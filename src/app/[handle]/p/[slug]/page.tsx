@@ -2,9 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Store } from "lucide-react";
-import { getProductBySlug, getShopByHandle } from "@/lib/queries";
+import {
+  getCheckoutMethods,
+  getProductBySlug,
+  getShopByHandle,
+} from "@/lib/queries";
 import { ProductGallery } from "@/components/shop/product-gallery";
-import { OrderButton } from "@/components/shop/order-sheet";
+import {
+  OrderButton,
+  type CheckoutMethod,
+} from "@/components/shop/order-sheet";
 import { ReviewForm } from "@/components/shop/review-form";
 import { StarRating } from "@/components/shop/star-rating";
 import { VisitTracker } from "@/components/shop/visit-tracker";
@@ -47,6 +54,12 @@ export default async function ProductPage({
 
   const product = await getProductBySlug(shop.id, slug);
   if (!product || !product.isPublished) notFound();
+
+  const checkoutMethods = await getCheckoutMethods(shop.id);
+  const methods: CheckoutMethod[] = checkoutMethods.map((m) => ({
+    type: m.type as CheckoutMethod["type"],
+    label: m.label,
+  }));
 
   const onSale =
     product.compareAtCents !== null &&
@@ -144,7 +157,8 @@ export default async function ProductPage({
               productTitle={product.title}
               priceCents={product.priceCents}
               currency={shop.currency}
-              hasWhatsApp={Boolean(shop.whatsapp)}
+              methods={methods}
+              needsAddress={shop.collectAddress && product.kind === "physical"}
               contactEmail={shop.contactEmail}
               inStock={product.inStock}
             />

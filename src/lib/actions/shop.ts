@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { and, eq, ne } from "drizzle-orm";
 import { getDb } from "@/db";
-import { shops, type ShopSocial } from "@/db/schema";
+import { paymentMethods, shops, type ShopSocial } from "@/db/schema";
 import { requireShop, requireUser } from "@/lib/session";
 import { normalizeHandle, normalizePhone, SOCIAL_PLATFORMS } from "@/lib/utils";
 
@@ -71,14 +71,28 @@ export async function createShop(
   });
   if (existing) redirect("/admin");
 
-  await db.insert(shops).values({
-    userId: user.id,
-    handle,
-    name,
-    description: String(formData.get("description") ?? "").trim() || null,
-    whatsapp: normalizePhone(String(formData.get("whatsapp") ?? "")) || null,
-    currency: String(formData.get("currency") ?? "USD"),
-  });
+  const [shop] = await db
+    .insert(shops)
+    .values({
+      userId: user.id,
+      handle,
+      name,
+      description: String(formData.get("description") ?? "").trim() || null,
+      currency: String(formData.get("currency") ?? "USD"),
+    })
+    .returning({ id: shops.id });
+
+  // A shop with no way to order is useless, so seed WhatsApp if given.
+  const whatsapp = normalizePhone(String(formData.get("whatsapp") ?? ""));
+  if (whatsapp) {
+    await db.insert(paymentMethods).values({
+      shopId: shop.id,
+      type: "whatsapp",
+      config: { phone: whatsapp },
+      isEnabled: true,
+      position: 1,
+    });
+  }
 
   redirect("/admin?welcome=1");
 }
@@ -116,10 +130,10 @@ export async function updateShop(
       theme: theme === "dark" ? "dark" : "light",
       layout: layout === "list" ? "list" : "grid",
       currency: String(formData.get("currency") ?? "USD"),
-      whatsapp: normalizePhone(String(formData.get("whatsapp") ?? "")) || null,
       contactEmail: String(formData.get("contactEmail") ?? "").trim() || null,
       location: String(formData.get("location") ?? "").trim() || null,
       socials: readSocials(formData),
+      collectAddress: formData.get("collectAddress") === "on",
       isPublished: formData.get("isPublished") === "on",
       updatedAt: new Date(),
     })

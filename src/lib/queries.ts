@@ -14,17 +14,21 @@ import {
 import { getDb } from "@/db";
 import {
   categories,
+  clients,
   orders,
+  paymentMethods,
   productImages,
   products,
   reviews,
   shops,
   visits,
   type Category,
+  type Client,
   type Product,
   type ProductImage,
   type Shop,
 } from "@/db/schema";
+import { isConfigured } from "./payments";
 
 export type ProductCard = Product & {
   images: ProductImage[];
@@ -216,6 +220,8 @@ export async function getDashboardStats(shopId: string) {
         total: sql<string>`count(*)`,
         pending: sql<string>`count(*) filter (where ${orders.status} = 'new')`,
         revenue: sql<string>`coalesce(sum(${orders.unitPriceCents} * ${orders.quantity}), 0)`,
+        paid: sql<string>`coalesce(sum(${orders.unitPriceCents} * ${orders.quantity}) filter (where ${orders.paymentStatus} = 'paid'), 0)`,
+        awaitingConfirm: sql<string>`count(*) filter (where ${orders.paymentStatus} = 'pending')`,
       })
       .from(orders)
       .where(eq(orders.shopId, shopId)),
@@ -240,6 +246,8 @@ export async function getDashboardStats(shopId: string) {
     totalOrders: Number(orderRow?.total ?? 0),
     newOrders: Number(orderRow?.pending ?? 0),
     orderValueCents: Number(orderRow?.revenue ?? 0),
+    paidValueCents: Number(orderRow?.paid ?? 0),
+    awaitingConfirmation: Number(orderRow?.awaitingConfirm ?? 0),
     totalProducts: Number(productRow?.total ?? 0),
     publishedProducts: Number(productRow?.published ?? 0),
     pendingReviews: Number(reviewRow?.pending ?? 0),
@@ -281,48 +289,88 @@ export async function getShopOrders(shopId: string, limit = 100) {
   });
 }
 
-/**
- * "Clients" are derived from order intents — we key on contact when we have
- * one, otherwise on name, so repeat buyers collapse into a single row.
- */
-export async function getShopClients(shopId: string) {
-  const rows = await getShopOrders(shopId, 500);
-  const map = new Map<
-    string,
-    {
-      key: string;
-      name: string;
-      contact: string | null;
-      orderCount: number;
-      totalCents: number;
-      lastOrderAt: Date;
-    }
-  >();
+export type ClientRow = Client & {
+  orderCount: number;
+  totalCents: number;
+  lastOrderAt: Date | null;
+};
 
-  for (const o of rows) {
-    const key = (o.customerContact || o.customerName || "").trim().toLowerCase();
-    if (!key) continue;
-    const existing = map.get(key);
-    const value = o.unitPriceCents * o.quantity;
-    if (existing) {
-      existing.orderCount += 1;
-      existing.totalCents += value;
-      if (o.createdAt > existing.lastOrderAt) existing.lastOrderAt = o.createdAt;
-    } else {
-      map.set(key, {
-        key,
-        name: o.customerName || "Anonymous",
-        contact: o.customerContact,
-        orderCount: 1,
-        totalCents: value,
-        lastOrderAt: o.createdAt,
-      });
-    }
-  }
+/** Clients with their lifetime totals, most recently active first. */
+export async function getShopClients(shopId: string): Promise<ClientRow[]> {
+  const db = getDb();
 
-  return [...map.values()].sort(
-    (a, b) => b.lastOrderAt.getTime() - a.lastOrderAt.getTime(),
+  const rows = await db
+    .select({
+      client: clients,
+      orderCount: sql<string>`count(${orders.id})`,
+      totalCents: sql<string>`coalesce(sum(${orders.unitPriceCents} * ${orders.quantity}), 0)`,
+      lastOrderAt: sql<string | null>`max(${orders.createdAt})`,
+    })
+    .from(clients)
+    .leftJoin(orders, eq(orders.clientId, clients.id))
+    .where(eq(clients.shopId, shopId))
+    .groupBy(clients.id)
+    .orderBy(sql`max(${orders.createdAt}) desc nulls last`);
+
+  return rows.map((r) => ({
+    ...r.client,
+    orderCount: Number(r.orderCount),
+    totalCents: Number(r.totalCents),
+    lastOrderAt: r.lastOrderAt ? new Date(r.lastOrderAt) : null,
+  }));
+}
+
+export async function getClientWithOrders(shopId: string, clientId: string) {
+  const db = getDb();
+
+  const client = await db.query.clients.findFirst({
+    where: and(eq(clients.id, clientId), eq(clients.shopId, shopId)),
+  });
+  if (!client) return null;
+
+  const clientOrders = await db.query.orders.findMany({
+    where: and(eq(orders.clientId, clientId), eq(orders.shopId, shopId)),
+    orderBy: [desc(orders.createdAt)],
+  });
+
+  const totalCents = clientOrders.reduce(
+    (sum, o) => sum + o.unitPriceCents * o.quantity,
+    0,
   );
+  const paidCents = clientOrders
+    .filter((o) => o.paymentStatus === "paid")
+    .reduce((sum, o) => sum + o.unitPriceCents * o.quantity, 0);
+
+  return {
+    client,
+    orders: clientOrders,
+    totalCents,
+    paidCents,
+    outstandingCents: totalCents - paidCents,
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Payment methods                                                            */
+/* -------------------------------------------------------------------------- */
+
+export async function getShopPaymentMethods(shopId: string) {
+  return getDb().query.paymentMethods.findMany({
+    where: eq(paymentMethods.shopId, shopId),
+    orderBy: [asc(paymentMethods.position)],
+  });
+}
+
+/** Only rails a buyer can actually use — enabled and fully configured. */
+export async function getCheckoutMethods(shopId: string) {
+  const rows = await getDb().query.paymentMethods.findMany({
+    where: and(
+      eq(paymentMethods.shopId, shopId),
+      eq(paymentMethods.isEnabled, true),
+    ),
+    orderBy: [asc(paymentMethods.position)],
+  });
+  return rows.filter((m) => isConfigured(m.type, m.config));
 }
 
 export async function getAdminProducts(shopId: string) {

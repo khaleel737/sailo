@@ -5,7 +5,7 @@ import type { ProductCard as ProductCardData } from "@/lib/queries";
 import type { Shop } from "@/db/schema";
 import { cn, formatMoney } from "@/lib/utils";
 import { StarRating } from "./star-rating";
-import { OrderButton } from "./order-sheet";
+import { OrderButton, type CheckoutMethod } from "./order-sheet";
 
 const KIND_LABEL: Record<string, string> = {
   digital: "Digital",
@@ -16,10 +16,12 @@ export function ProductCard({
   product,
   shop,
   layout,
+  methods,
 }: {
   product: ProductCardData;
   shop: Shop;
   layout: "grid" | "list";
+  methods: CheckoutMethod[];
 }) {
   const href = `/${shop.handle}/p/${product.slug}`;
   const image = product.images[0];
@@ -125,7 +127,8 @@ export function ProductCard({
             productTitle={product.title}
             priceCents={product.priceCents}
             currency={shop.currency}
-            hasWhatsApp={Boolean(shop.whatsapp)}
+            methods={methods}
+            needsAddress={shop.collectAddress && product.kind === "physical"}
             contactEmail={shop.contactEmail}
             inStock={product.inStock}
             label="Order"

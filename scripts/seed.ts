@@ -14,7 +14,9 @@ import { slugify } from "../src/lib/utils";
 const {
   account,
   categories,
+  clients,
   orders,
+  paymentMethods,
   productImages,
   products,
   reviews,
@@ -187,7 +189,7 @@ async function main() {
       theme: "light",
       layout: "grid",
       currency: "USD",
-      whatsapp: "12025550147",
+      collectAddress: true,
       contactEmail: "hello@clayandco.example",
       location: "Lagos, Nigeria",
       socials: [
@@ -260,31 +262,159 @@ async function main() {
     })),
   );
 
+  console.log("Creating payment methods…");
+  await db.insert(paymentMethods).values([
+    {
+      shopId: shop.id,
+      type: "whatsapp",
+      config: { phone: "12025550147" },
+      isEnabled: true,
+      position: 1,
+    },
+    {
+      shopId: shop.id,
+      type: "telegram",
+      config: { username: "clayandco" },
+      isEnabled: true,
+      position: 2,
+    },
+    {
+      shopId: shop.id,
+      type: "instagram",
+      config: { username: "clayandco" },
+      isEnabled: true,
+      position: 3,
+    },
+    {
+      shopId: shop.id,
+      type: "bank_transfer",
+      config: {
+        bankName: "Guaranty Trust Bank",
+        accountName: "Clay & Co. Ltd",
+        accountNumber: "0123456789",
+        iban: "NG29 GTBK 6016 1331 9268 19",
+        swift: "GTBINGLA",
+        instructions:
+          "Use your name as the transfer reference so we can match your order.",
+      },
+      isEnabled: true,
+      position: 4,
+    },
+    {
+      shopId: shop.id,
+      type: "cod",
+      config: {
+        instructions:
+          "We deliver within Lagos in 2–3 working days. Please have the exact amount ready.",
+      },
+      isEnabled: true,
+      position: 5,
+    },
+    // Configured but switched off, so the admin shows an "Off" state too.
+    {
+      shopId: shop.id,
+      type: "email",
+      config: { address: "orders@clayandco.example" },
+      isEnabled: false,
+      position: 6,
+    },
+  ]);
+
+  console.log("Creating clients…");
+  const CLIENTS = [
+    {
+      name: "Tomi Adeyemi",
+      email: "tomi@example.com",
+      phone: "2348012345678",
+      addressLine1: "14 Bishop Oluwole Street",
+      addressLine2: "Flat 3B",
+      city: "Lagos",
+      region: "Lagos State",
+      postalCode: "101241",
+      country: "Nigeria",
+    },
+    {
+      name: "Priya Nair",
+      email: "priya@example.com",
+      phone: "919820098200",
+      addressLine1: "22 Carter Road",
+      city: "Mumbai",
+      region: "Maharashtra",
+      postalCode: "400050",
+      country: "India",
+    },
+    {
+      name: "Dan Kowalski",
+      email: "dan@example.com",
+      phone: "14155550123",
+      addressLine1: "1104 W Belmont Ave",
+      city: "Chicago",
+      region: "IL",
+      postalCode: "60657",
+      country: "United States",
+    },
+    {
+      name: "Yasmin Haddad",
+      email: "yasmin@example.com",
+      phone: "962791234567",
+      addressLine1: "9 Rainbow Street",
+      city: "Amman",
+      postalCode: "11181",
+      country: "Jordan",
+      notes: "Asks about shipping to Amman — quoted $18 flat.",
+    },
+    {
+      name: "Chris B.",
+      email: "chris@example.com",
+      phone: null,
+      country: "United Kingdom",
+    },
+  ];
+
+  const insertedClients = await db
+    .insert(clients)
+    .values(CLIENTS.map((c) => ({ ...c, shopId: shop.id })))
+    .returning();
+  const clientByEmail = new Map(insertedClients.map((c) => [c.email, c]));
+
   console.log("Creating orders…");
   const ORDERS = [
-    { p: 0, name: "Tomi Adeyemi", contact: "+2348012345678", qty: 2, status: "fulfilled", note: "Can you wrap them separately? They're gifts." },
-    { p: 6, name: "Priya Nair", contact: "priya@example.com", qty: 1, status: "fulfilled", note: null },
-    { p: 4, name: "Dan Kowalski", contact: "+14155550123", qty: 1, status: "contacted", note: null },
-    { p: 2, name: "Yasmin Haddad", contact: "yasmin@example.com", qty: 3, status: "new", note: "Do you ship to Amman?" },
-    { p: 0, name: "Tomi Adeyemi", contact: "+2348012345678", qty: 1, status: "new", note: null },
-    { p: 5, name: "Chris B.", contact: null, qty: 1, status: "new", note: null },
+    { p: 0, email: "tomi@example.com", qty: 2, method: "whatsapp", status: "fulfilled", payment: "paid", note: "Can you wrap them separately? They're gifts.", ref: null },
+    { p: 6, email: "priya@example.com", qty: 1, method: "bank_transfer", status: "fulfilled", payment: "paid", note: null, ref: "TRF-88213" },
+    { p: 4, email: "dan@example.com", qty: 1, method: "telegram", status: "confirmed", payment: "unpaid", note: null, ref: null },
+    { p: 2, email: "yasmin@example.com", qty: 3, method: "bank_transfer", status: "new", payment: "pending", note: "Do you ship to Amman?", ref: "TRF-91007" },
+    { p: 0, email: "tomi@example.com", qty: 1, method: "cod", status: "new", payment: "unpaid", note: null, ref: null },
+    { p: 5, email: "chris@example.com", qty: 1, method: "instagram", status: "new", payment: "unpaid", note: null, ref: null },
   ];
 
   await db.insert(orders).values(
-    ORDERS.map((o, i) => ({
-      shopId: shop.id,
-      productId: productIds[o.p],
-      productTitle: PRODUCTS[o.p].title,
-      unitPriceCents: PRODUCTS[o.p].priceCents,
-      quantity: o.qty,
-      currency: "USD",
-      customerName: o.name,
-      customerContact: o.contact,
-      note: o.note,
-      channel: "whatsapp",
-      status: o.status,
-      createdAt: daysAgo(i * 2),
-    })),
+    ORDERS.map((o, i) => {
+      const client = clientByEmail.get(o.email)!;
+      return {
+        shopId: shop.id,
+        productId: productIds[o.p],
+        clientId: client.id,
+        productTitle: PRODUCTS[o.p].title,
+        unitPriceCents: PRODUCTS[o.p].priceCents,
+        quantity: o.qty,
+        currency: "USD",
+        customerName: client.name,
+        customerEmail: client.email,
+        customerPhone: client.phone,
+        addressLine1: client.addressLine1,
+        addressLine2: client.addressLine2,
+        city: client.city,
+        region: client.region,
+        postalCode: client.postalCode,
+        country: client.country,
+        note: o.note,
+        paymentMethod: o.method,
+        paymentStatus: o.payment,
+        paymentReference: o.ref,
+        status: o.status,
+        createdAt: daysAgo(i * 2),
+      };
+    }),
   );
 
   console.log("Creating visit history…");
@@ -319,7 +449,8 @@ async function main() {
   Login     ${DEMO_EMAIL}
   Password  ${DEMO_PASSWORD}
 
-  ${PRODUCTS.length} products · ${REVIEWS.length} reviews · ${ORDERS.length} orders · ${visitRows.length} visits
+  ${PRODUCTS.length} products · ${REVIEWS.length} reviews · ${CLIENTS.length} clients
+  ${ORDERS.length} orders · ${visitRows.length} visits · 5 live payment rails
 `);
 }
 

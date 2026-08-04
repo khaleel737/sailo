@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
+  CreditCard,
   ExternalLink,
   LayoutDashboard,
   LogOut,
@@ -27,6 +28,7 @@ const NAV = [
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { href: "/admin/clients", label: "Clients", icon: Users },
   { href: "/admin/reviews", label: "Reviews", icon: MessageSquare },
+  { href: "/admin/payments", label: "Payments", icon: CreditCard },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 

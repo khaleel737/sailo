@@ -86,34 +86,60 @@ WhatsApp messages — set it to the real origin in production.
 /admin                Overview: visits, orders, products
 /admin/products       Product CRUD with image upload
 /admin/categories     Category management
-/admin/orders         Order intents + status
-/admin/clients        Buyers, grouped by contact
+/admin/orders         Orders, payment status, delivery address
+/admin/clients        Buyers with lifetime totals
+/admin/clients/[id]   Client profile, address, notes, full order history
+/admin/payments       Turn payment rails on/off and configure them
 /admin/reviews        Review moderation
-/admin/settings       Identity, appearance, socials, WhatsApp
+/admin/settings       Identity, appearance, socials, address collection
 ```
 
 ## How ordering works
 
-There is no checkout. When a buyer taps **Order**:
+There is no card checkout. Sellers switch on any combination of rails and the
+buyer picks one:
 
-1. A sheet collects quantity, name, contact and an optional note.
-2. The order is **persisted first** as an intent — so the seller keeps the lead
-   even if the buyer never sends the message.
-3. The buyer is handed a `wa.me` deep link with the order details pre-filled.
+| Rail | Kind | What happens |
+|---|---|---|
+| WhatsApp | chat handoff | `wa.me` deep link, order pre-filled |
+| Telegram | chat handoff | `t.me` deep link, order pre-filled |
+| Instagram DM | chat handoff | `ig.me` link (Instagram can't pre-fill) |
+| Email | chat handoff | `mailto:` with the order written out |
+| Phone | chat handoff | `tel:` link |
+| Bank transfer | manual | Account details shown, buyer submits a reference |
+| Cash on delivery | manual | Buyer pays on arrival |
 
-If a seller hasn't set a WhatsApp number the order is still recorded, and the
-buyer sees a confirmation instead.
+Every rail follows the same rule: **the order is persisted first**, then the
+buyer is handed off. The seller keeps the lead even if the handoff never
+completes.
+
+Manual rails require an email or phone number so the seller can follow up; chat
+rails don't, because the conversation itself is the contact. A rail only appears
+to buyers when it is both enabled *and* fully configured — a half-set-up option
+is hidden rather than shown broken.
+
+Card checkout (Stripe, Paystack, PayPal — connected by the seller, money going
+straight to them) is the next step. Stripe reaches only 46 countries, which is
+why the chat and manual rails come first.
 
 ## Data model
 
-`shops` (one per user) → `categories`, `products` → `product_images`, `reviews`.
-Plus `orders` (intents, carrying a product snapshot so records survive product
-deletion) and `visits` (pageview analytics). BetterAuth owns `user`, `session`,
-`account` and `verification`.
+`shops` (one per user) → `categories`, `products` → `product_images`, `reviews`,
+plus `payment_methods` (the rails) and `clients` (buyers).
+
+`orders` link to a client but also snapshot the customer and product details, so
+a record stays truthful after a client edits their profile or a product is
+deleted. Clients are matched on email or phone, so repeat buyers accumulate
+history instead of creating duplicates; an order that collects no address never
+blanks an address already on file.
+
+`visits` holds pageview analytics. BetterAuth owns `user`, `session`, `account`
+and `verification`.
 
 ## Not built yet
 
-- Payments — deliberate. WhatsApp ordering dodges merchant-of-record liability
-  and country restrictions, which is what makes a global v1 possible.
+- Card checkout via seller-owned gateways (see above).
+- Paid tiers. The plan is to gate on branding, custom domain and card checkout
+  rather than product count, with regional pricing.
 - Custom domains, multiple shops per user, digital file delivery, email
   notifications, bot filtering on visit tracking.

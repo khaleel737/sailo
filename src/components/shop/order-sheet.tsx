@@ -1,9 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Loader2, Minus, Plus, X } from "lucide-react";
-import { createOrderIntent } from "@/lib/actions/orders";
+import { Check, Copy, Loader2, Minus, Plus, X } from "lucide-react";
+import {
+  createOrderIntent,
+  submitPaymentReference,
+  type OrderIntentResult,
+} from "@/lib/actions/orders";
+import { PAYMENT_METHOD_DEFS, type PaymentMethodType } from "@/lib/payments";
 import { formatMoney } from "@/lib/utils";
+
+export type CheckoutMethod = {
+  type: PaymentMethodType;
+  label: string | null;
+};
 
 type Props = {
   shopId: string;
@@ -12,28 +22,35 @@ type Props = {
   productTitle: string;
   priceCents: number;
   currency: string;
-  hasWhatsApp: boolean;
-  contactEmail: string | null;
   inStock: boolean;
+  methods: CheckoutMethod[];
+  /** Ask for a delivery address (physical products in address-collecting shops). */
+  needsAddress: boolean;
+  contactEmail: string | null;
   className?: string;
   label?: string;
 };
 
 export function OrderButton({ className, label = "Order now", ...props }: Props) {
   const [open, setOpen] = useState(false);
+  const disabled = !props.inStock || props.methods.length === 0;
 
   return (
     <>
       <button
         type="button"
-        disabled={!props.inStock}
+        disabled={disabled}
         onClick={() => setOpen(true)}
         className={
           className ??
           "accent-bg h-11 w-full rounded-xl text-sm font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
         }
       >
-        {props.inStock ? label : "Sold out"}
+        {!props.inStock
+          ? "Sold out"
+          : props.methods.length === 0
+            ? "Unavailable"
+            : label}
       </button>
       {open ? <OrderSheet {...props} onClose={() => setOpen(false)} /> : null}
     </>
@@ -47,14 +64,19 @@ function OrderSheet({
   productTitle,
   priceCents,
   currency,
-  hasWhatsApp,
+  methods,
+  needsAddress,
   contactEmail,
   onClose,
 }: Props & { onClose: () => void }) {
   const [quantity, setQuantity] = useState(1);
+  const [method, setMethod] = useState<PaymentMethodType>(methods[0].type);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sent, setSent] = useState(false);
+  const [result, setResult] = useState<Extract<
+    OrderIntentResult,
+    { ok: true }
+  > | null>(null);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -66,34 +88,45 @@ function OrderSheet({
     };
   }, [onClose]);
 
+  const def = PAYMENT_METHOD_DEFS[method];
+  const isManual = def.kind === "manual";
+
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPending(true);
     setError(null);
 
     const data = new FormData(event.currentTarget);
-    const result = await createOrderIntent({
+    const res = await createOrderIntent({
       shopId,
       productId,
       quantity,
+      paymentMethod: method,
       customerName: String(data.get("customerName") ?? ""),
-      customerContact: String(data.get("customerContact") ?? ""),
+      customerEmail: String(data.get("customerEmail") ?? ""),
+      customerPhone: String(data.get("customerPhone") ?? ""),
+      addressLine1: String(data.get("addressLine1") ?? ""),
+      addressLine2: String(data.get("addressLine2") ?? ""),
+      city: String(data.get("city") ?? ""),
+      region: String(data.get("region") ?? ""),
+      postalCode: String(data.get("postalCode") ?? ""),
+      country: String(data.get("country") ?? ""),
       note: String(data.get("note") ?? ""),
     });
 
-    if (!result.ok) {
-      setError(result.error);
+    if (!res.ok) {
+      setError(res.error);
       setPending(false);
       return;
     }
 
-    if (result.whatsappUrl) {
-      window.location.href = result.whatsappUrl;
+    // Contact rails leave the site immediately; manual rails stay for instructions.
+    if (res.handoff?.kind === "redirect") {
+      window.location.href = res.handoff.url;
       return;
     }
 
-    // No WhatsApp configured — the lead is saved, tell the buyer what happens next.
-    setSent(true);
+    setResult(res);
     setPending(false);
   }
 
@@ -111,7 +144,7 @@ function OrderSheet({
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
       />
 
-      <div className="surface-card animate-rise relative w-full max-w-md rounded-t-2xl p-5 sm:rounded-2xl">
+      <div className="surface-card animate-rise relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-2xl p-5 sm:rounded-2xl">
         <button
           type="button"
           onClick={onClose}
@@ -121,24 +154,13 @@ function OrderSheet({
           <X className="size-5" />
         </button>
 
-        {sent ? (
-          <div className="py-6 text-center">
-            <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-              <Check className="size-6" />
-            </div>
-            <p className="font-semibold">Order sent to {shopName}</p>
-            <p className="text-muted mt-1 text-sm">
-              They&rsquo;ll get back to you
-              {contactEmail ? ` — or reach them at ${contactEmail}` : " shortly"}.
-            </p>
-            <button
-              type="button"
-              onClick={onClose}
-              className="surface-elevated mt-5 h-10 w-full rounded-xl text-sm font-medium"
-            >
-              Done
-            </button>
-          </div>
+        {result ? (
+          <Confirmation
+            result={result}
+            shopName={shopName}
+            contactEmail={contactEmail}
+            onClose={onClose}
+          />
         ) : (
           <form onSubmit={onSubmit} className="space-y-4">
             <div className="pr-8">
@@ -179,17 +201,123 @@ function OrderSheet({
               </div>
             </div>
 
-            <input
-              name="customerName"
-              placeholder="Your name"
-              autoComplete="name"
-              className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
-            />
-            <input
-              name="customerContact"
-              placeholder="Phone or email (optional)"
-              className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
-            />
+            {methods.length > 1 ? (
+              <fieldset>
+                <legend className="mb-1.5 text-sm font-medium">
+                  How would you like to order?
+                </legend>
+                <div className="space-y-1.5">
+                  {methods.map((m) => {
+                    const d = PAYMENT_METHOD_DEFS[m.type];
+                    const active = method === m.type;
+                    return (
+                      <label
+                        key={m.type}
+                        className={`flex cursor-pointer items-start gap-2.5 rounded-xl p-2.5 transition ${
+                          active ? "surface-elevated" : "hover:opacity-70"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value={m.type}
+                          checked={active}
+                          onChange={() => setMethod(m.type)}
+                          className="mt-0.5 size-4 accent-current"
+                        />
+                        <span className="min-w-0">
+                          <span className="block text-sm font-medium">
+                            {m.label ?? d.name}
+                          </span>
+                          <span className="text-muted block text-xs leading-snug">
+                            {d.description}
+                          </span>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </fieldset>
+            ) : null}
+
+            <div className="space-y-2.5">
+              <input
+                name="customerName"
+                placeholder="Your name"
+                autoComplete="name"
+                className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  name="customerEmail"
+                  type="email"
+                  placeholder={isManual ? "Email" : "Email (optional)"}
+                  autoComplete="email"
+                  className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                />
+                <input
+                  name="customerPhone"
+                  type="tel"
+                  placeholder={isManual ? "Phone" : "Phone (optional)"}
+                  autoComplete="tel"
+                  className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                />
+              </div>
+              {isManual ? (
+                <p className="text-muted text-xs">
+                  Give at least one so {shopName} can reach you about this order.
+                </p>
+              ) : null}
+            </div>
+
+            {needsAddress ? (
+              <fieldset className="space-y-2.5">
+                <legend className="mb-1.5 text-sm font-medium">
+                  Delivery address
+                </legend>
+                <input
+                  name="addressLine1"
+                  placeholder="Street address"
+                  autoComplete="address-line1"
+                  className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                />
+                <input
+                  name="addressLine2"
+                  placeholder="Apartment, suite (optional)"
+                  autoComplete="address-line2"
+                  className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    name="city"
+                    placeholder="City"
+                    autoComplete="address-level2"
+                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                  />
+                  <input
+                    name="region"
+                    placeholder="State / region"
+                    autoComplete="address-level1"
+                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    name="postalCode"
+                    placeholder="Postal code"
+                    autoComplete="postal-code"
+                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                  />
+                  <input
+                    name="country"
+                    placeholder="Country"
+                    autoComplete="country-name"
+                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                  />
+                </div>
+              </fieldset>
+            ) : null}
+
             <textarea
               name="note"
               rows={2}
@@ -197,7 +325,7 @@ function OrderSheet({
               className="surface-elevated w-full rounded-xl px-3 py-2.5 text-sm outline-none placeholder:opacity-50"
             />
 
-            <div className="flex items-center justify-between border-t pt-3 text-sm surface-border">
+            <div className="surface-border flex items-center justify-between border-t pt-3 text-sm">
               <span className="text-muted">Total</span>
               <span className="text-base font-semibold tabular-nums">
                 {formatMoney(priceCents * quantity, currency)}
@@ -210,17 +338,161 @@ function OrderSheet({
               className="accent-bg flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition hover:opacity-90 disabled:opacity-60"
             >
               {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-              {hasWhatsApp ? "Continue on WhatsApp" : "Send order"}
+              {def.action}
             </button>
 
             <p className="text-muted text-center text-xs">
-              {hasWhatsApp
-                ? "Opens WhatsApp with your order details filled in."
-                : "The seller receives your order in their dashboard."}
+              {def.kind === "contact"
+                ? "Your order details are sent along so you don't have to type them."
+                : "The seller gets your order and confirms payment."}
             </p>
           </form>
         )}
       </div>
+    </div>
+  );
+}
+
+function Confirmation({
+  result,
+  shopName,
+  contactEmail,
+  onClose,
+}: {
+  result: Extract<OrderIntentResult, { ok: true }>;
+  shopName: string;
+  contactEmail: string | null;
+  onClose: () => void;
+}) {
+  const [reference, setReference] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [refError, setRefError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const hasBank = Boolean(result.bankDetails?.length);
+
+  async function onSubmitReference() {
+    setPending(true);
+    setRefError(null);
+    const res = await submitPaymentReference({
+      orderId: result.orderId,
+      reference,
+    });
+    if (!res.ok) {
+      setRefError(res.error ?? "Couldn't save that.");
+      setPending(false);
+      return;
+    }
+    setSubmitted(true);
+    setPending(false);
+  }
+
+  async function copyDetails() {
+    const text = (result.bankDetails ?? [])
+      .map((d) => `${d.label}: ${d.value}`)
+      .join("\n");
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Details stay visible on screen, so a blocked clipboard is harmless.
+    }
+  }
+
+  return (
+    <div className="py-2">
+      <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+        <Check className="size-6" />
+      </div>
+      <p className="text-center font-semibold">Order sent to {shopName}</p>
+      <p className="text-muted mt-1 text-center text-sm">
+        {hasBank
+          ? "Transfer the total using the details below, then add your reference."
+          : `Paid by ${result.methodName.toLowerCase()}.`}
+      </p>
+
+      {hasBank ? (
+        <div className="surface-elevated mt-4 rounded-xl p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-xs font-medium uppercase tracking-wide opacity-60">
+              Bank details
+            </span>
+            <button
+              type="button"
+              onClick={copyDetails}
+              className="inline-flex items-center gap-1 text-xs font-medium transition hover:opacity-70"
+            >
+              {copied ? (
+                <Check className="size-3.5" />
+              ) : (
+                <Copy className="size-3.5" />
+              )}
+              {copied ? "Copied" : "Copy"}
+            </button>
+          </div>
+          <dl className="space-y-1.5">
+            {result.bankDetails!.map((d) => (
+              <div key={d.label} className="flex justify-between gap-3 text-sm">
+                <dt className="text-muted shrink-0">{d.label}</dt>
+                <dd className="text-right font-medium break-all">{d.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      ) : null}
+
+      {result.instructions ? (
+        <p className="surface-elevated mt-3 whitespace-pre-wrap rounded-xl p-3 text-sm">
+          {result.instructions}
+        </p>
+      ) : null}
+
+      {hasBank && !submitted ? (
+        <div className="mt-4 space-y-2">
+          {refError ? (
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+              {refError}
+            </p>
+          ) : null}
+          <input
+            value={reference}
+            onChange={(e) => setReference(e.target.value)}
+            placeholder="Transfer reference"
+            className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+          />
+          <button
+            type="button"
+            onClick={onSubmitReference}
+            disabled={pending || !reference.trim()}
+            className="accent-bg flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition hover:opacity-90 disabled:opacity-50"
+          >
+            {pending ? <Loader2 className="size-4 animate-spin" /> : null}
+            I&rsquo;ve sent the payment
+          </button>
+        </div>
+      ) : null}
+
+      {submitted ? (
+        <p className="mt-4 rounded-xl bg-emerald-50 px-3 py-2.5 text-center text-sm text-emerald-700">
+          Thanks — {shopName} will confirm your payment shortly.
+        </p>
+      ) : null}
+
+      {contactEmail ? (
+        <p className="text-muted mt-3 text-center text-xs">
+          Questions? {contactEmail}
+        </p>
+      ) : null}
+
+      <button
+        type="button"
+        onClick={onClose}
+        className="surface-elevated mt-4 h-10 w-full rounded-xl text-sm font-medium"
+      >
+        Done
+      </button>
     </div>
   );
 }

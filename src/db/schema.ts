@@ -101,9 +101,11 @@ export const shops = pgTable(
 
     // Contact / ordering
     currency: text("currency").default("USD").notNull(),
-    whatsapp: text("whatsapp"), // E.164 digits, no +
     contactEmail: text("contact_email"),
     location: text("location"),
+
+    // Ask for a delivery address on physical products.
+    collectAddress: boolean("collect_address").default(true).notNull(),
 
     // [{ platform: 'instagram', url: '...' }, ...]
     socials: jsonb("socials").$type<ShopSocial[]>().default([]).notNull(),
@@ -215,9 +217,76 @@ export const reviews = pgTable(
 );
 
 /**
- * An order here is an *intent* — captured the moment a buyer commits, just
- * before we hand them off to WhatsApp. The seller keeps the lead even if the
- * buyer never sends the message.
+ * The rails a shop offers at checkout. Contact rails hand off to a chat app,
+ * manual rails settle out of band, and card rails (later) redirect to a
+ * gateway the seller owns. Config shape varies per type — see PaymentConfig.
+ */
+export const paymentMethods = pgTable(
+  "payment_methods",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+
+    type: text("type").notNull(), // see PAYMENT_METHOD_TYPES
+    label: text("label"), // seller override for the button text
+    config: jsonb("config").$type<PaymentConfig>().default({}).notNull(),
+
+    isEnabled: boolean("is_enabled").default(true).notNull(),
+    position: integer("position").default(0).notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("payment_methods_shop_type_key").on(t.shopId, t.type),
+    index("payment_methods_shop_idx").on(t.shopId),
+  ],
+);
+
+/**
+ * A buyer, owned by one shop. Created or matched on every order so repeat
+ * buyers accumulate history instead of appearing as separate rows.
+ */
+export const clients = pgTable(
+  "clients",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+
+    name: text("name").notNull(),
+    email: text("email"),
+    phone: text("phone"),
+
+    addressLine1: text("address_line1"),
+    addressLine2: text("address_line2"),
+    city: text("city"),
+    region: text("region"),
+    postalCode: text("postal_code"),
+    country: text("country"),
+
+    notes: text("notes"), // seller's private notes
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("clients_shop_idx").on(t.shopId),
+    uniqueIndex("clients_shop_email_key").on(t.shopId, t.email),
+    uniqueIndex("clients_shop_phone_key").on(t.shopId, t.phone),
+  ],
+);
+
+/**
+ * An order here is an *intent* — captured the moment a buyer commits, before
+ * we hand them off to their chosen rail. The seller keeps the lead even if the
+ * buyer never completes the handoff.
+ *
+ * Customer and product details are snapshotted so the record stays truthful
+ * after a client edits their profile or a product is deleted.
  */
 export const orders = pgTable(
   "orders",
@@ -229,24 +298,41 @@ export const orders = pgTable(
     productId: uuid("product_id").references(() => products.id, {
       onDelete: "set null",
     }),
+    clientId: uuid("client_id").references(() => clients.id, {
+      onDelete: "set null",
+    }),
 
-    // Snapshot so the record survives product edits/deletes.
     productTitle: text("product_title").notNull(),
     unitPriceCents: integer("unit_price_cents").default(0).notNull(),
     quantity: integer("quantity").default(1).notNull(),
     currency: text("currency").default("USD").notNull(),
 
+    // Customer snapshot
     customerName: text("customer_name"),
-    customerContact: text("customer_contact"),
+    customerEmail: text("customer_email"),
+    customerPhone: text("customer_phone"),
+    addressLine1: text("address_line1"),
+    addressLine2: text("address_line2"),
+    city: text("city"),
+    region: text("region"),
+    postalCode: text("postal_code"),
+    country: text("country"),
     note: text("note"),
 
-    channel: text("channel").default("whatsapp").notNull(),
-    status: text("status").default("new").notNull(), // new | contacted | fulfilled | cancelled
+    // How they chose to pay
+    paymentMethod: text("payment_method").default("whatsapp").notNull(),
+    paymentStatus: text("payment_status").default("unpaid").notNull(), // unpaid | pending | paid
+    paymentReference: text("payment_reference"), // transfer ref the buyer typed
+    paymentProofUrl: text("payment_proof_url"),
+
+    status: text("status").default("new").notNull(), // new | confirmed | fulfilled | cancelled
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (t) => [
     index("orders_shop_idx").on(t.shopId),
+    index("orders_client_idx").on(t.clientId),
     index("orders_created_idx").on(t.createdAt),
   ],
 );
@@ -282,6 +368,17 @@ export const shopsRelations = relations(shops, ({ one, many }) => ({
   categories: many(categories),
   orders: many(orders),
   visits: many(visits),
+  paymentMethods: many(paymentMethods),
+  clients: many(clients),
+}));
+
+export const paymentMethodsRelations = relations(paymentMethods, ({ one }) => ({
+  shop: one(shops, { fields: [paymentMethods.shopId], references: [shops.id] }),
+}));
+
+export const clientsRelations = relations(clients, ({ one, many }) => ({
+  shop: one(shops, { fields: [clients.shopId], references: [shops.id] }),
+  orders: many(orders),
 }));
 
 export const categoriesRelations = relations(categories, ({ one, many }) => ({
@@ -320,6 +417,10 @@ export const ordersRelations = relations(orders, ({ one }) => ({
     fields: [orders.productId],
     references: [products.id],
   }),
+  client: one(clients, {
+    fields: [orders.clientId],
+    references: [clients.id],
+  }),
 }));
 
 /* -------------------------------------------------------------------------- */
@@ -331,6 +432,22 @@ export type ShopSocial = {
   url: string;
 };
 
+/** Union of every rail's settings — only the keys for that type are used. */
+export type PaymentConfig = {
+  // Contact rails
+  phone?: string; // whatsapp, phone
+  username?: string; // telegram, instagram
+  address?: string; // email
+  // Bank transfer
+  bankName?: string;
+  accountName?: string;
+  accountNumber?: string;
+  iban?: string;
+  swift?: string;
+  // Free text shown to the buyer after ordering (bank_transfer, cod)
+  instructions?: string;
+};
+
 export type Shop = typeof shops.$inferSelect;
 export type Category = typeof categories.$inferSelect;
 export type Product = typeof products.$inferSelect;
@@ -338,3 +455,5 @@ export type ProductImage = typeof productImages.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type Visit = typeof visits.$inferSelect;
+export type PaymentMethod = typeof paymentMethods.$inferSelect;
+export type Client = typeof clients.$inferSelect;

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MapPin, PackageOpen, Store } from "lucide-react";
 import {
+  getCheckoutMethods,
   getPublicProducts,
   getShopByHandle,
   getShopCategories,
@@ -11,6 +12,7 @@ import {
 } from "@/lib/queries";
 import { FilterBar } from "@/components/shop/filter-bar";
 import { ProductCard } from "@/components/shop/product-card";
+import type { CheckoutMethod } from "@/components/shop/order-sheet";
 import { SocialIcons } from "@/components/shop/social-icons";
 import { VisitTracker } from "@/components/shop/visit-tracker";
 import { cn, shopThemeVars } from "@/lib/utils";
@@ -43,10 +45,16 @@ export default async function ShopPage({
   if (!shop || !shop.isPublished) notFound();
 
   const filters = (await searchParams) as ShopFilters;
-  const [categories, products] = await Promise.all([
+  const [categories, products, checkoutMethods] = await Promise.all([
     getShopCategories(shop.id),
     getPublicProducts(shop.id, filters),
+    getCheckoutMethods(shop.id),
   ]);
+
+  const methods: CheckoutMethod[] = checkoutMethods.map((m) => ({
+    type: m.type as CheckoutMethod["type"],
+    label: m.label,
+  }));
 
   const layout = shop.layout === "list" ? "list" : "grid";
   const hasFilters = Boolean(
@@ -145,6 +153,7 @@ export default async function ShopPage({
                   product={product}
                   shop={shop}
                   layout={layout}
+                  methods={methods}
                 />
               ))}
             </div>

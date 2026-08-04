@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Users } from "lucide-react";
+import Link from "next/link";
+import { ChevronRight, MapPin, Users } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getShopClients } from "@/lib/queries";
 import { PageHeader } from "@/components/admin/page-header";
 import { Card, EmptyState } from "@/components/ui";
-import { formatMoney } from "@/lib/utils";
+import { formatAddress, formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Clients" };
 
@@ -16,51 +17,61 @@ export default async function AdminClientsPage() {
     <>
       <PageHeader
         title="Clients"
-        description="Everyone who has ordered from you, grouped by contact."
+        description={
+          clients.length > 0
+            ? `${clients.length} ${clients.length === 1 ? "person has" : "people have"} ordered from you.`
+            : "Everyone who has ordered from you."
+        }
       />
 
       {clients.length === 0 ? (
         <EmptyState
           icon={<Users className="size-8" />}
           title="No clients yet"
-          description="Buyers appear here once they place their first order and leave a name or contact."
+          description="Buyers appear here once they place their first order and leave an email or phone number."
         />
       ) : (
-        <Card className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-ink-100 text-left text-xs text-ink-500">
-                <th className="px-4 py-3 font-medium">Name</th>
-                <th className="px-4 py-3 font-medium">Contact</th>
-                <th className="px-4 py-3 text-right font-medium">Orders</th>
-                <th className="px-4 py-3 text-right font-medium">Total</th>
-                <th className="px-4 py-3 text-right font-medium">Last order</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-ink-100">
-              {clients.map((client) => (
-                <tr key={client.key}>
-                  <td className="px-4 py-3 font-medium">{client.name}</td>
-                  <td className="px-4 py-3 text-ink-600">
-                    {client.contact ?? <span className="text-ink-300">—</span>}
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums">
-                    {client.orderCount}
-                  </td>
-                  <td className="px-4 py-3 text-right font-medium tabular-nums">
+        <Card className="divide-y divide-ink-100">
+          {clients.map((client) => {
+            const address = formatAddress(client);
+            return (
+              <Link
+                key={client.id}
+                href={`/admin/clients/${client.id}`}
+                className="flex items-center gap-3 p-4 transition hover:bg-ink-50"
+              >
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-ink-100 text-sm font-semibold text-ink-600">
+                  {client.name.slice(0, 1).toUpperCase()}
+                </span>
+
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{client.name}</p>
+                  <p className="truncate text-xs text-ink-500">
+                    {[client.email, client.phone].filter(Boolean).join(" · ") ||
+                      "No contact details"}
+                  </p>
+                  {address ? (
+                    <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-ink-400">
+                      <MapPin className="size-3 shrink-0" />
+                      {address}
+                    </p>
+                  ) : null}
+                </div>
+
+                <div className="shrink-0 text-right">
+                  <p className="text-sm font-semibold tabular-nums">
                     {formatMoney(client.totalCents, shop.currency)}
-                  </td>
-                  <td className="px-4 py-3 text-right text-ink-500">
-                    {client.lastOrderAt.toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </p>
+                  <p className="text-xs text-ink-500">
+                    {client.orderCount}{" "}
+                    {client.orderCount === 1 ? "order" : "orders"}
+                  </p>
+                </div>
+
+                <ChevronRight className="size-4 shrink-0 text-ink-300" />
+              </Link>
+            );
+          })}
         </Card>
       )}
     </>

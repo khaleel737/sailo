@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
+import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { updateShop } from "@/lib/actions/shop";
 import { ImageUploader } from "./image-uploader";
@@ -159,23 +160,21 @@ export function SettingsForm({ shop }: { shop: Shop }) {
       </Card>
 
       <Card className="space-y-4 p-5">
-        <h2 className="text-sm font-semibold">Orders &amp; contact</h2>
+        <div>
+          <h2 className="text-sm font-semibold">Orders &amp; contact</h2>
+          <p className="mt-0.5 text-xs text-ink-500">
+            Ways to order live in{" "}
+            <Link
+              href="/admin/payments"
+              className="font-medium text-ink-700 underline underline-offset-2"
+            >
+              Payments
+            </Link>
+            .
+          </p>
+        </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field
-            label="WhatsApp number"
-            htmlFor="whatsapp"
-            hint="country code, no +"
-          >
-            <Input
-              id="whatsapp"
-              name="whatsapp"
-              inputMode="tel"
-              defaultValue={shop.whatsapp ?? ""}
-              placeholder="234801234567"
-            />
-          </Field>
-
           <Field label="Currency" htmlFor="currency">
             <Select id="currency" name="currency" defaultValue={shop.currency}>
               {CURRENCIES.map((c) => (
@@ -185,9 +184,7 @@ export function SettingsForm({ shop }: { shop: Shop }) {
               ))}
             </Select>
           </Field>
-        </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Contact email" htmlFor="contactEmail" hint="optional">
             <Input
               id="contactEmail"
@@ -196,16 +193,34 @@ export function SettingsForm({ shop }: { shop: Shop }) {
               defaultValue={shop.contactEmail ?? ""}
             />
           </Field>
-
-          <Field label="Location" htmlFor="location" hint="optional">
-            <Input
-              id="location"
-              name="location"
-              defaultValue={shop.location ?? ""}
-              placeholder="Lagos, Nigeria"
-            />
-          </Field>
         </div>
+
+        <Field label="Location" htmlFor="location" hint="optional">
+          <Input
+            id="location"
+            name="location"
+            defaultValue={shop.location ?? ""}
+            placeholder="Lagos, Nigeria"
+          />
+        </Field>
+
+        <label className="flex cursor-pointer items-start gap-3 border-t border-ink-100 pt-4">
+          <input
+            type="checkbox"
+            name="collectAddress"
+            defaultChecked={shop.collectAddress}
+            className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900"
+          />
+          <span>
+            <span className="block text-sm font-medium">
+              Ask for a delivery address
+            </span>
+            <span className="block text-xs text-ink-500">
+              Shown on physical products only. Turn off if you sell digital
+              goods or services.
+            </span>
+          </span>
+        </label>
       </Card>
 
       <Card className="space-y-3 p-5">

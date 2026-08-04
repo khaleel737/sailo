@@ -51,30 +51,26 @@ export function normalizePhone(input: string) {
   return input.replace(/\D/g, "");
 }
 
-export function buildWhatsAppUrl(opts: {
-  phone: string;
-  shopName: string;
-  productTitle: string;
-  quantity: number;
-  price: string;
-  productUrl?: string;
-  note?: string;
-  customerName?: string;
+/** Single-line address for chat messages and admin tables. */
+export function formatAddress(parts: {
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  city?: string | null;
+  region?: string | null;
+  postalCode?: string | null;
+  country?: string | null;
 }) {
-  const lines = [
-    `Hi ${opts.shopName}! I'd like to order:`,
-    ``,
-    `*${opts.productTitle}*`,
-    `Quantity: ${opts.quantity}`,
-    `Price: ${opts.price}`,
-  ];
-  if (opts.customerName) lines.push(`Name: ${opts.customerName}`);
-  if (opts.note) lines.push(`Note: ${opts.note}`);
-  if (opts.productUrl) lines.push(``, opts.productUrl);
-
-  return `https://wa.me/${normalizePhone(opts.phone)}?text=${encodeURIComponent(
-    lines.join("\n"),
-  )}`;
+  return [
+    parts.addressLine1,
+    parts.addressLine2,
+    parts.city,
+    parts.region,
+    parts.postalCode,
+    parts.country,
+  ]
+    .map((p) => p?.trim())
+    .filter(Boolean)
+    .join(", ");
 }
 
 const UUID_RE =

@@ -22,7 +22,7 @@ export const metadata: Metadata = { title: "Overview" };
 
 const STATUS_TONE = {
   new: "blue",
-  contacted: "amber",
+  confirmed: "amber",
   fulfilled: "green",
   cancelled: "neutral",
 } as const;
@@ -90,6 +90,22 @@ export default async function AdminOverviewPage() {
           }
         />
       </div>
+
+      {stats.awaitingConfirmation > 0 ? (
+        <Link
+          href="/admin/orders"
+          className="mb-6 flex items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 transition hover:bg-amber-100"
+        >
+          <p className="text-sm text-amber-900">
+            <span className="font-medium">
+              {stats.awaitingConfirmation}{" "}
+              {stats.awaitingConfirmation === 1 ? "buyer says" : "buyers say"}
+            </span>{" "}
+            they&rsquo;ve sent payment. Confirm to mark as paid.
+          </p>
+          <ArrowRight className="size-4 shrink-0 text-amber-700" />
+        </Link>
+      ) : null}
 
       <Card className="mb-6 p-5">
         <VisitsChart data={series} />
