@@ -35,6 +35,7 @@ export const tr: Dictionary = {
     star: "{count} yıldız", stars: "{count} yıldız",
   },
   checkout: {
+    taxIncluded: "{amount} tutarında {name} dâhildir (%{percent})",
     saveFailed: "Kaydedilemedi.",
     quantity: "Adet", increase: "Adedi artır", decrease: "Adedi azalt",
     howReceive: "Siparişinizi nasıl almak istersiniz?", howOrder: "Nasıl sipariş vermek istersiniz?",
@@ -102,6 +103,8 @@ export const tr: Dictionary = {
     terms: "Koşullar",
   },
   invoice: {
+    tax: "Vergi",
+    includes: "Dâhil",
     invoice: "Fatura", billedTo: "Alıcı", details: "Ayrıntılar", item: "Ürün",
     qty: "Adet", price: "Fiyat", amount: "Tutar", payment: "Ödeme",
     delivery: "Teslimat", pickup: "Teslim alma", reference: "Ref.", note: "Not",

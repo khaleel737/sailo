@@ -36,6 +36,7 @@ export const pt: Dictionary = {
     star: "{count} estrela", stars: "{count} estrelas",
   },
   checkout: {
+    taxIncluded: "Inclui {amount} de {name} ({percent}%)",
     saveFailed: "Não foi possível guardar.",
     quantity: "Quantidade", increase: "Aumentar quantidade", decrease: "Reduzir quantidade",
     howReceive: "Como quer receber?", howOrder: "Como quer encomendar?",
@@ -103,6 +104,8 @@ export const pt: Dictionary = {
     terms: "Condições",
   },
   invoice: {
+    tax: "Imposto",
+    includes: "Inclui",
     invoice: "Fatura", billedTo: "Faturado a", details: "Detalhes",
     item: "Artigo", qty: "Qtd.", price: "Preço", amount: "Valor",
     payment: "Pagamento", delivery: "Entrega", pickup: "Levantamento",

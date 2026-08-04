@@ -57,6 +57,7 @@ export const ja: Dictionary = {
     stars: "星{count}",
   },
   checkout: {
+    taxIncluded: "{name}（{percent}%）{amount}を含みます",
     saveFailed: "保存できませんでした。",
     quantity: "数量", increase: "数量を増やす", decrease: "数量を減らす",
     howReceive: "受け取り方法をお選びください",
@@ -132,6 +133,8 @@ export const ja: Dictionary = {
     terms: "規約",
   },
   invoice: {
+    tax: "税",
+    includes: "内訳",
     invoice: "請求書", billedTo: "請求先", details: "詳細",
     item: "商品", qty: "数量", price: "単価", amount: "金額",
     payment: "支払い", delivery: "配送", pickup: "受け取り場所",

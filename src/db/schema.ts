@@ -142,6 +142,22 @@ export const shops = pgTable(
     invoicePrefix: text("invoice_prefix").default("INV").notNull(),
     invoiceNextNumber: integer("invoice_next_number").default(1).notNull(),
     invoiceNotes: text("invoice_notes"),
+
+    // Tax. Off by default: most link-in-bio sellers are under a registration
+    // threshold, and charging tax they don't owe is worse than not charging it.
+    taxEnabled: boolean("tax_enabled").default(false).notNull(),
+    /** What the buyer sees on the line: VAT, GST, Sales tax, IVA… */
+    taxName: text("tax_name").default("Tax").notNull(),
+    /** Basis points — 2000 = 20%. */
+    taxRateBp: integer("tax_rate_bp").default(0).notNull(),
+    /**
+     * True where the law expects displayed prices to already include tax (the
+     * EU, the UK, most of Asia); false where it's added at checkout (the US).
+     */
+    taxInclusive: boolean("tax_inclusive").default(false).notNull(),
+    /** Shipping is taxable in most places, so this defaults on. */
+    taxOnDelivery: boolean("tax_on_delivery").default(true).notNull(),
+    /** VAT/GST registration number, printed on the invoice. */
     taxId: text("tax_id"),
 
     // [{ platform: 'instagram', url: '...' }, ...]
@@ -459,6 +475,16 @@ export const orders = pgTable(
     subtotalCents: integer("subtotal_cents").default(0).notNull(),
     discountCents: integer("discount_cents").default(0).notNull(),
     deliveryFeeCents: integer("delivery_fee_cents").default(0).notNull(),
+    /**
+     * Tax snapshot. The rate and name are copied from the shop at order time —
+     * a rate change must never rewrite what a past buyer was charged, and an
+     * invoice has to keep saying what it said when it was issued.
+     */
+    taxCents: integer("tax_cents").default(0).notNull(),
+    taxRateBp: integer("tax_rate_bp").default(0).notNull(),
+    taxName: text("tax_name"),
+    /** True when `taxCents` is contained in the total rather than added to it. */
+    taxInclusive: boolean("tax_inclusive").default(false).notNull(),
     totalCents: integer("total_cents").default(0).notNull(),
 
     // Delivery — id for reporting, snapshot so the record survives rate edits
@@ -572,13 +598,39 @@ export const visits = pgTable(
       onDelete: "cascade",
     }),
     sessionId: text("session_id"),
+
+    /** The full referring URL as the browser reported it. */
     referrer: text("referrer"),
+    /** Just the host, for grouping: "instagram.com", "google.com". */
+    referrerHost: text("referrer_host"),
+    /**
+     * How they arrived: direct | search | social | referral | campaign.
+     * Derived once on write so the dashboard can group without re-parsing.
+     */
+    source: text("source"),
+
+    // Campaign tagging, when the link carried UTM parameters.
+    utmSource: text("utm_source"),
+    utmMedium: text("utm_medium"),
+    utmCampaign: text("utm_campaign"),
+
+    // Geography, from the edge. Absent in local development.
     country: text("country"),
+    region: text("region"),
+    city: text("city"),
+
+    /** mobile | tablet | desktop */
+    device: text("device"),
+    os: text("os"),
+    browser: text("browser"),
+
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [
     index("visits_shop_idx").on(t.shopId),
     index("visits_created_idx").on(t.createdAt),
+    // The dashboard breakdowns all filter by shop and date, then group.
+    index("visits_shop_created_idx").on(t.shopId, t.createdAt),
   ],
 );
 

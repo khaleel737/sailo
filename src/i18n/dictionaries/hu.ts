@@ -33,6 +33,7 @@ export const hu: Dictionary = {
     star: "{count} csillag", stars: "{count} csillag",
   },
   checkout: {
+    taxIncluded: "Tartalmaz {amount} {name}-t ({percent}%)",
     saveFailed: "Nem sikerült elmenteni.",
     quantity: "Mennyiség", increase: "Mennyiség növelése", decrease: "Mennyiség csökkentése",
     howReceive: "Hogyan szeretnéd megkapni?", howOrder: "Hogyan szeretnél rendelni?",
@@ -98,6 +99,8 @@ export const hu: Dictionary = {
     terms: "Feltételek",
   },
   invoice: {
+    tax: "Adó",
+    includes: "Tartalmaz",
     invoice: "Számla", billedTo: "Vevő", details: "Részletek", item: "Tétel",
     qty: "Db", price: "Ár", amount: "Összeg", payment: "Fizetés",
     delivery: "Szállítás", pickup: "Átvétel", reference: "Hiv.", note: "Megjegyzés",

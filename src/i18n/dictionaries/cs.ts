@@ -33,6 +33,7 @@ export const cs: Dictionary = {
     star: "Hvězdiček: {count}", stars: "Hvězdiček: {count}",
   },
   checkout: {
+    taxIncluded: "Včetně {amount} {name} ({percent} %)",
     saveFailed: "Nepodařilo se to uložit.",
     quantity: "Množství", increase: "Zvýšit množství", decrease: "Snížit množství",
     howReceive: "Jak chcete zboží převzít?", howOrder: "Jak chcete objednat?",
@@ -98,6 +99,8 @@ export const cs: Dictionary = {
     terms: "Podmínky",
   },
   invoice: {
+    tax: "Daň",
+    includes: "Včetně",
     invoice: "Faktura", billedTo: "Odběratel", details: "Podrobnosti", item: "Položka",
     qty: "Ks", price: "Cena", amount: "Částka", payment: "Platba",
     delivery: "Doručení", pickup: "Osobní odběr", reference: "Ref.", note: "Poznámka",

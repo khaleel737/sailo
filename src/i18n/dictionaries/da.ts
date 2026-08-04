@@ -33,6 +33,7 @@ export const da: Dictionary = {
     star: "{count} stjerne", stars: "{count} stjerner",
   },
   checkout: {
+    taxIncluded: "Inklusive {amount} {name} ({percent} %)",
     saveFailed: "Kunne ikke gemme det.",
     quantity: "Antal", increase: "Øg antal", decrease: "Reducér antal",
     howReceive: "Hvordan vil du modtage den?", howOrder: "Hvordan vil du bestille?",
@@ -98,6 +99,8 @@ export const da: Dictionary = {
     terms: "Betingelser",
   },
   invoice: {
+    tax: "Moms",
+    includes: "Inklusive",
     invoice: "Faktura", billedTo: "Faktureres til", details: "Detaljer", item: "Vare",
     qty: "Antal", price: "Pris", amount: "Beløb", payment: "Betaling",
     delivery: "Levering", pickup: "Afhentning", reference: "Ref.", note: "Note",

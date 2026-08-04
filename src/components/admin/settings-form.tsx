@@ -231,6 +231,108 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
         </label>
       </Card>
 
+      <Card className="space-y-4 p-5">
+        <div>
+          <h2 className="text-sm font-semibold">Tax</h2>
+          <p className="mt-0.5 text-xs text-ink-500">
+            Only turn this on if you are registered to charge it. Existing
+            orders keep the rate they were placed at.
+          </p>
+        </div>
+
+        <label className="flex cursor-pointer items-start gap-3">
+          <input
+            type="checkbox"
+            name="taxEnabled"
+            defaultChecked={shop.taxEnabled}
+            className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900"
+          />
+          <span>
+            <span className="block text-sm font-medium">Charge tax</span>
+            <span className="block text-xs text-ink-500">
+              Adds a tax line to checkout and to every invoice.
+            </span>
+          </span>
+        </label>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field
+            label="Tax name"
+            htmlFor="taxName"
+            hint="what buyers see — VAT, GST, Sales tax"
+          >
+            <Input
+              id="taxName"
+              name="taxName"
+              defaultValue={shop.taxName}
+              placeholder="VAT"
+              maxLength={40}
+            />
+          </Field>
+
+          <Field label="Rate" htmlFor="taxRate" hint="percent, e.g. 20 or 7.5">
+            <Input
+              id="taxRate"
+              name="taxRate"
+              type="number"
+              min={0}
+              max={100}
+              step="0.01"
+              inputMode="decimal"
+              defaultValue={
+                shop.taxRateBp ? String(shop.taxRateBp / 100) : ""
+              }
+              placeholder="20"
+            />
+          </Field>
+        </div>
+
+        <Field label="How prices are shown" htmlFor="taxInclusive">
+          <Select
+            id="taxInclusive"
+            name="taxInclusive"
+            defaultValue={shop.taxInclusive ? "inclusive" : "exclusive"}
+          >
+            <option value="exclusive">
+              Prices exclude tax — added at checkout (US sales tax)
+            </option>
+            <option value="inclusive">
+              Prices already include tax (EU VAT, UK, most of Asia)
+            </option>
+          </Select>
+        </Field>
+
+        <label className="flex cursor-pointer items-start gap-3">
+          <input
+            type="checkbox"
+            name="taxOnDelivery"
+            defaultChecked={shop.taxOnDelivery}
+            className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900"
+          />
+          <span>
+            <span className="block text-sm font-medium">
+              Tax the delivery fee
+            </span>
+            <span className="block text-xs text-ink-500">
+              Shipping is taxable in most places. Uncheck if yours is exempt.
+            </span>
+          </span>
+        </label>
+
+        <Field
+          label="Tax ID"
+          htmlFor="taxId"
+          hint="optional — printed on invoices"
+        >
+          <Input
+            id="taxId"
+            name="taxId"
+            defaultValue={shop.taxId ?? ""}
+            placeholder="GB123456789"
+          />
+        </Field>
+      </Card>
+
       <Card className="space-y-3 p-5">
         <h2 className="text-sm font-semibold">Social links</h2>
         <p className="-mt-1 text-xs text-ink-500">

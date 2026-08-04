@@ -140,6 +140,7 @@ export function OrderRow({
 
           {order.discountCents > 0 ||
           order.deliveryFeeCents > 0 ||
+          order.taxCents > 0 ||
           order.commissionCents > 0 ? (
             <p className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-ink-500">
               <span>
@@ -154,6 +155,13 @@ export function OrderRow({
               {order.deliveryFeeCents > 0 ? (
                 <span>
                   Delivery {formatMoney(order.deliveryFeeCents, order.currency)}
+                </span>
+              ) : null}
+              {order.taxCents > 0 ? (
+                <span>
+                  {order.taxName ?? "Tax"}{" "}
+                  {formatMoney(order.taxCents, order.currency)}
+                  {order.taxInclusive ? " (incl.)" : ""}
                 </span>
               ) : null}
               {order.commissionCents > 0 ? (

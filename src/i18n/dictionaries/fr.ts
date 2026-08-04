@@ -38,6 +38,7 @@ export const fr: Dictionary = {
     star: "{count} étoile", stars: "{count} étoiles",
   },
   checkout: {
+    taxIncluded: "Dont {amount} de {name} ({percent} %)",
     saveFailed: "Enregistrement impossible.",
     quantity: "Quantité", increase: "Augmenter la quantité", decrease: "Réduire la quantité",
     howReceive: "Comment souhaitez-vous le recevoir ?",
@@ -108,6 +109,8 @@ export const fr: Dictionary = {
     terms: "Conditions",
   },
   invoice: {
+    tax: "Taxe",
+    includes: "Dont",
     invoice: "Facture", billedTo: "Facturé à", details: "Détails",
     item: "Article", qty: "Qté", price: "Prix", amount: "Montant",
     payment: "Paiement", delivery: "Livraison", pickup: "Retrait",

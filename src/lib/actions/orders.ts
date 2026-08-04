@@ -294,6 +294,7 @@ export async function createOrderIntent(
     coupon,
     deliveryMethod: delivery,
     commissionBp,
+    tax: shop,
     now,
   });
 
@@ -352,6 +353,12 @@ export async function createOrderIntent(
       subtotalCents: totals.subtotalCents,
       discountCents: totals.discountCents,
       deliveryFeeCents: totals.deliveryFeeCents,
+      // Snapshot, not a reference: changing the shop's rate tomorrow must not
+      // rewrite what this buyer was charged today.
+      taxCents: totals.taxCents,
+      taxRateBp: shop.taxEnabled ? shop.taxRateBp : 0,
+      taxName: shop.taxEnabled ? shop.taxName : null,
+      taxInclusive: shop.taxInclusive,
       totalCents: totals.totalCents,
 
       deliveryMethodId: delivery?.id ?? null,
@@ -478,9 +485,17 @@ export async function createOrderIntent(
   };
 }
 
+/** What the order sheet needs to label the tax line, or null when tax is off. */
+export type PreviewTax = {
+  name: string;
+  rateBp: number;
+  inclusive: boolean;
+} | null;
+
 export type OrderPreview = {
   totals: Totals;
   currency: string;
+  tax: PreviewTax;
   couponError?: string;
   couponApplied?: string;
 };
@@ -501,7 +516,15 @@ export async function previewOrder(input: {
 
   const shop = await db.query.shops.findFirst({
     where: and(eq(shops.id, input.shopId), eq(shops.isPublished, true)),
-    columns: { id: true, currency: true },
+    columns: {
+      id: true,
+      currency: true,
+      taxEnabled: true,
+      taxName: true,
+      taxRateBp: true,
+      taxInclusive: true,
+      taxOnDelivery: true,
+    },
   });
   if (!shop) return { error: "Shop not found." };
 
@@ -552,8 +575,16 @@ export async function previewOrder(input: {
       quantity,
       coupon,
       deliveryMethod: delivery,
+      tax: shop,
     }),
     currency: shop.currency,
+    tax: shop.taxEnabled
+      ? {
+          name: shop.taxName,
+          rateBp: shop.taxRateBp,
+          inclusive: shop.taxInclusive,
+        }
+      : null,
     couponError,
     couponApplied,
   };

@@ -3,12 +3,18 @@ import { cookies, headers } from "next/headers";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { products, shops, visits } from "@/db/schema";
+import { classifyVisit, parseUserAgent } from "@/lib/analytics";
 
 const COOKIE = "sailo_sid";
 const SIX_MONTHS = 60 * 60 * 24 * 180;
 
 export async function POST(request: Request) {
-  let payload: { shopId?: string; productId?: string };
+  let payload: {
+    shopId?: string;
+    productId?: string;
+    referrer?: string;
+    url?: string;
+  };
   try {
     payload = await request.json();
   } catch {
@@ -49,14 +55,46 @@ export async function POST(request: Request) {
   }
 
   const h = await headers();
-  const referrer = h.get("referer");
+
+  // The referrer must come from the browser, not from this request's own
+  // `Referer` — that header points at the storefront page that called us, so
+  // reading it recorded every visit as a self-referral.
+  const origin = classifyVisit({
+    referrer: payload.referrer,
+    url: payload.url,
+    selfHost: h.get("host"),
+  });
+
+  // Vercel resolves geography at the edge; these are simply absent locally.
+  const geo = (name: string) => {
+    const value = h.get(name);
+    if (!value) return null;
+    // City and region arrive percent-encoded ("S%C3%A3o%20Paulo").
+    try {
+      return decodeURIComponent(value).slice(0, 120) || null;
+    } catch {
+      return value.slice(0, 120);
+    }
+  };
+
+  const ua = parseUserAgent(h.get("user-agent"));
 
   await db.insert(visits).values({
     shopId: shop.id,
     productId: validProductId,
     sessionId: sid,
-    referrer: referrer ? referrer.slice(0, 500) : null,
+    referrer: origin.referrer,
+    referrerHost: origin.referrerHost,
+    source: origin.source,
+    utmSource: origin.utmSource,
+    utmMedium: origin.utmMedium,
+    utmCampaign: origin.utmCampaign,
     country: h.get("x-vercel-ip-country"),
+    region: geo("x-vercel-ip-country-region"),
+    city: geo("x-vercel-ip-city"),
+    device: ua.device,
+    os: ua.os,
+    browser: ua.browser,
   });
 
   return NextResponse.json({ ok: true });

@@ -170,6 +170,16 @@ export async function createShop(
   redirect("/admin?welcome=1");
 }
 
+/**
+ * A percent typed by a human ("20", "7.5") into basis points. Clamped to
+ * 0–100%: a typo like 2000 must not bill a buyer twenty times the goods.
+ */
+function readTaxRateBp(value: FormDataEntryValue | null): number {
+  const percent = Number.parseFloat(String(value ?? "").replace(",", "."));
+  if (!Number.isFinite(percent) || percent <= 0) return 0;
+  return Math.round(Math.min(percent, 100) * 100);
+}
+
 /** Only a locale we actually ship; anything else falls back to English. */
 function readLocale(value: FormDataEntryValue | null): Locale {
   const code = String(value ?? "");
@@ -212,6 +222,12 @@ export async function updateShop(
       layout: layout === "list" ? "list" : "grid",
       currency: String(formData.get("currency") ?? "USD"),
       locale: readLocale(formData.get("locale")),
+      taxEnabled: formData.get("taxEnabled") === "on",
+      taxName: String(formData.get("taxName") ?? "").trim().slice(0, 40) || "Tax",
+      taxRateBp: readTaxRateBp(formData.get("taxRate")),
+      taxInclusive: formData.get("taxInclusive") === "inclusive",
+      taxOnDelivery: formData.get("taxOnDelivery") === "on",
+      taxId: String(formData.get("taxId") ?? "").trim().slice(0, 64) || null,
       contactEmail: String(formData.get("contactEmail") ?? "").trim() || null,
       location: String(formData.get("location") ?? "").trim() || null,
       socials: readSocials(formData),

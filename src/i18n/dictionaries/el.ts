@@ -35,6 +35,7 @@ export const el: Dictionary = {
     star: "{count} αστέρι", stars: "{count} αστέρια",
   },
   checkout: {
+    taxIncluded: "Περιλαμβάνει {amount} {name} ({percent}%)",
     saveFailed: "Δεν ήταν δυνατή η αποθήκευση.",
     quantity: "Ποσότητα", increase: "Αύξηση ποσότητας", decrease: "Μείωση ποσότητας",
     howReceive: "Πώς θέλετε να το παραλάβετε;", howOrder: "Πώς θέλετε να παραγγείλετε;",
@@ -102,6 +103,8 @@ export const el: Dictionary = {
     terms: "Όροι",
   },
   invoice: {
+    tax: "Φόρος",
+    includes: "Περιλαμβάνει",
     invoice: "Τιμολόγιο", billedTo: "Προς", details: "Στοιχεία", item: "Είδος",
     qty: "Ποσ.", price: "Τιμή", amount: "Ποσό", payment: "Πληρωμή",
     delivery: "Παράδοση", pickup: "Παραλαβή", reference: "Αρ. αναφ.", note: "Σημείωση",

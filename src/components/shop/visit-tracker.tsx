@@ -19,7 +19,14 @@ export function VisitTracker({
     fetch("/api/track", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ shopId, productId }),
+      // `document.referrer` is the only place the real referring page exists;
+      // the server sees only its own URL in the `Referer` header.
+      body: JSON.stringify({
+        shopId,
+        productId,
+        referrer: document.referrer || null,
+        url: window.location.href,
+      }),
       keepalive: true,
     }).catch(() => {});
   }, [shopId, productId]);

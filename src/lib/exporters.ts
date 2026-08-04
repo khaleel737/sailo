@@ -5,6 +5,7 @@ import { orders, productImages, products } from "@/db/schema";
 import { getShopClients, getInvoiceMap } from "@/lib/queries";
 import { bool, date, money, toCsv } from "@/lib/csv";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
+import { formatPercent } from "@/lib/pricing";
 
 export const EXPORT_TYPES = ["products", "orders", "clients"] as const;
 export type ExportType = (typeof EXPORT_TYPES)[number];
@@ -75,6 +76,10 @@ export const ORDER_HEADERS = [
   "Discount Code",
   "Delivery",
   "Delivery Fee",
+  "Tax",
+  "Tax Name",
+  "Tax Rate",
+  "Tax Included In Price",
   "Total",
   "Refunded",
   "Commission",
@@ -117,6 +122,10 @@ export async function exportOrders(shopId: string) {
       o.couponCode ?? "",
       o.deliveryLabel ?? "",
       money(o.deliveryFeeCents),
+      money(o.taxCents),
+      o.taxName ?? "",
+      o.taxRateBp > 0 ? `${formatPercent(o.taxRateBp)}%` : "",
+      o.taxCents > 0 ? (o.taxInclusive ? "yes" : "no") : "",
       money(o.totalCents),
       money(o.refundedCents),
       money(o.commissionCents),

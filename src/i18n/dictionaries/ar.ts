@@ -57,6 +57,7 @@ export const ar: Dictionary = {
     stars: "{count} نجوم",
   },
   checkout: {
+    taxIncluded: "يشمل {amount} {name} ({percent}%)",
     saveFailed: "تعذّر الحفظ.",
     quantity: "الكمية", increase: "زيادة الكمية", decrease: "إنقاص الكمية",
     howReceive: "كيف تود استلام طلبك؟",
@@ -131,6 +132,8 @@ export const ar: Dictionary = {
     terms: "الشروط",
   },
   invoice: {
+    tax: "ضريبة",
+    includes: "يشمل",
     invoice: "فاتورة", billedTo: "العميل", details: "التفاصيل",
     item: "الصنف", qty: "الكمية", price: "السعر", amount: "المبلغ",
     payment: "الدفع", delivery: "التوصيل", pickup: "الاستلام",

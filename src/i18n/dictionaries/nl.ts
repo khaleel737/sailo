@@ -36,6 +36,7 @@ export const nl: Dictionary = {
     star: "{count} ster", stars: "{count} sterren",
   },
   checkout: {
+    taxIncluded: "Inclusief {amount} {name} ({percent}%)",
     saveFailed: "Kon dat niet opslaan.",
     quantity: "Aantal", increase: "Aantal verhogen", decrease: "Aantal verlagen",
     howReceive: "Hoe wil je het ontvangen?", howOrder: "Hoe wil je bestellen?",
@@ -103,6 +104,8 @@ export const nl: Dictionary = {
     terms: "Voorwaarden",
   },
   invoice: {
+    tax: "Belasting",
+    includes: "Inclusief",
     invoice: "Factuur", billedTo: "Gefactureerd aan", details: "Gegevens",
     item: "Artikel", qty: "Aantal", price: "Prijs", amount: "Bedrag",
     payment: "Betaling", delivery: "Bezorging", pickup: "Afhalen",

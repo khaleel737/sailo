@@ -33,6 +33,7 @@ export const sv: Dictionary = {
     star: "{count} stjärna", stars: "{count} stjärnor",
   },
   checkout: {
+    taxIncluded: "Inklusive {amount} {name} ({percent} %)",
     saveFailed: "Det gick inte att spara.",
     quantity: "Antal", increase: "Öka antal", decrease: "Minska antal",
     howReceive: "Hur vill du få den?", howOrder: "Hur vill du beställa?",
@@ -99,6 +100,8 @@ export const sv: Dictionary = {
     terms: "Villkor",
   },
   invoice: {
+    tax: "Skatt",
+    includes: "Inklusive",
     invoice: "Faktura", billedTo: "Faktureras till", details: "Uppgifter", item: "Artikel",
     qty: "Antal", price: "Pris", amount: "Belopp", payment: "Betalning",
     delivery: "Leverans", pickup: "Upphämtning", reference: "Ref.", note: "Notering",

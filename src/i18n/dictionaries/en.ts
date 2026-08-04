@@ -79,6 +79,7 @@ export const en = {
   },
 
   checkout: {
+    taxIncluded: "Includes {amount} {name} ({percent}%)",
     quantity: "Quantity",
     increase: "Increase quantity",
     decrease: "Decrease quantity",
@@ -181,6 +182,8 @@ export const en = {
   },
 
   invoice: {
+    tax: "Tax",
+    includes: "Includes",
     invoice: "Invoice",
     billedTo: "Billed to",
     details: "Details",

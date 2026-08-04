@@ -7,10 +7,12 @@ import {
   gte,
   ilike,
   inArray,
+  isNotNull,
   lte,
   or,
   sql,
 } from "drizzle-orm";
+import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { getDb } from "@/db";
 import {
   affiliates,
@@ -233,6 +235,9 @@ export async function getDashboardStats(shopId: string, windowDays = 30) {
         awaitingConfirm: sql<string>`count(*) filter (where ${orders.paymentStatus} = 'pending')`,
         awaitingShipment: sql<string>`count(*) filter (where ${orders.deliveryMethod} = 'shipping' and ${orders.status} in ('new','confirmed'))`,
         unpaidCommission: sql<string>`coalesce(sum(${orders.commissionCents}) filter (where not ${orders.commissionPaid}), 0)`,
+        // Tax the seller has collected and owes on. Cancelled orders never
+        // happened; a refund hands the tax back with the rest of the money.
+        tax: sql<string>`coalesce(sum(${orders.taxCents}) filter (where ${orders.status} <> 'cancelled' and ${orders.refundedCents} = 0), 0)`,
       })
       .from(orders)
       .where(eq(orders.shopId, shopId)),
@@ -265,6 +270,7 @@ export async function getDashboardStats(shopId: string, windowDays = 30) {
     awaitingConfirmation: Number(orderRow?.awaitingConfirm ?? 0),
     awaitingShipment: Number(orderRow?.awaitingShipment ?? 0),
     unpaidCommissionCents: Number(orderRow?.unpaidCommission ?? 0),
+    taxCollectedCents: Number(orderRow?.tax ?? 0),
     totalProducts: Number(productRow?.total ?? 0),
     publishedProducts: Number(productRow?.published ?? 0),
     pendingReviews: Number(reviewRow?.pending ?? 0),
@@ -328,6 +334,103 @@ export async function getRevenueSeries(shopId: string, days = 14) {
   const byDay = new Map(rows.map((r) => [r.day, Number(r.cents)]));
   return keys.map((day) => ({ day, cents: byDay.get(day) ?? 0 }));
 }
+
+/**
+ * Where a shop's visitors come from, over the same window as the charts.
+ *
+ * One pass over the visits table per dimension. Each is `count(*)` grouped and
+ * ordered, capped at a handful of rows — a seller acts on the top few and a
+ * long tail of one-visit referrers is noise.
+ */
+export async function getVisitBreakdown(shopId: string, days = 30, limit = 6) {
+  const db = getDb();
+  const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  const scope = and(eq(visits.shopId, shopId), gte(visits.createdAt, since));
+
+  /** Grouped counts for one column, ignoring rows where it's null. */
+  const top = async <T extends AnyPgColumn>(column: T) =>
+    db
+      .select({
+        key: sql<string>`${column}`,
+        count: sql<string>`count(*)`,
+        unique: sql<string>`count(distinct ${visits.sessionId})`,
+      })
+      .from(visits)
+      .where(and(scope, isNotNull(column)))
+      .groupBy(sql`${column}`)
+      .orderBy(desc(sql`count(*)`))
+      .limit(limit);
+
+  const [countries, cities, sources, referrers, devices, campaigns, totals] =
+    await Promise.all([
+      top(visits.country),
+      // A city name is only meaningful with its country — "Springfield" alone
+      // could be any of dozens.
+      db
+        .select({
+          key: sql<string>`${visits.city}`,
+          country: sql<string>`max(${visits.country})`,
+          count: sql<string>`count(*)`,
+          unique: sql<string>`count(distinct ${visits.sessionId})`,
+        })
+        .from(visits)
+        .where(and(scope, isNotNull(visits.city)))
+        .groupBy(sql`${visits.city}`)
+        .orderBy(desc(sql`count(*)`))
+        .limit(limit),
+      top(visits.source),
+      top(visits.referrerHost),
+      top(visits.device),
+      db
+        .select({
+          key: sql<string>`coalesce(${visits.utmCampaign}, ${visits.utmSource})`,
+          medium: sql<string>`max(${visits.utmMedium})`,
+          source: sql<string>`max(${visits.utmSource})`,
+          count: sql<string>`count(*)`,
+          unique: sql<string>`count(distinct ${visits.sessionId})`,
+        })
+        .from(visits)
+        .where(
+          and(
+            scope,
+            or(isNotNull(visits.utmCampaign), isNotNull(visits.utmSource)),
+          ),
+        )
+        .groupBy(sql`coalesce(${visits.utmCampaign}, ${visits.utmSource})`)
+        .orderBy(desc(sql`count(*)`))
+        .limit(limit),
+      db
+        .select({
+          count: sql<string>`count(*)`,
+          unique: sql<string>`count(distinct ${visits.sessionId})`,
+          located: sql<string>`count(*) filter (where ${visits.country} is not null)`,
+        })
+        .from(visits)
+        .where(scope),
+    ]);
+
+  const rows = <R extends { key: string; count: string; unique: string }>(list: R[]) =>
+    list.map((r) => ({
+      ...r,
+      count: Number(r.count),
+      unique: Number(r.unique),
+    }));
+
+  return {
+    total: Number(totals[0]?.count ?? 0),
+    unique: Number(totals[0]?.unique ?? 0),
+    /** Visits the edge could place. Zero in local development. */
+    located: Number(totals[0]?.located ?? 0),
+    countries: rows(countries),
+    cities: rows(cities),
+    sources: rows(sources),
+    referrers: rows(referrers),
+    devices: rows(devices),
+    campaigns: rows(campaigns),
+  };
+}
+
+export type VisitBreakdown = Awaited<ReturnType<typeof getVisitBreakdown>>;
 
 export async function getShopOrders(shopId: string, limit = 100) {
   return getDb().query.orders.findMany({

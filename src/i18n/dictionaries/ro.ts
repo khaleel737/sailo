@@ -33,6 +33,7 @@ export const ro: Dictionary = {
     star: "{count} stea", stars: "{count} stele",
   },
   checkout: {
+    taxIncluded: "Include {amount} {name} ({percent}%)",
     saveFailed: "Nu s-a putut salva.",
     quantity: "Cantitate", increase: "Crește cantitatea", decrease: "Scade cantitatea",
     howReceive: "Cum vrei să primești comanda?", howOrder: "Cum vrei să comanzi?",
@@ -98,6 +99,8 @@ export const ro: Dictionary = {
     terms: "Termeni",
   },
   invoice: {
+    tax: "Taxă",
+    includes: "Include",
     invoice: "Factură", billedTo: "Facturat către", details: "Detalii", item: "Articol",
     qty: "Cant.", price: "Preț", amount: "Valoare", payment: "Plată",
     delivery: "Livrare", pickup: "Ridicare", reference: "Ref.", note: "Notă",

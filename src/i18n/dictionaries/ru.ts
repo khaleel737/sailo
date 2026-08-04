@@ -34,6 +34,7 @@ export const ru: Dictionary = {
     star: "Звёзд: {count}", stars: "Звёзд: {count}",
   },
   checkout: {
+    taxIncluded: "Включая {amount} {name} ({percent}%)",
     saveFailed: "Не удалось сохранить.",
     quantity: "Количество", increase: "Увеличить количество", decrease: "Уменьшить количество",
     howReceive: "Как вы хотите получить заказ?", howOrder: "Как вы хотите оформить заказ?",
@@ -101,6 +102,8 @@ export const ru: Dictionary = {
     terms: "Условия",
   },
   invoice: {
+    tax: "Налог",
+    includes: "Включая",
     invoice: "Счёт", billedTo: "Плательщик", details: "Детали", item: "Позиция",
     qty: "Кол-во", price: "Цена", amount: "Сумма", payment: "Оплата",
     delivery: "Доставка", pickup: "Самовывоз", reference: "Номер", note: "Примечание",

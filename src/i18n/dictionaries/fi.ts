@@ -33,6 +33,7 @@ export const fi: Dictionary = {
     star: "{count} tähti", stars: "{count} tähteä",
   },
   checkout: {
+    taxIncluded: "Sisältää {amount} {name} ({percent} %)",
     saveFailed: "Tallennus ei onnistunut.",
     quantity: "Määrä", increase: "Lisää määrää", decrease: "Vähennä määrää",
     howReceive: "Miten haluat vastaanottaa sen?", howOrder: "Miten haluat tilata?",
@@ -98,6 +99,8 @@ export const fi: Dictionary = {
     terms: "Ehdot",
   },
   invoice: {
+    tax: "Vero",
+    includes: "Sisältää",
     invoice: "Lasku", billedTo: "Laskutetaan", details: "Tiedot", item: "Tuote",
     qty: "Määrä", price: "Hinta", amount: "Summa", payment: "Maksu",
     delivery: "Toimitus", pickup: "Nouto", reference: "Viite", note: "Huomautus",

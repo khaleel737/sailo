@@ -16,10 +16,11 @@ import {
   previewOrder,
   submitPaymentReference,
   type OrderIntentResult,
+  type PreviewTax,
 } from "@/lib/actions/orders";
 import { PAYMENT_METHOD_DEFS, type PaymentMethodType } from "@/lib/payments";
 import type { DeliveryMethodType } from "@/lib/delivery";
-import type { Totals } from "@/lib/pricing";
+import { formatPercent, type Totals } from "@/lib/pricing";
 import { readReferralCode } from "@/lib/referral";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
@@ -144,9 +145,11 @@ function OrderSheet({
     subtotalCents: priceCents,
     discountCents: 0,
     deliveryFeeCents: 0,
+    taxCents: 0,
     totalCents: priceCents,
     commissionCents: 0,
   });
+  const [tax, setTax] = useState<PreviewTax>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Extract<
@@ -176,6 +179,7 @@ function OrderSheet({
     }).then((res) => {
       if (cancelled || "error" in res) return;
       setTotals(res.totals);
+      setTax(res.tax);
       if (appliedCoupon && res.couponError) {
         setCouponError(res.couponError);
         setAppliedCoupon("");
@@ -211,6 +215,7 @@ function OrderSheet({
     }
     setAppliedCoupon(res.couponApplied ?? code.toUpperCase());
     setTotals(res.totals);
+    setTax(res.tax);
   }
 
   const def = PAYMENT_METHOD_DEFS[method];
@@ -607,12 +612,31 @@ function OrderSheet({
                   </dd>
                 </div>
               ) : null}
+              {tax && totals.taxCents > 0 && !tax.inclusive ? (
+                <div className="flex justify-between">
+                  <dt className="text-muted">
+                    {tax.name} ({formatPercent(tax.rateBp)}%)
+                  </dt>
+                  <dd className="tabular-nums">
+                    {formatMoney(totals.taxCents, currency)}
+                  </dd>
+                </div>
+              ) : null}
               <div className="surface-border flex justify-between border-t pt-1.5 text-base font-semibold">
                 <dt>{t.checkout.total}</dt>
                 <dd className="tabular-nums">
                   {formatMoney(totals.totalCents, currency)}
                 </dd>
               </div>
+              {tax && totals.taxCents > 0 && tax.inclusive ? (
+                <p className="text-muted text-xs">
+                  {interpolate(t.checkout.taxIncluded, {
+                    amount: formatMoney(totals.taxCents, currency),
+                    name: tax.name,
+                    percent: formatPercent(tax.rateBp),
+                  })}
+                </p>
+              ) : null}
             </dl>
 
             <button

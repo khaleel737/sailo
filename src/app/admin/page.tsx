@@ -6,15 +6,17 @@ import {
   getDashboardStats,
   getRevenueSeries,
   getShopOrders,
+  getVisitBreakdown,
   getVisitSeries,
 } from "@/lib/queries";
 import { BarChart } from "@/components/admin/bar-chart";
+import { TrafficPanel } from "@/components/admin/traffic-panel";
 import { RangePicker } from "@/components/admin/range-picker";
 import { analyticsLimit, clampAnalyticsRange, planFor } from "@/lib/plans";
 import { CopyLink } from "@/components/admin/copy-link";
 import { Badge, Card, EmptyState } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
-import { getT } from "@/i18n/server";
+import { getLocale, getT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Overview" };
 
@@ -32,18 +34,21 @@ export default async function AdminOverviewPage({
 }: PageProps<"/admin">) {
   const { shop } = await requireShop();
   const { t } = await getT();
+  const locale = await getLocale();
   const params = await searchParams;
 
   // Clamped server-side, so a hand-typed ?range= can't read past the plan.
   const range = clampAnalyticsRange(shop, Number(params.range) || undefined);
   const chartDays = Math.min(range, 60);
 
-  const [stats, visitSeries, revenueSeries, orders] = await Promise.all([
-    getDashboardStats(shop.id, range),
-    getVisitSeries(shop.id, chartDays),
-    getRevenueSeries(shop.id, chartDays),
-    getShopOrders(shop.id, 5),
-  ]);
+  const [stats, visitSeries, revenueSeries, traffic, orders] =
+    await Promise.all([
+      getDashboardStats(shop.id, range),
+      getVisitSeries(shop.id, chartDays),
+      getRevenueSeries(shop.id, chartDays),
+      getVisitBreakdown(shop.id, range),
+      getShopOrders(shop.id, 5),
+    ]);
 
   const money = (cents: number) => formatMoney(cents, shop.currency);
 
@@ -108,11 +113,18 @@ export default async function AdminOverviewPage({
           icon={<Wallet className="size-4" />}
           label="Net revenue"
           value={money(stats.netRevenueCents)}
-          hint={
+          hint={[
             stats.refundedCents > 0
               ? `${money(stats.refundedCents)} refunded`
-              : undefined
-          }
+              : null,
+            // Tax is collected, not earned — worth naming next to revenue so
+            // the seller knows how much of it isn't theirs.
+            stats.taxCollectedCents > 0
+              ? `${money(stats.taxCollectedCents)} tax collected`
+              : null,
+          ]
+            .filter(Boolean)
+            .join(" · ") || undefined}
         />
       </div>
 
@@ -169,6 +181,8 @@ export default async function AdminOverviewPage({
           />
         </Card>
       </div>
+
+      <TrafficPanel data={traffic} days={range} locale={locale} />
 
       <Card className="p-5">
         <div className="mb-4 flex items-center justify-between">

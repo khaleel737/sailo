@@ -57,6 +57,7 @@ export const zh: Dictionary = {
     stars: "{count} 星",
   },
   checkout: {
+    taxIncluded: "含{name}（{percent}%）{amount}",
     saveFailed: "保存失败。",
     quantity: "数量", increase: "增加数量", decrease: "减少数量",
     howReceive: "您希望如何收货？",
@@ -131,6 +132,8 @@ export const zh: Dictionary = {
     terms: "条款",
   },
   invoice: {
+    tax: "税",
+    includes: "含",
     invoice: "发票", billedTo: "付款方", details: "详情",
     item: "商品", qty: "数量", price: "单价", amount: "金额",
     payment: "支付", delivery: "配送", pickup: "自提地点",

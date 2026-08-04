@@ -84,13 +84,42 @@ export function commission(netCents: number, bp: number) {
   return Math.max(0, Math.round((netCents * bp) / 10_000));
 }
 
+/** The shop-level tax settings, as `computeTotals` needs them. */
+export type TaxSettings = {
+  taxEnabled: boolean;
+  taxName: string;
+  taxRateBp: number;
+  taxInclusive: boolean;
+  taxOnDelivery: boolean;
+};
+
 export type Totals = {
   subtotalCents: number;
   discountCents: number;
   deliveryFeeCents: number;
+  taxCents: number;
   totalCents: number;
   commissionCents: number;
 };
+
+/**
+ * How much tax sits on a given base.
+ *
+ * The two conventions are genuinely different sums, not a display choice:
+ *
+ * - **Exclusive** (US sales tax): the price is pre-tax and tax is added, so
+ *   `base × rate`. A $100 item at 20% becomes $120.
+ * - **Inclusive** (EU VAT, UK, most of Asia): the price the buyer already saw
+ *   contains the tax, so the tax is *extracted* with `base × rate / (1 + rate)`.
+ *   A £100 item at 20% is £83.33 + £16.67, still £100. Multiplying by the rate
+ *   here would over-report by a sixth and hand the seller a wrong VAT return.
+ */
+export function taxOn(baseCents: number, rateBp: number, inclusive: boolean) {
+  if (baseCents <= 0 || rateBp <= 0) return 0;
+  return inclusive
+    ? Math.round((baseCents * rateBp) / (10_000 + rateBp))
+    : Math.round((baseCents * rateBp) / 10_000);
+}
 
 export function computeTotals(input: {
   unitPriceCents: number;
@@ -98,6 +127,7 @@ export function computeTotals(input: {
   coupon?: Coupon | null;
   deliveryMethod?: Pick<DeliveryMethod, "feeCents" | "freeOverCents"> | null;
   commissionBp?: number | null;
+  tax?: TaxSettings | null;
   now?: Date;
 }): Totals {
   const subtotalCents = Math.max(0, input.unitPriceCents * input.quantity);
@@ -110,13 +140,35 @@ export function computeTotals(input: {
   const netCents = subtotalCents - discountCents;
   const deliveryFeeCents = deliveryFee(input.deliveryMethod, netCents);
 
+  const tax = input.tax;
+  const taxable =
+    tax?.taxEnabled && tax.taxRateBp > 0
+      ? netCents + (tax.taxOnDelivery ? deliveryFeeCents : 0)
+      : 0;
+  const taxCents = taxable
+    ? taxOn(taxable, tax!.taxRateBp, tax!.taxInclusive)
+    : 0;
+
+  // Inclusive tax is already inside the prices, so it must not be added again.
+  const totalCents =
+    netCents + deliveryFeeCents + (tax?.taxInclusive ? 0 : taxCents);
+
+  // An affiliate earns on the goods, never on tax the seller merely collects
+  // and remits, nor on delivery. With inclusive pricing the tax is hidden
+  // inside `netCents`, so strip it out before paying commission on it.
+  const goodsTaxCents =
+    tax?.taxEnabled && tax.taxInclusive
+      ? taxOn(netCents, tax.taxRateBp, true)
+      : 0;
+
   return {
     subtotalCents,
     discountCents,
     deliveryFeeCents,
-    totalCents: netCents + deliveryFeeCents,
+    taxCents,
+    totalCents,
     commissionCents: input.commissionBp
-      ? commission(netCents, input.commissionBp)
+      ? commission(netCents - goodsTaxCents, input.commissionBp)
       : 0,
   };
 }

@@ -34,6 +34,7 @@ export const uk: Dictionary = {
     star: "Зірок: {count}", stars: "Зірок: {count}",
   },
   checkout: {
+    taxIncluded: "Включно з {amount} {name} ({percent}%)",
     saveFailed: "Не вдалося зберегти.",
     quantity: "Кількість", increase: "Збільшити кількість", decrease: "Зменшити кількість",
     howReceive: "Як бажаєте отримати?", howOrder: "Як бажаєте замовити?",
@@ -101,6 +102,8 @@ export const uk: Dictionary = {
     terms: "Умови",
   },
   invoice: {
+    tax: "Податок",
+    includes: "Включно з",
     invoice: "Рахунок", billedTo: "Платник", details: "Деталі", item: "Позиція",
     qty: "К-сть", price: "Ціна", amount: "Сума", payment: "Оплата",
     delivery: "Доставка", pickup: "Самовивіз", reference: "Номер", note: "Примітка",

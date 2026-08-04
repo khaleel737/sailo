@@ -6,6 +6,7 @@ import { getInvoiceByToken } from "@/lib/queries";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { PrintButton } from "@/components/shop/print-button";
 import { getShopT } from "@/i18n/server";
+import { formatPercent } from "@/lib/pricing";
 import { formatAddress, formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -200,12 +201,38 @@ export default async function InvoicePage({
                 </dd>
               </div>
             ) : null}
+            {order.taxCents > 0 && !order.taxInclusive ? (
+              <div className="flex justify-between">
+                <dt className="text-ink-500">
+                  {order.taxName ?? t.invoice.tax}
+                  {order.taxRateBp > 0
+                    ? ` (${formatPercent(order.taxRateBp)}%)`
+                    : ""}
+                </dt>
+                <dd className="tabular-nums">
+                  {formatMoney(order.taxCents, order.currency)}
+                </dd>
+              </div>
+            ) : null}
             <div className="flex justify-between border-t border-ink-100 pt-1.5 text-base font-semibold">
               <dt>{t.checkout.total}</dt>
               <dd className="tabular-nums">
                 {formatMoney(order.totalCents, order.currency)}
               </dd>
             </div>
+            {order.taxCents > 0 && order.taxInclusive ? (
+              <div className="flex justify-between text-xs text-ink-500">
+                <dt>
+                  {t.invoice.includes} {order.taxName ?? t.invoice.tax}
+                  {order.taxRateBp > 0
+                    ? ` (${formatPercent(order.taxRateBp)}%)`
+                    : ""}
+                </dt>
+                <dd className="tabular-nums">
+                  {formatMoney(order.taxCents, order.currency)}
+                </dd>
+              </div>
+            ) : null}
           </dl>
 
           {order.note ? (

@@ -2,6 +2,7 @@ import "server-only";
 import PDFDocument from "pdfkit";
 import type { Invoice, Order, Shop } from "@/db/schema";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
+import { formatPercent } from "@/lib/pricing";
 import { formatAddress, formatMoney } from "@/lib/utils";
 
 const INK = "#1a1a20";
@@ -13,6 +14,14 @@ const MARGIN = 50;
  * Renders the invoice with pdfkit's built-in Helvetica, so no font files need
  * bundling and it works unchanged on serverless.
  */
+/** "VAT (20%)" — the rate is snapshotted on the order, not read from the shop. */
+function taxLabel(order: { taxName: string | null; taxRateBp: number }) {
+  const name = order.taxName ?? "Tax";
+  return order.taxRateBp > 0
+    ? `${name} (${formatPercent(order.taxRateBp)}%)`
+    : name;
+}
+
 export function renderInvoicePdf(data: {
   shop: Shop;
   order: Order;
@@ -193,11 +202,19 @@ export function renderInvoicePdf(data: {
     if (order.deliveryFeeCents > 0) {
       totalRow(order.deliveryLabel ?? "Delivery", money(order.deliveryFeeCents));
     }
+    // Exclusive tax is a line that adds to the total; inclusive tax is already
+    // inside it and is stated underneath instead, as a VAT invoice must.
+    if (order.taxCents > 0 && !order.taxInclusive) {
+      totalRow(taxLabel(order), money(order.taxCents));
+    }
 
     y += 4;
     doc.moveTo(cols.price - 90, y).lineTo(right, y).strokeColor(LINE).stroke();
     y += 8;
     totalRow("Total", money(order.totalCents), true);
+    if (order.taxCents > 0 && order.taxInclusive) {
+      totalRow(`Includes ${taxLabel(order)}`, money(order.taxCents));
+    }
 
     if (order.refundedCents > 0) {
       totalRow("Refunded", `-${money(order.refundedCents)}`, false, "#dc2626");
