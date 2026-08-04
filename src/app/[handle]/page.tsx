@@ -121,13 +121,16 @@ export default async function ShopPage({
               className="mt-4 h-8 w-auto object-contain"
             />
           ) : (
-            <h1 className="mt-4 text-xl font-bold tracking-tight sm:text-2xl">
+            <h1
+              dir="auto"
+              className="mt-4 text-xl font-bold tracking-tight sm:text-2xl"
+            >
               {shop.name}
             </h1>
           )}
 
           {shop.description ? (
-            <p className="text-muted mt-2 max-w-md text-sm leading-relaxed">
+            <p dir="auto" className="text-muted mt-2 max-w-md text-sm leading-relaxed">
               {shop.description}
             </p>
           ) : null}

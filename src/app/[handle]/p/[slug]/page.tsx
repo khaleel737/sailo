@@ -145,7 +145,10 @@ export default async function ProductPage({
             ) : null}
           </div>
 
-          <h1 className="mt-3 text-2xl font-bold leading-tight tracking-tight">
+          <h1
+            dir="auto"
+            className="mt-3 text-2xl font-bold leading-tight tracking-tight"
+          >
             {product.title}
           </h1>
 
@@ -194,7 +197,10 @@ export default async function ProductPage({
           ) : null}
 
           {product.description ? (
-            <p className="text-muted mt-4 whitespace-pre-wrap text-sm leading-relaxed">
+            <p
+              dir="auto"
+              className="text-muted mt-4 whitespace-pre-wrap text-sm leading-relaxed"
+            >
               {product.description}
             </p>
           ) : null}

@@ -105,7 +105,13 @@ export function ProductCard({
         <div className="flex-1">
           <div className="flex items-start justify-between gap-2">
             <Link href={href} className="min-w-0">
-              <h3 className="truncate text-sm font-semibold leading-snug">
+              {/* A catalogue can hold both scripts, so each title picks its
+                  own direction — otherwise an English name in an Arabic shop
+                  truncates from the front and loses its first word. */}
+              <h3
+                dir="auto"
+                className="truncate text-sm font-semibold leading-snug"
+              >
                 {product.title}
               </h3>
             </Link>
@@ -117,7 +123,7 @@ export function ProductCard({
           </div>
 
           {layout === "list" && product.description ? (
-            <p className="text-muted mt-1 line-clamp-2 text-xs">
+            <p dir="auto" className="text-muted mt-1 line-clamp-2 text-xs">
               {product.description}
             </p>
           ) : null}

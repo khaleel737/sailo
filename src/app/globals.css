@@ -20,6 +20,22 @@
 :root {
   --accent: #111111;
   --accent-contrast: #ffffff;
+
+  /*
+   * Light defaults for the surface palette.
+   *
+   * `[data-surface]` below overrides these per shop, but the same utilities
+   * get used outside a storefront — the admin header, the auth screens, and
+   * anything fixed-position that escapes the shop's wrapper. Without a value
+   * here `background: var(--surface-card)` resolves to nothing and the panel
+   * renders transparent.
+   */
+  --surface-bg: #ffffff;
+  --surface-fg: #16161a;
+  --surface-muted: #6d6d7d;
+  --surface-card: #ffffff;
+  --surface-elevated: #f7f7f8;
+  --surface-border: #e6e6ea;
 }
 
 html {

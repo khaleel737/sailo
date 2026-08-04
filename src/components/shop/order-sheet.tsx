@@ -279,7 +279,7 @@ function ProductSheet({
           />
         ) : null}
         <div className="min-w-0">
-          <h2 className="font-semibold leading-tight">
+          <h2 dir="auto" className="font-semibold leading-tight">
             {productTitle}
             {variant ? (
               <span className="text-muted font-normal">

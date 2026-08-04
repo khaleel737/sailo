@@ -155,7 +155,7 @@ function CartRow({
       ) : null}
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">
+        <p dir="auto" className="truncate text-sm font-medium">
           {priced?.title ?? line.title}
           {label ? <span className="text-muted"> — {label}</span> : null}
         </p>

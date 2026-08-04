@@ -14,7 +14,8 @@ import { PaymentStatusSelect } from "./payment-status-select";
 import { OrderActions } from "./order-actions";
 import { Badge, Button } from "@/components/ui";
 import { formatAddress, formatMoney } from "@/lib/utils";
-import type { Order, OrderItem } from "@/db/schema";
+import type { Order } from "@/db/schema";
+import type { OrderLine } from "@/lib/order-lines";
 
 const STATUS_TONE = {
   new: "blue",
@@ -33,11 +34,11 @@ export function OrderRow({
 }: {
   order: Order;
   /** Every line. Falls back to the header for orders written before carts. */
-  items?: OrderItem[];
+  items?: OrderLine[];
   invoice?: { number: string; token: string };
   showCustomer?: boolean;
 }) {
-  const lines: OrderItem[] = items?.length ? items : [];
+  const lines: OrderLine[] = items?.length ? items : [];
   const address = formatAddress(order);
   const methodName = isPaymentMethodType(order.paymentMethod)
     ? PAYMENT_METHOD_DEFS[order.paymentMethod].name
