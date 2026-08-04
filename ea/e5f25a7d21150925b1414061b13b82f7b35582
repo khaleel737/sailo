@@ -1,0 +1,62 @@
+src/lib/connect.ts
+  s_3dd4b357265b83::t_ebcb442d37412d 3,5,164-165,167,187-196
+  s_3dd4b357265b83::t_bb6b3e82e890ca 6,282
+src/lib/actions/orders.ts
+  s_3dd4b357265b83::t_09b49a9aa74a55 459-460,466
+src/lib/inventory.ts
+  s_3dd4b357265b83::t_a20cad52853575 2,202-254
+  s_3dd4b357265b83::t_58e1d104a5eb6c 255
+src/lib/invoice-pdf.ts
+  s_79ff13cbe32e61::t_e74dfd7429ab1a 4,31
+  s_3dd4b357265b83::t_b18c94fdba7764 3
+vercel.json
+  s_79ff13cbe32e61::t_a38e4c991b2277 1-9
+src/lib/order-lines.ts
+  s_79ff13cbe32e61::t_e74dfd7429ab1a 27-30,48-50,77-79
+  s_3dd4b357265b83::t_ebcb442d37412d 167-187
+  s_3dd4b357265b83::t_7ec04f0cd6dfff 1-26,31-47,51-76,80-166
+src/app/admin/page.tsx
+  s_3dd4b357265b83::t_f0daff5c3c5566 2,214-215
+src/components/shop/checkout-panel.tsx
+  s_79ff13cbe32e61::t_b758ca26a942bc 446,456,461
+  s_3dd4b357265b83::t_09b49a9aa74a55 229-230
+src/app/download/[token]/page.tsx
+  s_3dd4b357265b83::t_bb6b3e82e890ca 2,49
+src/lib/email.ts
+  s_79ff13cbe32e61::t_a6d0d8e88cfa02 3
+  s_3dd4b357265b83::t_cefe78c94171d4 4,293
+  s_3dd4b357265b83::t_f0daff5c3c5566 226,261
+  s_3dd4b357265b83::t_4d53e539129b97 117-122,145
+src/lib/notifications.ts
+  s_3dd4b357265b83::t_f0daff5c3c5566 2,64,76,152
+src/app/api/cron/sweep/route.ts
+  s_3dd4b357265b83::t_d06b273240914c 1-36
+src/lib/payments.ts
+  s_3dd4b357265b83::t_abd2e2c7a0692d 42-56,67-68,80-81,99-100,117-118,136-137,153-154,170-171,202-203
+src/lib/queries.ts
+  s_3dd4b357265b83::t_23ddf14388eb5f 18,449-451,453-454,459
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "eae5f25a7d21150925b1414061b13b82f7b35582",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_79ff13cbe32e61": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d4473ffb-fe57-4d6e-8826-d0885bba381b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
