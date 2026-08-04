@@ -4,7 +4,14 @@ import { useTransition } from "react";
 import { updateOrderStatus } from "@/lib/actions/orders";
 import { cn } from "@/lib/utils";
 
-const STATUSES = ["new", "contacted", "fulfilled", "cancelled"] as const;
+const STATUSES = [
+  "new",
+  "confirmed",
+  "shipped",
+  "completed",
+  "cancelled",
+  "refunded",
+] as const;
 
 export function OrderStatusSelect({
   orderId,

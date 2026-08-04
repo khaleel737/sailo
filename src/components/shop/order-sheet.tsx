@@ -29,8 +29,9 @@ export type CheckoutMethod = {
 };
 
 export type CheckoutDelivery = {
+  id: string;
   type: DeliveryMethodType;
-  label: string | null;
+  name: string;
   feeCents: number;
   freeOverCents: number | null;
   estimate?: string;
@@ -99,8 +100,8 @@ function OrderSheet({
 }: Props & { onClose: () => void }) {
   const [quantity, setQuantity] = useState(1);
   const [method, setMethod] = useState<PaymentMethodType>(methods[0].type);
-  const [delivery, setDelivery] = useState<DeliveryMethodType | null>(
-    deliveryOptions[0]?.type ?? null,
+  const [deliveryId, setDeliveryId] = useState<string | null>(
+    deliveryOptions[0]?.id ?? null,
   );
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState("");
@@ -137,7 +138,7 @@ function OrderSheet({
       shopId,
       productId,
       quantity,
-      deliveryMethod: delivery ?? undefined,
+      deliveryMethodId: deliveryId ?? undefined,
       couponCode: appliedCoupon || undefined,
     }).then((res) => {
       if (cancelled || "error" in res) return;
@@ -150,7 +151,7 @@ function OrderSheet({
     return () => {
       cancelled = true;
     };
-  }, [shopId, productId, quantity, delivery, appliedCoupon]);
+  }, [shopId, productId, quantity, deliveryId, appliedCoupon]);
 
   async function onApplyCoupon() {
     const code = couponInput.trim();
@@ -162,7 +163,7 @@ function OrderSheet({
       shopId,
       productId,
       quantity,
-      deliveryMethod: delivery ?? undefined,
+      deliveryMethodId: deliveryId ?? undefined,
       couponCode: code,
     });
     setCheckingCoupon(false);
@@ -181,7 +182,7 @@ function OrderSheet({
 
   const def = PAYMENT_METHOD_DEFS[method];
   const isManual = def.kind === "manual";
-  const selectedDelivery = deliveryOptions.find((d) => d.type === delivery);
+  const selectedDelivery = deliveryOptions.find((d) => d.id === deliveryId);
   const needsAddress =
     isPhysical &&
     collectAddress &&
@@ -198,7 +199,7 @@ function OrderSheet({
       productId,
       quantity,
       paymentMethod: method,
-      deliveryMethod: delivery ?? undefined,
+      deliveryMethodId: deliveryId ?? undefined,
       couponCode: appliedCoupon || undefined,
       affiliateCode: readReferralCode() ?? undefined,
       customerName: String(data.get("customerName") ?? ""),
@@ -308,7 +309,7 @@ function OrderSheet({
                 <div className="space-y-1.5">
                   {deliveryOptions.map((option) => {
                     const d = DELIVERY_METHOD_DEFS[option.type];
-                    const active = delivery === option.type;
+                    const active = deliveryId === option.id;
                     const free =
                       option.freeOverCents !== null &&
                       totals.subtotalCents - totals.discountCents >=
@@ -323,15 +324,15 @@ function OrderSheet({
                         <input
                           type="radio"
                           name="deliveryMethod"
-                          value={option.type}
+                          value={option.id}
                           checked={active}
-                          onChange={() => setDelivery(option.type)}
+                          onChange={() => setDeliveryId(option.id)}
                           className="mt-0.5 size-4 accent-current"
                         />
                         <span className="min-w-0 flex-1">
                           <span className="flex items-baseline justify-between gap-2">
                             <span className="text-sm font-medium">
-                              {option.label ?? d.name}
+                              {option.name}
                             </span>
                             <span className="text-xs font-semibold tabular-nums">
                               {option.feeCents === 0 || free
@@ -555,8 +556,7 @@ function OrderSheet({
               {isPhysical && selectedDelivery ? (
                 <div className="flex justify-between">
                   <dt className="text-muted">
-                    {selectedDelivery.label ??
-                      DELIVERY_METHOD_DEFS[selectedDelivery.type].name}
+                    {selectedDelivery.name}
                   </dt>
                   <dd className="tabular-nums">
                     {totals.deliveryFeeCents === 0

@@ -1,19 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Eye,
-  Package,
-  ShoppingBag,
-  Users,
-} from "lucide-react";
+import { ArrowRight, Eye, ShoppingBag, Users, Wallet } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import {
   getDashboardStats,
+  getRevenueSeries,
   getShopOrders,
   getVisitSeries,
 } from "@/lib/queries";
-import { VisitsChart } from "@/components/admin/visits-chart";
+import { BarChart } from "@/components/admin/bar-chart";
 import { CopyLink } from "@/components/admin/copy-link";
 import { Badge, Card, EmptyState } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
@@ -23,17 +18,22 @@ export const metadata: Metadata = { title: "Overview" };
 const STATUS_TONE = {
   new: "blue",
   confirmed: "amber",
-  fulfilled: "green",
+  shipped: "blue",
+  completed: "green",
   cancelled: "neutral",
+  refunded: "red",
 } as const;
 
 export default async function AdminOverviewPage() {
   const { shop } = await requireShop();
-  const [stats, series, orders] = await Promise.all([
+  const [stats, visitSeries, revenueSeries, orders] = await Promise.all([
     getDashboardStats(shop.id),
     getVisitSeries(shop.id, 14),
+    getRevenueSeries(shop.id, 14),
     getShopOrders(shop.id, 5),
   ]);
+
+  const money = (cents: number) => formatMoney(cents, shop.currency);
 
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const shopUrl = `${base}/${shop.handle}`;
@@ -80,16 +80,32 @@ export default async function AdminOverviewPage() {
           hint={stats.newOrders > 0 ? `${stats.newOrders} new` : undefined}
         />
         <Stat
-          icon={<Package className="size-4" />}
-          label="Products"
-          value={stats.totalProducts.toLocaleString()}
+          icon={<Wallet className="size-4" />}
+          label="Net revenue"
+          value={money(stats.netRevenueCents)}
           hint={
-            stats.totalProducts > stats.publishedProducts
-              ? `${stats.totalProducts - stats.publishedProducts} hidden`
+            stats.refundedCents > 0
+              ? `${money(stats.refundedCents)} refunded`
               : undefined
           }
         />
       </div>
+
+      {stats.awaitingShipment > 0 ? (
+        <Link
+          href="/admin/orders"
+          className="mb-6 flex items-center justify-between gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 transition hover:bg-blue-100"
+        >
+          <p className="text-sm text-blue-900">
+            <span className="font-medium">
+              {stats.awaitingShipment} order
+              {stats.awaitingShipment === 1 ? "" : "s"}
+            </span>{" "}
+            waiting to be shipped. Add tracking when you post {stats.awaitingShipment === 1 ? "it" : "them"}.
+          </p>
+          <ArrowRight className="size-4 shrink-0 text-blue-700" />
+        </Link>
+      ) : null}
 
       {stats.awaitingConfirmation > 0 ? (
         <Link
@@ -107,9 +123,27 @@ export default async function AdminOverviewPage() {
         </Link>
       ) : null}
 
-      <Card className="mb-6 p-5">
-        <VisitsChart data={series} />
-      </Card>
+      <div className="mb-6 grid gap-3 lg:grid-cols-2">
+        <Card className="p-5">
+          <BarChart
+            title="Visits · last 14 days"
+            data={visitSeries.map((d) => ({ day: d.day, value: d.count }))}
+            colour="#4f46e5"
+            unit="count"
+            emptyLabel="No visits yet — share your link."
+          />
+        </Card>
+        <Card className="p-5">
+          <BarChart
+            title="Revenue · last 14 days"
+            data={revenueSeries.map((d) => ({ day: d.day, value: d.cents }))}
+            colour="#0d7d63"
+            unit="money"
+            currency={shop.currency}
+            emptyLabel="No revenue yet."
+          />
+        </Card>
+      </div>
 
       <Card className="p-5">
         <div className="mb-4 flex items-center justify-between">
@@ -152,10 +186,7 @@ export default async function AdminOverviewPage() {
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
                   <span className="text-sm font-medium tabular-nums">
-                    {formatMoney(
-                      order.unitPriceCents * order.quantity,
-                      order.currency,
-                    )}
+                    {formatMoney(order.totalCents, order.currency)}
                   </span>
                   <Badge tone={STATUS_TONE[order.status as keyof typeof STATUS_TONE] ?? "neutral"}>
                     {order.status}

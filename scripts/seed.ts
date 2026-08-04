@@ -333,33 +333,60 @@ async function main() {
     },
   ]);
 
-  console.log("Creating delivery methods…");
-  await db.insert(deliveryMethods).values([
-    {
-      shopId: shop.id,
-      type: "shipping",
-      feeCents: 800,
-      freeOverCents: 7500,
-      config: {
-        estimate: "2–4 working days",
-        instructions: "Everything is wrapped in straw and recycled paper.",
+  console.log("Creating delivery options…");
+  const insertedDelivery = await db
+    .insert(deliveryMethods)
+    .values([
+      {
+        shopId: shop.id,
+        type: "shipping",
+        name: "Standard delivery",
+        feeCents: 800,
+        freeOverCents: 7500,
+        config: {
+          estimate: "2–4 working days",
+          instructions: "Wrapped in straw and recycled paper.",
+        },
+        isEnabled: true,
+        position: 1,
       },
-      isEnabled: true,
-      position: 1,
-    },
-    {
-      shopId: shop.id,
-      type: "collection",
-      feeCents: 0,
-      config: {
-        address: "12 Marina Road, Lagos Island, Lagos",
-        hours: "Tue–Sat, 10am–5pm",
-        instructions: "Ring the bell at the blue side door.",
+      {
+        shopId: shop.id,
+        type: "shipping",
+        name: "Express delivery",
+        feeCents: 1800,
+        config: {
+          estimate: "Next working day if ordered before 11am",
+          instructions: "Tracked and signed for.",
+        },
+        isEnabled: true,
+        position: 2,
       },
-      isEnabled: true,
-      position: 2,
-    },
-  ]);
+      {
+        shopId: shop.id,
+        type: "shipping",
+        name: "International",
+        feeCents: 3500,
+        config: { estimate: "7–14 working days" },
+        isEnabled: true,
+        position: 3,
+      },
+      {
+        shopId: shop.id,
+        type: "collection",
+        name: "Studio pickup",
+        feeCents: 0,
+        config: {
+          address: "12 Marina Road, Lagos Island, Lagos",
+          hours: "Tue–Sat, 10am–5pm",
+          instructions: "Ring the bell at the blue side door.",
+        },
+        isEnabled: true,
+        position: 4,
+      },
+    ])
+    .returning();
+  const deliveryByName = new Map(insertedDelivery.map((d) => [d.name, d]));
 
   console.log("Creating coupons…");
   await db.insert(coupons).values([
@@ -485,16 +512,14 @@ async function main() {
   const clientByEmail = new Map(insertedClients.map((c) => [c.email, c]));
 
   console.log("Creating orders…");
-  const SHIPPING = { feeCents: 800, freeOverCents: 7500 };
-  const COLLECTION = { feeCents: 0, freeOverCents: null };
-
   const ORDERS = [
-    { p: 0, email: "tomi@example.com", qty: 2, method: "whatsapp", delivery: "shipping", coupon: null, affiliate: null, status: "fulfilled", payment: "paid", note: "Can you wrap them separately? They're gifts.", ref: null },
-    { p: 6, email: "priya@example.com", qty: 1, method: "bank_transfer", delivery: null, coupon: null, affiliate: null, status: "fulfilled", payment: "paid", note: null, ref: "TRF-88213" },
-    { p: 4, email: "dan@example.com", qty: 1, method: "telegram", delivery: "shipping", coupon: null, affiliate: "AMARA", status: "confirmed", payment: "unpaid", note: null, ref: null },
-    { p: 2, email: "yasmin@example.com", qty: 3, method: "bank_transfer", delivery: "shipping", coupon: "WELCOME10", affiliate: null, status: "new", payment: "pending", note: "Do you ship to Amman?", ref: "TRF-91007" },
-    { p: 0, email: "tomi@example.com", qty: 1, method: "cod", delivery: "collection", coupon: null, affiliate: null, status: "new", payment: "unpaid", note: null, ref: null },
-    { p: 5, email: "chris@example.com", qty: 1, method: "instagram", delivery: null, coupon: null, affiliate: "POTTERYWEEKLY", status: "new", payment: "unpaid", note: null, ref: null },
+    { p: 0, email: "tomi@example.com", qty: 2, method: "whatsapp", delivery: "Standard delivery", coupon: null, affiliate: null, status: "completed", payment: "paid", note: "Can you wrap them separately? They're gifts.", ref: null, tracking: { carrier: "DHL", number: "JD0002890124", url: "https://www.dhl.com/track?id=JD0002890124" }, refund: 0 },
+    { p: 6, email: "priya@example.com", qty: 1, method: "bank_transfer", delivery: null, coupon: null, affiliate: null, status: "completed", payment: "paid", note: null, ref: "TRF-88213", tracking: null, refund: 0 },
+    { p: 4, email: "dan@example.com", qty: 1, method: "telegram", delivery: "Express delivery", coupon: null, affiliate: "AMARA", status: "shipped", payment: "paid", note: null, ref: null, tracking: { carrier: "Royal Mail", number: "RM88213771GB", url: "https://www.royalmail.com/track-your-item#/RM88213771GB" }, refund: 0 },
+    { p: 2, email: "yasmin@example.com", qty: 3, method: "bank_transfer", delivery: "International", coupon: "WELCOME10", affiliate: null, status: "new", payment: "pending", note: "Do you ship to Amman?", ref: "TRF-91007", tracking: null, refund: 0 },
+    { p: 0, email: "tomi@example.com", qty: 1, method: "cod", delivery: "Studio pickup", coupon: null, affiliate: null, status: "new", payment: "unpaid", note: null, ref: null, tracking: null, refund: 0 },
+    // A refunded order, so the dashboard shows revenue net of one.
+    { p: 5, email: "chris@example.com", qty: 1, method: "instagram", delivery: null, coupon: null, affiliate: "POTTERYWEEKLY", status: "refunded", payment: "refunded", note: null, ref: null, tracking: null, refund: 1200 },
   ];
 
   const seededCoupons = await db.query.coupons.findMany({
@@ -508,12 +533,7 @@ async function main() {
       ORDERS.map((o, i) => {
         const client = clientByEmail.get(o.email)!;
         const product = PRODUCTS[o.p];
-        const delivery =
-          o.delivery === "shipping"
-            ? SHIPPING
-            : o.delivery === "collection"
-              ? COLLECTION
-              : null;
+        const delivery = o.delivery ? deliveryByName.get(o.delivery)! : null;
         const affiliate = o.affiliate
           ? affiliateByCode.get(o.affiliate)
           : undefined;
@@ -529,7 +549,7 @@ async function main() {
             : null,
         });
 
-        const shipping = o.delivery === "shipping";
+        const shipping = delivery?.type === "shipping";
         return {
           shopId: shop.id,
           productId: productIds[o.p],
@@ -544,16 +564,22 @@ async function main() {
           deliveryFeeCents: totals.deliveryFeeCents,
           totalCents: totals.totalCents,
 
-          deliveryMethod: o.delivery,
-          deliveryLabel: o.delivery
-            ? o.delivery === "shipping"
-              ? "Shipping"
-              : "Collection"
-            : null,
+          deliveryMethodId: delivery?.id ?? null,
+          deliveryMethod: delivery?.type ?? null,
+          deliveryLabel: delivery?.name ?? null,
           pickupLocation:
-            o.delivery === "collection"
-              ? "12 Marina Road, Lagos Island, Lagos"
+            delivery?.type === "collection"
+              ? (delivery.config.address ?? null)
               : null,
+
+          trackingCarrier: o.tracking?.carrier ?? null,
+          trackingNumber: o.tracking?.number ?? null,
+          trackingUrl: o.tracking?.url ?? null,
+          shippedAt: o.tracking ? daysAgo(i * 2 - 1) : null,
+
+          refundedCents: o.refund,
+          refundedAt: o.refund > 0 ? daysAgo(i * 2 - 1) : null,
+          refundReason: o.refund > 0 ? "Buyer changed their mind." : null,
 
           couponId: o.coupon ? (couponByCode.get(o.coupon)?.id ?? null) : null,
           couponCode: o.coupon,
@@ -634,7 +660,7 @@ async function main() {
 
   ${PRODUCTS.length} products · ${REVIEWS.length} reviews · ${CLIENTS.length} clients
   ${ORDERS.length} orders + invoices · ${visitRows.length} visits
-  5 payment rails · 2 delivery options · 3 coupons · 3 affiliates
+  5 payment rails · ${insertedDelivery.length} delivery options · 3 coupons · 3 affiliates
 `);
 }
 

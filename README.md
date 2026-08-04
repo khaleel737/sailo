@@ -60,7 +60,15 @@ yourself:
 BETTER_AUTH_SECRET=      # openssl rand -base64 32
 BETTER_AUTH_URL=http://localhost:3000
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Email (optional — order, shipping and refund notifications)
+RESEND_API_KEY=
+SHOPIK_FROM_EMAIL="Shopik <orders@yourdomain.com>"
 ```
+
+Without `RESEND_API_KEY` the app runs fine and simply skips emails — a failed or
+unconfigured send is logged and never blocks an order. The from-address domain
+must be verified in Resend.
 
 `NEXT_PUBLIC_APP_URL` is used to build the product links embedded in outgoing
 WhatsApp messages — set it to the real origin in production.
@@ -101,9 +109,21 @@ WhatsApp messages — set it to the real origin in production.
 
 ## Delivery, discounts and commission
 
-**Delivery** is offered per shop as shipping and/or collection, each with an
-optional fee and a free-over threshold. Only physical products ask — digital
-goods and services skip it. Collection orders never ask for an address.
+**Delivery** options are rows, not fixed types — a shop can offer "Standard",
+"Express", "International" and a pickup point all at once, each with its own
+fee and free-over threshold. Only physical products ask; digital goods and
+services skip it. Collection options never ask for an address.
+
+Orders reference the chosen rate by id *and* snapshot its name and fee, so
+editing a rate later never rewrites history.
+
+**Fulfilment**: shipping orders take a carrier, tracking number and link. Saving
+them moves the order to `shipped` and emails the buyer. Order status runs
+`new → confirmed → shipped → completed`, with `cancelled` and `refunded`.
+
+**Refunds** record an amount (defaulting to the full total, capped at it) and a
+reason. They come straight off net revenue while leaving gross untouched, and
+the buyer is emailed. A full refund flips both order and payment status.
 
 **Coupons** are percent or fixed, with an optional minimum spend, usage cap and
 expiry. A discount can never exceed the subtotal, so a total can't go negative.

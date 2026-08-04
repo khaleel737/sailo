@@ -8,6 +8,7 @@ const OPTIONS = [
   { value: "unpaid", label: "Unpaid" },
   { value: "pending", label: "Payment sent" },
   { value: "paid", label: "Paid" },
+  { value: "refunded", label: "Refunded" },
 ];
 
 export function PaymentStatusSelect({

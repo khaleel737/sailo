@@ -274,7 +274,8 @@ export const deliveryMethods = pgTable(
       .references(() => shops.id, { onDelete: "cascade" }),
 
     type: text("type").notNull(), // shipping | collection
-    label: text("label"),
+    /** Shown to the buyer — "Standard", "Express", "Next day", "Pickup". */
+    name: text("name").notNull(),
     feeCents: integer("fee_cents").default(0).notNull(),
     /** Orders at or above this subtotal ship free. Null disables the rule. */
     freeOverCents: integer("free_over_cents"),
@@ -286,10 +287,8 @@ export const deliveryMethods = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
-  (t) => [
-    uniqueIndex("delivery_methods_shop_type_key").on(t.shopId, t.type),
-    index("delivery_methods_shop_idx").on(t.shopId),
-  ],
+  // No unique key on type — a shop can offer several shipping rates.
+  (t) => [index("delivery_methods_shop_idx").on(t.shopId)],
 );
 
 export const coupons = pgTable(
@@ -425,10 +424,28 @@ export const orders = pgTable(
     deliveryFeeCents: integer("delivery_fee_cents").default(0).notNull(),
     totalCents: integer("total_cents").default(0).notNull(),
 
-    // Delivery
+    // Delivery — id for reporting, snapshot so the record survives rate edits
+    deliveryMethodId: uuid("delivery_method_id").references(
+      () => deliveryMethods.id,
+      { onDelete: "set null" },
+    ),
     deliveryMethod: text("delivery_method"), // shipping | collection | null for digital
     deliveryLabel: text("delivery_label"),
     pickupLocation: text("pickup_location"),
+
+    // Fulfilment
+    trackingCarrier: text("tracking_carrier"),
+    trackingNumber: text("tracking_number"),
+    trackingUrl: text("tracking_url"),
+    shippedAt: timestamp("shipped_at"),
+
+    // Refunds — excluded from revenue
+    refundedCents: integer("refunded_cents").default(0).notNull(),
+    refundedAt: timestamp("refunded_at"),
+    refundReason: text("refund_reason"),
+
+    // Email dispatch
+    confirmationSentAt: timestamp("confirmation_sent_at"),
 
     // Coupon snapshot
     couponId: uuid("coupon_id").references(() => coupons.id, {
@@ -462,7 +479,8 @@ export const orders = pgTable(
     paymentReference: text("payment_reference"), // transfer ref the buyer typed
     paymentProofUrl: text("payment_proof_url"),
 
-    status: text("status").default("new").notNull(), // new | confirmed | fulfilled | cancelled
+    // new | confirmed | shipped | completed | cancelled | refunded
+    status: text("status").default("new").notNull(),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -605,6 +623,10 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
 
 export const ordersRelations = relations(orders, ({ one }) => ({
   shop: one(shops, { fields: [orders.shopId], references: [shops.id] }),
+  deliveryRate: one(deliveryMethods, {
+    fields: [orders.deliveryMethodId],
+    references: [deliveryMethods.id],
+  }),
   product: one(products, {
     fields: [orders.productId],
     references: [products.id],

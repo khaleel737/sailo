@@ -18,7 +18,18 @@ import {
   type Shop,
 } from "@/db/schema";
 import { requireShop } from "@/lib/session";
-import { formatAddress, formatMoney, normalizePhone } from "@/lib/utils";
+import {
+  formatAddress,
+  formatMoney,
+  normalizePhone,
+  parseMoneyToCents,
+} from "@/lib/utils";
+import {
+  sendOrderConfirmation,
+  sendRefundNotification,
+  sendShippingNotification,
+} from "@/lib/email";
+import type { ActionState } from "./shop";
 import {
   bankDetailLines,
   buildHandoff,
@@ -27,11 +38,7 @@ import {
   PAYMENT_METHOD_DEFS,
   type Handoff,
 } from "@/lib/payments";
-import {
-  DELIVERY_METHOD_DEFS,
-  isDeliveryConfigured,
-  type DeliveryMethodType,
-} from "@/lib/delivery";
+import { isDeliveryConfigured } from "@/lib/delivery";
 import {
   checkCoupon,
   computeTotals,
@@ -43,8 +50,16 @@ import {
 } from "@/lib/pricing";
 import { createInvoiceForOrder } from "@/lib/invoices";
 
-const ORDER_STATUSES = new Set(["new", "confirmed", "fulfilled", "cancelled"]);
-const PAYMENT_STATUSES = new Set(["unpaid", "pending", "paid"]);
+// A "use server" module may only export async functions, so this stays local.
+const ORDER_STATUSES = new Set([
+  "new",
+  "confirmed",
+  "shipped",
+  "completed",
+  "cancelled",
+  "refunded",
+]);
+const PAYMENT_STATUSES = new Set(["unpaid", "pending", "paid", "refunded"]);
 
 export type OrderAddress = {
   addressLine1?: string;
@@ -60,7 +75,7 @@ export type OrderIntentInput = {
   productId: string;
   quantity: number;
   paymentMethod: string;
-  deliveryMethod?: string;
+  deliveryMethodId?: string;
   couponCode?: string;
   affiliateCode?: string;
   customerName?: string;
@@ -220,8 +235,8 @@ export async function createOrderIntent(
     ).filter((d) => isDeliveryConfigured(d.type, d.config));
 
     if (available.length > 0) {
-      delivery = input.deliveryMethod
-        ? available.find((d) => d.type === input.deliveryMethod)
+      delivery = input.deliveryMethodId
+        ? available.find((d) => d.id === input.deliveryMethodId)
         : available[0];
       if (!delivery) {
         return { ok: false, error: "Pick how you'd like to receive it." };
@@ -319,10 +334,6 @@ export async function createOrderIntent(
     ...address,
   });
 
-  const deliveryDef = delivery
-    ? DELIVERY_METHOD_DEFS[delivery.type as DeliveryMethodType]
-    : null;
-
   const [order] = await db
     .insert(orders)
     .values({
@@ -339,8 +350,9 @@ export async function createOrderIntent(
       deliveryFeeCents: totals.deliveryFeeCents,
       totalCents: totals.totalCents,
 
+      deliveryMethodId: delivery?.id ?? null,
       deliveryMethod: delivery?.type ?? null,
-      deliveryLabel: delivery ? (delivery.label ?? deliveryDef?.name) : null,
+      deliveryLabel: delivery?.name ?? null,
       pickupLocation:
         delivery?.type === "collection"
           ? (delivery.config.address ?? null)
@@ -375,6 +387,29 @@ export async function createOrderIntent(
   const invoice = await createInvoiceForOrder(shop.id, order.id);
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
 
+  // Confirmation email — best effort, never blocks or fails the order.
+  if (email) {
+    const saved = await db.query.orders.findFirst({
+      where: eq(orders.id, order.id),
+    });
+    if (saved) {
+      const result = await sendOrderConfirmation({
+        shop,
+        order: saved,
+        invoiceUrl: invoice && base ? `${base}/invoice/${invoice.token}` : null,
+        invoiceNumber: invoice?.number ?? null,
+      });
+      if (result.sent) {
+        await db
+          .update(orders)
+          .set({ confirmationSentAt: new Date() })
+          .where(eq(orders.id, order.id));
+      } else {
+        console.warn(`[shopik] order email not sent: ${result.reason}`);
+      }
+    }
+  }
+
   // Buyers who leave an email can be offered their own referral link.
   const referral =
     shop.affiliatesEnabled && email
@@ -395,7 +430,7 @@ export async function createOrderIntent(
     note: note ?? undefined,
     address: formatAddress(address) || undefined,
     delivery: delivery
-      ? `${delivery.label ?? deliveryDef?.name}${
+      ? `${delivery.name}${
           delivery.type === "collection" && delivery.config.address
             ? ` — ${delivery.config.address}`
             : ""
@@ -455,7 +490,7 @@ export async function previewOrder(input: {
   shopId: string;
   productId: string;
   quantity: number;
-  deliveryMethod?: string;
+  deliveryMethodId?: string;
   couponCode?: string;
 }): Promise<OrderPreview | { error: string }> {
   const db = getDb();
@@ -479,11 +514,11 @@ export async function previewOrder(input: {
   const quantity = Math.min(Math.max(Math.trunc(input.quantity) || 1, 1), 999);
 
   const delivery =
-    product.kind === "physical" && input.deliveryMethod
+    product.kind === "physical" && input.deliveryMethodId
       ? await db.query.deliveryMethods.findFirst({
           where: and(
             eq(deliveryMethods.shopId, shop.id),
-            eq(deliveryMethods.type, input.deliveryMethod),
+            eq(deliveryMethods.id, input.deliveryMethodId),
             eq(deliveryMethods.isEnabled, true),
           ),
         })
@@ -628,6 +663,143 @@ export async function updatePaymentStatus(formData: FormData) {
 
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
+}
+
+/**
+ * Records dispatch details and moves the order to `shipped`. Emails the buyer
+ * their tracking info when we have an address for them.
+ */
+export async function markOrderShipped(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const { shop } = await requireShop();
+  const db = getDb();
+
+  const id = String(formData.get("id") ?? "");
+  const order = await db.query.orders.findFirst({
+    where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
+  });
+  if (!order) return { ok: false, error: "Order not found." };
+
+  const carrier = String(formData.get("trackingCarrier") ?? "").trim().slice(0, 80);
+  const number = String(formData.get("trackingNumber") ?? "").trim().slice(0, 120);
+  const urlRaw = String(formData.get("trackingUrl") ?? "").trim().slice(0, 500);
+
+  let trackingUrl: string | null = null;
+  if (urlRaw) {
+    const candidate = /^https?:\/\//i.test(urlRaw) ? urlRaw : `https://${urlRaw}`;
+    try {
+      new URL(candidate);
+      trackingUrl = candidate;
+    } catch {
+      return { ok: false, error: "That tracking link isn't a valid URL." };
+    }
+  }
+
+  await db
+    .update(orders)
+    .set({
+      trackingCarrier: carrier || null,
+      trackingNumber: number || null,
+      trackingUrl,
+      shippedAt: order.shippedAt ?? new Date(),
+      status: "shipped",
+      updatedAt: new Date(),
+    })
+    .where(eq(orders.id, id));
+
+  const updated = await db.query.orders.findFirst({ where: eq(orders.id, id) });
+  let note = "Marked as shipped.";
+  if (updated?.customerEmail) {
+    const result = await sendShippingNotification({ shop, order: updated });
+    note = result.sent
+      ? `Marked as shipped and emailed ${updated.customerEmail}.`
+      : `Marked as shipped, but the email failed: ${result.reason}`;
+  }
+
+  revalidatePath("/admin/orders");
+  revalidatePath("/admin/clients");
+  return { ok: true, message: note };
+}
+
+/**
+ * Records a refund. The amount is capped at the order total and comes straight
+ * off revenue; a full refund also moves the order to `refunded`.
+ */
+export async function refundOrder(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const { shop } = await requireShop();
+  const db = getDb();
+
+  const id = String(formData.get("id") ?? "");
+  const order = await db.query.orders.findFirst({
+    where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
+  });
+  if (!order) return { ok: false, error: "Order not found." };
+
+  const raw = String(formData.get("amount") ?? "").trim();
+  // Blank means refund everything.
+  const requested = raw ? parseMoneyToCents(raw) : order.totalCents;
+  if (requested <= 0) {
+    return { ok: false, error: "Enter a refund amount above zero." };
+  }
+  if (requested > order.totalCents) {
+    return {
+      ok: false,
+      error: `You can't refund more than the order total (${formatMoney(order.totalCents, order.currency)}).`,
+    };
+  }
+
+  const isFull = requested === order.totalCents;
+  await db
+    .update(orders)
+    .set({
+      refundedCents: requested,
+      refundedAt: new Date(),
+      refundReason:
+        String(formData.get("reason") ?? "").trim().slice(0, 300) || null,
+      status: isFull ? "refunded" : order.status,
+      paymentStatus: isFull ? "refunded" : order.paymentStatus,
+      updatedAt: new Date(),
+    })
+    .where(eq(orders.id, id));
+
+  const updated = await db.query.orders.findFirst({ where: eq(orders.id, id) });
+  let note = `Refunded ${formatMoney(requested, order.currency)}.`;
+  if (updated?.customerEmail) {
+    const result = await sendRefundNotification({ shop, order: updated });
+    if (!result.sent) note += ` Email failed: ${result.reason}`;
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/orders");
+  revalidatePath("/admin/clients");
+  return { ok: true, message: note };
+}
+
+/** Undoes a refund, e.g. one entered by mistake. */
+export async function clearRefund(formData: FormData) {
+  const { shop } = await requireShop();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+
+  await getDb()
+    .update(orders)
+    .set({
+      refundedCents: 0,
+      refundedAt: null,
+      refundReason: null,
+      status: "confirmed",
+      paymentStatus: "paid",
+      updatedAt: new Date(),
+    })
+    .where(and(eq(orders.id, id), eq(orders.shopId, shop.id)));
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/orders");
 }
 
 export async function deleteOrder(formData: FormData) {

@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { FileText, MapPin, Trash2 } from "lucide-react";
+import { FileText, MapPin, Trash2, Truck } from "lucide-react";
 import { deleteOrder } from "@/lib/actions/orders";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { OrderStatusSelect } from "./order-status-select";
 import { PaymentStatusSelect } from "./payment-status-select";
+import { OrderActions } from "./order-actions";
 import { Badge, Button } from "@/components/ui";
 import { formatAddress, formatMoney } from "@/lib/utils";
 import type { Order } from "@/db/schema";
@@ -11,8 +12,10 @@ import type { Order } from "@/db/schema";
 const STATUS_TONE = {
   new: "blue",
   confirmed: "amber",
-  fulfilled: "green",
+  shipped: "blue",
+  completed: "green",
   cancelled: "neutral",
+  refunded: "red",
 } as const;
 
 export function OrderRow({
@@ -100,6 +103,32 @@ export function OrderRow({
             </p>
           ) : null}
 
+          {order.trackingNumber || order.trackingCarrier ? (
+            <p className="mt-1 flex items-center gap-1 text-xs text-ink-600">
+              <Truck className="size-3 shrink-0" />
+              {[order.trackingCarrier, order.trackingNumber]
+                .filter(Boolean)
+                .join(" · ")}
+              {order.trackingUrl ? (
+                <a
+                  href={order.trackingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-ink-900"
+                >
+                  Track
+                </a>
+              ) : null}
+            </p>
+          ) : null}
+
+          {order.refundedCents > 0 ? (
+            <p className="mt-1 text-xs font-medium text-red-600">
+              Refunded {formatMoney(order.refundedCents, order.currency)}
+              {order.refundReason ? ` — ${order.refundReason}` : ""}
+            </p>
+          ) : null}
+
           {order.paymentReference ? (
             <p className="mt-1.5 text-xs text-ink-500">
               Transfer ref:{" "}
@@ -182,6 +211,8 @@ export function OrderRow({
           </form>
         </div>
       </div>
+
+      <OrderActions order={order} />
     </div>
   );
 }

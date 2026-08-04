@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { deliveryMethods, type DeliveryConfig } from "@/db/schema";
 import { requireShop } from "@/lib/session";
@@ -13,18 +13,27 @@ import {
 import { parseMoneyToCents } from "@/lib/utils";
 import type { ActionState } from "./shop";
 
+/**
+ * Creates or updates one delivery rate. A shop can have any number of them —
+ * "Standard", "Express", "Next day" are all rows of type `shipping`.
+ */
 export async function saveDeliveryMethod(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const { shop } = await requireShop();
-  const type = String(formData.get("type") ?? "");
+  const db = getDb();
 
+  const id = String(formData.get("id") ?? "").trim() || null;
+  const type = String(formData.get("type") ?? "");
   if (!isDeliveryMethodType(type)) {
-    return { ok: false, error: "Unknown delivery method." };
+    return { ok: false, error: "Unknown delivery type." };
   }
 
   const def = DELIVERY_METHOD_DEFS[type];
+  const name = String(formData.get("name") ?? "").trim().slice(0, 60);
+  if (!name) return { ok: false, error: "Give this option a name." };
+
   const config: DeliveryConfig = {};
   for (const field of def.fields) {
     const value = String(formData.get(field.key) ?? "").trim();
@@ -35,7 +44,7 @@ export async function saveDeliveryMethod(
   if (isEnabled && !isDeliveryConfigured(type, config)) {
     return {
       ok: false,
-      error: "Add your pickup address before turning collection on.",
+      error: "Add a pickup address before turning collection on.",
     };
   }
 
@@ -43,39 +52,83 @@ export async function saveDeliveryMethod(
   const freeOverRaw = String(formData.get("freeOver") ?? "").trim();
   const freeOverCents = freeOverRaw ? parseMoneyToCents(freeOverRaw) : null;
 
-  const db = getDb();
-  const [{ max }] = await db
-    .select({ max: sql<string>`coalesce(max(${deliveryMethods.position}), 0)` })
-    .from(deliveryMethods)
-    .where(eq(deliveryMethods.shopId, shop.id));
+  const values = {
+    type,
+    name,
+    feeCents,
+    freeOverCents,
+    config,
+    isEnabled,
+    updatedAt: new Date(),
+  };
 
-  const label = String(formData.get("label") ?? "").trim().slice(0, 60) || null;
-
-  await db
-    .insert(deliveryMethods)
-    .values({
-      shopId: shop.id,
-      type,
-      label,
-      feeCents,
-      freeOverCents,
-      config,
-      isEnabled,
-      position: Number(max) + 1,
-    })
-    .onConflictDoUpdate({
-      target: [deliveryMethods.shopId, deliveryMethods.type],
-      set: {
-        label,
-        feeCents,
-        freeOverCents,
-        config,
-        isEnabled,
-        updatedAt: new Date(),
-      },
+  if (id) {
+    const owned = await db.query.deliveryMethods.findFirst({
+      where: and(
+        eq(deliveryMethods.id, id),
+        eq(deliveryMethods.shopId, shop.id),
+      ),
+      columns: { id: true },
     });
+    if (!owned) return { ok: false, error: "Delivery option not found." };
+    await db
+      .update(deliveryMethods)
+      .set(values)
+      .where(eq(deliveryMethods.id, id));
+  } else {
+    const [{ max }] = await db
+      .select({
+        max: sql<string>`coalesce(max(${deliveryMethods.position}), 0)`,
+      })
+      .from(deliveryMethods)
+      .where(eq(deliveryMethods.shopId, shop.id));
+
+    await db.insert(deliveryMethods).values({
+      ...values,
+      shopId: shop.id,
+      position: Number(max) + 1,
+    });
+  }
 
   revalidatePath("/admin/delivery");
   revalidatePath(`/${shop.handle}`);
-  return { ok: true, message: `${def.name} saved.` };
+  return { ok: true, message: id ? "Option updated." : `${name} added.` };
+}
+
+export async function deleteDeliveryMethod(formData: FormData) {
+  const { shop } = await requireShop();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+
+  await getDb()
+    .delete(deliveryMethods)
+    .where(
+      and(eq(deliveryMethods.id, id), eq(deliveryMethods.shopId, shop.id)),
+    );
+
+  revalidatePath("/admin/delivery");
+  revalidatePath(`/${shop.handle}`);
+}
+
+export async function toggleDeliveryMethod(formData: FormData) {
+  const { shop } = await requireShop();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+
+  const db = getDb();
+  const method = await db.query.deliveryMethods.findFirst({
+    where: and(eq(deliveryMethods.id, id), eq(deliveryMethods.shopId, shop.id)),
+  });
+  if (!method) return;
+  // Never switch on an option a buyer couldn't actually use.
+  if (!method.isEnabled && !isDeliveryConfigured(method.type, method.config))
+    return;
+
+  await db
+    .update(deliveryMethods)
+    .set({ isEnabled: !method.isEnabled, updatedAt: new Date() })
+    .where(eq(deliveryMethods.id, id));
+
+  revalidatePath("/admin/delivery");
+  revalidatePath(`/${shop.handle}`);
 }

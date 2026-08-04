@@ -225,9 +225,13 @@ export async function getDashboardStats(shopId: string) {
       .select({
         total: sql<string>`count(*)`,
         pending: sql<string>`count(*) filter (where ${orders.status} = 'new')`,
-        revenue: sql<string>`coalesce(sum(${orders.totalCents}), 0)`,
+        // Cancelled orders never counted; refunds come straight off the top.
+        gross: sql<string>`coalesce(sum(${orders.totalCents}) filter (where ${orders.status} <> 'cancelled'), 0)`,
+        refunded: sql<string>`coalesce(sum(${orders.refundedCents}), 0)`,
+        refundCount: sql<string>`count(*) filter (where ${orders.refundedCents} > 0)`,
         paid: sql<string>`coalesce(sum(${orders.totalCents}) filter (where ${orders.paymentStatus} = 'paid'), 0)`,
         awaitingConfirm: sql<string>`count(*) filter (where ${orders.paymentStatus} = 'pending')`,
+        awaitingShipment: sql<string>`count(*) filter (where ${orders.deliveryMethod} = 'shipping' and ${orders.status} in ('new','confirmed'))`,
         unpaidCommission: sql<string>`coalesce(sum(${orders.commissionCents}) filter (where not ${orders.commissionPaid}), 0)`,
       })
       .from(orders)
@@ -252,9 +256,14 @@ export async function getDashboardStats(shopId: string) {
     uniqueVisitors30d: Number(visitRow?.unique ?? 0),
     totalOrders: Number(orderRow?.total ?? 0),
     newOrders: Number(orderRow?.pending ?? 0),
-    orderValueCents: Number(orderRow?.revenue ?? 0),
+    grossCents: Number(orderRow?.gross ?? 0),
+    refundedCents: Number(orderRow?.refunded ?? 0),
+    netRevenueCents:
+      Number(orderRow?.gross ?? 0) - Number(orderRow?.refunded ?? 0),
+    refundCount: Number(orderRow?.refundCount ?? 0),
     paidValueCents: Number(orderRow?.paid ?? 0),
     awaitingConfirmation: Number(orderRow?.awaitingConfirm ?? 0),
+    awaitingShipment: Number(orderRow?.awaitingShipment ?? 0),
     unpaidCommissionCents: Number(orderRow?.unpaidCommission ?? 0),
     totalProducts: Number(productRow?.total ?? 0),
     publishedProducts: Number(productRow?.published ?? 0),
@@ -262,11 +271,28 @@ export async function getDashboardStats(shopId: string) {
   };
 }
 
+/**
+ * Timestamps are stored as UTC wall-clock, and Postgres `::date` truncates in
+ * UTC — so the JS buckets must be built in UTC too. Using local midnight here
+ * silently drops today's bucket for anyone ahead of UTC.
+ */
+function utcDayWindow(days: number) {
+  const since = new Date();
+  since.setUTCHours(0, 0, 0, 0);
+  since.setUTCDate(since.getUTCDate() - (days - 1));
+
+  const keys: string[] = [];
+  for (let i = 0; i < days; i++) {
+    const d = new Date(since);
+    d.setUTCDate(since.getUTCDate() + i);
+    keys.push(d.toISOString().slice(0, 10));
+  }
+  return { since, keys };
+}
+
 /** Daily visit counts for the last N days, zero-filled for the chart. */
 export async function getVisitSeries(shopId: string, days = 14) {
-  const since = new Date();
-  since.setHours(0, 0, 0, 0);
-  since.setDate(since.getDate() - (days - 1));
+  const { since, keys } = utcDayWindow(days);
 
   const rows = await getDb()
     .select({
@@ -279,14 +305,28 @@ export async function getVisitSeries(shopId: string, days = 14) {
     .orderBy(sql`${visits.createdAt}::date`);
 
   const counts = new Map(rows.map((r) => [r.day, Number(r.count)]));
-  const series: { day: string; count: number }[] = [];
-  for (let i = 0; i < days; i++) {
-    const d = new Date(since);
-    d.setDate(since.getDate() + i);
-    const key = d.toISOString().slice(0, 10);
-    series.push({ day: key, count: counts.get(key) ?? 0 });
-  }
-  return series;
+  return keys.map((day) => ({ day, count: counts.get(day) ?? 0 }));
+}
+
+/**
+ * Daily net revenue for the last N days, zero-filled. Refunds are subtracted
+ * on the day the order was placed so a day's bar reflects what it truly earned.
+ */
+export async function getRevenueSeries(shopId: string, days = 14) {
+  const { since, keys } = utcDayWindow(days);
+
+  const rows = await getDb()
+    .select({
+      day: sql<string>`to_char(${orders.createdAt}::date, 'YYYY-MM-DD')`,
+      cents: sql<string>`coalesce(sum(${orders.totalCents}) filter (where ${orders.status} <> 'cancelled'), 0) - coalesce(sum(${orders.refundedCents}), 0)`,
+    })
+    .from(orders)
+    .where(and(eq(orders.shopId, shopId), gte(orders.createdAt, since)))
+    .groupBy(sql`${orders.createdAt}::date`)
+    .orderBy(sql`${orders.createdAt}::date`);
+
+  const byDay = new Map(rows.map((r) => [r.day, Number(r.cents)]));
+  return keys.map((day) => ({ day, cents: byDay.get(day) ?? 0 }));
 }
 
 export async function getShopOrders(shopId: string, limit = 100) {
@@ -311,7 +351,8 @@ export async function getShopClients(shopId: string): Promise<ClientRow[]> {
     .select({
       client: clients,
       orderCount: sql<string>`count(${orders.id})`,
-      totalCents: sql<string>`coalesce(sum(${orders.totalCents}), 0)`,
+      // Lifetime value is net of refunds.
+      totalCents: sql<string>`coalesce(sum(${orders.totalCents} - ${orders.refundedCents}) filter (where ${orders.status} <> 'cancelled'), 0)`,
       lastOrderAt: sql<string | null>`max(${orders.createdAt})`,
     })
     .from(clients)
@@ -341,17 +382,24 @@ export async function getClientWithOrders(shopId: string, clientId: string) {
     orderBy: [desc(orders.createdAt)],
   });
 
-  const totalCents = clientOrders.reduce((sum, o) => sum + o.totalCents, 0);
-  const paidCents = clientOrders
+  const active = clientOrders.filter((o) => o.status !== "cancelled");
+  const totalCents = active.reduce(
+    (sum, o) => sum + o.totalCents - o.refundedCents,
+    0,
+  );
+  const paidCents = active
     .filter((o) => o.paymentStatus === "paid")
     .reduce((sum, o) => sum + o.totalCents, 0);
+  const refundedCents = clientOrders.reduce((sum, o) => sum + o.refundedCents, 0);
 
   return {
     client,
     orders: clientOrders,
     totalCents,
     paidCents,
-    outstandingCents: totalCents - paidCents,
+    refundedCents,
+    // Never show a negative balance owed.
+    outstandingCents: Math.max(0, totalCents - paidCents),
   };
 }
 
@@ -413,8 +461,9 @@ export async function getCheckoutOptions(shopId: string) {
       label: m.label,
     })),
     deliveryOptions: delivery.map((d) => ({
+      id: d.id,
       type: d.type as DeliveryMethodType,
-      label: d.label,
+      name: d.name,
       feeCents: d.feeCents,
       freeOverCents: d.freeOverCents,
       estimate: d.config.estimate,
