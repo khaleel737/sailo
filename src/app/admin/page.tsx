@@ -9,6 +9,8 @@ import {
   getVisitSeries,
 } from "@/lib/queries";
 import { BarChart } from "@/components/admin/bar-chart";
+import { RangePicker } from "@/components/admin/range-picker";
+import { analyticsLimit, clampAnalyticsRange, planFor } from "@/lib/plans";
 import { CopyLink } from "@/components/admin/copy-link";
 import { Badge, Card, EmptyState } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
@@ -24,12 +26,20 @@ const STATUS_TONE = {
   refunded: "red",
 } as const;
 
-export default async function AdminOverviewPage() {
+export default async function AdminOverviewPage({
+  searchParams,
+}: PageProps<"/admin">) {
   const { shop } = await requireShop();
+  const params = await searchParams;
+
+  // Clamped server-side, so a hand-typed ?range= can't read past the plan.
+  const range = clampAnalyticsRange(shop, Number(params.range) || undefined);
+  const chartDays = Math.min(range, 60);
+
   const [stats, visitSeries, revenueSeries, orders] = await Promise.all([
-    getDashboardStats(shop.id),
-    getVisitSeries(shop.id, 14),
-    getRevenueSeries(shop.id, 14),
+    getDashboardStats(shop.id, range),
+    getVisitSeries(shop.id, chartDays),
+    getRevenueSeries(shop.id, chartDays),
     getShopOrders(shop.id, 5),
   ]);
 
@@ -62,16 +72,28 @@ export default async function AdminOverviewPage() {
         </div>
       </div>
 
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-sm font-medium text-ink-500">
+          Last {range >= 365 ? `${Math.round(range / 365)} year` : `${range} days`}
+          {range >= 365 && range >= 730 ? "s" : ""}
+        </h2>
+        <RangePicker
+          current={range}
+          limit={analyticsLimit(shop)}
+          currentPlan={planFor(shop).id}
+        />
+      </div>
+
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat
           icon={<Eye className="size-4" />}
-          label="Visits (30d)"
-          value={stats.visits30d.toLocaleString()}
+          label="Visits"
+          value={stats.visitsInRange.toLocaleString()}
         />
         <Stat
           icon={<Users className="size-4" />}
           label="Unique visitors"
-          value={stats.uniqueVisitors30d.toLocaleString()}
+          value={stats.uniqueVisitorsInRange.toLocaleString()}
         />
         <Stat
           icon={<ShoppingBag className="size-4" />}
@@ -126,7 +148,7 @@ export default async function AdminOverviewPage() {
       <div className="mb-6 grid gap-3 lg:grid-cols-2">
         <Card className="p-5">
           <BarChart
-            title="Visits · last 14 days"
+            title={`Visits · last ${chartDays} days`}
             data={visitSeries.map((d) => ({ day: d.day, value: d.count }))}
             colour="#4f46e5"
             unit="count"
@@ -135,7 +157,7 @@ export default async function AdminOverviewPage() {
         </Card>
         <Card className="p-5">
           <BarChart
-            title="Revenue · last 14 days"
+            title={`Revenue · last ${chartDays} days`}
             data={revenueSeries.map((d) => ({ day: d.day, value: d.cents }))}
             colour="#0d7d63"
             unit="money"

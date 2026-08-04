@@ -7,6 +7,8 @@ import { bpToPercent } from "@/lib/pricing";
 import { PageHeader } from "@/components/admin/page-header";
 import { CouponForm } from "@/components/admin/coupon-form";
 import { Badge, Button, Card, EmptyState } from "@/components/ui";
+import { LockedFeature } from "@/components/admin/locked-feature";
+import { can } from "@/lib/plans";
 import { formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Coupons" };
@@ -15,6 +17,29 @@ export default async function AdminCouponsPage() {
   const { shop } = await requireShop();
   const coupons = await getShopCoupons(shop.id);
   const now = new Date();
+
+  if (!can(shop, "coupons")) {
+    return (
+      <>
+        <PageHeader
+          title="Coupons"
+          description="Discount codes buyers enter at checkout."
+        />
+        <LockedFeature
+          shop={shop}
+          feature="coupons"
+          icon={<Tags className="size-8" />}
+          title="Discount codes"
+          description="Run promotions with percentage or fixed discounts, minimum spend, usage caps and expiry dates."
+          points={[
+            "WELCOME10 for 10% off a first order",
+            "£5 off when they spend £30",
+            "Limit a code to the first 100 uses",
+          ]}
+        />
+      </>
+    );
+  }
 
   return (
     <>

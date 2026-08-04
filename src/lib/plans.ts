@@ -152,6 +152,31 @@ export function atProductLimit(shop: BillingShape, current: number): boolean {
   return limit !== null && current >= limit;
 }
 
+/** Selectable analytics ranges, in days. */
+export const ANALYTICS_RANGES = [7, 30, 90, 365, 1095] as const;
+export type AnalyticsRange = (typeof ANALYTICS_RANGES)[number];
+
+export function analyticsLimit(shop: BillingShape): number {
+  return planFor(shop).limits.analyticsDays;
+}
+
+/**
+ * Clamps a requested range to the plan's allowance. Enforced here rather than
+ * in the UI so a hand-typed query string can't read further back than paid for.
+ */
+export function clampAnalyticsRange(
+  shop: BillingShape,
+  requested: number | undefined,
+): AnalyticsRange {
+  const limit = analyticsLimit(shop);
+  const allowed = ANALYTICS_RANGES.filter((r) => r <= limit);
+  const max = allowed[allowed.length - 1] ?? 7;
+  if (!requested || !ANALYTICS_RANGES.includes(requested as AnalyticsRange)) {
+    return Math.min(30, max) as AnalyticsRange;
+  }
+  return Math.min(requested, max) as AnalyticsRange;
+}
+
 /** Shown when a gate blocks something, so the message names the cheapest fix. */
 export function cheapestPlanWith(feature: keyof Features): Plan | null {
   for (const id of PLAN_IDS) {

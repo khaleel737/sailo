@@ -127,6 +127,14 @@ export const shops = pgTable(
     currentPeriodEnd: timestamp("current_period_end"),
     cancelAtPeriodEnd: boolean("cancel_at_period_end").default(false).notNull(),
 
+    /** Everything before this is treated as read in the notification tray. */
+    notificationsReadAt: timestamp("notifications_read_at"),
+    /** Individually dismissed notification ids. */
+    dismissedNotifications: jsonb("dismissed_notifications")
+      .$type<string[]>()
+      .default([])
+      .notNull(),
+
     // Invoicing
     invoicePrefix: text("invoice_prefix").default("INV").notNull(),
     invoiceNextNumber: integer("invoice_next_number").default(1).notNull(),

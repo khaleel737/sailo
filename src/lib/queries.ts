@@ -209,9 +209,9 @@ export async function getPriceBounds(shopId: string) {
 /*  Admin                                                                      */
 /* -------------------------------------------------------------------------- */
 
-export async function getDashboardStats(shopId: string) {
+export async function getDashboardStats(shopId: string, windowDays = 30) {
   const db = getDb();
-  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const since = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000);
 
   const [[visitRow], [orderRow], [productRow], [reviewRow]] = await Promise.all([
     db
@@ -252,8 +252,8 @@ export async function getDashboardStats(shopId: string) {
   ]);
 
   return {
-    visits30d: Number(visitRow?.total ?? 0),
-    uniqueVisitors30d: Number(visitRow?.unique ?? 0),
+    visitsInRange: Number(visitRow?.total ?? 0),
+    uniqueVisitorsInRange: Number(visitRow?.unique ?? 0),
     totalOrders: Number(orderRow?.total ?? 0),
     newOrders: Number(orderRow?.pending ?? 0),
     grossCents: Number(orderRow?.gross ?? 0),

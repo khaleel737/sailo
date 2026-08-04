@@ -15,6 +15,8 @@ import {
   AffiliateSettingsForm,
 } from "@/components/admin/affiliate-widgets";
 import { Badge, Button, Card, EmptyState } from "@/components/ui";
+import { LockedFeature } from "@/components/admin/locked-feature";
+import { can } from "@/lib/plans";
 import { formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Affiliates" };
@@ -27,6 +29,30 @@ const SOURCE_LABEL: Record<string, string> = {
 
 export default async function AdminAffiliatesPage() {
   const { shop } = await requireShop();
+
+  if (!can(shop, "affiliates")) {
+    return (
+      <>
+        <PageHeader
+          title="Affiliates"
+          description="Pay people a share of what they sell for you."
+        />
+        <LockedFeature
+          shop={shop}
+          feature="affiliates"
+          icon={<Gift className="size-8" />}
+          title="Referral programme"
+          description="Give people a link, pay them a commission on what it brings in. Buyers can opt in to their own link right after ordering."
+          points={[
+            "Set a default rate, or a different one per affiliate",
+            "Track clicks, orders and commission owed",
+            "A public sign-up page for your shop",
+          ]}
+        />
+      </>
+    );
+  }
+
   const affiliates = await getShopAffiliates(shop.id);
 
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
