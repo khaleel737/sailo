@@ -58,9 +58,19 @@ const HOST_NAMES: Record<string, string> = {
   "fb.com": "Facebook",
 };
 
-/** Strips `www.`, `m.`, `l.` and the like so hosts group together. */
+/**
+ * Strips the port and a `www.`/`m.`/`l.` style prefix so hosts group together.
+ *
+ * The port matters: the `Host` header carries one ("localhost:3000") while a
+ * referrer's `hostname` never does, so without this the self-referral check
+ * silently fails behind any non-default port and records same-site clicks as
+ * inbound referrals.
+ */
 export function normalizeHost(host: string): string {
-  return host.toLowerCase().replace(/^(www|m|mobile|l|lm|out)\./, "");
+  return host
+    .toLowerCase()
+    .replace(/:\d+$/, "")
+    .replace(/^(www|m|mobile|l|lm|out)\./, "");
 }
 
 function matches(host: string, needles: string[]) {
