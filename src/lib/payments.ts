@@ -188,11 +188,15 @@ export type OrderSummary = {
   shopName: string;
   productTitle: string;
   quantity: number;
+  /** The final total, after any discount and delivery fee. */
   priceLabel: string;
   productUrl?: string;
   customerName?: string;
   note?: string;
   address?: string;
+  delivery?: string;
+  discount?: string;
+  invoiceNumber?: string;
 };
 
 export function orderMessage(order: OrderSummary) {
@@ -201,11 +205,14 @@ export function orderMessage(order: OrderSummary) {
     ``,
     `${order.productTitle}`,
     `Quantity: ${order.quantity}`,
-    `Price: ${order.priceLabel}`,
   ];
+  if (order.discount) lines.push(`Discount: ${order.discount}`);
+  if (order.delivery) lines.push(`Delivery: ${order.delivery}`);
+  lines.push(`Total: ${order.priceLabel}`);
   if (order.customerName) lines.push(`Name: ${order.customerName}`);
   if (order.address) lines.push(`Deliver to: ${order.address}`);
   if (order.note) lines.push(`Note: ${order.note}`);
+  if (order.invoiceNumber) lines.push(`Invoice: ${order.invoiceNumber}`);
   if (order.productUrl) lines.push(``, order.productUrl);
   return lines.join("\n");
 }

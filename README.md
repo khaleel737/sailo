@@ -86,13 +86,52 @@ WhatsApp messages — set it to the real origin in production.
 /admin                Overview: visits, orders, products
 /admin/products       Product CRUD with image upload
 /admin/categories     Category management
-/admin/orders         Orders, payment status, delivery address
+/admin/orders         Orders, payment status, delivery, invoice links
 /admin/clients        Buyers with lifetime totals
 /admin/clients/[id]   Client profile, address, notes, full order history
+/admin/coupons        Discount codes
+/admin/affiliates     Referral programme, rates, links, commission owed
 /admin/payments       Turn payment rails on/off and configure them
+/admin/delivery       Shipping and collection options
 /admin/reviews        Review moderation
 /admin/settings       Identity, appearance, socials, address collection
+/[handle]/affiliate   Public referral page (when enabled)
+/invoice/[token]      Public printable invoice
 ```
+
+## Delivery, discounts and commission
+
+**Delivery** is offered per shop as shipping and/or collection, each with an
+optional fee and a free-over threshold. Only physical products ask — digital
+goods and services skip it. Collection orders never ask for an address.
+
+**Coupons** are percent or fixed, with an optional minimum spend, usage cap and
+expiry. A discount can never exceed the subtotal, so a total can't go negative.
+
+**Affiliates** earn a share of what they refer. Each has a code used as
+`?ref=CODE`, with a per-affiliate rate overriding the shop default. Attribution
+is last-touch, stored for 30 days. Commission is charged on goods **after
+discount** and never on the delivery fee.
+
+Buyers who leave an email are offered their own referral link right after
+ordering — the moment they've just demonstrated they like the shop. Sellers can
+also open a public signup page, where applications wait for approval; buyer
+referrals go live immediately.
+
+Money on an order always satisfies:
+
+```
+total = subtotal − discount + delivery
+```
+
+Percentages are stored in basis points (1000 = 10%) so fractional rates survive
+a round trip. The order sheet quotes totals from the same `computeTotals` the
+order uses, so the quote can't drift from what's charged.
+
+**Invoices** are issued automatically per order with a per-shop sequential
+number, claimed atomically so concurrent orders can't collide. Each has a public
+token URL that's printable to PDF, linked from the admin and offered to the
+buyer at checkout.
 
 ## How ordering works
 
@@ -125,7 +164,8 @@ why the chat and manual rails come first.
 ## Data model
 
 `shops` (one per user) → `categories`, `products` → `product_images`, `reviews`,
-plus `payment_methods` (the rails) and `clients` (buyers).
+plus `payment_methods` and `delivery_methods` (the checkout rails), `clients`
+(buyers), `coupons`, `affiliates` and `invoices`.
 
 `orders` link to a client but also snapshot the customer and product details, so
 a record stays truthful after a client edits their profile or a product is
@@ -139,7 +179,10 @@ and `verification`.
 ## Not built yet
 
 - Card checkout via seller-owned gateways (see above).
+- **Emailing invoices.** They generate and are shareable by link, but sending
+  needs an email provider (Resend or similar) that isn't wired up yet.
 - Paid tiers. The plan is to gate on branding, custom domain and card checkout
   rather than product count, with regional pricing.
-- Custom domains, multiple shops per user, digital file delivery, email
-  notifications, bot filtering on visit tracking.
+- Multi-item carts — an order is currently one product with a quantity.
+- Custom domains, multiple shops per user, digital file delivery, bot filtering
+  on visit tracking.

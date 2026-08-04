@@ -107,6 +107,22 @@ export const shops = pgTable(
     // Ask for a delivery address on physical products.
     collectAddress: boolean("collect_address").default(true).notNull(),
 
+    // Affiliate programme
+    affiliatesEnabled: boolean("affiliates_enabled").default(false).notNull(),
+    /** Default commission in basis points — 1000 = 10%. */
+    affiliateDefaultBp: integer("affiliate_default_bp").default(1000).notNull(),
+    /** Let anyone apply to be an affiliate from the public page. */
+    affiliatePublicSignup: boolean("affiliate_public_signup")
+      .default(false)
+      .notNull(),
+    affiliateTerms: text("affiliate_terms"),
+
+    // Invoicing
+    invoicePrefix: text("invoice_prefix").default("INV").notNull(),
+    invoiceNextNumber: integer("invoice_next_number").default(1).notNull(),
+    invoiceNotes: text("invoice_notes"),
+    taxId: text("tax_id"),
+
     // [{ platform: 'instagram', url: '...' }, ...]
     socials: jsonb("socials").$type<ShopSocial[]>().default([]).notNull(),
 
@@ -246,6 +262,102 @@ export const paymentMethods = pgTable(
 );
 
 /**
+ * How the buyer receives the order. Mirrors paymentMethods: sellers enable the
+ * ones they offer, the buyer picks one at checkout.
+ */
+export const deliveryMethods = pgTable(
+  "delivery_methods",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+
+    type: text("type").notNull(), // shipping | collection
+    label: text("label"),
+    feeCents: integer("fee_cents").default(0).notNull(),
+    /** Orders at or above this subtotal ship free. Null disables the rule. */
+    freeOverCents: integer("free_over_cents"),
+    config: jsonb("config").$type<DeliveryConfig>().default({}).notNull(),
+
+    isEnabled: boolean("is_enabled").default(true).notNull(),
+    position: integer("position").default(0).notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("delivery_methods_shop_type_key").on(t.shopId, t.type),
+    index("delivery_methods_shop_idx").on(t.shopId),
+  ],
+);
+
+export const coupons = pgTable(
+  "coupons",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+
+    code: text("code").notNull(), // stored uppercase
+    discountType: text("discount_type").default("percent").notNull(), // percent | fixed
+    /** Basis points when percent (1000 = 10%), minor units when fixed. */
+    discountValue: integer("discount_value").notNull(),
+
+    minSubtotalCents: integer("min_subtotal_cents").default(0).notNull(),
+    maxRedemptions: integer("max_redemptions"),
+    timesRedeemed: integer("times_redeemed").default(0).notNull(),
+
+    startsAt: timestamp("starts_at"),
+    expiresAt: timestamp("expires_at"),
+    isActive: boolean("is_active").default(true).notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("coupons_shop_code_key").on(t.shopId, t.code),
+    index("coupons_shop_idx").on(t.shopId),
+  ],
+);
+
+/**
+ * Someone who earns commission for referring buyers. `code` is what appears in
+ * a `?ref=` link; a per-affiliate rate overrides the shop default when set.
+ */
+export const affiliates = pgTable(
+  "affiliates",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+
+    name: text("name").notNull(),
+    email: text("email"),
+    code: text("code").notNull(), // stored uppercase
+
+    /** Null falls back to shops.affiliateDefaultBp. */
+    commissionBp: integer("commission_bp"),
+
+    status: text("status").default("active").notNull(), // pending | active | disabled
+    /** Set when a buyer opts into refer-and-earn after ordering. */
+    source: text("source").default("manual").notNull(), // manual | signup | buyer
+
+    clicks: integer("clicks").default(0).notNull(),
+    payoutNotes: text("payout_notes"),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("affiliates_shop_code_key").on(t.shopId, t.code),
+    index("affiliates_shop_idx").on(t.shopId),
+  ],
+);
+
+/**
  * A buyer, owned by one shop. Created or matched on every order so repeat
  * buyers accumulate history instead of appearing as separate rows.
  */
@@ -307,6 +419,31 @@ export const orders = pgTable(
     quantity: integer("quantity").default(1).notNull(),
     currency: text("currency").default("USD").notNull(),
 
+    // Money breakdown: total = subtotal - discount + delivery
+    subtotalCents: integer("subtotal_cents").default(0).notNull(),
+    discountCents: integer("discount_cents").default(0).notNull(),
+    deliveryFeeCents: integer("delivery_fee_cents").default(0).notNull(),
+    totalCents: integer("total_cents").default(0).notNull(),
+
+    // Delivery
+    deliveryMethod: text("delivery_method"), // shipping | collection | null for digital
+    deliveryLabel: text("delivery_label"),
+    pickupLocation: text("pickup_location"),
+
+    // Coupon snapshot
+    couponId: uuid("coupon_id").references(() => coupons.id, {
+      onDelete: "set null",
+    }),
+    couponCode: text("coupon_code"),
+
+    // Affiliate attribution
+    affiliateId: uuid("affiliate_id").references(() => affiliates.id, {
+      onDelete: "set null",
+    }),
+    affiliateCode: text("affiliate_code"),
+    commissionCents: integer("commission_cents").default(0).notNull(),
+    commissionPaid: boolean("commission_paid").default(false).notNull(),
+
     // Customer snapshot
     customerName: text("customer_name"),
     customerEmail: text("customer_email"),
@@ -334,6 +471,38 @@ export const orders = pgTable(
     index("orders_shop_idx").on(t.shopId),
     index("orders_client_idx").on(t.clientId),
     index("orders_created_idx").on(t.createdAt),
+  ],
+);
+
+/**
+ * Issued per order with a per-shop sequential number. `token` backs a public
+ * link so the buyer can view it without an account.
+ */
+export const invoices = pgTable(
+  "invoices",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+    orderId: uuid("order_id")
+      .notNull()
+      .references(() => orders.id, { onDelete: "cascade" }),
+
+    number: text("number").notNull(), // e.g. INV-0007
+    token: text("token").notNull(),
+
+    issuedAt: timestamp("issued_at").defaultNow().notNull(),
+    sentAt: timestamp("sent_at"),
+    sentTo: text("sent_to"),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("invoices_token_key").on(t.token),
+    uniqueIndex("invoices_shop_number_key").on(t.shopId, t.number),
+    uniqueIndex("invoices_order_key").on(t.orderId),
+    index("invoices_shop_idx").on(t.shopId),
   ],
 );
 
@@ -369,7 +538,30 @@ export const shopsRelations = relations(shops, ({ one, many }) => ({
   orders: many(orders),
   visits: many(visits),
   paymentMethods: many(paymentMethods),
+  deliveryMethods: many(deliveryMethods),
   clients: many(clients),
+  coupons: many(coupons),
+  affiliates: many(affiliates),
+  invoices: many(invoices),
+}));
+
+export const deliveryMethodsRelations = relations(deliveryMethods, ({ one }) => ({
+  shop: one(shops, { fields: [deliveryMethods.shopId], references: [shops.id] }),
+}));
+
+export const couponsRelations = relations(coupons, ({ one, many }) => ({
+  shop: one(shops, { fields: [coupons.shopId], references: [shops.id] }),
+  orders: many(orders),
+}));
+
+export const affiliatesRelations = relations(affiliates, ({ one, many }) => ({
+  shop: one(shops, { fields: [affiliates.shopId], references: [shops.id] }),
+  orders: many(orders),
+}));
+
+export const invoicesRelations = relations(invoices, ({ one }) => ({
+  shop: one(shops, { fields: [invoices.shopId], references: [shops.id] }),
+  order: one(orders, { fields: [invoices.orderId], references: [orders.id] }),
 }));
 
 export const paymentMethodsRelations = relations(paymentMethods, ({ one }) => ({
@@ -421,6 +613,18 @@ export const ordersRelations = relations(orders, ({ one }) => ({
     fields: [orders.clientId],
     references: [clients.id],
   }),
+  coupon: one(coupons, {
+    fields: [orders.couponId],
+    references: [coupons.id],
+  }),
+  affiliate: one(affiliates, {
+    fields: [orders.affiliateId],
+    references: [affiliates.id],
+  }),
+  invoice: one(invoices, {
+    fields: [orders.id],
+    references: [invoices.orderId],
+  }),
 }));
 
 /* -------------------------------------------------------------------------- */
@@ -448,6 +652,17 @@ export type PaymentConfig = {
   instructions?: string;
 };
 
+/** Union of every delivery type's settings. */
+export type DeliveryConfig = {
+  /** shipping: "2–3 working days" */
+  estimate?: string;
+  /** collection: where to pick up */
+  address?: string;
+  /** collection: opening hours */
+  hours?: string;
+  instructions?: string;
+};
+
 export type Shop = typeof shops.$inferSelect;
 export type Category = typeof categories.$inferSelect;
 export type Product = typeof products.$inferSelect;
@@ -456,4 +671,8 @@ export type Review = typeof reviews.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type Visit = typeof visits.$inferSelect;
 export type PaymentMethod = typeof paymentMethods.$inferSelect;
+export type DeliveryMethod = typeof deliveryMethods.$inferSelect;
 export type Client = typeof clients.$inferSelect;
+export type Coupon = typeof coupons.$inferSelect;
+export type Affiliate = typeof affiliates.$inferSelect;
+export type Invoice = typeof invoices.$inferSelect;

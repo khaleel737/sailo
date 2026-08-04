@@ -10,11 +10,16 @@ import { eq } from "drizzle-orm";
 import { hashPassword } from "better-auth/crypto";
 import * as schema from "../src/db/schema";
 import { slugify } from "../src/lib/utils";
+import { computeTotals } from "../src/lib/pricing";
 
 const {
   account,
+  affiliates,
   categories,
   clients,
+  coupons,
+  deliveryMethods,
+  invoices,
   orders,
   paymentMethods,
   productImages,
@@ -190,6 +195,14 @@ async function main() {
       layout: "grid",
       currency: "USD",
       collectAddress: true,
+      affiliatesEnabled: true,
+      affiliateDefaultBp: 1000, // 10%
+      affiliatePublicSignup: true,
+      affiliateTerms:
+        "Commission is paid monthly by bank transfer once your balance reaches $50. Self-referrals don't count.",
+      invoicePrefix: "CLAY",
+      invoiceNotes: "Thanks for supporting a small studio. Handmade in Lagos.",
+      taxId: "NG-1234567-8",
       contactEmail: "hello@clayandco.example",
       location: "Lagos, Nigeria",
       socials: [
@@ -320,6 +333,100 @@ async function main() {
     },
   ]);
 
+  console.log("Creating delivery methods…");
+  await db.insert(deliveryMethods).values([
+    {
+      shopId: shop.id,
+      type: "shipping",
+      feeCents: 800,
+      freeOverCents: 7500,
+      config: {
+        estimate: "2–4 working days",
+        instructions: "Everything is wrapped in straw and recycled paper.",
+      },
+      isEnabled: true,
+      position: 1,
+    },
+    {
+      shopId: shop.id,
+      type: "collection",
+      feeCents: 0,
+      config: {
+        address: "12 Marina Road, Lagos Island, Lagos",
+        hours: "Tue–Sat, 10am–5pm",
+        instructions: "Ring the bell at the blue side door.",
+      },
+      isEnabled: true,
+      position: 2,
+    },
+  ]);
+
+  console.log("Creating coupons…");
+  await db.insert(coupons).values([
+    {
+      shopId: shop.id,
+      code: "WELCOME10",
+      discountType: "percent",
+      discountValue: 1000, // 10%
+      isActive: true,
+    },
+    {
+      shopId: shop.id,
+      code: "FIVEOFF",
+      discountType: "fixed",
+      discountValue: 500, // $5
+      minSubtotalCents: 3000,
+      maxRedemptions: 100,
+      timesRedeemed: 3,
+      isActive: true,
+    },
+    {
+      shopId: shop.id,
+      code: "KILNSALE",
+      discountType: "percent",
+      discountValue: 2500, // 25%
+      expiresAt: daysAgo(5),
+      isActive: true,
+    },
+  ]);
+
+  console.log("Creating affiliates…");
+  const insertedAffiliates = await db
+    .insert(affiliates)
+    .values([
+      {
+        shopId: shop.id,
+        name: "Amara Okafor",
+        email: "amara@example.com",
+        code: "AMARA",
+        commissionBp: 1500, // 15% — beats the shop default
+        status: "active",
+        source: "manual",
+        clicks: 47,
+        payoutNotes: "GTB 0123456789",
+      },
+      {
+        shopId: shop.id,
+        name: "Studio Pottery Weekly",
+        email: "hello@potteryweekly.example",
+        code: "POTTERYWEEKLY",
+        status: "active",
+        source: "signup",
+        clicks: 128,
+      },
+      {
+        shopId: shop.id,
+        name: "Lola Fashola",
+        email: "lola@example.com",
+        code: "LOLA",
+        status: "pending",
+        source: "signup",
+        clicks: 4,
+      },
+    ])
+    .returning();
+  const affiliateByCode = new Map(insertedAffiliates.map((a) => [a.code, a]));
+
   console.log("Creating clients…");
   const CLIENTS = [
     {
@@ -378,44 +485,120 @@ async function main() {
   const clientByEmail = new Map(insertedClients.map((c) => [c.email, c]));
 
   console.log("Creating orders…");
+  const SHIPPING = { feeCents: 800, freeOverCents: 7500 };
+  const COLLECTION = { feeCents: 0, freeOverCents: null };
+
   const ORDERS = [
-    { p: 0, email: "tomi@example.com", qty: 2, method: "whatsapp", status: "fulfilled", payment: "paid", note: "Can you wrap them separately? They're gifts.", ref: null },
-    { p: 6, email: "priya@example.com", qty: 1, method: "bank_transfer", status: "fulfilled", payment: "paid", note: null, ref: "TRF-88213" },
-    { p: 4, email: "dan@example.com", qty: 1, method: "telegram", status: "confirmed", payment: "unpaid", note: null, ref: null },
-    { p: 2, email: "yasmin@example.com", qty: 3, method: "bank_transfer", status: "new", payment: "pending", note: "Do you ship to Amman?", ref: "TRF-91007" },
-    { p: 0, email: "tomi@example.com", qty: 1, method: "cod", status: "new", payment: "unpaid", note: null, ref: null },
-    { p: 5, email: "chris@example.com", qty: 1, method: "instagram", status: "new", payment: "unpaid", note: null, ref: null },
+    { p: 0, email: "tomi@example.com", qty: 2, method: "whatsapp", delivery: "shipping", coupon: null, affiliate: null, status: "fulfilled", payment: "paid", note: "Can you wrap them separately? They're gifts.", ref: null },
+    { p: 6, email: "priya@example.com", qty: 1, method: "bank_transfer", delivery: null, coupon: null, affiliate: null, status: "fulfilled", payment: "paid", note: null, ref: "TRF-88213" },
+    { p: 4, email: "dan@example.com", qty: 1, method: "telegram", delivery: "shipping", coupon: null, affiliate: "AMARA", status: "confirmed", payment: "unpaid", note: null, ref: null },
+    { p: 2, email: "yasmin@example.com", qty: 3, method: "bank_transfer", delivery: "shipping", coupon: "WELCOME10", affiliate: null, status: "new", payment: "pending", note: "Do you ship to Amman?", ref: "TRF-91007" },
+    { p: 0, email: "tomi@example.com", qty: 1, method: "cod", delivery: "collection", coupon: null, affiliate: null, status: "new", payment: "unpaid", note: null, ref: null },
+    { p: 5, email: "chris@example.com", qty: 1, method: "instagram", delivery: null, coupon: null, affiliate: "POTTERYWEEKLY", status: "new", payment: "unpaid", note: null, ref: null },
   ];
 
-  await db.insert(orders).values(
-    ORDERS.map((o, i) => {
-      const client = clientByEmail.get(o.email)!;
-      return {
-        shopId: shop.id,
-        productId: productIds[o.p],
-        clientId: client.id,
-        productTitle: PRODUCTS[o.p].title,
-        unitPriceCents: PRODUCTS[o.p].priceCents,
-        quantity: o.qty,
-        currency: "USD",
-        customerName: client.name,
-        customerEmail: client.email,
-        customerPhone: client.phone,
-        addressLine1: client.addressLine1,
-        addressLine2: client.addressLine2,
-        city: client.city,
-        region: client.region,
-        postalCode: client.postalCode,
-        country: client.country,
-        note: o.note,
-        paymentMethod: o.method,
-        paymentStatus: o.payment,
-        paymentReference: o.ref,
-        status: o.status,
-        createdAt: daysAgo(i * 2),
-      };
-    }),
+  const seededCoupons = await db.query.coupons.findMany({
+    where: eq(coupons.shopId, shop.id),
+  });
+  const couponByCode = new Map(seededCoupons.map((c) => [c.code, c]));
+
+  const insertedOrders = await db
+    .insert(orders)
+    .values(
+      ORDERS.map((o, i) => {
+        const client = clientByEmail.get(o.email)!;
+        const product = PRODUCTS[o.p];
+        const delivery =
+          o.delivery === "shipping"
+            ? SHIPPING
+            : o.delivery === "collection"
+              ? COLLECTION
+              : null;
+        const affiliate = o.affiliate
+          ? affiliateByCode.get(o.affiliate)
+          : undefined;
+
+        // Reuse the app's own maths so seeded totals can't drift from real ones.
+        const totals = computeTotals({
+          unitPriceCents: product.priceCents,
+          quantity: o.qty,
+          coupon: o.coupon ? couponByCode.get(o.coupon) : null,
+          deliveryMethod: delivery,
+          commissionBp: affiliate
+            ? (affiliate.commissionBp ?? shop.affiliateDefaultBp)
+            : null,
+        });
+
+        const shipping = o.delivery === "shipping";
+        return {
+          shopId: shop.id,
+          productId: productIds[o.p],
+          clientId: client.id,
+          productTitle: product.title,
+          unitPriceCents: product.priceCents,
+          quantity: o.qty,
+          currency: "USD",
+
+          subtotalCents: totals.subtotalCents,
+          discountCents: totals.discountCents,
+          deliveryFeeCents: totals.deliveryFeeCents,
+          totalCents: totals.totalCents,
+
+          deliveryMethod: o.delivery,
+          deliveryLabel: o.delivery
+            ? o.delivery === "shipping"
+              ? "Shipping"
+              : "Collection"
+            : null,
+          pickupLocation:
+            o.delivery === "collection"
+              ? "12 Marina Road, Lagos Island, Lagos"
+              : null,
+
+          couponId: o.coupon ? (couponByCode.get(o.coupon)?.id ?? null) : null,
+          couponCode: o.coupon,
+
+          affiliateId: affiliate?.id ?? null,
+          affiliateCode: affiliate?.code ?? null,
+          commissionCents: totals.commissionCents,
+          commissionPaid: o.status === "fulfilled",
+
+          customerName: client.name,
+          customerEmail: client.email,
+          customerPhone: client.phone,
+          // Collection orders don't capture a delivery address.
+          addressLine1: shipping ? client.addressLine1 : null,
+          addressLine2: shipping ? client.addressLine2 : null,
+          city: shipping ? client.city : null,
+          region: shipping ? client.region : null,
+          postalCode: shipping ? client.postalCode : null,
+          country: shipping ? client.country : null,
+
+          note: o.note,
+          paymentMethod: o.method,
+          paymentStatus: o.payment,
+          paymentReference: o.ref,
+          status: o.status,
+          createdAt: daysAgo(i * 2),
+        };
+      }),
+    )
+    .returning({ id: orders.id });
+
+  console.log("Creating invoices…");
+  await db.insert(invoices).values(
+    insertedOrders.map((o, i) => ({
+      shopId: shop.id,
+      orderId: o.id,
+      number: `CLAY-${String(i + 1).padStart(4, "0")}`,
+      token: `seedtoken${String(i + 1).padStart(4, "0")}${shop.id.slice(0, 8)}`,
+      issuedAt: daysAgo(i * 2),
+    })),
   );
+  await db
+    .update(shops)
+    .set({ invoiceNextNumber: insertedOrders.length + 1 })
+    .where(eq(shops.id, shop.id));
 
   console.log("Creating visit history…");
   const visitRows: (typeof visits.$inferInsert)[] = [];
@@ -450,7 +633,8 @@ async function main() {
   Password  ${DEMO_PASSWORD}
 
   ${PRODUCTS.length} products · ${REVIEWS.length} reviews · ${CLIENTS.length} clients
-  ${ORDERS.length} orders · ${visitRows.length} visits · 5 live payment rails
+  ${ORDERS.length} orders + invoices · ${visitRows.length} visits
+  5 payment rails · 2 delivery options · 3 coupons · 3 affiliates
 `);
 }
 

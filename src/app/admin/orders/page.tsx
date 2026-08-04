@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ShoppingBag } from "lucide-react";
 import { requireShop } from "@/lib/session";
-import { getShopOrders } from "@/lib/queries";
+import { getInvoiceMap, getShopOrders } from "@/lib/queries";
 import { PageHeader } from "@/components/admin/page-header";
 import { OrderRow } from "@/components/admin/order-row";
 import { Card, EmptyState } from "@/components/ui";
@@ -11,6 +11,7 @@ export const metadata: Metadata = { title: "Orders" };
 export default async function AdminOrdersPage() {
   const { shop } = await requireShop();
   const orders = await getShopOrders(shop.id);
+  const invoices = await getInvoiceMap(orders.map((o) => o.id));
   const awaiting = orders.filter((o) => o.paymentStatus === "pending").length;
 
   return (
@@ -33,7 +34,11 @@ export default async function AdminOrdersPage() {
       ) : (
         <Card className="divide-y divide-ink-100">
           {orders.map((order) => (
-            <OrderRow key={order.id} order={order} />
+            <OrderRow
+              key={order.id}
+              order={order}
+              invoice={invoices.get(order.id)}
+            />
           ))}
         </Card>
       )}

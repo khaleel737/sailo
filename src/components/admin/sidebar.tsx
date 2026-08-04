@@ -6,6 +6,7 @@ import { useState } from "react";
 import {
   CreditCard,
   ExternalLink,
+  Gift,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -15,6 +16,8 @@ import {
   ShoppingBag,
   Store,
   Tag,
+  Tags,
+  Truck,
   Users,
   X,
 } from "lucide-react";
@@ -28,7 +31,10 @@ const NAV = [
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { href: "/admin/clients", label: "Clients", icon: Users },
   { href: "/admin/reviews", label: "Reviews", icon: MessageSquare },
+  { href: "/admin/coupons", label: "Coupons", icon: Tags },
+  { href: "/admin/affiliates", label: "Affiliates", icon: Gift },
   { href: "/admin/payments", label: "Payments", icon: CreditCard },
+  { href: "/admin/delivery", label: "Delivery", icon: Truck },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Mail, MapPin, Phone, Trash2 } from "lucide-react";
 import { requireShop } from "@/lib/session";
-import { getClientWithOrders } from "@/lib/queries";
+import { getClientWithOrders, getInvoiceMap } from "@/lib/queries";
 import { deleteClient, updateClientNotes } from "@/lib/actions/orders";
 import { PageHeader } from "@/components/admin/page-header";
 import { OrderRow } from "@/components/admin/order-row";
@@ -23,6 +23,7 @@ export default async function ClientDetailPage({
   if (!data) notFound();
 
   const { client, orders, totalCents, paidCents, outstandingCents } = data;
+  const invoiceMap = await getInvoiceMap(orders.map((o) => o.id));
   const address = formatAddress(client);
 
   return (
@@ -154,7 +155,12 @@ export default async function ClientDetailPage({
             ) : (
               <div className="divide-y divide-ink-100">
                 {orders.map((order) => (
-                  <OrderRow key={order.id} order={order} showCustomer={false} />
+                  <OrderRow
+                    key={order.id}
+                    order={order}
+                    invoice={invoiceMap.get(order.id)}
+                    showCustomer={false}
+                  />
                 ))}
               </div>
             )}

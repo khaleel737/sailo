@@ -1,18 +1,41 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Copy, Loader2, Minus, Plus, X } from "lucide-react";
+import {
+  Check,
+  Copy,
+  FileText,
+  Gift,
+  Loader2,
+  Minus,
+  Plus,
+  X,
+} from "lucide-react";
 import {
   createOrderIntent,
+  previewOrder,
   submitPaymentReference,
   type OrderIntentResult,
 } from "@/lib/actions/orders";
 import { PAYMENT_METHOD_DEFS, type PaymentMethodType } from "@/lib/payments";
+import { DELIVERY_METHOD_DEFS, type DeliveryMethodType } from "@/lib/delivery";
+import type { Totals } from "@/lib/pricing";
+import { readReferralCode } from "@/lib/referral";
 import { formatMoney } from "@/lib/utils";
 
 export type CheckoutMethod = {
   type: PaymentMethodType;
   label: string | null;
+};
+
+export type CheckoutDelivery = {
+  type: DeliveryMethodType;
+  label: string | null;
+  feeCents: number;
+  freeOverCents: number | null;
+  estimate?: string;
+  address?: string;
+  hours?: string;
 };
 
 type Props = {
@@ -24,8 +47,11 @@ type Props = {
   currency: string;
   inStock: boolean;
   methods: CheckoutMethod[];
-  /** Ask for a delivery address (physical products in address-collecting shops). */
-  needsAddress: boolean;
+  deliveryOptions: CheckoutDelivery[];
+  /** Physical goods need delivering; digital and services don't. */
+  isPhysical: boolean;
+  /** Shop-level switch for asking after a delivery address. */
+  collectAddress: boolean;
   contactEmail: string | null;
   className?: string;
   label?: string;
@@ -65,12 +91,28 @@ function OrderSheet({
   priceCents,
   currency,
   methods,
-  needsAddress,
+  deliveryOptions,
+  isPhysical,
+  collectAddress,
   contactEmail,
   onClose,
 }: Props & { onClose: () => void }) {
   const [quantity, setQuantity] = useState(1);
   const [method, setMethod] = useState<PaymentMethodType>(methods[0].type);
+  const [delivery, setDelivery] = useState<DeliveryMethodType | null>(
+    deliveryOptions[0]?.type ?? null,
+  );
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState("");
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [checkingCoupon, setCheckingCoupon] = useState(false);
+  const [totals, setTotals] = useState<Totals>({
+    subtotalCents: priceCents,
+    discountCents: 0,
+    deliveryFeeCents: 0,
+    totalCents: priceCents,
+    commissionCents: 0,
+  });
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Extract<
@@ -88,8 +130,62 @@ function OrderSheet({
     };
   }, [onClose]);
 
+  // Totals come from the server so the quote can't drift from what's charged.
+  useEffect(() => {
+    let cancelled = false;
+    previewOrder({
+      shopId,
+      productId,
+      quantity,
+      deliveryMethod: delivery ?? undefined,
+      couponCode: appliedCoupon || undefined,
+    }).then((res) => {
+      if (cancelled || "error" in res) return;
+      setTotals(res.totals);
+      if (appliedCoupon && res.couponError) {
+        setCouponError(res.couponError);
+        setAppliedCoupon("");
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [shopId, productId, quantity, delivery, appliedCoupon]);
+
+  async function onApplyCoupon() {
+    const code = couponInput.trim();
+    if (!code) return;
+    setCheckingCoupon(true);
+    setCouponError(null);
+
+    const res = await previewOrder({
+      shopId,
+      productId,
+      quantity,
+      deliveryMethod: delivery ?? undefined,
+      couponCode: code,
+    });
+    setCheckingCoupon(false);
+
+    if ("error" in res) {
+      setCouponError(res.error);
+      return;
+    }
+    if (res.couponError) {
+      setCouponError(res.couponError);
+      return;
+    }
+    setAppliedCoupon(res.couponApplied ?? code.toUpperCase());
+    setTotals(res.totals);
+  }
+
   const def = PAYMENT_METHOD_DEFS[method];
   const isManual = def.kind === "manual";
+  const selectedDelivery = deliveryOptions.find((d) => d.type === delivery);
+  const needsAddress =
+    isPhysical &&
+    collectAddress &&
+    (!selectedDelivery || selectedDelivery.type === "shipping");
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -102,6 +198,9 @@ function OrderSheet({
       productId,
       quantity,
       paymentMethod: method,
+      deliveryMethod: delivery ?? undefined,
+      couponCode: appliedCoupon || undefined,
+      affiliateCode: readReferralCode() ?? undefined,
       customerName: String(data.get("customerName") ?? ""),
       customerEmail: String(data.get("customerEmail") ?? ""),
       customerPhone: String(data.get("customerPhone") ?? ""),
@@ -200,6 +299,69 @@ function OrderSheet({
                 </button>
               </div>
             </div>
+
+            {isPhysical && deliveryOptions.length > 0 ? (
+              <fieldset>
+                <legend className="mb-1.5 text-sm font-medium">
+                  How would you like to receive it?
+                </legend>
+                <div className="space-y-1.5">
+                  {deliveryOptions.map((option) => {
+                    const d = DELIVERY_METHOD_DEFS[option.type];
+                    const active = delivery === option.type;
+                    const free =
+                      option.freeOverCents !== null &&
+                      totals.subtotalCents - totals.discountCents >=
+                        option.freeOverCents;
+                    return (
+                      <label
+                        key={option.type}
+                        className={`flex cursor-pointer items-start gap-2.5 rounded-xl p-2.5 transition ${
+                          active ? "surface-elevated" : "hover:opacity-70"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="deliveryMethod"
+                          value={option.type}
+                          checked={active}
+                          onChange={() => setDelivery(option.type)}
+                          className="mt-0.5 size-4 accent-current"
+                        />
+                        <span className="min-w-0 flex-1">
+                          <span className="flex items-baseline justify-between gap-2">
+                            <span className="text-sm font-medium">
+                              {option.label ?? d.name}
+                            </span>
+                            <span className="text-xs font-semibold tabular-nums">
+                              {option.feeCents === 0 || free
+                                ? "Free"
+                                : formatMoney(option.feeCents, currency)}
+                            </span>
+                          </span>
+                          <span className="text-muted block text-xs leading-snug">
+                            {option.type === "collection"
+                              ? (option.address ?? d.description)
+                              : (option.estimate ?? d.description)}
+                            {option.type === "collection" && option.hours
+                              ? ` · ${option.hours}`
+                              : ""}
+                          </span>
+                          {!free &&
+                          option.freeOverCents !== null &&
+                          option.feeCents > 0 ? (
+                            <span className="text-muted block text-xs">
+                              Free over{" "}
+                              {formatMoney(option.freeOverCents, currency)}
+                            </span>
+                          ) : null}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </fieldset>
+            ) : null}
 
             {methods.length > 1 ? (
               <fieldset>
@@ -325,12 +487,91 @@ function OrderSheet({
               className="surface-elevated w-full rounded-xl px-3 py-2.5 text-sm outline-none placeholder:opacity-50"
             />
 
-            <div className="surface-border flex items-center justify-between border-t pt-3 text-sm">
-              <span className="text-muted">Total</span>
-              <span className="text-base font-semibold tabular-nums">
-                {formatMoney(priceCents * quantity, currency)}
-              </span>
+            <div>
+              {appliedCoupon ? (
+                <div className="surface-elevated flex items-center justify-between gap-2 rounded-xl px-3 py-2.5">
+                  <span className="text-sm">
+                    <span className="font-semibold">{appliedCoupon}</span>{" "}
+                    <span className="text-muted">applied</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAppliedCoupon("");
+                      setCouponInput("");
+                      setCouponError(null);
+                    }}
+                    className="text-muted text-xs underline underline-offset-2 transition hover:opacity-70"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    value={couponInput}
+                    onChange={(e) => {
+                      setCouponInput(e.target.value.toUpperCase());
+                      setCouponError(null);
+                    }}
+                    placeholder="Discount code"
+                    aria-label="Discount code"
+                    className="surface-elevated h-11 min-w-0 flex-1 rounded-xl px-3 text-sm uppercase outline-none placeholder:normal-case placeholder:opacity-50"
+                  />
+                  <button
+                    type="button"
+                    onClick={onApplyCoupon}
+                    disabled={checkingCoupon || !couponInput.trim()}
+                    className="surface-card h-11 shrink-0 rounded-xl px-4 text-sm font-medium transition hover:opacity-70 disabled:opacity-40"
+                  >
+                    {checkingCoupon ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      "Apply"
+                    )}
+                  </button>
+                </div>
+              )}
+              {couponError ? (
+                <p className="mt-1.5 text-xs text-red-600">{couponError}</p>
+              ) : null}
             </div>
+
+            <dl className="surface-border space-y-1.5 border-t pt-3 text-sm">
+              <div className="flex justify-between">
+                <dt className="text-muted">Subtotal</dt>
+                <dd className="tabular-nums">
+                  {formatMoney(totals.subtotalCents, currency)}
+                </dd>
+              </div>
+              {totals.discountCents > 0 ? (
+                <div className="flex justify-between text-emerald-600">
+                  <dt>Discount</dt>
+                  <dd className="tabular-nums">
+                    −{formatMoney(totals.discountCents, currency)}
+                  </dd>
+                </div>
+              ) : null}
+              {isPhysical && selectedDelivery ? (
+                <div className="flex justify-between">
+                  <dt className="text-muted">
+                    {selectedDelivery.label ??
+                      DELIVERY_METHOD_DEFS[selectedDelivery.type].name}
+                  </dt>
+                  <dd className="tabular-nums">
+                    {totals.deliveryFeeCents === 0
+                      ? "Free"
+                      : formatMoney(totals.deliveryFeeCents, currency)}
+                  </dd>
+                </div>
+              ) : null}
+              <div className="surface-border flex justify-between border-t pt-1.5 text-base font-semibold">
+                <dt>Total</dt>
+                <dd className="tabular-nums">
+                  {formatMoney(totals.totalCents, currency)}
+                </dd>
+              </div>
+            </dl>
 
             <button
               type="submit"
@@ -480,6 +721,25 @@ function Confirmation({
         </p>
       ) : null}
 
+      {result.invoiceUrl ? (
+        <a
+          href={result.invoiceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="surface-card mt-4 flex items-center justify-between gap-3 rounded-xl p-3 transition hover:opacity-80"
+        >
+          <span className="flex items-center gap-2 text-sm">
+            <FileText className="size-4 shrink-0 opacity-60" />
+            Invoice {result.invoiceNumber}
+          </span>
+          <span className="text-muted text-xs">View</span>
+        </a>
+      ) : null}
+
+      {result.referral ? (
+        <ReferAndEarn referral={result.referral} shopName={shopName} />
+      ) : null}
+
       {contactEmail ? (
         <p className="text-muted mt-3 text-center text-xs">
           Questions? {contactEmail}
@@ -493,6 +753,54 @@ function Confirmation({
       >
         Done
       </button>
+    </div>
+  );
+}
+
+/**
+ * Shown right after ordering — the moment the buyer has most obviously just
+ * decided the shop is worth buying from.
+ */
+function ReferAndEarn({
+  referral,
+  shopName,
+}: {
+  referral: { code: string; url: string; percent: string };
+  shopName: string;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(referral.url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // The link is on screen, so a blocked clipboard isn't fatal.
+    }
+  }
+
+  return (
+    <div className="surface-card mt-4 rounded-xl p-3">
+      <p className="flex items-center gap-1.5 text-sm font-semibold">
+        <Gift className="size-4 shrink-0" />
+        Earn {referral.percent}% on referrals
+      </p>
+      <p className="text-muted mt-1 text-xs leading-relaxed">
+        Share your link. When someone buys from {shopName} through it, you earn{" "}
+        {referral.percent}% of their order.
+      </p>
+      <div className="surface-elevated mt-2.5 flex items-center gap-2 rounded-lg p-2">
+        <code className="min-w-0 flex-1 truncate text-xs">{referral.url}</code>
+        <button
+          type="button"
+          onClick={copy}
+          className="inline-flex shrink-0 items-center gap-1 text-xs font-medium transition hover:opacity-70"
+        >
+          {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
     </div>
   );
 }

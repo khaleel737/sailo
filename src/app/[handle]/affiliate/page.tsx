@@ -1,0 +1,122 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft, Gift, Link2, Share2, Wallet } from "lucide-react";
+import { getShopByHandle } from "@/lib/queries";
+import { AffiliateSignupForm } from "@/components/shop/affiliate-signup-form";
+import { formatPercent } from "@/lib/pricing";
+import { shopThemeVars } from "@/lib/utils";
+
+export async function generateMetadata({
+  params,
+}: PageProps<"/[handle]/affiliate">): Promise<Metadata> {
+  const { handle } = await params;
+  const shop = await getShopByHandle(handle);
+  if (!shop) return { title: "Not found" };
+
+  return {
+    title: `Refer & earn · ${shop.name}`,
+    description: `Earn ${formatPercent(shop.affiliateDefaultBp)}% by sharing ${shop.name}.`,
+  };
+}
+
+export default async function AffiliatePage({
+  params,
+}: PageProps<"/[handle]/affiliate">) {
+  const { handle } = await params;
+  const shop = await getShopByHandle(handle);
+  if (!shop || !shop.isPublished || !shop.affiliatesEnabled) notFound();
+
+  const percent = formatPercent(shop.affiliateDefaultBp);
+
+  const STEPS = [
+    {
+      icon: Link2,
+      title: "Get your link",
+      body: shop.affiliatePublicSignup
+        ? "Sign up below and we'll send you a personal link."
+        : "Buy something and you'll be offered your own link at checkout.",
+    },
+    {
+      icon: Share2,
+      title: "Share it",
+      body: "Post it, message it, put it in your own bio — anywhere your people are.",
+    },
+    {
+      icon: Wallet,
+      title: `Earn ${percent}%`,
+      body: `Every order placed through your link earns you ${percent}% of the order value.`,
+    },
+  ];
+
+  return (
+    <div
+      data-surface={shop.theme === "dark" ? "dark" : "light"}
+      style={shopThemeVars(shop.accentColor)}
+      className="min-h-screen"
+    >
+      <div className="mx-auto w-full max-w-[680px] px-4 pb-20 pt-8">
+        <Link
+          href={`/${shop.handle}`}
+          className="text-muted mb-8 inline-flex items-center gap-1.5 text-sm transition hover:opacity-70"
+        >
+          <ArrowLeft className="size-4" />
+          {shop.name}
+        </Link>
+
+        <header className="text-center">
+          <span className="accent-bg mx-auto flex size-14 items-center justify-center rounded-full">
+            <Gift className="size-6" />
+          </span>
+          <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
+            Earn {percent}% sharing {shop.name}
+          </h1>
+          <p className="text-muted mx-auto mt-2 max-w-md text-sm leading-relaxed">
+            Share what you love and take a cut of every order that comes from
+            your link.
+          </p>
+        </header>
+
+        <ol className="mt-10 space-y-3">
+          {STEPS.map((step, i) => (
+            <li key={step.title} className="surface-card flex gap-4 rounded-2xl p-4">
+              <span className="surface-elevated flex size-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
+                {i + 1}
+              </span>
+              <div className="min-w-0">
+                <p className="flex items-center gap-1.5 text-sm font-semibold">
+                  <step.icon className="size-4 shrink-0 opacity-60" />
+                  {step.title}
+                </p>
+                <p className="text-muted mt-1 text-sm leading-relaxed">
+                  {step.body}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        {shop.affiliatePublicSignup ? (
+          <div className="mt-8">
+            <h2 className="mb-3 text-sm font-semibold">Apply to join</h2>
+            <AffiliateSignupForm shopId={shop.id} />
+          </div>
+        ) : (
+          <p className="surface-card mt-8 rounded-2xl p-4 text-center text-sm">
+            This programme is invite-only right now — place an order and
+            you&rsquo;ll get your link automatically.
+          </p>
+        )}
+
+        {shop.affiliateTerms ? (
+          <div className="mt-8">
+            <h2 className="mb-2 text-sm font-semibold">Terms</h2>
+            <p className="text-muted whitespace-pre-wrap text-sm leading-relaxed">
+              {shop.affiliateTerms}
+            </p>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}

@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MapPin, PackageOpen, Store } from "lucide-react";
+import { Gift, MapPin, PackageOpen, Store } from "lucide-react";
+import { formatPercent } from "@/lib/pricing";
+import { Suspense } from "react";
 import {
-  getCheckoutMethods,
+  getCheckoutOptions,
   getPublicProducts,
   getShopByHandle,
   getShopCategories,
@@ -12,7 +14,7 @@ import {
 } from "@/lib/queries";
 import { FilterBar } from "@/components/shop/filter-bar";
 import { ProductCard } from "@/components/shop/product-card";
-import type { CheckoutMethod } from "@/components/shop/order-sheet";
+import { ReferralCapture } from "@/components/shop/referral-capture";
 import { SocialIcons } from "@/components/shop/social-icons";
 import { VisitTracker } from "@/components/shop/visit-tracker";
 import { cn, shopThemeVars } from "@/lib/utils";
@@ -45,16 +47,11 @@ export default async function ShopPage({
   if (!shop || !shop.isPublished) notFound();
 
   const filters = (await searchParams) as ShopFilters;
-  const [categories, products, checkoutMethods] = await Promise.all([
+  const [categories, products, checkout] = await Promise.all([
     getShopCategories(shop.id),
     getPublicProducts(shop.id, filters),
-    getCheckoutMethods(shop.id),
+    getCheckoutOptions(shop.id),
   ]);
-
-  const methods: CheckoutMethod[] = checkoutMethods.map((m) => ({
-    type: m.type as CheckoutMethod["type"],
-    label: m.label,
-  }));
 
   const layout = shop.layout === "list" ? "list" : "grid";
   const hasFilters = Boolean(
@@ -68,6 +65,11 @@ export default async function ShopPage({
       className="min-h-screen"
     >
       <VisitTracker shopId={shop.id} />
+      {shop.affiliatesEnabled ? (
+        <Suspense fallback={null}>
+          <ReferralCapture shopId={shop.id} />
+        </Suspense>
+      ) : null}
 
       <div className="mx-auto w-full max-w-[680px] px-4 pb-20 pt-12 sm:pt-16">
         <header className="flex flex-col items-center text-center">
@@ -153,14 +155,24 @@ export default async function ShopPage({
                   product={product}
                   shop={shop}
                   layout={layout}
-                  methods={methods}
+                  methods={checkout.methods}
+                  deliveryOptions={checkout.deliveryOptions}
                 />
               ))}
             </div>
           )}
         </main>
 
-        <footer className="mt-14 text-center">
+        <footer className="mt-14 flex flex-col items-center gap-3 text-center">
+          {shop.affiliatesEnabled ? (
+            <Link
+              href={`/${shop.handle}/affiliate`}
+              className="surface-card inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition hover:opacity-70"
+            >
+              <Gift className="size-3.5" />
+              Earn {formatPercent(shop.affiliateDefaultBp)}% by sharing this shop
+            </Link>
+          ) : null}
           <Link
             href="/"
             className="text-muted inline-flex items-center gap-1.5 text-xs transition hover:opacity-70"

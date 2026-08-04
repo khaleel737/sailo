@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin, Trash2 } from "lucide-react";
+import { FileText, MapPin, Trash2 } from "lucide-react";
 import { deleteOrder } from "@/lib/actions/orders";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { OrderStatusSelect } from "./order-status-select";
@@ -17,9 +17,11 @@ const STATUS_TONE = {
 
 export function OrderRow({
   order,
+  invoice,
   showCustomer = true,
 }: {
   order: Order;
+  invoice?: { number: string; token: string };
   showCustomer?: boolean;
 }) {
   const address = formatAddress(order);
@@ -44,6 +46,9 @@ export function OrderRow({
               {order.status}
             </Badge>
             <Badge>{methodName}</Badge>
+            {order.deliveryLabel ? (
+              <Badge tone="blue">{order.deliveryLabel}</Badge>
+            ) : null}
             {order.paymentStatus === "paid" ? (
               <Badge tone="green">Paid</Badge>
             ) : order.paymentStatus === "pending" ? (
@@ -89,6 +94,12 @@ export function OrderRow({
             </p>
           ) : null}
 
+          {order.pickupLocation ? (
+            <p className="mt-1 text-xs text-ink-500">
+              Collect from: {order.pickupLocation}
+            </p>
+          ) : null}
+
           {order.paymentReference ? (
             <p className="mt-1.5 text-xs text-ink-500">
               Transfer ref:{" "}
@@ -98,19 +109,59 @@ export function OrderRow({
             </p>
           ) : null}
 
-          <p className="mt-1.5 text-xs text-ink-400">
-            {order.createdAt.toLocaleString("en-US", {
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "2-digit",
-            })}
+          {order.discountCents > 0 ||
+          order.deliveryFeeCents > 0 ||
+          order.commissionCents > 0 ? (
+            <p className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-ink-500">
+              <span>
+                Items {formatMoney(order.subtotalCents, order.currency)}
+              </span>
+              {order.discountCents > 0 ? (
+                <span className="text-emerald-600">
+                  {order.couponCode ? `${order.couponCode} ` : ""}−
+                  {formatMoney(order.discountCents, order.currency)}
+                </span>
+              ) : null}
+              {order.deliveryFeeCents > 0 ? (
+                <span>
+                  Delivery {formatMoney(order.deliveryFeeCents, order.currency)}
+                </span>
+              ) : null}
+              {order.commissionCents > 0 ? (
+                <span className="text-amber-600">
+                  {order.affiliateCode} commission{" "}
+                  {formatMoney(order.commissionCents, order.currency)}
+                  {order.commissionPaid ? " (paid)" : ""}
+                </span>
+              ) : null}
+            </p>
+          ) : null}
+
+          <p className="mt-1.5 flex flex-wrap items-center gap-x-2 text-xs text-ink-400">
+            <span>
+              {order.createdAt.toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+              })}
+            </span>
+            {invoice ? (
+              <Link
+                href={`/invoice/${invoice.token}`}
+                target="_blank"
+                className="inline-flex items-center gap-1 text-ink-500 transition hover:text-ink-900"
+              >
+                <FileText className="size-3" />
+                {invoice.number}
+              </Link>
+            ) : null}
           </p>
         </div>
 
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
           <span className="text-sm font-semibold tabular-nums">
-            {formatMoney(order.unitPriceCents * order.quantity, order.currency)}
+            {formatMoney(order.totalCents, order.currency)}
           </span>
           <PaymentStatusSelect
             orderId={order.id}

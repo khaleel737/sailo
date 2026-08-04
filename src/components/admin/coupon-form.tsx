@@ -1,0 +1,166 @@
+"use client";
+
+import { useActionState, useEffect, useRef, useState } from "react";
+import { useFormStatus } from "react-dom";
+import { Loader2, Plus } from "lucide-react";
+import { saveCoupon } from "@/lib/actions/coupons";
+import { bpToPercent } from "@/lib/pricing";
+import {
+  Alert,
+  Button,
+  Card,
+  Field,
+  Input,
+  Select,
+} from "@/components/ui";
+import type { Coupon } from "@/db/schema";
+
+function Submit({ isEdit }: { isEdit: boolean }) {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending ? (
+        <Loader2 className="size-4 animate-spin" />
+      ) : isEdit ? null : (
+        <Plus className="size-4" />
+      )}
+      {isEdit ? "Save coupon" : "Create coupon"}
+    </Button>
+  );
+}
+
+export function CouponForm({
+  coupon,
+  currency,
+  onDone,
+}: {
+  coupon?: Coupon;
+  currency: string;
+  onDone?: () => void;
+}) {
+  const [state, action] = useActionState(saveCoupon, { ok: false });
+  const [discountType, setDiscountType] = useState(
+    coupon?.discountType ?? "percent",
+  );
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (state.ok && !coupon) formRef.current?.reset();
+    if (state.ok) onDone?.();
+  }, [state, coupon, onDone]);
+
+  const valueDefault = coupon
+    ? coupon.discountType === "percent"
+      ? String(bpToPercent(coupon.discountValue))
+      : (coupon.discountValue / 100).toFixed(2)
+    : "";
+
+  return (
+    <Card className="p-5">
+      <form ref={formRef} action={action} className="space-y-4">
+        {coupon ? <input type="hidden" name="id" value={coupon.id} /> : null}
+
+        {state.error ? <Alert>{state.error}</Alert> : null}
+        {state.ok && state.message ? (
+          <Alert tone="success">{state.message}</Alert>
+        ) : null}
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Field label="Code" htmlFor="code">
+            <Input
+              id="code"
+              name="code"
+              required
+              defaultValue={coupon?.code ?? ""}
+              placeholder="WELCOME10"
+              className="uppercase"
+              maxLength={32}
+            />
+          </Field>
+
+          <Field label="Type" htmlFor="discountType">
+            <Select
+              id="discountType"
+              name="discountType"
+              value={discountType}
+              onChange={(e) => setDiscountType(e.target.value)}
+            >
+              <option value="percent">Percentage off</option>
+              <option value="fixed">Fixed amount off</option>
+            </Select>
+          </Field>
+
+          <Field
+            label={discountType === "percent" ? "Percent off" : `Amount (${currency})`}
+            htmlFor="value"
+          >
+            <Input
+              id="value"
+              name="value"
+              inputMode="decimal"
+              required
+              defaultValue={valueDefault}
+              placeholder={discountType === "percent" ? "10" : "5.00"}
+            />
+          </Field>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Field
+            label={`Minimum spend (${currency})`}
+            htmlFor="minSubtotal"
+            hint="optional"
+          >
+            <Input
+              id="minSubtotal"
+              name="minSubtotal"
+              inputMode="decimal"
+              defaultValue={
+                coupon?.minSubtotalCents
+                  ? (coupon.minSubtotalCents / 100).toFixed(2)
+                  : ""
+              }
+              placeholder="0.00"
+            />
+          </Field>
+
+          <Field label="Usage limit" htmlFor="maxRedemptions" hint="optional">
+            <Input
+              id="maxRedemptions"
+              name="maxRedemptions"
+              inputMode="numeric"
+              defaultValue={coupon?.maxRedemptions ?? ""}
+              placeholder="Unlimited"
+            />
+          </Field>
+
+          <Field label="Expires" htmlFor="expiresAt" hint="optional">
+            <Input
+              id="expiresAt"
+              name="expiresAt"
+              type="date"
+              defaultValue={
+                coupon?.expiresAt
+                  ? coupon.expiresAt.toISOString().slice(0, 10)
+                  : ""
+              }
+            />
+          </Field>
+        </div>
+
+        <div className="flex items-center justify-between gap-3 border-t border-ink-100 pt-4">
+          <label className="flex cursor-pointer items-center gap-2.5">
+            <input
+              type="checkbox"
+              name="isActive"
+              defaultChecked={coupon?.isActive ?? true}
+              className="size-4 rounded border-ink-300 accent-ink-900"
+            />
+            <span className="text-sm font-medium">Active</span>
+          </label>
+          <Submit isEdit={Boolean(coupon)} />
+        </div>
+      </form>
+    </Card>
+  );
+}

@@ -13,8 +13,12 @@ import {
 } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
+  affiliates,
   categories,
   clients,
+  coupons,
+  deliveryMethods,
+  invoices,
   orders,
   paymentMethods,
   productImages,
@@ -22,13 +26,15 @@ import {
   reviews,
   shops,
   visits,
+  type Affiliate,
   type Category,
   type Client,
   type Product,
   type ProductImage,
   type Shop,
 } from "@/db/schema";
-import { isConfigured } from "./payments";
+import { isConfigured, type PaymentMethodType } from "./payments";
+import { isDeliveryConfigured, type DeliveryMethodType } from "./delivery";
 
 export type ProductCard = Product & {
   images: ProductImage[];
@@ -219,9 +225,10 @@ export async function getDashboardStats(shopId: string) {
       .select({
         total: sql<string>`count(*)`,
         pending: sql<string>`count(*) filter (where ${orders.status} = 'new')`,
-        revenue: sql<string>`coalesce(sum(${orders.unitPriceCents} * ${orders.quantity}), 0)`,
-        paid: sql<string>`coalesce(sum(${orders.unitPriceCents} * ${orders.quantity}) filter (where ${orders.paymentStatus} = 'paid'), 0)`,
+        revenue: sql<string>`coalesce(sum(${orders.totalCents}), 0)`,
+        paid: sql<string>`coalesce(sum(${orders.totalCents}) filter (where ${orders.paymentStatus} = 'paid'), 0)`,
         awaitingConfirm: sql<string>`count(*) filter (where ${orders.paymentStatus} = 'pending')`,
+        unpaidCommission: sql<string>`coalesce(sum(${orders.commissionCents}) filter (where not ${orders.commissionPaid}), 0)`,
       })
       .from(orders)
       .where(eq(orders.shopId, shopId)),
@@ -248,6 +255,7 @@ export async function getDashboardStats(shopId: string) {
     orderValueCents: Number(orderRow?.revenue ?? 0),
     paidValueCents: Number(orderRow?.paid ?? 0),
     awaitingConfirmation: Number(orderRow?.awaitingConfirm ?? 0),
+    unpaidCommissionCents: Number(orderRow?.unpaidCommission ?? 0),
     totalProducts: Number(productRow?.total ?? 0),
     publishedProducts: Number(productRow?.published ?? 0),
     pendingReviews: Number(reviewRow?.pending ?? 0),
@@ -303,7 +311,7 @@ export async function getShopClients(shopId: string): Promise<ClientRow[]> {
     .select({
       client: clients,
       orderCount: sql<string>`count(${orders.id})`,
-      totalCents: sql<string>`coalesce(sum(${orders.unitPriceCents} * ${orders.quantity}), 0)`,
+      totalCents: sql<string>`coalesce(sum(${orders.totalCents}), 0)`,
       lastOrderAt: sql<string | null>`max(${orders.createdAt})`,
     })
     .from(clients)
@@ -333,13 +341,10 @@ export async function getClientWithOrders(shopId: string, clientId: string) {
     orderBy: [desc(orders.createdAt)],
   });
 
-  const totalCents = clientOrders.reduce(
-    (sum, o) => sum + o.unitPriceCents * o.quantity,
-    0,
-  );
+  const totalCents = clientOrders.reduce((sum, o) => sum + o.totalCents, 0);
   const paidCents = clientOrders
     .filter((o) => o.paymentStatus === "paid")
-    .reduce((sum, o) => sum + o.unitPriceCents * o.quantity, 0);
+    .reduce((sum, o) => sum + o.totalCents, 0);
 
   return {
     client,
@@ -371,6 +376,154 @@ export async function getCheckoutMethods(shopId: string) {
     orderBy: [asc(paymentMethods.position)],
   });
   return rows.filter((m) => isConfigured(m.type, m.config));
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Delivery                                                                   */
+/* -------------------------------------------------------------------------- */
+
+export async function getShopDeliveryMethods(shopId: string) {
+  return getDb().query.deliveryMethods.findMany({
+    where: eq(deliveryMethods.shopId, shopId),
+    orderBy: [asc(deliveryMethods.position)],
+  });
+}
+
+export async function getCheckoutDeliveryMethods(shopId: string) {
+  const rows = await getDb().query.deliveryMethods.findMany({
+    where: and(
+      eq(deliveryMethods.shopId, shopId),
+      eq(deliveryMethods.isEnabled, true),
+    ),
+    orderBy: [asc(deliveryMethods.position)],
+  });
+  return rows.filter((d) => isDeliveryConfigured(d.type, d.config));
+}
+
+/** Both checkout option lists in the shape the order sheet expects. */
+export async function getCheckoutOptions(shopId: string) {
+  const [payment, delivery] = await Promise.all([
+    getCheckoutMethods(shopId),
+    getCheckoutDeliveryMethods(shopId),
+  ]);
+
+  return {
+    methods: payment.map((m) => ({
+      type: m.type as PaymentMethodType,
+      label: m.label,
+    })),
+    deliveryOptions: delivery.map((d) => ({
+      type: d.type as DeliveryMethodType,
+      label: d.label,
+      feeCents: d.feeCents,
+      freeOverCents: d.freeOverCents,
+      estimate: d.config.estimate,
+      address: d.config.address,
+      hours: d.config.hours,
+    })),
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Coupons                                                                    */
+/* -------------------------------------------------------------------------- */
+
+export async function getShopCoupons(shopId: string) {
+  return getDb().query.coupons.findMany({
+    where: eq(coupons.shopId, shopId),
+    orderBy: [desc(coupons.createdAt)],
+  });
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Affiliates                                                                 */
+/* -------------------------------------------------------------------------- */
+
+export type AffiliateRow = Affiliate & {
+  orderCount: number;
+  salesCents: number;
+  earnedCents: number;
+  unpaidCents: number;
+};
+
+export async function getShopAffiliates(shopId: string): Promise<AffiliateRow[]> {
+  const rows = await getDb()
+    .select({
+      affiliate: affiliates,
+      orderCount: sql<string>`count(${orders.id})`,
+      salesCents: sql<string>`coalesce(sum(${orders.totalCents}), 0)`,
+      earnedCents: sql<string>`coalesce(sum(${orders.commissionCents}), 0)`,
+      unpaidCents: sql<string>`coalesce(sum(${orders.commissionCents}) filter (where not ${orders.commissionPaid}), 0)`,
+    })
+    .from(affiliates)
+    .leftJoin(orders, eq(orders.affiliateId, affiliates.id))
+    .where(eq(affiliates.shopId, shopId))
+    .groupBy(affiliates.id)
+    .orderBy(sql`coalesce(sum(${orders.commissionCents}), 0) desc`);
+
+  return rows.map((r) => ({
+    ...r.affiliate,
+    orderCount: Number(r.orderCount),
+    salesCents: Number(r.salesCents),
+    earnedCents: Number(r.earnedCents),
+    unpaidCents: Number(r.unpaidCents),
+  }));
+}
+
+export async function getAffiliateByCode(shopId: string, code: string) {
+  return getDb().query.affiliates.findFirst({
+    where: and(
+      eq(affiliates.shopId, shopId),
+      eq(affiliates.code, code.toUpperCase()),
+      eq(affiliates.status, "active"),
+    ),
+  });
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Invoices                                                                   */
+/* -------------------------------------------------------------------------- */
+
+/** Public lookup by token — returns everything the invoice page renders. */
+export async function getInvoiceByToken(token: string) {
+  const db = getDb();
+
+  const invoice = await db.query.invoices.findFirst({
+    where: eq(invoices.token, token),
+  });
+  if (!invoice) return null;
+
+  const [order, shop] = await Promise.all([
+    db.query.orders.findFirst({ where: eq(orders.id, invoice.orderId) }),
+    db.query.shops.findFirst({ where: eq(shops.id, invoice.shopId) }),
+  ]);
+  if (!order || !shop) return null;
+
+  return { invoice, order, shop };
+}
+
+export async function getInvoiceForOrder(orderId: string) {
+  return getDb().query.invoices.findFirst({
+    where: eq(invoices.orderId, orderId),
+  });
+}
+
+/** Invoice numbers keyed by order id, for listing screens. */
+export async function getInvoiceMap(orderIds: string[]) {
+  const map = new Map<string, { number: string; token: string }>();
+  if (orderIds.length === 0) return map;
+
+  const rows = await getDb()
+    .select({
+      orderId: invoices.orderId,
+      number: invoices.number,
+      token: invoices.token,
+    })
+    .from(invoices)
+    .where(inArray(invoices.orderId, orderIds));
+
+  for (const r of rows) map.set(r.orderId, { number: r.number, token: r.token });
+  return map;
 }
 
 export async function getAdminProducts(shopId: string) {
