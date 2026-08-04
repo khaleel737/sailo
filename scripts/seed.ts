@@ -195,6 +195,10 @@ async function main() {
       layout: "grid",
       currency: "USD",
       collectAddress: true,
+      // The demo showcases the whole product, so it sits on the top plan —
+      // otherwise the seeded coupons and affiliates would be unreachable.
+      plan: "business",
+      subscriptionStatus: "active",
       affiliatesEnabled: true,
       affiliateDefaultBp: 1000, // 10%
       affiliatePublicSignup: true,
