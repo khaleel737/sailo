@@ -1,0 +1,24 @@
+src/components/shop/checkout-panel.tsx
+  s_3dd4b357265b83::t_0c4051445cd767 241-242,565-570
+src/lib/actions/orders.ts
+  s_3dd4b357265b83::t_493bd95c0a025f 459-468
+src/app/api/stripe/webhook/route.ts
+  s_3dd4b357265b83::t_65e0d1852b26cf 7,26,114,270-293
+  s_3dd4b357265b83::t_4e2bdeec98abaa 294-295
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "52b7749da402c3b236ac54e24b0334e7aba9acb3",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
