@@ -59,7 +59,6 @@ export const nl: Dictionary = {
     confirmSoon: "Bedankt — {shop} bevestigt je betaling binnenkort.",
     invoice: "Factuur {number}", view: "Bekijken", questions: "Vragen? {email}",
     choose: "Kies {option}",
-    continue: "Verder",
     onlyLeft: "Nog maar {count} over",
     preferredTime: "Gewenste datum en tijd",
     bookingHint: "{shop} bevestigt je tijdstip na je bestelling.",

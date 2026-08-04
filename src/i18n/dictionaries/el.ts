@@ -58,7 +58,6 @@ export const el: Dictionary = {
     confirmSoon: "Ευχαριστούμε — το {shop} θα επιβεβαιώσει σύντομα.",
     invoice: "Τιμολόγιο {number}", view: "Προβολή", questions: "Ερωτήσεις; {email}",
     choose: "Επιλέξτε {option}",
-    continue: "Συνέχεια",
     onlyLeft: "Μένουν μόνο {count}",
     preferredTime: "Ημερομηνία και ώρα προτίμησης",
     bookingHint: "Το {shop} επιβεβαιώνει το ραντεβού σας μετά την παραγγελία.",

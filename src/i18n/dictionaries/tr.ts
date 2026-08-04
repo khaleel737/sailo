@@ -58,7 +58,6 @@ export const tr: Dictionary = {
     confirmSoon: "Teşekkürler — {shop} ödemenizi birazdan onaylayacak.",
     invoice: "Fatura {number}", view: "Görüntüle", questions: "Sorunuz mu var? {email}",
     choose: "{option} seçin",
-    continue: "Devam",
     onlyLeft: "Yalnızca {count} kaldı",
     preferredTime: "Tercih ettiğiniz tarih ve saat",
     bookingHint: "{shop} siparişten sonra saatinizi onaylar.",

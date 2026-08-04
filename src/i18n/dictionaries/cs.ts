@@ -56,7 +56,6 @@ export const cs: Dictionary = {
     confirmSoon: "Děkujeme — {shop} platbu brzy potvrdí.",
     invoice: "Faktura {number}", view: "Zobrazit", questions: "Dotazy? {email}",
     choose: "Vyberte {option}",
-    continue: "Pokračovat",
     onlyLeft: "Zbývá jen {count}",
     preferredTime: "Preferovaný datum a čas",
     bookingHint: "{shop} po objednávce potvrdí váš termín.",

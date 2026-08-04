@@ -86,7 +86,6 @@ export const ar: Dictionary = {
     invoice: "فاتورة {number}", view: "عرض",
     questions: "لديك سؤال؟ {email}",
     choose: "اختر {option}",
-    continue: "متابعة",
     onlyLeft: "بقي {count} فقط",
     preferredTime: "التاريخ والوقت المفضّل",
     bookingHint: "يؤكّد {shop} موعدك بعد الطلب.",

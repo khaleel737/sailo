@@ -57,7 +57,6 @@ export const uk: Dictionary = {
     confirmSoon: "Дякуємо — {shop} невдовзі підтвердить оплату.",
     invoice: "Рахунок {number}", view: "Переглянути", questions: "Питання? {email}",
     choose: "Оберіть {option}",
-    continue: "Далі",
     onlyLeft: "Залишилося лише {count}",
     preferredTime: "Бажані дата й час",
     bookingHint: "{shop} підтвердить час після замовлення.",

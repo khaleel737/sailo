@@ -86,7 +86,6 @@ export const ja: Dictionary = {
     invoice: "請求書 {number}", view: "表示",
     questions: "ご不明な点は {email} まで",
     choose: "{option}を選択",
-    continue: "次へ",
     onlyLeft: "残り{count}点",
     preferredTime: "希望の日時",
     bookingHint: "ご注文後に{shop}が日時を確定します。",

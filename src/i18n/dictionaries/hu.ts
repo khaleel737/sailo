@@ -56,7 +56,6 @@ export const hu: Dictionary = {
     confirmSoon: "Köszönjük — a(z) {shop} hamarosan visszaigazolja.",
     invoice: "Számla: {number}", view: "Megtekintés", questions: "Kérdés? {email}",
     choose: "Válassz: {option}",
-    continue: "Tovább",
     onlyLeft: "Már csak {count} van",
     preferredTime: "Kívánt időpont",
     bookingHint: "A(z) {shop} a rendelés után visszaigazolja az időpontot.",

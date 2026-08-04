@@ -64,7 +64,6 @@ export const fr: Dictionary = {
     confirmSoon: "Merci — {shop} confirmera votre paiement sous peu.",
     invoice: "Facture {number}", view: "Voir", questions: "Une question ? {email}",
     choose: "Choisissez {option}",
-    continue: "Continuer",
     onlyLeft: "Plus que {count} en stock",
     preferredTime: "Date et heure souhaitées",
     bookingHint: "{shop} confirmera votre créneau après la commande.",

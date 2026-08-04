@@ -57,7 +57,6 @@ export const ru: Dictionary = {
     confirmSoon: "Спасибо — {shop} вскоре подтвердит оплату.",
     invoice: "Счёт {number}", view: "Открыть", questions: "Вопросы? {email}",
     choose: "Выберите {option}",
-    continue: "Далее",
     onlyLeft: "Осталось всего {count}",
     preferredTime: "Желаемые дата и время",
     bookingHint: "{shop} подтвердит время после оформления заказа.",

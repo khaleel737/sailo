@@ -116,10 +116,9 @@ export function CartProvider({
       cachedTotalCents: cachedTotal(lines),
       ready,
       open,
-      add: (line) => {
-        commit(addLine(lines, line));
-        setOpen(true);
-      },
+      // Adding does not open the basket. The buyer is still browsing; the
+      // pill at the bottom is what tells them it landed.
+      add: (line) => commit(addLine(lines, line)),
       setQty: (key, quantity) => commit(setQuantity(lines, key, quantity)),
       remove: (key) => commit(removeLine(lines, key)),
       schedule: (key, scheduledFor) =>

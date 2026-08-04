@@ -56,7 +56,6 @@ export const fi: Dictionary = {
     confirmSoon: "Kiitos — {shop} vahvistaa maksun pian.",
     invoice: "Lasku {number}", view: "Näytä", questions: "Kysyttävää? {email}",
     choose: "Valitse {option}",
-    continue: "Jatka",
     onlyLeft: "Vain {count} jäljellä",
     preferredTime: "Toivottu päivä ja aika",
     bookingHint: "{shop} vahvistaa aikasi tilauksen jälkeen.",

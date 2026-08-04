@@ -56,7 +56,6 @@ export const ro: Dictionary = {
     confirmSoon: "Mulțumim — {shop} va confirma plata în curând.",
     invoice: "Factura {number}", view: "Vezi", questions: "Întrebări? {email}",
     choose: "Alege {option}",
-    continue: "Continuă",
     onlyLeft: "Au mai rămas doar {count}",
     preferredTime: "Data și ora preferate",
     bookingHint: "{shop} confirmă programarea după comandă.",

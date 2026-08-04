@@ -56,7 +56,6 @@ export const da: Dictionary = {
     confirmSoon: "Tak — {shop} bekræfter din betaling snarest.",
     invoice: "Faktura {number}", view: "Se", questions: "Spørgsmål? {email}",
     choose: "Vælg {option}",
-    continue: "Fortsæt",
     onlyLeft: "Kun {count} tilbage",
     preferredTime: "Ønsket dato og tid",
     bookingHint: "{shop} bekræfter din tid, når du har bestilt.",

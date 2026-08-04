@@ -3,12 +3,12 @@
 import { useState } from "react";
 import {
   CalendarClock,
+  Check,
   MapPin,
   Minus,
   Plus,
   ShoppingBag,
   Video,
-  X,
 } from "lucide-react";
 import {
   CheckoutPanel,
@@ -94,10 +94,9 @@ export function isSoldOut(props: Pick<ProductSheetProps, "inStock" | "variants" 
 /**
  * The two ways to buy one product.
  *
- * "Buy now" opens checkout with just this item; "Add" drops it in the basket.
- * Both need the same decision from the buyer first — which size, which colour,
- * how many — so a product with options opens the picker either way rather than
- * guessing a combination on their behalf.
+ * "Buy now" opens checkout with just this item, options and all. The bag
+ * beside it adds without interrupting anything: no sheet, no navigation, just
+ * a tick on the button and a heavier basket at the bottom of the page.
  */
 export function OrderButton({
   className,
@@ -106,13 +105,13 @@ export function OrderButton({
   compact = false,
   ...props
 }: ProductSheetProps & { showAddToCart?: boolean; compact?: boolean }) {
-  const [mode, setMode] = useState<"buy" | "add" | null>(null);
+  const [mode, setMode] = useState<"buy" | null>(null);
+  const [justAdded, setJustAdded] = useState(false);
   const cart = useCart();
 
   const soldOut = isSoldOut(props);
   const noRails = props.methods.length === 0;
   const disabled = soldOut || noRails;
-  const hasChoices = (props.variants?.length ?? 0) > 0;
 
   const buyLabel = soldOut
     ? props.t.shop.soldOut
@@ -121,19 +120,31 @@ export function OrderButton({
       : // "Buy now" only reads as a choice when there's an "add" beside it.
         (label ?? (cart ? props.t.cart.buyNow : props.t.shop.orderNow));
 
-  /** No options means nothing to ask — it goes straight in the basket. */
-  function quickAdd() {
+  /**
+   * Adds, and says so. No sheet, no interruption — the buyer keeps browsing
+   * and the pill at the bottom of the page carries the running total.
+   *
+   * A product with options goes in as its first available combination, the
+   * same one the picker would have opened on.
+   */
+  function addToBasket() {
     if (!cart) return;
+    const variants = props.variants ?? [];
+    const variant = variants.find((v) => v.available) ?? variants[0] ?? null;
+
     cart.add({
       productId: props.productId,
-      variantId: null,
+      variantId: variant?.id ?? null,
       quantity: 1,
       title: props.productTitle,
-      label: "",
+      label: variant ? variantLabel(variant.options, props.options ?? []) : "",
       kind: props.kind,
-      unitPriceCents: props.priceCents,
-      imageUrl: props.imageUrl ?? null,
+      unitPriceCents: variant?.priceCents ?? props.priceCents,
+      imageUrl: variant?.imageUrl ?? props.imageUrl ?? null,
     });
+
+    setJustAdded(true);
+    window.setTimeout(() => setJustAdded(false), 1600);
   }
 
   return (
@@ -144,12 +155,18 @@ export function OrderButton({
             type="button"
             disabled={disabled}
             aria-label={props.t.cart.add}
-            onClick={() => (hasChoices ? setMode("add") : quickAdd())}
-            className={`surface-elevated flex shrink-0 items-center justify-center font-semibold transition hover:opacity-70 disabled:cursor-not-allowed disabled:opacity-40 ${
-              compact ? "h-9 rounded-lg px-2.5" : "h-11 rounded-xl px-3.5"
-            }`}
+            onClick={addToBasket}
+            className={`flex shrink-0 items-center justify-center font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${
+              justAdded
+                ? "accent-bg"
+                : "surface-elevated hover:opacity-70"
+            } ${compact ? "h-9 rounded-lg px-2.5" : "h-11 rounded-xl px-3.5"}`}
           >
-            <ShoppingBag className={compact ? "size-3.5" : "size-4"} />
+            {justAdded ? (
+              <Check className={compact ? "size-3.5" : "size-4"} />
+            ) : (
+              <ShoppingBag className={compact ? "size-3.5" : "size-4"} />
+            )}
           </button>
         ) : null}
 
@@ -167,21 +184,20 @@ export function OrderButton({
       </div>
 
       {mode ? (
-        <ProductSheet {...props} mode={mode} onClose={() => setMode(null)} />
+        <ProductSheet {...props} onClose={() => setMode(null)} />
       ) : null}
     </>
   );
 }
 
 /**
- * Picks the variant, the quantity and — for a service — the slot, then either
- * hands off to checkout or drops the result in the basket.
+ * Everything one product needs answered — which combination, how many, and for
+ * a service, when — sitting above the shared checkout panel.
  */
 function ProductSheet({
-  mode,
   onClose,
   ...props
-}: ProductSheetProps & { mode: "buy" | "add"; onClose: () => void }) {
+}: ProductSheetProps & { onClose: () => void }) {
   const {
     shopId,
     shopName,
@@ -197,14 +213,11 @@ function ProductSheet({
     unitsLeft = null,
     service = null,
     serviceLocation = null,
-    imageUrl = null,
     hasFiles = false,
     heldUntilPaid = false,
     contactEmail,
     t,
   } = props;
-
-  const cart = useCart();
 
   // Open on something the buyer can actually have.
   const [selection, setSelection] = useState<VariantOptions>(
@@ -251,22 +264,6 @@ function ProductSheet({
   }
 
   const scheduledFor = booking ? new Date(booking).toISOString() : undefined;
-
-  function addToCart() {
-    cart?.add({
-      productId,
-      variantId: variant?.id ?? null,
-      quantity,
-      scheduledFor,
-      title: productTitle,
-      label: variant ? variantLabel(variant.options, options) : "",
-      kind,
-      unitPriceCents,
-      // The combination's own photo when it has one, the product's otherwise.
-      imageUrl: variant?.imageUrl ?? imageUrl,
-    });
-    onClose();
-  }
 
   const chooser = (
     <>
@@ -429,59 +426,6 @@ function ProductSheet({
       </div>
     </>
   );
-
-  // "Add" only needs the chooser — the basket asks the rest later. Same shell
-  // as checkout so the two sheets read as one system.
-  if (mode === "add") {
-    return (
-      <div
-        className="fixed inset-0 z-50 flex items-end justify-center sm:items-center"
-        role="dialog"
-        aria-modal="true"
-        aria-label={`${t.cart.add} — ${productTitle}`}
-      >
-        <button
-          type="button"
-          aria-label={t.common.close}
-          onClick={onClose}
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        />
-        <div className="surface-card animate-rise relative flex max-h-[92vh] w-full max-w-md flex-col overflow-hidden rounded-t-2xl sm:max-h-[88vh] sm:rounded-2xl">
-          <div className="surface-border flex shrink-0 items-center gap-2 border-b px-4 py-3">
-            <p className="min-w-0 flex-1 truncate text-sm font-semibold">
-              {t.cart.add}
-            </p>
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label={t.common.close}
-              className="text-muted -me-1 flex size-8 items-center justify-center rounded-lg transition hover:opacity-70"
-            >
-              <X className="size-5" />
-            </button>
-          </div>
-
-          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-4">
-            {chooser}
-          </div>
-
-          <div className="surface-border shrink-0 border-t px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-            <button
-              type="button"
-              onClick={addToCart}
-              className="accent-bg flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition hover:opacity-90"
-            >
-              <ShoppingBag className="size-4" />
-              {t.cart.add}
-              <span className="tabular-nums opacity-80">
-                {formatMoney(unitPriceCents * quantity, currency)}
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <CheckoutPanel

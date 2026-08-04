@@ -59,7 +59,6 @@ export const pl: Dictionary = {
     confirmSoon: "Dziękujemy — {shop} wkrótce potwierdzi płatność.",
     invoice: "Faktura {number}", view: "Zobacz", questions: "Pytania? {email}",
     choose: "Wybierz {option}",
-    continue: "Dalej",
     onlyLeft: "Zostało tylko {count}",
     preferredTime: "Preferowana data i godzina",
     bookingHint: "{shop} potwierdzi termin po złożeniu zamówienia.",

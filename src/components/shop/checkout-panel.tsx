@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  ArrowLeft,
   Check,
   Copy,
   Download,
@@ -120,14 +119,6 @@ const EMPTY_TOTALS: Totals = {
   commissionCents: 0,
 };
 
-/**
- * Checkout asks three kinds of question, and skips any it doesn't have.
- *
- * A download or a booking never sees the delivery step, so buying an ebook is
- * two screens rather than one long form with half of it crossed out.
- */
-type Step = "review" | "delivery" | "pay";
-
 export function CheckoutPanel({
   shopId,
   shopName,
@@ -163,8 +154,6 @@ export function CheckoutPanel({
     OrderIntentResult,
     { ok: true }
   > | null>(null);
-
-  const [step, setStep] = useState<Step>("review");
 
   const totals = preview?.totals ?? EMPTY_TOTALS;
   const tax: PreviewTax = preview?.tax ?? null;
@@ -246,23 +235,6 @@ export function CheckoutPanel({
   const showDelivery = (preview?.needsDelivery ?? false) && deliveryOptions.length > 0;
   const needsAddress = preview?.needsAddress ?? false;
 
-  const steps: Step[] = showDelivery
-    ? ["review", "delivery", "pay"]
-    : ["review", "pay"];
-  // The delivery step can appear once the server answers; a buyer already past
-  // it shouldn't be stranded on a screen that no longer exists.
-  const index = Math.max(0, steps.indexOf(step));
-  const current = steps[index] ?? "review";
-  const isLast = index === steps.length - 1;
-
-  function goNext() {
-    setStep(steps[Math.min(index + 1, steps.length - 1)]);
-  }
-
-  function goBack() {
-    setStep(steps[Math.max(index - 1, 0)]);
-  }
-
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPending(true);
@@ -307,7 +279,6 @@ export function CheckoutPanel({
     setResult(res);
     setPending(false);
   }
-
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center sm:items-center"
@@ -322,79 +293,37 @@ export function CheckoutPanel({
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
       />
 
-      <div className="surface-card animate-rise relative flex max-h-[92vh] w-full max-w-md flex-col overflow-hidden rounded-t-2xl sm:max-h-[88vh] sm:rounded-2xl">
-        {/* Header — stays put while the step below it scrolls. */}
-        <div className="surface-border relative flex shrink-0 items-center gap-2 border-b px-4 py-3">
-          {!result && items.length > 0 && index > 0 ? (
-            <button
-              type="button"
-              onClick={goBack}
-              aria-label={t.common.back}
-              className="text-muted -ms-1 flex size-8 items-center justify-center rounded-lg transition hover:opacity-70 rtl:rotate-180"
-            >
-              <ArrowLeft className="size-4" />
-            </button>
-          ) : null}
-
-          <p className="min-w-0 flex-1 truncate text-sm font-semibold">
-            {result ? shopName : title}
-          </p>
-
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={t.common.close}
-            className="text-muted -me-1 flex size-8 items-center justify-center rounded-lg transition hover:opacity-70"
-          >
-            <X className="size-5" />
-          </button>
-
-          {/* How far through, without spending a line of text on it. */}
-          {!result && items.length > 0 && steps.length > 1 ? (
-            <div className="absolute inset-x-0 bottom-0 flex gap-1 px-4">
-              {steps.map((s, i) => (
-                <span
-                  key={s}
-                  className={`h-0.5 flex-1 rounded-full transition-colors ${
-                    i <= index ? "accent-bg" : "bg-transparent"
-                  }`}
-                />
-              ))}
-            </div>
-          ) : null}
-        </div>
+      <div className="surface-card animate-rise relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-2xl p-5 sm:rounded-2xl">
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label={t.common.close}
+          className="text-muted absolute end-4 top-4 z-10 transition hover:opacity-70"
+        >
+          <X className="size-5" />
+        </button>
 
         {result ? (
-          <div className="overflow-y-auto px-5 pb-5">
-            <Confirmation
-              result={result}
-              shopName={shopName}
-              contactEmail={contactEmail}
-              methodName={rail.name}
-              t={t}
-              onClose={onClose}
-            />
-          </div>
+          <Confirmation
+            result={result}
+            shopName={shopName}
+            contactEmail={contactEmail}
+            methodName={rail.name}
+            t={t}
+            onClose={onClose}
+          />
         ) : items.length === 0 ? (
-          <div className="px-5 pb-5">{empty}</div>
+          <div className="pe-8">{empty}</div>
         ) : (
-          <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col">
-            {/*
-              Every step stays mounted and inactive ones are hidden, so an
-              address typed on step two is still in the form on step three.
-            */}
-            <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-4">
-              <div hidden={current !== "review"} className="space-y-4">
-                {children?.(preview)}
-              </div>
+          <form onSubmit={onSubmit} className="space-y-4">
+            {children?.(preview)}
 
-              {error ? (
-                <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
-                  {error}
-                </p>
-              ) : null}
+            {error ? (
+              <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+                {error}
+              </p>
+            ) : null}
 
-              <div hidden={current !== "delivery"} className="space-y-4">
             {showDelivery ? (
               <fieldset>
                 <legend className="mb-1.5 text-sm font-medium">
@@ -462,56 +391,6 @@ export function CheckoutPanel({
               </fieldset>
             ) : null}
 
-            {needsAddress ? (
-              <fieldset className="space-y-2.5">
-                <legend className="mb-1.5 text-sm font-medium">
-                  {t.checkout.deliveryAddress}
-                </legend>
-                <input
-                  name="addressLine1"
-                  placeholder={t.checkout.street}
-                  autoComplete="address-line1"
-                  className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
-                />
-                <input
-                  name="addressLine2"
-                  placeholder={t.checkout.apartment}
-                  autoComplete="address-line2"
-                  className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
-                />
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    name="city"
-                    placeholder={t.checkout.city}
-                    autoComplete="address-level2"
-                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
-                  />
-                  <input
-                    name="region"
-                    placeholder={t.checkout.region}
-                    autoComplete="address-level1"
-                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    name="postalCode"
-                    placeholder={t.checkout.postalCode}
-                    autoComplete="postal-code"
-                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
-                  />
-                  <input
-                    name="country"
-                    placeholder={t.checkout.country}
-                    autoComplete="country-name"
-                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
-                  />
-                </div>
-              </fieldset>
-            ) : null}
-              </div>
-
-              <div hidden={current !== "pay"} className="space-y-4">
             {methods.length > 1 ? (
               <fieldset>
                 <legend className="mb-1.5 text-sm font-medium">
@@ -562,12 +441,13 @@ export function CheckoutPanel({
                 <input
                   name="customerEmail"
                   type="email"
+                  // A card receipt has nowhere to go without one.
+                  required={needsEmail}
                   placeholder={
                     isManual || needsEmail
                       ? t.checkout.email
                       : t.checkout.emailOptional
                   }
-                  required={needsEmail}
                   autoComplete="email"
                   className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                 />
@@ -585,6 +465,54 @@ export function CheckoutPanel({
                 </p>
               ) : null}
             </div>
+
+            {needsAddress ? (
+              <fieldset className="space-y-2.5">
+                <legend className="mb-1.5 text-sm font-medium">
+                  {t.checkout.deliveryAddress}
+                </legend>
+                <input
+                  name="addressLine1"
+                  placeholder={t.checkout.street}
+                  autoComplete="address-line1"
+                  className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                />
+                <input
+                  name="addressLine2"
+                  placeholder={t.checkout.apartment}
+                  autoComplete="address-line2"
+                  className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    name="city"
+                    placeholder={t.checkout.city}
+                    autoComplete="address-level2"
+                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                  />
+                  <input
+                    name="region"
+                    placeholder={t.checkout.region}
+                    autoComplete="address-level1"
+                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    name="postalCode"
+                    placeholder={t.checkout.postalCode}
+                    autoComplete="postal-code"
+                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                  />
+                  <input
+                    name="country"
+                    placeholder={t.checkout.country}
+                    autoComplete="country-name"
+                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                  />
+                </div>
+              </fieldset>
+            ) : null}
 
             <textarea
               name="note"
@@ -704,51 +632,20 @@ export function CheckoutPanel({
               </p>
             ) : null}
 
+            <button
+              type="submit"
+              disabled={pending || !preview}
+              className="accent-bg flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition hover:opacity-90 disabled:opacity-60"
+            >
+              {pending ? <Loader2 className="size-4 animate-spin" /> : null}
+              {rail.action}
+            </button>
+
             <p className="text-muted text-center text-xs">
               {def.kind === "contact"
                 ? t.checkout.contactHandoffNote
                 : t.checkout.manualNote}
             </p>
-              </div>
-            </div>
-
-            {/*
-              The total and the way forward stay in view at the bottom of the
-              sheet — on a long basket the buyer should never have to scroll to
-              find out what they're about to pay.
-            */}
-            <div className="surface-border surface-card shrink-0 border-t px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-              <div className="mb-2.5 flex items-baseline justify-between gap-3">
-                <span className="text-muted text-sm">{t.checkout.total}</span>
-                <span className="text-base font-semibold tabular-nums">
-                  {preview ? (
-                    formatMoney(totals.totalCents, currency)
-                  ) : (
-                    <Loader2 className="size-4 animate-spin opacity-40" />
-                  )}
-                </span>
-              </div>
-
-              {isLast ? (
-                <button
-                  type="submit"
-                  disabled={pending || !preview}
-                  className="accent-bg flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition hover:opacity-90 disabled:opacity-60"
-                >
-                  {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-                  {rail.action}
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={goNext}
-                  disabled={!preview}
-                  className="accent-bg flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition hover:opacity-90 disabled:opacity-60"
-                >
-                  {t.checkout.continue}
-                </button>
-              )}
-            </div>
           </form>
         )}
       </div>

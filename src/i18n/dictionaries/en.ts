@@ -130,7 +130,6 @@ export const en = {
     earnReferralBody:
       "Share your link. When someone buys from {shop} through it, you earn {percent}% of their order.",
     choose: "Choose {option}",
-    continue: "Continue",
     onlyLeft: "Only {count} left",
     preferredTime: "Preferred date and time",
     bookingHint: "{shop} confirms your slot after you order.",

@@ -86,7 +86,6 @@ export const zh: Dictionary = {
     invoice: "发票 {number}", view: "查看",
     questions: "有疑问？{email}",
     choose: "选择{option}",
-    continue: "继续",
     onlyLeft: "仅剩 {count} 件",
     preferredTime: "希望的日期和时间",
     bookingHint: "下单后 {shop} 会与你确认时间。",

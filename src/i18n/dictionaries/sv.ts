@@ -56,7 +56,6 @@ export const sv: Dictionary = {
     confirmSoon: "Tack — {shop} bekräftar din betalning inom kort.",
     invoice: "Faktura {number}", view: "Visa", questions: "Frågor? {email}",
     choose: "Välj {option}",
-    continue: "Fortsätt",
     onlyLeft: "Bara {count} kvar",
     preferredTime: "Önskad dag och tid",
     bookingHint: "{shop} bekräftar din tid när du har beställt.",
