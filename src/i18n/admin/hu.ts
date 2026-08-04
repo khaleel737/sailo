@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminHu: PartialAdminDictionary = {
+  common: {
+    save: "Mentés",
+    saveChanges: "Módosítások mentése",
+    cancel: "Mégse",
+    delete: "Törlés",
+    edit: "Szerkesztés",
+    add: "Hozzáadás",
+    optional: "opcionális",
+    private: "privát",
+    unlimited: "Korlátlan",
+    active: "Aktív",
+    inactive: "Inaktív",
+    pending: "Függőben",
+    disabled: "Letiltva",
+    disable: "Letiltás",
+    live: "Élő",
+    off: "Ki",
+    hidden: "Rejtett",
+    featured: "Kiemelt",
+    soldOut: "Elfogyott",
+    paid: "Fizetve",
+    approve: "Jóváhagyás",
+    view: "Megtekintés",
+    viewAll: "Összes",
+    visit: "Megnyitás",
+    name: "Név",
+    email: "E-mail",
+    code: "Kód",
+    type: "Típus",
+    status: "Állapot",
+    expires: "Lejár",
+    day: "Nap",
+    viewAsTable: "Táblázatként",
+  },
+  dashboard: {
+    shopLink: "A boltod linkje",
+    recentOrders: "Legutóbbi rendelések",
+    visits: "Látogatás",
+    uniqueVisitors: "Egyedi látogató",
+    orders: "Rendelések",
+    netRevenue: "Nettó bevétel",
+    noOrders: "Még nincs rendelés",
+    noOrdersBody: "Amint valaki a boltodban a Rendelésre koppint, az adatai ideérkeznek — még mielőtt írna.",
+  },
+  products: {
+    title: "Termékek",
+    description: "Minden, amit árulsz: fizikai, digitális vagy szolgáltatás.",
+  },
+  orders: {
+    title: "Rendelések",
+    description: "Abban a pillanatban rögzülnek, amikor valaki a Rendelésre koppint.",
+  },
+  clients: {
+    title: "Ügyfelek",
+    emptyBody: "A vásárlók az első rendelés után jelennek meg e-maillel vagy telefonnal.",
+  },
+  categories: {
+    title: "Kategóriák",
+    description: "Ezekből lesznek a szűrők a bolt tetején.",
+  },
+  reviews: {
+    title: "Értékelések",
+    emptyBody: "A vásárlók bármelyik terméklapon értékelhetnek.",
+  },
+  coupons: {
+    title: "Kuponok",
+    description: "Kedvezménykódok, amiket a vásárló fizetéskor ír be.",
+  },
+  affiliates: {
+    title: "Partnerek",
+    description: "Fizess másoknak részesedést abból, amit neked eladnak.",
+  },
+  payments: {
+    title: "Fizetés",
+    description: "Annyi rendelési módot kapcsolsz be, amennyit akarsz.",
+  },
+  delivery: {
+    title: "Szállítás",
+    description: "Adj hozzá bármennyi lehetőséget: normál, expressz, átvétel.",
+  },
+  settings: {
+    title: "Beállítások",
+    description: "A boltod adatai, a csomagod és az adataid.",
+  },
+};

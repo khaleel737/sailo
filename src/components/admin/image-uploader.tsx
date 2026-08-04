@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { ImagePlus, Loader2, X } from "lucide-react";
+import { useAdminT } from "./admin-i18n";
 
 const MAX_IMAGES = 8;
 
@@ -17,6 +18,7 @@ export function ImageUploader({
   max?: number;
   aspect?: "square" | "wide";
 }) {
+  const a = useAdminT();
   const [urls, setUrls] = useState<string[]>(initial);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,12 +39,12 @@ export function ImageUploader({
         const res = await fetch("/api/upload", { method: "POST", body });
         const json = await res.json();
         if (!res.ok) {
-          setError(json.error ?? "Upload failed.");
+          setError(json.error ?? a.files.failed);
           continue;
         }
         setUrls((prev) => [...prev, json.url]);
       } catch {
-        setError("Upload failed. Check your connection.");
+        setError(a.files.failedNetwork);
       }
     }
 
@@ -81,7 +83,7 @@ export function ImageUploader({
             </button>
             {i === 0 ? (
               <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1 text-[10px] font-medium text-white">
-                Cover
+                {a.images.cover}
               </span>
             ) : null}
           </div>
@@ -102,7 +104,7 @@ export function ImageUploader({
               <ImagePlus className="size-5" />
             )}
             <span className="text-[10px] font-medium">
-              {uploading ? "Uploading" : "Add"}
+              {uploading ? a.images.uploading : a.images.add}
             </span>
           </button>
         ) : null}
@@ -119,7 +121,7 @@ export function ImageUploader({
 
       {error ? <p className="mt-2 text-xs text-red-600">{error}</p> : null}
       <p className="mt-2 text-xs text-ink-400">
-        JPG, PNG, WebP or GIF · up to 8 MB each · first image is the cover
+        {a.images.hint}
       </p>
     </div>
   );

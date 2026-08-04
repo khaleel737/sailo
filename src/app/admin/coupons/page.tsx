@@ -10,12 +10,13 @@ import { Badge, Button, Card, EmptyState } from "@/components/ui";
 import { LockedFeature } from "@/components/admin/locked-feature";
 import { can } from "@/lib/plans";
 import { formatMoney } from "@/lib/utils";
-import { getT } from "@/i18n/server";
+import { getT, getAdminT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Coupons" };
 
 export default async function AdminCouponsPage() {
   const { shop } = await requireShop();
+  const { a } = await getAdminT();
   const { t } = await getT();
   const coupons = await getShopCoupons(shop.id);
   const now = new Date();
@@ -24,8 +25,8 @@ export default async function AdminCouponsPage() {
     return (
       <>
         <PageHeader
-          title="Coupons"
-          description="Discount codes buyers enter at checkout."
+          title={a.coupons.title}
+          description={a.coupons.description}
         />
         <LockedFeature
           t={t}
@@ -47,8 +48,8 @@ export default async function AdminCouponsPage() {
   return (
     <>
       <PageHeader
-        title="Coupons"
-        description="Discount codes buyers enter at checkout."
+        title={a.coupons.title}
+        description={a.coupons.description}
       />
 
       <div className="mb-5">
@@ -58,8 +59,8 @@ export default async function AdminCouponsPage() {
       {coupons.length === 0 ? (
         <EmptyState
           icon={<Tags className="size-8" />}
-          title="No coupons yet"
-          description="Create a code above and share it with your customers."
+          title={a.coupons.empty}
+          description={a.coupons.emptyBody}
         />
       ) : (
         <Card className="divide-y divide-ink-100">

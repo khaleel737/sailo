@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminNl: PartialAdminDictionary = {
+  common: {
+    save: "Opslaan",
+    saveChanges: "Wijzigingen opslaan",
+    cancel: "Annuleren",
+    delete: "Verwijderen",
+    edit: "Bewerken",
+    add: "Toevoegen",
+    optional: "optioneel",
+    private: "privé",
+    unlimited: "Onbeperkt",
+    active: "Actief",
+    inactive: "Inactief",
+    pending: "In afwachting",
+    disabled: "Uitgeschakeld",
+    disable: "Uitschakelen",
+    live: "Live",
+    off: "Uit",
+    hidden: "Verborgen",
+    featured: "Uitgelicht",
+    soldOut: "Uitverkocht",
+    paid: "Betaald",
+    approve: "Goedkeuren",
+    view: "Bekijken",
+    viewAll: "Alles bekijken",
+    visit: "Bezoeken",
+    name: "Naam",
+    email: "E-mail",
+    code: "Code",
+    type: "Soort",
+    status: "Status",
+    expires: "Verloopt",
+    day: "Dag",
+    viewAsTable: "Als tabel",
+  },
+  dashboard: {
+    shopLink: "De link naar je winkel",
+    recentOrders: "Recente bestellingen",
+    visits: "Bezoeken",
+    uniqueVisitors: "Unieke bezoekers",
+    orders: "Bestellingen",
+    netRevenue: "Netto-omzet",
+    noOrders: "Nog geen bestellingen",
+    noOrdersBody: "Zodra iemand op Bestellen tikt, komen de gegevens hier binnen — nog voordat ze je berichten.",
+  },
+  products: {
+    title: "Producten",
+    description: "Alles wat je verkoopt: fysiek, digitaal of een dienst.",
+  },
+  orders: {
+    title: "Bestellingen",
+    description: "Vastgelegd zodra iemand op Bestellen tikt, nog voor het bericht.",
+  },
+  clients: {
+    title: "Klanten",
+    emptyBody: "Kopers verschijnen hier na hun eerste bestelling met e-mail of telefoon.",
+  },
+  categories: {
+    title: "Categorieën",
+    description: "Dit worden de filters bovenaan je winkel.",
+  },
+  reviews: {
+    title: "Beoordelingen",
+    emptyBody: "Kopers kunnen op elke productpagina een beoordeling achterlaten.",
+  },
+  coupons: {
+    title: "Kortingscodes",
+    description: "Codes die kopers invullen bij het afrekenen.",
+  },
+  affiliates: {
+    title: "Partners",
+    description: "Betaal anderen een deel van wat ze voor je verkopen.",
+  },
+  payments: {
+    title: "Betalingen",
+    description: "Zet zoveel manieren van bestellen aan als je wilt.",
+  },
+  delivery: {
+    title: "Bezorging",
+    description: "Voeg zoveel opties toe als je wilt: standaard, express, afhalen.",
+  },
+  settings: {
+    title: "Instellingen",
+    description: "Je winkelgegevens, je abonnement en je data.",
+  },
+};

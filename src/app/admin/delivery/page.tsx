@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Info, Truck, Trash2 } from "lucide-react";
 import { requireShop } from "@/lib/session";
+import { getAdminT } from "@/i18n/server";
 import { getShopDeliveryMethods } from "@/lib/queries";
 import {
   DELIVERY_METHOD_DEFS,
@@ -20,13 +21,14 @@ export const metadata: Metadata = { title: "Delivery" };
 
 export default async function AdminDeliveryPage() {
   const { shop } = await requireShop();
+  const { a } = await getAdminT();
   const methods = await getShopDeliveryMethods(shop.id);
 
   return (
     <>
       <PageHeader
-        title="Delivery"
-        description="Add as many options as you like — Standard, Express, pickup. Buyers pick one at checkout."
+        title={a.delivery.title}
+        description={a.delivery.description}
       />
 
       <div className="mb-5 flex gap-3 rounded-2xl border border-ink-200 bg-ink-50 p-4">
@@ -42,8 +44,8 @@ export default async function AdminDeliveryPage() {
         <div className="mb-5">
           <EmptyState
             icon={<Truck className="size-8" />}
-            title="No delivery options yet"
-            description="Add one below. Without any, physical orders are taken with no delivery choice and no fee."
+            title={a.delivery.empty}
+            description={a.delivery.emptyBody}
           />
         </div>
       ) : (

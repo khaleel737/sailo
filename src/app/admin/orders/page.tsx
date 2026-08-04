@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ShoppingBag } from "lucide-react";
 import { requireShop } from "@/lib/session";
+import { getAdminT } from "@/i18n/server";
 import { getInvoiceMap, getOrderItemsMap, getShopOrders } from "@/lib/queries";
 import { PageHeader } from "@/components/admin/page-header";
 import { ExportButton } from "@/components/admin/export-button";
@@ -11,6 +12,7 @@ export const metadata: Metadata = { title: "Orders" };
 
 export default async function AdminOrdersPage() {
   const { shop } = await requireShop();
+  const { a } = await getAdminT();
   const orders = await getShopOrders(shop.id);
   const [invoices, itemsByOrder] = await Promise.all([
     getInvoiceMap(orders.map((o) => o.id)),
@@ -21,7 +23,7 @@ export default async function AdminOrdersPage() {
   return (
     <>
       <PageHeader
-        title="Orders"
+        title={a.orders.title}
         description={
           awaiting > 0
             ? `${awaiting} ${awaiting === 1 ? "buyer says they've" : "buyers say they've"} paid — confirm to mark as paid.`
@@ -33,8 +35,8 @@ export default async function AdminOrdersPage() {
       {orders.length === 0 ? (
         <EmptyState
           icon={<ShoppingBag className="size-8" />}
-          title="No orders yet"
-          description="Share your shop link and orders will show up here."
+          title={a.orders.empty}
+          description={a.orders.emptyBody}
         />
       ) : (
         <Card className="divide-y divide-ink-100">

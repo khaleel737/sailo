@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminJa: PartialAdminDictionary = {
+  common: {
+    save: "保存",
+    saveChanges: "変更を保存",
+    cancel: "キャンセル",
+    delete: "削除",
+    edit: "編集",
+    add: "追加",
+    optional: "任意",
+    private: "非公開",
+    unlimited: "無制限",
+    active: "有効",
+    inactive: "無効",
+    pending: "保留中",
+    disabled: "無効",
+    disable: "無効にする",
+    live: "公開中",
+    off: "オフ",
+    hidden: "非表示",
+    featured: "おすすめ",
+    soldOut: "売り切れ",
+    paid: "支払い済み",
+    approve: "承認",
+    view: "表示",
+    viewAll: "すべて表示",
+    visit: "開く",
+    name: "名前",
+    email: "メール",
+    code: "コード",
+    type: "種類",
+    status: "状態",
+    expires: "期限",
+    day: "日",
+    viewAsTable: "表で見る",
+  },
+  dashboard: {
+    shopLink: "ショップのリンク",
+    recentOrders: "最近の注文",
+    visits: "訪問数",
+    uniqueVisitors: "ユニーク訪問者",
+    orders: "注文",
+    netRevenue: "純売上",
+    noOrders: "注文はまだありません",
+    noOrdersBody: "ショップで「注文」が押された瞬間に、連絡が来る前でも情報がここに届きます。",
+  },
+  products: {
+    title: "商品",
+    description: "販売するものすべて — 物販、デジタル、サービス。",
+  },
+  orders: {
+    title: "注文",
+    description: "「注文」が押された瞬間に、メッセージより先に記録されます。",
+  },
+  clients: {
+    title: "顧客",
+    emptyBody: "初回注文でメールか電話を残した購入者がここに並びます。",
+  },
+  categories: {
+    title: "カテゴリー",
+    description: "ショップ上部の絞り込みになります。",
+  },
+  reviews: {
+    title: "レビュー",
+    emptyBody: "購入者はどの商品ページからでもレビューできます。",
+  },
+  coupons: {
+    title: "クーポン",
+    description: "購入者が支払い時に入力する割引コード。",
+  },
+  affiliates: {
+    title: "アフィリエイト",
+    description: "代わりに売ってくれた人に取り分を支払います。",
+  },
+  payments: {
+    title: "支払い",
+    description: "注文方法はいくつでも有効にでき、購入者が選びます。",
+  },
+  delivery: {
+    title: "配送",
+    description: "標準・当日・店頭受取など、いくつでも追加できます。",
+  },
+  settings: {
+    title: "設定",
+    description: "ショップ情報、プラン、データ。",
+  },
+};

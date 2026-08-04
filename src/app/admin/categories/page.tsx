@@ -4,6 +4,7 @@ import { Tag, Trash2 } from "lucide-react";
 import { getDb } from "@/db";
 import { products } from "@/db/schema";
 import { requireShop } from "@/lib/session";
+import { getAdminT } from "@/i18n/server";
 import { getShopCategories } from "@/lib/queries";
 import { deleteCategory } from "@/lib/actions/products";
 import { PageHeader } from "@/components/admin/page-header";
@@ -14,6 +15,7 @@ export const metadata: Metadata = { title: "Categories" };
 
 export default async function AdminCategoriesPage() {
   const { shop } = await requireShop();
+  const { a } = await getAdminT();
   const categories = await getShopCategories(shop.id);
 
   const counts = await getDb()
@@ -27,8 +29,8 @@ export default async function AdminCategoriesPage() {
   return (
     <>
       <PageHeader
-        title="Categories"
-        description="These become the filter chips at the top of your shop."
+        title={a.categories.title}
+        description={a.categories.description}
       />
 
       <Card className="mb-5 p-5">
@@ -38,8 +40,8 @@ export default async function AdminCategoriesPage() {
       {categories.length === 0 ? (
         <EmptyState
           icon={<Tag className="size-8" />}
-          title="No categories yet"
-          description="Categories are optional — add a few once you have enough products to group."
+          title={a.categories.empty}
+          description={a.categories.emptyBody}
         />
       ) : (
         <Card className="divide-y divide-ink-100">

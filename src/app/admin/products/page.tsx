@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Eye, EyeOff, ImageIcon, Package, Plus, Trash2 } from "lucide-react";
 import { requireShop } from "@/lib/session";
+import { getAdminT } from "@/i18n/server";
 import { getAdminProducts } from "@/lib/queries";
 import { deleteProduct, toggleProductPublished } from "@/lib/actions/products";
 import { PageHeader } from "@/components/admin/page-header";
@@ -15,20 +16,21 @@ export const metadata: Metadata = { title: "Products" };
 
 export default async function AdminProductsPage() {
   const { shop } = await requireShop();
+  const { a } = await getAdminT();
   const products = await getAdminProducts(shop.id);
 
   return (
     <>
       <PageHeader
-        title="Products"
-        description="Anything you sell — physical, digital or a service."
+        title={a.products.title}
+        description={a.products.description}
         action={
           <div className="flex gap-2">
             <ExportButton shop={shop} type="products" />
             <Link href="/admin/products/new">
               <Button>
                 <Plus className="size-4" />
-                Add product
+                {a.products.add}
               </Button>
             </Link>
           </div>
@@ -38,13 +40,13 @@ export default async function AdminProductsPage() {
       {products.length === 0 ? (
         <EmptyState
           icon={<Package className="size-8" />}
-          title="No products yet"
-          description="Add your first item and it appears on your shop link immediately."
+          title={a.products.empty}
+          description={a.products.emptyBody}
           action={
             <Link href="/admin/products/new">
               <Button>
                 <Plus className="size-4" />
-                Add your first product
+                {a.products.addFirst}
               </Button>
             </Link>
           }
@@ -120,9 +122,9 @@ export default async function AdminProductsPage() {
                     <Badge>{product.category.name}</Badge>
                   ) : null}
                   {!product.isPublished ? (
-                    <Badge tone="amber">Hidden</Badge>
+                    <Badge tone="amber">{a.common.hidden}</Badge>
                   ) : null}
-                  {!sellable ? <Badge tone="red">Sold out</Badge> : null}
+                  {!sellable ? <Badge tone="red">{a.common.soldOut}</Badge> : null}
                   {product.isFeatured ? (
                     <Badge tone="blue">Featured</Badge>
                   ) : null}
@@ -153,8 +155,8 @@ export default async function AdminProductsPage() {
                     variant="ghost"
                     size="sm"
                     type="submit"
-                    title="Delete"
-                    aria-label="Delete product"
+                    title={a.common.delete}
+                    aria-label={a.products.deleteProduct}
                     className="text-ink-400 hover:bg-red-50 hover:text-red-600"
                   >
                     <Trash2 className="size-4" />

@@ -9,6 +9,7 @@ import {
   type Locale,
 } from "./config";
 import { getDictionary } from ".";
+import { getAdminDictionary } from "./admin";
 
 /**
  * The viewer's own preference: an explicit cookie first, then the browser's
@@ -41,6 +42,20 @@ export async function getShopLocale(shopLocale: string | null): Promise<Locale> 
 export async function getT() {
   const locale = await getLocale();
   return { locale, t: getDictionary(locale), dir: directionOf(locale) };
+}
+
+/**
+ * The admin's own strings, in the seller's language. `a` rather than `t` so a
+ * component holding both never has to think about which one it's reading.
+ */
+export async function getAdminT() {
+  const locale = await getLocale();
+  return {
+    locale,
+    t: getDictionary(locale),
+    a: getAdminDictionary(locale),
+    dir: directionOf(locale),
+  };
 }
 
 export async function getShopT(shopLocale: string | null) {

@@ -18,6 +18,8 @@ import {
   Textarea,
 } from "@/components/ui";
 import { PRODUCT_KINDS } from "@/lib/utils";
+import { useAdminT } from "./admin-i18n";
+import { interpolate } from "@/i18n";
 import type {
   Category,
   Product,
@@ -33,11 +35,12 @@ type ProductWithRelations = Product & {
 };
 
 function Submit({ isEdit }: { isEdit: boolean }) {
+  const a = useAdminT();
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
       {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-      {isEdit ? "Save changes" : "Add product"}
+      {isEdit ? a.common.saveChanges : a.products.add}
     </Button>
   );
 }
@@ -51,6 +54,7 @@ export function ProductForm({
   categories: Category[];
   currency: string;
 }) {
+  const a = useAdminT();
   const [state, action] = useActionState(saveProduct, { ok: false });
   const isEdit = Boolean(product);
 
@@ -80,35 +84,39 @@ export function ProductForm({
       ) : null}
 
       <Card className="space-y-4 p-5">
-        <Field label="Title" htmlFor="title">
+        <Field label={a.productForm.titleLabel} htmlFor="title">
           <Input
             id="title"
             name="title"
             required
             maxLength={140}
             defaultValue={product?.title}
-            placeholder="Speckled stoneware mug"
+            placeholder={a.productForm.titlePlaceholder}
           />
         </Field>
 
-        <Field label="Description" htmlFor="description" hint="optional">
+        <Field
+          label={a.productForm.descriptionLabel}
+          htmlFor="description"
+          hint={a.common.optional}
+        >
           <Textarea
             id="description"
             name="description"
             rows={4}
             defaultValue={product?.description ?? ""}
-            placeholder="Wheel-thrown, glazed in matte oatmeal. Holds 350ml. Dishwasher safe."
+            placeholder={a.productForm.descriptionPlaceholder}
           />
         </Field>
 
-        <Field label="Photos">
+        <Field label={a.productForm.photos}>
           <ImageUploader initial={product?.images.map((i) => i.url) ?? []} />
         </Field>
       </Card>
 
       <Card className="space-y-4 p-5">
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label={`Price (${currency})`} htmlFor="price">
+          <Field label={interpolate(a.productForm.price, { currency })} htmlFor="price">
             <Input
               id="price"
               name="price"
@@ -121,9 +129,9 @@ export function ProductForm({
           </Field>
 
           <Field
-            label="Compare-at price"
+            label={a.productForm.compareAt}
             htmlFor="compareAtPrice"
-            hint="optional"
+            hint={a.common.optional}
           >
             <Input
               id="compareAtPrice"
@@ -140,7 +148,7 @@ export function ProductForm({
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Type" htmlFor="kind">
+          <Field label={a.productForm.kind} htmlFor="kind">
             <Select
               id="kind"
               name="kind"
@@ -155,13 +163,17 @@ export function ProductForm({
             </Select>
           </Field>
 
-          <Field label="Category" htmlFor="categoryId" hint="optional">
+          <Field
+            label={a.productForm.category}
+            htmlFor="categoryId"
+            hint={a.common.optional}
+          >
             <Select
               id="categoryId"
               name="categoryId"
               defaultValue={product?.categoryId ?? ""}
             >
-              <option value="">No category</option>
+              <option value="">{a.productForm.noCategory}</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -173,22 +185,22 @@ export function ProductForm({
 
         <p className="text-xs text-ink-500">
           {kind === "digital"
-            ? "Digital products skip delivery and are sent as a private download link."
+            ? a.productForm.digitalHint
             : kind === "service"
-              ? "Services skip delivery. Add a duration and let buyers pick a time below."
-              : "Physical products ask the buyer how they'd like it delivered."}
+              ? a.productForm.serviceHint
+              : a.productForm.physicalHint}
         </p>
 
         <Field
-          label="Tags"
+          label={a.productForm.tags}
           htmlFor="tags"
-          hint="comma separated, used by search"
+          hint={a.productForm.tagsHint}
         >
           <Input
             id="tags"
             name="tags"
             defaultValue={product?.tags.join(", ") ?? ""}
-            placeholder="handmade, ceramic, gift"
+            placeholder={a.productForm.tagsPlaceholder}
           />
         </Field>
       </Card>
@@ -197,16 +209,18 @@ export function ProductForm({
 
       <Card className="space-y-4 p-5">
         <div>
-          <h2 className="text-sm font-semibold text-ink-900">Options & stock</h2>
+          <h2 className="text-sm font-semibold text-ink-900">
+            {a.productForm.optionsTitle}
+          </h2>
           <p className="mt-0.5 text-xs text-ink-500">
-            Sizes, colours, session lengths — anything the buyer chooses between.
+            {a.productForm.optionsBody}
           </p>
         </div>
 
         <Toggle
           name="trackInventory"
-          label="Track stock"
-          description="Counts units down with every order and stops sales at zero."
+          label={a.productForm.trackStock}
+          description={a.productForm.trackStockBody}
           checked={trackInventory}
           onChange={setTrackInventory}
         />
@@ -227,11 +241,10 @@ export function ProductForm({
         <Card className="space-y-4 p-5">
           <div>
             <h2 className="text-sm font-semibold text-ink-900">
-              Files to deliver
+              {a.productForm.filesTitle}
             </h2>
             <p className="mt-0.5 text-xs text-ink-500">
-              Buyers get a private download page as soon as the order is
-              released.
+              {a.productForm.filesBody}
             </p>
           </div>
 
@@ -248,17 +261,17 @@ export function ProductForm({
 
           <Toggle
             name="releaseOnPayment"
-            label="Release only after payment is confirmed"
-            description="Every payment option here settles outside Sailo, so leaving this on stops someone taking the file without paying. Free products unlock straight away either way."
+label={a.productForm.releaseOnPayment}
+description={a.productForm.releaseOnPaymentBody}
             checked={releaseOnPayment}
             onChange={setReleaseOnPayment}
           />
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Field
-              label="Download limit"
+              label={a.productForm.downloadLimit}
               htmlFor="downloadLimit"
-              hint="blank = unlimited"
+              hint={a.productForm.downloadLimitHint}
             >
               <Input
                 id="downloadLimit"
@@ -269,9 +282,9 @@ export function ProductForm({
               />
             </Field>
             <Field
-              label="Link expires after (days)"
+              label={a.productForm.downloadExpiry}
               htmlFor="downloadExpiryDays"
-              hint="blank = never"
+              hint={a.productForm.downloadExpiryHint}
             >
               <Input
                 id="downloadExpiryDays"
@@ -291,19 +304,18 @@ export function ProductForm({
         <Card className="space-y-4 p-5">
           <div>
             <h2 className="text-sm font-semibold text-ink-900">
-              Service details
+              {a.productForm.serviceTitle}
             </h2>
             <p className="mt-0.5 text-xs text-ink-500">
-              How long it takes, where it happens, and whether buyers book a
-              time.
+              {a.productForm.serviceBody}
             </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Field
-              label="Duration (minutes)"
+              label={a.productForm.duration}
               htmlFor="durationMinutes"
-              hint="optional"
+              hint={a.common.optional}
             >
               <Input
                 id="durationMinutes"
@@ -313,45 +325,45 @@ export function ProductForm({
                 placeholder="60"
               />
             </Field>
-            <Field label="Where" htmlFor="serviceMode">
+            <Field label={a.productForm.where} htmlFor="serviceMode">
               <Select
                 id="serviceMode"
                 name="serviceMode"
                 defaultValue={product?.serviceMode ?? "in_person"}
               >
-                <option value="in_person">In person</option>
-                <option value="online">Online</option>
+                <option value="in_person">{a.productForm.inPerson}</option>
+                <option value="online">{a.productForm.online}</option>
               </Select>
             </Field>
           </div>
 
           <Field
-            label="Location or joining details"
+            label={a.productForm.serviceLocation}
             htmlFor="serviceLocation"
-            hint="optional, shown after ordering"
+            hint={a.productForm.serviceLocationHint}
           >
             <Textarea
               id="serviceLocation"
               name="serviceLocation"
               rows={2}
               defaultValue={product?.serviceLocation ?? ""}
-              placeholder="12 Rue Lafayette, Paris — studio on the second floor"
+              placeholder={a.productForm.serviceLocationPlaceholder}
             />
           </Field>
 
           <Toggle
             name="bookingEnabled"
-            label="Let buyers pick a date and time"
-            description="Adds a preferred date and time to checkout. You confirm the slot afterwards."
+            label={a.productForm.bookingEnabled}
+            description={a.productForm.bookingEnabledBody}
             checked={bookingEnabled}
             onChange={setBookingEnabled}
           />
 
           {bookingEnabled ? (
             <Field
-              label="Notice needed (hours)"
+              label={a.productForm.bookingLead}
               htmlFor="bookingLeadHours"
-              hint="the picker won't offer anything sooner"
+              hint={a.productForm.bookingLeadHint}
             >
               <Input
                 id="bookingLeadHours"
@@ -371,20 +383,20 @@ export function ProductForm({
       <Card className="space-y-3 p-5">
         <Toggle
           name="inStock"
-          label="In stock"
-          description="Turn off to show a Sold out badge and disable ordering."
+          label={a.productForm.inStock}
+          description={a.productForm.inStockBody}
           defaultChecked={product?.inStock ?? true}
         />
         <Toggle
           name="isFeatured"
-          label="Featured"
-          description="Pins this product to the top of your shop."
+          label={a.productForm.featured}
+          description={a.productForm.featuredBody}
           defaultChecked={product?.isFeatured ?? false}
         />
         <Toggle
           name="isPublished"
-          label="Published"
-          description="Uncheck to hide it from your shop while you work on it."
+          label={a.productForm.published}
+          description={a.productForm.publishedBody}
           defaultChecked={product?.isPublished ?? true}
         />
       </Card>
@@ -395,7 +407,7 @@ export function ProductForm({
           href="/admin/products"
           className="text-sm text-ink-500 transition hover:text-ink-900"
         >
-          Cancel
+          {a.common.cancel}
         </Link>
       </div>
     </form>

@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminEs: PartialAdminDictionary = {
+  common: {
+    save: "Guardar",
+    saveChanges: "Guardar cambios",
+    cancel: "Cancelar",
+    delete: "Eliminar",
+    edit: "Editar",
+    add: "Añadir",
+    optional: "opcional",
+    private: "privado",
+    unlimited: "Ilimitado",
+    active: "Activo",
+    inactive: "Inactivo",
+    pending: "Pendiente",
+    disabled: "Desactivado",
+    disable: "Desactivar",
+    live: "Activo",
+    off: "Desactivado",
+    hidden: "Oculto",
+    featured: "Destacado",
+    soldOut: "Agotado",
+    paid: "Pagado",
+    approve: "Aprobar",
+    view: "Ver",
+    viewAll: "Ver todo",
+    visit: "Visitar",
+    name: "Nombre",
+    email: "Correo",
+    code: "Código",
+    type: "Tipo",
+    status: "Estado",
+    expires: "Caduca",
+    day: "Día",
+    viewAsTable: "Ver como tabla",
+  },
+  dashboard: {
+    shopLink: "El enlace de tu tienda",
+    recentOrders: "Pedidos recientes",
+    visits: "Visitas",
+    uniqueVisitors: "Visitantes únicos",
+    orders: "Pedidos",
+    netRevenue: "Ingresos netos",
+    noOrders: "Aún no hay pedidos",
+    noOrdersBody: "Cuando alguien pulse Pedir en tu tienda, sus datos aparecerán aquí — incluso antes de que te escriban.",
+  },
+  products: {
+    title: "Productos",
+    description: "Todo lo que vendes: físico, digital o un servicio.",
+  },
+  orders: {
+    title: "Pedidos",
+    description: "Capturados en cuanto alguien pulsa Pedir, antes incluso de enviarte el mensaje.",
+  },
+  clients: {
+    title: "Clientes",
+    emptyBody: "Los compradores aparecen aquí tras su primer pedido si dejan un correo o un teléfono.",
+  },
+  categories: {
+    title: "Categorías",
+    description: "Se convierten en los filtros de la parte superior de tu tienda.",
+  },
+  reviews: {
+    title: "Reseñas",
+    emptyBody: "Los compradores pueden dejar una reseña en cualquier página de producto.",
+  },
+  coupons: {
+    title: "Cupones",
+    description: "Códigos de descuento que los compradores introducen al pagar.",
+  },
+  affiliates: {
+    title: "Afiliados",
+    description: "Paga a otras personas una parte de lo que venden por ti.",
+  },
+  payments: {
+    title: "Pagos",
+    description: "Activa tantas formas de pedir como quieras. El comprador elige una al pagar.",
+  },
+  delivery: {
+    title: "Envío",
+    description: "Añade tantas opciones como quieras: estándar, exprés, recogida. El comprador elige una.",
+  },
+  settings: {
+    title: "Ajustes",
+    description: "Los datos de tu tienda, tu plan y tus datos.",
+  },
+};

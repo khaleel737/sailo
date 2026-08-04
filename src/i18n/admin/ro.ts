@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminRo: PartialAdminDictionary = {
+  common: {
+    save: "Salvează",
+    saveChanges: "Salvează modificările",
+    cancel: "Anulează",
+    delete: "Șterge",
+    edit: "Editează",
+    add: "Adaugă",
+    optional: "opțional",
+    private: "privat",
+    unlimited: "Nelimitat",
+    active: "Activ",
+    inactive: "Inactiv",
+    pending: "În așteptare",
+    disabled: "Dezactivat",
+    disable: "Dezactivează",
+    live: "Activ",
+    off: "Oprit",
+    hidden: "Ascuns",
+    featured: "Promovat",
+    soldOut: "Epuizat",
+    paid: "Plătit",
+    approve: "Aprobă",
+    view: "Vezi",
+    viewAll: "Vezi tot",
+    visit: "Vizitează",
+    name: "Nume",
+    email: "E-mail",
+    code: "Cod",
+    type: "Tip",
+    status: "Stare",
+    expires: "Expiră",
+    day: "Zi",
+    viewAsTable: "Ca tabel",
+  },
+  dashboard: {
+    shopLink: "Linkul magazinului tău",
+    recentOrders: "Comenzi recente",
+    visits: "Vizite",
+    uniqueVisitors: "Vizitatori unici",
+    orders: "Comenzi",
+    netRevenue: "Venit net",
+    noOrders: "Încă nicio comandă",
+    noOrdersBody: "De îndată ce cineva apasă Comandă, datele ajung aici — chiar înainte să-ți scrie.",
+  },
+  products: {
+    title: "Produse",
+    description: "Tot ce vinzi: fizic, digital sau un serviciu.",
+  },
+  orders: {
+    title: "Comenzi",
+    description: "Salvate din clipa în care cineva apasă Comandă, înainte de mesaj.",
+  },
+  clients: {
+    title: "Clienți",
+    emptyBody: "Cumpărătorii apar aici după prima comandă, cu e-mail sau telefon.",
+  },
+  categories: {
+    title: "Categorii",
+    description: "Devin filtrele din capul magazinului.",
+  },
+  reviews: {
+    title: "Recenzii",
+    emptyBody: "Cumpărătorii pot lăsa o recenzie pe orice pagină de produs.",
+  },
+  coupons: {
+    title: "Cupoane",
+    description: "Coduri de reducere introduse la plată.",
+  },
+  affiliates: {
+    title: "Parteneri",
+    description: "Plătește altora o parte din ce vând pentru tine.",
+  },
+  payments: {
+    title: "Plăți",
+    description: "Activează câte moduri de comandă vrei.",
+  },
+  delivery: {
+    title: "Livrare",
+    description: "Adaugă oricâte opțiuni: standard, expres, ridicare.",
+  },
+  settings: {
+    title: "Setări",
+    description: "Datele magazinului, planul și datele tale.",
+  },
+};

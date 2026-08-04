@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminZh: PartialAdminDictionary = {
+  common: {
+    save: "保存",
+    saveChanges: "保存更改",
+    cancel: "取消",
+    delete: "删除",
+    edit: "编辑",
+    add: "添加",
+    optional: "可选",
+    private: "私密",
+    unlimited: "无限制",
+    active: "启用",
+    inactive: "停用",
+    pending: "待处理",
+    disabled: "已停用",
+    disable: "停用",
+    live: "上线",
+    off: "关闭",
+    hidden: "已隐藏",
+    featured: "精选",
+    soldOut: "售罄",
+    paid: "已付款",
+    approve: "通过",
+    view: "查看",
+    viewAll: "查看全部",
+    visit: "访问",
+    name: "名称",
+    email: "邮箱",
+    code: "代码",
+    type: "类型",
+    status: "状态",
+    expires: "到期",
+    day: "日",
+    viewAsTable: "以表格查看",
+  },
+  dashboard: {
+    shopLink: "你的店铺链接",
+    recentOrders: "最近订单",
+    visits: "访问量",
+    uniqueVisitors: "独立访客",
+    orders: "订单",
+    netRevenue: "净收入",
+    noOrders: "还没有订单",
+    noOrdersBody: "有人在你的店铺点下单时，信息就会到这里——甚至在他们联系你之前。",
+  },
+  products: {
+    title: "商品",
+    description: "你出售的一切：实物、数字商品或服务。",
+  },
+  orders: {
+    title: "订单",
+    description: "有人点下单的那一刻就记录，甚至在消息发出之前。",
+  },
+  clients: {
+    title: "客户",
+    emptyBody: "买家首次下单并留下邮箱或电话后会出现在这里。",
+  },
+  categories: {
+    title: "分类",
+    description: "它们会成为店铺顶部的筛选标签。",
+  },
+  reviews: {
+    title: "评价",
+    emptyBody: "买家可以在任何商品页面留下评价。",
+  },
+  coupons: {
+    title: "优惠码",
+    description: "买家在结账时输入的折扣码。",
+  },
+  affiliates: {
+    title: "推广伙伴",
+    description: "把销售额的一部分分给替你带货的人。",
+  },
+  payments: {
+    title: "收款",
+    description: "想开多少种下单方式都可以，买家自行选择。",
+  },
+  delivery: {
+    title: "配送",
+    description: "想加多少种方式都行：标准、当日、自取。",
+  },
+  settings: {
+    title: "设置",
+    description: "店铺信息、套餐和你的数据。",
+  },
+};

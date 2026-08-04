@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminSv: PartialAdminDictionary = {
+  common: {
+    save: "Spara",
+    saveChanges: "Spara ändringar",
+    cancel: "Avbryt",
+    delete: "Ta bort",
+    edit: "Redigera",
+    add: "Lägg till",
+    optional: "valfritt",
+    private: "privat",
+    unlimited: "Obegränsat",
+    active: "Aktiv",
+    inactive: "Inaktiv",
+    pending: "Väntar",
+    disabled: "Avstängd",
+    disable: "Stäng av",
+    live: "Live",
+    off: "Av",
+    hidden: "Dold",
+    featured: "Utvald",
+    soldOut: "Slutsåld",
+    paid: "Betald",
+    approve: "Godkänn",
+    view: "Visa",
+    viewAll: "Visa alla",
+    visit: "Besök",
+    name: "Namn",
+    email: "E-post",
+    code: "Kod",
+    type: "Typ",
+    status: "Status",
+    expires: "Går ut",
+    day: "Dag",
+    viewAsTable: "Som tabell",
+  },
+  dashboard: {
+    shopLink: "Länken till din butik",
+    recentOrders: "Senaste ordrar",
+    visits: "Besök",
+    uniqueVisitors: "Unika besökare",
+    orders: "Ordrar",
+    netRevenue: "Nettointäkt",
+    noOrders: "Inga ordrar än",
+    noOrdersBody: "Så fort någon trycker Beställ i din butik hamnar uppgifterna här — innan de ens hört av sig.",
+  },
+  products: {
+    title: "Produkter",
+    description: "Allt du säljer: fysiskt, digitalt eller en tjänst.",
+  },
+  orders: {
+    title: "Ordrar",
+    description: "Sparas i samma stund som någon trycker Beställ, före meddelandet.",
+  },
+  clients: {
+    title: "Kunder",
+    emptyBody: "Köpare dyker upp här efter första ordern om de lämnar e-post eller telefon.",
+  },
+  categories: {
+    title: "Kategorier",
+    description: "De blir filtren högst upp i butiken.",
+  },
+  reviews: {
+    title: "Omdömen",
+    emptyBody: "Köpare kan lämna omdöme på varje produktsida.",
+  },
+  coupons: {
+    title: "Rabattkoder",
+    description: "Koder som köpare fyller i i kassan.",
+  },
+  affiliates: {
+    title: "Partners",
+    description: "Betala andra en andel av det de säljer åt dig.",
+  },
+  payments: {
+    title: "Betalningar",
+    description: "Slå på hur många sätt att beställa du vill.",
+  },
+  delivery: {
+    title: "Leverans",
+    description: "Lägg till hur många alternativ du vill: standard, express, upphämtning.",
+  },
+  settings: {
+    title: "Inställningar",
+    description: "Dina butiksuppgifter, ditt paket och din data.",
+  },
+};

@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminFr: PartialAdminDictionary = {
+  common: {
+    save: "Enregistrer",
+    saveChanges: "Enregistrer les modifications",
+    cancel: "Annuler",
+    delete: "Supprimer",
+    edit: "Modifier",
+    add: "Ajouter",
+    optional: "facultatif",
+    private: "privé",
+    unlimited: "Illimité",
+    active: "Actif",
+    inactive: "Inactif",
+    pending: "En attente",
+    disabled: "Désactivé",
+    disable: "Désactiver",
+    live: "Actif",
+    off: "Inactif",
+    hidden: "Masqué",
+    featured: "En avant",
+    soldOut: "Épuisé",
+    paid: "Payé",
+    approve: "Approuver",
+    view: "Voir",
+    viewAll: "Tout voir",
+    visit: "Visiter",
+    name: "Nom",
+    email: "E-mail",
+    code: "Code",
+    type: "Type",
+    status: "Statut",
+    expires: "Expire le",
+    day: "Jour",
+    viewAsTable: "Voir en tableau",
+  },
+  dashboard: {
+    shopLink: "Le lien de votre boutique",
+    recentOrders: "Commandes récentes",
+    visits: "Visites",
+    uniqueVisitors: "Visiteurs uniques",
+    orders: "Commandes",
+    netRevenue: "Revenu net",
+    noOrders: "Aucune commande",
+    noOrdersBody: "Dès que quelqu'un appuie sur Commander, ses coordonnées arrivent ici — avant même qu'il vous écrive.",
+  },
+  products: {
+    title: "Produits",
+    description: "Tout ce que vous vendez : physique, numérique ou un service.",
+  },
+  orders: {
+    title: "Commandes",
+    description: "Enregistrées dès que quelqu'un appuie sur Commander, avant même l'envoi du message.",
+  },
+  clients: {
+    title: "Clients",
+    emptyBody: "Les acheteurs apparaissent ici après leur première commande s'ils laissent un e-mail ou un téléphone.",
+  },
+  categories: {
+    title: "Catégories",
+    description: "Elles deviennent les filtres en haut de votre boutique.",
+  },
+  reviews: {
+    title: "Avis",
+    emptyBody: "Les acheteurs peuvent laisser un avis sur chaque page produit.",
+  },
+  coupons: {
+    title: "Codes promo",
+    description: "Des codes de réduction saisis au moment du paiement.",
+  },
+  affiliates: {
+    title: "Affiliés",
+    description: "Reversez une part de ce que d'autres vendent pour vous.",
+  },
+  payments: {
+    title: "Paiements",
+    description: "Activez autant de moyens de commander que vous voulez. L'acheteur en choisit un.",
+  },
+  delivery: {
+    title: "Livraison",
+    description: "Ajoutez autant d'options que vous voulez : standard, express, retrait.",
+  },
+  settings: {
+    title: "Réglages",
+    description: "Les détails de votre boutique, votre offre et vos données.",
+  },
+};

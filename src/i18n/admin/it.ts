@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminIt: PartialAdminDictionary = {
+  common: {
+    save: "Salva",
+    saveChanges: "Salva modifiche",
+    cancel: "Annulla",
+    delete: "Elimina",
+    edit: "Modifica",
+    add: "Aggiungi",
+    optional: "facoltativo",
+    private: "privato",
+    unlimited: "Illimitato",
+    active: "Attivo",
+    inactive: "Inattivo",
+    pending: "In attesa",
+    disabled: "Disattivato",
+    disable: "Disattiva",
+    live: "Attivo",
+    off: "Spento",
+    hidden: "Nascosto",
+    featured: "In evidenza",
+    soldOut: "Esaurito",
+    paid: "Pagato",
+    approve: "Approva",
+    view: "Vedi",
+    viewAll: "Vedi tutto",
+    visit: "Visita",
+    name: "Nome",
+    email: "E-mail",
+    code: "Codice",
+    type: "Tipo",
+    status: "Stato",
+    expires: "Scade",
+    day: "Giorno",
+    viewAsTable: "Vedi come tabella",
+  },
+  dashboard: {
+    shopLink: "Il link del tuo negozio",
+    recentOrders: "Ordini recenti",
+    visits: "Visite",
+    uniqueVisitors: "Visitatori unici",
+    orders: "Ordini",
+    netRevenue: "Ricavo netto",
+    noOrders: "Ancora nessun ordine",
+    noOrdersBody: "Appena qualcuno tocca Ordina, i suoi dati arrivano qui — ancora prima che ti scriva.",
+  },
+  products: {
+    title: "Prodotti",
+    description: "Tutto ciò che vendi: fisico, digitale o un servizio.",
+  },
+  orders: {
+    title: "Ordini",
+    description: "Registrati appena qualcuno tocca Ordina, prima ancora del messaggio.",
+  },
+  clients: {
+    title: "Clienti",
+    emptyBody: "Gli acquirenti compaiono qui dopo il primo ordine, se lasciano e-mail o telefono.",
+  },
+  categories: {
+    title: "Categorie",
+    description: "Diventano i filtri in cima al tuo negozio.",
+  },
+  reviews: {
+    title: "Recensioni",
+    emptyBody: "Gli acquirenti possono recensire da ogni pagina prodotto.",
+  },
+  coupons: {
+    title: "Coupon",
+    description: "Codici sconto inseriti al momento del pagamento.",
+  },
+  affiliates: {
+    title: "Affiliati",
+    description: "Paga ad altri una quota di ciò che vendono per te.",
+  },
+  payments: {
+    title: "Pagamenti",
+    description: "Attiva quanti modi di ordinare vuoi. L'acquirente ne sceglie uno.",
+  },
+  delivery: {
+    title: "Spedizione",
+    description: "Aggiungi tutte le opzioni che vuoi: standard, express, ritiro.",
+  },
+  settings: {
+    title: "Impostazioni",
+    description: "I dati del negozio, il piano e i tuoi dati.",
+  },
+};

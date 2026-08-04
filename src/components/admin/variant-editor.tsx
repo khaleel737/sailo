@@ -3,6 +3,8 @@
 import { useMemo, useRef, useState } from "react";
 import { ImagePlus, Loader2, Plus, Trash2, X } from "lucide-react";
 import { Button, Input } from "@/components/ui";
+import { useAdminT } from "./admin-i18n";
+import { interpolate } from "@/i18n";
 import {
   combinations,
   MAX_OPTIONS,
@@ -83,6 +85,7 @@ export function VariantEditor({
   /** The product's own count, used only while it has no options. */
   stockQuantity: number | null;
 }) {
+  const a = useAdminT();
   const [optionDrafts, setOptionDrafts] = useState<OptionDraft[]>(
     initialOptions.length > 0
       ? initialOptions.map((o) => ({ name: o.name, values: o.values.join(", ") }))
@@ -150,12 +153,16 @@ export function VariantEditor({
           <div key={index} className="flex items-end gap-2">
             <div className="w-1/3 min-w-0">
               <label className="mb-1.5 block text-xs font-medium text-ink-500">
-                Option
+                {a.variants.option}
               </label>
               <Input
                 value={option.name}
                 maxLength={40}
-                placeholder={index === 0 ? "Size" : "Colour"}
+                placeholder={
+                  index === 0
+                    ? a.variants.optionNamePlaceholder
+                    : a.variants.optionNamePlaceholderTwo
+                }
                 onChange={(e) =>
                   setOptionDrafts((prev) =>
                     prev.map((o, i) =>
@@ -167,12 +174,14 @@ export function VariantEditor({
             </div>
             <div className="min-w-0 flex-1">
               <label className="mb-1.5 block text-xs font-medium text-ink-500">
-                Values
+                {a.variants.values}
               </label>
               <Input
                 value={option.values}
                 placeholder={
-                  index === 0 ? "Small, Medium, Large" : "Red, Blue, Black"
+                  index === 0
+                    ? a.variants.optionValuesPlaceholder
+                    : a.variants.optionValuesPlaceholderTwo
                 }
                 onChange={(e) =>
                   setOptionDrafts((prev) =>
@@ -208,16 +217,16 @@ export function VariantEditor({
             }
           >
             <Plus className="size-4" />
-            {optionDrafts.length === 0 ? "Add options" : "Add another option"}
+            {optionDrafts.length === 0
+              ? a.variants.addOptions
+              : a.variants.addAnother}
           </Button>
         ) : null}
       </div>
 
       {optionDrafts.length === 0 ? (
         <p className="text-xs text-ink-500">
-          Sizes for a pizza, colours for a shirt, session lengths for a
-          consultation. Each combination gets its own price and stock — leave a
-          price blank and it uses the product price above.
+          {a.variants.intro}
         </p>
       ) : null}
 
@@ -229,9 +238,9 @@ export function VariantEditor({
             htmlFor="stockQuantity"
             className="mb-1.5 block text-sm font-medium text-ink-800"
           >
-            Units in stock
+            {a.variants.unitsInStock}
             <span className="ml-1.5 font-normal text-ink-400">
-              blank = don&apos;t count
+              {a.variants.unitsHint}
             </span>
           </label>
           <Input
@@ -250,15 +259,19 @@ export function VariantEditor({
           <table className="w-full min-w-[560px] text-sm">
             <thead>
               <tr className="border-b border-ink-200 bg-ink-50 text-left text-xs font-medium text-ink-500">
-                <th className="px-3 py-2 w-14">Photo</th>
-                <th className="px-3 py-2">Variant</th>
-                <th className="px-3 py-2 w-28">Price ({currency})</th>
-                <th className="px-3 py-2 w-28">Compare at</th>
+                <th className="px-3 py-2 w-14">{a.variants.photo}</th>
+                <th className="px-3 py-2">{a.variants.variant}</th>
+                <th className="px-3 py-2 w-28">
+                  {interpolate(a.variants.priceIn, { currency })}
+                </th>
+                <th className="px-3 py-2 w-28">{a.variants.compareAt}</th>
                 {trackInventory ? (
-                  <th className="px-3 py-2 w-24">Stock</th>
+                  <th className="px-3 py-2 w-24">{a.variants.stock}</th>
                 ) : null}
-                <th className="px-3 py-2 w-28">SKU</th>
-                <th className="px-3 py-2 w-20 text-center">For sale</th>
+                <th className="px-3 py-2 w-28">{a.variants.sku}</th>
+                <th className="px-3 py-2 w-20 text-center">
+                  {a.variants.forSale}
+                </th>
                 <th className="px-3 py-2 w-10" />
               </tr>
             </thead>

@@ -3,11 +3,12 @@ import { AdminHeader } from "@/components/admin/admin-header";
 import { getDashboardStats } from "@/lib/queries";
 import { getNotifications } from "@/lib/notifications";
 import { requireShop } from "@/lib/session";
-import { getT } from "@/i18n/server";
+import { getAdminT } from "@/i18n/server";
+import { AdminI18nProvider } from "@/components/admin/admin-i18n";
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const { shop } = await requireShop();
-  const { locale, t, dir } = await getT();
+  const { locale, t, a, dir } = await getAdminT();
 
   const [stats, all] = await Promise.all([
     getDashboardStats(shop.id),
@@ -18,6 +19,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const notifications = all.filter((n) => !dismissed.has(n.id));
 
   return (
+    <AdminI18nProvider value={a}>
     <div
       dir={dir}
       lang={locale}
@@ -42,5 +44,6 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
         </main>
       </div>
     </div>
+    </AdminI18nProvider>
   );
 }

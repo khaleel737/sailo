@@ -18,7 +18,7 @@ import { Badge, Button, Card, EmptyState } from "@/components/ui";
 import { LockedFeature } from "@/components/admin/locked-feature";
 import { can } from "@/lib/plans";
 import { formatMoney } from "@/lib/utils";
-import { getT } from "@/i18n/server";
+import { getT, getAdminT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Affiliates" };
 
@@ -30,14 +30,15 @@ const SOURCE_LABEL: Record<string, string> = {
 
 export default async function AdminAffiliatesPage() {
   const { shop } = await requireShop();
+  const { a } = await getAdminT();
   const { t } = await getT();
 
   if (!can(shop, "affiliates")) {
     return (
       <>
         <PageHeader
-          title="Affiliates"
-          description="Pay people a share of what they sell for you."
+          title={a.affiliates.title}
+          description={a.affiliates.description}
         />
         <LockedFeature
           t={t}
@@ -65,8 +66,8 @@ export default async function AdminAffiliatesPage() {
   return (
     <>
       <PageHeader
-        title="Affiliates"
-        description="Pay people a share of what they sell for you."
+        title={a.affiliates.title}
+        description={a.affiliates.description}
       />
 
       <div className="mb-5">
@@ -111,8 +112,8 @@ export default async function AdminAffiliatesPage() {
           {affiliates.length === 0 ? (
             <EmptyState
               icon={<Gift className="size-8" />}
-              title="No affiliates yet"
-              description="Add someone above, or let buyers opt in after they order."
+              title={a.affiliates.empty}
+              description={a.affiliates.emptyBody}
             />
           ) : (
             <Card className="divide-y divide-ink-100">

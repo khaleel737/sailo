@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Check, MessageSquare, Star, Trash2 } from "lucide-react";
 import { requireShop } from "@/lib/session";
+import { getAdminT } from "@/i18n/server";
 import { getShopReviews } from "@/lib/queries";
 import { approveReview, deleteReview } from "@/lib/actions/reviews";
 import { PageHeader } from "@/components/admin/page-header";
@@ -11,13 +12,14 @@ export const metadata: Metadata = { title: "Reviews" };
 
 export default async function AdminReviewsPage() {
   const { shop } = await requireShop();
+  const { a } = await getAdminT();
   const reviews = await getShopReviews(shop.id);
   const pending = reviews.filter((r) => !r.isApproved);
 
   return (
     <>
       <PageHeader
-        title="Reviews"
+        title={a.reviews.title}
         description={
           pending.length > 0
             ? `${pending.length} waiting for your approval — only approved reviews show on your shop.`
@@ -28,8 +30,8 @@ export default async function AdminReviewsPage() {
       {reviews.length === 0 ? (
         <EmptyState
           icon={<MessageSquare className="size-8" />}
-          title="No reviews yet"
-          description="Buyers can leave a review on any product page."
+          title={a.reviews.empty}
+          description={a.reviews.emptyBody}
         />
       ) : (
         <Card className="divide-y divide-ink-100">
@@ -82,7 +84,7 @@ export default async function AdminReviewsPage() {
                       variant="secondary"
                       size="sm"
                       type="submit"
-                      aria-label="Approve review"
+                      aria-label={a.reviews.approveReview}
                     >
                       <Check className="size-4" />
                       Approve
@@ -96,7 +98,7 @@ export default async function AdminReviewsPage() {
                     variant="ghost"
                     size="sm"
                     type="submit"
-                    aria-label="Delete review"
+                    aria-label={a.reviews.deleteReview}
                     className="text-ink-400 hover:bg-red-50 hover:text-red-600"
                   >
                     <Trash2 className="size-4" />

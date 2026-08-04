@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AlertTriangle } from "lucide-react";
 import { requireShop } from "@/lib/session";
+import { getAdminT } from "@/i18n/server";
 import { getShopPaymentMethods } from "@/lib/queries";
 import { isConfigured, PAYMENT_METHOD_LIST } from "@/lib/payments";
 import { PageHeader } from "@/components/admin/page-header";
@@ -14,6 +15,7 @@ export default async function AdminPaymentsPage({
   searchParams,
 }: PageProps<"/admin/payments">) {
   let { shop } = await requireShop();
+  const { a } = await getAdminT();
   const params = await searchParams;
 
   // Coming back from Stripe's onboarding proves nothing on its own — Stripe
@@ -36,8 +38,8 @@ export default async function AdminPaymentsPage({
   return (
     <>
       <PageHeader
-        title="Payments"
-        description="Turn on as many ways to order as you like. Buyers pick one at checkout."
+        title={a.payments.title}
+        description={a.payments.description}
       />
 
       {liveCount === 0 ? (

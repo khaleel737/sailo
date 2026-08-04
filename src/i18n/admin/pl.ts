@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminPl: PartialAdminDictionary = {
+  common: {
+    save: "Zapisz",
+    saveChanges: "Zapisz zmiany",
+    cancel: "Anuluj",
+    delete: "Usuń",
+    edit: "Edytuj",
+    add: "Dodaj",
+    optional: "opcjonalne",
+    private: "prywatne",
+    unlimited: "Bez limitu",
+    active: "Aktywny",
+    inactive: "Nieaktywny",
+    pending: "Oczekuje",
+    disabled: "Wyłączony",
+    disable: "Wyłącz",
+    live: "Aktywne",
+    off: "Wył.",
+    hidden: "Ukryty",
+    featured: "Wyróżniony",
+    soldOut: "Wyprzedane",
+    paid: "Opłacone",
+    approve: "Zatwierdź",
+    view: "Zobacz",
+    viewAll: "Zobacz wszystko",
+    visit: "Otwórz",
+    name: "Nazwa",
+    email: "E-mail",
+    code: "Kod",
+    type: "Typ",
+    status: "Status",
+    expires: "Wygasa",
+    day: "Dzień",
+    viewAsTable: "Jako tabela",
+  },
+  dashboard: {
+    shopLink: "Link do Twojego sklepu",
+    recentOrders: "Ostatnie zamówienia",
+    visits: "Wizyty",
+    uniqueVisitors: "Unikalni użytkownicy",
+    orders: "Zamówienia",
+    netRevenue: "Przychód netto",
+    noOrders: "Brak zamówień",
+    noOrdersBody: "Gdy ktoś kliknie Zamów, jego dane trafią tutaj — jeszcze zanim napisze.",
+  },
+  products: {
+    title: "Produkty",
+    description: "Wszystko, co sprzedajesz: fizyczne, cyfrowe lub usługa.",
+  },
+  orders: {
+    title: "Zamówienia",
+    description: "Zapisywane w chwili kliknięcia Zamów, jeszcze przed wiadomością.",
+  },
+  clients: {
+    title: "Klienci",
+    emptyBody: "Kupujący pojawiają się tu po pierwszym zamówieniu z e-mailem lub telefonem.",
+  },
+  categories: {
+    title: "Kategorie",
+    description: "Stają się filtrami na górze sklepu.",
+  },
+  reviews: {
+    title: "Opinie",
+    emptyBody: "Kupujący mogą wystawić opinię na każdej stronie produktu.",
+  },
+  coupons: {
+    title: "Kody rabatowe",
+    description: "Kody wpisywane przy składaniu zamówienia.",
+  },
+  affiliates: {
+    title: "Partnerzy",
+    description: "Płać innym część tego, co sprzedadzą dla Ciebie.",
+  },
+  payments: {
+    title: "Płatności",
+    description: "Włącz dowolnie wiele sposobów zamawiania.",
+  },
+  delivery: {
+    title: "Dostawa",
+    description: "Dodaj dowolne opcje: standardowa, ekspres, odbiór.",
+  },
+  settings: {
+    title: "Ustawienia",
+    description: "Dane sklepu, plan i Twoje dane.",
+  },
+};

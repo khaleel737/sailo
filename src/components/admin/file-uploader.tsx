@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { FileUp, Loader2, Paperclip, X } from "lucide-react";
 import { Button } from "@/components/ui";
 import { formatBytes } from "@/lib/utils";
+import { useAdminT } from "./admin-i18n";
 
 const MAX_FILES = 10;
 
@@ -28,6 +29,7 @@ export function FileUploader({
   initial?: UploadedFile[];
   max?: number;
 }) {
+  const a = useAdminT();
   const [files, setFiles] = useState<UploadedFile[]>(initial);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +49,7 @@ export function FileUploader({
         const res = await fetch("/api/upload", { method: "POST", body });
         const json = await res.json();
         if (!res.ok) {
-          setError(json.error ?? "Upload failed.");
+          setError(json.error ?? a.files.failed);
           continue;
         }
         setFiles((prev) => [
@@ -60,7 +62,7 @@ export function FileUploader({
           },
         ]);
       } catch {
-        setError("Upload failed. Check your connection.");
+        setError(a.files.failedNetwork);
       }
     }
 
@@ -132,7 +134,11 @@ export function FileUploader({
           ) : (
             <FileUp className="size-4" />
           )}
-          {uploading ? "Uploading" : files.length ? "Add another file" : "Add a file"}
+          {uploading
+            ? a.files.uploading
+            : files.length
+              ? a.files.addAnother
+              : a.files.add}
         </Button>
       ) : null}
 
@@ -146,8 +152,7 @@ export function FileUploader({
 
       {error ? <p className="mt-2 text-xs text-red-600">{error}</p> : null}
       <p className="mt-2 text-xs text-ink-400">
-        PDF, zip, documents, audio, video or images · up to 100 MB each · buyers
-        get a private link, never the file&apos;s address.
+        {a.files.hint}
       </p>
     </div>
   );

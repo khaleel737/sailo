@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminCs: PartialAdminDictionary = {
+  common: {
+    save: "Uložit",
+    saveChanges: "Uložit změny",
+    cancel: "Zrušit",
+    delete: "Smazat",
+    edit: "Upravit",
+    add: "Přidat",
+    optional: "volitelné",
+    private: "soukromé",
+    unlimited: "Neomezeně",
+    active: "Aktivní",
+    inactive: "Neaktivní",
+    pending: "Čeká",
+    disabled: "Vypnuto",
+    disable: "Vypnout",
+    live: "Aktivní",
+    off: "Vyp.",
+    hidden: "Skryté",
+    featured: "Doporučené",
+    soldOut: "Vyprodáno",
+    paid: "Zaplaceno",
+    approve: "Schválit",
+    view: "Zobrazit",
+    viewAll: "Zobrazit vše",
+    visit: "Otevřít",
+    name: "Název",
+    email: "E-mail",
+    code: "Kód",
+    type: "Typ",
+    status: "Stav",
+    expires: "Vyprší",
+    day: "Den",
+    viewAsTable: "Jako tabulku",
+  },
+  dashboard: {
+    shopLink: "Odkaz na váš obchod",
+    recentOrders: "Poslední objednávky",
+    visits: "Návštěvy",
+    uniqueVisitors: "Unikátní návštěvníci",
+    orders: "Objednávky",
+    netRevenue: "Čistý výnos",
+    noOrders: "Zatím žádné objednávky",
+    noOrdersBody: "Jakmile někdo klikne na Objednat, jeho údaje dorazí sem — ještě než vám napíše.",
+  },
+  products: {
+    title: "Produkty",
+    description: "Vše, co prodáváte: fyzické, digitální nebo služba.",
+  },
+  orders: {
+    title: "Objednávky",
+    description: "Ukládají se ve chvíli kliknutí na Objednat, ještě před zprávou.",
+  },
+  clients: {
+    title: "Zákazníci",
+    emptyBody: "Kupující se objeví po první objednávce s e-mailem nebo telefonem.",
+  },
+  categories: {
+    title: "Kategorie",
+    description: "Stanou se filtry v horní části obchodu.",
+  },
+  reviews: {
+    title: "Recenze",
+    emptyBody: "Kupující mohou hodnotit na každé stránce produktu.",
+  },
+  coupons: {
+    title: "Slevové kódy",
+    description: "Kódy, které kupující zadá při placení.",
+  },
+  affiliates: {
+    title: "Partneři",
+    description: "Plaťte ostatním podíl z toho, co pro vás prodají.",
+  },
+  payments: {
+    title: "Platby",
+    description: "Zapněte kolik způsobů objednání chcete.",
+  },
+  delivery: {
+    title: "Doprava",
+    description: "Přidejte libovolné možnosti: standardní, expres, osobní odběr.",
+  },
+  settings: {
+    title: "Nastavení",
+    description: "Údaje obchodu, tarif a vaše data.",
+  },
+};

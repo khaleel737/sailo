@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminFi: PartialAdminDictionary = {
+  common: {
+    save: "Tallenna",
+    saveChanges: "Tallenna muutokset",
+    cancel: "Peruuta",
+    delete: "Poista",
+    edit: "Muokkaa",
+    add: "Lisää",
+    optional: "valinnainen",
+    private: "yksityinen",
+    unlimited: "Rajoittamaton",
+    active: "Aktiivinen",
+    inactive: "Ei käytössä",
+    pending: "Odottaa",
+    disabled: "Poistettu käytöstä",
+    disable: "Poista käytöstä",
+    live: "Käytössä",
+    off: "Pois",
+    hidden: "Piilotettu",
+    featured: "Nostettu",
+    soldOut: "Loppuunmyyty",
+    paid: "Maksettu",
+    approve: "Hyväksy",
+    view: "Näytä",
+    viewAll: "Näytä kaikki",
+    visit: "Avaa",
+    name: "Nimi",
+    email: "Sähköposti",
+    code: "Koodi",
+    type: "Tyyppi",
+    status: "Tila",
+    expires: "Vanhenee",
+    day: "Päivä",
+    viewAsTable: "Taulukkona",
+  },
+  dashboard: {
+    shopLink: "Kauppasi linkki",
+    recentOrders: "Viimeisimmät tilaukset",
+    visits: "Käynnit",
+    uniqueVisitors: "Yksilöidyt kävijät",
+    orders: "Tilaukset",
+    netRevenue: "Nettotuotto",
+    noOrders: "Ei vielä tilauksia",
+    noOrdersBody: "Heti kun joku painaa Tilaa, tiedot tulevat tänne — jo ennen kuin hän ehtii viestiä.",
+  },
+  products: {
+    title: "Tuotteet",
+    description: "Kaikki mitä myyt: fyysinen, digitaalinen tai palvelu.",
+  },
+  orders: {
+    title: "Tilaukset",
+    description: "Tallentuvat sillä hetkellä kun joku painaa Tilaa, ennen viestiä.",
+  },
+  clients: {
+    title: "Asiakkaat",
+    emptyBody: "Ostajat ilmestyvät tänne ensimmäisen tilauksen jälkeen sähköpostilla tai puhelimella.",
+  },
+  categories: {
+    title: "Kategoriat",
+    description: "Näistä tulevat kauppasi yläreunan suodattimet.",
+  },
+  reviews: {
+    title: "Arvostelut",
+    emptyBody: "Ostajat voivat arvostella miltä tahansa tuotesivulta.",
+  },
+  coupons: {
+    title: "Alennuskoodit",
+    description: "Koodit, jotka ostaja syöttää kassalla.",
+  },
+  affiliates: {
+    title: "Kumppanit",
+    description: "Maksa muille osuus siitä, mitä he myyvät puolestasi.",
+  },
+  payments: {
+    title: "Maksut",
+    description: "Ota käyttöön niin monta tilaustapaa kuin haluat.",
+  },
+  delivery: {
+    title: "Toimitus",
+    description: "Lisää niin monta vaihtoehtoa kuin haluat: vakio, pika, nouto.",
+  },
+  settings: {
+    title: "Asetukset",
+    description: "Kaupan tiedot, tilaus ja datasi.",
+  },
+};

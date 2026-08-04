@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminEl: PartialAdminDictionary = {
+  common: {
+    save: "Αποθήκευση",
+    saveChanges: "Αποθήκευση αλλαγών",
+    cancel: "Ακύρωση",
+    delete: "Διαγραφή",
+    edit: "Επεξεργασία",
+    add: "Προσθήκη",
+    optional: "προαιρετικό",
+    private: "ιδιωτικό",
+    unlimited: "Απεριόριστα",
+    active: "Ενεργό",
+    inactive: "Ανενεργό",
+    pending: "Σε αναμονή",
+    disabled: "Απενεργοποιημένο",
+    disable: "Απενεργοποίηση",
+    live: "Ενεργό",
+    off: "Ανενεργό",
+    hidden: "Κρυφό",
+    featured: "Προβεβλημένο",
+    soldOut: "Εξαντλήθηκε",
+    paid: "Πληρωμένο",
+    approve: "Έγκριση",
+    view: "Προβολή",
+    viewAll: "Προβολή όλων",
+    visit: "Επίσκεψη",
+    name: "Όνομα",
+    email: "E-mail",
+    code: "Κωδικός",
+    type: "Τύπος",
+    status: "Κατάσταση",
+    expires: "Λήγει",
+    day: "Ημέρα",
+    viewAsTable: "Ως πίνακας",
+  },
+  dashboard: {
+    shopLink: "Ο σύνδεσμος του καταστήματος",
+    recentOrders: "Πρόσφατες παραγγελίες",
+    visits: "Επισκέψεις",
+    uniqueVisitors: "Μοναδικοί επισκέπτες",
+    orders: "Παραγγελίες",
+    netRevenue: "Καθαρά έσοδα",
+    noOrders: "Καμία παραγγελία ακόμη",
+    noOrdersBody: "Μόλις κάποιος πατήσει Παραγγελία, τα στοιχεία του φτάνουν εδώ — πριν καν σας γράψει.",
+  },
+  products: {
+    title: "Προϊόντα",
+    description: "Ό,τι πουλάτε: φυσικό, ψηφιακό ή υπηρεσία.",
+  },
+  orders: {
+    title: "Παραγγελίες",
+    description: "Καταγράφονται μόλις πατηθεί η Παραγγελία, πριν το μήνυμα.",
+  },
+  clients: {
+    title: "Πελάτες",
+    emptyBody: "Οι αγοραστές εμφανίζονται μετά την πρώτη παραγγελία με e-mail ή τηλέφωνο.",
+  },
+  categories: {
+    title: "Κατηγορίες",
+    description: "Γίνονται τα φίλτρα στην κορυφή του καταστήματος.",
+  },
+  reviews: {
+    title: "Κριτικές",
+    emptyBody: "Οι αγοραστές μπορούν να αφήσουν κριτική σε κάθε προϊόν.",
+  },
+  coupons: {
+    title: "Κουπόνια",
+    description: "Κωδικοί έκπτωσης στο ταμείο.",
+  },
+  affiliates: {
+    title: "Συνεργάτες",
+    description: "Πληρώστε σε άλλους μερίδιο από όσα πουλούν για εσάς.",
+  },
+  payments: {
+    title: "Πληρωμές",
+    description: "Ενεργοποιήστε όσους τρόπους παραγγελίας θέλετε.",
+  },
+  delivery: {
+    title: "Παράδοση",
+    description: "Προσθέστε όσες επιλογές θέλετε: απλή, express, παραλαβή.",
+  },
+  settings: {
+    title: "Ρυθμίσεις",
+    description: "Στοιχεία καταστήματος, πλάνο και δεδομένα.",
+  },
+};

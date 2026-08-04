@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminPt: PartialAdminDictionary = {
+  common: {
+    save: "Guardar",
+    saveChanges: "Guardar alterações",
+    cancel: "Cancelar",
+    delete: "Eliminar",
+    edit: "Editar",
+    add: "Adicionar",
+    optional: "opcional",
+    private: "privado",
+    unlimited: "Ilimitado",
+    active: "Ativo",
+    inactive: "Inativo",
+    pending: "Pendente",
+    disabled: "Desativado",
+    disable: "Desativar",
+    live: "Ativo",
+    off: "Desligado",
+    hidden: "Oculto",
+    featured: "Destacado",
+    soldOut: "Esgotado",
+    paid: "Pago",
+    approve: "Aprovar",
+    view: "Ver",
+    viewAll: "Ver tudo",
+    visit: "Visitar",
+    name: "Nome",
+    email: "E-mail",
+    code: "Código",
+    type: "Tipo",
+    status: "Estado",
+    expires: "Expira",
+    day: "Dia",
+    viewAsTable: "Ver como tabela",
+  },
+  dashboard: {
+    shopLink: "A ligação da sua loja",
+    recentOrders: "Encomendas recentes",
+    visits: "Visitas",
+    uniqueVisitors: "Visitantes únicos",
+    orders: "Encomendas",
+    netRevenue: "Receita líquida",
+    noOrders: "Ainda sem encomendas",
+    noOrdersBody: "Assim que alguém tocar em Encomendar, os dados aparecem aqui — antes mesmo de lhe escreverem.",
+  },
+  products: {
+    title: "Produtos",
+    description: "Tudo o que vende: físico, digital ou um serviço.",
+  },
+  orders: {
+    title: "Encomendas",
+    description: "Registadas assim que alguém toca em Encomendar, antes de enviar a mensagem.",
+  },
+  clients: {
+    title: "Clientes",
+    emptyBody: "Os compradores aparecem aqui após a primeira encomenda, se deixarem e-mail ou telefone.",
+  },
+  categories: {
+    title: "Categorias",
+    description: "Tornam-se os filtros no topo da sua loja.",
+  },
+  reviews: {
+    title: "Avaliações",
+    emptyBody: "Os compradores podem avaliar em qualquer página de produto.",
+  },
+  coupons: {
+    title: "Cupões",
+    description: "Códigos de desconto introduzidos no checkout.",
+  },
+  affiliates: {
+    title: "Afiliados",
+    description: "Pague a outras pessoas uma parte do que vendem por si.",
+  },
+  payments: {
+    title: "Pagamentos",
+    description: "Ative tantas formas de encomendar quantas quiser.",
+  },
+  delivery: {
+    title: "Entrega",
+    description: "Adicione as opções que quiser: normal, expresso, recolha.",
+  },
+  settings: {
+    title: "Definições",
+    description: "Os dados da loja, o seu plano e os seus dados.",
+  },
+};

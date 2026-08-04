@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminAr: PartialAdminDictionary = {
+  common: {
+    save: "حفظ",
+    saveChanges: "حفظ التغييرات",
+    cancel: "إلغاء",
+    delete: "حذف",
+    edit: "تعديل",
+    add: "إضافة",
+    optional: "اختياري",
+    private: "خاص",
+    unlimited: "غير محدود",
+    active: "نشط",
+    inactive: "غير نشط",
+    pending: "قيد الانتظار",
+    disabled: "معطّل",
+    disable: "تعطيل",
+    live: "مباشر",
+    off: "متوقف",
+    hidden: "مخفي",
+    featured: "مميّز",
+    soldOut: "نفد المخزون",
+    paid: "مدفوع",
+    approve: "اعتماد",
+    view: "عرض",
+    viewAll: "عرض الكل",
+    visit: "زيارة",
+    name: "الاسم",
+    email: "البريد الإلكتروني",
+    code: "الرمز",
+    type: "النوع",
+    status: "الحالة",
+    expires: "ينتهي في",
+    day: "اليوم",
+    viewAsTable: "عرض كجدول",
+  },
+  dashboard: {
+    shopLink: "رابط متجرك",
+    recentOrders: "أحدث الطلبات",
+    visits: "الزيارات",
+    uniqueVisitors: "زوار فريدون",
+    orders: "الطلبات",
+    netRevenue: "صافي الإيرادات",
+    noOrders: "لا توجد طلبات بعد",
+    noOrdersBody: "بمجرد أن يضغط أحدهم على الطلب في متجرك، تصل بياناته هنا — حتى قبل أن يراسلك.",
+  },
+  products: {
+    title: "المنتجات",
+    description: "كل ما تبيعه: منتج مادي أو رقمي أو خدمة.",
+  },
+  orders: {
+    title: "الطلبات",
+    description: "تُسجَّل لحظة الضغط على الطلب، قبل إرسال الرسالة أصلًا.",
+  },
+  clients: {
+    title: "العملاء",
+    emptyBody: "يظهر المشترون هنا بعد أول طلب إذا تركوا بريدًا أو رقم هاتف.",
+  },
+  categories: {
+    title: "الفئات",
+    description: "تتحوّل إلى فلاتر في أعلى متجرك.",
+  },
+  reviews: {
+    title: "التقييمات",
+    emptyBody: "يمكن للمشترين ترك تقييم في أي صفحة منتج.",
+  },
+  coupons: {
+    title: "كوبونات",
+    description: "رموز خصم يُدخلها المشتري عند الدفع.",
+  },
+  affiliates: {
+    title: "المسوّقون",
+    description: "ادفع لغيرك حصة مما يبيعونه لك.",
+  },
+  payments: {
+    title: "المدفوعات",
+    description: "فعّل ما تشاء من طرق الطلب، ويختار المشتري واحدة.",
+  },
+  delivery: {
+    title: "التوصيل",
+    description: "أضف ما تشاء من خيارات: عادي، سريع، استلام.",
+  },
+  settings: {
+    title: "الإعدادات",
+    description: "تفاصيل متجرك وخطتك وبياناتك.",
+  },
+};

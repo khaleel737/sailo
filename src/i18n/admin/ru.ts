@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminRu: PartialAdminDictionary = {
+  common: {
+    save: "Сохранить",
+    saveChanges: "Сохранить изменения",
+    cancel: "Отмена",
+    delete: "Удалить",
+    edit: "Изменить",
+    add: "Добавить",
+    optional: "необязательно",
+    private: "приватно",
+    unlimited: "Без ограничений",
+    active: "Активен",
+    inactive: "Неактивен",
+    pending: "Ожидает",
+    disabled: "Отключён",
+    disable: "Отключить",
+    live: "Активно",
+    off: "Выкл",
+    hidden: "Скрыт",
+    featured: "В избранном",
+    soldOut: "Распродано",
+    paid: "Оплачен",
+    approve: "Одобрить",
+    view: "Открыть",
+    viewAll: "Показать все",
+    visit: "Перейти",
+    name: "Имя",
+    email: "Эл. почта",
+    code: "Код",
+    type: "Тип",
+    status: "Статус",
+    expires: "Истекает",
+    day: "День",
+    viewAsTable: "В виде таблицы",
+  },
+  dashboard: {
+    shopLink: "Ссылка на ваш магазин",
+    recentOrders: "Последние заказы",
+    visits: "Визиты",
+    uniqueVisitors: "Уникальные посетители",
+    orders: "Заказы",
+    netRevenue: "Чистая выручка",
+    noOrders: "Заказов пока нет",
+    noOrdersBody: "Как только кто-то нажмёт «Заказать», его данные появятся здесь — ещё до того, как он напишет.",
+  },
+  products: {
+    title: "Товары",
+    description: "Всё, что вы продаёте: физическое, цифровое или услуга.",
+  },
+  orders: {
+    title: "Заказы",
+    description: "Фиксируются в момент нажатия «Заказать», ещё до сообщения.",
+  },
+  clients: {
+    title: "Клиенты",
+    emptyBody: "Покупатели появляются здесь после первого заказа с почтой или телефоном.",
+  },
+  categories: {
+    title: "Категории",
+    description: "Из них складываются фильтры вверху магазина.",
+  },
+  reviews: {
+    title: "Отзывы",
+    emptyBody: "Покупатели могут оставить отзыв на любой странице товара.",
+  },
+  coupons: {
+    title: "Купоны",
+    description: "Промокоды, которые покупатель вводит при оформлении.",
+  },
+  affiliates: {
+    title: "Партнёры",
+    description: "Платите другим долю с того, что они продают за вас.",
+  },
+  payments: {
+    title: "Оплата",
+    description: "Включите сколько угодно способов заказа — покупатель выберет один.",
+  },
+  delivery: {
+    title: "Доставка",
+    description: "Добавьте любые варианты: обычная, экспресс, самовывоз.",
+  },
+  settings: {
+    title: "Настройки",
+    description: "Данные магазина, тариф и ваши данные.",
+  },
+};

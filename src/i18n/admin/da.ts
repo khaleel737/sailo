@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminDa: PartialAdminDictionary = {
+  common: {
+    save: "Gem",
+    saveChanges: "Gem ændringer",
+    cancel: "Annuller",
+    delete: "Slet",
+    edit: "Rediger",
+    add: "Tilføj",
+    optional: "valgfrit",
+    private: "privat",
+    unlimited: "Ubegrænset",
+    active: "Aktiv",
+    inactive: "Inaktiv",
+    pending: "Afventer",
+    disabled: "Deaktiveret",
+    disable: "Deaktiver",
+    live: "Live",
+    off: "Fra",
+    hidden: "Skjult",
+    featured: "Fremhævet",
+    soldOut: "Udsolgt",
+    paid: "Betalt",
+    approve: "Godkend",
+    view: "Se",
+    viewAll: "Se alle",
+    visit: "Besøg",
+    name: "Navn",
+    email: "E-mail",
+    code: "Kode",
+    type: "Type",
+    status: "Status",
+    expires: "Udløber",
+    day: "Dag",
+    viewAsTable: "Som tabel",
+  },
+  dashboard: {
+    shopLink: "Linket til din butik",
+    recentOrders: "Seneste ordrer",
+    visits: "Besøg",
+    uniqueVisitors: "Unikke besøgende",
+    orders: "Ordrer",
+    netRevenue: "Nettoomsætning",
+    noOrders: "Ingen ordrer endnu",
+    noOrdersBody: "Så snart nogen trykker Bestil i din butik, lander oplysningerne her — før de overhovedet skriver.",
+  },
+  products: {
+    title: "Produkter",
+    description: "Alt hvad du sælger: fysisk, digitalt eller en ydelse.",
+  },
+  orders: {
+    title: "Ordrer",
+    description: "Gemmes i det øjeblik nogen trykker Bestil, før beskeden sendes.",
+  },
+  clients: {
+    title: "Kunder",
+    emptyBody: "Købere dukker op her efter deres første ordre med e-mail eller telefon.",
+  },
+  categories: {
+    title: "Kategorier",
+    description: "De bliver til filtrene øverst i din butik.",
+  },
+  reviews: {
+    title: "Anmeldelser",
+    emptyBody: "Købere kan anmelde fra enhver produktside.",
+  },
+  coupons: {
+    title: "Rabatkoder",
+    description: "Koder køberen taster ved betaling.",
+  },
+  affiliates: {
+    title: "Partnere",
+    description: "Betal andre en andel af det, de sælger for dig.",
+  },
+  payments: {
+    title: "Betalinger",
+    description: "Slå så mange bestillingsmåder til, du vil.",
+  },
+  delivery: {
+    title: "Levering",
+    description: "Tilføj lige så mange muligheder, du vil: standard, ekspres, afhentning.",
+  },
+  settings: {
+    title: "Indstillinger",
+    description: "Dine butiksoplysninger, din plan og dine data.",
+  },
+};

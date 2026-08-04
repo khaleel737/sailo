@@ -1,15 +1,18 @@
 import { SettingsNav } from "@/components/admin/settings-nav";
+import { getAdminT } from "@/i18n/server";
 
-export default function SettingsLayout({
+export default async function SettingsLayout({
   children,
 }: LayoutProps<"/admin/settings">) {
+  const { a } = await getAdminT();
+
   return (
     <>
       <div className="mb-6">
-        <h1 className="text-xl font-semibold tracking-tight">Settings</h1>
-        <p className="mt-1 text-sm text-ink-500">
-          Your shop details, plan and data.
-        </p>
+        <h1 className="text-xl font-semibold tracking-tight">
+          {a.settings.title}
+        </h1>
+        <p className="mt-1 text-sm text-ink-500">{a.settings.description}</p>
       </div>
       <SettingsNav />
       {children}

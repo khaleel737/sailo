@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminDe: PartialAdminDictionary = {
+  common: {
+    save: "Speichern",
+    saveChanges: "Änderungen speichern",
+    cancel: "Abbrechen",
+    delete: "Löschen",
+    edit: "Bearbeiten",
+    add: "Hinzufügen",
+    optional: "optional",
+    private: "privat",
+    unlimited: "Unbegrenzt",
+    active: "Aktiv",
+    inactive: "Inaktiv",
+    pending: "Ausstehend",
+    disabled: "Deaktiviert",
+    disable: "Deaktivieren",
+    live: "Aktiv",
+    off: "Aus",
+    hidden: "Verborgen",
+    featured: "Hervorgehoben",
+    soldOut: "Ausverkauft",
+    paid: "Bezahlt",
+    approve: "Freigeben",
+    view: "Ansehen",
+    viewAll: "Alle ansehen",
+    visit: "Öffnen",
+    name: "Name",
+    email: "E-Mail",
+    code: "Code",
+    type: "Art",
+    status: "Status",
+    expires: "Läuft ab",
+    day: "Tag",
+    viewAsTable: "Als Tabelle",
+  },
+  dashboard: {
+    shopLink: "Dein Shop-Link",
+    recentOrders: "Letzte Bestellungen",
+    visits: "Besuche",
+    uniqueVisitors: "Eindeutige Besucher",
+    orders: "Bestellungen",
+    netRevenue: "Nettoumsatz",
+    noOrders: "Noch keine Bestellungen",
+    noOrdersBody: "Sobald jemand in deinem Shop auf Bestellen tippt, landen die Daten hier — noch bevor er dir schreibt.",
+  },
+  products: {
+    title: "Produkte",
+    description: "Alles, was du verkaufst: physisch, digital oder eine Dienstleistung.",
+  },
+  orders: {
+    title: "Bestellungen",
+    description: "Erfasst, sobald jemand auf Bestellen tippt — noch vor der Nachricht.",
+  },
+  clients: {
+    title: "Kunden",
+    emptyBody: "Käufer erscheinen hier nach ihrer ersten Bestellung, wenn sie E-Mail oder Telefon hinterlassen.",
+  },
+  categories: {
+    title: "Kategorien",
+    description: "Daraus werden die Filter oben in deinem Shop.",
+  },
+  reviews: {
+    title: "Bewertungen",
+    emptyBody: "Käufer können auf jeder Produktseite eine Bewertung hinterlassen.",
+  },
+  coupons: {
+    title: "Gutscheine",
+    description: "Rabattcodes, die Käufer beim Bezahlen eingeben.",
+  },
+  affiliates: {
+    title: "Partner",
+    description: "Zahle anderen einen Anteil an dem, was sie für dich verkaufen.",
+  },
+  payments: {
+    title: "Zahlungen",
+    description: "Aktiviere so viele Bestellwege, wie du möchtest. Der Käufer wählt einen.",
+  },
+  delivery: {
+    title: "Versand",
+    description: "Füge beliebig viele Optionen hinzu: Standard, Express, Abholung.",
+  },
+  settings: {
+    title: "Einstellungen",
+    description: "Deine Shop-Daten, dein Tarif und deine Daten.",
+  },
+};

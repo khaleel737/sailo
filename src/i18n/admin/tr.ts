@@ -1,0 +1,88 @@
+import type { PartialAdminDictionary } from "./en";
+
+export const adminTr: PartialAdminDictionary = {
+  common: {
+    save: "Kaydet",
+    saveChanges: "Değişiklikleri kaydet",
+    cancel: "Vazgeç",
+    delete: "Sil",
+    edit: "Düzenle",
+    add: "Ekle",
+    optional: "isteğe bağlı",
+    private: "özel",
+    unlimited: "Sınırsız",
+    active: "Aktif",
+    inactive: "Pasif",
+    pending: "Beklemede",
+    disabled: "Devre dışı",
+    disable: "Devre dışı bırak",
+    live: "Yayında",
+    off: "Kapalı",
+    hidden: "Gizli",
+    featured: "Öne çıkan",
+    soldOut: "Tükendi",
+    paid: "Ödendi",
+    approve: "Onayla",
+    view: "Gör",
+    viewAll: "Tümünü gör",
+    visit: "Ziyaret et",
+    name: "Ad",
+    email: "E-posta",
+    code: "Kod",
+    type: "Tür",
+    status: "Durum",
+    expires: "Bitiş",
+    day: "Gün",
+    viewAsTable: "Tablo olarak",
+  },
+  dashboard: {
+    shopLink: "Mağaza bağlantınız",
+    recentOrders: "Son siparişler",
+    visits: "Ziyaret",
+    uniqueVisitors: "Tekil ziyaretçi",
+    orders: "Siparişler",
+    netRevenue: "Net gelir",
+    noOrders: "Henüz sipariş yok",
+    noOrdersBody: "Biri mağazanızda Sipariş'e dokunduğu anda bilgileri buraya düşer — size yazmadan önce bile.",
+  },
+  products: {
+    title: "Ürünler",
+    description: "Sattığınız her şey: fiziksel, dijital ya da hizmet.",
+  },
+  orders: {
+    title: "Siparişler",
+    description: "Sipariş'e dokunulduğu anda, mesaj gelmeden kaydedilir.",
+  },
+  clients: {
+    title: "Müşteriler",
+    emptyBody: "Alıcılar ilk siparişten sonra e-posta veya telefon bırakırsa burada görünür.",
+  },
+  categories: {
+    title: "Kategoriler",
+    description: "Mağazanızın üstündeki filtreler bunlardan oluşur.",
+  },
+  reviews: {
+    title: "Değerlendirmeler",
+    emptyBody: "Alıcılar her ürün sayfasında değerlendirme bırakabilir.",
+  },
+  coupons: {
+    title: "Kuponlar",
+    description: "Alıcıların ödemede girdiği indirim kodları.",
+  },
+  affiliates: {
+    title: "Ortaklar",
+    description: "Sizin için sattıklarından başkalarına pay verin.",
+  },
+  payments: {
+    title: "Ödemeler",
+    description: "İstediğiniz kadar sipariş yolunu açın; alıcı birini seçer.",
+  },
+  delivery: {
+    title: "Teslimat",
+    description: "İstediğiniz kadar seçenek ekleyin: standart, hızlı, teslim alma.",
+  },
+  settings: {
+    title: "Ayarlar",
+    description: "Mağaza bilgileriniz, planınız ve verileriniz.",
+  },
+};

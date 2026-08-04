@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight, MapPin, Users } from "lucide-react";
 import { requireShop } from "@/lib/session";
+import { getAdminT } from "@/i18n/server";
 import { getShopClients } from "@/lib/queries";
 import { PageHeader } from "@/components/admin/page-header";
 import { ExportButton } from "@/components/admin/export-button";
@@ -12,12 +13,13 @@ export const metadata: Metadata = { title: "Clients" };
 
 export default async function AdminClientsPage() {
   const { shop } = await requireShop();
+  const { a } = await getAdminT();
   const clients = await getShopClients(shop.id);
 
   return (
     <>
       <PageHeader
-        title="Clients"
+        title={a.clients.title}
         description={
           clients.length > 0
             ? `${clients.length} ${clients.length === 1 ? "person has" : "people have"} ordered from you.`
@@ -29,8 +31,8 @@ export default async function AdminClientsPage() {
       {clients.length === 0 ? (
         <EmptyState
           icon={<Users className="size-8" />}
-          title="No clients yet"
-          description="Buyers appear here once they place their first order and leave an email or phone number."
+          title={a.clients.empty}
+          description={a.clients.emptyBody}
         />
       ) : (
         <Card className="divide-y divide-ink-100">
