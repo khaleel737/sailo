@@ -1,0 +1,103 @@
+src/lib/email.ts
+  s_3dd4b357265b83::t_674cfe2627f3c1 1-222
+src/db/schema.ts
+  s_3dd4b357265b83::t_9e18c130daed9c 626-629
+  s_3dd4b357265b83::t_ad826eea18a50f 482-483
+  s_3dd4b357265b83::t_f13313f8e4d85f 277-278,290-291
+  s_3dd4b357265b83::t_c866333a8418ec 427-431,436-448
+  s_3dd4b357265b83::t_57adba669f25d5 449
+src/lib/actions/delivery.ts
+  s_3dd4b357265b83::t_8325a8fe10d63b 4,16-19,25,27-28,30,34-36,47,55-63,65-84,86-87,91-130
+src/lib/queries.ts
+  s_3dd4b357265b83::t_a2be113745e273 308
+  s_3dd4b357265b83::t_2ef42e60834805 464,466
+  s_3dd4b357265b83::t_965416a097c008 385-390,393,400-402
+  s_3dd4b357265b83::t_612c5018c469b7 316
+  s_3dd4b357265b83::t_ac7e9bb90b64ca 311-315,317-328
+  s_3dd4b357265b83::t_4dbf25f0151d1a 274-292,295,309
+  s_3dd4b357265b83::t_a4d59c28429268 329
+  s_3dd4b357265b83::t_ee656853176316 259-263,266
+  s_3dd4b357265b83::t_eef424ac75c8a5 228-231,234
+  s_3dd4b357265b83::t_222a976afda515 354-355
+  s_3dd4b357265b83::t_4683ef1a3cb40a 310
+src/lib/actions/orders.ts
+  s_3dd4b357265b83::t_b7527b056eb118 238-239
+  s_3dd4b357265b83::t_94de2b8511fa73 668-804
+  s_3dd4b357265b83::t_fb4e97c576ac75 55-60,62
+  s_3dd4b357265b83::t_5747085ab78c25 53-54,61
+  s_3dd4b357265b83::t_3cc96ed9135549 517,521
+  s_3dd4b357265b83::t_ecd2909c641e3d 78
+  s_3dd4b357265b83::t_78edac709ff848 493
+  s_3dd4b357265b83::t_375d12902eee61 21-32
+  s_3dd4b357265b83::t_8dffd00230f2f7 41
+  s_3dd4b357265b83::t_20994b9dacc2f1 390-412
+  s_3dd4b357265b83::t_5d377724feb963 433
+  s_3dd4b357265b83::t_d5f0df12a7ffa8 353,355
+src/app/admin/page.tsx
+  s_3dd4b357265b83::t_a29ca3012fc885 29,32,36
+  s_3dd4b357265b83::t_3c44b0a8093098 3
+  s_3dd4b357265b83::t_55e0105d0edc27 132,141-142
+  s_3dd4b357265b83::t_a45450b1406bd4 7,11
+  s_3dd4b357265b83::t_14a8a9dca93385 126-131,133-140,143-146
+  s_3dd4b357265b83::t_2e02a7812e1e45 21-22,24
+  s_3dd4b357265b83::t_ab553850a70e57 189
+  s_3dd4b357265b83::t_2055afb9247a09 83-85,87-88,94-108
+  s_3dd4b357265b83::t_f42ddcb9712266 37
+  s_3dd4b357265b83::t_7b7670b1a35420 109
+src/components/admin/delivery-rate-form.tsx
+  s_3dd4b357265b83::t_464c3923ac4221 1-175
+src/components/shop/order-sheet.tsx
+  s_3dd4b357265b83::t_ed5b07b39c8220 32,34
+  s_3dd4b357265b83::t_aa3be6bf0ef3e3 141,154,166,185,202,312,327,329,335,559
+  s_3dd4b357265b83::t_258e3a4ffe2861 103-104
+package.json
+  s_3dd4b357265b83::t_011717ef093f86 24
+src/components/admin/bar-chart.tsx
+  s_3dd4b357265b83::t_2eba961017d6a3 4
+  s_3dd4b357265b83::t_c70ea4d249277c 12-14,20-21,28-29,33-36
+  s_3dd4b357265b83::t_2f5624edd9d2d7 1-3,5-11,15-19,22-27,30-32,37-146
+src/components/admin/order-actions.tsx
+  s_3dd4b357265b83::t_194636d05ef9f5 1-157
+src/components/admin/order-row.tsx
+  s_3dd4b357265b83::t_8c9ebe9ec0f562 106-131
+  s_3dd4b357265b83::t_dccecde31c64f9 15-16,18
+  s_3dd4b357265b83::t_b16e67c1e5dce2 2
+  s_3dd4b357265b83::t_0b5a8380c6ad8a 214-215
+  s_3dd4b357265b83::t_5949b026da0486 7
+src/app/admin/delivery/page.tsx
+  s_3dd4b357265b83::t_fa0718c863c354 2,5-13,15-17,29,36-37,41-46,48-125
+src/components/admin/order-status-select.tsx
+  s_3dd4b357265b83::t_35591acce845f6 7-14
+src/components/admin/payment-status-select.tsx
+  s_3dd4b357265b83::t_a74b0c5ffd4f6f 11
+scripts/seed.ts
+  s_3dd4b357265b83::t_d47bf0ec3e18a3 516-522
+  s_3dd4b357265b83::t_ffef56ad8f3472 663
+  s_3dd4b357265b83::t_0a86d0d43c50c1 552
+  s_3dd4b357265b83::t_e14fffd2de10e1 336-351,353-363,365-389
+  s_3dd4b357265b83::t_e77e43e54f385a 567-569,571-572,575-582
+  s_3dd4b357265b83::t_b53e6c02ba0b19 536
+  s_3dd4b357265b83::t_634946be4af730 583
+README.md
+  s_3dd4b357265b83::t_cf6392aa9e807f 63-66,69-71
+  s_3dd4b357265b83::t_6b0a4fe42d018d 112-126
+  s_3dd4b357265b83::t_ec766264426592 72
+package-lock.json
+  s_3dd4b357265b83::t_022a74a52caf26 20,2282-2287,5264-5269,7325-7330,7528-7548,7978-7987
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6c183c5f9439020ff9b4cdc274d5c5f6d299540d",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
