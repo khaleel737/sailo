@@ -1,0 +1,42 @@
+src/components/admin/upgrade-modal.tsx
+  s_3dd4b357265b83::t_32bffbbd0df525 88
+src/app/layout.tsx
+  s_3dd4b357265b83::t_f32940ea1b771f 3,26-31,34
+  s_3dd4b357265b83::t_c26cf9ee78455c 4,35
+src/components/shop/filter-bar.tsx
+  s_3dd4b357265b83::t_29fab08a666580 91,98,105
+src/lib/billing-map.ts
+  s_3dd4b357265b83::t_630386459e24de 49-64
+src/lib/billing-sync.ts
+  s_3dd4b357265b83::t_c1dfcdad8d19b7 36
+src/lib/exporters.ts
+  s_3dd4b357265b83::t_6a6e945f392549 27-28
+src/app/api/stripe/webhook/route.ts
+  s_3dd4b357265b83::t_c1dfcdad8d19b7 145
+src/components/admin/notification-bell.tsx
+  s_3dd4b357265b83::t_29fab08a666580 103,110,115,182
+src/app/invoice/[token]/page.tsx
+  s_3dd4b357265b83::t_29fab08a666580 80,125,152,154-156,162,165,168,175
+src/components/shop/order-sheet.tsx
+  s_3dd4b357265b83::t_29fab08a666580 286,302,728
+src/components/shop/product-card.tsx
+  s_3dd4b357265b83::t_29fab08a666580 73,77
+src/components/admin/sidebar.tsx
+  s_3dd4b357265b83::t_32bffbbd0df525 159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3b5222c8e0998b004570fd5dc808bea239e3e85a",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
