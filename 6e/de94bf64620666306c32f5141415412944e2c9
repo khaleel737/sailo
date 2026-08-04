@@ -1,0 +1,76 @@
+src/app/admin/settings/layout.tsx
+  s_3dd4b357265b83::t_163f27fd841138 1-18
+src/lib/importers.ts
+  s_3dd4b357265b83::t_d05ba51685e435 8,50-51
+  s_3dd4b357265b83::t_c5c255a0331137 1-7,9-49,52-353
+src/components/shop/order-sheet.tsx
+  s_3dd4b357265b83::t_942ff2f1e96286 735
+src/components/admin/order-row.tsx
+  s_3dd4b357265b83::t_942ff2f1e96286 179-194
+src/app/admin/products/page.tsx
+  s_3dd4b357265b83::t_70b0063f0b2d6d 9
+  s_3dd4b357265b83::t_640ee22624676f 25-33
+src/lib/plans.ts
+  s_3dd4b357265b83::t_80f0f1c60f7062 61-62,69,76-78,85,87,93-95,108-110
+src/app/admin/clients/page.tsx
+  s_3dd4b357265b83::t_640ee22624676f 26
+  s_3dd4b357265b83::t_70b0063f0b2d6d 7
+package.json
+  s_3dd4b357265b83::t_ba3f907af4966e 22-23,34-35
+src/app/api/export/[type]/route.ts
+  s_3dd4b357265b83::t_4aa711f87bc0ee 1-29
+src/lib/actions/billing.ts
+  s_3dd4b357265b83::t_8b7fec3549c0fa 65-66,76,80,90
+src/lib/exporters.ts
+  s_3dd4b357265b83::t_9ee68473c13075 163,183
+  s_3dd4b357265b83::t_ef1bd5e47d3548 1-162,164-182,184-200
+src/app/admin/settings/billing/page.tsx
+  s_3dd4b357265b83::t_8b7fec3549c0fa 1-203
+src/app/admin/orders/page.tsx
+  s_3dd4b357265b83::t_70b0063f0b2d6d 6
+  s_3dd4b357265b83::t_640ee22624676f 27
+src/components/admin/import-panel.tsx
+  s_3dd4b357265b83::t_9f0edfd2a5832e 1-172
+src/lib/csv.ts
+  s_3dd4b357265b83::t_cb47cb2401b8cc 1-94
+src/components/admin/export-button.tsx
+  s_3dd4b357265b83::t_f3249b803a0881 1-40
+src/components/admin/settings-nav.tsx
+  s_3dd4b357265b83::t_0b6a702d8d9608 1-40
+README.md
+  s_3dd4b357265b83::t_0037b802a237ac 173-197,244,248-249,251-253,256-264,276-279
+  s_3dd4b357265b83::t_9e5003beca66b3 124-126,128-129
+src/app/invoice/[token]/pdf/route.ts
+  s_3dd4b357265b83::t_d75859f36fefe9 1-26
+src/components/admin/interval-toggle.tsx
+  s_3dd4b357265b83::t_8b7fec3549c0fa 12
+src/app/invoice/[token]/page.tsx
+  s_3dd4b357265b83::t_942ff2f1e96286 4,45-54
+src/lib/actions/import.ts
+  s_3dd4b357265b83::t_1c6e034e9fad9a 1-78
+src/lib/invoice-pdf.ts
+  s_3dd4b357265b83::t_ed2dc1e7e1b7e6 1-234
+src/app/admin/settings/data/page.tsx
+  s_3dd4b357265b83::t_60b0e54f5f4212 1-137
+next.config.ts
+  s_3dd4b357265b83::t_c51b8ca41e87bc 15-24
+  s_3dd4b357265b83::t_db56bdef459342 4-6
+package-lock.json
+  s_3dd4b357265b83::t_a577cd0dfd01df 18-19,30-31,2621-2640,3656-3675,3964-3981,4126-4134,4337-4342,5421-5437,6372-6377,6785-6803,7342-7353,7393-7430,7484-7491,7770-7775,8440-8445,9219-9244
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6ede94bf64620666306c32f5141415412944e2c9",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
