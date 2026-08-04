@@ -1,0 +1,105 @@
+src/app/admin/products/page.tsx
+  s_79ff13cbe32e61::t_a29557e29aa6da 6,19,25-26,33,43-44,49,125,127,158-159
+src/components/admin/admin-i18n.tsx
+  s_79ff13cbe32e61::t_248157c1b6c02f 1-34
+src/i18n/admin/it.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/i18n/admin/pl.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/i18n/admin/ja.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/i18n/admin/pt.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/app/admin/clients/page.tsx
+  s_79ff13cbe32e61::t_a29557e29aa6da 5,16,22,34-35
+src/app/admin/reviews/page.tsx
+  s_79ff13cbe32e61::t_a29557e29aa6da 4,15,22,33-34,87,101
+src/i18n/admin/es.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/app/admin/categories/page.tsx
+  s_79ff13cbe32e61::t_a29557e29aa6da 7,18,32-33,43-44
+src/app/admin/layout.tsx
+  s_79ff13cbe32e61::t_5733d04eb26100 6-7,11,22,47
+src/app/admin/coupons/page.tsx
+  s_79ff13cbe32e61::t_a29557e29aa6da 13,19,28-29,51-52,62-63
+src/app/admin/orders/page.tsx
+  s_79ff13cbe32e61::t_a29557e29aa6da 4,15,26,38-39
+src/i18n/admin/nl.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/i18n/admin/index.ts
+  s_79ff13cbe32e61::t_51c6f34551beff 63,68,70
+  s_79ff13cbe32e61::t_8f103c8cffced3 1-62,64-67,69,71-100
+src/i18n/admin/zh.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/i18n/server.ts
+  s_79ff13cbe32e61::t_248157c1b6c02f 12
+  s_79ff13cbe32e61::t_1767e55626d401 47-60
+src/components/admin/variant-editor.tsx
+  s_79ff13cbe32e61::t_df9a96695c7367 6-7,88,156,161-165,177,182-184,220-222,229,241,243,262-267,269,271-274
+src/i18n/admin/fi.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/i18n/admin/tr.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/app/admin/delivery/page.tsx
+  s_79ff13cbe32e61::t_a29557e29aa6da 4,24,30-31,47-48
+src/i18n/admin/hu.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/app/admin/payments/page.tsx
+  s_79ff13cbe32e61::t_a29557e29aa6da 4,41-42
+  s_79ff13cbe32e61::t_6c6974fe94053b 18
+src/i18n/admin/el.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/i18n/admin/ru.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/i18n/admin/uk.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/app/admin/settings/layout.tsx
+  s_79ff13cbe32e61::t_542deb4056adfb 2,4,7-8,12-15
+src/i18n/admin/ar.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/components/admin/product-form.tsx
+  s_79ff13cbe32e61::t_b0f3966264d4c9 21-22,43,57,87,94,98-102,108,112,119,132,134,151,166-170,176,188,190-191,195,197,203,212-214,216,222-223,244,247,264-265,272,274,285,287,307,310,316,318,328,334-335,341,343,350,356-357,364,366,386-387,392-393,398-399,410
+  s_79ff13cbe32e61::t_c76105c0d66460 38
+src/app/admin/affiliates/page.tsx
+  s_79ff13cbe32e61::t_a29557e29aa6da 21,33,40-41,69-70,115-116
+src/components/admin/file-uploader.tsx
+  s_79ff13cbe32e61::t_b47505f5a948d7 7,32,52,65,137-141,155
+src/i18n/admin/de.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/i18n/admin/fr.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/components/admin/image-uploader.tsx
+  s_79ff13cbe32e61::t_b47505f5a948d7 6,21,42,47,86,107,124
+package.json
+  s_79ff13cbe32e61::t_06617f39ebcc5b 14-15
+src/i18n/admin/da.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/i18n/admin/no.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/i18n/admin/ro.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+scripts/check-i18n.ts
+  s_79ff13cbe32e61::t_06617f39ebcc5b 1-66
+src/i18n/admin/en.ts
+  s_79ff13cbe32e61::t_58474288c356db 1-366
+src/i18n/admin/sv.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+src/i18n/admin/cs.ts
+  s_79ff13cbe32e61::t_4f5047de506bc2 1-88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "0064f9b58f5a2c30bbcf6babe1339bc91606ddfd",
+  "prompts": {},
+  "sessions": {
+    "s_79ff13cbe32e61": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d4473ffb-fe57-4d6e-8826-d0885bba381b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
