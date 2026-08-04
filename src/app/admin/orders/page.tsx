@@ -3,6 +3,7 @@ import { ShoppingBag } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getInvoiceMap, getShopOrders } from "@/lib/queries";
 import { PageHeader } from "@/components/admin/page-header";
+import { ExportButton } from "@/components/admin/export-button";
 import { OrderRow } from "@/components/admin/order-row";
 import { Card, EmptyState } from "@/components/ui";
 
@@ -23,6 +24,7 @@ export default async function AdminOrdersPage() {
             ? `${awaiting} ${awaiting === 1 ? "buyer says they've" : "buyers say they've"} paid — confirm to mark as paid.`
             : "Captured the moment someone taps Order — before they even send the message."
         }
+        action={<ExportButton shop={shop} type="orders" />}
       />
 
       {orders.length === 0 ? (

@@ -732,7 +732,7 @@ function Confirmation({
             <FileText className="size-4 shrink-0 opacity-60" />
             Invoice {result.invoiceNumber}
           </span>
-          <span className="text-muted text-xs">View</span>
+          <span className="text-muted text-xs">View · PDF</span>
         </a>
       ) : null}
 

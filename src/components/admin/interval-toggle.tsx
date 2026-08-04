@@ -9,7 +9,7 @@ export function IntervalToggle({ interval }: { interval: "month" | "year" }) {
       {(["month", "year"] as const).map((value) => (
         <Link
           key={value}
-          href={`/admin/billing?interval=${value}`}
+          href={`/admin/settings/billing?interval=${value}`}
           scroll={false}
           className={cn(
             "rounded-lg px-3.5 py-1.5 text-sm font-medium transition",

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Store } from "lucide-react";
+import { Download, Store } from "lucide-react";
 import { getInvoiceByToken } from "@/lib/queries";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { PrintButton } from "@/components/shop/print-button";
@@ -42,7 +42,16 @@ export default async function InvoicePage({
           >
             ← {shop.name}
           </Link>
-          <PrintButton />
+          <div className="flex gap-2">
+            <a
+              href={`/invoice/${invoice.token}/pdf`}
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-ink-900 px-3 text-sm font-medium text-white transition hover:bg-ink-800"
+            >
+              <Download className="size-4" />
+              Download PDF
+            </a>
+            <PrintButton />
+          </div>
         </div>
 
         <article className="rounded-2xl border border-ink-200 bg-white p-6 shadow-sm sm:p-10 print:border-0 print:shadow-none">

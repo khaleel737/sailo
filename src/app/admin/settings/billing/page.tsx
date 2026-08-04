@@ -8,7 +8,6 @@ import { openBillingPortal, startCheckout } from "@/lib/actions/billing";
 import { syncSubscriptionForShop } from "@/lib/billing-sync";
 import { PLAN_IDS, PLANS, planFor, productLimit } from "@/lib/plans";
 import { billingEnabled } from "@/lib/stripe";
-import { PageHeader } from "@/components/admin/page-header";
 import { IntervalToggle } from "@/components/admin/interval-toggle";
 import { Badge, Button, Card } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
@@ -17,7 +16,7 @@ export const metadata: Metadata = { title: "Billing" };
 
 export default async function BillingPage({
   searchParams,
-}: PageProps<"/admin/billing">) {
+}: PageProps<"/admin/settings/billing">) {
   const { shop } = await requireShop();
   const params = await searchParams;
 
@@ -40,11 +39,6 @@ export default async function BillingPage({
 
   return (
     <>
-      <PageHeader
-        title="Billing"
-        description="Upgrade to take card payments, run promotions and drop the badge."
-      />
-
       {params.checkout === "cancelled" ? (
         <p className="mb-5 rounded-2xl border border-ink-200 bg-ink-50 p-4 text-sm text-ink-600">
           Checkout cancelled — nothing was charged.
@@ -65,11 +59,9 @@ export default async function BillingPage({
             <p className="mt-1 text-2xl font-semibold">{current.name}</p>
             <p className="mt-1 text-sm text-ink-500">
               {productCount} of {limit ?? "unlimited"} products used
-              {current.platformFeeBp > 0
-                ? ` · ${current.platformFeeBp / 100}% fee on card payments`
-                : current.features.cardRails
-                  ? " · 0% fee on card payments"
-                  : ""}
+              {current.features.cardRails
+                ? " · 0% fee on card payments"
+                : ""}
             </p>
             {fresh.currentPeriodEnd ? (
               <p className="mt-0.5 text-xs text-ink-400">

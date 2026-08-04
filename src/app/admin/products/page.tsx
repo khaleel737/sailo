@@ -6,6 +6,7 @@ import { requireShop } from "@/lib/session";
 import { getAdminProducts } from "@/lib/queries";
 import { deleteProduct, toggleProductPublished } from "@/lib/actions/products";
 import { PageHeader } from "@/components/admin/page-header";
+import { ExportButton } from "@/components/admin/export-button";
 import { Badge, Button, Card, EmptyState } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
 
@@ -21,12 +22,15 @@ export default async function AdminProductsPage() {
         title="Products"
         description="Anything you sell — physical, digital or a service."
         action={
-          <Link href="/admin/products/new">
-            <Button>
-              <Plus className="size-4" />
-              Add product
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <ExportButton shop={shop} type="products" />
+            <Link href="/admin/products/new">
+              <Button>
+                <Plus className="size-4" />
+                Add product
+              </Button>
+            </Link>
+          </div>
         }
       />
 

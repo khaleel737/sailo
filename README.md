@@ -121,9 +121,12 @@ WhatsApp messages — set it to the real origin in production.
 /admin/payments       Turn payment rails on/off and configure them
 /admin/delivery       Shipping and collection options
 /admin/reviews        Review moderation
-/admin/settings       Identity, appearance, socials, address collection
+/admin/settings       Shop details, appearance, socials, address collection
+/admin/settings/billing   Plan and billing
+/admin/settings/data      CSV import and export
 /[handle]/affiliate   Public referral page (when enabled)
-/invoice/[token]      Public printable invoice
+/invoice/[token]      Public invoice (HTML)
+/invoice/[token]/pdf  Public invoice (PDF download)
 ```
 
 ## Delivery, discounts and commission
@@ -167,10 +170,31 @@ Percentages are stored in basis points (1000 = 10%) so fractional rates survive
 a round trip. The order sheet quotes totals from the same `computeTotals` the
 order uses, so the quote can't drift from what's charged.
 
-**Invoices** are issued automatically per order with a per-shop sequential
-number, claimed atomically so concurrent orders can't collide. Each has a public
-token URL that's printable to PDF, linked from the admin and offered to the
-buyer at checkout.
+**Invoices** are issued automatically on every order with a per-shop sequential
+number, claimed atomically so concurrent orders can't collide. Each has an
+unguessable token URL serving both an HTML view and a real generated
+`application/pdf` download at `/invoice/<token>/pdf` — linked from the admin,
+the invoice page and the buyer's confirmation.
+
+## Import and export
+
+CSV in and out, using Shopify's column names so files move between the two
+without hand-editing: UTF-8 with a BOM, no currency symbols, `Handle` as the
+product key.
+
+Exports cover products, orders and customers. Imports cover **products and
+customers only** — orders are export-only, the same restriction Shopify has,
+because importing an order means inventing payment and fulfilment history.
+
+Two details worth knowing:
+
+- Import is **two-step**. The first submit is a dry run reporting what would
+  happen and the per-row problems; nothing is written until you confirm.
+- Fields absent from a file never blank stored values. Re-importing a partial
+  customer list won't wipe addresses it didn't carry.
+
+Exported fields beginning `=`, `+`, `-` or `@` are prefixed with a quote so a
+product title can't execute as a formula when the file opens in Excel.
 
 ## How ordering works
 
@@ -217,20 +241,27 @@ and `verification`.
 
 ## Plans
 
-| | Free | Pro — $9.99/mo | Business — $29.99/mo |
+| | Free | Pro — $9.99/mo | Business — $19.99/mo |
 |---|---|---|---|
 | Products | 20 | 250 | Unlimited |
 | Chat ordering + bank transfer + COD | ✓ | ✓ | ✓ |
-| Delivery, reviews, filters, invoices | ✓ | ✓ | ✓ |
-| Card payments (seller's own gateway) | — | ✓ | ✓ |
-| Shopik fee on card payments | — | 2% | **0%** |
-| Coupons and referrals | — | ✓ | ✓ |
+| Delivery, reviews, filters, PDF invoices | ✓ | ✓ | ✓ |
+| Import products and customers | ✓ | ✓ | ✓ |
 | Shopik badge removed | — | ✓ | ✓ |
-| Custom domain | — | — | ✓ |
+| CSV export | — | ✓ | ✓ |
+| Card payments (seller's own gateway) | — | — | ✓ |
+| Coupons and referrals | — | — | ✓ |
 | Analytics window | 30 days | 1 year | 3 years |
 
-Yearly billing is ~20% off. Business pays for itself against Pro at roughly
-$1,000/month in card sales — the 2% saved covers the $20 difference.
+Yearly billing is ~20% off. Shopik takes **no cut of any sale** on any plan.
+
+Free is deliberately enough to take real orders — a paywall before the first
+sale converts nobody, and every free shop carries the badge, so free shops are
+distribution. Pro is "look professional and grow"; Business is "the tools that
+make more money".
+
+**Import is free on every plan.** It reduces the cost of switching to Shopik,
+so putting it behind a paywall would be self-defeating.
 
 Entitlements live in `lib/plans.ts` and are enforced **inside server actions**,
 not just hidden in the UI. Downgrading never deletes anything: existing products,
@@ -242,11 +273,10 @@ the risk.
 
 ## Not built yet
 
-- Card checkout via seller-owned gateways (see above).
-- **Emailing invoices.** They generate and are shareable by link, but sending
-  needs an email provider (Resend or similar) that isn't wired up yet.
-- Paid tiers. The plan is to gate on branding, custom domain and card checkout
-  rather than product count, with regional pricing.
+- Card checkout via seller-owned gateways. The Business tier gates it, but the
+  rail itself isn't built — that's the next piece of work.
+- Regional pricing. Flat USD today; localised pricing lifts conversion sharply
+  in the emerging markets this is aimed at.
 - Multi-item carts — an order is currently one product with a quantity.
 - Custom domains, multiple shops per user, digital file delivery, bot filtering
   on visit tracking.

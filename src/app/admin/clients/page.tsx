@@ -4,6 +4,7 @@ import { ChevronRight, MapPin, Users } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getShopClients } from "@/lib/queries";
 import { PageHeader } from "@/components/admin/page-header";
+import { ExportButton } from "@/components/admin/export-button";
 import { Card, EmptyState } from "@/components/ui";
 import { formatAddress, formatMoney } from "@/lib/utils";
 
@@ -22,6 +23,7 @@ export default async function AdminClientsPage() {
             ? `${clients.length} ${clients.length === 1 ? "person has" : "people have"} ordered from you.`
             : "Everyone who has ordered from you."
         }
+        action={<ExportButton shop={shop} type="clients" />}
       />
 
       {clients.length === 0 ? (

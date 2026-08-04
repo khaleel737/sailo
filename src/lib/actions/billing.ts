@@ -62,8 +62,8 @@ export async function startCheckout(formData: FormData) {
     subscription_data: { metadata: { shopId: shop.id, plan } },
     metadata: { shopId: shop.id, plan },
     allow_promotion_codes: true,
-    success_url: `${appUrl()}/admin/billing?checkout=success`,
-    cancel_url: `${appUrl()}/admin/billing?checkout=cancelled`,
+    success_url: `${appUrl()}/admin/settings/billing?checkout=success`,
+    cancel_url: `${appUrl()}/admin/settings/billing?checkout=cancelled`,
   });
 
   if (!session.url) throw new Error("Stripe did not return a checkout URL");
@@ -73,11 +73,11 @@ export async function startCheckout(formData: FormData) {
 /** Stripe-hosted portal for changing plan, card or cancelling. */
 export async function openBillingPortal() {
   const { shop } = await requireShop();
-  if (!shop.stripeCustomerId) redirect("/admin/billing");
+  if (!shop.stripeCustomerId) redirect("/admin/settings/billing");
 
   const session = await stripe().billingPortal.sessions.create({
     customer: shop.stripeCustomerId,
-    return_url: `${appUrl()}/admin/billing`,
+    return_url: `${appUrl()}/admin/settings/billing`,
   });
 
   redirect(session.url);
@@ -87,6 +87,6 @@ export async function openBillingPortal() {
 export async function syncSubscription() {
   const { shop } = await requireShop();
   await syncSubscriptionForShop(shop.id);
-  revalidatePath("/admin/billing");
+  revalidatePath("/admin/settings/billing");
   revalidatePath("/admin");
 }

@@ -176,14 +176,22 @@ export function OrderRow({
               })}
             </span>
             {invoice ? (
-              <Link
-                href={`/invoice/${invoice.token}`}
-                target="_blank"
-                className="inline-flex items-center gap-1 text-ink-500 transition hover:text-ink-900"
-              >
-                <FileText className="size-3" />
-                {invoice.number}
-              </Link>
+              <>
+                <Link
+                  href={`/invoice/${invoice.token}`}
+                  target="_blank"
+                  className="inline-flex items-center gap-1 text-ink-500 transition hover:text-ink-900"
+                >
+                  <FileText className="size-3" />
+                  {invoice.number}
+                </Link>
+                <a
+                  href={`/invoice/${invoice.token}/pdf`}
+                  className="inline-flex items-center gap-1 text-ink-500 underline underline-offset-2 transition hover:text-ink-900"
+                >
+                  PDF
+                </a>
+              </>
             ) : null}
           </p>
         </div>

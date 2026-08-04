@@ -14,7 +14,6 @@ export type Features = {
   coupons: boolean;
   affiliates: boolean;
   removeBadge: boolean;
-  customDomain: boolean;
   csvExport: boolean;
 };
 
@@ -30,8 +29,6 @@ export type Plan = {
   tagline: string;
   monthlyCents: number;
   yearlyCents: number;
-  /** Shopik's cut of card payments, in basis points. 0 on Business. */
-  platformFeeBp: number;
   limits: Limits;
   features: Features;
   highlights: string[];
@@ -44,7 +41,6 @@ export const PLANS: Record<PlanId, Plan> = {
     tagline: "Everything you need to take your first orders.",
     monthlyCents: 0,
     yearlyCents: 0,
-    platformFeeBp: 0,
     limits: { products: 20, analyticsDays: 30 },
     features: {
       chatRails: true,
@@ -53,7 +49,6 @@ export const PLANS: Record<PlanId, Plan> = {
       coupons: false,
       affiliates: false,
       removeBadge: false,
-      customDomain: false,
       csvExport: false,
     },
     highlights: [
@@ -63,45 +58,41 @@ export const PLANS: Record<PlanId, Plan> = {
       "Bank transfer and cash on delivery",
       "Shipping and collection options",
       "Reviews, search and filters",
-      "Invoices",
+      "PDF invoices",
+      "Import your products and customers",
       "30 days of analytics",
     ],
   },
   pro: {
     id: "pro",
     name: "Pro",
-    tagline: "Take card payments and grow with coupons and referrals.",
+    tagline: "Room to grow, and your shop looks like your own.",
     monthlyCents: 999,
     yearlyCents: 9590, // ~20% off
-    platformFeeBp: 200, // 2%
     limits: { products: 250, analyticsDays: 365 },
     features: {
       chatRails: true,
       manualRails: true,
-      cardRails: true,
-      coupons: true,
-      affiliates: true,
+      cardRails: false,
+      coupons: false,
+      affiliates: false,
       removeBadge: true,
-      customDomain: false,
       csvExport: true,
     },
     highlights: [
       "250 products",
-      "Card payments through your own Stripe or Paystack",
-      "Discount codes",
-      "Referral programme",
       "No Shopik badge",
+      "Export products, orders and customers",
       "A year of analytics",
-      "Order export",
+      "Email support",
     ],
   },
   business: {
     id: "business",
     name: "Business",
-    tagline: "For shops where the 2% starts to hurt.",
-    monthlyCents: 2999,
-    yearlyCents: 28790,
-    platformFeeBp: 0,
+    tagline: "Card payments, promotions and referrals — the tools that grow revenue.",
+    monthlyCents: 1999,
+    yearlyCents: 19190,
     limits: { products: null, analyticsDays: 365 * 3 },
     features: {
       chatRails: true,
@@ -110,13 +101,13 @@ export const PLANS: Record<PlanId, Plan> = {
       coupons: true,
       affiliates: true,
       removeBadge: true,
-      customDomain: true,
       csvExport: true,
     },
     highlights: [
       "Unlimited products",
-      "0% Shopik fee on card payments",
-      "Custom domain",
+      "Card payments through your own Stripe or Paystack",
+      "Discount codes",
+      "Referral programme with commissions",
       "Three years of analytics",
       "Priority support",
     ],
@@ -159,10 +150,6 @@ export function productLimit(shop: BillingShape): number | null {
 export function atProductLimit(shop: BillingShape, current: number): boolean {
   const limit = productLimit(shop);
   return limit !== null && current >= limit;
-}
-
-export function platformFeeBp(shop: BillingShape): number {
-  return planFor(shop).platformFeeBp;
 }
 
 /** Shown when a gate blocks something, so the message names the cheapest fix. */
