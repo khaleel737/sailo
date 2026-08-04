@@ -1,0 +1,88 @@
+src/app/admin/payments/page.tsx
+  s_3dd4b357265b83::t_4879d7b7a47aef 1-85
+src/components/admin/sidebar.tsx
+  s_3dd4b357265b83::t_516efbb87d96f8 7
+  s_3dd4b357265b83::t_4be6146fcdf897 31
+src/app/[handle]/page.tsx
+  s_3dd4b357265b83::t_442a40369997bb 156
+  s_3dd4b357265b83::t_723bd4cb4f6c6b 48,51,54-57
+  s_3dd4b357265b83::t_40732a06559f5d 7,15
+  s_3dd4b357265b83::t_6aead5f5538003 58
+src/lib/payments.ts
+  s_3dd4b357265b83::t_a40586437edbf0 1-289
+src/app/admin/clients/page.tsx
+  s_3dd4b357265b83::t_0232f78c97e260 2-3,8,20-24,31,34-62,64-74
+src/components/admin/payment-method-card.tsx
+  s_3dd4b357265b83::t_15dde077b0b1f8 1-141
+src/components/shop/order-sheet.tsx
+  s_3dd4b357265b83::t_890cbe7978e2e9 4-10,13-17,26-29,36,42,49-53,67-68,73,76-79,91-93,100,104,106-113,117-118,123-125,129,147,157-163,204-320,328,341,345-347,355-495
+  s_3dd4b357265b83::t_3d2d2bea245df5 496-498
+src/app/admin/clients/[id]/page.tsx
+  s_3dd4b357265b83::t_acf867a8224b2e 1-189
+src/lib/actions/orders.ts
+  s_3dd4b357265b83::t_399694a9a0656f 6-13,15-23,25-26,28-35,37,41,43-44,46-136,152-156,158-169,172-200,203-222,224-225,228-239,242-247,251-285,290-305,309,328-355
+  s_3dd4b357265b83::t_5fa83c09941ac1 4
+src/lib/actions/shop.ts
+  s_3dd4b357265b83::t_1c00103a650be7 7
+  s_3dd4b357265b83::t_3f23d0dc79e16b 74-95
+  s_3dd4b357265b83::t_825d99a1b4205e 136
+src/components/admin/order-row.tsx
+  s_3dd4b357265b83::t_ecbcd89b798a75 1-136
+src/components/admin/settings-form.tsx
+  s_3dd4b357265b83::t_a10337bf8137b7 163-175,197-223
+  s_3dd4b357265b83::t_26ff4d925bed1c 5
+src/db/schema.ts
+  s_3dd4b357265b83::t_b9c4de6e91a2a7 371-381
+  s_3dd4b357265b83::t_deb1effec7d14b 107-108
+  s_3dd4b357265b83::t_b9be2264c40c31 420-423
+  s_3dd4b357265b83::t_7fe1ed5471493d 220-289,301-303,310,312-319,322-328,331,335
+  s_3dd4b357265b83::t_3a298b0114278e 435-450,458-459
+  s_3dd4b357265b83::t_99c163aebd4c39 109
+src/lib/utils.ts
+  s_3dd4b357265b83::t_011b1d2ee7eed2 54-61,63-73
+src/app/[handle]/p/[slug]/page.tsx
+  s_3dd4b357265b83::t_df2fc306d74e7a 58-63
+  s_3dd4b357265b83::t_082470b4eb9a22 5-9,11-14
+  s_3dd4b357265b83::t_91849c9f777803 160-161
+src/app/admin/orders/page.tsx
+  s_3dd4b357265b83::t_8e462b81a32675 2,6-7,14,20-24,36
+README.md
+  s_3dd4b357265b83::t_c24f236203cbe0 89-92,94,99-100,102-110,112-123,127-137,141-143
+scripts/seed.ts
+  s_3dd4b357265b83::t_3ca9951820e306 452-453
+  s_3dd4b357265b83::t_20e5f2e317bfce 265-379,382-387,391-417
+  s_3dd4b357265b83::t_c529943a5e05ce 17,19
+  s_3dd4b357265b83::t_24ff7688a25208 192
+src/lib/queries.ts
+  s_3dd4b357265b83::t_9a670e58bd868d 17,19,26,31
+  s_3dd4b357265b83::t_0c871398b34328 292-329,331-338,340-373
+  s_3dd4b357265b83::t_86a6b86ca4dba3 249-250
+  s_3dd4b357265b83::t_4bca14791a9bbd 223-224
+src/components/admin/payment-status-select.tsx
+  s_3dd4b357265b83::t_5e81ac8cfcc48b 1-46
+src/components/shop/product-card.tsx
+  s_3dd4b357265b83::t_e690a591b20ceb 130-131
+  s_3dd4b357265b83::t_ce571f4888270b 8
+  s_3dd4b357265b83::t_6b5dba532a63e1 19,24
+src/lib/actions/payments.ts
+  s_3dd4b357265b83::t_88d48a479ec9b2 1-98
+src/app/admin/page.tsx
+  s_3dd4b357265b83::t_6aa7d03a1a9e82 94-109
+  s_3dd4b357265b83::t_4cc30746f21271 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6b6e6c413935c8ddfa1841cd1f8f9d3415d7b28b",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
