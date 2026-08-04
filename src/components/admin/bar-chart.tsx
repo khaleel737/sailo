@@ -64,36 +64,39 @@ export function BarChart({
         ) : null}
       </div>
 
-      <div className="relative">
-        <div className="absolute inset-x-0 bottom-5 h-px bg-ink-200" />
+      {/*
+        Each bar sits in a track with a DEFINITE height (h-28). A percentage
+        height against an auto-height parent resolves to nothing, which
+        silently collapses every bar to zero.
+      */}
+      <div className="flex items-end gap-0.5 border-b border-ink-200">
+        {data.map((point, i) => {
+          const pct = (point.value / max) * 100;
+          const isHovered = hover === i;
 
-        <div className="flex h-32 items-end gap-0.5">
-          {data.map((point, i) => {
-            const pct = (point.value / max) * 100;
-            const isHovered = hover === i;
-
-            return (
-              <div
-                key={point.day}
-                className="group relative flex flex-1 flex-col justify-end"
-                onMouseEnter={() => setHover(i)}
-                onMouseLeave={() => setHover(null)}
-              >
-                {isHovered ? (
-                  <div className="pointer-events-none absolute -top-1 left-1/2 z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-lg bg-ink-900 px-2 py-1 text-xs text-white shadow-lg">
-                    <span className="font-semibold tabular-nums">
-                      {format(point.value)}
-                    </span>{" "}
-                    <span className="opacity-70">· {fmtDay(point.day)}</span>
-                  </div>
-                ) : null}
-
-                {i === peakIndex && point.value > 0 && !isHovered ? (
-                  <span className="mb-1 truncate text-center text-[10px] font-medium tabular-nums text-ink-500">
+          return (
+            <div
+              key={point.day}
+              className="group relative flex flex-1 flex-col items-center justify-end"
+              onMouseEnter={() => setHover(i)}
+              onMouseLeave={() => setHover(null)}
+            >
+              {isHovered ? (
+                <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink-900 px-2 py-1 text-xs text-white shadow-lg">
+                  <span className="font-semibold tabular-nums">
                     {format(point.value)}
-                  </span>
-                ) : null}
+                  </span>{" "}
+                  <span className="opacity-70">· {fmtDay(point.day)}</span>
+                </div>
+              ) : null}
 
+              {i === peakIndex && point.value > 0 && !isHovered ? (
+                <span className="mb-1 whitespace-nowrap text-[10px] font-medium tabular-nums text-ink-500">
+                  {format(point.value)}
+                </span>
+              ) : null}
+
+              <div className="flex h-28 w-full items-end">
                 <div
                   className="w-full rounded-t transition-opacity"
                   style={{
@@ -102,16 +105,23 @@ export function BarChart({
                     opacity: hover === null || isHovered ? 1 : 0.45,
                   }}
                 />
-
-                <span className="mt-1.5 h-4 text-center text-[10px] text-ink-400">
-                  {i === 0 || i === data.length - 1
-                    ? new Date(`${point.day}T00:00:00`).getDate()
-                    : ""}
-                </span>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-1.5 flex gap-0.5">
+        {data.map((point, i) => (
+          <span
+            key={point.day}
+            className="flex-1 text-center text-[10px] text-ink-400"
+          >
+            {i === 0 || i === data.length - 1
+              ? new Date(`${point.day}T00:00:00Z`).getUTCDate()
+              : ""}
+          </span>
+        ))}
       </div>
 
       {!hasData ? (

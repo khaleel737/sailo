@@ -316,7 +316,7 @@ function OrderSheet({
                         option.freeOverCents;
                     return (
                       <label
-                        key={option.type}
+                        key={option.id}
                         className={`flex cursor-pointer items-start gap-2.5 rounded-xl p-2.5 transition ${
                           active ? "surface-elevated" : "hover:opacity-70"
                         }`}
