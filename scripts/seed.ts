@@ -9,6 +9,7 @@ import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import { hashPassword } from "better-auth/crypto";
 import * as schema from "../src/db/schema";
+import { slugify } from "../src/lib/utils";
 
 const {
   account,
@@ -221,10 +222,7 @@ async function main() {
         shopId: shop.id,
         categoryId: categoryBySlug.get(p.category) ?? null,
         title: p.title,
-        slug: p.title
-          .toLowerCase()
-          .replace(/[^a-z0-9\s-]/g, "")
-          .replace(/\s+/g, "-"),
+        slug: slugify(p.title),
         description: p.description,
         priceCents: p.priceCents,
         compareAtCents: p.compareAtCents ?? null,
