@@ -1,0 +1,63 @@
+src/app/[handle]/p/[slug]/page.tsx
+  s_3dd4b357265b83::t_003b5a65a47765 223
+src/app/invoice/[token]/page.tsx
+  s_3dd4b357265b83::t_003b5a65a47765 216
+src/lib/referral.ts
+  s_3dd4b357265b83::t_003b5a65a47765 3
+src/db/schema.ts
+  s_3dd4b357265b83::t_003b5a65a47765 75
+package.json
+  s_3dd4b357265b83::t_003b5a65a47765 2
+scripts/seed.ts
+  s_3dd4b357265b83::t_003b5a65a47765 33
+src/lib/actions/orders.ts
+  s_3dd4b357265b83::t_003b5a65a47765 412
+src/app/(auth)/layout.tsx
+  s_3dd4b357265b83::t_003b5a65a47765 11
+src/app/layout.tsx
+  s_3dd4b357265b83::t_003b5a65a47765 17-18,21
+src/components/admin/handle-field.tsx
+  s_3dd4b357265b83::t_003b5a65a47765 33-34
+src/lib/email.ts
+  s_3dd4b357265b83::t_003b5a65a47765 18,74
+src/components/auth-form.tsx
+  s_3dd4b357265b83::t_003b5a65a47765 84
+src/app/globals.css
+  s_3dd4b357265b83::t_003b5a65a47765 97,109
+src/lib/handle.ts
+  s_3dd4b357265b83::t_003b5a65a47765 17
+src/app/onboarding/page.tsx
+  s_3dd4b357265b83::t_003b5a65a47765 28
+src/app/page.tsx
+  s_3dd4b357265b83::t_003b5a65a47765 57,86,135,151
+src/lib/stripe.ts
+  s_3dd4b357265b83::t_003b5a65a47765 15
+src/lib/exporters.ts
+  s_3dd4b357265b83::t_003b5a65a47765 194,196,198
+README.md
+  s_3dd4b357265b83::t_003b5a65a47765 1,5,20,66,250,256,263
+scripts/stripe-setup.ts
+  s_3dd4b357265b83::t_003b5a65a47765 2,4,23,30,32,54
+src/app/api/track/route.ts
+  s_3dd4b357265b83::t_003b5a65a47765 7
+src/lib/plans.ts
+  s_3dd4b357265b83::t_003b5a65a47765 84
+src/app/[handle]/page.tsx
+  s_3dd4b357265b83::t_003b5a65a47765 32,186
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "051a1b3946192ac1371ea8e3ded322914449f2e8",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
