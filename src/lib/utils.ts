@@ -37,6 +37,31 @@ export function parseMoneyToCents(value: string | number): number {
   return Math.max(0, Math.round(n * 100));
 }
 
+/** Human file size for download listings: 1536 → "1.5 KB". */
+export function formatBytes(bytes: number) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return "0 KB";
+  const units = ["B", "KB", "MB", "GB"];
+  const exponent = Math.min(
+    Math.floor(Math.log(bytes) / Math.log(1024)),
+    units.length - 1,
+  );
+  const value = bytes / 1024 ** exponent;
+  // Bytes and kilobytes read better whole; megabytes deserve a decimal.
+  return `${value >= 10 || exponent <= 1 ? Math.round(value) : value.toFixed(1)} ${units[exponent]}`;
+}
+
+/**
+ * How long a service takes: "45 min", "1 h 30 min". The units stay as the
+ * symbols rather than words — this string is dropped into all 22 storefront
+ * languages, and "hr" would read as English in every one of them.
+ */
+export function formatDuration(minutes: number) {
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  return rest === 0 ? `${hours} h` : `${hours} h ${rest} min`;
+}
+
 /** Strips everything but digits — wa.me wants a bare E.164 number. */
 export function normalizePhone(input: string) {
   return input.replace(/\D/g, "");

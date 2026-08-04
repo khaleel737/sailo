@@ -1,6 +1,6 @@
 import "server-only";
 import PDFDocument from "pdfkit";
-import type { Invoice, Order, Shop } from "@/db/schema";
+import type { Invoice, Order, OrderItem, Shop } from "@/db/schema";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatPercent } from "@/lib/pricing";
 import { formatAddress, formatMoney } from "@/lib/utils";
@@ -26,8 +26,10 @@ export function renderInvoicePdf(data: {
   shop: Shop;
   order: Order;
   invoice: Invoice;
+  /** Every line of the order, in the seller's order. */
+  items: OrderItem[];
 }): Promise<Buffer> {
-  const { shop, order, invoice } = data;
+  const { shop, order, invoice, items } = data;
 
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ size: "A4", margin: MARGIN });
@@ -136,6 +138,14 @@ export function renderInvoicePdf(data: {
       `Payment: ${methodName}`,
       order.deliveryLabel ? `Delivery: ${order.deliveryLabel}` : null,
       order.pickupLocation ? `Pickup: ${order.pickupLocation}` : null,
+      order.scheduledFor
+        ? `Booked: ${order.scheduledFor.toLocaleString("en-US", {
+            day: "numeric",
+            month: "short",
+            hour: "numeric",
+            minute: "2-digit",
+          })}`
+        : null,
       order.trackingNumber
         ? `Tracking: ${[order.trackingCarrier, order.trackingNumber].filter(Boolean).join(" ")}`
         : null,
@@ -162,16 +172,56 @@ export function renderInvoicePdf(data: {
     doc.moveTo(MARGIN, y).lineTo(right, y).strokeColor(LINE).stroke();
     y += 10;
 
-    doc.font("Helvetica-Bold").fontSize(10).fillColor(INK);
-    doc.text(order.productTitle, cols.item, y, { width: cols.qty - MARGIN - 10 });
-    const itemBottom = doc.y;
+    for (const item of items) {
+      // A long basket runs onto a second page rather than off the first.
+      if (y > doc.page.height - 220) {
+        doc.addPage();
+        y = MARGIN;
+      }
 
-    doc.font("Helvetica").fontSize(10);
-    doc.text(String(order.quantity), cols.qty, y, { width: 50, align: "right" });
-    doc.text(money(order.unitPriceCents), cols.price, y, { width: 60, align: "right" });
-    doc.text(money(order.subtotalCents), cols.amount, y, { width: 70, align: "right" });
+      doc.font("Helvetica-Bold").fontSize(10).fillColor(INK);
+      doc.text(item.title, cols.item, y, { width: cols.qty - MARGIN - 10 });
 
-    y = Math.max(itemBottom, doc.y) + 14;
+      const detail = [
+        [item.variantLabel, item.sku].filter(Boolean).join(" · "),
+        item.scheduledFor
+          ? item.scheduledFor.toLocaleString("en-US", {
+              day: "numeric",
+              month: "short",
+              hour: "numeric",
+              minute: "2-digit",
+            })
+          : "",
+      ]
+        .filter(Boolean)
+        .join(" — ");
+
+      if (detail) {
+        doc
+          .font("Helvetica")
+          .fontSize(9)
+          .fillColor(MUTED)
+          .text(detail, cols.item, doc.y + 1, {
+            width: cols.qty - MARGIN - 10,
+          });
+      }
+      const itemBottom = doc.y;
+
+      doc.font("Helvetica").fontSize(10).fillColor(INK);
+      doc.text(String(item.quantity), cols.qty, y, { width: 50, align: "right" });
+      doc.text(money(item.unitPriceCents), cols.price, y, {
+        width: 60,
+        align: "right",
+      });
+      doc.text(money(item.subtotalCents), cols.amount, y, {
+        width: 70,
+        align: "right",
+      });
+
+      y = Math.max(itemBottom, doc.y) + 8;
+    }
+
+    y += 6;
     doc.moveTo(MARGIN, y).lineTo(right, y).strokeColor(LINE).stroke();
     y += 12;
 

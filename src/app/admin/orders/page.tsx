@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ShoppingBag } from "lucide-react";
 import { requireShop } from "@/lib/session";
-import { getInvoiceMap, getShopOrders } from "@/lib/queries";
+import { getInvoiceMap, getOrderItemsMap, getShopOrders } from "@/lib/queries";
 import { PageHeader } from "@/components/admin/page-header";
 import { ExportButton } from "@/components/admin/export-button";
 import { OrderRow } from "@/components/admin/order-row";
@@ -12,7 +12,10 @@ export const metadata: Metadata = { title: "Orders" };
 export default async function AdminOrdersPage() {
   const { shop } = await requireShop();
   const orders = await getShopOrders(shop.id);
-  const invoices = await getInvoiceMap(orders.map((o) => o.id));
+  const [invoices, itemsByOrder] = await Promise.all([
+    getInvoiceMap(orders.map((o) => o.id)),
+    getOrderItemsMap(orders),
+  ]);
   const awaiting = orders.filter((o) => o.paymentStatus === "pending").length;
 
   return (
@@ -39,6 +42,7 @@ export default async function AdminOrdersPage() {
             <OrderRow
               key={order.id}
               order={order}
+              items={itemsByOrder.get(order.id)}
               invoice={invoices.get(order.id)}
             />
           ))}

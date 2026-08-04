@@ -21,9 +21,12 @@ const {
   deliveryMethods,
   invoices,
   orders,
+  orderItems,
   paymentMethods,
+  productFiles,
   productImages,
   products,
+  productVariants,
   reviews,
   shops,
   user,
@@ -43,7 +46,42 @@ const CATEGORIES = [
   { name: "Workshops", slug: "workshops" },
 ];
 
-const PRODUCTS = [
+type SeedProduct = {
+  title: string;
+  category: string;
+  kind: string;
+  priceCents: number;
+  compareAtCents?: number;
+  description: string;
+  tags: string[];
+  images: string[];
+  featured?: boolean;
+  inStock?: boolean;
+
+  options?: { name: string; values: string[] }[];
+  variants?: {
+    options: Record<string, string>;
+    priceCents?: number;
+    stock?: number;
+    sku?: string;
+    available?: boolean;
+  }[];
+  trackInventory?: boolean;
+  stockQuantity?: number;
+
+  files?: { name: string; url: string; sizeBytes?: number; contentType?: string }[];
+  releaseOnPayment?: boolean;
+  downloadLimit?: number;
+  downloadExpiryDays?: number;
+
+  durationMinutes?: number;
+  serviceMode?: string;
+  serviceLocation?: string;
+  bookingEnabled?: boolean;
+  bookingLeadHours?: number;
+};
+
+const PRODUCTS: SeedProduct[] = [
   {
     title: "Speckled stoneware mug",
     category: "mugs",
@@ -51,10 +89,18 @@ const PRODUCTS = [
     priceCents: 2400,
     compareAtCents: 3200,
     description:
-      "Wheel-thrown and glazed in matte oatmeal with a raw clay foot. Holds 350ml. Dishwasher and microwave safe.",
+      "Wheel-thrown and glazed in matte oatmeal with a raw clay foot. Dishwasher and microwave safe.",
     tags: ["handmade", "ceramic", "gift"],
     images: ["mug-a", "mug-a2", "mug-a3"],
     featured: true,
+    // One axis, priced per size — the shape most sellers start with.
+    options: [{ name: "Size", values: ["250ml", "350ml", "450ml"] }],
+    trackInventory: true,
+    variants: [
+      { options: { Size: "250ml" }, priceCents: 2200, stock: 14, sku: "MUG-250" },
+      { options: { Size: "350ml" }, stock: 9, sku: "MUG-350" },
+      { options: { Size: "450ml" }, priceCents: 2800, stock: 3, sku: "MUG-450" },
+    ],
   },
   {
     title: "Cobalt dip mug",
@@ -75,6 +121,9 @@ const PRODUCTS = [
       "A generous 18cm bowl for porridge, ramen or a very large salad. Sold individually.",
     tags: ["handmade", "ceramic", "kitchen"],
     images: ["bowl-a", "bowl-a2"],
+    // Counted on the product itself, since there's nothing to choose between.
+    trackInventory: true,
+    stockQuantity: 6,
   },
   {
     title: "Side plate — set of 2",
@@ -102,9 +151,20 @@ const PRODUCTS = [
     kind: "digital",
     priceCents: 1200,
     description:
-      "Twelve tested cone-6 glaze recipes with photos of each on white and dark clay bodies. Instant download.",
+      "Twelve tested cone-6 glaze recipes with photos of each on white and dark clay bodies.",
     tags: ["digital", "download", "glaze"],
     images: ["pdf-a"],
+    files: [
+      {
+        name: "Cone 6 glaze recipes.pdf",
+        url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        sizeBytes: 13_264,
+        contentType: "application/pdf",
+      },
+    ],
+    releaseOnPayment: true,
+    downloadLimit: 5,
+    downloadExpiryDays: 60,
   },
   {
     title: "Beginner wheel throwing — 3 hours",
@@ -116,6 +176,18 @@ const PRODUCTS = [
     tags: ["workshop", "class", "in-person"],
     images: ["class-a", "class-a2"],
     featured: true,
+    durationMinutes: 180,
+    serviceMode: "in_person",
+    serviceLocation:
+      "Unit 4, Kiln Yard, 22 Bridge Street — ring the bell on the blue door.",
+    bookingEnabled: true,
+    bookingLeadHours: 48,
+    // Two people can book the same slot at different lengths.
+    options: [{ name: "Seats", values: ["One seat", "Two seats"] }],
+    variants: [
+      { options: { Seats: "One seat" } },
+      { options: { Seats: "Two seats" }, priceCents: 16000 },
+    ],
   },
   {
     title: "Private studio session",
@@ -126,6 +198,106 @@ const PRODUCTS = [
       "Two hours one-to-one on the wheel, shaped around whatever you want to make. Weekdays only.",
     tags: ["workshop", "private"],
     images: ["class-b"],
+    durationMinutes: 120,
+    serviceMode: "in_person",
+    serviceLocation: "Unit 4, Kiln Yard, 22 Bridge Street.",
+    bookingEnabled: true,
+    bookingLeadHours: 24,
+  },
+  // Kept last so the review and order fixtures below keep their indices.
+  {
+    title: "Studio apron",
+    category: "bowls-plates",
+    kind: "physical",
+    priceCents: 4200,
+    description:
+      "Heavy cotton canvas with a split leg and a deep tool pocket. Softens with every wash.",
+    tags: ["apron", "studio", "cotton"],
+    images: ["apron-a", "apron-a2"],
+    // Two axes: every size in every colour, counted separately.
+    options: [
+      { name: "Size", values: ["S", "M", "L"] },
+      { name: "Colour", values: ["Natural", "Charcoal"] },
+    ],
+    trackInventory: true,
+    variants: [
+      { options: { Size: "S", Colour: "Natural" }, stock: 4, sku: "APR-S-NAT" },
+      { options: { Size: "S", Colour: "Charcoal" }, stock: 2, sku: "APR-S-CHR" },
+      { options: { Size: "M", Colour: "Natural" }, stock: 7, sku: "APR-M-NAT" },
+      { options: { Size: "M", Colour: "Charcoal" }, stock: 5, sku: "APR-M-CHR" },
+      // Sold out in one combination only — the picker greys it out.
+      { options: { Size: "L", Colour: "Natural" }, stock: 0, sku: "APR-L-NAT" },
+      {
+        options: { Size: "L", Colour: "Charcoal" },
+        stock: 3,
+        sku: "APR-L-CHR",
+        priceCents: 4500,
+      },
+    ],
+  },
+  {
+    title: "Studio glaze log — printable",
+    category: "prints",
+    kind: "digital",
+    priceCents: 0,
+    description:
+      "The sheet we use to record every test tile: recipe, cone, clay body, result. Free, no strings.",
+    tags: ["digital", "free", "template"],
+    images: ["log-a"],
+    files: [
+      {
+        name: "Glaze log.pdf",
+        url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        sizeBytes: 13_264,
+        contentType: "application/pdf",
+      },
+    ],
+    // Nothing to wait for on a free download, so it unlocks on the spot.
+    releaseOnPayment: false,
+  },
+  {
+    title: "Kiln Notes — digital bundle",
+    category: "prints",
+    kind: "digital",
+    priceCents: 1800,
+    description:
+      "The full risograph series as high-resolution files, ready to print at home or at a studio.",
+    tags: ["digital", "download", "art"],
+    images: ["bundle-a", "bundle-a2"],
+    // A download can have options too — same files, different licence.
+    options: [{ name: "Licence", values: ["Personal", "Commercial"] }],
+    variants: [
+      { options: { Licence: "Personal" }, sku: "KN-PERS" },
+      { options: { Licence: "Commercial" }, priceCents: 5400, sku: "KN-COMM" },
+    ],
+    files: [
+      {
+        name: "Kiln Notes — print files.pdf",
+        url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        sizeBytes: 13_264,
+        contentType: "application/pdf",
+      },
+    ],
+    releaseOnPayment: true,
+    downloadLimit: 3,
+    downloadExpiryDays: 30,
+  },
+  {
+    title: "Glaze troubleshooting call",
+    category: "workshops",
+    kind: "service",
+    priceCents: 4500,
+    description:
+      "Forty-five minutes on a video call. Send photos of what went wrong beforehand and we'll work through it.",
+    tags: ["service", "online", "advice"],
+    images: ["call-a"],
+    durationMinutes: 45,
+    // The other services happen in the studio; this one happens on a link.
+    serviceMode: "online",
+    serviceLocation:
+      "We'll email you a video link once the time is confirmed. No app needed.",
+    bookingEnabled: true,
+    bookingLeadHours: 12,
   },
 ];
 
@@ -247,6 +419,17 @@ async function main() {
         compareAtCents: p.compareAtCents ?? null,
         kind: p.kind,
         tags: p.tags,
+        options: p.options ?? [],
+        trackInventory: p.trackInventory ?? false,
+        stockQuantity: p.stockQuantity ?? null,
+        releaseOnPayment: p.releaseOnPayment ?? true,
+        downloadLimit: p.downloadLimit ?? null,
+        downloadExpiryDays: p.downloadExpiryDays ?? null,
+        durationMinutes: p.durationMinutes ?? null,
+        serviceMode: p.serviceMode ?? "in_person",
+        serviceLocation: p.serviceLocation ?? null,
+        bookingEnabled: p.bookingEnabled ?? false,
+        bookingLeadHours: p.bookingLeadHours ?? 24,
         inStock: p.inStock ?? true,
         isFeatured: p.featured ?? false,
         isPublished: true,
@@ -263,6 +446,34 @@ async function main() {
         position: index,
       })),
     );
+
+    if (p.variants?.length) {
+      await db.insert(productVariants).values(
+        p.variants.map((v, index) => ({
+          productId: created.id,
+          options: v.options,
+          sku: v.sku ?? null,
+          // A blank price inherits the product's, which is the point.
+          priceCents: v.priceCents ?? null,
+          stockQuantity: p.trackInventory ? (v.stock ?? null) : null,
+          isAvailable: v.available ?? true,
+          position: index,
+        })),
+      );
+    }
+
+    if (p.files?.length) {
+      await db.insert(productFiles).values(
+        p.files.map((f, index) => ({
+          productId: created.id,
+          name: f.name,
+          url: f.url,
+          sizeBytes: f.sizeBytes ?? null,
+          contentType: f.contentType ?? null,
+          position: index,
+        })),
+      );
+    }
   }
 
   console.log("Creating reviews…");
@@ -544,8 +755,7 @@ async function main() {
 
         // Reuse the app's own maths so seeded totals can't drift from real ones.
         const totals = computeTotals({
-          unitPriceCents: product.priceCents,
-          quantity: o.qty,
+          subtotalCents: product.priceCents * o.qty,
           coupon: o.coupon ? couponByCode.get(o.coupon) : null,
           deliveryMethod: delivery,
           commissionBp: affiliate
@@ -559,8 +769,10 @@ async function main() {
           productId: productIds[o.p],
           clientId: client.id,
           productTitle: product.title,
+          productKind: product.kind,
           unitPriceCents: product.priceCents,
           quantity: o.qty,
+          itemCount: 1,
           currency: "USD",
 
           subtotalCents: totals.subtotalCents,
@@ -614,6 +826,25 @@ async function main() {
       }),
     )
     .returning({ id: orders.id });
+
+  // Every order carries its lines, the same as one placed for real.
+  console.log("Creating order items…");
+  await db.insert(orderItems).values(
+    insertedOrders.map((row, i) => {
+      const o = ORDERS[i];
+      const product = PRODUCTS[o.p];
+      return {
+        orderId: row.id,
+        productId: productIds[o.p],
+        title: product.title,
+        kind: product.kind,
+        unitPriceCents: product.priceCents,
+        quantity: o.qty,
+        subtotalCents: product.priceCents * o.qty,
+        position: 0,
+      };
+    }),
+  );
 
   console.log("Creating invoices…");
   await db.insert(invoices).values(

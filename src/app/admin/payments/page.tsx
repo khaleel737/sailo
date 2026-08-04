@@ -5,11 +5,24 @@ import { getShopPaymentMethods } from "@/lib/queries";
 import { isConfigured, PAYMENT_METHOD_LIST } from "@/lib/payments";
 import { PageHeader } from "@/components/admin/page-header";
 import { PaymentMethodCard } from "@/components/admin/payment-method-card";
+import { StripeCard } from "@/components/admin/stripe-card";
+import { syncAccount } from "@/lib/connect";
 
 export const metadata: Metadata = { title: "Payments" };
 
-export default async function AdminPaymentsPage() {
-  const { shop } = await requireShop();
+export default async function AdminPaymentsPage({
+  searchParams,
+}: PageProps<"/admin/payments">) {
+  let { shop } = await requireShop();
+  const params = await searchParams;
+
+  // Coming back from Stripe's onboarding proves nothing on its own — Stripe
+  // decides separately whether the account may take charges — so re-read it.
+  if (params.stripe === "return" && shop.stripeAccountId) {
+    await syncAccount(shop);
+    ({ shop } = await requireShop());
+  }
+
   const methods = await getShopPaymentMethods(shop.id);
   const byType = new Map(methods.map((m) => [m.type, m]));
 
@@ -41,6 +54,15 @@ export default async function AdminPaymentsPage() {
           </div>
         </div>
       ) : null}
+
+      <section className="mb-6">
+        <h2 className="mb-1 text-sm font-semibold">Pay online</h2>
+        <p className="mb-3 text-sm text-ink-500">
+          The buyer pays on the spot and the order confirms itself — no
+          chasing, no marking things paid by hand.
+        </p>
+        <StripeCard shop={shop} />
+      </section>
 
       <section className="mb-6">
         <h2 className="mb-1 text-sm font-semibold">Chat handoff</h2>

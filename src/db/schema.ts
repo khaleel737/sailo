@@ -138,6 +138,23 @@ export const shops = pgTable(
       .default([])
       .notNull(),
 
+    /*
+     * Card payments, via Stripe Connect. The seller's own account — the charge
+     * lands there directly and Sailo never holds the money, so we store an
+     * account reference and never their API keys.
+     */
+    stripeAccountId: text("stripe_account_id"),
+    /** Stripe's own verdict; a seller can be connected but not yet payable. */
+    stripeChargesEnabled: boolean("stripe_charges_enabled")
+      .default(false)
+      .notNull(),
+    stripeDetailsSubmitted: boolean("stripe_details_submitted")
+      .default(false)
+      .notNull(),
+    /** Country and currency Stripe assigned the account, for display. */
+    stripeAccountCountry: text("stripe_account_country"),
+    stripeConnectedAt: timestamp("stripe_connected_at"),
+
     // Invoicing
     invoicePrefix: text("invoice_prefix").default("INV").notNull(),
     invoiceNextNumber: integer("invoice_next_number").default(1).notNull(),
@@ -209,7 +226,11 @@ export const categories = pgTable(
 
 /**
  * A product is anything the seller uploads — physical goods, a digital file,
- * or a service. The template renders all three identically.
+ * or a service. The template renders all three identically; what differs is
+ * how the order is fulfilled, which the `kind`-specific columns below drive.
+ *
+ * The price here is the product's base. A product with options prices each
+ * combination in `productVariants` and falls back to this when one is blank.
  */
 export const products = pgTable(
   "products",
@@ -233,6 +254,43 @@ export const products = pgTable(
     kind: text("kind").default("physical").notNull(), // physical | digital | service
     tags: jsonb("tags").$type<string[]>().default([]).notNull(),
 
+    /**
+     * What the buyer chooses between: [{ name: "Size", values: ["S","M","L"] }].
+     * Empty for a product sold as one thing. The sellable combinations live in
+     * `productVariants` — this is only the shape of the choice.
+     */
+    options: jsonb("options").$type<ProductOption[]>().default([]).notNull(),
+
+    /**
+     * Count units down as orders arrive instead of relying on the manual
+     * `inStock` switch. Stock lives on the variant when there are options.
+     */
+    trackInventory: boolean("track_inventory").default(false).notNull(),
+    /** Units left, for a product with no options. Null while untracked. */
+    stockQuantity: integer("stock_quantity"),
+
+    // Digital goods
+    /**
+     * Hold the files until the seller confirms payment. On by default: every
+     * rail here settles out of band, so releasing on order would hand the file
+     * to anyone willing to click through checkout.
+     */
+    releaseOnPayment: boolean("release_on_payment").default(true).notNull(),
+    /** Downloads allowed per order. Null is unlimited. */
+    downloadLimit: integer("download_limit"),
+    /** Days the buyer's link stays alive. Null never expires. */
+    downloadExpiryDays: integer("download_expiry_days"),
+
+    // Services
+    durationMinutes: integer("duration_minutes"),
+    serviceMode: text("service_mode").default("in_person").notNull(), // in_person | online
+    /** Where to turn up, or how the call is joined. */
+    serviceLocation: text("service_location"),
+    /** Ask the buyer for a preferred date and time at checkout. */
+    bookingEnabled: boolean("booking_enabled").default(false).notNull(),
+    /** Notice the seller needs — the picker won't offer anything sooner. */
+    bookingLeadHours: integer("booking_lead_hours").default(24).notNull(),
+
     inStock: boolean("in_stock").default(true).notNull(),
     isFeatured: boolean("is_featured").default(false).notNull(),
     isPublished: boolean("is_published").default(true).notNull(),
@@ -246,6 +304,63 @@ export const products = pgTable(
     index("products_shop_idx").on(t.shopId),
     index("products_category_idx").on(t.categoryId),
   ],
+);
+
+/**
+ * One sellable combination of a product's options — the medium pizza, the red
+ * shirt in large. Price, stock and SKU are per-variant; a blank price means
+ * "same as the product", so a shirt that costs the same in every colour needs
+ * no numbers typed at all.
+ */
+export const productVariants = pgTable(
+  "product_variants",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+
+    /** One value per product option: { Size: "Large", Colour: "Red" }. */
+    options: jsonb("options").$type<VariantOptions>().default({}).notNull(),
+
+    sku: text("sku"),
+    /** Null falls back to the product's price. */
+    priceCents: integer("price_cents"),
+    compareAtCents: integer("compare_at_cents"),
+    /** Units left. Null while the product isn't tracking inventory. */
+    stockQuantity: integer("stock_quantity"),
+    /** The seller's manual switch for this combination alone. */
+    isAvailable: boolean("is_available").default(true).notNull(),
+    /** Swapped into the gallery when this combination is picked. */
+    imageUrl: text("image_url"),
+
+    position: integer("position").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [index("product_variants_product_idx").on(t.productId)],
+);
+
+/**
+ * A file a digital product delivers. Buyers never see these URLs — the
+ * download route streams the bytes behind a per-order token.
+ */
+export const productFiles = pgTable(
+  "product_files",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+
+    name: text("name").notNull(),
+    url: text("url").notNull(),
+    sizeBytes: integer("size_bytes"),
+    contentType: text("content_type"),
+    position: integer("position").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [index("product_files_product_idx").on(t.productId)],
 );
 
 export const productImages = pgTable(
@@ -465,10 +580,29 @@ export const orders = pgTable(
     clientId: uuid("client_id").references(() => clients.id, {
       onDelete: "set null",
     }),
+    variantId: uuid("variant_id").references(() => productVariants.id, {
+      onDelete: "set null",
+    }),
 
+    /*
+     * The first line, repeated on the header.
+     *
+     * `orderItems` is the authoritative list — these columns exist so a
+     * single-item order (still the common case) can be read, searched and
+     * summarised without a join, and so rows written before carts existed stay
+     * meaningful. `quantity` counts every unit in the order, so on a multi-line
+     * order it is deliberately not `subtotalCents / unitPriceCents`.
+     */
     productTitle: text("product_title").notNull(),
+    /** "Large / Red" — snapshotted so a later rename can't rewrite history. */
+    variantLabel: text("variant_label"),
+    variantSku: text("variant_sku"),
+    /** What kind of thing this was when it sold: physical | digital | service. */
+    productKind: text("product_kind").default("physical").notNull(),
     unitPriceCents: integer("unit_price_cents").default(0).notNull(),
     quantity: integer("quantity").default(1).notNull(),
+    /** How many lines the order has, so a list can say "and 2 more". */
+    itemCount: integer("item_count").default(1).notNull(),
     currency: text("currency").default("USD").notNull(),
 
     // Money breakdown: total = subtotal - discount + delivery
@@ -502,15 +636,43 @@ export const orders = pgTable(
     trackingUrl: text("tracking_url"),
     shippedAt: timestamp("shipped_at"),
 
+    // Booking, for services the buyer scheduled
+    scheduledFor: timestamp("scheduled_for"),
+    serviceMode: text("service_mode"), // in_person | online
+    serviceLocation: text("service_location"),
+
+    /**
+     * Digital delivery. The token backs a public download page; the files stay
+     * locked until `downloadReleasedAt` is set, which happens on order or on
+     * payment depending on the product.
+     */
+    downloadToken: text("download_token"),
+    downloadReleasedAt: timestamp("download_released_at"),
+    downloadExpiresAt: timestamp("download_expires_at"),
+    /** Snapshot of the product's cap, so tightening it can't strand a buyer. */
+    downloadLimit: integer("download_limit"),
+    downloadCount: integer("download_count").default(0).notNull(),
+
     // Refunds — excluded from revenue
     refundedCents: integer("refunded_cents").default(0).notNull(),
     refundedAt: timestamp("refunded_at"),
     refundReason: text("refund_reason"),
+    /** Set once cancelled or refunded stock has gone back on the shelf. */
+    restockedAt: timestamp("restocked_at"),
 
     // Email dispatch
     confirmationSentAt: timestamp("confirmation_sent_at"),
 
     // Coupon snapshot
+    /*
+     * Card payments. The session is created before the buyer is redirected;
+     * the payment intent arrives with the webhook that confirms the money.
+     */
+    stripeSessionId: text("stripe_session_id"),
+    stripePaymentIntentId: text("stripe_payment_intent_id"),
+    /** The connected account the charge landed in, for reconciliation. */
+    stripeAccountId: text("stripe_account_id"),
+
     couponId: uuid("coupon_id").references(() => coupons.id, {
       onDelete: "set null",
     }),
@@ -552,6 +714,57 @@ export const orders = pgTable(
     index("orders_shop_idx").on(t.shopId),
     index("orders_client_idx").on(t.clientId),
     index("orders_created_idx").on(t.createdAt),
+    uniqueIndex("orders_download_token_key").on(t.downloadToken),
+    // The Connect webhook finds the order by session id, on every card payment.
+    index("orders_stripe_session_idx").on(t.stripeSessionId),
+  ],
+);
+
+/**
+ * The lines of an order. Every order has at least one — a "buy now" writes a
+ * single row, a cart writes one per product.
+ *
+ * Everything a line needs to be read years later is copied in, because the
+ * product it came from can be edited, re-priced or deleted and the record must
+ * still say what was actually sold.
+ */
+export const orderItems = pgTable(
+  "order_items",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    orderId: uuid("order_id")
+      .notNull()
+      .references(() => orders.id, { onDelete: "cascade" }),
+    productId: uuid("product_id").references(() => products.id, {
+      onDelete: "set null",
+    }),
+    variantId: uuid("variant_id").references(() => productVariants.id, {
+      onDelete: "set null",
+    }),
+
+    title: text("title").notNull(),
+    variantLabel: text("variant_label"),
+    sku: text("sku"),
+    kind: text("kind").default("physical").notNull(),
+    imageUrl: text("image_url"),
+
+    unitPriceCents: integer("unit_price_cents").default(0).notNull(),
+    quantity: integer("quantity").default(1).notNull(),
+    /** unitPrice × quantity, before any order-level discount or tax. */
+    subtotalCents: integer("subtotal_cents").default(0).notNull(),
+
+    // A service books its own slot: two services in one cart are two
+    // appointments, not one.
+    scheduledFor: timestamp("scheduled_for"),
+    serviceMode: text("service_mode"),
+    serviceLocation: text("service_location"),
+
+    position: integer("position").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("order_items_order_idx").on(t.orderId),
+    index("order_items_product_idx").on(t.productId),
   ],
 );
 
@@ -666,6 +879,18 @@ export const affiliatesRelations = relations(affiliates, ({ one, many }) => ({
   orders: many(orders),
 }));
 
+export const orderItemsRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, { fields: [orderItems.orderId], references: [orders.id] }),
+  product: one(products, {
+    fields: [orderItems.productId],
+    references: [products.id],
+  }),
+  variant: one(productVariants, {
+    fields: [orderItems.variantId],
+    references: [productVariants.id],
+  }),
+}));
+
 export const invoicesRelations = relations(invoices, ({ one }) => ({
   shop: one(shops, { fields: [invoices.shopId], references: [shops.id] }),
   order: one(orders, { fields: [invoices.orderId], references: [orders.id] }),
@@ -693,11 +918,27 @@ export const productsRelations = relations(products, ({ one, many }) => ({
   }),
   images: many(productImages),
   reviews: many(reviews),
+  variants: many(productVariants),
+  files: many(productFiles),
 }));
 
 export const productImagesRelations = relations(productImages, ({ one }) => ({
   product: one(products, {
     fields: [productImages.productId],
+    references: [products.id],
+  }),
+}));
+
+export const productVariantsRelations = relations(productVariants, ({ one }) => ({
+  product: one(products, {
+    fields: [productVariants.productId],
+    references: [products.id],
+  }),
+}));
+
+export const productFilesRelations = relations(productFiles, ({ one }) => ({
+  product: one(products, {
+    fields: [productFiles.productId],
     references: [products.id],
   }),
 }));
@@ -710,8 +951,9 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
   shop: one(shops, { fields: [reviews.shopId], references: [shops.id] }),
 }));
 
-export const ordersRelations = relations(orders, ({ one }) => ({
+export const ordersRelations = relations(orders, ({ one, many }) => ({
   shop: one(shops, { fields: [orders.shopId], references: [shops.id] }),
+  items: many(orderItems),
   deliveryRate: one(deliveryMethods, {
     fields: [orders.deliveryMethodId],
     references: [deliveryMethods.id],
@@ -719,6 +961,10 @@ export const ordersRelations = relations(orders, ({ one }) => ({
   product: one(products, {
     fields: [orders.productId],
     references: [products.id],
+  }),
+  variant: one(productVariants, {
+    fields: [orders.variantId],
+    references: [productVariants.id],
   }),
   client: one(clients, {
     fields: [orders.clientId],
@@ -746,6 +992,15 @@ export type ShopSocial = {
   platform: string;
   url: string;
 };
+
+/** One axis of choice on a product: "Size" with "Small", "Medium", "Large". */
+export type ProductOption = {
+  name: string;
+  values: string[];
+};
+
+/** A variant's pick on each axis, keyed by option name. */
+export type VariantOptions = Record<string, string>;
 
 /** Union of every rail's settings — only the keys for that type are used. */
 export type PaymentConfig = {
@@ -778,8 +1033,11 @@ export type Shop = typeof shops.$inferSelect;
 export type Category = typeof categories.$inferSelect;
 export type Product = typeof products.$inferSelect;
 export type ProductImage = typeof productImages.$inferSelect;
+export type ProductVariant = typeof productVariants.$inferSelect;
+export type ProductFile = typeof productFiles.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
 export type Order = typeof orders.$inferSelect;
+export type OrderItem = typeof orderItems.$inferSelect;
 export type Visit = typeof visits.$inferSelect;
 export type PaymentMethod = typeof paymentMethods.$inferSelect;
 export type DeliveryMethod = typeof deliveryMethods.$inferSelect;

@@ -50,6 +50,7 @@ export const en = {
     kindService: "Service",
     labelDigital: "Digital",
     labelService: "Service",
+    from: "From {price}",
   },
 
   sort: {
@@ -128,6 +129,43 @@ export const en = {
     earnReferral: "Earn {percent}% on referrals",
     earnReferralBody:
       "Share your link. When someone buys from {shop} through it, you earn {percent}% of their order.",
+    choose: "Choose {option}",
+    continue: "Continue",
+    onlyLeft: "Only {count} left",
+    preferredTime: "Preferred date and time",
+    bookingHint: "{shop} confirms your slot after you order.",
+    duration: "Takes {duration}",
+    online: "Online",
+    inPerson: "In person",
+    downloadAfterPayment:
+      "Your download unlocks as soon as {shop} confirms your payment.",
+    getFiles: "Get your files",
+  },
+
+  cart: {
+    title: "Your basket",
+    add: "Add to basket",
+    buyNow: "Buy now",
+    view: "Basket",
+    itemCount: "{count} in your basket",
+    empty: "Your basket is empty",
+    emptyBody: "Add something and it'll show up here.",
+    keepShopping: "Keep shopping",
+    remove: "Remove",
+    someGone:
+      "Something in your basket has sold out and has been left out of the total.",
+  },
+
+  download: {
+    title: "Your download",
+    file: "Download",
+    expires: "This link works until {date}.",
+    expired: "This link has expired. Get in touch with {shop} for a new one.",
+    remaining: "Downloads left: {count}",
+    usedUp:
+      "You've used every download on this link. Get in touch with {shop} if you need it again.",
+    notReady: "Your files unlock once {shop} confirms your payment.",
+    visitShop: "Visit {shop}",
   },
 
   /**
@@ -136,6 +174,9 @@ export const en = {
    * details…"); these are what the shopper reads.
    */
   rails: {
+    cardName: "Card",
+    cardAction: "Pay by card",
+    cardDesc: "Pay securely by card, Apple Pay or Google Pay.",
     whatsappAction: "Order on WhatsApp",
     whatsappDesc: "Opens WhatsApp with your order already written out.",
     telegramAction: "Order on Telegram",

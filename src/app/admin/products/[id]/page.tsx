@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { and, asc, eq } from "drizzle-orm";
 import { ExternalLink } from "lucide-react";
-import { getDb } from "@/db";
-import { productImages, products } from "@/db/schema";
 import { requireShop } from "@/lib/session";
-import { getShopCategories } from "@/lib/queries";
+import { getAdminProduct, getShopCategories } from "@/lib/queries";
 import { ProductForm } from "@/components/admin/product-form";
 import { PageHeader } from "@/components/admin/page-header";
 import { isUuid } from "@/lib/utils";
@@ -20,10 +17,7 @@ export default async function EditProductPage({
   const { shop } = await requireShop();
   if (!isUuid(id)) notFound();
 
-  const product = await getDb().query.products.findFirst({
-    where: and(eq(products.id, id), eq(products.shopId, shop.id)),
-    with: { images: { orderBy: [asc(productImages.position)] } },
-  });
+  const product = await getAdminProduct(shop.id, id);
   if (!product) notFound();
 
   const categories = await getShopCategories(shop.id);

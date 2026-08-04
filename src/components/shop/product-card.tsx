@@ -5,6 +5,13 @@ import type { ProductCard as ProductCardData } from "@/lib/queries";
 import type { Shop } from "@/db/schema";
 import type { Dictionary } from "@/i18n";
 import { cn, formatMoney } from "@/lib/utils";
+import {
+  anySellable,
+  priceRange,
+  toCheckoutVariants,
+  unitsLeft,
+} from "@/lib/variants";
+import { interpolate } from "@/i18n";
 import { StarRating } from "./star-rating";
 import {
   OrderButton,
@@ -29,9 +36,18 @@ export function ProductCard({
 }) {
   const href = `/${shop.handle}/p/${product.slug}`;
   const image = product.images[0];
+
+  // With options, the card quotes the cheapest combination rather than a price
+  // the buyer might not be able to get.
+  const variants = toCheckoutVariants(product, product.variants);
+  const range = priceRange(product, product.variants);
+  const displayPrice = range.min;
+  const sellable = product.inStock && anySellable(product, product.variants);
+
   const onSale =
+    !range.varies &&
     product.compareAtCents !== null &&
-    product.compareAtCents > product.priceCents;
+    product.compareAtCents > displayPrice;
   const kindLabel =
     product.kind === "digital"
       ? t.shop.labelDigital
@@ -69,7 +85,7 @@ export function ProductCard({
           </div>
         )}
 
-        {!product.inStock ? (
+        {!sellable ? (
           <span className="absolute start-2 top-2 rounded-full bg-black/75 px-2 py-0.5 text-[11px] font-medium text-white">
             {t.shop.soldOut}
           </span>
@@ -108,8 +124,12 @@ export function ProductCard({
 
           <div className="mt-1.5 flex items-baseline gap-1.5">
             <span className="text-sm font-semibold tabular-nums">
-              {product.priceCents > 0
-                ? formatMoney(product.priceCents, shop.currency)
+              {displayPrice > 0
+                ? range.varies
+                  ? interpolate(t.shop.from, {
+                      price: formatMoney(displayPrice, shop.currency),
+                    })
+                  : formatMoney(displayPrice, shop.currency)
                 : t.common.free}
             </span>
             {onSale ? (
@@ -138,11 +158,25 @@ export function ProductCard({
             currency={shop.currency}
             methods={methods}
             deliveryOptions={deliveryOptions}
-            isPhysical={product.kind === "physical"}
-            collectAddress={shop.collectAddress}
+            kind={product.kind}
+            options={product.options}
+            variants={variants}
+            unitsLeft={unitsLeft(product)}
+            service={
+              product.kind === "service"
+                ? {
+                    bookingEnabled: product.bookingEnabled,
+                    bookingLeadHours: product.bookingLeadHours,
+                    durationMinutes: product.durationMinutes,
+                    mode: product.serviceMode,
+                  }
+                : null
+            }
+            serviceLocation={product.serviceLocation}
+            imageUrl={image?.url ?? null}
             contactEmail={shop.contactEmail}
             inStock={product.inStock}
-            label={t.shop.order}
+            compact
             t={t}
             className="accent-bg h-9 w-full rounded-lg text-xs font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           />

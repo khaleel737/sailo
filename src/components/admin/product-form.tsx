@@ -1,11 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { saveProduct } from "@/lib/actions/products";
 import { ImageUploader } from "./image-uploader";
+import { FileUploader } from "./file-uploader";
+import { VariantEditor } from "./variant-editor";
 import {
   Alert,
   Button,
@@ -16,9 +18,19 @@ import {
   Textarea,
 } from "@/components/ui";
 import { PRODUCT_KINDS } from "@/lib/utils";
-import type { Category, Product, ProductImage } from "@/db/schema";
+import type {
+  Category,
+  Product,
+  ProductFile,
+  ProductImage,
+  ProductVariant,
+} from "@/db/schema";
 
-type ProductWithImages = Product & { images: ProductImage[] };
+type ProductWithRelations = Product & {
+  images: ProductImage[];
+  variants: ProductVariant[];
+  files: ProductFile[];
+};
 
 function Submit({ isEdit }: { isEdit: boolean }) {
   const { pending } = useFormStatus();
@@ -35,12 +47,28 @@ export function ProductForm({
   categories,
   currency,
 }: {
-  product?: ProductWithImages;
+  product?: ProductWithRelations;
   categories: Category[];
   currency: string;
 }) {
   const [state, action] = useActionState(saveProduct, { ok: false });
   const isEdit = Boolean(product);
+
+  // The form shows different sections per kind and per toggle, so these three
+  // are held in state rather than read back from the DOM.
+  const [kind, setKind] = useState(product?.kind ?? "physical");
+  const [trackInventory, setTrackInventory] = useState(
+    product?.trackInventory ?? false,
+  );
+  const [price, setPrice] = useState(
+    product ? (product.priceCents / 100).toFixed(2) : "",
+  );
+  const [bookingEnabled, setBookingEnabled] = useState(
+    product?.bookingEnabled ?? false,
+  );
+  const [releaseOnPayment, setReleaseOnPayment] = useState(
+    product?.releaseOnPayment ?? true,
+  );
 
   return (
     <form action={action} className="space-y-5">
@@ -86,9 +114,8 @@ export function ProductForm({
               name="price"
               inputMode="decimal"
               required
-              defaultValue={
-                product ? (product.priceCents / 100).toFixed(2) : ""
-              }
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
               placeholder="24.00"
             />
           </Field>
@@ -117,7 +144,8 @@ export function ProductForm({
             <Select
               id="kind"
               name="kind"
-              defaultValue={product?.kind ?? "physical"}
+              value={kind}
+              onChange={(e) => setKind(e.target.value)}
             >
               {PRODUCT_KINDS.map((k) => (
                 <option key={k.value} value={k.value}>
@@ -143,6 +171,14 @@ export function ProductForm({
           </Field>
         </div>
 
+        <p className="text-xs text-ink-500">
+          {kind === "digital"
+            ? "Digital products skip delivery and are sent as a private download link."
+            : kind === "service"
+              ? "Services skip delivery. Add a duration and let buyers pick a time below."
+              : "Physical products ask the buyer how they'd like it delivered."}
+        </p>
+
         <Field
           label="Tags"
           htmlFor="tags"
@@ -156,6 +192,181 @@ export function ProductForm({
           />
         </Field>
       </Card>
+
+      {/* ---- Options and variants ---------------------------------------- */}
+
+      <Card className="space-y-4 p-5">
+        <div>
+          <h2 className="text-sm font-semibold text-ink-900">Options & stock</h2>
+          <p className="mt-0.5 text-xs text-ink-500">
+            Sizes, colours, session lengths — anything the buyer chooses between.
+          </p>
+        </div>
+
+        <Toggle
+          name="trackInventory"
+          label="Track stock"
+          description="Counts units down with every order and stops sales at zero."
+          checked={trackInventory}
+          onChange={setTrackInventory}
+        />
+
+        <VariantEditor
+          options={product?.options ?? []}
+          variants={product?.variants ?? []}
+          currency={currency}
+          basePrice={price}
+          trackInventory={trackInventory}
+          stockQuantity={product?.stockQuantity ?? null}
+        />
+      </Card>
+
+      {/* ---- Digital delivery -------------------------------------------- */}
+
+      {kind === "digital" ? (
+        <Card className="space-y-4 p-5">
+          <div>
+            <h2 className="text-sm font-semibold text-ink-900">
+              Files to deliver
+            </h2>
+            <p className="mt-0.5 text-xs text-ink-500">
+              Buyers get a private download page as soon as the order is
+              released.
+            </p>
+          </div>
+
+          <FileUploader
+            initial={
+              product?.files.map((f) => ({
+                name: f.name,
+                url: f.url,
+                sizeBytes: f.sizeBytes,
+                contentType: f.contentType,
+              })) ?? []
+            }
+          />
+
+          <Toggle
+            name="releaseOnPayment"
+            label="Release only after payment is confirmed"
+            description="Every payment option here settles outside Sailo, so leaving this on stops someone taking the file without paying. Free products unlock straight away either way."
+            checked={releaseOnPayment}
+            onChange={setReleaseOnPayment}
+          />
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field
+              label="Download limit"
+              htmlFor="downloadLimit"
+              hint="blank = unlimited"
+            >
+              <Input
+                id="downloadLimit"
+                name="downloadLimit"
+                inputMode="numeric"
+                defaultValue={product?.downloadLimit ?? ""}
+                placeholder="5"
+              />
+            </Field>
+            <Field
+              label="Link expires after (days)"
+              htmlFor="downloadExpiryDays"
+              hint="blank = never"
+            >
+              <Input
+                id="downloadExpiryDays"
+                name="downloadExpiryDays"
+                inputMode="numeric"
+                defaultValue={product?.downloadExpiryDays ?? ""}
+                placeholder="30"
+              />
+            </Field>
+          </div>
+        </Card>
+      ) : null}
+
+      {/* ---- Service settings -------------------------------------------- */}
+
+      {kind === "service" ? (
+        <Card className="space-y-4 p-5">
+          <div>
+            <h2 className="text-sm font-semibold text-ink-900">
+              Service details
+            </h2>
+            <p className="mt-0.5 text-xs text-ink-500">
+              How long it takes, where it happens, and whether buyers book a
+              time.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field
+              label="Duration (minutes)"
+              htmlFor="durationMinutes"
+              hint="optional"
+            >
+              <Input
+                id="durationMinutes"
+                name="durationMinutes"
+                inputMode="numeric"
+                defaultValue={product?.durationMinutes ?? ""}
+                placeholder="60"
+              />
+            </Field>
+            <Field label="Where" htmlFor="serviceMode">
+              <Select
+                id="serviceMode"
+                name="serviceMode"
+                defaultValue={product?.serviceMode ?? "in_person"}
+              >
+                <option value="in_person">In person</option>
+                <option value="online">Online</option>
+              </Select>
+            </Field>
+          </div>
+
+          <Field
+            label="Location or joining details"
+            htmlFor="serviceLocation"
+            hint="optional, shown after ordering"
+          >
+            <Textarea
+              id="serviceLocation"
+              name="serviceLocation"
+              rows={2}
+              defaultValue={product?.serviceLocation ?? ""}
+              placeholder="12 Rue Lafayette, Paris — studio on the second floor"
+            />
+          </Field>
+
+          <Toggle
+            name="bookingEnabled"
+            label="Let buyers pick a date and time"
+            description="Adds a preferred date and time to checkout. You confirm the slot afterwards."
+            checked={bookingEnabled}
+            onChange={setBookingEnabled}
+          />
+
+          {bookingEnabled ? (
+            <Field
+              label="Notice needed (hours)"
+              htmlFor="bookingLeadHours"
+              hint="the picker won't offer anything sooner"
+            >
+              <Input
+                id="bookingLeadHours"
+                name="bookingLeadHours"
+                inputMode="numeric"
+                defaultValue={product?.bookingLeadHours ?? 24}
+                placeholder="24"
+                className="sm:w-40"
+              />
+            </Field>
+          ) : null}
+        </Card>
+      ) : null}
+
+      {/* ---- Visibility --------------------------------------------------- */}
 
       <Card className="space-y-3 p-5">
         <Toggle
@@ -196,18 +407,27 @@ function Toggle({
   label,
   description,
   defaultChecked,
+  checked,
+  onChange,
 }: {
   name: string;
   label: string;
   description: string;
-  defaultChecked: boolean;
+  defaultChecked?: boolean;
+  /** Pass both to drive the toggle from the form's own state. */
+  checked?: boolean;
+  onChange?: (next: boolean) => void;
 }) {
+  const controlled = checked !== undefined && onChange !== undefined;
+
   return (
     <label className="flex cursor-pointer items-start gap-3">
       <input
         type="checkbox"
         name={name}
-        defaultChecked={defaultChecked}
+        {...(controlled
+          ? { checked, onChange: (e) => onChange(e.target.checked) }
+          : { defaultChecked })}
         className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900"
       />
       <span>

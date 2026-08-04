@@ -1,6 +1,6 @@
 import "server-only";
 import { Resend } from "resend";
-import type { Order, Shop } from "@/db/schema";
+import type { Order, OrderItem, Shop } from "@/db/schema";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatAddress, formatMoney } from "@/lib/utils";
 
@@ -113,8 +113,14 @@ function button(href: string, label: string) {
 export async function sendOrderConfirmation(opts: {
   shop: Shop;
   order: Order;
+  /** Every line, so a basket doesn't arrive named after its first item. */
+  items?: OrderItem[];
   invoiceUrl: string | null;
   invoiceNumber: string | null;
+  /** Set once a digital order's files are already unlocked. */
+  downloadUrl?: string | null;
+  /** Set when they're waiting on the seller confirming payment. */
+  downloadPending?: boolean;
 }): Promise<SendResult> {
   const { shop, order } = opts;
   if (!order.customerEmail) return { sent: false, reason: "no customer email" };
@@ -131,17 +137,61 @@ export async function sendOrderConfirmation(opts: {
     <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">
       Thanks${order.customerName ? ` ${esc(order.customerName)}` : ""} — ${esc(shop.name)} has your order.
     </p>
-    <p style="margin:0;font-size:15px;font-weight:600;">
-      ${esc(order.productTitle)}${order.quantity > 1 ? ` × ${order.quantity}` : ""}
-    </p>
+    ${(
+      opts.items?.length
+        ? opts.items
+        : [
+            {
+              title: order.productTitle,
+              variantLabel: order.variantLabel,
+              quantity: order.quantity,
+              subtotalCents: order.unitPriceCents * order.quantity,
+              scheduledFor: order.scheduledFor,
+            },
+          ]
+    )
+      .map(
+        (item) => `<p style="margin:0 0 4px;font-size:15px;font-weight:600;">
+      ${esc(item.title)}${item.variantLabel ? ` — ${esc(item.variantLabel)}` : ""}${item.quantity > 1 ? ` × ${item.quantity}` : ""}
+      <span style="float:right;font-weight:400;color:#565664;">${esc(formatMoney(item.subtotalCents, order.currency))}</span>
+    </p>${
+      item.scheduledFor
+        ? `<p style="margin:0 0 8px;font-size:13px;color:#8e8e9c;">${esc(
+            item.scheduledFor.toLocaleString("en-US", {
+              weekday: "short",
+              day: "numeric",
+              month: "long",
+              hour: "numeric",
+              minute: "2-digit",
+            }),
+          )}</p>`
+        : ""
+    }`,
+      )
+      .join("")}
     ${moneyRows(order)}
     <div style="margin-top:18px;">
       ${detail("Payment", methodName)}
       ${order.deliveryLabel ? detail("Delivery", order.deliveryLabel) : ""}
       ${order.pickupLocation ? detail("Collect from", order.pickupLocation) : ""}
       ${address ? detail("Deliver to", address) : ""}
+      ${
+        order.serviceLocation
+          ? detail(
+              order.serviceMode === "online" ? "Joining details" : "Where",
+              order.serviceLocation,
+            )
+          : ""
+      }
       ${opts.invoiceNumber ? detail("Invoice", opts.invoiceNumber) : ""}
     </div>
+    ${
+      opts.downloadUrl
+        ? button(opts.downloadUrl, "Get your files")
+        : opts.downloadPending
+          ? `<p style="margin:16px 0 0;font-size:14px;color:#565664;">Your download unlocks as soon as ${esc(shop.name)} confirms your payment — we'll email you the link.</p>`
+          : ""
+    }
     ${opts.invoiceUrl ? button(opts.invoiceUrl, "View your invoice") : ""}
   `;
 
@@ -149,6 +199,52 @@ export async function sendOrderConfirmation(opts: {
     to: order.customerEmail,
     subject: `Your order from ${shop.name}`,
     html: layout(shop, "Order confirmed", body),
+    replyTo: shop.contactEmail ?? undefined,
+  });
+}
+
+/**
+ * Sent when a digital order's files unlock — either right after ordering, or
+ * once the seller confirms the payment that was holding them back.
+ */
+export async function sendDownloadReady(opts: {
+  shop: Shop;
+  order: Order;
+  url: string;
+}): Promise<SendResult> {
+  const { shop, order, url } = opts;
+  if (!order.customerEmail) return { sent: false, reason: "no customer email" };
+
+  const expiry = order.downloadExpiresAt
+    ? `<p style="margin:12px 0 0;font-size:13px;color:#8e8e9c;">This link works until ${esc(
+        order.downloadExpiresAt.toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        }),
+      )}.</p>`
+    : "";
+
+  const body = `
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">
+      Your download is ready.
+    </p>
+    <p style="margin:0;font-size:15px;font-weight:600;">
+      ${esc(order.productTitle)}${order.variantLabel ? ` — ${esc(order.variantLabel)}` : ""}
+    </p>
+    ${button(url, "Get your files")}
+    ${
+      order.downloadLimit
+        ? `<p style="margin:12px 0 0;font-size:13px;color:#8e8e9c;">You can download ${order.downloadLimit} time${order.downloadLimit === 1 ? "" : "s"}.</p>`
+        : ""
+    }
+    ${expiry}
+  `;
+
+  return send({
+    to: order.customerEmail,
+    subject: `Your download from ${shop.name}`,
+    html: layout(shop, "Ready to download", body),
     replyTo: shop.contactEmail ?? undefined,
   });
 }

@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { FileText, MapPin, Trash2, Truck } from "lucide-react";
+import {
+  CalendarClock,
+  Download,
+  FileText,
+  MapPin,
+  Trash2,
+  Truck,
+} from "lucide-react";
 import { deleteOrder } from "@/lib/actions/orders";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { OrderStatusSelect } from "./order-status-select";
@@ -7,7 +14,7 @@ import { PaymentStatusSelect } from "./payment-status-select";
 import { OrderActions } from "./order-actions";
 import { Badge, Button } from "@/components/ui";
 import { formatAddress, formatMoney } from "@/lib/utils";
-import type { Order } from "@/db/schema";
+import type { Order, OrderItem } from "@/db/schema";
 
 const STATUS_TONE = {
   new: "blue",
@@ -20,13 +27,17 @@ const STATUS_TONE = {
 
 export function OrderRow({
   order,
+  items,
   invoice,
   showCustomer = true,
 }: {
   order: Order;
+  /** Every line. Falls back to the header for orders written before carts. */
+  items?: OrderItem[];
   invoice?: { number: string; token: string };
   showCustomer?: boolean;
 }) {
+  const lines: OrderItem[] = items?.length ? items : [];
   const address = formatAddress(order);
   const methodName = isPaymentMethodType(order.paymentMethod)
     ? PAYMENT_METHOD_DEFS[order.paymentMethod].name
@@ -39,8 +50,17 @@ export function OrderRow({
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-sm font-medium">
               {order.productTitle}
-              {order.quantity > 1 ? (
+              {order.variantLabel ? (
+                <span className="text-ink-500"> — {order.variantLabel}</span>
+              ) : null}
+              {lines.length <= 1 && order.quantity > 1 ? (
                 <span className="text-ink-400"> ×{order.quantity}</span>
+              ) : null}
+              {lines.length > 1 ? (
+                <span className="text-ink-400">
+                  {" "}
+                  + {lines.length - 1} more
+                </span>
               ) : null}
             </p>
             <Badge
@@ -91,6 +111,34 @@ export function OrderRow({
             </p>
           ) : null}
 
+          {/* A basket is listed in full — the seller has to pick every line. */}
+          {lines.length > 1 ? (
+            <ul className="mt-1.5 space-y-0.5 border-s-2 border-ink-100 ps-2.5">
+              {lines.map((item) => (
+                <li key={item.id} className="text-xs text-ink-600">
+                  <span className="font-medium text-ink-800">{item.title}</span>
+                  {item.variantLabel ? ` — ${item.variantLabel}` : ""}
+                  {item.quantity > 1 ? ` ×${item.quantity}` : ""}
+                  <span className="text-ink-400">
+                    {" · "}
+                    {formatMoney(item.subtotalCents, order.currency)}
+                  </span>
+                  {item.scheduledFor ? (
+                    <span className="text-ink-500">
+                      {" · "}
+                      {item.scheduledFor.toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
           {order.note ? (
             <p className="mt-1.5 rounded-lg bg-ink-50 px-2.5 py-1.5 text-xs text-ink-600">
               {order.note}
@@ -100,6 +148,51 @@ export function OrderRow({
           {order.pickupLocation ? (
             <p className="mt-1 text-xs text-ink-500">
               Collect from: {order.pickupLocation}
+            </p>
+          ) : null}
+
+          {order.scheduledFor ? (
+            <p className="mt-1 flex items-center gap-1 text-xs font-medium text-ink-700">
+              <CalendarClock className="size-3 shrink-0" />
+              {order.scheduledFor.toLocaleString("en-US", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+              })}
+              {order.serviceMode ? (
+                <span className="font-normal text-ink-500">
+                  · {order.serviceMode === "online" ? "Online" : "In person"}
+                </span>
+              ) : null}
+            </p>
+          ) : null}
+
+          {order.downloadToken ? (
+            <p className="mt-1 flex items-center gap-1 text-xs text-ink-500">
+              <Download className="size-3 shrink-0" />
+              {order.downloadReleasedAt ? (
+                <>
+                  Files released
+                  {order.downloadLimit
+                    ? ` · ${order.downloadCount}/${order.downloadLimit} downloaded`
+                    : order.downloadCount > 0
+                      ? ` · downloaded ${order.downloadCount}×`
+                      : ""}
+                </>
+              ) : (
+                <span className="text-amber-600">
+                  Files held until you mark this paid
+                </span>
+              )}
+              <Link
+                href={`/download/${order.downloadToken}`}
+                target="_blank"
+                className="underline underline-offset-2 hover:text-ink-900"
+              >
+                View
+              </Link>
             </p>
           ) : null}
 

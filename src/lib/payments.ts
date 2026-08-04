@@ -2,6 +2,7 @@ import type { PaymentConfig } from "@/db/schema";
 import { normalizePhone } from "./utils";
 
 export const PAYMENT_METHOD_TYPES = [
+  "card",
   "whatsapp",
   "telegram",
   "instagram",
@@ -16,9 +17,15 @@ export type PaymentMethodType = (typeof PAYMENT_METHOD_TYPES)[number];
 /**
  * `contact` rails hand the buyer off to a chat app and settle entirely off
  * platform. `manual` rails keep the buyer on the page and show instructions,
- * with the seller confirming payment later.
+ * with the seller confirming payment later. `electronic` rails take the money
+ * then and there and confirm themselves, so the seller never marks them paid.
  */
-export type RailKind = "contact" | "manual";
+export type RailKind = "contact" | "manual" | "electronic";
+
+/** Rails that settle themselves — no seller action, no "I've paid" button. */
+export function isElectronic(type: string) {
+  return isPaymentMethodType(type) && PAYMENT_METHOD_DEFS[type].kind === "electronic";
+}
 
 export type ConfigField = {
   key: keyof PaymentConfig;
@@ -40,6 +47,17 @@ export type PaymentMethodDef = {
 };
 
 export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = {
+  card: {
+    type: "card",
+    kind: "electronic",
+    name: "Card",
+    action: "Pay by card",
+    description:
+      "Buyers pay by card, Apple Pay or Google Pay on Stripe's checkout. The money lands in your own Stripe account — Sailo never holds it and takes no cut.",
+    // Configured by connecting a Stripe account, not by typing anything, so
+    // the admin form for this rail is the Connect button instead of fields.
+    fields: [],
+  },
   whatsapp: {
     type: "whatsapp",
     kind: "contact",
@@ -184,6 +202,26 @@ export function isConfigured(type: string, config: PaymentConfig) {
     .every((f) => Boolean(config[f.key]?.toString().trim()));
 }
 
+/**
+ * Whether a rail can actually take an order right now.
+ *
+ * Card has no fields to fill, so `isConfigured` would always say yes; what
+ * makes it usable is a connected Stripe account that Stripe itself has cleared
+ * for charges. A seller mid-onboarding is connected but not payable, and
+ * offering the button then sends buyers into an error.
+ */
+export function isRailUsable(
+  type: string,
+  config: PaymentConfig,
+  shop: { stripeAccountId: string | null; stripeChargesEnabled: boolean },
+) {
+  if (!isPaymentMethodType(type)) return false;
+  if (type === "card") {
+    return Boolean(shop.stripeAccountId && shop.stripeChargesEnabled);
+  }
+  return isConfigured(type, config);
+}
+
 export type OrderSummary = {
   shopName: string;
   productTitle: string;
@@ -277,6 +315,12 @@ export function buildHandoff(
     case "bank_transfer":
     case "cod":
       return { kind: "instructions", message };
+
+    // Card can't be resolved here: the buyer's next step is a Stripe Checkout
+    // Session, which needs the saved order to exist first. `createOrderIntent`
+    // builds that redirect once it has an order id.
+    case "card":
+      return null;
   }
 }
 

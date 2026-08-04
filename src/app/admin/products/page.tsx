@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/admin/page-header";
 import { ExportButton } from "@/components/admin/export-button";
 import { Badge, Button, Card, EmptyState } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
+import { anySellable, priceRange, unitsLeft } from "@/lib/variants";
 
 export const metadata: Metadata = { title: "Products" };
 
@@ -50,7 +51,21 @@ export default async function AdminProductsPage() {
         />
       ) : (
         <Card className="divide-y divide-ink-100">
-          {products.map((product) => (
+          {products.map((product) => {
+            const range = priceRange(product, product.variants);
+            const sellable =
+              product.inStock && anySellable(product, product.variants);
+            // With variants, the useful number is everything on the shelf.
+            const stock = product.trackInventory
+              ? product.variants.length > 0
+                ? product.variants.reduce(
+                    (sum, v) => sum + (v.stockQuantity ?? 0),
+                    0,
+                  )
+                : unitsLeft(product)
+              : null;
+
+            return (
             <div
               key={product.id}
               className="flex items-center gap-3 p-3 sm:gap-4 sm:p-4"
@@ -83,15 +98,31 @@ export default async function AdminProductsPage() {
                 </Link>
                 <div className="mt-1 flex flex-wrap items-center gap-1.5">
                   <span className="text-sm tabular-nums text-ink-600">
-                    {formatMoney(product.priceCents, shop.currency)}
+                    {range.varies
+                      ? `from ${formatMoney(range.min, shop.currency)}`
+                      : formatMoney(range.min, shop.currency)}
                   </span>
+                  {product.variants.length > 0 ? (
+                    <Badge>
+                      {product.variants.length} variant
+                      {product.variants.length === 1 ? "" : "s"}
+                    </Badge>
+                  ) : null}
+                  {stock !== null ? (
+                    <Badge tone={stock > 0 ? "neutral" : "red"}>
+                      {stock} in stock
+                    </Badge>
+                  ) : null}
+                  {product.kind !== "physical" ? (
+                    <Badge>{product.kind}</Badge>
+                  ) : null}
                   {product.category ? (
                     <Badge>{product.category.name}</Badge>
                   ) : null}
                   {!product.isPublished ? (
                     <Badge tone="amber">Hidden</Badge>
                   ) : null}
-                  {!product.inStock ? <Badge tone="red">Sold out</Badge> : null}
+                  {!sellable ? <Badge tone="red">Sold out</Badge> : null}
                   {product.isFeatured ? (
                     <Badge tone="blue">Featured</Badge>
                   ) : null}
@@ -131,7 +162,8 @@ export default async function AdminProductsPage() {
                 </form>
               </div>
             </div>
-          ))}
+            );
+          })}
         </Card>
       )}
     </>

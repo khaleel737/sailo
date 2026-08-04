@@ -122,15 +122,15 @@ export function taxOn(baseCents: number, rateBp: number, inclusive: boolean) {
 }
 
 export function computeTotals(input: {
-  unitPriceCents: number;
-  quantity: number;
+  /** The goods, already summed — one line or a whole cart. */
+  subtotalCents: number;
   coupon?: Coupon | null;
   deliveryMethod?: Pick<DeliveryMethod, "feeCents" | "freeOverCents"> | null;
   commissionBp?: number | null;
   tax?: TaxSettings | null;
   now?: Date;
 }): Totals {
-  const subtotalCents = Math.max(0, input.unitPriceCents * input.quantity);
+  const subtotalCents = Math.max(0, input.subtotalCents);
 
   const couponResult = input.coupon
     ? checkCoupon(input.coupon, subtotalCents, input.now ?? new Date())

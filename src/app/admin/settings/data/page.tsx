@@ -34,6 +34,12 @@ const PRODUCT_COLUMNS = [
   { name: "Type", note: "physical, digital or service. Defaults to physical." },
   { name: "Category", note: "Created automatically if it doesn't exist yet." },
   { name: "Tags", note: "Comma or pipe separated." },
+  {
+    name: "Option1 Name / Option1 Value",
+    note: "Sizes, colours and so on, up to three. Repeat the Handle on a row per combination.",
+  },
+  { name: "Variant Price / Variant SKU", note: "Per combination. A blank price uses the product's." },
+  { name: "Variant Inventory Qty", note: "Units in stock. Any number here turns stock tracking on." },
   { name: "In Stock / Featured / Published", note: "TRUE or FALSE." },
   { name: "Image Src", note: "One or more https URLs separated by |." },
 ];

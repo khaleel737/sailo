@@ -9,12 +9,21 @@ import {
 } from "@/lib/queries";
 import { ProductGallery } from "@/components/shop/product-gallery";
 import { OrderButton } from "@/components/shop/order-sheet";
+import { CartRegion } from "@/components/shop/cart-region";
 import { ReviewForm } from "@/components/shop/review-form";
 import { StarRating } from "@/components/shop/star-rating";
 import { VisitTracker } from "@/components/shop/visit-tracker";
 import { LanguageSwitcher } from "@/components/shop/language-switcher";
 import { getShopT } from "@/i18n/server";
-import { formatMoney, shopThemeVars } from "@/lib/utils";
+import { interpolate } from "@/i18n";
+import { formatDuration, formatMoney, shopThemeVars } from "@/lib/utils";
+import {
+  anySellable,
+  isLowStock,
+  priceRange,
+  toCheckoutVariants,
+  unitsLeft,
+} from "@/lib/variants";
 import { can } from "@/lib/plans";
 
 export async function generateMetadata({
@@ -58,11 +67,30 @@ export default async function ProductPage({
         ? t.shop.kindService
         : t.shop.kindPhysical;
 
+  const variants = toCheckoutVariants(product, product.variants);
+  const range = priceRange(product, product.variants);
+  const sellable = product.inStock && anySellable(product, product.variants);
+  const stockLeft = unitsLeft(product);
+
   const onSale =
+    !range.varies &&
     product.compareAtCents !== null &&
-    product.compareAtCents > product.priceCents;
+    product.compareAtCents > range.min;
 
   return (
+    <CartRegion
+      shopId={shop.id}
+      shopName={shop.name}
+      currency={shop.currency}
+      theme={shop.theme}
+      accentColor={shop.accentColor}
+      dir={dir}
+      locale={locale}
+      methods={checkout.methods}
+      deliveryOptions={checkout.deliveryOptions}
+      contactEmail={shop.contactEmail}
+      t={t}
+    >
     <div
       data-surface={shop.theme === "dark" ? "dark" : "light"}
       dir={dir}
@@ -96,7 +124,21 @@ export default async function ProductPage({
             <span className="surface-elevated text-muted rounded-full px-2.5 py-1 text-xs font-medium">
               {kindLabel}
             </span>
-            {!product.inStock ? (
+            {product.kind === "service" && product.durationMinutes ? (
+              <span className="surface-elevated text-muted rounded-full px-2.5 py-1 text-xs font-medium">
+                {interpolate(t.checkout.duration, {
+                  duration: formatDuration(product.durationMinutes),
+                })}
+              </span>
+            ) : null}
+            {product.kind === "service" ? (
+              <span className="surface-elevated text-muted rounded-full px-2.5 py-1 text-xs font-medium">
+                {product.serviceMode === "online"
+                  ? t.checkout.online
+                  : t.checkout.inPerson}
+              </span>
+            ) : null}
+            {!sellable ? (
               <span className="rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700">
                 {t.shop.soldOut}
               </span>
@@ -109,8 +151,12 @@ export default async function ProductPage({
 
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-xl font-semibold tabular-nums">
-              {product.priceCents > 0
-                ? formatMoney(product.priceCents, shop.currency)
+              {range.min > 0
+                ? range.varies
+                  ? interpolate(t.shop.from, {
+                      price: formatMoney(range.min, shop.currency),
+                    })
+                  : formatMoney(range.min, shop.currency)
                 : t.common.free}
             </span>
             {onSale ? (
@@ -119,6 +165,23 @@ export default async function ProductPage({
               </span>
             ) : null}
           </div>
+
+          {sellable && isLowStock(stockLeft) ? (
+            <p className="mt-1.5 text-sm font-medium text-amber-600">
+              {interpolate(t.checkout.onlyLeft, { count: stockLeft })}
+            </p>
+          ) : null}
+
+          {product.options.length > 0 ? (
+            <dl className="mt-3 space-y-1">
+              {product.options.map((option) => (
+                <div key={option.name} className="flex gap-2 text-sm">
+                  <dt className="text-muted">{option.name}:</dt>
+                  <dd>{option.values.join(" · ")}</dd>
+                </div>
+              ))}
+            </dl>
+          ) : null}
 
           {product.reviewCount > 0 ? (
             <StarRating
@@ -159,8 +222,24 @@ export default async function ProductPage({
               currency={shop.currency}
               methods={checkout.methods}
               deliveryOptions={checkout.deliveryOptions}
-              isPhysical={product.kind === "physical"}
-              collectAddress={shop.collectAddress}
+              kind={product.kind}
+              options={product.options}
+              variants={variants}
+              unitsLeft={stockLeft}
+              service={
+                product.kind === "service"
+                  ? {
+                      bookingEnabled: product.bookingEnabled,
+                      bookingLeadHours: product.bookingLeadHours,
+                      durationMinutes: product.durationMinutes,
+                      mode: product.serviceMode,
+                    }
+                  : null
+              }
+              serviceLocation={product.serviceLocation}
+              imageUrl={product.images[0]?.url ?? null}
+              hasFiles={product.kind === "digital" && product.files.length > 0}
+              heldUntilPaid={product.releaseOnPayment}
               contactEmail={shop.contactEmail}
               inStock={product.inStock}
               t={t}
@@ -239,5 +318,6 @@ export default async function ProductPage({
         )}
       </div>
     </div>
+    </CartRegion>
   );
 }

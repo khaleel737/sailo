@@ -70,7 +70,15 @@ export async function getNotifications(
         id: `order:${order.id}`,
         kind: "order",
         title: t.notifications.newOrder,
-        body: `${order.productTitle}${order.quantity > 1 ? ` ×${order.quantity}` : ""} — ${formatMoney(order.totalCents, order.currency)}`,
+        // The variant matters to whoever has to pick the order off a shelf,
+        // and a basket has to say it's a basket.
+        body: `${order.productTitle}${order.variantLabel ? ` (${order.variantLabel})` : ""}${
+          order.itemCount > 1
+            ? ` + ${order.itemCount - 1} more`
+            : order.quantity > 1
+              ? ` ×${order.quantity}`
+              : ""
+        } — ${formatMoney(order.totalCents, order.currency)}`,
         href: "/admin/orders",
         at: order.createdAt,
       });

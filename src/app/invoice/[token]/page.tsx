@@ -21,7 +21,7 @@ export default async function InvoicePage({
   const data = await getInvoiceByToken(token);
   if (!data) notFound();
 
-  const { invoice, order, shop } = data;
+  const { invoice, order, shop, items } = data;
   const { locale, t, dir } = await getShopT(shop.locale);
   const address = formatAddress(order);
   const methodName = isPaymentMethodType(order.paymentMethod)
@@ -158,18 +158,35 @@ export default async function InvoicePage({
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="py-3 font-medium">{order.productTitle}</td>
-                <td className="py-3 text-end tabular-nums">
-                  {order.quantity}
-                </td>
-                <td className="py-3 text-end tabular-nums">
-                  {formatMoney(order.unitPriceCents, order.currency)}
-                </td>
-                <td className="py-3 text-end tabular-nums">
-                  {formatMoney(order.subtotalCents, order.currency)}
-                </td>
-              </tr>
+              {items.map((item) => (
+                <tr key={item.id} className="align-top">
+                  <td className="py-3 font-medium">
+                    {item.title}
+                    {item.variantLabel || item.sku ? (
+                      <span className="block text-xs font-normal text-ink-500">
+                        {[item.variantLabel, item.sku].filter(Boolean).join(" · ")}
+                      </span>
+                    ) : null}
+                    {item.scheduledFor ? (
+                      <span className="block text-xs font-normal text-ink-500">
+                        {item.scheduledFor.toLocaleString(locale, {
+                          day: "numeric",
+                          month: "short",
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                    ) : null}
+                  </td>
+                  <td className="py-3 text-end tabular-nums">{item.quantity}</td>
+                  <td className="py-3 text-end tabular-nums">
+                    {formatMoney(item.unitPriceCents, order.currency)}
+                  </td>
+                  <td className="py-3 text-end tabular-nums">
+                    {formatMoney(item.subtotalCents, order.currency)}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
 

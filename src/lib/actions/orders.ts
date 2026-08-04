@@ -8,13 +8,17 @@ import {
   clients,
   coupons,
   deliveryMethods,
+  orderItems,
   orders,
   paymentMethods,
   products,
+  productVariants,
   shops,
   type Affiliate,
   type Coupon,
   type PaymentConfig,
+  type Product,
+  type ProductVariant,
   type Shop,
 } from "@/db/schema";
 import { requireShop } from "@/lib/session";
@@ -33,15 +37,14 @@ import type { ActionState } from "./shop";
 import {
   bankDetailLines,
   buildHandoff,
-  isConfigured,
   isPaymentMethodType,
   PAYMENT_METHOD_DEFS,
+  isRailUsable,
   type Handoff,
 } from "@/lib/payments";
 import { isDeliveryConfigured } from "@/lib/delivery";
 import {
   checkCoupon,
-  computeTotals,
   COUPON_MESSAGES,
   formatPercent,
   generateCode,
@@ -50,6 +53,36 @@ import {
 } from "@/lib/pricing";
 import { createInvoiceForOrder } from "@/lib/invoices";
 import { can } from "@/lib/plans";
+import {
+  cartNeedsDelivery,
+  cartSubtotal,
+  quote,
+  type Quote,
+  type QuoteLine,
+} from "@/lib/quote";
+import {
+  clampQuantity,
+  isSellable,
+  maxOrderable,
+  unitsLeft,
+  variantLabel,
+  variantPrice,
+} from "@/lib/variants";
+import {
+  releaseStock,
+  reserveStock,
+  restoreStock,
+  retakeStock,
+} from "@/lib/inventory";
+import { createCheckoutSession } from "@/lib/connect";
+import {
+  downloadExpiry,
+  downloadUrl,
+  hasDeliverableFiles,
+  newDownloadToken,
+  releaseDownloads,
+  releasesImmediately,
+} from "@/lib/downloads";
 
 // A "use server" module may only export async functions, so this stays local.
 const ORDER_STATUSES = new Set([
@@ -71,10 +104,20 @@ export type OrderAddress = {
   country?: string;
 };
 
+/** One thing the buyer wants, as the browser asks for it. */
+export type OrderLineInput = {
+  productId: string;
+  /** Which combination of the product's options the buyer picked. */
+  variantId?: string;
+  quantity: number;
+  /** ISO instant from the booking picker, for a service line. */
+  scheduledFor?: string;
+};
+
 export type OrderIntentInput = {
   shopId: string;
-  productId: string;
-  quantity: number;
+  /** One line for "buy now", several for a cart. */
+  items: OrderLineInput[];
   paymentMethod: string;
   deliveryMethodId?: string;
   couponCode?: string;
@@ -84,6 +127,124 @@ export type OrderIntentInput = {
   customerPhone?: string;
   note?: string;
 } & OrderAddress;
+
+/** Past this a "cart" is a data-entry mistake, not a shopping trip. */
+const MAX_LINES = 50;
+
+type ResolvedLine = QuoteLine & {
+  product: Product;
+  variant: ProductVariant | null;
+  scheduledFor: Date | null;
+};
+
+/**
+ * Turns what the browser asked for into what the shop will actually sell:
+ * real products, real variants, real prices. Nothing the client sent about
+ * money survives this function.
+ *
+ * `strict` fails the whole order on the first unusable line — right when a
+ * buyer is committing. The cart preview is lenient instead, dropping bad lines
+ * so the rest of the basket still prices.
+ */
+async function resolveLines(
+  shopId: string,
+  items: OrderLineInput[],
+  opts: { strict: boolean; now: Date },
+): Promise<
+  | { ok: true; lines: ResolvedLine[]; dropped: OrderLineInput[] }
+  | { ok: false; error: string }
+> {
+  const db = getDb();
+  const lines: ResolvedLine[] = [];
+  const dropped: OrderLineInput[] = [];
+
+  if (items.length === 0) return { ok: false, error: "Your basket is empty." };
+
+  const fail = (line: OrderLineInput, error: string) => {
+    if (opts.strict) return { ok: false as const, error };
+    dropped.push(line);
+    return null;
+  };
+
+  for (const item of items.slice(0, MAX_LINES)) {
+    const product = await db.query.products.findFirst({
+      where: and(
+        eq(products.id, item.productId),
+        eq(products.shopId, shopId),
+        eq(products.isPublished, true),
+      ),
+    });
+    if (!product) {
+      const stop = fail(item, "Product not available.");
+      if (stop) return stop;
+      continue;
+    }
+
+    const variants = await db.query.productVariants.findMany({
+      where: eq(productVariants.productId, product.id),
+      orderBy: [asc(productVariants.position)],
+    });
+
+    let variant: ProductVariant | null = null;
+    if (variants.length > 0) {
+      variant = variants.find((v) => v.id === item.variantId) ?? null;
+      if (!variant) {
+        const what = product.options[0]?.name?.toLowerCase() ?? "option";
+        const stop = fail(item, `Choose a ${what} for ${product.title}.`);
+        if (stop) return stop;
+        continue;
+      }
+    }
+
+    if (!isSellable(product, variant)) {
+      const stop = fail(item, `${product.title} is sold out.`);
+      if (stop) return stop;
+      continue;
+    }
+
+    // A service books its own slot, against its own notice period.
+    let scheduledFor: Date | null = null;
+    if (product.kind === "service" && product.bookingEnabled) {
+      scheduledFor = parseBooking(
+        item.scheduledFor,
+        product.bookingLeadHours,
+        opts.now,
+      );
+      if (item.scheduledFor?.trim() && !scheduledFor) {
+        const stop = fail(
+          item,
+          `Pick a time for ${product.title} at least ${product.bookingLeadHours} hours from now.`,
+        );
+        if (stop) return stop;
+        continue;
+      }
+    }
+
+    const quantity = clampQuantity(item.quantity, maxOrderable(product, variant));
+
+    lines.push({
+      productId: product.id,
+      variantId: variant?.id ?? null,
+      title: product.title,
+      kind: product.kind,
+      options: product.options,
+      variantOptions: variant?.options ?? null,
+      sku: variant?.sku ?? null,
+      imageUrl: variant?.imageUrl ?? null,
+      // The price the buyer is charged comes from the variant they picked.
+      unitPriceCents: variantPrice(product, variant),
+      quantity,
+      product,
+      variant,
+      scheduledFor,
+    });
+  }
+
+  if (lines.length === 0) {
+    return { ok: false, error: "Nothing in your basket is available right now." };
+  }
+  return { ok: true, lines, dropped };
+}
 
 export type OrderIntentResult =
   | {
@@ -98,6 +259,10 @@ export type OrderIntentResult =
       currency: string;
       invoiceUrl: string | null;
       invoiceNumber: string | null;
+      /** Set when a digital order's files are already unlocked. */
+      downloadUrl: string | null;
+      /** Set when they unlock once the seller confirms payment. */
+      downloadPending: boolean;
       /** Present when the shop runs a referral programme. */
       referral: { code: string; url: string; percent: string } | null;
     }
@@ -187,15 +352,18 @@ export async function createOrderIntent(
   });
   if (!shop) return { ok: false, error: "Shop not found." };
 
-  const product = await db.query.products.findFirst({
-    where: and(
-      eq(products.id, input.productId),
-      eq(products.shopId, shop.id),
-      eq(products.isPublished, true),
-    ),
+  const now = new Date();
+
+  /* ---- Lines ----------------------------------------------------------- */
+
+  const resolved = await resolveLines(shop.id, input.items, {
+    strict: true,
+    now,
   });
-  if (!product) return { ok: false, error: "Product not available." };
-  if (!product.inStock) return { ok: false, error: "This item is sold out." };
+  if (!resolved.ok) return { ok: false, error: resolved.error };
+  const { lines } = resolved;
+  // The first line stands in for the order wherever one product is expected.
+  const head = lines[0];
 
   if (!isPaymentMethodType(input.paymentMethod)) {
     return { ok: false, error: "Pick how you'd like to order." };
@@ -208,51 +376,33 @@ export async function createOrderIntent(
       eq(paymentMethods.isEnabled, true),
     ),
   });
-  if (!method || !isConfigured(method.type, method.config)) {
+  if (!method || !isRailUsable(method.type, method.config, shop)) {
+    return { ok: false, error: "That option isn't available right now." };
+  }
+  // Gated rails are refused server-side too: a downgraded shop must not keep
+  // taking card orders because a stale page still shows the button.
+  if (method.type === "card" && !can(shop, "cardRails")) {
     return { ok: false, error: "That option isn't available right now." };
   }
 
   const def = PAYMENT_METHOD_DEFS[input.paymentMethod];
-  const quantity = Math.min(Math.max(Math.trunc(input.quantity) || 1, 1), 999);
-  const now = new Date();
 
   /* ---- Delivery ------------------------------------------------------- */
 
-  // Only physical goods are delivered; digital and services skip it entirely.
-  const needsDelivery = product.kind === "physical";
-  let delivery: Awaited<
-    ReturnType<typeof db.query.deliveryMethods.findFirst>
-  > = undefined;
-
-  if (needsDelivery) {
-    const available = (
-      await db.query.deliveryMethods.findMany({
-        where: and(
-          eq(deliveryMethods.shopId, shop.id),
-          eq(deliveryMethods.isEnabled, true),
-        ),
-        orderBy: [asc(deliveryMethods.position)],
-      })
-    ).filter((d) => isDeliveryConfigured(d.type, d.config));
-
-    if (available.length > 0) {
-      delivery = input.deliveryMethodId
-        ? available.find((d) => d.id === input.deliveryMethodId)
-        : available[0];
-      if (!delivery) {
-        return { ok: false, error: "Pick how you'd like to receive it." };
-      }
-    }
+  // One fee for the order, and only when something in it has to travel: a
+  // basket of downloads and appointments is never shipped.
+  const delivery = await resolveDelivery(
+    shop.id,
+    cartNeedsDelivery(lines),
+    input.deliveryMethodId,
+  );
+  if (delivery === "unavailable") {
+    return { ok: false, error: "Pick how you'd like to receive it." };
   }
-
-  const wantsAddress =
-    needsDelivery &&
-    shop.collectAddress &&
-    (!delivery || delivery.type === "shipping");
 
   /* ---- Coupon --------------------------------------------------------- */
 
-  const subtotalCents = product.priceCents * quantity;
+  const subtotalCents = cartSubtotal(lines);
   let coupon: Coupon | null = null;
 
   if (input.couponCode?.trim()) {
@@ -288,15 +438,18 @@ export async function createOrderIntent(
     ? (affiliate.commissionBp ?? shop.affiliateDefaultBp)
     : null;
 
-  const totals = computeTotals({
-    unitPriceCents: product.priceCents,
-    quantity,
+  const priced: Quote = quote({
+    lines,
     coupon,
     deliveryMethod: delivery,
     commissionBp,
     tax: shop,
+    collectAddress: shop.collectAddress,
+    deliveryType: delivery?.type ?? null,
     now,
   });
+  const totals = priced.totals;
+  const wantsAddress = priced.needsAddress;
 
   const email = clean(input.customerEmail, 160)?.toLowerCase() ?? null;
   const phoneRaw = clean(input.customerPhone, 40);
@@ -339,15 +492,87 @@ export async function createOrderIntent(
     ...address,
   });
 
+  /* ---- Stock ----------------------------------------------------------- */
+
+  // Taken before the row is written: an order that can't be fulfilled is worse
+  // than one that was never placed, and each guard is atomic so the last unit
+  // can only be sold once. A cart is all-or-nothing — if the third line has
+  // just sold out, the first two go back on the shelf.
+  const taken: QuoteLine[] = [];
+  for (const line of lines) {
+    const ok = await reserveStock({
+      productId: line.productId,
+      variantId: line.variantId,
+      quantity: line.quantity,
+      trackInventory: line.product.trackInventory,
+    });
+    if (ok) {
+      taken.push(line);
+      continue;
+    }
+
+    for (const undo of taken) {
+      await releaseStock({
+        productId: undo.productId,
+        variantId: undo.variantId,
+        quantity: undo.quantity,
+      });
+    }
+    return {
+      ok: false,
+      error:
+        line.quantity > 1
+          ? `There isn't that much ${line.title} left. Try a smaller quantity.`
+          : `${line.title} just sold out.`,
+    };
+  }
+
+  /* ---- Digital delivery ------------------------------------------------ */
+
+  // One link per order covering every downloadable line in it. The strictest
+  // rule wins: if any file is held until payment, none of them open early.
+  const digitalLines = [];
+  for (const line of lines) {
+    if (line.kind !== "digital") continue;
+    if (await hasDeliverableFiles(line.productId)) digitalLines.push(line);
+  }
+
+  const deliversFiles = digitalLines.length > 0;
+  const unlockNow =
+    deliversFiles &&
+    digitalLines.every((line) =>
+      releasesImmediately(line.product, {
+        totalCents: totals.totalCents,
+        paymentStatus: "unpaid",
+      }),
+    );
+  const downloadToken = deliversFiles ? newDownloadToken() : null;
+  // The shortest window and the tightest cap, so no line outlives its terms.
+  const downloadExpiresAt = deliversFiles
+    ? soonest(
+        digitalLines.map((l) => downloadExpiry(l.product.downloadExpiryDays, now)),
+      )
+    : null;
+  const downloadLimit = deliversFiles
+    ? smallest(digitalLines.map((l) => l.product.downloadLimit))
+    : null;
+
   const [order] = await db
     .insert(orders)
     .values({
       shopId: shop.id,
-      productId: product.id,
+      productId: head.productId,
+      variantId: head.variantId,
       clientId,
-      productTitle: product.title,
-      unitPriceCents: product.priceCents,
-      quantity,
+      productTitle: head.title,
+      variantLabel: head.variantOptions
+        ? variantLabel(head.variantOptions, head.options)
+        : null,
+      variantSku: head.sku,
+      productKind: head.kind,
+      unitPriceCents: head.unitPriceCents,
+      quantity: priced.unitCount,
+      itemCount: lines.length,
       currency: shop.currency,
 
       subtotalCents: totals.subtotalCents,
@@ -369,6 +594,22 @@ export async function createOrderIntent(
           ? (delivery.config.address ?? null)
           : null,
 
+      // Services: what was booked, and where it happens. Snapshotted so a
+      // later edit to the product can't move an appointment already agreed.
+      // Each line keeps its own; the header repeats the first booked one so a
+      // list can show a time without a join.
+      scheduledFor: lines.find((l) => l.scheduledFor)?.scheduledFor ?? null,
+      serviceMode: head.kind === "service" ? head.product.serviceMode : null,
+      serviceLocation:
+        head.kind === "service" ? head.product.serviceLocation : null,
+
+      // Digital: the token exists from the start; the release timestamp is
+      // what actually opens the files.
+      downloadToken,
+      downloadReleasedAt: unlockNow ? now : null,
+      downloadExpiresAt,
+      downloadLimit,
+
       couponId: coupon?.id ?? null,
       couponCode: coupon?.code ?? null,
 
@@ -386,6 +627,30 @@ export async function createOrderIntent(
       paymentStatus: "unpaid",
     })
     .returning({ id: orders.id });
+
+  // The authoritative list of what was sold. Written straight after the header
+  // so nothing can read the order in a one-line-only state.
+  await db.insert(orderItems).values(
+    priced.lines.map((line, position) => ({
+      orderId: order.id,
+      productId: line.productId,
+      variantId: line.variantId,
+      title: line.title,
+      variantLabel: line.label || null,
+      sku: line.sku,
+      kind: line.kind,
+      imageUrl: line.imageUrl,
+      unitPriceCents: line.unitPriceCents,
+      quantity: line.quantity,
+      subtotalCents: line.subtotalCents,
+      scheduledFor: lines[position]?.scheduledFor ?? null,
+      serviceMode:
+        line.kind === "service" ? lines[position].product.serviceMode : null,
+      serviceLocation:
+        line.kind === "service" ? lines[position].product.serviceLocation : null,
+      position,
+    })),
+  );
 
   // Redemptions are counted atomically so a usage cap can't be overshot.
   if (coupon) {
@@ -407,8 +672,15 @@ export async function createOrderIntent(
       const result = await sendOrderConfirmation({
         shop,
         order: saved,
+        items: await db.query.orderItems.findMany({
+          where: eq(orderItems.orderId, order.id),
+          orderBy: [asc(orderItems.position)],
+        }),
         invoiceUrl: invoice && base ? `${base}/invoice/${invoice.token}` : null,
         invoiceNumber: invoice?.number ?? null,
+        downloadUrl:
+          unlockNow && downloadToken ? downloadUrl(downloadToken, base) : null,
+        downloadPending: deliversFiles && !unlockNow,
       });
       if (result.sent) {
         await db
@@ -431,12 +703,27 @@ export async function createOrderIntent(
   revalidatePath("/admin/clients");
   revalidatePath("/admin/invoices");
 
-  const handoff = buildHandoff(method.type, method.config, {
+  let handoff = buildHandoff(method.type, method.config, {
     shopName: shop.name,
-    productTitle: product.title,
-    quantity,
+    // The seller reads this in a chat app, so every line goes in it — a cart
+    // summarised to its first item would have them ringing back to ask.
+    productTitle: priced.lines
+      .map(
+        (line) =>
+          `${line.title}${line.label ? ` — ${line.label}` : ""}${
+            line.quantity > 1 ? ` ×${line.quantity}` : ""
+          }`,
+      )
+      .join("\n"),
+    // Already spelled out per line above; repeating it would read as double.
+    quantity: lines.length > 1 ? 1 : head.quantity,
     priceLabel: formatMoney(totals.totalCents, shop.currency),
-    productUrl: base ? `${base}/${shop.handle}/p/${product.slug}` : undefined,
+    productUrl:
+      base && lines.length === 1
+        ? `${base}/${shop.handle}/p/${head.product.slug}`
+        : base
+          ? `${base}/${shop.handle}`
+          : undefined,
     customerName: name ?? undefined,
     note: note ?? undefined,
     address: formatAddress(address) || undefined,
@@ -453,6 +740,67 @@ export async function createOrderIntent(
         : undefined,
     invoiceNumber: invoice?.number,
   });
+
+  /* ---- Card: hand the buyer to Stripe --------------------------------- */
+
+  // Only reachable once the order row exists — the session carries its id so
+  // the webhook can find it, and the amounts come from the row rather than
+  // from anything the client sent.
+  if (method.type === "card") {
+    // The insert returns only an id; the session and the rollback both need
+    // the full row, so read it back once here rather than widening every
+    // other caller's return.
+    const saved = await db.query.orders.findFirst({
+      where: eq(orders.id, order.id),
+    });
+    if (!saved) return { ok: false, error: "Couldn't start the payment." };
+
+    try {
+      const session = await createCheckoutSession({
+        shop,
+        order: saved,
+        // Stripe's receipt itemises the basket rather than lumping it under
+        // the first product's name.
+        items: priced.lines.map((line) => ({
+          name: line.label ? `${line.title} — ${line.label}` : line.title,
+          unitPriceCents: line.unitPriceCents,
+          quantity: line.quantity,
+        })),
+        successUrl: invoice
+          ? `${base}/invoice/${invoice.token}?paid=1`
+          : `${base}/${shop.handle}?ordered=1`,
+        cancelUrl:
+          lines.length === 1
+            ? `${base}/${shop.handle}/p/${head.product.slug}?cancelled=1`
+            : `${base}/${shop.handle}?cancelled=1`,
+      });
+
+      await db
+        .update(orders)
+        .set({
+          stripeSessionId: session.id,
+          stripeAccountId: shop.stripeAccountId,
+          updatedAt: new Date(),
+        })
+        .where(eq(orders.id, order.id));
+
+      if (!session.url) throw new Error("Stripe returned no checkout URL");
+      handoff = { kind: "redirect", url: session.url };
+    } catch (error) {
+      // The order and its stock reservation already exist. Rolling both back
+      // is the only honest outcome: leaving an unpayable order would hold
+      // stock the seller could otherwise sell.
+      await restoreStock(saved);
+      await db.delete(orders).where(eq(orders.id, order.id));
+
+      console.error("[sailo] stripe checkout session failed", error);
+      return {
+        ok: false,
+        error:
+          "Card payment isn't available right now. Try another way to order.",
+      };
+    }
+  }
 
   const config = method.config as PaymentConfig;
   const deliveryInstructions = delivery
@@ -475,14 +823,95 @@ export async function createOrderIntent(
     currency: shop.currency,
     invoiceUrl: invoice && base ? `${base}/invoice/${invoice.token}` : null,
     invoiceNumber: invoice?.number ?? null,
+    downloadUrl:
+      unlockNow && downloadToken ? downloadUrl(downloadToken, base) : null,
+    downloadPending: deliversFiles && !unlockNow,
     referral,
     bankDetails:
       method.type === "bank_transfer" ? bankDetailLines(config) : undefined,
     instructions:
-      [config.instructions?.trim(), deliveryInstructions.trim()]
+      [
+        config.instructions?.trim(),
+        deliveryInstructions.trim(),
+        // Each service tells the buyer where to be, or how to join.
+        ...[
+          ...new Set(
+            lines
+              .filter((l) => l.kind === "service" && l.product.serviceLocation)
+              .map((l) => l.product.serviceLocation!.trim()),
+          ),
+        ],
+      ]
         .filter(Boolean)
         .join("\n\n") || undefined,
   };
+}
+
+/**
+ * The delivery rate the buyer picked, or the shop's first one. Returns
+ * `undefined` when nothing in the basket travels, and "unavailable" when the
+ * buyer asked for a rate this shop doesn't offer.
+ */
+async function resolveDelivery(
+  shopId: string,
+  needed: boolean,
+  requestedId: string | undefined,
+) {
+  if (!needed) return undefined;
+  const db = getDb();
+
+  const available = (
+    await db.query.deliveryMethods.findMany({
+      where: and(
+        eq(deliveryMethods.shopId, shopId),
+        eq(deliveryMethods.isEnabled, true),
+      ),
+      orderBy: [asc(deliveryMethods.position)],
+    })
+  ).filter((d) => isDeliveryConfigured(d.type, d.config));
+
+  if (available.length === 0) return undefined;
+  if (!requestedId) return available[0];
+  return available.find((d) => d.id === requestedId) ?? ("unavailable" as const);
+}
+
+/** The earliest of several deadlines, ignoring the ones that never expire. */
+function soonest(dates: (Date | null)[]): Date | null {
+  const real = dates.filter((d): d is Date => d !== null);
+  if (real.length === 0) return null;
+  return real.reduce((min, d) => (d < min ? d : min));
+}
+
+/** The tightest of several caps, ignoring the ones that are uncapped. */
+function smallest(limits: (number | null)[]): number | null {
+  const real = limits.filter((n): n is number => n !== null);
+  if (real.length === 0) return null;
+  return Math.min(...real);
+}
+
+/**
+ * Reads the booking picker's local datetime. Anything earlier than the notice
+ * the seller asked for is rejected rather than quietly rounded up — a buyer
+ * who picked 9am tomorrow should be told it's too soon, not booked for Friday.
+ */
+function parseBooking(
+  value: string | undefined,
+  leadHours: number,
+  now: Date,
+): Date | null {
+  if (!value?.trim()) return null;
+
+  const when = new Date(value);
+  if (Number.isNaN(when.getTime())) return null;
+
+  const earliest = new Date(now.getTime() + Math.max(0, leadHours) * 3_600_000);
+  if (when < earliest) return null;
+
+  // A year out is a typo, not a booking.
+  const latest = new Date(now.getTime() + 365 * 24 * 3_600_000);
+  if (when > latest) return null;
+
+  return when;
 }
 
 /** What the order sheet needs to label the tax line, or null when tax is off. */
@@ -492,33 +921,56 @@ export type PreviewTax = {
   inclusive: boolean;
 } | null;
 
+/** A priced line, as the cart draws it. */
+export type PreviewLine = {
+  productId: string;
+  variantId: string | null;
+  title: string;
+  label: string;
+  kind: string;
+  imageUrl: string | null;
+  unitPriceCents: number;
+  quantity: number;
+  subtotalCents: number;
+  /** Units left, or null when nobody is counting. */
+  unitsLeft: number | null;
+};
+
 export type OrderPreview = {
   totals: Totals;
   currency: string;
   tax: PreviewTax;
+  lines: PreviewLine[];
+  /** Lines that have gone since they were added, so the cart can say so. */
+  unavailable: { productId: string; variantId: string | null }[];
+  needsDelivery: boolean;
+  needsAddress: boolean;
+  hasService: boolean;
   couponError?: string;
   couponApplied?: string;
 };
 
 /**
- * Recomputes totals for the order sheet as the buyer changes quantity,
- * delivery or coupon. Uses the same `computeTotals` as the real order, so the
- * quoted price can't drift from the charged one.
+ * Prices a basket for the checkout panel as the buyer changes quantity,
+ * delivery or coupon. It runs the same `resolveLines` and `quote` as the real
+ * order, so what's shown can't drift from what's charged — and it's lenient,
+ * so one sold-out line doesn't blank the whole cart.
  */
 export async function previewOrder(input: {
   shopId: string;
-  productId: string;
-  quantity: number;
+  items: OrderLineInput[];
   deliveryMethodId?: string;
   couponCode?: string;
 }): Promise<OrderPreview | { error: string }> {
   const db = getDb();
+  const now = new Date();
 
   const shop = await db.query.shops.findFirst({
     where: and(eq(shops.id, input.shopId), eq(shops.isPublished, true)),
     columns: {
       id: true,
       currency: true,
+      collectAddress: true,
       taxEnabled: true,
       taxName: true,
       taxRateBp: true,
@@ -528,28 +980,17 @@ export async function previewOrder(input: {
   });
   if (!shop) return { error: "Shop not found." };
 
-  const product = await db.query.products.findFirst({
-    where: and(
-      eq(products.id, input.productId),
-      eq(products.shopId, shop.id),
-      eq(products.isPublished, true),
-    ),
-    columns: { priceCents: true, kind: true },
+  const resolved = await resolveLines(shop.id, input.items, {
+    strict: false,
+    now,
   });
-  if (!product) return { error: "Product not available." };
+  if (!resolved.ok) return { error: resolved.error };
 
-  const quantity = Math.min(Math.max(Math.trunc(input.quantity) || 1, 1), 999);
-
-  const delivery =
-    product.kind === "physical" && input.deliveryMethodId
-      ? await db.query.deliveryMethods.findFirst({
-          where: and(
-            eq(deliveryMethods.shopId, shop.id),
-            eq(deliveryMethods.id, input.deliveryMethodId),
-            eq(deliveryMethods.isEnabled, true),
-          ),
-        })
-      : undefined;
+  const delivery = await resolveDelivery(
+    shop.id,
+    cartNeedsDelivery(resolved.lines),
+    input.deliveryMethodId,
+  );
 
   let coupon: Coupon | null = null;
   let couponError: string | undefined;
@@ -560,7 +1001,8 @@ export async function previewOrder(input: {
     const found = await db.query.coupons.findFirst({
       where: and(eq(coupons.shopId, shop.id), eq(coupons.code, code)),
     });
-    const verdict = checkCoupon(found, product.priceCents * quantity, new Date());
+    // Judged against the whole basket, so a minimum spend counts every line.
+    const verdict = checkCoupon(found, cartSubtotal(resolved.lines), now);
     if (verdict.ok) {
       coupon = found!;
       couponApplied = code;
@@ -569,14 +1011,19 @@ export async function previewOrder(input: {
     }
   }
 
+  const deliveryRate = delivery === "unavailable" ? undefined : delivery;
+  const priced = quote({
+    lines: resolved.lines,
+    coupon,
+    deliveryMethod: deliveryRate,
+    tax: shop,
+    collectAddress: shop.collectAddress,
+    deliveryType: deliveryRate?.type ?? null,
+    now,
+  });
+
   return {
-    totals: computeTotals({
-      unitPriceCents: product.priceCents,
-      quantity,
-      coupon,
-      deliveryMethod: delivery,
-      tax: shop,
-    }),
+    totals: priced.totals,
     currency: shop.currency,
     tax: shop.taxEnabled
       ? {
@@ -585,6 +1032,28 @@ export async function previewOrder(input: {
           inclusive: shop.taxInclusive,
         }
       : null,
+    lines: priced.lines.map((line, index) => ({
+      productId: line.productId,
+      variantId: line.variantId,
+      title: line.title,
+      label: line.label,
+      kind: line.kind,
+      imageUrl: line.imageUrl,
+      unitPriceCents: line.unitPriceCents,
+      quantity: line.quantity,
+      subtotalCents: line.subtotalCents,
+      unitsLeft: unitsLeft(
+        resolved.lines[index].product,
+        resolved.lines[index].variant,
+      ),
+    })),
+    unavailable: resolved.dropped.map((d) => ({
+      productId: d.productId,
+      variantId: d.variantId ?? null,
+    })),
+    needsDelivery: priced.needsDelivery,
+    needsAddress: priced.needsAddress,
+    hasService: priced.hasService,
     couponError,
     couponApplied,
   };
@@ -672,17 +1141,33 @@ export async function submitPaymentReference(input: {
 
 export async function updateOrderStatus(formData: FormData) {
   const { shop } = await requireShop();
+  const db = getDb();
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
   if (!id || !ORDER_STATUSES.has(status)) return;
 
-  await getDb()
+  const order = await db.query.orders.findFirst({
+    where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
+  });
+  if (!order) return;
+
+  await db
     .update(orders)
     .set({ status, updatedAt: new Date() })
-    .where(and(eq(orders.id, id), eq(orders.shopId, shop.id)));
+    .where(eq(orders.id, id));
 
+  // A cancelled order's units go back on the shelf; un-cancelling takes them
+  // off again, so the count follows the seller rather than drifting.
+  if (status === "cancelled") {
+    await restoreStock(order);
+  } else if (order.status === "cancelled" && order.restockedAt) {
+    await retakeStock(order);
+  }
+
+  revalidatePath("/admin");
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
+  revalidatePath("/admin/products");
 }
 
 export async function updatePaymentStatus(formData: FormData) {
@@ -691,10 +1176,17 @@ export async function updatePaymentStatus(formData: FormData) {
   const paymentStatus = String(formData.get("paymentStatus") ?? "");
   if (!id || !PAYMENT_STATUSES.has(paymentStatus)) return;
 
-  await getDb()
+  const [updated] = await getDb()
     .update(orders)
     .set({ paymentStatus, updatedAt: new Date() })
-    .where(and(eq(orders.id, id), eq(orders.shopId, shop.id)));
+    .where(and(eq(orders.id, id), eq(orders.shopId, shop.id)))
+    .returning({ id: orders.id });
+
+  // Confirming the money is what unlocks a held-back download, and the buyer
+  // is emailed the link rather than being left to check back.
+  if (updated && paymentStatus === "paid") {
+    await releaseDownloads(updated.id);
+  }
 
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
@@ -802,6 +1294,10 @@ export async function refundOrder(
     })
     .where(eq(orders.id, id));
 
+  // A fully refunded order is one the buyer no longer has, so the units are
+  // available again. A partial refund is a price adjustment, not a return.
+  if (isFull) await restoreStock(order);
+
   const updated = await db.query.orders.findFirst({ where: eq(orders.id, id) });
   let note = `Refunded ${formatMoney(requested, order.currency)}.`;
   if (updated?.customerEmail) {
@@ -812,16 +1308,23 @@ export async function refundOrder(
   revalidatePath("/admin");
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
+  revalidatePath("/admin/products");
   return { ok: true, message: note };
 }
 
 /** Undoes a refund, e.g. one entered by mistake. */
 export async function clearRefund(formData: FormData) {
   const { shop } = await requireShop();
+  const db = getDb();
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
-  await getDb()
+  const order = await db.query.orders.findFirst({
+    where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
+  });
+  if (!order) return;
+
+  await db
     .update(orders)
     .set({
       refundedCents: 0,
@@ -831,23 +1334,36 @@ export async function clearRefund(formData: FormData) {
       paymentStatus: "paid",
       updatedAt: new Date(),
     })
-    .where(and(eq(orders.id, id), eq(orders.shopId, shop.id)));
+    .where(eq(orders.id, id));
+
+  // The buyer has the goods again, so the units come back off the shelf.
+  if (order.restockedAt) await retakeStock(order);
+  // Marking it paid is also what releases a download that was waiting on it.
+  await releaseDownloads(order.id);
 
   revalidatePath("/admin");
   revalidatePath("/admin/orders");
+  revalidatePath("/admin/products");
 }
 
 export async function deleteOrder(formData: FormData) {
   const { shop } = await requireShop();
+  const db = getDb();
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
-  await getDb()
-    .delete(orders)
-    .where(and(eq(orders.id, id), eq(orders.shopId, shop.id)));
+  const order = await db.query.orders.findFirst({
+    where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
+  });
+  if (!order) return;
+
+  // Deleting the record shouldn't leave its units counted against the seller.
+  await restoreStock(order);
+  await db.delete(orders).where(eq(orders.id, id));
 
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
+  revalidatePath("/admin/products");
 }
 
 /** Removes clients that no longer have any orders. */

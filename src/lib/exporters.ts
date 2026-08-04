@@ -1,8 +1,8 @@
 import "server-only";
 import { asc, desc, eq } from "drizzle-orm";
 import { getDb } from "@/db";
-import { orders, productImages, products } from "@/db/schema";
-import { getShopClients, getInvoiceMap } from "@/lib/queries";
+import { orders, productImages, products, productVariants } from "@/db/schema";
+import { getShopClients, getInvoiceMap, getOrderItemsMap } from "@/lib/queries";
 import { bool, date, money, toCsv } from "@/lib/csv";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatPercent } from "@/lib/pricing";
@@ -25,8 +25,16 @@ export const PRODUCT_HEADERS = [
   "Type",
   "Category",
   "Tags",
+  "Option1 Name",
+  "Option1 Value",
+  "Option2 Name",
+  "Option2 Value",
+  "Option3 Name",
+  "Option3 Value",
+  "Variant SKU",
   "Variant Price",
   "Variant Compare At Price",
+  "Variant Inventory Qty",
   "In Stock",
   "Featured",
   "Published",
@@ -34,6 +42,11 @@ export const PRODUCT_HEADERS = [
   "Created At",
 ];
 
+/**
+ * One row per variant, as Shopify writes it: the product's own details appear
+ * on its first row and later rows carry only what differs. A product without
+ * options is a single row with the option columns blank.
+ */
 export async function exportProducts(shopId: string) {
   const rows = await getDb().query.products.findMany({
     where: eq(products.shopId, shopId),
@@ -41,34 +54,77 @@ export async function exportProducts(shopId: string) {
     with: {
       images: { orderBy: [asc(productImages.position)] },
       category: true,
+      variants: { orderBy: [asc(productVariants.position)] },
     },
   });
 
-  return toCsv(
-    PRODUCT_HEADERS,
-    rows.map((p) => [
+  const lines: (string | number)[][] = [];
+
+  for (const p of rows) {
+    // Option columns are positional, so an absent second option is two blanks.
+    const optionCells = (values: string[]) =>
+      [0, 1, 2].flatMap((i) => [
+        p.options[i]?.name ?? "",
+        p.options[i] ? (values[i] ?? "") : "",
+      ]);
+
+    const productCells = (first: boolean) => [
       p.slug,
-      p.title,
-      p.description ?? "",
-      p.kind,
-      p.category?.name ?? "",
-      p.tags.join(", "),
-      money(p.priceCents),
-      money(p.compareAtCents),
-      bool(p.inStock),
-      bool(p.isFeatured),
-      bool(p.isPublished),
+      first ? p.title : "",
+      first ? (p.description ?? "") : "",
+      first ? p.kind : "",
+      first ? (p.category?.name ?? "") : "",
+      first ? p.tags.join(", ") : "",
+    ];
+
+    // "In stock" is the variant's own answer once there are variants — the
+    // product-level switch only decides whether any of them are on sale.
+    const tailCells = (first: boolean, available = true) => [
+      bool(p.inStock && available),
+      first ? bool(p.isFeatured) : "",
+      first ? bool(p.isPublished) : "",
       // Multiple images separated by a pipe, since commas are the delimiter.
-      p.images.map((i) => i.url).join(" | "),
-      date(p.createdAt),
-    ]),
-  );
+      first ? p.images.map((i) => i.url).join(" | ") : "",
+      first ? date(p.createdAt) : "",
+    ];
+
+    if (p.variants.length === 0) {
+      lines.push([
+        ...productCells(true),
+        ...optionCells([]),
+        "",
+        money(p.priceCents),
+        money(p.compareAtCents),
+        p.trackInventory && p.stockQuantity !== null ? p.stockQuantity : "",
+        ...tailCells(true),
+      ]);
+      continue;
+    }
+
+    for (const [index, v] of p.variants.entries()) {
+      const first = index === 0;
+      lines.push([
+        ...productCells(first),
+        ...optionCells(p.options.map((o) => v.options[o.name] ?? "")),
+        v.sku ?? "",
+        money(v.priceCents ?? p.priceCents),
+        money(v.compareAtCents ?? (v.priceCents === null ? p.compareAtCents : null)),
+        p.trackInventory && v.stockQuantity !== null ? v.stockQuantity : "",
+        ...tailCells(first, v.isAvailable),
+      ]);
+    }
+  }
+
+  return toCsv(PRODUCT_HEADERS, lines);
 }
 
 export const ORDER_HEADERS = [
   "Order Date",
   "Invoice",
   "Product",
+  "Variant",
+  "Variant SKU",
+  "Product Type",
   "Quantity",
   "Currency",
   "Subtotal",
@@ -99,36 +155,60 @@ export const ORDER_HEADERS = [
   "Tracking Carrier",
   "Tracking Number",
   "Shipped At",
+  "Booked For",
+  "Downloads",
   "Note",
 ];
 
+/**
+ * One row per line of the order, the way Shopify writes it: an order with
+ * three products is three rows sharing a date and an invoice number, and the
+ * order-level money appears on the first of them so a sum over the column
+ * still gives the shop's revenue.
+ */
 export async function exportOrders(shopId: string) {
   const rows = await getDb().query.orders.findMany({
     where: eq(orders.shopId, shopId),
     orderBy: [desc(orders.createdAt)],
   });
-  const invoices = await getInvoiceMap(rows.map((o) => o.id));
+  const [invoices, itemsByOrder] = await Promise.all([
+    getInvoiceMap(rows.map((o) => o.id)),
+    getOrderItemsMap(rows),
+  ]);
+
+  const lines = rows.flatMap((o) =>
+    (itemsByOrder.get(o.id) ?? []).map((item, index) => ({
+      o,
+      item,
+      first: index === 0,
+    })),
+  );
 
   return toCsv(
     ORDER_HEADERS,
-    rows.map((o) => [
+    lines.map(({ o, item, first }) => [
       date(o.createdAt),
       invoices.get(o.id)?.number ?? "",
-      o.productTitle,
-      o.quantity,
+      item.title,
+      item.variantLabel ?? "",
+      item.sku ?? "",
+      item.kind,
+      item.quantity,
       o.currency,
-      money(o.subtotalCents),
-      money(o.discountCents),
-      o.couponCode ?? "",
-      o.deliveryLabel ?? "",
-      money(o.deliveryFeeCents),
-      money(o.taxCents),
-      o.taxName ?? "",
-      o.taxRateBp > 0 ? `${formatPercent(o.taxRateBp)}%` : "",
-      o.taxCents > 0 ? (o.taxInclusive ? "yes" : "no") : "",
-      money(o.totalCents),
-      money(o.refundedCents),
-      money(o.commissionCents),
+      // Order-level money on the first row only, so summing a column across
+      // a multi-line order doesn't count its total once per product.
+      first ? money(o.subtotalCents) : money(item.subtotalCents),
+      first ? money(o.discountCents) : "",
+      first ? (o.couponCode ?? "") : "",
+      first ? (o.deliveryLabel ?? "") : "",
+      first ? money(o.deliveryFeeCents) : "",
+      first ? money(o.taxCents) : "",
+      first ? (o.taxName ?? "") : "",
+      first && o.taxRateBp > 0 ? `${formatPercent(o.taxRateBp)}%` : "",
+      first && o.taxCents > 0 ? (o.taxInclusive ? "yes" : "no") : "",
+      first ? money(o.totalCents) : "",
+      first ? money(o.refundedCents) : "",
+      first ? money(o.commissionCents) : "",
       o.affiliateCode ?? "",
       o.customerName ?? "",
       o.customerEmail ?? "",
@@ -147,7 +227,11 @@ export async function exportOrders(shopId: string) {
       o.trackingCarrier ?? "",
       o.trackingNumber ?? "",
       date(o.shippedAt),
-      o.note ?? "",
+      date(item.scheduledFor),
+      o.downloadToken
+        ? `${o.downloadCount}${o.downloadLimit ? `/${o.downloadLimit}` : ""}`
+        : "",
+      first ? (o.note ?? "") : "",
     ]),
   );
 }

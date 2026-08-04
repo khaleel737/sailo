@@ -15,6 +15,7 @@ import {
 } from "@/lib/queries";
 import { FilterBar } from "@/components/shop/filter-bar";
 import { ProductCard } from "@/components/shop/product-card";
+import { CartRegion } from "@/components/shop/cart-region";
 import { ReferralCapture } from "@/components/shop/referral-capture";
 import { SocialIcons } from "@/components/shop/social-icons";
 import { VisitTracker } from "@/components/shop/visit-tracker";
@@ -67,6 +68,19 @@ export default async function ShopPage({
   );
 
   return (
+    <CartRegion
+      shopId={shop.id}
+      shopName={shop.name}
+      currency={shop.currency}
+      theme={shop.theme}
+      accentColor={shop.accentColor}
+      dir={dir}
+      locale={locale}
+      methods={checkout.methods}
+      deliveryOptions={checkout.deliveryOptions}
+      contactEmail={shop.contactEmail}
+      t={t}
+    >
     <div
       data-surface={shop.theme === "dark" ? "dark" : "light"}
       dir={dir}
@@ -200,5 +214,6 @@ export default async function ShopPage({
         </footer>
       </div>
     </div>
+    </CartRegion>
   );
 }
