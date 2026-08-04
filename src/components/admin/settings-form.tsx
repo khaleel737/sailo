@@ -65,7 +65,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
 
         <HandleField
           label={t.handle.label}
-          prefix="/"
+          prefix="sailo.store/"
           defaultValue={shop.handle}
           currentHandle={shop.handle}
           t={t}

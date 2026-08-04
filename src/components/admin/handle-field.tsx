@@ -32,7 +32,7 @@ export function HandleField({
   defaultValue = "",
   /** Present when editing — the shop's own handle shouldn't read as taken. */
   currentHandle,
-  prefix = "sailo.to/",
+  prefix = "sailo.store/",
   label,
   autoFocus = false,
   t,

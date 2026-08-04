@@ -30,7 +30,7 @@ const {
   visits,
 } = schema;
 
-const DEMO_EMAIL = "demo@sailo.app";
+const DEMO_EMAIL = "demo@sailo.store";
 const DEMO_PASSWORD = "demo12345";
 const DEMO_HANDLE = "demo";
 
