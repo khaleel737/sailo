@@ -22,32 +22,35 @@ import {
   X,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import type { Dictionary } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
-  { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/categories", label: "Categories", icon: Tag },
-  { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
-  { href: "/admin/clients", label: "Clients", icon: Users },
-  { href: "/admin/reviews", label: "Reviews", icon: MessageSquare },
-  { href: "/admin/coupons", label: "Coupons", icon: Tags },
-  { href: "/admin/affiliates", label: "Affiliates", icon: Gift },
-  { href: "/admin/payments", label: "Payments", icon: CreditCard },
-  { href: "/admin/delivery", label: "Delivery", icon: Truck },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
-];
+  { href: "/admin", key: "overview", icon: LayoutDashboard, exact: true },
+  { href: "/admin/products", key: "products", icon: Package },
+  { href: "/admin/categories", key: "categories", icon: Tag },
+  { href: "/admin/orders", key: "orders", icon: ShoppingBag },
+  { href: "/admin/clients", key: "clients", icon: Users },
+  { href: "/admin/reviews", key: "reviews", icon: MessageSquare },
+  { href: "/admin/coupons", key: "coupons", icon: Tags },
+  { href: "/admin/affiliates", key: "affiliates", icon: Gift },
+  { href: "/admin/payments", key: "payments", icon: CreditCard },
+  { href: "/admin/delivery", key: "delivery", icon: Truck },
+  { href: "/admin/settings", key: "settings", icon: Settings },
+] as const;
 
 export function Sidebar({
   shopName,
   handle,
   pendingReviews,
   newOrders,
+  t,
 }: {
   shopName: string;
   handle: string;
   pendingReviews: number;
   newOrders: number;
+  t: Dictionary;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -62,9 +65,10 @@ export function Sidebar({
   const nav = (
     <nav className="flex flex-1 flex-col gap-0.5">
       {NAV.map((item) => {
-        const active = item.exact
-          ? pathname === item.href
-          : pathname.startsWith(item.href);
+        const active =
+          "exact" in item && item.exact
+            ? pathname === item.href
+            : pathname.startsWith(item.href);
         const badge =
           item.href === "/admin/reviews"
             ? pendingReviews
@@ -85,7 +89,7 @@ export function Sidebar({
             )}
           >
             <item.icon className="size-4 shrink-0" />
-            <span className="flex-1">{item.label}</span>
+            <span className="flex-1">{t.nav[item.key]}</span>
             {badge > 0 ? (
               <span
                 className={cn(
@@ -111,7 +115,7 @@ export function Sidebar({
         className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-ink-600 transition hover:bg-ink-100 hover:text-ink-900"
       >
         <ExternalLink className="size-4" />
-        View shop
+        {t.nav.viewShop}
       </a>
       <button
         type="button"
@@ -119,7 +123,7 @@ export function Sidebar({
         className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-ink-600 transition hover:bg-ink-100 hover:text-ink-900"
       >
         <LogOut className="size-4" />
-        Sign out
+        {t.nav.signOut}
       </button>
     </div>
   );
@@ -137,7 +141,7 @@ export function Sidebar({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          aria-label="Open menu"
+          aria-label={t.nav.openMenu}
           className="rounded-lg p-2 text-ink-600 hover:bg-ink-100"
         >
           <Menu className="size-5" />
@@ -148,7 +152,7 @@ export function Sidebar({
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
-            aria-label="Close menu"
+            aria-label={t.nav.closeMenu}
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-black/40"
           />
@@ -158,7 +162,7 @@ export function Sidebar({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                aria-label="Close menu"
+                aria-label={t.nav.closeMenu}
                 className="rounded-lg p-1.5 text-ink-500 hover:bg-ink-100"
               >
                 <X className="size-5" />

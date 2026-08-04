@@ -4,8 +4,9 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 import { applyAsAffiliate } from "@/lib/actions/affiliates";
+import type { Dictionary } from "@/i18n";
 
-function Submit() {
+function Submit({ label }: { label: string }) {
   const { pending } = useFormStatus();
   return (
     <button
@@ -14,18 +15,24 @@ function Submit() {
       className="accent-bg flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition hover:opacity-90 disabled:opacity-60"
     >
       {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-      Apply to join
+      {label}
     </button>
   );
 }
 
-export function AffiliateSignupForm({ shopId }: { shopId: string }) {
+export function AffiliateSignupForm({
+  shopId,
+  t,
+}: {
+  shopId: string;
+  t: Dictionary;
+}) {
   const [state, action] = useActionState(applyAsAffiliate, { ok: false });
 
   if (state.ok) {
     return (
       <p className="rounded-xl bg-emerald-50 px-3 py-2.5 text-sm text-emerald-700">
-        {state.message}
+        {t.affiliate.applyThanks}
       </p>
     );
   }
@@ -43,7 +50,7 @@ export function AffiliateSignupForm({ shopId }: { shopId: string }) {
       <input
         name="name"
         required
-        placeholder="Your name"
+        placeholder={t.affiliate.yourName}
         autoComplete="name"
         className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
       />
@@ -51,11 +58,11 @@ export function AffiliateSignupForm({ shopId }: { shopId: string }) {
         name="email"
         type="email"
         required
-        placeholder="Your email"
+        placeholder={t.affiliate.yourEmail}
         autoComplete="email"
         className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
       />
-      <Submit />
+      <Submit label={t.affiliate.applyButton} />
     </form>
   );
 }

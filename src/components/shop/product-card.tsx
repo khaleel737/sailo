@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ImageIcon } from "lucide-react";
 import type { ProductCard as ProductCardData } from "@/lib/queries";
 import type { Shop } from "@/db/schema";
+import type { Dictionary } from "@/i18n";
 import { cn, formatMoney } from "@/lib/utils";
 import { StarRating } from "./star-rating";
 import {
@@ -11,30 +12,32 @@ import {
   type CheckoutMethod,
 } from "./order-sheet";
 
-const KIND_LABEL: Record<string, string> = {
-  digital: "Digital",
-  service: "Service",
-};
-
 export function ProductCard({
   product,
   shop,
   layout,
   methods,
   deliveryOptions,
+  t,
 }: {
   product: ProductCardData;
   shop: Shop;
   layout: "grid" | "list";
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
+  t: Dictionary;
 }) {
   const href = `/${shop.handle}/p/${product.slug}`;
   const image = product.images[0];
   const onSale =
     product.compareAtCents !== null &&
     product.compareAtCents > product.priceCents;
-  const kindLabel = KIND_LABEL[product.kind];
+  const kindLabel =
+    product.kind === "digital"
+      ? t.shop.labelDigital
+      : product.kind === "service"
+        ? t.shop.labelService
+        : null;
 
   return (
     <article
@@ -68,11 +71,11 @@ export function ProductCard({
 
         {!product.inStock ? (
           <span className="absolute left-2 top-2 rounded-full bg-black/75 px-2 py-0.5 text-[11px] font-medium text-white">
-            Sold out
+            {t.shop.soldOut}
           </span>
         ) : onSale ? (
           <span className="absolute left-2 top-2 rounded-full bg-red-600 px-2 py-0.5 text-[11px] font-semibold text-white">
-            Sale
+            {t.shop.sale}
           </span>
         ) : null}
       </Link>
@@ -107,7 +110,7 @@ export function ProductCard({
             <span className="text-sm font-semibold tabular-nums">
               {product.priceCents > 0
                 ? formatMoney(product.priceCents, shop.currency)
-                : "Free"}
+                : t.common.free}
             </span>
             {onSale ? (
               <span className="text-muted text-xs line-through tabular-nums">
@@ -139,7 +142,8 @@ export function ProductCard({
             collectAddress={shop.collectAddress}
             contactEmail={shop.contactEmail}
             inStock={product.inStock}
-            label="Order"
+            label={t.shop.order}
+            t={t}
             className="accent-bg h-9 w-full rounded-lg text-xs font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           />
         </div>

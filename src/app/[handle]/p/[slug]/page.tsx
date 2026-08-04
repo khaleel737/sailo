@@ -12,14 +12,10 @@ import { OrderButton } from "@/components/shop/order-sheet";
 import { ReviewForm } from "@/components/shop/review-form";
 import { StarRating } from "@/components/shop/star-rating";
 import { VisitTracker } from "@/components/shop/visit-tracker";
+import { LanguageSwitcher } from "@/components/shop/language-switcher";
+import { getShopT } from "@/i18n/server";
 import { formatMoney, shopThemeVars } from "@/lib/utils";
 import { can } from "@/lib/plans";
-
-const KIND_LABEL: Record<string, string> = {
-  physical: "Physical product",
-  digital: "Digital product",
-  service: "Service",
-};
 
 export async function generateMetadata({
   params,
@@ -54,6 +50,13 @@ export default async function ProductPage({
   if (!product || !product.isPublished) notFound();
 
   const checkout = await getCheckoutOptions(shop.id);
+  const { locale, t, dir } = await getShopT(shop.locale);
+  const kindLabel =
+    product.kind === "digital"
+      ? t.shop.kindDigital
+      : product.kind === "service"
+        ? t.shop.kindService
+        : t.shop.kindPhysical;
 
   const onSale =
     product.compareAtCents !== null &&
@@ -62,6 +65,8 @@ export default async function ProductPage({
   return (
     <div
       data-surface={shop.theme === "dark" ? "dark" : "light"}
+      dir={dir}
+      lang={locale}
       style={shopThemeVars(shop.accentColor)}
       className="min-h-screen"
     >
@@ -89,11 +94,11 @@ export default async function ProductPage({
               </Link>
             ) : null}
             <span className="surface-elevated text-muted rounded-full px-2.5 py-1 text-xs font-medium">
-              {KIND_LABEL[product.kind] ?? product.kind}
+              {kindLabel}
             </span>
             {!product.inStock ? (
               <span className="rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700">
-                Sold out
+                {t.shop.soldOut}
               </span>
             ) : null}
           </div>
@@ -106,7 +111,7 @@ export default async function ProductPage({
             <span className="text-xl font-semibold tabular-nums">
               {product.priceCents > 0
                 ? formatMoney(product.priceCents, shop.currency)
-                : "Free"}
+                : t.common.free}
             </span>
             {onSale ? (
               <span className="text-muted text-sm line-through tabular-nums">
@@ -121,6 +126,7 @@ export default async function ProductPage({
               count={product.reviewCount}
               size="md"
               className="mt-2"
+              t={t}
             />
           ) : null}
 
@@ -157,6 +163,7 @@ export default async function ProductPage({
               collectAddress={shop.collectAddress}
               contactEmail={shop.contactEmail}
               inStock={product.inStock}
+              t={t}
             />
           </div>
         </div>
@@ -164,7 +171,7 @@ export default async function ProductPage({
         <section className="mt-12">
           <div className="mb-4 flex items-center justify-between gap-4">
             <h2 className="text-base font-semibold">
-              Reviews{" "}
+              {t.product.reviews}{" "}
               {product.reviewCount > 0 ? (
                 <span className="text-muted font-normal">
                   ({product.reviewCount})
@@ -175,6 +182,7 @@ export default async function ProductPage({
               value={product.avgRating}
               size="md"
               showEmpty
+              t={t}
             />
           </div>
 
@@ -190,14 +198,14 @@ export default async function ProductPage({
                       dateTime={review.createdAt.toISOString()}
                       className="text-muted text-xs"
                     >
-                      {review.createdAt.toLocaleDateString("en-US", {
+                      {review.createdAt.toLocaleDateString(locale, {
                         month: "short",
                         day: "numeric",
                         year: "numeric",
                       })}
                     </time>
                   </div>
-                  <StarRating value={review.rating} className="mt-1.5" />
+                  <StarRating value={review.rating} className="mt-1.5" t={t} />
                   {review.body ? (
                     <p className="mt-2 text-sm leading-relaxed">{review.body}</p>
                   ) : null}
@@ -206,24 +214,29 @@ export default async function ProductPage({
             </ul>
           ) : (
             <p className="text-muted mb-5 text-sm">
-              No reviews yet — be the first.
+              {t.product.noReviews}
             </p>
           )}
 
-          <ReviewForm productId={product.id} />
+          <ReviewForm productId={product.id} t={t} />
         </section>
 
         {!can(shop, "removeBadge") ? (
-          <footer className="mt-14 text-center">
+          <footer className="mt-14 flex flex-col items-center gap-3 text-center">
             <Link
               href="/"
               className="text-muted inline-flex items-center gap-1.5 text-xs transition hover:opacity-70"
             >
               <Store className="size-3.5" />
-              Powered by <span className="font-semibold">Sailo</span>
+              {t.shop.poweredBy} <span className="font-semibold">Sailo</span>
             </Link>
+            <LanguageSwitcher current={locale} label={t.common.language} />
           </footer>
-        ) : null}
+        ) : (
+          <footer className="mt-14 flex justify-center">
+            <LanguageSwitcher current={locale} label={t.common.language} />
+          </footer>
+        )}
       </div>
     </div>
   );

@@ -9,6 +9,8 @@ import {
   validateHandleFormat,
   type HandleProblem,
 } from "@/lib/handle";
+import type { Dictionary } from "@/i18n";
+import { interpolate } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 type State =
@@ -31,8 +33,9 @@ export function HandleField({
   /** Present when editing — the shop's own handle shouldn't read as taken. */
   currentHandle,
   prefix = "sailo.to/",
-  label = "Your Sailo link",
+  label,
   autoFocus = false,
+  t,
 }: {
   name?: string;
   defaultValue?: string;
@@ -40,6 +43,7 @@ export function HandleField({
   prefix?: string;
   label?: string;
   autoFocus?: boolean;
+  t: Dictionary;
 }) {
   const [handle, setHandle] = useState(() => normalizeHandle(defaultValue));
   const [remote, setRemote] = useState<Remote | null>(null);
@@ -108,7 +112,7 @@ export function HandleField({
         htmlFor={name}
         className="mb-1.5 block text-sm font-medium text-ink-800"
       >
-        {label}
+        {label ?? t.onboarding.yourLink}
       </label>
 
       <div
@@ -147,14 +151,14 @@ export function HandleField({
       <div id={`${name}-status`} aria-live="polite" className="mt-1.5">
         {state.kind === "available" ? (
           <p className="text-xs font-medium text-emerald-600">
-            {handle} is available
+            {interpolate(t.handle.available, { handle })}
           </p>
         ) : state.kind === "taken" ? (
           <>
             <p className="text-xs text-red-600">{state.message}</p>
             {state.suggestions.length > 0 ? (
               <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-ink-500">
-                Try:
+                {t.handle.tryInstead}
                 {state.suggestions.map((s) => (
                   <button
                     key={s}
@@ -170,12 +174,11 @@ export function HandleField({
           </>
         ) : state.kind === "unchanged" ? (
           <p className="text-xs text-ink-400">
-            This is your current link. Changing it breaks any links already
-            shared.
+            {t.handle.current}
           </p>
         ) : (
           <p className="text-xs text-ink-400">
-            Letters, numbers, hyphens and underscores.
+            {t.handle.hint}
           </p>
         )}
       </div>

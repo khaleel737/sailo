@@ -94,6 +94,9 @@ export const shops = pgTable(
     avatarUrl: text("avatar_url"),
     logoUrl: text("logo_url"),
 
+    /** Default storefront language; a visitor's own choice overrides it. */
+    locale: text("locale").default("en").notNull(),
+
     // Look & feel — one template, a few knobs
     accentColor: text("accent_color").default("#111111").notNull(),
     theme: text("theme").default("light").notNull(), // light | dark

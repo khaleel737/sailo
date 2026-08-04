@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import type { Dictionary } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 export function StarRating({
@@ -7,12 +8,14 @@ export function StarRating({
   size = "sm",
   showEmpty = false,
   className,
+  t,
 }: {
   value: number | null;
   count?: number;
   size?: "sm" | "md";
   showEmpty?: boolean;
   className?: string;
+  t?: Dictionary;
 }) {
   if (value === null && !showEmpty) return null;
 
@@ -45,7 +48,9 @@ export function StarRating({
           {count !== undefined ? ` (${count})` : ""}
         </span>
       ) : (
-        <span className="text-muted text-xs">No reviews yet</span>
+        <span className="text-muted text-xs">
+          {t?.product.noReviewsShort ?? "No reviews yet"}
+        </span>
       )}
     </div>
   );

@@ -14,6 +14,7 @@ import { analyticsLimit, clampAnalyticsRange, planFor } from "@/lib/plans";
 import { CopyLink } from "@/components/admin/copy-link";
 import { Badge, Card, EmptyState } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
+import { getT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Overview" };
 
@@ -30,6 +31,7 @@ export default async function AdminOverviewPage({
   searchParams,
 }: PageProps<"/admin">) {
   const { shop } = await requireShop();
+  const { t } = await getT();
   const params = await searchParams;
 
   // Clamped server-side, so a hand-typed ?range= can't read past the plan.
@@ -78,6 +80,7 @@ export default async function AdminOverviewPage({
           {range >= 365 && range >= 730 ? "s" : ""}
         </h2>
         <RangePicker
+          t={t}
           current={range}
           limit={analyticsLimit(shop)}
           currentPlan={planFor(shop).id}

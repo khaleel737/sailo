@@ -6,8 +6,15 @@ import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { Alert, Button, Field, Input } from "@/components/ui";
+import type { Dictionary } from "@/i18n";
 
-export function AuthForm({ mode }: { mode: "login" | "signup" }) {
+export function AuthForm({
+  mode,
+  t,
+}: {
+  mode: "login" | "signup";
+  t: Dictionary;
+}) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -28,7 +35,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       : await authClient.signIn.email({ email, password });
 
     if (result.error) {
-      setError(result.error.message ?? "Something went wrong. Try again.");
+      setError(result.error.message ?? t.auth.somethingWrong);
       setPending(false);
       return;
     }
@@ -43,12 +50,12 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       {error ? <Alert>{error}</Alert> : null}
 
       {isSignup ? (
-        <Field label="Your name" htmlFor="name">
+        <Field label={t.auth.yourName} htmlFor="name">
           <Input id="name" name="name" required autoComplete="name" placeholder="Amina Yusuf" />
         </Field>
       ) : null}
 
-      <Field label="Email" htmlFor="email">
+      <Field label={t.auth.email} htmlFor="email">
         <Input
           id="email"
           name="email"
@@ -60,9 +67,9 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       </Field>
 
       <Field
-        label="Password"
+        label={t.auth.password}
         htmlFor="password"
-        hint={isSignup ? "8 characters minimum" : undefined}
+        hint={isSignup ? t.auth.minChars : undefined}
       >
         <Input
           id="password"
@@ -77,16 +84,16 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
 
       <Button type="submit" size="lg" className="w-full" disabled={pending}>
         {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-        {isSignup ? "Create my shop" : "Sign in"}
+        {isSignup ? t.auth.createMyShop : t.auth.signIn}
       </Button>
 
       <p className="text-center text-sm text-ink-500">
-        {isSignup ? "Already have a shop? " : "New to Sailo? "}
+        {isSignup ? `${t.auth.haveShop} ` : `${t.auth.newHere} `}
         <Link
           href={isSignup ? "/login" : "/signup"}
           className="font-medium text-ink-900 underline underline-offset-4"
         >
-          {isSignup ? "Sign in" : "Create one free"}
+          {isSignup ? t.auth.signIn : t.auth.createOne}
         </Link>
       </p>
     </form>

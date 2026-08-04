@@ -1,3 +1,4 @@
+import type { Dictionary } from "@/i18n";
 import type { Shop } from "@/db/schema";
 
 export const PLAN_IDS = ["free", "pro", "business"] as const;
@@ -31,7 +32,8 @@ export type Plan = {
   yearlyCents: number;
   limits: Limits;
   features: Features;
-  highlights: string[];
+  /** Dictionary keys under `highlights`, resolved at render time. */
+  highlights: (keyof Dictionary["highlights"])[];
 };
 
 export const PLANS: Record<PlanId, Plan> = {
@@ -52,15 +54,8 @@ export const PLANS: Record<PlanId, Plan> = {
       csvExport: false,
     },
     highlights: [
-      "20 products",
-      "Unlimited categories",
-      "WhatsApp, Telegram, Instagram, email ordering",
-      "Bank transfer and cash on delivery",
-      "Shipping and collection options",
-      "Reviews, search and filters",
-      "PDF invoices",
-      "Import your products and customers",
-      "30 days of analytics",
+      "free1", "free2", "free3", "free4", "free5",
+      "free6", "free7", "free8", "free9",
     ],
   },
   pro: {
@@ -79,13 +74,7 @@ export const PLANS: Record<PlanId, Plan> = {
       removeBadge: true,
       csvExport: true,
     },
-    highlights: [
-      "250 products",
-      "No Sailo badge",
-      "Export products, orders and customers",
-      "A year of analytics",
-      "Email support",
-    ],
+    highlights: ["pro1", "pro2", "pro3", "pro4", "pro5"],
   },
   business: {
     id: "business",
@@ -103,14 +92,7 @@ export const PLANS: Record<PlanId, Plan> = {
       removeBadge: true,
       csvExport: true,
     },
-    highlights: [
-      "Unlimited products",
-      "Card payments through your own Stripe or Paystack",
-      "Discount codes",
-      "Referral programme with commissions",
-      "Three years of analytics",
-      "Priority support",
-    ],
+    highlights: ["biz1", "biz2", "biz3", "biz4", "biz5", "biz6"],
   },
 };
 

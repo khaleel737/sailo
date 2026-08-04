@@ -5,31 +5,34 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Category } from "@/db/schema";
-
-const SORTS = [
-  { value: "", label: "Featured" },
-  { value: "newest", label: "Newest" },
-  { value: "price_asc", label: "Price: low to high" },
-  { value: "price_desc", label: "Price: high to low" },
-  { value: "rating", label: "Top rated" },
-];
-
-const KINDS = [
-  { value: "", label: "All types" },
-  { value: "physical", label: "Physical" },
-  { value: "digital", label: "Digital" },
-  { value: "service", label: "Services" },
-];
+import type { Dictionary } from "@/i18n";
+import { interpolate, plural } from "@/i18n";
 
 export function FilterBar({
   categories,
   resultCount,
   currency,
+  t,
 }: {
   categories: Category[];
   resultCount: number;
   currency: string;
+  t: Dictionary;
 }) {
+  const SORTS = [
+    { value: "", label: t.sort.featured },
+    { value: "newest", label: t.sort.newest },
+    { value: "price_asc", label: t.sort.priceAsc },
+    { value: "price_desc", label: t.sort.priceDesc },
+    { value: "rating", label: t.sort.rating },
+  ];
+  const KINDS = [
+    { value: "", label: t.sort.allTypes },
+    { value: "physical", label: t.sort.physical },
+    { value: "digital", label: t.sort.digital },
+    { value: "service", label: t.sort.services },
+  ];
+
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -90,15 +93,15 @@ export function FilterBar({
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search products…"
-            aria-label="Search products"
+            placeholder={t.shop.searchPlaceholder}
+            aria-label={t.shop.searchPlaceholder}
             className="surface-card h-11 w-full rounded-xl pl-9 pr-9 text-sm outline-none transition placeholder:opacity-50 focus:ring-2 focus:ring-current/10"
           />
           {query ? (
             <button
               type="button"
               onClick={() => setQuery("")}
-              aria-label="Clear search"
+              aria-label={t.shop.clearSearch}
               className="text-muted absolute right-2 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-md transition hover:opacity-70"
             >
               <X className="size-4" />
@@ -116,7 +119,7 @@ export function FilterBar({
           )}
         >
           <SlidersHorizontal className="size-4" />
-          <span className="hidden sm:inline">Filters</span>
+          <span className="hidden sm:inline">{t.shop.filters}</span>
           {activeFilterCount > 0 ? (
             <span className="accent-bg flex size-5 items-center justify-center rounded-full text-[11px] font-semibold">
               {activeFilterCount}
@@ -128,7 +131,7 @@ export function FilterBar({
       {categories.length > 0 ? (
         <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
           <CategoryChip
-            label="All"
+            label={t.shop.all}
             active={!activeCategory}
             onClick={() => setParams({ category: null })}
           />
@@ -152,7 +155,7 @@ export function FilterBar({
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
               <span className="text-muted mb-1.5 block text-xs font-medium uppercase tracking-wide">
-                Type
+                {t.shop.type}
               </span>
               <select
                 value={activeKind}
@@ -169,7 +172,7 @@ export function FilterBar({
 
             <label className="block">
               <span className="text-muted mb-1.5 block text-xs font-medium uppercase tracking-wide">
-                Sort by
+                {t.shop.sortBy}
               </span>
               <select
                 value={activeSort}
@@ -187,7 +190,7 @@ export function FilterBar({
 
           <div>
             <span className="text-muted mb-1.5 block text-xs font-medium uppercase tracking-wide">
-              Price range ({currency})
+              {interpolate(t.shop.priceRange, { currency })}
             </span>
             <div className="flex items-center gap-2">
               <input
@@ -196,8 +199,8 @@ export function FilterBar({
                 inputMode="decimal"
                 defaultValue={activeMin}
                 onBlur={(e) => setParams({ min: e.target.value || null })}
-                placeholder="Min"
-                aria-label="Minimum price"
+                placeholder={t.shop.min}
+                aria-label={t.shop.min}
                 className="surface-elevated h-10 w-full rounded-lg px-3 text-sm outline-none"
               />
               <span className="text-muted text-sm">—</span>
@@ -207,8 +210,8 @@ export function FilterBar({
                 inputMode="decimal"
                 defaultValue={activeMax}
                 onBlur={(e) => setParams({ max: e.target.value || null })}
-                placeholder="Max"
-                aria-label="Maximum price"
+                placeholder={t.shop.max}
+                aria-label={t.shop.max}
                 className="surface-elevated h-10 w-full rounded-lg px-3 text-sm outline-none"
               />
             </div>
@@ -221,7 +224,7 @@ export function FilterBar({
               onChange={(e) => setParams({ inStock: e.target.checked ? "1" : null })}
               className="size-4 rounded accent-current"
             />
-            In stock only
+            {t.shop.inStockOnly}
           </label>
 
           {activeFilterCount > 0 || activeCategory || query ? (
@@ -233,7 +236,7 @@ export function FilterBar({
               }}
               className="text-muted text-sm underline underline-offset-4 transition hover:opacity-70"
             >
-              Reset all filters
+              {t.shop.resetFilters}
             </button>
           ) : null}
         </div>
@@ -246,7 +249,7 @@ export function FilterBar({
         )}
         aria-live="polite"
       >
-        {resultCount} {resultCount === 1 ? "item" : "items"}
+        {plural(resultCount, t.shop.itemCountOne, t.shop.itemCount)}
       </p>
     </div>
   );

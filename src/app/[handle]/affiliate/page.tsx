@@ -5,6 +5,9 @@ import { ArrowLeft, Gift, Link2, Share2, Wallet } from "lucide-react";
 import { getShopByHandle } from "@/lib/queries";
 import { AffiliateSignupForm } from "@/components/shop/affiliate-signup-form";
 import { formatPercent } from "@/lib/pricing";
+import { LanguageSwitcher } from "@/components/shop/language-switcher";
+import { getShopT } from "@/i18n/server";
+import { interpolate } from "@/i18n";
 import { shopThemeVars } from "@/lib/utils";
 import { can } from "@/lib/plans";
 
@@ -30,30 +33,33 @@ export default async function AffiliatePage({
   if (!shop.affiliatesEnabled || !can(shop, "affiliates")) notFound();
 
   const percent = formatPercent(shop.affiliateDefaultBp);
+  const { locale, t, dir } = await getShopT(shop.locale);
 
   const STEPS = [
     {
       icon: Link2,
-      title: "Get your link",
+      title: t.affiliate.step1,
       body: shop.affiliatePublicSignup
-        ? "Sign up below and we'll send you a personal link."
-        : "Buy something and you'll be offered your own link at checkout.",
+        ? t.affiliate.step1Signup
+        : t.affiliate.step1Buyer,
     },
     {
       icon: Share2,
-      title: "Share it",
-      body: "Post it, message it, put it in your own bio — anywhere your people are.",
+      title: t.affiliate.step2,
+      body: t.affiliate.step2Body,
     },
     {
       icon: Wallet,
-      title: `Earn ${percent}%`,
-      body: `Every order placed through your link earns you ${percent}% of the order value.`,
+      title: interpolate(t.affiliate.step3, { percent }),
+      body: interpolate(t.affiliate.step3Body, { percent }),
     },
   ];
 
   return (
     <div
       data-surface={shop.theme === "dark" ? "dark" : "light"}
+      dir={dir}
+      lang={locale}
       style={shopThemeVars(shop.accentColor)}
       className="min-h-screen"
     >
@@ -71,11 +77,10 @@ export default async function AffiliatePage({
             <Gift className="size-6" />
           </span>
           <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
-            Earn {percent}% sharing {shop.name}
+            {interpolate(t.affiliate.title, { percent, shop: shop.name })}
           </h1>
           <p className="text-muted mx-auto mt-2 max-w-md text-sm leading-relaxed">
-            Share what you love and take a cut of every order that comes from
-            your link.
+            {t.affiliate.intro}
           </p>
         </header>
 
@@ -100,24 +105,29 @@ export default async function AffiliatePage({
 
         {shop.affiliatePublicSignup ? (
           <div className="mt-8">
-            <h2 className="mb-3 text-sm font-semibold">Apply to join</h2>
-            <AffiliateSignupForm shopId={shop.id} />
+            <h2 className="mb-3 text-sm font-semibold">
+              {t.affiliate.applyTitle}
+            </h2>
+            <AffiliateSignupForm shopId={shop.id} t={t} />
           </div>
         ) : (
           <p className="surface-card mt-8 rounded-2xl p-4 text-center text-sm">
-            This programme is invite-only right now — place an order and
-            you&rsquo;ll get your link automatically.
+            {t.affiliate.inviteOnly}
           </p>
         )}
 
         {shop.affiliateTerms ? (
           <div className="mt-8">
-            <h2 className="mb-2 text-sm font-semibold">Terms</h2>
+            <h2 className="mb-2 text-sm font-semibold">{t.affiliate.terms}</h2>
             <p className="text-muted whitespace-pre-wrap text-sm leading-relaxed">
               {shop.affiliateTerms}
             </p>
           </div>
         ) : null}
+
+        <footer className="mt-12 flex justify-center">
+          <LanguageSwitcher current={locale} label={t.common.language} />
+        </footer>
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import {
   suggestHandles,
   validateHandleFormat,
 } from "@/lib/handle";
+import { DEFAULT_LOCALE, LOCALES, type Locale } from "@/i18n/config";
 
 export type ActionState = { ok: boolean; error?: string; message?: string };
 
@@ -169,6 +170,14 @@ export async function createShop(
   redirect("/admin?welcome=1");
 }
 
+/** Only a locale we actually ship; anything else falls back to English. */
+function readLocale(value: FormDataEntryValue | null): Locale {
+  const code = String(value ?? "");
+  return LOCALES.some((l) => l.code === code)
+    ? (code as Locale)
+    : DEFAULT_LOCALE;
+}
+
 export async function updateShop(
   _prev: ActionState,
   formData: FormData,
@@ -202,6 +211,7 @@ export async function updateShop(
       theme: theme === "dark" ? "dark" : "light",
       layout: layout === "list" ? "list" : "grid",
       currency: String(formData.get("currency") ?? "USD"),
+      locale: readLocale(formData.get("locale")),
       contactEmail: String(formData.get("contactEmail") ?? "").trim() || null,
       location: String(formData.get("location") ?? "").trim() || null,
       socials: readSocials(formData),

@@ -2,6 +2,8 @@ import "server-only";
 import { and, desc, eq, gt, isNull, or } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, orders, reviews } from "@/db/schema";
+import type { Dictionary } from "@/i18n";
+import { interpolate, plural } from "@/i18n";
 import { formatMoney } from "@/lib/utils";
 
 export type NotificationKind =
@@ -31,6 +33,7 @@ export type Notification = {
 export async function getNotifications(
   shopId: string,
   readAt: Date | null,
+  t: Dictionary,
 ): Promise<Notification[]> {
   const db = getDb();
   const since = readAt ?? new Date(0);
@@ -53,8 +56,12 @@ export async function getNotifications(
       items.push({
         id: `payment:${order.id}`,
         kind: "payment",
-        title: "Payment to confirm",
-        body: `${order.customerName ?? "A buyer"} says they've paid ${formatMoney(order.totalCents, order.currency)} for ${order.productTitle}.`,
+        title: t.notifications.paymentToConfirm,
+        body: interpolate(t.notifications.paymentBody, {
+          name: order.customerName ?? t.notifications.aBuyer,
+          amount: formatMoney(order.totalCents, order.currency),
+          product: order.productTitle,
+        }),
         href: "/admin/orders",
         at: order.updatedAt,
       });
@@ -62,7 +69,7 @@ export async function getNotifications(
       items.push({
         id: `order:${order.id}`,
         kind: "order",
-        title: "New order",
+        title: t.notifications.newOrder,
         body: `${order.productTitle}${order.quantity > 1 ? ` ×${order.quantity}` : ""} — ${formatMoney(order.totalCents, order.currency)}`,
         href: "/admin/orders",
         at: order.createdAt,
@@ -84,8 +91,11 @@ export async function getNotifications(
     items.push({
       id: `review:${review.id}`,
       kind: "review",
-      title: "Review awaiting approval",
-      body: `${review.authorName} left ${review.rating} star${review.rating === 1 ? "" : "s"}.`,
+      title: t.notifications.reviewPending,
+      body: interpolate(t.notifications.reviewBody, {
+        name: review.authorName,
+        rating: plural(review.rating, t.product.star, t.product.stars),
+      }),
       href: "/admin/reviews",
       at: review.createdAt,
     });
@@ -105,8 +115,8 @@ export async function getNotifications(
     items.push({
       id: `affiliate:${affiliate.id}`,
       kind: "affiliate",
-      title: "Affiliate application",
-      body: `${affiliate.name} wants to promote your shop.`,
+      title: t.notifications.affiliateApplication,
+      body: interpolate(t.notifications.affiliateBody, { name: affiliate.name }),
       href: "/admin/affiliates",
       at: affiliate.createdAt,
     });
@@ -128,8 +138,11 @@ export async function getNotifications(
     items.push({
       id: `shipment:${order.id}`,
       kind: "shipment",
-      title: "Ready to ship",
-      body: `${order.productTitle} for ${order.customerName ?? "a buyer"} — add tracking when you post it.`,
+      title: t.notifications.readyToShip,
+      body: interpolate(t.notifications.shipBody, {
+        product: order.productTitle,
+        name: order.customerName ?? t.notifications.aBuyer,
+      }),
       href: "/admin/orders",
       at: order.updatedAt,
     });

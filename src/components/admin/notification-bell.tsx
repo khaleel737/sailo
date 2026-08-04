@@ -18,6 +18,8 @@ import {
 } from "@/lib/actions/notifications";
 import { cn } from "@/lib/utils";
 import type { Notification, NotificationKind } from "@/lib/notifications";
+import type { Dictionary } from "@/i18n";
+import type { Locale } from "@/i18n/config";
 
 const ICONS: Record<NotificationKind, typeof Bell> = {
   order: ShoppingBag,
@@ -35,22 +37,38 @@ const TONES: Record<NotificationKind, string> = {
   shipment: "bg-sky-100 text-sky-700",
 };
 
-function ago(date: Date) {
+/**
+ * `Intl.RelativeTimeFormat` already knows every locale we ship, so relative
+ * times need no dictionary entries — and it gets the plural rules right in
+ * languages where "2 minutes" and "5 minutes" inflect differently.
+ */
+function ago(date: Date, locale: Locale, justNow: string) {
   const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
-  if (seconds < 60) return "just now";
+  if (seconds < 60) return justNow;
+
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
+  if (minutes < 60) return rtf.format(-minutes, "minute");
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return rtf.format(-hours, "hour");
   const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d ago`;
-  return new Date(date).toLocaleDateString("en-US", {
+  if (days < 7) return rtf.format(-days, "day");
+
+  return new Date(date).toLocaleDateString(locale, {
     month: "short",
     day: "numeric",
   });
 }
 
-export function NotificationBell({ items }: { items: Notification[] }) {
+export function NotificationBell({
+  items,
+  locale,
+  t,
+}: {
+  items: Notification[];
+  locale: Locale;
+  t: Dictionary;
+}) {
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const ref = useRef<HTMLDivElement>(null);
@@ -76,7 +94,7 @@ export function NotificationBell({ items }: { items: Notification[] }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label={count ? `${count} notifications` : "Notifications"}
+        aria-label={t.notifications.title}
         aria-expanded={open}
         className="relative flex size-9 items-center justify-center rounded-lg text-ink-600 transition hover:bg-ink-100 hover:text-ink-900"
       >
@@ -92,7 +110,7 @@ export function NotificationBell({ items }: { items: Notification[] }) {
         <div className="absolute right-0 z-50 mt-2 w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-xl">
           <div className="flex items-center justify-between border-b border-ink-100 px-4 py-3">
             <p className="text-sm font-semibold">
-              Notifications
+              {t.notifications.title}
               {count > 0 ? (
                 <span className="ml-1.5 font-normal text-ink-400">{count}</span>
               ) : null}
@@ -110,7 +128,7 @@ export function NotificationBell({ items }: { items: Notification[] }) {
                 className="inline-flex items-center gap-1 text-xs font-medium text-ink-500 transition hover:text-ink-900 disabled:opacity-50"
               >
                 <CheckCheck className="size-3.5" />
-                Mark all read
+                {t.notifications.markAllRead}
               </button>
             ) : null}
           </div>
@@ -118,9 +136,11 @@ export function NotificationBell({ items }: { items: Notification[] }) {
           {count === 0 ? (
             <div className="px-4 py-10 text-center">
               <Bell className="mx-auto size-6 text-ink-200" />
-              <p className="mt-2 text-sm font-medium text-ink-700">All caught up</p>
+              <p className="mt-2 text-sm font-medium text-ink-700">
+                {t.notifications.empty}
+              </p>
               <p className="mt-0.5 text-xs text-ink-400">
-                New orders and reviews will appear here.
+                {t.notifications.emptyBody}
               </p>
             </div>
           ) : (
@@ -148,7 +168,7 @@ export function NotificationBell({ items }: { items: Notification[] }) {
                             {item.title}
                           </span>
                           <span className="shrink-0 text-xs text-ink-400">
-                            {ago(item.at)}
+                            {ago(item.at, locale, t.notifications.justNow)}
                           </span>
                         </span>
                         <span className="mt-0.5 block text-xs leading-relaxed text-ink-600">
@@ -164,7 +184,7 @@ export function NotificationBell({ items }: { items: Notification[] }) {
                       <input type="hidden" name="id" value={item.id} />
                       <button
                         type="submit"
-                        aria-label="Dismiss"
+                        aria-label={t.notifications.dismiss}
                         className="flex size-6 items-center justify-center rounded-md text-ink-400 transition hover:bg-ink-200 hover:text-ink-900"
                       >
                         <X className="size-3.5" />

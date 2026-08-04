@@ -3,6 +3,8 @@ import { cheapestPlanWith, planFor, type Features } from "@/lib/plans";
 import { UpgradeButton } from "./upgrade-modal";
 import { Card } from "@/components/ui";
 import type { Shop } from "@/db/schema";
+import type { Dictionary } from "@/i18n";
+import { interpolate } from "@/i18n";
 
 /**
  * Small chip naming the plan that unlocks something. Locked features stay
@@ -32,6 +34,7 @@ export function LockedFeature({
   title,
   description,
   points,
+  t,
 }: {
   shop: Shop;
   feature: keyof Features;
@@ -39,6 +42,7 @@ export function LockedFeature({
   title: string;
   description: string;
   points?: string[];
+  t: Dictionary;
 }) {
   const plan = cheapestPlanWith(feature);
   const current = planFor(shop);
@@ -67,13 +71,14 @@ export function LockedFeature({
       <UpgradeButton
         feature={feature}
         currentPlan={current.id}
+        t={t}
         className="mt-6 inline-flex h-10 items-center rounded-xl bg-ink-900 px-5 text-sm font-medium text-white transition hover:bg-ink-800"
       >
-        Upgrade to {plan?.name}
+        {interpolate(t.billing.upgradeTo, { plan: plan?.name ?? "" })}
       </UpgradeButton>
 
       <p className="mt-2 text-xs text-ink-400">
-        You&rsquo;re on {current.name}
+        {interpolate(t.billing.youAreOn, { plan: current.name })}
       </p>
     </Card>
   );

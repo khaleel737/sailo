@@ -18,6 +18,9 @@ import { ProductCard } from "@/components/shop/product-card";
 import { ReferralCapture } from "@/components/shop/referral-capture";
 import { SocialIcons } from "@/components/shop/social-icons";
 import { VisitTracker } from "@/components/shop/visit-tracker";
+import { LanguageSwitcher } from "@/components/shop/language-switcher";
+import { getShopT } from "@/i18n/server";
+import { interpolate } from "@/i18n";
 import { cn, shopThemeVars } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -54,6 +57,7 @@ export default async function ShopPage({
     getCheckoutOptions(shop.id),
   ]);
 
+  const { locale, t, dir } = await getShopT(shop.locale);
   const layout = shop.layout === "list" ? "list" : "grid";
   // A downgrade must switch the programme off publicly, not just in admin.
   const affiliatesLive = shop.affiliatesEnabled && can(shop, "affiliates");
@@ -65,6 +69,8 @@ export default async function ShopPage({
   return (
     <div
       data-surface={shop.theme === "dark" ? "dark" : "light"}
+      dir={dir}
+      lang={locale}
       style={shopThemeVars(shop.accentColor)}
       className="min-h-screen"
     >
@@ -129,6 +135,7 @@ export default async function ShopPage({
             categories={categories}
             resultCount={products.length}
             currency={shop.currency}
+            t={t}
           />
         </div>
 
@@ -137,12 +144,12 @@ export default async function ShopPage({
             <div className="surface-card flex flex-col items-center rounded-2xl px-6 py-16 text-center">
               <PackageOpen className="text-muted mb-3 size-8 opacity-50" />
               <p className="font-medium">
-                {hasFilters ? "Nothing matches that" : "No products yet"}
+                {hasFilters ? t.shop.noMatches : t.shop.noProducts}
               </p>
               <p className="text-muted mt-1 text-sm">
                 {hasFilters
-                  ? "Try clearing a filter or searching for something else."
-                  : `${shop.name} hasn't added anything yet. Check back soon.`}
+                  ? t.shop.noMatchesBody
+                  : interpolate(t.shop.noProductsBody, { shop: shop.name })}
               </p>
             </div>
           ) : (
@@ -161,6 +168,7 @@ export default async function ShopPage({
                   layout={layout}
                   methods={checkout.methods}
                   deliveryOptions={checkout.deliveryOptions}
+                  t={t}
                 />
               ))}
             </div>
@@ -174,7 +182,9 @@ export default async function ShopPage({
               className="surface-card inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition hover:opacity-70"
             >
               <Gift className="size-3.5" />
-              Earn {formatPercent(shop.affiliateDefaultBp)}% by sharing this shop
+              {interpolate(t.shop.earnBySharing, {
+                percent: formatPercent(shop.affiliateDefaultBp),
+              })}
             </Link>
           ) : null}
           {showBadge ? (
@@ -183,9 +193,10 @@ export default async function ShopPage({
               className="text-muted inline-flex items-center gap-1.5 text-xs transition hover:opacity-70"
             >
               <Store className="size-3.5" />
-              Powered by <span className="font-semibold">Sailo</span>
+              {t.shop.poweredBy} <span className="font-semibold">Sailo</span>
             </Link>
           ) : null}
+          <LanguageSwitcher current={locale} label={t.common.language} />
         </footer>
       </div>
     </div>

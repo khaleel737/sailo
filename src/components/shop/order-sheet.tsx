@@ -18,9 +18,11 @@ import {
   type OrderIntentResult,
 } from "@/lib/actions/orders";
 import { PAYMENT_METHOD_DEFS, type PaymentMethodType } from "@/lib/payments";
-import { DELIVERY_METHOD_DEFS, type DeliveryMethodType } from "@/lib/delivery";
+import type { DeliveryMethodType } from "@/lib/delivery";
 import type { Totals } from "@/lib/pricing";
 import { readReferralCode } from "@/lib/referral";
+import type { Dictionary } from "@/i18n";
+import { interpolate } from "@/i18n";
 import { formatMoney } from "@/lib/utils";
 
 export type CheckoutMethod = {
@@ -56,9 +58,39 @@ type Props = {
   contactEmail: string | null;
   className?: string;
   label?: string;
+  t: Dictionary;
 };
 
-export function OrderButton({ className, label = "Order now", ...props }: Props) {
+/**
+ * Buyer-facing rail copy. `PAYMENT_METHOD_DEFS` is written for the seller
+ * ("Buyer sees your account details…"), so the shopper gets these instead.
+ */
+function railCopy(type: PaymentMethodType, t: Dictionary) {
+  switch (type) {
+    case "whatsapp":
+      return { name: "WhatsApp", action: t.rails.whatsappAction, description: t.rails.whatsappDesc };
+    case "telegram":
+      return { name: "Telegram", action: t.rails.telegramAction, description: t.rails.telegramDesc };
+    case "instagram":
+      return { name: t.rails.instagramName, action: t.rails.instagramAction, description: t.rails.instagramDesc };
+    case "email":
+      return { name: t.rails.emailName, action: t.rails.emailAction, description: t.rails.emailDesc };
+    case "phone":
+      return { name: t.rails.phoneName, action: t.rails.phoneAction, description: t.rails.phoneDesc };
+    case "bank_transfer":
+      return { name: t.rails.bankName, action: t.rails.bankAction, description: t.rails.bankDesc };
+    case "cod":
+      return { name: t.rails.codName, action: t.rails.codAction, description: t.rails.codDesc };
+  }
+}
+
+function deliveryCopy(type: DeliveryMethodType, t: Dictionary) {
+  return type === "collection"
+    ? { name: t.rails.collectionName, description: t.rails.collectionDesc }
+    : { name: t.rails.shippingName, description: t.rails.shippingDesc };
+}
+
+export function OrderButton({ className, label, ...props }: Props) {
   const [open, setOpen] = useState(false);
   const disabled = !props.inStock || props.methods.length === 0;
 
@@ -74,10 +106,10 @@ export function OrderButton({ className, label = "Order now", ...props }: Props)
         }
       >
         {!props.inStock
-          ? "Sold out"
+          ? props.t.shop.soldOut
           : props.methods.length === 0
-            ? "Unavailable"
-            : label}
+            ? props.t.shop.unavailable
+            : (label ?? props.t.shop.orderNow)}
       </button>
       {open ? <OrderSheet {...props} onClose={() => setOpen(false)} /> : null}
     </>
@@ -96,6 +128,7 @@ function OrderSheet({
   isPhysical,
   collectAddress,
   contactEmail,
+  t,
   onClose,
 }: Props & { onClose: () => void }) {
   const [quantity, setQuantity] = useState(1);
@@ -181,6 +214,7 @@ function OrderSheet({
   }
 
   const def = PAYMENT_METHOD_DEFS[method];
+  const rail = railCopy(method, t);
   const isManual = def.kind === "manual";
   const selectedDelivery = deliveryOptions.find((d) => d.id === deliveryId);
   const needsAddress =
@@ -235,11 +269,11 @@ function OrderSheet({
       className="fixed inset-0 z-50 flex items-end justify-center sm:items-center"
       role="dialog"
       aria-modal="true"
-      aria-label={`Order ${productTitle}`}
+      aria-label={`${t.shop.order} — ${productTitle}`}
     >
       <button
         type="button"
-        aria-label="Close"
+        aria-label={t.common.close}
         onClick={onClose}
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
       />
@@ -248,7 +282,7 @@ function OrderSheet({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close"
+          aria-label={t.common.close}
           className="text-muted absolute right-4 top-4 transition hover:opacity-70"
         >
           <X className="size-5" />
@@ -259,6 +293,8 @@ function OrderSheet({
             result={result}
             shopName={shopName}
             contactEmail={contactEmail}
+            methodName={rail.name}
+            t={t}
             onClose={onClose}
           />
         ) : (
@@ -266,7 +302,9 @@ function OrderSheet({
             <div className="pr-8">
               <h2 className="font-semibold leading-tight">{productTitle}</h2>
               <p className="text-muted mt-0.5 text-sm">
-                {formatMoney(priceCents, currency)} each
+                {interpolate(t.checkout.each, {
+                  price: formatMoney(priceCents, currency),
+                })}
               </p>
             </div>
 
@@ -277,12 +315,12 @@ function OrderSheet({
             ) : null}
 
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Quantity</span>
+              <span className="text-sm font-medium">{t.checkout.quantity}</span>
               <div className="surface-elevated flex items-center rounded-lg">
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  aria-label="Decrease quantity"
+                  aria-label={t.checkout.decrease}
                   className="flex size-9 items-center justify-center transition hover:opacity-60"
                 >
                   <Minus className="size-4" />
@@ -293,7 +331,7 @@ function OrderSheet({
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.min(999, q + 1))}
-                  aria-label="Increase quantity"
+                  aria-label={t.checkout.increase}
                   className="flex size-9 items-center justify-center transition hover:opacity-60"
                 >
                   <Plus className="size-4" />
@@ -304,11 +342,11 @@ function OrderSheet({
             {isPhysical && deliveryOptions.length > 0 ? (
               <fieldset>
                 <legend className="mb-1.5 text-sm font-medium">
-                  How would you like to receive it?
+                  {t.checkout.howReceive}
                 </legend>
                 <div className="space-y-1.5">
                   {deliveryOptions.map((option) => {
-                    const d = DELIVERY_METHOD_DEFS[option.type];
+                    const d = deliveryCopy(option.type, t);
                     const active = deliveryId === option.id;
                     const free =
                       option.freeOverCents !== null &&
@@ -336,7 +374,7 @@ function OrderSheet({
                             </span>
                             <span className="text-xs font-semibold tabular-nums">
                               {option.feeCents === 0 || free
-                                ? "Free"
+                                ? t.common.free
                                 : formatMoney(option.feeCents, currency)}
                             </span>
                           </span>
@@ -352,8 +390,12 @@ function OrderSheet({
                           option.freeOverCents !== null &&
                           option.feeCents > 0 ? (
                             <span className="text-muted block text-xs">
-                              Free over{" "}
-                              {formatMoney(option.freeOverCents, currency)}
+                              {interpolate(t.checkout.freeOver, {
+                                amount: formatMoney(
+                                  option.freeOverCents,
+                                  currency,
+                                ),
+                              })}
                             </span>
                           ) : null}
                         </span>
@@ -367,11 +409,11 @@ function OrderSheet({
             {methods.length > 1 ? (
               <fieldset>
                 <legend className="mb-1.5 text-sm font-medium">
-                  How would you like to order?
+                  {t.checkout.howOrder}
                 </legend>
                 <div className="space-y-1.5">
                   {methods.map((m) => {
-                    const d = PAYMENT_METHOD_DEFS[m.type];
+                    const d = railCopy(m.type, t);
                     const active = method === m.type;
                     return (
                       <label
@@ -406,7 +448,7 @@ function OrderSheet({
             <div className="space-y-2.5">
               <input
                 name="customerName"
-                placeholder="Your name"
+                placeholder={t.checkout.yourName}
                 autoComplete="name"
                 className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
               />
@@ -414,21 +456,21 @@ function OrderSheet({
                 <input
                   name="customerEmail"
                   type="email"
-                  placeholder={isManual ? "Email" : "Email (optional)"}
+                  placeholder={isManual ? t.checkout.email : t.checkout.emailOptional}
                   autoComplete="email"
                   className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                 />
                 <input
                   name="customerPhone"
                   type="tel"
-                  placeholder={isManual ? "Phone" : "Phone (optional)"}
+                  placeholder={isManual ? t.checkout.phone : t.checkout.phoneOptional}
                   autoComplete="tel"
                   className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                 />
               </div>
               {isManual ? (
                 <p className="text-muted text-xs">
-                  Give at least one so {shopName} can reach you about this order.
+                  {interpolate(t.checkout.contactHint, { shop: shopName })}
                 </p>
               ) : null}
             </div>
@@ -436,30 +478,30 @@ function OrderSheet({
             {needsAddress ? (
               <fieldset className="space-y-2.5">
                 <legend className="mb-1.5 text-sm font-medium">
-                  Delivery address
+                  {t.checkout.deliveryAddress}
                 </legend>
                 <input
                   name="addressLine1"
-                  placeholder="Street address"
+                  placeholder={t.checkout.street}
                   autoComplete="address-line1"
                   className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                 />
                 <input
                   name="addressLine2"
-                  placeholder="Apartment, suite (optional)"
+                  placeholder={t.checkout.apartment}
                   autoComplete="address-line2"
                   className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <input
                     name="city"
-                    placeholder="City"
+                    placeholder={t.checkout.city}
                     autoComplete="address-level2"
                     className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                   />
                   <input
                     name="region"
-                    placeholder="State / region"
+                    placeholder={t.checkout.region}
                     autoComplete="address-level1"
                     className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                   />
@@ -467,13 +509,13 @@ function OrderSheet({
                 <div className="grid grid-cols-2 gap-2">
                   <input
                     name="postalCode"
-                    placeholder="Postal code"
+                    placeholder={t.checkout.postalCode}
                     autoComplete="postal-code"
                     className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                   />
                   <input
                     name="country"
-                    placeholder="Country"
+                    placeholder={t.checkout.country}
                     autoComplete="country-name"
                     className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                   />
@@ -484,7 +526,7 @@ function OrderSheet({
             <textarea
               name="note"
               rows={2}
-              placeholder="Size, colour, delivery notes…"
+              placeholder={t.checkout.notes}
               className="surface-elevated w-full rounded-xl px-3 py-2.5 text-sm outline-none placeholder:opacity-50"
             />
 
@@ -493,7 +535,7 @@ function OrderSheet({
                 <div className="surface-elevated flex items-center justify-between gap-2 rounded-xl px-3 py-2.5">
                   <span className="text-sm">
                     <span className="font-semibold">{appliedCoupon}</span>{" "}
-                    <span className="text-muted">applied</span>
+                    <span className="text-muted">{t.checkout.applied}</span>
                   </span>
                   <button
                     type="button"
@@ -504,7 +546,7 @@ function OrderSheet({
                     }}
                     className="text-muted text-xs underline underline-offset-2 transition hover:opacity-70"
                   >
-                    Remove
+                    {t.checkout.remove}
                   </button>
                 </div>
               ) : (
@@ -515,8 +557,8 @@ function OrderSheet({
                       setCouponInput(e.target.value.toUpperCase());
                       setCouponError(null);
                     }}
-                    placeholder="Discount code"
-                    aria-label="Discount code"
+                    placeholder={t.checkout.discountCode}
+                    aria-label={t.checkout.discountCode}
                     className="surface-elevated h-11 min-w-0 flex-1 rounded-xl px-3 text-sm uppercase outline-none placeholder:normal-case placeholder:opacity-50"
                   />
                   <button
@@ -528,7 +570,7 @@ function OrderSheet({
                     {checkingCoupon ? (
                       <Loader2 className="size-4 animate-spin" />
                     ) : (
-                      "Apply"
+                      t.checkout.apply
                     )}
                   </button>
                 </div>
@@ -540,14 +582,14 @@ function OrderSheet({
 
             <dl className="surface-border space-y-1.5 border-t pt-3 text-sm">
               <div className="flex justify-between">
-                <dt className="text-muted">Subtotal</dt>
+                <dt className="text-muted">{t.checkout.subtotal}</dt>
                 <dd className="tabular-nums">
                   {formatMoney(totals.subtotalCents, currency)}
                 </dd>
               </div>
               {totals.discountCents > 0 ? (
                 <div className="flex justify-between text-emerald-600">
-                  <dt>Discount</dt>
+                  <dt>{t.checkout.discount}</dt>
                   <dd className="tabular-nums">
                     −{formatMoney(totals.discountCents, currency)}
                   </dd>
@@ -560,13 +602,13 @@ function OrderSheet({
                   </dt>
                   <dd className="tabular-nums">
                     {totals.deliveryFeeCents === 0
-                      ? "Free"
+                      ? t.common.free
                       : formatMoney(totals.deliveryFeeCents, currency)}
                   </dd>
                 </div>
               ) : null}
               <div className="surface-border flex justify-between border-t pt-1.5 text-base font-semibold">
-                <dt>Total</dt>
+                <dt>{t.checkout.total}</dt>
                 <dd className="tabular-nums">
                   {formatMoney(totals.totalCents, currency)}
                 </dd>
@@ -579,13 +621,13 @@ function OrderSheet({
               className="accent-bg flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition hover:opacity-90 disabled:opacity-60"
             >
               {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-              {def.action}
+              {rail.action}
             </button>
 
             <p className="text-muted text-center text-xs">
               {def.kind === "contact"
-                ? "Your order details are sent along so you don't have to type them."
-                : "The seller gets your order and confirms payment."}
+                ? t.checkout.contactHandoffNote
+                : t.checkout.manualNote}
             </p>
           </form>
         )}
@@ -598,11 +640,15 @@ function Confirmation({
   result,
   shopName,
   contactEmail,
+  methodName,
+  t,
   onClose,
 }: {
   result: Extract<OrderIntentResult, { ok: true }>;
   shopName: string;
   contactEmail: string | null;
+  methodName: string;
+  t: Dictionary;
   onClose: () => void;
 }) {
   const [reference, setReference] = useState("");
@@ -621,7 +667,7 @@ function Confirmation({
       reference,
     });
     if (!res.ok) {
-      setRefError(res.error ?? "Couldn't save that.");
+      setRefError(res.error ?? t.checkout.saveFailed);
       setPending(false);
       return;
     }
@@ -647,18 +693,20 @@ function Confirmation({
       <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
         <Check className="size-6" />
       </div>
-      <p className="text-center font-semibold">Order sent to {shopName}</p>
+      <p className="text-center font-semibold">
+        {interpolate(t.checkout.orderSent, { shop: shopName })}
+      </p>
       <p className="text-muted mt-1 text-center text-sm">
         {hasBank
-          ? "Transfer the total using the details below, then add your reference."
-          : `Paid by ${result.methodName.toLowerCase()}.`}
+          ? t.checkout.bankInstructions
+          : interpolate(t.checkout.paidBy, { method: methodName })}
       </p>
 
       {hasBank ? (
         <div className="surface-elevated mt-4 rounded-xl p-3">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-xs font-medium uppercase tracking-wide opacity-60">
-              Bank details
+              {t.checkout.bankDetails}
             </span>
             <button
               type="button"
@@ -670,7 +718,7 @@ function Confirmation({
               ) : (
                 <Copy className="size-3.5" />
               )}
-              {copied ? "Copied" : "Copy"}
+              {copied ? t.checkout.copied : t.checkout.copy}
             </button>
           </div>
           <dl className="space-y-1.5">
@@ -700,7 +748,7 @@ function Confirmation({
           <input
             value={reference}
             onChange={(e) => setReference(e.target.value)}
-            placeholder="Transfer reference"
+            placeholder={t.checkout.transferReference}
             className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
           />
           <button
@@ -710,14 +758,14 @@ function Confirmation({
             className="accent-bg flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition hover:opacity-90 disabled:opacity-50"
           >
             {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-            I&rsquo;ve sent the payment
+            {t.checkout.sentPayment}
           </button>
         </div>
       ) : null}
 
       {submitted ? (
         <p className="mt-4 rounded-xl bg-emerald-50 px-3 py-2.5 text-center text-sm text-emerald-700">
-          Thanks — {shopName} will confirm your payment shortly.
+          {interpolate(t.checkout.confirmSoon, { shop: shopName })}
         </p>
       ) : null}
 
@@ -730,19 +778,21 @@ function Confirmation({
         >
           <span className="flex items-center gap-2 text-sm">
             <FileText className="size-4 shrink-0 opacity-60" />
-            Invoice {result.invoiceNumber}
+            {interpolate(t.checkout.invoice, {
+              number: result.invoiceNumber ?? "",
+            })}
           </span>
-          <span className="text-muted text-xs">View · PDF</span>
+          <span className="text-muted text-xs">{t.checkout.view} · PDF</span>
         </a>
       ) : null}
 
       {result.referral ? (
-        <ReferAndEarn referral={result.referral} shopName={shopName} />
+        <ReferAndEarn referral={result.referral} shopName={shopName} t={t} />
       ) : null}
 
       {contactEmail ? (
         <p className="text-muted mt-3 text-center text-xs">
-          Questions? {contactEmail}
+          {interpolate(t.checkout.questions, { email: contactEmail })}
         </p>
       ) : null}
 
@@ -751,7 +801,7 @@ function Confirmation({
         onClick={onClose}
         className="surface-elevated mt-4 h-10 w-full rounded-xl text-sm font-medium"
       >
-        Done
+        {t.common.done}
       </button>
     </div>
   );
@@ -764,9 +814,11 @@ function Confirmation({
 function ReferAndEarn({
   referral,
   shopName,
+  t,
 }: {
   referral: { code: string; url: string; percent: string };
   shopName: string;
+  t: Dictionary;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -784,11 +836,13 @@ function ReferAndEarn({
     <div className="surface-card mt-4 rounded-xl p-3">
       <p className="flex items-center gap-1.5 text-sm font-semibold">
         <Gift className="size-4 shrink-0" />
-        Earn {referral.percent}% on referrals
+        {interpolate(t.checkout.earnReferral, { percent: referral.percent })}
       </p>
       <p className="text-muted mt-1 text-xs leading-relaxed">
-        Share your link. When someone buys from {shopName} through it, you earn{" "}
-        {referral.percent}% of their order.
+        {interpolate(t.checkout.earnReferralBody, {
+          shop: shopName,
+          percent: referral.percent,
+        })}
       </p>
       <div className="surface-elevated mt-2.5 flex items-center gap-2 rounded-lg p-2">
         <code className="min-w-0 flex-1 truncate text-xs">{referral.url}</code>
@@ -798,7 +852,7 @@ function ReferAndEarn({
           className="inline-flex shrink-0 items-center gap-1 text-xs font-medium transition hover:opacity-70"
         >
           {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-          {copied ? "Copied" : "Copy"}
+          {copied ? t.checkout.copied : t.checkout.copy}
         </button>
       </div>
     </div>

@@ -18,6 +18,7 @@ import { Badge, Button, Card, EmptyState } from "@/components/ui";
 import { LockedFeature } from "@/components/admin/locked-feature";
 import { can } from "@/lib/plans";
 import { formatMoney } from "@/lib/utils";
+import { getT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Affiliates" };
 
@@ -29,6 +30,7 @@ const SOURCE_LABEL: Record<string, string> = {
 
 export default async function AdminAffiliatesPage() {
   const { shop } = await requireShop();
+  const { t } = await getT();
 
   if (!can(shop, "affiliates")) {
     return (
@@ -38,6 +40,7 @@ export default async function AdminAffiliatesPage() {
           description="Pay people a share of what they sell for you."
         />
         <LockedFeature
+          t={t}
           shop={shop}
           feature="affiliates"
           icon={<Gift className="size-8" />}

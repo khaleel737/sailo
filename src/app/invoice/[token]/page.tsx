@@ -5,6 +5,7 @@ import { Download, Store } from "lucide-react";
 import { getInvoiceByToken } from "@/lib/queries";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { PrintButton } from "@/components/shop/print-button";
+import { getShopT } from "@/i18n/server";
 import { formatAddress, formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default async function InvoicePage({
   if (!data) notFound();
 
   const { invoice, order, shop } = data;
+  const { locale, t, dir } = await getShopT(shop.locale);
   const address = formatAddress(order);
   const methodName = isPaymentMethodType(order.paymentMethod)
     ? PAYMENT_METHOD_DEFS[order.paymentMethod].name
@@ -33,7 +35,11 @@ export default async function InvoicePage({
         : "bg-ink-100 text-ink-700";
 
   return (
-    <div className="min-h-screen bg-ink-50 px-4 py-8 print:bg-white print:py-0">
+    <div
+      dir={dir}
+      lang={locale}
+      className="min-h-screen bg-ink-50 px-4 py-8 print:bg-white print:py-0"
+    >
       <div className="mx-auto w-full max-w-2xl">
         <div className="mb-4 flex items-center justify-between print:hidden">
           <Link
@@ -48,9 +54,9 @@ export default async function InvoicePage({
               className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-ink-900 px-3 text-sm font-medium text-white transition hover:bg-ink-800"
             >
               <Download className="size-4" />
-              Download PDF
+              {t.invoice.downloadPdf}
             </a>
-            <PrintButton />
+            <PrintButton label={t.invoice.print} />
           </div>
         </div>
 
@@ -66,18 +72,18 @@ export default async function InvoicePage({
               ) : null}
               {shop.taxId ? (
                 <p className="mt-1 text-xs text-ink-400">
-                  Tax ID: {shop.taxId}
+                  {t.invoice.taxId}: {shop.taxId}
                 </p>
               ) : null}
             </div>
 
             <div className="text-right">
               <p className="text-xs font-medium uppercase tracking-wide text-ink-400">
-                Invoice
+                {t.invoice.invoice}
               </p>
               <p className="text-lg font-semibold">{invoice.number}</p>
               <p className="mt-0.5 text-sm text-ink-500">
-                {invoice.issuedAt.toLocaleDateString("en-US", {
+                {invoice.issuedAt.toLocaleDateString(locale, {
                   day: "numeric",
                   month: "long",
                   year: "numeric",
@@ -87,10 +93,10 @@ export default async function InvoicePage({
                 className={`mt-2 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${paidTone}`}
               >
                 {order.paymentStatus === "paid"
-                  ? "Paid"
+                  ? t.invoice.paid
                   : order.paymentStatus === "pending"
-                    ? "Payment sent"
-                    : "Unpaid"}
+                    ? t.invoice.paymentSent
+                    : t.invoice.unpaid}
               </span>
             </div>
           </header>
@@ -98,7 +104,7 @@ export default async function InvoicePage({
           <section className="grid gap-6 border-b border-ink-100 py-6 sm:grid-cols-2">
             <div>
               <h2 className="mb-1.5 text-xs font-medium uppercase tracking-wide text-ink-400">
-                Billed to
+                {t.invoice.billedTo}
               </h2>
               <p className="text-sm font-medium">
                 {order.customerName ?? "Customer"}
@@ -118,22 +124,24 @@ export default async function InvoicePage({
 
             <div className="sm:text-right">
               <h2 className="mb-1.5 text-xs font-medium uppercase tracking-wide text-ink-400">
-                Details
+                {t.invoice.details}
               </h2>
-              <p className="text-sm text-ink-600">Payment: {methodName}</p>
+              <p className="text-sm text-ink-600">
+                {t.invoice.payment}: {methodName}
+              </p>
               {order.deliveryLabel ? (
                 <p className="text-sm text-ink-600">
-                  Delivery: {order.deliveryLabel}
+                  {t.invoice.delivery}: {order.deliveryLabel}
                 </p>
               ) : null}
               {order.pickupLocation ? (
                 <p className="text-sm text-ink-600">
-                  Pickup: {order.pickupLocation}
+                  {t.invoice.pickup}: {order.pickupLocation}
                 </p>
               ) : null}
               {order.paymentReference ? (
                 <p className="text-sm text-ink-600">
-                  Ref: {order.paymentReference}
+                  {t.invoice.reference}: {order.paymentReference}
                 </p>
               ) : null}
             </div>
@@ -142,10 +150,10 @@ export default async function InvoicePage({
           <table className="w-full py-6 text-sm">
             <thead>
               <tr className="border-b border-ink-100 text-left text-xs uppercase tracking-wide text-ink-400">
-                <th className="py-2 font-medium">Item</th>
-                <th className="py-2 text-right font-medium">Qty</th>
-                <th className="py-2 text-right font-medium">Price</th>
-                <th className="py-2 text-right font-medium">Amount</th>
+                <th className="py-2 font-medium">{t.invoice.item}</th>
+                <th className="py-2 text-right font-medium">{t.invoice.qty}</th>
+                <th className="py-2 text-right font-medium">{t.invoice.price}</th>
+                <th className="py-2 text-right font-medium">{t.invoice.amount}</th>
               </tr>
             </thead>
             <tbody>
@@ -166,14 +174,17 @@ export default async function InvoicePage({
 
           <dl className="ml-auto max-w-xs space-y-1.5 border-t border-ink-100 pt-4 text-sm">
             <div className="flex justify-between">
-              <dt className="text-ink-500">Subtotal</dt>
+              <dt className="text-ink-500">{t.checkout.subtotal}</dt>
               <dd className="tabular-nums">
                 {formatMoney(order.subtotalCents, order.currency)}
               </dd>
             </div>
             {order.discountCents > 0 ? (
               <div className="flex justify-between text-emerald-600">
-                <dt>Discount {order.couponCode ? `(${order.couponCode})` : ""}</dt>
+                <dt>
+                  {t.checkout.discount}{" "}
+                  {order.couponCode ? `(${order.couponCode})` : ""}
+                </dt>
                 <dd className="tabular-nums">
                   −{formatMoney(order.discountCents, order.currency)}
                 </dd>
@@ -182,7 +193,7 @@ export default async function InvoicePage({
             {order.deliveryFeeCents > 0 ? (
               <div className="flex justify-between">
                 <dt className="text-ink-500">
-                  {order.deliveryLabel ?? "Delivery"}
+                  {order.deliveryLabel ?? t.invoice.delivery}
                 </dt>
                 <dd className="tabular-nums">
                   {formatMoney(order.deliveryFeeCents, order.currency)}
@@ -190,7 +201,7 @@ export default async function InvoicePage({
               </div>
             ) : null}
             <div className="flex justify-between border-t border-ink-100 pt-1.5 text-base font-semibold">
-              <dt>Total</dt>
+              <dt>{t.checkout.total}</dt>
               <dd className="tabular-nums">
                 {formatMoney(order.totalCents, order.currency)}
               </dd>
@@ -199,7 +210,7 @@ export default async function InvoicePage({
 
           {order.note ? (
             <p className="mt-6 border-t border-ink-100 pt-4 text-sm text-ink-600">
-              <span className="font-medium">Note:</span> {order.note}
+              <span className="font-medium">{t.invoice.note}:</span> {order.note}
             </p>
           ) : null}
 
@@ -213,7 +224,7 @@ export default async function InvoicePage({
         <p className="mt-4 text-center text-xs text-ink-400 print:hidden">
           <Link href="/" className="inline-flex items-center gap-1.5">
             <Store className="size-3" />
-            Powered by Sailo
+            {t.shop.poweredBy} Sailo
           </Link>
         </p>
       </div>

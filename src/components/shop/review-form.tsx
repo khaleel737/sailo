@@ -4,9 +4,11 @@ import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Loader2, Star } from "lucide-react";
 import { submitReview } from "@/lib/actions/reviews";
+import type { Dictionary } from "@/i18n";
+import { plural } from "@/i18n";
 import { cn } from "@/lib/utils";
 
-function Submit() {
+function Submit({ label }: { label: string }) {
   const { pending } = useFormStatus();
   return (
     <button
@@ -15,12 +17,18 @@ function Submit() {
       className="accent-bg flex h-10 items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold transition hover:opacity-90 disabled:opacity-60"
     >
       {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-      Post review
+      {label}
     </button>
   );
 }
 
-export function ReviewForm({ productId }: { productId: string }) {
+export function ReviewForm({
+  productId,
+  t,
+}: {
+  productId: string;
+  t: Dictionary;
+}) {
   const [state, action] = useActionState(submitReview, { ok: false });
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -29,7 +37,7 @@ export function ReviewForm({ productId }: { productId: string }) {
   if (state.ok) {
     return (
       <p className="rounded-xl bg-emerald-50 px-3 py-2.5 text-sm text-emerald-700">
-        {state.message}
+        {t.product.reviewThanks}
       </p>
     );
   }
@@ -41,7 +49,7 @@ export function ReviewForm({ productId }: { productId: string }) {
         onClick={() => setOpen(true)}
         className="surface-card h-10 rounded-xl px-4 text-sm font-medium transition hover:opacity-70"
       >
-        Write a review
+        {t.product.writeReview}
       </button>
     );
   }
@@ -58,7 +66,9 @@ export function ReviewForm({ productId }: { productId: string }) {
       ) : null}
 
       <div>
-        <span className="mb-1.5 block text-sm font-medium">Your rating</span>
+        <span className="mb-1.5 block text-sm font-medium">
+          {t.product.yourRating}
+        </span>
         <div className="flex gap-1" onMouseLeave={() => setHover(0)}>
           {[1, 2, 3, 4, 5].map((i) => (
             <button
@@ -66,7 +76,7 @@ export function ReviewForm({ productId }: { productId: string }) {
               type="button"
               onClick={() => setRating(i)}
               onMouseEnter={() => setHover(i)}
-              aria-label={`${i} star${i > 1 ? "s" : ""}`}
+              aria-label={plural(i, t.product.star, t.product.stars)}
               className="transition hover:scale-110"
             >
               <Star
@@ -86,25 +96,25 @@ export function ReviewForm({ productId }: { productId: string }) {
         name="authorName"
         required
         maxLength={80}
-        placeholder="Your name"
+        placeholder={t.product.yourName}
         className="surface-elevated h-10 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
       />
       <textarea
         name="body"
         rows={3}
         maxLength={1000}
-        placeholder="How was it?"
+        placeholder={t.product.howWasIt}
         className="surface-elevated w-full rounded-xl px-3 py-2.5 text-sm outline-none placeholder:opacity-50"
       />
 
       <div className="flex items-center gap-2">
-        <Submit />
+        <Submit label={t.product.postReview} />
         <button
           type="button"
           onClick={() => setOpen(false)}
           className="text-muted h-10 px-3 text-sm transition hover:opacity-70"
         >
-          Cancel
+          {t.common.cancel}
         </button>
       </div>
     </form>

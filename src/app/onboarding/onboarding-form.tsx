@@ -8,27 +8,38 @@ import { Alert, Button, Field, Input, Select, Textarea } from "@/components/ui";
 import { HandleField } from "@/components/admin/handle-field";
 import { CURRENCIES, slugify } from "@/lib/utils";
 import { normalizeHandle } from "@/lib/handle";
+import type { Dictionary } from "@/i18n";
 
-function Submit() {
+function Submit({ label }: { label: string }) {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" size="lg" className="w-full" disabled={pending}>
       {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-      Create my shop
+      {label}
     </Button>
   );
 }
 
-export function OnboardingForm({ defaultName }: { defaultName: string }) {
+export function OnboardingForm({
+  defaultName,
+  t,
+}: {
+  defaultName: string;
+  t: Dictionary;
+}) {
   const [state, action] = useActionState(createShop, { ok: false });
 
   return (
     <form action={action} className="space-y-4">
       {state.error ? <Alert>{state.error}</Alert> : null}
 
-      <HandleField defaultValue={normalizeHandle(slugify(defaultName))} autoFocus />
+      <HandleField
+        defaultValue={normalizeHandle(slugify(defaultName))}
+        autoFocus
+        t={t}
+      />
 
-      <Field label="Shop name" htmlFor="name">
+      <Field label={t.onboarding.shopName} htmlFor="name">
         <Input
           id="name"
           name="name"
@@ -38,7 +49,11 @@ export function OnboardingForm({ defaultName }: { defaultName: string }) {
         />
       </Field>
 
-      <Field label="Short description" htmlFor="description" hint="optional">
+      <Field
+        label={t.onboarding.shortDescription}
+        htmlFor="description"
+        hint={t.common.optional}
+      >
         <Textarea
           id="description"
           name="description"
@@ -49,7 +64,7 @@ export function OnboardingForm({ defaultName }: { defaultName: string }) {
       </Field>
 
       <div className="grid grid-cols-2 gap-3">
-        <Field label="Currency" htmlFor="currency">
+        <Field label={t.onboarding.currency} htmlFor="currency">
           <Select id="currency" name="currency" defaultValue="USD">
             {CURRENCIES.map((c) => (
               <option key={c} value={c}>
@@ -59,7 +74,11 @@ export function OnboardingForm({ defaultName }: { defaultName: string }) {
           </Select>
         </Field>
 
-        <Field label="WhatsApp" htmlFor="whatsapp" hint="optional">
+        <Field
+          label={t.onboarding.whatsapp}
+          htmlFor="whatsapp"
+          hint={t.common.optional}
+        >
           <Input
             id="whatsapp"
             name="whatsapp"
@@ -70,10 +89,10 @@ export function OnboardingForm({ defaultName }: { defaultName: string }) {
       </div>
 
       <p className="text-xs text-ink-400">
-        Include your country code, no + or spaces. This is where orders land.
+        {t.onboarding.whatsappHint}
       </p>
 
-      <Submit />
+      <Submit label={t.onboarding.createMyShop} />
     </form>
   );
 }

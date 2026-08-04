@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Lock } from "lucide-react";
+import type { Dictionary } from "@/i18n";
 import { ANALYTICS_RANGES, cheapestPlanWith, PLANS, PLAN_IDS } from "@/lib/plans";
 import { UpgradeModal } from "./upgrade-modal";
 import { cn } from "@/lib/utils";
@@ -25,11 +26,13 @@ export function RangePicker({
   current,
   limit,
   currentPlan,
+  t,
 }: {
   current: number;
   /** The plan's maximum window in days. */
   limit: number;
   currentPlan: PlanId;
+  t: Dictionary;
 }) {
   const [upsell, setUpsell] = useState<number | null>(null);
 
@@ -78,6 +81,7 @@ export function RangePicker({
         open={upsell !== null}
         onClose={() => setUpsell(null)}
         currentPlan={currentPlan}
+        t={t}
         title={`See ${upsell ? LABELS[upsell] : ""} of history`}
         body={
           cheapestPlanWith("csvExport")

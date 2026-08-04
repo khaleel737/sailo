@@ -20,7 +20,10 @@ import {
   CURRENCIES,
   SOCIAL_PLATFORMS,
 } from "@/lib/utils";
+
+import { LOCALES } from "@/i18n/config";
 import type { Shop } from "@/db/schema";
+import type { Dictionary } from "@/i18n";
 
 const PRESET_COLORS = [
   "#111111", "#4f46e5", "#0ea5e9", "#059669",
@@ -44,7 +47,7 @@ function Submit() {
   );
 }
 
-export function SettingsForm({ shop }: { shop: Shop }) {
+export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
   const [state, action] = useActionState(updateShop, { ok: false });
   const [accent, setAccent] = useState(shop.accentColor);
 
@@ -61,10 +64,11 @@ export function SettingsForm({ shop }: { shop: Shop }) {
         <h2 className="text-sm font-semibold">Identity</h2>
 
         <HandleField
-          label="Shop link"
+          label={t.handle.label}
           prefix="/"
           defaultValue={shop.handle}
           currentHandle={shop.handle}
+          t={t}
         />
 
         <Field label="Shop name" htmlFor="name">
@@ -170,6 +174,20 @@ export function SettingsForm({ shop }: { shop: Shop }) {
               {CURRENCIES.map((c) => (
                 <option key={c} value={c}>
                   {c}
+                </option>
+              ))}
+            </Select>
+          </Field>
+
+          <Field
+            label={t.settings.storefrontLanguage}
+            htmlFor="locale"
+            hint={t.settings.storefrontLanguageHint}
+          >
+            <Select id="locale" name="locale" defaultValue={shop.locale}>
+              {LOCALES.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.native} — {l.name}
                 </option>
               ))}
             </Select>
