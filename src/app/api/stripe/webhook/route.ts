@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { orders, shops, stripeEvents } from "@/db/schema";
 import { stripe } from "@/lib/stripe";
+import { restoreStock } from "@/lib/inventory";
 import { freePlanFields, subscriptionFields } from "@/lib/billing-map";
 
 /**
@@ -22,6 +23,7 @@ const HANDLED = new Set([
   "customer.subscription.deleted",
   "invoice.payment_failed",
   "charge.refunded",
+  "checkout.session.expired",
   "account.updated",
 ]);
 
@@ -109,6 +111,7 @@ export async function POST(request: Request) {
     Boolean(event.account) ||
     event.type === "charge.refunded" ||
     event.type === "account.updated" ||
+    event.type === "checkout.session.expired" ||
     (event.type === "checkout.session.completed" &&
       (event.data.object as Stripe.Checkout.Session).mode === "payment");
 
@@ -262,6 +265,32 @@ async function handleShopEvent(event: Stripe.Event, accountId: string | null) {
         .where(eq(orders.id, order.id));
 
       return `order ${order.id} paid`;
+    }
+
+    /*
+     * The buyer opened Stripe and never paid.
+     *
+     * Stock is taken when the order is written, before the money arrives —
+     * otherwise two buyers can be sold the same last unit while one of them is
+     * still typing a card number. The cost is that an abandoned checkout holds
+     * those units, so Stripe's expiry is what gives them back. Without this a
+     * shop quietly sells out of things it still has.
+     */
+    case "checkout.session.expired": {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const order = await db.query.orders.findFirst({
+        where: eq(orders.stripeSessionId, session.id),
+      });
+      if (!order) return "order not found";
+      if (order.paymentStatus === "paid") return "already paid";
+
+      await restoreStock(order);
+      await db
+        .update(orders)
+        .set({ status: "cancelled", updatedAt: new Date() })
+        .where(eq(orders.id, order.id));
+
+      return `order ${order.id} expired and restocked`;
     }
 
     case "charge.refunded": {

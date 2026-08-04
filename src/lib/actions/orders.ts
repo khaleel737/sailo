@@ -456,6 +456,16 @@ export async function createOrderIntent(
   const phone = phoneRaw ? normalizePhone(phoneRaw) || null : null;
 
   // Manual rails settle later, so we need a way to reach the buyer.
+  // Card needs an email specifically: Stripe requires one for the receipt, and
+  // without it the buyer gets no invoice and no confirmation of what they just
+  // paid for. Asking here beats Stripe stopping them mid-payment.
+  if (def.kind === "electronic" && !email) {
+    return {
+      ok: false,
+      error: "Add your email so we can send your receipt.",
+    };
+  }
+
   if (def.kind === "manual" && !email && !phone) {
     return {
       ok: false,
