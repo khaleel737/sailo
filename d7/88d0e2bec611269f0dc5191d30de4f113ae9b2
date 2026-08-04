@@ -1,0 +1,69 @@
+scripts/stripe-setup.ts
+  s_3dd4b357265b83::t_8b643f907e6721 1-73
+src/lib/actions/coupons.ts
+  s_3dd4b357265b83::t_fc46818fba19ed 10
+  s_3dd4b357265b83::t_e24383d9046250 20-23
+src/lib/actions/orders.ts
+  s_3dd4b357265b83::t_269c8e4b104fa6 52,272-274,276,419
+src/components/admin/interval-toggle.tsx
+  s_3dd4b357265b83::t_5a6a880ad3e6e5 1-36
+README.md
+  s_3dd4b357265b83::t_f0f59a02cb8963 67-75,78-86
+  s_3dd4b357265b83::t_44e2eb542cc9f0 218-242
+  s_3dd4b357265b83::t_9e8d0dc388b65b 87
+src/app/api/stripe/webhook/route.ts
+  s_3dd4b357265b83::t_a12ec9438c4dab 1-179
+src/components/admin/sidebar.tsx
+  s_3dd4b357265b83::t_86ca9b7edf9755 22,39
+src/lib/actions/billing.ts
+  s_3dd4b357265b83::t_ef41283516628d 10
+  s_3dd4b357265b83::t_9fd74405b4efb2 11,86,89
+  s_3dd4b357265b83::t_d26ff0b1cf1f73 1-9,12-85,87-88,90-92
+src/app/[handle]/p/[slug]/page.tsx
+  s_3dd4b357265b83::t_313ad92eb8fb0f 16,216-226
+src/lib/billing-map.ts
+  s_3dd4b357265b83::t_d4ea5538f05b9c 1-58
+package.json
+  s_3dd4b357265b83::t_6697c55b958906 26
+src/lib/stripe.ts
+  s_3dd4b357265b83::t_b01643f8ac97ee 12-14
+  s_3dd4b357265b83::t_084994c9788e61 1-11,15-25
+src/app/[handle]/page.tsx
+  s_3dd4b357265b83::t_313ad92eb8fb0f 7,58-60,72,171,180-188
+src/app/[handle]/affiliate/page.tsx
+  s_3dd4b357265b83::t_313ad92eb8fb0f 9,29-30
+src/lib/plans.ts
+  s_3dd4b357265b83::t_73f4731e0920db 1-181
+src/db/schema.ts
+  s_3dd4b357265b83::t_8af5a24f6f1276 120-129
+  s_3dd4b357265b83::t_f9bc650defd4c9 146-147,151-162
+  s_3dd4b357265b83::t_d784ac65688b30 163-164
+src/app/admin/billing/page.tsx
+  s_3dd4b357265b83::t_25735aa0b2548e 1-6,9-26,28-211
+  s_3dd4b357265b83::t_9fd74405b4efb2 7-8,27
+src/lib/billing-sync.ts
+  s_3dd4b357265b83::t_767a3818dd2313 1-39
+src/lib/actions/products.ts
+  s_3dd4b357265b83::t_5acb885fb33e37 84-99
+  s_3dd4b357265b83::t_c2adedb4d21b6d 9
+src/lib/actions/affiliates.ts
+  s_3dd4b357265b83::t_655a30f3465582 9,21-24,142-146,150
+package-lock.json
+  s_3dd4b357265b83::t_729570da474648 22,8149-8165
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d788d0e2bec611269f0dc5191d30de4f113ae9b2",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
