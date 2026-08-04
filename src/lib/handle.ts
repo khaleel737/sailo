@@ -14,7 +14,7 @@ export const RESERVED_HANDLES = new Set([
   "blog", "docs", "status", "explore", "discover", "search", "new", "create",
   "edit", "delete", "invoice", "invoices", "order", "orders", "checkout",
   "cart", "product", "products", "shop", "shops", "store", "stores",
-  "shopik", "www", "app", "mail", "email", "static", "assets", "public",
+  "sailo", "www", "app", "mail", "email", "static", "assets", "public",
   "cdn", "img", "images", "media", "favicon", "robots", "sitemap",
   "_next", "vercel", "null", "undefined", "true", "false",
 ]);

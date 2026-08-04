@@ -409,7 +409,7 @@ export async function createOrderIntent(
           .set({ confirmationSentAt: new Date() })
           .where(eq(orders.id, order.id));
       } else {
-        console.warn(`[shopik] order email not sent: ${result.reason}`);
+        console.warn(`[sailo] order email not sent: ${result.reason}`);
       }
     }
   }

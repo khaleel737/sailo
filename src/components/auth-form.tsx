@@ -81,7 +81,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       </Button>
 
       <p className="text-center text-sm text-ink-500">
-        {isSignup ? "Already have a shop? " : "New to Shopik? "}
+        {isSignup ? "Already have a shop? " : "New to Sailo? "}
         <Link
           href={isSignup ? "/login" : "/signup"}
           className="font-medium text-ink-900 underline underline-offset-4"

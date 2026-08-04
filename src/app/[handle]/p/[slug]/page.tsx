@@ -220,7 +220,7 @@ export default async function ProductPage({
               className="text-muted inline-flex items-center gap-1.5 text-xs transition hover:opacity-70"
             >
               <Store className="size-3.5" />
-              Powered by <span className="font-semibold">Shopik</span>
+              Powered by <span className="font-semibold">Sailo</span>
             </Link>
           </footer>
         ) : null}

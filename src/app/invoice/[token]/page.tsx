@@ -213,7 +213,7 @@ export default async function InvoicePage({
         <p className="mt-4 text-center text-xs text-ink-400 print:hidden">
           <Link href="/" className="inline-flex items-center gap-1.5">
             <Store className="size-3" />
-            Powered by Shopik
+            Powered by Sailo
           </Link>
         </p>
       </div>

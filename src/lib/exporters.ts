@@ -191,10 +191,10 @@ export async function exportClients(shopId: string) {
 export async function runExport(type: ExportType, shopId: string) {
   switch (type) {
     case "products":
-      return { filename: "shopik-products.csv", body: await exportProducts(shopId) };
+      return { filename: "sailo-products.csv", body: await exportProducts(shopId) };
     case "orders":
-      return { filename: "shopik-orders.csv", body: await exportOrders(shopId) };
+      return { filename: "sailo-orders.csv", body: await exportOrders(shopId) };
     case "clients":
-      return { filename: "shopik-customers.csv", body: await exportClients(shopId) };
+      return { filename: "sailo-customers.csv", body: await exportClients(shopId) };
   }
 }

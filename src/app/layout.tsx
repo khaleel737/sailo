@@ -14,11 +14,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Shopik — one link, your whole shop",
-    template: "%s · Shopik",
+    default: "Sailo — one link, your whole shop",
+    template: "%s · Sailo",
   },
   description:
-    "Shopik turns your bio link into a shop. Upload products, digital goods or services, and take orders on WhatsApp. No store setup, no checkout to configure.",
+    "Sailo turns your bio link into a shop. Upload products, digital goods or services, and take orders on WhatsApp. No store setup, no checkout to configure.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

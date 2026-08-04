@@ -94,7 +94,7 @@ body {
   }
 }
 
-@keyframes shopik-rise {
+@keyframes sailo-rise {
   from {
     opacity: 0;
     transform: translateY(8px);
@@ -106,7 +106,7 @@ body {
 }
 
 @utility animate-rise {
-  animation: shopik-rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: sailo-rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

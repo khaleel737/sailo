@@ -54,7 +54,7 @@ export default async function HomePage() {
           <span className="flex size-8 items-center justify-center rounded-lg bg-ink-900 text-white">
             <Store className="size-4" />
           </span>
-          <span className="font-semibold tracking-tight">Shopik</span>
+          <span className="font-semibold tracking-tight">Sailo</span>
         </span>
         <nav className="flex items-center gap-1">
           <Link
@@ -83,7 +83,7 @@ export default async function HomePage() {
             but it&rsquo;s a shop.
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-ink-600 sm:text-lg">
-            Shopik is as simple as a link-in-bio page — except the rows are your
+            Sailo is as simple as a link-in-bio page — except the rows are your
             products. Upload what you sell, share one link, take orders on
             WhatsApp.
           </p>
@@ -132,7 +132,7 @@ export default async function HomePage() {
               Selling from your DMs already works.
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-ink-600">
-              Shopik just gives it a front door — so people can browse, search
+              Sailo just gives it a front door — so people can browse, search
               and see prices before they message you.
             </p>
             <Link
@@ -148,7 +148,7 @@ export default async function HomePage() {
 
       <footer className="border-t border-ink-200 py-6">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3 px-4 text-sm text-ink-500">
-          <span>© {new Date().getFullYear()} Shopik</span>
+          <span>© {new Date().getFullYear()} Sailo</span>
           <Link href="/login" className="transition hover:text-ink-900">
             Sign in
           </Link>

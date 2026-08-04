@@ -29,7 +29,7 @@ export async function generateMetadata({
 
   return {
     title: shop.name,
-    description: shop.description ?? `Shop ${shop.name} on Shopik.`,
+    description: shop.description ?? `Shop ${shop.name} on Sailo.`,
     openGraph: {
       title: shop.name,
       description: shop.description ?? undefined,
@@ -183,7 +183,7 @@ export default async function ShopPage({
               className="text-muted inline-flex items-center gap-1.5 text-xs transition hover:opacity-70"
             >
               <Store className="size-3.5" />
-              Powered by <span className="font-semibold">Shopik</span>
+              Powered by <span className="font-semibold">Sailo</span>
             </Link>
           ) : null}
         </footer>

@@ -1,6 +1,6 @@
 "use client";
 
-const KEY = "shopik_ref";
+const KEY = "sailo_ref";
 const TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 type Stored = { code: string; shopId: string; at: number };

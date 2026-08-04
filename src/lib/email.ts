@@ -15,7 +15,7 @@ function resend() {
 
 export const emailEnabled = () => Boolean(process.env.RESEND_API_KEY);
 
-const FROM = () => process.env.SHOPIK_FROM_EMAIL ?? "Shopik <onboarding@resend.dev>";
+const FROM = () => process.env.SAILO_FROM_EMAIL ?? "Sailo <onboarding@resend.dev>";
 
 export type SendResult =
   | { sent: true; id: string }
@@ -71,7 +71,7 @@ function layout(shop: Shop, heading: string, body: string) {
     <tr><td style="padding:20px 28px 28px;">${body}</td></tr>
   </table>
   <p style="max-width:560px;margin:16px auto 0;text-align:center;font-size:12px;color:#b8b8c2;">
-    Sent by ${esc(shop.name)} via Shopik
+    Sent by ${esc(shop.name)} via Sailo
   </p>
 </body></html>`;
 }

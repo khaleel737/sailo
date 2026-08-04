@@ -1,7 +1,7 @@
 /**
- * Creates (or reuses) the Shopik products and prices in Stripe, then prints the
+ * Creates (or reuses) the Sailo products and prices in Stripe, then prints the
  * price ids to put in .env.local. Safe to re-run — it looks products up by a
- * `shopik_plan` metadata key rather than creating duplicates.
+ * `sailo_plan` metadata key rather than creating duplicates.
  *
  *   npx dotenv -e .env.local -- npx tsx scripts/stripe-setup.ts
  */
@@ -20,16 +20,16 @@ async function main() {
 
     // Find an existing product for this plan before making another.
     const search = await stripe.products.search({
-      query: `metadata['shopik_plan']:'${planId}'`,
+      query: `metadata['sailo_plan']:'${planId}'`,
       limit: 1,
     });
 
     const product =
       search.data[0] ??
       (await stripe.products.create({
-        name: `Shopik ${plan.name}`,
+        name: `Sailo ${plan.name}`,
         description: plan.tagline,
-        metadata: { shopik_plan: planId },
+        metadata: { sailo_plan: planId },
       }));
     console.log(`${plan.name}: product ${product.id}`);
 
@@ -51,7 +51,7 @@ async function main() {
           currency: "usd",
           unit_amount: amount,
           recurring: { interval },
-          metadata: { shopik_plan: planId, shopik_interval: interval },
+          metadata: { sailo_plan: planId, sailo_interval: interval },
         }));
 
       console.log(

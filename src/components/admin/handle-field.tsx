@@ -30,8 +30,8 @@ export function HandleField({
   defaultValue = "",
   /** Present when editing — the shop's own handle shouldn't read as taken. */
   currentHandle,
-  prefix = "shopik.to/",
-  label = "Your Shopik link",
+  prefix = "sailo.to/",
+  label = "Your Sailo link",
   autoFocus = false,
 }: {
   name?: string;

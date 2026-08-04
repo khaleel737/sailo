@@ -1,8 +1,8 @@
-# Shopik
+# Sailo
 
 **Your bio link, but it's a shop.**
 
-Shopik is as simple as a link-in-bio page — except the rows are your products.
+Sailo is as simple as a link-in-bio page — except the rows are your products.
 Sellers upload what they sell (physical goods, digital downloads or services),
 share one link, and take orders on WhatsApp. One template, no checkout to
 configure, works in every country.
@@ -17,7 +17,7 @@ filters, no search, no reviews. Everyone who *does* serve physical sellers went
 heavy (Big Cartel, Dukaan, Shopier, Salla, Zid) — full store platforms with
 checkout, shipping, inventory and tax.
 
-Shopik sits in the empty middle: a catalogue page as simple as Linktree.
+Sailo sits in the empty middle: a catalogue page as simple as Linktree.
 
 Ordering over WhatsApp is what makes it global — no Stripe onboarding, no
 merchant-of-record liability, no country restrictions, no seller KYC. A seller
@@ -63,7 +63,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 # Email (optional — order, shipping and refund notifications)
 RESEND_API_KEY=
-SHOPIK_FROM_EMAIL="Shopik <orders@yourdomain.com>"
+SAILO_FROM_EMAIL="Sailo <orders@yourdomain.com>"
 
 # Billing (optional — subscriptions)
 STRIPE_SECRET_KEY=
@@ -247,20 +247,20 @@ and `verification`.
 | Chat ordering + bank transfer + COD | ✓ | ✓ | ✓ |
 | Delivery, reviews, filters, PDF invoices | ✓ | ✓ | ✓ |
 | Import products and customers | ✓ | ✓ | ✓ |
-| Shopik badge removed | — | ✓ | ✓ |
+| Sailo badge removed | — | ✓ | ✓ |
 | CSV export | — | ✓ | ✓ |
 | Card payments (seller's own gateway) | — | — | ✓ |
 | Coupons and referrals | — | — | ✓ |
 | Analytics window | 30 days | 1 year | 3 years |
 
-Yearly billing is ~20% off. Shopik takes **no cut of any sale** on any plan.
+Yearly billing is ~20% off. Sailo takes **no cut of any sale** on any plan.
 
 Free is deliberately enough to take real orders — a paywall before the first
 sale converts nobody, and every free shop carries the badge, so free shops are
 distribution. Pro is "look professional and grow"; Business is "the tools that
 make more money".
 
-**Import is free on every plan.** It reduces the cost of switching to Shopik,
+**Import is free on every plan.** It reduces the cost of switching to Sailo,
 so putting it behind a paywall would be self-defeating.
 
 Entitlements live in `lib/plans.ts` and are enforced **inside server actions**,

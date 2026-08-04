@@ -25,7 +25,7 @@ export default async function OnboardingPage() {
         <span className="flex size-9 items-center justify-center rounded-xl bg-ink-900 text-white">
           <Store className="size-5" />
         </span>
-        <span className="text-xl font-semibold tracking-tight">Shopik</span>
+        <span className="text-xl font-semibold tracking-tight">Sailo</span>
       </Link>
 
       <div className="w-full max-w-md rounded-2xl border border-ink-200 bg-white p-6 shadow-sm sm:p-8">

@@ -4,7 +4,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { products, shops, visits } from "@/db/schema";
 
-const COOKIE = "shopik_sid";
+const COOKIE = "sailo_sid";
 const SIX_MONTHS = 60 * 60 * 24 * 180;
 
 export async function POST(request: Request) {

@@ -12,7 +12,7 @@ export function stripe() {
       // Matches the version this SDK's types are generated from, so a
       // Stripe-side upgrade can't change behaviour under us.
       apiVersion: "2026-07-29.dahlia",
-      appInfo: { name: "Shopik", version: "0.1.0" },
+      appInfo: { name: "Sailo", version: "0.1.0" },
     });
   }
   return client;

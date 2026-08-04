@@ -81,7 +81,7 @@ export const PLANS: Record<PlanId, Plan> = {
     },
     highlights: [
       "250 products",
-      "No Shopik badge",
+      "No Sailo badge",
       "Export products, orders and customers",
       "A year of analytics",
       "Email support",
