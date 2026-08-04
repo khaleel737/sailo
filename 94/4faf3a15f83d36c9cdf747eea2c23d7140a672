@@ -1,0 +1,51 @@
+src/components/admin/range-picker.tsx
+  s_3dd4b357265b83::t_56a0fe6f3a54b0 1-90
+src/lib/notifications.ts
+  s_3dd4b357265b83::t_35aea97d903c43 1-139
+src/app/admin/layout.tsx
+  s_3dd4b357265b83::t_6ebbc0dd15d1e3 2,4,9-16,26-31
+src/app/admin/affiliates/page.tsx
+  s_3dd4b357265b83::t_fa3beef6c94418 18-19,32-55
+src/db/schema.ts
+  s_3dd4b357265b83::t_bb3874427bc111 130-137
+src/components/admin/notification-bell.tsx
+  s_3dd4b357265b83::t_bf24781c5d9933 1-182
+src/app/admin/page.tsx
+  s_3dd4b357265b83::t_88166c3ddb39e4 91,96
+  s_3dd4b357265b83::t_daf1cbbcc3da3a 12-13,29-31,33-38,40-42,75-86,90,151,160
+src/components/admin/upgrade-modal.tsx
+  s_3dd4b357265b83::t_2b67e49570ef52 1-3,5-70,75,77-227,230-266
+  s_3dd4b357265b83::t_19327d6b339cae 4,71-74,76,228-229
+src/lib/actions/notifications.ts
+  s_3dd4b357265b83::t_d17bb46ea4f20f 1-40
+src/components/admin/admin-header.tsx
+  s_3dd4b357265b83::t_2e998d09c6cc74 1-50
+src/components/admin/locked-feature.tsx
+  s_3dd4b357265b83::t_55d3ee8860158e 1-80
+src/app/admin/coupons/page.tsx
+  s_3dd4b357265b83::t_fa3beef6c94418 10-11,21-42
+  s_3dd4b357265b83::t_0a2d862e1334af 43
+src/lib/plans.ts
+  s_3dd4b357265b83::t_a56573bd6d8aff 155-179
+src/lib/queries.ts
+  s_3dd4b357265b83::t_a56573bd6d8aff 212,214
+  s_3dd4b357265b83::t_88166c3ddb39e4 255-256
+package-lock.json
+  s_3dd4b357265b83::t_ea0daf83885568 2,8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "944faf3a15f83d36c9cdf747eea2c23d7140a672",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
