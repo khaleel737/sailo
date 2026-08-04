@@ -1,0 +1,21 @@
+src/components/admin/bar-chart.tsx
+  s_3dd4b357265b83::t_33007413399447 67-75,77-86,88-91,93-99,109-124
+src/components/shop/order-sheet.tsx
+  s_3dd4b357265b83::t_6e38a0dba40897 319
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "024cd56b140abe06015bcbd9614e273bf31e083d",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
