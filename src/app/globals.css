@@ -1,26 +1,119 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --color-ink-50: #f7f7f8;
+  --color-ink-100: #ededf0;
+  --color-ink-200: #d9d9df;
+  --color-ink-300: #b8b8c2;
+  --color-ink-400: #8e8e9c;
+  --color-ink-500: #6d6d7d;
+  --color-ink-600: #565664;
+  --color-ink-700: #464651;
+  --color-ink-800: #2c2c34;
+  --color-ink-900: #1a1a20;
+  --color-ink-950: #0e0e12;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --accent: #111111;
+  --accent-contrast: #ffffff;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* ---------------------------------------------------------------------------
+   Shop template surface — the one template. `data-surface` flips the palette
+   so a seller's light/dark choice never depends on the visitor's OS setting.
+--------------------------------------------------------------------------- */
+
+[data-surface] {
+  background: var(--surface-bg);
+  color: var(--surface-fg);
+}
+
+[data-surface="light"] {
+  --surface-bg: #ffffff;
+  --surface-fg: #16161a;
+  --surface-muted: #6d6d7d;
+  --surface-card: #ffffff;
+  --surface-elevated: #f7f7f8;
+  --surface-border: #e6e6ea;
+}
+
+[data-surface="dark"] {
+  --surface-bg: #0c0c0f;
+  --surface-fg: #f2f2f5;
+  --surface-muted: #9a9aa8;
+  --surface-card: #16161b;
+  --surface-elevated: #1c1c22;
+  --surface-border: #26262e;
+}
+
+@utility surface-card {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+}
+
+@utility surface-elevated {
+  background: var(--surface-elevated);
+}
+
+@utility surface-border {
+  border-color: var(--surface-border);
+}
+
+@utility text-muted {
+  color: var(--surface-muted);
+}
+
+@utility accent-bg {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+@utility accent-text {
+  color: var(--accent);
+}
+
+/* Hide scrollbars on the horizontal category rail without losing scroll. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes shopik-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-rise {
+  animation: shopik-rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
