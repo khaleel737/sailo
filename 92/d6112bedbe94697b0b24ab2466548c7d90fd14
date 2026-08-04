@@ -1,0 +1,32 @@
+scripts/seed-niches.ts
+  s_79ff13cbe32e61::t_e3d0a84fd0ed6f 100,127,131-170,179-503,505,530,533-593,606-624,641-743,746,771-784,787,801-809,811-823,825-829,831-833,836-845,847-849,852-905
+  s_79ff13cbe32e61::t_b6cc4529c950ac 47-52,54-61
+  s_79ff13cbe32e61::t_28e5bdea1e6388 1155-1160
+  s_79ff13cbe32e61::t_db3c16494dc6c1 1148
+src/components/shop/checkout-panel.tsx
+  s_79ff13cbe32e61::t_cfbf6694386052 296-304,307-314,316,318-319,321-325,469-516,635-642
+  s_79ff13cbe32e61::t_82f83b52038976 444-445
+  s_79ff13cbe32e61::t_f0673b010d3279 643
+src/components/shop/order-sheet.tsx
+  s_79ff13cbe32e61::t_c90d175b7a3545 108-109,123-130,132-134,137,140,142-143,145-147,158-163,165-169
+  s_79ff13cbe32e61::t_6e2158372f4632 97-99,187,194-195,200
+  s_79ff13cbe32e61::t_c59dff4cb64cfe 6
+src/components/shop/cart-provider.tsx
+  s_79ff13cbe32e61::t_18057643d3fc97 119-121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "92d6112bedbe94697b0b24ab2466548c7d90fd14",
+  "prompts": {},
+  "sessions": {
+    "s_79ff13cbe32e61": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d4473ffb-fe57-4d6e-8826-d0885bba381b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
