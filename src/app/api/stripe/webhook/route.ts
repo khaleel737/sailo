@@ -142,7 +142,7 @@ export async function POST(request: Request) {
 
         await db
           .update(shops)
-          .set({ ...freePlanFields, updatedAt: new Date() })
+          .set(freePlanFields())
           .where(eq(shops.id, shopId));
         break;
       }

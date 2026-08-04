@@ -46,13 +46,19 @@ export function subscriptionFields(sub: SubscriptionLike) {
   };
 }
 
-/** Columns that put a shop back on the free plan. */
-export const freePlanFields = {
-  plan: "free" as const,
-  stripeSubscriptionId: null,
-  subscriptionStatus: null,
-  subscriptionInterval: null,
-  currentPeriodEnd: null,
-  cancelAtPeriodEnd: false,
-  updatedAt: new Date(),
-};
+/**
+ * Columns that put a shop back on the free plan. A function, not a constant:
+ * a module-level `new Date()` freezes at import and every downgrade for the
+ * life of that instance would be stamped with the same time.
+ */
+export function freePlanFields() {
+  return {
+    plan: "free" as const,
+    stripeSubscriptionId: null,
+    subscriptionStatus: null,
+    subscriptionInterval: null,
+    currentPeriodEnd: null,
+    cancelAtPeriodEnd: false,
+    updatedAt: new Date(),
+  };
+}

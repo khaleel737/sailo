@@ -33,7 +33,7 @@ export async function syncSubscriptionForShop(shopId: string) {
     .set(
       live
         ? subscriptionFields(live)
-        : { ...freePlanFields, updatedAt: new Date() },
+        : freePlanFields(),
     )
     .where(eq(shops.id, shopId));
 }

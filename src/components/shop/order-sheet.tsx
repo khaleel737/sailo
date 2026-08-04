@@ -283,7 +283,7 @@ function OrderSheet({
           type="button"
           onClick={onClose}
           aria-label={t.common.close}
-          className="text-muted absolute right-4 top-4 transition hover:opacity-70"
+          className="text-muted absolute end-4 top-4 transition hover:opacity-70"
         >
           <X className="size-5" />
         </button>
@@ -299,7 +299,7 @@ function OrderSheet({
           />
         ) : (
           <form onSubmit={onSubmit} className="space-y-4">
-            <div className="pr-8">
+            <div className="pe-8">
               <h2 className="font-semibold leading-tight">{productTitle}</h2>
               <p className="text-muted mt-0.5 text-sm">
                 {interpolate(t.checkout.each, {
@@ -725,7 +725,7 @@ function Confirmation({
             {result.bankDetails!.map((d) => (
               <div key={d.label} className="flex justify-between gap-3 text-sm">
                 <dt className="text-muted shrink-0">{d.label}</dt>
-                <dd className="text-right font-medium break-all">{d.value}</dd>
+                <dd className="text-end font-medium break-all">{d.value}</dd>
               </div>
             ))}
           </dl>

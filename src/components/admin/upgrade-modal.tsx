@@ -85,7 +85,7 @@ export function UpgradeModal({
           type="button"
           onClick={onClose}
           aria-label={t.common.close}
-          className="absolute right-4 top-4 rounded-lg p-1.5 text-ink-400 transition hover:bg-ink-100 hover:text-ink-900"
+          className="absolute end-4 top-4 rounded-lg p-1.5 text-ink-400 transition hover:bg-ink-100 hover:text-ink-900"
         >
           <X className="size-5" />
         </button>

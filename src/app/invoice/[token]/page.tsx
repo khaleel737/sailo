@@ -77,7 +77,7 @@ export default async function InvoicePage({
               ) : null}
             </div>
 
-            <div className="text-right">
+            <div className="text-end">
               <p className="text-xs font-medium uppercase tracking-wide text-ink-400">
                 {t.invoice.invoice}
               </p>
@@ -122,7 +122,7 @@ export default async function InvoicePage({
               ) : null}
             </div>
 
-            <div className="sm:text-right">
+            <div className="sm:text-end">
               <h2 className="mb-1.5 text-xs font-medium uppercase tracking-wide text-ink-400">
                 {t.invoice.details}
               </h2>
@@ -149,30 +149,30 @@ export default async function InvoicePage({
 
           <table className="w-full py-6 text-sm">
             <thead>
-              <tr className="border-b border-ink-100 text-left text-xs uppercase tracking-wide text-ink-400">
+              <tr className="border-b border-ink-100 text-start text-xs uppercase tracking-wide text-ink-400">
                 <th className="py-2 font-medium">{t.invoice.item}</th>
-                <th className="py-2 text-right font-medium">{t.invoice.qty}</th>
-                <th className="py-2 text-right font-medium">{t.invoice.price}</th>
-                <th className="py-2 text-right font-medium">{t.invoice.amount}</th>
+                <th className="py-2 text-end font-medium">{t.invoice.qty}</th>
+                <th className="py-2 text-end font-medium">{t.invoice.price}</th>
+                <th className="py-2 text-end font-medium">{t.invoice.amount}</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td className="py-3 font-medium">{order.productTitle}</td>
-                <td className="py-3 text-right tabular-nums">
+                <td className="py-3 text-end tabular-nums">
                   {order.quantity}
                 </td>
-                <td className="py-3 text-right tabular-nums">
+                <td className="py-3 text-end tabular-nums">
                   {formatMoney(order.unitPriceCents, order.currency)}
                 </td>
-                <td className="py-3 text-right tabular-nums">
+                <td className="py-3 text-end tabular-nums">
                   {formatMoney(order.subtotalCents, order.currency)}
                 </td>
               </tr>
             </tbody>
           </table>
 
-          <dl className="ml-auto max-w-xs space-y-1.5 border-t border-ink-100 pt-4 text-sm">
+          <dl className="ms-auto max-w-xs space-y-1.5 border-t border-ink-100 pt-4 text-sm">
             <div className="flex justify-between">
               <dt className="text-ink-500">{t.checkout.subtotal}</dt>
               <dd className="tabular-nums">

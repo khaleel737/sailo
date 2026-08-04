@@ -156,7 +156,7 @@ export function Sidebar({
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-black/40"
           />
-          <div className="absolute inset-y-0 left-0 flex w-64 flex-col bg-white p-4">
+          <div className="absolute inset-y-0 start-0 flex w-64 flex-col bg-white p-4">
             <div className="mb-4 flex items-center justify-between">
               <span className="text-sm font-semibold">{shopName}</span>
               <button

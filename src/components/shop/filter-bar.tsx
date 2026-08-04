@@ -88,21 +88,21 @@ export function FilterBar({
     <div className="space-y-3">
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="text-muted pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2" />
+          <Search className="text-muted pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2" />
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t.shop.searchPlaceholder}
             aria-label={t.shop.searchPlaceholder}
-            className="surface-card h-11 w-full rounded-xl pl-9 pr-9 text-sm outline-none transition placeholder:opacity-50 focus:ring-2 focus:ring-current/10"
+            className="surface-card h-11 w-full rounded-xl ps-9 pe-9 text-sm outline-none transition placeholder:opacity-50 focus:ring-2 focus:ring-current/10"
           />
           {query ? (
             <button
               type="button"
               onClick={() => setQuery("")}
               aria-label={t.shop.clearSearch}
-              className="text-muted absolute right-2 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-md transition hover:opacity-70"
+              className="text-muted absolute end-2 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-md transition hover:opacity-70"
             >
               <X className="size-4" />
             </button>

@@ -70,11 +70,11 @@ export function ProductCard({
         )}
 
         {!product.inStock ? (
-          <span className="absolute left-2 top-2 rounded-full bg-black/75 px-2 py-0.5 text-[11px] font-medium text-white">
+          <span className="absolute start-2 top-2 rounded-full bg-black/75 px-2 py-0.5 text-[11px] font-medium text-white">
             {t.shop.soldOut}
           </span>
         ) : onSale ? (
-          <span className="absolute left-2 top-2 rounded-full bg-red-600 px-2 py-0.5 text-[11px] font-semibold text-white">
+          <span className="absolute start-2 top-2 rounded-full bg-red-600 px-2 py-0.5 text-[11px] font-semibold text-white">
             {t.shop.sale}
           </span>
         ) : null}

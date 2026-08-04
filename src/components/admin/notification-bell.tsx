@@ -100,19 +100,19 @@ export function NotificationBell({
       >
         <Bell className="size-5" />
         {count > 0 ? (
-          <span className="absolute -right-0.5 -top-0.5 flex min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+          <span className="absolute -end-0.5 -top-0.5 flex min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
             {count > 9 ? "9+" : count}
           </span>
         ) : null}
       </button>
 
       {open ? (
-        <div className="absolute right-0 z-50 mt-2 w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-xl">
+        <div className="absolute end-0 z-50 mt-2 w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-xl">
           <div className="flex items-center justify-between border-b border-ink-100 px-4 py-3">
             <p className="text-sm font-semibold">
               {t.notifications.title}
               {count > 0 ? (
-                <span className="ml-1.5 font-normal text-ink-400">{count}</span>
+                <span className="ms-1.5 font-normal text-ink-400">{count}</span>
               ) : null}
             </p>
             {count > 0 ? (
@@ -179,7 +179,7 @@ export function NotificationBell({
 
                     <form
                       action={dismissNotification}
-                      className="absolute right-2 top-2 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100"
+                      className="absolute end-2 top-2 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100"
                     >
                       <input type="hidden" name="id" value={item.id} />
                       <button
