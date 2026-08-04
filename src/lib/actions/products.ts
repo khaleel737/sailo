@@ -6,6 +6,7 @@ import { getDb } from "@/db";
 import { categories, productImages, products } from "@/db/schema";
 import { requireShop } from "@/lib/session";
 import { parseMoneyToCents, slugify } from "@/lib/utils";
+import { atProductLimit, planFor, productLimit } from "@/lib/plans";
 import type { ActionState } from "./shop";
 
 const KINDS = new Set(["physical", "digital", "service"]);
@@ -79,6 +80,22 @@ export async function saveProduct(
     isPublished: formData.get("isPublished") === "on",
     updatedAt: new Date(),
   };
+
+  // Product cap applies to new products only — a downgrade never deletes work.
+  if (!id) {
+    const [{ count: existing }] = await db
+      .select({ count: sql<string>`count(*)` })
+      .from(products)
+      .where(eq(products.shopId, shop.id));
+
+    if (atProductLimit(shop, Number(existing))) {
+      const limit = productLimit(shop);
+      return {
+        ok: false,
+        error: `You've reached the ${limit}-product limit on ${planFor(shop).name}. Upgrade to add more.`,
+      };
+    }
+  }
 
   const urls = readImageUrls(formData);
   let productId = id;

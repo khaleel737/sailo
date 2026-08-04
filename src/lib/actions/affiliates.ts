@@ -6,6 +6,7 @@ import { getDb } from "@/db";
 import { affiliates, orders, shops } from "@/db/schema";
 import { requireShop } from "@/lib/session";
 import { generateCode, normalizeCode, percentToBp } from "@/lib/pricing";
+import { can, upgradeMessage } from "@/lib/plans";
 import type { ActionState } from "./shop";
 
 const STATUSES = new Set(["pending", "active", "disabled"]);
@@ -16,6 +17,10 @@ export async function saveAffiliate(
 ): Promise<ActionState> {
   const { shop } = await requireShop();
   const db = getDb();
+
+  if (!can(shop, "affiliates")) {
+    return { ok: false, error: upgradeMessage("affiliates", "Affiliates") };
+  }
 
   const id = String(formData.get("id") ?? "").trim() || null;
   const name = String(formData.get("name") ?? "").trim().slice(0, 120);
@@ -134,10 +139,15 @@ export async function updateAffiliateSettings(
     return { ok: false, error: "Default commission must be between 0 and 100%." };
   }
 
+  const enabling = formData.get("affiliatesEnabled") === "on";
+  if (enabling && !can(shop, "affiliates")) {
+    return { ok: false, error: upgradeMessage("affiliates", "Referral programmes") };
+  }
+
   await getDb()
     .update(shops)
     .set({
-      affiliatesEnabled: formData.get("affiliatesEnabled") === "on",
+      affiliatesEnabled: enabling,
       affiliateDefaultBp: percentToBp(pct),
       affiliatePublicSignup: formData.get("affiliatePublicSignup") === "on",
       affiliateTerms:

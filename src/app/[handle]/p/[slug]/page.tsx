@@ -13,6 +13,7 @@ import { ReviewForm } from "@/components/shop/review-form";
 import { StarRating } from "@/components/shop/star-rating";
 import { VisitTracker } from "@/components/shop/visit-tracker";
 import { formatMoney, shopThemeVars } from "@/lib/utils";
+import { can } from "@/lib/plans";
 
 const KIND_LABEL: Record<string, string> = {
   physical: "Physical product",
@@ -212,15 +213,17 @@ export default async function ProductPage({
           <ReviewForm productId={product.id} />
         </section>
 
-        <footer className="mt-14 text-center">
-          <Link
-            href="/"
-            className="text-muted inline-flex items-center gap-1.5 text-xs transition hover:opacity-70"
-          >
-            <Store className="size-3.5" />
-            Powered by <span className="font-semibold">Shopik</span>
-          </Link>
-        </footer>
+        {!can(shop, "removeBadge") ? (
+          <footer className="mt-14 text-center">
+            <Link
+              href="/"
+              className="text-muted inline-flex items-center gap-1.5 text-xs transition hover:opacity-70"
+            >
+              <Store className="size-3.5" />
+              Powered by <span className="font-semibold">Shopik</span>
+            </Link>
+          </footer>
+        ) : null}
       </div>
     </div>
   );

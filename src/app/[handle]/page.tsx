@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Gift, MapPin, PackageOpen, Store } from "lucide-react";
 import { formatPercent } from "@/lib/pricing";
+import { can } from "@/lib/plans";
 import { Suspense } from "react";
 import {
   getCheckoutOptions,
@@ -54,6 +55,9 @@ export default async function ShopPage({
   ]);
 
   const layout = shop.layout === "list" ? "list" : "grid";
+  // A downgrade must switch the programme off publicly, not just in admin.
+  const affiliatesLive = shop.affiliatesEnabled && can(shop, "affiliates");
+  const showBadge = !can(shop, "removeBadge");
   const hasFilters = Boolean(
     filters.q || filters.category || filters.kind || filters.min || filters.max,
   );
@@ -65,7 +69,7 @@ export default async function ShopPage({
       className="min-h-screen"
     >
       <VisitTracker shopId={shop.id} />
-      {shop.affiliatesEnabled ? (
+      {affiliatesLive ? (
         <Suspense fallback={null}>
           <ReferralCapture shopId={shop.id} />
         </Suspense>
@@ -164,7 +168,7 @@ export default async function ShopPage({
         </main>
 
         <footer className="mt-14 flex flex-col items-center gap-3 text-center">
-          {shop.affiliatesEnabled ? (
+          {affiliatesLive ? (
             <Link
               href={`/${shop.handle}/affiliate`}
               className="surface-card inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition hover:opacity-70"
@@ -173,13 +177,15 @@ export default async function ShopPage({
               Earn {formatPercent(shop.affiliateDefaultBp)}% by sharing this shop
             </Link>
           ) : null}
-          <Link
-            href="/"
-            className="text-muted inline-flex items-center gap-1.5 text-xs transition hover:opacity-70"
-          >
-            <Store className="size-3.5" />
-            Powered by <span className="font-semibold">Shopik</span>
-          </Link>
+          {showBadge ? (
+            <Link
+              href="/"
+              className="text-muted inline-flex items-center gap-1.5 text-xs transition hover:opacity-70"
+            >
+              <Store className="size-3.5" />
+              Powered by <span className="font-semibold">Shopik</span>
+            </Link>
+          ) : null}
         </footer>
       </div>
     </div>

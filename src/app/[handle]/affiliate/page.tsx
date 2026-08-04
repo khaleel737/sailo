@@ -6,6 +6,7 @@ import { getShopByHandle } from "@/lib/queries";
 import { AffiliateSignupForm } from "@/components/shop/affiliate-signup-form";
 import { formatPercent } from "@/lib/pricing";
 import { shopThemeVars } from "@/lib/utils";
+import { can } from "@/lib/plans";
 
 export async function generateMetadata({
   params,
@@ -25,7 +26,8 @@ export default async function AffiliatePage({
 }: PageProps<"/[handle]/affiliate">) {
   const { handle } = await params;
   const shop = await getShopByHandle(handle);
-  if (!shop || !shop.isPublished || !shop.affiliatesEnabled) notFound();
+  if (!shop || !shop.isPublished) notFound();
+  if (!shop.affiliatesEnabled || !can(shop, "affiliates")) notFound();
 
   const percent = formatPercent(shop.affiliateDefaultBp);
 

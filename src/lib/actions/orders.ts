@@ -49,6 +49,7 @@ import {
   type Totals,
 } from "@/lib/pricing";
 import { createInvoiceForOrder } from "@/lib/invoices";
+import { can } from "@/lib/plans";
 
 // A "use server" module may only export async functions, so this stays local.
 const ORDER_STATUSES = new Set([
@@ -268,8 +269,11 @@ export async function createOrderIntent(
 
   /* ---- Affiliate ------------------------------------------------------ */
 
+  // Commission only accrues while the shop is actually entitled to it.
+  const affiliatesLive = shop.affiliatesEnabled && can(shop, "affiliates");
+
   let affiliate: Affiliate | null = null;
-  if (shop.affiliatesEnabled && input.affiliateCode?.trim()) {
+  if (affiliatesLive && input.affiliateCode?.trim()) {
     const found = await db.query.affiliates.findFirst({
       where: and(
         eq(affiliates.shopId, shop.id),
@@ -412,7 +416,7 @@ export async function createOrderIntent(
 
   // Buyers who leave an email can be offered their own referral link.
   const referral =
-    shop.affiliatesEnabled && email
+    affiliatesLive && email
       ? await referralFor(shop, name, email, base)
       : null;
 

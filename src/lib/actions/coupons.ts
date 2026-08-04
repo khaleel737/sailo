@@ -7,6 +7,7 @@ import { coupons } from "@/db/schema";
 import { requireShop } from "@/lib/session";
 import { normalizeCode, percentToBp } from "@/lib/pricing";
 import { parseMoneyToCents } from "@/lib/utils";
+import { can, upgradeMessage } from "@/lib/plans";
 import type { ActionState } from "./shop";
 
 export async function saveCoupon(
@@ -15,6 +16,10 @@ export async function saveCoupon(
 ): Promise<ActionState> {
   const { shop } = await requireShop();
   const db = getDb();
+
+  if (!can(shop, "coupons")) {
+    return { ok: false, error: upgradeMessage("coupons", "Discount codes") };
+  }
 
   const id = String(formData.get("id") ?? "").trim() || null;
   const code = normalizeCode(String(formData.get("code") ?? ""));

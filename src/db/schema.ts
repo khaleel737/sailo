@@ -117,6 +117,16 @@ export const shops = pgTable(
       .notNull(),
     affiliateTerms: text("affiliate_terms"),
 
+    // Billing — see lib/plans.ts for what each tier unlocks
+    plan: text("plan").default("free").notNull(), // free | pro | business
+    stripeCustomerId: text("stripe_customer_id"),
+    stripeSubscriptionId: text("stripe_subscription_id"),
+    /** Stripe's status verbatim: active, trialing, past_due, canceled… */
+    subscriptionStatus: text("subscription_status"),
+    subscriptionInterval: text("subscription_interval"), // month | year
+    currentPeriodEnd: timestamp("current_period_end"),
+    cancelAtPeriodEnd: boolean("cancel_at_period_end").default(false).notNull(),
+
     // Invoicing
     invoicePrefix: text("invoice_prefix").default("INV").notNull(),
     invoiceNextNumber: integer("invoice_next_number").default(1).notNull(),
@@ -133,7 +143,23 @@ export const shops = pgTable(
   (t) => [
     uniqueIndex("shops_handle_key").on(t.handle),
     uniqueIndex("shops_user_id_key").on(t.userId),
+    index("shops_stripe_customer_idx").on(t.stripeCustomerId),
+    index("shops_stripe_subscription_idx").on(t.stripeSubscriptionId),
   ],
+);
+
+/**
+ * Every Stripe event we've processed. The webhook is at-least-once, so this
+ * makes replays a no-op instead of double-applying a plan change.
+ */
+export const stripeEvents = pgTable(
+  "stripe_events",
+  {
+    id: text("id").primaryKey(), // Stripe's event id
+    type: text("type").notNull(),
+    processedAt: timestamp("processed_at").defaultNow().notNull(),
+  },
+  (t) => [index("stripe_events_type_idx").on(t.type)],
 );
 
 export const categories = pgTable(

@@ -19,6 +19,7 @@ import {
   Tags,
   Truck,
   Users,
+  Wallet,
   X,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
@@ -35,6 +36,7 @@ const NAV = [
   { href: "/admin/affiliates", label: "Affiliates", icon: Gift },
   { href: "/admin/payments", label: "Payments", icon: CreditCard },
   { href: "/admin/delivery", label: "Delivery", icon: Truck },
+  { href: "/admin/billing", label: "Billing", icon: Wallet },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 

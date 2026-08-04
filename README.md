@@ -64,7 +64,26 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 # Email (optional — order, shipping and refund notifications)
 RESEND_API_KEY=
 SHOPIK_FROM_EMAIL="Shopik <orders@yourdomain.com>"
+
+# Billing (optional — subscriptions)
+STRIPE_SECRET_KEY=
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+STRIPE_WEBHOOK_SECRET=
+STRIPE_PRICE_PRO_MONTHLY=
+STRIPE_PRICE_PRO_YEARLY=
+STRIPE_PRICE_BUSINESS_MONTHLY=
+STRIPE_PRICE_BUSINESS_YEARLY=
 ```
+
+Run `npx dotenv -e .env.local -- npx tsx scripts/stripe-setup.ts` to create the
+products and prices in Stripe and print the price ids. For local webhooks:
+
+```bash
+stripe listen --forward-to localhost:3000/api/stripe/webhook
+```
+
+Without `STRIPE_SECRET_KEY` every shop stays on Free and the billing page says
+so, rather than breaking.
 
 Without `RESEND_API_KEY` the app runs fine and simply skips emails — a failed or
 unconfigured send is logged and never blocks an order. The from-address domain
@@ -195,6 +214,31 @@ blanks an address already on file.
 
 `visits` holds pageview analytics. BetterAuth owns `user`, `session`, `account`
 and `verification`.
+
+## Plans
+
+| | Free | Pro — $9.99/mo | Business — $29.99/mo |
+|---|---|---|---|
+| Products | 20 | 250 | Unlimited |
+| Chat ordering + bank transfer + COD | ✓ | ✓ | ✓ |
+| Delivery, reviews, filters, invoices | ✓ | ✓ | ✓ |
+| Card payments (seller's own gateway) | — | ✓ | ✓ |
+| Shopik fee on card payments | — | 2% | **0%** |
+| Coupons and referrals | — | ✓ | ✓ |
+| Shopik badge removed | — | ✓ | ✓ |
+| Custom domain | — | — | ✓ |
+| Analytics window | 30 days | 1 year | 3 years |
+
+Yearly billing is ~20% off. Business pays for itself against Pro at roughly
+$1,000/month in card sales — the 2% saved covers the $20 difference.
+
+Entitlements live in `lib/plans.ts` and are enforced **inside server actions**,
+not just hidden in the UI. Downgrading never deletes anything: existing products,
+coupons and affiliates keep working, you simply can't create more.
+
+`past_due` deliberately keeps paid features — Stripe retries a failed renewal for
+days, and taking a shop offline mid-sale over a card blip is worse than carrying
+the risk.
 
 ## Not built yet
 
