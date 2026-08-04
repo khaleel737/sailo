@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, eq, gte, isNull, isNotNull, or, sql } from "drizzle-orm";
+import { and, asc, eq, gte, isNull, isNotNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
   orderItems,
@@ -198,4 +198,58 @@ export async function retakeStock(order: Order): Promise<boolean> {
 /** Statuses where the units are no longer going anywhere. */
 export function isStockReleasingStatus(status: string) {
   return status === "cancelled" || status === "refunded";
+}
+
+/**
+ * Gives back stock held by checkouts that were never paid for.
+ *
+ * Units come off the shelf when the order is written, before the money
+ * arrives — otherwise two buyers racing for the last one can both be told yes.
+ * The cost is that a buyer who opens a card checkout and wanders off is still
+ * holding those units.
+ *
+ * `checkout.session.expired` normally hands them back, but that is a webhook,
+ * and a webhook is a promise someone else keeps. An endpoint that was down for
+ * an hour, a delivery Stripe gave up retrying, a session created while the app
+ * was mid-deploy — any of those leaves stock reserved for a sale that will
+ * never happen, with nothing to notice.
+ *
+ * So this sweeps rather than trusts. It is deliberately idempotent:
+ * `restoreStock` claims `restockedAt` in the same statement it reads, so an
+ * order that a webhook already handled is skipped rather than restocked twice.
+ */
+export async function releaseAbandonedCheckouts(opts?: {
+  /** How long a buyer gets to pay. Stripe expires its own sessions at 24h. */
+  olderThanMinutes?: number;
+  shopId?: string;
+}): Promise<{ swept: number; orderIds: string[] }> {
+  const db = getDb();
+  const cutoff = new Date(
+    Date.now() - (opts?.olderThanMinutes ?? 24 * 60) * 60 * 1000,
+  );
+
+  const stale = await db.query.orders.findMany({
+    where: and(
+      eq(orders.paymentStatus, "unpaid"),
+      isNotNull(orders.stripeSessionId),
+      isNull(orders.restockedAt),
+      lt(orders.createdAt, cutoff),
+      ...(opts?.shopId ? [eq(orders.shopId, opts.shopId)] : []),
+    ),
+    limit: 200,
+  });
+
+  const orderIds: string[] = [];
+  for (const order of stale) {
+    // Cancelled first: if restocking fails halfway the order still reads as
+    // dead, which is the safer of the two wrong states.
+    await db
+      .update(orders)
+      .set({ status: "cancelled", updatedAt: new Date() })
+      .where(eq(orders.id, order.id));
+
+    if (await restoreStock(order)) orderIds.push(order.id);
+  }
+
+  return { swept: orderIds.length, orderIds };
 }

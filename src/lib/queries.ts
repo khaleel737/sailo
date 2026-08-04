@@ -15,6 +15,7 @@ import {
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { getDb } from "@/db";
 import { can } from "@/lib/plans";
+import { orderLines, orderLinesMap } from "@/lib/order-lines";
 import { isRailUsable } from "@/lib/payments";
 import {
   affiliates,
@@ -23,7 +24,6 @@ import {
   coupons,
   deliveryMethods,
   invoices,
-  orderItems,
   orders,
   paymentMethods,
   productFiles,
@@ -37,7 +37,6 @@ import {
   type Category,
   type Client,
   type Order,
-  type OrderItem,
   type Product,
   type ProductImage,
   type ProductVariant,
@@ -447,61 +446,19 @@ export async function getVisitBreakdown(shopId: string, days = 30, limit = 6) {
 export type VisitBreakdown = Awaited<ReturnType<typeof getVisitBreakdown>>;
 
 /**
- * An order's lines, newest schema first. Orders written before carts existed
- * have no rows, so the header stands in as a single line — every reader can
- * then treat every order as a list.
+ * An order's lines. Delegates to `order-lines`, which is the only module
+ * allowed to decide what an order contains — see the note there on why the
+ * header columns are not a second source of truth.
  */
-export async function getOrderItems(order: Order): Promise<OrderItem[]> {
-  const rows = await getDb().query.orderItems.findMany({
-    where: eq(orderItems.orderId, order.id),
-    orderBy: [asc(orderItems.position)],
-  });
-  return rows.length > 0 ? rows : [headerAsItem(order)];
+export async function getOrderItems(order: Order) {
+  return orderLines(order);
 }
 
 /** The same, for a list of orders, in one query rather than one each. */
 export async function getOrderItemsMap(orders: Order[]) {
-  const map = new Map<string, OrderItem[]>();
-  if (orders.length === 0) return map;
-
-  const rows = await getDb()
-    .select()
-    .from(orderItems)
-    .where(inArray(orderItems.orderId, orders.map((o) => o.id)))
-    .orderBy(asc(orderItems.position));
-
-  for (const row of rows) {
-    const list = map.get(row.orderId) ?? [];
-    list.push(row);
-    map.set(row.orderId, list);
-  }
-  for (const order of orders) {
-    if (!map.has(order.id)) map.set(order.id, [headerAsItem(order)]);
-  }
-  return map;
+  return orderLinesMap(orders);
 }
 
-function headerAsItem(order: Order): OrderItem {
-  return {
-    id: `${order.id}-legacy`,
-    orderId: order.id,
-    productId: order.productId,
-    variantId: order.variantId,
-    title: order.productTitle,
-    variantLabel: order.variantLabel,
-    sku: order.variantSku,
-    kind: order.productKind,
-    imageUrl: null,
-    unitPriceCents: order.unitPriceCents,
-    quantity: order.quantity,
-    subtotalCents: order.unitPriceCents * order.quantity,
-    scheduledFor: order.scheduledFor,
-    serviceMode: order.serviceMode,
-    serviceLocation: order.serviceLocation,
-    position: 0,
-    createdAt: order.createdAt,
-  };
-}
 
 export async function getShopOrders(shopId: string, limit = 100) {
   return getDb().query.orders.findMany({

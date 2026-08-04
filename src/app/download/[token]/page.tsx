@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { orderSummaryTitle } from "@/lib/order-lines";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Clock, Download, FileDown, Lock, Store } from "lucide-react";
@@ -45,8 +46,7 @@ export default async function DownloadPage({
           {t.download.title}
         </h1>
         <p className="text-muted mt-1 text-sm">
-          {order.productTitle}
-          {order.variantLabel ? ` — ${order.variantLabel}` : ""}
+          {orderSummaryTitle(order)}
         </p>
 
         {state.open ? (

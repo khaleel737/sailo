@@ -1,8 +1,9 @@
 import "server-only";
 import type Stripe from "stripe";
-import { asc, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
-import { orderItems, shops, type Order, type Shop } from "@/db/schema";
+import { shops, type Order, type Shop } from "@/db/schema";
+import { lineTitle, orderLines, orderSummaryTitle } from "@/lib/order-lines";
 import { appUrl, stripe } from "@/lib/stripe";
 
 /**
@@ -160,10 +161,10 @@ export async function createCheckoutSession(opts: {
   shop: Shop;
   order: Order;
   /**
-   * The basket, so Stripe's receipt itemises what was bought. Optional only as
-   * an optimisation — omit it and the lines are read from the order.
+   * Every line. Required: the order's header columns describe one line, and
+   * charging from them billed a four-line basket for its first item.
    */
-  items?: { name: string; unitPriceCents: number; quantity: number }[];
+  items: { name: string; unitPriceCents: number; quantity: number }[];
   /** Where to send the buyer afterwards. */
   successUrl: string;
   cancelUrl: string;
@@ -183,34 +184,16 @@ export async function createCheckoutSession(opts: {
    * drops the rest — a four-line order came out $62 short before this read
    * the item rows.
    */
-  const goods =
-    opts.items?.length
-      ? opts.items
-      : await (async () => {
-          const rows = await getDb().query.orderItems.findMany({
-            where: eq(orderItems.orderId, order.id),
-            orderBy: [asc(orderItems.position)],
-          });
-
-          if (rows.length > 0) {
-            return rows.map((r) => ({
-              name: r.variantLabel ? `${r.title} — ${r.variantLabel}` : r.title,
-              unitPriceCents: r.unitPriceCents,
-              quantity: r.quantity,
-            }));
-          }
-
-          // Genuinely single-line: an order written before carts existed.
-          return [
-            {
-              name: order.variantLabel
-                ? `${order.productTitle} — ${order.variantLabel}`
-                : order.productTitle,
-              unitPriceCents: order.unitPriceCents,
-              quantity: order.quantity,
-            },
-          ];
-        })();
+  // The basket, always from the order's own lines. `items` is a hand-off from
+  // a caller that already priced them; the accessor is the same source either
+  // way, so there is no path here that prices from the single-item header.
+  const goods = opts.items.length
+    ? opts.items
+    : (await orderLines(order)).map((l) => ({
+        name: lineTitle(l),
+        unitPriceCents: l.unitPriceCents,
+        quantity: l.quantity,
+      }));
 
   // Whatever the source, Stripe must ask for exactly what the order says.
   const goodsTotal = goods.reduce(
@@ -296,7 +279,7 @@ export async function createCheckoutSession(opts: {
       metadata: { orderId: order.id, shopId: shop.id },
       payment_intent_data: {
         metadata: { orderId: order.id, shopId: shop.id },
-        description: `${shop.name} — ${order.productTitle}`,
+        description: `${shop.name} — ${orderSummaryTitle(order)}`,
       },
       // Adaptive Pricing would let the buyer pay a converted amount in their
       // own currency. The shop picked its currency, the order row records it,

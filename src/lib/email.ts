@@ -1,6 +1,7 @@
 import "server-only";
 import { Resend } from "resend";
-import type { Order, OrderItem, Shop } from "@/db/schema";
+import type { Order, Shop } from "@/db/schema";
+import { orderSummaryTitle, type OrderLine } from "@/lib/order-lines";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatAddress, formatMoney } from "@/lib/utils";
 
@@ -113,8 +114,12 @@ function button(href: string, label: string) {
 export async function sendOrderConfirmation(opts: {
   shop: Shop;
   order: Order;
-  /** Every line, so a basket doesn't arrive named after its first item. */
-  items?: OrderItem[];
+  /**
+   * Every line. Required, not optional: an optional list with a header
+   * fallback is how a two-line order came to be emailed as one line at the
+   * wrong price.
+   */
+  items: OrderLine[];
   invoiceUrl: string | null;
   invoiceNumber: string | null;
   /** Set once a digital order's files are already unlocked. */
@@ -137,19 +142,7 @@ export async function sendOrderConfirmation(opts: {
     <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">
       Thanks${order.customerName ? ` ${esc(order.customerName)}` : ""} — ${esc(shop.name)} has your order.
     </p>
-    ${(
-      opts.items?.length
-        ? opts.items
-        : [
-            {
-              title: order.productTitle,
-              variantLabel: order.variantLabel,
-              quantity: order.quantity,
-              subtotalCents: order.unitPriceCents * order.quantity,
-              scheduledFor: order.scheduledFor,
-            },
-          ]
-    )
+    ${opts.items
       .map(
         (item) => `<p style="margin:0 0 4px;font-size:15px;font-weight:600;">
       ${esc(item.title)}${item.variantLabel ? ` — ${esc(item.variantLabel)}` : ""}${item.quantity > 1 ? ` × ${item.quantity}` : ""}
@@ -230,7 +223,7 @@ export async function sendDownloadReady(opts: {
       Your download is ready.
     </p>
     <p style="margin:0;font-size:15px;font-weight:600;">
-      ${esc(order.productTitle)}${order.variantLabel ? ` — ${esc(order.variantLabel)}` : ""}
+      ${esc(orderSummaryTitle(order))}
     </p>
     ${button(url, "Get your files")}
     ${
@@ -265,7 +258,7 @@ export async function sendShippingNotification(opts: {
       Your order is on its way.
     </p>
     <p style="margin:0;font-size:15px;font-weight:600;">
-      ${esc(order.productTitle)}${order.quantity > 1 ? ` × ${order.quantity}` : ""}
+      ${esc(orderSummaryTitle(order))}
     </p>
     <div style="margin-top:16px;">
       ${order.trackingCarrier ? detail("Carrier", order.trackingCarrier) : ""}
@@ -297,7 +290,7 @@ export async function sendRefundNotification(opts: {
       for your order.
     </p>
     <p style="margin:0;font-size:15px;font-weight:600;">
-      ${esc(order.productTitle)}${order.quantity > 1 ? ` × ${order.quantity}` : ""}
+      ${esc(orderSummaryTitle(order))}
     </p>
     ${
       order.refundReason

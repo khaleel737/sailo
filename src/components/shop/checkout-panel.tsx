@@ -226,9 +226,8 @@ export function CheckoutPanel({
 
   const def = PAYMENT_METHOD_DEFS[method];
   const rail = railCopy(method, t);
-  const isManual = def.kind === "manual";
-  // Card needs an email for the receipt; the field stops being optional.
-  const needsEmail = def.kind === "electronic";
+  const needsContact = Boolean(def.requires.contact);
+  const needsEmail = Boolean(def.requires.email);
   const selectedDelivery = deliveryOptions.find((d) => d.id === deliveryId);
   // The server decides both of these: a basket of downloads isn't shipped, and
   // a collection order has nowhere to deliver to.
@@ -444,7 +443,7 @@ export function CheckoutPanel({
                   // A card receipt has nowhere to go without one.
                   required={needsEmail}
                   placeholder={
-                    isManual || needsEmail
+                    needsContact || needsEmail
                       ? t.checkout.email
                       : t.checkout.emailOptional
                   }
@@ -454,12 +453,12 @@ export function CheckoutPanel({
                 <input
                   name="customerPhone"
                   type="tel"
-                  placeholder={isManual ? t.checkout.phone : t.checkout.phoneOptional}
+                  placeholder={needsContact ? t.checkout.phone : t.checkout.phoneOptional}
                   autoComplete="tel"
                   className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                 />
               </div>
-              {isManual ? (
+              {needsContact ? (
                 <p className="text-muted text-xs">
                   {interpolate(t.checkout.contactHint, { shop: shopName })}
                 </p>

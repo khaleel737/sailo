@@ -1,6 +1,7 @@
 import "server-only";
 import PDFDocument from "pdfkit";
-import type { Invoice, Order, OrderItem, Shop } from "@/db/schema";
+import type { Invoice, Order, Shop } from "@/db/schema";
+import type { OrderLine } from "@/lib/order-lines";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatPercent } from "@/lib/pricing";
 import { formatAddress, formatMoney } from "@/lib/utils";
@@ -27,7 +28,7 @@ export function renderInvoicePdf(data: {
   order: Order;
   invoice: Invoice;
   /** Every line of the order, in the seller's order. */
-  items: OrderItem[];
+  items: OrderLine[];
 }): Promise<Buffer> {
   const { shop, order, invoice, items } = data;
 

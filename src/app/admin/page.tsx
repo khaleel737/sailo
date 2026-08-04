@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { orderSummaryTitle } from "@/lib/order-lines";
 import Link from "next/link";
 import { ArrowRight, Eye, ShoppingBag, Users, Wallet } from "lucide-react";
 import { requireShop } from "@/lib/session";
@@ -210,8 +211,8 @@ export default async function AdminOverviewPage({
               >
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">
-                    {order.productTitle}
-                    {order.quantity > 1 ? (
+                    {orderSummaryTitle(order)}
+                    {order.itemCount === 1 && order.quantity > 1 ? (
                       <span className="text-ink-400"> ×{order.quantity}</span>
                     ) : null}
                   </p>

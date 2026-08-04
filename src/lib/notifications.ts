@@ -1,4 +1,5 @@
 import "server-only";
+import { orderSummaryTitle } from "@/lib/order-lines";
 import { and, desc, eq, gt, isNull, or } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, orders, reviews } from "@/db/schema";
@@ -60,7 +61,7 @@ export async function getNotifications(
         body: interpolate(t.notifications.paymentBody, {
           name: order.customerName ?? t.notifications.aBuyer,
           amount: formatMoney(order.totalCents, order.currency),
-          product: order.productTitle,
+          product: orderSummaryTitle(order),
         }),
         href: "/admin/orders",
         at: order.updatedAt,
@@ -72,7 +73,7 @@ export async function getNotifications(
         title: t.notifications.newOrder,
         // The variant matters to whoever has to pick the order off a shelf,
         // and a basket has to say it's a basket.
-        body: `${order.productTitle}${order.variantLabel ? ` (${order.variantLabel})` : ""}${
+        body: `${orderSummaryTitle(order)}${
           order.itemCount > 1
             ? ` + ${order.itemCount - 1} more`
             : order.quantity > 1
@@ -148,7 +149,7 @@ export async function getNotifications(
       kind: "shipment",
       title: t.notifications.readyToShip,
       body: interpolate(t.notifications.shipBody, {
-        product: order.productTitle,
+        product: orderSummaryTitle(order),
         name: order.customerName ?? t.notifications.aBuyer,
       }),
       href: "/admin/orders",

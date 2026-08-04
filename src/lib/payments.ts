@@ -39,6 +39,21 @@ export type ConfigField = {
 export type PaymentMethodDef = {
   type: PaymentMethodType;
   kind: RailKind;
+  /**
+   * What the rail needs and does, stated once here rather than re-derived from
+   * `kind` at each call site. Every place that asked "is this kind manual?"
+   * had to know what that implied, and they didn't all agree — card needed an
+   * email for its receipt and nothing asked for one until Stripe refused the
+   * payment.
+   */
+  requires: {
+    /** The buyer must leave an email — a receipt has nowhere else to go. */
+    email?: boolean;
+    /** An email or a phone will do; the seller just has to reach them. */
+    contact?: boolean;
+  };
+  /** True when payment confirms itself and the seller never marks it paid. */
+  settlesItself: boolean;
   name: string;
   /** Button text on the public shop. */
   action: string;
@@ -49,6 +64,8 @@ export type PaymentMethodDef = {
 export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = {
   card: {
     type: "card",
+    requires: { email: true },
+    settlesItself: true,
     kind: "electronic",
     name: "Card",
     action: "Pay by card",
@@ -60,6 +77,8 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
   },
   whatsapp: {
     type: "whatsapp",
+    requires: {},
+    settlesItself: false,
     kind: "contact",
     name: "WhatsApp",
     action: "Order on WhatsApp",
@@ -77,6 +96,8 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
   },
   telegram: {
     type: "telegram",
+    requires: {},
+    settlesItself: false,
     kind: "contact",
     name: "Telegram",
     action: "Order on Telegram",
@@ -93,6 +114,8 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
   },
   instagram: {
     type: "instagram",
+    requires: {},
+    settlesItself: false,
     kind: "contact",
     name: "Instagram DM",
     action: "Order via Instagram",
@@ -110,6 +133,8 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
   },
   email: {
     type: "email",
+    requires: {},
+    settlesItself: false,
     kind: "contact",
     name: "Email",
     action: "Order by email",
@@ -125,6 +150,8 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
   },
   phone: {
     type: "phone",
+    requires: {},
+    settlesItself: false,
     kind: "contact",
     name: "Phone call",
     action: "Call to order",
@@ -140,6 +167,8 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
   },
   bank_transfer: {
     type: "bank_transfer",
+    requires: { contact: true },
+    settlesItself: false,
     kind: "manual",
     name: "Bank transfer",
     action: "Pay by bank transfer",
@@ -170,6 +199,8 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
   },
   cod: {
     type: "cod",
+    requires: { contact: true },
+    settlesItself: false,
     kind: "manual",
     name: "Cash on delivery",
     action: "Pay on delivery",
