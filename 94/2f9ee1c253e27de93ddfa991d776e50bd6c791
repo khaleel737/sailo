@@ -1,0 +1,53 @@
+.gitignore
+  s_3dd4b357265b83::t_195b7531f28594 1-41
+AGENTS.md
+  s_3dd4b357265b83::t_8c49d755ff2511 1-9
+CLAUDE.md
+  s_3dd4b357265b83::t_478d6b8d5ae8b7 1
+README.md
+  s_3dd4b357265b83::t_e27956637714fd 1-36
+eslint.config.mjs
+  s_3dd4b357265b83::t_84f09bfa26b353 1-18
+next.config.ts
+  s_3dd4b357265b83::t_a3d6d29ffae708 1-7
+package-lock.json
+  s_3dd4b357265b83::t_b031d5a2c1005f 1-6781
+package.json
+  s_3dd4b357265b83::t_70ab555e8e6820 1-26
+postcss.config.mjs
+  s_3dd4b357265b83::t_9463c7b275de7c 1-7
+public/file.svg
+  s_3dd4b357265b83::t_21e737de5c7926 1
+public/globe.svg
+  s_3dd4b357265b83::t_cf384ac2aa96f9 1
+public/next.svg
+  s_3dd4b357265b83::t_393ab0983ee4ae 1
+public/vercel.svg
+  s_3dd4b357265b83::t_53d9077b54235a 1
+public/window.svg
+  s_3dd4b357265b83::t_8e6d7b1dfbecde 1
+src/app/globals.css
+  s_3dd4b357265b83::t_021cace28f1e6b 1-26
+src/app/layout.tsx
+  s_3dd4b357265b83::t_56c28729db6006 1-29
+src/app/page.tsx
+  s_3dd4b357265b83::t_036856f5d28b85 1-69
+tsconfig.json
+  s_3dd4b357265b83::t_f29c39568e6a56 1-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "942f9ee1c253e27de93ddfa991d776e50bd6c791",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
