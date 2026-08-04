@@ -1,11 +1,13 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 import { createShop } from "@/lib/actions/shop";
 import { Alert, Button, Field, Input, Select, Textarea } from "@/components/ui";
-import { CURRENCIES, normalizeHandle, slugify } from "@/lib/utils";
+import { HandleField } from "@/components/admin/handle-field";
+import { CURRENCIES, slugify } from "@/lib/utils";
+import { normalizeHandle } from "@/lib/handle";
 
 function Submit() {
   const { pending } = useFormStatus();
@@ -19,28 +21,12 @@ function Submit() {
 
 export function OnboardingForm({ defaultName }: { defaultName: string }) {
   const [state, action] = useActionState(createShop, { ok: false });
-  const [handle, setHandle] = useState(() => normalizeHandle(slugify(defaultName)));
 
   return (
     <form action={action} className="space-y-4">
       {state.error ? <Alert>{state.error}</Alert> : null}
 
-      <Field label="Your Shopik link" htmlFor="handle">
-        <div className="flex items-center rounded-xl border border-ink-200 bg-white transition focus-within:border-ink-900 focus-within:ring-2 focus-within:ring-ink-900/10">
-          <span className="pl-3 text-sm text-ink-400">shopik.to/</span>
-          <input
-            id="handle"
-            name="handle"
-            required
-            minLength={3}
-            maxLength={32}
-            value={handle}
-            onChange={(e) => setHandle(normalizeHandle(e.target.value))}
-            className="h-10 flex-1 rounded-r-xl bg-transparent pl-0.5 pr-3 text-sm font-medium text-ink-900 focus:outline-none"
-            placeholder="yourshop"
-          />
-        </div>
-      </Field>
+      <HandleField defaultValue={normalizeHandle(slugify(defaultName))} autoFocus />
 
       <Field label="Shop name" htmlFor="name">
         <Input

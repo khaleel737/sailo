@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { updateShop } from "@/lib/actions/shop";
 import { ImageUploader } from "./image-uploader";
+import { HandleField } from "./handle-field";
 import {
   Alert,
   Button,
@@ -18,7 +19,6 @@ import {
 import {
   CURRENCIES,
   SOCIAL_PLATFORMS,
-  normalizeHandle,
 } from "@/lib/utils";
 import type { Shop } from "@/db/schema";
 
@@ -46,7 +46,6 @@ function Submit() {
 
 export function SettingsForm({ shop }: { shop: Shop }) {
   const [state, action] = useActionState(updateShop, { ok: false });
-  const [handle, setHandle] = useState(shop.handle);
   const [accent, setAccent] = useState(shop.accentColor);
 
   const socialByPlatform = new Map(shop.socials.map((s) => [s.platform, s.url]));
@@ -61,21 +60,12 @@ export function SettingsForm({ shop }: { shop: Shop }) {
       <Card className="space-y-4 p-5">
         <h2 className="text-sm font-semibold">Identity</h2>
 
-        <Field label="Shop link" htmlFor="handle">
-          <div className="flex items-center rounded-xl border border-ink-200 bg-white transition focus-within:border-ink-900 focus-within:ring-2 focus-within:ring-ink-900/10">
-            <span className="pl-3 text-sm text-ink-400">/</span>
-            <input
-              id="handle"
-              name="handle"
-              required
-              minLength={3}
-              maxLength={32}
-              value={handle}
-              onChange={(e) => setHandle(normalizeHandle(e.target.value))}
-              className="h-10 flex-1 rounded-r-xl bg-transparent pr-3 text-sm font-medium text-ink-900 focus:outline-none"
-            />
-          </div>
-        </Field>
+        <HandleField
+          label="Shop link"
+          prefix="/"
+          defaultValue={shop.handle}
+          currentHandle={shop.handle}
+        />
 
         <Field label="Shop name" htmlFor="name">
           <Input id="name" name="name" required defaultValue={shop.name} />

@@ -18,15 +18,6 @@ export function slugify(input: string) {
   return base || `item-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-/** Handles are what live at shopik.com/<handle> — stricter than a slug. */
-export function normalizeHandle(input: string) {
-  return input
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9_-]/g, "")
-    .slice(0, 32);
-}
-
 export function formatMoney(cents: number, currency = "USD") {
   try {
     return new Intl.NumberFormat("en-US", {

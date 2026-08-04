@@ -6,18 +6,15 @@ import { and, eq, ne } from "drizzle-orm";
 import { getDb } from "@/db";
 import { paymentMethods, shops, type ShopSocial } from "@/db/schema";
 import { requireShop, requireUser } from "@/lib/session";
-import { normalizeHandle, normalizePhone, SOCIAL_PLATFORMS } from "@/lib/utils";
+import { normalizePhone, SOCIAL_PLATFORMS } from "@/lib/utils";
+import {
+  HANDLE_MESSAGES,
+  normalizeHandle,
+  suggestHandles,
+  validateHandleFormat,
+} from "@/lib/handle";
 
 export type ActionState = { ok: boolean; error?: string; message?: string };
-
-/** Routes that would collide with a shop handle. */
-const RESERVED = new Set([
-  "admin", "api", "login", "signup", "signin", "sign-in", "sign-up",
-  "onboarding", "dashboard", "settings", "about", "pricing", "help",
-  "terms", "privacy", "support", "blog", "docs", "explore", "discover",
-  "shopik", "www", "app", "static", "public", "assets", "_next", "favicon",
-  "new", "create", "edit", "delete", "account", "profile", "me",
-]);
 
 async function handleTaken(handle: string, exceptShopId?: string) {
   const existing = await getDb().query.shops.findFirst({
@@ -27,6 +24,42 @@ async function handleTaken(handle: string, exceptShopId?: string) {
     columns: { id: true },
   });
   return Boolean(existing);
+}
+
+const HANDLE_INDEX = "shops_handle_key";
+const UNIQUE_VIOLATION = "23505";
+
+/**
+ * Availability is checked before writing, but two people can pass that check
+ * at the same time. The unique index is the real guarantee — this turns the
+ * resulting violation into the same message instead of a 500.
+ *
+ * The driver puts the Postgres code and constraint on `cause`, not in the
+ * message, so this reads both plus a string fallback for other drivers.
+ */
+function isHandleCollision(error: unknown) {
+  const pgError = (error as { code?: string; constraint?: string })?.code
+    ? (error as { code?: string; constraint?: string })
+    : (error as { cause?: { code?: string; constraint?: string } })?.cause;
+
+  if (pgError?.code === UNIQUE_VIOLATION) {
+    // A shop also has a unique user_id; only the handle clash is recoverable.
+    return !pgError.constraint || pgError.constraint === HANDLE_INDEX;
+  }
+
+  const text = error instanceof Error ? error.message : String(error);
+  return text.includes(HANDLE_INDEX);
+}
+
+/** Runs format rules then the availability lookup. */
+async function checkHandleAvailability(raw: string, exceptShopId?: string) {
+  const handle = normalizeHandle(raw);
+  const problem = validateHandleFormat(raw);
+  if (problem) return { handle, problem } as const;
+  if (await handleTaken(handle, exceptShopId)) {
+    return { handle, problem: "taken" } as const;
+  }
+  return { handle, problem: null } as const;
 }
 
 function readSocials(formData: FormData): ShopSocial[] {
@@ -40,10 +73,43 @@ function readSocials(formData: FormData): ShopSocial[] {
   return socials;
 }
 
-export async function checkHandle(handle: string): Promise<boolean> {
-  const clean = normalizeHandle(handle);
-  if (clean.length < 3 || RESERVED.has(clean)) return false;
-  return !(await handleTaken(clean));
+export type HandleStatus = {
+  handle: string;
+  available: boolean;
+  message: string | null;
+  /** Free alternatives, only when the wanted one is taken. */
+  suggestions: string[];
+};
+
+/**
+ * Live availability check for the handle field. Called as the seller types, so
+ * it stays cheap: format first, one indexed lookup, and suggestions only when
+ * the handle is actually gone.
+ */
+export async function checkHandle(raw: string): Promise<HandleStatus> {
+  // No shop id parameter on purpose — a client could pass someone else's and
+  // get a misleading answer. Editing forms skip the call for their own handle.
+  const { handle, problem } = await checkHandleAvailability(raw);
+
+  if (!problem) {
+    return { handle, available: true, message: null, suggestions: [] };
+  }
+
+  let suggestions: string[] = [];
+  if (problem === "taken" || problem === "reserved") {
+    const candidates = suggestHandles(handle);
+    const free = await Promise.all(
+      candidates.map(async (c) => ((await handleTaken(c)) ? null : c)),
+    );
+    suggestions = free.filter((c): c is string => c !== null).slice(0, 3);
+  }
+
+  return {
+    handle,
+    available: false,
+    message: HANDLE_MESSAGES[problem],
+    suggestions,
+  };
 }
 
 export async function createShop(
@@ -53,16 +119,13 @@ export async function createShop(
   const user = await requireUser();
   const db = getDb();
 
-  const handle = normalizeHandle(String(formData.get("handle") ?? ""));
   const name = String(formData.get("name") ?? "").trim();
-
-  if (handle.length < 3)
-    return { ok: false, error: "Handle must be at least 3 characters." };
-  if (RESERVED.has(handle))
-    return { ok: false, error: "That handle is reserved. Try another." };
   if (!name) return { ok: false, error: "Give your shop a name." };
-  if (await handleTaken(handle))
-    return { ok: false, error: "That handle is already taken." };
+
+  const { handle, problem } = await checkHandleAvailability(
+    String(formData.get("handle") ?? ""),
+  );
+  if (problem) return { ok: false, error: HANDLE_MESSAGES[problem] };
 
   // One shop per user — if they already have one, send them to it.
   const existing = await db.query.shops.findFirst({
@@ -71,16 +134,25 @@ export async function createShop(
   });
   if (existing) redirect("/admin");
 
-  const [shop] = await db
-    .insert(shops)
-    .values({
-      userId: user.id,
-      handle,
-      name,
-      description: String(formData.get("description") ?? "").trim() || null,
-      currency: String(formData.get("currency") ?? "USD"),
-    })
-    .returning({ id: shops.id });
+  let shop: { id: string };
+  try {
+    [shop] = await db
+      .insert(shops)
+      .values({
+        userId: user.id,
+        handle,
+        name,
+        description: String(formData.get("description") ?? "").trim() || null,
+        currency: String(formData.get("currency") ?? "USD"),
+      })
+      .returning({ id: shops.id });
+  } catch (error) {
+    // Someone claimed it between the check and the insert.
+    if (isHandleCollision(error)) {
+      return { ok: false, error: HANDLE_MESSAGES.taken };
+    }
+    throw error;
+  }
 
   // A shop with no way to order is useless, so seed WhatsApp if given.
   const whatsapp = normalizePhone(String(formData.get("whatsapp") ?? ""));
@@ -103,22 +175,22 @@ export async function updateShop(
 ): Promise<ActionState> {
   const { shop } = await requireShop();
 
-  const handle = normalizeHandle(String(formData.get("handle") ?? shop.handle));
   const name = String(formData.get("name") ?? "").trim();
-
-  if (handle.length < 3)
-    return { ok: false, error: "Handle must be at least 3 characters." };
-  if (RESERVED.has(handle))
-    return { ok: false, error: "That handle is reserved. Try another." };
   if (!name) return { ok: false, error: "Shop name can't be empty." };
-  if (await handleTaken(handle, shop.id))
-    return { ok: false, error: "That handle is already taken." };
+
+  const { handle, problem } = await checkHandleAvailability(
+    String(formData.get("handle") ?? shop.handle),
+    shop.id,
+  );
+  if (problem) return { ok: false, error: HANDLE_MESSAGES[problem] };
+  const handleChanged = handle !== shop.handle;
 
   const theme = String(formData.get("theme") ?? "light");
   const layout = String(formData.get("layout") ?? "grid");
   const accent = String(formData.get("accentColor") ?? "#111111");
 
-  await getDb()
+  try {
+    await getDb()
     .update(shops)
     .set({
       handle,
@@ -138,8 +210,22 @@ export async function updateShop(
       updatedAt: new Date(),
     })
     .where(eq(shops.id, shop.id));
+  } catch (error) {
+    if (isHandleCollision(error)) {
+      return { ok: false, error: HANDLE_MESSAGES.taken };
+    }
+    throw error;
+  }
 
   revalidatePath("/admin/settings");
   revalidatePath(`/${handle}`);
-  return { ok: true, message: "Saved." };
+  // The old address stops resolving, so drop it from the cache too.
+  if (handleChanged) revalidatePath(`/${shop.handle}`);
+
+  return {
+    ok: true,
+    message: handleChanged
+      ? `Saved. Your shop now lives at /${handle}.`
+      : "Saved.",
+  };
 }
