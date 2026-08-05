@@ -1,0 +1,62 @@
+src/lib/hq/accounts.ts
+  s_3dd4b357265b83::t_56f9be1c327611 6
+  s_3dd4b357265b83::t_d40e45b53aab46 7
+  s_3dd4b357265b83::t_485dbc66ea85f7 9
+  s_3dd4b357265b83::t_d94ee414c8ac36 4-5
+  s_3dd4b357265b83::t_47604b58059e48 2,8
+  s_3dd4b357265b83::t_ffe99709233251 1,3,10-330
+src/lib/hq/exports.ts
+  s_3dd4b357265b83::t_47604b58059e48 2
+  s_3dd4b357265b83::t_ffe99709233251 1,3-107
+src/lib/hq/lists.ts
+  s_3dd4b357265b83::t_d94ee414c8ac36 6
+  s_3dd4b357265b83::t_ffe99709233251 1,3-4,8-300
+  s_3dd4b357265b83::t_47604b58059e48 2,5
+  s_3dd4b357265b83::t_485dbc66ea85f7 7
+src/lib/hq/subscriptions.ts
+  s_3dd4b357265b83::t_47604b58059e48 2
+  s_3dd4b357265b83::t_5308867252203e 6-7
+  s_3dd4b357265b83::t_ffe99709233251 1,3-5,9-77
+  s_3dd4b357265b83::t_485dbc66ea85f7 8
+src/lib/hq/pagination.ts
+  s_3dd4b357265b83::t_ffe99709233251 2-6,8,10,12-40,42-64,66-73,75-90
+  s_3dd4b357265b83::t_47604b58059e48 1
+  s_3dd4b357265b83::t_56f9be1c327611 7,9,11,41,65,74
+src/lib/hq/system.ts
+  s_3dd4b357265b83::t_8ca06a0c34253a 2
+  s_3dd4b357265b83::t_d40e45b53aab46 3
+  s_3dd4b357265b83::t_47604b58059e48 6
+  s_3dd4b357265b83::t_5308867252203e 7
+  s_3dd4b357265b83::t_ffe99709233251 1,4-5,8-173
+src/lib/hq/billing-state.ts
+  s_3dd4b357265b83::t_56f9be1c327611 7,17
+  s_3dd4b357265b83::t_485dbc66ea85f7 3
+  s_3dd4b357265b83::t_47604b58059e48 1
+  s_3dd4b357265b83::t_ffe99709233251 2,4-6,8-16,18-46
+.oxlintrc.json
+  s_3dd4b357265b83::t_27ee59817472cd 56-57
+src/lib/hq/overview.ts
+  s_3dd4b357265b83::t_47604b58059e48 2
+  s_3dd4b357265b83::t_ffe99709233251 1,3,5,9-12,14-147,200-312
+  s_3dd4b357265b83::t_d94ee414c8ac36 4,7-8
+  s_3dd4b357265b83::t_d40e45b53aab46 13
+  s_3dd4b357265b83::t_c82ae9bc01550e 6,148-199
+src/lib/hq/index.ts
+  s_3dd4b357265b83::t_ffe99709233251 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "63354a022801b008cbdea339ece77339e7820de7",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
