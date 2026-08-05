@@ -52,26 +52,22 @@ export function BioCard({
         >
           {initials}
         </span>
-        <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-1 text-sm font-semibold text-ink-900">
-            <span className="truncate">@{handle}</span>
-            <BadgeCheck className="size-3.5 shrink-0 text-sky-500" />
-          </p>
-          <dl className="mt-1.5 flex gap-3">
-            {STATS.map((stat) => (
-              <div key={stat.key} className="flex items-baseline gap-1">
-                <dt className="sr-only">{t.hero[stat.key]}</dt>
-                <dd className="tabular text-xs font-semibold text-ink-900">
-                  {stat.value}
-                </dd>
-                <span aria-hidden className="text-[10px] text-ink-500">
-                  {t.hero[stat.key]}
-                </span>
-              </div>
-            ))}
-          </dl>
-        </div>
+        <p className="flex min-w-0 flex-1 items-center gap-1 text-sm font-semibold text-ink-900">
+          <span className="truncate">@{handle}</span>
+          <BadgeCheck className="size-3.5 shrink-0 text-sky-500" />
+        </p>
       </div>
+
+      {/* Full width rather than beside the avatar: three counts and three
+          labels do not fit next to a 56px circle in every language. */}
+      <dl className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
+        {STATS.map((stat) => (
+          <div key={stat.key} className="flex items-baseline gap-1">
+            <dt className="order-2 text-[10px] text-ink-500">{t.hero[stat.key]}</dt>
+            <dd className="tabular text-xs font-semibold text-ink-900">{stat.value}</dd>
+          </div>
+        ))}
+      </dl>
 
       <p className="mt-3 text-xs font-semibold text-ink-900">{name}</p>
       <p className="mt-0.5 text-xs leading-relaxed text-ink-600">{t.hero.igBio}</p>

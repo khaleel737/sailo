@@ -8,7 +8,7 @@ import {
   getInvoiceMap,
   getOrderItemsMap,
 } from "@/lib/queries";
-import { deleteClient, updateClientNotes } from "@/lib/actions/orders";
+import { deleteClient, updateClientNotes } from "@/lib/actions/order-admin";
 import { PageHeader } from "@/components/shared/page-header";
 import { OrderRow } from "@/app/admin/_components/order-row";
 import { Button, Card, Textarea } from "@/components/ui";

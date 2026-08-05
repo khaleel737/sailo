@@ -14,11 +14,13 @@ import {
   createOrderIntent,
   previewOrder,
   submitPaymentReference,
-  type OrderIntentResult,
-  type OrderLineInput,
-  type OrderPreview,
-  type PreviewTax,
 } from "@/lib/actions/orders";
+import type {
+  OrderIntentResult,
+  OrderLineInput,
+  OrderPreview,
+  PreviewTax,
+} from "@/lib/orders/types";
 import { PAYMENT_METHOD_DEFS, type PaymentMethodType } from "@/lib/payments";
 import type { DeliveryMethodType } from "@/lib/delivery";
 import { formatPercent, type Totals } from "@/lib/pricing";

@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Loader2, RotateCcw, Truck } from "lucide-react";
-import { markOrderShipped, refundOrder } from "@/lib/actions/orders";
+import { markOrderShipped, refundOrder } from "@/lib/actions/order-admin";
 import { Alert, Button, Field, Input } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
 import type { Order } from "@/db/schema";

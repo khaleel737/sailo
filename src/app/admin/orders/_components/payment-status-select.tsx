@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { updatePaymentStatus } from "@/lib/actions/orders";
+import { updatePaymentStatus } from "@/lib/actions/order-admin";
 import { cn } from "@/lib/utils";
 
 const OPTIONS = [

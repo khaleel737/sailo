@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { Alert, Button, Field, Input } from "@/components/ui";
 import type { Dictionary } from "@/i18n";
@@ -82,8 +81,13 @@ export function AuthForm({
         />
       </Field>
 
-      <Button type="submit" size="lg" className="w-full" disabled={pending}>
-        {pending ? <Loader2 className="size-4 animate-spin" /> : null}
+      <Button
+        type="submit"
+        variant="brand"
+        size="lg"
+        className="w-full"
+        loading={pending}
+      >
         {isSignup ? t.auth.createMyShop : t.auth.signIn}
       </Button>
 
@@ -91,7 +95,7 @@ export function AuthForm({
         {isSignup ? `${t.auth.haveShop} ` : `${t.auth.newHere} `}
         <Link
           href={isSignup ? "/login" : "/signup"}
-          className="font-medium text-ink-900 underline underline-offset-4"
+          className="focus-ring rounded font-medium text-brand-700 underline underline-offset-4 hover:text-brand-800"
         >
           {isSignup ? t.auth.signIn : t.auth.createOne}
         </Link>

@@ -17,9 +17,12 @@ import type { MarketingDictionary } from "@/i18n/marketing";
 export function SiteNav({
   t,
   locale,
+  languageLabel,
 }: {
   t: MarketingDictionary;
   locale: Locale;
+  /** From the storefront dictionary, which already owns the word. */
+  languageLabel: string;
 }) {
   const links = [
     { href: "#how", label: t.nav.how },

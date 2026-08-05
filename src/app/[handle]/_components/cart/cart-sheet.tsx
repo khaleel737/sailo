@@ -13,7 +13,7 @@ import { isLowStock } from "@/lib/variants";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import { formatMoney } from "@/lib/utils";
-import type { PreviewLine } from "@/lib/actions/orders";
+import type { PreviewLine } from "@/lib/orders/types";
 
 /**
  * The basket, and checkout for all of it at once.

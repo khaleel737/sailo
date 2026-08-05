@@ -7,7 +7,7 @@ import {
   Trash2,
   Truck,
 } from "lucide-react";
-import { deleteOrder } from "@/lib/actions/orders";
+import { deleteOrder } from "@/lib/actions/order-admin";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { OrderStatusSelect } from "@/app/admin/orders/_components/order-status-select";
 import { PaymentStatusSelect } from "@/app/admin/orders/_components/payment-status-select";
