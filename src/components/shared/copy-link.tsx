@@ -39,11 +39,15 @@ export function CopyLink({
       onClick={onCopy}
       className={
         variant === "onDark"
-          ? "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-white/15 px-3 text-xs font-medium text-white transition hover:bg-white/25"
-          : "accent-bg inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-3 text-xs font-semibold transition hover:opacity-90"
+          ? "focus-ring press inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl bg-white/15 px-3.5 text-xs font-semibold text-white transition hover:bg-white/25"
+          : "accent-bg focus-ring-accent press inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl px-3.5 text-xs font-semibold transition hover:opacity-90"
       }
     >
-      {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+      {copied ? (
+        <Check className="animate-pop size-3.5" strokeWidth={3} />
+      ) : (
+        <Copy className="size-3.5" />
+      )}
       {copied ? copiedLabel : copyLabel}
     </button>
   );

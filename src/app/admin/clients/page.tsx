@@ -4,8 +4,8 @@ import { ChevronRight, MapPin, Users } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { getShopClients } from "@/lib/queries";
-import { PageHeader } from "@/components/admin/page-header";
-import { ExportButton } from "@/components/admin/export-button";
+import { PageHeader } from "@/components/shared/page-header";
+import { ExportButton } from "@/app/admin/_components/export-button";
 import { Card, EmptyState } from "@/components/ui";
 import { formatAddress, formatMoney } from "@/lib/utils";
 

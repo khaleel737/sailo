@@ -1,4 +1,4 @@
-import { SettingsNav } from "@/components/admin/settings-nav";
+import { SettingsNav } from "@/app/admin/settings/_components/settings-nav";
 import { getAdminT } from "@/i18n/server";
 
 export default async function SettingsLayout({

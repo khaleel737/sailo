@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { requireShop } from "@/lib/session";
-import { SettingsForm } from "@/components/admin/settings-form";
+import { SettingsForm } from "@/app/admin/settings/_components/settings-form";
 import { getT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Settings" };

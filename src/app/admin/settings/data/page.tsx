@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Download, Lock } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { can, cheapestPlanWith } from "@/lib/plans";
-import { ImportPanel } from "@/components/admin/import-panel";
+import { ImportPanel } from "@/app/admin/settings/data/_components/import-panel";
 import { Badge, Card } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Import & export" };

@@ -67,7 +67,7 @@ export function RangePicker({
               className={cn(
                 "rounded-lg px-2.5 py-1.5 text-sm font-medium transition",
                 active
-                  ? "bg-ink-900 text-white"
+                  ? "bg-brand-700 text-white shadow-xs"
                   : "text-ink-500 hover:text-ink-900",
               )}
             >

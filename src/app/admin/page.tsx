@@ -10,11 +10,11 @@ import {
   getVisitBreakdown,
   getVisitSeries,
 } from "@/lib/queries";
-import { BarChart } from "@/components/admin/bar-chart";
-import { TrafficPanel } from "@/components/admin/traffic-panel";
-import { RangePicker } from "@/components/admin/range-picker";
+import { BarChart } from "@/components/shared/bar-chart";
+import { TrafficPanel } from "@/app/admin/_components/traffic-panel";
+import { RangePicker } from "@/app/admin/_components/range-picker";
 import { analyticsLimit, clampAnalyticsRange, planFor } from "@/lib/plans";
-import { CopyLink } from "@/components/admin/copy-link";
+import { CopyLink } from "@/components/shared/copy-link";
 import { Badge, Card, EmptyState } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
 import { getLocale, getT } from "@/i18n/server";
@@ -59,24 +59,38 @@ export default async function AdminOverviewPage({
 
   return (
     <>
-      <div className="mb-6 flex flex-col gap-3 rounded-2xl bg-ink-900 p-5 text-white sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <p className="text-xs font-medium uppercase tracking-wide text-white/50">
-            Your shop link
-          </p>
-          <p className="mt-1 truncate text-lg font-semibold">{displayUrl}</p>
-        </div>
-        <div className="flex shrink-0 gap-2">
-          <CopyLink url={shopUrl} />
-          <a
-            href={`/${shop.handle}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-white px-3 text-xs font-medium text-ink-900 transition hover:bg-ink-100"
-          >
-            Visit
-            <ArrowRight className="size-3.5" />
-          </a>
+      {/* The link is the product. It leads the page, in brand colour, because
+          the single most useful thing this screen can do is hand it over. */}
+      <div className="relative mb-6 overflow-hidden rounded-3xl bg-brand-800 p-5 text-white shadow-md sm:p-6">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-70"
+          style={{
+            backgroundImage:
+              "radial-gradient(ellipse 60% 120% at 100% 0%, rgba(52,217,138,0.35), transparent 70%)",
+          }}
+        />
+        <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <p className="text-xs font-medium uppercase tracking-wider text-brand-200">
+              Your shop link
+            </p>
+            <p className="mt-1.5 truncate text-lg font-semibold tracking-tight sm:text-xl">
+              {displayUrl}
+            </p>
+          </div>
+          <div className="flex shrink-0 gap-2">
+            <CopyLink url={shopUrl} />
+            <a
+              href={`/${shop.handle}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="focus-ring press inline-flex h-9 items-center gap-1.5 rounded-xl bg-white px-3.5 text-xs font-semibold text-brand-900 transition hover:bg-brand-50"
+            >
+              Visit
+              <ArrowRight className="size-3.5 rtl:rotate-180" />
+            </a>
+          </div>
         </div>
       </div>
 
@@ -166,7 +180,7 @@ export default async function AdminOverviewPage({
           <BarChart
             title={`Visits · last ${chartDays} days`}
             data={visitSeries.map((d) => ({ day: d.day, value: d.count }))}
-            colour="#4f46e5"
+            colour="#434c49"
             unit="count"
             emptyLabel="No visits yet — share your link."
           />
@@ -175,7 +189,7 @@ export default async function AdminOverviewPage({
           <BarChart
             title={`Revenue · last ${chartDays} days`}
             data={revenueSeries.map((d) => ({ day: d.day, value: d.cents }))}
-            colour="#0d7d63"
+            colour="#037740"
             unit="money"
             currency={shop.currency}
             emptyLabel="No revenue yet."

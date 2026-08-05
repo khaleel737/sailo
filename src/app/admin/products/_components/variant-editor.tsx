@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import { ImagePlus, Loader2, Plus, Trash2, X } from "lucide-react";
 import { Button, Input } from "@/components/ui";
-import { useAdminT } from "./admin-i18n";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@/i18n";
 import {
   combinations,

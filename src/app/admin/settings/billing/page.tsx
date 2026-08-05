@@ -5,13 +5,15 @@ import { count, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { products } from "@/db/schema";
 import { requireShop } from "@/lib/session";
+import { getAdminT } from "@/i18n/server";
 import { openBillingPortal, startCheckout } from "@/lib/actions/billing";
 import { syncSubscriptionForShop } from "@/lib/billing-sync";
 import { PLAN_IDS, PLANS, planFor, productLimit } from "@/lib/plans";
 import { billingEnabled } from "@/lib/stripe";
-import { IntervalToggle } from "@/components/admin/interval-toggle";
-import { Badge, Button, Card } from "@/components/ui";
+import { IntervalToggle } from "@/app/admin/settings/billing/_components/interval-toggle";
+import { Alert, Badge, Button, Card, Progress } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Billing" };
 
@@ -19,6 +21,7 @@ export default async function BillingPage({
   searchParams,
 }: PageProps<"/admin/settings/billing">) {
   const { shop } = await requireShop();
+  const { t } = await getAdminT();
   const params = await searchParams;
 
   // Returning from Checkout, the webhook may still be in flight — pull the
@@ -31,38 +34,51 @@ export default async function BillingPage({
   const current = planFor(fresh);
   const interval = params.interval === "year" ? "year" : "month";
 
-  const { value: productCount } = firstRow(await getDb()
-    .select({ value: count() })
-    .from(products)
-    .where(eq(products.shopId, fresh.id)), "value aggregate");
+  const { value: productCount } = firstRow(
+    await getDb()
+      .select({ value: count() })
+      .from(products)
+      .where(eq(products.shopId, fresh.id)),
+    "value aggregate",
+  );
 
   const limit = productLimit(fresh);
+  const atLimit = limit !== null && productCount >= limit;
 
   return (
     <>
       {params.checkout === "cancelled" ? (
-        <p className="mb-5 rounded-2xl border border-ink-200 bg-ink-50 p-4 text-sm text-ink-600">
+        <Alert tone="info" className="mb-5">
           Checkout cancelled — nothing was charged.
-        </p>
+        </Alert>
       ) : null}
 
       <Card className="mb-6 p-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-medium text-ink-500">Current plan</h2>
               {fresh.subscriptionStatus === "past_due" ? (
-                <Badge tone="red">Payment failed</Badge>
+                <Badge tone="red" dot>
+                  Payment failed
+                </Badge>
               ) : fresh.cancelAtPeriodEnd ? (
-                <Badge tone="amber">Cancels at period end</Badge>
-              ) : null}
+                <Badge tone="amber" dot>
+                  Cancels at period end
+                </Badge>
+              ) : (
+                <Badge tone="green" dot>
+                  Active
+                </Badge>
+              )}
             </div>
-            <p className="mt-1 text-2xl font-semibold">{current.name}</p>
+            <p className="mt-1 text-2xl font-semibold tracking-tight text-ink-900">
+              {current.name}
+            </p>
             <p className="mt-1 text-sm text-ink-500">
-              {productCount} of {limit ?? "unlimited"} products used
-              {current.features.cardRails
-                ? " · 0% fee on card payments"
-                : ""}
+              <span className="tabular">{productCount}</span> of{" "}
+              {limit ?? "unlimited"} products used
+              {current.features.cardRails ? " · 0% fee on card payments" : ""}
             </p>
             {fresh.currentPeriodEnd ? (
               <p className="mt-0.5 text-xs text-ink-400">
@@ -86,19 +102,30 @@ export default async function BillingPage({
           ) : null}
         </div>
 
-        {limit !== null && productCount >= limit ? (
-          <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm text-amber-900">
+        {/* A bar, not just a sentence: how close the shop is to the ceiling is
+            the one number on this page that changes what to do next. */}
+        {limit !== null ? (
+          <Progress
+            value={productCount / limit}
+            tone={atLimit ? "amber" : "brand"}
+            label="Product slots used"
+            className="mt-4"
+          />
+        ) : null}
+
+        {atLimit ? (
+          <Alert tone="warning" className="mt-4">
             You&rsquo;ve used every product slot on {current.name}. Existing
             products keep working — upgrade to add more.
-          </p>
+          </Alert>
         ) : null}
       </Card>
 
       {!billingEnabled() ? (
-        <p className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+        <Alert tone="warning">
           Billing isn&rsquo;t configured — set <code>STRIPE_SECRET_KEY</code> to
           enable upgrades.
-        </p>
+        </Alert>
       ) : (
         <>
           <div className="mb-4 flex justify-center">
@@ -115,18 +142,20 @@ export default async function BillingPage({
                 interval === "year"
                   ? Math.round(plan.yearlyCents / 12)
                   : plan.monthlyCents;
+              const featured = id === "pro";
 
               return (
                 <Card
                   key={id}
-                  className={`flex flex-col p-5 ${
-                    id === "pro" ? "ring-2 ring-ink-900" : ""
-                  }`}
+                  className={cn(
+                    "relative flex flex-col p-5",
+                    featured && "border-brand-600 ring-1 ring-brand-600",
+                  )}
                 >
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold">{plan.name}</h3>
-                    {id === "pro" ? (
-                      <Badge tone="blue">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="font-semibold text-ink-900">{plan.name}</h3>
+                    {featured ? (
+                      <Badge tone="brand">
                         <Sparkles className="size-3" />
                         Popular
                       </Badge>
@@ -139,7 +168,7 @@ export default async function BillingPage({
                   </p>
 
                   <p className="mt-4">
-                    <span className="text-3xl font-semibold tabular-nums">
+                    <span className="tabular text-3xl font-semibold text-ink-900">
                       {price === 0 ? "Free" : formatMoney(monthly, "USD")}
                     </span>
                     {price > 0 ? (
@@ -147,16 +176,22 @@ export default async function BillingPage({
                     ) : null}
                   </p>
                   {price > 0 && interval === "year" ? (
-                    <p className="text-xs text-ink-400">
+                    <p className="tabular text-xs text-ink-400">
                       {formatMoney(price, "USD")} billed yearly
                     </p>
                   ) : null}
 
-                  <ul className="mt-4 flex-1 space-y-1.5">
-                    {plan.highlights.map((line) => (
-                      <li key={line} className="flex gap-2 text-sm text-ink-700">
-                        <Check className="mt-0.5 size-4 shrink-0 text-emerald-600" />
-                        {line}
+                  <ul className="mt-4 flex-1 space-y-2">
+                    {plan.highlights.map((key) => (
+                      <li
+                        key={key}
+                        className="flex gap-2 text-sm leading-snug text-ink-700"
+                      >
+                        <Check
+                          className="mt-0.5 size-4 shrink-0 text-brand-600"
+                          strokeWidth={3}
+                        />
+                        {t.highlights[key]}
                       </li>
                     ))}
                   </ul>
@@ -181,7 +216,11 @@ export default async function BillingPage({
                       <form action={startCheckout}>
                         <input type="hidden" name="plan" value={id} />
                         <input type="hidden" name="interval" value={interval} />
-                        <Button type="submit" className="w-full">
+                        <Button
+                          type="submit"
+                          variant={featured ? "brand" : "primary"}
+                          className="w-full"
+                        >
                           {current.id === "free" ? "Upgrade" : "Switch"} to{" "}
                           {plan.name}
                         </Button>

@@ -193,7 +193,7 @@ function List({
                     auto-height parent resolves to nothing and draws no bar. */}
                 <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-ink-100">
                   <div
-                    className={cn("h-full rounded-full bg-ink-900")}
+                    className={cn("h-full rounded-full bg-brand-600")}
                     style={{ width: `${Math.max(share, 2)}%` }}
                   />
                 </div>

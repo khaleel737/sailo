@@ -7,8 +7,8 @@ import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { getShopCategories } from "@/lib/queries";
 import { deleteCategory } from "@/lib/actions/products";
-import { PageHeader } from "@/components/admin/page-header";
-import { CategoryForm } from "@/components/admin/category-form";
+import { PageHeader } from "@/components/shared/page-header";
+import { CategoryForm } from "@/app/admin/categories/_components/category-form";
 import { Button, Card, EmptyState } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Categories" };

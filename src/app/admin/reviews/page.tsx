@@ -4,7 +4,7 @@ import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { getShopReviews } from "@/lib/queries";
 import { approveReview, deleteReview } from "@/lib/actions/reviews";
-import { PageHeader } from "@/components/admin/page-header";
+import { PageHeader } from "@/components/shared/page-header";
 import { Badge, Button, Card, EmptyState } from "@/components/ui";
 import { cn } from "@/lib/utils";
 

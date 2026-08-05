@@ -9,8 +9,8 @@ import {
   getOrderItemsMap,
 } from "@/lib/queries";
 import { deleteClient, updateClientNotes } from "@/lib/actions/orders";
-import { PageHeader } from "@/components/admin/page-header";
-import { OrderRow } from "@/components/admin/order-row";
+import { PageHeader } from "@/components/shared/page-header";
+import { OrderRow } from "@/app/admin/_components/order-row";
 import { Button, Card, Textarea } from "@/components/ui";
 import { formatAddress, formatMoney, isUuid } from "@/lib/utils";
 

@@ -9,9 +9,9 @@ import {
 } from "lucide-react";
 import { deleteOrder } from "@/lib/actions/orders";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
-import { OrderStatusSelect } from "./order-status-select";
-import { PaymentStatusSelect } from "./payment-status-select";
-import { OrderActions } from "./order-actions";
+import { OrderStatusSelect } from "@/app/admin/orders/_components/order-status-select";
+import { PaymentStatusSelect } from "@/app/admin/orders/_components/payment-status-select";
+import { OrderActions } from "@/app/admin/orders/_components/order-actions";
 import { Badge, Button } from "@/components/ui";
 import { formatAddress, formatMoney } from "@/lib/utils";
 import type { Order } from "@/db/schema";
@@ -25,6 +25,20 @@ const STATUS_TONE = {
   cancelled: "neutral",
   refunded: "red",
 } as const;
+
+/*
+ * The database stores lowercase enum values; a row is read by a person, so it
+ * gets a written label. Keeping the map here rather than capitalising the enum
+ * means "cod" never renders as "Cod".
+ */
+const STATUS_LABEL: Record<string, string> = {
+  new: "New",
+  confirmed: "Confirmed",
+  shipped: "Shipped",
+  completed: "Completed",
+  cancelled: "Cancelled",
+  refunded: "Refunded",
+};
 
 export function OrderRow({
   order,
@@ -66,13 +80,10 @@ export function OrderRow({
             </p>
             <Badge
               tone={STATUS_TONE[order.status as keyof typeof STATUS_TONE] ?? "neutral"}
+              dot
             >
-              {order.status}
+              {STATUS_LABEL[order.status] ?? order.status}
             </Badge>
-            <Badge>{methodName}</Badge>
-            {order.deliveryLabel ? (
-              <Badge tone="blue">{order.deliveryLabel}</Badge>
-            ) : null}
             {order.paymentStatus === "paid" ? (
               <Badge tone="green">Paid</Badge>
             ) : order.paymentStatus === "pending" ? (
@@ -80,6 +91,10 @@ export function OrderRow({
             ) : (
               <Badge tone="red">Unpaid</Badge>
             )}
+            <span className="text-xs text-ink-400">
+              {methodName}
+              {order.deliveryLabel ? ` · ${order.deliveryLabel}` : ""}
+            </span>
           </div>
 
           {showCustomer ? (

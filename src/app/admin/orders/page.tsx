@@ -3,9 +3,9 @@ import { ShoppingBag } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { getInvoiceMap, getOrderItemsMap, getShopOrders } from "@/lib/queries";
-import { PageHeader } from "@/components/admin/page-header";
-import { ExportButton } from "@/components/admin/export-button";
-import { OrderRow } from "@/components/admin/order-row";
+import { PageHeader } from "@/components/shared/page-header";
+import { ExportButton } from "@/app/admin/_components/export-button";
+import { OrderRow } from "@/app/admin/_components/order-row";
 import { Card, EmptyState } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Orders" };

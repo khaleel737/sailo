@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { requireShop } from "@/lib/session";
 import { getShopCategories } from "@/lib/queries";
-import { ProductForm } from "@/components/admin/product-form";
-import { PageHeader } from "@/components/admin/page-header";
+import { ProductForm } from "@/app/admin/products/_components/product-form";
+import { PageHeader } from "@/components/shared/page-header";
 
 export const metadata: Metadata = { title: "Add product" };
 

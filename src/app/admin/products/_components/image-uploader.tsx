@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { ImagePlus, Loader2, X } from "lucide-react";
-import { useAdminT } from "./admin-i18n";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 const MAX_IMAGES = 8;
 

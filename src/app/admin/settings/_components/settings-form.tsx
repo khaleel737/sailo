@@ -5,8 +5,8 @@ import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { updateShop } from "@/lib/actions/shop";
-import { ImageUploader } from "./image-uploader";
-import { HandleField } from "./handle-field";
+import { ImageUploader } from "@/app/admin/products/_components/image-uploader";
+import { HandleField } from "@/components/shared/handle-field";
 import {
   Alert,
   Button,
@@ -14,6 +14,7 @@ import {
   Field,
   Input,
   Select,
+  Switch,
   Textarea,
 } from "@/components/ui";
 import {
@@ -61,7 +62,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
       ) : null}
 
       <Card className="space-y-4 p-5">
-        <h2 className="text-sm font-semibold">Identity</h2>
+        <h2 className="text-sm font-semibold text-ink-900">Identity</h2>
 
         <HandleField
           label={t.handle.label}
@@ -106,7 +107,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
       </Card>
 
       <Card className="space-y-4 p-5">
-        <h2 className="text-sm font-semibold">Appearance</h2>
+        <h2 className="text-sm font-semibold text-ink-900">Appearance</h2>
 
         <Field label="Accent colour">
           <div className="flex flex-wrap items-center gap-2">
@@ -155,7 +156,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
 
       <Card className="space-y-4 p-5">
         <div>
-          <h2 className="text-sm font-semibold">Orders &amp; contact</h2>
+          <h2 className="text-sm font-semibold text-ink-900">Orders &amp; contact</h2>
           <p className="mt-0.5 text-xs text-ink-500">
             Ways to order live in{" "}
             <Link
@@ -215,28 +216,19 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
           />
         </Field>
 
-        <label className="flex cursor-pointer items-start gap-3 border-t border-ink-100 pt-4">
-          <input
-            type="checkbox"
+        <div className="border-t border-ink-200 pt-4">
+          <Switch
             name="collectAddress"
             defaultChecked={shop.collectAddress}
-            className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900"
+            label="Ask for a delivery address"
+            description="Shown on physical products only. Turn off if you sell digital goods or services."
           />
-          <span>
-            <span className="block text-sm font-medium">
-              Ask for a delivery address
-            </span>
-            <span className="block text-xs text-ink-500">
-              Shown on physical products only. Turn off if you sell digital
-              goods or services.
-            </span>
-          </span>
-        </label>
+        </div>
       </Card>
 
       <Card className="space-y-4 p-5">
         <div>
-          <h2 className="text-sm font-semibold">Tax</h2>
+          <h2 className="text-sm font-semibold text-ink-900">Tax</h2>
           <p className="mt-0.5 text-xs text-ink-500">
             Only turn this on if you are registered to charge it. Existing
             orders keep the rate they were placed at.
@@ -337,7 +329,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
       </Card>
 
       <Card className="space-y-3 p-5">
-        <h2 className="text-sm font-semibold">Social links</h2>
+        <h2 className="text-sm font-semibold text-ink-900">Social links</h2>
         <p className="-mt-1 text-xs text-ink-500">
           Leave blank to hide. Icons appear under your description.
         </p>
@@ -364,20 +356,12 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
       </Card>
 
       <Card className="p-5">
-        <label className="flex cursor-pointer items-start gap-3">
-          <input
-            type="checkbox"
-            name="isPublished"
-            defaultChecked={shop.isPublished}
-            className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900"
-          />
-          <span>
-            <span className="block text-sm font-medium">Shop is live</span>
-            <span className="block text-xs text-ink-500">
-              Uncheck to take your page offline. Visitors will see a 404.
-            </span>
-          </span>
-        </label>
+        <Switch
+          name="isPublished"
+          defaultChecked={shop.isPublished}
+          label="Shop is live"
+          description="Turn this off to take your page offline. Visitors will see a 404."
+        />
       </Card>
 
       <Submit />

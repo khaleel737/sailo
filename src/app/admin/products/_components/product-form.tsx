@@ -18,7 +18,7 @@ import {
   Textarea,
 } from "@/components/ui";
 import { PRODUCT_KINDS } from "@/lib/utils";
-import { useAdminT } from "./admin-i18n";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@/i18n";
 import type {
   Category,

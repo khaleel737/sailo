@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Info, Truck, Trash2 } from "lucide-react";
+import { Info, Package, Plus, Store, Truck } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { getShopDeliveryMethods } from "@/lib/queries";
@@ -12,9 +12,10 @@ import {
   deleteDeliveryMethod,
   toggleDeliveryMethod,
 } from "@/lib/actions/delivery";
-import { PageHeader } from "@/components/admin/page-header";
-import { DeliveryRateForm } from "@/components/admin/delivery-rate-form";
-import { Badge, Button, Card, EmptyState } from "@/components/ui";
+import { PageHeader } from "@/components/shared/page-header";
+import { DeliveryRateForm } from "@/app/admin/delivery/_components/delivery-rate-form";
+import { Panel } from "@/components/overlays";
+import { Alert, Badge, Button, EmptyState } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Delivery" };
@@ -24,53 +25,89 @@ export default async function AdminDeliveryPage() {
   const { a } = await getAdminT();
   const methods = await getShopDeliveryMethods(shop.id);
 
+  const liveCount = methods.filter(
+    (m) => m.isEnabled && isDeliveryConfigured(m.type, m.config),
+  ).length;
+
   return (
     <>
       <PageHeader
         title={a.delivery.title}
         description={a.delivery.description}
+        meta={
+          methods.length > 0 ? (
+            <Badge tone={liveCount > 0 ? "green" : "amber"} dot>
+              {liveCount} of {methods.length} live
+            </Badge>
+          ) : null
+        }
       />
 
-      <div className="mb-5 flex gap-3 rounded-2xl border border-ink-200 bg-ink-50 p-4">
-        <Info className="mt-0.5 size-5 shrink-0 text-ink-400" />
-        <p className="text-sm text-ink-600">
-          Only <strong>physical products</strong> ask about delivery — digital
-          downloads and services skip it. Collection options never ask the buyer
-          for an address.
-        </p>
-      </div>
+      <Alert
+        tone="info"
+        icon={<Info className="size-5" />}
+        className="mb-5"
+      >
+        Only <strong>physical products</strong> ask about delivery — digital
+        downloads and services skip it. Collection options never ask the buyer
+        for an address.
+      </Alert>
 
       {methods.length === 0 ? (
         <div className="mb-5">
           <EmptyState
-            icon={<Truck className="size-8" />}
+            icon={<Truck className="size-6" />}
             title={a.delivery.empty}
             description={a.delivery.emptyBody}
           />
         </div>
       ) : (
-        <Card className="mb-5 divide-y divide-ink-100">
+        /*
+         * One panel per option, each holding its own form. The summary row
+         * carries the price and the status, so the page can be read without
+         * opening anything — the previous version rendered every edit form
+         * expanded at once and buried the list under them.
+         */
+        <div className="mb-5 space-y-3">
           {methods.map((method) => {
             const def = DELIVERY_METHOD_DEFS[method.type as DeliveryMethodType];
             const configured = isDeliveryConfigured(method.type, method.config);
+            const live = method.isEnabled && configured;
+
             return (
-              <div
+              <Panel
                 key={method.id}
-                className="flex flex-wrap items-start justify-between gap-3 p-4"
-              >
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm font-medium">{method.name}</span>
-                    <Badge>{def?.name ?? method.type}</Badge>
-                    {method.isEnabled && configured ? (
-                      <Badge tone="green">Live</Badge>
+                tone={live ? "active" : "default"}
+                icon={
+                  method.type === "collection" ? (
+                    <Store className="size-5" />
+                  ) : (
+                    <Package className="size-5" />
+                  )
+                }
+                title={method.name}
+                status={
+                  <>
+                    {live ? (
+                      <Badge tone="green" dot>
+                        Live
+                      </Badge>
                     ) : configured ? (
-                      <Badge tone="amber">Off</Badge>
+                      <Badge tone="amber" dot>
+                        Off
+                      </Badge>
                     ) : (
-                      <Badge tone="red">Needs a pickup address</Badge>
+                      <Badge tone="red" dot>
+                        Needs a pickup address
+                      </Badge>
                     )}
-                  </div>
-                  <p className="mt-1 text-xs text-ink-500">
+                    <span className="text-xs text-ink-400">
+                      {def?.name ?? method.type}
+                    </span>
+                  </>
+                }
+                subtitle={
+                  <>
                     {method.feeCents === 0
                       ? "Free"
                       : formatMoney(method.feeCents, shop.currency)}
@@ -79,10 +116,12 @@ export default async function AdminDeliveryPage() {
                       : ""}
                     {method.config.estimate ? ` · ${method.config.estimate}` : ""}
                     {method.config.address ? ` · ${method.config.address}` : ""}
-                  </p>
-                </div>
+                  </>
+                }
+              >
+                <DeliveryRateForm method={method} currency={shop.currency} />
 
-                <div className="flex shrink-0 items-center gap-1">
+                <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-ink-200 pt-4">
                   <form action={toggleDeliveryMethod}>
                     <input type="hidden" name="id" value={method.id} />
                     <Button variant="secondary" size="sm" type="submit">
@@ -95,36 +134,26 @@ export default async function AdminDeliveryPage() {
                       variant="ghost"
                       size="sm"
                       type="submit"
-                      aria-label={`Delete ${method.name}`}
-                      className="text-ink-400 hover:bg-red-50 hover:text-red-600"
+                      className="text-ink-500 hover:bg-red-50 hover:text-red-600"
                     >
-                      <Trash2 className="size-4" />
+                      Delete
                     </Button>
                   </form>
                 </div>
-              </div>
+              </Panel>
             );
           })}
-        </Card>
+        </div>
       )}
 
-      <h2 className="mb-3 text-sm font-semibold">Add an option</h2>
-      <DeliveryRateForm currency={shop.currency} />
-
-      {methods.length > 0 ? (
-        <>
-          <h2 className="mb-3 mt-8 text-sm font-semibold">Edit existing</h2>
-          <div className="space-y-3">
-            {methods.map((method) => (
-              <DeliveryRateForm
-                key={method.id}
-                method={method}
-                currency={shop.currency}
-              />
-            ))}
-          </div>
-        </>
-      ) : null}
+      <Panel
+        icon={<Plus className="size-5" />}
+        title="Add an option"
+        subtitle="Standard, express, international or collection in person."
+        defaultOpen={methods.length === 0}
+      >
+        <DeliveryRateForm currency={shop.currency} />
+      </Panel>
     </>
   );
 }

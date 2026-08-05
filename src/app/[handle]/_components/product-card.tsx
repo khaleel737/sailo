@@ -58,9 +58,11 @@ export function ProductCard({
   return (
     <article
       className={cn(
-        "surface-card group overflow-hidden rounded-2xl",
-        "transition-[transform,box-shadow] duration-300 ease-[var(--ease-out-quint)]",
-        "hover:-translate-y-0.5 hover:shadow-lg",
+        // Shadow only, never a transform: this card is an ancestor of the
+        // checkout trigger, and a transformed ancestor becomes the containing
+        // block for the panel's `position: fixed` — which renders the whole
+        // modal inside this grid cell while the pointer is over the card.
+        "surface-card group overflow-hidden rounded-2xl transition hover:shadow-md",
         layout === "list" && "flex gap-4 p-3",
       )}
     >
@@ -79,7 +81,7 @@ export function ProductCard({
             alt={image.alt ?? product.title}
             fill
             sizes={layout === "grid" ? "(max-width: 640px) 50vw, 320px" : "112px"}
-            className="object-cover transition-transform duration-500 ease-[var(--ease-out-quint)] group-hover:scale-[1.04]"
+            className="object-cover transition duration-300 group-hover:scale-[1.03]"
           />
         ) : (
           <div className="text-muted flex size-full items-center justify-center">
@@ -87,17 +89,12 @@ export function ProductCard({
           </div>
         )}
 
-        {/* Sold out dims the photo as well as labelling it — the label alone
-            gets lost against a busy product shot. */}
         {!sellable ? (
-          <>
-            <span className="absolute inset-0 bg-white/45" />
-            <span className="absolute start-2 top-2 rounded-full bg-ink-950/80 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
-              {t.shop.soldOut}
-            </span>
-          </>
+          <span className="absolute start-2 top-2 rounded-full bg-black/75 px-2 py-0.5 text-[11px] font-medium text-white">
+            {t.shop.soldOut}
+          </span>
         ) : onSale ? (
-          <span className="absolute start-2 top-2 rounded-full bg-red-600 px-2.5 py-1 text-[11px] font-semibold text-white shadow-sm">
+          <span className="absolute start-2 top-2 rounded-full bg-red-600 px-2 py-0.5 text-[11px] font-semibold text-white">
             {t.shop.sale}
           </span>
         ) : null}
@@ -191,7 +188,7 @@ export function ProductCard({
             inStock={product.inStock}
             compact
             t={t}
-            className="accent-bg focus-ring-accent press h-9 w-full rounded-xl text-xs font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            className="accent-bg h-9 w-full rounded-lg text-xs font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           />
         </div>
       </div>

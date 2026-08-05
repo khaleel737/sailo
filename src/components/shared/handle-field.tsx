@@ -35,6 +35,8 @@ export function HandleField({
   prefix = "sailo.store/",
   label,
   autoFocus = false,
+  onChange,
+  onResolved,
   t,
 }: {
   name?: string;
@@ -43,6 +45,10 @@ export function HandleField({
   prefix?: string;
   label?: string;
   autoFocus?: boolean;
+  /** Mirrors the normalised handle out, for a live preview. */
+  onChange?: (handle: string) => void;
+  /** Fires whenever the field settles on a verdict — lets a stepper gate on it. */
+  onResolved?: (usable: boolean) => void;
   t: Dictionary;
 }) {
   const [handle, setHandle] = useState(() => normalizeHandle(defaultValue));
@@ -99,12 +105,27 @@ export function HandleField({
                     suggestions: fresh.suggestions,
                   };
 
+  // A handle is usable once it is either free or the one this shop already
+  // has. `checking` deliberately counts as not-yet, so a stepper can't be
+  // walked past while a request is still in flight.
+  const usable = state.kind === "available" || state.kind === "unchanged";
+
+  useEffect(() => {
+    onResolved?.(usable);
+  }, [usable, onResolved]);
+
+  function commit(next: string) {
+    const normalized = normalizeHandle(next);
+    setHandle(normalized);
+    onChange?.(normalized);
+  }
+
   const tone =
     state.kind === "available"
-      ? "border-emerald-400 focus-within:ring-emerald-500/15"
+      ? "border-emerald-400 ring-4 ring-emerald-500/10"
       : state.kind === "taken"
-        ? "border-red-300 focus-within:ring-red-500/15"
-        : "border-ink-200 focus-within:border-ink-900 focus-within:ring-ink-900/10";
+        ? "border-red-300 ring-4 ring-red-500/10"
+        : "border-ink-200 focus-within:border-brand-600 focus-within:ring-4 focus-within:ring-brand-600/12";
 
   return (
     <div>
@@ -117,11 +138,14 @@ export function HandleField({
 
       <div
         className={cn(
-          "flex items-center rounded-xl border bg-white transition focus-within:ring-2",
+          "flex items-center rounded-xl border bg-white shadow-xs",
+          "transition-[border-color,box-shadow] duration-150",
           tone,
         )}
       >
-        <span className="shrink-0 pl-3 text-sm text-ink-400">{prefix}</span>
+        <span className="shrink-0 ps-3.5 text-sm text-ink-400 select-none">
+          {prefix}
+        </span>
         <input
           id={name}
           name={name}
@@ -131,19 +155,19 @@ export function HandleField({
           autoCapitalize="none"
           spellCheck={false}
           value={handle}
-          onChange={(e) => setHandle(normalizeHandle(e.target.value))}
+          onChange={(e) => commit(e.target.value)}
           aria-invalid={state.kind === "taken"}
           aria-describedby={`${name}-status`}
-          className="h-10 min-w-0 flex-1 bg-transparent pl-0.5 pr-2 text-sm font-medium text-ink-900 focus:outline-none"
+          className="h-11 min-w-0 flex-1 bg-transparent pe-2 ps-0.5 text-sm font-semibold text-ink-900 focus:outline-none"
           placeholder="yourshop"
         />
-        <span className="flex w-8 shrink-0 justify-center">
+        <span className="flex w-9 shrink-0 justify-center">
           {state.kind === "checking" ? (
             <Loader2 className="size-4 animate-spin text-ink-300" />
           ) : state.kind === "available" ? (
-            <Check className="size-4 text-emerald-600" />
+            <Check className="animate-pop size-4 text-emerald-600" strokeWidth={3} />
           ) : state.kind === "taken" ? (
-            <X className="size-4 text-red-500" />
+            <X className="animate-pop size-4 text-red-500" strokeWidth={3} />
           ) : null}
         </span>
       </div>
@@ -155,16 +179,16 @@ export function HandleField({
           </p>
         ) : state.kind === "taken" ? (
           <>
-            <p className="text-xs text-red-600">{state.message}</p>
+            <p className="text-xs font-medium text-red-600">{state.message}</p>
             {state.suggestions.length > 0 ? (
-              <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-ink-500">
+              <p className="mt-1.5 flex flex-wrap items-center gap-1.5 text-xs text-ink-500">
                 {t.handle.tryInstead}
                 {state.suggestions.map((s) => (
                   <button
                     key={s}
                     type="button"
-                    onClick={() => setHandle(s)}
-                    className="rounded-md bg-ink-100 px-1.5 py-0.5 font-medium text-ink-800 transition hover:bg-ink-200"
+                    onClick={() => commit(s)}
+                    className="focus-ring rounded-md bg-ink-100 px-1.5 py-0.5 font-medium text-ink-800 transition hover:bg-ink-200"
                   >
                     {s}
                   </button>
@@ -173,13 +197,9 @@ export function HandleField({
             ) : null}
           </>
         ) : state.kind === "unchanged" ? (
-          <p className="text-xs text-ink-400">
-            {t.handle.current}
-          </p>
+          <p className="text-xs text-ink-400">{t.handle.current}</p>
         ) : (
-          <p className="text-xs text-ink-400">
-            {t.handle.hint}
-          </p>
+          <p className="text-xs text-ink-400">{t.handle.hint}</p>
         )}
       </div>
     </div>

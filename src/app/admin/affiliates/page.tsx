@@ -8,17 +8,17 @@ import {
   setAffiliateStatus,
 } from "@/lib/actions/affiliates";
 import { bpToPercent } from "@/lib/pricing";
-import { PageHeader } from "@/components/admin/page-header";
+import { PageHeader } from "@/components/shared/page-header";
 import {
   AffiliateForm,
   AffiliateLink,
   AffiliateSettingsForm,
-} from "@/components/admin/affiliate-widgets";
+} from "@/app/admin/affiliates/_components/affiliate-widgets";
 import { Badge, Button, Card, EmptyState } from "@/components/ui";
-import { LockedFeature } from "@/components/admin/locked-feature";
+import { LockedFeature } from "@/app/admin/_components/locked-feature";
 import { can } from "@/lib/plans";
 import { formatMoney } from "@/lib/utils";
-import { CopyLink } from "@/components/admin/copy-link";
+import { CopyLink } from "@/components/shared/copy-link";
 import { ensurePortalToken, portalUrl } from "@/lib/affiliate-portal";
 import { getT, getAdminT } from "@/i18n/server";
 

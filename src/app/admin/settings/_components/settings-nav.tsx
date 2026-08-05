@@ -24,11 +24,13 @@ export function SettingsNav() {
           <Link
             key={tab.href}
             href={tab.href}
+            aria-current={active ? "page" : undefined}
             className={cn(
-              "-mb-px shrink-0 border-b-2 px-3 pb-2.5 pt-1 text-sm font-medium transition",
+              "focus-ring -mb-px shrink-0 rounded-t-lg border-b-2 px-3 pb-2.5 pt-1 text-sm font-medium",
+              "transition-colors duration-150",
               active
-                ? "border-ink-900 text-ink-900"
-                : "border-transparent text-ink-500 hover:text-ink-900",
+                ? "border-brand-600 text-ink-900"
+                : "border-transparent text-ink-500 hover:border-ink-200 hover:text-ink-900",
             )}
           >
             {tab.label}
