@@ -46,3 +46,18 @@ export function firstRow<T>(rows: readonly T[], what: string): T {
   }
   return row;
 }
+
+/**
+ * The first row, or nothing.
+ *
+ * The counterpart to `firstRow`, and the one a conditional write wants. An
+ * `UPDATE ... WHERE` that matches no rows has not failed — it has answered.
+ * `firstRow` would throw there, turning "your download allowance is spent"
+ * into a 500 and skipping the branch written to handle it.
+ *
+ * Reach for `firstRow` when no row means the code is broken, and this when no
+ * row is one of the outcomes.
+ */
+export function maybeRow<T>(rows: readonly T[]): T | undefined {
+  return rows[0];
+}

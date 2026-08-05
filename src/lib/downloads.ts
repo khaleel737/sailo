@@ -1,6 +1,7 @@
 import "server-only";
-import { and, asc, eq, isNull } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
+import { orderLines } from "@/lib/order-lines";
 import {
   orders,
   productFiles,
@@ -127,13 +128,32 @@ export async function releaseDownloads(orderId: string): Promise<boolean> {
   return true;
 }
 
-/** The files an order is entitled to, in the seller's order. */
+/**
+ * The files an order is entitled to, in the seller's order.
+ *
+ * Across every line, not just `order.productId`. That column names the
+ * header's single product, so reading it alone would show a buyer who paid
+ * for two digital products the files of one of them and nothing to explain
+ * where the rest went.
+ */
 export async function filesForOrder(order: Order) {
-  if (!order.productId) return [];
+  const productIds = await orderedProductIds(order);
+  if (productIds.length === 0) return [];
+
   return getDb().query.productFiles.findMany({
-    where: eq(productFiles.productId, order.productId),
+    where: inArray(productFiles.productId, productIds),
     orderBy: [asc(productFiles.position)],
   });
+}
+
+/** Every product in an order, deduplicated. Entitlement is judged on this. */
+export async function orderedProductIds(order: Order): Promise<string[]> {
+  const lines = await orderLines(order);
+  return [
+    ...new Set(
+      lines.map((line) => line.productId).filter((id): id is string => !!id),
+    ),
+  ];
 }
 
 /** True when this product can actually deliver something. */

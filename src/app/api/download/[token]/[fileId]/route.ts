@@ -1,7 +1,8 @@
-import { and, eq, isNotNull, isNull, or, gt, sql } from "drizzle-orm";
-import { firstRow } from "@/lib/invariant";
+import { and, eq, gt, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
+import { maybeRow } from "@/lib/invariant";
 import { getDb } from "@/db";
 import { orders, productFiles } from "@/db/schema";
+import { orderedProductIds } from "@/lib/downloads";
 import { isUuid } from "@/lib/utils";
 
 /**
@@ -26,15 +27,24 @@ export async function GET(
   const order = await db.query.orders.findFirst({
     where: eq(orders.downloadToken, token),
   });
-  if (!order || !order.productId) {
+  if (!order) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  /*
+   * Entitlement is every product on the order, not `order.productId` — that
+   * column names the header's single line, and gating on it would refuse a
+   * buyer the second half of what they paid for.
+   */
+  const productIds = await orderedProductIds(order);
+  if (productIds.length === 0) {
     return new Response("Not found", { status: 404 });
   }
 
   const file = await db.query.productFiles.findFirst({
     where: and(
       eq(productFiles.id, fileId),
-      // Belonging to the ordered product is what entitles the buyer to it.
-      eq(productFiles.productId, order.productId),
+      inArray(productFiles.productId, productIds),
     ),
   });
   if (!file) {
@@ -43,7 +53,7 @@ export async function GET(
 
   // Claiming the download and checking whether one is left happen in the same
   // statement, so opening two tabs can't spend the last one twice.
-  const claimed = firstRow(await db
+  const claimed = maybeRow(await db
     .update(orders)
     .set({ downloadCount: sql`${orders.downloadCount} + 1` })
     .where(
@@ -60,7 +70,7 @@ export async function GET(
         ),
       ),
     )
-    .returning({ id: orders.id }), "claimed");
+    .returning({ id: orders.id }));
 
   if (!claimed) {
     // Gone rather than Forbidden: the link was valid, its allowance isn't.
@@ -82,6 +92,9 @@ export async function GET(
   }
 
   const filename = file.name.replace(/["\\\r\n]/g, "").slice(0, 120) || "download";
+  // Read once: testing one call and asserting on a second says they must
+  // agree, which is a claim about the header object rather than about a value.
+  const length = upstream.headers.get("content-length");
 
   return new Response(upstream.body, {
     headers: {
@@ -89,9 +102,7 @@ export async function GET(
       // The ASCII fallback keeps old clients happy; the UTF-8 form carries
       // names the buyer will actually recognise.
       "Content-Disposition": `attachment; filename="${filename.replace(/[^\x20-\x7e]/g, "_")}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
-      ...(upstream.headers.get("content-length")
-        ? { "Content-Length": upstream.headers.get("content-length")! }
-        : {}),
+      ...(length ? { "Content-Length": length } : {}),
       // A private link to private bytes: nothing about this is cacheable.
       "Cache-Control": "private, no-store",
     },
