@@ -16,13 +16,46 @@ function resend() {
 
 export const emailEnabled = () => Boolean(process.env.RESEND_API_KEY);
 
-const FROM = () => process.env.SAILO_FROM_EMAIL ?? "Sailo <onboarding@resend.dev>";
+/**
+ * Every address we send from lives on one domain, and that domain has to stay
+ * verified in Resend or nothing leaves the building. Overridable so a staging
+ * deploy can point at a different verified domain rather than mailing buyers
+ * from production's.
+ */
+const MAIL_DOMAIN = process.env.SAILO_MAIL_DOMAIN ?? "sailo.store";
+
+/** Anything a buyer gets about an order they placed. */
+const ORDERS = `orders@${MAIL_DOMAIN}`;
+/** Sailo speaking for itself, to the people who promote shops. */
+const PARTNERS = `partners@${MAIL_DOMAIN}`;
+
+/**
+ * Builds a From header.
+ *
+ * The address is always ours — it's the one Resend has verified — but the name
+ * beside it is the shop's, because the buyer bought from them and not from us.
+ * `replyTo` then carries the conversation to the seller's real inbox.
+ *
+ * Shop names are seller-supplied and end up in a mail header, so a newline
+ * never survives: it would let a name inject headers of its own. Quotes and
+ * backslashes are escaped rather than stripped, since plenty of shops
+ * legitimately have them.
+ */
+function sender(displayName: string, address: string) {
+  const safe = displayName
+    .replace(/[\r\n]+/g, " ")
+    .replace(/["\\]/g, "\\$&")
+    .trim()
+    .slice(0, 78);
+  return safe ? `"${safe}" <${address}>` : address;
+}
 
 export type SendResult =
   | { sent: true; id: string }
   | { sent: false; reason: string };
 
 async function send(opts: {
+  from: string;
   to: string;
   subject: string;
   html: string;
@@ -33,7 +66,7 @@ async function send(opts: {
 
   try {
     const { data, error } = await api.emails.send({
-      from: FROM(),
+      from: opts.from,
       to: opts.to,
       subject: opts.subject,
       html: opts.html,
@@ -189,6 +222,7 @@ export async function sendOrderConfirmation(opts: {
   `;
 
   return send({
+    from: sender(shop.name, ORDERS),
     to: order.customerEmail,
     subject: `Your order from ${shop.name}`,
     html: layout(shop, "Order confirmed", body),
@@ -235,6 +269,7 @@ export async function sendDownloadReady(opts: {
   `;
 
   return send({
+    from: sender(shop.name, ORDERS),
     to: order.customerEmail,
     subject: `Your download from ${shop.name}`,
     html: layout(shop, "Ready to download", body),
@@ -276,7 +311,12 @@ export async function sendPortalLinks(opts: {
   </table>
 </body></html>`;
 
-  return send({ to, subject: "Your referral report", html });
+  return send({
+    from: sender("Sailo", PARTNERS),
+    to,
+    subject: "Your referral report",
+    html,
+  });
 }
 
 /** Sent when the seller marks a shipping order as dispatched. */
@@ -305,6 +345,7 @@ export async function sendShippingNotification(opts: {
   `;
 
   return send({
+    from: sender(shop.name, ORDERS),
     to: order.customerEmail,
     subject: `Your order from ${shop.name} has shipped`,
     html: layout(shop, "On its way", body),
@@ -340,6 +381,7 @@ export async function sendRefundNotification(opts: {
   `;
 
   return send({
+    from: sender(shop.name, ORDERS),
     to: order.customerEmail,
     subject: `Refund from ${shop.name}`,
     html: layout(shop, "Refund issued", body),
