@@ -860,6 +860,43 @@ export const visits = pgTable(
   ],
 );
 
+/**
+ * One row per shop per day, folded down from `visits`.
+ *
+ * Raw visits are the biggest table in the product by an order of magnitude —
+ * a shop doing a hundred views a day writes more rows in a month than its
+ * whole catalogue — and every dashboard reads the same thirty-day window over
+ * and over. Rolling them up nightly turns that into a few dozen rows, and lets
+ * the raw table be trimmed to a retention window without losing the history
+ * the charts are drawn from.
+ *
+ * Uniques are counted per day. They can't be summed across days without
+ * double-counting a returning visitor, which is why the dashboard's own
+ * "unique visitors" figure still reads the raw window inside retention.
+ */
+export const visitDaily = pgTable(
+  "visit_daily",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+
+    /** UTC date, matching how the raw rows are bucketed. */
+    day: timestamp("day").notNull(),
+    visits: integer("visits").default(0).notNull(),
+    uniqueVisitors: integer("unique_visitors").default(0).notNull(),
+    /** Top dimensions for the day: { countries: {NG: 12}, sources: {...} }. */
+    breakdown: jsonb("breakdown").$type<VisitBreakdownJson>().default({}).notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("visit_daily_shop_day_key").on(t.shopId, t.day),
+    index("visit_daily_shop_idx").on(t.shopId, t.day),
+  ],
+);
+
 /* -------------------------------------------------------------------------- */
 /*  Relations                                                                  */
 /* -------------------------------------------------------------------------- */
@@ -1001,6 +1038,15 @@ export const ordersRelations = relations(orders, ({ one, many }) => ({
 /*  Types                                                                      */
 /* -------------------------------------------------------------------------- */
 
+/** Counts keyed by dimension value, as folded into a day's row. */
+export type VisitBreakdownJson = {
+  countries?: Record<string, number>;
+  cities?: Record<string, number>;
+  sources?: Record<string, number>;
+  devices?: Record<string, number>;
+  referrers?: Record<string, number>;
+};
+
 export type ShopSocial = {
   platform: string;
   url: string;
@@ -1052,6 +1098,7 @@ export type Review = typeof reviews.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
 export type Visit = typeof visits.$inferSelect;
+export type VisitDaily = typeof visitDaily.$inferSelect;
 export type PaymentMethod = typeof paymentMethods.$inferSelect;
 export type DeliveryMethod = typeof deliveryMethods.$inferSelect;
 export type Client = typeof clients.$inferSelect;

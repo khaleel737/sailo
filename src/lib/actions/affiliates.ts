@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidateShop } from "@/lib/cache";
 import { firstRow } from "@/lib/invariant";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -160,6 +161,8 @@ export async function updateAffiliateSettings(
 
   revalidatePath("/admin/affiliates");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
   revalidatePath(`/${shop.handle}/affiliate`);
   return { ok: true, message: "Saved." };
 }

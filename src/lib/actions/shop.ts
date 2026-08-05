@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidateShop } from "@/lib/cache";
 import { redirect } from "next/navigation";
 import { and, eq, ne } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -249,8 +250,15 @@ export async function updateShop(
 
   revalidatePath("/admin/settings");
   revalidatePath(`/${handle}`);
+  // Settings change the storefront's name, theme, currency and tax, all of
+  // which the cached shop row carries. The old handle is dropped too, or a
+  // renamed shop keeps answering on its previous address.
+  revalidateShop(shop.id, handle);
   // The old address stops resolving, so drop it from the cache too.
-  if (handleChanged) revalidatePath(`/${shop.handle}`);
+  if (handleChanged) {
+    revalidatePath(`/${shop.handle}`);
+    revalidateShop(shop.id, shop.handle);
+  }
 
   return {
     ok: true,

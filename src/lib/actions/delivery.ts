@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidateShop } from "@/lib/cache";
 import { firstRow } from "@/lib/invariant";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -93,6 +94,8 @@ export async function saveDeliveryMethod(
 
   revalidatePath("/admin/delivery");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
   return { ok: true, message: id ? "Option updated." : `${name} added.` };
 }
 
@@ -109,6 +112,8 @@ export async function deleteDeliveryMethod(formData: FormData) {
 
   revalidatePath("/admin/delivery");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
 }
 
 export async function toggleDeliveryMethod(formData: FormData) {
@@ -132,4 +137,6 @@ export async function toggleDeliveryMethod(formData: FormData) {
 
   revalidatePath("/admin/delivery");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
 }

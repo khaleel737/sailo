@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { revalidateShop } from "@/lib/cache";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { paymentMethods, shops } from "@/db/schema";
@@ -71,6 +72,8 @@ export async function refreshStripeAccount() {
 
   revalidatePath("/admin/payments");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
 }
 
 /** Opens the seller's own Stripe dashboard — payouts, disputes, receipts. */
@@ -108,4 +111,6 @@ export async function disconnectStripe() {
 
   revalidatePath("/admin/payments");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
 }

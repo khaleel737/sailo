@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidateShop } from "@/lib/cache";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { products, reviews, shops } from "@/db/schema";
@@ -59,6 +60,8 @@ export async function approveReview(formData: FormData) {
 
   revalidatePath("/admin/reviews");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
 }
 
 export async function deleteReview(formData: FormData) {
@@ -72,4 +75,6 @@ export async function deleteReview(formData: FormData) {
 
   revalidatePath("/admin/reviews");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
 }

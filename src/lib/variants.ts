@@ -139,22 +139,29 @@ export function findVariant<V extends { options: VariantOptions }>(
 /*  Price                                                                      */
 /* -------------------------------------------------------------------------- */
 
-/** A blank variant price means "same as the product", not "free". */
+/**
+ * A blank variant price means "same as the product", not "free".
+ *
+ * Typed to the two fields it reads rather than a whole variant, so a caller
+ * with just a price — a test, a projection — doesn't have to invent stock and
+ * availability to ask what something costs.
+ */
 export function variantPrice(
   product: PricedProduct,
-  variant?: VariantLike | null,
+  variant?: Partial<Pick<VariantLike, "priceCents">> | null,
 ): number {
   return variant?.priceCents ?? product.priceCents;
 }
 
 export function variantCompareAt(
   product: PricedProduct,
-  variant?: VariantLike | null,
+  variant?: Partial<Pick<VariantLike, "priceCents" | "compareAtCents">> | null,
 ): number | null {
   // A variant that sets its own price also owns its own strike-through, or it
   // would advertise a saving against a different item's price.
   if (variant?.priceCents !== null && variant?.priceCents !== undefined) {
-    return variant.compareAtCents;
+    // A partial variant may omit the field entirely; absent means none.
+    return variant.compareAtCents ?? null;
   }
   return variant?.compareAtCents ?? product.compareAtCents;
 }

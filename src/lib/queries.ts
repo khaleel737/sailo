@@ -14,6 +14,7 @@ import {
 } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { getDb } from "@/db";
+import { cachedForShop, handleTag, shopTag } from "@/lib/cache";
 import { can } from "@/lib/plans";
 import { orderLines, orderLinesMap } from "@/lib/order-lines";
 import { isRailUsable } from "@/lib/payments";
@@ -32,6 +33,7 @@ import {
   productVariants,
   reviews,
   shops,
+  visitDaily,
   visits,
   type Affiliate,
   type Category,
@@ -63,14 +65,14 @@ export type ShopFilters = {
   inStock?: string;
 };
 
-export async function getShopByHandle(handle: string): Promise<Shop | null> {
+async function readShopByHandle(handle: string): Promise<Shop | null> {
   const shop = await getDb().query.shops.findFirst({
     where: eq(shops.handle, handle.toLowerCase()),
   });
   return shop ?? null;
 }
 
-export async function getShopCategories(shopId: string) {
+async function readShopCategories(shopId: string) {
   return getDb().query.categories.findMany({
     where: eq(categories.shopId, shopId),
     orderBy: [asc(categories.position), asc(categories.name)],
@@ -104,7 +106,7 @@ async function getRatings(productIds: string[]) {
  * The public catalog query — search, category, kind, price range and sort all
  * resolve here so the template stays a dumb renderer.
  */
-export async function getPublicProducts(
+async function readPublicProducts(
   shopId: string,
   filters: ShopFilters = {},
 ): Promise<ProductCard[]> {
@@ -181,7 +183,7 @@ export async function getPublicProducts(
   return cards;
 }
 
-export async function getProductBySlug(shopId: string, slug: string) {
+async function readProductBySlug(shopId: string, slug: string) {
   const db = getDb();
   const product = await db.query.products.findFirst({
     where: and(eq(products.shopId, shopId), eq(products.slug, slug)),
@@ -389,18 +391,43 @@ function utcDayWindow(days: number) {
 /** Daily visit counts for the last N days, zero-filled for the chart. */
 export async function getVisitSeries(shopId: string, days = 14) {
   const { since, keys } = utcDayWindow(days);
+  const db = getDb();
 
-  const rows = await getDb()
-    .select({
-      day: sql<string>`to_char(${visits.createdAt}::date, 'YYYY-MM-DD')`,
-      count: sql<string>`count(*)`,
-    })
-    .from(visits)
-    .where(and(eq(visits.shopId, shopId), gte(visits.createdAt, since)))
-    .groupBy(sql`${visits.createdAt}::date`)
-    .orderBy(sql`${visits.createdAt}::date`);
+  /*
+   * Read the rollup first, then today from the raw table.
+   *
+   * Yesterday and earlier are already folded into one row per day, so a chart
+   * over a year reads 365 rows instead of a year of pageviews. Today isn't
+   * folded yet — the fold runs overnight — so it still comes from raw, which
+   * is a single day of one shop's rows and cheap. Any day the rollup is
+   * missing falls through to raw as well, so a skipped night shows real
+   * numbers rather than a hole.
+   */
+  const [rolled, raw] = await Promise.all([
+    db
+      .select({
+        day: sql<string>`to_char(${visitDaily.day}, 'YYYY-MM-DD')`,
+        count: visitDaily.visits,
+      })
+      .from(visitDaily)
+      .where(and(eq(visitDaily.shopId, shopId), gte(visitDaily.day, since))),
+    db
+      .select({
+        day: sql<string>`to_char(${visits.createdAt}::date, 'YYYY-MM-DD')`,
+        count: sql<string>`count(*)`,
+      })
+      .from(visits)
+      .where(and(eq(visits.shopId, shopId), gte(visits.createdAt, since)))
+      .groupBy(sql`${visits.createdAt}::date`),
+  ]);
 
-  const counts = new Map(rows.map((r) => [r.day, Number(r.count)]));
+  const counts = new Map(rolled.map((r) => [r.day, Number(r.count)]));
+  for (const r of raw) {
+    // Raw wins only where the rollup hasn't been there — never added to it,
+    // or a folded day whose raw rows are still inside retention doubles.
+    if (!counts.has(r.day)) counts.set(r.day, Number(r.count));
+  }
+
   return keys.map((day) => ({ day, count: counts.get(day) ?? 0 }));
 }
 
@@ -669,7 +696,7 @@ export async function getCheckoutDeliveryMethods(shopId: string) {
 }
 
 /** Both checkout option lists in the shape the order sheet expects. */
-export async function getCheckoutOptions(shopId: string) {
+async function readCheckoutOptions(shopId: string) {
   const [payment, delivery] = await Promise.all([
     getCheckoutMethods(shopId),
     getCheckoutDeliveryMethods(shopId),
@@ -840,3 +867,41 @@ export async function getShopReviews(shopId: string) {
 
   return rows.map((r) => ({ ...r, productTitle: titles.get(r.productId) ?? "Deleted product" }));
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Cached storefront reads                                                    */
+/*                                                                             */
+/*  A catalogue changes when its seller changes it, so these are cached until  */
+/*  a write says otherwise rather than for a guessed number of seconds. See    */
+/*  lib/cache.ts — every admin write path calls `revalidateShop`.              */
+/* -------------------------------------------------------------------------- */
+
+export const getShopByHandle = cachedForShop(
+  ["shop-by-handle"],
+  readShopByHandle,
+  (handle) => [handleTag(handle)],
+);
+
+export const getShopCategories = cachedForShop(
+  ["shop-categories"],
+  readShopCategories,
+  (shopId) => [shopTag(shopId)],
+);
+
+export const getPublicProducts = cachedForShop(
+  ["public-products"],
+  readPublicProducts,
+  (shopId) => [shopTag(shopId)],
+);
+
+export const getProductBySlug = cachedForShop(
+  ["product-by-slug"],
+  readProductBySlug,
+  (shopId) => [shopTag(shopId)],
+);
+
+export const getCheckoutOptions = cachedForShop(
+  ["checkout-options"],
+  readCheckoutOptions,
+  (shopId) => [shopTag(shopId)],
+);

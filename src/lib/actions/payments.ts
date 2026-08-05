@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidateShop } from "@/lib/cache";
 import { firstRow } from "@/lib/invariant";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -70,6 +71,8 @@ export async function savePaymentMethod(
 
   revalidatePath("/admin/payments");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
   return { ok: true, message: `${def.name} saved.` };
 }
 
@@ -96,4 +99,6 @@ export async function togglePaymentMethod(formData: FormData) {
 
   revalidatePath("/admin/payments");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
 }

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidateShop } from "@/lib/cache";
 import { requireShop } from "@/lib/session";
 import {
   importClients,
@@ -63,6 +64,8 @@ export async function runImport(
       revalidatePath("/admin/clients");
       revalidatePath("/admin/categories");
       revalidatePath(`/${shop.handle}`);
+      // The catalogue is cached per shop; a write has to drop it.
+      revalidateShop(shop.id, shop.handle);
     }
 
     return { ok: true, report, committed: commit };

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidateShop } from "@/lib/cache";
 import { firstRow } from "@/lib/invariant";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -371,6 +372,8 @@ export async function saveProduct(
 
   revalidatePath("/admin/products");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
   // Variant prices and stock live on the detail page too.
   revalidatePath(`/${shop.handle}/p/${slug}`);
   return { ok: true, message: id ? "Product updated." : "Product added." };
@@ -387,6 +390,8 @@ export async function deleteProduct(formData: FormData) {
 
   revalidatePath("/admin/products");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
 }
 
 export async function toggleProductPublished(formData: FormData) {
@@ -401,6 +406,8 @@ export async function toggleProductPublished(formData: FormData) {
 
   revalidatePath("/admin/products");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -435,6 +442,8 @@ export async function createCategory(
 
   revalidatePath("/admin/categories");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
   return { ok: true, message: "Category added." };
 }
 
@@ -449,4 +458,6 @@ export async function deleteCategory(formData: FormData) {
 
   revalidatePath("/admin/categories");
   revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
 }
