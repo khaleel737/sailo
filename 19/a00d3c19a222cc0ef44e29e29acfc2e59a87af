@@ -1,0 +1,31 @@
+src/lib/invariant.test.ts
+  s_3dd4b357265b83::t_26cd4fd9044ea0 1-59
+src/lib/invariant.ts
+  s_3dd4b357265b83::t_9b89bb04f03111 49-63
+src/app/api/download/[token]/[fileId]/route.ts
+  s_3dd4b357265b83::t_d44d2a97fff031 1,5,30-40,47
+  s_3dd4b357265b83::t_9b89bb04f03111 2,56,73
+  s_3dd4b357265b83::t_898ddae857f4ec 95-97,105
+src/lib/downloads.ts
+  s_3dd4b357265b83::t_ca499f321f2c6b 4,131-138,140-142,144,149-156
+  s_3dd4b357265b83::t_d44d2a97fff031 2
+  s_3dd4b357265b83::t_cbd8395103e963 157-158
+src/lib/inventory.ts
+  s_3dd4b357265b83::t_9b89bb04f03111 2,144,148,161,165
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "19a00d3c19a222cc0ef44e29e29acfc2e59a87af",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
