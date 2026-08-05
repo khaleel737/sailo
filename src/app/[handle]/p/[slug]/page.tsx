@@ -30,7 +30,7 @@ import {
   unitsLeft,
 } from "@/lib/variants";
 import { PoweredBy } from "@/components/shared/powered-by";
-import { absolute } from "@/lib/seo";
+import { absolute, productJsonLd } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -42,29 +42,35 @@ export async function generateMetadata({
   const product = await getProductBySlug(shop.id, slug);
   if (!product) return { title: "Not found" };
 
-  const image = product.images[0]?.url;
   const url = absolute(`/${shop.handle}/p/${product.slug}`);
 
   return {
-    title: `${product.title} · ${shop.name}`,
+    // The seller's own brand, not ours — see the note on the shop page.
+    title: { absolute: `${product.title} · ${shop.name}` },
     description: product.description ?? undefined,
     alternates: { canonical: url },
     // An unpublished product is reachable by URL for the seller's own preview;
     // it must not be reachable through search.
     robots: product.isPublished ? undefined : { index: false, follow: false },
+    // The shop's icon, not Sailo's — see the note on the shop page.
+    icons: {
+      icon: [{ url: `/${shop.handle}/icon`, type: "image/png", sizes: "32x32" }],
+      apple: [{ url: `/${shop.handle}/apple-icon`, sizes: "180x180" }],
+    },
     openGraph: {
       title: product.title,
       description: product.description ?? undefined,
       url,
       siteName: shop.name,
-      images: image ? [image] : undefined,
       type: "website",
+      // Drawn by `opengraph-image.tsx` in this segment: the photo, the name and
+      // the price on one 1200x630 card. The bare product photo used to go here,
+      // at whatever aspect ratio the seller happened to upload.
     },
     twitter: {
-      card: image ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title: product.title,
       description: product.description ?? undefined,
-      images: image ? [image] : undefined,
     },
   };
 }
@@ -99,6 +105,32 @@ export default async function ProductPage({
     product.compareAtCents > range.min;
 
   return (
+    <>
+      {/*
+        Structured data for the product, so a search result can carry the price
+        and the stock state rather than being a bare link. Built from the same
+        values the page renders, so the two cannot disagree.
+      */}
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            productJsonLd({
+              title: product.title,
+              slug: product.slug,
+              description: product.description,
+              images: product.images,
+              priceCents: range.min,
+              currency: shop.currency,
+              inStock: sellable,
+              avgRating: product.avgRating,
+              reviewCount: product.reviewCount,
+              shop: { name: shop.name, handle: shop.handle },
+            }),
+          ),
+        }}
+      />
     <CartRegion
       shopId={shop.id}
       shopName={shop.name}
@@ -294,17 +326,25 @@ export default async function ProductPage({
 
           {product.reviews.length > 0 ? (
             <ul className="mb-5 space-y-3">
-              {product.reviews.map((review) => (
+              {product.reviews.map((review) => {
+                /*
+                 * `createdAt` is typed as a Date but arrives as a string, so
+                 * calling Date methods on it threw and took the whole product
+                 * page down. Coerced here rather than in the query, which is
+                 * being restructured in parallel.
+                 */
+                const posted = new Date(review.createdAt);
+                return (
                 <li key={review.id} className="surface-card rounded-2xl p-4">
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-sm font-medium">
                       {review.authorName}
                     </span>
                     <time
-                      dateTime={review.createdAt.toISOString()}
+                      dateTime={posted.toISOString()}
                       className="text-muted text-xs"
                     >
-                      {review.createdAt.toLocaleDateString(locale, {
+                      {posted.toLocaleDateString(locale, {
                         month: "short",
                         day: "numeric",
                         year: "numeric",
@@ -316,7 +356,8 @@ export default async function ProductPage({
                     <p className="mt-2 text-sm leading-relaxed">{review.body}</p>
                   ) : null}
                 </li>
-              ))}
+                );
+              })}
             </ul>
           ) : (
             <p className="text-muted mb-5 text-sm">
@@ -334,5 +375,6 @@ export default async function ProductPage({
       </div>
     </div>
     </CartRegion>
+    </>
   );
 }

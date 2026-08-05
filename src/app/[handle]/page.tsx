@@ -23,7 +23,12 @@ export async function generateMetadata({
   const url = absolute(`/${shop.handle}`);
 
   return {
-    title: shop.name,
+    /*
+     * `absolute` so the root layout's "%s · Sailo" template does not run.
+     * A storefront is the seller's brand, and a search result reading
+     * "Forno Nove · Sailo" spends the seller's title on our name.
+     */
+    title: { absolute: shop.name },
     description,
     /*
      * The filter bar puts its state in the query string, so `?category=mugs`
@@ -32,19 +37,34 @@ export async function generateMetadata({
      * competing with itself for its own name.
      */
     alternates: { canonical: url },
+    /*
+     * The root layout declares `icons` for the marketing site, and every route
+     * inherits it — which is why the file-based `icon.tsx` in this segment was
+     * not reaching the head. Pointing at the generated routes explicitly is
+     * what actually overrides it, so a shop gets its own tab icon instead of
+     * Sailo's.
+     */
+    icons: {
+      icon: [{ url: `/${shop.handle}/icon`, type: "image/png", sizes: "32x32" }],
+      apple: [{ url: `/${shop.handle}/apple-icon`, sizes: "180x180" }],
+    },
     openGraph: {
       title: shop.name,
       description,
       url,
       siteName: shop.name,
-      images: shop.avatarUrl ? [shop.avatarUrl] : undefined,
       type: "website",
+      /*
+       * No `images` here on purpose. `opengraph-image.tsx` in this segment
+       * draws a proper 1200x630 card and Next wires it up with its own size
+       * and alt tags. Listing the avatar as well would put a 400px square
+       * first in the list, and that is the one every crawler would take.
+       */
     },
     twitter: {
-      card: shop.avatarUrl ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title: shop.name,
       description,
-      images: shop.avatarUrl ? [shop.avatarUrl] : undefined,
     },
   };
 }

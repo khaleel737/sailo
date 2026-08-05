@@ -95,3 +95,64 @@ export function shopJsonLd(shop: {
       : {}),
   };
 }
+
+/**
+ * A product, in the shape Google reads for rich results.
+ *
+ * This is the difference between a plain blue link and a result carrying a
+ * price, a stock state and a star rating — which for a seller whose whole
+ * shopfront is a link is worth more than any amount of copy. The offer is the
+ * part search engines actually validate, so `price`, `priceCurrency` and
+ * `availability` are always present rather than conditional.
+ */
+export function productJsonLd(product: {
+  title: string;
+  slug: string;
+  description: string | null;
+  images: { url: string }[];
+  priceCents: number;
+  currency: string;
+  inStock: boolean;
+  avgRating: number | null;
+  reviewCount: number;
+  shop: { name: string; handle: string };
+}) {
+  const url = absolute(`/${product.shop.handle}/p/${product.slug}`);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    url,
+    ...(product.description ? { description: product.description } : {}),
+    ...(product.images.length > 0
+      ? { image: product.images.map((image) => image.url) }
+      : {}),
+    brand: { "@type": "Brand", name: product.shop.name },
+    offers: {
+      "@type": "Offer",
+      url,
+      // Schema.org wants a decimal string, not our integer cents.
+      price: (product.priceCents / 100).toFixed(2),
+      priceCurrency: product.currency,
+      availability: product.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      seller: { "@type": "Organization", name: product.shop.name },
+    },
+    /*
+     * Omitted entirely when there are no reviews. An aggregateRating with a
+     * count of zero is a structured-data error in Search Console, not a
+     * neutral statement, and it can cost the whole rich result.
+     */
+    ...(product.reviewCount > 0 && product.avgRating !== null
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: product.avgRating.toFixed(1),
+            reviewCount: product.reviewCount,
+          },
+        }
+      : {}),
+  };
+}
