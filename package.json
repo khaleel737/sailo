@@ -21,6 +21,7 @@
     "check:methods": "dotenv -e .env.local -- tsx scripts/check-payment-methods.ts",
     "check:subs": "dotenv -e .env.local -- tsx scripts/check-subscriptions.ts",
     "check:plans": "dotenv -e .env.local -- tsx scripts/check-plans.ts",
+    "check:live": "tsx scripts/check-live.ts",
     "check:webhooks": "bash scripts/check-webhooks.sh",
     "shots": "tsx scripts/shots.ts",
     "check:load": "dotenv -e .env.local -- tsx scripts/check-load.ts",

@@ -227,6 +227,66 @@ async function main() {
       );
     }
 
+
+    /* ------------------------------------------- every status Stripe can set */
+    console.log("\nWhat each subscription status means for access");
+    if (created) {
+      const base = created.data.object as Stripe.Subscription;
+
+      /*
+       * Taken straight from Stripe's subscription lifecycle. The rule that
+       * matters is the difference between `past_due` and `unpaid`: while
+       * past_due Stripe is still retrying, so a shop that is mid-sale stays up.
+       * By `unpaid` the retries are spent — Stripe's own guidance is to revoke
+       * then, and a shop left running there is one we are hosting for free.
+       */
+      const expectations: [string, string, boolean][] = [
+        ["trialing", "Pro", true],
+        ["active", "Pro", true],
+        ["past_due", "Pro", true],
+        ["unpaid", "Free", false],
+        ["incomplete", "Free", false],
+        ["incomplete_expired", "Free", false],
+        ["paused", "Free", false],
+        ["canceled", "Free", false],
+      ];
+
+      for (const [status, entitled, keepsPaidFeatures] of expectations) {
+        await deliver({
+          ...base && {},
+          id: `evt_${randomUUID().replace(/-/g, "")}`,
+          object: "event",
+          api_version: "2026-07-29.dahlia",
+          created: Math.floor(Date.now() / 1000),
+          type: "customer.subscription.updated",
+          data: { object: { ...base, status } },
+        });
+        const after = await shopRow(shopId);
+        const ent = entitlements(after);
+        check(
+          `${status.padEnd(19)} → ${entitled}`,
+          { entitledTo: ent.entitledTo, csvExport: ent.csvExport },
+          { entitledTo: entitled, csvExport: keepsPaidFeatures },
+        );
+      }
+
+      /* A shop that pays its overdue invoice comes straight back. */
+      console.log("\nThey pay the overdue invoice");
+      await deliver({
+        id: `evt_${randomUUID().replace(/-/g, "")}`,
+        object: "event",
+        api_version: "2026-07-29.dahlia",
+        created: Math.floor(Date.now() / 1000),
+        type: "customer.subscription.updated",
+        data: { object: { ...base, status: "active" } },
+      });
+      check(
+        "access comes back without anyone intervening",
+        entitlements(await shopRow(shopId)).entitledTo,
+        "Pro",
+      );
+    }
+
     /* --------------------------------------------------- a renewal fails */
     console.log("\nA renewal fails");
     await deliver({
@@ -239,9 +299,15 @@ async function main() {
     });
     row = await shopRow(shopId);
     check("marked past due", row.subscription_status, "past_due");
+    /*
+     * The invariant is that a past-due shop keeps whatever it had, not that it
+     * has any particular feature — which plan that is depends on what it was
+     * paying for. Asserting a specific feature made this fail the moment the
+     * test above left the shop on Pro instead of Business.
+     */
     check(
       "still entitled — Stripe is still retrying, the shop stays up",
-      entitlements(row).cardRails,
+      entitlements(row).entitledTo !== "Free",
       true,
     );
 
