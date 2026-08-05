@@ -1,0 +1,38 @@
+src/app/[handle]/_components/cart/order-sheet.tsx
+  s_3dd4b357265b83::t_533ebdfa81547f 12-13
+  s_3dd4b357265b83::t_b0ef4df9d6ebde 14
+src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_3dd4b357265b83::t_56713fa86bea57 83-104,106
+src/app/[handle]/_lib/local-time.test.ts
+  s_3dd4b357265b83::t_5841961e01fad5 1-37
+src/app/[handle]/_lib/availability.ts
+  s_3dd4b357265b83::t_533ebdfa81547f 1-25
+src/app/[handle]/_lib/local-time.ts
+  s_3dd4b357265b83::t_533ebdfa81547f 1-11
+src/app/[handle]/_lib/availability.test.ts
+  s_3dd4b357265b83::t_db320be9675acf 1-79
+src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_3dd4b357265b83::t_f035bafd1cdb7d 6
+src/app/[handle]/_components/cart/confirmation.tsx
+  s_3dd4b357265b83::t_e1b758bf03a216 39-40,59,105
+src/app/[handle]/_components/product-card.tsx
+  s_3dd4b357265b83::t_d4551f2d8d33f7 47-52,55-57,103,152,154
+src/app/[handle]/p/[slug]/page.tsx
+  s_3dd4b357265b83::t_a1abb9e3fe518a 97-102,105-107,220,222
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "31d6f814ee3242a6875ba9bc74707d5788c0c8d5",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
