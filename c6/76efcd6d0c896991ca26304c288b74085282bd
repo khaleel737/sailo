@@ -1,0 +1,113 @@
+src/app/(auth)/reset-password/page.tsx
+  s_79ff13cbe32e61::t_55e31fe8d32247 1-60
+src/i18n/dictionaries/sv.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 184-197
+  s_245cff4bd6e8de::t_57b676f7a173de 205-212
+src/i18n/dictionaries/fr.ts
+  s_245cff4bd6e8de::t_57b676f7a173de 215-222
+  s_79ff13cbe32e61::t_9da04aa8b32432 194-207
+src/i18n/dictionaries/nl.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 189-202
+  s_245cff4bd6e8de::t_57b676f7a173de 210-217
+src/i18n/dictionaries/de.ts
+  s_245cff4bd6e8de::t_57b676f7a173de 214-221
+  s_79ff13cbe32e61::t_9da04aa8b32432 193-206
+src/lib/auth.ts
+  s_79ff13cbe32e61::t_a590ed7bc95da3 6-12
+  s_79ff13cbe32e61::t_28a2fb064f4b22 21-22,25-45
+src/i18n/dictionaries/el.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 187-200
+  s_245cff4bd6e8de::t_57b676f7a173de 208-215
+src/i18n/dictionaries/fi.ts
+  s_245cff4bd6e8de::t_57b676f7a173de 204-211
+  s_79ff13cbe32e61::t_9da04aa8b32432 183-196
+src/i18n/dictionaries/it.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 189-202
+  s_245cff4bd6e8de::t_57b676f7a173de 210-217
+src/i18n/dictionaries/ja.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 220-233
+  s_245cff4bd6e8de::t_57b676f7a173de 241-248
+src/i18n/dictionaries/en.ts
+  s_79ff13cbe32e61::t_fa5d66b0c6d19b 301-316,318-319
+  s_79ff13cbe32e61::t_e7920c9294b8d4 317
+  s_245cff4bd6e8de::t_2b7d791b3deb44 332-339
+src/app/(auth)/forgot-password/forgot-password-form.tsx
+  s_79ff13cbe32e61::t_5929078854f709 1-86
+src/i18n/dictionaries/ru.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 186-199
+  s_245cff4bd6e8de::t_57b676f7a173de 207-214
+src/i18n/dictionaries/pt.ts
+  s_245cff4bd6e8de::t_57b676f7a173de 210-217
+  s_79ff13cbe32e61::t_9da04aa8b32432 189-202
+src/i18n/dictionaries/hu.ts
+  s_245cff4bd6e8de::t_57b676f7a173de 204-211
+  s_79ff13cbe32e61::t_9da04aa8b32432 183-196
+src/i18n/dictionaries/uk.ts
+  s_245cff4bd6e8de::t_57b676f7a173de 207-214
+  s_79ff13cbe32e61::t_9da04aa8b32432 186-199
+src/i18n/dictionaries/cs.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 183-196
+  s_245cff4bd6e8de::t_57b676f7a173de 204-211
+src/i18n/dictionaries/pl.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 188-201
+  s_245cff4bd6e8de::t_57b676f7a173de 209-216
+src/i18n/dictionaries/da.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 183-196
+  s_245cff4bd6e8de::t_57b676f7a173de 204-211
+src/i18n/dictionaries/es.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 193-206
+  s_245cff4bd6e8de::t_57b676f7a173de 214-221
+src/components/ui/form.tsx
+  s_79ff13cbe32e61::t_17becb449d6a12 97,108-109,115,119-127
+  s_79ff13cbe32e61::t_2bfe9706081fe0 116-118
+src/app/(auth)/forgot-password/page.tsx
+  s_79ff13cbe32e61::t_329f8809710a7c 1-28
+src/i18n/dictionaries/zh.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 219-232
+  s_245cff4bd6e8de::t_57b676f7a173de 240-247
+src/i18n/dictionaries/no.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 183-196
+  s_245cff4bd6e8de::t_57b676f7a173de 204-211
+src/lib/email.ts
+  s_79ff13cbe32e61::t_b6e619a138c5af 31-32
+  s_79ff13cbe32e61::t_f81df9ef372d9a 319-321,325-326
+  s_79ff13cbe32e61::t_ef6eb9fa243b0a 144-160,406,413,443
+  s_79ff13cbe32e61::t_6097c2e85dde1f 405,407-412,414-442
+src/i18n/dictionaries/ar.ts
+  s_245cff4bd6e8de::t_57b676f7a173de 240-247
+  s_79ff13cbe32e61::t_9da04aa8b32432 219-232
+src/components/auth-form.tsx
+  s_79ff13cbe32e61::t_03092eb4793a90 72-83
+src/app/(auth)/reset-password/reset-password-form.tsx
+  s_79ff13cbe32e61::t_ab55fdb657757c 1-111
+src/i18n/dictionaries/tr.ts
+  s_245cff4bd6e8de::t_57b676f7a173de 208-215
+  s_79ff13cbe32e61::t_9da04aa8b32432 187-200
+src/i18n/dictionaries/ro.ts
+  s_79ff13cbe32e61::t_9da04aa8b32432 183-196
+  s_245cff4bd6e8de::t_57b676f7a173de 204-211
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c676efcd6d0c896991ca26304c288b74085282bd",
+  "prompts": {},
+  "sessions": {
+    "s_245cff4bd6e8de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e02099e-b1fd-430e-af26-4353fefe29d8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_79ff13cbe32e61": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d4473ffb-fe57-4d6e-8826-d0885bba381b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
