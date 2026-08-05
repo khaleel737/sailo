@@ -83,6 +83,7 @@ const shopRow = async (id: string) => {
     select plan, subscription_status, subscription_interval, current_period_end,
            cancel_at_period_end, stripe_subscription_id, stripe_customer_id, comp_plan
     from shops where id = ${id}`;
+  if (!row) throw new Error(`the fixture shop ${id} vanished mid-run`);
   return row;
 };
 
@@ -122,13 +123,14 @@ async function main() {
       insert into shops (user_id, handle, name, currency, plan, is_published)
       values (${owner}, ${handle}, 'Subs Check Shop', 'USD', 'free', true)
       returning id`;
-    shopId = shop!.id as string;
+    if (!shop) throw new Error("the fixture shop was not created");
+    shopId = shop.id as string;
 
     let row = await shopRow(shopId);
-    check("starts on the free plan", row?.plan, "free");
+    check("starts on the free plan", row.plan, "free");
     check(
       "free entitlements",
-      entitlements(row!),
+      entitlements(row),
       {
         entitledTo: "Free",
         cardRails: false,
@@ -170,14 +172,14 @@ async function main() {
       check("webhook accepted it", result.status, 200);
 
       row = await shopRow(shopId);
-      check("shop is on Pro", row?.plan, "pro");
-      check("status recorded", row?.subscription_status, "active");
-      check("interval recorded", row?.subscription_interval, "month");
-      check("subscription id stored", row?.stripe_subscription_id, subscription.id);
-      check("renewal date stored", Boolean(row?.current_period_end), true);
+      check("shop is on Pro", row.plan, "pro");
+      check("status recorded", row.subscription_status, "active");
+      check("interval recorded", row.subscription_interval, "month");
+      check("subscription id stored", row.stripe_subscription_id, subscription.id);
+      check("renewal date stored", Boolean(row.current_period_end), true);
       check(
         "Pro entitlements",
-        entitlements(row!),
+        entitlements(row),
         {
           entitledTo: "Pro",
           cardRails: false,
@@ -196,8 +198,9 @@ async function main() {
     if (!businessYearly) throw new Error("STRIPE_PRICE_BUSINESS_YEARLY is not set");
 
     const item = subscription.items.data[0];
+    if (!item) throw new Error("the subscription has no line to upgrade");
     const upgraded = await stripe.subscriptions.update(subscription.id, {
-      items: [{ id: item!.id, price: businessYearly }],
+      items: [{ id: item.id, price: businessYearly }],
       proration_behavior: "none",
     });
     check("Stripe switched the price", upgraded.items.data[0]?.price.id, businessYearly);
@@ -207,11 +210,11 @@ async function main() {
     if (updated) {
       await deliver(updated);
       row = await shopRow(shopId);
-      check("shop is on Business", row?.plan, "business");
-      check("interval is now yearly", row?.subscription_interval, "year");
+      check("shop is on Business", row.plan, "business");
+      check("interval is now yearly", row.subscription_interval, "year");
       check(
         "Business entitlements — the card rail unlocks",
-        entitlements(row!),
+        entitlements(row),
         {
           entitledTo: "Business",
           cardRails: true,
@@ -235,10 +238,10 @@ async function main() {
       data: { object: { object: "invoice", customer: customer.id } },
     });
     row = await shopRow(shopId);
-    check("marked past due", row?.subscription_status, "past_due");
+    check("marked past due", row.subscription_status, "past_due");
     check(
       "still entitled — Stripe is still retrying, the shop stays up",
-      entitlements(row!).cardRails,
+      entitlements(row).cardRails,
       true,
     );
 
@@ -250,12 +253,12 @@ async function main() {
     if (deleted) {
       await deliver(deleted);
       row = await shopRow(shopId);
-      check("back to free", row?.plan, "free");
-      check("status cleared", row?.subscription_status, null);
-      check("subscription id cleared", row?.stripe_subscription_id, null);
+      check("back to free", row.plan, "free");
+      check("status cleared", row.subscription_status, null);
+      check("subscription id cleared", row.stripe_subscription_id, null);
       check(
         "entitlements revoked",
-        entitlements(row!),
+        entitlements(row),
         {
           entitledTo: "Free",
           cardRails: false,
@@ -274,7 +277,7 @@ async function main() {
     row = await shopRow(shopId);
     check(
       "comped shop is entitled to Business despite a cancelled subscription",
-      entitlements(row!).entitledTo,
+      entitlements(row).entitledTo,
       "Business",
     );
     await sql`update shops set comp_plan = null where id = ${shopId}`;
