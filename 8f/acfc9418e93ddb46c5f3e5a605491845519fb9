@@ -1,0 +1,24 @@
+src/app/[handle]/_lib/coupon-state.ts
+  s_3dd4b357265b83::t_5c5ec5fd6af814 1-80
+src/app/[handle]/_lib/coupon-state.test.ts
+  s_3dd4b357265b83::t_8be6d43bd057f7 1-98
+src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_3dd4b357265b83::t_c111c6df8df536 3,54,92,99-100,112,115,117,126,130,133-135,160,436,439,444,453,455
+  s_3dd4b357265b83::t_6f3daa0734f349 4-8,464,467,475-476
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8facfc9418e93ddb46c5f3e5a605491845519fb9",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
