@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowUpRight,
@@ -15,7 +14,7 @@ import {
 import { BarChart } from "@/components/shared/bar-chart";
 import { PageHeader } from "@/components/shared/page-header";
 import { AccountActions } from "@/components/hq/account-actions";
-import { EmptyRow, Table, Td, Th, Tr } from "@/components/hq/hq-table";
+import { Table, Td, Th, Tr } from "@/components/hq/hq-table";
 import {
   BillingBadge,
   Detail,
@@ -32,11 +31,13 @@ import { billingState } from "@/lib/hq-metrics";
 import {
   isPaymentMethodType,
   PAYMENT_METHOD_DEFS,
-  PAYMENT_STATUS_TONES,
 } from "@/lib/payments";
 import { planFor } from "@/lib/plans";
-import { orderSummaryTitle } from "@/lib/order-lines";
-import { formatAddress, formatMoney, isShopLive } from "@/lib/utils";
+import { formatMoney, isShopLive } from "@/lib/utils";
+import { OrdersTable } from "./_components/orders-table";
+import { CatalogueTable } from "./_components/catalogue-table";
+import { AffiliatesTable } from "./_components/affiliates-table";
+import { BuyersTable } from "./_components/buyers-table";
 
 export async function generateMetadata({
   params,
@@ -46,15 +47,6 @@ export async function generateMetadata({
   if (!detail) return { title: "Account" };
   return { title: detail.shop?.name ?? detail.owner.name };
 }
-
-const STATUS_TONE = {
-  new: "blue",
-  confirmed: "amber",
-  shipped: "blue",
-  completed: "green",
-  cancelled: "neutral",
-  refunded: "red",
-} as const;
 
 export default async function HqAccountPage({
   params,
@@ -258,251 +250,10 @@ export default async function HqAccountPage({
             </Card>
           </div>
 
-          <SectionTitle>Recent orders</SectionTitle>
-          <Table
-            minWidth="38rem"
-            head={
-              <>
-                <Th>Order</Th>
-                <Th>Buyer</Th>
-                <Th align="end">Total</Th>
-                <Th>Payment</Th>
-                <Th>Status</Th>
-                <Th align="end">Placed</Th>
-              </>
-            }
-          >
-            {detail.recentOrders.length === 0 ? (
-              <EmptyRow colSpan={6}>No orders yet.</EmptyRow>
-            ) : (
-              detail.recentOrders.map((order) => (
-                <Tr key={order.id}>
-                  <Td className="max-w-56">
-                    <span className="block truncate text-ink-900">
-                      {orderSummaryTitle(order)}
-                    </span>
-                    <span className="text-xs text-ink-400">
-                      {order.itemCount} item{order.itemCount === 1 ? "" : "s"}
-                      {order.affiliateCode ? ` · ref ${order.affiliateCode}` : ""}
-                      {order.couponCode ? ` · ${order.couponCode}` : ""}
-                    </span>
-                  </Td>
-                  <Td className="max-w-40" label="Buyer">
-                    <span className="block truncate">
-                      {order.customerName ?? "Anonymous"}
-                    </span>
-                  </Td>
-                  <Td align="end" className="tabular whitespace-nowrap" label="Total">
-                    {formatMoney(order.totalCents, order.currency)}
-                  </Td>
-                  <Td label="Payment">
-                    <Badge
-                      tone={
-                        PAYMENT_STATUS_TONES[
-                          order.paymentStatus as keyof typeof PAYMENT_STATUS_TONES
-                        ] ?? "neutral"
-                      }
-                    >
-                      {order.paymentStatus}
-                    </Badge>
-                  </Td>
-                  <Td label="Status">
-                    <Badge
-                      tone={
-                        STATUS_TONE[order.status as keyof typeof STATUS_TONE] ??
-                        "neutral"
-                      }
-                    >
-                      {order.status}
-                    </Badge>
-                  </Td>
-                  <Td align="end" className="text-ink-500" label="Placed">
-                    <When value={order.createdAt} />
-                  </Td>
-                </Tr>
-              ))
-            )}
-          </Table>
-
-          <SectionTitle
-            action={
-              <Link
-                href={`/hq/products?q=${encodeURIComponent(shop.handle)}`}
-                className="focus-ring inline-flex items-center rounded text-xs font-medium text-ink-500 transition hover:text-ink-900 pointer-coarse:min-h-11"
-              >
-                All products
-              </Link>
-            }
-          >
-            Catalogue
-          </SectionTitle>
-          <Table
-            minWidth="38rem"
-            head={
-              <>
-                <Th>Product</Th>
-                <Th>Kind</Th>
-                <Th align="end">Price</Th>
-                <Th align="end">Sold</Th>
-                <Th>State</Th>
-                <Th align="end">Added</Th>
-              </>
-            }
-          >
-            {detail.catalogue.length === 0 ? (
-              <EmptyRow colSpan={6}>Nothing in the catalogue.</EmptyRow>
-            ) : (
-              detail.catalogue.map((product) => (
-                <Tr key={product.id}>
-                  <Td className="max-w-64">
-                    <span className="block truncate text-ink-900">
-                      {product.title}
-                    </span>
-                  </Td>
-                  <Td className="capitalize" label="Kind">{product.kind}</Td>
-                  <Td align="end" className="tabular whitespace-nowrap" label="Price">
-                    {money(product.priceCents)}
-                  </Td>
-                  <Td align="end" className="tabular" label="Sold">
-                    {product.orderCount}
-                  </Td>
-                  <Td label="State">
-                    {!product.isPublished ? (
-                      <Badge tone="neutral">Hidden</Badge>
-                    ) : product.inStock ? (
-                      <Badge tone="green">Live</Badge>
-                    ) : (
-                      <Badge tone="amber">Sold out</Badge>
-                    )}
-                  </Td>
-                  <Td align="end" className="text-ink-500" label="Added">
-                    <When value={product.createdAt} />
-                  </Td>
-                </Tr>
-              ))
-            )}
-          </Table>
-
-          <SectionTitle>Affiliates</SectionTitle>
-          <Table
-            minWidth="38rem"
-            head={
-              <>
-                <Th>Affiliate</Th>
-                <Th>Code</Th>
-                <Th>Status</Th>
-                <Th align="end">Clicks</Th>
-                <Th align="end">Orders</Th>
-                <Th align="end">Earned</Th>
-                <Th align="end">Unpaid</Th>
-              </>
-            }
-          >
-            {detail.affiliates.length === 0 ? (
-              <EmptyRow colSpan={7}>
-                {shop.affiliatesEnabled
-                  ? "The programme is on, but nobody has joined."
-                  : "The affiliate programme is switched off."}
-              </EmptyRow>
-            ) : (
-              detail.affiliates.map((affiliate) => (
-                <Tr key={affiliate.id}>
-                  <Td className="max-w-48">
-                    <span className="block truncate text-ink-900">
-                      {affiliate.name}
-                    </span>
-                    {affiliate.email ? (
-                      <span className="block truncate text-xs text-ink-400">
-                        {affiliate.email}
-                      </span>
-                    ) : null}
-                  </Td>
-                  <Td label="Code">
-                    <Mono>{affiliate.code}</Mono>
-                  </Td>
-                  <Td label="Status">
-                    <Badge
-                      tone={
-                        affiliate.status === "active"
-                          ? "green"
-                          : affiliate.status === "pending"
-                            ? "amber"
-                            : "neutral"
-                      }
-                    >
-                      {affiliate.status}
-                    </Badge>
-                  </Td>
-                  <Td align="end" className="tabular" label="Clicks">
-                    {affiliate.clicks}
-                  </Td>
-                  <Td align="end" className="tabular" label="Orders">
-                    {affiliate.orderCount}
-                  </Td>
-                  <Td align="end" className="tabular whitespace-nowrap" label="Earned">
-                    {money(affiliate.earnedCents)}
-                  </Td>
-                  <Td align="end" className="tabular whitespace-nowrap" label="Unpaid">
-                    {money(affiliate.unpaidCents)}
-                  </Td>
-                </Tr>
-              ))
-            )}
-          </Table>
-
-          <SectionTitle
-            action={
-              <span className="text-xs text-ink-400">
-                Top {Math.min(detail.buyerCount, 8)} of {detail.buyerCount}
-              </span>
-            }
-          >
-            Their buyers
-          </SectionTitle>
-          <Table
-            minWidth="38rem"
-            head={
-              <>
-                <Th>Buyer</Th>
-                <Th>Where</Th>
-                <Th align="end">Orders</Th>
-                <Th align="end">Spent</Th>
-                <Th align="end">Last order</Th>
-              </>
-            }
-          >
-            {detail.buyers.length === 0 ? (
-              <EmptyRow colSpan={5}>Nobody has ordered yet.</EmptyRow>
-            ) : (
-              detail.buyers.map((buyer) => (
-                <Tr key={buyer.id}>
-                  <Td className="max-w-48">
-                    <span className="block truncate text-ink-900">
-                      {buyer.name}
-                    </span>
-                    <span className="block truncate text-xs text-ink-400">
-                      {[buyer.email, buyer.phone].filter(Boolean).join(" · ") ||
-                        "No contact details"}
-                    </span>
-                  </Td>
-                  <Td className="max-w-48" label="Where">
-                    <span className="block truncate text-xs text-ink-500">
-                      {formatAddress(buyer) || "—"}
-                    </span>
-                  </Td>
-                  <Td align="end" className="tabular" label="Orders">
-                    {buyer.orderCount}
-                  </Td>
-                  <Td align="end" className="tabular whitespace-nowrap" label="Spent">
-                    {money(buyer.totalCents)}
-                  </Td>
-                  <Td align="end" className="text-ink-500" label="Last order">
-                    <When value={buyer.lastOrderAt} />
-                  </Td>
-                </Tr>
-              ))
-            )}
-          </Table>
+          <OrdersTable detail={detail} />
+          <CatalogueTable detail={detail} shop={shop} />
+          <AffiliatesTable detail={detail} shop={shop} />
+          <BuyersTable detail={detail} shop={shop} />
 
           <SectionTitle>Checkout</SectionTitle>
           <div className="grid items-start gap-3 sm:grid-cols-2">
