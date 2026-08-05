@@ -242,6 +242,43 @@ export async function sendDownloadReady(opts: {
   });
 }
 
+/**
+ * The affiliate's own report links, one per shop they promote. Sent only to an
+ * address that already has an active affiliate row against it.
+ */
+export async function sendPortalLinks(opts: {
+  to: string;
+  links: { shopName: string; url: string }[];
+}): Promise<SendResult> {
+  const { to, links } = opts;
+  if (links.length === 0) return { sent: false, reason: "no links" };
+
+  const rows = links
+    .map(
+      (l) =>
+        `<p style="margin:0 0 10px;font-size:15px;">
+          <a href="${esc(l.url)}" style="color:#1a1a20;font-weight:600;">${esc(l.shopName)}</a>
+        </p>`,
+    )
+    .join("");
+
+  const html = `<!doctype html>
+<html><body style="margin:0;padding:24px;background:#f7f7f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1a1a20;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e6e6ea;border-radius:16px;">
+    <tr><td style="padding:28px;">
+      <h1 style="margin:0 0 6px;font-size:20px;line-height:1.3;">Your referral report</h1>
+      <p style="margin:0 0 18px;font-size:15px;line-height:1.6;color:#565664;">
+        ${links.length === 1 ? "Here's your private link." : `Here are your private links — one for each shop you promote.`}
+        Keep them to yourself: anyone with a link can see your earnings.
+      </p>
+      ${rows}
+    </td></tr>
+  </table>
+</body></html>`;
+
+  return send({ to, subject: "Your referral report", html });
+}
+
 /** Sent when the seller marks a shipping order as dispatched. */
 export async function sendShippingNotification(opts: {
   shop: Shop;

@@ -18,6 +18,8 @@ import { Badge, Button, Card, EmptyState } from "@/components/ui";
 import { LockedFeature } from "@/components/admin/locked-feature";
 import { can } from "@/lib/plans";
 import { formatMoney } from "@/lib/utils";
+import { CopyLink } from "@/components/admin/copy-link";
+import { ensurePortalToken, portalUrl } from "@/lib/affiliate-portal";
 import { getT, getAdminT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Affiliates" };
@@ -60,6 +62,12 @@ export default async function AdminAffiliatesPage() {
   const affiliates = await getShopAffiliates(shop.id);
 
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
+
+  // One token per affiliate, minted the first time the seller looks.
+  const portalUrls = new Map<string, string>();
+  for (const affiliate of affiliates) {
+    portalUrls.set(affiliate.id, portalUrl(await ensurePortalToken(affiliate), base));
+  }
   const pending = affiliates.filter((a) => a.status === "pending");
   const totalUnpaid = affiliates.reduce((sum, a) => sum + a.unpaidCents, 0);
 
@@ -149,10 +157,22 @@ export default async function AdminAffiliatesPage() {
                           </p>
                         ) : null}
 
-                        <div className="mt-2 max-w-md">
+                        <div className="mt-2 max-w-md space-y-1.5">
                           <AffiliateLink
                             url={`${base}/${shop.handle}?ref=${affiliate.code}`}
                           />
+                          {/* Their own report — the seller sends this once and
+                              never has to answer "how much have I earned?" */}
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-ink-400">
+                              {a.affiliates.reportLink}
+                            </span>
+                            <CopyLink
+                              url={portalUrls.get(affiliate.id) ?? ""}
+                              variant="onDark"
+                              copyLabel={a.affiliates.copyReport}
+                            />
+                          </div>
                         </div>
 
                         <p className="mt-2 text-xs text-ink-500">

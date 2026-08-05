@@ -3,7 +3,23 @@
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 
-export function CopyLink({ url }: { url: string }) {
+/**
+ * `onDark` is the admin's shop-link banner; `surface` is anywhere the shop's
+ * own palette applies — the affiliate's report, for instance.
+ */
+export function CopyLink({
+  url,
+  variant = "onDark",
+  copyLabel = "Copy",
+  copiedLabel = "Copied",
+  showUrl = false,
+}: {
+  url: string;
+  variant?: "onDark" | "surface";
+  copyLabel?: string;
+  copiedLabel?: string;
+  showUrl?: boolean;
+}) {
   const [copied, setCopied] = useState(false);
 
   async function onCopy() {
@@ -17,14 +33,29 @@ export function CopyLink({ url }: { url: string }) {
     }
   }
 
-  return (
+  const button = (
     <button
       type="button"
       onClick={onCopy}
-      className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-white/15 px-3 text-xs font-medium text-white transition hover:bg-white/25"
+      className={
+        variant === "onDark"
+          ? "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-white/15 px-3 text-xs font-medium text-white transition hover:bg-white/25"
+          : "accent-bg inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-3 text-xs font-semibold transition hover:opacity-90"
+      }
     >
       {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-      {copied ? "Copied" : "Copy"}
+      {copied ? copiedLabel : copyLabel}
     </button>
+  );
+
+  if (!showUrl) return button;
+
+  return (
+    <div className="surface-elevated flex items-center gap-2 rounded-xl p-2">
+      <code className="min-w-0 flex-1 truncate text-xs" dir="ltr">
+        {url}
+      </code>
+      {button}
+    </div>
   );
 }

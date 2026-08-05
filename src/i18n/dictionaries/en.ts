@@ -221,6 +221,38 @@ export const en = {
     terms: "Terms",
   },
 
+  /** The affiliate's own report — reached by a private link, no account. */
+  partner: {
+    title: "Your referrals",
+    subtitle: "{name} · {percent}% of every order through your link to {shop}",
+    yourLink: "Your link",
+    unpaid: "Owed to you",
+    earned: "Earned",
+    orders: "Orders",
+    clicks: "Clicks",
+    conversionLine: "{orders} of {clicks} clicks turned into an order — {percent}%.",
+    noClicksYet: "No clicks on your link yet.",
+    salesLine: "{amount} of sales sent so far.",
+    last30: "Commission · last 30 days",
+    allShops: "Shops you promote",
+    viewing: "viewing",
+    earnedLower: "earned",
+    unpaidLower: "owed",
+    recent: "Recent orders",
+    noOrders: "Nothing yet. Share your link and orders will show up here.",
+    andMore: "+ {count} more",
+    paid: "Paid out",
+    awaitingPayout: "Awaiting payout",
+    privateNote: "This page is private to you. {shop} pays out commission.",
+    signInTitle: "Find your referral report",
+    signInBody:
+      "Enter the email you signed up with and we'll send your private link — one for every shop you promote.",
+    signInAction: "Email me my link",
+    signInDone:
+      "If that address is registered, the link is on its way. Check your inbox.",
+    signInEmail: "Your email",
+  },
+
   invoice: {
     tax: "Tax",
     includes: "Includes",

@@ -515,12 +515,25 @@ export const affiliates = pgTable(
     clicks: integer("clicks").default(0).notNull(),
     payoutNotes: text("payout_notes"),
 
+    /**
+     * Unguessable key to the affiliate's own report page.
+     *
+     * `code` can't do this job — it's the thing that appears in every `?ref=`
+     * link they share, so anyone who clicked one would be able to read their
+     * earnings. Issued on demand and rotatable without breaking their links.
+     */
+    portalToken: text("portal_token"),
+    portalSeenAt: timestamp("portal_seen_at"),
+
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (t) => [
     uniqueIndex("affiliates_shop_code_key").on(t.shopId, t.code),
     index("affiliates_shop_idx").on(t.shopId),
+    uniqueIndex("affiliates_portal_token_key").on(t.portalToken),
+    // The portal signs in by email across every shop at once.
+    index("affiliates_email_idx").on(t.email),
   ],
 );
 

@@ -277,6 +277,8 @@ export const adminEn = {
     payoutNotes: "Payout notes",
     payoutPlaceholder: "Pays out to GTB 0123456789",
     clicks: "Clicks",
+    reportLink: "Their report:",
+    copyReport: "Copy report link",
     sales: "Sales",
     earned: "Earned",
     unpaid: "Unpaid",

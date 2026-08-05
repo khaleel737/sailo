@@ -126,6 +126,13 @@ export default async function AffiliatePage({
         ) : null}
 
         <footer className="mt-12 flex justify-center">
+          {/* Someone who already has a link comes here looking for numbers. */}
+          <Link
+            href="/partner"
+            className="text-muted text-xs underline underline-offset-2 transition hover:opacity-70"
+          >
+            {t.partner.signInTitle}
+          </Link>
           <LanguageSwitcher current={locale} label={t.common.language} />
         </footer>
       </div>
