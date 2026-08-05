@@ -5,11 +5,23 @@ import { revalidateShop } from "@/lib/cache";
 import { firstRow } from "@/lib/invariant";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { categories, productFiles, productImages, products, productVariants, type ProductOption, type VariantOptions } from "@/db/schema";
+import {
+  optionalCents,
+  optionalCount,
+  readImageUrls,
+  readJson,
+  readJsonRows,
+  readTags,
+  text,
+  usableVariants,
+  type FileRow,
+  type VariantRow,
+} from "@/lib/products/form-fields";
+import { categories, productFiles, productImages, products, productVariants, type ProductOption } from "@/db/schema";
 import { requireShop } from "@/lib/session";
 import { parseMoneyToCents, slugify } from "@/lib/utils";
 import { atProductLimit, planFor, productLimit } from "@/lib/plans";
-import { combinations, isProductKind, isServiceMode, MAX_VARIANTS, normalizeOptions, optionKey } from "@/lib/variants";
+import { isProductKind, isServiceMode, normalizeOptions, optionKey } from "@/lib/variants";
 import type { ActionState } from "./shop";
 
 const MAX_FILES = 10;
@@ -28,103 +40,6 @@ async function uniqueSlug(shopId: string, base: string, exceptId?: string) {
     n += 1;
     slug = `${base}-${n}`;
   }
-}
-
-function readImageUrls(formData: FormData) {
-  return formData
-    .getAll("imageUrls")
-    .map((v) => String(v).trim())
-    .filter(Boolean)
-    .slice(0, 8);
-}
-
-function readTags(formData: FormData) {
-  return String(formData.get("tags") ?? "")
-    .split(",")
-    .map((t) => t.trim())
-    .filter(Boolean)
-    .slice(0, 12);
-}
-
-/**
- * The variant and file editors post one JSON blob per row rather than parallel
- * arrays: an unchecked checkbox submits nothing, which would silently shift
- * every later row's values onto the wrong variant.
- */
-function readJson<T>(value: FormDataEntryValue | null): T | null {
-  if (typeof value !== "string" || !value.trim()) return null;
-  try {
-    return JSON.parse(value) as T;
-  } catch {
-    return null;
-  }
-}
-
-function readJsonRows<T>(formData: FormData, name: string): T[] {
-  return formData
-    .getAll(name)
-    .map((v) => readJson<T>(v))
-    .filter((v): v is T => v !== null);
-}
-
-/** Blank means "no answer", which is different from zero. */
-function optionalCents(value: unknown): number | null {
-  const raw = typeof value === "string" ? value.trim() : "";
-  return raw ? parseMoneyToCents(raw) : null;
-}
-
-function optionalCount(value: unknown, max = 1_000_000): number | null {
-  const raw = typeof value === "string" ? value.trim() : "";
-  if (!raw) return null;
-  const n = Number(raw);
-  if (!Number.isFinite(n)) return null;
-  return Math.min(Math.max(Math.trunc(n), 0), max);
-}
-
-function text(value: unknown, max: number): string | null {
-  const raw = typeof value === "string" ? value.trim() : "";
-  return raw ? raw.slice(0, max) : null;
-}
-
-type VariantRow = {
-  options?: VariantOptions;
-  price?: string;
-  compareAt?: string;
-  sku?: string;
-  stock?: string;
-  available?: boolean;
-  image?: string;
-};
-
-type FileRow = {
-  name?: string;
-  url?: string;
-  sizeBytes?: number;
-  contentType?: string;
-};
-
-/**
- * Keeps only combinations the product's options actually describe, and only
- * one row per combination. A stale row left behind by an option rename would
- * otherwise become an orphan the buyer can never select.
- */
-function usableVariants(options: ProductOption[], rows: VariantRow[]) {
-  if (options.length === 0) return [];
-
-  const allowed = new Set(combinations(options).map(optionKey));
-  const seen = new Set<string>();
-  const usable: (VariantRow & { options: VariantOptions })[] = [];
-
-  for (const row of rows) {
-    if (!row.options || typeof row.options !== "object") continue;
-    const key = optionKey(row.options);
-    if (!allowed.has(key) || seen.has(key)) continue;
-    seen.add(key);
-    usable.push({ ...row, options: row.options });
-    if (usable.length >= MAX_VARIANTS) break;
-  }
-
-  return usable;
 }
 
 /**
@@ -186,8 +101,14 @@ async function syncVariants(
 
 async function syncFiles(productId: string, rows: FileRow[]) {
   const db = getDb();
+  // Tested and extracted together: `filter` narrows nothing, so a later
+  // `f.url` would have to be asserted despite this line having just proved it.
   const usable = rows
-    .filter((f) => typeof f.url === "string" && /^https?:\/\//i.test(f.url))
+    .flatMap((f) =>
+      typeof f.url === "string" && /^https?:\/\//i.test(f.url)
+        ? [{ ...f, url: f.url }]
+        : [],
+    )
     .slice(0, MAX_FILES);
 
   await db.delete(productFiles).where(eq(productFiles.productId, productId));
@@ -197,7 +118,7 @@ async function syncFiles(productId: string, rows: FileRow[]) {
     usable.map((f, position) => ({
       productId,
       name: text(f.name, 200) ?? "Download",
-      url: f.url!,
+      url: f.url,
       sizeBytes:
         typeof f.sizeBytes === "number" && Number.isFinite(f.sizeBytes)
           ? Math.max(0, Math.trunc(f.sizeBytes))
@@ -345,8 +266,10 @@ export async function saveProduct(
   }
 
   if (productId && urls.length) {
+    // Bound outside the closure, which cannot see the guard above it.
+    const savedId = productId;
     await db.insert(productImages).values(
-      urls.map((url, i) => ({ productId: productId!, url, position: i })),
+      urls.map((url, i) => ({ productId: savedId, url, position: i })),
     );
   }
 
