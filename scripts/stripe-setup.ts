@@ -180,8 +180,11 @@ async function main() {
   const settings: Stripe.BillingPortal.ConfigurationCreateParams = {
     business_profile: {
       headline: "Sailo — one link, your whole shop",
-      // No privacy/terms URLs: Sailo has no such pages yet, and linking the
-      // portal at a 404 is worse than leaving the row off.
+      // These pages exist now. Stripe shows them in the portal, and a seller
+      // being asked to manage a subscription with no terms in sight is a worse
+      // look than the 404 this used to avoid.
+      privacy_policy_url: `${APP_URL}/privacy`,
+      terms_of_service_url: `${APP_URL}/terms`,
     },
     features: {
       customer_update: { enabled: true, allowed_updates: ["email", "address", "tax_id"] },
