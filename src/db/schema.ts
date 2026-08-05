@@ -94,8 +94,17 @@ export const shops = pgTable(
     avatarUrl: text("avatar_url"),
     logoUrl: text("logo_url"),
 
-    /** Default storefront language; a visitor's own choice overrides it. */
-    locale: text("locale").default("en").notNull(),
+    /**
+     * The storefront language the seller pinned, or null to follow whatever
+     * the visitor's browser asks for.
+     *
+     * Nullable on purpose. With a NOT NULL default of "en", a seller who never
+     * opened the setting looked identical to one who deliberately chose
+     * English — so the Accept-Language branch below it was unreachable and a
+     * German visitor arriving from a link got English. Most visitors never
+     * find the switcher; the header is the only signal they give us.
+     */
+    locale: text("locale"),
 
     // Look & feel — one template, a few knobs
     accentColor: text("accent_color").default("#111111").notNull(),

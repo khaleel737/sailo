@@ -184,7 +184,10 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
             htmlFor="locale"
             hint={t.settings.storefrontLanguageHint}
           >
-            <Select id="locale" name="locale" defaultValue={shop.locale}>
+            <Select id="locale" name="locale" defaultValue={shop.locale ?? ""}>
+              <option value="">
+                Match the visitor&rsquo;s browser
+              </option>
               {LOCALES.map((l) => (
                 <option key={l.code} value={l.code}>
                   {l.native} — {l.name}

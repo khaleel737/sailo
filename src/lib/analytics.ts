@@ -245,7 +245,13 @@ export function countryName(code: string | null, locale = "en"): string {
   try {
     let names = countryNames.get(locale);
     if (!names) {
-      names = new Intl.DisplayNames([locale], { type: "region" });
+      // `fallback: "code"` returns "ZZ" for an unrecognised code. The default
+      // returns the literal string "Unknown Region", which a seller reads as a
+      // bug in the dashboard rather than as a country we couldn't place.
+      names = new Intl.DisplayNames([locale], {
+        type: "region",
+        fallback: "code",
+      });
       countryNames.set(locale, names);
     }
     return names.of(code.toUpperCase()) ?? code;

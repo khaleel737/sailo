@@ -56,7 +56,18 @@ export function validateHandleFormat(raw: string): HandleProblem | null {
 
   if (!handle) return raw.trim() ? "invalid_chars" : "empty";
   if (handle.length < HANDLE_MIN) return "too_short";
-  if (handle.length > HANDLE_MAX) return "too_long";
+
+  /*
+   * Measured before normalising, not after.
+   *
+   * `normalizeHandle` truncates to `HANDLE_MAX`, so checking the normalised
+   * value made this branch unreachable and the message dead. A seller typing
+   * fifty characters got thirty-two back with no explanation — their link
+   * quietly wasn't what they asked for. Silently changing what someone typed
+   * is worse than telling them it won't fit.
+   */
+  const usable = raw.toLowerCase().trim().replace(/[^a-z0-9_-]/g, "");
+  if (usable.length > HANDLE_MAX) return "too_long";
   if (/^[-_]|[-_]$/.test(handle)) return "edge_dash";
   if (RESERVED_HANDLES.has(handle)) return "reserved";
   return null;

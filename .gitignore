@@ -47,3 +47,8 @@ skills-lock.json
 
 # Generated knowledge-graph output — regenerated on demand, not source.
 graphify-out/
+
+# Test output
+/test-results
+/playwright-report
+/coverage

@@ -30,11 +30,16 @@ export async function getLocale(): Promise<Locale> {
  * so someone who picked a language keeps it across shops.
  */
 export async function getShopLocale(shopLocale: string | null): Promise<Locale> {
+  // The visitor's own choice, if they made one.
   const jar = await cookies();
   const chosen = jar.get(LOCALE_COOKIE)?.value;
   if (isLocale(chosen)) return chosen;
+
+  // A pinned shop language beats the browser: the seller asked for it.
   if (isLocale(shopLocale)) return shopLocale;
 
+  // Otherwise follow the visitor. This is the common case — most people
+  // arrive from a link and never look for a language switcher.
   const header = (await headers()).get("accept-language");
   return matchAcceptLanguage(header) ?? DEFAULT_LOCALE;
 }

@@ -14,7 +14,7 @@ import {
   suggestHandles,
   validateHandleFormat,
 } from "@/lib/handle";
-import { DEFAULT_LOCALE, LOCALES, type Locale } from "@/i18n/config";
+import { LOCALES, type Locale } from "@/i18n/config";
 
 export type ActionState = { ok: boolean; error?: string; message?: string };
 
@@ -145,6 +145,7 @@ export async function createShop(
         handle,
         name,
         description: String(formData.get("description") ?? "").trim() || null,
+        location: String(formData.get("location") ?? "").trim() || null,
         currency: String(formData.get("currency") ?? "USD"),
       })
       .returning({ id: shops.id });
@@ -186,11 +187,12 @@ function readTaxRateBp(value: FormDataEntryValue | null): number {
 }
 
 /** Only a locale we actually ship; anything else falls back to English. */
-function readLocale(value: FormDataEntryValue | null): Locale {
+function readLocale(value: FormDataEntryValue | null): Locale | null {
   const code = String(value ?? "");
-  return LOCALES.some((l) => l.code === code)
-    ? (code as Locale)
-    : DEFAULT_LOCALE;
+  // Blank means "follow the visitor" — stored as null so it stays
+  // distinguishable from a seller who deliberately picked English.
+  if (!code) return null;
+  return LOCALES.some((l) => l.code === code) ? (code as Locale) : null;
 }
 
 export async function updateShop(
