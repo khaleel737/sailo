@@ -83,6 +83,6 @@ describe("readGroupOptions", () => {
 
 describe("KINDS", () => {
   it("accepts only what a shop can sell", () => {
-    expect([...KINDS].sort()).toEqual(["digital", "physical", "service"]);
+    expect([...KINDS].toSorted()).toEqual(["digital", "physical", "service"]);
   });
 });

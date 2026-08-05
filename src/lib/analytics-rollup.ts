@@ -56,7 +56,12 @@ async function dimension(
 
   const out: Record<string, number> = {};
   for (const row of rows) {
-    if (row.key != null) out[String(row.key)] = Number(row.n);
+    // Both null and undefined, deliberately: a grouped column comes back
+    // null when the visit had no value for it, and skipping those is what
+    // keeps "unknown" out of the top-N as if it were a real answer.
+    if (row.key !== null && row.key !== undefined) {
+      out[String(row.key)] = Number(row.n);
+    }
   }
   return out;
 }

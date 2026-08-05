@@ -1,37 +1,49 @@
 import { cn } from "@/lib/utils";
 
 /*
- * The Sailo mark is a shopping bag whose body is a blocky, edge-to-edge S: the
- * letter's two counters are capsules that run off opposite sides of the bag, so
- * the S reads through the silhouette rather than sitting inside it. Drawn on a
- * 64-unit grid — bag body x5–59 / y19–59, arms 9.5 thick, handle radius 11.5.
+ * Sailo's identity: a three-leaf mark and a geometric "Sailo" wordmark, both
+ * taken from the supplied artwork (Sailo-Icon.svg, Sailo-Logo-Green.svg).
  *
- * Everything is `currentColor`, so a mark inherits whatever colour it lands in.
+ * The mark arrived as an auto-trace — 278 curves plus fifteen sub-pixel specks,
+ * split into two near-identical greens whose shared edge showed as a hairline
+ * seam wherever the two halves were antialiased separately. It is refitted here
+ * as one closed outline: 34 cubics, corner-split at the three tips and the two
+ * notches so those stay crisp, and within 0.23% of the original silhouette.
+ * One path also means one fill pass, so the seams are gone.
+ *
+ * Everything is `currentColor`. The mark sits on white in the sidebar tile, on
+ * grey in the footer and on ink in the auth header — a baked-in green would be
+ * wrong in all three.
  */
 
-const HANDLE = "M20.5 19A11.5 11.5 0 0 1 43.5 19";
+/** Tight bounds 877.6 × 1125.4, origin at the top-left of the ink. */
+const MARK =
+  "M220.6 0C241.5 10.4 282.6 62.2 298.9 83.6C376.4 185.6 413.9 312.8 432.6 437.7C434.3 438.6 443.8 429.1 445.5 427.5C461.7 412.1 479.2 398.1 497.6 385.3C536.5 358.4 574.9 338.5 618.8 322.6C624.7 320.5 671.7 303.2 681.9 306.6C687.3 318 689.8 329.9 692.9 342C716.2 432 711.7 521.3 686.8 611C679.6 637.2 671.2 663.3 661.4 688.5C658 697.3 652.1 706.6 650.7 716.3C651.8 717.3 662.3 713.7 664.8 713.2C681.4 710.4 696.6 707.7 712.7 706.4C751.2 703.2 791.4 702.6 829.3 711.3C832.1 712 868.9 717.1 877.6 725.8C877.6 745.4 861 789 854 804.8C813.8 895.8 739.8 968.5 659.1 1024.5C634.7 1041.4 609.1 1056 582.3 1068.9C574 1073 564.7 1075.8 556.1 1079.6C482.4 1111.7 401.7 1130.1 322 1124.4C317.6 1124.1 313.2 1124.6 308.7 1124.4C291 1123.4 272.4 1119.5 254.8 1115.7C241.7 1112.8 226 1111.7 214.9 1103.5C204.2 1095.6 196.1 1087.9 187.1 1078.4C156.6 1046.1 129.1 1012 106.6 973.5C94.9 953.5 85.4 933 75 912.4C53.4 869.1 40.5 821.7 27.9 775.2C22.1 753.6 30.1 792.8 22.6 759.6C21 752.4 21 745.1 19.6 737.6C16.5 721.7 12 704.3 9.7 687.8C-6.1 573.3-3.8 455 25.6 342.4C32.5 315.9 40.1 290.4 48.4 264.1C50.4 257.9 51.7 250.8 54.1 244.7C78.4 183.4 108.8 125.1 149.5 72.9C163.1 55.5 209.4 2.8 220.6 0Z";
 
-const BAG =
-  "M24 19H54A5 5 0 0 1 59 24V28.5H17.875A2.875 2.875 0 0 0 17.875 34.25H59V40" +
-  "A19 19 0 0 1 40 59H10A5 5 0 0 1 5 54V49.5H46.125A2.875 2.875 0 0 0 46.125 43.75H5V38" +
-  "A19 19 0 0 1 24 19Z";
+/** Tight bounds 1508.2 × 542. Ascender top at y0, baseline at y537.7. */
+const WORDMARK =
+  "M1088.4 0C1090 5.8 1089.1 12.5 1089.2 18.5C1089.2 30.4 1089.2 42.3 1089.2 54.3C1089.2 93.1 1089.2 132 1089.2 170.9C1089.1 254 1089.1 337 1089.2 420.1C1089.2 446.4 1089.3 472.8 1089.2 499.1C1089.2 509.3 1090.8 528.8 1088.4 537.8C1054.9 537.8 1021.4 537.8 987.8 537.8C986.2 531.2 987.1 523.7 987.1 517C987.1 504.4 987.1 491.9 987.1 479.4C987.1 439.5 987.1 399.7 987.1 359.9C987.1 287.2 987 214.5 987.1 141.7C987.1 118.2 987.1 94.7 987.1 71.2C987.1 59.1 986.2 46.5 987.4 34.5C1021.1 23 1054.8 11.5 1088.4 0ZM375.4 88.1C353.8 115.9 332.3 143.7 310.7 171.5C302 165.9 294.5 157.8 286.1 151.7C257.5 130.9 224 112 187.5 113.8C159.7 115.2 131.1 131 132.8 162.4C133.6 178 144.9 187.5 157.4 194.8C182.3 209.4 210.5 218.6 237.3 228.8C294.3 250.3 351.7 274.4 373 336.6C376.7 347.4 378.9 358.9 379.7 370.3C380.8 384.9 380.3 399.7 377.5 414.2C374.8 428.4 369.8 442.2 363 455C353.6 472.4 340.1 488.1 324.5 500.2C252.2 556.6 147.8 552.3 70.9 507.1C51.1 495.5 32.9 481.5 16.9 465.1C11.8 459.8 3 452 0 445.5C22.7 417.9 45.4 390.4 68.1 362.8C78.9 373.9 87 388.1 98.8 399.2C128.3 427 168.6 441.8 209.1 439.2C237.3 437.4 269.7 427.2 271.4 393.8C272.8 364.6 252.1 351.5 228.2 341.3C217.5 336.8 206.9 332.4 196.1 328.3C189.1 325.6 182 323.1 175 320.2C112.8 295.2 45 267.9 28.3 195.3C25.3 182 24.6 168.4 25.3 154.9C26.1 139.2 29.8 123.5 35.8 109C41.2 96 48.6 84.1 57.6 73.4C122.6-4.4 240.5.7 321.6 48.6C335 56.5 347.9 65.2 360.2 74.9C365.3 78.9 371.5 83 375.4 88.1ZM925 152.9C925 281 925 409 925 537C918.5 539.2 900.7 537.8 892.8 537.8C877.5 537.7 862.1 537.8 846.8 537.8C839.3 537.8 831.1 538.7 823.8 537.3C823.8 420.3 823.8 303.3 823.8 186.3C845.1 178.1 867.2 171.7 888.8 164.4C898.6 161.1 915.3 153.5 925 152.9ZM670.3 181.1C670.3 174.8 670.3 168.4 670.3 162.1C704.1 162.1 737.9 162.1 771.7 162.1C773.1 171 772.2 180.6 772.2 189.7C772.2 206.9 772.2 224.2 772.2 241.4C772.3 294.7 772.3 348 772.3 401.3C772.3 431.7 772.3 462.1 772.2 492.5C772.2 502.2 772.3 512 772.2 521.7C772.2 527 772.7 532.6 771.5 537.7C737.8 537.7 704.2 537.7 670.5 537.7C670.5 532.2 670.5 526.7 670.5 521.2C665.7 522.9 661.3 525.6 656.6 527.6C646.6 531.9 636 535.3 625.4 537.7C581.2 547.6 533.6 540.3 493.9 518.5C404 469.1 369 355.6 416.9 264.4C431.9 235.9 454.9 211.5 481.6 193.6C522 166.5 572.3 156.8 620.1 164.8C631.1 166.6 642.2 169.6 652.6 173.7C657.4 175.6 665.6 181 670.3 181.1ZM1304.8 162.4C1331.4 160.6 1357.8 164.3 1382.9 173.1C1405.1 181 1425.9 193.8 1443.5 209.4C1460.7 224.6 1475.6 243 1486.3 263.4C1495.5 281 1502 299.9 1505.4 319.5C1520.3 405.6 1474.5 488.5 1396 525C1375.8 534.4 1353.3 540.1 1331.1 541.5C1305.1 543.2 1279.4 539.4 1254.8 530.8C1233.4 523.3 1212.8 511.7 1195.6 496.8C1174.1 478.1 1156.2 455.5 1144.6 429.3C1103 335.2 1143.8 225.4 1236 180.7C1257.6 170.2 1280.9 163.9 1304.8 162.4ZM577 263C523.8 268.7 486.3 319.3 498.4 372.1C500.7 382 504.9 392 510.4 400.5C515.8 408.7 522.9 416.7 530.7 422.5C539.7 429.1 549.2 434.4 559.9 437.5C572.1 441.1 585 441.9 597.5 440.3C608.5 439 619.1 435.5 628.7 430.1C684.4 399.2 690.7 320.2 640.1 281.2C631.6 274.6 621.9 269.5 611.7 266.3C600.6 262.9 588.5 261.7 577 263ZM1308.6 262.9C1260 268.8 1223.6 312.3 1229.3 361.8C1230.7 374.4 1235 386.5 1241.3 397.4C1246.6 406.5 1253.8 414.6 1261.9 421.1C1270.7 428 1280.4 433.7 1291.2 437C1303.7 440.9 1317.1 441.9 1330.1 440.3C1341.2 439 1352.3 435.4 1362 429.9C1418.1 397.9 1423.4 317.5 1370.7 279.4C1362.7 273.7 1353.7 269 1344.3 266.2C1332.9 262.9 1320.5 261.5 1308.6 262.9Z";
 
-function Bag() {
-  return (
-    <>
-      <path
-        d={HANDLE}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={5.5}
-        strokeLinecap="round"
-      />
-      <path d={BAG} fill="currentColor" />
-    </>
-  );
-}
+/*
+ * Lockup geometry, all of it derived rather than eyeballed:
+ *
+ *   mark height   700  — 1.30× the wordmark's ascender, so the leaf leads
+ *                        without shouting over the letters
+ *   scale         700 / 1125.4
+ *   gap           210  — 0.4× cap height, the wordmark's own spacing rhythm
+ *   baseline      692  — the mark's rounded foot overshoots it by 8, the same
+ *                        1.1% the "o" overshoots by, so both sit on one line
+ */
+const LOCKUP_MARK_H = 700;
+const LOCKUP_SCALE = LOCKUP_MARK_H / 1125.4;
+const LOCKUP_WORD_X = 877.6 * LOCKUP_SCALE + 210;
+const LOCKUP_WORD_Y = 154.3;
+const LOCKUP_W = LOCKUP_WORD_X + 1508.2;
 
-/** Square mark on its own — favicons, avatars, the collapsed sidebar. */
+/**
+ * The leaf on its own — favicons, avatars, the sidebar tile, narrow headers.
+ * Framed in a square so `size-*` behaves, with the ink centred in it.
+ */
 export function SailoMark({
   className,
   title,
@@ -41,54 +53,50 @@ export function SailoMark({
 }) {
   return (
     <svg
-      viewBox="0 0 64 64"
+      viewBox="-123.9 0 1125.4 1125.4"
       className={cn("size-6", className)}
       role={title ? "img" : "presentation"}
       aria-label={title}
       aria-hidden={title ? undefined : true}
     >
       {title ? <title>{title}</title> : null}
-      <Bag />
+      <path d={MARK} fill="currentColor" />
     </svg>
   );
 }
 
-/*
- * The lockup sets the mark as the S of SAILO, followed by A I L O drawn on the
- * same grid — cap height 40, baseline 59, stem 8.5, so the letters carry the
- * mark's weight. The A's legs run past the baseline and are cut flat by the
- * viewBox, which is why `overflow` is pinned hidden rather than left to chance.
- */
+/** The letters alone, for places that already carry the mark. */
+export function SailoWordmark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 1508.2 542"
+      className={cn("h-5 w-auto", className)}
+      role="img"
+      aria-label="Sailo"
+    >
+      <title>Sailo</title>
+      <path d={WORDMARK} fill="currentColor" />
+    </svg>
+  );
+}
+
+/** The horizontal lockup: leaf, then the wordmark sharing its baseline. */
 export function SailoLogo({ className }: { className?: string }) {
   return (
     <svg
-      viewBox="5 4.75 197.1 54.25"
-      overflow="hidden"
+      viewBox={`0 0 ${LOCKUP_W.toFixed(1)} ${LOCKUP_MARK_H}`}
       className={cn("h-7 w-auto", className)}
       role="img"
       aria-label="Sailo"
     >
       <title>Sailo</title>
-      <Bag />
-      <g
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={8.5}
-        strokeLinecap="butt"
-        strokeLinejoin="round"
-      >
-        <path d="M77.5 62L93 23L108.5 62M81.462 47H104.538" />
-        <path d="M120.35 19V59" />
-        <path d="M135.85 19V54.75H157.6" />
+      <g fill="currentColor">
+        <path d={MARK} transform={`scale(${LOCKUP_SCALE.toFixed(5)})`} />
+        <path
+          d={WORDMARK}
+          transform={`translate(${LOCKUP_WORD_X.toFixed(1)} ${LOCKUP_WORD_Y})`}
+        />
       </g>
-      <circle
-        cx={182.1}
-        cy={39}
-        r={15.75}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={8.5}
-      />
     </svg>
   );
 }
@@ -105,7 +113,7 @@ export function SailoBadge({ className }: { className?: string }) {
         className,
       )}
     >
-      <SailoMark className="size-5" />
+      <SailoMark className="size-5.5" />
     </span>
   );
 }

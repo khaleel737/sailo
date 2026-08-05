@@ -103,7 +103,8 @@ function merge(overrides: PartialAdminDictionary): AdminDictionary {
   for (const section of Object.keys(adminEn) as (keyof AdminDictionary)[]) {
     out[section] = {
       ...adminEn[section],
-      ...(overrides[section] ?? {}),
+      // Spreading undefined is a no-op, so a missing section needs no guard.
+      ...overrides[section],
     };
   }
   return out as AdminDictionary;

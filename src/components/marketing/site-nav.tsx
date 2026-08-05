@@ -44,7 +44,7 @@ export function SiteNav({
           {/* Below `sm` the wordmark costs ~56px the header does not have: the
               longest translated CTA plus a menu button already fills a 320px
               screen. The mark alone still identifies the page. */}
-          <SailoMark className="size-5 sm:hidden" />
+          <SailoMark className="size-6 sm:hidden" />
           <SailoLogo className="hidden h-[1.3rem] w-auto sm:block" />
         </Link>
 

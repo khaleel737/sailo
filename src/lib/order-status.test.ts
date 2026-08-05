@@ -21,8 +21,8 @@ describe("order status tones", () => {
   });
 
   it("has no tone for a status that isn't real", () => {
-    expect(Object.keys(ORDER_STATUS_TONE).sort()).toEqual(
-      [...ORDER_STATUSES].sort(),
+    expect(Object.keys(ORDER_STATUS_TONE).toSorted()).toEqual(
+      [...ORDER_STATUSES].toSorted(),
     );
   });
 

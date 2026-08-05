@@ -24,6 +24,7 @@
      5. Interaction    focus, press, lift, native control fixes
      6. Decoration     the one gradient the brand pages use
      7. Motion         keyframes, and the reduced-motion override
+     8. Route progress the navigation hairline at the top of the viewport
 =========================================================================== */
 
 /* --- 1. Theme ----------------------------------------------------------- */
@@ -349,16 +350,87 @@ body {
   }
 }
 
-/* Loading placeholder that reads as "content is coming", not "something broke". */
+/*
+ * Loading placeholder that reads as "content is coming", not "something broke".
+ *
+ * One step darker than the surfaces it sits on. The panels are `ink-50`
+ * (#faf9f7) and the brand pages are `--paper` (#fbfbf9); a ramp that topped out
+ * at `ink-50` disappeared entirely on the second, so it starts at `ink-200`.
+ */
 @utility skeleton {
   background: linear-gradient(
     90deg,
-    var(--color-ink-100) 25%,
-    var(--color-ink-50) 50%,
-    var(--color-ink-100) 75%
+    var(--color-ink-200) 25%,
+    var(--color-ink-100) 50%,
+    var(--color-ink-200) 75%
   );
   background-size: 200% 100%;
   animation: var(--animate-shimmer);
+}
+
+/* --- 8. Route progress -------------------------------------------------------
+
+   The hairline across the top of the viewport during a navigation.
+
+   It creeps towards 90% and never arrives on its own: the only thing that
+   completes it is the route committing. That is the honest shape for a wait of
+   unknown length — a bar that reaches 100% and sits there has lied.
+
+   `scaleX` on a full-width element rather than an animated `width`, so the
+   whole thing runs on the compositor and never touches layout.
+--------------------------------------------------------------------------- */
+
+@keyframes sailo-route-progress {
+  /* Fast off the line — most navigations are prefetched and end here. */
+  0% {
+    transform: scaleX(0);
+  }
+  12% {
+    transform: scaleX(0.35);
+  }
+  40% {
+    transform: scaleX(0.65);
+  }
+  /* Then asymptotic: still moving, never finishing. */
+  100% {
+    transform: scaleX(0.9);
+  }
+}
+
+.route-progress {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 100;
+  height: 2px;
+  pointer-events: none;
+  transform-origin: left center;
+  background: var(--color-brand-500);
+  /* The bar is drawn in logical order, so RTL grows from the right edge. */
+  will-change: transform, opacity;
+}
+
+[dir="rtl"] .route-progress {
+  transform-origin: right center;
+}
+
+.route-progress[data-state="idle"] {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.route-progress[data-state="loading"] {
+  opacity: 1;
+  animation: sailo-route-progress 12s var(--ease-out-quint) forwards;
+}
+
+.route-progress[data-state="done"] {
+  opacity: 0;
+  transform: scaleX(1);
+  /* Snap to full, then fade — the fade is delayed so the completion reads. */
+  transition:
+    transform 180ms var(--ease-out-quint),
+    opacity 260ms linear 140ms;
 }
 
 [dir="rtl"] {

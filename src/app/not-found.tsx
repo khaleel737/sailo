@@ -9,7 +9,7 @@ export default function NotFound() {
 
       <div className="animate-rise relative">
         <span className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-brand-700 text-white shadow-md">
-          <SailoMark className="size-6" />
+          <SailoMark className="size-7" />
         </span>
         <h1 className="mt-6 text-2xl font-bold tracking-tight text-ink-900 sm:text-3xl">
           This shop doesn&rsquo;t exist

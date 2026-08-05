@@ -5,6 +5,18 @@
  * `{placeholders}` are substituted at render time.
  */
 export const en = {
+  /**
+   * The error boundaries. Client components, so they cannot await a
+   * dictionary — the root layout hands them these five strings instead.
+   */
+  errors: {
+    title: "Something went wrong",
+    body: "This page didn't load. It is usually temporary, so trying again is worth a go.",
+    retry: "Try again",
+    home: "Go to the homepage",
+    reference: "Reference",
+  },
+
   common: {
     save: "Save",
     cancel: "Cancel",

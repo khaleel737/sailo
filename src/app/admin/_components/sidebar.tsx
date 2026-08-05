@@ -113,7 +113,7 @@ export function Sidebar({
       className="focus-ring flex items-center gap-2.5 rounded-xl px-1 py-1"
     >
       <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-brand-600 text-white">
-        <SailoMark className="size-5" />
+        <SailoMark className="size-5.5" />
       </span>
       <span className="min-w-0">
         <span className="block text-[11px] font-medium uppercase tracking-wide text-brand-400">

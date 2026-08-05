@@ -85,7 +85,7 @@ export function HqSidebar({ email }: { email: string }) {
       className="focus-ring flex items-center gap-2.5 rounded-xl px-1 py-1"
     >
       <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white text-ink-950">
-        <SailoMark className="size-5" />
+        <SailoMark className="size-5.5" />
       </span>
       <span className="min-w-0">
         <span className="block truncate text-sm font-semibold text-white">

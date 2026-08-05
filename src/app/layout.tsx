@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono, Outfit } from "next/font/google";
-import { getLocale } from "@/i18n/server";
+import { getLocale, getT } from "@/i18n/server";
 import { directionOf } from "@/i18n/config";
 import { getMarketingDictionary } from "@/i18n/marketing";
+import { RouteProgress } from "@/components/shared/route-progress";
 import { APP_URL } from "@/lib/seo";
 import "./globals.css";
 import "./brand.css";
@@ -133,6 +135,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   // visitor's resolved language. A shop whose own default differs overrides
   // both `lang` and `dir` on its own container.
   const locale = await getLocale();
+  const { t } = await getT();
 
   return (
     <html
@@ -141,6 +144,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-ink-900">
+        {/*
+          Suspense because the bar reads `useSearchParams`, which opts its
+          nearest boundary out of the static shell. Without one, that boundary
+          would be the whole document.
+        */}
+        <Suspense fallback={null}>
+          <RouteProgress label={t.common.loading} />
+        </Suspense>
         {children}
       </body>
     </html>

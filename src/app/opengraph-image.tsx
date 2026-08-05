@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getLocale } from "@/i18n/server";
 import { getMarketingDictionary } from "@/i18n/marketing";
+import { SailoMark } from "@/lib/og";
 
 export const alt = "Sailo — one link, your whole shop";
 export const size = { width: 1200, height: 630 };
@@ -36,19 +37,10 @@ export default async function Image() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-          {/* The mark, hand-inlined: Satori resolves no imports. */}
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-            <path
-              d="M20.5 19A11.5 11.5 0 0 1 43.5 19"
-              stroke="#34d98a"
-              strokeWidth={5.5}
-              strokeLinecap="round"
-            />
-            <path
-              d="M24 19H54A5 5 0 0 1 59 24V28.5H17.875A2.875 2.875 0 0 0 17.875 34.25H59V40A19 19 0 0 1 40 59H10A5 5 0 0 1 5 54V49.5H46.125A2.875 2.875 0 0 0 46.125 43.75H5V38A19 19 0 0 1 24 19Z"
-              fill="#34d98a"
-            />
-          </svg>
+          {/* Satori will not render an imported *component*, but it is happy
+              with a function that returns JSX — which is what this is. Sharing
+              it keeps this card on the same mark as the other three. */}
+          <SailoMark color="#34d98a" size={64} />
           <span style={{ fontSize: 40, fontWeight: 700, letterSpacing: -1 }}>
             Sailo
           </span>
