@@ -19,6 +19,8 @@
     "check:cards": "dotenv -e .env.local -- tsx scripts/check-cards.ts",
     "check:stores": "dotenv -e .env.local -- tsx scripts/check-stores.ts",
     "check:methods": "dotenv -e .env.local -- tsx scripts/check-payment-methods.ts",
+    "check:subs": "dotenv -e .env.local -- tsx scripts/check-subscriptions.ts",
+    "check:plans": "dotenv -e .env.local -- tsx scripts/check-plans.ts",
     "check:webhooks": "bash scripts/check-webhooks.sh",
     "shots": "tsx scripts/shots.ts",
     "check:load": "dotenv -e .env.local -- tsx scripts/check-load.ts",
