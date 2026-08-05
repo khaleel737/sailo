@@ -1,0 +1,27 @@
+src/lib/payments/rails.test.ts
+  s_3dd4b357265b83::t_f2c6c88e16817c 1-100
+src/lib/payments/handoff.ts
+  s_3dd4b357265b83::t_2863d4faf8c058 1-127
+src/lib/payments/index.ts
+  s_3dd4b357265b83::t_9bb56184e821b3 1-11
+src/lib/payments/rails.ts
+  s_3dd4b357265b83::t_0d3ee5851f6296 2-9
+src/lib/payments/status.ts
+  s_3dd4b357265b83::t_02c41cc911470c 1-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "1f0ab95f6aee9a65ed55dea59d78619721129c41",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
