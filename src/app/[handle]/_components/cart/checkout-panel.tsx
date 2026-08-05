@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
+import {
+  couponFor,
+  couponReducer,
+  NO_COUPON,
+} from "../../_lib/coupon-state";
 import { Download, Loader2, X } from "lucide-react";
 import { createOrderIntent, previewOrder } from "@/lib/actions/orders";
 import type { OrderIntentResult, OrderPreview, PreviewTax } from "@/lib/orders/types";
@@ -46,10 +51,7 @@ export function CheckoutPanel({
   const [deliveryId, setDeliveryId] = useState<string | null>(
     deliveryOptions[0]?.id ?? null,
   );
-  const [couponInput, setCouponInput] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState("");
-  const [couponError, setCouponError] = useState<string | null>(null);
-  const [checkingCoupon, setCheckingCoupon] = useState(false);
+  const [coupon, dispatchCoupon] = useReducer(couponReducer, NO_COUPON);
   const [preview, setPreview] = useState<OrderPreview | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -87,16 +89,15 @@ export function CheckoutPanel({
           shopId,
           items,
           deliveryMethodId: deliveryId ?? undefined,
-          couponCode: appliedCoupon || undefined,
+          couponCode: couponFor(coupon),
         });
         if (cancelled || "error" in res) return;
         setPreview(res);
         // A code that was fine a moment ago can stop qualifying when the
         // basket shrinks below its minimum, so it's dropped rather than
         // silently kept.
-        if (appliedCoupon && res.couponError) {
-          setCouponError(res.couponError);
-          setAppliedCoupon("");
+        if (coupon.applied && res.couponError) {
+          dispatchCoupon({ type: "lapsed", message: res.couponError });
         }
       } catch {
         // The last good total stays on screen. It is only ever a quote —
@@ -108,13 +109,12 @@ export function CheckoutPanel({
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shopId, itemsKey, deliveryId, appliedCoupon]);
+  }, [shopId, itemsKey, deliveryId, coupon.applied]);
 
   async function onApplyCoupon() {
-    const code = couponInput.trim();
+    const code = coupon.input.trim();
     if (!code) return;
-    setCheckingCoupon(true);
-    setCouponError(null);
+    dispatchCoupon({ type: "checking" });
 
     const res = await previewOrder({
       shopId,
@@ -122,17 +122,17 @@ export function CheckoutPanel({
       deliveryMethodId: deliveryId ?? undefined,
       couponCode: code,
     });
-    setCheckingCoupon(false);
-
     if ("error" in res) {
-      setCouponError(res.error);
+      dispatchCoupon({ type: "rejected", message: res.error });
       return;
     }
     if (res.couponError) {
-      setCouponError(res.couponError);
+      dispatchCoupon({ type: "rejected", message: res.couponError });
       return;
     }
-    setAppliedCoupon(res.couponApplied ?? code.toUpperCase());
+    // The server's spelling wins, so the buyer sees the code as the shop
+    // wrote it rather than as they typed it.
+    dispatchCoupon({ type: "applied", code: res.couponApplied ?? code.toUpperCase() });
     setPreview(res);
   }
 
@@ -157,7 +157,7 @@ export function CheckoutPanel({
       items,
       paymentMethod: method,
       deliveryMethodId: deliveryId ?? undefined,
-      couponCode: appliedCoupon || undefined,
+      couponCode: couponFor(coupon),
       affiliateCode: readReferralCode() ?? undefined,
       customerName: String(data.get("customerName") ?? ""),
       customerEmail: String(data.get("customerEmail") ?? ""),
@@ -433,19 +433,15 @@ export function CheckoutPanel({
             />
 
             <div>
-              {appliedCoupon ? (
+              {coupon.applied ? (
                 <div className="surface-elevated flex items-center justify-between gap-2 rounded-xl px-3 py-2.5">
                   <span className="text-sm">
-                    <span className="font-semibold">{appliedCoupon}</span>{" "}
+                    <span className="font-semibold">{coupon.applied}</span>{" "}
                     <span className="text-muted">{t.checkout.applied}</span>
                   </span>
                   <button
                     type="button"
-                    onClick={() => {
-                      setAppliedCoupon("");
-                      setCouponInput("");
-                      setCouponError(null);
-                    }}
+                    onClick={() => dispatchCoupon({ type: "cleared" })}
                     className="text-muted text-xs underline underline-offset-2 transition hover:opacity-70"
                   >
                     {t.checkout.remove}
@@ -454,10 +450,9 @@ export function CheckoutPanel({
               ) : (
                 <div className="flex gap-2">
                   <input
-                    value={couponInput}
+                    value={coupon.input}
                     onChange={(e) => {
-                      setCouponInput(e.target.value.toUpperCase());
-                      setCouponError(null);
+                      dispatchCoupon({ type: "typed", value: e.target.value.toUpperCase() });
                     }}
                     placeholder={t.checkout.discountCode}
                     aria-label={t.checkout.discountCode}
@@ -466,10 +461,10 @@ export function CheckoutPanel({
                   <button
                     type="button"
                     onClick={onApplyCoupon}
-                    disabled={checkingCoupon || !couponInput.trim()}
+                    disabled={coupon.checking || !coupon.input.trim()}
                     className="surface-card h-11 shrink-0 rounded-xl px-4 text-sm font-medium transition hover:opacity-70 disabled:opacity-40"
                   >
-                    {checkingCoupon ? (
+                    {coupon.checking ? (
                       <Loader2 className="size-4 animate-spin" />
                     ) : (
                       t.checkout.apply
@@ -477,8 +472,8 @@ export function CheckoutPanel({
                   </button>
                 </div>
               )}
-              {couponError ? (
-                <p className="mt-1.5 text-xs text-red-600">{couponError}</p>
+              {coupon.error ? (
+                <p className="mt-1.5 text-xs text-red-600">{coupon.error}</p>
               ) : null}
             </div>
 
