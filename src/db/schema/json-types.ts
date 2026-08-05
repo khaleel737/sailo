@@ -1,0 +1,55 @@
+/**
+ * The shapes stored in `jsonb` columns.
+ *
+ * Separate from the tables because both the tables and the application read
+ * them, and a column's type shouldn't drag a table definition along with it.
+ */
+
+export type VisitBreakdownJson = {
+  countries?: Record<string, number>;
+  cities?: Record<string, number>;
+  sources?: Record<string, number>;
+  devices?: Record<string, number>;
+  referrers?: Record<string, number>;
+};
+
+export type ShopSocial = {
+  platform: string;
+  url: string;
+};
+
+/** One axis of choice on a product: "Size" with "Small", "Medium", "Large". */
+export type ProductOption = {
+  name: string;
+  values: string[];
+};
+
+/** A variant's pick on each axis, keyed by option name. */
+export type VariantOptions = Record<string, string>;
+
+/** Union of every rail's settings — only the keys for that type are used. */
+export type PaymentConfig = {
+  // Contact rails
+  phone?: string; // whatsapp, phone
+  username?: string; // telegram, instagram
+  address?: string; // email
+  // Bank transfer
+  bankName?: string;
+  accountName?: string;
+  accountNumber?: string;
+  iban?: string;
+  swift?: string;
+  // Free text shown to the buyer after ordering (bank_transfer, cod)
+  instructions?: string;
+};
+
+/** Union of every delivery type's settings. */
+export type DeliveryConfig = {
+  /** shipping: "2–3 working days" */
+  estimate?: string;
+  /** collection: where to pick up */
+  address?: string;
+  /** collection: opening hours */
+  hours?: string;
+  instructions?: string;
+};
