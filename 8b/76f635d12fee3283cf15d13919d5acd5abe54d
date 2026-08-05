@@ -1,0 +1,25 @@
+src/lib/products/form-fields.test.ts
+  s_3dd4b357265b83::t_33ab0d4cf6058c 1-165
+src/lib/products/form-fields.ts
+  s_3dd4b357265b83::t_ceec09aedffc76 1-110
+src/lib/actions/products.ts
+  s_3dd4b357265b83::t_4bfa3ef2ce3e80 270,272
+  s_3dd4b357265b83::t_f351b9b0107814 20,24,104-105,107-111,121,269
+  s_3dd4b357265b83::t_a2ec28a3817e83 8-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8b76f635d12fee3283cf15d13919d5acd5abe54d",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
