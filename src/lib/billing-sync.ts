@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { shops } from "@/db/schema";
 import { stripe } from "@/lib/stripe";
+import { resolveCustomerId } from "@/lib/billing-customer";
 import { freePlanFields, subscriptionFields } from "@/lib/billing-map";
 
 /**
@@ -17,8 +18,18 @@ export async function syncSubscriptionForShop(shopId: string) {
   const shop = await db.query.shops.findFirst({ where: eq(shops.id, shopId) });
   if (!shop?.stripeCustomerId) return;
 
+  /*
+   * A stale id here means the row points at a customer this Stripe account
+   * cannot see — a test-mode id under live keys, or one deleted from the
+   * dashboard. Listing its subscriptions would throw, and this runs during
+   * render on the billing page, so it would take the whole page with it.
+   * There is nothing to sync from a customer that does not exist.
+   */
+  const customer = await resolveCustomerId(shop.stripeCustomerId);
+  if (!customer) return;
+
   const subs = await stripe().subscriptions.list({
-    customer: shop.stripeCustomerId,
+    customer,
     status: "all",
     limit: 10,
   });

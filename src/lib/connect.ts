@@ -5,6 +5,7 @@ import { getDb } from "@/db";
 import { shops, type Order, type Shop } from "@/db/schema";
 import { lineTitle, orderLines, orderSummaryTitle } from "@/lib/order-lines";
 import { appUrl, stripe } from "@/lib/stripe";
+import { taxName } from "@/lib/tax-label";
 import { platformFeeCents } from "@/lib/plans";
 
 /**
@@ -291,7 +292,7 @@ export async function createCheckoutSession(opts: {
       price_data: {
         currency,
         unit_amount: order.taxCents,
-        product_data: { name: order.taxName ?? "Tax" },
+        product_data: { name: taxName(order) },
       },
     });
   }

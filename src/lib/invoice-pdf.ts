@@ -9,7 +9,8 @@ import {
   showsBadge,
 } from "@/components/shared/powered-by";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
-import { formatPercent } from "@/lib/pricing";
+import { taxLabel } from "@/lib/tax-label";
+
 import { formatAddress, formatMoney } from "@/lib/utils";
 
 const INK = "#1a1a20";
@@ -22,13 +23,6 @@ const MARGIN = 50;
  * bundling and it works unchanged on serverless.
  */
 /** "VAT (20%)" — the rate is snapshotted on the order, not read from the shop. */
-function taxLabel(order: { taxName: string | null; taxRateBp: number }) {
-  const name = order.taxName ?? "Tax";
-  return order.taxRateBp > 0
-    ? `${name} (${formatPercent(order.taxRateBp)}%)`
-    : name;
-}
-
 export function renderInvoicePdf(data: {
   shop: Shop;
   order: Order;

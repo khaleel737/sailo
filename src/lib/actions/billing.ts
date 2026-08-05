@@ -2,39 +2,15 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { shops } from "@/db/schema";
 import { requireShop } from "@/lib/session";
 import { appUrl, stripe } from "@/lib/stripe";
+import { ensureCustomerId, resolveCustomerId } from "@/lib/billing-customer";
 import { isPlanId, PLANS } from "@/lib/plans";
 import { syncSubscriptionForShop } from "@/lib/billing-sync";
 
 function priceIdFor(plan: string, interval: string) {
   const key = `STRIPE_PRICE_${plan.toUpperCase()}_${interval.toUpperCase()}LY`;
   return process.env[key];
-}
-
-/** Reuses the shop's Stripe customer, creating one on first upgrade. */
-async function customerIdFor(shopId: string) {
-  const db = getDb();
-  const shop = await db.query.shops.findFirst({ where: eq(shops.id, shopId) });
-  if (!shop) throw new Error("Shop not found");
-  if (shop.stripeCustomerId) return shop.stripeCustomerId;
-
-  const customer = await stripe().customers.create({
-    name: shop.name,
-    email: shop.contactEmail ?? undefined,
-    // Lets the webhook find the shop even if client_reference_id is missing.
-    metadata: { shopId: shop.id, handle: shop.handle },
-  });
-
-  await db
-    .update(shops)
-    .set({ stripeCustomerId: customer.id, updatedAt: new Date() })
-    .where(eq(shops.id, shop.id));
-
-  return customer.id;
 }
 
 /**
@@ -77,7 +53,7 @@ export async function startCheckout(formData: FormData) {
     );
   }
 
-  const customer = await customerIdFor(shop.id);
+  const customer = await ensureCustomerId(shop.id);
   const session = await stripe().checkout.sessions.create({
     mode: "subscription",
     customer,
@@ -104,8 +80,16 @@ export async function openBillingPortal() {
   const { shop } = await requireShop();
   if (!shop.stripeCustomerId) redirect("/admin/settings/billing");
 
+  /*
+   * Resolve rather than trust. Unlike checkout there is nothing to create
+   * here: a customer Stripe has never heard of has no invoices, cards or
+   * subscription to manage, so the honest destination is the billing page.
+   */
+  const customer = await resolveCustomerId(shop.stripeCustomerId);
+  if (!customer) redirect("/admin/settings/billing");
+
   const session = await stripe().billingPortal.sessions.create({
-    customer: shop.stripeCustomerId,
+    customer,
     return_url: `${appUrl()}/admin/settings/billing`,
   });
 
