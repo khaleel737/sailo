@@ -1,0 +1,50 @@
+src/db/schema/types.ts
+  s_3dd4b357265b83::t_7a7375e7366060 1-16,19-40
+  s_3dd4b357265b83::t_27e8c0fe01f257 17-18
+src/db/schema/relations.ts
+  s_3dd4b357265b83::t_27e8c0fe01f257 7
+  s_3dd4b357265b83::t_7a7375e7366060 1-6,8-148
+src/db/schema/analytics.ts
+  s_3dd4b357265b83::t_7a7375e7366060 1-130
+drizzle.config.ts
+  s_409182f8577344::t_6ba6a68e934b86 4
+src/db/schema/auth.ts
+  s_3dd4b357265b83::t_7a7375e7366060 1-81
+src/db/schema/orders.ts
+  s_3dd4b357265b83::t_7a7375e7366060 2-5,10,12-14,16
+src/db/schema/json-types.ts
+  s_3dd4b357265b83::t_7a7375e7366060 1-55
+src/db/schema/shop.ts
+  s_3dd4b357265b83::t_7a7375e7366060 1-12,14-178
+  s_3dd4b357265b83::t_27e8c0fe01f257 13
+src/db/schema/commerce.ts
+  s_3dd4b357265b83::t_7a7375e7366060 1-152
+src/db/schema/catalog.ts
+  s_3dd4b357265b83::t_7a7375e7366060 1-215
+src/db/schema/index.ts
+  s_3dd4b357265b83::t_b3c0cea30156f5 1-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ab474e00974a89a6fdc7602f54a3926d96ea1933",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_409182f8577344": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ac36c06e-0b1f-49d2-8d1b-799407288c73",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
