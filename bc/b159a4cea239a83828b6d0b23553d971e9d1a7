@@ -1,0 +1,21 @@
+src/lib/dependencies.test.ts
+  s_3dd4b357265b83::t_48de10cd7c6588 54-56
+  s_3dd4b357265b83::t_39c4805d94b038 65-76
+  s_3dd4b357265b83::t_9f44063c75dc17 1-53,57-64,77-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "bcb159a4cea239a83828b6d0b23553d971e9d1a7",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
