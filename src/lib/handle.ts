@@ -9,6 +9,8 @@ export const HANDLE_MAX = 32;
 /** Paths that would collide with a shop handle at the root of the site. */
 export const RESERVED_HANDLES = new Set([
   "admin", "api", "login", "signup", "signin", "sign-in", "sign-up", "logout",
+  // Sailo's own back office, and the names it might move to.
+  "hq", "staff", "console", "internal", "ops", "team",
   "onboarding", "dashboard", "settings", "billing", "account", "profile", "me",
   "about", "pricing", "help", "support", "contact", "terms", "privacy", "legal",
   "blog", "docs", "status", "explore", "discover", "search", "new", "create",

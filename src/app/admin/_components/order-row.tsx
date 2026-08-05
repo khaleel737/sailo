@@ -13,34 +13,13 @@ import { OrderStatusSelect } from "@/app/admin/orders/_components/order-status-s
 import { PaymentStatusSelect } from "@/app/admin/orders/_components/payment-status-select";
 import { OrderActions } from "@/app/admin/orders/_components/order-actions";
 import { Badge, Button } from "@/components/ui";
+import { orderStatusLabel, orderStatusTone } from "@/lib/order-status";
+import { getAdminT } from "@/i18n/server";
 import { formatAddress, formatMoney } from "@/lib/utils";
 import type { Order } from "@/db/schema";
 import type { OrderLine } from "@/lib/order-lines";
 
-const STATUS_TONE = {
-  new: "blue",
-  confirmed: "amber",
-  shipped: "blue",
-  completed: "green",
-  cancelled: "neutral",
-  refunded: "red",
-} as const;
-
-/*
- * The database stores lowercase enum values; a row is read by a person, so it
- * gets a written label. Keeping the map here rather than capitalising the enum
- * means "cod" never renders as "Cod".
- */
-const STATUS_LABEL: Record<string, string> = {
-  new: "New",
-  confirmed: "Confirmed",
-  shipped: "Shipped",
-  completed: "Completed",
-  cancelled: "Cancelled",
-  refunded: "Refunded",
-};
-
-export function OrderRow({
+export async function OrderRow({
   order,
   items,
   invoice,
@@ -52,6 +31,7 @@ export function OrderRow({
   invoice?: { number: string; token: string };
   showCustomer?: boolean;
 }) {
+  const { a } = await getAdminT();
   const lines: OrderLine[] = items?.length ? items : [];
   const address = formatAddress(order);
   const methodName = isPaymentMethodType(order.paymentMethod)
@@ -78,18 +58,15 @@ export function OrderRow({
                 </span>
               ) : null}
             </p>
-            <Badge
-              tone={STATUS_TONE[order.status as keyof typeof STATUS_TONE] ?? "neutral"}
-              dot
-            >
-              {STATUS_LABEL[order.status] ?? order.status}
+            <Badge tone={orderStatusTone(order.status)} dot>
+              {orderStatusLabel(order.status, a.orderStatus)}
             </Badge>
             {order.paymentStatus === "paid" ? (
-              <Badge tone="green">Paid</Badge>
+              <Badge tone="green">{a.common.paid}</Badge>
             ) : order.paymentStatus === "pending" ? (
-              <Badge tone="amber">Confirm payment</Badge>
+              <Badge tone="amber">{a.orders.confirmPayment}</Badge>
             ) : (
-              <Badge tone="red">Unpaid</Badge>
+              <Badge tone="red">{a.orders.unpaid}</Badge>
             )}
             <span className="text-xs text-ink-400">
               {methodName}
@@ -199,7 +176,7 @@ export function OrderRow({
                 </>
               ) : (
                 <span className="text-amber-600">
-                  Files held until you mark this paid
+                  {a.orders.filesHeld}
                 </span>
               )}
               <Link
@@ -207,7 +184,7 @@ export function OrderRow({
                 target="_blank"
                 className="underline underline-offset-2 hover:text-ink-900"
               >
-                View
+                {a.common.view}
               </Link>
             </p>
           ) : null}
@@ -225,7 +202,7 @@ export function OrderRow({
                   rel="noopener noreferrer"
                   className="underline underline-offset-2 hover:text-ink-900"
                 >
-                  Track
+                  {a.orders.track}
                 </a>
               ) : null}
             </p>
@@ -328,7 +305,7 @@ export function OrderRow({
               variant="ghost"
               size="sm"
               type="submit"
-              aria-label="Delete order"
+              aria-label={a.orders.deleteOrder}
               className="text-ink-400 hover:bg-red-50 hover:text-red-600"
             >
               <Trash2 className="size-4" />

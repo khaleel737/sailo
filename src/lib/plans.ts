@@ -109,10 +109,21 @@ export function isPlanId(value: string): value is PlanId {
  */
 const ENTITLED_STATUSES = new Set(["active", "trialing", "past_due"]);
 
-type BillingShape = Pick<Shop, "plan" | "subscriptionStatus">;
+type BillingShape = Pick<Shop, "plan" | "subscriptionStatus"> & {
+  /** Optional so callers holding only the two billing columns still fit. */
+  compPlan?: string | null;
+};
 
 /** The plan a shop is actually entitled to right now. */
 export function planFor(shop: BillingShape): Plan {
+  /*
+   * A plan we granted from /hq outranks whatever Stripe says. It has to: the
+   * billing sync rewrites `plan` and `subscriptionStatus` from Stripe on every
+   * visit to the billing page, so a comp expressed in those columns would be
+   * wiped by the seller simply looking at their own bill.
+   */
+  if (shop.compPlan && isPlanId(shop.compPlan)) return PLANS[shop.compPlan];
+
   if (!isPlanId(shop.plan) || shop.plan === "free") return PLANS.free;
   if (!shop.subscriptionStatus) return PLANS.free;
   return ENTITLED_STATUSES.has(shop.subscriptionStatus)
@@ -165,6 +176,46 @@ export function cheapestPlanWith(feature: keyof Features): Plan | null {
     if (PLANS[id].features[feature]) return PLANS[id];
   }
   return null;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  What Sailo keeps from a card sale                                          */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The platform fee, in basis points — 100 = 1%.
+ *
+ * Taken as a function of the plan rather than a constant because that is where
+ * this ends up: Shopify's equivalent surcharge runs 2% on Basic down to 0.2%
+ * on Plus, so the bigger the subscription the smaller the cut. Cards are a
+ * single tier here today, so there is one number — but the shape is ready for
+ * the day there are several, and every caller already passes the shop.
+ */
+export function platformFeeBp(_shop: BillingShape): number {
+  return 100;
+}
+
+/**
+ * The fee on one order, in minor units.
+ *
+ * Charged on the goods alone. Delivery is usually money the seller hands to a
+ * courier, and tax is money they collect for a government and never owned —
+ * billing a percentage of either means charging them for holding someone
+ * else's money. A discount comes off first, because 1% of a price nobody paid
+ * is not 1% of a sale.
+ */
+export function platformFeeCents(
+  shop: BillingShape,
+  order: { subtotalCents: number; discountCents: number },
+): number {
+  const goods = Math.max(0, order.subtotalCents - order.discountCents);
+  return Math.round((goods * platformFeeBp(shop)) / 10_000);
+}
+
+/** "1%" — for the places that have to state the fee to a seller. */
+export function platformFeeLabel(shop: BillingShape): string {
+  const bp = platformFeeBp(shop);
+  return bp % 100 === 0 ? `${bp / 100}%` : `${(bp / 100).toFixed(2)}%`;
 }
 
 export function upgradeMessage(feature: keyof Features, what: string) {

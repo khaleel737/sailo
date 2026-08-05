@@ -405,7 +405,7 @@ description={a.productForm.releaseOnPaymentBody}
         <Submit isEdit={isEdit} />
         <Link
           href="/admin/products"
-          className="text-sm text-ink-500 transition hover:text-ink-900"
+          className="focus-ring inline-flex items-center rounded text-sm text-ink-500 transition hover:text-ink-900 pointer-coarse:min-h-11"
         >
           {a.common.cancel}
         </Link>
@@ -433,14 +433,14 @@ function Toggle({
   const controlled = checked !== undefined && onChange !== undefined;
 
   return (
-    <label className="flex cursor-pointer items-start gap-3">
+    <label className="flex cursor-pointer items-start gap-3 pointer-coarse:min-h-11">
       <input
         type="checkbox"
         name={name}
         {...(controlled
           ? { checked, onChange: (e) => onChange(e.target.checked) }
           : { defaultChecked })}
-        className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900"
+        className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900 pointer-coarse:size-5"
       />
       <span>
         <span className="block text-sm font-medium text-ink-900">{label}</span>

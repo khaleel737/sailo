@@ -8,8 +8,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       // Vercel Blob — where product images land.
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
-      // Used by the demo seed only.
+      // Used by the demo seeds only.
       { protocol: "https", hostname: "picsum.photos" },
+      { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
   async redirects() {

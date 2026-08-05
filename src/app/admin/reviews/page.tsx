@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Check, MessageSquare, Star, Trash2 } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
+import { interpolate } from "@/i18n";
 import { getShopReviews } from "@/lib/queries";
 import { approveReview, deleteReview } from "@/lib/actions/reviews";
 import { PageHeader } from "@/components/shared/page-header";
@@ -22,8 +23,8 @@ export default async function AdminReviewsPage() {
         title={a.reviews.title}
         description={
           pending.length > 0
-            ? `${pending.length} waiting for your approval — only approved reviews show on your shop.`
-            : "Only approved reviews show on your shop."
+            ? interpolate(a.reviews.awaiting, { count: pending.length })
+            : a.reviews.allApproved
         }
       />
 
@@ -56,9 +57,9 @@ export default async function AdminReviewsPage() {
                     ))}
                   </div>
                   {review.isApproved ? (
-                    <Badge tone="green">Live</Badge>
+                    <Badge tone="green">{a.common.live}</Badge>
                   ) : (
-                    <Badge tone="amber">Pending</Badge>
+                    <Badge tone="amber">{a.common.pending}</Badge>
                   )}
                 </div>
 
@@ -87,7 +88,7 @@ export default async function AdminReviewsPage() {
                       aria-label={a.reviews.approveReview}
                     >
                       <Check className="size-4" />
-                      Approve
+                      {a.common.approve}
                     </Button>
                   </form>
                 ) : null}

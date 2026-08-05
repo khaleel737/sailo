@@ -47,8 +47,8 @@ export default async function AdminAffiliatesPage() {
           shop={shop}
           feature="affiliates"
           icon={<Gift className="size-8" />}
-          title="Referral programme"
-          description="Give people a link, pay them a commission on what it brings in. Buyers can opt in to their own link right after ordering."
+          title={a.affiliates.programme}
+          description={a.affiliates.programmeBody}
           points={[
             "Set a default rate, or a different one per affiliate",
             "Track clicks, orders and commission owed",
@@ -84,7 +84,7 @@ export default async function AdminAffiliatesPage() {
 
       {!shop.affiliatesEnabled ? (
         <p className="text-sm text-ink-500">
-          Turn the programme on above to add affiliates and share links.
+          {a.affiliates.turnOnFirst}
         </p>
       ) : (
         <>
@@ -140,11 +140,11 @@ export default async function AdminAffiliatesPage() {
                           </code>
                           <Badge tone="blue">{bpToPercent(rate)}%</Badge>
                           {affiliate.status === "active" ? (
-                            <Badge tone="green">Active</Badge>
+                            <Badge tone="green">{a.common.active}</Badge>
                           ) : affiliate.status === "pending" ? (
-                            <Badge tone="amber">Pending</Badge>
+                            <Badge tone="amber">{a.common.pending}</Badge>
                           ) : (
-                            <Badge>Disabled</Badge>
+                            <Badge>{a.common.disabled}</Badge>
                           )}
                           <Badge>
                             {SOURCE_LABEL[affiliate.source] ?? affiliate.source}
@@ -188,7 +188,7 @@ export default async function AdminAffiliatesPage() {
                         <p className="text-sm font-semibold tabular-nums">
                           {formatMoney(affiliate.earnedCents, shop.currency)}
                         </p>
-                        <p className="text-xs text-ink-500">earned</p>
+                        <p className="text-xs text-ink-500">{a.affiliates.earned}</p>
                         {affiliate.unpaidCents > 0 ? (
                           <p className="mt-0.5 text-xs font-medium text-amber-600">
                             {formatMoney(affiliate.unpaidCents, shop.currency)}{" "}
@@ -214,7 +214,7 @@ export default async function AdminAffiliatesPage() {
                           <input type="hidden" name="id" value={affiliate.id} />
                           <input type="hidden" name="status" value="disabled" />
                           <Button variant="secondary" size="sm" type="submit">
-                            Disable
+                            {a.common.disable}
                           </Button>
                         </form>
                       )}
@@ -227,7 +227,7 @@ export default async function AdminAffiliatesPage() {
                             value={affiliate.id}
                           />
                           <Button variant="secondary" size="sm" type="submit">
-                            Mark paid
+                            {a.affiliates.markPaid}
                           </Button>
                         </form>
                       ) : null}

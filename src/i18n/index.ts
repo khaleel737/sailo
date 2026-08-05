@@ -14,6 +14,7 @@ import { el } from "./dictionaries/el";
 import { es } from "./dictionaries/es";
 import { fi } from "./dictionaries/fi";
 import { fr } from "./dictionaries/fr";
+import { hr } from "./dictionaries/hr";
 import { hu } from "./dictionaries/hu";
 import { it } from "./dictionaries/it";
 import { ja } from "./dictionaries/ja";
@@ -23,14 +24,37 @@ import { pl } from "./dictionaries/pl";
 import { pt } from "./dictionaries/pt";
 import { ro } from "./dictionaries/ro";
 import { ru } from "./dictionaries/ru";
+import { sr } from "./dictionaries/sr";
 import { sv } from "./dictionaries/sv";
 import { tr } from "./dictionaries/tr";
 import { uk } from "./dictionaries/uk";
 import { zh } from "./dictionaries/zh";
 
+import { bs } from "./dictionaries/bs";
+
+import { sl } from "./dictionaries/sl";
+
+import { mk } from "./dictionaries/mk";
+
+import { sq } from "./dictionaries/sq";
+
+import { bg } from "./dictionaries/bg";
+
+import { th } from "./dictionaries/th";
+
+import { vi } from "./dictionaries/vi";
+
+import { id } from "./dictionaries/id";
+
+import { ms } from "./dictionaries/ms";
+
+import { fil } from "./dictionaries/fil";
+
+import { ko } from "./dictionaries/ko";
+
 const DICTIONARIES: Record<Locale, Dictionary> = {
   en, ar, cs, da, de, el, es, fi, fr, hu, it, ja,
-  nl, no, pl, pt, ro, ru, sv, tr, uk, zh,
+  nl, no, pl, pt, ro, ru, sv, tr, uk, zh, hr, sr, bs, sl, mk, sq, bg, th, vi, id, ms, fil, ko,
 };
 
 export function getDictionary(locale: string | undefined | null): Dictionary {

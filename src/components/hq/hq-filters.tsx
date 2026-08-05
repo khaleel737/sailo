@@ -78,7 +78,7 @@ export function HqFilters({
           defaultValue={values.q ?? ""}
           placeholder={placeholder}
           aria-label={placeholder}
-          className="h-10 ps-9"
+          className="h-10 ps-9 pointer-coarse:h-11"
         />
       </form>
 
@@ -88,7 +88,7 @@ export function HqFilters({
           aria-label={field.label}
           value={values[field.name] ?? "all"}
           onChange={(e) => go({ [field.name]: e.target.value })}
-          className="h-10 w-auto min-w-36"
+          className="h-10 w-auto min-w-36 pointer-coarse:h-11"
         >
           {field.options.map((option) => (
             <option key={option.value} value={option.value}>

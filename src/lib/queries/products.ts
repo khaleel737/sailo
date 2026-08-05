@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, gte, ilike, inArray, isNotNull, lte, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, inArray, lte, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
   categories,
@@ -14,6 +14,7 @@ import {
   type ProductVariant,
 } from "@/db/schema";
 import { cachedForShop, shopTag } from "@/lib/cache";
+import { nextOffsetFor, orderByIds } from "./pagination";
 
 /** Reading the catalogue, for the storefront and for the admin. */
 
@@ -35,37 +36,36 @@ export type ShopFilters = {
   inStock?: string;
 };
 
-/** Rating aggregates keyed by product id — approved reviews only. */
-async function getRatings(productIds: string[]) {
-  const map = new Map<string, { avg: number; count: number }>();
-  if (productIds.length === 0) return map;
+/** How many cards one batch of the storefront grid holds. */
+export const PRODUCT_PAGE_SIZE = 24;
 
-  const rows = await getDb()
-    .select({
-      productId: reviews.productId,
-      avg: sql<string>`avg(${reviews.rating})`,
-      count: sql<string>`count(*)`,
-    })
-    .from(reviews)
-    .where(
-      and(inArray(reviews.productId, productIds), eq(reviews.isApproved, true)),
-    )
-    .groupBy(reviews.productId);
+export type ProductPage = {
+  items: ProductCard[];
+  /** Every match for the filter, not just this batch — what the filter bar counts. */
+  total: number;
+  /** Offset to ask for next, or null when the catalogue is exhausted. */
+  nextOffset: number | null;
+};
 
-  for (const r of rows) {
-    map.set(r.productId, { avg: Number(r.avg), count: Number(r.count) });
-  }
-  return map;
-}
+const EMPTY_PAGE: ProductPage = { items: [], total: 0, nextOffset: null };
 
 /**
  * The public catalog query — search, category, kind, price range and sort all
  * resolve here so the template stays a dumb renderer.
+ *
+ * Read in three steps rather than one. The catalogue is unbounded on the
+ * Business plan, so the batch has to be chosen in SQL before any relation is
+ * loaded: fetching every product's images and variants and then slicing in
+ * JavaScript would leave the expensive part uncapped, which is the whole
+ * problem. Step one picks the page's ids, step two loads relations for those
+ * ids only, step three restores the order SQL chose.
  */
 async function readPublicProducts(
   shopId: string,
   filters: ShopFilters = {},
-): Promise<ProductCard[]> {
+  offset = 0,
+  limit = PRODUCT_PAGE_SIZE,
+): Promise<ProductPage> {
   const db = getDb();
   const where = [eq(products.shopId, shopId), eq(products.isPublished, true)];
 
@@ -86,7 +86,7 @@ async function readPublicProducts(
       ),
     });
     // An unknown category slug should return nothing, not everything.
-    if (!cat) return [];
+    if (!cat) return EMPTY_PAGE;
     where.push(eq(products.categoryId, cat.id));
   }
 
@@ -101,20 +101,73 @@ async function readPublicProducts(
   if (Number.isFinite(max) && filters.max)
     where.push(lte(products.priceCents, Math.round(max * 100)));
 
+  /*
+   * Approved-review aggregate, joined rather than fetched afterwards. Sorting
+   * by rating used to happen in JavaScript over the whole result set, which
+   * only worked while the whole result set was in memory — under a LIMIT it
+   * would have sorted each batch against itself and silently mis-ordered the
+   * catalogue.
+   */
+  const ratings = db
+    .select({
+      productId: reviews.productId,
+      avg: sql<string>`avg(${reviews.rating})`.as("avg_rating"),
+      count: sql<string>`count(*)`.as("review_count"),
+    })
+    .from(reviews)
+    .where(eq(reviews.isApproved, true))
+    .groupBy(reviews.productId)
+    .as("ratings");
+
   const orderBy = {
     price_asc: [asc(products.priceCents)],
     price_desc: [desc(products.priceCents)],
     newest: [desc(products.createdAt)],
     oldest: [asc(products.createdAt)],
+    // NULLS LAST keeps unreviewed products behind reviewed ones in both
+    // engines' default, rather than at whichever end Postgres prefers.
+    rating: [sql`${ratings.avg} desc nulls last`],
   }[filters.sort ?? ""] ?? [
     desc(products.isFeatured),
     asc(products.position),
     desc(products.createdAt),
   ];
 
+  /*
+   * Every sort ends on the primary key, so the order is total rather than
+   * partial. Without it a batch boundary is undefined where the sort keys tie
+   * — and they tie constantly: `position` defaults to 0, and Postgres gives
+   * every row inserted by one CSV import the same `created_at`, because now()
+   * is fixed for the transaction. A tie across a boundary repeats a product on
+   * the next batch or drops it entirely.
+   */
+  const ordered = [...orderBy, asc(products.id)];
+
+  const [idRows, totalRows] = await Promise.all([
+    db
+      .select({
+        id: products.id,
+        avg: ratings.avg,
+        count: ratings.count,
+      })
+      .from(products)
+      .leftJoin(ratings, eq(ratings.productId, products.id))
+      .where(and(...where))
+      .orderBy(...ordered)
+      .limit(limit)
+      .offset(offset),
+    db
+      .select({ total: sql<string>`count(*)` })
+      .from(products)
+      .where(and(...where)),
+  ]);
+
+  const total = Number(totalRows[0]?.total ?? 0);
+  if (idRows.length === 0) return { items: [], total, nextOffset: null };
+
+  const ids = idRows.map((r) => r.id);
   const rows = await db.query.products.findMany({
-    where: and(...where),
-    orderBy,
+    where: inArray(products.id, ids),
     with: {
       images: { orderBy: [asc(productImages.position)] },
       category: true,
@@ -124,19 +177,23 @@ async function readPublicProducts(
     },
   });
 
-  const ratings = await getRatings(rows.map((r) => r.id));
+  // `inArray` has no order of its own, so the batch is rebuilt in the order
+  // the first query chose.
+  const rating = new Map(idRows.map((r) => [r.id, r]));
+  const items: ProductCard[] = orderByIds(ids, rows).map((product) => {
+    // A product nobody has reviewed has no row on the left join, so both come
+    // back null — which is a rating of "none", not a score of zero.
+    const found = rating.get(product.id);
+    const avg = found?.avg ?? null;
+    const count = found?.count ?? null;
+    return {
+      ...product,
+      avgRating: avg === null ? null : Number(avg),
+      reviewCount: count === null ? 0 : Number(count),
+    };
+  });
 
-  let cards: ProductCard[] = rows.map((r) => ({
-    ...r,
-    avgRating: ratings.get(r.id)?.avg ?? null,
-    reviewCount: ratings.get(r.id)?.count ?? 0,
-  }));
-
-  if (filters.sort === "rating") {
-    cards = [...cards].sort((a, b) => (b.avgRating ?? -1) - (a.avgRating ?? -1));
-  }
-
-  return cards;
+  return { items, total, nextOffset: nextOffsetFor(offset, items.length, total) };
 }
 
 async function readProductBySlug(shopId: string, slug: string) {
@@ -191,7 +248,19 @@ export async function getAdminProduct(shopId: string, id: string) {
 }
 
 export const getPublicProducts = cachedForShop(
-  ["public-products"],
+  /*
+   * The suffix is part of the cache key, and it moves whenever the shape of
+   * what this returns changes.
+   *
+   * These entries never expire — `cachedForShop` sets `revalidate: false` and
+   * relies on tag invalidation, which only fires when a seller edits their
+   * shop. So a deploy that changes the shape meets entries written by the
+   * previous one: this used to return `ProductCard[]` and now returns a page,
+   * and the new code reading `.items` off an old array gets `undefined` and
+   * takes the storefront down until every shop happens to be edited. Renaming
+   * the key retires the old entries instead of reinterpreting them.
+   */
+  ["public-products-v2-page"],
   readPublicProducts,
   (shopId) => [shopTag(shopId)],
 );

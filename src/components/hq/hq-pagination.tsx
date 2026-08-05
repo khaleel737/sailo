@@ -84,6 +84,7 @@ function PageLink({
 }) {
   const className = cn(
     "focus-ring inline-flex size-8 items-center justify-center rounded-lg border border-ink-200 bg-white text-ink-600 shadow-xs transition",
+    "pointer-coarse:size-11",
     disabled
       ? "pointer-events-none opacity-40"
       : "hover:border-ink-300 hover:text-ink-900",

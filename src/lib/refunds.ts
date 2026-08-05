@@ -1,0 +1,83 @@
+import "server-only";
+import type { Order } from "@/db/schema";
+import { refundCharge } from "@/lib/connect";
+import { isPaymentMethodType, type PaymentMethodType } from "@/lib/payments";
+
+/**
+ * Giving money back, by the rail that took it.
+ *
+ * An order records which rail it was paid on, so a refund asks that rail to
+ * reverse itself rather than assuming Stripe. Most of Sailo's rails can't:
+ * a WhatsApp handoff or a bank transfer settles between two people and the
+ * seller hands the money back the same way they received it. Card is the one
+ * that moves on its own, and Paystack or Flutterwave would slot in beside it
+ * as another entry in the table below.
+ *
+ * The distinction matters to what the seller is told. "Refunded to their card"
+ * and "pay them back yourself" are different instructions, and getting them the
+ * wrong way round means either a buyer who is never paid or a buyer who is paid
+ * twice.
+ */
+
+export type RefundOutcome =
+  /** Money actually moved. `reference` is the processor's own id for it. */
+  | { kind: "reversed"; reference: string }
+  /** Nothing to reverse — the seller settles it themselves. */
+  | { kind: "manual"; reason: "off_platform" | "never_charged" };
+
+type Reverser = (order: Order, amountCents: number) => Promise<RefundOutcome>;
+
+/**
+ * Only rails that can move money on their own appear here. Anything absent is
+ * settled by hand, which is the honest default: adding a rail without teaching
+ * it to reverse should mean "we can't do this for you", never a silent success.
+ */
+const REVERSERS: Partial<Record<PaymentMethodType, Reverser>> = {
+  card: async (order, amountCents) => {
+    /*
+     * A card order with no payment intent never completed at Stripe — the
+     * buyer picked card and abandoned the checkout, or paid another way. There
+     * is no charge to reverse, and pretending otherwise would tell the seller
+     * money had gone back when none had.
+     */
+    if (!order.stripePaymentIntentId || !order.stripeAccountId) {
+      return { kind: "manual", reason: "never_charged" };
+    }
+
+    const refund = await refundCharge({
+      accountId: order.stripeAccountId,
+      paymentIntentId: order.stripePaymentIntentId,
+      amountCents,
+    });
+
+    return { kind: "reversed", reference: refund.id };
+  },
+};
+
+/** True when this order's rail can give the money back without a human. */
+export function canReverse(order: Pick<Order, "paymentMethod">): boolean {
+  return (
+    isPaymentMethodType(order.paymentMethod) &&
+    order.paymentMethod in REVERSERS
+  );
+}
+
+/**
+ * Reverses a payment on whichever rail took it.
+ *
+ * Throws if the processor refuses — the caller must not record a refund that
+ * didn't happen.
+ */
+export async function reversePayment(
+  order: Order,
+  amountCents: number,
+): Promise<RefundOutcome> {
+  if (!isPaymentMethodType(order.paymentMethod)) {
+    return { kind: "manual", reason: "off_platform" };
+  }
+
+  const reverse = REVERSERS[order.paymentMethod];
+  if (!reverse) return { kind: "manual", reason: "off_platform" };
+
+  return reverse(order, amountCents);
+}

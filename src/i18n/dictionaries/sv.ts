@@ -15,7 +15,7 @@ export const sv: Dictionary = {
     noProductsBody: "{shop} har inte lagt upp något än. Kom tillbaka snart.",
     noMatches: "Inga träffar", noMatchesBody: "Testa att ta bort ett filter eller söka på något annat.",
     soldOut: "Slutsåld", sale: "Rea", order: "Beställ", orderNow: "Beställ nu",
-    unavailable: "Ej tillgänglig", poweredBy: "Drivs av",
+    unavailable: "Ej tillgänglig", joinOnSailo: "Gå med {shop} på Sailo", loadMore: "Ladda fler",
     earnBySharing: "Tjäna {percent}% på att dela den här butiken",
     kindPhysical: "Skickas till dig", kindDigital: "Ladda ner direkt",
     kindService: "Boka en tid", labelDigital: "Nedladdning", labelService: "Bokning",

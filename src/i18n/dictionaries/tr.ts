@@ -17,7 +17,7 @@ export const tr: Dictionary = {
     noMatches: "Sonuç bulunamadı",
     noMatchesBody: "Bir filtreyi kaldırmayı ya da başka bir şey aramayı deneyin.",
     soldOut: "Tükendi", sale: "İndirim", order: "Sipariş ver", orderNow: "Hemen sipariş ver",
-    unavailable: "Kullanılamıyor", poweredBy: "Altyapı",
+    unavailable: "Kullanılamıyor", joinOnSailo: "{shop} ile Sailo'ya katıl", loadMore: "Daha fazla yükle",
     earnBySharing: "Bu mağazayı paylaşarak %{percent} kazanın",
     kindPhysical: "Adresinize gönderilir", kindDigital: "Anında indirme",
     kindService: "Randevu alın", labelDigital: "İndirme", labelService: "Randevu",

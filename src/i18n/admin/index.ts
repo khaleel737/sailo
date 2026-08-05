@@ -6,7 +6,7 @@ import { DEFAULT_LOCALE, isLocale, type Locale } from "../config";
  *
  * A locale supplies whatever it has and the rest resolves to English, so
  * translating the admin can land a section at a time without ever showing a
- * blank label — and adding a new English string doesn't break twenty-one
+ * blank label — and adding a new English string doesn't break thirty-four
  * builds at once.
  */
 
@@ -32,7 +32,46 @@ import { adminTr } from "./tr";
 import { adminUk } from "./uk";
 import { adminZh } from "./zh";
 
+import { adminBg } from "./bg";
+
+import { adminBs } from "./bs";
+
+import { adminFil } from "./fil";
+
+import { adminHr } from "./hr";
+
+import { adminId } from "./id";
+
+import { adminKo } from "./ko";
+
+import { adminMk } from "./mk";
+
+import { adminMs } from "./ms";
+
+import { adminSl } from "./sl";
+
+import { adminSq } from "./sq";
+
+import { adminSr } from "./sr";
+
+import { adminTh } from "./th";
+
+import { adminVi } from "./vi";
+
 const OVERRIDES: Partial<Record<Locale, PartialAdminDictionary>> = {
+  vi: adminVi,
+  th: adminTh,
+  sr: adminSr,
+  sq: adminSq,
+  sl: adminSl,
+  ms: adminMs,
+  mk: adminMk,
+  ko: adminKo,
+  id: adminId,
+  hr: adminHr,
+  fil: adminFil,
+  bs: adminBs,
+  bg: adminBg,
   ar: adminAr,
   cs: adminCs,
   da: adminDa,

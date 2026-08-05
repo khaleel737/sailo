@@ -29,16 +29,20 @@ export async function getShopPageData(
   // a seller taking their page down shouldn't leak that it's theirs.
   if (!shop || !isShopLive(shop)) notFound();
 
-  const [facets, products, checkout, translations] = await Promise.all([
-    getShopFacets(shop.id),
+  const [page, facets, checkout, translations] = await Promise.all([
+    // Only the first batch. The rest arrives as the shopper scrolls, so a
+    // catalogue with no ceiling can't decide how long this page takes.
     getPublicProducts(shop.id, filters),
+    getShopFacets(shop.id),
     getCheckoutOptions(shop.id),
     getShopT(shop.locale),
   ]);
 
   return {
     shop,
-    products,
+    products: page.items,
+    productTotal: page.total,
+    nextOffset: page.nextOffset,
     facets,
     checkout,
     locale: translations.locale,
@@ -47,7 +51,6 @@ export async function getShopPageData(
     layout: readLayout(shop.layout),
     // A downgrade has to switch the programme off publicly, not just in admin.
     affiliatesLive: shop.affiliatesEnabled && can(shop, "affiliates"),
-    showBadge: !can(shop, "removeBadge"),
     hasFilters: hasActiveFilters(filters),
   };
 }

@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { PaymentMethodCard } from "@/app/admin/payments/_components/payment-method-card";
 import { StripeCard } from "@/app/admin/payments/_components/stripe-card";
 import { Alert, Badge } from "@/components/ui";
+import { interpolate } from "@/i18n";
 import { syncAccount } from "@/lib/connect";
 
 export const metadata: Metadata = { title: "Payments" };
@@ -18,20 +19,8 @@ export const metadata: Metadata = { title: "Payments" };
  * have to reconcile by hand.
  */
 const SECTIONS = [
-  {
-    kind: "contact",
-    icon: MessageCircle,
-    title: "Chat handoff",
-    description:
-      "The buyer is sent to a chat app with their order written out. Nothing is charged online — you agree payment between yourselves.",
-  },
-  {
-    kind: "manual",
-    icon: Wallet,
-    title: "Manual payment",
-    description:
-      "The buyer stays on your shop and sees your instructions. You confirm the payment from the Orders page.",
-  },
+  { kind: "contact", icon: MessageCircle, title: "chatHandoff", body: "chatHandoffBody" },
+  { kind: "manual", icon: Wallet, title: "manual", body: "manualBody" },
 ] as const;
 
 function SectionHeading({
@@ -39,11 +28,14 @@ function SectionHeading({
   title,
   description,
   count,
+  liveLabel,
 }: {
   icon: typeof Wallet;
   title: string;
   description: string;
   count: number;
+  /** Pre-interpolated, because this is a server component with no dictionary. */
+  liveLabel: string;
 }) {
   return (
     <div className="mb-3">
@@ -52,7 +44,7 @@ function SectionHeading({
         <h2 className="text-sm font-semibold text-ink-900">{title}</h2>
         {count > 0 ? (
           <Badge tone="green" dot>
-            {count} live
+            {liveLabel}
           </Badge>
         ) : null}
       </div>
@@ -97,34 +89,54 @@ export default async function AdminPaymentsPage({
         meta={
           totalLive > 0 ? (
             <Badge tone="green" dot>
-              {totalLive === 1 ? "1 way to order" : `${totalLive} ways to order`}
+              {totalLive === 1
+                ? a.payments.waysToOrderOne
+                : interpolate(a.payments.waysToOrder, { count: totalLive })}
             </Badge>
           ) : (
             <Badge tone="red" dot>
-              Nothing live
+              {a.payments.nothingLive}
             </Badge>
           )
         }
       />
 
-      {totalLive === 0 ? (
+      {/*
+        Stripe refused to start onboarding. Shown verbatim: Stripe writes these
+        for people to read, and the alternative — a Next error page over the
+        admin — tells the seller nothing and us less.
+      */}
+      {params.stripe === "error" ? (
         <Alert
-          tone="warning"
-          title="Nobody can order yet"
+          tone="error"
+          title={a.payments.stripeErrorTitle}
           icon={<AlertTriangle className="size-5" />}
           className="mb-6"
         >
-          Set up at least one option below — until you do, the Order buttons on
-          your shop stay disabled.
+          {typeof params.reason === "string"
+            ? params.reason
+            : a.payments.stripeNoResponse}
+        </Alert>
+      ) : null}
+
+      {totalLive === 0 ? (
+        <Alert
+          tone="warning"
+          title={a.payments.nobodyCanOrder}
+          icon={<AlertTriangle className="size-5" />}
+          className="mb-6"
+        >
+          {a.payments.nobodyCanOrderBody}
         </Alert>
       ) : null}
 
       <section className="mb-8">
         <SectionHeading
           icon={CreditCard}
-          title="Pay online"
-          description="The buyer pays on the spot and the order confirms itself — no chasing, no marking things paid by hand."
+          title={a.payments.payOnline}
+          description={a.payments.payOnlineBody}
           count={cardLive ? 1 : 0}
+          liveLabel={interpolate(a.payments.liveCount, { count: 1 })}
         />
         <StripeCard shop={shop} />
       </section>
@@ -135,9 +147,12 @@ export default async function AdminPaymentsPage({
           <section key={section.kind} className="mb-8 last:mb-0">
             <SectionHeading
               icon={section.icon}
-              title={section.title}
-              description={section.description}
+              title={a.payments[section.title]}
+              description={a.payments[section.body]}
               count={rails.filter((d) => isLive(d.type)).length}
+              liveLabel={interpolate(a.payments.liveCount, {
+                count: rails.filter((d) => isLive(d.type)).length,
+              })}
             />
             <div className="space-y-3">
               {rails.map((def) => (

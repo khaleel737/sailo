@@ -18,7 +18,7 @@ export const es: Dictionary = {
     noMatches: "No hay coincidencias",
     noMatchesBody: "Prueba a quitar un filtro o a buscar otra cosa.",
     soldOut: "Agotado", sale: "Oferta", order: "Pedir", orderNow: "Pedir ahora",
-    unavailable: "No disponible", poweredBy: "Con la tecnología de",
+    unavailable: "No disponible", joinOnSailo: "Únete a {shop} en Sailo", loadMore: "Cargar más",
     earnBySharing: "Gana un {percent}% compartiendo esta tienda",
     kindPhysical: "Te lo enviamos", kindDigital: "Descarga inmediata",
     kindService: "Reserva una cita", labelDigital: "Descarga", labelService: "Reserva",

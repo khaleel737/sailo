@@ -16,7 +16,7 @@ export const ru: Dictionary = {
     noMatches: "Ничего не найдено",
     noMatchesBody: "Попробуйте снять фильтр или поискать другое.",
     soldOut: "Продано", sale: "Скидка", order: "Заказать", orderNow: "Заказать сейчас",
-    unavailable: "Недоступно", poweredBy: "Работает на",
+    unavailable: "Недоступно", joinOnSailo: "Присоединяйтесь к {shop} на Sailo", loadMore: "Показать ещё",
     earnBySharing: "Зарабатывайте {percent}%, делясь этим магазином",
     kindPhysical: "Доставим вам", kindDigital: "Мгновенная загрузка",
     kindService: "Забронируйте время", labelDigital: "Загрузка", labelService: "Запись",

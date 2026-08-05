@@ -48,10 +48,11 @@ export function RangePicker({
             return (
               <button
                 key={days}
+                dir="auto"
                 type="button"
                 onClick={() => setUpsell(days)}
                 title={`${LABELS[days]} is available on ${needed ? PLANS[needed].name : "a paid plan"}`}
-                className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-sm font-medium text-ink-300 transition hover:text-ink-600"
+                className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-sm font-medium text-ink-300 transition hover:text-ink-600 pointer-coarse:min-h-11"
               >
                 <Lock className="size-3" />
                 {LABELS[days]}
@@ -62,10 +63,12 @@ export function RangePicker({
           return (
             <Link
               key={days}
+              dir="auto"
               href={`/admin?range=${days}`}
               scroll={false}
               className={cn(
-                "rounded-lg px-2.5 py-1.5 text-sm font-medium transition",
+                "inline-flex items-center rounded-lg px-2.5 py-1.5 text-sm font-medium transition",
+                "pointer-coarse:min-h-11",
                 active
                   ? "bg-brand-700 text-white shadow-xs"
                   : "text-ink-500 hover:text-ink-900",

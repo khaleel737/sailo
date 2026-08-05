@@ -26,12 +26,26 @@ const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
     "bg-red-600 text-white shadow-xs hover:bg-red-700 active:bg-red-800 disabled:bg-red-300",
 };
 
+/*
+ * Two scales, chosen by input device rather than by viewport.
+ *
+ * A mouse is precise and rewards density, so the pointer sizes stay as they
+ * were. A finger is not: anything under 44px is a mis-tap, which on a row of
+ * icon buttons means publishing a product you meant to delete. `pointer-coarse`
+ * asks the right question — touch, not narrow — so a touchscreen laptop and an
+ * iPad in landscape are covered too, and a narrow desktop window is not
+ * needlessly inflated.
+ *
+ * On touch `sm` and `md` land on the same height. That is the point: 44px is
+ * the floor, not a preference, and the two keep their own type sizes and
+ * padding so the hierarchy still reads.
+ */
 const BUTTON_SIZES = {
-  sm: "h-8 gap-1.5 px-3 text-xs",
-  md: "h-10 gap-2 px-4 text-sm",
+  sm: "h-8 gap-1.5 px-3 text-xs pointer-coarse:h-11 pointer-coarse:px-4",
+  md: "h-10 gap-2 px-4 text-sm pointer-coarse:h-11",
   lg: "h-12 gap-2 px-6 text-[0.9375rem]",
-  icon: "size-10 gap-0",
-  "icon-sm": "size-8 gap-0",
+  icon: "size-10 gap-0 pointer-coarse:size-11",
+  "icon-sm": "size-8 gap-0 pointer-coarse:size-11",
 } as const;
 
 export function Button({

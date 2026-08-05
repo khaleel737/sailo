@@ -6,6 +6,7 @@ import { Clock, Download, FileDown, Lock, Store } from "lucide-react";
 import { getDownloadByToken, downloadState } from "@/lib/downloads";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
+import { PoweredBy } from "@/components/shared/powered-by";
 import { formatBytes, shopThemeVars } from "@/lib/utils";
 
 /** A private link — never something a search engine should hold on to. */
@@ -124,6 +125,10 @@ export default async function DownloadPage({
         >
           {interpolate(t.download.visitShop, { shop: shop.name })}
         </Link>
+
+        <footer className="mt-8 flex justify-center">
+          <PoweredBy shop={shop} t={t} />
+        </footer>
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ export const el: Dictionary = {
     noMatches: "Κανένα αποτέλεσμα",
     noMatchesBody: "Δοκιμάστε να αφαιρέσετε ένα φίλτρο ή να αναζητήσετε κάτι άλλο.",
     soldOut: "Εξαντλήθηκε", sale: "Προσφορά", order: "Παραγγελία", orderNow: "Παραγγείλτε τώρα",
-    unavailable: "Μη διαθέσιμο", poweredBy: "Με την υποστήριξη του",
+    unavailable: "Μη διαθέσιμο", joinOnSailo: "Γίνε μέλος του {shop} στο Sailo", loadMore: "Φόρτωση περισσότερων",
     earnBySharing: "Κερδίστε {percent}% μοιράζοντας αυτό το κατάστημα",
     kindPhysical: "Αποστέλλεται σε εσάς", kindDigital: "Άμεση λήψη",
     kindService: "Κλείστε ραντεβού", labelDigital: "Λήψη", labelService: "Κράτηση",

@@ -7,6 +7,7 @@ import { markOrderShipped, refundOrder } from "@/lib/actions/order-admin";
 import { Alert, Button, Field, Input } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
 import type { Order } from "@/db/schema";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit({ label }: { label: string }) {
   const { pending } = useFormStatus();
@@ -19,6 +20,7 @@ function Submit({ label }: { label: string }) {
 }
 
 export function OrderActions({ order }: { order: Order }) {
+  const a = useAdminT();
   const [panel, setPanel] = useState<"ship" | "refund" | null>(null);
   const [shipState, shipAction] = useActionState(markOrderShipped, {
     ok: false,
@@ -52,7 +54,7 @@ export function OrderActions({ order }: { order: Order }) {
             className="text-ink-500"
           >
             <RotateCcw className="size-4" />
-            Refund
+          {a.orders.refund}
           </Button>
         ) : null}
       </div>
@@ -69,7 +71,7 @@ export function OrderActions({ order }: { order: Order }) {
           ) : null}
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <Field label="Carrier" htmlFor={`${order.id}-carrier`}>
+            <Field label={a.orders.carrier} htmlFor={`${order.id}-carrier`}>
               <Input
                 id={`${order.id}-carrier`}
                 name="trackingCarrier"
@@ -77,26 +79,26 @@ export function OrderActions({ order }: { order: Order }) {
                 placeholder="DHL"
               />
             </Field>
-            <Field label="Tracking number" htmlFor={`${order.id}-number`}>
+            <Field label={a.orders.trackingNumber} htmlFor={`${order.id}-number`}>
               <Input
                 id={`${order.id}-number`}
                 name="trackingNumber"
                 defaultValue={order.trackingNumber ?? ""}
-                placeholder="JD0002890124"
+                placeholder={a.orders.trackingNumberPlaceholder}
               />
             </Field>
           </div>
 
           <Field
-            label="Tracking link"
+            label={a.orders.trackingLink}
             htmlFor={`${order.id}-url`}
-            hint="optional"
+            hint={a.common.optional}
           >
             <Input
               id={`${order.id}-url`}
               name="trackingUrl"
               defaultValue={order.trackingUrl ?? ""}
-              placeholder="https://dhl.com/track?id=…"
+              placeholder={a.orders.trackingLinkPlaceholder}
             />
           </Field>
 
@@ -106,7 +108,7 @@ export function OrderActions({ order }: { order: Order }) {
               : "No email on file, so nothing will be sent."}
           </p>
 
-          <Submit label="Mark as shipped" />
+          <Submit label={a.orders.markShipped} />
         </form>
       ) : null}
 
@@ -125,7 +127,7 @@ export function OrderActions({ order }: { order: Order }) {
             <Field
               label={`Amount (${order.currency})`}
               htmlFor={`${order.id}-amount`}
-              hint="blank = full"
+              hint={a.orders.refundAmountHint}
             >
               <Input
                 id={`${order.id}-amount`}
@@ -134,11 +136,11 @@ export function OrderActions({ order }: { order: Order }) {
                 placeholder={(order.totalCents / 100).toFixed(2)}
               />
             </Field>
-            <Field label="Reason" htmlFor={`${order.id}-reason`} hint="optional">
+            <Field label={a.orders.refundReason} htmlFor={`${order.id}-reason`} hint={a.common.optional}>
               <Input
                 id={`${order.id}-reason`}
                 name="reason"
-                placeholder="Arrived damaged"
+                placeholder={a.orders.refundReasonPlaceholder}
               />
             </Field>
           </div>
@@ -149,7 +151,7 @@ export function OrderActions({ order }: { order: Order }) {
             {order.customerEmail ? " The buyer is emailed." : ""}
           </p>
 
-          <Submit label="Record refund" />
+          <Submit label={a.orders.recordRefund} />
         </form>
       ) : null}
     </div>

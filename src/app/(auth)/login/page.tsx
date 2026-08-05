@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AuthForm } from "@/components/auth-form";
+import { AuthHeader } from "@/components/auth/auth-kit";
 import { getSession } from "@/lib/session";
 import { getT } from "@/i18n/server";
 
@@ -13,10 +14,7 @@ export default async function LoginPage() {
 
   return (
     <>
-      <h1 className="text-xl font-semibold tracking-tight">
-        {t.auth.welcomeBack}
-      </h1>
-      <p className="mb-6 mt-1 text-sm text-ink-500">{t.auth.signInSubtitle}</p>
+      <AuthHeader title={t.auth.welcomeBack} subtitle={t.auth.signInSubtitle} />
       <AuthForm mode="login" t={t} />
     </>
   );

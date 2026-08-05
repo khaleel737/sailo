@@ -1,9 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { CHART, type ChartTone } from "@/lib/chart-palette";
 import { formatMoney } from "@/lib/utils";
 
 export type Point = { day: string; value: number };
+
+/** Midday-safe: a bare date string parses as UTC and can slip a day westward. */
+const fmtDay = (day: string) =>
+  new Date(`${day}T00:00:00`).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
 
 /**
  * A 14-day single-series bar chart. One series per chart, so the heading names
@@ -16,19 +24,30 @@ export type Point = { day: string; value: number };
 export function BarChart({
   title,
   data,
-  colour,
+  tone,
   unit,
   currency = "USD",
   emptyLabel = "No activity yet",
+  tableLabel = "View as table",
 }: {
   title: string;
   data: Point[];
-  /** Validated for contrast against the light admin surface. */
-  colour: string;
+  /**
+   * Which entity this measures, not which colour to use. Call sites cannot
+   * invent a hue, which is how the same measure ended up indigo on one screen
+   * and teal on another. See `lib/chart-palette.ts`.
+   */
+  tone: ChartTone;
   unit: "count" | "money";
   currency?: string;
   emptyLabel?: string;
+  /*
+   * Passed in rather than read from a dictionary: this chart is shared with
+   * /hq, which is English-only and sits outside the admin's i18n provider.
+   */
+  tableLabel?: string;
 }) {
+  const colour = CHART[tone];
   const [hover, setHover] = useState<number | null>(null);
 
   const format = (value: number) =>
@@ -44,17 +63,11 @@ export function BarChart({
   // and splitting them let the render read a row the guard didn't prove.
   const peak = data.some((d) => d.value > 0) ? data[peakIndex] : undefined;
 
-  const fmtDay = (day: string) =>
-    new Date(`${day}T00:00:00`).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    });
-
   return (
     <div>
       <div className="mb-4 flex items-baseline justify-between gap-3">
         <div>
-          <h2 className="text-sm font-medium text-ink-500">{title}</h2>
+          <h2 dir="auto" className="text-sm font-medium text-ink-500">{title}</h2>
           <p className="mt-0.5 text-2xl font-semibold tabular-nums">{total}</p>
         </div>
         {peak ? (
@@ -131,8 +144,8 @@ export function BarChart({
       ) : null}
 
       <details className="mt-3">
-        <summary className="cursor-pointer text-xs text-ink-400 transition hover:text-ink-600">
-          View as table
+        <summary className="focus-ring inline-flex cursor-pointer items-center rounded text-xs text-ink-400 transition hover:text-ink-600 pointer-coarse:min-h-11">
+          {tableLabel}
         </summary>
         <table className="mt-2 w-full text-xs">
           <thead>

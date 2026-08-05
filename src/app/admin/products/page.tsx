@@ -8,12 +8,21 @@ import { getAdminProducts } from "@/lib/queries";
 import { deleteProduct, toggleProductPublished } from "@/lib/actions/products";
 import { PageHeader } from "@/components/shared/page-header";
 import { ExportButton } from "@/app/admin/_components/export-button";
-import { Badge, Button, Card, EmptyState } from "@/components/ui";
+import { Table, Td, Th, Tr } from "@/components/shared/table";
+import { Badge, Button, EmptyState } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
 import { anySellable, priceRange, unitsLeft } from "@/lib/variants";
 
 export const metadata: Metadata = { title: "Products" };
 
+/**
+ * A table rather than a stack of cards.
+ *
+ * A catalogue is read by comparing rows — this price against that one, what is
+ * hidden, what has run out — and a card stack puts every value in a different
+ * horizontal position so none of them line up. Columns do the comparing for
+ * you, which is why every commerce admin worth using ends up here.
+ */
 export default async function AdminProductsPage() {
   const { shop } = await requireShop();
   const { a } = await getAdminT();
@@ -24,6 +33,13 @@ export default async function AdminProductsPage() {
       <PageHeader
         title={a.products.title}
         description={a.products.description}
+        meta={
+          products.length > 0 ? (
+            <Badge tone="neutral">
+              {products.length === 1 ? "1 product" : `${products.length} products`}
+            </Badge>
+          ) : null
+        }
         action={
           <div className="flex gap-2">
             <ExportButton shop={shop} type="products" />
@@ -39,7 +55,7 @@ export default async function AdminProductsPage() {
 
       {products.length === 0 ? (
         <EmptyState
-          icon={<Package className="size-8" />}
+          icon={<Package className="size-6" />}
           title={a.products.empty}
           description={a.products.emptyBody}
           action={
@@ -52,7 +68,20 @@ export default async function AdminProductsPage() {
           }
         />
       ) : (
-        <Card className="divide-y divide-ink-100">
+        <Table
+          minWidth="46rem"
+          head={
+            <>
+              <Th>{a.columns.product}</Th>
+              <Th>{a.columns.status}</Th>
+              <Th align="end">{a.columns.price}</Th>
+              <Th align="end">{a.columns.stock}</Th>
+              <Th className="w-24">
+                <span className="sr-only">{a.columns.actions}</span>
+              </Th>
+            </>
+          }
+        >
           {products.map((product) => {
             const range = priceRange(product, product.variants);
             const sellable =
@@ -67,106 +96,136 @@ export default async function AdminProductsPage() {
                 : unitsLeft(product)
               : null;
 
+            const href = `/admin/products/${product.id}`;
+
             return (
-            <div
-              key={product.id}
-              className="flex items-center gap-3 p-3 sm:gap-4 sm:p-4"
-            >
-              <Link
-                href={`/admin/products/${product.id}`}
-                className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-ink-100"
-              >
-                {product.images[0] ? (
-                  <Image
-                    src={product.images[0].url}
-                    alt={product.title}
-                    fill
-                    sizes="56px"
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="flex size-full items-center justify-center text-ink-300">
-                    <ImageIcon className="size-5" />
-                  </div>
-                )}
-              </Link>
-
-              <div className="min-w-0 flex-1">
-                <Link
-                  href={`/admin/products/${product.id}`}
-                  className="block truncate text-sm font-medium hover:underline"
-                >
-                  {product.title}
-                </Link>
-                <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                  <span className="text-sm tabular-nums text-ink-600">
-                    {range.varies
-                      ? `from ${formatMoney(range.min, shop.currency)}`
-                      : formatMoney(range.min, shop.currency)}
-                  </span>
-                  {product.variants.length > 0 ? (
-                    <Badge>
-                      {product.variants.length} variant
-                      {product.variants.length === 1 ? "" : "s"}
-                    </Badge>
-                  ) : null}
-                  {stock !== null ? (
-                    <Badge tone={stock > 0 ? "neutral" : "red"}>
-                      {stock} in stock
-                    </Badge>
-                  ) : null}
-                  {product.kind !== "physical" ? (
-                    <Badge>{product.kind}</Badge>
-                  ) : null}
-                  {product.category ? (
-                    <Badge>{product.category.name}</Badge>
-                  ) : null}
-                  {!product.isPublished ? (
-                    <Badge tone="amber">{a.common.hidden}</Badge>
-                  ) : null}
-                  {!sellable ? <Badge tone="red">{a.common.soldOut}</Badge> : null}
-                  {product.isFeatured ? (
-                    <Badge tone="blue">Featured</Badge>
-                  ) : null}
-                </div>
-              </div>
-
-              <div className="flex shrink-0 items-center gap-1">
-                <form action={toggleProductPublished}>
-                  <input type="hidden" name="id" value={product.id} />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    type="submit"
-                    title={product.isPublished ? "Hide" : "Publish"}
-                    aria-label={product.isPublished ? "Hide product" : "Publish product"}
+              <Tr key={product.id}>
+                <Td>
+                  <Link
+                    href={href}
+                    className="focus-ring flex min-w-0 items-center gap-3 rounded pointer-coarse:min-h-11"
                   >
-                    {product.isPublished ? (
-                      <Eye className="size-4" />
+                    <span className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-ink-100">
+                      {product.images[0] ? (
+                        <Image
+                          src={product.images[0].url}
+                          alt=""
+                          fill
+                          sizes="40px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <span className="flex size-full items-center justify-center text-ink-300">
+                          <ImageIcon className="size-4" />
+                        </span>
+                      )}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate font-medium text-ink-900">
+                        {product.title}
+                      </span>
+                      <span className="block truncate text-xs text-ink-400">
+                        {[
+                          product.category?.name,
+                          product.kind !== "physical" ? product.kind : null,
+                          product.variants.length > 0
+                            ? `${product.variants.length} variant${product.variants.length === 1 ? "" : "s"}`
+                            : null,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ") || "—"}
+                      </span>
+                    </span>
+                  </Link>
+                </Td>
+
+                <Td label={a.columns.status}>
+                  {/* One chip, not five. The row's status is the single fact
+                      that changes what you'd do about it. */}
+                  <span className="flex flex-wrap gap-1.5">
+                    {!product.isPublished ? (
+                      <Badge tone="amber" dot>
+                        {a.common.hidden}
+                      </Badge>
+                    ) : !sellable ? (
+                      <Badge tone="red" dot>
+                        {a.common.soldOut}
+                      </Badge>
                     ) : (
-                      <EyeOff className="size-4" />
+                      <Badge tone="green" dot>
+                        {a.common.live}
+                      </Badge>
                     )}
-                  </Button>
-                </form>
+                    {product.isFeatured ? (
+                      <Badge tone="blue">{a.common.featured}</Badge>
+                    ) : null}
+                  </span>
+                </Td>
 
-                <form action={deleteProduct}>
-                  <input type="hidden" name="id" value={product.id} />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    type="submit"
-                    title={a.common.delete}
-                    aria-label={a.products.deleteProduct}
-                    className="text-ink-400 hover:bg-red-50 hover:text-red-600"
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
-                </form>
-              </div>
-            </div>
+                <Td
+                  align="end"
+                  label={a.columns.price}
+                  className="tabular whitespace-nowrap text-ink-900"
+                >
+                  {range.varies
+                    ? `from ${formatMoney(range.min, shop.currency)}`
+                    : formatMoney(range.min, shop.currency)}
+                </Td>
+
+                <Td
+                  align="end"
+                  label={a.columns.stock}
+                  className="tabular whitespace-nowrap"
+                >
+                  {stock === null ? (
+                    <span className="text-ink-300">—</span>
+                  ) : (
+                    <span className={stock > 0 ? "text-ink-700" : "text-red-600"}>
+                      {stock}
+                    </span>
+                  )}
+                </Td>
+
+                <Td align="end">
+                  <span className="flex items-center justify-end gap-1">
+                    <form action={toggleProductPublished}>
+                      <input type="hidden" name="id" value={product.id} />
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        type="submit"
+                        title={product.isPublished ? "Hide" : "Publish"}
+                        aria-label={
+                          product.isPublished ? "Hide product" : "Publish product"
+                        }
+                      >
+                        {product.isPublished ? (
+                          <Eye className="size-4" />
+                        ) : (
+                          <EyeOff className="size-4" />
+                        )}
+                      </Button>
+                    </form>
+
+                    <form action={deleteProduct}>
+                      <input type="hidden" name="id" value={product.id} />
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        type="submit"
+                        title={a.common.delete}
+                        aria-label={a.products.deleteProduct}
+                        className="text-ink-400 hover:bg-red-50 hover:text-red-600"
+                      >
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </form>
+                  </span>
+                </Td>
+              </Tr>
             );
           })}
-        </Card>
+        </Table>
       )}
     </>
   );

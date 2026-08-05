@@ -17,7 +17,7 @@ export const it: Dictionary = {
     noMatches: "Nessun risultato",
     noMatchesBody: "Prova a togliere un filtro o a cercare altro.",
     soldOut: "Esaurito", sale: "Offerta", order: "Ordina", orderNow: "Ordina ora",
-    unavailable: "Non disponibile", poweredBy: "Con la tecnologia di",
+    unavailable: "Non disponibile", joinOnSailo: "Unisciti a {shop} su Sailo", loadMore: "Carica altro",
     earnBySharing: "Guadagna il {percent}% condividendo questo negozio",
     kindPhysical: "Spedito a casa tua", kindDigital: "Download immediato",
     kindService: "Prenota un orario", labelDigital: "Download", labelService: "Prenotazione",

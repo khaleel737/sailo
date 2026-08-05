@@ -28,12 +28,12 @@ export function AdminHeader({
   const plan = planFor(shop);
 
   return (
-    <header className="sticky top-0 z-30 hidden items-center justify-end gap-1.5 border-b border-ink-200 bg-white/85 px-4 py-2.5 backdrop-blur-md sm:px-6 lg:flex lg:px-8">
+    <header className="sticky top-0 z-30 hidden items-center justify-end gap-1.5 bg-ink-50/85 px-4 py-2.5 backdrop-blur-md sm:px-6 lg:flex lg:px-8">
       {plan.id === "free" ? (
         <UpgradeButton
           currentPlan={plan.id}
           t={t}
-          className="focus-ring press inline-flex h-9 items-center gap-1.5 rounded-xl bg-brand-700 px-3.5 text-sm font-medium text-white shadow-xs transition hover:bg-brand-600"
+          className="focus-ring press inline-flex h-9 pointer-coarse:h-11 items-center gap-1.5 rounded-xl bg-brand-700 px-3.5 text-sm font-medium text-white shadow-xs transition hover:bg-brand-600"
         >
           <Sparkles className="size-3.5" />
           {t.nav.upgrade}
@@ -41,7 +41,7 @@ export function AdminHeader({
       ) : (
         <Link
           href="/admin/settings/billing"
-          className="focus-ring inline-flex h-9 items-center gap-1.5 rounded-xl border border-brand-200 bg-brand-50 px-3 text-sm font-medium text-brand-800 transition hover:bg-brand-100"
+          className="focus-ring inline-flex h-9 pointer-coarse:h-11 items-center gap-1.5 rounded-xl border border-brand-200 bg-brand-50 px-3 text-sm font-medium text-brand-800 transition hover:bg-brand-100"
         >
           {plan.name}
         </Link>
@@ -87,7 +87,7 @@ export function AdminHeaderCompact({
         <UpgradeButton
           currentPlan={plan.id}
           t={t}
-          className="focus-ring press inline-flex h-9 items-center gap-1.5 rounded-xl bg-brand-700 px-3 text-xs font-medium text-white"
+          className="focus-ring press inline-flex h-9 pointer-coarse:h-11 items-center gap-1.5 rounded-xl bg-brand-700 px-3 text-xs font-medium text-white"
         >
           <Sparkles className="size-3.5" />
           {t.nav.upgrade}

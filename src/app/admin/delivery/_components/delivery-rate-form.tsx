@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@/components/ui";
 import type { DeliveryConfig, DeliveryMethod } from "@/db/schema";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit({ isEdit }: { isEdit: boolean }) {
   const { pending } = useFormStatus();
@@ -41,6 +42,7 @@ export function DeliveryRateForm({
   method?: DeliveryMethod;
   currency: string;
 }) {
+  const a = useAdminT();
   const [state, action] = useActionState(saveDeliveryMethod, { ok: false });
   const [type, setType] = useState<DeliveryMethodType>(
     (method?.type as DeliveryMethodType) ?? "shipping",
@@ -65,7 +67,7 @@ export function DeliveryRateForm({
         ) : null}
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Type" htmlFor={`${method?.id ?? "new"}-type`}>
+          <Field label={a.delivery.kind} htmlFor={`${method?.id ?? "new"}-type`}>
             <Select
               id={`${method?.id ?? "new"}-type`}
               name="type"
@@ -81,7 +83,7 @@ export function DeliveryRateForm({
           </Field>
 
           <Field
-            label="Name buyers see"
+            label={a.delivery.nameBuyersSee}
             htmlFor={`${method?.id ?? "new"}-name`}
           >
             <Input
@@ -107,9 +109,9 @@ export function DeliveryRateForm({
             />
           </Field>
           <Field
-            label="Free over"
+            label={a.delivery.freeOverLabel}
             htmlFor={`${method?.id ?? "new"}-freeOver`}
-            hint="optional"
+            hint={a.common.optional}
           >
             <Input
               id={`${method?.id ?? "new"}-freeOver`}
@@ -158,14 +160,14 @@ export function DeliveryRateForm({
         )}
 
         <div className="flex items-center justify-between gap-3 border-t border-ink-100 pt-4">
-          <label className="flex cursor-pointer items-center gap-2.5">
+          <label className="flex cursor-pointer items-center gap-2.5 pointer-coarse:min-h-11">
             <input
               type="checkbox"
               name="isEnabled"
               defaultChecked={method?.isEnabled ?? true}
-              className="size-4 rounded border-ink-300 accent-ink-900"
+              className="size-4 rounded border-ink-300 accent-ink-900 pointer-coarse:size-5"
             />
-            <span className="text-sm font-medium">Offer at checkout</span>
+            <span className="text-sm font-medium">{a.delivery.offerAtCheckout}</span>
           </label>
           <Submit isEdit={Boolean(method)} />
         </div>

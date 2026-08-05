@@ -14,6 +14,7 @@ import {
   Select,
 } from "@/components/ui";
 import type { Coupon } from "@/db/schema";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit({ isEdit }: { isEdit: boolean }) {
   const { pending } = useFormStatus();
@@ -38,6 +39,7 @@ export function CouponForm({
   currency: string;
   onDone?: () => void;
 }) {
+  const a = useAdminT();
   const [state, action] = useActionState(saveCoupon, { ok: false });
   const [discountType, setDiscountType] = useState(
     coupon?.discountType ?? "percent",
@@ -66,27 +68,27 @@ export function CouponForm({
         ) : null}
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <Field label="Code" htmlFor="code">
+          <Field label={a.common.code} htmlFor="code">
             <Input
               id="code"
               name="code"
               required
               defaultValue={coupon?.code ?? ""}
-              placeholder="WELCOME10"
+              placeholder={a.coupons.codePlaceholder}
               className="uppercase"
               maxLength={32}
             />
           </Field>
 
-          <Field label="Type" htmlFor="discountType">
+          <Field label={a.common.type} htmlFor="discountType">
             <Select
               id="discountType"
               name="discountType"
               value={discountType}
               onChange={(e) => setDiscountType(e.target.value)}
             >
-              <option value="percent">Percentage off</option>
-              <option value="fixed">Fixed amount off</option>
+              <option value="percent">{a.coupons.percentOff}</option>
+              <option value="fixed">{a.coupons.fixedOff}</option>
             </Select>
           </Field>
 
@@ -109,7 +111,7 @@ export function CouponForm({
           <Field
             label={`Minimum spend (${currency})`}
             htmlFor="minSubtotal"
-            hint="optional"
+            hint={a.common.optional}
           >
             <Input
               id="minSubtotal"
@@ -124,17 +126,17 @@ export function CouponForm({
             />
           </Field>
 
-          <Field label="Usage limit" htmlFor="maxRedemptions" hint="optional">
+          <Field label={a.coupons.usageLimit} htmlFor="maxRedemptions" hint={a.common.optional}>
             <Input
               id="maxRedemptions"
               name="maxRedemptions"
               inputMode="numeric"
               defaultValue={coupon?.maxRedemptions ?? ""}
-              placeholder="Unlimited"
+              placeholder={a.coupons.usageLimitPlaceholder}
             />
           </Field>
 
-          <Field label="Expires" htmlFor="expiresAt" hint="optional">
+          <Field label={a.common.expires} htmlFor="expiresAt" hint={a.common.optional}>
             <Input
               id="expiresAt"
               name="expiresAt"
@@ -149,14 +151,14 @@ export function CouponForm({
         </div>
 
         <div className="flex items-center justify-between gap-3 border-t border-ink-100 pt-4">
-          <label className="flex cursor-pointer items-center gap-2.5">
+          <label className="flex cursor-pointer items-center gap-2.5 pointer-coarse:min-h-11">
             <input
               type="checkbox"
               name="isActive"
               defaultChecked={coupon?.isActive ?? true}
-              className="size-4 rounded border-ink-300 accent-ink-900"
+              className="size-4 rounded border-ink-300 accent-ink-900 pointer-coarse:size-5"
             />
-            <span className="text-sm font-medium">Active</span>
+            <span className="text-sm font-medium">{a.common.active}</span>
           </label>
           <Submit isEdit={Boolean(coupon)} />
         </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import {
@@ -72,18 +73,45 @@ export function NotificationBell({
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
   const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  /**
+   * Where the panel's top edge goes on a phone.
+   *
+   * On a wide screen the panel hangs off the bell and `absolute` is enough. On
+   * a phone it cannot: the bell sits ~64px in from the right edge with the menu
+   * button beside it, so a 24rem panel anchored to the bell's right edge starts
+   * 32px off the left of the screen and clips its own text. There it goes
+   * full-width instead, which needs a viewport coordinate rather than an offset
+   * from the bell — measured, so the staff banner, RTL and any future change to
+   * the bar are all accounted for without hard-coding a height.
+   */
+  const [top, setTop] = useState(0);
 
   useEffect(() => {
     if (!open) return;
-    const onDown = (e: MouseEvent) => {
+
+    const place = () => {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (rect) setTop(rect.bottom + 8);
+    };
+    place();
+
+    // `pointerdown` rather than `mousedown`: on touch the mouse event is a
+    // synthesised afterthought, and on a drag it never arrives at all.
+    const onDown = (e: PointerEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    document.addEventListener("mousedown", onDown);
+
+    document.addEventListener("pointerdown", onDown);
     document.addEventListener("keydown", onKey);
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
     return () => {
-      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("pointerdown", onDown);
       document.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
     };
   }, [open]);
 
@@ -92,22 +120,34 @@ export function NotificationBell({
   return (
     <div className="relative" ref={ref}>
       <button
+        ref={buttonRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={t.notifications.title}
         aria-expanded={open}
-        className="relative flex size-9 items-center justify-center rounded-lg text-ink-600 transition hover:bg-ink-100 hover:text-ink-900"
+        aria-controls="notification-panel"
+        className="relative flex size-9 items-center justify-center rounded-lg text-ink-600 transition hover:bg-ink-100 hover:text-ink-900 pointer-coarse:size-11"
       >
         <Bell className="size-5" />
         {count > 0 ? (
-          <span className="absolute -end-0.5 -top-0.5 flex min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+          <span className="absolute -end-0.5 -top-0.5 flex min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-semibold text-white">
             {count > 9 ? "9+" : count}
           </span>
         ) : null}
       </button>
 
       {open ? (
-        <div className="absolute end-0 z-50 mt-2 w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-xl">
+        <div
+          id="notification-panel"
+          style={{ "--bell-top": `${top}px` } as CSSProperties}
+          className={cn(
+            "z-50 overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-xl",
+            // Phone: pinned to the viewport, a gutter on each side.
+            "max-md:fixed max-md:inset-x-4 max-md:top-(--bell-top)",
+            // Desktop: hangs off the bell, as before.
+            "md:absolute md:end-0 md:mt-2 md:w-96",
+          )}
+        >
           <div className="flex items-center justify-between border-b border-ink-100 px-4 py-3">
             <p className="text-sm font-semibold">
               {t.notifications.title}
@@ -125,7 +165,7 @@ export function NotificationBell({
                     setOpen(false);
                   })
                 }
-                className="inline-flex items-center gap-1 text-xs font-medium text-ink-500 transition hover:text-ink-900 disabled:opacity-50"
+                className="focus-ring -my-2 inline-flex items-center gap-1 rounded px-1 py-2 text-xs font-medium text-ink-500 transition hover:text-ink-900 disabled:opacity-50 pointer-coarse:min-h-11"
               >
                 <CheckCheck className="size-3.5" />
                 {t.notifications.markAllRead}
@@ -144,15 +184,15 @@ export function NotificationBell({
               </p>
             </div>
           ) : (
-            <ul className="max-h-96 divide-y divide-ink-100 overflow-y-auto">
+            <ul className="divide-y divide-ink-100 overflow-y-auto overscroll-contain max-md:max-h-[min(24rem,calc(100dvh-var(--bell-top)-1.5rem))] md:max-h-96">
               {items.map((item) => {
                 const Icon = ICONS[item.kind];
                 return (
-                  <li key={item.id} className="group relative">
+                  <li key={item.id} className="group flex items-start">
                     <Link
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className="flex gap-3 px-4 py-3 transition hover:bg-ink-50"
+                      className="flex min-w-0 flex-1 gap-3 py-3 pe-1 ps-4 transition hover:bg-ink-50"
                     >
                       <span
                         className={cn(
@@ -177,15 +217,17 @@ export function NotificationBell({
                       </span>
                     </Link>
 
-                    <form
-                      action={dismissNotification}
-                      className="absolute end-2 top-2 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100"
-                    >
+                    {/*
+                      In the row rather than over it. Overlaid it covered the
+                      timestamp, and revealed on hover it did not exist on a
+                      phone — dismissing was simply unavailable there.
+                    */}
+                    <form action={dismissNotification} className="shrink-0 pe-2 pt-2.5">
                       <input type="hidden" name="id" value={item.id} />
                       <button
                         type="submit"
                         aria-label={t.notifications.dismiss}
-                        className="flex size-6 items-center justify-center rounded-md text-ink-400 transition hover:bg-ink-200 hover:text-ink-900"
+                        className="focus-ring flex size-8 items-center justify-center rounded-md text-ink-400 opacity-0 transition hover:bg-ink-200 hover:text-ink-900 focus-visible:opacity-100 group-hover:opacity-100 pointer-coarse:size-11 pointer-coarse:opacity-100"
                       >
                         <X className="size-3.5" />
                       </button>

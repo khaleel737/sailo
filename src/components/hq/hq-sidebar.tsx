@@ -119,7 +119,7 @@ export function HqSidebar({ email }: { email: string }) {
                     // path for a change that this click already knows about.
                     onClick={() => setOpen(false)}
                     className={cn(
-                      "focus-ring group relative flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-colors duration-150",
+                      "focus-ring group relative flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium transition-colors duration-150 pointer-coarse:min-h-11",
                       active
                         ? "bg-white/10 text-white"
                         : "text-white/60 hover:bg-white/5 hover:text-white",
@@ -156,7 +156,7 @@ export function HqSidebar({ email }: { email: string }) {
       <Link
         href="/admin"
         onClick={() => setOpen(false)}
-        className="focus-ring flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white"
+        className="focus-ring flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white pointer-coarse:min-h-11"
       >
         <ArrowLeft className="size-4 text-white/40" />
         My own shop
@@ -164,7 +164,7 @@ export function HqSidebar({ email }: { email: string }) {
       <button
         type="button"
         onClick={onSignOut}
-        className="focus-ring flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white"
+        className="focus-ring flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white pointer-coarse:min-h-11"
       >
         <LogOut className="size-4 text-white/40" />
         Sign out
@@ -182,28 +182,28 @@ export function HqSidebar({ email }: { email: string }) {
           onClick={() => setOpen(true)}
           aria-label="Open menu"
           aria-expanded={open}
-          className="focus-ring press rounded-xl p-2 text-white/70 transition hover:bg-white/10"
+          className="focus-ring press grid size-9 place-items-center rounded-xl text-white/70 transition hover:bg-white/10 pointer-coarse:size-11"
         >
           <Menu className="size-5" />
         </button>
       </div>
 
       {open ? (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
           <button
             type="button"
             aria-label="Close menu"
             onClick={() => setOpen(false)}
             className="animate-backdrop absolute inset-0 bg-ink-950/60 backdrop-blur-[2px]"
           />
-          <div className="animate-sheet-in absolute inset-y-0 start-0 flex w-72 flex-col bg-ink-950 p-4 shadow-xl">
+          <div className="animate-sheet-in absolute inset-y-0 start-0 flex w-72 max-w-[85vw] flex-col bg-ink-950 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-xl">
             <div className="mb-6 flex items-center justify-between gap-2">
               {brand}
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
-                className="focus-ring press rounded-xl p-2 text-white/60 transition hover:bg-white/10"
+                className="focus-ring press grid size-9 place-items-center rounded-xl text-white/60 transition hover:bg-white/10 pointer-coarse:size-11"
               >
                 <X className="size-5" />
               </button>

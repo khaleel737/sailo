@@ -29,7 +29,7 @@ export const ar: Dictionary = {
     order: "اطلب",
     orderNow: "اطلب الآن",
     unavailable: "غير متاح",
-    poweredBy: "مدعوم من",
+    joinOnSailo: "انضم إلى {shop} على Sailo", loadMore: "تحميل المزيد",
     earnBySharing: "اربح {percent}% بمشاركة هذا المتجر",
     kindPhysical: "يُشحن إليك",
     kindDigital: "تنزيل فوري",

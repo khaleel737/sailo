@@ -29,7 +29,7 @@ export const ja: Dictionary = {
     order: "注文する",
     orderNow: "今すぐ注文",
     unavailable: "利用できません",
-    poweredBy: "Powered by",
+    joinOnSailo: "Sailo で {shop} に参加", loadMore: "もっと見る",
     earnBySharing: "このショップを紹介して{percent}%を獲得",
     kindPhysical: "お届け商品",
     kindDigital: "すぐにダウンロード",

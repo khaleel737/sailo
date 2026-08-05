@@ -187,7 +187,7 @@ export const orders = pgTable(
 
     // How they chose to pay
     paymentMethod: text("payment_method").default("whatsapp").notNull(),
-    paymentStatus: text("payment_status").default("unpaid").notNull(), // unpaid | pending | paid
+    paymentStatus: text("payment_status").default("unpaid").notNull(), // see PAYMENT_STATUSES in lib/payments
     paymentReference: text("payment_reference"), // transfer ref the buyer typed
     paymentProofUrl: text("payment_proof_url"),
 

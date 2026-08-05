@@ -111,6 +111,19 @@ export const products = pgTable(
     uniqueIndex("products_shop_slug_key").on(t.shopId, t.slug),
     index("products_shop_idx").on(t.shopId),
     index("products_category_idx").on(t.categoryId),
+    /**
+     * The storefront's default order, batched. Without this a deep catalogue
+     * sorts the whole published set on every batch, so the last batch costs
+     * more than the first — which is the cost the batching exists to remove.
+     */
+    index("products_shop_browse_idx").on(
+      t.shopId,
+      t.isPublished,
+      t.isFeatured,
+      t.position,
+      t.createdAt,
+      t.id,
+    ),
   ],
 );
 

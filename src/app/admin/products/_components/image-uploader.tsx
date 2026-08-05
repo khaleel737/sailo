@@ -77,12 +77,12 @@ export function ImageUploader({
               type="button"
               onClick={() => setUrls((prev) => prev.filter((u) => u !== url))}
               aria-label={`Remove image ${i + 1}`}
-              className="absolute right-1 top-1 flex size-5 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition group-hover:opacity-100 focus:opacity-100"
+              className="absolute right-1 top-1 flex size-5 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition group-hover:opacity-100 focus:opacity-100 pointer-coarse:size-11 pointer-coarse:opacity-100"
             >
               <X className="size-3" />
             </button>
             {i === 0 ? (
-              <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1 text-[10px] font-medium text-white">
+              <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1 text-[11px] font-medium text-white">
                 {a.images.cover}
               </span>
             ) : null}
@@ -103,7 +103,7 @@ export function ImageUploader({
             ) : (
               <ImagePlus className="size-5" />
             )}
-            <span className="text-[10px] font-medium">
+            <span className="text-[11px] font-medium">
               {uploading ? a.images.uploading : a.images.add}
             </span>
           </button>

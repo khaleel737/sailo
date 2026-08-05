@@ -1,5 +1,4 @@
 import "server-only";
-import { firstRow } from "@/lib/invariant";
 import { and, asc, eq, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
@@ -96,11 +95,17 @@ export async function releaseDownloads(orderId: string): Promise<boolean> {
   }
   if (order.downloadReleasedAt) return false;
 
-  const claimed = firstRow(await db
+  /*
+   * Nothing coming back means another caller claimed it first — a webhook
+   * retry racing the seller's own click. That is the ordinary outcome this
+   * WHERE clause exists to produce, not a broken invariant, so it returns
+   * false rather than throwing and failing the delivery.
+   */
+  const [claimed] = await db
     .update(orders)
     .set({ downloadReleasedAt: new Date(), updatedAt: new Date() })
     .where(and(eq(orders.id, orderId), isNull(orders.downloadReleasedAt)))
-    .returning({ id: orders.id }), "claimed");
+    .returning({ id: orders.id });
   if (!claimed) return false;
 
   if (order.customerEmail) {

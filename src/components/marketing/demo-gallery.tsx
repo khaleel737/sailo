@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import Link from "next/link";
+import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { Instagram } from "@/components/shared/brand-icons";
 import { DEMOS, phoneShotUrl, shotUrl } from "@/lib/demos";
@@ -13,35 +14,33 @@ import { cn } from "@/lib/utils";
 /**
  * Five shops, one at a time.
  *
- * A grid of five would make every screenshot too small to read, and the point
- * of the section is that the pages are legible. So it's a tab strip — and a
- * real one: `role="tablist"` with arrow-key movement, because a row of
- * shop names that only responds to a mouse is a worse demo than no demo.
+ * A grid of five would make every screenshot too small to read, and the whole
+ * point of the section is that the pages are legible. So it is a tab strip, and
+ * a real one: `role="tablist"` with roving tabindex and arrow keys, because a
+ * row of shop names that only answers a mouse is a worse demo than no demo.
  *
- * Every panel is rendered, not just the selected one. The images are the
- * expensive part and the browser wants to start on them early; hiding the
- * others with `hidden` keeps them out of the accessibility tree either way.
+ * The crossfade is motivated. Swapping two large screenshots instantly reads as
+ * a page reload; a 260ms fade says "same frame, different shop", which is the
+ * argument the section is making. The selected pill slides between tabs with a
+ * shared `layoutId` for the same reason.
  */
 export function DemoGallery({ t }: { t: MarketingDictionary }) {
   const [active, setActive] = useState(0);
   const baseId = useId();
+  // `active` only ever comes from a map over DEMOS, but the index signature
+  // does not know that, and the page must not blank out if it ever did drift.
+  const demo = DEMOS[active] ?? DEMOS[0];
+  if (!demo) return null;
 
-  /**
-   * Roving tabindex: only the selected tab is reachable by Tab, and the arrow
-   * keys move between them. The handler sits on the tabs rather than on the
-   * tablist so the container never has to be focusable itself.
-   */
   function onKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
-    const delta =
-      event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+    const delta = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
     if (!delta) return;
     event.preventDefault();
 
-    // The strip is laid out in the writing direction, so in Arabic the right
-    // arrow has to walk backwards through the list to still move rightwards.
+    // The strip lays out in the writing direction, so in Arabic the right arrow
+    // has to walk backwards through the list to still move rightwards.
     const rtl = event.currentTarget.closest("[dir='rtl']") !== null;
-    const step = rtl ? -delta : delta;
-    const next = (active + step + DEMOS.length) % DEMOS.length;
+    const next = (active + (rtl ? -delta : delta) + DEMOS.length) % DEMOS.length;
     setActive(next);
     document.getElementById(`${baseId}-tab-${next}`)?.focus();
   }
@@ -51,97 +50,98 @@ export function DemoGallery({ t }: { t: MarketingDictionary }) {
       <div
         role="tablist"
         aria-label={t.demos.title}
-        className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:justify-center"
+        className="no-scrollbar -mx-5 flex gap-1.5 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:justify-center sm:px-0"
       >
-        {DEMOS.map((demo, i) => {
+        {DEMOS.map((item, i) => {
           const selected = i === active;
           return (
             <button
-              key={demo.handle}
+              key={item.handle}
               id={`${baseId}-tab-${i}`}
               role="tab"
               type="button"
               aria-selected={selected}
-              aria-controls={`${baseId}-panel-${i}`}
+              aria-controls={`${baseId}-panel`}
               tabIndex={selected ? 0 : -1}
               onClick={() => setActive(i)}
               onKeyDown={onKeyDown}
-              style={selected ? { backgroundColor: demo.accent } : undefined}
               className={cn(
-                "focus-ring press shrink-0 rounded-full px-4 py-2 text-sm font-medium transition",
-                selected
-                  ? "text-white shadow-md"
-                  : "border border-white/15 text-ink-300 hover:border-white/30 hover:text-white",
+                "focus-line push relative shrink-0 rounded-[var(--r-pill)] px-4 py-2.5 text-[0.875rem] transition-colors",
+                selected ? "text-[var(--ink)]" : "text-white/50 hover:text-white/85",
               )}
             >
-              {demo.name}
+              {selected ? (
+                <motion.span
+                  layoutId={`${baseId}-pill`}
+                  transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  className="absolute inset-0 rounded-[var(--r-pill)] bg-[var(--paper)]"
+                />
+              ) : null}
+              <span className="relative">{item.name}</span>
             </button>
           );
         })}
       </div>
 
-      {DEMOS.map((demo, i) => (
-        <div
-          key={demo.handle}
-          id={`${baseId}-panel-${i}`}
-          role="tabpanel"
-          aria-labelledby={`${baseId}-tab-${i}`}
-          hidden={i !== active}
-          className="animate-fade mt-8"
-        >
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_15rem] lg:items-end">
-            <BrowserFrame
-              src={shotUrl(demo.handle)}
-              url={`sailo.store/${demo.handle}`}
-              alt={demo.name}
-              dark={demo.theme === "dark"}
-              // Only the first panel is visible on arrival; the rest would
-              // otherwise fight the hero for bandwidth on a slow connection.
-              priority={i === 0}
-              sizes="(min-width: 1024px) 760px, 100vw"
-            />
-            <div className="flex items-end gap-6">
+      <div id={`${baseId}-panel`} role="tabpanel" className="mt-12 sm:mt-16">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={demo.handle}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_12rem] lg:items-end lg:gap-12">
+              <BrowserFrame
+                src={shotUrl(demo.handle)}
+                url={`sailo.store/${demo.handle}`}
+                alt={demo.name}
+                dark={demo.theme === "dark"}
+                priority={active === 0}
+                sizes="(min-width: 1024px) 740px, 100vw"
+              />
               <PhoneFrame
                 src={phoneShotUrl(demo.handle)}
-                alt={`${demo.name} — ${t.demos.phone}`}
+                alt={`${demo.name} ${t.demos.phone}`}
                 className="mx-auto w-40 lg:mx-0 lg:w-full"
-                sizes="(min-width: 1024px) 240px, 160px"
+                sizes="(min-width: 1024px) 192px, 160px"
               />
             </div>
-          </div>
 
-          <div className="mt-8 flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-400">
-                <span
-                  style={{ color: demo.accent }}
-                  className="font-semibold uppercase tracking-widest"
-                >
-                  {t.demos[demo.kicker]}
-                </span>
-                <span className="inline-flex items-center gap-1">
-                  <MapPin className="size-3" />
-                  {demo.city}
-                </span>
-                <span dir="ltr" className="inline-flex items-center gap-1">
-                  <Instagram className="size-3" />@{demo.instagram}
-                </span>
-              </p>
-              <p className="mt-2 max-w-2xl text-pretty text-sm leading-relaxed text-ink-300">
-                {t.demos[demo.line]}
-              </p>
+            <div className="mt-10 flex flex-col gap-6 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <p className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[0.75rem] text-white/40">
+                  <span
+                    style={{ color: demo.accent }}
+                    className="font-semibold uppercase tracking-[0.16em]"
+                  >
+                    {t.demos[demo.kicker]}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <MapPin className="size-3.5" />
+                    {demo.city}
+                  </span>
+                  <span dir="ltr" className="inline-flex items-center gap-1.5">
+                    <Instagram className="size-3.5" />@{demo.instagram}
+                  </span>
+                </p>
+                <p className="mt-3 max-w-2xl text-pretty leading-relaxed text-[var(--on-ink-soft)]">
+                  {t.demos[demo.line]}
+                </p>
+              </div>
+
+              <Link
+                href={`/${demo.handle}`}
+                className="focus-line push group inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-[var(--r-pill)] bg-[var(--paper)] px-6 text-[0.875rem] font-medium text-[var(--ink)] transition-colors hover:bg-[var(--mute-100)]"
+              >
+                {interpolate(t.demos.open, { shop: demo.name })}
+                <ArrowUpRight className="size-4 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </Link>
             </div>
-
-            <Link
-              href={`/${demo.handle}`}
-              className="focus-ring press group inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-ink-900 transition hover:bg-ink-100"
-            >
-              {interpolate(t.demos.open, { shop: demo.name })}
-              <ArrowUpRight className="size-4 transition-transform duration-300 ease-[var(--ease-out-quint)] group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </Link>
-          </div>
-        </div>
-      ))}
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

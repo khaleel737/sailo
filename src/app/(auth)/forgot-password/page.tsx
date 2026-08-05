@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
 import { getT } from "@/i18n/server";
+import { AuthHeader } from "@/components/auth/auth-kit";
 import { ForgotPasswordForm } from "./forgot-password-form";
 
 export const metadata: Metadata = {
@@ -18,10 +19,7 @@ export default async function ForgotPasswordPage() {
 
   return (
     <>
-      <h1 className="text-xl font-semibold tracking-tight">
-        {t.auth.forgotTitle}
-      </h1>
-      <p className="mb-6 mt-1 text-sm text-ink-500">{t.auth.forgotSubtitle}</p>
+      <AuthHeader title={t.auth.forgotTitle} subtitle={t.auth.forgotSubtitle} />
       <ForgotPasswordForm t={t} />
     </>
   );

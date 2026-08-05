@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { rateLimit } from "@/lib/redis";
 import { cookies, headers } from "next/headers";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
 import { products, shops, visits } from "@/db/schema";
 import { classifyVisit, parseUserAgent } from "@/lib/analytics";
@@ -42,7 +42,13 @@ export async function POST(request: Request) {
 
   const db = getDb();
   const shop = await db.query.shops.findFirst({
-    where: and(eq(shops.id, shopId), eq(shops.isPublished, true)),
+    where: and(
+      eq(shops.id, shopId),
+      eq(shops.isPublished, true),
+      // A suspended shop isn't reachable, so a beacon naming one is either
+      // stale or forged. Either way it shouldn't add to anyone's analytics.
+      isNull(shops.suspendedAt),
+    ),
     columns: { id: true },
   });
   if (!shop) return NextResponse.json({ ok: false }, { status: 404 });

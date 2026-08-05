@@ -39,8 +39,8 @@ export function CopyLink({
       onClick={onCopy}
       className={
         variant === "onDark"
-          ? "focus-ring press inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl bg-white/15 px-3.5 text-xs font-semibold text-white transition hover:bg-white/25"
-          : "accent-bg focus-ring-accent press inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl px-3.5 text-xs font-semibold transition hover:opacity-90"
+          ? "focus-ring press inline-flex h-9 pointer-coarse:h-11 shrink-0 items-center gap-1.5 rounded-xl bg-white/15 px-3.5 text-xs font-semibold text-white transition hover:bg-white/25"
+          : "accent-bg focus-ring-accent press inline-flex h-9 pointer-coarse:h-11 shrink-0 items-center gap-1.5 rounded-xl px-3.5 text-xs font-semibold transition hover:opacity-90"
       }
     >
       {copied ? (

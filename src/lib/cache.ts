@@ -1,5 +1,5 @@
 import "server-only";
-import { unstable_cache, revalidateTag } from "next/cache";
+import { unstable_cache, revalidateTag, updateTag } from "next/cache";
 
 /**
  * Storefront caching.
@@ -69,4 +69,22 @@ function stringify(value: unknown): string {
 export function revalidateShop(shopId: string, handle?: string) {
   revalidateTag(shopTag(shopId), "max");
   if (handle) revalidateTag(handleTag(handle), "max");
+}
+
+/**
+ * The same invalidation, but the next reader waits for fresh data instead of
+ * being handed the stale copy while it refreshes behind them.
+ *
+ * `revalidateTag(…, "max")` above is stale-while-revalidate, which is the right
+ * trade for a seller fixing a typo: one visitor sees the old price for one more
+ * request and nobody is harmed. It is the wrong trade when we take a shop off
+ * the air from /hq — "suspended" has to mean suspended on the very next
+ * request, not the one after it, and a measured test caught exactly that: a
+ * suspended storefront still answered 200 once before going dark.
+ *
+ * Server Actions only; `updateTag` throws anywhere else.
+ */
+export function updateShopNow(shopId: string, handle?: string) {
+  updateTag(shopTag(shopId));
+  if (handle) updateTag(handleTag(handle));
 }

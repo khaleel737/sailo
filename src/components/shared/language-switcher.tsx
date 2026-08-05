@@ -47,10 +47,17 @@ export function LanguageSwitcher({
   current,
   align = "center",
   label = "Language",
+  size = "sm",
 }: {
   current: Locale;
   align?: "start" | "center" | "end";
   label?: string;
+  /**
+   * `sm` is the storefront footer's compact pill. `md` meets the 44px touch
+   * target, for surfaces where this is a primary control rather than a
+   * footnote.
+   */
+  size?: "sm" | "md";
 }) {
   const router = useRouter();
   const [panel, setPanel] = useState<Panel | null>(null);
@@ -168,7 +175,12 @@ export function LanguageSwitcher({
         aria-expanded={open}
         aria-haspopup="listbox"
         disabled={pending}
-        className="surface-card inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition hover:opacity-70 disabled:opacity-50"
+        className={cn(
+          "surface-card inline-flex items-center gap-1.5 rounded-full font-medium transition hover:opacity-70 disabled:opacity-50",
+          size === "md"
+            ? "min-h-11 px-4 py-2.5 text-[0.8125rem]"
+            : "px-3 py-1.5 text-xs",
+        )}
       >
         <span aria-hidden className="text-sm leading-none">
           {active.flag}

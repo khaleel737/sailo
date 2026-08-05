@@ -43,7 +43,7 @@ export const en = {
     order: "Order",
     orderNow: "Order now",
     unavailable: "Unavailable",
-    poweredBy: "Powered by",
+    joinOnSailo: "Join {shop} on Sailo", loadMore: "Load more",
     earnBySharing: "Earn {percent}% by sharing this shop",
     // A badge answers "what happens after I pay?", not "what category is
     // this?". `kind*` is the product page; `label*` is the smaller card badge,
@@ -414,7 +414,7 @@ export const en = {
   },
   billing: {
     cardTitle: "Take card payments",
-    cardBody: "Let buyers pay by card through your own Stripe or Paystack account. Sailo never touches the money and takes no cut.",
+    cardBody: "Let buyers pay by card through your own Stripe or Paystack account. Sailo never touches the money, and keeps 1% of card sales.",
     couponsTitle: "Run discount codes",
     couponsBody: "Percentage or fixed discounts, with minimum spend, usage caps and expiry dates.",
     affiliatesTitle: "Start a referral programme",
@@ -434,7 +434,7 @@ export const en = {
     currentPlan: "Current plan",
     unlocksThis: "Unlocks this",
     bestValue: "Best value",
-    cancelAnyTime: "Cancel any time. Sailo takes no cut of your sales on any plan.",
+    cancelAnyTime: "Cancel any time. Chat and bank-transfer orders are always yours in full; card sales carry a 1% fee.",
     planFeature: "{plan} feature",
     paidFeature: "Paid feature",
     youAreOn: "You're on {plan}",

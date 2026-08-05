@@ -3,13 +3,19 @@
 import { useState } from "react";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import { Alert, Button, Field, Input } from "@/components/ui";
+import {
+  AuthError,
+  AuthField,
+  AuthInput,
+  AuthNotice,
+  AuthSubmit,
+} from "@/components/auth/auth-kit";
 import type { Dictionary } from "@/i18n";
 
 /**
  * Sets the new password.
  *
- * Resetting deliberately doesn't sign anyone in: it ends every existing
+ * Resetting deliberately does not sign anyone in: it ends every existing
  * session, including any the person who prompted the reset was holding, so the
  * next step is a fresh sign-in with the password just chosen.
  */
@@ -57,11 +63,11 @@ export function ResetPasswordForm({
 
   if (done) {
     return (
-      <div className="space-y-4">
-        <Alert tone="success">{t.auth.resetDone}</Alert>
+      <div className="space-y-6">
+        <AuthNotice>{t.auth.resetDone}</AuthNotice>
         <Link
           href="/login"
-          className="focus-ring accent-bg press flex h-11 w-full items-center justify-center rounded-xl text-sm font-semibold"
+          className="focus-line push inline-flex h-12 w-full items-center justify-center rounded-[var(--r-pill)] bg-[var(--ink)] text-[0.9375rem] font-medium text-[var(--paper)] transition-colors hover:bg-[var(--ink-soft)]"
         >
           {t.auth.signIn}
         </Link>
@@ -70,11 +76,11 @@ export function ResetPasswordForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
-      {error ? <Alert>{error}</Alert> : null}
+    <form onSubmit={onSubmit} className="space-y-5">
+      {error ? <AuthError>{error}</AuthError> : null}
 
-      <Field label={t.auth.newPassword} htmlFor="password" hint={t.auth.minChars}>
-        <Input
+      <AuthField label={t.auth.newPassword} htmlFor="password" hint={t.auth.minChars}>
+        <AuthInput
           id="password"
           name="password"
           type="password"
@@ -83,10 +89,10 @@ export function ResetPasswordForm({
           autoComplete="new-password"
           placeholder="••••••••"
         />
-      </Field>
+      </AuthField>
 
-      <Field label={t.auth.confirmPassword} htmlFor="confirm">
-        <Input
+      <AuthField label={t.auth.confirmPassword} htmlFor="confirm">
+        <AuthInput
           id="confirm"
           name="confirm"
           type="password"
@@ -95,17 +101,9 @@ export function ResetPasswordForm({
           autoComplete="new-password"
           placeholder="••••••••"
         />
-      </Field>
+      </AuthField>
 
-      <Button
-        type="submit"
-        variant="brand"
-        size="lg"
-        className="w-full"
-        loading={pending}
-      >
-        {t.auth.updatePassword}
-      </Button>
+      <AuthSubmit loading={pending}>{t.auth.updatePassword}</AuthSubmit>
     </form>
   );
 }

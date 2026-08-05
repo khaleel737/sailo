@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Store } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import {
   getCheckoutOptions,
   getProductBySlug,
@@ -29,7 +29,8 @@ import {
   toCheckoutVariants,
   unitsLeft,
 } from "@/lib/variants";
-import { can } from "@/lib/plans";
+import { PoweredBy } from "@/components/shared/powered-by";
+import { absolute } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -41,14 +42,29 @@ export async function generateMetadata({
   const product = await getProductBySlug(shop.id, slug);
   if (!product) return { title: "Not found" };
 
+  const image = product.images[0]?.url;
+  const url = absolute(`/${shop.handle}/p/${product.slug}`);
+
   return {
     title: `${product.title} · ${shop.name}`,
     description: product.description ?? undefined,
+    alternates: { canonical: url },
+    // An unpublished product is reachable by URL for the seller's own preview;
+    // it must not be reachable through search.
+    robots: product.isPublished ? undefined : { index: false, follow: false },
     openGraph: {
       title: product.title,
       description: product.description ?? undefined,
-      images: product.images[0]?.url ? [product.images[0].url] : undefined,
+      url,
+      siteName: shop.name,
+      images: image ? [image] : undefined,
       type: "website",
+    },
+    twitter: {
+      card: image ? "summary_large_image" : "summary",
+      title: product.title,
+      description: product.description ?? undefined,
+      images: image ? [image] : undefined,
     },
   };
 }
@@ -311,22 +327,10 @@ export default async function ProductPage({
           <ReviewForm productId={product.id} t={t} />
         </section>
 
-        {!can(shop, "removeBadge") ? (
-          <footer className="mt-14 flex flex-col items-center gap-3 text-center">
-            <Link
-              href="/"
-              className="text-muted inline-flex items-center gap-1.5 text-xs transition hover:opacity-70"
-            >
-              <Store className="size-3.5" />
-              {t.shop.poweredBy} <span className="font-semibold">Sailo</span>
-            </Link>
-            <LanguageSwitcher current={locale} label={t.common.language} />
-          </footer>
-        ) : (
-          <footer className="mt-14 flex justify-center">
-            <LanguageSwitcher current={locale} label={t.common.language} />
-          </footer>
-        )}
+        <footer className="mt-14 flex flex-col items-center gap-3 text-center">
+          <PoweredBy shop={shop} t={t} />
+          <LanguageSwitcher current={locale} label={t.common.language} />
+        </footer>
       </div>
     </div>
     </CartRegion>

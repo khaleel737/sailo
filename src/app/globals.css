@@ -1,21 +1,103 @@
 @import "tailwindcss";
 
+/* ===========================================================================
+   Sailo, app-wide
+
+   What every surface shares: the admin, the storefront template, HQ, and the
+   public brand pages. The palette, radii, shadows and easings are Tailwind's
+   own defaults on purpose. Restyling every existing screen is not something a
+   brand refresh needs to do, and the previous attempt at it moved screens
+   nobody asked to have moved.
+
+   Everything below is additive. Nothing here changes how a screen looked
+   before the brand work landed unless that screen opts in by using it.
+
+   The public pages (landing, auth, onboarding) layer their own tokens on top
+   of this in `brand.css`, scoped to `.brand-surface`. Nothing in that file
+   reaches back into this one.
+
+   CONTENTS
+     1. Theme          the ink and brand scales, motion vocabulary
+     2. Root           runtime surface variables the storefront overrides
+     3. Base           html and body
+     4. Shop surface   the one storefront template, light and dark
+     5. Interaction    focus, press, lift, native control fixes
+     6. Decoration     the one gradient the brand pages use
+     7. Motion         keyframes, and the reduced-motion override
+=========================================================================== */
+
+/* --- 1. Theme ----------------------------------------------------------- */
+
 @theme {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  --color-ink-50: #f7f7f8;
-  --color-ink-100: #ededf0;
-  --color-ink-200: #d9d9df;
-  --color-ink-300: #b8b8c2;
-  --color-ink-400: #8e8e9c;
-  --color-ink-500: #6d6d7d;
-  --color-ink-600: #565664;
-  --color-ink-700: #464651;
-  --color-ink-800: #2c2c34;
-  --color-ink-900: #1a1a20;
-  --color-ink-950: #0e0e12;
+  /* --- Ink ---------------------------------------------------------------
+     The product's one neutral, and the reason this ramp is warm.
+
+     There used to be two greys: a violet-tinted one here, driving the admin,
+     HQ and the storefront chrome, and a warm one on the brand pages. Same
+     lightness, different hue, so walking from the landing page into /admin
+     read as walking into a different product.
+
+     One family now. `brand.css` maps its own semantic names onto these exact
+     steps rather than redeclaring hexes, so there is a single place to change
+     the neutral and nowhere for the two to drift apart again. */
+  --color-ink-50: #faf9f7;
+  --color-ink-100: #f0efea;
+  --color-ink-200: #e0ddd5;
+  --color-ink-300: #c2beb3;
+  --color-ink-400: #96928a;
+  --color-ink-500: #6f6b64;
+  --color-ink-600: #55524b;
+  --color-ink-700: #403d38;
+  --color-ink-800: #2a2824;
+  --color-ink-900: #1a1917;
+  --color-ink-950: #0d0d0c;
+
+  /* --- Brand -------------------------------------------------------------
+     Anchored on 700 — the green lifted straight off the mark. Used by the
+     logo, the marketing page, auth and onboarding; the admin and the
+     storefront only reach for it where a page explicitly asks. */
+  --color-brand-50: #ecfdf3;
+  --color-brand-100: #d1fae0;
+  --color-brand-200: #a5f3c6;
+  --color-brand-300: #6ee7a7;
+  --color-brand-400: #34d98a;
+  --color-brand-500: #12b76a;
+  --color-brand-600: #059154;
+  --color-brand-700: #037740;
+  --color-brand-800: #065f37;
+  --color-brand-900: #064e2f;
+  --color-brand-950: #022c1a;
+
+  /* --- Radius ------------------------------------------------------------
+     Rounder than Tailwind's defaults, and shared. `xl` is the control radius
+     (buttons, inputs, chips), `2xl` the surface radius (cards, panels, sheets).
+     The brand pages use a capsule for their calls to action instead; that is a
+     deliberate difference of terminal shape, not of scale, because pills waste
+     horizontal room in the dense toolbars a working surface is made of. */
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.5rem;
+
+  /* --- Motion ------------------------------------------------------------
+     Everything decelerates. Nothing here should feel like it is still
+     accelerating when it arrives. */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --animate-fade: sailo-fade 0.3s var(--ease-out-quint) both;
+  --animate-pop: sailo-pop 0.32s var(--ease-spring) both;
+  --animate-sheet-up: sailo-sheet-up 0.34s var(--ease-out-expo) both;
+  --animate-sheet-in: sailo-sheet-in 0.34s var(--ease-out-expo) both;
+  --animate-backdrop: sailo-backdrop 0.28s var(--ease-out-quint) both;
+  --animate-shimmer: sailo-shimmer 1.6s linear infinite;
 }
+
+/* --- 2. Root ------------------------------------------------------------ */
 
 :root {
   --accent: #111111;
@@ -38,6 +120,8 @@
   --surface-border: #e6e6ea;
 }
 
+/* --- 3. Base ------------------------------------------------------------ */
+
 html {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -47,7 +131,7 @@ body {
   font-family: var(--font-sans);
 }
 
-/* ---------------------------------------------------------------------------
+/* --- 4. Shop surface ---------------------------------------------------------
    Shop template surface — the one template. `data-surface` flips the palette
    so a seller's light/dark choice never depends on the visitor's OS setting.
 --------------------------------------------------------------------------- */
@@ -59,20 +143,20 @@ body {
 
 [data-surface="light"] {
   --surface-bg: #ffffff;
-  --surface-fg: #16161a;
-  --surface-muted: #6d6d7d;
+  --surface-fg: #1a1917;
+  --surface-muted: #6f6b64;
   --surface-card: #ffffff;
-  --surface-elevated: #f7f7f8;
-  --surface-border: #e6e6ea;
+  --surface-elevated: #faf9f7;
+  --surface-border: #e6e3dc;
 }
 
 [data-surface="dark"] {
-  --surface-bg: #0c0c0f;
-  --surface-fg: #f2f2f5;
-  --surface-muted: #9a9aa8;
-  --surface-card: #16161b;
-  --surface-elevated: #1c1c22;
-  --surface-border: #26262e;
+  --surface-bg: #0d0d0c;
+  --surface-fg: #f4f3f0;
+  --surface-muted: #9d9990;
+  --surface-card: #171614;
+  --surface-elevated: #1f1e1a;
+  --surface-border: #2b2924;
 }
 
 @utility surface-card {
@@ -110,6 +194,89 @@ body {
   }
 }
 
+/* --- 5. Interaction ----------------------------------------------------------
+   Interaction
+
+   `focus-ring` is opt-in per control rather than a global `:focus-visible`
+   rule, so nothing that already had a focus style gets two.
+--------------------------------------------------------------------------- */
+
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+}
+
+/* Controls sitting on a shop's own surface borrow the seller's accent. */
+@utility focus-ring-accent {
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+@utility press {
+  transition: transform 0.12s var(--ease-out-quint);
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+/*
+ * `lift` moves an element on hover, which makes it the containing block for
+ * any `position: fixed` descendant while the pointer is over it. Never put it
+ * on anything that contains a modal, a sheet or a popover — see the note on
+ * the storefront product card.
+ */
+@utility lift {
+  transition:
+    transform 0.22s var(--ease-out-quint),
+    box-shadow 0.22s var(--ease-out-quint);
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+/* Native select, minus the native arrow. The chevron is painted on so it can
+   sit on the trailing edge in both writing directions. */
+@utility select-chevron {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2396928a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.25rem;
+  padding-left: 0.75rem;
+
+  &:dir(rtl) {
+    background-position: left 0.75rem center;
+    padding-right: 0.75rem;
+    padding-left: 2.25rem;
+  }
+}
+
+/* Numbers in tables, totals and stats should never jitter as they update. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- 6. Decoration -----------------------------------------------------------
+   The one gradient still shared with the brand pages. The landing page owns
+   its own surface treatment in `brand.css`; this is what /not-found and
+   onboarding still reach for.
+--------------------------------------------------------------------------- */
+
+@utility bg-aurora {
+  background-image:
+    radial-gradient(ellipse 60% 50% at 15% 0%, oklch(0.9 0.11 160 / 0.5), transparent 60%),
+    radial-gradient(ellipse 50% 45% at 85% 10%, oklch(0.92 0.07 200 / 0.45), transparent 60%);
+}
+
+/* --- 7. Motion ---------------------------------------------------------------
+   Keyframes, and the one override that turns all of it off.
+--------------------------------------------------------------------------- */
+
 @keyframes sailo-rise {
   from {
     opacity: 0;
@@ -125,11 +292,86 @@ body {
   animation: sailo-rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+@keyframes sailo-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sailo-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes sailo-sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Direction-aware: `start` is the left edge in English, the right in Arabic. */
+@keyframes sailo-sheet-in {
+  from {
+    transform: translateX(calc(100% * var(--sheet-dir, 1)));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes sailo-backdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sailo-shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* Loading placeholder that reads as "content is coming", not "something broke". */
+@utility skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-ink-100) 25%,
+    var(--color-ink-50) 50%,
+    var(--color-ink-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+[dir="rtl"] {
+  --sheet-dir: -1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

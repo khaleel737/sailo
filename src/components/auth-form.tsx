@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import { Alert, Button, Field, Input } from "@/components/ui";
+import {
+  AuthError,
+  AuthField,
+  AuthFooterLink,
+  AuthInput,
+  AuthSubmit,
+} from "@/components/auth/auth-kit";
 import type { Dictionary } from "@/i18n";
 
 export function AuthForm({
@@ -45,44 +51,51 @@ export function AuthForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
-      {error ? <Alert>{error}</Alert> : null}
+    <form onSubmit={onSubmit} className="space-y-5">
+      {error ? <AuthError>{error}</AuthError> : null}
 
       {isSignup ? (
-        <Field label={t.auth.yourName} htmlFor="name">
-          <Input id="name" name="name" required autoComplete="name" placeholder="Amina Yusuf" />
-        </Field>
+        <AuthField label={t.auth.yourName} htmlFor="name">
+          <AuthInput
+            id="name"
+            name="name"
+            required
+            autoComplete="name"
+            placeholder="Amina Yusuf"
+          />
+        </AuthField>
       ) : null}
 
-      <Field label={t.auth.email} htmlFor="email">
-        <Input
+      <AuthField label={t.auth.email} htmlFor="email">
+        <AuthInput
           id="email"
           name="email"
           type="email"
           required
           autoComplete="email"
+          inputMode="email"
           placeholder="you@example.com"
         />
-      </Field>
+      </AuthField>
 
-      <Field
+      <AuthField
         label={t.auth.password}
         htmlFor="password"
         hint={isSignup ? t.auth.minChars : undefined}
-        // Sits beside the field it's about, so it's found at the moment the
-        // password won't come rather than after the sign-in fails.
+        // Sits beside the field it is about, so it is found at the moment the
+        // password will not come rather than after the sign-in fails.
         action={
           isSignup ? undefined : (
             <Link
               href="/forgot-password"
-              className="focus-ring rounded text-xs font-medium text-ink-500 underline underline-offset-4 hover:text-ink-900"
+              className="focus-line draw-underline inline-flex items-center text-[0.8125rem] text-[var(--mute-500)] pointer-coarse:min-h-11"
             >
               {t.auth.forgotPassword}
             </Link>
           )
         }
       >
-        <Input
+        <AuthInput
           id="password"
           name="password"
           type="password"
@@ -91,27 +104,17 @@ export function AuthForm({
           autoComplete={isSignup ? "new-password" : "current-password"}
           placeholder="••••••••"
         />
-      </Field>
+      </AuthField>
 
-      <Button
-        type="submit"
-        variant="brand"
-        size="lg"
-        className="w-full"
-        loading={pending}
-      >
+      <AuthSubmit loading={pending}>
         {isSignup ? t.auth.createMyShop : t.auth.signIn}
-      </Button>
+      </AuthSubmit>
 
-      <p className="text-center text-sm text-ink-500">
-        {isSignup ? `${t.auth.haveShop} ` : `${t.auth.newHere} `}
-        <Link
-          href={isSignup ? "/login" : "/signup"}
-          className="focus-ring rounded font-medium text-brand-700 underline underline-offset-4 hover:text-brand-800"
-        >
-          {isSignup ? t.auth.signIn : t.auth.createOne}
-        </Link>
-      </p>
+      <AuthFooterLink
+        prompt={isSignup ? t.auth.haveShop : t.auth.newHere}
+        href={isSignup ? "/login" : "/signup"}
+        label={isSignup ? t.auth.signIn : t.auth.createOne}
+      />
     </form>
   );
 }

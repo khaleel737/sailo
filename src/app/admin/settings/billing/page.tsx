@@ -13,6 +13,7 @@ import { billingEnabled } from "@/lib/stripe";
 import { IntervalToggle } from "@/app/admin/settings/billing/_components/interval-toggle";
 import { Alert, Badge, Button, Card, Progress } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
+import { interpolate } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Billing" };
@@ -21,7 +22,7 @@ export default async function BillingPage({
   searchParams,
 }: PageProps<"/admin/settings/billing">) {
   const { shop } = await requireShop();
-  const { t } = await getAdminT();
+  const { t, a } = await getAdminT();
   const params = await searchParams;
 
   // Returning from Checkout, the webhook may still be in flight — pull the
@@ -49,7 +50,7 @@ export default async function BillingPage({
     <>
       {params.checkout === "cancelled" ? (
         <Alert tone="info" className="mb-5">
-          Checkout cancelled — nothing was charged.
+          {a.billing.cancelled}
         </Alert>
       ) : null}
 
@@ -57,18 +58,18 @@ export default async function BillingPage({
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h2 className="text-sm font-medium text-ink-500">Current plan</h2>
+              <h2 className="text-sm font-medium text-ink-500">{a.billing.currentPlan}</h2>
               {fresh.subscriptionStatus === "past_due" ? (
                 <Badge tone="red" dot>
-                  Payment failed
+                  {a.billing.paymentFailed}
                 </Badge>
               ) : fresh.cancelAtPeriodEnd ? (
                 <Badge tone="amber" dot>
-                  Cancels at period end
+                  {a.billing.cancelsAtPeriodEnd}
                 </Badge>
               ) : (
                 <Badge tone="green" dot>
-                  Active
+                  {a.billing.active}
                 </Badge>
               )}
             </div>
@@ -76,13 +77,15 @@ export default async function BillingPage({
               {current.name}
             </p>
             <p className="mt-1 text-sm text-ink-500">
-              <span className="tabular">{productCount}</span> of{" "}
-              {limit ?? "unlimited"} products used
-              {current.features.cardRails ? " · 0% fee on card payments" : ""}
+              {interpolate(a.billing.slotsUsed, {
+                used: productCount,
+                limit: limit ?? a.common.unlimited.toLowerCase(),
+              })}
+              {current.features.cardRails ? ` · ${a.billing.zeroFee}` : ""}
             </p>
             {fresh.currentPeriodEnd ? (
               <p className="mt-0.5 text-xs text-ink-400">
-                {fresh.cancelAtPeriodEnd ? "Access ends" : "Renews"}{" "}
+                {fresh.cancelAtPeriodEnd ? a.billing.accessEnds : a.billing.renews}{" "}
                 {fresh.currentPeriodEnd.toLocaleDateString("en-US", {
                   day: "numeric",
                   month: "long",
@@ -95,7 +98,7 @@ export default async function BillingPage({
           {fresh.stripeCustomerId ? (
             <form action={openBillingPortal}>
               <Button variant="secondary" type="submit">
-                Manage billing
+                {a.billing.manageBilling}
                 <ExternalLink className="size-4" />
               </Button>
             </form>
@@ -108,23 +111,21 @@ export default async function BillingPage({
           <Progress
             value={productCount / limit}
             tone={atLimit ? "amber" : "brand"}
-            label="Product slots used"
+            label={a.billing.productSlots}
             className="mt-4"
           />
         ) : null}
 
         {atLimit ? (
           <Alert tone="warning" className="mt-4">
-            You&rsquo;ve used every product slot on {current.name}. Existing
-            products keep working — upgrade to add more.
+            {interpolate(a.billing.atLimit, { plan: current.name })}
           </Alert>
         ) : null}
       </Card>
 
       {!billingEnabled() ? (
         <Alert tone="warning">
-          Billing isn&rsquo;t configured — set <code>STRIPE_SECRET_KEY</code> to
-          enable upgrades.
+          {a.billing.notConfigured} <code>STRIPE_SECRET_KEY</code>.
         </Alert>
       ) : (
         <>
@@ -157,10 +158,10 @@ export default async function BillingPage({
                     {featured ? (
                       <Badge tone="brand">
                         <Sparkles className="size-3" />
-                        Popular
+                        {a.billing.popular}
                       </Badge>
                     ) : null}
-                    {isCurrent ? <Badge tone="green">Current</Badge> : null}
+                    {isCurrent ? <Badge tone="green">{a.billing.current}</Badge> : null}
                   </div>
 
                   <p className="mt-1 text-xs leading-relaxed text-ink-500">
@@ -169,15 +170,20 @@ export default async function BillingPage({
 
                   <p className="mt-4">
                     <span className="tabular text-3xl font-semibold text-ink-900">
-                      {price === 0 ? "Free" : formatMoney(monthly, "USD")}
+                      {price === 0 ? a.billing.free : formatMoney(monthly, "USD")}
                     </span>
                     {price > 0 ? (
-                      <span className="text-sm text-ink-500"> /month</span>
+                      <span className="text-sm text-ink-500">
+                        {" "}
+                        {a.billing.perMonth}
+                      </span>
                     ) : null}
                   </p>
                   {price > 0 && interval === "year" ? (
                     <p className="tabular text-xs text-ink-400">
-                      {formatMoney(price, "USD")} billed yearly
+                      {interpolate(a.billing.billedYearly, {
+                        amount: formatMoney(price, "USD"),
+                      })}
                     </p>
                   ) : null}
 
@@ -199,7 +205,7 @@ export default async function BillingPage({
                   <div className="mt-5">
                     {isCurrent ? (
                       <Button variant="secondary" className="w-full" disabled>
-                        Your plan
+                        {a.billing.yourPlan}
                       </Button>
                     ) : id === "free" ? (
                       <form action={openBillingPortal}>
@@ -209,7 +215,7 @@ export default async function BillingPage({
                           className="w-full"
                           disabled={!fresh.stripeCustomerId}
                         >
-                          Downgrade
+                          {a.billing.downgrade}
                         </Button>
                       </form>
                     ) : (
@@ -221,8 +227,12 @@ export default async function BillingPage({
                           variant={featured ? "brand" : "primary"}
                           className="w-full"
                         >
-                          {current.id === "free" ? "Upgrade" : "Switch"} to{" "}
-                          {plan.name}
+                          {interpolate(
+                            current.id === "free"
+                              ? a.billing.upgradeTo
+                              : a.billing.switchTo,
+                            { plan: plan.name },
+                          )}
                         </Button>
                       </form>
                     )}
@@ -233,8 +243,7 @@ export default async function BillingPage({
           </div>
 
           <p className="mt-4 text-center text-xs text-ink-400">
-            Cancel any time. Downgrading never deletes products — you just
-            can&rsquo;t add more until you&rsquo;re under the limit.
+            {a.billing.cancelAnyTime}
           </p>
         </>
       )}

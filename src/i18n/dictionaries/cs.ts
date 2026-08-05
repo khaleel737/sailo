@@ -15,7 +15,7 @@ export const cs: Dictionary = {
     noProductsBody: "{shop} zatím nic nepřidal. Podívejte se znovu později.",
     noMatches: "Žádné výsledky", noMatchesBody: "Zkuste odebrat filtr nebo hledat něco jiného.",
     soldOut: "Vyprodáno", sale: "Sleva", order: "Objednat", orderNow: "Objednat teď",
-    unavailable: "Nedostupné", poweredBy: "Běží na",
+    unavailable: "Nedostupné", joinOnSailo: "Přidej se k {shop} na Sailo", loadMore: "Načíst další",
     earnBySharing: "Vydělejte {percent}% sdílením tohoto obchodu",
     kindPhysical: "Doručíme vám", kindDigital: "Okamžité stažení",
     kindService: "Rezervujte si termín", labelDigital: "Ke stažení", labelService: "Rezervace",

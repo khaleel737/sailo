@@ -8,7 +8,8 @@ import {
   type TrafficSource,
 } from "@/lib/analytics";
 import { Card } from "@/components/ui";
-import { cn } from "@/lib/utils";
+import { getAdminT } from "@/i18n/server";
+import { CHART } from "@/lib/chart-palette";
 
 type Row = { label: string; lead?: string; count: number; unique: number };
 
@@ -18,7 +19,7 @@ type Row = { label: string; lead?: string; count: number; unique: number };
  * rankings — "Instagram beats Google" — not as magnitudes to compare across
  * dimensions.
  */
-export function TrafficPanel({
+export async function TrafficPanel({
   data,
   days,
   locale,
@@ -27,11 +28,13 @@ export function TrafficPanel({
   days: number;
   locale: string;
 }) {
+  const { a } = await getAdminT();
+
   if (data.total === 0) {
     return (
       <Card className="flex flex-col items-center px-6 py-10 text-center">
         <Globe className="mb-2 size-6 text-ink-300" />
-        <p className="text-sm font-medium text-ink-700">No visits yet</p>
+        <p className="text-sm font-medium text-ink-700">{a.traffic.noVisits}</p>
         <p className="mt-0.5 text-xs text-ink-400">
           Share your link and this fills in — country, city, and what brought
           them.
@@ -82,63 +85,64 @@ export function TrafficPanel({
   return (
     <section className="mb-6">
       <div className="mb-3 flex items-baseline justify-between gap-3">
-        <h2 className="text-sm font-semibold">Where your visitors come from</h2>
+        <h2 className="text-sm font-semibold">{a.traffic.title}</h2>
         <p className="text-xs text-ink-400">
-          Last {days} days · {data.total.toLocaleString()} visit
-          {data.total === 1 ? "" : "s"}
+          {a.traffic.rangeSummary
+            .replace("{days}", String(days))
+            .replace("{count}", data.total.toLocaleString())}
         </p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <List
           icon={<Globe className="size-4" />}
-          title="Countries"
+          title={a.traffic.countries}
           rows={countries}
           total={data.total}
           empty={
             data.located === 0
-              ? "Geography is resolved at the edge — it appears once your shop is live."
-              : "No location data yet."
+              ? a.traffic.geoEdge
+              : a.traffic.noLocation
           }
         />
         <List
           icon={<MapPin className="size-4" />}
-          title="Cities"
+          title={a.traffic.cities}
           rows={cities}
           total={data.total}
           empty={
             data.located === 0
-              ? "Appears on your live shop, not in local previews."
-              : "No city data yet."
+              ? a.traffic.cityEdge
+              : a.traffic.noCity
           }
         />
         <List
           icon={<Share2 className="size-4" />}
-          title="How they found you"
+          title={a.traffic.howTheyFound}
           rows={sources}
           total={data.total}
-          empty="No data yet."
+          empty={a.traffic.noData}
         />
         <List
           icon={<Globe className="size-4" />}
-          title="Referring sites"
+          title={a.traffic.referringSites}
           rows={referrers}
           total={data.total}
-          empty="Everyone arrived directly — no referring site."
+          empty={a.traffic.allDirect}
         />
         <List
           icon={<Monitor className="size-4" />}
-          title="Devices"
+          title={a.traffic.devices}
           rows={devices}
           total={data.total}
-          empty="No data yet."
+          empty={a.traffic.noData}
         />
         <List
           icon={<Megaphone className="size-4" />}
-          title="Campaigns"
+          title={a.traffic.campaigns}
           rows={campaigns}
           total={data.total}
-          empty="Tag a link with ?utm_campaign=spring to track it here."
+          empty={a.traffic.campaignHint}
         />
       </div>
     </section>
@@ -193,8 +197,15 @@ function List({
                     auto-height parent resolves to nothing and draws no bar. */}
                 <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-ink-100">
                   <div
-                    className={cn("h-full rounded-full bg-brand-600")}
-                    style={{ width: `${Math.max(share, 2)}%` }}
+                    // Traffic, so it wears the activity colour. These bars
+                    // were brand green, which is the money colour: a visitor
+                    // breakdown drawn in the same hue as revenue invites the
+                    // reader to compare two things that share no unit.
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${Math.max(share, 2)}%`,
+                      backgroundColor: CHART.activity,
+                    }}
                   />
                 </div>
               </li>

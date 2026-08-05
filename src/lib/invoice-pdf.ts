@@ -2,6 +2,12 @@ import "server-only";
 import PDFDocument from "pdfkit";
 import type { Invoice, Order, Shop } from "@/db/schema";
 import type { OrderLine } from "@/lib/order-lines";
+import { getDictionary } from "@/i18n";
+import {
+  badgeHref,
+  badgeLabel,
+  showsBadge,
+} from "@/components/shared/powered-by";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatPercent } from "@/lib/pricing";
 import { formatAddress, formatMoney } from "@/lib/utils";
@@ -285,6 +291,22 @@ export function renderInvoicePdf(data: {
     }
 
     /* ---- footer ------------------------------------------------------- */
+
+    // A free shop's invoice carries the badge like its pages do. This is the
+    // copy most likely to be forwarded to someone who has never seen Sailo,
+    // so leaving it off was the largest of the gaps.
+    if (showsBadge(shop)) {
+      doc
+        .font("Helvetica")
+        .fontSize(8)
+        .fillColor(MUTED)
+        .text(
+          badgeLabel(shop, getDictionary(shop.locale)),
+          MARGIN,
+          doc.page.height - MARGIN - 22,
+          { width, align: "center", link: badgeHref(shop.handle) },
+        );
+    }
 
     doc
       .font("Helvetica")

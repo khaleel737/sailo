@@ -29,7 +29,7 @@ export const zh: Dictionary = {
     order: "下单",
     orderNow: "立即下单",
     unavailable: "暂不可用",
-    poweredBy: "技术支持",
+    joinOnSailo: "在 Sailo 上加入 {shop}", loadMore: "加载更多",
     earnBySharing: "分享本店赚取 {percent}%",
     kindPhysical: "配送到家",
     kindDigital: "立即下载",

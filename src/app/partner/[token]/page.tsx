@@ -14,7 +14,7 @@ import { getShopT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
 import { formatPercent } from "@/lib/pricing";
 import { formatMoney, shopThemeVars } from "@/lib/utils";
-import { CopyLink } from "@/components/admin/copy-link";
+import { CopyLink } from "@/components/shared/copy-link";
 
 /** A private report — never something a search engine should hold on to. */
 export const metadata: Metadata = {

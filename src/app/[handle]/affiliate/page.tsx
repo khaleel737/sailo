@@ -6,6 +6,7 @@ import { getShopByHandle } from "@/lib/queries";
 import { AffiliateSignupForm } from "@/app/[handle]/affiliate/_components/affiliate-signup-form";
 import { formatPercent } from "@/lib/pricing";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
+import { PoweredBy } from "@/components/shared/powered-by";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
 import { isShopLive, shopThemeVars } from "@/lib/utils";
@@ -125,7 +126,7 @@ export default async function AffiliatePage({
           </div>
         ) : null}
 
-        <footer className="mt-12 flex justify-center">
+        <footer className="mt-12 flex flex-col items-center gap-3 text-center">
           {/* Someone who already has a link comes here looking for numbers. */}
           <Link
             href="/partner"
@@ -133,6 +134,7 @@ export default async function AffiliatePage({
           >
             {t.partner.signInTitle}
           </Link>
+          <PoweredBy shop={shop} t={t} />
           <LanguageSwitcher current={locale} label={t.common.language} />
         </footer>
       </div>

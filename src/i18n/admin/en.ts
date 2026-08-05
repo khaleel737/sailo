@@ -79,6 +79,15 @@ export const adminEn = {
      * the distinction the colour used to — see the note in the sidebar.
      */
     role: "Shop admin",
+
+    /**
+     * The panel footer. A seller signs the terms here, not on the marketing
+     * site, so this is where the documents have to be reachable from.
+     */
+    legal: "Legal",
+    privacy: "Privacy",
+    terms: "Terms",
+    refunds: "Refunds",
   },
 
   /**
@@ -388,6 +397,8 @@ export const adminEn = {
   },
 
   payments: {
+    stripeErrorTitle: "Stripe couldn't start the setup",
+    stripeNoResponse: "Stripe did not respond. Try again in a moment.",
     waysToOrder: "{count} ways to order",
     waysToOrderOne: "1 way to order",
     nothingLive: "Nothing live",
@@ -402,7 +413,7 @@ export const adminEn = {
     showOnShop: "Show on my shop",
     fillInFirst: "Fill in the details above before turning this on.",
     cardTitle: "Card payments",
-    cardBody: "Buyers pay by card, Apple Pay or Google Pay without leaving the checkout. The money goes straight into your own Stripe account — Sailo never holds it and takes no cut of your sales.",
+    cardBody: "Buyers pay by card, Apple Pay or Google Pay without leaving the checkout. The money goes straight into your own Stripe account — Sailo never holds it, and keeps 1% of the goods on each card sale.",
     stripeVerifying: "Stripe is verifying",
     finishSetup: "Finish setup",
     notConnected: "Not connected",
@@ -551,6 +562,13 @@ export const adminEn = {
 
   traffic: {
     referringSites: "Referring sites",
+    geoEdge:
+      "Geography is resolved at the edge — it appears once your shop is live.",
+    noLocation: "No location data yet.",
+    cityEdge: "Appears on your live shop, not in local previews.",
+    noCity: "No city data yet.",
+    allDirect: "Everyone arrived directly — no referring site.",
+    campaignHint: "Tag a link with ?utm_campaign=spring to track it here.",
     noVisits: "No visits yet",
     rangeSummary: "Last {days} days · {count} visits",
     title: "Where your visitors come from",

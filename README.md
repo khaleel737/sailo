@@ -7,7 +7,9 @@ Sellers upload what they sell (physical goods, digital downloads or services),
 share one link, and take orders on WhatsApp. One template, no checkout to
 configure, works in every country.
 
-Demo shop (after seeding): `/demo`
+Showcase shops (after seeding): `/demo` (ceramics), `/forno` (pizzeria),
+`/lumi` (nail bar), `/serene` (massage rooms), `/inkwell` (ebooks). The landing
+page links to all five and shows screenshots taken from those very pages.
 
 ## Why this shape
 
@@ -44,8 +46,9 @@ npm install
 # Pull the Neon + Blob credentials from the linked Vercel project
 vercel env pull .env.local
 
-npm run db:push    # create tables
-npm run db:seed    # optional: demo shop at /demo
+npm run db:push          # create tables
+npm run db:seed          # optional: the /demo shop
+npm run db:seed:demos    # optional: the four other showcase shops
 npm run dev
 ```
 
@@ -101,6 +104,9 @@ WhatsApp messages — set it to the real origin in production.
 | `npm run db:push` | Push the Drizzle schema to Neon |
 | `npm run db:studio` | Drizzle Studio |
 | `npm run db:seed` | Reset and seed the `/demo` shop |
+| `npm run db:seed:demos` | Reset and seed `/forno`, `/lumi`, `/serene`, `/inkwell` |
+| `npm run shots` | Re-capture the landing page's storefront screenshots |
+| `npm run check:i18n` | Translation coverage for the storefront, landing page and admin |
 
 ## Routes
 

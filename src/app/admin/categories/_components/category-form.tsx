@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 import { Loader2, Plus } from "lucide-react";
 import { createCategory } from "@/lib/actions/products";
 import { Alert, Button, Input } from "@/components/ui";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit() {
   const { pending } = useFormStatus();
@@ -21,6 +22,7 @@ function Submit() {
 }
 
 export function CategoryForm() {
+  const a = useAdminT();
   const [state, action] = useActionState(createCategory, { ok: false });
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -36,8 +38,8 @@ export function CategoryForm() {
           name="name"
           required
           maxLength={60}
-          placeholder="Mugs, Prints, Consulting…"
-          aria-label="Category name"
+          placeholder={a.categories.namePlaceholder}
+          aria-label={a.categories.nameLabelText}
         />
         <Submit />
       </div>

@@ -12,6 +12,7 @@ import { deleteClient, updateClientNotes } from "@/lib/actions/order-admin";
 import { PageHeader } from "@/components/shared/page-header";
 import { OrderRow } from "@/app/admin/_components/order-row";
 import { Button, Card, Textarea } from "@/components/ui";
+import { getAdminT } from "@/i18n/server";
 import { formatAddress, formatMoney, isUuid } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Client" };
@@ -21,6 +22,7 @@ export default async function ClientDetailPage({
 }: PageProps<"/admin/clients/[id]">) {
   const { id } = await params;
   const { shop } = await requireShop();
+  const { a } = await getAdminT();
   if (!isUuid(id)) notFound();
 
   const data = await getClientWithOrders(shop.id, id);
@@ -40,7 +42,7 @@ export default async function ClientDetailPage({
         className="mb-4 inline-flex items-center gap-1.5 text-sm text-ink-500 transition hover:text-ink-900"
       >
         <ArrowLeft className="size-4" />
-        All clients
+        {a.clients.all}
       </Link>
 
       <PageHeader
@@ -59,17 +61,17 @@ export default async function ClientDetailPage({
               className="text-ink-400 hover:bg-red-50 hover:text-red-600"
             >
               <Trash2 className="size-4" />
-              Delete
+              {a.common.delete}
             </Button>
           </form>
         }
       />
 
       <div className="mb-5 grid gap-3 sm:grid-cols-3">
-        <Stat label="Lifetime value" value={formatMoney(totalCents, shop.currency)} />
-        <Stat label="Paid" value={formatMoney(paidCents, shop.currency)} />
+        <Stat label={a.clients.lifetimeValue} value={formatMoney(totalCents, shop.currency)} />
+        <Stat label={a.clients.paid} value={formatMoney(paidCents, shop.currency)} />
         <Stat
-          label="Outstanding"
+          label={a.clients.outstandingLabel}
           value={formatMoney(outstandingCents, shop.currency)}
           tone={outstandingCents > 0 ? "warn" : undefined}
         />
@@ -78,7 +80,7 @@ export default async function ClientDetailPage({
       <div className="grid gap-5 lg:grid-cols-3">
         <div className="space-y-5 lg:col-span-1">
           <Card className="p-5">
-            <h2 className="mb-3 text-sm font-semibold">Contact</h2>
+            <h2 className="mb-3 text-sm font-semibold">{a.clients.contact}</h2>
             <dl className="space-y-2.5 text-sm">
               {client.email ? (
                 <div className="flex items-start gap-2">
@@ -123,23 +125,23 @@ export default async function ClientDetailPage({
                 </div>
               ) : null}
               {!client.email && !client.phone && !address ? (
-                <p className="text-ink-400">No details captured.</p>
+                <p className="text-ink-400">{a.clients.noDetails}</p>
               ) : null}
             </dl>
           </Card>
 
           <Card className="p-5">
-            <h2 className="mb-3 text-sm font-semibold">Private notes</h2>
+            <h2 className="mb-3 text-sm font-semibold">{a.clients.privateNotes}</h2>
             <form action={updateClientNotes} className="space-y-3">
               <input type="hidden" name="id" value={client.id} />
               <Textarea
                 name="notes"
                 rows={4}
                 defaultValue={client.notes ?? ""}
-                placeholder="Prefers pickup. Allergic to nickel. Repeat wholesale buyer…"
+                placeholder={a.clients.notesPlaceholder}
               />
               <Button type="submit" size="sm" variant="secondary">
-                Save notes
+              {a.clients.saveNotesLabel}
               </Button>
             </form>
           </Card>
@@ -157,7 +159,7 @@ export default async function ClientDetailPage({
             </div>
             {orders.length === 0 ? (
               <p className="px-5 py-10 text-center text-sm text-ink-500">
-                No orders yet.
+              {a.clients.noOrdersYet}
               </p>
             ) : (
               <div className="divide-y divide-ink-100">

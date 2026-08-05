@@ -20,7 +20,8 @@ export function IntervalToggle({ interval }: { interval: "month" | "year" }) {
             scroll={false}
             aria-current={active ? "true" : undefined}
             className={cn(
-              "focus-ring rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors duration-200",
+              "focus-ring inline-flex items-center rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors duration-200",
+              "pointer-coarse:min-h-11",
               active
                 ? "bg-white text-ink-900 shadow-xs"
                 : "text-ink-500 hover:text-ink-900",

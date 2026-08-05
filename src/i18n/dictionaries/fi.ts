@@ -15,7 +15,7 @@ export const fi: Dictionary = {
     noProductsBody: "{shop} ei ole vielä lisännyt mitään. Käy pian uudelleen.",
     noMatches: "Ei osumia", noMatchesBody: "Kokeile poistaa suodatin tai hakea jotain muuta.",
     soldOut: "Loppuunmyyty", sale: "Tarjous", order: "Tilaa", orderNow: "Tilaa nyt",
-    unavailable: "Ei saatavilla", poweredBy: "Taustalla",
+    unavailable: "Ei saatavilla", joinOnSailo: "Liity {shop} mukaan Sailossa", loadMore: "Lataa lisää",
     earnBySharing: "Ansaitse {percent}% jakamalla tämä kauppa",
     kindPhysical: "Toimitetaan sinulle", kindDigital: "Välitön lataus",
     kindService: "Varaa aika", labelDigital: "Lataus", labelService: "Varaus",

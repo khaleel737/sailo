@@ -48,7 +48,7 @@ export default async function AdminDeliveryPage() {
         icon={<Info className="size-5" />}
         className="mb-5"
       >
-        Only <strong>physical products</strong> ask about delivery — digital
+        {a.delivery.only} <strong>{a.delivery.physicalOnly}</strong> ask about delivery — digital
         downloads and services skip it. Collection options never ask the buyer
         for an address.
       </Alert>
@@ -90,7 +90,7 @@ export default async function AdminDeliveryPage() {
                   <>
                     {live ? (
                       <Badge tone="green" dot>
-                        Live
+                        {a.common.live}
                       </Badge>
                     ) : configured ? (
                       <Badge tone="amber" dot>
@@ -98,7 +98,7 @@ export default async function AdminDeliveryPage() {
                       </Badge>
                     ) : (
                       <Badge tone="red" dot>
-                        Needs a pickup address
+                        {a.delivery.needsPickup}
                       </Badge>
                     )}
                     <span className="text-xs text-ink-400">
@@ -136,7 +136,7 @@ export default async function AdminDeliveryPage() {
                       type="submit"
                       className="text-ink-500 hover:bg-red-50 hover:text-red-600"
                     >
-                      Delete
+                      {a.common.delete}
                     </Button>
                   </form>
                 </div>
@@ -148,8 +148,8 @@ export default async function AdminDeliveryPage() {
 
       <Panel
         icon={<Plus className="size-5" />}
-        title="Add an option"
-        subtitle="Standard, express, international or collection in person."
+        title={a.delivery.addOption}
+        subtitle={a.delivery.addOptionBody}
         defaultOpen={methods.length === 0}
       >
         <DeliveryRateForm currency={shop.currency} />

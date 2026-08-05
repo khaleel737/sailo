@@ -355,7 +355,7 @@ export function VariantEditor({
                         variant="ghost"
                         size="sm"
                         aria-label={`Remove ${variantLabel(row.options, parsedOptions)}`}
-                        title="This combination isn't sold"
+                        title={a.variants.notSold}
                         onClick={() =>
                           setRemoved((prev) => new Set(prev).add(row.key))
                         }
@@ -392,9 +392,7 @@ export function VariantEditor({
 
       {rows.length > 0 ? (
         <p className="text-xs text-ink-500">
-          Untick <strong>For sale</strong> to show a combination as sold out;
-          delete it if you never sell it at all. A photo here replaces the
-          product&apos;s when a buyer picks that combination.
+          {a.variants.footnote}
         </p>
       ) : null}
     </div>

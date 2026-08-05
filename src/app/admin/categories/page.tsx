@@ -9,6 +9,7 @@ import { getShopCategories } from "@/lib/queries";
 import { deleteCategory } from "@/lib/actions/products";
 import { PageHeader } from "@/components/shared/page-header";
 import { CategoryForm } from "@/app/admin/categories/_components/category-form";
+import { Table, Td, Th, Tr } from "@/components/shared/table";
 import { Button, Card, EmptyState } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Categories" };
@@ -39,39 +40,53 @@ export default async function AdminCategoriesPage() {
 
       {categories.length === 0 ? (
         <EmptyState
-          icon={<Tag className="size-8" />}
+          icon={<Tag className="size-6" />}
           title={a.categories.empty}
           description={a.categories.emptyBody}
         />
       ) : (
-        <Card className="divide-y divide-ink-100">
-          {categories.map((category) => (
-            <div
-              key={category.id}
-              className="flex items-center justify-between gap-3 p-4"
-            >
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{category.name}</p>
-                <p className="text-xs text-ink-500">
-                  {countBy.get(category.id) ?? 0}{" "}
-                  {(countBy.get(category.id) ?? 0) === 1 ? "product" : "products"}
-                </p>
-              </div>
-              <form action={deleteCategory}>
-                <input type="hidden" name="id" value={category.id} />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  type="submit"
-                  aria-label={`Delete ${category.name}`}
-                  className="text-ink-400 hover:bg-red-50 hover:text-red-600"
-                >
-                  <Trash2 className="size-4" />
-                </Button>
-              </form>
-            </div>
-          ))}
-        </Card>
+        <Table
+          minWidth="30rem"
+          head={
+            <>
+              <Th>{a.columns.category}</Th>
+              <Th align="end">{a.columns.products}</Th>
+              <Th className="w-16">
+                <span className="sr-only">{a.columns.actions}</span>
+              </Th>
+            </>
+          }
+        >
+          {categories.map((category) => {
+            const count = countBy.get(category.id) ?? 0;
+            return (
+              <Tr key={category.id}>
+                <Td className="font-medium text-ink-900">{category.name}</Td>
+                <Td align="end" label={a.columns.products} className="tabular">
+                  {count === 0 ? (
+                    <span className="text-ink-300">0</span>
+                  ) : (
+                    count
+                  )}
+                </Td>
+                <Td align="end">
+                  <form action={deleteCategory}>
+                    <input type="hidden" name="id" value={category.id} />
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      type="submit"
+                      aria-label={`Delete ${category.name}`}
+                      className="text-ink-400 hover:bg-red-50 hover:text-red-600"
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </form>
+                </Td>
+              </Tr>
+            );
+          })}
+        </Table>
       )}
     </>
   );

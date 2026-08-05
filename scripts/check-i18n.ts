@@ -11,8 +11,11 @@ import { LOCALES } from "../src/i18n/config";
 import { adminCoverage } from "../src/i18n/admin";
 import { en } from "../src/i18n/dictionaries/en";
 import { getDictionary } from "../src/i18n";
+import { marketingEn } from "../src/i18n/marketing/en";
+import { getMarketingDictionary } from "../src/i18n/marketing";
 
 let storefrontGaps = 0;
+let marketingGaps = 0;
 
 /** The storefront dictionary is typed complete, so this only catches empties. */
 function countEmpty(obj: Record<string, unknown>, path = ""): number {
@@ -38,6 +41,48 @@ for (const locale of LOCALES) {
 const storefrontKeys = JSON.stringify(en).match(/"/g)!.length / 4;
 console.log(`  ${LOCALES.length} locales, ~${Math.round(storefrontKeys)} keys each, ${storefrontGaps} empty\n`);
 
+/**
+ * The landing page is typed complete like the storefront, so this catches
+ * empties — and copy-paste, which the type system can't: a leaf still holding
+ * its English source string means that locale was never actually translated.
+ */
+console.log("Landing page");
+const untranslated: string[] = [];
+for (const locale of LOCALES) {
+  const dict = getMarketingDictionary(locale.code) as unknown as Record<string, unknown>;
+  marketingGaps += countEmpty(dict);
+  if (locale.code === "en") continue;
+  const same = countIdentical(marketingEn as unknown as Record<string, unknown>, dict);
+  if (same > 0) untranslated.push(`${locale.code}:${same}`);
+}
+const marketingKeys = JSON.stringify(marketingEn).match(/"/g)!.length / 4;
+console.log(
+  `  ${LOCALES.length} locales, ~${Math.round(marketingKeys)} keys each, ${marketingGaps} empty`,
+);
+console.log(
+  untranslated.length
+    ? `  still English: ${untranslated.join(" ")}\n`
+    : `  no leaf still holds its English source string\n`,
+);
+
+/** Leaves that are byte-identical to English — untranslated, not coincidence. */
+function countIdentical(
+  source: Record<string, unknown>,
+  target: Record<string, unknown>,
+): number {
+  let n = 0;
+  for (const [k, v] of Object.entries(source)) {
+    const other = target[k];
+    if (typeof v === "string") {
+      // Short shared tokens ("Sailo", "Pro") legitimately match; ignore them.
+      if (v.length > 24 && v === other) n += 1;
+    } else if (v && typeof v === "object" && other && typeof other === "object") {
+      n += countIdentical(v as Record<string, unknown>, other as Record<string, unknown>);
+    }
+  }
+  return n;
+}
+
 console.log("Admin");
 const rows = LOCALES.filter((l) => l.code !== "en").map((l) => ({
   locale: l.code,
@@ -60,7 +105,9 @@ console.log(
 );
 console.log(`  Least covered locale: ${worst}/${total} keys.`);
 
-if (storefrontGaps > 0) {
-  console.error(`\n${storefrontGaps} empty storefront strings — that would render blank.`);
+if (storefrontGaps + marketingGaps > 0) {
+  console.error(
+    `\n${storefrontGaps + marketingGaps} empty strings — those would render blank.`,
+  );
   process.exit(1);
 }

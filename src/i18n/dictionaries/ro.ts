@@ -15,7 +15,7 @@ export const ro: Dictionary = {
     noProductsBody: "{shop} nu a adăugat nimic încă. Revino curând.",
     noMatches: "Niciun rezultat", noMatchesBody: "Încearcă să scoți un filtru sau să cauți altceva.",
     soldOut: "Stoc epuizat", sale: "Reducere", order: "Comandă", orderNow: "Comandă acum",
-    unavailable: "Indisponibil", poweredBy: "Realizat cu",
+    unavailable: "Indisponibil", joinOnSailo: "Alătură-te {shop} pe Sailo", loadMore: "Încarcă mai multe",
     earnBySharing: "Câștigă {percent}% distribuind acest magazin",
     kindPhysical: "Se livrează la tine", kindDigital: "Descărcare imediată",
     kindService: "Rezervă o oră", labelDigital: "Descărcare", labelService: "Rezervare",

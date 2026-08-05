@@ -1,26 +1,39 @@
 import Link from "next/link";
-import { Gift, Store } from "lucide-react";
+import { Gift } from "lucide-react";
 import type { Shop } from "@/db/schema";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import type { Locale } from "@/i18n/config";
 import { formatPercent } from "@/lib/pricing";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
+import { PoweredBy } from "@/components/shared/powered-by";
+import { getMarketingDictionary } from "@/i18n/marketing";
 
-/** The referral invitation, the Sailo badge, and the language switcher. */
+/**
+ * The referral invitation, the Sailo badge, the platform's legal pages, and the
+ * language switcher.
+ *
+ * The legal links sit here rather than only on the marketing site because this
+ * is the page a buyer is actually on when they decide whether to hand over a
+ * name and an address. Making them find the homepage first to learn how their
+ * data is handled would be the wrong way round.
+ *
+ * They stay in the muted footer type, and they never compete with the seller's
+ * own branding: this is our small print on their page.
+ */
 export function ShopFooter({
   shop,
   affiliatesLive,
-  showBadge,
   locale,
   t,
 }: {
   shop: Shop;
   affiliatesLive: boolean;
-  showBadge: boolean;
   locale: Locale;
   t: Dictionary;
 }) {
+  const m = getMarketingDictionary(locale);
+
   return (
     <footer className="mt-14 flex flex-col items-center gap-3 text-center">
       {affiliatesLive ? (
@@ -35,15 +48,26 @@ export function ShopFooter({
         </Link>
       ) : null}
 
-      {showBadge ? (
-        <Link
-          href="/"
-          className="text-muted inline-flex items-center gap-1.5 text-xs transition hover:opacity-70"
-        >
-          <Store className="size-3.5" />
-          {t.shop.poweredBy} <span className="font-semibold">Sailo</span>
-        </Link>
-      ) : null}
+      <PoweredBy shop={shop} t={t} />
+
+      <nav aria-label={m.footer.legal}>
+        <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1">
+          {[
+            { href: "/privacy", label: m.footer.privacy },
+            { href: "/terms", label: m.footer.terms },
+            { href: "/refunds", label: m.footer.refunds },
+          ].map((doc) => (
+            <li key={doc.href}>
+              <Link
+                href={doc.href}
+                className="text-muted focus-ring-accent inline-flex min-h-11 items-center rounded text-xs transition hover:opacity-70"
+              >
+                {doc.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
       <LanguageSwitcher current={locale} label={t.common.language} />
     </footer>

@@ -2,9 +2,13 @@ import { PackageOpen } from "lucide-react";
 import type { Shop } from "@/db/schema";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
-import type { CheckoutOptions, ProductCard as ProductCardData } from "@/lib/queries";
-import { cn } from "@/lib/utils";
+import type {
+  CheckoutOptions,
+  ProductCard as ProductCardData,
+  ShopFilters,
+} from "@/lib/queries";
 import { ProductCard } from "./product-card";
+import { InfiniteGrid } from "./infinite-grid";
 import type { ShopLayout } from "../_types/shop-page.types";
 
 /**
@@ -21,13 +25,18 @@ export function ProductGrid({
   layout,
   checkout,
   hasFilters,
+  filters,
+  nextOffset,
   t,
 }: {
+  /** The first batch only — the rest arrives as the shopper scrolls. */
   products: ProductCardData[];
   shop: Shop;
   layout: ShopLayout;
   checkout: CheckoutOptions;
   hasFilters: boolean;
+  filters: ShopFilters;
+  nextOffset: number | null;
   t: Dictionary;
 }) {
   if (products.length === 0) {
@@ -47,12 +56,12 @@ export function ProductGrid({
   }
 
   return (
-    <div
-      className={cn(
-        layout === "grid"
-          ? "grid grid-cols-2 gap-3 sm:gap-4"
-          : "flex flex-col gap-3",
-      )}
+    <InfiniteGrid
+      handle={shop.handle}
+      filters={filters}
+      initialOffset={nextOffset}
+      layout={layout}
+      labels={{ loadMore: t.shop.loadMore, loading: t.common.loading }}
     >
       {products.map((product) => (
         <ProductCard
@@ -65,6 +74,6 @@ export function ProductGrid({
           t={t}
         />
       ))}
-    </div>
+    </InfiniteGrid>
   );
 }

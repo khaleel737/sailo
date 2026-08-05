@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getShopByHandle, type ShopFilters } from "@/lib/queries";
+import { absolute, shopJsonLd } from "@/lib/seo";
 import { shopThemeVars } from "@/lib/utils";
 import { getShopPageData } from "./_lib/get-shop-page-data";
 import { CartRegion } from "./_components/cart/cart-region";
@@ -18,14 +19,32 @@ export async function generateMetadata({
   const shop = await getShopByHandle(handle);
   if (!shop) return { title: "Shop not found" };
 
+  const description = shop.description ?? `Shop ${shop.name} on Sailo.`;
+  const url = absolute(`/${shop.handle}`);
+
   return {
     title: shop.name,
-    description: shop.description ?? `Shop ${shop.name} on Sailo.`,
+    description,
+    /*
+     * The filter bar puts its state in the query string, so `?category=mugs`
+     * and `?sort=newest` are the same catalogue seen through two windows.
+     * Pointing every one of them at the bare handle keeps a shop from
+     * competing with itself for its own name.
+     */
+    alternates: { canonical: url },
     openGraph: {
       title: shop.name,
-      description: shop.description ?? undefined,
+      description,
+      url,
+      siteName: shop.name,
       images: shop.avatarUrl ? [shop.avatarUrl] : undefined,
       type: "website",
+    },
+    twitter: {
+      card: shop.avatarUrl ? "summary_large_image" : "summary",
+      title: shop.name,
+      description,
+      images: shop.avatarUrl ? [shop.avatarUrl] : undefined,
     },
   };
 }
@@ -47,7 +66,8 @@ export default async function ShopPage({
     t,
     layout,
     affiliatesLive,
-    showBadge,
+    productTotal,
+    nextOffset,
     hasFilters,
   } = await getShopPageData(handle, filters);
 
@@ -72,7 +92,14 @@ export default async function ShopPage({
         style={shopThemeVars(shop.accentColor)}
         className="min-h-screen"
       >
-        <VisitTracker shopId={shop.id} />
+        {/* A storefront is a shop, so say so — the name, address and image a
+          crawler needs are already on the page. */}
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(shopJsonLd(shop)) }}
+      />
+      <VisitTracker shopId={shop.id} />
         {affiliatesLive ? (
           // Reads `?ref=` from the URL, so it needs a search-params boundary.
           <Suspense fallback={null}>
@@ -86,7 +113,7 @@ export default async function ShopPage({
           <div className="mt-10">
             <FilterBar
               facets={facets}
-              resultCount={products.length}
+              resultCount={productTotal}
               currency={shop.currency}
               t={t}
             />
@@ -94,11 +121,17 @@ export default async function ShopPage({
 
           <main className="mt-5">
             <ProductGrid
+              // Changing a filter starts a new catalogue, so the batches
+              // loaded for the old one have to go with it. Without the key the
+              // client keeps them and appends the new shop underneath.
+              key={JSON.stringify(filters)}
               products={products}
               shop={shop}
               layout={layout}
               checkout={checkout}
               hasFilters={hasFilters}
+              filters={filters}
+              nextOffset={nextOffset}
               t={t}
             />
           </main>
@@ -106,7 +139,6 @@ export default async function ShopPage({
           <ShopFooter
             shop={shop}
             affiliatesLive={affiliatesLive}
-            showBadge={showBadge}
             locale={locale}
             t={t}
           />

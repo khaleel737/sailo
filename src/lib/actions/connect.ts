@@ -18,14 +18,32 @@ import {
 
 export type ConnectState = { ok: boolean; error?: string; message?: string };
 
-/** Sends the seller to Stripe to create or finish their account. */
+/**
+ * Sends the seller to Stripe to create or finish their account.
+ *
+ * A failure here used to escape as a Next runtime error page — a stack trace
+ * over the admin, from pressing a button. Stripe's own messages are written to
+ * be read by a human, so the seller gets one back on the page they were on and
+ * the full error goes to the server log.
+ */
 export async function connectStripe() {
   const { shop } = await requireShop();
   if (!can(shop, "cardRails")) {
     throw new Error("Card payments are a Business feature.");
   }
 
-  const url = await startOnboarding(shop);
+  let url: string;
+  try {
+    url = await startOnboarding(shop);
+  } catch (error) {
+    console.error("[sailo] Stripe Connect onboarding failed:", error);
+    const reason =
+      error instanceof Error ? error.message : "Stripe did not respond.";
+    redirect(
+      `/admin/payments?stripe=error&reason=${encodeURIComponent(reason.slice(0, 300))}`,
+    );
+  }
+
   redirect(url);
 }
 

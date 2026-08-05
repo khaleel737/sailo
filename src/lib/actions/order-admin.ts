@@ -5,10 +5,11 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { clients, orders } from "@/db/schema";
 import { requireShop } from "@/lib/session";
-import { firstRow, present } from "@/lib/invariant";
+import { firstRow } from "@/lib/invariant";
 import { formatMoney, parseMoneyToCents } from "@/lib/utils";
-import { restoreStock, retakeStock, isStockReleasingStatus } from "@/lib/inventory";
-import { refundCharge } from "@/lib/connect";
+import { restoreStock, retakeStock } from "@/lib/inventory";
+import { canReverse, reversePayment, type RefundOutcome } from "@/lib/refunds";
+import { isSellerSettablePaymentStatus } from "@/lib/payments";
 import { releaseDownloads } from "@/lib/downloads";
 import { sendRefundNotification, sendShippingNotification } from "@/lib/email";
 import type { ActionState } from "./shop";
@@ -22,7 +23,7 @@ const ORDER_STATUSES = new Set([
   "cancelled",
   "refunded",
 ]);
-const PAYMENT_STATUSES = new Set(["unpaid", "pending", "paid", "refunded"]);
+
 
 /**
  * What a seller does to an order after it exists: confirm it, ship it, refund
@@ -69,7 +70,7 @@ export async function updatePaymentStatus(formData: FormData) {
   const { shop } = await requireShop();
   const id = String(formData.get("id") ?? "");
   const paymentStatus = String(formData.get("paymentStatus") ?? "");
-  if (!id || !PAYMENT_STATUSES.has(paymentStatus)) return;
+  if (!id || !isSellerSettablePaymentStatus(paymentStatus)) return;
 
   const updated = firstRow(await getDb()
     .update(orders)
@@ -112,8 +113,9 @@ export async function markOrderShipped(
   if (urlRaw) {
     const candidate = /^https?:\/\//i.test(urlRaw) ? urlRaw : `https://${urlRaw}`;
     try {
-      new URL(candidate);
-      trackingUrl = candidate;
+      // Parsing is the validation — a carrier's tracking link is pasted by
+      // hand and half of them arrive without a scheme or with a stray space.
+      trackingUrl = new URL(candidate).toString();
     } catch {
       return { ok: false, error: "That tracking link isn't a valid URL." };
     }
@@ -176,6 +178,33 @@ export async function refundOrder(
   }
 
   const isFull = requested === order.totalCents;
+
+  /*
+   * Give the money back before writing down that we did.
+   *
+   * This used to record the refund in our own table and email the buyer to say
+   * it had happened — without ever calling the processor. The order read
+   * "refunded", the buyer read "your money is on its way", and nothing moved.
+   * A payments product may fail to refund; it may never claim it refunded when
+   * it didn't.
+   *
+   * Which reversal to call is the order's own business: it records the rail it
+   * was paid on, and `reversePayment` asks that rail. See lib/refunds.ts.
+   */
+  let outcome: RefundOutcome;
+  try {
+    outcome = await reversePayment(order, requested);
+  } catch (error) {
+    console.error("[sailo] refund failed:", error);
+    return {
+      ok: false,
+      error:
+        error instanceof Error
+          ? `The payment couldn't be reversed: ${error.message}`
+          : "The payment couldn't be reversed. Nothing was changed.",
+    };
+  }
+
   await db
     .update(orders)
     .set({
@@ -194,7 +223,13 @@ export async function refundOrder(
   if (isFull) await restoreStock(order);
 
   const updated = await db.query.orders.findFirst({ where: eq(orders.id, id) });
-  let note = `Refunded ${formatMoney(requested, order.currency)}.`;
+  const amount = formatMoney(requested, order.currency);
+  let note =
+    outcome.kind === "reversed"
+      ? `Refunded ${amount}. The money is on its way back to the buyer.`
+      : outcome.reason === "never_charged"
+        ? `Recorded a ${amount} refund. Nothing was ever charged for this order, so there is nothing to send back.`
+        : `Recorded a ${amount} refund — this rail settles between you and the buyer, so pay them back yourself.`;
   if (updated?.customerEmail) {
     const result = await sendRefundNotification({ shop, order: updated });
     if (!result.sent) note += ` Email failed: ${result.reason}`;
@@ -207,7 +242,15 @@ export async function refundOrder(
   return { ok: true, message: note };
 }
 
-/** Undoes a refund, e.g. one entered by mistake. */
+/**
+ * Undoes a refund that was only ever a note in our own table.
+ *
+ * A refund that actually moved money cannot be undone from here: the money has
+ * left the seller's Stripe balance and only a fresh charge would bring it back,
+ * which is not something to do behind a button labelled "clear". Clearing the
+ * row would leave us claiming the buyer was never refunded while their bank
+ * says otherwise, which is worse than the mistake being corrected.
+ */
 export async function clearRefund(formData: FormData) {
   const { shop } = await requireShop();
   const db = getDb();
@@ -218,6 +261,14 @@ export async function clearRefund(formData: FormData) {
     where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
   });
   if (!order) return;
+
+  if (order.stripePaymentIntentId && canReverse(order)) {
+    console.warn(
+      `[sailo] refusing to clear a processed refund on order ${order.id} — ` +
+        "the money already went back to the buyer",
+    );
+    return;
+  }
 
   await db
     .update(orders)

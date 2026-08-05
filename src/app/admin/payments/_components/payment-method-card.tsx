@@ -16,6 +16,8 @@ import {
   Textarea,
 } from "@/components/ui";
 import { Panel } from "@/components/overlays";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
+import { interpolate } from "@/i18n";
 import type { PaymentConfig, PaymentMethod } from "@/db/schema";
 
 /*
@@ -40,11 +42,11 @@ const ICONS: Record<string, (p: { className?: string }) => React.ReactNode> = {
   cod: Wallet,
 };
 
-function Submit() {
+function Submit({ label }: { label: string }) {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" size="sm" loading={pending}>
-      Save
+      {label}
     </Button>
   );
 }
@@ -56,6 +58,7 @@ export function PaymentMethodCard({
   def: PaymentMethodDef;
   method?: PaymentMethod;
 }) {
+  const a = useAdminT();
   const [state, action] = useActionState(savePaymentMethod, { ok: false });
   const config = (method?.config ?? {}) as PaymentConfig;
   const configured = method ? isConfigured(def.type, config) : false;
@@ -75,15 +78,15 @@ export function PaymentMethodCard({
       status={
         live ? (
           <Badge tone="green" dot>
-            Live
+            {a.common.live}
           </Badge>
         ) : configured ? (
           <Badge tone="amber" dot>
-            Off
+            {a.common.off}
           </Badge>
         ) : (
           <Badge tone="neutral" dot>
-            Not set up
+            {a.payments.notSetUp}
           </Badge>
         )
       }
@@ -101,7 +104,7 @@ export function PaymentMethodCard({
             key={field.key}
             label={field.label}
             htmlFor={`${def.type}-${field.key}`}
-            hint={field.required ? undefined : "optional"}
+            hint={field.required ? undefined : a.common.optional}
             help={field.hint}
           >
             {field.multiline ? (
@@ -124,9 +127,9 @@ export function PaymentMethodCard({
         ))}
 
         <Field
-          label="Button text"
+          label={a.payments.buttonText}
           htmlFor={`${def.type}-label`}
-          hint={`defaults to "${def.name}"`}
+          hint={interpolate(a.payments.buttonTextHint, { name: def.name })}
         >
           <Input
             id={`${def.type}-label`}
@@ -141,14 +144,12 @@ export function PaymentMethodCard({
           <Switch
             name="isEnabled"
             defaultChecked={method?.isEnabled ?? false}
-            label="Show on my shop"
+            label={a.payments.showOnShop}
             description={
-              configured || !method
-                ? undefined
-                : "Fill in the details above before turning this on."
+              configured || !method ? undefined : a.payments.fillInFirst
             }
           />
-          <Submit />
+          <Submit label={a.common.save} />
         </div>
       </form>
     </Panel>

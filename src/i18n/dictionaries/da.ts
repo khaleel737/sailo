@@ -15,7 +15,7 @@ export const da: Dictionary = {
     noProductsBody: "{shop} har ikke lagt noget op endnu. Kig forbi igen snart.",
     noMatches: "Ingen resultater", noMatchesBody: "Prøv at fjerne et filter eller søge på noget andet.",
     soldOut: "Udsolgt", sale: "Tilbud", order: "Bestil", orderNow: "Bestil nu",
-    unavailable: "Ikke tilgængelig", poweredBy: "Drevet af",
+    unavailable: "Ikke tilgængelig", joinOnSailo: "Slut dig til {shop} på Sailo", loadMore: "Indlæs flere",
     earnBySharing: "Tjen {percent}% ved at dele denne butik",
     kindPhysical: "Sendes til dig", kindDigital: "Download med det samme",
     kindService: "Book en tid", labelDigital: "Download", labelService: "Booking",

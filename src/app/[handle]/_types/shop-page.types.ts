@@ -32,8 +32,13 @@ export type ShopPageData = {
    * it off publicly, not just hide it in admin.
    */
   affiliatesLive: boolean;
-  /** Free plans carry the Sailo badge. */
-  showBadge: boolean;
+  /**
+   * Every product matching the filter, not just the batch in `products` —
+   * the filter bar counts matches, not what has loaded so far.
+   */
+  productTotal: number;
+  /** Where the next batch starts, or null when the first batch is the whole shop. */
+  nextOffset: number | null;
   /** True when the visitor narrowed the list, so "nothing found" can say why. */
   hasFilters: boolean;
 };

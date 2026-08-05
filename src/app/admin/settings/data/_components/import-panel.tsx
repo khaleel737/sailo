@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 import { AlertTriangle, Check, Loader2, Upload } from "lucide-react";
 import { runImport, type ImportState } from "@/lib/actions/import";
 import { Alert, Button, Card } from "@/components/ui";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit({ label, variant }: { label: string; variant?: "primary" | "secondary" }) {
   const { pending } = useFormStatus();
@@ -27,6 +28,7 @@ export function ImportPanel({
   description: string;
   columns: { name: string; note: string }[];
 }) {
+  const a = useAdminT();
   const [state, action] = useActionState<ImportState, FormData>(runImport, {
     ok: false,
   });
@@ -79,12 +81,12 @@ export function ImportPanel({
             onClick={() => inputRef.current?.click()}
           >
             <Upload className="size-4" />
-            Choose CSV
+            {a.data.chooseCsv}
           </Button>
           {fileName ? (
             <span className="text-sm text-ink-600">{fileName}</span>
           ) : (
-            <span className="text-sm text-ink-400">No file selected</span>
+            <span className="text-sm text-ink-400">{a.data.noFileSelected}</span>
           )}
         </div>
 
@@ -100,7 +102,7 @@ export function ImportPanel({
               {isDone ? (
                 <>
                   <Check className="size-4 text-emerald-600" />
-                  Imported
+            {a.data.imported}
                 </>
               ) : (
                 "Preview — nothing saved yet"
@@ -134,7 +136,7 @@ export function ImportPanel({
         <div className="flex items-center gap-2">
           {isDone ? (
             <Button type="button" variant="secondary" onClick={reset}>
-              Import another file
+              {a.data.importAnother}
             </Button>
           ) : (
             <>
@@ -144,7 +146,7 @@ export function ImportPanel({
               />
               {isPreview ? (
                 <Button type="button" variant="ghost" onClick={reset}>
-                  Cancel
+              {a.common.cancel}
                 </Button>
               ) : null}
             </>
@@ -153,8 +155,8 @@ export function ImportPanel({
       </form>
 
       <details className="mt-4">
-        <summary className="cursor-pointer text-xs text-ink-500 hover:text-ink-900">
-          Which columns are used?
+        <summary className="focus-ring inline-flex cursor-pointer items-center rounded text-xs text-ink-500 hover:text-ink-900 pointer-coarse:min-h-11">
+          {a.data.whichColumns}
         </summary>
         <table className="mt-2 w-full text-xs">
           <tbody className="divide-y divide-ink-100">

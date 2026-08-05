@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Download, Store } from "lucide-react";
+import { Download } from "lucide-react";
 import { getInvoiceByToken } from "@/lib/queries";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { PrintButton } from "@/app/invoice/[token]/_components/print-button";
+import { PoweredBy } from "@/components/shared/powered-by";
 import { getShopT } from "@/i18n/server";
 import { formatPercent } from "@/lib/pricing";
 import { formatAddress, formatMoney } from "@/lib/utils";
@@ -52,7 +53,7 @@ export default async function InvoicePage({
           <div className="flex gap-2">
             <a
               href={`/invoice/${invoice.token}/pdf`}
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-ink-900 px-3 text-sm font-medium text-white transition hover:bg-ink-800"
+              className="inline-flex h-9 pointer-coarse:h-11 items-center gap-1.5 rounded-lg bg-ink-900 px-3 text-sm font-medium text-white transition hover:bg-ink-800"
             >
               <Download className="size-4" />
               {t.invoice.downloadPdf}
@@ -265,11 +266,8 @@ export default async function InvoicePage({
           ) : null}
         </article>
 
-        <p className="mt-4 text-center text-xs text-ink-400 print:hidden">
-          <Link href="/" className="inline-flex items-center gap-1.5">
-            <Store className="size-3" />
-            {t.shop.poweredBy} Sailo
-          </Link>
+        <p className="mt-4 text-center text-xs print:hidden">
+          <PoweredBy shop={shop} t={t} />
         </p>
       </div>
     </div>

@@ -17,7 +17,7 @@ export const nl: Dictionary = {
     noMatches: "Geen resultaten",
     noMatchesBody: "Probeer een filter te verwijderen of iets anders te zoeken.",
     soldOut: "Uitverkocht", sale: "Aanbieding", order: "Bestellen", orderNow: "Nu bestellen",
-    unavailable: "Niet beschikbaar", poweredBy: "Mogelijk gemaakt door",
+    unavailable: "Niet beschikbaar", joinOnSailo: "Sluit je aan bij {shop} op Sailo", loadMore: "Meer laden",
     earnBySharing: "Verdien {percent}% door deze winkel te delen",
     kindPhysical: "Wordt bezorgd", kindDigital: "Direct downloaden",
     kindService: "Boek een tijd", labelDigital: "Download", labelService: "Boeking",

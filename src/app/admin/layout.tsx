@@ -9,6 +9,7 @@ import { isStaff, requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { AdminI18nProvider } from "@/app/admin/_components/admin-i18n";
 import { StatusBanners } from "@/app/admin/_components/status-banners";
+import { PanelFooter } from "@/components/shared/panel-footer";
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const { shop } = await requireShop();
@@ -28,7 +29,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
       <div
         dir={dir}
         lang={locale}
-        className="flex min-h-screen flex-col bg-ink-50 lg:flex-row"
+        className="flex min-h-screen flex-col bg-ink-950 lg:flex-row"
       >
         <Sidebar
           shopName={shop.name}
@@ -45,7 +46,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
           }
           t={t}
         />
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex min-w-0 flex-1 flex-col bg-ink-50">
           <StatusBanners shop={shop} isStaff={staff} />
           <AdminHeader
             shop={shop}
@@ -54,10 +55,11 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
             t={t}
           />
           <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-            <div className="animate-fade mx-auto w-full max-w-5xl">
+            <div className="animate-fade mx-auto w-full max-w-6xl">
               {children}
             </div>
           </main>
+          <PanelFooter labels={a.shell} />
         </div>
       </div>
     </AdminI18nProvider>

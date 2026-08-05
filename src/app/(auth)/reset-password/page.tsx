@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Alert } from "@/components/ui";
 import { getT } from "@/i18n/server";
+import { AuthError, AuthHeader } from "@/components/auth/auth-kit";
 import { ResetPasswordForm } from "./reset-password-form";
 
 export const metadata: Metadata = {
@@ -32,17 +32,17 @@ export default async function ResetPasswordPage({
   if (!token || error) {
     return (
       <>
-        <h1 className="text-xl font-semibold tracking-tight">
-          {t.auth.resetTitle}
-        </h1>
-        <div className="mt-6 space-y-4">
-          <Alert>{t.auth.resetInvalid}</Alert>
-          <Link
-            href="/forgot-password"
-            className="focus-ring block rounded text-center text-sm font-medium text-brand-700 underline underline-offset-4 hover:text-brand-800"
-          >
-            {t.auth.forgotTitle}
-          </Link>
+        <AuthHeader title={t.auth.resetTitle} />
+        <div className="space-y-6">
+          <AuthError>{t.auth.resetInvalid}</AuthError>
+          <p className="text-center text-[0.875rem]">
+            <Link
+              href="/forgot-password"
+              className="focus-line draw-underline font-medium text-[var(--ink)]"
+            >
+              {t.auth.forgotTitle}
+            </Link>
+          </p>
         </div>
       </>
     );
@@ -50,10 +50,7 @@ export default async function ResetPasswordPage({
 
   return (
     <>
-      <h1 className="text-xl font-semibold tracking-tight">
-        {t.auth.resetTitle}
-      </h1>
-      <p className="mb-6 mt-1 text-sm text-ink-500">{t.auth.resetSubtitle}</p>
+      <AuthHeader title={t.auth.resetTitle} subtitle={t.auth.resetSubtitle} />
       <ResetPasswordForm token={token} t={t} />
     </>
   );

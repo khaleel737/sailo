@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ChevronRight, MapPin, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { getShopClients } from "@/lib/queries";
 import { PageHeader } from "@/components/shared/page-header";
 import { ExportButton } from "@/app/admin/_components/export-button";
-import { Card, EmptyState } from "@/components/ui";
+import { Table, Td, Th, Tr } from "@/components/shared/table";
+import { EmptyState } from "@/components/ui";
 import { formatAddress, formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Clients" };
@@ -30,53 +31,68 @@ export default async function AdminClientsPage() {
 
       {clients.length === 0 ? (
         <EmptyState
-          icon={<Users className="size-8" />}
+          icon={<Users className="size-6" />}
           title={a.clients.empty}
           description={a.clients.emptyBody}
         />
       ) : (
-        <Card className="divide-y divide-ink-100">
+        <Table
+          minWidth="44rem"
+          head={
+            <>
+              <Th>{a.columns.client}</Th>
+              <Th>{a.columns.where}</Th>
+              <Th align="end">{a.columns.orders}</Th>
+              <Th align="end">{a.columns.spent}</Th>
+            </>
+          }
+        >
           {clients.map((client) => {
             const address = formatAddress(client);
             return (
-              <Link
-                key={client.id}
-                href={`/admin/clients/${client.id}`}
-                className="flex items-center gap-3 p-4 transition hover:bg-ink-50"
-              >
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-ink-100 text-sm font-semibold text-ink-600">
-                  {client.name.slice(0, 1).toUpperCase()}
-                </span>
+              <Tr key={client.id}>
+                <Td>
+                  <Link
+                    href={`/admin/clients/${client.id}`}
+                    className="focus-ring flex min-w-0 items-center gap-3 rounded"
+                  >
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-ink-100 text-xs font-semibold text-ink-600">
+                      {client.name.slice(0, 1).toUpperCase()}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate font-medium text-ink-900">
+                        {client.name}
+                      </span>
+                      <span className="block truncate text-xs text-ink-400">
+                        {[client.email, client.phone]
+                          .filter(Boolean)
+                          .join(" · ") || "No contact details"}
+                      </span>
+                    </span>
+                  </Link>
+                </Td>
 
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{client.name}</p>
-                  <p className="truncate text-xs text-ink-500">
-                    {[client.email, client.phone].filter(Boolean).join(" · ") ||
-                      "No contact details"}
-                  </p>
+                <Td className="max-w-xs" label={a.columns.where}>
                   {address ? (
-                    <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-ink-400">
-                      <MapPin className="size-3 shrink-0" />
+                    <span className="block truncate text-xs text-ink-500">
                       {address}
-                    </p>
-                  ) : null}
-                </div>
+                    </span>
+                  ) : (
+                    <span className="text-ink-300">—</span>
+                  )}
+                </Td>
 
-                <div className="shrink-0 text-right">
-                  <p className="text-sm font-semibold tabular-nums">
-                    {formatMoney(client.totalCents, shop.currency)}
-                  </p>
-                  <p className="text-xs text-ink-500">
-                    {client.orderCount}{" "}
-                    {client.orderCount === 1 ? "order" : "orders"}
-                  </p>
-                </div>
+                <Td align="end" className="tabular" label={a.columns.orders}>
+                  {client.orderCount}
+                </Td>
 
-                <ChevronRight className="size-4 shrink-0 text-ink-300" />
-              </Link>
+                <Td align="end" className="tabular font-medium text-ink-900" label={a.columns.spent}>
+                  {formatMoney(client.totalCents, shop.currency)}
+                </Td>
+              </Tr>
             );
           })}
-        </Card>
+        </Table>
       )}
     </>
   );

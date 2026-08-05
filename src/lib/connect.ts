@@ -5,6 +5,7 @@ import { getDb } from "@/db";
 import { shops, type Order, type Shop } from "@/db/schema";
 import { lineTitle, orderLines, orderSummaryTitle } from "@/lib/order-lines";
 import { appUrl, stripe } from "@/lib/stripe";
+import { platformFeeCents } from "@/lib/plans";
 
 /**
  * Card payments through the seller's own Stripe account, using Connect.
@@ -13,8 +14,10 @@ import { appUrl, stripe } from "@/lib/stripe";
  * Sailo never sees bank details, never holds funds, and never stores anyone's
  * API keys — we hold an account id and act on their behalf with it.
  *
- * No application fee is taken anywhere in this file. The plan copy promises
- * Sailo takes no cut of sales, and that promise lives here.
+ * Sailo takes a platform fee on card sales — see `platformFeeCents`. It is
+ * named on the charge in `createCheckoutSession` and handed back in
+ * `refundCharge`, so a refunded order refunds our share too. Both are the only
+ * places in the codebase that move money to us, deliberately.
  */
 
 /** Fields we mirror from Stripe onto the shop. */
@@ -36,6 +39,40 @@ export const disconnectedFields = {
 };
 
 /**
+ * The shop's public address, but only when Stripe will accept it.
+ *
+ * `business_profile.url` has to be a URL Stripe can actually reach. Anything
+ * local — localhost, an IP, a bare hostname, a .local domain — is refused with
+ * a flat "Not a valid URL" that names no field, so the first person to press
+ * Connect on a dev machine gets a runtime error and no idea which of the eight
+ * parameters was wrong. Returning null here means we send a description of the
+ * business instead and let Stripe ask the seller for their address during
+ * onboarding, which it does anyway.
+ */
+export function publicShopUrl(handle: string): string | null {
+  let url: URL;
+  try {
+    url = new URL(`${appUrl()}/${handle}`);
+  } catch {
+    return null;
+  }
+
+  if (url.protocol !== "https:" && url.protocol !== "http:") return null;
+
+  const host = url.hostname.toLowerCase();
+  const isLocal =
+    host === "localhost" ||
+    host.endsWith(".localhost") ||
+    host.endsWith(".local") ||
+    // A bare hostname with no dot can't resolve publicly either.
+    !host.includes(".") ||
+    /^\d{1,3}(\.\d{1,3}){3}$/.test(host) ||
+    host.startsWith("[");
+
+  return isLocal ? null : url.toString();
+}
+
+/**
  * Creates the seller's connected account if they don't have one, then returns
  * a fresh onboarding link.
  *
@@ -47,12 +84,20 @@ export async function startOnboarding(shop: Shop) {
   let accountId = shop.stripeAccountId;
 
   if (!accountId) {
+    const shopUrl = publicShopUrl(shop.handle);
+
     const account = await stripe().accounts.create({
       type: "express",
       email: shop.contactEmail ?? undefined,
       business_profile: {
         name: shop.name,
-        url: `${appUrl()}/${shop.handle}`,
+        ...(shopUrl
+          ? { url: shopUrl }
+          : {
+              product_description:
+                shop.description?.trim().slice(0, 500) ||
+                `Products and services sold through ${shop.name}.`,
+            }),
       },
       capabilities: { card_payments: { requested: true }, transfers: { requested: true } },
       metadata: { shopId: shop.id, handle: shop.handle },
@@ -253,6 +298,9 @@ export async function createCheckoutSession(opts: {
 
   // A coupon is applied as a Stripe discount so the buyer sees the reduction
   // on Stripe's page rather than a total that silently disagrees with ours.
+  // Sailo's share of the goods, before Stripe takes its own from the seller.
+  const applicationFee = platformFeeCents(shop, order);
+
   let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined;
   if (order.discountCents > 0) {
     const coupon = await stripe().coupons.create(
@@ -280,6 +328,19 @@ export async function createCheckoutSession(opts: {
       payment_intent_data: {
         metadata: { orderId: order.id, shopId: shop.id },
         description: `${shop.name} — ${orderSummaryTitle(order)}`,
+        /*
+         * Sailo's cut, named on the charge itself.
+         *
+         * It has to be here and not in the Dashboard's platform pricing
+         * scheme: that scheme only applies where the platform is billed for
+         * Stripe's own fees, which is not this configuration. Measured against
+         * a sandbox — a direct charge with no `application_fee_amount` comes
+         * back with `application_fee_amount: null` however the Dashboard is
+         * set. A fee that lives in code is also one that shows up in a diff.
+         */
+        ...(applicationFee > 0
+          ? { application_fee_amount: applicationFee }
+          : {}),
       },
       // Adaptive Pricing would let the buyer pay a converted amount in their
       // own currency. The shop picked its currency, the order row records it,
@@ -303,6 +364,15 @@ export async function refundCharge(opts: {
     {
       payment_intent: opts.paymentIntentId,
       amount: opts.amountCents,
+      /*
+       * Give our fee back with the money.
+       *
+       * Without this the seller refunds the buyer in full and is still out
+       * Sailo's cut — we would be the only party who profited from a sale that
+       * got undone. Stripe returns it in proportion to the amount refunded, so
+       * a partial refund returns part of the fee.
+       */
+      refund_application_fee: true,
     },
     actingAs(opts.accountId),
   );

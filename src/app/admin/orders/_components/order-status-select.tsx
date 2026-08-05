@@ -2,16 +2,9 @@
 
 import { useTransition } from "react";
 import { updateOrderStatus } from "@/lib/actions/order-admin";
+import { ORDER_STATUSES, orderStatusLabel } from "@/lib/order-status";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { cn } from "@/lib/utils";
-
-const STATUSES = [
-  "new",
-  "confirmed",
-  "shipped",
-  "completed",
-  "cancelled",
-  "refunded",
-] as const;
 
 export function OrderStatusSelect({
   orderId,
@@ -21,12 +14,13 @@ export function OrderStatusSelect({
   status: string;
 }) {
   const [pending, startTransition] = useTransition();
+  const a = useAdminT();
 
   return (
     <select
       defaultValue={status}
       disabled={pending}
-      aria-label="Order status"
+      aria-label={a.orders.statusLabel}
       onChange={(event) => {
         const data = new FormData();
         data.set("id", orderId);
@@ -34,14 +28,14 @@ export function OrderStatusSelect({
         startTransition(() => updateOrderStatus(data));
       }}
       className={cn(
-        "h-8 rounded-lg border border-ink-200 bg-white px-2 text-xs capitalize text-ink-700",
+        "h-8 rounded-lg border border-ink-200 bg-white px-2 text-xs text-ink-700",
         "transition focus:border-ink-900 focus:outline-none",
         pending && "opacity-50",
       )}
     >
-      {STATUSES.map((s) => (
-        <option key={s} value={s} className="capitalize">
-          {s}
+      {ORDER_STATUSES.map((value) => (
+        <option key={value} value={value}>
+          {orderStatusLabel(value, a.orderStatus)}
         </option>
       ))}
     </select>

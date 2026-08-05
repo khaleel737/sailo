@@ -14,6 +14,60 @@ export const PAYMENT_METHOD_TYPES = [
 
 export type PaymentMethodType = (typeof PAYMENT_METHOD_TYPES)[number];
 
+/* -------------------------------------------------------------------------- */
+/*  Where an order's money stands                                              */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Every payment status an order can hold.
+ *
+ * Defined once because it had drifted into four places that disagreed: the
+ * column comment listed three, the seller's dropdown offered four, and the
+ * webhook wrote a fifth. A status the UI doesn't know about renders as
+ * whatever happens to be first in a `<select>`, which is how a disputed order
+ * came to display as "Unpaid".
+ */
+export const PAYMENT_STATUSES = [
+  "unpaid",
+  "pending",
+  "paid",
+  "refunded",
+  "disputed",
+] as const;
+
+export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
+
+/**
+ * The ones a seller may set by hand.
+ *
+ * `disputed` is missing on purpose: it is a fact a bank reported to us, not an
+ * opinion the seller gets to hold, and letting them clear it from a dropdown
+ * would hide money that has already left their balance.
+ */
+export const SELLER_SETTABLE_PAYMENT_STATUSES = [
+  "unpaid",
+  "pending",
+  "paid",
+  "refunded",
+] as const;
+
+export function isPaymentStatus(value: string): value is PaymentStatus {
+  return (PAYMENT_STATUSES as readonly string[]).includes(value);
+}
+
+export function isSellerSettablePaymentStatus(value: string): boolean {
+  return (SELLER_SETTABLE_PAYMENT_STATUSES as readonly string[]).includes(value);
+}
+
+/** One tone per status, so every table colours them the same way. */
+export const PAYMENT_STATUS_TONES = {
+  unpaid: "neutral",
+  pending: "amber",
+  paid: "green",
+  refunded: "red",
+  disputed: "red",
+} as const satisfies Record<PaymentStatus, string>;
+
 /**
  * `contact` rails hand the buyer off to a chat app and settle entirely off
  * platform. `manual` rails keep the buyer on the page and show instructions,
@@ -70,7 +124,7 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
     name: "Card",
     action: "Pay by card",
     description:
-      "Buyers pay by card, Apple Pay or Google Pay on Stripe's checkout. The money lands in your own Stripe account — Sailo never holds it and takes no cut.",
+      "Buyers pay by card, Apple Pay or Google Pay on Stripe's checkout. The money lands in your own Stripe account — Sailo never holds it, and keeps 1% of the goods.",
     // Configured by connecting a Stripe account, not by typing anything, so
     // the admin form for this rail is the Connect button instead of fields.
     fields: [],
@@ -366,6 +420,11 @@ export function bankDetailLines(config: PaymentConfig) {
       ["SWIFT / BIC", config.swift],
     ] as const
   )
-    .filter(([, value]) => Boolean(value?.trim()))
-    .map(([label, value]) => ({ label, value: value!.trim() }));
+    // One pass rather than filter-then-assert: the filter proved the value was
+    // there and the map had to swear to it again, which is exactly the kind of
+    // promise that stops being true when someone edits one line and not the other.
+    .flatMap(([label, value]) => {
+      const trimmed = value?.trim();
+      return trimmed ? [{ label, value: trimmed }] : [];
+    });
 }

@@ -15,26 +15,19 @@ import { TrafficPanel } from "@/app/admin/_components/traffic-panel";
 import { RangePicker } from "@/app/admin/_components/range-picker";
 import { analyticsLimit, clampAnalyticsRange, planFor } from "@/lib/plans";
 import { CopyLink } from "@/components/shared/copy-link";
-import { Badge, Card, EmptyState } from "@/components/ui";
+import { Badge, Card, EmptyState, Stat } from "@/components/ui";
+import { orderStatusLabel, orderStatusTone } from "@/lib/order-status";
 import { formatMoney } from "@/lib/utils";
-import { getLocale, getT } from "@/i18n/server";
+import { getAdminT, getLocale, getT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Overview" };
-
-const STATUS_TONE = {
-  new: "blue",
-  confirmed: "amber",
-  shipped: "blue",
-  completed: "green",
-  cancelled: "neutral",
-  refunded: "red",
-} as const;
 
 export default async function AdminOverviewPage({
   searchParams,
 }: PageProps<"/admin">) {
   const { shop } = await requireShop();
   const { t } = await getT();
+  const { a } = await getAdminT();
   const locale = await getLocale();
   const params = await searchParams;
 
@@ -59,23 +52,27 @@ export default async function AdminOverviewPage({
 
   return (
     <>
-      {/* The link is the product. It leads the page, in brand colour, because
-          the single most useful thing this screen can do is hand it over. */}
-      <div className="relative mb-6 overflow-hidden rounded-3xl bg-brand-800 p-5 text-white shadow-md sm:p-6">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-70"
-          style={{
-            backgroundImage:
-              "radial-gradient(ellipse 60% 120% at 100% 0%, rgba(52,217,138,0.35), transparent 70%)",
-          }}
-        />
+      {/*
+        The link is the product, so it leads the page.
+
+        It used to lead in a slab of brand green, which made the loudest thing
+        on the screen a colour rather than the URL itself, and set the seller's
+        own accent against ours the moment they scrolled to their shop. Ink
+        instead: the same inverted surface the brand pages use, with the green
+        kept for the live dot beside the address. The URL is now the brightest
+        thing in the block, which is what it should have been all along.
+      */}
+      <div className="relative mb-6 overflow-hidden rounded-3xl bg-ink-950 p-5 text-white sm:p-6">
         <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
-            <p className="text-xs font-medium uppercase tracking-wider text-brand-200">
-              Your shop link
+            <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-ink-400">
+              <span className="size-1.5 rounded-full bg-brand-500" />
+              {a.dashboard.shopLink}
             </p>
-            <p className="mt-1.5 truncate text-lg font-semibold tracking-tight sm:text-xl">
+            <p
+              dir="ltr"
+              className="mt-2 truncate text-lg font-semibold tracking-tight sm:text-xl"
+            >
               {displayUrl}
             </p>
           </div>
@@ -85,9 +82,9 @@ export default async function AdminOverviewPage({
               href={`/${shop.handle}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="focus-ring press inline-flex h-9 items-center gap-1.5 rounded-xl bg-white px-3.5 text-xs font-semibold text-brand-900 transition hover:bg-brand-50"
+              className="focus-ring press inline-flex h-9 pointer-coarse:h-11 items-center gap-1.5 rounded-xl bg-white px-3.5 text-xs font-semibold text-ink-900 transition hover:bg-ink-100"
             >
-              Visit
+              {a.common.visit}
               <ArrowRight className="size-3.5 rtl:rotate-180" />
             </a>
           </div>
@@ -95,7 +92,7 @@ export default async function AdminOverviewPage({
       </div>
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-sm font-medium text-ink-500">
+        <h2 dir="auto" className="text-sm font-medium text-ink-500">
           Last {range >= 365 ? `${Math.round(range / 365)} year` : `${range} days`}
           {range >= 365 && range >= 730 ? "s" : ""}
         </h2>
@@ -110,23 +107,23 @@ export default async function AdminOverviewPage({
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat
           icon={<Eye className="size-4" />}
-          label="Visits"
+          label={a.dashboard.visits}
           value={stats.visitsInRange.toLocaleString()}
         />
         <Stat
           icon={<Users className="size-4" />}
-          label="Unique visitors"
+          label={a.dashboard.uniqueVisitors}
           value={stats.uniqueVisitorsInRange.toLocaleString()}
         />
         <Stat
           icon={<ShoppingBag className="size-4" />}
-          label="Orders"
+          label={a.dashboard.orders}
           value={stats.totalOrders.toLocaleString()}
           hint={stats.newOrders > 0 ? `${stats.newOrders} new` : undefined}
         />
         <Stat
           icon={<Wallet className="size-4" />}
-          label="Net revenue"
+          label={a.dashboard.netRevenue}
           value={money(stats.netRevenueCents)}
           hint={[
             stats.refundedCents > 0
@@ -180,19 +177,21 @@ export default async function AdminOverviewPage({
           <BarChart
             title={`Visits · last ${chartDays} days`}
             data={visitSeries.map((d) => ({ day: d.day, value: d.count }))}
-            colour="#434c49"
+            tone="activity"
             unit="count"
-            emptyLabel="No visits yet — share your link."
+            emptyLabel={a.dashboard.noVisits}
+            tableLabel={a.common.viewAsTable}
           />
         </Card>
         <Card className="p-5">
           <BarChart
             title={`Revenue · last ${chartDays} days`}
             data={revenueSeries.map((d) => ({ day: d.day, value: d.cents }))}
-            colour="#037740"
+            tone="money"
             unit="money"
             currency={shop.currency}
-            emptyLabel="No revenue yet."
+            emptyLabel={a.dashboard.noRevenue}
+            tableLabel={a.common.viewAsTable}
           />
         </Card>
       </div>
@@ -201,20 +200,20 @@ export default async function AdminOverviewPage({
 
       <Card className="p-5">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-sm font-semibold">Recent orders</h2>
+          <h2 className="text-sm font-semibold">{a.dashboard.recentOrders}</h2>
           <Link
             href="/admin/orders"
-            className="text-xs font-medium text-ink-500 transition hover:text-ink-900"
+            className="focus-ring inline-flex items-center rounded text-xs font-medium text-ink-500 transition hover:text-ink-900 pointer-coarse:min-h-11"
           >
-            View all
+            {a.common.viewAll}
           </Link>
         </div>
 
         {orders.length === 0 ? (
           <EmptyState
             icon={<ShoppingBag className="size-7" />}
-            title="No orders yet"
-            description="When someone taps Order on your shop, their details land here — even before they message you."
+            title={a.dashboard.noOrders}
+            description={a.dashboard.noOrdersBody}
           />
         ) : (
           <ul className="divide-y divide-ink-100">
@@ -242,8 +241,8 @@ export default async function AdminOverviewPage({
                   <span className="text-sm font-medium tabular-nums">
                     {formatMoney(order.totalCents, order.currency)}
                   </span>
-                  <Badge tone={STATUS_TONE[order.status as keyof typeof STATUS_TONE] ?? "neutral"}>
-                    {order.status}
+                  <Badge tone={orderStatusTone(order.status)} dot>
+                    {orderStatusLabel(order.status, a.orderStatus)}
                   </Badge>
                 </div>
               </li>
@@ -252,28 +251,5 @@ export default async function AdminOverviewPage({
         )}
       </Card>
     </>
-  );
-}
-
-function Stat({
-  icon,
-  label,
-  value,
-  hint,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  hint?: string;
-}) {
-  return (
-    <Card className="p-4">
-      <div className="flex items-center gap-1.5 text-ink-400">
-        {icon}
-        <span className="text-xs font-medium">{label}</span>
-      </div>
-      <p className="mt-2 text-2xl font-semibold tabular-nums">{value}</p>
-      {hint ? <p className="mt-0.5 text-xs text-ink-500">{hint}</p> : null}
-    </Card>
   );
 }

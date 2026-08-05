@@ -10,13 +10,16 @@ import {
   refreshStripeAccount,
 } from "@/lib/actions/connect";
 import { Alert, Badge, Button, Card } from "@/components/ui";
+import { getAdminT } from "@/i18n/server";
+import { interpolate } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 /**
  * The Stripe rail is configured by connecting an account, not by filling in
  * fields, so it gets its own card rather than the generic method form.
  */
-export function StripeCard({ shop }: { shop: Shop }) {
+export async function StripeCard({ shop }: { shop: Shop }) {
+  const { a } = await getAdminT();
   const entitled = can(shop, "cardRails");
   const state = connectState(shop);
   const needs = cheapestPlanWith("cardRails");
@@ -45,7 +48,7 @@ export function StripeCard({ shop }: { shop: Shop }) {
         </span>
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm font-medium text-ink-900">Card payments</h3>
+            <h3 className="text-sm font-medium text-ink-900">{a.payments.cardTitle}</h3>
             {!entitled && needs ? (
               <Badge tone="amber">
                 <Lock className="size-3" />
@@ -53,52 +56,51 @@ export function StripeCard({ shop }: { shop: Shop }) {
               </Badge>
             ) : state === "active" ? (
               <Badge tone="green" dot>
-                Live
+                {a.common.live}
               </Badge>
             ) : state === "verifying" ? (
               <Badge tone="amber" dot>
-                Stripe is verifying
+                {a.payments.stripeVerifying}
               </Badge>
             ) : state === "onboarding" ? (
               <Badge tone="amber" dot>
-                Finish setup
+                {a.payments.finishSetup}
               </Badge>
             ) : (
               <Badge tone="neutral" dot>
-                Not connected
+                {a.payments.notConnected}
               </Badge>
             )}
           </div>
           <p className="mt-1 max-w-lg text-xs leading-relaxed text-ink-500">
-            Buyers pay by card, Apple Pay or Google Pay without leaving the
-            checkout. The money goes straight into your own Stripe account —
-            Sailo never holds it and takes no cut of your sales.
+            {a.payments.cardBody}
           </p>
         </div>
       </div>
 
       {!entitled ? (
         <p className="mt-4 rounded-xl border border-ink-200 bg-ink-50 px-3.5 py-2.5 text-sm text-ink-600">
-          Card payments are part of {needs?.name ?? "a paid plan"}.{" "}
+          {interpolate(a.payments.cardOnPlan, {
+            plan: needs?.name ?? "—",
+          })}{" "}
           <Link
             href="/admin/settings/billing"
             className="focus-ring rounded font-medium text-brand-700 underline underline-offset-4 hover:text-brand-800"
           >
-            See plans
+            {a.payments.seePlans}
           </Link>
         </p>
       ) : state === "not_connected" ? (
         <form action={connectStripe} className="mt-4">
           <button
             type="submit"
-            className="focus-ring press inline-flex h-10 items-center gap-2 rounded-xl bg-[#635bff] px-4 text-sm font-medium text-white shadow-xs transition hover:bg-[#5148e8]"
+            className="focus-ring press inline-flex h-10 items-center gap-2 rounded-xl pointer-coarse:h-11 bg-[#635bff] px-4 text-sm font-medium text-white shadow-xs transition hover:bg-[#5148e8]"
           >
-            Connect Stripe
+            {a.payments.connectStripe}
             <ArrowUpRight className="size-4 rtl:-scale-x-100" />
           </button>
           <p className="mt-2 text-xs text-ink-400">
-            Opens Stripe. You&rsquo;ll need your bank details and an ID —
-            Sailo never sees either.
+            {a.payments.connectHint}
           </p>
         </form>
       ) : (
@@ -106,21 +108,21 @@ export function StripeCard({ shop }: { shop: Shop }) {
           {state !== "active" ? (
             <Alert tone="warning" icon={<AlertTriangle className="size-4" />}>
               {state === "onboarding"
-                ? "Stripe still needs some details before you can take payments."
-                : "Stripe has your details and is checking them. This is usually quick, and the card option turns on by itself."}
+                ? a.payments.stripeNeedsDetails
+                : a.payments.stripeChecking}
             </Alert>
           ) : null}
 
           <dl className="grid gap-x-6 gap-y-2 rounded-xl border border-ink-200 bg-white p-3 text-sm sm:grid-cols-2">
             <div className="flex justify-between gap-3 sm:block">
-              <dt className="text-xs text-ink-500">Account</dt>
+              <dt className="text-xs text-ink-500">{a.payments.account}</dt>
               <dd className="mt-0.5 font-mono text-xs text-ink-700">
                 {shop.stripeAccountId}
               </dd>
             </div>
             {shop.stripeAccountCountry ? (
               <div className="flex justify-between gap-3 sm:block">
-                <dt className="text-xs text-ink-500">Country</dt>
+                <dt className="text-xs text-ink-500">{a.payments.country}</dt>
                 <dd className="mt-0.5 text-xs text-ink-700">
                   {shop.stripeAccountCountry}
                 </dd>
@@ -133,16 +135,16 @@ export function StripeCard({ shop }: { shop: Shop }) {
               <form action={connectStripe}>
                 <button
                   type="submit"
-                  className="focus-ring press inline-flex h-9 items-center gap-1.5 rounded-xl bg-[#635bff] px-3 text-sm font-medium text-white shadow-xs transition hover:bg-[#5148e8]"
+                  className="focus-ring press inline-flex h-9 pointer-coarse:h-11 items-center gap-1.5 rounded-xl bg-[#635bff] px-3 text-sm font-medium text-white shadow-xs transition hover:bg-[#5148e8]"
                 >
-                  Continue on Stripe
+                  {a.payments.continueOnStripe}
                   <ArrowUpRight className="size-3.5 rtl:-scale-x-100" />
                 </button>
               </form>
             ) : (
               <form action={openStripeDashboard}>
                 <Button type="submit" variant="secondary" size="sm">
-                  Payouts on Stripe
+                  {a.payments.payoutsOnStripe}
                   <ArrowUpRight className="size-3.5 rtl:-scale-x-100" />
                 </Button>
               </form>
@@ -150,20 +152,19 @@ export function StripeCard({ shop }: { shop: Shop }) {
 
             <form action={refreshStripeAccount}>
               <Button type="submit" variant="secondary" size="sm">
-                Refresh status
+                {a.payments.refreshStatus}
               </Button>
             </form>
 
             <form action={disconnectStripe}>
               <Button type="submit" variant="ghost" size="sm">
-                Disconnect
+                {a.payments.disconnect}
               </Button>
             </form>
           </div>
 
           <p className="text-xs text-ink-400">
-            Disconnecting stops new card orders. Your Stripe account, its
-            payouts and its records stay exactly where they are.
+            {a.payments.disconnectHint}
           </p>
         </div>
       )}

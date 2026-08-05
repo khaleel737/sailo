@@ -5,6 +5,7 @@ import { requireShop } from "@/lib/session";
 import { can, cheapestPlanWith } from "@/lib/plans";
 import { ImportPanel } from "@/app/admin/settings/data/_components/import-panel";
 import { Badge, Card } from "@/components/ui";
+import { getAdminT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Import & export" };
 
@@ -52,6 +53,7 @@ const CLIENT_COLUMNS = [
 ];
 
 export default async function DataPage() {
+  const { a } = await getAdminT();
   const { shop } = await requireShop();
   const canExport = can(shop, "csvExport");
   const exportPlan = cheapestPlanWith("csvExport");
@@ -61,7 +63,7 @@ export default async function DataPage() {
       <Card className="p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="text-sm font-semibold">Export</h2>
+            <h2 className="text-sm font-semibold">{a.data.export}</h2>
             <p className="mt-1 text-sm text-ink-500">
               Download your data as CSV. Opens in Excel, Numbers or Google
               Sheets, and matches Shopify&rsquo;s column names.
@@ -88,10 +90,10 @@ export default async function DataPage() {
               {canExport ? (
                 <a
                   href={`/api/export/${item.type}`}
-                  className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl border border-ink-200 bg-white px-3 text-sm font-medium text-ink-900 transition hover:bg-ink-50"
+                  className="inline-flex h-9 pointer-coarse:h-11 shrink-0 items-center gap-1.5 rounded-xl border border-ink-200 bg-white px-3 text-sm font-medium text-ink-900 transition hover:bg-ink-50"
                 >
                   <Download className="size-4" />
-                  Download CSV
+                  {a.data.downloadCsv}
                 </a>
               ) : (
                 <span className="text-xs text-ink-400">
@@ -116,7 +118,7 @@ export default async function DataPage() {
       </Card>
 
       <div>
-        <h2 className="mb-1 text-sm font-semibold">Import</h2>
+        <h2 className="mb-1 text-sm font-semibold">{a.data.import}</h2>
         <p className="mb-3 text-sm text-ink-500">
           Bring products and customers in from a spreadsheet or another
           platform. You&rsquo;ll see a preview before anything is saved.
@@ -126,14 +128,14 @@ export default async function DataPage() {
         <div className="space-y-3">
           <ImportPanel
             type="products"
-            title="Import products"
-            description="Existing products are matched on Handle and updated; anything new is created."
+            title={a.data.importProducts}
+            description={a.data.importProductsBody}
             columns={PRODUCT_COLUMNS}
           />
           <ImportPanel
             type="clients"
-            title="Import customers"
-            description="Matched on email, or phone when there's no email. Existing details are never blanked by a missing column."
+            title={a.data.importClients}
+            description={a.data.importClientsBody}
             columns={CLIENT_COLUMNS}
           />
         </div>

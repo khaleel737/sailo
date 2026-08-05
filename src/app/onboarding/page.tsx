@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
-import { Store } from "lucide-react";
 import { getDb } from "@/db";
 import { shops } from "@/db/schema";
 import { requireUser } from "@/lib/session";
 import { OnboardingForm } from "./onboarding-form";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
+import { SailoLogo } from "@/components/brand";
 import { getT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Set up your shop" };
@@ -24,30 +24,20 @@ export default async function OnboardingPage() {
   const { locale, t, dir } = await getT();
 
   return (
-    <div
-      dir={dir}
-      lang={locale}
-      className="flex min-h-screen flex-col items-center justify-center bg-ink-50 px-4 py-12"
-    >
-      <Link href="/" className="mb-8 inline-flex items-center gap-2">
-        <span className="flex size-9 items-center justify-center rounded-xl bg-ink-900 text-white">
-          <Store className="size-5" />
-        </span>
-        <span className="text-xl font-semibold tracking-tight">Sailo</span>
-      </Link>
+    <div dir={dir} lang={locale} className="relative min-h-screen bg-ink-50">
+      <div className="bg-aurora pointer-events-none absolute inset-x-0 top-0 h-80 opacity-70" />
 
-      <div className="w-full max-w-md rounded-2xl border border-ink-200 bg-white p-6 shadow-sm sm:p-8">
-        <h1 className="text-xl font-semibold tracking-tight">
-          {t.onboarding.claimTitle}
-        </h1>
-        <p className="mb-6 mt-1 text-sm text-ink-500">
-          {t.onboarding.claimSubtitle}
-        </p>
-        <OnboardingForm defaultName={user.name} t={t} />
-      </div>
+      <div className="relative mx-auto flex min-h-screen w-full max-w-4xl flex-col px-4 py-8 sm:py-12">
+        <header className="mb-8 flex items-center justify-between">
+          <Link href="/" className="focus-ring rounded-lg text-brand-700">
+            <SailoLogo className="h-6 w-auto" />
+          </Link>
+          <LanguageSwitcher current={locale} label={t.common.language} />
+        </header>
 
-      <div className="mt-6">
-        <LanguageSwitcher current={locale} label={t.common.language} />
+        <main className="flex-1 rounded-3xl border border-ink-200 bg-white p-6 shadow-md sm:p-8 lg:p-10">
+          <OnboardingForm defaultName={user.name} t={t} />
+        </main>
       </div>
     </div>
   );

@@ -1,0 +1,200 @@
+/* ===========================================================================
+   Sailo brand surface
+
+   The public face of the product: the landing page, sign-in, sign-up and
+   onboarding. Everything a stranger sees before they have an account.
+
+   Scoped to `.brand-surface` on purpose. `globals.css` is shared with the
+   admin, the storefront and HQ, which are working surfaces with different
+   needs; nothing in this file may leak into them.
+
+   THE IDEA
+   The page is monochrome. Bone paper, off-black ink, one warm neutral ramp,
+   and no chromatic accent anywhere in the chrome. Every colour a visitor sees
+   comes out of a real shop screenshot.
+
+   That is not restraint for its own sake. Green is the wrong differentiator
+   here: Shopify and Linktree both own it, and a green page fighting five shop
+   accents (terracotta, tomato, pink, teal, indigo) is a page where nothing
+   reads. Making Sailo the neutral frame lets the sellers' work be the colour,
+   which happens to also be the product's argument.
+=========================================================================== */
+
+.brand-surface {
+  /* --- Surface ---------------------------------------------------------
+     Semantic names over the shared ink ramp in `globals.css`. Nothing here
+     invents a colour: change the neutral in one place and the admin, HQ, the
+     storefront chrome and these pages all move together, which is the only
+     way two surfaces stay the same product a year from now.
+
+     `--paper` is the one exception, and it is deliberate: a shade brighter
+     than the app's `ink-50` chrome, because pure white next to a screenshot
+     of a white shop page makes the screenshot look grey, while warm paper
+     makes it look lit. */
+  --paper: #fbfbf9;
+  --paper-sunk: var(--color-ink-50);
+  --ink: var(--color-ink-950);
+  --ink-soft: var(--color-ink-900);
+
+  --mute-100: var(--color-ink-100);
+  --mute-200: var(--color-ink-200);
+  --mute-300: var(--color-ink-300);
+  --mute-400: var(--color-ink-400);
+  --mute-500: var(--color-ink-500);
+  --mute-600: var(--color-ink-600);
+
+  /* On the inverted surfaces. */
+  --on-ink-mute: var(--color-ink-400);
+  --on-ink-soft: var(--color-ink-300);
+
+  /* The single chromatic moment on these pages: the live indicator and the
+     focus ring, nowhere else. The mark's own green, and the same value the
+     app surfaces focus with, so the logo is not orphaned by a monochrome
+     page and the two surfaces do not focus in different colours. */
+  --signal: var(--color-brand-500);
+
+  /* --- Shape -----------------------------------------------------------
+     Same scale as the app surfaces, which is why `--r-card` reads the shared
+     token rather than a literal. The one difference is terminal shape: a call
+     to action here is a capsule, where an admin control is a rounded rect,
+     because pills waste horizontal room in a dense toolbar. */
+  --r-pill: 999px;
+  --r-card: var(--radius-2xl);
+  --r-media: var(--radius-3xl);
+
+  /* --- Motion ----------------------------------------------------------
+     Everything decelerates and nothing overshoots except on press. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Display type. Outfit is geometric and slightly wide, which is what makes it
+   read expensive at 6rem and friendly at 2rem. Body stays Geist: it is already
+   loaded for the rest of the product and it is a better paragraph face. */
+.brand-surface .display {
+  font-family: var(--font-outfit), var(--font-geist-sans), sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.94;
+  text-wrap: balance;
+}
+
+/* Optical correction: tracking that looks right at 6rem is too tight at 2rem,
+   so the smaller display sizes give some back. */
+.brand-surface .display-sm {
+  font-family: var(--font-outfit), var(--font-geist-sans), sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+/* --------------------------------------------------------------------------
+   Scroll-driven reveal
+
+   Native CSS, not JavaScript. `animation-timeline: view()` runs on the
+   compositor, needs no observer, no hydration and no cleanup, and degrades to
+   "already visible" in browsers that do not support it because the `to` state
+   is the resting state.
+--------------------------------------------------------------------------- */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .brand-surface .reveal {
+      animation: marketing-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
+  }
+}
+
+@keyframes marketing-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Marquee
+
+   One per page, and it earns its place: the shop links genuinely are a list
+   too long to sit still and too shallow to deserve a grid.
+--------------------------------------------------------------------------- */
+
+@keyframes marketing-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* The track holds two identical halves, so travelling exactly half its
+       width lands on a frame identical to the first one. */
+    transform: translateX(-50%);
+  }
+}
+
+.brand-surface .marquee-track {
+  animation: marketing-marquee 46s linear infinite;
+}
+
+.brand-surface .marquee:hover .marquee-track,
+.brand-surface .marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-surface .marquee-track {
+    animation: none;
+    /* Without the animation the doubled track would overflow silently, so it
+       becomes an ordinary scroll rail the visitor drives. */
+    transform: none;
+  }
+  .brand-surface .marquee {
+    overflow-x: auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Interaction
+--------------------------------------------------------------------------- */
+
+.brand-surface .focus-line:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: var(--r-pill);
+}
+
+/* A button should feel like it takes the press. */
+.brand-surface .push {
+  transition: transform 0.14s var(--ease-out), background-color 0.2s var(--ease-out),
+    color 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
+}
+
+.brand-surface .push:active {
+  transform: scale(0.975);
+}
+
+/* Underline that draws from the leading edge, direction-aware. */
+.brand-surface .draw-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size 0.32s var(--ease-out);
+}
+
+.brand-surface .draw-underline:hover,
+.brand-surface .draw-underline:focus-visible {
+  background-size: 100% 1px;
+}
+
+[dir="rtl"] .brand-surface .draw-underline {
+  background-position: 100% 100%;
+}

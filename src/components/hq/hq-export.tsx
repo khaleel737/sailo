@@ -24,7 +24,7 @@ export function ExportCsv({
   return (
     <a
       href={`/api/hq/export/${type}`}
-      className="focus-ring press inline-flex h-10 items-center gap-2 rounded-xl border border-ink-200 bg-white px-4 text-sm font-medium text-ink-900 shadow-xs transition hover:border-ink-300 hover:bg-ink-50"
+      className="focus-ring press inline-flex h-10 items-center gap-2 rounded-xl pointer-coarse:h-11 border border-ink-200 bg-white px-4 text-sm font-medium text-ink-900 shadow-xs transition hover:border-ink-300 hover:bg-ink-50"
     >
       <Download className="size-4" />
       {label}

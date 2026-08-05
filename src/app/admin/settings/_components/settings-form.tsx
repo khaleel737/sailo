@@ -25,6 +25,7 @@ import {
 import { LOCALES } from "@/i18n/config";
 import type { Shop } from "@/db/schema";
 import type { Dictionary } from "@/i18n";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 const PRESET_COLORS = [
   "#111111", "#4f46e5", "#0ea5e9", "#059669",
@@ -49,6 +50,7 @@ function Submit() {
 }
 
 export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
+  const a = useAdminT();
   const [state, action] = useActionState(updateShop, { ok: false });
   const [accent, setAccent] = useState(shop.accentColor);
 
@@ -62,7 +64,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
       ) : null}
 
       <Card className="space-y-4 p-5">
-        <h2 className="text-sm font-semibold text-ink-900">Identity</h2>
+        <h2 className="text-sm font-semibold text-ink-900">{a.settings.identity}</h2>
 
         <HandleField
           label={t.handle.label}
@@ -72,11 +74,15 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
           t={t}
         />
 
-        <Field label="Shop name" htmlFor="name">
+        <Field label={a.settings.shopName} htmlFor="name">
           <Input id="name" name="name" required defaultValue={shop.name} />
         </Field>
 
-        <Field label="Description" htmlFor="description" hint="optional">
+        <Field
+          label={a.settings.shopDescription}
+          htmlFor="description"
+          hint={a.common.optional}
+        >
           <Textarea
             id="description"
             name="description"
@@ -87,7 +93,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
         </Field>
 
         <div className="grid gap-5 sm:grid-cols-2">
-          <Field label="Profile picture" hint="shown as a circle">
+          <Field label={a.settings.profilePicture} hint={a.settings.profilePictureHint}>
             <ImageUploader
               name="avatarUrl"
               initial={shop.avatarUrl ? [shop.avatarUrl] : []}
@@ -95,7 +101,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
             />
           </Field>
 
-          <Field label="Logo" hint="replaces the shop name">
+          <Field label={a.settings.logo} hint={a.settings.logoHint}>
             <ImageUploader
               name="logoUrl"
               initial={shop.logoUrl ? [shop.logoUrl] : []}
@@ -107,9 +113,9 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
       </Card>
 
       <Card className="space-y-4 p-5">
-        <h2 className="text-sm font-semibold text-ink-900">Appearance</h2>
+        <h2 className="text-sm font-semibold text-ink-900">{a.settings.appearance}</h2>
 
-        <Field label="Accent colour">
+        <Field label={a.settings.accentColour}>
           <div className="flex flex-wrap items-center gap-2">
             {PRESET_COLORS.map((color) => (
               <button
@@ -118,7 +124,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
                 onClick={() => setAccent(color)}
                 aria-label={`Use ${color}`}
                 aria-pressed={accent.toLowerCase() === color}
-                className={`size-8 rounded-full transition ${
+                className={`size-8 rounded-full transition pointer-coarse:size-11 ${
                   accent.toLowerCase() === color
                     ? "ring-2 ring-ink-900 ring-offset-2"
                     : "hover:scale-110"
@@ -130,25 +136,25 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
               type="color"
               value={accent}
               onChange={(e) => setAccent(e.target.value)}
-              aria-label="Custom accent colour"
-              className="size-8 cursor-pointer rounded-full border border-ink-200 bg-transparent p-0"
+              aria-label={a.settings.customAccent}
+              className="size-8 cursor-pointer rounded-full border border-ink-200 bg-transparent p-0 pointer-coarse:size-11"
             />
           </div>
           <input type="hidden" name="accentColor" value={accent} />
         </Field>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Theme" htmlFor="theme">
+          <Field label={a.settings.theme} htmlFor="theme">
             <Select id="theme" name="theme" defaultValue={shop.theme}>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
+              <option value="light">{a.settings.themeLight}</option>
+              <option value="dark">{a.settings.themeDark}</option>
             </Select>
           </Field>
 
-          <Field label="Product layout" htmlFor="layout">
+          <Field label={a.settings.productLayout} htmlFor="layout">
             <Select id="layout" name="layout" defaultValue={shop.layout}>
-              <option value="grid">Grid</option>
-              <option value="list">List</option>
+              <option value="grid">{a.settings.layoutGrid}</option>
+              <option value="list">{a.settings.layoutList}</option>
             </Select>
           </Field>
         </div>
@@ -156,21 +162,21 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
 
       <Card className="space-y-4 p-5">
         <div>
-          <h2 className="text-sm font-semibold text-ink-900">Orders &amp; contact</h2>
+          <h2 className="text-sm font-semibold text-ink-900">{a.settings.ordersContact}</h2>
           <p className="mt-0.5 text-xs text-ink-500">
             Ways to order live in{" "}
             <Link
               href="/admin/payments"
               className="font-medium text-ink-700 underline underline-offset-2"
             >
-              Payments
+            {a.payments.title}
             </Link>
             .
           </p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Currency" htmlFor="currency">
+          <Field label={a.settings.currency} htmlFor="currency">
             <Select id="currency" name="currency" defaultValue={shop.currency}>
               {CURRENCIES.map((c) => (
                 <option key={c} value={c}>
@@ -187,7 +193,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
           >
             <Select id="locale" name="locale" defaultValue={shop.locale ?? ""}>
               <option value="">
-                Match the visitor&rsquo;s browser
+                {a.settings.matchBrowser}
               </option>
               {LOCALES.map((l) => (
                 <option key={l.code} value={l.code}>
@@ -197,7 +203,11 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
             </Select>
           </Field>
 
-          <Field label="Contact email" htmlFor="contactEmail" hint="optional">
+          <Field
+            label={a.settings.contactEmail}
+            htmlFor="contactEmail"
+            hint={a.common.optional}
+          >
             <Input
               id="contactEmail"
               name="contactEmail"
@@ -207,12 +217,16 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
           </Field>
         </div>
 
-        <Field label="Location" htmlFor="location" hint="optional">
+        <Field
+          label={a.settings.location}
+          htmlFor="location"
+          hint={a.common.optional}
+        >
           <Input
             id="location"
             name="location"
             defaultValue={shop.location ?? ""}
-            placeholder="Lagos, Nigeria"
+            placeholder={a.settings.locationPlaceholder}
           />
         </Field>
 
@@ -220,41 +234,41 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
           <Switch
             name="collectAddress"
             defaultChecked={shop.collectAddress}
-            label="Ask for a delivery address"
-            description="Shown on physical products only. Turn off if you sell digital goods or services."
+            label={a.settings.collectAddress}
+            description={a.settings.collectAddressBody}
           />
         </div>
       </Card>
 
       <Card className="space-y-4 p-5">
         <div>
-          <h2 className="text-sm font-semibold text-ink-900">Tax</h2>
+          <h2 className="text-sm font-semibold text-ink-900">{a.settings.tax}</h2>
           <p className="mt-0.5 text-xs text-ink-500">
             Only turn this on if you are registered to charge it. Existing
             orders keep the rate they were placed at.
           </p>
         </div>
 
-        <label className="flex cursor-pointer items-start gap-3">
+        <label className="flex cursor-pointer items-start gap-3 pointer-coarse:min-h-11">
           <input
             type="checkbox"
             name="taxEnabled"
             defaultChecked={shop.taxEnabled}
-            className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900"
+            className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900 pointer-coarse:size-5"
           />
           <span>
-            <span className="block text-sm font-medium">Charge tax</span>
+            <span className="block text-sm font-medium">{a.settings.chargeTax}</span>
             <span className="block text-xs text-ink-500">
-              Adds a tax line to checkout and to every invoice.
+              {a.settings.chargeTaxBody}
             </span>
           </span>
         </label>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
-            label="Tax name"
+            label={a.settings.taxName}
             htmlFor="taxName"
-            hint="what buyers see — VAT, GST, Sales tax"
+            hint={a.settings.taxNameHint}
           >
             <Input
               id="taxName"
@@ -265,7 +279,11 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
             />
           </Field>
 
-          <Field label="Rate" htmlFor="taxRate" hint="percent, e.g. 20 or 7.5">
+          <Field
+            label={a.settings.taxRate}
+            htmlFor="taxRate"
+            hint={a.settings.taxRateHint}
+          >
             <Input
               id="taxRate"
               name="taxRate"
@@ -282,56 +300,56 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
           </Field>
         </div>
 
-        <Field label="How prices are shown" htmlFor="taxInclusive">
+        <Field label={a.settings.taxShown} htmlFor="taxInclusive">
           <Select
             id="taxInclusive"
             name="taxInclusive"
             defaultValue={shop.taxInclusive ? "inclusive" : "exclusive"}
           >
             <option value="exclusive">
-              Prices exclude tax — added at checkout (US sales tax)
+              {a.settings.taxExclusive}
             </option>
             <option value="inclusive">
-              Prices already include tax (EU VAT, UK, most of Asia)
+              {a.settings.taxInclusive}
             </option>
           </Select>
         </Field>
 
-        <label className="flex cursor-pointer items-start gap-3">
+        <label className="flex cursor-pointer items-start gap-3 pointer-coarse:min-h-11">
           <input
             type="checkbox"
             name="taxOnDelivery"
             defaultChecked={shop.taxOnDelivery}
-            className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900"
+            className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900 pointer-coarse:size-5"
           />
           <span>
             <span className="block text-sm font-medium">
-              Tax the delivery fee
+              {a.settings.taxOnDelivery}
             </span>
             <span className="block text-xs text-ink-500">
-              Shipping is taxable in most places. Uncheck if yours is exempt.
+              {a.settings.taxOnDeliveryBody}
             </span>
           </span>
         </label>
 
         <Field
-          label="Tax ID"
+          label={a.settings.taxId}
           htmlFor="taxId"
-          hint="optional — printed on invoices"
+          hint={a.settings.taxIdHint}
         >
           <Input
             id="taxId"
             name="taxId"
             defaultValue={shop.taxId ?? ""}
-            placeholder="GB123456789"
+            placeholder={a.settings.taxIdPlaceholder}
           />
         </Field>
       </Card>
 
       <Card className="space-y-3 p-5">
-        <h2 className="text-sm font-semibold text-ink-900">Social links</h2>
+        <h2 className="text-sm font-semibold text-ink-900">{a.settings.socialLinks}</h2>
         <p className="-mt-1 text-xs text-ink-500">
-          Leave blank to hide. Icons appear under your description.
+          {a.settings.socialLinksBody}
         </p>
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -359,8 +377,8 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
         <Switch
           name="isPublished"
           defaultChecked={shop.isPublished}
-          label="Shop is live"
-          description="Turn this off to take your page offline. Visitors will see a 404."
+          label={a.settings.shopIsLive}
+          description={a.settings.shopIsLiveBody}
         />
       </Card>
 

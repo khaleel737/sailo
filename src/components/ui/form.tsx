@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /** Form controls: input, textarea, select, label, field, checkbox, switch. */
@@ -81,8 +80,10 @@ export function Label({
       {...props}
     >
       {children}
+      {/* ink-400 measures 2.99:1 against both the app surface and brand paper,
+          under AA. ink-500 is 5.11 and still reads as secondary. */}
       {hint ? (
-        <span className="ms-1.5 font-normal text-ink-400">{hint}</span>
+        <span className="ms-1.5 font-normal text-ink-500">{hint}</span>
       ) : null}
     </label>
   );

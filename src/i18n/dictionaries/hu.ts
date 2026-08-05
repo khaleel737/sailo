@@ -15,7 +15,7 @@ export const hu: Dictionary = {
     noProductsBody: "A(z) {shop} még nem töltött fel semmit. Nézz vissza hamarosan.",
     noMatches: "Nincs találat", noMatchesBody: "Próbálj meg levenni egy szűrőt vagy másra keresni.",
     soldOut: "Elfogyott", sale: "Akció", order: "Megrendelés", orderNow: "Megrendelem",
-    unavailable: "Nem elérhető", poweredBy: "Működteti a",
+    unavailable: "Nem elérhető", joinOnSailo: "Csatlakozz a(z) {shop} oldalához a Sailón", loadMore: "Több betöltése",
     earnBySharing: "Keress {percent}%-ot a bolt megosztásával",
     kindPhysical: "Kiszállítjuk", kindDigital: "Azonnali letöltés",
     kindService: "Foglaljon időpontot", labelDigital: "Letöltés", labelService: "Foglalás",

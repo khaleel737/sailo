@@ -18,6 +18,7 @@ import {
   Textarea,
 } from "@/components/ui";
 import type { Affiliate, Shop } from "@/db/schema";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit({ label }: { label: string }) {
   const { pending } = useFormStatus();
@@ -30,6 +31,7 @@ function Submit({ label }: { label: string }) {
 }
 
 export function AffiliateSettingsForm({ shop }: { shop: Shop }) {
+  const a = useAdminT();
   const [state, action] = useActionState(updateAffiliateSettings, { ok: false });
   const [enabled, setEnabled] = useState(shop.affiliatesEnabled);
 
@@ -41,17 +43,17 @@ export function AffiliateSettingsForm({ shop }: { shop: Shop }) {
           <Alert tone="success">{state.message}</Alert>
         ) : null}
 
-        <label className="flex cursor-pointer items-start gap-3">
+        <label className="flex cursor-pointer items-start gap-3 pointer-coarse:min-h-11">
           <input
             type="checkbox"
             name="affiliatesEnabled"
             checked={enabled}
             onChange={(e) => setEnabled(e.target.checked)}
-            className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900"
+            className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900 pointer-coarse:size-5"
           />
           <span>
             <span className="block text-sm font-medium">
-              Run a referral programme
+              {a.affiliates.runProgramme}
             </span>
             <span className="block text-xs text-ink-500">
               Adds a referral link to your shop footer and offers buyers their
@@ -63,9 +65,9 @@ export function AffiliateSettingsForm({ shop }: { shop: Shop }) {
         {enabled ? (
           <>
             <Field
-              label="Default commission"
+              label={a.affiliates.defaultCommission}
               htmlFor="defaultCommission"
-              hint="% of each order, before delivery"
+              hint={a.affiliates.commissionHint}
             >
               <Input
                 id="defaultCommission"
@@ -76,16 +78,16 @@ export function AffiliateSettingsForm({ shop }: { shop: Shop }) {
               />
             </Field>
 
-            <label className="flex cursor-pointer items-start gap-3">
+            <label className="flex cursor-pointer items-start gap-3 pointer-coarse:min-h-11">
               <input
                 type="checkbox"
                 name="affiliatePublicSignup"
                 defaultChecked={shop.affiliatePublicSignup}
-                className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900"
+                className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900 pointer-coarse:size-5"
               />
               <span>
                 <span className="block text-sm font-medium">
-                  Let anyone apply
+                  {a.affiliates.letAnyoneApply}
                 </span>
                 <span className="block text-xs text-ink-500">
                   Adds a signup form to your public referral page. Applications
@@ -94,19 +96,19 @@ export function AffiliateSettingsForm({ shop }: { shop: Shop }) {
               </span>
             </label>
 
-            <Field label="Programme terms" htmlFor="affiliateTerms" hint="optional">
+            <Field label={a.affiliates.terms} htmlFor="affiliateTerms" hint={a.common.optional}>
               <Textarea
                 id="affiliateTerms"
                 name="affiliateTerms"
                 rows={3}
                 defaultValue={shop.affiliateTerms ?? ""}
-                placeholder="Commission is paid monthly by bank transfer once you reach $50."
+                placeholder={a.affiliates.termsPlaceholder}
               />
             </Field>
           </>
         ) : null}
 
-        <Submit label="Save settings" />
+        <Submit label={a.affiliates.saveSettings} />
       </form>
     </Card>
   );
@@ -119,6 +121,7 @@ export function AffiliateForm({
   affiliate?: Affiliate;
   defaultBp: number;
 }) {
+  const a = useAdminT();
   const [state, action] = useActionState(saveAffiliate, { ok: false });
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -139,38 +142,38 @@ export function AffiliateForm({
         ) : null}
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Name" htmlFor="name">
+          <Field label={a.common.name} htmlFor="name">
             <Input
               id="name"
               name="name"
               required
               defaultValue={affiliate?.name ?? ""}
-              placeholder="Amara Okafor"
+              placeholder={a.affiliates.namePlaceholder}
             />
           </Field>
-          <Field label="Email" htmlFor="email" hint="optional">
+          <Field label={a.common.email} htmlFor="email" hint={a.common.optional}>
             <Input
               id="email"
               name="email"
               type="email"
               defaultValue={affiliate?.email ?? ""}
-              placeholder="amara@example.com"
+              placeholder={a.affiliates.emailPlaceholder}
             />
           </Field>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <Field label="Code" htmlFor="code" hint="auto if blank">
+          <Field label={a.common.code} htmlFor="code" hint={a.affiliates.codeHint}>
             <Input
               id="code"
               name="code"
               defaultValue={affiliate?.code ?? ""}
-              placeholder="AMARA"
+              placeholder={a.affiliates.codePlaceholder}
               className="uppercase"
             />
           </Field>
           <Field
-            label="Commission %"
+            label={a.affiliates.commissionPercent}
             htmlFor="commission"
             hint={`default ${bpToPercent(defaultBp)}%`}
           >
@@ -187,25 +190,25 @@ export function AffiliateForm({
               placeholder={String(bpToPercent(defaultBp))}
             />
           </Field>
-          <Field label="Status" htmlFor="status">
+          <Field label={a.common.status} htmlFor="status">
             <Select
               id="status"
               name="status"
               defaultValue={affiliate?.status ?? "active"}
             >
-              <option value="active">Active</option>
-              <option value="pending">Pending</option>
-              <option value="disabled">Disabled</option>
+              <option value="active">{a.affiliates.statusActive}</option>
+              <option value="pending">{a.affiliates.statusPending}</option>
+              <option value="disabled">{a.affiliates.statusDisabled}</option>
             </Select>
           </Field>
         </div>
 
-        <Field label="Payout notes" htmlFor="payoutNotes" hint="private">
+        <Field label={a.affiliates.payoutNotes} htmlFor="payoutNotes" hint={a.common.private}>
           <Input
             id="payoutNotes"
             name="payoutNotes"
             defaultValue={affiliate?.payoutNotes ?? ""}
-            placeholder="Pays out to GTB 0123456789"
+            placeholder={a.affiliates.payoutPlaceholder}
           />
         </Field>
 
@@ -237,7 +240,7 @@ export function AffiliateLink({ url }: { url: string }) {
       <button
         type="button"
         onClick={copy}
-        className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-ink-600 transition hover:text-ink-900"
+        className="focus-ring inline-flex shrink-0 items-center gap-1 rounded text-xs font-medium text-ink-600 transition hover:text-ink-900 pointer-coarse:min-h-11"
       >
         {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
         {copied ? "Copied" : "Copy"}

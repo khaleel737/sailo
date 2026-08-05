@@ -16,7 +16,7 @@ export const uk: Dictionary = {
     noMatches: "Нічого не знайдено",
     noMatchesBody: "Спробуйте зняти фільтр або пошукати інше.",
     soldOut: "Розпродано", sale: "Знижка", order: "Замовити", orderNow: "Замовити зараз",
-    unavailable: "Недоступно", poweredBy: "Працює на",
+    unavailable: "Недоступно", joinOnSailo: "Приєднуйтеся до {shop} на Sailo", loadMore: "Показати ще",
     earnBySharing: "Заробляйте {percent}%, ділячись цим магазином",
     kindPhysical: "Доставимо вам", kindDigital: "Миттєве завантаження",
     kindService: "Забронюйте час", labelDigital: "Завантаження", labelService: "Запис",

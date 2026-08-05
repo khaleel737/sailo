@@ -26,7 +26,7 @@ export function PageHeader({
       {back ? (
         <Link
           href={back.href}
-          className="focus-ring -ms-1 mb-2 inline-flex items-center gap-1 rounded-lg px-1 py-0.5 text-sm font-medium text-ink-500 transition hover:text-ink-900"
+          className="focus-ring -ms-1 mb-2 inline-flex items-center gap-1 rounded-lg px-1 py-0.5 text-sm font-medium text-ink-500 transition hover:text-ink-900 pointer-coarse:min-h-11"
         >
           <ChevronLeft className="size-4 rtl:rotate-180" />
           {back.label}

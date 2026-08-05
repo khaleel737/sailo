@@ -242,7 +242,7 @@ export function FilterBar({
           ) : null}
 
           {showStock ? (
-          <label className="flex cursor-pointer items-center gap-2.5 text-sm">
+          <label className="flex cursor-pointer items-center gap-2.5 text-sm pointer-coarse:min-h-11">
             <input
               type="checkbox"
               checked={inStockOnly}

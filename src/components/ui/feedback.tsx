@@ -166,16 +166,26 @@ export function EmptyState({
   );
 }
 
-/** A single headline number. Grouped three or four across on a dashboard. */
+/**
+ * A single headline number. Grouped three or four across on a dashboard.
+ *
+ * Icon and label sit together on one line rather than pushed to opposite
+ * edges — the icon labels the metric, so it belongs beside the words, and a
+ * row of tiles then shares one left margin instead of four ragged ones. Same
+ * shape HQ's `Metric` uses, so the two dashboards read as one product.
+ */
 export function Stat({
   label,
   value,
+  hint,
   delta,
   icon,
   className,
 }: {
   label: string;
   value: React.ReactNode;
+  /** The one qualifier that stops the number being misread. */
+  hint?: React.ReactNode;
   /** Signed change against the previous period, already formatted. */
   delta?: { value: string; direction: "up" | "down" | "flat" };
   icon?: React.ReactNode;
@@ -188,9 +198,9 @@ export function Stat({
         className,
       )}
     >
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-xs font-medium text-ink-500">{label}</p>
-        {icon ? <span className="text-ink-300">{icon}</span> : null}
+      <div className="flex items-center gap-1.5 text-ink-400">
+        {icon}
+        <span className="text-xs font-medium">{label}</span>
       </div>
       <p className="tabular mt-2 text-2xl font-semibold text-ink-900">{value}</p>
       {delta ? (
@@ -207,6 +217,7 @@ export function Stat({
           {delta.value}
         </p>
       ) : null}
+      {hint ? <p className="mt-0.5 text-xs text-ink-500">{hint}</p> : null}
     </div>
   );
 }
