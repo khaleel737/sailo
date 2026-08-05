@@ -1,0 +1,109 @@
+src/lib/queries/products.ts
+  s_3dd4b357265b83::t_840c66cef45f98 4
+src/app/page.tsx
+  s_409182f8577344::t_af6e066ff5a0b3 1,33-40
+  s_409182f8577344::t_6c701ae3a228ea 41
+src/db/schema/orders.ts
+  s_3dd4b357265b83::t_840c66cef45f98 1
+src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_3dd4b357265b83::t_840c66cef45f98 4
+src/app/[handle]/_components/cart/order-sheet.tsx
+  s_3dd4b357265b83::t_840c66cef45f98 4-5,10
+src/lib/actions/orders.ts
+  s_3dd4b357265b83::t_840c66cef45f98 9,14-17,20-22,24
+  s_3dd4b357265b83::t_ecb160236ef72e 11,13
+src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_3dd4b357265b83::t_840c66cef45f98 4-6,14
+src/db/schema/catalog.ts
+  s_3dd4b357265b83::t_840c66cef45f98 1
+src/lib/queries/coupons.ts
+  s_3dd4b357265b83::t_840c66cef45f98 2
+src/lib/actions/connect.ts
+  s_3dd4b357265b83::t_840c66cef45f98 12
+src/lib/queries/invoices.ts
+  s_3dd4b357265b83::t_ecb160236ef72e 2
+src/lib/notifications.ts
+  s_3dd4b357265b83::t_334adb0c6d76a1 160
+src/lib/actions/products.ts
+  s_3dd4b357265b83::t_840c66cef45f98 8,12
+src/app/[handle]/_components/cart/cart-provider.tsx
+  s_3dd4b357265b83::t_840c66cef45f98 3-4
+src/db/schema/shop.ts
+  s_3dd4b357265b83::t_840c66cef45f98 1
+src/db/schema/auth.ts
+  s_3dd4b357265b83::t_840c66cef45f98 1
+src/lib/queries/shop.ts
+  s_3dd4b357265b83::t_840c66cef45f98 2
+src/i18n/marketing/fil.ts
+  s_3dd4b357265b83::t_68b0b53776571a 123,156
+src/lib/orders/resolve-lines.ts
+  s_3dd4b357265b83::t_840c66cef45f98 5
+src/lib/billing-sync.ts
+  s_3dd4b357265b83::t_334adb0c6d76a1 29
+src/lib/actions/delivery.ts
+  s_3dd4b357265b83::t_840c66cef45f98 10
+src/db/schema/analytics.ts
+  s_3dd4b357265b83::t_840c66cef45f98 1
+src/lib/queries/affiliates.ts
+  s_3dd4b357265b83::t_ecb160236ef72e 2
+src/lib/variants.ts
+  s_3dd4b357265b83::t_334adb0c6d76a1 106
+src/lib/actions/payments.ts
+  s_3dd4b357265b83::t_840c66cef45f98 10
+src/lib/queries/orders.ts
+  s_3dd4b357265b83::t_840c66cef45f98 2
+src/lib/actions/shop.ts
+  s_3dd4b357265b83::t_840c66cef45f98 11
+src/lib/queries/checkout.ts
+  s_3dd4b357265b83::t_840c66cef45f98 2
+src/lib/pricing.ts
+  s_3dd4b357265b83::t_e0b4506b7b9b78 143-154,156,166
+src/app/layout.tsx
+  s_409182f8577344::t_e5f845ec1f5c5d 112-119
+  s_409182f8577344::t_af6e066ff5a0b3 65-73
+  s_409182f8577344::t_1cb2a8090ed936 6
+src/lib/orders/referral.ts
+  s_3dd4b357265b83::t_840c66cef45f98 6
+src/db/schema/commerce.ts
+  s_3dd4b357265b83::t_840c66cef45f98 1
+src/i18n/dictionaries/sq.ts
+  s_3dd4b357265b83::t_68b0b53776571a 42,98,104,108-109,114,132,153,173
+src/lib/actions/import.ts
+  s_3dd4b357265b83::t_840c66cef45f98 6
+src/db/schema/types.ts
+  s_3dd4b357265b83::t_840c66cef45f98 2-3
+src/lib/queries/reviews.ts
+  s_3dd4b357265b83::t_ecb160236ef72e 2
+src/i18n/marketing/sq.ts
+  s_3dd4b357265b83::t_68b0b53776571a 86,117,134,154,171
+src/lib/queries/analytics.ts
+  s_3dd4b357265b83::t_840c66cef45f98 2
+src/i18n/config.ts
+  s_3dd4b357265b83::t_334adb0c6d76a1 77
+scripts/check-i18n.ts
+  s_3dd4b357265b83::t_dfc7ecfccc2cb7 94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ca2747645eb86416021b1fc001e35d0869da6ecb",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_409182f8577344": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ac36c06e-0b1f-49d2-8d1b-799407288c73",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
