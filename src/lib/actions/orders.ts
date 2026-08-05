@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { resolveLines } from "@/lib/orders/resolve-lines";
-import { clean } from "@/lib/orders/sanitize";
+import { readBuyer } from "@/lib/orders/buyer";
 import { upsertClient } from "@/lib/orders/clients";
 import { resolveDelivery, smallest, soonest } from "@/lib/orders/delivery";
 import { referralFor } from "@/lib/orders/referral";
@@ -13,7 +13,7 @@ import { getDb } from "@/db";
 import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
 import { affiliates, coupons, orderItems, orders, paymentMethods, shops, type Affiliate, type Coupon, type PaymentConfig } from "@/db/schema";
-import { formatAddress, formatMoney, normalizePhone } from "@/lib/utils";
+import { formatAddress, formatMoney } from "@/lib/utils";
 import { sendOrderConfirmation } from "@/lib/email";
 import { bankDetailLines, buildHandoff, isPaymentMethodType, PAYMENT_METHOD_DEFS, isRailUsable } from "@/lib/payments";
 import { checkCoupon, COUPON_MESSAGES, normalizeCode } from "@/lib/pricing";
@@ -157,46 +157,9 @@ export async function createOrderIntent(
   const totals = priced.totals;
   const wantsAddress = priced.needsAddress;
 
-  const email = clean(input.customerEmail, 160)?.toLowerCase() ?? null;
-  const phoneRaw = clean(input.customerPhone, 40);
-  const phone = phoneRaw ? normalizePhone(phoneRaw) || null : null;
-
-  // Manual rails settle later, so we need a way to reach the buyer.
-  // What the rail needs, read from the rail rather than inferred from its kind.
-  if (def.requires.email && !email) {
-    return {
-      ok: false,
-      error: "Add your email so we can send your receipt.",
-    };
-  }
-  if (def.requires.contact && !email && !phone) {
-    return {
-      ok: false,
-      error: "Add an email or phone number so the seller can reach you.",
-    };
-  }
-
-  // A collection order has no delivery address to store.
-  const address = wantsAddress
-    ? {
-        addressLine1: clean(input.addressLine1, 200),
-        addressLine2: clean(input.addressLine2, 200),
-        city: clean(input.city, 100),
-        region: clean(input.region, 100),
-        postalCode: clean(input.postalCode, 32),
-        country: clean(input.country, 100),
-      }
-    : {
-        addressLine1: null,
-        addressLine2: null,
-        city: null,
-        region: null,
-        postalCode: null,
-        country: null,
-      };
-
-  const name = clean(input.customerName, 120);
-  const note = clean(input.note, 500);
+  const read = readBuyer(input, { def, wantsAddress });
+  if (!read.ok) return { ok: false, error: read.error };
+  const { name, email, phone, note, address } = read.buyer;
 
   const clientId = await upsertClient(shop.id, {
     name,
