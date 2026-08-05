@@ -80,21 +80,30 @@ export function CheckoutPanel({
     // stale preview can't be seen.
     if (items.length === 0) return;
     let cancelled = false;
-    previewOrder({
-      shopId,
-      items,
-      deliveryMethodId: deliveryId ?? undefined,
-      couponCode: appliedCoupon || undefined,
-    }).then((res) => {
-      if (cancelled || "error" in res) return;
-      setPreview(res);
-      // A code that was fine a moment ago can stop qualifying when the basket
-      // shrinks below its minimum, so it's dropped rather than silently kept.
-      if (appliedCoupon && res.couponError) {
-        setCouponError(res.couponError);
-        setAppliedCoupon("");
+
+    void (async () => {
+      try {
+        const res = await previewOrder({
+          shopId,
+          items,
+          deliveryMethodId: deliveryId ?? undefined,
+          couponCode: appliedCoupon || undefined,
+        });
+        if (cancelled || "error" in res) return;
+        setPreview(res);
+        // A code that was fine a moment ago can stop qualifying when the
+        // basket shrinks below its minimum, so it's dropped rather than
+        // silently kept.
+        if (appliedCoupon && res.couponError) {
+          setCouponError(res.couponError);
+          setAppliedCoupon("");
+        }
+      } catch {
+        // The last good total stays on screen. It is only ever a quote —
+        // the order is priced again on the server before anything is
+        // charged — so a failed refresh costs a stale figure, not money.
       }
-    });
+    })();
     return () => {
       cancelled = true;
     };

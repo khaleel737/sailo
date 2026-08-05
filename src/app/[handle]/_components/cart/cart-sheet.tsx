@@ -3,7 +3,7 @@
 import { CalendarClock, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { CheckoutPanel, type CheckoutDelivery, type CheckoutMethod } from "./checkout-panel";
 import { useCart } from "./cart-provider";
-import { toLocalInput } from "./order-sheet";
+import { toLocalInput } from "../../_lib/local-time";
 import { lineKey, toOrderItems, type CartLine } from "@/lib/cart";
 import { isLowStock } from "@/lib/variants";
 import type { Dictionary } from "@/i18n";

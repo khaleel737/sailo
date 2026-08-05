@@ -44,10 +44,17 @@ export function ProductCard({
   const displayPrice = range.min;
   const sellable = product.inStock && anySellable(product, product.variants);
 
-  const onSale =
+  /*
+   * The struck-through price, or null when there isn't one. A boolean here
+   * would say a compare-at price exists without carrying it, leaving the only
+   * line that needs it to assert what the flag already proved.
+   */
+  const wasPriced =
     !range.varies &&
     product.compareAtCents !== null &&
-    product.compareAtCents > displayPrice;
+    product.compareAtCents > displayPrice
+      ? product.compareAtCents
+      : null;
   const kindLabel =
     product.kind === "digital"
       ? t.shop.labelDigital
@@ -93,7 +100,7 @@ export function ProductCard({
           <span className="absolute start-2 top-2 rounded-full bg-black/75 px-2 py-0.5 text-[11px] font-medium text-white">
             {t.shop.soldOut}
           </span>
-        ) : onSale ? (
+        ) : wasPriced !== null ? (
           <span className="absolute start-2 top-2 rounded-full bg-red-600 px-2 py-0.5 text-[11px] font-semibold text-white">
             {t.shop.sale}
           </span>
@@ -142,9 +149,9 @@ export function ProductCard({
                   : formatMoney(displayPrice, shop.currency)
                 : t.common.free}
             </span>
-            {onSale ? (
+            {wasPriced !== null ? (
               <span className="text-muted text-xs line-through tabular-nums">
-                {formatMoney(product.compareAtCents!, shop.currency)}
+                {formatMoney(wasPriced, shop.currency)}
               </span>
             ) : null}
           </div>

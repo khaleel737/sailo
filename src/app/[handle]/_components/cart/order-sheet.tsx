@@ -9,6 +9,9 @@ import { interpolate } from "@/i18n";
 import { formatDuration, formatMoney } from "@/lib/utils";
 import { findVariant, isLowStock, MAX_QUANTITY, variantLabel, type CheckoutVariant } from "@/lib/variants";
 import type { ProductOption, VariantOptions } from "@/db/schema";
+import { isSoldOut } from "../../_lib/availability";
+import { toLocalInput } from "../../_lib/local-time";
+
 
 export type { CheckoutDelivery, CheckoutMethod } from "./checkout-panel";
 
@@ -53,25 +56,6 @@ export type ProductSheetProps = {
   label?: string;
   t: Dictionary;
 };
-
-/** `datetime-local` wants "YYYY-MM-DDTHH:mm" in the buyer's own timezone. */
-export function toLocalInput(date: Date) {
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
-    date.getDate(),
-  )}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
-
-/** True when nothing about this product can be bought right now. */
-export function isSoldOut(props: Pick<ProductSheetProps, "inStock" | "variants" | "unitsLeft">) {
-  const variants = props.variants ?? [];
-  return (
-    !props.inStock ||
-    (variants.length > 0
-      ? !variants.some((v) => v.available)
-      : props.unitsLeft === 0)
-  );
-}
 
 /**
  * The two ways to buy one product.

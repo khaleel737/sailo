@@ -94,10 +94,17 @@ export default async function ProductPage({
   const sellable = product.inStock && anySellable(product, product.variants);
   const stockLeft = unitsLeft(product);
 
-  const onSale =
+  /*
+   * The struck-through price, or null when there isn't one. A boolean here
+   * would say a compare-at price exists without carrying it, leaving the only
+   * line that needs it to assert what the flag already proved.
+   */
+  const wasPriced =
     !range.varies &&
     product.compareAtCents !== null &&
-    product.compareAtCents > range.min;
+    product.compareAtCents > range.min
+      ? product.compareAtCents
+      : null;
 
   return (
     <>
@@ -210,9 +217,9 @@ export default async function ProductPage({
                   : formatMoney(range.min, shop.currency)
                 : t.common.free}
             </span>
-            {onSale ? (
+            {wasPriced !== null ? (
               <span className="text-muted text-sm line-through tabular-nums">
-                {formatMoney(product.compareAtCents!, shop.currency)}
+                {formatMoney(wasPriced, shop.currency)}
               </span>
             ) : null}
           </div>

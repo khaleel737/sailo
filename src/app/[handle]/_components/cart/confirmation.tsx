@@ -36,7 +36,8 @@ export function Confirmation({
   const [refError, setRefError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const hasBank = Boolean(result.bankDetails?.length);
+  const bank = result.bankDetails ?? [];
+  const hasBank = bank.length > 0;
 
   async function onSubmitReference() {
     setPending(true);
@@ -55,7 +56,7 @@ export function Confirmation({
   }
 
   async function copyDetails() {
-    const text = (result.bankDetails ?? [])
+    const text = bank
       .map((d) => `${d.label}: ${d.value}`)
       .join("\n");
     try {
@@ -101,7 +102,7 @@ export function Confirmation({
             </button>
           </div>
           <dl className="space-y-1.5">
-            {result.bankDetails!.map((d) => (
+            {bank.map((d) => (
               <div key={d.label} className="flex justify-between gap-3 text-sm">
                 <dt className="text-muted shrink-0">{d.label}</dt>
                 <dd className="text-end font-medium break-all">{d.value}</dd>
