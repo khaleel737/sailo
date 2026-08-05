@@ -1,0 +1,41 @@
+src/app/api/track/route.ts
+  s_3dd4b357265b83::t_2c8a68b1a13d20 3,20
+src/app/api/referral/route.ts
+  s_3dd4b357265b83::t_2c8a68b1a13d20 3,13
+src/lib/og.tsx
+  s_245cff4bd6e8de::t_ed1656443b41ea 109,113-116,118-119,122-127,129
+src/lib/actions/orders.ts
+  s_245cff4bd6e8de::t_1300201f52e049 13-14,32-45,545-549,659-664
+src/lib/client-ip.test.ts
+  s_3dd4b357265b83::t_5efd6bbdf6859c 1-58
+src/lib/actions/reviews.ts
+  s_3dd4b357265b83::t_345cf0fbc9f0c1 9-10,18-24
+src/lib/client-ip.ts
+  s_3dd4b357265b83::t_6b8f476f13b80f 1-29
+src/lib/actions/partner.ts
+  s_3dd4b357265b83::t_345cf0fbc9f0c1 5-6,16-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "a21b0fcbd56664e0a67656e75f26f5a363ebf78b",
+  "prompts": {},
+  "sessions": {
+    "s_245cff4bd6e8de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e02099e-b1fd-430e-af26-4353fefe29d8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
