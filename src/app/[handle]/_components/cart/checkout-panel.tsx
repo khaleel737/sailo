@@ -289,15 +289,26 @@ export function CheckoutPanel({
         type="button"
         aria-label={t.common.close}
         onClick={onClose}
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        tabIndex={-1}
+        className="animate-backdrop absolute inset-0 bg-black/50 backdrop-blur-[2px]"
       />
 
-      <div className="surface-card animate-rise relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-2xl p-5 sm:rounded-2xl">
+      {/*
+        Rises from the bottom edge on phones and scales in from the middle above
+        that, matching where it is anchored in each case. The trailing padding
+        clears the home indicator on iOS, where a checkout button sitting flush
+        with the bottom is genuinely hard to tap.
+      */}
+      <div className="surface-card animate-sheet-up sm:animate-pop relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-3xl p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-xl sm:rounded-3xl">
+        <div
+          aria-hidden
+          className="surface-border mx-auto -mt-2 mb-3 h-1 w-9 rounded-full border-t-4 sm:hidden"
+        />
         <button
           type="button"
           onClick={onClose}
           aria-label={t.common.close}
-          className="text-muted absolute end-4 top-4 z-10 transition hover:opacity-70"
+          className="focus-ring-accent press text-muted absolute end-3 top-3 z-10 flex size-9 items-center justify-center rounded-xl transition hover:opacity-70"
         >
           <X className="size-5" />
         </button>
@@ -318,7 +329,10 @@ export function CheckoutPanel({
             {children?.(preview)}
 
             {error ? (
-              <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+              <p
+                role="alert"
+                className="animate-fade rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700"
+              >
                 {error}
               </p>
             ) : null}

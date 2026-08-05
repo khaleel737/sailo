@@ -7,16 +7,21 @@ import {
   getProductBySlug,
   getShopByHandle,
 } from "@/lib/queries";
-import { ProductGallery } from "@/components/shop/product-gallery";
-import { OrderButton } from "@/components/shop/order-sheet";
-import { CartRegion } from "@/components/shop/cart-region";
-import { ReviewForm } from "@/components/shop/review-form";
-import { StarRating } from "@/components/shop/star-rating";
-import { VisitTracker } from "@/components/shop/visit-tracker";
-import { LanguageSwitcher } from "@/components/shop/language-switcher";
+import { ProductGallery } from "@/app/[handle]/p/[slug]/_components/product-gallery";
+import { OrderButton } from "@/app/[handle]/_components/cart/order-sheet";
+import { CartRegion } from "@/app/[handle]/_components/cart/cart-region";
+import { ReviewForm } from "@/app/[handle]/p/[slug]/_components/review-form";
+import { StarRating } from "@/app/[handle]/_components/star-rating";
+import { VisitTracker } from "@/app/[handle]/_components/visit-tracker";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
-import { formatDuration, formatMoney, shopThemeVars } from "@/lib/utils";
+import {
+  formatDuration,
+  formatMoney,
+  isShopLive,
+  shopThemeVars,
+} from "@/lib/utils";
 import {
   anySellable,
   isLowStock,
@@ -53,7 +58,7 @@ export default async function ProductPage({
 }: PageProps<"/[handle]/p/[slug]">) {
   const { handle, slug } = await params;
   const shop = await getShopByHandle(handle);
-  if (!shop || !shop.isPublished) notFound();
+  if (!shop || !isShopLive(shop)) notFound();
 
   const product = await getProductBySlug(shop.id, slug);
   if (!product || !product.isPublished) notFound();

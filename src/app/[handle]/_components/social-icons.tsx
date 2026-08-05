@@ -78,19 +78,26 @@ function Pinterest({ className }: IconProps) {
   );
 }
 
-const ICONS: Record<string, LucideIcon | ((p: IconProps) => React.ReactElement)> =
-  {
-    instagram: Instagram,
-    tiktok: TikTok,
-    x: XMark,
-    youtube: YouTube,
-    facebook: Facebook,
-    whatsapp: WhatsApp,
-    telegram: Send,
-    snapchat: Ghost,
-    pinterest: Pinterest,
-    website: Globe,
-  };
+/**
+ * Exported so the admin's payment rails can show the same marks the storefront
+ * does — a WhatsApp rail labelled with a generic speech bubble reads as a
+ * different product from the button the buyer eventually taps.
+ */
+export const PLATFORM_ICONS: Record<
+  string,
+  LucideIcon | ((p: IconProps) => React.ReactElement)
+> = {
+  instagram: Instagram,
+  tiktok: TikTok,
+  x: XMark,
+  youtube: YouTube,
+  facebook: Facebook,
+  whatsapp: WhatsApp,
+  telegram: Send,
+  snapchat: Ghost,
+  pinterest: Pinterest,
+  website: Globe,
+};
 
 const LABELS: Record<string, string> = {
   x: "X (Twitter)",
@@ -106,7 +113,7 @@ export function SocialIcons({ socials }: { socials: ShopSocial[] }) {
   return (
     <ul className="flex flex-wrap items-center justify-center gap-2">
       {socials.map((social) => {
-        const Icon = ICONS[social.platform] ?? Globe;
+        const Icon = PLATFORM_ICONS[social.platform] ?? Globe;
         const label =
           LABELS[social.platform] ??
           social.platform.charAt(0).toUpperCase() + social.platform.slice(1);

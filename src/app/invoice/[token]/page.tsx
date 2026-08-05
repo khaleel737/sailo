@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Download, Store } from "lucide-react";
 import { getInvoiceByToken } from "@/lib/queries";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
-import { PrintButton } from "@/components/shop/print-button";
+import { PrintButton } from "@/app/invoice/[token]/_components/print-button";
 import { getShopT } from "@/i18n/server";
 import { formatPercent } from "@/lib/pricing";
 import { formatAddress, formatMoney } from "@/lib/utils";

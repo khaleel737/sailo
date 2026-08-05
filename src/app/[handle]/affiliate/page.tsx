@@ -3,12 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Gift, Link2, Share2, Wallet } from "lucide-react";
 import { getShopByHandle } from "@/lib/queries";
-import { AffiliateSignupForm } from "@/components/shop/affiliate-signup-form";
+import { AffiliateSignupForm } from "@/app/[handle]/affiliate/_components/affiliate-signup-form";
 import { formatPercent } from "@/lib/pricing";
-import { LanguageSwitcher } from "@/components/shop/language-switcher";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
-import { shopThemeVars } from "@/lib/utils";
+import { isShopLive, shopThemeVars } from "@/lib/utils";
 import { can } from "@/lib/plans";
 
 export async function generateMetadata({
@@ -29,7 +29,7 @@ export default async function AffiliatePage({
 }: PageProps<"/[handle]/affiliate">) {
   const { handle } = await params;
   const shop = await getShopByHandle(handle);
-  if (!shop || !shop.isPublished) notFound();
+  if (!shop || !isShopLive(shop)) notFound();
   if (!shop.affiliatesEnabled || !can(shop, "affiliates")) notFound();
 
   const percent = formatPercent(shop.affiliateDefaultBp);

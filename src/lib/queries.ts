@@ -905,3 +905,6 @@ export const getCheckoutOptions = cachedForShop(
   readCheckoutOptions,
   (shopId) => [shopTag(shopId)],
 );
+
+/** The rails and delivery options a buyer may choose from. */
+export type CheckoutOptions = Awaited<ReturnType<typeof readCheckoutOptions>>;

@@ -112,7 +112,7 @@ export function FilterBar({
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t.shop.searchPlaceholder}
             aria-label={t.shop.searchPlaceholder}
-            className="surface-card h-11 w-full rounded-xl ps-9 pe-9 text-sm outline-none transition placeholder:opacity-50 focus:ring-2 focus:ring-current/10"
+            className="surface-card focus-ring-accent h-11 w-full rounded-xl ps-9 pe-9 text-sm outline-none transition-[border-color,box-shadow] placeholder:opacity-50"
           />
           {query ? (
             <button
@@ -132,11 +132,16 @@ export function FilterBar({
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           className={cn(
-            "surface-card relative flex h-11 items-center gap-2 rounded-xl px-3.5 text-sm font-medium transition hover:opacity-80",
+            "surface-card focus-ring-accent press relative flex h-11 items-center gap-2 rounded-xl px-3.5 text-sm font-medium transition hover:opacity-80",
             open && "surface-elevated",
           )}
         >
-          <SlidersHorizontal className="size-4" />
+          <SlidersHorizontal
+            className={cn(
+              "size-4 transition-transform duration-300 ease-[var(--ease-out-quint)]",
+              open && "rotate-90",
+            )}
+          />
           <span className="hidden sm:inline">{t.shop.filters}</span>
           {activeFilterCount > 0 ? (
             <span className="accent-bg flex size-5 items-center justify-center rounded-full text-[11px] font-semibold">
@@ -171,7 +176,7 @@ export function FilterBar({
       ) : null}
 
       {open ? (
-        <div className="surface-card animate-rise space-y-4 rounded-2xl p-4">
+        <div className="surface-card animate-rise space-y-4 rounded-2xl p-4 shadow-sm">
           <div className="grid gap-4 sm:grid-cols-2">
             {showKinds ? (
             <label className="block">
@@ -181,7 +186,7 @@ export function FilterBar({
               <select
                 value={activeKind}
                 onChange={(e) => setParams({ kind: e.target.value || null })}
-                className="surface-elevated h-10 w-full rounded-lg px-3 text-sm outline-none"
+                className="surface-elevated focus-ring-accent h-10 w-full rounded-xl px-3 text-sm outline-none"
               >
                 {KINDS.map((k) => (
                   <option key={k.value} value={k.value}>
@@ -199,7 +204,7 @@ export function FilterBar({
               <select
                 value={activeSort}
                 onChange={(e) => setParams({ sort: e.target.value || null })}
-                className="surface-elevated h-10 w-full rounded-lg px-3 text-sm outline-none"
+                className="surface-elevated focus-ring-accent h-10 w-full rounded-xl px-3 text-sm outline-none"
               >
                 {SORTS.map((s) => (
                   <option key={s.value} value={s.value}>
@@ -224,7 +229,7 @@ export function FilterBar({
                 onBlur={(e) => setParams({ min: e.target.value || null })}
                 placeholder={majorUnits(facets.priceMinCents)}
                 aria-label={t.shop.min}
-                className="surface-elevated h-10 w-full rounded-lg px-3 text-sm outline-none"
+                className="surface-elevated focus-ring-accent h-10 w-full rounded-xl px-3 text-sm outline-none"
               />
               <span className="text-muted text-sm">—</span>
               <input
@@ -235,7 +240,7 @@ export function FilterBar({
                 onBlur={(e) => setParams({ max: e.target.value || null })}
                 placeholder={majorUnits(facets.priceMaxCents)}
                 aria-label={t.shop.max}
-                className="surface-elevated h-10 w-full rounded-lg px-3 text-sm outline-none"
+                className="surface-elevated focus-ring-accent h-10 w-full rounded-xl px-3 text-sm outline-none"
               />
             </div>
           </div>
@@ -298,10 +303,9 @@ function CategoryChip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition",
-        active
-          ? "accent-bg"
-          : "surface-card hover:opacity-70",
+        "focus-ring-accent press shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium",
+        "transition-[background-color,color,box-shadow] duration-200",
+        active ? "accent-bg shadow-sm" : "surface-card hover:opacity-70",
       )}
     >
       {label}

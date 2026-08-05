@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Gift } from "lucide-react";
-import { PartnerSignIn } from "@/components/shop/partner-sign-in";
+import { PartnerSignIn } from "@/app/partner/_components/partner-sign-in";
 import { getT } from "@/i18n/server";
 
 export const metadata: Metadata = {
