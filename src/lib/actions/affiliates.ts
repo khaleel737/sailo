@@ -7,6 +7,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, orders, shops } from "@/db/schema";
 import { requireShop } from "@/lib/session";
+import { bufferAffiliateClick } from "@/lib/redis";
 import { generateCode, normalizeCode, percentToBp } from "@/lib/pricing";
 import { can, upgradeMessage } from "@/lib/plans";
 import type { ActionState } from "./shop";
@@ -228,14 +229,32 @@ export async function applyAsAffiliate(
 
 /** Fire-and-forget click counter for ?ref= landings. */
 export async function recordAffiliateClick(shopId: string, code: string) {
-  await getDb()
+  const db = getDb();
+
+  /*
+   * A click is the one public write that scales with traffic rather than with
+   * orders — a popular affiliate posting a link turns into a row UPDATE per
+   * visitor. When Redis is there the count is buffered and folded in nightly;
+   * when it isn't, this does exactly what it always did.
+   *
+   * Buffering needs the affiliate's id, so the row is still read — but a
+   * SELECT on an indexed unique key is far cheaper than an UPDATE, and it
+   * doesn't take a row lock every affiliate click contends for.
+   */
+  const affiliate = await db.query.affiliates.findFirst({
+    where: and(
+      eq(affiliates.shopId, shopId),
+      eq(affiliates.code, normalizeCode(code)),
+      eq(affiliates.status, "active"),
+    ),
+    columns: { id: true },
+  });
+  if (!affiliate) return;
+
+  if (await bufferAffiliateClick(affiliate.id)) return;
+
+  await db
     .update(affiliates)
     .set({ clicks: sql`${affiliates.clicks} + 1` })
-    .where(
-      and(
-        eq(affiliates.shopId, shopId),
-        eq(affiliates.code, normalizeCode(code)),
-        eq(affiliates.status, "active"),
-      ),
-    );
+    .where(eq(affiliates.id, affiliate.id));
 }

@@ -2,7 +2,8 @@ import "server-only";
 import { and, desc, eq, gte, isNotNull, lt, sql } from "drizzle-orm";
 import type { PgColumn } from "drizzle-orm/pg-core";
 import { getDb } from "@/db";
-import { visitDaily, visits, type VisitBreakdownJson } from "@/db/schema";
+import { affiliates, visitDaily, visits, type VisitBreakdownJson } from "@/db/schema";
+import { drainAffiliateClicks } from "@/lib/redis";
 
 /**
  * Folding raw visits into daily rows.
@@ -156,5 +157,17 @@ export async function rollUpVisits(opts: { days?: number; now?: Date } = {}) {
     .where(lt(visits.createdAt, cutoff))
     .returning({ id: visits.id });
 
-  return { daysRolled, shopsRolled, rawTrimmed: trimmed.length };
+  // Clicks buffered in Redis since the last run. Empty when Redis isn't
+  // configured, in which case they were written straight to Postgres already.
+  const buffered = await drainAffiliateClicks();
+  let clicksFlushed = 0;
+  for (const [affiliateId, count] of Object.entries(buffered)) {
+    await db
+      .update(affiliates)
+      .set({ clicks: sql`${affiliates.clicks} + ${count}` })
+      .where(eq(affiliates.id, affiliateId));
+    clicksFlushed += count;
+  }
+
+  return { daysRolled, shopsRolled, rawTrimmed: trimmed.length, clicksFlushed };
 }

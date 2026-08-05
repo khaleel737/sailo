@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { rateLimit } from "@/lib/redis";
 import { cookies, headers } from "next/headers";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -9,6 +10,21 @@ const COOKIE = "sailo_sid";
 const SIX_MONTHS = 60 * 60 * 24 * 180;
 
 export async function POST(request: Request) {
+  /*
+   * Public, unauthenticated and it writes a row — the shape of endpoint that
+   * gets hammered. Keyed on the caller's address; fails open, because a
+   * limiter that blocks real buyers when its own backend is down has cost
+   * more than the traffic it stopped.
+   */
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    request.headers.get("x-real-ip") ??
+    "unknown";
+  const verdict = await rateLimit(`track:${ip}`, 120, 60);
+  if (!verdict.allowed) {
+    return NextResponse.json({ ok: false }, { status: 429 });
+  }
+
   let payload: {
     shopId?: string;
     productId?: string;
