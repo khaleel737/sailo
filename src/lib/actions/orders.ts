@@ -19,8 +19,8 @@ import { createInvoiceForOrder } from "@/lib/invoices";
 import { can } from "@/lib/plans";
 import { cartNeedsDelivery, cartSubtotal, quote, type Quote, type QuoteLine } from "@/lib/quote";
 import { unitsLeft, variantLabel } from "@/lib/variants";
-import { releaseStock, reserveStock, restoreStock } from "@/lib/inventory";
-import { createCheckoutSession } from "@/lib/connect";
+import { releaseStock, reserveStock } from "@/lib/inventory";
+import { handOffToStripe } from "@/lib/orders/card-handoff";
 import { downloadExpiry, downloadUrl, hasDeliverableFiles, newDownloadToken, releasesImmediately } from "@/lib/downloads";
 
 
@@ -95,10 +95,16 @@ export async function createOrderIntent(
       where: and(eq(coupons.shopId, shop.id), eq(coupons.code, code)),
     });
     const verdict = checkCoupon(found, subtotalCents, now);
-    if (!verdict.ok) {
-      return { ok: false, error: COUPON_MESSAGES[verdict.reason] };
+    if (!verdict.ok || !found) {
+      // `checkCoupon` reports `not_found` for a missing coupon, so these two
+      // are the same condition — checking both is what lets the assignment
+      // below stand without an assertion.
+      return {
+        ok: false,
+        error: verdict.ok ? COUPON_MESSAGES.not_found : COUPON_MESSAGES[verdict.reason],
+      };
     }
-    coupon = found!;
+    coupon = found;
   }
 
   /* ---- Affiliate ------------------------------------------------------ */
@@ -438,63 +444,30 @@ export async function createOrderIntent(
 
   /* ---- Card: hand the buyer to Stripe --------------------------------- */
 
-  // Only reachable once the order row exists — the session carries its id so
-  // the webhook can find it, and the amounts come from the row rather than
-  // from anything the client sent.
   if (method.type === "card") {
-    // The insert returns only an id; the session and the rollback both need
-    // the full row, so read it back once here rather than widening every
-    // other caller's return.
-    const saved = await db.query.orders.findFirst({
-      where: eq(orders.id, order.id),
+    const card = await handOffToStripe({
+      shop,
+      orderId: order.id,
+      // Stripe's receipt itemises the basket rather than lumping it under the
+      // first product's name.
+      items: priced.lines.map((line) => ({
+        name: line.label ? `${line.title} — ${line.label}` : line.title,
+        unitPriceCents: line.unitPriceCents,
+        quantity: line.quantity,
+      })),
+      successUrl: invoice
+        ? `${base}/invoice/${invoice.token}?paid=1`
+        : `${base}/${shop.handle}?ordered=1`,
+      cancelUrl:
+        lines.length === 1
+          ? `${base}/${shop.handle}/p/${head.product.slug}?cancelled=1`
+          : `${base}/${shop.handle}?cancelled=1`,
     });
-    if (!saved) return { ok: false, error: "Couldn't start the payment." };
 
-    try {
-      const session = await createCheckoutSession({
-        shop,
-        order: saved,
-        // Stripe's receipt itemises the basket rather than lumping it under
-        // the first product's name.
-        items: priced.lines.map((line) => ({
-          name: line.label ? `${line.title} — ${line.label}` : line.title,
-          unitPriceCents: line.unitPriceCents,
-          quantity: line.quantity,
-        })),
-        successUrl: invoice
-          ? `${base}/invoice/${invoice.token}?paid=1`
-          : `${base}/${shop.handle}?ordered=1`,
-        cancelUrl:
-          lines.length === 1
-            ? `${base}/${shop.handle}/p/${head.product.slug}?cancelled=1`
-            : `${base}/${shop.handle}?cancelled=1`,
-      });
-
-      await db
-        .update(orders)
-        .set({
-          stripeSessionId: session.id,
-          stripeAccountId: shop.stripeAccountId,
-          updatedAt: new Date(),
-        })
-        .where(eq(orders.id, order.id));
-
-      if (!session.url) throw new Error("Stripe returned no checkout URL");
-      handoff = { kind: "redirect", url: session.url };
-    } catch (error) {
-      // The order and its stock reservation already exist. Rolling both back
-      // is the only honest outcome: leaving an unpayable order would hold
-      // stock the seller could otherwise sell.
-      await restoreStock(saved);
-      await db.delete(orders).where(eq(orders.id, order.id));
-
-      console.error("[sailo] stripe checkout session failed", error);
-      return {
-        ok: false,
-        error:
-          "Card payment isn't available right now. Try another way to order.",
-      };
-    }
+    // The handoff rolls the order back on failure, so there is nothing to
+    // undo here — only a message to pass on.
+    if (!card.ok) return { ok: false, error: card.error };
+    handoff = card.handoff;
   }
 
   const config = method.config as PaymentConfig;
@@ -529,13 +502,13 @@ export async function createOrderIntent(
         config.instructions?.trim(),
         deliveryInstructions.trim(),
         // Each service tells the buyer where to be, or how to join.
-        ...[
-          ...new Set(
-            lines
-              .filter((l) => l.kind === "service" && l.product.serviceLocation)
-              .map((l) => l.product.serviceLocation!.trim()),
+        ...new Set(
+          lines.flatMap((l) =>
+            l.kind === "service" && l.product.serviceLocation
+              ? [l.product.serviceLocation.trim()]
+              : [],
           ),
-        ],
+        ),
       ]
         .filter(Boolean)
         .join("\n\n") || undefined,
@@ -594,8 +567,10 @@ export async function previewOrder(input: {
     });
     // Judged against the whole basket, so a minimum spend counts every line.
     const verdict = checkCoupon(found, cartSubtotal(resolved.lines), now);
-    if (verdict.ok) {
-      coupon = found!;
+    if (!found) {
+      couponError = COUPON_MESSAGES.not_found;
+    } else if (verdict.ok) {
+      coupon = found;
       couponApplied = code;
     } else {
       couponError = COUPON_MESSAGES[verdict.reason];
