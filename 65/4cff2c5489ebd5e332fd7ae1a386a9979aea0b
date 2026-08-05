@@ -1,0 +1,24 @@
+scripts/check-live.ts
+  s_7ee005f5ad96b3::t_d070ed0f4e72c5 1-194
+scripts/check-subscriptions.ts
+  s_7ee005f5ad96b3::t_2a249fd27948f2 230-289
+  s_7ee005f5ad96b3::t_c0ace0907bf374 302-307,310
+package.json
+  s_7ee005f5ad96b3::t_4f7b314af1802e 24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "654cff2c5489ebd5e332fd7ae1a386a9979aea0b",
+  "prompts": {},
+  "sessions": {
+    "s_7ee005f5ad96b3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "22956574-b8ad-444b-a8fe-b34f24b6e02a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
