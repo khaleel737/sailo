@@ -1,0 +1,19 @@
+scripts/check-subscriptions.ts
+  s_7ee005f5ad96b3::t_0d8b6cf9f41caf 86,126-127,130,133,175-179,182,201,203,213-214,217,241,244,256-258,261,280
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6d31e1bfcc2e2a2359642b94540546e89ee64dd3",
+  "prompts": {},
+  "sessions": {
+    "s_7ee005f5ad96b3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "22956574-b8ad-444b-a8fe-b34f24b6e02a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
