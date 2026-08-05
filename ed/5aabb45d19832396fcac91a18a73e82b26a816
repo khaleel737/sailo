@@ -1,0 +1,26 @@
+src/app/_components/pricing-section.test.ts
+  s_3dd4b357265b83::t_ae61841d7489b8 1-52
+src/app/page.tsx
+  s_3dd4b357265b83::t_ff5100efe1d5d3 3,8
+  s_3dd4b357265b83::t_862739da8d7cd4 25-27,392,456
+src/app/_components/site-footer.tsx
+  s_3dd4b357265b83::t_6e3b9132121901 1-115
+src/app/_components/pricing-section.tsx
+  s_3dd4b357265b83::t_8a156ba25c2583 1-168
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ed5aabb45d19832396fcac91a18a73e82b26a816",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
