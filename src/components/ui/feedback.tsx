@@ -1,0 +1,222 @@
+import * as React from "react";
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+/** Status: badge, status dot, alert, empty state, stat, skeleton, spinner. */
+
+/* --------------------------------------------------------------------------
+   Status
+-------------------------------------------------------------------------- */
+
+type Tone = "neutral" | "green" | "amber" | "red" | "blue" | "brand";
+
+const BADGE_TONES: Record<Tone, string> = {
+  neutral: "bg-ink-100 text-ink-700",
+  green: "bg-emerald-100 text-emerald-800",
+  amber: "bg-amber-100 text-amber-900",
+  red: "bg-red-100 text-red-700",
+  blue: "bg-blue-100 text-blue-800",
+  brand: "bg-brand-100 text-brand-900",
+};
+
+const DOT_TONES: Record<Tone, string> = {
+  neutral: "bg-ink-400",
+  green: "bg-emerald-500",
+  amber: "bg-amber-500",
+  red: "bg-red-500",
+  blue: "bg-blue-500",
+  brand: "bg-brand-600",
+};
+
+export function Badge({
+  className,
+  tone = "neutral",
+  dot = false,
+  children,
+  ...props
+}: React.ComponentProps<"span"> & {
+  tone?: Tone;
+  /** Adds a leading status dot — use it when the badge reports live state. */
+  dot?: boolean;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium",
+        BADGE_TONES[tone],
+        className,
+      )}
+      {...props}
+    >
+      {dot ? (
+        <span className={cn("size-1.5 rounded-full", DOT_TONES[tone])} />
+      ) : null}
+      {children}
+    </span>
+  );
+}
+
+/**
+ * A live/idle indicator. `pulse` is reserved for genuinely live things — a
+ * rail that is taking orders right now — so the animation still means
+ * something when you see it.
+ */
+export function StatusDot({
+  tone = "neutral",
+  pulse = false,
+  className,
+}: {
+  tone?: Tone;
+  pulse?: boolean;
+  className?: string;
+}) {
+  return (
+    <span className={cn("relative flex size-2.5 shrink-0", className)}>
+      {pulse ? (
+        <span
+          className={cn(
+            "absolute inset-0 animate-ping rounded-full opacity-60",
+            DOT_TONES[tone],
+          )}
+        />
+      ) : null}
+      <span
+        className={cn("relative size-2.5 rounded-full", DOT_TONES[tone])}
+      />
+    </span>
+  );
+}
+
+const ALERT_TONES = {
+  error: "border-red-200 bg-red-50 text-red-800",
+  success: "border-emerald-200 bg-emerald-50 text-emerald-800",
+  warning: "border-amber-200 bg-amber-50 text-amber-900",
+  info: "border-blue-200 bg-blue-50 text-blue-800",
+} as const;
+
+export function Alert({
+  tone = "error",
+  title,
+  icon,
+  children,
+  className,
+}: {
+  tone?: keyof typeof ALERT_TONES;
+  title?: string;
+  icon?: React.ReactNode;
+  children?: React.ReactNode;
+  className?: string;
+}) {
+  if (!children && !title) return null;
+  return (
+    <div
+      role={tone === "error" ? "alert" : "status"}
+      className={cn(
+        "animate-fade flex gap-3 rounded-xl border px-3.5 py-3 text-sm",
+        ALERT_TONES[tone],
+        className,
+      )}
+    >
+      {icon ? <span className="mt-0.5 shrink-0">{icon}</span> : null}
+      <div className="min-w-0 flex-1">
+        {title ? <p className="font-medium">{title}</p> : null}
+        {children ? (
+          <div className={cn("leading-relaxed", title && "mt-0.5 opacity-90")}>
+            {children}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+export function EmptyState({
+  icon,
+  title,
+  description,
+  action,
+  className,
+}: {
+  icon?: React.ReactNode;
+  title: string;
+  description?: string;
+  action?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "animate-rise flex flex-col items-center justify-center rounded-2xl border border-dashed border-ink-200 bg-ink-50/50 px-6 py-16 text-center",
+        className,
+      )}
+    >
+      {icon ? (
+        <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-white text-ink-400 shadow-xs ring-1 ring-ink-200">
+          {icon}
+        </div>
+      ) : null}
+      <p className="font-semibold text-ink-900">{title}</p>
+      {description ? (
+        <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-ink-500">
+          {description}
+        </p>
+      ) : null}
+      {action ? <div className="mt-6">{action}</div> : null}
+    </div>
+  );
+}
+
+/** A single headline number. Grouped three or four across on a dashboard. */
+export function Stat({
+  label,
+  value,
+  delta,
+  icon,
+  className,
+}: {
+  label: string;
+  value: React.ReactNode;
+  /** Signed change against the previous period, already formatted. */
+  delta?: { value: string; direction: "up" | "down" | "flat" };
+  icon?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "rounded-2xl border border-ink-200 bg-white p-4 shadow-sm",
+        className,
+      )}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-medium text-ink-500">{label}</p>
+        {icon ? <span className="text-ink-300">{icon}</span> : null}
+      </div>
+      <p className="tabular mt-2 text-2xl font-semibold text-ink-900">{value}</p>
+      {delta ? (
+        <p
+          className={cn(
+            "tabular mt-1 text-xs font-medium",
+            delta.direction === "up"
+              ? "text-emerald-600"
+              : delta.direction === "down"
+                ? "text-red-600"
+                : "text-ink-400",
+          )}
+        >
+          {delta.value}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+export function Skeleton({ className }: { className?: string }) {
+  return <div className={cn("skeleton rounded-lg", className)} aria-hidden />;
+}
+
+export function Spinner({ className }: { className?: string }) {
+  return <Loader2 className={cn("size-4 animate-spin", className)} />;
+}
+
+/** Thin determinate bar — upload progress, plan usage, step position. */

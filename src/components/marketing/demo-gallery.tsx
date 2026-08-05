@@ -26,7 +26,12 @@ export function DemoGallery({ t }: { t: MarketingDictionary }) {
   const [active, setActive] = useState(0);
   const baseId = useId();
 
-  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+  /**
+   * Roving tabindex: only the selected tab is reachable by Tab, and the arrow
+   * keys move between them. The handler sits on the tabs rather than on the
+   * tablist so the container never has to be focusable itself.
+   */
+  function onKeyDown(event: React.KeyboardEvent<HTMLButtonElement>) {
     const delta =
       event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
     if (!delta) return;
@@ -46,7 +51,6 @@ export function DemoGallery({ t }: { t: MarketingDictionary }) {
       <div
         role="tablist"
         aria-label={t.demos.title}
-        onKeyDown={onKeyDown}
         className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:justify-center"
       >
         {DEMOS.map((demo, i) => {
@@ -61,6 +65,7 @@ export function DemoGallery({ t }: { t: MarketingDictionary }) {
               aria-controls={`${baseId}-panel-${i}`}
               tabIndex={selected ? 0 : -1}
               onClick={() => setActive(i)}
+              onKeyDown={onKeyDown}
               style={selected ? { backgroundColor: demo.accent } : undefined}
               className={cn(
                 "focus-ring press shrink-0 rounded-full px-4 py-2 text-sm font-medium transition",
@@ -118,7 +123,7 @@ export function DemoGallery({ t }: { t: MarketingDictionary }) {
                   <MapPin className="size-3" />
                   {demo.city}
                 </span>
-                <span className="inline-flex items-center gap-1">
+                <span dir="ltr" className="inline-flex items-center gap-1">
                   <Instagram className="size-3" />@{demo.instagram}
                 </span>
               </p>

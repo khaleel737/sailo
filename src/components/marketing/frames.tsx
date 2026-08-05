@@ -49,8 +49,8 @@ export function BrowserFrame({
         )}
       >
         <span aria-hidden className="flex gap-1.5">
-          {["bg-ink-300/70", "bg-ink-300/50", "bg-ink-300/40"].map((tint, i) => (
-            <span key={i} className={cn("size-2.5 rounded-full", tint)} />
+          {["bg-ink-300/70", "bg-ink-300/50", "bg-ink-300/40"].map((tint) => (
+            <span key={tint} className={cn("size-2.5 rounded-full", tint)} />
           ))}
         </span>
         {/* The address is the claim being made, so it is real text, not an image. */}

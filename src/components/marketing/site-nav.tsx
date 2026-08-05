@@ -37,10 +37,9 @@ export function SiteNav({
       <div className="mx-auto flex w-full max-w-6xl items-center gap-4 px-4 py-3">
         <Link href="/" className="focus-ring shrink-0 rounded-lg text-brand-700">
           <SailoLogo className="h-6 w-auto" />
-          <span className="sr-only">Sailo</span>
         </Link>
 
-        <nav aria-label={t.nav.features} className="hidden flex-1 lg:block">
+        <nav aria-label={t.footer.product} className="hidden flex-1 lg:block">
           <ul className="flex items-center justify-center gap-1">
             {links.map((link) => (
               <li key={link.href}>
@@ -57,7 +56,7 @@ export function SiteNav({
 
         <div className="ms-auto flex items-center gap-1.5 lg:ms-0">
           <div className="hidden sm:block">
-            <LanguageSwitcher current={locale} align="end" label={t.nav.openMenu} />
+            <LanguageSwitcher current={locale} align="end" label={languageLabel} />
           </div>
           <Link
             href="/login"
@@ -98,6 +97,16 @@ export function SiteNav({
                   >
                     {t.nav.signIn}
                   </Link>
+                </li>
+                {/* Below `sm` the header has no room for the picker, and the
+                    footer is a long way down for someone who landed in the
+                    wrong language. */}
+                <li className="px-3 py-2 sm:hidden">
+                  <LanguageSwitcher
+                    current={locale}
+                    align="start"
+                    label={languageLabel}
+                  />
                 </li>
               </ul>
             </div>

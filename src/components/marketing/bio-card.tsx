@@ -53,7 +53,11 @@ export function BioCard({
           {initials}
         </span>
         <p className="flex min-w-0 flex-1 items-center gap-1 text-sm font-semibold text-ink-900">
-          <span className="truncate">@{handle}</span>
+          {/* A Latin handle inside an Arabic run renders as "name@" unless the
+              span declares its own direction. */}
+          <span dir="ltr" className="truncate">
+            @{handle}
+          </span>
           <BadgeCheck className="size-3.5 shrink-0 text-sky-500" />
         </p>
       </div>
