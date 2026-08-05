@@ -69,6 +69,18 @@ export function AuthForm({
         label={t.auth.password}
         htmlFor="password"
         hint={isSignup ? t.auth.minChars : undefined}
+        // Sits beside the field it's about, so it's found at the moment the
+        // password won't come rather than after the sign-in fails.
+        action={
+          isSignup ? undefined : (
+            <Link
+              href="/forgot-password"
+              className="focus-ring rounded text-xs font-medium text-ink-500 underline underline-offset-4 hover:text-ink-900"
+            >
+              {t.auth.forgotPassword}
+            </Link>
+          )
+        }
       >
         <Input
           id="password"

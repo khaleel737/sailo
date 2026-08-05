@@ -28,6 +28,8 @@ const MAIL_DOMAIN = process.env.SAILO_MAIL_DOMAIN ?? "sailo.store";
 const ORDERS = `orders@${MAIL_DOMAIN}`;
 /** Sailo speaking for itself, to the people who promote shops. */
 const PARTNERS = `partners@${MAIL_DOMAIN}`;
+/** Anything about the seller's own Sailo login, not their shop. */
+const ACCOUNTS = `accounts@${MAIL_DOMAIN}`;
 
 /**
  * Builds a From header.
@@ -137,6 +139,23 @@ function moneyRows(order: Order) {
     }
     ${row("Total", formatMoney(order.totalCents, order.currency), true)}
   </table>`;
+}
+
+/**
+ * The shell for mail Sailo sends as itself — no shop name above it, because
+ * no shop is involved. `layout` is the other one: a shop talking to its buyer.
+ */
+function sailoLayout(heading: string, body: string) {
+  return `<!doctype html>
+<html><body style="margin:0;padding:24px;background:#f7f7f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1a1a20;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e6e6ea;border-radius:16px;">
+    <tr><td style="padding:28px;">
+      <h1 style="margin:0 0 6px;font-size:20px;line-height:1.3;">${esc(heading)}</h1>
+      ${body}
+    </td></tr>
+  </table>
+  <p style="max-width:560px;margin:16px auto 0;text-align:center;font-size:12px;color:#b8b8c2;">Sailo</p>
+</body></html>`;
 }
 
 function button(href: string, label: string) {
@@ -297,19 +316,14 @@ export async function sendPortalLinks(opts: {
     )
     .join("");
 
-  const html = `<!doctype html>
-<html><body style="margin:0;padding:24px;background:#f7f7f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#1a1a20;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #e6e6ea;border-radius:16px;">
-    <tr><td style="padding:28px;">
-      <h1 style="margin:0 0 6px;font-size:20px;line-height:1.3;">Your referral report</h1>
-      <p style="margin:0 0 18px;font-size:15px;line-height:1.6;color:#565664;">
+  const html = sailoLayout(
+    "Your referral report",
+    `<p style="margin:0 0 18px;font-size:15px;line-height:1.6;color:#565664;">
         ${links.length === 1 ? "Here's your private link." : `Here are your private links — one for each shop you promote.`}
         Keep them to yourself: anyone with a link can see your earnings.
       </p>
-      ${rows}
-    </td></tr>
-  </table>
-</body></html>`;
+      ${rows}`,
+  );
 
   return send({
     from: sender("Sailo", PARTNERS),
@@ -386,5 +400,44 @@ export async function sendRefundNotification(opts: {
     subject: `Refund from ${shop.name}`,
     html: layout(shop, "Refund issued", body),
     replyTo: shop.contactEmail ?? undefined,
+  });
+}
+
+/**
+ * The link that lets someone back into their own account.
+ *
+ * Deliberately sparse: no order data, no shop branding, nothing worth
+ * harvesting if it lands in the wrong inbox. It says how long the link lasts
+ * and what to do if they didn't ask for it, because a reset mail nobody
+ * requested is the first sign of someone trying the door.
+ */
+export async function sendPasswordReset(opts: {
+  to: string;
+  name?: string | null;
+  url: string;
+  /** How long the link stays good, in whole hours. */
+  expiresInHours: number;
+}): Promise<SendResult> {
+  const { to, name, url, expiresInHours } = opts;
+
+  const body = `
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#565664;">
+      ${name ? `Hi ${esc(name)} — ` : ""}someone asked to reset the password for
+      the Sailo account on <strong style="color:#1a1a20;">${esc(to)}</strong>.
+    </p>
+    ${button(url, "Choose a new password")}
+    <p style="margin:18px 0 0;font-size:13px;color:#8e8e9c;">
+      This link works once, and expires in ${expiresInHours} hour${expiresInHours === 1 ? "" : "s"}.
+    </p>
+    <p style="margin:8px 0 0;font-size:13px;color:#8e8e9c;">
+      If this wasn't you, ignore this email — your password stays as it is.
+    </p>
+  `;
+
+  return send({
+    from: sender("Sailo", ACCOUNTS),
+    to,
+    subject: "Reset your Sailo password",
+    html: sailoLayout("Reset your password", body),
   });
 }

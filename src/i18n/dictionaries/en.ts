@@ -298,6 +298,25 @@ export const en = {
     newHere: "New to Sailo?",
     createOne: "Create one free",
     somethingWrong: "Something went wrong. Try again.",
+    // Password reset. The "sent" line never says whether the address had an
+    // account — that answer would turn this form into a way to find out who
+    // sells on Sailo.
+    forgotPassword: "Forgot your password?",
+    forgotTitle: "Reset your password",
+    forgotSubtitle: "We'll email you a link to set a new one.",
+    sendResetLink: "Email me a link",
+    resetSent:
+      "If that address has an account, the link is on its way. It expires in an hour.",
+    backToSignIn: "Back to sign in",
+    resetTitle: "Choose a new password",
+    resetSubtitle: "Last step — pick something you'll remember.",
+    newPassword: "New password",
+    confirmPassword: "Confirm password",
+    passwordsDiffer: "Those two passwords don't match.",
+    updatePassword: "Update password",
+    resetDone: "Password updated. You can sign in with it now.",
+    resetInvalid:
+      "That link has expired or has already been used. Ask for a new one.",
   },
 
   onboarding: {
@@ -310,6 +329,14 @@ export const en = {
     currency: "Currency",
     whatsapp: "WhatsApp",
     whatsappHint: "Include your country code, no + or spaces. This is where orders land.",
+    stepOf: "Step {current} of {total}",
+    continue: "Continue",
+    shopTitle: "Name your shop",
+    shopSubtitle: "This is what buyers see at the top of your page.",
+    ordersTitle: "Where orders land",
+    ordersSubtitle: "Price in your currency, and tell buyers how to reach you.",
+    location: "Where you are",
+    preview: "Your shop, so far",
     createMyShop: "Create my shop",
   },
 

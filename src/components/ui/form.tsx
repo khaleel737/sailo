@@ -94,6 +94,7 @@ export function Field({
   help,
   error,
   htmlFor,
+  action,
   children,
   className,
 }: {
@@ -104,14 +105,26 @@ export function Field({
   /** Replaces `help` once it is set, and colours the row. */
   error?: string;
   htmlFor?: string;
+  /** Sits opposite the label — a link or control about this field alone. */
+  action?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
 }) {
   return (
     <div className={className}>
-      <Label htmlFor={htmlFor} hint={hint}>
-        {label}
-      </Label>
+      {action ? (
+        <div className="mb-1.5 flex items-baseline justify-between gap-3">
+          {/* The row owns the gap to the input now, so the label gives up its own. */}
+          <Label htmlFor={htmlFor} hint={hint} className="mb-0">
+            {label}
+          </Label>
+          {action}
+        </div>
+      ) : (
+        <Label htmlFor={htmlFor} hint={hint}>
+          {label}
+        </Label>
+      )}
       {children}
       {error ? (
         <p className="mt-1.5 text-xs font-medium text-red-600">{error}</p>
