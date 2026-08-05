@@ -1,0 +1,30 @@
+{
+  "capturedFrom": "http://localhost:3000",
+  "shots": [
+    {
+      "handle": "demo",
+      "width": 1280,
+      "height": 1000
+    },
+    {
+      "handle": "forno",
+      "width": 1280,
+      "height": 1000
+    },
+    {
+      "handle": "lumi",
+      "width": 1280,
+      "height": 1000
+    },
+    {
+      "handle": "serene",
+      "width": 1280,
+      "height": 1000
+    },
+    {
+      "handle": "inkwell",
+      "width": 1280,
+      "height": 1000
+    }
+  ]
+}

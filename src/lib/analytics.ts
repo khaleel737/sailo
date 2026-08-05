@@ -239,7 +239,7 @@ export function countryFlag(code: string | null): string {
  */
 const countryNames = new Map<string, Intl.DisplayNames>();
 
-/** "NG" → "Nigeria". Falls back to the code when the runtime doesn't know it. */
+/** "DE" → "Germany". Falls back to the code when the runtime doesn't know it. */
 export function countryName(code: string | null, locale = "en"): string {
   if (!code) return "Unknown";
   try {

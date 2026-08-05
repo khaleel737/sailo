@@ -210,7 +210,7 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
       {
         key: "instructions",
         label: "Delivery notes",
-        placeholder: "We deliver within Lagos in 2–3 days. Please have exact cash.",
+        placeholder: "We deliver within Portland in 2–3 days. Please have exact cash.",
         multiline: true,
       },
     ],

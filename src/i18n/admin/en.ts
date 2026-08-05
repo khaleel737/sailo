@@ -10,6 +10,8 @@
  */
 export const adminEn = {
   common: {
+    viewAsTableLabel: "View as table",
+    shopHandlePlaceholder: "yourshop",
     save: "Save",
     saveChanges: "Save changes",
     cancel: "Cancel",
@@ -44,7 +46,58 @@ export const adminEn = {
     viewAsTable: "View as table",
   },
 
+  /**
+   * Column headings for the list tables. Kept together rather than under each
+   * page's own section: they are one- and two-word labels that recur across
+   * lists, and a translator does a better job seeing them side by side.
+   */
+  columns: {
+    actions: "Actions",
+    category: "Category",
+    client: "Client",
+    code: "Code",
+    discount: "Discount",
+    expires: "Expires",
+    never: "Never",
+    orders: "Orders",
+    price: "Price",
+    product: "Product",
+    products: "Products",
+    spent: "Spent",
+    status: "Status",
+    stock: "Stock",
+    used: "Used",
+    where: "Where",
+  },
+
+  shell: {
+    suspended: "Your shop is suspended.",
+    staffNotice: "You're signed in as Sailo staff.",
+    openHq: "Open HQ",
+    /**
+     * Names the room. /admin and /hq share a rail now, so the label carries
+     * the distinction the colour used to — see the note in the sidebar.
+     */
+    role: "Shop admin",
+  },
+
+  /**
+   * Sidebar group headings. They name what a seller is trying to do, not what
+   * the pages under them are — "Catalogue" and "Selling" read as tasks where
+   * "Products, Categories" would just repeat the links underneath.
+   */
+  navGroups: {
+    catalogue: "Catalogue",
+    selling: "Selling",
+    growth: "Growth",
+    setup: "Setup",
+  },
+
   dashboard: {
+    noVisits: "No visits yet — share your link.",
+    noRevenue: "No revenue yet.",
+    visitsRange: "Visits · last {days} days",
+    revenueRange: "Revenue · last {days} days",
     shopLink: "Your shop link",
     recentOrders: "Recent orders",
     visits: "Visits",
@@ -136,6 +189,9 @@ export const adminEn = {
   },
 
   variants: {
+    untick: "Untick",
+    forSaleWord: "For sale",
+    notSold: "This combination isn't sold",
     option: "Option",
     values: "Values",
     addOptions: "Add options",
@@ -180,6 +236,7 @@ export const adminEn = {
   },
 
   categories: {
+    nameLabelText: "Category name",
     title: "Categories",
     description: "These become the filter chips at the top of your shop.",
     empty: "No categories yet",
@@ -189,7 +246,35 @@ export const adminEn = {
     nameLabel: "Category name",
   },
 
+  /** The order lifecycle, as a seller reads it. Keys match the stored enum. */
+  orderStatus: {
+    new: "New",
+    confirmed: "Confirmed",
+    shipped: "Shipped",
+    completed: "Completed",
+    cancelled: "Cancelled",
+    refunded: "Refunded",
+  },
+
   orders: {
+    carrier: "Carrier",
+    trackingNumber: "Tracking number",
+    trackingNumberPlaceholder: "JD0002890124",
+    trackingLink: "Tracking link",
+    trackingLinkPlaceholder: "https://dhl.com/track?id=…",
+    markShipped: "Mark as shipped",
+    refundAmountHint: "blank = full",
+    refundReason: "Reason",
+    refundReasonPlaceholder: "Arrived damaged",
+    recordRefund: "Record refund",
+    statusLabel: "Order status",
+    paymentStatusLabel: "Payment status",
+    confirmPayment: "Confirm payment",
+    unpaid: "Unpaid",
+    track: "Track",
+    addTracking: "Add tracking",
+    editTracking: "Edit tracking",
+    refund: "Refund",
     title: "Orders",
     empty: "No orders yet",
     emptyBody: "Share your shop link and orders will show up here.",
@@ -211,6 +296,12 @@ export const adminEn = {
   },
 
   clients: {
+    outstandingLabel: "Outstanding",
+    saveNotesLabel: "Save notes",
+    noOrdersYet: "No orders yet.",
+    paid: "Paid",
+    delete: "Delete",
+    privateNotes: "Private notes",
     title: "Clients",
     empty: "No clients yet",
     emptyBody:
@@ -228,6 +319,8 @@ export const adminEn = {
   },
 
   reviews: {
+    awaiting: "{count} waiting for your approval — only approved reviews show on your shop.",
+    allApproved: "Only approved reviews show on your shop.",
     title: "Reviews",
     empty: "No reviews yet",
     emptyBody: "Buyers can leave a review on any product page.",
@@ -236,6 +329,9 @@ export const adminEn = {
   },
 
   coupons: {
+    usageLimitPlaceholder: "Unlimited",
+    discountCodes: "Discount codes",
+    discountCodesBody: "Run promotions with percentage or fixed discounts, minimum spend, usage caps and expiry dates.",
     title: "Coupons",
     description: "Discount codes buyers enter at checkout.",
     lockTitle: "Discount codes",
@@ -254,6 +350,13 @@ export const adminEn = {
   },
 
   affiliates: {
+    statusActive: "Active",
+    statusPending: "Pending",
+    statusDisabled: "Disabled",
+    letAnyoneApply: "Let anyone apply",
+    programme: "Referral programme",
+    programmeBody: "Give people a link, pay them a commission on what it brings in. Buyers can opt in to their own link right after ordering.",
+    turnOnFirst: "Turn the programme on above to add affiliates and share links.",
     title: "Affiliates",
     description: "Pay people a share of what they sell for you.",
     lockTitle: "Referral programme",
@@ -285,6 +388,37 @@ export const adminEn = {
   },
 
   payments: {
+    waysToOrder: "{count} ways to order",
+    waysToOrderOne: "1 way to order",
+    nothingLive: "Nothing live",
+    liveCount: "{count} live",
+    nobodyCanOrderBody: "Set up at least one option below — until you do, the Order buttons on your shop stay disabled.",
+    payOnlineBody: "The buyer pays on the spot and the order confirms itself — no chasing, no marking things paid by hand.",
+    chatHandoffBody: "The buyer is sent to a chat app with their order written out. Nothing is charged online — you agree payment between yourselves.",
+    manualBody: "The buyer stays on your shop and sees your instructions. You confirm the payment from the Orders page.",
+    notSetUp: "Not set up",
+    buttonText: "Button text",
+    buttonTextHint: "defaults to \"{name}\"",
+    showOnShop: "Show on my shop",
+    fillInFirst: "Fill in the details above before turning this on.",
+    cardTitle: "Card payments",
+    cardBody: "Buyers pay by card, Apple Pay or Google Pay without leaving the checkout. The money goes straight into your own Stripe account — Sailo never holds it and takes no cut of your sales.",
+    stripeVerifying: "Stripe is verifying",
+    finishSetup: "Finish setup",
+    notConnected: "Not connected",
+    seePlans: "See plans",
+    cardOnPlan: "Card payments are part of {plan}.",
+    connectStripe: "Connect Stripe",
+    connectHint: "Opens Stripe. You'll need your bank details and an ID — Sailo never sees either.",
+    account: "Account",
+    country: "Country",
+    continueOnStripe: "Continue on Stripe",
+    payoutsOnStripe: "Payouts on Stripe",
+    refreshStatus: "Refresh status",
+    disconnect: "Disconnect",
+    disconnectHint: "Disconnecting stops new card orders. Your Stripe account, its payouts and its records stay exactly where they are.",
+    stripeNeedsDetails: "Stripe still needs some details before you can take payments.",
+    stripeChecking: "Stripe has your details and is checking them. This is usually quick, and the card option turns on by itself.",
     title: "Payments",
     description:
       "Turn on as many ways to order as you like. Buyers pick one at checkout.",
@@ -295,6 +429,10 @@ export const adminEn = {
   },
 
   delivery: {
+    kind: "Type",
+    freeOverLabel: "Free over",
+    addOptionBody: "Standard, express, international or collection in person.",
+    liveOfCount: "{live} of {total} live",
     title: "Delivery",
     description:
       "Add as many options as you like — Standard, Express, pickup. Buyers pick one at checkout.",
@@ -313,11 +451,74 @@ export const adminEn = {
   },
 
   settings: {
+    taxIdPlaceholder: "GB123456789",
+    identity: "Identity",
+    appearance: "Appearance",
+    ordersContact: "Orders & contact",
+    socialLinks: "Social links",
+    socialLinksBody: "Leave blank to hide. Icons appear under your description.",
+    shopName: "Shop name",
+    shopDescription: "Description",
+    profilePicture: "Profile picture",
+    profilePictureHint: "shown as a circle",
+    logo: "Logo",
+    logoHint: "replaces the shop name",
+    accentColour: "Accent colour",
+    customAccent: "Custom accent colour",
+    useColour: "Use {color}",
+    theme: "Theme",
+    themeLight: "Light",
+    themeDark: "Dark",
+    productLayout: "Product layout",
+    layoutGrid: "Grid",
+    layoutList: "List",
+    currency: "Currency",
+    storefrontLanguage: "Storefront language",
+    storefrontLanguageHint: "what visitors see by default",
+    matchBrowser: "Match the visitor's browser",
+    contactEmail: "Contact email",
+    location: "Location",
+    locationPlaceholder: "Portland, Oregon",
+    collectAddress: "Ask for a delivery address",
+    collectAddressBody: "Shown on physical products only. Turn off if you sell digital goods or services.",
+    waysToOrderLiveIn: "Ways to order live in",
+    tax: "Tax",
+    taxBody: "Only turn this on if you are registered to charge it. Existing orders keep the rate they were placed at.",
+    chargeTax: "Charge tax",
+    chargeTaxBody: "Adds a tax line to checkout and to every invoice.",
+    taxName: "Tax name",
+    taxNameHint: "what buyers see — VAT, GST, Sales tax",
+    taxRate: "Rate",
+    taxRateHint: "percent, e.g. 20 or 7.5",
+    taxShown: "How prices are shown",
+    taxExclusive: "Prices exclude tax — added at checkout (US sales tax)",
+    taxInclusive: "Prices already include tax (EU VAT, UK, most of Asia)",
+    taxOnDelivery: "Tax the delivery fee",
+    taxOnDeliveryBody: "Shipping is taxable in most places. Uncheck if yours is exempt.",
+    taxId: "Tax ID",
+    taxIdHint: "optional — printed on invoices",
+    shopIsLive: "Shop is live",
+    shopIsLiveBody: "Turn this off to take your page offline. Visitors will see a 404.",
     title: "Settings",
     description: "Your shop details, plan and data.",
   },
 
   billing: {
+    productSlots: "Product slots used",
+    active: "Active",
+    slotsUsed: "{used} of {limit} products used",
+    zeroFee: "0% fee on card payments",
+    accessEnds: "Access ends",
+    renews: "Renews",
+    atLimit: "You've used every product slot on {plan}. Existing products keep working — upgrade to add more.",
+    perMonth: "/month",
+    billedYearly: "{amount} billed yearly",
+    upgradeTo: "Upgrade to {plan}",
+    switchTo: "Switch to {plan}",
+    free: "Free",
+    monthly: "Monthly",
+    yearly: "Yearly",
+    cancelAnyTime: "Cancel any time. Downgrading never deletes products — you just can't add more until you're under the limit.",
     cancelled: "Checkout cancelled — nothing was charged.",
     currentPlan: "Current plan",
     paymentFailed: "Payment failed",
@@ -331,6 +532,11 @@ export const adminEn = {
   },
 
   data: {
+    exportsOnPlan: "Exports are available on {plan}",
+    noFileSelected: "No file selected",
+    imported: "Imported",
+    importAnother: "Import another file",
+    whichColumns: "Which columns are used?",
     export: "Export",
     downloadCsv: "Download CSV",
     import: "Import",
@@ -344,6 +550,9 @@ export const adminEn = {
   },
 
   traffic: {
+    referringSites: "Referring sites",
+    noVisits: "No visits yet",
+    rangeSummary: "Last {days} days · {count} visits",
     title: "Where your visitors come from",
     countries: "Countries",
     cities: "Cities",

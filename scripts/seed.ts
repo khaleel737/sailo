@@ -38,7 +38,14 @@ const DEMO_EMAIL = "demo@sailo.store";
 const DEMO_PASSWORD = "demo12345";
 const DEMO_HANDLE = "demo";
 
-const img = (seed: string) => `https://picsum.photos/seed/${seed}/900/900`;
+/**
+ * Product photography, hosted by Unsplash and requested at the size we render.
+ * Ids rather than random seeds: this shop is one of the five the landing page
+ * shows off, and a "speckled mug" illustrated by a photo of a car park reads
+ * as a broken product, not a placeholder.
+ */
+const img = (id: string, size = 900) =>
+  `https://images.unsplash.com/${id}?w=${size}&h=${size}&fit=crop&q=80`;
 
 const CATEGORIES = [
   { name: "Mugs", slug: "mugs" },
@@ -92,7 +99,7 @@ const PRODUCTS: SeedProduct[] = [
     description:
       "Wheel-thrown and glazed in matte oatmeal with a raw clay foot. Dishwasher and microwave safe.",
     tags: ["handmade", "ceramic", "gift"],
-    images: ["mug-a", "mug-a2", "mug-a3"],
+    images: ["photo-1514228742587-6b1558fcca3d", "photo-1544787219-7f47ccb76574"],
     featured: true,
     // One axis, priced per size — the shape most sellers start with.
     options: [{ name: "Size", values: ["250ml", "350ml", "450ml"] }],
@@ -111,7 +118,7 @@ const PRODUCTS: SeedProduct[] = [
     description:
       "Half-dipped in a deep cobalt glaze that pools at the base. Every one comes out slightly different.",
     tags: ["handmade", "ceramic", "blue"],
-    images: ["mug-b", "mug-b2"],
+    images: ["photo-1610632380989-680fe40816c6", "photo-1567016376408-0226e4d0c1ea"],
   },
   {
     title: "Wide breakfast bowl",
@@ -121,7 +128,7 @@ const PRODUCTS: SeedProduct[] = [
     description:
       "A generous 18cm bowl for porridge, ramen or a very large salad. Sold individually.",
     tags: ["handmade", "ceramic", "kitchen"],
-    images: ["bowl-a", "bowl-a2"],
+    images: ["photo-1610701596007-11502861dcfa", "photo-1565193566173-7a0ee3dbe261"],
     // Counted on the product itself, since there's nothing to choose between.
     trackInventory: true,
     stockQuantity: 6,
@@ -133,7 +140,7 @@ const PRODUCTS: SeedProduct[] = [
     priceCents: 5200,
     description: "Two 20cm plates with a soft rolled edge. Stacks neatly.",
     tags: ["handmade", "set"],
-    images: ["plate-a"],
+    images: ["photo-1578500494198-246f612d3b3d"],
     inStock: false,
   },
   {
@@ -144,7 +151,7 @@ const PRODUCTS: SeedProduct[] = [
     description:
       "A2 two-colour risograph on 120gsm recycled stock. Signed, edition of 50.",
     tags: ["print", "art", "limited"],
-    images: ["print-a", "print-a2"],
+    images: ["photo-1544967082-d9d25d867d66", "photo-1513519245088-0e12902e5a38"],
   },
   {
     title: "Glaze recipe pack (PDF)",
@@ -154,7 +161,7 @@ const PRODUCTS: SeedProduct[] = [
     description:
       "Twelve tested cone-6 glaze recipes with photos of each on white and dark clay bodies.",
     tags: ["digital", "download", "glaze"],
-    images: ["pdf-a"],
+    images: ["photo-1490312278390-ab64016e0aa9"],
     files: [
       {
         name: "Cone 6 glaze recipes.pdf",
@@ -175,7 +182,7 @@ const PRODUCTS: SeedProduct[] = [
     description:
       "Small group class, maximum six people. Clay, tools, firing and a coffee included. You take home two pieces.",
     tags: ["workshop", "class", "in-person"],
-    images: ["class-a", "class-a2"],
+    images: ["photo-1493106641515-6b5631de4bb9", "photo-1554941829-202a0b2403b8"],
     featured: true,
     durationMinutes: 180,
     serviceMode: "in_person",
@@ -198,7 +205,7 @@ const PRODUCTS: SeedProduct[] = [
     description:
       "Two hours one-to-one on the wheel, shaped around whatever you want to make. Weekdays only.",
     tags: ["workshop", "private"],
-    images: ["class-b"],
+    images: ["photo-1517686469429-8bdb88b9f907"],
     durationMinutes: 120,
     serviceMode: "in_person",
     serviceLocation: "Unit 4, Kiln Yard, 22 Bridge Street.",
@@ -214,7 +221,7 @@ const PRODUCTS: SeedProduct[] = [
     description:
       "Heavy cotton canvas with a split leg and a deep tool pocket. Softens with every wash.",
     tags: ["apron", "studio", "cotton"],
-    images: ["apron-a", "apron-a2"],
+    images: ["photo-1618354691373-d851c5c3a990", "photo-1620799140408-edc6dcb6d633"],
     // Two axes: every size in every colour, counted separately.
     options: [
       { name: "Size", values: ["S", "M", "L"] },
@@ -244,7 +251,7 @@ const PRODUCTS: SeedProduct[] = [
     description:
       "The sheet we use to record every test tile: recipe, cone, clay body, result. Free, no strings.",
     tags: ["digital", "free", "template"],
-    images: ["log-a"],
+    images: ["photo-1584589167171-541ce45f1eea"],
     files: [
       {
         name: "Glaze log.pdf",
@@ -264,7 +271,7 @@ const PRODUCTS: SeedProduct[] = [
     description:
       "The full risograph series as high-resolution files, ready to print at home or at a studio.",
     tags: ["digital", "download", "art"],
-    images: ["bundle-a", "bundle-a2"],
+    images: ["photo-1547891654-e66ed7ebb968", "photo-1567016376408-0226e4d0c1ea"],
     // A download can have options too — same files, different licence.
     options: [{ name: "Licence", values: ["Personal", "Commercial"] }],
     variants: [
@@ -291,7 +298,7 @@ const PRODUCTS: SeedProduct[] = [
     description:
       "Forty-five minutes on a video call. Send photos of what went wrong beforehand and we'll work through it.",
     tags: ["service", "online", "advice"],
-    images: ["call-a"],
+    images: ["photo-1590650153855-d9e808231d41"],
     durationMinutes: 45,
     // The other services happen in the studio; this one happens on a link.
     serviceMode: "online",
@@ -361,8 +368,8 @@ async function main() {
       handle: DEMO_HANDLE,
       name: "Clay & Co.",
       description:
-        "Small-batch stoneware, thrown by hand in Lagos. Restocks every other Friday.",
-      avatarUrl: img("clayco-avatar"),
+        "Small-batch stoneware, thrown by hand in Portland. Restocks every other Friday.",
+      avatarUrl: img("photo-1514228742587-6b1558fcca3d", 400),
       accentColor: "#b45309",
       theme: "light",
       layout: "grid",
@@ -378,10 +385,10 @@ async function main() {
       affiliateTerms:
         "Commission is paid monthly by bank transfer once your balance reaches $50. Self-referrals don't count.",
       invoicePrefix: "CLAY",
-      invoiceNotes: "Thanks for supporting a small studio. Handmade in Lagos.",
-      taxId: "NG-1234567-8",
+      invoiceNotes: "Thanks for supporting a small studio. Handmade in Portland.",
+      taxId: "US-93-1234567",
       contactEmail: "hello@clayandco.example",
-      location: "Lagos, Nigeria",
+      location: "Portland, Oregon",
       socials: [
         { platform: "instagram", url: "https://instagram.com/clayandco" },
         { platform: "tiktok", url: "https://tiktok.com/@clayandco" },
@@ -534,7 +541,7 @@ async function main() {
       type: "cod",
       config: {
         instructions:
-          "We deliver within Lagos in 2–3 working days. Please have the exact amount ready.",
+          "We deliver within Portland in 2–3 working days. Please have the exact amount ready.",
       },
       isEnabled: true,
       position: 5,
@@ -593,7 +600,7 @@ async function main() {
         name: "Studio pickup",
         feeCents: 0,
         config: {
-          address: "12 Marina Road, Lagos Island, Lagos",
+          address: "412 NE Alberta Street, Portland",
           hours: "Tue–Sat, 10am–5pm",
           instructions: "Ring the bell at the blue side door.",
         },
@@ -675,23 +682,23 @@ async function main() {
     {
       name: "Tomi Adeyemi",
       email: "tomi@example.com",
-      phone: "2348012345678",
-      addressLine1: "14 Bishop Oluwole Street",
+      phone: "15035550142",
+      addressLine1: "1412 NE Alberta Street",
       addressLine2: "Flat 3B",
-      city: "Lagos",
-      region: "Lagos State",
-      postalCode: "101241",
-      country: "Nigeria",
+      city: "Portland",
+      region: "OR",
+      postalCode: "97211",
+      country: "United States",
     },
     {
       name: "Priya Nair",
       email: "priya@example.com",
-      phone: "919820098200",
-      addressLine1: "22 Carter Road",
-      city: "Mumbai",
-      region: "Maharashtra",
-      postalCode: "400050",
-      country: "India",
+      phone: "447700900142",
+      addressLine1: "22 Bramley Road",
+      city: "London",
+      region: "Greater London",
+      postalCode: "W10 6SZ",
+      country: "United Kingdom",
     },
     {
       name: "Dan Kowalski",
@@ -706,12 +713,12 @@ async function main() {
     {
       name: "Yasmin Haddad",
       email: "yasmin@example.com",
-      phone: "962791234567",
-      addressLine1: "9 Rainbow Street",
-      city: "Amman",
-      postalCode: "11181",
-      country: "Jordan",
-      notes: "Asks about shipping to Amman — quoted $18 flat.",
+      phone: "4915112345678",
+      addressLine1: "9 Oranienstraße",
+      city: "Berlin",
+      postalCode: "10999",
+      country: "Germany",
+      notes: "Asks about shipping to Berlin — quoted $18 flat.",
     },
     {
       name: "Chris B.",
@@ -732,7 +739,7 @@ async function main() {
     { p: 0, email: "tomi@example.com", qty: 2, method: "whatsapp", delivery: "Standard delivery", coupon: null, affiliate: null, status: "completed", payment: "paid", note: "Can you wrap them separately? They're gifts.", ref: null, tracking: { carrier: "DHL", number: "JD0002890124", url: "https://www.dhl.com/track?id=JD0002890124" }, refund: 0 },
     { p: 6, email: "priya@example.com", qty: 1, method: "bank_transfer", delivery: null, coupon: null, affiliate: null, status: "completed", payment: "paid", note: null, ref: "TRF-88213", tracking: null, refund: 0 },
     { p: 4, email: "dan@example.com", qty: 1, method: "telegram", delivery: "Express delivery", coupon: null, affiliate: "AMARA", status: "shipped", payment: "paid", note: null, ref: null, tracking: { carrier: "Royal Mail", number: "RM88213771GB", url: "https://www.royalmail.com/track-your-item#/RM88213771GB" }, refund: 0 },
-    { p: 2, email: "yasmin@example.com", qty: 3, method: "bank_transfer", delivery: "International", coupon: "WELCOME10", affiliate: null, status: "new", payment: "pending", note: "Do you ship to Amman?", ref: "TRF-91007", tracking: null, refund: 0 },
+    { p: 2, email: "yasmin@example.com", qty: 3, method: "bank_transfer", delivery: "International", coupon: "WELCOME10", affiliate: null, status: "new", payment: "pending", note: "Do you ship to Berlin?", ref: "TRF-91007", tracking: null, refund: 0 },
     { p: 0, email: "tomi@example.com", qty: 1, method: "cod", delivery: "Studio pickup", coupon: null, affiliate: null, status: "new", payment: "unpaid", note: null, ref: null, tracking: null, refund: 0 },
     // A refunded order, so the dashboard shows revenue net of one.
     { p: 5, email: "chris@example.com", qty: 1, method: "instagram", delivery: null, coupon: null, affiliate: "POTTERYWEEKLY", status: "refunded", payment: "refunded", note: null, ref: null, tracking: null, refund: 1200 },

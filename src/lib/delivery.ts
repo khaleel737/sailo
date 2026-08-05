@@ -51,7 +51,7 @@ export const DELIVERY_METHOD_DEFS: Record<
       {
         key: "address",
         label: "Pickup address",
-        placeholder: "12 Marina Road, Lagos",
+        placeholder: "412 NE Alberta Street, Portland",
         multiline: true,
       },
       {
