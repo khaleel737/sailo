@@ -15,6 +15,7 @@ import { OrderActions } from "@/app/admin/orders/_components/order-actions";
 import { Badge, Button } from "@/components/ui";
 import { orderStatusLabel, orderStatusTone } from "@/lib/order-status";
 import { getAdminT } from "@/i18n/server";
+import { taxName } from "@/lib/tax-label";
 import { formatAddress, formatMoney } from "@/lib/utils";
 import type { Order } from "@/db/schema";
 import type { OrderLine } from "@/lib/order-lines";
@@ -245,7 +246,7 @@ export async function OrderRow({
               ) : null}
               {order.taxCents > 0 ? (
                 <span>
-                  {order.taxName ?? "Tax"}{" "}
+                  {taxName(order, a.settings.tax)}{" "}
                   {formatMoney(order.taxCents, order.currency)}
                   {order.taxInclusive ? " (incl.)" : ""}
                 </span>

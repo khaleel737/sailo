@@ -7,7 +7,7 @@ import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { PrintButton } from "@/app/invoice/[token]/_components/print-button";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { getShopT } from "@/i18n/server";
-import { formatPercent } from "@/lib/pricing";
+import { taxLabel } from "@/lib/tax-label";
 import { formatAddress, formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -222,10 +222,7 @@ export default async function InvoicePage({
             {order.taxCents > 0 && !order.taxInclusive ? (
               <div className="flex justify-between">
                 <dt className="text-ink-500">
-                  {order.taxName ?? t.invoice.tax}
-                  {order.taxRateBp > 0
-                    ? ` (${formatPercent(order.taxRateBp)}%)`
-                    : ""}
+                  {taxLabel(order, t.invoice.tax)}
                 </dt>
                 <dd className="tabular-nums">
                   {formatMoney(order.taxCents, order.currency)}
@@ -241,10 +238,7 @@ export default async function InvoicePage({
             {order.taxCents > 0 && order.taxInclusive ? (
               <div className="flex justify-between text-xs text-ink-500">
                 <dt>
-                  {t.invoice.includes} {order.taxName ?? t.invoice.tax}
-                  {order.taxRateBp > 0
-                    ? ` (${formatPercent(order.taxRateBp)}%)`
-                    : ""}
+                  {t.invoice.includes} {taxLabel(order, t.invoice.tax)}
                 </dt>
                 <dd className="tabular-nums">
                   {formatMoney(order.taxCents, order.currency)}
