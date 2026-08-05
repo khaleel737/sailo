@@ -74,7 +74,7 @@ export function matchAcceptLanguage(header: string | null): Locale | null {
       return { tag: tag.trim().toLowerCase(), q: q ? Number(q) : 1 };
     })
     .filter((p) => p.tag && Number.isFinite(p.q))
-    .sort((a, b) => b.q - a.q);
+    .toSorted((a, b) => b.q - a.q);
 
   for (const { tag } of wanted) {
     if (isLocale(tag)) return tag;

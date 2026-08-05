@@ -1,25 +1,7 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-  useSyncExternalStore,
-} from "react";
-import {
-  addLine,
-  cachedTotal,
-  cartCount,
-  cartKey,
-  lineKey,
-  readCart,
-  removeLine,
-  setQuantity,
-  writeCart,
-  type CartLine,
-} from "@/lib/cart";
+import { createContext, useCallback, useContext, useMemo, useState, useSyncExternalStore } from "react";
+import { addLine, cachedTotal, cartCount, cartKey, lineKey, readCart, removeLine, setQuantity, writeCart, type CartLine } from "@/lib/cart";
 
 /* -------------------------------------------------------------------------- */
 /*  The store                                                                  */

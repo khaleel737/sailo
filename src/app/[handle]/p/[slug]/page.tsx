@@ -52,11 +52,6 @@ export async function generateMetadata({
     // An unpublished product is reachable by URL for the seller's own preview;
     // it must not be reachable through search.
     robots: product.isPublished ? undefined : { index: false, follow: false },
-    // The shop's icon, not Sailo's — see the note on the shop page.
-    icons: {
-      icon: [{ url: `/${shop.handle}/icon`, type: "image/png", sizes: "32x32" }],
-      apple: [{ url: `/${shop.handle}/apple-icon`, sizes: "180x180" }],
-    },
     openGraph: {
       title: product.title,
       description: product.description ?? undefined,

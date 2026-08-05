@@ -8,12 +8,7 @@ import { getDb } from "@/db";
 import { paymentMethods, shops, type ShopSocial } from "@/db/schema";
 import { requireShop, requireUser } from "@/lib/session";
 import { normalizePhone, SOCIAL_PLATFORMS } from "@/lib/utils";
-import {
-  HANDLE_MESSAGES,
-  normalizeHandle,
-  suggestHandles,
-  validateHandleFormat,
-} from "@/lib/handle";
+import { HANDLE_MESSAGES, normalizeHandle, suggestHandles, validateHandleFormat } from "@/lib/handle";
 import { LOCALES, type Locale } from "@/i18n/config";
 
 export type ActionState = { ok: boolean; error?: string; message?: string };

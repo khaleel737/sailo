@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
@@ -28,6 +29,15 @@ import {
   SectionHead,
 } from "@/components/marketing/kit";
 import { APP_URL, faqJsonLd, softwareJsonLd } from "@/lib/seo";
+
+/**
+ * The homepage is the one page whose canonical is "/" — it used to be declared
+ * on the root layout, where every other route inherited it.
+ */
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
 
 /**
  * Splits a headline on its `{highlight}` placeholder. A placeholder rather than

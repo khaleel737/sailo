@@ -1,18 +1,7 @@
 import "server-only";
 import { and, asc, desc, eq, gte, ilike, inArray, lte, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import {
-  categories,
-  productFiles,
-  productImages,
-  productVariants,
-  products,
-  reviews,
-  type Category,
-  type Product,
-  type ProductImage,
-  type ProductVariant,
-} from "@/db/schema";
+import { categories, productFiles, productImages, productVariants, products, reviews, type Category, type Product, type ProductImage, type ProductVariant } from "@/db/schema";
 import { cachedForShop, shopTag } from "@/lib/cache";
 import { nextOffsetFor, orderByIds } from "./pagination";
 

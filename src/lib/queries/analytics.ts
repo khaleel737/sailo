@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, gte, ilike, inArray, isNotNull, lte, or, sql } from "drizzle-orm";
+import { and, desc, eq, gte, isNotNull, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { orders, products, reviews, visitDaily, visits } from "@/db/schema";

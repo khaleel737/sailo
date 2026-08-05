@@ -1,40 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import {
-  Check,
-  Copy,
-  Download,
-  FileText,
-  Gift,
-  Loader2,
-  X,
-} from "lucide-react";
-import {
-  createOrderIntent,
-  previewOrder,
-  submitPaymentReference,
-} from "@/lib/actions/orders";
-import type {
-  OrderIntentResult,
-  OrderLineInput,
-  OrderPreview,
-  PreviewTax,
-} from "@/lib/orders/types";
+import { Download, Loader2, X } from "lucide-react";
+import { createOrderIntent, previewOrder } from "@/lib/actions/orders";
+import type { OrderIntentResult, OrderPreview, PreviewTax } from "@/lib/orders/types";
 import { PAYMENT_METHOD_DEFS, type PaymentMethodType } from "@/lib/payments";
-import type { DeliveryMethodType } from "@/lib/delivery";
 import { formatPercent, type Totals } from "@/lib/pricing";
 import { readReferralCode } from "@/lib/referral";
-import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import { formatMoney } from "@/lib/utils";
 import { deliveryCopy, railCopy } from "./checkout-copy";
 import { Confirmation } from "./confirmation";
-import type {
-  CheckoutDelivery,
-  CheckoutMethod,
-  CheckoutPanelProps,
-} from "./checkout.types";
+import type { CheckoutDelivery, CheckoutMethod, CheckoutPanelProps } from "./checkout.types";
 
 const EMPTY_TOTALS: Totals = {
   subtotalCents: 0,

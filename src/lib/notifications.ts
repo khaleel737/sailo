@@ -157,5 +157,5 @@ export async function getNotifications(
     });
   }
 
-  return items.sort((a, b) => b.at.getTime() - a.at.getTime()).slice(0, 30);
+  return items.toSorted((a, b) => b.at.getTime() - a.at.getTime()).slice(0, 30);
 }

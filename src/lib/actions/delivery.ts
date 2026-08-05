@@ -7,11 +7,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { deliveryMethods, type DeliveryConfig } from "@/db/schema";
 import { requireShop } from "@/lib/session";
-import {
-  DELIVERY_METHOD_DEFS,
-  isDeliveryConfigured,
-  isDeliveryMethodType,
-} from "@/lib/delivery";
+import { DELIVERY_METHOD_DEFS, isDeliveryConfigured, isDeliveryMethodType } from "@/lib/delivery";
 import { parseMoneyToCents } from "@/lib/utils";
 import type { ActionState } from "./shop";
 

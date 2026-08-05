@@ -103,7 +103,7 @@ export function combinations(options: ProductOption[]): VariantOptions[] {
  */
 export function optionKey(options: VariantOptions): string {
   return Object.keys(options)
-    .sort()
+    .toSorted()
     .map((k) => `${k.toLowerCase()}=${String(options[k]).toLowerCase()}`)
     .join("|");
 }

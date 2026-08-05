@@ -5,26 +5,11 @@ import { revalidateShop } from "@/lib/cache";
 import { firstRow } from "@/lib/invariant";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import {
-  categories,
-  productFiles,
-  productImages,
-  products,
-  productVariants,
-  type ProductOption,
-  type VariantOptions,
-} from "@/db/schema";
+import { categories, productFiles, productImages, products, productVariants, type ProductOption, type VariantOptions } from "@/db/schema";
 import { requireShop } from "@/lib/session";
 import { parseMoneyToCents, slugify } from "@/lib/utils";
 import { atProductLimit, planFor, productLimit } from "@/lib/plans";
-import {
-  combinations,
-  isProductKind,
-  isServiceMode,
-  MAX_VARIANTS,
-  normalizeOptions,
-  optionKey,
-} from "@/lib/variants";
+import { combinations, isProductKind, isServiceMode, MAX_VARIANTS, normalizeOptions, optionKey } from "@/lib/variants";
 import type { ActionState } from "./shop";
 
 const MAX_FILES = 10;

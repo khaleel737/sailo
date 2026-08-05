@@ -1,11 +1,7 @@
 "use client";
 
 import { CalendarClock, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-import {
-  CheckoutPanel,
-  type CheckoutDelivery,
-  type CheckoutMethod,
-} from "./checkout-panel";
+import { CheckoutPanel, type CheckoutDelivery, type CheckoutMethod } from "./checkout-panel";
 import { useCart } from "./cart-provider";
 import { toLocalInput } from "./order-sheet";
 import { lineKey, toOrderItems, type CartLine } from "@/lib/cart";

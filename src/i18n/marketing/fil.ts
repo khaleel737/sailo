@@ -120,7 +120,7 @@ export const marketingFil: MarketingDictionary = {
 
   languages: {
     eyebrow: "Saanman ka magbenta",
-    title: "Tatlumpu\'t limang wika, kasama ang mga binabasa mula kanan pakaliwa.",
+    title: "Tatlumpu't limang wika, kasama ang mga binabasa mula kanan pakaliwa.",
     body: "Tamang-tama ang pagkabasa ng tindahan mo sa Arabic, Hapon, Turko o Polish — at gayundin ang admin sa likod nito. Awtomatikong nakukuha ng bisita ang sariling wika; o pumili ka ng isa kung nasa iisang lugar lang ang mga bumibili sa iyo.",
     rtl: "Parehong tindahan, sa Arabic",
     rtlNote: "Hindi ito salamin na screenshot — ang pahina mismo ang nag-aayos mula kanan pakaliwa, hanggang sa search field at filter bar.",
@@ -153,7 +153,7 @@ export const marketingFil: MarketingDictionary = {
     q5: "May Linktree na ako. Bakit ako lilipat?",
     a5: "Dahil hindi makakatanggap ng order ang listahan ng link. Ginagawa rin ng Sailo ang bahaging iyon — nasa itaas ng pahina ang mga social mo — pero sa ilalim nito ay may presyo, stock at basket, kaya bumibili ang tao sa halip na ipadala sa ibang lugar.",
     q6: "Anong wika ang magiging tindahan ko?",
-    a6: "Alinman sa tatlumpu\'t lima ang hilingin ng browser ng bisita mo, o ang isang pipiliin mo kung nasa iisang lugar lang ang mga bumibili sa iyo. Ang Arabic at iba pang wikang kanan-pakaliwa ay maayos na naka-ayos, hindi lang basta sinalamin.",
+    a6: "Alinman sa tatlumpu't lima ang hilingin ng browser ng bisita mo, o ang isang pipiliin mo kung nasa iisang lugar lang ang mga bumibili sa iyo. Ang Arabic at iba pang wikang kanan-pakaliwa ay maayos na naka-ayos, hindi lang basta sinalamin.",
   },
 
   proof: {

@@ -9,12 +9,7 @@ import { paymentMethods, shops } from "@/db/schema";
 import { and } from "drizzle-orm";
 import { requireShop } from "@/lib/session";
 import { can } from "@/lib/plans";
-import {
-  disconnectedFields,
-  loginLink,
-  startOnboarding,
-  syncAccount,
-} from "@/lib/connect";
+import { disconnectedFields, loginLink, startOnboarding, syncAccount } from "@/lib/connect";
 
 export type ConnectState = { ok: boolean; error?: string; message?: string };
 

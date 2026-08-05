@@ -3,7 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, type Shop } from "@/db/schema";
 import { firstRow } from "@/lib/invariant";
-import { generateCode, normalizeCode } from "@/lib/pricing";
+import { generateCode } from "@/lib/pricing";
 import { formatPercent } from "@/lib/pricing";
 
 /**

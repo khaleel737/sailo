@@ -91,7 +91,7 @@ const rows = LOCALES.filter((l) => l.code !== "en").map((l) => ({
 const total = rows[0]?.total ?? 0;
 console.log(`  ${total} keys in the English source\n`);
 
-for (const r of rows.sort((a, b) => b.translated - a.translated)) {
+for (const r of rows.toSorted((a, b) => b.translated - a.translated)) {
   const pct = Math.round((r.translated / r.total) * 100);
   const bar = "█".repeat(Math.round(pct / 5)).padEnd(20, "·");
   console.log(

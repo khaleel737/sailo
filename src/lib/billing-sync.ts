@@ -26,7 +26,7 @@ export async function syncSubscriptionForShop(shopId: string) {
   // The newest non-terminal subscription wins.
   const live = subs.data
     .filter((s) => !["canceled", "incomplete_expired"].includes(s.status))
-    .sort((a, b) => b.created - a.created)[0];
+    .toSorted((a, b) => b.created - a.created)[0];
 
   await db
     .update(shops)

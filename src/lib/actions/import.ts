@@ -3,12 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { revalidateShop } from "@/lib/cache";
 import { requireShop } from "@/lib/session";
-import {
-  importClients,
-  importProducts,
-  isImportType,
-  type ImportReport,
-} from "@/lib/importers";
+import { importClients, importProducts, isImportType, type ImportReport } from "@/lib/importers";
 
 export type ImportState =
   | { ok: false; error?: string }

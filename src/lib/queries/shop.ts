@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, gte, ilike, inArray, isNotNull, lte, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { categories, products, reviews, shops, type Shop } from "@/db/schema";
 import { cachedForShop, handleTag, shopTag } from "@/lib/cache";

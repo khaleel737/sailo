@@ -1,31 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import {
-  CalendarClock,
-  Check,
-  MapPin,
-  Minus,
-  Plus,
-  ShoppingBag,
-  Video,
-} from "lucide-react";
-import {
-  CheckoutPanel,
-  type CheckoutDelivery,
-  type CheckoutMethod,
-} from "./checkout-panel";
+import { CalendarClock, Check, MapPin, Minus, Plus, ShoppingBag, Video } from "lucide-react";
+import { CheckoutPanel, type CheckoutDelivery, type CheckoutMethod } from "./checkout-panel";
 import { useCart } from "./cart-provider";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import { formatDuration, formatMoney } from "@/lib/utils";
-import {
-  findVariant,
-  isLowStock,
-  MAX_QUANTITY,
-  variantLabel,
-  type CheckoutVariant,
-} from "@/lib/variants";
+import { findVariant, isLowStock, MAX_QUANTITY, variantLabel, type CheckoutVariant } from "@/lib/variants";
 import type { ProductOption, VariantOptions } from "@/db/schema";
 
 export type { CheckoutDelivery, CheckoutMethod } from "./checkout-panel";

@@ -140,14 +140,20 @@ export function computeTotals(input: {
   const netCents = subtotalCents - discountCents;
   const deliveryFeeCents = deliveryFee(input.deliveryMethod, netCents);
 
-  const tax = input.tax;
-  const taxable =
-    tax?.taxEnabled && tax.taxRateBp > 0
-      ? netCents + (tax.taxOnDelivery ? deliveryFeeCents : 0)
-      : 0;
-  const taxCents = taxable
-    ? taxOn(taxable, tax!.taxRateBp, tax!.taxInclusive)
+  /*
+   * Bound once, so "is tax charged here" and "what rate" cannot disagree.
+   *
+   * Computing the taxable base under a guard and then reading the rate through
+   * `tax!` meant two separate claims about the same fact — and the assertion
+   * would have thrown on the day they diverged.
+   */
+  const tax =
+    input.tax?.taxEnabled && input.tax.taxRateBp > 0 ? input.tax : null;
+
+  const taxable = tax
+    ? netCents + (tax.taxOnDelivery ? deliveryFeeCents : 0)
     : 0;
+  const taxCents = tax ? taxOn(taxable, tax.taxRateBp, tax.taxInclusive) : 0;
 
   // Inclusive tax is already inside the prices, so it must not be added again.
   const totalCents =
@@ -157,9 +163,7 @@ export function computeTotals(input: {
   // and remits, nor on delivery. With inclusive pricing the tax is hidden
   // inside `netCents`, so strip it out before paying commission on it.
   const goodsTaxCents =
-    tax?.taxEnabled && tax.taxInclusive
-      ? taxOn(netCents, tax.taxRateBp, true)
-      : 0;
+    tax?.taxInclusive ? taxOn(netCents, tax.taxRateBp, true) : 0;
 
   return {
     subtotalCents,

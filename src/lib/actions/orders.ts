@@ -5,98 +5,23 @@ import { resolveLines } from "@/lib/orders/resolve-lines";
 import { clean } from "@/lib/orders/sanitize";
 import { upsertClient } from "@/lib/orders/clients";
 import { resolveDelivery, smallest, soonest } from "@/lib/orders/delivery";
-import { parseBooking } from "@/lib/orders/booking";
 import { referralFor } from "@/lib/orders/referral";
-import type {
-  OrderAddress,
-  OrderIntentInput,
-  OrderIntentResult,
-  OrderLineInput,
-  OrderPreview,
-} from "@/lib/orders/types";
+import type { OrderIntentInput, OrderIntentResult, OrderLineInput, OrderPreview } from "@/lib/orders/types";
 import { firstRow, present } from "@/lib/invariant";
-import { and, asc, eq, or, sql } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import {
-  affiliates,
-  clients,
-  coupons,
-  deliveryMethods,
-  orderItems,
-  orders,
-  paymentMethods,
-  products,
-  productVariants,
-  shops,
-  type Affiliate,
-  type Coupon,
-  type PaymentConfig,
-  type Product,
-  type ProductVariant,
-  type Shop,
-} from "@/db/schema";
-import { requireShop } from "@/lib/session";
-import {
-  formatAddress,
-  formatMoney,
-  normalizePhone,
-  parseMoneyToCents,
-} from "@/lib/utils";
-import {
-  sendOrderConfirmation,
-  sendRefundNotification,
-  sendShippingNotification,
-} from "@/lib/email";
-import type { ActionState } from "./shop";
-import {
-  bankDetailLines,
-  buildHandoff,
-  isPaymentMethodType,
-  PAYMENT_METHOD_DEFS,
-  isRailUsable,
-  type Handoff,
-} from "@/lib/payments";
-import { isDeliveryConfigured } from "@/lib/delivery";
-import {
-  checkCoupon,
-  COUPON_MESSAGES,
-  formatPercent,
-  generateCode,
-  normalizeCode,
-  type Totals,
-} from "@/lib/pricing";
+import { affiliates, coupons, orderItems, orders, paymentMethods, shops, type Affiliate, type Coupon, type PaymentConfig } from "@/db/schema";
+import { formatAddress, formatMoney, normalizePhone } from "@/lib/utils";
+import { sendOrderConfirmation } from "@/lib/email";
+import { bankDetailLines, buildHandoff, isPaymentMethodType, PAYMENT_METHOD_DEFS, isRailUsable } from "@/lib/payments";
+import { checkCoupon, COUPON_MESSAGES, normalizeCode } from "@/lib/pricing";
 import { createInvoiceForOrder } from "@/lib/invoices";
 import { can } from "@/lib/plans";
-import {
-  cartNeedsDelivery,
-  cartSubtotal,
-  quote,
-  type Quote,
-  type QuoteLine,
-} from "@/lib/quote";
-import {
-  clampQuantity,
-  isSellable,
-  maxOrderable,
-  unitsLeft,
-  variantLabel,
-  variantPrice,
-} from "@/lib/variants";
-import {
-  releaseStock,
-  reserveStock,
-  restoreStock,
-  retakeStock,
-} from "@/lib/inventory";
+import { cartNeedsDelivery, cartSubtotal, quote, type Quote, type QuoteLine } from "@/lib/quote";
+import { unitsLeft, variantLabel } from "@/lib/variants";
+import { releaseStock, reserveStock, restoreStock } from "@/lib/inventory";
 import { createCheckoutSession } from "@/lib/connect";
-import {
-  downloadExpiry,
-  downloadUrl,
-  hasDeliverableFiles,
-  newDownloadToken,
-  releaseDownloads,
-  releasesImmediately,
-} from "@/lib/downloads";
+import { downloadExpiry, downloadUrl, hasDeliverableFiles, newDownloadToken, releasesImmediately } from "@/lib/downloads";
 
 
 export async function createOrderIntent(

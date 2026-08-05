@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import { getLocale } from "@/i18n/server";
 import { directionOf } from "@/i18n/config";
 import { getMarketingDictionary } from "@/i18n/marketing";
-import { APP_URL, absolute } from "@/lib/seo";
+import { APP_URL } from "@/lib/seo";
 import "./globals.css";
 import "./brand.css";
 
@@ -62,7 +62,15 @@ export async function generateMetadata(): Promise<Metadata> {
       "Linktree alternative",
       "no commission ecommerce",
     ],
-    alternates: { canonical: "/" },
+    /*
+     * No `alternates.canonical` here on purpose.
+     *
+     * Metadata is inherited, so a canonical on the root layout is a canonical
+     * on every page that does not set its own — /login and /signup were both
+     * telling Google they *were* the homepage. The homepage declares its own
+     * in `page.tsx`; anything else either sets one that fits or has none, and
+     * a page with no canonical is simply itself.
+     */
     openGraph: {
       type: "website",
       siteName: "Sailo",
@@ -101,11 +109,14 @@ export async function generateMetadata(): Promise<Metadata> {
       apple: "/apple-icon.png",
     },
     manifest: "/manifest.webmanifest",
-    other: {
-      // Storefronts are the product; make the canonical origin explicit for
-      // scrapers that don't follow `metadataBase`.
-      "og:site": absolute("/"),
-    },
+    /*
+     * There was an `og:site` here. It is not an Open Graph property — the real
+     * one is `og:site_name`, already emitted above from `openGraph.siteName` —
+     * and Next rendered it as `<meta name=...>` rather than `<meta property=...>`,
+     * so no scraper read it under either name. Removed rather than renamed: the
+     * canonical origin it was trying to state is what `metadataBase` and the
+     * absolute `og:url` already say.
+     */
   };
 }
 

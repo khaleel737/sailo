@@ -7,11 +7,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { paymentMethods, type PaymentConfig } from "@/db/schema";
 import { requireShop } from "@/lib/session";
-import {
-  isConfigured,
-  isPaymentMethodType,
-  PAYMENT_METHOD_DEFS,
-} from "@/lib/payments";
+import { isConfigured, isPaymentMethodType, PAYMENT_METHOD_DEFS } from "@/lib/payments";
 import type { ActionState } from "./shop";
 
 /**

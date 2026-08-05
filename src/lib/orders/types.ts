@@ -44,8 +44,6 @@ export type OrderIntentInput = {
   note?: string;
 } & OrderAddress;
 
-/** Past this a "cart" is a data-entry mistake, not a shopping trip. */
-const MAX_LINES = 50;
 
 export type ResolvedLine = QuoteLine & {
   product: Product;

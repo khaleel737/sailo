@@ -1,18 +1,6 @@
 import type { shops } from "./shop";
-import type {
-  categories,
-  productFiles,
-  productImages,
-  productVariants,
-  products,
-  reviews,
-} from "./catalog";
-import type {
-  affiliates,
-  coupons,
-  deliveryMethods,
-  paymentMethods,
-} from "./commerce";
+import type { categories, productFiles, productImages, productVariants, products, reviews } from "./catalog";
+import type { affiliates, coupons, deliveryMethods, paymentMethods } from "./commerce";
 import type { clients, invoices, orderItems, orders } from "./orders";
 import type { staffActions, visitDaily, visits } from "./analytics";
 import type { user } from "./auth";

@@ -83,7 +83,7 @@ export const marketingSq: MarketingDictionary = {
   demos: {
     eyebrow: "Dyqane të gjalla",
     title: "Pesë dyqane të vërteta që punojnë mbi këtë.",
-    body: "Jo maketa. Secili është një dyqan Sailo i gjallë që mund ta hapni, filtroni dhe t\'i shtoni në shportë — dhe pamjet më poshtë u morën nga ato faqe, jo u vizatuan të duken si ato.",
+    body: "Jo maketa. Secili është një dyqan Sailo i gjallë që mund ta hapni, filtroni dhe t'i shtoni në shportë — dhe pamjet më poshtë u morën nga ato faqe, jo u vizatuan të duken si ato.",
     proves: "Çfarë tregon",
     open: "Hap {shop}",
     desktop: "Në laptop",
@@ -114,7 +114,7 @@ export const marketingSq: MarketingDictionary = {
     f4b: "Shisni një takim me zgjedhës date dhe afat njoftimi, ose një skedar që hapet sapo konfirmoni pagesën.",
     f5t: "Vlerësime, kuponë dhe rekomandime",
     f5b: "Blerësit vlerësojnë atë që blenë dhe ju vendosni çfarë publikohet. Nisni një kod zbritjeje, ose lini të tjerët të shesin për ju me komision.",
-    f6t: "Shifra që ia vlen t\'i lexosh",
+    f6t: "Shifra që ia vlen t'i lexosh",
     f6b: "Vizita, porosi, blerës të përsëritur dhe nga vjen trafiku — me fatura dhe eksporte CSV kur ju duhet dokumentacioni.",
   },
 
@@ -131,7 +131,7 @@ export const marketingSq: MarketingDictionary = {
     title: "Falas për të filluar dhe falas për të vazhduar.",
     body: "Sailo nuk merr kurrë pjesë nga shitjet tuaja — as në planet me pagesë, as në atë falas.",
     freeTagline: "Gjithçka që ju duhet për porositë e para.",
-    proTagline: "Hapësirë për t\'u rritur dhe një dyqan që duket i juaji.",
+    proTagline: "Hapësirë për t'u rritur dhe një dyqan që duket i juaji.",
     bizTagline: "Pagesa me kartë, promocione dhe rekomandime — mjetet që rrisin të ardhurat.",
     start: "Filloni falas",
     choose: "Zgjidhni {plan}",
@@ -151,7 +151,7 @@ export const marketingSq: MarketingDictionary = {
     q4: "A mund të shes shërbime ose skedarë dixhitalë?",
     a4: "Po, dhe sillen siç duhet. Një shërbim mund të mbajë kohëzgjatje, vendndodhje dhe zgjedhës date me afat njoftimi. Një produkt dixhital dërgon skedarë që hapen sapo konfirmoni pagesën, me kufij shkarkimi dhe skadim nëse i doni.",
     q5: "Kam tashmë një Linktree. Pse të ndërroj?",
-    a5: "Sepse një listë lidhjesh nuk mund të marrë porosi. Sailo e bën edhe pjesën e lidhjeve — rrjetet tuaja sociale qëndrojnë në krye të faqes — por poshtë tyre ka çmime, gjendje dhe një shportë, kështu që njerëzit blejnë në vend që t\'i dërgoni gjetkë.",
+    a5: "Sepse një listë lidhjesh nuk mund të marrë porosi. Sailo e bën edhe pjesën e lidhjeve — rrjetet tuaja sociale qëndrojnë në krye të faqes — por poshtë tyre ka çmime, gjendje dhe një shportë, kështu që njerëzit blejnë në vend që t'i dërgoni gjetkë.",
     q6: "Në cilën gjuhë do të jetë dyqani im?",
     a6: "Në atë nga tridhjetë e pesë që kërkon shfletuesi i vizitorit tuaj, ose në atë që fiksoni nëse blerësit tuaj janë të gjithë në një vend. Arabishtja dhe gjuhët e tjera nga e djathta në të majtë rregullohen siç duhet, jo të pasqyruara.",
   },
@@ -168,7 +168,7 @@ export const marketingSq: MarketingDictionary = {
 
   cta: {
     title: "Tashmë po shisni në mesazhe.",
-    body: "Sailo thjesht i jep një derë hyrëse — që njerëzit të shfletojnë, të krahasojnë dhe të shohin çmimet para se t\'ju shkruajnë.",
+    body: "Sailo thjesht i jep një derë hyrëse — që njerëzit të shfletojnë, të krahasojnë dhe të shohin çmimet para se t'ju shkruajnë.",
     button: "Merrni lidhjen tuaj",
     note: "Falas gjatë beta-s · Pa kartë",
   },
