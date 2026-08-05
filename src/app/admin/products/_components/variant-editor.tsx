@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
-import { ImagePlus, Loader2, Plus, Trash2, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Plus, Trash2 } from "lucide-react";
 import { Button, Input } from "@/components/ui";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@/i18n";
@@ -25,48 +25,14 @@ import type { ProductOption, ProductVariant } from "@/db/schema";
  * ago brings its price and stock back with it.
  */
 
-type Draft = {
-  price: string;
-  compareAt: string;
-  sku: string;
-  stock: string;
-  available: boolean;
-  image: string;
-};
-
-const BLANK: Draft = {
-  price: "",
-  compareAt: "",
-  sku: "",
-  stock: "",
-  available: true,
-  image: "",
-};
-
-type OptionDraft = { name: string; values: string };
-
-function splitValues(input: string) {
-  return input
-    .split(/[,\n]/)
-    .map((v) => v.trim())
-    .filter(Boolean);
-}
-
-function toDrafts(variants: ProductVariant[]) {
-  const map: Record<string, Draft> = {};
-  for (const v of variants) {
-    map[optionKey(v.options)] = {
-      price: v.priceCents === null ? "" : (v.priceCents / 100).toFixed(2),
-      compareAt:
-        v.compareAtCents === null ? "" : (v.compareAtCents / 100).toFixed(2),
-      sku: v.sku ?? "",
-      stock: v.stockQuantity === null ? "" : String(v.stockQuantity),
-      available: v.isAvailable,
-      image: v.imageUrl ?? "",
-    };
-  }
-  return map;
-}
+import {
+  BLANK,
+  splitValues,
+  toDrafts,
+  type Draft,
+  type OptionDraft,
+} from "../_lib/variant-draft";
+import { VariantImage } from "./variant-image";
 
 export function VariantEditor({
   options: initialOptions,
@@ -272,7 +238,11 @@ export function VariantEditor({
                 <th className="px-3 py-2 w-20 text-center">
                   {a.variants.forSale}
                 </th>
-                <th className="px-3 py-2 w-10" />
+                <th className="px-3 py-2 w-10">
+                  {/* Announced by a screen reader, invisible on screen —
+                      an empty header reads as a nameless column. */}
+                  <span className="sr-only">{a.variants.notSold}</span>
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-ink-100">
@@ -400,72 +370,3 @@ export function VariantEditor({
 }
 
 /** One photo per combination — the red shirt, not the shirt. */
-function VariantImage({
-  url,
-  label,
-  onChange,
-}: {
-  url: string;
-  label: string;
-  onChange: (url: string) => void;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [busy, setBusy] = useState(false);
-
-  async function upload(file: File | undefined) {
-    if (!file) return;
-    setBusy(true);
-    const body = new FormData();
-    body.append("file", file);
-    try {
-      const res = await fetch("/api/upload", { method: "POST", body });
-      const json = await res.json();
-      if (res.ok) onChange(json.url);
-    } catch {
-      // The row stays as it was; the seller can try again.
-    }
-    setBusy(false);
-    if (inputRef.current) inputRef.current.value = "";
-  }
-
-  return (
-    <div className="relative size-10">
-      <button
-        type="button"
-        onClick={() => inputRef.current?.click()}
-        aria-label={`Photo for ${label}`}
-        className="flex size-10 items-center justify-center overflow-hidden rounded-lg border border-dashed border-ink-300 text-ink-400 transition hover:border-ink-900 hover:text-ink-900"
-      >
-        {busy ? (
-          <Loader2 className="size-4 animate-spin" />
-        ) : url ? (
-          // Not next/image: this is a preview of an arbitrary blob URL that
-          // changes as the seller types, and it never reaches a buyer's page.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={url} alt="" className="size-full object-cover" />
-        ) : (
-          <ImagePlus className="size-4" />
-        )}
-      </button>
-
-      {url && !busy ? (
-        <button
-          type="button"
-          onClick={() => onChange("")}
-          aria-label={`Remove photo for ${label}`}
-          className="absolute -end-1.5 -top-1.5 flex size-4 items-center justify-center rounded-full bg-ink-900 text-white"
-        >
-          <X className="size-2.5" />
-        </button>
-      ) : null}
-
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
-        onChange={(e) => upload(e.target.files?.[0])}
-        className="hidden"
-      />
-    </div>
-  );
-}
