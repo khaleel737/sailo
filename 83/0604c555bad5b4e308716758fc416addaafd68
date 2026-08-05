@@ -1,0 +1,35 @@
+src/lib/order-status.test.ts
+  s_3dd4b357265b83::t_33feb38beb25b6 1-43
+src/app/hq/accounts/[id]/page.tsx
+  s_3dd4b357265b83::t_bd6ade19ef0837 17,36
+  s_3dd4b357265b83::t_6eda95cf193a75 37-40,254-256
+  s_3dd4b357265b83::t_a28e64c3ae3cae 253
+src/app/hq/accounts/[id]/_components/affiliates-table.tsx
+  s_3dd4b357265b83::t_ddfdffc58611f0 1-89
+src/app/hq/accounts/[id]/_components/buyers-table.tsx
+  s_3dd4b357265b83::t_ddfdffc58611f0 1-75
+src/app/hq/accounts/[id]/_components/account.types.ts
+  s_3dd4b357265b83::t_ddfdffc58611f0 1-3,13
+  s_3dd4b357265b83::t_c98953835885da 4-12
+src/app/hq/accounts/[id]/_components/orders-table.tsx
+  s_3dd4b357265b83::t_ddfdffc58611f0 1-6,9-69,71-85
+  s_3dd4b357265b83::t_92b58c3aef86e5 7-8,70
+src/app/hq/accounts/[id]/_components/catalogue-table.tsx
+  s_3dd4b357265b83::t_ddfdffc58611f0 1-82
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "830604c555bad5b4e308716758fc416addaafd68",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
