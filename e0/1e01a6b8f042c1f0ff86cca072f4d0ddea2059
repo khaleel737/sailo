@@ -1,0 +1,26 @@
+e2e/security.spec.ts
+  s_3dd4b357265b83::t_191f0eb625e5c6 1-31,36-57,61,64-80
+  s_3dd4b357265b83::t_a849bf08279733 32-35,58-60,62-63
+playwright.config.ts
+  s_3dd4b357265b83::t_a849bf08279733 1-22
+next.config.ts
+  s_3dd4b357265b83::t_150be98e127c09 16-69
+package.json
+  s_3dd4b357265b83::t_5ee53f0279ea59 33-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "e01e01a6b8f042c1f0ff86cca072f4d0ddea2059",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
