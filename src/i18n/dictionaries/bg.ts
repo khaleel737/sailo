@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const bg: Dictionary = {
+  errors: {
+    title: "Нещо се обърка",
+    body: "Тази страница не се зареди. Обикновено е временно, така че си струва да опитате пак.",
+    retry: "Опитай пак",
+    home: "Към началната страница",
+    reference: "Референция",
+  },
+
   common: {
     save: "Запази", cancel: "Отказ", close: "Затвори", delete: "Изтрий", edit: "Редактирай",
     done: "Готово", back: "Назад", loading: "Зареждане…", optional: "по избор",

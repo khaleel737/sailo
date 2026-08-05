@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const zh: Dictionary = {
+  errors: {
+    title: "出了点问题",
+    body: "这个页面没能加载。通常只是暂时的，值得再试一次。",
+    retry: "重试",
+    home: "回到首页",
+    reference: "参考编号",
+  },
+
   common: {
     save: "保存", cancel: "取消", close: "关闭", delete: "删除",
     edit: "编辑", done: "完成", back: "返回", loading: "加载中…",

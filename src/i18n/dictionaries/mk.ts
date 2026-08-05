@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const mk: Dictionary = {
+  errors: {
+    title: "Нешто тргна наопаку",
+    body: "Оваа страница не се вчита. Обично е привремено, па вреди да се обидете повторно.",
+    retry: "Обиди се повторно",
+    home: "Оди на почетна",
+    reference: "Референца",
+  },
+
   common: {
     save: "Зачувај", cancel: "Откажи", close: "Затвори", delete: "Избриши", edit: "Уреди",
     done: "Готово", back: "Назад", loading: "Вчитување…", optional: "изборно",

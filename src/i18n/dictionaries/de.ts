@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const de: Dictionary = {
+  errors: {
+    title: "Etwas ist schiefgelaufen",
+    body: "Diese Seite hat nicht geladen. Das ist meist vorübergehend — ein zweiter Versuch lohnt sich.",
+    retry: "Erneut versuchen",
+    home: "Zur Startseite",
+    reference: "Referenz",
+  },
+
   common: {
     save: "Speichern", cancel: "Abbrechen", close: "Schließen", delete: "Löschen",
     edit: "Bearbeiten", done: "Fertig", back: "Zurück", loading: "Wird geladen…",

@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const fr: Dictionary = {
+  errors: {
+    title: "Une erreur s’est produite",
+    body: "Cette page ne s’est pas chargée. C’est généralement temporaire, alors réessayer vaut le coup.",
+    retry: "Réessayer",
+    home: "Aller à l’accueil",
+    reference: "Référence",
+  },
+
   common: {
     save: "Enregistrer", cancel: "Annuler", close: "Fermer", delete: "Supprimer",
     edit: "Modifier", done: "Terminé", back: "Retour", loading: "Chargement…",

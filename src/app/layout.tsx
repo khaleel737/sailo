@@ -5,6 +5,7 @@ import { getLocale, getT } from "@/i18n/server";
 import { directionOf } from "@/i18n/config";
 import { getMarketingDictionary } from "@/i18n/marketing";
 import { RouteProgress } from "@/components/shared/route-progress";
+import { ErrorStringsProvider } from "@/components/shared/error-panel";
 import { APP_URL } from "@/lib/seo";
 import "./globals.css";
 import "./brand.css";
@@ -152,7 +153,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <Suspense fallback={null}>
           <RouteProgress label={t.common.loading} />
         </Suspense>
-        {children}
+        {/*
+          Every `error.tsx` below renders inside this, so the five strings an
+          error boundary needs are in context by the time one is reached.
+        */}
+        <ErrorStringsProvider value={t.errors}>{children}</ErrorStringsProvider>
       </body>
     </html>
   );

@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const fil: Dictionary = {
+  errors: {
+    title: "May nangyaring mali",
+    body: "Hindi na-load ang page na ito. Karaniwang pansamantala lang, kaya sulit subukan ulit.",
+    retry: "Subukan ulit",
+    home: "Pumunta sa homepage",
+    reference: "Reference",
+  },
+
   common: {
     save: "I-save", cancel: "Kanselahin", close: "Isara", delete: "Burahin", edit: "I-edit",
     done: "Tapos na", back: "Bumalik", loading: "Naglo-load…", optional: "opsyonal",

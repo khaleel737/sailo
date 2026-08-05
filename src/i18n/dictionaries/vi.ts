@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const vi: Dictionary = {
+  errors: {
+    title: "Đã có lỗi xảy ra",
+    body: "Trang này không tải được. Thường chỉ là tạm thời, nên thử lại là đáng.",
+    retry: "Thử lại",
+    home: "Về trang chủ",
+    reference: "Mã tham chiếu",
+  },
+
   common: {
     save: "Lưu", cancel: "Huỷ", close: "Đóng", delete: "Xoá", edit: "Sửa",
     done: "Xong", back: "Quay lại", loading: "Đang tải…", optional: "không bắt buộc",

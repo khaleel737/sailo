@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const ko: Dictionary = {
+  errors: {
+    title: "문제가 발생했어요",
+    body: "이 페이지를 불러오지 못했어요. 대개는 일시적인 문제라 다시 시도해 볼 만해요.",
+    retry: "다시 시도",
+    home: "홈으로 가기",
+    reference: "참조 번호",
+  },
+
   common: {
     save: "저장", cancel: "취소", close: "닫기", delete: "삭제", edit: "수정",
     done: "완료", back: "뒤로", loading: "불러오는 중…", optional: "선택",

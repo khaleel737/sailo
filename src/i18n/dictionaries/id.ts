@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const id: Dictionary = {
+  errors: {
+    title: "Ada yang tidak beres",
+    body: "Halaman ini gagal dimuat. Biasanya cuma sementara, jadi coba lagi saja.",
+    retry: "Coba lagi",
+    home: "Ke halaman utama",
+    reference: "Kode referensi",
+  },
+
   common: {
     save: "Simpan", cancel: "Batal", close: "Tutup", delete: "Hapus", edit: "Ubah",
     done: "Selesai", back: "Kembali", loading: "Memuat…", optional: "opsional",

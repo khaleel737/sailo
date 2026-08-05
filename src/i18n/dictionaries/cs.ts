@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const cs: Dictionary = {
+  errors: {
+    title: "Něco se pokazilo",
+    body: "Tato stránka se nenačetla. Bývá to jen dočasné, takže stojí za to zkusit to znovu.",
+    retry: "Zkusit znovu",
+    home: "Přejít na domovskou stránku",
+    reference: "Referenční kód",
+  },
+
   common: {
     save: "Uložit", cancel: "Zrušit", close: "Zavřít", delete: "Smazat", edit: "Upravit",
     done: "Hotovo", back: "Zpět", loading: "Načítání…", optional: "nepovinné",

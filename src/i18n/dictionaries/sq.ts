@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const sq: Dictionary = {
+  errors: {
+    title: "Diçka shkoi keq",
+    body: "Kjo faqe nuk u ngarkua. Zakonisht është e përkohshme, prandaj ia vlen të provoni sërish.",
+    retry: "Provo sërish",
+    home: "Shko te faqja kryesore",
+    reference: "Referenca",
+  },
+
   common: {
     save: "Ruaj", cancel: "Anulo", close: "Mbyll", delete: "Fshi", edit: "Ndrysho",
     done: "U krye", back: "Kthehu", loading: "Po ngarkohet…", optional: "opsionale",

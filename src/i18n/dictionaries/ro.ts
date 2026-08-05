@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const ro: Dictionary = {
+  errors: {
+    title: "Ceva nu a mers bine",
+    body: "Această pagină nu s-a încărcat. De obicei e temporar, așa că merită să încerci din nou.",
+    retry: "Încearcă din nou",
+    home: "Mergi la pagina principală",
+    reference: "Referință",
+  },
+
   common: {
     save: "Salvează", cancel: "Anulează", close: "Închide", delete: "Șterge",
     edit: "Editează", done: "Gata", back: "Înapoi", loading: "Se încarcă…",

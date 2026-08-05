@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const hu: Dictionary = {
+  errors: {
+    title: "Valami elromlott",
+    body: "Ez az oldal nem töltődött be. Ez általában átmeneti, úgyhogy érdemes újrapróbálni.",
+    retry: "Újra",
+    home: "Ugrás a főoldalra",
+    reference: "Hivatkozási szám",
+  },
+
   common: {
     save: "Mentés", cancel: "Mégse", close: "Bezárás", delete: "Törlés", edit: "Szerkesztés",
     done: "Kész", back: "Vissza", loading: "Betöltés…", optional: "nem kötelező",

@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const uk: Dictionary = {
+  errors: {
+    title: "Щось пішло не так",
+    body: "Ця сторінка не завантажилася. Зазвичай це тимчасово, тож варто спробувати ще раз.",
+    retry: "Спробувати ще раз",
+    home: "На головну",
+    reference: "Код помилки",
+  },
+
   common: {
     save: "Зберегти", cancel: "Скасувати", close: "Закрити", delete: "Видалити",
     edit: "Редагувати", done: "Готово", back: "Назад", loading: "Завантаження…",

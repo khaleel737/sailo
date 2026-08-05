@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const nl: Dictionary = {
+  errors: {
+    title: "Er is iets misgegaan",
+    body: "Deze pagina is niet geladen. Dat is meestal tijdelijk, dus het is de moeite waard het opnieuw te proberen.",
+    retry: "Opnieuw proberen",
+    home: "Naar de homepage",
+    reference: "Referentie",
+  },
+
   common: {
     save: "Opslaan", cancel: "Annuleren", close: "Sluiten", delete: "Verwijderen",
     edit: "Bewerken", done: "Klaar", back: "Terug", loading: "Laden…",

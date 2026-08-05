@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const da: Dictionary = {
+  errors: {
+    title: "Noget gik galt",
+    body: "Denne side blev ikke indlæst. Det er som regel midlertidigt, så det er værd at prøve igen.",
+    retry: "Prøv igen",
+    home: "Gå til forsiden",
+    reference: "Reference",
+  },
+
   common: {
     save: "Gem", cancel: "Annuller", close: "Luk", delete: "Slet", edit: "Rediger",
     done: "Færdig", back: "Tilbage", loading: "Indlæser…", optional: "valgfrit",

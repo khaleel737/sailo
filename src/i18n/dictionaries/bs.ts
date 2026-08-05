@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const bs: Dictionary = {
+  errors: {
+    title: "Nešto je pošlo po zlu",
+    body: "Ova stranica se nije učitala. Obično je to privremeno, pa se isplati pokušati ponovo.",
+    retry: "Pokušaj ponovo",
+    home: "Idi na početnu",
+    reference: "Referenca",
+  },
+
   common: {
     save: "Sačuvaj", cancel: "Otkaži", close: "Zatvori", delete: "Obriši", edit: "Izmijeni",
     done: "Gotovo", back: "Nazad", loading: "Učitavanje…", optional: "neobavezno",

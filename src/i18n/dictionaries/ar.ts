@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const ar: Dictionary = {
+  errors: {
+    title: "حدث خطأ ما",
+    body: "لم تُحمَّل هذه الصفحة. عادةً ما يكون الأمر مؤقتًا، فالمحاولة مرة أخرى تستحق.",
+    retry: "إعادة المحاولة",
+    home: "الذهاب إلى الصفحة الرئيسية",
+    reference: "الرقم المرجعي",
+  },
+
   common: {
     save: "حفظ", cancel: "إلغاء", close: "إغلاق", delete: "حذف",
     edit: "تعديل", done: "تم", back: "رجوع", loading: "جارٍ التحميل…",

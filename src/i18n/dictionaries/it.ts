@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const it: Dictionary = {
+  errors: {
+    title: "Qualcosa è andato storto",
+    body: "Questa pagina non si è caricata. Di solito è temporaneo, quindi vale la pena riprovare.",
+    retry: "Riprova",
+    home: "Vai alla home",
+    reference: "Riferimento",
+  },
+
   common: {
     save: "Salva", cancel: "Annulla", close: "Chiudi", delete: "Elimina",
     edit: "Modifica", done: "Fatto", back: "Indietro", loading: "Caricamento…",

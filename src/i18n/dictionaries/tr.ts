@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const tr: Dictionary = {
+  errors: {
+    title: "Bir şeyler ters gitti",
+    body: "Bu sayfa yüklenmedi. Genelde geçicidir, tekrar denemeye değer.",
+    retry: "Tekrar dene",
+    home: "Ana sayfaya git",
+    reference: "Referans",
+  },
+
   common: {
     save: "Kaydet", cancel: "Vazgeç", close: "Kapat", delete: "Sil", edit: "Düzenle",
     done: "Tamam", back: "Geri", loading: "Yükleniyor…", optional: "isteğe bağlı",

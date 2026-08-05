@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const ru: Dictionary = {
+  errors: {
+    title: "Что-то пошло не так",
+    body: "Страница не загрузилась. Обычно это временно, так что стоит попробовать ещё раз.",
+    retry: "Попробовать снова",
+    home: "На главную",
+    reference: "Код ошибки",
+  },
+
   common: {
     save: "Сохранить", cancel: "Отмена", close: "Закрыть", delete: "Удалить",
     edit: "Изменить", done: "Готово", back: "Назад", loading: "Загрузка…",

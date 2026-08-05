@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const sl: Dictionary = {
+  errors: {
+    title: "Nekaj je šlo narobe",
+    body: "Ta stran se ni naložila. Običajno je to začasno, zato se splača poskusiti znova.",
+    retry: "Poskusi znova",
+    home: "Pojdi na domačo stran",
+    reference: "Sklic",
+  },
+
   common: {
     save: "Shrani", cancel: "Prekliči", close: "Zapri", delete: "Izbriši", edit: "Uredi",
     done: "Končano", back: "Nazaj", loading: "Nalaganje…", optional: "neobvezno",

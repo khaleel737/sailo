@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const sv: Dictionary = {
+  errors: {
+    title: "Något gick fel",
+    body: "Den här sidan laddades inte. Det är oftast tillfälligt, så det är värt att försöka igen.",
+    retry: "Försök igen",
+    home: "Gå till startsidan",
+    reference: "Referens",
+  },
+
   common: {
     save: "Spara", cancel: "Avbryt", close: "Stäng", delete: "Ta bort", edit: "Redigera",
     done: "Klar", back: "Tillbaka", loading: "Laddar…", optional: "valfritt",

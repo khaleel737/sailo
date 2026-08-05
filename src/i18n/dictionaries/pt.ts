@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const pt: Dictionary = {
+  errors: {
+    title: "Algo correu mal",
+    body: "Esta página não carregou. Costuma ser temporário, por isso vale a pena tentar de novo.",
+    retry: "Tentar de novo",
+    home: "Ir para a página inicial",
+    reference: "Referência",
+  },
+
   common: {
     save: "Guardar", cancel: "Cancelar", close: "Fechar", delete: "Eliminar",
     edit: "Editar", done: "Concluído", back: "Voltar", loading: "A carregar…",

@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const th: Dictionary = {
+  errors: {
+    title: "มีบางอย่างผิดพลาด",
+    body: "หน้านี้โหลดไม่สำเร็จ ปกติเป็นเรื่องชั่วคราว ลองใหม่อีกครั้งดู",
+    retry: "ลองใหม่",
+    home: "ไปที่หน้าแรก",
+    reference: "รหัสอ้างอิง",
+  },
+
   common: {
     save: "บันทึก", cancel: "ยกเลิก", close: "ปิด", delete: "ลบ", edit: "แก้ไข",
     done: "เสร็จสิ้น", back: "ย้อนกลับ", loading: "กำลังโหลด…", optional: "ไม่บังคับ",

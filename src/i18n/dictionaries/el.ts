@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const el: Dictionary = {
+  errors: {
+    title: "Κάτι πήγε στραβά",
+    body: "Αυτή η σελίδα δεν φόρτωσε. Συνήθως είναι προσωρινό, οπότε αξίζει να δοκιμάσετε ξανά.",
+    retry: "Δοκιμάστε ξανά",
+    home: "Μετάβαση στην αρχική",
+    reference: "Κωδικός αναφοράς",
+  },
+
   common: {
     save: "Αποθήκευση", cancel: "Ακύρωση", close: "Κλείσιμο", delete: "Διαγραφή",
     edit: "Επεξεργασία", done: "Έτοιμο", back: "Πίσω", loading: "Φόρτωση…",

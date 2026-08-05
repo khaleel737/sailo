@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const hr: Dictionary = {
+  errors: {
+    title: "Nešto je pošlo po zlu",
+    body: "Ova se stranica nije učitala. Obično je to privremeno, pa se isplati pokušati ponovno.",
+    retry: "Pokušaj ponovno",
+    home: "Idi na početnu",
+    reference: "Referenca",
+  },
+
   common: {
     save: "Spremi", cancel: "Odustani", close: "Zatvori", delete: "Obriši", edit: "Uredi",
     done: "Gotovo", back: "Natrag", loading: "Učitavanje…", optional: "neobavezno",

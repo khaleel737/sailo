@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const fi: Dictionary = {
+  errors: {
+    title: "Jokin meni pieleen",
+    body: "Tämä sivu ei latautunut. Se on yleensä ohimenevää, joten uudelleenyritys kannattaa.",
+    retry: "Yritä uudelleen",
+    home: "Siirry etusivulle",
+    reference: "Viite",
+  },
+
   common: {
     save: "Tallenna", cancel: "Peruuta", close: "Sulje", delete: "Poista", edit: "Muokkaa",
     done: "Valmis", back: "Takaisin", loading: "Ladataan…", optional: "valinnainen",

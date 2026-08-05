@@ -1,6 +1,14 @@
 import type { Dictionary } from "./en";
 
 export const ja: Dictionary = {
+  errors: {
+    title: "問題が発生しました",
+    body: "このページを読み込めませんでした。多くは一時的なものなので、もう一度お試しください。",
+    retry: "再試行",
+    home: "ホームへ戻る",
+    reference: "参照番号",
+  },
+
   common: {
     save: "保存", cancel: "キャンセル", close: "閉じる", delete: "削除",
     edit: "編集", done: "完了", back: "戻る", loading: "読み込み中…",
