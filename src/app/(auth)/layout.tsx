@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Store } from "lucide-react";
-import { LanguageSwitcher } from "@/components/shop/language-switcher";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { getT } from "@/i18n/server";
 
 export default async function AuthLayout({ children }: LayoutProps<"/">) {

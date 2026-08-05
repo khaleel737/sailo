@@ -7,7 +7,7 @@ import type { Notification } from "@/lib/notifications";
 import type { Shop } from "@/db/schema";
 import type { Dictionary } from "@/i18n";
 import type { Locale } from "@/i18n/config";
-import { LanguageSwitcher } from "@/components/shop/language-switcher";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 
 export function AdminHeader({
   shop,

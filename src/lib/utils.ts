@@ -89,6 +89,21 @@ export function formatAddress(parts: {
     .join(", ");
 }
 
+/**
+ * Whether the public can reach a shop at all.
+ *
+ * Two separate switches with one answer: `isPublished` is the seller's, and
+ * `suspendedAt` is ours. Kept together in one function so a new public route
+ * can't honour one and forget the other — which is how a suspended shop ends
+ * up quietly still selling on a page nobody remembered to guard.
+ */
+export function isShopLive(shop: {
+  isPublished: boolean;
+  suspendedAt: Date | null;
+}) {
+  return shop.isPublished && !shop.suspendedAt;
+}
+
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

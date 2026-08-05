@@ -7,7 +7,7 @@ import { getDb } from "@/db";
 import { shops } from "@/db/schema";
 import { requireUser } from "@/lib/session";
 import { OnboardingForm } from "./onboarding-form";
-import { LanguageSwitcher } from "@/components/shop/language-switcher";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { getT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Set up your shop" };
