@@ -25,6 +25,7 @@
  * deliberate act, not a side effect of a deploy.
  */
 import Stripe from "stripe";
+import { present } from "../src/lib/invariant";
 import { PAID_PLAN_IDS, PLANS } from "../src/lib/plans";
 
 const CHECK_ONLY = process.argv.includes("--check");
@@ -53,7 +54,7 @@ async function main() {
   const resolved: { product: string; prices: string[] }[] = [];
 
   for (const planId of PAID_PLAN_IDS) {
-    const plan = PLANS[planId];
+    const plan = present(PLANS[planId], "PLANS[planId]");
     console.log(`${plan.name}`);
 
     // Look under the current key first, then the pre-rename one, so an account

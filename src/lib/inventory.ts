@@ -1,4 +1,5 @@
 import "server-only";
+import { firstRow } from "@/lib/invariant";
 import { and, asc, eq, gte, isNull, isNotNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
@@ -140,11 +141,11 @@ async function stockLinesFor(order: Order): Promise<StockLine[]> {
 export async function restoreStock(order: Order): Promise<boolean> {
   const db = getDb();
 
-  const [claimed] = await db
+  const claimed = firstRow(await db
     .update(orders)
     .set({ restockedAt: new Date() })
     .where(and(eq(orders.id, order.id), isNull(orders.restockedAt)))
-    .returning({ id: orders.id });
+    .returning({ id: orders.id }), "claimed");
   if (!claimed) return false;
 
   for (const line of await stockLinesFor(order)) {
@@ -157,11 +158,11 @@ export async function restoreStock(order: Order): Promise<boolean> {
 export async function retakeStock(order: Order): Promise<boolean> {
   const db = getDb();
 
-  const [claimed] = await db
+  const claimed = firstRow(await db
     .update(orders)
     .set({ restockedAt: null })
     .where(and(eq(orders.id, order.id), isNotNull(orders.restockedAt)))
-    .returning({ id: orders.id });
+    .returning({ id: orders.id }), "claimed");
   if (!claimed) return false;
 
   for (const line of await stockLinesFor(order)) {

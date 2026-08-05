@@ -1,4 +1,5 @@
 import "server-only";
+import { firstRow } from "@/lib/invariant";
 import { and, asc, eq, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
@@ -95,11 +96,11 @@ export async function releaseDownloads(orderId: string): Promise<boolean> {
   }
   if (order.downloadReleasedAt) return false;
 
-  const [claimed] = await db
+  const claimed = firstRow(await db
     .update(orders)
     .set({ downloadReleasedAt: new Date(), updatedAt: new Date() })
     .where(and(eq(orders.id, orderId), isNull(orders.downloadReleasedAt)))
-    .returning({ id: orders.id });
+    .returning({ id: orders.id }), "claimed");
   if (!claimed) return false;
 
   if (order.customerEmail) {

@@ -10,6 +10,7 @@
  *   npm test
  */
 import type { Coupon, DeliveryMethod, ProductOption } from "../src/db/schema";
+import { present } from "../src/lib/invariant";
 import { quote, cartNeedsDelivery, type QuoteLine } from "../src/lib/quote";
 import { checkCoupon, type TaxSettings } from "../src/lib/pricing";
 
@@ -427,8 +428,8 @@ check("quantity and variant pricing reach the line subtotal", () => {
     tax: NO_TAX,
     now: NOW,
   });
-  equal(result.lines[0].subtotalCents, 8400, "3 × 2800");
-  equal(result.lines[0].label, "450ml", "variant label");
+  equal(present(result.lines[0], "line 0").subtotalCents, 8400, "3 × 2800");
+  equal(present(result.lines[0], "line 0").label, "450ml", "variant label");
   equal(result.totals.subtotalCents, 8400, "subtotal");
 });
 

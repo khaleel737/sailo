@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { firstRow } from "@/lib/invariant";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { deliveryMethods, type DeliveryConfig } from "@/db/schema";
@@ -76,12 +77,12 @@ export async function saveDeliveryMethod(
       .set(values)
       .where(eq(deliveryMethods.id, id));
   } else {
-    const [{ max }] = await db
+    const { max } = firstRow(await db
       .select({
         max: sql<string>`coalesce(max(${deliveryMethods.position}), 0)`,
       })
       .from(deliveryMethods)
-      .where(eq(deliveryMethods.shopId, shop.id));
+      .where(eq(deliveryMethods.shopId, shop.id)), "max aggregate");
 
     await db.insert(deliveryMethods).values({
       ...values,

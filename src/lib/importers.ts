@@ -1,4 +1,5 @@
 import "server-only";
+import { firstRow } from "@/lib/invariant";
 import Papa from "papaparse";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -201,10 +202,10 @@ export async function importProducts(opts: {
     preview: opts.dryRun ? [] : undefined,
   };
 
-  const [{ count: existingCount }] = await db
+  const { count: existingCount } = firstRow(await db
     .select({ count: sql<string>`count(*)` })
     .from(products)
-    .where(eq(products.shopId, opts.shopId));
+    .where(eq(products.shopId, opts.shopId)), "count aggregate");
   let liveCount = Number(existingCount);
 
   // Categories are created on demand and cached so one lookup covers the file.
@@ -243,6 +244,8 @@ export async function importProducts(opts: {
     const head =
       group.find(({ raw }) => field(raw, "Title", "Name", "Product")) ??
       group[0];
+    // Groups are built from rows, so one always exists.
+    if (!head) continue;
     const { line, raw } = head;
     const title = field(raw, "Title", "Name", "Product") || handle;
 
@@ -303,7 +306,7 @@ export async function importProducts(opts: {
       if (catCache.has(key)) {
         categoryId = catCache.get(key)!;
       } else {
-        const [created] = await db
+        const created = firstRow(await db
           .insert(categories)
           .values({
             shopId: opts.shopId,
@@ -312,7 +315,7 @@ export async function importProducts(opts: {
             position: catCache.size,
           })
           .onConflictDoNothing({ target: [categories.shopId, categories.slug] })
-          .returning({ id: categories.id });
+          .returning({ id: categories.id }), "created");
 
         categoryId =
           created?.id ??
@@ -367,7 +370,7 @@ export async function importProducts(opts: {
       productId = existing.id;
       report.updated += 1;
     } else {
-      const [created] = await db
+      const created = firstRow(await db
         .insert(products)
         .values({
           ...values,
@@ -375,7 +378,7 @@ export async function importProducts(opts: {
           slug: handle,
           position: position++,
         })
-        .returning({ id: products.id });
+        .returning({ id: products.id }), "created");
       productId = created.id;
       report.created += 1;
       liveCount += 1;

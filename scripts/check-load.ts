@@ -54,6 +54,9 @@ async function generate() {
 
 async function measure() {
   const [shop] = await sql`select id, handle from shops where handle like ${TAG + "%"} limit 1`;
+  if (!shop) {
+    throw new Error(`No load-test shop found — run the generate step first.`);
+  }
   let worst = 0;
   const seqScans: string[] = [];
 
@@ -85,8 +88,13 @@ async function measure() {
   await plan("portal token", await sql`explain (analyze) select * from affiliates where portal_token = 'none'`);
   await plan("invoice token", await sql`explain (analyze) select * from invoices where token = 'none'`);
 
-  const [{ n: rows }] = await sql`select count(*)::int n from products`;
-  const [{ s: size }] = await sql`select pg_size_pretty(pg_database_size(current_database())) s`;
+  const rows = Number(
+    (await sql`select count(*)::int n from products`)[0]?.n ?? 0,
+  );
+  const size = String(
+    (await sql`select pg_size_pretty(pg_database_size(current_database())) s`)[0]
+      ?.s ?? "unknown",
+  );
   console.log(`\n  ${rows.toLocaleString()} products · database ${size} · slowest query ${worst.toFixed(2)}ms`);
   return { worst, seqScans };
 }

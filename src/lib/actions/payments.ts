@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { firstRow } from "@/lib/invariant";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { paymentMethods, type PaymentConfig } from "@/db/schema";
@@ -47,10 +48,10 @@ export async function savePaymentMethod(
   const label = String(formData.get("label") ?? "").trim().slice(0, 60) || null;
   const db = getDb();
 
-  const [{ max }] = await db
+  const { max } = firstRow(await db
     .select({ max: sql<string>`coalesce(max(${paymentMethods.position}), 0)` })
     .from(paymentMethods)
-    .where(eq(paymentMethods.shopId, shop.id));
+    .where(eq(paymentMethods.shopId, shop.id)), "max aggregate");
 
   await db
     .insert(paymentMethods)

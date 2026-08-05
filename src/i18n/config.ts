@@ -57,7 +57,7 @@ export function matchAcceptLanguage(header: string | null): Locale | null {
   const wanted = header
     .split(",")
     .map((part) => {
-      const [tag, q] = part.trim().split(";q=");
+      const [tag = "", q] = part.trim().split(";q=");
       return { tag: tag.trim().toLowerCase(), q: q ? Number(q) : 1 };
     })
     .filter((p) => p.tag && Number.isFinite(p.q))

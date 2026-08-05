@@ -110,8 +110,10 @@ export function summarise(
   lines: { title: string; label?: string }[],
   more = (n: number) => `and ${n} more`,
 ) {
-  if (lines.length === 0) return "";
   const [first, ...rest] = lines;
+  // Nothing to summarise. Checked via the destructured head rather than
+  // `lines.length`, which the compiler can't connect to `first` being present.
+  if (!first) return "";
   const head = first.label ? `${first.title} — ${first.label}` : first.title;
   return rest.length ? `${head} ${more(rest.length)}` : head;
 }

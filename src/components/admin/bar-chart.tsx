@@ -37,10 +37,12 @@ export function BarChart({
 
   const max = Math.max(...data.map((d) => d.value), 1);
   const peakIndex = data.reduce(
-    (best, d, i) => (d.value > data[best].value ? i : best),
+    (best, d, i) => (d.value > (data[best]?.value ?? -Infinity) ? i : best),
     0,
   );
-  const hasData = data.some((d) => d.value > 0);
+  // Bound once: "there is data" and "the peak row exists" are the same fact,
+  // and splitting them let the render read a row the guard didn't prove.
+  const peak = data.some((d) => d.value > 0) ? data[peakIndex] : undefined;
 
   const fmtDay = (day: string) =>
     new Date(`${day}T00:00:00`).toLocaleDateString("en-US", {
@@ -55,11 +57,11 @@ export function BarChart({
           <h2 className="text-sm font-medium text-ink-500">{title}</h2>
           <p className="mt-0.5 text-2xl font-semibold tabular-nums">{total}</p>
         </div>
-        {hasData ? (
+        {peak ? (
           <p className="text-right text-xs text-ink-400">
-            Peak {format(data[peakIndex].value)}
+            Peak {format(peak.value)}
             <br />
-            {fmtDay(data[peakIndex].day)}
+            {fmtDay(peak.day)}
           </p>
         ) : null}
       </div>
@@ -124,7 +126,7 @@ export function BarChart({
         ))}
       </div>
 
-      {!hasData ? (
+      {!peak ? (
         <p className="mt-2 text-center text-xs text-ink-400">{emptyLabel}</p>
       ) : null}
 

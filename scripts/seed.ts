@@ -5,6 +5,7 @@
  *   npm run db:seed
  */
 import { neon } from "@neondatabase/serverless";
+import { firstRow, present } from "@/lib/invariant";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import { hashPassword } from "better-auth/crypto";
@@ -353,7 +354,7 @@ async function main() {
   });
 
   console.log("Creating demo shop…");
-  const [shop] = await db
+  const shop = firstRow(await db
     .insert(shops)
     .values({
       userId,
@@ -388,7 +389,7 @@ async function main() {
       ],
       isPublished: true,
     })
-    .returning();
+    .returning(), "shop");
 
   console.log("Creating categories…");
   const insertedCategories = await db
@@ -407,7 +408,7 @@ async function main() {
   console.log("Creating products…");
   const productIds: string[] = [];
   for (const [i, p] of PRODUCTS.entries()) {
-    const [created] = await db
+    const created = firstRow(await db
       .insert(products)
       .values({
         shopId: shop.id,
@@ -435,7 +436,7 @@ async function main() {
         isPublished: true,
         position: i,
       })
-      .returning();
+      .returning(), "created");
 
     productIds.push(created.id);
     await db.insert(productImages).values(
@@ -480,7 +481,7 @@ async function main() {
   await db.insert(reviews).values(
     REVIEWS.map((r, i) => ({
       shopId: shop.id,
-      productId: productIds[r.product],
+      productId: present(productIds[r.product], `product ${r.product}`),
       authorName: r.name,
       rating: r.rating,
       body: r.body,
@@ -747,7 +748,7 @@ async function main() {
     .values(
       ORDERS.map((o, i) => {
         const client = clientByEmail.get(o.email)!;
-        const product = PRODUCTS[o.p];
+        const product = present(PRODUCTS[o.p], `product ${o.p}`);
         const delivery = o.delivery ? deliveryByName.get(o.delivery)! : null;
         const affiliate = o.affiliate
           ? affiliateByCode.get(o.affiliate)
@@ -831,8 +832,8 @@ async function main() {
   console.log("Creating order items…");
   await db.insert(orderItems).values(
     insertedOrders.map((row, i) => {
-      const o = ORDERS[i];
-      const product = PRODUCTS[o.p];
+      const o = present(ORDERS[i], "ORDERS[i]");
+      const product = present(PRODUCTS[o.p], `product ${o.p}`);
       return {
         orderId: row.id,
         productId: productIds[o.p],

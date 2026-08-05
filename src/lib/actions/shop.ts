@@ -135,7 +135,7 @@ export async function createShop(
   });
   if (existing) redirect("/admin");
 
-  let shop: { id: string };
+  let shop: { id: string } | undefined;
   try {
     [shop] = await db
       .insert(shops)
@@ -154,6 +154,10 @@ export async function createShop(
     }
     throw error;
   }
+
+  // An insert that returned nothing means the shop wasn't created; there is
+  // nothing to attach a payment method to and nowhere to send them.
+  if (!shop) return { ok: false, error: "Couldn't create your shop. Try again." };
 
   // A shop with no way to order is useless, so seed WhatsApp if given.
   const whatsapp = normalizePhone(String(formData.get("whatsapp") ?? ""));

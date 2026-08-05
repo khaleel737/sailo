@@ -13,6 +13,7 @@
  *   npm run db:seed:niches
  */
 import { neon } from "@neondatabase/serverless";
+import { firstRow } from "@/lib/invariant";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import { hashPassword } from "better-auth/crypto";
@@ -946,7 +947,7 @@ async function main() {
   });
 
   console.log("Creating the shop…");
-  const [shop] = await db
+  const shop = firstRow(await db
     .insert(shops)
     .values({
       userId,
@@ -978,7 +979,7 @@ async function main() {
       socials: [{ platform: "instagram", url: "https://instagram.com/sundry" }],
       isPublished: true,
     })
-    .returning();
+    .returning(), "shop");
 
   console.log("Creating categories…");
   const insertedCategories = await db
@@ -996,7 +997,7 @@ async function main() {
 
   console.log("Creating products…");
   for (const [i, p] of PRODUCTS.entries()) {
-    const [created] = await db
+    const created = firstRow(await db
       .insert(products)
       .values({
         shopId: shop.id,
@@ -1024,7 +1025,7 @@ async function main() {
         isPublished: true,
         position: i,
       })
-      .returning();
+      .returning(), "created");
 
     await db.insert(productImages).values(
       p.images.map((seed, index) => ({

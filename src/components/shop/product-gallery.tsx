@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { present } from "@/lib/invariant";
 import Image from "next/image";
 import { ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -23,7 +24,11 @@ export function ProductGallery({
     );
   }
 
-  const current = images[Math.min(active, images.length - 1)];
+  // The empty case returned above, so the clamped index always lands.
+  const current = present(
+    images[Math.min(active, images.length - 1)],
+    "a gallery image",
+  );
 
   return (
     <div className="space-y-3">

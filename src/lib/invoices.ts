@@ -1,4 +1,5 @@
 import "server-only";
+import { firstRow } from "@/lib/invariant";
 import { eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { invoices, shops } from "@/db/schema";
@@ -9,14 +10,14 @@ import { invoices, shops } from "@/db/schema";
  */
 async function claimNumber(shopId: string) {
   const db = getDb();
-  const [row] = await db
+  const row = firstRow(await db
     .update(shops)
     .set({ invoiceNextNumber: sql`${shops.invoiceNextNumber} + 1` })
     .where(eq(shops.id, shopId))
     .returning({
       next: shops.invoiceNextNumber,
       prefix: shops.invoicePrefix,
-    });
+    }), "row");
 
   // `next` is the post-increment value, so the number we claimed is one below.
   const claimed = row.next - 1;
@@ -41,11 +42,11 @@ export async function createInvoiceForOrder(shopId: string, orderId: string) {
   if (existing) return existing;
 
   const number = await claimNumber(shopId);
-  const [invoice] = await db
+  const invoice = firstRow(await db
     .insert(invoices)
     .values({ shopId, orderId, number, token: randomToken() })
     .onConflictDoNothing({ target: invoices.orderId })
-    .returning();
+    .returning(), "invoice");
 
   if (invoice) return invoice;
 

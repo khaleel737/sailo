@@ -1,4 +1,5 @@
 import { and, eq, isNotNull, isNull, or, gt, sql } from "drizzle-orm";
+import { firstRow } from "@/lib/invariant";
 import { getDb } from "@/db";
 import { orders, productFiles } from "@/db/schema";
 import { isUuid } from "@/lib/utils";
@@ -42,7 +43,7 @@ export async function GET(
 
   // Claiming the download and checking whether one is left happen in the same
   // statement, so opening two tabs can't spend the last one twice.
-  const [claimed] = await db
+  const claimed = firstRow(await db
     .update(orders)
     .set({ downloadCount: sql`${orders.downloadCount} + 1` })
     .where(
@@ -59,7 +60,7 @@ export async function GET(
         ),
       ),
     )
-    .returning({ id: orders.id });
+    .returning({ id: orders.id }), "claimed");
 
   if (!claimed) {
     // Gone rather than Forbidden: the link was valid, its allowance isn't.

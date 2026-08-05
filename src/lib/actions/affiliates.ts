@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { firstRow } from "@/lib/invariant";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, orders, shops } from "@/db/schema";
@@ -197,7 +198,7 @@ export async function applyAsAffiliate(
   }
 
   for (let attempt = 0; attempt < 5; attempt++) {
-    const [created] = await db
+    const created = firstRow(await db
       .insert(affiliates)
       .values({
         shopId: shop.id,
@@ -209,7 +210,7 @@ export async function applyAsAffiliate(
         source: "signup",
       })
       .onConflictDoNothing({ target: [affiliates.shopId, affiliates.code] })
-      .returning();
+      .returning(), "created");
     if (created) {
       revalidatePath("/admin/affiliates");
       return {

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { firstRow } from "@/lib/invariant";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
@@ -307,10 +308,10 @@ export async function saveProduct(
 
   // Product cap applies to new products only — a downgrade never deletes work.
   if (!id) {
-    const [{ count: existing }] = await db
+    const { count: existing } = firstRow(await db
       .select({ count: sql<string>`count(*)` })
       .from(products)
-      .where(eq(products.shopId, shop.id));
+      .where(eq(products.shopId, shop.id)), "count aggregate");
 
     if (atProductLimit(shop, Number(existing))) {
       const limit = productLimit(shop);
@@ -340,12 +341,12 @@ export async function saveProduct(
     // Images are managed as a set — replace wholesale.
     await db.delete(productImages).where(eq(productImages.productId, id));
   } else {
-    const [{ max }] = await db
+    const { max } = firstRow(await db
       .select({ max: sql<string>`coalesce(max(${products.position}), 0)` })
       .from(products)
-      .where(eq(products.shopId, shop.id));
+      .where(eq(products.shopId, shop.id)), "max aggregate");
 
-    const [created] = await db
+    const created = firstRow(await db
       .insert(products)
       .values({
         ...values,
@@ -353,7 +354,7 @@ export async function saveProduct(
         slug,
         position: Number(max) + 1,
       })
-      .returning({ id: products.id });
+      .returning({ id: products.id }), "created");
     productId = created.id;
   }
 
@@ -423,10 +424,10 @@ export async function createCategory(
   });
   if (exists) return { ok: false, error: "You already have that category." };
 
-  const [{ max }] = await db
+  const { max } = firstRow(await db
     .select({ max: sql<string>`coalesce(max(${categories.position}), 0)` })
     .from(categories)
-    .where(eq(categories.shopId, shop.id));
+    .where(eq(categories.shopId, shop.id)), "max aggregate");
 
   await db
     .insert(categories)

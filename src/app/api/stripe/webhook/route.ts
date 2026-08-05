@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { firstRow } from "@/lib/invariant";
 import type Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -83,11 +84,11 @@ export async function POST(request: Request) {
   const db = getDb();
 
   // Stripe delivers at least once; recording the id first makes replays no-ops.
-  const [claimed] = await db
+  const claimed = firstRow(await db
     .insert(stripeEvents)
     .values({ id: event.id, type: event.type })
     .onConflictDoNothing({ target: stripeEvents.id })
-    .returning({ id: stripeEvents.id });
+    .returning({ id: stripeEvents.id }), "claimed");
 
   if (!claimed) {
     return NextResponse.json({ received: true, duplicate: true });

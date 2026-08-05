@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { firstRow } from "@/lib/invariant";
 import { Check, ExternalLink, Sparkles } from "lucide-react";
 import { count, eq } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -30,10 +31,10 @@ export default async function BillingPage({
   const current = planFor(fresh);
   const interval = params.interval === "year" ? "year" : "month";
 
-  const [{ value: productCount }] = await getDb()
+  const { value: productCount } = firstRow(await getDb()
     .select({ value: count() })
     .from(products)
-    .where(eq(products.shopId, fresh.id));
+    .where(eq(products.shopId, fresh.id)), "value aggregate");
 
   const limit = productLimit(fresh);
 

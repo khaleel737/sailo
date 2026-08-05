@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { firstRow, present } from "@/lib/invariant";
 import { and, asc, eq, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
@@ -325,7 +326,7 @@ async function upsertClient(
     return existing.id;
   }
 
-  const [created] = await db
+  const created = firstRow(await db
     .insert(clients)
     .values({
       shopId,
@@ -334,7 +335,7 @@ async function upsertClient(
       phone: data.phone,
       ...address,
     })
-    .returning({ id: clients.id });
+    .returning({ id: clients.id }), "created");
   return created.id;
 }
 
@@ -363,7 +364,9 @@ export async function createOrderIntent(
   if (!resolved.ok) return { ok: false, error: resolved.error };
   const { lines } = resolved;
   // The first line stands in for the order wherever one product is expected.
-  const head = lines[0];
+  // Every path above rejects an empty basket, but the header columns are
+  // derived from this line and a silent undefined would write a broken order.
+  const head = present(lines[0], "at least one order line");
 
   if (!isPaymentMethodType(input.paymentMethod)) {
     return { ok: false, error: "Pick how you'd like to order." };
@@ -564,7 +567,7 @@ export async function createOrderIntent(
     ? smallest(digitalLines.map((l) => l.product.downloadLimit))
     : null;
 
-  const [order] = await db
+  const order = firstRow(await db
     .insert(orders)
     .values({
       shopId: shop.id,
@@ -633,7 +636,7 @@ export async function createOrderIntent(
       // COD is collected on delivery; transfers are owed until confirmed.
       paymentStatus: "unpaid",
     })
-    .returning({ id: orders.id });
+    .returning({ id: orders.id }), "order");
 
   // The authoritative list of what was sold. Written straight after the header
   // so nothing can read the order in a one-line-only state.
@@ -652,9 +655,13 @@ export async function createOrderIntent(
       subtotalCents: line.subtotalCents,
       scheduledFor: lines[position]?.scheduledFor ?? null,
       serviceMode:
-        line.kind === "service" ? lines[position].product.serviceMode : null,
+        line.kind === "service"
+          ? (resolved.lines[position]?.product.serviceMode ?? null)
+          : null,
       serviceLocation:
-        line.kind === "service" ? lines[position].product.serviceLocation : null,
+        line.kind === "service"
+          ? (resolved.lines[position]?.product.serviceLocation ?? null)
+          : null,
       position,
     })),
   );
@@ -1049,10 +1056,11 @@ export async function previewOrder(input: {
       unitPriceCents: line.unitPriceCents,
       quantity: line.quantity,
       subtotalCents: line.subtotalCents,
-      unitsLeft: unitsLeft(
-        resolved.lines[index].product,
-        resolved.lines[index].variant,
-      ),
+      // `priced.lines` is built from `resolved.lines` in order, so the index
+      // lines up — but a missing entry means stock, not a crash.
+      unitsLeft: resolved.lines[index]
+        ? unitsLeft(resolved.lines[index].product, resolved.lines[index].variant)
+        : null,
     })),
     unavailable: resolved.dropped.map((d) => ({
       productId: d.productId,
@@ -1086,18 +1094,19 @@ async function referralFor(
   if (!affiliate) {
     // Retry on the rare code collision rather than failing the order.
     for (let attempt = 0; attempt < 5 && !affiliate; attempt++) {
-      const [created] = await db
+      const localPart = email.split("@")[0] ?? email;
+      const created = firstRow(await db
         .insert(affiliates)
         .values({
           shopId: shop.id,
-          name: name ?? email.split("@")[0],
+          name: name ?? localPart,
           email,
-          code: generateCode(name ?? email.split("@")[0]),
+          code: generateCode(name ?? localPart),
           status: "active",
           source: "buyer",
         })
         .onConflictDoNothing({ target: [affiliates.shopId, affiliates.code] })
-        .returning();
+        .returning(), "created");
       affiliate = created;
     }
   }
@@ -1183,11 +1192,11 @@ export async function updatePaymentStatus(formData: FormData) {
   const paymentStatus = String(formData.get("paymentStatus") ?? "");
   if (!id || !PAYMENT_STATUSES.has(paymentStatus)) return;
 
-  const [updated] = await getDb()
+  const updated = firstRow(await getDb()
     .update(orders)
     .set({ paymentStatus, updatedAt: new Date() })
     .where(and(eq(orders.id, id), eq(orders.shopId, shop.id)))
-    .returning({ id: orders.id });
+    .returning({ id: orders.id }), "updated");
 
   // Confirming the money is what unlocks a held-back download, and the buyer
   // is emailed the link rather than being left to check back.

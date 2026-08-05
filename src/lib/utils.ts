@@ -101,7 +101,7 @@ export function isUuid(value: string) {
 export function readableOn(hex: string) {
   const match = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
   if (!match) return "#ffffff";
-  const int = parseInt(match[1], 16);
+  const int = parseInt(match[1] ?? "ffffff", 16);
   const r = (int >> 16) & 255;
   const g = (int >> 8) & 255;
   const b = int & 255;

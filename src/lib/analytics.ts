@@ -96,7 +96,7 @@ export function hostLabel(host: string | null): string {
     n.endsWith(".") ? clean.startsWith(n) : clean === n || clean.endsWith(`.${n}`),
   );
   const base = (known ?? clean).replace(/\.$/, "");
-  const word = base.split(".")[0];
+  const word = base.split(".")[0] ?? base;
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
