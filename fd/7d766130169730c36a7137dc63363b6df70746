@@ -1,0 +1,22 @@
+scripts/check-load.ts
+  s_79ff13cbe32e61::t_f71599a82f5a85 101-114,117-121
+  s_79ff13cbe32e61::t_94e3c831c5a1b5 1-100,115-116
+package.json
+  s_79ff13cbe32e61::t_94e3c831c5a1b5 15-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "fd7d766130169730c36a7137dc63363b6df70746",
+  "prompts": {},
+  "sessions": {
+    "s_79ff13cbe32e61": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d4473ffb-fe57-4d6e-8826-d0885bba381b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
