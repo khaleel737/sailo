@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { rateLimit } from "@/lib/redis";
+import { ipFromHeaders } from "@/lib/client-ip";
 import { cookies, headers } from "next/headers";
 import { and, eq, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -16,10 +17,7 @@ export async function POST(request: Request) {
    * limiter that blocks real buyers when its own backend is down has cost
    * more than the traffic it stopped.
    */
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    request.headers.get("x-real-ip") ??
-    "unknown";
+  const ip = ipFromHeaders(request.headers);
   const verdict = await rateLimit(`track:${ip}`, 120, 60);
   if (!verdict.allowed) {
     return NextResponse.json({ ok: false }, { status: 429 });

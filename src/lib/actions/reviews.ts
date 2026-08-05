@@ -6,6 +6,8 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { products, reviews, shops } from "@/db/schema";
 import { requireShop } from "@/lib/session";
+import { rateLimit } from "@/lib/redis";
+import { callerIp } from "@/lib/client-ip";
 import type { ActionState } from "./shop";
 
 /** Public submission — always lands unapproved so sellers moderate. */
@@ -13,6 +15,13 @@ export async function submitReview(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  // Public and unauthenticated: without a ceiling a shop's product page is a
+  // free billboard for whoever scripts it fastest.
+  const gate = await rateLimit(`review:${await callerIp()}`, 5, 3600);
+  if (!gate.allowed) {
+    return { ok: false, error: "Too many reviews just now. Try again later." };
+  }
+
   const db = getDb();
   const productId = String(formData.get("productId") ?? "");
   const rating = Number(formData.get("rating"));

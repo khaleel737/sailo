@@ -10,6 +10,8 @@ import type { OrderIntentInput, OrderIntentResult, OrderLineInput, OrderPreview 
 import { firstRow, present } from "@/lib/invariant";
 import { and, asc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
+import { rateLimit } from "@/lib/redis";
+import { callerIp } from "@/lib/client-ip";
 import { affiliates, coupons, orderItems, orders, paymentMethods, shops, type Affiliate, type Coupon, type PaymentConfig } from "@/db/schema";
 import { formatAddress, formatMoney, normalizePhone } from "@/lib/utils";
 import { sendOrderConfirmation } from "@/lib/email";
@@ -27,6 +29,20 @@ import { downloadExpiry, downloadUrl, hasDeliverableFiles, newDownloadToken, rel
 export async function createOrderIntent(
   input: OrderIntentInput,
 ): Promise<OrderIntentResult> {
+  /*
+   * Public and unauthenticated, and it reserves stock. Without a ceiling one
+   * caller can hold a shop's entire inventory in unpaid orders faster than
+   * the hourly sweep releases it, and the shop reads as sold out to everyone
+   * else. Ten a minute is far above any real buyer.
+   *
+   * Fails open, like the rest: a limiter that blocks real orders when its own
+   * backend is down costs more than the traffic it stops.
+   */
+  const gate = await rateLimit(`order:${await callerIp()}`, 10, 60);
+  if (!gate.allowed) {
+    return { ok: false, error: "Too many attempts. Wait a moment and try again." };
+  }
+
   const db = getDb();
 
   const shop = await db.query.shops.findFirst({
@@ -526,6 +542,11 @@ export async function previewOrder(input: {
   deliveryMethodId?: string;
   couponCode?: string;
 }): Promise<OrderPreview | { error: string }> {
+  // Read-only, but it prices a whole basket on every keystroke in the coupon
+  // field, so the ceiling is high enough never to reach a real shopper.
+  const gate = await rateLimit(`quote:${await callerIp()}`, 120, 60);
+  if (!gate.allowed) return { error: "Too many attempts. Wait a moment." };
+
   const db = getDb();
   const now = new Date();
 
@@ -635,6 +656,12 @@ export async function submitPaymentReference(input: {
   orderId: string;
   reference: string;
 }): Promise<{ ok: boolean; error?: string }> {
+  // Writes to someone else's order, identified only by its id.
+  const gate = await rateLimit(`payref:${await callerIp()}`, 10, 60);
+  if (!gate.allowed) {
+    return { ok: false, error: "Too many attempts. Wait a moment and try again." };
+  }
+
   const reference = input.reference.trim().slice(0, 200);
   if (!reference) return { ok: false, error: "Add the transfer reference." };
 
