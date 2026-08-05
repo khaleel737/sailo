@@ -4,34 +4,51 @@ import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Category } from "@/db/schema";
+import type { ShopFacets } from "@/lib/queries";
 import type { Dictionary } from "@/i18n";
 import { interpolate, plural } from "@/i18n";
 
 export function FilterBar({
-  categories,
+  facets,
   resultCount,
   currency,
   t,
 }: {
-  categories: Category[];
+  facets: ShopFacets;
   resultCount: number;
   currency: string;
   t: Dictionary;
 }) {
+  const KIND_LABELS: Record<string, string> = {
+    physical: t.sort.physical,
+    digital: t.sort.digital,
+    service: t.sort.services,
+  };
+
+  /*
+   * Only what this shop actually sells. A control that cannot change the
+   * result is worse than no control: the shopper spends a tap finding out,
+   * and lands on an empty page that reads like the shop is broken.
+   */
+  const kinds = facets.kinds.filter((k) => KIND_LABELS[k.kind]);
+  const showKinds = kinds.length > 1;
+  const showStock = facets.hasOutOfStock;
+  const showPrice = facets.priceMaxCents > facets.priceMinCents;
+
   const SORTS = [
     { value: "", label: t.sort.featured },
     { value: "newest", label: t.sort.newest },
     { value: "price_asc", label: t.sort.priceAsc },
     { value: "price_desc", label: t.sort.priceDesc },
-    { value: "rating", label: t.sort.rating },
+    // Nothing to rank by until a review has been approved.
+    ...(facets.hasReviews ? [{ value: "rating", label: t.sort.rating }] : []),
   ];
   const KINDS = [
     { value: "", label: t.sort.allTypes },
-    { value: "physical", label: t.sort.physical },
-    { value: "digital", label: t.sort.digital },
-    { value: "service", label: t.sort.services },
+    ...kinds.map((k) => ({ value: k.kind, label: KIND_LABELS[k.kind] })),
   ];
+
+  const showFilterButton = showKinds || showStock || showPrice || SORTS.length > 1;
 
   const router = useRouter();
   const pathname = usePathname();
@@ -109,6 +126,7 @@ export function FilterBar({
           ) : null}
         </div>
 
+        {showFilterButton ? (
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -126,19 +144,21 @@ export function FilterBar({
             </span>
           ) : null}
         </button>
+        ) : null}
       </div>
 
-      {categories.length > 0 ? (
+      {facets.categories.length > 0 ? (
         <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
           <CategoryChip
             label={t.shop.all}
             active={!activeCategory}
             onClick={() => setParams({ category: null })}
           />
-          {categories.map((cat) => (
+          {facets.categories.map((cat) => (
             <CategoryChip
               key={cat.id}
               label={cat.name}
+              count={cat.count}
               active={activeCategory === cat.slug}
               onClick={() =>
                 setParams({
@@ -153,6 +173,7 @@ export function FilterBar({
       {open ? (
         <div className="surface-card animate-rise space-y-4 rounded-2xl p-4">
           <div className="grid gap-4 sm:grid-cols-2">
+            {showKinds ? (
             <label className="block">
               <span className="text-muted mb-1.5 block text-xs font-medium uppercase tracking-wide">
                 {t.shop.type}
@@ -169,6 +190,7 @@ export function FilterBar({
                 ))}
               </select>
             </label>
+            ) : null}
 
             <label className="block">
               <span className="text-muted mb-1.5 block text-xs font-medium uppercase tracking-wide">
@@ -188,6 +210,7 @@ export function FilterBar({
             </label>
           </div>
 
+          {showPrice ? (
           <div>
             <span className="text-muted mb-1.5 block text-xs font-medium uppercase tracking-wide">
               {interpolate(t.shop.priceRange, { currency })}
@@ -199,7 +222,7 @@ export function FilterBar({
                 inputMode="decimal"
                 defaultValue={activeMin}
                 onBlur={(e) => setParams({ min: e.target.value || null })}
-                placeholder={t.shop.min}
+                placeholder={majorUnits(facets.priceMinCents)}
                 aria-label={t.shop.min}
                 className="surface-elevated h-10 w-full rounded-lg px-3 text-sm outline-none"
               />
@@ -210,13 +233,15 @@ export function FilterBar({
                 inputMode="decimal"
                 defaultValue={activeMax}
                 onBlur={(e) => setParams({ max: e.target.value || null })}
-                placeholder={t.shop.max}
+                placeholder={majorUnits(facets.priceMaxCents)}
                 aria-label={t.shop.max}
                 className="surface-elevated h-10 w-full rounded-lg px-3 text-sm outline-none"
               />
             </div>
           </div>
+          ) : null}
 
+          {showStock ? (
           <label className="flex cursor-pointer items-center gap-2.5 text-sm">
             <input
               type="checkbox"
@@ -226,6 +251,7 @@ export function FilterBar({
             />
             {t.shop.inStockOnly}
           </label>
+          ) : null}
 
           {activeFilterCount > 0 || activeCategory || query ? (
             <button
@@ -257,10 +283,12 @@ export function FilterBar({
 
 function CategoryChip({
   label,
+  count,
   active,
   onClick,
 }: {
   label: string;
+  count?: number;
   active: boolean;
   onClick: () => void;
 }) {
@@ -277,6 +305,14 @@ function CategoryChip({
       )}
     >
       {label}
+      {count !== undefined ? (
+        <span className="ms-1.5 opacity-50 tabular-nums">{count}</span>
+      ) : null}
     </button>
   );
+}
+
+/** Minor units as a plain number, for a price placeholder. */
+function majorUnits(cents: number) {
+  return String(Math.round(cents / 100));
 }

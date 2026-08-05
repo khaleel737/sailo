@@ -10,7 +10,7 @@ import {
   getCheckoutOptions,
   getPublicProducts,
   getShopByHandle,
-  getShopCategories,
+  getShopFacets,
   type ShopFilters,
 } from "@/lib/queries";
 import { FilterBar } from "@/components/shop/filter-bar";
@@ -52,8 +52,8 @@ export default async function ShopPage({
   if (!shop || !shop.isPublished) notFound();
 
   const filters = (await searchParams) as ShopFilters;
-  const [categories, products, checkout] = await Promise.all([
-    getShopCategories(shop.id),
+  const [facets, products, checkout] = await Promise.all([
+    getShopFacets(shop.id),
     getPublicProducts(shop.id, filters),
     getCheckoutOptions(shop.id),
   ]);
@@ -149,7 +149,7 @@ export default async function ShopPage({
 
         <div className="mt-10">
           <FilterBar
-            categories={categories}
+            facets={facets}
             resultCount={products.length}
             currency={shop.currency}
             t={t}
