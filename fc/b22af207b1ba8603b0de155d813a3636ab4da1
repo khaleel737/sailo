@@ -1,0 +1,41 @@
+src/lib/actions/billing.ts
+  s_3dd4b357265b83::t_6a6c16b99f2bd7 7,56,83-90,92
+src/lib/tax-label.test.ts
+  s_3dd4b357265b83::t_dbdcaa2bb0ef40 1-57
+src/lib/billing-customer.ts
+  s_245cff4bd6e8de::t_b440c1f99975ed 1-86
+src/lib/billing-sync.ts
+  s_3dd4b357265b83::t_6a6c16b99f2bd7 6,21-30,32
+src/lib/invoice-pdf.ts
+  s_245cff4bd6e8de::t_bf3eeaf21226b4 13
+  s_3dd4b357265b83::t_4c5c49c566d807 12
+src/lib/tax-label.ts
+  s_3dd4b357265b83::t_fe49c118292fee 2-33
+  s_3dd4b357265b83::t_502adf18e8fa52 1
+src/lib/connect.ts
+  s_3dd4b357265b83::t_9b22a170a3684f 8,295
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "fcb22af207b1ba8603b0de155d813a3636ab4da1",
+  "prompts": {},
+  "sessions": {
+    "s_245cff4bd6e8de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e02099e-b1fd-430e-af26-4353fefe29d8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
