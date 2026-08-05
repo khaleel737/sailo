@@ -1,0 +1,131 @@
+src/components/overlays/sheet.tsx
+  s_3dd4b357265b83::t_c2e7854cfd5224 1-106
+src/i18n/dictionaries/pl.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/components/overlays/index.ts
+  s_3dd4b357265b83::t_c2e7854cfd5224 1-4
+src/components/shared/error-panel.tsx
+  s_245cff4bd6e8de::t_f85998e023ad99 1-123
+src/i18n/dictionaries/da.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/it.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/fr.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/components/overlays/modal-layer.tsx
+  s_245cff4bd6e8de::t_aa9a7ffdddd243 6,18,81,93
+  s_3dd4b357265b83::t_c2e7854cfd5224 1-5,7-17,19-51,58-80,82-92,94-121
+  s_3dd4b357265b83::t_db63e0c100a2ed 52-57
+src/i18n/dictionaries/cs.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/ro.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/sv.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/app/admin/error.tsx
+  s_245cff4bd6e8de::t_02d34e74063bba 1-20
+src/i18n/dictionaries/sl.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/id.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/sr.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/vi.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/app/(auth)/error.tsx
+  s_245cff4bd6e8de::t_02d34e74063bba 1-17
+src/i18n/dictionaries/hr.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/pt.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/el.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/tr.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/th.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/app/(legal)/error.tsx
+  s_245cff4bd6e8de::t_02d34e74063bba 1-14
+src/components/ui/segmented-control.tsx
+  s_3dd4b357265b83::t_c2e7854cfd5224 1-76
+src/i18n/dictionaries/ms.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/hu.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/ar.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/ru.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/app/(marketing)/error.tsx
+  s_245cff4bd6e8de::t_02d34e74063bba 1-21
+src/i18n/dictionaries/fil.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/ja.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/es.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/bs.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/no.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/bg.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/fi.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/uk.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/app/[handle]/error.tsx
+  s_245cff4bd6e8de::t_02d34e74063bba 1-35
+src/i18n/dictionaries/zh.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/app/global-error.tsx
+  s_245cff4bd6e8de::t_8fd94e95d9284a 1-128
+src/components/overlays/panel.tsx
+  s_3dd4b357265b83::t_c2e7854cfd5224 1-100
+src/app/error.tsx
+  s_245cff4bd6e8de::t_02d34e74063bba 1-25
+src/i18n/dictionaries/de.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/mk.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/nl.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/app/hq/error.tsx
+  s_245cff4bd6e8de::t_02d34e74063bba 1-14
+src/app/admin/_components/upgrade-modal.tsx
+  s_245cff4bd6e8de::t_aa9a7ffdddd243 8-9
+src/components/overlays/dialog.tsx
+  s_3dd4b357265b83::t_c2e7854cfd5224 1-91
+src/components/overlays/confirm-dialog.tsx
+  s_3dd4b357265b83::t_c2e7854cfd5224 1-62
+src/i18n/dictionaries/ko.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/i18n/dictionaries/sq.ts
+  s_245cff4bd6e8de::t_ad3078121365d9 4-11
+src/app/layout.tsx
+  s_245cff4bd6e8de::t_e212c0820287cf 8,156-160
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3a8c69292b0d14977ed28f012e099fac3d28341e",
+  "prompts": {},
+  "sessions": {
+    "s_245cff4bd6e8de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e02099e-b1fd-430e-af26-4353fefe29d8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
