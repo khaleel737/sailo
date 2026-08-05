@@ -1,0 +1,29 @@
+src/app/[handle]/page.tsx
+  s_3dd4b357265b83::t_d45cb0e3556568 13,55-56
+  s_3dd4b357265b83::t_4bd9b1557b9612 152
+src/components/shop/filter-bar.tsx
+  s_3dd4b357265b83::t_abd47a52a7f6c0 161,225,236,242,244,254,286,291,308-310,314-317
+  s_3dd4b357265b83::t_039b30b5282c2f 7,12,17,22-37,43-44,48,51-52,129,147,150,157,176,193,213
+  s_3dd4b357265b83::t_0718dec8e71161 318
+src/lib/queries.ts
+  s_3dd4b357265b83::t_bf4e95e1e28772 210-282,284-297
+src/app/api/cron/sweep/route.ts
+  s_3dd4b357265b83::t_2ac4ec5f98bb73 3,13-22,24-30,32-35,45-54
+  s_3dd4b357265b83::t_fcd544dd0d8ee3 55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "fc136ab946c0005f36bc48856b996f4cf38676ab",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
