@@ -1,0 +1,24 @@
+src/lib/orders/card-handoff.ts
+  s_3dd4b357265b83::t_d3537e22ecb55e 1-76
+src/lib/actions/orders.ts
+  s_3dd4b357265b83::t_52a03ff5d31700 98-105,107,505-509,511,573
+  s_3dd4b357265b83::t_cde280ea989295 22
+  s_3dd4b357265b83::t_c21775955f5954 23,448-464,467-470
+  s_3dd4b357265b83::t_16902dc6599b23 570-572
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "f12b0f03fd64aac209afe58ac810a1038c93fed5",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
