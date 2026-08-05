@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { getSession } from "@/lib/session";
 import { getT } from "@/i18n/server";
 import { getMarketingDictionary } from "@/i18n/marketing";
-import { interpolate } from "@/i18n";
 import { LOCALES } from "@/i18n/config";
-import { PLANS } from "@/lib/plans";
-import { formatMoney } from "@/lib/utils";
-import { DEMOS, HERO_DEMO, RTL_DEMO, phoneShotUrl, rtlShotUrl } from "@/lib/demos";
-import { SailoLogo } from "@/components/brand";
-import { LanguageSwitcher } from "@/components/shared/language-switcher";
+import { HERO_DEMO, RTL_DEMO, phoneShotUrl, rtlShotUrl } from "@/lib/demos";
 import { SiteNav } from "@/components/marketing/site-nav";
 import { BioCard } from "@/components/marketing/bio-card";
 import { PhoneFrame } from "@/components/marketing/frames";
@@ -28,7 +22,9 @@ import {
   Section,
   SectionHead,
 } from "@/components/marketing/kit";
-import { APP_URL, faqJsonLd, softwareJsonLd } from "@/lib/seo";
+import { faqJsonLd, softwareJsonLd } from "@/lib/seo";
+import { PricingSection } from "./_components/pricing-section";
+import { SiteFooter } from "./_components/site-footer";
 
 /**
  * The homepage is the one page whose canonical is "/" — it used to be declared
@@ -94,16 +90,6 @@ export default async function HomePage() {
     { to: 21, suffix: "", label: m.stats.s1 },
     { to: 0, suffix: "%", label: m.stats.s2 },
     { to: 60, suffix: "s", label: m.stats.s3 },
-  ];
-
-  const plans = [
-    { plan: PLANS.free, tagline: m.pricing.freeTagline, carry: null },
-    { plan: PLANS.pro, tagline: m.pricing.proTagline, carry: m.pricing.everythingFree },
-    {
-      plan: PLANS.business,
-      tagline: m.pricing.bizTagline,
-      carry: m.pricing.everythingPro,
-    },
   ];
 
   return (
@@ -403,142 +389,7 @@ export default async function HomePage() {
           </dl>
         </Section>
 
-        {/* ---------------------------------------------------------------
-            Pricing
-        --------------------------------------------------------------- */}
-        <Section id="pricing">
-          <SectionHead
-            eyebrow={m.pricing.eyebrow}
-            title={m.pricing.title}
-            body={m.pricing.body}
-          />
-
-          <div className="mt-16 grid gap-px overflow-hidden rounded-[var(--r-card)] bg-[var(--mute-200)] lg:grid-cols-3">
-            {plans.map(({ plan, tagline, carry }) => {
-              const featured = plan.id === "business";
-              return (
-                <div
-                  key={plan.id}
-                  className={
-                    featured
-                      ? "reveal flex flex-col bg-[var(--ink)] p-8 text-[var(--paper)] lg:p-10"
-                      : "reveal flex flex-col bg-[var(--paper)] p-8 lg:p-10"
-                  }
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <h3
-                      className={
-                        featured
-                          ? "text-[1.0625rem] font-medium text-[var(--paper)]"
-                          : "text-[1.0625rem] font-medium text-[var(--ink)]"
-                      }
-                    >
-                      {plan.name}
-                    </h3>
-                    {featured ? (
-                      <span className="rounded-[var(--r-pill)] border border-white/20 px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-[var(--on-ink-soft)]">
-                        {t.billing.bestValue}
-                      </span>
-                    ) : null}
-                  </div>
-
-                  <p
-                    className={
-                      featured
-                        ? "mt-3 min-h-12 text-[0.9375rem] leading-relaxed text-[var(--on-ink-mute)]"
-                        : "mt-3 min-h-12 text-[0.9375rem] leading-relaxed text-[var(--mute-500)]"
-                    }
-                  >
-                    {tagline}
-                  </p>
-
-                  <p className="mt-9 flex items-baseline gap-2">
-                    <span
-                      className={
-                        featured
-                          ? "display tabular text-[3rem] text-[var(--paper)]"
-                          : "display tabular text-[3rem] text-[var(--ink)]"
-                      }
-                    >
-                      {plan.monthlyCents === 0
-                        ? t.common.free
-                        : formatMoney(plan.monthlyCents, "USD")}
-                    </span>
-                    {plan.monthlyCents > 0 ? (
-                      <span
-                        className={
-                          featured
-                            ? "text-[0.875rem] text-[var(--on-ink-mute)]"
-                            : "text-[0.875rem] text-[var(--mute-400)]"
-                        }
-                      >
-                        {t.billing.perMonth}
-                      </span>
-                    ) : null}
-                  </p>
-                  <p
-                    className={
-                      featured
-                        ? "tabular mt-2 min-h-5 text-[0.8125rem] text-[var(--on-ink-mute)]"
-                        : "tabular mt-2 min-h-5 text-[0.8125rem] text-[var(--mute-400)]"
-                    }
-                  >
-                    {plan.yearlyCents > 0
-                      ? interpolate(t.billing.billedYearly, {
-                          amount: formatMoney(plan.yearlyCents, "USD"),
-                        })
-                      : ""}
-                  </p>
-
-                  <Cta
-                    href="/signup"
-                    tone={featured ? "invert" : "outline"}
-                    size="md"
-                    className="mt-9 w-full"
-                  >
-                    {plan.id === "free"
-                      ? m.pricing.start
-                      : interpolate(m.pricing.choose, { plan: plan.name })}
-                  </Cta>
-
-                  {carry ? (
-                    <p
-                      className={
-                        featured
-                          ? "mt-9 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-[var(--on-ink-mute)]"
-                          : "mt-9 text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-[var(--mute-400)]"
-                      }
-                    >
-                      {carry}
-                    </p>
-                  ) : null}
-                  <ul className={carry ? "mt-5 space-y-3.5" : "mt-9 space-y-3.5"}>
-                    {plan.highlights.map((key) => (
-                      <li
-                        key={key}
-                        className={
-                          featured
-                            ? "flex gap-3 text-[0.875rem] leading-snug text-[var(--on-ink-soft)]"
-                            : "flex gap-3 text-[0.875rem] leading-snug text-[var(--mute-600)]"
-                        }
-                      >
-                        <Check
-                          className="mt-px size-4 shrink-0 opacity-45"
-                          strokeWidth={2.5}
-                        />
-                        {t.highlights[key]}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
-
-          <p className="mt-10 text-center text-[0.8125rem] text-[var(--mute-400)]">
-            {t.billing.cancelAnyTime}
-          </p>
-        </Section>
+        <PricingSection t={t} m={m} />
 
         {/* ---------------------------------------------------------------
             Questions
@@ -602,87 +453,7 @@ export default async function HomePage() {
         </Section>
       </main>
 
-      <footer className="border-t border-[var(--mute-200)] py-16">
-        <Container>
-          <div className="grid gap-12 sm:grid-cols-[1fr_auto] sm:items-start">
-            <div>
-              <SailoLogo className="h-5 w-auto text-[var(--mute-400)]" />
-              <p className="mt-5 max-w-xs text-[0.875rem] leading-relaxed text-[var(--mute-500)]">
-                {m.footer.tagline}
-              </p>
-              <div className="mt-6">
-                <LanguageSwitcher
-                  current={locale}
-                  align="start"
-                  label={t.common.language}
-                  size="md"
-                />
-              </div>
-            </div>
-
-            <div className="grid gap-10 sm:grid-cols-2 sm:gap-16">
-              <nav aria-label={m.footer.liveShops}>
-                <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-[var(--mute-400)]">
-                  {m.footer.liveShops}
-                </p>
-                <ul className="mt-5 grid gap-3">
-                  {DEMOS.map((demo) => (
-                    <li key={demo.handle}>
-                      <Link
-                        href={`/${demo.handle}`}
-                        className="focus-line group inline-flex min-h-11 items-center gap-1.5 text-[0.875rem] text-[var(--mute-500)] transition-colors hover:text-[var(--ink)]"
-                      >
-                        {demo.name}
-                        <ArrowUpRight className="size-3.5 opacity-0 transition-opacity group-hover:opacity-100" />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-
-              {/* Its own column, not a line of small print at the very bottom.
-                  A buyer deciding whether to trust a shop, and a payment
-                  provider reviewing the platform, both look for these first. */}
-              <nav aria-label={m.footer.legal}>
-                <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-[var(--mute-400)]">
-                  {m.footer.legal}
-                </p>
-                <ul className="mt-5 grid gap-3">
-                  {[
-                    { href: "/privacy", label: m.footer.privacy },
-                    { href: "/terms", label: m.footer.terms },
-                    { href: "/refunds", label: m.footer.refunds },
-                  ].map((doc) => (
-                    <li key={doc.href}>
-                      <Link
-                        href={doc.href}
-                        className="focus-line inline-flex min-h-11 items-center text-[0.875rem] text-[var(--mute-500)] transition-colors hover:text-[var(--ink)]"
-                      >
-                        {doc.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </div>
-          </div>
-
-          <div className="mt-14 flex flex-wrap items-center justify-between gap-5 border-t border-[var(--mute-200)] pt-8 text-[0.8125rem] text-[var(--mute-400)]">
-            <span className="tabular">
-              © {new Date().getFullYear()} Sailo. {m.footer.rights}
-            </span>
-            <div className="flex items-center gap-7">
-              <Link href="/login" className="focus-line inline-flex min-h-11 items-center transition-colors hover:text-[var(--ink)]">
-                {m.nav.signIn}
-              </Link>
-              <Link href="/signup" className="focus-line inline-flex min-h-11 items-center transition-colors hover:text-[var(--ink)]">
-                {m.nav.createShop}
-              </Link>
-              <span dir="ltr">{new URL(APP_URL).host}</span>
-            </div>
-          </div>
-        </Container>
-      </footer>
+      <SiteFooter locale={locale} t={t} m={m} />
     </div>
     </MotionProvider>
   );
