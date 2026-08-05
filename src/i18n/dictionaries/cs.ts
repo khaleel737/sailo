@@ -17,14 +17,14 @@ export const cs: Dictionary = {
     soldOut: "Vyprodáno", sale: "Sleva", order: "Objednat", orderNow: "Objednat teď",
     unavailable: "Nedostupné", poweredBy: "Běží na",
     earnBySharing: "Vydělejte {percent}% sdílením tohoto obchodu",
-    kindPhysical: "Fyzický produkt", kindDigital: "Digitální produkt",
-    kindService: "Služba", labelDigital: "Digitální", labelService: "Služba",
+    kindPhysical: "Doručíme vám", kindDigital: "Okamžité stažení",
+    kindService: "Rezervujte si termín", labelDigital: "Ke stažení", labelService: "Rezervace",
     from: "Od {price}",
   },
   sort: {
     featured: "Doporučené", newest: "Nejnovější", priceAsc: "Cena vzestupně",
-    priceDesc: "Cena sestupně", rating: "Nejlépe hodnocené", allTypes: "Všechny typy",
-    physical: "Fyzické", digital: "Digitální", services: "Služby",
+    priceDesc: "Cena sestupně", rating: "Nejlépe hodnocené", allTypes: "Vše",
+    physical: "Produkty", digital: "Ke stažení", services: "Rezervace",
   },
   product: {
     reviews: "Recenze", noReviews: "Zatím žádné recenze — buďte první.",

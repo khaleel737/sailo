@@ -17,14 +17,14 @@ export const fi: Dictionary = {
     soldOut: "Loppuunmyyty", sale: "Tarjous", order: "Tilaa", orderNow: "Tilaa nyt",
     unavailable: "Ei saatavilla", poweredBy: "Taustalla",
     earnBySharing: "Ansaitse {percent}% jakamalla tämä kauppa",
-    kindPhysical: "Fyysinen tuote", kindDigital: "Digitaalinen tuote",
-    kindService: "Palvelu", labelDigital: "Digitaalinen", labelService: "Palvelu",
+    kindPhysical: "Toimitetaan sinulle", kindDigital: "Välitön lataus",
+    kindService: "Varaa aika", labelDigital: "Lataus", labelService: "Varaus",
     from: "Alkaen {price}",
   },
   sort: {
     featured: "Suositellut", newest: "Uusimmat", priceAsc: "Hinta: halvin ensin",
-    priceDesc: "Hinta: kallein ensin", rating: "Parhaat arviot", allTypes: "Kaikki tyypit",
-    physical: "Fyysiset", digital: "Digitaaliset", services: "Palvelut",
+    priceDesc: "Hinta: kallein ensin", rating: "Parhaat arviot", allTypes: "Kaikki",
+    physical: "Tuotteet", digital: "Lataukset", services: "Varaukset",
   },
   product: {
     reviews: "Arviot", noReviews: "Ei vielä arvioita — kirjoita ensimmäinen.",

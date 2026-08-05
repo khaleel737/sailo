@@ -19,14 +19,14 @@ export const pt: Dictionary = {
     soldOut: "Esgotado", sale: "Promoção", order: "Encomendar", orderNow: "Encomendar agora",
     unavailable: "Indisponível", poweredBy: "Desenvolvido com",
     earnBySharing: "Ganhe {percent}% ao partilhar esta loja",
-    kindPhysical: "Produto físico", kindDigital: "Produto digital",
-    kindService: "Serviço", labelDigital: "Digital", labelService: "Serviço",
+    kindPhysical: "Enviamos para si", kindDigital: "Transferência imediata",
+    kindService: "Marque uma hora", labelDigital: "Transferência", labelService: "Marcação",
     from: "A partir de {price}",
   },
   sort: {
     featured: "Em destaque", newest: "Mais recentes", priceAsc: "Preço: do menor ao maior",
-    priceDesc: "Preço: do maior ao menor", rating: "Melhor avaliados", allTypes: "Todos os tipos",
-    physical: "Físicos", digital: "Digitais", services: "Serviços",
+    priceDesc: "Preço: do maior ao menor", rating: "Melhor avaliados", allTypes: "Tudo",
+    physical: "Produtos", digital: "Transferências", services: "Marcações",
   },
   product: {
     reviews: "Avaliações", noReviews: "Ainda sem avaliações — seja o primeiro.",

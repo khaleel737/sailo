@@ -17,14 +17,14 @@ export const sv: Dictionary = {
     soldOut: "Slutsåld", sale: "Rea", order: "Beställ", orderNow: "Beställ nu",
     unavailable: "Ej tillgänglig", poweredBy: "Drivs av",
     earnBySharing: "Tjäna {percent}% på att dela den här butiken",
-    kindPhysical: "Fysisk produkt", kindDigital: "Digital produkt",
-    kindService: "Tjänst", labelDigital: "Digital", labelService: "Tjänst",
+    kindPhysical: "Skickas till dig", kindDigital: "Ladda ner direkt",
+    kindService: "Boka en tid", labelDigital: "Nedladdning", labelService: "Bokning",
     from: "Från {price}",
   },
   sort: {
     featured: "Utvalda", newest: "Nyast", priceAsc: "Pris: lägst först",
-    priceDesc: "Pris: högst först", rating: "Högst betyg", allTypes: "Alla typer",
-    physical: "Fysiska", digital: "Digitala", services: "Tjänster",
+    priceDesc: "Pris: högst först", rating: "Högst betyg", allTypes: "Allt",
+    physical: "Varor", digital: "Nedladdningar", services: "Bokningar",
   },
   product: {
     reviews: "Omdömen", noReviews: "Inga omdömen än — bli först.",

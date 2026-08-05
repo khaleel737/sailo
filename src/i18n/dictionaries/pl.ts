@@ -19,14 +19,14 @@ export const pl: Dictionary = {
     soldOut: "Wyprzedane", sale: "Promocja", order: "Zamów", orderNow: "Zamów teraz",
     unavailable: "Niedostępne", poweredBy: "Działa na",
     earnBySharing: "Zarabiaj {percent}%, udostępniając ten sklep",
-    kindPhysical: "Produkt fizyczny", kindDigital: "Produkt cyfrowy",
-    kindService: "Usługa", labelDigital: "Cyfrowy", labelService: "Usługa",
+    kindPhysical: "Wysyłamy do Ciebie", kindDigital: "Pobierz od razu",
+    kindService: "Zarezerwuj termin", labelDigital: "Do pobrania", labelService: "Rezerwacja",
     from: "Od {price}",
   },
   sort: {
     featured: "Polecane", newest: "Najnowsze", priceAsc: "Cena rosnąco",
-    priceDesc: "Cena malejąco", rating: "Najlepiej oceniane", allTypes: "Wszystkie rodzaje",
-    physical: "Fizyczne", digital: "Cyfrowe", services: "Usługi",
+    priceDesc: "Cena malejąco", rating: "Najlepiej oceniane", allTypes: "Wszystko",
+    physical: "Produkty", digital: "Do pobrania", services: "Rezerwacje",
   },
   product: {
     reviews: "Opinie", noReviews: "Brak opinii — napisz pierwszą.",

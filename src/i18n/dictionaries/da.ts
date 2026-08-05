@@ -17,14 +17,14 @@ export const da: Dictionary = {
     soldOut: "Udsolgt", sale: "Tilbud", order: "Bestil", orderNow: "Bestil nu",
     unavailable: "Ikke tilgængelig", poweredBy: "Drevet af",
     earnBySharing: "Tjen {percent}% ved at dele denne butik",
-    kindPhysical: "Fysisk produkt", kindDigital: "Digitalt produkt",
-    kindService: "Service", labelDigital: "Digital", labelService: "Service",
+    kindPhysical: "Sendes til dig", kindDigital: "Download med det samme",
+    kindService: "Book en tid", labelDigital: "Download", labelService: "Booking",
     from: "Fra {price}",
   },
   sort: {
     featured: "Fremhævede", newest: "Nyeste", priceAsc: "Pris: lavest først",
-    priceDesc: "Pris: højest først", rating: "Bedst bedømt", allTypes: "Alle typer",
-    physical: "Fysiske", digital: "Digitale", services: "Services",
+    priceDesc: "Pris: højest først", rating: "Bedst bedømt", allTypes: "Alt",
+    physical: "Varer", digital: "Downloads", services: "Bookinger",
   },
   product: {
     reviews: "Anmeldelser", noReviews: "Ingen anmeldelser endnu — vær den første.",

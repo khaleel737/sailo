@@ -18,14 +18,14 @@ export const ru: Dictionary = {
     soldOut: "Продано", sale: "Скидка", order: "Заказать", orderNow: "Заказать сейчас",
     unavailable: "Недоступно", poweredBy: "Работает на",
     earnBySharing: "Зарабатывайте {percent}%, делясь этим магазином",
-    kindPhysical: "Физический товар", kindDigital: "Цифровой товар",
-    kindService: "Услуга", labelDigital: "Цифровой", labelService: "Услуга",
+    kindPhysical: "Доставим вам", kindDigital: "Мгновенная загрузка",
+    kindService: "Забронируйте время", labelDigital: "Загрузка", labelService: "Запись",
     from: "От {price}",
   },
   sort: {
     featured: "Рекомендуемые", newest: "Новинки", priceAsc: "Цена: по возрастанию",
-    priceDesc: "Цена: по убыванию", rating: "Лучшие оценки", allTypes: "Все типы",
-    physical: "Физические", digital: "Цифровые", services: "Услуги",
+    priceDesc: "Цена: по убыванию", rating: "Лучшие оценки", allTypes: "Всё",
+    physical: "Товары", digital: "Загрузки", services: "Записи",
   },
   product: {
     reviews: "Отзывы", noReviews: "Отзывов пока нет — напишите первый.",

@@ -19,14 +19,14 @@ export const el: Dictionary = {
     soldOut: "Εξαντλήθηκε", sale: "Προσφορά", order: "Παραγγελία", orderNow: "Παραγγείλτε τώρα",
     unavailable: "Μη διαθέσιμο", poweredBy: "Με την υποστήριξη του",
     earnBySharing: "Κερδίστε {percent}% μοιράζοντας αυτό το κατάστημα",
-    kindPhysical: "Φυσικό προϊόν", kindDigital: "Ψηφιακό προϊόν",
-    kindService: "Υπηρεσία", labelDigital: "Ψηφιακό", labelService: "Υπηρεσία",
+    kindPhysical: "Αποστέλλεται σε εσάς", kindDigital: "Άμεση λήψη",
+    kindService: "Κλείστε ραντεβού", labelDigital: "Λήψη", labelService: "Κράτηση",
     from: "Από {price}",
   },
   sort: {
     featured: "Προτεινόμενα", newest: "Νεότερα", priceAsc: "Τιμή: αύξουσα",
-    priceDesc: "Τιμή: φθίνουσα", rating: "Κορυφαία αξιολόγηση", allTypes: "Όλοι οι τύποι",
-    physical: "Φυσικά", digital: "Ψηφιακά", services: "Υπηρεσίες",
+    priceDesc: "Τιμή: φθίνουσα", rating: "Κορυφαία αξιολόγηση", allTypes: "Όλα",
+    physical: "Προϊόντα", digital: "Λήψεις", services: "Κρατήσεις",
   },
   product: {
     reviews: "Αξιολογήσεις", noReviews: "Καμία αξιολόγηση ακόμη — γράψτε την πρώτη.",

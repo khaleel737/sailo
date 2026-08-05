@@ -19,14 +19,14 @@ export const nl: Dictionary = {
     soldOut: "Uitverkocht", sale: "Aanbieding", order: "Bestellen", orderNow: "Nu bestellen",
     unavailable: "Niet beschikbaar", poweredBy: "Mogelijk gemaakt door",
     earnBySharing: "Verdien {percent}% door deze winkel te delen",
-    kindPhysical: "Fysiek product", kindDigital: "Digitaal product",
-    kindService: "Dienst", labelDigital: "Digitaal", labelService: "Dienst",
+    kindPhysical: "Wordt bezorgd", kindDigital: "Direct downloaden",
+    kindService: "Boek een tijd", labelDigital: "Download", labelService: "Boeking",
     from: "Vanaf {price}",
   },
   sort: {
     featured: "Uitgelicht", newest: "Nieuwste", priceAsc: "Prijs oplopend",
-    priceDesc: "Prijs aflopend", rating: "Best beoordeeld", allTypes: "Alle soorten",
-    physical: "Fysiek", digital: "Digitaal", services: "Diensten",
+    priceDesc: "Prijs aflopend", rating: "Best beoordeeld", allTypes: "Alles",
+    physical: "Producten", digital: "Downloads", services: "Boekingen",
   },
   product: {
     reviews: "Beoordelingen", noReviews: "Nog geen beoordelingen — wees de eerste.",

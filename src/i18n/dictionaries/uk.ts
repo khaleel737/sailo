@@ -18,14 +18,14 @@ export const uk: Dictionary = {
     soldOut: "Розпродано", sale: "Знижка", order: "Замовити", orderNow: "Замовити зараз",
     unavailable: "Недоступно", poweredBy: "Працює на",
     earnBySharing: "Заробляйте {percent}%, ділячись цим магазином",
-    kindPhysical: "Фізичний товар", kindDigital: "Цифровий товар",
-    kindService: "Послуга", labelDigital: "Цифровий", labelService: "Послуга",
+    kindPhysical: "Доставимо вам", kindDigital: "Миттєве завантаження",
+    kindService: "Забронюйте час", labelDigital: "Завантаження", labelService: "Запис",
     from: "Від {price}",
   },
   sort: {
     featured: "Рекомендовані", newest: "Найновіші", priceAsc: "Ціна: за зростанням",
-    priceDesc: "Ціна: за спаданням", rating: "Найкращі оцінки", allTypes: "Усі типи",
-    physical: "Фізичні", digital: "Цифрові", services: "Послуги",
+    priceDesc: "Ціна: за спаданням", rating: "Найкращі оцінки", allTypes: "Усе",
+    physical: "Товари", digital: "Завантаження", services: "Записи",
   },
   product: {
     reviews: "Відгуки", noReviews: "Відгуків ще немає — напишіть перший.",

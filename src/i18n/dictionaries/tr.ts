@@ -19,14 +19,14 @@ export const tr: Dictionary = {
     soldOut: "Tükendi", sale: "İndirim", order: "Sipariş ver", orderNow: "Hemen sipariş ver",
     unavailable: "Kullanılamıyor", poweredBy: "Altyapı",
     earnBySharing: "Bu mağazayı paylaşarak %{percent} kazanın",
-    kindPhysical: "Fiziksel ürün", kindDigital: "Dijital ürün",
-    kindService: "Hizmet", labelDigital: "Dijital", labelService: "Hizmet",
+    kindPhysical: "Adresinize gönderilir", kindDigital: "Anında indirme",
+    kindService: "Randevu alın", labelDigital: "İndirme", labelService: "Randevu",
     from: "{price} üzeri",
   },
   sort: {
     featured: "Öne çıkanlar", newest: "En yeniler", priceAsc: "Fiyat: artan",
-    priceDesc: "Fiyat: azalan", rating: "En yüksek puan", allTypes: "Tüm türler",
-    physical: "Fiziksel", digital: "Dijital", services: "Hizmetler",
+    priceDesc: "Fiyat: azalan", rating: "En yüksek puan", allTypes: "Tümü",
+    physical: "Ürünler", digital: "İndirmeler", services: "Randevular",
   },
   product: {
     reviews: "Değerlendirmeler", noReviews: "Henüz değerlendirme yok — ilk siz yazın.",

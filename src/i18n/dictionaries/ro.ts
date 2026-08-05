@@ -17,14 +17,14 @@ export const ro: Dictionary = {
     soldOut: "Stoc epuizat", sale: "Reducere", order: "Comandă", orderNow: "Comandă acum",
     unavailable: "Indisponibil", poweredBy: "Realizat cu",
     earnBySharing: "Câștigă {percent}% distribuind acest magazin",
-    kindPhysical: "Produs fizic", kindDigital: "Produs digital",
-    kindService: "Serviciu", labelDigital: "Digital", labelService: "Serviciu",
+    kindPhysical: "Se livrează la tine", kindDigital: "Descărcare imediată",
+    kindService: "Rezervă o oră", labelDigital: "Descărcare", labelService: "Rezervare",
     from: "De la {price}",
   },
   sort: {
     featured: "Recomandate", newest: "Cele mai noi", priceAsc: "Preț crescător",
-    priceDesc: "Preț descrescător", rating: "Cele mai apreciate", allTypes: "Toate tipurile",
-    physical: "Fizice", digital: "Digitale", services: "Servicii",
+    priceDesc: "Preț descrescător", rating: "Cele mai apreciate", allTypes: "Tot",
+    physical: "Produse", digital: "Descărcări", services: "Rezervări",
   },
   product: {
     reviews: "Recenzii", noReviews: "Încă nicio recenzie — scrie prima.",

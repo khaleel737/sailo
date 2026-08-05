@@ -17,14 +17,14 @@ export const hu: Dictionary = {
     soldOut: "Elfogyott", sale: "Akció", order: "Megrendelés", orderNow: "Megrendelem",
     unavailable: "Nem elérhető", poweredBy: "Működteti a",
     earnBySharing: "Keress {percent}%-ot a bolt megosztásával",
-    kindPhysical: "Fizikai termék", kindDigital: "Digitális termék",
-    kindService: "Szolgáltatás", labelDigital: "Digitális", labelService: "Szolgáltatás",
+    kindPhysical: "Kiszállítjuk", kindDigital: "Azonnali letöltés",
+    kindService: "Foglaljon időpontot", labelDigital: "Letöltés", labelService: "Foglalás",
     from: "{price}-tól",
   },
   sort: {
     featured: "Kiemelt", newest: "Legújabb", priceAsc: "Ár szerint növekvő",
-    priceDesc: "Ár szerint csökkenő", rating: "Legjobbra értékelt", allTypes: "Minden típus",
-    physical: "Fizikai", digital: "Digitális", services: "Szolgáltatások",
+    priceDesc: "Ár szerint csökkenő", rating: "Legjobbra értékelt", allTypes: "Minden",
+    physical: "Termékek", digital: "Letöltések", services: "Foglalások",
   },
   product: {
     reviews: "Értékelések", noReviews: "Még nincs értékelés — legyél az első.",

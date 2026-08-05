@@ -45,11 +45,14 @@ export const en = {
     unavailable: "Unavailable",
     poweredBy: "Powered by",
     earnBySharing: "Earn {percent}% by sharing this shop",
-    kindPhysical: "Physical product",
-    kindDigital: "Digital product",
-    kindService: "Service",
-    labelDigital: "Digital",
-    labelService: "Service",
+    // A badge answers "what happens after I pay?", not "what category is
+    // this?". `kind*` is the product page; `label*` is the smaller card badge,
+    // where physical is the unmarked default.
+    kindPhysical: "Ships to you",
+    kindDigital: "Instant download",
+    kindService: "Book a time",
+    labelDigital: "Download",
+    labelService: "Booking",
     from: "From {price}",
   },
 
@@ -59,10 +62,13 @@ export const en = {
     priceAsc: "Price: low to high",
     priceDesc: "Price: high to low",
     rating: "Top rated",
-    allTypes: "All types",
-    physical: "Physical",
-    digital: "Digital",
-    services: "Services",
+    // How the buyer receives it, in their words. "Physical" is warehouse
+    // language — a shopper is deciding between something arriving, something
+    // downloading now, and something they have to book.
+    allTypes: "Everything",
+    physical: "Products",
+    digital: "Downloads",
+    services: "Bookings",
   },
 
   product: {
