@@ -1,0 +1,25 @@
+src/lib/variants.test.ts
+  s_3dd4b357265b83::t_d8e077fe2158d6 122-123,127,132
+src/lib/analytics.test.ts
+  s_3dd4b357265b83::t_59e7b2e5b79544 51-54,119-127
+  s_3dd4b357265b83::t_754aef4ba99eab 1-50,55-118,128-139
+src/lib/analytics.ts
+  s_3dd4b357265b83::t_59e7b2e5b79544 83-87
+  s_3dd4b357265b83::t_21f7c7cc0410bd 232-238
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3ef596f17b460c1117a6d1f3b019ea57aa13d9a5",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
