@@ -1,0 +1,21 @@
+src/lib/consent.ts
+  s_2003e12856e408::t_db5151d3c08bbe 1-78
+src/lib/visitor-id.ts
+  s_2003e12856e408::t_8d9d8fb015dd39 1-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6116987b7ea75e5e941850ee9c8ee856cfad9c2c",
+  "prompts": {},
+  "sessions": {
+    "s_2003e12856e408": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "75f413c8-ba54-4803-8715-86e2a4dfb62f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
