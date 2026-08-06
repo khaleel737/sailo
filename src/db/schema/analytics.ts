@@ -1,14 +1,40 @@
-import { index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import {
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { shops } from "./shop";
 import { products } from "./catalog";
 import type { VisitBreakdownJson } from "./json-types";
 
 /** Traffic, rolled-up daily counts, and the staff audit trail. */
 
+/**
+ * PARTITIONED BY MONTH ON `created_at`.
+ *
+ * Drizzle has no way to say that, so the partitioning lives in
+ * `scripts/partition-visits.ts` and `lib/visit-partitions.ts` and this
+ * declaration describes the shape rather than the storage. Two consequences
+ * worth knowing before editing:
+ *
+ *   - The primary key is `(id, created_at)`, not `id`. A partitioned table's
+ *     key must contain the partition key, because a uuid alone cannot be proven
+ *     unique across partitions the planner never reads. Changing it back here
+ *     makes `npm run db:push` try to change it back there.
+ *   - The monthly children live in a separate `visits_parts` schema, out of
+ *     `db:push`'s sight — it offers to drop anything in `public` it does not find
+ *     in this file.
+ */
 export const visits = pgTable(
   "visits",
   {
-    id: uuid("id").defaultRandom().primaryKey(),
+    id: uuid("id").defaultRandom().notNull(),
     shopId: uuid("shop_id")
       .notNull()
       .references(() => shops.id, { onDelete: "cascade" }),
@@ -45,6 +71,7 @@ export const visits = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [
+    primaryKey({ columns: [t.id, t.createdAt] }),
     index("visits_shop_idx").on(t.shopId),
     index("visits_created_idx").on(t.createdAt),
     // The dashboard breakdowns all filter by shop and date, then group.
@@ -79,7 +106,10 @@ export const visitDaily = pgTable(
     visits: integer("visits").default(0).notNull(),
     uniqueVisitors: integer("unique_visitors").default(0).notNull(),
     /** Top dimensions for the day: { countries: {NG: 12}, sources: {...} }. */
-    breakdown: jsonb("breakdown").$type<VisitBreakdownJson>().default({}).notNull(),
+    breakdown: jsonb("breakdown")
+      .$type<VisitBreakdownJson>()
+      .default({})
+      .notNull(),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },

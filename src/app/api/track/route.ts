@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { rateLimit } from "@/lib/redis";
 import { ipFromHeaders } from "@/lib/client-ip";
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import { and, eq, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
 import { products, shops, visits } from "@/db/schema";
 import { classifyVisit, parseUserAgent } from "@/lib/analytics";
+import { ensurePartition } from "@/lib/visit-partitions";
+import { visitorId } from "@/lib/visitor-id";
 
-const COOKIE = "sailo_sid";
-const SIX_MONTHS = 60 * 60 * 24 * 180;
 
 export async function POST(request: Request) {
   /*
@@ -61,20 +61,18 @@ export async function POST(request: Request) {
     validProductId = p?.id ?? null;
   }
 
-  const jar = await cookies();
-  let sid = jar.get(COOKIE)?.value;
-  if (!sid) {
-    sid = crypto.randomUUID();
-    jar.set(COOKIE, sid, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: SIX_MONTHS,
-      path: "/",
-    });
-  }
-
   const h = await headers();
+
+  /*
+   * Derived per shop per day from data we already hold for the length of this
+   * request, and written to nobody's device. See `visitor-id.ts` for why that
+   * matters more than the id being random.
+   */
+  const sid = visitorId({
+    ip,
+    userAgent: h.get("user-agent"),
+    shopId: shop.id,
+  });
 
   // The referrer must come from the browser, not from this request's own
   // `Referer` — that header points at the storefront page that called us, so
@@ -99,7 +97,7 @@ export async function POST(request: Request) {
 
   const ua = parseUserAgent(h.get("user-agent"));
 
-  await db.insert(visits).values({
+  const visit = {
     shopId: shop.id,
     productId: validProductId,
     sessionId: sid,
@@ -115,7 +113,29 @@ export async function POST(request: Request) {
     device: ua.device,
     os: ua.os,
     browser: ua.browser,
-  });
+  };
+
+  /*
+   * `visits` is partitioned by month, and a row whose timestamp finds no
+   * partition is rejected rather than filed anywhere sensible. The nightly job
+   * keeps four months of runway ahead, so this should never happen — but "should
+   * never" is doing a lot of work in a beacon that runs on every page view of
+   * every shop. So: create the month and try once more.
+   *
+   * And if it still fails, say ok anyway. This endpoint exists to count a
+   * pageview; a lost count is a rounding error, while a 500 is a failed request
+   * in a visitor's console on a seller's storefront.
+   */
+  try {
+    await db.insert(visits).values(visit);
+  } catch (error) {
+    try {
+      await ensurePartition(new Date());
+      await db.insert(visits).values(visit);
+    } catch {
+      console.warn("track: could not record a visit", error);
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }

@@ -2,8 +2,18 @@ import "server-only";
 import { and, desc, eq, gte, inArray, isNotNull, lt, sql } from "drizzle-orm";
 import type { PgColumn } from "drizzle-orm/pg-core";
 import { getDb } from "@/db";
-import { affiliates, visitDaily, visits, type VisitBreakdownJson } from "@/db/schema";
+import {
+  affiliates,
+  visitDaily,
+  visits,
+  type VisitBreakdownJson,
+} from "@/db/schema";
 import { drainAffiliateClicks } from "@/lib/redis";
+import {
+  dropExpiredPartitions,
+  ensureUpcomingPartitions,
+  isPartitioned,
+} from "@/lib/visit-partitions";
 
 /**
  * Folding raw visits into daily rows.
@@ -135,6 +145,10 @@ const TRIM_MAX_BATCHES = 200;
 /**
  * Drops raw visits past the cutoff, a batch at a time.
  *
+ * The fallback path now. Where `visits` is partitioned, whole months are
+ * dropped instead and this only clears the stragglers inside the month the
+ * cutoff runs through — plus any database where the migration has not run.
+ *
  * Two reasons it isn't one statement. The count used to come from
  * `.returning({ id })`, which streams every deleted uuid back over an HTTP
  * driver purely to call `.length` on it — at the volumes described above that
@@ -203,7 +217,30 @@ export async function rollUpVisits(opts: { days?: number; now?: Date } = {}) {
     daysRolled += 1;
   }
 
-  const cutoff = new Date(now.getTime() - RAW_RETENTION_DAYS * 24 * 60 * 60 * 1000);
+  const cutoff = new Date(
+    now.getTime() - RAW_RETENTION_DAYS * 24 * 60 * 60 * 1000,
+  );
+
+  /*
+   * Retention, and the runway that keeps writes possible.
+   *
+   * A partitioned `visits` gives back a whole month in one catalogue
+   * operation — data and indexes together, nothing left to vacuum. That is the
+   * entire reason it is partitioned: as a plain table, three million deletes
+   * had left 78MB of indexes standing over 352kB of rows.
+   *
+   * Creating the months ahead matters more than dropping the old ones. A row
+   * whose timestamp finds no partition is rejected outright, so the day this
+   * job stops running is the day pageviews start failing. Four months of
+   * runway makes that four missed nights rather than one.
+   */
+  const partitioned = await isPartitioned();
+  const partitionsAdded = partitioned
+    ? await ensureUpcomingPartitions(now)
+    : [];
+  const partitionsDropped = partitioned
+    ? await dropExpiredPartitions(cutoff)
+    : [];
   const rawTrimmed = await trimRawVisits(cutoff);
 
   // Clicks buffered in Redis since the last run. Empty when Redis isn't
@@ -218,5 +255,12 @@ export async function rollUpVisits(opts: { days?: number; now?: Date } = {}) {
     clicksFlushed += count;
   }
 
-  return { daysRolled, shopsRolled, rawTrimmed, clicksFlushed };
+  return {
+    daysRolled,
+    shopsRolled,
+    rawTrimmed,
+    clicksFlushed,
+    partitionsAdded,
+    partitionsDropped,
+  };
 }

@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "test": "vitest run",
     "db:push": "dotenv -e .env.local -- drizzle-kit push",
+    "db:partition": "dotenv -e .env.local -- tsx scripts/partition-visits.ts",
     "db:studio": "dotenv -e .env.local -- drizzle-kit studio",
     "db:seed": "dotenv -e .env.local -- tsx scripts/seed.ts",
     "db:seed:niches": "dotenv -e .env.local -- tsx scripts/seed-niches.ts",
