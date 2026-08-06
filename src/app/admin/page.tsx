@@ -10,7 +10,7 @@ import {
   getVisitBreakdown,
   getVisitSeries,
 } from "@/lib/queries";
-import { BarChart } from "@/components/shared/bar-chart";
+import { Chart } from "@/components/shared/chart";
 import { TrafficPanel } from "@/app/admin/_components/traffic-panel";
 import { RangePicker } from "@/app/admin/_components/range-picker";
 import { analyticsLimit, clampAnalyticsRange, planFor } from "@/lib/plans";
@@ -93,7 +93,8 @@ export default async function AdminOverviewPage({
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <h2 dir="auto" className="text-sm font-medium text-ink-500">
-          Last {range >= 365 ? `${Math.round(range / 365)} year` : `${range} days`}
+          Last{" "}
+          {range >= 365 ? `${Math.round(range / 365)} year` : `${range} days`}
           {range >= 365 && range >= 730 ? "s" : ""}
         </h2>
         <RangePicker
@@ -125,18 +126,20 @@ export default async function AdminOverviewPage({
           icon={<Wallet className="size-4" />}
           label={a.dashboard.netRevenue}
           value={money(stats.netRevenueCents)}
-          hint={[
-            stats.refundedCents > 0
-              ? `${money(stats.refundedCents)} refunded`
-              : null,
-            // Tax is collected, not earned — worth naming next to revenue so
-            // the seller knows how much of it isn't theirs.
-            stats.taxCollectedCents > 0
-              ? `${money(stats.taxCollectedCents)} tax collected`
-              : null,
-          ]
-            .filter(Boolean)
-            .join(" · ") || undefined}
+          hint={
+            [
+              stats.refundedCents > 0
+                ? `${money(stats.refundedCents)} refunded`
+                : null,
+              // Tax is collected, not earned — worth naming next to revenue so
+              // the seller knows how much of it isn't theirs.
+              stats.taxCollectedCents > 0
+                ? `${money(stats.taxCollectedCents)} tax collected`
+                : null,
+            ]
+              .filter(Boolean)
+              .join(" · ") || undefined
+          }
         />
       </div>
 
@@ -150,7 +153,8 @@ export default async function AdminOverviewPage({
               {stats.awaitingShipment} order
               {stats.awaitingShipment === 1 ? "" : "s"}
             </span>{" "}
-            waiting to be shipped. Add tracking when you post {stats.awaitingShipment === 1 ? "it" : "them"}.
+            waiting to be shipped. Add tracking when you post{" "}
+            {stats.awaitingShipment === 1 ? "it" : "them"}.
           </p>
           <ArrowRight className="size-4 shrink-0 text-blue-700" />
         </Link>
@@ -174,8 +178,9 @@ export default async function AdminOverviewPage({
 
       <div className="mb-6 grid gap-3 lg:grid-cols-2">
         <Card className="p-5">
-          <BarChart
+          <Chart
             title={`Visits · last ${chartDays} days`}
+            variant="line"
             data={visitSeries.map((d) => ({ day: d.day, value: d.count }))}
             tone="activity"
             unit="count"
@@ -184,7 +189,7 @@ export default async function AdminOverviewPage({
           />
         </Card>
         <Card className="p-5">
-          <BarChart
+          <Chart
             title={`Revenue · last ${chartDays} days`}
             data={revenueSeries.map((d) => ({ day: d.day, value: d.cents }))}
             tone="money"

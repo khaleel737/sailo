@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A profile link opening straight into a shop">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <!-- The long way round: profile, link list, then somewhere else. -->
+  <g opacity="0.28">
+    <rect x="96" y="150" width="180" height="330" rx="24" fill="none" stroke="#14140f" stroke-width="3"/>
+    <circle cx="186" cy="212" r="26" fill="#14140f"/>
+    <rect x="126" y="258" width="120" height="10" rx="5" fill="#14140f"/>
+    <rect x="126" y="292" width="120" height="30" rx="15" fill="none" stroke="#14140f" stroke-width="3"/>
+    <rect x="126" y="336" width="120" height="30" rx="15" fill="none" stroke="#14140f" stroke-width="3"/>
+    <rect x="126" y="380" width="120" height="30" rx="15" fill="none" stroke="#14140f" stroke-width="3"/>
+  </g>
+  <path d="M320 315 h120" stroke="#14140f" stroke-width="3" stroke-dasharray="10 10" opacity="0.28"/>
+  <path d="M470 315 h120" stroke="#14140f" stroke-width="3" stroke-dasharray="10 10" opacity="0.28"/>
+  <!-- The short way: the link is the shop. -->
+  <g>
+    <rect x="640" y="110" width="260" height="410" rx="30" fill="#ffffff" stroke="#14140f" stroke-width="4"/>
+    <circle cx="770" cy="180" r="30" fill="#037740"/>
+    <rect x="700" y="228" width="140" height="12" rx="6" fill="#14140f"/>
+    <rect x="676" y="272" width="86" height="86" rx="14" fill="#e8e6e1"/>
+    <rect x="778" y="272" width="86" height="86" rx="14" fill="#e8e6e1"/>
+    <rect x="676" y="372" width="52" height="10" rx="5" fill="#14140f"/>
+    <rect x="778" y="372" width="52" height="10" rx="5" fill="#14140f"/>
+    <rect x="676" y="402" width="188" height="40" rx="20" fill="#037740"/>
+    <rect x="736" y="418" width="68" height="8" rx="4" fill="#ffffff"/>
+  </g>
+  <circle cx="1010" cy="315" r="58" fill="#037740" opacity="0.12"/>
+  <path d="M985 315 l18 18 l32 -38" stroke="#037740" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

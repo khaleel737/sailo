@@ -10,7 +10,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { BarChart } from "@/components/shared/bar-chart";
+import { Chart } from "@/components/shared/chart";
 import { PageHeader } from "@/components/shared/page-header";
 import { Table, Td, Th, Tr, EmptyRow } from "@/app/hq/_components/hq-table";
 import {
@@ -178,7 +178,7 @@ export default async function HqOverviewPage() {
 
       <div className="mt-6 grid gap-3 lg:grid-cols-2">
         <Card className="p-5">
-          <BarChart
+          <Chart
             title="Registrations · last 30 days"
             data={signups.map((d) => ({ day: d.day, value: d.value }))}
             tone="activity"
@@ -187,7 +187,7 @@ export default async function HqOverviewPage() {
           />
         </Card>
         <Card className="p-5">
-          <BarChart
+          <Chart
             title="Orders · last 30 days"
             data={orderSeries.map((d) => ({ day: d.day, value: d.value }))}
             tone="activity"
@@ -199,8 +199,9 @@ export default async function HqOverviewPage() {
 
       <div className="mt-3">
         <Card className="p-5">
-          <BarChart
+          <Chart
             title={`Seller volume in ${leadCurrency} · last 30 days`}
+            variant="line"
             data={gmvSeries.map((d) => ({ day: d.day, value: d.value }))}
             tone="money"
             unit="money"
@@ -230,7 +231,9 @@ export default async function HqOverviewPage() {
                     <span className="font-semibold">
                       {step.count.toLocaleString()}
                     </span>
-                    <span className="ms-2 text-xs text-ink-400">{percent}%</span>
+                    <span className="ms-2 text-xs text-ink-400">
+                      {percent}%
+                    </span>
                   </span>
                 </div>
                 <div className="h-2 w-full overflow-hidden rounded-full bg-ink-100">

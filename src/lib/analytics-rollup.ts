@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, gte, isNotNull, lt, sql } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, isNotNull, lt, sql } from "drizzle-orm";
 import type { PgColumn } from "drizzle-orm/pg-core";
 import { getDb } from "@/db";
 import { affiliates, visitDaily, visits, type VisitBreakdownJson } from "@/db/schema";
@@ -127,6 +127,53 @@ export async function rollUpDay(shopId: string, day: Date) {
   return { visits: count, uniques: Number(totals?.uniques ?? 0) };
 }
 
+/** How many raw rows one DELETE may take. */
+const TRIM_BATCH = 5_000;
+/** Ceiling on batches per run, so a backlog can't run the job forever. */
+const TRIM_MAX_BATCHES = 200;
+
+/**
+ * Drops raw visits past the cutoff, a batch at a time.
+ *
+ * Two reasons it isn't one statement. The count used to come from
+ * `.returning({ id })`, which streams every deleted uuid back over an HTTP
+ * driver purely to call `.length` on it — at the volumes described above that
+ * is millions of ids marshalled to produce one number, and the function runs
+ * out of memory before it prints it. And a single unbounded DELETE holds one
+ * long transaction over the busiest table in the product, which on a serverless
+ * Postgres is how a nightly job turns into a nightly outage.
+ *
+ * Batching fixes both: each statement returns at most `TRIM_BATCH` ids and
+ * commits on its own. Whatever the ceiling leaves behind is caught tomorrow —
+ * the cutoff is a moving window, not a one-off migration.
+ */
+async function trimRawVisits(cutoff: Date): Promise<number> {
+  const db = getDb();
+  let removed = 0;
+
+  for (let batch = 0; batch < TRIM_MAX_BATCHES; batch++) {
+    const deleted = await db
+      .delete(visits)
+      .where(
+        inArray(
+          visits.id,
+          db
+            .select({ id: visits.id })
+            .from(visits)
+            .where(lt(visits.createdAt, cutoff))
+            .limit(TRIM_BATCH),
+        ),
+      )
+      .returning({ id: visits.id });
+
+    removed += deleted.length;
+    // A short batch means the tail is reached; anything else is another lap.
+    if (deleted.length < TRIM_BATCH) break;
+  }
+
+  return removed;
+}
+
 /**
  * Rolls up every shop that had traffic in the window, then trims raw rows past
  * retention. Returns what it did, so the cron route can log something useful.
@@ -157,10 +204,7 @@ export async function rollUpVisits(opts: { days?: number; now?: Date } = {}) {
   }
 
   const cutoff = new Date(now.getTime() - RAW_RETENTION_DAYS * 24 * 60 * 60 * 1000);
-  const trimmed = await db
-    .delete(visits)
-    .where(lt(visits.createdAt, cutoff))
-    .returning({ id: visits.id });
+  const rawTrimmed = await trimRawVisits(cutoff);
 
   // Clicks buffered in Redis since the last run. Empty when Redis isn't
   // configured, in which case they were written straight to Postgres already.
@@ -174,5 +218,5 @@ export async function rollUpVisits(opts: { days?: number; now?: Date } = {}) {
     clicksFlushed += count;
   }
 
-  return { daysRolled, shopsRolled, rawTrimmed: trimmed.length, clicksFlushed };
+  return { daysRolled, shopsRolled, rawTrimmed, clicksFlushed };
 }

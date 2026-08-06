@@ -24,12 +24,21 @@ export function SiteNav({
   /** From the storefront dictionary, which already owns the word. */
   languageLabel: string;
 }) {
+  /*
+     Rooted at "/" rather than a bare "#section": these are in-page anchors on
+     the landing page, but the same nav now renders on /blog, where "#pricing"
+     would scroll to nothing. "/#pricing" navigates home and then scrolls.
+  */
   const links = [
-    { href: "#compare", label: t.nav.how },
-    { href: "#demos", label: t.nav.demos },
-    { href: "#features", label: t.nav.features },
-    { href: "#pricing", label: t.nav.pricing },
-    { href: "#faq", label: t.nav.faq },
+    { href: "/#compare", label: t.nav.how },
+    { href: "/#demos", label: t.nav.demos },
+    { href: "/#features", label: t.nav.features },
+    { href: "/#pricing", label: t.nav.pricing },
+    { href: "/#faq", label: t.nav.faq },
+    // The only entry that leaves the page, so it goes last — everything
+    // above it scrolls, and a route change in the middle of a scroll menu
+    // reads as a mis-tap.
+    { href: "/blog", label: t.nav.blog },
   ];
 
   return (

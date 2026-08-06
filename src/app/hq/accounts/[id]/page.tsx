@@ -11,7 +11,7 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { BarChart } from "@/components/shared/bar-chart";
+import { Chart } from "@/components/shared/chart";
 import { PageHeader } from "@/components/shared/page-header";
 import { AccountActions } from "./_components/account-actions";
 import { Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
@@ -28,10 +28,7 @@ import {
 import { Badge, Card } from "@/components/ui";
 import { getAccountDetail } from "@/lib/hq";
 import { billingState } from "@/lib/hq-metrics";
-import {
-  isPaymentMethodType,
-  PAYMENT_METHOD_DEFS,
-} from "@/lib/payments";
+import { isPaymentMethodType, PAYMENT_METHOD_DEFS } from "@/lib/payments";
 import { planFor } from "@/lib/plans";
 import { formatMoney, isShopLive } from "@/lib/utils";
 import { OrdersTable } from "./_components/orders-table";
@@ -224,8 +221,9 @@ export default async function HqAccountPage({
         <div className="min-w-0">
           <div className="grid items-start gap-3 sm:grid-cols-2">
             <Card className="p-5">
-              <BarChart
+              <Chart
                 title="Visits · 30 days"
+                variant="line"
                 data={detail.visitSeries.map((d) => ({
                   day: d.day,
                   value: d.count,
@@ -236,7 +234,7 @@ export default async function HqAccountPage({
               />
             </Card>
             <Card className="p-5">
-              <BarChart
+              <Chart
                 title="Revenue · 30 days"
                 data={detail.revenueSeries.map((d) => ({
                   day: d.day,
@@ -305,7 +303,9 @@ export default async function HqAccountPage({
                       <span className="truncate text-ink-700">
                         {option.name}
                         <span className="ms-1.5 text-xs text-ink-400">
-                          {option.feeCents > 0 ? money(option.feeCents) : "Free"}
+                          {option.feeCents > 0
+                            ? money(option.feeCents)
+                            : "Free"}
                         </span>
                       </span>
                       <Badge tone={option.isEnabled ? "green" : "neutral"}>

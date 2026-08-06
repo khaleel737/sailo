@@ -211,7 +211,7 @@ export function DashboardSkeleton({ stats = 4 }: { stats?: number }) {
       <PageHeaderSkeleton action />
       <StatGridSkeleton count={stats} />
       <div className="mt-6 grid gap-3 lg:grid-cols-2">
-        {/* Matches `<BarChart>`: a label row over a fixed-height plot. */}
+        {/* Matches `<Chart>`: a label row over a fixed-height plot. */}
         <CardSkeleton className="p-5">
           <Skeleton className="h-4 w-28" />
           <Skeleton className="mt-4 h-40 w-full rounded-lg" />

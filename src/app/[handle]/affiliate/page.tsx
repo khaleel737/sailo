@@ -134,6 +134,15 @@ export default async function AffiliatePage({
           >
             {t.partner.signInTitle}
           </Link>
+          {/*
+            Renders nothing under today's plans, and that is correct rather
+            than dead: this page is gated on `affiliates`, which only Business
+            has, and Business also has `removeBadge`. The two are exactly
+            anti-correlated, so no shop can both reach this page and carry the
+            badge. Kept because the gate belongs to the plan matrix, not to
+            this file — the day a plan offers affiliates without removing the
+            badge, this page brands itself like every other.
+          */}
           <PoweredBy shop={shop} t={t} />
           <LanguageSwitcher current={locale} label={t.common.language} />
         </footer>

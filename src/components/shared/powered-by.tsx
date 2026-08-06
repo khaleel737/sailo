@@ -1,10 +1,12 @@
 import Link from "next/link";
-import { Store } from "lucide-react";
+import type { ReactNode } from "react";
 import type { Shop } from "@/db/schema";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import { can } from "@/lib/plans";
 import { APP_URL } from "@/lib/seo";
+import { cn } from "@/lib/utils";
+import { SailoMark } from "@/components/brand";
 
 /**
  * The free tier's rent.
@@ -57,6 +59,30 @@ export function badgeLabel(shop: BadgeShop, t: Dictionary): string {
   return interpolate(t.shop.joinOnSailo, { shop: shop.name });
 }
 
+const BRAND = "Sailo";
+
+/**
+ * The label with our name at full strength and the rest of the sentence muted.
+ *
+ * Split rather than composed from two strings, because the name does not sit
+ * in the same place in every language — it opens the Japanese and Chinese
+ * lines, ends the German one, and takes a suffix in Turkish ("Sailo'ya").
+ * Splitting on the word finds it wherever the grammar put it, and a locale
+ * that somehow lacks it still renders a correct, if evenly weighted, sentence.
+ */
+function emphasised(label: string): ReactNode {
+  const at = label.indexOf(BRAND);
+  if (at === -1) return label;
+
+  return (
+    <>
+      {label.slice(0, at)}
+      <span className="font-semibold text-[var(--surface-fg)]">{BRAND}</span>
+      {label.slice(at + BRAND.length)}
+    </>
+  );
+}
+
 /**
  * Renders nothing for a paid shop. Callers can drop this in unconditionally —
  * that is the point, since a caller deciding for itself is how the invoice
@@ -73,13 +99,42 @@ export function PoweredBy({
 }) {
   if (!showsBadge(shop)) return null;
 
+  const label = badgeLabel(shop, t);
+
   return (
     <Link
       href={badgeHref(shop.handle)}
-      className={`text-muted inline-flex items-center gap-1.5 text-xs transition hover:opacity-70 ${className}`.trim()}
+      /*
+       * A pill rather than a line of small print. As muted 12px text beside a
+       * generic shop glyph it read as a caption and was skipped; carried on a
+       * card, with our own mark, it reads as a thing you can press — which is
+       * the whole point of a channel we are choosing to measure.
+       *
+       * It still defers to the seller: same pill shape and size as the
+       * referral chip above it, no accent fill, and it sits below their
+       * content rather than beside it.
+       */
+      className={cn(
+        "surface-card focus-ring-accent press",
+        // min-h-11 is 44px — the same hit area the legal links in this footer
+        // already take. Padding alone left it at 38px, which is a miss on a
+        // phone and inconsistent with its own neighbours.
+        "inline-flex min-h-11 max-w-full items-center gap-2 rounded-full px-3.5",
+        // `press` owns the transform transition, so naming opacity here keeps
+        // the two from overwriting each other through the shorthand — and the
+        // curve is the app's, not Tailwind's default ease-in-out.
+        "text-muted text-xs font-medium",
+        "transition-opacity duration-150 ease-[var(--ease-out-quint)] hover:opacity-70",
+        className,
+      )}
+      // The sentence already names Sailo, so the mark beside it would only
+      // repeat the word to a screen reader.
+      aria-label={label}
     >
-      <Store className="size-3.5" />
-      {badgeLabel(shop, t)}
+      <SailoMark className="size-4 shrink-0 text-[var(--badge-mark)]" />
+      {/* `min-w-0` or the flex item refuses to shrink and `truncate` never
+          fires — a long shop name would push the pill past its container. */}
+      <span className="min-w-0 truncate">{emphasised(label)}</span>
     </Link>
   );
 }
