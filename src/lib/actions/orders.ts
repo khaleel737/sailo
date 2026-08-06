@@ -10,7 +10,7 @@ import { resolveDelivery, smallest, soonest } from "@/lib/orders/delivery";
 import { referralFor } from "@/lib/orders/referral";
 import type { OrderIntentInput, OrderIntentResult, OrderLineInput, OrderPreview } from "@/lib/orders/types";
 import { firstRow, present } from "@/lib/invariant";
-import { and, asc, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
 import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
@@ -26,8 +26,25 @@ import { cartNeedsDelivery, cartSubtotal, quote, type Quote, type QuoteLine } fr
 import { unitsLeft, variantLabel } from "@/lib/variants";
 import { releaseStock, reserveStock } from "@/lib/inventory";
 import { handOffToStripe } from "@/lib/orders/card-handoff";
+import { claimCouponRedemption, releaseCouponRedemption } from "@/lib/orders/coupon-redemption";
 import { downloadExpiry, downloadUrl, hasDeliverableFiles, newDownloadToken, releasesImmediately } from "@/lib/downloads";
 
+
+/**
+ * Puts back every unit a cart had taken off the shelf.
+ *
+ * A cart is all-or-nothing, so any abandonment after the first reservation has
+ * to undo all of them — the line that failed and the ones already held.
+ */
+async function releaseStockFor(lines: QuoteLine[]): Promise<void> {
+  for (const line of lines) {
+    await releaseStock({
+      productId: line.productId,
+      variantId: line.variantId,
+      quantity: line.quantity,
+    });
+  }
+}
 
 export async function createOrderIntent(
   input: OrderIntentInput,
@@ -177,13 +194,7 @@ export async function createOrderIntent(
       continue;
     }
 
-    for (const undo of taken) {
-      await releaseStock({
-        productId: undo.productId,
-        variantId: undo.variantId,
-        quantity: undo.quantity,
-      });
-    }
+    await releaseStockFor(taken);
     return {
       ok: false,
       error:
@@ -350,6 +361,20 @@ export async function createOrderIntent(
    * rollback then deleted. Stripe is the step most likely to fail of all of
    * them, so it goes first and everything irreversible waits behind it.
    */
+  /*
+   * The coupon is the exception to "nothing irreversible before the payment".
+   *
+   * A cap has to be enforced *before* the buyer pays — taking money on a
+   * discount that was already exhausted is worse than either failure it sits
+   * between. So it is claimed here, and given back explicitly if the handoff
+   * then fails, which is the undo that did not exist when this ran first.
+   */
+  if (coupon && !(await claimCouponRedemption(coupon))) {
+    await releaseStockFor(taken);
+    await db.delete(orders).where(eq(orders.id, order.id));
+    return { ok: false, error: COUPON_MESSAGES.used_up };
+  }
+
   let cardHandoff: Handoff | null = null;
   if (method.type === "card") {
     const card = await handOffToStripe({
@@ -369,21 +394,16 @@ export async function createOrderIntent(
           : `${base}/${shop.handle}?cancelled=1`,
     });
 
-    // The handoff rolls the order back on failure, so there is nothing to
-    // undo here — only a message to pass on.
-    if (!card.ok) return { ok: false, error: card.error };
+    // The handoff rolls the order and its stock back on failure. The coupon is
+    // ours to undo, because we claimed it above rather than after.
+    if (!card.ok) {
+      if (coupon) await releaseCouponRedemption(coupon.id);
+      return { ok: false, error: card.error };
+    }
     cardHandoff = card.handoff;
   }
 
   /* ---- Past here the order stands -------------------------------------- */
-
-  // Redemptions are counted atomically so a usage cap can't be overshot.
-  if (coupon) {
-    await db
-      .update(coupons)
-      .set({ timesRedeemed: sql`${coupons.timesRedeemed} + 1` })
-      .where(eq(coupons.id, coupon.id));
-  }
 
   const invoice = await createInvoiceForOrder(shop.id, order.id, invoiceToken);
 

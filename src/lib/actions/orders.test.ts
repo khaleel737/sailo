@@ -18,6 +18,8 @@ import { describe, expect, it } from "vitest";
  * see it. `dependencies.test.ts` guards a structural invariant the same way.
  */
 
+/** The one write allowed in front of the payment, because it can be undone. */
+
 const source = readFileSync("src/lib/actions/orders.ts", "utf8");
 
 /** Where a step happens in `createOrderIntent`, failing loudly if it moved. */
@@ -33,15 +35,31 @@ function positionOf(label: string, needle: string): number {
 }
 
 const handoff = positionOf("the Stripe handoff", "await handOffToStripe(");
-const coupon = positionOf("the coupon redemption", "${coupons.timesRedeemed} + 1");
+const claim = positionOf("the coupon claim", "await claimCouponRedemption(");
+const release = positionOf("the coupon release", "await releaseCouponRedemption(");
 const invoice = positionOf("the invoice", "await createInvoiceForOrder(");
 const email = positionOf("the confirmation email", "await sendOrderConfirmation(");
 
 describe("createOrderIntent — nothing irreversible before the payment handoff", () => {
-  it("hands off to Stripe before spending the buyer's coupon", () => {
-    // A redemption counted against an order that then gets deleted is a
-    // discount the buyer paid for and can never use again.
-    expect(handoff).toBeLessThan(coupon);
+  /*
+   * The coupon is the deliberate exception, and it is only allowed to be one
+   * because it has an undo.
+   *
+   * A usage cap has to be enforced before the buyer pays — taking money on a
+   * discount that was already exhausted is worse than either failure it sits
+   * between. So the redemption is claimed ahead of the handoff, and handed
+   * back explicitly when the handoff fails. Both halves are asserted: a claim
+   * without its release is bug 4 again, in one line.
+   */
+  it("claims the coupon before the buyer pays, so a spent code cannot be charged for", () => {
+    expect(claim).toBeLessThan(handoff);
+  });
+
+  it("gives the coupon back when the payment handoff fails", () => {
+    // Inside the `if (!card.ok)` branch, which is after the handoff call and
+    // before the invoice.
+    expect(release).toBeGreaterThan(handoff);
+    expect(release).toBeLessThan(invoice);
   });
 
   it("hands off to Stripe before claiming an invoice number", () => {
