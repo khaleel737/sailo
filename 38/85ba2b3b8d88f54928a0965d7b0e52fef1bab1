@@ -1,0 +1,23 @@
+src/lib/actions/orders.ts
+  s_3dd4b357265b83::t_c5e04ff833ee67 6,144
+src/lib/orders/commission.test.ts
+  s_3dd4b357265b83::t_9d6677d6afa9ed 1-45
+src/lib/orders/commission.ts
+  s_3dd4b357265b83::t_942ec3a6319392 1-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3885ba2b3b8d88f54928a0965d7b0e52fef1bab1",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
