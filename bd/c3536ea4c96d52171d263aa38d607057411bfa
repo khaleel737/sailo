@@ -1,0 +1,24 @@
+src/lib/actions/orders.ts
+  s_2e1da3b18d1c53::t_d89a063efac820 30-31
+  s_2e1da3b18d1c53::t_e7344388969c9f 9
+  s_2e1da3b18d1c53::t_e188a49085c26a 210-215
+src/lib/orders/digital-delivery.ts
+  s_2e1da3b18d1c53::t_38044171f95228 9,38,42
+  s_2e1da3b18d1c53::t_e6653ada38eb01 1-8,10-37,39-41,43-76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "bdc3536ea4c96d52171d263aa38d607057411bfa",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
