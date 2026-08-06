@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AlertTriangle, TrendingUp, Users, Wallet } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
-import { ExportCsv } from "@/components/hq/hq-export";
-import { EmptyRow, Table, Td, Th, Tr } from "@/components/hq/hq-table";
+import { ExportCsv } from "@/app/hq/_components/hq-export";
+import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import {
   BillingBadge,
   Metric,
@@ -12,7 +12,7 @@ import {
   SectionTitle,
   StripeLink,
   When,
-} from "@/components/hq/hq-ui";
+} from "@/app/hq/_components/hq-ui";
 import { Badge, Card } from "@/components/ui";
 import {
   getPaidAccounts,

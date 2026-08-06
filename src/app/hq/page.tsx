@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { BarChart } from "@/components/shared/bar-chart";
 import { PageHeader } from "@/components/shared/page-header";
-import { Table, Td, Th, Tr, EmptyRow } from "@/components/hq/hq-table";
+import { Table, Td, Th, Tr, EmptyRow } from "@/app/hq/_components/hq-table";
 import {
   BillingBadge,
   Metric,
@@ -20,7 +20,7 @@ import {
   Money,
   SectionTitle,
   When,
-} from "@/components/hq/hq-ui";
+} from "@/app/hq/_components/hq-ui";
 import { Card } from "@/components/ui";
 import {
   getAccounts,

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HqSidebar } from "@/components/hq/hq-sidebar";
+import { HqSidebar } from "@/app/hq/_components/hq-sidebar";
 import { PanelFooter } from "@/components/shared/panel-footer";
 import { requireStaff } from "@/lib/session";
 

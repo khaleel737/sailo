@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { EmptyRow, Table, Td, Th, Tr } from "@/components/hq/hq-table";
-import { SectionTitle, When } from "@/components/hq/hq-ui";
+import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
+import { SectionTitle, When } from "@/app/hq/_components/hq-ui";
 import { Badge } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
 import type { AccountDetail, AccountShop } from "./account.types";

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Check, Minus, X } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
-import { SectionTitle, When } from "@/components/hq/hq-ui";
+import { SectionTitle, When } from "@/app/hq/_components/hq-ui";
 import { Card } from "@/components/ui";
 import { getStaffLog, getSystemHealth } from "@/lib/hq";
 import { staffEmails } from "@/lib/staff";

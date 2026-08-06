@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/page-header";
-import { ExportCsv } from "@/components/hq/hq-export";
-import { HqFilters } from "@/components/hq/hq-filters";
-import { Pagination } from "@/components/hq/hq-pagination";
-import { EmptyRow, Table, Td, Th, Tr } from "@/components/hq/hq-table";
-import { BillingBadge, When } from "@/components/hq/hq-ui";
+import { ExportCsv } from "@/app/hq/_components/hq-export";
+import { HqFilters } from "@/app/hq/_components/hq-filters";
+import { Pagination } from "@/app/hq/_components/hq-pagination";
+import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
+import { BillingBadge, When } from "@/app/hq/_components/hq-ui";
 import { Badge } from "@/components/ui";
 import {
   ACCOUNT_SORT_OPTIONS,

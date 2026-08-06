@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/shared/page-header";
-import { ExportCsv } from "@/components/hq/hq-export";
-import { HqFilters } from "@/components/hq/hq-filters";
-import { Pagination } from "@/components/hq/hq-pagination";
-import { EmptyRow, Table, Td, Th, Tr } from "@/components/hq/hq-table";
-import { ShopCell, When } from "@/components/hq/hq-ui";
+import { ExportCsv } from "@/app/hq/_components/hq-export";
+import { HqFilters } from "@/app/hq/_components/hq-filters";
+import { Pagination } from "@/app/hq/_components/hq-pagination";
+import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
+import { ShopCell, When } from "@/app/hq/_components/hq-ui";
 import { Badge } from "@/components/ui";
 import { first, getPlatformProducts, pageNumber } from "@/lib/hq";
 import { formatMoney } from "@/lib/utils";

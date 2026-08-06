@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import { BarChart } from "@/components/shared/bar-chart";
 import { PageHeader } from "@/components/shared/page-header";
-import { AccountActions } from "@/components/hq/account-actions";
-import { Table, Td, Th, Tr } from "@/components/hq/hq-table";
+import { AccountActions } from "./_components/account-actions";
+import { Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import {
   BillingBadge,
   Detail,
@@ -24,7 +24,7 @@ import {
   SectionTitle,
   StripeLink,
   When,
-} from "@/components/hq/hq-ui";
+} from "@/app/hq/_components/hq-ui";
 import { Badge, Card } from "@/components/ui";
 import { getAccountDetail } from "@/lib/hq";
 import { billingState } from "@/lib/hq-metrics";
