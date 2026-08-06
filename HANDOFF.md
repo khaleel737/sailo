@@ -17,11 +17,38 @@ The goal is a codebase that can take real users and real money.
 
 - `AGENTS.md` — **this Next.js has breaking changes from your training data.**
   Read `node_modules/next/dist/docs/` before writing anything version-sensitive.
-- Skills live in **`.claude/skills/`** (project, not `~/.claude/skills/`).
-  Relevant: `clean-code-ts-react`, `next-best-practices`, `nextjs`,
-  `nextjs-ppr-patterns`, `ast-grep-typescript-react`, `drizzle-nextjs-postgres`,
-  `frontend-design`. Load them with the Skill tool before the work they cover.
-- `stripe-best-practices` (user-level skill) for anything touching payments.
+
+### Skills — 252 are installed in `.claude/skills/` (project, NOT `~/.claude/skills/`)
+
+Load with the Skill tool **before** the work it covers, not after. The ones
+that matter here, and when:
+
+| When you are… | Load |
+|---|---|
+| Splitting a component or naming an extraction | `clean-code-ts-react`, `react-composition`, `react-refactor` |
+| Writing or changing anything Next-specific | `nextjs`, `next-best-practices`, `nextjs-ppr-patterns` |
+| Touching types, generics, narrowing, `satisfies` | `typescript`, `typescript-advanced-patterns`, `typescript-refactor` |
+| Writing React that holds state | `react`, `react-best-practices`, `react-optimise` |
+| A mechanical rename or codemod across many files | `ast-grep-typescript-react`, `refactor` |
+| Writing tests | `tdd`, `vitest`, `react-testing-library`, `playwright` |
+| **Auditing for vulnerabilities / pentesting** | **`threat-model`**, then **`threat-patch`** to fix what it finds |
+| **Reviewing your own diff before committing** | **`code-reviewer`**, **`bug-review`** |
+| Anything touching Drizzle or the schema | `drizzle-nextjs-postgres` |
+| Anything touching Stripe | `stripe-best-practices` (user-level) |
+| Validation / parsing untrusted input | `zod`, `adversarial-zod` |
+| Auth, sessions, guards | `better-auth` |
+| Performance or bundle size | `nextjs-bundle-optimizer`, `algorithmic-complexity-review` |
+| SEO / metadata | `nextjs-seo` |
+
+**Run `threat-model` over the payment and auth paths as part of Phase 3.** It
+was never run last session — Phase 3 was done by hand, which is why the audit
+that followed still found nine bugs.
+
+**Run `code-reviewer` on your own staged diff before every commit on the money
+path.** Cheaper than finding it in production.
+
+Browse the rest with `ls .claude/skills/` — there is likely one for whatever
+you are about to do by hand.
 
 ## Where it stands
 
@@ -268,7 +295,8 @@ This is the method that produced everything above. Follow it literally.
 3. Extract one seam. Exact line ranges — never a regex over TypeScript.
 4. Run `npx tsc --noEmit`. READ WHAT IT SAYS. This is the bug-finding step.
 5. Test the rule the seam encodes, not its implementation.
-6. Gate, commit, push. One seam per commit.
+6. Load `code-reviewer` and review your own staged diff. Then gate,
+   commit, push. One seam per commit.
 ```
 
 **Step 4 is the point.** Nearly every bug found last session was surfaced by
@@ -300,10 +328,16 @@ Check: `ls src/components` should contain no folder named after one feature.
 carries a written reason to stay whole, and the pure logic each one held is
 importable and tested. Check: the `wc -l` command above, minus i18n and legal.
 
-**Phase 3 — Harden.** Done when every server action and API route either has
-an ownership guard or a written reason it is public; every public write has a
-rate limit; no secret-bearing module is imported for its runtime value by a
-`"use client"` file; `npm audit --omit=dev` is understood, not just run.
+**Phase 3 — Harden.** Load `threat-model` and run it over the checkout, auth
+and webhook paths — this was skipped last session and an audit afterwards
+still found nine bugs, several of them exploitable. Use `threat-patch` for
+what it surfaces.
+
+Done when every server action and API route either has an ownership guard or
+a written reason it is public; every public write has a rate limit; no
+secret-bearing module is imported for its runtime value by a `"use client"`
+file; `npm audit --omit=dev` is understood, not just run; and `threat-model`
+reports nothing unaddressed on the payment path.
 
 **Phase 4 — Production.** Done when a fresh clone (`git clone` → `npm ci` →
 `npm run build`) exits 0, the checkout and security e2e suites pass against a
