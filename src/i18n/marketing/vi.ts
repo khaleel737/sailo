@@ -7,6 +7,7 @@ export const marketingVi: MarketingDictionary = {
     features: "Tính năng",
     pricing: "Giá",
     faq: "Câu hỏi",
+    blog: "Blog",
     signIn: "Đăng nhập",
     createShop: "Tạo cửa hàng của bạn",
     openMenu: "Mở menu",
@@ -172,6 +173,23 @@ export const marketingVi: MarketingDictionary = {
     button: "Nhận liên kết của bạn",
     note: "Miễn phí trong thời gian beta · Không cần thẻ",
   },
+
+  blog: {
+
+    title: "Ghi chép về bán hàng",
+
+    intro:
+
+      "Cách bán từ liên kết trong tiểu sử: hình ảnh, giá, giao hàng và những quyết định nhỏ biến người theo dõi thành đơn hàng.",
+
+    empty: "Chưa có bài nào. Sắp có.",
+
+    minuteRead: "phút đọc",
+
+    backToBlog: "Tất cả bài viết",
+
+  },
+
 
   footer: {
     tagline: "Một liên kết, cả cửa hàng của bạn.",

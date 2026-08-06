@@ -14,7 +14,7 @@ export default function MarketingError({
   retry: () => void;
 }) {
   return (
-    <div className="brand-surface flex min-h-[100dvh] items-center justify-center">
+    <div className="flex min-h-[60vh] items-center justify-center">
       <ErrorPanel error={error} retry={retry} />
     </div>
   );

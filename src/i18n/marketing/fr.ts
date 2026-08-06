@@ -7,6 +7,7 @@ export const marketingFr: MarketingDictionary = {
     features: "Fonctionnalités",
     pricing: "Tarifs",
     faq: "Questions",
+    blog: "Blog",
     signIn: "Se connecter",
     createShop: "Créer ma boutique",
     openMenu: "Ouvrir le menu",
@@ -172,6 +173,23 @@ export const marketingFr: MarketingDictionary = {
     button: "Obtenir mon lien",
     note: "Gratuit pendant la bêta · Sans carte bancaire",
   },
+
+  blog: {
+
+    title: "Notes sur la vente",
+
+    intro:
+
+      "Comment vendre depuis le lien de votre bio : photos, prix, livraison et les petites décisions qui transforment un abonné en commande.",
+
+    empty: "Rien de publié pour l'instant. Bientôt.",
+
+    minuteRead: "min de lecture",
+
+    backToBlog: "Tous les articles",
+
+  },
+
 
   footer: {
     tagline: "Un lien, toute votre boutique.",

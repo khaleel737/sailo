@@ -7,6 +7,7 @@ export const marketingRu: MarketingDictionary = {
     features: "Возможности",
     pricing: "Тарифы",
     faq: "Вопросы",
+    blog: "Блог",
     signIn: "Войти",
     createShop: "Создать магазин",
     openMenu: "Открыть меню",
@@ -172,6 +173,23 @@ export const marketingRu: MarketingDictionary = {
     button: "Получить ссылку",
     note: "Бесплатно на время беты · Карта не нужна",
   },
+
+  blog: {
+
+    title: "Заметки о продажах",
+
+    intro:
+
+      "Как продавать по ссылке в профиле: фотографии, цены, доставка и небольшие решения, которые превращают подписчика в заказ.",
+
+    empty: "Пока ничего не опубликовано. Скоро.",
+
+    minuteRead: "мин чтения",
+
+    backToBlog: "Все статьи",
+
+  },
+
 
   footer: {
     tagline: "Одна ссылка — весь ваш магазин.",

@@ -7,6 +7,7 @@ export const marketingMs: MarketingDictionary = {
     features: "Ciri",
     pricing: "Harga",
     faq: "Soalan",
+    blog: "Blog",
     signIn: "Log masuk",
     createShop: "Cipta kedai anda",
     openMenu: "Buka menu",
@@ -172,6 +173,23 @@ export const marketingMs: MarketingDictionary = {
     button: "Dapatkan pautan anda",
     note: "Percuma sepanjang beta · Tiada kad diperlukan",
   },
+
+  blog: {
+
+    title: "Nota tentang berjualan",
+
+    intro:
+
+      "Cara berjualan daripada pautan di bio anda: foto, harga, penghantaran dan keputusan kecil yang menukar pengikut kepada pesanan.",
+
+    empty: "Belum ada apa-apa. Tidak lama lagi.",
+
+    minuteRead: "min bacaan",
+
+    backToBlog: "Semua artikel",
+
+  },
+
 
   footer: {
     tagline: "Satu pautan, seluruh kedai anda.",

@@ -7,6 +7,7 @@ export const marketingRo: MarketingDictionary = {
     features: "Funcții",
     pricing: "Prețuri",
     faq: "Întrebări",
+    blog: "Blog",
     signIn: "Autentificare",
     createShop: "Creează-ți magazinul",
     openMenu: "Deschide meniul",
@@ -172,6 +173,23 @@ export const marketingRo: MarketingDictionary = {
     button: "Ia-ți linkul",
     note: "Gratuit pe durata beta · Fără card",
   },
+
+  blog: {
+
+    title: "Note despre vânzare",
+
+    intro:
+
+      "Cum să vinzi din linkul din bio: fotografii, prețuri, livrare și deciziile mici care transformă un urmăritor într-o comandă.",
+
+    empty: "Nimic publicat încă. În curând.",
+
+    minuteRead: "min de citit",
+
+    backToBlog: "Toate articolele",
+
+  },
+
 
   footer: {
     tagline: "Un link, tot magazinul tău.",

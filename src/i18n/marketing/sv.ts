@@ -7,6 +7,7 @@ export const marketingSv: MarketingDictionary = {
     features: "Funktioner",
     pricing: "Priser",
     faq: "Frågor",
+    blog: "Blogg",
     signIn: "Logga in",
     createShop: "Skapa din butik",
     openMenu: "Öppna menyn",
@@ -172,6 +173,23 @@ export const marketingSv: MarketingDictionary = {
     button: "Hämta din länk",
     note: "Gratis under betan · Inget kort behövs",
   },
+
+  blog: {
+
+    title: "Anteckningar om att sälja",
+
+    intro:
+
+      "Så säljer du från länken i din bio: bilder, priser, leverans och de små besluten som gör en följare till en order.",
+
+    empty: "Inget publicerat än. Snart.",
+
+    minuteRead: "min läsning",
+
+    backToBlog: "Alla artiklar",
+
+  },
+
 
   footer: {
     tagline: "En länk, hela din butik.",

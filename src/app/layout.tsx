@@ -96,12 +96,23 @@ export async function generateMetadata(): Promise<Metadata> {
       description: m.seo.ogDescription,
       images: ["/opengraph-image"],
     },
+    /*
+     * Preview limits only — deliberately no `index: true`.
+     *
+     * A page with no robots meta is already indexable, so asserting it gained
+     * nothing and cost the 404s. `notFound()` makes Next inject
+     * `<meta name="robots" content="noindex">`, and because every dynamic
+     * route here streams, the response has already committed to `200` before
+     * the not-found renders — that tag is the only thing keeping a missing
+     * shop out of the index. Declaring `index: true` at the root overrode it,
+     * so every unknown handle, product and invoice token served a soft 404
+     * that invited Google to index it.
+     *
+     * A page that must not be indexed still says so itself; see the invoice
+     * and download routes.
+     */
     robots: {
-      index: true,
-      follow: true,
       googleBot: {
-        index: true,
-        follow: true,
         "max-image-preview": "large",
         "max-snippet": -1,
         "max-video-preview": -1,

@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { and, desc, eq } from "drizzle-orm";
 import { getDb, schema } from "@/db";
 import { absolute } from "@/lib/seo";
+import { getArticles } from "@/lib/blog";
 
 /**
  * The public surface: the marketing page, every published shop and every
@@ -36,7 +37,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absolute("/privacy"), lastModified: now, changeFrequency: "yearly", priority: 0.4 },
     { url: absolute("/terms"), lastModified: now, changeFrequency: "yearly", priority: 0.4 },
     { url: absolute("/refunds"), lastModified: now, changeFrequency: "yearly", priority: 0.4 },
+    { url: absolute("/blog"), lastModified: now, changeFrequency: "weekly", priority: 0.7 },
   ];
+
+  /*
+   * Articles come off disk, not out of the database, so they belong outside
+   * the try/catch below — a database outage should not take the blog out of
+   * the sitemap along with the shops.
+   */
+  const articles = await getArticles();
+  for (const article of articles) {
+    staticRoutes.push({
+      url: absolute(`/blog/${article.slug}`),
+      lastModified: new Date(article.date),
+      changeFrequency: "monthly",
+      priority: 0.6,
+    });
+  }
 
   try {
     const db = getDb();

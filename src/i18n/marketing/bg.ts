@@ -7,6 +7,7 @@ export const marketingBg: MarketingDictionary = {
     features: "Функции",
     pricing: "Цени",
     faq: "Въпроси",
+    blog: "Блог",
     signIn: "Вход",
     createShop: "Създайте магазин",
     openMenu: "Отвори менюто",
@@ -172,6 +173,23 @@ export const marketingBg: MarketingDictionary = {
     button: "Вземете своя линк",
     note: "Безплатно по време на бета · Без карта",
   },
+
+  blog: {
+
+    title: "Бележки за продаването",
+
+    intro:
+
+      "Как да продавате от връзката в биото си: снимки, цени, доставка и малките решения, които превръщат последовател в поръчка.",
+
+    empty: "Още нищо публикувано. Скоро.",
+
+    minuteRead: "мин четене",
+
+    backToBlog: "Всички статии",
+
+  },
+
 
   footer: {
     tagline: "Един линк, целият ви магазин.",

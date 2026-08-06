@@ -7,6 +7,7 @@ export const marketingNl: MarketingDictionary = {
     features: "Functies",
     pricing: "Prijzen",
     faq: "Vragen",
+    blog: "Blog",
     signIn: "Inloggen",
     createShop: "Maak je winkel",
     openMenu: "Menu openen",
@@ -172,6 +173,23 @@ export const marketingNl: MarketingDictionary = {
     button: "Haal je link",
     note: "Gratis tijdens de bèta · Geen creditcard nodig",
   },
+
+  blog: {
+
+    title: "Notities over verkopen",
+
+    intro:
+
+      "Hoe je verkoopt via de link in je bio: foto's, prijzen, bezorging en de kleine beslissingen die van een volger een bestelling maken.",
+
+    empty: "Nog niets gepubliceerd. Binnenkort.",
+
+    minuteRead: "min leestijd",
+
+    backToBlog: "Alle artikelen",
+
+  },
+
 
   footer: {
     tagline: "Eén link, je hele winkel.",

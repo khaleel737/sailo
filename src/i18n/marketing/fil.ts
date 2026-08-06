@@ -7,6 +7,7 @@ export const marketingFil: MarketingDictionary = {
     features: "Mga feature",
     pricing: "Presyo",
     faq: "Mga tanong",
+    blog: "Blog",
     signIn: "Mag-sign in",
     createShop: "Gumawa ng tindahan mo",
     openMenu: "Buksan ang menu",
@@ -172,6 +173,23 @@ export const marketingFil: MarketingDictionary = {
     button: "Kunin ang link mo",
     note: "Libre habang beta · Walang kailangang card",
   },
+
+  blog: {
+
+    title: "Mga tala sa pagbebenta",
+
+    intro:
+
+      "Paano magbenta mula sa link sa bio mo: mga larawan, presyo, delivery, at ang maliliit na desisyong gumagawa ng order mula sa isang follower.",
+
+    empty: "Wala pang nailathala. Malapit na.",
+
+    minuteRead: "min na pagbasa",
+
+    backToBlog: "Lahat ng artikulo",
+
+  },
+
 
   footer: {
     tagline: "Isang link, ang buong tindahan mo.",

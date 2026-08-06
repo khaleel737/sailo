@@ -7,6 +7,7 @@ export const marketingHu: MarketingDictionary = {
     features: "Funkciók",
     pricing: "Árak",
     faq: "Kérdések",
+    blog: "Blog",
     signIn: "Bejelentkezés",
     createShop: "Boltot indítok",
     openMenu: "Menü megnyitása",
@@ -172,6 +173,23 @@ export const marketingHu: MarketingDictionary = {
     button: "Kérem a linkem",
     note: "A béta alatt ingyenes · Bankkártya nélkül",
   },
+
+  blog: {
+
+    title: "Jegyzetek az eladásról",
+
+    intro:
+
+      "Hogyan adj el a bio linkedről: fotók, árak, kiszállítás és az apró döntések, amelyek követőből rendelést csinálnak.",
+
+    empty: "Még nincs semmi. Hamarosan.",
+
+    minuteRead: "perc olvasás",
+
+    backToBlog: "Összes cikk",
+
+  },
+
 
   footer: {
     tagline: "Egy link, az egész boltod.",

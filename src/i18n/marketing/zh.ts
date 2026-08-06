@@ -7,6 +7,7 @@ export const marketingZh: MarketingDictionary = {
     features: "功能",
     pricing: "价格",
     faq: "常见问题",
+    blog: "博客",
     signIn: "登录",
     createShop: "创建店铺",
     openMenu: "打开菜单",
@@ -172,6 +173,23 @@ export const marketingZh: MarketingDictionary = {
     button: "领取你的链接",
     note: "公测期间免费 · 无需绑卡",
   },
+
+  blog: {
+
+    title: "关于销售的笔记",
+
+    intro:
+
+      "如何通过简介里的链接卖货：照片、定价、配送，以及那些把粉丝变成订单的小决定。",
+
+    empty: "还没有文章，敬请期待。",
+
+    minuteRead: "分钟阅读",
+
+    backToBlog: "全部文章",
+
+  },
+
 
   footer: {
     tagline: "一条链接，整间店。",

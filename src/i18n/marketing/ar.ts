@@ -7,6 +7,7 @@ export const marketingAr: MarketingDictionary = {
     features: "المزايا",
     pricing: "الأسعار",
     faq: "أسئلة",
+    blog: "مدونة",
     signIn: "تسجيل الدخول",
     createShop: "أنشئ متجرك",
     openMenu: "فتح القائمة",
@@ -172,6 +173,23 @@ export const marketingAr: MarketingDictionary = {
     button: "احصل على رابطك",
     note: "مجاني خلال فترة التجربة · بدون بطاقة",
   },
+
+  blog: {
+
+    title: "ملاحظات عن البيع",
+
+    intro:
+
+      "كيف تبيع من رابط في نبذتك: الصور، والتسعير، والتوصيل، والقرارات الصغيرة التي تحوّل متابعًا إلى طلب.",
+
+    empty: "لا شيء منشور بعد. قريبًا.",
+
+    minuteRead: "دقيقة قراءة",
+
+    backToBlog: "كل المقالات",
+
+  },
+
 
   footer: {
     tagline: "رابط واحد، متجرك كله.",

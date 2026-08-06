@@ -7,6 +7,7 @@ export const marketingFi: MarketingDictionary = {
     features: "Ominaisuudet",
     pricing: "Hinnat",
     faq: "Kysymyksiä",
+    blog: "Blogi",
     signIn: "Kirjaudu",
     createShop: "Luo kauppasi",
     openMenu: "Avaa valikko",
@@ -172,6 +173,23 @@ export const marketingFi: MarketingDictionary = {
     button: "Hae linkkisi",
     note: "Ilmainen beta-aikana · Korttia ei tarvita",
   },
+
+  blog: {
+
+    title: "Muistiinpanoja myymisestä",
+
+    intro:
+
+      "Miten myydä bion linkistä: kuvat, hinnat, toimitus ja pienet päätökset, jotka tekevät seuraajasta tilaajan.",
+
+    empty: "Ei vielä julkaisuja. Pian.",
+
+    minuteRead: "min lukuaika",
+
+    backToBlog: "Kaikki artikkelit",
+
+  },
+
 
   footer: {
     tagline: "Yksi linkki, koko kauppasi.",

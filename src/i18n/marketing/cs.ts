@@ -7,6 +7,7 @@ export const marketingCs: MarketingDictionary = {
     features: "Funkce",
     pricing: "Ceník",
     faq: "Otázky",
+    blog: "Blog",
     signIn: "Přihlásit se",
     createShop: "Založit obchod",
     openMenu: "Otevřít menu",
@@ -172,6 +173,23 @@ export const marketingCs: MarketingDictionary = {
     button: "Získat svůj odkaz",
     note: "Zdarma po dobu bety · Bez karty",
   },
+
+  blog: {
+
+    title: "Poznámky o prodeji",
+
+    intro:
+
+      "Jak prodávat z odkazu v biu: fotografie, ceny, doručení a drobná rozhodnutí, která ze sledujícího udělají objednávku.",
+
+    empty: "Zatím nic zveřejněno. Brzy.",
+
+    minuteRead: "min čtení",
+
+    backToBlog: "Všechny články",
+
+  },
+
 
   footer: {
     tagline: "Jeden odkaz, celý váš obchod.",

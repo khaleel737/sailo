@@ -7,6 +7,7 @@ export const marketingDa: MarketingDictionary = {
     features: "Funktioner",
     pricing: "Priser",
     faq: "Spørgsmål",
+    blog: "Blog",
     signIn: "Log ind",
     createShop: "Opret din butik",
     openMenu: "Åbn menu",
@@ -172,6 +173,23 @@ export const marketingDa: MarketingDictionary = {
     button: "Hent dit link",
     note: "Gratis under betaen · Intet kort påkrævet",
   },
+
+  blog: {
+
+    title: "Noter om at sælge",
+
+    intro:
+
+      "Sådan sælger du fra linket i din bio: billeder, priser, levering og de små beslutninger, der gør en følger til en ordre.",
+
+    empty: "Intet udgivet endnu. Snart.",
+
+    minuteRead: "min læsning",
+
+    backToBlog: "Alle artikler",
+
+  },
+
 
   footer: {
     tagline: "Ét link, hele din butik.",

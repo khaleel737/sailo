@@ -7,6 +7,7 @@ export const marketingTh: MarketingDictionary = {
     features: "ฟีเจอร์",
     pricing: "ราคา",
     faq: "คำถาม",
+    blog: "บล็อก",
     signIn: "เข้าสู่ระบบ",
     createShop: "สร้างร้านของคุณ",
     openMenu: "เปิดเมนู",
@@ -172,6 +173,23 @@ export const marketingTh: MarketingDictionary = {
     button: "รับลิงก์ของคุณ",
     note: "ฟรีในช่วงเบต้า · ไม่ต้องใช้บัตร",
   },
+
+  blog: {
+
+    title: "บันทึกเรื่องการขาย",
+
+    intro:
+
+      "วิธีขายจากลิงก์ในไบโอ: ภาพถ่าย ราคา การจัดส่ง และการตัดสินใจเล็ก ๆ ที่เปลี่ยนผู้ติดตามให้เป็นคำสั่งซื้อ",
+
+    empty: "ยังไม่มีบทความ เร็ว ๆ นี้",
+
+    minuteRead: "นาทีในการอ่าน",
+
+    backToBlog: "บทความทั้งหมด",
+
+  },
+
 
   footer: {
     tagline: "ลิงก์เดียว ร้านทั้งร้านของคุณ",

@@ -7,6 +7,7 @@ export const marketingEs: MarketingDictionary = {
     features: "Funciones",
     pricing: "Precios",
     faq: "Preguntas",
+    blog: "Blog",
     signIn: "Iniciar sesión",
     createShop: "Crea tu tienda",
     openMenu: "Abrir menú",
@@ -172,6 +173,23 @@ export const marketingEs: MarketingDictionary = {
     button: "Consigue tu enlace",
     note: "Gratis durante la beta · Sin tarjeta",
   },
+
+  blog: {
+
+    title: "Notas sobre vender",
+
+    intro:
+
+      "Cómo vender desde el enlace de tu bio: fotos, precios, entrega y las pequeñas decisiones que convierten a un seguidor en un pedido.",
+
+    empty: "Aún no hay nada publicado. Pronto.",
+
+    minuteRead: "min de lectura",
+
+    backToBlog: "Todos los artículos",
+
+  },
+
 
   footer: {
     tagline: "Un enlace, toda tu tienda.",

@@ -7,6 +7,7 @@ export const marketingKo: MarketingDictionary = {
     features: "기능",
     pricing: "요금",
     faq: "자주 묻는 질문",
+    blog: "블로그",
     signIn: "로그인",
     createShop: "내 가게 만들기",
     openMenu: "메뉴 열기",
@@ -172,6 +173,23 @@ export const marketingKo: MarketingDictionary = {
     button: "내 링크 받기",
     note: "베타 기간 무료 · 카드 등록 불필요",
   },
+
+  blog: {
+
+    title: "판매에 대한 노트",
+
+    intro:
+
+      "프로필 링크로 판매하는 법: 사진, 가격, 배송, 그리고 팔로워를 주문으로 바꾸는 작은 결정들.",
+
+    empty: "아직 게시된 글이 없습니다. 곧 올라옵니다.",
+
+    minuteRead: "분 읽기",
+
+    backToBlog: "전체 글",
+
+  },
+
 
   footer: {
     tagline: "링크 하나에, 가게 전부.",

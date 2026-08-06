@@ -7,6 +7,7 @@ export const marketingMk: MarketingDictionary = {
     features: "Можности",
     pricing: "Цени",
     faq: "Прашања",
+    blog: "Блог",
     signIn: "Пријава",
     createShop: "Отворете продавница",
     openMenu: "Отвори мени",
@@ -172,6 +173,23 @@ export const marketingMk: MarketingDictionary = {
     button: "Земете ја вашата врска",
     note: "Бесплатно во текот на бета · Без картичка",
   },
+
+  blog: {
+
+    title: "Белешки за продажбата",
+
+    intro:
+
+      "Како да продавате преку линкот во биото: фотографии, цени, достава и малите одлуки што од следбеник прават нарачка.",
+
+    empty: "Сè уште нема објави. Наскоро.",
+
+    minuteRead: "мин читање",
+
+    backToBlog: "Сите статии",
+
+  },
+
 
   footer: {
     tagline: "Една врска, целата ваша продавница.",

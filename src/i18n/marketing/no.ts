@@ -7,6 +7,7 @@ export const marketingNo: MarketingDictionary = {
     features: "Funksjoner",
     pricing: "Priser",
     faq: "Spørsmål",
+    blog: "Blogg",
     signIn: "Logg inn",
     createShop: "Lag butikken din",
     openMenu: "Åpne meny",
@@ -172,6 +173,23 @@ export const marketingNo: MarketingDictionary = {
     button: "Hent lenken din",
     note: "Gratis i betaen · Ingen kort nødvendig",
   },
+
+  blog: {
+
+    title: "Notater om å selge",
+
+    intro:
+
+      "Slik selger du fra lenken i bioen: bilder, priser, levering og de små valgene som gjør en følger til en bestilling.",
+
+    empty: "Ingenting publisert ennå. Snart.",
+
+    minuteRead: "min lesing",
+
+    backToBlog: "Alle artikler",
+
+  },
+
 
   footer: {
     tagline: "Én lenke, hele butikken din.",

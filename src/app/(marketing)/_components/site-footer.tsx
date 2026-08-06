@@ -45,7 +45,7 @@ export function SiteFooter({
             </div>
           </div>
 
-          <div className="grid gap-10 sm:grid-cols-2 sm:gap-16">
+          <div className="grid gap-10 sm:grid-cols-3 sm:gap-14">
             <nav aria-label={m.footer.liveShops}>
               <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-[var(--mute-400)]">
                 {m.footer.liveShops}
@@ -62,6 +62,22 @@ export function SiteFooter({
                     </Link>
                   </li>
                 ))}
+              </ul>
+            </nav>
+
+            <nav aria-label={m.footer.product}>
+              <p className="text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-[var(--mute-400)]">
+                {m.footer.product}
+              </p>
+              <ul className="mt-5 grid gap-3">
+                <li>
+                  <Link
+                    href="/blog"
+                    className="focus-line inline-flex min-h-11 items-center text-[0.875rem] text-[var(--mute-500)] transition-colors hover:text-[var(--ink)]"
+                  >
+                    {m.nav.blog}
+                  </Link>
+                </li>
               </ul>
             </nav>
 

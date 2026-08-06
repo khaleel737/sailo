@@ -7,6 +7,7 @@ export const marketingBs: MarketingDictionary = {
     features: "Mogućnosti",
     pricing: "Cijene",
     faq: "Pitanja",
+    blog: "Blog",
     signIn: "Prijava",
     createShop: "Otvorite prodavnicu",
     openMenu: "Otvori meni",
@@ -172,6 +173,23 @@ export const marketingBs: MarketingDictionary = {
     button: "Uzmite svoj link",
     note: "Besplatno tokom bete · Bez kartice",
   },
+
+  blog: {
+
+    title: "Bilješke o prodaji",
+
+    intro:
+
+      "Kako prodavati preko linka u biografiji: fotografije, cijene, dostava i male odluke koje pratioca pretvaraju u narudžbu.",
+
+    empty: "Još ništa objavljeno. Uskoro.",
+
+    minuteRead: "min čitanja",
+
+    backToBlog: "Svi članci",
+
+  },
+
 
   footer: {
     tagline: "Jedan link, cijela vaša prodavnica.",

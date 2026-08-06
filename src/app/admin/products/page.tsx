@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { interpolate } from "@/i18n";
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, EyeOff, ImageIcon, Package, Plus, Trash2 } from "lucide-react";
@@ -129,7 +130,11 @@ export default async function AdminProductsPage() {
                           product.category?.name,
                           product.kind !== "physical" ? product.kind : null,
                           product.variants.length > 0
-                            ? `${product.variants.length} variant${product.variants.length === 1 ? "" : "s"}`
+                            ? product.variants.length === 1
+                              ? a.products.variantCountOne
+                              : interpolate(a.products.variantCount, {
+                                  count: product.variants.length,
+                                })
                             : null,
                         ]
                           .filter(Boolean)

@@ -41,7 +41,7 @@ export function OrderActions({ order }: { order: Order }) {
             onClick={() => setPanel(panel === "ship" ? null : "ship")}
           >
             <Truck className="size-4" />
-            {order.trackingNumber ? "Edit tracking" : "Add tracking"}
+            {order.trackingNumber ? a.orders.editTracking : a.orders.addTracking}
           </Button>
         ) : null}
 

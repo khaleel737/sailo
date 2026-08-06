@@ -21,6 +21,7 @@ export const marketingEn = {
     features: "Features",
     pricing: "Pricing",
     faq: "Questions",
+    blog: "Blog",
     signIn: "Sign in",
     createShop: "Create your shop",
     openMenu: "Open menu",
@@ -186,6 +187,15 @@ export const marketingEn = {
     body: "Sailo just gives it a front door — so people can browse, compare and see prices before they message you.",
     button: "Get your link",
     note: "Free while in beta · No card required",
+  },
+
+  blog: {
+    title: "Notes on selling",
+    intro:
+      "How to sell from a link in your bio: photographs, pricing, delivery and the small decisions that turn a follower into an order.",
+    empty: "Nothing published yet. Soon.",
+    minuteRead: "min read",
+    backToBlog: "All articles",
   },
 
   footer: {

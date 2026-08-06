@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { cn } from "@/lib/utils";
 
 /**
@@ -9,6 +10,8 @@ import { cn } from "@/lib/utils";
  * that component drives local state and can't carry an href.
  */
 export function IntervalToggle({ interval }: { interval: "month" | "year" }) {
+  const a = useAdminT();
+
   return (
     <div className="inline-flex rounded-xl border border-ink-200 bg-ink-50 p-1">
       {(["month", "year"] as const).map((value) => {
@@ -27,7 +30,7 @@ export function IntervalToggle({ interval }: { interval: "month" | "year" }) {
                 : "text-ink-500 hover:text-ink-900",
             )}
           >
-            {value === "month" ? "Monthly" : "Yearly"}
+            {value === "month" ? a.billing.monthly : a.billing.yearly}
             {value === "year" ? (
               <span className="ms-1.5 text-xs font-semibold text-brand-600">
                 −20%

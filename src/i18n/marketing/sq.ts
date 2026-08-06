@@ -7,6 +7,7 @@ export const marketingSq: MarketingDictionary = {
     features: "Veçoritë",
     pricing: "Çmimet",
     faq: "Pyetje",
+    blog: "Blog",
     signIn: "Hyr",
     createShop: "Krijoni dyqanin tuaj",
     openMenu: "Hap menunë",
@@ -172,6 +173,23 @@ export const marketingSq: MarketingDictionary = {
     button: "Merrni lidhjen tuaj",
     note: "Falas gjatë beta-s · Pa kartë",
   },
+
+  blog: {
+
+    title: "Shënime për shitjen",
+
+    intro:
+
+      "Si të shesësh nga lidhja në bio: fotografitë, çmimet, dërgesa dhe vendimet e vogla që e kthejnë një ndjekës në porosi.",
+
+    empty: "Ende asgjë e publikuar. Së shpejti.",
+
+    minuteRead: "min lexim",
+
+    backToBlog: "Të gjithë artikujt",
+
+  },
+
 
   footer: {
     tagline: "Një lidhje, i gjithë dyqani juaj.",

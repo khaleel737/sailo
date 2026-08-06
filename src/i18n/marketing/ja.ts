@@ -7,6 +7,7 @@ export const marketingJa: MarketingDictionary = {
     features: "機能",
     pricing: "料金",
     faq: "よくある質問",
+    blog: "ブログ",
     signIn: "ログイン",
     createShop: "ショップを作る",
     openMenu: "メニューを開く",
@@ -172,6 +173,23 @@ export const marketingJa: MarketingDictionary = {
     button: "リンクを受け取る",
     note: "ベータ期間中は無料 · カード登録は不要",
   },
+
+  blog: {
+
+    title: "販売についての覚え書き",
+
+    intro:
+
+      "プロフィールのリンクから売るには——写真、価格、配送、そしてフォロワーを注文に変える小さな判断について。",
+
+    empty: "まだ記事はありません。近日公開。",
+
+    minuteRead: "分で読めます",
+
+    backToBlog: "記事一覧",
+
+  },
+
 
   footer: {
     tagline: "リンク一本に、ショップまるごと。",

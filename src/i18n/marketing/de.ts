@@ -7,6 +7,7 @@ export const marketingDe: MarketingDictionary = {
     features: "Funktionen",
     pricing: "Preise",
     faq: "Fragen",
+    blog: "Blog",
     signIn: "Anmelden",
     createShop: "Shop erstellen",
     openMenu: "Menü öffnen",
@@ -172,6 +173,23 @@ export const marketingDe: MarketingDictionary = {
     button: "Link sichern",
     note: "Kostenlos in der Beta · Keine Kreditkarte",
   },
+
+  blog: {
+
+    title: "Notizen zum Verkaufen",
+
+    intro:
+
+      "Wie man über den Link in der Bio verkauft: Fotos, Preise, Lieferung und die kleinen Entscheidungen, die aus Follower:innen Bestellungen machen.",
+
+    empty: "Noch nichts veröffentlicht. Bald.",
+
+    minuteRead: "Min. Lesezeit",
+
+    backToBlog: "Alle Artikel",
+
+  },
+
 
   footer: {
     tagline: "Ein Link, dein ganzer Shop.",

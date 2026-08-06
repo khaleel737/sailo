@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { interpolate } from "@/i18n";
 import { ShoppingBag } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
@@ -26,8 +27,10 @@ export default async function AdminOrdersPage() {
         title={a.orders.title}
         description={
           awaiting > 0
-            ? `${awaiting} ${awaiting === 1 ? "buyer says they've" : "buyers say they've"} paid — confirm to mark as paid.`
-            : "Captured the moment someone taps Order — before they even send the message."
+            ? awaiting === 1
+              ? a.orders.awaitingOne
+              : interpolate(a.orders.awaiting, { count: awaiting })
+            : a.orders.description
         }
         action={<ExportButton shop={shop} type="orders" />}
       />

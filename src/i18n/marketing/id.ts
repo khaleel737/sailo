@@ -7,6 +7,7 @@ export const marketingId: MarketingDictionary = {
     features: "Fitur",
     pricing: "Harga",
     faq: "Pertanyaan",
+    blog: "Blog",
     signIn: "Masuk",
     createShop: "Buat toko Anda",
     openMenu: "Buka menu",
@@ -172,6 +173,23 @@ export const marketingId: MarketingDictionary = {
     button: "Ambil tautan Anda",
     note: "Gratis selama beta · Tanpa kartu",
   },
+
+  blog: {
+
+    title: "Catatan tentang berjualan",
+
+    intro:
+
+      "Cara berjualan dari tautan di bio: foto, harga, pengiriman, dan keputusan kecil yang mengubah pengikut menjadi pesanan.",
+
+    empty: "Belum ada yang terbit. Segera.",
+
+    minuteRead: "menit baca",
+
+    backToBlog: "Semua artikel",
+
+  },
+
 
   footer: {
     tagline: "Satu tautan, seluruh toko Anda.",

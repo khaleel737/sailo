@@ -15,6 +15,7 @@ import { OrderActions } from "@/app/admin/orders/_components/order-actions";
 import { Badge, Button } from "@/components/ui";
 import { orderStatusLabel, orderStatusTone } from "@/lib/order-status";
 import { getAdminT } from "@/i18n/server";
+import { interpolate } from "@/i18n";
 import { taxName } from "@/lib/tax-label";
 import { formatAddress, formatMoney } from "@/lib/utils";
 import type { Order } from "@/db/schema";
@@ -55,7 +56,7 @@ export async function OrderRow({
               {lines.length > 1 ? (
                 <span className="text-ink-400">
                   {" "}
-                  + {lines.length - 1} more
+                  {interpolate(a.orders.andMore, { count: lines.length - 1 })}
                 </span>
               ) : null}
             </p>
@@ -141,7 +142,7 @@ export async function OrderRow({
 
           {order.pickupLocation ? (
             <p className="mt-1 text-xs text-ink-500">
-              Collect from: {order.pickupLocation}
+              {a.orders.collectFrom}: {order.pickupLocation}
             </p>
           ) : null}
 
@@ -168,11 +169,11 @@ export async function OrderRow({
               <Download className="size-3 shrink-0" />
               {order.downloadReleasedAt ? (
                 <>
-                  Files released
+                  {a.orders.filesReleased}
                   {order.downloadLimit
-                    ? ` · ${order.downloadCount}/${order.downloadLimit} downloaded`
+                    ? ` · ${interpolate(a.orders.downloadedOf, { count: order.downloadCount, limit: order.downloadLimit })}`
                     : order.downloadCount > 0
-                      ? ` · downloaded ${order.downloadCount}×`
+                      ? ` · ${interpolate(a.orders.downloadedTimes, { count: order.downloadCount })}`
                       : ""}
                 </>
               ) : (
@@ -211,14 +212,14 @@ export async function OrderRow({
 
           {order.refundedCents > 0 ? (
             <p className="mt-1 text-xs font-medium text-red-600">
-              Refunded {formatMoney(order.refundedCents, order.currency)}
+              {a.orders.refunded} {formatMoney(order.refundedCents, order.currency)}
               {order.refundReason ? ` — ${order.refundReason}` : ""}
             </p>
           ) : null}
 
           {order.paymentReference ? (
             <p className="mt-1.5 text-xs text-ink-500">
-              Transfer ref:{" "}
+              {a.orders.transferRef}:{" "}
               <span className="font-medium text-ink-700">
                 {order.paymentReference}
               </span>
@@ -231,7 +232,7 @@ export async function OrderRow({
           order.commissionCents > 0 ? (
             <p className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-ink-500">
               <span>
-                Items {formatMoney(order.subtotalCents, order.currency)}
+                {a.orders.items} {formatMoney(order.subtotalCents, order.currency)}
               </span>
               {order.discountCents > 0 ? (
                 <span className="text-emerald-600">
@@ -241,7 +242,7 @@ export async function OrderRow({
               ) : null}
               {order.deliveryFeeCents > 0 ? (
                 <span>
-                  Delivery {formatMoney(order.deliveryFeeCents, order.currency)}
+                  {a.orders.delivery} {formatMoney(order.deliveryFeeCents, order.currency)}
                 </span>
               ) : null}
               {order.taxCents > 0 ? (

@@ -6,7 +6,6 @@ import { getT } from "@/i18n/server";
 import { getMarketingDictionary } from "@/i18n/marketing";
 import { LOCALES } from "@/i18n/config";
 import { HERO_DEMO, RTL_DEMO, phoneShotUrl, rtlShotUrl } from "@/lib/demos";
-import { SiteNav } from "@/components/marketing/site-nav";
 import { BioCard } from "@/components/marketing/bio-card";
 import { PhoneFrame } from "@/components/marketing/frames";
 import { DemoGallery } from "@/components/marketing/demo-gallery";
@@ -24,7 +23,6 @@ import {
 } from "@/components/marketing/kit";
 import { faqJsonLd, softwareJsonLd } from "@/lib/seo";
 import { PricingSection } from "./_components/pricing-section";
-import { SiteFooter } from "./_components/site-footer";
 
 /**
  * The homepage is the one page whose canonical is "/" — it used to be declared
@@ -94,7 +92,7 @@ export default async function HomePage() {
 
   return (
     <MotionProvider>
-    <div className="brand-surface flex min-h-screen flex-col">
+    <>
       {/* Search engines read this; it is the same copy the page shows, so the
           two can never disagree. */}
       <script
@@ -105,16 +103,6 @@ export default async function HomePage() {
         }}
       />
 
-      <a
-        href="#main"
-        className="focus-line sr-only focus:not-sr-only focus:absolute focus:start-5 focus:top-5 focus:z-50 focus:rounded-[var(--r-pill)] focus:bg-[var(--ink)] focus:px-5 focus:py-2.5 focus:text-sm focus:font-medium focus:text-[var(--paper)]"
-      >
-        {m.nav.skip}
-      </a>
-
-      <SiteNav t={m} locale={locale} languageLabel={t.common.language} />
-
-      <main id="main" className="flex-1">
         {/* ---------------------------------------------------------------
             Hero. Asymmetric split: the claim on one side, the proof on the
             other. Four text elements, no more.
@@ -451,10 +439,7 @@ export default async function HomePage() {
             <p className="mt-6 text-[0.8125rem] text-[var(--on-ink-mute)]">{m.cta.note}</p>
           </div>
         </Section>
-      </main>
-
-      <SiteFooter locale={locale} t={t} m={m} />
-    </div>
+    </>
     </MotionProvider>
   );
 }

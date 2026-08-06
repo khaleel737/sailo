@@ -7,6 +7,7 @@ export const marketingTr: MarketingDictionary = {
     features: "Özellikler",
     pricing: "Fiyatlar",
     faq: "Sorular",
+    blog: "Blog",
     signIn: "Giriş yap",
     createShop: "Dükkânını aç",
     openMenu: "Menüyü aç",
@@ -172,6 +173,23 @@ export const marketingTr: MarketingDictionary = {
     button: "Bağlantını al",
     note: "Beta boyunca ücretsiz · Kart gerekmez",
   },
+
+  blog: {
+
+    title: "Satış üzerine notlar",
+
+    intro:
+
+      "Biyografinizdeki bağlantıdan nasıl satılır: fotoğraflar, fiyatlar, teslimat ve bir takipçiyi siparişe dönüştüren küçük kararlar.",
+
+    empty: "Henüz bir şey yayımlanmadı. Yakında.",
+
+    minuteRead: "dk okuma",
+
+    backToBlog: "Tüm yazılar",
+
+  },
+
 
   footer: {
     tagline: "Tek bağlantı, bütün dükkânın.",
