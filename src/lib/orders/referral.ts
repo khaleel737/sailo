@@ -2,7 +2,7 @@ import "server-only";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, type Shop } from "@/db/schema";
-import { firstRow } from "@/lib/invariant";
+import { maybeRow } from "@/lib/invariant";
 import { generateCode } from "@/lib/pricing";
 import { formatPercent } from "@/lib/pricing";
 
@@ -30,7 +30,14 @@ export async function referralFor(
     // Retry on the rare code collision rather than failing the order.
     for (let attempt = 0; attempt < 5 && !affiliate; attempt++) {
       const localPart = email.split("@")[0] ?? email;
-      const created = firstRow(await db
+      /*
+       * `maybeRow`, because no row is the outcome this loop exists for.
+       * `onConflictDoNothing` returns nothing precisely when the generated
+       * code collided, which is the case the retry handles — `firstRow` threw
+       * instead, and it threw here on the checkout path *after* the order was
+       * already written.
+       */
+      const created = maybeRow(await db
         .insert(affiliates)
         .values({
           shopId: shop.id,
@@ -41,7 +48,7 @@ export async function referralFor(
           source: "buyer",
         })
         .onConflictDoNothing({ target: [affiliates.shopId, affiliates.code] })
-        .returning(), "created");
+        .returning());
       affiliate = created;
     }
   }

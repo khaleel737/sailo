@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { revalidateShop } from "@/lib/cache";
-import { firstRow } from "@/lib/invariant";
+import { maybeRow } from "@/lib/invariant";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, orders, shops } from "@/db/schema";
@@ -202,7 +202,9 @@ export async function applyAsAffiliate(
   }
 
   for (let attempt = 0; attempt < 5; attempt++) {
-    const created = firstRow(await db
+    // No row means the generated code collided, which is what the retry is
+    // for. `firstRow` threw on it instead, so the `if` below never ran.
+    const created = maybeRow(await db
       .insert(affiliates)
       .values({
         shopId: shop.id,
@@ -214,7 +216,7 @@ export async function applyAsAffiliate(
         source: "signup",
       })
       .onConflictDoNothing({ target: [affiliates.shopId, affiliates.code] })
-      .returning(), "created");
+      .returning());
     if (created) {
       revalidatePath("/admin/affiliates");
       return {

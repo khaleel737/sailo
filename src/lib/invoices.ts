@@ -1,5 +1,5 @@
 import "server-only";
-import { firstRow } from "@/lib/invariant";
+import { firstRow, maybeRow } from "@/lib/invariant";
 import { eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { invoices, shops } from "@/db/schema";
@@ -54,11 +54,13 @@ export async function createInvoiceForOrder(
   if (existing) return existing;
 
   const number = await claimNumber(shopId);
-  const invoice = firstRow(await db
+  // No row means another writer got there first — the outcome the fallback
+  // below is written for. `firstRow` threw on it, so that fallback was dead.
+  const invoice = maybeRow(await db
     .insert(invoices)
     .values({ shopId, orderId, number, token })
     .onConflictDoNothing({ target: invoices.orderId })
-    .returning(), "invoice");
+    .returning());
 
   if (invoice) return invoice;
 

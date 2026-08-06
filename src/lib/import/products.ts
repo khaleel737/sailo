@@ -2,7 +2,7 @@ import "server-only";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { categories, productImages, products, productVariants, type ProductOption, type VariantOptions } from "@/db/schema";
-import { firstRow } from "@/lib/invariant";
+import { firstRow, maybeRow } from "@/lib/invariant";
 import { field, parseBool, parseMoneyField } from "@/lib/csv";
 import { slugify } from "@/lib/utils";
 import { atProductLimit } from "@/lib/plans";
@@ -223,7 +223,15 @@ export async function importProducts(opts: {
       if (cached) {
         categoryId = cached;
       } else {
-        const created = firstRow(await db
+        /*
+         * No row means the slug already existed, which the lookup below is
+         * written to recover from — note the `created?.id` it starts with.
+         * `firstRow` threw there instead, and it does not take a concurrent
+         * import to reach: the cache is keyed by name but the constraint is on
+         * the slug, so "T Shirts" and "T-Shirts" in one file collide and the
+         * whole import fails on a row it was equipped to handle.
+         */
+        const created = maybeRow(await db
           .insert(categories)
           .values({
             shopId: opts.shopId,
@@ -232,7 +240,7 @@ export async function importProducts(opts: {
             position: catCache.size,
           })
           .onConflictDoNothing({ target: [categories.shopId, categories.slug] })
-          .returning({ id: categories.id }), "created");
+          .returning({ id: categories.id }));
 
         categoryId =
           created?.id ??
