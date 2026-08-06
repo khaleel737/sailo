@@ -1,0 +1,124 @@
+src/components/shared/chart/chart-readout.tsx
+  s_7ee005f5ad96b3::t_c74951cade2152 24,30
+src/app/(marketing)/blog/page.tsx
+  s_8655c64984f687::t_4ddb5629636ead 6
+  s_8655c64984f687::t_af2ddb95d614f0 133-134,140-141
+  s_8655c64984f687::t_d8c0ab803ce3b7 86-88,90-91,97-98
+  s_8655c64984f687::t_868bf089dee072 32-34
+src/lib/blog.test.ts
+  s_8655c64984f687::t_fb483a007b6a2d 114,117-187,194-196,201,218-219,272-273
+  s_8655c64984f687::t_b92f4be549429d 205-209
+  s_8655c64984f687::t_3fff940c15cae8 3,14-15,34-36,61-86,104-113,240-245,263-271
+  s_8655c64984f687::t_3cd70a61854a53 188-193,197-200,202-204,210-217
+  s_8655c64984f687::t_3e57806cf84588 87-103,115
+  s_8655c64984f687::t_2c52b292d6db9a 2
+  s_8655c64984f687::t_19cf6f4f8be471 116
+src/app/sitemap.ts
+  s_8655c64984f687::t_b9526d642e89e2 47-50,52
+  s_8655c64984f687::t_b0372f72e52b6f 5
+src/components/shared/chart/variant-switch.tsx
+  s_7ee005f5ad96b3::t_c74951cade2152 29
+src/lib/chart/domain.ts
+  s_409182f8577344::t_ef9271aa3be783 112-133
+  s_7ee005f5ad96b3::t_5df761ec1d23bd 1,29,33-35,92,95,110-111
+src/components/shared/chart/index.tsx
+  s_7ee005f5ad96b3::t_e2b8ba35833f5a 6-7,18-19,23,28-29,40-41,44-46,51,57-63,66-67,70-73,76,90,92,94,98,100-101,103-106,126,129,132-133,158,164,187,205,207
+  s_409182f8577344::t_ef9271aa3be783 117-118,190,201
+src/app/hq/accounts/[id]/page.tsx
+  s_7ee005f5ad96b3::t_c74951cade2152 267
+  s_7ee005f5ad96b3::t_5a73f722b75265 226
+src/app/admin/page.tsx
+  s_7ee005f5ad96b3::t_c74951cade2152 227
+  s_7ee005f5ad96b3::t_1b440ec3465908 183
+scripts/tmp/shop.mts
+  s_409182f8577344::t_81b68d6ea3ece4 1-18
+scripts/tmp/order.mts
+  s_245cff4bd6e8de::t_62c7bcbaffef5f 18-46
+  s_409182f8577344::t_7a07b12633f33c 1-17,47
+src/components/shared/chart/chart-header.tsx
+  s_7ee005f5ad96b3::t_c74951cade2152 25
+src/components/shared/chart/chart-series.tsx
+  s_409182f8577344::t_ef9271aa3be783 5,94-98,100
+  s_7ee005f5ad96b3::t_16f946d222fc56 6-7,10,13,18,25-27,31,34,36-38,41-42,51-63,65-76,78-89,91-93,99,101-114,116-122
+src/lib/chart/cursor.ts
+  s_7ee005f5ad96b3::t_c74951cade2152 54-55
+src/components/shared/chart/chart-plot.tsx
+  s_7ee005f5ad96b3::t_d73db5914104a7 9,34,43-45,52,56,81,86,90,108,169
+next.config.ts
+  s_7ee005f5ad96b3::t_b89733833491d4 7-28
+src/app/(marketing)/blog/[slug]/page.tsx
+  s_8655c64984f687::t_3227ab102402e0 116-118
+  s_8655c64984f687::t_f6386c7e8c93dc 6,8
+  s_8655c64984f687::t_c9a8ae91e8fe41 79-80
+  s_8655c64984f687::t_2b21a8bc4ce137 48-51
+  s_8655c64984f687::t_a7c594ae267c7d 16-18,21-22
+  s_8655c64984f687::t_532407a1f8ab3d 134-144,146-150
+docs/blog-brief.md
+  s_409182f8577344::t_bd346c2c00b00f 29,64,88
+scripts/tmp/orders.mts
+  s_8655c64984f687::t_ef5293389af964 1-11
+src/lib/chart/variations.test.ts
+  s_7ee005f5ad96b3::t_f8ef52ac224c7f 1-243
+src/lib/chart/cursor.test.ts
+  s_409182f8577344::t_3f8f42980944a7 105,120
+src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_8655c64984f687::t_e1fef5c0c2ec7f 184-202,204,206
+src/lib/chart/types.ts
+  s_7ee005f5ad96b3::t_bdaec4dbc127fa 3-13,29-31,35,37-40,42,55-58
+  s_7ee005f5ad96b3::t_609b6fcd207771 59
+docs/blog-keywords.csv
+  s_8655c64984f687::t_2f56261ca10b1a 1-3
+src/lib/blog.ts
+  s_8655c64984f687::t_c973e6bab5c1c8 120-122
+  s_8655c64984f687::t_797b7dda86c7a3 5,10-25,45-50,76,78-79,86,88,93,109,115-119,123-129,131-134,141-148,150-153,156-160,163-193,208,215-218,246-255,259-262,267-271,273
+  s_8655c64984f687::t_8f59488ed5157c 154-155
+  s_8655c64984f687::t_f094d46a1f8ca4 195-207,209-214,220-245
+  s_8655c64984f687::t_47c550b67911e6 194
+  s_8655c64984f687::t_7f0f5dd81d53cb 219
+src/app/(marketing)/page.tsx
+  s_409182f8577344::t_881ec3a42f4609 88-94
+src/app/hq/page.tsx
+  s_7ee005f5ad96b3::t_698bbfa62f88e3 218
+src/lib/chart/domain.test.ts
+  s_7ee005f5ad96b3::t_71518a4826c36e 2-11,137-164
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "68ec1e68506a5ecd27dad71fa79b34575a080493",
+  "prompts": {},
+  "sessions": {
+    "s_245cff4bd6e8de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e02099e-b1fd-430e-af26-4353fefe29d8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_409182f8577344": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ac36c06e-0b1f-49d2-8d1b-799407288c73",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_7ee005f5ad96b3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "22956574-b8ad-444b-a8fe-b34f24b6e02a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_8655c64984f687": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3b27ca8b-2952-4bcf-ac99-898ade8c9a98",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
