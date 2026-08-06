@@ -17,9 +17,9 @@ import { callerIp } from "@/lib/client-ip";
 import { affiliates, coupons, orderItems, orders, paymentMethods, shops, type Affiliate, type Coupon, type PaymentConfig } from "@/db/schema";
 import { formatAddress, formatMoney } from "@/lib/utils";
 import { sendOrderConfirmation } from "@/lib/email";
-import { bankDetailLines, buildHandoff, isPaymentMethodType, PAYMENT_METHOD_DEFS, isRailUsable } from "@/lib/payments";
+import { bankDetailLines, buildHandoff, isPaymentMethodType, PAYMENT_METHOD_DEFS, isRailUsable, type Handoff } from "@/lib/payments";
 import { checkCoupon, COUPON_MESSAGES, normalizeCode } from "@/lib/pricing";
-import { createInvoiceForOrder } from "@/lib/invoices";
+import { createInvoiceForOrder, newInvoiceToken } from "@/lib/invoices";
 import { can } from "@/lib/plans";
 import { cartNeedsDelivery, cartSubtotal, quote, type Quote, type QuoteLine } from "@/lib/quote";
 import { unitsLeft, variantLabel } from "@/lib/variants";
@@ -321,6 +321,61 @@ export async function createOrderIntent(
     })),
   );
 
+  const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
+
+  /*
+   * The invoice's public token, minted before the invoice exists.
+   *
+   * Stripe's success URL has to name the invoice, but claiming an invoice
+   * number is one of the things that must not happen until the payment handoff
+   * has succeeded — so the token is generated here, spent in the success URL
+   * below, and only written to a row once Stripe has accepted the session.
+   * Nothing resolves it until the buyer comes back from paying.
+   */
+  const invoiceToken = newInvoiceToken();
+
+  /* ---- Card: hand the buyer to Stripe --------------------------------- */
+
+  /*
+   * Before the coupon, the invoice and the email, all of which this used to
+   * run first.
+   *
+   * A failure here rolls the order and its stock reservation back, and those
+   * are the only two things that *can* be rolled back. A redemption already
+   * counted is a discount the buyer paid for and cannot use again; an invoice
+   * number already claimed leaves a gap in a sequence a tax authority expects
+   * to be unbroken; and an email already sent cannot be recalled — it told the
+   * buyer their order was confirmed and linked them to an invoice that the
+   * rollback then deleted. Stripe is the step most likely to fail of all of
+   * them, so it goes first and everything irreversible waits behind it.
+   */
+  let cardHandoff: Handoff | null = null;
+  if (method.type === "card") {
+    const card = await handOffToStripe({
+      shop,
+      orderId: order.id,
+      // Stripe's receipt itemises the basket rather than lumping it under the
+      // first product's name.
+      items: priced.lines.map((line) => ({
+        name: line.label ? `${line.title} — ${line.label}` : line.title,
+        unitPriceCents: line.unitPriceCents,
+        quantity: line.quantity,
+      })),
+      successUrl: `${base}/invoice/${invoiceToken}?paid=1`,
+      cancelUrl:
+        lines.length === 1
+          ? `${base}/${shop.handle}/p/${head.product.slug}?cancelled=1`
+          : `${base}/${shop.handle}?cancelled=1`,
+    });
+
+    // The handoff rolls the order back on failure, so there is nothing to
+    // undo here — only a message to pass on.
+    if (!card.ok) return { ok: false, error: card.error };
+    cardHandoff = card.handoff;
+  }
+
+  /* ---- Past here the order stands -------------------------------------- */
+
   // Redemptions are counted atomically so a usage cap can't be overshot.
   if (coupon) {
     await db
@@ -329,8 +384,7 @@ export async function createOrderIntent(
       .where(eq(coupons.id, coupon.id));
   }
 
-  const invoice = await createInvoiceForOrder(shop.id, order.id);
-  const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
+  const invoice = await createInvoiceForOrder(shop.id, order.id, invoiceToken);
 
   // Confirmation email — best effort, never blocks or fails the order.
   if (email) {
@@ -372,7 +426,10 @@ export async function createOrderIntent(
   revalidatePath("/admin/clients");
   revalidatePath("/admin/invoices");
 
-  let handoff = buildHandoff(method.type, method.config, {
+  // A card buyer's handoff is Stripe's redirect, settled above. Every other
+  // rail builds a message for the seller, and that message carries the invoice
+  // number — which is why it is built here rather than before the payment.
+  const handoff = cardHandoff ?? buildHandoff(method.type, method.config, {
     shopName: shop.name,
     // The seller reads this in a chat app, so every line goes in it — a cart
     // summarised to its first item would have them ringing back to ask.
@@ -409,34 +466,6 @@ export async function createOrderIntent(
         : undefined,
     invoiceNumber: invoice?.number,
   });
-
-  /* ---- Card: hand the buyer to Stripe --------------------------------- */
-
-  if (method.type === "card") {
-    const card = await handOffToStripe({
-      shop,
-      orderId: order.id,
-      // Stripe's receipt itemises the basket rather than lumping it under the
-      // first product's name.
-      items: priced.lines.map((line) => ({
-        name: line.label ? `${line.title} — ${line.label}` : line.title,
-        unitPriceCents: line.unitPriceCents,
-        quantity: line.quantity,
-      })),
-      successUrl: invoice
-        ? `${base}/invoice/${invoice.token}?paid=1`
-        : `${base}/${shop.handle}?ordered=1`,
-      cancelUrl:
-        lines.length === 1
-          ? `${base}/${shop.handle}/p/${head.product.slug}?cancelled=1`
-          : `${base}/${shop.handle}?cancelled=1`,
-    });
-
-    // The handoff rolls the order back on failure, so there is nothing to
-    // undo here — only a message to pass on.
-    if (!card.ok) return { ok: false, error: card.error };
-    handoff = card.handoff;
-  }
 
   const config = method.config as PaymentConfig;
   const deliveryInstructions = delivery
