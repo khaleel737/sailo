@@ -74,25 +74,31 @@ describe("removeBadge entitlement", () => {
  */
 describe("the platform fee on a card sale", () => {
   const free = shop("free", null);
-  const order = (subtotalCents: number, discountCents = 0) => ({
+  const order = (
+    subtotalCents: number,
+    discountCents = 0,
+    tax: { taxRateBp?: number; taxInclusive?: boolean } = {},
+  ) => ({
     subtotalCents,
     discountCents,
+    taxRateBp: tax.taxRateBp ?? 0,
+    taxInclusive: tax.taxInclusive ?? false,
   });
 
-  it("takes one percent of the goods", () => {
-    expect(platformFeeBp(free)).toBe(100);
-    expect(platformFeeCents(free, order(4800))).toBe(48);
-    expect(platformFeeLabel(free)).toBe("1%");
+  it("takes half a percent of the goods", () => {
+    expect(platformFeeBp(free)).toBe(50);
+    expect(platformFeeCents(free, order(4800))).toBe(24);
+    expect(platformFeeLabel(free)).toBe("0.5%");
   });
 
-  it("takes the discount off first — 1% of a price nobody paid is not a sale", () => {
-    expect(platformFeeCents(free, order(10_000, 2_000))).toBe(80);
+  it("takes the discount off first — 0.5% of a price nobody paid is not a sale", () => {
+    expect(platformFeeCents(free, order(10_000, 2_000))).toBe(40);
   });
 
   it("rounds to the nearest cent", () => {
-    // 1% of $2.45 is 2.45 cents.
-    expect(platformFeeCents(free, order(245))).toBe(2);
-    expect(platformFeeCents(free, order(255))).toBe(3);
+    // 0.5% of $2.45 is 1.225 cents; of $2.55 it is 1.275.
+    expect(platformFeeCents(free, order(245))).toBe(1);
+    expect(platformFeeCents(free, order(255))).toBe(1);
   });
 
   it("charges nothing on a free order", () => {
@@ -105,14 +111,55 @@ describe("the platform fee on a card sale", () => {
 
   /*
    * Delivery is money the seller hands to a courier and tax is money they
-   * collect for a government. Neither is theirs, so neither is ours. The
-   * function only ever sees the two fields it may charge on, which is the
-   * cheapest way to keep that true.
+   * collect for a government. Neither is theirs, so neither is ours.
+   *
+   * This used to be asserted by noting the function was only given
+   * `subtotalCents` and `discountCents`, and concluding it therefore could not
+   * charge on tax. That reasoning was wrong, and it is what let the bug below
+   * through: under inclusive pricing the tax is *inside* `subtotalCents`, so
+   * withholding the tax fields did not withhold the tax.
    */
-  it("is computed from the goods alone", () => {
-    const goodsOnly = platformFeeCents(free, order(5_000));
-    expect(goodsOnly).toBe(50);
-    // An order with $20 delivery and $10 tax on the same goods pays the same.
-    expect(platformFeeCents(free, order(5_000, 0))).toBe(goodsOnly);
+  it("never charges on delivery, which is not in the subtotal", () => {
+    // Delivery genuinely is a separate field the function never receives.
+    expect(platformFeeCents(free, order(5_000))).toBe(25);
+  });
+
+  it("charges the full subtotal when tax is added on top", () => {
+    // US-style: the $50 is pre-tax and the tax is charged beside it, so the
+    // subtotal is already the goods.
+    expect(platformFeeCents(free, order(5_000, 0, { taxRateBp: 2_000 }))).toBe(25);
+  });
+
+  it("strips tax that is baked into the price before charging", () => {
+    /*
+     * The bug. A €100 VAT-inclusive sale at 20% earns the seller €83.33; the
+     * remaining €16.67 is the government's. Charging 0.5% of €100 billed them
+     * for holding it. `pricing.ts` already strips inclusive tax before paying
+     * affiliate commission — this did not.
+     */
+    const fee = platformFeeCents(
+      free,
+      order(10_000, 0, { taxRateBp: 2_000, taxInclusive: true }),
+    );
+    // 0.5% of the €83.33 that is actually the seller's, not of the €100.
+    expect(fee).toBe(42);
+    expect(fee).toBeLessThan(50);
+  });
+
+  it("takes the discount off before extracting the tax", () => {
+    // €100 less a €20 coupon is an €80 inclusive sale: €66.67 of goods.
+    expect(
+      platformFeeCents(
+        free,
+        order(10_000, 2_000, { taxRateBp: 2_000, taxInclusive: true }),
+      ),
+    ).toBe(33);
+  });
+
+  it("charges nothing on an inclusive order that is entirely tax", () => {
+    // Degenerate, but it must not go negative.
+    expect(
+      platformFeeCents(free, order(100, 0, { taxRateBp: 1_000_000, taxInclusive: true })),
+    ).toBe(0);
   });
 });

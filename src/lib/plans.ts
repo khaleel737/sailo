@@ -1,5 +1,6 @@
 import type { Dictionary } from "@/i18n";
 import type { Shop } from "@/db/schema";
+import { taxOn } from "@/lib/pricing";
 
 export const PLAN_IDS = ["free", "pro", "business"] as const;
 export type PlanId = (typeof PLAN_IDS)[number];
@@ -192,7 +193,32 @@ export function cheapestPlanWith(feature: keyof Features): Plan | null {
  * the day there are several, and every caller already passes the shop.
  */
 export function platformFeeBp(_shop: BillingShape): number {
-  return 100;
+  return 50;
+}
+
+/**
+ * The fee as a percentage, for copy that has no shop to hand — the pricing
+ * page, the marketing site, the legal documents.
+ *
+ * Exported so that no sentence anywhere writes the number itself. Every
+ * translated string that mentions the fee interpolates this, because the
+ * alternative was measured and it failed: the English copy was updated when
+ * the fee was introduced and thirty-four translations were not, so every
+ * non-English seller was told on the pricing page that Sailo took no
+ * commission while Stripe collected one on every card sale.
+ */
+export const PLATFORM_FEE_LABEL = formatFeeBp(platformFeeBp({
+  plan: "free",
+  subscriptionStatus: null,
+}));
+
+/**
+ * Basis points as a percentage, with no trailing zero to explain away: 50 is
+ * "0.5%", not "0.50%", and 100 is "1%". `toFixed` alone gives the second form,
+ * which reads like a rate quoted to two decimals for a reason.
+ */
+function formatFeeBp(bp: number): string {
+  return `${Number((bp / 100).toFixed(2))}%`;
 }
 
 /**
@@ -206,16 +232,40 @@ export function platformFeeBp(_shop: BillingShape): number {
  */
 export function platformFeeCents(
   shop: BillingShape,
-  order: { subtotalCents: number; discountCents: number },
+  order: {
+    subtotalCents: number;
+    discountCents: number;
+    /*
+     * Both required, not optional with a default.
+     *
+     * A caller that omits them is a caller that has not decided whether its
+     * prices include tax, and the wrong answer overcharges silently. Making
+     * the compiler ask is the only thing that catches the next call site.
+     */
+    taxRateBp: number | null;
+    taxInclusive: boolean | null;
+  },
 ): number {
-  const goods = Math.max(0, order.subtotalCents - order.discountCents);
-  return Math.round((goods * platformFeeBp(shop)) / 10_000);
+  const net = Math.max(0, order.subtotalCents - order.discountCents);
+
+  /*
+   * Under inclusive pricing the tax is *inside* the prices, so it is inside
+   * `net` too — and billing a percentage of it is billing the seller for
+   * holding a government's money, which the note above says this must not do.
+   * `pricing.ts` already strips it before paying affiliate commission; this
+   * charged it. A €100 VAT-inclusive sale at 20% was billed on €100 rather
+   * than the €83.33 the seller actually earned.
+   */
+  const includedTax = order.taxInclusive
+    ? taxOn(net, order.taxRateBp ?? 0, true)
+    : 0;
+
+  return Math.round(((net - includedTax) * platformFeeBp(shop)) / 10_000);
 }
 
-/** "1%" — for the places that have to state the fee to a seller. */
+/** "0.5%" — for the places that have to state the fee to a seller. */
 export function platformFeeLabel(shop: BillingShape): string {
-  const bp = platformFeeBp(shop);
-  return bp % 100 === 0 ? `${bp / 100}%` : `${(bp / 100).toFixed(2)}%`;
+  return formatFeeBp(platformFeeBp(shop));
 }
 
 export function upgradeMessage(feature: keyof Features, what: string) {
