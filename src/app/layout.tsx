@@ -64,7 +64,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "sell digital downloads",
       "booking page",
       "Linktree alternative",
-      "no commission ecommerce",
+      "low fee ecommerce",
     ],
     /*
      * No `alternates.canonical` here on purpose.
@@ -120,6 +120,12 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     icons: {
+      /*
+       * Only the SVG is declared. `favicon.ico` sits in this folder and Next
+       * emits its own tag for it with a content hash — which is what makes a
+       * replaced icon actually replace the one in a browser's cache. Adding a
+       * second, unhashed tag here only duplicates it and loses the hash.
+       */
       icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
       apple: "/apple-icon.png",
     },
