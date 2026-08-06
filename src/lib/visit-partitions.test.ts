@@ -32,7 +32,7 @@ describe("partitionName", () => {
       new Date(Date.UTC(2026, 1, 1)),
       new Date(Date.UTC(2026, 9, 1)),
     ].map(partitionName);
-    expect([...names].sort()).toEqual([
+    expect(names.toSorted()).toEqual([
       "visits_2026_02",
       "visits_2026_10",
       "visits_2026_12",
@@ -108,7 +108,7 @@ describe("expiredPartitions", () => {
     expect(
       expiredPartitions(shuffled, cutoff)
         .map((p) => p.name)
-        .sort(),
+        .toSorted(),
     ).toEqual(["visits_2026_05", "visits_2026_06"]);
   });
 });
