@@ -9,11 +9,11 @@ function createDb() {
 }
 
 // Lazy so `next build` doesn't need a live connection string.
-let _db: ReturnType<typeof createDb> | null = null;
+let cached: ReturnType<typeof createDb> | null = null;
 
 export function getDb() {
-  if (!_db) _db = createDb();
-  return _db;
+  if (!cached) cached = createDb();
+  return cached;
 }
 
 export { schema };

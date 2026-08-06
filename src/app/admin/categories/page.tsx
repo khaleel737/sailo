@@ -58,15 +58,15 @@ export default async function AdminCategoriesPage() {
           }
         >
           {categories.map((category) => {
-            const count = countBy.get(category.id) ?? 0;
+            const productCount = countBy.get(category.id) ?? 0;
             return (
               <Tr key={category.id}>
                 <Td className="font-medium text-ink-900">{category.name}</Td>
                 <Td align="end" label={a.columns.products} className="tabular">
-                  {count === 0 ? (
+                  {productCount === 0 ? (
                     <span className="text-ink-300">0</span>
                   ) : (
-                    count
+                    productCount
                   )}
                 </Td>
                 <Td align="end">

@@ -16,8 +16,8 @@ export async function getOrderItems(order: Order) {
 }
 
 /** The same, for a list of orders, in one query rather than one each. */
-export async function getOrderItemsMap(orders: Order[]) {
-  return orderLinesMap(orders);
+export async function getOrderItemsMap(rows: Order[]) {
+  return orderLinesMap(rows);
 }
 
 export async function getShopOrders(shopId: string, limit = 100) {

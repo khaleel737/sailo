@@ -29,10 +29,10 @@ export const auth = betterAuth({
      * the reset keeps the access the reset was meant to revoke.
      */
     revokeSessionsOnPasswordReset: true,
-    sendResetPassword: async ({ user: account, url }) => {
+    sendResetPassword: async ({ user: recipient, url }) => {
       const result = await sendPasswordReset({
-        to: account.email,
-        name: account.name,
+        to: recipient.email,
+        name: recipient.name,
         url,
         expiresInHours: RESET_TOKEN_TTL_SECONDS / 3600,
       });

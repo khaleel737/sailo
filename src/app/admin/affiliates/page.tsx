@@ -68,8 +68,8 @@ export default async function AdminAffiliatesPage() {
   for (const affiliate of affiliates) {
     portalUrls.set(affiliate.id, portalUrl(await ensurePortalToken(affiliate), base));
   }
-  const pending = affiliates.filter((a) => a.status === "pending");
-  const totalUnpaid = affiliates.reduce((sum, a) => sum + a.unpaidCents, 0);
+  const pending = affiliates.filter((affiliate) => affiliate.status === "pending");
+  const totalUnpaid = affiliates.reduce((sum, affiliate) => sum + affiliate.unpaidCents, 0);
 
   return (
     <>
@@ -95,8 +95,8 @@ export default async function AdminAffiliatesPage() {
                   {formatMoney(totalUnpaid, shop.currency)}
                 </span>{" "}
                 in commission is owed across{" "}
-                {affiliates.filter((a) => a.unpaidCents > 0).length} affiliate
-                {affiliates.filter((a) => a.unpaidCents > 0).length === 1
+                {affiliates.filter((affiliate) => affiliate.unpaidCents > 0).length} affiliate
+                {affiliates.filter((affiliate) => affiliate.unpaidCents > 0).length === 1
                   ? ""
                   : "s"}
                 .

@@ -32,10 +32,13 @@ import type { PaymentConfig, PaymentMethod } from "@/db/schema";
  *   Not set up  it needs details before it can do anything at all.
  */
 
+/*
+ * Spread rather than picked one by one: PLATFORM_ICONS already holds these
+ * three under the same keys, and naming each was three assertions saying the
+ * map has what the map defines.
+ */
 const ICONS: Record<string, (p: { className?: string }) => React.ReactNode> = {
-  whatsapp: PLATFORM_ICONS.whatsapp!,
-  telegram: PLATFORM_ICONS.telegram!,
-  instagram: PLATFORM_ICONS.instagram!,
+  ...PLATFORM_ICONS,
   email: Mail,
   phone: Phone,
   bank_transfer: Banknote,
