@@ -1,0 +1,36 @@
+src/lib/refunds.test.ts
+  s_8655c64984f687::t_b27208a3177af4 90-158
+  s_3dd4b357265b83::t_7e163b7a0dcda1 2
+src/lib/downloads.test.ts
+  s_3dd4b357265b83::t_e33e2b8ae580c2 1-54
+src/lib/actions/order-admin.ts
+  s_8655c64984f687::t_6ceeab03a58e3b 11,169-172,175-178,181,212
+src/lib/downloads.ts
+  s_3dd4b357265b83::t_3d9a936292b5ce 90-108,113-117,140
+src/lib/refunds.ts
+  s_3dd4b357265b83::t_007f2895384b6d 58-103
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "1960667ce096338ac6550b65dd15162d1e35af6b",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_8655c64984f687": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3b27ca8b-2952-4bcf-ac99-898ade8c9a98",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
