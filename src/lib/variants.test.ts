@@ -119,16 +119,16 @@ describe("normalizeOptions", () => {
 describe("variantPrice", () => {
   it("uses the product's price when the variant sets none", () => {
     // Empty means inherit, which is why the column is nullable.
-    expect(variantPrice({ priceCents: 1999 }, { priceCents: null })).toBe(1999);
-    expect(variantPrice({ priceCents: 1999 }, null)).toBe(1999);
+    expect(variantPrice({ priceCents: 1999, compareAtCents: null }, { priceCents: null })).toBe(1999);
+    expect(variantPrice({ priceCents: 1999, compareAtCents: null }, null)).toBe(1999);
   });
 
   it("uses the variant's own price when it has one", () => {
-    expect(variantPrice({ priceCents: 1999 }, { priceCents: 2499 })).toBe(2499);
+    expect(variantPrice({ priceCents: 1999, compareAtCents: null }, { priceCents: 2499 })).toBe(2499);
   });
 
   it("honours a variant priced at zero rather than inheriting", () => {
     // A deliberately free variant must not silently cost the product's price.
-    expect(variantPrice({ priceCents: 1999 }, { priceCents: 0 })).toBe(0);
+    expect(variantPrice({ priceCents: 1999, compareAtCents: null }, { priceCents: 0 })).toBe(0);
   });
 });

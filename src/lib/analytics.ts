@@ -80,9 +80,11 @@ function matches(host: string, needles: string[]) {
 }
 
 /**
- * A readable name for a referring host: "Instagram", "google.com".
- * Capitalises the brand where we know it, otherwise leaves the host alone —
- * guessing at an unknown domain's brand name reads worse than the domain.
+ * A readable name for a referring host: "Instagram", "Some-blog".
+ *
+ * A brand we know keeps its own spelling. Anything else becomes its first
+ * label, capitalised — so "some-blog.example" reads as "Some-blog" rather
+ * than as a guess at what the site calls itself.
  */
 export function hostLabel(host: string | null): string {
   if (!host) return "Direct";
@@ -227,6 +229,13 @@ export function parseUserAgent(ua: string | null | undefined): DeviceInfo {
 /** ISO 3166-1 alpha-2 → the flag emoji, by offsetting into the indicator block. */
 export function countryFlag(code: string | null): string {
   if (!code || code.length !== 2 || !/^[a-z]{2}$/i.test(code)) return "🌍";
+  /*
+   * ZZ is CLDR's code for "Unknown Region" and arrives from GeoIP whenever an
+   * address cannot be placed. It is two letters, so it would otherwise build a
+   * flag for a country that does not exist — which renders as two letter-boxes
+   * beside a name that already reads "Unknown Region".
+   */
+  if (code.toUpperCase() === "ZZ") return "🌍";
   return String.fromCodePoint(
     ...[...code.toUpperCase()].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65),
   );
