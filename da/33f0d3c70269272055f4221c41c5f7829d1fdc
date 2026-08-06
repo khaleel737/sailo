@@ -1,0 +1,23 @@
+src/lib/queries/analytics.ts
+  s_7ee005f5ad96b3::t_b568619c0b1878 2,13-14,22-30,44-70,84,89-92,94-100
+src/db/schema/orders.ts
+  s_7ee005f5ad96b3::t_910b328eeece24 192-194
+src/components/shared/chart/variant-switch.tsx
+  s_7ee005f5ad96b3::t_e65d107ad8cbf0 39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "da33f0d3c70269272055f4221c41c5f7829d1fdc",
+  "prompts": {},
+  "sessions": {
+    "s_7ee005f5ad96b3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "22956574-b8ad-444b-a8fe-b34f24b6e02a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
