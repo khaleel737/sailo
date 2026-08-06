@@ -3,7 +3,6 @@ import type { PartialAdminDictionary } from "./en";
 export const adminSq: PartialAdminDictionary = {
   variants: {
     untick: "Hiq shenjën",
-    forSaleWord: "Në shitje",
     notSold: "Ky kombinim nuk shitet",
     option: "Opsioni",
     values: "Vlerat",
@@ -110,9 +109,6 @@ export const adminSq: PartialAdminDictionary = {
     sales: "Shitjet",
     earned: "Fituar",
     unpaid: "E papaguar",
-    lockTitle: "Programi i rekomandimeve",
-    offHint: "Ndizni programin më sipër për të shtuar partnerë dhe për të ndarë lidhje.",
-    publicSignup: "Lejo këdo të aplikojë",
     namePlaceholder: "Amara Okafor",
     emailPlaceholder: "amara@example.com",
     codePlaceholder: "AMARA",
@@ -249,7 +245,6 @@ export const adminSq: PartialAdminDictionary = {
     editExisting: "Redakto një ekzistues",
     offerAtCheckout: "Ofroje te pagesa",
     nameBuyersSee: "Emri që sheh blerësi",
-    freeOver: "Falas mbi",
     physicalOnly: "Vetëm produktet fizike pyesin për dërgesën — shkarkimet dixhitale dhe shërbimet e kapërcejnë. Opsionet e tërheqjes nuk i kërkojnë kurrë adresë blerësit.",
     freeOverLabel: "Falas mbi",
   },
@@ -346,7 +341,6 @@ export const adminSq: PartialAdminDictionary = {
     expires: "Skadon",
     day: "Dita",
     viewAsTable: "Shfaq si tabelë",
-    viewAsTableLabel: "Shfaq si tabelë",
   },
 
   coupons: {
@@ -355,7 +349,6 @@ export const adminSq: PartialAdminDictionary = {
     discountCodesBody: "Zhvilloni promocione me zbritje në përqindje ose shumë fikse, blerje minimale, kufi përdorimesh dhe datë skadimi.",
     title: "Kuponat",
     description: "Kode zbritjeje që blerësit shkruajnë kur paguajnë.",
-    lockTitle: "Kodet e zbritjes",
     lockBody: "Zhvilloni promocione me zbritje në përqindje ose shumë fikse, blerje minimale, kufi përdorimesh dhe datë skadimi.",
     empty: "Ende asnjë kupon",
     emptyBody: "Krijoni një kod më sipër dhe ndajeni me klientët tuaj.",
@@ -382,11 +375,7 @@ export const adminSq: PartialAdminDictionary = {
     all: "Të gjithë klientët",
     contact: "Kontakti",
     noDetails: "Nuk u regjistrua asnjë e dhënë.",
-    notes: "Shënime private",
-    saveNotes: "Ruaj shënimet",
-    noOrders: "Ende asnjë porosi.",
     lifetimeValue: "Vlera e përgjithshme",
-    outstanding: "Për t’u arkëtuar",
     notesPlaceholder: "Preferon tërheqjen vetë. Alergjik ndaj nikelit. Blerës i rregullt me shumicë…",
   },
 
@@ -445,7 +434,6 @@ export const adminSq: PartialAdminDictionary = {
     empty: "Ende asnjë kategori",
     emptyBody: "Kategoritë janë opsionale — shtoni disa kur të keni mjaftueshëm për t’i grupuar.",
     namePlaceholder: "Filxhanë, Postera, Konsulencë…",
-    nameLabel: "Emri i kategorisë",
   },
 
   products: {

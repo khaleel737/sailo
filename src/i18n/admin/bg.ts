@@ -3,7 +3,6 @@ import type { PartialAdminDictionary } from "./en";
 export const adminBg: PartialAdminDictionary = {
   variants: {
     untick: "Махни отметката",
-    forSaleWord: "В продажба",
     notSold: "Тази комбинация не се продава",
     option: "Опция",
     values: "Стойности",
@@ -110,9 +109,6 @@ export const adminBg: PartialAdminDictionary = {
     sales: "Продажби",
     earned: "Спечелено",
     unpaid: "Неизплатено",
-    lockTitle: "Партньорска програма",
-    offHint: "Включете програмата по-горе, за да добавяте партньори и да споделяте връзки.",
-    publicSignup: "Нека всеки може да кандидатства",
     namePlaceholder: "Amara Okafor",
     emailPlaceholder: "amara@example.com",
     codePlaceholder: "AMARA",
@@ -249,7 +245,6 @@ export const adminBg: PartialAdminDictionary = {
     editExisting: "Редактирай съществуваща",
     offerAtCheckout: "Предлагай при плащане",
     nameBuyersSee: "Име, което купувачът вижда",
-    freeOver: "Безплатно над",
     physicalOnly: "За доставка питат само физическите продукти — дигиталните файлове и услугите я пропускат. Опциите за взимане никога не искат адрес от купувача.",
     freeOverLabel: "Безплатно над",
   },
@@ -346,7 +341,6 @@ export const adminBg: PartialAdminDictionary = {
     expires: "Изтича",
     day: "Ден",
     viewAsTable: "Показване като таблица",
-    viewAsTableLabel: "Показване като таблица",
   },
 
   coupons: {
@@ -355,7 +349,6 @@ export const adminBg: PartialAdminDictionary = {
     discountCodesBody: "Правете промоции с процентна или фиксирана отстъпка, минимална поръчка, лимит на употреби и срок на валидност.",
     title: "Купони",
     description: "Кодове за отстъпка, които купувачите въвеждат при плащане.",
-    lockTitle: "Кодове за отстъпка",
     lockBody: "Правете промоции с процентна или фиксирана отстъпка, минимална поръчка, лимит на употреби и срок на валидност.",
     empty: "Още няма купони",
     emptyBody: "Създайте код по-горе и го споделете с клиентите си.",
@@ -382,11 +375,7 @@ export const adminBg: PartialAdminDictionary = {
     all: "Всички клиенти",
     contact: "Контакт",
     noDetails: "Няма записани данни.",
-    notes: "Лични бележки",
-    saveNotes: "Запази бележките",
-    noOrders: "Още няма поръчки.",
     lifetimeValue: "Обща стойност",
-    outstanding: "Дължимо",
     notesPlaceholder: "Предпочита лично взимане. Алергия към никел. Редовен клиент на едро…",
   },
 
@@ -445,7 +434,6 @@ export const adminBg: PartialAdminDictionary = {
     empty: "Още няма категории",
     emptyBody: "Категориите не са задължителни — добавете ги, когато има какво да групирате.",
     namePlaceholder: "Чаши, Постери, Консултации…",
-    nameLabel: "Име на категорията",
   },
 
   products: {

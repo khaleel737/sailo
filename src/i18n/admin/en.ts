@@ -10,7 +10,6 @@
  */
 export const adminEn = {
   common: {
-    viewAsTableLabel: "View as table",
     shopHandlePlaceholder: "yourshop",
     save: "Save",
     saveChanges: "Save changes",
@@ -199,7 +198,6 @@ export const adminEn = {
 
   variants: {
     untick: "Untick",
-    forSaleWord: "For sale",
     notSold: "This combination isn't sold",
     option: "Option",
     values: "Values",
@@ -252,7 +250,6 @@ export const adminEn = {
     emptyBody:
       "Categories are optional — add a few once you have enough products to group.",
     namePlaceholder: "Mugs, Prints, Consulting…",
-    nameLabel: "Category name",
   },
 
   /** The order lifecycle, as a seller reads it. Keys match the stored enum. */
@@ -318,11 +315,7 @@ export const adminEn = {
     all: "All clients",
     contact: "Contact",
     noDetails: "No details captured.",
-    notes: "Private notes",
-    saveNotes: "Save notes",
-    noOrders: "No orders yet.",
     lifetimeValue: "Lifetime value",
-    outstanding: "Outstanding",
     notesPlaceholder:
       "Prefers pickup. Allergic to nickel. Repeat wholesale buyer…",
   },
@@ -343,7 +336,6 @@ export const adminEn = {
     discountCodesBody: "Run promotions with percentage or fixed discounts, minimum spend, usage caps and expiry dates.",
     title: "Coupons",
     description: "Discount codes buyers enter at checkout.",
-    lockTitle: "Discount codes",
     lockBody:
       "Run promotions with percentage or fixed discounts, minimum spend, usage caps and expiry dates.",
     empty: "No coupons yet",
@@ -368,13 +360,10 @@ export const adminEn = {
     turnOnFirst: "Turn the programme on above to add affiliates and share links.",
     title: "Affiliates",
     description: "Pay people a share of what they sell for you.",
-    lockTitle: "Referral programme",
     empty: "No affiliates yet",
     emptyBody: "Add someone above, or let buyers opt in after they order.",
-    offHint: "Turn the programme on above to add affiliates and share links.",
     markPaid: "Mark paid",
     runProgramme: "Run a referral programme",
-    publicSignup: "Let anyone apply",
     defaultCommission: "Default commission",
     commissionHint: "% of each order, before delivery",
     terms: "Programme terms",
@@ -456,7 +445,6 @@ export const adminEn = {
     editExisting: "Edit existing",
     offerAtCheckout: "Offer at checkout",
     nameBuyersSee: "Name buyers see",
-    freeOver: "Free over",
     physicalOnly:
       "Only physical products ask about delivery — digital downloads and services skip it. Collection options never ask the buyer for an address.",
   },

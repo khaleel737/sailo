@@ -3,7 +3,6 @@ import type { PartialAdminDictionary } from "./en";
 export const adminSr: PartialAdminDictionary = {
   variants: {
     untick: "Одзначи",
-    forSaleWord: "У продаји",
     notSold: "Ова се комбинација не продаје",
     option: "Опција",
     values: "Вредности",
@@ -110,9 +109,6 @@ export const adminSr: PartialAdminDictionary = {
     sales: "Продаја",
     earned: "Зарађено",
     unpaid: "Неисплаћено",
-    lockTitle: "Програм препорука",
-    offHint: "Укључите програм изнад да додате партнере и делите линкове.",
-    publicSignup: "Нека свако може да се пријави",
     namePlaceholder: "Amara Okafor",
     emailPlaceholder: "amara@example.com",
     codePlaceholder: "AMARA",
@@ -249,7 +245,6 @@ export const adminSr: PartialAdminDictionary = {
     editExisting: "Измени постојећу",
     offerAtCheckout: "Понуди при плаћању",
     nameBuyersSee: "Назив који купци виде",
-    freeOver: "Бесплатно изнад",
     physicalOnly: "За доставу питају само физички производи — дигитална преузимања и услуге је прескачу. Опције преузимања никад не траже адресу од купца.",
     freeOverLabel: "Бесплатно изнад",
   },
@@ -346,7 +341,6 @@ export const adminSr: PartialAdminDictionary = {
     expires: "Истиче",
     day: "Дан",
     viewAsTable: "Приказ у табели",
-    viewAsTableLabel: "Приказ у табели",
   },
 
   coupons: {
@@ -355,7 +349,6 @@ export const adminSr: PartialAdminDictionary = {
     discountCodesBody: "Покрените акције са процентуалним или фиксним попустом, минималним износом, ограничењем броја коришћења и датумом истека.",
     title: "Купони",
     description: "Кодови за попуст које купци уносе при плаћању.",
-    lockTitle: "Кодови за попуст",
     lockBody: "Покрените акције са процентуалним или фиксним попустом, минималним износом, ограничењем броја коришћења и датумом истека.",
     empty: "Још нема купона",
     emptyBody: "Направите код изнад и поделите га са купцима.",
@@ -382,11 +375,7 @@ export const adminSr: PartialAdminDictionary = {
     all: "Сви клијенти",
     contact: "Контакт",
     noDetails: "Нема забележених података.",
-    notes: "Приватне белешке",
-    saveNotes: "Сачувај белешке",
-    noOrders: "Још нема поруџбина.",
     lifetimeValue: "Укупна вредност",
-    outstanding: "Дуговање",
     notesPlaceholder: "Радије преузима лично. Алергија на никл. Редован велепродајни купац…",
   },
 
@@ -445,7 +434,6 @@ export const adminSr: PartialAdminDictionary = {
     empty: "Још нема категорија",
     emptyBody: "Категорије нису обавезне — додајте их кад будете имали шта да групишете.",
     namePlaceholder: "Шоље, Постери, Консултације…",
-    nameLabel: "Назив категорије",
   },
 
   products: {

@@ -3,7 +3,6 @@ import type { PartialAdminDictionary } from "./en";
 export const adminVi: PartialAdminDictionary = {
   variants: {
     untick: "Bỏ chọn",
-    forSaleWord: "Đang bán",
     notSold: "Tổ hợp này không được bán",
     option: "Tùy chọn",
     values: "Giá trị",
@@ -110,9 +109,6 @@ export const adminVi: PartialAdminDictionary = {
     sales: "Doanh số",
     earned: "Đã kiếm được",
     unpaid: "Chưa trả",
-    lockTitle: "Chương trình giới thiệu",
-    offHint: "Bật chương trình ở trên để thêm cộng tác viên và chia sẻ liên kết.",
-    publicSignup: "Cho phép ai cũng đăng ký",
     namePlaceholder: "Amara Okafor",
     emailPlaceholder: "amara@example.com",
     codePlaceholder: "AMARA",
@@ -249,7 +245,6 @@ export const adminVi: PartialAdminDictionary = {
     editExisting: "Sửa tùy chọn có sẵn",
     offerAtCheckout: "Hiện khi thanh toán",
     nameBuyersSee: "Tên người mua nhìn thấy",
-    freeOver: "Miễn phí khi trên",
     physicalOnly: "Chỉ hàng thật mới hỏi về giao hàng — tệp số và dịch vụ bỏ qua bước này. Tùy chọn nhận trực tiếp không bao giờ hỏi địa chỉ người mua.",
     freeOverLabel: "Miễn phí khi trên",
   },
@@ -346,7 +341,6 @@ export const adminVi: PartialAdminDictionary = {
     expires: "Hết hạn",
     day: "Ngày",
     viewAsTable: "Xem dạng bảng",
-    viewAsTableLabel: "Xem dạng bảng",
   },
 
   coupons: {
@@ -355,7 +349,6 @@ export const adminVi: PartialAdminDictionary = {
     discountCodesBody: "Chạy khuyến mãi với mức giảm theo phần trăm hoặc số tiền cố định, đơn tối thiểu, giới hạn lượt dùng và ngày hết hạn.",
     title: "Mã giảm giá",
     description: "Mã giảm giá người mua nhập khi thanh toán.",
-    lockTitle: "Mã giảm giá",
     lockBody: "Chạy khuyến mãi với mức giảm theo phần trăm hoặc số tiền cố định, đơn tối thiểu, giới hạn lượt dùng và ngày hết hạn.",
     empty: "Chưa có mã giảm giá",
     emptyBody: "Tạo một mã ở trên và chia sẻ với khách của bạn.",
@@ -382,11 +375,7 @@ export const adminVi: PartialAdminDictionary = {
     all: "Tất cả khách hàng",
     contact: "Liên hệ",
     noDetails: "Chưa ghi nhận thông tin nào.",
-    notes: "Ghi chú riêng",
-    saveNotes: "Lưu ghi chú",
-    noOrders: "Chưa có đơn hàng.",
     lifetimeValue: "Tổng chi tiêu",
-    outstanding: "Còn nợ",
     notesPlaceholder: "Thích nhận tại chỗ. Dị ứng niken. Khách sỉ quen…",
   },
 
@@ -445,7 +434,6 @@ export const adminVi: PartialAdminDictionary = {
     empty: "Chưa có danh mục",
     emptyBody: "Danh mục là tùy chọn — thêm khi bạn đã có đủ thứ để nhóm lại.",
     namePlaceholder: "Cốc, Tranh in, Tư vấn…",
-    nameLabel: "Tên danh mục",
   },
 
   products: {

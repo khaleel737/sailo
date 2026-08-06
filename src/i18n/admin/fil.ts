@@ -3,7 +3,6 @@ import type { PartialAdminDictionary } from "./en";
 export const adminFil: PartialAdminDictionary = {
   variants: {
     untick: "Alisin ang tsek",
-    forSaleWord: "Ibinebenta",
     notSold: "Hindi ibinebenta ang kombinasyong ito",
     option: "Opsyon",
     values: "Mga halaga",
@@ -110,9 +109,6 @@ export const adminFil: PartialAdminDictionary = {
     sales: "Benta",
     earned: "Kinita",
     unpaid: "Hindi pa bayad",
-    lockTitle: "Referral program",
-    offHint: "Buksan muna ang program sa itaas para makadagdag ng affiliate at makapagbahagi ng link.",
-    publicSignup: "Payagang mag-apply ang kahit sino",
     namePlaceholder: "Amara Okafor",
     emailPlaceholder: "amara@example.com",
     codePlaceholder: "AMARA",
@@ -249,7 +245,6 @@ export const adminFil: PartialAdminDictionary = {
     editExisting: "I-edit ang meron na",
     offerAtCheckout: "Ialok sa checkout",
     nameBuyersSee: "Pangalang nakikita ng bumibili",
-    freeOver: "Libre kapag lampas sa",
     physicalOnly: "Pisikal na produkto lang ang nagtatanong tungkol sa paghahatid — nilalaktawan ito ng digital na download at serbisyo. Hindi kailanman humihingi ng address sa bumibili ang mga opsyong susunduin.",
     freeOverLabel: "Libre kapag lampas sa",
   },
@@ -346,7 +341,6 @@ export const adminFil: PartialAdminDictionary = {
     expires: "Mag-e-expire",
     day: "Araw",
     viewAsTable: "Ipakita bilang talahanayan",
-    viewAsTableLabel: "Ipakita bilang talahanayan",
   },
 
   coupons: {
@@ -355,7 +349,6 @@ export const adminFil: PartialAdminDictionary = {
     discountCodesBody: "Magpatakbo ng promo na porsyento o fixed na diskuwento, may minimum na bilihin, limitasyon sa paggamit at petsa ng pagtatapos.",
     title: "Mga coupon",
     description: "Mga discount code na inilalagay ng bumibili kapag nagbabayad.",
-    lockTitle: "Mga discount code",
     lockBody: "Magpatakbo ng promo na porsyento o fixed na diskuwento, may minimum na bilihin, limitasyon sa paggamit at petsa ng pagtatapos.",
     empty: "Wala pang coupon",
     emptyBody: "Gumawa ng code sa itaas at ibahagi ito sa mga customer mo.",
@@ -382,11 +375,7 @@ export const adminFil: PartialAdminDictionary = {
     all: "Lahat ng kliyente",
     contact: "Contact",
     noDetails: "Walang naitalang detalye.",
-    notes: "Pribadong notes",
-    saveNotes: "I-save ang notes",
-    noOrders: "Wala pang order.",
     lifetimeValue: "Kabuuang halaga",
-    outstanding: "Natitirang bayad",
     notesPlaceholder: "Mas gustong sunduin. Allergic sa nickel. Suking wholesale buyer…",
   },
 
@@ -445,7 +434,6 @@ export const adminFil: PartialAdminDictionary = {
     empty: "Wala pang kategorya",
     emptyBody: "Opsyonal ang mga kategorya — magdagdag kapag may sapat ka nang pagsama-samahin.",
     namePlaceholder: "Mug, Poster, Konsultasyon…",
-    nameLabel: "Pangalan ng kategorya",
   },
 
   products: {

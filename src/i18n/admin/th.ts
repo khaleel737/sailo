@@ -3,7 +3,6 @@ import type { PartialAdminDictionary } from "./en";
 export const adminTh: PartialAdminDictionary = {
   variants: {
     untick: "เอาเครื่องหมายออก",
-    forSaleWord: "วางขาย",
     notSold: "ชุดตัวเลือกนี้ไม่ได้ขาย",
     option: "ตัวเลือก",
     values: "ค่า",
@@ -110,9 +109,6 @@ export const adminTh: PartialAdminDictionary = {
     sales: "ยอดขาย",
     earned: "รายได้",
     unpaid: "ยังไม่จ่าย",
-    lockTitle: "โปรแกรมแนะนำต่อ",
-    offHint: "เปิดโปรแกรมด้านบนก่อน จึงจะเพิ่มพาร์ตเนอร์และแชร์ลิงก์ได้",
-    publicSignup: "ให้ใครก็สมัครได้",
     namePlaceholder: "Amara Okafor",
     emailPlaceholder: "amara@example.com",
     codePlaceholder: "AMARA",
@@ -249,7 +245,6 @@ export const adminTh: PartialAdminDictionary = {
     editExisting: "แก้ไขตัวเลือกที่มีอยู่",
     offerAtCheckout: "เสนอตอนชำระเงิน",
     nameBuyersSee: "ชื่อที่ผู้ซื้อเห็น",
-    freeOver: "ส่งฟรีเมื่อซื้อเกิน",
     physicalOnly: "มีแต่สินค้าจริงเท่านั้นที่ถามเรื่องจัดส่ง — ไฟล์ดิจิทัลและบริการจะข้ามไป ตัวเลือกมารับเองไม่เคยขอที่อยู่จากผู้ซื้อ",
     freeOverLabel: "ส่งฟรีเมื่อซื้อเกิน",
   },
@@ -346,7 +341,6 @@ export const adminTh: PartialAdminDictionary = {
     expires: "หมดอายุ",
     day: "วัน",
     viewAsTable: "แสดงเป็นตาราง",
-    viewAsTableLabel: "แสดงเป็นตาราง",
   },
 
   coupons: {
@@ -355,7 +349,6 @@ export const adminTh: PartialAdminDictionary = {
     discountCodesBody: "จัดโปรโมชันด้วยส่วนลดแบบเปอร์เซ็นต์หรือจำนวนเงิน กำหนดยอดขั้นต่ำ จำนวนครั้งที่ใช้ได้ และวันหมดอายุ",
     title: "คูปอง",
     description: "โค้ดส่วนลดที่ผู้ซื้อกรอกตอนชำระเงิน",
-    lockTitle: "โค้ดส่วนลด",
     lockBody: "จัดโปรโมชันด้วยส่วนลดแบบเปอร์เซ็นต์หรือจำนวนเงิน กำหนดยอดขั้นต่ำ จำนวนครั้งที่ใช้ได้ และวันหมดอายุ",
     empty: "ยังไม่มีคูปอง",
     emptyBody: "สร้างโค้ดด้านบนแล้วส่งให้ลูกค้าของคุณ",
@@ -382,11 +375,7 @@ export const adminTh: PartialAdminDictionary = {
     all: "ลูกค้าทั้งหมด",
     contact: "ช่องทางติดต่อ",
     noDetails: "ไม่มีข้อมูลที่บันทึกไว้",
-    notes: "โน้ตส่วนตัว",
-    saveNotes: "บันทึกโน้ต",
-    noOrders: "ยังไม่มีออร์เดอร์",
     lifetimeValue: "ยอดซื้อสะสม",
-    outstanding: "ค้างชำระ",
     notesPlaceholder: "ชอบมารับเอง แพ้นิกเกิล ลูกค้าส่งประจำ…",
   },
 
@@ -445,7 +434,6 @@ export const adminTh: PartialAdminDictionary = {
     empty: "ยังไม่มีหมวดหมู่",
     emptyBody: "หมวดหมู่ไม่บังคับ — เพิ่มเมื่อคุณมีของมากพอที่จะจัดกลุ่ม",
     namePlaceholder: "แก้ว, โปสเตอร์, ให้คำปรึกษา…",
-    nameLabel: "ชื่อหมวดหมู่",
   },
 
   products: {

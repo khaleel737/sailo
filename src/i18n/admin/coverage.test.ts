@@ -68,12 +68,12 @@ describe("admin translation coverage", () => {
 
   it("does not grow the backlog of translations nobody shows", () => {
     /*
-     * Pinned, not zero. Fifty-six keys are currently unreferenced and each
+     * Pinned, not zero. Forty-four keys are currently unreferenced and each
      * needs reading individually — some are strings hardcoded in English on a
      * screen, others are keys left behind by a rewrite. This stops the number
      * rising while they are worked through, and must be lowered as they are.
      */
-    expect(unreferenced.length).toBeLessThanOrEqual(56);
+    expect(unreferenced.length).toBeLessThanOrEqual(44);
   });
 
   it("keeps every language carrying the same keys as English", () => {

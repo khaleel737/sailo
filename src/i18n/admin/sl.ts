@@ -3,7 +3,6 @@ import type { PartialAdminDictionary } from "./en";
 export const adminSl: PartialAdminDictionary = {
   variants: {
     untick: "Odkljukaj",
-    forSaleWord: "V prodaji",
     notSold: "Ta kombinacija se ne prodaja",
     option: "Možnost",
     values: "Vrednosti",
@@ -110,9 +109,6 @@ export const adminSl: PartialAdminDictionary = {
     sales: "Prodaja",
     earned: "Zasluženo",
     unpaid: "Neizplačano",
-    lockTitle: "Program priporočil",
-    offHint: "Zgoraj vklopite program, da lahko dodajate partnerje in delite povezave.",
-    publicSignup: "Naj se lahko prijavi vsak",
     namePlaceholder: "Amara Okafor",
     emailPlaceholder: "amara@example.com",
     codePlaceholder: "AMARA",
@@ -249,7 +245,6 @@ export const adminSl: PartialAdminDictionary = {
     editExisting: "Uredi obstoječo",
     offerAtCheckout: "Ponudi ob plačilu",
     nameBuyersSee: "Ime, ki ga vidi kupec",
-    freeOver: "Brezplačno nad",
     physicalOnly: "Po dostavi sprašujejo samo fizični izdelki — digitalni prenosi in storitve jo preskočijo. Možnosti prevzema kupca nikoli ne vprašajo za naslov.",
     freeOverLabel: "Brezplačno nad",
   },
@@ -346,7 +341,6 @@ export const adminSl: PartialAdminDictionary = {
     expires: "Poteče",
     day: "Dan",
     viewAsTable: "Prikaz v tabeli",
-    viewAsTableLabel: "Prikaz v tabeli",
   },
 
   coupons: {
@@ -355,7 +349,6 @@ export const adminSl: PartialAdminDictionary = {
     discountCodesBody: "Izvajajte akcije z odstotnim ali fiksnim popustom, najmanjšim zneskom, omejitvijo uporabe in datumom poteka.",
     title: "Kuponi",
     description: "Kode za popust, ki jih kupci vnesejo ob plačilu.",
-    lockTitle: "Kode za popust",
     lockBody: "Izvajajte akcije z odstotnim ali fiksnim popustom, najmanjšim zneskom, omejitvijo uporabe in datumom poteka.",
     empty: "Še ni kuponov",
     emptyBody: "Zgoraj ustvarite kodo in jo delite s strankami.",
@@ -382,11 +375,7 @@ export const adminSl: PartialAdminDictionary = {
     all: "Vse stranke",
     contact: "Stik",
     noDetails: "Ni zabeleženih podatkov.",
-    notes: "Zasebni zapiski",
-    saveNotes: "Shrani zapiske",
-    noOrders: "Še ni naročil.",
     lifetimeValue: "Skupna vrednost",
-    outstanding: "Neporavnano",
     notesPlaceholder: "Raje prevzame osebno. Alergija na nikelj. Redna veleprodajna stranka…",
   },
 
@@ -445,7 +434,6 @@ export const adminSl: PartialAdminDictionary = {
     empty: "Še ni kategorij",
     emptyBody: "Kategorije so neobvezne — dodajte jih, ko boste imeli kaj združiti.",
     namePlaceholder: "Skodelice, Plakati, Svetovanje…",
-    nameLabel: "Ime kategorije",
   },
 
   products: {

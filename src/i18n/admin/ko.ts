@@ -3,7 +3,6 @@ import type { PartialAdminDictionary } from "./en";
 export const adminKo: PartialAdminDictionary = {
   variants: {
     untick: "체크 해제",
-    forSaleWord: "판매 중",
     notSold: "이 조합은 판매하지 않습니다",
     option: "옵션",
     values: "값",
@@ -110,9 +109,6 @@ export const adminKo: PartialAdminDictionary = {
     sales: "판매",
     earned: "적립액",
     unpaid: "미지급",
-    lockTitle: "추천 프로그램",
-    offHint: "제휴자를 추가하고 링크를 공유하려면 위에서 프로그램을 켜세요.",
-    publicSignup: "누구나 신청할 수 있게 하기",
     namePlaceholder: "Amara Okafor",
     emailPlaceholder: "amara@example.com",
     codePlaceholder: "AMARA",
@@ -249,7 +245,6 @@ export const adminKo: PartialAdminDictionary = {
     editExisting: "기존 항목 편집",
     offerAtCheckout: "결제 시 제공",
     nameBuyersSee: "구매자에게 보이는 이름",
-    freeOver: "이 금액 이상 무료",
     physicalOnly: "배송을 묻는 건 실물 상품뿐이에요 — 디지털 파일과 서비스는 건너뜁니다. 직접 수령 방식은 구매자에게 주소를 묻지 않아요.",
     freeOverLabel: "이 금액 이상 무료",
   },
@@ -346,7 +341,6 @@ export const adminKo: PartialAdminDictionary = {
     expires: "만료",
     day: "일",
     viewAsTable: "표로 보기",
-    viewAsTableLabel: "표로 보기",
   },
 
   coupons: {
@@ -355,7 +349,6 @@ export const adminKo: PartialAdminDictionary = {
     discountCodesBody: "비율 또는 정액 할인, 최소 구매 금액, 사용 횟수 제한, 만료일을 걸고 프로모션을 진행하세요.",
     title: "쿠폰",
     description: "구매자가 결제할 때 입력하는 할인 코드.",
-    lockTitle: "할인 코드",
     lockBody: "비율 또는 정액 할인, 최소 구매 금액, 사용 횟수 제한, 만료일을 걸고 프로모션을 진행하세요.",
     empty: "아직 쿠폰이 없어요",
     emptyBody: "위에서 코드를 만들어 고객에게 공유하세요.",
@@ -382,11 +375,7 @@ export const adminKo: PartialAdminDictionary = {
     all: "전체 고객",
     contact: "연락처",
     noDetails: "저장된 정보가 없어요.",
-    notes: "비공개 메모",
-    saveNotes: "메모 저장",
-    noOrders: "아직 주문이 없어요.",
     lifetimeValue: "누적 구매액",
-    outstanding: "미수금",
     notesPlaceholder: "방문 수령 선호. 니켈 알레르기. 단골 도매 고객…",
   },
 
@@ -445,7 +434,6 @@ export const adminKo: PartialAdminDictionary = {
     empty: "아직 카테고리가 없어요",
     emptyBody: "카테고리는 선택 사항이에요 — 묶을 상품이 충분해지면 추가하세요.",
     namePlaceholder: "머그컵, 포스터, 상담…",
-    nameLabel: "카테고리 이름",
   },
 
   products: {

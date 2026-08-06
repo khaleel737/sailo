@@ -3,7 +3,6 @@ import type { PartialAdminDictionary } from "./en";
 export const adminMs: PartialAdminDictionary = {
   variants: {
     untick: "Nyahtanda",
-    forSaleWord: "Dijual",
     notSold: "Kombinasi ini tidak dijual",
     option: "Pilihan",
     values: "Nilai",
@@ -110,9 +109,6 @@ export const adminMs: PartialAdminDictionary = {
     sales: "Jualan",
     earned: "Diperoleh",
     unpaid: "Belum dibayar",
-    lockTitle: "Program rujukan",
-    offHint: "Hidupkan program di atas untuk menambah afiliat dan berkongsi pautan.",
-    publicSignup: "Benarkan sesiapa sahaja memohon",
     namePlaceholder: "Amara Okafor",
     emailPlaceholder: "amara@example.com",
     codePlaceholder: "AMARA",
@@ -249,7 +245,6 @@ export const adminMs: PartialAdminDictionary = {
     editExisting: "Sunting yang sedia ada",
     offerAtCheckout: "Tawarkan semasa bayar",
     nameBuyersSee: "Nama yang pembeli lihat",
-    freeOver: "Percuma melebihi",
     physicalOnly: "Hanya produk fizikal bertanya tentang penghantaran — muat turun digital dan perkhidmatan melangkaunya. Pilihan ambil sendiri tidak pernah meminta alamat pembeli.",
     freeOverLabel: "Percuma melebihi",
   },
@@ -346,7 +341,6 @@ export const adminMs: PartialAdminDictionary = {
     expires: "Tamat",
     day: "Hari",
     viewAsTable: "Papar sebagai jadual",
-    viewAsTableLabel: "Papar sebagai jadual",
   },
 
   coupons: {
@@ -355,7 +349,6 @@ export const adminMs: PartialAdminDictionary = {
     discountCodesBody: "Jalankan promosi dengan diskaun peratusan atau jumlah tetap, belanja minimum, had penggunaan dan tarikh luput.",
     title: "Kupon",
     description: "Kod diskaun yang pembeli masukkan semasa membayar.",
-    lockTitle: "Kod diskaun",
     lockBody: "Jalankan promosi dengan diskaun peratusan atau jumlah tetap, belanja minimum, had penggunaan dan tarikh luput.",
     empty: "Belum ada kupon",
     emptyBody: "Cipta kod di atas dan kongsikan dengan pelanggan anda.",
@@ -382,11 +375,7 @@ export const adminMs: PartialAdminDictionary = {
     all: "Semua pelanggan",
     contact: "Hubungi",
     noDetails: "Tiada maklumat direkodkan.",
-    notes: "Nota peribadi",
-    saveNotes: "Simpan nota",
-    noOrders: "Belum ada pesanan.",
     lifetimeValue: "Jumlah belanja",
-    outstanding: "Tertunggak",
     notesPlaceholder: "Lebih suka ambil sendiri. Alah kepada nikel. Pelanggan borong tetap…",
   },
 
@@ -445,7 +434,6 @@ export const adminMs: PartialAdminDictionary = {
     empty: "Belum ada kategori",
     emptyBody: "Kategori adalah pilihan — tambah apabila anda ada cukup untuk dikumpulkan.",
     namePlaceholder: "Mug, Poster, Perundingan…",
-    nameLabel: "Nama kategori",
   },
 
   products: {
