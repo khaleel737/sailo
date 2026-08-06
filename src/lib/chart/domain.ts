@@ -1,5 +1,7 @@
+import type { Domain, Series } from "./types";
+
 /**
- * The domain arithmetic behind `components/shared/chart.tsx`.
+ * The domain arithmetic behind the chart.
  *
  * Separate from the component because it is the part that can be wrong in a way
  * nobody sees. A bar drawn at the wrong height still looks like a chart, and the
@@ -10,31 +12,6 @@
  * *what the domain is* — which is a product question, not a maths one, and the
  * one that was wrong.
  */
-
-export type Point = { day: string; value: number };
-
-/** One measure across the same days as its siblings. */
-export type Series = {
-  key: string;
-  label: string;
-  values: number[];
-  /** Bars read as discrete days; lines read as a trend across them. */
-  shape: "bar" | "line";
-  /**
-   * Drawn below the zero line. Refunds are money leaving, and a chart that
-   * stacks them on top of sales says the day was bigger than it was.
-   */
-  negative?: boolean;
-  /**
-   * Which step of the tone's lightness ramp to draw with. Defaults to the
-   * series' position, which is usually right and was wrong exactly where it
-   * mattered: on the revenue card, net is the headline figure but came third
-   * in the array, so the number in the hero slot was drawn in the palest step
-   * available and read as a wash behind the bars. Draw order and visual
-   * weight are different decisions, so they get different knobs.
-   */
-  depth?: number;
-};
 
 /** The smallest bar a non-zero value may draw, so a real value is never invisible. */
 export const MIN_BAR_PCT = 3;
@@ -48,7 +25,7 @@ export const ZERO_BAR_PCT = 1.5;
  * their own maxima put a £5 refund at the same height as a £5,000 sale, which
  * is not a chart, it is two charts overlaid.
  */
-export function chartDomain(series: Series[]): { min: number; max: number } {
+export function chartDomain(series: Series[]): Domain {
   let max = 0;
   let min = 0;
 
@@ -73,7 +50,7 @@ export function chartDomain(series: Series[]): { min: number; max: number } {
 }
 
 /** Where a value sits, as a percentage down from the top of the plot. */
-export function toPercent(value: number, domain: { min: number; max: number }) {
+export function toPercent(value: number, domain: Domain) {
   // A flat series — all zero, or every day identical — would divide by nothing.
   const span = domain.max - domain.min || 1;
   return ((domain.max - value) / span) * 100;
@@ -82,7 +59,7 @@ export function toPercent(value: number, domain: { min: number; max: number }) {
 /** Top and height of a bar, in percent, measured against the zero line. */
 export function barRect(
   value: number,
-  domain: { min: number; max: number },
+  domain: Domain,
 ): { top: number; height: number } {
   const span = domain.max - domain.min || 1;
   const zero = toPercent(0, domain);

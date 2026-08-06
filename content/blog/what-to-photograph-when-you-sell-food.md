@@ -2,7 +2,7 @@
 title: What to photograph when you sell food
 description: You do not need a studio. You need one window, one surface, and the discipline to shoot the thing people actually order.
 date: 2026-07-28
-author: Khaleel Musleh
+author: Sailo team
 cover: /blog/food-photography.svg
 coverAlt: A pizza photographed from above on a dark surface beside a window
 tags: [photography, food]

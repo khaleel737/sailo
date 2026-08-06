@@ -77,7 +77,9 @@ function parse(slug: string, raw: string) {
     title,
     description,
     date,
-    author: typeof data.author === "string" ? data.author : "Sailo",
+    // Posts are the product's voice, not an individual's — a post that forgets
+    // to name an author should read as written by the team, not by nobody.
+    author: typeof data.author === "string" ? data.author : "Sailo team",
     cover: typeof data.cover === "string" ? data.cover : null,
     // Falling back to the title keeps the alt text meaningful rather than
     // duplicating the filename, which is what an empty alt would amount to.

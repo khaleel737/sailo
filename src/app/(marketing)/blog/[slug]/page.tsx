@@ -96,7 +96,10 @@ export default async function ArticlePage({ params }: PageProps<"/blog/[slug]">)
             headline: article.title,
             description: article.description,
             datePublished: article.date,
-            author: { "@type": "Person", name: article.author },
+            // Organization, not Person: the byline is the team. Declaring a
+            // Person named "Sailo team" would be structured data asserting
+            // something untrue about a human being.
+            author: { "@type": "Organization", name: article.author },
             publisher: {
               "@type": "Organization",
               name: "Sailo",

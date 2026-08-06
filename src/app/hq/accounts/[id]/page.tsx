@@ -268,6 +268,7 @@ export default async function HqAccountPage({
                     label: "Net",
                     shape: "line",
                     depth: 0,
+                    fixedShape: true,
                     values: detail.revenueSeries.map((d) => d.cents),
                   },
                 ]}

@@ -41,9 +41,13 @@ export function PanelFooter({
       )}
     >
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2">
-        <p className="text-xs text-ink-400">
-          {LEGAL.product} · {LEGAL.operator}
-        </p>
+        {/*
+          The product, not the person behind it. Who operates the service is a
+          fact the legal documents have to state, and they do — it belongs on
+          the terms and the privacy policy, where it is load-bearing, and
+          nowhere a seller reads every day.
+        */}
+        <p className="text-xs text-ink-400">{LEGAL.product}</p>
         <nav aria-label={labels.legal}>
           <ul className="flex flex-wrap items-center gap-x-5 gap-y-1">
             {docs.map((doc) => (

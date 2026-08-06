@@ -1,12 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  barRect,
-  chartDomain,
-  hasData,
-  peak,
-  toPercent,
-  type Series,
-} from "./chart-scale";
+import { barRect, chartDomain, hasData, peak, toPercent } from "./domain";
+import type { Series } from "./types";
 
 const line = (key: string, values: number[]): Series => ({
   key,

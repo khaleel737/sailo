@@ -2,7 +2,7 @@
 title: Why your link in bio is costing you sales
 description: A link tree sends people somewhere else to buy. Every extra tap between the post and the payment is a customer you already paid for and then lost.
 date: 2026-07-14
-author: Khaleel Musleh
+author: Sailo team
 cover: /blog/link-in-bio.svg
 coverAlt: A phone showing a shop page opened from a social profile
 tags: [selling, conversion]

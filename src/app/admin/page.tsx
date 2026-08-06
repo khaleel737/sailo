@@ -228,6 +228,7 @@ export default async function AdminOverviewPage({
                 label: "Net",
                 shape: "line",
                 depth: 0,
+                fixedShape: true,
                 values: revenueSeries.map((d) => d.cents),
               },
             ]}
