@@ -27,12 +27,30 @@ const nextConfig: NextConfig = {
   async headers() {
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.stripe.com",
+      /*
+       * Analytics has to be named here or it does not run. Both tags failed
+       * silently in production for exactly this reason: the browser blocks the
+       * script, the page looks fine, and the dashboards stay empty — there is
+       * nothing to notice unless you read the console on the deployed site.
+       *
+       * googletagmanager serves gtag.js; vercel-scripts serves the Web
+       * Analytics script in development. In production Vercel serves its own
+       * from `/_vercel/insights/…`, which is same-origin and already covered
+       * by 'self'.
+       */
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.stripe.com https://www.googletagmanager.com https://va.vercel-scripts.com",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://picsum.photos https://images.unsplash.com https://*.stripe.com",
+      // Google Analytics still falls back to a tracking pixel in some paths.
+      "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://picsum.photos https://images.unsplash.com https://*.stripe.com https://www.google-analytics.com https://www.googletagmanager.com",
       "font-src 'self' data:",
-      // Stripe.js posts to its own API; the app posts only to itself.
-      "connect-src 'self' https://api.stripe.com https://*.stripe.com",
+      /*
+       * Stripe.js posts to its own API; the app posts only to itself. The two
+       * analytics tags beacon out as well — Google to its collect endpoints,
+       * Vercel to a same-origin path already covered by 'self'. Without these
+       * the scripts load and then every event is dropped, which is the same
+       * empty dashboard as before but harder to spot.
+       */
+      "connect-src 'self' https://api.stripe.com https://*.stripe.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com",
       // Checkout, the billing portal and Connect onboarding are iframed or
       // opened by Stripe.js.
       "frame-src https://js.stripe.com https://hooks.stripe.com https://*.stripe.com",

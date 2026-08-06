@@ -120,3 +120,29 @@ describe("the tag itself", () => {
     expect(source).toContain("return null");
   });
 });
+
+describe("the Content Security Policy lets the tags run", () => {
+  /*
+   * A tag the CSP blocks fails in the quietest possible way: the script is
+   * requested, the browser refuses it, the page renders perfectly and the
+   * dashboard stays empty. Both tags shipped like that. Nothing in the app
+   * can detect it, so the policy is asserted here instead.
+   */
+  const config = readFileSync(
+    join(import.meta.dirname, "..", "..", "next.config.ts"),
+    "utf8",
+  );
+
+  it("allows the Google tag's script and its collect endpoints", () => {
+    const scriptSrc = config.match(/"script-src[^"]+"/)?.[0] ?? "";
+    expect(scriptSrc).toContain("googletagmanager.com");
+
+    const connectSrc = config.match(/"connect-src[^"]+"/)?.[0] ?? "";
+    expect(connectSrc).toContain("google-analytics.com");
+  });
+
+  it("allows Vercel's development script host", () => {
+    const scriptSrc = config.match(/"script-src[^"]+"/)?.[0] ?? "";
+    expect(scriptSrc).toContain("va.vercel-scripts.com");
+  });
+});
