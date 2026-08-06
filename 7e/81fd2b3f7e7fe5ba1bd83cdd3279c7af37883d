@@ -1,0 +1,33 @@
+src/lib/refunds.test.ts
+  s_2e1da3b18d1c53::t_eb61492ac5ef96 102-104
+  s_2e1da3b18d1c53::t_0fc2684157dba6 110,119,126,135,142,147,152-153,158
+src/lib/consent.test.ts
+  s_2003e12856e408::t_08708cb096df50 1-33,38-120
+  s_2e1da3b18d1c53::t_e68cb8d62d1725 34-37
+src/lib/visit-partitions.test.ts
+  s_2e1da3b18d1c53::t_e68cb8d62d1725 35,111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7e81fd2b3f7e7fe5ba1bd83cdd3279c7af37883d",
+  "prompts": {},
+  "sessions": {
+    "s_2003e12856e408": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "75f413c8-ba54-4803-8715-86e2a4dfb62f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
