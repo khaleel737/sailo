@@ -1,6 +1,6 @@
 import "server-only";
 import type Stripe from "stripe";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { orders, shops, stripeEvents } from "@/db/schema";
 import { stripe } from "@/lib/stripe";
@@ -373,14 +373,38 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
     case "checkout.session.completed":
     case "checkout.session.async_payment_succeeded": {
       const session = event.data.object as Stripe.Checkout.Session;
-      if (session.payment_status !== "paid") {
-        // Not a failure: the money is still in flight and Stripe will tell us
-        // how it lands. Acknowledged so it is not retried.
-        return `awaiting settlement (${session.payment_status})`;
-      }
-
       const order = await orderForSession(session, accountId);
       if (!order) return "order not found";
+
+      if (session.payment_status !== "paid") {
+        /*
+         * Not a failure: the money is still in flight and Stripe will tell us
+         * how it lands. Boleto takes up to three days, SEPA longer.
+         *
+         * This used to write nothing and return, which left the order sitting
+         * at `unpaid` — indistinguishable from a buyer who opened a checkout
+         * and wandered off. `releaseAbandonedCheckouts` sweeps exactly that
+         * shape at 24 hours, so a Boleto buyer's order was cancelled and their
+         * goods put back on the shelf while their money was still on its way.
+         *
+         * `pending` is the status that already means "we are waiting for money
+         * we expect", so the sweep passes over it and the seller sees the
+         * truth rather than an order that looks abandoned.
+         */
+        await db
+          .update(orders)
+          .set({
+            paymentStatus: "pending",
+            stripePaymentIntentId: intentIdOf(session.payment_intent),
+            stripeAccountId: accountId ?? order.stripeAccountId,
+            updatedAt: new Date(),
+          })
+          // Only ever a promotion from `unpaid`; a later event that already
+          // settled this order must not be walked backwards by a retry.
+          .where(and(eq(orders.id, order.id), eq(orders.paymentStatus, "unpaid")));
+
+        return `awaiting settlement (${session.payment_status})`;
+      }
 
       // Payment is what confirms the order, so the seller never has to.
       await db

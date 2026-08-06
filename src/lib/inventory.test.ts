@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { ORDER_STATUSES } from "./order-status";
 import { isStockReleasingStatus } from "./inventory";
@@ -45,5 +46,91 @@ describe("isStockReleasingStatus", () => {
     // would hand back units for an order that may still be live.
     expect(isStockReleasingStatus("awaiting-pickup")).toBe(false);
     expect(isStockReleasingStatus("")).toBe(false);
+  });
+});
+
+/**
+ * Which orders the abandoned-checkout sweep is allowed to reclaim.
+ *
+ * Stock comes off the shelf before the money arrives, so something has to put
+ * it back when the buyer never pays. Getting the predicate wrong is expensive
+ * in both directions, and it was wrong in both:
+ *
+ * - It required `stripeSessionId`, which is only written once Stripe accepts
+ *   the handoff. An order that reserved stock and threw before that write was
+ *   invisible to this sweep forever, and nothing else reclaims it.
+ * - It matched every `unpaid` order with a session, which includes a delayed
+ *   method still settling. Boleto takes three days; those orders were
+ *   cancelled and restocked with the buyer's money still in flight.
+ *
+ * Asserted against the source because the rule lives in a SQL WHERE clause —
+ * there is no pure function to call, and a wrong clause here is silent.
+ */
+describe("the abandoned-checkout predicate", () => {
+  const source = readFileSync("src/lib/inventory.ts", "utf8");
+  const sweep = source.slice(source.indexOf("const stale = await"));
+  /*
+   * Comments stripped first. The prose here explains what the predicate no
+   * longer does, and naming a removed clause in a comment would otherwise read
+   * as the clause still being present — which is exactly what happened the
+   * first time this was written.
+   */
+  const predicate = sweep
+    .slice(0, sweep.indexOf("limit: 200"))
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\/\/.*$/gm, "");
+
+  it("reclaims only orders whose money never arrived", () => {
+    expect(predicate).toContain('eq(orders.paymentStatus, "unpaid")');
+  });
+
+  it("leaves a delayed payment that is still settling alone", () => {
+    /*
+     * `pending` is what the webhook promotes a completed-but-unsettled session
+     * to, and it is the only thing separating "the money is on its way" from
+     * "the buyer walked away". Sweeping it would cancel a paid-for order.
+     */
+    expect(predicate).not.toContain('"pending"');
+  });
+
+  it("finds an order that never reached the Stripe handoff", () => {
+    // The session id is written after the handoff, so requiring it here meant
+    // the orders most in need of reclaiming were the ones it could not see.
+    expect(predicate).not.toContain("stripeSessionId");
+  });
+
+  it("matches on the rail, so bank transfer and cash on delivery are safe", () => {
+    // Those are unpaid because the seller is waiting for money, not because
+    // the buyer abandoned anything. Cancelling them would destroy real orders.
+    expect(predicate).toContain('eq(orders.paymentMethod, "card")');
+  });
+
+  it("never restocks the same order twice", () => {
+    expect(predicate).toContain("isNull(orders.restockedAt)");
+  });
+
+  it("only touches orders older than the cutoff", () => {
+    expect(predicate).toContain("lt(orders.createdAt, cutoff)");
+  });
+});
+
+/**
+ * The other half of that pair, in the webhook.
+ *
+ * The sweep above is only safe because a session that completes unpaid is
+ * moved off `unpaid`. If that write is ever removed, the sweep silently starts
+ * cancelling Boleto and SEPA orders again — so it is pinned here, next to the
+ * predicate that depends on it, rather than in a file nobody reads together.
+ */
+describe("a completed-but-unsettled session", () => {
+  const webhook = readFileSync("src/lib/stripe-webhooks.ts", "utf8");
+
+  it("is promoted out of unpaid so the sweep passes over it", () => {
+    const branch = webhook.slice(
+      webhook.indexOf('if (session.payment_status !== "paid")'),
+    );
+    expect(branch.slice(0, branch.indexOf("return `awaiting"))).toContain(
+      'paymentStatus: "pending"',
+    );
   });
 });

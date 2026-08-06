@@ -47,6 +47,25 @@ async function releaseStockFor(lines: QuoteLine[]): Promise<void> {
   }
 }
 
+/**
+ * A rejection handler that puts reserved stock back before rethrowing.
+ *
+ * Units come off the shelf before the order row is written, so everything
+ * between those two points is a window where a throw strands them: no order
+ * exists, so `releaseAbandonedCheckouts` has nothing to find, and nothing else
+ * ever reclaims them. The shop reads as sold out for a sale that never
+ * happened, and only a manual stock edit fixes it.
+ *
+ * Rethrows rather than swallowing — the caller still failed, and the buyer
+ * still needs to hear so.
+ */
+function releasingStock(taken: QuoteLine[]) {
+  return async (error: unknown): Promise<never> => {
+    await releaseStockFor(taken);
+    throw error;
+  };
+}
+
 export async function createOrderIntent(
   input: OrderIntentInput,
 ): Promise<OrderIntentResult> {
@@ -207,12 +226,14 @@ export async function createOrderIntent(
 
   /* ---- Digital delivery ------------------------------------------------ */
 
+  // Reads the products' files, so it can fail — and the stock is already off
+  // the shelf by here, which is why it hands the units back on the way out.
   const { deliversFiles, unlockNow, downloadToken, downloadExpiresAt, downloadLimit } =
     await resolveDigitalDelivery({
       lines,
       totalCents: totals.totalCents,
       now,
-    });
+    }).catch(releasingStock(taken));
 
   const order = firstRow(await db
     .insert(orders)
@@ -283,7 +304,11 @@ export async function createOrderIntent(
       // COD is collected on delivery; transfers are owed until confirmed.
       paymentStatus: "unpaid",
     })
-    .returning({ id: orders.id }), "order");
+    .returning({ id: orders.id })
+    // The last step of the window that opened when the stock was reserved.
+    // Once this row exists the abandoned-checkout sweep can find the order and
+    // reclaim its units; until it does, only this can.
+    .catch(releasingStock(taken)), "order");
 
   // The authoritative list of what was sold. Written straight after the header
   // so nothing can read the order in a one-line-only state.

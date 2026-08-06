@@ -247,8 +247,26 @@ export async function releaseAbandonedCheckouts(opts?: {
 
   const stale = await db.query.orders.findMany({
     where: and(
+      /*
+       * `unpaid` is the whole discriminator, and it only works because a
+       * delayed method that has completed but not settled is moved to
+       * `pending` by the webhook. Boleto takes three days; without that
+       * promotion those orders sat here looking exactly like an abandoned
+       * checkout and were cancelled with the buyer's money still in flight.
+       */
       eq(orders.paymentStatus, "unpaid"),
-      isNotNull(orders.stripeSessionId),
+      /*
+       * The rail, not the session id.
+       *
+       * This used to require `stripeSessionId`, which is written only after
+       * Stripe accepts the handoff — so an order that got as far as reserving
+       * stock and never reached that write was invisible here forever, and
+       * nothing else reclaims it. Matching on the rail catches those too,
+       * while still leaving bank transfer and cash on delivery alone: those
+       * are unpaid because the seller is waiting for money, not because the
+       * buyer walked away.
+       */
+      eq(orders.paymentMethod, "card"),
       isNull(orders.restockedAt),
       lt(orders.createdAt, cutoff),
       ...(opts?.shopId ? [eq(orders.shopId, opts.shopId)] : []),
