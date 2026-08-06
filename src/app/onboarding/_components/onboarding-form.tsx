@@ -7,15 +7,14 @@ import { createShop } from "@/lib/actions/shop";
 import {
   Alert,
   Button,
-  Field,
-  Input,
-  Select,
   Stepper,
-  Textarea,
 } from "@/components/ui";
+import { ShopDetailsStep } from "./shop-details-step";
+import { SellingStep } from "./selling-step";
+import type { Values } from "./onboarding.types";
 import { HandleField } from "@/components/shared/handle-field";
 import { ShopPreview } from "./shop-preview";
-import { CURRENCIES, slugify } from "@/lib/utils";
+import { slugify } from "@/lib/utils";
 import { normalizeHandle } from "@/lib/handle";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
@@ -32,14 +31,6 @@ import { cn } from "@/lib/utils";
  * shop.
  */
 
-type Values = {
-  handle: string;
-  name: string;
-  description: string;
-  location: string;
-  currency: string;
-  whatsapp: string;
-};
 
 const STEP_COUNT = 3;
 
@@ -143,85 +134,11 @@ export function OnboardingForm({
             ) : null}
 
             {step === 1 ? (
-              <>
-                <Field label={t.onboarding.shopName} htmlFor="name">
-                  <Input
-                    id="name"
-                    name="name"
-                    required
-                    autoFocus
-                    value={values.name}
-                    onChange={set("name")}
-                    placeholder="Amina's Ceramics"
-                  />
-                </Field>
-
-                <Field
-                  label={t.onboarding.shortDescription}
-                  htmlFor="description"
-                  hint={t.common.optional}
-                >
-                  <Textarea
-                    id="description"
-                    name="description"
-                    rows={2}
-                    maxLength={280}
-                    value={values.description}
-                    onChange={set("description")}
-                    placeholder="Handmade stoneware, fired in small batches in Portland."
-                  />
-                </Field>
-
-                <Field
-                  label={t.onboarding.location}
-                  htmlFor="location"
-                  hint={t.common.optional}
-                >
-                  <Input
-                    id="location"
-                    name="location"
-                    value={values.location}
-                    onChange={set("location")}
-                    placeholder="Portland, Oregon"
-                  />
-                </Field>
-              </>
+              <ShopDetailsStep values={values} set={set} t={t} />
             ) : null}
 
             {step === 2 ? (
-              <>
-                <Field label={t.onboarding.currency} htmlFor="currency">
-                  <Select
-                    id="currency"
-                    name="currency"
-                    value={values.currency}
-                    onChange={set("currency")}
-                  >
-                    {CURRENCIES.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </Select>
-                </Field>
-
-                <Field
-                  label={t.onboarding.whatsapp}
-                  htmlFor="whatsapp"
-                  hint={t.common.optional}
-                  help={t.onboarding.whatsappHint}
-                >
-                  <Input
-                    id="whatsapp"
-                    name="whatsapp"
-                    inputMode="tel"
-                    autoFocus
-                    value={values.whatsapp}
-                    onChange={set("whatsapp")}
-                    placeholder="234801234567"
-                  />
-                </Field>
-              </>
+              <SellingStep values={values} set={set} t={t} />
             ) : null}
           </div>
 

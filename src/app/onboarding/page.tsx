@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { shops } from "@/db/schema";
 import { requireUser } from "@/lib/session";
-import { OnboardingForm } from "./onboarding-form";
+import { OnboardingForm } from "./_components/onboarding-form";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { SailoLogo } from "@/components/brand";
 import { getT } from "@/i18n/server";
