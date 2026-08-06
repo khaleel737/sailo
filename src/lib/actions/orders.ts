@@ -6,7 +6,7 @@ import { readBuyer } from "@/lib/orders/buyer";
 import { commissionBpFor } from "@/lib/orders/commission";
 import { resolveCoupon } from "@/lib/orders/resolve-coupon";
 import { upsertClient } from "@/lib/orders/clients";
-import { resolveDelivery, smallest, soonest } from "@/lib/orders/delivery";
+import { resolveDelivery } from "@/lib/orders/delivery";
 import { referralFor } from "@/lib/orders/referral";
 import type { OrderIntentInput, OrderIntentResult, OrderLineInput, OrderPreview } from "@/lib/orders/types";
 import { firstRow, present } from "@/lib/invariant";
@@ -27,7 +27,8 @@ import { unitsLeft, variantLabel } from "@/lib/variants";
 import { releaseStock, reserveStock } from "@/lib/inventory";
 import { handOffToStripe } from "@/lib/orders/card-handoff";
 import { claimCouponRedemption, releaseCouponRedemption } from "@/lib/orders/coupon-redemption";
-import { downloadExpiry, downloadUrl, hasDeliverableFiles, newDownloadToken, releasesImmediately } from "@/lib/downloads";
+import { downloadUrl } from "@/lib/downloads";
+import { resolveDigitalDelivery } from "@/lib/orders/digital-delivery";
 
 
 /**
@@ -206,33 +207,12 @@ export async function createOrderIntent(
 
   /* ---- Digital delivery ------------------------------------------------ */
 
-  // One link per order covering every downloadable line in it. The strictest
-  // rule wins: if any file is held until payment, none of them open early.
-  const digitalLines = [];
-  for (const line of lines) {
-    if (line.kind !== "digital") continue;
-    if (await hasDeliverableFiles(line.productId)) digitalLines.push(line);
-  }
-
-  const deliversFiles = digitalLines.length > 0;
-  const unlockNow =
-    deliversFiles &&
-    digitalLines.every((line) =>
-      releasesImmediately(line.product, {
-        totalCents: totals.totalCents,
-        paymentStatus: "unpaid",
-      }),
-    );
-  const downloadToken = deliversFiles ? newDownloadToken() : null;
-  // The shortest window and the tightest cap, so no line outlives its terms.
-  const downloadExpiresAt = deliversFiles
-    ? soonest(
-        digitalLines.map((l) => downloadExpiry(l.product.downloadExpiryDays, now)),
-      )
-    : null;
-  const downloadLimit = deliversFiles
-    ? smallest(digitalLines.map((l) => l.product.downloadLimit))
-    : null;
+  const { deliversFiles, unlockNow, downloadToken, downloadExpiresAt, downloadLimit } =
+    await resolveDigitalDelivery({
+      lines,
+      totalCents: totals.totalCents,
+      now,
+    });
 
   const order = firstRow(await db
     .insert(orders)
