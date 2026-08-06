@@ -10,13 +10,12 @@ import { resolveDelivery } from "@/lib/orders/delivery";
 import { referralFor } from "@/lib/orders/referral";
 import type { OrderIntentInput, OrderIntentResult, OrderLineInput, OrderPreview } from "@/lib/orders/types";
 import { firstRow, present } from "@/lib/invariant";
-import { and, asc, eq, inArray, isNull } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
 import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
 import { affiliates, coupons, orderItems, orders, paymentMethods, shops, type Affiliate, type Coupon, type PaymentConfig } from "@/db/schema";
 import { formatAddress, formatMoney } from "@/lib/utils";
-import { sendOrderConfirmation } from "@/lib/email";
 import { bankDetailLines, buildHandoff, isPaymentMethodType, PAYMENT_METHOD_DEFS, isRailUsable, type Handoff } from "@/lib/payments";
 import { checkPaymentReference, TRANSFERABLE_PAYMENT_STATUSES } from "@/lib/payments/status";
 import { checkCoupon, COUPON_MESSAGES, normalizeCode } from "@/lib/pricing";
@@ -29,6 +28,7 @@ import { handOffToStripe } from "@/lib/orders/card-handoff";
 import { claimCouponRedemption, releaseCouponRedemption } from "@/lib/orders/coupon-redemption";
 import { downloadUrl } from "@/lib/downloads";
 import { resolveDigitalDelivery } from "@/lib/orders/digital-delivery";
+import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";
 
 
 /**
@@ -387,34 +387,15 @@ export async function createOrderIntent(
 
   const invoice = await createInvoiceForOrder(shop.id, order.id, invoiceToken);
 
-  // Confirmation email — best effort, never blocks or fails the order.
+  // Best effort, never blocks or fails the order — the money has already moved.
   if (email) {
-    const saved = await db.query.orders.findFirst({
-      where: eq(orders.id, order.id),
+    await confirmBuyerByEmail({
+      shop,
+      orderId: order.id,
+      invoice,
+      delivery: { deliversFiles, unlockNow, downloadToken },
+      base,
     });
-    if (saved) {
-      const result = await sendOrderConfirmation({
-        shop,
-        order: saved,
-        items: await db.query.orderItems.findMany({
-          where: eq(orderItems.orderId, order.id),
-          orderBy: [asc(orderItems.position)],
-        }),
-        invoiceUrl: invoice && base ? `${base}/invoice/${invoice.token}` : null,
-        invoiceNumber: invoice?.number ?? null,
-        downloadUrl:
-          unlockNow && downloadToken ? downloadUrl(downloadToken, base) : null,
-        downloadPending: deliversFiles && !unlockNow,
-      });
-      if (result.sent) {
-        await db
-          .update(orders)
-          .set({ confirmationSentAt: new Date() })
-          .where(eq(orders.id, order.id));
-      } else {
-        console.warn(`[sailo] order email not sent: ${result.reason}`);
-      }
-    }
   }
 
   // Buyers who leave an email can be offered their own referral link.
