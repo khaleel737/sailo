@@ -1,0 +1,32 @@
+src/app/admin/settings/_components/tax-card.tsx
+  s_3dd4b357265b83::t_eaa7e1094855e2 1-116
+src/app/admin/settings/_components/orders-contact-card.tsx
+  s_3dd4b357265b83::t_ccf1272abe3099 6-7,11
+  s_3dd4b357265b83::t_eaa7e1094855e2 1-5,8-10,12-95
+src/app/admin/settings/_components/social-links-card.tsx
+  s_3dd4b357265b83::t_eaa7e1094855e2 1-6,14-45
+  s_3dd4b357265b83::t_ccf1272abe3099 7-13
+src/app/admin/settings/_components/settings-form.tsx
+  s_3dd4b357265b83::t_ccf1272abe3099 103
+  s_3dd4b357265b83::t_b4acf358e059f3 17-21,53,105,107,109
+src/app/admin/settings/_components/identity-card.tsx
+  s_3dd4b357265b83::t_eaa7e1094855e2 1-63
+src/app/admin/settings/_components/publish-card.tsx
+  s_3dd4b357265b83::t_eaa7e1094855e2 1-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4e2addb1486d8e6c7134203ec1e1f0bfa3f25e1c",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
