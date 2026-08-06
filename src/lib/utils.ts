@@ -31,8 +31,56 @@ export function formatMoney(cents: number, currency = "USD") {
   }
 }
 
+/**
+ * Which of the two separators in a number is the decimal point, if either.
+ *
+ * Sailo sells in 22 languages and both conventions are in daily use: "1,299.99"
+ * across the US and UK, "1.299,99" across most of Europe, Turkey, Brazil and
+ * Indonesia. Nothing asks the seller which they mean, so the string has to say.
+ *
+ * - Both separators present — the *later* one is the decimal point, because
+ *   grouping always comes before the fraction in both conventions.
+ * - One separator, appearing more than once — grouping. "1,234,567".
+ * - One separator with exactly three digits after it — grouping. "1,299" and
+ *   "1.299" are both 1299; nobody prices in thousandths.
+ * - One separator otherwise — a decimal point. This is the case that was
+ *   missing.
+ */
+function decimalSeparator(value: string): "." | "," | null {
+  const lastDot = value.lastIndexOf(".");
+  const lastComma = value.lastIndexOf(",");
+  if (lastDot === -1 && lastComma === -1) return null;
+  if (lastDot !== -1 && lastComma !== -1) return lastDot > lastComma ? "." : ",";
+
+  const separator = lastDot === -1 ? "," : ".";
+  const at = Math.max(lastDot, lastComma);
+  if (value.indexOf(separator) !== at) return null;
+  return value.length - at - 1 === 3 ? null : separator;
+}
+
+/**
+ * Money as a human typed it, in minor units.
+ *
+ * This used to strip everything but digits and a dot, which silently read
+ * "12,5" — an ordinary way to write €12.50 — as €125. A seller pricing in
+ * euros, lira, reais or rupiah could overcharge by a factor of ten without a
+ * single validation message, and the same string typed into the tax field was
+ * already being read the other way.
+ */
 export function parseMoneyToCents(value: string | number): number {
-  const n = typeof value === "number" ? value : Number(String(value).replace(/[^0-9.-]/g, ""));
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? Math.max(0, Math.round(value * 100)) : 0;
+  }
+
+  const cleaned = String(value).replace(/[^0-9.,-]/g, "");
+  if (!cleaned) return 0;
+
+  const separator = decimalSeparator(cleaned);
+  const normalized = separator
+    ? cleaned.replace(separator === "." ? /,/g : /\./g, "").replace(separator, ".")
+    : cleaned.replace(/[.,]/g, "");
+
+  const n = Number(normalized);
   if (!Number.isFinite(n)) return 0;
   return Math.max(0, Math.round(n * 100));
 }

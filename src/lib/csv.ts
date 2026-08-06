@@ -4,6 +4,8 @@
  * symbols or thousand separators, and a `Handle` as the product's stable key.
  */
 
+import { parseMoneyToCents } from "@/lib/utils";
+
 /** Formats minor units as a bare decimal — `29.99`, never `$29.99`. */
 export function money(cents: number | null | undefined) {
   if (cents === null || cents === undefined) return "";
@@ -84,11 +86,17 @@ export function parseBool(value: string, fallback = false) {
   return ["true", "yes", "y", "1", "active"].includes(v);
 }
 
-/** Accepts `29.99`, `$29.99`, `1,299.99` and blank. Returns minor units. */
+/**
+ * Accepts `29.99`, `$29.99`, `1,299.99`, `1.299,99`, `12,5` and blank.
+ * Returns minor units, or null for blank — which is not zero: an empty price
+ * column means "inherit from the product", and zero means free.
+ *
+ * Defers to `parseMoneyToCents` so an imported CSV and a typed form field read
+ * the same string the same way. This had its own convention, which stripped
+ * every comma and turned a European seller's "12,5" into 1250 cents.
+ */
 export function parseMoneyField(value: string): number | null {
-  const cleaned = value.replace(/[^0-9.,-]/g, "").replace(/,/g, "");
+  const cleaned = value.replace(/[^0-9.,-]/g, "");
   if (!cleaned) return null;
-  const n = Number(cleaned);
-  if (!Number.isFinite(n)) return null;
-  return Math.max(0, Math.round(n * 100));
+  return parseMoneyToCents(cleaned);
 }
