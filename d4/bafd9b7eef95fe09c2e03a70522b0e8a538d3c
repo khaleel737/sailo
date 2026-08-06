@@ -1,0 +1,21 @@
+src/lib/actions/affiliates.ts
+  s_3dd4b357265b83::t_40d7b7b6295769 6,189
+src/lib/actions/orders.ts
+  s_3dd4b357265b83::t_c19dd655d4b03f 13,51,506
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d4bafd9b7eef95fe09c2e03a70522b0e8a538d3c",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
