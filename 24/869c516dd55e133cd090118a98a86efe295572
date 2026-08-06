@@ -1,0 +1,60 @@
+src/app/download/[token]/loading.tsx
+  s_3dd4b357265b83::t_aaa1a55274093e 1-25
+src/app/[handle]/p/[slug]/loading.tsx
+  s_3dd4b357265b83::t_aaa1a55274093e 1-45
+src/db/index.ts
+  s_3dd4b357265b83::t_116f042563d4fa 12,15-16
+src/components/shared/brand-icons.test.tsx
+  s_245cff4bd6e8de::t_108a74ef30667a 2-8,28
+  s_3dd4b357265b83::t_615517374d5050 34,48
+src/lib/auth.ts
+  s_3dd4b357265b83::t_116f042563d4fa 32,34
+  s_3dd4b357265b83::t_7850d4982e93d5 35
+src/app/admin/affiliates/page.tsx
+  s_3dd4b357265b83::t_116f042563d4fa 71
+  s_3dd4b357265b83::t_888d06bef622fe 72,98-99
+src/app/admin/categories/page.tsx
+  s_3dd4b357265b83::t_116f042563d4fa 61
+  s_3dd4b357265b83::t_baf3bcf1f703d5 66,69
+src/app/[handle]/loading.tsx
+  s_409182f8577344::t_a656e18026da85 1-34,37-56
+  s_3dd4b357265b83::t_aaa1a55274093e 35-36
+src/app/[handle]/affiliate/loading.tsx
+  s_3dd4b357265b83::t_aaa1a55274093e 1-25
+src/app/admin/payments/_components/payment-method-card.tsx
+  s_3dd4b357265b83::t_5237287f1e1f3a 35-39,41
+src/lib/queries/orders.ts
+  s_3dd4b357265b83::t_24855f5fa4a020 19-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "24869c516dd55e133cd090118a98a86efe295572",
+  "prompts": {},
+  "sessions": {
+    "s_245cff4bd6e8de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e02099e-b1fd-430e-af26-4353fefe29d8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_409182f8577344": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ac36c06e-0b1f-49d2-8d1b-799407288c73",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
