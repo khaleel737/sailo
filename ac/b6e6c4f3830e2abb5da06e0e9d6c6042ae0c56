@@ -1,0 +1,26 @@
+src/lib/actions/orders.ts
+  s_2e1da3b18d1c53::t_ec80da89aa100b 13
+  s_2e1da3b18d1c53::t_833d4c3bea426e 21
+  s_2e1da3b18d1c53::t_ea11856f2c089f 654-664,667-673
+src/lib/payments/status.test.ts
+  s_2e1da3b18d1c53::t_3c4d7cd0563eff 1-23,25,27-132
+  s_2e1da3b18d1c53::t_e3893db2da89e0 24,26
+src/lib/payments/status.ts
+  s_2e1da3b18d1c53::t_d7702e7858e9a3 44-93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "acb6e6c4f3830e2abb5da06e0e9d6c6042ae0c56",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
