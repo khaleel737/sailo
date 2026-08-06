@@ -10,7 +10,7 @@ import { resolveDelivery, smallest, soonest } from "@/lib/orders/delivery";
 import { referralFor } from "@/lib/orders/referral";
 import type { OrderIntentInput, OrderIntentResult, OrderLineInput, OrderPreview } from "@/lib/orders/types";
 import { firstRow, present } from "@/lib/invariant";
-import { and, asc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
@@ -18,6 +18,7 @@ import { affiliates, coupons, orderItems, orders, paymentMethods, shops, type Af
 import { formatAddress, formatMoney } from "@/lib/utils";
 import { sendOrderConfirmation } from "@/lib/email";
 import { bankDetailLines, buildHandoff, isPaymentMethodType, PAYMENT_METHOD_DEFS, isRailUsable, type Handoff } from "@/lib/payments";
+import { checkPaymentReference, TRANSFERABLE_PAYMENT_STATUSES } from "@/lib/payments/status";
 import { checkCoupon, COUPON_MESSAGES, normalizeCode } from "@/lib/pricing";
 import { createInvoiceForOrder, newInvoiceToken } from "@/lib/invoices";
 import { can } from "@/lib/plans";
@@ -643,24 +644,33 @@ export async function submitPaymentReference(input: {
     return { ok: false, error: "Too many attempts. Wait a moment and try again." };
   }
 
-  const reference = input.reference.trim().slice(0, 200);
-  if (!reference) return { ok: false, error: "Add the transfer reference." };
-
   const db = getDb();
   const order = await db.query.orders.findFirst({
     where: eq(orders.id, input.orderId),
     columns: { id: true, paymentStatus: true },
   });
   if (!order) return { ok: false, error: "Order not found." };
-  // Only an unconfirmed order may be updated from the public side.
-  if (order.paymentStatus === "paid") {
-    return { ok: false, error: "This order is already marked paid." };
-  }
 
+  const check = checkPaymentReference(order, input.reference);
+  if (!check.ok) return { ok: false, error: check.error };
+
+  /*
+   * The status is repeated in the WHERE clause, not just checked above.
+   *
+   * A chargeback arriving between the read and the write would otherwise be
+   * overwritten by this update, which is the whole thing the check exists to
+   * prevent — and a webhook landing in that window is exactly when it would
+   * matter most.
+   */
   await db
     .update(orders)
-    .set({ paymentReference: reference, paymentStatus: "pending", updatedAt: new Date() })
-    .where(eq(orders.id, input.orderId));
+    .set({ paymentReference: check.reference, paymentStatus: "pending", updatedAt: new Date() })
+    .where(
+      and(
+        eq(orders.id, input.orderId),
+        inArray(orders.paymentStatus, [...TRANSFERABLE_PAYMENT_STATUSES]),
+      ),
+    );
 
   revalidatePath("/admin/orders");
   return { ok: true };
