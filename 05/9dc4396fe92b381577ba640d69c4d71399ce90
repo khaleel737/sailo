@@ -1,0 +1,19 @@
+src/app/(marketing)/loading.tsx
+  s_cf5f84be3e460d::t_ad6c6ab075e71f 1-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "059dc4396fe92b381577ba640d69c4d71399ce90",
+  "prompts": {},
+  "sessions": {
+    "s_cf5f84be3e460d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bba93066-f545-4840-80d2-323716e4b9cc",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
