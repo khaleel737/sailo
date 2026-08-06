@@ -30,7 +30,7 @@ function layouts(dir = APP, prefix = ""): string[] {
 
 function mountsTag(route: string) {
   const path = join(APP, route === "/" ? "" : route, "layout.tsx");
-  return readFileSync(path, "utf8").includes("<Analytics />");
+  return readFileSync(path, "utf8").includes("<GoogleTag />");
 }
 
 /* Sailo's own product. Measuring these is the point of the tag. */
@@ -58,13 +58,13 @@ const UNMEASURED = ["/", "/hq", "/admin/settings"];
 describe("the Google tag's placement", () => {
   it("is mounted on every Sailo-owned surface", () => {
     for (const route of MEASURED) {
-      expect(mountsTag(route), `${route} should mount <Analytics />`).toBe(true);
+      expect(mountsTag(route), `${route} should mount <GoogleTag />`).toBe(true);
     }
   });
 
   it("is absent from the root layout, which storefronts inherit", () => {
     for (const route of UNMEASURED) {
-      expect(mountsTag(route), `${route} must NOT mount <Analytics />`).toBe(false);
+      expect(mountsTag(route), `${route} must NOT mount <GoogleTag />`).toBe(false);
     }
   });
 
@@ -80,6 +80,26 @@ describe("the Google tag's placement", () => {
       unaccounted,
       "new layout(s) found — decide whether each is Sailo-owned, then list it above",
     ).toEqual([]);
+  });
+});
+
+describe("the two tags do not swap places", () => {
+  const root = readFileSync(join(APP, "layout.tsx"), "utf8");
+
+  /*
+   * The root is the one layout storefronts inherit. Vercel Web Analytics is
+   * cookieless and aggregate and belongs here; the Google tag is neither and
+   * does not. Asserting both directions means neither can quietly replace the
+   * other during a tidy-up.
+   */
+  it("puts the cookieless tag on the root, and only that one", () => {
+    expect(root).toContain("<VercelAnalytics />");
+    expect(root).not.toContain("<GoogleTag />");
+  });
+
+  it("keeps the Google tag out of the storefront's inheritance chain", () => {
+    const storefront = join(APP, "[handle]");
+    expect(readdirSync(storefront).includes("layout.tsx")).toBe(false);
   });
 });
 
