@@ -1,0 +1,43 @@
+src/app/admin/products/_components/service-settings-card.tsx
+  s_3dd4b357265b83::t_060f431982dabf 3
+  s_3dd4b357265b83::t_7e7b2ba44e8b7c 1-2,5,7-14,16-76,78-98
+  s_245cff4bd6e8de::t_71f99a6effaef9 4,6,15,77
+src/app/admin/products/_components/digital-delivery-card.tsx
+  s_3dd4b357265b83::t_7e7b2ba44e8b7c 1-2,6,8-15,17-48,50-82
+  s_245cff4bd6e8de::t_71f99a6effaef9 3-5,7,16,49
+src/app/admin/products/_components/product-form.tsx
+  s_3dd4b357265b83::t_c793b0d9dc35f4 21-24
+  s_3dd4b357265b83::t_1a7c6d6af67ebd 235-239,245-249
+src/lib/billing-checkout.test.ts
+  s_3dd4b357265b83::t_bd0aa99bfdcdc5 119-128
+src/lib/billing-checkout.ts
+  s_3dd4b357265b83::t_bd0aa99bfdcdc5 144-167
+src/app/admin/products/_components/product.types.ts
+  s_3dd4b357265b83::t_c793b0d9dc35f4 1-13
+src/app/admin/products/_components/toggle.tsx
+  s_3dd4b357265b83::t_c793b0d9dc35f4 1-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c3b3779e8338757216696ad1fb9e88deccd730f0",
+  "prompts": {},
+  "sessions": {
+    "s_245cff4bd6e8de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e02099e-b1fd-430e-af26-4353fefe29d8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
