@@ -1,0 +1,43 @@
+src/i18n/admin/coverage.test.ts
+  s_3dd4b357265b83::t_e789a512ce65e7 1-29,36,49-70,72-75,77-93
+  s_3dd4b357265b83::t_b31b2e297aa4e3 30-35,37-48
+  s_3dd4b357265b83::t_cdf10ba260e82f 71,76
+src/lib/billing-checkout.ts
+  s_245cff4bd6e8de::t_85b9280458601e 6,8-95,101-147
+  s_245cff4bd6e8de::t_67a742458d55e3 96-100
+  s_245cff4bd6e8de::t_616461c5c4e7a2 1-5,7
+src/lib/actions/billing.ts
+  s_245cff4bd6e8de::t_616461c5c4e7a2 6-7
+  s_245cff4bd6e8de::t_99ce4dd3565c94 9-14,30,33-36,39,41
+  s_245cff4bd6e8de::t_67a742458d55e3 40
+src/lib/connect.ts
+  s_245cff4bd6e8de::t_616461c5c4e7a2 7-8
+src/lib/app-url.ts
+  s_245cff4bd6e8de::t_616461c5c4e7a2 1-11
+src/lib/billing-checkout.test.ts
+  s_245cff4bd6e8de::t_cfb3f37a32c318 1-128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "dda07ad046885f7d955ffe880864d2e4481be7aa",
+  "prompts": {},
+  "sessions": {
+    "s_245cff4bd6e8de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e02099e-b1fd-430e-af26-4353fefe29d8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
