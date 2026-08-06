@@ -1,0 +1,20 @@
+HANDOFF.md
+  s_3dd4b357265b83::t_355b227c1113fc 26-38,83-87,89-91,93,102-105,206-256
+  s_3dd4b357265b83::t_1f111a9d9db863 257,274-282
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4a0acbc7933a17b23569e6cabafb5122664138f7",
+  "prompts": {},
+  "sessions": {
+    "s_3dd4b357265b83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a242b8ff-0936-4ac2-8c50-f7b1cd4a60db",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
