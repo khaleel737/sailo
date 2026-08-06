@@ -153,6 +153,82 @@ async function shopIdFor(opts: {
 
 
 /**
+ * The account an event arrived on.
+ *
+ * Stripe omits `account` for events on the platform's own account, and that
+ * account is a real seller here: `actingAs` in `lib/connect.ts` deliberately
+ * drops the `stripeAccount` header when a shop is wired to the platform's own
+ * account, so its charges are created — and its events delivered — with no
+ * account named. Resolving null to the platform id keeps that one shop subject
+ * to the same ownership rule as every other, rather than exempt from it.
+ */
+export function sendingAccount(accountId: string | null): string | null {
+  return accountId ?? process.env.STRIPE_PLATFORM_ACCOUNT_ID ?? null;
+}
+
+/**
+ * Whether an event from `sender` may act on an order owned by `owner`.
+ *
+ * Unknown on either side denies. A shop with no connected account has no
+ * charges for an event to be about, and a sender we cannot identify has proved
+ * nothing — neither is a reason to fall through to "allow".
+ */
+export function sameAccount(owner: string | null, sender: string | null): boolean {
+  return Boolean(owner && sender && owner === sender);
+}
+
+/** A charge's, dispute's or session's payment intent, expanded or not. */
+export function intentIdOf(
+  intent: string | { id: string } | null | undefined,
+): string | null {
+  if (!intent) return null;
+  return typeof intent === "string" ? intent : intent.id;
+}
+
+/**
+ * Narrows an order to the account the event arrived on, or to nothing.
+ *
+ * Every seller on Sailo controls their own Stripe account, so an event naming
+ * an order is not evidence that the order's seller sent it.
+ */
+async function ownedBySender<T extends { shopId: string }>(
+  order: T | undefined,
+  accountId: string | null,
+): Promise<T | null> {
+  if (!order) return null;
+
+  const shop = await getDb().query.shops.findFirst({
+    where: eq(shops.id, order.shopId),
+    columns: { stripeAccountId: true },
+  });
+  return sameAccount(shop?.stripeAccountId ?? null, sendingAccount(accountId))
+    ? order
+    : null;
+}
+
+/**
+ * The order behind a payment intent, scoped to the sending account.
+ *
+ * The only route from a charge or a dispute to an order. `charge.refunded`
+ * used to look the intent up itself and skip the scoping every sibling
+ * handler applies, which let a seller mark another shop's order refunded — and
+ * clear its own chargeback — from their own connected account. A test asserts
+ * this stays the only place `stripePaymentIntentId` is searched on.
+ */
+export async function orderForIntent(
+  intent: string | { id: string } | null | undefined,
+  accountId: string | null,
+) {
+  const intentId = intentIdOf(intent);
+  if (!intentId) return null;
+
+  const order = await getDb().query.orders.findFirst({
+    where: eq(orders.stripePaymentIntentId, intentId),
+  });
+  return ownedBySender(order, accountId);
+}
+
+/**
  * The order a completed session belongs to — and only if it really belongs to
  * the account that sent the event.
  *
@@ -181,23 +257,10 @@ async function orderForSession(
   if (!orderId) return null;
 
   const byId = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
-  if (!byId) return null;
-
-  // The shop this order belongs to has to be the one whose Stripe account the
-  // event arrived on. A null `account` means the platform's own account acting
-  // as a seller, which is the only case where they legitimately differ.
-  const shop = await db.query.shops.findFirst({
-    where: eq(shops.id, byId.shopId),
-    columns: { stripeAccountId: true },
-  });
-  const owner = shop?.stripeAccountId ?? null;
-  const sender = accountId ?? process.env.STRIPE_PLATFORM_ACCOUNT_ID ?? null;
-
-  return owner && sender && owner === sender ? byId : null;
+  return ownedBySender(byId, accountId);
 }
 
 
-/** The order behind a dispute, found through the charge's payment intent. */
 /**
  * Sailo's own account: a seller paying us.
  *
@@ -290,34 +353,6 @@ export async function handleAccountEvent(event: Stripe.Event): Promise<string> {
   return `handled ${event.type}`;
 }
 
-export async function orderForCharge(
-  dispute: Stripe.Dispute,
-  accountId: string | null,
-) {
-  const intentId =
-    typeof dispute.payment_intent === "string"
-      ? dispute.payment_intent
-      : (dispute.payment_intent?.id ?? null);
-  if (!intentId) return null;
-
-  const order = await getDb().query.orders.findFirst({
-    where: eq(orders.stripePaymentIntentId, intentId),
-  });
-  if (!order) return null;
-
-  // Same rule as `orderForSession`: an event may only touch orders belonging to
-  // the account it came from. The intent id is one we stored ourselves, so this
-  // is belt and braces — but a chargeback moves money, and it is worth both.
-  if (accountId) {
-    const shop = await getDb().query.shops.findFirst({
-      where: eq(shops.id, order.shopId),
-      columns: { stripeAccountId: true },
-    });
-    if (shop?.stripeAccountId !== accountId) return null;
-  }
-
-  return order;
-}
 
 /**
  * A buyer's payment on a seller's connected account.
@@ -353,10 +388,7 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
         .set({
           paymentStatus: "paid",
           status: order.status === "new" ? "confirmed" : order.status,
-          stripePaymentIntentId:
-            typeof session.payment_intent === "string"
-              ? session.payment_intent
-              : (session.payment_intent?.id ?? null),
+          stripePaymentIntentId: intentIdOf(session.payment_intent),
           stripeAccountId: accountId ?? order.stripeAccountId,
           updatedAt: new Date(),
         })
@@ -428,15 +460,7 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
 
     case "charge.refunded": {
       const charge = event.data.object as Stripe.Charge;
-      const intentId =
-        typeof charge.payment_intent === "string"
-          ? charge.payment_intent
-          : (charge.payment_intent?.id ?? null);
-      if (!intentId) return "no payment intent";
-
-      const order = await db.query.orders.findFirst({
-        where: eq(orders.stripePaymentIntentId, intentId),
-      });
+      const order = await orderForIntent(charge.payment_intent, accountId);
       if (!order) return "order not found";
 
       // Mirrors a refund issued from Stripe's own dashboard, so the seller's
@@ -465,7 +489,7 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
      */
     case "charge.dispute.created": {
       const dispute = event.data.object as Stripe.Dispute;
-      const order = await orderForCharge(dispute, accountId);
+      const order = await orderForIntent(dispute.payment_intent, accountId);
       if (!order) return "order not found";
 
       await db
@@ -487,7 +511,7 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
      */
     case "charge.dispute.closed": {
       const dispute = event.data.object as Stripe.Dispute;
-      const order = await orderForCharge(dispute, accountId);
+      const order = await orderForIntent(dispute.payment_intent, accountId);
       if (!order) return "order not found";
 
       const won = dispute.status === "won";
