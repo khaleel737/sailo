@@ -39,12 +39,12 @@ const SOCIAL_LABELS: Record<string, string> = {
   whatsapp: "WhatsApp",
 };
 
-function Submit() {
+function Submit({ label }: { label: string }) {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
       {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-      Save changes
+      {label}
     </Button>
   );
 }
@@ -164,7 +164,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
         <div>
           <h2 className="text-sm font-semibold text-ink-900">{a.settings.ordersContact}</h2>
           <p className="mt-0.5 text-xs text-ink-500">
-            Ways to order live in{" "}
+            {a.settings.waysToOrderLiveIn}{" "}
             <Link
               href="/admin/payments"
               className="font-medium text-ink-700 underline underline-offset-2"
@@ -244,8 +244,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
         <div>
           <h2 className="text-sm font-semibold text-ink-900">{a.settings.tax}</h2>
           <p className="mt-0.5 text-xs text-ink-500">
-            Only turn this on if you are registered to charge it. Existing
-            orders keep the rate they were placed at.
+            {a.settings.taxBody}
           </p>
         </div>
 
@@ -382,7 +381,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
         />
       </Card>
 
-      <Submit />
+      <Submit label={a.common.saveChanges} />
     </form>
   );
 }

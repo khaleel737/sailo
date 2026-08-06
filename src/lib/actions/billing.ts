@@ -62,11 +62,28 @@ export async function startCheckout(formData: FormData) {
     subscription_data: { metadata: { shopId: shop.id, plan } },
     metadata: { shopId: shop.id, plan },
     allow_promotion_codes: true,
-    // Stripe's Adaptive Pricing would convert $19.99 into the seller's local
-    // currency at checkout. The plan table quotes USD and nothing localises
-    // it, so a German seller would read "$19.99" here and "€18.04" there.
-    // Turn this back on the day plan prices are localised too.
+    /*
+     * Adaptive Pricing would convert $19.99 into the seller's local currency at
+     * checkout. The plan table quotes USD and nothing localises it, so a German
+     * seller would read "$19.99" here and "€18.04" there. Turn it back on the
+     * day plan prices are localised too.
+     *
+     * `managed_payments` is not a second opinion about the same thing — it is
+     * what makes the line above legal. Managed Payments is Stripe's merchant of
+     * record product and it is ON by default on newer accounts, including the
+     * live one this deploys against. While it is on, Stripe rejects
+     * `adaptive_pricing[enabled]=false` outright, so every upgrade 400'd with
+     * "adaptive_pricing[enabled] must be `true` when Managed Payments is
+     * enabled". Opting this session out of Managed Payments is the escape
+     * hatch Stripe's own error names, and it keeps prices in the currency the
+     * pricing table advertises.
+     *
+     * This never showed up locally because the test account does not have
+     * Managed Payments enabled — the two accounts are configured differently,
+     * which is exactly the kind of drift that only surfaces in production.
+     */
     adaptive_pricing: { enabled: false },
+    managed_payments: { enabled: false },
     success_url: `${appUrl()}/admin/settings/billing?checkout=success`,
     cancel_url: `${appUrl()}/admin/settings/billing?checkout=cancelled`,
   });
