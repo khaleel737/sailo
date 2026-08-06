@@ -94,11 +94,21 @@ test.describe("routes that must refuse", () => {
     const body = await page.content();
 
     expect(body).toMatch(/not found/i);
-    // The noindex tag is what stops a soft 404 becoming a search result.
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-      "content",
-      /noindex/,
-    );
+
+    /*
+     * The noindex tag is what stops a soft 404 becoming a search result.
+     *
+     * Asserted across every match rather than on a single one: a streamed
+     * response carries the tag twice, once in the head and once inlined into
+     * the body where the boundary resolved. Both must say noindex — one
+     * saying otherwise would undo the other.
+     */
+    const robots = page.locator('meta[name="robots"]');
+    const tags = await robots.count();
+    expect(tags).toBeGreaterThan(0);
+    for (let i = 0; i < tags; i++) {
+      await expect(robots.nth(i)).toHaveAttribute("content", /noindex/);
+    }
     // Whatever the status, it must never be a redirect to somewhere real or a
     // page carrying a real shop's name.
     expect(res?.status()).toBeLessThan(400);
