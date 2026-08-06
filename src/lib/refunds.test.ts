@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canReverse, reversePayment } from "@/lib/refunds";
+import { canReverse, checkRefund, refundableCents, reversePayment } from "@/lib/refunds";
 import type { Order } from "@/db/schema";
 
 /**
@@ -85,5 +85,74 @@ describe("reversePayment", () => {
     await expect(
       reversePayment(order({ paymentMethod: "" }), 4800),
     ).resolves.toEqual({ kind: "manual", reason: "off_platform" });
+  });
+});
+
+/**
+ * How much of an order is still refundable.
+ *
+ * The guard used to compare a request against the order total and the write
+ * used to assign rather than accumulate. A seller refunding $50 of a $100
+ * order twice moved $100 at the processor — each half sits inside the
+ * original charge, so nothing rejects it — while the column still read $50.
+ * Revenue, the dashboard and both CSV exports then under-report by half, with
+ * no screen showing the gap.
+ */
+describe("checkRefund", () => {
+  const order = (totalCents: number, refundedCents = 0) => ({
+    totalCents,
+    refundedCents,
+  });
+
+  it("allows a first refund up to the total", () => {
+    const check = checkRefund(order(10_000), 10_000);
+    expect(check.ok).toBe(true);
+    if (check.ok) {
+      expect(check.refundedTotal).toBe(10_000);
+      expect(check.isFull).toBe(true);
+    }
+  });
+
+  it("accumulates rather than overwrites", () => {
+    const check = checkRefund(order(10_000, 5_000), 5_000);
+    expect(check.ok).toBe(true);
+    // The bug: this used to record 5,000 after 10,000 had been moved.
+    if (check.ok) expect(check.refundedTotal).toBe(10_000);
+  });
+
+  it("refuses a second refund that exceeds what is left", () => {
+    const check = checkRefund(order(10_000, 5_000), 6_000);
+    expect(check.ok).toBe(false);
+    if (!check.ok) {
+      expect(check.reason).toBe("exceeds_remaining");
+      expect(check.remaining).toBe(5_000);
+    }
+  });
+
+  it("refuses anything once the order is fully refunded", () => {
+    const check = checkRefund(order(10_000, 10_000), 1);
+    expect(check.ok).toBe(false);
+    if (!check.ok) expect(check.remaining).toBe(0);
+  });
+
+  it("counts two halves as a full refund", () => {
+    // Status must become "refunded" whether it took one refund or two.
+    const check = checkRefund(order(10_000, 5_000), 5_000);
+    if (check.ok) expect(check.isFull).toBe(true);
+  });
+
+  it("leaves a partial refund partial", () => {
+    const check = checkRefund(order(10_000), 2_500);
+    if (check.ok) expect(check.isFull).toBe(false);
+  });
+
+  it("refuses zero and negative amounts", () => {
+    expect(checkRefund(order(10_000), 0).ok).toBe(false);
+    expect(checkRefund(order(10_000), -500).ok).toBe(false);
+  });
+
+  it("never reports a negative remaining", () => {
+    // An over-refund recorded by an older build must not invert the ceiling.
+    expect(refundableCents(order(10_000, 12_000))).toBe(0);
   });
 });

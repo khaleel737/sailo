@@ -87,14 +87,34 @@ export function downloadUrl(token: string, base = process.env.NEXT_PUBLIC_APP_UR
  * in the update's WHERE clause means a webhook retry — or a seller flipping
  * the payment status twice — sends one email, not two.
  */
+/**
+ * Whether an order has files to unlock at all.
+ *
+ * The token is the authority, and it is minted only when a line was found
+ * carrying deliverable files — so its presence already means there is
+ * something to release. `productKind` must not be consulted: it is a header
+ * column describing the order's *first* line, so a basket holding a mug and
+ * a PDF reads as "physical" and every release path refuses forever, leaving
+ * a buyer who paid with files that no manual action can free.
+ */
+export function hasReleasableDownloads(order: {
+  downloadToken: string | null;
+  downloadReleasedAt: Date | null;
+}): boolean {
+  if (!order.downloadToken) return false;
+  // Already released: claiming twice would send the buyer a second email.
+  return order.downloadReleasedAt === null;
+}
+
 export async function releaseDownloads(orderId: string): Promise<boolean> {
   const db = getDb();
 
   const order = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
-  if (!order || !order.downloadToken || order.productKind !== "digital") {
-    return false;
-  }
-  if (order.downloadReleasedAt) return false;
+  if (!order || !hasReleasableDownloads(order)) return false;
+  // Bound here because the guard above proves it to a reader, not to the
+  // compiler — the narrowing does not cross a function boundary.
+  const { downloadToken } = order;
+  if (!downloadToken) return false;
 
   /*
    * Nothing coming back means another caller claimed it first — a webhook
@@ -117,7 +137,7 @@ export async function releaseDownloads(orderId: string): Promise<boolean> {
       const result = await sendDownloadReady({
         shop,
         order,
-        url: downloadUrl(order.downloadToken),
+        url: downloadUrl(downloadToken),
       });
       if (!result.sent) {
         console.warn(`[sailo] download email not sent: ${result.reason}`);

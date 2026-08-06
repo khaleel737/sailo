@@ -8,7 +8,7 @@ import { requireShop } from "@/lib/session";
 import { firstRow } from "@/lib/invariant";
 import { formatMoney, parseMoneyToCents } from "@/lib/utils";
 import { restoreStock, retakeStock } from "@/lib/inventory";
-import { canReverse, reversePayment, type RefundOutcome } from "@/lib/refunds";
+import { canReverse, checkRefund, refundableCents, reversePayment, type RefundOutcome } from "@/lib/refunds";
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
 import { releaseDownloads } from "@/lib/downloads";
 import { sendRefundNotification, sendShippingNotification } from "@/lib/email";
@@ -166,18 +166,19 @@ export async function refundOrder(
 
   const raw = String(formData.get("amount") ?? "").trim();
   // Blank means refund everything.
-  const requested = raw ? parseMoneyToCents(raw) : order.totalCents;
-  if (requested <= 0) {
-    return { ok: false, error: "Enter a refund amount above zero." };
-  }
-  if (requested > order.totalCents) {
+  // Blank means refund whatever is left, not the whole order again.
+  const requested = raw ? parseMoneyToCents(raw) : refundableCents(order);
+  const check = checkRefund(order, requested);
+  if (!check.ok) {
     return {
       ok: false,
-      error: `You can't refund more than the order total (${formatMoney(order.totalCents, order.currency)}).`,
+      error:
+        check.reason === "not_positive"
+          ? "Enter a refund amount above zero."
+          : `Only ${formatMoney(check.remaining, order.currency)} is left to refund on this order.`,
     };
   }
-
-  const isFull = requested === order.totalCents;
+  const isFull = check.isFull;
 
   /*
    * Give the money back before writing down that we did.
@@ -208,7 +209,7 @@ export async function refundOrder(
   await db
     .update(orders)
     .set({
-      refundedCents: requested,
+      refundedCents: check.refundedTotal,
       refundedAt: new Date(),
       refundReason:
         String(formData.get("reason") ?? "").trim().slice(0, 300) || null,

@@ -55,6 +55,52 @@ const REVERSERS: Partial<Record<PaymentMethodType, Reverser>> = {
 };
 
 /** True when this order's rail can give the money back without a human. */
+/**
+ * How much of an order is still refundable.
+ *
+ * `refundedCents` accumulates, so the ceiling is what is left rather than the
+ * order total. Checking against the total lets a seller refund $50 of a $100
+ * order twice: the processor moves $100 — each half is within the original
+ * charge, so nothing rejects it — while the column, being assigned rather
+ * than added to, still reads $50. The seller's revenue, their dashboard and
+ * both CSV exports then under-report the refund by half, and no screen shows
+ * the discrepancy.
+ */
+export function refundableCents(order: {
+  totalCents: number;
+  refundedCents: number;
+}): number {
+  return Math.max(0, order.totalCents - order.refundedCents);
+}
+
+export type RefundCheck =
+  | { ok: true; amountCents: number; refundedTotal: number; isFull: boolean }
+  | { ok: false; reason: "not_positive" | "exceeds_remaining"; remaining: number };
+
+/** Validates a requested refund against what the order has left. */
+export function checkRefund(
+  order: { totalCents: number; refundedCents: number },
+  requestedCents: number,
+): RefundCheck {
+  const remaining = refundableCents(order);
+  if (requestedCents <= 0) {
+    return { ok: false, reason: "not_positive", remaining };
+  }
+  if (requestedCents > remaining) {
+    return { ok: false, reason: "exceeds_remaining", remaining };
+  }
+
+  const refundedTotal = order.refundedCents + requestedCents;
+  return {
+    ok: true,
+    amountCents: requestedCents,
+    refundedTotal,
+    // Full once nothing is left, not once one refund matches the total —
+    // two halves make an order fully refunded just as one whole does.
+    isFull: refundedTotal >= order.totalCents,
+  };
+}
+
 export function canReverse(order: Pick<Order, "paymentMethod">): boolean {
   return (
     isPaymentMethodType(order.paymentMethod) &&
