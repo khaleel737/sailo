@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { resolveLines } from "@/lib/orders/resolve-lines";
 import { readBuyer } from "@/lib/orders/buyer";
+import { commissionBpFor } from "@/lib/orders/commission";
 import { upsertClient } from "@/lib/orders/clients";
 import { resolveDelivery, smallest, soonest } from "@/lib/orders/delivery";
 import { referralFor } from "@/lib/orders/referral";
@@ -140,9 +141,7 @@ export async function createOrderIntent(
     affiliate = found ?? null;
   }
 
-  const commissionBp = affiliate
-    ? (affiliate.commissionBp ?? shop.affiliateDefaultBp)
-    : null;
+  const commissionBp = commissionBpFor(affiliate, shop);
 
   const priced: Quote = quote({
     lines,
