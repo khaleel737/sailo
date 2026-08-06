@@ -754,9 +754,11 @@ async function main() {
     .insert(orders)
     .values(
       ORDERS.map((o, i) => {
-        const client = clientByEmail.get(o.email)!;
+        const client = present(clientByEmail.get(o.email), `client ${o.email}`);
         const product = present(PRODUCTS[o.p], `product ${o.p}`);
-        const delivery = o.delivery ? deliveryByName.get(o.delivery)! : null;
+        const delivery = o.delivery
+          ? present(deliveryByName.get(o.delivery), `delivery ${o.delivery}`)
+          : null;
         const affiliate = o.affiliate
           ? affiliateByCode.get(o.affiliate)
           : undefined;

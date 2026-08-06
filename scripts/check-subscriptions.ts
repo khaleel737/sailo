@@ -18,6 +18,12 @@ import Stripe from "stripe";
 import { neon } from "@neondatabase/serverless";
 import { randomUUID } from "node:crypto";
 import { can, planFor, productLimit } from "@/lib/plans";
+import {
+  checkoutSessionParams,
+  priceEnvKey,
+  priceMismatch,
+} from "@/lib/billing-checkout";
+import { payHostedCheckout } from "./lib/hosted-checkout";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -141,6 +147,77 @@ async function main() {
         products: 20,
       },
     );
+
+    /* ------------------------------------- the button, before the API calls */
+    /*
+     * Everything below drives Stripe with `subscriptions.create`, which is the
+     * only practical way to reach a failed renewal or a cancellation. It is
+     * not, however, how a seller starts one — they press Upgrade, which calls
+     * `checkout.sessions.create`. That difference cost days: the live account
+     * rejected a parameter in those session params and every check here still
+     * passed, because nothing here had ever built one.
+     *
+     * So the door gets opened first, with the same builder the server action
+     * uses. Creating the session is what catches a rejected parameter; filling
+     * the card proves the whole path, webhook included. The subscription it
+     * creates is cancelled immediately so the lifecycle below starts clean.
+     */
+    console.log("\nThey press Upgrade — a real Checkout Session, paid by card");
+    const doorCustomer = await stripe.customers.create({
+      name: "Subs Check Shop (checkout door)",
+      email: `${owner}+door@sailo.local`,
+      metadata: { shopId, handle },
+    });
+    await sql`update shops set stripe_customer_id = ${doorCustomer.id} where id = ${shopId}`;
+
+    const doorPrice = process.env[priceEnvKey("pro", "month")];
+    if (!doorPrice) throw new Error(`${priceEnvKey("pro", "month")} is not set`);
+    check(
+      "the price matches what the pricing table advertises",
+      priceMismatch("pro", "month", await stripe.prices.retrieve(doorPrice)),
+      null,
+    );
+
+    const doorSession = await stripe.checkout.sessions.create(
+      checkoutSessionParams({
+        shopId,
+        plan: "pro",
+        price: doorPrice,
+        customer: doorCustomer.id,
+      }),
+    );
+    // The check above reports it; binding it here is what lets the next line
+    // use it without asserting what that check already established.
+    const hostedUrl = doorSession.url;
+    check("Stripe accepted the session parameters", Boolean(hostedUrl), true);
+    if (!hostedUrl) return;
+
+    const paid = await payHostedCheckout(hostedUrl);
+    check("the hosted page took a test card", paid, true);
+
+    if (paid) {
+      const done = await eventFor("checkout.session.completed", doorSession.id);
+      check("Stripe emitted checkout.session.completed", Boolean(done), true);
+
+      const doorSubs = await stripe.subscriptions.list({
+        customer: doorCustomer.id,
+        status: "all",
+        limit: 1,
+      });
+      const doorSub = doorSubs.data[0];
+      check("a subscription exists after checkout", Boolean(doorSub), true);
+
+      if (doorSub) {
+        const born = await eventFor("customer.subscription.created", doorSub.id);
+        if (born) await deliver(born);
+        row = await shopRow(shopId);
+        check("the shop is on Pro, from the button alone", row.plan, "pro");
+        await stripe.subscriptions.cancel(doorSub.id).catch(() => {});
+        const gone = await eventFor("customer.subscription.deleted", doorSub.id);
+        if (gone) await deliver(gone);
+      }
+    }
+    await stripe.customers.del(doorCustomer.id).catch(() => {});
 
     /* ------------------------------------------------------ subscribe: Pro */
     console.log("\nThey subscribe to Pro (monthly)");

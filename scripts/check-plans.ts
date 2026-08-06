@@ -15,6 +15,7 @@
  */
 import Stripe from "stripe";
 import { PLANS } from "../src/lib/plans";
+import { present } from "../src/lib/invariant";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 if (!secretKey) throw new Error("STRIPE_SECRET_KEY is not set");
@@ -26,7 +27,10 @@ const money = (cents: number | null, currency: string) =>
 let problems = 0;
 
 async function main() {
-  const live = !secretKey!.includes("_test_");
+  // The script exits above without a key, but binding it here is what makes
+  // that visible to the compiler rather than asserted at the point of use.
+  const key = present(secretKey, "STRIPE_SECRET_KEY");
+  const live = !key.includes("_test_");
   console.log(`Stripe account — ${live ? "LIVE" : "TEST"} mode\n`);
 
   /* ------------------------------------------- everything in the account */

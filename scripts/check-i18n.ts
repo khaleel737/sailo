@@ -38,7 +38,7 @@ for (const locale of LOCALES) {
   const empties = countEmpty(getDictionary(locale.code) as unknown as Record<string, unknown>);
   storefrontGaps += empties;
 }
-const storefrontKeys = JSON.stringify(en).match(/"/g)!.length / 4;
+const storefrontKeys = (JSON.stringify(en).match(/"/g)?.length ?? 0) / 4;
 console.log(`  ${LOCALES.length} locales, ~${Math.round(storefrontKeys)} keys each, ${storefrontGaps} empty\n`);
 
 /**
@@ -55,7 +55,7 @@ for (const locale of LOCALES) {
   const same = countIdentical(marketingEn as unknown as Record<string, unknown>, dict);
   if (same > 0) untranslated.push(`${locale.code}:${same}`);
 }
-const marketingKeys = JSON.stringify(marketingEn).match(/"/g)!.length / 4;
+const marketingKeys = (JSON.stringify(marketingEn).match(/"/g)?.length ?? 0) / 4;
 console.log(
   `  ${LOCALES.length} locales, ~${Math.round(marketingKeys)} keys each, ${marketingGaps} empty`,
 );

@@ -21,6 +21,11 @@
 import Stripe from "stripe";
 import { neon } from "@neondatabase/serverless";
 import { randomUUID } from "node:crypto";
+import {
+  checkoutSessionParams,
+  priceEnvKey,
+  priceMismatch,
+} from "../src/lib/billing-checkout";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 const databaseUrl = process.env.DATABASE_URL;
@@ -99,6 +104,59 @@ async function main() {
     if (!shop) throw new Error("could not create the fixture shop");
     shopId = shop.id as string;
     check("starts free", (await waitForShop(shopId, () => true, 1))?.plan, "free");
+
+    /* ------------------------------------------ the button a seller presses */
+    /*
+     * This section is the reason the file exists in its current shape.
+     *
+     * Everything below subscribes with `subscriptions.create`, which is how
+     * Stripe's own webhooks get exercised — but it is not what the upgrade
+     * button does. The button calls `checkout.sessions.create`, and for days
+     * that call 400'd on the live account while every test here passed and
+     * every local run passed, because nothing anywhere created a live Checkout
+     * Session. Managed Payments is on by default on this account and rejects
+     * `adaptive_pricing[enabled]=false`; the test account has it off, so the
+     * two accounts disagreed about a default and only production found out.
+     *
+     * The parameters come from `checkoutSessionParams`, the same builder the
+     * server action uses, so this cannot drift into checking a different call.
+     * A session that is never completed costs nothing, and it is expired
+     * immediately afterwards rather than left open.
+     */
+    console.log("\nThey press Upgrade — the real Checkout Session, live");
+    for (const interval of ["month", "year"] as const) {
+      const priceId = process.env[priceEnvKey("pro", interval)];
+      if (!priceId) {
+        check(`${priceEnvKey("pro", interval)} is set`, false, true);
+        continue;
+      }
+
+      const stripePrice = await stripe.prices.retrieve(priceId);
+      check(
+        `the live ${interval}ly price matches the pricing table`,
+        priceMismatch("pro", interval, stripePrice),
+        null,
+      );
+
+      const probeCustomer = await stripe.customers.create({
+        name: "Sailo live check (checkout probe)",
+        metadata: { shopId, handle },
+      });
+      try {
+        const session = await stripe.checkout.sessions.create(
+          checkoutSessionParams({
+            shopId,
+            plan: "pro",
+            price: priceId,
+            customer: probeCustomer.id,
+          }),
+        );
+        check(`Stripe returns a ${interval}ly checkout URL`, Boolean(session.url), true);
+        await stripe.checkout.sessions.expire(session.id).catch(() => {});
+      } finally {
+        await stripe.customers.del(probeCustomer.id).catch(() => {});
+      }
+    }
 
     /* -------------------------------------- a real subscription, at no cost */
     console.log("\nThey subscribe to Pro — on a 100% off coupon, so nothing is charged");

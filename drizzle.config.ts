@@ -1,3 +1,4 @@
+import { present } from "./src/lib/invariant";
 import type { Config } from "drizzle-kit";
 
 export default {
@@ -5,6 +6,8 @@ export default {
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    // Migrations cannot run without it, and the assertion would report the
+    // failure as a type error from drizzle-kit rather than a missing variable.
+    url: present(process.env.DATABASE_URL, "DATABASE_URL"),
   },
 } satisfies Config;

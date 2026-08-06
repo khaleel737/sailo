@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 /**
  * The buyer's path to paying. Split across several files now — panel, copy,
@@ -7,7 +8,7 @@ import { expect, test } from "@playwright/test";
 
 const DEMO = "/demo";
 
-async function openCheckout(page: import("@playwright/test").Page) {
+async function openCheckout(page: Page) {
   await page.goto(DEMO, { waitUntil: "networkidle" });
   await page.getByRole("button", { name: /^buy now$/i }).first().click();
   const dialog = page.locator('[role="dialog"]');

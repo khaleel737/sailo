@@ -9,9 +9,10 @@
  *   npm run check:load          # 5000 shops × 10 products
  *   SHOPS=20000 npm run check:load
  */
+import { present } from "@/lib/invariant";
 import { neon } from "@neondatabase/serverless";
 
-const sql = neon(process.env.DATABASE_URL!);
+const sql = neon(present(process.env.DATABASE_URL, "DATABASE_URL"));
 const SHOPS = Number(process.env.SHOPS ?? 5000);
 const PER_SHOP = Number(process.env.PRODUCTS_PER_SHOP ?? 10);
 const TAG = "loadtest-";
