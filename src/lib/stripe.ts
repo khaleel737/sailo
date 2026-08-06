@@ -19,7 +19,3 @@ export function stripe() {
 }
 
 export const billingEnabled = () => Boolean(process.env.STRIPE_SECRET_KEY);
-
-export function appUrl() {
-  return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-}

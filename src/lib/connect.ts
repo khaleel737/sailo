@@ -4,7 +4,8 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { shops, type Order, type Shop } from "@/db/schema";
 import { lineTitle, orderLines, orderSummaryTitle } from "@/lib/order-lines";
-import { appUrl, stripe } from "@/lib/stripe";
+import { stripe } from "@/lib/stripe";
+import { appUrl } from "@/lib/app-url";
 import { taxName } from "@/lib/tax-label";
 import { platformFeeCents } from "@/lib/plans";
 
