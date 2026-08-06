@@ -1,0 +1,21 @@
+package.json
+  s_409182f8577344::t_48b8f61ccfc46c 42,44
+package-lock.json
+  s_409182f8577344::t_f62ca04bc72209 16,18,6634-6646,6736-6747,7162-7198,7575-7583,8057-8065,8495-8506,9732-9744,10019-10024,10194-10202
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "744068d9486cc5c402ac775d8cfd175b1b0e1c37",
+  "prompts": {},
+  "sessions": {
+    "s_409182f8577344": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ac36c06e-0b1f-49d2-8d1b-799407288c73",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
