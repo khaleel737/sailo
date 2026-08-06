@@ -1,0 +1,79 @@
+src/lib/chart/cursor.test.ts
+  s_7ee005f5ad96b3::t_bdfe2c5723cb08 1-8,15-65,73-124
+  s_7ee005f5ad96b3::t_23cd296635704f 9-14,66-72
+src/components/shared/panel-footer.tsx
+  s_2003e12856e408::t_e3b750cda97207 44-50
+src/components/shared/chart/chart-readout.tsx
+  s_7ee005f5ad96b3::t_ae0f5dd1a8b0cf 1-63
+src/components/shared/chart/index.tsx
+  s_7ee005f5ad96b3::t_f1415944f95bfb 1-110,112-117,120,122-149,154-212
+  s_7ee005f5ad96b3::t_23cd296635704f 111,118-119,121,150-153
+src/components/shared/chart/variant-switch.tsx
+  s_7ee005f5ad96b3::t_c80ac42afaa9c2 1-60
+src/components/shared/chart/chart-plot.tsx
+  s_7ee005f5ad96b3::t_971c38662106e0 100-110,184
+  s_7ee005f5ad96b3::t_23cd296635704f 145-148
+  s_7ee005f5ad96b3::t_572ec04e9fbf15 1-99,111-144,149-183,185-217
+src/app/admin/page.tsx
+  s_7ee005f5ad96b3::t_23cd296635704f 231
+src/components/shared/chart/scales.ts
+  s_7ee005f5ad96b3::t_c80ac42afaa9c2 1-10
+src/components/shared/chart/chart-header.tsx
+  s_7ee005f5ad96b3::t_971c38662106e0 27-29
+  s_7ee005f5ad96b3::t_b30ebbc7f70dd9 1-26,30-49
+content/blog/why-your-link-in-bio-is-costing-you-sales.md
+  s_2003e12856e408::t_c369d020643997 5
+src/components/shared/chart/chart-series.tsx
+  s_7ee005f5ad96b3::t_0f4b63d85620e8 1-109
+src/app/hq/accounts/[id]/page.tsx
+  s_7ee005f5ad96b3::t_23cd296635704f 271
+src/lib/chart/domain.test.ts
+  s_7ee005f5ad96b3::t_a65c2c9677ceec 1,3-129
+  s_7ee005f5ad96b3::t_23cd296635704f 2
+src/lib/chart/types.ts
+  s_7ee005f5ad96b3::t_bfe6672079d490 1-47
+docs/blog-brief.md
+  s_409182f8577344::t_7acddb8ca7daaa 1-328
+src/lib/chart/domain.ts
+  s_7ee005f5ad96b3::t_a65c2c9677ceec 1-109
+content/blog/what-to-photograph-when-you-sell-food.md
+  s_2003e12856e408::t_c369d020643997 5
+src/lib/blog.ts
+  s_2003e12856e408::t_3fd2e6ec7e9999 80-82
+src/app/(marketing)/blog/[slug]/page.tsx
+  s_2003e12856e408::t_cc3106b001de15 99-102
+src/lib/chart/cursor.ts
+  s_7ee005f5ad96b3::t_c601951c01db7f 1-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7834f18fccc24f01e3c945414863b5e925ed3320",
+  "prompts": {},
+  "sessions": {
+    "s_2003e12856e408": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "75f413c8-ba54-4803-8715-86e2a4dfb62f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_409182f8577344": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ac36c06e-0b1f-49d2-8d1b-799407288c73",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_7ee005f5ad96b3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "22956574-b8ad-444b-a8fe-b34f24b6e02a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
