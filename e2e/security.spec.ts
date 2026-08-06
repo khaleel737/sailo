@@ -73,8 +73,35 @@ test.describe("routes that must refuse", () => {
     expect(res.status()).toBe(401);
   });
 
-  test("an unpublished shop is a 404, not a leak", async ({ page }) => {
+  /*
+   * A handle nobody owns must not tell anyone whether it could be owned.
+   *
+   * This used to assert a 404 status and failed against a correct app. The
+   * route renders `notFound()` from inside the Suspense boundary that
+   * `[handle]/loading.tsx` creates, and Next has already flushed the shell —
+   * and with it the 200 — by the time that runs. Next's own documentation
+   * calls this out and injects `<meta name="robots" content="noindex">` to
+   * keep the soft 404 out of search results; returning a real 404 would mean
+   * checking the handle before the response streams, which costs the shop page
+   * its loading UI on the most-visited route in the product.
+   *
+   * So the status code is the trade-off, not the security property. What
+   * matters is that the response is identical whether or not the handle is
+   * merely unpublished, and that it is not indexable.
+   */
+  test("an unknown shop reveals nothing and is not indexable", async ({ page }) => {
     const res = await page.goto("/definitely-not-a-shop-xyz");
-    expect(res?.status()).toBe(404);
+    const body = await page.content();
+
+    expect(body).toMatch(/not found/i);
+    // The noindex tag is what stops a soft 404 becoming a search result.
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+      "content",
+      /noindex/,
+    );
+    // Whatever the status, it must never be a redirect to somewhere real or a
+    // page carrying a real shop's name.
+    expect(res?.status()).toBeLessThan(400);
+    expect(new URL(page.url()).pathname).toBe("/definitely-not-a-shop-xyz");
   });
 });
