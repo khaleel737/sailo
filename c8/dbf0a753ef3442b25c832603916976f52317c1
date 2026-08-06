@@ -1,0 +1,30 @@
+src/lib/actions/orders.ts
+  s_2e1da3b18d1c53::t_edab2fd95d8622 29
+  s_2e1da3b18d1c53::t_f5fb5c283ca672 197
+  s_2e1da3b18d1c53::t_3c5e70f541c2cf 397-402
+  s_2e1da3b18d1c53::t_42dc16f6a8126a 364-374,376-377
+  s_2e1da3b18d1c53::t_6df85db1dbfc66 13
+  s_2e1da3b18d1c53::t_50f63cbe1909f4 375
+  s_2e1da3b18d1c53::t_01ab4d1d7f378c 33-48
+src/lib/actions/orders.test.ts
+  s_2e1da3b18d1c53::t_0e445655ed7f23 38-39,44-62
+  s_2e1da3b18d1c53::t_5ccd27f25cf1bd 21-22
+src/lib/orders/coupon-redemption.ts
+  s_2e1da3b18d1c53::t_19f8a85b047f0e 1-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c8dbf0a753ef3442b25c832603916976f52317c1",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
