@@ -23,7 +23,19 @@ The goal is a codebase that can take real users and real money.
   `frontend-design`. Load them with the Skill tool before the work they cover.
 - `stripe-best-practices` (user-level skill) for anything touching payments.
 
-## Where it stands (measured, not estimated)
+## Where it stands
+
+Measured at commit 1960667. **Re-measure before planning** — this repo has two
+agents working in it and the numbers move:
+
+```bash
+find src -name '*.ts' -o -name '*.tsx' | wc -l
+npx vitest run 2>&1 | grep -E 'Tests '
+npx tsc --noEmit 2>&1 | grep -c 'error TS'
+npx oxlint 2>&1 | grep -cE ' error '
+find src -name '*.ts' -o -name '*.tsx' | grep -v i18n/ | xargs wc -l | awk '$1>300' | sort -rn
+```
+
 
 | | |
 |---|---|
@@ -68,11 +80,17 @@ verification, CSP + security headers. **New code has not been through this.**
 
 **Phase 4 — Production.** Not formally done.
 
-## Open bugs, found by audit and NOT yet fixed
+## Known bugs — 9 open, 2 already fixed
 
-Ranked. Each has been verified by reading the code, not guessed.
+Ranked, each verified by reading the code rather than guessed. **This list is
+what was found last time, not the whole truth — the audits above are how you
+find what is not on it.** New code has never been audited at all.
 
-1. **Mixed basket digital files never deliver.** `src/lib/downloads.ts:94`
+~~1. Mixed basket digital files never deliver.~~ **FIXED** (commit 1960667) —
+   `hasReleasableDownloads` now gates on the token alone. Left here so you can
+   see the shape of the bug; do not re-fix it.
+
+   Original: **Mixed basket digital files never deliver.** `src/lib/downloads.ts:94`
    gates on `order.productKind`, which is the *header* column set from the
    first line only (`actions/orders.ts:236`), while `downloadToken` is issued
    whenever *any* line is digital. Buy a mug + a PDF: token exists,
@@ -81,7 +99,10 @@ Ranked. Each has been verified by reading the code, not guessed.
    files held permanently, no manual fix exists. Use `orderLines` /
    `orderedProductIds` — `filesForOrder` two functions below already does.
 
-2. **Refunds are not capped by prior refunds.** `actions/order-admin.ts:173,211`
+~~2. Refunds are not capped by prior refunds.~~ **FIXED** (commit 1960667) —
+   `checkRefund` caps against what is left and accumulates. Do not re-fix.
+
+   Original: **Refunds are not capped by prior refunds.** `actions/order-admin.ts:173,211`
    guards `requested > order.totalCents` but never reads `refundedCents`, and
    writes `refundedCents: requested` (assignment, not accumulation). Two $50
    refunds on a $100 order move $100 at Stripe and record $50.
@@ -182,6 +203,58 @@ for f in src/lib/*.ts; do b=$(basename $f .ts); [ -f "src/lib/$b.test.ts" ] || e
 - Commit messages: explain *why*, name the bug the change prevents, no
   bullet lists of files changed.
 
+## How to work — this matters as much as the list
+
+**Start by auditing, not by fixing.** The eleven bugs below were found by
+running three audit agents in parallel, not by reading files in order. Do the
+same before touching anything:
+
+```
+Agent 1: every server action and API route in src/lib/actions/ and
+         src/app/api/ — which write data without an ownership check
+         (requireShop / requireStaff)? Which public writes have no rate limit?
+Agent 2: money — floating point on cents, totals recomputed client-side and
+         trusted, rounding that differs between two call sites, refund or
+         commission paths that assign where they should accumulate.
+Agent 3: everything added since commit 059dc43 — has it been split, tested,
+         guarded? lib/blog.ts (406 lines) has never been reviewed at all.
+```
+
+Ask each for `file:line`, what breaks, and how a user would notice. Then
+**verify every finding yourself by reading the code** before acting on it —
+roughly one report in five is wrong, and acting on a wrong one wastes a commit.
+
+**Per commit, without exception:**
+
+```bash
+npx tsc --noEmit                 # must be silent — vitest does NOT typecheck
+npx vitest run                   # all green
+npm run build > /dev/null 2>&1; echo $?   # must be 0 — read the CODE, not the output
+npx oxlint <files you touched>   # clean
+! git diff --cached | grep -qiE "sk_(test|live)_[A-Za-z0-9]{20,}|whsec_[A-Za-z0-9]{20,}" \
+  && git commit ... && git push origin main
+```
+
+Touching the checkout or payment path additionally requires
+`npx playwright test e2e/checkout.spec.ts` **before** the commit, not after a
+batch of them.
+
+**Push after every commit.** Do not let them stack.
+
+**Fixing a bug means a test that fails before the fix and passes after.** If
+the logic is buried in a function that needs a database, extract the decision
+as a pure function and test that — `hasReleasableDownloads` and `checkRefund`
+in commit 1960667 are the pattern to copy.
+
+**When not to split a file:** legal prose, `src/i18n/**` dictionaries, and
+positional layout code (`invoice-pdf.ts` draws a PDF where each section
+depends on the `y` the last one left). Splitting those trades a real coupling
+for a cosmetic one. Say so instead of doing it badly.
+
+**Definition of done for a file:** under ~300 lines *or* a written reason why
+it should stay whole; its pure logic tested; its route colocated; no non-null
+assertions; lint clean.
+
 ## Suggested order
 
 1. **Bugs 1–4 first.** They move money or break delivery for a paying buyer.
@@ -198,5 +271,12 @@ for f in src/lib/*.ts; do b=$(basename $f .ts); [ -f "src/lib/$b.test.ts" ] || e
    reviewed, split, or hardened.
 5. **Clear the 13 lint errors.**
 
-Report honestly: if a test you wrote was wrong rather than the code, say so.
-If a file shouldn't be split, say why instead of splitting it badly.
+## Reporting
+
+Say plainly what you did and did not do. If a test you wrote was wrong rather
+than the code, say so — that happened repeatedly last session and admitting it
+was faster than defending it. If a file should stay whole, give the reason
+instead of splitting it badly. If a finding turned out to be wrong on
+inspection, say that too rather than quietly dropping it.
+
+Do not report "done" for work that was not verified by the gate above.
