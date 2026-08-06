@@ -1,0 +1,19 @@
+e2e/security.spec.ts
+  s_2e1da3b18d1c53::t_6fcf224bbdc743 97-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "40e2dd2498e8fec64dafd08e2ead323419365e10",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
