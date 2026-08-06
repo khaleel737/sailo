@@ -1,0 +1,159 @@
+src/app/(marketing)/layout.tsx
+  s_7ee005f5ad96b3::t_6669c864476018 1,38
+src/i18n/admin/ms.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/i18n/admin/tr.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/lib/chart-palette.ts
+  s_7ee005f5ad96b3::t_60b8219f38d045 57-85
+src/app/hq/page.tsx
+  s_7ee005f5ad96b3::t_ddad3321f043eb 183-191,200-208,220-228
+src/i18n/admin/uk.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/el.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/ro.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/hr.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/lib/google-tag.test.ts
+  s_245cff4bd6e8de::t_15a92a3caf203c 1-45,55,57-102
+  s_245cff4bd6e8de::t_9e824f7969c853 46-54,56
+src/i18n/admin/da.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/fil.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/i18n/admin/cs.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/it.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/mk.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/i18n/admin/sr.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/i18n/admin/vi.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/lib/queries/analytics.ts
+  s_7ee005f5ad96b3::t_ddad3321f043eb 13-54,141-144,212-217,295-297
+  s_7ee005f5ad96b3::t_40faa7b6136ff6 96-105
+  s_7ee005f5ad96b3::t_fc547e9e24a837 162-173,177-205,207-211,218
+  s_7ee005f5ad96b3::t_ad84852e6a588d 125,133,140,145,149-151,154-158
+src/i18n/admin/fr.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/de.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/ja.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/app/admin/page.tsx
+  s_7ee005f5ad96b3::t_ddad3321f043eb 185-190,193-198,210-215,217-229
+  s_7ee005f5ad96b3::t_da15923074be4c 183-184,191-192,199,208-209,216,230-231
+src/lib/google-tag.tsx
+  s_7ee005f5ad96b3::t_6669c864476018 62
+  s_245cff4bd6e8de::t_eee3a60ed357b6 1-61,63-66
+src/lib/vercel-analytics.tsx
+  s_245cff4bd6e8de::t_d0216023e0f297 1-42
+src/i18n/admin/pt.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/bg.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/i18n/admin/id.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/app/(auth)/layout.tsx
+  s_7ee005f5ad96b3::t_6669c864476018 1,118
+src/lib/chart-scale.ts
+  s_7ee005f5ad96b3::t_872d5f631ae2f8 2,8-11,16-27,31,33-55,58-59,63-64,66-71,73-79,81-87,92-94,96-113
+src/i18n/admin/fi.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/components/shared/chart.tsx
+  s_7ee005f5ad96b3::t_cad441147f72c6 4-11,20,29-53,86-87,92,100-102,104-105,110,117,119,121,177,183-185,189-190,192,194-200,202-212,214-216,218-224
+  s_7ee005f5ad96b3::t_523e9eccad50b4 56,58-64,66-70,72-76,78-82,93,106,126-143,145-153,155-176,178,180-181,186-188,191,193,227-228,230-244,246-247,249-261,263-274,276-322,325-326,328-411
+  s_7ee005f5ad96b3::t_76dc3fb9932414 3,95,245
+  s_7ee005f5ad96b3::t_ddad3321f043eb 12-17
+  s_7ee005f5ad96b3::t_8b06fa74cd0f97 54,225-226
+src/i18n/admin/bs.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/i18n/admin/hu.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/ar.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/th.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/app/hq/accounts/[id]/page.tsx
+  s_7ee005f5ad96b3::t_ddad3321f043eb 226-240,249-271
+src/app/onboarding/layout.tsx
+  s_245cff4bd6e8de::t_68028712243f95 2-15,17-19
+  s_7ee005f5ad96b3::t_6669c864476018 1,16
+src/i18n/admin/ko.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/i18n/admin/sl.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/i18n/admin/sv.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/zh.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/lib/chart-scale.test.ts
+  s_7ee005f5ad96b3::t_1275750f5df818 2-9,11-23,25-26,29-31,34-39,42-45,48-55,57-64,66-75,77-79,81-89,95-96,101-102,106,109,111-121
+src/app/admin/_components/status-banners.tsx
+  s_2003e12856e408::t_e17d490bf35be9 2,4,8,18-28
+  s_2003e12856e408::t_3c65817f61635a 52-83
+  s_245cff4bd6e8de::t_be74f1a9ac41a2 51
+src/i18n/admin/no.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/pl.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/app/admin/layout.tsx
+  s_7ee005f5ad96b3::t_6669c864476018 1,65
+src/i18n/admin/es.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/app/(legal)/layout.tsx
+  s_7ee005f5ad96b3::t_6669c864476018 1,74
+src/i18n/admin/ru.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+package.json
+  s_245cff4bd6e8de::t_b1aeb523be4c41 39
+  s_7ee005f5ad96b3::t_cada5141f407e7 46
+  s_245cff4bd6e8de::t_b3c9dad780fcb2 38
+  s_7ee005f5ad96b3::t_95b22fb8e35476 41-45,47-48
+src/i18n/admin/nl.ts
+  s_2003e12856e408::t_0950efe24ffb08 85-87
+src/i18n/admin/sq.ts
+  s_2003e12856e408::t_0950efe24ffb08 490-492
+src/i18n/admin/en.ts
+  s_2003e12856e408::t_d593e6c8656e2d 76-86
+src/app/layout.tsx
+  s_7ee005f5ad96b3::t_6669c864476018 9,173-178
+package-lock.json
+  s_245cff4bd6e8de::t_8f9e32f5f1891b 12-13,15-22,2228-2239,3308-3385,3400-3405,3466,4101-4141,4204-4396,5371-5376,5462,5465-5591,5720-5728,7859-7867,8997-9002,9969-9994,10130-10135,10850-10854
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4c689b4550f5411fe0bb6f0c136a42b1279ac44e",
+  "prompts": {},
+  "sessions": {
+    "s_2003e12856e408": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "75f413c8-ba54-4803-8715-86e2a4dfb62f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_245cff4bd6e8de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e02099e-b1fd-430e-af26-4353fefe29d8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_7ee005f5ad96b3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "22956574-b8ad-444b-a8fe-b34f24b6e02a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
