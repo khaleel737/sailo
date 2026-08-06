@@ -4,6 +4,28 @@ const nextConfig: NextConfig = {
   // pdfkit reads its .afm font metrics from disk at runtime; bundling rewrites
   // those paths and it can't find them. Keep it as a plain Node dependency.
   serverExternalPackages: ["pdfkit"],
+  /*
+   * Flat-export packages, where importing one symbol pulls the whole surface
+   * unless Next is told to rewrite the import.
+   *
+   * visx is the case this exists for: eight small packages, each re-exporting
+   * everything it owns, imported from a client component that ships on the
+   * seller dashboard. lucide-react is the same shape — hundreds of icons behind
+   * one entry point, of which the app uses a few dozen.
+   */
+  experimental: {
+    optimizePackageImports: [
+      "@visx/axis",
+      "@visx/curve",
+      "@visx/event",
+      "@visx/grid",
+      "@visx/group",
+      "@visx/responsive",
+      "@visx/scale",
+      "@visx/shape",
+      "lucide-react",
+    ],
+  },
   images: {
     remotePatterns: [
       // Vercel Blob — where product images land.

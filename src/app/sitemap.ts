@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { and, desc, eq } from "drizzle-orm";
 import { getDb, schema } from "@/db";
 import { absolute } from "@/lib/seo";
-import { getArticles } from "@/lib/blog";
+import { getEveryArticle } from "@/lib/blog";
 
 /**
  * The public surface: the marketing page, every published shop and every
@@ -44,8 +44,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
    * Articles come off disk, not out of the database, so they belong outside
    * the try/catch below — a database outage should not take the blog out of
    * the sitemap along with the shops.
+   *
+   * Every language, not the English set: a slug written only as a translation
+   * has a URL like any other, and a crawler is the one reader who should be
+   * told about all of them.
    */
-  const articles = await getArticles();
+  const articles = await getEveryArticle();
   for (const article of articles) {
     staticRoutes.push({
       url: absolute(`/blog/${article.slug}`),

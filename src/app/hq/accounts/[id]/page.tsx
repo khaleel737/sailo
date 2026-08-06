@@ -223,18 +223,17 @@ export default async function HqAccountPage({
             <Card className="p-5">
               <Chart
                 title="Visits · 30 days"
+                defaultShape="line"
                 days={detail.visitSeries.map((d) => d.day)}
                 series={[
                   {
                     key: "visits",
                     label: "Views",
-                    shape: "line",
                     values: detail.visitSeries.map((d) => d.count),
                   },
                   {
                     key: "unique",
                     label: "Visitors",
-                    shape: "line",
                     values: detail.visitSeries.map((d) => d.unique),
                   },
                 ]}
@@ -251,14 +250,12 @@ export default async function HqAccountPage({
                   {
                     key: "sales",
                     label: "Sales",
-                    shape: "bar",
                     depth: 1,
                     values: detail.revenueSeries.map((d) => d.grossCents),
                   },
                   {
                     key: "refunds",
                     label: "Refunds",
-                    shape: "bar",
                     negative: true,
                     depth: 2,
                     values: detail.revenueSeries.map((d) => d.refundedCents),
@@ -266,9 +263,8 @@ export default async function HqAccountPage({
                   {
                     key: "net",
                     label: "Net",
-                    shape: "line",
                     depth: 0,
-                    fixedShape: true,
+                    readoutOnly: true,
                     values: detail.revenueSeries.map((d) => d.cents),
                   },
                 ]}

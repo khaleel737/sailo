@@ -26,7 +26,7 @@ export function VariantSwitch({
   value: ChartShape;
   onChange: (next: ChartShape) => void;
   labels?: Record<ChartShape, string>;
-}) {
+}): React.ReactElement {
   return (
     <fieldset className="shrink-0">
       <legend className="sr-only">Chart shape</legend>

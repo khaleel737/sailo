@@ -8,13 +8,11 @@ const series: Series[] = [
   {
     key: "sales",
     label: "Sales",
-    shape: "bar",
     values: [100, 200, 300, 0, 50],
   },
   {
     key: "refunds",
     label: "Refunds",
-    shape: "bar",
     negative: true,
     values: [0, 40, 0, 0, 10],
   },
@@ -104,7 +102,7 @@ describe("snapshotAt", () => {
 
   it("fills a series that is shorter than the window", () => {
     const short: Series[] = [
-      { key: "a", label: "A", shape: "line", values: [1] },
+      { key: "a", label: "A", values: [1] },
     ];
     expect(snapshotAt(3, days, short)?.values).toEqual([
       { key: "a", label: "A", value: 0 },
@@ -119,6 +117,6 @@ describe("sumOf", () => {
 
   it("is zero for nothing", () => {
     expect(sumOf(undefined)).toBe(0);
-    expect(sumOf({ key: "a", label: "A", shape: "bar", values: [] })).toBe(0);
+    expect(sumOf({ key: "a", label: "A", values: [] })).toBe(0);
   });
 });

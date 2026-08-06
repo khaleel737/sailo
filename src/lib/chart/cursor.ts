@@ -51,8 +51,8 @@ export function indexAtPointer(x: number, bands: Bands): number | null {
  */
 export function snapshotAt(
   index: number,
-  days: string[],
-  series: Series[],
+  days: readonly string[],
+  series: readonly Series[],
 ): CursorSnapshot | null {
   const day = days[index];
   if (day === undefined) return null;

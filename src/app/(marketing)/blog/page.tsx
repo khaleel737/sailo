@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getArticles } from "@/lib/blog";
 import { getLocale } from "@/i18n/server";
+import { directionOf } from "@/i18n/config";
 import { getMarketingDictionary } from "@/i18n/marketing";
 import { Container } from "@/components/marketing/kit";
 import { absolute } from "@/lib/seo";
@@ -28,8 +29,9 @@ export const metadata: Metadata = {
  * from one — so the grid starts as a single column and only splits at `sm`.
  */
 export default async function BlogIndex() {
-  const [articles, locale] = await Promise.all([getArticles(), getLocale()]);
-  const m = getMarketingDictionary(await getLocale());
+  const locale = await getLocale();
+  const articles = await getArticles(locale);
+  const m = getMarketingDictionary(locale);
   const [lead, ...rest] = articles;
 
   const formatted = (date: string) =>
@@ -81,15 +83,19 @@ export default async function BlogIndex() {
                     {lead.readingMinutes} {m.blog.minuteRead}
                   </p>
                   {/* The post's own language, not the visitor's — see the
-                      note on the article page. */}
+                      note on the article page. Declared rather than sniffed:
+                      the copy on disk knows which language it is in, so `auto`
+                      would only be guessing at something already known. */}
                   <h2
-                    dir="auto"
+                    lang={lead.locale}
+                    dir={directionOf(lead.locale)}
                     className="display-sm mt-3 text-[clamp(1.5rem,3.5vw,2.125rem)] text-[var(--ink)]"
                   >
                     {lead.title}
                   </h2>
                   <p
-                    dir="auto"
+                    lang={lead.locale}
+                    dir={directionOf(lead.locale)}
                     className="mt-3 max-w-2xl text-[0.9375rem] leading-[1.7] text-[var(--mute-600)]"
                   >
                     {lead.description}
@@ -124,13 +130,15 @@ export default async function BlogIndex() {
                           {article.readingMinutes} {m.blog.minuteRead}
                         </p>
                         <h2
-                          dir="auto"
+                          lang={article.locale}
+                          dir={directionOf(article.locale)}
                           className="display-sm mt-2 text-[1.25rem] leading-snug text-[var(--ink)]"
                         >
                           {article.title}
                         </h2>
                         <p
-                          dir="auto"
+                          lang={article.locale}
+                          dir={directionOf(article.locale)}
                           className="mt-2 text-[0.9375rem] leading-[1.7] text-[var(--mute-600)]"
                         >
                           {article.description}

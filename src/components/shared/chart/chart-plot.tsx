@@ -6,7 +6,7 @@ import { GridRows } from "@visx/grid";
 import { localPoint } from "@visx/event";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { indexAtPointer } from "@/lib/chart/cursor";
-import type { ChartTone, Domain, Series } from "@/lib/chart/types";
+import type { ChartShape, ChartTone, Domain, Series } from "@/lib/chart/types";
 import { ChartSeries } from "./chart-series";
 
 export const PLOT_HEIGHT = 132;
@@ -31,6 +31,7 @@ export function ChartPlot({
   width,
   days,
   series,
+  shape,
   tone,
   domain,
   populated,
@@ -39,19 +40,20 @@ export function ChartPlot({
   dayLabel,
 }: {
   width: number;
-  days: string[];
-  series: Series[];
+  days: readonly string[];
+  series: readonly Series[];
+  shape: ChartShape;
   tone: ChartTone;
   domain: Domain;
   populated: boolean;
   cursor: number | null;
   onCursor: (index: number | null) => void;
   dayLabel: (day: string) => string;
-}) {
+}): React.ReactElement {
   const innerHeight = PLOT_HEIGHT - AXIS_HEIGHT;
 
   const xScale = useMemo(
-    () => scaleBand({ domain: days, range: [0, width], padding: 0.28 }),
+    () => scaleBand({ domain: [...days], range: [0, width], padding: 0.28 }),
     [days, width],
   );
   const yScale = useMemo(
@@ -76,16 +78,16 @@ export function ChartPlot({
         range: [0, xScale.bandwidth()],
         padding: members.length > 1 ? 0.12 : 0,
       });
-    const bars = series.filter((s) => s.shape === "bar");
+    const bars = shape === "bar" ? series : [];
     return {
       above: build(bars.filter((s) => !s.negative)),
       below: build(bars.filter((s) => s.negative)),
     };
-  }, [series, xScale]);
+  }, [series, shape, xScale]);
 
   const zeroY = yScale(0);
 
-  function track(event: React.PointerEvent<SVGRectElement>) {
+  function track(event: React.PointerEvent<SVGRectElement>): void {
     const point = localPoint(event);
     if (!point) return;
     onCursor(
@@ -103,7 +105,7 @@ export function ChartPlot({
    * day they tapped is the answer they asked for, and clearing it makes a tap
    * do nothing at all, which is exactly what it did before this check existed.
    */
-  function release(event: React.PointerEvent<SVGRectElement>) {
+  function release(event: React.PointerEvent<SVGRectElement>): void {
     if (event.pointerType === "touch") return;
     onCursor(null);
   }
@@ -164,6 +166,7 @@ export function ChartPlot({
         <ChartSeries
           series={series}
           days={days}
+          shape={shape}
           tone={tone}
           xScale={xScale}
           yScale={yScale}

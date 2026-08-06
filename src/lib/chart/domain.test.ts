@@ -1,17 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { barRect, chartDomain, hasData, peak, toPercent } from "./domain";
+import {
+  MAX_BAR_WIDTH,
+  barOffset,
+  barRect,
+  barWidth,
+  chartDomain,
+  hasData,
+  peak,
+  toPercent,
+} from "./domain";
 import type { Series } from "./types";
 
 const line = (key: string, values: number[]): Series => ({
   key,
   label: key,
-  shape: "line",
   values,
 });
 const bars = (key: string, values: number[], negative = false): Series => ({
   key,
   label: key,
-  shape: "bar",
   values,
   negative,
 });
@@ -125,5 +132,33 @@ describe("hasData", () => {
     expect(hasData([line("a", [0, 0]), line("b", [0, 1])])).toBe(true);
     // A refund-only window is still data worth drawing.
     expect(hasData([bars("refunds", [30], true)])).toBe(true);
+  });
+});
+
+describe("bar width", () => {
+  it("fills a narrow lane completely", () => {
+    expect(barWidth(6)).toBe(6);
+    expect(barOffset(6)).toBe(0);
+  });
+
+  it("stops growing once a lane is generous", () => {
+    // A one-day window hands the only column nearly the whole card. Left
+    // uncapped that drew a $249 sale as a slab half the width of its chart.
+    expect(barWidth(400)).toBe(MAX_BAR_WIDTH);
+    expect(barWidth(400)).toBeLessThan(400);
+  });
+
+  it("centres a capped bar in its lane", () => {
+    const lane = 400;
+    expect(barOffset(lane)).toBe((lane - MAX_BAR_WIDTH) / 2);
+    // Centred means equal space either side.
+    expect(barOffset(lane) * 2 + barWidth(lane)).toBeCloseTo(lane);
+  });
+
+  it("never returns something undrawable", () => {
+    for (const lane of [0, -10, Number.NaN, Number.POSITIVE_INFINITY]) {
+      expect(Number.isFinite(barWidth(lane))).toBe(true);
+      expect(barWidth(lane)).toBeGreaterThanOrEqual(0);
+    }
   });
 });

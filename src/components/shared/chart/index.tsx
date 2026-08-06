@@ -2,8 +2,9 @@
 
 import { useId, useMemo, useState } from "react";
 import { ParentSize } from "@visx/responsive";
-import { chartDomain, hasData, peak } from "@/lib/chart/domain";
 import { snapshotAt, sumOf } from "@/lib/chart/cursor";
+import { chartDomain, hasData, peak } from "@/lib/chart/domain";
+import { plotted } from "@/lib/chart/types";
 import type { ChartShape, ChartTone, Series } from "@/lib/chart/types";
 import { formatMoney } from "@/lib/utils";
 import { ChartHeader } from "./chart-header";
@@ -14,17 +15,18 @@ import { VariantSwitch } from "./variant-switch";
 export type { Series };
 
 /** Midday-safe: a bare date string parses as UTC and can slip a day westward. */
-const fmtDay = (day: string) =>
-  new Date(`${day}T00:00:00`).toLocaleDateString("en-US", {
+function formatDay(day: string): string {
+  return new Date(`${day}T00:00:00`).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
   });
+}
 
 export type ChartProps = {
   title: string;
   /** ISO days, one per column, shared by every series. */
-  days: string[];
-  series: Series[];
+  days: readonly string[];
+  series: readonly Series[];
   /**
    * Which entity this measures, not which colour to use. Call sites cannot
    * invent a hue, which is how the same measure ended up indigo on one screen
@@ -35,36 +37,43 @@ export type ChartProps = {
   currency?: string;
   emptyLabel?: string;
   /**
-   * The headline figure. Defaults to the sum of the first series; pass a
-   * different series key when the total that matters is a derived one, such as
-   * net revenue rather than gross.
+   * The headline figure. Defaults to the sum of the first series; name a
+   * different one when the total that matters is derived, as net revenue is.
    */
   totalKey?: string;
-  /** Offer the reader bars-or-line. On by default; off for single-shape cards. */
+  /** What the chart draws until the reader says otherwise. */
+  defaultShape?: ChartShape;
+  /** Offer the reader bars-or-line. */
   switchable?: boolean;
 };
 
 /**
- * A multi-series day chart: bars, lines, or both, over one shared domain.
+ * A multi-series day chart. One shape at a time, over one shared domain.
  *
  * This file owns state and layout only. The arithmetic is in `lib/chart/`, the
  * marks are in `chart-series`, the frame is in `chart-plot`, and the figures
  * are in `chart-readout` — each testable or replaceable without the others.
  *
+ * ONE SHAPE, NEVER TWO
+ * An earlier version carried `shape` per series, so a revenue card drew sales
+ * as bars and net as a line in the same frame. That reads as two charts
+ * overlaid rather than one measure summarising another, and it is why net is
+ * now reported rather than plotted: it is sales minus refunds, already on the
+ * card twice over.
+ *
  * WHY VISX AND NOT RECHARTS
  * Measured, not assumed: these subpackages come to ~25kB gzipped, Recharts is
- * ~100kB, and `@visx/visx` — the convenience meta-package — is 167kB because it
- * re-exports all thirty-six. visx owns the scales and the path maths; what was
- * actually broken here stays in this repo, under test.
+ * ~100kB, and `@visx/visx` — the meta-package — is 167kB because it re-exports
+ * all thirty-six.
  *
  * ONE DOMAIN, ALWAYS CONTAINING ZERO
- * Every series shares a vertical scale. Drawn to their own maxima, a $5 refund
- * would sit at the same height as a $5,000 sale. Zero stays in the domain, so a
- * flat week between $90 and $100 reads as flat rather than as a collapse, and a
- * losing day has a baseline to hang from.
+ * Every drawn series shares a vertical scale. Drawn to their own maxima, a $5
+ * refund would sit at the same height as a $5,000 sale. Zero stays in the
+ * domain, so a flat week between $90 and $100 reads as flat rather than as a
+ * collapse, and a losing day has a baseline to hang from.
  *
  * SIGN IS POSITION, NOT COLOUR
- * Refunds hang below the zero line. `chart-palette.ts` establishes that the hue
+ * Refunds hang below the zero line. `chart-palette.ts` establishes the hue
  * space is full at two, so a second series steps the same hue in lightness —
  * the one axis that survives every kind of colour blindness — and is named in
  * the readout rather than left to a legend.
@@ -78,32 +87,23 @@ export function Chart({
   currency = "USD",
   emptyLabel = "No activity yet",
   totalKey,
+  defaultShape = "bar",
   switchable = true,
-}: ChartProps) {
+}: ChartProps): React.ReactElement {
   const [cursor, setCursor] = useState<number | null>(null);
-  const [shape, setShape] = useState<ChartShape | null>(null);
+  const [chosenShape, setChosenShape] = useState<ChartShape | null>(null);
   const switchId = useId();
   const cursorId = useId();
 
-  const format = (value: number) =>
+  const shape = chosenShape ?? defaultShape;
+
+  const format = (value: number): string =>
     unit === "money" ? formatMoney(value, currency) : value.toLocaleString();
 
-  /*
-   * The reader's choice overrides each series' default, except where a series
-   * pins itself: net revenue is a running summary, and as bars beside the sales
-   * it summarises it reads as a competing measure rather than their result.
-   */
-  const drawn = useMemo(
-    () =>
-      shape === null
-        ? series
-        : series.map((s) => (s.fixedShape ? s : { ...s, shape })),
-    [series, shape],
-  );
-
-  const domain = useMemo(() => chartDomain(drawn), [drawn]);
-  const populated = hasData(drawn);
-  const top = useMemo(() => peak(drawn), [drawn]);
+  const drawn = useMemo(() => plotted(series), [series]);
+  const domain = useMemo(() => chartDomain(series), [series]);
+  const populated = hasData(series);
+  const top = useMemo(() => peak(series), [series]);
 
   const snapshot = cursor === null ? null : snapshotAt(cursor, days, series);
   const readoutValues = useMemo(
@@ -114,11 +114,8 @@ export function Chart({
 
   const headline = series.find((s) => s.key === totalKey) ?? series[0];
   const total = format(sumOf(headline));
-
-  const offerSwitch =
-    switchable && populated && series.some((s) => !s.fixedShape);
-  const currentShape: ChartShape =
-    shape ?? series.find((s) => !s.fixedShape)?.shape ?? "bar";
+  // "1 days" was on the card for every shop whose window was a single day.
+  const windowLabel = `${days.length} ${days.length === 1 ? "day" : "days"}`;
 
   return (
     <div>
@@ -126,14 +123,14 @@ export function Chart({
         title={title}
         total={total}
         peak={top}
-        peakDay={top ? fmtDay(days[top.index] ?? "") : undefined}
+        peakDay={top ? formatDay(days[top.index] ?? "") : undefined}
         format={format}
         action={
-          offerSwitch ? (
+          switchable && populated ? (
             <VariantSwitch
               name={switchId}
-              value={currentShape}
-              onChange={setShape}
+              value={shape}
+              onChange={setChosenShape}
             />
           ) : null
         }
@@ -158,12 +155,13 @@ export function Chart({
                 width={width}
                 days={days}
                 series={drawn}
+                shape={shape}
                 tone={tone}
                 domain={domain}
                 populated={populated}
                 cursor={cursor}
                 onCursor={setCursor}
-                dayLabel={fmtDay}
+                dayLabel={formatDay}
               />
             )
           }
@@ -186,10 +184,10 @@ export function Chart({
             onBlur={() => setCursor(null)}
             aria-valuetext={
               snapshot
-                ? `${fmtDay(snapshot.day)}. ${snapshot.values
+                ? `${formatDay(snapshot.day)}. ${snapshot.values
                     .map((v) => `${v.label} ${format(v.value)}`)
                     .join(", ")}`
-                : `${days.length} days, ${total} in total`
+                : `${windowLabel}, ${total} in total`
             }
             className="sr-only"
           />
@@ -200,13 +198,13 @@ export function Chart({
         series={series}
         tone={tone}
         values={readoutValues}
-        periodLabel={snapshot ? fmtDay(snapshot.day) : `${days.length} days`}
+        periodLabel={snapshot ? formatDay(snapshot.day) : windowLabel}
         format={format}
       />
 
-      {!populated ? (
+      {populated ? null : (
         <p className="mt-2 text-center text-xs text-ink-400">{emptyLabel}</p>
-      ) : null}
+      )}
     </div>
   );
 }

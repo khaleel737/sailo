@@ -85,7 +85,13 @@ export default async function HomePage() {
   ];
 
   const stats = [
-    { to: 21, suffix: "", label: m.stats.s1 },
+    /*
+       Counted, not typed. This said 21 while every sentence on the page said
+       35 — the number was written down when there were 21 locales and never
+       moved again. `LOCALES` is the same list the language switcher renders,
+       so adding a dictionary now updates the claim by itself.
+    */
+    { to: LOCALES.length, suffix: "", label: m.stats.s1 },
     { to: 0, suffix: "%", label: m.stats.s2 },
     { to: 60, suffix: "s", label: m.stats.s3 },
   ];

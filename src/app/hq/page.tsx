@@ -185,7 +185,6 @@ export default async function HqOverviewPage() {
               {
                 key: "signups",
                 label: "Registrations",
-                shape: "bar",
                 values: signups.map((d) => d.value),
               },
             ]}
@@ -202,7 +201,6 @@ export default async function HqOverviewPage() {
               {
                 key: "orders",
                 label: "Orders",
-                shape: "bar",
                 values: orderSeries.map((d) => d.value),
               },
             ]}
@@ -217,12 +215,12 @@ export default async function HqOverviewPage() {
         <Card className="p-5">
           <Chart
             title={`Seller volume in ${leadCurrency} · last 30 days`}
+            defaultShape="line"
             days={gmvSeries.map((d) => d.day)}
             series={[
               {
                 key: "gmv",
                 label: "Volume",
-                shape: "line",
                 values: gmvSeries.map((d) => d.value),
               },
             ]}

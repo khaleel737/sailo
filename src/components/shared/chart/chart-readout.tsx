@@ -21,13 +21,13 @@ export function ChartReadout({
   periodLabel,
   format,
 }: {
-  series: Series[];
+  series: readonly Series[];
   tone: ChartTone;
   /** Per-series figures for the pointed-at day, or null for window totals. */
   values: Map<string, number> | null;
   periodLabel: string;
   format: (value: number) => string;
-}) {
+}): React.ReactElement {
   return (
     <dl className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1.5">
       <dt className="sr-only">Period</dt>

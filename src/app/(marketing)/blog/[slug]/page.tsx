@@ -3,8 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { getArticle, getArticles } from "@/lib/blog";
+import { getArticle, getArticleSlugs } from "@/lib/blog";
 import { getLocale } from "@/i18n/server";
+import { directionOf } from "@/i18n/config";
 import { getMarketingDictionary } from "@/i18n/marketing";
 import { Container } from "@/components/marketing/kit";
 import { absolute } from "@/lib/seo";
@@ -12,10 +13,13 @@ import { absolute } from "@/lib/seo";
 /**
  * The posts ship with the code, so the full set is known at build time. This
  * turns every article into a static page — no database, no per-request work.
+ *
+ * Slugs, not articles: the parameter list has to be every slug written in any
+ * language, so a post that exists only as a translation still gets a page.
  */
 export async function generateStaticParams() {
-  const articles = await getArticles();
-  return articles.map((article) => ({ slug: article.slug }));
+  const slugs = await getArticleSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 /**
@@ -41,7 +45,10 @@ export async function generateMetadata({
   params,
 }: PageProps<"/blog/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const article = await getArticle(slug);
+  // The same copy the page will render, so the title in the tab and the title
+  // on the page cannot disagree when a translation exists for one and not the
+  // other.
+  const article = await getArticle(slug, await getLocale());
   if (!article) return { title: "Not found" };
 
   const url = absolute(`/blog/${article.slug}`);
@@ -69,10 +76,10 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ params }: PageProps<"/blog/[slug]">) {
   const { slug } = await params;
-  const article = await getArticle(slug);
+  const locale = await getLocale();
+  const article = await getArticle(slug, locale);
   if (!article) notFound();
 
-  const locale = await getLocale();
   const m = getMarketingDictionary(locale);
   const posted = new Date(article.date).toLocaleDateString(locale, {
     day: "numeric",
@@ -106,6 +113,9 @@ export default async function ArticlePage({ params }: PageProps<"/blog/[slug]">)
               logo: absolute("/brand/sailo-mark-512.png"),
             },
             mainEntityOfPage: absolute(`/blog/${article.slug}`),
+            // The language of the copy being served, which is not always the
+            // one the visitor asked for.
+            inLanguage: article.locale,
             ...(article.cover ? { image: absolute(article.cover) } : {}),
           }),
         }}
@@ -121,12 +131,23 @@ export default async function ArticlePage({ params }: PageProps<"/blog/[slug]">)
         </Link>
 
         {/*
-          `dir="auto"` on the article, not on the page. The chrome around it —
-          the back link, the reading time — is translated and follows the
-          visitor's direction. The post is written in one language and has to
-          read in that language's direction whatever locale it is opened in.
+          The post's own language on the article, not the page's. The chrome
+          around it — the back link, the reading time — is translated and
+          follows the visitor's direction. The post is written in one language
+          and has to read in that language's direction whatever locale it is
+          opened in.
+
+          Declared from `article.locale` rather than sniffed with `dir="auto"`:
+          the file on disk knows which language it holds, and the visitor's
+          locale is not it — an Arabic reader served the English original needs
+          `lang="en"` and `dir="ltr"` here, not the direction of their own
+          preference.
         */}
-        <article dir="auto" className="mt-6">
+        <article
+          lang={article.locale}
+          dir={directionOf(article.locale)}
+          className="mt-6"
+        >
           <header>
             <h1 className="display text-[clamp(2rem,5.5vw,3rem)] leading-[1.1] text-[var(--ink)]">
               {article.title}

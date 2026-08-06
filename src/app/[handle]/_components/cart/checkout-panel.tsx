@@ -181,10 +181,29 @@ export function CheckoutPanel({
     // and the buyer must not come back to a basket they've already paid for.
     onPlaced?.();
 
-    // Contact rails leave the site immediately; manual rails stay for instructions.
+    /*
+     * Two different things wear the same `redirect` kind, and they behave
+     * nothing alike.
+     *
+     * `https:` — WhatsApp, Telegram, Instagram — genuinely leaves the page, so
+     * returning early is right: nothing after it would ever run anyway.
+     *
+     * `mailto:` and `tel:` do not. They ask the operating system to hand off to
+     * another app, and if nothing is registered to take it — desktop Chrome
+     * with no default mail client, most commonly — the browser does nothing at
+     * all. The page stays exactly where it was. Returning early there skipped
+     * `setPending(false)`, so the button sat spinning forever while the order
+     * had already been saved. A buyer reads that as failure and presses it
+     * again, which is how one order becomes three.
+     *
+     * So: try the handoff either way, but only treat the http case as a
+     * departure. Everything else falls through to the confirmation, because
+     * the order exists whether or not a mail app ever opened.
+     */
     if (res.handoff?.kind === "redirect") {
+      const leavesPage = /^https?:/i.test(res.handoff.url);
       window.location.href = res.handoff.url;
-      return;
+      if (leavesPage) return;
     }
 
     setResult(res);

@@ -1,3 +1,4 @@
+import { plotted } from "./types";
 import type { Domain, Series } from "./types";
 
 /**
@@ -25,11 +26,13 @@ export const ZERO_BAR_PCT = 1.5;
  * their own maxima put a £5 refund at the same height as a £5,000 sale, which
  * is not a chart, it is two charts overlaid.
  */
-export function chartDomain(series: Series[]): Domain {
+export function chartDomain(series: readonly Series[]): Domain {
   let max = 0;
   let min = 0;
 
-  for (const s of series) {
+  // A reported-only measure is never drawn, so it must not stretch the axis
+  // the drawn ones are measured against.
+  for (const s of plotted(series)) {
     for (const raw of s.values) {
       // A negative series is *stored* positive — refunds are a positive amount
       // of money refunded — and flipped here, so callers never have to
@@ -86,10 +89,10 @@ export type Peak = { index: number; value: number; label: string };
  * index alone, and the card ended up printing the word "Peak" above a date
  * with no number anywhere near it — a label with nothing to label.
  */
-export function peak(series: Series[]): Peak | null {
+export function peak(series: readonly Series[]): Peak | null {
   let best: Peak | null = null;
 
-  for (const s of series) {
+  for (const s of plotted(series)) {
     for (let index = 0; index < s.values.length; index++) {
       const value = s.values[index] ?? 0;
       // A window of nothing has no peak; zero is not a high point.
@@ -104,6 +107,28 @@ export function peak(series: Series[]): Peak | null {
 }
 
 /** True when any series carries a figure worth drawing. */
-export function hasData(series: Series[]): boolean {
-  return series.some((s) => s.values.some((v) => v !== 0));
+export function hasData(series: readonly Series[]): boolean {
+  return plotted(series).some((s) => s.values.some((v) => v !== 0));
+}
+
+/**
+ * The widest a single bar may be drawn.
+ *
+ * A band scale hands each column whatever it can spare, which for a one-day
+ * window is nearly the whole card — a $249 sale rendered as a green slab half
+ * the width of its own chart, which reads as a broken layout rather than as one
+ * good day. Above this, the bar stops growing and sits centred in its lane
+ * instead, so a short window looks like a short window.
+ */
+export const MAX_BAR_WIDTH = 40;
+
+/** How wide to draw a bar in a lane of `bandwidth` pixels. */
+export function barWidth(bandwidth: number): number {
+  if (!Number.isFinite(bandwidth) || bandwidth <= 0) return 0;
+  return Math.min(bandwidth, MAX_BAR_WIDTH);
+}
+
+/** How far into its lane a capped bar starts, so it stays centred. */
+export function barOffset(bandwidth: number): number {
+  return (bandwidth - barWidth(bandwidth)) / 2;
 }

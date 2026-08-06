@@ -26,7 +26,7 @@ Three things must be true. If any is missing, stop and say so.
 3. **A cover image exists or you have specified one.** `src/lib/blog.test.ts`
    fails the build if a `cover:` path is not a real file in `/public`.
 
-**There is no Hindi locale.** Sailo ships 34 languages and `hi` is not one of
+**There is no Hindi locale.** Sailo ships 35 languages and `hi` is not one of
 them. Indian traffic is served by English articles written for Indian search
 behaviour (see §8). Do not write Hindi files; they will not build.
 
@@ -61,7 +61,7 @@ something not on it, verify it in the codebase first or leave it out.
 | WhatsApp orders | The order arrives pre-written: item, options, address, total |
 | Services | Duration, location, date picker, notice period |
 | Digital goods | Files unlock on payment confirmation; download limits and expiry available |
-| Languages | 34, right-to-left laid out properly rather than mirrored |
+| Languages | 35, right-to-left laid out properly rather than mirrored |
 
 **Never claim:** a specific number of users, sellers, GMV or countries; that
 Sailo is "the best" anything; any feature not in the table above; anything
@@ -85,7 +85,7 @@ content/blog/<locale>/<slug>.md
 
 - **`<slug>`** must match `^[a-z0-9][a-z0-9-]*$`. It is the URL. It never
   changes after publish — a changed slug is a dead link and a lost ranking.
-- **`<locale>`** must be one of the 34 shipped codes.
+- **`<locale>`** must be one of the 35 shipped codes.
 
 Frontmatter — `title`, `description` and a parseable `date` are **required**;
 the build throws without them:

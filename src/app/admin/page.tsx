@@ -180,12 +180,12 @@ export default async function AdminOverviewPage({
         <Card className="p-5">
           <Chart
             title={`Visits · last ${chartDays} days`}
+            defaultShape="line"
             days={visitSeries.map((d) => d.day)}
             series={[
               {
                 key: "visits",
                 label: "Views",
-                shape: "line",
                 values: visitSeries.map((d) => d.count),
               },
               // The gap between the two lines is repeat viewing — the number
@@ -193,7 +193,6 @@ export default async function AdminOverviewPage({
               {
                 key: "unique",
                 label: "Visitors",
-                shape: "line",
                 values: visitSeries.map((d) => d.unique),
               },
             ]}
@@ -210,7 +209,6 @@ export default async function AdminOverviewPage({
               {
                 key: "sales",
                 label: "Sales",
-                shape: "bar",
                 depth: 1,
                 values: revenueSeries.map((d) => d.grossCents),
               },
@@ -218,7 +216,6 @@ export default async function AdminOverviewPage({
               {
                 key: "refunds",
                 label: "Refunds",
-                shape: "bar",
                 negative: true,
                 depth: 2,
                 values: revenueSeries.map((d) => d.refundedCents),
@@ -226,9 +223,8 @@ export default async function AdminOverviewPage({
               {
                 key: "net",
                 label: "Net",
-                shape: "line",
                 depth: 0,
-                fixedShape: true,
+                readoutOnly: true,
                 values: revenueSeries.map((d) => d.cents),
               },
             ]}
