@@ -84,13 +84,29 @@ export async function releaseStock(line: StockLine) {
   if (line.quantity <= 0) return;
 
   if (line.variantId) {
+    /*
+     * The same two conditions the product branch below applies, because
+     * `reserveStock` never took these units in the first place: it returns
+     * early for an untracked product, and a null count means nobody is
+     * counting. Adding units back regardless drifts the number upward on
+     * every cancel, refund and failed handoff — and the drift only becomes
+     * visible the day a seller turns tracking on.
+     *
+     * Tracking lives on the parent product, so the variant is judged by it.
+     */
     await db
       .update(productVariants)
       .set({
         stockQuantity: sql`${productVariants.stockQuantity} + ${line.quantity}`,
         updatedAt: new Date(),
       })
-      .where(eq(productVariants.id, line.variantId));
+      .where(
+        and(
+          eq(productVariants.id, line.variantId),
+          isNotNull(productVariants.stockQuantity),
+          sql`exists (select 1 from ${products} where ${products.id} = ${productVariants.productId} and ${products.trackInventory})`,
+        ),
+      );
     return;
   }
 
