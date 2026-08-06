@@ -3,7 +3,7 @@ import {
   barRect,
   chartDomain,
   hasData,
-  peakIndex,
+  peak,
   toPercent,
   type Series,
 } from "./chart-scale";
@@ -97,18 +97,30 @@ describe("barRect", () => {
   });
 });
 
-describe("peakIndex", () => {
+describe("peak", () => {
   it("finds the largest day across every series", () => {
-    expect(peakIndex([line("a", [1, 2, 3]), line("b", [0, 9, 0])])).toBe(1);
+    expect(peak([line("a", [1, 2, 3]), line("b", [0, 9, 0])])?.index).toBe(1);
+  });
+
+  it("reports the figure and which measure it came from", () => {
+    // The card prints this. Returning only an index is how it ended up
+    // showing the word "Peak" over a date with no number anywhere near it.
+    const p = peak([line("Sales", [1, 40]), line("Refunds", [0, 9])]);
+    expect(p).toEqual({ index: 1, value: 40, label: "Sales" });
   });
 
   it("calls out the worst day when the loss is the story", () => {
-    expect(peakIndex([line("net", [10, -80, 20])])).toBe(1);
+    expect(peak([line("Net", [10, -80, 20])])).toEqual({
+      index: 1,
+      value: -80,
+      label: "Net",
+    });
   });
 
-  it("does not throw on nothing at all", () => {
-    expect(peakIndex([])).toBe(0);
-    expect(peakIndex([line("a", [])])).toBe(0);
+  it("has no peak when nothing happened", () => {
+    expect(peak([])).toBeNull();
+    expect(peak([line("a", [])])).toBeNull();
+    expect(peak([line("a", [0, 0, 0])])).toBeNull();
   });
 });
 

@@ -222,6 +222,18 @@ body {
   }
 }
 
+/*
+ * For a widget whose focusable control is not the thing you look at — the
+ * chart's day cursor is a visually hidden range input, and its display is the
+ * plot above it. Ringing the input would draw a box around nothing.
+ */
+@utility focus-ring-within {
+  &:has(:focus-visible) {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+}
+
 /* Controls sitting on a shop's own surface borrow the seller's accent. */
 @utility focus-ring-accent {
   &:focus-visible {

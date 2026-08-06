@@ -88,23 +88,32 @@ export function barRect(
   };
 }
 
+/** Which day to call out, what it was, and which measure it belonged to. */
+export type Peak = { index: number; value: number; label: string };
+
 /**
  * The day worth labelling: the largest single figure across every series, by
  * magnitude — so a catastrophic refund day is called out as readily as a
  * record sale.
+ *
+ * Returns the figure, not just where it is. An earlier version returned the
+ * index alone, and the card ended up printing the word "Peak" above a date
+ * with no number anywhere near it — a label with nothing to label.
  */
-export function peakIndex(series: Series[]): number {
-  let best = 0;
-  let bestValue = -Infinity;
+export function peak(series: Series[]): Peak | null {
+  let best: Peak | null = null;
 
   for (const s of series) {
-    s.values.forEach((value, i) => {
-      if (Math.abs(value) > bestValue) {
-        bestValue = Math.abs(value);
-        best = i;
+    for (let index = 0; index < s.values.length; index++) {
+      const value = s.values[index] ?? 0;
+      // A window of nothing has no peak; zero is not a high point.
+      if (value === 0) continue;
+      if (best === null || Math.abs(value) > Math.abs(best.value)) {
+        best = { index, value, label: s.label };
       }
-    });
+    }
   }
+
   return best;
 }
 
