@@ -141,6 +141,30 @@ export function checkoutSessionParams({
      */
     integration_identifier: "sailo-plan-upgrade-kqmzrtwv",
 
+    /*
+     * Stripe Tax, and the parameter that makes it legal.
+     *
+     * `automatic_tax` alone is rejected here — not silently, with a 400:
+     * "Automatic tax calculation in Checkout requires a valid address on the
+     * Customer." Every session passes an existing `customer`, minted by
+     * `ensureCustomerId` with a name and an email and no address, and Stripe
+     * will not guess a jurisdiction from nothing. `customer_update.address`
+     * lets Checkout save the address the seller types and tax against that.
+     *
+     * The two travel together or upgrades break, which is the same shape as
+     * the `managed_payments` regression above; the test file pins both pairs.
+     *
+     * What this collects is decided in the Dashboard, not here. Stripe Tax
+     * charges only where there is an *active registration* — a seller in a
+     * state or country with none is charged no tax and sees no error, which
+     * is the most commonly misread part of this feature. The account's
+     * default `tax_behavior` decides whether the plan price is inclusive or
+     * exclusive of that tax; on `exclusive` the advertised $9.99 becomes
+     * $9.99 plus whatever the jurisdiction adds.
+     */
+    automatic_tax: { enabled: true },
+    customer_update: { address: "auto" },
+
     success_url: `${appUrl()}/admin/settings/billing?checkout=success`,
     cancel_url: `${appUrl()}/admin/settings/billing?checkout=cancelled`,
   };

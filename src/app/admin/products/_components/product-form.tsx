@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { saveProduct } from "@/lib/actions/products";
 import { ImageUploader } from "./image-uploader";
-import { FileUploader } from "./file-uploader";
 import { VariantEditor } from "./variant-editor";
 import {
   Alert,
@@ -19,20 +18,15 @@ import {
 } from "@/components/ui";
 import { PRODUCT_KINDS } from "@/lib/utils";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
+import { Toggle } from "./toggle";
+import { DigitalDeliveryCard } from "./digital-delivery-card";
+import { ServiceSettingsCard } from "./service-settings-card";
+import type { ProductWithRelations } from "./product.types";
 import { interpolate } from "@/i18n";
 import type {
   Category,
-  Product,
-  ProductFile,
-  ProductImage,
-  ProductVariant,
 } from "@/db/schema";
 
-type ProductWithRelations = Product & {
-  images: ProductImage[];
-  variants: ProductVariant[];
-  files: ProductFile[];
-};
 
 function Submit({ isEdit }: { isEdit: boolean }) {
   const a = useAdminT();
@@ -238,144 +232,21 @@ export function ProductForm({
       {/* ---- Digital delivery -------------------------------------------- */}
 
       {kind === "digital" ? (
-        <Card className="space-y-4 p-5">
-          <div>
-            <h2 className="text-sm font-semibold text-ink-900">
-              {a.productForm.filesTitle}
-            </h2>
-            <p className="mt-0.5 text-xs text-ink-500">
-              {a.productForm.filesBody}
-            </p>
-          </div>
-
-          <FileUploader
-            initial={
-              product?.files.map((f) => ({
-                name: f.name,
-                url: f.url,
-                sizeBytes: f.sizeBytes,
-                contentType: f.contentType,
-              })) ?? []
-            }
-          />
-
-          <Toggle
-            name="releaseOnPayment"
-label={a.productForm.releaseOnPayment}
-description={a.productForm.releaseOnPaymentBody}
-            checked={releaseOnPayment}
-            onChange={setReleaseOnPayment}
-          />
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field
-              label={a.productForm.downloadLimit}
-              htmlFor="downloadLimit"
-              hint={a.productForm.downloadLimitHint}
-            >
-              <Input
-                id="downloadLimit"
-                name="downloadLimit"
-                inputMode="numeric"
-                defaultValue={product?.downloadLimit ?? ""}
-                placeholder="5"
-              />
-            </Field>
-            <Field
-              label={a.productForm.downloadExpiry}
-              htmlFor="downloadExpiryDays"
-              hint={a.productForm.downloadExpiryHint}
-            >
-              <Input
-                id="downloadExpiryDays"
-                name="downloadExpiryDays"
-                inputMode="numeric"
-                defaultValue={product?.downloadExpiryDays ?? ""}
-                placeholder="30"
-              />
-            </Field>
-          </div>
-        </Card>
+        <DigitalDeliveryCard
+          product={product}
+          releaseOnPayment={releaseOnPayment}
+          onReleaseOnPaymentChange={setReleaseOnPayment}
+        />
       ) : null}
 
       {/* ---- Service settings -------------------------------------------- */}
 
       {kind === "service" ? (
-        <Card className="space-y-4 p-5">
-          <div>
-            <h2 className="text-sm font-semibold text-ink-900">
-              {a.productForm.serviceTitle}
-            </h2>
-            <p className="mt-0.5 text-xs text-ink-500">
-              {a.productForm.serviceBody}
-            </p>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field
-              label={a.productForm.duration}
-              htmlFor="durationMinutes"
-              hint={a.common.optional}
-            >
-              <Input
-                id="durationMinutes"
-                name="durationMinutes"
-                inputMode="numeric"
-                defaultValue={product?.durationMinutes ?? ""}
-                placeholder="60"
-              />
-            </Field>
-            <Field label={a.productForm.where} htmlFor="serviceMode">
-              <Select
-                id="serviceMode"
-                name="serviceMode"
-                defaultValue={product?.serviceMode ?? "in_person"}
-              >
-                <option value="in_person">{a.productForm.inPerson}</option>
-                <option value="online">{a.productForm.online}</option>
-              </Select>
-            </Field>
-          </div>
-
-          <Field
-            label={a.productForm.serviceLocation}
-            htmlFor="serviceLocation"
-            hint={a.productForm.serviceLocationHint}
-          >
-            <Textarea
-              id="serviceLocation"
-              name="serviceLocation"
-              rows={2}
-              defaultValue={product?.serviceLocation ?? ""}
-              placeholder={a.productForm.serviceLocationPlaceholder}
-            />
-          </Field>
-
-          <Toggle
-            name="bookingEnabled"
-            label={a.productForm.bookingEnabled}
-            description={a.productForm.bookingEnabledBody}
-            checked={bookingEnabled}
-            onChange={setBookingEnabled}
-          />
-
-          {bookingEnabled ? (
-            <Field
-              label={a.productForm.bookingLead}
-              htmlFor="bookingLeadHours"
-              hint={a.productForm.bookingLeadHint}
-            >
-              <Input
-                id="bookingLeadHours"
-                name="bookingLeadHours"
-                inputMode="numeric"
-                defaultValue={product?.bookingLeadHours ?? 24}
-                placeholder="24"
-                className="sm:w-40"
-              />
-            </Field>
-          ) : null}
-        </Card>
+        <ServiceSettingsCard
+          product={product}
+          bookingEnabled={bookingEnabled}
+          onBookingEnabledChange={setBookingEnabled}
+        />
       ) : null}
 
       {/* ---- Visibility --------------------------------------------------- */}
@@ -411,41 +282,5 @@ description={a.productForm.releaseOnPaymentBody}
         </Link>
       </div>
     </form>
-  );
-}
-
-function Toggle({
-  name,
-  label,
-  description,
-  defaultChecked,
-  checked,
-  onChange,
-}: {
-  name: string;
-  label: string;
-  description: string;
-  defaultChecked?: boolean;
-  /** Pass both to drive the toggle from the form's own state. */
-  checked?: boolean;
-  onChange?: (next: boolean) => void;
-}) {
-  const controlled = checked !== undefined && onChange !== undefined;
-
-  return (
-    <label className="flex cursor-pointer items-start gap-3 pointer-coarse:min-h-11">
-      <input
-        type="checkbox"
-        name={name}
-        {...(controlled
-          ? { checked, onChange: (e) => onChange(e.target.checked) }
-          : { defaultChecked })}
-        className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900 pointer-coarse:size-5"
-      />
-      <span>
-        <span className="block text-sm font-medium text-ink-900">{label}</span>
-        <span className="block text-xs text-ink-500">{description}</span>
-      </span>
-    </label>
   );
 }

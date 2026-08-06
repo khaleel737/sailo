@@ -116,6 +116,16 @@ describe("checkoutSessionParams", () => {
     expect(params.managed_payments).toEqual({ enabled: false });
   });
 
+  /*
+   * The second pair that has to travel together. `automatic_tax` on its own
+   * is a 400: the customer this session names has no address, and Stripe will
+   * not infer a tax jurisdiction from nothing.
+   */
+  it("pairs Stripe Tax with the address update it requires", () => {
+    expect(params.automatic_tax).toEqual({ enabled: true });
+    expect(params.customer_update).toMatchObject({ address: "auto" });
+  });
+
   /* Pinning these locks out everything configured in the Dashboard. */
   it("lets Stripe decide the payment methods", () => {
     expect(params).not.toHaveProperty("payment_method_types");
