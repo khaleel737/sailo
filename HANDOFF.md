@@ -255,6 +255,60 @@ for a cosmetic one. Say so instead of doing it badly.
 it should stay whole; its pure logic tested; its route colocated; no non-null
 assertions; lint clean.
 
+## The loop, per file
+
+This is the method that produced everything above. Follow it literally.
+
+```
+1. Read the file. Find the seams — usually a section comment, a Card, a
+   table, or a block of pure logic trapped among effects.
+2. Name what each seam IS, not where it sits. "What a digital product
+   delivers and when the buyer gets it" is a component; "the second Card"
+   is not.
+3. Extract one seam. Exact line ranges — never a regex over TypeScript.
+4. Run `npx tsc --noEmit`. READ WHAT IT SAYS. This is the bug-finding step.
+5. Test the rule the seam encodes, not its implementation.
+6. Gate, commit, push. One seam per commit.
+```
+
+**Step 4 is the point.** Nearly every bug found last session was surfaced by
+extraction, not by reading:
+
+- Pulling four tables out of the HQ page made tsc reveal that
+  `getAccountDetail` returns a **union** — the shop-less branch had been
+  narrowed by an early return the tables inherited invisibly.
+- Moving the status badge exposed a **second copy** of `ORDER_STATUS_TONE`
+  without its `satisfies` — a new status would compile in one place and go
+  silently grey in the other.
+- Extracting the variant image upload showed `json.url` read off an unchecked
+  response: a malformed body set the image to `undefined`, which reads as
+  "uploaded" and shows nothing.
+- Lifting the file sync out showed `filter` narrows nothing, so the next line
+  had to assert a URL the line above had just proved.
+
+A file that extracts with zero compiler complaints was probably already fine.
+A file that fights you is telling you something. **Do not paper over step 4 by
+adding `!` or `as` — that is the signal, not the obstacle.**
+
+## Definition of done, per phase
+
+**Phase 1 — Colocation.** Done when every route's components live under that
+route and `src/components/**` holds only what genuinely crosses sections.
+Check: `ls src/components` should contain no folder named after one feature.
+
+**Phase 2 — Split.** Done when every real-code file is under ~300 lines *or*
+carries a written reason to stay whole, and the pure logic each one held is
+importable and tested. Check: the `wc -l` command above, minus i18n and legal.
+
+**Phase 3 — Harden.** Done when every server action and API route either has
+an ownership guard or a written reason it is public; every public write has a
+rate limit; no secret-bearing module is imported for its runtime value by a
+`"use client"` file; `npm audit --omit=dev` is understood, not just run.
+
+**Phase 4 — Production.** Done when a fresh clone (`git clone` → `npm ci` →
+`npm run build`) exits 0, the checkout and security e2e suites pass against a
+running server, and the nine open bugs are closed or consciously accepted.
+
 ## Suggested order
 
 1. **Bugs 1–4 first.** They move money or break delivery for a paying buyer.
