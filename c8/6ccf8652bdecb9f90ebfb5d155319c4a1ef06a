@@ -1,0 +1,21 @@
+src/lib/google-tag.test.ts
+  s_245cff4bd6e8de::t_a5ffe760489d61 123-148
+next.config.ts
+  s_245cff4bd6e8de::t_5e5a1bb3c663b4 30-41,43-44,46-53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c86ccf8652bdecb9f90ebfb5d155319c4a1ef06a",
+  "prompts": {},
+  "sessions": {
+    "s_245cff4bd6e8de": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e02099e-b1fd-430e-af26-4353fefe29d8",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
