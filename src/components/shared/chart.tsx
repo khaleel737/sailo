@@ -22,8 +22,9 @@ const fmtDay = (day: string) =>
   });
 
 const PLOT_HEIGHT = 132;
-/** Room under the plot for the day axis. */
-const AXIS_HEIGHT = 18;
+/** Room under the plot for the day axis, descenders included — at 18 the
+ *  tail of the g in "Aug" was sliced off. */
+const AXIS_HEIGHT = 22;
 
 type ChartProps = {
   title: string;
@@ -193,7 +194,7 @@ export function Chart({
                       .join(", ")}`
                   : `${days.length} days, ${total} in total`
               }
-              className="sr-only accent-brand-500 pointer-coarse:not-sr-only pointer-coarse:mt-3 pointer-coarse:h-11 pointer-coarse:w-full"
+              className="sr-only pointer-coarse:day-scrubber pointer-coarse:not-sr-only pointer-coarse:mt-2 pointer-coarse:h-11 pointer-coarse:w-full"
             />
           </>
         ) : null}
@@ -210,7 +211,7 @@ export function Chart({
         border, and a hairline eight pixels inside it frames the same content
         twice.
       */}
-      <dl className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1.5">
+      <dl className="mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1.5 pointer-coarse:mt-1">
         <dt className="sr-only">Period</dt>
         <dd className="text-xs font-medium tabular-nums text-ink-500">
           {readoutDay ? fmtDay(readoutDay) : `${days.length} days`}
@@ -220,7 +221,7 @@ export function Chart({
             <span
               aria-hidden="true"
               className="size-2 shrink-0 translate-y-px rounded-full"
-              style={{ backgroundColor: chartColour(tone, i) }}
+              style={{ backgroundColor: chartColour(tone, s.depth ?? i) }}
             />
             <dt className="text-xs text-ink-400">{s.label}</dt>
             {/*
@@ -282,18 +283,26 @@ function Plot({
     [domain, innerHeight],
   );
 
-  // Bar series share each day's column, side by side. With one series that is
-  // the whole column; with two it is a pair, which is how sales and refunds
-  // stay legible on the same day rather than one hiding the other.
-  const barScale = useMemo(
-    () =>
+  /*
+   * Bars share a day's column only with bars that could overlap them — which
+   * means bars on the same side of the axis. Grouping sales against refunds
+   * halved both, and at thirty days that left a four-pixel sliver each: the
+   * revenue card read as noise. Refunds hang below zero and sales sit above,
+   * so neither can hide the other, and both get the full column.
+   */
+  const barScales = useMemo(() => {
+    const build = (members: Series[]) =>
       scaleBand({
-        domain: series.filter((s) => s.shape === "bar").map((s) => s.key),
+        domain: members.map((m) => m.key),
         range: [0, xScale.bandwidth()],
-        padding: 0.12,
-      }),
-    [series, xScale],
-  );
+        padding: members.length > 1 ? 0.12 : 0,
+      });
+    const bars = series.filter((s) => s.shape === "bar");
+    return {
+      above: build(bars.filter((s) => !s.negative)),
+      below: build(bars.filter((s) => s.negative)),
+    };
+  }, [series, xScale]);
 
   const zeroY = yScale(0);
   const centre = (i: number) =>
@@ -359,8 +368,14 @@ function Plot({
         />
       ) : null}
 
-      {series.map((s, seriesIndex) => {
-        const colour = chartColour(tone, seriesIndex);
+      {/*
+        With no data there is nothing to plot. Drawing the series anyway put a
+        confident green line along the baseline of an empty shop's revenue
+        card, which reads as a real measurement that happens to be flat rather
+        than as a shop that has not sold anything yet.
+      */}
+      {(populated ? series : []).map((s, seriesIndex) => {
+        const colour = chartColour(tone, s.depth ?? seriesIndex);
 
         if (s.shape === "line") {
           return (
@@ -400,12 +415,14 @@ function Plot({
                 value === 0 ? 1 : 2,
               );
 
+              const lane = s.negative ? barScales.below : barScales.above;
+
               return (
                 <Bar
                   key={day}
-                  x={(xScale(day) ?? 0) + (barScale(s.key) ?? 0)}
+                  x={(xScale(day) ?? 0) + (lane(s.key) ?? 0)}
                   y={value >= 0 ? yScale(value) : zeroY}
-                  width={barScale.bandwidth()}
+                  width={lane.bandwidth()}
                   height={height}
                   rx={2}
                   // The warm neutral, not the cool #e6e6ea that used to sit
@@ -445,10 +462,20 @@ function Plot({
           tickFormat={(d) => fmtDay(String(d))}
           stroke="transparent"
           tickStroke="transparent"
-          tickLabelProps={() => ({
+          /*
+            The first and last labels are centred on columns that sit against
+            the edges, so half of each fell outside the card — "Jul 8" rendered
+            as "ul 8". Anchor the ends inward and leave the rest centred.
+          */
+          tickLabelProps={(_, index, ticks) => ({
             fill: "currentColor",
             fontSize: 10,
-            textAnchor: "middle",
+            textAnchor:
+              index === 0
+                ? "start"
+                : index === ticks.length - 1
+                  ? "end"
+                  : "middle",
             className: "text-ink-400",
           })}
         />

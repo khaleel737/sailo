@@ -252,6 +252,7 @@ export default async function HqAccountPage({
                     key: "sales",
                     label: "Sales",
                     shape: "bar",
+                    depth: 1,
                     values: detail.revenueSeries.map((d) => d.grossCents),
                   },
                   {
@@ -259,12 +260,14 @@ export default async function HqAccountPage({
                     label: "Refunds",
                     shape: "bar",
                     negative: true,
+                    depth: 2,
                     values: detail.revenueSeries.map((d) => d.refundedCents),
                   },
                   {
                     key: "net",
                     label: "Net",
                     shape: "line",
+                    depth: 0,
                     values: detail.revenueSeries.map((d) => d.cents),
                   },
                 ]}

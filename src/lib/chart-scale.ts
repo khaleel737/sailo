@@ -25,6 +25,15 @@ export type Series = {
    * stacks them on top of sales says the day was bigger than it was.
    */
   negative?: boolean;
+  /**
+   * Which step of the tone's lightness ramp to draw with. Defaults to the
+   * series' position, which is usually right and was wrong exactly where it
+   * mattered: on the revenue card, net is the headline figure but came third
+   * in the array, so the number in the hero slot was drawn in the palest step
+   * available and read as a wash behind the bars. Draw order and visual
+   * weight are different decisions, so they get different knobs.
+   */
+  depth?: number;
 };
 
 /** The smallest bar a non-zero value may draw, so a real value is never invisible. */

@@ -211,6 +211,7 @@ export default async function AdminOverviewPage({
                 key: "sales",
                 label: "Sales",
                 shape: "bar",
+                depth: 1,
                 values: revenueSeries.map((d) => d.grossCents),
               },
               // Below the axis: money leaving, on the day it left.
@@ -219,12 +220,14 @@ export default async function AdminOverviewPage({
                 label: "Refunds",
                 shape: "bar",
                 negative: true,
+                depth: 2,
                 values: revenueSeries.map((d) => d.refundedCents),
               },
               {
                 key: "net",
                 label: "Net",
                 shape: "line",
+                depth: 0,
                 values: revenueSeries.map((d) => d.cents),
               },
             ]}

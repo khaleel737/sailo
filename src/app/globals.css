@@ -234,6 +234,46 @@ body {
   }
 }
 
+/*
+ * The chart's day cursor, once it becomes visible on a touch screen.
+ * Left native it renders a full-width charcoal bar that outweighs the chart it
+ * is scrubbing — the control shouted louder than the data. Reduced to a
+ * hairline in the ink ramp with the brand dot as its thumb, kept at a 44px
+ * hit area by the input's own height.
+ */
+@utility day-scrubber {
+  appearance: none;
+  background: transparent;
+
+  &::-webkit-slider-runnable-track {
+    height: 2px;
+    border-radius: 9999px;
+    background: var(--color-ink-200);
+  }
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: -6px;
+    border-radius: 9999px;
+    background: var(--color-brand-500);
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
+  }
+  &::-moz-range-track {
+    height: 2px;
+    border-radius: 9999px;
+    background: var(--color-ink-200);
+  }
+  &::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 9999px;
+    background: var(--color-brand-500);
+    border: 2px solid #fff;
+  }
+}
+
 /* Controls sitting on a shop's own surface borrow the seller's accent. */
 @utility focus-ring-accent {
   &:focus-visible {
