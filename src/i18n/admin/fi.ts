@@ -82,6 +82,9 @@ export const adminFi: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Kauppasi ei voi vielä ottaa vastaan tilauksia.",
+    noRailBody: "Ota käyttöön vähintään yksi maksutapa, jotta ostajat voivat tehdä tilauksen.",
+    noRailCta: "Määritä maksut",
     legal: "Oikeudelliset tiedot",
     privacy: "Tietosuoja",
     terms: "Ehdot",

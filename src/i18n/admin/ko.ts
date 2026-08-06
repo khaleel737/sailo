@@ -487,6 +487,9 @@ export const adminKo: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "아직 주문을 받을 수 없습니다.",
+    noRailBody: "결제 수단을 하나 이상 활성화하면 구매자가 주문할 수 있습니다.",
+    noRailCta: "결제 설정",
     legal: "법적 고지",
     privacy: "개인정보 처리방침",
     terms: "이용약관",

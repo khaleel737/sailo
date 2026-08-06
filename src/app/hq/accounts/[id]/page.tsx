@@ -223,11 +223,21 @@ export default async function HqAccountPage({
             <Card className="p-5">
               <Chart
                 title="Visits · 30 days"
-                variant="line"
-                data={detail.visitSeries.map((d) => ({
-                  day: d.day,
-                  value: d.count,
-                }))}
+                days={detail.visitSeries.map((d) => d.day)}
+                series={[
+                  {
+                    key: "visits",
+                    label: "Views",
+                    shape: "line",
+                    values: detail.visitSeries.map((d) => d.count),
+                  },
+                  {
+                    key: "unique",
+                    label: "Visitors",
+                    shape: "line",
+                    values: detail.visitSeries.map((d) => d.unique),
+                  },
+                ]}
                 tone="activity"
                 unit="count"
                 emptyLabel="No visits."
@@ -236,10 +246,29 @@ export default async function HqAccountPage({
             <Card className="p-5">
               <Chart
                 title="Revenue · 30 days"
-                data={detail.revenueSeries.map((d) => ({
-                  day: d.day,
-                  value: d.cents,
-                }))}
+                days={detail.revenueSeries.map((d) => d.day)}
+                series={[
+                  {
+                    key: "sales",
+                    label: "Sales",
+                    shape: "bar",
+                    values: detail.revenueSeries.map((d) => d.grossCents),
+                  },
+                  {
+                    key: "refunds",
+                    label: "Refunds",
+                    shape: "bar",
+                    negative: true,
+                    values: detail.revenueSeries.map((d) => d.refundedCents),
+                  },
+                  {
+                    key: "net",
+                    label: "Net",
+                    shape: "line",
+                    values: detail.revenueSeries.map((d) => d.cents),
+                  },
+                ]}
+                totalKey="net"
                 tone="money"
                 unit="money"
                 currency={shop.currency}

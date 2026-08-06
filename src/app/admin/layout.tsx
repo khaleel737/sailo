@@ -1,3 +1,4 @@
+import { GoogleTag } from "@/lib/google-tag";
 import { Sidebar } from "@/app/admin/_components/sidebar";
 import {
   AdminHeader,
@@ -61,6 +62,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
           </main>
           <PanelFooter labels={a.shell} />
         </div>
+        <GoogleTag />
       </div>
     </AdminI18nProvider>
   );

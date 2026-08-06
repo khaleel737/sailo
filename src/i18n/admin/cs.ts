@@ -82,6 +82,9 @@ export const adminCs: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Váš obchod zatím nemůže přijímat objednávky.",
+    noRailBody: "Zapněte alespoň jeden způsob platby, aby zákazníci mohli dokončit nákup.",
+    noRailCta: "Nastavit platby",
     legal: "Právní informace",
     privacy: "Soukromí",
     terms: "Podmínky",

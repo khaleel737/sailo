@@ -82,6 +82,9 @@ export const adminHu: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "A boltod még nem tud rendelést fogadni.",
+    noRailBody: "Kapcsolj be legalább egy fizetési módot, hogy a vásárlók le tudják adni a rendelést.",
+    noRailCta: "Fizetés beállítása",
     legal: "Jogi tudnivalók",
     privacy: "Adatvédelem",
     terms: "Feltételek",

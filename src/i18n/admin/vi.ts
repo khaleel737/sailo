@@ -487,6 +487,9 @@ export const adminVi: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Cửa hàng của bạn chưa thể nhận đơn hàng.",
+    noRailBody: "Bật ít nhất một hình thức thanh toán để người mua có thể đặt hàng.",
+    noRailCta: "Thiết lập thanh toán",
     legal: "Pháp lý",
     privacy: "Quyền riêng tư",
     terms: "Điều khoản",

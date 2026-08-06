@@ -82,6 +82,9 @@ export const adminJa: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "ショップはまだ注文を受け取れません。",
+    noRailBody: "支払い方法を1つ以上有効にすると、購入者が注文できるようになります。",
+    noRailCta: "支払いを設定",
     legal: "法的事項",
     privacy: "プライバシー",
     terms: "利用規約",

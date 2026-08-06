@@ -73,6 +73,17 @@ export const adminEn = {
     suspended: "Your shop is suspended.",
     staffNotice: "You're signed in as Sailo staff.",
     openHq: "Open HQ",
+
+    /**
+     * Shown until a shop has one rail a buyer could actually pay through.
+     * Phrased as the consequence — no orders — rather than as the missing
+     * setting, because a seller who hasn't set one up doesn't yet know that
+     * "payment method" is the thing standing between them and a sale.
+     */
+    noRail: "Your shop can't take orders yet.",
+    noRailBody:
+      "Turn on at least one way to get paid and buyers can start checking out.",
+    noRailCta: "Set up payments",
     /**
      * Names the room. /admin and /hq share a rail now, so the label carries
      * the distinction the colour used to — see the note in the sidebar.

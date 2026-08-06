@@ -1,3 +1,4 @@
+import { GoogleTag } from "@/lib/google-tag";
 import { SiteNav } from "@/components/marketing/site-nav";
 import { getT, getLocale } from "@/i18n/server";
 import { getMarketingDictionary } from "@/i18n/marketing";
@@ -34,6 +35,7 @@ export default async function MarketingLayout({ children }: LayoutProps<"/">) {
       </main>
 
       <SiteFooter locale={locale} t={t} m={m} />
+      <GoogleTag />
     </div>
   );
 }

@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, ShieldAlert } from "lucide-react";
+import { ArrowRight, ShieldAlert, Wallet } from "lucide-react";
 import type { Shop } from "@/db/schema";
+import { getCheckoutOptions } from "@/lib/queries";
 import { getAdminT } from "@/i18n/server";
 
 /**
- * Two notices that sit above every admin page, both about things the seller
- * cannot change from inside their own admin.
+ * The notices that sit above every admin page.
  */
 export async function StatusBanners({
   shop,
@@ -15,6 +15,17 @@ export async function StatusBanners({
   isStaff: boolean;
 }) {
   const { a } = await getAdminT();
+
+  /*
+   * Whether a buyer could actually pay. `getCheckoutOptions` is the same
+   * cached read the storefront makes, so asking here costs nothing extra and
+   * — more to the point — cannot disagree with it. Counting enabled rows
+   * instead would call a half-configured bank transfer a way to get paid,
+   * and the seller would be told they are open while their page says
+   * otherwise.
+   */
+  const { methods } = await getCheckoutOptions(shop.id);
+
   return (
     <>
       {/*
@@ -33,6 +44,39 @@ export async function StatusBanners({
               Your page is offline and can&rsquo;t take orders. Reply to your
               welcome email and we&rsquo;ll look at it with you.
             </p>
+          </div>
+        </div>
+      ) : null}
+
+      {/*
+        A shop with no way to be paid.
+
+        This is the state every seller starts in — onboarding only seeds a rail
+        when they typed a WhatsApp number — and nothing else in the admin says
+        so plainly. The products page looks finished, the storefront renders,
+        and the order button is simply absent, which reads as a bug rather than
+        as an unfinished setup.
+
+        Not shown to a suspended shop: that page is offline regardless, and
+        stacking two alarms buries the one they can't fix themselves.
+
+        Amber, not red. Nothing is broken — it just isn't finished yet.
+      */}
+      {!shop.suspendedAt && methods.length === 0 ? (
+        <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 sm:px-6 lg:px-8">
+          <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-3 gap-y-2">
+            <Wallet className="size-4 shrink-0 text-amber-700" />
+            <p dir="auto" className="flex-1 text-sm text-amber-900">
+              <span className="font-medium">{a.shell.noRail}</span>{" "}
+              {a.shell.noRailBody}
+            </p>
+            <Link
+              href="/admin/payments"
+              className="focus-ring inline-flex shrink-0 items-center gap-1 rounded-lg bg-amber-900 px-3 text-xs font-semibold text-white transition hover:bg-amber-800 pointer-coarse:min-h-11 min-h-9"
+            >
+              {a.shell.noRailCta}
+              <ArrowRight className="size-3.5" />
+            </Link>
           </div>
         </div>
       ) : null}

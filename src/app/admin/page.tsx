@@ -180,23 +180,59 @@ export default async function AdminOverviewPage({
         <Card className="p-5">
           <Chart
             title={`Visits · last ${chartDays} days`}
-            variant="line"
-            data={visitSeries.map((d) => ({ day: d.day, value: d.count }))}
+            days={visitSeries.map((d) => d.day)}
+            series={[
+              {
+                key: "visits",
+                label: "Views",
+                shape: "line",
+                values: visitSeries.map((d) => d.count),
+              },
+              // The gap between the two lines is repeat viewing — the number
+              // that tells a link that is working from one being refreshed.
+              {
+                key: "unique",
+                label: "Visitors",
+                shape: "line",
+                values: visitSeries.map((d) => d.unique),
+              },
+            ]}
             tone="activity"
             unit="count"
             emptyLabel={a.dashboard.noVisits}
-            tableLabel={a.common.viewAsTable}
           />
         </Card>
         <Card className="p-5">
           <Chart
             title={`Revenue · last ${chartDays} days`}
-            data={revenueSeries.map((d) => ({ day: d.day, value: d.cents }))}
+            days={revenueSeries.map((d) => d.day)}
+            series={[
+              {
+                key: "sales",
+                label: "Sales",
+                shape: "bar",
+                values: revenueSeries.map((d) => d.grossCents),
+              },
+              // Below the axis: money leaving, on the day it left.
+              {
+                key: "refunds",
+                label: "Refunds",
+                shape: "bar",
+                negative: true,
+                values: revenueSeries.map((d) => d.refundedCents),
+              },
+              {
+                key: "net",
+                label: "Net",
+                shape: "line",
+                values: revenueSeries.map((d) => d.cents),
+              },
+            ]}
+            totalKey="net"
             tone="money"
             unit="money"
             currency={shop.currency}
             emptyLabel={a.dashboard.noRevenue}
-            tableLabel={a.common.viewAsTable}
           />
         </Card>
       </div>

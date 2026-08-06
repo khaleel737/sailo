@@ -1,3 +1,4 @@
+import { GoogleTag } from "@/lib/google-tag";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { SailoLogo } from "@/components/brand";
@@ -70,6 +71,7 @@ export default function LegalLayout({ children }: LayoutProps<"/">) {
           </Link>
         </Container>
       </footer>
+      <GoogleTag />
     </div>
   );
 }

@@ -82,6 +82,9 @@ export const adminAr: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "متجرك لا يستطيع استقبال الطلبات بعد.",
+    noRailBody: "فعّل طريقة دفع واحدة على الأقل ليتمكن المشترون من إتمام الشراء.",
+    noRailCta: "إعداد المدفوعات",
     legal: "قانوني",
     privacy: "الخصوصية",
     terms: "الشروط",

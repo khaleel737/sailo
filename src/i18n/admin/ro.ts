@@ -82,6 +82,9 @@ export const adminRo: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Magazinul tău nu poate primi încă comenzi.",
+    noRailBody: "Activează cel puțin o metodă de plată pentru ca cumpărătorii să poată finaliza comanda.",
+    noRailCta: "Configurează plățile",
     legal: "Informații legale",
     privacy: "Confidențialitate",
     terms: "Termeni",

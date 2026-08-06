@@ -82,6 +82,9 @@ export const adminEs: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Tu tienda aún no puede recibir pedidos.",
+    noRailBody: "Activa al menos una forma de cobro para que los compradores puedan finalizar la compra.",
+    noRailCta: "Configurar pagos",
     legal: "Legal",
     privacy: "Privacidad",
     terms: "Términos",

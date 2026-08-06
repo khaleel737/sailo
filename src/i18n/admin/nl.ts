@@ -82,6 +82,9 @@ export const adminNl: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Je winkel kan nog geen bestellingen aannemen.",
+    noRailBody: "Zet minstens één betaalmethode aan zodat kopers kunnen afrekenen.",
+    noRailCta: "Betalingen instellen",
     legal: "Juridisch",
     privacy: "Privacy",
     terms: "Voorwaarden",

@@ -180,7 +180,15 @@ export default async function HqOverviewPage() {
         <Card className="p-5">
           <Chart
             title="Registrations · last 30 days"
-            data={signups.map((d) => ({ day: d.day, value: d.value }))}
+            days={signups.map((d) => d.day)}
+            series={[
+              {
+                key: "signups",
+                label: "Registrations",
+                shape: "bar",
+                values: signups.map((d) => d.value),
+              },
+            ]}
             tone="activity"
             unit="count"
             emptyLabel="Nobody has signed up in the last 30 days."
@@ -189,7 +197,15 @@ export default async function HqOverviewPage() {
         <Card className="p-5">
           <Chart
             title="Orders · last 30 days"
-            data={orderSeries.map((d) => ({ day: d.day, value: d.value }))}
+            days={orderSeries.map((d) => d.day)}
+            series={[
+              {
+                key: "orders",
+                label: "Orders",
+                shape: "bar",
+                values: orderSeries.map((d) => d.value),
+              },
+            ]}
             tone="activity"
             unit="count"
             emptyLabel="No orders in the last 30 days."
@@ -201,8 +217,15 @@ export default async function HqOverviewPage() {
         <Card className="p-5">
           <Chart
             title={`Seller volume in ${leadCurrency} · last 30 days`}
-            variant="line"
-            data={gmvSeries.map((d) => ({ day: d.day, value: d.value }))}
+            days={gmvSeries.map((d) => d.day)}
+            series={[
+              {
+                key: "gmv",
+                label: "Volume",
+                shape: "line",
+                values: gmvSeries.map((d) => d.value),
+              },
+            ]}
             tone="money"
             unit="money"
             currency={leadCurrency}

@@ -487,6 +487,9 @@ export const adminTh: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "ร้านของคุณยังรับคำสั่งซื้อไม่ได้",
+    noRailBody: "เปิดใช้ช่องทางชำระเงินอย่างน้อยหนึ่งช่องทาง เพื่อให้ผู้ซื้อสั่งซื้อได้",
+    noRailCta: "ตั้งค่าการชำระเงิน",
     legal: "ข้อกฎหมาย",
     privacy: "ความเป็นส่วนตัว",
     terms: "เงื่อนไข",

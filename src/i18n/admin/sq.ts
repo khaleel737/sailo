@@ -487,6 +487,9 @@ export const adminSq: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Dyqani juaj nuk mund të marrë ende porosi.",
+    noRailBody: "Aktivizoni të paktën një mënyrë pagese që blerësit të mund të porosisin.",
+    noRailCta: "Konfiguro pagesat",
     legal: "Ligjore",
     privacy: "Privatësia",
     terms: "Kushtet",

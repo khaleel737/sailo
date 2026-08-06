@@ -82,6 +82,9 @@ export const adminDa: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Din butik kan ikke modtage ordrer endnu.",
+    noRailBody: "Slå mindst én betalingsmetode til, så kunderne kan gennemføre købet.",
+    noRailCta: "Opsæt betalinger",
     legal: "Juridisk",
     privacy: "Privatliv",
     terms: "Vilkår",

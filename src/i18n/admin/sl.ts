@@ -487,6 +487,9 @@ export const adminSl: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Vaša trgovina še ne more sprejemati naročil.",
+    noRailBody: "Vklopite vsaj en način plačila, da bodo kupci lahko zaključili nakup.",
+    noRailCta: "Nastavi plačila",
     legal: "Pravno",
     privacy: "Zasebnost",
     terms: "Pogoji",

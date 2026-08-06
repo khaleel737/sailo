@@ -487,6 +487,9 @@ export const adminFil: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Hindi pa makatanggap ng order ang tindahan mo.",
+    noRailBody: "Mag-activate ng kahit isang paraan ng bayad para makabili na ang mga customer.",
+    noRailCta: "I-set up ang bayad",
     legal: "Legal",
     privacy: "Privacy",
     terms: "Mga tuntunin",

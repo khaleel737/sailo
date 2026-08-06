@@ -82,6 +82,9 @@ export const adminTr: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Mağazanız henüz sipariş alamıyor.",
+    noRailBody: "Alıcıların sipariş verebilmesi için en az bir ödeme yöntemi açın.",
+    noRailCta: "Ödemeleri ayarla",
     legal: "Yasal",
     privacy: "Gizlilik",
     terms: "Koşullar",

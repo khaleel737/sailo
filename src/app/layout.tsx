@@ -6,6 +6,7 @@ import { directionOf } from "@/i18n/config";
 import { getMarketingDictionary } from "@/i18n/marketing";
 import { RouteProgress } from "@/components/shared/route-progress";
 import { ErrorStringsProvider } from "@/components/shared/error-panel";
+import { VercelAnalytics } from "@/lib/vercel-analytics";
 import { APP_URL } from "@/lib/seo";
 import "./globals.css";
 import "./brand.css";
@@ -169,6 +170,12 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           error boundary needs are in context by the time one is reached.
         */}
         <ErrorStringsProvider value={t.errors}>{children}</ErrorStringsProvider>
+        {/*
+          Cookieless and aggregate, so unlike the Google tag this one covers
+          storefronts too — see `src/lib/vercel-analytics.tsx` for why the
+          two tags deliberately have opposite placement rules.
+        */}
+        <VercelAnalytics />
       </body>
     </html>
   );

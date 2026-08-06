@@ -487,6 +487,9 @@ export const adminId: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Toko Anda belum bisa menerima pesanan.",
+    noRailBody: "Aktifkan minimal satu metode pembayaran agar pembeli bisa checkout.",
+    noRailCta: "Atur pembayaran",
     legal: "Legal",
     privacy: "Privasi",
     terms: "Ketentuan",

@@ -54,3 +54,32 @@ export const CHART = {
 } as const;
 
 export type ChartTone = keyof typeof CHART;
+
+/**
+ * The second and third series within one chart.
+ *
+ * This is the "step the existing hue in lightness" escape hatch described
+ * above, now that charts carry more than one series — sales beside refunds,
+ * visits beside unique visitors. Lightness is the one axis that survives every
+ * kind of colour blindness, so a viewer who cannot separate the two hues can
+ * still separate the two steps.
+ *
+ * Each step is the same hue with chroma held and lightness raised, and each is
+ * still ≥3:1 against both app surfaces, so a thin line at `soft` remains
+ * visible rather than becoming a suggestion. Three steps is the limit: a fourth
+ * lands inside the just-noticeable difference of the third at chart line widths.
+ *
+ * As with hue, the step never carries meaning alone. Every series is named in
+ * the readout beneath the plot, and the value a viewer actually wants is
+ * printed there as a number.
+ */
+export const CHART_STEPS = {
+  money: ["#037740", "#3E9E6C", "#7CC29C"],
+  activity: ["#0B63CE", "#5189DC", "#8FB4EA"],
+} as const satisfies Record<ChartTone, readonly [string, string, string]>;
+
+/** The colour for series `index` of a chart in `tone`. Clamped, never wraps. */
+export function chartColour(tone: ChartTone, index: number): string {
+  const steps = CHART_STEPS[tone];
+  return steps[Math.min(index, steps.length - 1)] ?? steps[0];
+}

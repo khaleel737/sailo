@@ -487,6 +487,9 @@ export const adminMs: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Kedai anda belum boleh menerima pesanan.",
+    noRailBody: "Aktifkan sekurang-kurangnya satu cara pembayaran supaya pembeli boleh membuat pesanan.",
+    noRailCta: "Sediakan pembayaran",
     legal: "Perundangan",
     privacy: "Privasi",
     terms: "Terma",

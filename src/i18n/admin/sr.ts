@@ -487,6 +487,9 @@ export const adminSr: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Ваша продавница још не може да прима поруџбине.",
+    noRailBody: "Укључите бар један начин плаћања како би купци могли да заврше куповину.",
+    noRailCta: "Подеси плаћања",
     legal: "Правно",
     privacy: "Приватност",
     terms: "Услови",

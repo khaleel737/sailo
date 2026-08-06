@@ -82,6 +82,9 @@ export const adminSv: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Din butik kan inte ta emot beställningar än.",
+    noRailBody: "Slå på minst ett betalsätt så att köpare kan slutföra köpet.",
+    noRailCta: "Ställ in betalningar",
     legal: "Juridik",
     privacy: "Integritet",
     terms: "Villkor",

@@ -1,11 +1,23 @@
 "use client";
 
-import { useId, useState } from "react";
-import { CHART, type ChartTone } from "@/lib/chart-palette";
-import { chartScale, peakIndex, type Point } from "@/lib/chart-scale";
+import { useId, useMemo, useState } from "react";
+import { AxisBottom } from "@visx/axis";
+import { curveMonotoneX } from "@visx/curve";
+import { GridRows } from "@visx/grid";
+import { Group } from "@visx/group";
+import { ParentSize } from "@visx/responsive";
+import { scaleBand, scaleLinear } from "@visx/scale";
+import { Bar, LinePath } from "@visx/shape";
+import { chartColour, type ChartTone } from "@/lib/chart-palette";
+import {
+  chartDomain,
+  hasData,
+  peakIndex,
+  type Series,
+} from "@/lib/chart-scale";
 import { formatMoney } from "@/lib/utils";
 
-export type { Point };
+export type { Series };
 
 /** Midday-safe: a bare date string parses as UTC and can slip a day westward. */
 const fmtDay = (day: string) =>
@@ -14,42 +26,15 @@ const fmtDay = (day: string) =>
     day: "numeric",
   });
 
-/**
- * A single-series day chart, drawn as bars or as a line.
- *
- * One series per chart, so the heading names it and no legend is needed; only
- * the peak is directly labelled and the rest surface on hover. A table view
- * keeps the data available without hover.
- *
- * Formatting is described by props rather than a callback — a server component
- * can't hand a function to a client one.
- *
- * WHY THIS DRAWS ITSELF
- * Recharts is ~100kB gzipped of client JavaScript. This is a single series of
- * a few dozen points with no zoom, no brush, no second axis and no stacking,
- * and it ships on the dashboard every seller sees. Fifty lines of arithmetic
- * is the cheaper trade until one of those features is actually wanted.
- *
- * NEGATIVE VALUES
- * Revenue goes negative on a day whose refunds outweigh its sales. The chart
- * this replaced clamped every such day to a 1.5% grey stub, which is exactly
- * what a zero day looked like — so a day that lost $500 and a day that did
- * nothing were indistinguishable. Sign is carried by position: the zero line
- * is drawn wherever the data puts it, and negative days hang below it in the
- * same hue. Not by colour, which `lib/chart-palette.ts` explains is full.
- */
-export function Chart({
-  title,
-  data,
-  tone,
-  unit,
-  variant = "bar",
-  currency = "USD",
-  emptyLabel = "No activity yet",
-  tableLabel = "View as table",
-}: {
+const PLOT_HEIGHT = 132;
+/** Room under the plot for the day axis. */
+const AXIS_HEIGHT = 18;
+
+type ChartProps = {
   title: string;
-  data: Point[];
+  /** ISO days, one per column, shared by every series. */
+  days: string[];
+  series: Series[];
   /**
    * Which entity this measures, not which colour to use. Call sites cannot
    * invent a hue, which is how the same measure ended up indigo on one screen
@@ -57,237 +42,372 @@ export function Chart({
    */
   tone: ChartTone;
   unit: "count" | "money";
-  /** Bars for discrete daily totals, a line for shape over a longer window. */
-  variant?: "bar" | "line";
   currency?: string;
   emptyLabel?: string;
-  /*
-   * Passed in rather than read from a dictionary: this chart is shared with
-   * /hq, which is English-only and sits outside the admin's i18n provider.
+  /**
+   * The headline figure. Defaults to the sum of the first series; pass a
+   * different series key when the total that matters is a derived one, such as
+   * net revenue rather than gross.
    */
-  tableLabel?: string;
-}) {
-  const colour = CHART[tone];
+  totalKey?: string;
+};
+
+/**
+ * A multi-series day chart: bars, lines, or both, over one shared domain.
+ *
+ * WHY VISX AND NOT RECHARTS
+ * Measured, not assumed. The subpackages this imports come to ~25kB gzipped;
+ * Recharts is ~100kB, and `@visx/visx` — the convenience meta-package — is
+ * 167kB, because it re-exports all thirty-six. visx is primitives: it owns the
+ * scales and the path maths and nothing else, which leaves the parts that were
+ * actually broken here (what the domain is, what a refund means, what a phone
+ * can read) in this repo, under test.
+ *
+ * ONE DOMAIN, ALWAYS CONTAINING ZERO
+ * Every series shares a vertical scale. Drawn to their own maxima, a $5 refund
+ * would sit at the same height as a $5,000 sale. And zero is always in the
+ * domain, so a flat week between $90 and $100 reads as flat rather than as a
+ * collapse, and a losing day has a baseline to hang from. See `chart-scale.ts`.
+ *
+ * SIGN IS POSITION, NOT COLOUR
+ * Refunds hang below the zero line. `chart-palette.ts` establishes that the hue
+ * space is full at two, so a second series steps the same hue in lightness —
+ * the one axis that survives every kind of colour blindness — and is named in
+ * the readout rather than left to a legend.
+ *
+ * ONLY THE PLOT IS MEASURED
+ * `ParentSize` renders nothing until it has a width, so wrapping the whole card
+ * in it would leave the title and the totals missing on first paint and drop
+ * them in afterwards. The text is plain server-rendered markup; only the svg
+ * waits, inside a box that already reserves its height.
+ */
+export function Chart({
+  title,
+  days,
+  series,
+  tone,
+  unit,
+  currency = "USD",
+  emptyLabel = "No activity yet",
+  totalKey,
+}: ChartProps) {
   const [cursor, setCursor] = useState<number | null>(null);
-  const gradientId = useId();
+  const cursorId = useId();
 
   const format = (value: number) =>
     unit === "money" ? formatMoney(value, currency) : value.toLocaleString();
-  const total = format(data.reduce((sum, d) => sum + d.value, 0));
 
-  // The positioning arithmetic lives in `lib/chart-scale.ts`, where it is
-  // tested. A bar at the wrong height still looks like a chart.
-  const { lo, zeroY, y, x, bar } = chartScale(data);
-  const peakAt = peakIndex(data);
+  const domain = useMemo(() => chartDomain(series), [series]);
+  const populated = hasData(series);
+  const peakAt = peakIndex(series);
 
-  // Bound once: "there is data" and "the peak row exists" are the same fact,
-  // and splitting them let the render read a row the guard didn't prove.
-  const peak = data.some((d) => d.value !== 0) ? data[peakAt] : undefined;
-  const active = cursor === null ? null : data[cursor];
-
-  // Label the ends and a couple of interior days; one label per column is
-  // unreadable past about a fortnight.
-  const labelStep = Math.max(1, Math.ceil(data.length / 4));
-
-  function onKeyDown(event: React.KeyboardEvent) {
-    const keys: Record<string, number> = {
-      ArrowRight: (cursor ?? -1) + 1,
-      ArrowLeft: (cursor ?? data.length) - 1,
-      Home: 0,
-      End: data.length - 1,
-    };
-    const next = keys[event.key];
-    if (next === undefined) return;
-    event.preventDefault();
-    setCursor(Math.min(Math.max(next, 0), data.length - 1));
-  }
+  const headline = series.find((s) => s.key === totalKey) ?? series[0];
+  const total = format((headline?.values ?? []).reduce((a, b) => a + b, 0));
+  const readoutDay = cursor === null ? null : days[cursor];
 
   return (
     <div>
-      <div className="mb-4 flex items-baseline justify-between gap-3">
+      <div className="mb-3 flex items-baseline justify-between gap-3">
         <div>
           <h2 dir="auto" className="text-sm font-medium text-ink-500">
             {title}
           </h2>
           <p className="mt-0.5 text-2xl font-semibold tabular-nums">{total}</p>
         </div>
-        {peak ? (
+        {populated ? (
           <p className="text-right text-xs text-ink-400">
-            Peak {format(peak.value)}
+            Peak
             <br />
-            {fmtDay(peak.day)}
+            {fmtDay(days[peakAt] ?? "")}
           </p>
         ) : null}
       </div>
 
-      {/*
-        A single tab stop with arrow-key navigation, rather than one per column:
-        thirty tab stops to cross one card is worse than none. Pointer events
-        rather than mouse events so a tap on a phone reads a value — this chart
-        is on the dashboard of a product whose sellers are mostly on phones, and
-        hover alone left them with nothing but the peak.
-      */}
-      <div
-        role="group"
-        tabIndex={data.length > 0 ? 0 : -1}
-        aria-label={`${title}. ${total} in total.${
-          peak ? ` Peak ${format(peak.value)} on ${fmtDay(peak.day)}.` : ""
-        } Use arrow keys to read each day.`}
-        onKeyDown={onKeyDown}
-        onBlur={() => setCursor(null)}
-        onPointerLeave={() => setCursor(null)}
-        className="focus-ring relative h-28 rounded"
-      >
-        {/* The zero line, drawn only when something actually sits below it. */}
-        {lo < 0 ? (
-          <div
-            className="absolute inset-x-0 border-t border-dashed border-ink-300"
-            style={{ top: `${zeroY}%` }}
-          />
-        ) : null}
-
-        {variant === "line" ? (
-          <svg
-            className="absolute inset-0 h-full w-full overflow-visible"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <defs>
-              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={colour} stopOpacity="0.22" />
-                <stop offset="100%" stopColor={colour} stopOpacity="0.02" />
-              </linearGradient>
-            </defs>
-            {data.length > 1 ? (
-              <path
-                d={`M ${x(0)} ${zeroY} ${data
-                  .map((d, i) => `L ${x(i)} ${y(d.value)}`)
-                  .join(" ")} L ${x(data.length - 1)} ${zeroY} Z`}
-                fill={`url(#${gradientId})`}
+      <div style={{ height: PLOT_HEIGHT }}>
+        <ParentSize debounceTime={0}>
+          {({ width }) =>
+            width < 40 ? null : (
+              <Plot
+                width={width}
+                days={days}
+                series={series}
+                tone={tone}
+                domain={domain}
+                cursor={cursor}
+                onCursor={setCursor}
               />
-            ) : null}
-            <polyline
-              points={data.map((d, i) => `${x(i)},${y(d.value)}`).join(" ")}
-              fill="none"
-              stroke={colour}
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              /*
-               * The viewBox is stretched to the card, so without this the
-               * stroke is squashed to a hairline horizontally and fat
-               * vertically. Circles would distort the same way, which is why
-               * the markers below are HTML rather than <circle>.
-               */
-              vectorEffect="non-scaling-stroke"
+            )
+          }
+        </ParentSize>
+      </div>
+
+      {/*
+        Keyboard and screen-reader access through a real control, rather than a
+        div wearing tabIndex and a keydown handler — which is what this was, and
+        what the a11y linter correctly rejected. A range input already *is* a
+        cursor over an ordered set: it takes focus, arrow keys and Home/End work
+        without being reimplemented, and assistive technology announces each
+        step from `aria-valuetext` instead of reading a bare number. It is
+        visually hidden because the plot and the readout below are its display —
+        both move with it, so a sighted keyboard user watches the figures change
+        even though the control itself is off-screen.
+      */}
+      {populated ? (
+        <>
+          <label htmlFor={cursorId} className="sr-only">
+            {title} — read day by day
+          </label>
+          <input
+            id={cursorId}
+            type="range"
+            min={0}
+            max={Math.max(days.length - 1, 0)}
+            step={1}
+            value={cursor ?? 0}
+            onChange={(event) => setCursor(Number(event.target.value))}
+            onBlur={() => setCursor(null)}
+            aria-valuetext={
+              readoutDay
+                ? `${fmtDay(readoutDay)}. ${series
+                    .map(
+                      (s) => `${s.label} ${format(s.values[cursor ?? 0] ?? 0)}`,
+                    )
+                    .join(", ")}`
+                : `${days.length} days, ${total} in total`
+            }
+            className="sr-only"
+          />
+        </>
+      ) : null}
+
+      {/*
+        The readout, in place of the table that used to hide behind a
+        disclosure. Opening a fortnight of rows to answer "what happened on
+        Tuesday" is a worse answer than putting Tuesday here: always visible,
+        every series named, no interaction needed on a phone. It shows window
+        totals at rest and the hovered day while reading.
+      */}
+      <dl className="mt-2 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-ink-100 pt-2">
+        <dt className="sr-only">Period</dt>
+        <dd className="text-xs font-medium tabular-nums text-ink-600">
+          {readoutDay ? fmtDay(readoutDay) : `${days.length} days`}
+        </dd>
+        {series.map((s, i) => (
+          <div key={s.key} className="flex items-baseline gap-1.5">
+            <span
+              aria-hidden="true"
+              className="size-2 shrink-0 translate-y-px rounded-full"
+              style={{ backgroundColor: chartColour(tone, i) }}
             />
-          </svg>
-        ) : null}
-
-        <div className="absolute inset-0 flex items-stretch gap-0.5">
-          {data.map((point, i) => {
-            const isActive = cursor === i;
-            const isPeak = i === peakAt && point.value !== 0;
-            const { top, height } = bar(point.value);
-
-            return (
-              <div
-                key={point.day}
-                className="relative flex-1"
-                onPointerEnter={() => setCursor(i)}
-                onPointerDown={() => setCursor(i)}
-              >
-                {variant === "bar" ? (
-                  <div
-                    className="absolute inset-x-0 rounded-[2px] transition-opacity"
-                    style={{
-                      top: `${top}%`,
-                      height: `${height}%`,
-                      backgroundColor: point.value === 0 ? "#e6e6ea" : colour,
-                      opacity: cursor === null || isActive ? 1 : 0.45,
-                    }}
-                  />
-                ) : (
-                  <div
-                    className="absolute size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white transition-opacity"
-                    style={{
-                      left: `${x(i)}%`,
-                      top: `${y(point.value)}%`,
-                      backgroundColor: colour,
-                      opacity: isActive || isPeak ? 1 : 0,
-                    }}
-                  />
-                )}
-
-                {isActive ? (
-                  <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink-900 px-2 py-1 text-xs text-white shadow-lg">
-                    <span className="font-semibold tabular-nums">
-                      {format(point.value)}
-                    </span>{" "}
-                    <span className="opacity-70">· {fmtDay(point.day)}</span>
-                  </div>
-                ) : null}
-
-                {isPeak && cursor === null ? (
-                  <span
-                    className="pointer-events-none absolute left-1/2 -translate-x-1/2 -translate-y-full whitespace-nowrap text-[10px] font-medium tabular-nums text-ink-500"
-                    style={{ top: `${y(point.value)}%` }}
-                  >
-                    {format(point.value)}
-                  </span>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="mt-1.5 flex gap-0.5 border-t border-ink-200 pt-1.5">
-        {data.map((point, i) => (
-          <span
-            key={point.day}
-            className="flex-1 text-center text-[10px] text-ink-400"
-          >
-            {i === 0 || i === data.length - 1 || i % labelStep === 0
-              ? new Date(`${point.day}T00:00:00Z`).getUTCDate()
-              : ""}
-          </span>
+            <dt className="text-xs text-ink-400">{s.label}</dt>
+            <dd className="text-xs font-semibold tabular-nums text-ink-900">
+              {format(
+                cursor === null
+                  ? s.values.reduce((a, b) => a + b, 0)
+                  : (s.values[cursor] ?? 0),
+              )}
+            </dd>
+          </div>
         ))}
-      </div>
+      </dl>
 
-      {!peak ? (
+      {!populated ? (
         <p className="mt-2 text-center text-xs text-ink-400">{emptyLabel}</p>
       ) : null}
 
-      {/* Announced for screen readers as the cursor moves. */}
+      {/* Announced as the cursor moves, so the readout is not sighted-only. */}
       <p className="sr-only" aria-live="polite">
-        {active ? `${fmtDay(active.day)}: ${format(active.value)}` : ""}
+        {readoutDay
+          ? `${fmtDay(readoutDay)}. ${series
+              .map((s) => `${s.label} ${format(s.values[cursor ?? 0] ?? 0)}`)
+              .join(", ")}`
+          : ""}
       </p>
-
-      <details className="mt-3">
-        <summary className="focus-ring inline-flex cursor-pointer items-center rounded text-xs text-ink-400 transition hover:text-ink-600 pointer-coarse:min-h-11">
-          {tableLabel}
-        </summary>
-        <table className="mt-2 w-full text-xs">
-          <thead>
-            <tr className="text-left text-ink-400">
-              <th className="py-1 font-medium">Day</th>
-              <th className="py-1 text-right font-medium">{title}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((point) => (
-              <tr key={point.day} className="border-t border-ink-100">
-                <td className="py-1 text-ink-600">{fmtDay(point.day)}</td>
-                <td className="py-1 text-right tabular-nums text-ink-900">
-                  {format(point.value)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </details>
     </div>
+  );
+}
+
+function Plot({
+  width,
+  days,
+  series,
+  tone,
+  domain,
+  cursor,
+  onCursor,
+}: {
+  width: number;
+  days: string[];
+  series: Series[];
+  tone: ChartTone;
+  domain: { min: number; max: number };
+  cursor: number | null;
+  onCursor: (index: number | null) => void;
+}) {
+  const innerHeight = PLOT_HEIGHT - AXIS_HEIGHT;
+
+  const xScale = useMemo(
+    () => scaleBand({ domain: days, range: [0, width], padding: 0.28 }),
+    [days, width],
+  );
+  const yScale = useMemo(
+    () =>
+      scaleLinear({
+        domain: [domain.min, domain.max || 1],
+        range: [innerHeight, 0],
+        nice: true,
+      }),
+    [domain, innerHeight],
+  );
+
+  // Bar series share each day's column, side by side. With one series that is
+  // the whole column; with two it is a pair, which is how sales and refunds
+  // stay legible on the same day rather than one hiding the other.
+  const barScale = useMemo(
+    () =>
+      scaleBand({
+        domain: series.filter((s) => s.shape === "bar").map((s) => s.key),
+        range: [0, xScale.bandwidth()],
+        padding: 0.12,
+      }),
+    [series, xScale],
+  );
+
+  const zeroY = yScale(0);
+  const centre = (i: number) =>
+    (xScale(days[i] ?? "") ?? 0) + xScale.bandwidth() / 2;
+  /** A series' value for a day, flipped negative when it is money leaving. */
+  const valueAt = (s: Series, i: number) => {
+    const raw = s.values[i] ?? 0;
+    return s.negative ? -Math.abs(raw) : raw;
+  };
+
+  return (
+    <svg
+      width={width}
+      height={PLOT_HEIGHT}
+      className="overflow-visible"
+      onPointerLeave={() => onCursor(null)}
+    >
+      <GridRows
+        scale={yScale}
+        width={width}
+        numTicks={3}
+        stroke="currentColor"
+        className="text-ink-100"
+      />
+
+      {/* The zero line: solid once something hangs below it, otherwise a hint. */}
+      <line
+        x1={0}
+        x2={width}
+        y1={zeroY}
+        y2={zeroY}
+        className="text-ink-300"
+        stroke="currentColor"
+        strokeWidth={1}
+        strokeDasharray={domain.min < 0 ? undefined : "2 3"}
+      />
+
+      {/* The day under the cursor, marked behind everything it explains. */}
+      {cursor !== null ? (
+        <rect
+          x={xScale(days[cursor] ?? "") ?? 0}
+          y={0}
+          width={xScale.bandwidth()}
+          height={innerHeight}
+          className="text-ink-100"
+          fill="currentColor"
+          rx={3}
+        />
+      ) : null}
+
+      {series.map((s, seriesIndex) => {
+        const colour = chartColour(tone, seriesIndex);
+
+        if (s.shape === "line") {
+          return (
+            <Group key={s.key}>
+              <LinePath
+                data={days.map((_, i) => i)}
+                x={centre}
+                y={(i) => yScale(valueAt(s, i))}
+                stroke={colour}
+                strokeWidth={2}
+                strokeLinecap="round"
+                curve={curveMonotoneX}
+                fill="none"
+              />
+              {cursor !== null ? (
+                <circle
+                  cx={centre(cursor)}
+                  cy={yScale(valueAt(s, cursor))}
+                  r={3.5}
+                  fill={colour}
+                  stroke="white"
+                  strokeWidth={1.5}
+                />
+              ) : null}
+            </Group>
+          );
+        }
+
+        return (
+          <Group key={s.key}>
+            {days.map((day, i) => {
+              const value = valueAt(s, i);
+              // A real value must never round away to an invisible sliver; a
+              // zero day still draws a tick so the column reads as present.
+              const height = Math.max(
+                Math.abs(yScale(value) - zeroY),
+                value === 0 ? 1 : 2,
+              );
+
+              return (
+                <Bar
+                  key={day}
+                  x={(xScale(day) ?? 0) + (barScale(s.key) ?? 0)}
+                  y={value >= 0 ? yScale(value) : zeroY}
+                  width={barScale.bandwidth()}
+                  height={height}
+                  rx={2}
+                  fill={value === 0 ? "#e6e6ea" : colour}
+                  opacity={cursor === null || cursor === i ? 1 : 0.45}
+                />
+              );
+            })}
+          </Group>
+        );
+      })}
+
+      {/* Full-height hit zones: the whole column answers, not just the bar. */}
+      {days.map((day, i) => (
+        <rect
+          key={day}
+          x={xScale(day) ?? 0}
+          y={0}
+          width={xScale.step()}
+          height={innerHeight}
+          fill="transparent"
+          onPointerEnter={() => onCursor(i)}
+          onPointerDown={() => onCursor(i)}
+        />
+      ))}
+
+      <AxisBottom
+        top={innerHeight}
+        scale={xScale}
+        numTicks={Math.min(5, days.length)}
+        tickFormat={(d) => fmtDay(String(d))}
+        stroke="transparent"
+        tickStroke="transparent"
+        tickLabelProps={() => ({
+          fill: "currentColor",
+          fontSize: 10,
+          textAnchor: "middle",
+          className: "text-ink-400",
+        })}
+      />
+    </svg>
   );
 }

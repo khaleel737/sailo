@@ -82,6 +82,9 @@ export const adminDe: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "Dein Shop kann noch keine Bestellungen annehmen.",
+    noRailBody: "Aktiviere mindestens eine Zahlungsart, damit Käufer bestellen können.",
+    noRailCta: "Zahlungen einrichten",
     legal: "Rechtliches",
     privacy: "Datenschutz",
     terms: "AGB",

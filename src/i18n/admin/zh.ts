@@ -82,6 +82,9 @@ export const adminZh: PartialAdminDictionary = {
   },
 
   shell: {
+    noRail: "你的店铺还不能接单。",
+    noRailBody: "启用至少一种收款方式，买家才能下单。",
+    noRailCta: "设置收款",
     legal: "法律信息",
     privacy: "隐私",
     terms: "条款",

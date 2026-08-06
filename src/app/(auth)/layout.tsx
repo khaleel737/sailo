@@ -1,3 +1,4 @@
+import { GoogleTag } from "@/lib/google-tag";
 import Link from "next/link";
 import { ArrowLeft, Check } from "lucide-react";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
@@ -114,6 +115,7 @@ export default async function AuthLayout({ children }: LayoutProps<"/">) {
           />
         </div>
       </aside>
+      <GoogleTag />
     </div>
   );
 }
