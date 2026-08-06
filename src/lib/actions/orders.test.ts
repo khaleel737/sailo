@@ -38,7 +38,7 @@ const handoff = positionOf("the Stripe handoff", "await handOffToStripe(");
 const claim = positionOf("the coupon claim", "await claimCouponRedemption(");
 const release = positionOf("the coupon release", "await releaseCouponRedemption(");
 const invoice = positionOf("the invoice", "await createInvoiceForOrder(");
-const email = positionOf("the confirmation email", "await sendOrderConfirmation(");
+const email = positionOf("the confirmation email", "await confirmBuyerByEmail(");
 
 describe("createOrderIntent — nothing irreversible before the payment handoff", () => {
   /*
