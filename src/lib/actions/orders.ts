@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { resolveLines } from "@/lib/orders/resolve-lines";
 import { readBuyer } from "@/lib/orders/buyer";
 import { commissionBpFor } from "@/lib/orders/commission";
+import { resolveCoupon } from "@/lib/orders/resolve-coupon";
 import { upsertClient } from "@/lib/orders/clients";
 import { resolveDelivery, smallest, soonest } from "@/lib/orders/delivery";
 import { referralFor } from "@/lib/orders/referral";
@@ -104,25 +105,14 @@ export async function createOrderIntent(
   /* ---- Coupon --------------------------------------------------------- */
 
   const subtotalCents = cartSubtotal(lines);
-  let coupon: Coupon | null = null;
-
-  if (input.couponCode?.trim()) {
-    const code = normalizeCode(input.couponCode);
-    const found = await db.query.coupons.findFirst({
-      where: and(eq(coupons.shopId, shop.id), eq(coupons.code, code)),
-    });
-    const verdict = checkCoupon(found, subtotalCents, now);
-    if (!verdict.ok || !found) {
-      // `checkCoupon` reports `not_found` for a missing coupon, so these two
-      // are the same condition — checking both is what lets the assignment
-      // below stand without an assertion.
-      return {
-        ok: false,
-        error: verdict.ok ? COUPON_MESSAGES.not_found : COUPON_MESSAGES[verdict.reason],
-      };
-    }
-    coupon = found;
-  }
+  const discount = await resolveCoupon({
+    shopId: shop.id,
+    code: input.couponCode,
+    subtotalCents,
+    now,
+  });
+  if (!discount.ok) return { ok: false, error: discount.error };
+  const coupon = discount.coupon;
 
   /* ---- Affiliate ------------------------------------------------------ */
 
