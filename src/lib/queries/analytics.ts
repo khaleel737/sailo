@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, gte, isNotNull, or, sql } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, isNotNull, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { orders, products, reviews, visitDaily, visits } from "@/db/schema";
@@ -10,8 +10,8 @@ export async function getDashboardStats(shopId: string, windowDays = 30) {
   const db = getDb();
   const since = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000);
 
-  const [[visitRow], [orderRow], [productRow], [reviewRow]] = await Promise.all(
-    [
+  const [[visitRow], [periodRow], [openRow], [productRow], [reviewRow]] =
+    await Promise.all([
       db
         .select({
           total: sql<string>`count(*)`,
@@ -19,24 +19,55 @@ export async function getDashboardStats(shopId: string, windowDays = 30) {
         })
         .from(visits)
         .where(and(eq(visits.shopId, shopId), gte(visits.createdAt, since))),
+      /*
+       * What happened in the window the seller is looking at.
+       *
+       * This had no date bound at all, so a shop with two hundred lifetime
+       * orders read "Last 30 days · Orders 200" in a month it had sold nothing
+       * — four figures under one heading, two of them measuring a different
+       * period from the other two. It also meant the app's home page
+       * aggregated a shop's entire order history on every single load.
+       */
       db
         .select({
           total: sql<string>`count(*)`,
-          pending: sql<string>`count(*) filter (where ${orders.status} = 'new')`,
           // Cancelled orders never counted; refunds come straight off the top.
           gross: sql<string>`coalesce(sum(${orders.totalCents}) filter (where ${orders.status} <> 'cancelled'), 0)`,
           refunded: sql<string>`coalesce(sum(${orders.refundedCents}), 0)`,
           refundCount: sql<string>`count(*) filter (where ${orders.refundedCents} > 0)`,
           paid: sql<string>`coalesce(sum(${orders.totalCents}) filter (where ${orders.paymentStatus} = 'paid'), 0)`,
-          awaitingConfirm: sql<string>`count(*) filter (where ${orders.paymentStatus} = 'pending')`,
-          awaitingShipment: sql<string>`count(*) filter (where ${orders.deliveryMethod} = 'shipping' and ${orders.status} in ('new','confirmed'))`,
-          unpaidCommission: sql<string>`coalesce(sum(${orders.commissionCents}) filter (where not ${orders.commissionPaid}), 0)`,
           // Tax the seller has collected and owes on. Cancelled orders never
           // happened; a refund hands the tax back with the rest of the money.
           tax: sql<string>`coalesce(sum(${orders.taxCents}) filter (where ${orders.status} <> 'cancelled' and ${orders.refundedCents} = 0), 0)`,
         })
         .from(orders)
-        .where(eq(orders.shopId, shopId)),
+        .where(and(eq(orders.shopId, shopId), gte(orders.createdAt, since))),
+      /*
+       * What still needs doing, whenever it happened.
+       *
+       * Deliberately not windowed. An order placed in March that has still not
+       * shipped is exactly the one a seller must be told about, and bounding
+       * this to thirty days would quietly hide it. Narrowed by state instead,
+       * so it reads the open tail rather than every order ever placed.
+       */
+      db
+        .select({
+          pending: sql<string>`count(*) filter (where ${orders.status} = 'new')`,
+          awaitingConfirm: sql<string>`count(*) filter (where ${orders.paymentStatus} = 'pending')`,
+          awaitingShipment: sql<string>`count(*) filter (where ${orders.deliveryMethod} = 'shipping' and ${orders.status} in ('new','confirmed'))`,
+          unpaidCommission: sql<string>`coalesce(sum(${orders.commissionCents}) filter (where not ${orders.commissionPaid}), 0)`,
+        })
+        .from(orders)
+        .where(
+          and(
+            eq(orders.shopId, shopId),
+            or(
+              inArray(orders.status, ["new", "confirmed"]),
+              eq(orders.paymentStatus, "pending"),
+              eq(orders.commissionPaid, false),
+            ),
+          ),
+        ),
       db
         .select({
           total: sql<string>`count(*)`,
@@ -50,24 +81,23 @@ export async function getDashboardStats(shopId: string, windowDays = 30) {
         })
         .from(reviews)
         .where(eq(reviews.shopId, shopId)),
-    ],
-  );
+    ]);
 
   return {
     visitsInRange: Number(visitRow?.total ?? 0),
     uniqueVisitorsInRange: Number(visitRow?.unique ?? 0),
-    totalOrders: Number(orderRow?.total ?? 0),
-    newOrders: Number(orderRow?.pending ?? 0),
-    grossCents: Number(orderRow?.gross ?? 0),
-    refundedCents: Number(orderRow?.refunded ?? 0),
+    totalOrders: Number(periodRow?.total ?? 0),
+    newOrders: Number(openRow?.pending ?? 0),
+    grossCents: Number(periodRow?.gross ?? 0),
+    refundedCents: Number(periodRow?.refunded ?? 0),
     netRevenueCents:
-      Number(orderRow?.gross ?? 0) - Number(orderRow?.refunded ?? 0),
-    refundCount: Number(orderRow?.refundCount ?? 0),
-    paidValueCents: Number(orderRow?.paid ?? 0),
-    awaitingConfirmation: Number(orderRow?.awaitingConfirm ?? 0),
-    awaitingShipment: Number(orderRow?.awaitingShipment ?? 0),
-    unpaidCommissionCents: Number(orderRow?.unpaidCommission ?? 0),
-    taxCollectedCents: Number(orderRow?.tax ?? 0),
+      Number(periodRow?.gross ?? 0) - Number(periodRow?.refunded ?? 0),
+    refundCount: Number(periodRow?.refundCount ?? 0),
+    paidValueCents: Number(periodRow?.paid ?? 0),
+    awaitingConfirmation: Number(openRow?.awaitingConfirm ?? 0),
+    awaitingShipment: Number(openRow?.awaitingShipment ?? 0),
+    unpaidCommissionCents: Number(openRow?.unpaidCommission ?? 0),
+    taxCollectedCents: Number(periodRow?.tax ?? 0),
     totalProducts: Number(productRow?.total ?? 0),
     publishedProducts: Number(productRow?.published ?? 0),
     pendingReviews: Number(reviewRow?.pending ?? 0),

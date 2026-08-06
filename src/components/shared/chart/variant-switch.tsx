@@ -36,7 +36,7 @@ export function VariantSwitch({
           return (
             <label
               key={shape}
-              className={`focus-within:ring-2 focus-within:ring-brand-500 cursor-pointer rounded-md px-2 py-1 text-[11px] font-medium transition-colors pointer-coarse:min-h-9 pointer-coarse:px-3 ${
+              className={`focus-within:ring-2 focus-within:ring-brand-500 flex cursor-pointer items-center justify-center rounded-md px-2 py-1 text-[11px] font-medium transition-colors pointer-coarse:min-h-11 pointer-coarse:px-3 ${
                 active
                   ? "bg-white text-ink-900 shadow-sm"
                   : "text-ink-500 hover:text-ink-700"

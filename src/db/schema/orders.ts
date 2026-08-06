@@ -189,6 +189,9 @@ export const orders = pgTable(
   },
   (t) => [
     index("orders_shop_idx").on(t.shopId),
+    // The dashboard asks "this shop, this window" on every load; without
+    // the pair it reads the shop's whole history and filters after.
+    index("orders_shop_created_idx").on(t.shopId, t.createdAt),
     index("orders_client_idx").on(t.clientId),
     index("orders_created_idx").on(t.createdAt),
     uniqueIndex("orders_download_token_key").on(t.downloadToken),
