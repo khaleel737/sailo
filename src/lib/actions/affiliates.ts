@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { revalidateShop } from "@/lib/cache";
 import { firstRow } from "@/lib/invariant";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, orders, shops } from "@/db/schema";
 import { requireShop } from "@/lib/session";
@@ -186,7 +186,7 @@ export async function applyAsAffiliate(
   if (!email.includes("@")) return { ok: false, error: "Add a valid email." };
 
   const shop = await db.query.shops.findFirst({
-    where: and(eq(shops.id, shopId), eq(shops.isPublished, true)),
+    where: and(eq(shops.id, shopId), eq(shops.isPublished, true), isNull(shops.suspendedAt)),
   });
   if (!shop || !shop.affiliatesEnabled || !shop.affiliatePublicSignup) {
     return { ok: false, error: "This shop isn't accepting applications." };

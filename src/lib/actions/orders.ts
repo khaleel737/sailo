@@ -10,7 +10,7 @@ import { resolveDelivery, smallest, soonest } from "@/lib/orders/delivery";
 import { referralFor } from "@/lib/orders/referral";
 import type { OrderIntentInput, OrderIntentResult, OrderLineInput, OrderPreview } from "@/lib/orders/types";
 import { firstRow, present } from "@/lib/invariant";
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
@@ -48,7 +48,7 @@ export async function createOrderIntent(
   const db = getDb();
 
   const shop = await db.query.shops.findFirst({
-    where: and(eq(shops.id, input.shopId), eq(shops.isPublished, true)),
+    where: and(eq(shops.id, input.shopId), eq(shops.isPublished, true), isNull(shops.suspendedAt)),
   });
   if (!shop) return { ok: false, error: "Shop not found." };
 
@@ -503,7 +503,7 @@ export async function previewOrder(input: {
   const now = new Date();
 
   const shop = await db.query.shops.findFirst({
-    where: and(eq(shops.id, input.shopId), eq(shops.isPublished, true)),
+    where: and(eq(shops.id, input.shopId), eq(shops.isPublished, true), isNull(shops.suspendedAt)),
     columns: {
       id: true,
       currency: true,
