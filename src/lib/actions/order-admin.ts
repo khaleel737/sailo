@@ -7,23 +7,13 @@ import { clients, orders } from "@/db/schema";
 import { requireShop } from "@/lib/session";
 import { firstRow } from "@/lib/invariant";
 import { formatMoney, parseMoneyToCents } from "@/lib/utils";
-import { restoreStock, retakeStock } from "@/lib/inventory";
+import { isStockReleasingStatus, restoreStock, retakeStock } from "@/lib/inventory";
 import { canReverse, checkRefund, refundableCents, reversePayment, type RefundOutcome } from "@/lib/refunds";
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
+import { isOrderStatus } from "@/lib/order-status";
 import { releaseDownloads } from "@/lib/downloads";
 import { sendRefundNotification, sendShippingNotification } from "@/lib/email";
 import type { ActionState } from "./shop";
-
-/** The statuses a seller may set. Anything else is a stale form or a bot. */
-const ORDER_STATUSES = new Set([
-  "new",
-  "confirmed",
-  "shipped",
-  "completed",
-  "cancelled",
-  "refunded",
-]);
-
 
 /**
  * What a seller does to an order after it exists: confirm it, ship it, refund
@@ -40,7 +30,7 @@ export async function updateOrderStatus(formData: FormData) {
   const db = getDb();
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
-  if (!id || !ORDER_STATUSES.has(status)) return;
+  if (!id || !isOrderStatus(status)) return;
 
   const order = await db.query.orders.findFirst({
     where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
@@ -52,11 +42,21 @@ export async function updateOrderStatus(formData: FormData) {
     .set({ status, updatedAt: new Date() })
     .where(eq(orders.id, id));
 
-  // A cancelled order's units go back on the shelf; un-cancelling takes them
-  // off again, so the count follows the seller rather than drifting.
-  if (status === "cancelled") {
+  /*
+   * A cancelled *or refunded* order's units go back on the shelf; moving it
+   * back out of either takes them off again, so the count follows the seller
+   * rather than drifting.
+   *
+   * This used to name "cancelled" twice and nothing else, while
+   * `isStockReleasingStatus` — written, tested, and wired to nothing — said
+   * refunded released stock too. A seller refunding from this dropdown got the
+   * goods back in their hands and the shop still counting them as sold. The
+   * refund *action* restocks on a full refund, so the two ways to refund an
+   * order disagreed with each other as well.
+   */
+  if (isStockReleasingStatus(status)) {
     await restoreStock(order);
-  } else if (order.status === "cancelled" && order.restockedAt) {
+  } else if (isStockReleasingStatus(order.status) && order.restockedAt) {
     await retakeStock(order);
   }
 

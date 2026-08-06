@@ -22,6 +22,19 @@ export const ORDER_STATUSES = [
 
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
+/**
+ * Whether a submitted or stored value is a status this build knows.
+ *
+ * Exported because two call sites had each written the list out again as a
+ * local `Set` — the seller's status action and the /hq order filter — and a
+ * hand-copied list is a list that drifts. A status added here but missing from
+ * one of those copies is silently unsettable on one screen and unfilterable on
+ * the other, with nothing failing to say so.
+ */
+export function isOrderStatus(value: string): value is OrderStatus {
+  return (ORDER_STATUSES as readonly string[]).includes(value);
+}
+
 /** Badge tone per status. Only the two that need acting on carry warm colour. */
 export const ORDER_STATUS_TONE = {
   new: "blue",

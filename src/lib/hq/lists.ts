@@ -5,6 +5,8 @@ import { affiliates, clients, orders, products, shops, user } from "@/db/schema"
 import { HQ_PAGE_SIZE, like, num, paginate } from "./pagination";
 import { daysAgo } from "./pagination";
 import { mergeCurrencyTotals } from "@/lib/hq-metrics";
+import { isOrderStatus } from "@/lib/order-status";
+import { isPaymentStatus } from "@/lib/payments/status";
 
 /** Platform-wide lists: every order, product, affiliate and buyer. */
 
@@ -17,16 +19,6 @@ export type ListFilters = {
   days?: number;
 };
 
-const ORDER_STATUSES = new Set([
-  "new",
-  "confirmed",
-  "shipped",
-  "completed",
-  "cancelled",
-  "refunded",
-]);
-
-const PAYMENT_STATUSES = new Set(["unpaid", "pending", "paid"]);
 
 export async function getPlatformOrders(filters: ListFilters = {}) {
   const db = getDb();
@@ -44,10 +36,16 @@ export async function getPlatformOrders(filters: ListFilters = {}) {
       ),
     );
   }
-  if (filters.status && ORDER_STATUSES.has(filters.status)) {
+  if (filters.status && isOrderStatus(filters.status)) {
     clauses.push(eq(orders.status, filters.status));
   }
-  if (filters.payment && PAYMENT_STATUSES.has(filters.payment)) {
+  /*
+   * Both lists were written out again here, and the payment one had drifted:
+   * it held only unpaid, pending and paid, so filtering /hq by `refunded` or
+   * `disputed` silently returned every order instead of those — the two
+   * statuses someone looking at /hq is most likely searching for.
+   */
+  if (filters.payment && isPaymentStatus(filters.payment)) {
     clauses.push(eq(orders.paymentStatus, filters.payment));
   }
   if (filters.days && filters.days > 0) {
