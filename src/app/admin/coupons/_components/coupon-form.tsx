@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 import { Loader2, Plus } from "lucide-react";
 import { saveCoupon } from "@/lib/actions/coupons";
 import { bpToPercent } from "@/lib/pricing";
+import { centsToAmount } from "@/lib/utils";
 import {
   Alert,
   Button,
@@ -54,7 +55,7 @@ export function CouponForm({
   const valueDefault = coupon
     ? coupon.discountType === "percent"
       ? String(bpToPercent(coupon.discountValue))
-      : (coupon.discountValue / 100).toFixed(2)
+      : centsToAmount(coupon.discountValue, currency)
     : "";
 
   return (
@@ -123,7 +124,7 @@ export function CouponForm({
               inputMode="decimal"
               defaultValue={
                 coupon?.minSubtotalCents
-                  ? (coupon.minSubtotalCents / 100).toFixed(2)
+                  ? centsToAmount(coupon.minSubtotalCents, currency)
                   : ""
               }
               placeholder="0.00"

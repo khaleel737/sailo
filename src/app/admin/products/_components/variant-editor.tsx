@@ -59,7 +59,7 @@ export function VariantEditor({
       : [],
   );
   const [drafts, setDrafts] = useState<Record<string, Draft>>(() =>
-    toDrafts(variants),
+    toDrafts(variants, currency),
   );
   // Combinations the seller doesn't sell — no small pizza in that topping.
   const [removed, setRemoved] = useState<Set<string>>(new Set());

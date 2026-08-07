@@ -24,6 +24,6 @@ export async function GET(
     );
   }
 
-  const { filename, body } = await runExport(type, shop.id);
+  const { filename, body } = await runExport(type, shop.id, shop.currency);
   return csvResponse(filename, body);
 }

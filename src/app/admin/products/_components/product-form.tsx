@@ -16,7 +16,7 @@ import {
   Select,
   Textarea,
 } from "@/components/ui";
-import { PRODUCT_KINDS } from "@/lib/utils";
+import { centsToAmount, PRODUCT_KINDS } from "@/lib/utils";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { Toggle } from "./toggle";
 import { DigitalDeliveryCard } from "./digital-delivery-card";
@@ -59,7 +59,7 @@ export function ProductForm({
     product?.trackInventory ?? false,
   );
   const [price, setPrice] = useState(
-    product ? (product.priceCents / 100).toFixed(2) : "",
+    product ? centsToAmount(product.priceCents, currency) : "",
   );
   const [bookingEnabled, setBookingEnabled] = useState(
     product?.bookingEnabled ?? false,
@@ -133,7 +133,7 @@ export function ProductForm({
               inputMode="decimal"
               defaultValue={
                 product?.compareAtCents
-                  ? (product.compareAtCents / 100).toFixed(2)
+                  ? centsToAmount(product.compareAtCents, currency)
                   : ""
               }
               placeholder="32.00"

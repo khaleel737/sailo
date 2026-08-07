@@ -1,6 +1,7 @@
 import type { MarketingDictionary } from "@/i18n/marketing";
 import type { DeliveryMethodType } from "@/lib/delivery";
 import type { PaymentMethodType } from "@/lib/payments";
+import { centsToAmount } from "@/lib/utils";
 
 /**
  * Everything a crawler reads.
@@ -289,7 +290,7 @@ export function productJsonLd(
       "@type": "Offer",
       url,
       // Schema.org wants a decimal string, not our integer cents.
-      price: (product.priceCents / 100).toFixed(2),
+      price: centsToAmount(product.priceCents, product.currency),
       priceCurrency: product.currency,
       availability: product.inStock
         ? "https://schema.org/InStock"

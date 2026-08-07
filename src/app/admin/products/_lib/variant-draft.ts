@@ -1,5 +1,6 @@
 import type { ProductVariant } from "@/db/schema";
 import { optionKey } from "@/lib/variants";
+import { centsToAmount } from "@/lib/utils";
 
 /**
  * What a variant looks like while it is being edited.
@@ -54,18 +55,23 @@ export function probablyMissingCommas(input: string): boolean {
   return only !== undefined && second === undefined && /\s/.test(only);
 }
 
-/** Minor units to the decimal string an input shows. Null stays empty. */
-function toAmount(cents: number | null): string {
-  return cents === null ? "" : (cents / 100).toFixed(2);
-}
-
-/** Saved variants, keyed by their option combination, ready to edit. */
-export function toDrafts(variants: ProductVariant[]): Record<string, Draft> {
+/**
+ * Saved variants, keyed by their option combination, ready to edit.
+ *
+ * `currency` is required rather than defaulted because these strings are saved
+ * straight back through `parseMoneyToCents`, which is currency-aware. A flat
+ * hundred here turned every JPY variant into a hundredth of its price on any
+ * save, and every KWD variant into ten times its price.
+ */
+export function toDrafts(
+  variants: ProductVariant[],
+  currency: string,
+): Record<string, Draft> {
   const map: Record<string, Draft> = {};
   for (const v of variants) {
     map[optionKey(v.options)] = {
-      price: toAmount(v.priceCents),
-      compareAt: toAmount(v.compareAtCents),
+      price: centsToAmount(v.priceCents, currency),
+      compareAt: centsToAmount(v.compareAtCents, currency),
       sku: v.sku ?? "",
       stock: v.stockQuantity === null ? "" : String(v.stockQuantity),
       available: v.isAvailable,

@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { formatAddress, formatMoney, normalizePhone, parseMoneyToCents, slugify } from "./utils";
+import {
+  centsToAmount,
+  formatAddress,
+  formatMoney,
+  normalizePhone,
+  parseMoneyToCents,
+  slugify,
+} from "./utils";
 
 /**
  * The helpers that turn stored values into what a buyer reads.
@@ -243,4 +250,56 @@ describe("parseMoneyToCents", () => {
   it.each(["abc", "$", ".", ",", "NaN"])("reads junk as zero: %j", (input) => {
     expect(parseMoneyToCents(input)).toBe(0);
   });
+});
+
+/**
+ * The other half of the pair, and the half a currency-awareness pass missed.
+ *
+ * Every edit form in the admin renders a stored amount into a text input and
+ * saves whatever comes back through `parseMoneyToCents`. That parser has known
+ * each currency's minor unit since seventy-one of them were added; the render
+ * side divided by a flat 100 for another two commits. The round-trip test
+ * below is the one that fails on that asymmetry — opening a product and
+ * pressing Save without typing anything must not change the price, in any
+ * currency.
+ */
+describe("centsToAmount", () => {
+  it.each([
+    [2999, "USD", "29.99"],
+    [1000, "USD", "10.00"],
+    [0, "USD", "0.00"],
+  ])("renders a two-decimal currency: %i %s → %j", (minor, code, shown) => {
+    expect(centsToAmount(minor, code)).toBe(shown);
+  });
+
+  it("renders a zero-decimal currency as a whole number", () => {
+    // ¥1,000 is a thousand minor units. Divided by 100 it showed "10.00",
+    // which saved back as ¥10 — the price cut to a hundredth by a no-op edit.
+    expect(centsToAmount(1000, "JPY")).toBe("1000");
+    expect(centsToAmount(0, "JPY")).toBe("0");
+  });
+
+  it("renders a three-decimal currency to three places", () => {
+    // 12.500 KWD. Divided by 100 it showed "125.00", which saved back as
+    // 125.000 KWD and charged the buyer ten times the price.
+    expect(centsToAmount(12_500, "KWD")).toBe("12.500");
+  });
+
+  it("keeps blank blank, because blank is not zero", () => {
+    // An empty variant price means "inherit from the product"; 0 means free.
+    expect(centsToAmount(null)).toBe("");
+    expect(centsToAmount(undefined)).toBe("");
+    expect(centsToAmount(0)).toBe("0.00");
+  });
+
+  it.each(["USD", "EUR", "JPY", "KWD", "BHD", "ISK", "TND", "CLP"])(
+    "round-trips through the parser unchanged in %s",
+    (code) => {
+      // The property that matters: opening a form and saving it untouched is
+      // not allowed to move the price, whatever the currency.
+      for (const minor of [0, 1, 999, 1000, 12_500, 123_456]) {
+        expect(parseMoneyToCents(centsToAmount(minor, code), code)).toBe(minor);
+      }
+    },
+  );
 });

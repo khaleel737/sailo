@@ -32,7 +32,7 @@ export async function getShopPageData(
   const [page, facets, checkout, translations] = await Promise.all([
     // Only the first batch. The rest arrives as the shopper scrolls, so a
     // catalogue with no ceiling can't decide how long this page takes.
-    getPublicProducts(shop.id, filters),
+    getPublicProducts(shop.id, shop.currency, filters),
     getShopFacets(shop.id),
     getCheckoutOptions(shop.id),
     getShopT(shop.locale),

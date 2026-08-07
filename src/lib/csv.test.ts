@@ -138,15 +138,29 @@ describe("toCsv", () => {
 
 describe("the cell formatters", () => {
   it("writes money as a bare decimal with no currency symbol", () => {
-    expect(money(2999)).toBe("29.99");
-    expect(money(0)).toBe("0.00");
+    expect(money(2999, "USD")).toBe("29.99");
+    expect(money(0, "USD")).toBe("0.00");
   });
 
   it("distinguishes a missing price from a free one", () => {
     // Blank means "inherit"; 0.00 means free. Collapsing them costs money.
-    expect(money(null)).toBe("");
-    expect(money(undefined)).toBe("");
-    expect(money(0)).toBe("0.00");
+    expect(money(null, "USD")).toBe("");
+    expect(money(undefined, "USD")).toBe("");
+    expect(money(0, "USD")).toBe("0.00");
+  });
+
+  it("writes the currency's own minor unit, so a re-import reads it back", () => {
+    /*
+     * Export and import are a round trip: `parseMoneyField` has been
+     * currency-aware since seventy-one currencies were added, while this side
+     * divided by a flat 100. Exporting a JPY catalogue and importing it again
+     * divided every price by a hundred, in bulk, silently.
+     */
+    expect(money(1000, "JPY")).toBe("1000");
+    expect(money(12_500, "KWD")).toBe("12.500");
+    for (const [minor, code] of [[1000, "JPY"], [12_500, "KWD"], [2999, "USD"]] as const) {
+      expect(parseMoneyField(money(minor, code), code)).toBe(minor);
+    }
   });
 
   it("writes booleans as the words importers expect", () => {

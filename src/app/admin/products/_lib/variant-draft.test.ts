@@ -92,7 +92,7 @@ describe("probablyMissingCommas", () => {
 
 describe("toDrafts", () => {
   it("keeps an unset price empty, never '0.00'", () => {
-    const [draft] = Object.values(toDrafts([variant()]));
+    const [draft] = Object.values(toDrafts([variant()], "USD"));
     expect(draft?.price).toBe("");
     expect(draft?.compareAt).toBe("");
     expect(draft?.stock).toBe("");
@@ -100,16 +100,17 @@ describe("toDrafts", () => {
 
   it("shows a real zero price as 0.00, which is not the same as unset", () => {
     const [draft] = Object.values(
-      toDrafts([{ ...variant(), priceCents: 0 } as ProductVariant]),
+      toDrafts([{ ...variant(), priceCents: 0 } as ProductVariant], "USD"),
     );
     expect(draft?.price).toBe("0.00");
   });
 
   it("converts minor units to two decimals", () => {
     const [draft] = Object.values(
-      toDrafts([
-        { ...variant(), priceCents: 1999, compareAtCents: 2999 } as ProductVariant,
-      ]),
+      toDrafts(
+        [{ ...variant(), priceCents: 1999, compareAtCents: 2999 } as ProductVariant],
+        "USD",
+      ),
     );
     expect(draft?.price).toBe("19.99");
     expect(draft?.compareAt).toBe("29.99");
@@ -117,24 +118,46 @@ describe("toDrafts", () => {
 
   it("does not lose a cent on amounts that don't divide cleanly", () => {
     const [draft] = Object.values(
-      toDrafts([{ ...variant(), priceCents: 1 } as ProductVariant]),
+      toDrafts([{ ...variant(), priceCents: 1 } as ProductVariant], "USD"),
     );
     expect(draft?.price).toBe("0.01");
   });
 
   it("keeps zero stock distinct from untracked stock", () => {
     const tracked = Object.values(
-      toDrafts([{ ...variant(), stockQuantity: 0 } as ProductVariant]),
+      toDrafts([{ ...variant(), stockQuantity: 0 } as ProductVariant], "USD"),
     )[0];
     expect(tracked?.stock).toBe("0"); // sold out
-    expect(Object.values(toDrafts([variant()]))[0]?.stock).toBe(""); // not counted
+    expect(Object.values(toDrafts([variant()], "USD"))[0]?.stock).toBe(""); // not counted
+  });
+
+  it("prices a variant in the shop's own currency, not in cents", () => {
+    /*
+     * The bug: this divided by a flat 100 while `parseMoneyToCents` — which
+     * reads the string back on save — has known each currency's minor unit
+     * since seventy-one of them were added. A JPY seller opening the variant
+     * editor and pressing Save without touching a field turned ¥1,000 into
+     * ¥10; a KWD seller turned 12.500 into 125.000 and charged ten times.
+     */
+    const jpy = Object.values(
+      toDrafts([{ ...variant(), priceCents: 1000 } as ProductVariant], "JPY"),
+    )[0];
+    expect(jpy?.price).toBe("1000");
+
+    const kwd = Object.values(
+      toDrafts([{ ...variant(), priceCents: 12_500 } as ProductVariant], "KWD"),
+    )[0];
+    expect(kwd?.price).toBe("12.500");
   });
 
   it("keys drafts by the option combination", () => {
-    const drafts = toDrafts([
-      { ...variant(), options: { Size: "S" } } as ProductVariant,
-      { ...variant(), id: "v2", options: { Size: "M" } } as ProductVariant,
-    ]);
+    const drafts = toDrafts(
+      [
+        { ...variant(), options: { Size: "S" } } as ProductVariant,
+        { ...variant(), id: "v2", options: { Size: "M" } } as ProductVariant,
+      ],
+      "USD",
+    );
     expect(Object.keys(drafts)).toHaveLength(2);
   });
 });

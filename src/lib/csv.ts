@@ -4,12 +4,21 @@
  * symbols or thousand separators, and a `Handle` as the product's stable key.
  */
 
-import { moneyToCents } from "@/lib/utils";
+import { centsToAmount, moneyToCents } from "@/lib/utils";
 
-/** Formats minor units as a bare decimal — `29.99`, never `$29.99`. */
-export function money(cents: number | null | undefined) {
-  if (cents === null || cents === undefined) return "";
-  return (cents / 100).toFixed(2);
+/**
+ * Formats minor units as a bare decimal — `29.99`, never `$29.99`.
+ *
+ * `currency` is required, not defaulted. A CSV from this file is read back by
+ * `lib/import/products.ts`, which has been currency-aware since seventy-one
+ * currencies were added: it parses a cell with the shop's minor unit in hand.
+ * This side divided by a flat 100, so exporting a JPY catalogue and importing
+ * it again divided every price by a hundred, in bulk, with no error anywhere.
+ * Making the argument required is what stops a new column being added without
+ * one.
+ */
+export function money(cents: number | null | undefined, currency: string) {
+  return centsToAmount(cents, currency);
 }
 
 export function bool(value: boolean) {

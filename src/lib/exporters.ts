@@ -47,7 +47,7 @@ export const PRODUCT_HEADERS = [
  * on its first row and later rows carry only what differs. A product without
  * options is a single row with the option columns blank.
  */
-export async function exportProducts(shopId: string) {
+export async function exportProducts(shopId: string, currency: string) {
   const rows = await getDb().query.products.findMany({
     where: eq(products.shopId, shopId),
     orderBy: [asc(products.position), desc(products.createdAt)],
@@ -93,8 +93,8 @@ export async function exportProducts(shopId: string) {
         ...productCells(true),
         ...optionCells([]),
         "",
-        money(p.priceCents),
-        money(p.compareAtCents),
+        money(p.priceCents, currency),
+        money(p.compareAtCents, currency),
         p.trackInventory && p.stockQuantity !== null ? p.stockQuantity : "",
         ...tailCells(true),
       ]);
@@ -107,8 +107,11 @@ export async function exportProducts(shopId: string) {
         ...productCells(first),
         ...optionCells(p.options.map((o) => v.options[o.name] ?? "")),
         v.sku ?? "",
-        money(v.priceCents ?? p.priceCents),
-        money(v.compareAtCents ?? (v.priceCents === null ? p.compareAtCents : null)),
+        money(v.priceCents ?? p.priceCents, currency),
+        money(
+          v.compareAtCents ?? (v.priceCents === null ? p.compareAtCents : null),
+          currency,
+        ),
         p.trackInventory && v.stockQuantity !== null ? v.stockQuantity : "",
         ...tailCells(first, v.isAvailable),
       ]);
@@ -197,18 +200,18 @@ export async function exportOrders(shopId: string) {
       o.currency,
       // Order-level money on the first row only, so summing a column across
       // a multi-line order doesn't count its total once per product.
-      first ? money(o.subtotalCents) : money(item.subtotalCents),
-      first ? money(o.discountCents) : "",
+      first ? money(o.subtotalCents, o.currency) : money(item.subtotalCents, o.currency),
+      first ? money(o.discountCents, o.currency) : "",
       first ? (o.couponCode ?? "") : "",
       first ? (o.deliveryLabel ?? "") : "",
-      first ? money(o.deliveryFeeCents) : "",
-      first ? money(o.taxCents) : "",
+      first ? money(o.deliveryFeeCents, o.currency) : "",
+      first ? money(o.taxCents, o.currency) : "",
       first ? (o.taxName ?? "") : "",
       first && o.taxRateBp > 0 ? `${formatPercent(o.taxRateBp)}%` : "",
       first && o.taxCents > 0 ? (o.taxInclusive ? "yes" : "no") : "",
-      first ? money(o.totalCents) : "",
-      first ? money(o.refundedCents) : "",
-      first ? money(o.commissionCents) : "",
+      first ? money(o.totalCents, o.currency) : "",
+      first ? money(o.refundedCents, o.currency) : "",
+      first ? money(o.commissionCents, o.currency) : "",
       o.affiliateCode ?? "",
       o.customerName ?? "",
       o.customerEmail ?? "",
@@ -253,7 +256,7 @@ export const CLIENT_HEADERS = [
   "Created At",
 ];
 
-export async function exportClients(shopId: string) {
+export async function exportClients(shopId: string, currency: string) {
   const rows = await getShopClients(shopId);
 
   return toCsv(
@@ -273,7 +276,7 @@ export async function exportClients(shopId: string) {
         c.postalCode ?? "",
         c.country ?? "",
         c.orderCount,
-        money(c.totalCents),
+        money(c.totalCents, currency),
         c.notes ?? "",
         date(c.createdAt),
       ];
@@ -281,13 +284,29 @@ export async function exportClients(shopId: string) {
   );
 }
 
-export async function runExport(type: ExportType, shopId: string) {
+/**
+ * `currency` is the shop's, and it is threaded rather than looked up here so
+ * every exporter states which currency its numbers are in. An order carries
+ * its own — the shop may have changed currency since — so `exportOrders`
+ * ignores this one and reads each row's.
+ */
+export async function runExport(
+  type: ExportType,
+  shopId: string,
+  currency: string,
+) {
   switch (type) {
     case "products":
-      return { filename: "sailo-products.csv", body: await exportProducts(shopId) };
+      return {
+        filename: "sailo-products.csv",
+        body: await exportProducts(shopId, currency),
+      };
     case "orders":
       return { filename: "sailo-orders.csv", body: await exportOrders(shopId) };
     case "clients":
-      return { filename: "sailo-customers.csv", body: await exportClients(shopId) };
+      return {
+        filename: "sailo-customers.csv",
+        body: await exportClients(shopId, currency),
+      };
   }
 }

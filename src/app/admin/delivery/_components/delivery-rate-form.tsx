@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Loader2, Plus } from "lucide-react";
 import { saveDeliveryMethod } from "@/lib/actions/delivery";
+import { centsToAmount } from "@/lib/utils";
 import {
   DELIVERY_METHOD_DEFS,
   DELIVERY_METHOD_LIST,
@@ -105,7 +106,7 @@ export function DeliveryRateForm({
               id={`${method?.id ?? "new"}-fee`}
               name="fee"
               inputMode="decimal"
-              defaultValue={method ? (method.feeCents / 100).toFixed(2) : "0.00"}
+              defaultValue={centsToAmount(method?.feeCents ?? 0, currency)}
             />
           </Field>
           <Field
@@ -120,7 +121,7 @@ export function DeliveryRateForm({
               defaultValue={
                 method?.freeOverCents !== null &&
                 method?.freeOverCents !== undefined
-                  ? (method.freeOverCents / 100).toFixed(2)
+                  ? centsToAmount(method.freeOverCents, currency)
                   : ""
               }
               placeholder="75.00"

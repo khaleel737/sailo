@@ -4,6 +4,7 @@ import { and, asc, desc, eq, gte, ilike, inArray, lte, or, sql } from "drizzle-o
 import { getDb } from "@/db";
 import { categories, productFiles, productImages, productVariants, products, reviews, type Category, type Product, type ProductImage, type ProductVariant } from "@/db/schema";
 import { shopTag } from "@/lib/cache";
+import { minorPerMajor } from "@/lib/currency";
 import { nextOffsetFor, orderByIds } from "./pagination";
 
 /** Reading the catalogue, for the storefront and for the admin. */
@@ -52,6 +53,7 @@ const EMPTY_PAGE: ProductPage = { items: [], total: 0, nextOffset: null };
  */
 async function readPublicProducts(
   shopId: string,
+  currency: string,
   filters: ShopFilters = {},
   offset = 0,
   limit = PRODUCT_PAGE_SIZE,
@@ -83,13 +85,22 @@ async function readPublicProducts(
   if (filters.kind) where.push(eq(products.kind, filters.kind));
   if (filters.inStock === "1") where.push(eq(products.inStock, true));
 
+  /*
+   * The buyer types a price in major units — "20" means twenty of whatever the
+   * shop sells in. A flat hundred read that as 2,000 minor units, which is
+   * right for dollars and wrong for the twenty-odd currencies that do not have
+   * two decimals: a JPY shop filtering under ¥2,000 was really filtering under
+   * ¥20 and saw an empty catalogue.
+   */
+  const per = minorPerMajor(currency);
+
   const min = Number(filters.min);
   if (Number.isFinite(min) && filters.min)
-    where.push(gte(products.priceCents, Math.round(min * 100)));
+    where.push(gte(products.priceCents, Math.round(min * per)));
 
   const max = Number(filters.max);
   if (Number.isFinite(max) && filters.max)
-    where.push(lte(products.priceCents, Math.round(max * 100)));
+    where.push(lte(products.priceCents, Math.round(max * per)));
 
   /*
    * Approved-review aggregate, joined rather than fetched afterwards. Sorting
@@ -254,6 +265,7 @@ export async function getAdminProduct(shopId: string, id: string) {
  */
 export async function getPublicProducts(
   shopId: string,
+  currency: string,
   filters: ShopFilters = {},
   offset = 0,
   limit = PRODUCT_PAGE_SIZE,
@@ -261,7 +273,7 @@ export async function getPublicProducts(
   "use cache";
   cacheLife("max");
   cacheTag(shopTag(shopId));
-  return readPublicProducts(shopId, filters, offset, limit);
+  return readPublicProducts(shopId, currency, filters, offset, limit);
 }
 
 export async function getProductBySlug(shopId: string, slug: string) {

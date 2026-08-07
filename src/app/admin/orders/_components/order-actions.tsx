@@ -5,7 +5,7 @@ import { useFormStatus } from "react-dom";
 import { Loader2, RotateCcw, Truck } from "lucide-react";
 import { markOrderShipped, refundOrder } from "@/lib/actions/order-admin";
 import { Alert, Button, Field, Input } from "@/components/ui";
-import { formatMoney } from "@/lib/utils";
+import { centsToAmount, formatMoney } from "@/lib/utils";
 import type { Order } from "@/db/schema";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
 
@@ -134,7 +134,7 @@ export function OrderActions({ order }: { order: Order }) {
                 id={`${order.id}-amount`}
                 name="amount"
                 inputMode="decimal"
-                placeholder={(order.totalCents / 100).toFixed(2)}
+                placeholder={centsToAmount(order.totalCents, order.currency)}
               />
             </Field>
             <Field label={a.orders.refundReason} htmlFor={`${order.id}-reason`} hint={a.common.optional}>

@@ -161,6 +161,34 @@ export function parseMoneyToCents(value: string | number, currency = "USD"): num
   return moneyToCents(value, currency) ?? 0;
 }
 
+/**
+ * The inverse of `moneyToCents`: minor units to the plain decimal string an
+ * `<input>` shows and a CSV column holds. Null stays empty, because a blank
+ * price means "inherit" and `0` means free.
+ *
+ * This is the half of the pair that a currency-awareness pass missed, and the
+ * asymmetry cost real money. Every edit form renders the stored amount into a
+ * text field and saves whatever comes back through `parseMoneyToCents`, which
+ * has known each currency's minor unit since seventy-one of them were added.
+ * The render side still divided by a flat 100 — so a seller who opened a JPY
+ * product and pressed Save without touching anything turned ¥1,000 into ¥10,
+ * and a KWD seller turned 12.500 KWD into 125.000 and charged their buyer ten
+ * times the price. Both sides agreed with each other afterwards, so nothing
+ * downstream could notice: `connect.ts` re-checks the Stripe lines against the
+ * order subtotal, and both were corrupt together.
+ *
+ * No grouping separators and always `.` for the decimal, because the output is
+ * parsed again rather than read — `formatMoney` is what a human should see.
+ */
+export function centsToAmount(
+  minor: number | null | undefined,
+  currency = "USD",
+): string {
+  if (minor === null || minor === undefined || !Number.isFinite(minor)) return "";
+  const decimals = currencyDecimals(currency);
+  return (minor / 10 ** decimals).toFixed(decimals);
+}
+
 /** Human file size for download listings: 1536 → "1.5 KB". */
 export function formatBytes(bytes: number) {
   if (!Number.isFinite(bytes) || bytes <= 0) return "0 KB";

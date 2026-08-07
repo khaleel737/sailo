@@ -10,6 +10,13 @@ import {
   getPaidAccounts,
 } from "@/lib/hq";
 import { billingState, planMonthlyCents } from "@/lib/hq-metrics";
+
+/**
+ * Sailo bills its own sellers in USD, whatever currency they sell in. The plan
+ * column and the seller's revenue columns are therefore different currencies
+ * on the same row, which is why each one names its own.
+ */
+const PLATFORM_CURRENCY = "USD";
 import { planFor } from "@/lib/plans";
 
 /**
@@ -96,10 +103,10 @@ async function build(
             shop?.currency ?? "",
             shop ? planFor(shop).name : "",
             shop ? billingState(shop) : "no shop",
-            shop ? money(planMonthlyCents(shop)) : "",
+            shop ? money(planMonthlyCents(shop), PLATFORM_CURRENCY) : "",
             a.productCount,
             a.orderCount,
-            money(a.gmvCents),
+            money(a.gmvCents, shop?.currency ?? PLATFORM_CURRENCY),
             shop?.stripeCustomerId ?? "",
             shop?.stripeAccountId ?? "",
             shop?.staffNote ?? "",
@@ -139,7 +146,7 @@ async function build(
           shop.plan,
           shop.subscriptionInterval ?? "",
           shop.subscriptionStatus ?? "",
-          money(planMonthlyCents(shop)),
+          money(planMonthlyCents(shop), PLATFORM_CURRENCY),
           date(shop.currentPeriodEnd),
           bool(shop.cancelAtPeriodEnd),
           shop.compPlan ?? "",
@@ -186,12 +193,12 @@ async function build(
           order.productTitle,
           order.itemCount,
           order.currency,
-          money(order.subtotalCents),
-          money(order.discountCents),
-          money(order.deliveryFeeCents),
-          money(order.taxCents),
-          money(order.totalCents),
-          money(order.refundedCents),
+          money(order.subtotalCents, order.currency),
+          money(order.discountCents, order.currency),
+          money(order.deliveryFeeCents, order.currency),
+          money(order.taxCents, order.currency),
+          money(order.totalCents, order.currency),
+          money(order.refundedCents, order.currency),
           order.paymentMethod,
           order.paymentStatus,
           order.status,
@@ -199,7 +206,7 @@ async function build(
           order.customerEmail ?? "",
           order.couponCode ?? "",
           order.affiliateCode ?? "",
-          money(order.commissionCents),
+          money(order.commissionCents, order.currency),
         ]),
       };
     }
@@ -230,8 +237,8 @@ async function build(
           product.slug,
           product.kind,
           currency,
-          money(product.priceCents),
-          money(product.compareAtCents),
+          money(product.priceCents, currency),
+          money(product.compareAtCents, currency),
           bool(product.isPublished),
           bool(product.inStock),
           bool(product.trackInventory),
@@ -272,8 +279,8 @@ async function build(
           r.affiliate.clicks,
           r.orderCount,
           r.currency,
-          money(r.earnedCents),
-          money(r.unpaidCents),
+          money(r.earnedCents, r.currency),
+          money(r.unpaidCents, r.currency),
         ]),
       };
     }
@@ -303,7 +310,7 @@ async function build(
           r.client.country ?? "",
           r.orderCount,
           r.currency,
-          money(r.spentCents),
+          money(r.spentCents, r.currency),
         ]),
       };
     }

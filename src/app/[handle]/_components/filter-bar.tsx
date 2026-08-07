@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { minorPerMajor } from "@/lib/currency";
 import type { ShopFacets } from "@/lib/queries";
 import type { Dictionary } from "@/i18n";
 import { interpolate, plural } from "@/i18n";
@@ -222,7 +223,7 @@ export function FilterBar({
                 inputMode="decimal"
                 defaultValue={activeMin}
                 onBlur={(e) => setParams({ min: e.target.value || null })}
-                placeholder={majorUnits(facets.priceMinCents)}
+                placeholder={majorUnits(facets.priceMinCents, currency)}
                 aria-label={t.shop.min}
                 className="surface-elevated h-10 w-full rounded-lg px-3 text-sm outline-none"
               />
@@ -233,7 +234,7 @@ export function FilterBar({
                 inputMode="decimal"
                 defaultValue={activeMax}
                 onBlur={(e) => setParams({ max: e.target.value || null })}
-                placeholder={majorUnits(facets.priceMaxCents)}
+                placeholder={majorUnits(facets.priceMaxCents, currency)}
                 aria-label={t.shop.max}
                 className="surface-elevated h-10 w-full rounded-lg px-3 text-sm outline-none"
               />
@@ -312,7 +313,13 @@ function CategoryChip({
   );
 }
 
-/** Minor units as a plain number, for a price placeholder. */
-function majorUnits(cents: number) {
-  return String(Math.round(cents / 100));
+/**
+ * Minor units as a plain number, for a price placeholder.
+ *
+ * The buyer types major units into the box beside this, and the query parses
+ * them back with the shop's own minor unit — so a flat hundred here offered a
+ * JPY shopper a "from ¥10" placeholder for a ¥1,000 product.
+ */
+function majorUnits(cents: number, currency: string) {
+  return String(Math.round(cents / minorPerMajor(currency)));
 }

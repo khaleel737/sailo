@@ -41,7 +41,7 @@ export async function loadMoreProducts(
   if (!shop || !isShopLive(shop)) return empty;
 
   const [page, checkout, { t, locale }] = await Promise.all([
-    getPublicProducts(shop.id, filters, offset),
+    getPublicProducts(shop.id, shop.currency, filters, offset),
     getCheckoutOptions(shop.id),
     getShopT(shop.locale),
   ]);
