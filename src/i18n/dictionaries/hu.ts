@@ -286,7 +286,7 @@ export const hu: Dictionary = {
     pro4: "Egy év statisztika",
     pro5: "E-mailes támogatás",
     biz1: "Korlátlan termék",
-    biz2: "Kártyás fizetés saját Stripe- vagy Paystack-fiókkal",
+    biz2: "Kártyás fizetés saját Stripe-fiókkal",
     biz3: "Kedvezménykódok",
     biz4: "Ajánlói program jutalékkal",
     biz5: "Három év statisztika",

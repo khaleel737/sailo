@@ -440,7 +440,7 @@ export const en = {
     pro4: "A year of analytics",
     pro5: "Email support",
     biz1: "Unlimited products",
-    biz2: "Card payments through your own Stripe or Paystack",
+    biz2: "Card payments through your own Stripe",
     biz3: "Discount codes",
     biz4: "Referral programme with commissions",
     biz5: "Three years of analytics",

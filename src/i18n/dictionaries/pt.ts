@@ -293,7 +293,7 @@ export const pt: Dictionary = {
     pro4: "Um ano de estatísticas",
     pro5: "Apoio por e-mail",
     biz1: "Produtos ilimitados",
-    biz2: "Pagamentos com cartão pelo seu Stripe ou Paystack",
+    biz2: "Pagamentos com cartão pelo seu Stripe",
     biz3: "Códigos de desconto",
     biz4: "Programa de referências com comissões",
     biz5: "Três anos de estatísticas",

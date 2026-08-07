@@ -240,7 +240,7 @@ export const ms: Dictionary = {
     pro1: "250 produk", pro2: "Tiada lencana Sailo",
     pro3: "Eksport produk, pesanan dan pelanggan", pro4: "Analitis setahun",
     pro5: "Sokongan e-mel", biz1: "Produk tanpa had",
-    biz2: "Bayaran kad melalui Stripe atau Paystack anda sendiri",
+    biz2: "Bayaran kad melalui Stripe anda sendiri",
     biz3: "Kod diskaun", biz4: "Program rujukan dengan komisen",
     biz5: "Analitis tiga tahun", biz6: "Sokongan keutamaan",
   },

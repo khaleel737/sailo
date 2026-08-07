@@ -37,7 +37,7 @@ export const marketingMs: MarketingDictionary = {
 
   rails: {
     title: "Terima bayaran mengikut cara pembeli anda sudah membayar",
-    body: "Pembayaran kad melalui akaun Stripe atau Paystack anda sendiri, atau cara yang orang di tempat anda benar-benar guna — dengan arahan anda, dalam perkataan anda.",
+    body: "Pembayaran kad melalui akaun Stripe anda sendiri, atau cara yang orang di tempat anda benar-benar guna — dengan arahan anda, dalam perkataan anda.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingMs: MarketingDictionary = {
     q1: "Adakah saya perlukan laman web?",
     a1: "Tidak — Sailo ialah laman webnya. Anda dapat sailo.store/namaanda sebaik mendaftar, dan ia berfungsi pada mana-mana telefon tanpa anda menyentuh tema.",
     q2: "Bagaimana pembeli sebenarnya membayar saya?",
-    a2: "Seperti cara anda sudah menerima wang. Kad, melalui akaun Stripe atau Paystack anda sendiri, jadi caj itu mendarat terus kepada anda. Atau pemindahan bank, bayar semasa terima dan wang mudah alih, dengan arahan yang anda tulis sendiri. Sailo tidak pernah memegang wang itu.",
+    a2: "Seperti cara anda sudah menerima wang. Kad, melalui akaun Stripe anda sendiri, jadi caj itu mendarat terus kepada anda. Atau pemindahan bank, bayar semasa terima dan wang mudah alih, dengan arahan yang anda tulis sendiri. Sailo tidak pernah memegang wang itu.",
     q3: "Adakah Sailo mengambil komisen?",
     a3: "Untuk pesanan sembang, pindahan bank dan tunai, tidak — semuanya milik anda. Jualan kad dikenakan {fee} daripada barangan, diambil sebagai yuran Stripe. Tidak sekali pada penghantaran atau cukai.",
     q4: "Bolehkah saya menjual perkhidmatan atau fail digital?",

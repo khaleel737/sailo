@@ -37,7 +37,7 @@ export const marketingRo: MarketingDictionary = {
 
   rails: {
     title: "Încasează așa cum clienții îți plătesc deja",
-    body: "Plată cu cardul prin propriul cont Stripe sau Paystack, ori metodele folosite cu adevărat la tine — cu instrucțiunile scrise de tine.",
+    body: "Plată cu cardul prin propriul cont Stripe, ori metodele folosite cu adevărat la tine — cu instrucțiunile scrise de tine.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingRo: MarketingDictionary = {
     q1: "Am nevoie de un site?",
     a1: "Nu — Sailo e site-ul. Ai sailo.store/numeletau din clipa în care te înregistrezi și funcționează pe orice telefon, fără să atingi vreo temă.",
     q2: "Cum mă plătesc de fapt cumpărătorii?",
-    a2: "Așa cum încasezi deja azi. Cu cardul, prin propriul cont Stripe sau Paystack, deci încasarea ajunge direct la tine. Sau prin transfer, plata la livrare și bani pe mobil, cu instrucțiuni scrise de tine. Sailo nu ține niciodată banii.",
+    a2: "Așa cum încasezi deja azi. Cu cardul, prin propriul cont Stripe, deci încasarea ajunge direct la tine. Sau prin transfer, plata la livrare și bani pe mobil, cu instrucțiuni scrise de tine. Sailo nu ține niciodată banii.",
     q3: "Ia Sailo comision?",
     a3: "La comenzile prin chat, transfer bancar și numerar, nu — sunt integral ale tale. Vânzările cu cardul au {fee} din valoarea produselor, reținut ca taxă Stripe. Niciodată din livrare sau taxe.",
     q4: "Pot vinde servicii sau fișiere digitale?",

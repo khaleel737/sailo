@@ -37,7 +37,7 @@ export const marketingIt: MarketingDictionary = {
 
   rails: {
     title: "Incassa come i tuoi clienti già ti pagano",
-    body: "Pagamento con carta tramite il tuo account Stripe o Paystack, oppure i canali che si usano davvero dove sei tu — con le tue istruzioni, scritte da te.",
+    body: "Pagamento con carta tramite il tuo account Stripe, oppure i canali che si usano davvero dove sei tu — con le tue istruzioni, scritte da te.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingIt: MarketingDictionary = {
     q1: "Mi serve un sito?",
     a1: "No — Sailo è il sito. Hai sailo.store/iltuonome dal momento in cui ti registri, e funziona su qualsiasi telefono senza toccare un tema.",
     q2: "Come mi pagano davvero?",
-    a2: "Come incassi già oggi. Con carta, tramite il tuo account Stripe o Paystack, quindi l'incasso arriva direttamente a te. Oppure con bonifico, contrassegno e mobile money, con istruzioni scritte da te. Sailo non tiene mai i soldi.",
+    a2: "Come incassi già oggi. Con carta, tramite il tuo account Stripe, quindi l'incasso arriva direttamente a te. Oppure con bonifico, contrassegno e mobile money, con istruzioni scritte da te. Sailo non tiene mai i soldi.",
     q3: "Sailo prende una commissione?",
     a3: "Su ordini via chat, bonifico e contanti no: sono interamente tuoi. Le vendite con carta hanno il {fee} sui prodotti, trattenuto come commissione Stripe. Mai su spedizione o imposte.",
     q4: "Posso vendere servizi o file digitali?",

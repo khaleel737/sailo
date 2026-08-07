@@ -293,7 +293,7 @@ export const nl: Dictionary = {
     pro4: "Een jaar statistieken",
     pro5: "E-mailsupport",
     biz1: "Onbeperkt producten",
-    biz2: "Kaartbetalingen via je eigen Stripe of Paystack",
+    biz2: "Kaartbetalingen via je eigen Stripe",
     biz3: "Kortingscodes",
     biz4: "Referralprogramma met commissie",
     biz5: "Drie jaar statistieken",

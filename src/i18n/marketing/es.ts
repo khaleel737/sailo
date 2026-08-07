@@ -37,7 +37,7 @@ export const marketingEs: MarketingDictionary = {
 
   rails: {
     title: "Cobra como tus clientes ya te pagan",
-    body: "Pago con tarjeta a través de tu propia cuenta de Stripe o Paystack, o los medios que de verdad se usan donde estás — con tus instrucciones, escritas por ti.",
+    body: "Pago con tarjeta a través de tu propia cuenta de Stripe, o los medios que de verdad se usan donde estás — con tus instrucciones, escritas por ti.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingEs: MarketingDictionary = {
     q1: "¿Necesito una web?",
     a1: "No — Sailo es la web. Tienes sailo.store/tunombre desde que te registras, y funciona en cualquier móvil sin tocar una plantilla.",
     q2: "¿Cómo me pagan de verdad?",
-    a2: "Como ya cobras hoy. Con tarjeta, a través de tu propia cuenta de Stripe o Paystack, así que el cobro te llega directamente. O por transferencia, contra reembolso y dinero móvil, con instrucciones escritas por ti. Sailo nunca retiene el dinero.",
+    a2: "Como ya cobras hoy. Con tarjeta, a través de tu propia cuenta de Stripe, así que el cobro te llega directamente. O por transferencia, contra reembolso y dinero móvil, con instrucciones escritas por ti. Sailo nunca retiene el dinero.",
     q3: "¿Sailo se lleva comisión?",
     a3: "En pedidos por chat, transferencia y efectivo no: son íntegramente tuyos. Las ventas con tarjeta llevan un {fee} de los productos, cobrado como comisión de Stripe. Nunca sobre el envío ni los impuestos.",
     q4: "¿Puedo vender servicios o archivos digitales?",

@@ -37,7 +37,7 @@ export const marketingSq: MarketingDictionary = {
 
   rails: {
     title: "Paguhuni ashtu si blerësit tuaj tashmë ju paguajnë",
-    body: "Arkë me kartë përmes llogarisë suaj Stripe ose Paystack, ose mënyrat që njerëzit i përdorin vërtet aty ku jeni — me udhëzimet tuaja, me fjalët tuaja.",
+    body: "Arkë me kartë përmes llogarisë suaj Stripe, ose mënyrat që njerëzit i përdorin vërtet aty ku jeni — me udhëzimet tuaja, me fjalët tuaja.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingSq: MarketingDictionary = {
     q1: "A më duhet një faqe interneti?",
     a1: "Jo — Sailo është faqja. Merrni sailo.store/emriuaj sapo regjistroheni dhe funksionon në çdo telefon pa prekur asnjë temë.",
     q2: "Si më paguajnë vërtet blerësit?",
-    a2: "Ashtu si i merrni tashmë paratë. Me kartë, përmes llogarisë suaj Stripe ose Paystack, që pagesa të vijë drejtpërdrejt te ju. Ose me transfertë bankare, pagesë në dorëzim dhe para celulare, me udhëzime që i shkruani vetë. Sailo nuk i mban kurrë paratë.",
+    a2: "Ashtu si i merrni tashmë paratë. Me kartë, përmes llogarisë suaj Stripe, që pagesa të vijë drejtpërdrejt te ju. Ose me transfertë bankare, pagesë në dorëzim dhe para celulare, me udhëzime që i shkruani vetë. Sailo nuk i mban kurrë paratë.",
     q3: "A merr Sailo komision?",
     a3: "Për porositë me chat, transfertë bankare dhe para në dorë, jo — ato janë plotësisht tuajat. Shitjet me kartë kanë {fee} të mallit, marrë si tarifë Stripe. Kurrë mbi dërgesën apo taksën.",
     q4: "A mund të shes shërbime ose skedarë dixhitalë?",

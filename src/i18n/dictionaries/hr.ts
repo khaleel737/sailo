@@ -240,7 +240,7 @@ export const hr: Dictionary = {
     pro1: "250 proizvoda", pro2: "Bez Sailo oznake",
     pro3: "Izvoz proizvoda, narudžbi i kupaca", pro4: "Godina dana statistike",
     pro5: "Podrška e-poštom", biz1: "Neograničeno proizvoda",
-    biz2: "Plaćanje karticom preko vašeg Stripea ili Paystacka",
+    biz2: "Plaćanje karticom preko vašeg Stripea",
     biz3: "Kodovi za popust", biz4: "Partnerski program s provizijama",
     biz5: "Tri godine statistike", biz6: "Prioritetna podrška",
   },

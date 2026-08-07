@@ -240,7 +240,7 @@ export const sq: Dictionary = {
     pro1: "250 produkte", pro2: "Pa shenjën Sailo",
     pro3: "Eksportoni produkte, porosi dhe klientë", pro4: "Një vit statistika",
     pro5: "Mbështetje me email", biz1: "Produkte të pakufizuara",
-    biz2: "Pagesa me kartë përmes Stripe ose Paystack tuaj",
+    biz2: "Pagesa me kartë përmes Stripe tuaj",
     biz3: "Kode zbritjeje", biz4: "Program rekomandimesh me komisione",
     biz5: "Tre vjet statistika", biz6: "Mbështetje prioritare",
   },

@@ -37,7 +37,7 @@ export const marketingHr: MarketingDictionary = {
 
   rails: {
     title: "Naplatite onako kako vam kupci ionako plaćaju",
-    body: "Plaćanje karticom preko vašeg Stripe ili Paystack računa, ili načini koje ljudi kod vas stvarno koriste — s vašim uputama, vašim riječima.",
+    body: "Plaćanje karticom preko vašeg Stripe računa, ili načini koje ljudi kod vas stvarno koriste — s vašim uputama, vašim riječima.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingHr: MarketingDictionary = {
     q1: "Trebam li web-stranicu?",
     a1: "Ne — Sailo jest web-stranica. Dobivate sailo.store/vaseime čim se prijavite i radi na svakom mobitelu bez diranja teme.",
     q2: "Kako mi kupci zapravo plaćaju?",
-    a2: "Onako kako već primate novac. Karticom, preko vašeg Stripe ili Paystack računa, pa naplata stiže izravno vama. Ili bankovnom uplatom, pouzećem i mobilnim novcem, s uputama koje sami napišete. Sailo nikad ne drži novac.",
+    a2: "Onako kako već primate novac. Karticom, preko vašeg Stripe računa, pa naplata stiže izravno vama. Ili bankovnom uplatom, pouzećem i mobilnim novcem, s uputama koje sami napišete. Sailo nikad ne drži novac.",
     q3: "Uzima li Sailo proviziju?",
     a3: "Kod narudžbi putem chata, bankovnog prijenosa i gotovine ne — one su u cijelosti vaše. Prodaja karticom nosi {fee} od robe, naplaćeno kao Stripe naknada. Nikada na dostavu ili porez.",
     q4: "Mogu li prodavati usluge ili digitalne datoteke?",

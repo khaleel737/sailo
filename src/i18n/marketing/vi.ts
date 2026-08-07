@@ -37,7 +37,7 @@ export const marketingVi: MarketingDictionary = {
 
   rails: {
     title: "Nhận tiền theo đúng cách khách đã trả cho bạn",
-    body: "Thanh toán thẻ qua tài khoản Stripe hoặc Paystack của chính bạn, hoặc những cách người ở chỗ bạn thật sự dùng — với hướng dẫn của bạn, bằng lời của bạn.",
+    body: "Thanh toán thẻ qua tài khoản Stripe của chính bạn, hoặc những cách người ở chỗ bạn thật sự dùng — với hướng dẫn của bạn, bằng lời của bạn.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingVi: MarketingDictionary = {
     q1: "Tôi có cần website không?",
     a1: "Không — Sailo chính là website. Bạn có sailo.store/tenban ngay khi đăng ký, và nó chạy trên mọi điện thoại mà bạn không phải đụng đến giao diện.",
     q2: "Khách thật sự trả tiền cho tôi thế nào?",
-    a2: "Đúng như cách bạn vẫn nhận tiền. Bằng thẻ, qua tài khoản Stripe hoặc Paystack của chính bạn, nên tiền về thẳng chỗ bạn. Hoặc chuyển khoản, thanh toán khi nhận hàng và ví di động, với hướng dẫn bạn tự viết. Sailo không bao giờ giữ tiền.",
+    a2: "Đúng như cách bạn vẫn nhận tiền. Bằng thẻ, qua tài khoản Stripe của chính bạn, nên tiền về thẳng chỗ bạn. Hoặc chuyển khoản, thanh toán khi nhận hàng và ví di động, với hướng dẫn bạn tự viết. Sailo không bao giờ giữ tiền.",
     q3: "Sailo có lấy hoa hồng không?",
     a3: "Với đơn qua chat, chuyển khoản và tiền mặt thì không — hoàn toàn là của bạn. Bán qua thẻ chịu {fee} trên giá hàng, thu dưới dạng phí Stripe. Không bao giờ tính trên phí giao hàng hay thuế.",
     q4: "Tôi bán dịch vụ hoặc tệp số được không?",

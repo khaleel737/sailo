@@ -324,7 +324,7 @@ export const zh: Dictionary = {
     pro4: "一年数据分析",
     pro5: "邮件支持",
     biz1: "商品数量不限",
-    biz2: "通过你自己的 Stripe 或 Paystack 收卡",
+    biz2: "通过你自己的 Stripe 收卡",
     biz3: "折扣码",
     biz4: "带佣金的推荐计划",
     biz5: "三年数据分析",

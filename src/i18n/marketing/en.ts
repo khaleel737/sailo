@@ -52,7 +52,7 @@ export const marketingEn = {
 
   rails: {
     title: "Get paid the way your buyers already pay you",
-    body: "Card checkout through your own Stripe or Paystack account, or the rails people actually use where you are — with your instructions, in your words.",
+    body: "Card checkout through your own Stripe account, or the rails people actually use where you are — with your instructions, in your words.",
   },
 
   compare: {
@@ -161,7 +161,7 @@ export const marketingEn = {
     q1: "Do I need a website?",
     a1: "No — Sailo is the website. You get sailo.store/yourname the moment you sign up, and it works on any phone without you touching a theme.",
     q2: "How do buyers actually pay me?",
-    a2: "However you already take money. Card, through your own Stripe or Paystack account, so the charge lands with you directly. Or bank transfer, cash on delivery and mobile money, with instructions you write yourself. Sailo never holds the money.",
+    a2: "However you already take money. Card, through your own Stripe account, so the charge lands with you directly. Or bank transfer, cash on delivery and mobile money, with instructions you write yourself. Sailo never holds the money.",
     q3: "Does Sailo take a commission?",
     a3: "On chat, bank-transfer and cash orders, no — those are yours in full. Card sales carry {fee} of the goods, taken as a Stripe fee at checkout. Never on delivery or tax.",
     q4: "Can I sell services or digital files?",

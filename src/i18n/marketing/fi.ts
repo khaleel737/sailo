@@ -37,7 +37,7 @@ export const marketingFi: MarketingDictionary = {
 
   rails: {
     title: "Ota rahat vastaan niin kuin asiakkaasi jo maksavat",
-    body: "Korttimaksu oman Stripe- tai Paystack-tilisi kautta, tai ne tavat joita teillä oikeasti käytetään — omilla ohjeillasi ja omin sanoin.",
+    body: "Korttimaksu oman Stripe-tilisi kautta, tai ne tavat joita teillä oikeasti käytetään — omilla ohjeillasi ja omin sanoin.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingFi: MarketingDictionary = {
     q1: "Tarvitsenko verkkosivut?",
     a1: "Et — Sailo on ne verkkosivut. Saat sailo.store/nimesi heti rekisteröityessäsi, ja se toimii millä tahansa puhelimella ilman että kosket teemaan.",
     q2: "Miten ostajat oikeasti maksavat minulle?",
-    a2: "Samoin kuin otat rahaa vastaan jo nyt. Kortilla oman Stripe- tai Paystack-tilisi kautta, jolloin suoritus tulee suoraan sinulle. Tai tilisiirtona, postiennakolla ja mobiilirahalla, ohjeilla jotka kirjoitat itse. Sailo ei koskaan pidä rahoja hallussaan.",
+    a2: "Samoin kuin otat rahaa vastaan jo nyt. Kortilla oman Stripe-tilisi kautta, jolloin suoritus tulee suoraan sinulle. Tai tilisiirtona, postiennakolla ja mobiilirahalla, ohjeilla jotka kirjoitat itse. Sailo ei koskaan pidä rahoja hallussaan.",
     q3: "Ottaako Sailo provisiota?",
     a3: "Chat-, tilisiirto- ja käteistilauksista ei — ne ovat kokonaan sinun. Korttimyynnistä peritään {fee} tuotteista Stripe-maksuna. Ei koskaan toimituksesta tai verosta.",
     q4: "Voinko myydä palveluita tai digitaalisia tiedostoja?",

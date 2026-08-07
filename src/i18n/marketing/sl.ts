@@ -37,7 +37,7 @@ export const marketingSl: MarketingDictionary = {
 
   rails: {
     title: "Zaračunajte tako, kot vam kupci že plačujejo",
-    body: "Plačilo s kartico prek vašega računa Stripe ali Paystack, ali načini, ki jih ljudje pri vas dejansko uporabljajo — z vašimi navodili, vašimi besedami.",
+    body: "Plačilo s kartico prek vašega računa Stripe, ali načini, ki jih ljudje pri vas dejansko uporabljajo — z vašimi navodili, vašimi besedami.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingSl: MarketingDictionary = {
     q1: "Ali potrebujem spletno stran?",
     a1: "Ne — Sailo je spletna stran. sailo.store/vaseime dobite takoj ob prijavi in deluje na vsakem telefonu, ne da bi se dotaknili teme.",
     q2: "Kako mi kupci dejansko plačajo?",
-    a2: "Tako, kot že sprejemate denar. S kartico, prek vašega računa Stripe ali Paystack, tako da plačilo pristane neposredno pri vas. Ali z bančnim nakazilom, plačilom po povzetju in mobilnim denarjem, z navodili, ki jih napišete sami. Sailo denarja nikoli ne zadrži.",
+    a2: "Tako, kot že sprejemate denar. S kartico, prek vašega računa Stripe, tako da plačilo pristane neposredno pri vas. Ali z bančnim nakazilom, plačilom po povzetju in mobilnim denarjem, z navodili, ki jih napišete sami. Sailo denarja nikoli ne zadrži.",
     q3: "Ali Sailo vzame provizijo?",
     a3: "Pri naročilih prek klepeta, nakazila in gotovine ne — ta so v celoti vaša. Pri plačilu s kartico velja {fee} od blaga, zaračunano kot provizija Stripe. Nikoli od dostave ali davka.",
     q4: "Ali lahko prodajam storitve ali digitalne datoteke?",

@@ -37,7 +37,7 @@ export const marketingNl: MarketingDictionary = {
 
   rails: {
     title: "Word betaald zoals je klanten je nu al betalen",
-    body: "Kaartbetaling via je eigen Stripe- of Paystack-account, of de manieren die bij jou echt gebruikt worden — met jouw instructies, in jouw woorden.",
+    body: "Kaartbetaling via je eigen Stripe-account, of de manieren die bij jou echt gebruikt worden — met jouw instructies, in jouw woorden.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingNl: MarketingDictionary = {
     q1: "Heb ik een website nodig?",
     a1: "Nee — Sailo ís de website. Je hebt sailo.store/jouwnaam zodra je je aanmeldt, en het werkt op elke telefoon zonder dat je aan een thema komt.",
     q2: "Hoe betalen kopers me eigenlijk?",
-    a2: "Zoals je nu al betaald wordt. Met kaart, via je eigen Stripe- of Paystack-account, dus de betaling komt rechtstreeks bij jou binnen. Of per overboeking, rembours en mobiel geld, met instructies die je zelf schrijft. Sailo houdt het geld nooit vast.",
+    a2: "Zoals je nu al betaald wordt. Met kaart, via je eigen Stripe-account, dus de betaling komt rechtstreeks bij jou binnen. Of per overboeking, rembours en mobiel geld, met instructies die je zelf schrijft. Sailo houdt het geld nooit vast.",
     q3: "Neemt Sailo commissie?",
     a3: "Bij chat-, overboekings- en contante bestellingen niet — die zijn volledig van jou. Kaartverkopen kosten {fee} van de goederen, ingehouden als Stripe-kosten. Nooit over verzending of belasting.",
     q4: "Kan ik diensten of digitale bestanden verkopen?",

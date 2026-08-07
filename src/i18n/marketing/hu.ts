@@ -37,7 +37,7 @@ export const marketingHu: MarketingDictionary = {
 
   rails: {
     title: "Úgy vedd fel a pénzt, ahogy a vevőid amúgy is fizetnek",
-    body: "Kártyás fizetés a saját Stripe- vagy Paystack-fiókodon keresztül, vagy azok a módok, amelyeket nálatok tényleg használnak — a te szavaiddal írt útmutatóval.",
+    body: "Kártyás fizetés a saját Stripe-fiókodon keresztül, vagy azok a módok, amelyeket nálatok tényleg használnak — a te szavaiddal írt útmutatóval.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingHu: MarketingDictionary = {
     q1: "Kell hozzá weboldal?",
     a1: "Nem — a Sailo maga a weboldal. A sailo.store/aneved a regisztráció pillanatában a tiéd, és bármelyik telefonon működik anélkül, hogy sablonhoz nyúlnál.",
     q2: "Hogyan fizetnek nekem valójában?",
-    a2: "Ugyanúgy, ahogy ma is felveszed a pénzt. Kártyával, a saját Stripe- vagy Paystack-fiókodon át, így az összeg közvetlenül hozzád érkezik. Vagy átutalással, utánvéttel és mobilpénzzel, a te útmutatóddal. A Sailo soha nem tartja a pénzt.",
+    a2: "Ugyanúgy, ahogy ma is felveszed a pénzt. Kártyával, a saját Stripe-fiókodon át, így az összeg közvetlenül hozzád érkezik. Vagy átutalással, utánvéttel és mobilpénzzel, a te útmutatóddal. A Sailo soha nem tartja a pénzt.",
     q3: "Kér a Sailo jutalékot?",
     a3: "Chates, átutalásos és készpénzes rendeléseknél nem — azok teljes egészében a tiéd. A kártyás eladásokat {fee} terheli az áru értékéből, Stripe-díjként levonva. Szállításra és adóra soha.",
     q4: "Árulhatok szolgáltatást vagy digitális fájlt?",

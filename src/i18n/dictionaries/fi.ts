@@ -286,7 +286,7 @@ export const fi: Dictionary = {
     pro4: "Vuoden analytiikka",
     pro5: "Sähköpostituki",
     biz1: "Rajattomasti tuotteita",
-    biz2: "Korttimaksut omalla Stripe- tai Paystack-tililläsi",
+    biz2: "Korttimaksut omalla Stripe-tililläsi",
     biz3: "Alennuskoodit",
     biz4: "Suositteluohjelma palkkioineen",
     biz5: "Kolmen vuoden analytiikka",

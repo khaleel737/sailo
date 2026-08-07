@@ -240,7 +240,7 @@ export const fil: Dictionary = {
     pro1: "250 produkto", pro2: "Walang Sailo badge",
     pro3: "I-export ang mga produkto, order at kostumer", pro4: "Isang taong analytics",
     pro5: "Suporta sa email", biz1: "Walang limitasyong produkto",
-    biz2: "Bayad sa card gamit ang sarili mong Stripe o Paystack",
+    biz2: "Bayad sa card gamit ang sarili mong Stripe",
     biz3: "Mga discount code", biz4: "Referral program na may komisyon",
     biz5: "Tatlong taong analytics", biz6: "Priority na suporta",
   },

@@ -240,7 +240,7 @@ export const vi: Dictionary = {
     pro1: "250 sản phẩm", pro2: "Không có huy hiệu Sailo",
     pro3: "Xuất sản phẩm, đơn hàng và khách hàng", pro4: "Một năm thống kê",
     pro5: "Hỗ trợ qua email", biz1: "Sản phẩm không giới hạn",
-    biz2: "Thanh toán thẻ qua Stripe hoặc Paystack của chính bạn",
+    biz2: "Thanh toán thẻ qua Stripe của chính bạn",
     biz3: "Mã giảm giá", biz4: "Chương trình giới thiệu có hoa hồng",
     biz5: "Ba năm thống kê", biz6: "Hỗ trợ ưu tiên",
   },

@@ -240,7 +240,7 @@ export const sl: Dictionary = {
     pro1: "250 izdelkov", pro2: "Brez oznake Sailo",
     pro3: "Izvoz izdelkov, naročil in strank", pro4: "Leto dni statistike",
     pro5: "Podpora po e-pošti", biz1: "Neomejeno izdelkov",
-    biz2: "Plačilo s kartico prek vašega Stripa ali Paystacka",
+    biz2: "Plačilo s kartico prek vašega Stripa",
     biz3: "Kode za popust", biz4: "Partnerski program s provizijami",
     biz5: "Tri leta statistike", biz6: "Prednostna podpora",
   },

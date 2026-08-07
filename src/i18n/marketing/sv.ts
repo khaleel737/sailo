@@ -37,7 +37,7 @@ export const marketingSv: MarketingDictionary = {
 
   rails: {
     title: "Få betalt som dina kunder redan betalar",
-    body: "Kortbetalning via ditt eget Stripe- eller Paystack-konto, eller de sätt som faktiskt används där du är — med dina egna instruktioner, i dina ord.",
+    body: "Kortbetalning via ditt eget Stripe-konto, eller de sätt som faktiskt används där du är — med dina egna instruktioner, i dina ord.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingSv: MarketingDictionary = {
     q1: "Behöver jag en webbplats?",
     a1: "Nej — Sailo är webbplatsen. Du får sailo.store/dittnamn i samma stund du registrerar dig, och det fungerar på vilken mobil som helst utan att du rör ett tema.",
     q2: "Hur betalar köpare mig egentligen?",
-    a2: "Som du redan tar betalt idag. Med kort, via ditt eget Stripe- eller Paystack-konto, så pengarna landar direkt hos dig. Eller med banköverföring, postförskott och mobila betalningar, med instruktioner du skriver själv. Sailo håller aldrig i pengarna.",
+    a2: "Som du redan tar betalt idag. Med kort, via ditt eget Stripe-konto, så pengarna landar direkt hos dig. Eller med banköverföring, postförskott och mobila betalningar, med instruktioner du skriver själv. Sailo håller aldrig i pengarna.",
     q3: "Tar Sailo provision?",
     a3: "På chatt-, banköverförings- och kontantordrar nej — de är helt dina. Kortförsäljning kostar {fee} av varorna, taget som en Stripe-avgift. Aldrig på frakt eller skatt.",
     q4: "Kan jag sälja tjänster eller digitala filer?",

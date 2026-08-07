@@ -37,7 +37,7 @@ export const marketingDe: MarketingDictionary = {
 
   rails: {
     title: "Kassiere so, wie deine Kundschaft ohnehin zahlt",
-    body: "Kartenzahlung über dein eigenes Stripe- oder Paystack-Konto, oder die Wege, die bei dir wirklich benutzt werden — mit deinen Anweisungen, in deinen Worten.",
+    body: "Kartenzahlung über dein eigenes Stripe-Konto, oder die Wege, die bei dir wirklich benutzt werden — mit deinen Anweisungen, in deinen Worten.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingDe: MarketingDictionary = {
     q1: "Brauche ich eine Website?",
     a1: "Nein — Sailo ist die Website. Du hast sailo.store/deinname ab der Anmeldung, und sie läuft auf jedem Handy, ohne dass du ein Theme anfasst.",
     q2: "Wie zahlen mir Käufer tatsächlich?",
-    a2: "So wie heute schon. Per Karte über dein eigenes Stripe- oder Paystack-Konto, die Zahlung landet also direkt bei dir. Oder per Überweisung, Nachnahme und Mobile Money, mit Anweisungen, die du selbst schreibst. Sailo hält das Geld nie.",
+    a2: "So wie heute schon. Per Karte über dein eigenes Stripe-Konto, die Zahlung landet also direkt bei dir. Oder per Überweisung, Nachnahme und Mobile Money, mit Anweisungen, die du selbst schreibst. Sailo hält das Geld nie.",
     q3: "Nimmt Sailo eine Provision?",
     a3: "Bei Chat-, Überweisungs- und Barbestellungen nein — die gehören ganz dir. Kartenzahlungen kosten {fee} der Ware, als Stripe-Gebühr abgezogen. Nie auf Versand oder Steuern.",
     q4: "Kann ich Dienstleistungen oder Dateien verkaufen?",

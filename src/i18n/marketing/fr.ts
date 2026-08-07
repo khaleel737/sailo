@@ -37,7 +37,7 @@ export const marketingFr: MarketingDictionary = {
 
   rails: {
     title: "Encaissez comme vos clients vous paient déjà",
-    body: "Paiement par carte via votre propre compte Stripe ou Paystack, ou les moyens réellement utilisés chez vous — avec vos instructions, écrites par vous.",
+    body: "Paiement par carte via votre propre compte Stripe, ou les moyens réellement utilisés chez vous — avec vos instructions, écrites par vous.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingFr: MarketingDictionary = {
     q1: "Ai-je besoin d'un site web ?",
     a1: "Non — Sailo est le site. Vous avez sailo.store/votrenom dès l'inscription, et ça marche sur n'importe quel téléphone sans toucher à un thème.",
     q2: "Comment mes clients me paient-ils vraiment ?",
-    a2: "Comme aujourd'hui. Par carte, via votre propre compte Stripe ou Paystack, donc l'encaissement vous revient directement. Ou par virement, paiement à la livraison et mobile money, avec vos propres instructions. Sailo ne détient jamais l'argent.",
+    a2: "Comme aujourd'hui. Par carte, via votre propre compte Stripe, donc l'encaissement vous revient directement. Ou par virement, paiement à la livraison et mobile money, avec vos propres instructions. Sailo ne détient jamais l'argent.",
     q3: "Sailo prend-il une commission ?",
     a3: "Sur les commandes par chat, virement et espèces, non : elles vous reviennent intégralement. Les ventes par carte comportent {fee} sur les produits, prélevés comme frais Stripe. Jamais sur la livraison ni la taxe.",
     q4: "Puis-je vendre des services ou des fichiers ?",

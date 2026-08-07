@@ -37,7 +37,7 @@ export const marketingFil: MarketingDictionary = {
 
   rails: {
     title: "Magbayad ka sa paraang ginagamit na ng mga bumibili sa iyo",
-    body: "Card checkout sa sarili mong Stripe o Paystack account, o ang mga paraang talagang ginagamit ng mga tao sa lugar mo — may sarili mong tagubilin, sa sarili mong salita.",
+    body: "Card checkout sa sarili mong Stripe account, o ang mga paraang talagang ginagamit ng mga tao sa lugar mo — may sarili mong tagubilin, sa sarili mong salita.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingFil: MarketingDictionary = {
     q1: "Kailangan ko ba ng website?",
     a1: "Hindi — ang Sailo na mismo ang website. Makukuha mo ang sailo.store/pangalanmo pagkasign-up mo, at gumagana ito sa kahit anong telepono nang hindi mo hinahawakan ang tema.",
     q2: "Paano ba talaga ako babayaran ng mga bumibili?",
-    a2: "Sa paraang tinatanggap mo na ang pera. Card, sa sarili mong Stripe o Paystack account, kaya diretso sa iyo ang bayad. O bank transfer, cash on delivery at mobile money, na may tagubiling ikaw ang sumulat. Hindi kailanman hinahawakan ng Sailo ang pera.",
+    a2: "Sa paraang tinatanggap mo na ang pera. Card, sa sarili mong Stripe account, kaya diretso sa iyo ang bayad. O bank transfer, cash on delivery at mobile money, na may tagubiling ikaw ang sumulat. Hindi kailanman hinahawakan ng Sailo ang pera.",
     q3: "Kumukuha ba ng komisyon ang Sailo?",
     a3: "Sa chat, bank transfer at cash na order, wala — sa iyo ang buo. May {fee} ang benta sa card mula sa halaga ng produkto, kinukuha bilang Stripe fee. Hindi kailanman sa delivery o buwis.",
     q4: "Puwede ba akong magbenta ng serbisyo o digital na file?",

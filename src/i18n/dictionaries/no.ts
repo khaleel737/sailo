@@ -286,7 +286,7 @@ export const no: Dictionary = {
     pro4: "Ett år med statistikk",
     pro5: "E-poststøtte",
     biz1: "Ubegrenset antall produkter",
-    biz2: "Kortbetaling via din egen Stripe eller Paystack",
+    biz2: "Kortbetaling via din egen Stripe",
     biz3: "Rabattkoder",
     biz4: "Henvisningsprogram med provisjon",
     biz5: "Tre år med statistikk",

@@ -37,7 +37,7 @@ export const marketingDa: MarketingDictionary = {
 
   rails: {
     title: "Få betaling på den måde, dine kunder allerede betaler",
-    body: "Kortbetaling gennem din egen Stripe- eller Paystack-konto, eller de metoder der rent faktisk bruges hos dig — med dine egne instruktioner, i dine ord.",
+    body: "Kortbetaling gennem din egen Stripe-konto, eller de metoder der rent faktisk bruges hos dig — med dine egne instruktioner, i dine ord.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingDa: MarketingDictionary = {
     q1: "Skal jeg have en hjemmeside?",
     a1: "Nej — Sailo er hjemmesiden. Du får sailo.store/dit-navn i samme øjeblik, du opretter dig, og det virker på enhver telefon, uden at du rører et tema.",
     q2: "Hvordan betaler købere mig egentlig?",
-    a2: "Som du allerede tager imod penge i dag. Med kort via din egen Stripe- eller Paystack-konto, så betalingen lander direkte hos dig. Eller med bankoverførsel, betaling ved levering og mobilbetaling, med instruktioner du selv skriver. Sailo holder aldrig på pengene.",
+    a2: "Som du allerede tager imod penge i dag. Med kort via din egen Stripe-konto, så betalingen lander direkte hos dig. Eller med bankoverførsel, betaling ved levering og mobilbetaling, med instruktioner du selv skriver. Sailo holder aldrig på pengene.",
     q3: "Tager Sailo provision?",
     a3: "På chat-, bankoverførsels- og kontantordrer nej — de er fuldt ud dine. Kortsalg koster {fee} af varerne, trukket som et Stripe-gebyr. Aldrig af fragt eller moms.",
     q4: "Kan jeg sælge ydelser eller digitale filer?",

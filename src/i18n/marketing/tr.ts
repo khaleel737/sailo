@@ -37,7 +37,7 @@ export const marketingTr: MarketingDictionary = {
 
   rails: {
     title: "Müşterilerin zaten nasıl ödüyorsa öyle tahsil et",
-    body: "Kendi Stripe veya Paystack hesabın üzerinden kartla ödeme, ya da senin bulunduğun yerde gerçekten kullanılan yöntemler — kendi yazdığın talimatlarla.",
+    body: "Kendi Stripe hesabın üzerinden kartla ödeme, ya da senin bulunduğun yerde gerçekten kullanılan yöntemler — kendi yazdığın talimatlarla.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingTr: MarketingDictionary = {
     q1: "Web siteme ihtiyacım var mı?",
     a1: "Hayır — Sailo zaten site. Kaydolduğun anda sailo.store/adin senin olur ve tema ayarına dokunmadan her telefonda çalışır.",
     q2: "Alıcılar bana gerçekte nasıl ödeme yapıyor?",
-    a2: "Bugün nasıl tahsil ediyorsan öyle. Kendi Stripe ya da Paystack hesabınla kartla; tahsilat doğrudan sana geçer. Ya da havale, kapıda ödeme ve mobil parayla, kendi yazdığın talimatlarla. Sailo parayı asla tutmaz.",
+    a2: "Bugün nasıl tahsil ediyorsan öyle. Kendi Stripe hesabınla kartla; tahsilat doğrudan sana geçer. Ya da havale, kapıda ödeme ve mobil parayla, kendi yazdığın talimatlarla. Sailo parayı asla tutmaz.",
     q3: "Sailo komisyon alıyor mu?",
     a3: "Sohbet, havale ve nakit siparişlerde hayır — tamamı sizindir. Kartlı satışlarda ürün bedelinin {fee} kadarı Stripe ücreti olarak alınır. Kargo ya da vergiden asla alınmaz.",
     q4: "Hizmet veya dijital dosya satabilir miyim?",

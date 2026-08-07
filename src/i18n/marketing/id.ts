@@ -37,7 +37,7 @@ export const marketingId: MarketingDictionary = {
 
   rails: {
     title: "Terima uang dengan cara yang sudah dipakai pembeli Anda",
-    body: "Checkout kartu lewat akun Stripe atau Paystack Anda sendiri, atau cara-cara yang benar-benar dipakai orang di tempat Anda — dengan instruksi Anda, dalam kata-kata Anda.",
+    body: "Checkout kartu lewat akun Stripe Anda sendiri, atau cara-cara yang benar-benar dipakai orang di tempat Anda — dengan instruksi Anda, dalam kata-kata Anda.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingId: MarketingDictionary = {
     q1: "Apakah saya butuh situs web?",
     a1: "Tidak — Sailo adalah situs webnya. Anda dapat sailo.store/namaanda begitu mendaftar, dan berjalan di ponsel apa pun tanpa Anda menyentuh tema.",
     q2: "Bagaimana pembeli benar-benar membayar saya?",
-    a2: "Sama seperti cara Anda sudah menerima uang. Kartu, lewat akun Stripe atau Paystack Anda sendiri, jadi tagihannya mendarat langsung ke Anda. Atau transfer bank, bayar di tempat, dan uang elektronik, dengan instruksi yang Anda tulis sendiri. Sailo tidak pernah menahan uangnya.",
+    a2: "Sama seperti cara Anda sudah menerima uang. Kartu, lewat akun Stripe Anda sendiri, jadi tagihannya mendarat langsung ke Anda. Atau transfer bank, bayar di tempat, dan uang elektronik, dengan instruksi yang Anda tulis sendiri. Sailo tidak pernah menahan uangnya.",
     q3: "Apakah Sailo mengambil komisi?",
     a3: "Untuk pesanan chat, transfer bank dan tunai, tidak — semuanya milik Anda. Penjualan kartu dikenakan {fee} dari nilai barang, diambil sebagai biaya Stripe. Tidak pernah dari ongkir atau pajak.",
     q4: "Bisakah saya menjual jasa atau berkas digital?",

@@ -325,7 +325,7 @@ export const ja: Dictionary = {
     pro4: "1年分の分析",
     pro5: "メールサポート",
     biz1: "商品数無制限",
-    biz2: "ご自身のStripe／Paystackによるカード決済",
+    biz2: "ご自身のStripeによるカード決済",
     biz3: "割引コード",
     biz4: "報酬つき紹介プログラム",
     biz5: "3年分の分析",

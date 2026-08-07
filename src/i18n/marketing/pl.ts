@@ -37,7 +37,7 @@ export const marketingPl: MarketingDictionary = {
 
   rails: {
     title: "Przyjmuj pieniądze tak, jak klienci już ci płacą",
-    body: "Płatność kartą przez twoje własne konto Stripe lub Paystack, albo metody, których naprawdę używa się u ciebie — z instrukcją napisaną twoimi słowami.",
+    body: "Płatność kartą przez twoje własne konto Stripe, albo metody, których naprawdę używa się u ciebie — z instrukcją napisaną twoimi słowami.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingPl: MarketingDictionary = {
     q1: "Czy potrzebuję strony internetowej?",
     a1: "Nie — Sailo jest tą stroną. Dostajesz sailo.store/twojanazwa w chwili rejestracji i działa to na każdym telefonie, bez dotykania motywu.",
     q2: "Jak właściwie klienci mi płacą?",
-    a2: "Tak jak przyjmujesz pieniądze dzisiaj. Kartą, przez twoje własne konto Stripe lub Paystack, więc wpłata trafia prosto do ciebie. Albo przelewem, za pobraniem i przez płatności mobilne, z instrukcją, którą sam piszesz. Sailo nigdy nie trzyma pieniędzy.",
+    a2: "Tak jak przyjmujesz pieniądze dzisiaj. Kartą, przez twoje własne konto Stripe, więc wpłata trafia prosto do ciebie. Albo przelewem, za pobraniem i przez płatności mobilne, z instrukcją, którą sam piszesz. Sailo nigdy nie trzyma pieniędzy.",
     q3: "Czy Sailo pobiera prowizję?",
     a3: "Przy zamówieniach przez czat, przelew i gotówkę nie — są w całości Twoje. Sprzedaż kartą objęta jest {fee} od towaru, pobieranym jako opłata Stripe. Nigdy od dostawy ani podatku.",
     q4: "Czy mogę sprzedawać usługi albo pliki cyfrowe?",

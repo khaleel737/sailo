@@ -37,7 +37,7 @@ export const marketingCs: MarketingDictionary = {
 
   rails: {
     title: "Berte peníze tak, jak vám zákazníci už platí",
-    body: "Platba kartou přes váš vlastní Stripe nebo Paystack, nebo způsoby, které se u vás opravdu používají — s pokyny, které napíšete vlastními slovy.",
+    body: "Platba kartou přes váš vlastní Stripe, nebo způsoby, které se u vás opravdu používají — s pokyny, které napíšete vlastními slovy.",
   },
 
   compare: {
@@ -146,7 +146,7 @@ export const marketingCs: MarketingDictionary = {
     q1: "Potřebuji web?",
     a1: "Ne — Sailo je ten web. Adresu sailo.store/vasejmeno máte ve chvíli registrace a funguje na jakémkoli telefonu, aniž byste sáhli na šablonu.",
     q2: "Jak mi kupující doopravdy platí?",
-    a2: "Stejně, jako přijímáte peníze dnes. Kartou přes váš vlastní účet Stripe nebo Paystack, takže platba míří přímo k vám. Nebo převodem, na dobírku a mobilními platbami, s pokyny, které si napíšete sami. Sailo peníze nikdy nedrží.",
+    a2: "Stejně, jako přijímáte peníze dnes. Kartou přes váš vlastní účet Stripe, takže platba míří přímo k vám. Nebo převodem, na dobírku a mobilními platbami, s pokyny, které si napíšete sami. Sailo peníze nikdy nedrží.",
     q3: "Bere si Sailo provizi?",
     a3: "U objednávek přes chat, převod a hotovost ne — ty jsou celé vaše. U plateb kartou je to {fee} z ceny zboží, strženo jako poplatek Stripe. Nikdy z dopravy nebo daně.",
     q4: "Můžu prodávat služby nebo digitální soubory?",

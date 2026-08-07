@@ -240,7 +240,7 @@ export const ko: Dictionary = {
     pro1: "상품 250개", pro2: "Sailo 배지 제거",
     pro3: "상품·주문·고객 내보내기", pro4: "1년 분석",
     pro5: "이메일 지원", biz1: "상품 무제한",
-    biz2: "내 Stripe 또는 Paystack 계정으로 카드 결제",
+    biz2: "내 Stripe 계정으로 카드 결제",
     biz3: "할인 코드", biz4: "수수료 기반 추천 프로그램",
     biz5: "3년 분석", biz6: "우선 지원",
   },

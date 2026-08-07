@@ -290,7 +290,7 @@ export const tr: Dictionary = {
     pro4: "Bir yıllık analiz",
     pro5: "E-posta desteği",
     biz1: "Sınırsız ürün",
-    biz2: "Kendi Stripe veya Paystack hesabınızla kartlı ödeme",
+    biz2: "Kendi Stripe hesabınızla kartlı ödeme",
     biz3: "İndirim kodları",
     biz4: "Komisyonlu referans programı",
     biz5: "Üç yıllık analiz",

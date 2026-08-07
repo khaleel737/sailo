@@ -286,7 +286,7 @@ export const ro: Dictionary = {
     pro4: "Un an de statistici",
     pro5: "Suport prin e-mail",
     biz1: "Produse nelimitate",
-    biz2: "Plăți cu cardul prin propriul Stripe sau Paystack",
+    biz2: "Plăți cu cardul prin propriul Stripe",
     biz3: "Coduri de reducere",
     biz4: "Program de recomandări cu comisioane",
     biz5: "Trei ani de statistici",

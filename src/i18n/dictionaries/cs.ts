@@ -286,7 +286,7 @@ export const cs: Dictionary = {
     pro4: "Rok statistik",
     pro5: "E-mailová podpora",
     biz1: "Neomezeně produktů",
-    biz2: "Platby kartou přes váš Stripe nebo Paystack",
+    biz2: "Platby kartou přes váš Stripe",
     biz3: "Slevové kódy",
     biz4: "Partnerský program s provizemi",
     biz5: "Tři roky statistik",
