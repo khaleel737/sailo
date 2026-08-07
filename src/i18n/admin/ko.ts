@@ -26,6 +26,8 @@ export const adminKo: PartialAdminDictionary = {
     optionValuesPlaceholderTwo: "빨강, 파랑, 검정",
     forSale: "판매 중",
     priceIn: "가격 ({currency})",
+    valuesNudge: "값 하나로 읽혀요. 값은 쉼표로 구분하세요: 0.5 kg, 1 kg, 2 kg.",
+    stockHint: "조합별로 남은 수량을 세려면 위의 재고 관리를 켜세요.",
   },
 
   productForm: {
@@ -242,6 +244,18 @@ export const adminKo: PartialAdminDictionary = {
     shopIsLiveBody: "끄면 페이지가 비공개로 전환됩니다. 방문자에게는 404가 표시돼요.",
     title: "설정",
     description: "가게 정보, 요금제, 내 데이터.",
+    booking: "예약",
+    bookingBody: "예약을 받는 시간에 대한 설정이에요. 구매자에게는 영업 중이고 아직 차지 않은 시간만 보입니다.",
+    timeZone: "시간대",
+    timeZoneHint: "영업시간은 이 시간대 기준으로 읽혀서, 예약 시각이 양쪽 모두에게 같은 시간이 됩니다.",
+    openingHours: "영업시간",
+    opensAt: "여는 시간",
+    closesAt: "닫는 시간",
+    closed: "휴무",
+    closesBeforeOpens: "닫는 시간은 여는 시간보다 늦어야 합니다.",
+    slotSpacing: "슬롯 간격",
+    slotSpacingHint: "예약이 시작되는 간격이에요. 더 촘촘하게 시작할 게 아니라면 소요 시간 그대로 두세요.",
+    slotFollowsDuration: "소요 시간에 맞추기",
   },
 
   delivery: {
@@ -514,6 +528,10 @@ export const adminKo: PartialAdminDictionary = {
     suspended: "회원님의 가게가 정지되었습니다.",
     staffNotice: "Sailo 직원 계정으로 로그인되어 있습니다.",
     openHq: "HQ 열기",
+    verifyEmail: "이메일 주소를 확인해 주세요.",
+    verifyEmailBody: "가입할 때 받은 편지함으로 링크를 보냈습니다 — 한 번만 클릭하면 이 주소가 본인 것임이 확인됩니다.",
+    verifyEmailCta: "이메일 다시 보내기",
+    verifyEmailSent: "보냈습니다 — 받은 편지함을 확인해 주세요.",
   },
 
   navGroups: {
@@ -544,6 +562,35 @@ export const adminKo: PartialAdminDictionary = {
     bar: "막대",
     line: "선",
     legend: "차트 모양",
+  },
+
+  support: {
+    title: "지원",
+    description: "막혔거나, 버그를 찾았거나, 뭔가 이상해 보이나요? 알려 주세요 — 모든 티켓을 읽고 이메일로 답합니다.",
+    topic: "주제",
+    subject: "제목",
+    subjectPlaceholder: "무엇에 관한 건가요?",
+    message: "무슨 일인가요?",
+    messagePlaceholder: "기대한 동작과 실제로 일어난 일을 알려 주세요. 자세할수록 더 빨리 도울 수 있어요.",
+    screenshots: "스크린샷",
+    screenshotsHint: "선택 사항, 최대 {max}장",
+    addImage: "스크린샷 추가",
+    removeImage: "스크린샷 {n} 제거",
+    send: "지원팀에 보내기",
+    previous: "내 티켓",
+    emptyBody: "아직 없어요. 티켓을 보내면 상태와 함께 여기에 표시됩니다.",
+    open: "처리 중",
+    closed: "종료됨",
+    helpLabel: "도움말 및 지원",
+  },
+
+  supportTopics: {
+    technical: "기술적인 문제",
+    billing: "요금제 및 결제",
+    payments: "결제 및 정산",
+    orders: "주문 및 배송",
+    account: "계정 및 로그인",
+    other: "기타",
   },
 
 };

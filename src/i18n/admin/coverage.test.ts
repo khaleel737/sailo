@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { adminEn } from "./en";
 
@@ -100,12 +100,24 @@ describe("admin translation coverage", () => {
     expect(unreferenced.length).toBeLessThanOrEqual(15);
   });
 
-  it("keeps every language carrying the same keys as English", () => {
-    // A language missing a key falls back to English mid-screen, which reads
-    // as a bug rather than as a missing translation.
+  it("keeps every language carrying the same sections as English", () => {
+    /*
+     * A language missing a section falls back to English mid-screen, which
+     * reads as a bug rather than as a missing translation.
+     *
+     * Every language, not a sample. This list was four spot-checked files, so
+     * the support page shipped translated into exactly those four and rendered
+     * English in the other thirty — the drift this test exists to catch.
+     * Section-level on purpose: a new key in an existing section still merges
+     * over English quietly, but a whole new screen must land everywhere.
+     */
     const en = readFileSync("src/i18n/admin/en.ts", "utf8");
     const sections = [...en.matchAll(/^ {2}([a-zA-Z]+): \{/gm)].map((m) => m[1]);
-    for (const file of ["de", "ar", "ja", "fr"]) {
+    const languages = readdirSync("src/i18n/admin")
+      .filter((f) => f.endsWith(".ts"))
+      .map((f) => f.replace(/\.ts$/, ""))
+      .filter((f) => !["en", "index", "coverage.test"].includes(f));
+    for (const file of languages) {
       const other = readFileSync(`src/i18n/admin/${file}.ts`, "utf8");
       for (const section of sections) {
         expect(other, `${file} is missing the ${section} section`).toContain(

@@ -26,6 +26,8 @@ export const adminTh: PartialAdminDictionary = {
     optionValuesPlaceholderTwo: "แดง, น้ำเงิน, ดำ",
     forSale: "วางขาย",
     priceIn: "ราคา ({currency})",
+    valuesNudge: "ข้อความนี้อ่านเป็นค่าเดียว คั่นแต่ละค่าด้วยจุลภาค: 0.5 kg, 1 kg, 2 kg",
+    stockHint: "ถ้าอยากนับจำนวนที่เหลือของแต่ละชุดตัวเลือก ให้เปิด ติดตามสต็อก ด้านบน",
   },
 
   productForm: {
@@ -242,6 +244,18 @@ export const adminTh: PartialAdminDictionary = {
     shopIsLiveBody: "ปิดเพื่อเอาหน้าร้านออกจากออนไลน์ ผู้เข้าชมจะเห็นหน้า 404",
     title: "ตั้งค่า",
     description: "ข้อมูลร้าน แพ็กเกจ และข้อมูลของคุณ",
+    booking: "การจอง",
+    bookingBody: "สำหรับตอนที่คุณรับนัดหมาย ผู้ซื้อจะเห็นเฉพาะเวลาที่คุณเปิดและยังว่างอยู่เท่านั้น",
+    timeZone: "เขตเวลา",
+    timeZoneHint: "เวลาทำการอ่านตามเขตเวลานี้ การจองจึงหมายถึงเวลาเดียวกันสำหรับทั้งสองฝ่าย",
+    openingHours: "เวลาทำการ",
+    opensAt: "เปิดเวลา",
+    closesAt: "ปิดเวลา",
+    closed: "ปิด",
+    closesBeforeOpens: "เวลาปิดต้องอยู่หลังเวลาเปิด",
+    slotSpacing: "ระยะห่างของช่วงเวลา",
+    slotSpacingHint: "นัดหมายแต่ละช่วงเริ่มห่างกันแค่ไหน ปล่อยไว้เท่าระยะเวลาบริการ เว้นแต่คุณอยากให้เริ่มถี่กว่านั้น",
+    slotFollowsDuration: "ตามระยะเวลาของบริการ",
   },
 
   delivery: {
@@ -514,6 +528,10 @@ export const adminTh: PartialAdminDictionary = {
     suspended: "ร้านของคุณถูกระงับ",
     staffNotice: "คุณเข้าสู่ระบบในฐานะพนักงาน Sailo",
     openHq: "เปิด HQ",
+    verifyEmail: "ยืนยันอีเมลของคุณ",
+    verifyEmailBody: "เราส่งลิงก์ไปที่กล่องจดหมายของคุณตอนสมัคร — คลิกเดียวก็พิสูจน์ได้ว่าอีเมลนี้เป็นของคุณ",
+    verifyEmailCta: "ส่งอีเมลอีกครั้ง",
+    verifyEmailSent: "ส่งแล้ว — ดูในกล่องจดหมายของคุณ",
   },
 
   navGroups: {
@@ -544,6 +562,35 @@ export const adminTh: PartialAdminDictionary = {
     bar: "แท่ง",
     line: "เส้น",
     legend: "รูปแบบกราฟ",
+  },
+
+  support: {
+    title: "ฝ่ายซัพพอร์ต",
+    description: "ติดขัด เจอบั๊ก หรืออะไรดูไม่ถูกต้อง บอกเราได้เลย — เราอ่านทุกเรื่องที่ส่งเข้ามาและตอบกลับทางอีเมล",
+    topic: "หัวข้อ",
+    subject: "เรื่อง",
+    subjectPlaceholder: "เกี่ยวกับอะไร",
+    message: "เกิดอะไรขึ้น",
+    messagePlaceholder: "เล่าให้เราฟังว่าคุณคาดหวังอะไรและเกิดอะไรขึ้นแทน ยิ่งละเอียดเรายิ่งช่วยได้เร็ว",
+    screenshots: "ภาพหน้าจอ",
+    screenshotsHint: "ไม่บังคับ สูงสุด {max} ภาพ",
+    addImage: "เพิ่มภาพหน้าจอ",
+    removeImage: "ลบภาพหน้าจอที่ {n}",
+    send: "ส่งถึงฝ่ายซัพพอร์ต",
+    previous: "เรื่องที่คุณส่งไว้",
+    emptyBody: "ยังไม่มีเลย เมื่อคุณส่งเรื่องเข้ามา เรื่องนั้นจะแสดงที่นี่พร้อมสถานะ",
+    open: "เปิดอยู่",
+    closed: "ปิดแล้ว",
+    helpLabel: "ความช่วยเหลือและซัพพอร์ต",
+  },
+
+  supportTopics: {
+    technical: "ปัญหาทางเทคนิค",
+    billing: "แผนและการเรียกเก็บเงิน",
+    payments: "การชำระเงินและการรับเงิน",
+    orders: "ออร์เดอร์และการจัดส่ง",
+    account: "บัญชีและการเข้าสู่ระบบ",
+    other: "เรื่องอื่น ๆ",
   },
 
 };

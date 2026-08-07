@@ -94,6 +94,10 @@ export const adminJa: PartialAdminDictionary = {
     suspended: "あなたのショップは停止されています。",
     staffNotice: "Sailo スタッフとしてログインしています。",
     openHq: "HQ を開く",
+    verifyEmail: "メールアドレスを確認してください。",
+    verifyEmailBody: "登録時に受信トレイへリンクをお送りしました — ワンクリックで、このアドレスがあなたのものだと証明できます。",
+    verifyEmailCta: "メールを再送",
+    verifyEmailSent: "送信しました — 受信トレイをご確認ください。",
   },
 
   columns: {
@@ -424,6 +428,18 @@ export const adminJa: PartialAdminDictionary = {
     shopIsLiveBody: "オフにするとページを非公開にします。訪問者には404が表示されます。",
     title: "設定",
     description: "ショップ情報、プラン、データ。",
+    booking: "予約",
+    bookingBody: "予約を受け付ける時間の設定です。購入者には、営業中でまだ埋まっていない時間だけが表示されます。",
+    timeZone: "タイムゾーン",
+    timeZoneHint: "営業時間はこのタイムゾーンで読まれるので、予約はあなたにも購入者にも同じ時刻を指します。",
+    openingHours: "営業時間",
+    opensAt: "開店",
+    closesAt: "閉店",
+    closed: "定休日",
+    closesBeforeOpens: "閉店時刻は開店時刻より後にしてください。",
+    slotSpacing: "予約枠の間隔",
+    slotSpacingHint: "予約の開始時刻をどれだけ空けるか。より詰めて始めたいのでなければ、所要時間のままにしてください。",
+    slotFollowsDuration: "所要時間に合わせる",
   },
   productForm: {
     titlePlaceholder: "斑点のあるストーンウェアマグ",
@@ -501,6 +517,8 @@ export const adminJa: PartialAdminDictionary = {
     stock: "在庫",
     sku: "SKU",
     forSale: "販売中",
+    valuesNudge: "これは1つの値として読まれます。値はカンマで区切ってください: 0.5 kg, 1 kg, 2 kg。",
+    stockHint: "組み合わせごとの残り数を数えるには、上の「在庫を管理する」をオンにしてください。",
   },
   files: {
     hint: "PDF、zip、書類、音声、動画、画像 · 各100MBまで · 購入者には非公開リンクが渡り、ファイルのアドレスは渡りません。",

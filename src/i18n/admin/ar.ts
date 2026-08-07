@@ -94,6 +94,10 @@ export const adminAr: PartialAdminDictionary = {
     suspended: "متجرك موقوف.",
     staffNotice: "أنت مسجَّل كموظف في سايلو.",
     openHq: "فتح HQ",
+    verifyEmail: "أكّد عنوان بريدك الإلكتروني.",
+    verifyEmailBody: "أرسلنا رابطًا إلى بريدك عند التسجيل — نقرة واحدة تثبت أن هذا العنوان لك.",
+    verifyEmailCta: "إعادة إرسال البريد",
+    verifyEmailSent: "أُرسل — تفقّد بريدك الوارد.",
   },
 
   columns: {
@@ -424,6 +428,18 @@ export const adminAr: PartialAdminDictionary = {
     shopIsLiveBody: "أطفئه لسحب صفحتك من الإنترنت. سيرى الزوّار صفحة 404.",
     title: "الإعدادات",
     description: "تفاصيل متجرك وخطتك وبياناتك.",
+    booking: "الحجز",
+    bookingBody: "عندما تستقبل مواعيد. لا يرى المشترون إلا الأوقات التي تفتح فيها ولم تُحجز بعد.",
+    timeZone: "المنطقة الزمنية",
+    timeZoneHint: "تُقرأ ساعات العمل بهذه المنطقة، فيعني الحجز الوقت نفسه لكما.",
+    openingHours: "ساعات العمل",
+    opensAt: "يفتح في",
+    closesAt: "يغلق في",
+    closed: "مغلق",
+    closesBeforeOpens: "يجب أن يكون وقت الإغلاق بعد وقت الفتح.",
+    slotSpacing: "تباعد المواعيد",
+    slotSpacingHint: "كم تتباعد بدايات المواعيد. اتركه بطول مدة الخدمة إلا إذا أردت بدايات متقاربة أكثر.",
+    slotFollowsDuration: "اتباع مدة الخدمة",
   },
   productForm: {
     titlePlaceholder: "كوب حجري منقّط",
@@ -501,6 +517,8 @@ export const adminAr: PartialAdminDictionary = {
     stock: "المخزون",
     sku: "رمز التخزين",
     forSale: "للبيع",
+    valuesNudge: "يبدو هذا قيمة واحدة. افصل القيم بفواصل: 0.5 كجم، 1 كجم، 2 كجم.",
+    stockHint: "لعدّ الوحدات المتبقية من كل تكوين، فعّل «تتبّع المخزون» بالأعلى.",
   },
   files: {
     hint: "PDF أو zip أو مستندات أو صوت أو فيديو أو صور · حتى 100 ميغابايت لكل ملف · يحصل المشتري على رابط خاص، لا على عنوان الملف.",

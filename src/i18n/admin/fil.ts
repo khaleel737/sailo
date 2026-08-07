@@ -26,6 +26,8 @@ export const adminFil: PartialAdminDictionary = {
     optionValuesPlaceholderTwo: "Pula, Asul, Itim",
     forSale: "Ibinebenta",
     priceIn: "Presyo ({currency})",
+    valuesNudge: "Mukhang iisang halaga lang ito. Paghiwalayin ang mga halaga gamit ang kuwit: 0.5 kg, 1 kg, 2 kg.",
+    stockHint: "Para mabilang ang natitirang stock ng bawat kombinasyon, i-on ang Subaybayan ang stock sa itaas.",
   },
 
   productForm: {
@@ -242,6 +244,18 @@ export const adminFil: PartialAdminDictionary = {
     shopIsLiveBody: "I-off para alisin online ang page mo. Makakakita ng 404 ang mga bisita.",
     title: "Mga setting",
     description: "Ang detalye ng tindahan mo, plan at data mo.",
+    booking: "Booking",
+    bookingBody: "Kailan ka tumatanggap ng appointment. Ang mga oras lang na bukas ka at hindi pa napupuno ang nakikita ng mga bumibili.",
+    timeZone: "Time zone",
+    timeZoneHint: "Sa time zone na ito binabasa ang oras ng pagbubukas, kaya iisang oras ang ibig sabihin ng booking para sa inyong dalawa.",
+    openingHours: "Oras ng pagbubukas",
+    opensAt: "bubukas nang",
+    closesAt: "magsasara nang",
+    closed: "Sarado",
+    closesBeforeOpens: "Dapat mas huli ang oras ng pagsasara kaysa sa oras ng pagbubukas.",
+    slotSpacing: "Pagitan ng mga slot",
+    slotSpacingHint: "Gaano kalayo ang pagitan ng simula ng mga appointment. Hayaang kasinghaba ng serbisyo maliban kung gusto mo ng mas dikit-dikit na simula.",
+    slotFollowsDuration: "Sundan ang haba ng serbisyo",
   },
 
   delivery: {
@@ -514,6 +528,10 @@ export const adminFil: PartialAdminDictionary = {
     suspended: "Suspendido ang tindahan mo.",
     staffNotice: "Naka-sign in ka bilang staff ng Sailo.",
     openHq: "Buksan ang HQ",
+    verifyEmail: "Kumpirmahin ang email address mo.",
+    verifyEmailBody: "Nagpadala kami ng link sa inbox mo noong nag-sign up ka — isang click lang para mapatunayang sa iyo ang address na ito.",
+    verifyEmailCta: "Ipadala ulit ang email",
+    verifyEmailSent: "Naipadala — tingnan ang inbox mo.",
   },
 
   navGroups: {
@@ -544,6 +562,34 @@ export const adminFil: PartialAdminDictionary = {
     bar: "Bar",
     line: "Linya",
     legend: "Hugis ng chart",
+  },
+
+  support: {
+    title: "Suporta",
+    description: "Na-stuck, may nakitang bug, o may mukhang mali? Sabihin mo sa amin — binabasa namin ang bawat ticket at sumasagot kami sa email.",
+    topic: "Paksa",
+    subject: "Subject",
+    subjectPlaceholder: "Tungkol saan ito?",
+    message: "Ano ang nangyayari?",
+    messagePlaceholder: "Sabihin sa amin kung ano ang inaasahan mo at kung ano ang nangyari. Kapag mas detalyado, mas mabilis kaming makakatulong.",
+    screenshots: "Mga screenshot",
+    screenshotsHint: "opsyonal, hanggang {max}",
+    addImage: "Magdagdag ng screenshot",
+    removeImage: "Alisin ang screenshot {n}",
+    send: "Ipadala sa suporta",
+    previous: "Mga ticket mo",
+    emptyBody: "Wala pa. Kapag nagpadala ka ng ticket, lalabas ito rito kasama ang status nito.",
+    open: "Bukas",
+    closed: "Sarado",
+    helpLabel: "Tulong at suporta",
+  },
+  supportTopics: {
+    technical: "Teknikal na problema",
+    billing: "Plano at singil",
+    payments: "Mga bayad at payout",
+    orders: "Mga order at paghahatid",
+    account: "Account at pag-sign-in",
+    other: "Iba pa",
   },
 
 };

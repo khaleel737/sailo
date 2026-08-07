@@ -26,6 +26,8 @@ export const adminSl: PartialAdminDictionary = {
     optionValuesPlaceholderTwo: "Rdeča, Modra, Črna",
     forSale: "V prodaji",
     priceIn: "Cena ({currency})",
+    valuesNudge: "To je videti kot ena sama vrednost. Vrednosti ločite z vejicami: 0.5 kg, 1 kg, 2 kg.",
+    stockHint: "Da preštejete preostale kose za vsako kombinacijo, zgoraj vklopite Spremljaj zalogo.",
   },
 
   productForm: {
@@ -242,6 +244,18 @@ export const adminSl: PartialAdminDictionary = {
     shopIsLiveBody: "Izklopite, da spletno stran umaknete. Obiskovalci bodo videli 404.",
     title: "Nastavitve",
     description: "Podatki vaše trgovine, paket in vaši podatki.",
+    booking: "Rezervacije",
+    bookingBody: "Kadar sprejemate termine. Kupci vidijo samo ure, ko ste odprti in še niso zapolnjene.",
+    timeZone: "Časovni pas",
+    timeZoneHint: "Odpiralni čas se bere v tem pasu, zato rezervacija za oba pomeni isto uro.",
+    openingHours: "Odpiralni čas",
+    opensAt: "odpre ob",
+    closesAt: "zapre ob",
+    closed: "Zaprto",
+    closesBeforeOpens: "Čas zaprtja mora biti po času odprtja.",
+    slotSpacing: "Razmik med termini",
+    slotSpacingHint: "Kako narazen se začenjajo termini. Pustite trajanje storitve, razen če želite tesnejše začetke.",
+    slotFollowsDuration: "Sledi trajanju storitve",
   },
 
   delivery: {
@@ -514,6 +528,10 @@ export const adminSl: PartialAdminDictionary = {
     suspended: "Vaša trgovina je začasno onemogočena.",
     staffNotice: "Prijavljeni ste kot osebje Sailo.",
     openHq: "Odpri HQ",
+    verifyEmail: "Potrdite svoj e-poštni naslov.",
+    verifyEmailBody: "Ob registraciji smo vam v nabiralnik poslali povezavo — en klik dokaže, da je ta naslov vaš.",
+    verifyEmailCta: "Znova pošlji e-pošto",
+    verifyEmailSent: "Poslano — preverite nabiralnik.",
   },
 
   navGroups: {
@@ -544,6 +562,35 @@ export const adminSl: PartialAdminDictionary = {
     bar: "Stolpci",
     line: "Črta",
     legend: "Oblika grafa",
+  },
+
+  support: {
+    title: "Podpora",
+    description: "Ste obtičali, našli napako ali je nekaj videti narobe? Sporočite nam — preberemo vsak zahtevek in odgovorimo po e-pošti.",
+    topic: "Tema",
+    subject: "Zadeva",
+    subjectPlaceholder: "Za kaj gre?",
+    message: "Kaj se dogaja?",
+    messagePlaceholder: "Opišite, kaj ste pričakovali in kaj se je zgodilo namesto tega. Več ko je podrobnosti, hitreje lahko pomagamo.",
+    screenshots: "Posnetki zaslona",
+    screenshotsHint: "neobvezno, do {max}",
+    addImage: "Dodaj posnetek zaslona",
+    removeImage: "Odstrani posnetek zaslona {n}",
+    send: "Pošlji podpori",
+    previous: "Vaši zahtevki",
+    emptyBody: "Še nič. Ko pošljete zahtevek, se prikaže tukaj s svojim statusom.",
+    open: "Odprt",
+    closed: "Zaprt",
+    helpLabel: "Pomoč in podpora",
+  },
+
+  supportTopics: {
+    technical: "Tehnična težava",
+    billing: "Paket in obračun",
+    payments: "Plačila in izplačila",
+    orders: "Naročila in dostava",
+    account: "Račun in prijava",
+    other: "Nekaj drugega",
   },
 
 };

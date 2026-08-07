@@ -26,6 +26,8 @@ export const adminSq: PartialAdminDictionary = {
     optionValuesPlaceholderTwo: "E kuqe, Blu, E zezë",
     forSale: "Në shitje",
     priceIn: "Çmimi ({currency})",
+    valuesNudge: "Kjo lexohet si një vlerë e vetme. Ndajini vlerat me presje: 0.5 kg, 1 kg, 2 kg.",
+    stockHint: "Për të numëruar njësitë e mbetura për çdo kombinim, ndizni Ndiq stokun më sipër.",
   },
 
   productForm: {
@@ -242,6 +244,18 @@ export const adminSq: PartialAdminDictionary = {
     shopIsLiveBody: "Fikeni për ta hequr faqen nga interneti. Vizitorët do të shohin një 404.",
     title: "Cilësimet",
     description: "Të dhënat e dyqanit, plani dhe të dhënat tuaja.",
+    booking: "Rezervimet",
+    bookingBody: "Kur pranoni takime. Blerësit shohin vetëm oraret kur jeni të hapur dhe që nuk janë zënë ende.",
+    timeZone: "Zona orare",
+    timeZoneHint: "Orari i hapjes lexohet në këtë zonë, kështu që një rezervim do të thotë të njëjtën orë për të dy palët.",
+    openingHours: "Orari i hapjes",
+    opensAt: "hapet në",
+    closesAt: "mbyllet në",
+    closed: "Mbyllur",
+    closesBeforeOpens: "Ora e mbylljes duhet të jetë pas orës së hapjes.",
+    slotSpacing: "Intervali mes orareve",
+    slotSpacingHint: "Sa larg njëri-tjetrit nisin takimet. Lëreni sa kohëzgjatja e shërbimit, veç nëse doni nisje më të dendura.",
+    slotFollowsDuration: "Ndiq kohëzgjatjen e shërbimit",
   },
 
   delivery: {
@@ -514,6 +528,10 @@ export const adminSq: PartialAdminDictionary = {
     suspended: "Dyqani juaj është pezulluar.",
     staffNotice: "Jeni identifikuar si staf i Sailo.",
     openHq: "Hap HQ",
+    verifyEmail: "Konfirmoni adresën tuaj të e-mailit.",
+    verifyEmailBody: "Kur u regjistruat, ju dërguam një lidhje në kutinë tuaj — një klikim vërteton se kjo adresë është e juaja.",
+    verifyEmailCta: "Ridërgo e-mailin",
+    verifyEmailSent: "U dërgua — kontrolloni kutinë tuaj.",
   },
 
   navGroups: {
@@ -544,6 +562,35 @@ export const adminSq: PartialAdminDictionary = {
     bar: "Shtylla",
     line: "Vijë",
     legend: "Forma e grafikut",
+  },
+
+  support: {
+    title: "Mbështetja",
+    description: "Ngecët diku, gjetët një gabim, apo diçka nuk duket në rregull? Na tregoni — e lexojmë çdo kërkesë dhe përgjigjemi me e-mail.",
+    topic: "Tema",
+    subject: "Subjekti",
+    subjectPlaceholder: "Për çfarë bëhet fjalë?",
+    message: "Çfarë po ndodh?",
+    messagePlaceholder: "Na tregoni çfarë prisnit dhe çfarë ndodhi në vend të saj. Sa më shumë detaje, aq më shpejt mund të ndihmojmë.",
+    screenshots: "Pamje ekrani",
+    screenshotsHint: "opsionale, deri në {max}",
+    addImage: "Shto një pamje ekrani",
+    removeImage: "Hiq pamjen e ekranit {n}",
+    send: "Dërgoje te mbështetja",
+    previous: "Kërkesat tuaja",
+    emptyBody: "Asgjë ende. Kur dërgoni një kërkesë, ajo shfaqet këtu me statusin e saj.",
+    open: "E hapur",
+    closed: "E mbyllur",
+    helpLabel: "Ndihmë dhe mbështetje",
+  },
+
+  supportTopics: {
+    technical: "Problem teknik",
+    billing: "Plani dhe faturimi",
+    payments: "Pagesat dhe arkëtimet",
+    orders: "Porositë dhe dërgesat",
+    account: "Llogaria dhe hyrja",
+    other: "Diçka tjetër",
   },
 
 };

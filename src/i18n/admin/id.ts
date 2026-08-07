@@ -26,6 +26,8 @@ export const adminId: PartialAdminDictionary = {
     optionValuesPlaceholderTwo: "Merah, Biru, Hitam",
     forSale: "Dijual",
     priceIn: "Harga ({currency})",
+    valuesNudge: "Ini terbaca sebagai satu nilai. Pisahkan nilai dengan koma: 500 g, 1 kg, 2 kg.",
+    stockHint: "Untuk menghitung sisa unit tiap kombinasi, nyalakan Lacak stok di atas.",
   },
 
   productForm: {
@@ -242,6 +244,18 @@ export const adminId: PartialAdminDictionary = {
     shopIsLiveBody: "Matikan untuk menurunkan halamanmu. Pengunjung akan melihat 404.",
     title: "Pengaturan",
     description: "Detail tokomu, paket, dan datamu.",
+    booking: "Reservasi",
+    bookingBody: "Saat kamu menerima janji temu. Pembeli hanya melihat waktu ketika kamu buka dan belum terisi.",
+    timeZone: "Zona waktu",
+    timeZoneHint: "Jam buka dibaca dalam zona ini, jadi satu reservasi berarti waktu yang sama bagi kamu dan pembeli.",
+    openingHours: "Jam buka",
+    opensAt: "buka pukul",
+    closesAt: "tutup pukul",
+    closed: "Tutup",
+    closesBeforeOpens: "Jam tutup harus setelah jam buka.",
+    slotSpacing: "Jarak antar slot",
+    slotSpacingHint: "Jarak antara waktu mulai tiap janji temu. Biarkan mengikuti durasi jasa kecuali kamu mau jadwal mulai yang lebih rapat.",
+    slotFollowsDuration: "Ikuti durasi jasa",
   },
 
   delivery: {
@@ -514,6 +528,10 @@ export const adminId: PartialAdminDictionary = {
     suspended: "Toko Anda ditangguhkan.",
     staffNotice: "Anda masuk sebagai staf Sailo.",
     openHq: "Buka HQ",
+    verifyEmail: "Konfirmasi alamat email Anda.",
+    verifyEmailBody: "Kami mengirim tautan ke kotak masuk Anda saat pendaftaran — satu klik membuktikan alamat ini milik Anda.",
+    verifyEmailCta: "Kirim ulang email",
+    verifyEmailSent: "Terkirim — periksa kotak masuk Anda.",
   },
 
   navGroups: {
@@ -544,6 +562,35 @@ export const adminId: PartialAdminDictionary = {
     bar: "Batang",
     line: "Garis",
     legend: "Bentuk grafik",
+  },
+
+  support: {
+    title: "Dukungan",
+    description: "Mentok, menemukan bug, atau ada yang aneh? Beri tahu kami — setiap tiket kami baca dan kami balas lewat email.",
+    topic: "Topik",
+    subject: "Subjek",
+    subjectPlaceholder: "Tentang apa?",
+    message: "Apa yang terjadi?",
+    messagePlaceholder: "Ceritakan apa yang kamu harapkan dan apa yang malah terjadi. Makin detail, makin cepat kami bisa membantu.",
+    screenshots: "Tangkapan layar",
+    screenshotsHint: "opsional, maksimal {max}",
+    addImage: "Tambah tangkapan layar",
+    removeImage: "Hapus tangkapan layar {n}",
+    send: "Kirim ke dukungan",
+    previous: "Tiketmu",
+    emptyBody: "Belum ada apa-apa. Begitu kamu mengirim tiket, tiketnya muncul di sini beserta statusnya.",
+    open: "Terbuka",
+    closed: "Ditutup",
+    helpLabel: "Bantuan & dukungan",
+  },
+
+  supportTopics: {
+    technical: "Masalah teknis",
+    billing: "Paket & tagihan",
+    payments: "Pembayaran & pencairan",
+    orders: "Pesanan & pengiriman",
+    account: "Akun & login",
+    other: "Hal lain",
   },
 
 };

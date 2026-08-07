@@ -26,6 +26,8 @@ export const adminMs: PartialAdminDictionary = {
     optionValuesPlaceholderTwo: "Merah, Biru, Hitam",
     forSale: "Dijual",
     priceIn: "Harga ({currency})",
+    valuesNudge: "Ini terbaca sebagai satu nilai. Pisahkan nilai dengan koma: 0.5 kg, 1 kg, 2 kg.",
+    stockHint: "Untuk mengira baki unit setiap kombinasi, hidupkan Jejak stok di atas.",
   },
 
   productForm: {
@@ -242,6 +244,18 @@ export const adminMs: PartialAdminDictionary = {
     shopIsLiveBody: "Matikan untuk menurunkan halaman anda. Pelawat akan melihat 404.",
     title: "Tetapan",
     description: "Butiran kedai anda, pelan dan data anda.",
+    booking: "Tempahan",
+    bookingBody: "Bila anda menerima temu janji. Pembeli hanya melihat masa anda buka dan yang belum terisi.",
+    timeZone: "Zon waktu",
+    timeZoneHint: "Waktu buka dibaca dalam zon ini, jadi tempahan bermaksud masa yang sama untuk anda dan pembeli.",
+    openingHours: "Waktu buka",
+    opensAt: "buka pada",
+    closesAt: "tutup pada",
+    closed: "Tutup",
+    closesBeforeOpens: "Masa tutup mesti selepas masa buka.",
+    slotSpacing: "Jarak slot",
+    slotSpacingHint: "Berapa jauh jarak antara mula temu janji. Biarkan ikut tempoh perkhidmatan kecuali anda mahu mula lebih rapat.",
+    slotFollowsDuration: "Ikut tempoh perkhidmatan",
   },
 
   delivery: {
@@ -514,6 +528,10 @@ export const adminMs: PartialAdminDictionary = {
     suspended: "Kedai anda digantung.",
     staffNotice: "Anda log masuk sebagai kakitangan Sailo.",
     openHq: "Buka HQ",
+    verifyEmail: "Sahkan alamat e-mel anda.",
+    verifyEmailBody: "Kami menghantar pautan ke peti masuk anda semasa anda mendaftar — satu klik membuktikan alamat ini milik anda.",
+    verifyEmailCta: "Hantar semula e-mel",
+    verifyEmailSent: "Dihantar — semak peti masuk anda.",
   },
 
   navGroups: {
@@ -544,6 +562,35 @@ export const adminMs: PartialAdminDictionary = {
     bar: "Bar",
     line: "Garis",
     legend: "Bentuk carta",
+  },
+
+  support: {
+    title: "Sokongan",
+    description: "Tersekat, terjumpa pepijat, atau ada yang tidak kena? Beritahu kami — kami membaca setiap tiket dan membalas melalui e-mel.",
+    topic: "Topik",
+    subject: "Subjek",
+    subjectPlaceholder: "Tentang apa?",
+    message: "Apa yang berlaku?",
+    messagePlaceholder: "Ceritakan apa yang anda jangkakan dan apa yang berlaku sebaliknya. Lebih terperinci, lebih cepat kami dapat membantu.",
+    screenshots: "Tangkapan skrin",
+    screenshotsHint: "pilihan, sehingga {max}",
+    addImage: "Tambah tangkapan skrin",
+    removeImage: "Buang tangkapan skrin {n}",
+    send: "Hantar kepada sokongan",
+    previous: "Tiket anda",
+    emptyBody: "Belum ada apa-apa. Apabila anda menghantar tiket, ia muncul di sini bersama statusnya.",
+    open: "Terbuka",
+    closed: "Ditutup",
+    helpLabel: "Bantuan & sokongan",
+  },
+
+  supportTopics: {
+    technical: "Masalah teknikal",
+    billing: "Pelan & bil",
+    payments: "Pembayaran & penerimaan wang",
+    orders: "Pesanan & penghantaran",
+    account: "Akaun & log masuk",
+    other: "Perkara lain",
   },
 
 };

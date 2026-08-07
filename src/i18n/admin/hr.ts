@@ -26,6 +26,8 @@ export const adminHr: PartialAdminDictionary = {
     optionValuesPlaceholderTwo: "Crvena, Plava, Crna",
     forSale: "U prodaji",
     priceIn: "Cijena ({currency})",
+    valuesNudge: "Ovo izgleda kao jedna vrijednost. Odvojite vrijednosti zarezima: 500 g, 1 kg, 2 kg.",
+    stockHint: "Da biste brojali preostale komade svake kombinacije, uključite Prati zalihe iznad.",
   },
 
   productForm: {
@@ -242,6 +244,18 @@ export const adminHr: PartialAdminDictionary = {
     shopIsLiveBody: "Isključite da svoju stranicu skinete s mreže. Posjetitelji će vidjeti 404.",
     title: "Postavke",
     description: "Podaci vaše trgovine, paket i vaši podaci.",
+    booking: "Rezervacije",
+    bookingBody: "Kada primate termine. Kupci vide samo vremena u kojima ste otvoreni i koja još nisu popunjena.",
+    timeZone: "Vremenska zona",
+    timeZoneHint: "Radno vrijeme čita se u ovoj zoni, pa rezervacija i vama i kupcu znači isto vrijeme.",
+    openingHours: "Radno vrijeme",
+    opensAt: "otvara u",
+    closesAt: "zatvara u",
+    closed: "Zatvoreno",
+    closesBeforeOpens: "Vrijeme zatvaranja mora biti nakon otvaranja.",
+    slotSpacing: "Razmak termina",
+    slotSpacingHint: "Koliko su razmaknuti počeci termina. Ostavite na trajanju usluge osim ako želite gušće početke.",
+    slotFollowsDuration: "Prati trajanje usluge",
   },
 
   delivery: {
@@ -514,6 +528,10 @@ export const adminHr: PartialAdminDictionary = {
     suspended: "Vaša trgovina je suspendirana.",
     staffNotice: "Prijavljeni ste kao Sailo osoblje.",
     openHq: "Otvori HQ",
+    verifyEmail: "Potvrdite svoju e-mail adresu.",
+    verifyEmailBody: "Poslali smo vam poveznicu u sandučić pri registraciji — jedan klik dokazuje da je ova adresa vaša.",
+    verifyEmailCta: "Ponovno pošalji e-mail",
+    verifyEmailSent: "Poslano — provjerite sandučić.",
   },
 
   navGroups: {
@@ -544,6 +562,34 @@ export const adminHr: PartialAdminDictionary = {
     bar: "Stupci",
     line: "Linija",
     legend: "Oblik grafikona",
+  },
+
+  support: {
+    title: "Podrška",
+    description: "Zapeli ste, našli grešku ili nešto izgleda krivo? Recite nam — čitamo svaki upit i odgovaramo e-mailom.",
+    topic: "Tema",
+    subject: "Predmet",
+    subjectPlaceholder: "O čemu se radi?",
+    message: "Što se događa?",
+    messagePlaceholder: "Recite nam što ste očekivali i što se dogodilo umjesto toga. Što više detalja, to brže možemo pomoći.",
+    screenshots: "Snimke zaslona",
+    screenshotsHint: "neobavezno, do {max}",
+    addImage: "Dodaj snimku zaslona",
+    removeImage: "Ukloni snimku zaslona {n}",
+    send: "Pošalji podršci",
+    previous: "Vaši upiti",
+    emptyBody: "Još ništa. Kad pošaljete upit, pojavit će se ovdje sa svojim statusom.",
+    open: "Otvoren",
+    closed: "Zatvoren",
+    helpLabel: "Pomoć i podrška",
+  },
+  supportTopics: {
+    technical: "Tehnički problem",
+    billing: "Plan i naplata",
+    payments: "Plaćanja i isplate",
+    orders: "Narudžbe i dostava",
+    account: "Račun i prijava",
+    other: "Nešto drugo",
   },
 
 };

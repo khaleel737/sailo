@@ -94,6 +94,10 @@ export const adminDe: PartialAdminDictionary = {
     suspended: "Dein Shop ist gesperrt.",
     staffNotice: "Du bist als Sailo-Mitarbeiter angemeldet.",
     openHq: "HQ öffnen",
+    verifyEmail: "Bestätige deine E-Mail-Adresse.",
+    verifyEmailBody: "Bei der Anmeldung haben wir dir einen Link in dein Postfach geschickt — ein Klick beweist, dass diese Adresse dir gehört.",
+    verifyEmailCta: "E-Mail erneut senden",
+    verifyEmailSent: "Gesendet — sieh in deinem Postfach nach.",
   },
 
   columns: {
@@ -424,6 +428,18 @@ export const adminDe: PartialAdminDictionary = {
     shopIsLiveBody: "Ausschalten, um deine Seite offline zu nehmen. Besucher sehen dann eine 404.",
     title: "Einstellungen",
     description: "Deine Shop-Daten, dein Tarif und deine Daten.",
+    booking: "Buchung",
+    bookingBody: "Wann du Termine annimmst. Käufer sehen nur Zeiten, zu denen du geöffnet hast und die noch nicht belegt sind.",
+    timeZone: "Zeitzone",
+    timeZoneHint: "Die Öffnungszeiten werden in dieser Zone gelesen — so bedeutet eine Buchung für euch beide dieselbe Uhrzeit.",
+    openingHours: "Öffnungszeiten",
+    opensAt: "öffnet um",
+    closesAt: "schließt um",
+    closed: "Geschlossen",
+    closesBeforeOpens: "Die Schließzeit muss nach der Öffnungszeit liegen.",
+    slotSpacing: "Terminabstand",
+    slotSpacingHint: "Wie weit auseinander Termine beginnen. Lass es bei der Dauer der Dienstleistung, außer du willst engere Starts.",
+    slotFollowsDuration: "Der Dauer der Dienstleistung folgen",
   },
   productForm: {
     titlePlaceholder: "Gesprenkelte Steinzeugtasse",
@@ -501,6 +517,8 @@ export const adminDe: PartialAdminDictionary = {
     stock: "Bestand",
     sku: "SKU",
     forSale: "Im Verkauf",
+    valuesNudge: "Das liest sich wie ein einzelner Wert. Trenn die Werte mit Kommas: 500 g, 1 kg, 2 kg.",
+    stockHint: "Um die verbleibenden Einheiten je Kombination zu zählen, schalte oben Bestand führen ein.",
   },
   files: {
     hint: "PDF, ZIP, Dokumente, Audio, Video oder Bilder · je bis zu 100 MB · Käufer bekommen einen privaten Link, nie die Adresse der Datei.",

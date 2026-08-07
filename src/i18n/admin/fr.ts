@@ -94,6 +94,10 @@ export const adminFr: PartialAdminDictionary = {
     suspended: "Votre boutique est suspendue.",
     staffNotice: "Vous êtes connecté en tant que personnel Sailo.",
     openHq: "Ouvrir HQ",
+    verifyEmail: "Confirmez votre adresse e-mail.",
+    verifyEmailBody: "Nous avons envoyé un lien dans votre boîte de réception lors de votre inscription — un clic prouve que cette adresse est bien la vôtre.",
+    verifyEmailCta: "Renvoyer l’e-mail",
+    verifyEmailSent: "Envoyé — vérifiez votre boîte de réception.",
   },
 
   columns: {
@@ -424,6 +428,18 @@ export const adminFr: PartialAdminDictionary = {
     shopIsLiveBody: "Désactivez pour mettre votre page hors ligne. Les visiteurs verront une page 404.",
     title: "Réglages",
     description: "Les détails de votre boutique, votre offre et vos données.",
+    booking: "Réservations",
+    bookingBody: "Quand vous prenez des rendez-vous. Les acheteurs ne voient que des créneaux où vous êtes ouvert et qui ne sont pas déjà pris.",
+    timeZone: "Fuseau horaire",
+    timeZoneHint: "Les horaires d’ouverture sont lus dans ce fuseau : une réservation signifie donc la même heure pour vous deux.",
+    openingHours: "Horaires d’ouverture",
+    opensAt: "ouvre à",
+    closesAt: "ferme à",
+    closed: "Fermé",
+    closesBeforeOpens: "L’heure de fermeture doit être après l’heure d’ouverture.",
+    slotSpacing: "Espacement des créneaux",
+    slotSpacingHint: "L’écart entre les débuts de rendez-vous. Laissez la durée du service, sauf si vous voulez des débuts plus rapprochés.",
+    slotFollowsDuration: "Suivre la durée du service",
   },
   productForm: {
     titlePlaceholder: "Mug en grès moucheté",
@@ -501,6 +517,8 @@ export const adminFr: PartialAdminDictionary = {
     stock: "Stock",
     sku: "SKU",
     forSale: "En vente",
+    valuesNudge: "Ceci se lit comme une seule valeur. Séparez les valeurs par des virgules : 500 g, 1 kg, 2 kg.",
+    stockHint: "Pour compter les unités restantes de chaque combinaison, activez Suivre le stock ci-dessus.",
   },
   files: {
     hint: "PDF, zip, documents, audio, vidéo ou images · jusqu’à 100 Mo chacun · l’acheteur reçoit un lien privé, jamais l’adresse du fichier.",

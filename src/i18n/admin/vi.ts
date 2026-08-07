@@ -26,6 +26,8 @@ export const adminVi: PartialAdminDictionary = {
     optionValuesPlaceholderTwo: "Đỏ, Xanh, Đen",
     forSale: "Đang bán",
     priceIn: "Giá ({currency})",
+    valuesNudge: "Chỗ này đang được hiểu là một giá trị. Hãy tách các giá trị bằng dấu phẩy: 0.5 kg, 1 kg, 2 kg.",
+    stockHint: "Để đếm số lượng còn cho từng tổ hợp, hãy bật Theo dõi tồn kho ở trên.",
   },
 
   productForm: {
@@ -242,6 +244,18 @@ export const adminVi: PartialAdminDictionary = {
     shopIsLiveBody: "Tắt để đưa trang của bạn offline. Khách sẽ thấy trang 404.",
     title: "Cài đặt",
     description: "Thông tin cửa hàng, gói dịch vụ và dữ liệu của bạn.",
+    booking: "Đặt lịch",
+    bookingBody: "Khi bạn nhận lịch hẹn. Người mua chỉ thấy những giờ bạn mở cửa và chưa kín chỗ.",
+    timeZone: "Múi giờ",
+    timeZoneHint: "Giờ mở cửa được tính theo múi giờ này, nên một lịch hẹn là cùng một thời điểm với cả hai bên.",
+    openingHours: "Giờ mở cửa",
+    opensAt: "mở lúc",
+    closesAt: "đóng lúc",
+    closed: "Đóng cửa",
+    closesBeforeOpens: "Giờ đóng cửa phải sau giờ mở cửa.",
+    slotSpacing: "Khoảng cách khung giờ",
+    slotSpacingHint: "Các lịch hẹn bắt đầu cách nhau bao xa. Cứ để bằng thời lượng dịch vụ, trừ khi bạn muốn các giờ bắt đầu sát nhau hơn.",
+    slotFollowsDuration: "Theo thời lượng dịch vụ",
   },
 
   delivery: {
@@ -514,6 +528,10 @@ export const adminVi: PartialAdminDictionary = {
     suspended: "Cửa hàng của bạn đã bị tạm ngưng.",
     staffNotice: "Bạn đang đăng nhập với tư cách nhân viên Sailo.",
     openHq: "Mở HQ",
+    verifyEmail: "Xác nhận địa chỉ email của bạn.",
+    verifyEmailBody: "Chúng tôi đã gửi một liên kết vào hộp thư khi bạn đăng ký — chỉ một cú nhấp là chứng minh địa chỉ này là của bạn.",
+    verifyEmailCta: "Gửi lại email",
+    verifyEmailSent: "Đã gửi — kiểm tra hộp thư của bạn.",
   },
 
   navGroups: {
@@ -544,6 +562,35 @@ export const adminVi: PartialAdminDictionary = {
     bar: "Cột",
     line: "Đường",
     legend: "Dạng biểu đồ",
+  },
+
+  support: {
+    title: "Hỗ trợ",
+    description: "Bị kẹt, gặp lỗi, hay thấy gì đó không đúng? Hãy nói với chúng tôi — chúng tôi đọc mọi yêu cầu và trả lời qua email.",
+    topic: "Chủ đề",
+    subject: "Tiêu đề",
+    subjectPlaceholder: "Về chuyện gì?",
+    message: "Chuyện gì đang xảy ra?",
+    messagePlaceholder: "Hãy kể bạn mong đợi điều gì và điều gì đã xảy ra thay vào đó. Càng chi tiết, chúng tôi giúp càng nhanh.",
+    screenshots: "Ảnh chụp màn hình",
+    screenshotsHint: "tùy chọn, tối đa {max}",
+    addImage: "Thêm ảnh chụp màn hình",
+    removeImage: "Xóa ảnh chụp màn hình {n}",
+    send: "Gửi cho bộ phận hỗ trợ",
+    previous: "Yêu cầu của bạn",
+    emptyBody: "Chưa có gì. Khi bạn gửi một yêu cầu, nó sẽ hiện ở đây cùng trạng thái.",
+    open: "Đang mở",
+    closed: "Đã đóng",
+    helpLabel: "Trợ giúp & hỗ trợ",
+  },
+
+  supportTopics: {
+    technical: "Sự cố kỹ thuật",
+    billing: "Gói & thanh toán",
+    payments: "Thanh toán & chi trả",
+    orders: "Đơn hàng & giao hàng",
+    account: "Tài khoản & đăng nhập",
+    other: "Chuyện khác",
   },
 
 };
