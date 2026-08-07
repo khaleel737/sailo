@@ -1,0 +1,37 @@
+src/lib/booking/claim.ts
+  s_3fd229194f6299::t_ee7fd4573ccc79 1-3,5-83,123
+  s_3fd229194f6299::t_ae75e93628544c 4,84-122
+scripts/scenarios/checkout.scenario.ts
+  s_3fd229194f6299::t_69ee5e13903bfe 604-617,626-719,732-760
+  s_3fd229194f6299::t_3243ecdf188f90 618-623,625
+  s_3fd229194f6299::t_d711eb5cafa6c7 624
+  s_3fd229194f6299::t_38539515842ff0 720-731
+src/lib/actions/orders.ts
+  s_3fd229194f6299::t_dfb0aab2a9ba7a 28,362-387,426-428
+drizzle/0003_booking_claims.sql
+  s_3fd229194f6299::t_779325067089d0 1-47
+src/lib/inventory.ts
+  s_3fd229194f6299::t_12a58abb93f767 247-261
+  s_3fd229194f6299::t_ae75e93628544c 6
+  s_3fd229194f6299::t_27924ae2b96bcb 172-181
+src/db/schema/orders.ts
+  s_3fd229194f6299::t_afb517b90b02c9 282-320
+src/lib/booking/availability.ts
+  s_3fd229194f6299::t_5c9ad1d0569807 4,56-88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "109f3cfec189e42d58099c94bab7b174c8ac2e28",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
