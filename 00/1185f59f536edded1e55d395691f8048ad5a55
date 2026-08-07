@@ -1,0 +1,35 @@
+src/lib/email/messages.ts
+  s_2e1da3b18d1c53::t_cb15ded89a0d5e 216-278
+  s_7114fe38b67e35::t_fe6374fcfaff6d 323-395
+src/lib/actions/order-admin.ts
+  s_2e1da3b18d1c53::t_ac7ed3dfd8c819 15,45-66
+  s_2e1da3b18d1c53::t_c0858e27485c76 67
+src/lib/inventory.test.ts
+  s_2e1da3b18d1c53::t_b147ea57e75f70 247-304
+src/lib/stripe-webhooks.ts
+  s_2e1da3b18d1c53::t_ac7ed3dfd8c819 450-464
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "001185f59f536edded1e55d395691f8048ad5a55",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_7114fe38b67e35": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8f7dffd4-ebcc-4a6f-9b6e-49a61b356ddf",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
