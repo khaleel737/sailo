@@ -141,7 +141,7 @@ describe("breadcrumbJsonLd", () => {
 
   it("makes every item an absolute URL", () => {
     const json = breadcrumbJsonLd([{ name: "Blog", path: "/fr/blog" }]);
-    expect(json.itemListElement[0]!.item).toMatch(/^https?:\/\/.+\/fr\/blog$/);
+    expect(json.itemListElement[0]?.item).toMatch(/^https?:\/\/.+\/fr\/blog$/);
   });
 });
 

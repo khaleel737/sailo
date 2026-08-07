@@ -104,8 +104,9 @@ export function getDb() {
 export function getReadDb() {
   if (!chosen) {
     const urls = replicaUrls();
-    if (urls.length === 0) return getDb();
-    chosen = urls[Math.floor(Math.random() * urls.length)] ?? urls[0]!;
+    const pick = urls[Math.floor(Math.random() * urls.length)];
+    if (!pick) return getDb();
+    chosen = pick;
   }
   if (!replica) replica = createDb(chosen);
   return replica;

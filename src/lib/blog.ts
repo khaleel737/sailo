@@ -356,30 +356,6 @@ export type ArticlePage = {
 };
 
 /**
- * One page of the index, newest first.
- *
- * `page` is clamped rather than rejected: `/blog/page/900` is a URL someone can
- * type or a crawler can invent, and showing the last page beats a 404 on a
- * listing that does exist.
- */
-export async function getArticlePage(
-  locale: Locale = DEFAULT_LOCALE,
-  page = 1,
-): Promise<ArticlePage> {
-  const all = await getArticles(locale);
-  const pageCount = Math.max(1, Math.ceil(all.length / ARTICLES_PER_PAGE));
-  const current = Math.min(Math.max(1, Math.floor(page) || 1), pageCount);
-  const start = (current - 1) * ARTICLES_PER_PAGE;
-
-  return {
-    articles: all.slice(start, start + ARTICLES_PER_PAGE),
-    page: current,
-    pageCount,
-    total: all.length,
-  };
-}
-
-/**
  * One entry per slug across every language, English preferred where it exists.
  *
  * This is the set that has a URL — what the sitemap advertises. It is a

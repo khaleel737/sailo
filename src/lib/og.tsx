@@ -10,9 +10,6 @@ import { readableOn } from "@/lib/utils";
  * to stay under 500KB, which is why nothing here embeds a typeface.
  */
 
-/** The browser tab. 32px is what a favicon is actually drawn at. */
-export const ICON_SIZE = { width: 32, height: 32 } as const;
-
 /** A six-digit hex, or the ink default if the column holds something odd. */
 export function safeHex(value: string | null | undefined, fallback = "#111111") {
   if (!value) return fallback;

@@ -63,14 +63,6 @@ export const LEGAL = {
   language: "English",
 } as const;
 
-/** Single-line postal address, for the contact blocks. */
-export const postalAddress = [
-  LEGAL.operator,
-  LEGAL.street,
-  `${LEGAL.city}, ${LEGAL.state} ${LEGAL.postalCode}`,
-  LEGAL.country,
-];
-
 /**
  * Everyone who touches personal data on Sailo's behalf.
  *

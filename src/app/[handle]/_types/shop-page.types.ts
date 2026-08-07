@@ -5,7 +5,6 @@ import type {
   CheckoutOptions,
   ProductCard,
   ShopFacets,
-  ShopFilters,
 } from "@/lib/queries";
 
 /**
@@ -44,8 +43,3 @@ export type ShopPageData = {
 };
 
 export type ShopLayout = "grid" | "list";
-
-export type ShopPageParams = {
-  handle: string;
-  filters: ShopFilters;
-};

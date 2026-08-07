@@ -3,5 +3,4 @@
  * messages themselves. Re-exported so callers import "@/lib/email" as before.
  */
 
-export { emailEnabled, type SendResult } from "./transport";
 export * from "./messages";

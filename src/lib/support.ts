@@ -36,5 +36,3 @@ export const MAX_TICKET_IMAGES = 3;
 
 export const MAX_SUBJECT_LENGTH = 140;
 export const MAX_MESSAGE_LENGTH = 5000;
-
-export type TicketStatus = "open" | "closed";

@@ -69,8 +69,8 @@ test.describe("chart interaction", () => {
     // visx nests an <svg> inside every axis tick label, so a card holds
     // several — the plot is the outermost one.
     const box = await card.locator("svg").first().boundingBox();
-    expect(box).not.toBeNull();
-    await page.mouse.move(box!.x + box!.width * 0.7, box!.y + box!.height / 2);
+    if (!box) throw new Error("the chart svg has no box to point at");
+    await page.mouse.move(box.x + box.width * 0.7, box.y + box.height / 2);
 
     // The period label becomes a date, which is the whole reason the disclosure
     // table was removed.
@@ -121,8 +121,8 @@ test.describe("chart on a phone", () => {
     await expect(readout).toContainText("30 days");
 
     const box = await card.locator("svg").first().boundingBox();
-    expect(box).not.toBeNull();
-    await page.touchscreen.tap(box!.x + box!.width * 0.6, box!.y + box!.height / 2);
+    if (!box) throw new Error("the chart svg has no box to tap");
+    await page.touchscreen.tap(box.x + box.width * 0.6, box.y + box.height / 2);
 
     /*
      * The bug this pins: a lifted finger used to clear the cursor, so a tap
@@ -149,8 +149,8 @@ test.describe("chart on a phone", () => {
     const slider = page.locator('[data-case="steady"] input[type="range"]');
     await expect(slider).toHaveCount(1);
     const box = await slider.boundingBox();
-    expect(box).not.toBeNull();
-    expect(box!.width).toBeLessThanOrEqual(1);
-    expect(box!.height).toBeLessThanOrEqual(1);
+    if (!box) throw new Error("the slider has no box to measure");
+    expect(box.width).toBeLessThanOrEqual(1);
+    expect(box.height).toBeLessThanOrEqual(1);
   });
 });

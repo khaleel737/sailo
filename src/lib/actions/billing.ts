@@ -1,7 +1,6 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
 import { requireShop } from "@/lib/session";
 import { stripe } from "@/lib/stripe";
 import { appUrl } from "@/lib/app-url";
@@ -12,7 +11,6 @@ import {
   priceEnvKey,
   priceMismatch,
 } from "@/lib/billing-checkout";
-import { syncSubscriptionForShop } from "@/lib/billing-sync";
 
 /**
  * Sends the seller to Stripe Checkout. The subscription is only applied when
@@ -63,12 +61,4 @@ export async function openBillingPortal() {
   });
 
   redirect(session.url);
-}
-
-/** Action wrapper — syncs then busts the cache. Safe to call from a client. */
-export async function syncSubscription() {
-  const { shop } = await requireShop();
-  await syncSubscriptionForShop(shop.id);
-  revalidatePath("/admin/settings/billing");
-  revalidatePath("/admin");
 }

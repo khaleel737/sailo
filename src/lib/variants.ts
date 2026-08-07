@@ -304,12 +304,6 @@ export function isServiceMode(value: string): value is ServiceMode {
   return value === "in_person" || value === "online";
 }
 
-/** Rounds a variant's stock into the shape the database column expects. */
-export function toStock(value: number | null): number | null {
-  if (value === null || !Number.isFinite(value)) return null;
-  return Math.max(0, Math.trunc(value));
-}
-
 export function clampQuantity(value: number, max = MAX_QUANTITY): number {
   const n = Math.trunc(value) || 1;
   return Math.min(Math.max(n, 1), Math.max(1, max));

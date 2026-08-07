@@ -277,20 +277,3 @@ export function Chip({
     </span>
   );
 }
-
-/**
- * A hairline, used where a card would have been. Most groupings on this page
- * are separated by space and a rule rather than boxed, which is the whole
- * difference between a page that reads as designed and one that reads as a
- * component library on a background.
- */
-export function Rule({ tone = "ink" }: { tone?: "ink" | "paper" }) {
-  return (
-    <hr
-      className={cn(
-        "border-0 border-t",
-        tone === "paper" ? "border-white/10" : "border-[var(--mute-200)]",
-      )}
-    />
-  );
-}

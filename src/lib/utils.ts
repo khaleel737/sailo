@@ -298,5 +298,3 @@ export const SOCIAL_PLATFORMS = [
   "instagram", "tiktok", "x", "youtube", "facebook",
   "whatsapp", "telegram", "snapchat", "pinterest", "website",
 ] as const;
-
-export type SocialPlatform = (typeof SOCIAL_PLATFORMS)[number];

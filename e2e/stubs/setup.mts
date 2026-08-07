@@ -1,4 +1,5 @@
 import { vi } from "vitest";
+import type * as nextCache from "next/cache";
 import { config } from "dotenv";
 
 config({ path: ".env.local", quiet: true });
@@ -14,7 +15,7 @@ config({ path: ".env.local", quiet: true });
  * an ordinary function call under vitest.
  */
 vi.mock("next/cache", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("next/cache")>()),
+  ...(await importOriginal<typeof nextCache>()),
   cacheLife: () => {},
   cacheTag: () => {},
 }));

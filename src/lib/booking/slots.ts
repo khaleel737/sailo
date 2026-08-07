@@ -1,6 +1,5 @@
 import {
   addDays,
-  fromIsoDate,
   toIsoDate,
   zonedParts,
   zonedTimeToInstant,
@@ -148,9 +147,4 @@ export function isOfferedSlot(startsAt: Date, opts: SlotOptions): boolean {
   return slotsOnDate({ year, month, day }, opts).some(
     (slot) => slot.startsAt.getTime() === startsAt.getTime(),
   );
-}
-
-/** Reads `2026-08-07` into the date a calendar page is showing. */
-export function calendarDateFrom(value: string | undefined, fallback: CalendarDate): CalendarDate {
-  return (value && fromIsoDate(value)) || fallback;
 }

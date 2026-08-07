@@ -86,7 +86,9 @@ describe("blogIndexLanguages", () => {
      */
     const languages = await blogIndexLanguages();
     for (const locale of await getContentLocales()) {
-      expect(new URL(languages[locale]!).pathname).toBe(blogIndexPath(locale));
+      const href = languages[locale];
+      if (!href) throw new Error(`no hreflang for ${locale}`);
+      expect(new URL(href).pathname).toBe(blogIndexPath(locale));
     }
   });
 });

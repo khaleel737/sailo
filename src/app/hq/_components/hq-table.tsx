@@ -11,5 +11,4 @@ export {
   Td,
   Tr,
   EmptyRow,
-  TitleCell,
 } from "@/components/shared/table";

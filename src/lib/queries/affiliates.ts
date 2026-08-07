@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, orders, type Affiliate } from "@/db/schema";
 
@@ -34,16 +34,6 @@ export async function getShopAffiliates(shopId: string): Promise<AffiliateRow[]>
     earnedCents: Number(r.earnedCents),
     unpaidCents: Number(r.unpaidCents),
   }));
-}
-
-export async function getAffiliateByCode(shopId: string, code: string) {
-  return getDb().query.affiliates.findFirst({
-    where: and(
-      eq(affiliates.shopId, shopId),
-      eq(affiliates.code, code.toUpperCase()),
-      eq(affiliates.status, "active"),
-    ),
-  });
 }
 
 /* -------------------------------------------------------------------------- */

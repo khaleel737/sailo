@@ -4,13 +4,12 @@
     "e2e/**/*.spec.ts",
     "e2e/stubs/*.{ts,mts}",
     "scripts/**/*.ts",
-    "sw.mjs",
-    "drizzle.config.ts"
+    "sw.mjs"
   ],
   "project": ["src/**/*.{ts,tsx}", "scripts/**/*.ts", "e2e/**/*.ts"],
   "ignoreExportsUsedInFile": true,
-  "ignore": ["src/i18n/**", "graphify-out/**"],
-  "ignoreDependencies": ["@vitejs/plugin-react"],
+  "ignore": ["src/i18n/**"],
+  "ignoreDependencies": ["@vitejs/plugin-react", "tailwindcss"],
   "drizzle": {
     "config": ["drizzle.config.ts"]
   }

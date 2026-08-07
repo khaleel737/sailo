@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { revalidateShop } from "@/lib/cache";
 import { firstRow } from "@/lib/invariant";
-import { and, eq, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { paymentMethods, type PaymentConfig } from "@/db/schema";
 import { requireShop } from "@/lib/session";
@@ -70,31 +70,4 @@ export async function savePaymentMethod(
   // The catalogue is cached per shop; a write has to drop it.
   revalidateShop(shop.id, shop.handle);
   return { ok: true, message: `${def.name} saved.` };
-}
-
-export async function togglePaymentMethod(formData: FormData) {
-  const { shop } = await requireShop();
-  const type = String(formData.get("type") ?? "");
-  if (!isPaymentMethodType(type)) return;
-
-  const db = getDb();
-  const existing = await db.query.paymentMethods.findFirst({
-    where: and(
-      eq(paymentMethods.shopId, shop.id),
-      eq(paymentMethods.type, type),
-    ),
-  });
-  // Never flip an unconfigured rail on.
-  if (!existing) return;
-  if (!existing.isEnabled && !isConfigured(type, existing.config)) return;
-
-  await db
-    .update(paymentMethods)
-    .set({ isEnabled: !existing.isEnabled, updatedAt: new Date() })
-    .where(eq(paymentMethods.id, existing.id));
-
-  revalidatePath("/admin/payments");
-  revalidatePath(`/${shop.handle}`);
-  // The catalogue is cached per shop; a write has to drop it.
-  revalidateShop(shop.id, shop.handle);
 }

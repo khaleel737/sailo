@@ -12,8 +12,6 @@ function resend() {
   return client;
 }
 
-export const emailEnabled = () => Boolean(process.env.RESEND_API_KEY);
-
 /**
  * Every address we send from lives on one domain, and that domain has to stay
  * verified in Resend or nothing leaves the building. Overridable so a staging

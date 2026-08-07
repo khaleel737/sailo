@@ -1,7 +1,6 @@
 import { cache } from "react";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { getSessionCookie } from "better-auth/cookies";
 import { eq } from "drizzle-orm";
 import { auth } from "./auth";
 import { isStaffEmail, staffEmails } from "./staff";
@@ -18,28 +17,6 @@ import { shops } from "@/db/schema";
 export const getSession = cache(async () => {
   return auth.api.getSession({ headers: await headers() });
 });
-
-/**
- * Whether this request carries a session cookie at all.
- *
- * `getSession()` is a database round trip, and on a public page almost every
- * request is anonymous — so the query's job there is to spend most of a second
- * confirming that nobody is signed in. This answers the same question from the
- * request itself, for the pages that only need to know whether to get out of a
- * signed-in seller's way.
- *
- * A cookie is not proof of a session: it can be expired, revoked, or simply
- * made up. So this only ever guards the real check and never stands in for it
- * — anything that grants access still calls `getSession()` and believes only
- * what comes back. Used to skip work, never to authorise it.
- *
- * Better-auth's own helper rather than a name match written here, because the
- * name is not one string: production adds a `__Secure-` prefix, and the
- * library accepts both `.` and `-` between the prefix and the cookie.
- */
-export async function hasSessionCookie() {
-  return getSessionCookie(await headers()) !== null;
-}
 
 export async function requireUser() {
   const session = await getSession();

@@ -8,7 +8,7 @@ import { requireShop } from "@/lib/session";
 import { firstRow } from "@/lib/invariant";
 import { formatMoney, parseMoneyToCents } from "@/lib/utils";
 import { isStockReleasingStatus, restoreStock, retakeStock } from "@/lib/inventory";
-import { canReverse, checkRefund, refundableCents, reversePayment, type RefundOutcome } from "@/lib/refunds";
+import { checkRefund, refundableCents, reversePayment, type RefundOutcome } from "@/lib/refunds";
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
 import { isOrderStatus } from "@/lib/order-status";
 import { releaseDownloads } from "@/lib/downloads";
@@ -274,56 +274,6 @@ export async function refundOrder(
   revalidatePath("/admin/clients");
   revalidatePath("/admin/products");
   return { ok: true, message: note };
-}
-
-/**
- * Undoes a refund that was only ever a note in our own table.
- *
- * A refund that actually moved money cannot be undone from here: the money has
- * left the seller's Stripe balance and only a fresh charge would bring it back,
- * which is not something to do behind a button labelled "clear". Clearing the
- * row would leave us claiming the buyer was never refunded while their bank
- * says otherwise, which is worse than the mistake being corrected.
- */
-export async function clearRefund(formData: FormData) {
-  const { shop } = await requireShop();
-  const db = getDb();
-  const id = String(formData.get("id") ?? "");
-  if (!id) return;
-
-  const order = await db.query.orders.findFirst({
-    where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
-  });
-  if (!order) return;
-
-  if (order.stripePaymentIntentId && canReverse(order)) {
-    console.warn(
-      `[sailo] refusing to clear a processed refund on order ${order.id} — ` +
-        "the money already went back to the buyer",
-    );
-    return;
-  }
-
-  await db
-    .update(orders)
-    .set({
-      refundedCents: 0,
-      refundedAt: null,
-      refundReason: null,
-      status: "confirmed",
-      paymentStatus: "paid",
-      updatedAt: new Date(),
-    })
-    .where(eq(orders.id, id));
-
-  // The buyer has the goods again, so the units come back off the shelf.
-  if (order.restockedAt) await retakeStock(order);
-  // Marking it paid is also what releases a download that was waiting on it.
-  await releaseDownloads(order.id);
-
-  revalidatePath("/admin");
-  revalidatePath("/admin/orders");
-  revalidatePath("/admin/products");
 }
 
 export async function deleteOrder(formData: FormData) {

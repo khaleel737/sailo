@@ -22,10 +22,6 @@ let connecting: Promise<RedisClientType | null> | null = null;
 let coldUntil = 0;
 const COLD_MS = 30_000;
 
-export function redisConfigured() {
-  return Boolean(process.env.REDIS_URL);
-}
-
 async function connect(): Promise<RedisClientType | null> {
   const url = process.env.REDIS_URL;
   if (!url) return null;
@@ -173,12 +169,4 @@ export async function drainAffiliateClicks(): Promise<Record<string, number>> {
     }
     return out;
   }, {});
-}
-
-/** For the health check — reports whether Redis is actually answering. */
-export async function redisPing(): Promise<{ ok: boolean; ms: number | null }> {
-  if (!redisConfigured()) return { ok: false, ms: null };
-  const started = Date.now();
-  const pong = await withRedis((redis) => redis.ping(), null);
-  return { ok: pong === "PONG", ms: pong === "PONG" ? Date.now() - started : null };
 }

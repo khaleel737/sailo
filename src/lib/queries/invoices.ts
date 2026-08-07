@@ -24,12 +24,6 @@ export async function getInvoiceByToken(token: string) {
   return { invoice, order, shop, items: await getOrderItems(order) };
 }
 
-export async function getInvoiceForOrder(orderId: string) {
-  return getDb().query.invoices.findFirst({
-    where: eq(invoices.orderId, orderId),
-  });
-}
-
 /** Invoice numbers keyed by order id, for listing screens. */
 export async function getInvoiceMap(orderIds: string[]) {
   const map = new Map<string, { number: string; token: string }>();

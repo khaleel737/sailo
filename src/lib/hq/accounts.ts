@@ -208,10 +208,6 @@ export async function getAccounts(filters: AccountFilters = {}) {
 /*  One account, in full                                                       */
 /* -------------------------------------------------------------------------- */
 
-export type AccountDetail = NonNullable<
-  Awaited<ReturnType<typeof getAccountDetail>>
->;
-
 export async function getAccountDetail(userId: string) {
   await requireStaff();
   const db = getDb();

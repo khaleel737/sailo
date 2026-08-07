@@ -11,8 +11,6 @@ import { notStaff } from "./roster";
 
 /** The platform at a glance: revenue, activation, growth. */
 
-export type PlatformOverview = Awaited<ReturnType<typeof getPlatformOverview>>;
-
 export async function getPlatformOverview() {
   await requireStaff();
   const db = getDb();
