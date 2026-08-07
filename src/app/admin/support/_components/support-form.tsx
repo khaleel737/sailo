@@ -27,11 +27,24 @@ export function SupportForm() {
   const [images, setImages] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
 
+  /*
+   * The attachment list clears during render; the form element itself clears
+   * from an effect, because a ref cannot be touched while rendering.
+   *
+   * Splitting it that way is what the lint rule was pointing at: setting state
+   * inside the effect scheduled a second render, so the seller saw their own
+   * attachments for a frame after the confirmation appeared. `settled` tracks
+   * which result has been handled, so a later failure does not re-clear a form
+   * they have started retyping.
+   */
+  const [settled, setSettled] = useState(state);
+  if (settled !== state) {
+    setSettled(state);
+    if (state.ok) setImages([]);
+  }
+
   useEffect(() => {
-    if (state.ok) {
-      formRef.current?.reset();
-      setImages([]);
-    }
+    if (state.ok) formRef.current?.reset();
   }, [state]);
 
   async function upload(file: File | undefined) {
