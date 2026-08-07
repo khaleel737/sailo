@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import { LOCALES, type Locale } from "@/i18n/config";
 import { setLocale } from "@/lib/actions/locale";
@@ -60,6 +60,7 @@ export function LanguageSwitcher({
   size?: "sm" | "md";
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [panel, setPanel] = useState<Panel | null>(null);
   const [pending, startTransition] = useTransition();
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -158,8 +159,21 @@ export function LanguageSwitcher({
   function choose(code: Locale) {
     setPanel(null);
     startTransition(async () => {
-      await setLocale(code);
-      router.refresh();
+      /*
+       * The blog keeps its language in the URL, not in the cookie, so there
+       * the switch is a navigation rather than a refresh. `setLocale` answers
+       * with where to go when that applies and null everywhere else — the
+       * client cannot work it out for itself, because whether a given article
+       * exists in the chosen language is a question only the server can
+       * answer.
+       *
+       * Refreshing on the blog changed the nav and left the article alone: a
+       * French header wrapped around an English post at a URL still saying
+       * `/en`.
+       */
+      const href = await setLocale(code, pathname);
+      if (href) router.push(href);
+      else router.refresh();
     });
   }
 
