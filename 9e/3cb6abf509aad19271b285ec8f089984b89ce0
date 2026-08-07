@@ -1,0 +1,31 @@
+src/lib/stripe-webhooks.ts
+  s_2e1da3b18d1c53::t_cf2fdf9f30cb33 7,473,494
+src/lib/actions/orders.ts
+  s_2e1da3b18d1c53::t_bad3933cd8114d 28
+  s_2e1da3b18d1c53::t_8e24326287a222 251-268,271,338-342,344,366-371
+  s_2e1da3b18d1c53::t_23a63cd11d72f6 434-436
+src/lib/inventory.ts
+  s_2e1da3b18d1c53::t_cf2fdf9f30cb33 3,174-196,310-312
+src/lib/orders/card-handoff.ts
+  s_2e1da3b18d1c53::t_cf2fdf9f30cb33 6,66-69,71
+src/lib/inventory.test.ts
+  s_2e1da3b18d1c53::t_17c2a709c958f4 137-194
+src/lib/actions/orders.test.ts
+  s_2e1da3b18d1c53::t_3118eb4b59fd44 57-63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "9e3cb6abf509aad19271b285ec8f089984b89ce0",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
