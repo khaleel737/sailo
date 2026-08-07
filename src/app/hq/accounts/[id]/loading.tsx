@@ -1,9 +1,0 @@
-/*
- * Shown while this route streams in. Sibling to `page.tsx`, so it wraps it
- * and everything nested under it in a Suspense boundary.
- */
-import { FormPageSkeleton } from "@/components/shared/skeleton";
-
-export default function Loading() {
-  return <FormPageSkeleton sections={3} fields={4} />;
-}
