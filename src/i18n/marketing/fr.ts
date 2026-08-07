@@ -16,7 +16,7 @@ export const marketingFr: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratuit pendant la bêta",
+    badge: "Gratuit au départ, gratuit ensuite",
     title: "Le lien de votre bio devrait déjà {highlight}.",
     titleHighlight: "prendre des commandes",
     body: "Sailo en fait une vraie boutique — photos, prix, recherche, paiement — et envoie chaque commande dans la messagerie à laquelle vous répondez déjà.",
@@ -24,7 +24,7 @@ export const marketingFr: MarketingDictionary = {
     ctaSecondary: "Ouvrir une boutique réelle",
     proof1: "En ligne en moins d'une minute",
     proof2: "Sans carte bancaire",
-    proof3: "Aucune commission sur vos ventes",
+    proof3: "Aucune commission sur les commandes par chat et virement",
     proof4: "35 langues",
     igBio: "Pizza au feu de bois, Naples. Commandez ci-dessous.",
     igPosts: "Publications",
@@ -148,7 +148,7 @@ export const marketingFr: MarketingDictionary = {
     q2: "Comment mes clients me paient-ils vraiment ?",
     a2: "Comme aujourd'hui. Par carte, via votre propre compte Stripe ou Paystack, donc l'encaissement vous revient directement. Ou par virement, paiement à la livraison et mobile money, avec vos propres instructions. Sailo ne détient jamais l'argent.",
     q3: "Sailo prend-il une commission ?",
-    a3: "Non. Ni sur la formule gratuite, ni sur les payantes. Ce que paie l'acheteur vous revient, moins ce que facture votre propre prestataire de paiement.",
+    a3: "Sur les commandes par chat, virement et espèces, non : elles vous reviennent intégralement. Les ventes par carte comportent {fee} sur les produits, prélevés comme frais Stripe. Jamais sur la livraison ni la taxe.",
     q4: "Puis-je vendre des services ou des fichiers ?",
     a4: "Oui, et ils se comportent correctement. Une prestation peut porter une durée, un lieu et un calendrier avec délai de prévenance. Un produit numérique livre des fichiers débloqués dès la confirmation du paiement, avec limite de téléchargements et expiration si vous le souhaitez.",
     q5: "J'ai déjà un Linktree. Pourquoi changer ?",
@@ -163,7 +163,7 @@ export const marketingFr: MarketingDictionary = {
 
   stats: {
     s1: "langues, de droite à gauche comprise",
-    s2: "de commission — sur toutes les formules, la gratuite comprise",
+    s2: "de commission sur les commandes par chat et virement",
     s3: "entre l'inscription et un lien à partager",
   },
 
@@ -187,6 +187,9 @@ export const marketingFr: MarketingDictionary = {
     minuteRead: "min de lecture",
 
     backToBlog: "Tous les articles",
+    pagination: "Pagination",
+    previousPage: "Page précédente",
+    nextPage: "Page suivante",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingFr: MarketingDictionary = {
     privacy: "Confidentialité",
     terms: "Conditions",
     refunds: "Remboursements",
+    gdpr: "GDPR",
   },
 
   seo: {

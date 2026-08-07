@@ -16,7 +16,7 @@ export const marketingFi: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Ilmainen beta-aikana",
+    badge: "Aloita ilmaiseksi, jatka ilmaiseksi",
     title: "Biosi linkin pitäisi jo {highlight}.",
     titleHighlight: "ottaa tilauksia vastaan",
     body: "Sailo tekee siitä oikean kaupan — kuvat, hinnat, haku, kassa — ja lähettää jokaisen tilauksen siihen viestisovellukseen, jossa muutenkin vastaat.",
@@ -24,7 +24,7 @@ export const marketingFi: MarketingDictionary = {
     ctaSecondary: "Avaa oikea kauppa",
     proof1: "Pystyssä alle minuutissa",
     proof2: "Korttia ei tarvita",
-    proof3: "Ei provisiota myynnistäsi",
+    proof3: "Ei provisiota chat- ja tilisiirtotilauksista",
     proof4: "35 kieltä",
     igBio: "Puu-uunipizzaa, Napoli. Tilaa alta.",
     igPosts: "Julkaisua",
@@ -148,7 +148,7 @@ export const marketingFi: MarketingDictionary = {
     q2: "Miten ostajat oikeasti maksavat minulle?",
     a2: "Samoin kuin otat rahaa vastaan jo nyt. Kortilla oman Stripe- tai Paystack-tilisi kautta, jolloin suoritus tulee suoraan sinulle. Tai tilisiirtona, postiennakolla ja mobiilirahalla, ohjeilla jotka kirjoitat itse. Sailo ei koskaan pidä rahoja hallussaan.",
     q3: "Ottaako Sailo provisiota?",
-    a3: "Ei. Ei ilmaisessa eikä maksullisissa paketeissa. Se minkä ostaja maksaa jää sinulle, miinus mitä oma maksunvälittäjäsi veloittaa.",
+    a3: "Chat-, tilisiirto- ja käteistilauksista ei — ne ovat kokonaan sinun. Korttimyynnistä peritään {fee} tuotteista Stripe-maksuna. Ei koskaan toimituksesta tai verosta.",
     q4: "Voinko myydä palveluita tai digitaalisia tiedostoja?",
     a4: "Kyllä, ja ne käyttäytyvät oikein. Palvelulla voi olla kesto, paikka ja päivämäärävalitsin varoitusaikoineen. Digitaalinen tuote toimittaa tiedostot, jotka aukeavat heti kun vahvistat maksun — halutessasi latausrajalla ja vanhenemisella.",
     q5: "Minulla on jo Linktree. Miksi vaihtaisin?",
@@ -163,7 +163,7 @@ export const marketingFi: MarketingDictionary = {
 
   stats: {
     s1: "kieltä, oikealta vasemmalle mukaan lukien",
-    s2: "provisiota — kaikissa paketeissa, myös ilmaisessa",
+    s2: "provisiota chat- ja tilisiirtotilauksista",
     s3: "rekisteröitymisestä jaettavaan linkkiin",
   },
 
@@ -187,6 +187,9 @@ export const marketingFi: MarketingDictionary = {
     minuteRead: "min lukuaika",
 
     backToBlog: "Kaikki artikkelit",
+    pagination: "Sivutus",
+    previousPage: "Edellinen sivu",
+    nextPage: "Seuraava sivu",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingFi: MarketingDictionary = {
     privacy: "Tietosuoja",
     terms: "Ehdot",
     refunds: "Hyvitykset",
+    gdpr: "GDPR",
   },
 
   seo: {

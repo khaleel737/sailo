@@ -3,7 +3,13 @@
 import { useState, type ReactNode } from "react";
 import { Check, Lock, Sparkles } from "lucide-react";
 import { startCheckout } from "@/lib/actions/billing";
-import { PLAN_IDS, PLANS, type Features, type PlanId } from "@/lib/plans";
+import {
+  PLANS,
+  PLAN_IDS,
+  PLATFORM_FEE_LABEL,
+  type Features,
+  type PlanId,
+} from "@/lib/plans";
 import { Badge, Button } from "@/components/ui";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { Dialog } from "@/components/overlays";
@@ -21,7 +27,7 @@ import { cn } from "@/lib/utils";
 /** Copy for the headline when a specific locked feature triggered the modal. */
 function featureCopy(feature: keyof Features, t: Dictionary) {
   const map: Partial<Record<keyof Features, { title: string; body: string }>> = {
-    cardRails: { title: t.billing.cardTitle, body: t.billing.cardBody },
+    cardRails: { title: t.billing.cardTitle, body: interpolate(t.billing.cardBody, { fee: PLATFORM_FEE_LABEL }) },
     coupons: { title: t.billing.couponsTitle, body: t.billing.couponsBody },
     affiliates: {
       title: t.billing.affiliatesTitle,
@@ -78,7 +84,7 @@ export function UpgradeModal({
       }
       footer={
         <p className="w-full text-center text-xs text-ink-400">
-          {t.billing.cancelAnyTime}
+          {interpolate(t.billing.cancelAnyTime, { fee: PLATFORM_FEE_LABEL })}
         </p>
       }
     >

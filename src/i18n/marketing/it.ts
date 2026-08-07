@@ -16,7 +16,7 @@ export const marketingIt: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis durante la beta",
+    badge: "Gratis per iniziare, gratis per restare",
     title: "Il link in bio dovrebbe già {highlight}.",
     titleHighlight: "prendere ordini",
     body: "Sailo lo trasforma in un negozio vero — foto, prezzi, ricerca, pagamento — e manda ogni ordine nell'app di messaggi a cui stai già rispondendo.",
@@ -24,7 +24,7 @@ export const marketingIt: MarketingDictionary = {
     ctaSecondary: "Apri un negozio vero",
     proof1: "Online in meno di un minuto",
     proof2: "Nessuna carta richiesta",
-    proof3: "Nessuna commissione sulle vendite",
+    proof3: "Nessuna commissione su ordini via chat e bonifico",
     proof4: "35 lingue",
     igBio: "Pizza al forno a legna, Napoli. Ordina qui sotto.",
     igPosts: "Post",
@@ -148,7 +148,7 @@ export const marketingIt: MarketingDictionary = {
     q2: "Come mi pagano davvero?",
     a2: "Come incassi già oggi. Con carta, tramite il tuo account Stripe o Paystack, quindi l'incasso arriva direttamente a te. Oppure con bonifico, contrassegno e mobile money, con istruzioni scritte da te. Sailo non tiene mai i soldi.",
     q3: "Sailo prende una commissione?",
-    a3: "No. Né sul piano gratuito né su quelli a pagamento. Quello che paga il cliente resta a te, meno ciò che addebita il tuo fornitore di pagamenti.",
+    a3: "Su ordini via chat, bonifico e contanti no: sono interamente tuoi. Le vendite con carta hanno il {fee} sui prodotti, trattenuto come commissione Stripe. Mai su spedizione o imposte.",
     q4: "Posso vendere servizi o file digitali?",
     a4: "Sì, e si comportano come devono. Un servizio può avere durata, luogo e calendario con preavviso. Un prodotto digitale consegna file che si sbloccano appena confermi il pagamento, con limite di download e scadenza se li vuoi.",
     q5: "Ho già un Linktree. Perché cambiare?",
@@ -163,7 +163,7 @@ export const marketingIt: MarketingDictionary = {
 
   stats: {
     s1: "lingue, da destra a sinistra comprese",
-    s2: "di commissione — su ogni piano, gratuito incluso",
+    s2: "di commissione su ordini via chat e bonifico",
     s3: "dall'iscrizione a un link da condividere",
   },
 
@@ -187,6 +187,9 @@ export const marketingIt: MarketingDictionary = {
     minuteRead: "min di lettura",
 
     backToBlog: "Tutti gli articoli",
+    pagination: "Impaginazione",
+    previousPage: "Pagina precedente",
+    nextPage: "Pagina successiva",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingIt: MarketingDictionary = {
     privacy: "Privacy",
     terms: "Termini",
     refunds: "Rimborsi",
+    gdpr: "GDPR",
   },
 
   seo: {

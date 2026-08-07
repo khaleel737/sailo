@@ -44,11 +44,21 @@ export function showsBadge(shop: BadgeShop): boolean {
 /**
  * Where the badge points. Absolute so the same builder serves the PDF, which
  * has no origin to resolve a relative path against.
+ *
+ * `medium` separates the surfaces the badge appears on. A shop page and an
+ * order confirmation are different channels with different economics — the
+ * page is seen by whoever browses, the email lands with someone who has
+ * already bought — and rolling them into one figure hides which of the two
+ * the free tier is actually being paid for.
  */
-export function badgeHref(handle: string, base: string = APP_URL): string {
+export function badgeHref(
+  handle: string,
+  base: string = APP_URL,
+  medium: "shop" | "email" = "shop",
+): string {
   const url = new URL("/", base);
   url.searchParams.set("utm_source", "sailo");
-  url.searchParams.set("utm_medium", "shop");
+  url.searchParams.set("utm_medium", medium);
   url.searchParams.set("utm_campaign", "footer_badge");
   url.searchParams.set("utm_content", handle);
   return url.toString();

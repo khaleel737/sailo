@@ -4,8 +4,8 @@
  *
  * There is deliberately no sign-up, no invite flow and no role column. Access
  * is an allowlist of email addresses, checked against the signed-in session on
- * every request. Two people run this company; a permissions system would be
- * more code to get wrong than the thing it protects.
+ * every request. A handful of people run this company; a permissions system
+ * would be more code to get wrong than the thing it protects.
  *
  * Pure on purpose — no database, no `next/*` imports — so the guards in
  * `lib/session.ts` and a unit test can both read it.
@@ -15,11 +15,14 @@
  * The default roster. Overridden wholesale by SAILO_STAFF_EMAILS (comma
  * separated) so adding or removing someone is an environment variable and a
  * redeploy, not a code change.
+ *
+ * One dedicated address, not the founders' personal Gmails: this account
+ * exists only to open /hq, signs in by magic link, and its inbox lives on a
+ * domain we control. A personal address on this list makes every place that
+ * inbox is signed in — a phone, an old laptop — part of the panel's attack
+ * surface.
  */
-const DEFAULT_STAFF = [
-  "khaleelmusleh@gmail.com",
-  "uncolored.inc@gmail.com",
-] as const;
+const DEFAULT_STAFF = ["admin@sailo.store"] as const;
 
 export function staffEmails(): string[] {
   const configured = process.env.SAILO_STAFF_EMAILS;

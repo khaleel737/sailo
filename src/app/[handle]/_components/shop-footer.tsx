@@ -56,6 +56,7 @@ export function ShopFooter({
             { href: "/privacy", label: m.footer.privacy },
             { href: "/terms", label: m.footer.terms },
             { href: "/refunds", label: m.footer.refunds },
+            { href: "/gdpr", label: m.footer.gdpr },
           ].map((doc) => (
             <li key={doc.href}>
               <Link

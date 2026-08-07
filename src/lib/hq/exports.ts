@@ -1,4 +1,5 @@
 import "server-only";
+import { requireStaff } from "@/lib/session";
 import { desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, clients, orders, products, shops, user } from "@/db/schema";
@@ -8,6 +9,7 @@ import { num } from "./pagination";
 
 /** Rows for the CSV exports, unpaginated but bounded. */
 export async function getAllAccountsForExport(limit = 5000) {
+  await requireStaff();
   const rows = await getDb()
     .select({
       userId: user.id,
@@ -34,6 +36,7 @@ export async function getAllAccountsForExport(limit = 5000) {
 }
 
 export async function getAllOrdersForExport(limit = 10000) {
+  await requireStaff();
   return getDb()
     .select({
       order: orders,
@@ -49,6 +52,7 @@ export async function getAllOrdersForExport(limit = 10000) {
 }
 
 export async function getAllProductsForExport(limit = 10000) {
+  await requireStaff();
   return getDb()
     .select({
       product: products,
@@ -63,6 +67,7 @@ export async function getAllProductsForExport(limit = 10000) {
 }
 
 export async function getAllAffiliatesForExport(limit = 10000) {
+  await requireStaff();
   const rows = await getDb()
     .select({
       affiliate: affiliates,
@@ -86,6 +91,7 @@ export async function getAllAffiliatesForExport(limit = 10000) {
 }
 
 export async function getAllBuyersForExport(limit = 10000) {
+  await requireStaff();
   const rows = await getDb()
     .select({
       client: clients,

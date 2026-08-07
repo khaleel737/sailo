@@ -1,13 +1,44 @@
+import { cache } from "react";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
+import { getSessionCookie } from "better-auth/cookies";
 import { eq } from "drizzle-orm";
 import { auth } from "./auth";
 import { isStaffEmail, staffEmails } from "./staff";
 import { getDb } from "@/db";
 import { shops } from "@/db/schema";
 
-export async function getSession() {
+/**
+ * Wrapped in React's `cache` so one request pays for one session lookup, no
+ * matter how many guards ask. The /hq queries each call `requireStaff` for
+ * themselves — the layout's check doesn't cover them, because Next renders
+ * layout and page in parallel — and without this, a page assembling five
+ * queries would make five identical round trips.
+ */
+export const getSession = cache(async () => {
   return auth.api.getSession({ headers: await headers() });
+});
+
+/**
+ * Whether this request carries a session cookie at all.
+ *
+ * `getSession()` is a database round trip, and on a public page almost every
+ * request is anonymous — so the query's job there is to spend most of a second
+ * confirming that nobody is signed in. This answers the same question from the
+ * request itself, for the pages that only need to know whether to get out of a
+ * signed-in seller's way.
+ *
+ * A cookie is not proof of a session: it can be expired, revoked, or simply
+ * made up. So this only ever guards the real check and never stands in for it
+ * — anything that grants access still calls `getSession()` and believes only
+ * what comes back. Used to skip work, never to authorise it.
+ *
+ * Better-auth's own helper rather than a name match written here, because the
+ * name is not one string: production adds a `__Secure-` prefix, and the
+ * library accepts both `.` and `-` between the prefix and the cookie.
+ */
+export async function hasSessionCookie() {
+  return getSessionCookie(await headers()) !== null;
 }
 
 export async function requireUser() {
@@ -27,19 +58,24 @@ export async function requireShop() {
 }
 
 /**
- * Everything behind /hq needs a signed-in user on the staff allowlist.
+ * Everything behind /hq needs a signed-in user on the staff allowlist, with
+ * the email verified — proven by clicking a link sent to it, which is also
+ * how /hq/login signs staff in. Without the verified requirement, typing a
+ * staff address into the ordinary sign-up form would be enough: sign-up
+ * doesn't check inbox ownership, and an allowlist of emails is only as good
+ * as the proof that the session's email is really its holder's.
  *
  * A signed-in stranger gets a 404 rather than a 403: the second tells them the
  * panel exists and that they found the right URL. Someone who isn't signed in
- * at all goes to the login page, because that's an ordinary session expiry and
- * hiding it would just look broken to us.
+ * at all goes to the staff login, because that's an ordinary session expiry
+ * and hiding it would just look broken to us.
  */
 export async function requireStaff() {
   const session = await getSession();
   const user = session?.user;
-  if (!user) redirect("/login");
+  if (!user) redirect("/hq/login");
 
-  if (!isStaffEmail(user.email)) {
+  if (!isStaffEmail(user.email) || !user.emailVerified) {
     /*
      * A refusal is a 404, which is right for the stranger and useless for us:
      * a founder locked out by a stray SAILO_STAFF_EMAILS override sees exactly
@@ -48,15 +84,21 @@ export async function requireStaff() {
      * the response still gives the caller nothing.
      */
     console.warn(
-      `[sailo] /hq refused ${user.email}; roster is ${staffEmails().join(", ")}`,
+      `[sailo] /hq refused ${user.email} (verified: ${user.emailVerified}); ` +
+        `roster is ${staffEmails().join(", ")}`,
     );
     notFound();
   }
   return user;
 }
 
-/** Non-blocking check, for showing staff-only affordances inside /admin. */
+/**
+ * Non-blocking check, for showing staff-only affordances inside /admin.
+ * Same test as `requireStaff`, verified email included — an affordance this
+ * shows must not lead to a door that check then refuses.
+ */
 export async function isStaff() {
   const session = await getSession();
-  return isStaffEmail(session?.user?.email);
+  const user = session?.user;
+  return Boolean(user?.emailVerified) && isStaffEmail(user?.email);
 }

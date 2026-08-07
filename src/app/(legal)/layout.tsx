@@ -1,4 +1,5 @@
 import { GoogleTag } from "@/lib/google-tag";
+import { ConsentGate } from "@/components/shared/consent-gate";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { SailoLogo } from "@/components/brand";
@@ -72,6 +73,7 @@ export default function LegalLayout({ children }: LayoutProps<"/">) {
         </Container>
       </footer>
       <GoogleTag />
+      <ConsentGate />
     </div>
   );
 }

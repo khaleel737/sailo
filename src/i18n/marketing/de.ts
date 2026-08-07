@@ -16,7 +16,7 @@ export const marketingDe: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Kostenlos in der Beta",
+    badge: "Kostenlos starten, kostenlos bleiben",
     title: "Der Link in deiner Bio sollte längst {highlight}.",
     titleHighlight: "Bestellungen annehmen",
     body: "Sailo macht daraus einen echten Shop — Fotos, Preise, Suche, Kasse — und schickt jede Bestellung in den Messenger, in dem du ohnehin schon antwortest.",
@@ -24,7 +24,7 @@ export const marketingDe: MarketingDictionary = {
     ctaSecondary: "Echten Shop ansehen",
     proof1: "In unter einer Minute online",
     proof2: "Keine Kreditkarte nötig",
-    proof3: "Keine Provision auf deine Verkäufe",
+    proof3: "Keine Provision auf Chat- und Überweisungsbestellungen",
     proof4: "35 Sprachen",
     igBio: "Holzofenpizza, Neapel. Bestell unten.",
     igPosts: "Beiträge",
@@ -148,7 +148,7 @@ export const marketingDe: MarketingDictionary = {
     q2: "Wie zahlen mir Käufer tatsächlich?",
     a2: "So wie heute schon. Per Karte über dein eigenes Stripe- oder Paystack-Konto, die Zahlung landet also direkt bei dir. Oder per Überweisung, Nachnahme und Mobile Money, mit Anweisungen, die du selbst schreibst. Sailo hält das Geld nie.",
     q3: "Nimmt Sailo eine Provision?",
-    a3: "Nein. Weder im kostenlosen Tarif noch in den bezahlten. Was der Käufer zahlt, bleibt bei dir — abzüglich dessen, was dein eigener Zahlungsanbieter berechnet.",
+    a3: "Bei Chat-, Überweisungs- und Barbestellungen nein — die gehören ganz dir. Kartenzahlungen kosten {fee} der Ware, als Stripe-Gebühr abgezogen. Nie auf Versand oder Steuern.",
     q4: "Kann ich Dienstleistungen oder Dateien verkaufen?",
     a4: "Ja, und zwar richtig. Eine Leistung kann Dauer, Ort und eine Datumsauswahl mit Vorlaufzeit haben. Ein digitales Produkt liefert Dateien, die sich mit der Zahlungsbestätigung öffnen — auf Wunsch mit Download-Limit und Ablaufdatum.",
     q5: "Ich habe schon ein Linktree. Warum wechseln?",
@@ -163,7 +163,7 @@ export const marketingDe: MarketingDictionary = {
 
   stats: {
     s1: "Sprachen, von rechts nach links inklusive",
-    s2: "Provision — in jedem Tarif, auch im kostenlosen",
+    s2: "Provision auf Chat- und Überweisungsbestellungen",
     s3: "von der Anmeldung bis zum teilbaren Link",
   },
 
@@ -187,6 +187,9 @@ export const marketingDe: MarketingDictionary = {
     minuteRead: "Min. Lesezeit",
 
     backToBlog: "Alle Artikel",
+    pagination: "Seitennummerierung",
+    previousPage: "Vorherige Seite",
+    nextPage: "Nächste Seite",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingDe: MarketingDictionary = {
     privacy: "Datenschutz",
     terms: "AGB",
     refunds: "Rückerstattungen",
+    gdpr: "GDPR",
   },
 
   seo: {

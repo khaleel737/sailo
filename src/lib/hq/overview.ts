@@ -1,4 +1,5 @@
 import "server-only";
+import { requireStaff } from "@/lib/session";
 import { and, eq, gte, inArray, isNotNull, isNull, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { clients, orders, products, shops, user, visits } from "@/db/schema";
@@ -12,6 +13,7 @@ import { daysAgo, num, utcDayWindow } from "./pagination";
 export type PlatformOverview = Awaited<ReturnType<typeof getPlatformOverview>>;
 
 export async function getPlatformOverview() {
+  await requireStaff();
   const db = getDb();
 
   const day = daysAgo(1);
@@ -207,6 +209,7 @@ export async function getPlatformOverview() {
  * numbers rather than needing a per-step base.
  */
 export async function getActivationFunnel() {
+  await requireStaff();
   const db = getDb();
 
   const [[users], [shopped], [stocked], [sold], [paid]] = await Promise.all([
@@ -253,6 +256,7 @@ export async function getActivationFunnel() {
 
 /** Daily registrations, zero-filled so the chart has no holes. */
 export async function getSignupSeries(days = 30) {
+  await requireStaff();
   const { since, keys } = utcDayWindow(days);
 
   const rows = await getDb()
@@ -270,6 +274,7 @@ export async function getSignupSeries(days = 30) {
 
 /** Daily order count across every shop. Currency-free, so it always adds up. */
 export async function getPlatformOrderSeries(days = 30) {
+  await requireStaff();
   const { since, keys } = utcDayWindow(days);
 
   const rows = await getDb()
@@ -292,6 +297,7 @@ export async function getPlatformOrderSeries(days = 30) {
  * platform's biggest and the chart says which it is drawing.
  */
 export async function getPlatformGmvSeries(currency: string, days = 30) {
+  await requireStaff();
   const { since, keys } = utcDayWindow(days);
 
   const rows = await getDb()

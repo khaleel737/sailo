@@ -16,7 +16,7 @@ export const marketingPl: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Bezpłatnie w wersji beta",
+    badge: "Za darmo na start, za darmo dalej",
     title: "Link w twoim bio powinien już {highlight}.",
     titleHighlight: "przyjmować zamówienia",
     body: "Sailo zamienia go w prawdziwy sklep — zdjęcia, ceny, wyszukiwarka, płatność — i wysyła każde zamówienie do komunikatora, w którym i tak już odpisujesz.",
@@ -24,7 +24,7 @@ export const marketingPl: MarketingDictionary = {
     ctaSecondary: "Otwórz prawdziwy sklep",
     proof1: "Działa w niecałą minutę",
     proof2: "Bez karty",
-    proof3: "Zero prowizji od sprzedaży",
+    proof3: "Bez prowizji od zamówień przez czat i przelew",
     proof4: "35 języków",
     igBio: "Pizza z pieca opalanego drewnem, Neapol. Zamów poniżej.",
     igPosts: "Posty",
@@ -148,7 +148,7 @@ export const marketingPl: MarketingDictionary = {
     q2: "Jak właściwie klienci mi płacą?",
     a2: "Tak jak przyjmujesz pieniądze dzisiaj. Kartą, przez twoje własne konto Stripe lub Paystack, więc wpłata trafia prosto do ciebie. Albo przelewem, za pobraniem i przez płatności mobilne, z instrukcją, którą sam piszesz. Sailo nigdy nie trzyma pieniędzy.",
     q3: "Czy Sailo pobiera prowizję?",
-    a3: "Nie. Ani w planie darmowym, ani w płatnych. To, co zapłaci kupujący, zostaje u ciebie — poza tym, co pobierze twój własny operator płatności.",
+    a3: "Przy zamówieniach przez czat, przelew i gotówkę nie — są w całości Twoje. Sprzedaż kartą objęta jest {fee} od towaru, pobieranym jako opłata Stripe. Nigdy od dostawy ani podatku.",
     q4: "Czy mogę sprzedawać usługi albo pliki cyfrowe?",
     a4: "Tak, i zachowują się jak należy. Usługa może mieć czas trwania, miejsce i kalendarz z wymaganym wyprzedzeniem. Produkt cyfrowy dostarcza pliki odblokowywane w chwili potwierdzenia płatności, z limitem pobrań i terminem ważności, jeśli chcesz.",
     q5: "Mam już Linktree. Po co zmieniać?",
@@ -163,7 +163,7 @@ export const marketingPl: MarketingDictionary = {
 
   stats: {
     s1: "języków, łącznie z pisanymi od prawej",
-    s2: "prowizji — w każdym planie, także darmowym",
+    s2: "prowizji od zamówień przez czat i przelew",
     s3: "od rejestracji do linku, którym można się podzielić",
   },
 
@@ -187,6 +187,9 @@ export const marketingPl: MarketingDictionary = {
     minuteRead: "min czytania",
 
     backToBlog: "Wszystkie artykuły",
+    pagination: "Paginacja",
+    previousPage: "Poprzednia strona",
+    nextPage: "Następna strona",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingPl: MarketingDictionary = {
     privacy: "Prywatność",
     terms: "Regulamin",
     refunds: "Zwroty",
+    gdpr: "GDPR",
   },
 
   seo: {

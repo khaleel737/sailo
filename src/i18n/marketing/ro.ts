@@ -16,7 +16,7 @@ export const marketingRo: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratuit pe durata beta",
+    badge: "Gratuit la început, gratuit în continuare",
     title: "Linkul din bio ar trebui deja să {highlight}.",
     titleHighlight: "primească comenzi",
     body: "Sailo îl transformă într-un magazin adevărat — poze, prețuri, căutare, plată — și trimite fiecare comandă în aplicația de mesaje la care oricum răspunzi deja.",
@@ -24,7 +24,7 @@ export const marketingRo: MarketingDictionary = {
     ctaSecondary: "Deschide un magazin real",
     proof1: "Online în mai puțin de un minut",
     proof2: "Fără card",
-    proof3: "Fără comision din vânzări",
+    proof3: "Fără comision la comenzile prin chat și transfer",
     proof4: "35 de limbi",
     igBio: "Pizza la cuptor cu lemne, Napoli. Comandă mai jos.",
     igPosts: "Postări",
@@ -148,7 +148,7 @@ export const marketingRo: MarketingDictionary = {
     q2: "Cum mă plătesc de fapt cumpărătorii?",
     a2: "Așa cum încasezi deja azi. Cu cardul, prin propriul cont Stripe sau Paystack, deci încasarea ajunge direct la tine. Sau prin transfer, plata la livrare și bani pe mobil, cu instrucțiuni scrise de tine. Sailo nu ține niciodată banii.",
     q3: "Ia Sailo comision?",
-    a3: "Nu. Nici pe planul gratuit, nici pe cele plătite. Ce plătește cumpărătorul rămâne la tine, minus ce percepe propriul tău procesator de plăți.",
+    a3: "La comenzile prin chat, transfer bancar și numerar, nu — sunt integral ale tale. Vânzările cu cardul au {fee} din valoarea produselor, reținut ca taxă Stripe. Niciodată din livrare sau taxe.",
     q4: "Pot vinde servicii sau fișiere digitale?",
     a4: "Da, și se comportă cum trebuie. Un serviciu poate avea durată, loc și un selector de dată cu preaviz. Un produs digital livrează fișiere care se deblochează imediat ce confirmi plata, cu limită de descărcări și expirare dacă vrei.",
     q5: "Am deja un Linktree. De ce să schimb?",
@@ -163,7 +163,7 @@ export const marketingRo: MarketingDictionary = {
 
   stats: {
     s1: "de limbi, inclusiv de la dreapta la stânga",
-    s2: "comision — pe orice plan, inclusiv cel gratuit",
+    s2: "comision la comenzile prin chat și transfer",
     s3: "de la înregistrare la un link pe care îl poți da mai departe",
   },
 
@@ -187,6 +187,9 @@ export const marketingRo: MarketingDictionary = {
     minuteRead: "min de citit",
 
     backToBlog: "Toate articolele",
+    pagination: "Paginare",
+    previousPage: "Pagina anterioară",
+    nextPage: "Pagina următoare",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingRo: MarketingDictionary = {
     privacy: "Confidențialitate",
     terms: "Termeni",
     refunds: "Rambursări",
+    gdpr: "GDPR",
   },
 
   seo: {

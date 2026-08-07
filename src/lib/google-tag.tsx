@@ -1,4 +1,5 @@
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { preconnect, prefetchDNS } from "react-dom";
+import { GoogleTagGate } from "@/lib/google-tag-gate";
 
 /* ===========================================================================
    Sailo's own analytics — the Google tag
@@ -58,9 +59,29 @@ export function measurementId(): string | null {
  *
  * Renders nothing when `NEXT_PUBLIC_GA_ID` is unset, which is the case in
  * development unless someone opts in on purpose.
+ *
+ * The hints are the reason this is a component rather than one line inline.
+ * `gtag.js` is fetched after hydration, so the page waits on a cold DNS
+ * lookup, TCP handshake and TLS negotiation to a host it has never spoken to
+ * — 300ms of it, measured. Warming the connection costs nothing on the
+ * critical path because it moves no bytes; the script still starts when the
+ * tag below decides to start it.
+ *
+ * Only the script host is preconnected. The collect endpoint is chosen by the
+ * visitor's region at runtime — `region1` for the EEA, the bare host
+ * elsewhere — so a full handshake to either one is a coin flip, and a wasted
+ * preconnect holds a socket open for ten seconds. DNS alone is the part worth
+ * paying for twice.
  */
 export function GoogleTag() {
   const id = measurementId();
   if (!id) return null;
-  return <GoogleAnalytics gaId={id} />;
+
+  preconnect("https://www.googletagmanager.com");
+  prefetchDNS("https://region1.google-analytics.com");
+  prefetchDNS("https://www.google-analytics.com");
+
+  // Gated: the script only loads once the visitor has agreed. See
+  // `google-tag-gate.tsx` for why this is not Consent Mode.
+  return <GoogleTagGate gaId={id} />;
 }

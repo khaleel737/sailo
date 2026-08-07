@@ -16,7 +16,7 @@ export const marketingSq: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Falas gjatë beta-s",
+    badge: "Falas për të filluar, falas për të vazhduar",
     title: "Lidhja në bio-n tuaj duhet të {highlight}.",
     titleHighlight: "marrë porosi",
     body: "Sailo e kthen atë në një dyqan të vërtetë — foto, çmime, kërkim, arkë — dhe e dërgon çdo porosi te aplikacioni i mesazheve që tashmë po i përgjigjeni.",
@@ -24,7 +24,7 @@ export const marketingSq: MarketingDictionary = {
     ctaSecondary: "Hapni një dyqan të gjallë",
     proof1: "Gati për më pak se një minutë",
     proof2: "Pa kartë",
-    proof3: "Pa komision mbi shitjet",
+    proof3: "Pa komision për porositë me chat dhe bankë",
     proof4: "35 gjuhë",
     igBio: "Pica në furrë me dru, Napoli. Porosisni më poshtë.",
     igPosts: "Postime",
@@ -148,7 +148,7 @@ export const marketingSq: MarketingDictionary = {
     q2: "Si më paguajnë vërtet blerësit?",
     a2: "Ashtu si i merrni tashmë paratë. Me kartë, përmes llogarisë suaj Stripe ose Paystack, që pagesa të vijë drejtpërdrejt te ju. Ose me transfertë bankare, pagesë në dorëzim dhe para celulare, me udhëzime që i shkruani vetë. Sailo nuk i mban kurrë paratë.",
     q3: "A merr Sailo komision?",
-    a3: "Jo. As në planin falas, as në ato me pagesë. Ajo që paguan blerësi është ajo që mbani ju, minus çfarë ju ngarkon ofruesi juaj i pagesave.",
+    a3: "Për porositë me chat, transfertë bankare dhe para në dorë, jo — ato janë plotësisht tuajat. Shitjet me kartë kanë {fee} të mallit, marrë si tarifë Stripe. Kurrë mbi dërgesën apo taksën.",
     q4: "A mund të shes shërbime ose skedarë dixhitalë?",
     a4: "Po, dhe sillen siç duhet. Një shërbim mund të mbajë kohëzgjatje, vendndodhje dhe zgjedhës date me afat njoftimi. Një produkt dixhital dërgon skedarë që hapen sapo konfirmoni pagesën, me kufij shkarkimi dhe skadim nëse i doni.",
     q5: "Kam tashmë një Linktree. Pse të ndërroj?",
@@ -163,7 +163,7 @@ export const marketingSq: MarketingDictionary = {
 
   stats: {
     s1: "gjuhë, përfshirë ato nga e djathta në të majtë",
-    s2: "komision — në çdo plan, përfshirë atë falas",
+    s2: "komision për porositë me chat dhe bankë",
     s3: "nga regjistrimi te një lidhje që mund ta ndani",
   },
 
@@ -187,6 +187,9 @@ export const marketingSq: MarketingDictionary = {
     minuteRead: "min lexim",
 
     backToBlog: "Të gjithë artikujt",
+    pagination: "Faqosja",
+    previousPage: "Faqja e mëparshme",
+    nextPage: "Faqja tjetër",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingSq: MarketingDictionary = {
     privacy: "Privatësia",
     terms: "Kushtet",
     refunds: "Rimbursimet",
+    gdpr: "GDPR",
   },
 
   seo: {

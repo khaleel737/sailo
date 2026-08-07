@@ -16,7 +16,7 @@ export const marketingHu: MarketingDictionary = {
   },
 
   hero: {
-    badge: "A béta alatt ingyenes",
+    badge: "Ingyen kezdhetsz, ingyen maradhatsz",
     title: "A bióban lévő linkednek már rég {highlight} kellene.",
     titleHighlight: "rendeléseket fogadnia",
     body: "A Sailo igazi bolttá alakítja — fotók, árak, kereső, fizetés — és minden rendelést abba a chatalkalmazásba küld, amelyben amúgy is válaszolsz.",
@@ -24,7 +24,7 @@ export const marketingHu: MarketingDictionary = {
     ctaSecondary: "Nyiss meg egy élő boltot",
     proof1: "Egy percen belül él",
     proof2: "Bankkártya nélkül",
-    proof3: "Nincs jutalék az eladásaidból",
+    proof3: "Nincs jutalék a chates és átutalásos rendeléseknél",
     proof4: "35 nyelv",
     igBio: "Fatüzelésű pizza, Nápoly. Rendelés a lenti linken.",
     igPosts: "Bejegyzés",
@@ -148,7 +148,7 @@ export const marketingHu: MarketingDictionary = {
     q2: "Hogyan fizetnek nekem valójában?",
     a2: "Ugyanúgy, ahogy ma is felveszed a pénzt. Kártyával, a saját Stripe- vagy Paystack-fiókodon át, így az összeg közvetlenül hozzád érkezik. Vagy átutalással, utánvéttel és mobilpénzzel, a te útmutatóddal. A Sailo soha nem tartja a pénzt.",
     q3: "Kér a Sailo jutalékot?",
-    a3: "Nem. Sem az ingyenes, sem a fizetős csomagban. Amit a vevő fizet, az nálad marad — leszámítva azt, amit a saját fizetési szolgáltatód levon.",
+    a3: "Chates, átutalásos és készpénzes rendeléseknél nem — azok teljes egészében a tiéd. A kártyás eladásokat {fee} terheli az áru értékéből, Stripe-díjként levonva. Szállításra és adóra soha.",
     q4: "Árulhatok szolgáltatást vagy digitális fájlt?",
     a4: "Igen, és úgy is viselkednek, ahogy kell. Egy szolgáltatásnak lehet időtartama, helyszíne és dátumválasztója előjelzési idővel. A digitális termék olyan fájlokat ad át, amelyek a fizetés visszaigazolásakor nyílnak meg — ha akarod, letöltési korláttal és lejárattal.",
     q5: "Már van Linktree-m. Miért váltsak?",
@@ -163,7 +163,7 @@ export const marketingHu: MarketingDictionary = {
 
   stats: {
     s1: "nyelv, a jobbról balra írottakkal együtt",
-    s2: "jutalék — minden csomagban, az ingyenesben is",
+    s2: "jutalék a chates és átutalásos rendeléseknél",
     s3: "a regisztrációtól a megosztható linkig",
   },
 
@@ -187,6 +187,9 @@ export const marketingHu: MarketingDictionary = {
     minuteRead: "perc olvasás",
 
     backToBlog: "Összes cikk",
+    pagination: "Lapozás",
+    previousPage: "Előző oldal",
+    nextPage: "Következő oldal",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingHu: MarketingDictionary = {
     privacy: "Adatvédelem",
     terms: "Feltételek",
     refunds: "Visszatérítés",
+    gdpr: "GDPR",
   },
 
   seo: {

@@ -1,4 +1,5 @@
 import type { PaymentConfig } from "@/db/schema";
+import { PLATFORM_FEE_LABEL } from "@/lib/plans";
 
 /**
  * The rails a shop can take money through, and what each one needs.
@@ -76,8 +77,12 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
     kind: "electronic",
     name: "Card",
     action: "Pay by card",
+    // The fee is interpolated, never written out. This string said "1%" while
+    // `platformFeeBp` charged half that, so every seller reading this card was
+    // shown double what they were billed — exactly the drift the note on
+    // `PLATFORM_FEE_LABEL` exists to prevent.
     description:
-      "Buyers pay by card, Apple Pay or Google Pay on Stripe's checkout. The money lands in your own Stripe account — Sailo never holds it, and keeps 1% of the goods.",
+      `Buyers pay by card, Apple Pay or Google Pay on Stripe's checkout. The money lands in your own Stripe account — Sailo never holds it, and keeps ${PLATFORM_FEE_LABEL} of the goods.`,
     // Configured by connecting a Stripe account, not by typing anything, so
     // the admin form for this rail is the Connect button instead of fields.
     fields: [],

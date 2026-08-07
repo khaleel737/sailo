@@ -16,7 +16,7 @@ export const marketingTr: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Beta boyunca ücretsiz",
+    badge: "Başlaması ücretsiz, kalması ücretsiz",
     title: "Biyografindeki bağlantı çoktan {highlight}.",
     titleHighlight: "sipariş alıyor olmalıydı",
     body: "Sailo onu gerçek bir dükkâna çevirir — fotoğraf, fiyat, arama, ödeme — ve her siparişi zaten cevapladığın mesajlaşma uygulamasına yollar.",
@@ -24,7 +24,7 @@ export const marketingTr: MarketingDictionary = {
     ctaSecondary: "Gerçek bir dükkân aç",
     proof1: "Bir dakikadan kısa sürede yayında",
     proof2: "Kart gerekmez",
-    proof3: "Satışlarından komisyon alınmaz",
+    proof3: "Sohbet ve havale siparişlerinde komisyon yok",
     proof4: "35 dil",
     igBio: "Odun ateşinde pizza, Napoli. Aşağıdan sipariş ver.",
     igPosts: "Gönderi",
@@ -148,7 +148,7 @@ export const marketingTr: MarketingDictionary = {
     q2: "Alıcılar bana gerçekte nasıl ödeme yapıyor?",
     a2: "Bugün nasıl tahsil ediyorsan öyle. Kendi Stripe ya da Paystack hesabınla kartla; tahsilat doğrudan sana geçer. Ya da havale, kapıda ödeme ve mobil parayla, kendi yazdığın talimatlarla. Sailo parayı asla tutmaz.",
     q3: "Sailo komisyon alıyor mu?",
-    a3: "Hayır. Ne ücretsiz planda ne de ücretli olanlarda. Alıcının ödediği sende kalır; yalnızca kendi ödeme sağlayıcının kestiği düşülür.",
+    a3: "Sohbet, havale ve nakit siparişlerde hayır — tamamı sizindir. Kartlı satışlarda ürün bedelinin {fee} kadarı Stripe ücreti olarak alınır. Kargo ya da vergiden asla alınmaz.",
     q4: "Hizmet veya dijital dosya satabilir miyim?",
     a4: "Evet, hem de düzgün biçimde. Bir hizmet süre, konum ve ön bildirim süreli tarih seçici taşıyabilir. Dijital ürün ise ödemeyi onayladığın anda açılan dosyalar gönderir; istersen indirme sınırı ve son kullanma tarihiyle.",
     q5: "Zaten Linktree'm var. Neden değiştireyim?",
@@ -163,7 +163,7 @@ export const marketingTr: MarketingDictionary = {
 
   stats: {
     s1: "dil, sağdan sola yazılanlar dâhil",
-    s2: "komisyon — ücretsiz olan dâhil her planda",
+    s2: "sohbet ve havale siparişlerinde komisyon",
     s3: "kayıttan paylaşabileceğin bir bağlantıya",
   },
 
@@ -187,6 +187,9 @@ export const marketingTr: MarketingDictionary = {
     minuteRead: "dk okuma",
 
     backToBlog: "Tüm yazılar",
+    pagination: "Sayfalama",
+    previousPage: "Önceki sayfa",
+    nextPage: "Sonraki sayfa",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingTr: MarketingDictionary = {
     privacy: "Gizlilik",
     terms: "Koşullar",
     refunds: "İadeler",
+    gdpr: "GDPR",
   },
 
   seo: {

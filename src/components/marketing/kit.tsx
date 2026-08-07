@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Magnetic } from "./motion";
 
@@ -30,6 +30,36 @@ export function Container({
 }) {
   return (
     <div className={cn("mx-auto w-full max-w-[78rem] px-5 sm:px-8", className)}>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * One step of the hero's entrance: fade up, `delay` seconds after the page
+ * paints.
+ *
+ * A server component on purpose. Its predecessor was a `motion.div` whose
+ * opening frame — `opacity: 0` — was what the server sent, which meant the
+ * headline could not appear until Motion had hydrated. The animation lives in
+ * `brand.css` now; this only carries the delay, so the markup that arrives is
+ * the markup that shows.
+ */
+export function Rise({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: ReactNode;
+  /** Seconds. The hero runs 0, 0.08, 0.16, 0.24 down the column. */
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn("rise", className)}
+      style={delay ? ({ "--rise-delay": `${delay}s` } as CSSProperties) : undefined}
+    >
       {children}
     </div>
   );

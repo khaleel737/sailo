@@ -16,7 +16,7 @@ export const marketingPt: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Grátis durante a beta",
+    badge: "Grátis para começar, grátis para continuar",
     title: "O link da tua bio já devia estar a {highlight}.",
     titleHighlight: "receber encomendas",
     body: "O Sailo transforma-o numa loja a sério — fotos, preços, pesquisa, pagamento — e envia cada encomenda para a aplicação de mensagens que já andas a responder.",
@@ -24,7 +24,7 @@ export const marketingPt: MarketingDictionary = {
     ctaSecondary: "Abrir uma loja real",
     proof1: "No ar em menos de um minuto",
     proof2: "Sem cartão",
-    proof3: "Sem comissão sobre as tuas vendas",
+    proof3: "Sem comissão em encomendas por chat e transferência",
     proof4: "35 idiomas",
     igBio: "Pizza em forno a lenha, Nápoles. Encomenda abaixo.",
     igPosts: "Publicações",
@@ -148,7 +148,7 @@ export const marketingPt: MarketingDictionary = {
     q2: "Como é que me pagam na prática?",
     a2: "Como já recebes hoje. Com cartão, pela tua própria conta Stripe ou Paystack, por isso o pagamento chega-te diretamente. Ou por transferência, pagamento na entrega e dinheiro móvel, com instruções escritas por ti. O Sailo nunca fica com o dinheiro.",
     q3: "O Sailo leva comissão?",
-    a3: "Não. Nem no plano gratuito, nem nos pagos. O que o comprador paga é o que fica contigo, menos o que o teu próprio processador cobrar.",
+    a3: "Em encomendas por chat, transferência e dinheiro, não — são inteiramente suas. As vendas com cartão têm {fee} sobre os produtos, cobrado como taxa Stripe. Nunca sobre portes ou impostos.",
     q4: "Posso vender serviços ou ficheiros digitais?",
     a4: "Sim, e comportam-se como devem. Um serviço pode ter duração, local e calendário com antecedência mínima. Um produto digital entrega ficheiros que abrem assim que confirmas o pagamento, com limite de descargas e validade se quiseres.",
     q5: "Já tenho um Linktree. Porquê mudar?",
@@ -163,7 +163,7 @@ export const marketingPt: MarketingDictionary = {
 
   stats: {
     s1: "idiomas, da direita para a esquerda incluído",
-    s2: "de comissão — em todos os planos, incluindo o gratuito",
+    s2: "de comissão em encomendas por chat e transferência",
     s3: "do registo até um link que podes partilhar",
   },
 
@@ -187,6 +187,9 @@ export const marketingPt: MarketingDictionary = {
     minuteRead: "min de leitura",
 
     backToBlog: "Todos os artigos",
+    pagination: "Paginação",
+    previousPage: "Página anterior",
+    nextPage: "Próxima página",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingPt: MarketingDictionary = {
     privacy: "Privacidade",
     terms: "Termos",
     refunds: "Reembolsos",
+    gdpr: "GDPR",
   },
 
   seo: {

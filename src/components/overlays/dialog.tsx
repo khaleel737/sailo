@@ -44,7 +44,14 @@ export function Dialog({
         aria-modal="true"
         aria-labelledby={titleId}
         className={cn(
-          "animate-sheet-up sm:animate-pop relative flex max-h-[92vh] w-full flex-col",
+          /*
+            `dvh`, not `vh`. On iOS Safari `vh` is the viewport measured with
+            the address bar hidden, and it stays that way while the bar is on
+            screen — so a cap of 92vh is taller than the phone can show. This
+            sheet is bottom-anchored below `sm`, which sends the excess off the
+            *top*, taking the header and its close button with it.
+          */
+          "animate-sheet-up sm:animate-pop relative flex max-h-[92dvh] w-full flex-col",
           "rounded-t-3xl bg-white shadow-xl sm:rounded-3xl",
           { sm: "sm:max-w-sm", md: "sm:max-w-lg", lg: "sm:max-w-3xl" }[size],
         )}
@@ -73,10 +80,27 @@ export function Dialog({
           <CloseButton onClose={onClose} label={closeLabel} className="-me-2" />
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        {/*
+          `overscroll-contain` keeps a flick that reaches the end of this list
+          from scrolling the page underneath, which on a phone reads as the
+          sheet ignoring the gesture.
+
+          The bottom padding only applies when nothing is pinned below: on a
+          phone this edge is the bottom of the screen, and on a handset with a
+          home indicator the last row would otherwise sit under it. With a
+          footer present, that footer owns the edge and does the same job.
+        */}
+        <div
+          className={cn(
+            "min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5",
+            !footer && "pb-[max(1.25rem,env(safe-area-inset-bottom))]",
+          )}
+        >
+          {children}
+        </div>
 
         {footer ? (
-          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-ink-200 px-6 py-4">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-ink-200 px-6 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
             {footer}
           </div>
         ) : null}

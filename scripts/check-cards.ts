@@ -177,8 +177,18 @@ async function makeChargeableAccount() {
     individual: { phone: "0000000000" },
   });
 
+  /*
+   * Wait for Stripe to enable charges.
+   *
+   * This used to give up after 50 seconds and print "still verifying", which
+   * reads as a Stripe problem and is really a harness one: test-mode
+   * verification is usually a few seconds and occasionally over a minute, so
+   * the run failed or passed depending on how busy Stripe was. Three minutes
+   * is longer than any wait observed and still bounded — an account that has
+   * not been enabled by then has something wrong with it worth reporting.
+   */
   let live = await stripe.accounts.retrieve(account.id);
-  for (let i = 0; i < 20 && !live.charges_enabled; i++) {
+  for (let i = 0; i < 72 && !live.charges_enabled; i++) {
     await sleep(2500);
     live = await stripe.accounts.retrieve(account.id);
   }

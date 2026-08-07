@@ -16,7 +16,7 @@ export const marketingSv: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis under betan",
+    badge: "Gratis att börja, gratis att fortsätta",
     title: "Länken i din bio borde redan {highlight}.",
     titleHighlight: "ta emot beställningar",
     body: "Sailo gör den till en riktig butik — bilder, priser, sök, kassa — och skickar varje beställning till chattappen du ändå redan svarar i.",
@@ -24,7 +24,7 @@ export const marketingSv: MarketingDictionary = {
     ctaSecondary: "Öppna en riktig butik",
     proof1: "Uppe på under en minut",
     proof2: "Inget kort behövs",
-    proof3: "Ingen provision på din försäljning",
+    proof3: "Ingen provision på chatt- och banköverföringsordrar",
     proof4: "35 språk",
     igBio: "Vedugnsbakad pizza, Neapel. Beställ nedan.",
     igPosts: "Inlägg",
@@ -148,7 +148,7 @@ export const marketingSv: MarketingDictionary = {
     q2: "Hur betalar köpare mig egentligen?",
     a2: "Som du redan tar betalt idag. Med kort, via ditt eget Stripe- eller Paystack-konto, så pengarna landar direkt hos dig. Eller med banköverföring, postförskott och mobila betalningar, med instruktioner du skriver själv. Sailo håller aldrig i pengarna.",
     q3: "Tar Sailo provision?",
-    a3: "Nej. Varken på den fria planen eller de betalda. Det köparen betalar behåller du, minus det din egen betalleverantör tar.",
+    a3: "På chatt-, banköverförings- och kontantordrar nej — de är helt dina. Kortförsäljning kostar {fee} av varorna, taget som en Stripe-avgift. Aldrig på frakt eller skatt.",
     q4: "Kan jag sälja tjänster eller digitala filer?",
     a4: "Ja, och de beter sig som de ska. En tjänst kan ha längd, plats och en datumväljare med framförhållning. En digital produkt levererar filer som låses upp så fort du bekräftar betalningen, med nedladdningsgräns och utgångsdatum om du vill.",
     q5: "Jag har redan ett Linktree. Varför byta?",
@@ -163,7 +163,7 @@ export const marketingSv: MarketingDictionary = {
 
   stats: {
     s1: "språk, höger-till-vänster inräknat",
-    s2: "provision — på alla planer, även den gratis",
+    s2: "provision på chatt- och banköverföringsordrar",
     s3: "från registrering till en länk du kan dela",
   },
 
@@ -187,6 +187,9 @@ export const marketingSv: MarketingDictionary = {
     minuteRead: "min läsning",
 
     backToBlog: "Alla artiklar",
+    pagination: "Sidnumrering",
+    previousPage: "Föregående sida",
+    nextPage: "Nästa sida",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingSv: MarketingDictionary = {
     privacy: "Integritet",
     terms: "Villkor",
     refunds: "Återbetalningar",
+    gdpr: "GDPR",
   },
 
   seo: {

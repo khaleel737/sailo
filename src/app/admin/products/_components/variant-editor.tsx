@@ -27,6 +27,7 @@ import type { ProductOption, ProductVariant } from "@/db/schema";
 
 import {
   BLANK,
+  probablyMissingCommas,
   splitValues,
   toDrafts,
   type Draft,
@@ -157,6 +158,11 @@ export function VariantEditor({
                   )
                 }
               />
+              {probablyMissingCommas(option.values) ? (
+                <p className="mt-1 text-xs text-amber-600">
+                  {a.variants.valuesNudge}
+                </p>
+              ) : null}
             </div>
             <Button
               type="button"
@@ -342,21 +348,28 @@ export function VariantEditor({
         </div>
       ) : null}
 
+      {/* The column a seller looks for is the one that isn't there: stock per
+          combination exists, but only once tracking is on. Say so where they
+          are looking, not just on the toggle. */}
+      {rows.length > 0 && !trackInventory ? (
+        <p className="text-xs text-ink-500">{a.variants.stockHint}</p>
+      ) : null}
+
       {removed.size > 0 ? (
         <button
           type="button"
           onClick={() => setRemoved(new Set())}
           className="text-xs text-ink-500 underline underline-offset-2 hover:text-ink-900"
         >
-          Bring back {removed.size} removed combination
-          {removed.size === 1 ? "" : "s"}
+          {removed.size === 1
+            ? a.variants.restoreOne
+            : interpolate(a.variants.restore, { count: removed.size })}
         </button>
       ) : null}
 
       {totalCombinations >= MAX_VARIANTS ? (
         <p className="text-xs text-amber-600">
-          {MAX_VARIANTS} combinations is the limit. Past that, separate products
-          are easier for buyers to browse.
+          {interpolate(a.variants.limitReached, { max: MAX_VARIANTS })}
         </p>
       ) : null}
 

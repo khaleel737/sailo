@@ -1,4 +1,5 @@
 import "server-only";
+import { requireStaff } from "@/lib/session";
 import { and, desc, eq, gte, ilike, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, clients, orders, products, shops, user } from "@/db/schema";
@@ -21,6 +22,7 @@ export type ListFilters = {
 
 
 export async function getPlatformOrders(filters: ListFilters = {}) {
+  await requireStaff();
   const db = getDb();
 
   const clauses: (SQL | undefined)[] = [];
@@ -106,6 +108,7 @@ export async function getPlatformOrders(filters: ListFilters = {}) {
 }
 
 export async function getPlatformProducts(filters: ListFilters = {}) {
+  await requireStaff();
   const db = getDb();
 
   const clauses: (SQL | undefined)[] = [];
@@ -162,6 +165,7 @@ export async function getPlatformProducts(filters: ListFilters = {}) {
 }
 
 export async function getPlatformAffiliates(filters: ListFilters = {}) {
+  await requireStaff();
   const db = getDb();
 
   const clauses: (SQL | undefined)[] = [];
@@ -231,6 +235,7 @@ export async function getPlatformAffiliates(filters: ListFilters = {}) {
 }
 
 export async function getPlatformBuyers(filters: ListFilters = {}) {
+  await requireStaff();
   const db = getDb();
 
   const clauses: (SQL | undefined)[] = [];

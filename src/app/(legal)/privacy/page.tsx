@@ -10,6 +10,7 @@ import {
   Ref,
 } from "@/components/legal/legal-kit";
 import { COOKIES, LEGAL, SUBPROCESSORS } from "@/lib/legal";
+import { PLATFORM_FEE_LABEL } from "@/lib/plans";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -125,18 +126,26 @@ export default function PrivacyPage() {
             <strong className="font-medium text-[var(--ink)]">
               If you simply visit a shop.
             </strong>{" "}
-            One page-view record, so the shop&rsquo;s owner can see whether anyone is
-            reading their link. It contains a random identifier from a first-party
-            cookie, the page that referred you, any campaign tags in the link, an
-            approximate country, region and city resolved at our host&rsquo;s network
-            edge, and your device type, operating system and browser family.
+            One page-view record, so the shop&rsquo;s owner can see whether anyone
+            is reading their link. It contains the page that referred you, any
+            campaign tags in the link, an approximate country, region and city
+            resolved at our host&rsquo;s network edge, your device type, operating
+            system and browser family, and a visitor identifier described below.
           </P>
           <Callout>
-            We do not store your IP address with that record. Your address is used
-            for a few milliseconds to rate-limit abusive traffic and is then
-            discarded. Location is approximate and derived at the network edge, not
-            from GPS, and it is never precise enough to identify a household.
+            We do not store your IP address with that record, and we no longer put
+            anything on your device to count you. The visitor identifier is
+            derived for each shop, each day, by hashing your address and browser
+            string together with the date — then your address is discarded. It
+            cannot be reversed into you, it is different at the next shop you
+            open, and it is different tomorrow. The cost of that is honest:
+            &ldquo;unique visitors&rdquo; means unique that day, not unique
+            forever.
           </Callout>
+          <P>
+            Location is approximate and derived at the network edge, not from GPS,
+            and it is never precise enough to identify a household.
+          </P>
         </Clause>
 
         <Clause id="why" n={4} title="Why we are allowed to hold it">
@@ -184,10 +193,19 @@ export default function PrivacyPage() {
             status Stripe reported, and nothing more.
           </P>
           <P>
-            When a seller accepts card payments, they do so through their own Stripe
-            account connected to the platform. The money moves from the buyer to that
-            seller&rsquo;s account. Sailo does not hold seller funds at any point and
-            takes no commission on any sale.
+            When a seller accepts card payments, they do so through their own
+            Stripe account connected to the platform. The charge is created on
+            that account, the money moves from the buyer to it, and Sailo does
+            not hold seller funds at any point.
+          </P>
+          <P>
+            Sailo does take a fee. {PLATFORM_FEE_LABEL} of the goods on each card
+            sale reaches us as a Stripe application fee, and the record of it —
+            the amount, the order it belongs to and the account it came from —
+            is data we hold. It is stated here because a privacy policy that
+            describes the flow of money inaccurately describes the flow of data
+            inaccurately too. The <Ref href="/terms">Terms</Ref> set out how the
+            fee is calculated.
           </P>
           <P>
             Stripe processes payment data as an independent controller under its own
@@ -215,7 +233,129 @@ export default function PrivacyPage() {
           </P>
         </Clause>
 
-        <Clause id="cookies" n={7} title="Cookies">
+        <Clause id="transfers" n={7} title="Sending data outside your country">
+          <P>
+            Every provider in the table above is in the United States. If you are
+            in the United Kingdom, the European Economic Area or Switzerland, that
+            means your data leaves your country to be processed.
+          </P>
+          <P>
+            We rely on the European Commission&rsquo;s Standard Contractual
+            Clauses, and the UK Addendum where the UK GDPR applies, in our
+            contracts with each of them. Where a provider is certified under the
+            EU&ndash;US Data Privacy Framework we rely on that as well, but we do
+            not rely on it alone: certifications have been struck down twice, and
+            a policy that depends on one is a policy with a countdown on it.
+          </P>
+          <P>
+            We have assessed the transfer, and the practical position is that the
+            data is ordinary commercial information — names, addresses, order
+            lines — held by large providers with published government-request
+            reports. If you want the detail of the safeguards for a particular
+            provider, ask at <Mail address={LEGAL.privacyEmail} /> and we will send
+            what we have.
+          </P>
+        </Clause>
+
+        <Clause id="processor" n={8} title="What we promise sellers, as their processor">
+          <P>
+            For the buyer data in a seller&rsquo;s shop, the seller is the
+            controller and {LEGAL.product} is the processor. This clause is the
+            written agreement the GDPR requires between the two of us, and it
+            applies to every account without anything further to sign.
+          </P>
+          <List
+            items={[
+              <>
+                We process buyer data only on the seller&rsquo;s documented
+                instructions, which for these purposes are the actions available
+                in the product itself, plus anything the law obliges us to do. If
+                a law compels something else, we will tell the seller unless that
+                law forbids it.
+              </>,
+              <>
+                Everyone with access is bound to confidentiality, and access is
+                limited to the people who need it to run the service.
+              </>,
+              <>
+                We apply the security measures described in section 13, and will
+                not lower them during the agreement.
+              </>,
+              <>
+                The providers in section 6 are the authorised sub-processors. We
+                will give notice before adding one, so a seller who objects has
+                time to leave, and each is bound by terms no weaker than these.
+              </>,
+              <>
+                We will help the seller answer a buyer&rsquo;s access, correction
+                or deletion request, and help with a data protection impact
+                assessment or a regulator&rsquo;s enquiry, so far as the buyer data
+                we hold allows.
+              </>,
+              <>
+                On the account closing, we delete buyer data on the schedule in
+                section 11, except what tax law requires us to keep.
+              </>,
+              <>
+                We will make available what a seller reasonably needs to satisfy
+                themselves that we are doing the above, and accept an audit where
+                a regulator requires one.
+              </>,
+            ]}
+          />
+        </Clause>
+
+        <Clause id="standard" n={9} title="How we approach the GDPR">
+          <P>
+            There is no such thing as a GDPR certificate, and any service
+            claiming to hold one is selling something. So rather than assert
+            compliance, this section says what we actually do, and the rest of
+            this policy is where each of them is set out in full.
+          </P>
+          <List
+            items={[
+              <>
+                A lawful basis is recorded for every category we hold, in
+                section 4 — not a blanket &ldquo;legitimate interests&rdquo;
+                covering everything.
+              </>,
+              <>
+                Data minimisation is a design decision, not a promise. We do not
+                store visitors&rsquo; IP addresses, and the analytics identifier
+                is derived per shop per day rather than stored on the device.
+              </>,
+              <>
+                Transfers out of the UK and EEA run on Standard Contractual
+                Clauses, section 7.
+              </>,
+              <>
+                The Article 28 processor terms sellers need are in section 8,
+                binding without anything further to sign.
+              </>,
+              <>
+                Retention is stated per category with an actual period, section
+                11, including the one category we cannot erase on request and
+                why.
+              </>,
+              <>
+                Subject rights are answered within 30 days and free, section 12,
+                and you can complain to your own regulator, section 14.
+              </>,
+              <>
+                Breaches are reported within 72 hours where the law requires it,
+                section 14.
+              </>,
+            ]}
+          />
+          <Callout>
+            Where we fall short of something here, the honest thing is to fix it
+            rather than to reword it. If you find a gap, write to{" "}
+            <Mail address={LEGAL.privacyEmail} /> and it will be read by the
+            person who can change the code.
+          </Callout>
+        </Clause>
+
+        <Clause id="cookies" n={10} title="Cookies">
           <P>
             Three, all first-party. There are no advertising cookies, no cross-site
             trackers, and no third-party tag managers anywhere on Sailo.
@@ -232,7 +372,7 @@ export default function PrivacyPage() {
           </P>
         </Clause>
 
-        <Clause id="retention" n={8} title="How long we keep things">
+        <Clause id="retention" n={11} title="How long we keep things">
           <List
             items={[
               <>
@@ -272,7 +412,7 @@ export default function PrivacyPage() {
           </P>
         </Clause>
 
-        <Clause id="rights" n={9} title="Your rights, and how to use them">
+        <Clause id="rights" n={12} title="Your rights, and how to use them">
           <P>
             Wherever you live, you can ask us for a copy of what we hold about you,
             ask us to correct it, ask us to delete it, or object to how we use it.
@@ -311,7 +451,7 @@ export default function PrivacyPage() {
           </P>
         </Clause>
 
-        <Clause id="security" n={10} title="How the data is kept">
+        <Clause id="security" n={13} title="How the data is kept">
           <P>
             The database is private and reachable only by the application, over TLS,
             with credentials held as encrypted environment secrets. It is not exposed
@@ -354,7 +494,42 @@ export default function PrivacyPage() {
           </P>
         </Clause>
 
-        <Clause id="children" n={11} title="Children">
+        <Clause id="breach" n={14} title="If something goes wrong, and what we never do automatically">
+          <P>
+            <strong className="font-medium text-[var(--ink)]">A breach.</strong>{" "}
+            If personal data is exposed, we will tell the relevant supervisory
+            authority within 72 hours of becoming aware where the law requires it,
+            and tell the people affected without undue delay where the risk to them
+            is high. Sellers whose buyer data is involved are told as controllers,
+            with enough detail to make their own notification. We would rather
+            report an incident that turns out to be nothing than sit on one.
+          </P>
+          <P>
+            <strong className="font-medium text-[var(--ink)]">
+              Automated decisions.
+            </strong>{" "}
+            Nothing here profiles you, scores you, or decides anything about you
+            with legal or similarly significant effect by machine alone. We run
+            automated checks for fraud and abuse — rate limits, and signals that a
+            shop is being used for something it should not be — but a suspension or
+            closure under the{" "}
+            <Ref href="/terms">Terms</Ref> is a decision a person takes and a
+            person will review. If one is made about you, you can ask for it to be
+            looked at again by writing to{" "}
+            <Mail address={LEGAL.privacyEmail} />.
+          </P>
+          <P>
+            <strong className="font-medium text-[var(--ink)]">
+              Complaining about us.
+            </strong>{" "}
+            You can complain to your own data protection authority — in the UK the
+            Information Commissioner&rsquo;s Office, in the EEA the authority for
+            the country you live in. We would ask you to write to us first, but
+            nothing requires you to.
+          </P>
+        </Clause>
+
+        <Clause id="children" n={15} title="Children">
           <P>
             Sailo is not intended for anyone under 16, and we do not knowingly collect
             their information. If you believe a child has given us data, write to{" "}
@@ -362,7 +537,7 @@ export default function PrivacyPage() {
           </P>
         </Clause>
 
-        <Clause id="changes" n={12} title="Changes to this policy">
+        <Clause id="changes" n={16} title="Changes to this policy">
           <P>
             When this policy changes, the effective date at the top changes with it.
             For anything that materially affects how your data is handled, we email
@@ -371,7 +546,7 @@ export default function PrivacyPage() {
           </P>
         </Clause>
 
-        <Clause id="contact" n={13} title="Contact">
+        <Clause id="contact" n={17} title="Contact">
           <P>
             Privacy requests and questions about this policy go to the address below.
             For anything else, see the <Ref href="/terms">Terms of Service</Ref> or

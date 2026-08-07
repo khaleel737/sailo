@@ -16,7 +16,7 @@ export const marketingSl: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Brezplačno med beto",
+    badge: "Brezplačno zdaj in vedno",
     title: "Povezava v vašem bio-u bi morala {highlight}.",
     titleHighlight: "sprejemati naročila",
     body: "Sailo jo spremeni v pravo trgovino — fotografije, cene, iskanje, blagajna — in pošlje vsako naročilo v aplikacijo za sporočila, na katero itak že odgovarjate.",
@@ -24,7 +24,7 @@ export const marketingSl: MarketingDictionary = {
     ctaSecondary: "Odprite živo trgovino",
     proof1: "Pripravljeno v manj kot minuti",
     proof2: "Brez kartice",
-    proof3: "Brez provizije od prodaje",
+    proof3: "Brez provizije pri naročilih prek klepeta in banke",
     proof4: "35 jezikov",
     igBio: "Pica iz krušne peči, Neapelj. Naročite spodaj.",
     igPosts: "Objave",
@@ -148,7 +148,7 @@ export const marketingSl: MarketingDictionary = {
     q2: "Kako mi kupci dejansko plačajo?",
     a2: "Tako, kot že sprejemate denar. S kartico, prek vašega računa Stripe ali Paystack, tako da plačilo pristane neposredno pri vas. Ali z bančnim nakazilom, plačilom po povzetju in mobilnim denarjem, z navodili, ki jih napišete sami. Sailo denarja nikoli ne zadrži.",
     q3: "Ali Sailo vzame provizijo?",
-    a3: "Ne. Ne pri brezplačnem paketu, ne pri plačljivih. Kar kupec plača, obdržite vi, zmanjšano za tisto, kar zaračuna vaš ponudnik plačil.",
+    a3: "Pri naročilih prek klepeta, nakazila in gotovine ne — ta so v celoti vaša. Pri plačilu s kartico velja {fee} od blaga, zaračunano kot provizija Stripe. Nikoli od dostave ali davka.",
     q4: "Ali lahko prodajam storitve ali digitalne datoteke?",
     a4: "Da, in obnašajo se pravilno. Storitev lahko nosi trajanje, lokacijo in izbirnik datuma z odpovednim rokom. Digitalni izdelek dostavi datoteke, ki se odklenejo takoj, ko potrdite plačilo, z omejitvijo prenosov in potekom, če ju želite.",
     q5: "Že imam Linktree. Zakaj bi menjal?",
@@ -163,7 +163,7 @@ export const marketingSl: MarketingDictionary = {
 
   stats: {
     s1: "jezikov, vključno s pisavami od desne proti levi",
-    s2: "provizije — pri vsakem paketu, tudi brezplačnem",
+    s2: "provizije pri naročilih prek klepeta in banke",
     s3: "od prijave do povezave, ki jo lahko delite",
   },
 
@@ -187,6 +187,9 @@ export const marketingSl: MarketingDictionary = {
     minuteRead: "min branja",
 
     backToBlog: "Vsi članki",
+    pagination: "Oštevilčenje strani",
+    previousPage: "Prejšnja stran",
+    nextPage: "Naslednja stran",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingSl: MarketingDictionary = {
     privacy: "Zasebnost",
     terms: "Pogoji",
     refunds: "Vračila",
+    gdpr: "GDPR",
   },
 
   seo: {

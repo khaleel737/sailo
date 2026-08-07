@@ -237,13 +237,15 @@ describe("share", () => {
 });
 
 describe("the staff allowlist", () => {
-  it("admits the founders by default", () => {
-    expect(isStaffEmail("khaleelmusleh@gmail.com")).toBe(true);
-    expect(isStaffEmail("uncolored.inc@gmail.com")).toBe(true);
+  it("admits only the dedicated admin address by default", () => {
+    expect(isStaffEmail("admin@sailo.store")).toBe(true);
+    // The founders' personal inboxes, which the roster once named.
+    expect(isStaffEmail("khaleelmusleh@gmail.com")).toBe(false);
+    expect(isStaffEmail("uncolored.inc@gmail.com")).toBe(false);
   });
 
   it("ignores case and stray whitespace", () => {
-    expect(isStaffEmail("  KhaleelMusleh@Gmail.com ")).toBe(true);
+    expect(isStaffEmail("  Admin@Sailo.store ")).toBe(true);
   });
 
   it("admits nobody else", () => {
@@ -252,10 +254,9 @@ describe("the staff allowlist", () => {
     expect(isStaffEmail("")).toBe(false);
   });
 
-  it("does not treat a Gmail alias as the same account", () => {
-    // Reaches the same inbox, but anyone can register it — so it is not us.
-    expect(isStaffEmail("khaleel.musleh@gmail.com")).toBe(false);
-    expect(isStaffEmail("khaleelmusleh+hq@gmail.com")).toBe(false);
+  it("does not treat a plus alias as the same account", () => {
+    // Reaches the same inbox, but it is a different address to register.
+    expect(isStaffEmail("admin+hq@sailo.store")).toBe(false);
   });
 
   it("is replaced wholesale by the environment variable", () => {
@@ -264,7 +265,7 @@ describe("the staff allowlist", () => {
       process.env.SAILO_STAFF_EMAILS = "ops@sailo.store, second@sailo.store";
       expect(staffEmails()).toEqual(["ops@sailo.store", "second@sailo.store"]);
       expect(isStaffEmail("ops@sailo.store")).toBe(true);
-      expect(isStaffEmail("khaleelmusleh@gmail.com")).toBe(false);
+      expect(isStaffEmail("admin@sailo.store")).toBe(false);
     } finally {
       if (original === undefined) delete process.env.SAILO_STAFF_EMAILS;
       else process.env.SAILO_STAFF_EMAILS = original;
@@ -275,8 +276,8 @@ describe("the staff allowlist", () => {
     const original = process.env.SAILO_STAFF_EMAILS;
     try {
       process.env.SAILO_STAFF_EMAILS = " , ";
-      expect(staffEmails()).toHaveLength(2);
-      expect(isStaffEmail("khaleelmusleh@gmail.com")).toBe(true);
+      expect(staffEmails()).toHaveLength(1);
+      expect(isStaffEmail("admin@sailo.store")).toBe(true);
     } finally {
       if (original === undefined) delete process.env.SAILO_STAFF_EMAILS;
       else process.env.SAILO_STAFF_EMAILS = original;

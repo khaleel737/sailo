@@ -9,6 +9,7 @@ import {
   Ref,
 } from "@/components/legal/legal-kit";
 import { LEGAL } from "@/lib/legal";
+import { PLATFORM_FEE_LABEL } from "@/lib/plans";
 
 export const metadata: Metadata = {
   title: "Refund Policy",
@@ -51,16 +52,19 @@ export default function RefundsPage() {
             </strong>{" "}
             is money you paid a seller for their goods or services. That is between
             you and them, and their refund terms apply, not ours. Sailo is the
-            software the shop runs on; we are not the merchant, we take no commission
-            on any sale, and the payment never passes through us. Card payments go
-            straight into the seller&rsquo;s own Stripe account; bank transfers and
-            cash never touch the platform at all.
+            software the shop runs on; we are not the merchant and the payment
+            never passes through us. Card payments go straight into the
+            seller&rsquo;s own Stripe account; bank transfers and cash never touch
+            the platform at all. We do take {PLATFORM_FEE_LABEL} of the goods on
+            a card sale as a fee from the seller — it comes out of their side of
+            the sale, never out of what you paid, and it is refunded with the
+            order if they refund you.
           </P>
           <P>
             So a refund for an order has to come from the seller. Their contact
             details are on their shop page. Section&nbsp;
             <a href="#orders" className="focus-line underline">
-              6
+              7
             </a>{" "}
             explains what to do if they will not answer.
           </P>
@@ -177,7 +181,7 @@ export default function RefundsPage() {
                 Requests about an order placed with a shop, which we have no money to
                 return. See section&nbsp;
                 <a href="#orders" className="focus-line underline">
-                  6
+                  7
                 </a>
                 .
               </>,
@@ -225,7 +229,44 @@ export default function RefundsPage() {
           </P>
         </Clause>
 
-        <Clause id="orders" n={6} title="If a shop will not refund you">
+        <Clause id="statutory" n={6} title="Rights this policy cannot take away">
+          <P>
+            Everything above is what we do voluntarily. None of it replaces a
+            right the law already gives you, and where the two differ the law
+            wins.
+          </P>
+          <List
+            items={[
+              <>
+                <strong>In the EU and the UK</strong>, a consumer buying a service
+                at a distance normally has 14 days to withdraw. Ask inside that
+                window and we refund, whatever the rest of this policy says. The
+                one exception is where you asked us to start immediately and the
+                service was fully performed — and even then we will look at it.
+              </>,
+              <>
+                <strong>Wherever you live</strong>, a local consumer protection
+                law that gives you more than this policy does applies instead of
+                it, and we will not ask you to waive it.
+              </>,
+              <>
+                <strong>An order from a shop</strong> carries the buyer rights of
+                the seller&rsquo;s country, not ours. The{" "}
+                <Ref href="/terms">Terms</Ref> require every seller to honour
+                them, and a seller who refuses is breaking their agreement with
+                us — tell us and we will act on the shop even though we cannot
+                refund you.
+              </>,
+            ]}
+          />
+          <Callout>
+            Nothing in this policy is a condition of getting your money back. You
+            never have to accept a credit instead of a refund, waive a right, or
+            agree to anything in writing to be refunded something you are owed.
+          </Callout>
+        </Clause>
+
+        <Clause id="orders" n={7} title="If a shop will not refund you">
           <P>
             Contact the seller first, through the details on their shop page. Most
             problems are a slow reply rather than a refusal.
@@ -237,10 +278,19 @@ export default function RefundsPage() {
             against the shop, including suspending it.
           </P>
           <Callout>
-            We have to be straight with you about the limit here: we cannot refund a
-            payment we never received. The money went to the seller, and only they or
-            their payment provider can return it.
+            We have to be straight with you about the limit here: we cannot
+            refund a payment we never received. A card payment to a shop is
+            created on that seller&rsquo;s own Stripe account, settles into their
+            balance, and is theirs to return. {LEGAL.product} never holds it and
+            cannot send it back for them.
           </Callout>
+          <P>
+            The one part that is ours is our fee. {LEGAL.product} takes{" "}
+            {PLATFORM_FEE_LABEL} of the goods on a card sale, and when a seller
+            refunds an order that fee is refunded with it, in proportion to the
+            amount returned. You are never left paying our share of a sale that
+            was undone.
+          </P>
           <P>
             If you paid that seller by card, your own card issuer&rsquo;s dispute
             process is open to you and is usually the fastest route. If you paid by
@@ -249,11 +299,22 @@ export default function RefundsPage() {
           </P>
         </Clause>
 
-        <Clause id="chargebacks" n={7} title="Chargebacks">
+        <Clause id="chargebacks" n={8} title="Chargebacks">
           <P>
-            If you dispute a Sailo charge with your bank before speaking to us, the
-            account is suspended while the dispute runs, because we are required to
-            respond to it and cannot keep billing in the meantime.
+            <strong>A charge from a shop.</strong> The seller is the merchant of
+            record, so the dispute is theirs. Stripe debits their account for the
+            amount and for its dispute fee, whether or not they contest it and
+            whether or not they have already shipped. {LEGAL.product} is not a
+            party to it and cannot decide it either way. If a seller&rsquo;s
+            disputes run high enough to threaten their card acceptance or ours,
+            we may stop card payments on that shop — the{" "}
+            <Ref href="/terms">Terms</Ref> set out when.
+          </P>
+          <P>
+            <strong>A charge from {LEGAL.product}.</strong> If you dispute one of
+            our own subscription charges with your bank before speaking to us,
+            the account is suspended while the dispute runs, because we are
+            required to respond to it and cannot keep billing in the meantime.
           </P>
           <P>
             Please email <Mail address={LEGAL.refundEmail} /> first. We have never
@@ -262,7 +323,7 @@ export default function RefundsPage() {
           </P>
         </Clause>
 
-        <Clause id="changes" n={8} title="Changes">
+        <Clause id="changes" n={9} title="Changes">
           <P>
             If this policy changes, the effective date at the top changes with it. The
             version in force when you were charged is the one that applies to that
@@ -270,7 +331,7 @@ export default function RefundsPage() {
           </P>
         </Clause>
 
-        <Clause id="contact" n={9} title="Contact">
+        <Clause id="contact" n={10} title="Contact">
           <P>
             Refund requests: <Mail address={LEGAL.refundEmail} />. Anything else about
             an account or a shop: <Mail address={LEGAL.supportEmail} />.

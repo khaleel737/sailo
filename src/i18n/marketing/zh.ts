@@ -16,7 +16,7 @@ export const marketingZh: MarketingDictionary = {
   },
 
   hero: {
-    badge: "公测期间免费",
+    badge: "免费开始，一直免费",
     title: "你简介里的那条链接，早就该{highlight}了。",
     titleHighlight: "开始接单",
     body: "Sailo 把它变成一间真正的店：照片、价格、搜索、结账一应俱全，每一笔订单都会送到你本来就在回消息的那个聊天工具里。",
@@ -24,7 +24,7 @@ export const marketingZh: MarketingDictionary = {
     ctaSecondary: "打开一间真实店铺",
     proof1: "不到一分钟就能上线",
     proof2: "无需绑卡",
-    proof3: "销售额不抽成",
+    proof3: "聊天和银行转账订单不抽成",
     proof4: "35 种语言",
     igBio: "那不勒斯柴火披萨。点下方链接下单。",
     igPosts: "帖子",
@@ -148,7 +148,7 @@ export const marketingZh: MarketingDictionary = {
     q2: "买家到底怎么付钱给我？",
     a2: "跟你现在收钱的方式一样。刷卡走的是你自己的 Stripe 或 Paystack 账户，钱直接进你账上。也可以银行转账、货到付款和移动支付，说明由你自己写。Sailo 从不经手这笔钱。",
     q3: "Sailo 抽成吗？",
-    a3: "不抽。免费方案不抽，付费方案也不抽。买家付多少你就拿多少，只扣你自己支付服务商收的那部分。",
+    a3: "聊天、银行转账和现金订单不收——全额归你。刷卡销售收取商品金额的 {fee}，作为 Stripe 手续费扣除。运费和税费从不计入。",
     q4: "能卖服务或数字文件吗？",
     a4: "能，而且是像模像样地卖。服务可以带时长、地点和需要提前多久预约的日期选择。数字商品会在你确认收款后立刻解锁文件，还能设下载次数和有效期。",
     q5: "我已经有 Linktree 了，为什么要换？",
@@ -163,7 +163,7 @@ export const marketingZh: MarketingDictionary = {
 
   stats: {
     s1: "种语言，包括从右往左书写的",
-    s2: "抽成——所有方案都一样，免费方案也是",
+    s2: "聊天和银行转账订单抽成",
     s3: "从注册到拿到一条可以分享的链接",
   },
 
@@ -187,6 +187,9 @@ export const marketingZh: MarketingDictionary = {
     minuteRead: "分钟阅读",
 
     backToBlog: "全部文章",
+    pagination: "分页",
+    previousPage: "上一页",
+    nextPage: "下一页",
 
   },
 
@@ -200,12 +203,13 @@ export const marketingZh: MarketingDictionary = {
     privacy: "隐私",
     terms: "条款",
     refunds: "退款",
+    gdpr: "GDPR",
   },
 
   seo: {
     title: "Sailo — 把简介里的链接变成一间店",
     description:
-      "Sailo 把你简介里的链接变成一间真正的店。卖实物、数字文件或服务，订单通过 WhatsApp 或刷卡收，支持 35 种语言。免费开始，不抽成。",
+      "Sailo 把你简介里的链接变成一间真正的店。卖实物、数字文件或服务，订单通过 WhatsApp 或刷卡收，支持 35 种语言。免费开始，聊天和银行转账订单不抽成。",
     ogTitle: "Sailo — 一条链接，整间店",
     ogDescription:
       "照片、价格、规格、库存、预约和下载，全都在简介的一条链接后面。订单会落到 WhatsApp，或者你自己的刷卡收款里。",

@@ -15,10 +15,18 @@ import { SailoMark } from "@/components/brand";
  * is scoped to `.brand-surface` in `brand.css`, which those surfaces do not
  * wear.
  *
- * Sized against the header so the mark sits on the optical centre of what is
- * left of the viewport, and tall enough that the footer starts below the fold —
- * a short fallback under a very tall page is what makes the footer jump when
- * the real content lands.
+ * It covers the viewport, header and footer included. `loading.tsx` renders
+ * inside `<main>`, so left alone it draws a panel framed by the site chrome —
+ * which is a placeholder, not a splash. The overlay is `fixed` to escape that
+ * and sits above the header's `z-40`, but below the cookie banner's `z-50`:
+ * a consent prompt is the one thing that should not be painted over.
+ *
+ * The outer element is why the footer does not jump. It stays in the flow and
+ * reserves a viewport's worth of height, so the footer starts below the fold
+ * and is still below it when the real page arrives. A `fixed` overlay alone
+ * collapses `<main>` to nothing, which pulls the footer up under the header
+ * and charges the difference to Cumulative Layout Shift the moment the content
+ * lands.
  *
  * Silent to screen readers on purpose. `RouteProgress` in the root layout
  * already owns the announcement, in the visitor's language and in a live
@@ -31,11 +39,10 @@ import { SailoMark } from "@/components/brand";
  */
 export default function Loading() {
   return (
-    <div
-      aria-hidden
-      className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-5"
-    >
-      <SailoMark className="splash-mark size-14 text-[var(--ink)]" />
+    <div aria-hidden className="min-h-[calc(100vh-4rem)]">
+      <div className="fixed inset-0 z-[45] flex items-center justify-center bg-[var(--paper)] px-5">
+        <SailoMark className="splash-mark size-14 text-[var(--ink)]" />
+      </div>
     </div>
   );
 }

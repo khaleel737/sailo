@@ -171,7 +171,15 @@ export function LanguageSwitcher({
         ref={buttonRef}
         type="button"
         onClick={toggle}
-        aria-label={label}
+        /*
+         * The visible name has to survive into the accessible one. A bare
+         * `aria-label` of "Language" replaced the word the button actually
+         * shows, so someone driving the page by voice said "click English"
+         * and nothing happened — the control they could see was not the
+         * control the browser had a name for. Naming both keeps the purpose
+         * and gives the spoken word something to match.
+         */
+        aria-label={`${label}: ${active.native}`}
         aria-expanded={open}
         aria-haspopup="listbox"
         disabled={pending}

@@ -12,16 +12,24 @@ import {
 import { cn } from "@/lib/utils";
 
 /*
- * The three places on this page where motion needs JavaScript.
+ * The two places on this page where motion needs JavaScript.
  *
  * Everything else animates in CSS: section reveals run on `animation-timeline:
- * view()` and the marquee is a keyframe. That is deliberate. Scroll-driven CSS
- * runs on the compositor, needs no observer, survives hydration and costs
- * nothing on a mid-range Android, which is what most of this audience holds.
+ * view()`, the hero's entrance is `.rise` in `brand.css`, and the marquee is a
+ * keyframe. That is deliberate. CSS runs on the compositor, needs no observer,
+ * survives hydration and costs nothing on a mid-range Android, which is what
+ * most of this audience holds.
  *
- * What is left needs a value React cannot cheaply own:
+ * The hero's entrance used to live here, and it is the reason for the rule.
+ * A JavaScript animation renders its opening frame into the server's HTML, so
+ * `initial={{ opacity: 0 }}` shipped an invisible headline that stayed
+ * invisible until this bundle had loaded and hydrated — most of a five-second
+ * LCP on a throttled phone, and forever with JavaScript off. Anything that can
+ * open a page has to be CSS.
  *
- *   Stagger   sequencing the hero, so the eye lands on the headline then the CTA
+ * What is left needs a value React cannot cheaply own, and neither runs until
+ * after the page is on screen:
+ *
  *   Magnetic  a pointer position, sixty times a second
  *   Counter   a number tweened from zero on an easing curve
  *
@@ -38,28 +46,6 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 /** Wraps every motion island on the page. Mounted once, in the page shell. */
 export function MotionProvider({ children }: { children: ReactNode }) {
   return <MotionConfig reducedMotion="user">{children}</MotionConfig>;
-}
-
-/** Hero entrance, sequenced. */
-export function Stagger({
-  children,
-  delay = 0,
-  className,
-}: {
-  children: ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, delay, ease: EASE }}
-    >
-      {children}
-    </motion.div>
-  );
 }
 
 /**

@@ -3,6 +3,7 @@ import { ArrowRight, ShieldAlert, Wallet } from "lucide-react";
 import type { Shop } from "@/db/schema";
 import { getCheckoutOptions } from "@/lib/queries";
 import { getAdminT } from "@/i18n/server";
+import { VerifyEmailBanner } from "./verify-email-banner";
 
 /**
  * The notices that sit above every admin page.
@@ -10,9 +11,12 @@ import { getAdminT } from "@/i18n/server";
 export async function StatusBanners({
   shop,
   isStaff,
+  unverifiedEmail,
 }: {
   shop: Shop;
   isStaff: boolean;
+  /** The signed-in email, when its confirmation link is still unclicked. */
+  unverifiedEmail?: string | null;
 }) {
   const { a } = await getAdminT();
 
@@ -79,6 +83,23 @@ export async function StatusBanners({
             </Link>
           </div>
         </div>
+      ) : null}
+
+      {/*
+        An address nobody has proven they own yet. Sign-up mailed the link;
+        this stays until it's clicked. Suppressed for a suspended shop for the
+        same reason the payments banner is — one alarm at a time.
+      */}
+      {!shop.suspendedAt && unverifiedEmail ? (
+        <VerifyEmailBanner
+          email={unverifiedEmail}
+          labels={{
+            title: a.shell.verifyEmail,
+            body: a.shell.verifyEmailBody,
+            cta: a.shell.verifyEmailCta,
+            sent: a.shell.verifyEmailSent,
+          }}
+        />
       ) : null}
 
       {/*

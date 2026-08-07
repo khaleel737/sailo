@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 import { interpolate } from "@/i18n";
 import type { MarketingDictionary } from "@/i18n/marketing";
 import type { Dictionary } from "@/i18n";
-import { PLANS, type Plan } from "@/lib/plans";
+import { PLANS, PLATFORM_FEE_LABEL, type Plan } from "@/lib/plans";
 import { formatMoney } from "@/lib/utils";
 import { Cta, Section, SectionHead } from "@/components/marketing/kit";
 
@@ -161,7 +161,7 @@ export function PricingSection({
       </div>
 
       <p className="mt-10 text-center text-[0.8125rem] text-[var(--mute-400)]">
-        {t.billing.cancelAnyTime}
+        {interpolate(t.billing.cancelAnyTime, { fee: PLATFORM_FEE_LABEL })}
       </p>
     </Section>
   );

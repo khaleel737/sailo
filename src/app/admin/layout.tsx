@@ -1,4 +1,5 @@
 import { GoogleTag } from "@/lib/google-tag";
+import { ConsentGate } from "@/components/shared/consent-gate";
 import { Sidebar } from "@/app/admin/_components/sidebar";
 import {
   AdminHeader,
@@ -13,7 +14,7 @@ import { StatusBanners } from "@/app/admin/_components/status-banners";
 import { PanelFooter } from "@/components/shared/panel-footer";
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
-  const { shop } = await requireShop();
+  const { user, shop } = await requireShop();
   const { locale, t, a, dir } = await getAdminT();
 
   const [stats, all, staff] = await Promise.all([
@@ -48,7 +49,11 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
           t={t}
         />
         <div className="flex min-w-0 flex-1 flex-col bg-ink-50">
-          <StatusBanners shop={shop} isStaff={staff} />
+          <StatusBanners
+            shop={shop}
+            isStaff={staff}
+            unverifiedEmail={user.emailVerified ? null : user.email}
+          />
           <AdminHeader
             shop={shop}
             notifications={notifications}
@@ -63,6 +68,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
           <PanelFooter labels={a.shell} />
         </div>
         <GoogleTag />
+      <ConsentGate />
       </div>
     </AdminI18nProvider>
   );

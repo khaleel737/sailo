@@ -16,7 +16,7 @@ export const marketingJa: MarketingDictionary = {
   },
 
   hero: {
-    badge: "ベータ期間中は無料",
+    badge: "無料で始めて、ずっと無料",
     title: "プロフィールのリンクは、とっくに{highlight}はずです。",
     titleHighlight: "注文を受けていていい",
     body: "Sailo はそれを本物のショップに変えます。写真も価格も検索も決済もそろい、注文はあなたが普段返信しているチャットアプリに届きます。",
@@ -24,7 +24,7 @@ export const marketingJa: MarketingDictionary = {
     ctaSecondary: "実際のショップを見る",
     proof1: "1分かからず公開",
     proof2: "カード登録は不要",
-    proof3: "売上からの手数料はゼロ",
+    proof3: "チャットと銀行振込の注文は手数料なし",
     proof4: "35言語",
     igBio: "薪窯のピッツァ、ナポリ。ご注文は下のリンクから。",
     igPosts: "投稿",
@@ -148,7 +148,7 @@ export const marketingJa: MarketingDictionary = {
     q2: "実際、どうやって支払われるのですか？",
     a2: "いま受け取っている方法のままです。カードなら、ご自身の Stripe や Paystack を通すので売上は直接あなたに入ります。銀行振込、代金引換、モバイルマネーも、案内文はあなたが書きます。Sailo がお金を預かることは一度もありません。",
     q3: "Sailo は手数料を取りますか？",
-    a3: "取りません。無料プランでも有料プランでも同じです。買い手が払った額はそのままあなたのもので、差し引かれるのはご自身の決済会社の手数料だけです。",
+    a3: "チャット・銀行振込・現金の注文はかかりません。全額あなたのものです。カード決済は商品代金の{fee}をStripe手数料として頂きます。配送料や税金にはかかりません。",
     q4: "サービスやデジタルファイルも売れますか？",
     a4: "売れますし、ちゃんとそれらしく動きます。サービスには所要時間、場所、受付期限つきの日時選択を持たせられます。デジタル商品は入金確認と同時に開くファイルを渡し、ダウンロード回数や有効期限も設定できます。",
     q5: "すでに Linktree があります。乗り換える理由は？",
@@ -163,7 +163,7 @@ export const marketingJa: MarketingDictionary = {
 
   stats: {
     s1: "言語。右から左に読む言語も含めて",
-    s2: "の手数料。無料プランを含む全プランで",
+    s2: "チャットと銀行振込の注文の手数料",
     s3: "で登録から共有できるリンクまで",
   },
 
@@ -187,6 +187,9 @@ export const marketingJa: MarketingDictionary = {
     minuteRead: "分で読めます",
 
     backToBlog: "記事一覧",
+    pagination: "ページ送り",
+    previousPage: "前のページ",
+    nextPage: "次のページ",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingJa: MarketingDictionary = {
     privacy: "プライバシー",
     terms: "利用規約",
     refunds: "返金",
+    gdpr: "GDPR",
   },
 
   seo: {

@@ -16,7 +16,7 @@ export const marketingMs: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Percuma sepanjang beta",
+    badge: "Percuma untuk mula, percuma seterusnya",
     title: "Pautan dalam bio anda sepatutnya {highlight}.",
     titleHighlight: "menerima pesanan",
     body: "Sailo menjadikannya kedai sebenar — gambar, harga, carian, pembayaran — dan menghantar setiap pesanan ke aplikasi sembang yang memang anda balas setiap hari.",
@@ -24,7 +24,7 @@ export const marketingMs: MarketingDictionary = {
     ctaSecondary: "Buka kedai sebenar",
     proof1: "Siap dalam masa kurang seminit",
     proof2: "Tiada kad diperlukan",
-    proof3: "Tiada komisen atas jualan",
+    proof3: "Tiada komisen untuk pesanan sembang dan bank",
     proof4: "35 bahasa",
     igBio: "Piza bakar kayu, Naples. Pesan di bawah.",
     igPosts: "Siaran",
@@ -148,7 +148,7 @@ export const marketingMs: MarketingDictionary = {
     q2: "Bagaimana pembeli sebenarnya membayar saya?",
     a2: "Seperti cara anda sudah menerima wang. Kad, melalui akaun Stripe atau Paystack anda sendiri, jadi caj itu mendarat terus kepada anda. Atau pemindahan bank, bayar semasa terima dan wang mudah alih, dengan arahan yang anda tulis sendiri. Sailo tidak pernah memegang wang itu.",
     q3: "Adakah Sailo mengambil komisen?",
-    a3: "Tidak. Bukan pada pelan percuma, bukan pada yang berbayar. Apa yang pembeli bayar itulah yang anda simpan, tolak apa sahaja yang dicaj oleh penyedia pembayaran anda sendiri.",
+    a3: "Untuk pesanan sembang, pindahan bank dan tunai, tidak — semuanya milik anda. Jualan kad dikenakan {fee} daripada barangan, diambil sebagai yuran Stripe. Tidak sekali pada penghantaran atau cukai.",
     q4: "Bolehkah saya menjual perkhidmatan atau fail digital?",
     a4: "Boleh, dan ia berkelakuan dengan betul. Perkhidmatan boleh membawa tempoh, lokasi dan pemilih tarikh dengan tempoh notis. Produk digital menghantar fail yang terbuka sebaik anda mengesahkan bayaran, dengan had muat turun dan tamat tempoh jika anda mahu.",
     q5: "Saya sudah ada Linktree. Kenapa perlu bertukar?",
@@ -163,7 +163,7 @@ export const marketingMs: MarketingDictionary = {
 
   stats: {
     s1: "bahasa, termasuk yang dibaca dari kanan ke kiri",
-    s2: "komisen — pada setiap pelan, termasuk yang percuma",
+    s2: "komisen untuk pesanan sembang dan pindahan bank",
     s3: "daripada mendaftar hinggalah pautan yang boleh dikongsi",
   },
 
@@ -187,6 +187,9 @@ export const marketingMs: MarketingDictionary = {
     minuteRead: "min bacaan",
 
     backToBlog: "Semua artikel",
+    pagination: "Penomboran halaman",
+    previousPage: "Halaman sebelumnya",
+    nextPage: "Halaman seterusnya",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingMs: MarketingDictionary = {
     privacy: "Privasi",
     terms: "Terma",
     refunds: "Pemulangan wang",
+    gdpr: "GDPR",
   },
 
   seo: {

@@ -1,4 +1,5 @@
 import "server-only";
+import { requireStaff } from "@/lib/session";
 import { and, asc, desc, eq, ilike, isNotNull, isNull, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import { products, shops, user, type Shop } from "@/db/schema";
@@ -144,6 +145,7 @@ function accountWhere(filters: AccountFilters): SQL | undefined {
  * shop is exactly the account we most need to see.
  */
 export async function getAccounts(filters: AccountFilters = {}) {
+  await requireStaff();
   const db = getDb();
   const where = accountWhere(filters);
 
@@ -208,6 +210,7 @@ export type AccountDetail = NonNullable<
 >;
 
 export async function getAccountDetail(userId: string) {
+  await requireStaff();
   const db = getDb();
 
   const owner = await db.query.user.findFirst({ where: eq(user.id, userId) });

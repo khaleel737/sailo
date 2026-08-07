@@ -28,6 +28,16 @@ describe("staffEmails", () => {
     expect(withoutOverride().length).toBeGreaterThan(0);
   });
 
+  it("ships only the dedicated staff address, on our own domain", () => {
+    /*
+     * The roster was once the founders' personal Gmails. Those inboxes are
+     * signed in on phones and old laptops, and each one was a way into /hq.
+     * Access now belongs to one purpose-made address; putting a personal
+     * account back on this list should have to argue with this test first.
+     */
+    expect(withoutOverride()).toEqual(["admin@sailo.store"]);
+  });
+
   it("returns every address lowercased", () => {
     process.env.SAILO_STAFF_EMAILS = "Someone@Example.COM,OTHER@example.com";
     expect(staffEmails()).toEqual(["someone@example.com", "other@example.com"]);

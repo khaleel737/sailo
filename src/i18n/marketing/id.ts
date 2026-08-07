@@ -16,7 +16,7 @@ export const marketingId: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis selama beta",
+    badge: "Gratis mulai, gratis seterusnya",
     title: "Tautan di bio Anda seharusnya {highlight}.",
     titleHighlight: "menerima pesanan",
     body: "Sailo mengubahnya jadi toko sungguhan — foto, harga, pencarian, checkout — dan mengirim setiap pesanan ke aplikasi chat yang memang sudah Anda balas tiap hari.",
@@ -24,7 +24,7 @@ export const marketingId: MarketingDictionary = {
     ctaSecondary: "Buka toko sungguhan",
     proof1: "Aktif dalam kurang dari satu menit",
     proof2: "Tanpa kartu",
-    proof3: "Tanpa komisi dari penjualan",
+    proof3: "Tanpa komisi untuk pesanan chat dan transfer bank",
     proof4: "35 bahasa",
     igBio: "Pizza panggang kayu, Napoli. Pesan di bawah.",
     igPosts: "Postingan",
@@ -148,7 +148,7 @@ export const marketingId: MarketingDictionary = {
     q2: "Bagaimana pembeli benar-benar membayar saya?",
     a2: "Sama seperti cara Anda sudah menerima uang. Kartu, lewat akun Stripe atau Paystack Anda sendiri, jadi tagihannya mendarat langsung ke Anda. Atau transfer bank, bayar di tempat, dan uang elektronik, dengan instruksi yang Anda tulis sendiri. Sailo tidak pernah menahan uangnya.",
     q3: "Apakah Sailo mengambil komisi?",
-    a3: "Tidak. Tidak di paket gratis, tidak juga di yang berbayar. Yang dibayar pembeli itu yang Anda simpan, dikurangi biaya penyedia pembayaran Anda sendiri.",
+    a3: "Untuk pesanan chat, transfer bank dan tunai, tidak — semuanya milik Anda. Penjualan kartu dikenakan {fee} dari nilai barang, diambil sebagai biaya Stripe. Tidak pernah dari ongkir atau pajak.",
     q4: "Bisakah saya menjual jasa atau berkas digital?",
     a4: "Bisa, dan keduanya berperilaku semestinya. Sebuah jasa bisa membawa durasi, lokasi, dan pemilih tanggal dengan tenggat pemberitahuan. Produk digital mengirim berkas yang terbuka begitu Anda mengonfirmasi pembayaran, dengan batas unduhan dan masa berlaku kalau Anda mau.",
     q5: "Saya sudah punya Linktree. Kenapa harus pindah?",
@@ -163,7 +163,7 @@ export const marketingId: MarketingDictionary = {
 
   stats: {
     s1: "bahasa, termasuk yang dibaca dari kanan ke kiri",
-    s2: "komisi — di setiap paket, termasuk yang gratis",
+    s2: "komisi untuk pesanan chat dan transfer bank",
     s3: "dari mendaftar sampai punya tautan yang bisa dibagikan",
   },
 
@@ -187,6 +187,9 @@ export const marketingId: MarketingDictionary = {
     minuteRead: "menit baca",
 
     backToBlog: "Semua artikel",
+    pagination: "Penomoran halaman",
+    previousPage: "Halaman sebelumnya",
+    nextPage: "Halaman berikutnya",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingId: MarketingDictionary = {
     privacy: "Privasi",
     terms: "Ketentuan",
     refunds: "Pengembalian dana",
+    gdpr: "GDPR",
   },
 
   seo: {

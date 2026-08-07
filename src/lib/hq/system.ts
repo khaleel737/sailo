@@ -1,4 +1,5 @@
 import "server-only";
+import { requireStaff } from "@/lib/session";
 import type { PgTable } from "drizzle-orm/pg-core";
 import { desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -12,6 +13,7 @@ export async function getStaffLog({
   shopId,
   limit = 40,
 }: { shopId?: string; limit?: number } = {}) {
+  await requireStaff();
   return getDb()
     .select({
       id: staffActions.id,
@@ -48,6 +50,7 @@ function flag(name: string, key: string, detail?: string) {
  * being a very bad day.
  */
 export async function getSystemHealth() {
+  await requireStaff();
   const db = getDb();
 
   const priceKeys = [

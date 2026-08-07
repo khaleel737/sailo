@@ -39,7 +39,17 @@
   --mute-100: var(--color-ink-100);
   --mute-200: var(--color-ink-200);
   --mute-300: var(--color-ink-300);
-  --mute-400: var(--color-ink-400);
+  /* The one token here that does not read the shared ramp, and it is not a
+     preference. `--color-ink-400` is #96928a, which is 2.99:1 on `--paper` —
+     every place this surface spends it is 11-13px text, where the floor is
+     4.5:1, so the ramp value failed at all thirty-odd of them. This is the
+     lightest warm grey that clears the floor on both `--paper` and
+     `--paper-sunk` (4.63:1 and 4.56:1). It sits close to `--mute-500`, and
+     that is the honest outcome: the ramp carried one more muted grey than a
+     legible text scale has room for, and size now does the work the second
+     grey was doing. `--on-ink-mute` still reads the ramp, because #96928a on
+     `--ink` is 6.27:1 and passes as it stands. */
+  --mute-400: #75726c;
   --mute-500: var(--color-ink-500);
   --mute-600: var(--color-ink-600);
 
@@ -119,6 +129,80 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Hero entrance
+
+   The same staggered sequence the hero used to run through Motion, moved into
+   CSS for one reason: a JavaScript entrance writes its opening frame —
+   `opacity: 0` — into the server's HTML, and the hero then stays invisible
+   until the bundle has downloaded, parsed and hydrated. That was 4.8s of the
+   hero's 5.5s Largest Contentful Paint on a throttled phone, and with
+   JavaScript off the page never showed a headline at all.
+
+   A CSS animation starts as soon as the stylesheet is parsed, which is the
+   frame the text would have painted on anyway. `both` holds the opening frame
+   through the stagger delay and leaves the resting state behind at the end,
+   so no element depends on the animation having run to be visible.
+
+   IT MOVES BUT IT DOES NOT FADE, and that is the whole point of the rule.
+   Chrome will not count an element as painted while its opacity is being
+   animated, and it does not settle for a partial credit: it waits for the
+   animation to finish, so a 0.7s fade on the headline is 0.7s added to
+   Largest Contentful Paint no matter how early the keyframes reach opacity 1
+   — measured both ways, 780ms either way. Transform carries no such penalty,
+   because a translated element is still a painted one. The headline is
+   therefore legible from the first frame and arrives at its resting position
+   shortly after, which is the part of the entrance a reader can actually see.
+   Sections below the fold still fade in `.reveal`; none of them is ever the
+   Largest Contentful Paint element.
+--------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .brand-surface .rise {
+    animation: marketing-rise 0.7s var(--ease-out) both;
+    animation-delay: var(--rise-delay, 0s);
+  }
+}
+
+@keyframes marketing-rise {
+  from {
+    transform: translateY(20px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Splash
+
+   The mark, while the page is on its way. It breathes rather than spins: a
+   spinner claims progress it cannot measure, and this wait is normally a
+   tenth of a second. The point is to look alive, not busy.
+
+   Held to two thirds opacity at its dimmest so it reads as one mark pulsing
+   rather than as something flickering in and out, and it starts at full
+   strength so the first frame is the logo at its most legible.
+--------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .brand-surface .splash-mark {
+    animation: marketing-splash 1.6s var(--ease-out) infinite;
+  }
+}
+
+@keyframes marketing-splash {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.66;
+    transform: scale(0.96);
   }
 }
 

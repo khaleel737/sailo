@@ -93,12 +93,19 @@ export function DemoGallery({ t }: { t: MarketingDictionary }) {
             transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_12rem] lg:items-end lg:gap-12">
+              {/*
+                Deliberately not `priority`. This sits about 4,700px down the
+                page, and marking the first tab's screenshot high-priority
+                preloaded the largest image on the site into the same few
+                hundred milliseconds the hero was trying to paint in — it
+                competed with the thing above the fold and was still offscreen
+                when it arrived. Lazy is what an image this far down wants.
+              */}
               <BrowserFrame
                 src={shotUrl(demo.handle)}
                 url={`sailo.store/${demo.handle}`}
                 alt={demo.name}
                 dark={demo.theme === "dark"}
-                priority={active === 0}
                 sizes="(min-width: 1024px) 740px, 100vw"
               />
               <PhoneFrame

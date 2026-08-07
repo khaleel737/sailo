@@ -36,7 +36,9 @@ export function AuthForm({
     const name = String(data.get("name") ?? "").trim();
 
     const result = isSignup
-      ? await authClient.signUp.email({ email, password, name })
+      ? // callbackURL is where the emailed confirmation link lands, not this
+        // form's redirect — that stays the router.push below.
+        await authClient.signUp.email({ email, password, name, callbackURL: "/admin" })
       : await authClient.signIn.email({ email, password });
 
     if (result.error) {

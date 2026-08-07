@@ -32,13 +32,26 @@ export const BLANK: Draft = {
 
 /**
  * Option values as typed: comma or newline separated, because sellers paste
- * lists from both.
+ * lists from both. The admin ships in thirty-six locales, so "comma" means the
+ * seller's comma — Arabic ،, full-width ，, ideographic 、 — and semicolons,
+ * which spreadsheets export. Spaces never split: "Extra Large" is one value.
  */
 export function splitValues(input: string): string[] {
   return input
-    .split(/[,\n]/)
+    .split(/[,\n;،؛，、]/)
     .map((v) => v.trim())
     .filter(Boolean);
+}
+
+/**
+ * True when the typed values probably wanted commas: "0.5kg 1kg 2kg" parses as
+ * one value, and the only symptom was a table with one row — the seller had no
+ * way to see how their typing was read. A single value with no spaces stays
+ * quiet; so does anything that already split.
+ */
+export function probablyMissingCommas(input: string): boolean {
+  const [only, second] = splitValues(input);
+  return only !== undefined && second === undefined && /\s/.test(only);
 }
 
 /** Minor units to the decimal string an input shows. Null stays empty. */

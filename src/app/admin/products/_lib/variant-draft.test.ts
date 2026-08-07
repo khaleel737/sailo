@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { ProductVariant } from "@/db/schema";
-import { BLANK, splitValues, toDrafts } from "./variant-draft";
+import {
+  BLANK,
+  probablyMissingCommas,
+  splitValues,
+  toDrafts,
+} from "./variant-draft";
 
 /**
  * This logic converts stored money into what a seller sees in a form, and it
@@ -43,6 +48,45 @@ describe("splitValues", () => {
 
   it("trims, so a pasted list doesn't create ' M' and 'M'", () => {
     expect(splitValues("  S ,  M  ")).toEqual(["S", "M"]);
+  });
+
+  it("takes the comma the seller's keyboard actually types", () => {
+    // Arabic comma — an Arabic-locale admin never produces U+002C.
+    expect(splitValues("نصف كيلو، كيلو، كيلوان")).toEqual([
+      "نصف كيلو",
+      "كيلو",
+      "كيلوان",
+    ]);
+    // Full-width and ideographic commas from CJK input methods.
+    expect(splitValues("小，中，大")).toEqual(["小", "中", "大"]);
+    expect(splitValues("小、中、大")).toEqual(["小", "中", "大"]);
+    // Semicolons, which spreadsheet exports use.
+    expect(splitValues("S; M; L")).toEqual(["S", "M", "L"]);
+  });
+
+  it("never splits on spaces — a value can be 'Extra Large'", () => {
+    expect(splitValues("Extra Large, Extra Small")).toEqual([
+      "Extra Large",
+      "Extra Small",
+    ]);
+  });
+});
+
+describe("probablyMissingCommas", () => {
+  it("catches a space-separated list typed as one value", () => {
+    expect(probablyMissingCommas("0.5kg 1kg 2kg")).toBe(true);
+    expect(probablyMissingCommas("Small Medium Large")).toBe(true);
+  });
+
+  it("stays quiet once anything splits", () => {
+    expect(probablyMissingCommas("0.5 kg, 1 kg")).toBe(false);
+    expect(probablyMissingCommas("نصف كيلو، كيلو")).toBe(false);
+  });
+
+  it("stays quiet on one word, or nothing", () => {
+    expect(probablyMissingCommas("Small")).toBe(false);
+    expect(probablyMissingCommas("")).toBe(false);
+    expect(probablyMissingCommas("   ")).toBe(false);
   });
 });
 

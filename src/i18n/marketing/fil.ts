@@ -16,7 +16,7 @@ export const marketingFil: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Libre habang beta",
+    badge: "Libreng magsimula, libreng manatili",
     title: "Ang link sa bio mo ay dapat {highlight}.",
     titleHighlight: "tumatanggap ng order",
     body: "Ginagawa itong totoong tindahan ng Sailo — larawan, presyo, paghahanap, checkout — at ipinapadala ang bawat order sa chat app na sinasagot mo naman araw-araw.",
@@ -24,7 +24,7 @@ export const marketingFil: MarketingDictionary = {
     ctaSecondary: "Buksan ang totoong tindahan",
     proof1: "Handa sa wala pang isang minuto",
     proof2: "Walang kailangang card",
-    proof3: "Walang komisyon sa benta",
+    proof3: "Walang komisyon sa chat at bank orders",
     proof4: "35 wika",
     igBio: "Wood-fired pizza, Naples. Mag-order sa ibaba.",
     igPosts: "Mga post",
@@ -148,7 +148,7 @@ export const marketingFil: MarketingDictionary = {
     q2: "Paano ba talaga ako babayaran ng mga bumibili?",
     a2: "Sa paraang tinatanggap mo na ang pera. Card, sa sarili mong Stripe o Paystack account, kaya diretso sa iyo ang bayad. O bank transfer, cash on delivery at mobile money, na may tagubiling ikaw ang sumulat. Hindi kailanman hinahawakan ng Sailo ang pera.",
     q3: "Kumukuha ba ng komisyon ang Sailo?",
-    a3: "Hindi. Hindi sa libreng plano, hindi rin sa mga bayad. Ang binayad ng bumibili ay sa iyo, bawas lang ang sinisingil ng sarili mong payment provider.",
+    a3: "Sa chat, bank transfer at cash na order, wala — sa iyo ang buo. May {fee} ang benta sa card mula sa halaga ng produkto, kinukuha bilang Stripe fee. Hindi kailanman sa delivery o buwis.",
     q4: "Puwede ba akong magbenta ng serbisyo o digital na file?",
     a4: "Oo, at tama ang pagkilos nila. Ang serbisyo ay puwedeng may tagal, lokasyon at date picker na may panahon ng abiso. Ang digital na produkto ay naghahatid ng file na bumubukas sa oras na kumpirmahin mo ang bayad, may limitasyon sa download at pag-expire kung gusto mo.",
     q5: "May Linktree na ako. Bakit ako lilipat?",
@@ -163,7 +163,7 @@ export const marketingFil: MarketingDictionary = {
 
   stats: {
     s1: "wika, kasama ang mga binabasa mula kanan pakaliwa",
-    s2: "komisyon — sa bawat plano, pati na ang libre",
+    s2: "komisyon sa chat at bank transfer orders",
     s3: "mula sa pag-sign up hanggang sa link na puwedeng i-share",
   },
 
@@ -187,6 +187,9 @@ export const marketingFil: MarketingDictionary = {
     minuteRead: "min na pagbasa",
 
     backToBlog: "Lahat ng artikulo",
+    pagination: "Pagination",
+    previousPage: "Nakaraang pahina",
+    nextPage: "Susunod na pahina",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingFil: MarketingDictionary = {
     privacy: "Privacy",
     terms: "Mga tuntunin",
     refunds: "Mga refund",
+    gdpr: "GDPR",
   },
 
   seo: {

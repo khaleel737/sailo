@@ -46,14 +46,16 @@ const MEASURED = [
  * Every other layout, and the reason it stays clean:
  *
  *   /                 wraps every route in the app, storefronts included
- *   /hq               internal staff, already noindex
+ *   /hq/(panel)       internal staff, already noindex — the (panel) group is
+ *                     the guarded shell; /hq/login sits beside it with no
+ *                     layout at all, so it inherits only the clean root
  *   /admin/settings   nested inside /admin, which measures already — a second
  *                     mount here would load the tag twice on those pages
  *
  * Storefronts and the token pages have no layout of their own, so they inherit
  * only the root, which is exactly why the root must stay clean.
  */
-const UNMEASURED = ["/", "/hq", "/admin/settings"];
+const UNMEASURED = ["/", "/hq/(panel)", "/admin/settings"];
 
 describe("the Google tag's placement", () => {
   it("is mounted on every Sailo-owned surface", () => {

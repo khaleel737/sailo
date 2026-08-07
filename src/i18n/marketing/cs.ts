@@ -16,7 +16,7 @@ export const marketingCs: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Zdarma po dobu bety",
+    badge: "Zdarma na začátek, zdarma i potom",
     title: "Odkaz ve vašem biu by měl už dávno {highlight}.",
     titleHighlight: "přijímat objednávky",
     body: "Sailo z něj udělá skutečný obchod — fotky, ceny, vyhledávání, pokladna — a každou objednávku pošle do chatu, ve kterém stejně už odpovídáte.",
@@ -24,7 +24,7 @@ export const marketingCs: MarketingDictionary = {
     ctaSecondary: "Otevřít skutečný obchod",
     proof1: "Hotovo za necelou minutu",
     proof2: "Bez karty",
-    proof3: "Žádná provize z prodejů",
+    proof3: "Žádná provize u objednávek přes chat a převod",
     proof4: "35 jazyků",
     igBio: "Pizza z pece na dřevo, Neapol. Objednávejte odkazem níže.",
     igPosts: "Příspěvky",
@@ -148,7 +148,7 @@ export const marketingCs: MarketingDictionary = {
     q2: "Jak mi kupující doopravdy platí?",
     a2: "Stejně, jako přijímáte peníze dnes. Kartou přes váš vlastní účet Stripe nebo Paystack, takže platba míří přímo k vám. Nebo převodem, na dobírku a mobilními platbami, s pokyny, které si napíšete sami. Sailo peníze nikdy nedrží.",
     q3: "Bere si Sailo provizi?",
-    a3: "Ne. Ani v bezplatném tarifu, ani v placených. Co kupující zaplatí, zůstává vám — mínus to, co si účtuje váš vlastní poskytovatel plateb.",
+    a3: "U objednávek přes chat, převod a hotovost ne — ty jsou celé vaše. U plateb kartou je to {fee} z ceny zboží, strženo jako poplatek Stripe. Nikdy z dopravy nebo daně.",
     q4: "Můžu prodávat služby nebo digitální soubory?",
     a4: "Ano, a chovají se, jak mají. Služba může mít trvání, místo a výběr data s předstihem. Digitální produkt doručí soubory, které se odemknou hned po potvrzení platby — s limitem stažení a expirací, pokud chcete.",
     q5: "Už mám Linktree. Proč měnit?",
@@ -163,7 +163,7 @@ export const marketingCs: MarketingDictionary = {
 
   stats: {
     s1: "jazyků, včetně psaní zprava doleva",
-    s2: "provize — ve všech tarifech, i v bezplatném",
+    s2: "provize u objednávek přes chat a převod",
     s3: "od registrace k odkazu, který můžete sdílet",
   },
 
@@ -187,6 +187,9 @@ export const marketingCs: MarketingDictionary = {
     minuteRead: "min čtení",
 
     backToBlog: "Všechny články",
+    pagination: "Stránkování",
+    previousPage: "Předchozí stránka",
+    nextPage: "Další stránka",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingCs: MarketingDictionary = {
     privacy: "Soukromí",
     terms: "Podmínky",
     refunds: "Vrácení peněz",
+    gdpr: "GDPR",
   },
 
   seo: {

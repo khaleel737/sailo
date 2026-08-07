@@ -16,7 +16,7 @@ export const marketingVi: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Miễn phí trong thời gian beta",
+    badge: "Miễn phí để bắt đầu, miễn phí để tiếp tục",
     title: "Liên kết trong bio của bạn nên {highlight}.",
     titleHighlight: "nhận đơn hàng",
     body: "Sailo biến nó thành một cửa hàng thật — ảnh, giá, tìm kiếm, thanh toán — và gửi mọi đơn hàng vào ứng dụng chat mà bạn vốn đã trả lời hằng ngày.",
@@ -24,7 +24,7 @@ export const marketingVi: MarketingDictionary = {
     ctaSecondary: "Mở một cửa hàng thật",
     proof1: "Hoạt động trong chưa đầy một phút",
     proof2: "Không cần thẻ",
-    proof3: "Không thu hoa hồng trên doanh số",
+    proof3: "Không hoa hồng với đơn qua chat và chuyển khoản",
     proof4: "35 ngôn ngữ",
     igBio: "Pizza lò củi, Naples. Đặt hàng bên dưới.",
     igPosts: "Bài viết",
@@ -148,7 +148,7 @@ export const marketingVi: MarketingDictionary = {
     q2: "Khách thật sự trả tiền cho tôi thế nào?",
     a2: "Đúng như cách bạn vẫn nhận tiền. Bằng thẻ, qua tài khoản Stripe hoặc Paystack của chính bạn, nên tiền về thẳng chỗ bạn. Hoặc chuyển khoản, thanh toán khi nhận hàng và ví di động, với hướng dẫn bạn tự viết. Sailo không bao giờ giữ tiền.",
     q3: "Sailo có lấy hoa hồng không?",
-    a3: "Không. Không ở gói miễn phí, cũng không ở các gói trả phí. Khách trả bao nhiêu bạn giữ bấy nhiêu, trừ đi phần nhà cung cấp thanh toán của bạn thu.",
+    a3: "Với đơn qua chat, chuyển khoản và tiền mặt thì không — hoàn toàn là của bạn. Bán qua thẻ chịu {fee} trên giá hàng, thu dưới dạng phí Stripe. Không bao giờ tính trên phí giao hàng hay thuế.",
     q4: "Tôi bán dịch vụ hoặc tệp số được không?",
     a4: "Được, và chúng hoạt động đúng cách. Một dịch vụ có thể mang thời lượng, địa điểm và bộ chọn ngày kèm thời gian báo trước. Một sản phẩm số gửi tệp mở khoá ngay khi bạn xác nhận thanh toán, có giới hạn lượt tải và hạn dùng nếu bạn muốn.",
     q5: "Tôi đã có Linktree. Sao phải đổi?",
@@ -163,7 +163,7 @@ export const marketingVi: MarketingDictionary = {
 
   stats: {
     s1: "ngôn ngữ, gồm cả ngôn ngữ viết từ phải sang trái",
-    s2: "hoa hồng — ở mọi gói, kể cả gói miễn phí",
+    s2: "hoa hồng với đơn qua chat và chuyển khoản",
     s3: "từ lúc đăng ký đến khi có liên kết để chia sẻ",
   },
 
@@ -187,6 +187,9 @@ export const marketingVi: MarketingDictionary = {
     minuteRead: "phút đọc",
 
     backToBlog: "Tất cả bài viết",
+    pagination: "Phân trang",
+    previousPage: "Trang trước",
+    nextPage: "Trang sau",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingVi: MarketingDictionary = {
     privacy: "Quyền riêng tư",
     terms: "Điều khoản",
     refunds: "Hoàn tiền",
+    gdpr: "GDPR",
   },
 
   seo: {

@@ -7,10 +7,6 @@
  * out-of-date one.
  *
  * ── BEFORE THIS GOES LIVE ────────────────────────────────────────────────
- * `STREET` has no building number. It was given as "Masson Ave, San Bruno
- * 94066" and a contact address on a legal notice has to be complete enough to
- * receive post at. Fill it in here and all three pages update.
- *
  * These documents were written against what the code actually does, not from a
  * template, and they are careful. They are not legal advice, and nobody here is
  * a lawyer. Have counsel read them before you take real money, particularly
@@ -33,7 +29,7 @@ export const LEGAL = {
   operatorForm: "a sole proprietor",
 
   /** Postal address, as it must appear on a legal notice. */
-  street: "Masson Ave",
+  street: "920 Masson Ave",
   city: "San Bruno",
   state: "California",
   postalCode: "94066",
@@ -54,7 +50,7 @@ export const LEGAL = {
   venue: "San Mateo County, California",
 
   /** Shown at the top of each document, and the date the current text took effect. */
-  effective: "5 August 2026",
+  effective: "5 September 2026",
 
   /**
    * The authoritative language.
@@ -131,11 +127,11 @@ export const COOKIES = [
     kind: "Strictly necessary",
   },
   {
-    name: "sailo_sid",
+    name: "_ga, _ga_*",
     purpose:
-      "A random identifier that lets a shop’s owner count one visitor once instead of counting every page view as a new person. It is not linked to a name, an account or an email, and it is never read across shops for advertising",
-    life: "6 months",
-    kind: "Analytics, first-party",
+      "Google Analytics, on Sailo's own pages only — never on a seller's shop. Set only after you agree to it, and not at all if you decline",
+    life: "Up to 2 years",
+    kind: "Analytics, with consent",
   },
   {
     name: "sailo_locale",

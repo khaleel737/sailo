@@ -16,7 +16,7 @@ export const marketingBs: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Besplatno tokom bete",
+    badge: "Besplatno za početak, besplatno i dalje",
     title: "Link u vašem bio-u trebao bi {highlight}.",
     titleHighlight: "primati narudžbe",
     body: "Sailo ga pretvara u pravu prodavnicu — fotografije, cijene, pretraga, kasa — i šalje svaku narudžbu u aplikaciju za poruke na koju ionako već odgovarate.",
@@ -24,7 +24,7 @@ export const marketingBs: MarketingDictionary = {
     ctaSecondary: "Otvorite živu prodavnicu",
     proof1: "Spremno za manje od minute",
     proof2: "Bez kartice",
-    proof3: "Bez provizije na prodaju",
+    proof3: "Bez provizije na chat i bankovne narudžbe",
     proof4: "35 jezika",
     igBio: "Pizza iz krušne peći, Napulj. Naručite ispod.",
     igPosts: "Objave",
@@ -148,7 +148,7 @@ export const marketingBs: MarketingDictionary = {
     q2: "Kako mi kupci zapravo plaćaju?",
     a2: "Onako kako već primate novac. Karticom, preko vašeg Stripe ili Paystack naloga, pa naplata stiže direktno vama. Ili bankovnom uplatom, pouzećem i mobilnim novcem, s uputstvima koja sami napišete. Sailo nikada ne drži novac.",
     q3: "Uzima li Sailo proviziju?",
-    a3: "Ne. Ni na besplatnom paketu ni na plaćenima. Ono što kupac plati vi i zadržavate, umanjeno za ono što naplaćuje vaš platni provajder.",
+    a3: "Za narudžbe putem chata, bankovnog transfera i gotovine — ne, one su u cijelosti vaše. Prodaja karticom nosi {fee} od vrijednosti robe, naplaćeno kao Stripe naknada. Nikada na dostavu ili porez.",
     q4: "Mogu li prodavati usluge ili digitalne fajlove?",
     a4: "Da, i ponašaju se kako treba. Usluga može nositi trajanje, lokaciju i birač datuma s rokom najave. Digitalni proizvod isporučuje fajlove koji se otključavaju čim potvrdite uplatu, s ograničenjem preuzimanja i istekom ako ih želite.",
     q5: "Već imam Linktree. Zašto bih mijenjao?",
@@ -163,7 +163,7 @@ export const marketingBs: MarketingDictionary = {
 
   stats: {
     s1: "jezika, uključujući pisma zdesna nalijevo",
-    s2: "provizije — na svakom paketu, uključujući besplatni",
+    s2: "provizije na narudžbe putem chata i banke",
     s3: "od prijave do linka koji možete podijeliti",
   },
 
@@ -187,6 +187,9 @@ export const marketingBs: MarketingDictionary = {
     minuteRead: "min čitanja",
 
     backToBlog: "Svi članci",
+    pagination: "Straničenje",
+    previousPage: "Prethodna stranica",
+    nextPage: "Sljedeća stranica",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingBs: MarketingDictionary = {
     privacy: "Privatnost",
     terms: "Uslovi",
     refunds: "Povrati",
+    gdpr: "GDPR",
   },
 
   seo: {

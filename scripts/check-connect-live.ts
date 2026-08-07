@@ -143,13 +143,25 @@ async function main() {
 
     /* ------------------------ the deployment verifies the Connect signature */
     console.log("\nStripe delivers account.updated to the deployment on its own");
+    /*
+     * On the connected account, not the platform.
+     *
+     * This check reported "none seen after 60s" against a Connect endpoint
+     * that was working perfectly. `events.list()` without `stripeAccount`
+     * returns the *platform's* events, and an event about a connected account
+     * is not one of those — it belongs to that account and is delivered on the
+     * Connect channel. The events were always arriving and always being
+     * acknowledged; the check was reading the wrong list, and so failed the
+     * one thing it exists to prove.
+     */
     let event: Stripe.Event | undefined;
     for (let i = 0; i < 24 && !event; i++) {
       await sleep(2500);
-      const list = await stripe.events.list({ type: "account.updated", limit: 25 });
-      event = list.data.find(
-        (e) => (e.data.object as Stripe.Account).id === accountId,
+      const list = await stripe.events.list(
+        { type: "account.updated", limit: 25 },
+        { stripeAccount: accountId },
       );
+      event = list.data[0];
     }
 
     if (!event) {
@@ -165,7 +177,9 @@ async function main() {
       let pending = event.pending_webhooks;
       for (let i = 0; i < 20 && pending > 0; i++) {
         await sleep(3000);
-        pending = (await stripe.events.retrieve(event.id)).pending_webhooks;
+        pending = (
+          await stripe.events.retrieve(event.id, {}, { stripeAccount: accountId })
+        ).pending_webhooks;
       }
       check(
         "the deployed site accepted it — the live Connect secret is correct",

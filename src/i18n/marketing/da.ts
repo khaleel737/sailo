@@ -16,7 +16,7 @@ export const marketingDa: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis under betaen",
+    badge: "Gratis at starte, gratis at fortsætte",
     title: "Linket i din bio burde for længst {highlight}.",
     titleHighlight: "tage imod bestillinger",
     body: "Sailo gør det til en rigtig butik — billeder, priser, søgning, betaling — og sender hver bestilling til den chatapp, du alligevel allerede svarer i.",
@@ -24,7 +24,7 @@ export const marketingDa: MarketingDictionary = {
     ctaSecondary: "Åbn en rigtig butik",
     proof1: "Oppe på under et minut",
     proof2: "Intet kort påkrævet",
-    proof3: "Ingen provision af dit salg",
+    proof3: "Ingen provision på chat- og bankordrer",
     proof4: "35 sprog",
     igBio: "Stenovnspizza, Napoli. Bestil nedenfor.",
     igPosts: "Opslag",
@@ -148,7 +148,7 @@ export const marketingDa: MarketingDictionary = {
     q2: "Hvordan betaler købere mig egentlig?",
     a2: "Som du allerede tager imod penge i dag. Med kort via din egen Stripe- eller Paystack-konto, så betalingen lander direkte hos dig. Eller med bankoverførsel, betaling ved levering og mobilbetaling, med instruktioner du selv skriver. Sailo holder aldrig på pengene.",
     q3: "Tager Sailo provision?",
-    a3: "Nej. Hverken på den gratis plan eller de betalte. Det, køberen betaler, beholder du — minus det din egen betalingsudbyder tager.",
+    a3: "På chat-, bankoverførsels- og kontantordrer nej — de er fuldt ud dine. Kortsalg koster {fee} af varerne, trukket som et Stripe-gebyr. Aldrig af fragt eller moms.",
     q4: "Kan jeg sælge ydelser eller digitale filer?",
     a4: "Ja, og de opfører sig, som de skal. En ydelse kan have varighed, sted og en datovælger med varsel. Et digitalt produkt leverer filer, der låses op, så snart du bekræfter betalingen — med downloadgrænse og udløb, hvis du vil.",
     q5: "Jeg har allerede et Linktree. Hvorfor skifte?",
@@ -163,7 +163,7 @@ export const marketingDa: MarketingDictionary = {
 
   stats: {
     s1: "sprog, højre mod venstre inklusive",
-    s2: "i provision — på alle planer, også den gratis",
+    s2: "provision på chat- og bankoverførselsordrer",
     s3: "fra oprettelse til et link, du kan dele",
   },
 
@@ -187,6 +187,9 @@ export const marketingDa: MarketingDictionary = {
     minuteRead: "min læsning",
 
     backToBlog: "Alle artikler",
+    pagination: "Sidenavigation",
+    previousPage: "Forrige side",
+    nextPage: "Næste side",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingDa: MarketingDictionary = {
     privacy: "Privatliv",
     terms: "Vilkår",
     refunds: "Refusioner",
+    gdpr: "GDPR",
   },
 
   seo: {

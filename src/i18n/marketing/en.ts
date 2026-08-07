@@ -30,7 +30,7 @@ export const marketingEn = {
   },
 
   hero: {
-    badge: "Free while in beta",
+    badge: "Free to start, free to stay",
     /** `{highlight}` is emphasised in place, so it can land anywhere a language needs it. */
     title: "The link in your bio should be {highlight}.",
     titleHighlight: "taking orders",
@@ -39,7 +39,7 @@ export const marketingEn = {
     ctaSecondary: "Open a live shop",
     proof1: "Live in under a minute",
     proof2: "No card required",
-    proof3: "No commission on sales",
+    proof3: "No commission on chat and bank orders",
     proof4: "35 languages",
     igBio: "Wood-fired pizza, Naples. Order below.",
     igPosts: "Posts",
@@ -145,7 +145,7 @@ export const marketingEn = {
   pricing: {
     eyebrow: "Pricing",
     title: "Free to start, and free to keep running.",
-    body: "Sailo never takes a cut of your sales — not on the paid plans, and not on the free one.",
+    body: "Chat, bank-transfer and cash orders are yours in full, on every plan. Card sales carry {fee} of the goods — never delivery, never tax.",
     freeTagline: "Everything you need to take your first orders.",
     proTagline: "Room to grow, and a shop that looks like your own.",
     bizTagline: "Card payments, promotions and referrals — the tools that grow revenue.",
@@ -163,7 +163,7 @@ export const marketingEn = {
     q2: "How do buyers actually pay me?",
     a2: "However you already take money. Card, through your own Stripe or Paystack account, so the charge lands with you directly. Or bank transfer, cash on delivery and mobile money, with instructions you write yourself. Sailo never holds the money.",
     q3: "Does Sailo take a commission?",
-    a3: "No. Not on the free plan, not on the paid ones. What the buyer pays is what you keep, minus whatever your own payment provider charges.",
+    a3: "On chat, bank-transfer and cash orders, no — those are yours in full. Card sales carry {fee} of the goods, taken as a Stripe fee at checkout. Never on delivery or tax.",
     q4: "Can I sell services or digital files?",
     a4: "Yes, and they behave properly. A service can carry a duration, a location and a date picker with a notice period. A digital product ships files that unlock as soon as you confirm payment, with download limits and expiry if you want them.",
     q5: "I already have a Linktree. Why swap?",
@@ -178,7 +178,7 @@ export const marketingEn = {
 
   stats: {
     s1: "languages, right to left included",
-    s2: "commission — on every plan, including the free one",
+    s2: "commission on chat and bank-transfer orders",
     s3: "from signing up to a link you can share",
   },
 
@@ -196,6 +196,9 @@ export const marketingEn = {
     empty: "Nothing published yet. Soon.",
     minuteRead: "min read",
     backToBlog: "All articles",
+    pagination: "Pagination",
+    previousPage: "Previous page",
+    nextPage: "Next page",
   },
 
   footer: {
@@ -207,12 +210,13 @@ export const marketingEn = {
     privacy: "Privacy",
     terms: "Terms",
     refunds: "Refunds",
+    gdpr: "GDPR",
   },
 
   seo: {
     title: "Sailo — turn the link in your bio into a shop",
     description:
-      "Sailo turns the link in your bio into a real shop. Sell products, digital files or services, take orders on WhatsApp or by card, in 35 languages. Free to start, and Sailo takes no commission.",
+      "Sailo turns the link in your bio into a real shop. Sell products, digital files or services, take orders on WhatsApp or by card, in 35 languages. Free to start, with no commission on chat and bank orders.",
     ogTitle: "Sailo — one link, your whole shop",
     ogDescription:
       "Photos, prices, variants, stock, bookings and downloads behind a single link in bio. Orders land in WhatsApp or on your own card checkout.",

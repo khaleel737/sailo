@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AlertTriangle, ArrowUpRight, CreditCard, Lock } from "lucide-react";
 import type { Shop } from "@/db/schema";
 import { connectState } from "@/lib/connect";
-import { can, cheapestPlanWith } from "@/lib/plans";
+import { PLATFORM_FEE_LABEL, can, cheapestPlanWith } from "@/lib/plans";
 import {
   connectStripe,
   disconnectStripe,
@@ -73,7 +73,7 @@ export async function StripeCard({ shop }: { shop: Shop }) {
             )}
           </div>
           <p className="mt-1 max-w-lg text-xs leading-relaxed text-ink-500">
-            {a.payments.cardBody}
+            {interpolate(a.payments.cardBody, { fee: PLATFORM_FEE_LABEL })}
           </p>
         </div>
       </div>

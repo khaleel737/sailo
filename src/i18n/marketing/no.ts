@@ -16,7 +16,7 @@ export const marketingNo: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis i betaen",
+    badge: "Gratis å starte, gratis å fortsette",
     title: "Lenken i bioen din burde for lengst {highlight}.",
     titleHighlight: "ta imot bestillinger",
     body: "Sailo gjør den om til en ekte butikk — bilder, priser, søk, kasse — og sender hver bestilling til chatteappen du uansett allerede svarer i.",
@@ -24,7 +24,7 @@ export const marketingNo: MarketingDictionary = {
     ctaSecondary: "Åpne en ekte butikk",
     proof1: "Oppe på under ett minutt",
     proof2: "Ingen kort nødvendig",
-    proof3: "Ingen provisjon på salget ditt",
+    proof3: "Ingen provisjon på chat- og bankbestillinger",
     proof4: "35 språk",
     igBio: "Vedfyrt pizza, Napoli. Bestill nedenfor.",
     igPosts: "Innlegg",
@@ -148,7 +148,7 @@ export const marketingNo: MarketingDictionary = {
     q2: "Hvordan betaler kjøpere meg egentlig?",
     a2: "Slik du allerede tar imot penger i dag. Med kort via din egen Stripe- eller Paystack-konto, så betalingen lander direkte hos deg. Eller med bankoverføring, oppkrav og mobilbetaling, med instruksjoner du skriver selv. Sailo holder aldri på pengene.",
     q3: "Tar Sailo provisjon?",
-    a3: "Nei. Verken på gratisplanen eller de betalte. Det kjøperen betaler beholder du — minus det din egen betalingsleverandør tar.",
+    a3: "På chat-, bankoverførings- og kontantordrer nei — de er helt dine. Kortsalg koster {fee} av varene, trukket som et Stripe-gebyr. Aldri av frakt eller skatt.",
     q4: "Kan jeg selge tjenester eller digitale filer?",
     a4: "Ja, og de oppfører seg som de skal. En tjeneste kan ha varighet, sted og en datovelger med varsel. Et digitalt produkt leverer filer som låses opp så snart du bekrefter betalingen — med nedlastingsgrense og utløp om du vil.",
     q5: "Jeg har allerede et Linktree. Hvorfor bytte?",
@@ -163,7 +163,7 @@ export const marketingNo: MarketingDictionary = {
 
   stats: {
     s1: "språk, høyre-til-venstre inkludert",
-    s2: "i provisjon — på alle planer, også gratisplanen",
+    s2: "provisjon på chat- og bankoverføringsordrer",
     s3: "fra registrering til en lenke du kan dele",
   },
 
@@ -187,6 +187,9 @@ export const marketingNo: MarketingDictionary = {
     minuteRead: "min lesing",
 
     backToBlog: "Alle artikler",
+    pagination: "Sidenavigering",
+    previousPage: "Forrige side",
+    nextPage: "Neste side",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingNo: MarketingDictionary = {
     privacy: "Personvern",
     terms: "Vilkår",
     refunds: "Refusjoner",
+    gdpr: "GDPR",
   },
 
   seo: {

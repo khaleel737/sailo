@@ -1,4 +1,5 @@
 import "server-only";
+import { requireStaff } from "@/lib/session";
 import { and, desc, eq, isNotNull, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { shops, user } from "@/db/schema";
@@ -20,6 +21,7 @@ export type SubscriptionRow = {
  * everything except the shops that have never been on a paid plan.
  */
 export async function getPaidAccounts(): Promise<SubscriptionRow[]> {
+  await requireStaff();
   const rows = await getDb()
     .select({ shop: shops, ownerName: user.name, ownerEmail: user.email })
     .from(shops)
@@ -55,6 +57,7 @@ export function renewalsWithin(rows: SubscriptionRow[], days = 30) {
 
 /** How sellers are taking money, across the platform. */
 export async function getRailAdoption() {
+  await requireStaff();
   const rows = await getDb()
     .select({
       type: paymentMethods.type,

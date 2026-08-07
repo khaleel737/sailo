@@ -9,11 +9,12 @@ import {
   Ref,
 } from "@/components/legal/legal-kit";
 import { LEGAL } from "@/lib/legal";
+import { PLATFORM_FEE_LABEL } from "@/lib/plans";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "The agreement between Sailo and the people who use it: what the platform does, what sellers are responsible for, and where each side's liability ends.",
+    "The agreement between Sailo and the people who use it: what the platform does, what sellers are responsible for, how card payments and fees work, and where each side's liability ends.",
   alternates: { canonical: "/terms" },
 };
 
@@ -29,46 +30,100 @@ export default function TermsPage() {
       <p className="mt-8 text-[1.0625rem] leading-[1.7] text-[var(--mute-600)]">
         These terms are the agreement between you and {LEGAL.operator},{" "}
         {LEGAL.operatorForm} trading as {LEGAL.product}. By opening an account or
-        using the service you accept them. If you do not, do not use {LEGAL.product}.
+        using the service you accept them. If you do not, do not use{" "}
+        {LEGAL.product}.
       </p>
 
       <div className="mt-14 space-y-12">
-        <Clause id="what" n={1} title="What Sailo is">
-          <P>
-            {LEGAL.product} gives a seller one public page at{" "}
-            <span dir="ltr">{LEGAL.domain}/their-handle</span> where they can list
-            what they sell and take orders. Buyers browse that page and order from
-            the seller.
-          </P>
+        <Clause id="summary" n={1} title="What this says, in short">
           <Callout>
-            Sailo is the software, not the shop. Every contract of sale is between
-            the buyer and the seller. We are not the merchant, the seller&rsquo;s
-            agent, or a party to any sale, and we do not take a commission on one.
+            {LEGAL.product} is software you run your shop on. It is not a shop, a
+            marketplace, a bank or a payment processor. Buyers buy from you, not
+            from us.
           </Callout>
+          <List
+            items={[
+              <>
+                <strong>Your shop is yours.</strong> What you sell, who you sell
+                it to, and what you promise them is your decision and your
+                responsibility.
+              </>,
+              <>
+                <strong>Money does not pass through us.</strong> Card payments
+                are created on your own Stripe account. Chat, bank-transfer and
+                cash orders never touch a payment system of ours at all.
+              </>,
+              <>
+                <strong>Our fee is {PLATFORM_FEE_LABEL} of the goods on card
+                sales.</strong> Nothing on chat, bank-transfer or cash orders,
+                and never on delivery or tax.
+              </>,
+              <>
+                <strong>You carry the chargebacks.</strong> You are the merchant
+                of record on card sales, so a disputed payment is debited from
+                your account, not ours.
+              </>,
+              <>
+                <strong>Fraud ends the account.</strong> Immediately, and without
+                notice where we reasonably believe it is happening.
+              </>,
+            ]}
+          />
           <P>
-            That is not a disclaimer of convenience, it describes how the money
-            actually moves. Card payments run through the seller&rsquo;s own
-            connected Stripe account and land there directly. Bank transfer and cash
-            on delivery happen entirely outside the platform. At no point does Sailo
-            hold, route or take a cut of a buyer&rsquo;s payment to a seller.
+            This summary is here to be read. It is not a substitute for the
+            clauses below, and where the two differ, the clauses govern.
           </P>
         </Clause>
 
-        <Clause id="accounts" n={2} title="Your account">
+        <Clause id="what" n={2} title="What Sailo is, and what it is not">
           <P>
-            You must be at least 16 and able to enter a binding contract. Give
-            accurate details and keep them current. You are responsible for
-            everything done under your account and for keeping your password to
-            yourself. Tell us at <Mail address={LEGAL.supportEmail} /> if you think
-            someone else has access.
+            {LEGAL.product} gives you a page at{" "}
+            {LEGAL.domain}/your-handle, a catalogue behind it, and the tools to
+            take orders through chat apps, bank transfer, cash on delivery, or a
+            card checkout run on your own Stripe account.
           </P>
           <P>
-            One person or business, one account. Do not share credentials, and do not
-            open a new account to get around a suspension.
+            We are the software, not the counterparty. We do not stock, ship,
+            inspect, insure or guarantee anything sold through a shop, we are not
+            party to the contract between a seller and a buyer, and we do not act
+            as agent for either of them. We are not a bank, a money transmitter,
+            an escrow service or a payment institution, and we do not hold client
+            money.
+          </P>
+          <P>
+            You need to be old enough to enter a contract where you live, and at
+            least 16. The service is not offered to anyone barred from it under
+            the sanctions or export laws that apply to us.
           </P>
         </Clause>
 
-        <Clause id="seller" n={3} title="If you sell on Sailo">
+        <Clause id="accounts" n={3} title="Your account">
+          <P>
+            One account, one shop, real details. You are responsible for
+            everything done under your login, so keep the password to yourself
+            and tell us at <Mail address={LEGAL.supportEmail} /> the moment you
+            think someone else has it.
+          </P>
+          <List
+            items={[
+              <>
+                Give accurate registration details and keep them current. We may
+                suspend an account whose details we cannot verify.
+              </>,
+              <>
+                Do not share, sell or transfer your account. Handles are lent,
+                not owned: we may reclaim one that impersonates someone, infringes
+                a mark, or sits unused on a free plan for twelve months.
+              </>,
+              <>
+                Do not use the service to build a competing product, scrape it,
+                probe it, or work around its limits.
+              </>,
+            ]}
+          />
+        </Clause>
+
+        <Clause id="seller" n={4} title="If you sell on Sailo">
           <P>
             The shop is yours, and so is the responsibility for it. By listing
             anything you confirm that:
@@ -76,272 +131,437 @@ export default function TermsPage() {
           <List
             items={[
               <>
-                You have the right to sell it, and selling it is lawful where you are
-                and where your buyers are.
+                You have the right to sell it, and selling it is lawful where you
+                are and where your buyers are.
               </>,
               <>
-                Your descriptions, prices, photos and stock levels are accurate, and
-                your delivery and returns terms are stated plainly to the buyer before
-                they order.
+                Your descriptions, prices, photos and stock levels are accurate,
+                and your delivery and returns terms are stated plainly to the
+                buyer before they order.
               </>,
               <>
                 You will fulfil orders you accept, or refund them promptly if you
                 cannot.
               </>,
               <>
-                You will handle your buyers&rsquo; personal data lawfully. For that
-                data you are the controller and Sailo is your processor; the{" "}
-                <Ref href="/privacy">Privacy Policy</Ref> sets out what that means.
+                You will handle your buyers&rsquo; personal data lawfully. For
+                that data you are the controller and {LEGAL.product} is your
+                processor; the <Ref href="/privacy">Privacy Policy</Ref> sets out
+                what that means.
               </>,
               <>
-                You will register for, collect and remit whatever tax applies to your
-                sales. Sailo does not calculate, collect or remit sales tax, VAT or
-                GST on your behalf.
+                You will register for, collect and remit whatever tax applies to
+                your sales. {LEGAL.product} does not calculate, collect or remit
+                sales tax, VAT or GST on your behalf, and the tax fields in the
+                product are a calculator you configure, not advice.
               </>,
               <>
-                You own or are licensed to use everything you upload, and it does not
-                infringe anyone&rsquo;s rights.
+                You own or are licensed to use everything you upload, and it does
+                not infringe anyone&rsquo;s rights.
+              </>,
+              <>
+                You hold every licence, permit and authorisation your trade
+                needs — before you list, not after a complaint — and you keep
+                them current for as long as you sell. Food, alcohol, cosmetics,
+                supplements, electronics and regulated services all carry them,
+                and none of them is our licence to hold.
+              </>,
+              <>
+                Any message you send through {LEGAL.product} to your buyers
+                complies with the anti-spam law that applies to them — CAN-SPAM
+                in the United States, CASL in Canada, the ePrivacy rules in the
+                EU and UK. You send to people who agreed to hear from you, you
+                identify yourself, and you honour an unsubscribe. Our email
+                reputation is shared across every seller here, so this one is
+                not a formality.
+              </>,
+              <>
+                You do not create fake, duplicated, automated or impersonating
+                accounts, shops or referral links, and you do not manufacture
+                referral activity that did not happen. Promoting your own shop
+                is the point; inventing traffic to earn commission on it is
+                fraud, and clause 7 applies.
+              </>,
+              <>
+                Where the law gives your buyers rights — a distance-selling
+                withdrawal period, a statutory guarantee, a right to a written
+                receipt — you will honour them. Nothing you write in your own
+                shop terms can take those away, and nothing in these terms
+                purports to.
               </>,
             ]}
           />
         </Clause>
 
-        <Clause id="prohibited" n={4} title="What may not be sold or done">
+        <Clause id="cards" n={5} title="Card payments, fees and chargebacks">
+          <P>
+            Card payments run on Stripe Connect. When you switch them on, a
+            Stripe Express connected account is created in your name and you
+            enter into Stripe&rsquo;s own{" "}
+            <Ref href="https://stripe.com/legal/connect-account">
+              Connected Account Agreement
+            </Ref>{" "}
+            directly with Stripe. That agreement governs the payment itself.
+            These terms govern your use of {LEGAL.product}. Where the two speak
+            to the same thing, Stripe&rsquo;s agreement governs the money.
+          </P>
+          <P>
+            Charges are created on your connected account, not on ours. You are
+            the merchant of record for every card sale: the funds settle into
+            your own Stripe balance, {LEGAL.product} never holds them, and we can
+            neither pay them out to you nor withhold them from you.
+          </P>
+
+          <Callout>
+            Because you are the merchant of record, the chargeback is yours. If a
+            buyer disputes a card payment, Stripe debits your connected account
+            for the disputed amount and for its dispute fee — whether or not you
+            contest it, and whether or not you have already shipped.
+          </Callout>
+
+          <List
+            items={[
+              <>
+                <strong>Our fee.</strong> {LEGAL.product} takes{" "}
+                {PLATFORM_FEE_LABEL} of the goods on each card sale, collected as
+                a Stripe application fee at the moment of the charge. It is
+                calculated on the price of the goods after any discount, and
+                never on delivery or tax: money you hand to a courier, or collect
+                for a government, was never yours and is not something we charge
+                on. Chat, bank-transfer and cash orders carry no fee at all.
+              </>,
+              <>
+                <strong>Stripe&rsquo;s fees are separate.</strong> Stripe sets its
+                own processing fees, deducts them from your account, and they are
+                not received by {LEGAL.product}. We neither set them nor control
+                them, and we do not quote them here because they depend on your
+                country and the card used. Stripe states them to you.
+              </>,
+              <>
+                <strong>Refunds.</strong> When you refund a card order, our fee on
+                it is refunded with it, in proportion to the amount returned. You
+                are never left paying our share of a sale that was undone.
+              </>,
+              <>
+                <strong>If your account cannot cover a dispute.</strong> A
+                chargeback, refund or reversal can leave your Stripe balance
+                negative. Recovering that is between you and Stripe under your
+                agreement with them — Stripe may take it from later sales or
+                debit your bank account, depending on your country and settings.
+                To the extent {LEGAL.product} is charged for any shortfall on your
+                account, you owe us that amount, and we may set it off against
+                anything we hold for you, invoice you for it, or both.
+              </>,
+              <>
+                <strong>Excessive disputes.</strong> The card networks monitor
+                dispute rates, and a shop above their thresholds puts its own and
+                our access at risk. We may stop card payments on a shop whose
+                disputes reach that level, and will tell you when we do.
+              </>,
+              <>
+                <strong>Changes.</strong> We may change our fee on 30 days&rsquo;
+                notice by email. A change applies to sales made after it takes
+                effect and never to sales already completed. If you do not accept
+                it, stop taking card payments or close the account before it
+                starts.
+              </>,
+            ]}
+          />
+        </Clause>
+
+        <Clause id="prohibited" n={6} title="What may not be sold or done">
           <P>
             Some of this is our choice and some of it is required by the payment
-            networks we and our sellers depend on. Either way it is not negotiable.
-            You may not use {LEGAL.product} to offer:
+            networks we and our sellers depend on. Either way it is not
+            negotiable, and a shop that breaks it can be suspended without
+            notice.
           </P>
           <List
             items={[
               <>
-                Anything illegal where the buyer or the seller is, including
-                controlled substances, drug paraphernalia, and prescription
-                medication.
-              </>,
-              <>Weapons, ammunition, explosives, and their components.</>,
-              <>
-                Counterfeit goods, pirated media, stolen property, or anything sold in
-                breach of someone else&rsquo;s trade mark or copyright.
+                Anything illegal where you are or where your buyer is, and
+                anything you are not licensed to sell.
               </>,
               <>
-                Sexually explicit material, escort or adult services, and any content
-                involving minors.
+                Weapons, ammunition, explosives, controlled drugs, drug
+                paraphernalia, prescription medicines and tobacco or vaping
+                products.
               </>,
               <>
-                Gambling, lotteries, betting, sweepstakes, and anything that pays out
-                on chance.
+                Counterfeits, replicas, and anything infringing a trademark,
+                copyright or design right.
               </>,
               <>
-                Financial instruments, securities, cryptocurrency, virtual currency,
-                money transmission and debt-collection services.
+                Sexual services, sexual content involving minors or non-consenting
+                adults, and content that sexualises anyone under 18.
               </>,
               <>
-                Multi-level marketing, pyramid and matrix schemes, get-rich-quick
-                programmes, and any offer whose return depends on recruitment.
+                Stolen goods, hacked accounts, credentials, personal data sold as
+                a product, and services designed to defraud.
               </>,
               <>
-                Human remains, live animals, endangered species and products made from
-                them.
+                Financial products, investments, lending, gambling, lotteries,
+                cryptocurrency exchange, and anything requiring a licence we have
+                not seen.
               </>,
               <>
-                Personal data, credentials, licence keys or accounts belonging to
-                someone else.
+                Human parts, live animals, endangered species and products made
+                from them.
               </>,
               <>
-                Content that harasses, defames, or incites violence or hatred against
-                any group or person.
+                Multi-level marketing, pyramid schemes, get-rich-quick offers, and
+                unsolicited bulk messaging of any kind.
+              </>,
+              <>
+                Using a shop to process payments for a business other than the one
+                the account describes — the practice card networks call
+                transaction laundering, and the single fastest way to lose the
+                account.
               </>,
             ]}
           />
-          <P>You also may not:</P>
+        </Clause>
+
+        <Clause id="fraud" n={7} title="Fraud, risk and enforcement">
+          <P>
+            Card acceptance is a shared privilege. One shop laundering payments or
+            running stolen cards puts every other seller on the platform at risk,
+            so this clause is deliberately blunt.
+          </P>
+          <P>
+            Where we reasonably believe an account is being used for fraud, for
+            money laundering, to process payments for an undisclosed business, or
+            in a way that threatens our own or our sellers&rsquo; access to the
+            card networks, we may — immediately and without prior notice — suspend
+            the shop, stop its card payments, withhold or reverse our own fee,
+            reject or close the connected account with Stripe, and terminate the
+            agreement.
+          </P>
+          <Callout>
+            We act on reasonable belief rather than proof. Waiting for certainty
+            while a scheme runs is not a risk we are willing to carry on behalf of
+            every other seller here.
+          </Callout>
+          <P>
+            Where the law allows us to say why, we will. Where a suspension turns
+            out to be wrong, we will restore the account. Nothing in this clause
+            gives us a right to your money: any funds in your Stripe balance
+            remain governed by your agreement with Stripe, and are not ours to
+            take. We may report suspected criminal conduct to the police, to
+            Stripe, and to anyone else the law requires.
+          </P>
+        </Clause>
+
+        <Clause id="plans" n={8} title="Plans, billing and cancellation">
+          <P>
+            Free is free and stays free. Paid plans are billed in advance, monthly
+            or yearly, through Stripe, and renew automatically until cancelled.
+          </P>
           <List
             items={[
               <>
-                Probe, scrape, overload or attempt to gain unauthorised access to any
-                part of the service or another shop&rsquo;s data.
+                Cancel any time from your billing settings. Cancellation takes
+                effect at the end of the period you have already paid for; we do
+                not cut a plan short on the day you cancel.
               </>,
               <>
-                Impersonate anyone, or set up a shop that misrepresents who is behind
-                it.
+                Prices may change on 30 days&rsquo; notice by email, effective at
+                your next renewal. Carrying on past that date is acceptance;
+                cancelling before it is the alternative.
               </>,
               <>
-                Use the platform to launder money, evade sanctions, or process
-                payments for a business other than the one on the account.
+                A failed renewal does not take your shop down on the first
+                attempt. Stripe retries for several days, and paid features stay
+                on while it does. If it never succeeds the account returns to the
+                free plan.
               </>,
               <>
-                Resell or white-label the service itself without a written agreement.
+                Downgrading never deletes anything you have made. Products over
+                the free limit stop being visible until you are under it again;
+                they are not erased.
+              </>,
+              <>
+                Query a charge within 60 days of it appearing. After that we may
+                not be able to reconstruct what happened well enough to put it
+                right, and Stripe&rsquo;s own records age out too.
+              </>,
+              <>
+                Refunds of subscription payments are governed by the{" "}
+                <Ref href="/refunds">Refund Policy</Ref>, which forms part of these
+                terms.
               </>,
             ]}
           />
+        </Clause>
+
+        <Clause id="buyers" n={9} title="If you buy from a shop on Sailo">
           <P>
-            We may remove content, suspend a shop, or close an account that breaches
-            this section. Where the breach is serious or unlawful, we will do so
-            without notice.
+            Your contract is with the seller. They take your money, they owe you
+            the goods, and their refund and delivery terms apply — not ours.
+          </P>
+          <P>
+            {LEGAL.product} is not the merchant, does not hold your payment, and
+            cannot refund it. If a seller will not resolve something, the{" "}
+            <Ref href="/refunds">Refund Policy</Ref> explains the routes that are
+            actually open to you, including your card issuer&rsquo;s dispute
+            process. Tell us at <Mail address={LEGAL.supportEmail} /> anyway: we
+            cannot return your money, but we can act on the shop, and a pattern of
+            complaints is how we find the shops that should not be here.
           </P>
         </Clause>
 
-        <Clause id="plans" n={5} title="Plans, billing and cancellation">
+        <Clause id="content" n={10} title="Who owns what">
           <P>
-            The free plan is free, with the limits shown on the pricing page. Paid
-            plans are billed in advance, monthly or yearly, through Stripe, and renew
-            automatically until cancelled.
+            You keep everything you upload. You grant us a non-exclusive,
+            worldwide, royalty-free licence to host, store, resize, cache and
+            display it — the operations required to run your shop and nothing
+            else. It ends when you delete the content or close the account, except
+            for copies in backups until they age out.
           </P>
-          <List
-            items={[
-              <>
-                Prices are in US dollars and exclude any tax that applies where you
-                are.
-              </>,
-              <>
-                You can cancel at any time from your billing settings. Cancellation
-                takes effect at the end of the period you have already paid for, and
-                your shop stays on the paid plan until then.
-              </>,
-              <>
-                If a payment fails we will retry it. If it keeps failing, the account
-                falls back to the free plan and anything above the free limits stops
-                being available. Nothing is deleted for non-payment.
-              </>,
-              <>
-                We may change prices with at least 30 days&rsquo; notice by email. The
-                new price applies from your next renewal, and you can cancel before it
-                if you would rather not.
-              </>,
-            ]}
-          />
           <P>
-            Refunds of Sailo subscription charges are covered by the{" "}
-            <Ref href="/refunds">Refund Policy</Ref>.
+            We keep the software, the brand and the design. Nothing here gives you
+            a right to use the {LEGAL.product} name or mark beyond the badge we
+            place on free shops, which you may not remove, alter or obscure while
+            you are on a free plan.
+          </P>
+          <P>
+            If you believe something on a shop infringes your rights, write to{" "}
+            <Mail address={LEGAL.contactEmail} /> with the URL, what it infringes,
+            and enough for us to act. We remove infringing material and terminate
+            repeat infringers.
           </P>
         </Clause>
 
-        <Clause id="buyers" n={6} title="If you buy from a shop on Sailo">
+        <Clause id="availability" n={11} title="Availability">
           <P>
-            You are buying from that seller, not from us. Their terms, their delivery
-            promises and their returns policy govern the sale. Questions about an
-            order, a delivery or a refund go to the seller first, using the contact
-            details on their shop page.
+            We aim to keep {LEGAL.product} running and we work at it, but the
+            service is provided as it is. We do not promise it will be
+            uninterrupted, error-free, or that it will keep working with every
+            third party it currently works with.
           </P>
           <P>
-            If a seller will not engage and you believe they are breaking these terms,
-            tell us at <Mail address={LEGAL.supportEmail} />. We can act against the
-            shop. We cannot refund you for a purchase we never received money for, and
-            we have no authority over a payment made by bank transfer or in cash.
-          </P>
-        </Clause>
-
-        <Clause id="content" n={7} title="Who owns what">
-          <P>
-            You keep every right you had in what you upload. You grant us a
-            non-exclusive, worldwide, royalty-free licence to host, store, resize and
-            display it, for the sole purpose of running your shop. That licence ends
-            when you delete the content or your account, apart from copies in routine
-            backups, which age out.
-          </P>
-          <P>
-            We keep the rights in {LEGAL.product} itself: the software, the name, the
-            mark and the design. Nothing here transfers them to you.
-          </P>
-          <P>
-            If you believe something on Sailo infringes your copyright, write to{" "}
-            <Mail address={LEGAL.contactEmail} /> identifying the work, the URL, and
-            your authority to act. We respond to valid notices and will remove
-            infringing material.
+            We may change, add or remove features. Where a change materially
+            reduces what a paid plan does, we will give notice and you may cancel
+            and have the unused part of the period back. Planned maintenance is
+            announced where we can; emergency maintenance sometimes cannot be.
           </P>
         </Clause>
 
-        <Clause id="availability" n={8} title="Availability">
+        <Clause id="liability" n={12} title="Limits of liability">
           <P>
-            We work to keep Sailo running and we do not promise it always will. The
-            service is provided as is, without warranty of any kind, express or
-            implied, including merchantability, fitness for a particular purpose and
-            non-infringement. There is no uptime guarantee on any plan.
+            Nothing in these terms limits liability for death or personal injury
+            caused by negligence, for fraud or fraudulent misrepresentation, or
+            for anything else that cannot lawfully be limited. If you are a
+            consumer, your statutory rights are unaffected by anything below.
           </P>
           <P>
-            We may change, suspend or discontinue any part of the service. If we
-            discontinue it entirely, we will give at least 30 days&rsquo; notice and a
-            way to export your products, orders and customers.
-          </P>
-        </Clause>
-
-        <Clause id="liability" n={9} title="Limits of liability">
-          <P>
-            To the fullest extent the law allows, {LEGAL.operator} is not liable for
-            indirect, incidental, special, consequential or punitive damages, nor for
-            lost profits, lost revenue, lost data or lost goodwill, arising out of your
-            use of the service.
+            Subject to that: to the fullest extent the law allows,{" "}
+            {LEGAL.operator} is not liable for lost profits, lost sales, lost
+            data, loss of goodwill, or any indirect or consequential loss; and our
+            total liability to you for all claims in any twelve-month period is
+            limited to the greater of the fees you paid us in that period, or 100
+            USD.
           </P>
           <P>
-            Total liability for any claim is limited to the greater of the amount you
-            paid us in the twelve months before the claim, or one hundred US dollars.
-          </P>
-          <P>
-            We are not liable for a dispute between a buyer and a seller, for goods or
-            services a seller does or does not deliver, or for a seller&rsquo;s
-            compliance with the law. Some jurisdictions do not allow these exclusions,
-            and where that is so they do not apply to you.
+            We are not liable for what a seller does or fails to do, for what a
+            buyer does, for the acts of Stripe or any other provider named in the{" "}
+            <Ref href="/privacy">Privacy Policy</Ref>, or for a chargeback,
+            refund or reversal on a sale we were never party to.
           </P>
         </Clause>
 
-        <Clause id="indemnity" n={10} title="Indemnity">
+        <Clause id="indemnity" n={13} title="Indemnity">
           <P>
-            If you sell on Sailo, you agree to indemnify {LEGAL.operator} against
-            claims, losses and reasonable legal costs arising from what you sold, what
-            you published, your breach of these terms, or your breach of the law. We
-            will tell you promptly about any such claim and will not settle it without
+            If you sell on {LEGAL.product}, you agree to indemnify{" "}
+            {LEGAL.operator} against claims, losses, fines and reasonable legal
+            costs arising from what you sold, what you said about it, how you
+            handled your buyers&rsquo; data, tax you did not remit, or any breach
+            of these terms. We will tell you promptly about any claim, let you
+            take the defence where you are entitled to, and not settle it without
             asking you.
           </P>
         </Clause>
 
-        <Clause id="termination" n={11} title="Ending the agreement">
+        <Clause id="termination" n={14} title="Ending the agreement">
           <P>
-            You can close your account at any time from your settings. We may suspend
-            or close an account that breaches these terms, that exposes us or our
-            providers to legal or payment-network risk, or that has been dormant for
-            more than 24 months on the free plan.
+            You may close your account at any time from your settings, for any
+            reason or none.
           </P>
           <P>
-            On closure your shop stops being reachable and your data is deleted on the
-            schedule in the <Ref href="/privacy">Privacy Policy</Ref>. Export your
-            data first if you want to keep it.
-          </P>
-        </Clause>
-
-        <Clause id="law" n={12} title="Governing law and disputes">
-          <P>
-            These terms are governed by the laws of {LEGAL.governingLaw}, without
-            regard to conflict-of-laws rules. Any dispute goes to the state or federal
-            courts located in {LEGAL.venue}, and both sides consent to that
-            jurisdiction.
+            We may end it on 30 days&rsquo; notice for any reason, and immediately
+            where you breach these terms, where clause 7 applies, where the law
+            requires it, or where a payment provider we depend on refuses to keep
+            serving your account.
           </P>
           <P>
-            Nothing here takes away a mandatory consumer right you have where you
-            live, including the right to bring a claim in your local courts if the law
-            gives you one.
-          </P>
-          <P>
-            Please write to us before filing anything. Most things are faster to fix
-            than to litigate.
+            When an account ends, the shop goes offline and your data is deleted
+            on the schedule in the <Ref href="/privacy">Privacy Policy</Ref>.
+            Export what you want first — the CSV export in your settings takes
+            everything, and it is free on every plan for exactly this reason.
+            Clauses that are meant to outlive the agreement — fees owed, liability,
+            indemnity, governing law — survive it.
           </P>
         </Clause>
 
-        <Clause id="misc" n={13} title="The rest">
+        <Clause id="law" n={15} title="Governing law and disputes">
           <P>
-            If a clause is unenforceable, the rest stands. Not enforcing a term once
-            does not waive it. You may not assign this agreement without our consent;
-            we may assign it if the business is transferred. These terms, with the
-            Privacy Policy and the Refund Policy, are the entire agreement between us.
+            These terms are governed by the laws of {LEGAL.governingLaw}, and the
+            courts of {LEGAL.venue} have exclusive jurisdiction — except that if
+            you are a consumer resident elsewhere, you keep the protection of the
+            mandatory laws of your own country and may bring proceedings there.
           </P>
           <P>
-            We may update these terms. The effective date changes when we do, and
-            material changes are emailed to account holders at least 30 days before
-            they take effect.
+            Before filing anything, email <Mail address={LEGAL.contactEmail} />{" "}
+            and give us 30 days. Most of what reaches a lawyer would have been
+            settled by a reply.
           </P>
         </Clause>
 
-        <Clause id="contact" n={14} title="Contact">
-          <P>Notices under these terms go to:</P>
+        <Clause id="misc" n={16} title="The rest">
+          <List
+            items={[
+              <>
+                <strong>Changes.</strong> We may update these terms. Material
+                changes are emailed to account holders at least 30 days before
+                they take effect, and the date at the top always says which
+                version you are reading. Continuing to use {LEGAL.product} after
+                that date is acceptance.
+              </>,
+              <>
+                <strong>Whole agreement.</strong> These terms, the{" "}
+                <Ref href="/privacy">Privacy Policy</Ref> and the{" "}
+                <Ref href="/refunds">Refund Policy</Ref> are the entire agreement
+                between us and replace anything said before.
+              </>,
+              <>
+                <strong>Severability.</strong> If a clause is unenforceable, it is
+                cut back to what is enforceable and the rest stands.
+              </>,
+              <>
+                <strong>No waiver.</strong> Not enforcing something once does not
+                give it up.
+              </>,
+              <>
+                <strong>Assignment.</strong> You may not transfer this agreement.
+                We may, on notice, to a successor of the business.
+              </>,
+              <>
+                <strong>Language.</strong> These terms are written in{" "}
+                {LEGAL.language}. A translation is a convenience; the{" "}
+                {LEGAL.language} version governs.
+              </>,
+              <>
+                <strong>Force majeure.</strong> Neither side is liable for a
+                failure caused by something genuinely outside its control.
+              </>,
+            ]}
+          />
+        </Clause>
+
+        <Clause id="contact" n={17} title="Contact">
+          <P>
+            {LEGAL.operator}, {LEGAL.operatorForm}, trading as {LEGAL.product}.
+          </P>
           <ContactBlock email={LEGAL.contactEmail} />
         </Clause>
       </div>

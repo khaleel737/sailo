@@ -49,9 +49,16 @@ export function Sheet({
         aria-labelledby={titleId}
         className={cn(
           "relative flex w-full flex-col bg-white shadow-xl",
+          /*
+            `dvh`, not `vh`. iOS Safari measures `vh` against the viewport with
+            the address bar hidden and does not shrink it when the bar returns,
+            so 94vh is taller than the visible screen. Both shapes here are
+            anchored to the bottom edge on a phone, which pushes the overflow
+            off the top — the header, and the close button in it, go with it.
+          */
           sideSheet
-            ? "animate-sheet-up sm:animate-sheet-in max-h-[94vh] rounded-t-3xl sm:h-full sm:max-h-none sm:max-w-md sm:rounded-none"
-            : "animate-sheet-up max-h-[94vh] rounded-t-3xl sm:max-w-lg sm:rounded-t-3xl",
+            ? "animate-sheet-up sm:animate-sheet-in max-h-[94dvh] rounded-t-3xl sm:h-full sm:max-h-none sm:max-w-md sm:rounded-none"
+            : "animate-sheet-up max-h-[94dvh] rounded-t-3xl sm:max-w-lg sm:rounded-t-3xl",
         )}
       >
         <div
@@ -80,7 +87,18 @@ export function Sheet({
           {header ? <div className="mt-3">{header}</div> : null}
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto border-t border-ink-200 px-5 py-4">
+        {/*
+          `overscroll-contain` so a flick that reaches the end of this list
+          does not hand the gesture to the page behind the sheet. The bottom
+          padding is only needed when no footer is pinned below to take the
+          edge — the footer already carries the same clearance.
+        */}
+        <div
+          className={cn(
+            "min-h-0 flex-1 overflow-y-auto overscroll-contain border-t border-ink-200 px-5 py-4",
+            !footer && "pb-[max(1rem,env(safe-area-inset-bottom))]",
+          )}
+        >
           {children}
         </div>
 

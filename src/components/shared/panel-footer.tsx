@@ -24,6 +24,7 @@ export function PanelFooter({
     privacy: string;
     terms: string;
     refunds: string;
+    gdpr: string;
   };
   className?: string;
 }) {
@@ -31,6 +32,7 @@ export function PanelFooter({
     { href: "/privacy", label: labels.privacy },
     { href: "/terms", label: labels.terms },
     { href: "/refunds", label: labels.refunds },
+    { href: "/gdpr", label: labels.gdpr },
   ];
 
   return (

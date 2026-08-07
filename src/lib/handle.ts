@@ -19,6 +19,10 @@ export const RESERVED_HANDLES = new Set([
   "sailo", "www", "app", "mail", "email", "static", "assets", "public",
   "cdn", "img", "images", "media", "favicon", "robots", "sitemap",
   "_next", "vercel", "null", "undefined", "true", "false",
+  // Locale prefixes. `/fr/blog` is a real URL, so a shop called `fil` would
+  // shadow the Filipino blog. Only three-letter codes need listing: every other
+  // locale is two characters and already too short to be a handle.
+  "fil",
 ]);
 
 export type HandleProblem =

@@ -1,4 +1,5 @@
 import { GoogleTag } from "@/lib/google-tag";
+import { ConsentGate } from "@/components/shared/consent-gate";
 
 /**
  * Onboarding exists as a layout only to carry the Google tag.
@@ -14,6 +15,7 @@ export default function OnboardingLayout({
     <>
       {children}
       <GoogleTag />
+      <ConsentGate />
     </>
   );
 }

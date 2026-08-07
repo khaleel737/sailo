@@ -98,3 +98,22 @@ describe("isRailUsable", () => {
     expect(isRailUsable("bitcoin", cfg({ phone: "x" }), STRIPE_LIVE)).toBe(false);
   });
 });
+
+describe("the card rail's description", () => {
+  /*
+   * This string is shown to sellers on the payments screen, and it once said
+   * "1%" while `platformFeeCents` charged half that — so every seller reading
+   * it was quoted double what they were billed. It now interpolates
+   * `PLATFORM_FEE_LABEL` rather than writing the number out, and these two
+   * assertions are what stop it drifting apart again.
+   */
+  it("quotes the fee the code actually charges", async () => {
+    const { PLATFORM_FEE_LABEL } = await import("@/lib/plans");
+    expect(PAYMENT_METHOD_DEFS.card.description).toContain(PLATFORM_FEE_LABEL);
+  });
+
+  it("does not write the fee out by hand", () => {
+    const withoutLabel = PAYMENT_METHOD_DEFS.card.description.replace("0.5%", "");
+    expect(withoutLabel).not.toMatch(/\d+(\.\d+)?\s?%/);
+  });
+});

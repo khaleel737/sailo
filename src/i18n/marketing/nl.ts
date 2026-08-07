@@ -16,7 +16,7 @@ export const marketingNl: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis tijdens de bèta",
+    badge: "Gratis starten, gratis blijven",
     title: "De link in je bio zou allang {highlight} moeten.",
     titleHighlight: "bestellingen aannemen",
     body: "Sailo maakt er een echte winkel van — foto's, prijzen, zoeken, afrekenen — en stuurt elke bestelling naar de chat-app waar je toch al antwoordt.",
@@ -24,7 +24,7 @@ export const marketingNl: MarketingDictionary = {
     ctaSecondary: "Open een echte winkel",
     proof1: "Binnen een minuut online",
     proof2: "Geen creditcard nodig",
-    proof3: "Geen commissie op je verkopen",
+    proof3: "Geen commissie op chat- en overboekingsbestellingen",
     proof4: "35 talen",
     igBio: "Houtoven-pizza, Napels. Bestel hieronder.",
     igPosts: "Berichten",
@@ -148,7 +148,7 @@ export const marketingNl: MarketingDictionary = {
     q2: "Hoe betalen kopers me eigenlijk?",
     a2: "Zoals je nu al betaald wordt. Met kaart, via je eigen Stripe- of Paystack-account, dus de betaling komt rechtstreeks bij jou binnen. Of per overboeking, rembours en mobiel geld, met instructies die je zelf schrijft. Sailo houdt het geld nooit vast.",
     q3: "Neemt Sailo commissie?",
-    a3: "Nee. Niet op het gratis pakket en niet op de betaalde. Wat de koper betaalt, houd jij — minus wat je eigen betaalprovider rekent.",
+    a3: "Bij chat-, overboekings- en contante bestellingen niet — die zijn volledig van jou. Kaartverkopen kosten {fee} van de goederen, ingehouden als Stripe-kosten. Nooit over verzending of belasting.",
     q4: "Kan ik diensten of digitale bestanden verkopen?",
     a4: "Ja, en ze gedragen zich zoals het hoort. Een dienst kan een duur, een locatie en een datumkiezer met opzegtermijn hebben. Een digitaal product levert bestanden die opengaan zodra jij de betaling bevestigt, desgewenst met downloadlimiet en vervaldatum.",
     q5: "Ik heb al een Linktree. Waarom overstappen?",
@@ -163,7 +163,7 @@ export const marketingNl: MarketingDictionary = {
 
   stats: {
     s1: "talen, van rechts naar links inbegrepen",
-    s2: "commissie — op elk pakket, ook het gratis pakket",
+    s2: "commissie op chat- en overboekingsbestellingen",
     s3: "van aanmelden tot een link die je kunt delen",
   },
 
@@ -187,6 +187,9 @@ export const marketingNl: MarketingDictionary = {
     minuteRead: "min leestijd",
 
     backToBlog: "Alle artikelen",
+    pagination: "Paginering",
+    previousPage: "Vorige pagina",
+    nextPage: "Volgende pagina",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingNl: MarketingDictionary = {
     privacy: "Privacy",
     terms: "Voorwaarden",
     refunds: "Terugbetalingen",
+    gdpr: "GDPR",
   },
 
   seo: {

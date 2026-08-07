@@ -16,7 +16,7 @@ export const marketingKo: MarketingDictionary = {
   },
 
   hero: {
-    badge: "베타 기간 무료",
+    badge: "무료로 시작, 계속 무료",
     title: "프로필의 그 링크, 이제 {highlight}.",
     titleHighlight: "주문을 받아야 합니다",
     body: "Sailo는 그 링크를 진짜 가게로 바꿉니다 — 사진, 가격, 검색, 결제 — 그리고 모든 주문을 이미 답장하고 계신 그 메신저로 보내드립니다.",
@@ -24,7 +24,7 @@ export const marketingKo: MarketingDictionary = {
     ctaSecondary: "실제 가게 열어보기",
     proof1: "1분 안에 오픈",
     proof2: "카드 등록 불필요",
-    proof3: "판매 수수료 없음",
+    proof3: "채팅·계좌이체 주문은 수수료 없음",
     proof4: "35개 언어",
     igBio: "화덕 피자, 나폴리. 아래에서 주문하세요.",
     igPosts: "게시물",
@@ -148,7 +148,7 @@ export const marketingKo: MarketingDictionary = {
     q2: "고객은 실제로 어떻게 결제하나요?",
     a2: "이미 돈을 받고 계신 그 방식 그대로입니다. 회원님 명의의 Stripe 또는 Paystack 계정을 통한 카드 결제라 대금이 곧바로 회원님께 들어갑니다. 또는 계좌 이체, 착불, 모바일 머니를 직접 쓰신 안내문과 함께 쓰실 수 있습니다. Sailo는 결코 돈을 보관하지 않습니다.",
     q3: "Sailo가 수수료를 가져가나요?",
-    a3: "아니요. 무료 플랜에서도, 유료 플랜에서도 가져가지 않습니다. 고객이 낸 금액은 그대로 회원님 몫이며, 회원님이 쓰시는 결제사 수수료만 차감됩니다.",
+    a3: "채팅·계좌이체·현금 주문에는 없습니다. 전액 판매자의 것입니다. 카드 결제는 상품 금액의 {fee}를 Stripe 수수료로 받습니다. 배송비나 세금에는 부과하지 않습니다.",
     q4: "서비스나 디지털 파일도 팔 수 있나요?",
     a4: "네, 그리고 제대로 동작합니다. 서비스에는 소요 시간, 장소, 사전 통보 기간이 있는 날짜 선택을 붙일 수 있습니다. 디지털 상품은 결제를 확인하는 즉시 열리는 파일을 전달하며, 원하시면 다운로드 횟수와 만료도 설정할 수 있습니다.",
     q5: "이미 Linktree를 쓰고 있는데 왜 바꿔야 하나요?",
@@ -163,7 +163,7 @@ export const marketingKo: MarketingDictionary = {
 
   stats: {
     s1: "개 언어, 오른쪽에서 왼쪽으로 읽는 언어 포함",
-    s2: "수수료 — 무료 플랜을 포함한 모든 플랜에서",
+    s2: "채팅·계좌이체 주문 수수료",
     s3: "가입부터 공유할 수 있는 링크까지",
   },
 
@@ -187,6 +187,9 @@ export const marketingKo: MarketingDictionary = {
     minuteRead: "분 읽기",
 
     backToBlog: "전체 글",
+    pagination: "페이지 매기기",
+    previousPage: "이전 페이지",
+    nextPage: "다음 페이지",
 
   },
 
@@ -200,6 +203,7 @@ export const marketingKo: MarketingDictionary = {
     privacy: "개인정보 처리방침",
     terms: "이용약관",
     refunds: "환불 정책",
+    gdpr: "GDPR",
   },
 
   seo: {

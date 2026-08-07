@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { esc } from "./markup";
+import { esc, layout, sailoLayout } from "./markup";
+import type { Shop } from "@/db/schema";
 
 /**
  * Escaping, for markup nobody can inspect after the fact.
@@ -47,5 +48,76 @@ describe("esc", () => {
 
   it("survives a value made only of dangerous characters", () => {
     expect(esc('<>&"')).toBe("&lt;&gt;&amp;&quot;");
+  });
+});
+
+/**
+ * The footer, which shipped for a long time as neither visible nor pressable.
+ *
+ * It was #b8b8c2 text on a #f7f7f8 background — 1.84:1, where 4.5:1 is the
+ * floor — and it was never wrapped in an anchor, so the free tier's one
+ * distribution channel was a grey smudge nobody could click. Both are asserted
+ * here because both were true at once and fixing either alone changes nothing.
+ */
+describe("the email footer", () => {
+  const shop = (over: Partial<Shop> = {}) =>
+    ({
+      name: "Forno Nove",
+      handle: "forno",
+      plan: "free",
+      subscriptionStatus: null,
+      compPlan: null,
+      ...over,
+    }) as Shop;
+
+  const footerOf = (html: string) =>
+    html.match(/<p style="max-width:560px[^>]*>([\s\S]*?)<\/p>/)?.[1] ?? "";
+
+  it("is legible — never the washed-out grey it shipped as", () => {
+    for (const html of [
+      layout(shop(), "Order confirmed", "<p>x</p>"),
+      sailoLayout("Your referral report", "<p>x</p>"),
+    ]) {
+      expect(html).not.toContain("#b8b8c2");
+    }
+  });
+
+  it("gives a free shop's buyer something to press", () => {
+    const footer = footerOf(layout(shop(), "Order confirmed", "<p>x</p>"));
+    expect(footer).toContain("<a href=");
+    expect(footer).toContain("Sailo</a>");
+  });
+
+  it("credits the shop that sent it, on its own medium", () => {
+    // Without this the free tier cannot be argued about with numbers: mail and
+    // shop pages would arrive as one undifferentiated lump of direct traffic.
+    const footer = footerOf(layout(shop(), "Order confirmed", "<p>x</p>"));
+    const href = footer.match(/href="([^"]+)"/)?.[1]?.replace(/&amp;/g, "&");
+    const url = new URL(href ?? "");
+    expect(url.pathname).toBe("/");
+    expect(url.searchParams.get("utm_medium")).toBe("email");
+    expect(url.searchParams.get("utm_content")).toBe("forno");
+  });
+
+  it("stays off a shop that paid to remove it", () => {
+    /*
+     * The gate the storefront badge already uses. A shop on Pro took Sailo's
+     * name off its pages; its customers' receipts are no less its own.
+     */
+    const paid = layout(
+      shop({ plan: "pro", subscriptionStatus: "active" }),
+      "Order confirmed",
+      "<p>x</p>",
+    );
+    const footer = footerOf(paid);
+    expect(footer).toContain("Forno Nove");
+    expect(footer).not.toContain("Sailo");
+    expect(footer).not.toContain("<a href=");
+  });
+
+  it("still signs Sailo's own mail, where no shop is involved", () => {
+    const footer = footerOf(sailoLayout("Reset your password", "<p>x</p>"));
+    expect(footer).toContain("<a href=");
+    expect(footer).toContain("Sailo</a>");
   });
 });

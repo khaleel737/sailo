@@ -84,6 +84,18 @@ export const adminEn = {
     noRailBody:
       "Turn on at least one way to get paid and buyers can start checking out.",
     noRailCta: "Set up payments",
+
+    /**
+     * Shown until the seller clicks the confirmation link sign-up mailed
+     * them. Not a gate — the admin keeps working — but until it's clicked the
+     * account is only a claim to an inbox, so the banner stays until the
+     * address is proven theirs.
+     */
+    verifyEmail: "Confirm your email address.",
+    verifyEmailBody:
+      "We sent a link to your inbox when you signed up — one click proves this address is yours.",
+    verifyEmailCta: "Resend email",
+    verifyEmailSent: "Sent — check your inbox.",
     /**
      * Names the room. /admin and /hq share a rail now, so the label carries
      * the distinction the colour used to — see the note in the sidebar.
