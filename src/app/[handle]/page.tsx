@@ -102,11 +102,22 @@ export default async function ShopPage({
         className="min-h-screen"
       >
         {/* A storefront is a shop, so say so — the name, address and image a
-          crawler needs are already on the page. */}
+          crawler needs are already on the page.
+
+          The rails come from the same `checkout` object the order sheet
+          renders from, so what the markup claims a buyer can pay with and
+          what the buttons actually offer are the same list, and neither costs
+          a query the page was not already making. */}
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(shopJsonLd(shop)) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            shopJsonLd(shop, {
+              payment: checkout.methods,
+              delivery: checkout.deliveryOptions,
+            }),
+          ),
+        }}
       />
       <VisitTracker shopId={shop.id} />
         {affiliatesLive ? (

@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { DEFAULT_LOCALE, LOCALES, LOCALE_COOKIE, type Locale } from "@/i18n/config";
 import { getContentLocales, getSlugLocales } from "@/lib/blog";
+import { articlePath, blogIndexPath } from "@/lib/blog-urls";
 
 /**
  * Persists a visitor's language choice. Server-side rather than
@@ -58,7 +59,7 @@ export async function blogHrefFor(
   // simply have no version of this page. Its index is the honest fallback:
   // the reader asked for French and gets French, rather than an English
   // article wearing French chrome.
-  const index = `/${locale}/blog`;
+  const index = blogIndexPath(locale);
   if (!(await getContentLocales()).includes(locale)) return index;
 
   const rest = match[1] ?? "";
@@ -67,6 +68,6 @@ export async function blogHrefFor(
 
   const slug = rest.split("/")[0] ?? "";
   return (await getSlugLocales(slug)).includes(locale)
-    ? `${index}/${slug}`
+    ? articlePath(locale, slug)
     : index;
 }

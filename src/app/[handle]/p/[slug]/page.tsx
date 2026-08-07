@@ -30,7 +30,7 @@ import {
   unitsLeft,
 } from "@/lib/variants";
 import { PoweredBy } from "@/components/shared/powered-by";
-import { absolute, productJsonLd } from "@/lib/seo";
+import { absolute, breadcrumbJsonLd, productJsonLd } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -115,7 +115,6 @@ export default async function ProductPage({
       */}
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
             productJsonLd({
@@ -129,7 +128,24 @@ export default async function ProductPage({
               avgRating: product.avgRating,
               reviewCount: product.reviewCount,
               shop: { name: shop.name, handle: shop.handle },
-            }),
+            }, { payment: checkout.methods, delivery: checkout.deliveryOptions }),
+          ),
+        }}
+      />
+      {/*
+        The trail back to the shop, which is what lets a result read
+        `sailo.store › Forno Nove › Sourdough loaf` instead of showing the raw
+        URL. Two crumbs is the whole hierarchy — a product's only parent is the
+        storefront it belongs to.
+      */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: shop.name, path: `/${shop.handle}` },
+              { name: product.title, path: `/${shop.handle}/p/${product.slug}` },
+            ]),
           ),
         }}
       />

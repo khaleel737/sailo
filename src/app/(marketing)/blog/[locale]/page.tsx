@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getArticlePageIn, getContentLocales } from "@/lib/blog";
-import { isLocale, type Locale } from "@/i18n/config";
+import { blogIndexLanguages, blogIndexPath } from "@/lib/blog-urls";
+import { isLocale } from "@/i18n/config";
 import { getMarketingDictionary } from "@/i18n/marketing";
 import { Container } from "@/components/marketing/kit";
-import { absolute } from "@/lib/seo";
+import { absolute, blogJsonLd } from "@/lib/seo";
 import { ArticleList, Pagination } from "../_components/article-list";
 
 /*
@@ -18,10 +19,6 @@ import { ArticleList, Pagination } from "../_components/article-list";
  * is French articles, not French translations of English ones, and an empty
  * locale is a 404 rather than a page of English under a French URL.
  */
-
-export function publicBlogHref(locale: Locale, page = 1) {
-  return page <= 1 ? `/${locale}/blog` : `/${locale}/blog/page/${page}`;
-}
 
 export async function generateStaticParams() {
   return (await getContentLocales()).map((locale) => ({ locale }));
@@ -48,13 +45,28 @@ export async function generateMetadata({
      * the first article for that language lands.
      */
     ...(total === 0 ? { robots: { index: false, follow: true } } : {}),
-    alternates: { canonical: publicBlogHref(locale) },
+    /*
+     * Self-canonical, plus every other language's index as an `hreflang`
+     * alternate. The 35 indexes are the same page — the blog's door — in 35
+     * languages, so each one has to name the others or Google indexes them as
+     * 35 unrelated pages and serves whichever it prefers to a French searcher.
+     *
+     * The alternates are the same for all of them by construction, because
+     * they are built from what is on disk rather than from this locale.
+     */
+    alternates: {
+      canonical: blogIndexPath(locale),
+      languages: await blogIndexLanguages(),
+    },
     openGraph: {
       type: "website",
       title: m.blog.title,
       description: m.blog.intro,
-      url: absolute(publicBlogHref(locale)),
+      url: absolute(blogIndexPath(locale)),
       locale,
+      // What the other 34 indexes are, in the vocabulary a social scraper
+      // reads — `alternates.languages` above is for crawlers only.
+      alternateLocale: (await getContentLocales()).filter((l) => l !== locale),
     },
   };
 }
@@ -89,18 +101,36 @@ export default async function LocaleBlogIndex({ params }: PageProps<"/blog/[loca
   }
 
   return (
-    <Container className="py-16 sm:py-24">
-      <header className="max-w-2xl">
-        <h1 className="display text-[clamp(2.25rem,6vw,3.5rem)] text-[var(--ink)]">
-          {m.blog.title}
-        </h1>
-        <p className="mt-4 text-[1.0625rem] leading-[1.7] text-[var(--mute-600)]">
-          {m.blog.intro}
-        </p>
-      </header>
+    <>
+      {/* Not on the empty state above: that page is `noindex`, and declaring a
+        Blog with nothing in it is structured data describing a page that does
+        not exist yet. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            blogJsonLd({
+              name: m.blog.title,
+              description: m.blog.intro,
+              path: blogIndexPath(locale),
+              locale,
+            }),
+          ),
+        }}
+      />
+      <Container className="py-16 sm:py-24">
+        <header className="max-w-2xl">
+          <h1 className="display text-[clamp(2.25rem,6vw,3.5rem)] text-[var(--ink)]">
+            {m.blog.title}
+          </h1>
+          <p className="mt-4 text-[1.0625rem] leading-[1.7] text-[var(--mute-600)]">
+            {m.blog.intro}
+          </p>
+        </header>
 
-      <ArticleList articles={articles} locale={locale} m={m} withLead />
-      <Pagination locale={locale} page={page} pageCount={pageCount} m={m} />
-    </Container>
+        <ArticleList articles={articles} locale={locale} m={m} withLead />
+        <Pagination locale={locale} page={page} pageCount={pageCount} m={m} />
+      </Container>
+    </>
   );
 }

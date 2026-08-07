@@ -3,6 +3,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { getDb, schema } from "@/db";
 import { absolute } from "@/lib/seo";
 import { getContentLocales, getEveryArticleByLocale } from "@/lib/blog";
+import { articlePath, blogIndexLanguages, blogIndexPath } from "@/lib/blog-urls";
 
 /**
  * The public surface: the marketing page, every published shop and every
@@ -46,12 +47,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
    * the reader prefers, so it has no content of its own to offer a crawler and
    * submitting a redirect is a Search Console warning rather than a ranking.
    */
+  /*
+   * The same `hreflang` cluster the index pages declare in their `<head>`,
+   * repeated here because the two are read at different times: Search Console
+   * validates the sitemap's alternates without fetching a page, and a crawler
+   * that has not recrawled `/de/blog` since a new language shipped learns
+   * about it from this list first.
+   *
+   * Identical for every index by construction — one call, reused — so the
+   * cluster cannot be self-inconsistent, which is the failure mode that makes
+   * Google drop `hreflang` entirely.
+   */
+  const languages = await blogIndexLanguages();
+
   for (const locale of await getContentLocales()) {
     staticRoutes.push({
-      url: absolute(`/${locale}/blog`),
+      url: absolute(blogIndexPath(locale)),
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.7,
+      alternates: { languages },
     });
   }
 
@@ -67,7 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
    */
   for (const { locale, article } of await getEveryArticleByLocale()) {
     staticRoutes.push({
-      url: absolute(`/${locale}/blog/${article.slug}`),
+      url: absolute(articlePath(locale, article.slug)),
       lastModified: new Date(article.date),
       changeFrequency: "monthly",
       priority: 0.6,

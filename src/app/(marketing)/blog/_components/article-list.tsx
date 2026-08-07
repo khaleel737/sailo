@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { ArticleSummary } from "@/lib/blog";
+import { articlePath, blogIndexPath } from "@/lib/blog-urls";
 import { directionOf, type Locale } from "@/i18n/config";
 import type { MarketingDictionary } from "@/i18n/marketing";
 
@@ -40,7 +41,7 @@ export function ArticleList({ articles, locale, m, withLead }: Props) {
     <div className="mt-14 space-y-12">
       {lead ? (
         <Link
-          href={`/${lead.locale}/blog/${lead.slug}`}
+          href={articlePath(lead.locale, lead.slug)}
           className="focus-line group block overflow-hidden rounded-[var(--r-card)] border border-[var(--mute-200)] transition-colors hover:border-[var(--mute-300)]"
         >
           {lead.cover ? (
@@ -90,7 +91,7 @@ export function ArticleList({ articles, locale, m, withLead }: Props) {
           {rest.map((article, i) => (
             <li key={article.slug}>
               <Link
-                href={`/${article.locale}/blog/${article.slug}`}
+                href={articlePath(article.locale, article.slug)}
                 className="focus-line group block h-full overflow-hidden rounded-[var(--r-card)] border border-[var(--mute-200)] transition-colors hover:border-[var(--mute-300)]"
               >
                 {article.cover ? (
@@ -139,15 +140,6 @@ export function ArticleList({ articles, locale, m, withLead }: Props) {
 }
 
 /**
- * The public, locale-prefixed URL — what a reader sees and a crawler indexes.
- * `src/proxy.ts` rewrites it onto the internal route. Page one is
- * `/<locale>/blog`, not `/<locale>/blog/page/1`, so one page has one URL.
- */
-export function pageHref(locale: Locale, page: number) {
-  return page <= 1 ? `/${locale}/blog` : `/${locale}/blog/page/${page}`;
-}
-
-/**
  * Numbered pager.
  *
  * Numbers rather than an endless "load more": with two hundred articles a
@@ -182,7 +174,7 @@ export function Pagination({
   return (
     <nav aria-label={m.blog.pagination} className="mt-16 flex flex-wrap items-center justify-center gap-2">
       {page > 1 ? (
-        <Link href={pageHref(locale, page - 1)} rel="prev" className={`${step} text-[var(--mute-600)] hover:border-[var(--mute-300)] hover:text-[var(--ink)]`}>
+        <Link href={blogIndexPath(locale, page - 1)} rel="prev" className={`${step} text-[var(--mute-600)] hover:border-[var(--mute-300)] hover:text-[var(--ink)]`}>
           <ChevronLeft className="size-4" aria-hidden />
           <span className="sr-only">{m.blog.previousPage}</span>
         </Link>
@@ -205,7 +197,7 @@ export function Pagination({
             </span>
           ) : (
             <Link
-              href={pageHref(locale, n)}
+              href={blogIndexPath(locale, n)}
               className={`${step} text-[var(--mute-600)] hover:border-[var(--mute-300)] hover:text-[var(--ink)]`}
             >
               {n}
@@ -215,7 +207,7 @@ export function Pagination({
       ))}
 
       {page < pageCount ? (
-        <Link href={pageHref(locale, page + 1)} rel="next" className={`${step} text-[var(--mute-600)] hover:border-[var(--mute-300)] hover:text-[var(--ink)]`}>
+        <Link href={blogIndexPath(locale, page + 1)} rel="next" className={`${step} text-[var(--mute-600)] hover:border-[var(--mute-300)] hover:text-[var(--ink)]`}>
           <ChevronRight className="size-4" aria-hidden />
           <span className="sr-only">{m.blog.nextPage}</span>
         </Link>

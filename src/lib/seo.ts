@@ -1,4 +1,6 @@
 import type { MarketingDictionary } from "@/i18n/marketing";
+import type { DeliveryMethodType } from "@/lib/delivery";
+import type { PaymentMethodType } from "@/lib/payments";
 
 /**
  * Everything a crawler reads.
@@ -75,14 +77,102 @@ export function faqJsonLd(faqs: { q: string; a: string }[]) {
   };
 }
 
+/* -------------------------------------------------------------------------- */
+/*  How a shop takes money, in a vocabulary a crawler already knows            */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Sailo's payment rails, mapped onto schema.org's.
+ *
+ * `null` means "this is not a payment method" and is the important half of the
+ * table. WhatsApp, Telegram, Instagram, email and phone are how a buyer *places
+ * an order*; the money then changes hands off-platform by means we never learn.
+ * Declaring them under `paymentAccepted` would be answering a question we do
+ * not know the answer to, so a shop that only offers chat rails declares no
+ * payment methods at all — which is the truth.
+ *
+ * A `Record` keyed on the union rather than a lookup with a default: adding a
+ * rail should not silently ship a storefront that under-declares itself. The
+ * compiler makes the next person decide what the new rail is worth telling
+ * Google, even if the answer is `null`.
+ *
+ * `uri` is GoodRelations where GoodRelations has the term, because that is the
+ * vocabulary `acceptedPaymentMethod` was built around and the one validators
+ * recognise. `label` is the human string `paymentAccepted` wants.
+ */
+const PAYMENT_SCHEMA: Record<
+  PaymentMethodType,
+  { label: string; uri: string } | null
+> = {
+  // Stripe Checkout offers the wallets alongside the card, so all three are
+  // genuinely accepted and worth naming — a buyer scanning a result for
+  // "Apple Pay" is looking for exactly this.
+  card: { label: "Credit Card, Debit Card, Apple Pay, Google Pay", uri: "https://schema.org/CreditCard" },
+  bank_transfer: {
+    label: "Bank Transfer",
+    uri: "http://purl.org/goodrelations/v1#ByBankTransferInAdvance",
+  },
+  cod: { label: "Cash on Delivery", uri: "http://purl.org/goodrelations/v1#COD" },
+  whatsapp: null,
+  telegram: null,
+  instagram: null,
+  email: null,
+  phone: null,
+};
+
+/** schema.org's `DeliveryMethod` terms for the two ways an order can travel. */
+const DELIVERY_SCHEMA: Record<DeliveryMethodType, string> = {
+  shipping: "https://schema.org/ParcelService",
+  collection: "https://schema.org/OnSitePickup",
+};
+
+type Rails = {
+  /** The payment rails the buyer can actually use — enabled and configured. */
+  payment?: readonly { type: string }[];
+  /** The delivery options the buyer can actually pick. */
+  delivery?: readonly { type: string }[];
+};
+
+function paymentTerms(rails: Rails | undefined) {
+  const seen = new Set<string>();
+  const terms: { label: string; uri: string }[] = [];
+
+  for (const { type } of rails?.payment ?? []) {
+    const term = PAYMENT_SCHEMA[type as PaymentMethodType];
+    // `?? null` rather than a truthiness check: an unrecognised type coming
+    // out of the database reads as `undefined` here, and that is the same
+    // "say nothing" answer as a deliberate `null`.
+    if (!term || seen.has(term.uri)) continue;
+    seen.add(term.uri);
+    terms.push(term);
+  }
+
+  return terms;
+}
+
+function deliveryTerms(rails: Rails | undefined) {
+  const terms = new Set<string>();
+  for (const { type } of rails?.delivery ?? []) {
+    const term = DELIVERY_SCHEMA[type as DeliveryMethodType];
+    if (term) terms.add(term);
+  }
+  return [...terms];
+}
+
 /** A storefront, so a shop's own page can be indexed as the shop it is. */
-export function shopJsonLd(shop: {
-  name: string;
-  handle: string;
-  description: string | null;
-  avatarUrl: string | null;
-  location: string | null;
-}) {
+export function shopJsonLd(
+  shop: {
+    name: string;
+    handle: string;
+    description: string | null;
+    avatarUrl: string | null;
+    location: string | null;
+    currency?: string;
+  },
+  rails?: Rails,
+) {
+  const payment = paymentTerms(rails);
+
   return {
     "@context": "https://schema.org",
     "@type": "Store",
@@ -93,6 +183,67 @@ export function shopJsonLd(shop: {
     ...(shop.location
       ? { address: { "@type": "PostalAddress", addressLocality: shop.location } }
       : {}),
+    /*
+     * What a buyer can pay with, before they click. This is the one field on a
+     * storefront that answers a question every buyer has and no title tag has
+     * room for, and Google reads it on `Store` specifically.
+     *
+     * Comma-separated text, which is the shape `paymentAccepted` is defined
+     * with — unlike `acceptedPaymentMethod` on an Offer below, which takes URIs.
+     */
+    ...(payment.length > 0
+      ? { paymentAccepted: payment.map((term) => term.label).join(", ") }
+      : {}),
+    ...(shop.currency ? { currenciesAccepted: shop.currency.toUpperCase() } : {}),
+  };
+}
+
+/**
+ * The trail above a page, which is what turns a raw URL in a search result into
+ * `sailo.store › forno › Sourdough loaf`.
+ *
+ * Positions are 1-based and must be contiguous — Google drops the whole
+ * breadcrumb otherwise — so they are generated here rather than passed in.
+ */
+export function breadcrumbJsonLd(trail: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: trail.map((crumb, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: crumb.name,
+      item: absolute(crumb.path),
+    })),
+  };
+}
+
+/**
+ * One language's blog index, declared as the blog it is.
+ *
+ * `inLanguage` is the point. Thirty-five indexes that differ only by language
+ * need to say which one they are in a field a crawler reads, not only in the
+ * `lang` attribute of the document.
+ */
+export function blogJsonLd(blog: {
+  name: string;
+  description: string;
+  path: string;
+  locale: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: blog.name,
+    description: blog.description,
+    url: absolute(blog.path),
+    inLanguage: blog.locale,
+    publisher: {
+      "@type": "Organization",
+      name: "Sailo",
+      url: APP_URL,
+      logo: absolute("/brand/sailo-mark-512.png"),
+    },
   };
 }
 
@@ -105,19 +256,24 @@ export function shopJsonLd(shop: {
  * part search engines actually validate, so `price`, `priceCurrency` and
  * `availability` are always present rather than conditional.
  */
-export function productJsonLd(product: {
-  title: string;
-  slug: string;
-  description: string | null;
-  images: { url: string }[];
-  priceCents: number;
-  currency: string;
-  inStock: boolean;
-  avgRating: number | null;
-  reviewCount: number;
-  shop: { name: string; handle: string };
-}) {
+export function productJsonLd(
+  product: {
+    title: string;
+    slug: string;
+    description: string | null;
+    images: { url: string }[];
+    priceCents: number;
+    currency: string;
+    inStock: boolean;
+    avgRating: number | null;
+    reviewCount: number;
+    shop: { name: string; handle: string };
+  },
+  rails?: Rails,
+) {
   const url = absolute(`/${product.shop.handle}/p/${product.slug}`);
+  const payment = paymentTerms(rails);
+  const delivery = deliveryTerms(rails);
 
   return {
     "@context": "https://schema.org",
@@ -139,6 +295,19 @@ export function productJsonLd(product: {
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
       seller: { "@type": "Organization", name: product.shop.name },
+      /*
+       * How this can be paid for and how it travels — URIs here, where the
+       * storefront's `paymentAccepted` uses text, because that is what each
+       * property is defined to take.
+       *
+       * Both come from the rails the seller has actually enabled *and*
+       * configured, so a shop that connected Stripe and then disconnected it
+       * stops claiming cards on the same deploy the button disappears.
+       */
+      ...(payment.length > 0
+        ? { acceptedPaymentMethod: payment.map((term) => term.uri) }
+        : {}),
+      ...(delivery.length > 0 ? { availableDeliveryMethod: delivery } : {}),
     },
     /*
      * Omitted entirely when there are no reviews. An aggregateRating with a

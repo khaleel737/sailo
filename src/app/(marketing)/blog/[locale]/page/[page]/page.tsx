@@ -6,7 +6,7 @@ import { getMarketingDictionary } from "@/i18n/marketing";
 import { Container } from "@/components/marketing/kit";
 import { absolute } from "@/lib/seo";
 import { ArticleList, Pagination } from "../../../_components/article-list";
-import { publicBlogHref } from "../../page";
+import { blogIndexPath } from "@/lib/blog-urls";
 
 /*
  * Pages two and up of one language's index: `/<locale>/blog/page/2`.
@@ -35,12 +35,23 @@ export async function generateMetadata({
   return {
     title: `${m.blog.title} — ${page}/${pageCount}`,
     description: m.blog.intro,
-    alternates: { canonical: publicBlogHref(locale, page) },
+    /*
+     * Self-canonical and no `hreflang`, unlike page one.
+     *
+     * The blog is written per market rather than translated, so the languages
+     * hold different numbers of articles and page 3 of the Italian index is
+     * not the Italian version of page 3 of the English one — it is a different
+     * set of posts that happens to fall at the same offset. Page one is the
+     * blog's door in each language and genuinely has 34 counterparts; an
+     * arbitrary slice of the archive does not, and claiming otherwise would be
+     * a lie a crawler can act on.
+     */
+    alternates: { canonical: blogIndexPath(locale, page) },
     openGraph: {
       type: "website",
       title: `${m.blog.title} — ${page}/${pageCount}`,
       description: m.blog.intro,
-      url: absolute(publicBlogHref(locale, page)),
+      url: absolute(blogIndexPath(locale, page)),
       locale,
     },
   };

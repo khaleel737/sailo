@@ -7,8 +7,8 @@ import { getArticleIn, getSlugLocales, getEveryArticleByLocale } from "@/lib/blo
 import { directionOf, isLocale } from "@/i18n/config";
 import { getMarketingDictionary } from "@/i18n/marketing";
 import { Container } from "@/components/marketing/kit";
-import { absolute } from "@/lib/seo";
-import { publicBlogHref } from "../page";
+import { absolute, breadcrumbJsonLd } from "@/lib/seo";
+import { articlePath, blogIndexPath } from "@/lib/blog-urls";
 
 /**
  * One article, in one language, at `/<locale>/blog/<slug>`.
@@ -22,10 +22,6 @@ export async function generateStaticParams() {
     locale,
     slug: article.slug,
   }));
-}
-
-function articleHref(locale: string, slug: string) {
-  return `/${locale}/blog/${slug}`;
 }
 
 export async function generateMetadata({
@@ -48,7 +44,7 @@ export async function generateMetadata({
   const article = await getArticleIn(slug, locale);
   if (!article) return missing;
 
-  const url = absolute(articleHref(locale, slug));
+  const url = absolute(articlePath(locale, slug));
 
   /*
    * `hreflang` only where the same article genuinely exists in another
@@ -59,7 +55,7 @@ export async function generateMetadata({
   const others = await getSlugLocales(slug);
   const languages =
     others.length > 1
-      ? Object.fromEntries(others.map((l) => [l, absolute(articleHref(l, slug))]))
+      ? Object.fromEntries(others.map((l) => [l, absolute(articlePath(l, slug))]))
       : undefined;
 
   /*
@@ -77,6 +73,13 @@ export async function generateMetadata({
   return {
     title: article.title,
     description: article.description,
+    /*
+     * The article's own tags, replacing the site-wide list the root layout
+     * sets. Inherited keywords put "Linktree alternative" on a piece about
+     * pricing knitwear, which describes the site rather than the page.
+     */
+    keywords: article.tags.length > 0 ? article.tags : undefined,
+    authors: [{ name: article.author }],
     alternates: { canonical: url, ...(languages ? { languages } : {}) },
     openGraph: {
       type: "article",
@@ -116,7 +119,6 @@ export default async function ArticlePage({ params }: PageProps<"/blog/[locale]/
     <>
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
@@ -134,15 +136,30 @@ export default async function ArticlePage({ params }: PageProps<"/blog/[locale]/
               name: "Sailo",
               logo: absolute("/brand/sailo-mark-512.png"),
             },
-            mainEntityOfPage: absolute(articleHref(locale, slug)),
+            mainEntityOfPage: absolute(articlePath(locale, slug)),
             ...(article.cover ? { image: absolute(article.cover) } : {}),
+            ...(article.tags.length > 0 ? { keywords: article.tags } : {}),
           }),
+        }}
+      />
+      {/* Blog › this article. The blog's own index is the only parent an
+        article has, and it is the page a reader who lands here from search is
+        most likely to want next. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbJsonLd([
+              { name: m.blog.title, path: blogIndexPath(locale) },
+              { name: article.title, path: articlePath(locale, slug) },
+            ]),
+          ),
         }}
       />
 
       <Container className="max-w-[44rem] py-12 sm:py-20">
         <Link
-          href={publicBlogHref(locale)}
+          href={blogIndexPath(locale)}
           className="focus-line inline-flex min-h-11 items-center gap-2 text-[0.8125rem] text-[var(--mute-500)] transition-colors hover:text-[var(--ink)]"
         >
           <ArrowLeft className="size-3.5" />
@@ -187,7 +204,6 @@ export default async function ArticlePage({ params }: PageProps<"/blog/[locale]/
 
           <div
             className="prose mt-10"
-            // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: article.html }}
           />
 
