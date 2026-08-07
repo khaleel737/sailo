@@ -1,0 +1,21 @@
+knip.json
+  s_2e1da3b18d1c53::t_3eb63d1999cb0c 1-17
+PRODUCTION-PLAN.md
+  s_2e1da3b18d1c53::t_40f9d261b9fda8 134-202
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ded3575e5a9426e40ab89b97e5b467edb1bde0d9",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
