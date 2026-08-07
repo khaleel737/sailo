@@ -91,16 +91,22 @@ export async function GET(
    */
   if (!isStoredFileUrl(file.url)) {
     console.error(`[sailo] refused an off-store file url on file ${file.id}`);
+    // Give the download back, exactly as the upstream-failure branch below
+    // does. The buyer got no bytes, and refusing a legacy row should not also
+    // cost them an allowance they can never spend on it.
+    await releaseDownload(db, order.id);
     return new Response("That file is temporarily unavailable.", { status: 502 });
   }
 
-  const upstream = await fetch(file.url);
+  /*
+   * `redirect: "manual"`. The host check above is pre-flight, so following a
+   * `Location` would let the one host it allows send us anywhere — the check
+   * bypassed by the party it constrains. A stored file needs no redirect.
+   */
+  const upstream = await fetch(file.url, { redirect: "manual" });
   if (!upstream.ok || !upstream.body) {
     // Give the download back — the buyer didn't get anything for it.
-    await db
-      .update(orders)
-      .set({ downloadCount: sql`greatest(${orders.downloadCount} - 1, 0)` })
-      .where(eq(orders.id, order.id));
+    await releaseDownload(db, order.id);
     return new Response("That file is temporarily unavailable.", {
       status: 502,
     });
@@ -122,4 +128,19 @@ export async function GET(
       "Cache-Control": "private, no-store",
     },
   });
+}
+
+/**
+ * Hands an allowance back after a download that delivered nothing.
+ *
+ * The count is claimed before the fetch so two tabs cannot spend the last one
+ * twice; every path that then fails to hand over bytes has to undo it, or the
+ * buyer is charged an attempt for our failure. `greatest(…, 0)` so a double
+ * release cannot give them more than they started with.
+ */
+async function releaseDownload(db: ReturnType<typeof getDb>, orderId: string) {
+  await db
+    .update(orders)
+    .set({ downloadCount: sql`greatest(${orders.downloadCount} - 1, 0)` })
+    .where(eq(orders.id, orderId));
 }

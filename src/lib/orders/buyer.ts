@@ -71,6 +71,22 @@ export function readBuyer(
   if (opts.def.requires.email && !email) {
     return { ok: false, error: "Add your email so we can send your receipt." };
   }
+  /*
+   * Shaped like an address, not merely present.
+   *
+   * This is the `to:` on the receipt, the invoice link and — for a digital
+   * order — the download link, and Resend takes a JSON body, so a malformed
+   * value is not an injection: it is a send that fails quietly. The buyer pays
+   * and hears nothing, and the seller sees a completed order with no clue why
+   * the customer is emailing them to ask where their file is.
+   *
+   * A single deliberately loose test. Anything stricter rejects addresses that
+   * are valid — quoted locals, new TLDs, unicode domains — and the only real
+   * proof an address works is the mail arriving.
+   */
+  if (email && !/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(email)) {
+    return { ok: false, error: "That email address doesn't look right." };
+  }
   if (opts.def.requires.contact && !email && !phone) {
     return {
       ok: false,

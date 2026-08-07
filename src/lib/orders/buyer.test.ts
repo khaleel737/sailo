@@ -91,3 +91,63 @@ describe("readBuyer", () => {
     ).toBe(false);
   });
 });
+
+/**
+ * The address a receipt is actually sent to.
+ *
+ * This value becomes the `to:` on the confirmation, the invoice link and — for
+ * a digital order — the download link. Resend takes a JSON body, so a
+ * malformed address is not an injection; it is a send that fails quietly. The
+ * buyer pays and hears nothing, and the seller sees a completed order and no
+ * reason why their customer is asking where the file is.
+ */
+describe("readBuyer — the email has to be deliverable", () => {
+  it("refuses an address that cannot be one", () => {
+    for (const email of [
+      "sam",
+      "sam@",
+      "@example.com",
+      "sam@example",
+      "sam example@test.com",
+      "sam@@example.com",
+      "sam@.com",
+    ]) {
+      const r = readBuyer({ customerEmail: email }, { def: NEEDS_EMAIL, wantsAddress: false });
+      expect(r.ok, email).toBe(false);
+    }
+  });
+
+  it("accepts the shapes that are valid but look unusual", () => {
+    /*
+     * Deliberately loose. Anything stricter rejects real addresses — plus
+     * tags, new TLDs, unicode domains — and the only real proof an address
+     * works is the mail arriving.
+     */
+    for (const email of [
+      "sam+tag@example.com",
+      "sam.o'brien@example.co.uk",
+      "sam@sub.domain.example.museum",
+      "sam@例え.テスト",
+      "s@e.co",
+    ]) {
+      const r = readBuyer({ customerEmail: email }, { def: NEEDS_EMAIL, wantsAddress: false });
+      expect(r.ok, email).toBe(true);
+    }
+  });
+
+  it("still lets a rail that wants no email through without one", () => {
+    // The check only fires on a value that exists; absence is a separate rule.
+    const r = readBuyer({ customerPhone: "+15551234567" }, { def: NEEDS_CONTACT, wantsAddress: false });
+    expect(r.ok).toBe(true);
+  });
+
+  it("checks a junk email even on a rail that only wants contact", () => {
+    // A phone would satisfy `requires.contact`, but a bad address that was
+    // typed anyway still gets used for the receipt.
+    const r = readBuyer(
+      { customerEmail: "not-an-address", customerPhone: "+15551234567" },
+      { def: NEEDS_CONTACT, wantsAddress: false },
+    );
+    expect(r.ok).toBe(false);
+  });
+});

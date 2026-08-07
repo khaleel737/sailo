@@ -43,6 +43,8 @@ export async function resolveLines(
 > {
   const db = getDb();
   const lines: ResolvedLine[] = [];
+  /** Slots this basket has already taken, which no committed order can show. */
+  const claimedSlots = new Set<string>();
   const dropped: OrderLineInput[] = [];
 
   if (items.length === 0) return { ok: false, error: "Your basket is empty." };
@@ -89,9 +91,20 @@ export async function resolveLines(
       continue;
     }
 
-    // A service books its own slot, against its own notice period.
+    /*
+     * A service books its own slot, against its own notice period.
+     *
+     * `isBookable`, not `bookingEnabled` alone. A product with booking turned
+     * on but no duration set is misconfigured — it can offer no slots, because
+     * the generator needs a length — and the re-derivation below is skipped
+     * for exactly that reason. Entering this branch on `bookingEnabled` meant
+     * such a product still accepted whatever `scheduledFor` the client sent,
+     * checked against nothing but `parseBooking`'s year-wide window. Nobody
+     * could reach that by using the shop; it was only reachable by forging the
+     * payload, which is who the check is for.
+     */
     let scheduledFor: Date | null = null;
-    if (product.kind === "service" && product.bookingEnabled) {
+    if (isBookable(product)) {
       scheduledFor = parseBooking(
         item.scheduledFor,
         product.bookingLeadHours,
@@ -117,7 +130,7 @@ export async function resolveLines(
        * bookings as they stand now, is the only answer that cannot be argued
        * with.
        */
-      if (scheduledFor && opts.shop && isBookable(product)) {
+      if (scheduledFor && opts.shop) {
         const slotOptions = await slotOptionsFor(
           opts.shop,
           product,
@@ -136,6 +149,26 @@ export async function resolveLines(
           if (stop) return stop;
           continue;
         }
+
+        /*
+         * And against the rest of this basket.
+         *
+         * `busyFor` reads committed orders, and none of these lines is one
+         * yet — so two lines asking for the same product at the same time both
+         * passed, and the shop owed one slot to two appointments in a single
+         * order. Every other line-level rule here re-reads the database; this
+         * is the one question the database cannot answer.
+         */
+        const key = `${product.id}@${scheduledFor.getTime()}`;
+        if (claimedSlots.has(key)) {
+          const stop = fail(
+            item,
+            `${product.title} is already booked for that time in this order.`,
+          );
+          if (stop) return stop;
+          continue;
+        }
+        claimedSlots.add(key);
       }
     }
 
