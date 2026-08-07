@@ -1,0 +1,40 @@
+src/lib/actions/payments.ts
+  s_3fd229194f6299::t_84791a31eef9ca 6
+src/db/index.ts
+  s_3fd229194f6299::t_ab0b9ffa1d5a79 107-109
+knip.json
+  s_3fd229194f6299::t_ab4c55dec356cd 7,11-12
+src/lib/actions/order-admin.ts
+  s_3fd229194f6299::t_0b3607b4571e32 11
+src/lib/queries/affiliates.ts
+  s_3fd229194f6299::t_98809c811167b7 2
+e2e/charts.spec.ts
+  s_3fd229194f6299::t_de3897ef1e2b8c 72-73,124-125,152-154
+package.json
+  s_3fd229194f6299::t_303789eb6ad3a3 80
+  s_3fd229194f6299::t_26a03f73b02f8f 86
+e2e/stubs/setup.mts
+  s_3fd229194f6299::t_e657fb1f99a2c3 2,18
+package-lock.json
+  s_3fd229194f6299::t_ae9dfa002e3352 52,58
+src/lib/blog-urls.test.ts
+  s_3fd229194f6299::t_006a52af17fb9c 89-91
+src/lib/seo.test.ts
+  s_3fd229194f6299::t_25b3c150e6fa85 144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "2d6020ef4cde4b74b31613f8af77d08fd3e14d63",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
