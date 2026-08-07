@@ -167,27 +167,35 @@ about an extraction, not by reading the file first.
 
 ---
 
-## 6. The e2e gap — read this before trusting a green run
+## 6. The e2e gap — mostly closed
 
-34 tests pass. **None of them places an order.** No e2e test calls
-`createOrderIntent`, so none of the work on the checkout path — this session's or
-the last — has been exercised end to end.
+34 Playwright tests pass and **none of them places an order**, for the reason
+they never could: the dev server runs against `.env.local`, whose
+`DATABASE_URL` is the same Neon database production uses.
 
-That is not an oversight. The Playwright dev server runs against `.env.local`,
-whose `DATABASE_URL` is the **same Neon database production uses**. A test that
-placed an order would write real rows, decrement real stock, and claim an invoice
-number out of the sequence.
+That is now worked around rather than lived with. `scripts/scenarios/up.sh`
+starts a throwaway Postgres behind a local Neon HTTP proxy — the proxy is the
+load-bearing part, because the app speaks Neon's HTTP protocol and a plain
+container cannot answer it — and `vitest.scenarios.mts` points the app's own
+`getDb()` at it with no change to application code:
 
-The fix is not "write the missing test". It is to give e2e a database it may
-dirty:
+```bash
+./scripts/scenarios/up.sh
+npx vitest run --config vitest.scenarios.mts     # 25 scenarios
+```
 
-1. A **Neon branch per run**, seeded from the demo fixtures, behind
-   `E2E_DATABASE_URL`.
-2. Then place an order on a manual rail — no Stripe needed — and assert the row,
-   its lines, the reserved stock, the invoice number and the handoff message.
-   That one test covers more of the money path than the whole current suite.
-3. Card orders need Stripe test mode and a forwarded webhook. Worth it, after
-   the manual rail proves the shape.
+The suite refuses to start if `DATABASE_URL` is not local, so it cannot be
+aimed at production by accident.
 
-Until that exists the money path is carried by unit tests of its pure rules. That
-is less than it sounds, and this document should not pretend otherwise.
+Twenty-five scenarios cover who may sell, what the order costs, stock, digital
+delivery, coupons, cancellation, abandonment and the sweep — including the two
+concurrency races (last unit, last coupon use) that a single-threaded test
+cannot see. Writing them immediately found a real defect: `upsertClient` was a
+check-then-act against two unique indexes, so a double-clicked "Buy now" ended
+the buyer's checkout on an error page.
+
+**What is still not covered.** Card orders need Stripe test mode and a
+forwarded webhook, so the whole `checkout.session.completed` path — settlement,
+invoice numbering, the confirmation email, download release — is still
+exercised only by unit tests of its pure rules. That is the next thing worth
+building, and it is now a much smaller step: the database is already there.
