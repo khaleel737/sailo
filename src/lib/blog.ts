@@ -1,5 +1,6 @@
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
+import { cacheLife, cacheTag } from "next/cache";
 import matter from "gray-matter";
 import { Marked } from "marked";
 import { DEFAULT_LOCALE, isLocale, LOCALES, type Locale } from "@/i18n/config";
@@ -250,12 +251,20 @@ export async function getArticles(locale: Locale = DEFAULT_LOCALE): Promise<Arti
 
 /** Locales that actually have articles on disk, in the shipped order. */
 export async function getContentLocales(): Promise<Locale[]> {
+  "use cache";
+  cacheLife("max");
+  cacheTag("blog-locales");
+
   const present = new Set(await localesOnDisk());
   return LOCALES.map((l) => l.code).filter((code) => present.has(code));
 }
 
 /** Articles written in exactly this locale, newest first. No fallback. */
 export async function getArticlesIn(locale: Locale): Promise<ArticleSummary[]> {
+  "use cache";
+  cacheLife("max");
+  cacheTag("blog-articles");
+
   const wanted = safeLocale(locale);
   const slugs = await readSlugs(wanted);
 
@@ -281,6 +290,10 @@ export async function getArticlePageIn(locale: Locale, page = 1): Promise<Articl
 
 /** One article in exactly this locale, or null. */
 export async function getArticleIn(slug: string, locale: Locale): Promise<Article | null> {
+  "use cache";
+  cacheLife("max");
+  cacheTag("blog-article");
+
   if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) return null;
 
   const wanted = safeLocale(locale);
@@ -302,6 +315,9 @@ export async function getArticleIn(slug: string, locale: Locale): Promise<Articl
  * crawler in a machine-readable format.
  */
 export async function getSlugLocales(slug: string): Promise<Locale[]> {
+  "use cache";
+  cacheLife("max");
+  cacheTag("blog-slug-locales");
   return (await readIndex()).get(slug) ?? [];
 }
 
@@ -309,6 +325,10 @@ export async function getSlugLocales(slug: string): Promise<Locale[]> {
 export async function getEveryArticleByLocale(): Promise<
   Array<{ locale: Locale; article: ArticleSummary }>
 > {
+  "use cache";
+  cacheLife("max");
+  cacheTag("blog-every");
+
   const locales = await getContentLocales();
   const perLocale = await Promise.all(
     locales.map(async (locale) =>

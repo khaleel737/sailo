@@ -3,6 +3,13 @@ import { HqSidebar } from "@/app/hq/_components/hq-sidebar";
 import { PanelFooter } from "@/components/shared/panel-footer";
 import { requireStaff } from "@/lib/session";
 
+/*
+ * Per-seller, behind a session, and re-read on every visit — there is no
+ * shared shell worth extracting here. `instant = false` says so explicitly
+ * rather than leaving the build to complain about it.
+ */
+export const instant = false;
+
 export const metadata: Metadata = {
   title: { default: "HQ", template: "%s · Sailo HQ" },
   // Internal, and behind an allowlist — but a stray link in a support email

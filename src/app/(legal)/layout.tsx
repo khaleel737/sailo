@@ -6,6 +6,14 @@ import { SailoLogo } from "@/components/brand";
 import { Container } from "@/components/marketing/kit";
 import { LEGAL } from "@/lib/legal";
 
+/*
+ * Not yet converted. The copy on these pages is chosen by a cookie, so the
+ * response varies per visitor and cannot be prerendered until the locale
+ * moves into the URL the way the blog's already has.
+ */
+export const instant = false;
+
+
 /**
  * The three legal documents share one shell.
  *

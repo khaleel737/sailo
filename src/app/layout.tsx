@@ -2,12 +2,13 @@ import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import { getLocale, getT } from "@/i18n/server";
-import { directionOf } from "@/i18n/config";
+import { DEFAULT_LOCALE } from "@/i18n/config";
 import { getMarketingDictionary } from "@/i18n/marketing";
 import { RouteProgress } from "@/components/shared/route-progress";
-import { ErrorStringsProvider } from "@/components/shared/error-panel";
+import { ErrorStringsSource } from "@/components/shared/error-panel";
 import { VercelAnalytics } from "@/lib/vercel-analytics";
 import { APP_URL } from "@/lib/seo";
+import { LANG_SCRIPT } from "@/i18n/lang-script";
 import "./globals.css";
 import "./brand.css";
 
@@ -149,33 +150,54 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
-  // Screen readers and search engines read the root element, so it carries the
-  // visitor's resolved language. A shop whose own default differs overrides
-  // both `lang` and `dir` on its own container.
-  const locale = await getLocale();
+/**
+ * The chrome that needs to know the visitor's language.
+ *
+ * Split out and streamed so the layout itself awaits nothing. Both pieces are
+ * siblings of the page rather than wrappers around it, which is what lets the
+ * page beneath prerender — see `ErrorStringsSource` for the longer version of
+ * why that distinction is the whole migration.
+ */
+async function LocalisedChrome() {
   const { t } = await getT();
 
   return (
+    <>
+      <RouteProgress label={t.common.loading} />
+      <ErrorStringsSource value={t.errors} />
+    </>
+  );
+}
+
+export default function RootLayout({ children }: LayoutProps<"/">) {
+  return (
+    /*
+     * A static default, corrected by `LANG_SCRIPT` before the first paint.
+     *
+     * Reading the real locale here means reading a cookie, and a cookie read
+     * on `<html>` has no child to stream — it makes every route in the product
+     * request-bound. `suppressHydrationWarning` because the script changes
+     * these two attributes before React hydrates, which is expected.
+     */
     <html
-      lang={locale}
-      dir={directionOf(locale)}
+      lang={DEFAULT_LOCALE}
+      dir="ltr"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${outfit.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-ink-900">
+        {/* First thing in the body, so it runs while the browser is still
+            parsing and nothing has been painted. */}
+        <script dangerouslySetInnerHTML={{ __html: LANG_SCRIPT }} />
         {/*
-          Suspense because the bar reads `useSearchParams`, which opts its
-          nearest boundary out of the static shell. Without one, that boundary
-          would be the whole document.
+          Suspense because `RouteProgress` reads `useSearchParams` and the
+          dictionary read is request-bound. Both stream; neither holds up the
+          page.
         */}
         <Suspense fallback={null}>
-          <RouteProgress label={t.common.loading} />
+          <LocalisedChrome />
         </Suspense>
-        {/*
-          Every `error.tsx` below renders inside this, so the five strings an
-          error boundary needs are in context by the time one is reached.
-        */}
-        <ErrorStringsProvider value={t.errors}>{children}</ErrorStringsProvider>
+        {children}
         {/*
           Cookieless and aggregate, so unlike the Google tag this one covers
           storefronts too — see `src/lib/vercel-analytics.tsx` for why the

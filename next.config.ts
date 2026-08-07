@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  /*
+   * Static shells with dynamic holes, instead of every route being
+   * request-bound. See `src/i18n/lang-script.ts` for the one await that was
+   * holding the whole product out of the CDN.
+   */
+  cacheComponents: true,
   // pdfkit reads its .afm font metrics from disk at runtime; bundling rewrites
   // those paths and it can't find them. Keep it as a plain Node dependency.
   serverExternalPackages: ["pdfkit"],

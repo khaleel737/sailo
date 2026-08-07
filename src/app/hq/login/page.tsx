@@ -6,6 +6,10 @@ import { getSession } from "@/lib/session";
 import { isStaffEmail } from "@/lib/staff";
 import { HqLoginForm } from "./login-form";
 
+/* Not yet converted — see the note in `next.config.ts`. */
+export const instant = false;
+
+
 export const metadata: Metadata = {
   title: "Sign in · Sailo HQ",
   // Same reasoning as the panel itself: a login page in a search index is a

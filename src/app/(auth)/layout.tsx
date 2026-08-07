@@ -10,6 +10,14 @@ import { getT } from "@/i18n/server";
 import { getMarketingDictionary } from "@/i18n/marketing";
 
 /*
+ * Not yet converted. The copy on these pages is chosen by a cookie, so the
+ * response varies per visitor and cannot be prerendered until the locale
+ * moves into the URL the way the blog's already has.
+ */
+export const instant = false;
+
+
+/*
  * Sign in, sign up, and the two password screens.
  *
  * Two panes on a laptop: the form on one side, the reason to fill it in on the

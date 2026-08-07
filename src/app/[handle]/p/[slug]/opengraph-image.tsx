@@ -21,7 +21,6 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 /* An hour: long enough that a crawler is not redrawing the card,
    short enough that a renamed shop is current the same session. */
-export const revalidate = 3600;
 
 
 /**

@@ -3,6 +3,10 @@ import { Gift } from "lucide-react";
 import { PartnerSignIn } from "@/app/partner/_components/partner-sign-in";
 import { getT } from "@/i18n/server";
 
+/* Not yet converted — see the note in `next.config.ts`. */
+export const instant = false;
+
+
 export const metadata: Metadata = {
   title: "Find your referral report",
   robots: { index: false, follow: false },

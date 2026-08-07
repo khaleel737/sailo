@@ -9,6 +9,10 @@ import { interpolate } from "@/i18n";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { formatBytes, shopThemeVars } from "@/lib/utils";
 
+/* Not yet converted — see the note in `next.config.ts`. */
+export const instant = false;
+
+
 /** A private link — never something a search engine should hold on to. */
 export const metadata: Metadata = {
   title: "Your download",

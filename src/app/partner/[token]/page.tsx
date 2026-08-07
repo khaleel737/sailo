@@ -16,6 +16,10 @@ import { formatPercent } from "@/lib/pricing";
 import { formatMoney, shopThemeVars } from "@/lib/utils";
 import { CopyLink } from "@/components/shared/copy-link";
 
+/* Not yet converted — see the note in `next.config.ts`. */
+export const instant = false;
+
+
 /** A private report — never something a search engine should hold on to. */
 export const metadata: Metadata = {
   title: "Your referrals",

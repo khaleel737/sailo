@@ -25,6 +25,14 @@ import {
 import { faqJsonLd, softwareJsonLd } from "@/lib/seo";
 import { PricingSection } from "./_components/pricing-section";
 
+/*
+ * The landing page's copy is chosen by a cookie, so it cannot prerender until
+ * the locale moves into the URL. Marked here rather than on the layout, which
+ * also wraps 446 blog pages whose language is already in their path.
+ */
+export const instant = false;
+
+
 /**
  * The homepage is the one page whose canonical is "/" — it used to be declared
  * on the root layout, where every other route inherited it.

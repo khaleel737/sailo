@@ -10,6 +10,10 @@ import { getShopT } from "@/i18n/server";
 import { taxLabel } from "@/lib/tax-label";
 import { formatAddress, formatMoney } from "@/lib/utils";
 
+/* Not yet converted — see the note in `next.config.ts`. */
+export const instant = false;
+
+
 export const metadata: Metadata = {
   title: "Invoice",
   robots: { index: false, follow: false },

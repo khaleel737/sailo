@@ -13,6 +13,13 @@ import { AdminI18nProvider } from "@/app/admin/_components/admin-i18n";
 import { StatusBanners } from "@/app/admin/_components/status-banners";
 import { PanelFooter } from "@/components/shared/panel-footer";
 
+/*
+ * Per-seller, behind a session, and re-read on every visit — there is no
+ * shared shell worth extracting here. `instant = false` says so explicitly
+ * rather than leaving the build to complain about it.
+ */
+export const instant = false;
+
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const { user, shop } = await requireShop();
   const { locale, t, a, dir } = await getAdminT();

@@ -15,7 +15,6 @@ import { articlePath, blogIndexLanguages, blogIndexPath } from "@/lib/blog-urls"
  * drives the refresh each night, so the file is already current by the time a
  * crawler asks for it.
  */
-export const revalidate = 86_400;
 
 /**
  * Google reads 50,000 URLs per sitemap and no further. Everything here shares

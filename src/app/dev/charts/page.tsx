@@ -3,6 +3,10 @@ import { Chart } from "@/components/shared/chart";
 import { Card } from "@/components/ui";
 import type { Series } from "@/lib/chart/types";
 
+/* Not yet converted — see the note in `next.config.ts`. */
+export const instant = false;
+
+
 /**
  * The chart, under every dataset that has ever broken it.
  *

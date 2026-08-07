@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { RotateCw } from "lucide-react";
 import type { Dictionary } from "@/i18n";
@@ -21,34 +21,62 @@ import { cn } from "@/lib/utils";
 
 type ErrorStrings = Dictionary["errors"];
 
-const Context = createContext<ErrorStrings | null>(null);
+const ENGLISH: ErrorStrings = {
+  title: "Something went wrong",
+  body: "This page didn't load. It is usually temporary, so trying again is worth a go.",
+  retry: "Try again",
+  home: "Go to the homepage",
+  reference: "Reference",
+};
 
-export function ErrorStringsProvider({
-  value,
-  children,
-}: {
-  value: ErrorStrings;
-  children: React.ReactNode;
-}) {
-  return <Context.Provider value={value}>{children}</Context.Provider>;
+/**
+ * A store rather than a context, and that is the whole point.
+ *
+ * These strings used to arrive as `<ErrorStringsProvider value={t.errors}>`
+ * wrapping the entire app from the root layout. Reading `t` meant awaiting the
+ * visitor's locale, which meant awaiting cookies, above `{children}` — so no
+ * page beneath it could ever be prerendered and every response in the product
+ * was `Cache-Control: private, no-store`. One provider held the whole site out
+ * of the CDN.
+ *
+ * Publishing sideways instead of wrapping breaks that. `<ErrorStringsSource>`
+ * is a sibling of the page, not its parent, so it can stream in at its own
+ * pace while the page around it prerenders.
+ *
+ * The strings still reach every boundary in time, because `error.tsx` is a
+ * Client Component: React renders it after hydration, by which point the
+ * effect below has run. Anything that somehow renders earlier gets English,
+ * which is exactly what a missing provider gave before.
+ */
+let published: ErrorStrings = ENGLISH;
+const listeners = new Set<() => void>();
+
+function subscribe(onChange: () => void) {
+  listeners.add(onChange);
+  return () => listeners.delete(onChange);
+}
+
+const snapshot = () => published;
+const serverSnapshot = () => ENGLISH;
+
+/** Streamed in beside the page. Renders nothing. */
+export function ErrorStringsSource({ value }: { value: ErrorStrings }) {
+  useEffect(() => {
+    published = value;
+    for (const listener of listeners) listener();
+  }, [value]);
+
+  return null;
 }
 
 /**
- * The strings, or English if something rendered this outside the root layout.
+ * The strings, or English if nothing has published them yet.
  *
- * Unlike `useAdminT`, this does not throw on a missing provider. It is the one
+ * Unlike `useAdminT`, this does not throw when they are missing. It is the one
  * hook whose whole job is to render when things have already gone wrong.
  */
 function useErrorStrings(): ErrorStrings {
-  return (
-    useContext(Context) ?? {
-      title: "Something went wrong",
-      body: "This page didn't load. It is usually temporary, so trying again is worth a go.",
-      retry: "Try again",
-      home: "Go to the homepage",
-      reference: "Reference",
-    }
-  );
+  return useSyncExternalStore(subscribe, snapshot, serverSnapshot);
 }
 
 /**

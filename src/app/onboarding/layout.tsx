@@ -1,6 +1,13 @@
 import { GoogleTag } from "@/lib/google-tag";
 import { ConsentGate } from "@/components/shared/consent-gate";
 
+/*
+ * Per-seller, behind a session, and re-read on every visit — there is no
+ * shared shell worth extracting here. `instant = false` says so explicitly
+ * rather than leaving the build to complain about it.
+ */
+export const instant = false;
+
 /**
  * Onboarding exists as a layout only to carry the Google tag.
  *

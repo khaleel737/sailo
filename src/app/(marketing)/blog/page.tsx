@@ -3,6 +3,9 @@ import { getLocale } from "@/i18n/server";
 import { getContentLocales } from "@/lib/blog";
 import { DEFAULT_LOCALE } from "@/i18n/config";
 
+/* A redirect that reads the visitor's language. Dynamic by nature. */
+export const instant = false;
+
 /**
  * `/blog` is not a page. It is the door to one.
  *
