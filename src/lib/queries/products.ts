@@ -1,8 +1,9 @@
 import "server-only";
+import { cacheLife, cacheTag } from "next/cache";
 import { and, asc, desc, eq, gte, ilike, inArray, lte, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { categories, productFiles, productImages, productVariants, products, reviews, type Category, type Product, type ProductImage, type ProductVariant } from "@/db/schema";
-import { cachedForShop, shopTag } from "@/lib/cache";
+import { shopTag } from "@/lib/cache";
 import { nextOffsetFor, orderByIds } from "./pagination";
 
 /** Reading the catalogue, for the storefront and for the admin. */
@@ -236,26 +237,36 @@ export async function getAdminProduct(shopId: string, id: string) {
   return product ?? null;
 }
 
-export const getPublicProducts = cachedForShop(
-  /*
-   * The suffix is part of the cache key, and it moves whenever the shape of
-   * what this returns changes.
-   *
-   * These entries never expire — `cachedForShop` sets `revalidate: false` and
-   * relies on tag invalidation, which only fires when a seller edits their
-   * shop. So a deploy that changes the shape meets entries written by the
-   * previous one: this used to return `ProductCard[]` and now returns a page,
-   * and the new code reading `.items` off an old array gets `undefined` and
-   * takes the storefront down until every shop happens to be edited. Renaming
-   * the key retires the old entries instead of reinterpreting them.
-   */
-  ["public-products-v2-page"],
-  readPublicProducts,
-  (shopId) => [shopTag(shopId)],
-);
+/**
+ * One page of a shop's public catalogue.
+ *
+ * The arguments are the cache key now — Next derives it from them — where
+ * `cachedForShop` needed a hand-written key part and a `stringify` helper to
+ * fold the filter object in. One fewer thing to get wrong: a filter that was
+ * invisible to the old key would have served two different catalogues from
+ * one entry.
+ *
+ * That hand-written key also carried a version suffix, because entries never
+ * expire and a deploy changing the return shape met entries written by the
+ * previous one. Arguments-as-key does not fix that on its own, so if the
+ * shape of `ProductPage` changes again, bump `cacheTag` here rather than
+ * hoping every shop is edited.
+ */
+export async function getPublicProducts(
+  shopId: string,
+  filters: ShopFilters = {},
+  offset = 0,
+  limit = PRODUCT_PAGE_SIZE,
+): Promise<ProductPage> {
+  "use cache";
+  cacheLife("max");
+  cacheTag(shopTag(shopId));
+  return readPublicProducts(shopId, filters, offset, limit);
+}
 
-export const getProductBySlug = cachedForShop(
-  ["product-by-slug"],
-  readProductBySlug,
-  (shopId) => [shopTag(shopId)],
-);
+export async function getProductBySlug(shopId: string, slug: string) {
+  "use cache";
+  cacheLife("max");
+  cacheTag(shopTag(shopId));
+  return readProductBySlug(shopId, slug);
+}

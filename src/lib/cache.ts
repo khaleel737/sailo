@@ -1,5 +1,5 @@
 import "server-only";
-import { unstable_cache, revalidateTag, updateTag } from "next/cache";
+import { revalidateTag, updateTag } from "next/cache";
 
 /**
  * Storefront caching.
@@ -14,6 +14,12 @@ import { unstable_cache, revalidateTag, updateTag } from "next/cache";
  * So the catalogue is cached per shop and invalidated by tag the moment
  * anything about that shop changes. Not by time: a seller who fixes a typo
  * should see it immediately, not in five minutes.
+ *
+ * The caching itself now lives at each reader as `"use cache"` — this module
+ * is just the tag vocabulary and the invalidation both sides agree on. The
+ * `cachedForShop` wrapper that used to sit here is gone: `unstable_cache`
+ * needed a hand-written key, and a hand-written key is a thing that can
+ * silently omit an argument and serve two shops one answer.
  *
  * Cookies and headers must never be read inside a cached scope — the locale a
  * visitor chose isn't part of the catalogue, so it stays outside and the
@@ -30,33 +36,6 @@ export function handleTag(handle: string) {
   return `handle:${handle.toLowerCase()}`;
 }
 
-/**
- * Wraps a per-shop read. `keyParts` must include everything the result varies
- * by — Next keys on the arguments, but a closure over a filter object would be
- * invisible to it and two different filters would share one entry.
- */
-export function cachedForShop<Args extends unknown[], Result>(
-  keyParts: string[],
-  fn: (...args: Args) => Promise<Result>,
-  // Takes only the first argument — the shop id or handle every one of these
-  // is keyed by. Taking `...Args` made inference pick this signature over the
-  // reader's, and a reader with an optional second parameter lost it.
-  tagsFor: (subject: Args[0]) => string[],
-): (...args: Args) => Promise<Result> {
-  return (...args: Args): Promise<Result> =>
-    unstable_cache(() => fn(...args), [...keyParts, ...args.map(stringify)], {
-      tags: tagsFor(args[0]),
-      // No time limit. Writes invalidate explicitly, which is both fresher and
-      // cheaper than re-reading on a timer nobody asked for.
-      revalidate: false,
-    })();
-}
-
-function stringify(value: unknown): string {
-  if (value === undefined) return "";
-  if (typeof value === "string") return value;
-  return JSON.stringify(value);
-}
 
 /**
  * Called from every write path that changes what a storefront renders.

@@ -1,8 +1,9 @@
 import "server-only";
+import { cacheLife, cacheTag } from "next/cache";
 import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { categories, products, reviews, shops, type Shop } from "@/db/schema";
-import { cachedForShop, handleTag, shopTag } from "@/lib/cache";
+import { handleTag, shopTag } from "@/lib/cache";
 
 /** The shop itself, and what it stocks — for building its storefront filters. */
 
@@ -114,14 +115,25 @@ export async function getShopFacets(shopId: string): Promise<ShopFacets> {
 /*  Admin                                                                      */
 /* -------------------------------------------------------------------------- */
 
-export const getShopByHandle = cachedForShop(
-  ["shop-by-handle"],
-  readShopByHandle,
-  (handle) => [handleTag(handle)],
-);
+/**
+ * The handle → shop lookup, cached until the shop changes.
+ *
+ * `cacheLife("max")` rather than a duration: nothing here goes stale on a
+ * clock. A shop's row changes when its owner edits it and at no other time, so
+ * a timer would only mean re-reading Postgres to discover nothing moved — and
+ * a short one would mean a seller waiting out a TTL to see their own typo fix.
+ * `revalidateShop` is what expires these, on the write that made them wrong.
+ */
+export async function getShopByHandle(handle: string): Promise<Shop | null> {
+  "use cache";
+  cacheLife("max");
+  cacheTag(handleTag(handle));
+  return readShopByHandle(handle);
+}
 
-export const getShopCategories = cachedForShop(
-  ["shop-categories"],
-  readShopCategories,
-  (shopId) => [shopTag(shopId)],
-);
+export async function getShopCategories(shopId: string) {
+  "use cache";
+  cacheLife("max");
+  cacheTag(shopTag(shopId));
+  return readShopCategories(shopId);
+}

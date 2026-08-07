@@ -1,8 +1,9 @@
 import "server-only";
+import { cacheLife, cacheTag } from "next/cache";
 import { and, asc, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { deliveryMethods, paymentMethods, shops } from "@/db/schema";
-import { cachedForShop, shopTag } from "@/lib/cache";
+import { shopTag } from "@/lib/cache";
 import { can } from "@/lib/plans";
 import { isRailUsable, type PaymentMethodType } from "@/lib/payments";
 import { isDeliveryConfigured, type DeliveryMethodType } from "@/lib/delivery";
@@ -91,11 +92,12 @@ async function readCheckoutOptions(shopId: string) {
 /*  Coupons                                                                    */
 /* -------------------------------------------------------------------------- */
 
-export const getCheckoutOptions = cachedForShop(
-  ["checkout-options"],
-  readCheckoutOptions,
-  (shopId) => [shopTag(shopId)],
-);
+export async function getCheckoutOptions(shopId: string) {
+  "use cache";
+  cacheLife("max");
+  cacheTag(shopTag(shopId));
+  return readCheckoutOptions(shopId);
+}
 
 /** The rails and delivery options a buyer may choose from. */
 export type CheckoutOptions = Awaited<ReturnType<typeof readCheckoutOptions>>;
