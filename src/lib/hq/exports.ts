@@ -4,6 +4,7 @@ import { desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, clients, orders, products, shops, user } from "@/db/schema";
 import { num } from "./pagination";
+import { notStaff } from "./roster";
 
 /** Bulk reads for CSV export. Capped — a full table is not a download. */
 
@@ -24,6 +25,8 @@ export async function getAllAccountsForExport(limit = 5000) {
     })
     .from(user)
     .leftJoin(shops, eq(shops.userId, user.id))
+    // Same rule as the accounts page: the export is our customers, not us.
+    .where(notStaff())
     .orderBy(desc(user.createdAt))
     .limit(limit);
 

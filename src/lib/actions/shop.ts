@@ -8,9 +8,9 @@ import { redirect } from "next/navigation";
 import { and, eq, ne } from "drizzle-orm";
 import { getDb } from "@/db";
 import { paymentMethods, shops, type ShopSocial } from "@/db/schema";
-import { requireShop, requireUser } from "@/lib/session";
+import { isStaff, requireShop, requireUser } from "@/lib/session";
 import { normalizePhone, SOCIAL_PLATFORMS } from "@/lib/utils";
-import { HANDLE_MESSAGES, normalizeHandle, suggestHandles, validateHandleFormat } from "@/lib/handle";
+import { BRAND_HANDLE, HANDLE_MESSAGES, normalizeHandle, suggestHandles, validateHandleFormat } from "@/lib/handle";
 import { LOCALES, type Locale } from "@/i18n/config";
 
 export type ActionState = { ok: boolean; error?: string; message?: string };
@@ -54,7 +54,17 @@ function isHandleCollision(error: unknown) {
 async function checkHandleAvailability(raw: string, exceptShopId?: string) {
   const handle = normalizeHandle(raw);
   const problem = validateHandleFormat(raw);
-  if (problem) return { handle, problem } as const;
+
+  /*
+   * "Reserved" has exactly one exception: the brand handle, for us. A staff
+   * session claiming sailo.store/sailo falls through to the taken check like
+   * any other handle; everyone else keeps the refusal. Every path that writes
+   * a handle runs through here, so this is the whole carve-out.
+   */
+  const ours =
+    problem === "reserved" && handle === BRAND_HANDLE && (await isStaff());
+
+  if (problem && !ours) return { handle, problem } as const;
   if (await handleTaken(handle, exceptShopId)) {
     return { handle, problem: "taken" } as const;
   }

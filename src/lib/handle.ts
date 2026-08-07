@@ -25,6 +25,15 @@ export const RESERVED_HANDLES = new Set([
   "fil",
 ]);
 
+/**
+ * The one reserved handle that can be claimed at all — by us. sailo.store/sailo
+ * is the brand's own storefront, kept out of sellers' reach like the rest of
+ * the reserved list; the carve-out that lets a staff session take it lives in
+ * the shop actions, beside the availability check, because only the server
+ * knows who is asking.
+ */
+export const BRAND_HANDLE = "sailo";
+
 export type HandleProblem =
   | "empty"
   | "too_short"

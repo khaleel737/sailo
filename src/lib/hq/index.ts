@@ -12,6 +12,7 @@
  */
 
 export * from "./pagination";
+export * from "./roster";
 export * from "./billing-state";
 export * from "./overview";
 export * from "./accounts";

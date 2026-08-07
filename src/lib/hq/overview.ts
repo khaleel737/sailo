@@ -7,6 +7,7 @@ import { mergeCurrencyTotals, rollUpRevenue } from "@/lib/hq-metrics";
 import type { BillingGroup, CurrencyTotal } from "@/lib/hq-metrics";
 import { ENTITLED } from "./billing-state";
 import { daysAgo, num, utcDayWindow } from "./pagination";
+import { notStaff } from "./roster";
 
 /** The platform at a glance: revenue, activation, growth. */
 
@@ -34,7 +35,8 @@ export async function getPlatformOverview() {
     [traffic],
   ] = await Promise.all([
     // Registrations, with the previous window alongside so the tiles can say
-    // whether the number is going anywhere.
+    // whether the number is going anywhere. Customers only — counting our own
+    // staff account as a signup would flatter every one of these tiles by one.
     db
       .select({
         total: sql<string>`count(*)`,
@@ -44,7 +46,8 @@ export async function getPlatformOverview() {
         prevWeek: sql<string>`count(*) filter (where ${user.createdAt} >= ${twoWeeks} and ${user.createdAt} < ${week})`,
         prevMonth: sql<string>`count(*) filter (where ${user.createdAt} >= ${twoMonths} and ${user.createdAt} < ${month})`,
       })
-      .from(user),
+      .from(user)
+      .where(notStaff()),
 
     db
       .select({
@@ -213,7 +216,7 @@ export async function getActivationFunnel() {
   const db = getDb();
 
   const [[users], [shopped], [stocked], [sold], [paid]] = await Promise.all([
-    db.select({ n: sql<string>`count(*)` }).from(user),
+    db.select({ n: sql<string>`count(*)` }).from(user).where(notStaff()),
     db
       .select({
         n: sql<string>`count(*)`,
@@ -265,7 +268,7 @@ export async function getSignupSeries(days = 30) {
       count: sql<string>`count(*)`,
     })
     .from(user)
-    .where(gte(user.createdAt, since))
+    .where(and(gte(user.createdAt, since), notStaff()))
     .groupBy(sql`${user.createdAt}::date`);
 
   const byDay = new Map(rows.map((r) => [r.day, num(r.count)]));

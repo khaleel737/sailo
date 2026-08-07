@@ -6,6 +6,7 @@ import { products, shops, user, type Shop } from "@/db/schema";
 import { stateFilter } from "./billing-state";
 import type { BillingState } from "@/lib/hq-metrics";
 import { HQ_PAGE_SIZE, like, num, paginate } from "./pagination";
+import { notStaff } from "./roster";
 import { getDashboardStats, getRevenueSeries, getShopAffiliates, getShopClients, getShopCoupons, getShopDeliveryMethods, getShopOrders, getShopPaymentMethods, getVisitSeries } from "@/lib/queries";
 import { getStaffLog } from "./system";
 
@@ -147,7 +148,9 @@ function accountWhere(filters: AccountFilters): SQL | undefined {
 export async function getAccounts(filters: AccountFilters = {}) {
   await requireStaff();
   const db = getDb();
-  const where = accountWhere(filters);
+  // Customers only: the staff account is a user like any other, but it is not
+  // an account we acquired, so it has no place in a list of them.
+  const where = and(notStaff(), accountWhere(filters));
 
   const result = await paginate(
     filters.page ?? 1,
