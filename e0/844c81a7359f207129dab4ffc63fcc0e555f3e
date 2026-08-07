@@ -1,0 +1,20 @@
+src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_2e1da3b18d1c53::t_df1af27db35696 3
+  s_2e1da3b18d1c53::t_4c66437a4dc6fa 6,101-104,123,134,174-199,201
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "e0844c81a7359f207129dab4ffc63fcc0e555f3e",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
