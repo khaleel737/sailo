@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, lt, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { coupons, type Coupon } from "@/db/schema";
 import { maybeRow } from "@/lib/invariant";
@@ -34,9 +34,23 @@ export async function claimCouponRedemption(coupon: Coupon): Promise<boolean> {
       .where(
         and(
           eq(coupons.id, coupon.id),
-          coupon.maxRedemptions === null
-            ? undefined
-            : lt(coupons.timesRedeemed, coupon.maxRedemptions),
+          /*
+           * The cap is read from the column, not from the row the caller is
+           * holding.
+           *
+           * `resolveCoupon` read that row earlier in the checkout, so its
+           * `maxRedemptions` is a snapshot. Baking it in as a literal made the
+           * statement atomic against a number that may already be stale: a
+           * seller raising the cap mid-checkout would still see in-flight
+           * buyers refused against the old limit, and lowering it would let
+           * claims through above the new one. Comparing column to column is
+           * the only version that enforces the cap as it stands.
+           *
+           * A NULL cap means unlimited, and `<` against NULL is NULL — never
+           * true — so it has to be spelled out rather than left to the
+           * comparison.
+           */
+          sql`(${coupons.maxRedemptions} is null or ${coupons.timesRedeemed} < ${coupons.maxRedemptions})`,
         ),
       )
       .returning({ id: coupons.id }),

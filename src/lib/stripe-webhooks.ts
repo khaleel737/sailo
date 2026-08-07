@@ -191,19 +191,37 @@ export function intentIdOf(
  * Every seller on Sailo controls their own Stripe account, so an event naming
  * an order is not evidence that the order's seller sent it.
  */
-async function ownedBySender<T extends { shopId: string }>(
+async function ownedBySender<T extends { shopId: string; stripeAccountId?: string | null }>(
   order: T | undefined,
   accountId: string | null,
 ): Promise<T | null> {
   if (!order) return null;
 
-  const shop = await getDb().query.shops.findFirst({
-    where: eq(shops.id, order.shopId),
-    columns: { stripeAccountId: true },
-  });
-  return sameAccount(shop?.stripeAccountId ?? null, sendingAccount(accountId))
-    ? order
-    : null;
+  /*
+   * The account the charge was actually made on, when the order recorded one.
+   *
+   * `orders.stripeAccountId` is written at handoff and never changes, which is
+   * what makes it the right authority. Resolving ownership through the live
+   * `shops` row instead meant that disconnecting Stripe — or Stripe
+   * deauthorizing the account — detached every historical order from its own
+   * webhooks: a chargeback on last month's sale arrived on the old account,
+   * failed to match the shop's new (or null) one, and was dropped. The order
+   * kept reading as a completed sale while the money had already left.
+   *
+   * The shop is still the fallback for orders written before that column was
+   * populated, and for rails that never touch Connect.
+   */
+  const owner =
+    order.stripeAccountId ??
+    (
+      await getDb().query.shops.findFirst({
+        where: eq(shops.id, order.shopId),
+        columns: { stripeAccountId: true },
+      })
+    )?.stripeAccountId ??
+    null;
+
+  return sameAccount(owner, sendingAccount(accountId)) ? order : null;
 }
 
 /**

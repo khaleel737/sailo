@@ -90,10 +90,13 @@ test.describe("routes that must refuse", () => {
    * merely unpublished, and that it is not indexable.
    */
   test("an unknown shop reveals nothing and is not indexable", async ({ page }) => {
-    const res = await page.goto("/definitely-not-a-shop-xyz");
+    const res = await page.goto("/definitely-not-a-shop-xyz", { waitUntil: "networkidle" });
     const body = await page.content();
+    const visible = await page.locator("body").innerText();
 
     expect(body).toMatch(/not found/i);
+    // Checked before the second navigation below, which moves page.url().
+    expect(new URL(page.url()).pathname).toBe("/definitely-not-a-shop-xyz");
 
     /*
      * The noindex tag is what stops a soft 404 becoming a search result.
@@ -109,9 +112,29 @@ test.describe("routes that must refuse", () => {
     for (let i = 0; i < tags; i++) {
       await expect(robots.nth(i)).toHaveAttribute("content", /noindex/);
     }
-    // Whatever the status, it must never be a redirect to somewhere real or a
-    // page carrying a real shop's name.
+    // Whatever the status, it must never be a redirect to somewhere real.
     expect(res?.status()).toBeLessThan(400);
-    expect(new URL(page.url()).pathname).toBe("/definitely-not-a-shop-xyz");
+
+    /*
+     * A second, different unknown handle — because one request cannot show the
+     * property this test is named for.
+     *
+     * The previous version fetched a single handle and then asserted, in a
+     * comment, that the response was indistinguishable from another's. It
+     * never compared anything, so a regression that leaked a real shop's name
+     * or a different status on one handle would have kept it green.
+     *
+     * Compared on what a visitor can see rather than on the HTML: the dev
+     * server injects per-request HMR and devtools chunks, so `page.content()`
+     * differs between two identical pages and can never assert this.
+     */
+    const other = await page.goto("/definitely-not-a-shop-abc", { waitUntil: "networkidle" });
+    const otherVisible = await page.locator("body").innerText();
+
+    expect(otherVisible.replace(/definitely-not-a-shop-abc/g, "X")).toBe(
+      visible.replace(/definitely-not-a-shop-xyz/g, "X"),
+    );
+    expect(other?.status()).toBe(res?.status());
+    expect(new URL(page.url()).pathname).toBe("/definitely-not-a-shop-abc");
   });
 });

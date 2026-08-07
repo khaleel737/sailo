@@ -142,8 +142,8 @@ describe("parseMoneyToCents", () => {
   it.each([
     ["1,299.99", 129_999],
     ["1,299", 129_900],
-    ["1.299", 129_900],
     ["1,234,567", 123_456_700],
+    ["1.234.567", 123_456_700],
   ])("reads a thousands separator: %j → %i", (input, cents) => {
     expect(parseMoneyToCents(input)).toBe(cents);
   });
@@ -154,9 +154,35 @@ describe("parseMoneyToCents", () => {
     expect(parseMoneyToCents("1,234.56")).toBe(123_456);
   });
 
-  it("treats exactly three trailing digits as a group, not thousandths", () => {
-    // Nobody prices in thousandths, and "1.299" is 1299 to most of Europe.
-    expect(parseMoneyToCents("1.299")).toBe(129_900);
+  it("never multiplies a price by a thousand", () => {
+    /*
+     * The regression this replaces. An earlier version read "exactly three
+     * digits after a lone separator" as grouping whichever separator it was,
+     * so a seller typing 12.500 for twelve fifty was charged twelve thousand
+     * five hundred, and 0.750 became seven hundred and fifty.
+     */
+    expect(parseMoneyToCents("12.500")).toBe(1250);
+    expect(parseMoneyToCents("0.750")).toBe(75);
+    expect(parseMoneyToCents("0,750")).toBe(75);
+  });
+
+  it("only reads a comma as a group when the lead could be one", () => {
+    // "1,299" groups; "0,750" cannot, because no grouped number starts with a
+    // lone zero.
+    expect(parseMoneyToCents("1,299")).toBe(129_900);
+    expect(parseMoneyToCents("0,750")).toBe(75);
+  });
+
+  it("keeps a lone dot a decimal point, and says so", () => {
+    /*
+     * Deliberately asymmetric with the comma rule. A European writing "1.299"
+     * for one thousand two hundred and ninety-nine gets 1.30 here, which is
+     * wrong — but it is the direction this has always been wrong in, it shows
+     * on the page the moment they save, and the alternative multiplies prices
+     * by a thousand. Resolving it needs the shop's locale, which the parser
+     * is not given. Pinned so the trade-off is a decision, not an accident.
+     */
+    expect(parseMoneyToCents("1.299")).toBe(130);
   });
 
   it("passes a number straight through", () => {

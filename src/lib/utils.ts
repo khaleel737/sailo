@@ -40,11 +40,21 @@ export function formatMoney(cents: number, currency = "USD") {
  *
  * - Both separators present — the *later* one is the decimal point, because
  *   grouping always comes before the fraction in both conventions.
- * - One separator, appearing more than once — grouping. "1,234,567".
- * - One separator with exactly three digits after it — grouping. "1,299" and
- *   "1.299" are both 1299; nobody prices in thousandths.
- * - One separator otherwise — a decimal point. This is the case that was
- *   missing.
+ * - One separator, appearing more than once — grouping. "1,234,567" and
+ *   "1.234.567".
+ * - A lone dot — always a decimal point. This is deliberately *not* symmetric
+ *   with the comma rule below, and the asymmetry is the point: a lone dot has
+ *   meant a decimal point here since the beginning, and treating "12.500" as
+ *   twelve thousand five hundred multiplies a seller's price by a thousand.
+ *   The cost is that a European writing "1.299" for one thousand two hundred
+ *   and ninety-nine gets 1.30, which is wrong but is wrong in the direction
+ *   this function has always been wrong in, and is visible on the page the
+ *   moment they save. Resolving it properly needs the shop's locale, which
+ *   this function is not given.
+ * - A lone comma with exactly three digits behind it *and* a leading part that
+ *   could really be a group — grouping. "1,299" is 1299.
+ * - A lone comma otherwise — a decimal point. "12,5" is 12.50, which is the
+ *   case that was missing and the reason any of this exists.
  */
 function decimalSeparator(value: string): "." | "," | null {
   const lastDot = value.lastIndexOf(".");
@@ -52,10 +62,20 @@ function decimalSeparator(value: string): "." | "," | null {
   if (lastDot === -1 && lastComma === -1) return null;
   if (lastDot !== -1 && lastComma !== -1) return lastDot > lastComma ? "." : ",";
 
-  const separator = lastDot === -1 ? "," : ".";
+  const separator: "." | "," = lastDot === -1 ? "," : ".";
   const at = Math.max(lastDot, lastComma);
+
+  // Only grouping repeats.
   if (value.indexOf(separator) !== at) return null;
-  return value.length - at - 1 === 3 ? null : separator;
+  if (separator === ".") return ".";
+
+  /*
+   * A leading part that cannot be a thousands group means the comma is a
+   * decimal point whatever follows it. "0,750" is seventy-five cents: no
+   * grouped number begins with a lone zero.
+   */
+  const canGroup = /^[1-9]\d{0,2}$/.test(value.slice(0, at));
+  return value.length - at - 1 === 3 && canGroup ? null : ",";
 }
 
 /**
@@ -67,13 +87,13 @@ function decimalSeparator(value: string): "." | "," | null {
  * single validation message, and the same string typed into the tax field was
  * already being read the other way.
  */
-export function parseMoneyToCents(value: string | number): number {
+export function moneyToCents(value: string | number): number | null {
   if (typeof value === "number") {
-    return Number.isFinite(value) ? Math.max(0, Math.round(value * 100)) : 0;
+    return Number.isFinite(value) ? Math.max(0, Math.round(value * 100)) : null;
   }
 
   const cleaned = String(value).replace(/[^0-9.,-]/g, "");
-  if (!cleaned) return 0;
+  if (!cleaned) return null;
 
   const separator = decimalSeparator(cleaned);
   const normalized = separator
@@ -81,8 +101,21 @@ export function parseMoneyToCents(value: string | number): number {
     : cleaned.replace(/[.,]/g, "");
 
   const n = Number(normalized);
-  if (!Number.isFinite(n)) return 0;
+  if (!Number.isFinite(n)) return null;
   return Math.max(0, Math.round(n * 100));
+}
+
+/**
+ * The same, for a caller that must end up with a number.
+ *
+ * A price input on a form has nowhere to put "that wasn't a number", so it
+ * settles for zero. An importer does — an unusable cell there means "inherit
+ * from the product", which is not the same as free — so it calls
+ * `moneyToCents` and keeps the null. Collapsing the two is how a variant whose
+ * price column held a stray "-" went live costing nothing.
+ */
+export function parseMoneyToCents(value: string | number): number {
+  return moneyToCents(value) ?? 0;
 }
 
 /** Human file size for download listings: 1536 → "1.5 KB". */

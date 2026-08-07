@@ -4,7 +4,7 @@
  * symbols or thousand separators, and a `Handle` as the product's stable key.
  */
 
-import { parseMoneyToCents } from "@/lib/utils";
+import { moneyToCents } from "@/lib/utils";
 
 /** Formats minor units as a bare decimal — `29.99`, never `$29.99`. */
 export function money(cents: number | null | undefined) {
@@ -91,12 +91,15 @@ export function parseBool(value: string, fallback = false) {
  * Returns minor units, or null for blank — which is not zero: an empty price
  * column means "inherit from the product", and zero means free.
  *
- * Defers to `parseMoneyToCents` so an imported CSV and a typed form field read
- * the same string the same way. This had its own convention, which stripped
- * every comma and turned a European seller's "12,5" into 1250 cents.
+ * Defers to `moneyToCents` so an imported CSV and a typed form field read the
+ * same string the same way. This had its own convention, which stripped every
+ * comma and turned a European seller's "12,5" into 1250 cents.
+ *
+ * `moneyToCents` and not `parseMoneyToCents`: the latter answers 0 for text
+ * that is not a number, which a form field needs and an importer must not
+ * have. A cell holding a stray "-" as a same-as-product placeholder would
+ * otherwise price that variant at zero and sell it free.
  */
 export function parseMoneyField(value: string): number | null {
-  const cleaned = value.replace(/[^0-9.,-]/g, "");
-  if (!cleaned) return null;
-  return parseMoneyToCents(cleaned);
+  return moneyToCents(value);
 }

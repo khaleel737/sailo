@@ -229,3 +229,34 @@ describe("parseMoneyField", () => {
     expect(parseMoneyField("$29.99")).toBe(2999);
   });
 });
+
+describe("parseMoneyField distinguishes no answer from zero", () => {
+  /*
+   * The importer treats null as "inherit the product's price" and 0 as free.
+   * A delegation to `parseMoneyToCents` — which answers 0 for text that is not
+   * a number, because a form field has nowhere else to go — collapsed the two,
+   * and a variant whose price cell held a stray "-" went live costing nothing.
+   */
+  it.each(["-", ".", ",", "1-2", "n/a", "TBC", "--"])(
+    "returns null for unusable text, not 0 (%j)",
+    (value) => {
+      expect(parseMoneyField(value)).toBeNull();
+    },
+  );
+
+  it("still returns 0 for a real zero, which means free", () => {
+    expect(parseMoneyField("0")).toBe(0);
+    expect(parseMoneyField("0.00")).toBe(0);
+    expect(parseMoneyField("0,00")).toBe(0);
+  });
+
+  it("returns null for blank, which means inherit", () => {
+    expect(parseMoneyField("")).toBeNull();
+    expect(parseMoneyField("   ")).toBeNull();
+  });
+
+  it("never multiplies an imported price by a thousand", () => {
+    expect(parseMoneyField("12.500")).toBe(1250);
+    expect(parseMoneyField("0.750")).toBe(75);
+  });
+});

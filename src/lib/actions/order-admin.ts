@@ -56,7 +56,17 @@ export async function updateOrderStatus(formData: FormData) {
    */
   if (isStockReleasingStatus(status)) {
     await restoreStock(order);
-  } else if (isStockReleasingStatus(order.status) && order.restockedAt) {
+  } else if (order.status === "cancelled" && order.restockedAt) {
+    /*
+     * Only *cancelled* is reversible, and the asymmetry is deliberate.
+     *
+     * Un-cancelling is a seller correcting a mistake: the goods never left, so
+     * taking them back off the shelf is right. Refunding is not a mistake — the
+     * money went back and, ordinarily, so did the goods. Reading this branch as
+     * `isStockReleasingStatus(order.status)` meant a seller who refunded an
+     * order and then tidied it to `completed` silently had the returned units
+     * taken off the shelf again, with the refund still standing.
+     */
     await retakeStock(order);
   }
 
