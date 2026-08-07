@@ -1,4 +1,5 @@
 import { readableOn } from "@/lib/utils";
+import { isRenderableImageUrl } from "@/lib/file-urls";
 
 /*
  * Shared parts for every generated social card and favicon.
@@ -52,6 +53,19 @@ export function clamp(text: string | null | undefined, max: number) {
  */
 export async function fetchImage(url: string | null | undefined) {
   if (!url) return null;
+
+  /*
+   * The host check, at the point of the fetch.
+   *
+   * This is a server-side request whose URL a seller supplies, on a route that
+   * is public and unauthenticated — the same shape as the download hole, and
+   * easier to reach because no order and no payment stand in front of it. The
+   * write paths validate too, but this is the one that has to hold: it is the
+   * only place that knows a fetch is about to happen, and it covers rows that
+   * were stored before those paths were guarded.
+   */
+  if (!isRenderableImageUrl(url)) return null;
+
   try {
     /*
      * `cache: "no-store"` is load-bearing, not a default.
@@ -68,6 +82,13 @@ export async function fetchImage(url: string | null | undefined) {
     const response = await fetch(url, {
       signal: AbortSignal.timeout(5_000),
       cache: "no-store",
+      /*
+       * The host check above is pre-flight only, and `follow` would let the
+       * allowed host hand us a `Location` pointing anywhere — which is the
+       * check bypassed by the one party it is meant to constrain. A redirect
+       * is not something a stored image needs.
+       */
+      redirect: "manual",
     });
     if (!response.ok) return null;
 

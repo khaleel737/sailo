@@ -125,11 +125,30 @@ describe("readTags and readImageUrls", () => {
   it("caps images at eight and drops blanks", () => {
     const pairs: [string, string][] = Array.from({ length: 12 }, (_, i) => [
       "imageUrls",
-      i === 0 ? "  " : `https://x/${i}.jpg`,
+      i === 0 ? "  " : `https://abc.public.blob.vercel-storage.com/${i}.jpg`,
     ]);
     const urls = readImageUrls(form(pairs));
     expect(urls).toHaveLength(8);
     expect(urls).not.toContain("");
+  });
+
+  it("drops an image URL the server must not fetch", () => {
+    /*
+     * A server action takes whatever the client sends — the upload widget in
+     * front of this is a suggestion, not a constraint — and these end up in
+     * `lib/og.tsx`'s `fetchImage`, which runs on a public unauthenticated
+     * route. An unvalidated string here is a server-side request a seller
+     * composes.
+     */
+    const urls = readImageUrls(
+      form([
+        ["imageUrls", "http://169.254.169.254/latest/meta-data/"],
+        ["imageUrls", "http://10.0.0.5:8080/"],
+        ["imageUrls", "https://evil.tld/a.png"],
+        ["imageUrls", "https://abc.public.blob.vercel-storage.com/ok.jpg"],
+      ]),
+    );
+    expect(urls).toEqual(["https://abc.public.blob.vercel-storage.com/ok.jpg"]);
   });
 });
 

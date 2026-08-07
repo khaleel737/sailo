@@ -5,7 +5,7 @@ import { revalidateShop } from "@/lib/cache";
 import { firstRow } from "@/lib/invariant";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { isStoredFileUrl } from "@/lib/file-urls";
+import { isStoredFileUrl, isRenderableImageUrl } from "@/lib/file-urls";
 import {
   optionalCents,
   optionalCount,
@@ -78,7 +78,9 @@ async function syncVariants(
       })(),
       stockQuantity: trackInventory ? optionalCount(row.stock) : null,
       isAvailable: row.available !== false,
-      imageUrl: text(row.image, 500),
+      // Fetched server-side by the social card, so it gets the same host
+      // check the product's own gallery does.
+      imageUrl: isRenderableImageUrl(row.image) ? row.image : null,
       position,
       updatedAt: new Date(),
     };

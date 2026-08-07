@@ -5,6 +5,7 @@ import { categories, productImages, products, productVariants, type ProductOptio
 import { firstRow, maybeRow } from "@/lib/invariant";
 import { field, parseBool, parseMoneyField } from "@/lib/csv";
 import { slugify } from "@/lib/utils";
+import { isRenderableImageUrl } from "@/lib/file-urls";
 import { atProductLimit } from "@/lib/plans";
 import { MAX_VARIANTS, optionKey } from "@/lib/variants";
 import { parse, type Row } from "./parse";
@@ -329,7 +330,14 @@ export async function importProducts(opts: {
           imageSrc
             .split(/[|\n]/)
             .map((u) => u.trim())
-            .filter((u) => /^https?:\/\//i.test(u)),
+            /*
+             * A scheme test is not a host check — it accepts
+             * `http://169.254.169.254/` — and these URLs are fetched
+             * server-side when the product's social card renders. Same
+             * allowlist as the product form, so an import cannot store what
+             * the form would refuse.
+             */
+            .filter(isRenderableImageUrl),
         ),
       ].slice(0, 8);
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isStoredFileUrl } from "@/lib/file-urls";
+import { isRenderableImageUrl, isStoredFileUrl } from "@/lib/file-urls";
 
 /**
  * The allowlist standing between a seller and a server-side fetch.
@@ -101,5 +101,84 @@ describe("isStoredFileUrl — what must keep working", () => {
     const value: unknown = "https://abc.public.blob.vercel-storage.com/f.zip";
     if (!isStoredFileUrl(value)) throw new Error("expected acceptance");
     expect(value.startsWith("https://")).toBe(true);
+  });
+});
+
+/**
+ * The same hole, in the place it was never patched.
+ *
+ * `lib/og.tsx` fetches an image URL server-side to draw a shop's social card,
+ * and the two `opengraph-image` routes are public, unauthenticated and
+ * directly requestable — no order and no payment in front of them, unlike the
+ * download route. Signup is open, so the seller who supplies `avatarUrl` is
+ * not a trusted party.
+ *
+ * The allowlist is the product's own: `next.config.ts` names these three hosts
+ * in `images.remotePatterns` and the CSP names them again in `img-src`, so
+ * nothing that fails here could have rendered in a browser anyway.
+ */
+describe("isRenderableImageUrl", () => {
+  it("accepts the hosts the product can already display", () => {
+    for (const url of [
+      "https://abc123.public.blob.vercel-storage.com/img/a.png",
+      "https://picsum.photos/seed/1/600",
+      "https://images.unsplash.com/photo-123",
+    ]) {
+      expect(isRenderableImageUrl(url), url).toBe(true);
+    }
+  });
+
+  it("refuses the internal address space", () => {
+    // The card is rendered on demand with `cache: "no-store"`, so each of
+    // these would be a fresh outbound request the attacker times.
+    for (const url of [
+      "http://169.254.169.254/latest/meta-data/",
+      "http://10.0.0.5:8080/",
+      "http://127.0.0.1:3000/api/cron/sweep",
+      "http://[::1]/",
+      "http://192.168.1.1/",
+    ]) {
+      expect(isRenderableImageUrl(url), url).toBe(false);
+    }
+  });
+
+  it("refuses a scheme that is not https", () => {
+    // `/^https?:\/\//` was the CSV importer's whole check, and it accepts the
+    // first of these.
+    for (const url of [
+      "http://picsum.photos/seed/1/600",
+      "file:///etc/passwd",
+      "gopher://internal/",
+      "data:image/png;base64,AAAA",
+    ]) {
+      expect(isRenderableImageUrl(url), url).toBe(false);
+    }
+  });
+
+  it("cannot be fooled by credentials smuggling a host", () => {
+    expect(
+      isRenderableImageUrl("https://picsum.photos@evil.tld/a.png"),
+    ).toBe(false);
+    expect(
+      isRenderableImageUrl(
+        "https://abc.public.blob.vercel-storage.com@evil.tld/a.png",
+      ),
+    ).toBe(false);
+  });
+
+  it("requires the dot, so a lookalike host does not pass", () => {
+    for (const url of [
+      "https://evil-public.blob.vercel-storage.com/a.png",
+      "https://notpicsum.photos/a.png",
+      "https://picsum.photos.evil.tld/a.png",
+    ]) {
+      expect(isRenderableImageUrl(url), url).toBe(false);
+    }
+  });
+
+  it("refuses junk rather than throwing on it", () => {
+    for (const value of ["", "not a url", null, undefined, 42, {}]) {
+      expect(isRenderableImageUrl(value)).toBe(false);
+    }
   });
 });

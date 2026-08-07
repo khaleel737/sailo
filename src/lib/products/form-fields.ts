@@ -1,6 +1,7 @@
 import type { ProductOption, VariantOptions } from "@/db/schema";
 import { parseMoneyToCents } from "@/lib/utils";
 import { combinations, MAX_VARIANTS, optionKey } from "@/lib/variants";
+import { isRenderableImageUrl } from "@/lib/file-urls";
 
 /**
  * Reading the product form.
@@ -29,11 +30,20 @@ export type FileRow = {
   contentType?: string;
 };
 
+/**
+ * `isRenderableImageUrl`, not `Boolean`.
+ *
+ * A server action takes whatever the client sends — the upload widget in front
+ * of it is a suggestion, not a constraint — and these URLs are fetched
+ * server-side by `lib/og.tsx` when the product's social card renders, on a
+ * public unauthenticated route. Anything not on a host the product can already
+ * display is dropped rather than stored.
+ */
 export function readImageUrls(formData: FormData): string[] {
   return formData
     .getAll("imageUrls")
     .map((v) => String(v).trim())
-    .filter(Boolean)
+    .filter(isRenderableImageUrl)
     .slice(0, 8);
 }
 

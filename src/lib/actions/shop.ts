@@ -11,7 +11,14 @@ import { getDb } from "@/db";
 import { paymentMethods, shops, type ShopSocial } from "@/db/schema";
 import { isStaff, requireShop, requireUser } from "@/lib/session";
 import { normalizePhone, SOCIAL_PLATFORMS } from "@/lib/utils";
+import { isRenderableImageUrl } from "@/lib/file-urls";
 import { BRAND_HANDLE, HANDLE_MESSAGES, normalizeHandle, suggestHandles, validateHandleFormat } from "@/lib/handle";
+
+/** A form value that is allowed to become a stored image URL, or null. */
+function imageUrlOrNull(value: FormDataEntryValue | null): string | null {
+  const url = String(value ?? "").trim();
+  return isRenderableImageUrl(url) ? url : null;
+}
 import { LOCALES, type Locale } from "@/i18n/config";
 
 export type ActionState = { ok: boolean; error?: string; message?: string };
@@ -278,8 +285,15 @@ export async function updateShop(
       handle,
       name,
       description: String(formData.get("description") ?? "").trim() || null,
-      avatarUrl: String(formData.get("avatarUrl") ?? "").trim() || null,
-      logoUrl: String(formData.get("logoUrl") ?? "").trim() || null,
+      /*
+       * Host-checked, not just trimmed. Both are fetched server-side by
+       * `lib/og.tsx` to draw the shop's social card and favicon, on public
+       * unauthenticated routes — so an unvalidated string here is a server-side
+       * request a seller composes, the same hole `isStoredFileUrl` closed for
+       * product downloads.
+       */
+      avatarUrl: imageUrlOrNull(formData.get("avatarUrl")),
+      logoUrl: imageUrlOrNull(formData.get("logoUrl")),
       accentColor: /^#[0-9a-f]{6}$/i.test(accent) ? accent : "#111111",
       theme: theme === "dark" ? "dark" : "light",
       layout: layout === "list" ? "list" : "grid",
