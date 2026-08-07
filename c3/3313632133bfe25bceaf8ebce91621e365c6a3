@@ -1,0 +1,21 @@
+src/app/hq/login/login-form.tsx
+  s_7114fe38b67e35::t_cd902eef98d25f 1,3-11,13-48,51-66,68-69
+src/app/hq/login/page.tsx
+  s_7114fe38b67e35::t_1f5767b3e1e59b 2-7,10-12,17-21,23-25,27-30,36,38-60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c33313632133bfe25bceaf8ebce91621e365c6a3",
+  "prompts": {},
+  "sessions": {
+    "s_7114fe38b67e35": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8f7dffd4-ebcc-4a6f-9b6e-49a61b356ddf",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
