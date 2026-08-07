@@ -1,9 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
-import { shops, staffActions, type Shop } from "@/db/schema";
+import { shops, staffActions, supportTickets, type Shop } from "@/db/schema";
+import { maybeRow } from "@/lib/invariant";
 import { requireStaff } from "@/lib/session";
 import { updateShopNow } from "@/lib/cache";
 import { isPlanId, PLANS } from "@/lib/plans";
@@ -182,4 +183,41 @@ export async function saveStaffNote(
     note ? `Note: ${note.slice(0, 120)}` : "Cleared the note.",
   );
   return { ok: true, message: "Saved." };
+}
+
+/**
+ * Marks a support ticket answered. The conversation itself lives in email —
+ * this is the queue's bookkeeping, so the list shows what still needs a reply.
+ */
+export async function closeSupportTicket(formData: FormData) {
+  const staff = await requireStaff();
+  const id = String(formData.get("id") ?? "").trim();
+  if (!id) return;
+
+  const db = getDb();
+  // Guarded on status, so two staff closing the same ticket audit it once.
+  const closed = maybeRow(
+    await db
+      .update(supportTickets)
+      .set({ status: "closed", closedAt: new Date() })
+      .where(and(eq(supportTickets.id, id), eq(supportTickets.status, "open")))
+      .returning(),
+  );
+  if (!closed) return;
+
+  /*
+   * The audit row directly rather than through `record()`: closing a ticket
+   * is desk housekeeping, and `record` also busts the shop's storefront
+   * cache — enforcement plumbing a ticket doesn't touch.
+   */
+  await db.insert(staffActions).values({
+    actorEmail: staff.email,
+    action: "support_close",
+    shopId: closed.shopId,
+    summary: `Closed support ticket "${closed.subject.slice(0, 120)}".`,
+  });
+
+  revalidatePath("/hq/support");
+  // The seller's own list shows the status too.
+  revalidatePath("/admin/support");
 }

@@ -531,4 +531,35 @@ export const adminAr: PartialAdminDictionary = {
     legend: "شكل الرسم البياني",
   },
 
+  support: {
+    title: "الدعم",
+    description:
+      "شيء لا يعمل، أو وجدت خللًا، أو يبدو شيء غير صحيح؟ أخبرنا — نقرأ كل تذكرة ونرد عبر البريد الإلكتروني.",
+    topic: "الموضوع",
+    subject: "العنوان",
+    subjectPlaceholder: "ما الموضوع؟",
+    message: "ما الذي يحدث؟",
+    messagePlaceholder:
+      "أخبرنا ما الذي توقعته وما الذي حدث بدلًا منه. كلما زادت التفاصيل، أسرعنا في المساعدة.",
+    screenshots: "لقطات الشاشة",
+    screenshotsHint: "اختياري، حتى {max}",
+    addImage: "إضافة لقطة شاشة",
+    removeImage: "إزالة لقطة الشاشة {n}",
+    send: "إرسال إلى الدعم",
+    previous: "تذاكرك",
+    emptyBody: "لا شيء بعد. عندما ترسل تذكرة، ستظهر هنا مع حالتها.",
+    open: "مفتوحة",
+    closed: "مغلقة",
+    helpLabel: "المساعدة والدعم",
+  },
+
+  supportTopics: {
+    technical: "مشكلة تقنية",
+    billing: "الخطة والفوترة",
+    payments: "المدفوعات والتحويلات",
+    orders: "الطلبات والتوصيل",
+    account: "الحساب وتسجيل الدخول",
+    other: "شيء آخر",
+  },
+
 };

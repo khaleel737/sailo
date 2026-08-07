@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ExternalLink, Sparkles } from "lucide-react";
 import { planFor } from "@/lib/plans";
+import { HelpLink } from "./help-link";
 import { NotificationBell } from "./notification-bell";
 import { UpgradeButton } from "./upgrade-modal";
 import type { Notification } from "@/lib/notifications";
@@ -59,6 +60,8 @@ export function AdminHeader({
 
       <LanguageSwitcher current={locale} align="end" label={t.common.language} />
 
+      <HelpLink />
+
       <NotificationBell items={notifications} locale={locale} t={t} />
     </header>
   );
@@ -93,6 +96,7 @@ export function AdminHeaderCompact({
           {t.nav.upgrade}
         </UpgradeButton>
       ) : null}
+      <HelpLink />
       <NotificationBell items={notifications} locale={locale} t={t} />
     </div>
   );

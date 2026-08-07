@@ -38,6 +38,7 @@ const WHOLESALE = new Set([
   "weekdays",
   "paymentStatus",
   "chart",
+  "supportTopics",
 ]);
 
 /*

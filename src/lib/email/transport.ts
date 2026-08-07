@@ -28,6 +28,8 @@ export const ORDERS = `orders@${MAIL_DOMAIN}`;
 export const PARTNERS = `partners@${MAIL_DOMAIN}`;
 /** Anything about the seller's own Sailo login, not their shop. */
 export const ACCOUNTS = `accounts@${MAIL_DOMAIN}`;
+/** Sellers asking us for help — the inbox the team answers from. */
+export const SUPPORT = `support@${MAIL_DOMAIN}`;
 
 /**
  * Builds a From header.
@@ -60,6 +62,8 @@ export async function send(opts: {
   subject: string;
   html: string;
   replyTo?: string;
+  /** Carbon copy — how a support ticket puts us and the seller on one thread. */
+  cc?: string;
 }): Promise<SendResult> {
   const api = resend();
   if (!api) return { sent: false, reason: "RESEND_API_KEY is not set" };
@@ -71,6 +75,7 @@ export async function send(opts: {
       subject: opts.subject,
       html: opts.html,
       replyTo: opts.replyTo,
+      cc: opts.cc,
     });
     if (error) return { sent: false, reason: error.message };
     return { sent: true, id: data?.id ?? "" };

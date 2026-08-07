@@ -14,6 +14,7 @@ export * from "./catalog";
 export * from "./commerce";
 export * from "./orders";
 export * from "./analytics";
+export * from "./support";
 
 export * from "./relations";
 export * from "./types";

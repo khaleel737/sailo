@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   Gift,
   LayoutDashboard,
+  LifeBuoy,
   LogOut,
   Menu,
   Package,
@@ -52,7 +53,10 @@ const GROUPS = [
   {
     id: "platform",
     label: "Platform",
-    items: [{ href: "/hq/system", label: "System", icon: Activity }],
+    items: [
+      { href: "/hq/support", label: "Support", icon: LifeBuoy },
+      { href: "/hq/system", label: "System", icon: Activity },
+    ],
   },
 ] as const;
 

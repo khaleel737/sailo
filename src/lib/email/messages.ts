@@ -3,7 +3,9 @@ import type { Order, Shop } from "@/db/schema";
 import { orderSummaryTitle, type OrderLine } from "@/lib/order-lines";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatAddress, formatMoney } from "@/lib/utils";
-import { ACCOUNTS, ORDERS, PARTNERS, send, sender, type SendResult } from "./transport";
+import { appUrl } from "@/lib/app-url";
+import { SUPPORT_TOPIC_LABELS, type SupportTopic } from "@/lib/support";
+import { ACCOUNTS, ORDERS, PARTNERS, SUPPORT, send, sender, type SendResult } from "./transport";
 import { button, esc, layout, moneyRows, sailoLayout } from "./markup";
 
 /** Every message Sailo sends. */
@@ -218,6 +220,64 @@ export async function sendAffiliateWelcome(opts: {
     from: sender("Sailo", PARTNERS),
     to,
     subject: `Share ${shopName}, earn ${percent}% of every order`,
+    html,
+  });
+}
+
+/**
+ * A seller's support ticket, delivered to our inbox with the seller in CC.
+ *
+ * The CC is the mechanism, not a courtesy: it puts both addresses on one
+ * thread, so support answers by replying and the seller's copy doubles as
+ * their confirmation. `replyTo` points at the seller for the same reason —
+ * a plain reply from the support inbox goes to them, not back to us.
+ */
+export async function sendSupportTicket(opts: {
+  shopName: string;
+  handle: string;
+  /** The seller's login email — CC'd, and where a reply lands. */
+  email: string;
+  topic: SupportTopic;
+  subject: string;
+  message: string;
+  imageUrls: string[];
+  ticketId: string;
+}): Promise<SendResult> {
+  const { shopName, handle, email, topic, subject, message, imageUrls, ticketId } = opts;
+  const base = appUrl();
+
+  const detail = (label: string, value: string) =>
+    `<p style="margin:2px 0;font-size:14px;color:#565664;">${esc(label)}: <span style="color:#1a1a20;">${value}</span></p>`;
+
+  const screenshots = imageUrls
+    .map(
+      (url, i) =>
+        `<p style="margin:0 0 6px;font-size:14px;">
+          <a href="${esc(url)}" style="color:#1a1a20;font-weight:600;">Screenshot ${i + 1}</a>
+        </p>`,
+    )
+    .join("");
+
+  const html = sailoLayout(
+    subject,
+    `${detail("Shop", `<a href="${esc(`${base}/${handle}`)}" style="color:#1a1a20;">${esc(shopName)}</a> (@${esc(handle)})`)}
+      ${detail("From", esc(email))}
+      ${detail("Topic", esc(SUPPORT_TOPIC_LABELS[topic]))}
+      ${detail("Ticket", esc(ticketId))}
+      <div style="margin:16px 0;padding:14px;background:#f6f6f8;border-radius:10px;font-size:15px;line-height:1.6;color:#1a1a20;white-space:pre-wrap;">${esc(message)}</div>
+      ${screenshots}
+      <p style="margin:16px 0 0;font-size:13px;color:#8e8e9c;">
+        Reply to this email to answer — the seller is in CC. Close the ticket in
+        <a href="${esc(`${base}/hq/support`)}" style="color:#565664;">HQ</a> when it's done.
+      </p>`,
+  );
+
+  return send({
+    from: sender(shopName, SUPPORT),
+    to: SUPPORT,
+    cc: email,
+    replyTo: email,
+    subject: `[${topic}] ${subject} · @${handle}`,
     html,
   });
 }

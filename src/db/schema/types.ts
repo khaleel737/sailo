@@ -3,6 +3,7 @@ import type { categories, productFiles, productImages, productVariants, products
 import type { affiliates, coupons, deliveryMethods, paymentMethods } from "./commerce";
 import type { clients, invoices, orderItems, orders } from "./orders";
 import type { staffActions, visitDaily, visits } from "./analytics";
+import type { supportTickets } from "./support";
 import type { user } from "./auth";
 
 /** Row types, inferred from the tables rather than written twice. */
@@ -25,4 +26,5 @@ export type Coupon = typeof coupons.$inferSelect;
 export type Affiliate = typeof affiliates.$inferSelect;
 export type Invoice = typeof invoices.$inferSelect;
 export type StaffActionRow = typeof staffActions.$inferSelect;
+export type SupportTicket = typeof supportTickets.$inferSelect;
 export type User = typeof user.$inferSelect;

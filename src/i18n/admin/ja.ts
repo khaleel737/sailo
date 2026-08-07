@@ -531,4 +531,36 @@ export const adminJa: PartialAdminDictionary = {
     legend: "グラフの形",
   },
 
+  support: {
+    title: "サポート",
+    description:
+      "困ったこと、バグ、おかしな動きがあれば教えてください — すべてのチケットに目を通し、メールで返信します。",
+    topic: "トピック",
+    subject: "件名",
+    subjectPlaceholder: "何についてですか？",
+    message: "何が起きていますか？",
+    messagePlaceholder:
+      "期待した動きと実際に起きたことを教えてください。詳しいほど早く対応できます。",
+    screenshots: "スクリーンショット",
+    screenshotsHint: "任意、最大{max}枚",
+    addImage: "スクリーンショットを追加",
+    removeImage: "スクリーンショット{n}を削除",
+    send: "サポートに送信",
+    previous: "あなたのチケット",
+    emptyBody:
+      "まだありません。チケットを送信すると、ここにステータスと共に表示されます。",
+    open: "対応中",
+    closed: "クローズ",
+    helpLabel: "ヘルプとサポート",
+  },
+
+  supportTopics: {
+    technical: "技術的な問題",
+    billing: "プランと請求",
+    payments: "支払いと入金",
+    orders: "注文と配送",
+    account: "アカウントとログイン",
+    other: "その他",
+  },
+
 };

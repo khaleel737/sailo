@@ -258,6 +258,39 @@ export const adminEn = {
       "To count units left for each combination, turn on Track stock above.",
   },
 
+  support: {
+    title: "Support",
+    description:
+      "Stuck, found a bug, or something looks wrong? Tell us — we read every ticket and reply by email.",
+    topic: "Topic",
+    subject: "Subject",
+    subjectPlaceholder: "What's it about?",
+    message: "What's happening?",
+    messagePlaceholder:
+      "Tell us what you expected and what happened instead. The more detail, the faster we can help.",
+    screenshots: "Screenshots",
+    screenshotsHint: "optional, up to {max}",
+    addImage: "Add a screenshot",
+    removeImage: "Remove screenshot {n}",
+    send: "Send to support",
+    previous: "Your tickets",
+    emptyBody:
+      "Nothing yet. When you send a ticket, it shows up here with its status.",
+    open: "Open",
+    closed: "Closed",
+    helpLabel: "Help & support",
+  },
+
+  /** Read by key — `a.supportTopics[topic]` — so the whole section is live. */
+  supportTopics: {
+    technical: "Technical problem",
+    billing: "Plan & billing",
+    payments: "Payments & payouts",
+    orders: "Orders & delivery",
+    account: "Account & login",
+    other: "Something else",
+  },
+
   files: {
     add: "Add a file",
     addAnother: "Add another file",

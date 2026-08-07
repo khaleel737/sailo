@@ -531,4 +531,36 @@ export const adminDe: PartialAdminDictionary = {
     legend: "Diagrammform",
   },
 
+  support: {
+    title: "Support",
+    description:
+      "Etwas klemmt, ein Fehler, etwas sieht falsch aus? Schreib uns — wir lesen jedes Ticket und antworten per E-Mail.",
+    topic: "Thema",
+    subject: "Betreff",
+    subjectPlaceholder: "Worum geht es?",
+    message: "Was ist los?",
+    messagePlaceholder:
+      "Beschreib, was du erwartet hast und was stattdessen passiert ist. Je mehr Details, desto schneller können wir helfen.",
+    screenshots: "Screenshots",
+    screenshotsHint: "optional, bis zu {max}",
+    addImage: "Screenshot hinzufügen",
+    removeImage: "Screenshot {n} entfernen",
+    send: "An den Support senden",
+    previous: "Deine Tickets",
+    emptyBody:
+      "Noch nichts. Sobald du ein Ticket sendest, erscheint es hier mit seinem Status.",
+    open: "Offen",
+    closed: "Geschlossen",
+    helpLabel: "Hilfe & Support",
+  },
+
+  supportTopics: {
+    technical: "Technisches Problem",
+    billing: "Tarif & Abrechnung",
+    payments: "Zahlungen & Auszahlungen",
+    orders: "Bestellungen & Lieferung",
+    account: "Konto & Anmeldung",
+    other: "Etwas anderes",
+  },
+
 };
