@@ -131,6 +131,75 @@ Only after B, because B changes what the seams are.
 | `(legal)/terms,privacy,refunds` | 570/560/344 | **Leave whole.** Prose is data. |
 | `src/i18n/**` | — | **Leave whole.** Dictionaries are data. |
 
+### Phase C½ — delete what nothing uses
+
+Not a separate pass. **Every split, extraction and refactor carries its own
+cleanup**, because the moment to find dead code is when you have just moved the
+thing next to it. Doing it as a sweep later means reading the same files twice.
+
+Measured, not guessed:
+
+```bash
+DATABASE_URL="postgres://knip:knip@localhost/knip" npx knip
+```
+
+| | Baseline (no config) | With `knip.json` |
+|---|---|---|
+| Unused files | 4 | **0** |
+| Unused exports | 94 | **27** |
+| Unused exported types | 28 | **7** |
+
+Two thirds of the baseline was noise: `drizzle.config.ts` could not load without
+`DATABASE_URL`, so the Drizzle plugin never ran and all fifteen `*Relations`
+were reported dead — they are consumed by Drizzle at runtime and deleting them
+would break every `with:` query. `knip.json` is committed so the number is
+reproducible and can go into CI.
+
+**Never auto-fix this.** The one-line proof: knip reports `tailwindcss` as an
+unused devDependency, because it cannot follow `.css` and the import is
+`@import "tailwindcss"` in `globals.css`. Removing it deletes every style in
+the product. `knip --fix` would have done it.
+
+What the 27 actually are, once traced:
+
+- **Genuinely dead components** — `SailoWordmark`, `SailoBadge`, `Rule`,
+  `SectionHeader`, `StatusDot`, `InputGroup`, `Checkbox`, `StateLabel`. Each is
+  referenced only by the file that defines it.
+- **Dead halves of duplicated components** — the more interesting group, and
+  the same drift that produced two `ORDER_STATUSES` and two `ORDER_STATUS_TONE`.
+  `Skeleton` exists in `ui/feedback.tsx` *and* `shared/skeleton.tsx`; ten
+  `loading.tsx` files import the shared one, so the other is dead. `TitleCell`
+  is the same story across `hq-table.tsx` and `shared/table.tsx`. Delete the
+  copy, keep the one with callers — and check the two had not already diverged.
+- **Unwired features** — `clearRefund`, `syncSubscription`,
+  `togglePaymentMethod`, `getInvoiceForOrder`, `getAffiliateByCode`. Server
+  actions and queries with no caller. These are *not* obviously deletable:
+  each is either an unfinished feature or a genuinely orphaned one, and that is
+  a product question. Confirm before removing; do not assume.
+- **Barrel re-exports with no consumer** — `Sheet` and `ConfirmDialog` from
+  `overlays/index.ts`, where callers import from `ui/index.ts` instead. Two
+  barrels exporting the same component is the same duplication in another shape.
+
+Three unlisted dependencies (`dotenv`, `playwright` ×2) are real and should be
+declared rather than relied on transitively.
+
+**The rule, applied to every commit from here:**
+
+1. Run `knip` over what you touched before you commit it.
+2. Delete the dead export in the same commit as the change that orphaned it —
+   never "later".
+3. Remove the imports it leaves behind; `oxlint` catches those, so lint clean
+   is part of the gate already.
+4. If a test only existed to cover deleted code, delete the test. A test that
+   asserts nothing reachable is worse than no test: it makes the suite look
+   larger than the coverage is.
+5. **Write the new tests small.** Test the extracted unit, not the caller that
+   used to contain it — that is the whole point of extracting it. A test that
+   still needs the surrounding function is a sign the seam was cut in the wrong
+   place.
+6. Never delete on knip's word alone. Trace the symbol first; `.css`, runtime
+   registries and framework conventions are all invisible to it.
+
 ### Phase D — security, with tools rather than reading
 
 1. `threat-model` over checkout, auth and the webhooks — **never run**, and

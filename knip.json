@@ -1,0 +1,17 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "e2e/**/*.spec.ts",
+    "e2e/stubs/*.{ts,mts}",
+    "scripts/**/*.ts",
+    "sw.mjs",
+    "drizzle.config.ts"
+  ],
+  "project": ["src/**/*.{ts,tsx}", "scripts/**/*.ts", "e2e/**/*.ts"],
+  "ignoreExportsUsedInFile": true,
+  "ignore": ["src/i18n/**", "graphify-out/**"],
+  "ignoreDependencies": ["@vitejs/plugin-react"],
+  "drizzle": {
+    "config": ["drizzle.config.ts"]
+  }
+}

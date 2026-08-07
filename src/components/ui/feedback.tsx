@@ -56,37 +56,6 @@ export function Badge({
   );
 }
 
-/**
- * A live/idle indicator. `pulse` is reserved for genuinely live things — a
- * rail that is taking orders right now — so the animation still means
- * something when you see it.
- */
-export function StatusDot({
-  tone = "neutral",
-  pulse = false,
-  className,
-}: {
-  tone?: Tone;
-  pulse?: boolean;
-  className?: string;
-}) {
-  return (
-    <span className={cn("relative flex size-2.5 shrink-0", className)}>
-      {pulse ? (
-        <span
-          className={cn(
-            "absolute inset-0 animate-ping rounded-full opacity-60",
-            DOT_TONES[tone],
-          )}
-        />
-      ) : null}
-      <span
-        className={cn("relative size-2.5 rounded-full", DOT_TONES[tone])}
-      />
-    </span>
-  );
-}
-
 const ALERT_TONES = {
   error: "border-red-200 bg-red-50 text-red-800",
   success: "border-emerald-200 bg-emerald-50 text-emerald-800",
@@ -220,10 +189,6 @@ export function Stat({
       {hint ? <p className="mt-0.5 text-xs text-ink-500">{hint}</p> : null}
     </div>
   );
-}
-
-export function Skeleton({ className }: { className?: string }) {
-  return <div className={cn("skeleton rounded-lg", className)} aria-hidden />;
 }
 
 export function Spinner({ className }: { className?: string }) {

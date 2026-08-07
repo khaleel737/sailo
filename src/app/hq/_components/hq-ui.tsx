@@ -124,9 +124,6 @@ export function BillingBadge({
   );
 }
 
-export function StateLabel({ state }: { state: BillingState }) {
-  return <>{STATE_LABELS[state]}</>;
-}
 
 /** Label above, value below — the shape every detail card is made of. */
 export function Detail({

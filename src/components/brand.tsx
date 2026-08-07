@@ -65,21 +65,6 @@ export function SailoMark({
   );
 }
 
-/** The letters alone, for places that already carry the mark. */
-export function SailoWordmark({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 1508.2 542"
-      className={cn("h-5 w-auto", className)}
-      role="img"
-      aria-label="Sailo"
-    >
-      <title>Sailo</title>
-      <path d={WORDMARK} fill="currentColor" />
-    </svg>
-  );
-}
-
 /** The horizontal lockup: leaf, then the wordmark sharing its baseline. */
 export function SailoLogo({ className }: { className?: string }) {
   return (
@@ -98,22 +83,5 @@ export function SailoLogo({ className }: { className?: string }) {
         />
       </g>
     </svg>
-  );
-}
-
-/**
- * Mark in a filled tile — the form the brand takes when it needs to hold its
- * own against a photo or a coloured header.
- */
-export function SailoBadge({ className }: { className?: string }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-brand-700 text-white",
-        className,
-      )}
-    >
-      <SailoMark className="size-5.5" />
-    </span>
   );
 }

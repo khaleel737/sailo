@@ -40,34 +40,6 @@ export function Select({ className, ...props }: React.ComponentProps<"select">) 
   );
 }
 
-/**
- * Prefixed input — for the things that are always read with something in
- * front of them, like a handle after a domain.
- */
-export function InputGroup({
-  prefix,
-  className,
-  children,
-}: {
-  prefix: React.ReactNode;
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className={cn(
-        "flex items-center rounded-xl border border-ink-200 bg-white shadow-xs",
-        "transition-[border-color,box-shadow] duration-150",
-        "focus-within:border-brand-600 focus-within:ring-4 focus-within:ring-brand-600/12",
-        className,
-      )}
-    >
-      <span className="ps-3.5 text-sm text-ink-400 select-none">{prefix}</span>
-      {children}
-    </div>
-  );
-}
-
 export function Label({
   className,
   children,
@@ -133,20 +105,6 @@ export function Field({
         <p className="mt-1.5 text-xs leading-relaxed text-ink-500">{help}</p>
       ) : null}
     </div>
-  );
-}
-
-export function Checkbox({ className, ...props }: React.ComponentProps<"input">) {
-  return (
-    <input
-      type="checkbox"
-      className={cn(
-        "focus-ring size-4.5 shrink-0 rounded-md border-ink-300 text-brand-700",
-        "accent-brand-700 transition",
-        className,
-      )}
-      {...props}
-    />
   );
 }
 
