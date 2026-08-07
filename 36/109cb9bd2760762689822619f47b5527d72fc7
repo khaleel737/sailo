@@ -1,0 +1,35 @@
+src/lib/file-urls.test.ts
+  s_3fd229194f6299::t_8534610c0aa819 1,74-87,96,98-99
+  s_3fd229194f6299::t_7cf0e62b456dd2 200-262,264
+  s_3fd229194f6299::t_21308f58b9bbd1 263,265
+src/lib/auth.ts
+  s_b243f8e34ce497::t_3a234193fe3377 14
+  s_3fd229194f6299::t_10f676530da6f6 95-144
+  s_b243f8e34ce497::t_5e6dff0bcc63da 94
+src/lib/file-urls.ts
+  s_3fd229194f6299::t_3b1101a0a98edd 24-51,73-76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "36109cb9bd2760762689822619f47b5527d72fc7",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_b243f8e34ce497": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "28ccd0dc-3455-40b0-827e-8d9c50d12c2b",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
