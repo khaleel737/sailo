@@ -1,0 +1,40 @@
+src/lib/handle.ts
+  s_3fd229194f6299::t_88876ff126f2b5 22-30
+src/lib/actions/affiliates.ts
+  s_3fd229194f6299::t_3f67e8000ceca0 13-14,236-253,267-277,281-292,299-300,320
+src/lib/orders/refund-claim.ts
+  s_3fd229194f6299::t_8c7c8324dd6573 1-87
+src/lib/actions/locale.ts
+  s_3fd229194f6299::t_ec74ebd46bf570 29-49
+src/lib/cron-auth.ts
+  s_3fd229194f6299::t_427e985bd05da3 1-43
+src/lib/actions/order-admin.ts
+  s_3fd229194f6299::t_12bd0cae6f0690 12,109-116,120,224-239,257-259,269
+  s_3fd229194f6299::t_7a1afd591df93d 8
+src/app/[handle]/p/[slug]/opengraph-image.tsx
+  s_3fd229194f6299::t_3af7949c3fd3cd 46-53
+src/app/api/cron/rollup/route.ts
+  s_3fd229194f6299::t_0b086f850b7481 2,13-14
+src/app/api/cron/sitemap/route.ts
+  s_3fd229194f6299::t_2801bb1af47e90 2,24-25
+src/app/api/cron/sweep/route.ts
+  s_3fd229194f6299::t_a80d9a40effe0a 2,11-13
+src/lib/handle.test.ts
+  s_3fd229194f6299::t_4dd138f272c56e 2-3,111-147
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3000f1e771460b9e22c101c9fb7cb945cc2c2273",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
