@@ -105,17 +105,52 @@ seam, push per commit.
 3. **Handle `no_payment_required` explicitly** as settled, not in-flight.
    Closes 6.
 
-### Phase B — cut the seam the graph found
+### Phase B — a transaction-capable client for the write path
 
-Introduce a repository boundary for the order lifecycle only — not a
-codebase-wide abstraction. `lib/orders/*` stops calling `getDb()` and takes a
-narrow port instead. This is what makes a real transaction possible later, and
-what makes the compensators testable without a database. Success is measured,
-not asserted: `getDb()` call sites in `lib/orders/**` reach **zero**.
+**This replaces the "introduce a repository port" plan, which was wrong.** A
+port over `getDb()` would not have produced a single transaction: the
+constraint is the driver, not the call sites, and no number of layers above
+`neon-http` makes it interactive. It would have added indirection and changed
+nothing about the bug class — a shallow module in Ousterhout's sense.
 
-Do **not** generalise this to admin, hq or analytics in the same pass. A
-repository over 217 call sites written in one go is a bigger risk than the bugs
-it prevents.
+Verified against the real database rather than assumed:
+
+```
+INTERACTIVE TRANSACTION: supported (rolled back cleanly)
+```
+
+`@neondatabase/serverless@1.1.0` exports `Pool`, `drizzle-orm/neon-serverless`
+is present, and Node 22+ supplies a native `WebSocket`, so no `ws` dependency
+is needed. A probe that read a value, branched on it in JavaScript, wrote, and
+threw to roll back succeeded — the exact read-then-decide-then-write shape
+`neon-http` cannot express.
+
+The design, when it is done:
+
+- Keep `getDb()` (`neon-http`) for everything it is good at — reads and
+  single-statement writes, which is the overwhelming majority of the 217 sites.
+  It is cheaper: no connection to establish.
+- Add a **second** client, pooled and transaction-capable, used only where
+  read-then-decide-then-write must be atomic. Today that is exactly one place:
+  `reserveStock` → order + lines → coupon claim.
+- Pool sized per `conn-pool-sizing-for-serverless`: `max: 10, min: 1,
+  idleTimeoutMillis: 5_000`, a `globalThis` guard so dev HMR does not leak
+  pools, and `attachDatabasePool` from `@vercel/functions` (**not currently a
+  dependency — adding it is part of this phase**) so a suspending instance does
+  not strand connections open on Postgres.
+- **Stripe stays outside the transaction.** Per `tx-no-external-io-inside`, a
+  transaction pins a backend connection for its whole body; a 400 ms call to a
+  payment provider inside one drains the pool under load, and an external call
+  cannot be rolled back anyway. The handoff runs after commit, and
+  `abandonOrder` remains the undo for a failure there.
+
+**Deferred deliberately, and this is the point of writing it down.** The bugs
+this would prevent are already fixed — `db.batch()` made the header and its
+lines atomic and `abandonOrder` unified the undo. What remains is a real but
+modest gain, against the deployment risk of a new connection model: different
+failure modes, Neon connection ceilings, and a new dependency, on the same day
+as everything else here. It gets its own day and its own gate, not a corner of
+this one.
 
 ### Phase C — split by responsibility
 

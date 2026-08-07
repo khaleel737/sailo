@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy, Download, FileText, Loader2 } from "lucide-react";
-import { submitPaymentReference } from "@/lib/actions/orders";
+import { submitPaymentReference } from "@/lib/actions/payment-reference";
 import type { OrderIntentResult } from "@/lib/orders/types";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
