@@ -1,0 +1,31 @@
+src/lib/orders/card-handoff.ts
+  s_2e1da3b18d1c53::t_eac2d20f5d3c01 28-29,48
+src/lib/actions/orders.ts
+  s_2e1da3b18d1c53::t_3b76467fee78ed 428,443-463,474
+src/lib/connect.ts
+  s_2e1da3b18d1c53::t_eac2d20f5d3c01 218-223
+  s_2e1da3b18d1c53::t_0da43efe2a843a 335-345
+src/lib/actions/orders.test.ts
+  s_2e1da3b18d1c53::t_432d7d4154204c 65-81
+src/lib/stripe-webhooks.ts
+  s_2e1da3b18d1c53::t_9b1b811c7cff31 9-10
+  s_2e1da3b18d1c53::t_0e787572d212ab 468-508
+src/lib/inventory.test.ts
+  s_2e1da3b18d1c53::t_b723a36272c68c 209-246
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "19d54ca1900c95b1fb630228b82a1510f4e7bfc6",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
