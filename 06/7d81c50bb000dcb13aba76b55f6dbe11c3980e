@@ -1,0 +1,240 @@
+src/i18n/admin/nl.ts
+  s_b243f8e34ce497::t_af2ab1fbcf05c3 431-442
+  s_b243f8e34ce497::t_6e68ab03e93420 520
+  s_b243f8e34ce497::t_98331cd6a6611d 97-100
+  s_b243f8e34ce497::t_dd55fe78eae243 552-578
+  s_b243f8e34ce497::t_ca7cd867720b50 521
+  s_b243f8e34ce497::t_cd59679f8ec5a4 579
+src/i18n/admin/no.ts
+  s_b243f8e34ce497::t_4a6079d5f17725 431-442
+  s_b243f8e34ce497::t_ad2f010b67b68c 97-100
+  s_b243f8e34ce497::t_6e68ab03e93420 520
+  s_b243f8e34ce497::t_b27b3779b37960 521
+  s_b243f8e34ce497::t_bb9c8646e96e85 552-578
+  s_b243f8e34ce497::t_489628850721fd 579
+src/i18n/admin/sl.ts
+  s_b243f8e34ce497::t_31a6a61b7fefd0 247-258
+  s_b243f8e34ce497::t_6c2d034ecc0152 567-594
+  s_b243f8e34ce497::t_7604db4ef828cc 531-534
+  s_b243f8e34ce497::t_842d91d316449b 29-30
+  s_3fd229194f6299::t_c4fe52113b37e2 595
+src/i18n/admin/id.ts
+  s_b243f8e34ce497::t_895f94287cc60f 531-534
+  s_b243f8e34ce497::t_0d9774834cf45d 247-258
+  s_b243f8e34ce497::t_943149257fb8dd 567-594
+  s_b243f8e34ce497::t_6711c7c80d3a56 29-30
+  s_b243f8e34ce497::t_ee48e89f7fc54a 595
+src/i18n/admin/cs.ts
+  s_b243f8e34ce497::t_574d2d69698014 97-100
+  s_b243f8e34ce497::t_d8b397442ab048 552-579
+  s_b243f8e34ce497::t_dbb62eb595943b 520-521
+  s_b243f8e34ce497::t_31e164c1fec6ad 431-442
+  s_3fd229194f6299::t_1fd32708ae118f 580
+src/i18n/admin/fil.ts
+  s_b243f8e34ce497::t_1a818e47ea76e2 531-534
+  s_b243f8e34ce497::t_eb5c3660832d2d 247-258
+  s_b243f8e34ce497::t_491b10cff79247 29-30
+  s_b243f8e34ce497::t_a4102701c2846a 567-593
+  s_b243f8e34ce497::t_9721d1e5900524 594
+src/i18n/admin/zh.ts
+  s_b243f8e34ce497::t_3e3186f2d4fdd5 552-579
+  s_b243f8e34ce497::t_bfdca94cf1cd6c 431-442
+  s_b243f8e34ce497::t_199db99a037772 520-521
+  s_b243f8e34ce497::t_3d8cb5dd4e3249 97-100
+  s_b243f8e34ce497::t_94556f53e359cd 580
+src/i18n/admin/fr.ts
+  s_b243f8e34ce497::t_0cca0104b23b97 97-100
+  s_b243f8e34ce497::t_1fc4ed34073f11 431-442
+  s_b243f8e34ce497::t_e7d0cdfa8b586a 521
+  s_b243f8e34ce497::t_6e68ab03e93420 520
+src/i18n/admin/ms.ts
+  s_b243f8e34ce497::t_9949fa6bd4085b 531-534
+  s_b243f8e34ce497::t_dbe630d1ee0f37 247-258
+  s_b243f8e34ce497::t_f7e11165c45d30 29-30
+  s_b243f8e34ce497::t_194cc51c1ce81e 567-594
+  s_3fd229194f6299::t_d88677c68a8518 595
+src/i18n/admin/sr.ts
+  s_b243f8e34ce497::t_d31a9381908d59 247-258
+  s_b243f8e34ce497::t_6fe45c4f9191a5 531-534
+  s_b243f8e34ce497::t_226e4b193c6e6f 29-30
+  s_b243f8e34ce497::t_8979a3c03e8fca 567-594
+  s_b243f8e34ce497::t_12643603cd87d0 595
+src/i18n/admin/es.ts
+  s_b243f8e34ce497::t_6e68ab03e93420 520
+  s_b243f8e34ce497::t_d4448f787dd59f 552-578
+  s_b243f8e34ce497::t_eafe3fd7de89c7 97-100
+  s_b243f8e34ce497::t_93e0f4f7d1d2d1 431-442
+  s_b243f8e34ce497::t_493904e4d342c2 521
+  s_b243f8e34ce497::t_482a4218c4f843 579
+src/i18n/admin/vi.ts
+  s_b243f8e34ce497::t_1bc884d6ea7491 29-30
+  s_b243f8e34ce497::t_3a4397131b91a6 567-594
+  s_b243f8e34ce497::t_28613228dd3063 247-258
+  s_b243f8e34ce497::t_76905092cdf0f6 531-534
+  s_3fd229194f6299::t_c5999b40688c1f 595
+src/i18n/admin/bs.ts
+  s_b243f8e34ce497::t_0c6eb096e8510b 29-30
+  s_b243f8e34ce497::t_249899db41c450 567-594
+  s_b243f8e34ce497::t_3b2336d78f9152 531-534
+  s_b243f8e34ce497::t_40b2d79d0b7def 247-258
+  s_b243f8e34ce497::t_44cf90a684e557 595
+src/i18n/admin/de.ts
+  s_b243f8e34ce497::t_98d8f2be5c802c 431-442
+  s_b243f8e34ce497::t_42adcbd3319095 97-100
+  s_b243f8e34ce497::t_efc054d298b7e2 520-521
+src/i18n/admin/ar.ts
+  s_b243f8e34ce497::t_e371eed48b3d67 431-442
+  s_b243f8e34ce497::t_78b952d3ecf82c 97-100
+  s_b243f8e34ce497::t_781c0fb83756b1 520-521
+src/i18n/admin/tr.ts
+  s_b243f8e34ce497::t_8878e9e88dffb7 431-442
+  s_b243f8e34ce497::t_6f5fa7109b3217 552-579
+  s_b243f8e34ce497::t_c75413b8bcefbc 520-521
+  s_b243f8e34ce497::t_5eccbd5bed7d56 97-100
+  s_b243f8e34ce497::t_8b548ecb1ab0eb 580
+src/i18n/admin/hr.ts
+  s_b243f8e34ce497::t_51d92eccaf21aa 531-534
+  s_b243f8e34ce497::t_6e68ab03e93420 29
+  s_b243f8e34ce497::t_e62272af92ae79 30
+  s_b243f8e34ce497::t_c5ba66f1fd2274 567-593
+  s_b243f8e34ce497::t_35c32e6799df3c 247-258
+  s_b243f8e34ce497::t_c5965746ce9140 594
+src/i18n/admin/da.ts
+  s_b243f8e34ce497::t_908913b9319587 431-442
+  s_b243f8e34ce497::t_b8bc87e188a7b5 552-579
+  s_b243f8e34ce497::t_0631d8caa3c2e4 520-521
+  s_b243f8e34ce497::t_a96f59c9605c41 97-100
+  s_b243f8e34ce497::t_0f52681931d8fc 580
+src/i18n/admin/ro.ts
+  s_b243f8e34ce497::t_6e68ab03e93420 520
+  s_b243f8e34ce497::t_1f5ee7c421b667 97-100
+  s_b243f8e34ce497::t_ae459a0be317fd 521
+  s_b243f8e34ce497::t_d6382ad0f56da4 552-578
+  s_b243f8e34ce497::t_398365956dd046 431-442
+  s_b243f8e34ce497::t_4c169ab6e4dd7d 579
+src/i18n/admin/coverage.test.ts
+  s_b243f8e34ce497::t_1db91fa1a8cd85 103-113,116-120
+  s_b243f8e34ce497::t_6ffc9efb404f0c 2
+src/i18n/admin/hu.ts
+  s_b243f8e34ce497::t_6e68ab03e93420 520
+  s_b243f8e34ce497::t_5c614f7b5e2f4e 97-100
+  s_b243f8e34ce497::t_87b85c1af8af20 552-578
+  s_b243f8e34ce497::t_3a4c144578eb01 431-442
+  s_b243f8e34ce497::t_ef075a023e052c 521
+  s_b243f8e34ce497::t_19e80b7e8723d9 579
+src/i18n/admin/sq.ts
+  s_b243f8e34ce497::t_c3abe92cc60fd3 567-594
+  s_b243f8e34ce497::t_dd926e47c64c9c 29-30
+  s_b243f8e34ce497::t_7b4a36ef84e48c 531-534
+  s_3fd229194f6299::t_83ca43a2df7bcf 247-258,595
+src/i18n/admin/uk.ts
+  s_b243f8e34ce497::t_c5bd7697a04cba 552-579
+  s_b243f8e34ce497::t_a68b64e78a46fd 97-100
+  s_b243f8e34ce497::t_e6176f6866e176 520-521
+  s_b243f8e34ce497::t_6d31b0a1af5270 431-442
+  s_b243f8e34ce497::t_2cdcec9e6b5807 580
+src/i18n/admin/pl.ts
+  s_b243f8e34ce497::t_44f09004c37d5a 97-100
+  s_b243f8e34ce497::t_0b8646ecccfa94 431-442
+  s_b243f8e34ce497::t_a2a245317d67a8 552-578
+  s_b243f8e34ce497::t_6e68ab03e93420 520
+  s_b243f8e34ce497::t_08bb73633ee905 521
+  s_b243f8e34ce497::t_8786bf0e67f488 579
+src/i18n/admin/ja.ts
+  s_b243f8e34ce497::t_89fd0a840868c5 97-100
+  s_b243f8e34ce497::t_d421147e613cf6 520-521
+  s_b243f8e34ce497::t_dbed1a08572955 431-442
+src/i18n/admin/ko.ts
+  s_b243f8e34ce497::t_73117cde7d5de7 567-594
+  s_b243f8e34ce497::t_b11bab8354b3d9 531-534
+  s_b243f8e34ce497::t_40541d7d41cc7b 29-30
+  s_b243f8e34ce497::t_257703e9cef5c6 247-258
+  s_b243f8e34ce497::t_e7f7477f1ed963 595
+src/i18n/admin/fi.ts
+  s_b243f8e34ce497::t_d14a1b5cac55cf 97-100
+  s_b243f8e34ce497::t_18749cc513fc6c 552-578
+  s_b243f8e34ce497::t_6e68ab03e93420 520
+  s_b243f8e34ce497::t_0d732a743cbd05 431-442
+  s_b243f8e34ce497::t_c1fcad0711f0d6 521,579
+src/i18n/admin/th.ts
+  s_b243f8e34ce497::t_9973d743ed2de9 567-594
+  s_b243f8e34ce497::t_b5740833df02a2 29-30
+  s_b243f8e34ce497::t_06d5194e45ddd6 247-258
+  s_b243f8e34ce497::t_645873632369d0 531-534
+  s_b243f8e34ce497::t_bd39a747413302 595
+src/i18n/admin/mk.ts
+  s_b243f8e34ce497::t_1211756f79d4fe 29-30
+  s_b243f8e34ce497::t_cf9ff62ffae8a0 531-534
+  s_b243f8e34ce497::t_85adb2831970ff 247-258
+  s_b243f8e34ce497::t_6fade8bc8fb254 567-594
+  s_b243f8e34ce497::t_13c25995a318b2 595
+src/i18n/admin/ru.ts
+  s_b243f8e34ce497::t_6e68ab03e93420 520
+  s_b243f8e34ce497::t_af8f8780888b24 521
+  s_b243f8e34ce497::t_faae2cbf16505c 552-578
+  s_b243f8e34ce497::t_c4206641668ad4 97-100
+  s_b243f8e34ce497::t_f61c3c3b6635a0 431-442
+  s_b243f8e34ce497::t_344379c44bef0e 579
+src/i18n/admin/bg.ts
+  s_b243f8e34ce497::t_6d8147fdb51077 29-30
+  s_b243f8e34ce497::t_e1efb5f712f2a5 567-594
+  s_b243f8e34ce497::t_2e5e3148418b43 531-534
+  s_b243f8e34ce497::t_21e060d816c5c8 247-258
+  s_b243f8e34ce497::t_1107e4ec5049e0 595
+src/i18n/admin/it.ts
+  s_b243f8e34ce497::t_bf5174e4f9f5f1 431-442
+  s_b243f8e34ce497::t_08f9fcc8adeed2 97-100
+  s_b243f8e34ce497::t_1489514705ef29 520-521
+  s_3f77e600417dd7::t_4608f7d6a1c842 552-580
+src/i18n/admin/sv.ts
+  s_b243f8e34ce497::t_e3deabbccb2fa9 431-442
+  s_b243f8e34ce497::t_ab02bef15bd1cf 552-579
+  s_b243f8e34ce497::t_43ac24f9187dba 520-521
+  s_b243f8e34ce497::t_2aa8209c810461 97-100
+  s_b243f8e34ce497::t_7d31ef4d3e2b4b 580
+src/i18n/admin/pt.ts
+  s_b243f8e34ce497::t_7cf71c54f1fafa 521
+  s_b243f8e34ce497::t_67b4b9d56840d0 552-578
+  s_b243f8e34ce497::t_a6a4bea79a2532 431-442
+  s_b243f8e34ce497::t_6e68ab03e93420 520
+  s_b243f8e34ce497::t_dcc8826d6d6e0f 97-100
+  s_b243f8e34ce497::t_a2036a2177e3ac 579
+src/i18n/admin/el.ts
+  s_b243f8e34ce497::t_796f0305319364 431-442
+  s_b243f8e34ce497::t_bba9d3ac537a74 520-521
+  s_b243f8e34ce497::t_6a9a53d4eee64d 552-579
+  s_b243f8e34ce497::t_4dd66648a8668b 97-100
+  s_3fd229194f6299::t_1afe57694befc0 580
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "067d81c50bb000dcb13aba76b55f6dbe11c3980e",
+  "prompts": {},
+  "sessions": {
+    "s_3f77e600417dd7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-a2482d8e731bec5d5",
+        "model": "unknown"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_b243f8e34ce497": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "28ccd0dc-3455-40b0-827e-8d9c50d12c2b",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
