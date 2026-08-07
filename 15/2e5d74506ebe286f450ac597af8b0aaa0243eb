@@ -1,0 +1,215 @@
+src/i18n/admin/uk.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+src/lib/booking/time-zone.ts
+  s_2e1da3b18d1c53::t_72d529e04c4d73 52-56
+src/app/admin/settings/_components/settings-form.tsx
+  s_2e1da3b18d1c53::t_5a62db40bd5992 23,109
+  s_2e1da3b18d1c53::t_4cd87ff2b9c593 22
+  s_b46e32c5fffa90::t_9395ed728e470c 110
+src/i18n/admin/no.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+src/i18n/admin/el.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+src/i18n/admin/sl.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+src/i18n/admin/nl.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+src/i18n/admin/tr.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_2003e12856e408::t_586bafd3430452 44
+  s_2003e12856e408::t_b0d59ebe0bf862 320
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+src/i18n/admin/sv.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+src/lib/booking/hours.test.ts
+  s_2e1da3b18d1c53::t_17b27767200eef 4,229-269
+  s_2e1da3b18d1c53::t_baf51d584db8a1 270-293
+  s_b46e32c5fffa90::t_ea2b51300c7de2 294
+src/i18n/admin/coverage.test.ts
+  s_b46e32c5fffa90::t_4ed8dadda4597e 71,76
+src/i18n/admin/ja.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+src/i18n/admin/fi.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+src/i18n/admin/vi.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+src/lib/booking/time-zone.test.ts
+  s_2e1da3b18d1c53::t_17b27767200eef 10,254-267
+  s_b46e32c5fffa90::t_030773547ad1f8 268
+src/i18n/admin/mk.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+src/i18n/admin/bg.ts
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+src/i18n/admin/en.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 421
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 101
+  s_2e1da3b18d1c53::t_1642d519b12e92 468-477,525-536
+  s_b46e32c5fffa90::t_a0ed6b93dc30ab 239-242
+src/i18n/admin/cs.ts
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+src/lib/booking/availability.ts
+  s_2e1da3b18d1c53::t_a3c340969ba359 1-4,7-97,100-136
+  s_2e1da3b18d1c53::t_72d529e04c4d73 5-6,98-99
+src/lib/actions/shop.ts
+  s_2e1da3b18d1c53::t_af32cc5185f4e6 4-5
+  s_2e1da3b18d1c53::t_01042b7c17144e 270-279
+  s_2e1da3b18d1c53::t_98f04d36515039 195-229
+src/i18n/admin/hu.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+src/i18n/admin/ro.ts
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+src/i18n/admin/it.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+src/i18n/admin/ko.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+src/i18n/admin/zh.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+src/i18n/admin/fil.ts
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+src/i18n/admin/pl.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+src/i18n/admin/bs.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+src/i18n/admin/fr.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+src/i18n/admin/th.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+src/i18n/admin/de.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+src/i18n/admin/ar.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+src/lib/booking/hours.ts
+  s_2e1da3b18d1c53::t_72d529e04c4d73 115-123,136-137
+  s_2e1da3b18d1c53::t_b1f1fda325ce41 124-135
+src/i18n/admin/es.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+src/i18n/admin/sq.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+src/i18n/admin/sr.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+src/i18n/admin/da.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+src/i18n/admin/hr.ts
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+src/i18n/admin/id.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+src/i18n/admin/ms.ts
+  s_2003e12856e408::t_c67ec1cd1498ac 279
+  s_2e1da3b18d1c53::t_d31f02473a2511 181-190
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 507
+src/app/admin/settings/_components/booking-card.tsx
+  s_2e1da3b18d1c53::t_da99f2e8287367 120-124,126-136,138-171
+  s_2e1da3b18d1c53::t_afd7a819033718 1-119,125,137,172-191
+src/i18n/admin/ru.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+src/i18n/admin/pt.ts
+  s_2e1da3b18d1c53::t_d31f02473a2511 361-370
+  s_7ee005f5ad96b3::t_ecf49b7d369dc5 92
+  s_2003e12856e408::t_c67ec1cd1498ac 320
+src/db/schema/shop.ts
+  s_2e1da3b18d1c53::t_0bf87fce702ced 3
+  s_2e1da3b18d1c53::t_f94e32d4ba1820 116-137
+  s_b46e32c5fffa90::t_a3ccd77dc2cf37 115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "152e5d74506ebe286f450ac597af8b0aaa0243eb",
+  "prompts": {},
+  "sessions": {
+    "s_2003e12856e408": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "75f413c8-ba54-4803-8715-86e2a4dfb62f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_7ee005f5ad96b3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "22956574-b8ad-444b-a8fe-b34f24b6e02a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_b46e32c5fffa90": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a6bedbce-9ae2-45f1-bcfd-dcb1cdcec3af",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
