@@ -3,8 +3,8 @@ title: Why your link in bio is costing you sales
 description: A link tree sends people somewhere else to buy. Every extra tap between the post and the payment is a customer you already paid for and then lost.
 date: 2026-07-14
 author: Sailo team
-cover: /blog/link-in-bio.svg
-coverAlt: A phone showing a shop page opened from a social profile
+cover: /blog/covers/why-your-link-in-bio-is-costing-you-sales.svg
+coverAlt: A magnifying glass over a few lines of text
 tags: [selling, conversion]
 ---
 
@@ -37,3 +37,5 @@ The fix is not a better link tree. It is not having one. Put the products, the p
 Three steps. No handoff, no second site, no loading spinner on a train.
 
 That is the whole idea behind Sailo — one link that *is* the shop, rather than one that points at it.
+
+If you are working out the wider setup, [selling on social media without a website](/en/blog/selling-on-social-media-without-a-website) covers where discovery, decision and payment each belong. And for the page itself, [what to put in your bio link](/en/blog/what-to-put-in-your-bio-link) goes through what a buyer has to be able to answer before they scroll.

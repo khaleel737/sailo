@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Bars of uneven height with the tallest picked out">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <g opacity="0.13"><path d="M183 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M203 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M223 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M243 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M263 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M283 40 l-70 130" stroke="#14140f" stroke-width="6"/></g>
+  <g transform="translate(-21 -4) rotate(2.9 600 315) scale(0.980) translate(12.2 6.4)">
+  <rect x="190" y="408" width="77" height="72" rx="10" fill="#14140f" opacity="0.26"/><rect x="293" y="351" width="77" height="129" rx="10" fill="#14140f" opacity="0.26"/><rect x="395" y="339" width="77" height="141" rx="10" fill="#14140f" opacity="0.26"/><rect x="498" y="280" width="77" height="200" rx="10" fill="#14140f" opacity="0.26"/><rect x="600" y="286" width="77" height="194" rx="10" fill="#14140f" opacity="0.26"/><rect x="703" y="210" width="77" height="270" rx="10" fill="#14140f" opacity="1"/><rect x="805" y="345" width="77" height="135" rx="10" fill="#14140f" opacity="0.26"/><rect x="908" y="308" width="77" height="172" rx="10" fill="#14140f" opacity="0.26"/><path d="M160 480 h880" fill="none" stroke="#14140f" stroke-width="4" opacity="1"/>
+  </g>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="An open book">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <g opacity="0.13"><path d="M695 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M715 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M735 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M755 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M775 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M795 40 l-70 130" stroke="#14140f" stroke-width="6"/></g>
+  <g transform="translate(-9 16) rotate(0.2 600 315) scale(0.950) translate(31.6 16.6)">
+  <path d="M600 200 c-70 -40 -180 -40 -230 -20 v280 c50 -20 160 -20 230 20 z" fill="#ffffff" stroke="#14140f" stroke-width="4"/><path d="M600 200 c70 -40 180 -40 230 -20 v280 c-50 -20 -160 -20 -230 20 z" fill="#ffffff" stroke="#14140f" stroke-width="4"/><path d="M600 200 v280" fill="none" stroke="#14140f" stroke-width="4" opacity="1"/><rect x="420" y="260" width="121" height="10" rx="5" fill="#14140f" opacity="0.25"/><rect x="420" y="294" width="126" height="10" rx="5" fill="#14140f" opacity="0.25"/><rect x="420" y="328" width="91" height="10" rx="5" fill="#14140f" opacity="0.25"/><rect x="650" y="260" width="78" height="10" rx="5" fill="#14140f" opacity="0.25"/><rect x="650" y="294" width="112" height="10" rx="5" fill="#14140f" opacity="0.25"/><rect x="650" y="328" width="66" height="10" rx="5" fill="#14140f" opacity="0.25"/>
+  </g>
+</svg>

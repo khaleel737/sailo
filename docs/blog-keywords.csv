@@ -1,3 +1,413 @@
 locale,slug,primary_keyword,intent,country,cluster,status
 en,what-to-photograph-when-you-sell-food,how to photograph food you sell,informational,US,product-craft,retrofit
 en,why-your-link-in-bio-is-costing-you-sales,link in bio losing sales,informational,US,selling-channels,retrofit
+en,how-to-take-payment-as-a-small-seller,how to take payment as a small seller,informational,US,getting-paid,claimed
+en,how-to-know-a-bank-transfer-actually-arrived,confirm a bank transfer for an order,informational,US,getting-paid,claimed
+en,cash-on-delivery-for-small-sellers,cash on delivery for online sellers,informational,US,getting-paid,claimed
+en,what-to-say-when-a-buyer-says-they-paid,buyer says they paid but no money received,informational,US,getting-paid,claimed
+en,do-you-need-card-payments-to-sell-online,do i need card payments to sell online,commercial,US,getting-paid,claimed
+en,how-payment-fees-eat-a-small-order,payment fees eating small business profit,informational,US,getting-paid,claimed
+en,selling-on-social-media-without-a-website,sell on social media without a website,informational,US,selling-channels,claimed
+en,how-to-take-orders-on-whatsapp,how to take orders on whatsapp,informational,US,selling-channels,claimed
+en,turning-instagram-dms-into-orders,instagram dm to order,informational,US,selling-channels,claimed
+en,what-to-put-in-your-bio-link,what to put in link in bio,informational,US,selling-channels,claimed
+en,selling-in-comments-without-losing-track,selling in instagram comments,informational,US,selling-channels,claimed
+en,when-a-marketplace-beats-your-own-shop,marketplace vs own online shop small seller,commercial,US,selling-channels,claimed
+en,how-to-sell-files-and-time-online,how to sell digital products and services online,informational,US,digital-and-services,claimed
+en,how-to-sell-pdfs-without-a-website,sell a pdf without a website,informational,US,digital-and-services,claimed
+en,how-to-take-bookings-for-a-service,how to take bookings online small business,informational,US,digital-and-services,claimed
+en,stopping-people-sharing-your-paid-files,stop people sharing digital downloads,informational,US,digital-and-services,claimed
+en,pricing-a-digital-product-for-the-first-time,how to price a digital product,informational,US,digital-and-services,claimed
+en,selling-a-course-without-a-course-platform,sell a course without a platform,informational,US,digital-and-services,claimed
+en,how-to-photograph-what-you-sell,product photography for small sellers,informational,US,product-craft,claimed
+en,writing-product-descriptions-that-sell,how to write product descriptions,informational,US,product-craft,claimed
+en,how-to-price-what-you-make,how to price handmade products,informational,US,product-craft,claimed
+en,photographing-clothes-without-a-model,how to photograph clothes to sell,informational,US,product-craft,claimed
+en,how-to-handle-sizes-and-variants,selling products with sizes and colours,informational,US,product-craft,claimed
+en,taking-photos-with-just-a-phone,product photos with a phone,informational,IN,product-craft,claimed
+en,how-to-name-your-products,how to name products for an online shop,informational,US,product-craft,claimed
+en,packaging-that-survives-the-courier,packaging for small online sellers,informational,US,product-craft,claimed
+en,when-to-raise-your-prices,when to raise prices small business,informational,US,product-craft,claimed
+en,building-a-catalogue-people-can-scan,how to organise an online product catalogue,informational,US,product-craft,claimed
+en,how-to-shoot-a-product-video,product video for social media selling,informational,US,product-craft,claimed
+en,what-a-good-product-photo-background-looks-like,best background for product photos,informational,US,product-craft,claimed
+en,how-many-products-should-you-launch-with,how many products to start an online shop,informational,US,product-craft,claimed
+en,writing-a-bio-that-sells,instagram bio for a small business,informational,US,product-craft,claimed
+en,how-to-photograph-jewellery,how to photograph jewellery to sell,informational,US,product-craft,claimed
+en,turning-an-audience-into-income,how to monetise a small following,informational,US,creator-economy,claimed
+en,you-do-not-need-100k-followers,how many followers to start selling,informational,US,creator-economy,claimed
+en,what-to-sell-when-you-have-no-product,what can i sell online with no product,informational,US,creator-economy,claimed
+en,brand-deals-versus-selling-your-own-thing,brand deals vs own products creator,commercial,US,creator-economy,claimed
+en,how-to-price-your-first-paid-offer,how to price a first digital offer,informational,US,creator-economy,claimed
+en,the-creator-middle-class,making a living as a small creator,informational,US,creator-economy,claimed
+en,turning-free-content-into-a-paid-offer,turn free content into paid product,informational,US,creator-economy,claimed
+en,how-to-launch-to-a-small-list,launching a product to a small audience,informational,US,creator-economy,claimed
+en,memberships-versus-one-off-sales,membership or one off product creator,commercial,US,creator-economy,claimed
+en,what-creators-get-wrong-about-funnels,sales funnel for creators,informational,US,creator-economy,claimed
+en,selling-without-feeling-like-a-salesperson,how to sell without being pushy,informational,US,creator-economy,claimed
+en,how-often-should-you-post-about-your-product,how often to promote your product,informational,US,creator-economy,claimed
+en,the-first-thousand-dollars-online,how to make your first 1000 online,informational,US,creator-economy,claimed
+en,why-your-audience-does-not-buy,why followers dont buy from you,informational,US,creator-economy,claimed
+en,building-an-email-list-without-a-website,build an email list without a website,informational,US,creator-economy,claimed
+en,what-to-do-when-a-post-goes-viral,what to do when a post goes viral selling,informational,US,creator-economy,claimed
+en,how-to-sell-on-tiktok-without-tiktok-shop,sell on tiktok without tiktok shop,informational,US,social-platforms,claimed
+en,selling-through-instagram-stories,how to sell on instagram stories,informational,US,social-platforms,claimed
+en,selling-on-facebook-groups,selling in facebook groups,informational,PH,social-platforms,claimed
+en,using-whatsapp-channels-to-sell,whatsapp channel for business,informational,IN,social-platforms,claimed
+en,selling-on-pinterest-without-a-shop,how to sell on pinterest,informational,US,social-platforms,claimed
+en,youtube-descriptions-that-drive-orders,youtube description link to shop,informational,US,social-platforms,claimed
+en,selling-on-threads-and-x,selling on threads app,informational,US,social-platforms,claimed
+en,how-to-use-telegram-to-take-orders,telegram for small business orders,informational,US,social-platforms,claimed
+en,which-platform-should-you-actually-sell-on,best social platform to sell on,commercial,US,social-platforms,claimed
+en,posting-the-same-thing-everywhere,cross posting to social platforms,informational,US,social-platforms,claimed
+en,how-tiktok-live-selling-works,tiktok live selling for beginners,informational,PH,social-platforms,claimed
+en,reels-that-actually-sell-something,instagram reels to sell products,informational,US,social-platforms,claimed
+en,what-to-do-when-a-platform-bans-you,social media account banned business,informational,US,social-platforms,claimed
+en,algorithms-change-your-link-does-not,why you need your own link,informational,US,social-platforms,claimed
+en,how-to-run-a-giveaway-that-sells,how to run an instagram giveaway,informational,US,social-platforms,claimed
+en,getting-your-first-ten-orders,how to get your first online order,informational,US,growth,claimed
+en,how-to-get-repeat-buyers,how to get repeat customers small business,informational,US,growth,claimed
+en,asking-customers-for-referrals,how to ask customers for referrals,informational,US,growth,claimed
+en,what-to-do-when-nobody-is-buying,no sales in my online shop,informational,US,growth,claimed
+en,using-customer-photos-to-sell,how to use customer photos marketing,informational,US,growth,claimed
+en,how-to-run-a-discount-without-losing-money,how to run a discount small business,informational,US,growth,claimed
+en,building-a-waiting-list-for-a-drop,how to build hype for a product drop,informational,US,growth,claimed
+en,how-to-get-found-on-google-as-a-small-seller,seo for small online sellers,informational,US,growth,claimed
+en,turning-one-customer-into-three,word of mouth marketing small business,informational,NG,growth,claimed
+en,how-to-follow-up-without-being-annoying,how to follow up with a customer,informational,US,growth,claimed
+en,what-a-good-first-message-looks-like,first message to a customer selling,informational,US,growth,claimed
+en,selling-to-people-who-already-know-you,selling to friends and family business,informational,US,growth,claimed
+en,how-to-collect-reviews-that-convince,how to get reviews for a small business,informational,US,growth,claimed
+en,the-quiet-months-and-what-to-do,slow season small business what to do,informational,US,growth,claimed
+en,how-to-know-which-product-to-push,which product to promote small shop,informational,US,growth,claimed
+en,when-to-spend-money-on-ads,should a small seller run ads,commercial,US,growth,claimed
+en,how-to-work-out-delivery-charges,how to calculate shipping costs small business,informational,US,shipping,claimed
+en,delivering-locally-without-a-courier,local delivery for small business,informational,NG,shipping,claimed
+en,what-to-do-when-a-parcel-goes-missing,parcel lost in transit what to do seller,informational,UK,shipping,claimed
+en,shipping-internationally-for-the-first-time,how to ship internationally small business,informational,US,shipping,claimed
+en,should-you-offer-free-delivery,is free shipping worth it small business,commercial,US,shipping,claimed
+en,packing-orders-faster,how to pack orders faster,informational,US,shipping,claimed
+en,choosing-a-courier-you-can-trust,how to choose a courier small business,commercial,IN,shipping,claimed
+en,delivery-times-you-can-actually-promise,how to set delivery expectations,informational,US,shipping,claimed
+en,handling-returns-without-a-warehouse,how to handle returns small business,informational,US,shipping,claimed
+en,shipping-fragile-things,how to ship fragile items,informational,US,shipping,claimed
+en,rider-handovers-and-cash-reconciliation,cash on delivery rider reconciliation,informational,KE,shipping,claimed
+en,what-to-put-in-the-box,what to include in a package order,informational,US,shipping,claimed
+en,writing-a-refund-policy-people-trust,how to write a refund policy,informational,US,trust,claimed
+en,how-to-handle-an-angry-customer,how to deal with an angry customer,informational,US,trust,claimed
+en,what-to-do-about-a-chargeback,how to handle a chargeback small business,informational,US,trust,claimed
+en,proving-you-are-a-real-seller,how to look trustworthy selling online,informational,NG,trust,claimed
+en,handling-a-bad-review,how to respond to a bad review,informational,US,trust,claimed
+en,when-to-say-no-to-a-customer,when to refuse a customer small business,informational,US,trust,claimed
+en,answering-messages-when-you-are-asleep,managing customer messages small business,informational,US,trust,claimed
+en,how-to-write-an-order-confirmation,order confirmation message to customer,informational,US,trust,claimed
+en,dealing-with-fake-orders-and-time-wasters,fake orders online seller,informational,IN,trust,claimed
+en,what-to-do-when-you-cannot-fulfil,how to tell a customer you cant fulfil,informational,US,trust,claimed
+en,setting-expectations-before-the-sale,how to set customer expectations,informational,US,trust,claimed
+en,how-to-apologise-and-keep-the-customer,how to apologise to a customer,informational,US,trust,claimed
+en,building-trust-before-money-moves,how to build trust with online buyers,informational,ID,trust,claimed
+en,privacy-and-what-you-do-with-buyer-data,customer data small business rules,informational,UK,trust,claimed
+en,do-you-need-to-register-your-business,do i need to register to sell online,informational,US,admin,claimed
+en,keeping-records-when-you-hate-paperwork,bookkeeping for small online sellers,informational,US,admin,claimed
+en,what-to-do-about-tax-on-online-sales,tax on online sales small seller,informational,UK,admin,claimed
+en,invoices-that-get-paid,how to write an invoice small business,informational,US,admin,claimed
+en,separating-business-and-personal-money,business bank account small seller,informational,NG,admin,claimed
+en,what-receipts-to-keep-and-for-how-long,what receipts to keep small business,informational,US,admin,claimed
+en,working-out-if-you-are-actually-profitable,how to work out profit small business,informational,US,admin,claimed
+en,when-a-side-hustle-becomes-a-business,when does a hobby become a business,informational,US,admin,claimed
+en,how-much-to-pay-yourself,how much to pay yourself small business,informational,US,admin,claimed
+en,insurance-and-what-can-go-wrong,do i need insurance to sell online,informational,UK,admin,claimed
+en,writing-terms-people-will-actually-read,terms and conditions for small shop,informational,US,admin,claimed
+en,vat-and-invoicing-anxiety,vat for small online sellers,informational,DE,admin,claimed
+en,how-to-start-selling-baked-goods,how to sell baked goods from home,informational,US,niches,claimed
+en,selling-thrift-and-vintage-clothes,how to sell thrift clothes online,informational,NG,niches,claimed
+en,starting-a-small-beauty-brand,how to sell skincare online small business,informational,US,niches,claimed
+en,selling-handmade-jewellery-online,how to sell handmade jewellery,informational,US,niches,claimed
+en,selling-plants-without-killing-them,how to sell plants online,informational,UK,niches,claimed
+en,selling-art-and-prints,how to sell art prints online,informational,US,niches,claimed
+en,how-to-sell-home-cooked-food,selling home cooked food online,informational,IN,niches,claimed
+en,starting-a-candle-business,how to sell candles online,informational,US,niches,claimed
+en,selling-crochet-and-knitwear,how to sell crochet items online,informational,US,niches,claimed
+en,running-a-small-cake-business,how to take cake orders online,informational,PH,niches,claimed
+en,selling-shoes-and-sneakers,how to sell sneakers online,informational,US,niches,claimed
+en,selling-perfume-and-oils,how to sell perfume oils online,informational,NG,niches,claimed
+en,tutoring-and-selling-your-hours,how to sell tutoring online,informational,PH,niches,claimed
+en,selling-photography-as-a-service,how to sell photography services,informational,US,niches,claimed
+en,selling-fitness-plans,how to sell workout plans online,informational,US,niches,claimed
+en,print-on-demand-without-the-hype,is print on demand worth it,commercial,US,niches,claimed
+en,selling-second-hand-electronics,how to sell used phones online safely,informational,KE,niches,claimed
+en,selling-groceries-and-produce,selling fresh produce online small business,informational,KE,niches,claimed
+en,selling-party-and-event-supplies,how to sell party supplies online,informational,US,niches,claimed
+en,selling-books-and-zines,how to sell self published books,informational,UK,niches,claimed
+en,starting-a-thrift-flip-business,thrift flipping business how to start,informational,US,niches,claimed
+en,selling-hair-and-wigs,how to sell wigs online,informational,NG,niches,claimed
+en,selling-furniture-you-restore,how to sell restored furniture,informational,UK,niches,claimed
+en,selling-digital-art-and-commissions,how to sell art commissions online,informational,US,niches,claimed
+en,running-a-cleaning-or-repair-service,how to take bookings for a home service,informational,US,niches,claimed
+en,selling-coffee-and-small-batch-food,selling small batch food online,informational,US,niches,claimed
+en,selling-stationery-and-planners,how to sell planners online,informational,US,niches,claimed
+en,selling-toys-and-kids-clothes,selling childrens clothes online,informational,PH,niches,claimed
+en,selling-online-in-india,how to sell online in india without a website,informational,IN,markets,claimed
+en,selling-online-in-nigeria,how to start an online business in nigeria,informational,NG,markets,claimed
+en,selling-online-in-the-philippines,how to sell online philippines beginner,informational,PH,markets,claimed
+en,selling-online-in-kenya,how to sell online in kenya,informational,KE,markets,claimed
+en,selling-online-in-the-uk,how to start selling online uk,informational,UK,markets,claimed
+en,selling-online-in-indonesia,how to sell online in indonesia,informational,ID,markets,claimed
+en,selling-to-gulf-customers,selling online in dubai instagram,informational,AE,markets,claimed
+en,selling-online-in-south-africa,how to sell online in south africa,informational,ZA,markets,claimed
+en,why-cash-on-delivery-dominates-some-markets,why cash on delivery is popular,informational,ID,markets,claimed
+en,selling-across-borders-for-the-first-time,how to sell to another country small business,informational,US,markets,claimed
+en,pricing-for-a-market-that-haggles,how to handle price negotiation selling,informational,NG,markets,claimed
+en,what-buyers-expect-in-different-countries,online shopping expectations by country,informational,US,markets,claimed
+en,selling-in-a-currency-that-moves,pricing when currency is unstable,informational,NG,markets,claimed
+en,selling-online-in-pakistan,how to sell online in pakistan,informational,PK,markets,claimed
+en,selling-online-in-ghana,how to sell online in ghana,informational,GH,markets,claimed
+en,selling-during-ramadan,selling online during ramadan,informational,AE,seasonal,claimed
+en,black-friday-for-very-small-shops,black friday for small business,informational,US,seasonal,claimed
+en,christmas-orders-without-the-chaos,christmas orders small business planning,informational,UK,seasonal,claimed
+en,valentines-day-for-small-sellers,valentines day small business ideas,informational,US,seasonal,claimed
+en,back-to-school-selling,back to school selling small business,informational,PH,seasonal,claimed
+en,mothers-day-and-the-delivery-cliff,mothers day small business orders,informational,US,seasonal,claimed
+en,selling-during-a-festival-rush,festival season selling india,informational,IN,seasonal,claimed
+en,end-of-year-stock-clearing,how to clear old stock small business,informational,US,seasonal,claimed
+en,planning-a-year-of-drops,product drop calendar small business,informational,US,seasonal,claimed
+en,what-trends-are-worth-chasing,should i sell trending products,commercial,US,seasonal,claimed
+en,when-a-trend-dies-mid-order,what to do when a trend dies stock,informational,US,seasonal,claimed
+en,new-year-restart-for-a-stalled-shop,restarting a failed online shop,informational,US,seasonal,claimed
+en,link-in-bio-tools-compared,best link in bio tool for selling,commercial,US,comparisons,claimed
+en,what-to-look-for-in-a-selling-link,how to choose a link in bio tool,commercial,US,comparisons,claimed
+en,when-shopify-is-the-right-answer,do i need shopify for a small shop,commercial,US,comparisons,claimed
+en,marketplace-fees-compared,marketplace seller fees comparison,commercial,US,comparisons,claimed
+en,moving-off-a-platform-without-losing-customers,how to migrate online shop platform,informational,US,comparisons,claimed
+en,free-versus-paid-selling-tools,free vs paid ecommerce tools small seller,commercial,US,comparisons,claimed
+en,what-a-commission-actually-costs-you,ecommerce commission cost calculator,commercial,US,comparisons,claimed
+en,do-you-need-an-app-to-sell,do i need an app for my small business,commercial,US,comparisons,claimed
+en,taking-a-deposit-before-you-start,how to take a deposit from a customer,informational,US,getting-paid,claimed
+en,getting-paid-by-a-business-not-a-person,how to invoice a business small seller,informational,UK,getting-paid,claimed
+en,splitting-payment-across-two-methods,part payment for an order,informational,NG,getting-paid,claimed
+en,what-to-do-about-a-partial-payment,customer paid less than the total,informational,IN,getting-paid,claimed
+en,payment-links-explained,what is a payment link,informational,US,getting-paid,claimed
+en,getting-paid-for-a-custom-order,how to charge for custom orders,informational,US,getting-paid,claimed
+en,refunding-on-a-manual-payment-rail,how to refund a bank transfer customer,informational,US,getting-paid,claimed
+en,keeping-track-of-who-has-paid,tracking payments small business,informational,PH,getting-paid,claimed
+en,selling-templates-and-presets,how to sell templates online,informational,US,digital-and-services,claimed
+en,selling-a-newsletter-or-paid-community,how to charge for a community,informational,US,digital-and-services,claimed
+en,delivering-large-files-to-buyers,how to send large files to customers,informational,US,digital-and-services,claimed
+en,offering-a-free-sample-of-a-paid-file,free sample of a digital product,informational,US,digital-and-services,claimed
+en,selling-consultations-by-the-hour,how to sell consulting hours online,informational,IN,digital-and-services,claimed
+en,rescheduling-and-cancellations,cancellation policy for bookings,informational,US,digital-and-services,claimed
+en,bundling-digital-products,how to bundle digital products,informational,US,digital-and-services,claimed
+en,updating-a-file-people-already-bought,updating a digital product after sale,informational,US,digital-and-services,claimed
+en,taking-orders-in-the-comments-and-dms-together,managing orders across dms and comments,informational,PH,selling-channels,claimed
+en,one-link-for-every-platform,single link for all social platforms,informational,US,selling-channels,claimed
+en,selling-offline-and-online-at-once,selling at markets and online,informational,UK,selling-channels,claimed
+en,qr-codes-that-actually-get-scanned,qr code for a small business shop,informational,IN,selling-channels,claimed
+en,what-to-do-when-dms-get-out-of-hand,too many dms to manage business,informational,US,selling-channels,claimed
+en,selling-to-a-group-chat,selling in a whatsapp group,informational,NG,selling-channels,claimed
+en,what-a-storefront-should-load-like-on-3g,slow internet ecommerce page speed,informational,IN,comparisons,claimed
+en,when-to-move-from-free-to-paid,when to upgrade ecommerce plan,commercial,US,comparisons,claimed
+en,owning-your-customer-list,why you should own your customer list,informational,US,comparisons,claimed
+en,what-happens-if-a-tool-shuts-down,what if my ecommerce platform shuts down,informational,US,comparisons,claimed
+en,how-to-read-your-own-numbers,ecommerce analytics for small sellers,informational,US,growth,claimed
+en,what-conversion-rate-should-you-expect,average conversion rate small online shop,informational,US,growth,claimed
+en,finding-out-why-people-abandon,why customers abandon carts small shop,informational,US,growth,claimed
+en,testing-a-product-before-you-make-it,how to validate a product idea,informational,US,growth,claimed
+en,what-should-i-sell-online,what should i sell online,informational,US,niches,claimed
+pt,como-vender-no-instagram-sem-site,como vender no instagram sem site,informational,BR,selling-channels,claimed
+pt,como-receber-por-pix-vendendo-online,como receber pagamento por pix vendendo,informational,BR,getting-paid,claimed
+pt,link-na-bio-que-vende,link na bio para vender,informational,BR,selling-channels,claimed
+pt,como-cobrar-pelo-whatsapp,como vender pelo whatsapp,informational,BR,selling-channels,claimed
+pt,quanto-cobrar-de-frete,como calcular frete para vender online,informational,BR,shipping,claimed
+pt,fotografar-produtos-com-o-celular,como fotografar produtos com celular,informational,BR,product-craft,claimed
+pt,como-conseguir-os-primeiros-pedidos,como conseguir os primeiros clientes online,informational,BR,growth,claimed
+pt,precificar-o-que-voce-faz,como precificar produtos artesanais,informational,BR,product-craft,claimed
+es,como-vender-por-instagram-sin-pagina-web,como vender por instagram sin pagina web,informational,MX,selling-channels,claimed
+es,como-cobrar-por-transferencia,como cobrar por transferencia bancaria vendiendo,informational,MX,getting-paid,claimed
+es,que-poner-en-el-link-de-la-bio,que poner en el link de la bio,informational,MX,selling-channels,claimed
+es,como-vender-por-whatsapp,como vender por whatsapp,informational,MX,selling-channels,claimed
+es,como-calcular-el-envio,como calcular el costo de envio,informational,MX,shipping,claimed
+es,fotografiar-productos-con-el-movil,como fotografiar productos con el movil,informational,ES,product-craft,claimed
+es,como-conseguir-los-primeros-pedidos,como conseguir los primeros clientes online,informational,MX,growth,claimed
+es,contra-reembolso-para-vendedores,pago contra reembolso vender online,informational,ES,getting-paid,claimed
+id,cara-jualan-online-tanpa-website,cara jualan online tanpa website,informational,ID,selling-channels,claimed
+id,cara-terima-pembayaran-cod,cara terima pembayaran cod,informational,ID,getting-paid,claimed
+id,jualan-lewat-whatsapp,cara jualan lewat whatsapp,informational,ID,selling-channels,claimed
+id,cara-hitung-ongkir,cara hitung ongkir,informational,ID,shipping,claimed
+id,paket-hilang-tanggung-jawab-siapa,paket hilang tanggung jawab siapa,informational,ID,shipping,claimed
+id,foto-produk-pakai-hp,cara foto produk pakai hp,informational,ID,product-craft,claimed
+id,cara-dapat-pembeli-pertama,cara dapat pembeli pertama online,informational,ID,growth,claimed
+id,toko-sendiri-atau-marketplace,jualan di marketplace atau toko sendiri,commercial,ID,comparisons,claimed
+tr,website-olmadan-instagramdan-satis,website olmadan instagramdan satis,informational,TR,selling-channels,claimed
+tr,havale-ile-odeme-almak,havale ile odeme almak,informational,TR,getting-paid,claimed
+tr,kapida-odeme-nasil-calisir,kapida odeme nasil calisir,informational,TR,getting-paid,claimed
+tr,whatsapptan-siparis-almak,whatsapptan siparis almak,informational,TR,selling-channels,claimed
+tr,kargo-ucreti-nasil-hesaplanir,kargo ucreti nasil hesaplanir,informational,TR,shipping,claimed
+tr,telefonla-urun-fotografi-cekmek,telefonla urun fotografi cekmek,informational,TR,product-craft,claimed
+tr,ilk-siparislerini-almak,ilk musterileri nasil bulunur,informational,TR,growth,claimed
+tr,biyografi-linkinde-ne-olmali,instagram biyografi linki ne olmali,informational,TR,selling-channels,claimed
+vi,ban-hang-online-khong-can-website,ban hang online khong can website,informational,VN,selling-channels,claimed
+vi,thu-tien-khi-giao-hang-cod,thu tien khi giao hang cod,informational,VN,getting-paid,claimed
+vi,ban-hang-qua-facebook,ban hang qua facebook,informational,VN,selling-channels,claimed
+vi,tinh-phi-ship-the-nao,tinh phi ship the nao,informational,VN,shipping,claimed
+vi,xu-ly-khach-bom-hang,khach bom hang phai lam sao,informational,VN,trust,claimed
+vi,chup-anh-san-pham-bang-dien-thoai,chup anh san pham bang dien thoai,informational,VN,product-craft,claimed
+vi,co-don-hang-dau-tien,cach co don hang dau tien,informational,VN,growth,claimed
+vi,ban-hang-qua-zalo,ban hang qua zalo,informational,VN,selling-channels,claimed
+ar,selling-on-instagram-in-the-gulf,selling on instagram in the gulf,informational,AE,selling-channels,claimed
+ar,taking-bank-transfer-in-the-gulf,bank transfer for gulf sellers,informational,AE,getting-paid,claimed
+ar,cash-on-delivery-in-the-gulf,cash on delivery gulf sellers,informational,SA,getting-paid,claimed
+ar,whatsapp-checkout-for-gulf-sellers,whatsapp checkout gulf sellers,informational,AE,selling-channels,claimed
+ar,delivery-inside-the-gcc,delivery for small sellers gcc,informational,SA,shipping,claimed
+ar,product-photos-for-gulf-buyers,product photos gulf buyers,informational,AE,product-craft,claimed
+ar,first-orders-for-a-gulf-seller,first orders gulf seller,informational,SA,growth,claimed
+ar,what-gulf-buyers-expect,what gulf buyers expect online,informational,AE,markets,claimed
+fr,vendre-sur-instagram-sans-site,vendre sur instagram sans site,informational,FR,selling-channels,claimed
+fr,se-faire-payer-par-virement,se faire payer par virement,informational,FR,getting-paid,claimed
+fr,vendre-sur-whatsapp,vendre sur whatsapp,informational,FR,selling-channels,claimed
+fr,calculer-les-frais-de-port,calculer les frais de port,informational,FR,shipping,claimed
+fr,point-relais-ou-livraison-domicile,point relais ou livraison a domicile,informational,FR,shipping,claimed
+fr,photographier-ses-produits-au-telephone,photographier ses produits au telephone,informational,FR,product-craft,claimed
+fr,fixer-ses-prix-artisanat,fixer ses prix artisanat,informational,FR,product-craft,claimed
+fr,obtenir-ses-premieres-commandes,obtenir ses premieres commandes en ligne,informational,FR,growth,claimed
+fr,vinted-ou-sa-propre-boutique,vinted ou sa propre boutique,informational,FR,comparisons,claimed
+fr,que-mettre-dans-le-lien-bio,que mettre dans le lien bio,informational,FR,selling-channels,claimed
+de,online-verkaufen-ohne-website,online verkaufen ohne website,informational,DE,selling-channels,claimed
+de,per-ueberweisung-bezahlt-werden,per ueberweisung bezahlt werden,informational,DE,getting-paid,claimed
+de,impressumspflicht-fuer-kleine-shops,impressumspflicht kleiner shop,informational,DE,admin,claimed
+de,rechnung-schreiben-als-kleinunternehmer,rechnung schreiben kleinunternehmer,informational,DE,admin,claimed
+de,versandkosten-richtig-berechnen,versandkosten berechnen,informational,DE,shipping,claimed
+de,produktfotos-mit-dem-handy,produktfotos mit dem handy,informational,DE,product-craft,claimed
+de,preise-kalkulieren-handmade,preise kalkulieren handmade,informational,DE,product-craft,claimed
+de,die-ersten-bestellungen-bekommen,erste bestellungen bekommen,informational,DE,growth,claimed
+de,ueber-whatsapp-verkaufen,ueber whatsapp verkaufen,informational,DE,selling-channels,claimed
+de,widerrufsrecht-im-kleinen-shop,widerrufsrecht kleiner online shop,informational,DE,trust,claimed
+it,vendere-su-instagram-senza-sito,vendere su instagram senza sito,informational,IT,selling-channels,claimed
+it,farsi-pagare-con-bonifico,farsi pagare con bonifico,informational,IT,getting-paid,claimed
+it,contrassegno-come-funziona,contrassegno come funziona,informational,IT,getting-paid,claimed
+it,calcolare-le-spese-di-spedizione,calcolare le spese di spedizione,informational,IT,shipping,claimed
+it,fotografare-i-prodotti-col-telefono,fotografare i prodotti col telefono,informational,IT,product-craft,claimed
+it,come-fare-i-prezzi-artigianato,come fare i prezzi artigianato,informational,IT,product-craft,claimed
+it,primi-ordini-online,primi ordini online,informational,IT,growth,claimed
+it,vendere-su-whatsapp-italia,vendere su whatsapp,informational,IT,selling-channels,claimed
+it,cosa-mettere-nel-link-in-bio,cosa mettere nel link in bio,informational,IT,selling-channels,claimed
+it,poste-o-corriere-privato,poste o corriere privato spedizioni,informational,IT,comparisons,claimed
+th,selling-online-in-thailand-without-a-website,selling online thailand without website,informational,TH,selling-channels,claimed
+th,taking-bank-transfer-in-thailand,bank transfer payment thailand seller,informational,TH,getting-paid,claimed
+th,cash-on-delivery-in-thailand,cash on delivery thailand seller,informational,TH,getting-paid,claimed
+th,selling-through-line-thailand,selling through line app thailand,informational,TH,selling-channels,claimed
+th,facebook-live-selling-thailand,facebook live selling thailand,informational,TH,social-platforms,claimed
+th,shipping-costs-in-thailand,shipping cost calculation thailand,informational,TH,shipping,claimed
+th,product-photos-thai-buyers,product photos for thai buyers,informational,TH,product-craft,claimed
+th,first-orders-in-thailand,first online orders thailand,informational,TH,growth,claimed
+th,what-thai-buyers-expect,what thai online buyers expect,informational,TH,markets,claimed
+th,link-in-bio-for-thai-sellers,link in bio thai seller,informational,TH,selling-channels,claimed
+fil,magbenta-online-nang-walang-website,paano magbenta online walang website,informational,PH,selling-channels,claimed
+fil,pagtanggap-ng-bayad-sa-bank-transfer,paano tumanggap ng bayad bank transfer,informational,PH,getting-paid,claimed
+fil,cod-para-sa-maliliit-na-nagbebenta,cod para sa online seller,informational,PH,getting-paid,claimed
+fil,magbenta-sa-facebook-groups,magbenta sa facebook group,informational,PH,social-platforms,claimed
+fil,magbenta-gamit-ang-messenger,magbenta gamit ang messenger,informational,PH,selling-channels,claimed
+fil,pagkukuwenta-ng-shipping-fee,paano magcompute ng shipping fee,informational,PH,shipping,claimed
+fil,kuha-ng-produkto-gamit-ang-cellphone,product photo gamit cellphone,informational,PH,product-craft,claimed
+fil,unang-mga-order-online,paano makakuha ng unang order,informational,PH,growth,claimed
+fil,presyo-ng-gawang-kamay,paano magpresyo ng handmade,informational,PH,product-craft,claimed
+fil,ano-ang-ilalagay-sa-bio-link,ano ilalagay sa bio link,informational,PH,selling-channels,claimed
+ms,jual-online-tanpa-website,cara jual online tanpa website,informational,MY,selling-channels,claimed
+ms,terima-bayaran-melalui-bank,cara terima bayaran bank transfer,informational,MY,getting-paid,claimed
+ms,cod-untuk-penjual-kecil,cod untuk penjual online,informational,MY,getting-paid,claimed
+ms,jual-melalui-whatsapp-malaysia,cara jual melalui whatsapp,informational,MY,selling-channels,claimed
+ms,kira-kos-penghantaran,cara kira kos penghantaran,informational,MY,shipping,claimed
+ms,gambar-produk-guna-telefon,gambar produk guna telefon,informational,MY,product-craft,claimed
+ms,cara-letak-harga-buatan-tangan,cara letak harga produk buatan tangan,informational,MY,product-craft,claimed
+ms,dapatkan-pesanan-pertama,cara dapat pesanan pertama online,informational,MY,growth,claimed
+ms,kedai-sendiri-atau-marketplace,kedai sendiri atau marketplace,informational,MY,comparisons,claimed
+ms,apa-nak-letak-dalam-link-bio,apa nak letak dalam link bio,informational,MY,selling-channels,claimed
+pl,sprzedaz-online-bez-strony,jak sprzedawac online bez strony,informational,PL,selling-channels,claimed
+pl,platnosc-przelewem-jak-przyjmowac,jak przyjmowac platnosci przelewem,informational,PL,getting-paid,claimed
+pl,paczkomat-czy-kurier,paczkomat czy kurier dla sprzedawcy,informational,PL,shipping,claimed
+pl,jak-liczyc-koszty-wysylki,jak liczyc koszty wysylki,informational,PL,shipping,claimed
+pl,zdjecia-produktow-telefonem,zdjecia produktow telefonem,informational,PL,product-craft,claimed
+pl,pierwsze-zamowienia-online,jak zdobyc pierwsze zamowienia,informational,PL,growth,claimed
+ru,prodavat-onlayn-bez-sayta,kak prodavat onlayn bez sayta,informational,RU,selling-channels,claimed
+ru,priyom-oplaty-perevodom,kak prinimat oplatu perevodom,informational,RU,getting-paid,claimed
+ru,nalozhennyy-platyozh,nalozhennyy platyozh dlya prodavtsa,informational,RU,getting-paid,claimed
+ru,raschyot-dostavki,kak rasschitat dostavku,informational,RU,shipping,claimed
+ru,foto-tovara-na-telefon,foto tovara na telefon,informational,RU,product-craft,claimed
+ru,pervyye-zakazy-onlayn,kak poluchit pervyye zakazy,informational,RU,growth,claimed
+nl,online-verkopen-zonder-website,online verkopen zonder website,informational,NL,selling-channels,claimed
+nl,betaling-via-overboeking,betaling via overboeking ontvangen,informational,NL,getting-paid,claimed
+nl,verzendkosten-berekenen,verzendkosten berekenen webshop,informational,NL,shipping,claimed
+nl,productfotos-met-je-telefoon,productfotos met telefoon,informational,NL,product-craft,claimed
+nl,je-eerste-bestellingen,eerste bestellingen online krijgen,informational,NL,growth,claimed
+nl,marktplaats-of-eigen-winkel,marktplaats of eigen webshop,informational,NL,comparisons,claimed
+uk,prodavaty-onlayn-bez-saytu,yak prodavaty onlayn bez saytu,informational,UA,selling-channels,claimed
+uk,oplata-perekazom,yak pryimaty oplatu perekazom,informational,UA,getting-paid,claimed
+uk,nova-poshta-dlya-prodavtsya,nova poshta dlya prodavtsya,informational,UA,shipping,claimed
+uk,rozrakhunok-dostavky,yak rozrakhuvaty dostavku,informational,UA,shipping,claimed
+uk,foto-tovaru-na-telefon,foto tovaru na telefon,informational,UA,product-craft,claimed
+uk,pershi-zamovlennya,yak otrymaty pershi zamovlennya,informational,UA,growth,claimed
+ja,selling-online-without-a-website-japan,website nashi de online hanbai,informational,JP,selling-channels,claimed
+ja,taking-bank-transfer-in-japan,ginko furikomi de uketoru,informational,JP,getting-paid,claimed
+ja,konbini-and-daibiki-payment,daibiki konbini barai hanbai,informational,JP,getting-paid,claimed
+ja,shipping-costs-in-japan,soryo keisan hanbai,informational,JP,shipping,claimed
+ja,product-photos-japan,shohin shashin sumaho,informational,JP,product-craft,claimed
+ja,first-orders-in-japan,hajimete no chuumon,informational,JP,growth,claimed
+ko,selling-online-without-a-website-korea,website eopsi onrain panmae,informational,KR,selling-channels,claimed
+ko,taking-bank-transfer-in-korea,gyejwa ibgeum badgi panmae,informational,KR,getting-paid,claimed
+ko,kakaotalk-for-sellers,kakaotalk panmae juvun,informational,KR,selling-channels,claimed
+ko,shipping-costs-in-korea,baesongbi gyesan,informational,KR,shipping,claimed
+ko,product-photos-korea,sangpum sajin hyudaepon,informational,KR,product-craft,claimed
+ko,first-orders-in-korea,cheot jumun batgi,informational,KR,growth,claimed
+zh,selling-online-without-a-website-chinese,wu wangzhan wangshang maidong,informational,CN,selling-channels,claimed
+zh,taking-bank-transfer-chinese-sellers,yinhang zhuanzhang shoukuan,informational,CN,getting-paid,claimed
+zh,wechat-selling-for-small-sellers,weixin maidong xiaoshangjia,informational,CN,selling-channels,claimed
+zh,shipping-costs-chinese-sellers,yunfei jisuan,informational,CN,shipping,claimed
+zh,product-photos-chinese-buyers,chanpin zhaopian shouji,informational,CN,product-craft,claimed
+zh,first-orders-chinese-sellers,diyi bi dingdan,informational,CN,growth,claimed
+ro,vinde-online-fara-site,cum sa vinzi online fara site,informational,RO,selling-channels,claimed
+ro,plata-prin-transfer-bancar,cum sa primesti plata prin transfer,informational,RO,getting-paid,claimed
+ro,ramburs-pentru-vanzatori,plata ramburs pentru vanzatori,informational,RO,getting-paid,claimed
+ro,calculul-costurilor-de-livrare,cum calculezi costul livrarii,informational,RO,shipping,claimed
+ro,poze-de-produs-cu-telefonul,poze de produs cu telefonul,informational,RO,product-craft,claimed
+ro,primele-comenzi-online,cum obtii primele comenzi,informational,RO,growth,claimed
+bg,prodavane-onlayn-bez-sayt,prodavane onlayn bez sayt,informational,BG,selling-channels,claimed
+bg,plashtane-s-bankov-prevod,plashtane s bankov prevod,informational,BG,getting-paid,claimed
+bg,nalozhen-platezh,nalozhen platezh,informational,BG,shipping,claimed
+bs,prodaja-online-bez-web-stranice,prodaja online bez web stranice,informational,BA,selling-channels,claimed
+bs,placanje-bankovnim-prijenosom,placanje bankovnim prijenosom,informational,BA,getting-paid,claimed
+bs,pouzecem-za-prodavce,pouzecem za prodavce,informational,BA,shipping,claimed
+cs,prodej-online-bez-webu,prodej online bez webu,informational,CZ,selling-channels,claimed
+cs,platba-prevodem,platba prevodem,informational,CZ,getting-paid,claimed
+cs,dobirka-pro-prodejce,dobirka pro prodejce,informational,CZ,shipping,claimed
+da,saelg-online-uden-hjemmeside,saelg online uden hjemmeside,informational,DK,selling-channels,claimed
+da,betaling-via-bankoverfoersel,betaling via bankoverfoersel,informational,DK,getting-paid,claimed
+da,fragtpriser-for-smaa-saelgere,fragtpriser for smaa saelgere,informational,DK,shipping,claimed
+el,polisi-online-choris-istoselida,polisi online choris istoselida,informational,GR,selling-channels,claimed
+el,pliromi-me-trapeziki-katathesi,pliromi me trapeziki katathesi,informational,GR,getting-paid,claimed
+el,antikatavoli-gia-polites,antikatavoli gia polites,informational,GR,shipping,claimed
+fi,myy-verkossa-ilman-verkkosivua,myy verkossa ilman verkkosivua,informational,FI,selling-channels,claimed
+fi,maksu-tilisiirtona,maksu tilisiirtona,informational,FI,getting-paid,claimed
+fi,toimituskulut-pienelle-myyjalle,toimituskulut pienelle myyjalle,informational,FI,shipping,claimed
+hr,prodaja-na-internetu-bez-stranice,prodaja na internetu bez stranice,informational,HR,selling-channels,claimed
+hr,placanje-bankovnom-uplatom,placanje bankovnom uplatom,informational,HR,getting-paid,claimed
+hr,pouzecem-za-male-prodavace,pouzecem za male prodavace,informational,HR,shipping,claimed
+hu,eladas-online-weboldal-nelkul,eladas online weboldal nelkul,informational,HU,selling-channels,claimed
+hu,fizetes-atutalassal,fizetes atutalassal,informational,HU,getting-paid,claimed
+hu,utanvet-kis-eladoknak,utanvet kis eladoknak,informational,HU,shipping,claimed
+mk,prodazba-onlajn-bez-veb-stranica,prodazba onlajn bez veb stranica,informational,MK,selling-channels,claimed
+mk,plakjanje-so-banka,plakjanje so banka,informational,MK,getting-paid,claimed
+mk,isporaka-so-plakjanje,isporaka so plakjanje,informational,MK,shipping,claimed
+no,selg-pa-nett-uten-nettside,selg pa nett uten nettside,informational,NO,selling-channels,claimed
+no,betaling-med-bankoverfoering,betaling med bankoverfoering,informational,NO,getting-paid,claimed
+no,fraktpriser-for-smaa-selgere,fraktpriser for smaa selgere,informational,NO,shipping,claimed
+sl,prodaja-na-spletu-brez-strani,prodaja na spletu brez strani,informational,SI,selling-channels,claimed
+sl,placilo-z-nakazilom,placilo z nakazilom,informational,SI,getting-paid,claimed
+sl,povzetje-za-male-prodajalce,povzetje za male prodajalce,informational,SI,shipping,claimed
+sq,shitje-online-pa-faqe-interneti,shitje online pa faqe interneti,informational,AL,selling-channels,claimed
+sq,pagesa-me-transferte-bankare,pagesa me transfertë bankare,informational,AL,getting-paid,claimed
+sq,pagesa-ne-dorezim,pagesa ne dorezim,informational,AL,shipping,claimed
+sr,prodaja-onlajn-bez-sajta,prodaja onlajn bez sajta,informational,RS,selling-channels,claimed
+sr,placanje-uplatom-na-racun,placanje uplatom na racun,informational,RS,getting-paid,claimed
+sr,troskovi-dostave-za-prodavce,troskovi dostave za prodavce,informational,RS,shipping,claimed
+sv,salj-online-utan-hemsida,salj online utan hemsida,informational,SE,selling-channels,claimed
+sv,betalning-via-bankoverforing,betalning via bankoverforing,informational,SE,getting-paid,claimed
+sv,fraktkostnader-for-sma-saljare,fraktkostnader for sma saljare,informational,SE,shipping,claimed

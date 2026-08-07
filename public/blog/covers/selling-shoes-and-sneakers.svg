@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A trainer seen from the side">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <circle cx="704" cy="378" r="128" fill="none" stroke="#14140f" stroke-width="5" opacity="0.14"/>
+  <g transform="translate(15 3) rotate(1.8 600 315) scale(1.050) translate(-28.6 -15.0)">
+  <path d="M330 430 c40 -110 90 -140 150 -140 l60 60 l150 20 c90 12 140 40 150 60 v40 z" fill="#ffffff" stroke="#14140f" stroke-width="4" stroke-linejoin="round"/><path d="M330 470 h510" fill="none" stroke="#14140f" stroke-width="6" opacity="1"/><path d="M500 330 l40 40 M540 300 l40 44" fill="none" stroke="#14140f" stroke-width="4" opacity="0.4"/>
+  </g>
+</svg>

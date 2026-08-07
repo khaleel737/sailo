@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A phone showing a conversation thread">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <circle cx="148" cy="242" r="189" fill="none" stroke="#14140f" stroke-width="5" opacity="0.14"/>
+  <g transform="translate(22 -7) rotate(0.0 600 315) scale(1.020) translate(-11.8 -6.2)">
+  <rect x="440" y="70" width="320" height="500" rx="35.2" fill="#ffffff" stroke="#14140f" stroke-width="4"/><rect x="470" y="130" width="135" height="56" rx="18" fill="none" stroke="#14140f" stroke-width="3" opacity="0.35"/><rect x="586" y="208" width="144" height="56" rx="18" fill="#14140f" stroke="#14140f" stroke-width="3" opacity="1"/><rect x="470" y="286" width="162" height="56" rx="18" fill="none" stroke="#14140f" stroke-width="3" opacity="0.35"/><rect x="573" y="364" width="157" height="56" rx="18" fill="#14140f" stroke="#14140f" stroke-width="3" opacity="1"/><rect x="470" y="442" width="114" height="56" rx="18" fill="none" stroke="#14140f" stroke-width="3" opacity="0.35"/>
+  </g>
+</svg>

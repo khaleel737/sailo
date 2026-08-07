@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A camera seen from the front">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <g opacity="0.13"><path d="M540 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M560 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M580 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M600 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M620 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M640 40 l-70 130" stroke="#14140f" stroke-width="6"/></g>
+  <g transform="translate(-9 14) rotate(2.8 600 315) scale(0.980) translate(12.2 6.4)">
+  <rect x="330" y="180" width="540" height="330" rx="30" fill="#ffffff" stroke="#14140f" stroke-width="4"/><path d="M470 180 l40 -60 h180 l40 60" fill="none" stroke="#14140f" stroke-width="4" opacity="1" stroke-linejoin="round"/><circle cx="600" cy="350" r="113" fill="none" stroke="#14140f" stroke-width="4" opacity="1"/><circle cx="600" cy="350" r="57" fill="#14140f"/><circle cx="790" cy="240" r="14" fill="#14140f"/>
+  </g>
+</svg>

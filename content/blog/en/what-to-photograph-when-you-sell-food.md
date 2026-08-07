@@ -3,8 +3,8 @@ title: What to photograph when you sell food
 description: You do not need a studio. You need one window, one surface, and the discipline to shoot the thing people actually order.
 date: 2026-07-28
 author: Sailo team
-cover: /blog/food-photography.svg
-coverAlt: A pizza photographed from above on a dark surface beside a window
+cover: /blog/covers/what-to-photograph-when-you-sell-food.svg
+coverAlt: A camera seen from the front
 tags: [photography, food]
 ---
 
@@ -37,3 +37,5 @@ If you photograph five dishes and three are blurry, you have wasted an afternoon
 ## Then stop
 
 Six good photographs will carry a shop for a year. Take those, put a price under each one, and go back to cooking.
+
+The same one-window rule works for anything you sell, not just food — there's a fuller version in [product photography for small sellers](/en/blog/how-to-photograph-what-you-sell). Once the pictures are done, the next thing that decides whether someone orders is [what you write underneath them](/en/blog/writing-product-descriptions-that-sell).

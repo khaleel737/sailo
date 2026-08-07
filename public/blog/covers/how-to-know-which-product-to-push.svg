@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A magnifying glass over a few lines of text">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <g opacity="0.13"><path d="M919 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M939 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M959 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M979 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M999 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M1019 40 l-70 130" stroke="#14140f" stroke-width="6"/></g>
+  <g transform="translate(-24 -13) rotate(0.7 600 315) scale(0.990) translate(6.1 3.2)">
+  <circle cx="530" cy="270" r="157" fill="#ffffff" stroke="#14140f" stroke-width="5"/><path d="M640 385 l160 160" fill="none" stroke="#14140f" stroke-width="24" opacity="1" stroke-linecap="round"/><rect x="450" y="230" width="144" height="10" rx="5" fill="#14140f" opacity="0.35"/><rect x="450" y="260" width="134" height="10" rx="5" fill="#14140f" opacity="0.35"/><rect x="450" y="290" width="147" height="10" rx="5" fill="#14140f" opacity="0.35"/>
+  </g>
+</svg>

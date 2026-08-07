@@ -54,17 +54,65 @@ describe("getArticles", () => {
     }
   });
 
+  it("gives every article its own cover, in every language", async () => {
+    /*
+     * Two articles sharing a picture makes the index look generated, which is
+     * the thing a hand-written blog most needs not to look like.
+     *
+     * Walks the directory rather than asking the reader for a list: a reader
+     * scoped to one locale would never see a translation reusing an English
+     * article's cover, and that is exactly the case a copy-pasted new post
+     * creates.
+     */
+    const { readdir, readFile } = await import("node:fs/promises");
+    const path = await import("node:path");
+    const matter = (await import("gray-matter")).default;
+    const root = path.join(process.cwd(), "content", "blog");
+
+    const owner = new Map<string, string>();
+
+    for (const dir of await readdir(root, { withFileTypes: true })) {
+      if (!dir.isDirectory()) continue;
+      for (const file of await readdir(path.join(root, dir.name))) {
+        if (!file.endsWith(".md")) continue;
+        const raw = await readFile(path.join(root, dir.name, file), "utf8");
+        const cover = matter(raw).data.cover;
+        if (typeof cover !== "string") continue;
+
+        const here = `${dir.name}/${file.replace(/\.md$/, "")}`;
+        expect(owner.get(cover), `${here} reuses ${owner.get(cover)}'s cover: ${cover}`).toBeUndefined();
+        owner.set(cover, here);
+      }
+    }
+  });
+
   it("does not carry the body — the index only needs summaries", async () => {
     const [first] = await getArticles();
     expect(first && "html" in first).toBe(false);
   });
 
   it("falls back to English for a language nothing has been written in yet", async () => {
-    // Until a translation lands, a reader on any other locale gets the same
-    // articles rather than an empty blog — and gets them marked `en`, so the
-    // page can say which language it actually handed over.
+    /*
+     * The empty locale is found at run time rather than named.
+     *
+     * This test used to hard-code `th`, which was empty when it was written and
+     * has ten articles now — so it failed on the day Thai landed, reporting a
+     * fallback bug that did not exist. Ask the directory instead.
+     */
+    const { readdir } = await import("node:fs/promises");
+    const path = await import("node:path");
+    const root = path.join(process.cwd(), "content", "blog");
+    const written = new Set(
+      (await readdir(root, { withFileTypes: true }))
+        .filter((d) => d.isDirectory())
+        .map((d) => d.name),
+    );
+
+    const empty = LOCALES.map((l) => l.code).find((c) => c !== "en" && !written.has(c));
+    if (!empty) return; // Every shipped language has articles. Nothing to prove.
+
     const english = await getArticles("en");
-    const untranslated = await getArticles("th");
+    const untranslated = await getArticles(empty);
 
     expect(untranslated.map((a) => a.slug)).toEqual(english.map((a) => a.slug));
     expect(untranslated.every((a) => a.locale === "en")).toBe(true);
@@ -175,6 +223,24 @@ describe("the keyword registry", () => {
       const key = `${row.locale}:${row.slug}`;
       expect(seen.has(key), `${key} has two rows`).toBe(false);
       seen.add(key);
+    }
+  });
+
+  it("never gives two articles the same slug", async () => {
+    /*
+     * Slugs must be unique across every language, not just within one.
+     *
+     * The URL would tolerate a collision — `/bs/blog/x` and `/sr/blog/x` are
+     * different pages — but the cover for an article is `covers/<slug>.svg`,
+     * with no locale in the path, so two articles sharing a slug would share a
+     * picture and silently overwrite each other's file. Two closely related
+     * languages produced exactly that collision once already.
+     */
+    const owner = new Map<string, string>();
+    for (const row of await readRegistry()) {
+      const previous = owner.get(row.slug);
+      expect(previous, `${row.locale}/${row.slug} reuses a slug owned by ${previous}`).toBeUndefined();
+      owner.set(row.slug, `${row.locale}/${row.slug}`);
     }
   });
 

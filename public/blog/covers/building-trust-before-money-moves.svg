@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A shield with a tick inside it">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <g opacity="0.13"><path d="M442 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M462 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M482 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M502 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M522 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M542 40 l-70 130" stroke="#14140f" stroke-width="6"/></g>
+  <g transform="translate(7 -2) rotate(0.0 600 315) scale(0.940) translate(38.3 20.1)">
+  <path d="M600 130 l180 60 v140 c0 120 -90 180 -180 210 c-90 -30 -180 -90 -180 -210 v-140 z" fill="#ffffff" stroke="#14140f" stroke-width="4" stroke-linejoin="round"/><g transform="translate(560 290) scale(1)"><circle cx="20" cy="20" r="20" fill="#14140f"/><path d="M11 20 l7 8 l13 -15" stroke="#faf9f7" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g>
+</svg>

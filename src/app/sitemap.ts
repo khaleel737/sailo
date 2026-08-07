@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { and, desc, eq } from "drizzle-orm";
 import { getDb, schema } from "@/db";
 import { absolute } from "@/lib/seo";
-import { getEveryArticle } from "@/lib/blog";
+import { getContentLocales, getEveryArticleByLocale } from "@/lib/blog";
 
 /**
  * The public surface: the marketing page, every published shop and every
@@ -37,22 +37,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absolute("/privacy"), lastModified: now, changeFrequency: "yearly", priority: 0.4 },
     { url: absolute("/terms"), lastModified: now, changeFrequency: "yearly", priority: 0.4 },
     { url: absolute("/refunds"), lastModified: now, changeFrequency: "yearly", priority: 0.4 },
-    { url: absolute("/blog"), lastModified: now, changeFrequency: "weekly", priority: 0.7 },
   ];
+
+  /*
+   * One index per language, at its own URL.
+   *
+   * `/blog` itself is deliberately absent: it redirects to whichever language
+   * the reader prefers, so it has no content of its own to offer a crawler and
+   * submitting a redirect is a Search Console warning rather than a ranking.
+   */
+  for (const locale of await getContentLocales()) {
+    staticRoutes.push({
+      url: absolute(`/${locale}/blog`),
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    });
+  }
 
   /*
    * Articles come off disk, not out of the database, so they belong outside
    * the try/catch below — a database outage should not take the blog out of
    * the sitemap along with the shops.
    *
-   * Every language, not the English set: a slug written only as a translation
-   * has a URL like any other, and a crawler is the one reader who should be
-   * told about all of them.
+   * Every language, each at its own locale-prefixed URL. That prefix is the
+   * whole reason these are worth submitting: a French article at `/fr/blog/...`
+   * is a French page a crawler can index as French, where the previous single
+   * cookie-switched URL per slug could only ever be indexed once.
    */
-  const articles = await getEveryArticle();
-  for (const article of articles) {
+  for (const { locale, article } of await getEveryArticleByLocale()) {
     staticRoutes.push({
-      url: absolute(`/blog/${article.slug}`),
+      url: absolute(`/${locale}/blog/${article.slug}`),
       lastModified: new Date(article.date),
       changeFrequency: "monthly",
       priority: 0.6,

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A delivery van in outline">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <circle cx="202" cy="318" r="114" fill="none" stroke="#14140f" stroke-width="5" opacity="0.14"/>
+  <g transform="translate(22 7) rotate(2.3 600 315) scale(1.020) translate(-11.8 -6.2)">
+  <path d="M240 200 h380 v220 h-380 z" fill="#ffffff" stroke="#14140f" stroke-width="4"/><path d="M620 260 h130 l90 100 v60 h-220 z" fill="#ffffff" stroke="#14140f" stroke-width="4" stroke-linejoin="round"/><circle cx="380" cy="440" r="46" fill="#ffffff" stroke="#14140f" stroke-width="4"/><circle cx="740" cy="440" r="46" fill="#ffffff" stroke="#14140f" stroke-width="4"/><circle cx="380" cy="440" r="16" fill="#14140f"/><circle cx="740" cy="440" r="16" fill="#14140f"/><path d="M120 300 h90 M120 360 h140" fill="none" stroke="#14140f" stroke-width="5" opacity="0.3" stroke-linecap="round"/>
+  </g>
+</svg>

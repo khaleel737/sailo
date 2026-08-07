@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A garment on a hanger">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <circle cx="226" cy="188" r="142" fill="none" stroke="#14140f" stroke-width="5" opacity="0.14"/>
+  <g transform="translate(4 -13) rotate(2.1 600 315) scale(1.010) translate(-5.9 -3.1)">
+  <path d="M600 180 a30 30 0 1 1 30 30 v20" fill="none" stroke="#14140f" stroke-width="5" opacity="1" stroke-linecap="round"/><path d="M600 230 l-190 110 h380 z" fill="none" stroke="#14140f" stroke-width="5" opacity="1" stroke-linejoin="round"/><path d="M430 350 l-40 170 h420 l-40 -170" fill="none" stroke="#14140f" stroke-width="5" opacity="1" stroke-linejoin="round" fill="#ffffff"/><rect x="470" y="400" width="90" height="10" rx="5" fill="#14140f" opacity="0.25"/><rect x="470" y="434" width="139" height="10" rx="5" fill="#14140f" opacity="0.25"/>
+  </g>
+</svg>

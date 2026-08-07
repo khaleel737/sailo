@@ -51,21 +51,42 @@ something not on it, verify it in the codebase first or leave it out.
 
 | Fact | Detail |
 |---|---|
-| Commission | **None, on every plan including free.** Sailo never holds the money |
-| Free plan | $0 — 20 products, 30 days of analytics, chat and manual payment rails |
-| Pro | $9.99/month or $95.90/year — 250 products, 1 year analytics, no Sailo badge, CSV export |
+| Commission — manual rails | **None.** Bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email and phone: Sailo never touches the money and takes nothing |
+| Commission — card | **0.5% of the goods**, on every plan including free. A Stripe application fee, charged on goods after discount, excluding delivery and tax. `plans.ts:194`, `connect.ts:304` |
+| Who holds the money | Never Sailo. Card charges land in the seller's own Stripe account |
+| Free plan | $0 — 20 products, 30 days of analytics, chat and manual payment rails. **No card payments** |
+| Pro | $9.99/month or $95.90/year — 250 products, 1 year analytics, no Sailo badge, CSV export. **No card payments** |
 | Business | $19.99/month or $191.90/year — unlimited products, 3 years analytics, card payments, coupons, affiliates |
-| The link | `sailo.store/yourname`, live the moment you sign up |
-| Card payments | Through the seller's **own** Stripe or Paystack account — the charge lands with them directly |
-| Other payment | Bank transfer, cash on delivery, mobile money, with instructions the seller writes |
+| The link | `sailo.store/yourname`, live the moment you sign up. No custom domains |
+| Card payments | Through the seller's **own Stripe** account, on Business only, and only once Stripe has cleared them for charges |
+| The complete rail list | `card`, `whatsapp`, `telegram`, `instagram`, `email`, `phone`, `bank_transfer`, `cod`. `rails.ts:11` |
+| Other payment | Bank transfer and cash on delivery, with instructions the seller writes |
 | WhatsApp orders | The order arrives pre-written: item, options, address, total |
-| Services | Duration, location, date picker, notice period |
-| Digital goods | Files unlock on payment confirmation; download limits and expiry available |
+| Services | Duration, location, date picker, notice period. The picker does **not** read your calendar |
+| Digital goods | Files unlock on payment confirmation; download limits and expiry available. Files cap at 100 MB each |
+| Product reviews | Name, 1–5 stars, optional text. **Nothing shows until the seller approves it.** No purchase check, no reply field |
+| Invoices | Issued on every order, on every plan, sequential per shop, web link plus PDF |
+| Transactional email | Order confirmation, shipping, refund and download-ready. **An order with no email address gets none**, so chat-rail orders send nothing automatically |
 | Languages | 35, right-to-left laid out properly rather than mirrored |
 
 **Never claim:** a specific number of users, sellers, GMV or countries; that
 Sailo is "the best" anything; any feature not in the table above; anything
 about a competitor's internals you have not verified this week.
+
+**Three things that are not true, however often you read them elsewhere.** The
+marketing site still says two of them, so it is not a source either.
+
+- **"No commission."** Not as a blanket claim. It is true of the manual rails
+  and false of card. Always name the rail.
+- **Paystack.** Not implemented. Card is Stripe and only Stripe — and Stripe is
+  not launched everywhere, so in Nigeria, Kenya and the Philippines the card
+  button cannot be obtained at any plan. That limitation is worth writing about.
+- **Mobile money, M-Pesa, GCash, UPI, Pix.** No such rail. A seller can put a
+  till number or wallet ID in the bank-transfer instructions field, which is a
+  workaround you may describe honestly and never a feature you may name.
+
+**Verify in the source, not here.** This table was wrong for months in exactly
+the way `plans.ts:198-208` describes. If a claim matters, open the code.
 
 **Say the awkward thing.** Sailo has a 20-product limit on free, no card
 payments below the Business plan, and no native app. An article that admits a

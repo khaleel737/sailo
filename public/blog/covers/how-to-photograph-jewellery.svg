@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A ring with a faceted stone">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  
+  <g transform="translate(-11 10) rotate(2.9 600 315) scale(0.970) translate(18.6 9.7)">
+  <circle cx="600" cy="380" r="113" fill="none" stroke="#14140f" stroke-width="16" opacity="1"/><path d="M600 200 l-52 52 l52 62 l52 -62 z" fill="#ffffff" stroke="#14140f" stroke-width="4" stroke-linejoin="round"/><path d="M548 252 h104 M600 200 v114" fill="none" stroke="#14140f" stroke-width="3" opacity="0.4"/>
+  </g>
+</svg>

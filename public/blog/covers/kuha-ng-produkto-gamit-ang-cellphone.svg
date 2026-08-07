@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Map pins joined by a dotted line">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  
+  <g transform="translate(-1 -18) rotate(2.1 600 315) scale(0.940) translate(38.3 20.1)">
+  <g transform="translate(400 230)"><path d="M0 0 a70 70 0 0 1 140 0 c0 60 -70 140 -70 140 s-70 -80 -70 -140 z" fill="#ffffff" stroke="#14140f" stroke-width="4"/><circle cx="70" cy="8" r="26" fill="#14140f"/></g><g transform="translate(610 320)"><path d="M0 0 a70 70 0 0 1 140 0 c0 60 -70 140 -70 140 s-70 -80 -70 -140 z" fill="#ffffff" stroke="#14140f" stroke-width="4"/><circle cx="70" cy="8" r="26" fill="#14140f"/></g><path d="M470 480 q200 -60 420 0" fill="none" stroke="#14140f" stroke-width="3" opacity="0.3" stroke-dasharray="10 10"/>
+  </g>
+</svg>

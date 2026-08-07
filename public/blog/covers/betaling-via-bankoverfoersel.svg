@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A parcel box drawn in outline">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <g opacity="0.13"><path d="M594 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M614 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M634 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M654 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M674 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M694 40 l-70 130" stroke="#14140f" stroke-width="6"/></g>
+  <g transform="translate(22 16) rotate(0.7 600 315) scale(0.950) translate(31.6 16.6)">
+  <g transform="translate(430 150) scale(1.085085643036291)"><path d="M0 60 l170 -60 l170 60 v190 l-170 60 l-170 -60 z" fill="#ffffff" stroke="#14140f" stroke-width="4" stroke-linejoin="round"/><path d="M0 60 l170 60 l170 -60 M170 120 v190" fill="none" stroke="#14140f" stroke-width="4" opacity="1"/><path d="M85 30 l170 60" fill="none" stroke="#14140f" stroke-width="4" opacity="0.3"/></g>
+  </g>
+</svg>

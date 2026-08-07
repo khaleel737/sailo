@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="An invoice with the total set apart at the bottom">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <circle cx="875" cy="488" r="147" fill="none" stroke="#14140f" stroke-width="5" opacity="0.14"/>
+  <g transform="translate(21 -4) rotate(-2.0 600 315) scale(1.020) translate(-11.8 -6.2)">
+  <path d="M390 110 a20 20 0 0 1 20 -20 h344 l56 56 v374 a20 20 0 0 1 -20 20 h-380 a20 20 0 0 1 -20 -20 z" fill="#ffffff" stroke="#14140f" stroke-width="4"/>
+   <path d="M754 90 v56 h56" fill="none" stroke="#14140f" stroke-width="4" opacity="1"/><rect x="440" y="180" width="196" height="10" rx="5" fill="#14140f" opacity="0.28"/><rect x="440" y="212" width="132" height="10" rx="5" fill="#14140f" opacity="0.28"/><rect x="440" y="244" width="138" height="10" rx="5" fill="#14140f" opacity="0.28"/><rect x="440" y="276" width="134" height="10" rx="5" fill="#14140f" opacity="0.28"/><rect x="440" y="308" width="194" height="10" rx="5" fill="#14140f" opacity="0.28"/><path d="M440 400 h320" fill="none" stroke="#14140f" stroke-width="3" opacity="0.3"/><rect x="440" y="430" width="90" height="14" rx="7" fill="#14140f" opacity="0.4"/><rect x="640" y="424" width="120" height="24" rx="12" fill="#14140f"/>
+  </g>
+</svg>

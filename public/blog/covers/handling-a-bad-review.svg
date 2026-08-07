@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A five star rating with some of them filled">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  
+  <g transform="translate(-18 -10) rotate(-1.0 600 315) scale(1.020) translate(-11.8 -6.2)">
+  <path d="M360.0 263.0 L372.9 297.2 L409.5 298.9 L380.9 321.8 L390.6 357.1 L360.0 337.0 L329.4 357.1 L339.1 321.8 L310.5 298.9 L347.1 297.2 z" fill="#14140f" stroke="#14140f" stroke-width="4" stroke-linejoin="round" opacity="1"/><path d="M482.0 263.0 L494.9 297.2 L531.5 298.9 L502.9 321.8 L512.6 357.1 L482.0 337.0 L451.4 357.1 L461.1 321.8 L432.5 298.9 L469.1 297.2 z" fill="#14140f" stroke="#14140f" stroke-width="4" stroke-linejoin="round" opacity="1"/><path d="M604.0 263.0 L616.9 297.2 L653.5 298.9 L624.9 321.8 L634.6 357.1 L604.0 337.0 L573.4 357.1 L583.1 321.8 L554.5 298.9 L591.1 297.2 z" fill="#14140f" stroke="#14140f" stroke-width="4" stroke-linejoin="round" opacity="1"/><path d="M726.0 263.0 L738.9 297.2 L775.5 298.9 L746.9 321.8 L756.6 357.1 L726.0 337.0 L695.4 357.1 L705.1 321.8 L676.5 298.9 L713.1 297.2 z" fill="#14140f" stroke="#14140f" stroke-width="4" stroke-linejoin="round" opacity="1"/><path d="M848.0 263.0 L860.9 297.2 L897.5 298.9 L868.9 321.8 L878.6 357.1 L848.0 337.0 L817.4 357.1 L827.1 321.8 L798.5 298.9 L835.1 297.2 z" fill="none" stroke="#14140f" stroke-width="4" stroke-linejoin="round" opacity="0.3"/>
+  </g>
+</svg>

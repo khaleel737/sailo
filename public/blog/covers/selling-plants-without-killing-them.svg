@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A potted plant with several leaves">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  
+  <g transform="translate(-24 12) rotate(-2.1 600 315) scale(0.980) translate(12.2 6.4)">
+  <path d="M470 400 h260 l-30 140 h-200 z" fill="#ffffff" stroke="#14140f" stroke-width="4" stroke-linejoin="round"/><path d="M600 400 v-130" fill="none" stroke="#14140f" stroke-width="5" opacity="1"/><path d="M600 380 c-90 -30 -110 -90 -20 -70" fill="none" stroke="#14140f" stroke-width="4" opacity="1"/><path d="M600 334 c90 -30 110 -90 20 -70" fill="none" stroke="#14140f" stroke-width="4" opacity="1"/><path d="M600 288 c-90 -30 -110 -90 -20 -70" fill="none" stroke="#14140f" stroke-width="4" opacity="1"/><path d="M600 242 c90 -30 110 -90 20 -70" fill="none" stroke="#14140f" stroke-width="4" opacity="1"/>
+  </g>
+</svg>

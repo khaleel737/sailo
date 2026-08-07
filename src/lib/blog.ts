@@ -2,7 +2,7 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 import { Marked } from "marked";
-import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/config";
+import { DEFAULT_LOCALE, isLocale, LOCALES, type Locale } from "@/i18n/config";
 
 /*
  * The blog, read off disk.
@@ -13,16 +13,22 @@ import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/config";
  * else, and a marketing page should never be one bad migration away from
  * vanishing.
  *
- * The slug is the URL; the locale is not. `/blog/<slug>` serves the reader's
- * language where that translation has been written and English where it has
- * not, resolved from the same cookie every other page on the site reads. A
- * translation landing later therefore never moves a URL.
+ * The URL carries the locale: `/<locale>/blog/<slug>`, rewritten onto
+ * `/blog/<locale>/<slug>` by `src/proxy.ts` because `[handle]` already owns the
+ * root dynamic segment and shops must keep the bare `sailo.store/yourname`.
  *
- * The cost of that is worth stating rather than discovering: one URL per slug
- * means no distinct indexable page per language and nothing to hang `hreflang`
- * on, so a translation serves readers who arrive but cannot rank on its own.
- * Fixing it means putting the locale in the path, which is the same site-wide
- * change the article route's `dynamicParams` note already describes.
+ * That prefix is what makes the writing worth doing. Each language is a page a
+ * crawler can index as that language, where a single cookie-switched URL per
+ * slug could only ever be indexed once, whichever language it happened to
+ * serve. The blog is also written per market rather than translated, so the
+ * French index is French articles and not French copies of English ones.
+ *
+ * Two families of reader live below, and they are not interchangeable:
+ * `getArticle`/`getArticles` resolve across languages with a fallback, which is
+ * still what the sitemap and any locale-blind caller wants. `getArticleIn` and
+ * friends read one language and stop, which is what a locale-prefixed URL
+ * requires — serving English under `/fr/` would put the wrong language behind a
+ * `lang="fr"` page.
  *
  * Everything here is server-only — `node:fs` cannot be bundled for the browser,
  * so importing this from a Client Component is a build error rather than a
@@ -226,6 +232,131 @@ export async function getArticles(locale: Locale = DEFAULT_LOCALE): Promise<Arti
         .map(([slug, available]) => summarise(slug, available, wanted)),
     ),
   );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Reading one locale exactly                                                 */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Everything above this line resolves a slug across languages, falling back to
+ * English — the right behaviour when one URL had to serve every reader.
+ *
+ * The URLs now carry the locale (`/blog/fr/…`), so these read one language and
+ * stop. `/blog/fr/<slug>` must serve the French article or nothing: falling
+ * back to English under a French URL would put the wrong language behind a
+ * `lang="fr"` page and invite a search engine to index it as French.
+ */
+
+/** Locales that actually have articles on disk, in the shipped order. */
+export async function getContentLocales(): Promise<Locale[]> {
+  const present = new Set(await localesOnDisk());
+  return LOCALES.map((l) => l.code).filter((code) => present.has(code));
+}
+
+/** Articles written in exactly this locale, newest first. No fallback. */
+export async function getArticlesIn(locale: Locale): Promise<ArticleSummary[]> {
+  const wanted = safeLocale(locale);
+  const slugs = await readSlugs(wanted);
+
+  return byNewest(
+    await Promise.all(
+      slugs.map(async (slug) => {
+        const { body: _body, ...summary } = await readArticle(slug, wanted);
+        return summary;
+      }),
+    ),
+  );
+}
+
+/** One page of a single locale's index. */
+export async function getArticlePageIn(locale: Locale, page = 1): Promise<ArticlePage> {
+  const all = await getArticlesIn(locale);
+  const pageCount = Math.max(1, Math.ceil(all.length / ARTICLES_PER_PAGE));
+  const current = Math.min(Math.max(1, Math.floor(page) || 1), pageCount);
+  const start = (current - 1) * ARTICLES_PER_PAGE;
+
+  return { articles: all.slice(start, start + ARTICLES_PER_PAGE), page: current, pageCount, total: all.length };
+}
+
+/** One article in exactly this locale, or null. */
+export async function getArticleIn(slug: string, locale: Locale): Promise<Article | null> {
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) return null;
+
+  const wanted = safeLocale(locale);
+  const available = (await readIndex()).get(slug);
+  if (!available?.includes(wanted)) return null;
+
+  const { body, ...rest } = await readArticle(slug, wanted);
+  return { ...rest, html: await marked.parse(body) };
+}
+
+/**
+ * Every locale this exact slug is written in.
+ *
+ * This is what `hreflang` needs, and it is deliberately keyed on the slug: two
+ * pages are alternates only when they are the same article in another language.
+ * Most of this blog is written per market rather than translated, so for most
+ * articles this returns one locale and no alternates are emitted — which is
+ * correct. Declaring unrelated articles as alternates would be a lie told to a
+ * crawler in a machine-readable format.
+ */
+export async function getSlugLocales(slug: string): Promise<Locale[]> {
+  return (await readIndex()).get(slug) ?? [];
+}
+
+/** Every (locale, slug) pair on disk — the full URL surface, for the sitemap. */
+export async function getEveryArticleByLocale(): Promise<
+  Array<{ locale: Locale; article: ArticleSummary }>
+> {
+  const locales = await getContentLocales();
+  const perLocale = await Promise.all(
+    locales.map(async (locale) =>
+      (await getArticlesIn(locale)).map((article) => ({ locale, article })),
+    ),
+  );
+  return perLocale.flat();
+}
+
+/**
+ * How many articles an index page shows.
+ *
+ * Twelve is a lead plus eleven, which fills the two-column grid evenly and
+ * keeps the page to a few screens on a phone. The number lives here rather than
+ * in the route because the reader is what has to slice by it.
+ */
+export const ARTICLES_PER_PAGE = 12;
+
+export type ArticlePage = {
+  articles: ArticleSummary[];
+  /** Clamped into range, so an out-of-range request lands on a real page. */
+  page: number;
+  pageCount: number;
+  total: number;
+};
+
+/**
+ * One page of the index, newest first.
+ *
+ * `page` is clamped rather than rejected: `/blog/page/900` is a URL someone can
+ * type or a crawler can invent, and showing the last page beats a 404 on a
+ * listing that does exist.
+ */
+export async function getArticlePage(
+  locale: Locale = DEFAULT_LOCALE,
+  page = 1,
+): Promise<ArticlePage> {
+  const all = await getArticles(locale);
+  const pageCount = Math.max(1, Math.ceil(all.length / ARTICLES_PER_PAGE));
+  const current = Math.min(Math.max(1, Math.floor(page) || 1), pageCount);
+  const start = (current - 1) * ARTICLES_PER_PAGE;
+
+  return {
+    articles: all.slice(start, start + ARTICLES_PER_PAGE),
+    page: current,
+    pageCount,
+    total: all.length,
+  };
 }
 
 /**

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Bars of uneven height with the tallest picked out">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <circle cx="595" cy="157" r="153" fill="none" stroke="#14140f" stroke-width="5" opacity="0.14"/>
+  <g transform="translate(9 -18) rotate(-2.5 600 315) scale(1.040) translate(-23.1 -12.1)">
+  <rect x="190" y="234" width="91" height="246" rx="10" fill="#14140f" opacity="1"/><rect x="307" y="379" width="91" height="101" rx="10" fill="#14140f" opacity="0.26"/><rect x="424" y="343" width="91" height="137" rx="10" fill="#14140f" opacity="0.26"/><rect x="541" y="339" width="91" height="141" rx="10" fill="#14140f" opacity="0.26"/><rect x="659" y="395" width="91" height="85" rx="10" fill="#14140f" opacity="0.26"/><rect x="776" y="329" width="91" height="151" rx="10" fill="#14140f" opacity="0.26"/><rect x="893" y="280" width="91" height="200" rx="10" fill="#14140f" opacity="0.26"/><path d="M160 480 h880" fill="none" stroke="#14140f" stroke-width="4" opacity="1"/>
+  </g>
+</svg>

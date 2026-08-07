@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A megaphone with sound lines">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <circle cx="687" cy="512" r="159" fill="none" stroke="#14140f" stroke-width="5" opacity="0.14"/>
+  <g transform="translate(10 10) rotate(-2.0 600 315) scale(1.020) translate(-11.8 -6.2)">
+  <path d="M380 280 h120 l240 -110 v330 l-240 -110 h-120 z" fill="#ffffff" stroke="#14140f" stroke-width="4" stroke-linejoin="round"/><path d="M500 390 v90 h70 v-70" fill="none" stroke="#14140f" stroke-width="4" opacity="1" stroke-linejoin="round"/><path d="M790 250 h82" fill="none" stroke="#14140f" stroke-width="5" opacity="0.35" stroke-linecap="round"/><path d="M790 310 h50" fill="none" stroke="#14140f" stroke-width="5" opacity="0.44999999999999996" stroke-linecap="round"/><path d="M790 370 h47" fill="none" stroke="#14140f" stroke-width="5" opacity="0.55" stroke-linecap="round"/>
+  </g>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A parcel part way along a dotted route">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  
+  <g transform="translate(5 2) rotate(-2.2 600 315) scale(1.050) translate(-28.6 -15.0)">
+  <circle cx="180" cy="339" r="18" fill="#14140f"/><path d="M180 339 C 400 265, 620 418, 1020 357" fill="none" stroke="#14140f" stroke-width="4" opacity="0.34" stroke-dasharray="12 14"/><g transform="translate(561 288) scale(0.8)"><path d="M0 34 l76 -34 l76 34 v84 l-76 34 l-76 -34 z" fill="#ffffff" stroke="#14140f" stroke-width="5" stroke-linejoin="round"/><path d="M0 34 l76 34 l76 -34 M76 68 v84" fill="none" stroke="#14140f" stroke-width="5" opacity="1"/></g><g transform="translate(1020 357)"><path d="M-38 56 v-66 l38 -32 l38 32 v66 z" fill="#ffffff" stroke="#14140f" stroke-width="4" stroke-linejoin="round"/><rect x="-15" y="16" width="30" height="40" fill="#14140f"/></g>
+  </g>
+</svg>

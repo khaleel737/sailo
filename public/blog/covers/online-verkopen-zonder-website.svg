@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A line that rises unevenly to a marked point">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <g opacity="0.13"><path d="M397 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M417 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M437 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M457 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M477 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M497 40 l-70 130" stroke="#14140f" stroke-width="6"/></g>
+  <g transform="translate(-18 -5) rotate(0.2 600 315) scale(1.010) translate(-5.9 -3.1)">
+  <path d="M190 192 L292.5 374 L395 260 L497.5 326 L600 218 L702.5 250 L805 275 L907.5 164 L1010 331" fill="none" stroke="#14140f" stroke-width="5" opacity="1" stroke-linecap="round" stroke-linejoin="round"/><circle cx="190" cy="192" r="8" fill="#14140f" opacity="0.35"/><circle cx="293" cy="374" r="8" fill="#14140f" opacity="0.35"/><circle cx="395" cy="260" r="8" fill="#14140f" opacity="0.35"/><circle cx="498" cy="326" r="8" fill="#14140f" opacity="0.35"/><circle cx="600" cy="218" r="8" fill="#14140f" opacity="0.35"/><circle cx="703" cy="250" r="8" fill="#14140f" opacity="0.35"/><circle cx="805" cy="275" r="8" fill="#14140f" opacity="0.35"/><circle cx="908" cy="164" r="8" fill="#14140f" opacity="0.35"/><circle cx="1010" cy="331" r="14" fill="#14140f" opacity="1"/><path d="M160 500 h880" fill="none" stroke="#14140f" stroke-width="4" opacity="0.4"/>
+  </g>
+</svg>

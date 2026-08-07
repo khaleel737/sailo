@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A circle with a thin wedge marked out of it">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <circle cx="666" cy="270" r="92" fill="none" stroke="#14140f" stroke-width="5" opacity="0.14"/>
+  <g transform="translate(-9 11) rotate(0.0 600 315) scale(1.060) translate(-34.0 -17.8)">
+  <circle cx="600" cy="315" r="210" fill="none" stroke="#14140f" stroke-width="4" opacity="0.3"/><path d="M600 315 L810 315 A210 210 0 0 1 793.3060192250125 397.05353698274746 z" fill="#14140f"/>
+  </g>
+</svg>

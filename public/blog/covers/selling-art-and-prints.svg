@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="A framed picture on a wall">
+  <rect width="1200" height="630" fill="#faf9f7"/>
+  <g opacity="0.13"><path d="M237 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M257 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M277 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M297 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M317 40 l-70 130" stroke="#14140f" stroke-width="6"/><path d="M337 40 l-70 130" stroke="#14140f" stroke-width="6"/></g>
+  <g transform="translate(-20 0) rotate(2.2 600 315) scale(1.050) translate(-28.6 -15.0)">
+  <rect x="380" y="130" width="466" height="338" rx="8" fill="#ffffff" stroke="#14140f" stroke-width="14"/><rect x="438" y="190" width="344" height="232" rx="4" fill="none" stroke="#14140f" stroke-width="3" opacity="0.3"/><path d="M470 400 l70 -90 l60 70 l50 -50 l70 90 z" fill="#14140f" opacity="0.75"/><circle cx="520" cy="250" r="22" fill="#14140f" opacity="0.4"/>
+  </g>
+</svg>
