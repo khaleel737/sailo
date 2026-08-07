@@ -92,6 +92,11 @@ const DEFS: CurrencyDef[] = [
   { code: "TWD", decimals: 2 },
   { code: "KRW", decimals: 0 },
 
+  // Central Asia and the Caucasus.
+  { code: "KZT", decimals: 2 },
+  { code: "AZN", decimals: 2 },
+  { code: "AMD", decimals: 2 },
+
   // Europe outside the euro.
   { code: "CHF", decimals: 2 },
   { code: "PLN", decimals: 2 },
@@ -102,6 +107,15 @@ const DEFS: CurrencyDef[] = [
   { code: "UAH", decimals: 2 },
   { code: "RSD", decimals: 2 },
   { code: "GEL", decimals: 2 },
+  /*
+   * The Balkans, added because the gap was visible from the other side: Sailo
+   * ships a fully translated dashboard in Macedonian, Albanian and Bosnian,
+   * and a seller reading it could not price in their own money.
+   */
+  { code: "MKD", decimals: 2 },
+  { code: "ALL", decimals: 2 },
+  { code: "BAM", decimals: 2 },
+  { code: "MDL", decimals: 2 },
 
   // Scandinavia and the Nordics.
   { code: "SEK", decimals: 2 },
@@ -132,6 +146,8 @@ const DEFS: CurrencyDef[] = [
   { code: "COP", decimals: 2 },
   { code: "PEN", decimals: 2 },
   { code: "UYU", decimals: 2 },
+  { code: "BOB", decimals: 2 },
+  { code: "PYG", decimals: 0 },
   { code: "DOP", decimals: 2 },
   { code: "GTQ", decimals: 2 },
   { code: "CRC", decimals: 2 },

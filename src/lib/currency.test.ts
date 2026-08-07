@@ -56,8 +56,35 @@ describe("the currency table", () => {
   it("carries the ones a seller in each of these markets needs", () => {
     for (const code of ["ILS", "UAH", "JOD", "AED", "SEK", "NOK", "DKK", "ISK",
                         "JPY", "CNY", "HKD", "SGD", "MYR", "THB", "KRW", "TWD",
-                        "VND", "CHF", "PLN", "NZD"]) {
+                        "VND", "CHF", "PLN", "NZD", "KZT", "AZN", "AMD",
+                        "BOB", "PYG"]) {
       expect(CURRENCY_CODES, code).toContain(code);
+    }
+  });
+
+  it("covers every EU currency, euro or not", () => {
+    // The seven national currencies still in use across the EU. Croatia
+    // adopted the euro in 2023, so kuna is deliberately absent.
+    for (const code of ["EUR", "BGN", "CZK", "DKK", "HUF", "PLN", "RON", "SEK"]) {
+      expect(CURRENCY_CODES, code).toContain(code);
+    }
+  });
+
+  it("can price a shop in every language it can be read in", () => {
+    /*
+     * This is the check that found four gaps. Sailo ships a translated
+     * dashboard in Macedonian, Albanian and Bosnian, and a seller reading one
+     * could not price in their own money — the sort of hole that is invisible
+     * from the currency list and obvious from the locale list.
+     */
+    const homeCurrency: Record<string, string> = {
+      mk: "MKD", sq: "ALL", bs: "BAM", sr: "RSD", uk: "UAH", bg: "BGN",
+      ro: "RON", cs: "CZK", pl: "PLN", hu: "HUF", da: "DKK", sv: "SEK",
+      no: "NOK", tr: "TRY", th: "THB", vi: "VND", ja: "JPY", ko: "KRW",
+      zh: "CNY", id: "IDR", ms: "MYR", fil: "PHP", ar: "AED", he: "ILS",
+    };
+    for (const [locale, code] of Object.entries(homeCurrency)) {
+      expect(CURRENCY_CODES, `${locale} sellers need ${code}`).toContain(code);
     }
   });
 });
