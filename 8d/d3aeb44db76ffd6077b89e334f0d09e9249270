@@ -1,0 +1,30 @@
+vitest.scenarios.mts
+  s_3fd229194f6299::t_2b900507b23c30 1-32
+scripts/scenarios/up.sh
+  s_3fd229194f6299::t_078c70d4160ba8 1-34
+src/lib/orders/clients.ts
+  s_3fd229194f6299::t_633c9e99cf18a3 5,63-79,88-109
+scripts/scenarios/checkout.scenario.ts
+  s_3fd229194f6299::t_cf9f4f4bd4137f 1-9,11-68,71-99,102-103,124-216,218-233,235-255,257-261,263-267,269-330,332-336,340-350,352-373,375-445,447-452,454-514,517-520,522-546,549-556,558-566
+  s_3fd229194f6299::t_7004cdb7c8b3da 256
+  s_3fd229194f6299::t_295751abe04304 10,104-123,217,234,331,337-339,351,374,446,453
+  s_3fd229194f6299::t_9306da85cd9faa 69-70,100-101,262,268,515-516,521,547-548,557
+scripts/scenarios/setup.ts
+  s_3fd229194f6299::t_2b900507b23c30 1-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8dd3aeb44db76ffd6077b89e334f0d09e9249270",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
