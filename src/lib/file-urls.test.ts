@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { isRenderableImageUrl, isStoredFileUrl } from "@/lib/file-urls";
 
 /**
@@ -71,6 +71,20 @@ describe("isStoredFileUrl — what must be refused", () => {
 });
 
 describe("isStoredFileUrl — what must keep working", () => {
+  /*
+   * The store id is pinned from `BLOB_READ_WRITE_TOKEN`, and the test process
+   * loads a real `.env.local`. Cleared here so this block tests the host rule
+   * on its own; the pinning has its own block at the bottom of the file.
+   */
+  const original = process.env.BLOB_READ_WRITE_TOKEN;
+  beforeEach(() => {
+    delete process.env.BLOB_READ_WRITE_TOKEN;
+  });
+  afterEach(() => {
+    if (original === undefined) delete process.env.BLOB_READ_WRITE_TOKEN;
+    else process.env.BLOB_READ_WRITE_TOKEN = original;
+  });
+
   it("accepts a URL from the blob store", () => {
     expect(
       isStoredFileUrl(
@@ -79,9 +93,10 @@ describe("isStoredFileUrl — what must keep working", () => {
     ).toBe(true);
   });
 
-  it("accepts any store id, since the host carries it", () => {
+  it("accepts any store id when no token pins one", () => {
     // `put()` returns `<storeId>.public.blob.vercel-storage.com`, and the store
-    // changes with the deployment's token.
+    // changes with the deployment's token. Without a token to compare against,
+    // the host is all there is to go on.
     for (const store of ["a", "store-1", "xyz789"]) {
       expect(
         isStoredFileUrl(`https://${store}.public.blob.vercel-storage.com/f.zip`),
@@ -179,6 +194,72 @@ describe("isRenderableImageUrl", () => {
   it("refuses junk rather than throwing on it", () => {
     for (const value of ["", "not a url", null, undefined, 42, {}]) {
       expect(isRenderableImageUrl(value)).toBe(false);
+    }
+  });
+});
+
+/**
+ * "A Vercel Blob host" is not the same claim as "our storage".
+ *
+ * The suffix check proves the first. Every Vercel account gets a blob store,
+ * so a seller could upload to their own, post that URL to `syncFiles`, and
+ * have the download route stream arbitrary bytes back under sailo.store's
+ * origin and certificate with a filename of their choosing — the platform as
+ * an open proxy, which is most of what the check exists to prevent.
+ */
+describe("isStoredFileUrl pinned to our own store", () => {
+  const original = process.env.BLOB_READ_WRITE_TOKEN;
+  afterEach(() => {
+    if (original === undefined) delete process.env.BLOB_READ_WRITE_TOKEN;
+    else process.env.BLOB_READ_WRITE_TOKEN = original;
+  });
+
+  it("accepts our store and refuses somebody else's", () => {
+    process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_Store1Abc_secretpart";
+    expect(
+      isStoredFileUrl("https://store1abc.public.blob.vercel-storage.com/f.zip"),
+    ).toBe(true);
+    expect(
+      isStoredFileUrl("https://attacker9.public.blob.vercel-storage.com/f.zip"),
+    ).toBe(false);
+  });
+
+  it("matches the store id regardless of case", () => {
+    // `put()` lowercases the host; the token carries the id as minted.
+    process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_MiXeDCase_secret";
+    expect(
+      isStoredFileUrl("https://mixedcase.public.blob.vercel-storage.com/f.zip"),
+    ).toBe(true);
+  });
+
+  it("falls back to the host check when no token is configured", () => {
+    /*
+     * A preview deploy or a local checkout without the variable must not find
+     * every already-stored file unreadable. The suffix check is what this had
+     * before pinning, so falling back to it loses nothing.
+     */
+    delete process.env.BLOB_READ_WRITE_TOKEN;
+    expect(
+      isStoredFileUrl("https://anystore.public.blob.vercel-storage.com/f.zip"),
+    ).toBe(true);
+    expect(isStoredFileUrl("https://evil.tld/f.zip")).toBe(false);
+  });
+
+  it("falls back rather than refusing everything on an odd token", () => {
+    process.env.BLOB_READ_WRITE_TOKEN = "something-else-entirely";
+    expect(
+      isStoredFileUrl("https://anystore.public.blob.vercel-storage.com/f.zip"),
+    ).toBe(true);
+  });
+
+  it("still refuses a non-blob host with the token set", () => {
+    process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_Store1Abc_secretpart";
+    for (const url of [
+      "https://evil.tld/f.zip",
+      "http://store1abc.public.blob.vercel-storage.com/f.zip",
+      "https://store1abc.public.blob.vercel-storage.com@evil.tld/f.zip",
+    ]) {
+      expect(isStoredFileUrl(url), url).toBe(false);
     }
   });
 });

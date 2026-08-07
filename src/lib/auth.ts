@@ -11,6 +11,7 @@ import {
   sendPasswordReset,
 } from "@/lib/email";
 import { isStaffEmail, refusesPasswordAuth } from "@/lib/staff";
+import { rateLimit } from "@/lib/redis";
 
 /**
  * How long a reset link stays good. Set here rather than left to the default
@@ -89,6 +90,57 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days
     updateAge: 60 * 60 * 24,
+  },
+  /*
+   * Rate limiting that survives more than one instance.
+   *
+   * Better-auth's default storage is `memory`, which on Fluid Compute means
+   * per-instance: a limit of five is five *per warm function*, and concurrency
+   * decides how many of those exist. In practice that is no limit at all on
+   * exactly the endpoints that most need one — password sign-in (credential
+   * stuffing), sign-up, `/send-verification-email` and `/forget-password`,
+   * each of which either guesses at a credential or sends mail to an address
+   * the caller chose.
+   *
+   * Redis is already here for the app's own limits, and `consume` is
+   * better-auth's atomic path: implementing it means the library skips its
+   * read-then-write fallback, which it warns is best-effort under concurrency
+   * — the same check-then-act gap this codebase has fixed three times
+   * elsewhere.
+   *
+   * Fails open when Redis is missing or cold, like every other limit here. A
+   * limiter that locks real sellers out because its own backend is down has
+   * done more damage than the traffic it was meant to stop.
+   */
+  rateLimit: {
+    enabled: true,
+    window: 60,
+    max: 30,
+    customRules: {
+      // Guessing a password, and the two endpoints that send mail to an
+      // address the caller names.
+      "/sign-in/email": { window: 300, max: 8 },
+      "/sign-up/email": { window: 900, max: 5 },
+      "/send-verification-email": { window: 900, max: 4 },
+      "/forget-password": { window: 900, max: 4 },
+      "/reset-password": { window: 900, max: 8 },
+      // The staff door. Only rostered addresses are ever mailed, but the
+      // endpoint answers identically either way, so it is free to hammer.
+      "/sign-in/magic-link": { window: 900, max: 5 },
+    },
+    customStorage: {
+      consume: async (key, rule) => {
+        const verdict = await rateLimit(`auth:${key}`, rule.max, rule.window);
+        return {
+          allowed: verdict.allowed,
+          retryAfter: verdict.allowed ? null : rule.window,
+        };
+      },
+      // Unused while `consume` is present; better-auth's storage contract
+      // still requires them.
+      get: async () => null,
+      set: async () => {},
+    },
   },
   /*
    * A staff address may not hold a password. This closes an account

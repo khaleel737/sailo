@@ -21,6 +21,34 @@
 
 const BLOB_HOST_SUFFIX = ".public.blob.vercel-storage.com";
 
+/**
+ * *Our* blob store, not merely *a* blob store.
+ *
+ * The suffix check below says the host is Vercel Blob. It does not say the
+ * store is ours, and every Vercel account on the internet gets one — so a
+ * seller could upload to their own free store, post that URL to `syncFiles`,
+ * and have `/api/download/[token]/[fileId]` stream arbitrary bytes back under
+ * sailo.store's origin, our certificate and a filename they choose. That is
+ * the platform as an open proxy and as a content-laundering host, which is
+ * most of what the original check was written to prevent.
+ *
+ * `BLOB_READ_WRITE_TOKEN` is `vercel_blob_rw_<storeId>_<secret>`, so the store
+ * id is already in the environment and needs no new configuration. Only the id
+ * is read; the secret half never leaves this function.
+ *
+ * Falls back to the suffix check when the token is absent or shaped
+ * unexpectedly. That is deliberate: a missing variable in a preview or a local
+ * checkout must not make every stored file unreadable, and the suffix check is
+ * what this had yesterday.
+ */
+function storeHostPrefix(): string | null {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) return null;
+
+  const id = /^vercel_blob_rw_([A-Za-z0-9]+)_/.exec(token)?.[1];
+  return id ? `${id.toLowerCase()}${BLOB_HOST_SUFFIX}` : null;
+}
+
 export function isStoredFileUrl(value: unknown): value is string {
   if (typeof value !== "string" || !value) return false;
 
@@ -42,7 +70,10 @@ export function isStoredFileUrl(value: unknown): value is string {
    * The leading dot matters too — without it `evil-public.blob.vercel-
    * storage.com` would pass.
    */
-  return url.hostname.endsWith(BLOB_HOST_SUFFIX);
+  if (!url.hostname.endsWith(BLOB_HOST_SUFFIX)) return false;
+
+  const ours = storeHostPrefix();
+  return ours === null || url.hostname.toLowerCase() === ours;
 }
 
 /**
