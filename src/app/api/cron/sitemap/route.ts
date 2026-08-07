@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cronAuthFailure } from "@/lib/cron-auth";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -20,13 +21,8 @@ import { revalidatePath } from "next/cache";
 export async function GET(request: Request) {
   // Vercel signs cron invocations with CRON_SECRET. Without the check this is
   // a free way to make the database re-run the fleet-wide queries on demand.
-  const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = request.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-  }
+  const denied = cronAuthFailure(request);
+  if (denied) return denied;
 
   revalidatePath("/sitemap.xml");
 

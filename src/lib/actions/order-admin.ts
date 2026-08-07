@@ -5,10 +5,11 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { clients, orders } from "@/db/schema";
 import { requireShop } from "@/lib/session";
-import { firstRow } from "@/lib/invariant";
+import { maybeRow } from "@/lib/invariant";
 import { formatMoney, parseMoneyToCents } from "@/lib/utils";
 import { isStockReleasingStatus, restoreStock, retakeStock } from "@/lib/inventory";
 import { checkRefund, refundableCents, reversePayment, type RefundOutcome } from "@/lib/refunds";
+import { claimRefundAmount, releaseRefundClaim } from "@/lib/orders/refund-claim";
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
 import { isOrderStatus } from "@/lib/order-status";
 import { releaseDownloads } from "@/lib/downloads";
@@ -105,11 +106,18 @@ export async function updatePaymentStatus(formData: FormData) {
   const paymentStatus = String(formData.get("paymentStatus") ?? "");
   if (!id || !isSellerSettablePaymentStatus(paymentStatus)) return;
 
-  const updated = firstRow(await getDb()
+  /*
+   * `maybeRow`, not `firstRow`. The WHERE carries the ownership check, so an
+   * id belonging to another shop matches nothing — which is the guard working,
+   * not an invariant breaking. `firstRow` threw on it and the seller got a 500
+   * from a dropdown, while the `if (updated && …)` below sat there as
+   * unreachable code proving `undefined` was what the author expected.
+   */
+  const updated = maybeRow(await getDb()
     .update(orders)
     .set({ paymentStatus, updatedAt: new Date() })
     .where(and(eq(orders.id, id), eq(orders.shopId, shop.id)))
-    .returning({ id: orders.id }), "updated");
+    .returning({ id: orders.id }));
 
   // Confirming the money is what unlocks a held-back download, and the buyer
   // is emailed the link rather than being left to check back.
@@ -214,6 +222,22 @@ export async function refundOrder(
   const isFull = check.isFull;
 
   /*
+   * Take the amount out of the order's refundable balance before spending it.
+   *
+   * `checkRefund` above is a read against a row fetched before this function
+   * calls Stripe, so two refunds issued in the same second both pass it. This
+   * is the statement that actually enforces the ceiling — it accumulates in
+   * SQL and compares column to column, so the loser is refused here rather
+   * than after it has already moved money.
+   */
+  if (!(await claimRefundAmount(order.id, shop.id, requested))) {
+    return {
+      ok: false,
+      error: "Another refund on this order went through first. Reload and check what's left.",
+    };
+  }
+
+  /*
    * Give the money back before writing down that we did.
    *
    * This used to record the refund in our own table and email the buyer to say
@@ -230,6 +254,9 @@ export async function refundOrder(
     outcome = await reversePayment(order, requested);
   } catch (error) {
     console.error("[sailo] refund failed:", error);
+    // The claim above reserved this amount; a processor that refused it must
+    // not leave the balance spent, or the seller cannot retry.
+    await releaseRefundClaim(order.id, requested);
     return {
       ok: false,
       error:
@@ -239,10 +266,10 @@ export async function refundOrder(
     };
   }
 
+  // `refundedCents` is not set here — the claim above already added it.
   await db
     .update(orders)
     .set({
-      refundedCents: check.refundedTotal,
       refundedAt: new Date(),
       refundReason:
         String(formData.get("reason") ?? "").trim().slice(0, 300) || null,

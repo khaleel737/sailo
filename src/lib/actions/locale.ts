@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
 import { DEFAULT_LOCALE, LOCALES, LOCALE_COOKIE, type Locale } from "@/i18n/config";
 import { getContentLocales, getSlugLocales } from "@/lib/blog";
 import { articlePath, blogIndexPath } from "@/lib/blog-urls";
@@ -27,9 +26,27 @@ export async function setLocale(
     sameSite: "lax",
   });
 
-  // Every page reads the cookie, so the whole tree is stale.
-  revalidatePath("/", "layout");
-
+  /*
+   * No `revalidatePath("/", "layout")` here, and that is deliberate.
+   *
+   * It used to purge the entire prerendered route tree, from an action that is
+   * unauthenticated, unthrottled, and — being called by a `"use client"`
+   * component — has its id in the public bundle. A `curl` loop at a few
+   * requests a second made every storefront, marketing page and blog article
+   * re-render for the next visitor, indefinitely, for nothing.
+   *
+   * It was also doing no work. Its comment claimed "every page reads the
+   * cookie, so the whole tree is stale" — but a page that reads the cookie
+   * reads it through `cookies()`, which puts it in the dynamic hole and out of
+   * the prerender, so there was never a cached copy of it to invalidate. The
+   * static shell that *is* cached contains nothing locale-dependent, which is
+   * the whole point of taking the cookie off `<html>`. And every cached
+   * function that varies by language — all of `lib/blog.ts` — takes the locale
+   * as an argument, so it is in the cache key already.
+   *
+   * The caller's `router.refresh()` re-renders the dynamic parts against the
+   * cookie set above, which is all that was ever needed.
+   */
   return blogHrefFor(locale, pathname);
 }
 

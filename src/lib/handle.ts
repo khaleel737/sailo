@@ -19,6 +19,15 @@ export const RESERVED_HANDLES = new Set([
   "sailo", "www", "app", "mail", "email", "static", "assets", "public",
   "cdn", "img", "images", "media", "favicon", "robots", "sitemap",
   "_next", "vercel", "null", "undefined", "true", "false",
+  /*
+   * Live top-level routes that were missing, found by listing `src/app`
+   * against this set rather than by remembering. A static segment always beats
+   * `[handle]`, so a seller who claimed one of these got a handle that
+   * validated, saved, and then served somebody else's page at their URL —
+   * their shop simply never rendered, with nothing anywhere to explain why.
+   */
+  "partner", "download", "dev", "gdpr", "refunds",
+  "forgot-password", "reset-password",
   // Locale prefixes. `/fr/blog` is a real URL, so a shop called `fil` would
   // shadow the Filipino blog. Only three-letter codes need listing: every other
   // locale is two characters and already too short to be a handle.

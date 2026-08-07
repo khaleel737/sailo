@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cronAuthFailure } from "@/lib/cron-auth";
 import { rollUpVisits } from "@/lib/analytics-rollup";
 
 /**
@@ -9,13 +10,8 @@ import { rollUpVisits } from "@/lib/analytics-rollup";
  * aggregation on demand.
  */
 export async function GET(request: Request) {
-  const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = request.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-  }
+  const denied = cronAuthFailure(request);
+  if (denied) return denied;
 
   const started = Date.now();
   const result = await rollUpVisits();

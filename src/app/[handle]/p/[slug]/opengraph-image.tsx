@@ -43,8 +43,14 @@ export default async function Image({
   const shop = await getShopByHandle(handle);
   const product = shop ? await getProductBySlug(shop.id, slug) : null;
 
-  // Directly requestable, so it must not throw for a bad handle or slug.
-  if (!shop || !product) {
+  /*
+   * Directly requestable, so it must not throw for a bad handle or slug — and
+   * must not answer for a draft either. The page one level up calls
+   * `notFound()` on `!product.isPublished`; this route rendered the title, the
+   * price and the photograph of an unpublished product to anyone who guessed
+   * the slug, which is the seller's unannounced work on a public URL.
+   */
+  if (!shop || !product || !product.isPublished) {
     return new ImageResponse(
       (
         <div

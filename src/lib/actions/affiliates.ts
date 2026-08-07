@@ -10,7 +10,8 @@ import { ensurePortalToken, portalUrl } from "@/lib/affiliate-portal";
 import { appUrl } from "@/lib/app-url";
 import { sendAffiliateWelcome } from "@/lib/email";
 import { requireShop } from "@/lib/session";
-import { bufferAffiliateClick } from "@/lib/redis";
+import { bufferAffiliateClick, rateLimit } from "@/lib/redis";
+import { callerIp } from "@/lib/client-ip";
 import { formatPercent, generateCode, normalizeCode, percentToBp } from "@/lib/pricing";
 import { can, upgradeMessage } from "@/lib/plans";
 import type { ActionState } from "./shop";
@@ -232,6 +233,24 @@ export async function updateAffiliateSettings(
 /*  Public                                                                     */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * The one answer this action ever gives.
+ *
+ * It used to branch three ways — "your code is X" for an active affiliate,
+ * "already being reviewed" for a pending one, "thanks" for a new one — which
+ * made an unauthenticated form into a way to ask whether a given person
+ * promotes a given shop, and then to read their code back. `requestPortalLink`
+ * in `partner.ts` answers identically for exactly this reason; this is the
+ * same property, applied to the endpoint that was giving it away.
+ *
+ * The reply is deliberately vague about what happened: it is true whether the
+ * application was created, already existed, or was refused.
+ */
+const APPLICATION_RECEIVED = {
+  ok: true,
+  message: "Thanks! We'll email you once you're approved.",
+} as const;
+
 /** Someone applying from the shop's public affiliate page. */
 export async function applyAsAffiliate(
   _prev: ActionState,
@@ -245,21 +264,40 @@ export async function applyAsAffiliate(
   if (!name) return { ok: false, error: "Add your name." };
   if (!email.includes("@")) return { ok: false, error: "Add a valid email." };
 
+  /*
+   * The only public write in the repo that had no ceiling. Unlimited inserts
+   * into `affiliates` against any shop that takes applications, and — before
+   * the constant reply below — an unlimited oracle to go with them.
+   *
+   * Keyed by IP and by shop, so one prolific applicant cannot lock a shop's
+   * form for everyone else.
+   */
+  const gate = await rateLimit(`affiliate-apply:${await callerIp()}`, 5, 900);
+  if (!gate.allowed) return APPLICATION_RECEIVED;
+
   const shop = await db.query.shops.findFirst({
     where: and(eq(shops.id, shopId), eq(shops.isPublished, true), isNull(shops.suspendedAt)),
   });
-  if (!shop || !shop.affiliatesEnabled || !shop.affiliatePublicSignup) {
+  /*
+   * `can(shop, "affiliates")` as well as the two toggles: the public page at
+   * `/[handle]/affiliate` already refuses to render without the plan, and an
+   * action that takes whatever the client sends must check what its own page
+   * checks rather than trust that the visitor came through it.
+   */
+  if (
+    !shop ||
+    !shop.affiliatesEnabled ||
+    !shop.affiliatePublicSignup ||
+    !can(shop, "affiliates")
+  ) {
     return { ok: false, error: "This shop isn't accepting applications." };
   }
 
   const existing = await db.query.affiliates.findFirst({
     where: and(eq(affiliates.shopId, shop.id), eq(affiliates.email, email)),
   });
-  if (existing) {
-    return existing.status === "active"
-      ? { ok: true, message: `You're already signed up. Your code is ${existing.code}.` }
-      : { ok: true, message: "Your application is already being reviewed." };
-  }
+  // Never says which of the two this is, and never repeats the code back.
+  if (existing) return APPLICATION_RECEIVED;
 
   for (let attempt = 0; attempt < 5; attempt++) {
     // No row means the generated code collided, which is what the retry is
@@ -279,10 +317,7 @@ export async function applyAsAffiliate(
       .returning());
     if (created) {
       revalidatePath("/admin/affiliates");
-      return {
-        ok: true,
-        message: "Thanks! We'll email you once you're approved.",
-      };
+      return APPLICATION_RECEIVED;
     }
   }
 
