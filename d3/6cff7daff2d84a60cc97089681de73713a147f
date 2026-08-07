@@ -1,0 +1,35 @@
+src/components/shared/chart/index.tsx
+  s_2e1da3b18d1c53::t_f9dacb10c45548 192
+  s_2e1da3b18d1c53::t_6f0709c39454cd 17-19,22,24,67,148
+  s_2e1da3b18d1c53::t_3708dc31e5afa7 20-21,23,59-66,113
+  s_2e1da3b18d1c53::t_a3ae4445057660 215,229
+src/app/admin/settings/billing/page.tsx
+  s_2e1da3b18d1c53::t_350372c853ae0e 25,89
+src/app/admin/page.tsx
+  s_2e1da3b18d1c53::t_350372c853ae0e 280
+  s_2e1da3b18d1c53::t_a3ae4445057660 203,239
+src/app/admin/coupons/page.tsx
+  s_2e1da3b18d1c53::t_350372c853ae0e 20,136
+src/app/admin/reviews/page.tsx
+  s_2e1da3b18d1c53::t_350372c853ae0e 16,68
+src/app/admin/_components/order-row.tsx
+  s_2e1da3b18d1c53::t_350372c853ae0e 36,124,152,267
+src/app/admin/clients/[id]/page.tsx
+  s_2e1da3b18d1c53::t_350372c853ae0e 25,50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d36cff7daff2d84a60cc97089681de73713a147f",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
