@@ -22,7 +22,7 @@ export default async function BillingPage({
   searchParams,
 }: PageProps<"/admin/settings/billing">) {
   const { shop } = await requireShop();
-  const { t, a } = await getAdminT();
+  const { t, a, locale } = await getAdminT();
   const params = await searchParams;
 
   // Returning from Checkout, the webhook may still be in flight — pull the
@@ -86,7 +86,7 @@ export default async function BillingPage({
             {fresh.currentPeriodEnd ? (
               <p className="mt-0.5 text-xs text-ink-400">
                 {fresh.cancelAtPeriodEnd ? a.billing.accessEnds : a.billing.renews}{" "}
-                {fresh.currentPeriodEnd.toLocaleDateString("en-US", {
+                {fresh.currentPeriodEnd.toLocaleDateString(locale, {
                   day: "numeric",
                   month: "long",
                   year: "numeric",

@@ -22,7 +22,7 @@ export default async function ClientDetailPage({
 }: PageProps<"/admin/clients/[id]">) {
   const { id } = await params;
   const { shop } = await requireShop();
-  const { a } = await getAdminT();
+  const { a, locale } = await getAdminT();
   if (!isUuid(id)) notFound();
 
   const data = await getClientWithOrders(shop.id, id);
@@ -47,7 +47,7 @@ export default async function ClientDetailPage({
 
       <PageHeader
         title={client.name}
-        description={`Client since ${client.createdAt.toLocaleDateString("en-US", {
+        description={`Client since ${client.createdAt.toLocaleDateString(locale, {
           month: "long",
           year: "numeric",
         })}`}

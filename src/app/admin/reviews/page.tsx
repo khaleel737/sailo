@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "Reviews" };
 
 export default async function AdminReviewsPage() {
   const { shop } = await requireShop();
-  const { a } = await getAdminT();
+  const { a, locale } = await getAdminT();
   const reviews = await getShopReviews(shop.id);
   const pending = reviews.filter((r) => !r.isApproved);
 
@@ -65,7 +65,7 @@ export default async function AdminReviewsPage() {
 
                 <p className="mt-0.5 text-xs text-ink-400">
                   on {review.productTitle} ·{" "}
-                  {review.createdAt.toLocaleDateString("en-US", {
+                  {review.createdAt.toLocaleDateString(locale, {
                     month: "short",
                     day: "numeric",
                     year: "numeric",

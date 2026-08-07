@@ -14,9 +14,14 @@ import { VariantSwitch } from "./variant-switch";
 
 export type { Series };
 
-/** Midday-safe: a bare date string parses as UTC and can slip a day westward. */
-function formatDay(day: string): string {
-  return new Date(`${day}T00:00:00`).toLocaleDateString("en-US", {
+/**
+  * Midday-safe: a bare date string parses as UTC and can slip a day westward.
+  *
+  * Every seller-facing chart passes a locale, so the axis of a German
+  * seller's dashboard reads "5. Aug." rather than "Aug 5".
+  */
+function formatDay(day: string, locale: string): string {
+  return new Date(`${day}T00:00:00`).toLocaleDateString(locale, {
     month: "short",
     day: "numeric",
   });
@@ -51,6 +56,15 @@ export type ChartProps = {
    * are English by design.
    */
   shape?: { bar: string; line: string; legend: string };
+  /**
+   * Formats the day axis.
+   *
+   * Defaulted rather than left undefined: `undefined` means "whatever locale
+   * this machine has", and `dev/charts` is a screenshot baseline whose whole
+   * premise is that nothing varies between runs. The staff panel is English
+   * by design and takes the same default.
+   */
+  locale?: string;
 };
 
 /**
@@ -96,6 +110,7 @@ export function Chart({
   defaultShape = "bar",
   switchable = true,
   shape: shapeLabels,
+  locale = "en-US",
 }: ChartProps): React.ReactElement {
   const [cursor, setCursor] = useState<number | null>(null);
   const [chosenShape, setChosenShape] = useState<ChartShape | null>(null);
@@ -130,7 +145,7 @@ export function Chart({
         title={title}
         total={total}
         peak={top}
-        peakDay={top ? formatDay(days[top.index] ?? "") : undefined}
+        peakDay={top ? formatDay(days[top.index] ?? "", locale) : undefined}
         format={format}
         action={
           switchable && populated ? (
@@ -174,7 +189,7 @@ export function Chart({
                 populated={populated}
                 cursor={cursor}
                 onCursor={setCursor}
-                dayLabel={formatDay}
+                dayLabel={(day) => formatDay(day, locale)}
               />
             )
           }
@@ -197,7 +212,7 @@ export function Chart({
             onBlur={() => setCursor(null)}
             aria-valuetext={
               snapshot
-                ? `${formatDay(snapshot.day)}. ${snapshot.values
+                ? `${formatDay(snapshot.day, locale)}. ${snapshot.values
                     .map((v) => `${v.label} ${format(v.value)}`)
                     .join(", ")}`
                 : `${windowLabel}, ${total} in total`
@@ -211,7 +226,7 @@ export function Chart({
         series={series}
         tone={tone}
         values={readoutValues}
-        periodLabel={snapshot ? formatDay(snapshot.day) : windowLabel}
+        periodLabel={snapshot ? formatDay(snapshot.day, locale) : windowLabel}
         format={format}
       />
 

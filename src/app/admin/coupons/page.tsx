@@ -17,7 +17,7 @@ export const metadata: Metadata = { title: "Coupons" };
 
 export default async function AdminCouponsPage() {
   const { shop } = await requireShop();
-  const { a } = await getAdminT();
+  const { a, locale } = await getAdminT();
   const { t } = await getT();
   const coupons = await getShopCoupons(shop.id);
   const now = new Date();
@@ -133,7 +133,7 @@ export default async function AdminCouponsPage() {
 
                 <Td align="end" className="tabular whitespace-nowrap" label={a.columns.expires}>
                   {coupon.expiresAt ? (
-                    coupon.expiresAt.toLocaleDateString("en-GB", {
+                    coupon.expiresAt.toLocaleDateString(locale, {
                       day: "numeric",
                       month: "short",
                       year: "numeric",

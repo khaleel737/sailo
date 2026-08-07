@@ -200,6 +200,7 @@ export default async function AdminOverviewPage({
             tone="activity"
             unit="count"
             shape={a.chart}
+            locale={locale}
             emptyLabel={a.dashboard.noVisits}
           />
         </Card>
@@ -235,6 +236,7 @@ export default async function AdminOverviewPage({
             unit="money"
             currency={shop.currency}
             shape={a.chart}
+            locale={locale}
             emptyLabel={a.dashboard.noRevenue}
           />
         </Card>
@@ -275,7 +277,7 @@ export default async function AdminOverviewPage({
                   </p>
                   <p className="truncate text-xs text-ink-500">
                     {order.customerName ?? "Anonymous"} ·{" "}
-                    {order.createdAt.toLocaleDateString("en-US", {
+                    {order.createdAt.toLocaleDateString(locale, {
                       month: "short",
                       day: "numeric",
                     })}

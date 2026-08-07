@@ -33,7 +33,7 @@ export async function OrderRow({
   invoice?: { number: string; token: string };
   showCustomer?: boolean;
 }) {
-  const { a } = await getAdminT();
+  const { a, locale } = await getAdminT();
   const lines: OrderLine[] = items?.length ? items : [];
   const address = formatAddress(order);
   const methodName = isPaymentMethodType(order.paymentMethod)
@@ -121,7 +121,7 @@ export async function OrderRow({
                   {item.scheduledFor ? (
                     <span className="text-ink-500">
                       {" · "}
-                      {item.scheduledFor.toLocaleString("en-US", {
+                      {item.scheduledFor.toLocaleString(locale, {
                         month: "short",
                         day: "numeric",
                         hour: "numeric",
@@ -149,7 +149,7 @@ export async function OrderRow({
           {order.scheduledFor ? (
             <p className="mt-1 flex items-center gap-1 text-xs font-medium text-ink-700">
               <CalendarClock className="size-3 shrink-0" />
-              {order.scheduledFor.toLocaleString("en-US", {
+              {order.scheduledFor.toLocaleString(locale, {
                 weekday: "short",
                 month: "short",
                 day: "numeric",
@@ -264,7 +264,7 @@ export async function OrderRow({
 
           <p className="mt-1.5 flex flex-wrap items-center gap-x-2 text-xs text-ink-400">
             <span>
-              {order.createdAt.toLocaleString("en-US", {
+              {order.createdAt.toLocaleString(locale, {
                 month: "short",
                 day: "numeric",
                 hour: "numeric",
