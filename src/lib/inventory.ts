@@ -1,5 +1,6 @@
 import "server-only";
 import { maybeRow } from "@/lib/invariant";
+import { releaseCouponRedemption } from "@/lib/orders/coupon-redemption";
 import { and, asc, eq, gte, isNull, isNotNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
@@ -170,6 +171,29 @@ export async function restoreStock(order: Order): Promise<boolean> {
   return true;
 }
 
+/**
+ * Everything an order nobody will pay for has to give back.
+ *
+ * Four places abandon an order — the Stripe handoff failing, the session
+ * expiring, a delayed payment failing to settle, and the sweep for buyers who
+ * simply closed the tab. All four released the stock. Exactly one released the
+ * coupon, so a one-use discount code was permanently spent by any buyer who
+ * reached Stripe and walked away: their own retry was refused, and so was
+ * everyone else's.
+ *
+ * `restoreStock` claims `restockedAt` in the statement that reads it and
+ * returns false if another caller got there first. Hanging the coupon release
+ * off that claim is what makes this safe to call twice — a webhook racing the
+ * sweep gives the use back once, because only one of them wins.
+ */
+export async function abandonOrder(order: Order): Promise<boolean> {
+  const claimed = await restoreStock(order);
+  if (!claimed) return false;
+
+  if (order.couponId) await releaseCouponRedemption(order.couponId);
+  return true;
+}
+
 /** Undoes a restock, for a cancellation the seller reverses. */
 export async function retakeStock(order: Order): Promise<boolean> {
   const db = getDb();
@@ -283,7 +307,9 @@ export async function releaseAbandonedCheckouts(opts?: {
       .set({ status: "cancelled", updatedAt: new Date() })
       .where(eq(orders.id, order.id));
 
-    if (await restoreStock(order)) orderIds.push(order.id);
+    // The sweep is one of the four abandonment paths, so it gives back the
+    // coupon as well as the stock.
+    if (await abandonOrder(order)) orderIds.push(order.id);
   }
 
   return { swept: orderIds.length, orderIds };

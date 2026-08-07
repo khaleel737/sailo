@@ -134,3 +134,61 @@ describe("a completed-but-unsettled session", () => {
     );
   });
 });
+
+/**
+ * Every path that abandons an order gives back everything it holds.
+ *
+ * There are four, and they were not equal. All of them released the stock;
+ * exactly one released the coupon — the branch that runs when Stripe's API
+ * call fails, which is the rarest of the four. A buyer who reached Stripe and
+ * closed the tab (the common case) had their one-use code spent forever: their
+ * own retry was refused, and so was every other buyer's.
+ *
+ * `abandonOrder` is now the single undo, and it hangs the coupon release off
+ * `restoreStock`'s `restockedAt` claim so calling it twice is safe. This pins
+ * the wiring, because the bug was never in the undo — it was in three call
+ * sites not using it.
+ */
+describe("the abandonment paths", () => {
+  const webhooks = readFileSync("src/lib/stripe-webhooks.ts", "utf8");
+  const handoff = readFileSync("src/lib/orders/card-handoff.ts", "utf8");
+  const sweep = readFileSync("src/lib/inventory.ts", "utf8");
+
+  /** A handler's body, from its `case` label to the next one. */
+  function branch(source: string, label: string): string {
+    const from = source.indexOf(`case "${label}"`);
+    expect(from, `${label} handler not found`).toBeGreaterThan(-1);
+    const next = source.indexOf("\n    case ", from + 1);
+    return source.slice(from, next === -1 ? undefined : next);
+  }
+
+  it.each(["checkout.session.expired", "checkout.session.async_payment_failed"])(
+    "%s gives back the coupon as well as the stock",
+    (event) => {
+      const body = branch(webhooks, event);
+      expect(body).toContain("abandonOrder(order)");
+      expect(body).not.toContain("restoreStock(order)");
+    },
+  );
+
+  it("a failed Stripe handoff gives back the coupon as well as the stock", () => {
+    expect(handoff).toContain("abandonOrder(saved)");
+    expect(handoff).not.toContain("restoreStock(saved)");
+  });
+
+  it("the abandoned-checkout sweep gives back the coupon as well as the stock", () => {
+    const body = sweep.slice(sweep.indexOf("const orderIds"));
+    expect(body).toContain("abandonOrder(order)");
+  });
+
+  it("still only restores stock when a paid order reverses", () => {
+    /*
+     * A lost chargeback is not an abandonment: the buyer did use the coupon,
+     * and the money leaving afterwards does not give that use back. It stays
+     * on `restoreStock` deliberately.
+     */
+    const body = branch(webhooks, "charge.dispute.closed");
+    expect(body).toContain("restoreStock(order)");
+    expect(body).not.toContain("abandonOrder(");
+  });
+});

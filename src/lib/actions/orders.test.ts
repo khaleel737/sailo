@@ -36,7 +36,6 @@ function positionOf(label: string, needle: string): number {
 
 const handoff = positionOf("the Stripe handoff", "await handOffToStripe(");
 const claim = positionOf("the coupon claim", "await claimCouponRedemption(");
-const release = positionOf("the coupon release", "await releaseCouponRedemption(");
 const invoice = positionOf("the invoice", "await createInvoiceForOrder(");
 const email = positionOf("the confirmation email", "await confirmBuyerByEmail(");
 
@@ -55,12 +54,13 @@ describe("createOrderIntent — nothing irreversible before the payment handoff"
     expect(claim).toBeLessThan(handoff);
   });
 
-  it("gives the coupon back when the payment handoff fails", () => {
-    // Inside the `if (!card.ok)` branch, which is after the handoff call and
-    // before the invoice.
-    expect(release).toBeGreaterThan(handoff);
-    expect(release).toBeLessThan(invoice);
-  });
+  /*
+   * The matching release is no longer asserted here, because it is no longer
+   * this function's job. It used to live in the `if (!card.ok)` branch and
+   * fired on that one path only, so a buyer who reached Stripe and closed the
+   * tab burnt the code permanently. It now belongs to `abandonOrder`, which
+   * every abandonment path calls — see inventory.test.ts, which pins that.
+   */
 
   it("hands off to Stripe before claiming an invoice number", () => {
     // Numbers are claimed from a per-shop sequence. One claimed for an order

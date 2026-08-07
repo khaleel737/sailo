@@ -25,7 +25,7 @@ import { cartNeedsDelivery, cartSubtotal, quote, type Quote, type QuoteLine } fr
 import { unitsLeft, variantLabel } from "@/lib/variants";
 import { releaseStock, reserveStock } from "@/lib/inventory";
 import { handOffToStripe } from "@/lib/orders/card-handoff";
-import { claimCouponRedemption, releaseCouponRedemption } from "@/lib/orders/coupon-redemption";
+import { claimCouponRedemption } from "@/lib/orders/coupon-redemption";
 import { downloadUrl } from "@/lib/downloads";
 import { resolveDigitalDelivery } from "@/lib/orders/digital-delivery";
 import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";
@@ -248,9 +248,27 @@ export async function createOrderIntent(
       now,
     }).catch(releasingStock(taken));
 
-  const order = firstRow(await db
+  /*
+   * The order id is minted here rather than by the database.
+   *
+   * That is what lets the header and its lines go in one `db.batch()`, which
+   * on neon-http is a single non-interactive transaction: both statements
+   * commit or neither does. Previously the lines were a second round trip with
+   * nothing to undo it, so a failure between them left a header row with no
+   * lines — and `stockLinesFor` falls back to the header's own quantity when
+   * it finds none, which attributes every unit in the basket to the first
+   * product. The sweep then restocked a product that had never held them.
+   *
+   * This driver cannot open an interactive transaction at all
+   * (`db.transaction()` throws), so a batch is the only atomicity available.
+   */
+  const orderId = crypto.randomUUID();
+
+  const [inserted] = await db.batch([
+    db
     .insert(orders)
     .values({
+      id: orderId,
       shopId: shop.id,
       productId: head.productId,
       variantId: head.variantId,
@@ -317,17 +335,13 @@ export async function createOrderIntent(
       // COD is collected on delivery; transfers are owed until confirmed.
       paymentStatus: "unpaid",
     })
-    .returning({ id: orders.id })
-    // The last step of the window that opened when the stock was reserved.
-    // Once this row exists the abandoned-checkout sweep can find the order and
-    // reclaim its units; until it does, only this can.
-    .catch(releasingStock(taken)), "order");
+    .returning({ id: orders.id }),
 
-  // The authoritative list of what was sold. Written straight after the header
-  // so nothing can read the order in a one-line-only state.
-  await db.insert(orderItems).values(
+  // The authoritative list of what was sold, in the same transaction as the
+  // header so nothing can ever read the order in a one-line-only state.
+  db.insert(orderItems).values(
     priced.lines.map((line, position) => ({
-      orderId: order.id,
+      orderId,
       productId: line.productId,
       variantId: line.variantId,
       title: line.title,
@@ -349,7 +363,12 @@ export async function createOrderIntent(
           : null,
       position,
     })),
-  );
+  ),
+  // Both statements are the window that opened when the stock was reserved.
+  // If the transaction fails, the units go back on the shelf on the way out.
+  ]).catch(releasingStock(taken));
+
+  const order = firstRow(inserted, "order");
 
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
 
@@ -412,12 +431,9 @@ export async function createOrderIntent(
           : `${base}/${shop.handle}?cancelled=1`,
     });
 
-    // The handoff rolls the order and its stock back on failure. The coupon is
-    // ours to undo, because we claimed it above rather than after.
-    if (!card.ok) {
-      if (coupon) await releaseCouponRedemption(coupon.id);
-      return { ok: false, error: card.error };
-    }
+    // The handoff abandons the order on failure — stock and coupon both — so
+    // there is nothing to undo here, only a message to pass on.
+    if (!card.ok) return { ok: false, error: card.error };
     cardHandoff = card.handoff;
   }
 

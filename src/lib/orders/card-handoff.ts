@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { orders, type Shop } from "@/db/schema";
 import { createCheckoutSession } from "@/lib/connect";
-import { restoreStock } from "@/lib/inventory";
+import { abandonOrder } from "@/lib/inventory";
 import type { Handoff } from "@/lib/payments";
 
 /**
@@ -63,8 +63,12 @@ export async function handOffToStripe(opts: {
      * Rolling both back is the only honest outcome: an order nobody can pay
      * for would hold units the seller could otherwise sell, and it would sit
      * in their list looking like a sale that never happened.
+     *
+     * `abandonOrder` rather than `restoreStock`, so the coupon goes back too —
+     * it is the same undo the expiry webhook and the sweep perform, and doing
+     * it here is what lets the caller stop doing it separately.
      */
-    await restoreStock(saved);
+    await abandonOrder(saved);
     await db.delete(orders).where(eq(orders.id, saved.id));
 
     console.error("[sailo] stripe checkout session failed", error);

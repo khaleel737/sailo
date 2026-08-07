@@ -4,7 +4,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { orders, shops, stripeEvents } from "@/db/schema";
 import { stripe } from "@/lib/stripe";
-import { restoreStock } from "@/lib/inventory";
+import { abandonOrder, restoreStock } from "@/lib/inventory";
 import { releaseDownloads } from "@/lib/downloads";
 import { freePlanFields, subscriptionFields } from "@/lib/billing-map";
 
@@ -470,7 +470,7 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
       if (!order) return "order not found";
       if (order.paymentStatus === "paid") return "already paid";
 
-      await restoreStock(order);
+      await abandonOrder(order);
       await db
         .update(orders)
         .set({
@@ -491,7 +491,7 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
       if (!order) return "order not found";
       if (order.paymentStatus === "paid") return "already paid";
 
-      await restoreStock(order);
+      await abandonOrder(order);
       await db
         .update(orders)
         .set({ status: "cancelled", updatedAt: new Date() })
