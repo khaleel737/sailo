@@ -116,7 +116,6 @@ export const adminEl: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "tokatastimasou",
     save: "Αποθήκευση",
     saveChanges: "Αποθήκευση αλλαγών",
     cancel: "Ακύρωση",
@@ -151,6 +150,11 @@ export const adminEl: PartialAdminDictionary = {
     viewAsTable: "Ως πίνακας",
   },
   dashboard: {
+    views: "Προβολές",
+    visitors: "Επισκέπτες",
+    sales: "Πωλήσεις",
+    refunds: "Επιστροφές χρημάτων",
+    net: "Καθαρό",
     noVisits: "Καμία επίσκεψη ακόμη — μοιραστείτε τον σύνδεσμό σας.",
     noRevenue: "Κανένα έσοδο ακόμη.",
     visitsRange: "Επισκέψεις · τελευταίες {days} ημέρες",
@@ -221,7 +225,6 @@ export const adminEl: PartialAdminDictionary = {
     saveNotesLabel: "Αποθήκευση σημειώσεων",
     noOrdersYet: "Καμία παραγγελία ακόμη.",
     paid: "Πληρωμένο",
-    delete: "Διαγραφή",
     privateNotes: "Ιδιωτικές σημειώσεις",
     empty: "Κανένας πελάτης ακόμη",
     all: "Όλοι οι πελάτες",
@@ -253,7 +256,6 @@ export const adminEl: PartialAdminDictionary = {
     usageLimitPlaceholder: "Απεριόριστο",
     discountCodes: "Κωδικοί έκπτωσης",
     discountCodesBody: "Τρέξτε προσφορές με ποσοστιαία ή σταθερή έκπτωση, ελάχιστη αγορά, όριο χρήσεων και ημερομηνία λήξης.",
-    lockBody: "Τρέξτε προσφορές με ποσοστιαία ή σταθερή έκπτωση, ελάχιστη αγορά, όριο χρήσεων και ημερομηνία λήξης.",
     empty: "Κανένα κουπόνι ακόμη",
     emptyBody: "Δημιουργήστε έναν κωδικό παραπάνω και μοιραστείτε τον με τους πελάτες σας.",
     expired: "Έληξε",
@@ -369,6 +371,9 @@ export const adminEl: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Στοιχεία καταστήματος",
+    tabBilling: "Πλάνο & χρέωση",
+    tabData: "Εισαγωγή & εξαγωγή",
     taxIdPlaceholder: "EL123456789",
     identity: "Ταυτότητα",
     appearance: "Εμφάνιση",
@@ -511,4 +516,19 @@ export const adminEl: PartialAdminDictionary = {
     add: "Προσθήκη",
     uploading: "Μεταφόρτωση",
   },
+
+  paymentStatus: {
+    unpaid: "Απλήρωτο",
+    pending: "Η πληρωμή στάλθηκε",
+    paid: "Πληρωμένο",
+    refunded: "Επιστράφηκε",
+    disputed: "Αντιλογισμός",
+  },
+
+  chart: {
+    bar: "Ράβδοι",
+    line: "Γραμμή",
+    legend: "Μορφή γραφήματος",
+  },
+
 };

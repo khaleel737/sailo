@@ -189,6 +189,9 @@ export const adminSr: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Детаљи продавнице",
+    tabBilling: "План и наплата",
+    tabData: "Увоз и извоз",
     taxIdPlaceholder: "101234567",
     identity: "Идентитет",
     appearance: "Изглед",
@@ -318,7 +321,6 @@ export const adminSr: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "вашапродавница",
     save: "Сачувај",
     saveChanges: "Сачувај измене",
     cancel: "Одустани",
@@ -359,7 +361,6 @@ export const adminSr: PartialAdminDictionary = {
     discountCodesBody: "Покрените акције са процентуалним или фиксним попустом, минималним износом, ограничењем броја коришћења и датумом истека.",
     title: "Купони",
     description: "Кодови за попуст које купци уносе при плаћању.",
-    lockBody: "Покрените акције са процентуалним или фиксним попустом, минималним износом, ограничењем броја коришћења и датумом истека.",
     empty: "Још нема купона",
     emptyBody: "Направите код изнад и поделите га са купцима.",
     expired: "Истекло",
@@ -377,7 +378,6 @@ export const adminSr: PartialAdminDictionary = {
     saveNotesLabel: "Сачувај белешке",
     noOrdersYet: "Још нема поруџбина.",
     paid: "Плаћено",
-    delete: "Обриши",
     privateNotes: "Приватне белешке",
     title: "Клијенти",
     empty: "Још нема клијената",
@@ -463,6 +463,11 @@ export const adminSr: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "Прегледи",
+    visitors: "Посетиоци",
+    sales: "Продаја",
+    refunds: "Повраћаји",
+    net: "Нето",
     noVisits: "Још нема посета — поделите свој линк.",
     noRevenue: "Још нема прихода.",
     visitsRange: "Посете · последњих {days} дана",
@@ -526,4 +531,19 @@ export const adminSr: PartialAdminDictionary = {
     cancelled: "Отказана",
     refunded: "Враћена",
   },
+
+  paymentStatus: {
+    unpaid: "Неплаћено",
+    pending: "Уплата послата",
+    paid: "Плаћено",
+    refunded: "Враћено",
+    disputed: "Повраћај средстава",
+  },
+
+  chart: {
+    bar: "Ступци",
+    line: "Линија",
+    legend: "Облик графикона",
+  },
+
 };

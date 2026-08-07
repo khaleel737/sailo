@@ -189,6 +189,9 @@ export const adminMk: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Детали за продавницата",
+    tabBilling: "План и наплата",
+    tabData: "Увоз и извоз",
     taxIdPlaceholder: "MK4030123456789",
     identity: "Идентитет",
     appearance: "Изглед",
@@ -318,7 +321,6 @@ export const adminMk: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "вашатапродавница",
     save: "Зачувај",
     saveChanges: "Зачувај измени",
     cancel: "Откажи",
@@ -359,7 +361,6 @@ export const adminMk: PartialAdminDictionary = {
     discountCodesBody: "Водете акции со процентуален или фиксен попуст, минимален износ, ограничување на употреба и датум на истек.",
     title: "Купони",
     description: "Кодови за попуст што купувачите ги внесуваат при плаќање.",
-    lockBody: "Водете акции со процентуален или фиксен попуст, минимален износ, ограничување на употреба и датум на истек.",
     empty: "Сè уште нема купони",
     emptyBody: "Создајте код погоре и споделете го со вашите купувачи.",
     expired: "Истечен",
@@ -377,7 +378,6 @@ export const adminMk: PartialAdminDictionary = {
     saveNotesLabel: "Зачувај белешки",
     noOrdersYet: "Сè уште нема нарачки.",
     paid: "Платено",
-    delete: "Избриши",
     privateNotes: "Приватни белешки",
     title: "Клиенти",
     empty: "Сè уште нема клиенти",
@@ -463,6 +463,11 @@ export const adminMk: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "Прегледи",
+    visitors: "Посетители",
+    sales: "Продажби",
+    refunds: "Поврати",
+    net: "Нето",
     noVisits: "Сè уште нема посети — споделете ја вашата врска.",
     noRevenue: "Сè уште нема приход.",
     visitsRange: "Посети · последните {days} дена",
@@ -526,4 +531,19 @@ export const adminMk: PartialAdminDictionary = {
     cancelled: "Откажана",
     refunded: "Вратена",
   },
+
+  paymentStatus: {
+    unpaid: "Неплатено",
+    pending: "Уплатата е испратена",
+    paid: "Платено",
+    refunded: "Вратено",
+    disputed: "Поврат на средства",
+  },
+
+  chart: {
+    bar: "Столбови",
+    line: "Линија",
+    legend: "Облик на графикон",
+  },
+
 };

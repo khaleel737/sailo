@@ -116,7 +116,6 @@ export const adminNo: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "dinbutikk",
     save: "Lagre",
     saveChanges: "Lagre endringer",
     cancel: "Avbryt",
@@ -151,6 +150,11 @@ export const adminNo: PartialAdminDictionary = {
     viewAsTable: "Som tabell",
   },
   dashboard: {
+    views: "Visninger",
+    visitors: "Besøkende",
+    sales: "Salg",
+    refunds: "Refusjoner",
+    net: "Netto",
     noVisits: "Ingen besøk ennå — del lenken din.",
     noRevenue: "Ingen inntekt ennå.",
     visitsRange: "Besøk · siste {days} dager",
@@ -221,7 +225,6 @@ export const adminNo: PartialAdminDictionary = {
     saveNotesLabel: "Lagre notater",
     noOrdersYet: "Ingen bestillinger ennå.",
     paid: "Betalt",
-    delete: "Slett",
     privateNotes: "Private notater",
     empty: "Ingen kunder ennå",
     all: "Alle kunder",
@@ -253,7 +256,6 @@ export const adminNo: PartialAdminDictionary = {
     usageLimitPlaceholder: "Ubegrenset",
     discountCodes: "Rabattkoder",
     discountCodesBody: "Kjør kampanjer med prosent- eller fast rabatt, minstekjøp, bruksgrense og utløpsdato.",
-    lockBody: "Kjør kampanjer med prosent- eller fast rabatt, minstekjøp, bruksgrense og utløpsdato.",
     empty: "Ingen rabattkoder ennå",
     emptyBody: "Lag en kode ovenfor og del den med kundene dine.",
     expired: "Utløpt",
@@ -369,6 +371,9 @@ export const adminNo: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Butikkdetaljer",
+    tabBilling: "Abonnement og fakturering",
+    tabData: "Import og eksport",
     taxIdPlaceholder: "NO123456789MVA",
     identity: "Identitet",
     appearance: "Utseende",
@@ -511,4 +516,19 @@ export const adminNo: PartialAdminDictionary = {
     add: "Legg til",
     uploading: "Laster opp",
   },
+
+  paymentStatus: {
+    unpaid: "Ubetalt",
+    pending: "Betaling sendt",
+    paid: "Betalt",
+    refunded: "Refundert",
+    disputed: "Tilbakeføring",
+  },
+
+  chart: {
+    bar: "Søyler",
+    line: "Linje",
+    legend: "Diagramform",
+  },
+
 };

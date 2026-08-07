@@ -189,6 +189,9 @@ export const adminVi: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Chi tiết cửa hàng",
+    tabBilling: "Gói và thanh toán",
+    tabData: "Nhập và xuất",
     taxIdPlaceholder: "0312345678",
     identity: "Thông tin",
     appearance: "Giao diện",
@@ -318,7 +321,6 @@ export const adminVi: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "cuahangcuaban",
     save: "Lưu",
     saveChanges: "Lưu thay đổi",
     cancel: "Hủy",
@@ -359,7 +361,6 @@ export const adminVi: PartialAdminDictionary = {
     discountCodesBody: "Chạy khuyến mãi với mức giảm theo phần trăm hoặc số tiền cố định, đơn tối thiểu, giới hạn lượt dùng và ngày hết hạn.",
     title: "Mã giảm giá",
     description: "Mã giảm giá người mua nhập khi thanh toán.",
-    lockBody: "Chạy khuyến mãi với mức giảm theo phần trăm hoặc số tiền cố định, đơn tối thiểu, giới hạn lượt dùng và ngày hết hạn.",
     empty: "Chưa có mã giảm giá",
     emptyBody: "Tạo một mã ở trên và chia sẻ với khách của bạn.",
     expired: "Hết hạn",
@@ -377,7 +378,6 @@ export const adminVi: PartialAdminDictionary = {
     saveNotesLabel: "Lưu ghi chú",
     noOrdersYet: "Chưa có đơn hàng.",
     paid: "Đã thanh toán",
-    delete: "Xóa",
     privateNotes: "Ghi chú riêng",
     title: "Khách hàng",
     empty: "Chưa có khách hàng",
@@ -463,6 +463,11 @@ export const adminVi: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "Lượt xem",
+    visitors: "Khách truy cập",
+    sales: "Doanh số",
+    refunds: "Hoàn tiền",
+    net: "Ròng",
     noVisits: "Chưa có lượt truy cập — hãy chia sẻ liên kết của bạn.",
     noRevenue: "Chưa có doanh thu.",
     visitsRange: "Lượt truy cập · {days} ngày qua",
@@ -526,4 +531,19 @@ export const adminVi: PartialAdminDictionary = {
     cancelled: "Đã huỷ",
     refunded: "Đã hoàn tiền",
   },
+
+  paymentStatus: {
+    unpaid: "Chưa thanh toán",
+    pending: "Đã gửi thanh toán",
+    paid: "Đã thanh toán",
+    refunded: "Đã hoàn tiền",
+    disputed: "Bồi hoàn",
+  },
+
+  chart: {
+    bar: "Cột",
+    line: "Đường",
+    legend: "Dạng biểu đồ",
+  },
+
 };

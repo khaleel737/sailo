@@ -116,7 +116,6 @@ export const adminDe: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "deinshop",
     save: "Speichern",
     saveChanges: "Änderungen speichern",
     cancel: "Abbrechen",
@@ -151,6 +150,11 @@ export const adminDe: PartialAdminDictionary = {
     viewAsTable: "Als Tabelle",
   },
   dashboard: {
+    views: "Aufrufe",
+    visitors: "Besucher",
+    sales: "Verkäufe",
+    refunds: "Erstattungen",
+    net: "Netto",
     noVisits: "Noch keine Besuche — teile deinen Link.",
     noRevenue: "Noch kein Umsatz.",
     visitsRange: "Besuche · letzte {days} Tage",
@@ -221,7 +225,6 @@ export const adminDe: PartialAdminDictionary = {
     saveNotesLabel: "Notizen speichern",
     noOrdersYet: "Noch keine Bestellungen.",
     paid: "Bezahlt",
-    delete: "Löschen",
     privateNotes: "Private Notizen",
     empty: "Noch keine Kunden",
     all: "Alle Kunden",
@@ -253,7 +256,6 @@ export const adminDe: PartialAdminDictionary = {
     usageLimitPlaceholder: "Unbegrenzt",
     discountCodes: "Rabattcodes",
     discountCodesBody: "Starte Aktionen mit Prozent- oder Festbetragsrabatt, Mindestbestellwert, Nutzungslimit und Ablaufdatum.",
-    lockBody: "Starte Aktionen mit Prozent- oder Festbetragsrabatt, Mindestbestellwert, Nutzungslimit und Ablaufdatum.",
     empty: "Noch keine Gutscheine",
     emptyBody: "Erstelle oben einen Code und teile ihn mit deinen Kunden.",
     expired: "Abgelaufen",
@@ -369,6 +371,9 @@ export const adminDe: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Shop-Details",
+    tabBilling: "Tarif & Abrechnung",
+    tabData: "Import & Export",
     taxIdPlaceholder: "DE123456789",
     identity: "Identität",
     appearance: "Erscheinungsbild",
@@ -511,4 +516,19 @@ export const adminDe: PartialAdminDictionary = {
     add: "Hinzufügen",
     uploading: "Wird hochgeladen",
   },
+
+  paymentStatus: {
+    unpaid: "Unbezahlt",
+    pending: "Zahlung gesendet",
+    paid: "Bezahlt",
+    refunded: "Erstattet",
+    disputed: "Rückbuchung",
+  },
+
+  chart: {
+    bar: "Balken",
+    line: "Linie",
+    legend: "Diagrammform",
+  },
+
 };

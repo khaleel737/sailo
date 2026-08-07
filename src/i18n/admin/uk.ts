@@ -116,7 +116,6 @@ export const adminUk: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "вашакрамниця",
     save: "Зберегти",
     saveChanges: "Зберегти зміни",
     cancel: "Скасувати",
@@ -151,6 +150,11 @@ export const adminUk: PartialAdminDictionary = {
     viewAsTable: "Як таблицю",
   },
   dashboard: {
+    views: "Перегляди",
+    visitors: "Відвідувачі",
+    sales: "Продажі",
+    refunds: "Повернення",
+    net: "Нетто",
     noVisits: "Поки немає відвідувань — поділіться посиланням.",
     noRevenue: "Поки немає доходу.",
     visitsRange: "Відвідування · останні {days} днів",
@@ -221,7 +225,6 @@ export const adminUk: PartialAdminDictionary = {
     saveNotesLabel: "Зберегти нотатки",
     noOrdersYet: "Поки немає замовлень.",
     paid: "Оплачено",
-    delete: "Видалити",
     privateNotes: "Особисті нотатки",
     empty: "Поки немає клієнтів",
     all: "Усі клієнти",
@@ -253,7 +256,6 @@ export const adminUk: PartialAdminDictionary = {
     usageLimitPlaceholder: "Без обмежень",
     discountCodes: "Промокоди",
     discountCodesBody: "Запускайте акції зі знижкою у відсотках або сумою, мінімальною сумою замовлення, лімітом використань і терміном дії.",
-    lockBody: "Запускайте акції зі знижкою у відсотках або сумою, мінімальною сумою замовлення, лімітом використань і терміном дії.",
     empty: "Поки немає промокодів",
     emptyBody: "Створіть код вище й поділіться ним із покупцями.",
     expired: "Термін вичерпано",
@@ -369,6 +371,9 @@ export const adminUk: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Дані магазину",
+    tabBilling: "Тариф і оплата",
+    tabData: "Імпорт та експорт",
     taxIdPlaceholder: "1234567890",
     identity: "Профіль",
     appearance: "Оформлення",
@@ -511,4 +516,19 @@ export const adminUk: PartialAdminDictionary = {
     add: "Додати",
     uploading: "Завантаження",
   },
+
+  paymentStatus: {
+    unpaid: "Не оплачено",
+    pending: "Платіж надіслано",
+    paid: "Оплачено",
+    refunded: "Повернено",
+    disputed: "Чарджбек",
+  },
+
+  chart: {
+    bar: "Стовпці",
+    line: "Лінія",
+    legend: "Вигляд графіка",
+  },
+
 };

@@ -116,7 +116,6 @@ export const adminAr: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "متجرك",
     save: "حفظ",
     saveChanges: "حفظ التغييرات",
     cancel: "إلغاء",
@@ -151,6 +150,11 @@ export const adminAr: PartialAdminDictionary = {
     viewAsTable: "عرض كجدول",
   },
   dashboard: {
+    views: "مشاهدات",
+    visitors: "زوار",
+    sales: "مبيعات",
+    refunds: "مبالغ مستردة",
+    net: "الصافي",
     noVisits: "لا زيارات بعد — شارك رابطك.",
     noRevenue: "لا إيرادات بعد.",
     visitsRange: "الزيارات · آخر {days} يومًا",
@@ -221,7 +225,6 @@ export const adminAr: PartialAdminDictionary = {
     saveNotesLabel: "حفظ الملاحظات",
     noOrdersYet: "لا طلبات بعد.",
     paid: "مدفوع",
-    delete: "حذف",
     privateNotes: "ملاحظات خاصة",
     empty: "لا عملاء بعد",
     all: "كل العملاء",
@@ -253,7 +256,6 @@ export const adminAr: PartialAdminDictionary = {
     usageLimitPlaceholder: "بلا حد",
     discountCodes: "أكواد الخصم",
     discountCodesBody: "أطلق عروضًا بخصم نسبي أو مبلغ ثابت، مع حد أدنى للشراء وسقف استخدام وتاريخ انتهاء.",
-    lockBody: "أطلق عروضًا بخصم نسبي أو مبلغ ثابت، مع حد أدنى للشراء وسقف استخدام وتاريخ انتهاء.",
     empty: "لا كوبونات بعد",
     emptyBody: "أنشئ كودًا بالأعلى وشاركه مع عملائك.",
     expired: "منتهي",
@@ -369,6 +371,9 @@ export const adminAr: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "تفاصيل المتجر",
+    tabBilling: "الخطة والفوترة",
+    tabData: "الاستيراد والتصدير",
     taxIdPlaceholder: "300123456700003",
     identity: "الهوية",
     appearance: "المظهر",
@@ -511,4 +516,19 @@ export const adminAr: PartialAdminDictionary = {
     add: "إضافة",
     uploading: "جارٍ الرفع",
   },
+
+  paymentStatus: {
+    unpaid: "غير مدفوع",
+    pending: "تم إرسال الدفعة",
+    paid: "مدفوع",
+    refunded: "مسترد",
+    disputed: "رد مبلغ",
+  },
+
+  chart: {
+    bar: "أعمدة",
+    line: "خط",
+    legend: "شكل الرسم البياني",
+  },
+
 };

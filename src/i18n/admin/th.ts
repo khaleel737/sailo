@@ -189,6 +189,9 @@ export const adminTh: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "รายละเอียดร้าน",
+    tabBilling: "แผนและการเรียกเก็บเงิน",
+    tabData: "นำเข้าและส่งออก",
     taxIdPlaceholder: "0105551234567",
     identity: "ข้อมูลร้าน",
     appearance: "หน้าตา",
@@ -318,7 +321,6 @@ export const adminTh: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "ร้านของคุณ",
     save: "บันทึก",
     saveChanges: "บันทึกการเปลี่ยนแปลง",
     cancel: "ยกเลิก",
@@ -359,7 +361,6 @@ export const adminTh: PartialAdminDictionary = {
     discountCodesBody: "จัดโปรโมชันด้วยส่วนลดแบบเปอร์เซ็นต์หรือจำนวนเงิน กำหนดยอดขั้นต่ำ จำนวนครั้งที่ใช้ได้ และวันหมดอายุ",
     title: "คูปอง",
     description: "โค้ดส่วนลดที่ผู้ซื้อกรอกตอนชำระเงิน",
-    lockBody: "จัดโปรโมชันด้วยส่วนลดแบบเปอร์เซ็นต์หรือจำนวนเงิน กำหนดยอดขั้นต่ำ จำนวนครั้งที่ใช้ได้ และวันหมดอายุ",
     empty: "ยังไม่มีคูปอง",
     emptyBody: "สร้างโค้ดด้านบนแล้วส่งให้ลูกค้าของคุณ",
     expired: "หมดอายุ",
@@ -377,7 +378,6 @@ export const adminTh: PartialAdminDictionary = {
     saveNotesLabel: "บันทึกโน้ต",
     noOrdersYet: "ยังไม่มีออร์เดอร์",
     paid: "ชำระแล้ว",
-    delete: "ลบ",
     privateNotes: "โน้ตส่วนตัว",
     title: "ลูกค้า",
     empty: "ยังไม่มีลูกค้า",
@@ -463,6 +463,11 @@ export const adminTh: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "การเข้าชม",
+    visitors: "ผู้เข้าชม",
+    sales: "ยอดขาย",
+    refunds: "การคืนเงิน",
+    net: "สุทธิ",
     noVisits: "ยังไม่มีผู้เข้าชม — แชร์ลิงก์ของคุณสิ",
     noRevenue: "ยังไม่มีรายได้",
     visitsRange: "ผู้เข้าชม · {days} วันล่าสุด",
@@ -526,4 +531,19 @@ export const adminTh: PartialAdminDictionary = {
     cancelled: "ยกเลิก",
     refunded: "คืนเงินแล้ว",
   },
+
+  paymentStatus: {
+    unpaid: "ยังไม่ชำระ",
+    pending: "แจ้งชำระเงินแล้ว",
+    paid: "ชำระแล้ว",
+    refunded: "คืนเงินแล้ว",
+    disputed: "การเรียกคืนเงิน",
+  },
+
+  chart: {
+    bar: "แท่ง",
+    line: "เส้น",
+    legend: "รูปแบบกราฟ",
+  },
+
 };

@@ -116,7 +116,6 @@ export const adminDa: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "dinbutik",
     save: "Gem",
     saveChanges: "Gem ændringer",
     cancel: "Annuller",
@@ -151,6 +150,11 @@ export const adminDa: PartialAdminDictionary = {
     viewAsTable: "Som tabel",
   },
   dashboard: {
+    views: "Visninger",
+    visitors: "Besøgende",
+    sales: "Salg",
+    refunds: "Refunderinger",
+    net: "Netto",
     noVisits: "Ingen besøg endnu — del dit link.",
     noRevenue: "Ingen omsætning endnu.",
     visitsRange: "Besøg · seneste {days} dage",
@@ -221,7 +225,6 @@ export const adminDa: PartialAdminDictionary = {
     saveNotesLabel: "Gem noter",
     noOrdersYet: "Ingen ordrer endnu.",
     paid: "Betalt",
-    delete: "Slet",
     privateNotes: "Private noter",
     empty: "Ingen kunder endnu",
     all: "Alle kunder",
@@ -253,7 +256,6 @@ export const adminDa: PartialAdminDictionary = {
     usageLimitPlaceholder: "Ubegrænset",
     discountCodes: "Rabatkoder",
     discountCodesBody: "Kør kampagner med procent- eller fast rabat, minimumskøb, brugsgrænse og udløbsdato.",
-    lockBody: "Kør kampagner med procent- eller fast rabat, minimumskøb, brugsgrænse og udløbsdato.",
     empty: "Ingen rabatkoder endnu",
     emptyBody: "Opret en kode ovenfor, og del den med dine kunder.",
     expired: "Udløbet",
@@ -369,6 +371,9 @@ export const adminDa: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Butiksoplysninger",
+    tabBilling: "Abonnement og betaling",
+    tabData: "Import og eksport",
     taxIdPlaceholder: "DK12345678",
     identity: "Identitet",
     appearance: "Udseende",
@@ -511,4 +516,19 @@ export const adminDa: PartialAdminDictionary = {
     add: "Tilføj",
     uploading: "Uploader",
   },
+
+  paymentStatus: {
+    unpaid: "Ubetalt",
+    pending: "Betaling sendt",
+    paid: "Betalt",
+    refunded: "Refunderet",
+    disputed: "Tilbageførsel",
+  },
+
+  chart: {
+    bar: "Søjler",
+    line: "Linje",
+    legend: "Diagramtype",
+  },
+
 };

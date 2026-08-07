@@ -222,6 +222,7 @@ export const fi: Dictionary = {
     resetInvalid: "Linkki on vanhentunut tai jo käytetty. Pyydä uusi.",
   },
   onboarding: {
+    handlePlaceholder: "sinunkauppasi",
     claimTitle: "Varaa linkkisi",
     claimSubtitle: "Tämän osoitteen laitat bioosi. Voit vaihtaa sen myöhemmin.",
     yourLink: "Sailo-linkkisi", shopName: "Kaupan nimi", shortDescription: "Lyhyt kuvaus",

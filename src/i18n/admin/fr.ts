@@ -116,7 +116,6 @@ export const adminFr: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "votreboutique",
     save: "Enregistrer",
     saveChanges: "Enregistrer les modifications",
     cancel: "Annuler",
@@ -151,6 +150,11 @@ export const adminFr: PartialAdminDictionary = {
     viewAsTable: "Voir en tableau",
   },
   dashboard: {
+    views: "Vues",
+    visitors: "Visiteurs",
+    sales: "Ventes",
+    refunds: "Remboursements",
+    net: "Net",
     noVisits: "Pas encore de visites — partagez votre lien.",
     noRevenue: "Pas encore de revenus.",
     visitsRange: "Visites · {days} derniers jours",
@@ -221,7 +225,6 @@ export const adminFr: PartialAdminDictionary = {
     saveNotesLabel: "Enregistrer les notes",
     noOrdersYet: "Pas encore de commandes.",
     paid: "Payé",
-    delete: "Supprimer",
     privateNotes: "Notes privées",
     empty: "Pas encore de clients",
     all: "Tous les clients",
@@ -253,7 +256,6 @@ export const adminFr: PartialAdminDictionary = {
     usageLimitPlaceholder: "Illimité",
     discountCodes: "Codes de réduction",
     discountCodesBody: "Lancez des promotions en pourcentage ou en montant fixe, avec minimum d’achat, plafond d’utilisation et date d’expiration.",
-    lockBody: "Lancez des promotions en pourcentage ou en montant fixe, avec minimum d’achat, plafond d’utilisation et date d’expiration.",
     empty: "Pas encore de codes",
     emptyBody: "Créez un code ci-dessus et partagez-le avec vos clients.",
     expired: "Expiré",
@@ -369,6 +371,9 @@ export const adminFr: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Détails de la boutique",
+    tabBilling: "Forfait et facturation",
+    tabData: "Import et export",
     taxIdPlaceholder: "FR12345678901",
     identity: "Identité",
     appearance: "Apparence",
@@ -511,4 +516,19 @@ export const adminFr: PartialAdminDictionary = {
     add: "Ajouter",
     uploading: "Envoi",
   },
+
+  paymentStatus: {
+    unpaid: "Impayé",
+    pending: "Paiement envoyé",
+    paid: "Payé",
+    refunded: "Remboursé",
+    disputed: "Rétrofacturation",
+  },
+
+  chart: {
+    bar: "Barres",
+    line: "Ligne",
+    legend: "Forme du graphique",
+  },
+
 };

@@ -350,6 +350,8 @@ export const en = {
   },
 
   onboarding: {
+    /** A stand-in handle, so the shape of the URL is visible before typing. */
+    handlePlaceholder: "yourshop",
     claimTitle: "Claim your link",
     claimSubtitle:
       "This is the address you'll put in your bio. You can change it later.",

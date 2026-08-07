@@ -223,6 +223,7 @@ export const sv: Dictionary = {
     resetInvalid: "Länken har gått ut eller redan använts. Begär en ny.",
   },
   onboarding: {
+    handlePlaceholder: "dinbutik",
     claimTitle: "Ta din länk",
     claimSubtitle: "Det här är adressen du lägger i din bio. Du kan ändra den senare.",
     yourLink: "Din Sailo-länk", shopName: "Butiksnamn", shortDescription: "Kort beskrivning",

@@ -116,7 +116,6 @@ export const adminNl: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "jouwwinkel",
     save: "Opslaan",
     saveChanges: "Wijzigingen opslaan",
     cancel: "Annuleren",
@@ -151,6 +150,11 @@ export const adminNl: PartialAdminDictionary = {
     viewAsTable: "Als tabel",
   },
   dashboard: {
+    views: "Weergaven",
+    visitors: "Bezoekers",
+    sales: "Verkopen",
+    refunds: "Terugbetalingen",
+    net: "Netto",
     noVisits: "Nog geen bezoeken — deel je link.",
     noRevenue: "Nog geen omzet.",
     visitsRange: "Bezoeken · laatste {days} dagen",
@@ -221,7 +225,6 @@ export const adminNl: PartialAdminDictionary = {
     saveNotesLabel: "Notities opslaan",
     noOrdersYet: "Nog geen bestellingen.",
     paid: "Betaald",
-    delete: "Verwijderen",
     privateNotes: "Privénotities",
     empty: "Nog geen klanten",
     all: "Alle klanten",
@@ -253,7 +256,6 @@ export const adminNl: PartialAdminDictionary = {
     usageLimitPlaceholder: "Onbeperkt",
     discountCodes: "Kortingscodes",
     discountCodesBody: "Start acties met procentuele of vaste korting, minimumbedrag, gebruikslimiet en vervaldatum.",
-    lockBody: "Start acties met procentuele of vaste korting, minimumbedrag, gebruikslimiet en vervaldatum.",
     empty: "Nog geen kortingscodes",
     emptyBody: "Maak hierboven een code aan en deel hem met je klanten.",
     expired: "Verlopen",
@@ -369,6 +371,9 @@ export const adminNl: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Winkelgegevens",
+    tabBilling: "Abonnement en facturatie",
+    tabData: "Importeren en exporteren",
     taxIdPlaceholder: "NL123456789B01",
     identity: "Identiteit",
     appearance: "Uiterlijk",
@@ -511,4 +516,19 @@ export const adminNl: PartialAdminDictionary = {
     add: "Toevoegen",
     uploading: "Uploaden",
   },
+
+  paymentStatus: {
+    unpaid: "Onbetaald",
+    pending: "Betaling verzonden",
+    paid: "Betaald",
+    refunded: "Terugbetaald",
+    disputed: "Chargeback",
+  },
+
+  chart: {
+    bar: "Staven",
+    line: "Lijn",
+    legend: "Grafiekvorm",
+  },
+
 };

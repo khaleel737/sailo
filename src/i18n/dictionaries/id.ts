@@ -187,6 +187,7 @@ export const id: Dictionary = {
     resetInvalid: "Tautan itu kedaluwarsa atau sudah dipakai. Minta yang baru.",
   },
   onboarding: {
+    handlePlaceholder: "tokokamu",
     claimTitle: "Ambil tautan Anda",
     claimSubtitle: "Ini alamat yang akan Anda taruh di bio. Bisa diubah nanti.",
     yourLink: "Tautan Sailo Anda", shopName: "Nama toko",

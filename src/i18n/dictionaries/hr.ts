@@ -187,6 +187,7 @@ export const hr: Dictionary = {
     resetInvalid: "Ta je poveznica istekla ili je već iskorištena. Zatražite novu.",
   },
   onboarding: {
+    handlePlaceholder: "vasatrgovina",
     claimTitle: "Rezervirajte svoju poveznicu",
     claimSubtitle: "Ovo je adresa koju ćete staviti u svoj bio. Možete je promijeniti kasnije.",
     yourLink: "Vaša Sailo poveznica", shopName: "Naziv trgovine",

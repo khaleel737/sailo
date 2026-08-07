@@ -222,6 +222,7 @@ export const hu: Dictionary = {
     resetInvalid: "A link lejárt vagy már felhasználták. Kérjen újat.",
   },
   onboarding: {
+    handlePlaceholder: "azuzleted",
     claimTitle: "Foglald le a linked",
     claimSubtitle: "Ezt a címet teszed a bio-dba. Később módosíthatod.",
     yourLink: "A Sailo linked", shopName: "Bolt neve", shortDescription: "Rövid leírás",

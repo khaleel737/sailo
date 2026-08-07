@@ -189,6 +189,9 @@ export const adminKo: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "상점 정보",
+    tabBilling: "요금제 및 결제",
+    tabData: "가져오기 및 내보내기",
     taxIdPlaceholder: "123-45-67890",
     identity: "기본 정보",
     appearance: "외형",
@@ -318,7 +321,6 @@ export const adminKo: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "yourshop",
     save: "저장",
     saveChanges: "변경사항 저장",
     cancel: "취소",
@@ -359,7 +361,6 @@ export const adminKo: PartialAdminDictionary = {
     discountCodesBody: "비율 또는 정액 할인, 최소 구매 금액, 사용 횟수 제한, 만료일을 걸고 프로모션을 진행하세요.",
     title: "쿠폰",
     description: "구매자가 결제할 때 입력하는 할인 코드.",
-    lockBody: "비율 또는 정액 할인, 최소 구매 금액, 사용 횟수 제한, 만료일을 걸고 프로모션을 진행하세요.",
     empty: "아직 쿠폰이 없어요",
     emptyBody: "위에서 코드를 만들어 고객에게 공유하세요.",
     expired: "만료됨",
@@ -377,7 +378,6 @@ export const adminKo: PartialAdminDictionary = {
     saveNotesLabel: "메모 저장",
     noOrdersYet: "아직 주문이 없어요.",
     paid: "결제 완료",
-    delete: "삭제",
     privateNotes: "비공개 메모",
     title: "고객",
     empty: "아직 고객이 없어요",
@@ -463,6 +463,11 @@ export const adminKo: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "조회수",
+    visitors: "방문자",
+    sales: "매출",
+    refunds: "환불",
+    net: "순액",
     noVisits: "아직 방문이 없어요 — 링크를 공유해 보세요.",
     noRevenue: "아직 매출이 없어요.",
     visitsRange: "방문 · 최근 {days}일",
@@ -526,4 +531,19 @@ export const adminKo: PartialAdminDictionary = {
     cancelled: "취소됨",
     refunded: "환불됨",
   },
+
+  paymentStatus: {
+    unpaid: "미결제",
+    pending: "결제 알림 받음",
+    paid: "결제됨",
+    refunded: "환불됨",
+    disputed: "지급 거절",
+  },
+
+  chart: {
+    bar: "막대",
+    line: "선",
+    legend: "차트 모양",
+  },
+
 };

@@ -116,7 +116,6 @@ export const adminTr: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "dukkanin",
     save: "Kaydet",
     saveChanges: "Değişiklikleri kaydet",
     cancel: "Vazgeç",
@@ -151,6 +150,11 @@ export const adminTr: PartialAdminDictionary = {
     viewAsTable: "Tablo olarak",
   },
   dashboard: {
+    views: "Görüntülenme",
+    visitors: "Ziyaretçi",
+    sales: "Satışlar",
+    refunds: "İadeler",
+    net: "Net",
     noVisits: "Henüz ziyaret yok — bağlantını paylaş.",
     noRevenue: "Henüz gelir yok.",
     visitsRange: "Ziyaretler · son {days} gün",
@@ -221,7 +225,6 @@ export const adminTr: PartialAdminDictionary = {
     saveNotesLabel: "Notları kaydet",
     noOrdersYet: "Henüz sipariş yok.",
     paid: "Ödendi",
-    delete: "Sil",
     privateNotes: "Özel notlar",
     empty: "Henüz müşteri yok",
     all: "Tüm müşteriler",
@@ -253,7 +256,6 @@ export const adminTr: PartialAdminDictionary = {
     usageLimitPlaceholder: "Sınırsız",
     discountCodes: "İndirim kodları",
     discountCodesBody: "Yüzde ya da sabit tutarlı indirim, alt limit, kullanım sınırı ve son kullanma tarihiyle kampanya yürütün.",
-    lockBody: "Yüzde ya da sabit tutarlı indirim, alt limit, kullanım sınırı ve son kullanma tarihiyle kampanya yürütün.",
     empty: "Henüz kupon yok",
     emptyBody: "Yukarıdan bir kod oluşturun ve müşterilerinizle paylaşın.",
     expired: "Süresi doldu",
@@ -369,6 +371,9 @@ export const adminTr: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Mağaza bilgileri",
+    tabBilling: "Plan ve faturalama",
+    tabData: "İçe ve dışa aktarma",
     taxIdPlaceholder: "1234567890",
     identity: "Kimlik",
     appearance: "Görünüm",
@@ -511,4 +516,19 @@ export const adminTr: PartialAdminDictionary = {
     add: "Ekle",
     uploading: "Yükleniyor",
   },
+
+  paymentStatus: {
+    unpaid: "Ödenmedi",
+    pending: "Ödeme gönderildi",
+    paid: "Ödendi",
+    refunded: "İade edildi",
+    disputed: "Ters ibraz",
+  },
+
+  chart: {
+    bar: "Çubuklar",
+    line: "Çizgi",
+    legend: "Grafik biçimi",
+  },
+
 };

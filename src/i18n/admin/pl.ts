@@ -116,7 +116,6 @@ export const adminPl: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "twojsklep",
     save: "Zapisz",
     saveChanges: "Zapisz zmiany",
     cancel: "Anuluj",
@@ -151,6 +150,11 @@ export const adminPl: PartialAdminDictionary = {
     viewAsTable: "Jako tabela",
   },
   dashboard: {
+    views: "Wyświetlenia",
+    visitors: "Odwiedzający",
+    sales: "Sprzedaż",
+    refunds: "Zwroty",
+    net: "Netto",
     noVisits: "Jeszcze brak wizyt — udostępnij swój link.",
     noRevenue: "Jeszcze brak przychodu.",
     visitsRange: "Wizyty · ostatnie {days} dni",
@@ -221,7 +225,6 @@ export const adminPl: PartialAdminDictionary = {
     saveNotesLabel: "Zapisz notatki",
     noOrdersYet: "Jeszcze brak zamówień.",
     paid: "Opłacone",
-    delete: "Usuń",
     privateNotes: "Notatki prywatne",
     empty: "Jeszcze brak klientów",
     all: "Wszyscy klienci",
@@ -253,7 +256,6 @@ export const adminPl: PartialAdminDictionary = {
     usageLimitPlaceholder: "Bez limitu",
     discountCodes: "Kody rabatowe",
     discountCodesBody: "Prowadź promocje ze zniżką procentową lub kwotową, minimalną wartością zamówienia, limitem użyć i datą wygaśnięcia.",
-    lockBody: "Prowadź promocje ze zniżką procentową lub kwotową, minimalną wartością zamówienia, limitem użyć i datą wygaśnięcia.",
     empty: "Jeszcze brak kuponów",
     emptyBody: "Utwórz kod powyżej i udostępnij go klientom.",
     expired: "Wygasł",
@@ -369,6 +371,9 @@ export const adminPl: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Dane sklepu",
+    tabBilling: "Plan i płatności",
+    tabData: "Import i eksport",
     taxIdPlaceholder: "PL1234567890",
     identity: "Tożsamość",
     appearance: "Wygląd",
@@ -511,4 +516,19 @@ export const adminPl: PartialAdminDictionary = {
     add: "Dodaj",
     uploading: "Wysyłanie",
   },
+
+  paymentStatus: {
+    unpaid: "Niezapłacone",
+    pending: "Płatność wysłana",
+    paid: "Zapłacone",
+    refunded: "Zwrócone",
+    disputed: "Obciążenie zwrotne",
+  },
+
+  chart: {
+    bar: "Słupki",
+    line: "Linia",
+    legend: "Typ wykresu",
+  },
+
 };

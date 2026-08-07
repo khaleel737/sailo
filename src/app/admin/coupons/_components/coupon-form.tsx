@@ -93,7 +93,11 @@ export function CouponForm({
           </Field>
 
           <Field
-            label={discountType === "percent" ? "Percent off" : `Amount (${currency})`}
+            label={
+              discountType === "percent"
+                ? a.coupons.percentOff
+                : `${a.coupons.amount} (${currency})`
+            }
             htmlFor="value"
           >
             <Input
@@ -109,7 +113,7 @@ export function CouponForm({
 
         <div className="grid gap-4 sm:grid-cols-3">
           <Field
-            label={`Minimum spend (${currency})`}
+            label={`${a.coupons.minSpend} (${currency})`}
             htmlFor="minSubtotal"
             hint={a.common.optional}
           >

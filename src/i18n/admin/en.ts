@@ -10,7 +10,6 @@
  */
 export const adminEn = {
   common: {
-    shopHandlePlaceholder: "yourshop",
     save: "Save",
     saveChanges: "Save changes",
     cancel: "Cancel",
@@ -126,6 +125,11 @@ export const adminEn = {
   },
 
   dashboard: {
+    views: "Views",
+    visitors: "Visitors",
+    sales: "Sales",
+    refunds: "Refunds",
+    net: "Net",
     noVisits: "No visits yet — share your link.",
     noRevenue: "No revenue yet.",
     visitsRange: "Visits · last {days} days",
@@ -334,7 +338,6 @@ export const adminEn = {
     saveNotesLabel: "Save notes",
     noOrdersYet: "No orders yet.",
     paid: "Paid",
-    delete: "Delete",
     privateNotes: "Private notes",
     title: "Clients",
     empty: "No clients yet",
@@ -364,8 +367,6 @@ export const adminEn = {
     discountCodesBody: "Run promotions with percentage or fixed discounts, minimum spend, usage caps and expiry dates.",
     title: "Coupons",
     description: "Discount codes buyers enter at checkout.",
-    lockBody:
-      "Run promotions with percentage or fixed discounts, minimum spend, usage caps and expiry dates.",
     empty: "No coupons yet",
     emptyBody: "Create a code above and share it with your customers.",
     expired: "Expired",
@@ -488,6 +489,9 @@ export const adminEn = {
   },
 
   settings: {
+    tabDetails: "Shop details",
+    tabBilling: "Plan & billing",
+    tabData: "Import & export",
     taxIdPlaceholder: "GB123456789",
     identity: "Identity",
     appearance: "Appearance",
@@ -618,6 +622,27 @@ export const adminEn = {
     referrers: "Referrers",
     noData: "No data yet",
   },
+  /**
+   * Where the money for one order currently stands, as opposed to where the
+   * order does. Read by bracket in `payment-status-select`, so the coverage
+   * test counts this section wholesale.
+   */
+  paymentStatus: {
+    unpaid: "Unpaid",
+    pending: "Payment sent",
+    paid: "Paid",
+    refunded: "Refunded",
+    /** Not a status the seller may set — the bank already decided. */
+    disputed: "Chargeback",
+  },
+
+  /** Words for the bars-or-line control, handed to `<Chart shape={a.chart}>`. */
+  chart: {
+    bar: "Bars",
+    line: "Line",
+    legend: "Chart shape",
+  },
+
 } as const;
 
 /** Every leaf widened to `string`, so translations aren't pinned to English. */

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Info, Package, Plus, Store, Truck } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
+import { interpolate } from "@/i18n";
 import { getShopDeliveryMethods } from "@/lib/queries";
 import {
   DELIVERY_METHOD_DEFS,
@@ -37,7 +38,10 @@ export default async function AdminDeliveryPage() {
         meta={
           methods.length > 0 ? (
             <Badge tone={liveCount > 0 ? "green" : "amber"} dot>
-              {liveCount} of {methods.length} live
+              {interpolate(a.delivery.liveOfCount, {
+                live: liveCount,
+                total: methods.length,
+              })}
             </Badge>
           ) : null
         }

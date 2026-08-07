@@ -189,6 +189,9 @@ export const adminFil: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Detalye ng tindahan",
+    tabBilling: "Plano at singil",
+    tabData: "Import at export",
     taxIdPlaceholder: "123-456-789-000",
     identity: "Pagkakakilanlan",
     appearance: "Itsura",
@@ -318,7 +321,6 @@ export const adminFil: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "tindahanmo",
     save: "I-save",
     saveChanges: "I-save ang mga pagbabago",
     cancel: "Kanselahin",
@@ -359,7 +361,6 @@ export const adminFil: PartialAdminDictionary = {
     discountCodesBody: "Magpatakbo ng promo na porsyento o fixed na diskuwento, may minimum na bilihin, limitasyon sa paggamit at petsa ng pagtatapos.",
     title: "Mga coupon",
     description: "Mga discount code na inilalagay ng bumibili kapag nagbabayad.",
-    lockBody: "Magpatakbo ng promo na porsyento o fixed na diskuwento, may minimum na bilihin, limitasyon sa paggamit at petsa ng pagtatapos.",
     empty: "Wala pang coupon",
     emptyBody: "Gumawa ng code sa itaas at ibahagi ito sa mga customer mo.",
     expired: "Expired na",
@@ -377,7 +378,6 @@ export const adminFil: PartialAdminDictionary = {
     saveNotesLabel: "I-save ang notes",
     noOrdersYet: "Wala pang order.",
     paid: "Bayad na",
-    delete: "Burahin",
     privateNotes: "Pribadong notes",
     title: "Mga kliyente",
     empty: "Wala pang kliyente",
@@ -463,6 +463,11 @@ export const adminFil: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "Views",
+    visitors: "Bisita",
+    sales: "Benta",
+    refunds: "Refund",
+    net: "Neto",
     noVisits: "Wala pang bisita — i-share mo ang link mo.",
     noRevenue: "Wala pang kita.",
     visitsRange: "Mga bisita · huling {days} araw",
@@ -526,4 +531,19 @@ export const adminFil: PartialAdminDictionary = {
     cancelled: "Kanselado",
     refunded: "Na-refund",
   },
+
+  paymentStatus: {
+    unpaid: "Hindi bayad",
+    pending: "Naipadala ang bayad",
+    paid: "Bayad na",
+    refunded: "Na-refund",
+    disputed: "Chargeback",
+  },
+
+  chart: {
+    bar: "Bar",
+    line: "Linya",
+    legend: "Hugis ng chart",
+  },
+
 };

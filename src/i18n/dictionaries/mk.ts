@@ -187,6 +187,7 @@ export const mk: Dictionary = {
     resetInvalid: "Таа врска истече или веќе е искористена. Побарајте нова.",
   },
   onboarding: {
+    handlePlaceholder: "вашатапродавница",
     claimTitle: "Резервирајте ја вашата врска",
     claimSubtitle: "Ова е адресата што ќе ја ставите во вашето био. Можете да ја смените подоцна.",
     yourLink: "Вашата Sailo врска", shopName: "Име на продавницата",

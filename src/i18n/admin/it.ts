@@ -116,7 +116,6 @@ export const adminIt: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "iltuonegozio",
     save: "Salva",
     saveChanges: "Salva modifiche",
     cancel: "Annulla",
@@ -151,6 +150,11 @@ export const adminIt: PartialAdminDictionary = {
     viewAsTable: "Vedi come tabella",
   },
   dashboard: {
+    views: "Visualizzazioni",
+    visitors: "Visitatori",
+    sales: "Vendite",
+    refunds: "Rimborsi",
+    net: "Netto",
     noVisits: "Ancora nessuna visita — condividi il tuo link.",
     noRevenue: "Ancora nessun ricavo.",
     visitsRange: "Visite · ultimi {days} giorni",
@@ -221,7 +225,6 @@ export const adminIt: PartialAdminDictionary = {
     saveNotesLabel: "Salva le note",
     noOrdersYet: "Ancora nessun ordine.",
     paid: "Pagato",
-    delete: "Elimina",
     privateNotes: "Note private",
     empty: "Ancora nessun cliente",
     all: "Tutti i clienti",
@@ -253,7 +256,6 @@ export const adminIt: PartialAdminDictionary = {
     usageLimitPlaceholder: "Illimitato",
     discountCodes: "Codici sconto",
     discountCodesBody: "Lancia promozioni con sconto percentuale o fisso, spesa minima, limite di utilizzi e data di scadenza.",
-    lockBody: "Lancia promozioni con sconto percentuale o fisso, spesa minima, limite di utilizzi e data di scadenza.",
     empty: "Ancora nessun coupon",
     emptyBody: "Crea un codice qui sopra e condividilo con i tuoi clienti.",
     expired: "Scaduto",
@@ -369,6 +371,9 @@ export const adminIt: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Dettagli negozio",
+    tabBilling: "Piano e fatturazione",
+    tabData: "Importa ed esporta",
     taxIdPlaceholder: "IT12345678901",
     identity: "Identità",
     appearance: "Aspetto",
@@ -511,4 +516,19 @@ export const adminIt: PartialAdminDictionary = {
     add: "Aggiungi",
     uploading: "Caricamento",
   },
+
+  paymentStatus: {
+    unpaid: "Non pagato",
+    pending: "Pagamento inviato",
+    paid: "Pagato",
+    refunded: "Rimborsato",
+    disputed: "Storno",
+  },
+
+  chart: {
+    bar: "Barre",
+    line: "Linea",
+    legend: "Forma del grafico",
+  },
+
 };

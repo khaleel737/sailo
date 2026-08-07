@@ -116,7 +116,6 @@ export const adminFi: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "sinunkauppasi",
     save: "Tallenna",
     saveChanges: "Tallenna muutokset",
     cancel: "Peruuta",
@@ -151,6 +150,11 @@ export const adminFi: PartialAdminDictionary = {
     viewAsTable: "Taulukkona",
   },
   dashboard: {
+    views: "Katselut",
+    visitors: "Kävijät",
+    sales: "Myynti",
+    refunds: "Hyvitykset",
+    net: "Netto",
     noVisits: "Ei vielä käyntejä — jaa linkkisi.",
     noRevenue: "Ei vielä myyntiä.",
     visitsRange: "Käynnit · viimeiset {days} päivää",
@@ -221,7 +225,6 @@ export const adminFi: PartialAdminDictionary = {
     saveNotesLabel: "Tallenna muistiinpanot",
     noOrdersYet: "Ei vielä tilauksia.",
     paid: "Maksettu",
-    delete: "Poista",
     privateNotes: "Yksityiset muistiinpanot",
     empty: "Ei vielä asiakkaita",
     all: "Kaikki asiakkaat",
@@ -253,7 +256,6 @@ export const adminFi: PartialAdminDictionary = {
     usageLimitPlaceholder: "Rajaton",
     discountCodes: "Alennuskoodit",
     discountCodesBody: "Järjestä kampanjoita prosentti- tai euromääräisellä alennuksella, minimiostoksella, käyttörajalla ja päättymispäivällä.",
-    lockBody: "Järjestä kampanjoita prosentti- tai euromääräisellä alennuksella, minimiostoksella, käyttörajalla ja päättymispäivällä.",
     empty: "Ei vielä kuponkeja",
     emptyBody: "Luo koodi yllä ja jaa se asiakkaillesi.",
     expired: "Vanhentunut",
@@ -369,6 +371,9 @@ export const adminFi: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Kaupan tiedot",
+    tabBilling: "Tilaus ja laskutus",
+    tabData: "Tuonti ja vienti",
     taxIdPlaceholder: "FI12345678",
     identity: "Tiedot",
     appearance: "Ulkoasu",
@@ -511,4 +516,19 @@ export const adminFi: PartialAdminDictionary = {
     add: "Lisää",
     uploading: "Ladataan",
   },
+
+  paymentStatus: {
+    unpaid: "Maksamatta",
+    pending: "Maksu lähetetty",
+    paid: "Maksettu",
+    refunded: "Hyvitetty",
+    disputed: "Takaisinveloitus",
+  },
+
+  chart: {
+    bar: "Pylväät",
+    line: "Viiva",
+    legend: "Kaavion muoto",
+  },
+
 };

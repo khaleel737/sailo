@@ -116,7 +116,6 @@ export const adminSv: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "dinbutik",
     save: "Spara",
     saveChanges: "Spara ändringar",
     cancel: "Avbryt",
@@ -151,6 +150,11 @@ export const adminSv: PartialAdminDictionary = {
     viewAsTable: "Som tabell",
   },
   dashboard: {
+    views: "Visningar",
+    visitors: "Besökare",
+    sales: "Försäljning",
+    refunds: "Återbetalningar",
+    net: "Netto",
     noVisits: "Inga besök än — dela din länk.",
     noRevenue: "Ingen intäkt än.",
     visitsRange: "Besök · senaste {days} dagarna",
@@ -221,7 +225,6 @@ export const adminSv: PartialAdminDictionary = {
     saveNotesLabel: "Spara anteckningar",
     noOrdersYet: "Inga ordrar än.",
     paid: "Betald",
-    delete: "Ta bort",
     privateNotes: "Privata anteckningar",
     empty: "Inga kunder än",
     all: "Alla kunder",
@@ -253,7 +256,6 @@ export const adminSv: PartialAdminDictionary = {
     usageLimitPlaceholder: "Obegränsat",
     discountCodes: "Rabattkoder",
     discountCodesBody: "Kör kampanjer med procentuell eller fast rabatt, minsta köpbelopp, användningstak och utgångsdatum.",
-    lockBody: "Kör kampanjer med procentuell eller fast rabatt, minsta köpbelopp, användningstak och utgångsdatum.",
     empty: "Inga rabattkoder än",
     emptyBody: "Skapa en kod ovanför och dela den med dina kunder.",
     expired: "Utgången",
@@ -369,6 +371,9 @@ export const adminSv: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Butiksuppgifter",
+    tabBilling: "Plan och fakturering",
+    tabData: "Import och export",
     taxIdPlaceholder: "SE123456789001",
     identity: "Identitet",
     appearance: "Utseende",
@@ -511,4 +516,19 @@ export const adminSv: PartialAdminDictionary = {
     add: "Lägg till",
     uploading: "Laddar upp",
   },
+
+  paymentStatus: {
+    unpaid: "Obetald",
+    pending: "Betalning skickad",
+    paid: "Betald",
+    refunded: "Återbetald",
+    disputed: "Återkrav",
+  },
+
+  chart: {
+    bar: "Staplar",
+    line: "Linje",
+    legend: "Diagramform",
+  },
+
 };

@@ -189,6 +189,9 @@ export const adminSq: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Detajet e dyqanit",
+    tabBilling: "Plani dhe faturimi",
+    tabData: "Importi dhe eksporti",
     taxIdPlaceholder: "K12345678L",
     identity: "Identiteti",
     appearance: "Pamja",
@@ -318,7 +321,6 @@ export const adminSq: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "dyqanijuaj",
     save: "Ruaj",
     saveChanges: "Ruaj ndryshimet",
     cancel: "Anulo",
@@ -359,7 +361,6 @@ export const adminSq: PartialAdminDictionary = {
     discountCodesBody: "Zhvilloni promocione me zbritje në përqindje ose shumë fikse, blerje minimale, kufi përdorimesh dhe datë skadimi.",
     title: "Kuponat",
     description: "Kode zbritjeje që blerësit shkruajnë kur paguajnë.",
-    lockBody: "Zhvilloni promocione me zbritje në përqindje ose shumë fikse, blerje minimale, kufi përdorimesh dhe datë skadimi.",
     empty: "Ende asnjë kupon",
     emptyBody: "Krijoni një kod më sipër dhe ndajeni me klientët tuaj.",
     expired: "Skaduar",
@@ -377,7 +378,6 @@ export const adminSq: PartialAdminDictionary = {
     saveNotesLabel: "Ruaj shënimet",
     noOrdersYet: "Ende asnjë porosi.",
     paid: "Paguar",
-    delete: "Fshi",
     privateNotes: "Shënime private",
     title: "Klientët",
     empty: "Ende asnjë klient",
@@ -463,6 +463,11 @@ export const adminSq: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "Shikime",
+    visitors: "Vizitorë",
+    sales: "Shitje",
+    refunds: "Rimbursime",
+    net: "Neto",
     noVisits: "Ende asnjë vizitë — ndani lidhjen tuaj.",
     noRevenue: "Ende asnjë të ardhur.",
     visitsRange: "Vizita · {days} ditët e fundit",
@@ -526,4 +531,19 @@ export const adminSq: PartialAdminDictionary = {
     cancelled: "E anuluar",
     refunded: "E rimbursuar",
   },
+
+  paymentStatus: {
+    unpaid: "E papaguar",
+    pending: "Pagesa u dërgua",
+    paid: "E paguar",
+    refunded: "E rimbursuar",
+    disputed: "Kthim pagese",
+  },
+
+  chart: {
+    bar: "Shtylla",
+    line: "Vijë",
+    legend: "Forma e grafikut",
+  },
+
 };

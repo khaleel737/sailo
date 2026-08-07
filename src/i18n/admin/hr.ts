@@ -189,6 +189,9 @@ export const adminHr: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Podaci o trgovini",
+    tabBilling: "Plan i naplata",
+    tabData: "Uvoz i izvoz",
     taxIdPlaceholder: "HR12345678901",
     identity: "Identitet",
     appearance: "Izgled",
@@ -318,7 +321,6 @@ export const adminHr: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "vasatrgovina",
     save: "Spremi",
     saveChanges: "Spremi promjene",
     cancel: "Odustani",
@@ -359,7 +361,6 @@ export const adminHr: PartialAdminDictionary = {
     discountCodesBody: "Pokrenite akcije s postotnim ili fiksnim popustom, minimalnim iznosom, ograničenjem broja korištenja i datumom isteka.",
     title: "Kuponi",
     description: "Kodovi za popust koje kupci unose pri plaćanju.",
-    lockBody: "Pokrenite akcije s postotnim ili fiksnim popustom, minimalnim iznosom, ograničenjem broja korištenja i datumom isteka.",
     empty: "Još nema kupona",
     emptyBody: "Napravite kod iznad i podijelite ga s kupcima.",
     expired: "Isteklo",
@@ -377,7 +378,6 @@ export const adminHr: PartialAdminDictionary = {
     saveNotesLabel: "Spremi bilješke",
     noOrdersYet: "Još nema narudžbi.",
     paid: "Plaćeno",
-    delete: "Obriši",
     privateNotes: "Privatne bilješke",
     title: "Klijenti",
     empty: "Još nema klijenata",
@@ -463,6 +463,11 @@ export const adminHr: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "Pregledi",
+    visitors: "Posjetitelji",
+    sales: "Prodaja",
+    refunds: "Povrati",
+    net: "Neto",
     noVisits: "Još nema posjeta — podijelite svoju poveznicu.",
     noRevenue: "Još nema prihoda.",
     visitsRange: "Posjeti · zadnjih {days} dana",
@@ -526,4 +531,19 @@ export const adminHr: PartialAdminDictionary = {
     cancelled: "Otkazana",
     refunded: "Vraćena",
   },
+
+  paymentStatus: {
+    unpaid: "Neplaćeno",
+    pending: "Uplata poslana",
+    paid: "Plaćeno",
+    refunded: "Vraćeno",
+    disputed: "Povrat sredstava",
+  },
+
+  chart: {
+    bar: "Stupci",
+    line: "Linija",
+    legend: "Oblik grafikona",
+  },
+
 };

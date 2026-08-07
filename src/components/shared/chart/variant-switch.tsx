@@ -20,16 +20,24 @@ export function VariantSwitch({
   value,
   onChange,
   labels = { bar: "Bars", line: "Line" },
+  legend = "Chart shape",
 }: {
   /** Unique per chart, or two charts on a page share one selection. */
   name: string;
   value: ChartShape;
   onChange: (next: ChartShape) => void;
+  /*
+   * English defaults, for the staff panel and the visual-regression page which
+   * are English by design. Every seller-facing chart passes translations —
+   * the legend especially, since it is read aloud rather than seen and so
+   * nobody notices it staying English.
+   */
   labels?: Record<ChartShape, string>;
+  legend?: string;
 }): React.ReactElement {
   return (
     <fieldset className="shrink-0">
-      <legend className="sr-only">Chart shape</legend>
+      <legend className="sr-only">{legend}</legend>
       <div className="flex rounded-lg bg-ink-100 p-0.5">
         {(["bar", "line"] as const).map((shape) => {
           const active = value === shape;

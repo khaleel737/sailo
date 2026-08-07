@@ -189,6 +189,9 @@ export const adminMs: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Butiran kedai",
+    tabBilling: "Pelan & bil",
+    tabData: "Import & eksport",
     taxIdPlaceholder: "C1234567890",
     identity: "Identiti",
     appearance: "Rupa",
@@ -318,7 +321,6 @@ export const adminMs: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "kedaianda",
     save: "Simpan",
     saveChanges: "Simpan perubahan",
     cancel: "Batal",
@@ -359,7 +361,6 @@ export const adminMs: PartialAdminDictionary = {
     discountCodesBody: "Jalankan promosi dengan diskaun peratusan atau jumlah tetap, belanja minimum, had penggunaan dan tarikh luput.",
     title: "Kupon",
     description: "Kod diskaun yang pembeli masukkan semasa membayar.",
-    lockBody: "Jalankan promosi dengan diskaun peratusan atau jumlah tetap, belanja minimum, had penggunaan dan tarikh luput.",
     empty: "Belum ada kupon",
     emptyBody: "Cipta kod di atas dan kongsikan dengan pelanggan anda.",
     expired: "Tamat tempoh",
@@ -377,7 +378,6 @@ export const adminMs: PartialAdminDictionary = {
     saveNotesLabel: "Simpan nota",
     noOrdersYet: "Belum ada pesanan.",
     paid: "Dibayar",
-    delete: "Padam",
     privateNotes: "Nota peribadi",
     title: "Pelanggan",
     empty: "Belum ada pelanggan",
@@ -463,6 +463,11 @@ export const adminMs: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "Paparan",
+    visitors: "Pelawat",
+    sales: "Jualan",
+    refunds: "Bayaran balik",
+    net: "Bersih",
     noVisits: "Belum ada lawatan — kongsikan pautan anda.",
     noRevenue: "Belum ada pendapatan.",
     visitsRange: "Lawatan · {days} hari lalu",
@@ -526,4 +531,19 @@ export const adminMs: PartialAdminDictionary = {
     cancelled: "Dibatalkan",
     refunded: "Dikembalikan",
   },
+
+  paymentStatus: {
+    unpaid: "Belum dibayar",
+    pending: "Bayaran dihantar",
+    paid: "Dibayar",
+    refunded: "Dibayar balik",
+    disputed: "Caj balik",
+  },
+
+  chart: {
+    bar: "Bar",
+    line: "Garis",
+    legend: "Bentuk carta",
+  },
+
 };

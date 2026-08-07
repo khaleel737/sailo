@@ -187,6 +187,7 @@ export const bg: Dictionary = {
     resetInvalid: "Този линк е изтекъл или вече е използван. Поискайте нов.",
   },
   onboarding: {
+    handlePlaceholder: "вашиятмагазин",
     claimTitle: "Запазете своя линк",
     claimSubtitle: "Това е адресът, който ще сложите в биото си. Можете да го смените по-късно.",
     yourLink: "Вашият Sailo линк", shopName: "Име на магазина",

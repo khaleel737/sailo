@@ -187,6 +187,7 @@ export const ms: Dictionary = {
     resetInvalid: "Pautan itu telah tamat tempoh atau sudah digunakan. Minta yang baharu.",
   },
   onboarding: {
+    handlePlaceholder: "kedaianda",
     claimTitle: "Tuntut pautan anda",
     claimSubtitle: "Ini alamat yang akan anda letakkan dalam bio. Anda boleh ubah kemudian.",
     yourLink: "Pautan Sailo anda", shopName: "Nama kedai",

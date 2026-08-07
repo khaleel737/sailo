@@ -232,6 +232,7 @@ export const de: Dictionary = {
     resetInvalid: "Dieser Link ist abgelaufen oder wurde bereits benutzt. Fordere einen neuen an.",
   },
   onboarding: {
+    handlePlaceholder: "deinshop",
     claimTitle: "Sichere dir deinen Link",
     claimSubtitle: "Diese Adresse setzt du in deine Bio. Du kannst sie später ändern.",
     yourLink: "Dein Sailo-Link", shopName: "Shopname",

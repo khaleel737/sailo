@@ -116,7 +116,6 @@ export const adminCs: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "vasobchod",
     save: "Uložit",
     saveChanges: "Uložit změny",
     cancel: "Zrušit",
@@ -151,6 +150,11 @@ export const adminCs: PartialAdminDictionary = {
     viewAsTable: "Jako tabulku",
   },
   dashboard: {
+    views: "Zobrazení",
+    visitors: "Návštěvníci",
+    sales: "Prodeje",
+    refunds: "Vratky",
+    net: "Netto",
     noVisits: "Zatím žádné návštěvy — sdílejte svůj odkaz.",
     noRevenue: "Zatím žádné tržby.",
     visitsRange: "Návštěvy · posledních {days} dní",
@@ -221,7 +225,6 @@ export const adminCs: PartialAdminDictionary = {
     saveNotesLabel: "Uložit poznámky",
     noOrdersYet: "Zatím žádné objednávky.",
     paid: "Zaplaceno",
-    delete: "Smazat",
     privateNotes: "Soukromé poznámky",
     empty: "Zatím žádní zákazníci",
     all: "Všichni zákazníci",
@@ -253,7 +256,6 @@ export const adminCs: PartialAdminDictionary = {
     usageLimitPlaceholder: "Neomezeně",
     discountCodes: "Slevové kódy",
     discountCodesBody: "Spusťte akce s procentní nebo pevnou slevou, minimální útratou, limitem použití a datem platnosti.",
-    lockBody: "Spusťte akce s procentní nebo pevnou slevou, minimální útratou, limitem použití a datem platnosti.",
     empty: "Zatím žádné kupony",
     emptyBody: "Vytvořte nahoře kód a sdílejte ho se zákazníky.",
     expired: "Vypršel",
@@ -369,6 +371,9 @@ export const adminCs: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Údaje o obchodu",
+    tabBilling: "Tarif a fakturace",
+    tabData: "Import a export",
     taxIdPlaceholder: "CZ12345678",
     identity: "Identita",
     appearance: "Vzhled",
@@ -511,4 +516,19 @@ export const adminCs: PartialAdminDictionary = {
     add: "Přidat",
     uploading: "Nahrávání",
   },
+
+  paymentStatus: {
+    unpaid: "Nezaplaceno",
+    pending: "Platba odeslána",
+    paid: "Zaplaceno",
+    refunded: "Vráceno",
+    disputed: "Chargeback",
+  },
+
+  chart: {
+    bar: "Sloupce",
+    line: "Čára",
+    legend: "Typ grafu",
+  },
+
 };

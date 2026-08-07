@@ -116,7 +116,6 @@ export const adminJa: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "yourshop",
     save: "保存",
     saveChanges: "変更を保存",
     cancel: "キャンセル",
@@ -151,6 +150,11 @@ export const adminJa: PartialAdminDictionary = {
     viewAsTable: "表で見る",
   },
   dashboard: {
+    views: "表示数",
+    visitors: "訪問者",
+    sales: "売上",
+    refunds: "返金",
+    net: "純額",
     noVisits: "まだ訪問はありません — リンクをシェアしましょう。",
     noRevenue: "まだ売上はありません。",
     visitsRange: "訪問数 · 直近{days}日",
@@ -221,7 +225,6 @@ export const adminJa: PartialAdminDictionary = {
     saveNotesLabel: "メモを保存",
     noOrdersYet: "まだ注文はありません。",
     paid: "支払い済み",
-    delete: "削除",
     privateNotes: "非公開メモ",
     empty: "まだ顧客はいません",
     all: "すべての顧客",
@@ -253,7 +256,6 @@ export const adminJa: PartialAdminDictionary = {
     usageLimitPlaceholder: "無制限",
     discountCodes: "割引コード",
     discountCodesBody: "割合または定額の割引、最低購入金額、利用回数の上限、有効期限を設定してキャンペーンを実施できます。",
-    lockBody: "割合または定額の割引、最低購入金額、利用回数の上限、有効期限を設定してキャンペーンを実施できます。",
     empty: "まだクーポンはありません",
     emptyBody: "上でコードを作成し、お客さまに共有しましょう。",
     expired: "期限切れ",
@@ -369,6 +371,9 @@ export const adminJa: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "ショップ情報",
+    tabBilling: "プランと請求",
+    tabData: "インポートとエクスポート",
     taxIdPlaceholder: "T1234567890123",
     identity: "基本情報",
     appearance: "外観",
@@ -511,4 +516,19 @@ export const adminJa: PartialAdminDictionary = {
     add: "追加",
     uploading: "アップロード中",
   },
+
+  paymentStatus: {
+    unpaid: "未払い",
+    pending: "支払い連絡あり",
+    paid: "支払い済み",
+    refunded: "返金済み",
+    disputed: "チャージバック",
+  },
+
+  chart: {
+    bar: "棒",
+    line: "折れ線",
+    legend: "グラフの形",
+  },
+
 };

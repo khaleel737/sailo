@@ -189,6 +189,9 @@ export const adminBs: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Podaci o prodavnici",
+    tabBilling: "Plan i naplata",
+    tabData: "Uvoz i izvoz",
     taxIdPlaceholder: "4200123450006",
     identity: "Identitet",
     appearance: "Izgled",
@@ -318,7 +321,6 @@ export const adminBs: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "vasaprodavnica",
     save: "Sačuvaj",
     saveChanges: "Sačuvaj izmjene",
     cancel: "Odustani",
@@ -359,7 +361,6 @@ export const adminBs: PartialAdminDictionary = {
     discountCodesBody: "Pokrenite akcije sa procentualnim ili fiksnim popustom, minimalnim iznosom, ograničenjem broja korištenja i datumom isteka.",
     title: "Kuponi",
     description: "Kodovi za popust koje kupci unose pri plaćanju.",
-    lockBody: "Pokrenite akcije sa procentualnim ili fiksnim popustom, minimalnim iznosom, ograničenjem broja korištenja i datumom isteka.",
     empty: "Još nema kupona",
     emptyBody: "Napravite kod iznad i podijelite ga sa kupcima.",
     expired: "Isteklo",
@@ -377,7 +378,6 @@ export const adminBs: PartialAdminDictionary = {
     saveNotesLabel: "Sačuvaj bilješke",
     noOrdersYet: "Još nema narudžbi.",
     paid: "Plaćeno",
-    delete: "Obriši",
     privateNotes: "Privatne bilješke",
     title: "Klijenti",
     empty: "Još nema klijenata",
@@ -463,6 +463,11 @@ export const adminBs: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "Pregledi",
+    visitors: "Posjetioci",
+    sales: "Prodaja",
+    refunds: "Povrati",
+    net: "Neto",
     noVisits: "Još nema posjeta — podijelite svoj link.",
     noRevenue: "Još nema prihoda.",
     visitsRange: "Posjete · zadnjih {days} dana",
@@ -526,4 +531,19 @@ export const adminBs: PartialAdminDictionary = {
     cancelled: "Otkazana",
     refunded: "Vraćena",
   },
+
+  paymentStatus: {
+    unpaid: "Neplaćeno",
+    pending: "Uplata poslana",
+    paid: "Plaćeno",
+    refunded: "Refundirano",
+    disputed: "Povrat sredstava",
+  },
+
+  chart: {
+    bar: "Stupci",
+    line: "Linija",
+    legend: "Oblik grafikona",
+  },
+
 };

@@ -6,12 +6,14 @@ import { cn } from "@/lib/utils";
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
-const OPTIONS = [
-  { value: "unpaid", label: "Unpaid" },
-  { value: "pending", label: "Payment sent" },
-  { value: "paid", label: "Paid" },
-  { value: "refunded", label: "Refunded" },
-];
+/**
+ * The four states a seller may set by hand, in the order they usually happen.
+ *
+ * Values only. The labels come from the dictionary at render, because these
+ * are the words in the one control on the orders page that decides whether an
+ * order counts as paid — and they were the last English ones on it.
+ */
+const SETTABLE = ["unpaid", "pending", "paid", "refunded"] as const;
 
 export function PaymentStatusSelect({
   orderId,
@@ -32,7 +34,7 @@ export function PaymentStatusSelect({
   if (!isSellerSettablePaymentStatus(paymentStatus)) {
     return (
       <span className="inline-flex h-8 items-center rounded-lg bg-red-100 px-2 text-xs font-medium text-red-700">
-        {paymentStatus === "disputed" ? "Chargeback" : paymentStatus}
+        {paymentStatus === "disputed" ? a.paymentStatus.disputed : paymentStatus}
       </span>
     );
   }
@@ -54,9 +56,9 @@ export function PaymentStatusSelect({
         pending && "opacity-50",
       )}
     >
-      {OPTIONS.map((o) => (
-        <option key={o.value} value={o.value}>
-          {o.label}
+      {SETTABLE.map((value) => (
+        <option key={value} value={value}>
+          {a.paymentStatus[value]}
         </option>
       ))}
     </select>

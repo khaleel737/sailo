@@ -3,15 +3,23 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
-const TABS = [
-  { href: "/admin/settings", label: "Shop details", exact: true },
-  { href: "/admin/settings/billing", label: "Plan & billing" },
-  { href: "/admin/settings/data", label: "Import & export" },
-];
-
+/*
+ * The tab list is built inside the component rather than at module scope,
+ * because the labels are only known once the dictionary is. A module-level
+ * constant is how these three came to be the last English words on an
+ * otherwise translated settings page.
+ */
 export function SettingsNav() {
   const pathname = usePathname();
+  const a = useAdminT();
+
+  const TABS = [
+    { href: "/admin/settings", label: a.settings.tabDetails, exact: true },
+    { href: "/admin/settings/billing", label: a.settings.tabBilling },
+    { href: "/admin/settings/data", label: a.settings.tabData },
+  ];
 
   return (
     <nav className="mb-6 flex gap-1 overflow-x-auto border-b border-ink-200">

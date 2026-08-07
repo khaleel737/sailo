@@ -159,7 +159,7 @@ export function HandleField({
           aria-invalid={state.kind === "taken"}
           aria-describedby={`${name}-status`}
           className="h-11 min-w-0 flex-1 bg-transparent pe-2 ps-0.5 text-sm font-semibold text-ink-900 focus:outline-none"
-          placeholder="yourshop"
+          placeholder={t.onboarding.handlePlaceholder}
         />
         <span className="flex w-9 shrink-0 justify-center">
           {state.kind === "checking" ? (

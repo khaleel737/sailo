@@ -116,7 +116,6 @@ export const adminHu: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "azuzleted",
     save: "Mentés",
     saveChanges: "Módosítások mentése",
     cancel: "Mégse",
@@ -151,6 +150,11 @@ export const adminHu: PartialAdminDictionary = {
     viewAsTable: "Táblázatként",
   },
   dashboard: {
+    views: "Megtekintések",
+    visitors: "Látogatók",
+    sales: "Eladások",
+    refunds: "Visszatérítések",
+    net: "Nettó",
     noVisits: "Még nincs látogatás — oszd meg a linkedet.",
     noRevenue: "Még nincs bevétel.",
     visitsRange: "Látogatások · utolsó {days} nap",
@@ -221,7 +225,6 @@ export const adminHu: PartialAdminDictionary = {
     saveNotesLabel: "Jegyzetek mentése",
     noOrdersYet: "Még nincs rendelés.",
     paid: "Fizetve",
-    delete: "Törlés",
     privateNotes: "Privát jegyzetek",
     empty: "Még nincs ügyfél",
     all: "Összes ügyfél",
@@ -253,7 +256,6 @@ export const adminHu: PartialAdminDictionary = {
     usageLimitPlaceholder: "Korlátlan",
     discountCodes: "Kedvezménykódok",
     discountCodesBody: "Indíts akciókat százalékos vagy fix kedvezménnyel, minimum kosárértékkel, felhasználási kerettel és lejárati dátummal.",
-    lockBody: "Indíts akciókat százalékos vagy fix kedvezménnyel, minimum kosárértékkel, felhasználási kerettel és lejárati dátummal.",
     empty: "Még nincs kupon",
     emptyBody: "Hozz létre fent egy kódot, és oszd meg az ügyfeleiddel.",
     expired: "Lejárt",
@@ -369,6 +371,9 @@ export const adminHu: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Bolt adatai",
+    tabBilling: "Csomag és számlázás",
+    tabData: "Import és export",
     taxIdPlaceholder: "HU12345678",
     identity: "Azonosság",
     appearance: "Megjelenés",
@@ -511,4 +516,19 @@ export const adminHu: PartialAdminDictionary = {
     add: "Hozzáadás",
     uploading: "Feltöltés",
   },
+
+  paymentStatus: {
+    unpaid: "Fizetetlen",
+    pending: "Fizetés elküldve",
+    paid: "Fizetve",
+    refunded: "Visszatérítve",
+    disputed: "Visszaterhelés",
+  },
+
+  chart: {
+    bar: "Oszlopok",
+    line: "Vonal",
+    legend: "Diagram típusa",
+  },
+
 };

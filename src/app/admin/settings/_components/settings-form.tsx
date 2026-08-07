@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 import { updateShop } from "@/lib/actions/shop";
+import { interpolate } from "@/i18n";
 import {
   Alert,
   Button,
@@ -64,7 +65,7 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
                 key={color}
                 type="button"
                 onClick={() => setAccent(color)}
-                aria-label={`Use ${color}`}
+                aria-label={interpolate(a.settings.useColour, { color })}
                 aria-pressed={accent.toLowerCase() === color}
                 className={`size-8 rounded-full transition pointer-coarse:size-11 ${
                   accent.toLowerCase() === color

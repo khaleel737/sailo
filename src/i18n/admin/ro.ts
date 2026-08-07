@@ -116,7 +116,6 @@ export const adminRo: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "magazinultau",
     save: "Salvează",
     saveChanges: "Salvează modificările",
     cancel: "Anulează",
@@ -151,6 +150,11 @@ export const adminRo: PartialAdminDictionary = {
     viewAsTable: "Ca tabel",
   },
   dashboard: {
+    views: "Vizualizări",
+    visitors: "Vizitatori",
+    sales: "Vânzări",
+    refunds: "Rambursări",
+    net: "Net",
     noVisits: "Încă nicio vizită — distribuie-ți linkul.",
     noRevenue: "Încă niciun venit.",
     visitsRange: "Vizite · ultimele {days} zile",
@@ -221,7 +225,6 @@ export const adminRo: PartialAdminDictionary = {
     saveNotesLabel: "Salvează notițele",
     noOrdersYet: "Încă nicio comandă.",
     paid: "Plătit",
-    delete: "Șterge",
     privateNotes: "Notițe private",
     empty: "Încă niciun client",
     all: "Toți clienții",
@@ -253,7 +256,6 @@ export const adminRo: PartialAdminDictionary = {
     usageLimitPlaceholder: "Nelimitat",
     discountCodes: "Coduri de reducere",
     discountCodesBody: "Rulează promoții cu reducere procentuală sau fixă, sumă minimă, limită de utilizări și dată de expirare.",
-    lockBody: "Rulează promoții cu reducere procentuală sau fixă, sumă minimă, limită de utilizări și dată de expirare.",
     empty: "Încă niciun cupon",
     emptyBody: "Creează un cod mai sus și distribuie-l clienților tăi.",
     expired: "Expirat",
@@ -369,6 +371,9 @@ export const adminRo: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Detalii magazin",
+    tabBilling: "Plan și facturare",
+    tabData: "Import și export",
     taxIdPlaceholder: "RO12345678",
     identity: "Identitate",
     appearance: "Aspect",
@@ -511,4 +516,19 @@ export const adminRo: PartialAdminDictionary = {
     add: "Adaugă",
     uploading: "Se încarcă",
   },
+
+  paymentStatus: {
+    unpaid: "Neplătit",
+    pending: "Plată trimisă",
+    paid: "Plătit",
+    refunded: "Rambursat",
+    disputed: "Contestație",
+  },
+
+  chart: {
+    bar: "Bare",
+    line: "Linie",
+    legend: "Forma graficului",
+  },
+
 };

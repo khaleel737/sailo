@@ -187,6 +187,7 @@ export const vi: Dictionary = {
     resetInvalid: "Liên kết đã hết hạn hoặc đã được dùng. Hãy yêu cầu liên kết mới.",
   },
   onboarding: {
+    handlePlaceholder: "cuahangcuaban",
     claimTitle: "Nhận liên kết của bạn",
     claimSubtitle: "Đây là địa chỉ bạn sẽ đặt trong bio. Bạn có thể đổi sau.",
     yourLink: "Liên kết Sailo của bạn", shopName: "Tên cửa hàng",

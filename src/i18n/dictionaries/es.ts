@@ -232,6 +232,7 @@ export const es: Dictionary = {
     resetInvalid: "Ese enlace ha caducado o ya se usó. Pide uno nuevo.",
   },
   onboarding: {
+    handlePlaceholder: "tutienda",
     claimTitle: "Reserva tu enlace",
     claimSubtitle: "Es la dirección que pondrás en tu bio. Puedes cambiarla después.",
     yourLink: "Tu enlace de Sailo", shopName: "Nombre de la tienda",

@@ -189,6 +189,9 @@ export const adminBg: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Данни за магазина",
+    tabBilling: "План и плащане",
+    tabData: "Импорт и експорт",
     taxIdPlaceholder: "BG123456789",
     identity: "Самоличност",
     appearance: "Външен вид",
@@ -318,7 +321,6 @@ export const adminBg: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "вашиятмагазин",
     save: "Запази",
     saveChanges: "Запази промените",
     cancel: "Отказ",
@@ -359,7 +361,6 @@ export const adminBg: PartialAdminDictionary = {
     discountCodesBody: "Правете промоции с процентна или фиксирана отстъпка, минимална поръчка, лимит на употреби и срок на валидност.",
     title: "Купони",
     description: "Кодове за отстъпка, които купувачите въвеждат при плащане.",
-    lockBody: "Правете промоции с процентна или фиксирана отстъпка, минимална поръчка, лимит на употреби и срок на валидност.",
     empty: "Още няма купони",
     emptyBody: "Създайте код по-горе и го споделете с клиентите си.",
     expired: "Изтекъл",
@@ -377,7 +378,6 @@ export const adminBg: PartialAdminDictionary = {
     saveNotesLabel: "Запази бележките",
     noOrdersYet: "Още няма поръчки.",
     paid: "Платено",
-    delete: "Изтрий",
     privateNotes: "Лични бележки",
     title: "Клиенти",
     empty: "Още няма клиенти",
@@ -463,6 +463,11 @@ export const adminBg: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "Показвания",
+    visitors: "Посетители",
+    sales: "Продажби",
+    refunds: "Възстановявания",
+    net: "Нето",
     noVisits: "Още няма посещения — споделете връзката си.",
     noRevenue: "Още няма приходи.",
     visitsRange: "Посещения · последните {days} дни",
@@ -526,4 +531,19 @@ export const adminBg: PartialAdminDictionary = {
     cancelled: "Отказана",
     refunded: "Възстановена",
   },
+
+  paymentStatus: {
+    unpaid: "Неплатено",
+    pending: "Плащането е изпратено",
+    paid: "Платено",
+    refunded: "Възстановено",
+    disputed: "Чарджбек",
+  },
+
+  chart: {
+    bar: "Стълбове",
+    line: "Линия",
+    legend: "Вид на графиката",
+  },
+
 };

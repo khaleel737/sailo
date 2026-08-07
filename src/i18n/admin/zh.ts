@@ -116,7 +116,6 @@ export const adminZh: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "yourshop",
     save: "保存",
     saveChanges: "保存更改",
     cancel: "取消",
@@ -151,6 +150,11 @@ export const adminZh: PartialAdminDictionary = {
     viewAsTable: "以表格查看",
   },
   dashboard: {
+    views: "浏览量",
+    visitors: "访客",
+    sales: "销售额",
+    refunds: "退款",
+    net: "净额",
     noVisits: "还没有访问 — 分享你的链接吧。",
     noRevenue: "还没有收入。",
     visitsRange: "访问 · 最近 {days} 天",
@@ -221,7 +225,6 @@ export const adminZh: PartialAdminDictionary = {
     saveNotesLabel: "保存备注",
     noOrdersYet: "还没有订单。",
     paid: "已付款",
-    delete: "删除",
     privateNotes: "私密备注",
     empty: "还没有客户",
     all: "全部客户",
@@ -253,7 +256,6 @@ export const adminZh: PartialAdminDictionary = {
     usageLimitPlaceholder: "不限",
     discountCodes: "折扣码",
     discountCodesBody: "按百分比或固定金额做促销，可设最低消费、使用次数上限和有效期。",
-    lockBody: "按百分比或固定金额做促销，可设最低消费、使用次数上限和有效期。",
     empty: "还没有优惠券",
     emptyBody: "在上方创建一个折扣码，分享给你的客户。",
     expired: "已过期",
@@ -369,6 +371,9 @@ export const adminZh: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "店铺详情",
+    tabBilling: "套餐与账单",
+    tabData: "导入与导出",
     taxIdPlaceholder: "91310000MA1K12345X",
     identity: "身份信息",
     appearance: "外观",
@@ -511,4 +516,19 @@ export const adminZh: PartialAdminDictionary = {
     add: "添加",
     uploading: "上传中",
   },
+
+  paymentStatus: {
+    unpaid: "未付款",
+    pending: "已发送付款",
+    paid: "已付款",
+    refunded: "已退款",
+    disputed: "拒付",
+  },
+
+  chart: {
+    bar: "柱状",
+    line: "折线",
+    legend: "图表样式",
+  },
+
 };

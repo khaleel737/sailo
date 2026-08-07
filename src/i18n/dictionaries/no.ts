@@ -222,6 +222,7 @@ export const no: Dictionary = {
     resetInvalid: "Lenken er utløpt eller allerede brukt. Be om en ny.",
   },
   onboarding: {
+    handlePlaceholder: "dinbutikk",
     claimTitle: "Sikre deg lenken din",
     claimSubtitle: "Dette er adressen du legger i bioen din. Du kan endre den senere.",
     yourLink: "Sailo-lenken din", shopName: "Butikknavn", shortDescription: "Kort beskrivelse",

@@ -45,6 +45,12 @@ export type ChartProps = {
   defaultShape?: ChartShape;
   /** Offer the reader bars-or-line. */
   switchable?: boolean;
+  /**
+   * Words for the bars-or-line control, including the legend a screen reader
+   * announces. Omitted on the staff panel and the chart-regression page, which
+   * are English by design.
+   */
+  shape?: { bar: string; line: string; legend: string };
 };
 
 /**
@@ -89,6 +95,7 @@ export function Chart({
   totalKey,
   defaultShape = "bar",
   switchable = true,
+  shape: shapeLabels,
 }: ChartProps): React.ReactElement {
   const [cursor, setCursor] = useState<number | null>(null);
   const [chosenShape, setChosenShape] = useState<ChartShape | null>(null);
@@ -131,6 +138,12 @@ export function Chart({
               name={switchId}
               value={shape}
               onChange={setChosenShape}
+              {...(shapeLabels
+                ? {
+                    labels: { bar: shapeLabels.bar, line: shapeLabels.line },
+                    legend: shapeLabels.legend,
+                  }
+                : {})}
             />
           ) : null
         }

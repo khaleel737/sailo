@@ -189,6 +189,9 @@ export const adminId: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Detail toko",
+    tabBilling: "Paket & tagihan",
+    tabData: "Impor & ekspor",
     taxIdPlaceholder: "01.234.567.8-901.000",
     identity: "Identitas",
     appearance: "Tampilan",
@@ -318,7 +321,6 @@ export const adminId: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "tokokamu",
     save: "Simpan",
     saveChanges: "Simpan perubahan",
     cancel: "Batal",
@@ -359,7 +361,6 @@ export const adminId: PartialAdminDictionary = {
     discountCodesBody: "Jalankan promo dengan diskon persen atau nominal tetap, minimal belanja, batas pemakaian, dan tanggal kedaluwarsa.",
     title: "Kupon",
     description: "Kode diskon yang diisi pembeli saat membayar.",
-    lockBody: "Jalankan promo dengan diskon persen atau nominal tetap, minimal belanja, batas pemakaian, dan tanggal kedaluwarsa.",
     empty: "Belum ada kupon",
     emptyBody: "Buat kode di atas dan bagikan ke pelangganmu.",
     expired: "Kedaluwarsa",
@@ -377,7 +378,6 @@ export const adminId: PartialAdminDictionary = {
     saveNotesLabel: "Simpan catatan",
     noOrdersYet: "Belum ada pesanan.",
     paid: "Lunas",
-    delete: "Hapus",
     privateNotes: "Catatan pribadi",
     title: "Pelanggan",
     empty: "Belum ada pelanggan",
@@ -463,6 +463,11 @@ export const adminId: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "Tayangan",
+    visitors: "Pengunjung",
+    sales: "Penjualan",
+    refunds: "Pengembalian dana",
+    net: "Neto",
     noVisits: "Belum ada kunjungan — bagikan tautanmu.",
     noRevenue: "Belum ada pendapatan.",
     visitsRange: "Kunjungan · {days} hari terakhir",
@@ -526,4 +531,19 @@ export const adminId: PartialAdminDictionary = {
     cancelled: "Dibatalkan",
     refunded: "Dikembalikan",
   },
+
+  paymentStatus: {
+    unpaid: "Belum dibayar",
+    pending: "Pembayaran dikirim",
+    paid: "Dibayar",
+    refunded: "Dikembalikan",
+    disputed: "Tolak bayar",
+  },
+
+  chart: {
+    bar: "Batang",
+    line: "Garis",
+    legend: "Bentuk grafik",
+  },
+
 };

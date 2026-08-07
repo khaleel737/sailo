@@ -189,6 +189,9 @@ export const adminSl: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Podatki trgovine",
+    tabBilling: "Paket in obračun",
+    tabData: "Uvoz in izvoz",
     taxIdPlaceholder: "SI12345678",
     identity: "Identiteta",
     appearance: "Videz",
@@ -318,7 +321,6 @@ export const adminSl: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "vasatrgovina",
     save: "Shrani",
     saveChanges: "Shrani spremembe",
     cancel: "Prekliči",
@@ -359,7 +361,6 @@ export const adminSl: PartialAdminDictionary = {
     discountCodesBody: "Izvajajte akcije z odstotnim ali fiksnim popustom, najmanjšim zneskom, omejitvijo uporabe in datumom poteka.",
     title: "Kuponi",
     description: "Kode za popust, ki jih kupci vnesejo ob plačilu.",
-    lockBody: "Izvajajte akcije z odstotnim ali fiksnim popustom, najmanjšim zneskom, omejitvijo uporabe in datumom poteka.",
     empty: "Še ni kuponov",
     emptyBody: "Zgoraj ustvarite kodo in jo delite s strankami.",
     expired: "Poteklo",
@@ -377,7 +378,6 @@ export const adminSl: PartialAdminDictionary = {
     saveNotesLabel: "Shrani zapiske",
     noOrdersYet: "Še ni naročil.",
     paid: "Plačano",
-    delete: "Izbriši",
     privateNotes: "Zasebni zapiski",
     title: "Stranke",
     empty: "Še ni strank",
@@ -463,6 +463,11 @@ export const adminSl: PartialAdminDictionary = {
   },
 
   dashboard: {
+    views: "Ogledi",
+    visitors: "Obiskovalci",
+    sales: "Prodaja",
+    refunds: "Vračila",
+    net: "Neto",
     noVisits: "Še ni obiskov — delite svojo povezavo.",
     noRevenue: "Še ni prihodkov.",
     visitsRange: "Obiski · zadnjih {days} dni",
@@ -526,4 +531,19 @@ export const adminSl: PartialAdminDictionary = {
     cancelled: "Preklicano",
     refunded: "Vrnjeno",
   },
+
+  paymentStatus: {
+    unpaid: "Neplačano",
+    pending: "Plačilo poslano",
+    paid: "Plačano",
+    refunded: "Vrnjeno",
+    disputed: "Povračilo",
+  },
+
+  chart: {
+    bar: "Stolpci",
+    line: "Črta",
+    legend: "Oblika grafa",
+  },
+
 };

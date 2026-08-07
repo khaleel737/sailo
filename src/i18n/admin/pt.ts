@@ -116,7 +116,6 @@ export const adminPt: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "atualoja",
     save: "Guardar",
     saveChanges: "Guardar alterações",
     cancel: "Cancelar",
@@ -151,6 +150,11 @@ export const adminPt: PartialAdminDictionary = {
     viewAsTable: "Ver como tabela",
   },
   dashboard: {
+    views: "Visualizações",
+    visitors: "Visitantes",
+    sales: "Vendas",
+    refunds: "Reembolsos",
+    net: "Líquido",
     noVisits: "Ainda sem visitas — partilha o teu link.",
     noRevenue: "Ainda sem receita.",
     visitsRange: "Visitas · últimos {days} dias",
@@ -221,7 +225,6 @@ export const adminPt: PartialAdminDictionary = {
     saveNotesLabel: "Guardar notas",
     noOrdersYet: "Ainda sem encomendas.",
     paid: "Pago",
-    delete: "Eliminar",
     privateNotes: "Notas privadas",
     empty: "Ainda sem clientes",
     all: "Todos os clientes",
@@ -253,7 +256,6 @@ export const adminPt: PartialAdminDictionary = {
     usageLimitPlaceholder: "Ilimitado",
     discountCodes: "Códigos de desconto",
     discountCodesBody: "Lança promoções com desconto percentual ou fixo, compra mínima, limite de utilizações e data de validade.",
-    lockBody: "Lança promoções com desconto percentual ou fixo, compra mínima, limite de utilizações e data de validade.",
     empty: "Ainda sem cupões",
     emptyBody: "Cria um código acima e partilha-o com os teus clientes.",
     expired: "Expirado",
@@ -369,6 +371,9 @@ export const adminPt: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Detalhes da loja",
+    tabBilling: "Plano e faturação",
+    tabData: "Importar e exportar",
     taxIdPlaceholder: "PT123456789",
     identity: "Identidade",
     appearance: "Aspeto",
@@ -511,4 +516,19 @@ export const adminPt: PartialAdminDictionary = {
     add: "Adicionar",
     uploading: "A enviar",
   },
+
+  paymentStatus: {
+    unpaid: "Não pago",
+    pending: "Pagamento enviado",
+    paid: "Pago",
+    refunded: "Reembolsado",
+    disputed: "Estorno",
+  },
+
+  chart: {
+    bar: "Barras",
+    line: "Linha",
+    legend: "Forma do gráfico",
+  },
+
 };

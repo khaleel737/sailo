@@ -24,8 +24,21 @@ const KEYS = Object.entries(adminEn).flatMap(([section, entries]) =>
  * Sections handed to a helper whole — `orderStatusLabel(status, a.orderStatus)`
  * — or read by bracket. Every key inside them is reachable, so counting their
  * members individually would report false positives.
+ *
+ * `weekdays` was missing from this list and had been since it was written:
+ * `booking-card` reads `a.weekdays[weekday]`, which the regex below cannot
+ * see, so all seven days counted as translations nobody shows. Seven of the
+ * thirty-one entries in the backlog were that one blind spot.
  */
-const WHOLESALE = new Set(["orderStatus", "navGroups", "payments", "shell"]);
+const WHOLESALE = new Set([
+  "orderStatus",
+  "navGroups",
+  "payments",
+  "shell",
+  "weekdays",
+  "paymentStatus",
+  "chart",
+]);
 
 /*
  * The boundary matters: without it, `schema.products.slug` matches on its own
@@ -68,12 +81,22 @@ describe("admin translation coverage", () => {
 
   it("does not grow the backlog of translations nobody shows", () => {
     /*
-     * Pinned, not zero. Thirty-one keys are currently unreferenced and each
-     * needs reading individually — some are strings hardcoded in English on a
-     * screen, others are keys left behind by a rewrite. This stops the number
-     * rising while they are worked through, and must be lowered as they are.
+     * Pinned, not zero, and lowered as the backlog is worked through: 31 → 15.
+     *
+     * Of the sixteen closed, seven were the `weekdays` blind spot above, two
+     * were duplicates of a key already in use and deleted outright
+     * (`clients.delete`, `coupons.lockBody`), one moved to the storefront
+     * dictionary where the component that needs it actually reads
+     * (`shopHandlePlaceholder`), and six were strings a screen was rendering
+     * in English while the translation sat here unread — the two dashboard
+     * chart titles, the coupon amount and minimum-spend labels, the accent
+     * swatch's `aria-label`, and the delivery live count.
+     *
+     * The fifteen left are genuinely unshown. Each needs reading on its own:
+     * some are keys left behind by a rewrite and should be deleted, others
+     * are screens still hardcoding English that has no key yet.
      */
-    expect(unreferenced.length).toBeLessThanOrEqual(31);
+    expect(unreferenced.length).toBeLessThanOrEqual(15);
   });
 
   it("keeps every language carrying the same keys as English", () => {

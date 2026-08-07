@@ -116,7 +116,6 @@ export const adminRu: PartialAdminDictionary = {
   },
 
   common: {
-    shopHandlePlaceholder: "вашмагазин",
     save: "Сохранить",
     saveChanges: "Сохранить изменения",
     cancel: "Отмена",
@@ -151,6 +150,11 @@ export const adminRu: PartialAdminDictionary = {
     viewAsTable: "В виде таблицы",
   },
   dashboard: {
+    views: "Просмотры",
+    visitors: "Посетители",
+    sales: "Продажи",
+    refunds: "Возвраты",
+    net: "Нетто",
     noVisits: "Пока нет визитов — поделитесь ссылкой.",
     noRevenue: "Пока нет выручки.",
     visitsRange: "Визиты · последние {days} дней",
@@ -221,7 +225,6 @@ export const adminRu: PartialAdminDictionary = {
     saveNotesLabel: "Сохранить заметки",
     noOrdersYet: "Пока нет заказов.",
     paid: "Оплачено",
-    delete: "Удалить",
     privateNotes: "Личные заметки",
     empty: "Пока нет клиентов",
     all: "Все клиенты",
@@ -253,7 +256,6 @@ export const adminRu: PartialAdminDictionary = {
     usageLimitPlaceholder: "Без ограничений",
     discountCodes: "Промокоды",
     discountCodesBody: "Запускайте акции со скидкой в процентах или в валюте, минимальной суммой заказа, лимитом использований и сроком действия.",
-    lockBody: "Запускайте акции со скидкой в процентах или в валюте, минимальной суммой заказа, лимитом использований и сроком действия.",
     empty: "Пока нет промокодов",
     emptyBody: "Создайте код выше и поделитесь им с покупателями.",
     expired: "Истёк",
@@ -369,6 +371,9 @@ export const adminRu: PartialAdminDictionary = {
   },
 
   settings: {
+    tabDetails: "Данные магазина",
+    tabBilling: "Тариф и оплата",
+    tabData: "Импорт и экспорт",
     taxIdPlaceholder: "7712345678",
     identity: "Профиль",
     appearance: "Оформление",
@@ -511,4 +516,19 @@ export const adminRu: PartialAdminDictionary = {
     add: "Добавить",
     uploading: "Загрузка",
   },
+
+  paymentStatus: {
+    unpaid: "Не оплачено",
+    pending: "Платёж отправлен",
+    paid: "Оплачено",
+    refunded: "Возвращено",
+    disputed: "Чарджбэк",
+  },
+
+  chart: {
+    bar: "Столбцы",
+    line: "Линия",
+    legend: "Вид графика",
+  },
+
 };
