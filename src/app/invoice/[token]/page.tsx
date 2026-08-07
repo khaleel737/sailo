@@ -181,10 +181,10 @@ export default async function InvoicePage({
                   </td>
                   <td className="py-3 text-end tabular-nums">{item.quantity}</td>
                   <td className="py-3 text-end tabular-nums">
-                    {formatMoney(item.unitPriceCents, order.currency)}
+                    {formatMoney(item.unitPriceCents, order.currency, locale)}
                   </td>
                   <td className="py-3 text-end tabular-nums">
-                    {formatMoney(item.subtotalCents, order.currency)}
+                    {formatMoney(item.subtotalCents, order.currency, locale)}
                   </td>
                 </tr>
               ))}
@@ -195,7 +195,7 @@ export default async function InvoicePage({
             <div className="flex justify-between">
               <dt className="text-ink-500">{t.checkout.subtotal}</dt>
               <dd className="tabular-nums">
-                {formatMoney(order.subtotalCents, order.currency)}
+                {formatMoney(order.subtotalCents, order.currency, locale)}
               </dd>
             </div>
             {order.discountCents > 0 ? (
@@ -205,7 +205,7 @@ export default async function InvoicePage({
                   {order.couponCode ? `(${order.couponCode})` : ""}
                 </dt>
                 <dd className="tabular-nums">
-                  −{formatMoney(order.discountCents, order.currency)}
+                  −{formatMoney(order.discountCents, order.currency, locale)}
                 </dd>
               </div>
             ) : null}
@@ -215,7 +215,7 @@ export default async function InvoicePage({
                   {order.deliveryLabel ?? t.invoice.delivery}
                 </dt>
                 <dd className="tabular-nums">
-                  {formatMoney(order.deliveryFeeCents, order.currency)}
+                  {formatMoney(order.deliveryFeeCents, order.currency, locale)}
                 </dd>
               </div>
             ) : null}
@@ -225,14 +225,14 @@ export default async function InvoicePage({
                   {taxLabel(order, t.invoice.tax)}
                 </dt>
                 <dd className="tabular-nums">
-                  {formatMoney(order.taxCents, order.currency)}
+                  {formatMoney(order.taxCents, order.currency, locale)}
                 </dd>
               </div>
             ) : null}
             <div className="flex justify-between border-t border-ink-100 pt-1.5 text-base font-semibold">
               <dt>{t.checkout.total}</dt>
               <dd className="tabular-nums">
-                {formatMoney(order.totalCents, order.currency)}
+                {formatMoney(order.totalCents, order.currency, locale)}
               </dd>
             </div>
             {order.taxCents > 0 && order.taxInclusive ? (
@@ -241,7 +241,7 @@ export default async function InvoicePage({
                   {t.invoice.includes} {taxLabel(order, t.invoice.tax)}
                 </dt>
                 <dd className="tabular-nums">
-                  {formatMoney(order.taxCents, order.currency)}
+                  {formatMoney(order.taxCents, order.currency, locale)}
                 </dd>
               </div>
             ) : null}

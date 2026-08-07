@@ -32,7 +32,7 @@ const SOURCE_LABEL: Record<string, string> = {
 
 export default async function AdminAffiliatesPage() {
   const { shop } = await requireShop();
-  const { a } = await getAdminT();
+  const { a, locale } = await getAdminT();
   const { t } = await getT();
 
   if (!can(shop, "affiliates")) {
@@ -92,7 +92,7 @@ export default async function AdminAffiliatesPage() {
             <div className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 p-4">
               <p className="text-sm text-amber-900">
                 <span className="font-medium">
-                  {formatMoney(totalUnpaid, shop.currency)}
+                  {formatMoney(totalUnpaid, shop.currency, locale)}
                 </span>{" "}
                 in commission is owed across{" "}
                 {affiliates.filter((affiliate) => affiliate.unpaidCents > 0).length} affiliate
@@ -180,18 +180,18 @@ export default async function AdminAffiliatesPage() {
                           {affiliate.clicks === 1 ? "" : "s"} ·{" "}
                           {affiliate.orderCount} order
                           {affiliate.orderCount === 1 ? "" : "s"} ·{" "}
-                          {formatMoney(affiliate.salesCents, shop.currency)} sold
+                          {formatMoney(affiliate.salesCents, shop.currency, locale)} sold
                         </p>
                       </div>
 
                       <div className="shrink-0 text-right">
                         <p className="text-sm font-semibold tabular-nums">
-                          {formatMoney(affiliate.earnedCents, shop.currency)}
+                          {formatMoney(affiliate.earnedCents, shop.currency, locale)}
                         </p>
                         <p className="text-xs text-ink-500">{a.affiliates.earned}</p>
                         {affiliate.unpaidCents > 0 ? (
                           <p className="mt-0.5 text-xs font-medium text-amber-600">
-                            {formatMoney(affiliate.unpaidCents, shop.currency)}{" "}
+                            {formatMoney(affiliate.unpaidCents, shop.currency, locale)}{" "}
                             owed
                           </p>
                         ) : null}

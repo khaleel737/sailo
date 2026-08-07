@@ -28,6 +28,7 @@ export function ProductGrid({
   filters,
   nextOffset,
   t,
+  locale,
 }: {
   /** The first batch only — the rest arrives as the shopper scrolls. */
   products: ProductCardData[];
@@ -38,6 +39,7 @@ export function ProductGrid({
   filters: ShopFilters;
   nextOffset: number | null;
   t: Dictionary;
+  locale: string;
 }) {
   if (products.length === 0) {
     return (
@@ -65,6 +67,7 @@ export function ProductGrid({
     >
       {products.map((product) => (
         <ProductCard
+          locale={locale}
           key={product.id}
           product={product}
           shop={shop}

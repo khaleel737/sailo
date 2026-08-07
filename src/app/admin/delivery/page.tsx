@@ -23,7 +23,7 @@ export const metadata: Metadata = { title: "Delivery" };
 
 export default async function AdminDeliveryPage() {
   const { shop } = await requireShop();
-  const { a } = await getAdminT();
+  const { a, locale } = await getAdminT();
   const methods = await getShopDeliveryMethods(shop.id);
 
   const liveCount = methods.filter(
@@ -114,9 +114,9 @@ export default async function AdminDeliveryPage() {
                   <>
                     {method.feeCents === 0
                       ? "Free"
-                      : formatMoney(method.feeCents, shop.currency)}
+                      : formatMoney(method.feeCents, shop.currency, locale)}
                     {method.freeOverCents !== null
-                      ? ` · free over ${formatMoney(method.freeOverCents, shop.currency)}`
+                      ? ` · free over ${formatMoney(method.freeOverCents, shop.currency, locale)}`
                       : ""}
                     {method.config.estimate ? ` · ${method.config.estimate}` : ""}
                     {method.config.address ? ` · ${method.config.address}` : ""}

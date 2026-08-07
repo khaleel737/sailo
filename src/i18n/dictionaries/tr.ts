@@ -226,6 +226,7 @@ export const tr: Dictionary = {
     resetInvalid: "Bu bağlantının süresi doldu veya zaten kullanıldı. Yenisini isteyin.",
   },
   onboarding: {
+    shopNameFallback: "Mağazan",
     handlePlaceholder: "dukkanin",
     claimTitle: "Bağlantınızı alın",
     claimSubtitle: "Biyografinize koyacağınız adres bu. Sonradan değiştirebilirsiniz.",

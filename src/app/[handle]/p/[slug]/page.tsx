@@ -228,14 +228,14 @@ export default async function ProductPage({
               {range.min > 0
                 ? range.varies
                   ? interpolate(t.shop.from, {
-                      price: formatMoney(range.min, shop.currency),
+                      price: formatMoney(range.min, shop.currency, locale),
                     })
-                  : formatMoney(range.min, shop.currency)
+                  : formatMoney(range.min, shop.currency, locale)
                 : t.common.free}
             </span>
             {wasPriced !== null ? (
               <span className="text-muted text-sm line-through tabular-nums">
-                {formatMoney(wasPriced, shop.currency)}
+                {formatMoney(wasPriced, shop.currency, locale)}
               </span>
             ) : null}
           </div>

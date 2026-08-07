@@ -116,7 +116,7 @@ export async function OrderRow({
                   {item.quantity > 1 ? ` ×${item.quantity}` : ""}
                   <span className="text-ink-400">
                     {" · "}
-                    {formatMoney(item.subtotalCents, order.currency)}
+                    {formatMoney(item.subtotalCents, order.currency, locale)}
                   </span>
                   {item.scheduledFor ? (
                     <span className="text-ink-500">
@@ -212,7 +212,7 @@ export async function OrderRow({
 
           {order.refundedCents > 0 ? (
             <p className="mt-1 text-xs font-medium text-red-600">
-              {a.orders.refunded} {formatMoney(order.refundedCents, order.currency)}
+              {a.orders.refunded} {formatMoney(order.refundedCents, order.currency, locale)}
               {order.refundReason ? ` — ${order.refundReason}` : ""}
             </p>
           ) : null}
@@ -232,30 +232,30 @@ export async function OrderRow({
           order.commissionCents > 0 ? (
             <p className="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-ink-500">
               <span>
-                {a.orders.items} {formatMoney(order.subtotalCents, order.currency)}
+                {a.orders.items} {formatMoney(order.subtotalCents, order.currency, locale)}
               </span>
               {order.discountCents > 0 ? (
                 <span className="text-emerald-600">
                   {order.couponCode ? `${order.couponCode} ` : ""}−
-                  {formatMoney(order.discountCents, order.currency)}
+                  {formatMoney(order.discountCents, order.currency, locale)}
                 </span>
               ) : null}
               {order.deliveryFeeCents > 0 ? (
                 <span>
-                  {a.orders.delivery} {formatMoney(order.deliveryFeeCents, order.currency)}
+                  {a.orders.delivery} {formatMoney(order.deliveryFeeCents, order.currency, locale)}
                 </span>
               ) : null}
               {order.taxCents > 0 ? (
                 <span>
                   {taxName(order, a.settings.tax)}{" "}
-                  {formatMoney(order.taxCents, order.currency)}
+                  {formatMoney(order.taxCents, order.currency, locale)}
                   {order.taxInclusive ? " (incl.)" : ""}
                 </span>
               ) : null}
               {order.commissionCents > 0 ? (
                 <span className="text-amber-600">
                   {order.affiliateCode} commission{" "}
-                  {formatMoney(order.commissionCents, order.currency)}
+                  {formatMoney(order.commissionCents, order.currency, locale)}
                   {order.commissionPaid ? " (paid)" : ""}
                 </span>
               ) : null}
@@ -294,7 +294,7 @@ export async function OrderRow({
 
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
           <span className="text-sm font-semibold tabular-nums">
-            {formatMoney(order.totalCents, order.currency)}
+            {formatMoney(order.totalCents, order.currency, locale)}
           </span>
           <PaymentStatusSelect
             orderId={order.id}

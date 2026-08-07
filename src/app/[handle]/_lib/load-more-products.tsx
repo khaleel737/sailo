@@ -40,7 +40,7 @@ export async function loadMoreProducts(
   // serving its catalogue through the action that renders it.
   if (!shop || !isShopLive(shop)) return empty;
 
-  const [page, checkout, { t }] = await Promise.all([
+  const [page, checkout, { t, locale }] = await Promise.all([
     getPublicProducts(shop.id, filters, offset),
     getCheckoutOptions(shop.id),
     getShopT(shop.locale),
@@ -58,6 +58,7 @@ export async function loadMoreProducts(
         methods={checkout.methods}
         deliveryOptions={checkout.deliveryOptions}
         t={t}
+        locale={locale}
       />
     )),
     nextOffset: page.nextOffset,

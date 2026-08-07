@@ -14,14 +14,20 @@ export function ShopPreview({
   description,
   location,
   currency,
+  locale,
+  fallbackName,
 }: {
   handle: string;
   name: string;
   description: string;
   location: string;
   currency: string;
+  /** Punctuates the sample price like the page around it. */
+  locale: string;
+  /** Stands in until the seller has typed a name. Translated by the caller. */
+  fallbackName: string;
 }) {
-  const shopName = name.trim() || "Your shop";
+  const shopName = name.trim() || fallbackName;
   const initials = shopName
     .split(/\s+/)
     .slice(0, 2)
@@ -69,7 +75,7 @@ export function ShopPreview({
           <div className="mt-2 flex items-center justify-between gap-2">
             <span className="h-2 w-14 rounded-full bg-ink-200" />
             <span className="tabular text-[11px] font-semibold text-ink-900">
-              {formatMoney(2800, currency)}
+              {formatMoney(2800, currency, locale)}
             </span>
           </div>
         </div>

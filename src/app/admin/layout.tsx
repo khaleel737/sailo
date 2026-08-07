@@ -27,7 +27,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const notifications = all.filter((n) => !dismissed.has(n.id));
 
   return (
-    <AdminI18nProvider value={a}>
+    <AdminI18nProvider value={a} locale={locale}>
       <div
         dir={dir}
         lang={locale}

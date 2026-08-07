@@ -26,6 +26,7 @@ export function ProductCard({
   methods,
   deliveryOptions,
   t,
+  locale,
 }: {
   product: ProductCardData;
   shop: Shop;
@@ -33,6 +34,8 @@ export function ProductCard({
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
   t: Dictionary;
+  /** The shop's resolved language, so a price is punctuated like its page. */
+  locale: string;
 }) {
   const href = `/${shop.handle}/p/${product.slug}`;
   const image = product.images[0];
@@ -144,14 +147,14 @@ export function ProductCard({
               {displayPrice > 0
                 ? range.varies
                   ? interpolate(t.shop.from, {
-                      price: formatMoney(displayPrice, shop.currency),
+                      price: formatMoney(displayPrice, shop.currency, locale),
                     })
-                  : formatMoney(displayPrice, shop.currency)
+                  : formatMoney(displayPrice, shop.currency, locale)
                 : t.common.free}
             </span>
             {wasPriced !== null ? (
               <span className="text-muted text-xs line-through tabular-nums">
-                {formatMoney(wasPriced, shop.currency)}
+                {formatMoney(wasPriced, shop.currency, locale)}
               </span>
             ) : null}
           </div>

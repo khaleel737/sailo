@@ -406,7 +406,7 @@ export default async function HomePage() {
           </dl>
         </Section>
 
-        <PricingSection t={t} m={m} />
+        <PricingSection t={t} m={m} locale={locale} />
 
         {/* ---------------------------------------------------------------
             Questions

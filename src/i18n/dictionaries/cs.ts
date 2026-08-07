@@ -222,6 +222,7 @@ export const cs: Dictionary = {
     resetInvalid: "Platnost odkazu vypršela nebo už byl použit. Vyžádejte si nový.",
   },
   onboarding: {
+    shopNameFallback: "Váš obchod",
     handlePlaceholder: "vasobchod",
     claimTitle: "Zaberte si odkaz",
     claimSubtitle: "Tuto adresu dáte do svého bia. Později ji můžete změnit.",

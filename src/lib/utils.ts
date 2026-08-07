@@ -18,9 +18,29 @@ export function slugify(input: string) {
   return base || `item-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-export function formatMoney(cents: number, currency = "USD") {
+/**
+ * A price, written the way the page it sits on is written.
+ *
+ * `locale` decides the separators and where the symbol goes: a German page
+ * says `1.234,56 €`, a French one `1 234,56 €`, and only an English one says
+ * `€1,234.56`. It was hardcoded to `en-US` for everyone, which meant every
+ * price on every storefront was punctuated in a way most of the world reads
+ * as wrong — and `1.234` means one thing to a German reader and something a
+ * thousand times larger to an American one, so this is not only cosmetic.
+ *
+ * `-u-nu-latn` pins the digits to 0-9. Arabic and a few other locales would
+ * otherwise render their own numerals, which is correct by the standard but
+ * is a change no seller asked for and every one of their buyers would notice.
+ * Everything else about the locale — separators, symbol position, the RTL
+ * marks Arabic needs — is left alone.
+ *
+ * Defaults to `en-US` rather than to the machine's locale: undefined would
+ * make a server's own configuration decide what a buyer sees, and the staff
+ * panel is deliberately English.
+ */
+export function formatMoney(cents: number, currency = "USD", locale = "en-US") {
   try {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat(`${locale}-u-nu-latn`, {
       style: "currency",
       currency,
       minimumFractionDigits: cents % 100 === 0 ? 0 : 2,

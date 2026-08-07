@@ -222,6 +222,7 @@ export const ro: Dictionary = {
     resetInvalid: "Linkul a expirat sau a fost deja folosit. Cere unul nou.",
   },
   onboarding: {
+    shopNameFallback: "Magazinul tău",
     handlePlaceholder: "magazinultau",
     claimTitle: "Rezervă-ți linkul",
     claimSubtitle: "Aceasta e adresa pe care o pui în bio. O poți schimba mai târziu.",

@@ -187,6 +187,7 @@ export const sq: Dictionary = {
     resetInvalid: "Kjo lidhje ka skaduar ose është përdorur tashmë. Kërkoni një të re.",
   },
   onboarding: {
+    shopNameFallback: "Dyqani juaj",
     handlePlaceholder: "dyqanijuaj",
     claimTitle: "Rezervoni lidhjen tuaj",
     claimSubtitle: "Kjo është adresa që do të vendosni në bio-n tuaj. Mund ta ndryshoni më vonë.",

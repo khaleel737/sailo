@@ -187,6 +187,7 @@ export const fil: Dictionary = {
     resetInvalid: "Expired na o nagamit na ang link na iyon. Humingi ng bago.",
   },
   onboarding: {
+    shopNameFallback: "Ang tindahan mo",
     handlePlaceholder: "tindahanmo",
     claimTitle: "Kunin ang link mo",
     claimSubtitle: "Ito ang address na ilalagay mo sa bio mo. Puwede mo itong palitan mamaya.",

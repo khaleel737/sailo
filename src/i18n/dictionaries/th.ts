@@ -187,6 +187,7 @@ export const th: Dictionary = {
     resetInvalid: "ลิงก์นี้หมดอายุหรือถูกใช้ไปแล้ว กรุณาขอลิงก์ใหม่",
   },
   onboarding: {
+    shopNameFallback: "ร้านของคุณ",
     handlePlaceholder: "ร้านของคุณ",
     claimTitle: "จองลิงก์ของคุณ",
     claimSubtitle: "นี่คือที่อยู่ที่คุณจะใส่ไว้ในไบโอ เปลี่ยนภายหลังได้",

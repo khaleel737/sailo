@@ -187,6 +187,7 @@ export const ms: Dictionary = {
     resetInvalid: "Pautan itu telah tamat tempoh atau sudah digunakan. Minta yang baharu.",
   },
   onboarding: {
+    shopNameFallback: "Kedai anda",
     handlePlaceholder: "kedaianda",
     claimTitle: "Tuntut pautan anda",
     claimSubtitle: "Ini alamat yang akan anda letakkan dalam bio. Anda boleh ubah kemudian.",

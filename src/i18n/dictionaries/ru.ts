@@ -225,6 +225,7 @@ export const ru: Dictionary = {
     resetInvalid: "Ссылка устарела или уже использована. Запросите новую.",
   },
   onboarding: {
+    shopNameFallback: "Ваш магазин",
     handlePlaceholder: "вашмагазин",
     claimTitle: "Займите свою ссылку",
     claimSubtitle: "Этот адрес вы поставите в описание профиля. Позже его можно изменить.",

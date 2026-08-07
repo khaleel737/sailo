@@ -228,6 +228,7 @@ export const nl: Dictionary = {
     resetInvalid: "Die link is verlopen of al gebruikt. Vraag een nieuwe aan.",
   },
   onboarding: {
+    shopNameFallback: "Jouw winkel",
     handlePlaceholder: "jouwwinkel",
     claimTitle: "Claim je link",
     claimSubtitle: "Dit is het adres voor in je bio. Je kunt het later wijzigen.",

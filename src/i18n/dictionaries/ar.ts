@@ -258,6 +258,7 @@ export const ar: Dictionary = {
     resetInvalid: "انتهت صلاحية هذا الرابط أو تم استخدامه بالفعل. اطلب رابطًا جديدًا.",
   },
   onboarding: {
+    shopNameFallback: "متجرك",
     handlePlaceholder: "متجرك",
     claimTitle: "احجز رابطك",
     claimSubtitle: "هذا هو العنوان الذي ستضعه في نبذتك. يمكنك تغييره لاحقًا.",

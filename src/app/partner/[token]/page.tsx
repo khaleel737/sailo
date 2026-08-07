@@ -31,7 +31,7 @@ export default async function PartnerPortalPage({
 
   const { affiliate, shop, stats, series, recentOrders, siblings } = data;
   const { locale, t, dir } = await getShopT(shop.locale);
-  const money = (cents: number) => formatMoney(cents, shop.currency);
+  const money = (cents: number) => formatMoney(cents, shop.currency, locale);
 
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const referralUrl = `${base}/${shop.handle}?ref=${affiliate.code}`;
@@ -163,10 +163,10 @@ export default async function PartnerPortalPage({
                         ) : null}
                       </span>
                       <span className="text-muted block text-xs tabular-nums">
-                        {formatMoney(s.earnedCents, s.currency)}{" "}
+                        {formatMoney(s.earnedCents, s.currency, locale)}{" "}
                         {t.partner.earnedLower}
                         {s.unpaidCents > 0
-                          ? ` · ${formatMoney(s.unpaidCents, s.currency)} ${t.partner.unpaidLower}`
+                          ? ` · ${formatMoney(s.unpaidCents, s.currency, locale)} ${t.partner.unpaidLower}`
                           : ""}
                       </span>
                     </span>
@@ -207,12 +207,12 @@ export default async function PartnerPortalPage({
                         year: "numeric",
                       })}
                       {" · "}
-                      {formatMoney(order.totalCents, order.currency)}
+                      {formatMoney(order.totalCents, order.currency, locale)}
                     </span>
                   </span>
                   <span className="text-end">
                     <span className="block text-sm font-semibold tabular-nums">
-                      {formatMoney(order.commissionCents, order.currency)}
+                      {formatMoney(order.commissionCents, order.currency, locale)}
                     </span>
                     <span
                       className={`block text-xs ${

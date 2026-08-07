@@ -156,11 +156,12 @@ function CartRow({
           {label ? <span className="text-muted"> — {label}</span> : null}
         </p>
         <p className="text-muted text-xs tabular-nums">
-          {formatMoney(unitPriceCents, currency)}
+          {formatMoney(unitPriceCents, currency, cartLocale)}
           {line.quantity > 1
             ? ` × ${line.quantity} = ${formatMoney(
                 unitPriceCents * line.quantity,
                 currency,
+                cartLocale,
               )}`
             : ""}
         </p>

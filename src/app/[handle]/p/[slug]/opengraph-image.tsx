@@ -70,9 +70,15 @@ export default async function Image({
   const t = cardTheme(shop.accentColor, shop.theme);
   const photo = await fetchImage(product.images[0]?.url);
   const range = priceRange(product, product.variants);
+  /*
+   * The shop's own declared language, not `getShopLocale` — a card is fetched
+   * by a scraper with no cookie and cached once for every viewer, so there is
+   * no visitor here whose preference could apply.
+   */
+  const cardLocale = shop.locale ?? "en";
   const price = range.varies
-    ? `From ${formatMoney(range.min, shop.currency)}`
-    : formatMoney(range.min, shop.currency);
+    ? `From ${formatMoney(range.min, shop.currency, cardLocale)}`
+    : formatMoney(range.min, shop.currency, cardLocale);
 
   return new ImageResponse(
     (

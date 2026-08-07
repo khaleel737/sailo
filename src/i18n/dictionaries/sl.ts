@@ -187,6 +187,7 @@ export const sl: Dictionary = {
     resetInvalid: "Ta povezava je potekla ali je bila že uporabljena. Zaprosite za novo.",
   },
   onboarding: {
+    shopNameFallback: "Vaša trgovina",
     handlePlaceholder: "vasatrgovina",
     claimTitle: "Rezervirajte svojo povezavo",
     claimSubtitle: "To je naslov, ki ga boste dali v svoj bio. Kasneje ga lahko spremenite.",

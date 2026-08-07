@@ -227,6 +227,7 @@ export const pl: Dictionary = {
     resetInvalid: "Ten link wygasł lub został już użyty. Poproś o nowy.",
   },
   onboarding: {
+    shopNameFallback: "Twój sklep",
     handlePlaceholder: "twojsklep",
     claimTitle: "Zarezerwuj swój link",
     claimSubtitle: "To adres, który wstawisz w bio. Możesz go później zmienić.",

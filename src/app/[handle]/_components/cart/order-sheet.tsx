@@ -259,7 +259,7 @@ function ProductSheet({
           </h2>
           <p className="text-muted mt-0.5 text-sm">
             {interpolate(t.checkout.each, {
-              price: formatMoney(unitPriceCents, currency),
+              price: formatMoney(unitPriceCents, currency, locale),
             })}
             {service?.durationMinutes
               ? ` · ${interpolate(t.checkout.duration, {

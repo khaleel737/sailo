@@ -225,6 +225,7 @@ export const uk: Dictionary = {
     resetInvalid: "Посилання застаріло або вже використане. Запросіть нове.",
   },
   onboarding: {
+    shopNameFallback: "Ваш магазин",
     handlePlaceholder: "вашакрамниця",
     claimTitle: "Займіть своє посилання",
     claimSubtitle: "Цю адресу ви поставите в біо. Пізніше її можна змінити.",

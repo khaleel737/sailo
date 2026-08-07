@@ -226,6 +226,7 @@ export const el: Dictionary = {
     resetInvalid: "Ο σύνδεσμος έληξε ή έχει ήδη χρησιμοποιηθεί. Ζητήστε νέον.",
   },
   onboarding: {
+    shopNameFallback: "Το κατάστημά σας",
     handlePlaceholder: "tokatastimasou",
     claimTitle: "Κατοχυρώστε τον σύνδεσμό σας",
     claimSubtitle: "Αυτή είναι η διεύθυνση που θα βάλετε στο bio σας. Μπορείτε να την αλλάξετε αργότερα.",

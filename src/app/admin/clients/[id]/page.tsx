@@ -68,11 +68,11 @@ export default async function ClientDetailPage({
       />
 
       <div className="mb-5 grid gap-3 sm:grid-cols-3">
-        <Stat label={a.clients.lifetimeValue} value={formatMoney(totalCents, shop.currency)} />
-        <Stat label={a.clients.paid} value={formatMoney(paidCents, shop.currency)} />
+        <Stat label={a.clients.lifetimeValue} value={formatMoney(totalCents, shop.currency, locale)} />
+        <Stat label={a.clients.paid} value={formatMoney(paidCents, shop.currency, locale)} />
         <Stat
           label={a.clients.outstandingLabel}
-          value={formatMoney(outstandingCents, shop.currency)}
+          value={formatMoney(outstandingCents, shop.currency, locale)}
           tone={outstandingCents > 0 ? "warn" : undefined}
         />
       </div>

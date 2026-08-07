@@ -228,6 +228,7 @@ export const pt: Dictionary = {
     resetInvalid: "Esse link expirou ou já foi usado. Peça um novo.",
   },
   onboarding: {
+    shopNameFallback: "A sua loja",
     handlePlaceholder: "atualoja",
     claimTitle: "Reserve o seu link",
     claimSubtitle: "É o endereço que vai pôr na sua bio. Pode mudá-lo depois.",

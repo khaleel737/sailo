@@ -16,6 +16,7 @@ import { readReferralCode } from "@/lib/referral";
 import { interpolate } from "@/i18n";
 import { formatMoney } from "@/lib/utils";
 import { deliveryCopy, railCopy } from "./checkout-copy";
+import { useCart } from "./cart-provider";
 import { Confirmation } from "./confirmation";
 import type { CheckoutDelivery, CheckoutMethod, CheckoutPanelProps } from "./checkout.types";
 
@@ -46,6 +47,14 @@ export function CheckoutPanel({
   children,
   empty,
 }: CheckoutPanelProps) {
+  /*
+   * Always rendered inside `CartRegion`, which is what puts the shop's
+   * resolved locale in context — the same one the page is written in, so a
+   * total reads `12,50 €` on a French storefront and `€12.50` on an English
+   * one. Optional-chained because the buy-now sheet mounts this outside a
+   * populated cart; the formatter falls back to English on its own.
+   */
+  const locale = useCart()?.locale;
   const [method, setMethod] = useState<PaymentMethodType>(
     methods[0]?.type ?? "whatsapp",
   );
@@ -315,7 +324,7 @@ export function CheckoutPanel({
                               <span className="text-xs font-semibold tabular-nums">
                                 {option.feeCents === 0 || free
                                   ? t.common.free
-                                  : formatMoney(option.feeCents, currency)}
+                                  : formatMoney(option.feeCents, currency, locale)}
                               </span>
                             </span>
                             <span className="text-muted block text-xs leading-snug">
@@ -334,6 +343,7 @@ export function CheckoutPanel({
                                   amount: formatMoney(
                                     option.freeOverCents,
                                     currency,
+                                    locale,
                                   ),
                                 })}
                               </span>
@@ -525,14 +535,14 @@ export function CheckoutPanel({
                 <div className="flex justify-between">
                   <dt className="text-muted">{t.checkout.subtotal}</dt>
                   <dd className="tabular-nums">
-                    {formatMoney(totals.subtotalCents, currency)}
+                    {formatMoney(totals.subtotalCents, currency, locale)}
                   </dd>
                 </div>
                 {totals.discountCents > 0 ? (
                   <div className="flex justify-between text-emerald-600">
                     <dt>{t.checkout.discount}</dt>
                     <dd className="tabular-nums">
-                      −{formatMoney(totals.discountCents, currency)}
+                      −{formatMoney(totals.discountCents, currency, locale)}
                     </dd>
                   </div>
                 ) : null}
@@ -542,7 +552,7 @@ export function CheckoutPanel({
                     <dd className="tabular-nums">
                       {totals.deliveryFeeCents === 0
                         ? t.common.free
-                        : formatMoney(totals.deliveryFeeCents, currency)}
+                        : formatMoney(totals.deliveryFeeCents, currency, locale)}
                     </dd>
                   </div>
                 ) : null}
@@ -552,20 +562,20 @@ export function CheckoutPanel({
                       {tax.name} ({formatPercent(tax.rateBp)}%)
                     </dt>
                     <dd className="tabular-nums">
-                      {formatMoney(totals.taxCents, currency)}
+                      {formatMoney(totals.taxCents, currency, locale)}
                     </dd>
                   </div>
                 ) : null}
                 <div className="surface-border flex justify-between border-t pt-1.5 text-base font-semibold">
                   <dt>{t.checkout.total}</dt>
                   <dd className="tabular-nums">
-                    {formatMoney(totals.totalCents, currency)}
+                    {formatMoney(totals.totalCents, currency, locale)}
                   </dd>
                 </div>
                 {tax && totals.taxCents > 0 && tax.inclusive ? (
                   <p className="text-muted text-xs">
                     {interpolate(t.checkout.taxIncluded, {
-                      amount: formatMoney(totals.taxCents, currency),
+                      amount: formatMoney(totals.taxCents, currency, locale),
                       name: tax.name,
                       percent: formatPercent(tax.rateBp),
                     })}

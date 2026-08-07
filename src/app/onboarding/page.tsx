@@ -36,7 +36,7 @@ export default async function OnboardingPage() {
         </header>
 
         <main className="flex-1 rounded-3xl border border-ink-200 bg-white p-6 shadow-md sm:p-8 lg:p-10">
-          <OnboardingForm defaultName={user.name} t={t} />
+          <OnboardingForm defaultName={user.name} t={t} locale={locale} />
         </main>
       </div>
     </div>

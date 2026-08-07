@@ -45,7 +45,7 @@ export default async function AdminOverviewPage({
       getShopOrders(shop.id, 5),
     ]);
 
-  const money = (cents: number) => formatMoney(cents, shop.currency);
+  const money = (cents: number) => formatMoney(cents, shop.currency, locale);
 
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const shopUrl = `${base}/${shop.handle}`;
@@ -285,7 +285,7 @@ export default async function AdminOverviewPage({
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
                   <span className="text-sm font-medium tabular-nums">
-                    {formatMoney(order.totalCents, order.currency)}
+                    {formatMoney(order.totalCents, order.currency, locale)}
                   </span>
                   <Badge tone={orderStatusTone(order.status)} dot>
                     {orderStatusLabel(order.status, a.orderStatus)}

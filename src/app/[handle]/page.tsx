@@ -153,6 +153,7 @@ export default async function ShopPage({
               filters={filters}
               nextOffset={nextOffset}
               t={t}
+              locale={locale}
             />
           </main>
 

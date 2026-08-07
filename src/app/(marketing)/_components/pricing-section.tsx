@@ -53,10 +53,12 @@ function PlanCard({
   tier,
   t,
   m,
+  locale,
 }: {
   tier: Tier;
   t: Dictionary;
   m: MarketingDictionary;
+  locale: string;
 }) {
   const { plan, tagline, carry } = tier;
   const featured = plan.id === "business";
@@ -83,7 +85,7 @@ function PlanCard({
         <span className={`display tabular text-[3rem] ${ink.price}`}>
           {plan.monthlyCents === 0
             ? t.common.free
-            : formatMoney(plan.monthlyCents, "USD")}
+            : formatMoney(plan.monthlyCents, "USD", locale)}
         </span>
         {plan.monthlyCents > 0 ? (
           <span className={`text-[0.875rem] ${ink.unit}`}>
@@ -97,7 +99,7 @@ function PlanCard({
       <p className={`tabular mt-2 min-h-5 text-[0.8125rem] ${ink.note}`}>
         {plan.yearlyCents > 0
           ? interpolate(t.billing.billedYearly, {
-              amount: formatMoney(plan.yearlyCents, "USD"),
+              amount: formatMoney(plan.yearlyCents, "USD", locale),
             })
           : ""}
       </p>
@@ -134,9 +136,11 @@ function PlanCard({
 export function PricingSection({
   t,
   m,
+  locale,
 }: {
   t: Dictionary;
   m: MarketingDictionary;
+  locale: string;
 }) {
   const tiers: Tier[] = [
     { plan: PLANS.free, tagline: m.pricing.freeTagline, carry: null },
@@ -156,7 +160,7 @@ export function PricingSection({
           three cards read as one table rather than three floating boxes. */}
       <div className="mt-16 grid gap-px overflow-hidden rounded-[var(--r-card)] bg-[var(--mute-200)] lg:grid-cols-3">
         {tiers.map((tier) => (
-          <PlanCard key={tier.plan.id} tier={tier} t={t} m={m} />
+          <PlanCard key={tier.plan.id} tier={tier} t={t} m={m} locale={locale} />
         ))}
       </div>
 

@@ -35,6 +35,49 @@ describe("formatMoney", () => {
     expect(formatMoney(99, "USD")).toContain("0.99");
   });
 
+  it("punctuates a price the way the page around it is written", () => {
+    /*
+     * The bug this closes was invisible in English and wrong everywhere else:
+     * every price on every storefront was formatted `en-US`. A German reader
+     * sees `1.234` as one thousand two hundred, so this was not only a matter
+     * of taste.
+     */
+    /*
+     * Spaces normalised before comparing. `Intl` separates an amount from its
+     * symbol with U+00A0 (and French groups thousands with U+202F), which is
+     * correct — those must not wrap — but pasting invisible characters into a
+     * test makes a failure unreadable, as this one was when first written.
+     */
+    const spaced = (s: string) => s.replace(/[\s  ]/g, " ");
+
+    expect(spaced(formatMoney(123456, "EUR", "de"))).toBe("1.234,56 €");
+    expect(spaced(formatMoney(123456, "EUR", "en"))).toBe("€1,234.56");
+    // Symbol placement moves too, not just the separators.
+    expect(spaced(formatMoney(123456, "EUR", "fr"))).toBe("1 234,56 €");
+  });
+
+  it("keeps the digits Latin, in every language", () => {
+    /*
+     * Arabic would otherwise render ١٬٢٣٤٫٥٦ — correct by the standard, and a
+     * change no seller asked for. `-u-nu-latn` pins the numerals while leaving
+     * the separators, the symbol and the RTL marks alone.
+     */
+    for (const locale of ["ar", "fa", "hi", "th", "bn"]) {
+      expect(formatMoney(123456, "USD", locale), locale).toMatch(/1[,.  ]?234/);
+    }
+  });
+
+  it("defaults to English rather than to whatever the machine is set to", () => {
+    // The staff panel and the chart screenshot baseline both rely on this: a
+    // server's own locale must never decide what a page renders.
+    expect(formatMoney(123456, "EUR")).toBe(formatMoney(123456, "EUR", "en-US"));
+  });
+
+  it("falls back rather than throwing on a locale it cannot parse", () => {
+    expect(() => formatMoney(1000, "USD", "not a locale")).not.toThrow();
+    expect(formatMoney(1000, "USD", "not a locale")).toContain("USD");
+  });
+
   it("survives a currency the runtime does not know", () => {
     // The code comes from a shop's settings and reaches this on every page.
     expect(() => formatMoney(1000, "XYZ")).not.toThrow();

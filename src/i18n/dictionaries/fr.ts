@@ -233,6 +233,7 @@ export const fr: Dictionary = {
     resetInvalid: "Ce lien a expiré ou a déjà été utilisé. Demandez-en un nouveau.",
   },
   onboarding: {
+    shopNameFallback: "Votre boutique",
     handlePlaceholder: "votreboutique",
     claimTitle: "Réservez votre lien",
     claimSubtitle: "C'est l'adresse que vous mettrez dans votre bio. Modifiable plus tard.",

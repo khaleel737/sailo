@@ -259,6 +259,7 @@ export const ja: Dictionary = {
     resetInvalid: "このリンクは期限切れか、すでに使われています。新しいものをリクエストしてください。",
   },
   onboarding: {
+    shopNameFallback: "あなたのショップ",
     handlePlaceholder: "yourshop",
     claimTitle: "リンクを取得",
     claimSubtitle: "プロフィールに載せるアドレスです。あとから変更できます。",

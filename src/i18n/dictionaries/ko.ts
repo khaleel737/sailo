@@ -187,6 +187,7 @@ export const ko: Dictionary = {
     resetInvalid: "이 링크는 만료되었거나 이미 사용되었습니다. 새 링크를 요청해 주세요.",
   },
   onboarding: {
+    shopNameFallback: "내 상점",
     handlePlaceholder: "yourshop",
     claimTitle: "내 링크 선점하기",
     claimSubtitle: "프로필에 넣을 주소입니다. 나중에 변경할 수 있습니다.",

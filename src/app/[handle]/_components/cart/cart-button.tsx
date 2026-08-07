@@ -45,7 +45,7 @@ export function CartButton({
         </span>
         <span>{t.cart.view}</span>
         <span className="tabular-nums opacity-80">
-          {formatMoney(cart.cachedTotalCents, currency)}
+          {formatMoney(cart.cachedTotalCents, currency, cart.locale)}
         </span>
       </button>
     </div>

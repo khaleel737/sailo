@@ -170,7 +170,7 @@ export default async function BillingPage({
 
                   <p className="mt-4">
                     <span className="tabular text-3xl font-semibold text-ink-900">
-                      {price === 0 ? a.billing.free : formatMoney(monthly, "USD")}
+                      {price === 0 ? a.billing.free : formatMoney(monthly, "USD", locale)}
                     </span>
                     {price > 0 ? (
                       <span className="text-sm text-ink-500">
@@ -182,7 +182,7 @@ export default async function BillingPage({
                   {price > 0 && interval === "year" ? (
                     <p className="tabular text-xs text-ink-400">
                       {interpolate(a.billing.billedYearly, {
-                        amount: formatMoney(price, "USD"),
+                        amount: formatMoney(price, "USD", locale),
                       })}
                     </p>
                   ) : null}

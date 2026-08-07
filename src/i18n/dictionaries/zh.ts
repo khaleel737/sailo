@@ -258,6 +258,7 @@ export const zh: Dictionary = {
     resetInvalid: "该链接已过期或已被使用。请重新获取。",
   },
   onboarding: {
+    shopNameFallback: "你的店铺",
     handlePlaceholder: "yourshop",
     claimTitle: "获取您的链接",
     claimSubtitle: "这是您放在简介里的地址，之后可以修改。",

@@ -26,7 +26,7 @@ export const metadata: Metadata = { title: "Products" };
  */
 export default async function AdminProductsPage() {
   const { shop } = await requireShop();
-  const { a } = await getAdminT();
+  const { a, locale } = await getAdminT();
   const products = await getAdminProducts(shop.id);
 
   return (
@@ -173,8 +173,8 @@ export default async function AdminProductsPage() {
                   className="tabular whitespace-nowrap text-ink-900"
                 >
                   {range.varies
-                    ? `from ${formatMoney(range.min, shop.currency)}`
-                    : formatMoney(range.min, shop.currency)}
+                    ? `from ${formatMoney(range.min, shop.currency, locale)}`
+                    : formatMoney(range.min, shop.currency, locale)}
                 </Td>
 
                 <Td

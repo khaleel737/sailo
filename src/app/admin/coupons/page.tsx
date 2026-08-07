@@ -93,7 +93,7 @@ export default async function AdminCouponsPage() {
                   </code>
                   {coupon.minSubtotalCents > 0 ? (
                     <span className="ms-2 text-xs text-ink-400">
-                      min {formatMoney(coupon.minSubtotalCents, shop.currency)}
+                      min {formatMoney(coupon.minSubtotalCents, shop.currency, locale)}
                     </span>
                   ) : null}
                 </Td>
@@ -121,7 +121,7 @@ export default async function AdminCouponsPage() {
                 <Td align="end" className="tabular whitespace-nowrap text-ink-900" label={a.columns.discount}>
                   {coupon.discountType === "percent"
                     ? `${bpToPercent(coupon.discountValue)}% off`
-                    : `${formatMoney(coupon.discountValue, shop.currency)} off`}
+                    : `${formatMoney(coupon.discountValue, shop.currency, locale)} off`}
                 </Td>
 
                 <Td align="end" className="tabular whitespace-nowrap" label={a.columns.used}>

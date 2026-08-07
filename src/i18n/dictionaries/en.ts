@@ -350,6 +350,8 @@ export const en = {
   },
 
   onboarding: {
+    /** Stands in on the live preview until the seller has typed a name. */
+    shopNameFallback: "Your shop",
     /** A stand-in handle, so the shape of the URL is visible before typing. */
     handlePlaceholder: "yourshop",
     claimTitle: "Claim your link",

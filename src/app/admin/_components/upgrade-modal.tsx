@@ -14,6 +14,7 @@ import { Badge, Button } from "@/components/ui";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { Dialog } from "@/components/overlays";
 import { formatMoney } from "@/lib/utils";
+import { useAdminLocale } from "@/app/admin/_components/admin-i18n";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import { cn } from "@/lib/utils";
@@ -57,6 +58,7 @@ export function UpgradeModal({
   body?: string;
   t: Dictionary;
 }) {
+  const locale = useAdminLocale();
   const [interval, setInterval] = useState<"month" | "year">("month");
 
   const copy = feature ? featureCopy(feature, t) : undefined;
@@ -145,7 +147,7 @@ export function UpgradeModal({
 
               <p className="mt-3">
                 <span className="tabular text-2xl font-semibold text-ink-900">
-                  {formatMoney(monthly, "USD")}
+                  {formatMoney(monthly, "USD", locale)}
                 </span>
                 <span className="text-sm text-ink-500">
                   {" "}
@@ -155,7 +157,7 @@ export function UpgradeModal({
               {interval === "year" ? (
                 <p className="tabular text-xs text-ink-400">
                   {interpolate(t.billing.billedYearly, {
-                    amount: formatMoney(plan.yearlyCents, "USD"),
+                    amount: formatMoney(plan.yearlyCents, "USD", locale),
                   })}
                 </p>
               ) : null}

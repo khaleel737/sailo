@@ -48,9 +48,11 @@ function SubmitButton({ label }: { label: string }) {
 export function OnboardingForm({
   defaultName,
   t,
+  locale,
 }: {
   defaultName: string;
   t: Dictionary;
+  locale: string;
 }) {
   const [state, action] = useActionState(createShop, { ok: false });
   const [step, setStep] = useState(0);
@@ -184,6 +186,8 @@ export function OnboardingForm({
           description={values.description}
           location={values.location}
           currency={values.currency}
+          locale={locale}
+          fallbackName={t.onboarding.shopNameFallback}
         />
         <ul className="mt-4 space-y-2">
           {[

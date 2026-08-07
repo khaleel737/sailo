@@ -120,7 +120,9 @@ export function Chart({
   const shape = chosenShape ?? defaultShape;
 
   const format = (value: number): string =>
-    unit === "money" ? formatMoney(value, currency) : value.toLocaleString();
+    unit === "money"
+      ? formatMoney(value, currency, locale)
+      : value.toLocaleString(locale);
 
   const drawn = useMemo(() => plotted(series), [series]);
   const domain = useMemo(() => chartDomain(series), [series]);

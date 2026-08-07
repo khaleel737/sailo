@@ -187,6 +187,7 @@ export const sr: Dictionary = {
     resetInvalid: "Тај линк је истекао или је већ искоришћен. Затражите нови.",
   },
   onboarding: {
+    shopNameFallback: "Ваша продавница",
     handlePlaceholder: "вашапродавница",
     claimTitle: "Резервишите свој линк",
     claimSubtitle: "Ово је адреса коју ћете ставити у свој био. Можете је променити касније.",

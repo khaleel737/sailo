@@ -14,7 +14,7 @@ export const metadata: Metadata = { title: "Clients" };
 
 export default async function AdminClientsPage() {
   const { shop } = await requireShop();
-  const { a } = await getAdminT();
+  const { a, locale } = await getAdminT();
   const clients = await getShopClients(shop.id);
 
   return (
@@ -87,7 +87,7 @@ export default async function AdminClientsPage() {
                 </Td>
 
                 <Td align="end" className="tabular font-medium text-ink-900" label={a.columns.spent}>
-                  {formatMoney(client.totalCents, shop.currency)}
+                  {formatMoney(client.totalCents, shop.currency, locale)}
                 </Td>
               </Tr>
             );

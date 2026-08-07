@@ -7,7 +7,7 @@ import { markOrderShipped, refundOrder } from "@/lib/actions/order-admin";
 import { Alert, Button, Field, Input } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
 import type { Order } from "@/db/schema";
-import { useAdminT } from "@/app/admin/_components/admin-i18n";
+import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit({ label }: { label: string }) {
   const { pending } = useFormStatus();
@@ -21,6 +21,7 @@ function Submit({ label }: { label: string }) {
 
 export function OrderActions({ order }: { order: Order }) {
   const a = useAdminT();
+  const locale = useAdminLocale();
   const [panel, setPanel] = useState<"ship" | "refund" | null>(null);
   const [shipState, shipAction] = useActionState(markOrderShipped, {
     ok: false,
@@ -147,7 +148,7 @@ export function OrderActions({ order }: { order: Order }) {
 
           <p className="text-xs text-red-700">
             Comes straight off your revenue. Max{" "}
-            {formatMoney(order.totalCents, order.currency)}.
+            {formatMoney(order.totalCents, order.currency, locale)}.
             {order.customerEmail ? " The buyer is emailed." : ""}
           </p>
 
