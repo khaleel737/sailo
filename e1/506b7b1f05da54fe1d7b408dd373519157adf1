@@ -1,0 +1,35 @@
+src/lib/booking/hours.ts
+  s_2e1da3b18d1c53::t_4b0ed1c942735f 1-85,87-118
+  s_2e1da3b18d1c53::t_6460bc16a85304 86
+src/lib/booking/slots.ts
+  s_2e1da3b18d1c53::t_68523272b8f399 1-103,105-156
+  s_2e1da3b18d1c53::t_3f9c8dd639d0a1 104
+src/lib/booking/time-zone.ts
+  s_2e1da3b18d1c53::t_58b4b5577f45bf 1-43,46-169
+  s_2e1da3b18d1c53::t_b15c55097950b7 44-45
+src/lib/booking/hours.test.ts
+  s_2e1da3b18d1c53::t_f8a1f99e2c355b 1-73,84-227
+  s_2e1da3b18d1c53::t_63bc3f6fde2709 74-83
+src/lib/booking/slots.test.ts
+  s_2e1da3b18d1c53::t_68de35315cc82f 98-102,105-125
+  s_2e1da3b18d1c53::t_fc2951a7ba33b2 1-97,103-104,126-190,192-453
+  s_2e1da3b18d1c53::t_808c6828fbdebb 191
+src/lib/booking/time-zone.test.ts
+  s_2e1da3b18d1c53::t_c3817adc209b8c 1-252
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "e1506b7b1f05da54fe1d7b408dd373519157adf1",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
