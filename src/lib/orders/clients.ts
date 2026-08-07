@@ -2,7 +2,7 @@ import "server-only";
 import { and, eq, or } from "drizzle-orm";
 import { getDb } from "@/db";
 import { clients } from "@/db/schema";
-import { firstRow } from "@/lib/invariant";
+import { maybeRow } from "@/lib/invariant";
 
 /**
  * Finds or creates the buyer's record.
@@ -60,7 +60,23 @@ export async function upsertClient(
     return existing.id;
   }
 
-  const created = firstRow(await db
+  /*
+   * The insert can lose a race with itself, and `onConflictDoNothing` is what
+   * makes losing survivable.
+   *
+   * The read above and this write are two statements, and `clients` carries a
+   * unique index on `(shop_id, email)` and another on `(shop_id, phone)`. Two
+   * orders from the same buyer at the same moment — a double-clicked "Buy
+   * now", two open tabs, a retried request — both found nothing and both
+   * inserted, and the loser got a raw Postgres 23505 that nothing caught. The
+   * buyer's checkout died on an error page for having clicked twice.
+   *
+   * `onConflictDoNothing` with no target covers both indexes, which a
+   * single-target `onConflictDoUpdate` cannot. An empty result then means the
+   * other request won, so the row it wrote is read and updated — the same work
+   * the `existing` branch above does, arrived at from the other direction.
+   */
+  const created = maybeRow(await db
     .insert(clients)
     .values({
       shopId,
@@ -69,8 +85,28 @@ export async function upsertClient(
       phone: data.phone,
       ...address,
     })
-    .returning({ id: clients.id }), "created");
-  return created.id;
+    .onConflictDoNothing()
+    .returning({ id: clients.id }));
+  if (created) return created.id;
+
+  const winner = await db.query.clients.findFirst({
+    where: and(eq(clients.shopId, shopId), match),
+  });
+  // Nothing to conflict with and nothing to find is not a race — it is a row
+  // this shop cannot hold, and the caller treats a null as "no client record".
+  if (!winner) return null;
+
+  await db
+    .update(clients)
+    .set({
+      name: data.name ?? winner.name,
+      email: data.email ?? winner.email,
+      phone: data.phone ?? winner.phone,
+      ...addressUpdate,
+      updatedAt: new Date(),
+    })
+    .where(eq(clients.id, winner.id));
+  return winner.id;
 }
 
 /**
