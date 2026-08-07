@@ -178,6 +178,16 @@ export const adminTh: PartialAdminDictionary = {
     downgrade: "ลดแพ็กเกจ",
   },
 
+  weekdays: {
+    sunday: "วันอาทิตย์",
+    monday: "วันจันทร์",
+    tuesday: "วันอังคาร",
+    wednesday: "วันพุธ",
+    thursday: "วันพฤหัสบดี",
+    friday: "วันศุกร์",
+    saturday: "วันเสาร์",
+  },
+
   settings: {
     taxIdPlaceholder: "0105551234567",
     identity: "ข้อมูลร้าน",
@@ -266,7 +276,7 @@ export const adminTh: PartialAdminDictionary = {
     showOnShop: "แสดงในร้านของฉัน",
     fillInFirst: "กรอกรายละเอียดด้านบนให้ครบก่อนเปิดใช้งาน",
     cardTitle: "ชำระด้วยบัตร",
-    cardBody: "ผู้ซื้อจ่ายด้วยบัตร Apple Pay หรือ Google Pay ได้โดยไม่ต้องออกจากหน้าชำระเงิน เงินเข้าบัญชี Stripe ของคุณโดยตรง — Sailo ไม่เคยถือเงินไว้ และหักค่าสินค้า 1% ต่อการขายผ่านบัตรแต่ละครั้ง",
+    cardBody: "ผู้ซื้อจ่ายด้วยบัตร Apple Pay หรือ Google Pay ได้โดยไม่ต้องออกจากหน้าชำระเงิน เงินเข้าบัญชี Stripe ของคุณโดยตรง — Sailo ไม่เคยถือเงินไว้ และหักค่าสินค้า {fee} ต่อการขายผ่านบัตรแต่ละครั้ง",
     stripeVerifying: "Stripe กำลังตรวจสอบ",
     finishSetup: "ตั้งค่าให้เสร็จ",
     notConnected: "ยังไม่เชื่อมต่อ",
@@ -494,6 +504,7 @@ export const adminTh: PartialAdminDictionary = {
     privacy: "ความเป็นส่วนตัว",
     terms: "เงื่อนไข",
     refunds: "การคืนเงิน",
+    gdpr: "GDPR",
     role: "ผู้ดูแลร้าน",
     suspended: "ร้านของคุณถูกระงับ",
     staffNotice: "คุณเข้าสู่ระบบในฐานะพนักงาน Sailo",

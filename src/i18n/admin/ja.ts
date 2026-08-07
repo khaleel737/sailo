@@ -89,6 +89,7 @@ export const adminJa: PartialAdminDictionary = {
     privacy: "プライバシー",
     terms: "利用規約",
     refunds: "返金",
+    gdpr: "GDPR",
     role: "ショップ管理",
     suspended: "あなたのショップは停止されています。",
     staffNotice: "Sailo スタッフとしてログインしています。",
@@ -316,7 +317,7 @@ export const adminJa: PartialAdminDictionary = {
     showOnShop: "自分のショップに表示する",
     fillInFirst: "有効にする前に、上の項目を入力してください。",
     cardTitle: "カード決済",
-    cardBody: "購入者は決済画面を離れずに、カード・Apple Pay・Google Payで支払えます。売上はあなた自身のStripeアカウントへ直接入ります — Sailoが預かることはなく、カード決済ごとに商品代金の1%をいただきます。",
+    cardBody: "購入者は決済画面を離れずに、カード・Apple Pay・Google Payで支払えます。売上はあなた自身のStripeアカウントへ直接入ります — Sailoが預かることはなく、カード決済ごとに商品代金の{fee}をいただきます。",
     stripeVerifying: "Stripeが確認中です",
     finishSetup: "設定を完了する",
     notConnected: "未接続",
@@ -357,6 +358,16 @@ export const adminJa: PartialAdminDictionary = {
     title: "配送",
     description: "標準・当日・店頭受取など、いくつでも追加できます。",
   },
+  weekdays: {
+    sunday: "日曜日",
+    monday: "月曜日",
+    tuesday: "火曜日",
+    wednesday: "水曜日",
+    thursday: "木曜日",
+    friday: "金曜日",
+    saturday: "土曜日",
+  },
+
   settings: {
     taxIdPlaceholder: "T1234567890123",
     identity: "基本情報",

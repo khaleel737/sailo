@@ -89,6 +89,7 @@ export const adminUk: PartialAdminDictionary = {
     privacy: "Конфіденційність",
     terms: "Умови",
     refunds: "Повернення",
+    gdpr: "GDPR",
     role: "Панель магазину",
     suspended: "Ваш магазин призупинено.",
     staffNotice: "Ви увійшли як працівник Sailo.",
@@ -316,7 +317,7 @@ export const adminUk: PartialAdminDictionary = {
     showOnShop: "Показувати в моїй крамниці",
     fillInFirst: "Заповніть дані вище, перш ніж вмикати.",
     cardTitle: "Оплата карткою",
-    cardBody: "Покупці платять карткою, Apple Pay або Google Pay, не залишаючи оформлення. Гроші йдуть прямо на ваш власний акаунт Stripe — Sailo їх ніколи не тримає й утримує 1 % вартості товару з кожного продажу карткою.",
+    cardBody: "Покупці платять карткою, Apple Pay або Google Pay, не залишаючи оформлення. Гроші йдуть прямо на ваш власний акаунт Stripe — Sailo їх ніколи не тримає й утримує {fee} вартості товару з кожного продажу карткою.",
     stripeVerifying: "Stripe перевіряє",
     finishSetup: "Завершити налаштування",
     notConnected: "Не підключено",
@@ -357,6 +358,16 @@ export const adminUk: PartialAdminDictionary = {
     title: "Доставка",
     description: "Додайте будь-які варіанти: звичайна, експрес, самовивіз.",
   },
+  weekdays: {
+    sunday: "Неділя",
+    monday: "Понеділок",
+    tuesday: "Вівторок",
+    wednesday: "Середа",
+    thursday: "Четвер",
+    friday: "П’ятниця",
+    saturday: "Субота",
+  },
+
   settings: {
     taxIdPlaceholder: "1234567890",
     identity: "Профіль",

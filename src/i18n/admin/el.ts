@@ -89,6 +89,7 @@ export const adminEl: PartialAdminDictionary = {
     privacy: "Απόρρητο",
     terms: "Όροι",
     refunds: "Επιστροφές",
+    gdpr: "GDPR",
     role: "Διαχείριση καταστήματος",
     suspended: "Το κατάστημά σου έχει ανασταλεί.",
     staffNotice: "Έχεις συνδεθεί ως προσωπικό της Sailo.",
@@ -316,7 +317,7 @@ export const adminEl: PartialAdminDictionary = {
     showOnShop: "Εμφάνιση στο κατάστημά μου",
     fillInFirst: "Συμπληρώστε τα στοιχεία παραπάνω πριν το ενεργοποιήσετε.",
     cardTitle: "Πληρωμές με κάρτα",
-    cardBody: "Οι αγοραστές πληρώνουν με κάρτα, Apple Pay ή Google Pay χωρίς να φύγουν από την πληρωμή. Τα χρήματα πάνε κατευθείαν στον δικό σας λογαριασμό Stripe — η Sailo δεν τα κρατά ποτέ και κρατά 1 % της αξίας των προϊόντων σε κάθε πώληση με κάρτα.",
+    cardBody: "Οι αγοραστές πληρώνουν με κάρτα, Apple Pay ή Google Pay χωρίς να φύγουν από την πληρωμή. Τα χρήματα πάνε κατευθείαν στον δικό σας λογαριασμό Stripe — η Sailo δεν τα κρατά ποτέ και κρατά {fee} της αξίας των προϊόντων σε κάθε πώληση με κάρτα.",
     stripeVerifying: "Το Stripe επαληθεύει",
     finishSetup: "Ολοκλήρωση ρύθμισης",
     notConnected: "Μη συνδεδεμένο",
@@ -357,6 +358,16 @@ export const adminEl: PartialAdminDictionary = {
     title: "Παράδοση",
     description: "Προσθέστε όσες επιλογές θέλετε: απλή, express, παραλαβή.",
   },
+  weekdays: {
+    sunday: "Κυριακή",
+    monday: "Δευτέρα",
+    tuesday: "Τρίτη",
+    wednesday: "Τετάρτη",
+    thursday: "Πέμπτη",
+    friday: "Παρασκευή",
+    saturday: "Σάββατο",
+  },
+
   settings: {
     taxIdPlaceholder: "EL123456789",
     identity: "Ταυτότητα",

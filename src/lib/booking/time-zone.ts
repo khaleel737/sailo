@@ -49,6 +49,11 @@ export function isTimeZone(value: unknown): value is string {
   }
 }
 
+/** A stored zone, or UTC when it is not one this runtime knows. */
+export function zoneOf(stored: unknown): string {
+  return isTimeZone(stored) ? stored : "UTC";
+}
+
 /** The wall clock in `timeZone` at a given instant. */
 export function zonedParts(
   instant: Date,

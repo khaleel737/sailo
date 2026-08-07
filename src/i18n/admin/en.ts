@@ -98,6 +98,7 @@ export const adminEn = {
     privacy: "Privacy",
     terms: "Terms",
     refunds: "Refunds",
+    gdpr: "GDPR",
   },
 
   /**
@@ -235,6 +236,10 @@ export const adminEn = {
     optionNamePlaceholderTwo: "Colour",
     optionValuesPlaceholder: "Small, Medium, Large",
     optionValuesPlaceholderTwo: "Red, Blue, Black",
+    valuesNudge:
+      "This reads as one value. Separate values with commas: 0.5 kg, 1 kg, 2 kg.",
+    stockHint:
+      "To count units left for each combination, turn on Track stock above.",
   },
 
   files: {
@@ -413,7 +418,7 @@ export const adminEn = {
     showOnShop: "Show on my shop",
     fillInFirst: "Fill in the details above before turning this on.",
     cardTitle: "Card payments",
-    cardBody: "Buyers pay by card, Apple Pay or Google Pay without leaving the checkout. The money goes straight into your own Stripe account — Sailo never holds it, and keeps 1% of the goods on each card sale.",
+    cardBody: "Buyers pay by card, Apple Pay or Google Pay without leaving the checkout. The money goes straight into your own Stripe account — Sailo never holds it, and keeps {fee} of the goods on each card sale.",
     stripeVerifying: "Stripe is verifying",
     finishSetup: "Finish setup",
     notConnected: "Not connected",
@@ -458,6 +463,16 @@ export const adminEn = {
     nameBuyersSee: "Name buyers see",
     physicalOnly:
       "Only physical products ask about delivery — digital downloads and services skip it. Collection options never ask the buyer for an address.",
+  },
+
+  weekdays: {
+    sunday: "Sunday",
+    monday: "Monday",
+    tuesday: "Tuesday",
+    wednesday: "Wednesday",
+    thursday: "Thursday",
+    friday: "Friday",
+    saturday: "Saturday",
   },
 
   settings: {
@@ -507,6 +522,18 @@ export const adminEn = {
     taxOnDeliveryBody: "Shipping is taxable in most places. Uncheck if yours is exempt.",
     taxId: "Tax ID",
     taxIdHint: "optional — printed on invoices",
+    booking: "Booking",
+    bookingBody: "When you take appointments. Buyers only ever see times you are open and have not already filled.",
+    timeZone: "Time zone",
+    timeZoneHint: "Opening hours are read in this zone, so a booking means the same time to both of you.",
+    openingHours: "Opening hours",
+    opensAt: "opens at",
+    closesAt: "closes at",
+    closed: "Closed",
+    closesBeforeOpens: "Closing time must be after opening time.",
+    slotSpacing: "Slot spacing",
+    slotSpacingHint: "How far apart appointments start. Leave as the service length unless you want tighter starts.",
+    slotFollowsDuration: "Follow the service length",
     shopIsLive: "Shop is live",
     shopIsLiveBody: "Turn this off to take your page offline. Visitors will see a 404.",
     title: "Settings",

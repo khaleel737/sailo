@@ -178,6 +178,16 @@ export const adminSq: PartialAdminDictionary = {
     downgrade: "Ulni planin",
   },
 
+  weekdays: {
+    sunday: "E diel",
+    monday: "E hënë",
+    tuesday: "E martë",
+    wednesday: "E mërkurë",
+    thursday: "E enjte",
+    friday: "E premte",
+    saturday: "E shtunë",
+  },
+
   settings: {
     taxIdPlaceholder: "K12345678L",
     identity: "Identiteti",
@@ -266,7 +276,7 @@ export const adminSq: PartialAdminDictionary = {
     showOnShop: "Shfaqe në dyqanin tim",
     fillInFirst: "Plotësoni të dhënat më sipër para se ta ndizni.",
     cardTitle: "Pagesa me kartë",
-    cardBody: "Blerësit paguajnë me kartë, Apple Pay ose Google Pay pa dalë nga arka. Paratë shkojnë direkt në llogarinë tuaj Stripe — Sailo nuk i mban kurrë dhe mban 1 % të mallit në çdo shitje me kartë.",
+    cardBody: "Blerësit paguajnë me kartë, Apple Pay ose Google Pay pa dalë nga arka. Paratë shkojnë direkt në llogarinë tuaj Stripe — Sailo nuk i mban kurrë dhe mban {fee} të mallit në çdo shitje me kartë.",
     stripeVerifying: "Stripe po verifikon",
     finishSetup: "Përfundo konfigurimin",
     notConnected: "I palidhur",
@@ -494,6 +504,7 @@ export const adminSq: PartialAdminDictionary = {
     privacy: "Privatësia",
     terms: "Kushtet",
     refunds: "Rimbursimet",
+    gdpr: "GDPR",
     role: "Administrimi i dyqanit",
     suspended: "Dyqani juaj është pezulluar.",
     staffNotice: "Jeni identifikuar si staf i Sailo.",

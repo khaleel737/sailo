@@ -89,6 +89,7 @@ export const adminNl: PartialAdminDictionary = {
     privacy: "Privacy",
     terms: "Voorwaarden",
     refunds: "Terugbetalingen",
+    gdpr: "GDPR",
     role: "Winkelbeheer",
     suspended: "Je winkel is opgeschort.",
     staffNotice: "Je bent ingelogd als Sailo-medewerker.",
@@ -316,7 +317,7 @@ export const adminNl: PartialAdminDictionary = {
     showOnShop: "Tonen in mijn winkel",
     fillInFirst: "Vul eerst de gegevens hierboven in voordat je dit aanzet.",
     cardTitle: "Kaartbetalingen",
-    cardBody: "Kopers betalen met kaart, Apple Pay of Google Pay zonder de checkout te verlaten. Het geld gaat rechtstreeks naar je eigen Stripe-account — Sailo houdt het nooit vast en houdt 1 % van de goederen in bij elke kaartverkoop.",
+    cardBody: "Kopers betalen met kaart, Apple Pay of Google Pay zonder de checkout te verlaten. Het geld gaat rechtstreeks naar je eigen Stripe-account — Sailo houdt het nooit vast en houdt {fee} van de goederen in bij elke kaartverkoop.",
     stripeVerifying: "Stripe controleert nog",
     finishSetup: "Instellen afronden",
     notConnected: "Niet verbonden",
@@ -357,6 +358,16 @@ export const adminNl: PartialAdminDictionary = {
     title: "Bezorging",
     description: "Voeg zoveel opties toe als je wilt: standaard, express, afhalen.",
   },
+  weekdays: {
+    sunday: "Zondag",
+    monday: "Maandag",
+    tuesday: "Dinsdag",
+    wednesday: "Woensdag",
+    thursday: "Donderdag",
+    friday: "Vrijdag",
+    saturday: "Zaterdag",
+  },
+
   settings: {
     taxIdPlaceholder: "NL123456789B01",
     identity: "Identiteit",

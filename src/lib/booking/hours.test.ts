@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   clockTime,
+  hoursOf,
   DEFAULT_WEEKLY_HOURS,
   isClosedAllWeek,
   isWeeklyHours,
@@ -223,5 +224,71 @@ describe("isClosedAllWeek", () => {
 
   it("is false when one day has a window", () => {
     expect(isClosedAllWeek(DEFAULT_WEEKLY_HOURS)).toBe(false);
+  });
+});
+
+describe("hoursOf", () => {
+  it("gives a shop that never opened the setting a sensible week", () => {
+    // Null is "not configured", and an empty week would read as a broken
+    // calendar rather than a closed shop.
+    expect(hoursOf(null)).toEqual(DEFAULT_WEEKLY_HOURS);
+    expect(hoursOf(undefined)).toEqual(DEFAULT_WEEKLY_HOURS);
+  });
+
+  it("returns a valid stored week untouched", () => {
+    const stored = normalizeWeeklyHours([
+      [],
+      [{ from: "10:00", to: "14:00" }],
+      [],
+      [],
+      [],
+      [],
+      [],
+    ]);
+    expect(hoursOf(stored)).toEqual(stored);
+  });
+
+  it("repairs a week an older build wrote rather than trusting it", () => {
+    const repaired = hoursOf([
+      [{ from: "09:00", to: "12:00" }, { from: "11:00", to: "17:00" }],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+    ]);
+    expect(repaired[0]).toEqual([{ from: "09:00", to: "17:00" }]);
+  });
+
+  it.each(["nonsense", 42, { monday: "9-5" }])(
+    "falls back to something usable for %j",
+    (stored) => {
+      expect(isWeeklyHours(hoursOf(stored))).toBe(true);
+    },
+  );
+
+  it("normalises even a week that validates, because overlap is legal to isWeeklyHours", () => {
+    /*
+     * The gap this closed. Two windows can each be well-formed and still
+     * overlap; `isWeeklyHours` checks them one at a time and says yes. The
+     * slot generator assumes they are disjoint and sorted, so returning the
+     * stored value untouched would have offered the same time twice.
+     */
+    const overlapping = [
+      [
+        { from: "09:00", to: "13:00" },
+        { from: "11:00", to: "17:00" },
+      ],
+      [], [], [], [], [], [],
+    ];
+    expect(isWeeklyHours(overlapping)).toBe(true);
+    expect(hoursOf(overlapping)[0]).toEqual([{ from: "09:00", to: "17:00" }]);
+  });
+
+  it("keeps a shop that deliberately closed every day closed", () => {
+    // Only null means "never configured". An all-closed week is a decision.
+    const closed = [[], [], [], [], [], [], []];
+    expect(hoursOf(closed)).toEqual(closed);
   });
 });

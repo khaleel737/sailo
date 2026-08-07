@@ -7,6 +7,7 @@ import {
   toIsoDate,
   zonedParts,
   zonedTimeToInstant,
+  zoneOf,
 } from "@/lib/booking/time-zone";
 
 /**
@@ -249,4 +250,19 @@ describe("toIsoDate and fromIsoDate", () => {
     expect(fromIsoDate("2028-02-29")).not.toBeNull();
     expect(fromIsoDate("2026-02-29")).toBeNull();
   });
+});
+
+describe("zoneOf", () => {
+  it("keeps a zone the runtime knows", () => {
+    expect(zoneOf("Europe/Lisbon")).toBe("Europe/Lisbon");
+  });
+
+  it.each([null, undefined, "", "Mars/Olympus", 42])(
+    "falls back to UTC for %j rather than throwing later",
+    (stored) => {
+      // A bad zone would otherwise surface as a RangeError deep in slot
+      // generation, on a page the seller cannot fix it from.
+      expect(zoneOf(stored)).toBe("UTC");
+    },
+  );
 });

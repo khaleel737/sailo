@@ -89,6 +89,7 @@ export const adminZh: PartialAdminDictionary = {
     privacy: "隐私",
     terms: "条款",
     refunds: "退款",
+    gdpr: "GDPR",
     role: "店铺管理",
     suspended: "你的店铺已被暂停。",
     staffNotice: "你正以 Sailo 员工身份登录。",
@@ -316,7 +317,7 @@ export const adminZh: PartialAdminDictionary = {
     showOnShop: "在我的店铺显示",
     fillInFirst: "打开之前请先填好上面的信息。",
     cardTitle: "刷卡支付",
-    cardBody: "买家无需离开结账页，即可用银行卡、Apple Pay 或 Google Pay 付款。钱直接进入你自己的 Stripe 账户 — Sailo 从不代管，每笔刷卡交易收取货款的 1%。",
+    cardBody: "买家无需离开结账页，即可用银行卡、Apple Pay 或 Google Pay 付款。钱直接进入你自己的 Stripe 账户 — Sailo 从不代管，每笔刷卡交易收取货款的 {fee}。",
     stripeVerifying: "Stripe 正在核验",
     finishSetup: "完成设置",
     notConnected: "未连接",
@@ -357,6 +358,16 @@ export const adminZh: PartialAdminDictionary = {
     title: "配送",
     description: "想加多少种方式都行：标准、当日、自取。",
   },
+  weekdays: {
+    sunday: "星期日",
+    monday: "星期一",
+    tuesday: "星期二",
+    wednesday: "星期三",
+    thursday: "星期四",
+    friday: "星期五",
+    saturday: "星期六",
+  },
+
   settings: {
     taxIdPlaceholder: "91310000MA1K12345X",
     identity: "身份信息",

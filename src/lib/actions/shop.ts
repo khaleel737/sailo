@@ -1,6 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { normalizeWeeklyHours, type WeeklyHours } from "@/lib/booking/hours";
+import { isTimeZone } from "@/lib/booking/time-zone";
 import { revalidateShop } from "@/lib/cache";
 import { redirect } from "next/navigation";
 import { and, eq, ne } from "drizzle-orm";
@@ -190,6 +192,41 @@ function readLocale(value: FormDataEntryValue | null): Locale | null {
   return LOCALES.some((l) => l.code === code) ? (code as Locale) : null;
 }
 
+/** The seller's zone, or the one they already had if this one is not real. */
+function readTimeZone(value: FormDataEntryValue | null, current: string): string {
+  const zone = String(value ?? "").trim();
+  return isTimeZone(zone) ? zone : current;
+}
+
+/**
+ * The week, as JSON from the hidden field the hours editor maintains.
+ *
+ * Normalised rather than merely validated, so windows that overlap or touch
+ * are merged before they reach the column — the slot generator assumes they
+ * are disjoint and sorted, and a hand-posted payload is under no obligation
+ * to be either.
+ */
+function readBookingHours(value: FormDataEntryValue | null): WeeklyHours | null {
+  const raw = String(value ?? "").trim();
+  if (!raw) return null;
+
+  try {
+    return normalizeWeeklyHours(JSON.parse(raw));
+  } catch {
+    // Unparseable means the field was tampered with or an older client posted
+    // it. Null restores the default week rather than storing nonsense.
+    return null;
+  }
+}
+
+/** Spacing between slot starts, or null to follow the service's own length. */
+function readSlotMinutes(value: FormDataEntryValue | null): number | null {
+  const minutes = Number(String(value ?? "").trim());
+  if (!Number.isFinite(minutes) || minutes <= 0) return null;
+  // A ceiling, so a crafted value cannot make one slot swallow a whole day.
+  return Math.min(Math.trunc(minutes), 24 * 60);
+}
+
 export async function updateShop(
   _prev: ActionState,
   formData: FormData,
@@ -230,6 +267,16 @@ export async function updateShop(
       taxInclusive: formData.get("taxInclusive") === "inclusive",
       taxOnDelivery: formData.get("taxOnDelivery") === "on",
       taxId: String(formData.get("taxId") ?? "").trim().slice(0, 64) || null,
+
+      /*
+       * Booking. Both arrive as text the client composed, so both are checked
+       * rather than stored: an unknown zone would make every slot calculation
+       * fall back to UTC silently, and malformed hours would sell nothing while
+       * looking configured.
+       */
+      timeZone: readTimeZone(formData.get("timeZone"), shop.timeZone),
+      bookingHours: readBookingHours(formData.get("bookingHours")),
+      bookingSlotMinutes: readSlotMinutes(formData.get("bookingSlotMinutes")),
       contactEmail: String(formData.get("contactEmail") ?? "").trim() || null,
       location: String(formData.get("location") ?? "").trim() || null,
       socials: readSocials(formData),

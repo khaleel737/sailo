@@ -89,6 +89,7 @@ export const adminPl: PartialAdminDictionary = {
     privacy: "Prywatność",
     terms: "Regulamin",
     refunds: "Zwroty",
+    gdpr: "GDPR",
     role: "Panel sklepu",
     suspended: "Twój sklep jest zawieszony.",
     staffNotice: "Jesteś zalogowany jako personel Sailo.",
@@ -316,7 +317,7 @@ export const adminPl: PartialAdminDictionary = {
     showOnShop: "Pokaż w moim sklepie",
     fillInFirst: "Uzupełnij dane powyżej, zanim to włączysz.",
     cardTitle: "Płatności kartą",
-    cardBody: "Kupujący płacą kartą, Apple Pay lub Google Pay bez opuszczania kasy. Pieniądze trafiają prosto na twoje konto Stripe — Sailo nigdy ich nie przechowuje i pobiera 1 % wartości towaru od każdej sprzedaży kartą.",
+    cardBody: "Kupujący płacą kartą, Apple Pay lub Google Pay bez opuszczania kasy. Pieniądze trafiają prosto na twoje konto Stripe — Sailo nigdy ich nie przechowuje i pobiera {fee} wartości towaru od każdej sprzedaży kartą.",
     stripeVerifying: "Stripe weryfikuje",
     finishSetup: "Dokończ konfigurację",
     notConnected: "Niepodłączone",
@@ -357,6 +358,16 @@ export const adminPl: PartialAdminDictionary = {
     title: "Dostawa",
     description: "Dodaj dowolne opcje: standardowa, ekspres, odbiór.",
   },
+  weekdays: {
+    sunday: "Niedziela",
+    monday: "Poniedziałek",
+    tuesday: "Wtorek",
+    wednesday: "Środa",
+    thursday: "Czwartek",
+    friday: "Piątek",
+    saturday: "Sobota",
+  },
+
   settings: {
     taxIdPlaceholder: "PL1234567890",
     identity: "Tożsamość",

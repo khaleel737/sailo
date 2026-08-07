@@ -178,6 +178,16 @@ export const adminSl: PartialAdminDictionary = {
     downgrade: "Preidi na nižji",
   },
 
+  weekdays: {
+    sunday: "Nedelja",
+    monday: "Ponedeljek",
+    tuesday: "Torek",
+    wednesday: "Sreda",
+    thursday: "Četrtek",
+    friday: "Petek",
+    saturday: "Sobota",
+  },
+
   settings: {
     taxIdPlaceholder: "SI12345678",
     identity: "Identiteta",
@@ -266,7 +276,7 @@ export const adminSl: PartialAdminDictionary = {
     showOnShop: "Prikaži v moji trgovini",
     fillInFirst: "Preden to vklopite, izpolnite podatke zgoraj.",
     cardTitle: "Plačilo s kartico",
-    cardBody: "Kupci plačajo s kartico, Apple Payem ali Google Payem, ne da bi zapustili blagajno. Denar gre naravnost na vaš lasten račun Stripe — Sailo ga nikoli ne zadrži in pri vsaki kartični prodaji obdrži 1 % vrednosti blaga.",
+    cardBody: "Kupci plačajo s kartico, Apple Payem ali Google Payem, ne da bi zapustili blagajno. Denar gre naravnost na vaš lasten račun Stripe — Sailo ga nikoli ne zadrži in pri vsaki kartični prodaji obdrži {fee} vrednosti blaga.",
     stripeVerifying: "Stripe preverja",
     finishSetup: "Dokončaj nastavitev",
     notConnected: "Ni povezano",
@@ -494,6 +504,7 @@ export const adminSl: PartialAdminDictionary = {
     privacy: "Zasebnost",
     terms: "Pogoji",
     refunds: "Vračila",
+    gdpr: "GDPR",
     role: "Upravljanje trgovine",
     suspended: "Vaša trgovina je začasno onemogočena.",
     staffNotice: "Prijavljeni ste kot osebje Sailo.",

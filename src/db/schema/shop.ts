@@ -1,5 +1,6 @@
 import { boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import type { ShopSocial } from "./json-types";
+import type { WeeklyHours } from "@/lib/booking/hours";
 import { user } from "./auth";
 
 /** The seller's shop, and the Stripe events we have already acted on. */
@@ -110,6 +111,29 @@ export const shops = pgTable(
     taxOnDelivery: boolean("tax_on_delivery").default(true).notNull(),
     /** VAT/GST registration number, printed on the invoice. */
     taxId: text("tax_id"),
+
+    /*
+     * Booking.
+     *
+     * `timeZone` is what makes opening hours mean anything: "we open at nine"
+     * is a wall-clock time in the seller's own zone, and storing it without
+     * one would make every appointment depend on where the server happened to
+     * run. UTC is the safe default rather than the right one — onboarding asks.
+     */
+    timeZone: text("time_zone").default("UTC").notNull(),
+    /**
+     * Seven days, each an array of `{ from, to }` wall-clock windows, so a
+     * shop that closes for lunch can say so. Validated by `isWeeklyHours` on
+     * the way out: jsonb hands back whatever was written, including by an
+     * older build.
+     */
+    bookingHours: jsonb("booking_hours").$type<WeeklyHours>(),
+    /**
+     * Minutes between slot starts, when the seller wants them tighter than the
+     * service is long — half-hourly starts for a 45-minute treatment. Null
+     * means the service's own duration sets the spacing.
+     */
+    bookingSlotMinutes: integer("booking_slot_minutes"),
 
     /*
      * Staff-side columns. Written only from /hq — the seller's own admin never

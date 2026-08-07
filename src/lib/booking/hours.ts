@@ -112,6 +112,29 @@ export const DEFAULT_WEEKLY_HOURS: WeeklyHours = [
   [],
 ];
 
+/**
+ * The week a shop actually keeps, from whatever jsonb handed back.
+ *
+ * Null is a shop that never opened the setting, and gets the default. Anything
+ * else is a row this build cannot read, and gets normalised rather than
+ * dropped — an empty week silently sells nothing and reads as a broken
+ * calendar rather than a closed shop.
+ */
+export function hoursOf(stored: unknown): WeeklyHours {
+  // Null is the only "not configured" value; a seller who closed every day
+  // meant it, and must not be handed the default back.
+  if (stored === null || stored === undefined) return DEFAULT_WEEKLY_HOURS;
+
+  /*
+   * Always normalised, never returned as stored even when it validates.
+   * `isWeeklyHours` checks each window on its own, so two that overlap pass it
+   * — and the slot generator assumes windows are disjoint and in order, which
+   * is a guarantee only normalising provides. Idempotent, so a week already in
+   * that shape comes back unchanged.
+   */
+  return normalizeWeeklyHours(stored);
+}
+
 /** True when no day has a window, which means the shop takes no bookings. */
 export function isClosedAllWeek(hours: WeeklyHours): boolean {
   return hours.every((day) => day.length === 0);

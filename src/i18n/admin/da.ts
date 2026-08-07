@@ -89,6 +89,7 @@ export const adminDa: PartialAdminDictionary = {
     privacy: "Privatliv",
     terms: "Vilkår",
     refunds: "Refusioner",
+    gdpr: "GDPR",
     role: "Butiksadmin",
     suspended: "Din butik er suspenderet.",
     staffNotice: "Du er logget ind som Sailo-medarbejder.",
@@ -316,7 +317,7 @@ export const adminDa: PartialAdminDictionary = {
     showOnShop: "Vis i min shop",
     fillInFirst: "Udfyld oplysningerne ovenfor, før du slår det til.",
     cardTitle: "Kortbetaling",
-    cardBody: "Købere betaler med kort, Apple Pay eller Google Pay uden at forlade betalingen. Pengene går direkte ind på din egen Stripe-konto — Sailo holder dem aldrig og beholder 1 % af varen ved hvert kortsalg.",
+    cardBody: "Købere betaler med kort, Apple Pay eller Google Pay uden at forlade betalingen. Pengene går direkte ind på din egen Stripe-konto — Sailo holder dem aldrig og beholder {fee} af varen ved hvert kortsalg.",
     stripeVerifying: "Stripe verificerer",
     finishSetup: "Afslut opsætning",
     notConnected: "Ikke forbundet",
@@ -357,6 +358,16 @@ export const adminDa: PartialAdminDictionary = {
     title: "Levering",
     description: "Tilføj lige så mange muligheder, du vil: standard, ekspres, afhentning.",
   },
+  weekdays: {
+    sunday: "Søndag",
+    monday: "Mandag",
+    tuesday: "Tirsdag",
+    wednesday: "Onsdag",
+    thursday: "Torsdag",
+    friday: "Fredag",
+    saturday: "Lørdag",
+  },
+
   settings: {
     taxIdPlaceholder: "DK12345678",
     identity: "Identitet",

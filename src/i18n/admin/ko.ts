@@ -178,6 +178,16 @@ export const adminKo: PartialAdminDictionary = {
     downgrade: "요금제 낮추기",
   },
 
+  weekdays: {
+    sunday: "일요일",
+    monday: "월요일",
+    tuesday: "화요일",
+    wednesday: "수요일",
+    thursday: "목요일",
+    friday: "금요일",
+    saturday: "토요일",
+  },
+
   settings: {
     taxIdPlaceholder: "123-45-67890",
     identity: "기본 정보",
@@ -266,7 +276,7 @@ export const adminKo: PartialAdminDictionary = {
     showOnShop: "내 가게에 표시",
     fillInFirst: "켜기 전에 위 항목을 채워 주세요.",
     cardTitle: "카드 결제",
-    cardBody: "구매자는 결제 화면을 벗어나지 않고 카드, Apple Pay, Google Pay로 결제합니다. 대금은 본인의 Stripe 계정으로 바로 들어가요 — Sailo가 보관하는 일은 없고, 카드 결제 건마다 상품가의 1%를 받습니다.",
+    cardBody: "구매자는 결제 화면을 벗어나지 않고 카드, Apple Pay, Google Pay로 결제합니다. 대금은 본인의 Stripe 계정으로 바로 들어가요 — Sailo가 보관하는 일은 없고, 카드 결제 건마다 상품가의 {fee}를 받습니다.",
     stripeVerifying: "Stripe가 확인 중이에요",
     finishSetup: "설정 마무리",
     notConnected: "연결 안 됨",
@@ -494,6 +504,7 @@ export const adminKo: PartialAdminDictionary = {
     privacy: "개인정보 처리방침",
     terms: "이용약관",
     refunds: "환불 정책",
+    gdpr: "GDPR",
     role: "가게 관리",
     suspended: "회원님의 가게가 정지되었습니다.",
     staffNotice: "Sailo 직원 계정으로 로그인되어 있습니다.",

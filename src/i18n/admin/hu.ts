@@ -89,6 +89,7 @@ export const adminHu: PartialAdminDictionary = {
     privacy: "Adatvédelem",
     terms: "Feltételek",
     refunds: "Visszatérítés",
+    gdpr: "GDPR",
     role: "Bolt adminisztráció",
     suspended: "A boltod fel van függesztve.",
     staffNotice: "Sailo munkatársként vagy bejelentkezve.",
@@ -316,7 +317,7 @@ export const adminHu: PartialAdminDictionary = {
     showOnShop: "Megjelenítés a boltomban",
     fillInFirst: "Töltsd ki a fenti adatokat, mielőtt bekapcsolod.",
     cardTitle: "Kártyás fizetés",
-    cardBody: "A vásárlók kártyával, Apple Payjel vagy Google Payjel fizetnek anélkül, hogy elhagynák a pénztárat. A pénz közvetlenül a saját Stripe-fiókodba érkezik — a Sailo soha nem tartja nála, és minden kártyás eladásnál az áru értékének 1 %-át tartja meg.",
+    cardBody: "A vásárlók kártyával, Apple Payjel vagy Google Payjel fizetnek anélkül, hogy elhagynák a pénztárat. A pénz közvetlenül a saját Stripe-fiókodba érkezik — a Sailo soha nem tartja nála, és minden kártyás eladásnál az áru értékének {fee}-át tartja meg.",
     stripeVerifying: "A Stripe ellenőriz",
     finishSetup: "Beállítás befejezése",
     notConnected: "Nincs csatlakoztatva",
@@ -357,6 +358,16 @@ export const adminHu: PartialAdminDictionary = {
     title: "Szállítás",
     description: "Adj hozzá bármennyi lehetőséget: normál, expressz, átvétel.",
   },
+  weekdays: {
+    sunday: "Vasárnap",
+    monday: "Hétfő",
+    tuesday: "Kedd",
+    wednesday: "Szerda",
+    thursday: "Csütörtök",
+    friday: "Péntek",
+    saturday: "Szombat",
+  },
+
   settings: {
     taxIdPlaceholder: "HU12345678",
     identity: "Azonosság",

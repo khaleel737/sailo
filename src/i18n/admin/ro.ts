@@ -89,6 +89,7 @@ export const adminRo: PartialAdminDictionary = {
     privacy: "Confidențialitate",
     terms: "Termeni",
     refunds: "Rambursări",
+    gdpr: "GDPR",
     role: "Administrare magazin",
     suspended: "Magazinul tău este suspendat.",
     staffNotice: "Ești autentificat ca personal Sailo.",
@@ -316,7 +317,7 @@ export const adminRo: PartialAdminDictionary = {
     showOnShop: "Arată în magazinul meu",
     fillInFirst: "Completează detaliile de mai sus înainte să activezi.",
     cardTitle: "Plăți cu cardul",
-    cardBody: "Cumpărătorii plătesc cu cardul, Apple Pay sau Google Pay fără să părăsească plata. Banii ajung direct în contul tău Stripe — Sailo nu îi ține niciodată și reține 1 % din valoarea mărfii la fiecare vânzare cu cardul.",
+    cardBody: "Cumpărătorii plătesc cu cardul, Apple Pay sau Google Pay fără să părăsească plata. Banii ajung direct în contul tău Stripe — Sailo nu îi ține niciodată și reține {fee} din valoarea mărfii la fiecare vânzare cu cardul.",
     stripeVerifying: "Stripe verifică",
     finishSetup: "Finalizează configurarea",
     notConnected: "Neconectat",
@@ -357,6 +358,16 @@ export const adminRo: PartialAdminDictionary = {
     title: "Livrare",
     description: "Adaugă oricâte opțiuni: standard, expres, ridicare.",
   },
+  weekdays: {
+    sunday: "Duminică",
+    monday: "Luni",
+    tuesday: "Marți",
+    wednesday: "Miercuri",
+    thursday: "Joi",
+    friday: "Vineri",
+    saturday: "Sâmbătă",
+  },
+
   settings: {
     taxIdPlaceholder: "RO12345678",
     identity: "Identitate",

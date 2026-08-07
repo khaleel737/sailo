@@ -178,6 +178,16 @@ export const adminMs: PartialAdminDictionary = {
     downgrade: "Turunkan pelan",
   },
 
+  weekdays: {
+    sunday: "Ahad",
+    monday: "Isnin",
+    tuesday: "Selasa",
+    wednesday: "Rabu",
+    thursday: "Khamis",
+    friday: "Jumaat",
+    saturday: "Sabtu",
+  },
+
   settings: {
     taxIdPlaceholder: "C1234567890",
     identity: "Identiti",
@@ -266,7 +276,7 @@ export const adminMs: PartialAdminDictionary = {
     showOnShop: "Papar di kedai saya",
     fillInFirst: "Isi maklumat di atas sebelum menghidupkan ini.",
     cardTitle: "Pembayaran kad",
-    cardBody: "Pembeli membayar dengan kad, Apple Pay atau Google Pay tanpa meninggalkan pembayaran. Wang masuk terus ke akaun Stripe anda sendiri — Sailo tidak pernah memegangnya dan mengambil 1 % nilai barang bagi setiap jualan kad.",
+    cardBody: "Pembeli membayar dengan kad, Apple Pay atau Google Pay tanpa meninggalkan pembayaran. Wang masuk terus ke akaun Stripe anda sendiri — Sailo tidak pernah memegangnya dan mengambil {fee} nilai barang bagi setiap jualan kad.",
     stripeVerifying: "Stripe sedang mengesahkan",
     finishSetup: "Selesaikan penyediaan",
     notConnected: "Tidak disambung",
@@ -494,6 +504,7 @@ export const adminMs: PartialAdminDictionary = {
     privacy: "Privasi",
     terms: "Terma",
     refunds: "Pemulangan wang",
+    gdpr: "GDPR",
     role: "Pentadbiran kedai",
     suspended: "Kedai anda digantung.",
     staffNotice: "Anda log masuk sebagai kakitangan Sailo.",

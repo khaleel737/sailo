@@ -89,6 +89,7 @@ export const adminAr: PartialAdminDictionary = {
     privacy: "الخصوصية",
     terms: "الشروط",
     refunds: "الاسترجاع",
+    gdpr: "GDPR",
     role: "إدارة المتجر",
     suspended: "متجرك موقوف.",
     staffNotice: "أنت مسجَّل كموظف في سايلو.",
@@ -316,7 +317,7 @@ export const adminAr: PartialAdminDictionary = {
     showOnShop: "إظهاره في متجري",
     fillInFirst: "املأ التفاصيل بالأعلى قبل تفعيله.",
     cardTitle: "الدفع بالبطاقة",
-    cardBody: "يدفع المشترون بالبطاقة أو Apple Pay أو Google Pay دون مغادرة صفحة الدفع. يذهب المال مباشرة إلى حساب Stripe الخاص بك — لا تحتفظ به Sailo أبدًا، وتأخذ 1% من قيمة البضاعة في كل عملية بطاقة.",
+    cardBody: "يدفع المشترون بالبطاقة أو Apple Pay أو Google Pay دون مغادرة صفحة الدفع. يذهب المال مباشرة إلى حساب Stripe الخاص بك — لا تحتفظ به Sailo أبدًا، وتأخذ {fee} من قيمة البضاعة في كل عملية بطاقة.",
     stripeVerifying: "Stripe يتحقق",
     finishSetup: "إكمال الإعداد",
     notConnected: "غير متصل",
@@ -357,6 +358,16 @@ export const adminAr: PartialAdminDictionary = {
     title: "التوصيل",
     description: "أضف ما تشاء من خيارات: عادي، سريع، استلام.",
   },
+  weekdays: {
+    sunday: "الأحد",
+    monday: "الاثنين",
+    tuesday: "الثلاثاء",
+    wednesday: "الأربعاء",
+    thursday: "الخميس",
+    friday: "الجمعة",
+    saturday: "السبت",
+  },
+
   settings: {
     taxIdPlaceholder: "300123456700003",
     identity: "الهوية",

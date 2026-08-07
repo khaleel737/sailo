@@ -89,6 +89,7 @@ export const adminCs: PartialAdminDictionary = {
     privacy: "Soukromí",
     terms: "Podmínky",
     refunds: "Vrácení peněz",
+    gdpr: "GDPR",
     role: "Správa obchodu",
     suspended: "Váš obchod je pozastaven.",
     staffNotice: "Jste přihlášeni jako personál Sailo.",
@@ -316,7 +317,7 @@ export const adminCs: PartialAdminDictionary = {
     showOnShop: "Zobrazit v mém obchodě",
     fillInFirst: "Než to zapnete, vyplňte údaje výše.",
     cardTitle: "Platby kartou",
-    cardBody: "Kupující platí kartou, přes Apple Pay nebo Google Pay bez odchodu z pokladny. Peníze jdou přímo na váš vlastní účet Stripe — Sailo je nikdy nedrží a z každého prodeje kartou si nechává 1 % z ceny zboží.",
+    cardBody: "Kupující platí kartou, přes Apple Pay nebo Google Pay bez odchodu z pokladny. Peníze jdou přímo na váš vlastní účet Stripe — Sailo je nikdy nedrží a z každého prodeje kartou si nechává {fee} z ceny zboží.",
     stripeVerifying: "Stripe ověřuje",
     finishSetup: "Dokončit nastavení",
     notConnected: "Nepřipojeno",
@@ -357,6 +358,16 @@ export const adminCs: PartialAdminDictionary = {
     title: "Doprava",
     description: "Přidejte libovolné možnosti: standardní, expres, osobní odběr.",
   },
+  weekdays: {
+    sunday: "Neděle",
+    monday: "Pondělí",
+    tuesday: "Úterý",
+    wednesday: "Středa",
+    thursday: "Čtvrtek",
+    friday: "Pátek",
+    saturday: "Sobota",
+  },
+
   settings: {
     taxIdPlaceholder: "CZ12345678",
     identity: "Identita",

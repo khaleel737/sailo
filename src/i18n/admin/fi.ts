@@ -89,6 +89,7 @@ export const adminFi: PartialAdminDictionary = {
     privacy: "Tietosuoja",
     terms: "Ehdot",
     refunds: "Hyvitykset",
+    gdpr: "GDPR",
     role: "Kaupan hallinta",
     suspended: "Kauppasi on jäädytetty.",
     staffNotice: "Olet kirjautunut Sailon henkilökuntana.",
@@ -316,7 +317,7 @@ export const adminFi: PartialAdminDictionary = {
     showOnShop: "Näytä kaupassani",
     fillInFirst: "Täytä yllä olevat tiedot ennen kuin otat tämän käyttöön.",
     cardTitle: "Korttimaksut",
-    cardBody: "Ostajat maksavat kortilla, Apple Paylla tai Google Paylla poistumatta kassalta. Rahat menevät suoraan omalle Stripe-tilillesi — Sailo ei koskaan pidä niitä ja pidättää 1 % tavaran arvosta jokaisesta korttimyynnistä.",
+    cardBody: "Ostajat maksavat kortilla, Apple Paylla tai Google Paylla poistumatta kassalta. Rahat menevät suoraan omalle Stripe-tilillesi — Sailo ei koskaan pidä niitä ja pidättää {fee} tavaran arvosta jokaisesta korttimyynnistä.",
     stripeVerifying: "Stripe tarkistaa",
     finishSetup: "Viimeistele käyttöönotto",
     notConnected: "Ei yhdistetty",
@@ -357,6 +358,16 @@ export const adminFi: PartialAdminDictionary = {
     title: "Toimitus",
     description: "Lisää niin monta vaihtoehtoa kuin haluat: vakio, pika, nouto.",
   },
+  weekdays: {
+    sunday: "Sunnuntai",
+    monday: "Maanantai",
+    tuesday: "Tiistai",
+    wednesday: "Keskiviikko",
+    thursday: "Torstai",
+    friday: "Perjantai",
+    saturday: "Lauantai",
+  },
+
   settings: {
     taxIdPlaceholder: "FI12345678",
     identity: "Tiedot",

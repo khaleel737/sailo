@@ -19,6 +19,8 @@ import { OrdersContactCard } from "./orders-contact-card";
 import { PublishCard } from "./publish-card";
 import { SocialLinksCard } from "./social-links-card";
 import { TaxCard } from "./tax-card";
+import { BookingCard } from "./booking-card";
+import { hoursOf } from "@/lib/booking/hours";
 
 const PRESET_COLORS = [
   "#111111", "#4f46e5", "#0ea5e9", "#059669",
@@ -103,6 +105,8 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
       <OrdersContactCard shop={shop} t={t} />
 
       <TaxCard shop={shop} />
+
+      <BookingCard shop={shop} hours={hoursOf(shop.bookingHours)} />
 
       <SocialLinksCard socialByPlatform={socialByPlatform} />
 

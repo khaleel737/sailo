@@ -178,6 +178,16 @@ export const adminFil: PartialAdminDictionary = {
     downgrade: "Bumaba ng plan",
   },
 
+  weekdays: {
+    sunday: "Linggo",
+    monday: "Lunes",
+    tuesday: "Martes",
+    wednesday: "Miyerkules",
+    thursday: "Huwebes",
+    friday: "Biyernes",
+    saturday: "Sabado",
+  },
+
   settings: {
     taxIdPlaceholder: "123-456-789-000",
     identity: "Pagkakakilanlan",
@@ -266,7 +276,7 @@ export const adminFil: PartialAdminDictionary = {
     showOnShop: "Ipakita sa tindahan ko",
     fillInFirst: "Punan muna ang mga detalye sa itaas bago ito buksan.",
     cardTitle: "Pagbabayad gamit ang card",
-    cardBody: "Nagbabayad ang mga bumibili gamit ang card, Apple Pay o Google Pay nang hindi umaalis sa checkout. Diretso sa sarili mong Stripe account ang pera — hindi ito kailanman hawak ng Sailo, at 1% ng halaga ng paninda ang kinukuha sa bawat card na benta.",
+    cardBody: "Nagbabayad ang mga bumibili gamit ang card, Apple Pay o Google Pay nang hindi umaalis sa checkout. Diretso sa sarili mong Stripe account ang pera — hindi ito kailanman hawak ng Sailo, at {fee} ng halaga ng paninda ang kinukuha sa bawat card na benta.",
     stripeVerifying: "Nagve-verify ang Stripe",
     finishSetup: "Tapusin ang set up",
     notConnected: "Hindi nakakonekta",
@@ -494,6 +504,7 @@ export const adminFil: PartialAdminDictionary = {
     privacy: "Privacy",
     terms: "Mga tuntunin",
     refunds: "Mga refund",
+    gdpr: "GDPR",
     role: "Admin ng tindahan",
     suspended: "Suspendido ang tindahan mo.",
     staffNotice: "Naka-sign in ka bilang staff ng Sailo.",

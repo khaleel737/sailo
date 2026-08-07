@@ -178,6 +178,16 @@ export const adminBg: PartialAdminDictionary = {
     downgrade: "Понижи плана",
   },
 
+  weekdays: {
+    sunday: "Неделя",
+    monday: "Понеделник",
+    tuesday: "Вторник",
+    wednesday: "Сряда",
+    thursday: "Четвъртък",
+    friday: "Петък",
+    saturday: "Събота",
+  },
+
   settings: {
     taxIdPlaceholder: "BG123456789",
     identity: "Самоличност",
@@ -266,7 +276,7 @@ export const adminBg: PartialAdminDictionary = {
     showOnShop: "Показвай в моя магазин",
     fillInFirst: "Попълнете данните по-горе, преди да включите това.",
     cardTitle: "Плащане с карта",
-    cardBody: "Купувачите плащат с карта, Apple Pay или Google Pay, без да напускат плащането. Парите отиват направо в собствената ви сметка в Stripe — Sailo никога не ги държи и задържа 1 % от стойността на стоката при всяка продажба с карта.",
+    cardBody: "Купувачите плащат с карта, Apple Pay или Google Pay, без да напускат плащането. Парите отиват направо в собствената ви сметка в Stripe — Sailo никога не ги държи и задържа {fee} от стойността на стоката при всяка продажба с карта.",
     stripeVerifying: "Stripe проверява",
     finishSetup: "Завърши настройката",
     notConnected: "Няма връзка",
@@ -494,6 +504,7 @@ export const adminBg: PartialAdminDictionary = {
     privacy: "Поверителност",
     terms: "Условия",
     refunds: "Възстановявания",
+    gdpr: "GDPR",
     role: "Управление на магазина",
     suspended: "Магазинът ви е спрян.",
     staffNotice: "Влезли сте като служител на Sailo.",

@@ -178,6 +178,16 @@ export const adminId: PartialAdminDictionary = {
     downgrade: "Turunkan paket",
   },
 
+  weekdays: {
+    sunday: "Minggu",
+    monday: "Senin",
+    tuesday: "Selasa",
+    wednesday: "Rabu",
+    thursday: "Kamis",
+    friday: "Jumat",
+    saturday: "Sabtu",
+  },
+
   settings: {
     taxIdPlaceholder: "01.234.567.8-901.000",
     identity: "Identitas",
@@ -266,7 +276,7 @@ export const adminId: PartialAdminDictionary = {
     showOnShop: "Tampilkan di tokoku",
     fillInFirst: "Isi detail di atas dulu sebelum menyalakan ini.",
     cardTitle: "Pembayaran kartu",
-    cardBody: "Pembeli membayar dengan kartu, Apple Pay atau Google Pay tanpa meninggalkan halaman bayar. Uangnya langsung masuk ke akun Stripe milikmu sendiri — Sailo tidak pernah menahannya, dan mengambil 1 % dari nilai barang di setiap transaksi kartu.",
+    cardBody: "Pembeli membayar dengan kartu, Apple Pay atau Google Pay tanpa meninggalkan halaman bayar. Uangnya langsung masuk ke akun Stripe milikmu sendiri — Sailo tidak pernah menahannya, dan mengambil {fee} dari nilai barang di setiap transaksi kartu.",
     stripeVerifying: "Stripe sedang memverifikasi",
     finishSetup: "Selesaikan penyiapan",
     notConnected: "Belum terhubung",
@@ -494,6 +504,7 @@ export const adminId: PartialAdminDictionary = {
     privacy: "Privasi",
     terms: "Ketentuan",
     refunds: "Pengembalian dana",
+    gdpr: "GDPR",
     role: "Admin toko",
     suspended: "Toko Anda ditangguhkan.",
     staffNotice: "Anda masuk sebagai staf Sailo.",

@@ -178,6 +178,16 @@ export const adminVi: PartialAdminDictionary = {
     downgrade: "Hạ gói",
   },
 
+  weekdays: {
+    sunday: "Chủ nhật",
+    monday: "Thứ Hai",
+    tuesday: "Thứ Ba",
+    wednesday: "Thứ Tư",
+    thursday: "Thứ Năm",
+    friday: "Thứ Sáu",
+    saturday: "Thứ Bảy",
+  },
+
   settings: {
     taxIdPlaceholder: "0312345678",
     identity: "Thông tin",
@@ -266,7 +276,7 @@ export const adminVi: PartialAdminDictionary = {
     showOnShop: "Hiện trên cửa hàng của tôi",
     fillInFirst: "Điền đủ thông tin phía trên trước khi bật.",
     cardTitle: "Thanh toán thẻ",
-    cardBody: "Người mua trả bằng thẻ, Apple Pay hoặc Google Pay mà không rời trang thanh toán. Tiền vào thẳng tài khoản Stripe của chính bạn — Sailo không bao giờ giữ, và giữ lại 1 % giá trị hàng ở mỗi lần bán qua thẻ.",
+    cardBody: "Người mua trả bằng thẻ, Apple Pay hoặc Google Pay mà không rời trang thanh toán. Tiền vào thẳng tài khoản Stripe của chính bạn — Sailo không bao giờ giữ, và giữ lại {fee} giá trị hàng ở mỗi lần bán qua thẻ.",
     stripeVerifying: "Stripe đang xác minh",
     finishSetup: "Hoàn tất thiết lập",
     notConnected: "Chưa kết nối",
@@ -494,6 +504,7 @@ export const adminVi: PartialAdminDictionary = {
     privacy: "Quyền riêng tư",
     terms: "Điều khoản",
     refunds: "Hoàn tiền",
+    gdpr: "GDPR",
     role: "Quản trị cửa hàng",
     suspended: "Cửa hàng của bạn đã bị tạm ngưng.",
     staffNotice: "Bạn đang đăng nhập với tư cách nhân viên Sailo.",
