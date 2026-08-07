@@ -6,6 +6,8 @@ import { orders, shops, stripeEvents } from "@/db/schema";
 import { stripe } from "@/lib/stripe";
 import { abandonOrder, restoreStock } from "@/lib/inventory";
 import { releaseDownloads } from "@/lib/downloads";
+import { createInvoiceForOrder } from "@/lib/invoices";
+import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";
 import { freePlanFields, subscriptionFields } from "@/lib/billing-map";
 
 /**
@@ -462,6 +464,47 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
        * a redelivery sends one email, not two.
        */
       await releaseDownloads(order.id);
+
+      /*
+       * The invoice and the buyer's confirmation, issued where the money is.
+       *
+       * Both used to run at checkout, which on the card rail is before the
+       * buyer has paid: an abandoned session left a claimed invoice number
+       * gapping a sequence a tax authority expects unbroken, and an
+       * un-recallable "we have your order" for an order the sweep then
+       * cancelled. Every other rail still issues them at checkout, because on
+       * those the order *is* the commitment and no webhook is coming.
+       *
+       * The token was minted before the session so the success URL could name
+       * it, and travels in the session's metadata — so the link the buyer was
+       * handed resolves to the invoice created here. `createInvoiceForOrder`
+       * is keyed on the order, so a redelivery returns the existing one rather
+       * than claiming a second number.
+       */
+      const paidShop = await db.query.shops.findFirst({
+        where: eq(shops.id, order.shopId),
+      });
+      if (paidShop) {
+        const invoice = await createInvoiceForOrder(
+          order.shopId,
+          order.id,
+          session.metadata?.invoiceToken || undefined,
+        );
+
+        if (order.customerEmail && !order.confirmationSentAt) {
+          await confirmBuyerByEmail({
+            shop: paidShop,
+            orderId: order.id,
+            invoice,
+            delivery: {
+              deliversFiles: Boolean(order.downloadToken),
+              unlockNow: Boolean(order.downloadToken),
+              downloadToken: order.downloadToken,
+            },
+            base: process.env.NEXT_PUBLIC_APP_URL ?? "",
+          });
+        }
+      }
 
       return `order ${order.id} paid`;
     }

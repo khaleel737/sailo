@@ -206,3 +206,41 @@ describe("the abandonment paths", () => {
     expect(body).not.toContain("abandonOrder(");
   });
 });
+
+/**
+ * Where a card order's settlement side effects actually happen.
+ *
+ * The invoice number and the buyer's confirmation used to be issued at
+ * checkout, which on the card rail is before the buyer has paid. Moving them
+ * behind the Stripe call closed only the case where Stripe's API refused; the
+ * common failure — reaching the payment page and closing the tab — still burnt
+ * an invoice number and still sent mail that could not be recalled, for an
+ * order the sweep cancelled a day later.
+ *
+ * They belong where the money arrives. This pins that they are there, because
+ * the checkout side only knows to skip them if this side does them.
+ */
+describe("settlement side effects on the paid path", () => {
+  const webhook = readFileSync("src/lib/stripe-webhooks.ts", "utf8");
+  const paid = webhook.slice(
+    webhook.indexOf("await releaseDownloads(order.id);"),
+    webhook.indexOf("return `order ${order.id} paid`"),
+  );
+
+  it("issues the invoice once the money has arrived", () => {
+    expect(paid).toContain("createInvoiceForOrder(");
+  });
+
+  it("uses the token the success URL was built from", () => {
+    // Minted before the session so the URL could name it, and carried in the
+    // session metadata. A fresh token here would 404 the link the buyer holds.
+    expect(paid).toContain("session.metadata?.invoiceToken");
+  });
+
+  it("tells the buyer, and only once", () => {
+    expect(paid).toContain("confirmBuyerByEmail(");
+    // `confirmationSentAt` is set by the checkout path on non-card rails, so
+    // this must not send a second copy on a redelivered webhook.
+    expect(paid).toContain("!order.confirmationSentAt");
+  });
+});

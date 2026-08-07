@@ -425,6 +425,7 @@ export async function createOrderIntent(
         quantity: line.quantity,
       })),
       successUrl: `${base}/invoice/${invoiceToken}?paid=1`,
+      invoiceToken,
       cancelUrl:
         lines.length === 1
           ? `${base}/${shop.handle}/p/${head.product.slug}?cancelled=1`
@@ -439,7 +440,27 @@ export async function createOrderIntent(
 
   /* ---- Past here the order stands -------------------------------------- */
 
-  const invoice = await createInvoiceForOrder(shop.id, order.id, invoiceToken);
+  /*
+   * Whether the money is settled by the time this function returns.
+   *
+   * On every rail but card it is, in the only sense that matters: there is no
+   * payment step to wait for. A bank transfer or a cash-on-delivery order is a
+   * commitment the moment it is placed, the seller confirms the money later by
+   * hand, and no webhook is ever coming — so the invoice and the confirmation
+   * email have to be issued here or they never will be.
+   *
+   * A card order is the opposite. `handOffToStripe` has only created a
+   * Checkout Session; the buyer has not paid and may never. Issuing an invoice
+   * number now leaves a hole in the sequence when they abandon, and sending
+   * "we have your order" hands them something un-recallable for an order the
+   * sweep will cancel in 24 hours. Both move to
+   * `checkout.session.completed`, which is where the money actually arrives.
+   */
+  const settlesAtCheckout = method.type !== "card";
+
+  const invoice = settlesAtCheckout
+    ? await createInvoiceForOrder(shop.id, order.id, invoiceToken)
+    : null;
 
   /*
    * Best effort, and never fails the checkout.
@@ -450,7 +471,7 @@ export async function createOrderIntent(
    * cancel, which is a real remaining gap: closing it means moving the send
    * onto the payment webhook, not reordering this function again.
    */
-  if (email) {
+  if (email && settlesAtCheckout) {
     await confirmBuyerByEmail({
       shop,
       orderId: order.id,

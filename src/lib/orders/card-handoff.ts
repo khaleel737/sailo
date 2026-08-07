@@ -25,6 +25,8 @@ export async function handOffToStripe(opts: {
   items: { name: string; unitPriceCents: number; quantity: number }[];
   successUrl: string;
   cancelUrl: string;
+  /** Passed to Stripe so the webhook can issue the invoice after payment. */
+  invoiceToken: string;
 }): Promise<CardHandoffResult> {
   const db = getDb();
 
@@ -43,6 +45,7 @@ export async function handOffToStripe(opts: {
       items: opts.items,
       successUrl: opts.successUrl,
       cancelUrl: opts.cancelUrl,
+      invoiceToken: opts.invoiceToken,
     });
     if (!session.url) throw new Error("Stripe returned no checkout URL");
 

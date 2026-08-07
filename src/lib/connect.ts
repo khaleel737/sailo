@@ -215,6 +215,12 @@ export async function createCheckoutSession(opts: {
   /** Where to send the buyer afterwards. */
   successUrl: string;
   cancelUrl: string;
+  /**
+   * The invoice's public token, minted before the invoice exists so the
+   * success URL can name it. Carried in metadata for the webhook to issue the
+   * invoice against once the money has actually arrived.
+   */
+  invoiceToken?: string;
 }) {
   const { shop, order } = opts;
   if (!shop.stripeAccountId) throw new Error("Shop has no connected Stripe account");
@@ -326,7 +332,17 @@ export async function createCheckoutSession(opts: {
       client_reference_id: order.id,
       // The webhook may arrive on the platform endpoint with only the event to
       // go on, so the order id travels on both the session and the payment.
-      metadata: { orderId: order.id, shopId: shop.id },
+      /*
+       * `invoiceToken` rides along because the invoice is not issued until the
+       * money arrives, and the success URL has to name it before that. The
+       * webhook reads it back and creates the invoice with the same token, so
+       * the link the buyer was given resolves the moment they return.
+       */
+      metadata: {
+        orderId: order.id,
+        shopId: shop.id,
+        ...(opts.invoiceToken ? { invoiceToken: opts.invoiceToken } : {}),
+      },
       payment_intent_data: {
         metadata: { orderId: order.id, shopId: shop.id },
         description: `${shop.name} — ${orderSummaryTitle(order)}`,

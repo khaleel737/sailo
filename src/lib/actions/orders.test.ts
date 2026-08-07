@@ -62,6 +62,23 @@ describe("createOrderIntent — nothing irreversible before the payment handoff"
    * every abandonment path calls — see inventory.test.ts, which pins that.
    */
 
+  it("issues the invoice and the email only on rails that settle at checkout", () => {
+    /*
+     * The stronger rule that replaced "after the handoff".
+     *
+     * Moving them after the Stripe call only closed the case where Stripe's
+     * API refused. A buyer who reached the payment page and closed the tab —
+     * far more common — still claimed an invoice number that gapped the
+     * sequence and still received an un-recallable "we have your order" for an
+     * order the sweep then cancelled. On the card rail both now happen on
+     * `checkout.session.completed`; every other rail keeps them here, because
+     * there the order is the commitment and no webhook is coming.
+     */
+    expect(source).toContain("const settlesAtCheckout = method.type !== \"card\"");
+    expect(source).toContain("settlesAtCheckout\n    ? await createInvoiceForOrder(");
+    expect(source).toContain("if (email && settlesAtCheckout)");
+  });
+
   it("hands off to Stripe before claiming an invoice number", () => {
     // Numbers are claimed from a per-shop sequence. One claimed for an order
     // that is then rolled back leaves a hole no later invoice fills.
