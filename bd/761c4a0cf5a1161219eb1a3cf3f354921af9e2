@@ -1,0 +1,24 @@
+src/db/replica.test.ts
+  s_2e1da3b18d1c53::t_2af9867a8b281a 47,49-55,57-98
+  s_2e1da3b18d1c53::t_8cc62f81b3e5cf 3
+src/db/index.ts
+  s_2e1da3b18d1c53::t_82bbe27d9cb425 105-110
+  s_2e1da3b18d1c53::t_a6ba111613f78d 85-102
+  s_2e1da3b18d1c53::t_cf3191484e96ac 13-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "bd761c4a0cf5a1161219eb1a3cf3f354921af9e2",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
