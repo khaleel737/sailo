@@ -1,0 +1,30 @@
+src/lib/exporters.ts
+  s_3fd229194f6299::t_7153cae57e6d18 260-262
+src/db/replica.test.ts
+  s_3fd229194f6299::t_a0af547fbb1770 133-136
+src/lib/queries/orders.ts
+  s_3fd229194f6299::t_7153cae57e6d18 37-57,72-73
+src/lib/orders/resolve-lines.ts
+  s_3fd229194f6299::t_390b9ebf38fb2d 58-102,109
+  s_3fd229194f6299::t_68ce7e9dde071d 2
+src/lib/queries/products.ts
+  s_3fd229194f6299::t_636cdb2c765a54 283-295,299
+src/lib/hq/overview.ts
+  s_3fd229194f6299::t_a0af547fbb1770 4,12-26,29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "27dd8799740b8f3eea1eb8d68e20808029a92611",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
