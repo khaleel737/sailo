@@ -141,7 +141,10 @@ export async function createShop(
     where: eq(shops.userId, user.id),
     columns: { id: true },
   });
-  if (existing) redirect("/admin");
+  if (existing) {
+    revalidatePath("/admin", "layout");
+    redirect("/admin");
+  }
 
   let shop: { id: string } | undefined;
   try {
@@ -180,6 +183,16 @@ export async function createShop(
     });
   }
 
+  /*
+   * Purge before the hop, or the hop can loop. /admin's "no shop → go to
+   * onboarding" and onboarding's "has shop → go to admin" are both streamed
+   * client-side redirects, and the router caches them. Creating the shop just
+   * made every cached copy of the first one wrong — without this purge the
+   * browser replays it against the fresh second one and ping-pongs between
+   * the two routes without ever asking the server again.
+   */
+  revalidatePath("/admin", "layout");
+  revalidatePath("/onboarding");
   redirect("/admin?welcome=1");
 }
 
