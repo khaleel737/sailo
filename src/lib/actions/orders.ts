@@ -25,6 +25,7 @@ import { variantLabel } from "@/lib/variants";
 import { releaseStock, reserveStock } from "@/lib/inventory";
 import { handOffToStripe } from "@/lib/orders/card-handoff";
 import { claimCouponRedemption } from "@/lib/orders/coupon-redemption";
+import { claimSlots, releaseSlots } from "@/lib/booking/claim";
 import { downloadUrl } from "@/lib/downloads";
 import { resolveDigitalDelivery } from "@/lib/orders/digital-delivery";
 import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";
@@ -358,6 +359,32 @@ export async function createOrderIntent(
 
   const order = firstRow(inserted, "order");
 
+  /*
+   * The appointments, claimed the way the stock was.
+   *
+   * `resolveLines` re-derived every slot against the shop's hours and its
+   * existing bookings, but that is a read: two buyers asking for the same time
+   * in the same second both passed it, and the shop owed one appointment to
+   * two people with nothing anywhere to notice. The unique index behind
+   * `claimSlots` is what actually decides, and it decides once.
+   *
+   * After the insert because the claim carries a foreign key to the order, and
+   * before the coupon because losing a slot must not also burn a discount.
+   */
+  const slots = lines.flatMap((line) =>
+    line.scheduledFor && line.productId
+      ? [{ productId: line.productId, startsAt: line.scheduledFor }]
+      : [],
+  );
+  if (!(await claimSlots(order.id, slots))) {
+    await releaseStockFor(taken);
+    await db.delete(orders).where(eq(orders.id, order.id));
+    return {
+      ok: false,
+      error: "That time has just been taken. Pick another and try again.",
+    };
+  }
+
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
 
   /*
@@ -396,6 +423,9 @@ export async function createOrderIntent(
    */
   if (coupon && !(await claimCouponRedemption(coupon))) {
     await releaseStockFor(taken);
+    // The delete cascades to `booking_claims`, but saying so here rather than
+    // relying on it keeps the undo readable next to the thing it undoes.
+    await releaseSlots(order.id);
     await db.delete(orders).where(eq(orders.id, order.id));
     return { ok: false, error: COUPON_MESSAGES.used_up };
   }

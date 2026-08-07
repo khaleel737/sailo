@@ -3,6 +3,7 @@ import { maybeRow } from "@/lib/invariant";
 import { releaseCouponRedemption } from "@/lib/orders/coupon-redemption";
 import { and, asc, eq, gte, isNull, isNotNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
+import { releaseSlots, retakeSlots } from "@/lib/booking/claim";
 import {
   orderItems,
   orders,
@@ -168,6 +169,16 @@ export async function restoreStock(order: Order): Promise<boolean> {
   for (const line of await stockLinesFor(order)) {
     await releaseStock(line);
   }
+  /*
+   * The appointment goes back with the units. An order that no longer holds
+   * its goods does not hold the shop's calendar either, and `busyFor` already
+   * treats cancelled and refunded as released — this is the claim row catching
+   * up with what the read already believed.
+   *
+   * Hung off the same `restockedAt` claim as everything else here, so a
+   * webhook racing the sweep releases once.
+   */
+  await releaseSlots(order.id);
   return true;
 }
 
@@ -233,6 +244,21 @@ export async function retakeStock(order: Order): Promise<boolean> {
         );
     }
   }
+
+  /*
+   * The appointment comes back too, and unlike the units it can fail to.
+   *
+   * A seller un-cancelling an order is reversing their own decision, so the
+   * stock above is taken back unguarded — but the calendar may have moved on:
+   * somebody else can have booked that time in the meantime, and there is only
+   * one of it. `retakeSlots` reports whether every slot was still free.
+   *
+   * The order is un-cancelled either way. Refusing the reversal would leave
+   * the seller with an order they meant to reinstate and no way to say so; the
+   * honest outcome is that it comes back and the double-booked time is a
+   * conversation they can now see and have.
+   */
+  await retakeSlots(order);
   return true;
 }
 

@@ -279,3 +279,42 @@ export const invoices = pgTable(
     index("invoices_shop_idx").on(t.shopId),
   ],
 );
+
+/**
+ * One row per appointment a shop currently owes, and the only thing that makes
+ * a booking exclusive.
+ *
+ * `busyFor` reads `order_items` to decide which times are free, and that read
+ * is a snapshot: two buyers asking for the same slot in the same second both
+ * see it free, both pass the re-derivation at checkout, and both get an
+ * appointment the shop cannot keep. Stock does not have this problem because
+ * `reserveStock` claims in the statement that reads, and coupons do not
+ * because `claimCouponRedemption` does the same. Bookings had no claim at all.
+ *
+ * A unique index on `order_items(product_id, scheduled_for)` cannot express
+ * this: a cancelled or refunded order releases its time, and a partial index
+ * there cannot see `orders.status`. So the claim is its own row, taken when
+ * the order is written and deleted when the order gives the slot back — which
+ * makes "is this time free" a question with one answer at a time, decided by
+ * Postgres rather than by whichever request read first.
+ */
+export const bookingClaims = pgTable(
+  "booking_claims",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    /** The instant the appointment starts, which is what a buyer picked. */
+    startsAt: timestamp("starts_at").notNull(),
+    orderId: uuid("order_id")
+      .notNull()
+      .references(() => orders.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    // The whole point. Two orders cannot hold one product at one instant.
+    uniqueIndex("booking_claims_slot_key").on(t.productId, t.startsAt),
+    index("booking_claims_order_idx").on(t.orderId),
+  ],
+);

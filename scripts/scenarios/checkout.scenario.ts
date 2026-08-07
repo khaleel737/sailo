@@ -601,3 +601,160 @@ describe("the storefront survives a hostile query string", () => {
     expect(desc.items[0]?.title).toBe("Dear");
   });
 });
+
+describe("bookings", () => {
+  /*
+   * The last check-then-act on the money path. `busyFor` decides which times a
+   * shop may offer, and that decision is a read — so two buyers asking for the
+   * same slot in the same second both saw it free, both passed the
+   * re-derivation, and the shop owed one appointment to two people with
+   * nothing anywhere to notice. Stock and coupons had claims; bookings did not.
+   */
+  const TIMES = { timeZone: "UTC", bookingSlotMinutes: 60 };
+
+  async function bookableShop() {
+    const shop = await withRail({
+      ...TIMES,
+      /*
+       * Seven day-arrays indexed Sunday-first, which is what `WeeklyHours` is
+       * — not an object keyed by day name. Open every day so the fixture does
+       * not depend on which day it happens to run.
+       */
+      bookingHours: Array.from({ length: 7 }, () => [
+        { from: "09:00", to: "17:00" },
+      ]) as never,
+    });
+    const product = await makeProduct(shop.id, {
+      kind: "service",
+      bookingEnabled: true,
+      durationMinutes: 60,
+      bookingLeadHours: 0,
+      priceCents: 5000,
+    });
+    return { shop, product };
+  }
+
+  /** The next 10:00 UTC that is at least a day out, so lead time never bites. */
+  function slotIso(daysAhead = 2) {
+    const d = new Date();
+    d.setUTCDate(d.getUTCDate() + daysAhead);
+    d.setUTCHours(10, 0, 0, 0);
+    return d.toISOString();
+  }
+
+  it("takes a booking and records the time", async () => {
+    const { shop, product } = await bookableShop();
+    const when = slotIso();
+    const r = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: product.id, quantity: 1, scheduledFor: when }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(r.ok, r.ok ? "" : r.error).toBe(true);
+    if (!r.ok) return;
+
+    const [line] = await db
+      .select()
+      .from(orderItems)
+      .where(eq(orderItems.orderId, r.orderId));
+    expect(line?.scheduledFor?.toISOString()).toBe(when);
+  });
+
+  it("refuses a second buyer the same slot", async () => {
+    const { shop, product } = await bookableShop();
+    const when = slotIso(3);
+
+    const first = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: product.id, quantity: 1, scheduledFor: when }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(first.ok).toBe(true);
+
+    const second = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: product.id, quantity: 1, scheduledFor: when }],
+      paymentMethod: "cod",
+      ...buyer,
+      customerEmail: "second@example.com",
+    });
+    expect(second.ok).toBe(false);
+  });
+
+  it("refuses two buyers racing for the same slot", async () => {
+    // The one a sequential test cannot see, and the reason the claim exists.
+    const { shop, product } = await bookableShop();
+    const when = slotIso(4);
+
+    const both = await Promise.all(
+      [1, 2].map((n) =>
+        createOrderIntent({
+          shopId: shop.id,
+          items: [{ productId: product.id, quantity: 1, scheduledFor: when }],
+          paymentMethod: "cod",
+          ...buyer,
+          customerEmail: `racer-slot${n}@example.com`,
+        }),
+      ),
+    );
+    expect(both.filter((r) => r.ok)).toHaveLength(1);
+  });
+
+  it("gives the slot back when the order is cancelled", async () => {
+    const { shop, product } = await bookableShop();
+    const when = slotIso(5);
+
+    const first = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: product.id, quantity: 1, scheduledFor: when }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(first.ok).toBe(true);
+    if (!first.ok) return;
+
+    const order = await orderRow(first.orderId);
+    if (!order) throw new Error("the order that was just placed cannot be read");
+    /*
+     * Both halves, because that is what cancelling actually is. `restoreStock`
+     * releases the claim, but `busyFor` also reads `order_items` joined to a
+     * *live* order — so an order whose stock came back while its status stayed
+     * `new` still holds its time, and correctly so. `updateOrderStatus` does
+     * both; a test that did only one was testing a state the product never
+     * reaches.
+     */
+    await db
+      .update(orders)
+      .set({ status: "cancelled" })
+      .where(eq(orders.id, order.id));
+    await restoreStock(order);
+
+    // Somebody else can now have the time, which is what "cancelled releases
+    // the slot" has to mean if the calendar is to be trusted.
+    const second = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: product.id, quantity: 1, scheduledFor: when }],
+      paymentMethod: "cod",
+      ...buyer,
+      customerEmail: "after-cancel@example.com",
+    });
+    expect(second.ok, second.ok ? "" : second.error).toBe(true);
+  });
+
+  it("refuses one basket booking the same slot twice", async () => {
+    const { shop, product } = await bookableShop();
+    const when = slotIso(6);
+    const r = await createOrderIntent({
+      shopId: shop.id,
+      items: [
+        { productId: product.id, quantity: 1, scheduledFor: when },
+        { productId: product.id, quantity: 1, scheduledFor: when },
+      ],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(r.ok).toBe(false);
+  });
+});

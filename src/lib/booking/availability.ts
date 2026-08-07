@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq, gte, isNotNull, lt, ne, notInArray } from "drizzle-orm";
 import { getDb } from "@/db";
-import { orderItems, orders, type Shop } from "@/db/schema";
+import { bookingClaims, orderItems, orders, type Shop } from "@/db/schema";
 import { hoursOf } from "./hours";
 import { zoneOf } from "./time-zone";
 import { slotsForDays, todayIn, type Busy, type DaySlots, type SlotOptions } from "./slots";
@@ -53,18 +53,39 @@ export async function busyFor(opts: {
       ),
     );
 
-  return rows.flatMap((row) =>
-    row.scheduledFor
-      ? [
-          {
-            startsAt: row.scheduledFor,
-            endsAt: new Date(
-              row.scheduledFor.getTime() + opts.durationMinutes * 60_000,
-            ),
-          },
-        ]
-      : [],
-  );
+  /*
+   * The claims as well as the lines.
+   *
+   * They agree almost always — a claim is written with the order and deleted
+   * when it is cancelled — but "almost" is the whole problem this read used to
+   * have. `booking_claims` is what the unique index actually enforces, so a
+   * slot held there is unavailable whatever the order rows say, and showing it
+   * as free would offer a buyer a time the database will then refuse them at
+   * checkout.
+   */
+  const claims = await getDb()
+    .select({ startsAt: bookingClaims.startsAt })
+    .from(bookingClaims)
+    .innerJoin(orders, eq(orders.id, bookingClaims.orderId))
+    .where(
+      and(
+        eq(bookingClaims.productId, opts.productId),
+        gte(bookingClaims.startsAt, opts.from),
+        lt(bookingClaims.startsAt, opts.to),
+        ...(opts.excludeOrderId ? [ne(orders.id, opts.excludeOrderId)] : []),
+      ),
+    );
+
+  const starts = new Set<number>();
+  for (const row of rows) {
+    if (row.scheduledFor) starts.add(row.scheduledFor.getTime());
+  }
+  for (const row of claims) starts.add(row.startsAt.getTime());
+
+  return [...starts].map((ms) => ({
+    startsAt: new Date(ms),
+    endsAt: new Date(ms + opts.durationMinutes * 60_000),
+  }));
 }
 
 export type BookableProduct = {
