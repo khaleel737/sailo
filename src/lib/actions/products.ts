@@ -5,6 +5,7 @@ import { revalidateShop } from "@/lib/cache";
 import { firstRow } from "@/lib/invariant";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
+import { isStoredFileUrl } from "@/lib/file-urls";
 import {
   optionalCents,
   optionalCount,
@@ -101,14 +102,22 @@ async function syncVariants(
 
 async function syncFiles(productId: string, rows: FileRow[]) {
   const db = getDb();
-  // Tested and extracted together: `filter` narrows nothing, so a later
-  // `f.url` would have to be asserted despite this line having just proved it.
+  /*
+   * The host, not just the scheme.
+   *
+   * `flatMap` rather than `filter` because `filter` narrows nothing: a later
+   * `f.url` would have to be asserted despite the line above having proved it.
+   *
+   * This checked `^https?://` and nothing else, which is no check at all: a
+   * server action takes whatever the client posts, so the upload widget is not
+   * a gate. Any URL stored here is later fetched *server-side* by
+   * `/api/download/[token]/[fileId]`, whose response is streamed back to the
+   * caller — so a seller, and signup is open, could point a file at a cloud
+   * metadata endpoint or anything else the function can reach, buy their own
+   * product, and read the reply.
+   */
   const usable = rows
-    .flatMap((f) =>
-      typeof f.url === "string" && /^https?:\/\//i.test(f.url)
-        ? [{ ...f, url: f.url }]
-        : [],
-    )
+    .flatMap((f) => (isStoredFileUrl(f.url) ? [{ ...f, url: f.url }] : []))
     .slice(0, MAX_FILES);
 
   await db.delete(productFiles).where(eq(productFiles.productId, productId));

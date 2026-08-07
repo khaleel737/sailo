@@ -235,6 +235,39 @@ declared rather than relied on transitively.
 6. Never delete on knip's word alone. Trace the symbol first; `.css`, runtime
    registries and framework conventions are all invisible to it.
 
+### The e2e gap — read this before trusting a green run
+
+`e2e/checkout.spec.ts` has seven tests. All seven open the checkout panel and
+assert that it renders: it shows a total, it lists the rails, it closes on
+Escape. **Not one of them places an order.** No e2e test in this repo calls
+`createOrderIntent`, and therefore none of today's work on it — the reorder,
+the batch insert, the compensators, the settlement move — was ever exercised
+end to end. Every "e2e green" claim made while changing that function meant
+"the panel still renders", and nothing more.
+
+The omission is not an oversight. The Playwright dev server runs against
+`.env.local`, whose `DATABASE_URL` is the **same Neon database production
+uses**. A browser test that placed an order would write real rows, decrement
+real stock, and claim an invoice number out of the sequence this plan spent a
+day making unbroken.
+
+So the fix is not "write the missing test" — it is to give e2e a database it is
+allowed to dirty:
+
+1. A **Neon branch per e2e run** (branching is cheap and instant, which is the
+   feature's whole point), seeded from the demo fixtures, with `E2E_DATABASE_URL`
+   pointing at it.
+2. Then the tests worth having: place an order on a manual rail — no Stripe
+   needed — and assert the row, its lines, the reserved stock, the invoice
+   number and the handoff message. That single test covers more of the money
+   path than the whole current suite.
+3. Card orders need Stripe's test mode and a forwarded webhook; worth it, but
+   after the manual rail proves the shape.
+
+Until that exists, the money path is carried by unit tests of its pure rules and
+by source-level tests of its wiring. That is genuinely less than it sounds, and
+the plan should not pretend otherwise.
+
 ### Phase D — security, with tools rather than reading
 
 1. `threat-model` over checkout, auth and the webhooks — **never run**, and

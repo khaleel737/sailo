@@ -4,6 +4,7 @@ import { getDb } from "@/db";
 import { orders, productFiles } from "@/db/schema";
 import { orderedProductIds } from "@/lib/downloads";
 import { isUuid } from "@/lib/utils";
+import { isStoredFileUrl } from "@/lib/file-urls";
 
 /**
  * Streams one file of a digital order.
@@ -77,6 +78,20 @@ export async function GET(
     return new Response("This download is no longer available.", {
       status: 410,
     });
+  }
+
+  /*
+   * Checked again here, at the point the request is actually made.
+   *
+   * `saveProductFiles` is the gate, but this is the line that turns a stored
+   * string into a server-side fetch whose body is streamed back to the caller.
+   * Rows written before that gate existed still carry whatever was accepted
+   * then, and a second write path added later would not know to ask. The check
+   * belongs where the danger is, not only where the value arrives.
+   */
+  if (!isStoredFileUrl(file.url)) {
+    console.error(`[sailo] refused an off-store file url on file ${file.id}`);
+    return new Response("That file is temporarily unavailable.", { status: 502 });
   }
 
   const upstream = await fetch(file.url);
