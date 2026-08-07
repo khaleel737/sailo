@@ -477,7 +477,9 @@ export async function createOrderIntent(
 
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
-  revalidatePath("/admin/invoices");
+  // No `/admin/invoices` — there is no such route. Invoices are shown on the
+  // order, and revalidating a path nothing serves is a line that reads like
+  // cache invalidation while invalidating nothing.
 
   // A card buyer's handoff is Stripe's redirect, settled above. Every other
   // rail builds a message for the seller, and that message carries the invoice

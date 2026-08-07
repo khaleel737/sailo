@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getShopByHandle, type ShopFilters } from "@/lib/queries";
+import { getShopByHandle, pickFilters } from "@/lib/queries";
 import { absolute, shopJsonLd } from "@/lib/seo";
 import { shopThemeVars } from "@/lib/utils";
 import { getShopPageData } from "./_lib/get-shop-page-data";
@@ -63,7 +63,13 @@ export default async function ShopPage({
   searchParams,
 }: PageProps<"/[handle]">) {
   const { handle } = await params;
-  const filters = (await searchParams) as ShopFilters;
+  /*
+   * Narrowed, not cast. `searchParams` is whatever the visitor put in the URL,
+   * and it becomes part of a `cacheLife("max")` key one call down — so an
+   * `fbclid` on every Instagram click was minting a permanent cache entry per
+   * click and missing the cache every time.
+   */
+  const filters = pickFilters(await searchParams);
 
   const {
     shop,

@@ -111,7 +111,27 @@ const nextConfig: NextConfig = {
        * from `/_vercel/insights/…`, which is same-origin and already covered
        * by 'self'.
        */
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.stripe.com https://www.googletagmanager.com https://va.vercel-scripts.com",
+      /*
+       * `'unsafe-eval'` is gone, and deliberately not replaced.
+       *
+       * Nothing in the production bundle needs it — not Stripe.js, not gtag —
+       * and Next's own example scopes it to development only. Removing it
+       * takes `eval` and `new Function` away from an injected script for free.
+       *
+       * `'unsafe-inline'` has to stay, and it is worth being honest about what
+       * that costs: with it, an injected `<script>` runs, so this policy is
+       * not a script-injection defence. What it still buys is real — no
+       * external script host, `object-src 'none'`, `base-uri 'self'`,
+       * `frame-ancestors 'none'`, and a `connect-src`/`form-action` narrow
+       * enough to bound where a successful XSS could send what it stole.
+       *
+       * A nonce is the usual answer and is architecturally unavailable here:
+       * Next's CSP guide is explicit that a nonce requires the page to be
+       * dynamically rendered, and this app's central decision is
+       * `cacheComponents` with static shells. Buying the nonce means giving up
+       * the prerender on every page, which is a worse trade than this.
+       */
+      "script-src 'self' 'unsafe-inline' https://js.stripe.com https://*.stripe.com https://www.googletagmanager.com https://va.vercel-scripts.com",
       "style-src 'self' 'unsafe-inline'",
       // Google Analytics still falls back to a tracking pixel in some paths.
       "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://picsum.photos https://images.unsplash.com https://*.stripe.com https://www.google-analytics.com https://www.googletagmanager.com",
@@ -143,6 +163,19 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "X-Frame-Options", value: "DENY" },
+          {
+            /*
+             * `allow-popups`, not bare `same-origin`: Stripe Connect
+             * onboarding and the billing portal are opened in a window by
+             * Stripe.js, and the strict form severs the opener they need.
+             *
+             * COEP is deliberately absent — it would block the Stripe iframes
+             * the checkout depends on, and cross-origin isolation buys this
+             * app nothing since it uses no SharedArrayBuffer.
+             */
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin-allow-popups",
+          },
           {
             key: "Permissions-Policy",
             // Nothing here needs a camera or a microphone; payment is Stripe's

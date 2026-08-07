@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getProductBySlug, getShopByHandle } from "@/lib/queries";
 import { priceRange } from "@/lib/variants";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney, isShopLive } from "@/lib/utils";
 import {
   SailoMark,
   cardTheme,
@@ -50,7 +50,7 @@ export default async function Image({
    * price and the photograph of an unpublished product to anyone who guessed
    * the slug, which is the seller's unannounced work on a public URL.
    */
-  if (!shop || !product || !product.isPublished) {
+  if (!shop || !isShopLive(shop) || !product || !product.isPublished) {
     return new ImageResponse(
       (
         <div

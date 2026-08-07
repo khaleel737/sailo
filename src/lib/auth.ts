@@ -115,18 +115,34 @@ export const auth = betterAuth({
   rateLimit: {
     enabled: true,
     window: 60,
-    max: 30,
+    max: 60,
+    /*
+     * Sized against a shared IP, not against one person.
+     *
+     * The key is the caller's address, and an office, a university, a
+     * coworking space and a mobile carrier's NAT are all one address. The
+     * first version of this table allowed five signups per fifteen minutes,
+     * which a browser test tripped within a minute of real use — and on launch
+     * day that is not a blocked attacker, it is five colleagues signing up
+     * together and the sixth being told to go away.
+     *
+     * So the numbers are set where a human never reaches them and an automated
+     * attempt still does: bulk account creation needs hundreds, credential
+     * stuffing needs thousands. What stays tight is anything that sends mail
+     * to an address the *caller* chooses, because there the cost of a false
+     * positive is one person waiting a minute and the cost of a false negative
+     * is someone else's inbox flooded from our domain.
+     */
     customRules: {
-      // Guessing a password, and the two endpoints that send mail to an
-      // address the caller names.
-      "/sign-in/email": { window: 300, max: 8 },
-      "/sign-up/email": { window: 900, max: 5 },
-      "/send-verification-email": { window: 900, max: 4 },
-      "/forget-password": { window: 900, max: 4 },
-      "/reset-password": { window: 900, max: 8 },
+      "/sign-in/email": { window: 300, max: 25 },
+      "/sign-up/email": { window: 900, max: 20 },
+      "/reset-password": { window: 900, max: 20 },
+      // Mail to a caller-chosen address. Deliberately the tightest rows here.
+      "/send-verification-email": { window: 900, max: 8 },
+      "/forget-password": { window: 900, max: 8 },
       // The staff door. Only rostered addresses are ever mailed, but the
       // endpoint answers identically either way, so it is free to hammer.
-      "/sign-in/magic-link": { window: 900, max: 5 },
+      "/sign-in/magic-link": { window: 900, max: 8 },
     },
     customStorage: {
       consume: async (key, rule) => {

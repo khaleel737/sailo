@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { cacheLife, cacheTag } from "next/cache";
 import { and, desc, eq } from "drizzle-orm";
 import { getDb, schema } from "@/db";
 import { absolute } from "@/lib/seo";
@@ -24,8 +25,27 @@ import { articlePath, blogIndexLanguages, blogIndexPath } from "@/lib/blog-urls"
  */
 const MAX_URLS = 50_000;
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
+/**
+ * Cached, which is what the paragraph above has been claiming.
+ *
+ * It said the file is "refreshed on a schedule rather than per request", and
+ * `/api/cron/sitemap` calls `revalidatePath("/sitemap.xml")` nightly on that
+ * understanding. The `export const revalidate = 86_400` that made it true was
+ * dropped in the Cache Components migration, and nothing noticed: the route
+ * quietly became `ƒ Dynamic`, so every crawler hit — and every `curl` in a
+ * loop — read every published shop and up to fifty thousand product rows,
+ * unbounded and unauthenticated. The cron's `revalidatePath` had nothing to
+ * invalidate.
+ *
+ * `"use cache"` is the Cache Components replacement for that segment config,
+ * and it restores both halves: the queries run once a day rather than once a
+ * request, and the cron's revalidation has something to act on again.
+ */
+async function buildSitemap(now: Date): Promise<MetadataRoute.Sitemap> {
+  "use cache";
+  cacheLife("days");
+  cacheTag("sitemap");
+
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: absolute("/"), lastModified: now, changeFrequency: "weekly", priority: 1 },
@@ -174,4 +194,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
     throw error;
   }
+}
+
+/*
+ * `now` is minted here, outside the cached function. A cached scope may not
+ * call `new Date()` — it would be baked into the entry and then be wrong for
+ * every later read — so the timestamp is passed in, and passing it in is also
+ * what would fragment the key if it were precise. It is floored to the day for
+ * that reason: one entry per day, matching `cacheLife("days")`.
+ */
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+  return buildSitemap(today);
 }

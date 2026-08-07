@@ -564,3 +564,40 @@ describe("cancellation and abandonment", () => {
     expect(typeof result.swept).toBe("number");
   });
 });
+
+describe("the storefront survives a hostile query string", () => {
+  /*
+   * `?sort=toString` was an unauthenticated 500 on every storefront in the
+   * fleet. The sort map was an object literal indexed by a client-supplied
+   * key, and an object literal inherits from `Object.prototype` — so the
+   * lookup returned a *function*, `??` never fired, and spreading it threw.
+   */
+  it.each([
+    "toString",
+    "constructor",
+    "valueOf",
+    "hasOwnProperty",
+    "isPrototypeOf",
+    "__proto__",
+    "propertyIsEnumerable",
+  ])("does not throw on ?sort=%s", async (sort) => {
+    const shop = await withRail();
+    await makeProduct(shop.id, { priceCents: 1000 });
+    const { getPublicProducts } = await import("@/lib/queries/products");
+
+    const page = await getPublicProducts(shop.id, shop.currency, { sort } as never);
+    expect(page.items.length).toBeGreaterThan(0);
+  });
+
+  it("still honours the sorts that are real", async () => {
+    const shop = await withRail();
+    await makeProduct(shop.id, { title: "Cheap", priceCents: 100 });
+    await makeProduct(shop.id, { title: "Dear", priceCents: 9000 });
+    const { getPublicProducts } = await import("@/lib/queries/products");
+
+    const asc = await getPublicProducts(shop.id, shop.currency, { sort: "price_asc" } as never);
+    expect(asc.items[0]?.title).toBe("Cheap");
+    const desc = await getPublicProducts(shop.id, shop.currency, { sort: "price_desc" } as never);
+    expect(desc.items[0]?.title).toBe("Dear");
+  });
+});

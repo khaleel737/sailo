@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getShopByHandle } from "@/lib/queries";
+import { isShopLive } from "@/lib/utils";
 import {
   cardTheme,
   clamp,
@@ -40,7 +41,14 @@ export default async function Image({ params }: { params: Promise<{ handle: stri
 
   // The route this belongs to 404s for an unknown handle, but a crawler can
   // still ask for the image directly, and an exception here would be cached.
-  if (!shop) {
+  /*
+   * `isShopLive`, not merely `shop`. A suspended or unpublished shop 404s one
+   * level up, and this route was still handing out its name, description,
+   * location and avatar as a 1200×630 card to anyone who asked — which also
+   * defeats `updateShopNow`, whose whole reason to exist is that suspended
+   * means suspended on the very next request.
+   */
+  if (!shop || !isShopLive(shop)) {
     return new ImageResponse(
       (
         <div

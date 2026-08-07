@@ -1,6 +1,7 @@
 import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 import { requireShop } from "@/lib/session";
+import { rateLimit } from "@/lib/redis";
 
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8 MB
 const MAX_FILE_BYTES = 100 * 1024 * 1024; // 100 MB
@@ -52,6 +53,21 @@ const FILE_TYPES = new Set([
 export async function POST(request: Request) {
   // Redirects if unauthenticated, so only shop owners can write to the store.
   const { shop } = await requireShop();
+
+  /*
+   * A guard is not a ceiling. Signup is open, so "an authenticated seller" is
+   * "anyone who spent thirty seconds" — and this is the largest write in the
+   * app, with the request size chosen by the caller. Keyed per shop rather
+   * than per IP: a seller uploading a catalogue of photos is the normal case
+   * and should not be throttled by whoever shares their office network.
+   */
+  const gate = await rateLimit(`upload:${shop.id}`, 60, 300);
+  if (!gate.allowed) {
+    return NextResponse.json(
+      { error: "Too many uploads just now. Wait a moment and try again." },
+      { status: 429 },
+    );
+  }
 
   const form = await request.formData();
   const file = form.get("file");

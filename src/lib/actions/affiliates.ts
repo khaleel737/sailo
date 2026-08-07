@@ -324,8 +324,19 @@ export async function applyAsAffiliate(
   return { ok: false, error: "Couldn't sign you up just now. Try again." };
 }
 
-/** Fire-and-forget click counter for ?ref= landings. */
+/**
+ * Fire-and-forget click counter for ?ref= landings.
+ *
+ * The `60/60` ceiling used to live only on `/api/referral`, which calls this —
+ * but an exported async function in a `"use server"` module is a server action
+ * in its own right, with its own id in the build manifest and its own POST
+ * endpoint. A server action runs *before* the page renders, so no page guard
+ * stands in front of it either. The limit belongs here, where the write is.
+ */
 export async function recordAffiliateClick(shopId: string, code: string) {
+  const gate = await rateLimit(`ref:${await callerIp()}`, 60, 60);
+  if (!gate.allowed) return;
+
   const db = getDb();
 
   /*

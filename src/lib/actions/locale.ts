@@ -24,6 +24,13 @@ export async function setLocale(
     path: "/",
     maxAge: 60 * 60 * 24 * 365,
     sameSite: "lax",
+    /*
+     * It holds a language code and nothing else, so this is tidiness rather
+     * than a fix — but a cookie with no `secure` is a cookie an attacker on
+     * the network can set, and there is no reason to leave one lying around.
+     * Off in development, where there is no TLS to be secure over.
+     */
+    secure: process.env.NODE_ENV === "production",
   });
 
   /*

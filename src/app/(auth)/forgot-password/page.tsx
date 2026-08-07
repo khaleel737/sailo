@@ -5,6 +5,15 @@ import { getT } from "@/i18n/server";
 import { AuthHeader } from "@/components/auth/auth-kit";
 import { ForgotPasswordForm } from "./forgot-password-form";
 
+/*
+ * Not yet converted, for the same reason as the layout around it: this reads
+ * the session to send an already-signed-in seller to their admin, which is a
+ * per-visitor answer. `instant = false` marks a *segment* as allowed to block
+ * and does not inherit, so the layout declaring it is not enough — the page
+ * has to say so too, which is what the dev-time prerender error was reporting.
+ */
+export const instant = false;
+
 export const metadata: Metadata = {
   title: "Reset your password",
   robots: { index: false, follow: false },

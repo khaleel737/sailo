@@ -49,6 +49,20 @@ export type ShopFacets = {
  * anything isn't rendered at all.
  */
 export async function getShopFacets(shopId: string): Promise<ShopFacets> {
+  /*
+   * Cached like every sibling in this file, which it was not.
+   *
+   * Four aggregate queries — kinds, categories, the price range, whether any
+   * review exists — ran on the primary on **every storefront pageview**, for
+   * data that changes only when the seller edits their catalogue. It was the
+   * last live read on the busiest page in the product, and about four fifths
+   * of what that page still cost. The invalidation plumbing already existed;
+   * only the three lines below were missing.
+   */
+  "use cache";
+  cacheLife("max");
+  cacheTag(shopTag(shopId));
+
   const db = getDb();
   const published = and(eq(products.shopId, shopId), eq(products.isPublished, true));
 

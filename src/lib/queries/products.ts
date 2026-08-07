@@ -1,6 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
-import { and, asc, desc, eq, gte, ilike, inArray, lte, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, inArray, lte, or, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import { categories, productFiles, productImages, productVariants, products, reviews, type Category, type Product, type ProductImage, type ProductVariant } from "@/db/schema";
 import { shopTag } from "@/lib/cache";
@@ -26,6 +26,44 @@ export type ShopFilters = {
   max?: string;
   inStock?: string;
 };
+
+/** The sorts the catalogue offers. Anything else falls back to the default. */
+const SORT_KEYS = ["price_asc", "price_desc", "newest", "oldest", "rating"] as const;
+
+/**
+ * The only seven keys that reach the cache, with everything else dropped.
+ *
+ * `getPublicProducts` is `"use cache"` with `cacheLife("max")` — entries never
+ * expire on a clock — and it is keyed on its arguments. The storefront page
+ * cast raw `searchParams` straight into it, so every key a visitor could
+ * invent became part of that key: `?fbclid=…` is unique per click, and sellers
+ * here live on Instagram and Facebook links. Every social click was a
+ * guaranteed miss, a fresh set of catalogue queries, and one permanent cache
+ * entry — the cache defeated by exactly the traffic it was built for, and an
+ * unbounded write surface for anyone who wanted one.
+ *
+ * The values are bounded as well as the keys. `q` is matched with a leading
+ * wildcard, so it cannot use an index; left uncapped it is a 1 MB pattern
+ * scanned across a whole catalogue, twice, per request.
+ */
+export function pickFilters(input: Record<string, unknown>): ShopFilters {
+  const text = (value: unknown, max: number) =>
+    typeof value === "string" && value.trim() ? value.trim().slice(0, max) : undefined;
+
+  const sort = text(input.sort, 20);
+
+  // Built key by key in a fixed order, so two visitors who chose the same
+  // filters in a different order share one entry rather than minting two.
+  return {
+    q: text(input.q, 80),
+    category: text(input.category, 80),
+    kind: text(input.kind, 20),
+    sort: sort && (SORT_KEYS as readonly string[]).includes(sort) ? sort : undefined,
+    min: text(input.min, 20),
+    max: text(input.max, 20),
+    inStock: input.inStock === "1" ? "1" : undefined,
+  };
+}
 
 /** How many cards one batch of the storefront grid holds. */
 export const PRODUCT_PAGE_SIZE = 24;
@@ -116,11 +154,18 @@ async function readPublicProducts(
       count: sql<string>`count(*)`.as("review_count"),
     })
     .from(reviews)
-    .where(eq(reviews.isApproved, true))
+    /*
+     * Scoped to this shop, not to the platform. Postgres cannot push a join
+     * key into a grouped subquery, so without this every catalogue read
+     * hash-aggregates every approved review in the database — one shop's page
+     * paying for every other shop's reviews, and getting slower as the fleet
+     * grows rather than as its own catalogue does.
+     */
+    .where(and(eq(reviews.isApproved, true), eq(reviews.shopId, shopId)))
     .groupBy(reviews.productId)
     .as("ratings");
 
-  const orderBy = {
+  const SORTS: Record<string, SQL[]> = {
     price_asc: [asc(products.priceCents)],
     price_desc: [desc(products.priceCents)],
     newest: [desc(products.createdAt)],
@@ -128,11 +173,23 @@ async function readPublicProducts(
     // NULLS LAST keeps unreviewed products behind reviewed ones in both
     // engines' default, rather than at whichever end Postgres prefers.
     rating: [sql`${ratings.avg} desc nulls last`],
-  }[filters.sort ?? ""] ?? [
-    desc(products.isFeatured),
-    asc(products.position),
-    desc(products.createdAt),
-  ];
+  };
+
+  /*
+   * `Object.hasOwn`, not a plain lookup with `??`.
+   *
+   * An object literal inherits from `Object.prototype`, so `SORTS["toString"]`
+   * resolves to a *function* — `??` never fires, `orderBy` is not an array,
+   * and the spread on the next line throws. `GET /anyshop?sort=toString` was
+   * an unauthenticated 500 on every storefront in the fleet, and
+   * `constructor`, `valueOf` and `__proto__` did the same.
+   */
+  const requested = filters.sort ?? "";
+  const orderBy = (Object.hasOwn(SORTS, requested) ? SORTS[requested] : undefined) ?? [
+        desc(products.isFeatured),
+        asc(products.position),
+        desc(products.createdAt),
+      ];
 
   /*
    * Every sort ends on the primary key, so the order is total rather than

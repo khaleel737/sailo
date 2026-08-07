@@ -6,8 +6,11 @@ import {
   getPublicProducts,
   getShopByHandle,
   type ShopFilters,
+  pickFilters,
 } from "@/lib/queries";
 import { getShopT } from "@/i18n/server";
+import { rateLimit } from "@/lib/redis";
+import { callerIp } from "@/lib/client-ip";
 import { isShopLive } from "@/lib/utils";
 import { ProductCard } from "../_components/product-card";
 
@@ -31,6 +34,18 @@ export async function loadMoreProducts(
 ): Promise<{ nodes: ReactNode; nextOffset: number | null }> {
   const empty = { nodes: null, nextOffset: null };
 
+  /*
+   * The ceiling every other public entry point already has.
+   *
+   * This is a server action reached from a `"use client"` grid, so its id is
+   * in the public bundle and no discovery step stands in front of it — and it
+   * drives `?q=`, which is matched with a leading wildcard against two columns
+   * and so cannot use an index. It was the only public action in the repo with
+   * no limit, while `previewOrder` beside it has 120 a minute. This matches it.
+   */
+  const gate = await rateLimit(`grid:${await callerIp()}`, 120, 60);
+  if (!gate.allowed) return empty;
+
   // A negative or fractional offset would page backwards through the
   // catalogue or land between two products.
   if (!Number.isSafeInteger(offset) || offset < 0) return empty;
@@ -41,7 +56,7 @@ export async function loadMoreProducts(
   if (!shop || !isShopLive(shop)) return empty;
 
   const [page, checkout, { t, locale }] = await Promise.all([
-    getPublicProducts(shop.id, shop.currency, filters, offset),
+    getPublicProducts(shop.id, shop.currency, pickFilters(filters), offset),
     getCheckoutOptions(shop.id),
     getShopT(shop.locale),
   ]);
