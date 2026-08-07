@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { execSync } from "node:child_process";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 /**
  * The replica is a correctness boundary, not a performance setting.
@@ -44,15 +44,58 @@ const PRIMARY_ONLY = [
 ];
 
 describe("read replica", () => {
-  it("falls back to the primary when no replica is configured", () => {
+  it("falls back to the primary when no replica is configured", async () => {
     /*
-     * The deploy order matters: this ships before the replica exists, and
-     * rolling back is deleting one environment variable. Neither may take the
-     * site down, so an unset `DATABASE_URL_REPLICA` has to mean "use the
-     * primary" rather than "throw".
+     * The deploy order matters: this shipped before the replicas existed, and
+     * rolling back is deleting an environment variable. Neither may take the
+     * site down, so "no replica configured" has to mean "use the primary"
+     * rather than "throw".
+     *
+     * Behavioural rather than a grep for the source line it used to be, which
+     * broke the moment the fallback moved.
      */
-    const source = readFileSync("src/db/index.ts", "utf8");
-    expect(source).toContain("if (!url) return getDb();");
+    vi.resetModules();
+    vi.stubEnv("DATABASE_URL", "postgresql://u:p@primary.example/db");
+    for (const key of ["READ_REPLICA_URL", "DATABASE_URL_REPLICA", "READ_REPLICA_URL_1"]) {
+      vi.stubEnv(key, "");
+    }
+
+    const { getDb, getReadDb } = await import("./index");
+    expect(getReadDb()).toBe(getDb());
+
+    vi.unstubAllEnvs();
+  });
+
+  it("uses a replica when one is configured, under either name", async () => {
+    for (const key of ["READ_REPLICA_URL", "DATABASE_URL_REPLICA"]) {
+      vi.resetModules();
+      vi.stubEnv("DATABASE_URL", "postgresql://u:p@primary.example/db");
+      vi.stubEnv(key, "postgresql://u:p@replica.example/db");
+
+      const { getDb, getReadDb } = await import("./index");
+      expect(getReadDb(), key).not.toBe(getDb());
+
+      vi.unstubAllEnvs();
+    }
+  });
+
+  it("picks one replica and keeps it, rather than round-robining", async () => {
+    /*
+     * Neon suspends an idle endpoint. Spreading every instance's queries
+     * across three replicas keeps all three lukewarm and none of them warm,
+     * and a cold start costs far more than the imbalance it avoids.
+     */
+    vi.resetModules();
+    vi.stubEnv("DATABASE_URL", "postgresql://u:p@primary.example/db");
+    vi.stubEnv("READ_REPLICA_URL_1", "postgresql://u:p@r1.example/db");
+    vi.stubEnv("READ_REPLICA_URL_2", "postgresql://u:p@r2.example/db");
+    vi.stubEnv("READ_REPLICA_URL_3", "postgresql://u:p@r3.example/db");
+
+    const { getReadDb } = await import("./index");
+    const first = getReadDb();
+    for (let i = 0; i < 20; i++) expect(getReadDb()).toBe(first);
+
+    vi.unstubAllEnvs();
   });
 
   it("never reads a write path from the replica", () => {

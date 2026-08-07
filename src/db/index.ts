@@ -11,6 +11,37 @@ let primary: ReturnType<typeof createDb> | null = null;
 let replica: ReturnType<typeof createDb> | null = null;
 
 /**
+ * Every replica connection string that is configured, in Neon's own naming.
+ *
+ * `READ_REPLICA_URL` is what their Drizzle guide uses, and `_1`, `_2`, … is
+ * the convention it gives for more than one. `DATABASE_URL_REPLICA` is
+ * accepted too because it shipped first and removing it would silently send
+ * an already-deployed environment back to the primary.
+ */
+function replicaUrls(): string[] {
+  const numbered = Array.from({ length: 8 }, (_, i) =>
+    process.env[`READ_REPLICA_URL_${i + 1}`],
+  );
+  return [
+    process.env.READ_REPLICA_URL,
+    process.env.DATABASE_URL_REPLICA,
+    ...numbered,
+  ].filter((url): url is string => Boolean(url));
+}
+
+/**
+ * Which replica this instance talks to, chosen once and kept.
+ *
+ * Picked per process rather than per query on purpose. Neon suspends an
+ * endpoint that goes idle, and a cold start costs far more than the imbalance
+ * this avoids — round-robin across three replicas from every instance keeps
+ * all three lukewarm and none of them warm. Pinning means one instance's
+ * traffic lands on one endpoint and keeps it awake, while the spread across
+ * many instances still uses every replica.
+ */
+let chosen: string | null = null;
+
+/**
  * The database of record. Every write, and every read that a write depends on.
  */
 export function getDb() {
@@ -51,14 +82,32 @@ export function getDb() {
  * The rule is simple enough to hold in your head: if the answer decides
  * whether a write happens, it comes from the primary.
  *
- * Falls back to the primary when `DATABASE_URL_REPLICA` is unset, so this is
- * safe to deploy before the replica exists and safe to roll back to by
- * removing one environment variable.
+ * WHY NOT `withReplicas()`
+ * Neon's Drizzle guide reaches for `drizzle-orm`'s `withReplicas(primary,
+ * [read])`, which routes every read to a replica and every write to the
+ * primary automatically, with `db.$primary()` to opt out. That is the wrong
+ * default here, and the reason is the list above: `inventory.ts` reading a
+ * stock count, `stripe-webhooks.ts` reading the order it is about to settle,
+ * and `session.ts` reading the staff allowlist are all `select`s, so all
+ * three would go to a replica unless someone remembered `$primary()` on each.
+ * Forgetting is silent, and it fails as overselling or a webhook redoing
+ * settled work rather than as an error.
+ *
+ * This inverts it: the primary is what you get, and reaching for a replica is
+ * a deliberate call in a module the test below allowlists. Forgetting is
+ * merely slower.
+ *
+ * Falls back to the primary when no replica is configured, so this is safe to
+ * deploy before the replicas exist and safe to roll back to by removing an
+ * environment variable.
  */
 export function getReadDb() {
-  const url = process.env.DATABASE_URL_REPLICA;
-  if (!url) return getDb();
-  if (!replica) replica = createDb(url);
+  if (!chosen) {
+    const urls = replicaUrls();
+    if (urls.length === 0) return getDb();
+    chosen = urls[Math.floor(Math.random() * urls.length)] ?? urls[0]!;
+  }
+  if (!replica) replica = createDb(chosen);
   return replica;
 }
 
