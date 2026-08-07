@@ -285,6 +285,39 @@ the plan should not pretend otherwise.
 
 ---
 
+## 4½. The outage, and the rule it bought
+
+Adding three columns to `db/schema/shop.ts` and pushing took every shop page
+down. Drizzle selects every column its schema declares, so one column the
+database has never heard of makes `select … from shops` fail — and the shop
+page, the storefront, and anything else reading a shop with it. The build was
+green, the tests were green, the types were green, and production was broken,
+because none of those three things ever touches the database.
+
+Nothing in the gate could have caught it. `npm run build` does not connect,
+`vitest` does not connect, and `tsc` least of all. The e2e suite *did* catch
+it — the failure is in the dev server's log in the run above — but it took
+reading the log rather than the exit code, because the shop page fails into an
+error boundary and still answers 200.
+
+**The rule: a schema change is not shipped until the migration has run.** In
+the same commit, before the push, in this order:
+
+```bash
+# 1. Write the migration by hand for an additive change. `db:push` diffs the
+#    whole schema, which is more than you need and more than is safe while
+#    another agent has schema work in flight.
+# 2. Apply it.
+npx dotenv -e .env.local -- npx tsx -e "…ALTER TABLE … ADD COLUMN IF NOT EXISTS…"
+# 3. Prove the column is there before pushing the code that reads it.
+select column_name from information_schema.columns where table_name='shops'
+```
+
+And a second rule from the same hour: **`curl | grep` is not a health check.**
+Every RSC payload embeds the error boundary's copy, so grepping a page for
+"something went wrong" matches every page including the healthy ones. Render it
+and read the visible text.
+
 ## 5. Rules this codebase earned today
 
 Beyond the four in HANDOFF.md, which still hold.
