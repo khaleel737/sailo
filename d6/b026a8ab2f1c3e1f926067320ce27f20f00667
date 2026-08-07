@@ -1,0 +1,20 @@
+src/lib/actions/shop.ts
+  s_7114fe38b67e35::t_b0434f1a5e9052 144-147
+  s_7114fe38b67e35::t_764700604f342e 186-195
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d6b026a8ab2f1c3e1f926067320ce27f20f00667",
+  "prompts": {},
+  "sessions": {
+    "s_7114fe38b67e35": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8f7dffd4-ebcc-4a6f-9b6e-49a61b356ddf",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
