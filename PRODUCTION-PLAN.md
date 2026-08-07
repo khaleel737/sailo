@@ -107,44 +107,35 @@ in the app is trustworthy.
 
 ## 3. Still open, ranked
 
-| # | Where | What | Why not today |
+| # | Where | What | Why not yet |
 |---|---|---|---|
-| 1 | `booking/availability.ts` | **Concurrent double-booking.** The slot is re-derived but the check and the order insert are separate statements. Intra-basket is closed; two simultaneous buyers is not. | Needs a DB constraint, and a plain unique index is wrong — a cancelled order releases its slot, and a partial index on `order_items` cannot see `orders.status`. Needs design, and a migration run before the code ships (§5). |
-| 2 | `inventory.ts:293` | **Calendar squatting.** `releaseAbandonedCheckouts` sweeps card orders only, so an unpaid bank-transfer or COD booking holds its slot forever. | Bounded by the 10/min limit on `createOrderIntent`, and "unpaid manual order" is legitimately pending — the seller confirms by hand. Needs a product decision on when to expire one. |
-| 3 | `connect.ts:257,271` | **Three-decimal rounding.** `toStripeAmount` rounds each line to a multiple of ten, but the `goodsTotal !== subtotalCents` guard compares unrounded values, so the charge can differ from the invoice by a few fils. | Small, real, and needs a decision about which side gives — round the order or round the lines. |
-| 4 | `order-preview.ts:71`, `shop.ts:99` | **Two enumeration oracles.** A coupon code can be probed at 120/min, and `checkHandle` enumerates the seller roster. | Redemption caps still hold; both are throttled. Low value against the change required. |
-| 5 | every `rateLimit` call | **All limits fail open** when Redis is missing or cold. | Deliberate and documented, but it means every ceiling above is absent in an environment without `REDIS_URL`. Worth a decision, not a silent default. |
+| 1 | `booking/availability.ts` | **Concurrent double-booking.** The slot is re-derived but the check and the insert are separate statements. Intra-basket is closed; two simultaneous buyers is not. | Needs a DB constraint, and a plain unique index is wrong — a cancelled order releases its slot, and a partial index on `order_items` cannot see `orders.status`. Needs design and a migration run before the code ships (§5). |
+| 2 | `inventory.ts` | **Calendar squatting.** The sweep handles card orders only, so an unpaid transfer or COD booking holds its slot. | Bounded by the 10/min limit on `createOrderIntent`; "unpaid manual order" is legitimately pending. Needs a product decision on when one expires. |
+| 3 | `connect.ts:257,271` | **Three-decimal rounding.** Lines round to a multiple of ten, the guard compares unrounded, so the charge can differ from the invoice by a few fils. | Needs a decision on which side gives. |
+| 4 | `order-preview.ts`, `shop.ts:99` | **Two enumeration oracles** — coupon probing at 120/min, handle enumeration. | Throttled, caps still hold. Low value against the change. |
+| 5 | every `rateLimit` call | **All limits fail open** without Redis. | Deliberate, but it means every ceiling is absent in an environment with no `REDIS_URL`. Worth a decision, not a silent default. |
+| 6 | `queries/products.ts`, `queries/orders.ts` | **Unbounded admin reads.** `getAdminProducts` loads a whole catalogue with relations; `getShopClients` aggregates every client × order. | Seller-only traffic; will time out for one big shop before it costs anyone else. Paginate. |
+| 7 | `resolve-lines.ts:58` | **N+1 on the checkout quote** — two queries per basket line, sequential, re-fired on every basket change. | ~100–300ms on a five-line cart. `inArray` collapses it to two queries; not done. |
+| 8 | `hq/overview.ts` | **`/hq` aggregates run on the primary**, unwindowed, though `db/index.ts` says these belong on the replica. | Two staff users. Low frequency, real cost per load. |
 
 ---
 
-## 4. Phase C — split by responsibility. **Not started.**
+## 4. Phase C — split by responsibility. **Started.**
 
-Measured now:
+| File | Was | Now | State |
+|---|---|---|---|
+| `lib/stripe-webhooks.ts` | 680 | 5 modules, largest 321 | **Done.** Split by the question each part answers; `ownership` is the security seam and now has its own file and header. |
+| `[handle]/.../checkout-panel.tsx` | 618 | 545 + a 126-line hook | **Partly.** `useCheckoutQuote` owns the server conversation. The form is the next cut, by step. |
+| `lib/actions/orders.ts` | 566 | 566 | Not started. |
+| `hq/(panel)/accounts/[id]/page.tsx` | 562 | 562 | Not started — four tables in one page. |
+| `lib/email/messages.ts` | 528 | 528 | Not started — split by message. |
+| `(marketing)/page.tsx` | 482 | 482 | Not started — sections. |
+| `lib/blog.ts` | 402 | 402 | Reviewed and hardened, never split. |
+| `(legal)/terms,privacy,refunds` | 570/560/344 | — | **Leave whole.** Prose is data. |
+| `lib/invoice-pdf.ts` | 318 | — | **Leave whole.** Positional layout; each section depends on the `y` the last one left. |
+| `src/i18n/**` | — | — | **Leave whole.** Dictionaries are data. |
 
-```bash
-find src -name '*.ts' -o -name '*.tsx' | grep -v i18n/ | xargs wc -l | awk '$1>300' | sort -rn
-```
-
-| File | Lines | Verdict |
-|---|---|---|
-| `lib/stripe-webhooks.ts` | 680 | **Split first.** Clean seams already: verification (25–110), idempotency (112–132), ownership resolution (134–283), platform events (292–375), then connect events by family — session (393–575), charge (576–604), dispute (605–661), account (662–680). |
-| `[handle]/_components/cart/checkout-panel.tsx` | 618 | Split by step, not by size. |
-| `lib/actions/orders.ts` | 566 | Split after the above; it is the file most likely to move again. |
-| `hq/(panel)/accounts/[id]/page.tsx` | 562 | Four tables in one page. |
-| `lib/email/messages.ts` | 528 | Split by message. |
-| `(marketing)/page.tsx` | 482 | Sections. |
-| `[handle]/_components/cart/order-sheet.tsx` | 422 | |
-| `lib/blog.ts` | 402 | Reviewed and hardened now, but never split. |
-| `(legal)/terms,privacy,refunds` | 570/560/344 | **Leave whole.** Prose is data. |
-| `lib/invoice-pdf.ts` | 318 | **Leave whole.** Positional layout — each section depends on the `y` the last one left. |
-| `src/i18n/**` | — | **Leave whole.** Dictionaries are data. |
-
-The method that works here is in HANDOFF.md and is worth following literally:
-extract one seam, run `npx tsc --noEmit`, and **read what it says**. Nearly every
-bug found by the previous split pass was surfaced by the compiler complaining
-about an extraction, not by reading the file first.
-
----
+The method that works: extract one seam, run `npx tsc --noEmit`, and **read what it says**. Splitting the webhooks turned three accidentally-private functions into a real boundary, and lifting the checkout's quote found `couponFor` being called twice with nothing making the two agree.
 
 ## 5. Rules this codebase earned
 
