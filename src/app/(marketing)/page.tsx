@@ -1,7 +1,7 @@
+import { interpolate } from "@/i18n";
+import { PLATFORM_FEE_LABEL } from "@/lib/plans";
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { getSession } from "@/lib/session";
 import { getT } from "@/i18n/server";
 import { getMarketingDictionary } from "@/i18n/marketing";
 import { LOCALES } from "@/i18n/config";
@@ -11,13 +11,14 @@ import { PhoneFrame } from "@/components/marketing/frames";
 import { DemoGallery } from "@/components/marketing/demo-gallery";
 import { ShopMarquee } from "@/components/marketing/shop-marquee";
 import { Versus } from "@/components/marketing/versus";
-import { Counter, MotionProvider, Stagger } from "@/components/marketing/motion";
+import { Counter, MotionProvider } from "@/components/marketing/motion";
 import {
   Chip,
   Container,
   Cta,
   Display,
   Lede,
+  Rise,
   Section,
   SectionHead,
 } from "@/components/marketing/kit";
@@ -44,7 +45,16 @@ function splitHighlight(title: string) {
 }
 
 export default async function HomePage() {
-  if (await getSession()) redirect("/admin");
+  /*
+   * The signed-in redirect is not here any more — it is in `src/proxy.ts`.
+   *
+   * It has to run before anything is sent. This page sits behind
+   * `loading.tsx`, so Next streams the shell and answers 200 the moment
+   * rendering starts; a `redirect()` from here therefore arrived after the
+   * seller had already seen the splash and then the header and footer wrapped
+   * around an empty page. The proxy answers with a real 307 and none of that
+   * is ever painted.
+   */
 
   const { locale, t, dir } = await getT();
   const m = getMarketingDictionary(locale);
@@ -78,7 +88,7 @@ export default async function HomePage() {
   const faqs = [
     { q: m.faq.q1, a: m.faq.a1 },
     { q: m.faq.q2, a: m.faq.a2 },
-    { q: m.faq.q3, a: m.faq.a3 },
+    { q: m.faq.q3, a: interpolate(m.faq.a3, { fee: PLATFORM_FEE_LABEL }) },
     { q: m.faq.q4, a: m.faq.a4 },
     { q: m.faq.q5, a: m.faq.a5 },
     { q: m.faq.q6, a: m.faq.a6 },
@@ -116,16 +126,21 @@ export default async function HomePage() {
         <section className="relative overflow-hidden">
           <Container className="grid items-center gap-16 pb-20 pt-16 sm:pb-28 lg:grid-cols-[1.08fr_auto] lg:gap-14 lg:pb-32 lg:pt-24">
             <div className="text-center lg:text-start">
-              <Stagger>
+              <Rise>
                 <p className="inline-flex items-center gap-2.5 rounded-[var(--r-pill)] border border-[var(--mute-200)] px-3.5 py-1.5 text-[0.75rem] text-[var(--mute-500)]">
-                  {/* The one live indicator on the page, and it means what it
-                      says: the beta is open right now. */}
+                  {/*
+                    The one live indicator on the page, and it still means what
+                    it says — only the claim has moved. It used to mark an open
+                    beta; it now marks an open door. The free plan is a real
+                    tier in `plans.ts` at zero a month, not a countdown, which
+                    is why the badge no longer implies one.
+                  */}
                   <span className="size-1.5 rounded-full bg-[var(--signal)]" />
                   {m.hero.badge}
                 </p>
-              </Stagger>
+              </Rise>
 
-              <Stagger delay={0.08}>
+              <Rise delay={0.08}>
                 <Display as="h1" size="lg" className="mt-7">
                   {headline.before}
                   {headline.marked ? (
@@ -135,15 +150,15 @@ export default async function HomePage() {
                   ) : null}
                   {headline.after}
                 </Display>
-              </Stagger>
+              </Rise>
 
-              <Stagger delay={0.16}>
+              <Rise delay={0.16}>
                 <Lede className="mx-auto mt-7 max-w-[34rem] lg:mx-0">
                   {m.hero.body}
                 </Lede>
-              </Stagger>
+              </Rise>
 
-              <Stagger delay={0.24}>
+              <Rise delay={0.24}>
                 <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row lg:justify-start">
                   <Cta href="/signup" magnetic className="group w-full sm:w-auto">
                     {m.hero.ctaPrimary}
@@ -156,13 +171,13 @@ export default async function HomePage() {
                     {m.hero.ctaSecondary}
                   </a>
                 </div>
-              </Stagger>
+              </Rise>
             </div>
 
             {/* The argument in one picture: a bio with a link in it, and the
                 shop that link opens. Both are real. The phone is a screenshot
                 of /forno taken by `npm run shots`. */}
-            <Stagger
+            <Rise
               delay={0.12}
               className="mx-auto flex w-full max-w-sm flex-col items-center gap-8 lg:mx-0 lg:max-w-none lg:flex-row lg:items-start lg:gap-6"
             >
@@ -181,14 +196,22 @@ export default async function HomePage() {
                 </p>
               </div>
 
+              {/*
+                `sizes` mirrors the width classes above it, breakpoint for
+                breakpoint. It used to claim 256px on every screen under
+                1024px while the frame is `w-56` — 224px — below `sm`, and an
+                overstated `sizes` is not a rounding error: it picks the next
+                candidate up out of the srcset, so the phone that can least
+                afford it downloaded the widest file.
+              */}
               <PhoneFrame
                 src={heroShot}
                 alt={HERO_DEMO.name}
                 priority
                 className="w-56 shrink-0 sm:w-64 lg:mt-16 lg:w-[13.5rem] xl:w-[15rem]"
-                sizes="(min-width: 1280px) 240px, (min-width: 1024px) 216px, 256px"
+                sizes="(min-width: 1280px) 240px, (min-width: 1024px) 216px, (min-width: 640px) 256px, 224px"
               />
-            </Stagger>
+            </Rise>
           </Container>
         </section>
 
