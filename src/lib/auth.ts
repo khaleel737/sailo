@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { magicLink } from "better-auth/plugins";
@@ -9,7 +10,7 @@ import {
   sendHqSignInLink,
   sendPasswordReset,
 } from "@/lib/email";
-import { isStaffEmail } from "@/lib/staff";
+import { isStaffEmail, refusesPasswordAuth } from "@/lib/staff";
 
 /**
  * How long a reset link stays good. Set here rather than left to the default
@@ -35,9 +36,13 @@ export const auth = betterAuth({
      * Sign-up stays instant — a confirmation email goes out (below), and the
      * admin shows a banner until it's clicked, but a seller can set up their
      * shop while it waits. Making it blocking would lock out everyone who
-     * signed up before verification existed. What unverified addresses can
-     * never do is open /hq: `requireStaff` insists on a verified email, so
-     * typing a staff address into the sign-up form proves nothing.
+     * signed up before verification existed.
+     *
+     * This used to add that typing a staff address into the sign-up form
+     * "proves nothing", which was the wrong reassurance: it proved nothing
+     * only until someone clicked the confirmation that signup mailed to the
+     * real inbox. See the `hooks` block below, which is what makes the claim
+     * true — a staff address cannot reach this endpoint at all.
      */
     requireEmailVerification: false,
     minPasswordLength: 8,
@@ -84,6 +89,45 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days
     updateAge: 60 * 60 * 24,
+  },
+  /*
+   * A staff address may not hold a password. This closes an account
+   * pre-hijack, and it is the assumption in the comment above — "typing a
+   * staff address into the sign-up form proves nothing" — being made true,
+   * because on its own it was not.
+   *
+   * The chain it breaks: sign up as the roster address with a password of the
+   * attacker's choosing. `sendOnSignUp` then mails the *real* inbox, from
+   * Sailo's genuine sending domain, a message indistinguishable from the one a
+   * colleague's own signup produces — and `/send-verification-email` is
+   * unauthenticated, so it can be sent again as often as the attacker likes.
+   * One click by anyone with inbox access sets `emailVerified`, and it does so
+   * without touching the credential: better-auth's magic-link flow calls
+   * `revokeUnprovenAccountAccess` before flipping that flag, and its
+   * email-verification flow does not. The attacker then signs in with the
+   * password they chose and `requireStaff` — verified address, on the roster —
+   * lets them into /hq, which is every seller's revenue and every buyer's
+   * personal data.
+   *
+   * `staff.ts` already says these accounts sign in by magic link and hold "no
+   * password anywhere for anyone to phish or reuse". This is the sentence
+   * enforced rather than described. Sign-in is refused as well as sign-up, so
+   * a row created before today cannot be used either.
+   */
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (!refusesPasswordAuth(ctx.path, ctx.body?.email)) return;
+
+      console.warn(`[sailo] password auth refused for staff address on ${ctx.path}`);
+      /*
+       * The same message either way, and the same one an ordinary duplicate
+       * signup gets. Naming the roster here would turn the endpoint into a
+       * test for whether an address is staff.
+       */
+      throw new APIError("BAD_REQUEST", {
+        message: "This address can't be used with a password. Use a sign-in link.",
+      });
+    }),
   },
   plugins: [
     /*

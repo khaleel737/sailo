@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { isStaffEmail, staffEmails } from "@/lib/staff";
+import { isStaffEmail, refusesPasswordAuth, staffEmails } from "@/lib/staff";
 
 /**
  * The whole of /hq's authorization model.
@@ -143,5 +143,72 @@ describe("isStaffEmail", () => {
     process.env.SAILO_STAFF_EMAILS = "second@example.com";
     expect(isStaffEmail("first@example.com")).toBe(false);
     expect(isStaffEmail("second@example.com")).toBe(true);
+  });
+});
+
+/**
+ * The account pre-hijack this closes.
+ *
+ * A staff account signs in by magic link and holds no password — the top of
+ * `staff.ts` has said so all along, and until this existed it was a
+ * description rather than a rule. Anyone could sign up as the roster address
+ * with a password of their choosing. Better-auth then mailed the *real* inbox
+ * a confirmation identical to the one a colleague's own signup produces, and
+ * `/send-verification-email` is unauthenticated, so it could be re-sent at
+ * will. One click set `emailVerified` — and it did so without disturbing the
+ * attacker's credential, because better-auth calls
+ * `revokeUnprovenAccountAccess` on the magic-link path and not on this one.
+ * `requireStaff` asks for a rostered address and a verified one; at that point
+ * both were true, and /hq is every seller's revenue and every buyer's PII.
+ */
+describe("refusesPasswordAuth", () => {
+  afterEach(() => {
+    delete process.env.SAILO_STAFF_EMAILS;
+  });
+
+  it("refuses a staff address a password signup", () => {
+    process.env.SAILO_STAFF_EMAILS = "staff@example.com";
+    expect(refusesPasswordAuth("/sign-up/email", "staff@example.com")).toBe(true);
+  });
+
+  it("refuses a staff address a password sign-in too", () => {
+    // Sign-up alone would leave any row written before this shipped usable.
+    process.env.SAILO_STAFF_EMAILS = "staff@example.com";
+    expect(refusesPasswordAuth("/sign-in/email", "staff@example.com")).toBe(true);
+  });
+
+  it("leaves every seller alone", () => {
+    // Sellers are the overwhelming majority of both endpoints' traffic.
+    process.env.SAILO_STAFF_EMAILS = "staff@example.com";
+    for (const path of ["/sign-up/email", "/sign-in/email"]) {
+      expect(refusesPasswordAuth(path, "seller@example.com"), path).toBe(false);
+    }
+  });
+
+  it("does not block the magic link, which is how staff actually sign in", () => {
+    process.env.SAILO_STAFF_EMAILS = "staff@example.com";
+    expect(refusesPasswordAuth("/sign-in/magic-link", "staff@example.com")).toBe(false);
+    expect(refusesPasswordAuth("/magic-link/verify", "staff@example.com")).toBe(false);
+  });
+
+  it("matches the roster the same way the guard does", () => {
+    // Case and whitespace, since the endpoint takes whatever was typed.
+    process.env.SAILO_STAFF_EMAILS = "staff@example.com";
+    expect(refusesPasswordAuth("/sign-up/email", "  STAFF@Example.com  ")).toBe(true);
+  });
+
+  it("survives a body with no email, or a hostile one", () => {
+    process.env.SAILO_STAFF_EMAILS = "staff@example.com";
+    for (const value of [undefined, null, 42, {}, [], { toString: () => "staff@example.com" }]) {
+      expect(refusesPasswordAuth("/sign-up/email", value)).toBe(false);
+    }
+  });
+
+  it("refuses the default roster, not just a configured one", () => {
+    // Production runs on the default unless SAILO_STAFF_EMAILS is set.
+    delete process.env.SAILO_STAFF_EMAILS;
+    for (const email of staffEmails()) {
+      expect(refusesPasswordAuth("/sign-up/email", email), email).toBe(true);
+    }
   });
 });

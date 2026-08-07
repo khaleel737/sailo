@@ -46,3 +46,29 @@ export function isStaffEmail(email: string | null | undefined): boolean {
   if (!email) return false;
   return staffEmails().includes(email.trim().toLowerCase());
 }
+
+/**
+ * The two better-auth endpoints a staff address must never reach.
+ *
+ * A roster account signs in by magic link and holds no password — that is
+ * stated at the top of this file, and until it was enforced it was only a
+ * description. Anyone could sign up as `admin@sailo.store` with a password of
+ * their own choosing; better-auth then mailed the real inbox a confirmation
+ * indistinguishable from a colleague's, and one click set `emailVerified`
+ * without disturbing the attacker's credential. `requireStaff` asks for a
+ * rostered address and a verified one, and at that point both were true.
+ *
+ * Sign-in is refused as well as sign-up so that a row written before this
+ * existed cannot be used either.
+ *
+ * A separate function from `isStaffEmail` because it answers a different
+ * question — not "is this person staff" but "may this request use a password"
+ * — and because the auth config that calls it cannot be unit tested without a
+ * database, while this can.
+ */
+const PASSWORD_PATHS = ["/sign-up/email", "/sign-in/email"] as const;
+
+export function refusesPasswordAuth(path: string, email: unknown): boolean {
+  if (!(PASSWORD_PATHS as readonly string[]).includes(path)) return false;
+  return isStaffEmail(typeof email === "string" ? email : null);
+}
