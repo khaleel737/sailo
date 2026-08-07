@@ -1,0 +1,164 @@
+src/app/[handle]/p/[slug]/opengraph-image.tsx
+  s_2e1da3b18d1c53::t_f92d5480e6daa1 73-78,80-81
+src/i18n/dictionaries/en.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 353-354
+src/i18n/dictionaries/th.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/i18n/dictionaries/vi.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/i18n/dictionaries/ko.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/components/shared/chart/index.tsx
+  s_2e1da3b18d1c53::t_4fc1c7c8e3ebcc 123-125
+src/app/admin/page.tsx
+  s_2e1da3b18d1c53::t_5b2282ddadcb58 48,288
+src/app/admin/affiliates/page.tsx
+  s_2e1da3b18d1c53::t_5b2282ddadcb58 95,183,189,194
+  s_2e1da3b18d1c53::t_8f23aea35d7f5e 35
+src/app/(marketing)/_components/pricing-section.tsx
+  s_2e1da3b18d1c53::t_f92d5480e6daa1 61
+  s_2e1da3b18d1c53::t_8294f5b41acbc1 56,88,102,139,143
+  s_2e1da3b18d1c53::t_98df81b7298bdd 163
+src/app/onboarding/_components/shop-preview.tsx
+  s_2e1da3b18d1c53::t_d6d438eefc0723 17-18,25-28,30,78
+src/i18n/dictionaries/hu.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 225
+src/app/admin/coupons/page.tsx
+  s_2e1da3b18d1c53::t_5b2282ddadcb58 96,124
+src/i18n/dictionaries/id.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/i18n/dictionaries/no.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 225
+src/i18n/dictionaries/es.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 235
+src/app/[handle]/_components/cart/cart-button.tsx
+  s_2e1da3b18d1c53::t_073c3930a9df67 48
+src/i18n/dictionaries/fi.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 225
+src/app/admin/settings/billing/page.tsx
+  s_2e1da3b18d1c53::t_5b2282ddadcb58 173,185
+src/app/invoice/[token]/page.tsx
+  s_2e1da3b18d1c53::t_709fe4c622ddb2 184,187,198,208,218,228,235,244
+src/i18n/dictionaries/cs.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 225
+src/app/admin/products/page.tsx
+  s_2e1da3b18d1c53::t_8f23aea35d7f5e 29
+  s_2e1da3b18d1c53::t_5b2282ddadcb58 176-177
+src/i18n/dictionaries/fil.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/i18n/dictionaries/fr.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 236
+src/i18n/dictionaries/hr.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/lib/utils.ts
+  s_2e1da3b18d1c53::t_0a820745b0a314 21-41,43
+src/app/onboarding/page.tsx
+  s_2e1da3b18d1c53::t_82923001b72729 39
+src/i18n/dictionaries/ru.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 228
+src/app/[handle]/_components/product-card.tsx
+  s_2e1da3b18d1c53::t_d5d6c864e56d34 29,37-38,150,152,157
+src/i18n/dictionaries/pl.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 230
+src/app/admin/_components/admin-i18n.tsx
+  s_2e1da3b18d1c53::t_d9fe6371b306ec 3,14-24,28,32,35-36,39,48-56
+src/i18n/dictionaries/da.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 225
+src/i18n/dictionaries/bg.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/app/admin/clients/[id]/page.tsx
+  s_2e1da3b18d1c53::t_5b2282ddadcb58 71-72,75
+src/app/admin/delivery/page.tsx
+  s_2e1da3b18d1c53::t_8f23aea35d7f5e 26
+  s_2e1da3b18d1c53::t_5b2282ddadcb58 117,119
+src/app/[handle]/_components/cart/order-sheet.tsx
+  s_2e1da3b18d1c53::t_709fe4c622ddb2 262
+src/app/admin/_components/order-row.tsx
+  s_2e1da3b18d1c53::t_5b2282ddadcb58 119,215,235,240,245,251,258,297
+src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_2e1da3b18d1c53::t_073c3930a9df67 159,164
+src/app/admin/layout.tsx
+  s_2e1da3b18d1c53::t_2fe630c7f92622 30
+src/app/admin/clients/page.tsx
+  s_2e1da3b18d1c53::t_5b2282ddadcb58 90
+  s_2e1da3b18d1c53::t_8f23aea35d7f5e 17
+src/app/onboarding/_components/onboarding-form.tsx
+  s_2e1da3b18d1c53::t_d6d438eefc0723 55,189-190
+  s_2e1da3b18d1c53::t_82923001b72729 51
+src/i18n/dictionaries/mk.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/i18n/dictionaries/ms.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/app/partner/[token]/page.tsx
+  s_2e1da3b18d1c53::t_709fe4c622ddb2 34,166,169,210,215
+src/app/admin/_components/upgrade-modal.tsx
+  s_2e1da3b18d1c53::t_d884e6470a9a09 17,61
+  s_2e1da3b18d1c53::t_5b2282ddadcb58 150,160
+src/i18n/dictionaries/ar.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 261
+src/i18n/dictionaries/nl.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 231
+src/i18n/dictionaries/pt.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 231
+src/i18n/dictionaries/ro.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 225
+src/i18n/dictionaries/el.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 229
+src/i18n/dictionaries/zh.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 261
+src/i18n/dictionaries/sl.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/app/[handle]/_components/product-grid.tsx
+  s_2e1da3b18d1c53::t_d5d6c864e56d34 31,42,70
+src/app/[handle]/_lib/load-more-products.tsx
+  s_2e1da3b18d1c53::t_6744af311058fd 43,61
+src/i18n/dictionaries/sv.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 226
+src/i18n/dictionaries/tr.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 229
+src/i18n/dictionaries/it.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 231
+src/lib/utils.test.ts
+  s_2e1da3b18d1c53::t_5142f9736c43bf 45-54,56
+  s_2e1da3b18d1c53::t_6c7120d20c8cc7 38-44,55,57-80
+src/app/(marketing)/page.tsx
+  s_2e1da3b18d1c53::t_98df81b7298bdd 409
+src/i18n/dictionaries/ja.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 262
+src/i18n/dictionaries/sr.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/i18n/dictionaries/bs.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/i18n/dictionaries/sq.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 190
+src/app/[handle]/page.tsx
+  s_2e1da3b18d1c53::t_03ec32b729d23d 156
+src/i18n/dictionaries/de.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 235
+src/app/[handle]/p/[slug]/page.tsx
+  s_2e1da3b18d1c53::t_709fe4c622ddb2 231,233,238
+src/i18n/dictionaries/uk.ts
+  s_2e1da3b18d1c53::t_afa4a4811b60aa 228
+src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_2e1da3b18d1c53::t_45207fe03db984 346
+  s_2e1da3b18d1c53::t_512fffb8e142ea 19,50-57,327,538,545,555,565,572,578
+src/app/admin/orders/_components/order-actions.tsx
+  s_2e1da3b18d1c53::t_d884e6470a9a09 10,24
+  s_2e1da3b18d1c53::t_5b2282ddadcb58 151
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c4eeffe6b59a0d1b4f1f89b5af619718a34ea796",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
