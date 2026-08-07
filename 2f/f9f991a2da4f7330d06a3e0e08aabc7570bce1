@@ -1,0 +1,21 @@
+src/lib/currency.ts
+  s_2e1da3b18d1c53::t_bdd815bdc78c58 95-99,110-118,149-150
+src/lib/currency.test.ts
+  s_2e1da3b18d1c53::t_d268e914a70dc9 59-60,64-89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "2ff9f991a2da4f7330d06a3e0e08aabc7570bce1",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
