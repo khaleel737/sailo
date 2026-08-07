@@ -69,13 +69,31 @@ export function SlotPicker({
   const [failed, setFailed] = useState(false);
   const [openDate, setOpenDate] = useState<string | null>(null);
 
+  /*
+   * Clearing last service's times when the product changes, during render
+   * rather than from the effect below.
+   *
+   * The effect ran after this component had already been painted once with
+   * the previous service's slots under the new service's name — a buyer could
+   * see, and click, a time that belongs to something they are no longer
+   * buying. Adjusting here means React discards that render before anyone
+   * sees it, and there is no second pass to schedule.
+   *
+   * Kept in the component rather than solved with a `key` at the two call
+   * sites: a third one added later would silently reintroduce the bug.
+   */
+  const [shownFor, setShownFor] = useState(productId);
+  if (shownFor !== productId) {
+    setShownFor(productId);
+    setCalendar(null);
+    setFailed(false);
+    setOpenDate(null);
+  }
+
   useEffect(() => {
     // Aborted on unmount and on a product change, so a slow answer for the
     // previous service cannot land in this one's list.
     const abort = new AbortController();
-
-    setCalendar(null);
-    setFailed(false);
 
     fetch(`/api/booking/${productId}?days=14`, { signal: abort.signal })
       .then((res) => (res.ok ? res.json() : Promise.reject(new Error("unavailable"))))

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
   CONSENT_EVENT,
@@ -8,6 +8,34 @@ import {
   writeConsent,
   type ConsentChoice,
 } from "@/lib/consent";
+
+/*
+ * Whether this browser has answered is external state — it lives in
+ * `localStorage`, another tab can change it, and it cannot be read while
+ * rendering on the server. That is precisely what `useSyncExternalStore`
+ * describes, and it replaces an effect that set state the moment it ran.
+ *
+ * Declared at module scope so the identities are stable: a `subscribe` that is
+ * recreated each render re-subscribes each render.
+ */
+function subscribeToConsent(onChange: () => void) {
+  window.addEventListener(CONSENT_EVENT, onChange);
+  // Another tab answering counts as answering.
+  window.addEventListener("storage", onChange);
+  return () => {
+    window.removeEventListener(CONSENT_EVENT, onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
+const isUnanswered = () => readConsent() === null;
+
+/*
+ * Never ask during server rendering. Whether to ask depends on what is in this
+ * browser's storage, and guessing produces a flash of a banner at someone who
+ * already answered.
+ */
+const isUnansweredOnServer = () => false;
 
 /**
  * The analytics consent request, for Sailo's own pages.
@@ -44,10 +72,22 @@ export function CookieConsent({
     analyticsBody: string;
   };
 }) {
-  // Never rendered on the server: whether to ask depends on what is in this
-  // browser's storage, and guessing produces a flash of a banner at someone
-  // who already answered.
-  const [asking, setAsking] = useState(false);
+  const unanswered = useSyncExternalStore(
+    subscribeToConsent,
+    isUnanswered,
+    isUnansweredOnServer,
+  );
+
+  /*
+   * Dismissal is tracked separately from the stored answer on purpose.
+   *
+   * `writeConsent` swallows a storage failure — private browsing, a full quota
+   * — and says so: asking again next time is the safe direction to fail in.
+   * But it must not fail by leaving the dialog open under someone who just
+   * clicked Accept, which reads as a broken button rather than as a browser
+   * refusing to remember. This closes it either way.
+   */
+  const [dismissed, setDismissed] = useState(false);
   /*
    * The middle path. One optional category today, so a panel could look like
    * theatre — but "accept or leave" is the pattern regulators single out, and
@@ -56,22 +96,9 @@ export function CookieConsent({
   const [choosing, setChoosing] = useState(false);
   const [analytics, setAnalytics] = useState(false);
 
-  useEffect(() => {
-    if (readConsent() === null) setAsking(true);
-
-    // Another tab answering counts as answering.
-    const sync = () => setAsking(readConsent() === null);
-    window.addEventListener(CONSENT_EVENT, sync);
-    window.addEventListener("storage", sync);
-    return () => {
-      window.removeEventListener(CONSENT_EVENT, sync);
-      window.removeEventListener("storage", sync);
-    };
-  }, []);
-
   const answer = useCallback((choice: ConsentChoice) => {
     writeConsent(choice);
-    setAsking(false);
+    setDismissed(true);
   }, []);
 
   const accept = useCallback(() => answer("granted"), [answer]);
@@ -83,7 +110,7 @@ export function CookieConsent({
     [answer, analytics],
   );
 
-  if (!asking) return null;
+  if (!unanswered || dismissed) return null;
 
   return (
     <div
