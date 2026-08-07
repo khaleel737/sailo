@@ -9,30 +9,34 @@ this repo has more than one agent in it and the numbers move.
 ## 1. Where it stands
 
 ```bash
-npx tsc --noEmit; echo $?                        # 0
-npx vitest run                                   # 1194 tests, 58 files
-npx oxlint 2>&1 | grep -cE ' error '             # 0
-npm run build > /dev/null 2>&1; echo $?          # 0
-npx playwright test e2e/                         # 34/34
-DATABASE_URL=postgres://k:k@localhost/k npx knip # 0 unused files, 0 unused exports
+npx tsc --noEmit; echo $?                              # 0
+npx vitest run                                         # 1200 tests, 59 files
+npx vitest run --config vitest.scenarios.mts           # 48 against a real database
+npx oxlint 2>&1 | grep -cE ' error '                   # 0
+npm run build > /dev/null 2>&1; echo $?                # 0
+npx playwright test e2e/                               # 34/34
+E2E_BASE_URL=https://sailo.store npx playwright test e2e/security.spec.ts e2e/checkout.spec.ts
+DATABASE_URL=postgres://k:k@localhost/k npx knip       # 0 unused files, 0 unused exports
 ```
 
-| | Previous | Now |
+| | Start of the day | Now |
 |---|---|---|
-| Tests | 909 | **1194** |
+| Unit tests | 909 | **1200** |
+| Tests against a real database | **0** | **48** |
 | Type errors | 0 | 0 |
-| Lint errors | 0 | 0 |
+| Lint errors | 13 | 0 |
 | Unused exports (knip) | 27 | **0** |
 | Unlisted dependencies | 3 | **0** |
-| Open findings from §3 | 6 | **0** |
-| Security findings from the audit | — | **15 closed, 5 open (§3)** |
+| Security findings open | — | **6, all ranked in §3** |
+| Files over 300 lines (real code) | 20 | 13, four of them prose or layout |
 
-The six ship-blocking findings in the previous version of this document are all
-closed in the code — verified by reading it, not by trusting the commit
-messages. Settlement side effects are on the webhook, `abandonOrder` is the one
-compensator, `no_payment_required` is treated as settled.
-
----
+**The number that matters most is the second row.** Until today no test in this
+repo had ever placed an order, because the only database the app could reach
+was production's. `scripts/scenarios/up.sh` now gives it one it may dirty, and
+writing those 48 scenarios found four defects that reading had not: a
+check-then-act in `upsertClient` that ended a buyer's checkout on an error page
+for double-clicking, the concurrent double-booking, and two of my own fixtures
+being wrong about the product rather than the other way round.
 
 ## 2. What the audit found, and what was done
 
@@ -109,33 +113,44 @@ in the app is trustworthy.
 
 | # | Where | What | Why not yet |
 |---|---|---|---|
-| 1 | `booking/availability.ts` | **Concurrent double-booking.** The slot is re-derived but the check and the insert are separate statements. Intra-basket is closed; two simultaneous buyers is not. | Needs a DB constraint, and a plain unique index is wrong — a cancelled order releases its slot, and a partial index on `order_items` cannot see `orders.status`. Needs design and a migration run before the code ships (§5). |
-| 2 | `inventory.ts` | **Calendar squatting.** The sweep handles card orders only, so an unpaid transfer or COD booking holds its slot. | Bounded by the 10/min limit on `createOrderIntent`; "unpaid manual order" is legitimately pending. Needs a product decision on when one expires. |
-| 3 | `connect.ts:257,271` | **Three-decimal rounding.** Lines round to a multiple of ten, the guard compares unrounded, so the charge can differ from the invoice by a few fils. | Needs a decision on which side gives. |
-| 4 | `order-preview.ts`, `shop.ts:99` | **Two enumeration oracles** — coupon probing at 120/min, handle enumeration. | Throttled, caps still hold. Low value against the change. |
-| 5 | every `rateLimit` call | **All limits fail open** without Redis. | Deliberate, but it means every ceiling is absent in an environment with no `REDIS_URL`. Worth a decision, not a silent default. |
-| 6 | `queries/products.ts`, `queries/orders.ts` | **Unbounded admin reads.** `getAdminProducts` loads a whole catalogue with relations; `getShopClients` aggregates every client × order. | Seller-only traffic; will time out for one big shop before it costs anyone else. Paginate. |
-| 7 | `resolve-lines.ts:58` | **N+1 on the checkout quote** — two queries per basket line, sequential, re-fired on every basket change. | ~100–300ms on a five-line cart. `inArray` collapses it to two queries; not done. |
-| 8 | `hq/overview.ts` | **`/hq` aggregates run on the primary**, unwindowed, though `db/index.ts` says these belong on the replica. | Two staff users. Low frequency, real cost per load. |
+| 1 | `connect.ts:257,271` | **Three-decimal rounding.** `toStripeAmount` rounds each line to a multiple of ten; the `goodsTotal !== subtotalCents` guard compares unrounded values, so a KWD/BHD/JOD charge can differ from its invoice by a few fils. | Needs a decision on which side gives — round the order, or round the lines and re-total. Affects three currencies. |
+| 2 | `inventory.ts` | **Calendar squatting.** The sweep reclaims card orders only, so an unpaid transfer or COD booking holds its slot until the seller cancels it. | Bounded by the 10/min limit on `createOrderIntent`, and "unpaid manual order" is legitimately pending — the seller confirms by hand. Needs a product decision on when one expires. |
+| 3 | `order-preview.ts`, `shop.ts:99` | **Two enumeration oracles** — a coupon code can be probed at 120/min, and `checkHandle` enumerates the seller roster. | Throttled; redemption caps still hold. Low value against the change. |
+| 4 | every `rateLimit` call | **All limits fail open** when Redis is missing or cold. | Deliberate and documented, but it means every ceiling is absent in an environment with no `REDIS_URL`. Worth a decision rather than a silent default. |
+| 5 | `/api/download/[token]/[fileId]` | **No rate limit**, and with `downloadLimit` null it is unbounded egress per token. | The token is the credential and carries 128 bits, so this is cost, not exposure. |
+| 6 | `queries/products.ts:64` | **`?q=` is a leading-wildcard `ILIKE`** with no trigram index — a per-shop scan. | Fine at hundreds of products, will crawl on a 10k-product catalogue. Length is capped and the endpoint is throttled, so it is a scaling item, not an abuse one. |
+
+**Closed since this document was rewritten:** the storefront 500 (`?sort=toString`),
+concurrent double-booking, the settlement path having no test, the checkout N+1,
+unbounded admin reads, `/hq` aggregates on the primary, three caches that had
+silently stopped working, two caches that lied about plan changes, and four
+missing rate limits.
 
 ---
 
-## 4. Phase C — split by responsibility. **Started.**
+## 4. Phase C — split by responsibility
 
 | File | Was | Now | State |
 |---|---|---|---|
-| `lib/stripe-webhooks.ts` | 680 | 5 modules, largest 321 | **Done.** Split by the question each part answers; `ownership` is the security seam and now has its own file and header. |
-| `[handle]/.../checkout-panel.tsx` | 618 | 545 + a 126-line hook | **Partly.** `useCheckoutQuote` owns the server conversation. The form is the next cut, by step. |
-| `lib/actions/orders.ts` | 566 | 566 | Not started. |
+| `lib/stripe-webhooks.ts` | 680 | 5 modules, largest 321 | **Done.** Split by the question each part answers; `ownership` is the security seam and has its own file and header. |
+| `lib/actions/orders.ts` | 598 | 521 + a 196-line resolver | **Done enough.** `resolveOrderIntent` is the half where failure is free — nothing it does touches a row. What is left is the commit-and-settle path, which is one story. |
+| `[handle]/.../checkout-panel.tsx` | 618 | 545 + a 118-line hook | **Partly.** `useCheckoutQuote` owns the server conversation; the form is the next cut, by step. |
 | `hq/(panel)/accounts/[id]/page.tsx` | 562 | 562 | Not started — four tables in one page. |
 | `lib/email/messages.ts` | 528 | 528 | Not started — split by message. |
 | `(marketing)/page.tsx` | 482 | 482 | Not started — sections. |
+| `[handle]/.../order-sheet.tsx` | 422 | 422 | Not started. |
 | `lib/blog.ts` | 402 | 402 | Reviewed and hardened, never split. |
 | `(legal)/terms,privacy,refunds` | 570/560/344 | — | **Leave whole.** Prose is data. |
 | `lib/invoice-pdf.ts` | 318 | — | **Leave whole.** Positional layout; each section depends on the `y` the last one left. |
 | `src/i18n/**` | — | — | **Leave whole.** Dictionaries are data. |
 
-The method that works: extract one seam, run `npx tsc --noEmit`, and **read what it says**. Splitting the webhooks turned three accidentally-private functions into a real boundary, and lifting the checkout's quote found `couponFor` being called twice with nothing making the two agree.
+The method that works, and the reason to keep going: extract one seam, run
+`npx tsc --noEmit`, and **read what it says**. Splitting the webhooks turned
+three accidentally-private functions into a real boundary. Lifting the
+checkout's quote found `couponFor` called twice with nothing making the two
+agree. Extracting the resolver found `delivery` being `undefined` rather than
+`null` — a distinction that carries meaning — and a payment row's `type` being
+asserted as something the database never promised.
 
 ## 5. Rules this codebase earned
 
