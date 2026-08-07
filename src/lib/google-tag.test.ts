@@ -135,16 +135,39 @@ describe("the Content Security Policy lets the tags run", () => {
     "utf8",
   );
 
+  /*
+   * Matches either quoting. `script-src` became a template literal when
+   * `'unsafe-eval'` was scoped to development, and a regex pinned to double
+   * quotes failed — which is a test asserting a formatting choice rather than
+   * the rule it is named for.
+   */
+  const directive = (name: string) =>
+    config.match(new RegExp(`["\`]${name}[^"\`]+["\`]`))?.[0] ?? "";
+
   it("allows the Google tag's script and its collect endpoints", () => {
-    const scriptSrc = config.match(/"script-src[^"]+"/)?.[0] ?? "";
+    const scriptSrc = directive("script-src");
     expect(scriptSrc).toContain("googletagmanager.com");
 
-    const connectSrc = config.match(/"connect-src[^"]+"/)?.[0] ?? "";
+    const connectSrc = directive("connect-src");
     expect(connectSrc).toContain("google-analytics.com");
   });
 
+  it("keeps 'unsafe-eval' out of production and in development", () => {
+    /*
+     * Removed outright, this broke the dev server: React's development build
+     * calls `eval` to reconstruct callstacks, says so in the console when a
+     * policy blocks it, and Next's error overlay is itself `role="dialog"` —
+     * so the checkout e2e suite found two dialogs and failed six ways at once.
+     *
+     * Production genuinely does not need it, which is why the answer is to
+     * scope it rather than keep it everywhere.
+     */
+    expect(config).toContain('process.env.NODE_ENV === "production" ? "" : " \'unsafe-eval\'"');
+    expect(directive("script-src")).not.toContain("'unsafe-eval'");
+  });
+
   it("allows Vercel's development script host", () => {
-    const scriptSrc = config.match(/"script-src[^"]+"/)?.[0] ?? "";
+    const scriptSrc = directive("script-src");
     expect(scriptSrc).toContain("va.vercel-scripts.com");
   });
 });

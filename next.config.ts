@@ -98,6 +98,19 @@ const nextConfig: NextConfig = {
    * pipeline is in place, and both are narrower than no policy at all.
    */
   async headers() {
+    /*
+     * React's development build calls `eval` — to reconstruct callstacks
+     * across environments, among other debugging features — and says so in the
+     * console when a policy blocks it. Removing `'unsafe-eval'` outright took
+     * the dev server's error overlay with it, and the checkout e2e suite
+     * caught that within one run: the overlay is itself `role="dialog"`, so
+     * every test looking for the checkout panel found two.
+     *
+     * Production never needs it, which is the whole point of scoping it here
+     * rather than keeping it everywhere.
+     */
+    const devEval = process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'";
+
     const csp = [
       "default-src 'self'",
       /*
@@ -112,11 +125,11 @@ const nextConfig: NextConfig = {
        * by 'self'.
        */
       /*
-       * `'unsafe-eval'` is gone, and deliberately not replaced.
+       * `'unsafe-eval'` is development-only, matching Next's own example.
        *
        * Nothing in the production bundle needs it — not Stripe.js, not gtag —
-       * and Next's own example scopes it to development only. Removing it
-       * takes `eval` and `new Function` away from an injected script for free.
+       * so in production it is absent and `eval`/`new Function` are off the
+       * table for an injected script. React's dev build does need it.
        *
        * `'unsafe-inline'` has to stay, and it is worth being honest about what
        * that costs: with it, an injected `<script>` runs, so this policy is
@@ -131,7 +144,7 @@ const nextConfig: NextConfig = {
        * `cacheComponents` with static shells. Buying the nonce means giving up
        * the prerender on every page, which is a worse trade than this.
        */
-      "script-src 'self' 'unsafe-inline' https://js.stripe.com https://*.stripe.com https://www.googletagmanager.com https://va.vercel-scripts.com",
+      `script-src 'self' 'unsafe-inline'${devEval} https://js.stripe.com https://*.stripe.com https://www.googletagmanager.com https://va.vercel-scripts.com`,
       "style-src 'self' 'unsafe-inline'",
       // Google Analytics still falls back to a tracking pixel in some paths.
       "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://picsum.photos https://images.unsplash.com https://*.stripe.com https://www.google-analytics.com https://www.googletagmanager.com",
