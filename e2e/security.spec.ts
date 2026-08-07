@@ -91,6 +91,16 @@ test.describe("routes that must refuse", () => {
    */
   test("an unknown shop reveals nothing and is not indexable", async ({ page }) => {
     const res = await page.goto("/definitely-not-a-shop-xyz", { waitUntil: "networkidle" });
+    /*
+     * Wait for the copy, not for the network.
+     *
+     * `networkidle` says the requests stopped; it does not say React finished
+     * streaming into the boundary. Under a loaded dev server this read an
+     * empty body often enough to fail the comparison below on its own —
+     * a flake that fails a *security* test for a rendering reason, which is
+     * the worst kind, because it trains you to re-run rather than to look.
+     */
+    await expect(page.locator("body")).toContainText(/doesn.t exist|not found/i);
     const body = await page.content();
     const visible = await page.locator("body").innerText();
 
@@ -129,6 +139,7 @@ test.describe("routes that must refuse", () => {
      * differs between two identical pages and can never assert this.
      */
     const other = await page.goto("/definitely-not-a-shop-abc", { waitUntil: "networkidle" });
+    await expect(page.locator("body")).toContainText(/doesn.t exist|not found/i);
     const otherVisible = await page.locator("body").innerText();
 
     expect(otherVisible.replace(/definitely-not-a-shop-abc/g, "X")).toBe(

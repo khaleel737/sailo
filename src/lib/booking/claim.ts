@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { bookingClaims, orderItems } from "@/db/schema";
 
@@ -61,26 +61,6 @@ export async function claimSlots(
  */
 export async function releaseSlots(orderId: string): Promise<void> {
   await getDb().delete(bookingClaims).where(eq(bookingClaims.orderId, orderId));
-}
-
-/** Which of these slots are already spoken for, for a pre-checkout read. */
-export async function claimedSlots(
-  productId: string,
-  startsAt: Date[],
-): Promise<Set<number>> {
-  if (startsAt.length === 0) return new Set();
-
-  const rows = await getDb()
-    .select({ startsAt: bookingClaims.startsAt })
-    .from(bookingClaims)
-    .where(
-      and(
-        eq(bookingClaims.productId, productId),
-        inArray(bookingClaims.startsAt, startsAt),
-      ),
-    );
-
-  return new Set(rows.map((r) => r.startsAt.getTime()));
 }
 
 /**

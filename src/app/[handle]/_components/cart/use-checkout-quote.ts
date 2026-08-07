@@ -29,8 +29,6 @@ export const EMPTY_TOTALS: Totals = {
   commissionCents: 0,
 };
 
-export type CheckoutQuote = ReturnType<typeof useCheckoutQuote>;
-
 export function useCheckoutQuote(input: {
   shopId: string;
   items: OrderLineInput[];

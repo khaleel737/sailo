@@ -1,26 +1,22 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { resolveLines } from "@/lib/orders/resolve-lines";
-import { readBuyer } from "@/lib/orders/buyer";
-import { commissionBpFor } from "@/lib/orders/commission";
-import { resolveCoupon } from "@/lib/orders/resolve-coupon";
+import { resolveOrderIntent } from "@/lib/orders/resolve-intent";
 import { upsertClient } from "@/lib/orders/clients";
-import { resolveDelivery } from "@/lib/orders/delivery";
 import { referralFor } from "@/lib/orders/referral";
 import type { OrderIntentInput, OrderIntentResult } from "@/lib/orders/types";
-import { firstRow, present } from "@/lib/invariant";
+import { firstRow } from "@/lib/invariant";
 import { and, eq, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
 import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
-import { affiliates, orderItems, orders, paymentMethods, shops, type Affiliate, type PaymentConfig } from "@/db/schema";
+import { orderItems, orders, shops, type PaymentConfig } from "@/db/schema";
 import { formatAddress, formatMoney } from "@/lib/utils";
-import { bankDetailLines, buildHandoff, isPaymentMethodType, PAYMENT_METHOD_DEFS, isRailUsable, type Handoff } from "@/lib/payments";
-import { COUPON_MESSAGES, normalizeCode } from "@/lib/pricing";
+import { bankDetailLines, buildHandoff, type Handoff } from "@/lib/payments";
+import { COUPON_MESSAGES } from "@/lib/pricing";
 import { createInvoiceForOrder, newInvoiceToken } from "@/lib/invoices";
 import { can } from "@/lib/plans";
-import { cartNeedsDelivery, cartSubtotal, quote, type Quote, type QuoteLine } from "@/lib/quote";
+import { type QuoteLine } from "@/lib/quote";
 import { variantLabel } from "@/lib/variants";
 import { releaseStock, reserveStock } from "@/lib/inventory";
 import { handOffToStripe } from "@/lib/orders/card-handoff";
@@ -92,103 +88,30 @@ export async function createOrderIntent(
 
   const now = new Date();
 
-  /* ---- Lines ----------------------------------------------------------- */
-
-  const resolved = await resolveLines(shop.id, input.items, {
-    strict: true,
-    now,
-    // Committing, so booked slots are verified against what is still free.
-    shop,
-  });
-  if (!resolved.ok) return { ok: false, error: resolved.error };
-  const { lines } = resolved;
-  // The first line stands in for the order wherever one product is expected.
-  // Every path above rejects an empty basket, but the header columns are
-  // derived from this line and a silent undefined would write a broken order.
-  const head = present(lines[0], "at least one order line");
-
-  if (!isPaymentMethodType(input.paymentMethod)) {
-    return { ok: false, error: "Pick how you'd like to order." };
-  }
-
-  const method = await db.query.paymentMethods.findFirst({
-    where: and(
-      eq(paymentMethods.shopId, shop.id),
-      eq(paymentMethods.type, input.paymentMethod),
-      eq(paymentMethods.isEnabled, true),
-    ),
-  });
-  if (!method || !isRailUsable(method.type, method.config, shop)) {
-    return { ok: false, error: "That option isn't available right now." };
-  }
-  // Gated rails are refused server-side too: a downgraded shop must not keep
-  // taking card orders because a stale page still shows the button.
-  if (method.type === "card" && !can(shop, "cardRails")) {
-    return { ok: false, error: "That option isn't available right now." };
-  }
-
-  const def = PAYMENT_METHOD_DEFS[input.paymentMethod];
-
-  /* ---- Delivery ------------------------------------------------------- */
-
-  // One fee for the order, and only when something in it has to travel: a
-  // basket of downloads and appointments is never shipped.
-  const delivery = await resolveDelivery(
-    shop.id,
-    cartNeedsDelivery(lines),
-    input.deliveryMethodId,
-  );
-  if (delivery === "unavailable") {
-    return { ok: false, error: "Pick how you'd like to receive it." };
-  }
-
-  /* ---- Coupon --------------------------------------------------------- */
-
-  const subtotalCents = cartSubtotal(lines);
-  const discount = await resolveCoupon({
-    shopId: shop.id,
-    code: input.couponCode,
-    subtotalCents,
-    now,
-  });
-  if (!discount.ok) return { ok: false, error: discount.error };
-  const coupon = discount.coupon;
-
-  /* ---- Affiliate ------------------------------------------------------ */
-
-  // Commission only accrues while the shop is actually entitled to it.
-  const affiliatesLive = shop.affiliatesEnabled && can(shop, "affiliates");
-
-  let affiliate: Affiliate | null = null;
-  if (affiliatesLive && input.affiliateCode?.trim()) {
-    const found = await db.query.affiliates.findFirst({
-      where: and(
-        eq(affiliates.shopId, shop.id),
-        eq(affiliates.code, normalizeCode(input.affiliateCode)),
-        eq(affiliates.status, "active"),
-      ),
-    });
-    affiliate = found ?? null;
-  }
-
-  const commissionBp = commissionBpFor(affiliate, shop);
-
-  const priced: Quote = quote({
+  /*
+   * Everything this order is, worked out before anything is written down.
+   *
+   * The seam is not the line count — it is that nothing in there touches a
+   * row. Which products at which prices, on which rail, with which delivery,
+   * coupon and affiliate, for which buyer: each can fail, and failing costs
+   * nothing, because no stock has been taken and no order written. Past this
+   * point every failure needs an undo, and the undos are what the hardest bugs
+   * in this file have been about.
+   */
+  const resolvedIntent = await resolveOrderIntent(shop, input, now);
+  if (!resolvedIntent.ok) return { ok: false, error: resolvedIntent.error };
+  const {
     lines,
+    head,
+    method,
+    def,
+    delivery,
     coupon,
-    deliveryMethod: delivery,
-    commissionBp,
-    tax: shop,
-    collectAddress: shop.collectAddress,
-    deliveryType: delivery?.type ?? null,
-    now,
-  });
+    affiliate,
+    priced,
+    buyer: { name, email, phone, note, address },
+  } = resolvedIntent.intent;
   const totals = priced.totals;
-  const wantsAddress = priced.needsAddress;
-
-  const read = readBuyer(input, { def, wantsAddress });
-  if (!read.ok) return { ok: false, error: read.error };
-  const { name, email, phone, note, address } = read.buyer;
 
   const clientId = await upsertClient(shop.id, {
     name,
@@ -344,11 +267,11 @@ export async function createOrderIntent(
       scheduledFor: lines[position]?.scheduledFor ?? null,
       serviceMode:
         line.kind === "service"
-          ? (resolved.lines[position]?.product.serviceMode ?? null)
+          ? (lines[position]?.product.serviceMode ?? null)
           : null,
       serviceLocation:
         line.kind === "service"
-          ? (resolved.lines[position]?.product.serviceLocation ?? null)
+          ? (lines[position]?.product.serviceLocation ?? null)
           : null,
       position,
     })),
@@ -501,7 +424,7 @@ export async function createOrderIntent(
 
   // Buyers who leave an email can be offered their own referral link.
   const referral =
-    affiliatesLive && email
+    shop.affiliatesEnabled && can(shop, "affiliates") && email
       ? await referralFor(shop, name, email, base)
       : null;
 
