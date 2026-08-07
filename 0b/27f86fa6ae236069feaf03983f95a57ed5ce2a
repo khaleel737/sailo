@@ -1,0 +1,185 @@
+src/i18n/admin/pt.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/dictionaries/sl.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/app/admin/orders/_components/payment-status-select.tsx
+  s_2e1da3b18d1c53::t_7e368b6ec05a2a 59-61
+  s_2e1da3b18d1c53::t_0762a056947ea2 9-16
+  s_2e1da3b18d1c53::t_0d1b755edb45de 37
+src/i18n/admin/bg.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/app/admin/settings/_components/settings-form.tsx
+  s_2e1da3b18d1c53::t_2d5799ddc1f9f1 7
+  s_2e1da3b18d1c53::t_53e423827d39ff 68
+src/i18n/dictionaries/it.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 231
+src/i18n/admin/ko.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/i18n/admin/tr.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/admin/es.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/dictionaries/mk.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/i18n/admin/ja.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/dictionaries/zh.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 261
+src/i18n/admin/sv.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/admin/el.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/app/admin/coupons/_components/coupon-form.tsx
+  s_2e1da3b18d1c53::t_53e423827d39ff 96-100,116
+src/i18n/dictionaries/bg.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/i18n/dictionaries/fi.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 225
+src/i18n/admin/ar.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/dictionaries/fil.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/i18n/dictionaries/id.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/i18n/dictionaries/no.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 225
+src/i18n/admin/coverage.test.ts
+  s_2e1da3b18d1c53::t_7ad3b725a6f741 27-31,33-41
+  s_2e1da3b18d1c53::t_41b9e45d8853c6 84-97,99
+src/i18n/dictionaries/sq.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/i18n/dictionaries/da.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 225
+src/i18n/admin/th.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/components/shared/handle-field.tsx
+  s_2e1da3b18d1c53::t_53e423827d39ff 162
+src/i18n/admin/id.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/components/shared/chart/variant-switch.tsx
+  s_2e1da3b18d1c53::t_bf54f4ae4b7ef1 23,29-34,36,40
+src/i18n/admin/no.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/admin/sr.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/i18n/dictionaries/fr.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 236
+src/i18n/dictionaries/ja.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 262
+src/i18n/admin/ms.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/i18n/admin/pl.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/admin/ru.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/dictionaries/ru.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 228
+src/i18n/dictionaries/nl.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 231
+src/i18n/dictionaries/pl.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 230
+src/i18n/dictionaries/sv.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 226
+src/components/shared/chart/index.tsx
+  s_2e1da3b18d1c53::t_b7944072cbf0c7 48-53,98,141-146
+src/i18n/admin/da.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/admin/en.ts
+  s_2e1da3b18d1c53::t_119baf3c3fb5c4 625-629,635,639,645
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 128-132,492-494,630-634,636-638,640-644
+src/i18n/dictionaries/sr.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/i18n/admin/mk.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/i18n/admin/fr.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/dictionaries/es.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 235
+src/i18n/admin/sq.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/i18n/dictionaries/ar.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 261
+src/i18n/dictionaries/hu.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 225
+src/i18n/dictionaries/pt.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 231
+src/i18n/admin/fi.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/dictionaries/de.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 235
+src/i18n/dictionaries/el.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 229
+src/i18n/dictionaries/ko.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/i18n/dictionaries/ro.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 225
+src/i18n/admin/de.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/admin/uk.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/admin/fil.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/i18n/admin/it.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/admin/cs.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/admin/hu.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/admin/nl.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/admin/zh.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/i18n/admin/bs.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/i18n/admin/hr.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/i18n/admin/ro.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 153-157,374-376,519-533
+src/app/admin/settings/_components/settings-nav.tsx
+  s_2e1da3b18d1c53::t_59bd5de1ca3360 6,8-13,16-22
+src/i18n/admin/sl.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/i18n/dictionaries/bs.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/i18n/dictionaries/en.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 353-354
+src/i18n/dictionaries/hr.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/i18n/dictionaries/ms.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/i18n/dictionaries/tr.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 229
+src/app/admin/page.tsx
+  s_2e1da3b18d1c53::t_0fdb09615f5a5c 202,237
+  s_2e1da3b18d1c53::t_7ab3839b6a2027 22
+  s_2e1da3b18d1c53::t_c03c02e1db2ad9 183,189,196,208,213,220,227
+src/app/admin/delivery/page.tsx
+  s_2e1da3b18d1c53::t_53e423827d39ff 41-44
+  s_2e1da3b18d1c53::t_2d5799ddc1f9f1 5
+src/i18n/admin/vi.ts
+  s_2e1da3b18d1c53::t_7a49ebefda6b82 192-194,466-470,534-548
+src/i18n/dictionaries/cs.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 225
+src/i18n/dictionaries/th.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/i18n/dictionaries/vi.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 190
+src/i18n/dictionaries/uk.ts
+  s_2e1da3b18d1c53::t_145c2573c98419 228
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "0b27f86fa6ae236069feaf03983f95a57ed5ce2a",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
