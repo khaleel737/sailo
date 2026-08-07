@@ -96,6 +96,8 @@ export async function createOrderIntent(
   const resolved = await resolveLines(shop.id, input.items, {
     strict: true,
     now,
+    // Committing, so booked slots are verified against what is still free.
+    shop,
   });
   if (!resolved.ok) return { ok: false, error: resolved.error };
   const { lines } = resolved;

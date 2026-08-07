@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalendarClock, Check, MapPin, Minus, Plus, ShoppingBag, Video } from "lucide-react";
+import { Check, MapPin, Minus, Plus, ShoppingBag, Video } from "lucide-react";
 import { CheckoutPanel, type CheckoutDelivery, type CheckoutMethod } from "./checkout-panel";
 import { useCart } from "./cart-provider";
 import type { Dictionary } from "@/i18n";
@@ -10,8 +10,9 @@ import { formatDuration, formatMoney } from "@/lib/utils";
 import { findVariant, isLowStock, MAX_QUANTITY, variantLabel, type CheckoutVariant } from "@/lib/variants";
 import type { ProductOption, VariantOptions } from "@/db/schema";
 import { isSoldOut } from "../../_lib/availability";
-import { toLocalInput } from "../../_lib/local-time";
 
+
+import { SlotPicker } from "./slot-picker";
 
 export type { CheckoutDelivery, CheckoutMethod } from "./checkout-panel";
 
@@ -186,6 +187,16 @@ function ProductSheet({
   } = props;
 
   // Open on something the buyer can actually have.
+  /*
+   * The storefront's language, for formatting the slot picker's dates and
+   * times the way this buyer reads them.
+   *
+   * Optional because `useCart` is: the sheet can render outside a cart region.
+   * Undefined then reaches `Intl` as "use the visitor's own locale", which is
+   * a better fallback than pinning English on a shop that isn't.
+   */
+  const locale = useCart()?.locale;
+
   const [selection, setSelection] = useState<VariantOptions>(
     () => (variants.find((v) => v.available) ?? variants[0])?.options ?? {},
   );
@@ -199,14 +210,6 @@ function ProductSheet({
 
   const [quantity, setQuantity] = useState(1);
   const [booking, setBooking] = useState("");
-  // The clock is read once, when the sheet mounts. A lazy initialiser keeps
-  // "now" out of the render path, where re-reading it would move the floor of
-  // the picker underneath whatever the buyer had already chosen.
-  const [earliestBooking] = useState(() =>
-    toLocalInput(
-      new Date(Date.now() + (service?.bookingLeadHours ?? 0) * 3_600_000),
-    ),
-  );
 
   /**
    * Picking a value keeps the rest of the selection when that combination
@@ -331,26 +334,21 @@ function ProductSheet({
         first and the quantity stepper sits under it.
       */}
       {service?.bookingEnabled ? (
-        <div className="surface-elevated rounded-xl p-3">
-          <label
-            htmlFor="scheduledFor"
-            className="mb-1.5 flex items-center gap-1.5 text-sm font-medium"
-          >
-            <CalendarClock className="size-4" />
-            {t.checkout.preferredTime}
-          </label>
-          <input
-            id="scheduledFor"
-            type="datetime-local"
-            value={booking}
-            min={earliestBooking}
-            onChange={(e) => setBooking(e.target.value)}
-            className="surface-card h-11 w-full rounded-lg px-3 text-sm outline-none"
-          />
-          <p className="text-muted mt-1.5 text-xs leading-relaxed">
-            {interpolate(t.checkout.bookingHint, { shop: shopName })}
-          </p>
-        </div>
+        <SlotPicker
+          productId={productId}
+          value={booking}
+          onChange={setBooking}
+          locale={locale}
+          copy={{
+            label: t.checkout.preferredTime,
+            hint: interpolate(t.checkout.bookingHint, { shop: shopName }),
+            loading: t.checkout.slotsLoading,
+            noneToday: t.checkout.slotsNoneToday,
+            noneAtAll: t.checkout.slotsNoneAtAll,
+            failed: t.checkout.slotsFailed,
+            clear: t.common.cancel,
+          }}
+        />
       ) : null}
 
       {/* Where to turn up, or how the call is joined. */}

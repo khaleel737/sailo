@@ -47,6 +47,13 @@ function snapshot(shopId: string): CartLine[] {
 
 type CartContext = {
   lines: CartLine[];
+  /**
+   * The storefront's language, so descendants can format a date or a time the
+   * way this buyer reads them. It comes from the server render rather than the
+   * browser: the shop may have pinned a locale, and `navigator.language` would
+   * disagree with every other string on the page.
+   */
+  locale: string;
   count: number;
   cachedTotalCents: number;
   /** False until hydration, so nothing flashes the wrong basket. */
@@ -65,9 +72,11 @@ const Context = createContext<CartContext | null>(null);
 /** Holds the basket for one shop, across every page of it. */
 export function CartProvider({
   shopId,
+  locale,
   children,
 }: {
   shopId: string;
+  locale: string;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -94,6 +103,7 @@ export function CartProvider({
   const value = useMemo<CartContext>(
     () => ({
       lines,
+      locale,
       count: cartCount(lines),
       cachedTotalCents: cachedTotal(lines),
       ready,
@@ -112,7 +122,7 @@ export function CartProvider({
       clear: () => commit([]),
       setOpen,
     }),
-    [lines, ready, open, commit],
+    [lines, ready, open, commit, locale],
   );
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

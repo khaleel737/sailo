@@ -6,7 +6,9 @@ import { clampQuantity, isSellable, maxOrderable, variantPrice } from "@/lib/var
 import type { OrderLineInput } from "./types";
 import type { ResolvedLine } from "./types";
 import { parseBooking } from "./booking";
-import type { ProductVariant } from "@/db/schema";
+import type { ProductVariant, Shop } from "@/db/schema";
+import { isBookable, slotOptionsFor } from "@/lib/booking/availability";
+import { isOfferedSlot } from "@/lib/booking/slots";
 
 /**
  * Turns what the browser asked for into what the shop actually sells.
@@ -24,7 +26,17 @@ const MAX_LINES = 50;
 export async function resolveLines(
   shopId: string,
   items: OrderLineInput[],
-  opts: { strict: boolean; now: Date },
+  opts: {
+    strict: boolean;
+    now: Date;
+    /**
+     * The shop's booking settings, when the caller is committing rather than
+     * quoting. Present means slots are re-derived server-side and a time that
+     * is no longer offered fails the order; absent means only the notice
+     * period is checked, which is all a price preview needs.
+     */
+    shop?: Pick<Shop, "bookingHours" | "timeZone" | "bookingSlotMinutes">;
+  },
 ): Promise<
   | { ok: true; lines: ResolvedLine[]; dropped: OrderLineInput[] }
   | { ok: false; error: string }
@@ -92,6 +104,38 @@ export async function resolveLines(
         );
         if (stop) return stop;
         continue;
+      }
+
+      /*
+       * The slot is re-derived here, not taken on trust.
+       *
+       * The browser was handed a list of free times, but a list is a snapshot:
+       * by the time this order arrives the slot may have been booked by
+       * somebody else, the seller may have changed their hours, or the value
+       * may never have come from the list at all — it is a client payload.
+       * Asking the same question again, against the same rules and the
+       * bookings as they stand now, is the only answer that cannot be argued
+       * with.
+       */
+      if (scheduledFor && opts.shop && isBookable(product)) {
+        const slotOptions = await slotOptionsFor(
+          opts.shop,
+          product,
+          {
+            from: new Date(scheduledFor.getTime() - 24 * 3_600_000),
+            to: new Date(scheduledFor.getTime() + 24 * 3_600_000),
+          },
+          opts.now,
+        );
+
+        if (!isOfferedSlot(scheduledFor, slotOptions)) {
+          const stop = fail(
+            item,
+            `That time for ${product.title} has just been taken. Pick another.`,
+          );
+          if (stop) return stop;
+          continue;
+        }
       }
     }
 

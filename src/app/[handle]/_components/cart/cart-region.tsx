@@ -43,7 +43,7 @@ export function CartRegion({
   children: React.ReactNode;
 }) {
   return (
-    <CartProvider shopId={shopId}>
+    <CartProvider shopId={shopId} locale={locale}>
       {children}
 
       {/*
