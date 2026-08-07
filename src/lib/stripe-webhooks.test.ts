@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { webhookSource } from "@/lib/webhook-source";
 import { afterEach, describe, expect, it } from "vitest";
 import { intentIdOf, sameAccount, sendingAccount } from "@/lib/stripe-webhooks";
 
@@ -94,7 +94,7 @@ describe("intentIdOf", () => {
  * which scopes — so a new handler cannot quietly go direct again.
  */
 describe("payment intent lookups", () => {
-  const source = readFileSync("src/lib/stripe-webhooks.ts", "utf8");
+  const source = webhookSource();
 
   it("searches on stripePaymentIntentId in exactly one place", () => {
     const lookups = source.match(/eq\(orders\.stripePaymentIntentId/g) ?? [];

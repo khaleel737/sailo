@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import { webhookSource } from "@/lib/webhook-source";
 import { describe, expect, it } from "vitest";
 import { ORDER_STATUSES } from "./order-status";
 import { isStockReleasingStatus } from "./inventory";
@@ -123,7 +124,7 @@ describe("the abandoned-checkout predicate", () => {
  * predicate that depends on it, rather than in a file nobody reads together.
  */
 describe("a completed-but-unsettled session", () => {
-  const webhook = readFileSync("src/lib/stripe-webhooks.ts", "utf8");
+  const webhook = webhookSource();
 
   it("is promoted out of unpaid so the sweep passes over it", () => {
     const branch = webhook.slice(webhook.indexOf("if (!settled) {"));
@@ -164,7 +165,7 @@ describe("a completed-but-unsettled session", () => {
  * sites not using it.
  */
 describe("the abandonment paths", () => {
-  const webhooks = readFileSync("src/lib/stripe-webhooks.ts", "utf8");
+  const webhooks = webhookSource();
   const handoff = readFileSync("src/lib/orders/card-handoff.ts", "utf8");
   const sweep = readFileSync("src/lib/inventory.ts", "utf8");
 
@@ -221,7 +222,7 @@ describe("the abandonment paths", () => {
  * the checkout side only knows to skip them if this side does them.
  */
 describe("settlement side effects on the paid path", () => {
-  const webhook = readFileSync("src/lib/stripe-webhooks.ts", "utf8");
+  const webhook = webhookSource();
   const paid = webhook.slice(
     webhook.indexOf("await releaseDownloads(order.id);"),
     webhook.indexOf("return `order ${order.id} paid`"),
@@ -258,7 +259,7 @@ describe("settlement side effects on the paid path", () => {
  * confirming a booked order, and the seller's decision must reach the buyer.
  */
 describe("a booked order waits for the seller", () => {
-  const webhook = readFileSync("src/lib/stripe-webhooks.ts", "utf8");
+  const webhook = webhookSource();
   const admin = readFileSync("src/lib/actions/order-admin.ts", "utf8");
 
   it("does not let payment confirm an appointment", () => {

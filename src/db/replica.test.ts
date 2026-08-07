@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { execSync } from "node:child_process";
 import { describe, expect, it, vi } from "vitest";
 
@@ -36,7 +37,7 @@ const PRIMARY_ONLY = [
   "src/lib/orders/coupon-redemption.ts",
   "src/lib/orders/card-handoff.ts",
   // Settlement, whose idempotency depends on seeing its own last write.
-  "src/lib/stripe-webhooks.ts",
+  "src/lib/stripe-webhooks",
   "src/lib/actions/order-admin.ts",
   // Sessions and the staff allowlist. A revoked session a replica has not
   // heard about yet is an authorisation hole.
@@ -100,12 +101,21 @@ describe("read replica", () => {
 
   it("never reads a write path from the replica", () => {
     for (const path of PRIMARY_ONLY) {
+      /*
+       * A path may name a file or a module directory — `stripe-webhooks` was
+       * one 715-line file and is now five, and the rule is about the module
+       * either way. Splitting a write path must not quietly drop it from this
+       * list, which is the only place recording why it stays on the primary.
+       */
       let source: string;
       try {
-        source = readFileSync(path, "utf8");
+        source = statSync(path).isDirectory()
+          ? readdirSync(path)
+              .filter((f) => f.endsWith(".ts"))
+              .map((f) => readFileSync(join(path, f), "utf8"))
+              .join("\n")
+          : readFileSync(path, "utf8");
       } catch {
-        // The module was renamed. That is worth knowing about, because this
-        // list is the only thing recording why it must stay on the primary.
         throw new Error(`${path} no longer exists — update PRIMARY_ONLY`);
       }
       expect(source, `${path} must read the primary`).not.toContain("getReadDb");
