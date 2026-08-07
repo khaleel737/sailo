@@ -1,13 +1,21 @@
 import "server-only";
 import { and, desc, eq, gte, inArray, isNotNull, or, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getReadDb } from "@/db";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { orders, products, reviews, visitDaily, visits } from "@/db/schema";
 
-/** Dashboard figures: what sold, who visited, and where they came from. */
+/**
+ * Dashboard figures: what sold, who visited, and where they came from.
+ *
+ * Every read here goes to the replica. These are the widest scans in the
+ * codebase — a window of visits and orders, grouped — they run on request
+ * rather than from cache, and nothing in them decides whether a write
+ * happens. A seller seeing a count that is a second old is not a bug; a
+ * checkout slowed down by someone else's dashboard is.
+ */
 
 export async function getDashboardStats(shopId: string, windowDays = 30) {
-  const db = getDb();
+  const db = getReadDb();
   const since = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000);
 
   const [[visitRow], [periodRow], [openRow], [productRow], [reviewRow]] =
@@ -135,7 +143,7 @@ function utcDayWindow(days: number) {
  */
 export async function getVisitSeries(shopId: string, days = 14) {
   const { since, keys } = utcDayWindow(days);
-  const db = getDb();
+  const db = getReadDb();
 
   /*
    * Read the rollup first, then today from the raw table.
@@ -204,7 +212,7 @@ export async function getVisitSeries(shopId: string, days = 14) {
  */
 export async function getRevenueSeries(shopId: string, days = 14) {
   const { since, keys } = utcDayWindow(days);
-  const db = getDb();
+  const db = getReadDb();
 
   const [sales, refunds] = await Promise.all([
     db
@@ -256,7 +264,7 @@ export async function getRevenueSeries(shopId: string, days = 14) {
  * long tail of one-visit referrers is noise.
  */
 export async function getVisitBreakdown(shopId: string, days = 30, limit = 6) {
-  const db = getDb();
+  const db = getReadDb();
   const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
   const scope = and(eq(visits.shopId, shopId), gte(visits.createdAt, since));
 

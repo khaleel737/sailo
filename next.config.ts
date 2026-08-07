@@ -26,6 +26,14 @@ const nextConfig: NextConfig = {
       "lucide-react",
     ],
   },
+  /*
+   * Image optimisation, sized for a catalogue rather than a magazine.
+   *
+   * Every distinct (source, width, quality) is its own optimiser run and its
+   * own stored object. One shop barely notices; fifty thousand shops multiply
+   * whatever this config allows by every product photo they upload, so the
+   * numbers below are chosen to be the smallest set that still looks right.
+   */
   images: {
     remotePatterns: [
       // Vercel Blob — where product images land.
@@ -34,6 +42,43 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "picsum.photos" },
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
+    /*
+     * 3840 is gone; everything else is the Next default.
+     *
+     * That entry exists for full-bleed hero images on 4K displays. Nothing
+     * here is full-bleed: the widest container in the app is 46rem — 736px —
+     * so the largest honest request is about 2208px on a 3x display, and 2048
+     * covers it. Generating a 3840px copy of every product photo was a second
+     * optimiser run and a second stored object per image, for pixels no
+     * layout can show.
+     */
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    /*
+     * Explicit, and required from Next 16 on: an unrestricted list lets any
+     * caller mint a new variant by asking for a quality nobody chose, and
+     * each one is optimised and stored separately. Nothing in the app passes
+     * `quality`, so this is the single value everything already uses.
+     */
+    qualities: [75],
+    /*
+     * Thirty days, matching what Vercel Blob already sends upstream — the
+     * longer of the two wins, so this is really a floor for images served
+     * from anywhere else.
+     *
+     * Safe to set this high specifically because Blob URLs are content
+     * addressed: replacing a product photo uploads to a new URL rather than
+     * overwriting the old one. The usual objection to a long TTL — that
+     * there is no way to invalidate an optimised image — cannot bite when
+     * the source URL changes on every edit.
+     */
+    minimumCacheTTL: 2_592_000,
+    /*
+     * WebP only, deliberately. AVIF is roughly a fifth smaller again, but
+     * Next stores every format separately, so enabling both doubles the
+     * stored variants for every image in the product. At this catalogue size
+     * that trade goes the other way.
+     */
+    formats: ["image/webp"],
   },
   /**
    * Security headers.

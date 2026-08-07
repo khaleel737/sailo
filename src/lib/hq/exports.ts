@@ -1,7 +1,7 @@
 import "server-only";
 import { requireStaff } from "@/lib/session";
 import { desc, eq, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getReadDb } from "@/db";
 import { affiliates, clients, orders, products, shops, user } from "@/db/schema";
 import { num } from "./pagination";
 import { notStaff } from "./roster";
@@ -11,7 +11,7 @@ import { notStaff } from "./roster";
 /** Rows for the CSV exports, unpaginated but bounded. */
 export async function getAllAccountsForExport(limit = 5000) {
   await requireStaff();
-  const rows = await getDb()
+  const rows = await getReadDb()
     .select({
       userId: user.id,
       name: user.name,
@@ -40,7 +40,7 @@ export async function getAllAccountsForExport(limit = 5000) {
 
 export async function getAllOrdersForExport(limit = 10000) {
   await requireStaff();
-  return getDb()
+  return getReadDb()
     .select({
       order: orders,
       shopName: shops.name,
@@ -56,7 +56,7 @@ export async function getAllOrdersForExport(limit = 10000) {
 
 export async function getAllProductsForExport(limit = 10000) {
   await requireStaff();
-  return getDb()
+  return getReadDb()
     .select({
       product: products,
       shopName: shops.name,
@@ -71,7 +71,7 @@ export async function getAllProductsForExport(limit = 10000) {
 
 export async function getAllAffiliatesForExport(limit = 10000) {
   await requireStaff();
-  const rows = await getDb()
+  const rows = await getReadDb()
     .select({
       affiliate: affiliates,
       shopHandle: shops.handle,
@@ -95,7 +95,7 @@ export async function getAllAffiliatesForExport(limit = 10000) {
 
 export async function getAllBuyersForExport(limit = 10000) {
   await requireStaff();
-  const rows = await getDb()
+  const rows = await getReadDb()
     .select({
       client: clients,
       shopHandle: shops.handle,
