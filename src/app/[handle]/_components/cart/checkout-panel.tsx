@@ -1,17 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useReducer, useState } from "react";
-import {
-  couponFor,
-  couponReducer,
-  NO_COUPON,
-} from "../../_lib/coupon-state";
+import { useEffect, useState } from "react";
 import { Download, Loader2, X } from "lucide-react";
 import { createOrderIntent } from "@/lib/actions/orders";
-import { previewOrder } from "@/lib/actions/order-preview";
-import type { OrderIntentResult, OrderPreview, PreviewTax } from "@/lib/orders/types";
+import type { OrderIntentResult } from "@/lib/orders/types";
+import { useCheckoutQuote } from "./use-checkout-quote";
 import { PAYMENT_METHOD_DEFS, type PaymentMethodType } from "@/lib/payments";
-import { formatPercent, type Totals } from "@/lib/pricing";
+import { formatPercent } from "@/lib/pricing";
 import { readReferralCode } from "@/lib/referral";
 import { interpolate } from "@/i18n";
 import { formatMoney } from "@/lib/utils";
@@ -19,15 +14,6 @@ import { deliveryCopy, railCopy } from "./checkout-copy";
 import { useCart } from "./cart-provider";
 import { Confirmation } from "./confirmation";
 import type { CheckoutDelivery, CheckoutMethod, CheckoutPanelProps } from "./checkout.types";
-
-const EMPTY_TOTALS: Totals = {
-  subtotalCents: 0,
-  discountCents: 0,
-  deliveryFeeCents: 0,
-  taxCents: 0,
-  totalCents: 0,
-  commissionCents: 0,
-};
 
 export function CheckoutPanel({
   shopId,
@@ -61,8 +47,6 @@ export function CheckoutPanel({
   const [deliveryId, setDeliveryId] = useState<string | null>(
     deliveryOptions[0]?.id ?? null,
   );
-  const [coupon, dispatchCoupon] = useReducer(couponReducer, NO_COUPON);
-  const [preview, setPreview] = useState<OrderPreview | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Extract<
@@ -70,11 +54,14 @@ export function CheckoutPanel({
     { ok: true }
   > | null>(null);
 
-  const totals = preview?.totals ?? EMPTY_TOTALS;
-  const tax: PreviewTax = preview?.tax ?? null;
-
-  // An array prop is a new object every render; the contents are what matter.
-  const itemsKey = useMemo(() => JSON.stringify(items), [items]);
+  /*
+   * Every figure on this panel comes from the server. `useCheckoutQuote` owns
+   * that conversation — the debounced re-price, the coupon round trip, and the
+   * two questions only the server can answer about whether this basket needs
+   * delivering or an address at all.
+   */
+  const quote = useCheckoutQuote({ shopId, items, deliveryId });
+  const { preview, coupon, dispatchCoupon, totals, tax } = quote;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -86,66 +73,6 @@ export function CheckoutPanel({
     };
   }, [onClose]);
 
-  // Totals come from the server so the quote can't drift from what's charged.
-  useEffect(() => {
-    // Nothing to price — the empty state is showing instead of the form, so a
-    // stale preview can't be seen.
-    if (items.length === 0) return;
-    let cancelled = false;
-
-    void (async () => {
-      try {
-        const res = await previewOrder({
-          shopId,
-          items,
-          deliveryMethodId: deliveryId ?? undefined,
-          couponCode: couponFor(coupon),
-        });
-        if (cancelled || "error" in res) return;
-        setPreview(res);
-        // A code that was fine a moment ago can stop qualifying when the
-        // basket shrinks below its minimum, so it's dropped rather than
-        // silently kept.
-        if (coupon.applied && res.couponError) {
-          dispatchCoupon({ type: "lapsed", message: res.couponError });
-        }
-      } catch {
-        // The last good total stays on screen. It is only ever a quote —
-        // the order is priced again on the server before anything is
-        // charged — so a failed refresh costs a stale figure, not money.
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shopId, itemsKey, deliveryId, coupon.applied]);
-
-  async function onApplyCoupon() {
-    const code = coupon.input.trim();
-    if (!code) return;
-    dispatchCoupon({ type: "checking" });
-
-    const res = await previewOrder({
-      shopId,
-      items,
-      deliveryMethodId: deliveryId ?? undefined,
-      couponCode: code,
-    });
-    if ("error" in res) {
-      dispatchCoupon({ type: "rejected", message: res.error });
-      return;
-    }
-    if (res.couponError) {
-      dispatchCoupon({ type: "rejected", message: res.couponError });
-      return;
-    }
-    // The server's spelling wins, so the buyer sees the code as the shop
-    // wrote it rather than as they typed it.
-    dispatchCoupon({ type: "applied", code: res.couponApplied ?? code.toUpperCase() });
-    setPreview(res);
-  }
-
   const def = PAYMENT_METHOD_DEFS[method];
   const rail = railCopy(method, t);
   const needsContact = Boolean(def.requires.contact);
@@ -153,8 +80,8 @@ export function CheckoutPanel({
   const selectedDelivery = deliveryOptions.find((d) => d.id === deliveryId);
   // The server decides both of these: a basket of downloads isn't shipped, and
   // a collection order has nowhere to deliver to.
-  const showDelivery = (preview?.needsDelivery ?? false) && deliveryOptions.length > 0;
-  const needsAddress = preview?.needsAddress ?? false;
+  const showDelivery = quote.needsDelivery && deliveryOptions.length > 0;
+  const needsAddress = quote.needsAddress;
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -167,7 +94,7 @@ export function CheckoutPanel({
       items,
       paymentMethod: method,
       deliveryMethodId: deliveryId ?? undefined,
-      couponCode: couponFor(coupon),
+      couponCode: quote.couponCode,
       affiliateCode: readReferralCode() ?? undefined,
       customerName: String(data.get("customerName") ?? ""),
       customerEmail: String(data.get("customerEmail") ?? ""),
@@ -514,7 +441,7 @@ export function CheckoutPanel({
                     />
                     <button
                       type="button"
-                      onClick={onApplyCoupon}
+                      onClick={quote.applyCoupon}
                       disabled={coupon.checking || !coupon.input.trim()}
                       className="surface-card h-11 shrink-0 rounded-xl px-4 text-sm font-medium transition hover:opacity-70 disabled:opacity-40"
                     >
