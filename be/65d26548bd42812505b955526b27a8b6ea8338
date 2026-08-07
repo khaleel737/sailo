@@ -1,0 +1,37 @@
+src/lib/hq/overview.ts
+  s_7114fe38b67e35::t_40ce8787abd25f 38-39,49-50
+  s_7114fe38b67e35::t_80b1aec12853f6 219
+  s_7114fe38b67e35::t_2ea9e3c67a6a54 271
+  s_7114fe38b67e35::t_71e97468009298 10
+src/lib/hq/accounts.ts
+  s_7114fe38b67e35::t_3db5ee079f8138 9
+  s_7114fe38b67e35::t_a56dc30c3d8a71 151-153
+src/lib/hq/index.ts
+  s_7114fe38b67e35::t_7f221ddc5748be 15
+src/lib/hq/exports.ts
+  s_7114fe38b67e35::t_8bace1132aafd0 28-29
+  s_7114fe38b67e35::t_fba4beda2b1849 7
+src/lib/actions/shop.ts
+  s_7114fe38b67e35::t_017a27822fbbbc 11,13
+  s_7114fe38b67e35::t_fa4e52b6218064 57-67
+src/lib/hq/roster.ts
+  s_7114fe38b67e35::t_280ec6f6c5a7cf 1-16
+src/lib/handle.ts
+  s_7114fe38b67e35::t_6ad2433f4687ff 28-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "be65d26548bd42812505b955526b27a8b6ea8338",
+  "prompts": {},
+  "sessions": {
+    "s_7114fe38b67e35": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8f7dffd4-ebcc-4a6f-9b6e-49a61b356ddf",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
