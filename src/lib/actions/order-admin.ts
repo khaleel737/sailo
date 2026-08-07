@@ -12,7 +12,7 @@ import { canReverse, checkRefund, refundableCents, reversePayment, type RefundOu
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
 import { isOrderStatus } from "@/lib/order-status";
 import { releaseDownloads } from "@/lib/downloads";
-import { sendRefundNotification, sendShippingNotification } from "@/lib/email";
+import { sendBookingDecision, sendRefundNotification, sendShippingNotification } from "@/lib/email";
 import type { ActionState } from "./shop";
 
 /**
@@ -41,6 +41,29 @@ export async function updateOrderStatus(formData: FormData) {
     .update(orders)
     .set({ status, updatedAt: new Date() })
     .where(eq(orders.id, id));
+
+  /*
+   * An appointment the seller has now answered.
+   *
+   * Checkout tells the buyer the shop confirms their slot afterwards, and this
+   * is where that happens: a booked order stays `new` through payment, so
+   * moving it to `confirmed` is the seller accepting the time and moving it to
+   * `cancelled` is them declining it. Either way the buyer is told, because a
+   * promised confirmation that arrives as silence is worse than none.
+   *
+   * Guarded on the *previous* status, so re-saving an order that was already
+   * confirmed does not email the buyer a second time.
+   */
+  if (order.scheduledFor && order.status === "new" && status !== "new") {
+    const decision = await sendBookingDecision({
+      shop,
+      order,
+      accepted: status !== "cancelled",
+    });
+    if (!decision.sent) {
+      console.warn(`[sailo] booking decision not sent: ${decision.reason}`);
+    }
+  }
 
   /*
    * A cancelled *or refunded* order's units go back on the shelf; moving it

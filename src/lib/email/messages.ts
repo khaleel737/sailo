@@ -213,6 +213,69 @@ export async function sendShippingNotification(opts: {
   });
 }
 
+/**
+ * The seller accepting or declining a requested appointment.
+ *
+ * Checkout promises that the shop confirms the slot afterwards, and until now
+ * nothing kept that promise: the order simply became "confirmed" when the
+ * money arrived, without anybody agreeing to the time. These are the two
+ * answers a buyer can actually receive.
+ */
+export async function sendBookingDecision(opts: {
+  shop: Shop;
+  order: Order;
+  accepted: boolean;
+}): Promise<SendResult> {
+  const { shop, order, accepted } = opts;
+  if (!order.customerEmail) return { sent: false, reason: "no customer email" };
+  if (!order.scheduledFor) return { sent: false, reason: "order has no booking" };
+
+  /*
+   * Written in the shop's zone, not the server's or the buyer's. The
+   * appointment is a time to turn up somewhere, and the seller's clock is the
+   * one both of them have to agree on.
+   */
+  const when = order.scheduledFor.toLocaleString("en-US", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: shop.timeZone,
+  });
+
+  const body = accepted
+    ? `
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">
+      Your appointment is confirmed.
+    </p>
+    <p style="margin:0;font-size:15px;font-weight:600;">${esc(orderSummaryTitle(order))}</p>
+    <p style="margin:8px 0 0;font-size:15px;">${esc(when)}</p>
+    <p style="margin:4px 0 0;font-size:13px;color:#8e8e9c;">${esc(shop.timeZone)}</p>
+  `
+    : `
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">
+      ${esc(shop.name)} can't make ${esc(when)} after all, and has cancelled
+      this booking. Anything you paid is being returned.
+    </p>
+    <p style="margin:0;font-size:15px;font-weight:600;">${esc(orderSummaryTitle(order))}</p>
+    <p style="margin:12px 0 0;font-size:15px;line-height:1.6;">
+      Reply to this email to arrange another time.
+    </p>
+  `;
+
+  return send({
+    from: sender(shop.name, ORDERS),
+    to: order.customerEmail,
+    subject: accepted
+      ? `Your appointment with ${shop.name} is confirmed`
+      : `Your appointment with ${shop.name} was cancelled`,
+    html: layout(shop, accepted ? "Confirmed" : "Cancelled", body),
+    // The buyer will want to answer a decline, and often an acceptance.
+    replyTo: shop.contactEmail ?? undefined,
+  });
+}
+
 /** Sent when the seller records a refund. */
 export async function sendRefundNotification(opts: {
   shop: Shop;
@@ -257,6 +320,79 @@ export async function sendRefundNotification(opts: {
  * and what to do if they didn't ask for it, because a reset mail nobody
  * requested is the first sign of someone trying the door.
  */
+/**
+ * The way into /hq. Staff don't have a password to type — this link, sent only
+ * to an address on the roster in `lib/staff.ts`, is the whole sign-in.
+ *
+ * As sparse as the password reset, and for the same reason: it lands in an
+ * inbox, and inboxes get read by the wrong people. It names no panel features
+ * and carries nothing but the link and how long it lasts.
+ */
+export async function sendHqSignInLink(opts: {
+  to: string;
+  url: string;
+  /** How long the link stays good, in whole minutes. */
+  expiresInMinutes: number;
+}): Promise<SendResult> {
+  const { to, url, expiresInMinutes } = opts;
+
+  const body = `
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#565664;">
+      Here's your sign-in link for <strong style="color:#1a1a20;">${esc(to)}</strong>.
+    </p>
+    ${button(url, "Sign in")}
+    <p style="margin:18px 0 0;font-size:13px;color:#8e8e9c;">
+      This link works once, and expires in ${expiresInMinutes} minute${expiresInMinutes === 1 ? "" : "s"}.
+    </p>
+    <p style="margin:8px 0 0;font-size:13px;color:#8e8e9c;">
+      If you didn't ask for it, ignore this email — nobody gets in without it.
+    </p>
+  `;
+
+  return send({
+    from: sender("Sailo", ACCOUNTS),
+    to,
+    subject: "Your Sailo sign-in link",
+    html: sailoLayout("Sign in to Sailo", body),
+  });
+}
+
+/**
+ * Proof that a new seller's address is really theirs.
+ *
+ * Sent on sign-up. Not a gate — they can use their admin while it waits — but
+ * until they click it, the account is only a claim to an inbox, and a claim is
+ * all an impostor has. Sparse like the other account mail: whoever typed the
+ * address might not be its owner, and the wrong inbox should learn nothing.
+ */
+export async function sendEmailConfirmation(opts: {
+  to: string;
+  name?: string | null;
+  url: string;
+}): Promise<SendResult> {
+  const { to, name, url } = opts;
+
+  const body = `
+    <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#565664;">
+      ${name ? `Hi ${esc(name)} — ` : ""}a Sailo account was just created with
+      <strong style="color:#1a1a20;">${esc(to)}</strong>. One click confirms
+      this address is yours.
+    </p>
+    ${button(url, "Confirm my email")}
+    <p style="margin:18px 0 0;font-size:13px;color:#8e8e9c;">
+      If you didn't create this account, ignore this email — unconfirmed, it
+      goes nowhere.
+    </p>
+  `;
+
+  return send({
+    from: sender("Sailo", ACCOUNTS),
+    to,
+    subject: "Confirm your email",
+    html: sailoLayout("Confirm your email", body),
+  });
+}
+
 export async function sendPasswordReset(opts: {
   to: string;
   name?: string | null;

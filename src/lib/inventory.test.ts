@@ -244,3 +244,61 @@ describe("settlement side effects on the paid path", () => {
     expect(paid).toContain("!order.confirmationSentAt");
   });
 });
+
+/**
+ * Who confirms an appointment.
+ *
+ * Checkout tells the buyer "{shop} confirms your slot after you order", and
+ * for a long time nothing did. The payment webhook flipped every `new` order
+ * to `confirmed`, so a card buyer read "confirmed" about a time the seller had
+ * never seen — the promise was broken by the system itself rather than by the
+ * seller forgetting.
+ *
+ * Two halves, pinned together because either alone is wrong: payment must stop
+ * confirming a booked order, and the seller's decision must reach the buyer.
+ */
+describe("a booked order waits for the seller", () => {
+  const webhook = readFileSync("src/lib/stripe-webhooks.ts", "utf8");
+  const admin = readFileSync("src/lib/actions/order-admin.ts", "utf8");
+
+  it("does not let payment confirm an appointment", () => {
+    const paid = webhook.slice(
+      webhook.indexOf("// Payment is what confirms the order"),
+      webhook.indexOf("await releaseDownloads(order.id);"),
+    );
+    // An order carrying a requested time keeps whatever status it had.
+    expect(paid).toContain("!order.scheduledFor");
+  });
+
+  it("still confirms an ordinary order, so a seller need not touch it", () => {
+    const paid = webhook.slice(
+      webhook.indexOf("// Payment is what confirms the order"),
+      webhook.indexOf("await releaseDownloads(order.id);"),
+    );
+    expect(paid).toContain('order.status === "new"');
+    expect(paid).toContain('? "confirmed"');
+  });
+
+  it("tells the buyer when the seller answers", () => {
+    const decision = admin.slice(
+      admin.indexOf("if (order.scheduledFor"),
+      admin.indexOf("isStockReleasingStatus(status)"),
+    );
+    expect(decision).toContain("sendBookingDecision(");
+    // Declining is an answer too, and the buyer needs it more than acceptance.
+    expect(decision).toContain('accepted: status !== "cancelled"');
+  });
+
+  it("does not email the same decision twice", () => {
+    /*
+     * Guarded on the previous status, not the new one. Re-saving an order that
+     * is already confirmed must not send a second "your appointment is
+     * confirmed" — the seller edits orders for all sorts of reasons.
+     */
+    const decision = admin.slice(
+      admin.indexOf("if (order.scheduledFor"),
+      admin.indexOf("isStockReleasingStatus(status)"),
+    );
+    expect(decision).toContain('order.status === "new"');
+  });
+});

@@ -447,7 +447,21 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
         .update(orders)
         .set({
           paymentStatus: "paid",
-          status: order.status === "new" ? "confirmed" : order.status,
+          /*
+           * Payment confirms an order, but it does not confirm an appointment.
+           *
+           * A booked order carries a time the buyer *asked* for, and the
+           * checkout tells them so: "the shop confirms your slot after you
+           * order". Flipping it to `confirmed` here made that a lie — the
+           * buyer read "confirmed" about a time nobody had agreed to, and the
+           * seller was never asked. A booking stays `new` until they accept
+           * it; everything else still confirms itself, so the seller never has
+           * to touch an ordinary order.
+           */
+          status:
+            order.status === "new" && !order.scheduledFor
+              ? "confirmed"
+              : order.status,
           stripePaymentIntentId: intentIdOf(session.payment_intent),
           stripeAccountId: accountId ?? order.stripeAccountId,
           updatedAt: new Date(),
