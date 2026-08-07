@@ -24,6 +24,7 @@ export function SiteFooter({
     { href: "/privacy", label: m.footer.privacy },
     { href: "/terms", label: m.footer.terms },
     { href: "/refunds", label: m.footer.refunds },
+    { href: "/gdpr", label: m.footer.gdpr },
   ];
 
   return (
