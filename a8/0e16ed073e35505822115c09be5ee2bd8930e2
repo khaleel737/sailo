@@ -1,0 +1,74 @@
+src/lib/queries/products.ts
+  s_3fd229194f6299::t_58d2a62d034577 3,157-164,168,176-192
+  s_3fd229194f6299::t_9ae3da6056e3a3 30-67
+src/lib/stripe-webhooks.ts
+  s_3fd229194f6299::t_39c8ed1338cde8 293-316,347,696,703-708
+  s_3fd229194f6299::t_7ccd25a14cfc02 5,364,380-382
+src/lib/queries/shop.ts
+  s_3fd229194f6299::t_4c770eafe97e17 52-65
+src/lib/auth.ts
+  s_3fd229194f6299::t_1c11cc75d3120c 118-135,137-142,145
+src/lib/actions/orders.ts
+  s_3fd229194f6299::t_38e9e2cce31669 480-482
+src/app/api/upload/route.ts
+  s_3fd229194f6299::t_acd68bdf4ee914 4,57-70
+  s_3fd229194f6299::t_1ee5e6d4256f6a 71
+src/app/sitemap.ts
+  s_3fd229194f6299::t_1419047ab766cd 2,28-48,198-209
+  s_3fd229194f6299::t_70e58130b95f1d 210
+src/lib/actions/locale.ts
+  s_3fd229194f6299::t_5893618c4238c6 27-33
+vercel.json
+  s_3fd229194f6299::t_af874d5a112946 10-13
+src/app/(auth)/forgot-password/page.tsx
+  s_3fd229194f6299::t_1cb85a25e97573 8-16
+src/lib/actions/affiliates.ts
+  s_3fd229194f6299::t_acd68bdf4ee914 327-335,337-339
+next.config.ts
+  s_3fd229194f6299::t_5893618c4238c6 114-134,166-178
+src/app/[handle]/page.tsx
+  s_3fd229194f6299::t_4d6249df88e9de 66-72
+  s_3fd229194f6299::t_03c7edf5d486d8 3
+src/app/(auth)/signup/page.tsx
+  s_3fd229194f6299::t_1cb85a25e97573 8-16
+src/app/[handle]/_lib/load-more-products.tsx
+  s_3fd229194f6299::t_4d6249df88e9de 59
+  s_3fd229194f6299::t_9ce2a08f14038c 12-13,37-47
+  s_3fd229194f6299::t_21ba69b9d19f0d 9
+  s_3fd229194f6299::t_b7253ce583be30 48
+src/app/[handle]/p/[slug]/opengraph-image.tsx
+  s_3fd229194f6299::t_0edd132e376090 4,53
+src/app/[handle]/opengraph-image.tsx
+  s_3fd229194f6299::t_0edd132e376090 44-51
+  s_3fd229194f6299::t_6aceb0b1e9c6ca 3
+e2e/journey.spec.ts
+  s_3fd229194f6299::t_c76f98133aa2ac 2-6,11-18,21-23,25,27,29-33,74-76,86-87,95-97,102,104,142-150,152-156,159-161,165,168,170-171,174,194-195
+  s_3fd229194f6299::t_0277042ccf926d 1,7-10,19-20,24,26,28,34-73,77-85,88-94,98-101,103,105-141,151,157-158,162-164,166-167,169,172-173,175-193
+src/app/(auth)/login/page.tsx
+  s_3fd229194f6299::t_1cb85a25e97573 8-16
+src/db/index.ts
+  s_3fd229194f6299::t_c974295d0378d8 1,5-32,34-40
+src/app/api/cron/sitemap/route.ts
+  s_3fd229194f6299::t_d10d90c49711d0 8-11,18,34
+  s_3fd229194f6299::t_a782e95923102f 3,27-33,36
+scripts/scenarios/checkout.scenario.ts
+  s_3fd229194f6299::t_dc9498d48d04c5 567-603
+.gitignore
+  s_3fd229194f6299::t_8a8e45baf650ff 55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "a80e16ed073e35505822115c09be5ee2bd8930e2",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
