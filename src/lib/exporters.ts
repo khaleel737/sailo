@@ -257,7 +257,9 @@ export const CLIENT_HEADERS = [
 ];
 
 export async function exportClients(shopId: string, currency: string) {
-  const rows = await getShopClients(shopId);
+  // Every client, deliberately: an export that silently stopped at a page
+  // boundary would be a file the seller believes is their whole customer list.
+  const rows = await getShopClients(shopId, null);
 
   return toCsv(
     CLIENT_HEADERS,

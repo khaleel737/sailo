@@ -130,6 +130,10 @@ describe("read replica", () => {
     const allowed = new Set([
       "src/lib/queries/analytics.ts",
       "src/lib/hq/exports.ts",
+      // The /hq dashboard: full-table counts over the three biggest tables,
+      // behind `requireStaff`, informing nothing but what is on screen. The
+      // staff actions that *do* write re-read on the primary first.
+      "src/lib/hq/overview.ts",
       "src/db/index.ts",
     ]);
     const actual = files("src").filter((f) => !f.endsWith(".test.ts"));

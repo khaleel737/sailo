@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
 import { productVariants, products } from "@/db/schema";
 import { clampQuantity, isSellable, maxOrderable, variantPrice } from "@/lib/variants";
@@ -55,24 +55,58 @@ export async function resolveLines(
     return null;
   };
 
-  for (const item of items.slice(0, MAX_LINES)) {
-    const product = await db.query.products.findFirst({
-      where: and(
-        eq(products.id, item.productId),
-        eq(products.shopId, shopId),
-        eq(products.isPublished, true),
-      ),
-    });
+  const wanted = items.slice(0, MAX_LINES);
+
+  /*
+   * Two queries for the whole basket, not two per line.
+   *
+   * This ran a `products` lookup and then a `productVariants` lookup inside
+   * the loop, sequentially — so a five-line cart was ten round trips to Neon,
+   * and it is not only the checkout that pays: `previewOrder` calls this on
+   * every basket change, every delivery choice and every coupon attempt, so a
+   * shopper adjusting quantities paid it over and over.
+   *
+   * The `shopId` and `isPublished` constraints stay in the query rather than
+   * being filtered afterwards. They are the reason a buyer cannot order
+   * another shop's product, or a draft, by editing the payload — a rule worth
+   * keeping in the WHERE where it cannot be forgotten.
+   */
+  const ids = [...new Set(wanted.map((i) => i.productId))];
+  const [found, allVariants] = await Promise.all([
+    ids.length > 0
+      ? db.query.products.findMany({
+          where: and(
+            inArray(products.id, ids),
+            eq(products.shopId, shopId),
+            eq(products.isPublished, true),
+          ),
+        })
+      : Promise.resolve([]),
+    ids.length > 0
+      ? db.query.productVariants.findMany({
+          where: inArray(productVariants.productId, ids),
+          orderBy: [asc(productVariants.position)],
+        })
+      : Promise.resolve([]),
+  ]);
+
+  const byId = new Map(found.map((p) => [p.id, p]));
+  const variantsByProduct = new Map<string, ProductVariant[]>();
+  for (const v of allVariants) {
+    const list = variantsByProduct.get(v.productId);
+    if (list) list.push(v);
+    else variantsByProduct.set(v.productId, [v]);
+  }
+
+  for (const item of wanted) {
+    const product = byId.get(item.productId);
     if (!product) {
       const stop = fail(item, "Product not available.");
       if (stop) return stop;
       continue;
     }
 
-    const variants = await db.query.productVariants.findMany({
-      where: eq(productVariants.productId, product.id),
-      orderBy: [asc(productVariants.position)],
-    });
+    const variants = variantsByProduct.get(product.id) ?? [];
 
     let variant: ProductVariant | null = null;
     if (variants.length > 0) {

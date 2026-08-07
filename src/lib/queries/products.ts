@@ -280,10 +280,23 @@ async function readProductBySlug(shopId: string, slug: string) {
   return { ...product, reviews: approved, avgRating: avg, reviewCount: approved.length };
 }
 
-export async function getAdminProducts(shopId: string) {
+/**
+ * The seller's own catalogue, bounded.
+ *
+ * The Business plan has no product limit, and this loaded every row with its
+ * images, its category and its variants — so the seller with the biggest
+ * catalogue, who is the one paying most, got the slowest admin and eventually
+ * a page that would not finish. A ceiling that is generous enough that almost
+ * nobody meets it is better than none: the storefront has paginated since it
+ * was written, and this is the same argument applied to the page behind it.
+ */
+export const ADMIN_PRODUCT_PAGE_SIZE = 200;
+
+export async function getAdminProducts(shopId: string, limit = ADMIN_PRODUCT_PAGE_SIZE) {
   return getDb().query.products.findMany({
     where: eq(products.shopId, shopId),
     orderBy: [asc(products.position), desc(products.createdAt)],
+    limit,
     with: {
       images: { orderBy: [asc(productImages.position)] },
       category: true,

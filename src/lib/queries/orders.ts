@@ -34,8 +34,27 @@ export type ClientRow = Client & {
   lastOrderAt: Date | null;
 };
 
-/** Clients with their lifetime totals, most recently active first. */
-export async function getShopClients(shopId: string): Promise<ClientRow[]> {
+/**
+ * How many clients a screen asks for. An export asks for all of them.
+ *
+ * This aggregated every client against every order they had ever placed, with
+ * no ceiling — so the shop with the most customers, which is the one paying
+ * most, had the slowest admin and eventually one that would not finish.
+ */
+export const CLIENT_PAGE_SIZE = 200;
+
+/**
+ * Clients with their lifetime totals, most recently active first.
+ *
+ * `limit: null` means every row and is only for the CSV export, where the
+ * whole point is completeness and the caller has asked for a file. Every
+ * screen passes a bound, and the default is bounded so a new screen inherits
+ * the safe answer rather than the fast-to-write one.
+ */
+export async function getShopClients(
+  shopId: string,
+  limit: number | null = CLIENT_PAGE_SIZE,
+): Promise<ClientRow[]> {
   const db = getDb();
 
   const rows = await db
@@ -50,7 +69,8 @@ export async function getShopClients(shopId: string): Promise<ClientRow[]> {
     .leftJoin(orders, eq(orders.clientId, clients.id))
     .where(eq(clients.shopId, shopId))
     .groupBy(clients.id)
-    .orderBy(sql`max(${orders.createdAt}) desc nulls last`);
+    .orderBy(sql`max(${orders.createdAt}) desc nulls last`)
+    .limit(limit ?? Number.MAX_SAFE_INTEGER);
 
   return rows.map((r) => ({
     ...r.client,

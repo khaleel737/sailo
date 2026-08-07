@@ -1,7 +1,7 @@
 import "server-only";
 import { requireStaff } from "@/lib/session";
 import { and, eq, gte, inArray, isNotNull, isNull, ne, or, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb, getReadDb } from "@/db";
 import { clients, orders, products, shops, user, visits } from "@/db/schema";
 import { mergeCurrencyTotals, rollUpRevenue } from "@/lib/hq-metrics";
 import type { BillingGroup, CurrencyTotal } from "@/lib/hq-metrics";
@@ -9,11 +9,24 @@ import { ENTITLED } from "./billing-state";
 import { daysAgo, num, utcDayWindow } from "./pagination";
 import { notStaff } from "./roster";
 
-/** The platform at a glance: revenue, activation, growth. */
-
+/**
+ * The platform at a glance: revenue, activation, growth.
+ *
+ * Reads the replica, which `db/index.ts` describes as exactly what it is for.
+ * These are full-table counts over `orders`, `visits` and `clients` — the
+ * three biggest tables — and they ran on the primary, which is the connection
+ * every checkout needs to stay fast. Two staff members loading a dashboard
+ * should not compete with a buyer paying.
+ *
+ * Safe on a replica because nothing here decides a write. A staff member who
+ * suspends a shop or comps a plan does so through `actions/hq.ts`, which
+ * re-reads the shop on the primary under `requireStaff` before it writes — so
+ * a dashboard a few hundred milliseconds behind changes what is displayed, and
+ * never what happens.
+ */
 export async function getPlatformOverview() {
   await requireStaff();
-  const db = getDb();
+  const db = getReadDb();
 
   const day = daysAgo(1);
   const week = daysAgo(7);
