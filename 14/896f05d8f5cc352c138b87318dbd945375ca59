@@ -1,0 +1,82 @@
+src/app/admin/_components/help-link.tsx
+  s_b46e32c5fffa90::t_43c9642f4a7f60 1-25
+src/app/hq/_components/hq-sidebar.tsx
+  s_b46e32c5fffa90::t_c385b42ffd03e6 56-59
+  s_b46e32c5fffa90::t_da24407875bd0c 11
+src/i18n/admin/coverage.test.ts
+  s_b46e32c5fffa90::t_22e076abc144e0 41
+src/app/hq/(panel)/support/page.tsx
+  s_b46e32c5fffa90::t_3324cd8f9c61e9 1-164
+src/lib/support.ts
+  s_b46e32c5fffa90::t_9896f44f88e3b6 1-20,34-40
+  s_b46e32c5fffa90::t_3dc96b3c455548 21-33
+src/i18n/admin/ar.ts
+  s_b46e32c5fffa90::t_b42382f7fbbec2 534-564
+src/app/admin/_components/admin-header.tsx
+  s_b46e32c5fffa90::t_a934c387c6f35a 4
+  s_b46e32c5fffa90::t_09bfb21042686b 63-64
+  s_b46e32c5fffa90::t_eb804697b215b2 99
+src/app/admin/support/_components/support-form.tsx
+  s_b46e32c5fffa90::t_dd6fbaed3ad3b8 1-165
+src/lib/actions/support.ts
+  s_b46e32c5fffa90::t_6ca99a7ed5bcf4 1-97
+src/lib/email/messages.ts
+  s_b46e32c5fffa90::t_0a5ea00efd59fc 227-280
+  s_b46e32c5fffa90::t_42f7943e56e031 6-8
+  s_b46e32c5fffa90::t_046cf2389e0e7c 281-283
+  s_b46e32c5fffa90::t_e4426cce9316ce 284
+src/lib/email/transport.ts
+  s_b46e32c5fffa90::t_9f27b24ed0058d 31-32
+  s_b46e32c5fffa90::t_d853ce353b131f 65-66,78
+src/lib/hq/index.ts
+  s_b46e32c5fffa90::t_beeca5058ab783 21
+src/db/schema/support.ts
+  s_b46e32c5fffa90::t_13fb14c9d16b7a 1-38
+src/i18n/admin/en.ts
+  s_b46e32c5fffa90::t_65f5e930b3fd46 261-293
+drizzle/0002_support_tickets.sql
+  s_b46e32c5fffa90::t_420eaac6b29b3d 1-38
+src/db/schema/types.ts
+  s_b46e32c5fffa90::t_630c0de2fe56b1 29
+  s_b46e32c5fffa90::t_f761c0cbecf5da 6
+src/db/schema/index.ts
+  s_b46e32c5fffa90::t_a8eb9ec5c48093 17
+src/app/admin/support/page.tsx
+  s_b46e32c5fffa90::t_dbc5cb5cb329f7 1-111
+src/i18n/admin/de.ts
+  s_b46e32c5fffa90::t_01fd085822ab06 534-565
+src/i18n/admin/fr.ts
+  s_b46e32c5fffa90::t_f12c86243ebd2c 534-565
+src/lib/hq/support.ts
+  s_b46e32c5fffa90::t_e4b77425e63dda 1-69
+src/i18n/admin/ja.ts
+  s_b46e32c5fffa90::t_c6bba850221b94 534-565
+src/lib/actions/hq.ts
+  s_b46e32c5fffa90::t_e58ac3bd251882 4,6-7
+  s_b46e32c5fffa90::t_e7ad72bb328df6 187-222
+  s_2e1da3b18d1c53::t_c57e2daa625fb0 223
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "14896f05d8f5cc352c138b87318dbd945375ca59",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_b46e32c5fffa90": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a6bedbce-9ae2-45f1-bcfd-dcb1cdcec3af",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
