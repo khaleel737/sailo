@@ -1,0 +1,28 @@
+src/lib/queries/shop.ts
+  s_2e1da3b18d1c53::t_b1fa6261a3d577 2,6
+  s_2e1da3b18d1c53::t_cb64d75ef4ed3d 118-132,134-139
+src/lib/queries/products.ts
+  s_2e1da3b18d1c53::t_b1fa6261a3d577 2,6
+  s_2e1da3b18d1c53::t_cb64d75ef4ed3d 240-265,267-272
+src/lib/queries/checkout.ts
+  s_2e1da3b18d1c53::t_cb64d75ef4ed3d 95-100
+  s_2e1da3b18d1c53::t_b1fa6261a3d577 2,6
+src/lib/cache.ts
+  s_2e1da3b18d1c53::t_5d33bc3db267d9 2,18-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "49aa48f8934dce32f23d801ecc3a042b75bff9a2",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
