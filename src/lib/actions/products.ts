@@ -53,6 +53,7 @@ async function syncVariants(
   options: ProductOption[],
   rows: VariantRow[],
   trackInventory: boolean,
+  currency: string,
 ) {
   const db = getDb();
   const wanted = usableVariants(options, rows);
@@ -63,14 +64,14 @@ async function syncVariants(
   const byKey = new Map(existing.map((v) => [optionKey(v.options), v]));
 
   for (const [position, row] of wanted.entries()) {
-    const priceCents = optionalCents(row.price);
+    const priceCents = optionalCents(row.price, currency);
     const values = {
       options: row.options,
       sku: text(row.sku, 60),
       priceCents,
       // A strike-through only means something next to its own price.
       compareAtCents: (() => {
-        const compare = optionalCents(row.compareAt);
+        const compare = optionalCents(row.compareAt, currency);
         return compare !== null && priceCents !== null && compare <= priceCents
           ? null
           : compare;
@@ -180,8 +181,8 @@ export async function saveProduct(
 
   const modeRaw = String(formData.get("serviceMode") ?? "in_person");
   const compareRaw = String(formData.get("compareAtPrice") ?? "").trim();
-  const priceCents = parseMoneyToCents(String(formData.get("price") ?? "0"));
-  const compareAtCents = compareRaw ? parseMoneyToCents(compareRaw) : null;
+  const priceCents = parseMoneyToCents(String(formData.get("price") ?? "0"), shop.currency);
+  const compareAtCents = compareRaw ? parseMoneyToCents(compareRaw, shop.currency) : null;
 
   const values = {
     title,
@@ -283,7 +284,13 @@ export async function saveProduct(
   }
 
   if (productId) {
-    await syncVariants(productId, hasVariants ? options : [], variantRows, trackInventory);
+    await syncVariants(
+      productId,
+      hasVariants ? options : [],
+      variantRows,
+      trackInventory,
+      shop.currency,
+    );
     await syncFiles(productId, readJsonRows<FileRow>(formData, "files"));
   }
 

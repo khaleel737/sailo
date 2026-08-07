@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { currencyDecimals } from "@/lib/currency";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -38,16 +39,28 @@ export function slugify(input: string) {
  * make a server's own configuration decide what a buyer sees, and the staff
  * panel is deliberately English.
  */
-export function formatMoney(cents: number, currency = "USD", locale = "en-US") {
+export function formatMoney(minor: number, currency = "USD", locale = "en-US") {
+  /*
+   * How many minor units make one of this currency, rather than a flat 100.
+   * ¥1,000 is a thousand minor units, not a hundred thousand, and dividing by
+   * 100 showed a seller pricing in yen a hundredth of what they charged.
+   */
+  const decimals = currencyDecimals(currency);
+  const per = 10 ** decimals;
+
   try {
     return new Intl.NumberFormat(`${locale}-u-nu-latn`, {
       style: "currency",
       currency,
-      minimumFractionDigits: cents % 100 === 0 ? 0 : 2,
-      maximumFractionDigits: 2,
-    }).format(cents / 100);
+      // A whole amount drops its fraction — "$20", not "$20.00" — while
+      // anything with a remainder shows every place the currency has, so a
+      // price never appears truncated. On a zero-decimal currency both
+      // branches are zero, which is the correct answer for yen.
+      minimumFractionDigits: minor % per === 0 ? 0 : decimals,
+      maximumFractionDigits: decimals,
+    }).format(minor / per);
   } catch {
-    return `${(cents / 100).toFixed(2)} ${currency}`;
+    return `${(minor / per).toFixed(decimals)} ${currency}`;
   }
 }
 
@@ -107,9 +120,19 @@ function decimalSeparator(value: string): "." | "," | null {
  * single validation message, and the same string typed into the tax field was
  * already being read the other way.
  */
-export function moneyToCents(value: string | number): number | null {
+export function moneyToCents(
+  value: string | number,
+  currency = "USD",
+): number | null {
+  /*
+   * The multiplier is the currency's, not a flat 100. A seller pricing at
+   * ¥1,000 types 1000; multiplying that by 100 stored ¥100,000 and Stripe
+   * charged it, because JPY's minor unit is the yen itself.
+   */
+  const per = 10 ** currencyDecimals(currency);
+
   if (typeof value === "number") {
-    return Number.isFinite(value) ? Math.max(0, Math.round(value * 100)) : null;
+    return Number.isFinite(value) ? Math.max(0, Math.round(value * per)) : null;
   }
 
   const cleaned = String(value).replace(/[^0-9.,-]/g, "");
@@ -122,7 +145,7 @@ export function moneyToCents(value: string | number): number | null {
 
   const n = Number(normalized);
   if (!Number.isFinite(n)) return null;
-  return Math.max(0, Math.round(n * 100));
+  return Math.max(0, Math.round(n * per));
 }
 
 /**
@@ -134,8 +157,8 @@ export function moneyToCents(value: string | number): number | null {
  * `moneyToCents` and keeps the null. Collapsing the two is how a variant whose
  * price column held a stray "-" went live costing nothing.
  */
-export function parseMoneyToCents(value: string | number): number {
-  return moneyToCents(value) ?? 0;
+export function parseMoneyToCents(value: string | number, currency = "USD"): number {
+  return moneyToCents(value, currency) ?? 0;
 }
 
 /** Human file size for download listings: 1536 → "1.5 KB". */
@@ -264,10 +287,6 @@ export function shopThemeVars(accentColor: string) {
   } as React.CSSProperties;
 }
 
-export const CURRENCIES = [
-  "USD", "EUR", "GBP", "AED", "SAR", "EGP", "TRY", "INR", "NGN",
-  "KES", "ZAR", "BRL", "MXN", "PKR", "IDR", "PHP", "CAD", "AUD",
-] as const;
 
 export const PRODUCT_KINDS = [
   { value: "physical", label: "Physical product" },

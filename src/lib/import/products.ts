@@ -23,6 +23,8 @@ async function importVariants(input: {
   group: Row[];
   productPriceCents: number;
   tracksInventory: boolean;
+  /** The shop's, so a price cell becomes the right number of minor units. */
+  currency: string;
 }): Promise<number> {
   const db = getDb();
   const { productId, options } = input;
@@ -62,9 +64,9 @@ async function importVariants(input: {
     if (seen.has(key) || seen.size >= MAX_VARIANTS) continue;
     seen.add(key);
 
-    const price = parseMoneyField(field(raw, "Variant Price", "Price"));
+    const price = parseMoneyField(field(raw, "Variant Price", "Price"), input.currency);
     const compareRaw = field(raw, "Variant Compare At Price", "Compare At Price");
-    const compare = compareRaw ? parseMoneyField(compareRaw) : null;
+    const compare = compareRaw ? parseMoneyField(compareRaw, input.currency) : null;
 
     const values = {
       options: combination,
@@ -103,6 +105,13 @@ export async function importProducts(opts: {
   shopId: string;
   csv: string;
   dryRun: boolean;
+  /**
+   * The shop's currency, which decides how a price cell becomes an integer.
+   * "1000" in a JPY shop is ¥1,000 — a thousand minor units — where the same
+   * cell in a USD shop is $10.00. Without this every imported price in a
+   * zero-decimal currency would be a hundred times too large.
+   */
+  currency: string;
   /** Only the billing fields are needed to check the product cap. */
   plan: { plan: string; subscriptionStatus: string | null };
 }): Promise<ImportReport> {
@@ -166,9 +175,9 @@ export async function importProducts(opts: {
     const title = field(raw, "Title", "Name", "Product") || handle;
 
     const priceCents =
-      parseMoneyField(field(raw, "Price", "Variant Price")) ?? 0;
+      parseMoneyField(field(raw, "Price", "Variant Price"), opts.currency) ?? 0;
     const compareRaw = field(raw, "Compare At Price", "Variant Compare At Price");
-    const compareAtCents = compareRaw ? parseMoneyField(compareRaw) : null;
+    const compareAtCents = compareRaw ? parseMoneyField(compareRaw, opts.currency) : null;
 
     if (compareAtCents !== null && compareAtCents < priceCents) {
       report.errors.push({
@@ -338,6 +347,7 @@ export async function importProducts(opts: {
       group,
       productPriceCents: priceCents,
       tracksInventory,
+      currency: opts.currency,
     });
 
     // Option columns that produced no complete combination would leave a

@@ -200,7 +200,7 @@ export async function refundOrder(
   const raw = String(formData.get("amount") ?? "").trim();
   // Blank means refund everything.
   // Blank means refund whatever is left, not the whole order again.
-  const requested = raw ? parseMoneyToCents(raw) : refundableCents(order);
+  const requested = raw ? parseMoneyToCents(raw, order.currency) : refundableCents(order);
   const check = checkRefund(order, requested);
   if (!check.ok) {
     return {

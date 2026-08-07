@@ -46,9 +46,9 @@ export async function saveDeliveryMethod(
     };
   }
 
-  const feeCents = parseMoneyToCents(String(formData.get("fee") ?? "0"));
+  const feeCents = parseMoneyToCents(String(formData.get("fee") ?? "0"), shop.currency);
   const freeOverRaw = String(formData.get("freeOver") ?? "").trim();
-  const freeOverCents = freeOverRaw ? parseMoneyToCents(freeOverRaw) : null;
+  const freeOverCents = freeOverRaw ? parseMoneyToCents(freeOverRaw, shop.currency) : null;
 
   const values = {
     type,

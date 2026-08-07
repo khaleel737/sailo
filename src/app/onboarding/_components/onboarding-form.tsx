@@ -140,7 +140,7 @@ export function OnboardingForm({
             ) : null}
 
             {step === 2 ? (
-              <SellingStep values={values} set={set} t={t} />
+              <SellingStep values={values} set={set} t={t} locale={locale} />
             ) : null}
           </div>
 

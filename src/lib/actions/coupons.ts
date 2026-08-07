@@ -42,7 +42,7 @@ export async function saveCoupon(
   }
 
   const discountValue =
-    discountType === "percent" ? percentToBp(numeric) : parseMoneyToCents(rawValue);
+    discountType === "percent" ? percentToBp(numeric) : parseMoneyToCents(rawValue, shop.currency);
 
   const clash = await db.query.coupons.findFirst({
     where: and(eq(coupons.shopId, shop.id), eq(coupons.code, code)),
@@ -65,7 +65,7 @@ export async function saveCoupon(
     code,
     discountType,
     discountValue,
-    minSubtotalCents: parseMoneyToCents(String(formData.get("minSubtotal") ?? "0")),
+    minSubtotalCents: parseMoneyToCents(String(formData.get("minSubtotal") ?? "0"), shop.currency),
     maxRedemptions:
       maxRedemptions && Number.isFinite(maxRedemptions) ? maxRedemptions : null,
     expiresAt,

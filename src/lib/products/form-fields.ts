@@ -67,9 +67,9 @@ export function readJsonRows<T>(formData: FormData, name: string): T[] {
 }
 
 /** Blank means "no answer", which is different from zero. */
-export function optionalCents(value: unknown): number | null {
+export function optionalCents(value: unknown, currency = "USD"): number | null {
   const raw = typeof value === "string" ? value.trim() : "";
-  return raw ? parseMoneyToCents(raw) : null;
+  return raw ? parseMoneyToCents(raw, currency) : null;
 }
 
 export function optionalCount(value: unknown, max = 1_000_000): number | null {

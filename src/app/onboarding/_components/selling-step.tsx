@@ -1,7 +1,7 @@
 "use client";
 
 import { Field, Input, Select } from "@/components/ui";
-import { CURRENCIES } from "@/lib/utils";
+import { CURRENCY_CODES, currencyLabel } from "@/lib/currency";
 import type { Dictionary } from "@/i18n";
 import type { SetField, Values } from "./onboarding.types";
 
@@ -9,10 +9,12 @@ export function SellingStep({
   values,
   set,
   t,
+  locale,
 }: {
   values: Values;
   set: SetField;
   t: Dictionary;
+  locale: string;
 }) {
   return (
     <>
@@ -23,9 +25,9 @@ export function SellingStep({
                       value={values.currency}
                       onChange={set("currency")}
                     >
-                      {CURRENCIES.map((c) => (
+                      {CURRENCY_CODES.map((c) => (
                         <option key={c} value={c}>
-                          {c}
+                          {currencyLabel(c, locale)}
                         </option>
                       ))}
                     </Select>

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { toCurrencyCode } from "@/lib/currency";
 import { normalizeWeeklyHours, type WeeklyHours } from "@/lib/booking/hours";
 import { isTimeZone } from "@/lib/booking/time-zone";
 import { revalidateShop } from "@/lib/cache";
@@ -156,7 +157,7 @@ export async function createShop(
         name,
         description: String(formData.get("description") ?? "").trim() || null,
         location: String(formData.get("location") ?? "").trim() || null,
-        currency: String(formData.get("currency") ?? "USD"),
+        currency: toCurrencyCode(formData.get("currency")),
       })
       .returning({ id: shops.id });
   } catch (error) {
@@ -282,7 +283,15 @@ export async function updateShop(
       accentColor: /^#[0-9a-f]{6}$/i.test(accent) ? accent : "#111111",
       theme: theme === "dark" ? "dark" : "light",
       layout: layout === "list" ? "list" : "grid",
-      currency: String(formData.get("currency") ?? "USD"),
+      /*
+       * Validated, not trusted. This was whatever arrived in the request, so
+       * a hand-rolled POST could store any string — and every price on that
+       * storefront would then be handed to `Intl` against a code it does not
+       * know, which throws and falls back to a bare number. It also decides
+       * how many decimals the shop's money has, so an unknown code silently
+       * moves every price by a factor of a hundred.
+       */
+      currency: toCurrencyCode(formData.get("currency")),
       locale: readLocale(formData.get("locale")),
       taxEnabled: formData.get("taxEnabled") === "on",
       taxName: String(formData.get("taxName") ?? "").trim().slice(0, 40) || "Tax",

@@ -100,6 +100,6 @@ export function parseBool(value: string, fallback = false) {
  * have. A cell holding a stray "-" as a same-as-product placeholder would
  * otherwise price that variant at zero and sell it free.
  */
-export function parseMoneyField(value: string): number | null {
-  return moneyToCents(value);
+export function parseMoneyField(value: string, currency = "USD"): number | null {
+  return moneyToCents(value, currency);
 }

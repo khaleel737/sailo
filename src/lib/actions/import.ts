@@ -46,6 +46,7 @@ export async function runImport(
             shopId: shop.id,
             csv,
             dryRun: !commit,
+            currency: shop.currency,
             plan: shop,
           })
         : await importClients({ shopId: shop.id, csv, dryRun: !commit });

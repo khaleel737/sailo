@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { Card, Field, Input, Select, Switch } from "@/components/ui";
-import { CURRENCIES } from "@/lib/utils";
+import { CURRENCY_CODES, currencyLabel } from "@/lib/currency";
 import { LOCALES } from "@/i18n/config";
 import type { Dictionary } from "@/i18n";
-import { useAdminT } from "@/app/admin/_components/admin-i18n";
+import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
 import type { Shop } from "@/db/schema";
 
 export function OrdersContactCard({ shop, t }: { shop: Shop; t: Dictionary }) {
   const a = useAdminT();
+  const locale = useAdminLocale();
 
   return (
           <Card className="space-y-4 p-5">
@@ -30,9 +31,9 @@ export function OrdersContactCard({ shop, t }: { shop: Shop; t: Dictionary }) {
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label={a.settings.currency} htmlFor="currency">
                 <Select id="currency" name="currency" defaultValue={shop.currency}>
-                  {CURRENCIES.map((c) => (
+                  {CURRENCY_CODES.map((c) => (
                     <option key={c} value={c}>
-                      {c}
+                      {currencyLabel(c, locale)}
                     </option>
                   ))}
                 </Select>

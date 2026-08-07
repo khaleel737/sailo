@@ -1,4 +1,5 @@
 import "server-only";
+import { toStripeAmount } from "@/lib/currency";
 import type Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -267,7 +268,7 @@ export async function createCheckoutSession(opts: {
       quantity: item.quantity,
       price_data: {
         currency,
-        unit_amount: item.unitPriceCents,
+        unit_amount: toStripeAmount(item.unitPriceCents, currency),
         product_data: {
           name: item.name,
           // The buyer's note belongs to the order, so it rides on the first
@@ -285,7 +286,7 @@ export async function createCheckoutSession(opts: {
       quantity: 1,
       price_data: {
         currency,
-        unit_amount: order.deliveryFeeCents,
+        unit_amount: toStripeAmount(order.deliveryFeeCents, currency),
         product_data: { name: order.deliveryLabel ?? "Delivery" },
       },
     });
@@ -298,7 +299,7 @@ export async function createCheckoutSession(opts: {
       quantity: 1,
       price_data: {
         currency,
-        unit_amount: order.taxCents,
+        unit_amount: toStripeAmount(order.taxCents, currency),
         product_data: { name: taxName(order) },
       },
     });
@@ -313,7 +314,7 @@ export async function createCheckoutSession(opts: {
   if (order.discountCents > 0) {
     const coupon = await stripe().coupons.create(
       {
-        amount_off: order.discountCents,
+        amount_off: toStripeAmount(order.discountCents, currency),
         currency,
         duration: "once",
         name: order.couponCode ?? "Discount",
@@ -356,8 +357,11 @@ export async function createCheckoutSession(opts: {
          * back with `application_fee_amount: null` however the Dashboard is
          * set. A fee that lives in code is also one that shows up in a diff.
          */
+        // Rounded like every other amount here: Stripe rejects a
+        // three-decimal currency amount that is not a multiple of ten, and it
+        // would reject this one after accepting all the line items.
         ...(applicationFee > 0
-          ? { application_fee_amount: applicationFee }
+          ? { application_fee_amount: toStripeAmount(applicationFee, currency) }
           : {}),
       },
       // Adaptive Pricing would let the buyer pay a converted amount in their
