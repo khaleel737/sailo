@@ -394,7 +394,23 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
       const order = await orderForSession(session, accountId);
       if (!order) return "order not found";
 
-      if (session.payment_status !== "paid") {
+      /*
+       * A session that needed no money is settled, not in flight.
+       *
+       * Stripe reports `no_payment_required` when the total is zero, which a
+       * 100%-off coupon on a basket with no delivery fee produces — and
+       * `connect.ts` applies coupons as Stripe discounts, so it really does
+       * happen. Treating every non-`paid` status as "still settling" stranded
+       * those orders in `pending` forever: no `async_payment_*` event ever
+       * follows, because nothing is settling. The order was never confirmed,
+       * its downloads never released, and — since the sweep skips `pending` —
+       * its stock never reclaimed either.
+       */
+      const settled =
+        session.payment_status === "paid" ||
+        session.payment_status === "no_payment_required";
+
+      if (!settled) {
         /*
          * Not a failure: the money is still in flight and Stripe will tell us
          * how it lands. Boleto takes up to three days, SEPA longer.

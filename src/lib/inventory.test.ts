@@ -126,12 +126,26 @@ describe("a completed-but-unsettled session", () => {
   const webhook = readFileSync("src/lib/stripe-webhooks.ts", "utf8");
 
   it("is promoted out of unpaid so the sweep passes over it", () => {
-    const branch = webhook.slice(
-      webhook.indexOf('if (session.payment_status !== "paid")'),
-    );
+    const branch = webhook.slice(webhook.indexOf("if (!settled) {"));
     expect(branch.slice(0, branch.indexOf("return `awaiting"))).toContain(
       'paymentStatus: "pending"',
     );
+  });
+
+  it("does not treat a zero-total session as money in flight", () => {
+    /*
+     * `no_payment_required` is what Stripe reports when a 100%-off coupon
+     * takes the basket to zero. No async_payment_* event ever follows, because
+     * nothing is settling — so calling it pending stranded the order forever:
+     * never confirmed, downloads never released, and exempt from the sweep
+     * that would otherwise have reclaimed its stock.
+     */
+    const settled = webhook.slice(
+      webhook.indexOf("const settled ="),
+      webhook.indexOf("if (!settled) {"),
+    );
+    expect(settled).toContain('session.payment_status === "paid"');
+    expect(settled).toContain('session.payment_status === "no_payment_required"');
   });
 });
 
