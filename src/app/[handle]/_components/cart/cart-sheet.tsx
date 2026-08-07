@@ -1,9 +1,9 @@
 "use client";
 
-import { CalendarClock, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { CheckoutPanel, type CheckoutDelivery, type CheckoutMethod } from "./checkout-panel";
 import { useCart } from "./cart-provider";
-import { toLocalInput } from "../../_lib/local-time";
+import { SlotPicker } from "./slot-picker";
 import { lineKey, toOrderItems, type CartLine } from "@/lib/cart";
 import { isLowStock } from "@/lib/variants";
 import type { Dictionary } from "@/i18n";
@@ -98,12 +98,10 @@ export function CartSheet({
                 t={t}
                 onQuantity={(quantity) => cart.setQty(lineKey(line), quantity)}
                 onRemove={() => cart.remove(lineKey(line))}
-                onSchedule={(value) =>
-                  cart.schedule(
-                    lineKey(line),
-                    value ? new Date(value).toISOString() : "",
-                  )
-                }
+                cartLocale={cart.locale}
+                // The picker returns an ISO instant, so nothing is reinterpreted
+                // in the browser's own zone on the way through.
+                onSchedule={(value) => cart.schedule(lineKey(line), value)}
               />
             ))}
           </ul>
@@ -122,6 +120,7 @@ function CartRow({
   onQuantity,
   onRemove,
   onSchedule,
+  cartLocale,
 }: {
   line: CartLine;
   /** The server's version of this line, once it has answered. */
@@ -132,6 +131,7 @@ function CartRow({
   onQuantity: (quantity: number) => void;
   onRemove: () => void;
   onSchedule: (value: string) => void;
+  cartLocale: string;
 }) {
   const gone = loaded && !priced;
   const unitPriceCents = priced?.unitPriceCents ?? line.unitPriceCents;
@@ -171,22 +171,34 @@ function CartRow({
           </p>
         ) : null}
 
-        {/* A service in the basket still needs a time against it. */}
-        {(priced?.kind ?? line.kind) === "service" ? (
-          <label className="mt-1.5 flex items-center gap-1.5 text-xs">
-            <CalendarClock className="size-3.5 shrink-0 opacity-60" />
-            <input
-              type="datetime-local"
-              aria-label={t.checkout.preferredTime}
-              value={
-                line.scheduledFor
-                  ? toLocalInput(new Date(line.scheduledFor))
-                  : ""
-              }
-              onChange={(e) => onSchedule(e.target.value)}
-              className="surface-elevated h-8 min-w-0 flex-1 rounded-lg px-2 text-xs outline-none"
+        {/*
+          A service in the basket still needs a time against it, and it is
+          picked from what the shop has free rather than typed.
+
+          This was a second `datetime-local`, which meant the picker on the
+          product could be bypassed entirely by editing the time here. The
+          server refuses a slot it is not offering, so that was never a way to
+          book something impossible — but it was a way to be told no after
+          filling in the whole checkout, which is worse than not offering it.
+        */}
+        {(priced?.kind ?? line.kind) === "service" && line.productId ? (
+          <div className="mt-1.5">
+            <SlotPicker
+              productId={line.productId}
+              value={line.scheduledFor ?? ""}
+              onChange={onSchedule}
+              locale={cartLocale}
+              copy={{
+                label: t.checkout.preferredTime,
+                hint: "",
+                loading: t.checkout.slotsLoading,
+                noneToday: t.checkout.slotsNoneToday,
+                noneAtAll: t.checkout.slotsNoneAtAll,
+                failed: t.checkout.slotsFailed,
+                clear: t.common.cancel,
+              }}
             />
-          </label>
+          </div>
         ) : null}
 
         <div className="mt-1.5 flex items-center gap-2">
