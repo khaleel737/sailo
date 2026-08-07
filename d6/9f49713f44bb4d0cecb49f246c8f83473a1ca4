@@ -1,0 +1,25 @@
+src/app/[handle]/_components/cart/slot-picker.tsx
+  s_2e1da3b18d1c53::t_0f99932c044a44 72-92
+src/components/shared/cookie-consent.tsx
+  s_2e1da3b18d1c53::t_2bd3b2048bc2e7 113
+  s_2e1da3b18d1c53::t_297a2cfe184a4f 3,12-38
+  s_2e1da3b18d1c53::t_3c16fcb88514a7 75-90
+  s_2e1da3b18d1c53::t_9d7451bf704ef9 101
+  s_2e1da3b18d1c53::t_7e1b716f2e6135 39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d69f49713f44bb4d0cecb49f246c8f83473a1ca4",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
