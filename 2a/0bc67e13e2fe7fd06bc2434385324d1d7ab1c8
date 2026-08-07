@@ -1,0 +1,19 @@
+PRODUCTION-PLAN.md
+  s_3fd229194f6299::t_a3b531f82d8ca9 110,112-119,123,125-138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "2a0bc67e13e2fe7fd06bc2434385324d1d7ab1c8",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
