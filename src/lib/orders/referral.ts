@@ -2,6 +2,7 @@ import "server-only";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { affiliates, type Shop } from "@/db/schema";
+import { ensurePortalToken } from "@/lib/affiliate-portal";
 import { maybeRow } from "@/lib/invariant";
 import { generateCode } from "@/lib/pricing";
 import { formatPercent } from "@/lib/pricing";
@@ -59,6 +60,9 @@ export async function referralFor(
     code: affiliate.code,
     url: `${base}/${shop.handle}?ref=${affiliate.code}`,
     percent: formatPercent(affiliate.commissionBp ?? shop.affiliateDefaultBp),
+    // Without this the confirmation hands out a link to share but no way to
+    // ever see what it earned — the report exists, and nothing pointed at it.
+    portalUrl: `${base}/partner/${await ensurePortalToken(affiliate)}`,
   };
 }
 

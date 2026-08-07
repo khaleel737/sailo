@@ -79,7 +79,13 @@ export type OrderIntentResult =
       /** Set when they unlock once the seller confirms payment. */
       downloadPending: boolean;
       /** Present when the shop runs a referral programme. */
-      referral: { code: string; url: string; percent: string } | null;
+      referral: {
+        code: string;
+        url: string;
+        percent: string;
+        /** Their private report — the only place they can see referrals. */
+        portalUrl: string;
+      } | null;
     }
   | { ok: false; error: string };
 

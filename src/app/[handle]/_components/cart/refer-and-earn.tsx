@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy, Gift } from "lucide-react";
+import { ArrowUpRight, Check, Copy, Gift } from "lucide-react";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 
@@ -14,7 +14,7 @@ export function ReferAndEarn({
   shopName,
   t,
 }: {
-  referral: { code: string; url: string; percent: string };
+  referral: { code: string; url: string; percent: string; portalUrl: string };
   shopName: string;
   t: Dictionary;
 }) {
@@ -53,6 +53,17 @@ export function ReferAndEarn({
           {copied ? t.checkout.copied : t.checkout.copy}
         </button>
       </div>
+      {/* The report is the only place their referrals show up, and this card
+          is the only moment they learn it exists — so it has to say so. */}
+      <a
+        href={referral.portalUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-2.5 inline-flex items-center gap-1 text-xs font-medium underline underline-offset-2 transition hover:opacity-70"
+      >
+        {t.partner.title}
+        <ArrowUpRight className="size-3.5" />
+      </a>
     </div>
   );
 }

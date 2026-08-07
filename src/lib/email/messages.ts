@@ -179,6 +179,49 @@ export async function sendPortalLinks(opts: {
   });
 }
 
+/**
+ * Sent the moment someone becomes an active affiliate — approved from the
+ * waiting list or added by the seller. This is how they learn where their
+ * report lives; without it the only copy of the portal link sits in the
+ * seller's admin, waiting to be pasted into a chat that may never happen.
+ */
+export async function sendAffiliateWelcome(opts: {
+  to: string;
+  shopName: string;
+  /** "10" — already formatted, the way the shop shows it. */
+  percent: string;
+  shareUrl: string;
+  portalUrl: string;
+}): Promise<SendResult> {
+  const { to, shopName, percent, shareUrl, portalUrl } = opts;
+
+  const html = sailoLayout(
+    `You're in — share ${esc(shopName)}, earn ${esc(percent)}%`,
+    `<p style="margin:0 0 18px;font-size:15px;line-height:1.6;color:#565664;">
+        Every order placed through your link earns you ${esc(percent)}% of the sale.
+      </p>
+      <p style="margin:0 0 6px;font-size:13px;color:#8e8e9c;">Your link to share</p>
+      <p style="margin:0 0 18px;font-size:15px;">
+        <a href="${esc(shareUrl)}" style="color:#1a1a20;font-weight:600;">${esc(shareUrl)}</a>
+      </p>
+      <p style="margin:0 0 6px;font-size:13px;color:#8e8e9c;">Your referral report</p>
+      <p style="margin:0 0 18px;font-size:15px;">
+        <a href="${esc(portalUrl)}" style="color:#1a1a20;font-weight:600;">${esc(portalUrl)}</a>
+      </p>
+      <p style="margin:0;font-size:13px;line-height:1.6;color:#8e8e9c;">
+        The report shows your clicks, orders and what you're owed. Keep the
+        link to yourself: anyone who has it can see your earnings.
+      </p>`,
+  );
+
+  return send({
+    from: sender("Sailo", PARTNERS),
+    to,
+    subject: `Share ${shopName}, earn ${percent}% of every order`,
+    html,
+  });
+}
+
 /** Sent when the seller marks a shipping order as dispatched. */
 export async function sendShippingNotification(opts: {
   shop: Shop;

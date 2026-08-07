@@ -5,14 +5,39 @@ import { revalidateShop } from "@/lib/cache";
 import { maybeRow } from "@/lib/invariant";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { affiliates, orders, shops } from "@/db/schema";
+import { affiliates, orders, shops, type Affiliate, type Shop } from "@/db/schema";
+import { ensurePortalToken, portalUrl } from "@/lib/affiliate-portal";
+import { appUrl } from "@/lib/app-url";
+import { sendAffiliateWelcome } from "@/lib/email";
 import { requireShop } from "@/lib/session";
 import { bufferAffiliateClick } from "@/lib/redis";
-import { generateCode, normalizeCode, percentToBp } from "@/lib/pricing";
+import { formatPercent, generateCode, normalizeCode, percentToBp } from "@/lib/pricing";
 import { can, upgradeMessage } from "@/lib/plans";
 import type { ActionState } from "./shop";
 
 const STATUSES = new Set(["pending", "active", "disabled"]);
+
+/**
+ * Tells a newly active affiliate where everything is: their share link and
+ * their report. Without this the only copy of the portal link sits in the
+ * seller's admin, waiting to be pasted into a chat that may never happen.
+ * Best effort — the status change stands whether or not the mail goes out.
+ */
+async function welcomeAffiliate(shop: Shop, affiliate: Affiliate) {
+  if (!affiliate.email) return;
+  const base = appUrl();
+
+  const result = await sendAffiliateWelcome({
+    to: affiliate.email,
+    shopName: shop.name,
+    percent: formatPercent(affiliate.commissionBp ?? shop.affiliateDefaultBp),
+    shareUrl: `${base}/${shop.handle}?ref=${affiliate.code}`,
+    portalUrl: portalUrl(await ensurePortalToken(affiliate), base),
+  });
+  if (!result.sent) {
+    console.warn(`[sailo] affiliate welcome not sent: ${result.reason}`);
+  }
+}
 
 export async function saveAffiliate(
   _prev: ActionState,
@@ -73,12 +98,31 @@ export async function saveAffiliate(
   if (id) {
     const owned = await db.query.affiliates.findFirst({
       where: and(eq(affiliates.id, id), eq(affiliates.shopId, shop.id)),
-      columns: { id: true },
+      columns: { id: true, status: true },
     });
     if (!owned) return { ok: false, error: "Affiliate not found." };
-    await db.update(affiliates).set(values).where(eq(affiliates.id, id));
+    const updated = maybeRow(
+      await db
+        .update(affiliates)
+        .set(values)
+        .where(eq(affiliates.id, id))
+        .returning(),
+    );
+    // Flipping the status dropdown to active is an approval too, not just the
+    // Approve button — the applicant is owed the same welcome either way.
+    if (updated && owned.status === "pending" && updated.status === "active") {
+      await welcomeAffiliate(shop, updated);
+    }
   } else {
-    await db.insert(affiliates).values({ ...values, shopId: shop.id });
+    const created = maybeRow(
+      await db
+        .insert(affiliates)
+        .values({ ...values, shopId: shop.id })
+        .returning(),
+    );
+    if (created && created.status === "active") {
+      await welcomeAffiliate(shop, created);
+    }
   }
 
   revalidatePath("/admin/affiliates");
@@ -87,14 +131,30 @@ export async function saveAffiliate(
 
 export async function setAffiliateStatus(formData: FormData) {
   const { shop } = await requireShop();
+  const db = getDb();
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
   if (!id || !STATUSES.has(status)) return;
 
-  await getDb()
-    .update(affiliates)
-    .set({ status, updatedAt: new Date() })
-    .where(and(eq(affiliates.id, id), eq(affiliates.shopId, shop.id)));
+  const previous = await db.query.affiliates.findFirst({
+    where: and(eq(affiliates.id, id), eq(affiliates.shopId, shop.id)),
+    columns: { status: true },
+  });
+  if (!previous) return;
+
+  const updated = maybeRow(
+    await db
+      .update(affiliates)
+      .set({ status, updatedAt: new Date() })
+      .where(and(eq(affiliates.id, id), eq(affiliates.shopId, shop.id)))
+      .returning(),
+  );
+
+  // Approval is the moment the affiliate learns they're in and where their
+  // report lives. Re-enabling a disabled one is seller housekeeping — no mail.
+  if (updated && previous.status === "pending" && status === "active") {
+    await welcomeAffiliate(shop, updated);
+  }
 
   revalidatePath("/admin/affiliates");
 }
