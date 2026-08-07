@@ -1,0 +1,65 @@
+src/app/onboarding/_components/onboarding-form.tsx
+  s_2e1da3b18d1c53::t_f60eccf01b0036 143
+src/lib/actions/products.ts
+  s_2e1da3b18d1c53::t_ef280058167b5d 56,67,74,184-185
+  s_2e1da3b18d1c53::t_ad5cf3e11a8860 287-293
+src/lib/import/products.ts
+  s_2e1da3b18d1c53::t_4749196fc3f74e 26-27,67,69
+  s_b46e32c5fffa90::t_471a2c702b44d5 108-114,178,180
+  s_2e1da3b18d1c53::t_95bcff8d49712f 350
+src/app/onboarding/_components/selling-step.tsx
+  s_2e1da3b18d1c53::t_e8926cb660a097 4,12,17,28,30
+src/lib/currency.ts
+  s_2e1da3b18d1c53::t_6f116bc12299be 1-189
+  s_2e1da3b18d1c53::t_fcf1abb22d6b9d 190-210
+src/app/admin/settings/_components/orders-contact-card.tsx
+  s_2e1da3b18d1c53::t_e8926cb660a097 5,8,13,34,36
+src/lib/connect.ts
+  s_2e1da3b18d1c53::t_37e40f289d108a 2,271,289,302,317
+  s_2e1da3b18d1c53::t_d76d2cf4e35505 360-362,364
+src/lib/actions/import.ts
+  s_b46e32c5fffa90::t_471a2c702b44d5 49
+src/lib/utils.ts
+  s_2e1da3b18d1c53::t_587d7bdddb09cf 160-161
+  s_2e1da3b18d1c53::t_74887005d5338a 2,123-133,135,148
+  s_2e1da3b18d1c53::t_86baa4ed7e34b8 42-50,55-61,63
+src/lib/currency.test.ts
+  s_2e1da3b18d1c53::t_0349ff3922eeb0 1-33,37-187
+  s_2e1da3b18d1c53::t_bc147b94954a21 34-36
+src/lib/actions/coupons.ts
+  s_2e1da3b18d1c53::t_f1c424c730b9cb 45,68
+src/lib/actions/delivery.ts
+  s_2e1da3b18d1c53::t_6da77a15faebd0 49,51
+src/lib/actions/order-admin.ts
+  s_2e1da3b18d1c53::t_de289d95aafc1d 203
+src/lib/actions/shop.ts
+  s_2e1da3b18d1c53::t_08673e4886aeef 4,160,286-294
+src/lib/csv.ts
+  s_2e1da3b18d1c53::t_735a7fef80b666 103-104
+src/lib/products/form-fields.ts
+  s_2e1da3b18d1c53::t_06f51e8f796f12 70,72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "61c8c0dcc99e28cfbe026ce681ef0beef10150b6",
+  "prompts": {},
+  "sessions": {
+    "s_2e1da3b18d1c53": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61fd585c-b9ff-4f61-8ffb-5d0ad32c2a3d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_b46e32c5fffa90": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a6bedbce-9ae2-45f1-bcfd-dcb1cdcec3af",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
