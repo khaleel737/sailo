@@ -57,6 +57,8 @@ export const sl: Dictionary = {
     star: "{count} zvezdica", stars: "{count} zvezdic",
   },
   checkout: {
+    failedSafe: "Nekaj je šlo narobe. Znesek ni bil obračunan — poskusite znova.",
+    failedUnsure: "Nekaj je šlo narobe. Vaše naročilo je morda prišlo skozi — preverite e-pošto, preden poskusite znova.",
     taxIncluded: "Vključuje {amount} {name} ({percent}%)", quantity: "Količina",
     increase: "Povečaj količino", decrease: "Zmanjšaj količino",
     howReceive: "Kako želite prejeti naročilo?", howOrder: "Kako želite naročiti?",

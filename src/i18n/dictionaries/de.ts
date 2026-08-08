@@ -62,6 +62,8 @@ export const de: Dictionary = {
     star: "{count} Stern", stars: "{count} Sterne",
   },
   checkout: {
+    failedSafe: "Etwas ist schiefgelaufen. Es wurde nichts abgebucht — bitte versuchen Sie es erneut.",
+    failedUnsure: "Etwas ist schiefgelaufen. Ihre Bestellung ist möglicherweise eingegangen — prüfen Sie Ihre E-Mails, bevor Sie es erneut versuchen.",
     taxIncluded: "Inklusive {amount} {name} ({percent} %)",
     saveFailed: "Konnte nicht gespeichert werden.",
     quantity: "Menge", increase: "Menge erhöhen", decrease: "Menge verringern",

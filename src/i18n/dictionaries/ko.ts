@@ -57,6 +57,8 @@ export const ko: Dictionary = {
     star: "별 {count}개", stars: "별 {count}개",
   },
   checkout: {
+    failedSafe: "문제가 발생했습니다. 결제는 이루어지지 않았으니 다시 시도해 주세요.",
+    failedUnsure: "문제가 발생했습니다. 주문이 접수되었을 수 있으니 다시 시도하기 전에 이메일을 확인해 주세요.",
     taxIncluded: "{name} {amount} 포함 ({percent}%)", quantity: "수량",
     increase: "수량 늘리기", decrease: "수량 줄이기",
     howReceive: "어떻게 받으시겠어요?", howOrder: "어떻게 주문하시겠어요?",

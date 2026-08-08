@@ -57,6 +57,8 @@ export const sv: Dictionary = {
     star: "{count} stjärna", stars: "{count} stjärnor",
   },
   checkout: {
+    failedSafe: "Något gick fel. Du har inte debiterats — försök igen.",
+    failedUnsure: "Något gick fel. Din beställning kan ha gått igenom — kolla din e-post innan du försöker igen.",
     taxIncluded: "Inklusive {amount} {name} ({percent} %)",
     saveFailed: "Det gick inte att spara.",
     quantity: "Antal", increase: "Öka antal", decrease: "Minska antal",

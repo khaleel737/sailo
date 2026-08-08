@@ -58,6 +58,8 @@ export const uk: Dictionary = {
     star: "Зірок: {count}", stars: "Зірок: {count}",
   },
   checkout: {
+    failedSafe: "Щось пішло не так. Кошти не списано — спробуйте ще раз.",
+    failedUnsure: "Щось пішло не так. Ваше замовлення могло бути оформлене — перевірте пошту, перш ніж спробувати знову.",
     taxIncluded: "Включно з {amount} {name} ({percent}%)",
     saveFailed: "Не вдалося зберегти.",
     quantity: "Кількість", increase: "Збільшити кількість", decrease: "Зменшити кількість",

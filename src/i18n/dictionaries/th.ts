@@ -57,6 +57,8 @@ export const th: Dictionary = {
     star: "{count} ดาว", stars: "{count} ดาว",
   },
   checkout: {
+    failedSafe: "เกิดข้อผิดพลาด คุณยังไม่ถูกเรียกเก็บเงิน — โปรดลองอีกครั้ง",
+    failedUnsure: "เกิดข้อผิดพลาด คำสั่งซื้อของคุณอาจสำเร็จแล้ว — โปรดตรวจสอบอีเมลก่อนลองอีกครั้ง",
     taxIncluded: "รวม {amount} {name} ({percent}%)", quantity: "จำนวน",
     increase: "เพิ่มจำนวน", decrease: "ลดจำนวน",
     howReceive: "คุณต้องการรับสินค้าอย่างไร?", howOrder: "คุณต้องการสั่งซื้ออย่างไร?",

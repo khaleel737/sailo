@@ -60,6 +60,8 @@ export const nl: Dictionary = {
     star: "{count} ster", stars: "{count} sterren",
   },
   checkout: {
+    failedSafe: "Er is iets misgegaan. Er is niets afgeschreven — probeer het opnieuw.",
+    failedUnsure: "Er is iets misgegaan. Je bestelling is mogelijk toch doorgekomen — controleer je e-mail voordat je het opnieuw probeert.",
     taxIncluded: "Inclusief {amount} {name} ({percent}%)",
     saveFailed: "Kon dat niet opslaan.",
     quantity: "Aantal", increase: "Aantal verhogen", decrease: "Aantal verlagen",

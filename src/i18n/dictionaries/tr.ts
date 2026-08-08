@@ -59,6 +59,8 @@ export const tr: Dictionary = {
     star: "{count} yıldız", stars: "{count} yıldız",
   },
   checkout: {
+    failedSafe: "Bir sorun oluştu. Sizden ücret alınmadı — lütfen tekrar deneyin.",
+    failedUnsure: "Bir sorun oluştu. Siparişiniz alınmış olabilir — tekrar denemeden önce e-postanızı kontrol edin.",
     taxIncluded: "{amount} tutarında {name} dâhildir (%{percent})",
     saveFailed: "Kaydedilemedi.",
     quantity: "Adet", increase: "Adedi artır", decrease: "Adedi azalt",

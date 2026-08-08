@@ -57,6 +57,8 @@ export const da: Dictionary = {
     star: "{count} stjerne", stars: "{count} stjerner",
   },
   checkout: {
+    failedSafe: "Noget gik galt. Du er ikke blevet opkrævet — prøv igen.",
+    failedUnsure: "Noget gik galt. Din ordre er måske gennemført — tjek din e-mail, før du prøver igen.",
     taxIncluded: "Inklusive {amount} {name} ({percent} %)",
     saveFailed: "Kunne ikke gemme det.",
     quantity: "Antal", increase: "Øg antal", decrease: "Reducér antal",

@@ -81,6 +81,8 @@ export const ar: Dictionary = {
     stars: "{count} نجوم",
   },
   checkout: {
+    failedSafe: "حدث خطأ ما. لم يتم خصم أي مبلغ — يرجى المحاولة مرة أخرى.",
+    failedUnsure: "حدث خطأ ما. قد يكون طلبك قد تم — تحقق من بريدك الإلكتروني قبل المحاولة مجددًا.",
     taxIncluded: "يشمل {amount} {name} ({percent}%)",
     saveFailed: "تعذّر الحفظ.",
     quantity: "الكمية", increase: "زيادة الكمية", decrease: "إنقاص الكمية",

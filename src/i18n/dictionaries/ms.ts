@@ -57,6 +57,8 @@ export const ms: Dictionary = {
     star: "{count} bintang", stars: "{count} bintang",
   },
   checkout: {
+    failedSafe: "Sesuatu tidak menjadi. Anda tidak dicaj — sila cuba lagi.",
+    failedUnsure: "Sesuatu tidak menjadi. Pesanan anda mungkin telah diterima — semak e-mel anda sebelum mencuba lagi.",
     taxIncluded: "Termasuk {amount} {name} ({percent}%)", quantity: "Kuantiti",
     increase: "Tambah kuantiti", decrease: "Kurangkan kuantiti",
     howReceive: "Bagaimana anda mahu menerimanya?", howOrder: "Bagaimana anda mahu memesan?",

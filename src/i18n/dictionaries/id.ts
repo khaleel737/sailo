@@ -57,6 +57,8 @@ export const id: Dictionary = {
     star: "{count} bintang", stars: "{count} bintang",
   },
   checkout: {
+    failedSafe: "Terjadi kesalahan. Anda tidak ditagih — silakan coba lagi.",
+    failedUnsure: "Terjadi kesalahan. Pesanan Anda mungkin sudah masuk — periksa email Anda sebelum mencoba lagi.",
     taxIncluded: "Termasuk {amount} {name} ({percent}%)", quantity: "Jumlah",
     increase: "Tambah jumlah", decrease: "Kurangi jumlah",
     howReceive: "Bagaimana Anda ingin menerimanya?", howOrder: "Bagaimana Anda ingin memesan?",

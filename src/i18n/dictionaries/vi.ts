@@ -57,6 +57,8 @@ export const vi: Dictionary = {
     star: "{count} sao", stars: "{count} sao",
   },
   checkout: {
+    failedSafe: "Đã xảy ra lỗi. Bạn chưa bị trừ tiền — vui lòng thử lại.",
+    failedUnsure: "Đã xảy ra lỗi. Đơn hàng của bạn có thể đã được ghi nhận — hãy kiểm tra email trước khi thử lại.",
     taxIncluded: "Đã gồm {amount} {name} ({percent}%)", quantity: "Số lượng",
     increase: "Tăng số lượng", decrease: "Giảm số lượng",
     howReceive: "Bạn muốn nhận hàng thế nào?", howOrder: "Bạn muốn đặt hàng thế nào?",

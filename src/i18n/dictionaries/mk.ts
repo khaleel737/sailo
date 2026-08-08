@@ -57,6 +57,8 @@ export const mk: Dictionary = {
     star: "{count} ѕвезда", stars: "{count} ѕвезди",
   },
   checkout: {
+    failedSafe: "Нешто тргна наопаку. Не ви е наплатено — обидете се повторно.",
+    failedUnsure: "Нешто тргна наопаку. Вашата порачка можеби помина — проверете го е-поштата пред да обидете повторно.",
     taxIncluded: "Вклучува {amount} {name} ({percent}%)", quantity: "Количина",
     increase: "Зголеми количина", decrease: "Намали количина",
     howReceive: "Како сакате да ја примите нарачката?", howOrder: "Како сакате да нарачате?",

@@ -57,6 +57,8 @@ export const hr: Dictionary = {
     star: "{count} zvjezdica", stars: "{count} zvjezdica",
   },
   checkout: {
+    failedSafe: "Nešto je pošlo po zlu. Nije vam naplaćeno — pokušajte ponovno.",
+    failedUnsure: "Nešto je pošlo po zlu. Vaša narudžba možda je prošla — provjerite e-poštu prije nego što pokušate ponovno.",
     taxIncluded: "Uključuje {amount} {name} ({percent}%)", quantity: "Količina",
     increase: "Povećaj količinu", decrease: "Smanji količinu",
     howReceive: "Kako želite primiti narudžbu?", howOrder: "Kako želite naručiti?",

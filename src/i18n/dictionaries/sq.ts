@@ -57,6 +57,8 @@ export const sq: Dictionary = {
     star: "{count} yll", stars: "{count} yje",
   },
   checkout: {
+    failedSafe: "Dicka shkoi keq. Nuk ju është ngarkuar asgjë — provoni përsëri.",
+    failedUnsure: "Dicka shkoi keq. Porosia juaj mund të ketë kaluar — kontrolloni email-in para se të provoni përsëri.",
     taxIncluded: "Përfshin {amount} {name} ({percent}%)", quantity: "Sasia",
     increase: "Rrit sasinë", decrease: "Ul sasinë",
     howReceive: "Si dëshironi ta merrni?", howOrder: "Si dëshironi të porosisni?",

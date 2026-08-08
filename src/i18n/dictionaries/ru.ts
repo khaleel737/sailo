@@ -58,6 +58,8 @@ export const ru: Dictionary = {
     star: "Звёзд: {count}", stars: "Звёзд: {count}",
   },
   checkout: {
+    failedSafe: "Что-то пошло не так. Средства не списаны — попробуйте ещё раз.",
+    failedUnsure: "Что-то пошло не так. Ваш заказ мог быть оформлен — проверьте почту, прежде чем пробовать снова.",
     taxIncluded: "Включая {amount} {name} ({percent}%)",
     saveFailed: "Не удалось сохранить.",
     quantity: "Количество", increase: "Увеличить количество", decrease: "Уменьшить количество",

@@ -57,6 +57,8 @@ export const fil: Dictionary = {
     star: "{count} bituin", stars: "{count} bituin",
   },
   checkout: {
+    failedSafe: "May nangyaring mali. Hindi ka siningil — subukan muli.",
+    failedUnsure: "May nangyaring mali. Maaaring natanggap ang order mo — tingnan ang email mo bago subukang muli.",
     taxIncluded: "Kasama ang {amount} {name} ({percent}%)", quantity: "Dami",
     increase: "Dagdagan ang dami", decrease: "Bawasan ang dami",
     howReceive: "Paano mo gustong matanggap ito?", howOrder: "Paano mo gustong mag-order?",

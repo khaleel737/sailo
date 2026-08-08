@@ -59,6 +59,8 @@ export const el: Dictionary = {
     star: "{count} αστέρι", stars: "{count} αστέρια",
   },
   checkout: {
+    failedSafe: "Κάτι πήγε στραβά. Δεν χρεώθηκατε — δοκιμάστε ξανά.",
+    failedUnsure: "Κάτι πήγε στραβά. Η παραγγελία σας μπορεί να καταχωρήθηκε — ελέγξτε το email σας πριν δοκιμάσετε ξανά.",
     taxIncluded: "Περιλαμβάνει {amount} {name} ({percent}%)",
     saveFailed: "Δεν ήταν δυνατή η αποθήκευση.",
     quantity: "Ποσότητα", increase: "Αύξηση ποσότητας", decrease: "Μείωση ποσότητας",

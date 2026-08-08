@@ -57,6 +57,8 @@ export const bg: Dictionary = {
     star: "{count} звезда", stars: "{count} звезди",
   },
   checkout: {
+    failedSafe: "Нещо се обърка. Не ви е удръжана сума — опитайте отново.",
+    failedUnsure: "Нещо се обърка. Поръчката ви може би е приета — проверете имейла си, преди да опитате пак.",
     taxIncluded: "Включва {amount} {name} ({percent}%)", quantity: "Количество",
     increase: "Увеличи количеството", decrease: "Намали количеството",
     howReceive: "Как искате да я получите?", howOrder: "Как искате да поръчате?",

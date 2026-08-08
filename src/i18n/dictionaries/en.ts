@@ -113,6 +113,8 @@ export const en = {
   },
 
   checkout: {
+    failedSafe: "Something went wrong. You haven't been charged — please try again.",
+    failedUnsure: "Something went wrong. Your order may have gone through — check your email before trying again.",
     taxIncluded: "Includes {amount} {name} ({percent}%)",
     quantity: "Quantity",
     increase: "Increase quantity",

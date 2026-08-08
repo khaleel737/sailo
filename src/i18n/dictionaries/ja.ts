@@ -81,6 +81,8 @@ export const ja: Dictionary = {
     stars: "星{count}",
   },
   checkout: {
+    failedSafe: "問題が発生しました。課金はされていませんので、もう一度お試しください。",
+    failedUnsure: "問題が発生しました。ご注文は完了している場合があります。再度お試しになる前にメールをご確認ください。",
     taxIncluded: "{name}（{percent}%）{amount}を含みます",
     saveFailed: "保存できませんでした。",
     quantity: "数量", increase: "数量を増やす", decrease: "数量を減らす",

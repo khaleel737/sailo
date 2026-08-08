@@ -57,6 +57,8 @@ export const hu: Dictionary = {
     star: "{count} csillag", stars: "{count} csillag",
   },
   checkout: {
+    failedSafe: "Valami hiba történt. Nem terheltunk meg — próbálja újra.",
+    failedUnsure: "Valami hiba történt. Lehet, hogy a rendelése átment — ellenőrizze az e-mailjeit, mielőtt újra próbálkozik.",
     taxIncluded: "Tartalmaz {amount} {name}-t ({percent}%)",
     saveFailed: "Nem sikerült elmenteni.",
     quantity: "Mennyiség", increase: "Mennyiség növelése", decrease: "Mennyiség csökkentése",

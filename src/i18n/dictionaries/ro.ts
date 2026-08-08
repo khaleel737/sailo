@@ -57,6 +57,8 @@ export const ro: Dictionary = {
     star: "{count} stea", stars: "{count} stele",
   },
   checkout: {
+    failedSafe: "Ceva nu a mers bine. Nu ai fost taxat — încearcă din nou.",
+    failedUnsure: "Ceva nu a mers bine. Comanda ta ar putea fi înregistrată — verifică-ți e-mailul înainte să încerci din nou.",
     taxIncluded: "Include {amount} {name} ({percent}%)",
     saveFailed: "Nu s-a putut salva.",
     quantity: "Cantitate", increase: "Crește cantitatea", decrease: "Scade cantitatea",

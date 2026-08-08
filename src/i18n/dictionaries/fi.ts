@@ -57,6 +57,8 @@ export const fi: Dictionary = {
     star: "{count} tähti", stars: "{count} tähteä",
   },
   checkout: {
+    failedSafe: "Jokin meni pieleen. Sinulta ei veloitettu — yritä uudelleen.",
+    failedUnsure: "Jokin meni pieleen. Tilauksesi on saattanut mennä läpi — tarkista sähköpostisi ennen uutta yritystä.",
     taxIncluded: "Sisältää {amount} {name} ({percent} %)",
     saveFailed: "Tallennus ei onnistunut.",
     quantity: "Määrä", increase: "Lisää määrää", decrease: "Vähennä määrää",

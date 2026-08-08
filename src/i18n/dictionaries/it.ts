@@ -60,6 +60,8 @@ export const it: Dictionary = {
     star: "{count} stella", stars: "{count} stelle",
   },
   checkout: {
+    failedSafe: "Qualcosa è andato storto. Non ti è stato addebitato nulla — riprova.",
+    failedUnsure: "Qualcosa è andato storto. Il tuo ordine potrebbe essere stato registrato — controlla l'e-mail prima di riprovare.",
     taxIncluded: "Include {amount} di {name} ({percent}%)",
     saveFailed: "Non è stato possibile salvare.",
     quantity: "Quantità", increase: "Aumenta quantità", decrease: "Riduci quantità",

@@ -81,6 +81,8 @@ export const zh: Dictionary = {
     stars: "{count} 星",
   },
   checkout: {
+    failedSafe: "出现了问题。未向您扣款 — 请重试。",
+    failedUnsure: "出现了问题。您的订单可能已提交 — 请先查看邮箱再重试。",
     taxIncluded: "含{name}（{percent}%）{amount}",
     saveFailed: "保存失败。",
     quantity: "数量", increase: "增加数量", decrease: "减少数量",

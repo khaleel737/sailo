@@ -98,3 +98,37 @@ describe("createOrderIntent — nothing irreversible before the payment handoff"
     expect(handoff).toBeLessThan(email);
   });
 });
+
+/**
+ * What the buyer is told when the action throws rather than returns.
+ *
+ * The panel's catch block has to give different advice per rail, and it can
+ * only be right about that by knowing something this file owns: whether a
+ * confirmation email has already been sent when the throw happens. Today it
+ * has not on the card rail, because the send is gated on `settlesAtCheckout`.
+ *
+ * Flip that gate — move the card send here, say — and the panel starts telling
+ * card buyers they have not been charged and should retry, when in fact an
+ * email is sitting in their inbox. Nothing else would notice, so this does.
+ */
+describe("the failure message matches the rail", () => {
+  const panel = readFileSync(
+    "src/app/[handle]/_components/cart/checkout-panel.tsx",
+    "utf8",
+  );
+
+  it("branches on the same rail the email is gated on", () => {
+    expect(panel).toContain(
+      'method === "card" ? t.checkout.failedSafe : t.checkout.failedUnsure',
+    );
+    // The premise: no email leaves on the card rail before payment.
+    expect(source).toContain("const settlesAtCheckout = method.type !== \"card\"");
+    expect(source).toContain("if (email && settlesAtCheckout)");
+  });
+
+  it("does not hard-code the message in English", () => {
+    // The panel already receives a dictionary; a literal here is a storefront
+    // that speaks its buyer's language until something breaks.
+    expect(panel).not.toContain("Something went wrong placing your order");
+  });
+});

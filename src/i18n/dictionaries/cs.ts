@@ -57,6 +57,8 @@ export const cs: Dictionary = {
     star: "Hvězdiček: {count}", stars: "Hvězdiček: {count}",
   },
   checkout: {
+    failedSafe: "Něco se pokazilo. Nic vám nebylo účtováno — zkuste to znovu.",
+    failedUnsure: "Něco se pokazilo. Vaše objednávka mohla projít — než to zkusíte znovu, zkontrolujte e-mail.",
     taxIncluded: "Včetně {amount} {name} ({percent} %)",
     saveFailed: "Nepodařilo se to uložit.",
     quantity: "Množství", increase: "Zvýšit množství", decrease: "Snížit množství",

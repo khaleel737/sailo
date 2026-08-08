@@ -102,8 +102,19 @@ export function CheckoutPanel({
      * below describes for `mailto:` — and it is how one order becomes three,
      * because a buyer reads a stuck spinner as failure and presses again.
      *
-     * The order may or may not exist when this fires, which is why the message
-     * says to check rather than to retry.
+     * What to tell them depends on the rail, because the two rails leave the
+     * buyer in genuinely different places.
+     *
+     * On a card, nothing has been charged — the money only moves after the
+     * redirect to Stripe, which is the step that did not happen — and no
+     * confirmation email is sent at this point either, since `createOrderIntent`
+     * only mails when the order settles at checkout. So "check your email" is
+     * advice that sends a card buyer looking for a message that does not exist,
+     * and retrying is simply safe: an unpaid order left behind is cancelled by
+     * the hourly sweep.
+     *
+     * On a manual rail the opposite holds. The order may be written and its
+     * confirmation already sent, so retrying is how one order becomes two.
      */
     let res: Awaited<ReturnType<typeof createOrderIntent>>;
     try {
@@ -129,9 +140,7 @@ export function CheckoutPanel({
       // Named for what it is rather than `error`, which is the state setter's
       // own name one scope up.
       console.error("[sailo] checkout failed:", thrown);
-      setError(
-        "Something went wrong placing your order. Check your email before trying again — it may have gone through.",
-      );
+      setError(method === "card" ? t.checkout.failedSafe : t.checkout.failedUnsure);
       setPending(false);
       return;
     }
