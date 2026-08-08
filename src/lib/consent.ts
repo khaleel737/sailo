@@ -73,6 +73,24 @@ export function writeConsent(analytics: ConsentChoice): void {
   window.dispatchEvent(new CustomEvent(CONSENT_EVENT));
 }
 
+/**
+ * Forgets the answer, so the banner asks again.
+ *
+ * Withdrawing has to be as easy as giving — a policy page saying "clear your
+ * browser storage" is not a mechanism, it is an instruction to do our job for
+ * us. This is what the footer's cookie link calls, and the tag unmounts on the
+ * same event that mounted it, so nothing further is measured from the click.
+ */
+export function clearConsent(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(CONSENT_KEY);
+  } catch {
+    // Nothing stored, nothing to forget.
+  }
+  window.dispatchEvent(new CustomEvent(CONSENT_EVENT));
+}
+
 export function hasAnalyticsConsent(): boolean {
   return readConsent()?.analytics === "granted";
 }

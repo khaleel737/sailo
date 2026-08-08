@@ -137,13 +137,26 @@ export function CookieConsent({
 
       {choosing ? (
         <ul className="mt-4 space-y-2">
-          <li className="flex items-start gap-3 rounded-[var(--r-card)] border border-[var(--mute-200)] p-3">
-            <span
-              aria-hidden
-              className="mt-0.5 inline-block h-5 w-9 shrink-0 rounded-full bg-[var(--mute-300)] p-0.5"
-            >
-              <span className="block size-4 translate-x-4 rounded-full bg-[var(--paper)]" />
-            </span>
+          {/*
+            Essentials is not a choice, so it must not be dressed as one.
+
+            It used to render a switch — the same pill-and-knob shape as a real
+            toggle, but an aria-hidden span with no handler. It could not be
+            clicked, which reads as a broken control rather than as a locked
+            one, and it is the first thing anyone tries when they open this
+            panel. A disabled checkbox in the same row shape as the category
+            below it says "on, and not yours to change" in the one visual
+            language the panel already uses.
+          */}
+          <li className="flex items-start gap-3 rounded-[var(--r-card)] border border-[var(--mute-200)] bg-[var(--mute-100)] p-3">
+            <input
+              type="checkbox"
+              checked
+              disabled
+              readOnly
+              aria-label={`${labels.essential}: ${labels.essentialBody}`}
+              className="mt-0.5 size-5 shrink-0 accent-[var(--ink)] opacity-60"
+            />
             <span className="min-w-0">
               <span className="block text-[0.8125rem] font-medium text-[var(--ink)]">
                 {labels.essential}
