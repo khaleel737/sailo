@@ -21,7 +21,7 @@ import { variantLabel } from "@/lib/variants";
 import { releaseStock, reserveStock } from "@/lib/inventory";
 import { handOffToStripe } from "@/lib/orders/card-handoff";
 import { claimCouponRedemption } from "@/lib/orders/coupon-redemption";
-import { claimSlots, releaseSlots } from "@/lib/booking/claim";
+import { claimSlots, releaseSlots, slotEnd } from "@/lib/booking/claim";
 import { downloadUrl } from "@/lib/downloads";
 import { resolveDigitalDelivery } from "@/lib/orders/digital-delivery";
 import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";
@@ -306,11 +306,35 @@ export async function createOrderIntent(
    */
   const slots = lines.flatMap((line) =>
     line.scheduledFor && line.productId
-      ? [{ productId: line.productId, startsAt: line.scheduledFor }]
+      ? [
+          {
+            productId: line.productId,
+            startsAt: line.scheduledFor,
+            // The range, not just the start: two appointments that overlap are
+            // as double-booked as two that begin together.
+            endsAt: slotEnd(line.scheduledFor, line.product.durationMinutes),
+          },
+        ]
       : [],
   );
-  if (!(await claimSlots(order.id, slots))) {
+  const gotSlots = await claimSlots(order.id, slots).catch(async (error: unknown) => {
+    /*
+     * A throw here, not just a `false`, has to undo the same things.
+     *
+     * `claimSlots` talks to the database, so it can fail rather than merely
+     * refuse — and an unhandled throw at this point leaves the order row and
+     * its reserved stock behind with nothing to reclaim them: the sweep only
+     * looks at card orders, so a manual-rail order would sit there for good.
+     * The batch above already routes its failures through `releasingStock`;
+     * this had no such path.
+     */
+    console.error("[sailo] slot claim failed:", error);
+    return false;
+  });
+
+  if (!gotSlots) {
     await releaseStockFor(taken);
+    await releaseSlots(order.id);
     await db.delete(orders).where(eq(orders.id, order.id));
     return {
       ok: false,

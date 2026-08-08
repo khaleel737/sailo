@@ -219,7 +219,6 @@ export async function refundOrder(
           : `Only ${formatMoney(check.remaining, order.currency)} is left to refund on this order.`,
     };
   }
-  const isFull = check.isFull;
 
   /*
    * Take the amount out of the order's refundable balance before spending it.
@@ -230,12 +229,24 @@ export async function refundOrder(
    * SQL and compares column to column, so the loser is refused here rather
    * than after it has already moved money.
    */
-  if (!(await claimRefundAmount(order.id, shop.id, requested))) {
+  const claimed = await claimRefundAmount(order.id, shop.id, requested);
+  if (!claimed) {
     return {
       ok: false,
       error: "Another refund on this order went through first. Reload and check what's left.",
     };
   }
+
+  /*
+   * Whether this order is now fully refunded, decided by the claim rather than
+   * by the row read before it.
+   *
+   * `check.isFull` came from a snapshot taken before the claim, so two partial
+   * refunds that between them consumed the whole balance each read themselves
+   * as partial — and neither restocked nor moved the order to `refunded`. The
+   * order sat fully refunded and still looking paid.
+   */
+  const isFull = claimed.refundedTotal >= order.totalCents;
 
   /*
    * Give the money back before writing down that we did.

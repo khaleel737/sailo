@@ -743,6 +743,84 @@ describe("bookings", () => {
     expect(second.ok, second.ok ? "" : second.error).toBe(true);
   });
 
+  it("refuses an appointment that overlaps one already taken", async () => {
+    /*
+     * A unique index on the start time is not enough. A shop can offer a
+     * 60-minute service on the half hour, so 09:00–10:00 and 09:30–10:30 are
+     * both offerable starts — different rows, overlapping appointments, and
+     * one of them the shop cannot keep. The exclusion constraint compares
+     * ranges rather than instants, which is what makes the second lose.
+     */
+    const shop = await withRail({
+      ...TIMES,
+      bookingSlotMinutes: 30,
+      bookingHours: Array.from({ length: 7 }, () => [
+        { from: "09:00", to: "17:00" },
+      ]) as never,
+    });
+    const product = await makeProduct(shop.id, {
+      kind: "service",
+      bookingEnabled: true,
+      durationMinutes: 60,
+      bookingLeadHours: 0,
+      priceCents: 5000,
+    });
+
+    const at = (hours: number, minutes: number) => {
+      const d = new Date();
+      d.setUTCDate(d.getUTCDate() + 9);
+      d.setUTCHours(hours, minutes, 0, 0);
+      return d.toISOString();
+    };
+
+    const first = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: product.id, quantity: 1, scheduledFor: at(10, 0) }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(first.ok, first.ok ? "" : first.error).toBe(true);
+
+    // Half an hour later: a different start, the same hour of the shop's time.
+    const overlapping = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: product.id, quantity: 1, scheduledFor: at(10, 30) }],
+      paymentMethod: "cod",
+      ...buyer,
+      customerEmail: "overlap@example.com",
+    });
+    expect(overlapping.ok).toBe(false);
+  });
+
+  it("still allows a back-to-back appointment", async () => {
+    // The range is half-open, so one ending at 10:00 and one starting at 10:00
+    // do not collide — back-to-back is the normal case for a service business.
+    const { shop, product } = await bookableShop();
+    const at = (hours: number) => {
+      const d = new Date();
+      d.setUTCDate(d.getUTCDate() + 10);
+      d.setUTCHours(hours, 0, 0, 0);
+      return d.toISOString();
+    };
+
+    const first = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: product.id, quantity: 1, scheduledFor: at(10) }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(first.ok, first.ok ? "" : first.error).toBe(true);
+
+    const next = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: product.id, quantity: 1, scheduledFor: at(11) }],
+      paymentMethod: "cod",
+      ...buyer,
+      customerEmail: "back-to-back@example.com",
+    });
+    expect(next.ok, next.ok ? "" : next.error).toBe(true);
+  });
+
   it("refuses one basket booking the same slot twice", async () => {
     const { shop, product } = await bookableShop();
     const when = slotIso(6);

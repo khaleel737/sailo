@@ -1,7 +1,7 @@
 import "server-only";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
-import { bookingClaims, orderItems } from "@/db/schema";
+import { bookingClaims, orderItems, products } from "@/db/schema";
 
 /**
  * Taking an appointment, and giving it back.
@@ -18,7 +18,17 @@ import { bookingClaims, orderItems } from "@/db/schema";
  * gap is exactly wide enough for the second buyer.
  */
 
-export type SlotClaim = { productId: string; startsAt: Date };
+export type SlotClaim = {
+  productId: string;
+  startsAt: Date;
+  /**
+   * When the appointment ends. Carried because overlapping is what
+   * double-booked means: a shop can offer a 60-minute service on the half
+   * hour, so 09:00 and 09:30 are both offerable starts and comparing starts
+   * alone would let two concurrent checkouts take both.
+   */
+  endsAt: Date;
+};
 
 /**
  * Takes every slot in one basket, or none of them.
@@ -63,6 +73,11 @@ export async function releaseSlots(orderId: string): Promise<void> {
   await getDb().delete(bookingClaims).where(eq(bookingClaims.orderId, orderId));
 }
 
+/** The end of an appointment, from its start and the product's duration. */
+export function slotEnd(startsAt: Date, durationMinutes: number | null): Date {
+  return new Date(startsAt.getTime() + Math.max(0, durationMinutes ?? 0) * 60_000);
+}
+
 /**
  * Re-claims an order's appointments after a seller un-cancels it.
  *
@@ -82,13 +97,22 @@ export async function retakeSlots(order: { id: string }): Promise<number> {
     .select({
       productId: orderItems.productId,
       scheduledFor: orderItems.scheduledFor,
+      // The product's length, so the range this re-claims is the one it held.
+      durationMinutes: products.durationMinutes,
     })
     .from(orderItems)
+    .leftJoin(products, eq(products.id, orderItems.productId))
     .where(eq(orderItems.orderId, order.id));
 
   const slots = lines.flatMap((line) =>
     line.productId && line.scheduledFor
-      ? [{ productId: line.productId, startsAt: line.scheduledFor }]
+      ? [
+          {
+            productId: line.productId,
+            startsAt: line.scheduledFor,
+            endsAt: slotEnd(line.scheduledFor, line.durationMinutes),
+          },
+        ]
       : [],
   );
   if (slots.length === 0) return 0;

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getInvoiceByToken } from "@/lib/queries";
 import { renderInvoicePdf } from "@/lib/invoice-pdf";
 import { rateLimit } from "@/lib/redis";
+import { callerIp } from "@/lib/client-ip";
 
 export async function GET(
   _request: Request,
@@ -19,6 +20,22 @@ export async function GET(
    * invoice is normal, and one token being hammered is the thing worth
    * stopping. Fails open, like the rest.
    */
+  /*
+   * Two ceilings, because one of them is bypassable on its own.
+   *
+   * The token key bounds what any single link can cost — which is the point,
+   * since the token is what identifies the thing being spent. But the token
+   * comes from the URL, so a caller who makes up a new one each time gets a
+   * fresh bucket every request: the limit never binds, and each attempt still
+   * costs a Redis round trip and a database lookup before it 404s. The address
+   * key is what bounds *that*, and it sits first so a made-up token is refused
+   * before it can buy a query.
+   */
+  const byCaller = await rateLimit(`invoice-ip:${await callerIp()}`, 120, 300);
+  if (!byCaller.allowed) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const gate = await rateLimit(`invoice-pdf:${token}`, 20, 300);
   if (!gate.allowed) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });

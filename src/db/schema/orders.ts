@@ -307,13 +307,29 @@ export const bookingClaims = pgTable(
       .references(() => products.id, { onDelete: "cascade" }),
     /** The instant the appointment starts, which is what a buyer picked. */
     startsAt: timestamp("starts_at").notNull(),
+    /**
+     * And when it ends, because overlapping is what double-booked means.
+     *
+     * A shop can offer a 60-minute service on the half hour, so 09:00–10:00
+     * and 09:30–10:30 are both offerable starts and a unique index on the
+     * start alone lets two concurrent checkouts take both. The exclusion
+     * constraint in `0004` compares ranges instead — half-open, so an
+     * appointment ending at 10:00 does not collide with one starting there.
+     */
+    endsAt: timestamp("ends_at").notNull(),
     orderId: uuid("order_id")
       .notNull()
       .references(() => orders.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [
-    // The whole point. Two orders cannot hold one product at one instant.
+    /*
+     * Two orders cannot hold one product at one instant. The overlap rule
+     * lives in `booking_claims_no_overlap`, a GiST exclusion constraint that
+     * Drizzle's schema language cannot express — see `drizzle/0004`. This
+     * index stays because it is the cheap exact-match case and the thing
+     * `ON CONFLICT DO NOTHING` can infer.
+     */
     uniqueIndex("booking_claims_slot_key").on(t.productId, t.startsAt),
     index("booking_claims_order_idx").on(t.orderId),
   ],

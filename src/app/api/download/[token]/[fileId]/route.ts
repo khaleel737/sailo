@@ -6,6 +6,7 @@ import { orderedProductIds } from "@/lib/downloads";
 import { isUuid } from "@/lib/utils";
 import { isStoredFileUrl } from "@/lib/file-urls";
 import { rateLimit } from "@/lib/redis";
+import { callerIp } from "@/lib/client-ip";
 
 /**
  * Streams one file of a digital order.
@@ -38,6 +39,24 @@ export async function GET(
    * `restartable` downloads are not a thing here — the whole file streams in
    * one response. Fails open, like every other limit.
    */
+  /*
+   * Two ceilings, because one of them is bypassable on its own.
+   *
+   * The token key bounds what any single link can cost — which is the point,
+   * since the token is what identifies the thing being spent. But the token
+   * comes from the URL, so a caller who makes up a new one each time gets a
+   * fresh bucket every request: the limit never binds, and each attempt still
+   * costs a Redis round trip and a database lookup before it 404s. The address
+   * key is what bounds *that*, and it sits first so a made-up token is refused
+   * before it can buy a query.
+   */
+  const byCaller = await rateLimit(`download-ip:${await callerIp()}`, 120, 300);
+  if (!byCaller.allowed) {
+    return new Response("Too many requests. Try again in a few minutes.", {
+      status: 429,
+    });
+  }
+
   const gate = await rateLimit(`download:${token}`, 30, 300);
   if (!gate.allowed) {
     return new Response("Too many requests. Try again in a few minutes.", {

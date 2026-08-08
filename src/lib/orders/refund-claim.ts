@@ -31,8 +31,8 @@ export async function claimRefundAmount(
   orderId: string,
   shopId: string,
   requestedCents: number,
-): Promise<boolean> {
-  if (requestedCents <= 0) return false;
+): Promise<{ refundedTotal: number } | null> {
+  if (requestedCents <= 0) return null;
 
   const claimed = maybeRow(
     await getDb()
@@ -56,10 +56,21 @@ export async function claimRefundAmount(
           sql`${orders.refundedCents} + ${requestedCents} <= ${orders.totalCents}`,
         ),
       )
-      .returning({ id: orders.id }),
+      /*
+       * The post-claim balance, which is the only trustworthy answer to "is
+       * this order now fully refunded".
+       *
+       * The caller used to decide that from the row it read *before* the
+       * claim, so two partial refunds that between them consumed the whole
+       * balance each saw themselves as partial — and neither restocked, nor
+       * moved the order to `refunded`. A fully refunded order sat there
+       * looking paid and active. The statement that accumulates the amount is
+       * the one that knows the total, so it returns it.
+       */
+      .returning({ refundedTotal: orders.refundedCents, total: orders.totalCents }),
   );
 
-  return Boolean(claimed);
+  return claimed ? { refundedTotal: claimed.refundedTotal } : null;
 }
 
 /**

@@ -166,19 +166,22 @@ export async function restoreStock(order: Order): Promise<boolean> {
     .returning({ id: orders.id }));
   if (!claimed) return false;
 
+  /*
+   * The appointment first, then the units.
+   *
+   * `restockedAt` is claimed above, so this function runs its cleanup exactly
+   * once — which means anything that throws part-way leaves the rest undone
+   * and a retry returns `false` without finishing it. Releasing the slot first
+   * puts the cheapest and most consequential step where a later failure cannot
+   * strand it: an appointment nobody can rebook is a shop's calendar blocked
+   * permanently, while a unit not yet returned is a count the seller can see
+   * and correct.
+   */
+  await releaseSlots(order.id);
+
   for (const line of await stockLinesFor(order)) {
     await releaseStock(line);
   }
-  /*
-   * The appointment goes back with the units. An order that no longer holds
-   * its goods does not hold the shop's calendar either, and `busyFor` already
-   * treats cancelled and refunded as released — this is the claim row catching
-   * up with what the read already believed.
-   *
-   * Hung off the same `restockedAt` claim as everything else here, so a
-   * webhook racing the sweep releases once.
-   */
-  await releaseSlots(order.id);
   return true;
 }
 
