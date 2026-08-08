@@ -22,6 +22,35 @@ let connecting: Promise<RedisClientType | null> | null = null;
 let coldUntil = 0;
 const COLD_MS = 30_000;
 
+/**
+ * Whether the last thing we said about Redis was that it was down.
+ *
+ * Going cold is the single most consequential thing that can happen quietly in
+ * this file: every rate limit in the app fails open, so the ceilings on
+ * signup, checkout, the affiliate form, the download route and better-auth all
+ * disappear at once — and the only outward sign is the absence of throttling,
+ * which looks exactly like not being attacked. This makes the transition say
+ * so, once each way rather than once per request, so a log full of it does not
+ * become the thing nobody reads.
+ */
+let reportedCold = false;
+
+function goCold(reason: string) {
+  coldUntil = Date.now() + COLD_MS;
+  if (reportedCold) return;
+  reportedCold = true;
+  console.error(
+    `[sailo] redis is unreachable (${reason}) — every rate limit is now ` +
+      `failing open until it recovers`,
+  );
+}
+
+function goWarm() {
+  if (!reportedCold) return;
+  reportedCold = false;
+  console.warn("[sailo] redis is answering again — rate limits are enforced");
+}
+
 async function connect(): Promise<RedisClientType | null> {
   const url = process.env.REDIS_URL;
   if (!url) return null;
@@ -45,15 +74,16 @@ async function connect(): Promise<RedisClientType | null> {
 
       // Without a listener, node-redis escalates socket errors to an
       // uncaught exception and takes the process with it.
-      next.on("error", () => {
-        coldUntil = Date.now() + COLD_MS;
+      next.on("error", (error: unknown) => {
+        goCold(error instanceof Error ? error.message : "socket error");
       });
 
       await next.connect();
       client = next;
+      goWarm();
       return next;
-    } catch {
-      coldUntil = Date.now() + COLD_MS;
+    } catch (error) {
+      goCold(error instanceof Error ? error.message : "connect failed");
       client = null;
       return null;
     } finally {
@@ -78,8 +108,8 @@ export async function withRedis<T>(
   if (!redis) return fallback;
   try {
     return await fn(redis);
-  } catch {
-    coldUntil = Date.now() + COLD_MS;
+  } catch (error) {
+    goCold(error instanceof Error ? error.message : "command failed");
     return fallback;
   }
 }

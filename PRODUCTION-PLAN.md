@@ -115,7 +115,7 @@ in the app is trustworthy.
 |---|---|---|---|
 | 1 | `inventory.ts` | **Calendar squatting.** The sweep reclaims card orders only, so an unpaid transfer or COD booking holds its slot until the seller cancels it. | Bounded by the 10/min limit on `createOrderIntent`, and "unpaid manual order" is legitimately pending — the seller confirms by hand. Needs a product decision on when one expires. |
 | 2 | `order-preview.ts`, `shop.ts:99` | **Two enumeration oracles** — a coupon code can be probed at 120/min, and `checkHandle` enumerates the seller roster. | Throttled; redemption caps still hold. Low value against the change. |
-| 3 | every `rateLimit` call | **All limits fail open** when Redis is missing or cold. | Deliberate and documented, but it means every ceiling is absent in an environment with no `REDIS_URL`. Worth a decision rather than a silent default. |
+| 3 | every `rateLimit` call | **All limits fail open** when Redis is cold. | Deliberate, and no longer silent: the transition logs once each way, so "every ceiling in the app just vanished" is a line in the log rather than an absence of throttling that looks like not being attacked. What is left is a product decision — whether some endpoint should fail *closed* instead — and that is yours, not mine. |
 | 4 | `queries/products.ts:64` | **`?q=` is a leading-wildcard `ILIKE`** with no trigram index — a per-shop scan. | Fine at hundreds of products, will crawl on a 10k-product catalogue. Length is capped and the endpoint is throttled, so it is a scaling item, not an abuse one. |
 
 **Every route now carries a ceiling.** The audit's inventory listed four with
