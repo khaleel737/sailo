@@ -8,7 +8,7 @@ You are continuing a long refactor, test and hardening effort on **Sailo**, a
 link-in-bio product catalogue ("Linktree, but the rows are products").
 Next.js 16 App Router + Turbopack, React 19, TypeScript strict, Tailwind v4,
 Neon Postgres + Drizzle, BetterAuth, Stripe (platform subscriptions + Connect
-for sellers). Repo `/Users/khaleelmusleh/Desktop/Shopik`, deployed to
+for sellers). Repo `/Users/khaleelmusleh/Desktop/Sailo`, deployed to
 https://sailo.store on every push to `main`.
 
 The goal is a codebase that can take real users and real money.
