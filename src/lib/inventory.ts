@@ -1,10 +1,11 @@
 import "server-only";
 import { maybeRow } from "@/lib/invariant";
 import { releaseCouponRedemption } from "@/lib/orders/coupon-redemption";
-import { and, asc, eq, gte, isNull, isNotNull, lt, or, sql } from "drizzle-orm";
+import { and, asc, eq, gte, inArray, isNull, isNotNull, lt, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { releaseSlots, retakeSlots } from "@/lib/booking/claim";
 import {
+  bookingClaims,
   orderItems,
   orders,
   products,
@@ -288,9 +289,26 @@ export function isStockReleasingStatus(status: string) {
  * `restoreStock` claims `restockedAt` in the same statement it reads, so an
  * order that a webhook already handled is skipped rather than restocked twice.
  */
+/**
+ * How long an unanswered booking on a manual rail keeps its slot: three days.
+ *
+ * This is a judgement, not a derived number, and it is the only one in this
+ * file — so it is worth saying what it is balancing. Too short cancels a real
+ * appointment while the buyer's bank transfer is still clearing, which takes
+ * one to three working days. Too long leaves a seller's calendar blockable by
+ * anyone willing to book and not pay. Three days clears the slowest transfer
+ * and still bounds the damage to a few days rather than indefinitely.
+ *
+ * A seller who wants a different answer already has a better one than a
+ * number: confirming the booking removes it from the sweep for good.
+ */
+const BOOKING_HOLD_HOURS = 72;
+
 export async function releaseAbandonedCheckouts(opts?: {
   /** How long a buyer gets to pay. Stripe expires its own sessions at 24h. */
   olderThanMinutes?: number;
+  /** How long an unanswered booking holds its slot. See `BOOKING_HOLD_HOURS`. */
+  bookingHoldHours?: number;
   shopId?: string;
 }): Promise<{ swept: number; orderIds: string[] }> {
   const db = getDb();
@@ -327,8 +345,66 @@ export async function releaseAbandonedCheckouts(opts?: {
     limit: 200,
   });
 
+  /*
+   * Bookings that were never answered, on a rail nothing else reclaims.
+   *
+   * The query above matches on `card` because a manual order being unpaid is
+   * not evidence of anything — the seller is waiting for a transfer, and only
+   * they know whether it arrived. That reasoning holds for stock and fails for
+   * a calendar. Units are fungible and visible: a seller can see the count is
+   * wrong and fix it. A held appointment is a specific hour that silently
+   * stops being bookable, and a shop's whole week can be taken by placing
+   * bank-transfer bookings across it and never paying — the rate limit bounds
+   * how fast, not whether.
+   *
+   * `new` is what makes this safe to do automatically. A booking deliberately
+   * stays `new` through payment because checkout promises the buyer the shop
+   * will confirm the time; the seller answering is a first-class step, not
+   * bookkeeping. So an order that is still `new` is one nobody has answered,
+   * and a seller who *has* answered has moved it to `confirmed`, which takes
+   * it out of this query permanently. That includes the case this would
+   * otherwise get wrong — a service paid at the appointment, booked weeks
+   * out — because accepting it is the same click the buyer was already told
+   * to expect.
+   *
+   * Paid bookings are never here: `unpaid` excludes them, so a buyer who paid
+   * and is waiting on the seller keeps their slot however long that takes.
+   */
+  const bookingCutoff = new Date(
+    Date.now() - (opts?.bookingHoldHours ?? BOOKING_HOLD_HOURS) * 60 * 60 * 1000,
+  );
+  const squatted = await db.query.orders.findMany({
+    where: and(
+      eq(orders.paymentStatus, "unpaid"),
+      eq(orders.status, "new"),
+      // Card is the query above's job, at its own much shorter cutoff.
+      sql`${orders.paymentMethod} <> 'card'`,
+      isNull(orders.restockedAt),
+      lt(orders.createdAt, bookingCutoff),
+      /*
+       * Holding a slot is the entire reason to reclaim one of these, so ask
+       * that directly rather than inferring it from `scheduledFor`. An order
+       * whose claim is already gone needs nothing, and a manual order that
+       * never booked anything is left alone — which keeps this from becoming
+       * an expiry on unpaid orders generally, something no seller asked for.
+       *
+       * Uncorrelated on purpose. The relational query builder aliases the
+       * table it is selecting from, so a hand-written `exists (... where
+       * order_id = orders.id)` refers to a name that is not in scope there and
+       * fails at parse time. Asking for the set of claimed order ids needs no
+       * outer reference, and Postgres executes it as a hash semi-join anyway.
+       */
+      inArray(orders.id, db.select({ id: bookingClaims.orderId }).from(bookingClaims)),
+      ...(opts?.shopId ? [eq(orders.shopId, opts.shopId)] : []),
+    ),
+    limit: 200,
+  });
+
+  const seen = new Set(stale.map((o) => o.id));
+  const due = [...stale, ...squatted.filter((o) => !seen.has(o.id))];
+
   const orderIds: string[] = [];
-  for (const order of stale) {
+  for (const order of due) {
     // Cancelled first: if restocking fails halfway the order still reads as
     // dead, which is the safer of the two wrong states.
     await db

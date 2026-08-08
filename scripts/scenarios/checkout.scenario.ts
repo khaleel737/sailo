@@ -3,6 +3,7 @@ import { assertLocalDatabase } from "./local-only";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
+  bookingClaims,
   coupons,
   deliveryMethods,
   orderItems,
@@ -871,5 +872,115 @@ describe("bookings", () => {
       ...buyer,
     });
     expect(r.ok).toBe(false);
+  });
+
+  /*
+   * Reclaiming a calendar nobody paid for.
+   *
+   * A booking on a manual rail holds its slot through the exclusion
+   * constraint, and nothing used to hand it back: the sweep matched `card`
+   * only, so a shop's week could be made unbookable by placing transfers and
+   * never paying. These pin both halves — that an unanswered booking is
+   * eventually released, and the cases where releasing it would be wrong.
+   */
+  async function ageOrder(orderId: string, hours: number) {
+    await db
+      .update(orders)
+      .set({ createdAt: new Date(Date.now() - hours * 60 * 60 * 1000) })
+      .where(eq(orders.id, orderId));
+  }
+
+  async function bookCod(shopId: string, productId: string, when: string) {
+    const r = await createOrderIntent({
+      shopId,
+      items: [{ productId, quantity: 1, scheduledFor: when }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(r.ok, r.ok ? "" : r.error).toBe(true);
+    if (!r.ok) throw new Error("fixture: the booking was refused");
+    return r.orderId;
+  }
+
+  async function claimCount(orderId: string) {
+    const rows = await db
+      .select()
+      .from(bookingClaims)
+      .where(eq(bookingClaims.orderId, orderId));
+    return rows.length;
+  }
+
+  it("releases a booking nobody paid for or answered", async () => {
+    const { shop, product } = await bookableShop();
+    const when = slotIso(9);
+    const orderId = await bookCod(shop.id, product.id, when);
+    expect(await claimCount(orderId)).toBe(1);
+
+    // Still inside the hold: the seller may yet be waiting on a transfer.
+    await ageOrder(orderId, 40);
+    await releaseAbandonedCheckouts({ shopId: shop.id });
+    expect(await claimCount(orderId)).toBe(1);
+
+    await ageOrder(orderId, 80);
+    const result = await releaseAbandonedCheckouts({ shopId: shop.id });
+    expect(result.orderIds).toContain(orderId);
+    expect(await claimCount(orderId)).toBe(0);
+    expect((await orderRow(orderId))?.status).toBe("cancelled");
+
+    // The point of all of it: the hour is bookable again.
+    const second = await bookCod(shop.id, product.id, when);
+    expect(await claimCount(second)).toBe(1);
+  });
+
+  it("leaves a booking the seller confirmed alone", async () => {
+    const { shop, product } = await bookableShop();
+    const orderId = await bookCod(shop.id, product.id, slotIso(10));
+
+    // The seller accepting the time is exactly the signal that this booking
+    // is real, whatever it says about payment — a service paid on the day
+    // lives here, and cancelling it would be the worst thing this can do.
+    await db
+      .update(orders)
+      .set({ status: "confirmed" })
+      .where(eq(orders.id, orderId));
+    await ageOrder(orderId, 24 * 30);
+
+    await releaseAbandonedCheckouts({ shopId: shop.id });
+    expect(await claimCount(orderId)).toBe(1);
+    expect((await orderRow(orderId))?.status).toBe("confirmed");
+  });
+
+  it("leaves a paid booking alone however long the seller takes", async () => {
+    const { shop, product } = await bookableShop();
+    const orderId = await bookCod(shop.id, product.id, slotIso(11));
+    await db
+      .update(orders)
+      .set({ paymentStatus: "paid" })
+      .where(eq(orders.id, orderId));
+    await ageOrder(orderId, 24 * 30);
+
+    await releaseAbandonedCheckouts({ shopId: shop.id });
+    expect(await claimCount(orderId)).toBe(1);
+    expect((await orderRow(orderId))?.status).toBe("new");
+  });
+
+  it("does not turn into an expiry on unpaid manual orders generally", async () => {
+    // The original sweep leaves manual stock orders for the seller to judge,
+    // and that reasoning is untouched: only a held slot is reclaimed here.
+    const shop = await withRail();
+    const p = await makeProduct(shop.id, { trackInventory: true, stockQuantity: 5 });
+    const r = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 2 }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(r.ok, r.ok ? "" : r.error).toBe(true);
+    if (!r.ok) return;
+    await ageOrder(r.orderId, 24 * 30);
+
+    await releaseAbandonedCheckouts({ shopId: shop.id });
+    expect((await orderRow(r.orderId))?.status).toBe("new");
+    expect(await stockOf(p.id)).toBe(3);
   });
 });
