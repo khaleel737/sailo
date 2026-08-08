@@ -70,10 +70,29 @@ export async function previewOrder(input: {
   let couponApplied: string | undefined;
 
   if (input.couponCode?.trim()) {
+    /*
+     * A ceiling on *guesses*, separate from the one on quotes.
+     *
+     * The general quote limit is 120 a minute because the basket re-prices on
+     * every keystroke — which also meant 120 coupon guesses a minute, and the
+     * reply distinguishes "no such code" from "that code does not apply here".
+     * A working discount code is a bearer token: anyone who finds one can
+     * spend it. A buyer types one code, maybe two; ten in five minutes is
+     * beyond any real use and far below what enumeration needs.
+     *
+     * Answered as `not_found` when tripped, so the ceiling itself says nothing
+     * about whether the code was real.
+     */
+    const guesses = await rateLimit(`coupon:${await callerIp()}`, 10, 300);
+
     const code = normalizeCode(input.couponCode);
-    const found = await db.query.coupons.findFirst({
-      where: and(eq(coupons.shopId, shop.id), eq(coupons.code, code)),
-    });
+    // Not looked up at all once the ceiling is reached, so the ceiling costs a
+    // query as well as saying nothing.
+    const found = guesses.allowed
+      ? await db.query.coupons.findFirst({
+          where: and(eq(coupons.shopId, shop.id), eq(coupons.code, code)),
+        })
+      : undefined;
     // Judged against the whole basket, so a minimum spend counts every line.
     const verdict = checkCoupon(found, cartSubtotal(resolved.lines), now);
     if (!found) {

@@ -12,6 +12,8 @@ import { paymentMethods, shops, type ShopSocial } from "@/db/schema";
 import { isStaff, requireShop, requireUser } from "@/lib/session";
 import { normalizePhone, SOCIAL_PLATFORMS } from "@/lib/utils";
 import { isRenderableImageUrl } from "@/lib/file-urls";
+import { rateLimit } from "@/lib/redis";
+import { callerIp } from "@/lib/client-ip";
 import { BRAND_HANDLE, HANDLE_MESSAGES, normalizeHandle, suggestHandles, validateHandleFormat } from "@/lib/handle";
 
 /** A form value that is allowed to become a stored image URL, or null. */
@@ -104,6 +106,22 @@ export type HandleStatus = {
  * the handle is actually gone.
  */
 export async function checkHandle(raw: string): Promise<HandleStatus> {
+  /*
+   * Throttled for what it costs, not for what it says.
+   *
+   * Whether a handle is taken is already public — visiting `/thehandle` shows
+   * either a shop or "this shop doesn't exist" — so hiding the answer would
+   * protect nothing. What is worth bounding is the work: a taken handle fans
+   * out into a lookup per suggested alternative, on an endpoint that needs no
+   * session and is called on every keystroke of a signup form.
+   *
+   * Generous, because it *is* called per keystroke by the very people we want.
+   */
+  const gate = await rateLimit(`handle:${await callerIp()}`, 120, 60);
+  if (!gate.allowed) {
+    return { handle: raw, available: false, message: null, suggestions: [] };
+  }
+
   // No shop id parameter on purpose — a client could pass someone else's and
   // get a misleading answer. Editing forms skip the call for their own handle.
   const { handle, problem } = await checkHandleAvailability(raw);

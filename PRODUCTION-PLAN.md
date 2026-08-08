@@ -111,12 +111,54 @@ in the app is trustworthy.
 
 ## 3. Still open, ranked
 
+One left, and it is a product decision rather than an engineering one.
+
 | # | Where | What | Why not yet |
 |---|---|---|---|
-| 1 | `inventory.ts` | **Calendar squatting.** The sweep reclaims card orders only, so an unpaid transfer or COD booking holds its slot until the seller cancels it. | Bounded by the 10/min limit on `createOrderIntent`, and "unpaid manual order" is legitimately pending — the seller confirms by hand. Needs a product decision on when one expires. |
-| 2 | `order-preview.ts`, `shop.ts:99` | **Two enumeration oracles** — a coupon code can be probed at 120/min, and `checkHandle` enumerates the seller roster. | Throttled; redemption caps still hold. Low value against the change. |
-| 3 | every `rateLimit` call | **All limits fail open** when Redis is cold. | Deliberate, and no longer silent: the transition logs once each way, so "every ceiling in the app just vanished" is a line in the log rather than an absence of throttling that looks like not being attacked. What is left is a product decision — whether some endpoint should fail *closed* instead — and that is yours, not mine. |
-| 4 | `queries/products.ts:64` | **`?q=` is a leading-wildcard `ILIKE`** with no trigram index — a per-shop scan. | Fine at hundreds of products, will crawl on a 10k-product catalogue. Length is capped and the endpoint is throttled, so it is a scaling item, not an abuse one. |
+| 1 | every `rateLimit` call | **All limits fail open** when Redis is cold. | Deliberate, and no longer silent: the transition logs once each way, so "every ceiling in the app just vanished" is a line in the log rather than an absence of throttling that looks like not being attacked. What is left is a product decision — whether some endpoint should fail *closed* instead — and that is yours, not mine. |
+
+### Closed since
+
+**Calendar squatting.** The sweep matched `card` only, so a bank-transfer or
+COD booking held its slot until the seller cancelled it by hand, and a shop's
+week could be made unbookable by anyone willing to book and not pay.
+
+The reason manual orders were left alone is sound for stock and wrong for a
+calendar: units are fungible and a seller can see the count is off, while a
+held hour silently stops being bookable. So the sweep now also reclaims
+bookings that are unpaid, still `new`, on a non-card rail, and older than
+`BOOKING_HOLD_HOURS` (72h — longer than the slowest bank transfer clears).
+
+`new` is what makes that safe without a seller-facing setting. A booking
+deliberately stays `new` through payment because checkout promises the buyer
+the shop will confirm the time, so an order still sitting at `new` is one
+nobody has answered — and a seller who *has* answered moved it to `confirmed`,
+which removes it from the sweep permanently. That covers the case this would
+otherwise get wrong, a service paid on the day and booked weeks out, using the
+same click the buyer was already told to expect. Paid bookings are never
+touched. Four scenarios in `checkout.scenario.ts` pin all of it, including that
+this did not become an expiry on unpaid manual orders generally.
+
+**Both enumeration oracles.** A coupon guess now costs against its own ceiling
+(10 per 5 minutes, separate from the 120/min quote limit) because a working
+discount code is a bearer token. `checkHandle` is capped at 120/min — framed as
+bounding cost rather than hiding disclosure, since handle existence is already
+public from the storefront.
+
+**`?q=` now has a trigram index** (`drizzle/0005`), and getting it used took
+more than adding one. Two GIN indexes, one per column, need a `BitmapOr`, and
+measured against 40k products the planner costed that *above* a sequential scan
+and refused it — Neon runs the default `random_page_cost = 4`, which is
+pessimistic for its storage. Rather than retune the planner database-wide,
+which changes every query in the app, the index covers `title || ' ' ||
+coalesce(description, '')` as one expression, so the search is a single
+condition the planner picks unprompted: **64ms → 0.5ms** on a selective term.
+
+That leaves the query and the migration coupled by an expression that must
+parse identically in both places, and drift is silent — the results stay
+correct and only the plan degrades. `search.scenario.ts` asserts on the
+`EXPLAIN` output through the exported expression itself, so a one-character
+change fails it; that was verified by making one.
 
 **Every route now carries a ceiling.** The audit's inventory listed four with
 a guard and no limit — `/api/upload`, `/api/download/[token]/[fileId]`,
