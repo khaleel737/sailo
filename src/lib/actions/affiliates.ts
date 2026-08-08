@@ -269,10 +269,13 @@ export async function applyAsAffiliate(
    * into `affiliates` against any shop that takes applications, and — before
    * the constant reply below — an unlimited oracle to go with them.
    *
-   * Keyed by IP and by shop, so one prolific applicant cannot lock a shop's
-   * form for everyone else.
+   * Keyed by shop *and* address, which the comment claimed before the key
+   * did. With the address alone, five applications aimed at any five shops
+   * from one connection suppressed every shop's form for fifteen minutes —
+   * a denial of service against the whole fleet from a single caller, and the
+   * opposite of what a per-applicant ceiling is for.
    */
-  const gate = await rateLimit(`affiliate-apply:${await callerIp()}`, 5, 900);
+  const gate = await rateLimit(`affiliate-apply:${shopId}:${await callerIp()}`, 5, 900);
   if (!gate.allowed) return APPLICATION_RECEIVED;
 
   const shop = await db.query.shops.findFirst({

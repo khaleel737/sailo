@@ -64,7 +64,17 @@ export async function busyFor(opts: {
    * checkout.
    */
   const claims = await getDb()
-    .select({ startsAt: bookingClaims.startsAt })
+    .select({
+      startsAt: bookingClaims.startsAt,
+      /*
+       * The stored end, not one recomputed from the product's *current*
+       * duration. A seller who shortens a service after somebody has booked it
+       * would otherwise have the calendar offer a slot the exclusion
+       * constraint then refuses — the buyer picks a time that looks free and
+       * the checkout tells them it is taken.
+       */
+      endsAt: bookingClaims.endsAt,
+    })
     .from(bookingClaims)
     .innerJoin(orders, eq(orders.id, bookingClaims.orderId))
     .where(
@@ -76,16 +86,24 @@ export async function busyFor(opts: {
       ),
     );
 
-  const starts = new Set<number>();
+  /*
+   * Keyed by start so an order row and its claim row do not count twice, and
+   * the claim's stored range wins where both exist — it is what the database
+   * will actually enforce.
+   */
+  const busy = new Map<number, Busy>();
   for (const row of rows) {
-    if (row.scheduledFor) starts.add(row.scheduledFor.getTime());
+    if (!row.scheduledFor) continue;
+    busy.set(row.scheduledFor.getTime(), {
+      startsAt: row.scheduledFor,
+      endsAt: new Date(row.scheduledFor.getTime() + opts.durationMinutes * 60_000),
+    });
   }
-  for (const row of claims) starts.add(row.startsAt.getTime());
+  for (const row of claims) {
+    busy.set(row.startsAt.getTime(), { startsAt: row.startsAt, endsAt: row.endsAt });
+  }
 
-  return [...starts].map((ms) => ({
-    startsAt: new Date(ms),
-    endsAt: new Date(ms + opts.durationMinutes * 60_000),
-  }));
+  return [...busy.values()];
 }
 
 export type BookableProduct = {

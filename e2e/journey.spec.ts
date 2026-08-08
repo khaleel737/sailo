@@ -21,7 +21,23 @@ import { expect, test, type Page } from "@playwright/test";
  */
 
 const BASE = process.env.E2E_BASE_URL ?? "http://localhost:3000";
-const LOCAL = /localhost|127\.0\.0\.1/.test(BASE);
+
+/*
+ * The hostname, parsed — not a substring of the URL.
+ *
+ * `/localhost/.test(url)` is true for `https://localhost.attacker.example` and
+ * for `https://example.com/localhost`, and this suite signs up accounts and
+ * writes orders. A guard that can be talked past by a hostname someone else
+ * registers is not a guard; it is a comment.
+ */
+const LOCAL = (() => {
+  try {
+    const host = new URL(BASE).hostname;
+    return host === "localhost" || host === "127.0.0.1" || host === "[::1]";
+  } catch {
+    return false;
+  }
+})();
 
 test.skip(!LOCAL, "journey writes real rows — localhost only");
 

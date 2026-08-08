@@ -1,4 +1,5 @@
 import type Stripe from "stripe";
+import { assertLocalDatabase } from "./local-only";
 import { beforeAll, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -45,10 +46,7 @@ const uid = () => crypto.randomUUID();
 const ACCOUNT = "acct_scenario_seller";
 
 beforeAll(() => {
-  const url = process.env.DATABASE_URL ?? "";
-  if (!url.includes("localhost")) {
-    throw new Error(`settlement suite refused: DATABASE_URL is not local (${url.slice(0, 30)}…)`);
-  }
+  assertLocalDatabase();
 });
 
 async function shopWithCardRail() {

@@ -1,4 +1,5 @@
 import { beforeAll, describe, expect, it } from "vitest";
+import { assertLocalDatabase } from "./local-only";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
@@ -128,10 +129,7 @@ const stockOf = async (id: string) =>
 beforeAll(async () => {
   // Fails loudly rather than silently running against whatever DATABASE_URL is
   // set — which, without the scenario setup, is production's.
-  const url = process.env.DATABASE_URL ?? "";
-  if (!url.includes("localhost")) {
-    throw new Error(`scenario suite refused: DATABASE_URL is not local (${url.slice(0, 30)}…)`);
-  }
+  assertLocalDatabase();
 });
 
 describe("who may sell", () => {
@@ -600,6 +598,45 @@ describe("the storefront survives a hostile query string", () => {
     const desc = await getPublicProducts(shop.id, shop.currency, { sort: "price_desc" } as never);
     expect(desc.items[0]?.title).toBe("Dear");
   });
+});
+
+describe("the quote and the order agree", () => {
+  /*
+   * A buyer must be charged the total they were shown. Rounding for the
+   * three-decimal currencies was added to the committing path and not to
+   * `previewOrder`, so a KWD shopper saw one total in the basket, qualified a
+   * coupon against it, and was charged another. Both paths start from
+   * `resolveLines`, which is where the rounding lives now — this asserts the
+   * two cannot drift apart again.
+   */
+  it.each(["KWD", "BHD", "JOD", "USD", "JPY"])(
+    "quotes in %s the amount it then charges",
+    async (currency) => {
+      const shop = await withRail({ currency });
+      // A price that is not a multiple of ten, which is the whole difficulty.
+      const product = await makeProduct(shop.id, { priceCents: 12_345 });
+
+      const { previewOrder } = await import("@/lib/actions/order-preview");
+      const quoted = await previewOrder({
+        shopId: shop.id,
+        items: [{ productId: product.id, quantity: 1 }],
+      } as never);
+      if ("error" in quoted) throw new Error(`preview failed: ${quoted.error}`);
+
+      const placed = await createOrderIntent({
+        shopId: shop.id,
+        items: [{ productId: product.id, quantity: 1 }],
+        paymentMethod: "cod",
+        ...buyer,
+        customerEmail: `quote-${currency}@example.com`,
+      });
+      expect(placed.ok, placed.ok ? "" : placed.error).toBe(true);
+      if (!placed.ok) return;
+
+      const order = await orderRow(placed.orderId);
+      expect(order?.totalCents, currency).toBe(quoted.totals.totalCents);
+    },
+  );
 });
 
 describe("bookings", () => {

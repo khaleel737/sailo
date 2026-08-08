@@ -284,8 +284,17 @@ export async function refundOrder(
       refundedAt: new Date(),
       refundReason:
         String(formData.get("reason") ?? "").trim().slice(0, 300) || null,
-      status: isFull ? "refunded" : order.status,
-      paymentStatus: isFull ? "refunded" : order.paymentStatus,
+      /*
+       * Only ever written *to* `refunded`, never back from it.
+       *
+       * `order.status` is the row as it was before the claim, so a partial
+       * refund running beside a concurrent one that completed the balance
+       * would have written the stale value back over `refunded` — undoing the
+       * other caller's conclusion and leaving a fully refunded order looking
+       * active. A partial refund has nothing to say about the status, so it
+       * says nothing.
+       */
+      ...(isFull ? { status: "refunded", paymentStatus: "refunded" } : {}),
       updatedAt: new Date(),
     })
     .where(eq(orders.id, id));

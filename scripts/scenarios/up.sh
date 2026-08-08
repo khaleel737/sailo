@@ -24,11 +24,34 @@ sleep 5
 
 # The schema, generated from the Drizzle definitions rather than from the
 # migrations — there is no baseline migration, only increments on top of one.
+#
+# `drizzle/` is tracked, and this moves it aside so drizzle-kit generates into
+# an empty directory. Anything failing in between — generation, the import, a
+# Ctrl-C — would otherwise leave the repository without its migrations, which
+# is a far worse outcome than a failed setup. The trap puts them back whatever
+# happens.
 TMP=$(mktemp -d)
+restore() {
+  if [ -d "$TMP/drizzle" ]; then
+    rm -rf drizzle
+    mv "$TMP/drizzle" drizzle
+  fi
+  rm -rf "$TMP"
+}
+trap restore EXIT INT TERM
+
 mv drizzle "$TMP/drizzle"
 mkdir -p drizzle
 DATABASE_URL="postgres://sailo:sailo@localhost:55432/sailo" npx drizzle-kit generate --name baseline >/dev/null
 docker exec -i sailo-test-db psql -U sailo -d sailo -q < drizzle/0000_baseline.sql
-rm -rf drizzle && mv "$TMP/drizzle" drizzle && rmdir "$TMP"
+
+# Then the increments on top, in order, so the local database matches what
+# production has actually had applied to it.
+restore
+trap - EXIT INT TERM
+for migration in drizzle/0*.sql; do
+  case "$migration" in *baseline*) continue;; esac
+  docker exec -i sailo-test-db psql -U sailo -d sailo -q < "$migration"
+done
 
 echo "scenario database ready on 55432, proxy on 54330"

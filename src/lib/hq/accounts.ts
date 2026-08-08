@@ -247,7 +247,13 @@ export async function getAccountDetail(userId: string) {
     getShopOrders(shop.id, 10),
     getShopProductRows(shop.id, 12),
     getShopAffiliates(shop.id),
-    getShopClients(shop.id),
+    /*
+     * Every buyer, deliberately. The default cap is a safety valve for the
+     * seller's own admin; here the number is *reported* as the shop's buyer
+     * count, and a capped list reported as a total is a wrong number on a
+     * staff screen used to make decisions about that shop.
+     */
+    getShopClients(shop.id, null),
     getShopPaymentMethods(shop.id),
     getShopDeliveryMethods(shop.id),
     getShopCoupons(shop.id),

@@ -53,6 +53,9 @@ export async function previewOrder(input: {
   const resolved = await resolveLines(shop.id, input.items, {
     strict: false,
     now,
+    // The same rounding the order will use, so the total a buyer is quoted is
+    // the total they are charged.
+    currency: shop.currency,
   });
   if (!resolved.ok) return { error: resolved.error };
 

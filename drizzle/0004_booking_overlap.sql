@@ -40,6 +40,24 @@ ALTER TABLE "booking_claims" ALTER COLUMN "ends_at" SET NOT NULL;
 ALTER TABLE "booking_claims"
   DROP CONSTRAINT IF EXISTS "booking_claims_no_overlap";
 
+-- Any overlap that already exists would make the ALTER below fail outright,
+-- and a migration that cannot be applied is worse than the bug it fixes: the
+-- deploy stops and the constraint never lands anywhere.
+--
+-- `0003` deduplicated identical start times, which is all it could see. This
+-- keeps the earliest claim in each overlapping group and drops the rest —
+-- earliest, because the buyer who booked first is the one the shop owes. The
+-- dropped claims release only their hold on the calendar; the orders and the
+-- appointments on them are untouched, so a seller sees both bookings and can
+-- decide what to do about a conflict that already existed.
+DELETE FROM "booking_claims" a
+USING "booking_claims" b
+WHERE a."product_id" = b."product_id"
+  AND a."id" <> b."id"
+  AND tsrange(a."starts_at", GREATEST(a."ends_at", a."starts_at"), '[)')
+      && tsrange(b."starts_at", GREATEST(b."ends_at", b."starts_at"), '[)')
+  AND (a."created_at", a."id") > (b."created_at", b."id");
+
 ALTER TABLE "booking_claims"
   ADD CONSTRAINT "booking_claims_no_overlap"
   EXCLUDE USING gist (

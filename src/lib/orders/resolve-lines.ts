@@ -3,6 +3,7 @@ import { and, asc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
 import { productVariants, products } from "@/db/schema";
 import { clampQuantity, isSellable, maxOrderable, variantPrice } from "@/lib/variants";
+import { toStripeAmount } from "@/lib/currency";
 import type { OrderLineInput } from "./types";
 import type { ResolvedLine } from "./types";
 import { parseBooking } from "./booking";
@@ -36,6 +37,16 @@ export async function resolveLines(
      * period is checked, which is all a price preview needs.
      */
     shop?: Pick<Shop, "bookingHours" | "timeZone" | "bookingSlotMinutes">;
+    /**
+     * The shop's currency, so prices come back in amounts a card can settle.
+     *
+     * Rounding here rather than at either caller is the point: `previewOrder`
+     * and `createOrderIntent` both start from this function, and when only the
+     * committing one rounded, a buyer in KWD saw one total in the basket and
+     * was charged another — and qualified a coupon against the wrong subtotal
+     * on the way. One place decides, so the two cannot disagree.
+     */
+    currency?: string;
   },
 ): Promise<
   | { ok: true; lines: ResolvedLine[]; dropped: OrderLineInput[] }
@@ -218,7 +229,16 @@ export async function resolveLines(
       sku: variant?.sku ?? null,
       imageUrl: variant?.imageUrl ?? null,
       // The price the buyer is charged comes from the variant they picked.
-      unitPriceCents: variantPrice(product, variant),
+      /*
+       * Rounded to what this currency can actually settle. A no-op for
+       * sixty-six of the seventy-one; for KWD, BHD, JOD, OMR and TND — quoted
+       * to three decimals, settled to two — it is what stops Stripe refusing
+       * the charge and what keeps the quote and the order the same number.
+       */
+      unitPriceCents: toStripeAmount(
+        variantPrice(product, variant),
+        opts.currency ?? "USD",
+      ),
       quantity,
       product,
       variant,
