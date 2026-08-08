@@ -1,0 +1,19 @@
+docs/scale-plan.md
+  s_b243f8e34ce497::t_dba1510b619dde 1-103
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6244084b40b845cae2b0b0e23f8a3b2ac03e56be",
+  "prompts": {},
+  "sessions": {
+    "s_b243f8e34ce497": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "28ccd0dc-3455-40b0-827e-8d9c50d12c2b",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
