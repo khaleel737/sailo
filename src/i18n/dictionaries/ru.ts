@@ -15,6 +15,7 @@ export const ru: Dictionary = {
     optional: "необязательно", free: "Бесплатно", search: "Поиск", language: "Язык",
   },
   consent: {
+    manage: "Настройки файлов cookie",
     customise: "Выбрать",
     save: "Сохранить",
     essential: "Необходимые",

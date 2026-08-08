@@ -15,6 +15,7 @@ export const da: Dictionary = {
     free: "Gratis", search: "Søg", language: "Sprog",
   },
   consent: {
+    manage: "Cookieindstillinger",
     customise: "Vælg",
     save: "Gem",
     essential: "Nødvendige",

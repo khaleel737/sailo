@@ -15,6 +15,7 @@ export const fil: Dictionary = {
     free: "Libre", search: "Maghanap", language: "Wika",
   },
   consent: {
+    manage: "Mga setting ng cookie",
     customise: "Pumili",
     save: "I-save",
     essential: "Mahalaga",

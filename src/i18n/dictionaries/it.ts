@@ -15,6 +15,7 @@ export const it: Dictionary = {
     optional: "facoltativo", free: "Gratis", search: "Cerca", language: "Lingua",
   },
   consent: {
+    manage: "Impostazioni cookie",
     customise: "Scegli",
     save: "Salva",
     essential: "Essenziali",

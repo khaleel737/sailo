@@ -15,6 +15,7 @@ export const ms: Dictionary = {
     free: "Percuma", search: "Cari", language: "Bahasa",
   },
   consent: {
+    manage: "Tetapan kuki",
     customise: "Pilih",
     save: "Simpan",
     essential: "Penting",

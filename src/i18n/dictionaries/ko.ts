@@ -15,6 +15,7 @@ export const ko: Dictionary = {
     free: "무료", search: "검색", language: "언어",
   },
   consent: {
+    manage: "쿠키 설정",
     customise: "선택",
     save: "저장",
     essential: "필수",

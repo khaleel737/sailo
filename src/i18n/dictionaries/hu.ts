@@ -15,6 +15,7 @@ export const hu: Dictionary = {
     free: "Ingyenes", search: "Keresés", language: "Nyelv",
   },
   consent: {
+    manage: "Cookie-beállítások",
     customise: "Választás",
     save: "Mentés",
     essential: "Szükséges",

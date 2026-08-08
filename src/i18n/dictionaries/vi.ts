@@ -15,6 +15,7 @@ export const vi: Dictionary = {
     free: "Miễn phí", search: "Tìm kiếm", language: "Ngôn ngữ",
   },
   consent: {
+    manage: "Cài đặt cookie",
     customise: "Tùy chọn",
     save: "Lưu",
     essential: "Thiết yếu",

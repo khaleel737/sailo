@@ -15,6 +15,7 @@ export const mk: Dictionary = {
     free: "Бесплатно", search: "Пребарај", language: "Јазик",
   },
   consent: {
+    manage: "Поставки за колачиња",
     customise: "Избери",
     save: "Зачувај",
     essential: "Основни",

@@ -15,6 +15,7 @@ export const cs: Dictionary = {
     free: "Zdarma", search: "Hledat", language: "Jazyk",
   },
   consent: {
+    manage: "Nastavení cookies",
     customise: "Vybrat",
     save: "Uložit",
     essential: "Nezbytné",

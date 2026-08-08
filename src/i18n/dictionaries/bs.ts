@@ -15,6 +15,7 @@ export const bs: Dictionary = {
     free: "Besplatno", search: "Pretraga", language: "Jezik",
   },
   consent: {
+    manage: "Postavke kolačića",
     customise: "Odaberi",
     save: "Sačuvaj",
     essential: "Osnovni",

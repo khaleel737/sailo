@@ -15,6 +15,7 @@ export const pl: Dictionary = {
     free: "Za darmo", search: "Szukaj", language: "Język",
   },
   consent: {
+    manage: "Ustawienia plików cookie",
     customise: "Wybierz",
     save: "Zapisz",
     essential: "Niezbędne",

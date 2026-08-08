@@ -15,6 +15,7 @@ export const id: Dictionary = {
     free: "Gratis", search: "Cari", language: "Bahasa",
   },
   consent: {
+    manage: "Pengaturan cookie",
     customise: "Pilih",
     save: "Simpan",
     essential: "Penting",

@@ -15,6 +15,7 @@ export const bg: Dictionary = {
     free: "Безплатно", search: "Търсене", language: "Език",
   },
   consent: {
+    manage: "Настройки за бисквитки",
     customise: "Избор",
     save: "Запази",
     essential: "Основни",

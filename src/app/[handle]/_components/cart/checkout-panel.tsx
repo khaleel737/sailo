@@ -89,24 +89,52 @@ export function CheckoutPanel({
     setError(null);
 
     const data = new FormData(event.currentTarget);
-    const res = await createOrderIntent({
-      shopId,
-      items,
-      paymentMethod: method,
-      deliveryMethodId: deliveryId ?? undefined,
-      couponCode: quote.couponCode,
-      affiliateCode: readReferralCode() ?? undefined,
-      customerName: String(data.get("customerName") ?? ""),
-      customerEmail: String(data.get("customerEmail") ?? ""),
-      customerPhone: String(data.get("customerPhone") ?? ""),
-      addressLine1: String(data.get("addressLine1") ?? ""),
-      addressLine2: String(data.get("addressLine2") ?? ""),
-      city: String(data.get("city") ?? ""),
-      region: String(data.get("region") ?? ""),
-      postalCode: String(data.get("postalCode") ?? ""),
-      country: String(data.get("country") ?? ""),
-      note: String(data.get("note") ?? ""),
-    });
+
+    /*
+     * A thrown action has to land somewhere the buyer can see.
+     *
+     * `createOrderIntent` returns `{ ok: false }` for everything it expects —
+     * sold out, a spent coupon, a rail that is off. It *throws* for what it
+     * does not: the database refusing a connection under load, most of all. A
+     * load test made that happen ninety times in a row, and with no catch here
+     * the rejection escaped `onSubmit`, `setPending(false)` never ran, and the
+     * button span forever with nothing said. That is the same trap the comment
+     * below describes for `mailto:` — and it is how one order becomes three,
+     * because a buyer reads a stuck spinner as failure and presses again.
+     *
+     * The order may or may not exist when this fires, which is why the message
+     * says to check rather than to retry.
+     */
+    let res: Awaited<ReturnType<typeof createOrderIntent>>;
+    try {
+      res = await createOrderIntent({
+        shopId,
+        items,
+        paymentMethod: method,
+        deliveryMethodId: deliveryId ?? undefined,
+        couponCode: quote.couponCode,
+        affiliateCode: readReferralCode() ?? undefined,
+        customerName: String(data.get("customerName") ?? ""),
+        customerEmail: String(data.get("customerEmail") ?? ""),
+        customerPhone: String(data.get("customerPhone") ?? ""),
+        addressLine1: String(data.get("addressLine1") ?? ""),
+        addressLine2: String(data.get("addressLine2") ?? ""),
+        city: String(data.get("city") ?? ""),
+        region: String(data.get("region") ?? ""),
+        postalCode: String(data.get("postalCode") ?? ""),
+        country: String(data.get("country") ?? ""),
+        note: String(data.get("note") ?? ""),
+      });
+    } catch (thrown) {
+      // Named for what it is rather than `error`, which is the state setter's
+      // own name one scope up.
+      console.error("[sailo] checkout failed:", thrown);
+      setError(
+        "Something went wrong placing your order. Check your email before trying again — it may have gone through.",
+      );
+      setPending(false);
+      return;
+    }
 
     if (!res.ok) {
       setError(res.error);

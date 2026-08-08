@@ -6,6 +6,8 @@ import type { Locale } from "@/i18n/config";
 import { DEMOS } from "@/lib/demos";
 import { APP_URL } from "@/lib/seo";
 import { SailoLogo } from "@/components/brand";
+import { CookieSettingsButton } from "@/components/shared/cookie-settings-button";
+import { measurementId } from "@/lib/google-tag";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { Container } from "@/components/marketing/kit";
 
@@ -63,6 +65,16 @@ export function SiteFooter({
                     </Link>
                   </li>
                 ))}
+                {/*
+                  Shown only where the banner can appear. With no measurement
+                  id there is no tag to consent to and nothing to withdraw, so
+                  the button would clear an answer nobody was asked for.
+                */}
+                {measurementId() ? (
+                  <li>
+                    <CookieSettingsButton label={t.consent.manage} />
+                  </li>
+                ) : null}
               </ul>
             </nav>
 
@@ -100,6 +112,16 @@ export function SiteFooter({
                     </Link>
                   </li>
                 ))}
+                {/*
+                  Shown only where the banner can appear. With no measurement
+                  id there is no tag to consent to and nothing to withdraw, so
+                  the button would clear an answer nobody was asked for.
+                */}
+                {measurementId() ? (
+                  <li>
+                    <CookieSettingsButton label={t.consent.manage} />
+                  </li>
+                ) : null}
               </ul>
             </nav>
           </div>

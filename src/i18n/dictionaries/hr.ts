@@ -15,6 +15,7 @@ export const hr: Dictionary = {
     free: "Besplatno", search: "Traži", language: "Jezik",
   },
   consent: {
+    manage: "Postavke kolačića",
     customise: "Odaberi",
     save: "Spremi",
     essential: "Nužni",

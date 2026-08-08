@@ -33,6 +33,7 @@ export const en = {
   },
 
   consent: {
+    manage: "Cookie settings",
     customise: "Choose",
     save: "Save choices",
     essential: "Essential",

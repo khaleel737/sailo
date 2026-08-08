@@ -15,6 +15,7 @@ export const ja: Dictionary = {
     optional: "任意", free: "無料", search: "検索", language: "言語",
   },
   consent: {
+    manage: "Cookie の設定",
     customise: "選択",
     save: "保存",
     essential: "必須",

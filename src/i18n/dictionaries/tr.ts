@@ -15,6 +15,7 @@ export const tr: Dictionary = {
     free: "Ücretsiz", search: "Ara", language: "Dil",
   },
   consent: {
+    manage: "Çerez ayarları",
     customise: "Seç",
     save: "Kaydet",
     essential: "Gerekli",

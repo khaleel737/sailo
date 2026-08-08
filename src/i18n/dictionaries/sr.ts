@@ -15,6 +15,7 @@ export const sr: Dictionary = {
     free: "Бесплатно", search: "Претрага", language: "Језик",
   },
   consent: {
+    manage: "Подешавања колачића",
     customise: "Изабери",
     save: "Сачувај",
     essential: "Неопходни",

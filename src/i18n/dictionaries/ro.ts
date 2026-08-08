@@ -15,6 +15,7 @@ export const ro: Dictionary = {
     optional: "opțional", free: "Gratuit", search: "Caută", language: "Limbă",
   },
   consent: {
+    manage: "Setări cookie-uri",
     customise: "Alege",
     save: "Salvează",
     essential: "Esențiale",

@@ -15,6 +15,7 @@ export const uk: Dictionary = {
     optional: "необовʼязково", free: "Безкоштовно", search: "Пошук", language: "Мова",
   },
   consent: {
+    manage: "Налаштування файлів cookie",
     customise: "Обрати",
     save: "Зберегти",
     essential: "Необхідні",

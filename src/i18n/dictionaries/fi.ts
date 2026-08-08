@@ -15,6 +15,7 @@ export const fi: Dictionary = {
     free: "Ilmainen", search: "Hae", language: "Kieli",
   },
   consent: {
+    manage: "Evästeasetukset",
     customise: "Valitse",
     save: "Tallenna",
     essential: "Välttämättömät",

@@ -15,6 +15,7 @@ export const zh: Dictionary = {
     optional: "选填", free: "免费", search: "搜索", language: "语言",
   },
   consent: {
+    manage: "Cookie 设置",
     customise: "自定义",
     save: "保存",
     essential: "必要",

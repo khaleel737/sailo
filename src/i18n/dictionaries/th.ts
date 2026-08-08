@@ -15,6 +15,7 @@ export const th: Dictionary = {
     free: "ฟรี", search: "ค้นหา", language: "ภาษา",
   },
   consent: {
+    manage: "การตั้งค่าคุกกี้",
     customise: "เลือก",
     save: "บันทึก",
     essential: "จำเป็น",

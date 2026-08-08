@@ -15,6 +15,7 @@ export const nl: Dictionary = {
     optional: "optioneel", free: "Gratis", search: "Zoeken", language: "Taal",
   },
   consent: {
+    manage: "Cookie-instellingen",
     customise: "Kiezen",
     save: "Opslaan",
     essential: "Essentieel",

@@ -15,6 +15,7 @@ export const sq: Dictionary = {
     free: "Falas", search: "Kërko", language: "Gjuha",
   },
   consent: {
+    manage: "Cilësimet e cookie-ve",
     customise: "Zgjidh",
     save: "Ruaj",
     essential: "Thelbësore",

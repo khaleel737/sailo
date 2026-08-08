@@ -15,6 +15,7 @@ export const no: Dictionary = {
     free: "Gratis", search: "Søk", language: "Språk",
   },
   consent: {
+    manage: "Innstillinger for informasjonskapsler",
     customise: "Velg",
     save: "Lagre",
     essential: "Nødvendige",

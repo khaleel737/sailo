@@ -15,6 +15,7 @@ export const ar: Dictionary = {
     optional: "اختياري", free: "مجاني", search: "بحث", language: "اللغة",
   },
   consent: {
+    manage: "إعدادات ملفات تعريف الارتباط",
     customise: "تخصيص",
     save: "حفظ الاختيارات",
     essential: "أساسية",

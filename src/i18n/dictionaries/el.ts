@@ -15,6 +15,7 @@ export const el: Dictionary = {
     optional: "προαιρετικό", free: "Δωρεάν", search: "Αναζήτηση", language: "Γλώσσα",
   },
   consent: {
+    manage: "Ρυθμίσεις cookies",
     customise: "Επιλογή",
     save: "Αποθήκευση",
     essential: "Απαραίτητα",

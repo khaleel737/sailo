@@ -10,9 +10,53 @@
  *   SHOPS=20000 npm run check:load
  */
 import { present } from "@/lib/invariant";
-import { neon } from "@neondatabase/serverless";
+import { neon, neonConfig } from "@neondatabase/serverless";
 
-const sql = neon(present(process.env.DATABASE_URL, "DATABASE_URL"));
+const url = present(process.env.DATABASE_URL, "DATABASE_URL");
+
+/*
+ * This writes five thousand shops and hundreds of thousands of rows before it
+ * deletes them again, and `npm run check:load` reads `.env.local` — where
+ * `DATABASE_URL` is production. Nothing stopped it. The cleanup makes that
+ * survivable rather than safe: it runs at the end, so an interrupted run
+ * leaves the lot behind, and "it tidies up afterwards" is not a reason to
+ * generate load against the database taking real orders.
+ *
+ * `LOAD_TEST_ALLOW_REMOTE=1` is the deliberate override, for someone running
+ * this against a Neon branch on purpose.
+ */
+function assertSafeTarget(target: string): void {
+  if (process.env.LOAD_TEST_ALLOW_REMOTE === "1") return;
+  let host: string;
+  try {
+    host = new URL(target).hostname;
+  } catch {
+    throw new Error("check:load refused: DATABASE_URL is not a URL it can check");
+  }
+  if (host !== "localhost" && host !== "127.0.0.1" && host !== "[::1]") {
+    throw new Error(
+      `check:load refused: ${host} is not this machine. Point DATABASE_URL at a ` +
+        `throwaway database (./scripts/scenarios/up.sh), or set ` +
+        `LOAD_TEST_ALLOW_REMOTE=1 if you mean a Neon branch.`,
+    );
+  }
+}
+
+assertSafeTarget(url);
+
+/*
+ * The same local-proxy rule `src/db/index.ts` applies: this driver speaks
+ * Neon's HTTP protocol, so against a plain Postgres container it needs the
+ * proxy in front of it. Keyed on the hostname, so it can only ever apply to a
+ * database on this machine.
+ */
+if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(new URL(url).hostname)) {
+  neonConfig.fetchEndpoint = process.env.NEON_LOCAL_PROXY ?? "http://localhost:54330/sql";
+  neonConfig.useSecureWebSocket = false;
+  neonConfig.poolQueryViaFetch = true;
+}
+
+const sql = neon(url);
 const SHOPS = Number(process.env.SHOPS ?? 5000);
 const PER_SHOP = Number(process.env.PRODUCTS_PER_SHOP ?? 10);
 const TAG = "loadtest-";
@@ -61,15 +105,43 @@ async function measure() {
   let worst = 0;
   const seqScans: string[] = [];
 
+  /*
+   * A sequential scan is only news on a table big enough for it to hurt.
+   *
+   * Postgres reads a small table end to end on purpose — it is cheaper than an
+   * index lookup — so flagging every one of them meant this report warned about
+   * `product_images`, `affiliates` and `invoices` on a run that generated no
+   * images, no affiliates and 143 invoices. Three warnings that could never be
+   * acted on, printed next to the ones that could, which is how a report stops
+   * being read. Only tables above the threshold are reported.
+   */
+  const SCAN_MATTERS_ABOVE = 5_000;
+  const sizes = new Map<string, number>();
+  const rowsIn = async (table: string): Promise<number> => {
+    const cached = sizes.get(table);
+    if (cached !== undefined) return cached;
+    const [row] = await sql`
+      select coalesce(n_live_tup, 0)::int as n from pg_stat_user_tables where relname = ${table}`;
+    const n = Number(row?.n ?? 0);
+    sizes.set(table, n);
+    return n;
+  };
+
   const plan = async (label: string, rows: Record<string, string>[]) => {
     const text = rows.map((r) => r["QUERY PLAN"]).join("\n");
-    const seq = [...text.matchAll(/Seq Scan on (\w+)/g)].map((m) => m[1]);
+    const scanned = [...new Set([...text.matchAll(/Seq Scan on (\w+)/g)].map((m) => m[1] ?? ""))];
     const exec = Number(/Execution Time: ([\d.]+)/.exec(text)?.[1] ?? 0);
     worst = Math.max(worst, exec);
-    seq.forEach((s) => seqScans.push(`${label}: ${s}`));
+
+    const worrying: string[] = [];
+    for (const table of scanned) {
+      if ((await rowsIn(table)) >= SCAN_MATTERS_ABOVE) worrying.push(table);
+    }
+    worrying.forEach((t) => seqScans.push(`${label}: ${t}`));
+
     console.log(
       `  ${label.padEnd(32)} ${(exec.toFixed(3) + "ms").padStart(10)}` +
-        (seq.length ? `   seq scan on ${[...new Set(seq)].join(", ")}` : ""),
+        (worrying.length ? `   seq scan on ${worrying.join(", ")}` : ""),
     );
   };
 
