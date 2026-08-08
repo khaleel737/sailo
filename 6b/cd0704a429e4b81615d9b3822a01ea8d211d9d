@@ -1,0 +1,29 @@
+src/lib/actions/orders.ts
+  s_3fd229194f6299::t_571d2947ca867e 16,114-124
+src/lib/currency.ts
+  s_3fd229194f6299::t_6bfa391f41c48f 204-222
+src/lib/pricing.ts
+  s_3fd229194f6299::t_d4b2dc5f1be0f6 2,199-247
+  s_3fd229194f6299::t_50cd937651ff77 248
+src/lib/connect.ts
+  s_3fd229194f6299::t_571d2947ca867e 264-287
+src/lib/pricing.test.ts
+  s_3fd229194f6299::t_835c2f8be03c6a 3-4,6
+  s_3fd229194f6299::t_b9c184d8811a2b 173-290
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6bcd0704a429e4b81615d9b3822a01ea8d211d9d",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
