@@ -219,7 +219,20 @@ export function generateCode(seed: string) {
  *
  * A no-op for the other sixty-six currencies, where the step is one.
  */
-export function toChargeableTotals(totals: Totals, currency: string): Totals {
+export function toChargeableTotals(
+  totals: Totals,
+  currency: string,
+  /*
+   * Required, not optional, and this is the reason: inclusive tax is already
+   * inside the prices, so `computeTotals` deliberately leaves it out of the
+   * total. A first version of this re-derived the total by adding tax
+   * unconditionally, which charged an inclusive-tax shop its own VAT a second
+   * time — twenty per cent too much, on the money path, in the five currencies
+   * this function exists for. Making the caller state it means the next person
+   * cannot forget it the way I did.
+   */
+  taxInclusive: boolean,
+): Totals {
   const step = chargeStep(currency);
   if (step === 1) return totals;
 
@@ -235,11 +248,19 @@ export function toChargeableTotals(totals: Totals, currency: string): Totals {
     discountCents,
     deliveryFeeCents,
     taxCents,
-    // Never negative: a discount rounded up past a subtotal rounded down would
-    // otherwise ask the card network for a refund it has no way to make.
+    /*
+     * The same rule `computeTotals` uses, not a second one. Inclusive tax is
+     * already inside the subtotal; adding it here charged it twice.
+     *
+     * Never negative either: a discount rounded up past a subtotal rounded
+     * down would otherwise ask the card network for a refund it cannot make.
+     */
     totalCents: Math.max(
       0,
-      subtotalCents - discountCents + deliveryFeeCents + taxCents,
+      subtotalCents -
+        discountCents +
+        deliveryFeeCents +
+        (taxInclusive ? 0 : taxCents),
     ),
     // Sailo's own cut, which is settled separately and in the platform's own
     // currency, so it is not bound by this currency's settlement step.

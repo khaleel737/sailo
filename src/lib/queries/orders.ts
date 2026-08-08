@@ -40,8 +40,12 @@ export type ClientRow = Client & {
  * This aggregated every client against every order they had ever placed, with
  * no ceiling — so the shop with the most customers, which is the one paying
  * most, had the slowest admin and eventually one that would not finish.
+ *
+ * A thousand, not two hundred: a ceiling low enough for a real shop to reach
+ * silently is worse than none, because the page renders what it got as the
+ * whole list. This is a backstop, and the page says so when it is hit.
  */
-export const CLIENT_PAGE_SIZE = 200;
+export const CLIENT_LIMIT = 1_000;
 
 /**
  * Clients with their lifetime totals, most recently active first.
@@ -53,7 +57,7 @@ export const CLIENT_PAGE_SIZE = 200;
  */
 export async function getShopClients(
   shopId: string,
-  limit: number | null = CLIENT_PAGE_SIZE,
+  limit: number | null = CLIENT_LIMIT,
 ): Promise<ClientRow[]> {
   const db = getDb();
 

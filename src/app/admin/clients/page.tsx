@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Users } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { getShopClients } from "@/lib/queries";
+import { CLIENT_LIMIT, getShopClients } from "@/lib/queries";
 import { PageHeader } from "@/components/shared/page-header";
 import { ExportButton } from "@/app/admin/_components/export-button";
 import { Table, Td, Th, Tr } from "@/components/shared/table";
@@ -16,6 +16,9 @@ export default async function AdminClientsPage() {
   const { shop } = await requireShop();
   const { a, locale } = await getAdminT();
   const clients = await getShopClients(shop.id);
+  // Same reasoning as the catalogue: at the ceiling the list is a sample, and
+  // the copy has to say so rather than name a number that is not the truth.
+  const clipped = clients.length >= CLIENT_LIMIT;
 
   return (
     <>
@@ -23,7 +26,7 @@ export default async function AdminClientsPage() {
         title={a.clients.title}
         description={
           clients.length > 0
-            ? `${clients.length} ${clients.length === 1 ? "person has" : "people have"} ordered from you.`
+            ? `${clients.length.toLocaleString(locale)}${clipped ? "+" : ""} ${clients.length === 1 ? "person has" : "people have"} ordered from you.`
             : "Everyone who has ordered from you."
         }
         action={<ExportButton shop={shop} type="clients" />}

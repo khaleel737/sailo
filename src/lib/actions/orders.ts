@@ -121,7 +121,7 @@ export async function createOrderIntent(
    * before anything is written down, is what makes the order, the invoice and
    * the charge the same number.
    */
-  const totals = toChargeableTotals(priced.totals, shop.currency);
+  const totals = toChargeableTotals(priced.totals, shop.currency, shop.taxInclusive);
 
   const clientId = await upsertClient(shop.id, {
     name,

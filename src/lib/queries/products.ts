@@ -281,18 +281,26 @@ async function readProductBySlug(shopId: string, slug: string) {
 }
 
 /**
- * The seller's own catalogue, bounded.
+ * The seller's own catalogue, with a safety ceiling.
  *
  * The Business plan has no product limit, and this loaded every row with its
  * images, its category and its variants — so the seller with the biggest
  * catalogue, who is the one paying most, got the slowest admin and eventually
- * a page that would not finish. A ceiling that is generous enough that almost
- * nobody meets it is better than none: the storefront has paginated since it
- * was written, and this is the same argument applied to the page behind it.
+ * a page that would not finish.
+ *
+ * A thousand, not two hundred. The first version of this capped low enough
+ * that a real shop could reach it, and the page rendered the truncated count
+ * as the whole catalogue — so a seller with five hundred products was told
+ * they had two hundred and could not find the rest. Silent truncation is worse
+ * than a slow page, because a slow page tells you something is wrong.
+ *
+ * This is a backstop against one shop taking the admin down, not pagination.
+ * A catalogue that reaches it has outgrown a single page and the caller says
+ * so rather than pretending otherwise — see `atProductLimit` at the call site.
  */
-export const ADMIN_PRODUCT_PAGE_SIZE = 200;
+export const ADMIN_PRODUCT_LIMIT = 1_000;
 
-export async function getAdminProducts(shopId: string, limit = ADMIN_PRODUCT_PAGE_SIZE) {
+export async function getAdminProducts(shopId: string, limit = ADMIN_PRODUCT_LIMIT) {
   return getDb().query.products.findMany({
     where: eq(products.shopId, shopId),
     orderBy: [asc(products.position), desc(products.createdAt)],

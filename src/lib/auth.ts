@@ -26,6 +26,23 @@ const RESET_TOKEN_TTL_SECONDS = 60 * 60;
  */
 const MAGIC_LINK_TTL_SECONDS = 60 * 5;
 
+/**
+ * Better-auth's own refusals, copied rather than imported.
+ *
+ * They live in `@better-auth/core/error`, which is a nested dependency of
+ * `better-auth` rather than a package this app declares — importing it would
+ * be reaching through someone else's `node_modules` for two strings. Copied
+ * with the source named instead, and `auth.test.ts` asserts they still match
+ * what the library throws, so a reword upstream fails a test rather than
+ * silently making our refusal distinguishable again.
+ */
+export const BETTER_AUTH_MESSAGES = {
+  /** `/sign-up/email`, 422, when the address is taken. */
+  userExists: "User already exists. Use another email.",
+  /** `/sign-in/email`, 401, when the password is wrong. */
+  badCredentials: "Invalid email or password",
+} as const;
+
 export const auth = betterAuth({
   database: drizzleAdapter(getDb(), {
     provider: "pg",
@@ -187,13 +204,32 @@ export const auth = betterAuth({
       if (!refusesPasswordAuth(ctx.path, ctx.body?.email)) return;
 
       console.warn(`[sailo] password auth refused for staff address on ${ctx.path}`);
+
       /*
-       * The same message either way, and the same one an ordinary duplicate
-       * signup gets. Naming the roster here would turn the endpoint into a
-       * test for whether an address is staff.
+       * Each endpoint's *own* refusal, status and message, rather than one of
+       * our own.
+       *
+       * The first version threw a bespoke 400 saying "use a sign-in link",
+       * with a comment claiming it was "the same one an ordinary duplicate
+       * signup gets". It was not, and a review caught the difference: a
+       * distinct status and a message naming the magic link turned the
+       * endpoint into a test for whether an address is on the staff roster.
+       * Anyone could have enumerated it from outside.
+       *
+       * `USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL` at 422 is exactly what
+       * `/sign-up/email` answers for an address that is taken — which a staff
+       * address, having been created by a magic link, genuinely is.
+       * `INVALID_EMAIL_OR_PASSWORD` at 401 is exactly what `/sign-in/email`
+       * answers for a wrong password. Both are true as well as
+       * indistinguishable, which is the only kind of cover worth having.
        */
-      throw new APIError("BAD_REQUEST", {
-        message: "This address can't be used with a password. Use a sign-in link.",
+      if (ctx.path === "/sign-up/email") {
+        throw new APIError("UNPROCESSABLE_ENTITY", {
+          message: BETTER_AUTH_MESSAGES.userExists,
+        });
+      }
+      throw new APIError("UNAUTHORIZED", {
+        message: BETTER_AUTH_MESSAGES.badCredentials,
       });
     }),
   },

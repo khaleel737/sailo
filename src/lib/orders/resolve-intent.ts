@@ -13,6 +13,7 @@ import {
   type PaymentMethodType,
 } from "@/lib/payments";
 import { cartNeedsDelivery, cartSubtotal, quote, type Quote } from "@/lib/quote";
+import { toStripeAmount } from "@/lib/currency";
 import { readBuyer } from "@/lib/orders/buyer";
 import { commissionBpFor } from "@/lib/orders/commission";
 import { resolveCoupon } from "@/lib/orders/resolve-coupon";
@@ -90,7 +91,28 @@ export async function resolveOrderIntent(
     shop,
   });
   if (!resolved.ok) return { ok: false, error: resolved.error };
-  const { lines } = resolved;
+
+  /*
+   * Prices rounded to what the shop's currency can actually settle, *before*
+   * anything is computed from them.
+   *
+   * A no-op for sixty-six of the seventy-one. For KWD, BHD, JOD, OMR and TND
+   * — quoted to three decimals, settled to two — it is the difference between
+   * a checkout that works and one that refuses itself: Stripe rejects any
+   * amount that is not a multiple of ten fils, so a line at 12.345 cannot be
+   * charged as written.
+   *
+   * At the *line* rather than at the total, which is the mistake worth not
+   * repeating. Rounding only the aggregates left the order's own lines adding
+   * up to something else, so the handoff's subtotal guard refused a checkout
+   * it should have allowed and a manual invoice showed lines that did not sum
+   * to its total. Round the parts the seller priced, and every figure derived
+   * from them is chargeable for free.
+   */
+  const lines = resolved.lines.map((line) => ({
+    ...line,
+    unitPriceCents: toStripeAmount(line.unitPriceCents, shop.currency),
+  }));
   // The first line stands in for the order wherever one product is expected.
   // Every path above rejects an empty basket, but the header columns are
   // derived from this line and a silent undefined would write a broken order.

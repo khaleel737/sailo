@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Eye, EyeOff, ImageIcon, Package, Plus, Trash2 } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { getAdminProducts } from "@/lib/queries";
+import { ADMIN_PRODUCT_LIMIT, getAdminProducts } from "@/lib/queries";
 import { deleteProduct, toggleProductPublished } from "@/lib/actions/products";
 import { PageHeader } from "@/components/shared/page-header";
 import { ExportButton } from "@/app/admin/_components/export-button";
@@ -28,6 +28,13 @@ export default async function AdminProductsPage() {
   const { shop } = await requireShop();
   const { a, locale } = await getAdminT();
   const products = await getAdminProducts(shop.id);
+  /*
+   * A catalogue at the ceiling is almost certainly larger than the ceiling, so
+   * the badge says "1,000+" rather than naming a number that is not the truth.
+   * Silent truncation is worse than a slow page: a seller told they have a
+   * thousand products goes looking for the other five hundred in the data.
+   */
+  const clipped = products.length >= ADMIN_PRODUCT_LIMIT;
 
   return (
     <>
@@ -37,7 +44,9 @@ export default async function AdminProductsPage() {
         meta={
           products.length > 0 ? (
             <Badge tone="neutral">
-              {products.length === 1 ? "1 product" : `${products.length} products`}
+              {products.length === 1
+                ? "1 product"
+                : `${products.length.toLocaleString(locale)}${clipped ? "+" : ""} products`}
             </Badge>
           ) : null
         }

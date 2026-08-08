@@ -196,15 +196,15 @@ describe("toChargeableTotals", () => {
   it("leaves a two-decimal currency exactly as it was", () => {
     // Sixty-six of the seventy-one. A cent is already the settlement step.
     const t = totals({ subtotalCents: 1999, taxCents: 137, totalCents: 2136 });
-    expect(toChargeableTotals(t, "USD")).toEqual(t);
-    expect(toChargeableTotals(t, "EUR")).toEqual(t);
-    expect(toChargeableTotals(t, "JPY")).toEqual(t);
+    expect(toChargeableTotals(t, "USD", false)).toEqual(t);
+    expect(toChargeableTotals(t, "EUR", false)).toEqual(t);
+    expect(toChargeableTotals(t, "JPY", false)).toEqual(t);
   });
 
   it("rounds a three-decimal currency to what the network settles", () => {
     // 5% tax on 12.500 KWD is 625 fils, which no card can charge.
     const t = totals({ subtotalCents: 12_500, taxCents: 625, totalCents: 13_125 });
-    const charged = toChargeableTotals(t, "KWD");
+    const charged = toChargeableTotals(t, "KWD", false);
 
     expect(charged.taxCents).toBe(630);
     expect(charged.totalCents).toBe(13_130);
@@ -226,6 +226,7 @@ describe("toChargeableTotals", () => {
           totalCents: 10_223,
         }),
         code,
+        false,
       );
       expect(
         c.subtotalCents - c.discountCents + c.deliveryFeeCents + c.taxCents,
@@ -245,11 +246,39 @@ describe("toChargeableTotals", () => {
         totalCents: 10_223,
       }),
       "KWD",
+      false,
     );
     for (const [name, value] of Object.entries(c)) {
       if (name === "commissionCents") continue; // settled separately, in USD
       expect(value % 10, name).toBe(0);
     }
+  });
+
+  it("does not charge inclusive tax a second time", () => {
+    /*
+     * The bug a review caught in the first version of this function, and the
+     * most expensive kind: it re-derived the total by adding tax
+     * unconditionally, while `computeTotals` deliberately leaves inclusive tax
+     * out because it is already inside the prices. An inclusive-tax shop in
+     * one of these five currencies would have charged its own VAT twice —
+     * twenty per cent too much, on every card sale.
+     *
+     * Inclusive: the buyer pays the shelf price and the tax is inside it.
+     */
+    const inclusive = toChargeableTotals(
+      totals({ subtotalCents: 12_000, taxCents: 2_000, totalCents: 12_000 }),
+      "KWD",
+      true,
+    );
+    expect(inclusive.totalCents).toBe(12_000);
+
+    // Exclusive: the same numbers, and now the tax really is added on top.
+    const exclusive = toChargeableTotals(
+      totals({ subtotalCents: 12_000, taxCents: 2_000, totalCents: 14_000 }),
+      "KWD",
+      false,
+    );
+    expect(exclusive.totalCents).toBe(14_000);
   });
 
   it("never asks the network for a negative amount", () => {
@@ -258,6 +287,7 @@ describe("toChargeableTotals", () => {
     const c = toChargeableTotals(
       totals({ subtotalCents: 4, discountCents: 6, totalCents: 0 }),
       "KWD",
+      false,
     );
     expect(c.totalCents).toBeGreaterThanOrEqual(0);
   });
@@ -278,6 +308,7 @@ describe("toChargeableTotals", () => {
           totalCents: 8_443,
         }),
         code,
+        false,
       );
       const asStripeSees =
         toStripeAmount(c.subtotalCents, code) -
