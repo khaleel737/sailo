@@ -1,5 +1,7 @@
 # Sailo
 
+[github.com/khaleel737/sailo](https://github.com/khaleel737/sailo) · [sailo.store](https://sailo.store)
+
 **Your bio link, but it's a shop.**
 
 Sailo is as simple as a link-in-bio page — except the rows are your products.
