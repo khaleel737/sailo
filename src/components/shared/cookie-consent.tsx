@@ -37,6 +37,39 @@ const isUnanswered = () => readConsent() === null;
  */
 const isUnansweredOnServer = () => false;
 
+/*
+ * What this site actually stores, and under which heading.
+ *
+ * Audited rather than assumed: `sailo_session` is BetterAuth's, `sailo_locale`
+ * is the language switcher's, `sailo_consent` is this answer. Google Analytics
+ * writes `_ga` and a per-property `_ga_*`, and it is the only optional thing
+ * here — Vercel Analytics is cookieless, and there is no Sentry, no ad tag and
+ * no third-party pixel to declare.
+ *
+ * A category with nothing behind it is worse than no category: it is a claim
+ * that cannot be checked. Add the next one when a tag arrives to justify it,
+ * and bump CONSENT_VERSION so everyone is asked again about the new question.
+ */
+const CATEGORIES = [
+  {
+    id: "essential",
+    body: "essentialBody",
+    locked: true,
+    cookies: ["sailo_session", "sailo_locale", "sailo_consent"],
+  },
+  {
+    id: "analytics",
+    body: "analyticsBody",
+    locked: false,
+    cookies: ["_ga", "_ga_*"],
+  },
+] as const satisfies readonly {
+  id: "essential" | "analytics";
+  body: "essentialBody" | "analyticsBody";
+  locked: boolean;
+  cookies: readonly string[];
+}[];
+
 /**
  * The analytics consent request, for Sailo's own pages.
  *
@@ -137,54 +170,68 @@ export function CookieConsent({
 
       {choosing ? (
         <ul className="mt-4 space-y-2">
-          {/*
-            Essentials is not a choice, so it must not be dressed as one.
-
-            It used to render a switch — the same pill-and-knob shape as a real
-            toggle, but an aria-hidden span with no handler. It could not be
-            clicked, which reads as a broken control rather than as a locked
-            one, and it is the first thing anyone tries when they open this
-            panel. A disabled checkbox in the same row shape as the category
-            below it says "on, and not yours to change" in the one visual
-            language the panel already uses.
-          */}
-          <li className="flex items-start gap-3 rounded-[var(--r-card)] border border-[var(--mute-200)] bg-[var(--mute-100)] p-3">
-            <input
-              type="checkbox"
-              checked
-              disabled
-              readOnly
-              aria-label={`${labels.essential}: ${labels.essentialBody}`}
-              className="mt-0.5 size-5 shrink-0 accent-[var(--ink)] opacity-60"
-            />
-            <span className="min-w-0">
-              <span className="block text-[0.8125rem] font-medium text-[var(--ink)]">
-                {labels.essential}
-              </span>
-              <span className="block text-[0.75rem] text-[var(--mute-500)]">
-                {labels.essentialBody}
-              </span>
-            </span>
-          </li>
-
-          <li>
-            <label className="flex cursor-pointer items-start gap-3 rounded-[var(--r-card)] border border-[var(--mute-200)] p-3 hover:bg-[var(--mute-100)]">
-              <input
-                type="checkbox"
-                checked={analytics}
-                onChange={toggleAnalytics}
-                className="focus-ring mt-0.5 size-5 shrink-0 accent-[var(--ink)]"
-              />
-              <span className="min-w-0">
-                <span className="block text-[0.8125rem] font-medium text-[var(--ink)]">
-                  {labels.analytics}
-                </span>
-                <span className="block text-[0.75rem] text-[var(--mute-500)]">
-                  {labels.analyticsBody}
-                </span>
-              </span>
-            </label>
-          </li>
+          {CATEGORIES.map((category) => {
+            const on = category.locked || analytics;
+            return (
+              <li key={category.id}>
+                <label
+                  className={
+                    category.locked
+                      ? "flex items-start gap-3 rounded-[var(--r-card)] border border-[var(--mute-200)] bg-[var(--mute-100)] p-3"
+                      : "flex cursor-pointer items-start gap-3 rounded-[var(--r-card)] border border-[var(--mute-200)] p-3 hover:bg-[var(--mute-100)]"
+                  }
+                >
+                  {/*
+                    A real switch, checkbox underneath.
+                    
+                    The input carries the state, the keyboard behaviour and the
+                    accessible name; the span beside it is only paint. An
+                    interactive div with a click handler would have to
+                    re-implement all three, and the version this replaced was a
+                    span with none of them — which is why the locked row read as
+                    a broken control rather than a fixed one.
+                  */}
+                  <input
+                    type="checkbox"
+                    checked={on}
+                    disabled={category.locked}
+                    readOnly={category.locked}
+                    onChange={category.locked ? undefined : toggleAnalytics}
+                    className="peer sr-only"
+                  />
+                  <span
+                    aria-hidden
+                    className={`mt-0.5 inline-flex h-5 w-9 shrink-0 items-center rounded-full p-0.5 transition-colors ${
+                      on ? "bg-[var(--ink)]" : "bg-[var(--mute-300)]"
+                    } ${category.locked ? "opacity-60" : "peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--ink)] peer-focus-visible:ring-offset-2"}`}
+                  >
+                    <span
+                      className={`block size-4 rounded-full bg-[var(--paper)] shadow-sm transition-transform ${
+                        on ? "translate-x-4" : "translate-x-0"
+                      }`}
+                    />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[0.8125rem] font-medium text-[var(--ink)]">
+                      {labels[category.id]}
+                    </span>
+                    <span className="block text-[0.75rem] text-[var(--mute-500)]">
+                      {labels[category.body]}
+                    </span>
+                    {/*
+                      The names themselves, which are identifiers rather than
+                      prose and so are the same in every language. Naming them
+                      is the difference between a category someone has to trust
+                      and one they can check.
+                    */}
+                    <span className="mt-1 block font-mono text-[0.6875rem] text-[var(--mute-400)]">
+                      {category.cookies.join(", ")}
+                    </span>
+                  </span>
+                </label>
+              </li>
+            );
+          })}
         </ul>
       ) : null}
 
