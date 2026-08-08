@@ -90,6 +90,42 @@ limit, idempotent webhooks, per-shop cache tags. Watch: email throughput
 hot shops, Fluid instance-count × pool-size vs Neon connection caps at rollout.
 Re-run the load test against a Neon branch pre-launch.
 
+## Second research pass: multi-master and everything else (2026-08-08)
+
+A follow-up sweep covered the categories the first pass missed. None changed
+the decision; two entries amended the plan.
+
+- **pgEdge (active-active Spock)**: cannot make the guarded stock decrement
+  safe — delta-apply is an unbounded-counter CRDT, the `stock >= N` guard only
+  runs against the origin node's stale value, so two regions can both pass it
+  and converge to negative stock; a CHECK turns oversell into a replication
+  stall. pgEdge's own guidance is to pin writes per region — i.e. tenant
+  homing, rebuilt on multi-master machinery plus Snowflake-sequence PKs,
+  FKs unenforced on apply, and quiesce-for-DDL migrations. Ruled out.
+- **YugabyteDB Aeon (partition-by-region)**: the honest "tenant homing inside
+  one database" product — safe decrements, Singapore/Jakarta/Tokyo available,
+  Drizzle works. Costs ~$3.5–7k/mo minimum and threads a region column through
+  every PK/unique/FK. **Recorded as the fallback if Neon cells ever prove
+  operationally heavy.**
+- **EDB PGD**: Quorum Commit (May 2026) genuinely fixes the bounded-counter
+  problem — by paying cross-region round trips inside every commit, defeating
+  the latency purpose; enterprise procurement besides. Watch, don't buy.
+- **Spanner PG dialect**: no Singapore-write multi-region config, no Drizzle
+  support (PGAdapter sidecar required). Out. **TiDB**: MySQL wire only. Out.
+- **Postgres edge caches**: PolyScale is dead (domain for sale); Prisma
+  Accelerate is Prisma-Client-only; ReadySet must sit beside the primary;
+  Hyperdrive is Workers-only. Category effectively empty for this stack.
+- **Sync engines**: unfit for checkout by design (writes need one authority) —
+  but **ElectricSQL is a real optional Phase 1.5**: per-tenant read-path
+  "shapes" served over CDN-cacheable HTTP would erase far-region latency for
+  seller admin dashboards without touching the write path (self-serve since
+  Apr 2026, ~$2/M writes emitted). Adopt when far-region seller complaints
+  materialize; PowerSync instead if a seller mobile app ships.
+- **Queue-based checkout** (Vercel Queues beta + Workflow GA): a contention
+  pattern, not a latency fix — confirmation still crosses the ocean and stock
+  races become after-the-fact rejections. Back pocket for a future flash-sale
+  feature only.
+
 ## Standing risks and watchlist
 
 - **Mainland China (20k shops)**: unserved by every option researched — no
@@ -101,3 +137,8 @@ Re-run the load test against a Neon branch pre-launch.
   revives cross-region replicas (dormant epic since 2023).
 - Vercel doc inconsistency: Pro function-region count reads 5 in the regions
   doc, 3 in the Fluid doc — confirm in the dashboard before relying on it.
+- Neon was acquired by Databricks (~$1B, closed 2025; tech underpins
+  Lakebase). No immediate risk; watch roadmap attention and pricing.
+- EDB PGD Quorum Commit maturing into a small-team-buyable product would
+  reopen the multi-master question; as of Aug 2026 it is ~10 weeks old and
+  enterprise-only.
