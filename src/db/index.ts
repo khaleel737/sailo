@@ -1,5 +1,6 @@
 import { neon, neonConfig } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
+import { isLocalDatabaseUrl } from "@/lib/local-database";
 import * as schema from "./schema";
 
 /**
@@ -18,20 +19,17 @@ import * as schema from "./schema";
  * where the database is. If `DATABASE_URL` names this machine, the proxy is
  * the only thing that could serve it, so honouring it is unambiguous — and if
  * it names Neon, nothing here runs at all.
+ *
+ * The "is this machine" test is `isLocalDatabaseUrl`, shared with the two
+ * scripts that refuse to write anywhere else. Three copies of one predicate is
+ * one loopback form away from disagreeing, and the disagreement would show up
+ * as a writing test suite reaching production rather than as an error.
  */
-function isLocalUrl(url: string): boolean {
-  try {
-    const host = new URL(url).hostname;
-    return host === "localhost" || host === "127.0.0.1" || host === "[::1]";
-  } catch {
-    return false;
-  }
-}
 
 let proxyConfigured = false;
 
 function createDb(url: string) {
-  if (isLocalUrl(url) && !proxyConfigured) {
+  if (isLocalDatabaseUrl(url) && !proxyConfigured) {
     neonConfig.fetchEndpoint =
       process.env.NEON_LOCAL_PROXY ?? "http://localhost:54330/sql";
     neonConfig.useSecureWebSocket = false;

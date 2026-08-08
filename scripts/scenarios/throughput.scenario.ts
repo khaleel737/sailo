@@ -120,6 +120,26 @@ describe("throughput", () => {
         `${seconds.toFixed(1)}s · ${(BUYERS / seconds).toFixed(1)}/s\n`,
     );
 
+    /*
+     * Cleared before the assertions, not after.
+     *
+     * This run leaves a shop, a product and up to eighty orders behind, and
+     * unlike the correctness suites it is measured — so its own leftovers are
+     * an input to the next run. Enough of them change which plan Postgres
+     * picks, and a throughput number that drifts because of junk rows from
+     * previous runs is worse than no number, because it looks like a
+     * regression in the code.
+     *
+     * Assertions throw, so anything after them only runs when the test passes,
+     * which is exactly the case where cleanup matters least. Doing it here
+     * means a failing run tidies up too.
+     */
+    await db.delete(orders).where(eq(orders.shopId, shop.id));
+    await db.delete(products).where(eq(products.shopId, shop.id));
+    await db.delete(paymentMethods).where(eq(paymentMethods.shopId, shop.id));
+    await db.delete(shops).where(eq(shops.id, shop.id));
+    await db.delete(user).where(eq(user.id, userId));
+
     // Nothing may throw: a checkout that errors is a buyer seeing a spinner
     // that never stops, which is how one order becomes three.
     expect(threw).toEqual([]);

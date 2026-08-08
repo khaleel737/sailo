@@ -10,6 +10,7 @@
  *   SHOPS=20000 npm run check:load
  */
 import { present } from "@/lib/invariant";
+import { hostnameOf, isLocalDatabaseUrl } from "@/lib/local-database";
 import { neon, neonConfig } from "@neondatabase/serverless";
 
 const url = present(process.env.DATABASE_URL, "DATABASE_URL");
@@ -27,19 +28,13 @@ const url = present(process.env.DATABASE_URL, "DATABASE_URL");
  */
 function assertSafeTarget(target: string): void {
   if (process.env.LOAD_TEST_ALLOW_REMOTE === "1") return;
-  let host: string;
-  try {
-    host = new URL(target).hostname;
-  } catch {
-    throw new Error("check:load refused: DATABASE_URL is not a URL it can check");
-  }
-  if (host !== "localhost" && host !== "127.0.0.1" && host !== "[::1]") {
-    throw new Error(
-      `check:load refused: ${host} is not this machine. Point DATABASE_URL at a ` +
-        `throwaway database (./scripts/scenarios/up.sh), or set ` +
-        `LOAD_TEST_ALLOW_REMOTE=1 if you mean a Neon branch.`,
-    );
-  }
+  if (isLocalDatabaseUrl(target)) return;
+
+  throw new Error(
+    `check:load refused: ${hostnameOf(target)} is not this machine. Point ` +
+      `DATABASE_URL at a throwaway database (./scripts/scenarios/up.sh), or ` +
+      `set LOAD_TEST_ALLOW_REMOTE=1 if you mean a Neon branch.`,
+  );
 }
 
 assertSafeTarget(url);
@@ -50,7 +45,7 @@ assertSafeTarget(url);
  * proxy in front of it. Keyed on the hostname, so it can only ever apply to a
  * database on this machine.
  */
-if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(new URL(url).hostname)) {
+if (isLocalDatabaseUrl(url)) {
   neonConfig.fetchEndpoint = process.env.NEON_LOCAL_PROXY ?? "http://localhost:54330/sql";
   neonConfig.useSecureWebSocket = false;
   neonConfig.poolQueryViaFetch = true;

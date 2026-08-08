@@ -1,3 +1,5 @@
+import { hostnameOf, isLocalDatabaseUrl } from "@/lib/local-database";
+
 /**
  * Refuses to run against anything but a database on this machine.
  *
@@ -6,24 +8,14 @@
  * of that for real, and no amount of care afterwards undoes a claimed invoice
  * number in a sequence a tax authority expects unbroken.
  *
- * The hostname is parsed rather than matched as a substring. `url.includes(
- * "localhost")` is true for `postgres://user@localhost.attacker.example/db`
- * and for any connection string with the word anywhere in it — a guard someone
- * else can register a domain to walk past is not a guard.
+ * The hostname test lives in `@/lib/local-database`, shared with the driver
+ * and with `check:load`, so all three agree on what "this machine" means.
  */
 export function assertLocalDatabase(url = process.env.DATABASE_URL ?? ""): void {
-  let host: string;
-  try {
-    host = new URL(url).hostname;
-  } catch {
-    throw new Error(
-      "scenario suite refused: DATABASE_URL is not a URL it can check",
-    );
-  }
+  if (isLocalDatabaseUrl(url)) return;
 
-  if (host !== "localhost" && host !== "127.0.0.1" && host !== "[::1]") {
-    throw new Error(
-      `scenario suite refused: DATABASE_URL points at ${host}, not this machine`,
-    );
-  }
+  throw new Error(
+    `scenario suite refused: DATABASE_URL points at ${hostnameOf(url)}, ` +
+      `not this machine`,
+  );
 }
