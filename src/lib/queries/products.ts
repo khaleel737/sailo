@@ -1,6 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
-import { and, asc, desc, eq, gte, ilike, inArray, lte, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import { categories, productFiles, productImages, productVariants, products, reviews, type Category, type Product, type ProductImage, type ProductVariant } from "@/db/schema";
 import { shopTag } from "@/lib/cache";
@@ -65,6 +65,24 @@ export function pickFilters(input: Record<string, unknown>): ShopFilters {
   };
 }
 
+/**
+ * What the storefront search matches against: title and description as one
+ * string, so a search for "blue mug" finds a product titled "Blue" described
+ * as "a mug".
+ *
+ * This must stay character-for-character identical to the expression indexed
+ * by `products_search_trgm_idx` (drizzle/0005_product_search.sql). Postgres
+ * matches an expression index by the expression's parse tree, so changing the
+ * separator or dropping the coalesce here silently falls back to a full scan
+ * of the shop's catalogue — no error, just a query that gets slower as the
+ * catalogue grows.
+ *
+ * Exported only so scripts/scenarios/search.scenario.ts can plan the real
+ * expression instead of a copy of it, which is what makes that test able to
+ * notice the drift this comment is asking you to avoid.
+ */
+export const productSearchExpr = sql`(${products.title} || ' ' || coalesce(${products.description}, ''))`;
+
 /** How many cards one batch of the storefront grid holds. */
 export const PRODUCT_PAGE_SIZE = 24;
 
@@ -100,12 +118,7 @@ async function readPublicProducts(
   const where = [eq(products.shopId, shopId), eq(products.isPublished, true)];
 
   if (filters.q?.trim()) {
-    const term = `%${filters.q.trim()}%`;
-    const match = or(
-      ilike(products.title, term),
-      ilike(products.description, term),
-    );
-    if (match) where.push(match);
+    where.push(sql`${productSearchExpr} ILIKE ${`%${filters.q.trim()}%`}`);
   }
 
   if (filters.category) {
