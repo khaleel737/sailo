@@ -1,4 +1,5 @@
 import type { Coupon, DeliveryMethod } from "@/db/schema";
+import { chargeStep } from "@/lib/currency";
 
 /**
  * Percentages are stored in basis points so fractional rates (7.5%) survive a
@@ -194,4 +195,54 @@ export function generateCode(seed: string) {
   const bytes = crypto.getRandomValues(new Uint8Array(4));
   for (const b of bytes) suffix += alphabet[b % alphabet.length];
   return `${base}${suffix}`;
+}
+
+/**
+ * An order priced in an amount a card can actually settle.
+ *
+ * The three-decimal currencies — KWD, BHD, JOD, OMR, TND — settle to two
+ * places, so a total of 12.345 KWD is not chargeable: Stripe refuses any
+ * amount that is not a multiple of ten fils. `toStripeAmount` rounded each
+ * *line* on the way out, which meant the card was asked for something the
+ * order had never said, and the guard that was supposed to catch that compared
+ * the unrounded numbers and passed. A buyer's statement and their invoice
+ * disagreed by up to five fils per line, with nothing in either to explain it.
+ *
+ * Rounding at the Stripe boundary cannot fix that, because the invoice is
+ * written from the order. So the order is rounded instead, and the invoice,
+ * the total the buyer agreed to and the amount charged are the same number by
+ * construction.
+ *
+ * The parts are rounded and the total re-derived from them, rather than the
+ * total rounded on its own — a receipt whose lines do not add up to its total
+ * is its own kind of wrong, and the one a seller has to explain.
+ *
+ * A no-op for the other sixty-six currencies, where the step is one.
+ */
+export function toChargeableTotals(totals: Totals, currency: string): Totals {
+  const step = chargeStep(currency);
+  if (step === 1) return totals;
+
+  const round = (n: number) => Math.round(n / step) * step;
+
+  const subtotalCents = round(totals.subtotalCents);
+  const discountCents = round(totals.discountCents);
+  const deliveryFeeCents = round(totals.deliveryFeeCents);
+  const taxCents = round(totals.taxCents);
+
+  return {
+    subtotalCents,
+    discountCents,
+    deliveryFeeCents,
+    taxCents,
+    // Never negative: a discount rounded up past a subtotal rounded down would
+    // otherwise ask the card network for a refund it has no way to make.
+    totalCents: Math.max(
+      0,
+      subtotalCents - discountCents + deliveryFeeCents + taxCents,
+    ),
+    // Sailo's own cut, which is settled separately and in the platform's own
+    // currency, so it is not bound by this currency's settlement step.
+    commissionCents: totals.commissionCents,
+  };
 }

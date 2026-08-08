@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { Coupon, DeliveryMethod } from "@/db/schema";
+import { toStripeAmount } from "@/lib/currency";
+import type { Totals } from "@/lib/pricing";
 import {
+  toChargeableTotals,
   bpToPercent,
   commission,
   couponDiscount,
@@ -165,5 +168,123 @@ describe("normalizeCode", () => {
   it("makes the same code out of the ways a buyer might type it", () => {
     expect(normalizeCode("  summer  ")).toBe("SUMMER");
     expect(normalizeCode("Summer")).toBe("SUMMER");
+  });
+});
+
+/**
+ * What a card can actually settle.
+ *
+ * KWD, BHD, JOD, OMR and TND are quoted to three decimals and settled to two,
+ * so the last digit of a price in fils is not chargeable and Stripe refuses
+ * any amount that is not a multiple of ten. `toStripeAmount` rounded each
+ * *line* on the way out, which meant the card was asked for something the
+ * order had never said — and the guard meant to catch that compared the
+ * unrounded numbers, so it passed. A buyer's statement and their invoice
+ * disagreed by up to five fils per line, with nothing in either to explain it.
+ */
+describe("toChargeableTotals", () => {
+  const totals = (over: Partial<Totals> = {}): Totals => ({
+    subtotalCents: 0,
+    discountCents: 0,
+    deliveryFeeCents: 0,
+    taxCents: 0,
+    totalCents: 0,
+    commissionCents: 0,
+    ...over,
+  });
+
+  it("leaves a two-decimal currency exactly as it was", () => {
+    // Sixty-six of the seventy-one. A cent is already the settlement step.
+    const t = totals({ subtotalCents: 1999, taxCents: 137, totalCents: 2136 });
+    expect(toChargeableTotals(t, "USD")).toEqual(t);
+    expect(toChargeableTotals(t, "EUR")).toEqual(t);
+    expect(toChargeableTotals(t, "JPY")).toEqual(t);
+  });
+
+  it("rounds a three-decimal currency to what the network settles", () => {
+    // 5% tax on 12.500 KWD is 625 fils, which no card can charge.
+    const t = totals({ subtotalCents: 12_500, taxCents: 625, totalCents: 13_125 });
+    const charged = toChargeableTotals(t, "KWD");
+
+    expect(charged.taxCents).toBe(630);
+    expect(charged.totalCents).toBe(13_130);
+  });
+
+  it("keeps the lines adding up to the total", () => {
+    /*
+     * The total is re-derived from the rounded parts rather than rounded on
+     * its own. A receipt whose lines do not sum to its total is its own kind
+     * of wrong, and the one a seller has to explain to a buyer.
+     */
+    for (const code of ["KWD", "BHD", "JOD", "OMR", "TND"]) {
+      const c = toChargeableTotals(
+        totals({
+          subtotalCents: 9_999,
+          discountCents: 1_234,
+          deliveryFeeCents: 567,
+          taxCents: 891,
+          totalCents: 10_223,
+        }),
+        code,
+      );
+      expect(
+        c.subtotalCents - c.discountCents + c.deliveryFeeCents + c.taxCents,
+        code,
+      ).toBe(c.totalCents);
+    }
+  });
+
+  it("makes every part chargeable, not just the total", () => {
+    // Stripe is sent line items, so each one has to survive on its own.
+    const c = toChargeableTotals(
+      totals({
+        subtotalCents: 9_999,
+        discountCents: 1_234,
+        deliveryFeeCents: 567,
+        taxCents: 891,
+        totalCents: 10_223,
+      }),
+      "KWD",
+    );
+    for (const [name, value] of Object.entries(c)) {
+      if (name === "commissionCents") continue; // settled separately, in USD
+      expect(value % 10, name).toBe(0);
+    }
+  });
+
+  it("never asks the network for a negative amount", () => {
+    // A discount rounded up past a subtotal rounded down would otherwise ask
+    // for a refund the checkout has no way to make.
+    const c = toChargeableTotals(
+      totals({ subtotalCents: 4, discountCents: 6, totalCents: 0 }),
+      "KWD",
+    );
+    expect(c.totalCents).toBeGreaterThanOrEqual(0);
+  });
+
+  it("agrees with what the Stripe boundary would round to", () => {
+    /*
+     * The property the whole change exists for: after rounding, sending each
+     * part through `toStripeAmount` changes nothing — so the invoice, the
+     * total the buyer agreed to and the amount charged are one number.
+     */
+    for (const code of ["KWD", "BHD", "JOD", "USD", "EUR", "JPY"]) {
+      const c = toChargeableTotals(
+        totals({
+          subtotalCents: 7_777,
+          discountCents: 333,
+          deliveryFeeCents: 444,
+          taxCents: 555,
+          totalCents: 8_443,
+        }),
+        code,
+      );
+      const asStripeSees =
+        toStripeAmount(c.subtotalCents, code) -
+        toStripeAmount(c.discountCents, code) +
+        toStripeAmount(c.deliveryFeeCents, code) +
+        toStripeAmount(c.taxCents, code);
+      expect(asStripeSees, code).toBe(c.totalCents);
+    }
   });
 });

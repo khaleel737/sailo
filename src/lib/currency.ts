@@ -201,7 +201,25 @@ export function minorPerMajor(code: string): number {
  * seeing a failed checkout they cannot diagnose.
  */
 export function toStripeAmount(minor: number, code: string): number {
-  return currencyDecimals(code) === 3 ? Math.round(minor / 10) * 10 : minor;
+  return Math.round(minor / chargeStep(code)) * chargeStep(code);
+}
+
+/**
+ * The smallest amount a card network can actually settle in this currency.
+ *
+ * One for almost everything. Ten for the three-decimal currencies — KWD, BHD,
+ * JOD, OMR, TND — because card networks settle those to two places, so the
+ * last digit of a price in fils is not chargeable at all. Stripe refuses an
+ * amount that is not a multiple of ten rather than rounding it for you.
+ *
+ * Exported because rounding at the Stripe boundary alone is not enough: an
+ * order whose total is not a multiple of ten cannot be charged as written, so
+ * whatever Stripe is asked for necessarily differs from the invoice. Rounding
+ * the order itself is what makes the two agree, and this is the number that
+ * decides both.
+ */
+export function chargeStep(code: string): number {
+  return currencyDecimals(code) === 3 ? 10 : 1;
 }
 
 /**

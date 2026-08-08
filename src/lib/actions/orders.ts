@@ -13,7 +13,7 @@ import { callerIp } from "@/lib/client-ip";
 import { orderItems, orders, shops, type PaymentConfig } from "@/db/schema";
 import { formatAddress, formatMoney } from "@/lib/utils";
 import { bankDetailLines, buildHandoff, type Handoff } from "@/lib/payments";
-import { COUPON_MESSAGES } from "@/lib/pricing";
+import { COUPON_MESSAGES, toChargeableTotals } from "@/lib/pricing";
 import { createInvoiceForOrder, newInvoiceToken } from "@/lib/invoices";
 import { can } from "@/lib/plans";
 import { type QuoteLine } from "@/lib/quote";
@@ -111,7 +111,17 @@ export async function createOrderIntent(
     priced,
     buyer: { name, email, phone, note, address },
   } = resolvedIntent.intent;
-  const totals = priced.totals;
+  /*
+   * Rounded to what the shop's currency can actually settle.
+   *
+   * A no-op for sixty-six of the seventy-one. For KWD, BHD, JOD, OMR and TND
+   * it is the difference between an invoice and a card statement that agree
+   * and two that do not: those settle to two places, so a total of 12.345 KWD
+   * is not a chargeable amount and Stripe refuses it outright. Rounding here,
+   * before anything is written down, is what makes the order, the invoice and
+   * the charge the same number.
+   */
+  const totals = toChargeableTotals(priced.totals, shop.currency);
 
   const clientId = await upsertClient(shop.id, {
     name,

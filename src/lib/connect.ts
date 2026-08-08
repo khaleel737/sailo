@@ -261,6 +261,30 @@ export async function createCheckoutSession(opts: {
     );
   }
 
+  /*
+   * And the same question about the whole charge, not just the goods.
+   *
+   * The check above compares unrounded numbers, so it passed while every line
+   * was then rounded on its way to Stripe — which is how a three-decimal
+   * currency ended up charging something the order had never said. The order
+   * is rounded at creation now, so these agree by construction; this asserts
+   * it rather than trusting it, because the failure mode is a card statement
+   * that disagrees with an invoice and nothing anywhere that would notice.
+   */
+  const chargeable = (n: number) => toStripeAmount(n, currency);
+  const stripeTotal =
+    goods.reduce((sum, g) => sum + chargeable(g.unitPriceCents) * g.quantity, 0) +
+    chargeable(order.deliveryFeeCents) +
+    (order.taxInclusive ? 0 : chargeable(order.taxCents)) -
+    chargeable(order.discountCents);
+
+  if (stripeTotal !== order.totalCents) {
+    throw new Error(
+      `Stripe would be asked for ${stripeTotal} but the order total is ` +
+        `${order.totalCents}. Refusing to charge a different amount.`,
+    );
+  }
+
   // The goods, at the unit price actually charged. Quantity is a separate
   // field so Stripe's receipt reads "3 × Speckled Mug" rather than one lump.
   for (const [index, item] of goods.entries()) {
