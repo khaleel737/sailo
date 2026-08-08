@@ -79,10 +79,17 @@ STRIPE_PRICE_BUSINESS_YEARLY=
 ```
 
 Run `npx dotenv -e .env.local -- npx tsx scripts/stripe-setup.ts` to create the
-products and prices in Stripe and print the price ids. For local webhooks:
+products and prices in Stripe and print the price ids. See **Testing** below
+for forwarding webhooks locally.
+
+Two webhook secrets, not one. Stripe delivers connected-account events — every
+card sale a buyer makes — only to an endpoint registered *for Connect*, and
+that registration has its own signing secret. An integration with only the
+ordinary endpoint records no payments at all:
 
 ```bash
-stripe listen --forward-to localhost:3000/api/stripe/webhook
+STRIPE_WEBHOOK_SECRET=          # /api/stripe/webhook — sellers paying us
+STRIPE_CONNECT_WEBHOOK_SECRET=  # /api/stripe/connect/webhook — buyers paying sellers
 ```
 
 Without `STRIPE_SECRET_KEY` every shop stays on Free and the billing page says
@@ -94,6 +101,62 @@ must be verified in Resend.
 
 `NEXT_PUBLIC_APP_URL` is used to build the product links embedded in outgoing
 WhatsApp messages — set it to the real origin in production.
+
+## Testing
+
+Three suites, and they cover different things on purpose.
+
+```bash
+npm run typecheck                                # tsc, separately — vitest does not typecheck
+npm test                                         # 1,217 unit tests
+npx playwright test e2e/                         # 34 browser tests
+npm run lint                                     # oxlint, zero errors expected
+npm run build                                    # read the exit code, not the output
+```
+
+### The scenario suite — the money path, against a real database
+
+Until recently no test in this repo had ever placed an order, because the only
+database the app could reach was production's. Writing one would have taken
+real stock and claimed a real invoice number out of a sequence a tax authority
+expects unbroken.
+
+`scripts/scenarios/up.sh` gives it somewhere safe to write: a throwaway
+Postgres behind a local Neon HTTP proxy. The proxy is the load-bearing part —
+the app speaks Neon's HTTP protocol and a plain container cannot answer it.
+
+```bash
+./scripts/scenarios/up.sh                        # needs Docker
+npx vitest run --config vitest.scenarios.mts     # 50 scenarios
+docker rm -f sailo-test-db sailo-neon-proxy      # when you are done
+```
+
+`src/db/index.ts` points the driver at the proxy **only when `DATABASE_URL`
+names localhost** — keyed on the hostname rather than a flag, because a flag
+can be set by mistake in production and a hostname cannot lie about where the
+database is. Both scenario suites refuse to start otherwise.
+
+Covered: who may sell, what an order costs, stock, digital delivery, coupons,
+bookings, cancellation, abandonment, and settlement — including the races a
+single-threaded test cannot see (two buyers, one unit; two buyers, one coupon;
+two buyers, one appointment).
+
+### Testing webhooks with the Stripe CLI
+
+```bash
+./scripts/scenarios/up.sh
+npx dotenv -e .env.local.test -- npx next dev -p 3100
+
+stripe listen \
+  --forward-to         http://localhost:3100/api/stripe/webhook \
+  --forward-connect-to http://localhost:3100/api/stripe/connect/webhook
+
+stripe trigger checkout.session.completed
+```
+
+Put the secret `stripe listen` prints into **both** `STRIPE_WEBHOOK_SECRET` and
+`STRIPE_CONNECT_WEBHOOK_SECRET` in `.env.local.test` — the CLI signs everything
+it forwards with the one secret, while production uses two.
 
 ## Scripts
 
@@ -107,6 +170,11 @@ WhatsApp messages — set it to the real origin in production.
 | `npm run db:seed:demos` | Reset and seed `/forno`, `/lumi`, `/serene`, `/inkwell` |
 | `npm run shots` | Re-capture the landing page's storefront screenshots |
 | `npm run check:i18n` | Translation coverage for the storefront, landing page and admin |
+| `npm run typecheck` | `tsc --noEmit`. Run it separately — vitest does not typecheck |
+| `npm test` | Unit tests |
+| `npm run test:e2e` | Playwright |
+| `npm run verify` | All of the above, in order |
+| `./scripts/scenarios/up.sh` | Throwaway Postgres + Neon proxy for the scenario suite |
 
 ## Routes
 
@@ -133,7 +201,28 @@ WhatsApp messages — set it to the real origin in production.
 /[handle]/affiliate   Public referral page (when enabled)
 /invoice/[token]      Public invoice (HTML)
 /invoice/[token]/pdf  Public invoice (PDF download)
+/download/[token]     Digital delivery — the buyer's files
+/partner              Affiliate portal sign-in
+/hq                   Sailo's own back office (staff allowlist, magic link only)
 ```
+
+### API routes
+
+```
+/api/stripe/webhook           Sellers paying us — subscriptions
+/api/stripe/connect/webhook   Buyers paying sellers — every card sale
+/api/cron/{rollup,sitemap,sweep}   Bearer-secret only, scheduled in vercel.json
+/api/download/[token]/[fileId]     Tokened file delivery
+/api/export/[type]            Seller CSV export
+/api/booking/[productId]      Free appointment slots
+/api/track, /api/referral     Public beacons
+/api/upload                   Seller image and file upload
+```
+
+Every route carries a ceiling or a credential: a rate limit, a bearer secret, a
+Stripe signature, or a session guard. There is deliberately no CORS
+configuration anywhere — browsers may send cross-origin requests but cannot
+read any response, and server actions are covered by Next's same-origin check.
 
 ## Delivery, discounts and commission
 
@@ -204,8 +293,7 @@ product title can't execute as a formula when the file opens in Excel.
 
 ## How ordering works
 
-There is no card checkout. Sellers switch on any combination of rails and the
-buyer picks one:
+Sellers switch on any combination of rails and the buyer picks one:
 
 | Rail | Kind | What happens |
 |---|---|---|
@@ -216,6 +304,7 @@ buyer picks one:
 | Phone | chat handoff | `tel:` link |
 | Bank transfer | manual | Account details shown, buyer submits a reference |
 | Cash on delivery | manual | Buyer pays on arrival |
+| Card | Stripe Connect | Direct charge on the seller's own account; money never touches ours |
 
 Every rail follows the same rule: **the order is persisted first**, then the
 buyer is handed off. The seller keeps the lead even if the handoff never
@@ -226,9 +315,15 @@ rails don't, because the conversation itself is the contact. A rail only appears
 to buyers when it is both enabled *and* fully configured — a half-set-up option
 is hidden rather than shown broken.
 
-Card checkout (Stripe, Paystack, PayPal — connected by the seller, money going
-straight to them) is the next step. Stripe reaches only 46 countries, which is
-why the chat and manual rails come first.
+**Card is a direct charge on the seller's own Stripe account**, so the money
+goes to them and never sits with us. It is a Business-plan feature and a
+separate webhook registration — Stripe delivers connected-account events only
+to an endpoint registered for Connect, which is why there are two routes.
+
+The chat and manual rails still come first, and that is the point of the
+product rather than a limitation: Stripe reaches 46 countries, and a seller
+anywhere can be taking orders on WhatsApp in three minutes with no onboarding,
+no KYC and no merchant-of-record liability.
 
 ## Data model
 
@@ -277,12 +372,39 @@ coupons and affiliates keep working, you simply can't create more.
 days, and taking a shop offline mid-sale over a card blip is worse than carrying
 the risk.
 
+## Deploying
+
+Every push to `main` deploys to https://sailo.store. Before pushing:
+
+```bash
+npm run typecheck && npm test && npm run build && npm run lint
+```
+
+**A schema change is not shipped until its migration has run**, and in that
+order. Drizzle selects every column its schema declares, so one column the
+database has never heard of breaks every read of that table — and the build,
+the tests and the types are all green either way, because none of the three
+connects to a database. Three columns once went out ahead of their migration
+and took every shop page down.
+
+```bash
+# Write it by hand for an additive change; db:push diffs the whole schema.
+# Apply it, confirm the column is really there, and only then push the code.
+npx dotenv -e .env.local -- npx tsx -e "…"
+```
+
+And `curl | grep` is not a health check: every RSC payload embeds the error
+boundary's copy, so grepping a page for "something went wrong" matches the
+healthy ones too. Render it and read the visible text.
+
 ## Not built yet
 
-- Card checkout via seller-owned gateways. The Business tier gates it, but the
-  rail itself isn't built — that's the next piece of work.
 - Regional pricing. Flat USD today; localised pricing lifts conversion sharply
   in the emerging markets this is aimed at.
-- Multi-item carts — an order is currently one product with a quantity.
-- Custom domains, multiple shops per user, digital file delivery, bot filtering
-  on visit tracking.
+- Custom domains, multiple shops per user, bot filtering on visit tracking.
+- Paystack and PayPal rails. Card is Stripe Connect only, which leaves out the
+  markets Stripe does not reach — the reason the chat rails matter.
+
+Shipped since this list was last written: card checkout on Stripe Connect,
+multi-item carts (up to 50 lines), digital file delivery with tokened
+downloads, and appointment booking for services.
