@@ -1,0 +1,41 @@
+src/lib/queries/products.ts
+  s_3fd229194f6299::t_43ed7eb81758f7 284,289-299,301,303
+src/lib/pricing.test.ts
+  s_3fd229194f6299::t_e648648f132e15 199-201
+  s_3fd229194f6299::t_e181b2bb459b47 207,229,249,290,311
+  s_3fd229194f6299::t_514d3fb3308b6f 257-283
+src/lib/pricing.ts
+  s_3fd229194f6299::t_18619c0bc26ccc 222-235,251-257,260-263
+src/lib/actions/orders.ts
+  s_3fd229194f6299::t_18619c0bc26ccc 124
+src/lib/queries/orders.ts
+  s_3fd229194f6299::t_43ed7eb81758f7 43-46,48,60
+src/app/admin/clients/page.tsx
+  s_3fd229194f6299::t_d4accb516ac926 6,19-21,29
+src/lib/auth.ts
+  s_3fd229194f6299::t_db1c41fcf1bc3b 207,209-224,226-227,229-231
+  s_3fd229194f6299::t_81e966880239f1 29-45,228,232
+src/app/admin/products/page.tsx
+  s_3fd229194f6299::t_8ab39d2f7e24c9 8,31-37,47-49
+src/lib/auth-messages.test.ts
+  s_3fd229194f6299::t_d882d160205ca7 1-56
+src/lib/orders/resolve-intent.ts
+  s_3fd229194f6299::t_789071d5b91be5 16
+  s_3fd229194f6299::t_6c529ae17d97a8 94-115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "a4be4474052fa6e77f4c8ae1c4d327eef054f3c9",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
