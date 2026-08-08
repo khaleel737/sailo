@@ -8,6 +8,7 @@ import { products, shops, visits } from "@/db/schema";
 import { classifyVisit, parseUserAgent } from "@/lib/analytics";
 import { ensurePartition } from "@/lib/visit-partitions";
 import { visitorId } from "@/lib/visitor-id";
+import { isUuid } from "@/lib/utils";
 
 
 export async function POST(request: Request) {
@@ -36,7 +37,16 @@ export async function POST(request: Request) {
   }
 
   const { shopId, productId } = payload;
-  if (!shopId) return NextResponse.json({ ok: false }, { status: 400 });
+  /*
+   * Shaped like a uuid, not merely present.
+   *
+   * These go straight into a `uuid` column comparison, and Postgres does not
+   * coerce — it raises, which escaped as a 500 from a public unauthenticated
+   * beacon. `{"shopId":"x"}` was enough, and every malformed beacon a stale
+   * cached page sent would have done it. The row check below is still the real
+   * answer to "is this a shop"; this only stops a malformed id reaching it.
+   */
+  if (!isUuid(shopId)) return NextResponse.json({ ok: false }, { status: 400 });
 
   const db = getDb();
   const shop = await db.query.shops.findFirst({
@@ -51,9 +61,15 @@ export async function POST(request: Request) {
   });
   if (!shop) return NextResponse.json({ ok: false }, { status: 404 });
 
-  // Only record a product view if that product really belongs to this shop.
+  /*
+   * Only record a product view if that product really belongs to this shop —
+   * and only look at all if the id could name one. A malformed `productId`
+   * raised in Postgres the same way a malformed `shopId` did; ignoring it
+   * rather than refusing the beacon is right, because the shop's own visit is
+   * still worth counting.
+   */
   let validProductId: string | null = null;
-  if (productId) {
+  if (isUuid(productId)) {
     const p = await db.query.products.findFirst({
       where: and(eq(products.id, productId), eq(products.shopId, shop.id)),
       columns: { id: true },

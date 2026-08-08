@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   centsToAmount,
   formatAddress,
+  isUuid,
   formatMoney,
   normalizePhone,
   parseMoneyToCents,
@@ -302,4 +303,45 @@ describe("centsToAmount", () => {
       }
     },
   );
+});
+
+/**
+ * The guard between a client-supplied string and a `uuid` column.
+ *
+ * Postgres raises on a value it cannot parse rather than returning nothing, so
+ * a malformed id does not come back empty — it comes back as a 500. Two public
+ * unauthenticated endpoints did exactly that until a live run found them:
+ * `{"shopId":"x"}` to `/api/track` or `/api/referral` was enough, and every
+ * malformed beacon a stale cached page sent would have done it.
+ *
+ * Takes `unknown` and narrows, because the coercion a `string`-only signature
+ * forces at the call site — `isUuid(maybe ?? "")` — is exactly where the check
+ * gets written wrong.
+ */
+describe("isUuid", () => {
+  it("accepts a real uuid in either case", () => {
+    expect(isUuid("00000000-0000-0000-0000-000000000000")).toBe(true);
+    expect(isUuid("A1B2C3D4-E5F6-7890-ABCD-EF1234567890")).toBe(true);
+  });
+
+  it("refuses what Postgres would raise on", () => {
+    for (const value of [
+      "x",
+      "",
+      "not-a-uuid",
+      "00000000-0000-0000-0000-00000000000",
+      "00000000-0000-0000-0000-0000000000000",
+      "00000000_0000_0000_0000_000000000000",
+      "zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz",
+      " 00000000-0000-0000-0000-000000000000",
+    ]) {
+      expect(isUuid(value), JSON.stringify(value)).toBe(false);
+    }
+  });
+
+  it("refuses a non-string without being coerced first", () => {
+    for (const value of [undefined, null, 42, {}, [], true]) {
+      expect(isUuid(value)).toBe(false);
+    }
+  });
 });

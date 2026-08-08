@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isUuid } from "@/lib/utils";
 import { rateLimit } from "@/lib/redis";
 import { ipFromHeaders } from "@/lib/client-ip";
 import { recordAffiliateClick } from "@/lib/actions/affiliates";
@@ -23,7 +24,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
-  if (!payload.shopId || !payload.code) {
+  /*
+   * `isUuid`, not merely present. `recordAffiliateClick` compares this against
+   * a `uuid` column, and Postgres raises on a value it cannot parse rather
+   * than returning nothing — so `{"shopId":"x"}` was a 500 from a public
+   * unauthenticated endpoint.
+   */
+  if (!isUuid(payload.shopId) || !payload.code) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 

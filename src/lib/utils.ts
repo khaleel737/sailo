@@ -259,9 +259,16 @@ export function isShopLive(shop: {
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-/** Postgres throws on malformed uuids, so route params get checked first. */
-export function isUuid(value: string) {
-  return UUID_RE.test(value);
+/**
+ * Postgres raises on a malformed uuid rather than returning nothing, so
+ * anything a client supplies gets checked before it reaches a `uuid` column.
+ * `{"shopId":"x"}` was a 500 from a public unauthenticated beacon.
+ *
+ * Takes `unknown` and narrows, so a caller with an optional field does not
+ * have to coerce it first — the coercion is where the check gets forgotten.
+ */
+export function isUuid(value: unknown): value is string {
+  return typeof value === "string" && UUID_RE.test(value);
 }
 
 const INK = "#111111";
