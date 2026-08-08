@@ -116,8 +116,16 @@ in the app is trustworthy.
 | 1 | `inventory.ts` | **Calendar squatting.** The sweep reclaims card orders only, so an unpaid transfer or COD booking holds its slot until the seller cancels it. | Bounded by the 10/min limit on `createOrderIntent`, and "unpaid manual order" is legitimately pending — the seller confirms by hand. Needs a product decision on when one expires. |
 | 2 | `order-preview.ts`, `shop.ts:99` | **Two enumeration oracles** — a coupon code can be probed at 120/min, and `checkHandle` enumerates the seller roster. | Throttled; redemption caps still hold. Low value against the change. |
 | 3 | every `rateLimit` call | **All limits fail open** when Redis is missing or cold. | Deliberate and documented, but it means every ceiling is absent in an environment with no `REDIS_URL`. Worth a decision rather than a silent default. |
-| 4 | `/api/download/[token]/[fileId]` | **No rate limit**, and with `downloadLimit` null it is unbounded egress per token. | The token is the credential and carries 128 bits, so this is cost, not exposure. |
-| 5 | `queries/products.ts:64` | **`?q=` is a leading-wildcard `ILIKE`** with no trigram index — a per-shop scan. | Fine at hundreds of products, will crawl on a 10k-product catalogue. Length is capped and the endpoint is throttled, so it is a scaling item, not an abuse one. |
+| 4 | `queries/products.ts:64` | **`?q=` is a leading-wildcard `ILIKE`** with no trigram index — a per-shop scan. | Fine at hundreds of products, will crawl on a 10k-product catalogue. Length is capped and the endpoint is throttled, so it is a scaling item, not an abuse one. |
+
+**Every route now carries a ceiling.** The audit's inventory listed four with
+a guard and no limit — `/api/upload`, `/api/download/[token]/[fileId]`,
+`/api/export/[type]` and `/invoice/[token]/pdf`. All four have one, keyed on
+whatever identifies the resource being spent: the shop for an upload or an
+export, the token for a download or an invoice, so a buyer on a phone that
+changes address mid-transfer does not read as two callers. The cron routes use
+a bearer secret, the Stripe routes a signature, and better-auth's endpoints the
+Redis limiter in `auth.ts`.
 
 **Closed since this document was rewritten:** three-decimal settlement — the
 five currencies quoted to three places and settled to two were charged an

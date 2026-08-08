@@ -5,6 +5,7 @@ import { orders, productFiles } from "@/db/schema";
 import { orderedProductIds } from "@/lib/downloads";
 import { isUuid } from "@/lib/utils";
 import { isStoredFileUrl } from "@/lib/file-urls";
+import { rateLimit } from "@/lib/redis";
 
 /**
  * Streams one file of a digital order.
@@ -20,6 +21,29 @@ export async function GET(
 ) {
   const { token, fileId } = await params;
   const db = getDb();
+
+  /*
+   * The last public route in the app without a ceiling, and the one that
+   * streams the most: with `downloadLimit` null a token is unbounded egress,
+   * paid by us, for as long as anyone holds it.
+   *
+   * The `downloadCount` claim below is a *product* rule — how many times a
+   * buyer may take their file — and a seller who sets no limit means it. This
+   * is a different question: how fast anyone may ask. Keyed on the token
+   * rather than the address, because the token is what identifies the resource
+   * being spent, and a buyer on a phone that changes IP mid-download should
+   * not look like two callers.
+   *
+   * Generous enough that a buyer retrying a failed transfer never notices, and
+   * `restartable` downloads are not a thing here — the whole file streams in
+   * one response. Fails open, like every other limit.
+   */
+  const gate = await rateLimit(`download:${token}`, 30, 300);
+  if (!gate.allowed) {
+    return new Response("Too many requests. Try again in a few minutes.", {
+      status: 429,
+    });
+  }
 
   if (!isUuid(fileId)) {
     return new Response("Not found", { status: 404 });
