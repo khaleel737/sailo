@@ -44,6 +44,19 @@ const PRIMARY_ONLY = [
   "src/lib/session.ts",
 ];
 
+/*
+ * The three tests below `await import("./index")` after `vi.resetModules()`,
+ * which means each one cold-loads the whole schema graph — about two seconds
+ * on an idle machine, and enough to pass vitest's five-second default when
+ * sixty other files are competing for the same cores. That surfaced as this
+ * file failing perhaps one run in six, always on a timeout rather than an
+ * assertion, which reads as a real defect in the fallback until you look.
+ *
+ * None of these measure speed; they measure which instance comes back. So the
+ * budget is set where it cannot be reached by a slow import.
+ */
+const IMPORT_HEAVY = 30_000;
+
 describe("read replica", () => {
   it("falls back to the primary when no replica is configured", async () => {
     /*
@@ -65,7 +78,7 @@ describe("read replica", () => {
     expect(getReadDb()).toBe(getDb());
 
     vi.unstubAllEnvs();
-  });
+  }, IMPORT_HEAVY);
 
   it("uses a replica when one is configured, under either name", async () => {
     for (const key of ["READ_REPLICA_URL", "DATABASE_URL_REPLICA"]) {
@@ -78,7 +91,7 @@ describe("read replica", () => {
 
       vi.unstubAllEnvs();
     }
-  });
+  }, IMPORT_HEAVY);
 
   it("picks one replica and keeps it, rather than round-robining", async () => {
     /*
@@ -97,7 +110,7 @@ describe("read replica", () => {
     for (let i = 0; i < 20; i++) expect(getReadDb()).toBe(first);
 
     vi.unstubAllEnvs();
-  });
+  }, IMPORT_HEAVY);
 
   it("never reads a write path from the replica", () => {
     for (const path of PRIMARY_ONLY) {

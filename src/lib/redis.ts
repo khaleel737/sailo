@@ -147,6 +147,45 @@ export async function rateLimit(
   );
 }
 
+/**
+ * Reads a budget without spending from it.
+ *
+ * For limits where only *some* outcomes should cost, which is the shape you
+ * want whenever the thing being rationed is attempts at a secret. Charging
+ * every attempt rations the legitimate user too — they have one code and they
+ * use it repeatedly — while charging only the failures rations exactly the
+ * behaviour that distinguishes guessing from using.
+ *
+ * So the caller peeks, does the work, and calls `rateLimit` only if it missed.
+ * The gap between the peek and the charge lets a burst of concurrent guesses
+ * through, which is the right trade here: this bounds a search space over
+ * minutes, and the window is what makes that expensive, not the exact count.
+ *
+ * Fails open, like `rateLimit`, and for the same reason.
+ */
+export async function rateLimitPeek(
+  key: string,
+  limit: number,
+  windowSeconds: number,
+): Promise<RateVerdict> {
+  return withRedis(
+    async (redis) => {
+      // The same bucket `rateLimit` writes, so the two see one counter.
+      const bucket = Math.floor(Date.now() / (windowSeconds * 1000));
+      const raw = await redis.get(`sailo:rl:${key}:${bucket}`);
+      const count = Number(raw ?? 0);
+
+      // `<` rather than `<=`: nothing has been spent yet, so the question is
+      // whether there is room for one more.
+      return {
+        allowed: Number.isFinite(count) ? count < limit : true,
+        remaining: Math.max(0, limit - count),
+      };
+    },
+    { allowed: true, remaining: limit },
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Buffered counters                                                          */
 /* -------------------------------------------------------------------------- */

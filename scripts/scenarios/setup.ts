@@ -25,7 +25,27 @@ delete process.env.READ_REPLICA_URL;
 delete process.env.DATABASE_URL_REPLICA;
 // Nothing here should send mail or reach Stripe.
 delete process.env.RESEND_API_KEY;
-delete process.env.REDIS_URL;
+
+/*
+ * No limiter by default: without a backend `rateLimit` fails open, which keeps
+ * these suites about the money path rather than about ceilings, and stops them
+ * needing a second container to run.
+ *
+ * `SCENARIO_REDIS_URL` opts in, for the suites whose subject *is* a ceiling —
+ * where failing open means the test passes without exercising anything, which
+ * is worse than not having it. Deliberately a separate variable, so pointing
+ * these at a real Redis stays a thing someone chose rather than something
+ * `.env.local` does to them.
+ *
+ * Set it for one file at a time. The rest place dozens of orders a minute from
+ * a single address, well past what `createOrderIntent` allows, so a live
+ * limiter fails them — correctly, which is the confusing part.
+ */
+if (process.env.SCENARIO_REDIS_URL) {
+  process.env.REDIS_URL = process.env.SCENARIO_REDIS_URL;
+} else {
+  delete process.env.REDIS_URL;
+}
 
 vi.mock("next/cache", () => ({
   revalidatePath: () => {},

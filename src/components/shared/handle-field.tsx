@@ -18,6 +18,8 @@ type State =
   | { kind: "unchanged" }
   | { kind: "checking" }
   | { kind: "available" }
+  /** Asked, and got no answer — throttled, offline, or a failed request. */
+  | { kind: "unknown" }
   | { kind: "taken"; message: string; suggestions: string[] };
 
 type Remote = { handle: string; result: HandleStatus | "error" };
@@ -96,19 +98,33 @@ export function HandleField({
           : fresh === null
             ? { kind: "checking" }
             : fresh === "error"
-              ? { kind: "idle" }
-              : fresh.available
-                ? { kind: "available" }
-                : {
-                    kind: "taken",
-                    message: fresh.message ?? HANDLE_MESSAGES.taken,
-                    suggestions: fresh.suggestions,
-                  };
+              ? { kind: "unknown" }
+              : fresh.unknown
+                ? { kind: "unknown" }
+                : fresh.available
+                  ? { kind: "available" }
+                  : {
+                      kind: "taken",
+                      message: fresh.message ?? HANDLE_MESSAGES.taken,
+                      suggestions: fresh.suggestions,
+                    };
 
-  // A handle is usable once it is either free or the one this shop already
-  // has. `checking` deliberately counts as not-yet, so a stepper can't be
-  // walked past while a request is still in flight.
-  const usable = state.kind === "available" || state.kind === "unchanged";
+  /*
+   * A handle is usable once it is either free or the one this shop already
+   * has. `checking` deliberately counts as not-yet, so a stepper can't be
+   * walked past while a request is still in flight.
+   *
+   * `unknown` counts as usable, which looks like the lenient choice and is the
+   * honest one: the check never ran, so treating it as a refusal is asserting
+   * something we did not learn. Shop creation validates uniqueness for real,
+   * and that is the check that decides — this one only saves a round trip. The
+   * alternative traps anyone whose request was throttled or dropped on a step
+   * they cannot leave, which is a worse failure than a late, accurate error.
+   */
+  const usable =
+    state.kind === "available" ||
+    state.kind === "unchanged" ||
+    state.kind === "unknown";
 
   useEffect(() => {
     onResolved?.(usable);

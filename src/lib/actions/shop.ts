@@ -98,6 +98,12 @@ export type HandleStatus = {
   message: string | null;
   /** Free alternatives, only when the wanted one is taken. */
   suggestions: string[];
+  /**
+   * True when the check did not run, so `available: false` here means "not
+   * known" rather than "taken". They are not the same answer and the field
+   * must not draw them the same way.
+   */
+  unknown?: boolean;
 };
 
 /**
@@ -119,7 +125,28 @@ export async function checkHandle(raw: string): Promise<HandleStatus> {
    */
   const gate = await rateLimit(`handle:${await callerIp()}`, 120, 60);
   if (!gate.allowed) {
-    return { handle: raw, available: false, message: null, suggestions: [] };
+    /*
+     * `unknown`, not "taken".
+     *
+     * This first returned a plain `available: false`, which the field draws as
+     * the handle being gone — red, with the "already taken" line — and which
+     * onboarding reads as a step that cannot be advanced past. So the one
+     * person most likely to trip a per-IP ceiling without doing anything wrong
+     * — someone signing up from an office, a school, a carrier NAT, anywhere
+     * an address is shared — was told a free handle belonged to somebody else
+     * and left with no way forward.
+     *
+     * Not knowing is its own answer, and the truthful one here. Shop creation
+     * checks uniqueness for real and is the only check that decides anything,
+     * so letting them continue risks a late error rather than a dead end.
+     */
+    return {
+      handle: raw,
+      available: false,
+      unknown: true,
+      message: null,
+      suggestions: [],
+    };
   }
 
   // No shop id parameter on purpose — a client could pass someone else's and

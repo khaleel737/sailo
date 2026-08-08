@@ -3,7 +3,7 @@
 import { and, eq, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
 import { coupons, shops, type Coupon } from "@/db/schema";
-import { rateLimit } from "@/lib/redis";
+import { rateLimit, rateLimitPeek } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
 import { resolveLines } from "@/lib/orders/resolve-lines";
 import { resolveDelivery } from "@/lib/orders/delivery";
@@ -71,28 +71,40 @@ export async function previewOrder(input: {
 
   if (input.couponCode?.trim()) {
     /*
-     * A ceiling on *guesses*, separate from the one on quotes.
+     * A ceiling on *wrong* guesses, separate from the one on quotes.
      *
      * The general quote limit is 120 a minute because the basket re-prices on
      * every keystroke — which also meant 120 coupon guesses a minute, and the
      * reply distinguishes "no such code" from "that code does not apply here".
      * A working discount code is a bearer token: anyone who finds one can
-     * spend it. A buyer types one code, maybe two; ten in five minutes is
-     * beyond any real use and far below what enumeration needs.
+     * spend it.
+     *
+     * Only a miss costs, and that is the whole design rather than a nicety.
+     * Charging every lookup rations the honest buyer hardest: their code stays
+     * in the basket, so it is re-checked on every keystroke, quantity change
+     * and address edit, and a ceiling of ten was gone in seconds — after which
+     * their perfectly good code came back `not_found` and the discount
+     * vanished from a checkout they were part-way through. Charging only for
+     * codes that do not exist rations the one behaviour that separates
+     * guessing from using, and leaves re-quoting a real code free forever.
      *
      * Answered as `not_found` when tripped, so the ceiling itself says nothing
      * about whether the code was real.
      */
-    const guesses = await rateLimit(`coupon:${await callerIp()}`, 10, 300);
+    const guessKey = `coupon:${await callerIp()}`;
+    const budget = await rateLimitPeek(guessKey, 10, 300);
 
     const code = normalizeCode(input.couponCode);
     // Not looked up at all once the ceiling is reached, so the ceiling costs a
     // query as well as saying nothing.
-    const found = guesses.allowed
+    const found = budget.allowed
       ? await db.query.coupons.findFirst({
           where: and(eq(coupons.shopId, shop.id), eq(coupons.code, code)),
         })
       : undefined;
+    // Spent here, on a guess that actually missed. A code that resolves never
+    // touches the budget however many times the basket re-prices.
+    if (budget.allowed && !found) await rateLimit(guessKey, 10, 300);
     // Judged against the whole basket, so a minimum spend counts every line.
     const verdict = checkCoupon(found, cartSubtotal(resolved.lines), now);
     if (!found) {

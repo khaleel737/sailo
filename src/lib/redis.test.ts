@@ -69,3 +69,71 @@ describe("rateLimit without a backend", () => {
     expect(String(error.mock.calls[0]?.[0])).toMatch(/failing open/i);
   }, 20_000);
 });
+
+/**
+ * Reading a budget without spending from it.
+ *
+ * `rateLimitPeek` exists so a limit can charge for some outcomes and not
+ * others — specifically, so guessing a coupon code costs and using a real one
+ * does not. The properties worth pinning are that it does not increment, that
+ * it reads the same counter `rateLimit` writes, and that it fails open.
+ */
+describe("rateLimitPeek", () => {
+  const original = process.env.REDIS_URL;
+
+  beforeEach(() => {
+    vi.resetModules();
+    vi.restoreAllMocks();
+  });
+
+  afterEach(() => {
+    if (original === undefined) delete process.env.REDIS_URL;
+    else process.env.REDIS_URL = original;
+  });
+
+  it("allows when Redis is not configured", async () => {
+    delete process.env.REDIS_URL;
+    const { rateLimitPeek } = await import("./redis");
+
+    expect(await rateLimitPeek("test", 10, 60)).toEqual(OK);
+  });
+
+  it("reads without incrementing, and reads what rateLimit wrote", async () => {
+    process.env.REDIS_URL = "redis://localhost:6379";
+
+    // One shared counter, so a peek after N writes must see exactly N.
+    const store = new Map<string, number>();
+    const client = {
+      incr: vi.fn(async (k: string) => {
+        const next = (store.get(k) ?? 0) + 1;
+        store.set(k, next);
+        return next;
+      }),
+      expire: vi.fn(async () => 1),
+      get: vi.fn(async (k: string) => store.get(k) ?? null),
+    };
+    vi.doMock("redis", () => ({
+      createClient: () => ({
+        ...client,
+        on: vi.fn(),
+        connect: vi.fn(async () => undefined),
+      }),
+    }));
+
+    const { rateLimit, rateLimitPeek } = await import("./redis");
+
+    await rateLimit("k", 3, 60);
+    await rateLimit("k", 3, 60);
+    const before = [...store.values()];
+
+    const peek = await rateLimitPeek("k", 3, 60);
+    // Two spent of three, so there is room for one more and nothing was taken.
+    expect(peek.allowed).toBe(true);
+    expect(peek.remaining).toBe(1);
+    expect([...store.values()]).toEqual(before);
+
+    // The third spends the budget; the peek after it must refuse.
+    await rateLimit("k", 3, 60);
+    expect((await rateLimitPeek("k", 3, 60)).allowed).toBe(false);
+  });
+});
