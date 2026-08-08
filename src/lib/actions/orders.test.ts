@@ -37,7 +37,14 @@ function positionOf(label: string, needle: string): number {
 const handoff = positionOf("the Stripe handoff", "await handOffToStripe(");
 const claim = positionOf("the coupon claim", "await claimCouponRedemption(");
 const invoice = positionOf("the invoice", "await createInvoiceForOrder(");
-const email = positionOf("the confirmation email", "await confirmBuyerByEmail(");
+/*
+ * `confirmBuyerByEmail(` without the `await`: the send moved into `after()`,
+ * which runs it once the response has gone rather than making the buyer wait
+ * on an HTTP call to a mail provider whose result nothing reads. Where it sits
+ * in the function still matters — it must not be scheduled before the payment
+ * handoff, because an email is the one thing here that cannot be recalled.
+ */
+const email = positionOf("the confirmation email", "confirmBuyerByEmail(");
 
 describe("createOrderIntent — nothing irreversible before the payment handoff", () => {
   /*

@@ -8,6 +8,7 @@
  * configured is production's.
  */
 import { neonConfig } from "@neondatabase/serverless";
+import type * as nextServer from "next/server";
 import { vi } from "vitest";
 
 const PROXY = process.env.SCENARIO_PROXY ?? "http://localhost:54330/sql";
@@ -32,6 +33,19 @@ vi.mock("next/cache", () => ({
   updateTag: () => {},
   cacheLife: () => {},
   cacheTag: () => {},
+}));
+
+/*
+ * `after()` schedules work for once the response has gone, so it only exists
+ * inside a request — and these suites call the server actions directly. Run
+ * inline here: the tests want the effect to have happened by the time they
+ * assert, which is the opposite of what `after` is for in production but is
+ * exactly what makes it observable in a test.
+ */
+vi.mock("next/server", async (importOriginal) => ({
+  ...(await importOriginal<typeof nextServer>()),
+  after: (fn: (() => unknown) | Promise<unknown>) =>
+    typeof fn === "function" ? void fn() : void fn,
 }));
 
 vi.mock("next/headers", () => ({

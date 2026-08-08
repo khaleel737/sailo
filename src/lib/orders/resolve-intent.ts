@@ -102,13 +102,48 @@ export async function resolveOrderIntent(
     return { ok: false, error: "Pick how you'd like to order." };
   }
 
-  const method = await db.query.paymentMethods.findFirst({
-    where: and(
-      eq(paymentMethods.shopId, shop.id),
-      eq(paymentMethods.type, input.paymentMethod),
-      eq(paymentMethods.isEnabled, true),
-    ),
-  });
+  /*
+   * The four independent lookups, at the same time.
+   *
+   * None of them needs another's answer: the rail, the delivery rate, the
+   * coupon and the affiliate all depend only on the shop and the lines, which
+   * are already in hand. Run one after another they were four sequential
+   * requests on a driver where each one crosses the network on its own —
+   * measured from across an ocean, six sequential statements cost 704ms and
+   * the same six concurrently cost 127ms.
+   *
+   * The *validation* stays sequential below, in the order a buyer should meet
+   * it: no rail is a different message from no delivery option, and answering
+   * with whichever query happened to fail first would make the error depend on
+   * network timing.
+   */
+  const subtotalCents = cartSubtotal(lines);
+  const affiliatesLive = shop.affiliatesEnabled && can(shop, "affiliates");
+  const wantsAffiliate = affiliatesLive && Boolean(input.affiliateCode?.trim());
+
+  const [method, delivery, discount, affiliateRow] = await Promise.all([
+    db.query.paymentMethods.findFirst({
+      where: and(
+        eq(paymentMethods.shopId, shop.id),
+        eq(paymentMethods.type, input.paymentMethod),
+        eq(paymentMethods.isEnabled, true),
+      ),
+    }),
+    // One fee for the order, and only when something in it has to travel: a
+    // basket of downloads and appointments is never shipped.
+    resolveDelivery(shop.id, cartNeedsDelivery(lines), input.deliveryMethodId),
+    resolveCoupon({ shopId: shop.id, code: input.couponCode, subtotalCents, now }),
+    wantsAffiliate
+      ? db.query.affiliates.findFirst({
+          where: and(
+            eq(affiliates.shopId, shop.id),
+            eq(affiliates.code, normalizeCode(input.affiliateCode ?? "")),
+            eq(affiliates.status, "active"),
+          ),
+        })
+      : Promise.resolve(undefined),
+  ]);
+
   if (!method || !isRailUsable(method.type, method.config, shop)) {
     return { ok: false, error: "That option isn't available right now." };
   }
@@ -120,47 +155,15 @@ export async function resolveOrderIntent(
 
   const def = PAYMENT_METHOD_DEFS[input.paymentMethod];
 
-  /* ---- Delivery ------------------------------------------------------- */
-
-  // One fee for the order, and only when something in it has to travel: a
-  // basket of downloads and appointments is never shipped.
-  const delivery = await resolveDelivery(
-    shop.id,
-    cartNeedsDelivery(lines),
-    input.deliveryMethodId,
-  );
   if (delivery === "unavailable") {
     return { ok: false, error: "Pick how you'd like to receive it." };
   }
 
-  /* ---- Coupon --------------------------------------------------------- */
-
-  const subtotalCents = cartSubtotal(lines);
-  const discount = await resolveCoupon({
-    shopId: shop.id,
-    code: input.couponCode,
-    subtotalCents,
-    now,
-  });
   if (!discount.ok) return { ok: false, error: discount.error };
   const coupon = discount.coupon;
 
-  /* ---- Affiliate ------------------------------------------------------ */
-
   // Commission only accrues while the shop is actually entitled to it.
-  const affiliatesLive = shop.affiliatesEnabled && can(shop, "affiliates");
-
-  let affiliate: Affiliate | null = null;
-  if (affiliatesLive && input.affiliateCode?.trim()) {
-    const found = await db.query.affiliates.findFirst({
-      where: and(
-        eq(affiliates.shopId, shop.id),
-        eq(affiliates.code, normalizeCode(input.affiliateCode)),
-        eq(affiliates.status, "active"),
-      ),
-    });
-    affiliate = found ?? null;
-  }
+  const affiliate: Affiliate | null = affiliateRow ?? null;
 
   const commissionBp = commissionBpFor(affiliate, shop);
 
