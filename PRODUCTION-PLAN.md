@@ -10,7 +10,7 @@ this repo has more than one agent in it and the numbers move.
 
 ```bash
 npx tsc --noEmit; echo $?                              # 0
-npx vitest run                                         # 1200 tests, 59 files
+npx vitest run                                         # 1206 tests, 59 files
 npx vitest run --config vitest.scenarios.mts           # 48 against a real database
 npx oxlint 2>&1 | grep -cE ' error '                   # 0
 npm run build > /dev/null 2>&1; echo $?                # 0
@@ -21,7 +21,7 @@ DATABASE_URL=postgres://k:k@localhost/k npx knip       # 0 unused files, 0 unuse
 
 | | Start of the day | Now |
 |---|---|---|
-| Unit tests | 909 | **1200** |
+| Unit tests | 909 | **1206** |
 | Tests against a real database | **0** | **48** |
 | Type errors | 0 | 0 |
 | Lint errors | 13 | 0 |
@@ -113,14 +113,15 @@ in the app is trustworthy.
 
 | # | Where | What | Why not yet |
 |---|---|---|---|
-| 1 | `connect.ts:257,271` | **Three-decimal rounding.** `toStripeAmount` rounds each line to a multiple of ten; the `goodsTotal !== subtotalCents` guard compares unrounded values, so a KWD/BHD/JOD charge can differ from its invoice by a few fils. | Needs a decision on which side gives — round the order, or round the lines and re-total. Affects three currencies. |
-| 2 | `inventory.ts` | **Calendar squatting.** The sweep reclaims card orders only, so an unpaid transfer or COD booking holds its slot until the seller cancels it. | Bounded by the 10/min limit on `createOrderIntent`, and "unpaid manual order" is legitimately pending — the seller confirms by hand. Needs a product decision on when one expires. |
-| 3 | `order-preview.ts`, `shop.ts:99` | **Two enumeration oracles** — a coupon code can be probed at 120/min, and `checkHandle` enumerates the seller roster. | Throttled; redemption caps still hold. Low value against the change. |
-| 4 | every `rateLimit` call | **All limits fail open** when Redis is missing or cold. | Deliberate and documented, but it means every ceiling is absent in an environment with no `REDIS_URL`. Worth a decision rather than a silent default. |
-| 5 | `/api/download/[token]/[fileId]` | **No rate limit**, and with `downloadLimit` null it is unbounded egress per token. | The token is the credential and carries 128 bits, so this is cost, not exposure. |
-| 6 | `queries/products.ts:64` | **`?q=` is a leading-wildcard `ILIKE`** with no trigram index — a per-shop scan. | Fine at hundreds of products, will crawl on a 10k-product catalogue. Length is capped and the endpoint is throttled, so it is a scaling item, not an abuse one. |
+| 1 | `inventory.ts` | **Calendar squatting.** The sweep reclaims card orders only, so an unpaid transfer or COD booking holds its slot until the seller cancels it. | Bounded by the 10/min limit on `createOrderIntent`, and "unpaid manual order" is legitimately pending — the seller confirms by hand. Needs a product decision on when one expires. |
+| 2 | `order-preview.ts`, `shop.ts:99` | **Two enumeration oracles** — a coupon code can be probed at 120/min, and `checkHandle` enumerates the seller roster. | Throttled; redemption caps still hold. Low value against the change. |
+| 3 | every `rateLimit` call | **All limits fail open** when Redis is missing or cold. | Deliberate and documented, but it means every ceiling is absent in an environment with no `REDIS_URL`. Worth a decision rather than a silent default. |
+| 4 | `/api/download/[token]/[fileId]` | **No rate limit**, and with `downloadLimit` null it is unbounded egress per token. | The token is the credential and carries 128 bits, so this is cost, not exposure. |
+| 5 | `queries/products.ts:64` | **`?q=` is a leading-wildcard `ILIKE`** with no trigram index — a per-shop scan. | Fine at hundreds of products, will crawl on a 10k-product catalogue. Length is capped and the endpoint is throttled, so it is a scaling item, not an abuse one. |
 
-**Closed since this document was rewritten:** the storefront 500 (`?sort=toString`),
+**Closed since this document was rewritten:** three-decimal settlement — the
+five currencies quoted to three places and settled to two were charged an
+amount their own invoice did not say; the storefront 500 (`?sort=toString`),
 concurrent double-booking, the settlement path having no test, the checkout N+1,
 unbounded admin reads, `/hq` aggregates on the primary, three caches that had
 silently stopped working, two caches that lied about plan changes, and four
