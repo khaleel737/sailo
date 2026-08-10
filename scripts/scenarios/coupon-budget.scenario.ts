@@ -83,66 +83,85 @@ describe.skipIf(!hasRedis)("the coupon budget", () => {
     return { shop, product, userId };
   }
 
+  /*
+   * In a `finally`, so a failed assertion tidies up too — a run that fails and
+   * leaves its shop behind makes the *next* run harder to read, which is the
+   * worst time for that. A failure inside the fixture itself can still leak
+   * its partial rows; the database is a throwaway, so that trade stops here.
+   */
+  async function drop(shopId: string, userId: string) {
+    const db = getDb();
+    await db.delete(products).where(eq(products.shopId, shopId));
+    await db.delete(coupons).where(eq(coupons.shopId, shopId));
+    await db.delete(shops).where(eq(shops.id, shopId));
+    await db.delete(user).where(eq(user.id, userId));
+  }
+
   it("keeps applying a real code however often the basket re-prices", async () => {
     assertLocalDatabase();
-    const db = getDb();
     const { shop, product, userId } = await shopWithCoupon();
 
-    // Well past the ceiling of ten. Every one of these is a legitimate
-    // re-quote: the code is in the basket and the buyer edited something.
-    const quotes = [];
-    for (let i = 0; i < 25; i++) {
-      quotes.push(
-        await previewOrder({
-          shopId: shop.id,
-          items: [{ productId: product.id, quantity: 1 }],
-          couponCode: "SAVE10",
-        }),
-      );
-    }
+    try {
+      // Well past the ceiling of ten. Every one of these is a legitimate
+      // re-quote: the code is in the basket and the buyer edited something.
+      const quotes = [];
+      for (let i = 0; i < 25; i++) {
+        quotes.push(
+          await previewOrder({
+            shopId: shop.id,
+            items: [{ productId: product.id, quantity: 1 }],
+            couponCode: "SAVE10",
+          }),
+        );
+      }
 
-    for (const [i, q] of quotes.entries()) {
-      if ("error" in q) throw new Error(`quote ${i} failed: ${q.error}`);
-      expect(q.couponApplied, `quote ${i} lost the discount`).toBe("SAVE10");
-      expect(q.couponError, `quote ${i} reported an error`).toBeUndefined();
-      expect(q.totals.discountCents).toBeGreaterThan(0);
+      for (const [i, q] of quotes.entries()) {
+        if ("error" in q) throw new Error(`quote ${i} failed: ${q.error}`);
+        expect(q.couponApplied, `quote ${i} lost the discount`).toBe("SAVE10");
+        expect(q.couponError, `quote ${i} reported an error`).toBeUndefined();
+        expect(q.totals.discountCents).toBeGreaterThan(0);
+      }
+    } finally {
+      await drop(shop.id, userId);
     }
-
-    await db.delete(products).where(eq(products.shopId, shop.id));
-    await db.delete(coupons).where(eq(coupons.shopId, shop.id));
-    await db.delete(shops).where(eq(shops.id, shop.id));
-    await db.delete(user).where(eq(user.id, userId));
   }, 120_000);
 
   it("still stops someone guessing codes that do not exist", async () => {
     assertLocalDatabase();
-    const db = getDb();
     const { shop, product, userId } = await shopWithCoupon();
 
-    // Distinct wrong codes, which is what enumeration looks like. The ceiling
-    // is ten in five minutes, so the tail of this run must be refused — and
-    // refused identically to a miss, saying nothing about which codes exist.
-    for (let i = 0; i < 12; i++) {
-      await previewOrder({
+    try {
+      // Distinct wrong codes, which is what enumeration looks like. The
+      // ceiling is ten in five minutes, so the run must end refused —
+      // identically to a miss, saying nothing about which codes exist.
+      //
+      // Fired concurrently because that is the shape of the attack, not
+      // because this test can see the difference: a burst ends with the
+      // budget spent under either ordering, and what the peek version leaked
+      // was the *lookups in between*, which no response reveals. The ordering
+      // itself is pinned where it is visible — `throttled-answers.test.ts`
+      // for the charge-before-lookup shape, `redis.test.ts` for the refund.
+      await Promise.all(
+        Array.from({ length: 12 }, (_, i) =>
+          previewOrder({
+            shopId: shop.id,
+            items: [{ productId: product.id, quantity: 1 }],
+            couponCode: `WRONG${i}`,
+          }),
+        ),
+      );
+
+      // The real code now misses too, because this address spent its budget
+      // on guesses. That is the intended cost and it falls on the guesser.
+      const after = await previewOrder({
         shopId: shop.id,
         items: [{ productId: product.id, quantity: 1 }],
-        couponCode: `WRONG${i}`,
+        couponCode: "SAVE10",
       });
+      if ("error" in after) throw new Error(after.error);
+      expect(after.couponApplied).toBeUndefined();
+    } finally {
+      await drop(shop.id, userId);
     }
-
-    // The real code now misses too, because this address spent its budget on
-    // guesses. That is the intended cost and it falls on the guesser.
-    const after = await previewOrder({
-      shopId: shop.id,
-      items: [{ productId: product.id, quantity: 1 }],
-      couponCode: "SAVE10",
-    });
-    if ("error" in after) throw new Error(after.error);
-    expect(after.couponApplied).toBeUndefined();
-
-    await db.delete(products).where(eq(products.shopId, shop.id));
-    await db.delete(coupons).where(eq(coupons.shopId, shop.id));
-    await db.delete(shops).where(eq(shops.id, shop.id));
-    await db.delete(user).where(eq(user.id, userId));
   }, 120_000);
 });

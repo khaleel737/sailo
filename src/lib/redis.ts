@@ -148,41 +148,47 @@ export async function rateLimit(
 }
 
 /**
- * Reads a budget without spending from it.
+ * Gives one spent unit back.
  *
- * For limits where only *some* outcomes should cost, which is the shape you
- * want whenever the thing being rationed is attempts at a secret. Charging
- * every attempt rations the legitimate user too — they have one code and they
- * use it repeatedly — while charging only the failures rations exactly the
- * behaviour that distinguishes guessing from using.
+ * For limits where only *some* outcomes should cost — the shape you want
+ * whenever the thing being rationed is attempts at a secret. Charging every
+ * attempt rations the legitimate user too: they have one code and they use it
+ * repeatedly. Charging only the failures rations exactly the behaviour that
+ * separates guessing from using.
  *
- * So the caller peeks, does the work, and calls `rateLimit` only if it missed.
- * The gap between the peek and the charge lets a burst of concurrent guesses
- * through, which is the right trade here: this bounds a search space over
- * minutes, and the window is what makes that expensive, not the exact count.
+ * The order matters, and it is charge-first: the caller pays with `rateLimit`,
+ * does the work, and refunds here if the attempt turns out to have been
+ * legitimate. The inviting alternative — peek at the counter, work, then
+ * charge on failure — has a hole exactly where this limit is aimed: every
+ * request in a concurrent burst peeks before any of them has charged, so all
+ * of them pass a ceiling that should have stopped all but the first few.
+ * Paying up front closes that, because `INCR` is atomic and the verdict comes
+ * from its return value. What it costs is a transient unit held while a
+ * legitimate attempt is in flight, returned milliseconds later — visible only
+ * to someone who fills the whole budget with concurrent requests, and
+ * self-healing on their next one.
  *
- * Fails open, like `rateLimit`, and for the same reason.
+ * Refunds only a bucket that still exists. The one way a refund can misfire is
+ * the window rolling over between the charge and here — decrementing the *new*
+ * bucket would hand next window's budget to this window's caller, so a missing
+ * bucket means the charge already expired and there is nothing to give back.
+ *
+ * Fails open, like `rateLimit`: a lost refund costs one unit for the rest of
+ * the window, which is the cheap side of that trade.
  */
-export async function rateLimitPeek(
+export async function refundRateLimit(
   key: string,
-  limit: number,
   windowSeconds: number,
-): Promise<RateVerdict> {
-  return withRedis(
+): Promise<void> {
+  await withRedis(
     async (redis) => {
-      // The same bucket `rateLimit` writes, so the two see one counter.
+      // The same bucket `rateLimit` charged, so the two see one counter.
       const bucket = Math.floor(Date.now() / (windowSeconds * 1000));
-      const raw = await redis.get(`sailo:rl:${key}:${bucket}`);
-      const count = Number(raw ?? 0);
-
-      // `<` rather than `<=`: nothing has been spent yet, so the question is
-      // whether there is room for one more.
-      return {
-        allowed: Number.isFinite(count) ? count < limit : true,
-        remaining: Math.max(0, limit - count),
-      };
+      const full = `sailo:rl:${key}:${bucket}`;
+      if (await redis.exists(full)) await redis.decr(full);
+      return undefined;
     },
-    { allowed: true, remaining: limit },
+    undefined,
   );
 }
 

@@ -92,19 +92,28 @@ function readSocials(formData: FormData): ShopSocial[] {
   return socials;
 }
 
-export type HandleStatus = {
-  handle: string;
-  available: boolean;
-  message: string | null;
-  /** Free alternatives, only when the wanted one is taken. */
-  suggestions: string[];
-  /**
-   * True when the check did not run, so `available: false` here means "not
-   * known" rather than "taken". They are not the same answer and the field
-   * must not draw them the same way.
-   */
-  unknown?: boolean;
-};
+/**
+ * A union rather than a struct with flags, because the flags could contradict.
+ *
+ * The first shape of this type carried `available: boolean` and an optional
+ * `unknown` — which permits `{ available: true, unknown: true }`, a value
+ * claiming both that the handle is free and that we never checked. Nothing
+ * produced it, but nothing *could not* produce it either, and the consumer was
+ * left to pick which field to believe. Three answers exist — free, taken, and
+ * not-checked — so the type has three cases, and a contradictory value is now
+ * unrepresentable rather than merely unlikely.
+ */
+export type HandleStatus =
+  | { handle: string; verdict: "available" }
+  /** The check did not run — throttled. Not the same answer as "taken". */
+  | { handle: string; verdict: "unknown" }
+  | {
+      handle: string;
+      verdict: "taken";
+      message: string;
+      /** Free alternatives, so a dead end comes with doors. */
+      suggestions: string[];
+    };
 
 /**
  * Live availability check for the handle field. Called as the seller types, so
@@ -140,13 +149,7 @@ export async function checkHandle(raw: string): Promise<HandleStatus> {
      * checks uniqueness for real and is the only check that decides anything,
      * so letting them continue risks a late error rather than a dead end.
      */
-    return {
-      handle: raw,
-      available: false,
-      unknown: true,
-      message: null,
-      suggestions: [],
-    };
+    return { handle: raw, verdict: "unknown" };
   }
 
   // No shop id parameter on purpose — a client could pass someone else's and
@@ -154,7 +157,7 @@ export async function checkHandle(raw: string): Promise<HandleStatus> {
   const { handle, problem } = await checkHandleAvailability(raw);
 
   if (!problem) {
-    return { handle, available: true, message: null, suggestions: [] };
+    return { handle, verdict: "available" };
   }
 
   let suggestions: string[] = [];
@@ -168,7 +171,7 @@ export async function checkHandle(raw: string): Promise<HandleStatus> {
 
   return {
     handle,
-    available: false,
+    verdict: "taken",
     message: HANDLE_MESSAGES[problem],
     suggestions,
   };

@@ -21,39 +21,53 @@ const preview = readFileSync("src/lib/actions/order-preview.ts", "utf8");
 const shop = readFileSync("src/lib/actions/shop.ts", "utf8");
 const field = readFileSync("src/components/shared/handle-field.tsx", "utf8");
 
-describe("a coupon budget is spent on misses, not on lookups", () => {
-  it("peeks before the lookup rather than consuming", () => {
-    // Consuming here is what broke it: the code stays in the basket, so it is
-    // re-checked on every keystroke and the ten were gone in seconds.
-    expect(preview).toContain("const budget = await rateLimitPeek(guessKey, 10, 300)");
+describe("a coupon budget is charged up front and refunded on a hit", () => {
+  it("charges before the lookup rather than peeking", () => {
+    /*
+     * Both orderings have failed here, in opposite directions, so the exact
+     * shape is the thing under test. Consuming without a refund burned the
+     * honest buyer's budget on re-quotes. Peeking and charging on a miss let
+     * a concurrent burst of guesses all read the counter before any wrote it,
+     * which is a hole exactly where the ceiling aims. Charge-then-refund is
+     * the only shape that closes both: the verdict is atomic in `INCR`, and a
+     * real code hands its unit straight back.
+     */
+    expect(preview).toContain("const budget = await rateLimit(guessKey, 10, 300)");
+    expect(preview).not.toContain("rateLimitPeek");
   });
 
-  it("charges only when the code did not resolve", () => {
-    expect(preview).toContain("if (budget.allowed && !found) await rateLimit(guessKey, 10, 300)");
+  it("refunds exactly when the code resolved", () => {
+    expect(preview).toContain("if (found) await refundRateLimit(guessKey, 300)");
   });
 
-  it("does not charge on the path where the code was found", () => {
-    // A valid code must be re-quotable forever. If a bare `await rateLimit(`
-    // ever reappears against the guess key outside the miss branch, this is
-    // the test that should stop it.
-    const charges = preview.match(/await rateLimit\(guessKey/g) ?? [];
-    expect(charges).toHaveLength(1);
+  it("gates the lookup on the verdict the charge returned", () => {
+    // The atomicity only holds if the answer used is the one INCR gave back —
+    // re-reading the counter here would reopen the burst window.
+    expect(preview).toContain("const found = budget.allowed");
   });
 });
 
 describe("a throttled handle check is unknown, not taken", () => {
-  it("says so explicitly rather than returning a bare negative", () => {
-    expect(shop).toContain("unknown: true");
-  });
-
-  it("draws an unknown result as neither available nor taken", () => {
-    expect(field).toContain('fresh.unknown\n                ? { kind: "unknown" }');
+  it("answers with a verdict union, so a contradiction cannot be built", () => {
+    /*
+     * The first fix kept `available: boolean` and added an optional `unknown`
+     * flag — which permits `{ available: true, unknown: true }`, a value
+     * claiming both that the handle is free and that nobody checked. The type
+     * now has one field with three cases, and the throttled branch returns
+     * the one that tells the truth.
+     */
+    expect(shop).toContain('| { handle: string; verdict: "unknown" }');
+    expect(shop).toContain('return { handle: raw, verdict: "unknown" };');
+    // The declaration itself, not the file — the comment above it names the
+    // old shape as a warning, which is exactly where the string should stay.
+    const decl = /export type HandleStatus =([\s\S]*?);\n/.exec(shop)?.[1] ?? "";
+    expect(decl).not.toContain("available: boolean");
+    expect(decl).not.toContain("unknown?:");
   });
 
   it("lets onboarding continue when the check never ran", () => {
     // Blocking asserts something we did not learn, and strands anyone on a
     // shared address. Shop creation is the check that actually decides.
-    expect(field).toContain('state.kind === "unknown"');
     const usable = /const usable =([\s\S]*?);/.exec(field)?.[1] ?? "";
     expect(usable).toContain('state.kind === "unknown"');
   });

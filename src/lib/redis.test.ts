@@ -71,14 +71,16 @@ describe("rateLimit without a backend", () => {
 });
 
 /**
- * Reading a budget without spending from it.
+ * Giving a spent unit back.
  *
- * `rateLimitPeek` exists so a limit can charge for some outcomes and not
- * others — specifically, so guessing a coupon code costs and using a real one
- * does not. The properties worth pinning are that it does not increment, that
- * it reads the same counter `rateLimit` writes, and that it fails open.
+ * `refundRateLimit` exists so a limit can charge for some outcomes and not
+ * others — specifically, so guessing a coupon code costs and holding a real
+ * one does not. Charge-first is what closes the burst hole a peek-then-charge
+ * design had, so the properties worth pinning are that a refund undoes exactly
+ * one charge on the same counter, that it will not touch a bucket that is not
+ * there, and that it fails open.
  */
-describe("rateLimitPeek", () => {
+describe("refundRateLimit", () => {
   const original = process.env.REDIS_URL;
 
   beforeEach(() => {
@@ -91,17 +93,16 @@ describe("rateLimitPeek", () => {
     else process.env.REDIS_URL = original;
   });
 
-  it("allows when Redis is not configured", async () => {
+  it("is a no-op when Redis is not configured", async () => {
     delete process.env.REDIS_URL;
-    const { rateLimitPeek } = await import("./redis");
+    const { refundRateLimit } = await import("./redis");
 
-    expect(await rateLimitPeek("test", 10, 60)).toEqual(OK);
+    await expect(refundRateLimit("test", 60)).resolves.toBeUndefined();
   });
 
-  it("reads without incrementing, and reads what rateLimit wrote", async () => {
+  it("returns exactly the unit rateLimit charged", async () => {
     process.env.REDIS_URL = "redis://localhost:6379";
 
-    // One shared counter, so a peek after N writes must see exactly N.
     const store = new Map<string, number>();
     const client = {
       incr: vi.fn(async (k: string) => {
@@ -109,8 +110,13 @@ describe("rateLimitPeek", () => {
         store.set(k, next);
         return next;
       }),
+      decr: vi.fn(async (k: string) => {
+        const next = (store.get(k) ?? 0) - 1;
+        store.set(k, next);
+        return next;
+      }),
+      exists: vi.fn(async (k: string) => (store.has(k) ? 1 : 0)),
       expire: vi.fn(async () => 1),
-      get: vi.fn(async (k: string) => store.get(k) ?? null),
     };
     vi.doMock("redis", () => ({
       createClient: () => ({
@@ -120,20 +126,52 @@ describe("rateLimitPeek", () => {
       }),
     }));
 
-    const { rateLimit, rateLimitPeek } = await import("./redis");
+    const { rateLimit, refundRateLimit } = await import("./redis");
 
-    await rateLimit("k", 3, 60);
-    await rateLimit("k", 3, 60);
-    const before = [...store.values()];
+    // Fill the budget, refund one, and the next charge must fit again —
+    // the honest-buyer loop: pay, resolve the code, get the unit back.
+    await rateLimit("k", 2, 60);
+    await rateLimit("k", 2, 60);
+    expect((await rateLimit("k", 2, 60)).allowed).toBe(false);
+    await refundRateLimit("k", 60);
+    // The refused charge above also incremented, so two refunds are owed
+    // before a new one fits; the point is each refund is exactly one unit.
+    await refundRateLimit("k", 60);
+    expect((await rateLimit("k", 2, 60)).allowed).toBe(true);
+  });
 
-    const peek = await rateLimitPeek("k", 3, 60);
-    // Two spent of three, so there is room for one more and nothing was taken.
-    expect(peek.allowed).toBe(true);
-    expect(peek.remaining).toBe(1);
-    expect([...store.values()]).toEqual(before);
+  it("does not create a counter that was never charged", async () => {
+    process.env.REDIS_URL = "redis://localhost:6379";
 
-    // The third spends the budget; the peek after it must refuse.
-    await rateLimit("k", 3, 60);
-    expect((await rateLimitPeek("k", 3, 60)).allowed).toBe(false);
+    const store = new Map<string, number>();
+    const client = {
+      incr: vi.fn(async () => 1),
+      decr: vi.fn(async (k: string) => {
+        const next = (store.get(k) ?? 0) - 1;
+        store.set(k, next);
+        return next;
+      }),
+      exists: vi.fn(async (k: string) => (store.has(k) ? 1 : 0)),
+      expire: vi.fn(async () => 1),
+    };
+    vi.doMock("redis", () => ({
+      createClient: () => ({
+        ...client,
+        on: vi.fn(),
+        connect: vi.fn(async () => undefined),
+      }),
+    }));
+
+    const { refundRateLimit } = await import("./redis");
+
+    /*
+     * The window-rollover case: the bucket the charge went into has expired
+     * by the time the refund arrives. Decrementing the new bucket would give
+     * this window's caller next window's budget, so the refund must land
+     * nowhere instead.
+     */
+    await refundRateLimit("never-charged", 60);
+    expect(client.decr).not.toHaveBeenCalled();
+    expect(store.size).toBe(0);
   });
 });

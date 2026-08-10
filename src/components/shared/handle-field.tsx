@@ -99,15 +99,15 @@ export function HandleField({
             ? { kind: "checking" }
             : fresh === "error"
               ? { kind: "unknown" }
-              : fresh.unknown
-                ? { kind: "unknown" }
-                : fresh.available
-                  ? { kind: "available" }
-                  : {
-                      kind: "taken",
-                      message: fresh.message ?? HANDLE_MESSAGES.taken,
-                      suggestions: fresh.suggestions,
-                    };
+              : fresh.verdict === "taken"
+                ? {
+                    kind: "taken",
+                    message: fresh.message,
+                    suggestions: fresh.suggestions,
+                  }
+                : // "available" and "unknown" map through by name; the union
+                  // means there is no fourth verdict to mishandle.
+                  { kind: fresh.verdict };
 
   /*
    * A handle is usable once it is either free or the one this shop already

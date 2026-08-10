@@ -3,7 +3,7 @@
 import { and, eq, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
 import { coupons, shops, type Coupon } from "@/db/schema";
-import { rateLimit, rateLimitPeek } from "@/lib/redis";
+import { rateLimit, refundRateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
 import { resolveLines } from "@/lib/orders/resolve-lines";
 import { resolveDelivery } from "@/lib/orders/delivery";
@@ -86,13 +86,23 @@ export async function previewOrder(input: {
      * their perfectly good code came back `not_found` and the discount
      * vanished from a checkout they were part-way through. Charging only for
      * codes that do not exist rations the one behaviour that separates
-     * guessing from using, and leaves re-quoting a real code free forever.
+     * guessing from using, and leaves re-quoting a real code free.
+     *
+     * Paid up front and refunded on a hit, not peeked and charged on a miss.
+     * The peek version had a hole precisely where this ceiling aims: a burst
+     * of concurrent guesses all read the counter before any of them wrote it,
+     * and the whole burst went through a budget of ten. `INCR` first makes the
+     * verdict atomic — of any burst, only what the budget covers reaches the
+     * lookup — and a real code hands its unit straight back, so the honest
+     * buyer's balance never drifts however often the basket re-prices.
      *
      * Answered as `not_found` when tripped, so the ceiling itself says nothing
-     * about whether the code was real.
+     * about whether the code was real. A code that exists but does not apply
+     * (expired, under minimum) also refunds: existence is the secret being
+     * guarded, and the buyer holding such a code is not guessing.
      */
     const guessKey = `coupon:${await callerIp()}`;
-    const budget = await rateLimitPeek(guessKey, 10, 300);
+    const budget = await rateLimit(guessKey, 10, 300);
 
     const code = normalizeCode(input.couponCode);
     // Not looked up at all once the ceiling is reached, so the ceiling costs a
@@ -102,9 +112,7 @@ export async function previewOrder(input: {
           where: and(eq(coupons.shopId, shop.id), eq(coupons.code, code)),
         })
       : undefined;
-    // Spent here, on a guess that actually missed. A code that resolves never
-    // touches the budget however many times the basket re-prices.
-    if (budget.allowed && !found) await rateLimit(guessKey, 10, 300);
+    if (found) await refundRateLimit(guessKey, 300);
     // Judged against the whole basket, so a minimum spend counts every line.
     const verdict = checkCoupon(found, cartSubtotal(resolved.lines), now);
     if (!found) {
