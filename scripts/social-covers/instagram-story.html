@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Instagram story, 540x960 rendered at 2x = 1080x1920. The one dark cover:
+     the story format sits between other people's videos, and the inverted
+     surface is the same one the site's own dark sections use. Text keeps
+     clear of the top and bottom 125px, where the story UI lives. -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="covers.css">
+<style>
+  body { width: 540px; height: 960px; background: var(--ink); color: var(--paper); }
+
+  .top { position: absolute; top: 138px; left: 0; right: 0; text-align: center; }
+  .top .wordmark { height: 30px; }
+  .top h1 { margin-top: 22px; font-size: 44px; }
+  .top .hl { text-decoration-color: rgb(150 146 138 / 0.55); }
+  .top .sub { margin-top: 18px; font-size: 15px; color: var(--on-ink-mute); }
+  .top .cta { margin-top: 26px; font-size: 15px; padding: 13px 28px; background: var(--paper); color: var(--ink); }
+
+  .shop { position: absolute; --w: 280px; gap: 12px; }
+  .shop.hero { left: 50%; transform: translateX(-50%) translateY(var(--dy, 0)); top: 470px; z-index: 2; }
+  .shop.side { --w: 200px; top: 584px; }
+  .shop.left { left: -66px; }
+  .shop.right { right: -66px; }
+
+  .pill {
+    font-size: 13px;
+    background: rgb(255 255 255 / 0.08);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12);
+    color: rgb(255 255 255 / 0.62);
+  }
+</style>
+</head>
+<body>
+  <div class="top">
+    <img class="wordmark" src="../../public/brand/sailo-logo-white.svg" alt="Sailo">
+    <h1 class="display">The link in your bio<br>should be <span class="hl">taking orders</span>.</h1>
+    <p class="sub">A real shop, not a list of links.</p>
+    <span class="cta">Create your shop — free</span>
+  </div>
+
+  <figure class="shop side left">
+    <div class="phone"><div class="screen"><img src="../../public/demos/lumi-phone.png" alt="Lumière Nails"></div></div>
+  </figure>
+  <figure class="shop hero" style="--accent: #c2410c">
+    <span class="pill"><span class="dot"></span>sailo.store/forno</span>
+    <div class="phone"><div class="screen"><img src="../../public/demos/forno-phone.png" alt="Forno Nove"></div></div>
+  </figure>
+  <figure class="shop side right">
+    <div class="phone"><div class="screen"><img src="../../public/demos/serene-phone.png" alt="Serenity Rooms"></div></div>
+  </figure>
+</body>
+</html>

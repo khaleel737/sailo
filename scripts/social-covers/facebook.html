@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Facebook page cover. Rendered at 820x312, shipped at 2x = 1640x624.
+     Mobile crops to roughly the central 640px, so the lockup stays centred
+     and only the outermost phones give ground. -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="covers.css">
+<style>
+  body { width: 820px; height: 312px; }
+
+  .top { position: absolute; top: 36px; left: 0; right: 0; text-align: center; }
+  .top .wordmark { height: 26px; }
+  .top h1 { margin-top: 15px; font-size: 33px; }
+
+  .shops {
+    position: absolute;
+    left: 50%;
+    top: 162px;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 22px;
+  }
+  .shop { --w: 118px; gap: 9px; }
+  .pill { font-size: 11px; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <img class="wordmark" src="../../public/brand/sailo-logo.svg" alt="Sailo">
+    <h1 class="display">The link in your bio<br>should be <span class="hl">taking orders</span>.</h1>
+  </div>
+
+  <div class="shops">
+    <figure class="shop" style="--dy: 30px; --accent: #b45309">
+      <span class="pill"><span class="dot"></span>sailo.store/demo</span>
+      <div class="phone"><div class="screen"><img src="../../public/demos/demo-phone.png" alt="Clay &amp; Co."></div></div>
+    </figure>
+    <figure class="shop" style="--dy: 14px; --accent: #14b8a6">
+      <span class="pill"><span class="dot"></span>sailo.store/serene</span>
+      <div class="phone"><div class="screen"><img src="../../public/demos/serene-phone.png" alt="Serenity Rooms"></div></div>
+    </figure>
+    <figure class="shop" style="--dy: 0px; --accent: #c2410c">
+      <span class="pill"><span class="dot"></span>sailo.store/forno</span>
+      <div class="phone"><div class="screen"><img src="../../public/demos/forno-phone.png" alt="Forno Nove"></div></div>
+    </figure>
+    <figure class="shop" style="--dy: 14px; --accent: #6366f1">
+      <span class="pill"><span class="dot"></span>sailo.store/inkwell</span>
+      <div class="phone"><div class="screen"><img src="../../public/demos/inkwell-phone.png" alt="Inkwell Press"></div></div>
+    </figure>
+    <figure class="shop" style="--dy: 30px; --accent: #db2777">
+      <span class="pill"><span class="dot"></span>sailo.store/lumi</span>
+      <div class="phone"><div class="screen"><img src="../../public/demos/lumi-phone.png" alt="Lumière Nails"></div></div>
+    </figure>
+  </div>
+</body>
+</html>

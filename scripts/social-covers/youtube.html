@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- YouTube channel art. Rendered at 1280x720, shipped at 2x = 2560x1440.
+     Everything that must survive every crop lives inside the safe band:
+     the centred 773x211 area (y 254-466, x 254-1026). Desktop shows the
+     full-width band, TV shows the whole canvas, so the phones stand in the
+     band and are allowed to run past its edges; the last one is cropped by
+     the canvas on purpose, so the row reads as continuing past the frame. -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="covers.css">
+<style>
+  body { width: 1280px; height: 720px; }
+
+  .text { position: absolute; left: 256px; top: 292px; }
+  .text .wordmark { display: block; height: 30px; }
+  .text h1 { margin-top: 18px; font-size: 34px; }
+  .sub {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13.5px;
+    color: var(--mute-400);
+  }
+  .sub .dot { width: 5px; height: 5px; border-radius: 999px; background: var(--signal); }
+
+  .shops { position: absolute; left: 690px; top: 288px; display: flex; gap: 16px; }
+  .shop { --w: 112px; gap: 9px; }
+  .pill { font-size: 11px; }
+</style>
+</head>
+<body>
+  <div class="text">
+    <img class="wordmark" src="../../public/brand/sailo-logo.svg" alt="Sailo">
+    <h1 class="display">The link in your bio<br>should be <span class="hl">taking orders</span>.</h1>
+    <p class="sub"><span class="dot"></span>sailo.store — free to start, free to stay</p>
+  </div>
+
+  <div class="shops">
+    <figure class="shop" style="--dy: 28px; --accent: #b45309">
+      <span class="pill"><span class="dot"></span>sailo.store/demo</span>
+      <div class="phone"><div class="screen"><img src="../../public/demos/demo-phone.png" alt="Clay &amp; Co."></div></div>
+    </figure>
+    <figure class="shop" style="--dy: 14px; --accent: #14b8a6">
+      <span class="pill"><span class="dot"></span>sailo.store/serene</span>
+      <div class="phone"><div class="screen"><img src="../../public/demos/serene-phone.png" alt="Serenity Rooms"></div></div>
+    </figure>
+    <figure class="shop" style="--dy: 4px; --accent: #c2410c">
+      <span class="pill"><span class="dot"></span>sailo.store/forno</span>
+      <div class="phone"><div class="screen"><img src="../../public/demos/forno-phone.png" alt="Forno Nove"></div></div>
+    </figure>
+    <figure class="shop" style="--dy: 0px; --accent: #6366f1">
+      <span class="pill"><span class="dot"></span>sailo.store/inkwell</span>
+      <div class="phone"><div class="screen"><img src="../../public/demos/inkwell-phone.png" alt="Inkwell Press"></div></div>
+    </figure>
+    <figure class="shop" style="--dy: 12px; --accent: #db2777">
+      <span class="pill"><span class="dot"></span>sailo.store/lumi</span>
+      <div class="phone"><div class="screen"><img src="../../public/demos/lumi-phone.png" alt="Lumière Nails"></div></div>
+    </figure>
+  </div>
+</body>
+</html>

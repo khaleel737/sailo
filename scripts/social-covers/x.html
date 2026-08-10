@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- X profile header. Rendered at 750x250, shipped at 2x = 1500x500 exactly.
+     The avatar overlaps the bottom-left corner on the profile page, so the
+     text block sits high and the corner stays quiet. -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="covers.css">
+<style>
+  body { width: 750px; height: 250px; }
+
+  .text { position: absolute; left: 46px; top: 44%; transform: translateY(-50%); }
+  .text .wordmark { display: block; height: 26px; }
+  .text h1 { margin-top: 16px; font-size: 27px; }
+  .sub {
+    margin-top: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    color: var(--mute-400);
+  }
+  .sub .dot { width: 5px; height: 5px; border-radius: 999px; background: var(--signal); }
+
+  .shops { position: absolute; left: 324px; top: 92px; display: flex; }
+  .shop { --w: 92px; margin-left: -14px; }
+  .shop:first-child { margin-left: 0; }
+  .shop:nth-child(1), .shop:nth-child(5) { z-index: 1; }
+  .shop:nth-child(2), .shop:nth-child(4) { z-index: 2; }
+  .shop:nth-child(3) { z-index: 3; }
+</style>
+</head>
+<body>
+  <div class="text">
+    <img class="wordmark" src="../../public/brand/sailo-logo.svg" alt="Sailo">
+    <h1 class="display">The link in your bio<br>should be <span class="hl">taking orders</span>.</h1>
+    <p class="sub"><span class="dot"></span>sailo.store — free to start, free to stay</p>
+  </div>
+
+  <div class="shops">
+    <figure class="shop" style="--dy: 50px"><div class="phone"><div class="screen"><img src="../../public/demos/demo-phone.png" alt="Clay &amp; Co."></div></div></figure>
+    <figure class="shop" style="--dy: 24px"><div class="phone"><div class="screen"><img src="../../public/demos/serene-phone.png" alt="Serenity Rooms"></div></div></figure>
+    <figure class="shop" style="--dy: 0px"><div class="phone"><div class="screen"><img src="../../public/demos/forno-phone.png" alt="Forno Nove"></div></div></figure>
+    <figure class="shop" style="--dy: 24px"><div class="phone"><div class="screen"><img src="../../public/demos/inkwell-phone.png" alt="Inkwell Press"></div></div></figure>
+    <figure class="shop" style="--dy: 50px"><div class="phone"><div class="screen"><img src="../../public/demos/lumi-phone.png" alt="Lumière Nails"></div></div></figure>
+  </div>
+</body>
+</html>

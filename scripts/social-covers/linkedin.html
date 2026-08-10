@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- LinkedIn company page cover. Rendered at 1128x191, shipped at 2x.
+     The company logo square overlaps the bottom-left on the page itself,
+     so the left 250px stays empty and the lockup starts after it. The
+     sixth phone is the same pizzeria reading right-to-left — the
+     thirty-five-languages claim, made in passing. -->
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="covers.css">
+<style>
+  body { width: 1128px; height: 191px; }
+
+  .text { position: absolute; left: 272px; top: 50%; transform: translateY(-50%); }
+  .text .wordmark { display: block; height: 20px; }
+  .text h1 { margin-top: 12px; font-size: 23px; }
+
+  .shops { position: absolute; left: 636px; top: 74px; display: flex; }
+  .shop { --w: 86px; margin-left: -10px; }
+  .shop:first-child { margin-left: 0; }
+  .shop:nth-child(1), .shop:nth-child(6) { z-index: 1; }
+  .shop:nth-child(2), .shop:nth-child(5) { z-index: 2; }
+  .shop:nth-child(3), .shop:nth-child(4) { z-index: 3; }
+</style>
+</head>
+<body>
+  <div class="text">
+    <img class="wordmark" src="../../public/brand/sailo-logo.svg" alt="Sailo">
+    <h1 class="display">The link in your bio<br>should be <span class="hl">taking orders</span>.</h1>
+  </div>
+
+  <div class="shops">
+    <figure class="shop" style="--dy: 26px"><div class="phone"><div class="screen"><img src="../../public/demos/demo-phone.png" alt="Clay &amp; Co."></div></div></figure>
+    <figure class="shop" style="--dy: 14px"><div class="phone"><div class="screen"><img src="../../public/demos/serene-phone.png" alt="Serenity Rooms"></div></div></figure>
+    <figure class="shop" style="--dy: 4px"><div class="phone"><div class="screen"><img src="../../public/demos/forno-phone.png" alt="Forno Nove"></div></div></figure>
+    <figure class="shop" style="--dy: 0px"><div class="phone"><div class="screen"><img src="../../public/demos/inkwell-phone.png" alt="Inkwell Press"></div></div></figure>
+    <figure class="shop" style="--dy: 10px"><div class="phone"><div class="screen"><img src="../../public/demos/lumi-phone.png" alt="Lumière Nails"></div></div></figure>
+    <figure class="shop" style="--dy: 22px"><div class="phone"><div class="screen"><img src="../../public/demos/forno-rtl-phone.png" alt="Forno Nove, reading right-to-left"></div></div></figure>
+  </div>
+</body>
+</html>

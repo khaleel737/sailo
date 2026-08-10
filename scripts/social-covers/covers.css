@@ -1,0 +1,160 @@
+/*
+ * Shared pieces for the social cover images.
+ *
+ * Every value here is lifted from the product, not invented for the banner:
+ * the tokens mirror `globals.css` and `brand.css`, the phone bezel mirrors
+ * `PhoneFrame` in `src/components/marketing/frames.tsx` (5px ink bezel on a
+ * 240px phone, 2.1rem/1.8rem radii, the same shadow), and the URL pill is the
+ * BrowserFrame address capsule. The covers make the landing page's argument
+ * in one image — Sailo is the neutral frame, the sellers are the colour — so
+ * nothing here may introduce chrome the product itself doesn't have.
+ *
+ * The phone is parameterised by `--w` so one recipe serves every canvas:
+ * all the PhoneFrame constants are expressed as ratios of its 240px width.
+ */
+
+:root {
+  --paper: #fbfbf9;
+  --paper-sunk: #faf9f7;
+  --ink: #0d0d0c;
+  --ink-soft: #1a1917;
+  --mute-100: #f0efea;
+  --mute-200: #e0ddd5;
+  --mute-300: #c2beb3;
+  --mute-400: #75726c;
+  --mute-500: #6f6b64;
+  --on-ink-mute: #96928a;
+  --on-ink-soft: #c2beb3;
+  --signal: #12b76a;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Display type: Outfit at the brand's small-display tracking. */
+.display {
+  font-family: "Outfit", "Geist", sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+
+/* The hero's emphasised words, underlined exactly as the landing page does.
+   Skip-ink is off here, unlike the browser default: at cover sizes the gap
+   the descender of "taking" punches in the line reads as a rendering bug. */
+.hl {
+  text-decoration-line: underline;
+  text-decoration-color: var(--mute-300);
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.14em;
+  text-decoration-skip-ink: none;
+}
+
+/* The hero badge: one green dot, quiet text. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  border: 1px solid var(--mute-200);
+  border-radius: 999px;
+  color: var(--mute-500);
+  white-space: nowrap;
+}
+
+.badge .dot {
+  width: 0.45em;
+  height: 0.45em;
+  border-radius: 999px;
+  background: var(--signal);
+}
+
+/* Primary call to action: the ink capsule from `Cta` tone="solid". */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* One shop: an address pill over a phone. The pill's dot takes the shop's
+   own accent — the only colour the covers add, and it isn't ours. */
+.shop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(var(--dy, 0px));
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.5em 1em;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08);
+  color: var(--mute-500);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.pill .dot {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 999px;
+  background: var(--accent, var(--signal));
+}
+
+/* PhoneFrame, ratio-for-ratio: p-[5px] → 0.0208w, rounded-[2.1rem] → 0.14w,
+   inner 1.8rem → 0.12w, the speaker line, and the same drop shadow. */
+.phone {
+  position: relative;
+  width: var(--w);
+  padding: calc(var(--w) * 0.0208);
+  border-radius: calc(var(--w) * 0.14);
+  background: var(--ink);
+  box-shadow: 0 calc(var(--w) * 0.125) calc(var(--w) * 0.2917)
+    calc(var(--w) * -0.125) rgb(11 11 12 / 0.5);
+}
+
+.phone::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(var(--w) * 0.054);
+  transform: translateX(-50%);
+  width: calc(var(--w) * 0.1833);
+  height: max(2px, calc(var(--w) * 0.0167));
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.25);
+  z-index: 2;
+}
+
+.screen {
+  overflow: hidden;
+  border-radius: calc(var(--w) * 0.12);
+}
+
+.screen img {
+  display: block;
+  width: 100%;
+}
