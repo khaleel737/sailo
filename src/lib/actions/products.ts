@@ -181,6 +181,20 @@ export async function saveProduct(
 
   const trackInventory = formData.get("trackInventory") === "on";
 
+  /*
+   * The event's start, from a `datetime-local` value. Parsed as an instant in
+   * the server's clock — the form labels it with the shop's time zone, and a
+   * seller placing a 7pm show wants "7pm where the event is", which for a
+   * link-in-bio seller is overwhelmingly their own zone.
+   */
+  const eventRaw = String(formData.get("eventStartsAt") ?? "").trim();
+  const eventParsed = eventRaw ? new Date(eventRaw) : null;
+  const eventStartsAt =
+    eventParsed && !Number.isNaN(eventParsed.getTime()) ? eventParsed : null;
+  if (kind === "event" && !eventStartsAt) {
+    return { ok: false, error: "An event needs a date and time." };
+  }
+
   const modeRaw = String(formData.get("serviceMode") ?? "in_person");
   const compareRaw = String(formData.get("compareAtPrice") ?? "").trim();
   const priceCents = parseMoneyToCents(String(formData.get("price") ?? "0"), shop.currency);
@@ -218,6 +232,10 @@ export async function saveProduct(
     serviceLocation: text(formData.get("serviceLocation"), 500),
     bookingEnabled: formData.get("bookingEnabled") === "on",
     bookingLeadHours: optionalCount(formData.get("bookingLeadHours"), 24 * 365) ?? 0,
+
+    // Events. Cleared on other kinds so a product switched away from being
+    // an event doesn't keep silently closing its own sales at a stale date.
+    eventStartsAt: kind === "event" ? eventStartsAt : null,
 
     inStock: formData.get("inStock") === "on",
     isFeatured: formData.get("isFeatured") === "on",

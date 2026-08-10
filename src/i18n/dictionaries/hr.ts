@@ -38,10 +38,11 @@ export const hr: Dictionary = {
     noProductsBody: "{shop} još ništa nije dodao. Navratite uskoro.",
     noMatches: "Ništa ne odgovara tome",
     noMatchesBody: "Pokušajte ukloniti filtar ili potražiti nešto drugo.",
-    soldOut: "Rasprodano", sale: "Akcija", order: "Naruči", orderNow: "Naruči odmah",
+    soldOut: "Rasprodano", salesClosed: "Prodaja zatvorena", sale: "Akcija", order: "Naruči", orderNow: "Naruči odmah",
     unavailable: "Nedostupno", joinOnSailo: "Pridruži se {shop} na Sailu", loadMore: "Učitaj više",
     earnBySharing: "Zaradite {percent}% dijeljenjem ove trgovine",
     kindPhysical: "Šalje se vama", kindDigital: "Trenutno preuzimanje", kindService: "Rezervirajte termin",
+    kindEvent: "Ulaznica za događaj",
     labelDigital: "Preuzimanje", labelService: "Rezervacija", from: "Od {price}",
   },
   sort: {
@@ -107,6 +108,13 @@ export const hr: Dictionary = {
     usedUp: "Iskoristili ste sva preuzimanja na ovoj poveznici. Javite se trgovini {shop} ako vam opet treba.",
     notReady: "Datoteke se otključavaju kad {shop} potvrdi vašu uplatu.",
     visitShop: "Posjeti {shop}",
+  },
+  tickets: {
+    title: "Vaše ulaznice",
+    notReady: "Ulaznice se otključavaju kad {shop} potvrdi vašu uplatu.",
+    admitOne: "Vrijedi za jednu osobu",
+    showAtDoor: "Pokažite ovo na ulazu.",
+    used: "Iskorištena",
   },
   rails: {
     cardName: "Kartica", cardAction: "Plati karticom",
@@ -214,7 +222,7 @@ export const hr: Dictionary = {
   nav: {
     overview: "Pregled", products: "Proizvodi", categories: "Kategorije", orders: "Narudžbe",
     clients: "Kupci", reviews: "Recenzije", coupons: "Kuponi", affiliates: "Partneri",
-    payments: "Plaćanja", delivery: "Dostava", settings: "Postavke", viewShop: "Pogledaj trgovinu",
+    payments: "Plaćanja", delivery: "Dostava", settings: "Postavke", checkin: "Provjera ulaznica", viewShop: "Pogledaj trgovinu",
     signOut: "Odjava", upgrade: "Nadogradi", openMenu: "Otvori izbornik", closeMenu: "Zatvori izbornik",
   },
   notifications: {

@@ -38,10 +38,11 @@ export const vi: Dictionary = {
     noProductsBody: "{shop} chưa thêm gì cả. Hãy quay lại sau nhé.",
     noMatches: "Không có gì khớp",
     noMatchesBody: "Thử bỏ bớt một bộ lọc hoặc tìm từ khoá khác.",
-    soldOut: "Hết hàng", sale: "Giảm giá", order: "Đặt hàng", orderNow: "Đặt ngay",
+    soldOut: "Hết hàng", salesClosed: "Đã ngừng bán", sale: "Giảm giá", order: "Đặt hàng", orderNow: "Đặt ngay",
     unavailable: "Không khả dụng", joinOnSailo: "Tham gia {shop} trên Sailo", loadMore: "Tải thêm",
     earnBySharing: "Kiếm {percent}% khi chia sẻ cửa hàng này",
     kindPhysical: "Giao đến bạn", kindDigital: "Tải về ngay", kindService: "Đặt lịch",
+    kindEvent: "Vé sự kiện",
     labelDigital: "Tải về", labelService: "Đặt lịch", from: "Từ {price}",
   },
   sort: {
@@ -107,6 +108,14 @@ export const vi: Dictionary = {
     usedUp: "Bạn đã dùng hết lượt tải của liên kết này. Liên hệ {shop} nếu cần lại.",
     notReady: "Tệp sẽ mở khoá khi {shop} xác nhận thanh toán của bạn.",
     visitShop: "Ghé {shop}",
+  },
+
+  tickets: {
+    title: "Vé của bạn",
+    notReady: "Vé sẽ mở khoá khi {shop} xác nhận thanh toán của bạn.",
+    admitOne: "Dành cho một người",
+    showAtDoor: "Xuất trình vé này ở cửa vào.",
+    used: "Đã dùng",
   },
   rails: {
     cardName: "Thẻ", cardAction: "Thanh toán bằng thẻ",
@@ -214,7 +223,8 @@ export const vi: Dictionary = {
   nav: {
     overview: "Tổng quan", products: "Sản phẩm", categories: "Danh mục", orders: "Đơn hàng",
     clients: "Khách hàng", reviews: "Đánh giá", coupons: "Mã giảm giá", affiliates: "Đối tác",
-    payments: "Thanh toán", delivery: "Giao hàng", settings: "Cài đặt", viewShop: "Xem cửa hàng",
+    payments: "Thanh toán", delivery: "Giao hàng", settings: "Cài đặt", checkin: "Soát vé",
+    viewShop: "Xem cửa hàng",
     signOut: "Đăng xuất", upgrade: "Nâng cấp", openMenu: "Mở menu", closeMenu: "Đóng menu",
   },
   notifications: {

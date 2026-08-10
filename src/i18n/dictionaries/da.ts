@@ -37,11 +37,12 @@ export const da: Dictionary = {
     noProducts: "Ingen produkter endnu",
     noProductsBody: "{shop} har ikke lagt noget op endnu. Kig forbi igen snart.",
     noMatches: "Ingen resultater", noMatchesBody: "Prøv at fjerne et filter eller søge på noget andet.",
-    soldOut: "Udsolgt", sale: "Tilbud", order: "Bestil", orderNow: "Bestil nu",
+    soldOut: "Udsolgt", salesClosed: "Salget er lukket", sale: "Tilbud", order: "Bestil", orderNow: "Bestil nu",
     unavailable: "Ikke tilgængelig", joinOnSailo: "Slut dig til {shop} på Sailo", loadMore: "Indlæs flere",
     earnBySharing: "Tjen {percent}% ved at dele denne butik",
     kindPhysical: "Sendes til dig", kindDigital: "Download med det samme",
-    kindService: "Book en tid", labelDigital: "Download", labelService: "Booking",
+    kindService: "Book en tid", kindEvent: "Eventbillet",
+    labelDigital: "Download", labelService: "Booking",
     from: "Fra {price}",
   },
   sort: {
@@ -119,6 +120,14 @@ export const da: Dictionary = {
     usedUp: "Du har brugt alle downloads på dette link. Kontakt {shop}, hvis du får brug for det igen.",
     notReady: "Dine filer låses op, når {shop} bekræfter din betaling.",
     visitShop: "Besøg {shop}",
+  },
+
+  tickets: {
+    title: "Dine billetter",
+    notReady: "Dine billetter låses op, når {shop} bekræfter din betaling.",
+    admitOne: "Adgang for én",
+    showAtDoor: "Vis den her ved indgangen.",
+    used: "Brugt",
   },
 
   rails: {
@@ -251,7 +260,7 @@ export const da: Dictionary = {
   nav: {
     overview: "Overblik", products: "Produkter", categories: "Kategorier", orders: "Ordrer",
     clients: "Kunder", reviews: "Anmeldelser", coupons: "Rabatkoder", affiliates: "Partnere",
-    payments: "Betalinger", delivery: "Levering", settings: "Indstillinger",
+    payments: "Betalinger", delivery: "Levering", settings: "Indstillinger", checkin: "Check-in",
     viewShop: "Se butik", signOut: "Log ud", upgrade: "Opgradér",
     openMenu: "Åbn menu", closeMenu: "Luk menu",
   },

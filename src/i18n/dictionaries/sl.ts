@@ -38,10 +38,11 @@ export const sl: Dictionary = {
     noProductsBody: "{shop} še ni ničesar dodal. Oglasite se kmalu.",
     noMatches: "Nič se ne ujema s tem",
     noMatchesBody: "Poskusite odstraniti filter ali poiskati kaj drugega.",
-    soldOut: "Razprodano", sale: "Akcija", order: "Naroči", orderNow: "Naroči zdaj",
+    soldOut: "Razprodano", salesClosed: "Prodaja zaključena", sale: "Akcija", order: "Naroči", orderNow: "Naroči zdaj",
     unavailable: "Ni na voljo", joinOnSailo: "Pridružite se trgovini {shop} na Sailu", loadMore: "Naloži več",
     earnBySharing: "Zaslužite {percent}% z deljenjem te trgovine",
     kindPhysical: "Poslano vam bo", kindDigital: "Takojšen prenos", kindService: "Rezervirajte termin",
+    kindEvent: "Vstopnica za dogodek",
     labelDigital: "Prenos", labelService: "Rezervacija", from: "Od {price}",
   },
   sort: {
@@ -107,6 +108,13 @@ export const sl: Dictionary = {
     usedUp: "Porabili ste vse prenose na tej povezavi. Obrnite se na {shop}, če jo potrebujete znova.",
     notReady: "Datoteke se odklenejo, ko {shop} potrdi vaše plačilo.",
     visitShop: "Obiščite {shop}",
+  },
+  tickets: {
+    title: "Vaše vstopnice",
+    notReady: "Vstopnice se odklenejo, ko {shop} potrdi vaše plačilo.",
+    admitOne: "Velja za eno osebo",
+    showAtDoor: "Pokažite to ob vhodu.",
+    used: "Uporabljena",
   },
   rails: {
     cardName: "Kartica", cardAction: "Plačaj s kartico",
@@ -214,7 +222,8 @@ export const sl: Dictionary = {
   nav: {
     overview: "Pregled", products: "Izdelki", categories: "Kategorije", orders: "Naročila",
     clients: "Stranke", reviews: "Mnenja", coupons: "Kuponi", affiliates: "Partnerji",
-    payments: "Plačila", delivery: "Dostava", settings: "Nastavitve", viewShop: "Poglej trgovino",
+    payments: "Plačila", delivery: "Dostava", settings: "Nastavitve",
+    checkin: "Preverjanje vstopnic", viewShop: "Poglej trgovino",
     signOut: "Odjava", upgrade: "Nadgradi", openMenu: "Odpri meni", closeMenu: "Zapri meni",
   },
   notifications: {

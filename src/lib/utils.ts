@@ -327,6 +327,7 @@ export const PRODUCT_KINDS = [
   { value: "physical", label: "Physical product" },
   { value: "digital", label: "Digital product" },
   { value: "service", label: "Service" },
+  { value: "event", label: "Event tickets" },
 ] as const;
 
 export const SOCIAL_PLATFORMS = [

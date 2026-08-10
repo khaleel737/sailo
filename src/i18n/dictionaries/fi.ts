@@ -37,11 +37,11 @@ export const fi: Dictionary = {
     noProducts: "Ei vielä tuotteita",
     noProductsBody: "{shop} ei ole vielä lisännyt mitään. Käy pian uudelleen.",
     noMatches: "Ei osumia", noMatchesBody: "Kokeile poistaa suodatin tai hakea jotain muuta.",
-    soldOut: "Loppuunmyyty", sale: "Tarjous", order: "Tilaa", orderNow: "Tilaa nyt",
+    soldOut: "Loppuunmyyty", salesClosed: "Myynti päättynyt", sale: "Tarjous", order: "Tilaa", orderNow: "Tilaa nyt",
     unavailable: "Ei saatavilla", joinOnSailo: "Liity {shop} mukaan Sailossa", loadMore: "Lataa lisää",
     earnBySharing: "Ansaitse {percent}% jakamalla tämä kauppa",
     kindPhysical: "Toimitetaan sinulle", kindDigital: "Välitön lataus",
-    kindService: "Varaa aika", labelDigital: "Lataus", labelService: "Varaus",
+    kindService: "Varaa aika", kindEvent: "Pääsylippu", labelDigital: "Lataus", labelService: "Varaus",
     from: "Alkaen {price}",
   },
   sort: {
@@ -119,6 +119,14 @@ export const fi: Dictionary = {
     usedUp: "Olet käyttänyt kaikki tämän linkin lataukset. Ota yhteyttä {shop}-kauppaan, jos tarvitset sen uudelleen.",
     notReady: "Tiedostosi avautuvat, kun {shop} vahvistaa maksusi.",
     visitShop: "Siirry kauppaan {shop}",
+  },
+
+  tickets: {
+    title: "Lippusi",
+    notReady: "Lippusi avautuvat, kun {shop} vahvistaa maksusi.",
+    admitOne: "Yksi sisäänpääsy",
+    showAtDoor: "Näytä tämä ovella.",
+    used: "Käytetty",
   },
 
   rails: {
@@ -251,7 +259,7 @@ export const fi: Dictionary = {
   nav: {
     overview: "Yleiskatsaus", products: "Tuotteet", categories: "Kategoriat", orders: "Tilaukset",
     clients: "Asiakkaat", reviews: "Arviot", coupons: "Alennuskoodit", affiliates: "Kumppanit",
-    payments: "Maksutavat", delivery: "Toimitus", settings: "Asetukset",
+    payments: "Maksutavat", delivery: "Toimitus", settings: "Asetukset", checkin: "Lipuntarkastus",
     viewShop: "Näytä kauppa", signOut: "Kirjaudu ulos", upgrade: "Päivitä",
     openMenu: "Avaa valikko", closeMenu: "Sulje valikko",
   },

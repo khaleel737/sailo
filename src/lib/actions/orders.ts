@@ -11,7 +11,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import { getDb } from "@/db";
 import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
-import { orderItems, orders, shops, type PaymentConfig } from "@/db/schema";
+import { orderItems, orders, shops, tickets, type PaymentConfig } from "@/db/schema";
 import { formatAddress, formatMoney } from "@/lib/utils";
 import { bankDetailLines, buildHandoff, type Handoff } from "@/lib/payments";
 import { COUPON_MESSAGES, toChargeableTotals } from "@/lib/pricing";
@@ -23,8 +23,9 @@ import { releaseStock, reserveStock } from "@/lib/inventory";
 import { handOffToStripe } from "@/lib/orders/card-handoff";
 import { claimCouponRedemption } from "@/lib/orders/coupon-redemption";
 import { claimSlots, releaseSlots, slotEnd } from "@/lib/booking/claim";
-import { downloadUrl } from "@/lib/downloads";
+import { downloadUrl, newDownloadToken, releasesImmediately } from "@/lib/downloads";
 import { resolveDigitalDelivery } from "@/lib/orders/digital-delivery";
+import { eventSalesOpen, ticketValues } from "@/lib/tickets";
 import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";
 
 
@@ -128,6 +129,18 @@ export async function createOrderIntent(
     priced,
     buyer: { name, email, phone, note, address },
   } = resolvedIntent.intent;
+
+  // A ticket sold after the doors open is one for an event already happening.
+  // Judged here, before any stock is taken, so refusing costs nothing.
+  const closedEvent = lines.find(
+    (line) => !eventSalesOpen(line.product, now),
+  );
+  if (closedEvent) {
+    return {
+      ok: false,
+      error: `Ticket sales for ${closedEvent.title} have closed.`,
+    };
+  }
   /*
    * Rounded to what the shop's currency can actually settle.
    *
@@ -196,12 +209,37 @@ export async function createOrderIntent(
 
   // Reads the products' files, so it can fail — and the stock is already off
   // the shelf by here, which is why it hands the units back on the way out.
-  const { deliversFiles, unlockNow, downloadToken, downloadExpiresAt, downloadLimit } =
-    await resolveDigitalDelivery({
-      lines,
-      totalCents: totals.totalCents,
-      now,
-    }).catch(releasingStock(taken));
+  const digital = await resolveDigitalDelivery({
+    lines,
+    totalCents: totals.totalCents,
+    now,
+  }).catch(releasingStock(taken));
+  const { deliversFiles, downloadExpiresAt, downloadLimit } = digital;
+
+  /*
+   * Tickets ride the same token and the same release timestamp as files.
+   * An event order therefore mints a token even with no file behind it —
+   * the delivery page it opens shows admissions instead of downloads — and
+   * "unlock now" must be agreed by *every* gated line across both kinds,
+   * because one token cannot be half-open.
+   */
+  const sellsTickets = lines.some(
+    (line) => line.kind === "event" && line.quantity > 0,
+  );
+  const eventsUnlockNow = lines
+    .filter((line) => line.kind === "event")
+    .every((line) =>
+      releasesImmediately(line.product, {
+        totalCents: totals.totalCents,
+        paymentStatus: "unpaid",
+      }),
+    );
+  const downloadToken =
+    digital.downloadToken ?? (sellsTickets ? newDownloadToken() : null);
+  const unlockNow =
+    (deliversFiles ? digital.unlockNow : true) &&
+    (sellsTickets ? eventsUnlockNow : true) &&
+    Boolean(downloadToken);
 
   /*
    * The order id is minted here rather than by the database.
@@ -218,6 +256,11 @@ export async function createOrderIntent(
    * (`db.transaction()` throws), so a batch is the only atomicity available.
    */
   const orderId = crypto.randomUUID();
+
+  // One row per admission, coded and countersigned by the same transaction
+  // that writes the order — a ticket cannot exist without its order, nor an
+  // event order without its tickets.
+  const ticketRows = ticketValues(lines, { orderId, shopId: shop.id });
 
   const [inserted] = await db.batch([
     db
@@ -319,7 +362,10 @@ export async function createOrderIntent(
       position,
     })),
   ),
-  // Both statements are the window that opened when the stock was reserved.
+  // Admissions, one row each, valid only once the release timestamp is set.
+  ...(ticketRows.length ? [db.insert(tickets).values(ticketRows)] : []),
+
+  // Every statement is the window that opened when the stock was reserved.
   // If the transaction fails, the units go back on the shelf on the way out.
   ]).catch(releasingStock(taken));
 

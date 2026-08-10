@@ -40,11 +40,11 @@ export const es: Dictionary = {
     noProductsBody: "{shop} todavía no ha añadido nada. Vuelve pronto.",
     noMatches: "No hay coincidencias",
     noMatchesBody: "Prueba a quitar un filtro o a buscar otra cosa.",
-    soldOut: "Agotado", sale: "Oferta", order: "Pedir", orderNow: "Pedir ahora",
+    soldOut: "Agotado", salesClosed: "Venta cerrada", sale: "Oferta", order: "Pedir", orderNow: "Pedir ahora",
     unavailable: "No disponible", joinOnSailo: "Únete a {shop} en Sailo", loadMore: "Cargar más",
     earnBySharing: "Gana un {percent}% compartiendo esta tienda",
     kindPhysical: "Te lo enviamos", kindDigital: "Descarga inmediata",
-    kindService: "Reserva una cita", labelDigital: "Descarga", labelService: "Reserva",
+    kindService: "Reserva una cita", kindEvent: "Entrada para evento", labelDigital: "Descarga", labelService: "Reserva",
     from: "Desde {price}",
   },
   sort: {
@@ -126,6 +126,14 @@ export const es: Dictionary = {
     usedUp: "Has usado todas las descargas de este enlace. Escribe a {shop} si lo necesitas otra vez.",
     notReady: "Tus archivos se desbloquean cuando {shop} confirme tu pago.",
     visitShop: "Visitar {shop}",
+  },
+
+  tickets: {
+    title: "Tus entradas",
+    notReady: "Tus entradas se desbloquean cuando {shop} confirme tu pago.",
+    admitOne: "Válida para una persona",
+    showAtDoor: "Muéstrala en la puerta.",
+    used: "Usada",
   },
 
   rails: {
@@ -261,7 +269,7 @@ export const es: Dictionary = {
   nav: {
     overview: "Resumen", products: "Productos", categories: "Categorías", orders: "Pedidos",
     clients: "Clientes", reviews: "Reseñas", coupons: "Cupones", affiliates: "Afiliados",
-    payments: "Pagos", delivery: "Entrega", settings: "Ajustes",
+    payments: "Pagos", delivery: "Entrega", settings: "Ajustes", checkin: "Check-in",
     viewShop: "Ver tienda", signOut: "Cerrar sesión", upgrade: "Mejorar plan",
     openMenu: "Abrir menú", closeMenu: "Cerrar menú",
   },

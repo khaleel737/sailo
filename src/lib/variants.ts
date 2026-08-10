@@ -281,12 +281,13 @@ export function toCheckoutVariants(
 /*  Kinds                                                                      */
 /* -------------------------------------------------------------------------- */
 
-export type ProductKind = "physical" | "digital" | "service";
+export type ProductKind = "physical" | "digital" | "service" | "event";
 
 export const PRODUCT_KIND_VALUES: ProductKind[] = [
   "physical",
   "digital",
   "service",
+  "event",
 ];
 
 export function isProductKind(value: string): value is ProductKind {

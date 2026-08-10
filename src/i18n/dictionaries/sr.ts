@@ -38,10 +38,11 @@ export const sr: Dictionary = {
     noProductsBody: "{shop} још ништа није додао. Свратите ускоро.",
     noMatches: "Ништа не одговара томе",
     noMatchesBody: "Покушајте да уклоните филтер или потражите нешто друго.",
-    soldOut: "Распродато", sale: "Акција", order: "Наручи", orderNow: "Наручи одмах",
+    soldOut: "Распродато", salesClosed: "Продаја затворена", sale: "Акција", order: "Наручи", orderNow: "Наручи одмах",
     unavailable: "Недоступно", joinOnSailo: "Придружите се продавници {shop} на Sailu", loadMore: "Учитај више",
     earnBySharing: "Зарадите {percent}% дељењем ове продавнице",
     kindPhysical: "Шаље се вама", kindDigital: "Тренутно преузимање", kindService: "Закажите термин",
+    kindEvent: "Улазница за догађај",
     labelDigital: "Преузимање", labelService: "Резервација", from: "Од {price}",
   },
   sort: {
@@ -107,6 +108,13 @@ export const sr: Dictionary = {
     usedUp: "Искористили сте сва преузимања на овом линку. Јавите се продавници {shop} ако вам поново треба.",
     notReady: "Фајлови се откључавају када {shop} потврди вашу уплату.",
     visitShop: "Посети {shop}",
+  },
+  tickets: {
+    title: "Ваше улазнице",
+    notReady: "Улазнице се откључавају када {shop} потврди вашу уплату.",
+    admitOne: "Важи за једну особу",
+    showAtDoor: "Покажите ово на улазу.",
+    used: "Искоришћена",
   },
   rails: {
     cardName: "Картица", cardAction: "Плати картицом",
@@ -214,7 +222,8 @@ export const sr: Dictionary = {
   nav: {
     overview: "Преглед", products: "Производи", categories: "Категорије", orders: "Поруџбине",
     clients: "Купци", reviews: "Рецензије", coupons: "Купони", affiliates: "Партнери",
-    payments: "Плаћања", delivery: "Достава", settings: "Подешавања", viewShop: "Погледај продавницу",
+    payments: "Плаћања", delivery: "Достава", settings: "Подешавања",
+    checkin: "Провера улазница", viewShop: "Погледај продавницу",
     signOut: "Одјава", upgrade: "Надогради", openMenu: "Отвори мени", closeMenu: "Затвори мени",
   },
   notifications: {

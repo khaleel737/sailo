@@ -1,7 +1,7 @@
 import type { shops } from "./shop";
 import type { categories, productFiles, productImages, productVariants, products, reviews } from "./catalog";
 import type { affiliates, coupons, deliveryMethods, paymentMethods } from "./commerce";
-import type { clients, invoices, orderItems, orders } from "./orders";
+import type { clients, invoices, orderItems, orders, tickets } from "./orders";
 import type { staffActions, visitDaily, visits } from "./analytics";
 import type { supportTickets } from "./support";
 import type { user } from "./auth";
@@ -17,6 +17,7 @@ export type ProductFile = typeof productFiles.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
+export type Ticket = typeof tickets.$inferSelect;
 export type Visit = typeof visits.$inferSelect;
 export type VisitDaily = typeof visitDaily.$inferSelect;
 export type PaymentMethod = typeof paymentMethods.$inferSelect;

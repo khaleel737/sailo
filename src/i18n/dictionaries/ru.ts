@@ -38,11 +38,11 @@ export const ru: Dictionary = {
     noProductsBody: "{shop} пока ничего не добавил. Загляните позже.",
     noMatches: "Ничего не найдено",
     noMatchesBody: "Попробуйте снять фильтр или поискать другое.",
-    soldOut: "Продано", sale: "Скидка", order: "Заказать", orderNow: "Заказать сейчас",
+    soldOut: "Продано", salesClosed: "Продажи закрыты", sale: "Скидка", order: "Заказать", orderNow: "Заказать сейчас",
     unavailable: "Недоступно", joinOnSailo: "Присоединяйтесь к {shop} на Sailo", loadMore: "Показать ещё",
     earnBySharing: "Зарабатывайте {percent}%, делясь этим магазином",
     kindPhysical: "Доставим вам", kindDigital: "Мгновенная загрузка",
-    kindService: "Забронируйте время", labelDigital: "Загрузка", labelService: "Запись",
+    kindService: "Забронируйте время", kindEvent: "Билет на мероприятие", labelDigital: "Загрузка", labelService: "Запись",
     from: "От {price}",
   },
   sort: {
@@ -120,6 +120,14 @@ export const ru: Dictionary = {
     usedUp: "Вы использовали все загрузки по этой ссылке. Напишите {shop}, если файл нужен снова.",
     notReady: "Файлы откроются, когда {shop} подтвердит оплату.",
     visitShop: "Перейти в {shop}",
+  },
+
+  tickets: {
+    title: "Ваши билеты",
+    notReady: "Билеты откроются, когда {shop} подтвердит оплату.",
+    admitOne: "Вход для одного",
+    showAtDoor: "Покажите это на входе.",
+    used: "Использован",
   },
 
   rails: {
@@ -254,7 +262,7 @@ export const ru: Dictionary = {
   nav: {
     overview: "Обзор", products: "Товары", categories: "Категории", orders: "Заказы",
     clients: "Клиенты", reviews: "Отзывы", coupons: "Промокоды", affiliates: "Партнёры",
-    payments: "Оплата", delivery: "Доставка", settings: "Настройки",
+    payments: "Оплата", delivery: "Доставка", settings: "Настройки", checkin: "Чек-ин",
     viewShop: "Открыть магазин", signOut: "Выйти", upgrade: "Улучшить тариф",
     openMenu: "Открыть меню", closeMenu: "Закрыть меню",
   },

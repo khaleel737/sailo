@@ -40,11 +40,12 @@ export const de: Dictionary = {
     noProductsBody: "{shop} hat noch nichts eingestellt. Schau bald wieder vorbei.",
     noMatches: "Nichts gefunden",
     noMatchesBody: "Entferne einen Filter oder suche nach etwas anderem.",
-    soldOut: "Ausverkauft", sale: "Angebot", order: "Bestellen", orderNow: "Jetzt bestellen",
+    soldOut: "Ausverkauft", salesClosed: "Verkauf beendet", sale: "Angebot", order: "Bestellen", orderNow: "Jetzt bestellen",
     unavailable: "Nicht verfügbar", joinOnSailo: "Tritt {shop} auf Sailo bei", loadMore: "Mehr laden",
     earnBySharing: "Verdiene {percent}%, indem du diesen Shop teilst",
     kindPhysical: "Wird geliefert", kindDigital: "Sofort-Download",
-    kindService: "Termin buchen", labelDigital: "Download", labelService: "Buchung",
+    kindService: "Termin buchen", kindEvent: "Event-Ticket",
+    labelDigital: "Download", labelService: "Buchung",
     from: "Ab {price}",
   },
   sort: {
@@ -126,6 +127,14 @@ export const de: Dictionary = {
     usedUp: "Du hast alle Downloads dieses Links genutzt. Melde dich bei {shop}, wenn du sie noch einmal brauchst.",
     notReady: "Deine Dateien werden freigeschaltet, sobald {shop} deine Zahlung bestätigt.",
     visitShop: "{shop} besuchen",
+  },
+
+  tickets: {
+    title: "Deine Tickets",
+    notReady: "Deine Tickets werden freigeschaltet, sobald {shop} deine Zahlung bestätigt.",
+    admitOne: "Einlass für eine Person",
+    showAtDoor: "Zeig das am Einlass vor.",
+    used: "Verwendet",
   },
 
   rails: {
@@ -261,7 +270,7 @@ export const de: Dictionary = {
   nav: {
     overview: "Übersicht", products: "Produkte", categories: "Kategorien", orders: "Bestellungen",
     clients: "Kunden", reviews: "Bewertungen", coupons: "Rabattcodes", affiliates: "Partner",
-    payments: "Zahlungen", delivery: "Lieferung", settings: "Einstellungen",
+    payments: "Zahlungen", delivery: "Lieferung", settings: "Einstellungen", checkin: "Check-in",
     viewShop: "Shop ansehen", signOut: "Abmelden", upgrade: "Upgrade",
     openMenu: "Menü öffnen", closeMenu: "Menü schließen",
   },

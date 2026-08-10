@@ -89,6 +89,16 @@ export const products = pgTable(
     /** Notice the seller needs — the picker won't offer anything sooner. */
     bookingLeadHours: integer("booking_lead_hours").default(24).notNull(),
 
+    // Events
+    /**
+     * When the doors open, for `kind: "event"`. This is the moment ticket
+     * sales close: a ticket sold after the start would be one for an event
+     * already happening. Venue reuses `serviceLocation` above, and capacity
+     * is ordinary stock — the guarded decrement is what stops overselling
+     * a room, exactly as it stops overselling a shelf.
+     */
+    eventStartsAt: timestamp("event_starts_at"),
+
     inStock: boolean("in_stock").default(true).notNull(),
     isFeatured: boolean("is_featured").default(false).notNull(),
     isPublished: boolean("is_published").default(true).notNull(),

@@ -48,6 +48,7 @@ export const zh: Dictionary = {
     noMatches: "没有匹配的商品",
     noMatchesBody: "试试去掉一个筛选条件，或换个关键词。",
     soldOut: "已售罄",
+    salesClosed: "已停售",
     sale: "促销",
     order: "下单",
     orderNow: "立即下单",
@@ -57,6 +58,7 @@ export const zh: Dictionary = {
     kindPhysical: "配送到家",
     kindDigital: "立即下载",
     kindService: "预约时间",
+    kindEvent: "活动门票",
     labelDigital: "下载",
     labelService: "预约",
     from: "{price}起",
@@ -149,6 +151,14 @@ export const zh: Dictionary = {
     usedUp: "此链接的下载次数已用完。如需再次下载，请联系 {shop}。",
     notReady: "{shop} 确认收款后，文件即可下载。",
     visitShop: "前往 {shop}",
+  },
+
+  tickets: {
+    title: "你的门票",
+    notReady: "{shop} 确认收款后，门票即可使用。",
+    admitOne: "单人入场",
+    showAtDoor: "入场时出示此票。",
+    used: "已使用",
   },
 
   rails: {
@@ -289,6 +299,7 @@ export const zh: Dictionary = {
     overview: "概览", products: "商品", categories: "分类", orders: "订单",
     clients: "客户", reviews: "评价", coupons: "优惠券", affiliates: "推广伙伴",
     payments: "支付方式", delivery: "配送", settings: "设置",
+    checkin: "检票",
     viewShop: "查看店铺", signOut: "退出登录", upgrade: "升级",
     openMenu: "打开菜单", closeMenu: "关闭菜单",
   },

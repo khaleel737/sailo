@@ -39,11 +39,11 @@ export const nl: Dictionary = {
     noProductsBody: "{shop} heeft nog niets toegevoegd. Kom snel terug.",
     noMatches: "Geen resultaten",
     noMatchesBody: "Probeer een filter te verwijderen of iets anders te zoeken.",
-    soldOut: "Uitverkocht", sale: "Aanbieding", order: "Bestellen", orderNow: "Nu bestellen",
+    soldOut: "Uitverkocht", salesClosed: "Verkoop gesloten", sale: "Aanbieding", order: "Bestellen", orderNow: "Nu bestellen",
     unavailable: "Niet beschikbaar", joinOnSailo: "Sluit je aan bij {shop} op Sailo", loadMore: "Meer laden",
     earnBySharing: "Verdien {percent}% door deze winkel te delen",
     kindPhysical: "Wordt bezorgd", kindDigital: "Direct downloaden",
-    kindService: "Boek een tijd", labelDigital: "Download", labelService: "Boeking",
+    kindService: "Boek een tijd", kindEvent: "Evenementticket", labelDigital: "Download", labelService: "Boeking",
     from: "Vanaf {price}",
   },
   sort: {
@@ -122,6 +122,14 @@ export const nl: Dictionary = {
     usedUp: "Je hebt alle downloads van deze link gebruikt. Neem contact op met {shop} als je hem opnieuw nodig hebt.",
     notReady: "Je bestanden komen vrij zodra {shop} je betaling bevestigt.",
     visitShop: "Ga naar {shop}",
+  },
+
+  tickets: {
+    title: "Jouw tickets",
+    notReady: "Je tickets komen vrij zodra {shop} je betaling bevestigt.",
+    admitOne: "Geldig voor één persoon",
+    showAtDoor: "Laat dit bij de deur zien.",
+    used: "Gebruikt",
   },
 
   rails: {
@@ -257,7 +265,7 @@ export const nl: Dictionary = {
   nav: {
     overview: "Overzicht", products: "Producten", categories: "Categorieën", orders: "Bestellingen",
     clients: "Klanten", reviews: "Beoordelingen", coupons: "Kortingscodes", affiliates: "Partners",
-    payments: "Betalingen", delivery: "Bezorging", settings: "Instellingen",
+    payments: "Betalingen", delivery: "Bezorging", settings: "Instellingen", checkin: "Check-in",
     viewShop: "Winkel bekijken", signOut: "Uitloggen", upgrade: "Upgraden",
     openMenu: "Menu openen", closeMenu: "Menu sluiten",
   },

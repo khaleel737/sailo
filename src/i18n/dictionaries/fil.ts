@@ -38,10 +38,11 @@ export const fil: Dictionary = {
     noProductsBody: "Wala pang idinagdag ang {shop}. Balikan mo mamaya.",
     noMatches: "Walang tumugma",
     noMatchesBody: "Subukang alisin ang isang filter o maghanap ng iba.",
-    soldOut: "Ubos na", sale: "Sale", order: "Mag-order", orderNow: "Mag-order na",
+    soldOut: "Ubos na", salesClosed: "Sarado na ang benta", sale: "Sale", order: "Mag-order", orderNow: "Mag-order na",
     unavailable: "Hindi available", joinOnSailo: "Sumali sa {shop} sa Sailo", loadMore: "Magpakita pa",
     earnBySharing: "Kumita ng {percent}% sa pag-share ng tindahang ito",
     kindPhysical: "Ipapadala sa iyo", kindDigital: "Agad na download", kindService: "Mag-book ng oras",
+    kindEvent: "Ticket sa event",
     labelDigital: "Download", labelService: "Booking", from: "Mula {price}",
   },
   sort: {
@@ -107,6 +108,13 @@ export const fil: Dictionary = {
     usedUp: "Naubos mo na ang lahat ng download sa link na ito. Makipag-ugnayan sa {shop} kung kailangan mo ulit.",
     notReady: "Mabubuksan ang mga file kapag kinumpirma ng {shop} ang bayad mo.",
     visitShop: "Bisitahin ang {shop}",
+  },
+  tickets: {
+    title: "Iyong mga ticket",
+    notReady: "Mabubuksan ang mga ticket mo kapag kinumpirma ng {shop} ang bayad mo.",
+    admitOne: "Para sa isang tao",
+    showAtDoor: "Ipakita ito sa pintuan.",
+    used: "Nagamit na",
   },
   rails: {
     cardName: "Card", cardAction: "Magbayad gamit ang card",
@@ -214,7 +222,7 @@ export const fil: Dictionary = {
   nav: {
     overview: "Pangkalahatan", products: "Mga produkto", categories: "Mga kategorya", orders: "Mga order",
     clients: "Mga kliyente", reviews: "Mga review", coupons: "Mga kupon", affiliates: "Mga kasosyo",
-    payments: "Mga bayad", delivery: "Padala", settings: "Mga setting", viewShop: "Tingnan ang tindahan",
+    payments: "Mga bayad", delivery: "Padala", settings: "Mga setting", checkin: "Check-in", viewShop: "Tingnan ang tindahan",
     signOut: "Mag-sign out", upgrade: "Mag-upgrade", openMenu: "Buksan ang menu", closeMenu: "Isara ang menu",
   },
   notifications: {

@@ -37,11 +37,11 @@ export const ro: Dictionary = {
     noProducts: "Încă niciun produs",
     noProductsBody: "{shop} nu a adăugat nimic încă. Revino curând.",
     noMatches: "Niciun rezultat", noMatchesBody: "Încearcă să scoți un filtru sau să cauți altceva.",
-    soldOut: "Stoc epuizat", sale: "Reducere", order: "Comandă", orderNow: "Comandă acum",
+    soldOut: "Stoc epuizat", salesClosed: "Vânzări închise", sale: "Reducere", order: "Comandă", orderNow: "Comandă acum",
     unavailable: "Indisponibil", joinOnSailo: "Alătură-te {shop} pe Sailo", loadMore: "Încarcă mai multe",
     earnBySharing: "Câștigă {percent}% distribuind acest magazin",
     kindPhysical: "Se livrează la tine", kindDigital: "Descărcare imediată",
-    kindService: "Rezervă o oră", labelDigital: "Descărcare", labelService: "Rezervare",
+    kindService: "Rezervă o oră", kindEvent: "Bilet la eveniment", labelDigital: "Descărcare", labelService: "Rezervare",
     from: "De la {price}",
   },
   sort: {
@@ -119,6 +119,14 @@ export const ro: Dictionary = {
     usedUp: "Ai folosit toate descărcările acestui link. Scrie-i lui {shop} dacă mai ai nevoie de el.",
     notReady: "Fișierele se deblochează după ce {shop} confirmă plata.",
     visitShop: "Vizitează {shop}",
+  },
+
+  tickets: {
+    title: "Biletele tale",
+    notReady: "Biletele se deblochează după ce {shop} confirmă plata.",
+    admitOne: "Valabil pentru o persoană",
+    showAtDoor: "Arată asta la intrare.",
+    used: "Folosit",
   },
 
   rails: {
@@ -251,7 +259,7 @@ export const ro: Dictionary = {
   nav: {
     overview: "Prezentare", products: "Produse", categories: "Categorii", orders: "Comenzi",
     clients: "Clienți", reviews: "Recenzii", coupons: "Coduri reducere", affiliates: "Afiliați",
-    payments: "Plăți", delivery: "Livrare", settings: "Setări",
+    payments: "Plăți", delivery: "Livrare", settings: "Setări", checkin: "Check-in",
     viewShop: "Vezi magazinul", signOut: "Deconectare", upgrade: "Schimbă planul",
     openMenu: "Deschide meniul", closeMenu: "Închide meniul",
   },

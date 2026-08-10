@@ -38,10 +38,11 @@ export const ko: Dictionary = {
     noProductsBody: "{shop}에서 아직 아무것도 올리지 않았어요. 곧 다시 확인해 주세요.",
     noMatches: "일치하는 상품이 없습니다",
     noMatchesBody: "필터를 지우거나 다른 검색어를 시도해 보세요.",
-    soldOut: "품절", sale: "할인", order: "주문하기", orderNow: "지금 주문",
+    soldOut: "품절", salesClosed: "판매 종료", sale: "할인", order: "주문하기", orderNow: "지금 주문",
     unavailable: "이용 불가", joinOnSailo: "Sailo에서 {shop} 만나보기", loadMore: "더 보기",
     earnBySharing: "이 가게를 공유하고 {percent}% 받기",
     kindPhysical: "배송해 드립니다", kindDigital: "즉시 다운로드", kindService: "시간 예약",
+    kindEvent: "이벤트 티켓",
     labelDigital: "다운로드", labelService: "예약", from: "{price}부터",
   },
   sort: {
@@ -107,6 +108,13 @@ export const ko: Dictionary = {
     usedUp: "이 링크의 다운로드 횟수를 모두 사용했습니다. 다시 필요하시면 {shop}에 문의해 주세요.",
     notReady: "{shop}에서 결제를 확인하면 파일이 열립니다.",
     visitShop: "{shop} 방문하기",
+  },
+  tickets: {
+    title: "티켓",
+    notReady: "{shop}에서 결제를 확인하면 티켓이 열립니다.",
+    admitOne: "1인 입장",
+    showAtDoor: "입장할 때 이 화면을 보여주세요.",
+    used: "사용됨",
   },
   rails: {
     cardName: "카드", cardAction: "카드로 결제",
@@ -214,7 +222,7 @@ export const ko: Dictionary = {
   nav: {
     overview: "개요", products: "상품", categories: "카테고리", orders: "주문",
     clients: "고객", reviews: "후기", coupons: "쿠폰", affiliates: "파트너",
-    payments: "결제", delivery: "배송", settings: "설정", viewShop: "가게 보기",
+    payments: "결제", delivery: "배송", settings: "설정", checkin: "체크인", viewShop: "가게 보기",
     signOut: "로그아웃", upgrade: "업그레이드", openMenu: "메뉴 열기", closeMenu: "메뉴 닫기",
   },
   notifications: {

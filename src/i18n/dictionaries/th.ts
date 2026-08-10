@@ -38,10 +38,11 @@ export const th: Dictionary = {
     noProductsBody: "{shop} ยังไม่ได้เพิ่มอะไรเลย กลับมาดูใหม่เร็ว ๆ นี้",
     noMatches: "ไม่พบรายการที่ตรงกัน",
     noMatchesBody: "ลองล้างตัวกรองหรือค้นหาคำอื่นดู",
-    soldOut: "สินค้าหมด", sale: "ลดราคา", order: "สั่งซื้อ", orderNow: "สั่งซื้อเลย",
+    soldOut: "สินค้าหมด", salesClosed: "ปิดการขายแล้ว", sale: "ลดราคา", order: "สั่งซื้อ", orderNow: "สั่งซื้อเลย",
     unavailable: "ไม่พร้อมจำหน่าย", joinOnSailo: "เข้าร่วม {shop} บน Sailo", loadMore: "โหลดเพิ่มเติม",
     earnBySharing: "รับ {percent}% จากการแชร์ร้านนี้",
     kindPhysical: "จัดส่งถึงคุณ", kindDigital: "ดาวน์โหลดทันที", kindService: "จองเวลา",
+    kindEvent: "บัตรเข้างาน",
     labelDigital: "ดาวน์โหลด", labelService: "การจอง", from: "เริ่มต้น {price}",
   },
   sort: {
@@ -107,6 +108,13 @@ export const th: Dictionary = {
     usedUp: "คุณใช้สิทธิ์ดาวน์โหลดของลิงก์นี้ครบแล้ว ติดต่อ {shop} หากต้องการอีกครั้ง",
     notReady: "ไฟล์จะปลดล็อกเมื่อ {shop} ยืนยันการชำระเงินของคุณ",
     visitShop: "เยี่ยมชม {shop}",
+  },
+  tickets: {
+    title: "บัตรของคุณ",
+    notReady: "บัตรจะปลดล็อกเมื่อ {shop} ยืนยันการชำระเงินของคุณ",
+    admitOne: "เข้าได้ 1 คน",
+    showAtDoor: "แสดงบัตรนี้ที่หน้างาน",
+    used: "ใช้แล้ว",
   },
   rails: {
     cardName: "บัตร", cardAction: "ชำระด้วยบัตร",
@@ -214,7 +222,8 @@ export const th: Dictionary = {
   nav: {
     overview: "ภาพรวม", products: "สินค้า", categories: "หมวดหมู่", orders: "คำสั่งซื้อ",
     clients: "ลูกค้า", reviews: "รีวิว", coupons: "คูปอง", affiliates: "พาร์ทเนอร์",
-    payments: "การชำระเงิน", delivery: "การจัดส่ง", settings: "ตั้งค่า", viewShop: "ดูร้าน",
+    payments: "การชำระเงิน", delivery: "การจัดส่ง", settings: "ตั้งค่า",
+    checkin: "เช็คอิน", viewShop: "ดูร้าน",
     signOut: "ออกจากระบบ", upgrade: "อัปเกรด", openMenu: "เปิดเมนู", closeMenu: "ปิดเมนู",
   },
   notifications: {

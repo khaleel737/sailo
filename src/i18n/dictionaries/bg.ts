@@ -38,10 +38,11 @@ export const bg: Dictionary = {
     noProductsBody: "{shop} още не е добавил нищо. Наминете скоро.",
     noMatches: "Нищо не отговаря на това",
     noMatchesBody: "Опитайте да махнете филтър или да потърсите нещо друго.",
-    soldOut: "Изчерпано", sale: "Промоция", order: "Поръчай", orderNow: "Поръчай сега",
+    soldOut: "Изчерпано", salesClosed: "Продажбите приключиха", sale: "Промоция", order: "Поръчай", orderNow: "Поръчай сега",
     unavailable: "Недостъпно", joinOnSailo: "Присъединете се към {shop} в Sailo", loadMore: "Зареди още",
     earnBySharing: "Спечелете {percent}% като споделите този магазин",
     kindPhysical: "Изпраща се до вас", kindDigital: "Мигновено изтегляне", kindService: "Запазете час",
+    kindEvent: "Билет за събитие",
     labelDigital: "Изтегляне", labelService: "Резервация", from: "От {price}",
   },
   sort: {
@@ -107,6 +108,13 @@ export const bg: Dictionary = {
     usedUp: "Използвахте всички изтегляния на този линк. Свържете се с {shop}, ако ви трябва отново.",
     notReady: "Файловете се отключват, когато {shop} потвърди плащането ви.",
     visitShop: "Посетете {shop}",
+  },
+  tickets: {
+    title: "Вашите билети",
+    notReady: "Билетите се отключват, когато {shop} потвърди плащането ви.",
+    admitOne: "Вход за един",
+    showAtDoor: "Покажете това на входа.",
+    used: "Използван",
   },
   rails: {
     cardName: "Карта", cardAction: "Плати с карта",
@@ -214,7 +222,8 @@ export const bg: Dictionary = {
   nav: {
     overview: "Обзор", products: "Продукти", categories: "Категории", orders: "Поръчки",
     clients: "Клиенти", reviews: "Отзиви", coupons: "Купони", affiliates: "Партньори",
-    payments: "Плащания", delivery: "Доставка", settings: "Настройки", viewShop: "Виж магазина",
+    payments: "Плащания", delivery: "Доставка", settings: "Настройки", checkin: "Чекиране",
+    viewShop: "Виж магазина",
     signOut: "Изход", upgrade: "Надгради", openMenu: "Отвори менюто", closeMenu: "Затвори менюто",
   },
   notifications: {

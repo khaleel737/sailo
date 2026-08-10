@@ -334,3 +334,40 @@ export const bookingClaims = pgTable(
     index("booking_claims_order_idx").on(t.orderId),
   ],
 );
+
+/**
+ * One row per admission — three tickets bought is three rows, each with its
+ * own code, because the person at the door admits people, not orders.
+ *
+ * Tickets ride the order's own release lifecycle: they are written with the
+ * order and become valid when `orders.downloadReleasedAt` is set — the same
+ * instant, and the same webhook-retry-safe claim, that opens a digital
+ * order's files. A ticket is never its own authority on payment.
+ */
+export const tickets = pgTable(
+  "tickets",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+    orderId: uuid("order_id")
+      .notNull()
+      .references(() => orders.id, { onDelete: "cascade" }),
+    /** Which line this admission came from; null if the product was deleted. */
+    productId: uuid("product_id").references(() => products.id, {
+      onDelete: "set null",
+    }),
+    /** What the door sees. Unambiguous alphabet, globally unique. */
+    code: text("code").notNull(),
+    /** valid | used | void — `used` is claimed atomically, once. */
+    status: text("status").default("valid").notNull(),
+    usedAt: timestamp("used_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("tickets_code_key").on(t.code),
+    index("tickets_order_idx").on(t.orderId),
+    index("tickets_shop_idx").on(t.shopId),
+  ],
+);

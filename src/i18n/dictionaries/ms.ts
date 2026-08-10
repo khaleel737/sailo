@@ -38,10 +38,11 @@ export const ms: Dictionary = {
     noProductsBody: "{shop} belum menambah apa-apa lagi. Datang semula tidak lama lagi.",
     noMatches: "Tiada yang sepadan",
     noMatchesBody: "Cuba buang satu penapis atau cari sesuatu yang lain.",
-    soldOut: "Habis dijual", sale: "Jualan", order: "Pesan", orderNow: "Pesan sekarang",
+    soldOut: "Habis dijual", salesClosed: "Jualan ditutup", sale: "Jualan", order: "Pesan", orderNow: "Pesan sekarang",
     unavailable: "Tidak tersedia", joinOnSailo: "Sertai {shop} di Sailo", loadMore: "Muat lagi",
     earnBySharing: "Dapat {percent}% dengan berkongsi kedai ini",
     kindPhysical: "Dihantar kepada anda", kindDigital: "Muat turun serta-merta", kindService: "Tempah masa",
+    kindEvent: "Tiket acara",
     labelDigital: "Muat turun", labelService: "Tempahan", from: "Dari {price}",
   },
   sort: {
@@ -107,6 +108,13 @@ export const ms: Dictionary = {
     usedUp: "Anda telah menggunakan semua muat turun pada pautan ini. Hubungi {shop} jika perlukannya lagi.",
     notReady: "Fail terbuka apabila {shop} mengesahkan bayaran anda.",
     visitShop: "Lawati {shop}",
+  },
+  tickets: {
+    title: "Tiket anda",
+    notReady: "Tiket terbuka apabila {shop} mengesahkan bayaran anda.",
+    admitOne: "Masuk untuk seorang",
+    showAtDoor: "Tunjukkan ini di pintu masuk.",
+    used: "Telah digunakan",
   },
   rails: {
     cardName: "Kad", cardAction: "Bayar dengan kad",
@@ -214,7 +222,7 @@ export const ms: Dictionary = {
   nav: {
     overview: "Gambaran keseluruhan", products: "Produk", categories: "Kategori", orders: "Pesanan",
     clients: "Pelanggan", reviews: "Ulasan", coupons: "Kupon", affiliates: "Rakan kongsi",
-    payments: "Pembayaran", delivery: "Penghantaran", settings: "Tetapan", viewShop: "Lihat kedai",
+    payments: "Pembayaran", delivery: "Penghantaran", settings: "Tetapan", checkin: "Daftar masuk", viewShop: "Lihat kedai",
     signOut: "Log keluar", upgrade: "Naik taraf", openMenu: "Buka menu", closeMenu: "Tutup menu",
   },
   notifications: {

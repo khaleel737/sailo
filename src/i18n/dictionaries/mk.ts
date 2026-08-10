@@ -38,10 +38,11 @@ export const mk: Dictionary = {
     noProductsBody: "{shop} сè уште не додал ништо. Навратете се наскоро.",
     noMatches: "Ништо не одговара на тоа",
     noMatchesBody: "Обидете се да отстраните филтер или да побарате нешто друго.",
-    soldOut: "Распродадено", sale: "Акција", order: "Нарачај", orderNow: "Нарачај сега",
+    soldOut: "Распродадено", salesClosed: "Продажбата е затворена", sale: "Акција", order: "Нарачај", orderNow: "Нарачај сега",
     unavailable: "Недостапно", joinOnSailo: "Придружете се на {shop} на Sailo", loadMore: "Вчитај повеќе",
     earnBySharing: "Заработете {percent}% со споделување на оваа продавница",
     kindPhysical: "Се испраќа до вас", kindDigital: "Моментално преземање", kindService: "Закажете термин",
+    kindEvent: "Билет за настан",
     labelDigital: "Преземање", labelService: "Резервација", from: "Од {price}",
   },
   sort: {
@@ -107,6 +108,13 @@ export const mk: Dictionary = {
     usedUp: "Ги искористивте сите преземања на оваа врска. Обратете се до {shop} ако ви треба повторно.",
     notReady: "Датотеките се отклучуваат кога {shop} ќе ја потврди вашата уплата.",
     visitShop: "Посетете {shop}",
+  },
+  tickets: {
+    title: "Вашите билети",
+    notReady: "Билетите се отклучуваат кога {shop} ќе ја потврди вашата уплата.",
+    admitOne: "Влез за едно лице",
+    showAtDoor: "Покажете го ова на влезот.",
+    used: "Искористен",
   },
   rails: {
     cardName: "Картичка", cardAction: "Плати со картичка",
@@ -214,7 +222,7 @@ export const mk: Dictionary = {
   nav: {
     overview: "Преглед", products: "Производи", categories: "Категории", orders: "Нарачки",
     clients: "Клиенти", reviews: "Рецензии", coupons: "Купони", affiliates: "Партнери",
-    payments: "Плаќања", delivery: "Достава", settings: "Поставки", viewShop: "Погледни ја продавницата",
+    payments: "Плаќања", delivery: "Достава", settings: "Поставки", checkin: "Чек-ин", viewShop: "Погледни ја продавницата",
     signOut: "Одјава", upgrade: "Надгради", openMenu: "Отвори мени", closeMenu: "Затвори мени",
   },
   notifications: {

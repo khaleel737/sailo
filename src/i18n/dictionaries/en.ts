@@ -66,6 +66,7 @@ export const en = {
     noMatches: "Nothing matches that",
     noMatchesBody: "Try clearing a filter or searching for something else.",
     soldOut: "Sold out",
+    salesClosed: "Sales closed",
     sale: "Sale",
     order: "Order",
     orderNow: "Order now",
@@ -78,6 +79,7 @@ export const en = {
     kindPhysical: "Ships to you",
     kindDigital: "Instant download",
     kindService: "Book a time",
+    kindEvent: "Event ticket",
     labelDigital: "Download",
     labelService: "Booking",
     from: "From {price}",
@@ -204,6 +206,14 @@ export const en = {
       "You've used every download on this link. Get in touch with {shop} if you need it again.",
     notReady: "Your files unlock once {shop} confirms your payment.",
     visitShop: "Visit {shop}",
+  },
+
+  tickets: {
+    title: "Your tickets",
+    notReady: "Your tickets unlock once {shop} confirms your payment.",
+    admitOne: "Admit one",
+    showAtDoor: "Show this at the door.",
+    used: "Used",
   },
 
   /**
@@ -397,6 +407,7 @@ export const en = {
     payments: "Payments",
     delivery: "Delivery",
     settings: "Settings",
+    checkin: "Check-in",
     viewShop: "View shop",
     signOut: "Sign out",
     upgrade: "Upgrade",

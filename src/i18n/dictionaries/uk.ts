@@ -38,11 +38,11 @@ export const uk: Dictionary = {
     noProductsBody: "{shop} ще нічого не додав. Завітайте пізніше.",
     noMatches: "Нічого не знайдено",
     noMatchesBody: "Спробуйте зняти фільтр або пошукати інше.",
-    soldOut: "Розпродано", sale: "Знижка", order: "Замовити", orderNow: "Замовити зараз",
+    soldOut: "Розпродано", salesClosed: "Продаж завершено", sale: "Знижка", order: "Замовити", orderNow: "Замовити зараз",
     unavailable: "Недоступно", joinOnSailo: "Приєднуйтеся до {shop} на Sailo", loadMore: "Показати ще",
     earnBySharing: "Заробляйте {percent}%, ділячись цим магазином",
     kindPhysical: "Доставимо вам", kindDigital: "Миттєве завантаження",
-    kindService: "Забронюйте час", labelDigital: "Завантаження", labelService: "Запис",
+    kindService: "Забронюйте час", kindEvent: "Квиток на подію", labelDigital: "Завантаження", labelService: "Запис",
     from: "Від {price}",
   },
   sort: {
@@ -120,6 +120,14 @@ export const uk: Dictionary = {
     usedUp: "Ви використали всі завантаження за цим посиланням. Напишіть {shop}, якщо файл потрібен знову.",
     notReady: "Файли відкриються, коли {shop} підтвердить оплату.",
     visitShop: "Перейти до {shop}",
+  },
+
+  tickets: {
+    title: "Ваші квитки",
+    notReady: "Квитки відкриються, коли {shop} підтвердить оплату.",
+    admitOne: "На одну особу",
+    showAtDoor: "Покажіть це на вході.",
+    used: "Використано",
   },
 
   rails: {
@@ -255,6 +263,7 @@ export const uk: Dictionary = {
     overview: "Огляд", products: "Товари", categories: "Категорії", orders: "Замовлення",
     clients: "Клієнти", reviews: "Відгуки", coupons: "Промокоди", affiliates: "Партнери",
     payments: "Оплата", delivery: "Доставка", settings: "Налаштування",
+    checkin: "Реєстрація",
     viewShop: "Переглянути магазин", signOut: "Вийти", upgrade: "Покращити тариф",
     openMenu: "Відкрити меню", closeMenu: "Закрити меню",
   },

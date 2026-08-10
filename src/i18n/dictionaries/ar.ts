@@ -48,6 +48,7 @@ export const ar: Dictionary = {
     noMatches: "لا نتائج مطابقة",
     noMatchesBody: "جرّب إزالة أحد عوامل التصفية أو البحث بكلمة أخرى.",
     soldOut: "نفد المخزون",
+    salesClosed: "أُغلق البيع",
     sale: "تخفيض",
     order: "اطلب",
     orderNow: "اطلب الآن",
@@ -57,6 +58,7 @@ export const ar: Dictionary = {
     kindPhysical: "يُشحن إليك",
     kindDigital: "تنزيل فوري",
     kindService: "احجز موعدًا",
+    kindEvent: "تذكرة فعالية",
     labelDigital: "تنزيل",
     labelService: "حجز",
     from: "ابتداءً من {price}",
@@ -149,6 +151,14 @@ export const ar: Dictionary = {
     usedUp: "لقد استخدمت كل التنزيلات المتاحة على هذا الرابط. تواصل مع {shop} إذا احتجت إليه مجددًا.",
     notReady: "تُفتح ملفاتك بعد أن يؤكّد {shop} دفعتك.",
     visitShop: "زيارة {shop}",
+  },
+
+  tickets: {
+    title: "تذاكرك",
+    notReady: "تُفتح تذاكرك بعد أن يؤكّد {shop} دفعتك.",
+    admitOne: "دخول لشخص واحد",
+    showAtDoor: "أبرِز هذه التذكرة عند الباب.",
+    used: "مستخدمة",
   },
 
   rails: {
@@ -289,6 +299,7 @@ export const ar: Dictionary = {
     overview: "نظرة عامة", products: "المنتجات", categories: "الفئات", orders: "الطلبات",
     clients: "العملاء", reviews: "التقييمات", coupons: "أكواد الخصم", affiliates: "المسوّقون",
     payments: "طرق الدفع", delivery: "التوصيل", settings: "الإعدادات",
+    checkin: "تسجيل الحضور",
     viewShop: "عرض المتجر", signOut: "تسجيل الخروج", upgrade: "ترقية",
     openMenu: "فتح القائمة", closeMenu: "إغلاق القائمة",
   },

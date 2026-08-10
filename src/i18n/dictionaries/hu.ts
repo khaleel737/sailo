@@ -37,11 +37,11 @@ export const hu: Dictionary = {
     noProducts: "Még nincs termék",
     noProductsBody: "A(z) {shop} még nem töltött fel semmit. Nézz vissza hamarosan.",
     noMatches: "Nincs találat", noMatchesBody: "Próbálj meg levenni egy szűrőt vagy másra keresni.",
-    soldOut: "Elfogyott", sale: "Akció", order: "Megrendelés", orderNow: "Megrendelem",
+    soldOut: "Elfogyott", salesClosed: "Értékesítés lezárva", sale: "Akció", order: "Megrendelés", orderNow: "Megrendelem",
     unavailable: "Nem elérhető", joinOnSailo: "Csatlakozz a(z) {shop} oldalához a Sailón", loadMore: "Több betöltése",
     earnBySharing: "Keress {percent}%-ot a bolt megosztásával",
     kindPhysical: "Kiszállítjuk", kindDigital: "Azonnali letöltés",
-    kindService: "Foglaljon időpontot", labelDigital: "Letöltés", labelService: "Foglalás",
+    kindService: "Foglaljon időpontot", kindEvent: "Belépőjegy", labelDigital: "Letöltés", labelService: "Foglalás",
     from: "{price}-tól",
   },
   sort: {
@@ -119,6 +119,14 @@ export const hu: Dictionary = {
     usedUp: "Elhasználtad a link összes letöltését. Írj a(z) {shop} boltnak, ha újra szükséged van rá.",
     notReady: "A fájljaid akkor nyílnak meg, ha a(z) {shop} visszaigazolja a fizetést.",
     visitShop: "Irány a(z) {shop}",
+  },
+
+  tickets: {
+    title: "A jegyeid",
+    notReady: "A jegyeid akkor nyílnak meg, ha a(z) {shop} visszaigazolja a fizetést.",
+    admitOne: "Egy fő belépésére jogosít",
+    showAtDoor: "Mutasd fel a bejáratnál.",
+    used: "Felhasználva",
   },
 
   rails: {
@@ -251,7 +259,7 @@ export const hu: Dictionary = {
   nav: {
     overview: "Áttekintés", products: "Termékek", categories: "Kategóriák", orders: "Rendelések",
     clients: "Ügyfelek", reviews: "Értékelések", coupons: "Kuponok", affiliates: "Partnerek",
-    payments: "Fizetés", delivery: "Szállítás", settings: "Beállítások",
+    payments: "Fizetés", delivery: "Szállítás", settings: "Beállítások", checkin: "Beléptetés",
     viewShop: "Bolt megtekintése", signOut: "Kijelentkezés", upgrade: "Csomagváltás",
     openMenu: "Menü megnyitása", closeMenu: "Menü bezárása",
   },

@@ -31,6 +31,7 @@ import {
 } from "@/lib/variants";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { absolute, breadcrumbJsonLd, productJsonLd } from "@/lib/seo";
+import { eventSalesOpen } from "@/lib/tickets";
 
 export async function generateMetadata({
   params,
@@ -87,11 +88,15 @@ export default async function ProductPage({
       ? t.shop.kindDigital
       : product.kind === "service"
         ? t.shop.kindService
-        : t.shop.kindPhysical;
+        : product.kind === "event"
+          ? t.shop.kindEvent
+          : t.shop.kindPhysical;
 
   const variants = toCheckoutVariants(product, product.variants);
   const range = priceRange(product, product.variants);
-  const sellable = product.inStock && anySellable(product, product.variants);
+  const salesOpen = eventSalesOpen(product);
+  const sellable =
+    product.inStock && salesOpen && anySellable(product, product.variants);
   const stockLeft = unitsLeft(product);
 
   /*
@@ -209,9 +214,20 @@ export default async function ProductPage({
                   : t.checkout.inPerson}
               </span>
             ) : null}
+            {product.kind === "event" && product.eventStartsAt ? (
+              <span className="surface-elevated text-muted rounded-full px-2.5 py-1 text-xs font-medium">
+                {product.eventStartsAt.toLocaleString(locale, {
+                  weekday: "short",
+                  day: "numeric",
+                  month: "short",
+                  hour: "numeric",
+                  minute: "2-digit",
+                })}
+              </span>
+            ) : null}
             {!sellable ? (
               <span className="rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700">
-                {t.shop.soldOut}
+                {salesOpen ? t.shop.soldOut : t.shop.salesClosed}
               </span>
             ) : null}
           </div>

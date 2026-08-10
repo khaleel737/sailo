@@ -48,6 +48,7 @@ export const ja: Dictionary = {
     noMatches: "該当する商品がありません",
     noMatchesBody: "条件を変えるか、別のキーワードでお試しください。",
     soldOut: "売り切れ",
+    salesClosed: "販売終了",
     sale: "セール",
     order: "注文する",
     orderNow: "今すぐ注文",
@@ -57,6 +58,7 @@ export const ja: Dictionary = {
     kindPhysical: "お届け商品",
     kindDigital: "すぐにダウンロード",
     kindService: "時間を予約",
+    kindEvent: "イベントチケット",
     labelDigital: "ダウンロード",
     labelService: "予約",
     from: "{price}から",
@@ -149,6 +151,14 @@ export const ja: Dictionary = {
     usedUp: "このリンクのダウンロード回数を使い切りました。もう一度必要な場合は{shop}にご連絡ください。",
     notReady: "{shop}が入金を確認するとファイルが開きます。",
     visitShop: "{shop}を見る",
+  },
+
+  tickets: {
+    title: "チケット",
+    notReady: "{shop}が入金を確認するとチケットが開きます。",
+    admitOne: "1名様入場",
+    showAtDoor: "入場時にこちらをご提示ください。",
+    used: "使用済み",
   },
 
   rails: {
@@ -290,6 +300,7 @@ export const ja: Dictionary = {
     overview: "概要", products: "商品", categories: "カテゴリ", orders: "注文",
     clients: "顧客", reviews: "レビュー", coupons: "クーポン", affiliates: "アフィリエイト",
     payments: "支払い方法", delivery: "配送", settings: "設定",
+    checkin: "チェックイン",
     viewShop: "ショップを見る", signOut: "ログアウト", upgrade: "アップグレード",
     openMenu: "メニューを開く", closeMenu: "メニューを閉じる",
   },

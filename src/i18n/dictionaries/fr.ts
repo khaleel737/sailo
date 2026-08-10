@@ -40,11 +40,11 @@ export const fr: Dictionary = {
     noProductsBody: "{shop} n'a rien ajouté pour le moment. Revenez bientôt.",
     noMatches: "Aucun résultat",
     noMatchesBody: "Essayez d'enlever un filtre ou de chercher autre chose.",
-    soldOut: "Épuisé", sale: "Promo", order: "Commander", orderNow: "Commander",
+    soldOut: "Épuisé", salesClosed: "Billetterie fermée", sale: "Promo", order: "Commander", orderNow: "Commander",
     unavailable: "Indisponible", joinOnSailo: "Rejoignez {shop} sur Sailo", loadMore: "Voir plus",
     earnBySharing: "Gagnez {percent}% en partageant cette boutique",
     kindPhysical: "Livré chez vous", kindDigital: "Téléchargement immédiat",
-    kindService: "Réservez un créneau", labelDigital: "Téléchargement", labelService: "Réservation",
+    kindService: "Réservez un créneau", kindEvent: "Billet d'événement", labelDigital: "Téléchargement", labelService: "Réservation",
     from: "À partir de {price}",
   },
   sort: {
@@ -127,6 +127,14 @@ export const fr: Dictionary = {
     usedUp: "Vous avez utilisé tous les téléchargements de ce lien. Contactez {shop} si vous en avez encore besoin.",
     notReady: "Vos fichiers se débloquent dès que {shop} confirme votre paiement.",
     visitShop: "Voir {shop}",
+  },
+
+  tickets: {
+    title: "Vos billets",
+    notReady: "Vos billets se débloquent dès que {shop} confirme votre paiement.",
+    admitOne: "Valable pour une personne",
+    showAtDoor: "Présentez-le à l'entrée.",
+    used: "Utilisé",
   },
 
   rails: {
@@ -262,7 +270,7 @@ export const fr: Dictionary = {
   nav: {
     overview: "Aperçu", products: "Produits", categories: "Catégories", orders: "Commandes",
     clients: "Clients", reviews: "Avis", coupons: "Codes promo", affiliates: "Affiliés",
-    payments: "Paiements", delivery: "Livraison", settings: "Paramètres",
+    payments: "Paiements", delivery: "Livraison", settings: "Paramètres", checkin: "Contrôle des billets",
     viewShop: "Voir la boutique", signOut: "Déconnexion", upgrade: "Changer de forfait",
     openMenu: "Ouvrir le menu", closeMenu: "Fermer le menu",
   },

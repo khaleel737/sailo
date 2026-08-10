@@ -21,6 +21,7 @@ import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { Toggle } from "./toggle";
 import { DigitalDeliveryCard } from "./digital-delivery-card";
 import { ServiceSettingsCard } from "./service-settings-card";
+import { EventSettingsCard } from "./event-settings-card";
 import type { ProductWithRelations } from "./product.types";
 import { interpolate } from "@/i18n";
 import type {
@@ -182,7 +183,9 @@ export function ProductForm({
             ? a.productForm.digitalHint
             : kind === "service"
               ? a.productForm.serviceHint
-              : a.productForm.physicalHint}
+              : kind === "event"
+                ? a.productForm.eventHint
+                : a.productForm.physicalHint}
         </p>
 
         <Field
@@ -246,6 +249,16 @@ export function ProductForm({
           product={product}
           bookingEnabled={bookingEnabled}
           onBookingEnabledChange={setBookingEnabled}
+        />
+      ) : null}
+
+      {/* ---- Event settings ----------------------------------------------- */}
+
+      {kind === "event" ? (
+        <EventSettingsCard
+          product={product}
+          releaseOnPayment={releaseOnPayment}
+          onReleaseOnPaymentChange={setReleaseOnPayment}
         />
       ) : null}
 

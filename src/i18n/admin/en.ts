@@ -180,6 +180,8 @@ export const adminEn = {
     physicalHint: "Physical products ask the buyer how they'd like it delivered.",
     digitalHint:
       "Digital products skip delivery and are sent as a private download link.",
+    eventHint:
+      "Events sell tickets. Stock is the capacity, variants are the tiers, and sales close when the doors open.",
     serviceHint:
       "Services skip delivery. Add a duration and let buyers pick a time below.",
     optionsTitle: "Options & stock",
@@ -214,6 +216,17 @@ export const adminEn = {
       "Adds a preferred date and time to checkout. You confirm the slot afterwards.",
     bookingLead: "Notice needed (hours)",
     bookingLeadHint: "the picker won't offer anything sooner",
+    eventTitle: "Event details",
+    eventBody: "When it happens, where to turn up, and when tickets unlock.",
+    eventStartsAt: "Starts at",
+    eventStartsAtHint: "in your own time zone \u2014 ticket sales close at this moment",
+    eventVenue: "Venue or joining details",
+    eventVenuePlaceholder: "Warehouse 7, Marina Bay \u2014 doors 19:00",
+    eventReleaseOnPayment: "Release tickets only after payment is confirmed",
+    eventReleaseOnPaymentBody:
+      "Every payment option here settles outside Sailo, so leaving this on stops someone walking in without paying. Free events admit straight away either way.",
+    eventCapacityHint:
+      "Capacity is stock: turn on Track stock above and set how many can come. Ticket tiers \u2014 General, VIP \u2014 are variants with their own price and count.",
     inStock: "In stock",
     inStockBody: "Turn off to show a Sold out badge and disable ordering.",
     featured: "Featured",
@@ -282,6 +295,20 @@ export const adminEn = {
   },
 
   /** Read by key — `a.supportTopics[topic]` — so the whole section is live. */
+  checkin: {
+    title: "Check-in",
+    description:
+      "Type or scan a ticket code at the door. Each code admits once.",
+    codeLabel: "Ticket code",
+    scanHint: "scanning a ticket QR opens this page with the code filled in",
+    submit: "Check in",
+    checkedIn: "Checked in \u2014 let them through.",
+    alreadyUsed: "Already used.",
+    alreadyUsedAt: "Already used at {time}.",
+    notReleased: "Not valid \u2014 this order isn't paid yet.",
+    notFound: "No ticket with that code in your shop.",
+  },
+
   supportTopics: {
     technical: "Technical problem",
     billing: "Plan & billing",

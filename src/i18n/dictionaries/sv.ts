@@ -37,11 +37,12 @@ export const sv: Dictionary = {
     noProducts: "Inga produkter än",
     noProductsBody: "{shop} har inte lagt upp något än. Kom tillbaka snart.",
     noMatches: "Inga träffar", noMatchesBody: "Testa att ta bort ett filter eller söka på något annat.",
-    soldOut: "Slutsåld", sale: "Rea", order: "Beställ", orderNow: "Beställ nu",
+    soldOut: "Slutsåld", salesClosed: "Försäljningen stängd", sale: "Rea", order: "Beställ", orderNow: "Beställ nu",
     unavailable: "Ej tillgänglig", joinOnSailo: "Gå med {shop} på Sailo", loadMore: "Ladda fler",
     earnBySharing: "Tjäna {percent}% på att dela den här butiken",
     kindPhysical: "Skickas till dig", kindDigital: "Ladda ner direkt",
-    kindService: "Boka en tid", labelDigital: "Nedladdning", labelService: "Bokning",
+    kindService: "Boka en tid", kindEvent: "Evenemangsbiljett",
+    labelDigital: "Nedladdning", labelService: "Bokning",
     from: "Från {price}",
   },
   sort: {
@@ -119,6 +120,14 @@ export const sv: Dictionary = {
     usedUp: "Du har använt alla nedladdningar på den här länken. Kontakta {shop} om du behöver den igen.",
     notReady: "Dina filer låses upp när {shop} bekräftar din betalning.",
     visitShop: "Besök {shop}",
+  },
+
+  tickets: {
+    title: "Dina biljetter",
+    notReady: "Dina biljetter låses upp när {shop} bekräftar din betalning.",
+    admitOne: "Gäller en person",
+    showAtDoor: "Visa den här i dörren.",
+    used: "Använd",
   },
 
   rails: {
@@ -253,6 +262,7 @@ export const sv: Dictionary = {
     overview: "Översikt", products: "Produkter", categories: "Kategorier", orders: "Ordrar",
     clients: "Kunder", reviews: "Omdömen", coupons: "Rabattkoder", affiliates: "Partners",
     payments: "Betalningar", delivery: "Leverans", settings: "Inställningar",
+    checkin: "Incheckning",
     viewShop: "Visa butik", signOut: "Logga ut", upgrade: "Uppgradera",
     openMenu: "Öppna meny", closeMenu: "Stäng meny",
   },

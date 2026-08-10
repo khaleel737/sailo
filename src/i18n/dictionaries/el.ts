@@ -39,11 +39,12 @@ export const el: Dictionary = {
     noProductsBody: "Το {shop} δεν έχει προσθέσει κάτι ακόμη. Ελάτε ξανά σύντομα.",
     noMatches: "Κανένα αποτέλεσμα",
     noMatchesBody: "Δοκιμάστε να αφαιρέσετε ένα φίλτρο ή να αναζητήσετε κάτι άλλο.",
-    soldOut: "Εξαντλήθηκε", sale: "Προσφορά", order: "Παραγγελία", orderNow: "Παραγγείλτε τώρα",
+    soldOut: "Εξαντλήθηκε", salesClosed: "Οι πωλήσεις έκλεισαν", sale: "Προσφορά", order: "Παραγγελία", orderNow: "Παραγγείλτε τώρα",
     unavailable: "Μη διαθέσιμο", joinOnSailo: "Γίνε μέλος του {shop} στο Sailo", loadMore: "Φόρτωση περισσότερων",
     earnBySharing: "Κερδίστε {percent}% μοιράζοντας αυτό το κατάστημα",
     kindPhysical: "Αποστέλλεται σε εσάς", kindDigital: "Άμεση λήψη",
-    kindService: "Κλείστε ραντεβού", labelDigital: "Λήψη", labelService: "Κράτηση",
+    kindService: "Κλείστε ραντεβού", kindEvent: "Εισιτήριο εκδήλωσης",
+    labelDigital: "Λήψη", labelService: "Κράτηση",
     from: "Από {price}",
   },
   sort: {
@@ -121,6 +122,14 @@ export const el: Dictionary = {
     usedUp: "Χρησιμοποιήσατε όλες τις λήψεις αυτού του συνδέσμου. Επικοινωνήστε με το {shop} αν το χρειάζεστε ξανά.",
     notReady: "Τα αρχεία σας ξεκλειδώνουν μόλις το {shop} επιβεβαιώσει την πληρωμή σας.",
     visitShop: "Επίσκεψη στο {shop}",
+  },
+
+  tickets: {
+    title: "Τα εισιτήριά σας",
+    notReady: "Τα εισιτήριά σας ξεκλειδώνουν μόλις το {shop} επιβεβαιώσει την πληρωμή σας.",
+    admitOne: "Είσοδος για ένα άτομο",
+    showAtDoor: "Δείξτε το στην είσοδο.",
+    used: "Χρησιμοποιημένο",
   },
 
   rails: {
@@ -255,7 +264,7 @@ export const el: Dictionary = {
   nav: {
     overview: "Επισκόπηση", products: "Προϊόντα", categories: "Κατηγορίες", orders: "Παραγγελίες",
     clients: "Πελάτες", reviews: "Αξιολογήσεις", coupons: "Κουπόνια", affiliates: "Συνεργάτες",
-    payments: "Πληρωμές", delivery: "Παράδοση", settings: "Ρυθμίσεις",
+    payments: "Πληρωμές", delivery: "Παράδοση", settings: "Ρυθμίσεις", checkin: "Check-in",
     viewShop: "Προβολή καταστήματος", signOut: "Αποσύνδεση", upgrade: "Αναβάθμιση",
     openMenu: "Άνοιγμα μενού", closeMenu: "Κλείσιμο μενού",
   },

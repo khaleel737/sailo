@@ -38,10 +38,11 @@ export const sq: Dictionary = {
     noProductsBody: "{shop} ende nuk ka shtuar asgjë. Kthehuni së shpejti.",
     noMatches: "Asgjë nuk përputhet me këtë",
     noMatchesBody: "Provoni të hiqni një filtër ose të kërkoni diçka tjetër.",
-    soldOut: "E shitur", sale: "Ofertë", order: "Porosit", orderNow: "Porosit tani",
+    soldOut: "E shitur", salesClosed: "Shitjet u mbyllën", sale: "Ofertë", order: "Porosit", orderNow: "Porosit tani",
     unavailable: "E padisponueshme", joinOnSailo: "Bashkohuni me {shop} në Sailo", loadMore: "Ngarko më shumë",
     earnBySharing: "Fitoni {percent}% duke ndarë këtë dyqan",
     kindPhysical: "Ju dërgohet", kindDigital: "Shkarkim i menjëhershëm", kindService: "Rezervoni një orar",
+    kindEvent: "Biletë eventi",
     labelDigital: "Shkarkim", labelService: "Rezervim", from: "Nga {price}",
   },
   sort: {
@@ -107,6 +108,13 @@ export const sq: Dictionary = {
     usedUp: "I keni përdorur të gjitha shkarkimet e kësaj lidhjeje. Kontaktoni {shop} nëse ju duhet përsëri.",
     notReady: "Skedarët hapen kur {shop} ta konfirmojë pagesën tuaj.",
     visitShop: "Vizitoni {shop}",
+  },
+  tickets: {
+    title: "Biletat tuaja",
+    notReady: "Biletat hapen kur {shop} ta konfirmojë pagesën tuaj.",
+    admitOne: "Vlen për një person",
+    showAtDoor: "Tregojeni këtë në hyrje.",
+    used: "E përdorur",
   },
   rails: {
     cardName: "Kartë", cardAction: "Paguaj me kartë",
@@ -214,7 +222,8 @@ export const sq: Dictionary = {
   nav: {
     overview: "Përmbledhje", products: "Produkte", categories: "Kategori", orders: "Porosi",
     clients: "Klientë", reviews: "Vlerësime", coupons: "Kuponë", affiliates: "Partnerë",
-    payments: "Pagesa", delivery: "Dërgesa", settings: "Cilësimet", viewShop: "Shiko dyqanin",
+    payments: "Pagesa", delivery: "Dërgesa", settings: "Cilësimet",
+    checkin: "Kontrolli i biletave", viewShop: "Shiko dyqanin",
     signOut: "Dil", upgrade: "Përmirëso", openMenu: "Hap menunë", closeMenu: "Mbyll menunë",
   },
   notifications: {

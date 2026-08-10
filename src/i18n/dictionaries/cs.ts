@@ -37,11 +37,12 @@ export const cs: Dictionary = {
     noProducts: "Zatím žádné produkty",
     noProductsBody: "{shop} zatím nic nepřidal. Podívejte se znovu později.",
     noMatches: "Žádné výsledky", noMatchesBody: "Zkuste odebrat filtr nebo hledat něco jiného.",
-    soldOut: "Vyprodáno", sale: "Sleva", order: "Objednat", orderNow: "Objednat teď",
+    soldOut: "Vyprodáno", salesClosed: "Prodej ukončen", sale: "Sleva", order: "Objednat", orderNow: "Objednat teď",
     unavailable: "Nedostupné", joinOnSailo: "Přidej se k {shop} na Sailo", loadMore: "Načíst další",
     earnBySharing: "Vydělejte {percent}% sdílením tohoto obchodu",
     kindPhysical: "Doručíme vám", kindDigital: "Okamžité stažení",
-    kindService: "Rezervujte si termín", labelDigital: "Ke stažení", labelService: "Rezervace",
+    kindService: "Rezervujte si termín", kindEvent: "Vstupenka na akci",
+    labelDigital: "Ke stažení", labelService: "Rezervace",
     from: "Od {price}",
   },
   sort: {
@@ -119,6 +120,14 @@ export const cs: Dictionary = {
     usedUp: "Vyčerpali jste všechna stažení na tomto odkazu. Napište {shop}, pokud ho potřebujete znovu.",
     notReady: "Soubory se odemknou, jakmile {shop} potvrdí vaši platbu.",
     visitShop: "Přejít na {shop}",
+  },
+
+  tickets: {
+    title: "Vaše vstupenky",
+    notReady: "Vstupenky se odemknou, jakmile {shop} potvrdí vaši platbu.",
+    admitOne: "Vstup pro jednoho",
+    showAtDoor: "Ukažte to u vchodu.",
+    used: "Použitá",
   },
 
   rails: {
@@ -251,7 +260,7 @@ export const cs: Dictionary = {
   nav: {
     overview: "Přehled", products: "Produkty", categories: "Kategorie", orders: "Objednávky",
     clients: "Zákazníci", reviews: "Recenze", coupons: "Slevové kódy", affiliates: "Partneři",
-    payments: "Platby", delivery: "Doručení", settings: "Nastavení",
+    payments: "Platby", delivery: "Doručení", settings: "Nastavení", checkin: "Odbavení",
     viewShop: "Zobrazit obchod", signOut: "Odhlásit se", upgrade: "Vylepšit tarif",
     openMenu: "Otevřít menu", closeMenu: "Zavřít menu",
   },

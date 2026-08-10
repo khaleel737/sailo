@@ -39,11 +39,12 @@ export const tr: Dictionary = {
     noProductsBody: "{shop} henüz bir şey eklemedi. Yakında tekrar uğrayın.",
     noMatches: "Sonuç bulunamadı",
     noMatchesBody: "Bir filtreyi kaldırmayı ya da başka bir şey aramayı deneyin.",
-    soldOut: "Tükendi", sale: "İndirim", order: "Sipariş ver", orderNow: "Hemen sipariş ver",
+    soldOut: "Tükendi", salesClosed: "Satışlar kapandı", sale: "İndirim", order: "Sipariş ver", orderNow: "Hemen sipariş ver",
     unavailable: "Kullanılamıyor", joinOnSailo: "{shop} ile Sailo'ya katıl", loadMore: "Daha fazla yükle",
     earnBySharing: "Bu mağazayı paylaşarak %{percent} kazanın",
     kindPhysical: "Adresinize gönderilir", kindDigital: "Anında indirme",
-    kindService: "Randevu alın", labelDigital: "İndirme", labelService: "Randevu",
+    kindService: "Randevu alın", kindEvent: "Etkinlik bileti",
+    labelDigital: "İndirme", labelService: "Randevu",
     from: "{price} üzeri",
   },
   sort: {
@@ -121,6 +122,14 @@ export const tr: Dictionary = {
     usedUp: "Bu bağlantıdaki tüm indirme haklarınızı kullandınız. Tekrar gerekiyorsa {shop} ile iletişime geçin.",
     notReady: "{shop} ödemenizi onayladığında dosyalarınız açılır.",
     visitShop: "{shop} mağazasına git",
+  },
+
+  tickets: {
+    title: "Biletleriniz",
+    notReady: "{shop} ödemenizi onayladığında biletleriniz açılır.",
+    admitOne: "Tek kişilik",
+    showAtDoor: "Bunu kapıda gösterin.",
+    used: "Kullanıldı",
   },
 
   rails: {
@@ -256,6 +265,7 @@ export const tr: Dictionary = {
     overview: "Genel bakış", products: "Ürünler", categories: "Kategoriler", orders: "Siparişler",
     clients: "Müşteriler", reviews: "Değerlendirmeler", coupons: "Kuponlar", affiliates: "İş ortakları",
     payments: "Ödemeler", delivery: "Teslimat", settings: "Ayarlar",
+    checkin: "Bilet kontrolü",
     viewShop: "Mağazayı gör", signOut: "Çıkış yap", upgrade: "Yükselt",
     openMenu: "Menüyü aç", closeMenu: "Menüyü kapat",
   },

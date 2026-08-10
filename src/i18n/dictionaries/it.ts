@@ -39,11 +39,12 @@ export const it: Dictionary = {
     noProductsBody: "{shop} non ha ancora aggiunto nulla. Torna presto.",
     noMatches: "Nessun risultato",
     noMatchesBody: "Prova a togliere un filtro o a cercare altro.",
-    soldOut: "Esaurito", sale: "Offerta", order: "Ordina", orderNow: "Ordina ora",
+    soldOut: "Esaurito", salesClosed: "Vendite chiuse", sale: "Offerta", order: "Ordina", orderNow: "Ordina ora",
     unavailable: "Non disponibile", joinOnSailo: "Unisciti a {shop} su Sailo", loadMore: "Carica altro",
     earnBySharing: "Guadagna il {percent}% condividendo questo negozio",
     kindPhysical: "Spedito a casa tua", kindDigital: "Download immediato",
-    kindService: "Prenota un orario", labelDigital: "Download", labelService: "Prenotazione",
+    kindService: "Prenota un orario", kindEvent: "Biglietto per l'evento",
+    labelDigital: "Download", labelService: "Prenotazione",
     from: "Da {price}",
   },
   sort: {
@@ -122,6 +123,14 @@ export const it: Dictionary = {
     usedUp: "Hai usato tutti i download di questo link. Scrivi a {shop} se ti serve di nuovo.",
     notReady: "I tuoi file si sbloccano quando {shop} conferma il pagamento.",
     visitShop: "Vai a {shop}",
+  },
+
+  tickets: {
+    title: "I tuoi biglietti",
+    notReady: "I tuoi biglietti si sbloccano quando {shop} conferma il pagamento.",
+    admitOne: "Valido per una persona",
+    showAtDoor: "Mostralo all'ingresso.",
+    used: "Usato",
   },
 
   rails: {
@@ -258,6 +267,7 @@ export const it: Dictionary = {
     overview: "Panoramica", products: "Prodotti", categories: "Categorie", orders: "Ordini",
     clients: "Clienti", reviews: "Recensioni", coupons: "Codici sconto", affiliates: "Affiliati",
     payments: "Pagamenti", delivery: "Consegna", settings: "Impostazioni",
+    checkin: "Check-in",
     viewShop: "Vedi negozio", signOut: "Esci", upgrade: "Passa a un piano superiore",
     openMenu: "Apri menu", closeMenu: "Chiudi menu",
   },

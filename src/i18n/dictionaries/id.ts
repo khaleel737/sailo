@@ -38,10 +38,11 @@ export const id: Dictionary = {
     noProductsBody: "{shop} belum menambahkan apa pun. Mampir lagi nanti ya.",
     noMatches: "Tidak ada yang cocok",
     noMatchesBody: "Coba hapus satu filter atau cari kata lain.",
-    soldOut: "Habis", sale: "Diskon", order: "Pesan", orderNow: "Pesan sekarang",
+    soldOut: "Habis", salesClosed: "Penjualan ditutup", sale: "Diskon", order: "Pesan", orderNow: "Pesan sekarang",
     unavailable: "Tidak tersedia", joinOnSailo: "Gabung dengan {shop} di Sailo", loadMore: "Muat lebih banyak",
     earnBySharing: "Dapatkan {percent}% dengan membagikan toko ini",
     kindPhysical: "Dikirim ke Anda", kindDigital: "Unduh langsung", kindService: "Pesan jadwal",
+    kindEvent: "Tiket acara",
     labelDigital: "Unduhan", labelService: "Pemesanan", from: "Mulai {price}",
   },
   sort: {
@@ -107,6 +108,13 @@ export const id: Dictionary = {
     usedUp: "Anda sudah memakai semua jatah unduhan tautan ini. Hubungi {shop} jika perlu lagi.",
     notReady: "Berkas terbuka saat {shop} mengonfirmasi pembayaran Anda.",
     visitShop: "Kunjungi {shop}",
+  },
+  tickets: {
+    title: "Tiket Anda",
+    notReady: "Tiket terbuka saat {shop} mengonfirmasi pembayaran Anda.",
+    admitOne: "Berlaku untuk satu orang",
+    showAtDoor: "Tunjukkan ini di pintu masuk.",
+    used: "Terpakai",
   },
   rails: {
     cardName: "Kartu", cardAction: "Bayar dengan kartu",
@@ -214,7 +222,7 @@ export const id: Dictionary = {
   nav: {
     overview: "Ringkasan", products: "Produk", categories: "Kategori", orders: "Pesanan",
     clients: "Pelanggan", reviews: "Ulasan", coupons: "Kupon", affiliates: "Mitra",
-    payments: "Pembayaran", delivery: "Pengiriman", settings: "Pengaturan", viewShop: "Lihat toko",
+    payments: "Pembayaran", delivery: "Pengiriman", settings: "Pengaturan", checkin: "Check-in", viewShop: "Lihat toko",
     signOut: "Keluar", upgrade: "Tingkatkan", openMenu: "Buka menu", closeMenu: "Tutup menu",
   },
   notifications: {

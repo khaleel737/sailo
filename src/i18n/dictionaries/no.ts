@@ -37,11 +37,11 @@ export const no: Dictionary = {
     noProducts: "Ingen produkter ennå",
     noProductsBody: "{shop} har ikke lagt ut noe ennå. Stikk innom snart.",
     noMatches: "Ingen treff", noMatchesBody: "Prøv å fjerne et filter eller søke på noe annet.",
-    soldOut: "Utsolgt", sale: "Tilbud", order: "Bestill", orderNow: "Bestill nå",
+    soldOut: "Utsolgt", salesClosed: "Salget er stengt", sale: "Tilbud", order: "Bestill", orderNow: "Bestill nå",
     unavailable: "Utilgjengelig", joinOnSailo: "Bli med {shop} på Sailo", loadMore: "Last inn flere",
     earnBySharing: "Tjen {percent}% på å dele denne butikken",
     kindPhysical: "Sendes til deg", kindDigital: "Last ned med en gang",
-    kindService: "Book en tid", labelDigital: "Nedlasting", labelService: "Booking",
+    kindService: "Book en tid", kindEvent: "Billett til arrangement", labelDigital: "Nedlasting", labelService: "Booking",
     from: "Fra {price}",
   },
   sort: {
@@ -119,6 +119,14 @@ export const no: Dictionary = {
     usedUp: "Du har brukt alle nedlastingene på denne lenken. Ta kontakt med {shop} hvis du trenger den igjen.",
     notReady: "Filene dine låses opp når {shop} bekrefter betalingen din.",
     visitShop: "Besøk {shop}",
+  },
+
+  tickets: {
+    title: "Billettene dine",
+    notReady: "Billettene dine låses opp når {shop} bekrefter betalingen din.",
+    admitOne: "Gjelder for én person",
+    showAtDoor: "Vis denne ved døren.",
+    used: "Brukt",
   },
 
   rails: {
@@ -251,7 +259,7 @@ export const no: Dictionary = {
   nav: {
     overview: "Oversikt", products: "Produkter", categories: "Kategorier", orders: "Bestillinger",
     clients: "Kunder", reviews: "Anmeldelser", coupons: "Rabattkoder", affiliates: "Partnere",
-    payments: "Betalinger", delivery: "Levering", settings: "Innstillinger",
+    payments: "Betalinger", delivery: "Levering", settings: "Innstillinger", checkin: "Innsjekk",
     viewShop: "Se butikken", signOut: "Logg ut", upgrade: "Oppgrader",
     openMenu: "Åpne meny", closeMenu: "Lukk meny",
   },

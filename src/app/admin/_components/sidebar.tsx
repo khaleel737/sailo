@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   MessageSquare,
+  ScanLine,
   Package,
   Settings,
   ShoppingBag,
@@ -47,6 +48,7 @@ const GROUPS = [
     id: "selling",
     items: [
       { href: "/admin/orders", key: "orders", icon: ShoppingBag },
+      { href: "/admin/checkin", key: "checkin", icon: ScanLine },
       { href: "/admin/clients", key: "clients", icon: Users },
       { href: "/admin/reviews", key: "reviews", icon: MessageSquare },
     ],

@@ -39,11 +39,11 @@ export const pl: Dictionary = {
     noProductsBody: "{shop} nie dodał jeszcze niczego. Zajrzyj wkrótce.",
     noMatches: "Brak wyników",
     noMatchesBody: "Spróbuj usunąć filtr albo poszukać czegoś innego.",
-    soldOut: "Wyprzedane", sale: "Promocja", order: "Zamów", orderNow: "Zamów teraz",
+    soldOut: "Wyprzedane", salesClosed: "Sprzedaż zakończona", sale: "Promocja", order: "Zamów", orderNow: "Zamów teraz",
     unavailable: "Niedostępne", joinOnSailo: "Dołącz do {shop} na Sailo", loadMore: "Załaduj więcej",
     earnBySharing: "Zarabiaj {percent}%, udostępniając ten sklep",
     kindPhysical: "Wysyłamy do Ciebie", kindDigital: "Pobierz od razu",
-    kindService: "Zarezerwuj termin", labelDigital: "Do pobrania", labelService: "Rezerwacja",
+    kindService: "Zarezerwuj termin", kindEvent: "Bilet na wydarzenie", labelDigital: "Do pobrania", labelService: "Rezerwacja",
     from: "Od {price}",
   },
   sort: {
@@ -122,6 +122,14 @@ export const pl: Dictionary = {
     usedUp: "Wykorzystałeś wszystkie pobrania z tego linku. Napisz do {shop}, jeśli potrzebujesz go ponownie.",
     notReady: "Twoje pliki odblokują się, gdy {shop} potwierdzi płatność.",
     visitShop: "Odwiedź {shop}",
+  },
+
+  tickets: {
+    title: "Twoje bilety",
+    notReady: "Twoje bilety odblokują się, gdy {shop} potwierdzi płatność.",
+    admitOne: "Wstęp dla jednej osoby",
+    showAtDoor: "Pokaż to przy wejściu.",
+    used: "Wykorzystany",
   },
 
   rails: {
@@ -256,7 +264,7 @@ export const pl: Dictionary = {
   nav: {
     overview: "Przegląd", products: "Produkty", categories: "Kategorie", orders: "Zamówienia",
     clients: "Klienci", reviews: "Opinie", coupons: "Kody rabatowe", affiliates: "Partnerzy",
-    payments: "Płatności", delivery: "Dostawa", settings: "Ustawienia",
+    payments: "Płatności", delivery: "Dostawa", settings: "Ustawienia", checkin: "Check-in",
     viewShop: "Zobacz sklep", signOut: "Wyloguj", upgrade: "Ulepsz plan",
     openMenu: "Otwórz menu", closeMenu: "Zamknij menu",
   },
