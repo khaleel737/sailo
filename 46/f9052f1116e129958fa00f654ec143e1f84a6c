@@ -1,0 +1,19 @@
+docs/specs/README.md
+  s_3fd229194f6299::t_098e05ca81b9fe 1,4-11,49-52,54-76,78,80-86,88-91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "46f9052f1116e129958fa00f654ec143e1f84a6c",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
