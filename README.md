@@ -183,6 +183,7 @@ it forwards with the one secret, while production uses two.
 ```
 /                     Landing page
 /signup, /login       Auth
+/verify-2fa           Second factor, when the account has one
 /onboarding           Claim a handle, create the shop
 /[handle]             THE TEMPLATE — public shop
 /[handle]/p/[slug]    Product detail + reviews
@@ -199,13 +200,16 @@ it forwards with the one secret, while production uses two.
 /admin/reviews        Review moderation
 /admin/settings       Shop details, appearance, socials, address collection
 /admin/settings/billing   Plan and billing
+/admin/settings/security  Two-factor, login sessions, account deletion
 /admin/settings/data      CSV import and export
 /[handle]/affiliate   Public referral page (when enabled)
+/r/[code]             Refer-a-creator link — sets the cookie, sends them to signup
 /invoice/[token]      Public invoice (HTML)
 /invoice/[token]/pdf  Public invoice (PDF download)
 /download/[token]     Digital delivery — the buyer's files
 /partner              Affiliate portal sign-in
 /hq                   Sailo's own back office (staff allowlist, magic link only)
+/hq/referrals         What we owe creators for the creators they brought us
 ```
 
 ### API routes
@@ -339,8 +343,44 @@ deleted. Clients are matched on email or phone, so repeat buyers accumulate
 history instead of creating duplicates; an order that collects no address never
 blanks an address already on file.
 
-`visits` holds pageview analytics. BetterAuth owns `user`, `session`, `account`
-and `verification`.
+`visits` holds pageview analytics. BetterAuth owns `user`, `session`, `account`,
+`verification` and `two_factor`.
+
+## Security and account
+
+**Two-factor** is TOTP, from BetterAuth's own plugin — the secret and the backup
+codes are encrypted with `BETTER_AUTH_SECRET`, and nothing is switched on until
+a code has been verified against the freshly enrolled secret. Enabling or
+disabling it kills every other session and emails the account, because a silent
+2FA change is what an account thief wants. Magic links deliberately skip the
+second factor: `sendMagicLink` only ever mails a staff address, and a staff
+account holds no password, so the two doors admit disjoint sets of people. That
+argument is written where the two plugins meet in `lib/auth.ts` — if magic links
+are ever opened to sellers, it stops holding.
+
+**Login sessions** list every signed-in device with its location, browser and
+sign-in time. Location comes from Vercel's geo headers, read once at session
+creation and stored, since the headers describe only the current request; rows
+from before that shipped show nothing rather than a guess. Terminating is
+immediate — there is no session cookie cache in front of it, which is the one
+way this feature could have silently lied.
+
+**Deleting an account** anonymises the ledger rather than dropping it. Orders
+and invoices document real money and a per-shop invoice sequence a tax
+authority expects unbroken, so the `shops` row survives as their retention
+container: tombstoned, unpublished, handle released, seller details overwritten.
+Everything else — catalogue, files, coupons, bank details, sessions, the 2FA
+secret — is deleted outright, and the platform subscription is cancelled at
+Stripe first so nobody keeps being charged for a store that is gone. It refuses
+while a paid order is undelivered: deleting mid-obligation is seller fraud
+tooling. Buyers keep their invoices and their downloads.
+
+**Seller notifications** email the seller when an order lands, a booking is
+requested, or a buyer reports a manual payment. Exactly one email per order —
+the manual rails send at checkout, card sends when the webhook settles, on the
+same discriminator the buyer's confirmation uses. Per-event switches live in
+Settings, stored as the *off* ones so a new event type ships on for everyone
+without a backfill.
 
 ## Plans
 
@@ -365,6 +405,16 @@ make more money".
 
 **Import is free on every plan.** It reduces the cost of switching to Sailo,
 so putting it behind a paywall would be self-defeating.
+
+**Refer-a-creator is free on every plan too**, for the same reason turned
+around: it is Sailo's own acquisition channel, and charging a seller for the
+privilege of bringing us a customer would be an odd way to run it. Every
+seller gets a `/r/<code>` link and keeps 20% of what the creator they referred
+pays us, every month, for as long as that subscription runs — appended to an
+append-only ledger by the `invoice.paid` webhook, settled by hand from
+`/hq/referrals` above a $25 minimum. Distinct from the *product* affiliates
+above, which are a seller paying someone to sell their products; this is us
+paying a seller. See `lib/creator-referrals/`.
 
 Entitlements live in `lib/plans.ts` and are enforced **inside server actions**,
 not just hidden in the UI. Downgrading never deletes anything: existing products,
@@ -406,7 +456,14 @@ healthy ones too. Render it and read the visible text.
 - Custom domains, multiple shops per user, bot filtering on visit tracking.
 - Paystack and PayPal rails. Card is Stripe Connect only, which leaves out the
   markets Stripe does not reach — the reason the chat rails matter.
+- The 90-day sweep for a deleted seller's product files. Deletion removes their
+  images at once and keeps the files, because buyers who paid for a download
+  still hold live tokens; the cron that finally clears them is a TODO in
+  `api/cron/sweep`.
 
 Shipped since this list was last written: card checkout on Stripe Connect,
 multi-item carts (up to 50 lines), digital file delivery with tokened
-downloads, and appointment booking for services.
+downloads, appointment booking for services, the security tab — two-factor
+sign-in, login sessions, self-serve account deletion and seller-facing order
+notifications — and the growth pair: the store-setup checklist on the
+dashboard, and refer-a-creator end to end.
