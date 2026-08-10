@@ -66,19 +66,22 @@ const CATEGORIES = [
     locked: true,
     // The qualifier is a technical identifier like the names themselves, so it
     // reads the same in every language and needs no dictionary entry.
-    cookies: ["sailo_session", "sailo_locale", "sailo_consent (localStorage)"],
+    // `stored`, not `cookies`: one of these lives in localStorage, and a
+    // field named for cookies quietly re-asserts the claim the label above
+    // just corrected. The category discloses what is *kept*, wherever it is.
+    stored: ["sailo_session", "sailo_locale", "sailo_consent (localStorage)"],
   },
   {
     id: "analytics",
     body: "analyticsBody",
     locked: false,
-    cookies: ["_ga", "_ga_*"],
+    stored: ["_ga", "_ga_*"],
   },
 ] as const satisfies readonly {
   id: "essential" | "analytics";
   body: "essentialBody" | "analyticsBody";
   locked: boolean;
-  cookies: readonly string[];
+  stored: readonly string[];
 }[];
 
 /**
@@ -244,7 +247,7 @@ export function CookieConsent({
                       and one they can check.
                     */}
                     <span className="mt-1 block font-mono text-[0.6875rem] text-[var(--mute-400)]">
-                      {category.cookies.join(", ")}
+                      {category.stored.join(", ")}
                     </span>
                   </span>
                 </label>

@@ -140,7 +140,7 @@ describe("what the banner claims is stored", () => {
 
   it("does not list the consent key as a plain cookie", () => {
     // The declaration, not the prose: the comments discuss it by name.
-    const list = /cookies: \[(.*?)\]/s.exec(banner)?.[1] ?? "";
+    const list = /stored: \[(.*?)\]/s.exec(banner)?.[1] ?? "";
     expect(list).toContain("sailo_consent");
     expect(list).not.toContain('"sailo_consent"');
     expect(list).toContain("sailo_consent (localStorage)");
