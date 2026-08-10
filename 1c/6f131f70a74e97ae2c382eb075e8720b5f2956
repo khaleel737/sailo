@@ -1,0 +1,1417 @@
+src/app/[handle]/_components/outbound-link.tsx
+  s_fc46a77e6b6321::t_a2b237ee4a21a6 1-42
+src/i18n/dictionaries/fi.ts
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 324
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 388-398
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,51-54,59,105-107,115,126-136,231-250,336-337
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 154-158
+  s_c082d7fe381826::t_8e376d64392d9c 283-292
+src/lib/shop-consent.ts
+  s_99bea57acbb689::t_7a13c31080709c 1-106
+src/lib/actions/referrals.ts
+  s_e299d9eed1a2c4::t_1bb7ea70f11c98 40-43,45,49-50,52-53,56,61-63,67
+  s_e299d9eed1a2c4::t_c74904fe519ef1 1-39,44,46-48,51,54-55,57-60,64-66,68
+scripts/scenarios/account-deletion.scenario.ts
+  s_c082d7fe381826::t_ea1599e14f76da 356,360
+  s_c082d7fe381826::t_7c6c1076274aff 101-103
+  s_c082d7fe381826::t_55b5d80fc875fb 1-100,104-355,357-359,361-387
+src/app/(legal)/privacy/page.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 51-54,362-364,376-383
+  s_c082d7fe381826::t_3d63bf93ca83d5 384
+src/lib/actions/order-preview.ts
+  s_fc46a77e6b6321::t_4191f834841031 3
+  s_c082d7fe381826::t_b57b4f5d6fed5b 5,40
+src/app/hq/(panel)/accounts/page.tsx
+  s_c082d7fe381826::t_4ed1bd915b2dd3 38-40
+  s_c082d7fe381826::t_d33241d7dbd756 136-140
+src/i18n/admin/vi.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,156-157,273-280,299-305,563-564,685-723
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 306-315
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 777-803
+  s_c082d7fe381826::t_85920f0743ed2f 217,219-228,724-774
+  s_fc46a77e6b6321::t_b01b4357c7146e 775-776
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 804-836
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 461-471
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 510-515
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+src/lib/client-tags.ts
+  s_da7c2fcb9a5fbd::t_f9bb354e6d26f4 1-110,112
+  s_da7c2fcb9a5fbd::t_7d0db9bd2308f8 111
+src/i18n/admin/sl.ts
+  s_fc46a77e6b6321::t_1edd7e180689ec 723-724
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,156-157,272-279,298-304,562-563,684-722
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 305-314
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 509-514
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 776-802
+  s_c082d7fe381826::t_9824c90d0f0bd7 725-775
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 803-835
+  s_c082d7fe381826::t_0edb23678f293a 217,219-227
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 460-470
+src/lib/stripe-webhooks/connect.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 7,12,81-85,165-177,180-185,219,237,271-275,301,325,343-346,366-370
+  s_e299d9eed1a2c4::t_850aa670040bfc 14
+  s_e299d9eed1a2c4::t_eb204fc63c6ef7 244-256
+src/app/u/[token]/page.tsx
+  s_da7c2fcb9a5fbd::t_3f5f024fb44b9e 51-53
+  s_da7c2fcb9a5fbd::t_85fc6b9aa1e6ee 1-50,54-100
+  s_3fd229194f6299::t_68f70e3e12ab5f 101
+src/app/admin/_components/product-performance.tsx
+  s_fc46a77e6b6321::t_60f3cb5d451fa8 1-133
+src/lib/file-urls.test.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 2-6,270-345
+src/db/schema/auth.ts
+  s_c082d7fe381826::t_9ae7818bcb3bf8 95
+  s_c082d7fe381826::t_b57b4f5d6fed5b 1,16-20,37-44,68-94
+src/app/admin/_components/setup-checklist.tsx
+  s_e299d9eed1a2c4::t_55a15fe0649d80 1-177
+src/lib/email/seller-messages.ts
+  s_c082d7fe381826::t_ec27ae4ef3a414 1-199
+src/i18n/dictionaries/uk.ts
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 327
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-54,59,105-107,115,126-136,233-252,339-340
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 154-158
+  s_c082d7fe381826::t_85920f0743ed2f 285-294
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 391-401
+src/lib/connect-payouts.ts
+  s_fc46a77e6b6321::t_01f9f5d4658723 1-80
+src/components/shared/live-refresh.tsx
+  s_07be8600ab23c8::t_2699f9bd43b5c8 178
+  s_07be8600ab23c8::t_0c866941c99424 192
+  s_07be8600ab23c8::t_c4db4b259018a9 1-126,128-138,140-177,179-191,193-230
+  s_07be8600ab23c8::t_83ee0a8c69719a 127,139
+src/app/admin/settings/security/_components/two-factor-card.tsx
+  s_c082d7fe381826::t_0c7051ec2bc9b6 4
+  s_c082d7fe381826::t_cca923cc6ce50c 98-107
+  s_c082d7fe381826::t_a0306b82a458fe 1-3,5-97,108-335
+src/lib/event-reminders.ts
+  s_da7c2fcb9a5fbd::t_a9bdd74bb5e18b 2
+  s_da7c2fcb9a5fbd::t_a4355dd3d87ff9 1,3-199
+src/app/admin/orders/page.tsx
+  s_da7c2fcb9a5fbd::t_df8c754c3b7a42 6-21,25,30-37,40-69,81-87,92-107,111-112
+src/i18n/dictionaries/el.ts
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 157-161
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 329
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 393-403
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,54-57,62,108-110,118,129-139,236-255,341-342
+  s_c082d7fe381826::t_c02761c075cdb4 288-297
+src/app/[handle]/_components/cart/cart-region.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 6-10,32,47,75
+src/lib/shop-pixels.ts
+  s_99bea57acbb689::t_ce36f39a603090 1-171
+src/app/admin/broadcasts/_components/composer.tsx
+  s_da7c2fcb9a5fbd::t_86bd31312aae9c 1-190
+src/components/auth-form.tsx
+  s_c082d7fe381826::t_d23cdf1c658281 60-64,66-67
+  s_c082d7fe381826::t_42d01e6348fe20 50-59,65,68-71
+src/lib/consent.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4-9
+src/lib/actions/shop.ts
+  s_da7c2fcb9a5fbd::t_3b6290c526aaa7 498-500,507-510
+  s_da7c2fcb9a5fbd::t_6d6987e941ae16 35-108
+  s_c082d7fe381826::t_b57b4f5d6fed5b 5,10,21-24,27,31,371-373,431-450,471-478,480-497,552-553,556-562,564-570,592
+  s_da7c2fcb9a5fbd::t_906e1780f8ae0a 593-599
+  s_e299d9eed1a2c4::t_0b3ccbb0b738c4 32-33
+  s_e299d9eed1a2c4::t_36148fe68e2ab4 4
+  s_e299d9eed1a2c4::t_403eba7f06b4d8 321-348
+  s_99bea57acbb689::t_7018d0a252a76e 479
+  s_da7c2fcb9a5fbd::t_b31dd996e166d0 14-20
+  s_c082d7fe381826::t_27f1df1406b79f 34
+src/app/[handle]/_components/social-icons.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 13,44-51,62-71,74-88
+drizzle/0012_bookings_and_audience.sql
+  s_da7c2fcb9a5fbd::t_d64c033f24e16c 1-195
+src/i18n/admin/uk.ts
+  s_c082d7fe381826::t_85920f0743ed2f 405,407-416,709-759
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 494-503
+  s_fc46a77e6b6321::t_33ce3f903e544a 760-761
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,461-468,487-493,670-708
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 789-821
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 762-788
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 565-569
+src/app/hq/_components/hq-sidebar.tsx
+  s_e299d9eed1a2c4::t_0186341dac9bc7 10
+  s_e299d9eed1a2c4::t_69fe85c02c0d96 42-48
+src/app/invoice/[token]/page.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 8,50-52
+src/app/admin/_components/sidebar.tsx
+  s_da7c2fcb9a5fbd::t_70d5c28a09259f 10
+  s_da7c2fcb9a5fbd::t_77980b46f4666e 61
+src/i18n/dictionaries/ms.ts
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 281
+  s_c082d7fe381826::t_cb0ec8e929f594 246-252
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 140-144
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-54,59,104-106,109,115-125,200-219,291-292
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 336-346
+src/i18n/admin/nl.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,317-320,464-471,490-496,671-709
+  s_c082d7fe381826::t_496c567cb84111 405,407-419
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 798-830
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 497-506
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_c082d7fe381826::t_8dca22e7165b4d 712-770
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 568-572
+  s_fc46a77e6b6321::t_b67d705870dfd3 168-169
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 771-797
+  s_fc46a77e6b6321::t_13fd38e17505a2 710-711
+src/app/[handle]/_components/cart/cart-provider.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 3-5,25-29,33,110-137
+  s_c082d7fe381826::t_69c738f9e08e0b 138
+src/i18n/admin/cs.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,460-467,486-492,669-707
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 564-568
+  s_fc46a77e6b6321::t_3a7416b46f4a55 708-709
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_c082d7fe381826::t_6c08e0482b6736 405,407-415
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 493-502
+  s_c082d7fe381826::t_63e3e2ebc50d98 710-760
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 761-787
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 788-820
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+src/i18n/admin/zh.ts
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_c082d7fe381826::t_85920f0743ed2f 405,407-416,709-759
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 565-569
+  s_fc46a77e6b6321::t_ff80875631c159 760-761
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 789-821
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 494-503
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 762-788
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,461-468,487-493,670-708
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4-9,33,42,59
+src/i18n/dictionaries/da.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-55,60,106-108,116,127-137,232-251,337-338
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 389-399
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 155-159
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 325
+  s_c082d7fe381826::t_835a602f1f72dd 284-293
+src/app/[handle]/_components/shop-tracking.tsx
+  s_99bea57acbb689::t_5b1ca69b4392f6 1-56
+src/components/shared/local-time.tsx
+  s_da7c2fcb9a5fbd::t_d50b9564f6ab1e 1-57
+src/lib/orders/notify-seller.test.ts
+  s_c082d7fe381826::t_5da113a2b05ba0 66-77
+  s_c082d7fe381826::t_301787615ee980 1-65,78-122
+src/lib/orders/notify-seller.ts
+  s_c082d7fe381826::t_0c4dbce12e179f 1-151
+src/i18n/dictionaries/vi.ts
+  s_c082d7fe381826::t_85920f0743ed2f 247-256
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-54,59,104-106,109,115-125,201-220,296-297
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 141-145
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 286
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 341-351
+src/lib/actions/affiliates.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,6,8,10,133-135,167-168,181-184,205-207,240,298,339-340
+src/lib/actions/coupons.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,8,90,104,124
+src/i18n/dictionaries/hr.ts
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 139-143
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 338-348
+  s_c082d7fe381826::t_c6f97c19c2e5dd 245-254
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 283
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-53,58,103-105,108,114-124,199-218,293-294
+src/lib/payout-summary.test.ts
+  s_fc46a77e6b6321::t_ef1f35514fa52d 1-54
+src/app/[handle]/_components/shop-footer.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 11-12,72-82
+src/app/admin/settings/security/_components/sessions-card.tsx
+  s_c082d7fe381826::t_6a4042d7e38eac 57-80,85,87,100
+  s_c082d7fe381826::t_2c45f3d640b5e9 41,46-53
+  s_c082d7fe381826::t_98f7f654b3e029 1-40,42-45,54-56,81-84,86,88-99,101-190
+src/lib/notification-prefs.test.ts
+  s_c082d7fe381826::t_815693f411ff66 1-68,71-73
+  s_c082d7fe381826::t_dbd15229d7e324 69-70
+src/lib/downloads.ts
+  s_da7c2fcb9a5fbd::t_2af5a6551ade1f 138-151,156
+  s_da7c2fcb9a5fbd::t_20edc78e79dc77 14
+src/lib/redis.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 117-147
+src/lib/queries/orders.ts
+  s_da7c2fcb9a5fbd::t_dabb5ea72cee68 2
+  s_da7c2fcb9a5fbd::t_60c1f5daf4ff18 23-48,50-69,75-84
+  s_da7c2fcb9a5fbd::t_e55ca0639da631 116-124,138-145
+  s_da7c2fcb9a5fbd::t_c2e49f9bc226a1 85
+src/lib/actions/order-status.ts
+  s_277f5f4cf7fcec::t_9d1c87b77d84c9 1-51
+src/lib/analytics-rollup.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 7,12,81-113,137-145,153,296-314
+  s_c082d7fe381826::t_398672c0c0ec2e 315-316
+src/i18n/admin/ko.ts
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 462-472
+  s_fc46a77e6b6321::t_7276b0665593c9 774-775
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 511-516
+  s_c082d7fe381826::t_c6f97c19c2e5dd 217,219-229,725-773
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 307-316
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 776-802
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,156-157,274-281,300-306,564-565,686-724
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 803-835
+src/lib/actions/notifications.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,8,26-27,44
+drizzle/0008_two_factor.sql
+  s_c082d7fe381826::t_c5ff3086cd30a4 1-32
+src/i18n/dictionaries/cs.ts
+  s_c082d7fe381826::t_c5b89a292a841f 284-293
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 155-159
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 325
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 389-399
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-55,60,106-108,116,127-137,232-251,337-338
+src/i18n/admin/mk.ts
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 307-316
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 776-802
+  s_c082d7fe381826::t_c6f97c19c2e5dd 217,219-229,725-773
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,156-157,274-281,300-306,564-565,686-724
+  s_fc46a77e6b6321::t_4b79e61ccaa7a7 774-775
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 462-472
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 803-835
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 511-516
+src/lib/payouts.test.ts
+  s_17d48d5105cb16::t_e12734adae723d 1-41
+src/i18n/admin/tr.ts
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 789-821
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 762-788
+  s_fc46a77e6b6321::t_0f458cd68f9981 760-761
+  s_c082d7fe381826::t_85920f0743ed2f 405,407-416,709-759
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,461-468,487-493,670-708
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 565-569
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 494-503
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+src/lib/actions/payment-reference.ts
+  s_3fd229194f6299::t_e624bfa73251ea 134-136,139-142,144-152
+  s_3fd229194f6299::t_149ae284e6b44b 74-89,96,103-118,120-123
+  s_3fd229194f6299::t_58ddaf8c6c05c2 12
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,8,14-15,100,130-133,137-138,143
+src/db/schema/growth.ts
+  s_e299d9eed1a2c4::t_b957aa716b46d1 1-132
+src/lib/client-tags.test.ts
+  s_da7c2fcb9a5fbd::t_87cdf4f67bd08b 1-111
+src/i18n/admin/hr.ts
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 511-516
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 462-472
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 774-800
+  s_c082d7fe381826::t_c6f97c19c2e5dd 217,219-229,723-771
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 801-833
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+  s_fc46a77e6b6321::t_9f7319085ad5a3 772-773
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,156-157,274-281,300-306,564-565,684-722
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 307-316
+src/i18n/admin/it.ts
+  s_fc46a77e6b6321::t_1bea11311c589f 759-760
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_c082d7fe381826::t_c6f97c19c2e5dd 405,407-417,710-758
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 788-820
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 761-787
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 566-570
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,462-469,488-494,671-709
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 495-504
+src/lib/auth.ts
+  s_c082d7fe381826::t_3bad4648c29d37 81
+  s_c082d7fe381826::t_b57b4f5d6fed5b 2-7,10,12,19,51-80,82-92,94-99,102,163-209,304-336,368-387,420-445
+src/app/[handle]/p/[slug]/page.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,11-12,14,17,22,153,164-166,169-186,228-235,260-261,265,268,270-271,293,297-319
+src/lib/hq/index.ts
+  s_e299d9eed1a2c4::t_81a27b4862541e 21
+src/app/[handle]/_components/favorites/favorite-button.tsx
+  s_f9c0a952c26c6a::t_775d6eb06bba5e 24,31-35,48-51
+  s_f9c0a952c26c6a::t_4d9a26d8f6b84e 1-23,25-30,36-47,52-63
+src/app/admin/settings/page.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 9,14
+src/lib/actions/account.ts
+  s_c082d7fe381826::t_6be58945019203 1-78
+src/lib/actions/payouts.ts
+  s_fc46a77e6b6321::t_1787c14582401f 1-30
+src/lib/orders/types.ts
+  s_277f5f4cf7fcec::t_d8df7ea421af65 108
+  s_c082d7fe381826::t_b57b4f5d6fed5b 45-52,100-107
+src/app/hq/(panel)/referrals/_components/payout-button.tsx
+  s_e299d9eed1a2c4::t_f92459b43baa25 1-56
+drizzle/0008_clicks.sql
+  s_fc46a77e6b6321::t_c91978f9554d9e 1-23
+src/lib/inventory.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 2,421-424
+  s_c082d7fe381826::t_571ae5581cee92 425-426
+src/lib/broadcasts/unsubscribe.ts
+  s_da7c2fcb9a5fbd::t_beb5b712da6dc4 1-97,107-108,122
+  s_da7c2fcb9a5fbd::t_230e7fc3791230 98-106,109-121
+  s_3fd229194f6299::t_975def9481485d 123-129
+src/app/admin/_components/referral-card.tsx
+  s_e299d9eed1a2c4::t_c5bcb067394579 1-115
+src/app/admin/clients/page.tsx
+  s_da7c2fcb9a5fbd::t_b783538c8b0d30 7,10,12,17-19,22-43,53-63,67-99,103-104,108,112,144-153
+  s_c082d7fe381826::t_b77b564d38767e 154-155
+src/lib/analytics.ts
+  s_fc46a77e6b6321::t_0fea00b997b737 178-218
+src/app/[handle]/_lib/load-more-products.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 57
+src/lib/analytics-window.ts
+  s_fc46a77e6b6321::t_71fa52258b2400 1-116
+src/app/api/booking/[productId]/route.ts
+  s_da7c2fcb9a5fbd::t_ed9b2728fdee41 61-75
+  s_c082d7fe381826::t_b57b4f5d6fed5b 3,60
+  s_c082d7fe381826::t_f07973ea806950 1
+src/i18n/admin/fil.ts
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 307-316
+  s_fc46a77e6b6321::t_e1d2b0d0fed862 772-773
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,156-157,274-281,300-306,564-565,684-722
+  s_c082d7fe381826::t_c6f97c19c2e5dd 217,219-229,723-771
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 774-800
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 462-472
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 801-833
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 511-516
+src/app/api/track/route.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 2,5,7,9-11,31-32,37,45-48,63-66,152,160,165-174,177-245
+  s_fc46a77e6b6321::t_8bc9e068d95745 246
+src/app/api/unsubscribe/[token]/route.ts
+  s_da7c2fcb9a5fbd::t_229820b8821277 1-79
+  s_3fd229194f6299::t_3e14df12d29e4e 80-84
+src/lib/visitor-id.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 12-14
+src/i18n/admin/ms.ts
+  s_fc46a77e6b6321::t_776e0f2beef1c6 562-563
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 509-514
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 305-314
+  s_fc46a77e6b6321::t_f5cbb0d8337e5b 156-157
+  s_c082d7fe381826::t_e037e2a2ee58c1 217,219-227
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 460-470
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 776-802
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+  s_c082d7fe381826::t_7ace29fce4b48c 725-775
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,272-279,298-304
+  s_fc46a77e6b6321::t_2200440d9d457e 684-724
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 803-835
+src/app/partner/[token]/_components/payout-form.tsx
+  s_17d48d5105cb16::t_44f8e3469fd2f4 1-2,4-117
+  s_17d48d5105cb16::t_47f86ae52667eb 3
+src/lib/broadcasts/quota.ts
+  s_da7c2fcb9a5fbd::t_3b10d8e6888f27 1-111
+src/lib/actions/unsubscribe.ts
+  s_da7c2fcb9a5fbd::t_434ca7fc2722f2 1-57
+drizzle/0007_shop_pixels.sql
+  s_99bea57acbb689::t_baaa89426b6c09 1-13
+src/i18n/admin/sv.ts
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,461-468,487-493,670-708
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 762-788
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_c082d7fe381826::t_85920f0743ed2f 405,407-416,709-759
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 565-569
+  s_fc46a77e6b6321::t_a45e87d00ebb27 760-761
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 789-821
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 494-503
+src/i18n/admin/ro.ts
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 497-506
+  s_c082d7fe381826::t_3ad21e515643b8 405,407-419
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_fc46a77e6b6321::t_378200d65766eb 168-169
+  s_fc46a77e6b6321::t_c8dd86851802d6 671-711
+  s_c082d7fe381826::t_851fcae6e1ec89 712-770
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 771-797
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 798-830
+  s_c082d7fe381826::t_b57b4f5d6fed5b 317-320,464-471,490-496
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 568-572
+  s_fc46a77e6b6321::t_2d7bc2229ec441 22-23
+next.config.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 147-160,162-164,173
+scripts/scenarios/bookings-audience.scenario.ts
+  s_da7c2fcb9a5fbd::t_30a18dc4873110 190-201,203-214
+  s_da7c2fcb9a5fbd::t_94aa3361b3ccb9 1-189,202,215-248,250-275,277-297,299-539,541-769
+  s_da7c2fcb9a5fbd::t_7d0db9bd2308f8 540
+  s_da7c2fcb9a5fbd::t_8efe8d9217525e 249,276,298
+src/app/[handle]/_components/cart/checkout.types.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 2,14-46,77
+src/lib/analytics-window.test.ts
+  s_fc46a77e6b6321::t_f0b1a00be149ed 1-78
+src/lib/events.test.ts
+  s_07be8600ab23c8::t_e439f8e1b2a414 1-18,20-26,28-30,32-36,38-165,167-171,173-269,272-276,278-298
+  s_07be8600ab23c8::t_f43c69b587c168 19,31,37,166,172,271,277
+  s_07be8600ab23c8::t_1657e31ee304ce 270
+  s_07be8600ab23c8::t_6307938f7c4960 27
+src/i18n/dictionaries/sv.ts
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 154-158
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-54,59,105-107,115,126-136,232-251,338-339
+  s_c082d7fe381826::t_85920f0743ed2f 284-293
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 326
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 390-400
+src/i18n/dictionaries/id.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-53,58,103-105,108,114-124,199-218,293-294
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 139-143
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 283
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 338-348
+  s_c082d7fe381826::t_c6f97c19c2e5dd 245-254
+src/lib/shop-consent.test.ts
+  s_99bea57acbb689::t_e9e17d2be975b4 1-108
+src/app/admin/payments/page.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 9,143-144
+src/i18n/admin/es.ts
+  s_c082d7fe381826::t_b47b68db3b857c 756
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_c082d7fe381826::t_fbc20628063c47 405,407-415
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 564-568
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 786-818
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 759-785
+  s_fc46a77e6b6321::t_3798b428c474e7 706-707
+  s_c082d7fe381826::t_a1f4cffc615d24 708-755,757-758
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 493-502
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,460-467,486-492,667-705
+scripts/scenarios/login-sessions.scenario.ts
+  s_c082d7fe381826::t_50c041a9b6002b 1-193
+src/i18n/admin/el.ts
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 761-787
+  s_fc46a77e6b6321::t_e7270ec0df957e 708-709
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 564-568
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 788-820
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_fc46a77e6b6321::t_0868d1239b0b65 168-169
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_c082d7fe381826::t_b57b4f5d6fed5b 317-320,460-467,486-492,669-707
+  s_c082d7fe381826::t_dfde5780fdab84 710-760
+  s_fc46a77e6b6321::t_3095cb9c446665 22-23
+  s_c082d7fe381826::t_db7d42320d8a50 405,407-415
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 493-502
+src/app/admin/settings/_components/notifications-card.tsx
+  s_c082d7fe381826::t_450974cb8a4d8e 1-76
+src/db/schema/index.ts
+  s_da7c2fcb9a5fbd::t_da7459f89779cd 16
+  s_e299d9eed1a2c4::t_f69655e4f59aca 18
+src/i18n/admin/fr.ts
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 566-570
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_c082d7fe381826::t_c6f97c19c2e5dd 405,407-417,713-761
+  s_fc46a77e6b6321::t_bad384bca602c2 762-763
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 791-823
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,462-469,488-494,674-712
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 764-790
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 495-504
+src/lib/actions/products.ts
+  s_da7c2fcb9a5fbd::t_58918894b67a42 201-220
+  s_da7c2fcb9a5fbd::t_8cfe3e520a128d 10
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,6,350,369,386,423,440
+  s_da7c2fcb9a5fbd::t_117d2ca8f4940b 253
+  s_da7c2fcb9a5fbd::t_aec60eda9ac2ec 261-267
+src/i18n/admin/de.ts
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 564-568
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,460-467,486-492,672-710
+  s_c082d7fe381826::t_f43038284db21d 405,407-415
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 764-790
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 791-823
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 493-502
+  s_c082d7fe381826::t_3bd67b4f693a2b 713-763
+  s_fc46a77e6b6321::t_e08afd0edb5941 711-712
+src/i18n/admin/da.ts
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 564-568
+  s_c082d7fe381826::t_3b4f5bf507a387 405,407-415
+  s_fc46a77e6b6321::t_94fa31d62ae677 708-709
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 788-820
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 493-502
+  s_c082d7fe381826::t_c1a9cd409f9d0e 710-760
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 761-787
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,460-467,486-492,669-707
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+src/app/[handle]/p/[slug]/opengraph-image.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 5,85-89,91-93
+src/lib/events.ts
+  s_07be8600ab23c8::t_ace7d32e0d7858 1-10,15-18,23,29-31,34,47-50,57,59-66,69,71-76,80,82-85,91,103,108-109,114-115,117-119,121-124,126,128-130,135,137-139,141-142,144,147,150-152,154,168-169,184-185,191-193,195-196,200-201,205-208,239-241,243,247-253,255-261,265,268-276,278-281,284-291,293-307,331-332,347-349,351,354,356-357,359-361
+  s_07be8600ab23c8::t_c2c766e3a7b1f7 11-14,19-22,24-28,32-33,35-46,51-56,58,67-68,70,77-79,81,86-90,92-102,104-107,110-113,131-134,136,140,143,145-146,148-149,153,155-167,170-183,186-190,194,197-199,202-204,209-238,242,244-246,254,262-264,266-267,277,282-283,292,308-330,333-346,350,352-353,355,358
+  s_07be8600ab23c8::t_f43c69b587c168 116,120,125,127
+src/app/partner/[token]/page.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 13-14,20-22,28-33,37,42,48-51,58-63,74-81,101-106,160-161,163-201,302-321
+  s_c082d7fe381826::t_0417fe5a831840 322
+src/i18n/dictionaries/it.ts
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 397-407
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 158-162
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 332
+  s_c082d7fe381826::t_c6f97c19c2e5dd 290-299
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,54-57,62,109-111,119,130-140,237-256,345-346
+src/lib/handle.ts
+  s_c082d7fe381826::t_4e334183589031 30
+src/app/hq/(panel)/accounts/[id]/page.tsx
+  s_c082d7fe381826::t_e652ed2285319d 127-142
+  s_c082d7fe381826::t_148a9f37bb8d0d 105-111
+vercel.json
+  s_da7c2fcb9a5fbd::t_034fc8f0b182d8 14-21
+src/lib/orders/clients.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 23-28,33-46,77-80,111,131-134
+src/i18n/admin/ja.ts
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 764-790
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 566-570
+  s_c082d7fe381826::t_c6f97c19c2e5dd 405,407-417,713-761
+  s_fc46a77e6b6321::t_b6a091b630c955 762-763
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 791-823
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,462-469,488-494,674-712
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 495-504
+src/components/verify-two-factor-form.tsx
+  s_c082d7fe381826::t_acc596c904afc4 1-103
+src/lib/actions/partner.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 3-17,19,51-195
+src/app/api/cron/reminders/route.ts
+  s_da7c2fcb9a5fbd::t_ab5dcc8fde4294 1-25
+src/lib/onboarding.test.ts
+  s_e299d9eed1a2c4::t_69e620bf0e65ae 1-102
+src/lib/google-tag.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 43-46
+scripts/check-load.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 152-155
+src/i18n/admin/pl.ts
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,464-471,490-496,671-709
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 771-797
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 497-506
+  s_c082d7fe381826::t_0ffce2afd96c08 405,407-419
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 798-830
+  s_c082d7fe381826::t_ab6067ffc84b09 712-770
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 568-572
+  s_fc46a77e6b6321::t_ee2daa2937a983 710-711
+src/app/api/cron/sweep/route.ts
+  s_da7c2fcb9a5fbd::t_a7be6124562c27 27-36,41-42
+  s_c082d7fe381826::t_918a96077dffdb 11-20
+  s_da7c2fcb9a5fbd::t_bf4f9368684faf 4
+src/i18n/dictionaries/fr.ts
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 335
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 400-410
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,54-57,63,113-115,123,134-144,241-260,348-349
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 162-166
+  s_c082d7fe381826::t_c6f97c19c2e5dd 294-303
+src/app/r/[code]/route.ts
+  s_e299d9eed1a2c4::t_e12b2347339efd 1-84
+src/app/api/admin/events/route.ts
+  s_07be8600ab23c8::t_8608e5645874c9 1-27
+src/lib/actions/orders.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 10,12,14,32,101,110-130,180-201,372-379,595-603,618-630
+  s_c082d7fe381826::t_6881ff6c7e5465 604-605
+  s_c082d7fe381826::t_e4c111a1c4d5bf 631
+src/lib/product-performance.ts
+  s_fc46a77e6b6321::t_ce4845b57f9726 1-103
+src/lib/orders/resolve-lines.ts
+  s_da7c2fcb9a5fbd::t_3c589eec99a79b 11
+  s_da7c2fcb9a5fbd::t_4552ce53d8087e 39
+  s_3fd229194f6299::t_61f21fdf2b35c0 10
+src/lib/analytics.test.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 8,104-151
+  s_fc46a77e6b6321::t_88bde472e89a77 152-154
+src/app/admin/orders/_components/order-filters.tsx
+  s_da7c2fcb9a5fbd::t_f1be4ed297d759 1-72,75-95
+  s_da7c2fcb9a5fbd::t_525ebea1831cc8 73-74
+src/app/admin/layout.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 15,78-84
+src/app/hq/(panel)/layout.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,46-47
+src/lib/event-stream.ts
+  s_07be8600ab23c8::t_6221ec1765f4ae 1-150
+src/app/[handle]/_components/filter-bar.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 27
+src/db/schema/commerce.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 118-129
+  s_c082d7fe381826::t_cd7a17d6b2f0a0 117
+src/app/admin/_components/traffic-panel.tsx
+  s_fc46a77e6b6321::t_5e0b556e2a9528 164
+  s_c082d7fe381826::t_b57b4f5d6fed5b 1-2,24,29-30,88-93,156-163
+src/lib/shop-pixels.test.ts
+  s_99bea57acbb689::t_bc17b032faa7de 1-123
+src/app/partner/[token]/_components/partner-chart.tsx
+  s_17d48d5105cb16::t_7fa93eeedf271a 1-323
+src/app/admin/broadcasts/page.tsx
+  s_da7c2fcb9a5fbd::t_7a6bc50388b3e2 1-112
+src/lib/email/messages.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 9-27,31-61,85-97,99-105,107-113,116-137,139-140,142-146,148,154-157,191-197,201,208-210,224,226-227,229,324,328,334-347,374-377,380-388,399-439,465,471-482,503,506-524,526-530,537-539,566,570-582,585-601,610-614,628-631,633-646,653-655,677,679-682,689-691,711-713,715,722-724,728-735,746-748,750-753,760-848
+  s_da7c2fcb9a5fbd::t_aa69a76def399c 170-182,187-189
+  s_da7c2fcb9a5fbd::t_0ac408f33cb87a 200,202-203,205-207,213,219-223
+  s_da7c2fcb9a5fbd::t_56b8aed264c340 230-308
+  s_e299d9eed1a2c4::t_8a6281edf41464 190,225,228
+src/lib/broadcasts/send.ts
+  s_da7c2fcb9a5fbd::t_63a854ef45dc1c 16
+  s_da7c2fcb9a5fbd::t_c764f9bb96a627 1-15,17-67,79-80,82-118,120-122,124-129,140-143,159-164,166,168-173,175-176,179-198,200-221,242-317,319-339,341-373,383-384,386-393,397-401,403-432
+  s_da7c2fcb9a5fbd::t_445f6dfbe98590 340
+  s_3fd229194f6299::t_8ed89c735e4f74 374-382
+  s_da7c2fcb9a5fbd::t_5c73d40dc0deab 144-158,165,167,174,177-178
+  s_3fd229194f6299::t_86e9ce9e8e6126 68-78,81
+  s_da7c2fcb9a5fbd::t_d85e5a0cbf4bd9 394-396
+  s_3fd229194f6299::t_48844de6375fcd 402
+  s_da7c2fcb9a5fbd::t_eb69a146628378 119,123,385
+  s_3fd229194f6299::t_de1d4943c4619d 130-139
+  s_3fd229194f6299::t_3b3e0a17f9a2b0 222-241
+  s_da7c2fcb9a5fbd::t_b6055a08a56202 199
+  s_da7c2fcb9a5fbd::t_b3b6d599b7355c 318
+src/lib/stripe-webhooks/verify.ts
+  s_e299d9eed1a2c4::t_791c30b2bf74ad 29-36
+src/lib/actions/hq.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,8,66-72,232
+scripts/scenarios/up.sh
+  s_da7c2fcb9a5fbd::t_743e5475bb4521 11-16,19,21-28
+src/lib/import/clients.ts
+  s_da7c2fcb9a5fbd::t_ceb38235e37240 13-20,27-28,39-45
+  s_da7c2fcb9a5fbd::t_eb69a146628378 7
+  s_da7c2fcb9a5fbd::t_1e911043067e48 130,132-149,159-164,177-178
+  s_da7c2fcb9a5fbd::t_3fefffa9f5ecfc 46
+src/lib/payout-summary.ts
+  s_fc46a77e6b6321::t_140e653d6cf2d3 1-73
+src/lib/account-deletion.ts
+  s_c082d7fe381826::t_554a386b3b637f 1-399
+src/lib/event-access.ts
+  s_da7c2fcb9a5fbd::t_d892bb457a3e48 1-82
+src/lib/actions/broadcasts.ts
+  s_3fd229194f6299::t_9cd6ef5ba292ef 186-192,194
+  s_da7c2fcb9a5fbd::t_836bf3b4b4d48e 1-185,193,195-216
+src/lib/notification-prefs.ts
+  s_c082d7fe381826::t_ccf57c2d134dfe 1-26,38-48
+  s_c082d7fe381826::t_69daa1237fb551 27-37
+src/i18n/dictionaries/bs.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-53,58,103-105,108,114-124,199-218,294-295
+  s_c082d7fe381826::t_e2b5b6b861edaa 245-254
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 284
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 139-143
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 339-349
+src/i18n/dictionaries/th.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-54,59,104-106,109,115-125,200-219,295-296
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 285
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 140-144
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 340-350
+  s_c082d7fe381826::t_85920f0743ed2f 246-255
+src/app/[handle]/p/[slug]/_components/buy-box.tsx
+  s_f9c0a952c26c6a::t_b50b302eddc478 1-6,8-59,61-86,88-265,267-332,334-340
+  s_e8866281a6725e::t_33cc05bf99d81e 87
+  s_f9c0a952c26c6a::t_6dca04d54fc72b 266
+  s_e8866281a6725e::t_a58ab621cdadad 333
+  s_e8866281a6725e::t_bb3abaa7fb3648 7
+  s_e8866281a6725e::t_5d820aecd382a1 60
+src/app/invoice/[token]/_components/settle-basket.tsx
+  s_277f5f4cf7fcec::t_4ed11b1622247e 1-33
+src/db/schema/audience.ts
+  s_da7c2fcb9a5fbd::t_170bd72524d47f 1-34,36-90,92-143
+  s_e299d9eed1a2c4::t_8d3950a7070c67 35,91
+src/lib/email/preview.test.ts
+  s_0e00670e057c5c::t_18adf2f42cfecc 1-209
+  s_3fd229194f6299::t_6600bf339f3da3 210-212
+src/lib/booking/external-busy.ts
+  s_da7c2fcb9a5fbd::t_b0929a117793b0 1-296
+src/app/admin/settings/security/_components/delete-account-card.tsx
+  s_c082d7fe381826::t_b569c4a9036b3d 1-125
+src/i18n/admin/th.ts
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 804-836
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 510-515
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 306-315
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,273-280,299-305
+  s_fc46a77e6b6321::t_ff97d19618ad5c 563-564
+  s_fc46a77e6b6321::t_8a0d156cae53ae 156-157
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+  s_fc46a77e6b6321::t_4ab2c2ca54ac62 685-723,775-776
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 777-803
+  s_c082d7fe381826::t_85920f0743ed2f 217,219-228,724-774
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 461-471
+src/i18n/dictionaries/sl.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-54,59,104-106,109,115-125,200-219,292-293
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 337-347
+  s_c082d7fe381826::t_f2e2b2f7b6a510 246-252
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 282
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 140-144
+src/i18n/dictionaries/no.ts
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 324
+  s_c082d7fe381826::t_a22c02ca91f835 282-292
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 153-157
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 388-398
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,51-53,58,104-106,114,125-135,230-249,336-337
+src/app/globals.css
+  s_c082d7fe381826::t_b57b4f5d6fed5b 325-349
+src/db/schema/analytics.ts
+  s_fc46a77e6b6321::t_a6517af50501d0 82-121
+src/i18n/admin/no.ts
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 568-572
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 771-797
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 497-506
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,464-471,490-496,671-709
+  s_c082d7fe381826::t_9317a38293f2d0 712-770
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 798-830
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_c082d7fe381826::t_87c3de97667ddf 405,407-419
+  s_fc46a77e6b6321::t_f66a96f2d327c4 710-711
+src/lib/favorites.ts
+  s_f9c0a952c26c6a::t_2ccc42b708ef94 1-83
+src/lib/email/markup.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 3-4,10-13,17-19,29-48,68-166,179-210,213-407,411-412,415-419,437-441,443-447,452-454,456-461,463-465,467-470,473-475,478-480
+src/lib/product-performance.test.ts
+  s_fc46a77e6b6321::t_1a2e29734e0ad5 1-88
+src/lib/queries/sessions.ts
+  s_c082d7fe381826::t_1a9281eaab3c24 1-75
+src/lib/shop-visibility.ts
+  s_c082d7fe381826::t_98f40f1611eaa2 1-21
+src/i18n/dictionaries/fil.ts
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 338-348
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-53,58,103-105,108,114-124,199-218,293-294
+  s_c082d7fe381826::t_c6f97c19c2e5dd 245-254
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 283
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 139-143
+scripts/scenarios/creator-referrals.scenario.ts
+  s_3fd229194f6299::t_8a029dda7be6bc 326-371
+  s_e299d9eed1a2c4::t_fa50832ec9181c 36-51
+  s_e299d9eed1a2c4::t_c3c59a6bfc0cc6 99-100,136,172,178,186,217,254,290,375,401,438
+  s_e299d9eed1a2c4::t_dd0347a9a0c460 56
+  s_e299d9eed1a2c4::t_381141a1a02250 88
+  s_e299d9eed1a2c4::t_359965fc20eedb 177
+  s_e299d9eed1a2c4::t_1254f24c887343 86-87,89-92
+  s_e299d9eed1a2c4::t_30c9da5c6ba8d0 320-322
+  s_e299d9eed1a2c4::t_0a3296f88e6fca 1
+  s_e299d9eed1a2c4::t_8baf311178fd3a 2
+  s_e299d9eed1a2c4::t_15c62a83c22b79 3-35,52-55,57-85,93-98,101-135,137-171,173-176,179-185,187-216,218-253,255-289,291-319,323-325,372-374,376-400,402-437,439-476
+src/app/[handle]/_components/share-button.tsx
+  s_0e00670e057c5c::t_2a726cc7892e39 306-310
+  s_387e3c9a6b3c37::t_9ddba2deff9550 46-48,50-54
+  s_387e3c9a6b3c37::t_19ab4eb36e864b 3
+  s_387e3c9a6b3c37::t_76a3b42f5b43fb 1-2,4-45,49,55-305,311-347
+src/app/admin/clients/_components/add-contact.tsx
+  s_da7c2fcb9a5fbd::t_e9427ba580f16f 1-79,83-101
+  s_da7c2fcb9a5fbd::t_9a91cf9ff749a0 80-82
+src/lib/creator-referrals/store.ts
+  s_e299d9eed1a2c4::t_928ddc15cbecf4 44-55,57-66,71-84,86-87,95
+  s_e299d9eed1a2c4::t_fa3e8246b3b912 140-145,154-160
+  s_e299d9eed1a2c4::t_e1c017c194a590 1-43,56,67-70,85,88-94,96-139,146-153,161-273,291-298,300,308,310,313-362
+  s_3fd229194f6299::t_354864f76d7712 274-290,299,309
+  s_3fd229194f6299::t_ff83f705ef7037 301-307,311-312
+src/lib/booking/feed-health.ts
+  s_da7c2fcb9a5fbd::t_a9bdd74bb5e18b 2
+  s_da7c2fcb9a5fbd::t_43003b70902887 1,3-87
+src/app/[handle]/_components/shop-cookie-settings.tsx
+  s_99bea57acbb689::t_d434ea024067a5 1-33
+src/i18n/admin/ar.ts
+  s_fc46a77e6b6321::t_4fd3fdd70241e3 168-169
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_fc46a77e6b6321::t_35fb1c44f45423 671-711
+  s_c082d7fe381826::t_fafbff82ed3413 712-762
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 564-568
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 763-789
+  s_fc46a77e6b6321::t_2c9092d2dc55ed 22-23
+  s_c082d7fe381826::t_b57b4f5d6fed5b 317-320,460-467,486-492
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 493-502
+  s_c082d7fe381826::t_43eadd21b83d1c 405,407-415
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 790-822
+src/i18n/dictionaries/ko.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-53,58,103-105,108,114-124,199-218,293-294
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 338-348
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 139-143
+  s_c082d7fe381826::t_c6f97c19c2e5dd 245-254
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 283
+src/lib/hq/accounts.ts
+  s_c082d7fe381826::t_ef01a66892e1cf 122-130,133,138-139
+  s_f74fd09d814c1c::t_024bb234559355 140
+src/lib/actions/support.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,7,98-100
+src/i18n/dictionaries/ro.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,51-53,58,104-106,114,125-135,230-249,336-337
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 388-398
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 153-157
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 324
+  s_c082d7fe381826::t_cd9e985162bc46 282-292
+src/app/admin/broadcasts/[id]/page.tsx
+  s_da7c2fcb9a5fbd::t_76f0216633df73 1-114
+src/lib/auth-client.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,8-15
+src/i18n/admin/id.ts
+  s_c082d7fe381826::t_c6f97c19c2e5dd 217,219-229,725-773
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,156-157,274-281,300-306,564-565,686-724
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 462-472
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 776-802
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 803-835
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 511-516
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 307-316
+  s_fc46a77e6b6321::t_fb169f12d882c2 774-775
+src/app/api/partner/events/route.ts
+  s_07be8600ab23c8::t_603684d8dd60e2 1-56
+src/lib/broadcasts/audience.ts
+  s_da7c2fcb9a5fbd::t_d9f0074dbba05c 1-131
+src/i18n/admin/hu.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,462-469,488-494,669-707
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 786-818
+  s_c082d7fe381826::t_c6f97c19c2e5dd 405,407-417,708-756
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_fc46a77e6b6321::t_32d7e825c45d02 757-758
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 495-504
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 566-570
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 759-785
+src/i18n/admin/bg.ts
+  s_fc46a77e6b6321::t_63ac2f38f78720 723-724
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 509-514
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 460-470
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 776-802
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 803-835
+  s_c082d7fe381826::t_fe527b2ac17754 217,219-227
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,156-157,272-279,298-304,562-563,684-722
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 305-314
+  s_c082d7fe381826::t_731e5471aabb82 725-775
+src/i18n/admin/coverage.test.ts
+  s_da7c2fcb9a5fbd::t_8197906304dbf6 46-53
+  s_c082d7fe381826::t_b57b4f5d6fed5b 42-45
+src/lib/booking/calendar-feed.ts
+  s_da7c2fcb9a5fbd::t_a2adf659b480e5 556,641
+  s_da7c2fcb9a5fbd::t_f47450b9fb7a22 432-441
+  s_da7c2fcb9a5fbd::t_93cc4be05dad94 286
+  s_da7c2fcb9a5fbd::t_1488d66e64125c 1-156,158-161,164-217,226-247,250-285,287-301,315-356,369-371,374,377,389-399,404-407,412-416,424-431,442-462,465-555,557-640,642-692
+  s_da7c2fcb9a5fbd::t_4fdd235ed57dae 306-311,314
+  s_da7c2fcb9a5fbd::t_a3a66df4fedcfb 157,162-163
+  s_da7c2fcb9a5fbd::t_a135133c15149a 304,400-403,408-411,417-423
+  s_da7c2fcb9a5fbd::t_1267eb18243840 218-225
+  s_da7c2fcb9a5fbd::t_58712b0a859913 357-368,372-373,375-376,378-379,381-388
+  s_da7c2fcb9a5fbd::t_b3a861cde797cd 380
+  s_da7c2fcb9a5fbd::t_1361ee6cd09bc1 463-464
+  s_da7c2fcb9a5fbd::t_3ef15e4002a48b 248-249,302-303,305,312-313
+src/lib/actions/reviews.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,6,59-63,81,97
+src/db/schema/catalog.ts
+  s_da7c2fcb9a5fbd::t_a1367f61244a97 101-112
+  s_c082d7fe381826::t_b57b4f5d6fed5b 52
+drizzle/0011_checkout_compliance.sql
+  s_e8866281a6725e::t_59bac5c73a9ae4 1-22
+src/lib/booking/calendar-feed.test.ts
+  s_da7c2fcb9a5fbd::t_d8c7757c2c2b7f 1-43,45-539
+  s_e299d9eed1a2c4::t_8a0594429613be 44
+src/lib/account-deletion.test.ts
+  s_c082d7fe381826::t_98f41e0a33b0ab 1-152
+src/i18n/dictionaries/ru.ts
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 327
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-54,59,105-107,115,126-136,233-252,339-340
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 391-401
+  s_c082d7fe381826::t_61b55ea19f24fe 285-295
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 154-158
+src/app/[handle]/_components/favorites/use-favorites.ts
+  s_f9c0a952c26c6a::t_5fb4b13e766fc1 1-100
+src/app/[handle]/page.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 8-9,13,16,105,134-136,145-170
+src/app/admin/clients/_components/tag-editor.tsx
+  s_da7c2fcb9a5fbd::t_50e2c5b14d69b2 1-71,75-77,79-87
+  s_da7c2fcb9a5fbd::t_9a91cf9ff749a0 72-74
+  s_da7c2fcb9a5fbd::t_a0a3105482d646 78
+src/i18n/dictionaries/nl.ts
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 330
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,53-55,60,107-109,117,128-138,235-254,343-344
+  s_c082d7fe381826::t_f6b1e3202d83d3 288-298
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 156-160
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 395-405
+src/app/(auth)/verify-2fa/page.tsx
+  s_c082d7fe381826::t_fa5c4f2a1f0162 1-40
+src/i18n/dictionaries/pt.ts
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 330
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 395-405
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,53-55,60,107-109,117,128-138,235-254,343-344
+  s_c082d7fe381826::t_b349305e5bd70c 288-298
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 156-160
+scripts/scenarios/setup.ts
+  s_da7c2fcb9a5fbd::t_fc24055eb95eae 30-40
+  s_e299d9eed1a2c4::t_21098a39d90a05 29
+src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_e8866281a6725e::t_fd894ff2b60798 667-668
+  s_c082d7fe381826::t_b57b4f5d6fed5b 6,12,18-23,33,146-152,169-192,215-219,600-666,691-696
+src/app/admin/payments/_components/payout-card.tsx
+  s_fc46a77e6b6321::t_4af898e728d9f4 1-192
+src/i18n/dictionaries/pl.ts
+  s_c082d7fe381826::t_79ac8f507b0edd 287-297
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 156-160
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 394-404
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 329
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,53-55,60,107-109,117,128-138,235-254,342-343
+package.json
+  s_c082d7fe381826::t_b57b4f5d6fed5b 69-70
+src/app/admin/settings/security/loading.tsx
+  s_c082d7fe381826::t_7d25df946d0b5c 1-5
+src/i18n/dictionaries/zh.ts
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 186-190
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 364
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 429-439
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,70-73,79,137-139,147,158-168,266-285,377-378
+  s_c082d7fe381826::t_85920f0743ed2f 321-330
+src/lib/file-urls.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 128-214
+src/app/admin/settings/_components/tracking-card.tsx
+  s_99bea57acbb689::t_cfde99acd97bc5 1-74
+src/app/admin/settings/_components/compliance-card.tsx
+  s_e8866281a6725e::t_72e76b9f5f00d3 1-77
+src/i18n/admin/en.ts
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 261-265
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 701-710
+  s_e299d9eed1a2c4::t_13ffee98b771dd 861-893
+  s_da7c2fcb9a5fbd::t_19138e692dca06 965
+  s_fc46a77e6b6321::t_7338c12b808405 149-150
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 422-427
+  s_fc46a77e6b6321::t_7b641115f6ef7d 930-931
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 932-964
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 446-456
+  s_c082d7fe381826::t_585ca7ceca3320 859-860
+  s_c082d7fe381826::t_b57b4f5d6fed5b 146-148,151-168,513-517,604,606-619,664-671,674-684,778-780,796-858,901-929
+src/i18n/admin/sq.ts
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 777-803
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,156-157,273-280,299-305,563-564,685-723
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 306-315
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 510-515
+  s_c082d7fe381826::t_85920f0743ed2f 217,219-228,724-774
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+  s_fc46a77e6b6321::t_512c237b20f27e 775-776
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 804-836
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 461-471
+src/i18n/admin/bs.ts
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 776-802
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 460-470
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 509-514
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,156-157,272-279,298-304,562-563,684-722
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 305-314
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 803-835
+  s_c082d7fe381826::t_71842bc665ef61 725-775
+  s_fc46a77e6b6321::t_6b0942d09d71a0 723-724
+  s_c082d7fe381826::t_eaab83f5cb8207 217,219-227
+src/lib/payouts.ts
+  s_17d48d5105cb16::t_141a2f04a799d9 1-48
+src/lib/actions/payments.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,6,74
+src/lib/track-click.ts
+  s_fc46a77e6b6321::t_9deef57eab1181 1-27
+src/i18n/dictionaries/en.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 48-55,94-99,115,198-200,206,218-233,343-368,517-518
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 252-256
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 500
+  s_c082d7fe381826::t_8a1a29e4cc34fa 577-587
+  s_c082d7fe381826::t_8d2b40731f647d 429-446
+src/app/[handle]/_components/cart/express-checkout.tsx
+  s_f9c0a952c26c6a::t_5d563709fb9669 1-6,8-18,24-61,63-87,89-192,194-204
+  s_e8866281a6725e::t_13b85b89bbc98f 88
+  s_e8866281a6725e::t_d49b66c0a81b2a 7
+  s_e8866281a6725e::t_54ce406a549305 19-23
+  s_e8866281a6725e::t_5a6c21411c4c8e 62
+  s_e8866281a6725e::t_aa7f657a3b1d27 193
+src/i18n/admin/ru.ts
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_c082d7fe381826::t_753db044e6b292 405,407-419
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 497-506
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 568-572
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 771-797
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,464-471,490-496,671-709
+  s_fc46a77e6b6321::t_471533031ae43f 710-711
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_c082d7fe381826::t_f55bf16baca24e 712-770
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 798-830
+src/db/schema/json-types.ts
+  s_fc46a77e6b6321::t_0d803e63284841 14-15
+  s_c082d7fe381826::t_b57b4f5d6fed5b 23-38
+src/db/schema/types.ts
+  s_da7c2fcb9a5fbd::t_f943c9dfc3edd2 22
+  s_e299d9eed1a2c4::t_8d3950a7070c67 5
+src/lib/plans.ts
+  s_da7c2fcb9a5fbd::t_c4f71c4325a53d 60-61,83-84,103-104
+  s_da7c2fcb9a5fbd::t_049f35463602e4 20-23
+src/app/download/[token]/page.tsx
+  s_da7c2fcb9a5fbd::t_4a9fd392fe8a6e 10
+  s_da7c2fcb9a5fbd::t_c9a673769c21f9 167-222
+  s_da7c2fcb9a5fbd::t_5203b90faceec0 6-7
+  s_da7c2fcb9a5fbd::t_19603136ca3d93 45-54
+src/app/admin/clients/[id]/page.tsx
+  s_da7c2fcb9a5fbd::t_a9820b81eece23 10,12-13
+  s_da7c2fcb9a5fbd::t_c41114c5d7acc5 139-144
+  s_da7c2fcb9a5fbd::t_725f93956b9faf 40-42
+src/lib/email/transport.ts
+  s_da7c2fcb9a5fbd::t_b788be6cf0ffc9 57,65-80,92-93,105-158
+  s_e299d9eed1a2c4::t_071b4c5a57cf42 159-160
+src/app/admin/page.tsx
+  s_e299d9eed1a2c4::t_260834c26bb42f 186-194
+  s_fc46a77e6b6321::t_eb7afca544dbdc 368
+  s_e299d9eed1a2c4::t_0bf3d08b7ae24a 27
+  s_e299d9eed1a2c4::t_aad433396d0169 84-85,95-103
+  s_e299d9eed1a2c4::t_953f4dd7cfc80f 17-21
+  s_e299d9eed1a2c4::t_18a37dac525b25 68-83,86-94,104-113
+  s_c082d7fe381826::t_b57b4f5d6fed5b 8,10,24,28-29,48-66,117-140,197-203,207-208,211-214,292-296,322-326,362-367,369-374
+  s_e299d9eed1a2c4::t_25e012e69378ab 428
+  s_e299d9eed1a2c4::t_3fd9e7b79ac9a5 429-443
+  s_e299d9eed1a2c4::t_91cda401df7276 7,16,26
+src/app/admin/settings/_components/settings-nav.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 21
+src/i18n/dictionaries/mk.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-54,59,104-106,109,115-125,200-219,294-295
+  s_c082d7fe381826::t_c6f97c19c2e5dd 246-255
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 140-144
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 339-349
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 284
+src/app/api/hq/events/route.ts
+  s_07be8600ab23c8::t_8ac0b4519bab59 1-23
+src/app/admin/settings/data/page.tsx
+  s_da7c2fcb9a5fbd::t_c4d5826ecca450 53-63
+src/lib/actions/security.ts
+  s_c082d7fe381826::t_db359ef7e8edeb 1-330
+src/lib/actions/order-admin.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,8,103-114,144,203,339-343,365-369,384,399
+src/i18n/dictionaries/tr.ts
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 393-403
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 156-160
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 329
+  s_c082d7fe381826::t_85920f0743ed2f 287-296
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,54-56,61,107-109,117,128-138,235-254,341-342
+src/lib/stripe-webhooks/platform.ts
+  s_e299d9eed1a2c4::t_0b3d2b048b9e51 183-232
+  s_c082d7fe381826::t_b57b4f5d6fed5b 8,79-81,99,118,173-175
+  s_e299d9eed1a2c4::t_4053156dba9299 122-156
+  s_e299d9eed1a2c4::t_fd6d7ad1b2b2c3 10-13
+  s_c082d7fe381826::t_e843eb0d9f184b 119-121
+src/app/admin/broadcasts/new/page.tsx
+  s_da7c2fcb9a5fbd::t_d2534a2b2b7185 1-51
+src/lib/email/markup.test.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 2-3,82-84,127-302
+src/lib/favorites.test.ts
+  s_f9c0a952c26c6a::t_051be31b723174 1-92
+src/lib/onboarding.ts
+  s_e299d9eed1a2c4::t_a5a9f8077cb22d 1-107
+src/lib/exporters.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 258-261,297-299
+  s_e299d9eed1a2c4::t_2d1f2793647362 7
+  s_da7c2fcb9a5fbd::t_6cfa0227dd9e3d 300-301
+  s_da7c2fcb9a5fbd::t_c0541a4ea6be20 262-269
+src/app/api/resend/webhook/route.ts
+  s_da7c2fcb9a5fbd::t_f6265953f8656a 1-141
+  s_3fd229194f6299::t_7e73fa38f0f6fc 142-148
+src/lib/cart.test.ts
+  s_277f5f4cf7fcec::t_e7b300889b5ccc 144,146-148
+  s_277f5f4cf7fcec::t_e634df29390996 1-143,145,149-150
+src/db/schema/orders.ts
+  s_da7c2fcb9a5fbd::t_598570842fa734 40-61,69-73
+  s_da7c2fcb9a5fbd::t_150d998b7f4979 420-451
+  s_e8866281a6725e::t_217b68fdb79b61 223
+  s_c082d7fe381826::t_b57b4f5d6fed5b 29-39,216-222
+src/lib/actions/clients.ts
+  s_da7c2fcb9a5fbd::t_ddf426982c143d 1-122
+src/i18n/dictionaries/es.ts
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 161-165
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,54-57,63,112-114,122,133-143,240-259,347-348
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 334
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 399-409
+  s_c082d7fe381826::t_f26354fdcdc063 293-302
+src/app/admin/_components/range-picker.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 3,5-6,21-22,33-37,44-52,54,56-84,91,128-143,146-180,186-190
+src/app/u/[token]/_components/unsubscribe-form.tsx
+  s_da7c2fcb9a5fbd::t_25414751d1cd64 1-68
+src/i18n/dictionaries/ar.ts
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 364
+  s_c082d7fe381826::t_5c3d46bbd28de3 321-330
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,70-73,79,137-139,147,158-168,266-285,377-378
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 186-190
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 429-439
+src/app/api/cron/broadcasts/route.ts
+  s_da7c2fcb9a5fbd::t_ea0088b820f35b 1-26
+src/app/admin/settings/_components/calendar-sync-card.tsx
+  s_da7c2fcb9a5fbd::t_29f9001965c734 1-129
+src/lib/actions/tickets.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 3,5,14-23
+src/app/admin/products/_components/event-settings-card.tsx
+  s_da7c2fcb9a5fbd::t_4358cc5d1d4615 64-74,77-107
+  s_da7c2fcb9a5fbd::t_a1edee5d900d79 3-4
+  s_da7c2fcb9a5fbd::t_c4e0c6769007ba 31-38
+  s_c082d7fe381826::t_bc7148b4ad14a7 108
+src/app/[handle]/_components/favorites/favorites-button.tsx
+  s_f9c0a952c26c6a::t_c43a49da98b249 1-148
+drizzle/0007_affiliate_payout.sql
+  s_17d48d5105cb16::t_e2e975b844f95d 1-11
+src/i18n/dictionaries/bg.ts
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 139-143
+  s_c082d7fe381826::t_c180efb4d11b31 245-254
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-53,58,103-105,108,114-124,199-218,294-295
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 339-349
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 284
+src/lib/queries/analytics.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 2,5-19,31-61,63,73-75,98-100,182-203,216-217,238-243,251-253,292-293,303-305,317,347-351,353-357,445-625
+  s_fc46a77e6b6321::t_b5bcc40197c17a 204-205
+src/app/[handle]/_components/shop-header.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 62
+src/db/schema/shop.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 2,48-66,89-96,165,194-211,239-246
+  s_e299d9eed1a2c4::t_2f0e632891d6bf 274-280
+  s_99bea57acbb689::t_9e7053663d1270 212
+  s_da7c2fcb9a5fbd::t_c9793d511c5492 166-193
+  s_e299d9eed1a2c4::t_d36c061b460ec4 248-262
+  s_da7c2fcb9a5fbd::t_e1ef7b138b54dd 247
+src/app/[handle]/_components/shop-consent.tsx
+  s_99bea57acbb689::t_af0b9dd9fd9e2e 1-225
+src/app/admin/settings/security/page.tsx
+  s_c082d7fe381826::t_a57fca20f3af24 1-38
+drizzle/0009_account_deletion.sql
+  s_c082d7fe381826::t_e221951d52c9bc 1-10
+scripts/scenarios/seller-notifications.scenario.ts
+  s_c082d7fe381826::t_0fa656d084cae7 28-53
+  s_c082d7fe381826::t_04801668fad65c 2
+  s_c082d7fe381826::t_19025387b9e0ce 87,188,210,283,305,417,425,450,454
+  s_c082d7fe381826::t_db9a5e1764a9be 72
+  s_c082d7fe381826::t_95389dc634e3e0 1,4-27,54,56-71,73-86,88-126,133-187,189-209,211-220,228-236,256,258-261,263-282,284-304,306-416,418-424,426-449,451-453,455-457
+  s_c082d7fe381826::t_466b6aeb154f9e 55
+  s_c082d7fe381826::t_3f6a1cf8cb3b7c 221-227,237-255,257,262
+  s_c082d7fe381826::t_9af8764c92c810 3
+  s_c082d7fe381826::t_21fdcc4de3025c 127-132
+src/lib/booking/availability.ts
+  s_da7c2fcb9a5fbd::t_b9969e9012595a 7-8
+  s_da7c2fcb9a5fbd::t_38fa799b47a8cb 111-129
+  s_da7c2fcb9a5fbd::t_f0c712cd668214 147-153,155,160,164-176,184-189
+  s_da7c2fcb9a5fbd::t_738350c3ad739d 203,213-234
+src/lib/hq/referrals.ts
+  s_e299d9eed1a2c4::t_4da97697e52a4d 121-124,128,143-146,148-152
+  s_e299d9eed1a2c4::t_2fc735d8131664 1,3-5,7-103,106-120,125-127,129-142,147,153
+  s_e299d9eed1a2c4::t_7015f066c54bf7 2
+  s_e299d9eed1a2c4::t_f9bcc4da4e3d01 6
+  s_e299d9eed1a2c4::t_949fca88713d6a 104-105
+src/lib/utils.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 247-253,258,260
+src/app/(legal)/gdpr/page.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 71-74
+src/lib/creator-referrals/program.ts
+  s_e299d9eed1a2c4::t_7f0617c28694dd 1-31,46,51-80,83,93-94,96,100-156,158-171,173-179
+  s_e299d9eed1a2c4::t_7705d68e1b74a2 45,47-50
+  s_e299d9eed1a2c4::t_cf21a062850d4c 157
+  s_e299d9eed1a2c4::t_6743fb5b6bcd39 32-44
+  s_e299d9eed1a2c4::t_7607585a52c759 81-82,84-92,95,97-99
+  s_e299d9eed1a2c4::t_f1a2ec0dbb01c4 172
+e2e/checkout.spec.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 7-10,15-16,18-25,32-48,100-105,107,109,113-133
+  s_f9c0a952c26c6a::t_15327faaddff20 49
+src/i18n/dictionaries/sq.ts
+  s_c082d7fe381826::t_85920f0743ed2f 246-255
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-54,59,104-106,109,115-125,200-219,295-296
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 140-144
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 340-350
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 285
+src/components/shared/consent-gate.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 9-13
+drizzle/0012_creator_referrals.sql
+  s_e299d9eed1a2c4::t_49ebc91578ef54 1-65
+src/app/admin/settings/_components/settings-form.tsx
+  s_da7c2fcb9a5fbd::t_f9b112059e6ae6 26,127
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22,24,27,46-55,123-124,131-133
+  s_da7c2fcb9a5fbd::t_f9186eee82619e 128,134
+src/lib/actions/security.test.ts
+  s_c082d7fe381826::t_cc944c955e4865 1-166,170-171
+  s_c082d7fe381826::t_71616f43c7401c 167-169
+src/i18n/dictionaries/ja.ts
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 186-190
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,70-73,79,137-139,147,158-168,267-286,378-379
+  s_c082d7fe381826::t_c6f97c19c2e5dd 322-331
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 365
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 430-440
+src/i18n/dictionaries/sr.ts
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 340-350
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 285
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 140-144
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,52-54,59,104-106,109,115-125,200-219,295-296
+  s_c082d7fe381826::t_85920f0743ed2f 246-255
+src/i18n/dictionaries/hu.ts
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 324
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 154-158
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,51-54,59,105-107,115,126-136,231-250,336-337
+  s_c082d7fe381826::t_c6f97c19c2e5dd 283-292
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 388-398
+src/lib/actions/delivery.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,6,97,116,142
+src/lib/actions/orders.test.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 49-61,102-137
+  s_e8866281a6725e::t_e629e46b79f7aa 138-139
+src/app/admin/affiliates/page.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 64-69,166-179
+  s_c082d7fe381826::t_42d6828a98e82b 180-182
+src/lib/actions/import.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 4,6,67
+scripts/scenarios/checkout.scenario.ts
+  s_da7c2fcb9a5fbd::t_174742681b3395 1193-1205,1207-1209
+  s_c082d7fe381826::t_b57b4f5d6fed5b 7,20,989-1192,1206,1210
+  s_3fd229194f6299::t_af7244c63c354d 1211
+src/lib/connect.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 190
+src/i18n/admin/pt.ts
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_c082d7fe381826::t_9ee6dda84a9b5d 712-770
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 771-797
+  s_fc46a77e6b6321::t_86644d9da492c3 710-711
+  s_c082d7fe381826::t_cf0522c6381afe 405,407-419
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 568-572
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 798-830
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,464-471,490-496,671-709
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 497-506
+src/app/hq/(panel)/referrals/page.tsx
+  s_e299d9eed1a2c4::t_0886118ccaa4c3 1-133
+src/lib/cart.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 62-74,145-194
+src/i18n/dictionaries/de.ts
+  s_da7c2fcb9a5fbd::t_c58e2ede3c530e 162-166
+  s_da7c2fcb9a5fbd::t_6bc3bfa3e1a8b4 335
+  s_da7c2fcb9a5fbd::t_ea8dceda18e426 400-410
+  s_c082d7fe381826::t_851c833d16a956 294-303
+  s_c082d7fe381826::t_b57b4f5d6fed5b 30-34,55-58,64,113-115,123,134-144,241-260,348-349
+src/app/[handle]/_components/product-card.tsx
+  s_c082d7fe381826::t_b57b4f5d6fed5b 3,7-9,12,14-23,45-47,64-67,71,73,95,102-116,121,125-138,140,177-250,252
+  s_f9c0a952c26c6a::t_430cf0fe9bb97c 139
+  s_c082d7fe381826::t_07a94bdc9680cf 251
+src/i18n/admin/sr.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 122-125,156-157,273-280,299-305,563-564,685-723
+  s_fc46a77e6b6321::t_0eb202ad248887 775-776
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 777-803
+  s_c082d7fe381826::t_85920f0743ed2f 217,219-228,724-774
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 93-97
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 461-471
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 804-836
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 510-515
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 306-315
+src/lib/notifications.ts
+  s_c082d7fe381826::t_b57b4f5d6fed5b 134-162
+src/lib/broadcasts/render.ts
+  s_da7c2fcb9a5fbd::t_70cd10d394996f 1-115
+src/i18n/admin/fi.ts
+  s_da7c2fcb9a5fbd::t_92456cf85bb051 251-261
+  s_c082d7fe381826::t_cd3e2b34aef913 708-758
+  s_e299d9eed1a2c4::t_bf51bc8e8778e8 759-785
+  s_da7c2fcb9a5fbd::t_bf4bd04ca4dd2d 493-502
+  s_c082d7fe381826::t_d38116d4f5fd3c 405,407-415
+  s_da7c2fcb9a5fbd::t_e5aa3a58422c07 564-568
+  s_da7c2fcb9a5fbd::t_77687a68ee954b 786-818
+  s_c082d7fe381826::t_b57b4f5d6fed5b 22-23,168-169,317-320,460-467,486-492,667-705
+  s_da7c2fcb9a5fbd::t_630427ae3fb2d3 230-235
+  s_fc46a77e6b6321::t_a3ecb12202b200 706-707
+src/app/[handle]/_components/shop-pixels.tsx
+  s_99bea57acbb689::t_24b06939fc29b5 1-134
+src/lib/event-stream.test.ts
+  s_07be8600ab23c8::t_19225da8a7cb22 1-108
+  s_3fd229194f6299::t_561ff5f5969cd5 109-116
+drizzle/0010_notification_prefs.sql
+  s_c082d7fe381826::t_29992eec367733 1-8
+e2e/journey.spec.ts
+  s_3fd229194f6299::t_8ea40f9dff6af5 44-62
+package-lock.json
+  s_c082d7fe381826::t_86681a6d8cce97 40-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "1c6f131f70a74e97ae2c382eb075e8720b5f2956",
+  "prompts": {},
+  "sessions": {
+    "s_07be8600ab23c8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a267c1d3-528a-4033-b796-8abc0398e46a",
+        "model": "claude-fable-5"
+      },
+      "human_author": null
+    },
+    "s_0e00670e057c5c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40ff8187-09a0-47af-bdab-1462630d209d",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_17d48d5105cb16": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "62d3891b-f7e5-4c6d-b2c2-c3bb9a3d448f",
+        "model": "claude-fable-5"
+      },
+      "human_author": null
+    },
+    "s_277f5f4cf7fcec": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "abd2a49d-bbe5-47ac-93a8-2b11c77b55bf",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_387e3c9a6b3c37": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e6e18f4e-d907-4415-ae83-15f3df338e46",
+        "model": "claude-fable-5"
+      },
+      "human_author": null
+    },
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_99bea57acbb689": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f5d257e5-f18e-4a95-ac17-10a567416f4c",
+        "model": "claude-fable-5"
+      },
+      "human_author": null
+    },
+    "s_c082d7fe381826": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1c30bfbe-c111-4274-9ccb-dfb5995bc748",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_da7c2fcb9a5fbd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "abf11ea1-922c-454e-8a7b-92c33731011c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e299d9eed1a2c4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4923584d-d9c3-4d4a-ad72-5916c4746c9a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e8866281a6725e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d59360b1-1d5a-4f8d-9720-f0b0e719563c",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    },
+    "s_f74fd09d814c1c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6a0cc16d-3a60-42c4-b261-758ca815f021",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_f9c0a952c26c6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "29ecefeb-aa26-4f75-a87a-abc78f30c37e",
+        "model": "claude-fable-5"
+      },
+      "human_author": null
+    },
+    "s_fc46a77e6b6321": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bdf40341-12da-45c0-bfa1-8f093a6665db",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
