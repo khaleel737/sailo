@@ -1,0 +1,44 @@
+scripts/social-covers/fonts/fonts.css
+  s_33c03075128aa7::t_d18ac540dba38c 1-153
+scripts/social-covers/instagram-story.html
+  s_33c03075128aa7::t_4bd509064ed695 1-54
+scripts/social-covers/youtube.html
+  s_33c03075128aa7::t_b10654b219fb0a 1-8,11-15,17,19-28,32-41,43-45,47-49,51-57,59-64
+  s_33c03075128aa7::t_7638b2fc9bba83 42,46,50,58
+  s_33c03075128aa7::t_eba20f380e4e1a 16,18
+  s_33c03075128aa7::t_dc2d8cabb677d6 9-10
+  s_33c03075128aa7::t_1049bee0287e5e 29-31
+scripts/social-covers/instagram-post.html
+  s_33c03075128aa7::t_346402987e40b4 1-52
+scripts/social-covers/render.ts
+  s_33c03075128aa7::t_3aa915c6350d4b 1-75
+scripts/social-covers/facebook.html
+  s_33c03075128aa7::t_fb2a5567efa3ab 1-58
+scripts/social-covers/linkedin.html
+  s_33c03075128aa7::t_c712b090923a89 34-39
+  s_33c03075128aa7::t_1710ea834ed0e2 19,22-24
+  s_33c03075128aa7::t_243469930d89af 7-9
+  s_33c03075128aa7::t_a24292bb9931fe 1-6,10-18,20-21,25-33,40-42
+scripts/social-covers/covers.css
+  s_33c03075128aa7::t_5ce87ff75f27f6 55-57,63
+  s_33c03075128aa7::t_4a42a4b7259a06 1-54,58-62,64-160
+scripts/social-covers/x.html
+  s_33c03075128aa7::t_18c57074b233e1 26
+  s_33c03075128aa7::t_ac82bfe29dff8c 1-25,27-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "2b357c0725ff4737f555d227260081777d27dbfa",
+  "prompts": {},
+  "sessions": {
+    "s_33c03075128aa7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "724e7fe6-b9f6-49ee-aa72-05cbee09af2e",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
