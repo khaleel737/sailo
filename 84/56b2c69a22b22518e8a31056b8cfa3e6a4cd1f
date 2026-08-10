@@ -1,0 +1,27 @@
+vitest.config.mts
+  s_3fd229194f6299::t_3633307114a891 25-41
+src/components/shared/cookie-consent.tsx
+  s_3fd229194f6299::t_d7dfc292cf2ccc 49-57
+  s_3fd229194f6299::t_5c038e9c39de7b 67-69
+  s_3fd229194f6299::t_7ec54aa70351d3 219-226,229
+src/db/replica.test.ts
+  s_3fd229194f6299::t_bf893e154647ab 68,81,100
+src/lib/consent.test.ts
+  s_3fd229194f6299::t_8de5d82b71fc5f 1,122-156
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8456b2c69a22b22518e8a31056b8cfa3e6a4cd1f",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
