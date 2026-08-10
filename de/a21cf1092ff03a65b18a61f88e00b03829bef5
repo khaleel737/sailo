@@ -1,0 +1,71 @@
+docs/specs/18-ecourse.md
+  s_3fd229194f6299::t_91830d4a92f15f 1-83
+docs/specs/09-marketing-pixels.md
+  s_3fd229194f6299::t_000896ffc04a7a 1-75
+docs/specs/24-paypal-rail.md
+  s_3fd229194f6299::t_24ace0f7617d88 1-42
+docs/specs/17-booking-integrations.md
+  s_3fd229194f6299::t_f36eba4fb15f18 1-84
+docs/specs/20-webinar.md
+  s_3fd229194f6299::t_f004867b1de6b2 1-73
+docs/specs/12-payout-visibility.md
+  s_3fd229194f6299::t_5cb0368fe99d91 1-56
+docs/specs/05-checkout-compliance.md
+  s_3fd229194f6299::t_647ce8310884cb 1-72
+docs/specs/08-order-bumps.md
+  s_3fd229194f6299::t_dfc1be1cbe1803 1-62
+docs/specs/14-email-broadcasts.md
+  s_3fd229194f6299::t_3ef3a0cb58520e 1-83
+docs/specs/16-outbound-webhooks.md
+  s_3fd229194f6299::t_96a3043d9981b3 1-78
+docs/specs/19-community.md
+  s_3fd229194f6299::t_7b8d42bb483c7b 1-49
+docs/specs/04-seller-notifications.md
+  s_3fd229194f6299::t_4785779b52d203 1-94
+docs/specs/26-education-hub.md
+  s_3fd229194f6299::t_ca909a95fee1fb 1-55
+docs/specs/15-landing-pages.md
+  s_3fd229194f6299::t_9b0ff534de2283 1-80
+docs/specs/21-media-embeds.md
+  s_3fd229194f6299::t_ab9caee4e11e6f 1-63
+docs/specs/23-crm-upgrades.md
+  s_3fd229194f6299::t_144340209c55f8 1-72
+docs/specs/03-account-deletion.md
+  s_3fd229194f6299::t_920172454c3b1c 1-84
+docs/specs/01-two-factor-authentication.md
+  s_3fd229194f6299::t_9ec74865488c7c 1-74
+docs/specs/02-login-sessions.md
+  s_3fd229194f6299::t_6587f9a3418bd5 1-74
+docs/specs/10-outbound-clicks.md
+  s_3fd229194f6299::t_859cdf1c9553ea 1-69
+docs/specs/11-analytics-upgrades.md
+  s_3fd229194f6299::t_b1e88bf717e98b 1-65
+docs/specs/07-lead-capture.md
+  s_3fd229194f6299::t_58fa179bfcf4ea 1-79
+docs/specs/25-autodm.md
+  s_3fd229194f6299::t_93d8ad28870444 1-56
+docs/specs/22-onboarding-checklist.md
+  s_3fd229194f6299::t_00dac98437e30c 1-54
+docs/specs/06-recurring-memberships.md
+  s_3fd229194f6299::t_2d9ca78dadf5f1 1-101
+docs/specs/README.md
+  s_3fd229194f6299::t_825799d25c513b 1-87
+docs/specs/13-refer-a-creator.md
+  s_3fd229194f6299::t_477823182a1174 1-76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "dea21cf1092ff03a65b18a61f88e00b03829bef5",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
