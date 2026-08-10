@@ -1,0 +1,36 @@
+src/lib/redis.ts
+  s_3fd229194f6299::t_18168e30805752 151,153-157,159-169,171-177,179,182-183,185,187-189,191
+src/lib/redis.test.ts
+  s_3fd229194f6299::t_3f20332ec569b9 74,76-81,83,96,98,100,103,113-118,129-144,146-163,165,167-175
+src/lib/actions/order-preview.ts
+  s_3fd229194f6299::t_7489880de01d47 89-97,100-102,105,115
+  s_3fd229194f6299::t_57d8585f0f3e98 6
+src/lib/actions/shop.ts
+  s_3fd229194f6299::t_6590216a4b4e5a 95-116
+  s_3fd229194f6299::t_3147fd66b1d9ba 152,160,174
+src/components/shared/handle-field.tsx
+  s_3fd229194f6299::t_0cd2cb92fdef40 102-110
+src/lib/actions/throttled-answers.test.ts
+  s_3fd229194f6299::t_b12f992af7db2f 24-36,39-40,43-46
+  s_3fd229194f6299::t_3f365c70c12a30 51-60
+  s_3fd229194f6299::t_38a4f82ee35d37 61-65
+scripts/scenarios/coupon-budget.scenario.ts
+  s_3fd229194f6299::t_ae3ad31cbf0d42 86-99,104-116,118-125,133-134,144-156,159,161-164
+  s_3fd229194f6299::t_fea808d0d229bb 135-143
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ef102be74f36ad4bfc319d3ff34e32f2329c3875",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
