@@ -1,11 +1,14 @@
-# Feature Specs — Stan-parity roadmap
+# Feature Specs — the build list
 
 One file per feature, written to be handed to an agent cold. Each spec says
-what the feature is (with Stan's version as the reference), the exact tables
-and files involved, the edge cases that will otherwise be missed, the tests
-that prove it, and a "done when". Source: the 2026-08-10 gap analysis of
-Stan Store's admin against this codebase — every "Sailo has / lacks" claim in
-these files was verified in source, not assumed.
+what the feature is, the exact tables and files involved, the edge cases
+that will otherwise be missed, the tests that prove it, and a "done when".
+Every "Sailo has / lacks" claim was verified in source during the
+2026-08-10 gap analysis, not assumed.
+
+**Everything in this folder is wanted.** Specs we decided not to pursue live
+in `deferred/` and are not work — do not pick them up without the owner
+saying so.
 
 ## Rules for every agent, before any spec
 
@@ -43,45 +46,46 @@ these files was verified in source, not assumed.
 10. **Never point write-tests at production.** The scenario stack refuses
     non-local databases; keep it that way in anything new.
 
-## The specs
+## Build order
 
-| # | Spec | Tier | Effort | Status / notes |
-|---|------|------|--------|----------------|
-| 01 | Two-factor authentication | P0 | S | Ready. Named priority. |
-| 02 | Login session history | P0 | S | Ready. Session table already has IP/UA. |
-| 03 | Account deletion | P0 | M | Ready. Ledger-retention rules inside. |
-| 04 | Seller notifications + prefs | P0 | M | Ready. Highest-value gap. |
-| 05 | Checkout compliance (T&C + consent) | P1 | S–M | Ready. Blocks 14. |
-| 06 | Recurring memberships | P1 | XL | Ready. Largest revenue feature. |
-| 07 | Lead capture + Leads metric | P1 | M | Ready. After 05. |
-| 08 | Order bumps | P2 | M | Ready. |
-| 09 | Marketing pixels | P2 | M | **In flight** — another agent started `src/lib/shop-pixels.ts` (ga4/gtm/meta/tiktok). Reconcile: spec's CSP scoping, storefront consent, and purchase events still apply. |
-| 10 | Outbound click tracking | P2 | S | Ready. |
-| 11 | Analytics upgrades | P2 | S | Ready. Leads tile needs 07. |
-| 12 | Payout visibility | P2 | S | Ready. |
-| 13 | Refer-a-creator | P2 | M–L | Ready. Distinct from product affiliates. |
-| 14 | Email broadcasts & flows | P2–3 | L | Needs 05 first. Legal floor inside. |
-| 15 | Landing pages / funnels | P3 | L | Ready. |
-| 16 | Outbound webhooks | P3 | M | Ready. SSRF rules inside. |
-| 17 | Booking integrations (GCal, Zoom) | P3 | L | Ready. Fail-open rules inside. |
-| 18 | eCourse | P3 | XL | Video-hosting decision recorded inside. |
-| 19 | Community | P4 | XL | **Decision spec** — recommends defer or Discord-gate via 06. |
-| 20 | Webinar | P3 | M | Ready. Capacity via atomic claim. |
-| 21 | Media embeds (YouTube/Spotify) | P3 | S | Ready. Feeds 15. |
-| 22 | Onboarding checklist | P3 | S | Ready. Computed, no migration. |
-| 23 | CRM upgrades (tags/import/filters/phone) | P3 | M | Ready. |
-| 24 | PayPal rail | P4 | XL | **Decision spec** — recommends defer; read before assigning. |
-| 25 | AutoDM (Instagram) | P4 | L | **Blocked on Meta app review** — human task first. |
-| 26 | Education hub | P4 | S+content | Ready; content is the real work. |
+Work top to bottom unless the owner reorders. 01+02 ship together (one
+Security tab).
 
-Already at parity (do not build): CSV export, coupons, storefront theming
-(accent/theme/layout), 35-language admin+storefront, powered-by removal
-(`removeBadge` plan flag), automatic payouts via Stripe Connect (12 only
-*surfaces* them), product affiliates, invoices, reviews, tax, physical
-goods, manual rails, booking engine.
+| Order | Spec | Effort | Notes |
+|---|---|---|---|
+| 1 | `01-two-factor-authentication.md` | S | Named priority |
+| 2 | `02-login-sessions.md` | S | Same tab as 01; data already exists |
+| 3 | `03-account-deletion.md` | M | Ledger-retention rules inside |
+| 4 | `04-seller-notifications.md` | M | Highest-value gap — sellers get no order emails today |
+| 5 | `05-checkout-compliance.md` | S–M | T&C + consent; prerequisite for 14 |
+| 6 | `07-lead-capture.md` | M | After 05 (consent column) |
+| 7 | `06-recurring-memberships.md` | XL | Largest revenue feature |
+| 8 | `12-payout-visibility.md` | S | Stripe balance + requirements banner |
+| 9 | `11-analytics-upgrades.md` | S | Per-product conversion, custom ranges |
+| 10 | `10-outbound-clicks.md` | S | "Where do my customers go" |
+| 11 | `08-order-bumps.md` | M | Checkout upsell |
+| 12 | `09-marketing-pixels.md` | M | **In flight** (`src/lib/shop-pixels.ts` exists) — remaining: CSP scoping, storefront consent, purchase events |
+| 13 | `13-refer-a-creator.md` | M–L | Distinct from product affiliates |
+| 14 | `22-onboarding-checklist.md` | S | Computed, no migration |
+| 15 | `21-media-embeds.md` | S | YouTube/Spotify; feeds 15 |
+| 16 | `15-landing-pages.md` | L | Funnels phase 2 inside |
+| 17 | `16-outbound-webhooks.md` | M | Zapier substrate; SSRF rules inside |
+| 18 | `20-webinar.md` | M | Capacity via atomic claim |
+| 19 | `17-booking-integrations.md` | L | GCal busy-sync + Zoom; fail-open rules |
+| 20 | `23-crm-upgrades.md` | M | Tags, import, filters, phone |
+| 21 | `14-email-broadcasts.md` | L | Needs 05; legal floor inside |
 
-## Suggested assignment order
+## Deferred (`deferred/` — not work)
 
-01+02 together (one Security tab) → 03 → 04 → 05 → 07 → 06 → 12 → 11 → 10 →
-08 → 13 → 22 → 21 → 15 → 16 → 20 → 17 → 23 → 14 → 18 → then the P4
-decision specs with the owner in the room.
+| Spec | Why it's parked |
+|---|---|
+| `18-ecourse.md` | Not needed — not Sailo's product direction now |
+| `19-community.md` | Covered better by 06: memberships can gate a Discord/WhatsApp invite |
+| `24-paypal-rail.md` | A second payment platform; Stripe + manual rails cover buyers |
+| `25-autodm.md` | Blocked on Meta app review — a human/business task, not agent work |
+| `26-education-hub.md` | We have education (blog programme, onboarding); no in-admin hub needed |
+
+Already at parity (do not build): CSV export, coupons, storefront theming,
+35-language admin+storefront, powered-by removal (`removeBadge`), automatic
+payouts via Stripe Connect (12 only *surfaces* them), product affiliates,
+invoices, reviews, tax, physical goods, manual rails, booking engine.
