@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   CONSENT_KEY,
@@ -116,5 +117,40 @@ describe("what does count", () => {
     expect(hasAnalyticsConsent()).toBe(false);
     writeConsent("granted");
     expect(hasAnalyticsConsent()).toBe(true);
+  });
+});
+
+/**
+ * The banner has to describe the storage this file actually uses.
+ *
+ * A consent notice is a factual claim about the site, and this one listed
+ * `sailo_consent` among the cookies while `writeConsent` was putting it in
+ * `localStorage` — a notice about cookies getting its own storage wrong, and
+ * disagreeing with the inventory in `legal.ts`, which never listed it.
+ *
+ * Nothing enforces the agreement between the two files, and neither of them
+ * breaks when it lapses. So this reads the banner and checks that whatever it
+ * says about `sailo_consent` is qualified rather than filed as a cookie.
+ */
+describe("what the banner claims is stored", () => {
+  const banner = readFileSync(
+    "src/components/shared/cookie-consent.tsx",
+    "utf8",
+  );
+
+  it("does not list the consent key as a plain cookie", () => {
+    // The declaration, not the prose: the comments discuss it by name.
+    const list = /cookies: \[(.*?)\]/s.exec(banner)?.[1] ?? "";
+    expect(list).toContain("sailo_consent");
+    expect(list).not.toContain('"sailo_consent"');
+    expect(list).toContain("sailo_consent (localStorage)");
+  });
+
+  it("still keeps the answer out of a cookie", () => {
+    // The premise of the label above. If this ever moves to a cookie, the
+    // label becomes the wrong one and this is what says so.
+    const consent = readFileSync("src/lib/consent.ts", "utf8");
+    expect(consent).toContain("localStorage.setItem(CONSENT_KEY");
+    expect(consent).not.toContain("document.cookie");
   });
 });

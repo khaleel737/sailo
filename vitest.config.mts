@@ -22,6 +22,23 @@ export default defineConfig({
     environment: "node",
     include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
     setupFiles: ["e2e/stubs/setup.mts"],
+    /*
+     * Vitest defaults to five seconds, which is not enough here.
+     *
+     * Five files call `await import(...)` after `vi.resetModules()` to observe
+     * a module reading its environment at load. That cold-loads a real module
+     * graph — `db/index.ts` pulls the whole schema and takes about two seconds
+     * on an idle machine — and sixty-odd files are competing for the cores
+     * while it happens. `replica.test.ts` failed roughly one run in six on
+     * that, always a timeout rather than an assertion, which reads as a broken
+     * replica fallback until you look at it.
+     *
+     * Raised here rather than per test, because the exposure is the pattern
+     * and not the file: the next test that imports for the same reason
+     * inherits the fix. Nothing in this suite measures elapsed time, so a
+     * generous ceiling costs only how long a genuine hang takes to report.
+     */
+    testTimeout: 30_000,
     coverage: {
       provider: "v8",
       include: ["src/**/_lib/**/*.ts", "src/lib/**/*.ts", "src/i18n/config.ts", "src/i18n/index.ts"],

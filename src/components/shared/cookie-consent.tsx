@@ -46,6 +46,15 @@ const isUnansweredOnServer = () => false;
  * here — Vercel Analytics is cookieless, and there is no Sentry, no ad tag and
  * no third-party pixel to declare.
  *
+ * `sailo_consent` is marked because it is *not* a cookie — `consent.ts` keeps
+ * it in `localStorage`, deliberately, so that recording an answer about
+ * cookies does not itself set one. Listing it unqualified beside three real
+ * cookies made this notice say something untrue about the site it describes,
+ * and disagree with the inventory in `legal.ts`, which correctly omits it. Of
+ * the two ways to fix that, naming it accurately beats dropping it: the
+ * paragraph above is about being checkable, and a visitor who opens their
+ * storage will find it there.
+ *
  * A category with nothing behind it is worse than no category: it is a claim
  * that cannot be checked. Add the next one when a tag arrives to justify it,
  * and bump CONSENT_VERSION so everyone is asked again about the new question.
@@ -55,7 +64,9 @@ const CATEGORIES = [
     id: "essential",
     body: "essentialBody",
     locked: true,
-    cookies: ["sailo_session", "sailo_locale", "sailo_consent"],
+    // The qualifier is a technical identifier like the names themselves, so it
+    // reads the same in every language and needs no dictionary entry.
+    cookies: ["sailo_session", "sailo_locale", "sailo_consent (localStorage)"],
   },
   {
     id: "analytics",
@@ -205,9 +216,17 @@ export function CookieConsent({
                       on ? "bg-[var(--ink)]" : "bg-[var(--mute-300)]"
                     } ${category.locked ? "opacity-60" : "peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--ink)] peer-focus-visible:ring-offset-2"}`}
                   >
+                    {/*
+                      `rtl:-translate-x-4` because the track flips and the
+                      thumb does not. Arabic sets `dir="rtl"` on the document,
+                      which starts the thumb on the right — and a physical
+                      `translate-x-4` then pushes it further right, off the
+                      track it is meant to cross, so the switch reads as on
+                      when it is off.
+                    */}
                     <span
                       className={`block size-4 rounded-full bg-[var(--paper)] shadow-sm transition-transform ${
-                        on ? "translate-x-4" : "translate-x-0"
+                        on ? "translate-x-4 rtl:-translate-x-4" : "translate-x-0"
                       }`}
                     />
                   </span>
