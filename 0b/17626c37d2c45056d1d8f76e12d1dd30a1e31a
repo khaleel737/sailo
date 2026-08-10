@@ -1,0 +1,21 @@
+src/components/shared/cookie-consent.tsx
+  s_33c03075128aa7::t_0055a03b2e8883 69-72,78,84,250
+src/lib/consent.test.ts
+  s_33c03075128aa7::t_0055a03b2e8883 143
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "0b17626c37d2c45056d1d8f76e12d1dd30a1e31a",
+  "prompts": {},
+  "sessions": {
+    "s_33c03075128aa7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "724e7fe6-b9f6-49ee-aa72-05cbee09af2e",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
