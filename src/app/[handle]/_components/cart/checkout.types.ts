@@ -1,4 +1,5 @@
 import type { OrderLineInput, OrderPreview } from "@/lib/orders/types";
+import type { Shop } from "@/db/schema";
 import type { Dictionary } from "@/i18n";
 import type { PaymentMethodType } from "@/lib/payments";
 import type { DeliveryMethodType } from "@/lib/delivery";
@@ -9,6 +10,39 @@ export type CheckoutMethod = {
   type: PaymentMethodType;
   label: string | null;
 };
+
+/**
+ * The shop's compliance switches, as the storefront hands them over.
+ *
+ * Carried as one object rather than three loose props because it threads
+ * through four components to reach the panel, and a bundle that arrives whole
+ * cannot arrive two-thirds of the way. Required, not optional: a shop that
+ * forgot to pass it should fail to compile, not quietly stop asking buyers to
+ * agree to anything.
+ */
+export type CheckoutCompliance = {
+  requireTerms: boolean;
+  termsUrl: string | null;
+  askMarketingConsent: boolean;
+};
+
+/**
+ * The three columns, read off the shop in exactly one place.
+ *
+ * Two pages mount a checkout — the storefront and a product page — and a
+ * compliance object assembled independently in each is the bug shape this
+ * codebase keeps finding: a rule applied at one sink and not at its twin. One
+ * function with two callers cannot drift.
+ */
+export function complianceOf(
+  shop: Pick<Shop, "requireTerms" | "termsUrl" | "askMarketingConsent">,
+): CheckoutCompliance {
+  return {
+    requireTerms: shop.requireTerms,
+    termsUrl: shop.termsUrl,
+    askMarketingConsent: shop.askMarketingConsent,
+  };
+}
 
 export type CheckoutDelivery = {
   id: string;
@@ -40,6 +74,7 @@ export type CheckoutPanelProps = {
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
   contactEmail: string | null;
+  compliance: CheckoutCompliance;
   /** True when a digital line has files attached. */
   hasFiles?: boolean;
   /** True when those files wait for the seller to confirm payment. */

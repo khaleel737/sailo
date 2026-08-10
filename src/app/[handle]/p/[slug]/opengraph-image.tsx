@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { getProductBySlug, getShopByHandle } from "@/lib/queries";
 import { priceRange } from "@/lib/variants";
 import { formatMoney, isShopLive } from "@/lib/utils";
+import { getDictionary, interpolate } from "@/i18n";
 import {
   SailoMark,
   cardTheme,
@@ -81,8 +82,15 @@ export default async function Image({
    * no visitor here whose preference could apply.
    */
   const cardLocale = shop.locale ?? "en";
+  /*
+   * "From" in the shop's language, not ours — the number was already
+   * localised, and an Italian shop's card reading "From €8" gave the one
+   * English word on it away as template text.
+   */
   const price = range.varies
-    ? `From ${formatMoney(range.min, shop.currency, cardLocale)}`
+    ? interpolate(getDictionary(cardLocale).shop.from, {
+        price: formatMoney(range.min, shop.currency, cardLocale),
+      })
     : formatMoney(range.min, shop.currency, cardLocale);
 
   return new ImageResponse(

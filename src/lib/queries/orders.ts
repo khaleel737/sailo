@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, isNotNull, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { clients, orders, type Client, type Order } from "@/db/schema";
 import { orderLines, orderLinesMap } from "@/lib/order-lines";
@@ -20,12 +20,67 @@ export async function getOrderItemsMap(rows: Order[]) {
   return orderLinesMap(rows);
 }
 
-export async function getShopOrders(shopId: string, limit = 100) {
+/**
+ * What the orders list may be narrowed by.
+ *
+ * Every one of these is a WHERE clause and none of them is a filter over the
+ * rows that came back. The list has a ceiling, so filtering afterwards would
+ * search the most recent hundred orders and present the result as "every
+ * order paid with SUMMER20" — an answer with a silent truncation inside it,
+ * which is worse than no filter at all.
+ */
+export type OrderFilters = {
+  status?: string | null;
+  paymentMethod?: string | null;
+  paymentStatus?: string | null;
+  /** Matched case-insensitively; coupon codes are stored uppercase. */
+  couponCode?: string | null;
+};
+
+export function hasOrderFilters(filters: OrderFilters): boolean {
+  return Object.values(filters).some(Boolean);
+}
+
+export async function getShopOrders(
+  shopId: string,
+  limit = 100,
+  filters: OrderFilters = {},
+) {
   return getDb().query.orders.findMany({
-    where: eq(orders.shopId, shopId),
+    where: and(
+      eq(orders.shopId, shopId),
+      ...(filters.status ? [eq(orders.status, filters.status)] : []),
+      ...(filters.paymentMethod
+        ? [eq(orders.paymentMethod, filters.paymentMethod)]
+        : []),
+      ...(filters.paymentStatus
+        ? [eq(orders.paymentStatus, filters.paymentStatus)]
+        : []),
+      /*
+       * Read from the order's snapshot rather than joined through
+       * `couponId`. The snapshot is what the buyer was actually charged
+       * under, and it survives the coupon being renamed or deleted — a join
+       * would quietly stop finding last year's orders the day a seller tidies
+       * up their codes.
+       */
+      ...(filters.couponCode
+        ? [eq(orders.couponCode, filters.couponCode.toUpperCase())]
+        : []),
+    ),
     orderBy: [desc(orders.createdAt)],
     limit,
   });
+}
+
+/** Every coupon code that has actually been used, for the filter's options. */
+export async function usedCouponCodes(shopId: string): Promise<string[]> {
+  const rows = await getDb()
+    .selectDistinct({ code: orders.couponCode })
+    .from(orders)
+    .where(and(eq(orders.shopId, shopId), isNotNull(orders.couponCode)))
+    .orderBy(orders.couponCode);
+
+  return rows.map((r) => r.code).filter((c): c is string => Boolean(c));
 }
 
 export type ClientRow = Client & {
@@ -58,6 +113,15 @@ export const CLIENT_LIMIT = 1_000;
 export async function getShopClients(
   shopId: string,
   limit: number | null = CLIENT_LIMIT,
+  /**
+   * One tag to narrow to, already normalised by the caller.
+   *
+   * Applied as a WHERE and not as a filter over the rows that came back.
+   * Filtering after the ceiling would search only the most recent thousand
+   * customers and call the result "everyone tagged vip" — a silent truncation
+   * that reads as an answer.
+   */
+  tag?: string | null,
 ): Promise<ClientRow[]> {
   const db = getDb();
 
@@ -71,7 +135,14 @@ export async function getShopClients(
     })
     .from(clients)
     .leftJoin(orders, eq(orders.clientId, clients.id))
-    .where(eq(clients.shopId, shopId))
+    .where(
+      and(
+        eq(clients.shopId, shopId),
+        // Array containment, which is what the GIN index in `drizzle/0012`
+        // can answer. `= any(tags)` cannot use it.
+        ...(tag ? [sql`${clients.tags} @> ARRAY[${tag}]::text[]`] : []),
+      ),
+    )
     .groupBy(clients.id)
     .orderBy(sql`max(${orders.createdAt}) desc nulls last`)
     .limit(limit ?? Number.MAX_SAFE_INTEGER);

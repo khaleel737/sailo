@@ -68,8 +68,10 @@ export default function GdprPage() {
               <>
                 <strong>Consent that is real.</strong> Analytics on our own pages
                 load only after you agree, and refusing is exactly as easy as
-                agreeing. Seller storefronts are never asked, because nothing on
-                them stores anything — <Ref href="/privacy#cookies">section 10</Ref>.
+                agreeing. A seller&rsquo;s storefront asks its own question only
+                when that seller has connected marketing tools of their own, and
+                those too load only after a yes —{" "}
+                <Ref href="/privacy#cookies">section 10</Ref>.
               </>,
               <>
                 <strong>Transfers on Standard Contractual Clauses</strong>, with

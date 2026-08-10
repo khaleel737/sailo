@@ -4,18 +4,43 @@ import { Users } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { CLIENT_LIMIT, getShopClients } from "@/lib/queries";
+import { normalizeTag, tagVocabulary } from "@/lib/client-tags";
 import { PageHeader } from "@/components/shared/page-header";
 import { ExportButton } from "@/app/admin/_components/export-button";
+import { AddContact } from "./_components/add-contact";
 import { Table, Td, Th, Tr } from "@/components/shared/table";
-import { EmptyState } from "@/components/ui";
+import { Badge, EmptyState } from "@/components/ui";
 import { formatAddress, formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Clients" };
 
-export default async function AdminClientsPage() {
+export default async function AdminClientsPage({
+  searchParams,
+}: PageProps<"/admin/clients">) {
   const { shop } = await requireShop();
   const { a, locale } = await getAdminT();
-  const clients = await getShopClients(shop.id);
+
+  /*
+   * Normalised before it reaches the query, with the same function that
+   * normalised it on the way in. A hand-typed `?tag=VIP` must find the same
+   * people the tag editor's "VIP" saved, or the filter is a coin toss.
+   */
+  const params = await searchParams;
+  const raw = Array.isArray(params.tag) ? params.tag[0] : params.tag;
+  const tag = normalizeTag(raw ?? "");
+
+  /*
+   * Two reads, and the second is not a duplicate. The list is filtered; the
+   * vocabulary has to come from the whole shop, or filtering to `vip` would
+   * leave `vip` as the only tag anyone could then choose and there would be
+   * no way back to the others.
+   */
+  const [clients, everyone] = await Promise.all([
+    getShopClients(shop.id, CLIENT_LIMIT, tag),
+    tag ? getShopClients(shop.id, CLIENT_LIMIT) : Promise.resolve(null),
+  ]);
+  const vocabulary = tagVocabulary(everyone ?? clients);
+
   // Same reasoning as the catalogue: at the ceiling the list is a sample, and
   // the copy has to say so rather than name a number that is not the truth.
   const clipped = clients.length >= CLIENT_LIMIT;
@@ -25,25 +50,66 @@ export default async function AdminClientsPage() {
       <PageHeader
         title={a.clients.title}
         description={
-          clients.length > 0
-            ? `${clients.length.toLocaleString(locale)}${clipped ? "+" : ""} ${clients.length === 1 ? "person has" : "people have"} ordered from you.`
-            : "Everyone who has ordered from you."
+          tag
+            ? `${clients.length.toLocaleString(locale)}${clipped ? "+" : ""} tagged ${tag}.`
+            : clients.length > 0
+              ? `${clients.length.toLocaleString(locale)}${clipped ? "+" : ""} ${clients.length === 1 ? "person has" : "people have"} ordered from you.`
+              : "Everyone who has ordered from you."
         }
-        action={<ExportButton shop={shop} type="clients" />}
+        action={
+          <div className="flex flex-wrap items-center gap-2">
+            <AddContact vocabulary={vocabulary} />
+            <ExportButton shop={shop} type="clients" />
+          </div>
+        }
       />
+
+      {vocabulary.length > 0 ? (
+        <nav
+          aria-label={a.clients.tags}
+          className="mb-4 flex flex-wrap items-center gap-1.5"
+        >
+          <Link
+            href="/admin/clients"
+            aria-current={tag ? undefined : "page"}
+            className={
+              tag
+                ? "focus-ring rounded-full px-2.5 py-1 text-xs font-medium text-ink-500 hover:bg-ink-100"
+                : "focus-ring rounded-full bg-ink-900 px-2.5 py-1 text-xs font-medium text-white"
+            }
+          >
+            {a.clients.allTags}
+          </Link>
+          {vocabulary.map((value) => (
+            <Link
+              key={value}
+              href={`/admin/clients?tag=${encodeURIComponent(value)}`}
+              aria-current={tag === value ? "page" : undefined}
+              className={
+                tag === value
+                  ? "focus-ring rounded-full bg-ink-900 px-2.5 py-1 text-xs font-medium text-white"
+                  : "focus-ring rounded-full px-2.5 py-1 text-xs font-medium text-ink-500 hover:bg-ink-100"
+              }
+            >
+              {value}
+            </Link>
+          ))}
+        </nav>
+      ) : null}
 
       {clients.length === 0 ? (
         <EmptyState
           icon={<Users className="size-6" />}
-          title={a.clients.empty}
-          description={a.clients.emptyBody}
+          title={tag ? a.clients.noneTagged : a.clients.empty}
+          description={tag ? a.clients.noneTaggedBody : a.clients.emptyBody}
         />
       ) : (
         <Table
-          minWidth="44rem"
+          minWidth="48rem"
           head={
             <>
               <Th>{a.columns.client}</Th>
+              <Th>{a.clients.tags}</Th>
               <Th>{a.columns.where}</Th>
               <Th align="end">{a.columns.orders}</Th>
               <Th align="end">{a.columns.spent}</Th>
@@ -73,6 +139,18 @@ export default async function AdminClientsPage() {
                       </span>
                     </span>
                   </Link>
+                </Td>
+
+                <Td className="max-w-[14rem]" label={a.clients.tags}>
+                  {client.tags.length > 0 ? (
+                    <span className="flex flex-wrap gap-1">
+                      {client.tags.map((value) => (
+                        <Badge key={value}>{value}</Badge>
+                      ))}
+                    </span>
+                  ) : (
+                    <span className="text-ink-300">—</span>
+                  )}
                 </Td>
 
                 <Td className="max-w-xs" label={a.columns.where}>

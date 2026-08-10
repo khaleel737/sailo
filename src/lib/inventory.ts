@@ -1,4 +1,5 @@
 import "server-only";
+import { publishShopEvent } from "@/lib/events";
 import { maybeRow } from "@/lib/invariant";
 import { releaseCouponRedemption } from "@/lib/orders/coupon-redemption";
 import { and, asc, eq, gte, inArray, isNull, isNotNull, lt, or, sql } from "drizzle-orm";
@@ -415,6 +416,12 @@ export async function releaseAbandonedCheckouts(opts?: {
     // The sweep is one of the four abandonment paths, so it gives back the
     // coupon as well as the stock.
     if (await abandonOrder(order)) orderIds.push(order.id);
+  }
+
+  // Orders just changed under sellers with nobody in the loop at all — the
+  // definitive case for the bus. One hint per shop, not per order.
+  for (const shopId of new Set(due.map((order) => order.shopId))) {
+    await publishShopEvent(shopId, "order");
   }
 
   return { swept: orderIds.length, orderIds };

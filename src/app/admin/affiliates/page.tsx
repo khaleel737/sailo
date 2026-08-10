@@ -61,6 +61,12 @@ export default async function AdminAffiliatesPage() {
 
   const affiliates = await getShopAffiliates(shop.id);
 
+  const payoutNames: Record<string, string> = {
+    bank: a.affiliates.payoutBank,
+    paypal: a.affiliates.payoutPaypal,
+    other: a.affiliates.payoutOther,
+  };
+
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
 
   // One token per affiliate, minted the first time the seller looks.
@@ -154,6 +160,23 @@ export default async function AdminAffiliatesPage() {
                         {affiliate.email ? (
                           <p className="mt-1 text-xs text-ink-500">
                             {affiliate.email}
+                          </p>
+                        ) : null}
+
+                        {/* Their answer to "where do I send it" — entered on
+                            their portal, shown in full only here, to the one
+                            person who has to act on it. */}
+                        {affiliate.payoutMethod && affiliate.payoutDetails ? (
+                          <p className="mt-1 text-xs text-ink-500">
+                            {a.affiliates.payoutLabel}:{" "}
+                            <span className="font-medium text-ink-700">
+                              {payoutNames[affiliate.payoutMethod] ??
+                                affiliate.payoutMethod}{" "}
+                              · {affiliate.payoutDetails}
+                            </span>
+                            {affiliate.payoutUpdatedAt
+                              ? ` · ${affiliate.payoutUpdatedAt.toLocaleDateString(locale, { day: "numeric", month: "short", year: "numeric" })}`
+                              : ""}
                           </p>
                         ) : null}
 

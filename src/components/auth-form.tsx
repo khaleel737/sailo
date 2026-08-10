@@ -47,6 +47,28 @@ export function AuthForm({
       return;
     }
 
+    /*
+     * A password is only half a sign-in for anyone with two-factor on.
+     *
+     * Better-auth answers `twoFactorRedirect` instead of a session: the
+     * credential was right, but the session it would have created has been
+     * deleted again and a short-lived challenge cookie put in its place. So
+     * there is nothing signed in yet, and /verify-2fa is where the second
+     * factor is spent. Sign-up can never see this — a brand-new account has
+     * no second factor — but the branch is on both paths because the check
+     * is on the response, not on the mode.
+     *
+     * Guarded on the shape rather than written as `"x" in result.data`: `in`
+     * throws on null, and a success whose body is null is a shape the client
+     * types permit. That throw would surface as a sign-in that spins forever,
+     * which is a worse failure than the one this branch exists to handle.
+     */
+    const payload = result.data as { twoFactorRedirect?: boolean } | null;
+    if (payload?.twoFactorRedirect) {
+      router.push("/verify-2fa");
+      return;
+    }
+
     // Onboarding decides whether they need a shop or already have one.
     router.push("/onboarding");
     router.refresh();

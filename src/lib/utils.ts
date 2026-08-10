@@ -244,16 +244,20 @@ export function formatAddress(parts: {
 /**
  * Whether the public can reach a shop at all.
  *
- * Two separate switches with one answer: `isPublished` is the seller's, and
- * `suspendedAt` is ours. Kept together in one function so a new public route
- * can't honour one and forget the other — which is how a suspended shop ends
- * up quietly still selling on a page nobody remembered to guard.
+ * Three separate switches with one answer: `isPublished` is the seller's,
+ * `suspendedAt` is ours, and `deletedAt` is the tombstone left behind by
+ * self-serve deletion — the row survives only to hold the invoice sequence
+ * and the orders that hang off it, and must never serve a page again. Kept
+ * together in one function so a new public route can't honour one and forget
+ * another, which is how a suspended shop ends up quietly still selling on a
+ * page nobody remembered to guard.
  */
 export function isShopLive(shop: {
   isPublished: boolean;
   suspendedAt: Date | null;
+  deletedAt?: Date | null;
 }) {
-  return shop.isPublished && !shop.suspendedAt;
+  return shop.isPublished && !shop.suspendedAt && !shop.deletedAt;
 }
 
 const UUID_RE =

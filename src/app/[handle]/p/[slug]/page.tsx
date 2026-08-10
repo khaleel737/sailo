@@ -1,30 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MapPin } from "lucide-react";
 import {
   getCheckoutOptions,
   getProductBySlug,
   getShopByHandle,
 } from "@/lib/queries";
 import { ProductGallery } from "@/app/[handle]/p/[slug]/_components/product-gallery";
-import { OrderButton } from "@/app/[handle]/_components/cart/order-sheet";
+import { BuyBox } from "@/app/[handle]/p/[slug]/_components/buy-box";
+import { ShareButton } from "@/app/[handle]/_components/share-button";
 import { CartRegion } from "@/app/[handle]/_components/cart/cart-region";
+import { complianceOf } from "@/app/[handle]/_components/cart/checkout.types";
 import { ReviewForm } from "@/app/[handle]/p/[slug]/_components/review-form";
 import { StarRating } from "@/app/[handle]/_components/star-rating";
+import { ShopTracking } from "@/app/[handle]/_components/shop-tracking";
 import { VisitTracker } from "@/app/[handle]/_components/visit-tracker";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
-import {
-  formatDuration,
-  formatMoney,
-  isShopLive,
-  shopThemeVars,
-} from "@/lib/utils";
+import { formatDuration, isShopLive, shopThemeVars } from "@/lib/utils";
 import {
   anySellable,
-  isLowStock,
   priceRange,
   toCheckoutVariants,
   unitsLeft,
@@ -99,18 +96,6 @@ export default async function ProductPage({
     product.inStock && salesOpen && anySellable(product, product.variants);
   const stockLeft = unitsLeft(product);
 
-  /*
-   * The struck-through price, or null when there isn't one. A boolean here
-   * would say a compare-at price exists without carrying it, leaving the only
-   * line that needs it to assert what the flag already proved.
-   */
-  const wasPriced =
-    !range.varies &&
-    product.compareAtCents !== null &&
-    product.compareAtCents > range.min
-      ? product.compareAtCents
-      : null;
-
   return (
     <>
       {/*
@@ -165,6 +150,7 @@ export default async function ProductPage({
       methods={checkout.methods}
       deliveryOptions={checkout.deliveryOptions}
       contactEmail={shop.contactEmail}
+      compliance={complianceOf(shop)}
       t={t}
     >
     <div
@@ -175,15 +161,29 @@ export default async function ProductPage({
       className="min-h-screen"
     >
       <VisitTracker shopId={shop.id} productId={product.id} />
+      {/* The seller's own tags, and the consent request they require. Renders
+          nothing unless the seller configured one in settings. */}
+      <ShopTracking shop={shop} t={t} />
 
       <div className="mx-auto w-full max-w-[680px] px-4 pb-20 pt-8">
-        <Link
-          href={`/${shop.handle}`}
-          className="text-muted mb-6 inline-flex items-center gap-1.5 text-sm transition hover:opacity-70"
-        >
-          <ArrowLeft className="size-4" />
-          {shop.name}
-        </Link>
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <Link
+            href={`/${shop.handle}`}
+            className="text-muted inline-flex min-w-0 items-center gap-1.5 text-sm transition hover:opacity-70"
+          >
+            <ArrowLeft className="size-4 shrink-0" />
+            <span className="truncate">{shop.name}</span>
+          </Link>
+          <ShareButton
+            url={absolute(`/${shop.handle}/p/${product.slug}`)}
+            // The message a share composes: the product, then whose it is.
+            title={`${product.title} · ${shop.name}`}
+            heading={t.share.productTitle}
+            qrFileName={product.slug}
+            t={t}
+            className="shrink-0"
+          />
+        </div>
 
         <ProductGallery images={product.images} title={product.title} />
 
@@ -225,6 +225,14 @@ export default async function ProductPage({
                 })}
               </span>
             ) : null}
+            {/* The venue rides in the service-location column; a ticket buyer
+                needs it on the page, not after the purchase. */}
+            {product.kind === "event" && product.serviceLocation ? (
+              <span className="surface-elevated text-muted inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium">
+                <MapPin className="size-3 shrink-0 opacity-70" />
+                {product.serviceLocation}
+              </span>
+            ) : null}
             {!sellable ? (
               <span className="rounded-full bg-red-100 px-2.5 py-1 text-xs font-medium text-red-700">
                 {salesOpen ? t.shop.soldOut : t.shop.salesClosed}
@@ -239,40 +247,6 @@ export default async function ProductPage({
             {product.title}
           </h1>
 
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-xl font-semibold tabular-nums">
-              {range.min > 0
-                ? range.varies
-                  ? interpolate(t.shop.from, {
-                      price: formatMoney(range.min, shop.currency, locale),
-                    })
-                  : formatMoney(range.min, shop.currency, locale)
-                : t.common.free}
-            </span>
-            {wasPriced !== null ? (
-              <span className="text-muted text-sm line-through tabular-nums">
-                {formatMoney(wasPriced, shop.currency, locale)}
-              </span>
-            ) : null}
-          </div>
-
-          {sellable && isLowStock(stockLeft) ? (
-            <p className="mt-1.5 text-sm font-medium text-amber-600">
-              {interpolate(t.checkout.onlyLeft, { count: stockLeft })}
-            </p>
-          ) : null}
-
-          {product.options.length > 0 ? (
-            <dl className="mt-3 space-y-1">
-              {product.options.map((option) => (
-                <div key={option.name} className="flex gap-2 text-sm">
-                  <dt className="text-muted">{option.name}:</dt>
-                  <dd>{option.values.join(" · ")}</dd>
-                </div>
-              ))}
-            </dl>
-          ) : null}
-
           {product.reviewCount > 0 ? (
             <StarRating
               value={product.avgRating}
@@ -282,6 +256,44 @@ export default async function ProductPage({
               t={t}
             />
           ) : null}
+
+          <div className="mt-4">
+            <BuyBox
+              shopId={shop.id}
+              shopName={shop.name}
+              productId={product.id}
+              slug={product.slug}
+              productTitle={product.title}
+              priceCents={product.priceCents}
+              compareAtCents={product.compareAtCents}
+              currency={shop.currency}
+              inStock={product.inStock}
+              salesOpen={salesOpen}
+              methods={checkout.methods}
+              deliveryOptions={checkout.deliveryOptions}
+              kind={product.kind}
+              options={product.options}
+              variants={variants}
+              unitsLeft={stockLeft}
+              service={
+                product.kind === "service"
+                  ? {
+                      bookingEnabled: product.bookingEnabled,
+                      bookingLeadHours: product.bookingLeadHours,
+                      durationMinutes: product.durationMinutes,
+                      mode: product.serviceMode,
+                    }
+                  : null
+              }
+              serviceLocation={product.serviceLocation}
+              imageUrl={product.images[0]?.url ?? null}
+              hasFiles={product.kind === "digital" && product.files.length > 0}
+              heldUntilPaid={product.releaseOnPayment}
+              contactEmail={shop.contactEmail}
+              compliance={complianceOf(shop)}
+              t={t}
+            />
+          </div>
 
           {product.description ? (
             <p
@@ -305,39 +317,6 @@ export default async function ProductPage({
             </ul>
           ) : null}
 
-          <div className="mt-6">
-            <OrderButton
-              shopId={shop.id}
-              shopName={shop.name}
-              productId={product.id}
-              productTitle={product.title}
-              priceCents={product.priceCents}
-              currency={shop.currency}
-              methods={checkout.methods}
-              deliveryOptions={checkout.deliveryOptions}
-              kind={product.kind}
-              options={product.options}
-              variants={variants}
-              unitsLeft={stockLeft}
-              service={
-                product.kind === "service"
-                  ? {
-                      bookingEnabled: product.bookingEnabled,
-                      bookingLeadHours: product.bookingLeadHours,
-                      durationMinutes: product.durationMinutes,
-                      mode: product.serviceMode,
-                    }
-                  : null
-              }
-              serviceLocation={product.serviceLocation}
-              imageUrl={product.images[0]?.url ?? null}
-              hasFiles={product.kind === "digital" && product.files.length > 0}
-              heldUntilPaid={product.releaseOnPayment}
-              contactEmail={shop.contactEmail}
-              inStock={product.inStock}
-              t={t}
-            />
-          </div>
         </div>
 
         <section className="mt-12">

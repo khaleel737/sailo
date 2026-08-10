@@ -1,20 +1,111 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import { after } from "next/server";
 import { toCurrencyCode } from "@/lib/currency";
 import { normalizeWeeklyHours, type WeeklyHours } from "@/lib/booking/hours";
 import { isTimeZone } from "@/lib/booking/time-zone";
 import { revalidateShop } from "@/lib/cache";
+import { publishHqEvent, publishShopEvent } from "@/lib/events";
 import { redirect } from "next/navigation";
 import { and, eq, ne } from "drizzle-orm";
 import { getDb } from "@/db";
-import { paymentMethods, shops, type ShopSocial } from "@/db/schema";
+import { paymentMethods, shops, type NotificationPrefs, type Shop, type ShopSocial } from "@/db/schema";
+import {
+  fetchExternalBusy,
+  forgetExternalBusy,
+  isCalendarFeedUrl,
+  normalizeFeedUrl,
+} from "@/lib/booking/external-busy";
+import {
+  NOTIFICATION_EVENTS,
+  notificationPrefsSchema,
+} from "@/lib/notification-prefs";
 import { isStaff, requireShop, requireUser } from "@/lib/session";
 import { normalizePhone, SOCIAL_PLATFORMS } from "@/lib/utils";
-import { isRenderableImageUrl } from "@/lib/file-urls";
+import { isPublicLinkUrl, isRenderableImageUrl } from "@/lib/file-urls";
 import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
 import { BRAND_HANDLE, HANDLE_MESSAGES, normalizeHandle, suggestHandles, validateHandleFormat } from "@/lib/handle";
+import { readPixelIds } from "@/lib/shop-pixels";
+import { attributeReferral } from "@/lib/creator-referrals/store";
+import { REFERRAL_COOKIE } from "@/lib/creator-referrals/program";
+
+/**
+ * What the calendar-feed field means, given that it is a secret.
+ *
+ * The stored URL is a bearer token for the seller's whole calendar, so the
+ * form never renders it back — which means a blank field cannot mean "clear
+ * it", the way a blank field means that everywhere else on this form. Blank
+ * is "leave what is there"; clearing is its own checkbox. Getting this
+ * backwards would disconnect a seller's calendar every time they saved an
+ * unrelated setting, and the symptom — slots quietly reappearing — is one
+ * nobody notices until a buyer books over something.
+ */
+async function readCalendarFeed(
+  formData: FormData,
+  shop: Pick<Shop, "id" | "timeZone" | "calendarFeedUrl">,
+): Promise<
+  | { ok: false; error: string }
+  | { ok: true; changed: false }
+  | {
+      ok: true;
+      changed: true;
+      values: Pick<
+        Shop,
+        "calendarFeedUrl" | "calendarFeedCheckedAt" | "calendarFeedError"
+      >;
+    }
+> {
+  if (formData.get("calendarFeedRemove") === "on") {
+    return {
+      ok: true,
+      changed: true,
+      values: {
+        calendarFeedUrl: null,
+        calendarFeedCheckedAt: null,
+        calendarFeedError: null,
+      },
+    };
+  }
+
+  const raw = String(formData.get("calendarFeedUrl") ?? "").trim();
+  if (!raw) return { ok: true, changed: false };
+
+  const url = normalizeFeedUrl(raw);
+  if (!isCalendarFeedUrl(url)) {
+    return {
+      ok: false,
+      error:
+        "That calendar link must be a public https:// or webcal:// address.",
+    };
+  }
+
+  /*
+   * Fetched once, here, so the seller finds out now rather than from a
+   * double booking. A feed that cannot be read is still *stored* — the URL
+   * may be right and the provider merely down — but the failure is stamped
+   * beside it and the settings card says so.
+   */
+  const now = new Date();
+  const probe = await fetchExternalBusy({
+    url,
+    timeZone: shop.timeZone,
+    from: new Date(now.getTime() - 24 * 3_600_000),
+    to: new Date(now.getTime() + 7 * 24 * 3_600_000),
+  });
+
+  return {
+    ok: true,
+    changed: true,
+    values: {
+      calendarFeedUrl: url,
+      calendarFeedCheckedAt: now,
+      calendarFeedError: probe.ok ? null : probe.reason,
+    },
+  };
+}
 
 /** A form value that is allowed to become a stored image URL, or null. */
 function imageUrlOrNull(value: FormDataEntryValue | null): string | null {
@@ -227,6 +318,34 @@ export async function createShop(
   // nothing to attach a payment method to and nowhere to send them.
   if (!shop) return { ok: false, error: "Couldn't create your shop. Try again." };
 
+  /*
+   * Who brought them, decided once and never revisited.
+   *
+   * This is the only place the referral cookie is read, and it is dropped in
+   * the same breath whatever the outcome — a cookie that survives attribution
+   * is a cookie that can attribute a second time. `after()` keeps it off the
+   * signup's critical path: a referral programme must never be able to fail a
+   * shop into not existing, and the failure modes here (Redis down, a race on
+   * the unique index) are all ones where the right answer is "the shop is
+   * created and nobody earns".
+   */
+  const referralCookie = (await cookies()).get(REFERRAL_COOKIE)?.value;
+  if (referralCookie) {
+    (await cookies()).delete(REFERRAL_COOKIE);
+    const shopId = shop.id;
+    after(async () => {
+      try {
+        await attributeReferral({
+          referredShopId: shopId,
+          referredEmail: user.email,
+          rawCode: referralCookie,
+        });
+      } catch {
+        // An unattributed signup is a lost commission, not a broken signup.
+      }
+    });
+  }
+
   // A shop with no way to order is useless, so seed WhatsApp if given.
   const whatsapp = normalizePhone(String(formData.get("whatsapp") ?? ""));
   if (whatsapp) {
@@ -249,6 +368,9 @@ export async function createShop(
    */
   revalidatePath("/admin", "layout");
   revalidatePath("/onboarding");
+  // A signup is the moment /hq's overview and accounts list change.
+  // Scheduled before the redirect throws, delivered after the response.
+  after(() => publishHqEvent("account"));
   redirect("/admin?welcome=1");
 }
 
@@ -306,6 +428,26 @@ function readSlotMinutes(value: FormDataEntryValue | null): number | null {
   return Math.min(Math.trunc(minutes), 24 * 60);
 }
 
+/**
+ * The seller's email switches, read as checkboxes and stored as exceptions.
+ *
+ * Only the *off* ones are written. An unchecked box is `false` in the column;
+ * a checked one is simply absent, which is what "absence means on" buys —
+ * tomorrow's event type is on for everybody without a migration.
+ *
+ * Parsed through the zod schema rather than assembled by hand so the column
+ * can only ever hold keys this build knows about; a crafted field name is
+ * dropped by `strictObject` instead of being stored forever.
+ */
+function readNotificationPrefs(formData: FormData): NotificationPrefs {
+  const off: Record<string, boolean> = {};
+  for (const event of NOTIFICATION_EVENTS) {
+    if (formData.get(`notify_${event}`) !== "on") off[event] = false;
+  }
+  const parsed = notificationPrefsSchema.safeParse(off);
+  return parsed.success ? parsed.data : {};
+}
+
 export async function updateShop(
   _prev: ActionState,
   formData: FormData,
@@ -326,12 +468,46 @@ export async function updateShop(
   const layout = String(formData.get("layout") ?? "grid");
   const accent = String(formData.get("accentColor") ?? "#111111");
 
+  /*
+   * Refused, not silently dropped. A malformed pixel id that quietly became
+   * null would save the rest of the form and leave the seller believing their
+   * campaign is measured — an empty dashboard weeks later, after the ad money
+   * was spent, is the worst possible place to learn about a typo.
+   */
+  const pixels = readPixelIds(formData);
+  if (!pixels.ok) return { ok: false, error: pixels.error };
+
+  /*
+   * Refused rather than nulled, for the same reason the pixel ids are.
+   *
+   * `imageUrlOrNull` above can afford to drop a bad value — a missing avatar
+   * is visible on the seller's own storefront the moment they look at it. A
+   * dropped terms link is not: the checkbox still renders, the checkout still
+   * works, and the seller believes buyers are agreeing to terms they were
+   * never shown. That belief is the whole value of the feature, and it would
+   * fail exactly when someone finally asked to see the agreement.
+   */
+  const termsUrlInput = String(formData.get("termsUrl") ?? "").trim();
+  if (termsUrlInput && !isPublicLinkUrl(termsUrlInput)) {
+    return {
+      ok: false,
+      error: "The terms link must be a public https:// address.",
+    };
+  }
+
+  const calendarFeed = await readCalendarFeed(formData, shop);
+  if (!calendarFeed.ok) return { ok: false, error: calendarFeed.error };
+
   try {
     await getDb()
     .update(shops)
     .set({
       handle,
       name,
+      // Spread rather than assigned, because "the seller did not touch the
+      // field" and "the seller cleared the field" are different writes and
+      // only one of them may reach the column. See `readCalendarFeed`.
+      ...(calendarFeed.changed ? calendarFeed.values : {}),
       description: String(formData.get("description") ?? "").trim() || null,
       /*
        * Host-checked, not just trimmed. Both are fetched server-side by
@@ -373,9 +549,25 @@ export async function updateShop(
       bookingSlotMinutes: readSlotMinutes(formData.get("bookingSlotMinutes")),
       contactEmail: String(formData.get("contactEmail") ?? "").trim() || null,
       location: String(formData.get("location") ?? "").trim() || null,
+      // Shape-checked above; what lands here can only be an id or null.
+      ...pixels.columns,
       socials: readSocials(formData),
       collectAddress: formData.get("collectAddress") === "on",
+
+      // Compliance. Checked above, so what lands here is a public https URL
+      // or nothing at all.
+      requireTerms: formData.get("requireTerms") === "on",
+      termsUrl: termsUrlInput || null,
+      askMarketingConsent: formData.get("askMarketingConsent") === "on",
+
       isPublished: formData.get("isPublished") === "on",
+      /*
+       * Which seller emails are still wanted. Stored as the *off* switches —
+       * absence of a key means on — so a new event type ships enabled for
+       * every existing shop without a backfill. Validated above, so what
+       * lands here can only be keys the code knows about.
+       */
+      notificationPrefs: readNotificationPrefs(formData),
       updatedAt: new Date(),
     })
     .where(eq(shops.id, shop.id));
@@ -397,6 +589,14 @@ export async function updateShop(
     revalidatePath(`/${shop.handle}`);
     revalidateShop(shop.id, shop.handle);
   }
+  after(() => publishShopEvent(shop.id, "catalog"));
+  /*
+   * The busy cache holds a minute of the *old* calendar, and a seller who has
+   * just connected or disconnected one is about to check whether it worked.
+   * Dropping it here is the difference between the feature appearing to do
+   * nothing and it working on the next page load.
+   */
+  if (calendarFeed.changed) await forgetExternalBusy(shop.id);
 
   return {
     ok: true,

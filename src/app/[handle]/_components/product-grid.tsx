@@ -3,7 +3,6 @@ import type { Shop } from "@/db/schema";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import type {
-  CheckoutOptions,
   ProductCard as ProductCardData,
   ShopFilters,
 } from "@/lib/queries";
@@ -23,7 +22,6 @@ export function ProductGrid({
   products,
   shop,
   layout,
-  checkout,
   hasFilters,
   filters,
   nextOffset,
@@ -34,7 +32,6 @@ export function ProductGrid({
   products: ProductCardData[];
   shop: Shop;
   layout: ShopLayout;
-  checkout: CheckoutOptions;
   hasFilters: boolean;
   filters: ShopFilters;
   nextOffset: number | null;
@@ -72,8 +69,6 @@ export function ProductGrid({
           product={product}
           shop={shop}
           layout={layout}
-          methods={checkout.methods}
-          deliveryOptions={checkout.deliveryOptions}
           t={t}
         />
       ))}

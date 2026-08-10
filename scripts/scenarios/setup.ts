@@ -27,6 +27,18 @@ delete process.env.DATABASE_URL_REPLICA;
 delete process.env.RESEND_API_KEY;
 
 /*
+ * A signing key for unsubscribe tokens.
+ *
+ * Not a secret in any meaningful sense here — it signs links in a throwaway
+ * database — but its *presence* is load-bearing: `queueBroadcast` refuses to
+ * send at all without one, on the grounds that mail carrying a dead
+ * unsubscribe link is mail we may not send. Without this the broadcast
+ * suite would pass by never sending anything, which is the shape of test
+ * that proves nothing.
+ */
+process.env.BETTER_AUTH_SECRET ??= "scenario-only-unsubscribe-signing-key";
+
+/*
  * No limiter by default: without a backend `rateLimit` fails open, which keeps
  * these suites about the money path rather than about ceilings, and stops them
  * needing a second container to run.

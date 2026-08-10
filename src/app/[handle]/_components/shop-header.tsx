@@ -59,7 +59,7 @@ export function ShopHeader({ shop }: { shop: Shop }) {
       ) : null}
 
       <div className="mt-5">
-        <SocialIcons socials={shop.socials} />
+        <SocialIcons socials={shop.socials} shopId={shop.id} />
       </div>
     </header>
   );

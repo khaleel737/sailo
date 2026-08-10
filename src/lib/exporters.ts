@@ -4,6 +4,7 @@ import { getDb } from "@/db";
 import { orders, productImages, products, productVariants } from "@/db/schema";
 import { getShopClients, getInvoiceMap, getOrderItemsMap } from "@/lib/queries";
 import { bool, date, money, toCsv } from "@/lib/csv";
+import { tagsToCsv } from "@/lib/client-tags";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatPercent } from "@/lib/pricing";
 
@@ -254,6 +255,18 @@ export const CLIENT_HEADERS = [
   "Total Spent",
   "Note",
   "Created At",
+  // The proof travels with the list. A seller who downloads their customers to
+  // mail them needs to know which of them agreed to be mailed — and a column
+  // that says *when* is the one an audit can actually use.
+  "Marketing Consent At",
+  // Semicolon-joined, because the CSV's own separator is the comma and
+  // `toCsv` would otherwise quote every tagged row for no reason. The
+  // importer splits on both, so a file edited by hand still reads back.
+  "Tags",
+  // Where this contact came from. An imported row cannot carry consent, so a
+  // seller reconciling "why did only 40 of my 300 get the email" needs the
+  // column that answers it next to the one that raises it.
+  "Source",
 ];
 
 export async function exportClients(shopId: string, currency: string) {
@@ -281,6 +294,11 @@ export async function exportClients(shopId: string, currency: string) {
         money(c.totalCents, currency),
         c.notes ?? "",
         date(c.createdAt),
+        // Blank means "never opted in", which is not the same as opted out and
+        // must not read as a date.
+        c.marketingConsentAt ? date(c.marketingConsentAt) : "",
+        tagsToCsv(c.tags),
+        c.source,
       ];
     }),
   );

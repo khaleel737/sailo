@@ -7,8 +7,8 @@ import { toStripeAmount } from "@/lib/currency";
 import type { OrderLineInput } from "./types";
 import type { ResolvedLine } from "./types";
 import { parseBooking } from "./booking";
-import type { ProductVariant, Shop } from "@/db/schema";
-import { isBookable, slotOptionsFor } from "@/lib/booking/availability";
+import type { ProductVariant } from "@/db/schema";
+import { isBookable, slotOptionsFor, type BookingShop } from "@/lib/booking/availability";
 import { isOfferedSlot } from "@/lib/booking/slots";
 
 /**
@@ -36,7 +36,7 @@ export async function resolveLines(
      * is no longer offered fails the order; absent means only the notice
      * period is checked, which is all a price preview needs.
      */
-    shop?: Pick<Shop, "bookingHours" | "timeZone" | "bookingSlotMinutes">;
+    shop?: BookingShop;
     /**
      * The shop's currency, so prices come back in amounts a card can settle.
      *

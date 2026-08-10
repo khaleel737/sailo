@@ -1,8 +1,22 @@
 import "server-only";
-import { and, desc, eq, gte, inArray, isNotNull, or, sql } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, isNotNull, lt, ne, or, sql } from "drizzle-orm";
 import { getReadDb } from "@/db";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
-import { orders, products, reviews, visitDaily, visits } from "@/db/schema";
+import {
+  clicks,
+  orderItems,
+  orders,
+  products,
+  reviews,
+  visitDaily,
+  visits,
+} from "@/db/schema";
+import type { DateWindow } from "@/lib/analytics-window";
+import {
+  mergePerformance,
+  type PerformanceSales,
+  type PerformanceViews,
+} from "@/lib/product-performance";
 
 /**
  * Dashboard figures: what sold, who visited, and where they came from.
@@ -14,9 +28,39 @@ import { orders, products, reviews, visitDaily, visits } from "@/db/schema";
  * checkout slowed down by someone else's dashboard is.
  */
 
-export async function getDashboardStats(shopId: string, windowDays = 30) {
+/**
+ * Every read here accepts either shape: a day-count is the rolling window the
+ * presets have always been, an explicit `{since, until}` is a custom range.
+ * Passing a number produces byte-for-byte the query it produced before custom
+ * ranges existed — no caller changed meaning.
+ */
+type Window = number | DateWindow;
+
+/** The window as bounds. `until` stays null on the rolling path. */
+function windowBounds(window: Window): { since: Date; until: Date | null } {
+  if (typeof window === "number") {
+    return {
+      since: new Date(Date.now() - window * 24 * 60 * 60 * 1000),
+      until: null,
+    };
+  }
+  return window;
+}
+
+/** `col >= since`, plus `col < until` when the window has a far edge. */
+function inWindow(
+  column: AnyPgColumn,
+  since: Date,
+  until: Date | null,
+) {
+  return until
+    ? and(gte(column, since), lt(column, until))
+    : gte(column, since);
+}
+
+export async function getDashboardStats(shopId: string, window: Window = 30) {
   const db = getReadDb();
-  const since = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000);
+  const { since, until } = windowBounds(window);
 
   const [[visitRow], [periodRow], [openRow], [productRow], [reviewRow]] =
     await Promise.all([
@@ -26,7 +70,9 @@ export async function getDashboardStats(shopId: string, windowDays = 30) {
           unique: sql<string>`count(distinct ${visits.sessionId})`,
         })
         .from(visits)
-        .where(and(eq(visits.shopId, shopId), gte(visits.createdAt, since))),
+        .where(
+          and(eq(visits.shopId, shopId), inWindow(visits.createdAt, since, until)),
+        ),
       /*
        * What happened in the window the seller is looking at.
        *
@@ -49,7 +95,9 @@ export async function getDashboardStats(shopId: string, windowDays = 30) {
           tax: sql<string>`coalesce(sum(${orders.taxCents}) filter (where ${orders.status} <> 'cancelled' and ${orders.refundedCents} = 0), 0)`,
         })
         .from(orders)
-        .where(and(eq(orders.shopId, shopId), gte(orders.createdAt, since))),
+        .where(
+          and(eq(orders.shopId, shopId), inWindow(orders.createdAt, since, until)),
+        ),
       /*
        * What still needs doing, whenever it happened.
        *
@@ -132,6 +180,30 @@ function utcDayWindow(days: number) {
 }
 
 /**
+ * Zero-fill keys and bounds for either window shape. A custom window's bounds
+ * are already UTC midnights (the resolver made them), so stepping in whole
+ * days lands exactly on its edge.
+ */
+function seriesWindow(window: Window): {
+  since: Date;
+  until: Date | null;
+  keys: string[];
+} {
+  if (typeof window === "number") {
+    return { ...utcDayWindow(window), until: null };
+  }
+  const keys: string[] = [];
+  for (
+    let t = window.since.getTime();
+    t < window.until.getTime();
+    t += 24 * 60 * 60 * 1000
+  ) {
+    keys.push(new Date(t).toISOString().slice(0, 10));
+  }
+  return { since: window.since, until: window.until, keys };
+}
+
+/**
  * Daily traffic for the last N days, zero-filled for the chart.
  *
  * Two figures per day: every view, and how many distinct sessions produced
@@ -141,8 +213,8 @@ function utcDayWindow(days: number) {
  * be summed across days without double-counting a returning visitor, which is
  * why the window total is still read separately.
  */
-export async function getVisitSeries(shopId: string, days = 14) {
-  const { since, keys } = utcDayWindow(days);
+export async function getVisitSeries(shopId: string, window: Window = 14) {
+  const { since, until, keys } = seriesWindow(window);
   const db = getReadDb();
 
   /*
@@ -163,7 +235,12 @@ export async function getVisitSeries(shopId: string, days = 14) {
         unique: visitDaily.uniqueVisitors,
       })
       .from(visitDaily)
-      .where(and(eq(visitDaily.shopId, shopId), gte(visitDaily.day, since))),
+      .where(
+        and(
+          eq(visitDaily.shopId, shopId),
+          inWindow(visitDaily.day, since, until),
+        ),
+      ),
     db
       .select({
         day: sql<string>`to_char(${visits.createdAt}::date, 'YYYY-MM-DD')`,
@@ -171,7 +248,9 @@ export async function getVisitSeries(shopId: string, days = 14) {
         unique: sql<string>`count(distinct ${visits.sessionId})`,
       })
       .from(visits)
-      .where(and(eq(visits.shopId, shopId), gte(visits.createdAt, since)))
+      .where(
+        and(eq(visits.shopId, shopId), inWindow(visits.createdAt, since, until)),
+      )
       .groupBy(sql`${visits.createdAt}::date`),
   ]);
 
@@ -210,8 +289,8 @@ export async function getVisitSeries(shopId: string, days = 14) {
  * *and* refunded took its money out of a day that had never counted it in —
  * pushing the day negative for no reason a seller could see.
  */
-export async function getRevenueSeries(shopId: string, days = 14) {
-  const { since, keys } = utcDayWindow(days);
+export async function getRevenueSeries(shopId: string, window: Window = 14) {
+  const { since, until, keys } = seriesWindow(window);
   const db = getReadDb();
 
   const [sales, refunds] = await Promise.all([
@@ -221,7 +300,9 @@ export async function getRevenueSeries(shopId: string, days = 14) {
         cents: sql<string>`coalesce(sum(${orders.totalCents}) filter (where ${orders.status} <> 'cancelled'), 0)`,
       })
       .from(orders)
-      .where(and(eq(orders.shopId, shopId), gte(orders.createdAt, since)))
+      .where(
+        and(eq(orders.shopId, shopId), inWindow(orders.createdAt, since, until)),
+      )
       .groupBy(sql`${orders.createdAt}::date`),
     db
       .select({
@@ -233,7 +314,7 @@ export async function getRevenueSeries(shopId: string, days = 14) {
         and(
           eq(orders.shopId, shopId),
           isNotNull(orders.refundedAt),
-          gte(orders.refundedAt, since),
+          inWindow(orders.refundedAt, since, until),
         ),
       )
       .groupBy(sql`${orders.refundedAt}::date`),
@@ -263,10 +344,17 @@ export async function getRevenueSeries(shopId: string, days = 14) {
  * ordered, capped at a handful of rows — a seller acts on the top few and a
  * long tail of one-visit referrers is noise.
  */
-export async function getVisitBreakdown(shopId: string, days = 30, limit = 6) {
+export async function getVisitBreakdown(
+  shopId: string,
+  window: Window = 30,
+  limit = 6,
+) {
   const db = getReadDb();
-  const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-  const scope = and(eq(visits.shopId, shopId), gte(visits.createdAt, since));
+  const { since, until } = windowBounds(window);
+  const scope = and(
+    eq(visits.shopId, shopId),
+    inWindow(visits.createdAt, since, until),
+  );
 
   /** Grouped counts for one column, ignoring rows where it's null. */
   const top = async <T extends AnyPgColumn>(column: T) =>
@@ -354,3 +442,184 @@ export async function getVisitBreakdown(shopId: string, days = 30, limit = 6) {
 }
 
 export type VisitBreakdown = Awaited<ReturnType<typeof getVisitBreakdown>>;
+
+/**
+ * Where visitors went next — outbound click hosts, over the same window as
+ * the sources panel it renders beside.
+ *
+ * Reads the raw `clicks` table for the whole window: clicks are an order of
+ * magnitude rarer than visits and the table is not trimmed, so the read is
+ * both cheap and complete. The nightly rollup still folds a `destinations`
+ * dimension into `visit_daily` so the day this table ever needs a retention
+ * window, the history is already somewhere the charts can reach.
+ */
+export async function getClickBreakdown(
+  shopId: string,
+  window: Window = 30,
+  limit = 6,
+) {
+  const db = getReadDb();
+  const { since, until } = windowBounds(window);
+  const scope = and(
+    eq(clicks.shopId, shopId),
+    inWindow(clicks.createdAt, since, until),
+  );
+
+  const [hosts, totals] = await Promise.all([
+    db
+      .select({
+        key: clicks.targetHost,
+        count: sql<string>`count(*)`,
+        unique: sql<string>`count(distinct ${clicks.sessionId})`,
+      })
+      .from(clicks)
+      .where(scope)
+      .groupBy(clicks.targetHost)
+      .orderBy(desc(sql`count(*)`))
+      .limit(limit),
+    db
+      .select({
+        count: sql<string>`count(*)`,
+        unique: sql<string>`count(distinct ${clicks.sessionId})`,
+      })
+      .from(clicks)
+      .where(scope),
+  ]);
+
+  return {
+    total: Number(totals[0]?.count ?? 0),
+    unique: Number(totals[0]?.unique ?? 0),
+    hosts: hosts.map((r) => ({
+      key: r.key,
+      count: Number(r.count),
+      unique: Number(r.unique),
+    })),
+  };
+}
+
+export type ClickBreakdown = Awaited<ReturnType<typeof getClickBreakdown>>;
+
+/** The table never renders more than a page of this at once. */
+export const PERFORMANCE_PAGE_SIZE = 50;
+
+/**
+ * The per-product table: views, orders, conversion and revenue per product.
+ *
+ * Nothing new is written for this — `visits.productId` already records
+ * product-page views, and the order lines carry per-product sales. Two
+ * grouped reads, merged in `mergePerformance`.
+ *
+ * Sales come keyed by product id where the product still exists and by the
+ * snapshotted line title where it doesn't: deletion nulls the id, and one
+ * null group would otherwise fold every deleted product into a single row.
+ * Titles always come from the order-line snapshot, so a renamed product's
+ * history keeps saying what it said — only a product that sold nothing in the
+ * window shows its current title, because a snapshot is the one thing it
+ * doesn't have.
+ *
+ * The settled-filter is the dashboard's own — `status <> 'cancelled'`, the
+ * same predicate `getDashboardStats` and `getRevenueSeries` count revenue
+ * with — so this table and the revenue tile can never disagree about which
+ * orders count.
+ */
+export async function getProductPerformance(
+  shopId: string,
+  window: Window = 30,
+  page = 1,
+) {
+  const db = getReadDb();
+  const { since, until } = windowBounds(window);
+
+  const [viewRows, saleRows] = await Promise.all([
+    // Runs against the partitioned table; the createdAt bound is what lets
+    // the planner prune months (verified in scripts/check-load.ts).
+    db
+      .select({
+        productId: visits.productId,
+        views: sql<string>`count(*)`,
+      })
+      .from(visits)
+      .where(
+        and(
+          eq(visits.shopId, shopId),
+          inWindow(visits.createdAt, since, until),
+          isNotNull(visits.productId),
+        ),
+      )
+      .groupBy(visits.productId),
+    db
+      .select({
+        key: sql<string>`coalesce(${orderItems.productId}::text, 'gone:' || ${orderItems.title})`,
+        productId: sql<string | null>`max(${orderItems.productId}::text)`,
+        title: sql<string>`max(${orderItems.title})`,
+        orders: sql<string>`count(distinct ${orderItems.orderId})`,
+        units: sql<string>`coalesce(sum(${orderItems.quantity}), 0)`,
+        revenueCents: sql<string>`coalesce(sum(${orderItems.subtotalCents}), 0)`,
+      })
+      .from(orderItems)
+      .innerJoin(orders, eq(orderItems.orderId, orders.id))
+      .where(
+        and(
+          eq(orders.shopId, shopId),
+          inWindow(orders.createdAt, since, until),
+          ne(orders.status, "cancelled"),
+        ),
+      )
+      .groupBy(
+        sql`coalesce(${orderItems.productId}::text, 'gone:' || ${orderItems.title})`,
+      ),
+  ]);
+
+  const sales: PerformanceSales[] = saleRows.map((r) => ({
+    key: r.key,
+    productId: r.productId,
+    title: r.title,
+    orders: Number(r.orders),
+    units: Number(r.units),
+    revenueCents: Number(r.revenueCents),
+  }));
+
+  /*
+   * Titles for products that were viewed but sold nothing in the window — the
+   * one case with no order-line snapshot to read. The lookup can't miss:
+   * deleting a product cascades its visits away, so a viewed id is a live row.
+   */
+  const soldKeys = new Set(sales.map((s) => s.key));
+  const viewedOnly = viewRows
+    .map((r) => r.productId)
+    .filter((id): id is string => id !== null && !soldKeys.has(id));
+
+  const titles = new Map<string, string>();
+  if (viewedOnly.length > 0) {
+    const rows = await db
+      .select({ id: products.id, title: products.title })
+      .from(products)
+      .where(inArray(products.id, viewedOnly));
+    for (const row of rows) titles.set(row.id, row.title);
+  }
+
+  const views: PerformanceViews[] = viewRows
+    .filter((r): r is typeof r & { productId: string } => r.productId !== null)
+    .map((r) => ({
+      productId: r.productId,
+      title: titles.get(r.productId) ?? "—",
+      views: Number(r.views),
+    }));
+
+  const merged = mergePerformance(views, sales);
+
+  // Paged, never silently capped: the caller shows "top N of total".
+  const safePage = Math.max(1, Math.floor(page) || 1);
+  const start = (safePage - 1) * PERFORMANCE_PAGE_SIZE;
+
+  return {
+    rows: merged.slice(start, start + PERFORMANCE_PAGE_SIZE),
+    total: merged.length,
+    page: safePage,
+    perPage: PERFORMANCE_PAGE_SIZE,
+  };
+}
+
+export type ProductPerformance = Awaited<
+  ReturnType<typeof getProductPerformance>
+>;

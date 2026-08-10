@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { revalidateShop } from "@/lib/cache";
+import { publishShopEvent } from "@/lib/events";
 import { requireShop } from "@/lib/session";
 import { importClients, importProducts, isImportType, type ImportReport } from "@/lib/importers";
 
@@ -62,6 +64,7 @@ export async function runImport(
       revalidatePath(`/${shop.handle}`);
       // The catalogue is cached per shop; a write has to drop it.
       revalidateShop(shop.id, shop.handle);
+      after(() => publishShopEvent(shop.id, "catalog"));
     }
 
     return { ok: true, report, committed: commit };

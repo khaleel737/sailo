@@ -11,12 +11,30 @@ export type VisitBreakdownJson = {
   sources?: Record<string, number>;
   devices?: Record<string, number>;
   referrers?: Record<string, number>;
+  /** Outbound click hosts, folded in from `clicks` — where visitors went next. */
+  destinations?: Record<string, number>;
 };
 
 export type ShopSocial = {
   platform: string;
   url: string;
 };
+
+/**
+ * Which seller-facing emails a shop has switched off.
+ *
+ * Absence of a key means ON — `{}` is "everything", so a new event type ships
+ * enabled for every existing shop without a backfill. Written only through the
+ * zod schema in `lib/notification-prefs.ts`, which rejects unknown keys.
+ */
+export type NotificationPrefs = Partial<{
+  /** Any settled or manual order. */
+  orderPlaced: boolean;
+  /** A service order with a requested slot, awaiting confirm/decline. */
+  bookingRequested: boolean;
+  /** A buyer reported a manual payment or uploaded proof. */
+  orderNeedsAction: boolean;
+}>;
 
 /** One axis of choice on a product: "Size" with "Small", "Medium", "Large". */
 export type ProductOption = {

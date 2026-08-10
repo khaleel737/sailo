@@ -1,6 +1,7 @@
 "use client";
 
-import { Card, Field, Input } from "@/components/ui";
+import { useState } from "react";
+import { Card, Field, Input, Select } from "@/components/ui";
 import { Toggle } from "./toggle";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import type { ProductWithRelations } from "./product.types";
@@ -27,6 +28,14 @@ export function EventSettingsCard({
   onReleaseOnPaymentChange: (next: boolean) => void;
 }) {
   const a = useAdminT();
+  /*
+   * Which fields are even relevant is decided here rather than by a seller
+   * reading labels: an online event has a join link and no venue, a room has
+   * a venue and no link. Showing both invites a seller to fill in both, and
+   * the product then has an address the buyer's email will never print.
+   */
+  const [mode, setMode] = useState(product?.serviceMode ?? "in_person");
+  const online = mode === "online";
 
   return (
     <Card className="space-y-4 p-5">
@@ -52,19 +61,50 @@ export function EventSettingsCard({
         />
       </Field>
 
-      <Field
-        label={a.productForm.eventVenue}
-        htmlFor="serviceLocation"
-        hint={a.productForm.serviceLocationHint}
-      >
-        <Input
-          id="serviceLocation"
-          name="serviceLocation"
-          maxLength={500}
-          defaultValue={product?.serviceLocation ?? ""}
-          placeholder={a.productForm.eventVenuePlaceholder}
-        />
+      <Field label={a.productForm.eventWhere} htmlFor="serviceMode">
+        <Select
+          id="serviceMode"
+          name="serviceMode"
+          value={mode}
+          onChange={(e) => setMode(e.target.value)}
+          className="sm:w-64"
+        >
+          <option value="in_person">{a.productForm.eventInPerson}</option>
+          <option value="online">{a.productForm.eventOnline}</option>
+        </Select>
       </Field>
+
+      {online ? (
+        <Field
+          label={a.productForm.eventJoinUrl}
+          htmlFor="eventJoinUrl"
+          hint={a.productForm.eventJoinUrlHint}
+        >
+          <Input
+            id="eventJoinUrl"
+            name="eventJoinUrl"
+            type="url"
+            inputMode="url"
+            maxLength={2000}
+            defaultValue={product?.eventJoinUrl ?? ""}
+            placeholder="https://zoom.us/j/…"
+          />
+        </Field>
+      ) : (
+        <Field
+          label={a.productForm.eventVenue}
+          htmlFor="serviceLocation"
+          hint={a.productForm.serviceLocationHint}
+        >
+          <Input
+            id="serviceLocation"
+            name="serviceLocation"
+            maxLength={500}
+            defaultValue={product?.serviceLocation ?? ""}
+            placeholder={a.productForm.eventVenuePlaceholder}
+          />
+        </Field>
+      )}
 
       <Toggle
         name="releaseOnPayment"

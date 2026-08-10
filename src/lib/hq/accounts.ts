@@ -119,13 +119,24 @@ function accountWhere(filters: AccountFilters): SQL | undefined {
       clauses.push(isNull(shops.id));
       break;
     case "live":
-      clauses.push(and(eq(shops.isPublished, true), isNull(shops.suspendedAt)));
+      // A tombstoned shop is unpublished and not suspended, so without the
+      // third clause it would have counted as live here.
+      clauses.push(
+        and(
+          eq(shops.isPublished, true),
+          isNull(shops.suspendedAt),
+          isNull(shops.deletedAt),
+        ),
+      );
       break;
     case "unpublished":
-      clauses.push(eq(shops.isPublished, false));
+      clauses.push(and(eq(shops.isPublished, false), isNull(shops.deletedAt)));
       break;
     case "suspended":
       clauses.push(isNotNull(shops.suspendedAt));
+      break;
+    case "deleted":
+      clauses.push(isNotNull(shops.deletedAt));
       break;
     case "connected":
       clauses.push(eq(shops.stripeChargesEnabled, true));

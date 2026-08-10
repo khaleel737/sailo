@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { HqSidebar } from "@/app/hq/_components/hq-sidebar";
 import { PanelFooter } from "@/components/shared/panel-footer";
+import { LiveRefresh } from "@/components/shared/live-refresh";
 import { requireStaff } from "@/lib/session";
 
 /*
@@ -42,6 +43,8 @@ export default async function HqLayout({ children }: LayoutProps<"/hq">) {
       className="flex min-h-screen flex-col bg-ink-950 lg:flex-row"
     >
       <HqSidebar email={staff.email} />
+      {/* The platform moves while staff look at it; the panel keeps up. */}
+      <LiveRefresh url="/api/hq/events" />
       <div className="flex min-w-0 flex-1 flex-col bg-ink-50">
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
           <div className="animate-fade mx-auto w-full max-w-6xl">{children}</div>

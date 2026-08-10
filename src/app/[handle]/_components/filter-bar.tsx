@@ -24,6 +24,7 @@ export function FilterBar({
     physical: t.sort.physical,
     digital: t.sort.digital,
     service: t.sort.services,
+    event: t.sort.events,
   };
 
   /*

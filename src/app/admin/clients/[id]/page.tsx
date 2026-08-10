@@ -7,7 +7,10 @@ import {
   getClientWithOrders,
   getInvoiceMap,
   getOrderItemsMap,
+  getShopClients,
 } from "@/lib/queries";
+import { tagVocabulary } from "@/lib/client-tags";
+import { TagEditor } from "../_components/tag-editor";
 import { deleteClient, updateClientNotes } from "@/lib/actions/order-admin";
 import { PageHeader } from "@/components/shared/page-header";
 import { OrderRow } from "@/app/admin/_components/order-row";
@@ -34,6 +37,9 @@ export default async function ClientDetailPage({
     getOrderItemsMap(orders),
   ]);
   const address = formatAddress(client);
+  // The shop's whole tag vocabulary, so the editor can autocomplete rather
+  // than let a seller invent `vips` beside the `vip` they already use.
+  const vocabulary = tagVocabulary(await getShopClients(shop.id));
 
   return (
     <>
@@ -129,6 +135,12 @@ export default async function ClientDetailPage({
               ) : null}
             </dl>
           </Card>
+
+          <TagEditor
+            clientId={client.id}
+            tags={client.tags}
+            vocabulary={vocabulary}
+          />
 
           <Card className="p-5">
             <h2 className="mb-3 text-sm font-semibold">{a.clients.privateNotes}</h2>

@@ -3,17 +3,24 @@
 import { useEffect, useState } from "react";
 import { Download, Loader2, X } from "lucide-react";
 import { createOrderIntent } from "@/lib/actions/orders";
+import { markPendingOrder } from "@/lib/cart";
 import type { OrderIntentResult } from "@/lib/orders/types";
 import { useCheckoutQuote } from "./use-checkout-quote";
 import { PAYMENT_METHOD_DEFS, type PaymentMethodType } from "@/lib/payments";
 import { formatPercent } from "@/lib/pricing";
 import { readReferralCode } from "@/lib/referral";
+import { trackClick } from "@/lib/track-click";
 import { interpolate } from "@/i18n";
 import { formatMoney } from "@/lib/utils";
 import { deliveryCopy, railCopy } from "./checkout-copy";
 import { useCart } from "./cart-provider";
 import { Confirmation } from "./confirmation";
-import type { CheckoutDelivery, CheckoutMethod, CheckoutPanelProps } from "./checkout.types";
+import type {
+  CheckoutCompliance,
+  CheckoutDelivery,
+  CheckoutMethod,
+  CheckoutPanelProps,
+} from "./checkout.types";
 
 export function CheckoutPanel({
   shopId,
@@ -23,6 +30,7 @@ export function CheckoutPanel({
   methods,
   deliveryOptions,
   contactEmail,
+  compliance,
   hasFiles = false,
   heldUntilPaid = false,
   title,
@@ -135,6 +143,13 @@ export function CheckoutPanel({
         postalCode: String(data.get("postalCode") ?? ""),
         country: String(data.get("country") ?? ""),
         note: String(data.get("note") ?? ""),
+        /*
+         * Sent as what the buyer did, not as what the shop requires. The
+         * server holds the switch and re-decides — these two lines are a
+         * report, and `createOrderIntent` treats them as one.
+         */
+        acceptedTerms: data.get("acceptedTerms") === "on",
+        marketingOptIn: data.get("marketingOptIn") === "on",
       });
     } catch (thrown) {
       // Named for what it is rather than `error`, which is the state setter's
@@ -151,9 +166,30 @@ export function CheckoutPanel({
       return;
     }
 
-    // Emptied before any navigation: a card rail leaves the page immediately
-    // and the buyer must not come back to a basket they've already paid for.
-    onPlaced?.();
+    /*
+     * When the basket empties depends on what just happened to the money.
+     *
+     * On every rail but card the order now stands — confirmation sent, invoice
+     * issued — so the basket it came from is spent, and it empties here,
+     * before any handoff navigates away.
+     *
+     * A card order is still only an intent: the buyer is about to leave for
+     * Stripe, and may pay or may abandon. Emptying here is what made
+     * abandoning lose the whole basket — they came back to a shop that had
+     * forgotten everything they picked. So the basket stays, and the order id
+     * is parked in storage instead: the invoice page empties it when the
+     * payment lands there, and the storefront asks the server on the next
+     * visit for anyone who never came back.
+     *
+     * `onPlaced` doubles as "this checkout sells the basket". The buy-now
+     * sheet passes nothing, and its orders must not park a marker that would
+     * later empty a basket they did not come from.
+     */
+    if (method === "card") {
+      if (onPlaced) markPendingOrder(shopId, res.orderId);
+    } else {
+      onPlaced?.();
+    }
 
     /*
      * Two different things wear the same `redirect` kind, and they behave
@@ -176,6 +212,11 @@ export function CheckoutPanel({
      */
     if (res.handoff?.kind === "redirect") {
       const leavesPage = /^https?:/i.test(res.handoff.url);
+      // The contact-rail handoff is an outbound click — count it before the
+      // navigation tears this page down. `sendBeacon` survives the unload;
+      // mailto:/tel: never reach the server (no host to count) and are not
+      // sent at all.
+      if (leavesPage) trackClick(shopId, res.handoff.url, "contact");
       window.location.href = res.handoff.url;
       if (leavesPage) return;
     }
@@ -556,6 +597,75 @@ export function CheckoutPanel({
                 </p>
               ) : null}
 
+              {/*
+                Compliance, immediately above the button that commits.
+
+                The terms box is `required`, which is what stops an honest
+                buyer from missing it — the server refuses the order anyway,
+                but being told no after filling in a whole checkout is a worse
+                way to learn about a checkbox than not being able to submit.
+
+                The consent box is never `defaultChecked`. Pre-ticked consent
+                is not consent under the GDPR, and a default that happened to
+                be convenient here would make every row this feature writes
+                worthless as proof.
+              */}
+              {compliance.requireTerms || compliance.askMarketingConsent ? (
+                <div className="space-y-2.5">
+                  {compliance.requireTerms ? (
+                    <div className="flex items-start gap-2.5">
+                      <input
+                        id="acceptedTerms"
+                        type="checkbox"
+                        name="acceptedTerms"
+                        required
+                        className="mt-0.5 size-4 shrink-0 accent-current pointer-coarse:size-5"
+                      />
+                      {/*
+                        The label wraps the words and stops there. With the
+                        anchor inside it, a tap on "read the terms" would
+                        both open the tab and toggle the box the buyer was
+                        trying to read about — so the link is its sibling.
+                      */}
+                      <span className="text-xs leading-snug">
+                        <label htmlFor="acceptedTerms" className="cursor-pointer">
+                          {t.checkout.termsAgree}
+                        </label>
+                        {compliance.termsUrl ? (
+                          <>
+                            {" "}
+                            <a
+                              href={compliance.termsUrl}
+                              // A new tab, so the basket this buyer spent five
+                              // minutes filling is still here when they come
+                              // back from reading.
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="underline underline-offset-2 transition hover:opacity-70"
+                            >
+                              {t.checkout.termsView}
+                            </a>
+                          </>
+                        ) : null}
+                      </span>
+                    </div>
+                  ) : null}
+
+                  {compliance.askMarketingConsent ? (
+                    <label className="flex cursor-pointer items-start gap-2.5">
+                      <input
+                        type="checkbox"
+                        name="marketingOptIn"
+                        className="mt-0.5 size-4 shrink-0 accent-current pointer-coarse:size-5"
+                      />
+                      <span className="text-xs leading-snug">
+                        {t.checkout.marketingOptIn}
+                      </span>
+                    </label>
+                  ) : null}
+                </div>
+              ) : null}
+
               <button
                 type="submit"
                 disabled={pending || !preview}
@@ -578,5 +688,10 @@ export function CheckoutPanel({
   );
 }
 
-export type { CheckoutDelivery, CheckoutMethod, CheckoutPanelProps };
+export type {
+  CheckoutCompliance,
+  CheckoutDelivery,
+  CheckoutMethod,
+  CheckoutPanelProps,
+};
 export { railCopy };

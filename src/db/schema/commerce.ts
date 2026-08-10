@@ -115,6 +115,19 @@ export const affiliates = pgTable(
     payoutNotes: text("payout_notes"),
 
     /**
+     * Where their money goes — set by the affiliate on their portal, read by
+     * the seller next to what they owe. Distinct from `payoutNotes`, which is
+     * the seller talking to themselves.
+     *
+     * `payoutUpdatedAt` is the audit trail for the one field an attacker with
+     * a leaked portal link would want to change: every change stamps it and
+     * mails the affiliate, so a silent redirection of money has a witness.
+     */
+    payoutMethod: text("payout_method"), // see PAYOUT_METHOD_TYPES in lib/payouts
+    payoutDetails: text("payout_details"),
+    payoutUpdatedAt: timestamp("payout_updated_at"),
+
+    /**
      * Unguessable key to the affiliate's own report page.
      *
      * `code` can't do this job — it's the thing that appears in every `?ref=`

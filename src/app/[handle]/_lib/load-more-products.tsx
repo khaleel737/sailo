@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import {
-  getCheckoutOptions,
   getPublicProducts,
   getShopByHandle,
   type ShopFilters,
@@ -55,9 +54,8 @@ export async function loadMoreProducts(
   // serving its catalogue through the action that renders it.
   if (!shop || !isShopLive(shop)) return empty;
 
-  const [page, checkout, { t, locale }] = await Promise.all([
+  const [page, { t, locale }] = await Promise.all([
     getPublicProducts(shop.id, shop.currency, pickFilters(filters), offset),
-    getCheckoutOptions(shop.id),
     getShopT(shop.locale),
   ]);
 
@@ -70,8 +68,6 @@ export async function loadMoreProducts(
         product={product}
         shop={shop}
         layout={layout}
-        methods={checkout.methods}
-        deliveryOptions={checkout.deliveryOptions}
         t={t}
         locale={locale}
       />

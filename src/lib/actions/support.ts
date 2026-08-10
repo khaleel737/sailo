@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { getDb } from "@/db";
 import { supportTickets } from "@/db/schema";
+import { publishShopEvent } from "@/lib/events";
 import { sendSupportTicket } from "@/lib/email";
 import { isStoredFileUrl } from "@/lib/file-urls";
 import { firstRow } from "@/lib/invariant";
@@ -93,5 +95,8 @@ export async function createSupportTicket(
 
   revalidatePath("/admin/support");
   revalidatePath("/hq/support");
+  // The bus mirrors support events onto the hq channel, so an open staff
+  // desk sees the ticket arrive without anyone reloading it.
+  after(() => publishShopEvent(shop.id, "support"));
   return { ok: true, message: "Ticket sent — we'll reply by email." };
 }

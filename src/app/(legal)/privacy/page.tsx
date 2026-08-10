@@ -48,8 +48,10 @@ export default function PrivacyPage() {
                 no third-party advertising or analytics trackers on any Sailo page.
               </>,
               <>
-                We do not store visitors&rsquo; IP addresses. Nothing on a storefront
-                follows anyone across the web.
+                We do not store visitors&rsquo; IP addresses. Nothing Sailo runs on a
+                storefront follows anyone across the web — and if a seller connects
+                marketing tools of their own, those load only after you accept them
+                on that shop.
               </>,
               <>
                 We never see card numbers. Payments run through Stripe&rsquo;s own
@@ -357,8 +359,9 @@ export default function PrivacyPage() {
 
         <Clause id="cookies" n={10} title="Cookies">
           <P>
-            Three, all first-party. There are no advertising cookies, no cross-site
-            trackers, and no third-party tag managers anywhere on Sailo.
+            Three, all first-party, on every page Sailo itself runs. There are no
+            advertising cookies, no cross-site trackers, and no third-party tag
+            managers on any of them.
           </P>
           <DataTable
             caption="Cookies"
@@ -369,6 +372,15 @@ export default function PrivacyPage() {
             You can clear or block all of them in your browser. Blocking the session
             cookie means you cannot stay signed in; blocking the other two costs you
             nothing but a language preference.
+          </P>
+          <P>
+            A seller can connect their own measurement tools to their own storefront
+            — Google Analytics, Google Tag Manager, a Meta or TikTok pixel. Those are
+            the seller&rsquo;s, not ours: a shop that uses them shows its own cookie
+            notice naming them, none of them load unless you accept, and the footer
+            of that shop carries the switch to change your answer. What they collect
+            is between you and that seller, who is the controller for it —{" "}
+            <Ref href="#processor">section 8</Ref>.
           </P>
         </Clause>
 

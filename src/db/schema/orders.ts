@@ -26,6 +26,39 @@ export const clients = pgTable(
 
     notes: text("notes"), // seller's private notes
 
+    /**
+     * When this buyer opted in to marketing email, or null if they never have.
+     *
+     * A date rather than a boolean because consent is a fact with a moment
+     * attached — an audit asks *when* it was given, and "true" cannot answer.
+     * Granted only, never revoked by omission: a later order that leaves the
+     * optional box empty is someone who skipped a box, not someone who
+     * withdrew. Withdrawal is unsubscribe, which is spec 14's to build.
+     */
+    marketingConsentAt: timestamp("marketing_consent_at"),
+
+    /**
+     * The seller's own labels for this person: `vip`, `wholesale`, `no-show`.
+     *
+     * A Postgres array rather than the jsonb `products.tags` uses, because
+     * these are what a broadcast's audience is selected by — `tags && '{vip}'`
+     * against the GIN index below is an index scan, and the same question
+     * asked of jsonb reads every client the shop has. Normalised on the way
+     * in by `lib/client-tags.ts`; the column trusts nothing.
+     */
+    tags: text("tags").array().default([]).notNull(),
+
+    /**
+     * How this person got into the list — see `CLIENT_SOURCES`.
+     *
+     * Defaulted to `order` because that is what every row written before this
+     * column existed is, and because it is the only source that can carry
+     * consent: a contact typed in or imported from a spreadsheet arrives with
+     * `marketingConsentAt` null and stays that way. Consent is a thing a
+     * person gave, and a CSV column is a claim that they did.
+     */
+    source: text("source").default("order").notNull(),
+
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
@@ -33,6 +66,11 @@ export const clients = pgTable(
     index("clients_shop_idx").on(t.shopId),
     uniqueIndex("clients_shop_email_key").on(t.shopId, t.email),
     uniqueIndex("clients_shop_phone_key").on(t.shopId, t.phone),
+    /*
+     * GIN, because the question is containment — "which clients carry this
+     * tag" — and a btree cannot answer it. See `drizzle/0012`.
+     */
+    index("clients_tags_idx").using("gin", t.tags),
   ],
 );
 
@@ -174,6 +212,14 @@ export const orders = pgTable(
     postalCode: text("postal_code"),
     country: text("country"),
     note: text("note"),
+
+    /**
+     * Proof this buyer agreed to the shop's terms, or null if the shop wasn't
+     * asking. Stamped from the server's clock at order creation and never from
+     * anything the client sent — a flag in a request body is a claim, and the
+     * whole point of the record is that it isn't one.
+     */
+    termsAcceptedAt: timestamp("terms_accepted_at"),
 
     // How they chose to pay
     paymentMethod: text("payment_method").default("whatsapp").notNull(),
@@ -370,4 +416,36 @@ export const tickets = pgTable(
     index("tickets_order_idx").on(t.orderId),
     index("tickets_shop_idx").on(t.shopId),
   ],
+);
+
+/**
+ * One row per event reminder actually sent, and the unique index is what
+ * makes "actually" true.
+ *
+ * The obvious shape is a `reminded24At` column on the order, and it is bug
+ * shape number four: an order is a header over lines, so a basket holding
+ * two different events would stamp once and the second event's registrants
+ * would never hear from anyone. The unit of "already reminded" has to be the
+ * same unit as "a thing that starts at a time", which is the line's product.
+ *
+ * The claim is the insert itself — `onConflictDoNothing().returning()` hands
+ * a row to exactly one caller — so two overlapping passes send one email
+ * between them rather than one each. Nothing here is read before it is
+ * written, which is what makes that true under concurrency.
+ */
+export const eventReminders = pgTable(
+  "event_reminders",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    orderId: uuid("order_id")
+      .notNull()
+      .references(() => orders.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    /** Which pass this was — see `REMINDER_LEADS` in `lib/events-reminders`. */
+    lead: text("lead").notNull(),
+    sentAt: timestamp("sent_at").defaultNow().notNull(),
+  },
+  (t) => [uniqueIndex("event_reminders_key").on(t.orderId, t.productId, t.lead)],
 );

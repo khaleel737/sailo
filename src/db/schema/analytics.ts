@@ -79,6 +79,46 @@ export const visits = pgTable(
   ],
 );
 
+/** Where an outbound click may point, by the surface that carried the link. */
+export const CLICK_KINDS = [
+  "social",
+  "product_link",
+  "contact",
+  "other",
+] as const;
+export type ClickKind = (typeof CLICK_KINDS)[number];
+
+/**
+ * One outbound click — a visitor leaving the storefront through a link the
+ * seller put there: a social icon, a contact handoff, an external product.
+ *
+ * Only the host is stored, never the full URL. A destination URL can carry the
+ * buyer's own data in its query string — a prefilled WhatsApp message is the
+ * whole order — and "where do my customers go" is answered by the host alone.
+ *
+ * A plain table, unlike `visits`: clicks are an order of magnitude rarer than
+ * pageviews (most views click nothing), so the partitioning machinery would
+ * cost more than the rows. Revisit only if `check:load` says so.
+ */
+export const clicks = pgTable(
+  "clicks",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+    /** Host only, punycoded as the URL parser hands it over. */
+    targetHost: text("target_host").notNull(),
+    /** Which surface carried the link — see CLICK_KINDS. */
+    kind: text("kind").default("other").notNull(),
+    /** The same derived, never-stored visitor id `visits` uses. */
+    sessionId: text("session_id"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  // The dashboard asks "this shop, this window", the same shape as visits.
+  (t) => [index("clicks_shop_created_idx").on(t.shopId, t.createdAt)],
+);
+
 /**
  * One row per shop per day, folded down from `visits`.
  *

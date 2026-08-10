@@ -54,7 +54,7 @@ export type SendResult =
   | { sent: true; id: string }
   | { sent: false; reason: string };
 
-export async function send(opts: {
+export type Message = {
   from: string;
   to: string;
   subject: string;
@@ -62,7 +62,22 @@ export async function send(opts: {
   replyTo?: string;
   /** Carbon copy — how a support ticket puts us and the seller on one thread. */
   cc?: string;
-}): Promise<SendResult> {
+  /**
+   * Extra headers, for the ones that are protocol rather than content.
+   *
+   * `List-Unsubscribe` and `List-Unsubscribe-Post` are the reason this
+   * exists: Gmail and Outlook both require them on bulk mail, and they are
+   * what puts a one-click unsubscribe in the mail client's own chrome — which
+   * is the difference between somebody unsubscribing and somebody pressing
+   * "report spam", and the second one damages every other seller sending
+   * through this domain.
+   */
+  headers?: Record<string, string>;
+  /** Plain-text alternative. Bulk mail without one reads as bulk mail. */
+  text?: string;
+};
+
+export async function send(opts: Message): Promise<SendResult> {
   const api = resend();
   if (!api) return { sent: false, reason: "RESEND_API_KEY is not set" };
 
@@ -74,6 +89,8 @@ export async function send(opts: {
       html: opts.html,
       replyTo: opts.replyTo,
       cc: opts.cc,
+      headers: opts.headers,
+      text: opts.text,
     });
     if (error) return { sent: false, reason: error.message };
     return { sent: true, id: data?.id ?? "" };
@@ -83,5 +100,61 @@ export async function send(opts: {
       sent: false,
       reason: error instanceof Error ? error.message : "unknown error",
     };
+  }
+}
+
+/** What one batch may carry. Resend's own ceiling, not a number we chose. */
+export const MAX_BATCH = 100;
+
+/**
+ * Sends up to `MAX_BATCH` messages in one call.
+ *
+ * Returns one result per message, in the order given, so a caller can mark
+ * each delivery row with what actually happened to it. A batch-level failure
+ * becomes the same failure repeated per message rather than an exception,
+ * because the caller's next move is identical either way: record it against
+ * every row it was going to send.
+ *
+ * Resend's batch endpoint returns ids without saying which is which beyond
+ * position, which is why this preserves order rather than keying by address —
+ * two recipients cannot share an address inside one broadcast anyway (the
+ * unique index sees to that), but position is the contract the API actually
+ * offers.
+ */
+export async function sendBatch(messages: Message[]): Promise<SendResult[]> {
+  if (messages.length === 0) return [];
+
+  const api = resend();
+  const fail = (reason: string) =>
+    messages.map((): SendResult => ({ sent: false, reason }));
+
+  if (!api) return fail("RESEND_API_KEY is not set");
+  if (messages.length > MAX_BATCH) return fail(`batch larger than ${MAX_BATCH}`);
+
+  try {
+    const { data, error } = await api.batch.send(
+      messages.map((m) => ({
+        from: m.from,
+        to: m.to,
+        subject: m.subject,
+        html: m.html,
+        replyTo: m.replyTo,
+        headers: m.headers,
+        text: m.text,
+      })),
+    );
+    if (error) return fail(error.message);
+
+    const ids = data?.data ?? [];
+    return messages.map((_, i) => {
+      const id = ids[i]?.id;
+      return id
+        ? { sent: true, id }
+        : // Fewer ids than messages is the provider telling us it did not
+          // accept them all, and guessing which is worse than saying so.
+          { sent: false, reason: "the provider returned no id for this message" };
+    });
+  } catch (error) {
+    return fail(error instanceof Error ? error.message : "unknown error");
   }
 }

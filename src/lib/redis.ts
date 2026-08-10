@@ -114,6 +114,37 @@ export async function withRedis<T>(
   }
 }
 
+/**
+ * A second connection, for the one Redis feature the shared client cannot
+ * carry: pub/sub. A connection that SUBSCRIBEs leaves command mode, so the
+ * rate limits and counters above would stop working on it — the protocol
+ * forces the split, not us.
+ *
+ * Callers own what they're given — they add their own `error` listener to
+ * decide what a dead subscription means for them, and they `destroy()` it
+ * when the stream it feeds closes. Returns null under exactly
+ * the conditions `withRedis` falls back — not configured, or cold — so a
+ * caller holding null knows push delivery is off and can say so instead of
+ * pretending.
+ */
+export async function createSubscriber(): Promise<RedisClientType | null> {
+  const base = await connect();
+  if (!base) return null;
+  try {
+    const sub: RedisClientType = base.duplicate();
+    // The same guard the shared client has: without a listener, a socket
+    // error escalates to an uncaught exception and takes the process along.
+    sub.on("error", (error: unknown) => {
+      goCold(error instanceof Error ? error.message : "subscriber error");
+    });
+    await sub.connect();
+    return sub;
+  } catch (error) {
+    goCold(error instanceof Error ? error.message : "subscriber failed");
+    return null;
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Rate limiting                                                              */
 /* -------------------------------------------------------------------------- */

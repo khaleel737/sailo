@@ -41,6 +41,25 @@ const LOCAL = (() => {
 
 test.skip(!LOCAL, "journey writes real rows — localhost only");
 
+/*
+ * A second, independent latch — because the first one guards the wrong thing.
+ *
+ * The hostname check above proves the *browser* talks to this machine. It
+ * proves nothing about where the dev server's DATABASE_URL points, and in this
+ * repo `.env.local` points at production: a `npx playwright test` run on any
+ * laptop would pass the localhost check and still write real accounts and real
+ * orders into the production database through the local dev server.
+ *
+ * So writing suites do not run by accident at all. Point the server at the
+ * scenario database (scripts/scenarios/up.sh) and say so explicitly:
+ *
+ *   E2E_ALLOW_WRITES=1 npx playwright test e2e/journey.spec.ts
+ */
+test.skip(
+  process.env.E2E_ALLOW_WRITES !== "1",
+  "journey writes rows through the dev server's DATABASE_URL — set E2E_ALLOW_WRITES=1 with the server pointed at a throwaway database",
+);
+
 const stamp = Date.now().toString(36);
 const seller = {
   name: "Journey Seller",

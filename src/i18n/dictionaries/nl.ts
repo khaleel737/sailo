@@ -27,6 +27,11 @@ export const nl: Dictionary = {
     accept: "Accepteren",
     decline: "Weigeren",
     privacy: "Privacybeleid",
+    shopTitle: "Cookies in deze shop",
+    shopBody: "{shop} gebruikt marketingtools die cookies op je apparaat opslaan om bezoeken en advertenties te meten. Er wordt niets geladen tenzij je accepteert.",
+    shopEssentialBody: "Altijd aan — je taal en deze keuze.",
+    marketing: "Marketing & analyse",
+    marketingBody: "Tools gekozen door {shop}. Alleen geladen als je accepteert.",
   },
 
   shop: {
@@ -45,11 +50,14 @@ export const nl: Dictionary = {
     kindPhysical: "Wordt bezorgd", kindDigital: "Direct downloaden",
     kindService: "Boek een tijd", kindEvent: "Evenementticket", labelDigital: "Download", labelService: "Boeking",
     from: "Vanaf {price}",
+    favorites: "Favorieten", favoritesEmpty: "Nog niets bewaard",
+    favoritesEmptyBody: "Tik op het hartje bij een product en het wacht hier op je.",
+    saveToFavorites: "Bewaar als favoriet",
   },
   sort: {
     featured: "Uitgelicht", newest: "Nieuwste", priceAsc: "Prijs oplopend",
     priceDesc: "Prijs aflopend", rating: "Best beoordeeld", allTypes: "Alles",
-    physical: "Producten", digital: "Downloads", services: "Boekingen",
+    physical: "Producten", digital: "Downloads", services: "Boekingen", events: "Evenementen",
   },
   product: {
     reviews: "Beoordelingen", noReviews: "Nog geen beoordelingen — wees de eerste.",
@@ -96,6 +104,9 @@ export const nl: Dictionary = {
     inPerson: "Op locatie",
     downloadAfterPayment: "Je download komt vrij zodra {shop} je betaling bevestigt.",
     getFiles: "Haal je bestanden op",
+    termsAgree: "Ik ga akkoord met de algemene voorwaarden",
+    termsView: "Lees ze",
+    marketingOptIn: "Stuur me nieuws en aanbiedingen",
     earnReferral: "Verdien {percent}% met verwijzingen",
     earnReferralBody:
       "Deel je link. Koopt iemand via die link bij {shop}, dan verdien jij {percent}% van de bestelling.",
@@ -103,6 +114,7 @@ export const nl: Dictionary = {
   cart: {
     title: "Je mandje",
     add: "In je mandje",
+    added: "Toegevoegd",
     buyNow: "Nu kopen",
     view: "Mandje",
     itemCount: "{count} in je mandje",
@@ -111,6 +123,17 @@ export const nl: Dictionary = {
     keepShopping: "Verder kijken",
     remove: "Verwijderen",
     someGone: "Iets in je mandje is uitverkocht en telt niet mee in het totaal.",
+  },
+
+  share: {
+    shopTitle: "Deel deze shop",
+    productTitle: "Deel dit product",
+    copyLink: "Link kopiëren",
+    copied: "Gekopieerd",
+    email: "E-mail",
+    more: "Meer",
+    scanToOpen: "Scan om te openen",
+    downloadQr: "QR-code downloaden",
   },
 
   download: {
@@ -130,6 +153,11 @@ export const nl: Dictionary = {
     admitOne: "Geldig voor één persoon",
     showAtDoor: "Laat dit bij de deur zien.",
     used: "Gebruikt",
+    online: "Online evenement",
+    inPerson: "Op locatie",
+    join: "Deelnemen aan het evenement",
+    joinLocked: "Je deelnamelink verschijnt hier zodra {shop} je betaling bevestigt.",
+    joinMissing: "Er is nog geen deelnamelink toegevoegd.",
   },
 
   rails: {
@@ -204,6 +232,26 @@ export const nl: Dictionary = {
     signInAction: "Stuur mij mijn link",
     signInDone: "Als dat adres bekend is, is de link onderweg. Kijk in je inbox.",
     signInEmail: "Je e-mailadres",
+    commission: "Commissie",
+    noActivity: "Nog niets verdiend in deze periode.",
+    payoutTitle: "Uitbetaald krijgen",
+    payoutIntro: "Vertel {shop} waar je commissie naartoe moet. Het staat naast wat ze je verschuldigd zijn, dus jou uitbetalen is één vraag minder.",
+    payoutMethodLabel: "Hoe",
+    payoutBank: "Overboeking",
+    payoutPaypal: "PayPal",
+    payoutOther: "Anders",
+    payoutDetailsLabel: "Waar",
+    payoutBankHint: "Rekeningnummer of IBAN en de naam op de rekening",
+    payoutPaypalHint: "Het e-mailadres van je PayPal-account",
+    payoutOtherHint: "Vertel {shop} hoe ze je kunnen betalen",
+    payoutSave: "Uitbetaalgegevens opslaan",
+    payoutSaved: "Opgeslagen — {shop} ziet dit naast wat ze je verschuldigd zijn.",
+    payoutOnFile: "Vastgelegd: {method} · {details}",
+    payoutNone: "Nog niets vastgelegd.",
+    securityTitle: "Houd deze link voor jezelf",
+    securityBody: "Deze link is de enige sleutel tot deze pagina: iedereen die hem heeft, kan je verdiensten zien en aanpassen hoe je betaald wordt. Zet hem nergens openbaar neer. Denk je dat iemand anders hem heeft? Vernieuw hem — de oude link stopt meteen met werken en de nieuwe krijg je per e-mail.",
+    securityReset: "Vernieuw mijn link",
+    securityResetDone: "Klaar — dit is je nieuwe link en de oude doet het niet meer. Sla deze pagina opnieuw op waar je hem bewaart.",
   },
 
   invoice: {
@@ -237,6 +285,17 @@ export const nl: Dictionary = {
     updatePassword: "Wachtwoord bijwerken",
     resetDone: "Wachtwoord bijgewerkt. Je kunt er nu mee inloggen.",
     resetInvalid: "Die link is verlopen of al gebruikt. Vraag een nieuwe aan.",
+    twoFactorTitle: "Voer je code in",
+    twoFactorSubtitle: "Open je authenticator-app en typ de zes cijfers die erin staan.",
+    twoFactorCode: "Code van zes cijfers",
+    twoFactorVerify: "Bevestigen en inloggen",
+    twoFactorUseBackup: "Gebruik in plaats daarvan een back-upcode",
+    twoFactorBackupTitle: "Een back-upcode gebruiken",
+    twoFactorBackupSubtitle:
+      "Voer een van de codes in die je hebt opgeslagen toen je tweestapsverificatie aanzette. Elke code werkt één keer.",
+    twoFactorBackupCode: "Back-upcode",
+    twoFactorUseApp: "Gebruik in plaats daarvan je authenticator-app",
+    twoFactorExpired: "Dat duurde te lang. Log opnieuw in om weer om een code gevraagd te worden.",
   },
   onboarding: {
     shopNameFallback: "Jouw winkel",
@@ -268,6 +327,7 @@ export const nl: Dictionary = {
     payments: "Betalingen", delivery: "Bezorging", settings: "Instellingen", checkin: "Check-in",
     viewShop: "Winkel bekijken", signOut: "Uitloggen", upgrade: "Upgraden",
     openMenu: "Menu openen", closeMenu: "Menu sluiten",
+    broadcasts: "Mailings",
   },
   notifications: {
     aBuyer: "Een koper",
@@ -280,6 +340,8 @@ export const nl: Dictionary = {
     reviewBody: "{name} gaf {rating}.",
     affiliateApplication: "Partneraanmelding",
     affiliateBody: "{name} wil je winkel promoten.",
+    payoutUpdated: "Uitbetaalgegevens bijgewerkt",
+    payoutUpdatedBody: "{name} heeft doorgegeven hoe hij of zij betaald wil worden.",
     readyToShip: "Klaar om te verzenden",
     shipBody: "{product} voor {name} — voeg de tracking toe bij verzending.",
     justNow: "zojuist",
@@ -329,5 +391,16 @@ export const nl: Dictionary = {
     unlocksThis: "Ontgrendelt dit", bestValue: "Beste keuze",
     cancelAnyTime: "Altijd opzegbaar. Bestellingen via chat en overboeking zijn volledig van jou; kaartbetalingen kosten {fee}.",
     planFeature: "{plan}-functie", paidFeature: "Betaalde functie", youAreOn: "Je gebruikt {plan}",
+  },
+
+  unsubscribe: {
+    link: "Afmelden",
+    title: "Geen marketingmails meer van {shop}?",
+    body: "{email} ontvangt geen marketingmails meer van {shop}. Orderbevestigingen en bonnen blijven gewoon komen.",
+    confirm: "Ja, meld me af",
+    doneTitle: "Je bent afgemeld",
+    doneBody: "{shop} stuurt je geen marketingmails meer. Orderbevestigingen blijven gewoon komen.",
+    invalidTitle: "Deze link is niet meer geldig",
+    invalidBody: "Reageer op een e-mail van de winkel en vraag of ze je van de lijst halen.",
   },
 };

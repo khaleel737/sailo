@@ -5,6 +5,7 @@ import { Download } from "lucide-react";
 import { getInvoiceByToken } from "@/lib/queries";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { PrintButton } from "@/app/invoice/[token]/_components/print-button";
+import { SettleBasket } from "@/app/invoice/[token]/_components/settle-basket";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { getShopT } from "@/i18n/server";
 import { taxLabel } from "@/lib/tax-label";
@@ -46,6 +47,9 @@ export default async function InvoicePage({
       lang={locale}
       className="min-h-screen bg-ink-50 px-4 py-8 print:bg-white print:py-0"
     >
+      {/* Stripe's success URL lands here; the basket this order came from is
+        spent the moment this page confirms it. */}
+      <SettleBasket shopId={shop.id} orderId={order.id} />
       <div className="mx-auto w-full max-w-2xl">
         <div className="mb-4 flex items-center justify-between print:hidden">
           <Link

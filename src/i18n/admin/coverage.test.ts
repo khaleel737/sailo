@@ -39,6 +39,18 @@ const WHOLESALE = new Set([
   "paymentStatus",
   "chart",
   "supportTopics",
+  // Handed to the range picker whole — `labels={a.range}`.
+  "range",
+  // Read by bracket — `a.payoutStatus[payout.status]` — like paymentStatus.
+  "payoutStatus",
+  /*
+   * Both read by bracket off a status string: `a.broadcastStatus[row.status]`
+   * on the broadcast list, `a.deliveryStatus[key]` on the progress tiles. The
+   * regex below sees neither, so every member would count as a translation
+   * nobody shows — the same blind spot `weekdays` had.
+   */
+  "broadcastStatus",
+  "deliveryStatus",
 ]);
 
 /*

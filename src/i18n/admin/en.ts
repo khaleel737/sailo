@@ -143,6 +143,29 @@ export const adminEn = {
     noOrders: "No orders yet",
     noOrdersBody:
       "When someone taps Order on your shop, their details land here — even before they message you.",
+    /** Chart titles when the window is a picked date range, not a preset. */
+    visitsCustom: "Visits · {range}",
+    revenueCustom: "Revenue · {range}",
+  },
+
+  /** The date-range control above the dashboard. */
+  range: {
+    custom: "Custom",
+    from: "From",
+    to: "To",
+    apply: "Apply",
+  },
+
+  /** The per-product table: Views · Orders · Conversion · Revenue. */
+  performance: {
+    title: "Product performance",
+    conversion: "Conversion",
+    revenue: "Revenue",
+    /** Never a silent cap: the seller is told the table is a page of a whole. */
+    showingTop: "Showing top {shown} of {total} products",
+    empty: "No product views or sales in this range yet.",
+    previous: "Previous",
+    next: "Next",
   },
 
   products: {
@@ -235,6 +258,11 @@ export const adminEn = {
     publishedBody: "Uncheck to hide it from your shop while you work on it.",
     added: "Product added.",
     updated: "Product updated.",
+    eventWhere: "Where it happens",
+    eventInPerson: "At a venue",
+    eventOnline: "Online",
+    eventJoinUrl: "Join link",
+    eventJoinUrlHint: "Zoom, Meet, Teams — anything with a link. Buyers only see it once their payment is confirmed.",
   },
 
   variants: {
@@ -391,6 +419,12 @@ export const adminEn = {
     filesHeld: "Files held until you mark this paid",
     downloadedTimes: "downloaded {count}×",
     downloadedOf: "{count}/{limit} downloaded",
+    paymentMethodLabel: "Payment method",
+    coupon: "Coupon",
+    clearFilters: "Clear",
+    filtered: "{count} orders match these filters.",
+    noMatches: "No orders match",
+    noMatchesBody: "Clear a filter to see more.",
   },
 
   clients: {
@@ -409,6 +443,17 @@ export const adminEn = {
     lifetimeValue: "Lifetime value",
     notesPlaceholder:
       "Prefers pickup. Allergic to nickel. Repeat wholesale buyer…",
+    tags: "Tags",
+    tagsHint: "Comma separated. Used to pick who a broadcast goes to.",
+    allTags: "Everyone",
+    noneTagged: "Nobody with that tag",
+    noneTaggedBody: "Add the tag to a customer and they'll show up here.",
+    add: "Add contact",
+    addBody: "Somebody who hasn't ordered yet — from a fair, a DM, a business card.",
+    addConsentNote: "Contacts you add yourself can't receive broadcasts. Only people who ticked the marketing box at checkout can.",
+    email: "Email",
+    phone: "Phone",
+    note: "Note",
   },
 
   reviews: {
@@ -465,6 +510,11 @@ export const adminEn = {
     codePlaceholder: "AMARA",
     commissionPercent: "Commission %",
     payoutNotes: "Payout notes",
+    // What the affiliate entered on their portal — shown in full here only.
+    payoutLabel: "Payout",
+    payoutBank: "Bank transfer",
+    payoutPaypal: "PayPal",
+    payoutOther: "Other",
     payoutPlaceholder: "Pays out to GTB 0123456789",
     clicks: "Clicks",
     reportLink: "Their report:",
@@ -551,7 +601,22 @@ export const adminEn = {
   settings: {
     tabDetails: "Shop details",
     tabBilling: "Plan & billing",
+    tabSecurity: "Security",
     tabData: "Import & export",
+
+    /* Seller-facing email switches. Every one defaults to on. */
+    notifications: "Email notifications",
+    notificationsBody:
+      "What Sailo emails you about your own shop. Your buyers' emails are unaffected.",
+    notifySentTo: "Sent to {email}",
+    notifyOrderPlaced: "New orders",
+    notifyOrderPlacedBody: "Someone bought something — including what and how much.",
+    notifyBookingRequested: "Booking requests",
+    notifyBookingRequestedBody:
+      "Someone asked for an appointment and is waiting for you to confirm the time.",
+    notifyOrderNeedsAction: "Payments to confirm",
+    notifyOrderNeedsActionBody:
+      "A buyer says they've sent a bank transfer, so the money needs checking.",
     taxIdPlaceholder: "GB123456789",
     identity: "Identity",
     appearance: "Appearance",
@@ -596,8 +661,27 @@ export const adminEn = {
     taxInclusive: "Prices already include tax (EU VAT, UK, most of Asia)",
     taxOnDelivery: "Tax the delivery fee",
     taxOnDeliveryBody: "Shipping is taxable in most places. Uncheck if yours is exempt.",
+    compliance: "Checkout compliance",
+    complianceBody: "Ask buyers to agree to your terms, and to opt in to marketing email.",
+    requireTerms: "Require agreement to your terms",
+    requireTermsBody: "Buyers tick a box before they can order. Orders without it are refused.",
+    termsUrl: "Link to your terms",
+    termsUrlHint: "optional — a public https:// address",
+    askMarketingConsent: "Ask for marketing consent",
+    askMarketingConsentBody: "An optional box, never pre-ticked. Only buyers who tick it may be emailed offers.",
     taxId: "Tax ID",
     taxIdHint: "optional — printed on invoices",
+    tracking: "Analytics & pixels",
+    trackingBody: "Connect your own tracking tools to measure visits and ad campaigns on your shop. Paste the ID, not the code snippet.",
+    trackingConsentNote: "Adding any of these puts a cookie banner on your shop, as the law requires. The tools load only after a buyer accepts, and each buyer's choice is remembered for your shop alone.",
+    ga4Label: "Google Analytics",
+    ga4Hint: "GA4 measurement ID — G-ABC12DE3F4",
+    gtmLabel: "Google Tag Manager",
+    gtmHint: "container ID — GTM-ABC123",
+    metaPixelLabel: "Meta Pixel",
+    metaPixelHint: "numeric pixel ID from Meta Events Manager",
+    tiktokPixelLabel: "TikTok Pixel",
+    tiktokPixelHint: "pixel ID from TikTok Events Manager",
     booking: "Booking",
     bookingBody: "When you take appointments. Buyers only ever see times you are open and have not already filled.",
     timeZone: "Time zone",
@@ -614,6 +698,16 @@ export const adminEn = {
     shopIsLiveBody: "Turn this off to take your page offline. Visitors will see a 404.",
     title: "Settings",
     description: "Your shop details, plan and data.",
+    calendarSync: "Calendar sync",
+    calendarSyncBody: "Block booking slots with busy time from your own calendar. Read-only — Sailo never writes to it.",
+    calendarFeedUrl: "Calendar link",
+    calendarFeedUrlHint: "In Google Calendar: Settings → your calendar → Secret address in iCal format. Apple and Outlook publish one too.",
+    calendarFeedReplace: "Replace the calendar link",
+    calendarFeedRemove: "Disconnect this calendar",
+    calendarSyncConnected: "Connected to {host}",
+    calendarSyncBroken: "This calendar isn't loading — no times are being blocked.",
+    calendarSyncPrivacy: "Only busy times are read. Titles, guests and descriptions are never fetched or stored.",
+    calendarSyncLocked: "Calendar sync is available on a paid plan.",
   },
 
   billing: {
@@ -681,6 +775,9 @@ export const adminEn = {
     campaigns: "Campaigns",
     referrers: "Referrers",
     noData: "No data yet",
+    destinations: "Where they go next",
+    destinationsEmpty:
+      "No outbound clicks yet — taps on your social icons and contact handoffs count here.",
   },
   /**
    * Where the money for one order currently stands, as opposed to where the
@@ -696,11 +793,174 @@ export const adminEn = {
     disputed: "Chargeback",
   },
 
+  /**
+   * Settings → Security: two-factor verification, the devices signed in to
+   * this account, and deleting it. The copy here is deliberately plain about
+   * consequences — every control on that tab either locks someone out or
+   * throws something away.
+   */
+  security: {
+    title: "Two-factor verification",
+    body: "Ask for a code from your phone as well as your password. It's the single best protection against someone who has learned your password.",
+    on: "On",
+    off: "Off",
+    turnOn: "Turn on",
+    turnOff: "Turn off",
+    yourPassword: "Your password",
+    confirmPassword: "Confirm it's you",
+    confirmPasswordBody: "Enter your password to start setting up two-factor verification.",
+    scanTitle: "Scan this with your authenticator app",
+    scanBody:
+      "Use Google Authenticator, 1Password, Authy — any of them. Then type the six-digit code it shows.",
+    cantScan: "Can't scan? Enter this key by hand:",
+    codeLabel: "Six-digit code",
+    confirmTurnOn: "Confirm and turn on",
+    backupTitle: "Save your backup codes",
+    backupBody:
+      "Each code works once, and gets you in if you lose your phone. This is the only time they are shown.",
+    backupWarning: "Store them somewhere safe and away from your phone. Without your phone or a backup code, nobody can let you back in.",
+    copyCodes: "Copy codes",
+    codesCopied: "Copied",
+    backupSaved: "I've saved them",
+    regenerate: "New backup codes",
+    regenerateBody:
+      "Replaces the codes you have now — the old ones stop working immediately.",
+    turnOffTitle: "Turn off two-factor verification",
+    turnOffBody:
+      "Your password alone will get into this account again. We ask for a code as well as your password, because someone who only has your password must not be able to switch this off.",
+    codeOrBackup: "Code, or a backup code",
+    changeSignsOutOthers:
+      "Turning this on or off signs out every other device, and we email you about it.",
+
+    sessionsTitle: "Login sessions",
+    sessionsBody: "Everywhere this account is signed in right now.",
+    colLocation: "Location",
+    colDevice: "Device",
+    colIp: "IP address",
+    colWhen: "Signed in",
+    currentSession: "Current session",
+    terminate: "Terminate",
+    signOutOthers: "Sign out all other sessions",
+    unknownLocation: "Unknown",
+    noSessions: "No other devices are signed in.",
+
+    deleteTitle: "Delete my account",
+    deleteBody:
+      "Deletes your shop, your products and your files, and closes your account. This cannot be undone.",
+    deleteKeeps:
+      "Records of orders you have already taken are kept without your personal details, because invoices that document real payments must survive for tax purposes.",
+    deleteReleases: "Your handle @{handle} is released, and your page goes offline.",
+    deleteConfirmLabel: "Type {handle} to confirm",
+    deleteConfirmMismatch: "That doesn't match your handle.",
+    deleteButton: "Delete my account permanently",
+    deleteBlockedTitle: "Finish your open orders first",
+    deleteBlockedBody:
+      "You have paid orders that haven't been delivered yet. Fulfil or refund them, then come back — deleting now would take money for goods nobody will send.",
+  },
+
+  /**
+   * The "Store setup" card on the dashboard. Four steps, derived from the
+   * shop itself — see `lib/onboarding.ts` for why publishing isn't one.
+   */
+  setup: {
+    title: "Store setup",
+    body: "A few things between you and a shop that can take an order.",
+    count: "{done} of {total}",
+    dismiss: "Hide this",
+    photo: "Add your photo",
+    photoHint: "A face or a logo at the top of your shop.",
+    product: "Add your first product",
+    productHint: "Anything you sell — physical, digital or a service.",
+    paid: "Turn on a way to get paid",
+    paidHint: "Cash, bank transfer, a chat handoff or card. One is enough.",
+    social: "Connect a social",
+    socialHint: "So people who find your shop can find you too.",
+  },
+
+  /** Refer-a-creator: the seller's own share card on the dashboard. */
+  referral: {
+    title: "Refer a creator",
+    body: "Share your link and keep {share} of what they pay Sailo, every month, for as long as they stay.",
+    copy: "Copy link",
+    copied: "Copied",
+    referred: "Signed up",
+    paying: "Now paying",
+    earned: "Earned",
+    unpaid: "Unpaid",
+    /** The threshold, stated rather than discovered. */
+    terms: "We send your earnings once they pass {minimum}. Referring yourself doesn't count.",
+  },
+
   /** Words for the bars-or-line control, handed to `<Chart shape={a.chart}>`. */
   chart: {
     bar: "Bars",
     line: "Line",
     legend: "Chart shape",
+  },
+
+  /** The Stripe balance card on the Payments page. */
+  payouts: {
+    title: "Payouts",
+    description:
+      "What Stripe is holding for you and what's on its way to your bank. Sailo never touches it.",
+    available: "Available",
+    pending: "Pending",
+    recent: "Recent payouts",
+    noneYet:
+      "No payouts yet — Stripe sends the first one a few days after your first card sale.",
+    arrives: "Arrives {date}",
+    requirementsTitle: "Stripe needs more information",
+    requirementsBody:
+      "Until it's provided, payouts can pause. It takes a few minutes on Stripe — the link below goes straight there.",
+    pausedTitle: "Payouts are paused",
+    pausedBody:
+      "Stripe isn't sending money to your bank right now. Finish the steps on Stripe to resume.",
+    finishOnStripe: "Finish on Stripe",
+    unavailable:
+      "Couldn't reach Stripe just now. Your balance is safe — try again in a moment.",
+  },
+
+  /** Read by bracket — `a.payoutStatus[payout.status]` — keys are Stripe's. */
+  payoutStatus: {
+    paid: "Paid",
+    pending: "Pending",
+    in_transit: "In transit",
+    failed: "Failed",
+    canceled: "Cancelled",
+  },
+
+
+  broadcasts: {
+    title: "Broadcasts",
+    compose: "New broadcast",
+    composeBody: "Written in Markdown, sent with your shop's look.",
+    reach: "{count} contacts have opted in to marketing email.",
+    empty: "No broadcasts yet",
+    emptyBody: "Tell your customers about a new drop, a sale, an event.",
+    lockedBody: "Email the customers who opted in — with unsubscribe and bounce handling built in.",
+    subject: "Subject",
+    audience: "Audience",
+    audienceHint: "{count} people will receive this.",
+    everyone: "Everyone who opted in",
+    body: "Message",
+    bodyHint: "Markdown: **bold**, *italic*, [links](https://…), - lists.",
+    consentNote: "Only contacts who opted in receive this, and every message carries a working unsubscribe link. People who unsubscribe or bounce are never mailed again.",
+    testSend: "Send a test to myself",
+    sendTo: "Send to {count}",
+  },
+
+  broadcastStatus: {
+    draft: "Draft",
+    sending: "Sending",
+    sent: "Sent",
+  },
+
+  deliveryStatus: {
+    sent: "Sent",
+    queued: "Waiting",
+    sending: "Unconfirmed",
+    failed: "Failed",
+    suppressed: "Opted out",
   },
 
 } as const;

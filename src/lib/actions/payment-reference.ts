@@ -1,14 +1,18 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
 import { orders } from "@/db/schema";
+import { publishShopEvent } from "@/lib/events";
 import { maybeRow } from "@/lib/invariant";
 import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
-import { checkPaymentReference, TRANSFERABLE_PAYMENT_STATUSES } from "@/lib/payments/status";
+import { checkPaymentReference } from "@/lib/payments/status";
 import { PAYMENT_METHOD_DEFS, PAYMENT_METHOD_TYPES } from "@/lib/payments";
+import { notifySellerOfPaymentReport } from "@/lib/orders/notify-seller";
+import { shops } from "@/db/schema";
 
 /**
  * A buyer telling the seller they have sent the money.
@@ -67,30 +71,84 @@ export async function submitPaymentReference(input: {
    * shop's stock off the shelf permanently, repeatably. A transfer reference
    * is meaningless on a card order anyway: nobody transfers money for one.
    */
-  const updated = maybeRow(
+  /*
+   * The first report and a correction are two different events, and only the
+   * first one emails the seller.
+   *
+   * The WHERE that admits both `unpaid` and `pending` is deliberate — a buyer
+   * who fat-fingered their reference must be able to correct it while the
+   * order sits `pending`. But firing the seller notification on *every*
+   * resubmission turned a public, order-id-keyed endpoint into an amplifier:
+   * ten resubmits a minute against the same order would, in under an hour,
+   * exhaust the shop's daily seller-mail ceiling and silence the emails for
+   * genuinely new orders. So the notification is gated on the transition
+   * `unpaid → pending`, claimed as its own conditional update; a correction
+   * on an already-`pending` order records the new reference and rings the
+   * dashboard, but sends no mail.
+   */
+  const firstReport = maybeRow(
     await db
       .update(orders)
       .set({ paymentReference: check.reference, paymentStatus: "pending", updatedAt: new Date() })
       .where(
         and(
           eq(orders.id, input.orderId),
-          inArray(orders.paymentStatus, [...TRANSFERABLE_PAYMENT_STATUSES]),
+          eq(orders.paymentStatus, "unpaid"),
           inArray(orders.paymentMethod, [...REFERENCEABLE_RAILS]),
         ),
       )
-      .returning({ id: orders.id }),
+      .returning({ id: orders.id, shopId: orders.shopId }),
   );
 
+  const updated =
+    firstReport ??
+    maybeRow(
+      await db
+        .update(orders)
+        .set({ paymentReference: check.reference, updatedAt: new Date() })
+        .where(
+          and(
+            eq(orders.id, input.orderId),
+            eq(orders.paymentStatus, "pending"),
+            inArray(orders.paymentMethod, [...REFERENCEABLE_RAILS]),
+          ),
+        )
+        .returning({ id: orders.id, shopId: orders.shopId }),
+    );
+
   /*
-   * No row means the guard above rejected it — the order moved under us, or it
-   * was never a rail that takes a reference. Reporting `ok` there told the
-   * buyer their reference was recorded when it had been discarded, and left
-   * the seller with nothing to reconcile against.
+   * No row means neither claim matched — the order moved under us (paid,
+   * cancelled, charged back), or it was never a rail that takes a reference.
+   * Reporting `ok` there told the buyer their reference was recorded when it
+   * had been discarded, and left the seller with nothing to reconcile against.
    */
   if (!updated) {
     return { ok: false, error: "This order is no longer awaiting a transfer." };
   }
 
   revalidatePath("/admin/orders");
+  // A buyer just told the seller "the transfer is on its way" — the orders
+  // screen and the bell should ring where the seller is already looking.
+  after(() => publishShopEvent(updated.shopId, "payment"));
+  /*
+   * And their inbox, for the seller who isn't looking at the dashboard — but
+   * only on the first report, never on a correction (see above). Off the
+   * buyer's critical path like every notification, and `notifySeller…`
+   * swallows its own failures — a mail outage must not un-record a reference.
+   */
+  if (firstReport) {
+    after(async () => {
+      const shop = await db.query.shops.findFirst({
+        where: eq(shops.id, firstReport.shopId),
+      });
+      if (shop) {
+        await notifySellerOfPaymentReport({
+          shop,
+          orderId: firstReport.id,
+          supplied: "reference",
+        });
+      }
+    });
+  }
   return { ok: true };
 }

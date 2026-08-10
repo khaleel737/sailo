@@ -12,6 +12,7 @@ import { getAdminT } from "@/i18n/server";
 import { AdminI18nProvider } from "@/app/admin/_components/admin-i18n";
 import { StatusBanners } from "@/app/admin/_components/status-banners";
 import { PanelFooter } from "@/components/shared/panel-footer";
+import { LiveRefresh } from "@/components/shared/live-refresh";
 
 /*
  * Per-seller, behind a session, and re-read on every visit — there is no
@@ -74,6 +75,13 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
           </main>
           <PanelFooter labels={a.shell} />
         </div>
+        {/*
+          The panel re-renders itself when the shop changes under it — a
+          webhook settling an order, a storefront visit landing. In the
+          layout rather than a page so every /admin screen, badges and bell
+          included, is live for the price of one stream per tab.
+        */}
+        <LiveRefresh url="/api/admin/events" />
         <GoogleTag />
       <ConsentGate />
       </div>

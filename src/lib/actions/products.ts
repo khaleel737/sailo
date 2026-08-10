@@ -1,11 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { revalidateShop } from "@/lib/cache";
+import { publishShopEvent } from "@/lib/events";
 import { firstRow } from "@/lib/invariant";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/db";
-import { isStoredFileUrl, isRenderableImageUrl } from "@/lib/file-urls";
+import { isStoredFileUrl, isRenderableImageUrl, isPublicLinkUrl } from "@/lib/file-urls";
 import {
   optionalCents,
   optionalCount,
@@ -196,6 +198,26 @@ export async function saveProduct(
   }
 
   const modeRaw = String(formData.get("serviceMode") ?? "in_person");
+  const mode = isServiceMode(modeRaw) ? modeRaw : "in_person";
+
+  /*
+   * The join link for an online event — refused rather than quietly dropped.
+   *
+   * A dropped link saves the rest of the form and leaves the seller believing
+   * their webinar has a way in. Nobody finds out until the reminder goes out
+   * an hour before it starts with nothing to click, which is the worst
+   * possible moment to discover a typo. `isPublicLinkUrl` is the same check
+   * the terms link gets: this is rendered as an anchor in an email and on the
+   * buyer's page, so `javascript:` and internal hosts are not things a seller
+   * may put in front of their buyers.
+   */
+  const joinRaw = String(formData.get("eventJoinUrl") ?? "").trim();
+  if (joinRaw && !isPublicLinkUrl(joinRaw)) {
+    return {
+      ok: false,
+      error: "The join link must be a public https:// address.",
+    };
+  }
   const compareRaw = String(formData.get("compareAtPrice") ?? "").trim();
   const priceCents = parseMoneyToCents(String(formData.get("price") ?? "0"), shop.currency);
   const compareAtCents = compareRaw ? parseMoneyToCents(compareRaw, shop.currency) : null;
@@ -228,7 +250,7 @@ export async function saveProduct(
 
     // Services
     durationMinutes: optionalCount(formData.get("durationMinutes"), 60 * 24 * 30),
-    serviceMode: isServiceMode(modeRaw) ? modeRaw : "in_person",
+    serviceMode: mode,
     serviceLocation: text(formData.get("serviceLocation"), 500),
     bookingEnabled: formData.get("bookingEnabled") === "on",
     bookingLeadHours: optionalCount(formData.get("bookingLeadHours"), 24 * 365) ?? 0,
@@ -236,6 +258,13 @@ export async function saveProduct(
     // Events. Cleared on other kinds so a product switched away from being
     // an event doesn't keep silently closing its own sales at a stale date.
     eventStartsAt: kind === "event" ? eventStartsAt : null,
+    /*
+     * Held to the same two conditions the buyer's page checks. An in-person
+     * event keeps no link — a venue is not joined — and a product switched
+     * away from being an event keeps none either, so a stale Zoom room can
+     * never be handed to the buyer of something else.
+     */
+    eventJoinUrl: kind === "event" && mode === "online" ? joinRaw || null : null,
 
     inStock: formData.get("inStock") === "on",
     isFeatured: formData.get("isFeatured") === "on",
@@ -318,6 +347,7 @@ export async function saveProduct(
   revalidatePath(`/${shop.handle}`);
   // The catalogue is cached per shop; a write has to drop it.
   revalidateShop(shop.id, shop.handle);
+  after(() => publishShopEvent(shop.id, "catalog"));
   // Variant prices and stock live on the detail page too.
   revalidatePath(`/${shop.handle}/p/${slug}`);
   return { ok: true, message: id ? "Product updated." : "Product added." };
@@ -336,6 +366,7 @@ export async function deleteProduct(formData: FormData) {
   revalidatePath(`/${shop.handle}`);
   // The catalogue is cached per shop; a write has to drop it.
   revalidateShop(shop.id, shop.handle);
+  after(() => publishShopEvent(shop.id, "catalog"));
 }
 
 export async function toggleProductPublished(formData: FormData) {
@@ -352,6 +383,7 @@ export async function toggleProductPublished(formData: FormData) {
   revalidatePath(`/${shop.handle}`);
   // The catalogue is cached per shop; a write has to drop it.
   revalidateShop(shop.id, shop.handle);
+  after(() => publishShopEvent(shop.id, "catalog"));
 }
 
 /* -------------------------------------------------------------------------- */
@@ -388,6 +420,7 @@ export async function createCategory(
   revalidatePath(`/${shop.handle}`);
   // The catalogue is cached per shop; a write has to drop it.
   revalidateShop(shop.id, shop.handle);
+  after(() => publishShopEvent(shop.id, "catalog"));
   return { ok: true, message: "Category added." };
 }
 
@@ -404,4 +437,5 @@ export async function deleteCategory(formData: FormData) {
   revalidatePath(`/${shop.handle}`);
   // The catalogue is cached per shop; a write has to drop it.
   revalidateShop(shop.id, shop.handle);
+  after(() => publishShopEvent(shop.id, "catalog"));
 }

@@ -1,7 +1,12 @@
 "use client";
 
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-import { CheckoutPanel, type CheckoutDelivery, type CheckoutMethod } from "./checkout-panel";
+import {
+  CheckoutPanel,
+  type CheckoutCompliance,
+  type CheckoutDelivery,
+  type CheckoutMethod,
+} from "./checkout-panel";
 import { useCart } from "./cart-provider";
 import { SlotPicker } from "./slot-picker";
 import { lineKey, toOrderItems, type CartLine } from "@/lib/cart";
@@ -25,6 +30,7 @@ export function CartSheet({
   methods,
   deliveryOptions,
   contactEmail,
+  compliance,
   t,
 }: {
   shopId: string;
@@ -33,6 +39,7 @@ export function CartSheet({
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
   contactEmail: string | null;
+  compliance: CheckoutCompliance;
   t: Dictionary;
 }) {
   const cart = useCart();
@@ -49,6 +56,7 @@ export function CartSheet({
       methods={methods}
       deliveryOptions={deliveryOptions}
       contactEmail={contactEmail}
+      compliance={compliance}
       title={t.cart.title}
       t={t}
       onClose={() => cart.setOpen(false)}

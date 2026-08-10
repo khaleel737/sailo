@@ -27,7 +27,7 @@ export const RESERVED_HANDLES = new Set([
    * their shop simply never rendered, with nothing anywhere to explain why.
    */
   "partner", "download", "dev", "gdpr", "refunds",
-  "forgot-password", "reset-password",
+  "forgot-password", "reset-password", "verify-2fa",
   // Locale prefixes. `/fr/blog` is a real URL, so a shop called `fil` would
   // shadow the Filipino blog. Only three-letter codes need listing: every other
   // locale is two characters and already too short to be a handle.

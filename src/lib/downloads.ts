@@ -11,6 +11,7 @@ import {
   type Product,
 } from "@/db/schema";
 import { sendDownloadReady } from "@/lib/email";
+import { eventAccessForOrder } from "@/lib/event-access";
 
 /**
  * Digital delivery. A buyer never receives a file's storage URL — they get a
@@ -134,10 +135,25 @@ export async function releaseDownloads(orderId: string): Promise<boolean> {
       where: eq(shops.id, order.shopId),
     });
     if (shop) {
+      /*
+       * Read after the claim, not before it.
+       *
+       * `eventAccessForOrder` returns a join link only when the order has
+       * been released, and the release is the UPDATE above — so asking
+       * earlier would reliably answer "locked" and this email, the one whose
+       * whole job is to hand over the link, would be the one email that never
+       * carries it.
+       */
+      const events = await eventAccessForOrder({
+        ...order,
+        downloadReleasedAt: new Date(),
+      });
+
       const result = await sendDownloadReady({
         shop,
         order,
         url: downloadUrl(downloadToken),
+        events,
       });
       if (!result.sent) {
         console.warn(`[sailo] download email not sent: ${result.reason}`);

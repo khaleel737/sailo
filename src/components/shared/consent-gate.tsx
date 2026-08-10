@@ -6,9 +6,11 @@ import { CookieConsent } from "./cookie-consent";
  * Asks for analytics consent, in the visitor's language, on Sailo's own pages.
  *
  * Mounted beside `<GoogleTag />` and nowhere else. Storefronts do not get it:
- * nothing on them stores anything on a device any more, so a banner there
- * would be us taxing a seller's conversion rate for a tag that is not even
- * loaded on their page.
+ * nothing of ours stores anything on a device there, so this banner would be
+ * us taxing a seller's conversion rate for a tag that is not even loaded on
+ * their page. A seller who connects their own marketing tags gets the
+ * storefront's own request instead — `shop-consent.tsx` under `[handle]`,
+ * asking about the seller's tools, per shop.
  *
  * Renders nothing when there is no measurement id — on a laptop, or on a
  * preview branch, there is no tag to consent to, and asking anyway would train

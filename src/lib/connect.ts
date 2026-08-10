@@ -187,7 +187,7 @@ export function connectState(shop: {
  * shop and exercise the whole flow end to end; Stripe rejects the header when
  * it names the calling account itself.
  */
-function actingAs(accountId: string): { stripeAccount?: string } {
+export function actingAs(accountId: string): { stripeAccount?: string } {
   const platform = process.env.STRIPE_PLATFORM_ACCOUNT_ID;
   return accountId && accountId !== platform ? { stripeAccount: accountId } : {};
 }

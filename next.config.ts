@@ -144,10 +144,24 @@ const nextConfig: NextConfig = {
        * `cacheComponents` with static shells. Buying the nonce means giving up
        * the prerender on every page, which is a worse trade than this.
        */
-      `script-src 'self' 'unsafe-inline'${devEval} https://js.stripe.com https://*.stripe.com https://www.googletagmanager.com https://va.vercel-scripts.com`,
+      /*
+       * facebook.net and analytics.tiktok.com are the seller-configured
+       * pixels (`lib/shop-pixels.ts`), loaded on storefronts after a buyer
+       * consents. They have to be named here for the same reason the Google
+       * hosts are — blocked scripts fail silently and the seller's dashboard
+       * just stays empty. Named globally because headers cannot tell
+       * `/{handle}` from our own routes; only storefronts ever mount them.
+       *
+       * This is also the boundary for what a seller's GTM container can do:
+       * a tag inside it that loads a further script from a host not listed
+       * here is blocked. Deliberate — Meta and TikTok are first-class fields
+       * precisely so nobody needs a container that pulls in arbitrary hosts.
+       */
+      `script-src 'self' 'unsafe-inline'${devEval} https://js.stripe.com https://*.stripe.com https://www.googletagmanager.com https://va.vercel-scripts.com https://connect.facebook.net https://analytics.tiktok.com`,
       "style-src 'self' 'unsafe-inline'",
-      // Google Analytics still falls back to a tracking pixel in some paths.
-      "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://picsum.photos https://images.unsplash.com https://*.stripe.com https://www.google-analytics.com https://www.googletagmanager.com",
+      // Google Analytics still falls back to a tracking pixel in some paths,
+      // and the Meta pixel's namesake fallback is an image request to /tr.
+      "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://picsum.photos https://images.unsplash.com https://*.stripe.com https://www.google-analytics.com https://www.googletagmanager.com https://www.facebook.com https://analytics.tiktok.com",
       "font-src 'self' data:",
       /*
        * Stripe.js posts to its own API; the app posts only to itself. The two
@@ -156,7 +170,7 @@ const nextConfig: NextConfig = {
        * the scripts load and then every event is dropped, which is the same
        * empty dashboard as before but harder to spot.
        */
-      "connect-src 'self' https://api.stripe.com https://*.stripe.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com",
+      "connect-src 'self' https://api.stripe.com https://*.stripe.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://analytics.tiktok.com",
       // Checkout, the billing portal and Connect onboarding are iframed or
       // opened by Stripe.js.
       "frame-src https://js.stripe.com https://hooks.stripe.com https://*.stripe.com",

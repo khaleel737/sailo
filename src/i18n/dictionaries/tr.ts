@@ -27,6 +27,11 @@ export const tr: Dictionary = {
     accept: "Kabul et",
     decline: "Reddet",
     privacy: "Gizlilik Politikası",
+    shopTitle: "Bu mağazadaki çerezler",
+    shopBody: "{shop}, ziyaretleri ve reklamları ölçmek için cihazınıza çerez kaydeden pazarlama araçları kullanıyor. Kabul etmedikçe hiçbir şey yüklenmez.",
+    shopEssentialBody: "Her zaman açık — diliniz ve bu tercih.",
+    marketing: "Pazarlama ve analitik",
+    marketingBody: "{shop} tarafından seçilen araçlar. Yalnızca kabul ederseniz yüklenir.",
   },
 
   shop: {
@@ -46,11 +51,14 @@ export const tr: Dictionary = {
     kindService: "Randevu alın", kindEvent: "Etkinlik bileti",
     labelDigital: "İndirme", labelService: "Randevu",
     from: "{price} üzeri",
+    favorites: "Favoriler", favoritesEmpty: "Henüz kaydedilen bir şey yok",
+    favoritesEmptyBody: "Bir üründeki kalbe dokunun, sizi burada beklesin.",
+    saveToFavorites: "Favorilere kaydet",
   },
   sort: {
     featured: "Öne çıkanlar", newest: "En yeniler", priceAsc: "Fiyat: artan",
     priceDesc: "Fiyat: azalan", rating: "En yüksek puan", allTypes: "Tümü",
-    physical: "Ürünler", digital: "İndirmeler", services: "Randevular",
+    physical: "Ürünler", digital: "İndirmeler", services: "Randevular", events: "Etkinlikler",
   },
   product: {
     reviews: "Değerlendirmeler", noReviews: "Henüz değerlendirme yok — ilk siz yazın.",
@@ -96,6 +104,9 @@ export const tr: Dictionary = {
     inPerson: "Yüz yüze",
     downloadAfterPayment: "{shop} ödemenizi onayladığı anda indirme açılır.",
     getFiles: "Dosyalarınızı alın",
+    termsAgree: "Şartları ve koşulları kabul ediyorum",
+    termsView: "Oku",
+    marketingOptIn: "Bana haberleri ve fırsatları gönderin",
     earnReferral: "Yönlendirmelerden %{percent} kazanın",
     earnReferralBody:
       "Bağlantınızı paylaşın. Biri onun üzerinden {shop} mağazasından alışveriş yaptığında siparişin %{percent} kadarını kazanırsınız.",
@@ -103,6 +114,7 @@ export const tr: Dictionary = {
   cart: {
     title: "Sepetiniz",
     add: "Sepete ekle",
+    added: "Eklendi",
     buyNow: "Hemen al",
     view: "Sepet",
     itemCount: "Sepetinizde {count}",
@@ -111,6 +123,17 @@ export const tr: Dictionary = {
     keepShopping: "Alışverişe devam",
     remove: "Kaldır",
     someGone: "Sepetinizdeki bir ürün tükendi ve toplama dahil edilmedi.",
+  },
+
+  share: {
+    shopTitle: "Bu mağazayı paylaş",
+    productTitle: "Bu ürünü paylaş",
+    copyLink: "Bağlantıyı kopyala",
+    copied: "Kopyalandı",
+    email: "E-posta",
+    more: "Daha fazla",
+    scanToOpen: "Açmak için tara",
+    downloadQr: "QR kodunu indir",
   },
 
   download: {
@@ -130,6 +153,11 @@ export const tr: Dictionary = {
     admitOne: "Tek kişilik",
     showAtDoor: "Bunu kapıda gösterin.",
     used: "Kullanıldı",
+    online: "Çevrimiçi etkinlik",
+    inPerson: "Yüz yüze",
+    join: "Etkinliğe katıl",
+    joinLocked: "Katılım bağlantın, {shop} ödemeni onayladığında burada görünecek.",
+    joinMissing: "Düzenleyen henüz bir katılım bağlantısı eklemedi.",
   },
 
   rails: {
@@ -204,6 +232,26 @@ export const tr: Dictionary = {
     signInAction: "Bağlantımı gönder",
     signInDone: "Adres kayıtlıysa bağlantı yolda. Gelen kutunuza bakın.",
     signInEmail: "E-postanız",
+    commission: "Komisyon",
+    noActivity: "Bu dönemde henüz kazanç yok.",
+    payoutTitle: "Ödemenizi nasıl alacaksınız",
+    payoutIntro: "Komisyonunuzun nereye gönderileceğini {shop} bilsin. Bu bilgi, size ödenecek tutarın hemen yanında durur — böylece size ödeme yapmak için sorulacak bir soru eksilir.",
+    payoutMethodLabel: "Nasıl",
+    payoutBank: "Banka havalesi",
+    payoutPaypal: "PayPal",
+    payoutOther: "Diğer",
+    payoutDetailsLabel: "Nereye",
+    payoutBankHint: "Hesap numarası veya IBAN ve hesaptaki isim",
+    payoutPaypalHint: "PayPal hesabınızın e-postası",
+    payoutOtherHint: "{shop} size nasıl ödesin, yazın",
+    payoutSave: "Ödeme bilgilerini kaydet",
+    payoutSaved: "Kaydedildi — {shop} bunu size ödenecek tutarın yanında görür.",
+    payoutOnFile: "Kayıtlı: {method} · {details}",
+    payoutNone: "Henüz kayıtlı bilgi yok.",
+    securityTitle: "Bu bağlantı sizde kalsın",
+    securityBody: "Bu bağlantı, bu sayfanın tek anahtarı: elinde olan herkes kazancınızı görebilir ve ödeme şeklinizi değiştirebilir. Herkese açık bir yerde paylaşmayın. Başkasının eline geçtiğini mi düşünüyorsunuz? Sıfırlayın — eski bağlantı anında çalışmaz olur, yenisi e-postanıza gönderilir.",
+    securityReset: "Bağlantımı sıfırla",
+    securityResetDone: "Tamam — yeni bağlantınız bu, eskisi artık çalışmıyor. Bu sayfayı sakladığınız yere yeniden kaydedin.",
   },
 
   invoice: {
@@ -236,6 +284,16 @@ export const tr: Dictionary = {
     updatePassword: "Şifreyi güncelle",
     resetDone: "Şifre güncellendi. Artık onunla giriş yapabilirsiniz.",
     resetInvalid: "Bu bağlantının süresi doldu veya zaten kullanıldı. Yenisini isteyin.",
+    twoFactorTitle: "Kodunuzu girin",
+    twoFactorSubtitle: "Doğrulama uygulamanızı açın ve gösterdiği altı haneyi yazın.",
+    twoFactorCode: "Altı haneli kod",
+    twoFactorVerify: "Doğrula ve giriş yap",
+    twoFactorUseBackup: "Bunun yerine yedek kod kullan",
+    twoFactorBackupTitle: "Yedek kod kullanın",
+    twoFactorBackupSubtitle: "İki adımlı doğrulamayı açtığınızda kaydettiğiniz kodlardan birini girin. Her kod bir kez çalışır.",
+    twoFactorBackupCode: "Yedek kod",
+    twoFactorUseApp: "Bunun yerine doğrulama uygulamanızı kullanın",
+    twoFactorExpired: "Bu çok uzun sürdü. Yeni bir kod istemi için tekrar giriş yapın.",
   },
   onboarding: {
     shopNameFallback: "Mağazan",
@@ -268,6 +326,7 @@ export const tr: Dictionary = {
     checkin: "Bilet kontrolü",
     viewShop: "Mağazayı gör", signOut: "Çıkış yap", upgrade: "Yükselt",
     openMenu: "Menüyü aç", closeMenu: "Menüyü kapat",
+    broadcasts: "Toplu e-postalar",
   },
   notifications: {
     aBuyer: "Bir alıcı",
@@ -279,6 +338,8 @@ export const tr: Dictionary = {
     reviewBody: "{name} {rating} verdi.",
     affiliateApplication: "İş ortağı başvurusu",
     affiliateBody: "{name} mağazanızı tanıtmak istiyor.",
+    payoutUpdated: "Ödeme bilgileri güncellendi",
+    payoutUpdatedBody: "{name} ödemesini nasıl almak istediğini belirtti.",
     readyToShip: "Gönderime hazır",
     shipBody: "{name} için {product} — kargoya verirken takip numarasını ekleyin.",
     justNow: "az önce",
@@ -328,5 +389,16 @@ export const tr: Dictionary = {
     unlocksThis: "Bunu açar", bestValue: "En avantajlı",
     cancelAnyTime: "İstediğiniz zaman iptal edin. Sohbet ve havale siparişleri tamamen sizindir; kartlı satışlarda {fee} komisyon alınır.",
     planFeature: "{plan} özelliği", paidFeature: "Ücretli özellik", youAreOn: "{plan} planındasınız",
+  },
+
+  unsubscribe: {
+    link: "Abonelikten çık",
+    title: "{shop} pazarlama e-postaları dursun mu?",
+    body: "{email} artık {shop} pazarlama e-postalarını almayacak. Sipariş onayları ve makbuzlar gelmeye devam eder.",
+    confirm: "Evet, abonelikten çıkar",
+    doneTitle: "Abonelikten çıktınız",
+    doneBody: "{shop} artık size pazarlama e-postası göndermeyecek. Sipariş onayları gelmeye devam eder.",
+    invalidTitle: "Bu bağlantı artık geçerli değil",
+    invalidBody: "Mağazadan gelen herhangi bir e-postayı yanıtlayın ve sizi listeden çıkarmalarını isteyin.",
   },
 };

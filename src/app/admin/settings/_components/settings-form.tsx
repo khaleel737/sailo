@@ -19,8 +19,12 @@ import { IdentityCard } from "./identity-card";
 import { OrdersContactCard } from "./orders-contact-card";
 import { PublishCard } from "./publish-card";
 import { SocialLinksCard } from "./social-links-card";
+import { ComplianceCard } from "./compliance-card";
 import { TaxCard } from "./tax-card";
+import { TrackingCard } from "./tracking-card";
 import { BookingCard } from "./booking-card";
+import { CalendarSyncCard } from "./calendar-sync-card";
+import { NotificationsCard } from "./notifications-card";
 import { hoursOf } from "@/lib/booking/hours";
 
 const PRESET_COLORS = [
@@ -39,7 +43,16 @@ function Submit({ label }: { label: string }) {
   );
 }
 
-export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
+export function SettingsForm({
+  shop,
+  t,
+  accountEmail,
+}: {
+  shop: Shop;
+  t: Dictionary;
+  /** Where seller notifications go when no contact address is set. */
+  accountEmail: string;
+}) {
   const a = useAdminT();
   const [state, action] = useActionState(updateShop, { ok: false });
   const [accent, setAccent] = useState(shop.accentColor);
@@ -107,9 +120,17 @@ export function SettingsForm({ shop, t }: { shop: Shop; t: Dictionary }) {
 
       <TaxCard shop={shop} />
 
+      <ComplianceCard shop={shop} />
+
       <BookingCard shop={shop} hours={hoursOf(shop.bookingHours)} />
 
+      <CalendarSyncCard shop={shop} />
+
       <SocialLinksCard socialByPlatform={socialByPlatform} />
+
+      <NotificationsCard shop={shop} accountEmail={accountEmail} />
+
+      <TrackingCard shop={shop} />
 
       <PublishCard shop={shop} />
 

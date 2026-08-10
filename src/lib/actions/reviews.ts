@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { revalidateShop } from "@/lib/cache";
+import { publishShopEvent } from "@/lib/events";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { products, reviews, shops } from "@/db/schema";
@@ -54,6 +56,11 @@ export async function submitReview(
   if (shop) revalidatePath(`/${shop.handle}/p/${product.slug}`);
   revalidatePath("/admin/reviews");
 
+  // A reviewer is never the seller, so without this the pending review sits
+  // invisible until the seller happens to reload. After the response — the
+  // reviewer shouldn't wait on the seller's dashboard either.
+  after(() => publishShopEvent(product.shopId, "review"));
+
   return { ok: true, message: "Thanks! Your review is awaiting approval." };
 }
 
@@ -71,6 +78,7 @@ export async function approveReview(formData: FormData) {
   revalidatePath(`/${shop.handle}`);
   // The catalogue is cached per shop; a write has to drop it.
   revalidateShop(shop.id, shop.handle);
+  after(() => publishShopEvent(shop.id, "review"));
 }
 
 export async function deleteReview(formData: FormData) {
@@ -86,4 +94,5 @@ export async function deleteReview(formData: FormData) {
   revalidatePath(`/${shop.handle}`);
   // The catalogue is cached per shop; a write has to drop it.
   revalidateShop(shop.id, shop.handle);
+  after(() => publishShopEvent(shop.id, "review"));
 }

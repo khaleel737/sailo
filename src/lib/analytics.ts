@@ -175,6 +175,47 @@ export function classifyVisit(input: {
   return { referrer, referrerHost, source, utmSource, utmMedium, utmCampaign };
 }
 
+/**
+ * The host an outbound click points at, or null when the click is not one to
+ * count.
+ *
+ * Always derived here, on the server, from the full URL the page posted —
+ * never from a client-supplied host string, which a hostile page could set to
+ * anything. The rules, each of which returns null rather than a guess:
+ *
+ *   - Only `http:` and `https:`. A `javascript:` URL is not a destination, a
+ *     protocol-relative `//host` string does not parse as a URL at all, and
+ *     `mailto:`/`tel:` name a person rather than a place.
+ *   - The shop's own host is internal navigation, not "outbound".
+ *   - Punycode stays as the parser hands it over — `münchen.de` is stored as
+ *     `xn--mnchen-3ya.de`, one spelling per site however the link was written.
+ *
+ * Normalised like a referrer host (`www.`/`m.` folded, lowercased) so the
+ * destinations chart groups the way the sources chart does.
+ */
+export function outboundHost(
+  rawUrl: unknown,
+  selfHost?: string | null,
+): string | null {
+  if (typeof rawUrl !== "string" || !rawUrl) return null;
+
+  let parsed: URL;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    return null;
+  }
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+
+  const host = normalizeHost(parsed.hostname);
+  if (!host) return null;
+
+  const self = selfHost ? normalizeHost(selfHost) : null;
+  if (self && host === self) return null;
+
+  return host;
+}
+
 export type DeviceInfo = {
   device: "mobile" | "tablet" | "desktop";
   os: string | null;

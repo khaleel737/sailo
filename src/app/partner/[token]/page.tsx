@@ -10,28 +10,44 @@ import {
   Wallet,
 } from "lucide-react";
 import { getPortalByToken } from "@/lib/affiliate-portal";
+import { rotatePortalToken } from "@/lib/actions/partner";
+import { maskPayoutDetails } from "@/lib/payouts";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
 import { formatPercent } from "@/lib/pricing";
 import { formatMoney, shopThemeVars } from "@/lib/utils";
 import { CopyLink } from "@/components/shared/copy-link";
+import { LiveRefresh } from "@/components/shared/live-refresh";
+import { PartnerChart } from "./_components/partner-chart";
+import { PayoutForm } from "./_components/payout-form";
 
 /* Not yet converted — see the note in `next.config.ts`. */
 export const instant = false;
 
 
-/** A private report — never something a search engine should hold on to. */
+/**
+ * A private report — never something a search engine should hold on to, and
+ * `no-referrer` because the token lives in this URL: the global header policy
+ * already strips the path cross-origin, but a page whose address *is* the
+ * credential shouldn't hand it to anyone, same-origin included.
+ */
 export const metadata: Metadata = {
   title: "Your referrals",
   robots: { index: false, follow: false },
+  referrer: "no-referrer",
 };
 
 export default async function PartnerPortalPage({
   params,
+  searchParams,
 }: PageProps<"/partner/[token]">) {
   const { token } = await params;
   const data = await getPortalByToken(token);
   if (!data) notFound();
+
+  // Set by `rotatePortalToken` on the way here: the reset landed, this is the
+  // fresh link, and the page should say so once.
+  const wasReset = (await searchParams).reset === "1";
 
   const { affiliate, shop, stats, series, recentOrders, siblings } = data;
   const { locale, t, dir } = await getShopT(shop.locale);
@@ -39,7 +55,12 @@ export default async function PartnerPortalPage({
 
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const referralUrl = `${base}/${shop.handle}?ref=${affiliate.code}`;
-  const peak = Math.max(1, ...series.map((d) => d.commissionCents));
+
+  const payoutMethodNames: Record<string, string> = {
+    bank: t.partner.payoutBank,
+    paypal: t.partner.payoutPaypal,
+    other: t.partner.payoutOther,
+  };
 
   return (
     <div
@@ -50,6 +71,14 @@ export default async function PartnerPortalPage({
       className="min-h-screen"
     >
       <div className="mx-auto w-full max-w-[720px] px-4 pb-20 pt-10">
+        {/*
+          The stream authenticates like the page does — by the token, which
+          is already this URL's path segment, so the query string reveals
+          nothing the address bar hasn't.
+        */}
+        <LiveRefresh
+          url={`/api/partner/events?token=${encodeURIComponent(token)}`}
+        />
         <Link
           href={`/${shop.handle}`}
           className="text-muted mb-6 inline-flex items-center gap-1.5 text-sm transition hover:opacity-70"
@@ -68,6 +97,12 @@ export default async function PartnerPortalPage({
             percent: formatPercent(stats.commissionBp),
           })}
         </p>
+
+        {wasReset ? (
+          <p className="mt-4 rounded-xl bg-emerald-50 px-3 py-2.5 text-sm text-emerald-700">
+            {t.partner.securityResetDone}
+          </p>
+        ) : null}
 
         {/* The link itself, because this is also where they come to fetch it. */}
         <div className="surface-card mt-6 rounded-2xl p-4">
@@ -122,27 +157,48 @@ export default async function PartnerPortalPage({
           {interpolate(t.partner.salesLine, { amount: money(stats.salesCents) })}
         </p>
 
-        {/* Thirty days of commission, so a good week is visible. */}
+        {/* Thirty days of commission, so a good week is visible — and
+            scrubbable, so a good *day* is readable. */}
         <section className="surface-card mt-6 rounded-2xl p-4">
-          <div className="flex items-baseline justify-between gap-3">
-            <h2 className="text-sm font-semibold">{t.partner.last30}</h2>
-            <span className="text-muted text-xs tabular-nums">
-              {money(series.reduce((sum, d) => sum + d.commissionCents, 0))}
-            </span>
-          </div>
-          <div className="mt-3 flex h-24 items-end gap-[3px]">
-            {series.map((d) => (
-              <div
-                key={d.day}
-                title={`${d.day} · ${money(d.commissionCents)}`}
-                className="accent-bg flex-1 rounded-sm"
-                style={{
-                  height: `${Math.max(2, (d.commissionCents / peak) * 100)}%`,
-                  opacity: d.commissionCents > 0 ? 1 : 0.15,
-                }}
-              />
-            ))}
-          </div>
+          <h2 className="mb-3 text-sm font-semibold">{t.partner.last30}</h2>
+          <PartnerChart
+            days={series.map((d) => d.day)}
+            commission={series.map((d) => d.commissionCents)}
+            orders={series.map((d) => d.orders)}
+            currency={shop.currency}
+            locale={locale}
+            labels={{
+              commission: t.partner.commission,
+              orders: t.partner.orders,
+              empty: t.partner.noActivity,
+              scrub: t.partner.last30,
+            }}
+          />
+        </section>
+
+        {/* Where the money should go — the affiliate's own answer, sitting
+            next to the seller's copy of what they owe. */}
+        <section className="surface-card mt-6 rounded-2xl p-4">
+          <h2 className="text-sm font-semibold">{t.partner.payoutTitle}</h2>
+          <p className="text-muted mt-1 text-sm leading-relaxed">
+            {interpolate(t.partner.payoutIntro, { shop: shop.name })}
+          </p>
+          <p className="text-muted mt-2 text-xs">
+            {affiliate.payoutMethod && affiliate.payoutDetails
+              ? interpolate(t.partner.payoutOnFile, {
+                  method:
+                    payoutMethodNames[affiliate.payoutMethod] ??
+                    affiliate.payoutMethod,
+                  details: maskPayoutDetails(affiliate.payoutDetails),
+                })
+              : t.partner.payoutNone}
+          </p>
+          <PayoutForm
+            token={token}
+            method={affiliate.payoutMethod}
+            shopName={shop.name}
+            t={t}
+          />
         </section>
 
         {/* Every shop this person promotes, keyed off their email. */}
@@ -242,6 +298,27 @@ export default async function PartnerPortalPage({
             </p>
           </section>
         ) : null}
+
+        {/*
+          The kill switch for a leaked link, next to the words that explain
+          why it exists. No confirm dialog: the paragraph above the button is
+          the confirmation, and the redirect lands on the working replacement.
+        */}
+        <section className="surface-card mt-6 rounded-2xl p-4">
+          <h2 className="text-sm font-semibold">{t.partner.securityTitle}</h2>
+          <p className="text-muted mt-1 text-sm leading-relaxed">
+            {t.partner.securityBody}
+          </p>
+          <form action={rotatePortalToken} className="mt-3">
+            <input type="hidden" name="token" value={token} />
+            <button
+              type="submit"
+              className="surface-elevated h-10 rounded-xl px-4 text-sm font-medium transition hover:opacity-80"
+            >
+              {t.partner.securityReset}
+            </button>
+          </form>
+        </section>
 
         <p className="text-muted mt-8 text-center text-xs leading-relaxed">
           {interpolate(t.partner.privateNote, { shop: shop.name })}

@@ -1,7 +1,8 @@
 "use server";
 
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
+import { liveShop } from "@/lib/shop-visibility";
 import { coupons, shops, type Coupon } from "@/db/schema";
 import { rateLimit, refundRateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
@@ -36,7 +37,7 @@ export async function previewOrder(input: {
   const now = new Date();
 
   const shop = await db.query.shops.findFirst({
-    where: and(eq(shops.id, input.shopId), eq(shops.isPublished, true), isNull(shops.suspendedAt)),
+    where: liveShop(eq(shops.id, input.shopId)),
     columns: {
       id: true,
       currency: true,

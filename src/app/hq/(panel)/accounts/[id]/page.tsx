@@ -102,7 +102,13 @@ export default async function HqAccountPage({
         meta={
           <>
             <BillingBadge shop={shop} plan={plan.name} />
-            {shop.suspendedAt ? (
+            {/* A tombstone is unpublished and not suspended, so it needs its
+                own badge or it reads as a seller who merely went offline. */}
+            {shop.deletedAt ? (
+              <Badge tone="neutral" dot>
+                Deleted
+              </Badge>
+            ) : shop.suspendedAt ? (
               <Badge tone="red" dot>
                 Suspended
               </Badge>
@@ -118,15 +124,22 @@ export default async function HqAccountPage({
           </>
         }
         action={
-          <a
-            href={`${base}/${shop.handle}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="focus-ring press inline-flex h-10 items-center gap-2 rounded-xl pointer-coarse:h-11 border border-ink-200 bg-white px-4 text-sm font-medium text-ink-900 shadow-xs transition hover:border-ink-300 hover:bg-ink-50"
-          >
-            /{shop.handle}
-            <ArrowUpRight className="size-4" />
-          </a>
+          // A tombstoned handle 404s by design, so the link would only ever
+          // be a dead end. The handle is still shown, because it is what the
+          // surviving invoices were issued under.
+          shop.deletedAt ? (
+            <span className="text-sm text-ink-400">/{shop.handle}</span>
+          ) : (
+            <a
+              href={`${base}/${shop.handle}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="focus-ring press inline-flex h-10 items-center gap-2 rounded-xl pointer-coarse:h-11 border border-ink-200 bg-white px-4 text-sm font-medium text-ink-900 shadow-xs transition hover:border-ink-300 hover:bg-ink-50"
+            >
+              /{shop.handle}
+              <ArrowUpRight className="size-4" />
+            </a>
+          )
         }
       />
 

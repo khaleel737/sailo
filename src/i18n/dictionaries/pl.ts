@@ -27,6 +27,11 @@ export const pl: Dictionary = {
     accept: "Akceptuję",
     decline: "Odrzucam",
     privacy: "Polityka prywatności",
+    shopTitle: "Pliki cookie w tym sklepie",
+    shopBody: "{shop} korzysta z narzędzi marketingowych, które zapisują pliki cookie na Twoim urządzeniu, aby mierzyć odwiedziny i reklamy. Nic nie zostanie załadowane, dopóki nie wyrazisz zgody.",
+    shopEssentialBody: "Zawsze włączone — Twój język i ta decyzja.",
+    marketing: "Marketing i analityka",
+    marketingBody: "Narzędzia wybrane przez {shop}. Ładowane tylko za Twoją zgodą.",
   },
 
   shop: {
@@ -45,11 +50,14 @@ export const pl: Dictionary = {
     kindPhysical: "Wysyłamy do Ciebie", kindDigital: "Pobierz od razu",
     kindService: "Zarezerwuj termin", kindEvent: "Bilet na wydarzenie", labelDigital: "Do pobrania", labelService: "Rezerwacja",
     from: "Od {price}",
+    favorites: "Ulubione", favoritesEmpty: "Jeszcze nic nie zapisano",
+    favoritesEmptyBody: "Stuknij serduszko przy produkcie, a poczeka tutaj na Ciebie.",
+    saveToFavorites: "Zapisz w ulubionych",
   },
   sort: {
     featured: "Polecane", newest: "Najnowsze", priceAsc: "Cena rosnąco",
     priceDesc: "Cena malejąco", rating: "Najlepiej oceniane", allTypes: "Wszystko",
-    physical: "Produkty", digital: "Do pobrania", services: "Rezerwacje",
+    physical: "Produkty", digital: "Do pobrania", services: "Rezerwacje", events: "Wydarzenia",
   },
   product: {
     reviews: "Opinie", noReviews: "Brak opinii — napisz pierwszą.",
@@ -96,6 +104,9 @@ export const pl: Dictionary = {
     inPerson: "Na miejscu",
     downloadAfterPayment: "Pobieranie odblokuje się, gdy {shop} potwierdzi płatność.",
     getFiles: "Pobierz swoje pliki",
+    termsAgree: "Akceptuję regulamin",
+    termsView: "Przeczytaj",
+    marketingOptIn: "Wysyłajcie mi nowości i oferty",
     earnReferral: "Zarabiaj {percent}% z poleceń",
     earnReferralBody:
       "Udostępnij swój link. Gdy ktoś kupi w {shop} przez niego, zarobisz {percent}% wartości zamówienia.",
@@ -103,6 +114,7 @@ export const pl: Dictionary = {
   cart: {
     title: "Twój koszyk",
     add: "Dodaj do koszyka",
+    added: "Dodano",
     buyNow: "Kup teraz",
     view: "Koszyk",
     itemCount: "{count} w koszyku",
@@ -111,6 +123,17 @@ export const pl: Dictionary = {
     keepShopping: "Wróć do zakupów",
     remove: "Usuń",
     someGone: "Coś z koszyka się wyprzedało i nie liczy się do sumy.",
+  },
+
+  share: {
+    shopTitle: "Udostępnij ten sklep",
+    productTitle: "Udostępnij ten produkt",
+    copyLink: "Kopiuj link",
+    copied: "Skopiowano",
+    email: "E-mail",
+    more: "Więcej",
+    scanToOpen: "Zeskanuj, aby otworzyć",
+    downloadQr: "Pobierz kod QR",
   },
 
   download: {
@@ -130,6 +153,11 @@ export const pl: Dictionary = {
     admitOne: "Wstęp dla jednej osoby",
     showAtDoor: "Pokaż to przy wejściu.",
     used: "Wykorzystany",
+    online: "Wydarzenie online",
+    inPerson: "Na miejscu",
+    join: "Dołącz do wydarzenia",
+    joinLocked: "Link do dołączenia pojawi się tutaj, gdy {shop} potwierdzi Twoją płatność.",
+    joinMissing: "Organizator nie dodał jeszcze linku do dołączenia.",
   },
 
   rails: {
@@ -204,6 +232,26 @@ export const pl: Dictionary = {
     signInAction: "Wyślij mi link",
     signInDone: "Jeśli adres jest zarejestrowany, link już leci. Sprawdź skrzynkę.",
     signInEmail: "Twój e-mail",
+    commission: "Prowizja",
+    noActivity: "W tym okresie jeszcze nic nie zarobiłeś.",
+    payoutTitle: "Jak dostaniesz pieniądze",
+    payoutIntro: "Daj znać sklepowi {shop}, dokąd wysłać Twoją prowizję. Ta informacja jest tuż obok kwoty, którą ma Ci wypłacić — więc wypłata to jedno pytanie mniej.",
+    payoutMethodLabel: "Jak",
+    payoutBank: "Przelew bankowy",
+    payoutPaypal: "PayPal",
+    payoutOther: "Inne",
+    payoutDetailsLabel: "Dokąd",
+    payoutBankHint: "Numer konta lub IBAN oraz imię i nazwisko właściciela",
+    payoutPaypalHint: "E-mail Twojego konta PayPal",
+    payoutOtherHint: "Powiedz sklepowi {shop}, jak ma Ci zapłacić",
+    payoutSave: "Zapisz dane do wypłaty",
+    payoutSaved: "Zapisano — {shop} widzi to obok kwoty, którą ma Ci wypłacić.",
+    payoutOnFile: "Zapisane: {method} · {details}",
+    payoutNone: "Na razie nic nie zapisano.",
+    securityTitle: "Zachowaj ten link dla siebie",
+    securityBody: "Ten link to jedyny klucz do tej strony: każdy, kto go ma, może zobaczyć Twoje zarobki i zmienić sposób wypłaty. Nie publikuj go nigdzie publicznie. Podejrzewasz, że ma go ktoś inny? Zresetuj go — stary link natychmiast przestaje działać, a nowy dostaniesz e-mailem.",
+    securityReset: "Zresetuj mój link",
+    securityResetDone: "Gotowe — to Twój nowy link, a stary już nie działa. Zapisz tę stronę na nowo tam, gdzie ją trzymasz.",
   },
 
   invoice: {
@@ -236,6 +284,17 @@ export const pl: Dictionary = {
     updatePassword: "Zaktualizuj hasło",
     resetDone: "Hasło zaktualizowane. Możesz się nim teraz zalogować.",
     resetInvalid: "Ten link wygasł lub został już użyty. Poproś o nowy.",
+    twoFactorTitle: "Wpisz swój kod",
+    twoFactorSubtitle: "Otwórz aplikację uwierzytelniającą i wpisz sześć cyfr, które pokazuje.",
+    twoFactorCode: "Sześciocyfrowy kod",
+    twoFactorVerify: "Potwierdź i zaloguj się",
+    twoFactorUseBackup: "Użyj zamiast tego kodu zapasowego",
+    twoFactorBackupTitle: "Użyj kodu zapasowego",
+    twoFactorBackupSubtitle:
+      "Wpisz jeden z kodów zapisanych przy włączaniu weryfikacji dwuetapowej. Każdy działa tylko raz.",
+    twoFactorBackupCode: "Kod zapasowy",
+    twoFactorUseApp: "Użyj zamiast tego aplikacji uwierzytelniającej",
+    twoFactorExpired: "To trwało za długo. Zaloguj się ponownie, żeby znów poprosić o kod.",
   },
   onboarding: {
     shopNameFallback: "Twój sklep",
@@ -267,6 +326,7 @@ export const pl: Dictionary = {
     payments: "Płatności", delivery: "Dostawa", settings: "Ustawienia", checkin: "Check-in",
     viewShop: "Zobacz sklep", signOut: "Wyloguj", upgrade: "Ulepsz plan",
     openMenu: "Otwórz menu", closeMenu: "Zamknij menu",
+    broadcasts: "Wysyłki",
   },
   notifications: {
     aBuyer: "Kupujący",
@@ -279,6 +339,8 @@ export const pl: Dictionary = {
     reviewBody: "{name} wystawił(a) {rating}.",
     affiliateApplication: "Zgłoszenie partnera",
     affiliateBody: "{name} chce promować Twój sklep.",
+    payoutUpdated: "Dane do wypłaty zaktualizowane",
+    payoutUpdatedBody: "{name} ustawił(a), jak chce otrzymywać wypłatę.",
     readyToShip: "Gotowe do wysyłki",
     shipBody: "{product} dla {name} — dodaj numer przesyłki przy nadaniu.",
     justNow: "przed chwilą",
@@ -328,5 +390,16 @@ export const pl: Dictionary = {
     unlocksThis: "Odblokowuje to", bestValue: "Najlepszy wybór",
     cancelAnyTime: "Anuluj w dowolnym momencie. Zamówienia przez czat i przelew są w całości Twoje; sprzedaż kartą objęta jest prowizją {fee}.",
     planFeature: "Funkcja planu {plan}", paidFeature: "Funkcja płatna", youAreOn: "Masz plan {plan}",
+  },
+
+  unsubscribe: {
+    link: "Wypisz się",
+    title: "Zrezygnować z e-maili marketingowych od {shop}?",
+    body: "{email} nie będzie już otrzymywać e-maili marketingowych od {shop}. Potwierdzenia zamówień i paragony nadal będą przychodzić.",
+    confirm: "Tak, wypisz mnie",
+    doneTitle: "Wypisano Cię",
+    doneBody: "{shop} nie wyśle Ci już e-maili marketingowych. Potwierdzenia zamówień nadal będą przychodzić.",
+    invalidTitle: "Ten link już nie działa",
+    invalidBody: "Odpowiedz na dowolny e-mail od sklepu i poproś o usunięcie z listy.",
   },
 };

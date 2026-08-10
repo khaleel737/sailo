@@ -27,6 +27,11 @@ export const uk: Dictionary = {
     accept: "Прийняти",
     decline: "Відхилити",
     privacy: "Політика конфіденційності",
+    shopTitle: "Файли cookie в цьому магазині",
+    shopBody: "{shop} використовує маркетингові інструменти, які зберігають файли cookie на вашому пристрої для вимірювання відвідувань і реклами. Нічого не завантажується без вашої згоди.",
+    shopEssentialBody: "Завжди увімкнені — ваша мова та цей вибір.",
+    marketing: "Маркетинг і аналітика",
+    marketingBody: "Інструменти, обрані магазином {shop}. Завантажуються лише за вашої згоди.",
   },
 
   shop: {
@@ -44,11 +49,14 @@ export const uk: Dictionary = {
     kindPhysical: "Доставимо вам", kindDigital: "Миттєве завантаження",
     kindService: "Забронюйте час", kindEvent: "Квиток на подію", labelDigital: "Завантаження", labelService: "Запис",
     from: "Від {price}",
+    favorites: "Обране", favoritesEmpty: "Поки нічого не збережено",
+    favoritesEmptyBody: "Натисніть на сердечко на товарі — і він чекатиме на вас тут.",
+    saveToFavorites: "Зберегти в обране",
   },
   sort: {
     featured: "Рекомендовані", newest: "Найновіші", priceAsc: "Ціна: за зростанням",
     priceDesc: "Ціна: за спаданням", rating: "Найкращі оцінки", allTypes: "Усе",
-    physical: "Товари", digital: "Завантаження", services: "Записи",
+    physical: "Товари", digital: "Завантаження", services: "Записи", events: "Події",
   },
   product: {
     reviews: "Відгуки", noReviews: "Відгуків ще немає — напишіть перший.",
@@ -94,6 +102,9 @@ export const uk: Dictionary = {
     inPerson: "Особисто",
     downloadAfterPayment: "Завантаження відкриється, щойно {shop} підтвердить оплату.",
     getFiles: "Отримати файли",
+    termsAgree: "Я погоджуюся з умовами",
+    termsView: "Прочитати",
+    marketingOptIn: "Надсилайте мені новини та пропозиції",
     earnReferral: "Заробляйте {percent}% за рекомендації",
     earnReferralBody:
       "Поділіться своїм посиланням. Коли хтось купить у {shop} через нього, ви отримаєте {percent}% від замовлення.",
@@ -101,6 +112,7 @@ export const uk: Dictionary = {
   cart: {
     title: "Ваш кошик",
     add: "До кошика",
+    added: "Додано",
     buyNow: "Купити зараз",
     view: "Кошик",
     itemCount: "{count} у кошику",
@@ -109,6 +121,17 @@ export const uk: Dictionary = {
     keepShopping: "Продовжити покупки",
     remove: "Прибрати",
     someGone: "Щось із кошика закінчилося й не увійшло до суми.",
+  },
+
+  share: {
+    shopTitle: "Поділитися цим магазином",
+    productTitle: "Поділитися цим товаром",
+    copyLink: "Скопіювати посилання",
+    copied: "Скопійовано",
+    email: "Ел. пошта",
+    more: "Більше",
+    scanToOpen: "Відскануйте, щоб відкрити",
+    downloadQr: "Завантажити QR-код",
   },
 
   download: {
@@ -128,6 +151,11 @@ export const uk: Dictionary = {
     admitOne: "На одну особу",
     showAtDoor: "Покажіть це на вході.",
     used: "Використано",
+    online: "Онлайн-подія",
+    inPerson: "Особисто",
+    join: "Приєднатися до події",
+    joinLocked: "Посилання з’явиться тут, щойно {shop} підтвердить вашу оплату.",
+    joinMissing: "Організатор ще не додав посилання.",
   },
 
   rails: {
@@ -202,6 +230,26 @@ export const uk: Dictionary = {
     signInAction: "Надіслати посилання",
     signInDone: "Якщо адресу зареєстровано, посилання вже в дорозі. Перевірте пошту.",
     signInEmail: "Ваша пошта",
+    commission: "Комісія",
+    noActivity: "За цей період ще нічого не зароблено.",
+    payoutTitle: "Як отримати гроші",
+    payoutIntro: "Скажіть {shop}, куди надсилати вашу комісію. Ці дані видно поруч із тим, що вам належить, — тож, щоб заплатити вам, лишається на одне питання менше.",
+    payoutMethodLabel: "Як",
+    payoutBank: "Банківський переказ",
+    payoutPaypal: "PayPal",
+    payoutOther: "Інше",
+    payoutDetailsLabel: "Куди",
+    payoutBankHint: "Рахунок або IBAN та ім'я власника рахунку",
+    payoutPaypalHint: "Пошта, на яку зареєстровано ваш PayPal",
+    payoutOtherHint: "Розкажіть {shop}, як вам заплатити",
+    payoutSave: "Зберегти дані для виплат",
+    payoutSaved: "Збережено — {shop} бачить це поруч із тим, що вам належить.",
+    payoutOnFile: "Записано: {method} · {details}",
+    payoutNone: "Поки нічого не вказано.",
+    securityTitle: "Тримайте це посилання при собі",
+    securityBody: "Це посилання — єдиний ключ до цієї сторінки: будь-хто, у кого воно є, може бачити ваш заробіток і змінити спосіб виплати. Не публікуйте його у відкритому доступі. Здається, воно потрапило до когось іще? Скиньте його — старе посилання одразу перестане працювати, а нове надійде вам на пошту.",
+    securityReset: "Скинути моє посилання",
+    securityResetDone: "Готово — це ваше нове посилання, старе більше не діє. Збережіть цю сторінку заново там, де ви її тримаєте.",
   },
 
   invoice: {
@@ -234,6 +282,16 @@ export const uk: Dictionary = {
     updatePassword: "Оновити пароль",
     resetDone: "Пароль оновлено. Тепер можна увійти з ним.",
     resetInvalid: "Посилання застаріло або вже використане. Запросіть нове.",
+    twoFactorTitle: "Введіть код",
+    twoFactorSubtitle: "Відкрийте застосунок автентифікації та введіть шість цифр, які він показує.",
+    twoFactorCode: "Шестизначний код",
+    twoFactorVerify: "Підтвердити й увійти",
+    twoFactorUseBackup: "Скористатися резервним кодом",
+    twoFactorBackupTitle: "Скористайтеся резервним кодом",
+    twoFactorBackupSubtitle: "Введіть один із кодів, які ви зберегли, коли вмикали двоетапну перевірку. Кожен діє один раз.",
+    twoFactorBackupCode: "Резервний код",
+    twoFactorUseApp: "Скористатися застосунком автентифікації",
+    twoFactorExpired: "Це тривало надто довго. Увійдіть ще раз, щоб отримати новий запит коду.",
   },
   onboarding: {
     shopNameFallback: "Ваш магазин",
@@ -266,6 +324,7 @@ export const uk: Dictionary = {
     checkin: "Реєстрація",
     viewShop: "Переглянути магазин", signOut: "Вийти", upgrade: "Покращити тариф",
     openMenu: "Відкрити меню", closeMenu: "Закрити меню",
+    broadcasts: "Розсилки",
   },
   notifications: {
     aBuyer: "Покупець",
@@ -277,6 +336,8 @@ export const uk: Dictionary = {
     reviewBody: "{name} поставив(ла) {rating}.",
     affiliateApplication: "Заявка партнера",
     affiliateBody: "{name} хоче просувати ваш магазин.",
+    payoutUpdated: "Дані для виплат оновлено",
+    payoutUpdatedBody: "{name} вказав(ла), як хоче отримувати виплату.",
     readyToShip: "Готово до відправлення",
     shipBody: "{product} для {name} — додайте номер відстеження під час відправлення.",
     justNow: "щойно",
@@ -326,5 +387,16 @@ export const uk: Dictionary = {
     unlocksThis: "Відкриває це", bestValue: "Найвигідніше",
     cancelAnyTime: "Скасувати можна будь-коли. Замовлення через чат і банківський переказ повністю ваші; з продажів карткою стягується комісія {fee}.",
     planFeature: "Функція {plan}", paidFeature: "Платна функція", youAreOn: "У вас тариф {plan}",
+  },
+
+  unsubscribe: {
+    link: "Відписатися",
+    title: "Відмовитися від розсилки {shop}?",
+    body: "{email} більше не отримуватиме розсилку від {shop}. Підтвердження замовлень і чеки надходитимуть, як завжди.",
+    confirm: "Так, відписатися",
+    doneTitle: "Ви відписані",
+    doneBody: "{shop} більше не надсилатиме вам розсилку. Підтвердження замовлень надходитимуть, як завжди.",
+    invalidTitle: "Це посилання більше не дійсне",
+    invalidBody: "Відповідайте на будь-який лист магазину та попросіть вилучити вас зі списку.",
   },
 };

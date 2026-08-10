@@ -45,6 +45,14 @@ export const en = {
     accept: "Accept",
     decline: "Decline",
     privacy: "Privacy Policy",
+    // A seller's storefront. The tools are the seller's, the seller is the
+    // controller, and the copy has to say so — reusing the Sailo strings
+    // above would make the banner claim the wrong party is measuring.
+    shopTitle: "Cookies on this shop",
+    shopBody: "{shop} uses marketing tools that store cookies on your device to measure visits and ads. None of them load unless you accept.",
+    shopEssentialBody: "Always on — your language and this choice.",
+    marketing: "Marketing & analytics",
+    marketingBody: "Tools chosen by {shop}. Loaded only if you accept.",
   },
 
   shop: {
@@ -83,6 +91,12 @@ export const en = {
     labelDigital: "Download",
     labelService: "Booking",
     from: "From {price}",
+    // The heart on a card and the sheet it fills. "Saved", not "wishlist" —
+    // the buyer is keeping a thing in mind, not writing to Santa.
+    favorites: "Favourites",
+    favoritesEmpty: "Nothing saved yet",
+    favoritesEmptyBody: "Tap the heart on a product and it'll wait for you here.",
+    saveToFavorites: "Save to favourites",
   },
 
   sort: {
@@ -98,6 +112,7 @@ export const en = {
     physical: "Products",
     digital: "Downloads",
     services: "Bookings",
+    events: "Events",
   },
 
   product: {
@@ -180,11 +195,15 @@ export const en = {
     downloadAfterPayment:
       "Your download unlocks as soon as {shop} confirms your payment.",
     getFiles: "Get your files",
+    termsAgree: "I agree to the terms and conditions",
+    termsView: "Read them",
+    marketingOptIn: "Email me news and offers",
   },
 
   cart: {
     title: "Your basket",
     add: "Add to basket",
+    added: "Added",
     buyNow: "Buy now",
     view: "Basket",
     itemCount: "{count} in your basket",
@@ -194,6 +213,22 @@ export const en = {
     remove: "Remove",
     someGone:
       "Something in your basket has sold out and has been left out of the total.",
+  },
+
+  /**
+   * The share sheet on a storefront and on each product. Channel names
+   * (WhatsApp, Telegram, X, Facebook) are brand names and stay untranslated
+   * in the component; these are the words around them.
+   */
+  share: {
+    shopTitle: "Share this shop",
+    productTitle: "Share this product",
+    copyLink: "Copy link",
+    copied: "Copied",
+    email: "Email",
+    more: "More",
+    scanToOpen: "Scan to open",
+    downloadQr: "Download QR code",
   },
 
   download: {
@@ -214,6 +249,11 @@ export const en = {
     admitOne: "Admit one",
     showAtDoor: "Show this at the door.",
     used: "Used",
+    online: "Online event",
+    inPerson: "In person",
+    join: "Join the event",
+    joinLocked: "Your join link appears here once {shop} confirms your payment.",
+    joinMissing: "The organiser hasn't added a join link yet.",
   },
 
   /**
@@ -300,6 +340,32 @@ export const en = {
     signInDone:
       "If that address is registered, the link is on its way. Check your inbox.",
     signInEmail: "Your email",
+    // The commission chart's readout.
+    commission: "Commission",
+    noActivity: "Nothing earned in this window yet.",
+    // Payout details — the affiliate telling the seller where money goes.
+    payoutTitle: "Getting paid",
+    payoutIntro:
+      "Tell {shop} where to send your commission. It sits next to what they owe you, so paying you is one less question.",
+    payoutMethodLabel: "How",
+    payoutBank: "Bank transfer",
+    payoutPaypal: "PayPal",
+    payoutOther: "Other",
+    payoutDetailsLabel: "Where",
+    payoutBankHint: "Account or IBAN, and the name on the account",
+    payoutPaypalHint: "The email on your PayPal account",
+    payoutOtherHint: "Tell {shop} how to pay you",
+    payoutSave: "Save payout details",
+    payoutSaved: "Saved — {shop} sees this next to what they owe you.",
+    payoutOnFile: "On file: {method} · {details}",
+    payoutNone: "Nothing on file yet.",
+    // The link is the only credential there is, so the page says so.
+    securityTitle: "Keep this link to yourself",
+    securityBody:
+      "This link is the only key to this page: anyone who has it can read your earnings and change how you're paid. Don't post it anywhere public. Think someone else has it? Reset it — the old link stops working straight away, and the new one is emailed to you.",
+    securityReset: "Reset my link",
+    securityResetDone:
+      "Done — this is your new link, and the old one is dead. Save this page again wherever you keep it.",
   },
 
   invoice: {
@@ -360,6 +426,24 @@ export const en = {
     resetDone: "Password updated. You can sign in with it now.",
     resetInvalid:
       "That link has expired or has already been used. Ask for a new one.",
+
+    /*
+     * The second step of a password sign-in, for accounts with two-factor on.
+     * Nothing here says whether the account exists or whether the password was
+     * right — reaching this screen at all already answers both, and only the
+     * person who got here can see it.
+     */
+    twoFactorTitle: "Enter your code",
+    twoFactorSubtitle: "Open your authenticator app and type the six digits it shows.",
+    twoFactorCode: "Six-digit code",
+    twoFactorVerify: "Verify and sign in",
+    twoFactorUseBackup: "Use a backup code instead",
+    twoFactorBackupTitle: "Use a backup code",
+    twoFactorBackupSubtitle:
+      "Enter one of the codes you saved when you turned two-factor on. Each one works once.",
+    twoFactorBackupCode: "Backup code",
+    twoFactorUseApp: "Use your authenticator app instead",
+    twoFactorExpired: "That took too long. Sign in again to get a new code prompt.",
   },
 
   onboarding: {
@@ -413,6 +497,7 @@ export const en = {
     upgrade: "Upgrade",
     openMenu: "Open menu",
     closeMenu: "Close menu",
+    broadcasts: "Broadcasts",
   },
 
   notifications: {
@@ -429,6 +514,8 @@ export const en = {
     reviewBody: "{name} left {rating}.",
     affiliateApplication: "Affiliate application",
     affiliateBody: "{name} wants to promote your shop.",
+    payoutUpdated: "Payout details updated",
+    payoutUpdatedBody: "{name} set how they'd like to be paid.",
     readyToShip: "Ready to ship",
     shipBody: "{product} for {name} — add tracking when you post it.",
     justNow: "just now",
@@ -486,6 +573,17 @@ export const en = {
     planFeature: "{plan} feature",
     paidFeature: "Paid feature",
     youAreOn: "You're on {plan}",
+  },
+
+  unsubscribe: {
+    link: "Unsubscribe",
+    title: "Stop marketing emails from {shop}?",
+    body: "{email} will stop receiving marketing emails from {shop}. Order confirmations and receipts still arrive as usual.",
+    confirm: "Yes, unsubscribe me",
+    doneTitle: "You're unsubscribed",
+    doneBody: "{shop} won't send you marketing emails again. Order confirmations still arrive as usual.",
+    invalidTitle: "This link has expired",
+    invalidBody: "Reply to any email from the shop and ask them to remove you, and they will.",
   },
 } as const;
 

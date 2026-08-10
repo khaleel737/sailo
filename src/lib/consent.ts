@@ -1,10 +1,12 @@
 /**
  * Whether the visitor has agreed to analytics.
  *
- * Only Sailo's own surfaces ask. Seller storefronts never do, because nothing
- * on them stores anything on a device any more — see `visitor-id.ts`. Asking
- * a seller's buyers to dismiss our banner on the seller's page would be us
- * taxing their conversion rate for a tag that is not even mounted there.
+ * Only Sailo's own surfaces ask this question. Nothing of ours stores
+ * anything on a seller's storefront — see `visitor-id.ts` — so our banner
+ * never appears there. When a seller connects marketing tags of their own,
+ * the storefront asks its own question from `shop-consent.ts`: a different
+ * controller, a different store, keyed per shop, and deliberately never
+ * read as an answer to this one.
  *
  * The choice is kept in `localStorage`, not a cookie. Storing a consent
  * decision is itself exempt — it exists solely to honour what the visitor

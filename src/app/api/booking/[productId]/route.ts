@@ -1,5 +1,6 @@
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
+import { liveShop } from "@/lib/shop-visibility";
 import { products, shops } from "@/db/schema";
 import { isUuid } from "@/lib/utils";
 import { rateLimit } from "@/lib/redis";
@@ -56,12 +57,22 @@ export async function GET(
    * because the product row is still published.
    */
   const shop = await db.query.shops.findFirst({
-    where: and(
-      eq(shops.id, product.shopId),
-      eq(shops.isPublished, true),
-      isNull(shops.suspendedAt),
-    ),
-    columns: { bookingHours: true, timeZone: true, bookingSlotMinutes: true },
+    where: liveShop(eq(shops.id, product.shopId)),
+    columns: {
+      id: true,
+      bookingHours: true,
+      timeZone: true,
+      bookingSlotMinutes: true,
+      /*
+       * The seller's own calendar, and what they pay for. Both read here
+       * rather than fetched inside the calendar, so the plan gate is decided
+       * from the same row that supplies the feed and cannot drift from it.
+       */
+      calendarFeedUrl: true,
+      plan: true,
+      subscriptionStatus: true,
+      compPlan: true,
+    },
   });
   if (!shop) {
     return Response.json({ error: "Not found." }, { status: 404 });

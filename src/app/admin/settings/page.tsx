@@ -6,12 +6,12 @@ import { getT } from "@/i18n/server";
 export const metadata: Metadata = { title: "Settings" };
 
 export default async function AdminSettingsPage() {
-  const { shop } = await requireShop();
+  const { user, shop } = await requireShop();
   const { t } = await getT();
 
   return (
     <>
-      <SettingsForm shop={shop} t={t} />
+      <SettingsForm shop={shop} t={t} accountEmail={user.email} />
     </>
   );
 }

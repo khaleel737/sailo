@@ -40,6 +40,10 @@ import { GoogleTagGate } from "@/lib/google-tag-gate";
      /[handle] and everything under it   seller's shop, seller's buyers
      /download /invoice /partner          buyer-facing, reached by token
      /hq                                  internal staff, already noindex
+
+   Storefronts can still carry tags — the *seller's* own, configured in
+   settings and consent-gated per shop. That is `lib/shop-pixels.ts` and the
+   `[handle]` components, and it reports to the seller's property, never ours.
 =========================================================================== */
 
 /**

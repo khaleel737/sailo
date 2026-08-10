@@ -10,6 +10,7 @@ import {
   type BrandIconProps,
 } from "@/components/shared/brand-icons";
 import type { ShopSocial } from "@/db/schema";
+import { OutboundLink } from "./outbound-link";
 
 /**
  * Exported so the admin's payment rails can show the same marks the storefront
@@ -40,7 +41,14 @@ const LABELS: Record<string, string> = {
   website: "Website",
 };
 
-export function SocialIcons({ socials }: { socials: ShopSocial[] }) {
+export function SocialIcons({
+  socials,
+  shopId,
+}: {
+  socials: ShopSocial[];
+  /** When present, each icon counts an outbound click for this shop. */
+  shopId?: string;
+}) {
   if (!socials?.length) return null;
 
   return (
@@ -51,18 +59,33 @@ export function SocialIcons({ socials }: { socials: ShopSocial[] }) {
           LABELS[social.platform] ??
           social.platform.charAt(0).toUpperCase() + social.platform.slice(1);
 
+        const anchor = {
+          href: social.url,
+          target: "_blank",
+          rel: "noopener noreferrer nofollow",
+          "aria-label": label,
+          title: label,
+          className:
+            "surface-card flex size-9 items-center justify-center rounded-full transition hover:opacity-70",
+        };
+
         return (
           <li key={`${social.platform}-${social.url}`}>
-            <a
-              href={social.url}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              aria-label={label}
-              title={label}
-              className="surface-card flex size-9 items-center justify-center rounded-full transition hover:opacity-70"
-            >
-              <Icon className="size-4" />
-            </a>
+            {shopId ? (
+              <OutboundLink
+                shopId={shopId}
+                // A "website" entry is the seller's own other site, not a
+                // social network; it still counts, filed under other.
+                kind={social.platform === "website" ? "other" : "social"}
+                {...anchor}
+              >
+                <Icon className="size-4" />
+              </OutboundLink>
+            ) : (
+              <a {...anchor}>
+                <Icon className="size-4" />
+              </a>
+            )}
           </li>
         );
       })}

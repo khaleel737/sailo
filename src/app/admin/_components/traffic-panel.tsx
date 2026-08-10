@@ -1,5 +1,5 @@
-import { Globe, MapPin, Megaphone, Monitor, Share2 } from "lucide-react";
-import type { VisitBreakdown } from "@/lib/queries";
+import { ExternalLink, Globe, MapPin, Megaphone, Monitor, Share2 } from "lucide-react";
+import type { ClickBreakdown, VisitBreakdown } from "@/lib/queries";
 import {
   SOURCE_LABELS,
   countryFlag,
@@ -21,10 +21,13 @@ type Row = { label: string; lead?: string; count: number; unique: number };
  */
 export async function TrafficPanel({
   data,
+  clicks,
   days,
   locale,
 }: {
   data: VisitBreakdown;
+  /** Outbound click hosts — "where do they go" beside "where are they from". */
+  clicks: ClickBreakdown;
   days: number;
   locale: string;
 }) {
@@ -78,6 +81,12 @@ export async function TrafficPanel({
   const campaigns: Row[] = data.campaigns.map((c) => ({
     label: c.key,
     lead: undefined,
+    count: c.count,
+    unique: c.unique,
+  }));
+
+  const destinations: Row[] = clicks.hosts.map((c) => ({
+    label: hostLabel(c.key),
     count: c.count,
     unique: c.unique,
   }));
@@ -143,6 +152,15 @@ export async function TrafficPanel({
           rows={campaigns}
           total={data.total}
           empty={a.traffic.campaignHint}
+        />
+        <List
+          icon={<ExternalLink className="size-4" />}
+          title={a.traffic.destinations}
+          rows={destinations}
+          // Shares within this list are of all outbound clicks, not of
+          // visits — the two counts share no denominator.
+          total={clicks.total}
+          empty={a.traffic.destinationsEmpty}
         />
       </div>
     </section>

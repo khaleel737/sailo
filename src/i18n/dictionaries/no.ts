@@ -27,6 +27,11 @@ export const no: Dictionary = {
     accept: "Godta",
     decline: "Avslå",
     privacy: "Personvern",
+    shopTitle: "Informasjonskapsler i denne butikken",
+    shopBody: "{shop} bruker markedsføringsverktøy som lagrer informasjonskapsler på enheten din for å måle besøk og annonser. Ingenting lastes inn med mindre du godtar.",
+    shopEssentialBody: "Alltid på — språket ditt og dette valget.",
+    marketing: "Markedsføring og analyse",
+    marketingBody: "Verktøy valgt av {shop}. Lastes bare inn hvis du godtar.",
   },
 
   shop: {
@@ -43,11 +48,14 @@ export const no: Dictionary = {
     kindPhysical: "Sendes til deg", kindDigital: "Last ned med en gang",
     kindService: "Book en tid", kindEvent: "Billett til arrangement", labelDigital: "Nedlasting", labelService: "Booking",
     from: "Fra {price}",
+    favorites: "Favoritter", favoritesEmpty: "Ingenting lagret ennå",
+    favoritesEmptyBody: "Trykk på hjertet på et produkt, så venter det på deg her.",
+    saveToFavorites: "Lagre som favoritt",
   },
   sort: {
     featured: "Utvalgte", newest: "Nyeste", priceAsc: "Pris: lavest først",
     priceDesc: "Pris: høyest først", rating: "Best vurdert", allTypes: "Alt",
-    physical: "Varer", digital: "Nedlastinger", services: "Bookinger",
+    physical: "Varer", digital: "Nedlastinger", services: "Bookinger", events: "Arrangementer",
   },
   product: {
     reviews: "Anmeldelser", noReviews: "Ingen anmeldelser ennå — bli den første.",
@@ -93,6 +101,9 @@ export const no: Dictionary = {
     inPerson: "Fysisk",
     downloadAfterPayment: "Nedlastingen låses opp så snart {shop} bekrefter betalingen din.",
     getFiles: "Hent filene dine",
+    termsAgree: "Jeg godtar vilkårene og betingelsene",
+    termsView: "Les dem",
+    marketingOptIn: "Send meg nyheter og tilbud",
     earnReferral: "Tjen {percent}% på henvisninger",
     earnReferralBody:
       "Del lenken din. Når noen handler hos {shop} via den, tjener du {percent}% av bestillingen.",
@@ -100,6 +111,7 @@ export const no: Dictionary = {
   cart: {
     title: "Handlekurven din",
     add: "Legg i kurven",
+    added: "Lagt til",
     buyNow: "Kjøp nå",
     view: "Handlekurv",
     itemCount: "{count} i kurven",
@@ -108,6 +120,17 @@ export const no: Dictionary = {
     keepShopping: "Fortsett å handle",
     remove: "Fjern",
     someGone: "Noe i kurven er utsolgt og er ikke regnet med i totalen.",
+  },
+
+  share: {
+    shopTitle: "Del denne butikken",
+    productTitle: "Del dette produktet",
+    copyLink: "Kopier lenke",
+    copied: "Kopiert",
+    email: "E-post",
+    more: "Mer",
+    scanToOpen: "Skann for å åpne",
+    downloadQr: "Last ned QR-kode",
   },
 
   download: {
@@ -127,6 +150,11 @@ export const no: Dictionary = {
     admitOne: "Gjelder for én person",
     showAtDoor: "Vis denne ved døren.",
     used: "Brukt",
+    online: "Digitalt arrangement",
+    inPerson: "Fysisk",
+    join: "Bli med på arrangementet",
+    joinLocked: "Lenken din vises her så snart {shop} bekrefter betalingen.",
+    joinMissing: "Arrangøren har ikke lagt til en lenke ennå.",
   },
 
   rails: {
@@ -199,6 +227,26 @@ export const no: Dictionary = {
     signInAction: "Send meg lenken",
     signInDone: "Er adressen registrert, er lenken på vei. Sjekk innboksen.",
     signInEmail: "E-posten din",
+    commission: "Provisjon",
+    noActivity: "Ingenting tjent i denne perioden ennå.",
+    payoutTitle: "Få betalt",
+    payoutIntro: "Fortell {shop} hvor provisjonen din skal sendes. Det står rett ved siden av det du har til gode, så å betale deg er ett spørsmål mindre.",
+    payoutMethodLabel: "Hvordan",
+    payoutBank: "Bankoverføring",
+    payoutPaypal: "PayPal",
+    payoutOther: "Annet",
+    payoutDetailsLabel: "Hvor",
+    payoutBankHint: "Kontonummer eller IBAN, og navnet på kontoen",
+    payoutPaypalHint: "E-posten på PayPal-kontoen din",
+    payoutOtherHint: "Fortell {shop} hvordan de kan betale deg",
+    payoutSave: "Lagre utbetalingsdetaljer",
+    payoutSaved: "Lagret — {shop} ser dette ved siden av det du har til gode.",
+    payoutOnFile: "Registrert: {method} · {details}",
+    payoutNone: "Ingenting registrert ennå.",
+    securityTitle: "Hold denne lenken for deg selv",
+    securityBody: "Denne lenken er den eneste nøkkelen til denne siden: alle som har den, kan se hva du tjener og endre hvordan du får betalt. Ikke legg den ut noe offentlig sted. Tror du noen andre har den? Tilbakestill den — den gamle lenken slutter å virke med en gang, og den nye får du på e-post.",
+    securityReset: "Tilbakestill lenken min",
+    securityResetDone: "Ferdig — dette er den nye lenken din, og den gamle virker ikke lenger. Lagre denne siden på nytt der du pleier å ha den.",
   },
 
   invoice: {
@@ -231,6 +279,17 @@ export const no: Dictionary = {
     updatePassword: "Oppdater passord",
     resetDone: "Passordet er oppdatert. Du kan logge inn med det nå.",
     resetInvalid: "Lenken er utløpt eller allerede brukt. Be om en ny.",
+    twoFactorTitle: "Skriv inn koden din",
+    twoFactorSubtitle: "Åpne autentiseringsappen og skriv inn de seks sifrene den viser.",
+    twoFactorCode: "Sekssifret kode",
+    twoFactorVerify: "Bekreft og logg inn",
+    twoFactorUseBackup: "Bruk en reservekode i stedet",
+    twoFactorBackupTitle: "Bruk en reservekode",
+    twoFactorBackupSubtitle:
+      "Skriv inn en av kodene du lagret da du slo på tofaktorbekreftelse. Hver kode virker én gang.",
+    twoFactorBackupCode: "Reservekode",
+    twoFactorUseApp: "Bruk autentiseringsappen i stedet",
+    twoFactorExpired: "Det tok for lang tid. Logg inn på nytt for å bli spurt om en ny kode.",
   },
   onboarding: {
     shopNameFallback: "Butikken din",
@@ -262,6 +321,7 @@ export const no: Dictionary = {
     payments: "Betalinger", delivery: "Levering", settings: "Innstillinger", checkin: "Innsjekk",
     viewShop: "Se butikken", signOut: "Logg ut", upgrade: "Oppgrader",
     openMenu: "Åpne meny", closeMenu: "Lukk meny",
+    broadcasts: "Utsendelser",
   },
   notifications: {
     aBuyer: "En kjøper",
@@ -273,6 +333,8 @@ export const no: Dictionary = {
     reviewBody: "{name} ga {rating}.",
     affiliateApplication: "Partnersøknad",
     affiliateBody: "{name} vil promotere butikken din.",
+    payoutUpdated: "Utbetalingsdetaljer oppdatert",
+    payoutUpdatedBody: "{name} har lagt inn hvordan de vil få betalt.",
     readyToShip: "Klar til sending",
     shipBody: "{product} til {name} — legg inn sporing når du sender.",
     justNow: "akkurat nå",
@@ -322,5 +384,16 @@ export const no: Dictionary = {
     unlocksThis: "Låser opp dette", bestValue: "Best verdi",
     cancelAnyTime: "Avslutt når som helst. Bestillinger via chat og bankoverføring er helt dine; kortsalg har et gebyr på {fee}.",
     planFeature: "{plan}-funksjon", paidFeature: "Betalt funksjon", youAreOn: "Du har {plan}",
+  },
+
+  unsubscribe: {
+    link: "Meld av",
+    title: "Slutte å motta markedsføring fra {shop}?",
+    body: "{email} får ikke lenger markedsføring fra {shop}. Ordrebekreftelser og kvitteringer kommer fortsatt.",
+    confirm: "Ja, meld meg av",
+    doneTitle: "Du er meldt av",
+    doneBody: "{shop} sender deg ikke mer markedsføring. Ordrebekreftelser kommer fortsatt.",
+    invalidTitle: "Denne lenken er ikke lenger gyldig",
+    invalidBody: "Svar på en e-post fra butikken og be dem fjerne deg fra listen.",
   },
 };

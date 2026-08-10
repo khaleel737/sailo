@@ -46,6 +46,19 @@ const invoice = positionOf("the invoice", "await createInvoiceForOrder(");
  */
 const email = positionOf("the confirmation email", "confirmBuyerByEmail(");
 
+/*
+ * Spec 05's compliance gate, and the two earliest writes it has to precede.
+ *
+ * `upsertClient` is the first row this function creates, and `reserveStock` is
+ * the first thing it takes away from anyone else.
+ */
+const termsGate = positionOf(
+  "the terms refusal",
+  "if (shop.requireTerms && !input.acceptedTerms)",
+);
+const clientWrite = positionOf("the client upsert", "await upsertClient(");
+const stockWrite = positionOf("the stock reservation", "await reserveStock(");
+
 describe("createOrderIntent — nothing irreversible before the payment handoff", () => {
   /*
    * The coupon is the deliberate exception, and it is only allowed to be one
@@ -84,6 +97,44 @@ describe("createOrderIntent — nothing irreversible before the payment handoff"
     expect(source).toContain("const settlesAtCheckout = method.type !== \"card\"");
     expect(source).toContain("settlesAtCheckout\n    ? await createInvoiceForOrder(");
     expect(source).toContain("if (email && settlesAtCheckout)");
+  });
+
+  /*
+   * The compliance refusal is in the same family as the rules above: it is
+   * about where a step sits, not what it computes.
+   *
+   * Refusing an order after reserving its stock takes units off the shelf for
+   * a sale that was never allowed to happen. No order row exists, so
+   * `releaseAbandonedCheckouts` has nothing to find and nothing ever hands
+   * them back — the shop reads as sold out until someone edits stock by hand.
+   * The same argument covers `upsertClient`: a buyer record written for a
+   * refused order is a lead the seller can neither explain nor use.
+   */
+  it("refuses on missing terms before it writes anything", () => {
+    expect(termsGate).toBeLessThan(clientWrite);
+    expect(termsGate).toBeLessThan(stockWrite);
+  });
+
+  /*
+   * The proof is stamped from the server's clock and gated on the shop's own
+   * column. Writing `input.acceptedTerms` into the row instead would record a
+   * claim the client made about itself, which is precisely what a compliance
+   * record cannot be.
+   */
+  it("timestamps the agreement from the server, not from the request", () => {
+    expect(source).toContain("termsAcceptedAt: shop.requireTerms ? now : null");
+    expect(source).not.toContain("termsAcceptedAt: input.acceptedTerms");
+  });
+
+  /*
+   * Consent is only taken from a shop that asked for it. Reading the flag on
+   * its own would let a hand-rolled body opt a buyer in to a shop whose
+   * checkout never showed the box.
+   */
+  it("only records consent a shop actually asked for", () => {
+    expect(source).toContain(
+      "shop.askMarketingConsent && input.marketingOptIn ? now : null",
+    );
   });
 
   it("hands off to Stripe before claiming an invoice number", () => {

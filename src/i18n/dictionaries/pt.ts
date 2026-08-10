@@ -27,6 +27,11 @@ export const pt: Dictionary = {
     accept: "Aceitar",
     decline: "Recusar",
     privacy: "Política de Privacidade",
+    shopTitle: "Cookies nesta loja",
+    shopBody: "{shop} usa ferramentas de marketing que guardam cookies no seu dispositivo para medir visitas e anúncios. Nada é carregado a menos que aceite.",
+    shopEssentialBody: "Sempre ativos — o seu idioma e esta escolha.",
+    marketing: "Marketing e análise",
+    marketingBody: "Ferramentas escolhidas por {shop}. Carregadas apenas se aceitar.",
   },
 
   shop: {
@@ -45,11 +50,14 @@ export const pt: Dictionary = {
     kindPhysical: "Enviamos para si", kindDigital: "Transferência imediata",
     kindService: "Marque uma hora", kindEvent: "Bilhete de evento", labelDigital: "Transferência", labelService: "Marcação",
     from: "A partir de {price}",
+    favorites: "Favoritos", favoritesEmpty: "Ainda não guardou nada",
+    favoritesEmptyBody: "Toque no coração de um produto e ele fica aqui à sua espera.",
+    saveToFavorites: "Guardar nos favoritos",
   },
   sort: {
     featured: "Em destaque", newest: "Mais recentes", priceAsc: "Preço: do menor ao maior",
     priceDesc: "Preço: do maior ao menor", rating: "Melhor avaliados", allTypes: "Tudo",
-    physical: "Produtos", digital: "Transferências", services: "Marcações",
+    physical: "Produtos", digital: "Transferências", services: "Marcações", events: "Eventos",
   },
   product: {
     reviews: "Avaliações", noReviews: "Ainda sem avaliações — seja o primeiro.",
@@ -96,6 +104,9 @@ export const pt: Dictionary = {
     inPerson: "Presencial",
     downloadAfterPayment: "A transferência fica disponível assim que {shop} confirmar o pagamento.",
     getFiles: "Obter os seus ficheiros",
+    termsAgree: "Aceito os termos e condições",
+    termsView: "Ler",
+    marketingOptIn: "Enviem-me novidades e ofertas",
     earnReferral: "Ganhe {percent}% por indicações",
     earnReferralBody:
       "Partilhe o seu link. Quando alguém comprar em {shop} através dele, ganha {percent}% da encomenda.",
@@ -103,6 +114,7 @@ export const pt: Dictionary = {
   cart: {
     title: "O seu cesto",
     add: "Adicionar ao cesto",
+    added: "Adicionado",
     buyNow: "Comprar agora",
     view: "Cesto",
     itemCount: "{count} no seu cesto",
@@ -111,6 +123,17 @@ export const pt: Dictionary = {
     keepShopping: "Continuar a comprar",
     remove: "Remover",
     someGone: "Algo no seu cesto esgotou e não conta para o total.",
+  },
+
+  share: {
+    shopTitle: "Partilhar esta loja",
+    productTitle: "Partilhar este produto",
+    copyLink: "Copiar ligação",
+    copied: "Copiado",
+    email: "E-mail",
+    more: "Mais",
+    scanToOpen: "Digitalize para abrir",
+    downloadQr: "Descarregar código QR",
   },
 
   download: {
@@ -130,6 +153,11 @@ export const pt: Dictionary = {
     admitOne: "Válido para uma pessoa",
     showAtDoor: "Mostre isto à porta.",
     used: "Utilizado",
+    online: "Evento online",
+    inPerson: "Presencial",
+    join: "Entrar no evento",
+    joinLocked: "O teu link de acesso aparece aqui assim que {shop} confirmar o pagamento.",
+    joinMissing: "Ainda não foi adicionado um link de acesso.",
   },
 
   rails: {
@@ -204,6 +232,26 @@ export const pt: Dictionary = {
     signInAction: "Enviem-me a ligação",
     signInDone: "Se o endereço estiver registado, a ligação vai a caminho. Veja a caixa de entrada.",
     signInEmail: "O seu e-mail",
+    commission: "Comissão",
+    noActivity: "Ainda nada ganho neste período.",
+    payoutTitle: "Receber o seu dinheiro",
+    payoutIntro: "Diga a {shop} para onde enviar a sua comissão. Fica mesmo ao lado do que lhe deve, por isso pagar-lhe é uma pergunta a menos.",
+    payoutMethodLabel: "Como",
+    payoutBank: "Transferência bancária",
+    payoutPaypal: "PayPal",
+    payoutOther: "Outro",
+    payoutDetailsLabel: "Para onde",
+    payoutBankHint: "Conta ou IBAN, e o nome do titular da conta",
+    payoutPaypalHint: "O e-mail da sua conta PayPal",
+    payoutOtherHint: "Diga a {shop} como lhe pagar",
+    payoutSave: "Guardar dados de pagamento",
+    payoutSaved: "Guardado — {shop} vê isto ao lado do que lhe deve.",
+    payoutOnFile: "Registado: {method} · {details}",
+    payoutNone: "Ainda nada registado.",
+    securityTitle: "Guarde esta ligação só para si",
+    securityBody: "Esta ligação é a única chave desta página: quem a tiver pode ver os seus ganhos e mudar a forma como é pago. Não a publique em nenhum sítio público. Acha que outra pessoa a tem? Reponha-a — a ligação antiga deixa de funcionar de imediato, e a nova é enviada para o seu e-mail.",
+    securityReset: "Repor a minha ligação",
+    securityResetDone: "Feito — esta é a sua nova ligação, e a antiga já não funciona. Guarde esta página de novo onde costuma tê-la.",
   },
 
   invoice: {
@@ -237,6 +285,17 @@ export const pt: Dictionary = {
     updatePassword: "Atualizar palavra-passe",
     resetDone: "Palavra-passe atualizada. Já pode iniciar sessão com ela.",
     resetInvalid: "Esse link expirou ou já foi usado. Peça um novo.",
+    twoFactorTitle: "Introduza o seu código",
+    twoFactorSubtitle: "Abra a aplicação de autenticação e escreva os seis dígitos que ela mostra.",
+    twoFactorCode: "Código de seis dígitos",
+    twoFactorVerify: "Verificar e iniciar sessão",
+    twoFactorUseBackup: "Usar antes um código de recuperação",
+    twoFactorBackupTitle: "Usar um código de recuperação",
+    twoFactorBackupSubtitle:
+      "Introduza um dos códigos que guardou quando ativou a verificação em dois passos. Cada um funciona uma vez.",
+    twoFactorBackupCode: "Código de recuperação",
+    twoFactorUseApp: "Usar antes a aplicação de autenticação",
+    twoFactorExpired: "Demorou demasiado tempo. Inicie sessão de novo para lhe ser pedido um código novo.",
   },
   onboarding: {
     shopNameFallback: "A sua loja",
@@ -268,6 +327,7 @@ export const pt: Dictionary = {
     payments: "Pagamentos", delivery: "Entrega", settings: "Definições", checkin: "Check-in",
     viewShop: "Ver loja", signOut: "Terminar sessão", upgrade: "Mudar de plano",
     openMenu: "Abrir menu", closeMenu: "Fechar menu",
+    broadcasts: "Envios",
   },
   notifications: {
     aBuyer: "Um comprador",
@@ -280,6 +340,8 @@ export const pt: Dictionary = {
     reviewBody: "{name} deu {rating}.",
     affiliateApplication: "Candidatura de afiliado",
     affiliateBody: "{name} quer promover a sua loja.",
+    payoutUpdated: "Dados de pagamento atualizados",
+    payoutUpdatedBody: "{name} definiu como quer ser pago.",
     readyToShip: "Pronto a enviar",
     shipBody: "{product} para {name} — adicione o rastreio ao enviar.",
     justNow: "agora mesmo",
@@ -329,5 +391,16 @@ export const pt: Dictionary = {
     unlocksThis: "Desbloqueia isto", bestValue: "Melhor valor",
     cancelAnyTime: "Cancele quando quiser. As encomendas por chat e transferência são inteiramente suas; as vendas com cartão têm uma comissão de {fee}.",
     planFeature: "Funcionalidade {plan}", paidFeature: "Funcionalidade paga", youAreOn: "Está no {plan}",
+  },
+
+  unsubscribe: {
+    link: "Cancelar subscrição",
+    title: "Deixar de receber emails de marketing de {shop}?",
+    body: "{email} deixará de receber emails de marketing de {shop}. As confirmações de encomenda e os recibos continuam a chegar.",
+    confirm: "Sim, cancelar",
+    doneTitle: "Subscrição cancelada",
+    doneBody: "{shop} não voltará a enviar-te emails de marketing. As confirmações de encomenda continuam a chegar.",
+    invalidTitle: "Este link já não é válido",
+    invalidBody: "Responde a qualquer email da loja e pede para te removerem da lista.",
   },
 };

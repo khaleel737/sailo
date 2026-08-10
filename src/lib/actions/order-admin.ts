@@ -1,9 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { clients, orders } from "@/db/schema";
+import { publishAffiliateEvent, publishShopEvent } from "@/lib/events";
 import { requireShop } from "@/lib/session";
 import { maybeRow } from "@/lib/invariant";
 import { formatMoney, parseMoneyToCents } from "@/lib/utils";
@@ -98,6 +100,18 @@ export async function updateOrderStatus(formData: FormData) {
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
   revalidatePath("/admin/products");
+
+  /*
+   * The action's own response repaints the tab it came from; the publish is
+   * for every other screen looking at this shop — the seller's phone, the
+   * staff panel, and the affiliate whose commission rides this order's
+   * status. Scheduled with `after` so the seller's click never waits on it.
+   */
+  after(() => publishShopEvent(shop.id, "order"));
+  if (order.affiliateId) {
+    const affiliateId = order.affiliateId;
+    after(() => publishAffiliateEvent(affiliateId, "order"));
+  }
 }
 
 export async function updatePaymentStatus(formData: FormData) {
@@ -127,6 +141,7 @@ export async function updatePaymentStatus(formData: FormData) {
 
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
+  if (updated) after(() => publishShopEvent(shop.id, "payment"));
 }
 
 /**
@@ -185,6 +200,7 @@ export async function markOrderShipped(
 
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
+  after(() => publishShopEvent(shop.id, "order"));
   return { ok: true, message: note };
 }
 
@@ -320,6 +336,11 @@ export async function refundOrder(
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
   revalidatePath("/admin/products");
+  after(() => publishShopEvent(shop.id, "payment"));
+  if (order.affiliateId) {
+    const affiliateId = order.affiliateId;
+    after(() => publishAffiliateEvent(affiliateId, "payment"));
+  }
   return { ok: true, message: note };
 }
 
@@ -341,6 +362,11 @@ export async function deleteOrder(formData: FormData) {
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
   revalidatePath("/admin/products");
+  after(() => publishShopEvent(shop.id, "order"));
+  if (order.affiliateId) {
+    const affiliateId = order.affiliateId;
+    after(() => publishAffiliateEvent(affiliateId, "order"));
+  }
 }
 
 /** Removes clients that no longer have any orders. */
@@ -355,6 +381,7 @@ export async function deleteClient(formData: FormData) {
 
   revalidatePath("/admin/clients");
   revalidatePath("/admin/orders");
+  after(() => publishShopEvent(shop.id, "client"));
 }
 
 export async function updateClientNotes(formData: FormData) {
@@ -369,4 +396,5 @@ export async function updateClientNotes(formData: FormData) {
     .where(and(eq(clients.id, id), eq(clients.shopId, shop.id)));
 
   revalidatePath(`/admin/clients/${id}`);
+  after(() => publishShopEvent(shop.id, "client"));
 }

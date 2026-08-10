@@ -5,11 +5,15 @@ import { absolute, shopJsonLd } from "@/lib/seo";
 import { shopThemeVars } from "@/lib/utils";
 import { getShopPageData } from "./_lib/get-shop-page-data";
 import { CartRegion } from "./_components/cart/cart-region";
+import { complianceOf } from "./_components/cart/checkout.types";
+import { FavoritesButton } from "./_components/favorites/favorites-button";
 import { FilterBar } from "./_components/filter-bar";
 import { ProductGrid } from "./_components/product-grid";
 import { ReferralCapture } from "./_components/referral-capture";
+import { ShareButton } from "./_components/share-button";
 import { ShopFooter } from "./_components/shop-footer";
 import { ShopHeader } from "./_components/shop-header";
+import { ShopTracking } from "./_components/shop-tracking";
 import { VisitTracker } from "./_components/visit-tracker";
 
 export async function generateMetadata({
@@ -98,6 +102,7 @@ export default async function ShopPage({
       methods={checkout.methods}
       deliveryOptions={checkout.deliveryOptions}
       contactEmail={shop.contactEmail}
+      compliance={complianceOf(shop)}
       t={t}
     >
       <div
@@ -126,6 +131,9 @@ export default async function ShopPage({
         }}
       />
       <VisitTracker shopId={shop.id} />
+      {/* The seller's own tags, and the consent request they require. Renders
+          nothing unless the seller configured one in settings. */}
+      <ShopTracking shop={shop} t={t} />
         {affiliatesLive ? (
           // Reads `?ref=` from the URL, so it needs a search-params boundary.
           <Suspense fallback={null}>
@@ -134,7 +142,32 @@ export default async function ShopPage({
         ) : null}
 
         <div className="mx-auto w-full max-w-[680px] px-4 pb-20 pt-12 sm:pt-16">
-          <ShopHeader shop={shop} />
+          <div className="relative">
+            {/*
+              Top corner rather than in the header's own flow: the header is
+              the seller's identity, centred, and a control hanging under the
+              avatar would read as part of the brand. The URL is built here,
+              server-side, so the sheet shares the canonical address and not
+              whatever filters happen to be in the visitor's address bar.
+            */}
+            <div className="absolute end-0 top-0 flex items-center gap-2">
+              <FavoritesButton
+                shopId={shop.id}
+                handle={shop.handle}
+                currency={shop.currency}
+                locale={locale}
+                t={t}
+              />
+              <ShareButton
+                url={absolute(`/${shop.handle}`)}
+                title={shop.name}
+                heading={t.share.shopTitle}
+                qrFileName={shop.handle}
+                t={t}
+              />
+            </div>
+            <ShopHeader shop={shop} />
+          </div>
 
           <div className="mt-10">
             <FilterBar
@@ -154,7 +187,6 @@ export default async function ShopPage({
               products={products}
               shop={shop}
               layout={layout}
-              checkout={checkout}
               hasFilters={hasFilters}
               filters={filters}
               nextOffset={nextOffset}

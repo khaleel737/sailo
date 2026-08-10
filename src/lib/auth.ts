@@ -1,17 +1,22 @@
 import { betterAuth } from "better-auth";
-import { APIError, createAuthMiddleware } from "better-auth/api";
+import {
+  APIError,
+  createAuthMiddleware,
+  getSessionFromCtx,
+  isAPIError,
+} from "better-auth/api";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { magicLink } from "better-auth/plugins";
+import { magicLink, twoFactor } from "better-auth/plugins";
 import { getDb } from "@/db";
-import { account, session, user, verification } from "@/db/schema";
+import { account, session, twoFactor as twoFactorTable, user, verification } from "@/db/schema";
 import {
   sendEmailConfirmation,
   sendHqSignInLink,
   sendPasswordReset,
 } from "@/lib/email";
 import { isStaffEmail, refusesPasswordAuth } from "@/lib/staff";
-import { rateLimit } from "@/lib/redis";
+import { rateLimit, refundRateLimit } from "@/lib/redis";
 
 /**
  * How long a reset link stays good. Set here rather than left to the default
@@ -43,10 +48,58 @@ export const BETTER_AUTH_MESSAGES = {
   badCredentials: "Invalid email or password",
 } as const;
 
+/**
+ * The two-factor verify endpoints, and the shape of the limit on them.
+ *
+ * Keyed on the *user*, not the caller's address: the threat this rations is
+ * someone who already holds the password and is guessing the six digits, and
+ * they can rotate IPs far more easily than the account can rotate users. Five
+ * per fifteen minutes — a real person mistypes once or twice; a guesser needs
+ * thousands.
+ */
+const TWO_FACTOR_VERIFY_PATHS = new Set([
+  "/two-factor/verify-totp",
+  "/two-factor/verify-backup-code",
+]);
+const TWO_FACTOR_ATTEMPTS = 5;
+const TWO_FACTOR_WINDOW_SECONDS = 15 * 60;
+
+const twoFactorRateKey = (userId: string) => `2fa:${userId}`;
+
+/**
+ * Whose codes are being guessed. Mid-sign-in there is no session — the
+ * challenge cookie stands in for one, and its signed value resolves to the
+ * pending user id through the verification table, the same lookup the plugin
+ * itself makes (`verify-two-factor.mjs`). Read-only on purpose: consuming the
+ * verification value here would break the endpoint this runs in front of.
+ */
+async function twoFactorUserId(
+  ctx: Parameters<Parameters<typeof createAuthMiddleware>[0]>[0],
+): Promise<string | null> {
+  const signedIn = await getSessionFromCtx(ctx);
+  if (signedIn?.user) return signedIn.user.id;
+
+  // "two_factor" is the plugin's cookie name; `createAuthCookie` adds the
+  // same prefixes the plugin's own cookie carries.
+  const cookie = ctx.context.createAuthCookie("two_factor");
+  const identifier = await ctx.getSignedCookie(cookie.name, ctx.context.secret);
+  if (!identifier) return null;
+
+  const pending =
+    await ctx.context.internalAdapter.findVerificationValue(identifier);
+  return pending?.value ?? null;
+}
+
 export const auth = betterAuth({
+  /*
+   * Doubles as the TOTP issuer — the name a seller sees beside the rotating
+   * code in their authenticator app. Renaming it after launch would strand
+   * every existing enrolment under the old label, so don't.
+   */
+  appName: "Sailo",
   database: drizzleAdapter(getDb(), {
     provider: "pg",
-    schema: { user, session, account, verification },
+    schema: { user, session, account, verification, twoFactor: twoFactorTable },
   }),
   emailAndPassword: {
     enabled: true,
@@ -107,6 +160,53 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 days
     updateAge: 60 * 60 * 24,
+    /*
+     * Where each sign-in came from, shown in Settings → Security. Declared so
+     * the adapter knows the columns; written by the session hook below.
+     * `input: false` — a caller never supplies their own location.
+     *
+     * Note there is deliberately no `cookieCache` here: the sessions table
+     * promises that a terminated session fails *immediately*, and a signed
+     * cookie snapshot would keep a revoked session alive for its TTL. Every
+     * `getSession` pays the database read; that is the price of the promise.
+     */
+    additionalFields: {
+      city: { type: "string", required: false, input: false },
+      country: { type: "string", required: false, input: false },
+    },
+  },
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (_session, ctx) => {
+          /*
+           * Vercel's geo headers describe the *current request* only, so the
+           * one moment they can truthfully describe a session is its
+           * creation. Sessions from before this existed, and local dev, keep
+           * null — the UI shows "—" rather than a guess.
+           */
+          const headers = ctx?.headers ?? ctx?.request?.headers;
+          if (!headers) return;
+
+          // Vercel percent-encodes header values ("S%C3%A3o%20Paulo").
+          const geo = (name: string): string | null => {
+            const raw = headers.get(name);
+            if (!raw) return null;
+            try {
+              const decoded = decodeURIComponent(raw).trim();
+              return decoded || null;
+            } catch {
+              return raw.trim() || null;
+            }
+          };
+
+          const city = geo("x-vercel-ip-city");
+          const country = geo("x-vercel-ip-country");
+          if (!city && !country) return;
+          return { data: { city, country } };
+        },
+      },
+    },
   },
   /*
    * Rate limiting that survives more than one instance.
@@ -201,6 +301,39 @@ export const auth = betterAuth({
    */
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
+      /*
+       * Attempts at a second factor are attempts at a secret, so they follow
+       * the repo's charge-then-refund shape (`refundRateLimit`): every
+       * attempt pays up front — `INCR` is atomic, so a concurrent burst
+       * cannot peek past the ceiling — and the after-hook below refunds the
+       * ones that turn out to be the legitimate user using their one code.
+       *
+       * A throttled attempt is *unknown*, not *wrong*: the refusal says "try
+       * again later" and never "invalid code", because the throttle has not
+       * looked at the code and must not pretend it has. The plugin's own
+       * database-backed lockout (ten failures, fifteen minutes) stays on
+       * underneath as the net for when Redis is cold — this limit fails open
+       * like every other one here.
+       */
+      if (TWO_FACTOR_VERIFY_PATHS.has(ctx.path)) {
+        const userId = await twoFactorUserId(ctx);
+        // No resolvable user means no challenge and no session; the endpoint
+        // is about to refuse the request itself, so there is nothing to meter.
+        if (userId) {
+          const verdict = await rateLimit(
+            twoFactorRateKey(userId),
+            TWO_FACTOR_ATTEMPTS,
+            TWO_FACTOR_WINDOW_SECONDS,
+          );
+          if (!verdict.allowed) {
+            throw new APIError("TOO_MANY_REQUESTS", {
+              message: "Too many attempts. Try again later.",
+            });
+          }
+        }
+        return;
+      }
+
       if (!refusesPasswordAuth(ctx.path, ctx.body?.email)) return;
 
       console.warn(`[sailo] password auth refused for staff address on ${ctx.path}`);
@@ -231,6 +364,26 @@ export const auth = betterAuth({
       throw new APIError("UNAUTHORIZED", {
         message: BETTER_AUTH_MESSAGES.badCredentials,
       });
+    }),
+    after: createAuthMiddleware(async (ctx) => {
+      if (!TWO_FACTOR_VERIFY_PATHS.has(ctx.path)) return;
+
+      /*
+       * The refund half of the charge above. After-hooks run on failures too —
+       * dispatch catches the endpoint's APIError and parks it in
+       * `ctx.context.returned` — so the refund is gated on the outcome:
+       * only a verified code gives its unit back. On the sign-in path the
+       * challenge cookie has been consumed by now, so the user comes from the
+       * response body the endpoint just built rather than from the cookie.
+       */
+      if (isAPIError(ctx.context.returned)) return;
+
+      const returned = ctx.context.returned as { user?: { id?: string } } | undefined;
+      const userId =
+        returned?.user?.id ?? (await getSessionFromCtx(ctx))?.user.id ?? null;
+      if (userId) {
+        await refundRateLimit(twoFactorRateKey(userId), TWO_FACTOR_WINDOW_SECONDS);
+      }
     }),
   },
   plugins: [
@@ -264,6 +417,32 @@ export const auth = betterAuth({
         }
       },
     }),
+    /*
+     * TOTP two-factor auth for seller accounts. Password sign-in for an
+     * enrolled user answers `twoFactorRedirect` instead of a session and the
+     * client steps through /verify-2fa; enabling, disabling and the seller UI
+     * live in `lib/actions/security.ts`.
+     *
+     * MAGIC LINKS AND 2FA, decided rather than left implicit: a magic-link
+     * sign-in bypasses the 2FA challenge — the plugin's after-hook matches
+     * only the password sign-in paths — and that is acceptable *here* because
+     * the two doors admit disjoint sets of people. `sendMagicLink` above
+     * refuses every address off the staff roster, so no seller can be signed
+     * in by link; and a staff account holds no password (enforced in the
+     * `hooks.before` refusal), so it cannot pass the password check that
+     * enabling 2FA requires and can never be enrolled. If magic links are
+     * ever opened to sellers, that sign-in path must be gated for
+     * 2FA-enabled users too — do not reuse it as-is. HQ staff sign-in is a
+     * separate surface and out of scope for seller 2FA.
+     *
+     * Plugin defaults kept deliberately: verify-before-enable (the enrolment
+     * secret stays `verified: false` until a code proves the authenticator
+     * holds it — never flip the toggle on an unverified secret), ±1 time-step
+     * TOTP drift with a constant-time comparison, encrypted secret and backup
+     * codes, and a database-backed lockout of ten failed verifications per
+     * fifteen minutes underneath the Redis limit in `hooks.before`.
+     */
+    twoFactor(),
     // Must stay last so Server Actions can set cookies.
     nextCookies(),
   ],

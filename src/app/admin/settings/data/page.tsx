@@ -50,6 +50,17 @@ const CLIENT_COLUMNS = [
   { name: "First Name / Last Name", note: "Or a single Name column." },
   { name: "Address1, Address2, City, Province, Zip, Country", note: "Optional address." },
   { name: "Note", note: "Your private note about them." },
+  { name: "Tags", note: "Comma or semicolon separated. Added to any tags they already have." },
+  {
+    /*
+     * Stated as a column so it is read where sellers read column names, and
+     * repeated as a banner below. This is the fact most likely to surprise
+     * somebody later — they import three hundred contacts, send a broadcast,
+     * and forty people receive it — so it is said twice on purpose.
+     */
+    name: "Marketing consent",
+    note: "Can't be imported. Imported contacts start with no consent, so email broadcasts won't reach them until they opt in themselves.",
+  },
 ];
 
 export default async function DataPage() {

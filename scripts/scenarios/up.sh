@@ -8,12 +8,24 @@ set -euo pipefail
 
 docker rm -f sailo-test-db sailo-neon-proxy >/dev/null 2>&1 || true
 
+# `max_connections` is raised from the default 100 on purpose: `throughput`
+# opens 120 concurrent checkouts, each of which runs several queries, so the
+# default refuses connections long before the test can say anything about
+# overselling. It failed with 300-odd "too many clients" in the Postgres log
+# and 85 dead queries in the assertion — which reads exactly like a broken
+# claim on stock, and is not one. The load test needs room to apply the load.
 docker run -d --name sailo-test-db \
   -e POSTGRES_PASSWORD=sailo -e POSTGRES_USER=sailo -e POSTGRES_DB=sailo \
-  -p 55432:5432 postgres:17-alpine >/dev/null
+  -p 55432:5432 postgres:17-alpine -c max_connections=400 >/dev/null
 
-for _ in $(seq 1 30); do
-  docker exec sailo-test-db pg_isready -U sailo >/dev/null 2>&1 && break
+# `psql` and not `pg_isready`, because they disagree at exactly the wrong
+# moment: the image's init runs a temporary server on a private socket, and
+# `pg_isready` answers yes to it — so the schema load below would fire at a
+# server that is about to be shut down and restarted, and fail with "No such
+# file or directory". A query that actually returns is the only readiness
+# check that means anything here.
+for _ in $(seq 1 60); do
+  docker exec sailo-test-db psql -U sailo -d sailo -c 'select 1' >/dev/null 2>&1 && break
   sleep 2
 done
 

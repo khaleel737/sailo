@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState, useSyncExternalStore } from "react";
-import { addLine, cachedTotal, cartCount, cartKey, lineKey, readCart, removeLine, setQuantity, writeCart, type CartLine } from "@/lib/cart";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { addLine, cachedTotal, cartCount, cartKey, clearPendingOrder, lineKey, readCart, readPendingOrder, removeLine, setQuantity, writeCart, type CartLine } from "@/lib/cart";
+import { checkoutOutcome } from "@/lib/actions/order-status";
 
 /* -------------------------------------------------------------------------- */
 /*  The store                                                                  */
@@ -21,9 +22,15 @@ let cache: { shopId: string; raw: string | null; lines: CartLine[] } | null = nu
 function subscribe(onChange: () => void) {
   listeners.add(onChange);
   window.addEventListener("storage", onChange);
+  // A page revived from the back/forward cache wakes with the snapshot it fell
+  // asleep holding, and the missed `storage` events are not replayed — so a
+  // buyer pressing Back from the invoice would see the basket that page had
+  // just emptied. `pageshow` fires on every revival; re-reading is cheap.
+  window.addEventListener("pageshow", onChange);
   return () => {
     listeners.delete(onChange);
     window.removeEventListener("storage", onChange);
+    window.removeEventListener("pageshow", onChange);
   };
 }
 
@@ -99,6 +106,35 @@ export function CartProvider({
     },
     [shopId],
   );
+
+  /*
+   * A card checkout leaves this page holding a full basket and a parked order
+   * id, because nothing has been paid yet. Most buyers come back through the
+   * invoice, which settles both. This is for the ones who did not: on the next
+   * visit, ask the server what became of that order. Paid — the basket is
+   * spent, empty it before the buyer buys it twice. Cancelled or gone — the
+   * abandonment this exists for; the basket stays and the marker goes. Still
+   * pending — Stripe may be open in another tab, so touch nothing.
+   */
+  useEffect(() => {
+    const orderId = readPendingOrder(shopId);
+    if (!orderId) return;
+
+    let stale = false;
+    void (async () => {
+      try {
+        const outcome = await checkoutOutcome(orderId);
+        if (stale || outcome === "pending") return;
+        clearPendingOrder(shopId);
+        if (outcome === "settled") commit([]);
+      } catch {
+        // Offline, most likely. The marker keeps, and the next visit asks.
+      }
+    })();
+    return () => {
+      stale = true;
+    };
+  }, [shopId, commit]);
 
   const value = useMemo<CartContext>(
     () => ({

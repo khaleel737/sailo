@@ -9,7 +9,9 @@ import { createHash } from "node:crypto";
  * but under ePrivacy the test is storage on the device, not what is stored, and
  * an analytics cookie needs consent before it is written. The choice was a
  * consent banner on every seller's storefront, or not needing one. This is not
- * needing one.
+ * needing one. (A storefront whose seller connects their own marketing tags
+ * shows a banner for *those* — `shop-consent.ts` — but this measurement never
+ * rides on that consent and keeps working when a buyer declines it.)
  *
  * The id is derived, never stored: a hash of the address, the browser string,
  * the shop and today's date. The address goes into the hash and is thrown away,

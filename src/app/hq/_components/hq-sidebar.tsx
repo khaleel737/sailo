@@ -7,6 +7,7 @@ import {
   Activity,
   ArrowLeft,
   Gift,
+  Handshake,
   LayoutDashboard,
   LifeBuoy,
   LogOut,
@@ -38,6 +39,13 @@ const GROUPS = [
       { href: "/hq", label: "Overview", icon: LayoutDashboard, exact: true },
       { href: "/hq/accounts", label: "Accounts", icon: Users },
       { href: "/hq/revenue", label: "Revenue", icon: Wallet },
+      /*
+       * Under Business, not beside Affiliates. Both lists are commission, but
+       * an affiliate is paid by a seller out of their own sale and this is
+       * paid by us out of our subscription revenue — so it belongs next to
+       * the revenue it comes out of.
+       */
+      { href: "/hq/referrals", label: "Referrals", icon: Handshake },
     ],
   },
   {

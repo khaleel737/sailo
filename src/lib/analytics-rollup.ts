@@ -4,10 +4,12 @@ import type { PgColumn } from "drizzle-orm/pg-core";
 import { getDb } from "@/db";
 import {
   affiliates,
+  clicks,
   visitDaily,
   visits,
   type VisitBreakdownJson,
 } from "@/db/schema";
+import { publishAffiliateEvent, publishShopEvent } from "@/lib/events";
 import { drainAffiliateClicks } from "@/lib/redis";
 import {
   dropExpiredPartitions,
@@ -76,6 +78,39 @@ async function dimension(
   return out;
 }
 
+/**
+ * Where the day's visitors went next — outbound click hosts, from `clicks`
+ * rather than `visits`, folded into the same breakdown row.
+ *
+ * A day with clicks but no visits never reaches this (the rollup selects
+ * active shops by visits, and a click implies the pageview that carried the
+ * link), and the raw `clicks` table is not trimmed — so a missing fold loses
+ * nothing that cannot be re-derived.
+ */
+async function clickDimension(
+  shopId: string,
+  from: Date,
+  to: Date,
+): Promise<Record<string, number>> {
+  const rows = await getDb()
+    .select({ key: clicks.targetHost, n: sql<string>`count(*)` })
+    .from(clicks)
+    .where(
+      and(
+        eq(clicks.shopId, shopId),
+        gte(clicks.createdAt, from),
+        lt(clicks.createdAt, to),
+      ),
+    )
+    .groupBy(clicks.targetHost)
+    .orderBy(desc(sql`count(*)`))
+    .limit(TOP_N);
+
+  const out: Record<string, number> = {};
+  for (const row of rows) out[row.key] = Number(row.n);
+  return out;
+}
+
 /** Folds one shop's one day. Returns null when that day had no traffic. */
 export async function rollUpDay(shopId: string, day: Date) {
   const db = getDb();
@@ -99,13 +134,15 @@ export async function rollUpDay(shopId: string, day: Date) {
   const count = Number(totals?.visits ?? 0);
   if (count === 0) return null;
 
-  const [countries, cities, sources, devices, referrers] = await Promise.all([
-    dimension(shopId, from, to, visits.country),
-    dimension(shopId, from, to, visits.city),
-    dimension(shopId, from, to, visits.source),
-    dimension(shopId, from, to, visits.device),
-    dimension(shopId, from, to, visits.referrerHost),
-  ]);
+  const [countries, cities, sources, devices, referrers, destinations] =
+    await Promise.all([
+      dimension(shopId, from, to, visits.country),
+      dimension(shopId, from, to, visits.city),
+      dimension(shopId, from, to, visits.source),
+      dimension(shopId, from, to, visits.device),
+      dimension(shopId, from, to, visits.referrerHost),
+      clickDimension(shopId, from, to),
+    ]);
 
   const breakdown: VisitBreakdownJson = {
     countries,
@@ -113,6 +150,7 @@ export async function rollUpDay(shopId: string, day: Date) {
     sources,
     devices,
     referrers,
+    destinations,
   };
 
   await db
@@ -253,6 +291,27 @@ export async function rollUpVisits(opts: { days?: number; now?: Date } = {}) {
       .set({ clicks: sql`${affiliates.clicks} + ${count}` })
       .where(eq(affiliates.id, affiliateId));
     clicksFlushed += count;
+  }
+
+  /*
+   * The flush is the moment buffered clicks become visible rows, so it is
+   * also the moment to tell the screens that count them: each affiliate's
+   * portal, and the affiliates page of each shop those affiliates promote.
+   * One lookup for the shop ids; per-shop dedup keeps a popular shop's
+   * thirty affiliates from becoming thirty hints.
+   */
+  const flushedIds = Object.keys(buffered);
+  if (flushedIds.length > 0) {
+    const owners = await db.query.affiliates.findMany({
+      where: inArray(affiliates.id, flushedIds),
+      columns: { id: true, shopId: true },
+    });
+    for (const owner of owners) {
+      await publishAffiliateEvent(owner.id, "affiliate");
+    }
+    for (const shopId of new Set(owners.map((owner) => owner.shopId))) {
+      await publishShopEvent(shopId, "affiliate");
+    }
   }
 
   return {

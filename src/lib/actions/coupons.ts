@@ -1,9 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { coupons } from "@/db/schema";
+import { publishShopEvent } from "@/lib/events";
 import { requireShop } from "@/lib/session";
 import { normalizeCode, percentToBp } from "@/lib/pricing";
 import { parseMoneyToCents } from "@/lib/utils";
@@ -85,6 +87,7 @@ export async function saveCoupon(
   }
 
   revalidatePath("/admin/coupons");
+  after(() => publishShopEvent(shop.id, "catalog"));
   return { ok: true, message: id ? "Coupon updated." : "Coupon created." };
 }
 
@@ -98,6 +101,7 @@ export async function deleteCoupon(formData: FormData) {
     .where(and(eq(coupons.id, id), eq(coupons.shopId, shop.id)));
 
   revalidatePath("/admin/coupons");
+  after(() => publishShopEvent(shop.id, "catalog"));
 }
 
 export async function toggleCoupon(formData: FormData) {
@@ -117,4 +121,5 @@ export async function toggleCoupon(formData: FormData) {
     .where(eq(coupons.id, id));
 
   revalidatePath("/admin/coupons");
+  after(() => publishShopEvent(shop.id, "catalog"));
 }

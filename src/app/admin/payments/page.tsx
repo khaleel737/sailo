@@ -6,6 +6,7 @@ import { getShopPaymentMethods } from "@/lib/queries";
 import { isConfigured, PAYMENT_METHOD_LIST } from "@/lib/payments";
 import { PageHeader } from "@/components/shared/page-header";
 import { PaymentMethodCard } from "@/app/admin/payments/_components/payment-method-card";
+import { PayoutCard } from "@/app/admin/payments/_components/payout-card";
 import { StripeCard } from "@/app/admin/payments/_components/stripe-card";
 import { Alert, Badge } from "@/components/ui";
 import { interpolate } from "@/i18n";
@@ -139,6 +140,8 @@ export default async function AdminPaymentsPage({
           liveLabel={interpolate(a.payments.liveCount, { count: 1 })}
         />
         <StripeCard shop={shop} />
+        {/* Balance, payouts and account health — only once an account exists. */}
+        <PayoutCard shop={shop} />
       </section>
 
       {SECTIONS.map((section) => {

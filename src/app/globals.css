@@ -322,6 +322,31 @@ body {
   }
 }
 
+/*
+ * iOS Safari zooms the whole page in when a focused control's text is under
+ * 16px — and never zooms back out on blur, so filling one checkout field
+ * leaves the visitor stranded on a cropped page. Every control in the product
+ * is text-sm (14px), which trips it on every form.
+ *
+ * The fix is a floor, not a viewport trick: `maximum-scale=1` also stops the
+ * zoom on iOS but disables pinch-zoom entirely on Android, which is an
+ * accessibility failure. Flooring text entry at 1rem on touch screens fixes
+ * every platform and costs nothing on any of them.
+ *
+ * `max(1rem, 1em)` rather than a flat 1rem so a control sitting in a larger
+ * type ramp keeps its inherited size. `(hover: none), (pointer: coarse)`
+ * rather than a width query because an iPad is wider than the `sm:`
+ * breakpoint and zooms all the same. Deliberately unlayered: it has to beat
+ * `text-sm` from the utilities layer, and unlayered rules always do.
+ */
+@media (hover: none), (pointer: coarse) {
+  input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"]),
+  select,
+  textarea {
+    font-size: max(1rem, 1em);
+  }
+}
+
 /* Numbers in tables, totals and stats should never jitter as they update. */
 .tabular {
   font-variant-numeric: tabular-nums;

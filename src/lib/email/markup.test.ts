@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { esc, layout, sailoLayout } from "./markup";
-import type { Shop } from "@/db/schema";
+import { esc, formatWhen, itemRows, layout, moneyRows, sailoLayout } from "./markup";
+import type { Order, Shop } from "@/db/schema";
 
 /**
  * Escaping, for markup nobody can inspect after the fact.
@@ -79,6 +79,9 @@ describe("the email footer", () => {
       sailoLayout("Your referral report", "<p>x</p>"),
     ]) {
       expect(html).not.toContain("#b8b8c2");
+      // The app's faint grey reads at 3.2:1 on white — under the 4.5:1 floor
+      // small text needs — so no email may carry it either.
+      expect(html).not.toContain("#8e8e9c");
     }
   });
 
@@ -119,5 +122,181 @@ describe("the email footer", () => {
     const footer = footerOf(sailoLayout("Reset your password", "<p>x</p>"));
     expect(footer).toContain("<a href=");
     expect(footer).toContain("Sailo</a>");
+  });
+});
+
+/**
+ * The card's identity row, which is where seller-supplied values meet markup.
+ */
+describe("the card header", () => {
+  const shop = (over: Partial<Shop> = {}) =>
+    ({
+      name: "Forno Nove",
+      handle: "forno",
+      plan: "free",
+      subscriptionStatus: null,
+      compPlan: null,
+      ...over,
+    }) as Shop;
+
+  it("carries the Sailo mark on Sailo's own mail", () => {
+    const html = sailoLayout("Sign in to Sailo", "<p>x</p>");
+    expect(html).toContain("/brand/email/sailo-mark.png");
+    expect(html).toContain(">Sailo</td>");
+  });
+
+  it("shows the shop's logo when it lives on a trusted host", () => {
+    const html = layout(
+      shop({ logoUrl: "https://images.unsplash.com/photo-1" }),
+      "Order confirmed",
+      "<p>x</p>",
+    );
+    expect(html).toContain('src="https://images.unsplash.com/photo-1"');
+  });
+
+  it("refuses a logo from anywhere else", () => {
+    /*
+     * A page is covered by the CSP; an email is rendered by whatever client
+     * opens it. A stored row pointing at an arbitrary host must not become a
+     * fetch from every buyer's inbox.
+     */
+    const html = layout(
+      shop({ logoUrl: "http://10.0.0.5:8080/probe.png" }),
+      "Order confirmed",
+      "<p>x</p>",
+    );
+    expect(html).not.toContain("10.0.0.5");
+    // The shop is still named, logo or not.
+    expect(html).toContain("Forno Nove");
+  });
+
+  it("paints the accent strip only with a hex colour", () => {
+    const painted = layout(shop({ accentColor: "#7c3aed" }), "x", "<p>x</p>");
+    expect(painted).toContain("background:#7c3aed");
+
+    // esc() stops attribute breakout, but not CSS of the seller's choosing —
+    // only a bare hex value may reach the style attribute at all.
+    const injected = layout(
+      shop({ accentColor: "red;background-image:url(https://evil.example/x)" }),
+      "x",
+      "<p>x</p>",
+    );
+    expect(injected).not.toContain("evil.example");
+    expect(injected).toContain("background:#1a1a20");
+  });
+});
+
+/**
+ * The money table — the one place a buyer sees the arithmetic.
+ */
+describe("moneyRows", () => {
+  const order = (over: Partial<Order> = {}) =>
+    ({
+      currency: "USD",
+      subtotalCents: 10000,
+      discountCents: 0,
+      couponCode: null,
+      deliveryFeeCents: 0,
+      deliveryLabel: null,
+      taxCents: 0,
+      taxRateBp: 0,
+      taxName: null,
+      taxInclusive: false,
+      totalCents: 10000,
+      ...over,
+    }) as Order;
+
+  it("shows added tax as its own line, by the name the shop charges it under", () => {
+    /*
+     * The tax snapshot was written onto every order and then never shown to
+     * the person who paid it — an email that says $100 + $8.75 = $108.75
+     * without naming the $8.75 is a receipt that doesn't add up.
+     */
+    const html = moneyRows(
+      order({ taxCents: 875, taxRateBp: 875, taxName: "Sales tax", totalCents: 10875 }),
+    );
+    expect(html).toContain("Sales tax (8.75%)");
+    expect(html).toContain("$8.75");
+  });
+
+  it("shows inclusive tax as contained in the total, not added to it", () => {
+    const html = moneyRows(
+      order({ taxCents: 1667, taxRateBp: 2000, taxName: "VAT", taxInclusive: true }),
+    );
+    expect(html).toContain("Includes VAT (20%)");
+    // Inclusive tax must not appear as an addend above the total.
+    expect(html.indexOf("Includes VAT")).toBeGreaterThan(html.indexOf("Total"));
+  });
+
+  it("stays silent about tax the order doesn't carry", () => {
+    expect(moneyRows(order())).not.toContain("Tax");
+  });
+
+  it("names the coupon next to what it saved", () => {
+    const html = moneyRows(
+      order({ discountCents: 1500, couponCode: "SPRING", totalCents: 8500 }),
+    );
+    expect(html).toContain("Discount (SPRING)");
+    expect(html).toContain("−$15");
+  });
+});
+
+/**
+ * The item lines, which carry buyer- and seller-typed text and product images.
+ */
+describe("itemRows", () => {
+  const item = (over: Partial<Parameters<typeof itemRows>[0][number]> = {}) => ({
+    title: "Speckled mug",
+    variantLabel: null,
+    quantity: 1,
+    unitPriceCents: 3100,
+    subtotalCents: 3100,
+    imageUrl: null,
+    scheduledFor: null,
+    serviceMode: null,
+    serviceLocation: null,
+    ...over,
+  });
+
+  it("spells out the maths only when there is any — quantity over one", () => {
+    const single = itemRows([item()], "USD");
+    expect(single).not.toContain("1 ×");
+
+    const double = itemRows([item({ quantity: 2, subtotalCents: 6200 })], "USD");
+    expect(double).toContain("2 × $31");
+    expect(double).toContain("$62");
+  });
+
+  it("embeds a product image only from a trusted host", () => {
+    const trusted = itemRows(
+      [item({ imageUrl: "https://images.unsplash.com/photo-2" })],
+      "USD",
+    );
+    expect(trusted).toContain('src="https://images.unsplash.com/photo-2"');
+
+    const untrusted = itemRows(
+      [item({ imageUrl: "https://evil.example/x.png" })],
+      "USD",
+    );
+    expect(untrusted).not.toContain("evil.example");
+  });
+
+  it("writes an appointment in the shop's zone, with the year", () => {
+    const html = itemRows(
+      [item({ scheduledFor: new Date("2026-12-28T18:30:00Z") })],
+      "USD",
+      "America/New_York",
+    );
+    // 18:30 UTC is 13:30 in New York; December's booking names its year.
+    expect(html).toContain("1:30");
+    expect(html).toContain("2026");
+  });
+});
+
+describe("formatWhen", () => {
+  it("survives a malformed stored time zone rather than failing the email", () => {
+    const date = new Date("2026-03-05T10:00:00Z");
+    expect(() => formatWhen(date, "Not/AZone")).not.toThrow();
+    expect(formatWhen(date, "Not/AZone")).toContain("2026");
   });
 });

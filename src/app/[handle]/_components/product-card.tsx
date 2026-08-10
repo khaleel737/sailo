@@ -1,38 +1,36 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ImageIcon } from "lucide-react";
+import { CalendarDays, Clock, Download, ImageIcon } from "lucide-react";
 import type { ProductCard as ProductCardData } from "@/lib/queries";
 import type { Shop } from "@/db/schema";
 import type { Dictionary } from "@/i18n";
-import { cn, formatMoney } from "@/lib/utils";
-import {
-  anySellable,
-  priceRange,
-  toCheckoutVariants,
-  unitsLeft,
-} from "@/lib/variants";
+import { cn, formatDuration, formatMoney } from "@/lib/utils";
+import { anySellable, priceRange } from "@/lib/variants";
+import { eventSalesOpen } from "@/lib/tickets";
 import { interpolate } from "@/i18n";
 import { StarRating } from "./star-rating";
-import {
-  OrderButton,
-  type CheckoutDelivery,
-  type CheckoutMethod,
-} from "./cart/order-sheet";
+import { FavoriteButton } from "./favorites/favorite-button";
 
+/**
+ * One product on the shop page.
+ *
+ * The card's whole job is to earn a tap through to the product page — so the
+ * entire card is the link, and the only other control on it is the heart.
+ * Buying happens on the product page, where the buyer can actually see what
+ * they're choosing; the pair of buy buttons that used to sit here asked for a
+ * commitment the card had never shown enough to justify, and silently added
+ * whichever variant came first.
+ */
 export function ProductCard({
   product,
   shop,
   layout,
-  methods,
-  deliveryOptions,
   t,
   locale,
 }: {
   product: ProductCardData;
   shop: Shop;
   layout: "grid" | "list";
-  methods: CheckoutMethod[];
-  deliveryOptions: CheckoutDelivery[];
   t: Dictionary;
   /** The shop's resolved language, so a price is punctuated like its page. */
   locale: string;
@@ -42,10 +40,11 @@ export function ProductCard({
 
   // With options, the card quotes the cheapest combination rather than a price
   // the buyer might not be able to get.
-  const variants = toCheckoutVariants(product, product.variants);
   const range = priceRange(product, product.variants);
   const displayPrice = range.min;
-  const sellable = product.inStock && anySellable(product, product.variants);
+  const salesOpen = eventSalesOpen(product);
+  const sellable =
+    product.inStock && salesOpen && anySellable(product, product.variants);
 
   /*
    * The struck-through price, or null when there isn't one. A boolean here
@@ -58,28 +57,20 @@ export function ProductCard({
     product.compareAtCents > displayPrice
       ? product.compareAtCents
       : null;
-  const kindLabel =
-    product.kind === "digital"
-      ? t.shop.labelDigital
-      : product.kind === "service"
-        ? t.shop.labelService
-        : null;
 
   return (
     <article
       className={cn(
-        // Shadow only, never a transform: this card is an ancestor of the
-        // checkout trigger, and a transformed ancestor becomes the containing
-        // block for the panel's `position: fixed` — which renders the whole
-        // modal inside this grid cell while the pointer is over the card.
-        "surface-card group overflow-hidden rounded-2xl transition hover:shadow-md",
+        // Shadow only, never a transform: a transformed ancestor would become
+        // the containing block for any `position: fixed` overlay a descendant
+        // opens, and the heart is not worth re-learning that lesson over.
+        "surface-card group relative overflow-hidden rounded-2xl transition hover:shadow-md",
         layout === "list" && "flex gap-4 p-3",
       )}
     >
-      <Link
-        href={href}
+      <div
         className={cn(
-          "relative block overflow-hidden bg-black/5",
+          "relative overflow-hidden bg-black/5",
           layout === "grid"
             ? "aspect-square w-full"
             : "size-24 shrink-0 rounded-xl sm:size-28",
@@ -101,40 +92,52 @@ export function ProductCard({
 
         {!sellable ? (
           <span className="absolute start-2 top-2 rounded-full bg-black/75 px-2 py-0.5 text-[11px] font-medium text-white">
-            {t.shop.soldOut}
+            {salesOpen ? t.shop.soldOut : t.shop.salesClosed}
           </span>
         ) : wasPriced !== null ? (
           <span className="absolute start-2 top-2 rounded-full bg-red-600 px-2 py-0.5 text-[11px] font-semibold text-white">
             {t.shop.sale}
           </span>
         ) : null}
-      </Link>
+      </div>
+
+      {/* Above the stretched link, or every tap on it would navigate. */}
+      <FavoriteButton
+        shopId={shop.id}
+        item={{
+          productId: product.id,
+          slug: product.slug,
+          title: product.title,
+          imageUrl: image?.url ?? null,
+          priceCents: displayPrice,
+        }}
+        label={t.shop.saveToFavorites}
+        className="absolute end-2 top-2 z-[2] size-8"
+      />
 
       <div
         className={cn(
           "flex flex-1 flex-col",
-          layout === "grid" ? "p-3" : "min-w-0 py-0.5",
+          layout === "grid" ? "p-3" : "min-w-0 py-0.5 pe-8",
         )}
       >
         <div className="flex-1">
-          <div className="flex items-start justify-between gap-2">
-            <Link href={href} className="min-w-0">
-              {/* A catalogue can hold both scripts, so each title picks its
-                  own direction — otherwise an English name in an Arabic shop
-                  truncates from the front and loses its first word. */}
-              <h3
-                dir="auto"
-                className="truncate text-sm font-semibold leading-snug"
-              >
-                {product.title}
-              </h3>
-            </Link>
-            {kindLabel ? (
-              <span className="surface-elevated text-muted shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide">
-                {kindLabel}
-              </span>
-            ) : null}
-          </div>
+          <Link
+            href={href}
+            className="min-w-0 after:absolute after:inset-0 after:z-[1] after:content-['']"
+          >
+            {/* A catalogue can hold both scripts, so each title picks its
+                own direction — otherwise an English name in an Arabic shop
+                truncates from the front and loses its first word. */}
+            <h3
+              dir="auto"
+              className="truncate text-sm font-semibold leading-snug"
+            >
+              {product.title}
+            </h3>
+          </Link>
+
+          <KindMeta product={product} locale={locale} t={t} />
 
           {layout === "list" && product.description ? (
             <p dir="auto" className="text-muted mt-1 line-clamp-2 text-xs">
@@ -167,41 +170,83 @@ export function ProductCard({
             />
           ) : null}
         </div>
-
-        <div className="mt-3">
-          <OrderButton
-            shopId={shop.id}
-            shopName={shop.name}
-            productId={product.id}
-            productTitle={product.title}
-            priceCents={product.priceCents}
-            currency={shop.currency}
-            methods={methods}
-            deliveryOptions={deliveryOptions}
-            kind={product.kind}
-            options={product.options}
-            variants={variants}
-            unitsLeft={unitsLeft(product)}
-            service={
-              product.kind === "service"
-                ? {
-                    bookingEnabled: product.bookingEnabled,
-                    bookingLeadHours: product.bookingLeadHours,
-                    durationMinutes: product.durationMinutes,
-                    mode: product.serviceMode,
-                  }
-                : null
-            }
-            serviceLocation={product.serviceLocation}
-            imageUrl={image?.url ?? null}
-            contactEmail={shop.contactEmail}
-            inStock={product.inStock}
-            compact
-            t={t}
-            className="accent-bg h-9 w-full rounded-lg text-xs font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-          />
-        </div>
       </div>
     </article>
+  );
+}
+
+/**
+ * The line that tells each kind's one deciding fact — when the event is, how
+ * long the appointment takes, that the file arrives instantly, which sizes a
+ * shirt comes in. What a buyer needed the product page to learn before, the
+ * card now answers where the comparing actually happens.
+ */
+function KindMeta({
+  product,
+  locale,
+  t,
+}: {
+  product: ProductCardData;
+  locale: string;
+  t: Dictionary;
+}) {
+  if (product.kind === "event") {
+    return (
+      <Meta icon={<CalendarDays className="size-3 shrink-0 opacity-70" />}>
+        {product.eventStartsAt
+          ? product.eventStartsAt.toLocaleString(locale, {
+              weekday: "short",
+              day: "numeric",
+              month: "short",
+              hour: "numeric",
+              minute: "2-digit",
+            })
+          : t.shop.kindEvent}
+      </Meta>
+    );
+  }
+
+  if (product.kind === "digital") {
+    return (
+      <Meta icon={<Download className="size-3 shrink-0 opacity-70" />}>
+        {t.shop.kindDigital}
+      </Meta>
+    );
+  }
+
+  if (product.kind === "service") {
+    return (
+      <Meta icon={<Clock className="size-3 shrink-0 opacity-70" />}>
+        {product.durationMinutes
+          ? `${interpolate(t.checkout.duration, {
+              duration: formatDuration(product.durationMinutes),
+            })} · ${
+              product.serviceMode === "online"
+                ? t.checkout.online
+                : t.checkout.inPerson
+            }`
+          : t.shop.kindService}
+      </Meta>
+    );
+  }
+
+  // Physical: the choices themselves — "S · M · L" says more than "3 sizes".
+  const values = product.options[0]?.values;
+  if (!values?.length) return null;
+  return <Meta>{values.join(" · ")}</Meta>;
+}
+
+function Meta({
+  icon,
+  children,
+}: {
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <p className="text-muted mt-0.5 flex items-center gap-1 text-xs">
+      {icon}
+      <span className="truncate">{children}</span>
+    </p>
   );
 }

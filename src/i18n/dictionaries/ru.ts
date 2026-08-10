@@ -27,6 +27,11 @@ export const ru: Dictionary = {
     accept: "Принять",
     decline: "Отклонить",
     privacy: "Политика конфиденциальности",
+    shopTitle: "Файлы cookie в этом магазине",
+    shopBody: "{shop} использует маркетинговые инструменты, которые сохраняют файлы cookie на вашем устройстве для измерения посещений и рекламы. Ничего не загружается без вашего согласия.",
+    shopEssentialBody: "Всегда включены — ваш язык и этот выбор.",
+    marketing: "Маркетинг и аналитика",
+    marketingBody: "Инструменты, выбранные магазином {shop}. Загружаются только с вашего согласия.",
   },
 
   shop: {
@@ -44,11 +49,14 @@ export const ru: Dictionary = {
     kindPhysical: "Доставим вам", kindDigital: "Мгновенная загрузка",
     kindService: "Забронируйте время", kindEvent: "Билет на мероприятие", labelDigital: "Загрузка", labelService: "Запись",
     from: "От {price}",
+    favorites: "Избранное", favoritesEmpty: "Пока ничего не сохранено",
+    favoritesEmptyBody: "Нажмите на сердечко на товаре — и он будет ждать вас здесь.",
+    saveToFavorites: "Сохранить в избранное",
   },
   sort: {
     featured: "Рекомендуемые", newest: "Новинки", priceAsc: "Цена: по возрастанию",
     priceDesc: "Цена: по убыванию", rating: "Лучшие оценки", allTypes: "Всё",
-    physical: "Товары", digital: "Загрузки", services: "Записи",
+    physical: "Товары", digital: "Загрузки", services: "Записи", events: "Мероприятия",
   },
   product: {
     reviews: "Отзывы", noReviews: "Отзывов пока нет — напишите первый.",
@@ -94,6 +102,9 @@ export const ru: Dictionary = {
     inPerson: "Лично",
     downloadAfterPayment: "Загрузка откроется, как только {shop} подтвердит оплату.",
     getFiles: "Получить файлы",
+    termsAgree: "Я согласен с условиями",
+    termsView: "Прочитать",
+    marketingOptIn: "Присылайте мне новости и предложения",
     earnReferral: "Зарабатывайте {percent}% за рекомендации",
     earnReferralBody:
       "Поделитесь ссылкой. Когда кто-то купит в {shop} по ней, вы получите {percent}% от заказа.",
@@ -101,6 +112,7 @@ export const ru: Dictionary = {
   cart: {
     title: "Ваша корзина",
     add: "В корзину",
+    added: "Добавлено",
     buyNow: "Купить сейчас",
     view: "Корзина",
     itemCount: "{count} в корзине",
@@ -109,6 +121,17 @@ export const ru: Dictionary = {
     keepShopping: "Продолжить покупки",
     remove: "Убрать",
     someGone: "Что-то из корзины закончилось и не вошло в сумму.",
+  },
+
+  share: {
+    shopTitle: "Поделиться этим магазином",
+    productTitle: "Поделиться этим товаром",
+    copyLink: "Скопировать ссылку",
+    copied: "Скопировано",
+    email: "Эл. почта",
+    more: "Ещё",
+    scanToOpen: "Отсканируйте, чтобы открыть",
+    downloadQr: "Скачать QR-код",
   },
 
   download: {
@@ -128,6 +151,11 @@ export const ru: Dictionary = {
     admitOne: "Вход для одного",
     showAtDoor: "Покажите это на входе.",
     used: "Использован",
+    online: "Онлайн-мероприятие",
+    inPerson: "Очно",
+    join: "Присоединиться",
+    joinLocked: "Ссылка появится здесь, как только {shop} подтвердит вашу оплату.",
+    joinMissing: "Организатор ещё не добавил ссылку.",
   },
 
   rails: {
@@ -202,6 +230,26 @@ export const ru: Dictionary = {
     signInAction: "Прислать ссылку",
     signInDone: "Если адрес зарегистрирован, ссылка уже в пути. Проверьте почту.",
     signInEmail: "Ваша почта",
+    commission: "Комиссия",
+    noActivity: "За этот период пока ничего не заработано.",
+    payoutTitle: "Как получать выплаты",
+    payoutIntro: "Подскажите магазину {shop}, куда переводить вашу комиссию. Эти данные видны рядом с тем, что вам причитается, — платить вам станет на один вопрос проще.",
+    payoutMethodLabel: "Как",
+    payoutBank: "Банковский перевод",
+    payoutPaypal: "PayPal",
+    payoutOther: "Другое",
+    payoutDetailsLabel: "Куда",
+    payoutBankHint: "Номер счёта или IBAN и имя владельца счёта",
+    payoutPaypalHint: "Почта вашего аккаунта PayPal",
+    payoutOtherHint: "Напишите магазину {shop}, как вам заплатить",
+    payoutSave: "Сохранить данные для выплат",
+    payoutSaved: "Сохранено — {shop} увидит это рядом с суммой, которая вам причитается.",
+    payoutOnFile: "Указано: {method} · {details}",
+    payoutNone: "Пока ничего не указано.",
+    securityTitle: "Никому не давайте эту ссылку",
+    securityBody: "Эта ссылка — единственный ключ к странице: любой, у кого она есть, увидит ваш заработок и сможет изменить способ выплаты. Не публикуйте её в открытых местах. Думаете, она попала к кому-то ещё? Сбросьте её — старая ссылка сразу перестанет работать, а новую мы пришлём вам на почту.",
+    securityReset: "Сбросить мою ссылку",
+    securityResetDone: "Готово — это ваша новая ссылка, старая больше не работает. Сохраните эту страницу заново там, где храните её.",
   },
 
   invoice: {
@@ -234,6 +282,17 @@ export const ru: Dictionary = {
     updatePassword: "Обновить пароль",
     resetDone: "Пароль обновлён. Теперь можно войти с ним.",
     resetInvalid: "Ссылка устарела или уже использована. Запросите новую.",
+    twoFactorTitle: "Введите код",
+    twoFactorSubtitle: "Откройте приложение-аутентификатор и введите шесть цифр, которые оно показывает.",
+    twoFactorCode: "Код из шести цифр",
+    twoFactorVerify: "Подтвердить и войти",
+    twoFactorUseBackup: "Ввести резервный код",
+    twoFactorBackupTitle: "Резервный код",
+    twoFactorBackupSubtitle:
+      "Введите один из кодов, сохранённых при включении двухфакторной защиты. Каждый работает один раз.",
+    twoFactorBackupCode: "Резервный код",
+    twoFactorUseApp: "Вернуться к приложению-аутентификатору",
+    twoFactorExpired: "Это заняло слишком много времени. Войдите снова, чтобы код запросили заново.",
   },
   onboarding: {
     shopNameFallback: "Ваш магазин",
@@ -265,6 +324,7 @@ export const ru: Dictionary = {
     payments: "Оплата", delivery: "Доставка", settings: "Настройки", checkin: "Чек-ин",
     viewShop: "Открыть магазин", signOut: "Выйти", upgrade: "Улучшить тариф",
     openMenu: "Открыть меню", closeMenu: "Закрыть меню",
+    broadcasts: "Рассылки",
   },
   notifications: {
     aBuyer: "Покупатель",
@@ -276,6 +336,8 @@ export const ru: Dictionary = {
     reviewBody: "{name} поставил(а) {rating}.",
     affiliateApplication: "Заявка партнёра",
     affiliateBody: "{name} хочет продвигать ваш магазин.",
+    payoutUpdated: "Данные для выплат обновлены",
+    payoutUpdatedBody: "{name} указал(а), как хочет получать выплаты.",
     readyToShip: "Готово к отправке",
     shipBody: "{product} для {name} — добавьте трек-номер при отправке.",
     justNow: "только что",
@@ -325,5 +387,16 @@ export const ru: Dictionary = {
     unlocksThis: "Открывает это", bestValue: "Выгоднее всего",
     cancelAnyTime: "Отменить можно в любой момент. Заказы через чат и банковский перевод остаются полностью вашими; с продаж по картам берётся комиссия {fee}.",
     planFeature: "Функция {plan}", paidFeature: "Платная функция", youAreOn: "У вас тариф {plan}",
+  },
+
+  unsubscribe: {
+    link: "Отписаться",
+    title: "Отказаться от рассылки {shop}?",
+    body: "{email} больше не будет получать рассылку от {shop}. Подтверждения заказов и чеки продолжат приходить.",
+    confirm: "Да, отписаться",
+    doneTitle: "Вы отписаны",
+    doneBody: "{shop} больше не будет присылать вам рассылку. Подтверждения заказов продолжат приходить.",
+    invalidTitle: "Ссылка больше не действительна",
+    invalidBody: "Ответьте на любое письмо магазина и попросите удалить вас из списка.",
   },
 };

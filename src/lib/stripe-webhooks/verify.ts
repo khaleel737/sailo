@@ -26,6 +26,14 @@ export const HANDLED = new Set([
   "customer.subscription.updated",
   "customer.subscription.deleted",
   "invoice.payment_failed",
+  /*
+   * A seller's subscription payment landing. Nothing about the plan changes
+   * here — `customer.subscription.*` does that — but it is the only event
+   * that says money actually arrived, which is what the refer-a-creator
+   * ledger accrues on. A subscription that exists is a promise; an invoice
+   * that is paid is revenue.
+   */
+  "invoice.paid",
   "charge.refunded",
   "checkout.session.expired",
   "account.updated",

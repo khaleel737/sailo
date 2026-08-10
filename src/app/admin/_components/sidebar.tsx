@@ -7,6 +7,7 @@ import {
   CreditCard,
   ExternalLink,
   Gift,
+  Mail,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -57,6 +58,7 @@ const GROUPS = [
     id: "growth",
     items: [
       { href: "/admin/coupons", key: "coupons", icon: Tags },
+      { href: "/admin/broadcasts", key: "broadcasts", icon: Mail },
       { href: "/admin/affiliates", key: "affiliates", icon: Gift },
     ],
   },

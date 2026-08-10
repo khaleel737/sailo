@@ -3,9 +3,11 @@ import { orderSummaryTitle } from "@/lib/order-lines";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { toString as qrSvg } from "qrcode";
-import { Clock, Download, FileDown, Lock, Store, Ticket } from "lucide-react";
+import { Clock, Download, FileDown, Lock, MapPin, Store, Ticket, Video } from "lucide-react";
+import { LocalTime } from "@/components/shared/local-time";
 import { getDownloadByToken, downloadState } from "@/lib/downloads";
 import { ticketsForOrder } from "@/lib/tickets";
+import { eventAccessForOrder } from "@/lib/event-access";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
 import { PoweredBy } from "@/components/shared/powered-by";
@@ -40,6 +42,16 @@ export default async function DownloadPage({
    * and a ticket does not stop admitting because a PDF link went stale.
    */
   const orderTickets = await ticketsForOrder(order.id);
+
+  /*
+   * The events this order registered for, and their join links.
+   *
+   * `eventAccessForOrder` decides on its own whether the links are earned —
+   * it returns them only once `downloadReleasedAt` is set — so this page has
+   * no gate of its own to get wrong. Read from the order's *lines*, so a
+   * basket holding a mug and a webinar still shows the webinar.
+   */
+  const events = await eventAccessForOrder(order);
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const ticketQrs = state.released
     ? await Promise.all(
@@ -150,6 +162,62 @@ export default async function DownloadPage({
               ) : null}
             </p>
           </div>
+        ) : null}
+
+        {events.length > 0 ? (
+          <ul className="mt-6 space-y-3">
+            {events.map((event) => (
+              <li key={event.productId} className="surface-card rounded-2xl p-4">
+                <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide opacity-60">
+                  {event.online ? (
+                    <Video className="size-3.5" />
+                  ) : (
+                    <MapPin className="size-3.5" />
+                  )}
+                  {event.online ? t.tickets.online : t.tickets.inPerson}
+                </p>
+                <p className="mt-1 text-sm font-semibold">{event.title}</p>
+
+                {event.startsAt ? (
+                  /*
+                   * Rendered in the *buyer's* own zone, by their own browser.
+                   * The server has no idea where they are, and "18:00" without
+                   * a zone is the single most common webinar support ticket —
+                   * so the one clock that cannot be wrong for them is theirs.
+                   */
+                  <LocalTime
+                    at={event.startsAt.toISOString()}
+                    className="text-muted mt-0.5 block text-xs"
+                  />
+                ) : null}
+
+                {event.joinUrl ? (
+                  <a
+                    href={event.joinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="accent-bg mt-3 inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-semibold"
+                  >
+                    <Video className="size-4" />
+                    {t.tickets.join}
+                  </a>
+                ) : null}
+
+                {event.online && !event.joinUrl ? (
+                  <p className="text-muted mt-2 flex items-center gap-1.5 text-xs">
+                    <Lock className="size-3.5" />
+                    {event.locked
+                      ? interpolate(t.tickets.joinLocked, { shop: shop.name })
+                      : t.tickets.joinMissing}
+                  </p>
+                ) : null}
+
+                {event.location ? (
+                  <p className="text-muted mt-2 text-xs">{event.location}</p>
+                ) : null}
+              </li>
+            ))}
+          </ul>
         ) : null}
 
         {ticketQrs.length > 0 ? (

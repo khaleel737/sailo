@@ -17,6 +17,10 @@ export type Features = {
   affiliates: boolean;
   removeBadge: boolean;
   csvExport: boolean;
+  /** Block Sailo slots with busy time from the seller's own calendar feed. */
+  calendarSync: boolean;
+  /** Marketing email to contacts who opted in. */
+  broadcasts: boolean;
 };
 
 export type Limits = {
@@ -53,6 +57,8 @@ export const PLANS: Record<PlanId, Plan> = {
       affiliates: false,
       removeBadge: false,
       csvExport: false,
+      calendarSync: false,
+      broadcasts: false,
     },
     highlights: [
       "free1", "free2", "free3", "free4", "free5",
@@ -74,6 +80,8 @@ export const PLANS: Record<PlanId, Plan> = {
       affiliates: false,
       removeBadge: true,
       csvExport: true,
+      calendarSync: true,
+      broadcasts: false,
     },
     highlights: ["pro1", "pro2", "pro3", "pro4", "pro5"],
   },
@@ -92,6 +100,8 @@ export const PLANS: Record<PlanId, Plan> = {
       affiliates: true,
       removeBadge: true,
       csvExport: true,
+      calendarSync: true,
+      broadcasts: true,
     },
     highlights: ["biz1", "biz2", "biz3", "biz4", "biz5", "biz6"],
   },

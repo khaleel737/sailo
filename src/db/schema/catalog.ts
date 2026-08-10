@@ -49,7 +49,7 @@ export const products = pgTable(
     priceCents: integer("price_cents").default(0).notNull(),
     compareAtCents: integer("compare_at_cents"),
 
-    kind: text("kind").default("physical").notNull(), // physical | digital | service
+    kind: text("kind").default("physical").notNull(), // physical | digital | service | event
     tags: jsonb("tags").$type<string[]>().default([]).notNull(),
 
     /**
@@ -98,6 +98,18 @@ export const products = pgTable(
      * a room, exactly as it stops overselling a shelf.
      */
     eventStartsAt: timestamp("event_starts_at"),
+    /**
+     * Where an online event is joined — a Zoom, Meet or Teams link the seller
+     * pastes, or anything else that is a URL.
+     *
+     * Held back until the order is released. It is the whole good being sold,
+     * so putting it in the confirmation email of an unpaid order is giving
+     * the event away to anyone willing to click through checkout; the gate is
+     * `orders.downloadReleasedAt`, the same timestamp that unlocks a digital
+     * order's files and validates a ticket. `serviceMode` decides whether an
+     * event is online at all, exactly as it does for a service.
+     */
+    eventJoinUrl: text("event_join_url"),
 
     inStock: boolean("in_stock").default(true).notNull(),
     isFeatured: boolean("is_featured").default(false).notNull(),

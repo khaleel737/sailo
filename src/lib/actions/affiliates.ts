@@ -1,10 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { revalidateShop } from "@/lib/cache";
+import { publishAffiliateEvent, publishShopEvent } from "@/lib/events";
 import { maybeRow } from "@/lib/invariant";
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
+import { liveShop } from "@/lib/shop-visibility";
 import { affiliates, orders, shops, type Affiliate, type Shop } from "@/db/schema";
 import { ensurePortalToken, portalUrl } from "@/lib/affiliate-portal";
 import { appUrl } from "@/lib/app-url";
@@ -127,6 +130,9 @@ export async function saveAffiliate(
   }
 
   revalidatePath("/admin/affiliates");
+  after(() => publishShopEvent(shop.id, "affiliate"));
+  // An edited affiliate may have their portal open on the terms just changed.
+  if (id) after(() => publishAffiliateEvent(id, "affiliate"));
   return { ok: true, message: id ? "Affiliate updated." : "Affiliate added." };
 }
 
@@ -158,6 +164,8 @@ export async function setAffiliateStatus(formData: FormData) {
   }
 
   revalidatePath("/admin/affiliates");
+  after(() => publishShopEvent(shop.id, "affiliate"));
+  after(() => publishAffiliateEvent(id, "affiliate"));
 }
 
 export async function deleteAffiliate(formData: FormData) {
@@ -170,6 +178,10 @@ export async function deleteAffiliate(formData: FormData) {
     .where(and(eq(affiliates.id, id), eq(affiliates.shopId, shop.id)));
 
   revalidatePath("/admin/affiliates");
+  after(() => publishShopEvent(shop.id, "affiliate"));
+  // Their portal token died with the row; an open portal refreshes into the
+  // 404 that is now the truth.
+  after(() => publishAffiliateEvent(id, "affiliate"));
 }
 
 /** Marks every unpaid commission for one affiliate as settled. */
@@ -190,6 +202,9 @@ export async function markCommissionsPaid(formData: FormData) {
     );
 
   revalidatePath("/admin/affiliates");
+  after(() => publishShopEvent(shop.id, "affiliate"));
+  // "Paid" is the number the affiliate is waiting to see move.
+  after(() => publishAffiliateEvent(affiliateId, "payment"));
 }
 
 export async function updateAffiliateSettings(
@@ -222,6 +237,7 @@ export async function updateAffiliateSettings(
     .where(eq(shops.id, shop.id));
 
   revalidatePath("/admin/affiliates");
+  after(() => publishShopEvent(shop.id, "affiliate"));
   revalidatePath(`/${shop.handle}`);
   // The catalogue is cached per shop; a write has to drop it.
   revalidateShop(shop.id, shop.handle);
@@ -279,7 +295,7 @@ export async function applyAsAffiliate(
   if (!gate.allowed) return APPLICATION_RECEIVED;
 
   const shop = await db.query.shops.findFirst({
-    where: and(eq(shops.id, shopId), eq(shops.isPublished, true), isNull(shops.suspendedAt)),
+    where: liveShop(eq(shops.id, shopId)),
   });
   /*
    * `can(shop, "affiliates")` as well as the two toggles: the public page at
@@ -320,6 +336,8 @@ export async function applyAsAffiliate(
       .returning());
     if (created) {
       revalidatePath("/admin/affiliates");
+      // The seller's bell learns about the application as it happens.
+      after(() => publishShopEvent(shop.id, "affiliate"));
       return APPLICATION_RECEIVED;
     }
   }

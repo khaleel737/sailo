@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { isRenderableImageUrl, isStoredFileUrl } from "@/lib/file-urls";
+import {
+  isPublicLinkUrl,
+  isRenderableImageUrl,
+  isStoredFileUrl,
+} from "@/lib/file-urls";
 
 /**
  * The allowlist standing between a seller and a server-side fetch.
@@ -261,5 +265,81 @@ describe("isStoredFileUrl pinned to our own store", () => {
     ]) {
       expect(isStoredFileUrl(url), url).toBe(false);
     }
+  });
+});
+
+/**
+ * Where a seller's terms link may point (spec 05).
+ *
+ * Nothing fetches this one — it is rendered as an anchor on the public
+ * checkout and followed by the buyer's own browser. So the failure it prevents
+ * is not a server-side request but what a stored href can be: `javascript:` is
+ * stored XSS on every storefront that opens a basket, and `http:` downgrades
+ * the connection on the page where a card number is about to be typed.
+ */
+
+describe("isPublicLinkUrl — what must be refused", () => {
+  it.each([
+    ["javascript:alert(1)", "the scheme that makes a link a script"],
+    ["data:text/html,<script>alert(1)</script>", "an inline document"],
+    ["http://example.com/terms", "plain http on a payment page"],
+    ["file:///etc/passwd", "a local file"],
+  ])("refuses %s (%s)", (url) => {
+    expect(isPublicLinkUrl(url)).toBe(false);
+  });
+
+  it.each([
+    ["https://localhost/terms", "loopback by name"],
+    ["https://127.0.0.1/terms", "loopback by address"],
+    ["https://127.13.14.15/terms", "the rest of the loopback block"],
+    ["https://[::1]/terms", "loopback over IPv6"],
+    ["https://[fd00::1]/terms", "IPv6 unique-local"],
+    ["https://10.0.0.5/terms", "RFC1918 ten-dot"],
+    ["https://172.16.0.1/terms", "RFC1918 172.16/12"],
+    ["https://172.31.255.254/terms", "the top of 172.16/12"],
+    ["https://192.168.1.1/terms", "RFC1918 192.168/16"],
+    ["https://169.254.169.254/terms", "link-local, where metadata lives"],
+    ["https://100.64.0.1/terms", "carrier-grade NAT"],
+    ["https://0.0.0.0/terms", "this network"],
+    ["https://printer.local/terms", "an mDNS name"],
+    ["https://metadata.google.internal/terms", "an internal name"],
+    ["https://wiki/terms", "a single-label host a resolver completes"],
+  ])("refuses %s (%s)", (url) => {
+    expect(isPublicLinkUrl(url)).toBe(false);
+  });
+
+  it.each([["", "empty"], ["not a url", "unparseable"], ["   ", "blank"]])(
+    "refuses %s (%s)",
+    (url) => {
+      expect(isPublicLinkUrl(url)).toBe(false);
+    },
+  );
+
+  it("refuses a non-string", () => {
+    expect(isPublicLinkUrl(undefined)).toBe(false);
+    expect(isPublicLinkUrl(null)).toBe(false);
+    expect(isPublicLinkUrl(42)).toBe(false);
+  });
+
+  it("is not fooled by a private address in the credentials", () => {
+    // The host `fetch` — or here, the browser — would actually contact.
+    const url = "https://10.0.0.5@example.com/terms";
+    expect(new URL(url).hostname).toBe("example.com");
+    expect(isPublicLinkUrl(url)).toBe(true);
+  });
+});
+
+describe("isPublicLinkUrl — what a seller may actually store", () => {
+  it.each([
+    "https://example.com/terms",
+    "https://www.example.co.uk/legal/terms-and-conditions",
+    "https://seller.myshopify.com/pages/terms?v=2",
+    "https://notion.so/My-Terms-abc123#refunds",
+    // Not private: 172.15 and 172.32 sit either side of the RFC1918 block.
+    "https://172.15.0.1/terms",
+    "https://172.32.0.1/terms",
+    "https://93.184.216.34/terms",
+  ])("accepts %s", (url) => {
+    expect(isPublicLinkUrl(url)).toBe(true);
   });
 });

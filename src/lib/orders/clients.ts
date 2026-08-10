@@ -20,9 +20,29 @@ export async function upsertClient(
     email: string | null;
     phone: string | null;
   } & Record<string, string | null>,
+  /*
+   * A separate argument rather than another key on `data`, whose index
+   * signature is `string | null` — a Date on it would widen to something
+   * neither this function nor its callers could read back.
+   */
+  consent?: { marketingConsentAt: Date | null },
 ) {
   const db = getDb();
   if (!data.email && !data.phone) return null;
+
+  /*
+   * Consent is granted, never revoked by omission.
+   *
+   * A buyer who opted in last month and left the optional box empty today did
+   * not withdraw anything — they skipped a box, which is what optional boxes
+   * are for. Writing `null` over their consent because this order did not
+   * carry it would silently shrink the seller's lawful audience every time a
+   * returning customer bought again, and nothing anywhere would report it.
+   *
+   * Withdrawal is a real thing a buyer must be able to do; it is unsubscribe,
+   * and it is spec 14's to build. It is deliberately not this expression.
+   */
+  const grantedConsent = consent?.marketingConsentAt ?? null;
 
   const matchers = [];
   if (data.email) matchers.push(eq(clients.email, data.email));
@@ -54,6 +74,10 @@ export async function upsertClient(
         email: data.email ?? existing.email,
         phone: data.phone ?? existing.phone,
         ...addressUpdate,
+        // Grant-only. The same rule is applied again in the race-loser branch
+        // below — the two update paths are one behaviour written twice, and a
+        // rule added to only one of them is the bug shape this file has had.
+        marketingConsentAt: grantedConsent ?? existing.marketingConsentAt,
         updatedAt: new Date(),
       })
       .where(eq(clients.id, existing.id));
@@ -84,6 +108,7 @@ export async function upsertClient(
       email: data.email,
       phone: data.phone,
       ...address,
+      marketingConsentAt: grantedConsent,
     })
     .onConflictDoNothing()
     .returning({ id: clients.id }));
@@ -103,6 +128,10 @@ export async function upsertClient(
       email: data.email ?? winner.email,
       phone: data.phone ?? winner.phone,
       ...addressUpdate,
+      // The twin of the grant-only merge above. A buyer who double-clicked
+      // "Buy now" arrives here instead, and their consent must survive the
+      // race exactly as it survives the ordinary path.
+      marketingConsentAt: grantedConsent ?? winner.marketingConsentAt,
       updatedAt: new Date(),
     })
     .where(eq(clients.id, winner.id));

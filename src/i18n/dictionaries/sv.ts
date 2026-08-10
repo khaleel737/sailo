@@ -27,6 +27,11 @@ export const sv: Dictionary = {
     accept: "Godkänn",
     decline: "Avböj",
     privacy: "Integritetspolicy",
+    shopTitle: "Kakor i den här butiken",
+    shopBody: "{shop} använder marknadsföringsverktyg som lagrar kakor på din enhet för att mäta besök och annonser. Inget läses in om du inte godkänner.",
+    shopEssentialBody: "Alltid på — ditt språk och det här valet.",
+    marketing: "Marknadsföring och analys",
+    marketingBody: "Verktyg valda av {shop}. Läses bara in om du godkänner.",
   },
 
   shop: {
@@ -44,11 +49,14 @@ export const sv: Dictionary = {
     kindService: "Boka en tid", kindEvent: "Evenemangsbiljett",
     labelDigital: "Nedladdning", labelService: "Bokning",
     from: "Från {price}",
+    favorites: "Favoriter", favoritesEmpty: "Inget sparat ännu",
+    favoritesEmptyBody: "Tryck på hjärtat på en vara så väntar den på dig här.",
+    saveToFavorites: "Spara som favorit",
   },
   sort: {
     featured: "Utvalda", newest: "Nyast", priceAsc: "Pris: lägst först",
     priceDesc: "Pris: högst först", rating: "Högst betyg", allTypes: "Allt",
-    physical: "Varor", digital: "Nedladdningar", services: "Bokningar",
+    physical: "Varor", digital: "Nedladdningar", services: "Bokningar", events: "Evenemang",
   },
   product: {
     reviews: "Omdömen", noReviews: "Inga omdömen än — bli först.",
@@ -94,6 +102,9 @@ export const sv: Dictionary = {
     inPerson: "På plats",
     downloadAfterPayment: "Din nedladdning låses upp så snart {shop} bekräftar din betalning.",
     getFiles: "Hämta dina filer",
+    termsAgree: "Jag godkänner villkoren",
+    termsView: "Läs dem",
+    marketingOptIn: "Skicka mig nyheter och erbjudanden",
     earnReferral: "Tjäna {percent}% på tips",
     earnReferralBody:
       "Dela din länk. När någon handlar hos {shop} via den tjänar du {percent}% av ordern.",
@@ -101,6 +112,7 @@ export const sv: Dictionary = {
   cart: {
     title: "Din varukorg",
     add: "Lägg i varukorgen",
+    added: "Tillagd",
     buyNow: "Köp nu",
     view: "Varukorg",
     itemCount: "{count} i varukorgen",
@@ -109,6 +121,17 @@ export const sv: Dictionary = {
     keepShopping: "Fortsätt handla",
     remove: "Ta bort",
     someGone: "Något i varukorgen är slutsålt och räknas inte in i summan.",
+  },
+
+  share: {
+    shopTitle: "Dela den här butiken",
+    productTitle: "Dela den här produkten",
+    copyLink: "Kopiera länk",
+    copied: "Kopierat",
+    email: "E-post",
+    more: "Mer",
+    scanToOpen: "Skanna för att öppna",
+    downloadQr: "Ladda ner QR-kod",
   },
 
   download: {
@@ -128,6 +151,11 @@ export const sv: Dictionary = {
     admitOne: "Gäller en person",
     showAtDoor: "Visa den här i dörren.",
     used: "Använd",
+    online: "Digitalt evenemang",
+    inPerson: "På plats",
+    join: "Gå med i evenemanget",
+    joinLocked: "Din länk visas här så snart {shop} bekräftar din betalning.",
+    joinMissing: "Arrangören har ännu inte lagt till en länk.",
   },
 
   rails: {
@@ -201,6 +229,26 @@ export const sv: Dictionary = {
     signInAction: "Skicka min länk",
     signInDone: "Om adressen finns registrerad är länken på väg. Kolla inkorgen.",
     signInEmail: "Din e-post",
+    commission: "Provision",
+    noActivity: "Inget intjänat under den här perioden än.",
+    payoutTitle: "Så får du betalt",
+    payoutIntro: "Berätta för {shop} vart din provision ska skickas. Det står bredvid vad de är skyldiga dig, så blir det en fråga mindre när du ska få betalt.",
+    payoutMethodLabel: "Hur",
+    payoutBank: "Banköverföring",
+    payoutPaypal: "PayPal",
+    payoutOther: "Annat",
+    payoutDetailsLabel: "Vart",
+    payoutBankHint: "Kontonummer eller IBAN, och namnet på kontot",
+    payoutPaypalHint: "E-posten på ditt PayPal-konto",
+    payoutOtherHint: "Berätta för {shop} hur du vill få betalt",
+    payoutSave: "Spara utbetalningsuppgifter",
+    payoutSaved: "Sparat — {shop} ser det här bredvid vad de är skyldiga dig.",
+    payoutOnFile: "Registrerat: {method} · {details}",
+    payoutNone: "Inget registrerat än.",
+    securityTitle: "Håll den här länken för dig själv",
+    securityBody: "Länken är den enda nyckeln till den här sidan: den som har den kan se dina intäkter och ändra hur du får betalt. Lägg inte upp den någonstans offentligt. Tror du att någon annan har den? Återställ den — den gamla länken slutar fungera direkt, och den nya mejlas till dig.",
+    securityReset: "Återställ min länk",
+    securityResetDone: "Klart — det här är din nya länk, och den gamla är död. Spara om den här sidan där du brukar ha den.",
   },
 
   invoice: {
@@ -233,6 +281,16 @@ export const sv: Dictionary = {
     updatePassword: "Uppdatera lösenordet",
     resetDone: "Lösenordet är uppdaterat. Du kan logga in med det nu.",
     resetInvalid: "Länken har gått ut eller redan använts. Begär en ny.",
+    twoFactorTitle: "Ange din kod",
+    twoFactorSubtitle: "Öppna din autentiseringsapp och skriv de sex siffror den visar.",
+    twoFactorCode: "Sexsiffrig kod",
+    twoFactorVerify: "Verifiera och logga in",
+    twoFactorUseBackup: "Använd en reservkod i stället",
+    twoFactorBackupTitle: "Använd en reservkod",
+    twoFactorBackupSubtitle: "Ange en av koderna du sparade när du slog på tvåfaktor. Varje kod fungerar en gång.",
+    twoFactorBackupCode: "Reservkod",
+    twoFactorUseApp: "Använd din autentiseringsapp i stället",
+    twoFactorExpired: "Det tog för lång tid. Logga in igen så får du en ny kodfråga.",
   },
   onboarding: {
     shopNameFallback: "Din butik",
@@ -265,6 +323,7 @@ export const sv: Dictionary = {
     checkin: "Incheckning",
     viewShop: "Visa butik", signOut: "Logga ut", upgrade: "Uppgradera",
     openMenu: "Öppna meny", closeMenu: "Stäng meny",
+    broadcasts: "Utskick",
   },
   notifications: {
     aBuyer: "En köpare",
@@ -276,6 +335,8 @@ export const sv: Dictionary = {
     reviewBody: "{name} gav {rating}.",
     affiliateApplication: "Partneransökan",
     affiliateBody: "{name} vill marknadsföra din butik.",
+    payoutUpdated: "Utbetalningsuppgifter uppdaterade",
+    payoutUpdatedBody: "{name} har angett hur hen vill få betalt.",
     readyToShip: "Redo att skickas",
     shipBody: "{product} till {name} — lägg till spårning när du skickar.",
     justNow: "nyss",
@@ -325,5 +386,16 @@ export const sv: Dictionary = {
     unlocksThis: "Låser upp detta", bestValue: "Bäst värde",
     cancelAnyTime: "Avsluta när du vill. Beställningar via chatt och banköverföring är helt dina; kortförsäljning har en avgift på {fee}.",
     planFeature: "{plan}-funktion", paidFeature: "Betalfunktion", youAreOn: "Du har {plan}",
+  },
+
+  unsubscribe: {
+    link: "Avsluta prenumeration",
+    title: "Sluta få marknadsföring från {shop}?",
+    body: "{email} får inte längre marknadsföring från {shop}. Orderbekräftelser och kvitton kommer fortfarande.",
+    confirm: "Ja, avsluta prenumerationen",
+    doneTitle: "Du är avregistrerad",
+    doneBody: "{shop} skickar inte mer marknadsföring till dig. Orderbekräftelser kommer fortfarande.",
+    invalidTitle: "Den här länken gäller inte längre",
+    invalidBody: "Svara på valfritt mejl från butiken och be dem ta bort dig från listan.",
   },
 };

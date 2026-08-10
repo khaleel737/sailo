@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { revalidateShop } from "@/lib/cache";
+import { publishShopEvent } from "@/lib/events";
 import { firstRow } from "@/lib/invariant";
 import { eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
@@ -69,5 +71,6 @@ export async function savePaymentMethod(
   revalidatePath(`/${shop.handle}`);
   // The catalogue is cached per shop; a write has to drop it.
   revalidateShop(shop.id, shop.handle);
+  after(() => publishShopEvent(shop.id, "account"));
   return { ok: true, message: `${def.name} saved.` };
 }

@@ -1,9 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { shops, staffActions, supportTickets, type Shop } from "@/db/schema";
+import { publishShopEvent } from "@/lib/events";
 import { maybeRow } from "@/lib/invariant";
 import { requireStaff } from "@/lib/session";
 import { updateShopNow } from "@/lib/cache";
@@ -61,6 +63,13 @@ async function record(
   revalidatePath("/hq/accounts");
   revalidatePath("/hq/revenue");
   revalidatePath("/hq");
+
+  /*
+   * Enforcement lands on the seller's screen as it lands on their account: a
+   * suspension banner, a granted plan, a staff note. The seller's panel is
+   * the audience the paths above can't reach, being another user's session.
+   */
+  after(() => publishShopEvent(shop.id, "account"));
 }
 
 /**
@@ -220,4 +229,5 @@ export async function closeSupportTicket(formData: FormData) {
   revalidatePath("/hq/support");
   // The seller's own list shows the status too.
   revalidatePath("/admin/support");
+  after(() => publishShopEvent(closed.shopId, "support"));
 }

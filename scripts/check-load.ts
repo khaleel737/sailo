@@ -149,6 +149,10 @@ async function measure() {
   console.log("\nAdmin");
   await plan("order rollup", await sql`explain (analyze) select count(*), sum(total_cents) from orders where shop_id = ${shop.id}`);
   await plan("visits 30d", await sql`explain (analyze) select count(*), count(distinct session_id) from visits where shop_id = ${shop.id} and created_at > now() - interval '30 days'`);
+  // The per-product table's views read. The created_at bound is what lets the
+  // planner prune months on a partitioned `visits` — if this plan ever lists
+  // every visits_parts child, the pruning is broken, not slow.
+  await plan("product views 30d", await sql`explain (analyze) select product_id, count(*) from visits where shop_id = ${shop.id} and created_at > now() - interval '30 days' and product_id is not null group by product_id`);
   await plan("orders list", await sql`explain (analyze) select * from orders where shop_id = ${shop.id} order by created_at desc limit 100`);
 
   console.log("\nToken lookups (must never scan)");

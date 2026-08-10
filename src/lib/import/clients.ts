@@ -4,10 +4,19 @@ import { getDb } from "@/db";
 import { clients } from "@/db/schema";
 import { field } from "@/lib/csv";
 import { normalizePhone } from "@/lib/utils";
+import { normalizeTags } from "@/lib/client-tags";
 import { parse } from "./parse";
 import type { ImportReport } from "./types";
 
 /** Importing a customer list. */
+
+/**
+ * A ceiling on one import, so a spreadsheet nobody meant to upload cannot
+ * become an hour of writes. Stated in the report rather than applied
+ * silently — a file that half-imported and said "1,000 added" would leave
+ * the seller believing the rest of their list is in here somewhere.
+ */
+export const MAX_IMPORT_ROWS = 1_000;
 
 export async function importClients(opts: {
   shopId: string;
@@ -15,7 +24,8 @@ export async function importClients(opts: {
   dryRun: boolean;
 }): Promise<ImportReport> {
   const db = getDb();
-  const rows = parse(opts.csv);
+  const all = parse(opts.csv);
+  const rows = all.slice(0, MAX_IMPORT_ROWS);
   const report: ImportReport = {
     type: "clients",
     parsed: rows.length,
@@ -25,6 +35,14 @@ export async function importClients(opts: {
     errors: [],
     preview: [],
   };
+
+  if (all.length > MAX_IMPORT_ROWS) {
+    report.errors.push({
+      row: MAX_IMPORT_ROWS + 1,
+      message: `Only the first ${MAX_IMPORT_ROWS} rows were read — ${all.length - MAX_IMPORT_ROWS} were left out. Split the file and import again.`,
+    });
+    report.skipped += all.length - MAX_IMPORT_ROWS;
+  }
 
   // Within one file, the same person must not create two rows.
   const seen = new Set<string>();
@@ -109,7 +127,26 @@ export async function importClients(opts: {
     );
 
     const notes = field(raw, "Note", "Notes") || null;
+    const { tags } = normalizeTags(field(raw, "Tags", "Tag"));
 
+    /*
+     * Consent is deliberately not read from this file, and there is no column
+     * name that would make it read.
+     *
+     * A CSV can carry a "Marketing Consent" column — Sailo's own export
+     * writes one — but importing it would let a seller assert, on somebody
+     * else's behalf, that they agreed to be mailed. Sailo cannot verify that
+     * and would be the party sending, so the safe reading is the only
+     * reading: an imported contact has given no consent here, and spec 14's
+     * audience will not include them until they tick a box themselves. The
+     * import screen says this out loud, because the alternative is a seller
+     * discovering it from a send count.
+     *
+     * The *update* branch below likewise never touches `marketingConsentAt`.
+     * A returning customer who once opted in keeps their consent — this file
+     * is not evidence either way, and grant-only is the rule everywhere else
+     * consent is written (`lib/orders/clients.ts`).
+     */
     if (existing) {
       await db
         .update(clients)
@@ -119,6 +156,12 @@ export async function importClients(opts: {
           phone: phone ?? existing.phone,
           ...addressUpdate,
           notes: notes ?? existing.notes,
+          // Merged, not replaced. A file naming one tag is a seller adding a
+          // label, not declaring the only label that customer has ever had.
+          tags:
+            tags.length > 0
+              ? normalizeTags([...existing.tags, ...tags]).tags
+              : existing.tags,
           updatedAt: new Date(),
         })
         .where(eq(clients.id, existing.id));
@@ -131,6 +174,8 @@ export async function importClients(opts: {
         phone,
         ...address,
         notes,
+        tags,
+        source: "import",
       });
       report.created += 1;
     }

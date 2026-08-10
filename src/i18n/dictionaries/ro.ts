@@ -27,6 +27,11 @@ export const ro: Dictionary = {
     accept: "Accept",
     decline: "Refuz",
     privacy: "Politica de confidențialitate",
+    shopTitle: "Cookie-uri în acest magazin",
+    shopBody: "{shop} folosește instrumente de marketing care stochează cookie-uri pe dispozitivul tău pentru a măsura vizitele și reclamele. Nimic nu se încarcă decât dacă accepți.",
+    shopEssentialBody: "Mereu active — limba ta și această alegere.",
+    marketing: "Marketing și analiză",
+    marketingBody: "Instrumente alese de {shop}. Se încarcă doar dacă accepți.",
   },
 
   shop: {
@@ -43,11 +48,14 @@ export const ro: Dictionary = {
     kindPhysical: "Se livrează la tine", kindDigital: "Descărcare imediată",
     kindService: "Rezervă o oră", kindEvent: "Bilet la eveniment", labelDigital: "Descărcare", labelService: "Rezervare",
     from: "De la {price}",
+    favorites: "Favorite", favoritesEmpty: "Încă nu ai salvat nimic",
+    favoritesEmptyBody: "Atinge inimioara de pe un produs și te va aștepta aici.",
+    saveToFavorites: "Salvează la favorite",
   },
   sort: {
     featured: "Recomandate", newest: "Cele mai noi", priceAsc: "Preț crescător",
     priceDesc: "Preț descrescător", rating: "Cele mai apreciate", allTypes: "Tot",
-    physical: "Produse", digital: "Descărcări", services: "Rezervări",
+    physical: "Produse", digital: "Descărcări", services: "Rezervări", events: "Evenimente",
   },
   product: {
     reviews: "Recenzii", noReviews: "Încă nicio recenzie — scrie prima.",
@@ -93,6 +101,9 @@ export const ro: Dictionary = {
     inPerson: "În persoană",
     downloadAfterPayment: "Descărcarea se deblochează imediat ce {shop} confirmă plata.",
     getFiles: "Descarcă fișierele",
+    termsAgree: "Sunt de acord cu termenii și condițiile",
+    termsView: "Citește-i",
+    marketingOptIn: "Trimiteți-mi noutăți și oferte",
     earnReferral: "Câștigă {percent}% din recomandări",
     earnReferralBody:
       "Distribuie linkul tău. Când cineva cumpără de la {shop} prin el, câștigi {percent}% din comandă.",
@@ -100,6 +111,7 @@ export const ro: Dictionary = {
   cart: {
     title: "Coșul tău",
     add: "Adaugă în coș",
+    added: "Adăugat",
     buyNow: "Cumpără acum",
     view: "Coș",
     itemCount: "{count} în coș",
@@ -108,6 +120,17 @@ export const ro: Dictionary = {
     keepShopping: "Continuă cumpărăturile",
     remove: "Elimină",
     someGone: "Ceva din coș s-a epuizat și nu intră în total.",
+  },
+
+  share: {
+    shopTitle: "Distribuie acest magazin",
+    productTitle: "Distribuie acest produs",
+    copyLink: "Copiază linkul",
+    copied: "Copiat",
+    email: "E-mail",
+    more: "Mai multe",
+    scanToOpen: "Scanează pentru a deschide",
+    downloadQr: "Descarcă codul QR",
   },
 
   download: {
@@ -127,6 +150,11 @@ export const ro: Dictionary = {
     admitOne: "Valabil pentru o persoană",
     showAtDoor: "Arată asta la intrare.",
     used: "Folosit",
+    online: "Eveniment online",
+    inPerson: "În persoană",
+    join: "Participă la eveniment",
+    joinLocked: "Linkul tău va apărea aici imediat ce {shop} îți confirmă plata.",
+    joinMissing: "Organizatorul nu a adăugat încă un link.",
   },
 
   rails: {
@@ -199,6 +227,26 @@ export const ro: Dictionary = {
     signInAction: "Trimiteți-mi linkul",
     signInDone: "Dacă adresa este înregistrată, linkul e pe drum. Verifică-ți inbox-ul.",
     signInEmail: "E-mailul tău",
+    commission: "Comision",
+    noActivity: "Nimic câștigat încă în această perioadă.",
+    payoutTitle: "Cum îți primești banii",
+    payoutIntro: "Spune-i lui {shop} unde să-ți trimită comisionul. Detaliile stau chiar lângă ce ți se datorează — o întrebare mai puțin atunci când te plătește.",
+    payoutMethodLabel: "Cum",
+    payoutBank: "Transfer bancar",
+    payoutPaypal: "PayPal",
+    payoutOther: "Altceva",
+    payoutDetailsLabel: "Unde",
+    payoutBankHint: "Contul sau IBAN-ul și numele de pe cont",
+    payoutPaypalHint: "E-mailul contului tău PayPal",
+    payoutOtherHint: "Spune-i lui {shop} cum să te plătească",
+    payoutSave: "Salvează detaliile de plată",
+    payoutSaved: "Salvat — {shop} vede asta lângă ce ți se datorează.",
+    payoutOnFile: "Înregistrat: {method} · {details}",
+    payoutNone: "Nimic înregistrat încă.",
+    securityTitle: "Păstrează linkul doar pentru tine",
+    securityBody: "Linkul acesta e singura cheie către această pagină: oricine îl are îți poate vedea câștigurile și poate schimba felul în care ești plătit. Nu-l posta nicăieri public. Crezi că îl mai are cineva? Resetează-l — linkul vechi încetează imediat să funcționeze, iar cel nou îți vine pe e-mail.",
+    securityReset: "Resetează-mi linkul",
+    securityResetDone: "Gata — acesta e noul tău link, iar cel vechi nu mai merge. Salvează pagina din nou acolo unde o păstrezi.",
   },
 
   invoice: {
@@ -231,6 +279,17 @@ export const ro: Dictionary = {
     updatePassword: "Actualizează parola",
     resetDone: "Parola a fost actualizată. Te poți autentifica acum cu ea.",
     resetInvalid: "Linkul a expirat sau a fost deja folosit. Cere unul nou.",
+    twoFactorTitle: "Introdu codul",
+    twoFactorSubtitle: "Deschide aplicația de autentificare și scrie cele șase cifre pe care le afișează.",
+    twoFactorCode: "Cod din șase cifre",
+    twoFactorVerify: "Verifică și autentifică-te",
+    twoFactorUseBackup: "Folosește în schimb un cod de rezervă",
+    twoFactorBackupTitle: "Folosește un cod de rezervă",
+    twoFactorBackupSubtitle:
+      "Introdu unul dintre codurile salvate când ai activat verificarea în doi pași. Fiecare funcționează o singură dată.",
+    twoFactorBackupCode: "Cod de rezervă",
+    twoFactorUseApp: "Folosește în schimb aplicația de autentificare",
+    twoFactorExpired: "A durat prea mult. Autentifică-te din nou ca să ți se ceară un cod nou.",
   },
   onboarding: {
     shopNameFallback: "Magazinul tău",
@@ -262,6 +321,7 @@ export const ro: Dictionary = {
     payments: "Plăți", delivery: "Livrare", settings: "Setări", checkin: "Check-in",
     viewShop: "Vezi magazinul", signOut: "Deconectare", upgrade: "Schimbă planul",
     openMenu: "Deschide meniul", closeMenu: "Închide meniul",
+    broadcasts: "Trimiteri",
   },
   notifications: {
     aBuyer: "Un cumpărător",
@@ -273,6 +333,8 @@ export const ro: Dictionary = {
     reviewBody: "{name} a dat {rating}.",
     affiliateApplication: "Cerere de afiliere",
     affiliateBody: "{name} vrea să îți promoveze magazinul.",
+    payoutUpdated: "Detalii de plată actualizate",
+    payoutUpdatedBody: "{name} a setat cum vrea să fie plătit.",
     readyToShip: "Gata de expediere",
     shipBody: "{product} pentru {name} — adaugă AWB-ul când expediezi.",
     justNow: "chiar acum",
@@ -322,5 +384,16 @@ export const ro: Dictionary = {
     unlocksThis: "Deblochează asta", bestValue: "Cea mai bună alegere",
     cancelAnyTime: "Anulează oricând. Comenzile prin chat și transfer bancar sunt integral ale tale; vânzările cu cardul au un comision de {fee}.",
     planFeature: "Funcție {plan}", paidFeature: "Funcție cu plată", youAreOn: "Ești pe {plan}",
+  },
+
+  unsubscribe: {
+    link: "Dezabonare",
+    title: "Oprești emailurile de marketing de la {shop}?",
+    body: "{email} nu va mai primi emailuri de marketing de la {shop}. Confirmările de comandă și bonurile sosesc în continuare.",
+    confirm: "Da, dezabonează-mă",
+    doneTitle: "Te-ai dezabonat",
+    doneBody: "{shop} nu îți va mai trimite emailuri de marketing. Confirmările de comandă sosesc în continuare.",
+    invalidTitle: "Acest link nu mai este valid",
+    invalidBody: "Răspunde la orice email de la magazin și cere-le să te scoată de pe listă.",
   },
 };

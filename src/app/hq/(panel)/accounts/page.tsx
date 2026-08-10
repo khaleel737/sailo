@@ -35,6 +35,9 @@ const SHOP_OPTIONS = [
   { value: "live", label: "Shop is live" },
   { value: "unpublished", label: "Unpublished" },
   { value: "suspended", label: "Suspended" },
+  // Self-deleted accounts. The row survives to hold the invoice sequence, so
+  // they are still findable here — and only here.
+  { value: "deleted", label: "Deleted" },
   { value: "connected", label: "Takes cards" },
 ];
 
@@ -130,7 +133,11 @@ export default async function HqAccountsPage({
                           /{shop.handle}
                         </span>
                       </span>
-                      {shop.suspendedAt ? (
+                      {/* Deletion outranks the rest: a tombstone is
+                          unpublished too, and "Hidden" would understate it. */}
+                      {shop.deletedAt ? (
+                        <Badge tone="neutral">Deleted</Badge>
+                      ) : shop.suspendedAt ? (
                         <Badge tone="red">Suspended</Badge>
                       ) : !shop.isPublished ? (
                         <Badge tone="neutral">Hidden</Badge>

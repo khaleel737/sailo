@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
+import { after } from "next/server";
 import { rateLimit } from "@/lib/redis";
 import { ipFromHeaders } from "@/lib/client-ip";
+import { publishShopEvent } from "@/lib/events";
 import { headers } from "next/headers";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
-import { products, shops, visits } from "@/db/schema";
-import { classifyVisit, parseUserAgent } from "@/lib/analytics";
+import { liveShop } from "@/lib/shop-visibility";
+import { CLICK_KINDS, clicks, products, shops, visits, type ClickKind } from "@/db/schema";
+import { classifyVisit, outboundHost, parseUserAgent } from "@/lib/analytics";
 import { ensurePartition } from "@/lib/visit-partitions";
 import { visitorId } from "@/lib/visitor-id";
 import { isUuid } from "@/lib/utils";
@@ -25,16 +28,23 @@ export async function POST(request: Request) {
   }
 
   let payload: {
+    /** Absent on the original visit beacon; "click" on the outbound variant. */
+    type?: string;
     shopId?: string;
     productId?: string;
     referrer?: string;
     url?: string;
+    kind?: string;
   };
   try {
     payload = await request.json();
   } catch {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
+
+  // The outbound-click variant of the beacon, discriminated on `type` so the
+  // visit shape stays exactly what every cached storefront page already sends.
+  if (payload.type === "click") return recordClick(request, payload, ip);
 
   const { shopId, productId } = payload;
   /*
@@ -50,13 +60,10 @@ export async function POST(request: Request) {
 
   const db = getDb();
   const shop = await db.query.shops.findFirst({
-    where: and(
-      eq(shops.id, shopId),
-      eq(shops.isPublished, true),
-      // A suspended shop isn't reachable, so a beacon naming one is either
-      // stale or forged. Either way it shouldn't add to anyone's analytics.
-      isNull(shops.suspendedAt),
-    ),
+    // A shop that isn't reachable can't have been visited, so a beacon naming
+    // one is either stale or forged. Either way it shouldn't add to anyone's
+    // analytics.
+    where: liveShop(eq(shops.id, shopId)),
     columns: { id: true },
   });
   if (!shop) return NextResponse.json({ ok: false }, { status: 404 });
@@ -142,6 +149,7 @@ export async function POST(request: Request) {
    * pageview; a lost count is a rounding error, while a 500 is a failed request
    * in a visitor's console on a seller's storefront.
    */
+  let recorded = true;
   try {
     await db.insert(visits).values(visit);
   } catch (error) {
@@ -149,9 +157,90 @@ export async function POST(request: Request) {
       await ensurePartition(new Date());
       await db.insert(visits).values(visit);
     } catch {
+      recorded = false;
       console.warn("track: could not record a visit", error);
     }
   }
 
+  /*
+   * Tell any open dashboard its numbers moved — after the response, because
+   * this is the hottest endpoint in the app and the beacon's latency budget
+   * belongs to the storefront. The bus gates this to one announcement per
+   * shop per window, so a traffic spike reads as a dashboard that ticks,
+   * not a dashboard under load. Only when a row was really written: a
+   * count that didn't change is not worth a repaint.
+   */
+  if (recorded) after(() => publishShopEvent(shop.id, "visit"));
+
   return NextResponse.json({ ok: true });
+}
+
+/**
+ * The outbound-click variant: a visitor leaving through a link the seller put
+ * on their page.
+ *
+ * Every outcome past the rate limit is a bodyless 204, row or no row. The
+ * visit path answers 400/404 because a storefront integration needs to hear
+ * that its shopId is wrong — but this branch's failure modes are hostile or
+ * garbage bodies, and answering them differently makes the endpoint an oracle
+ * for probing which URLs we count. A silent drop costs one click.
+ *
+ * The host is derived here from the posted URL — `outboundHost` — never taken
+ * from the client as a string, and only the host is stored: a destination URL
+ * can carry the buyer's own words in its query (a prefilled WhatsApp message
+ * is the whole order).
+ */
+async function recordClick(
+  request: Request,
+  payload: { shopId?: string; url?: string; kind?: string },
+  ip: string | null,
+) {
+  const done = new Response(null, { status: 204 });
+
+  if (!isUuid(payload.shopId)) return done;
+
+  const db = getDb();
+  const shop = await db.query.shops.findFirst({
+    // The same bar a visit has to clear.
+    where: liveShop(eq(shops.id, payload.shopId)),
+    columns: { id: true },
+  });
+  if (!shop) return done;
+
+  const h = await headers();
+  const targetHost = outboundHost(payload.url, h.get("host"));
+  if (!targetHost) return done;
+
+  // An unknown kind still counts as a click — it lands in "other" rather than
+  // giving a probing client a different answer for a made-up value.
+  const kind: ClickKind = (CLICK_KINDS as readonly string[]).includes(
+    payload.kind ?? "",
+  )
+    ? (payload.kind as ClickKind)
+    : "other";
+
+  const sid = visitorId({
+    ip,
+    userAgent: h.get("user-agent"),
+    shopId: shop.id,
+  });
+
+  try {
+    await db.insert(clicks).values({
+      shopId: shop.id,
+      targetHost,
+      kind,
+      sessionId: sid,
+    });
+  } catch (error) {
+    // A lost click is a rounding error; a 500 in a buyer's console is not.
+    console.warn("track: could not record a click", error);
+    return done;
+  }
+
+  // The dashboard's destinations panel counts these — same gated hint, same
+  // reasoning as the visit path above.
+  after(() => publishShopEvent(shop.id, "visit"));
+
+  return done;
 }

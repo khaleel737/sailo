@@ -11,6 +11,14 @@
     {
       "path": "/api/cron/sweep",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/reminders",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/broadcasts",
+      "schedule": "*/5 * * * *"
     }
   ]
 }

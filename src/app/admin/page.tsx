@@ -4,16 +4,29 @@ import Link from "next/link";
 import { ArrowRight, Eye, ShoppingBag, Users, Wallet } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import {
+  getCheckoutMethods,
+  getClickBreakdown,
   getDashboardStats,
+  getProductPerformance,
   getRevenueSeries,
   getShopOrders,
   getVisitBreakdown,
   getVisitSeries,
 } from "@/lib/queries";
+import { setupSteps } from "@/lib/onboarding";
+import { REFERRAL_PAYOUT_MINIMUM_CENTS } from "@/lib/creator-referrals/program";
+import {
+  ensureReferralCode,
+  getReferralSummary,
+} from "@/lib/creator-referrals/store";
 import { Chart } from "@/components/shared/chart";
 import { TrafficPanel } from "@/app/admin/_components/traffic-panel";
+import { ProductPerformancePanel } from "@/app/admin/_components/product-performance";
 import { RangePicker } from "@/app/admin/_components/range-picker";
-import { analyticsLimit, clampAnalyticsRange, planFor } from "@/lib/plans";
+import { SetupChecklist } from "@/app/admin/_components/setup-checklist";
+import { ReferralCard } from "@/app/admin/_components/referral-card";
+import { analyticsLimit, planFor } from "@/lib/plans";
+import { resolveAnalyticsWindow, type DateWindow } from "@/lib/analytics-window";
 import { CopyLink } from "@/components/shared/copy-link";
 import { Badge, Card, EmptyState, Stat } from "@/components/ui";
 import { orderStatusLabel, orderStatusTone } from "@/lib/order-status";
@@ -32,20 +45,98 @@ export default async function AdminOverviewPage({
   const locale = await getLocale();
   const params = await searchParams;
 
-  // Clamped server-side, so a hand-typed ?range= can't read past the plan.
-  const range = clampAnalyticsRange(shop, Number(params.range) || undefined);
-  const chartDays = Math.min(range, 60);
+  // Clamped server-side, so neither a hand-typed ?range= nor a ?from= can
+  // read past the plan. Presets pass through as the rolling windows they
+  // always were; ?from=&to= resolves to an explicit UTC window.
+  const window = resolveAnalyticsWindow(shop, params);
 
-  const [stats, visitSeries, revenueSeries, traffic, orders] =
-    await Promise.all([
-      getDashboardStats(shop.id, range),
-      getVisitSeries(shop.id, chartDays),
-      getRevenueSeries(shop.id, chartDays),
-      getVisitBreakdown(shop.id, range),
-      getShopOrders(shop.id, 5),
-    ]);
+  /*
+   * The charts stay readable at sixty bars, so a longer window plots its most
+   * recent sixty days — the same cap the presets have always had, applied to
+   * a custom window by sliding its near edge forward.
+   */
+  const chartQuery: number | DateWindow = !window.custom
+    ? Math.min(window.days, 60)
+    : window.days <= 60
+      ? (window.query as DateWindow)
+      : {
+          since: new Date(window.until.getTime() - 60 * 24 * 60 * 60 * 1000),
+          until: window.until,
+        };
+  const chartDays = Math.min(window.days, 60);
+
+  const [
+    stats,
+    visitSeries,
+    revenueSeries,
+    traffic,
+    clicks,
+    performance,
+    orders,
+    /*
+     * The setup card's "can this shop be paid" step, answered by the same
+     * function the storefront's checkout asks — enabled, configured, and
+     * within the plan. A second opinion written here would be the twin that
+     * drifts: it would tell a seller they were set up while their buyers saw
+     * no way to pay.
+     */
+    usableRails,
+    referrals,
+    referralCode,
+  ] = await Promise.all([
+    getDashboardStats(shop.id, window.query),
+    getVisitSeries(shop.id, chartQuery),
+    getRevenueSeries(shop.id, chartQuery),
+    getVisitBreakdown(shop.id, window.query),
+    getClickBreakdown(shop.id, window.query),
+    getProductPerformance(shop.id, window.query, Number(params.pp) || 1),
+    getShopOrders(shop.id, 5),
+    getCheckoutMethods(shop.id),
+    getReferralSummary(shop.id),
+    /*
+     * A write, on a page render, on purpose — and only ever the first one.
+     * The code is already on the shop row this page loaded, so a seller who
+     * has one pays nothing; a seller who does not gets theirs minted the
+     * first time the card is rendered, which is the first time it could
+     * possibly be copied.
+     */
+    ensureReferralCode(shop),
+  ]);
+
+  const steps = setupSteps({
+    avatarUrl: shop.avatarUrl,
+    logoUrl: shop.logoUrl,
+    socials: shop.socials,
+    productCount: stats.totalProducts,
+    enabledRailCount: usableRails.length,
+    stripeChargesEnabled: shop.stripeChargesEnabled,
+  });
 
   const money = (cents: number) => formatMoney(cents, shop.currency, locale);
+
+  // Bounds are UTC midnights; formatted in UTC so the label names the same
+  // calendar day the window actually covers.
+  const dateLabel = (d: Date) =>
+    d.toLocaleDateString(locale, {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      timeZone: "UTC",
+    });
+  const dayParam = (d: Date) => d.toISOString().slice(0, 10);
+  // `until` is exclusive; the last day on screen is the one just inside it.
+  const lastDayShown = new Date(window.until.getTime() - 1);
+  const rangeLabel = window.custom
+    ? `${dateLabel(window.since)} – ${dateLabel(lastDayShown)}`
+    : "";
+  const chartLabel =
+    window.custom && typeof chartQuery !== "number"
+      ? `${dateLabel(chartQuery.since)} – ${dateLabel(new Date(chartQuery.until.getTime() - 1))}`
+      : rangeLabel;
+  /** What the pager and any drill-down links carry to keep the same window. */
+  const rangeQuery = window.custom
+    ? `from=${dayParam(window.since)}&to=${dayParam(lastDayShown)}`
+    : `range=${window.days}`;
 
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const shopUrl = `${base}/${shop.handle}`;
@@ -92,17 +183,35 @@ export default async function AdminOverviewPage({
         </div>
       </div>
 
+      {/*
+        Directly under the link, above the numbers.
+
+        A seller with three of these outstanding has no numbers worth reading
+        yet — the charts are flat because the shop is not finished. It renders
+        itself away once every step is ticked or the seller dismisses it.
+      */}
+      <SetupChecklist shopId={shop.id} steps={steps} />
+
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <h2 dir="auto" className="text-sm font-medium text-ink-500">
-          Last{" "}
-          {range >= 365 ? `${Math.round(range / 365)} year` : `${range} days`}
-          {range >= 365 && range >= 730 ? "s" : ""}
+          {window.custom
+            ? rangeLabel
+            : `Last ${
+                window.days >= 365
+                  ? `${Math.round(window.days / 365)} year`
+                  : `${window.days} days`
+              }${window.days >= 730 ? "s" : ""}`}
         </h2>
         <RangePicker
           t={t}
-          current={range}
+          labels={a.range}
+          current={window.days}
           limit={analyticsLimit(shop)}
           currentPlan={planFor(shop).id}
+          custom={window.custom}
+          customFrom={dayParam(window.since)}
+          customTo={dayParam(lastDayShown)}
+          clamped={window.clamped}
         />
       </div>
 
@@ -180,7 +289,11 @@ export default async function AdminOverviewPage({
       <div className="mb-6 grid gap-3 lg:grid-cols-2">
         <Card className="p-5">
           <Chart
-            title={interpolate(a.dashboard.visitsRange, { days: chartDays })}
+            title={
+              window.custom
+                ? interpolate(a.dashboard.visitsCustom, { range: chartLabel })
+                : interpolate(a.dashboard.visitsRange, { days: chartDays })
+            }
             defaultShape="line"
             days={visitSeries.map((d) => d.day)}
             series={[
@@ -206,7 +319,11 @@ export default async function AdminOverviewPage({
         </Card>
         <Card className="p-5">
           <Chart
-            title={interpolate(a.dashboard.revenueRange, { days: chartDays })}
+            title={
+              window.custom
+                ? interpolate(a.dashboard.revenueCustom, { range: chartLabel })
+                : interpolate(a.dashboard.revenueRange, { days: chartDays })
+            }
             days={revenueSeries.map((d) => d.day)}
             series={[
               {
@@ -242,7 +359,19 @@ export default async function AdminOverviewPage({
         </Card>
       </div>
 
-      <TrafficPanel data={traffic} days={range} locale={locale} />
+      <TrafficPanel
+        data={traffic}
+        clicks={clicks}
+        days={window.days}
+        locale={locale}
+      />
+
+      <ProductPerformancePanel
+        data={performance}
+        currency={shop.currency}
+        locale={locale}
+        rangeQuery={rangeQuery}
+      />
 
       <Card className="p-5">
         <div className="mb-4 flex items-center justify-between">
@@ -296,6 +425,22 @@ export default async function AdminOverviewPage({
           </ul>
         )}
       </Card>
+
+      {/*
+        No code, no card. `ensureReferralCode` returns null only if it could
+        not mint one, and a card whose whole content is a link is nothing
+        without the link.
+      */}
+      {referralCode ? (
+        <ReferralCard
+          code={referralCode}
+          summary={referrals}
+          currency={shop.currency}
+          locale={locale}
+          minimumCents={REFERRAL_PAYOUT_MINIMUM_CENTS}
+          a={a}
+        />
+      ) : null}
     </>
   );
 }

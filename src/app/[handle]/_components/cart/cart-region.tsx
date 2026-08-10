@@ -3,7 +3,11 @@
 import { CartProvider } from "./cart-provider";
 import { CartButton } from "./cart-button";
 import { CartSheet } from "./cart-sheet";
-import type { CheckoutDelivery, CheckoutMethod } from "./checkout-panel";
+import type {
+  CheckoutCompliance,
+  CheckoutDelivery,
+  CheckoutMethod,
+} from "./checkout-panel";
 import type { Dictionary } from "@/i18n";
 import { shopThemeVars } from "@/lib/utils";
 
@@ -25,6 +29,7 @@ export function CartRegion({
   methods,
   deliveryOptions,
   contactEmail,
+  compliance,
   t,
   children,
 }: {
@@ -39,6 +44,7 @@ export function CartRegion({
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
   contactEmail: string | null;
+  compliance: CheckoutCompliance;
   t: Dictionary;
   children: React.ReactNode;
 }) {
@@ -66,6 +72,7 @@ export function CartRegion({
           methods={methods}
           deliveryOptions={deliveryOptions}
           contactEmail={contactEmail}
+          compliance={compliance}
           t={t}
         />
       </div>

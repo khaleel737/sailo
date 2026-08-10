@@ -42,6 +42,14 @@ export type OrderIntentInput = {
   customerEmail?: string;
   customerPhone?: string;
   note?: string;
+  /**
+   * The buyer ticked the shop's terms box. Optional because most shops don't
+   * ask — but when `shop.requireTerms` is on, its absence refuses the order,
+   * and it is the server that decides that rather than the form.
+   */
+  acceptedTerms?: boolean;
+  /** The buyer ticked the optional marketing box. Only ever grants consent. */
+  marketingOptIn?: boolean;
 } & OrderAddress;
 
 
@@ -88,6 +96,15 @@ export type OrderIntentResult =
       } | null;
     }
   | { ok: false; error: string };
+
+/**
+ * Where a card checkout that left for Stripe ended up, as the storefront asks
+ * on its next visit. "settled" — the money moved; the basket that became this
+ * order should empty. "pending" — the buyer may still be paying in another
+ * tab; touch nothing and ask again later. "gone" — the order was abandoned and
+ * reclaimed, or never survived; the basket lives on and the marker does not.
+ */
+export type CheckoutOutcome = "settled" | "pending" | "gone";
 
 /** What the order sheet needs to label the tax line, or null when tax is off. */
 export type PreviewTax = {

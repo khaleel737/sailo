@@ -5,7 +5,12 @@ import { getDb } from "@/db";
 import { shops } from "@/db/schema";
 import { stripe } from "@/lib/stripe";
 import { revalidateShop } from "@/lib/cache";
+import { publishShopEvent } from "@/lib/events";
 import { freePlanFields, subscriptionFields } from "@/lib/billing-map";
+import {
+  recordReferralEarning,
+  reverseReferralEarning,
+} from "@/lib/creator-referrals/store";
 import { shopIdFor } from "./ownership";
 
 /**
@@ -71,6 +76,9 @@ export async function handleAccountEvent(event: Stripe.Event): Promise<string> {
           })
           .where(eq(shops.id, shopId));
         await dropShopCache(shopId);
+        // The seller may be staring at the billing page this checkout
+        // started from, and /hq/revenue counts this subscription now.
+        await publishShopEvent(shopId, "account");
         break;
       }
 
@@ -88,6 +96,7 @@ export async function handleAccountEvent(event: Stripe.Event): Promise<string> {
           .set(subscriptionFields(sub))
           .where(eq(shops.id, shopId));
         await dropShopCache(shopId);
+        await publishShopEvent(shopId, "account");
         break;
       }
 
@@ -106,6 +115,45 @@ export async function handleAccountEvent(event: Stripe.Event): Promise<string> {
         // A lapsed subscription that the storefront never hears about keeps
         // selling on a plan the seller no longer pays for.
         await dropShopCache(shopId);
+        await publishShopEvent(shopId, "account");
+        break;
+      }
+
+      /*
+       * A seller paid us — which is the moment whoever referred them earns.
+       *
+       * Here rather than on `customer.subscription.created`, because a
+       * subscription is a promise and an invoice is money. A trial creates a
+       * subscription and pays nothing; commission on that would be paid out
+       * of Sailo's pocket for revenue that may never arrive.
+       *
+       * `amount_paid`, not the plan price: a prorated upgrade, a coupon or a
+       * partial credit all mean we received less than list, and the referrer's
+       * share is a share of what we actually took.
+       */
+      case "invoice.paid": {
+        const invoice = event.data.object as Stripe.Invoice;
+        if (invoice.amount_paid <= 0) break;
+
+        const shopId = await shopIdFor({
+          customerId:
+            typeof invoice.customer === "string" ? invoice.customer : null,
+        });
+        if (!shopId) break;
+
+        /*
+         * Idempotent by constraint, not by this call site — the unique index
+         * on (invoice, kind) is what makes Stripe's at-least-once delivery
+         * safe. `stripeEvents` already de-duplicates whole events; this
+         * survives the case that one does not cover, which is the same
+         * invoice arriving under two different event ids.
+         */
+        await recordReferralEarning({
+          referredShopId: shopId,
+          stripeInvoiceId: invoice.id,
+          invoiceAmountCents: invoice.amount_paid,
+          currency: invoice.currency,
+        });
         break;
       }
 
@@ -122,10 +170,63 @@ export async function handleAccountEvent(event: Stripe.Event): Promise<string> {
           .update(shops)
           .set({ subscriptionStatus: "past_due", updatedAt: new Date() })
           .where(eq(shops.id, shopId));
+        // "Past due" is a banner in the seller's panel and a row on
+        // /hq/revenue's at-risk list; both should appear without a reload.
+        await publishShopEvent(shopId, "account");
         break;
       }
   }
 
   return `handled ${event.type}`;
+}
+
+/**
+ * We handed a seller their subscription money back, so the referral
+ * commission on it comes back too.
+ *
+ * Reached from the Connect handler rather than from the switch above, because
+ * `charge.refunded` arriving with no `account` is genuinely ambiguous: it is
+ * either a direct-charge seller refunding a buyer, or this. The order lookup
+ * is what separates them, and that lookup lives over there — so it asks here
+ * only once it knows the refund matched no order at all.
+ *
+ * The reversal is appended as a negative row, never by editing or deleting
+ * the earning that recorded what we owed at the time. `amount_refunded` is
+ * the running total on the charge, and `reverseReferralEarning` clamps to the
+ * earning it undoes, so a second partial refund cannot claw back more than we
+ * ever credited.
+ */
+export async function handleSubscriptionRefund(
+  charge: Stripe.Charge,
+): Promise<string> {
+  const paymentIntentId =
+    typeof charge.payment_intent === "string"
+      ? charge.payment_intent
+      : charge.payment_intent?.id;
+  if (!paymentIntentId) return "refund carries no payment intent";
+
+  /*
+   * One lookup, because a Charge can no longer name its invoice: in this API
+   * version an invoice's payments are their own objects. It costs a round
+   * trip on a refund that matched no order — rare twice over — and it is the
+   * only thing that can tell us whether this refund was one of ours.
+   */
+  const payments = await stripe().invoicePayments.list({
+    payment: { type: "payment_intent", payment_intent: paymentIntentId },
+    limit: 1,
+  });
+
+  const link = payments.data[0]?.invoice;
+  const invoiceId = typeof link === "string" ? link : link?.id;
+  if (!invoiceId) return "refund is not for a Sailo invoice";
+
+  const reversed = await reverseReferralEarning({
+    stripeInvoiceId: invoiceId,
+    refundedCents: charge.amount_refunded,
+  });
+
+  return reversed
+    ? `referral commission reversed on ${invoiceId}`
+    : `no referral commission on ${invoiceId}`;
 }
 

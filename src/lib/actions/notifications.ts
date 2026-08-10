@@ -1,9 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { shops } from "@/db/schema";
+import { publishShopEvent } from "@/lib/events";
 import { requireShop } from "@/lib/session";
 
 /** Clears the tray by marking everything up to now as read. */
@@ -21,6 +23,8 @@ export async function markAllNotificationsRead() {
     .where(eq(shops.id, shop.id));
 
   revalidatePath("/admin", "layout");
+  // A tray cleared on the laptop should not keep ringing on the phone.
+  after(() => publishShopEvent(shop.id, "account"));
 }
 
 export async function dismissNotification(formData: FormData) {
@@ -37,4 +41,5 @@ export async function dismissNotification(formData: FormData) {
     .where(eq(shops.id, shop.id));
 
   revalidatePath("/admin", "layout");
+  after(() => publishShopEvent(shop.id, "account"));
 }

@@ -131,6 +131,35 @@ export async function getNotifications(
     });
   }
 
+  /*
+   * A payout-details change rings the bell even though no money has moved:
+   * it is the one field a stolen portal link would edit, and the seller is
+   * the second witness after the affiliate's own email. Routine too — most
+   * of these are "your next payout has somewhere to go now".
+   */
+  const payoutChanges = await db.query.affiliates.findMany({
+    where: and(
+      eq(affiliates.shopId, shopId),
+      gt(affiliates.payoutUpdatedAt, since),
+    ),
+    orderBy: [desc(affiliates.payoutUpdatedAt)],
+    limit: 10,
+  });
+
+  for (const affiliate of payoutChanges) {
+    if (!affiliate.payoutUpdatedAt) continue;
+    items.push({
+      id: `payout:${affiliate.id}`,
+      kind: "affiliate",
+      title: t.notifications.payoutUpdated,
+      body: interpolate(t.notifications.payoutUpdatedBody, {
+        name: affiliate.name,
+      }),
+      href: "/admin/affiliates",
+      at: affiliate.payoutUpdatedAt,
+    });
+  }
+
   const toShip = await db.query.orders.findMany({
     where: and(
       eq(orders.shopId, shopId),

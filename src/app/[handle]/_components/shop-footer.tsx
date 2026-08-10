@@ -8,6 +8,8 @@ import { formatPercent } from "@/lib/pricing";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { getMarketingDictionary } from "@/i18n/marketing";
+import { hasPixels } from "@/lib/shop-pixels";
+import { ShopCookieSettings } from "./shop-cookie-settings";
 
 /**
  * The referral invitation, the Sailo badge, the platform's legal pages, and the
@@ -67,6 +69,17 @@ export function ShopFooter({
               </Link>
             </li>
           ))}
+          {/*
+            Only when this shop actually asks the question. Withdrawing has to
+            be as easy as giving, so the same page that ran the tags carries
+            the way to take the answer back — and a shop with no tags gets no
+            button, because there would be nothing behind it.
+          */}
+          {hasPixels(shop) ? (
+            <li>
+              <ShopCookieSettings shopId={shop.id} label={t.consent.manage} />
+            </li>
+          ) : null}
         </ul>
       </nav>
 

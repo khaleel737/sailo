@@ -59,6 +59,19 @@ export function writeCart(shopId: string, lines: CartLine[]) {
   }
 }
 
+/**
+ * Empties the stored basket directly, for pages outside the cart's provider —
+ * the invoice a paid card order lands on, most of all.
+ */
+export function clearStoredCart(shopId: string) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(cartKey(shopId));
+  } catch {
+    // Nothing stored, nothing to empty.
+  }
+}
+
 function isCartLine(value: unknown): value is CartLine {
   if (!value || typeof value !== "object") return false;
   const line = value as Partial<CartLine>;
@@ -128,4 +141,54 @@ export function toOrderItems(lines: CartLine[]) {
     quantity: line.quantity,
     scheduledFor: line.scheduledFor,
   }));
+}
+
+/* -------------------------------------------------------------------------- */
+/*  The order in flight                                                        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A card checkout leaves the page before any money moves: the basket becomes
+ * an order intent, and the buyer goes to Stripe — where they may pay, or may
+ * close the tab and never come back. Emptying the basket at the redirect
+ * punished the buyer who abandoned: they returned to a shop that had forgotten
+ * everything they picked.
+ *
+ * So the basket stays, and the order's id is parked here instead. Whoever
+ * learns the order settled — the invoice page the payment returns to, or the
+ * storefront asking the server on the next visit — empties the basket then,
+ * which is the moment it actually stopped being a basket.
+ */
+const PENDING_PREFIX = "sailo:pending:";
+
+function pendingKey(shopId: string) {
+  return `${PENDING_PREFIX}${shopId}`;
+}
+
+export function markPendingOrder(shopId: string, orderId: string) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(pendingKey(shopId), orderId);
+  } catch {
+    // Then nothing is parked and a paid basket may outlive its order — the
+    // failure that leaves the buyer with too much rather than too little.
+  }
+}
+
+export function readPendingOrder(shopId: string): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return window.localStorage.getItem(pendingKey(shopId));
+  } catch {
+    return null;
+  }
+}
+
+export function clearPendingOrder(shopId: string) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(pendingKey(shopId));
+  } catch {
+    // Nothing parked, nothing to forget.
+  }
 }

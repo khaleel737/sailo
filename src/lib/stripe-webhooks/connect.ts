@@ -4,11 +4,14 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { orders, shops } from "@/db/schema";
 import { revalidateShop } from "@/lib/cache";
+import { publishAffiliateEvent, publishShopEvent } from "@/lib/events";
 import { abandonOrder, restoreStock } from "@/lib/inventory";
 import { releaseDownloads } from "@/lib/downloads";
 import { createInvoiceForOrder } from "@/lib/invoices";
 import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";
+import { notifySellerOfOrder } from "@/lib/orders/notify-seller";
 import { intentIdOf, orderForIntent, orderForSession } from "./ownership";
+import { handleSubscriptionRefund } from "./platform";
 
 /**
  * A buyer's payment on a seller's connected account.
@@ -75,6 +78,11 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
           // settled this order must not be walked backwards by a retry.
           .where(and(eq(orders.id, order.id), eq(orders.paymentStatus, "unpaid")));
 
+        // The seller's panel now has a payment to watch; tell it so. Every
+        // publish in this file is a hint for open dashboards — a buyer's
+        // money is never contingent on one, which is why none is awaited
+        // into a position where it could matter. They cannot throw.
+        await publishShopEvent(order.shopId, "payment");
         return `awaiting settlement (${session.payment_status})`;
       }
 
@@ -154,8 +162,27 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
             base: process.env.NEXT_PUBLIC_APP_URL ?? "",
           });
         }
+
+        /*
+         * The seller's copy — the card rail's half of the "exactly one of the
+         * two sites fires per order" rule; `createOrderIntent` covers every
+         * rail that settles at checkout. Replays of *this* event are fenced by
+         * the event-id claim in the webhook route, and the pre-update status
+         * read fences the rarer case of a second settling event for an order
+         * already marked paid. Best-effort: it logs its own failures and never
+         * throws, so a mail outage cannot make Stripe retry a settled payment.
+         */
+        if (order.paymentStatus !== "paid") {
+          await notifySellerOfOrder({ shop: paidShop, orderId: order.id });
+        }
       }
 
+      await publishShopEvent(order.shopId, "order");
+      // A settled sale is also the moment an affiliate's commission becomes
+      // real on their portal.
+      if (order.affiliateId) {
+        await publishAffiliateEvent(order.affiliateId, "order");
+      }
       return `order ${order.id} paid`;
     }
 
@@ -189,6 +216,7 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
         })
         .where(eq(orders.id, order.id));
 
+      await publishShopEvent(order.shopId, "order");
       return `order ${order.id} failed to settle and was restocked`;
     }
 
@@ -206,13 +234,26 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
         .set({ status: "cancelled", updatedAt: new Date() })
         .where(eq(orders.id, order.id));
 
+      await publishShopEvent(order.shopId, "order");
       return `order ${order.id} expired and restocked`;
     }
 
     case "charge.refunded": {
       const charge = event.data.object as Stripe.Charge;
       const order = await orderForIntent(charge.payment_intent, accountId);
-      if (!order) return "order not found";
+      if (!order) {
+        /*
+         * No order on this charge. With no connected account behind it either,
+         * the refund is not a buyer being repaid at all — it is Sailo handing
+         * a seller their own subscription money back, which arrives here only
+         * because a platform `charge.refunded` is indistinguishable from a
+         * direct-charge seller's until the order lookup above comes back
+         * empty. Handing it on is the whole of this branch; the platform side
+         * owns what happens next.
+         */
+        if (!accountId) return handleSubscriptionRefund(charge);
+        return "order not found";
+      }
 
       // Mirrors a refund issued from Stripe's own dashboard, so the seller's
       // revenue figures match their bank either way.
@@ -227,6 +268,11 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
         })
         .where(eq(orders.id, order.id));
 
+      await publishShopEvent(order.shopId, "payment");
+      // The commission this order carried just changed shape too.
+      if (order.affiliateId) {
+        await publishAffiliateEvent(order.affiliateId, "payment");
+      }
       return `order ${order.id} refunded`;
     }
 
@@ -252,6 +298,7 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
         })
         .where(eq(orders.id, order.id));
 
+      await publishShopEvent(order.shopId, "payment");
       return `order ${order.id} disputed (${dispute.reason})`;
     }
 
@@ -275,6 +322,7 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
             updatedAt: new Date(),
           })
           .where(eq(orders.id, order.id));
+        await publishShopEvent(order.shopId, "payment");
         return `order ${order.id} dispute won`;
       }
 
@@ -292,6 +340,10 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
         })
         .where(eq(orders.id, order.id));
 
+      await publishShopEvent(order.shopId, "payment");
+      if (order.affiliateId) {
+        await publishAffiliateEvent(order.affiliateId, "payment");
+      }
       return `order ${order.id} dispute ${dispute.status}`;
     }
 
@@ -311,7 +363,11 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
 
       // Whether the card button may be shown is cached; a restriction that the
       // storefront never hears about is the same as no restriction.
-      for (const row of synced) revalidateShop(row.id, row.handle);
+      for (const row of synced) {
+        revalidateShop(row.id, row.handle);
+        // The payments page shows exactly these two flags.
+        await publishShopEvent(row.id, "account");
+      }
       return `account ${account.id} synced`;
     }
 

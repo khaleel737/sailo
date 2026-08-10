@@ -5,6 +5,7 @@ import {
   countryName,
   hostLabel,
   normalizeHost,
+  outboundHost,
   parseUserAgent,
 } from "./analytics";
 
@@ -97,6 +98,57 @@ describe("classifyVisit", () => {
       url: `https://sailo.store/s?utm_source=${"x".repeat(500)}`,
     });
     expect((origin.utmSource ?? "").length).toBeLessThanOrEqual(120);
+  });
+});
+
+describe("outboundHost", () => {
+  /*
+   * The one function standing between a hostile beacon body and the
+   * destinations chart. Everything that is not a real outbound web address
+   * must come back null — a null is a dropped beacon, and dropping is the
+   * safe direction.
+   */
+  it("keeps only the host of a real outbound URL", () => {
+    expect(outboundHost("https://instagram.com/someshop?igsh=abc")).toBe(
+      "instagram.com",
+    );
+  });
+
+  it("refuses everything that is not http(s)", () => {
+    expect(outboundHost("javascript:alert(1)")).toBeNull();
+    expect(outboundHost("mailto:seller@example.com")).toBeNull();
+    expect(outboundHost("tel:+4915112345678")).toBeNull();
+    expect(outboundHost("data:text/html,hi")).toBeNull();
+  });
+
+  it("refuses a protocol-relative or malformed URL", () => {
+    // "//evil.example" is not a URL without a base, and no base is given.
+    expect(outboundHost("//evil.example/x")).toBeNull();
+    expect(outboundHost("not a url")).toBeNull();
+    expect(outboundHost("")).toBeNull();
+    expect(outboundHost(42)).toBeNull();
+    expect(outboundHost(null)).toBeNull();
+  });
+
+  it("stores the punycoded host as-is, however the link was written", () => {
+    // One spelling per site: the parser punycodes unicode, and an already
+    // punycoded host passes through unchanged.
+    expect(outboundHost("https://münchen.de/laden")).toBe("xn--mnchen-3ya.de");
+    expect(outboundHost("https://xn--mnchen-3ya.de/laden")).toBe(
+      "xn--mnchen-3ya.de",
+    );
+  });
+
+  it("does not count the shop's own storefront as outbound", () => {
+    expect(outboundHost("https://sailo.store/mug", "sailo.store")).toBeNull();
+    // The Host header carries a port; the URL's hostname never does.
+    expect(
+      outboundHost("http://localhost/checkout", "localhost:3000"),
+    ).toBeNull();
+  });
+
+  it("groups the way referrer hosts group", () => {
+    expect(outboundHost("https://www.YouTube.com/@shop")).toBe("youtube.com");
   });
 });
 

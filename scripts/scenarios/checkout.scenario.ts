@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
   bookingClaims,
+  clients,
   coupons,
   deliveryMethods,
   orderItems,
@@ -16,6 +17,7 @@ import {
 } from "@/db/schema";
 import { createOrderIntent } from "@/lib/actions/orders";
 import { abandonOrder, releaseAbandonedCheckouts, restoreStock } from "@/lib/inventory";
+import { exportClients } from "@/lib/exporters";
 
 /**
  * The money path, against a database we are allowed to dirty.
@@ -982,5 +984,228 @@ describe("bookings", () => {
     await releaseAbandonedCheckouts({ shopId: shop.id });
     expect((await orderRow(r.orderId))?.status).toBe("new");
     expect(await stockOf(p.id)).toBe(3);
+  });
+});
+
+/**
+ * Checkout compliance (spec 05): the terms gate and the consent record.
+ *
+ * Both switches are per-shop and default off, so the first thing worth proving
+ * is that a shop which never opened the setting checks out exactly as it did
+ * before. After that, the two rules that actually carry legal weight: the
+ * server refuses without agreement no matter what the browser sent, and
+ * consent is a timestamp that a later order can grant but never quietly erase.
+ */
+describe("checkout compliance", () => {
+  const clientRow = (shopId: string) =>
+    db.query.clients.findFirst({ where: eq(clients.shopId, shopId) });
+
+  it("refuses the order when the shop requires terms and none were agreed", async () => {
+    const shop = await withRail({ requireTerms: true });
+    const p = await makeProduct(shop.id);
+    const r = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 1 }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(r.ok).toBe(false);
+  });
+
+  /*
+   * The point of the gate sitting where it does. A refusal that happened after
+   * the reservation would hold units for an order that never existed, and with
+   * no order row the sweep has nothing to find and nothing hands them back.
+   */
+  it("takes nothing off the shelf for an order it refuses", async () => {
+    const shop = await withRail({ requireTerms: true });
+    const p = await makeProduct(shop.id, { trackInventory: true, stockQuantity: 5 });
+    const r = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 2 }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(r.ok).toBe(false);
+    expect(await stockOf(p.id)).toBe(5);
+  });
+
+  it("writes no buyer record for an order it refuses", async () => {
+    const shop = await withRail({ requireTerms: true });
+    const p = await makeProduct(shop.id);
+    await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 1 }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(await clientRow(shop.id)).toBeUndefined();
+  });
+
+  it("takes the order once agreed, and stamps when", async () => {
+    const shop = await withRail({ requireTerms: true });
+    const p = await makeProduct(shop.id);
+    const before = new Date();
+    const r = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 1 }],
+      paymentMethod: "cod",
+      acceptedTerms: true,
+      ...buyer,
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+
+    const accepted = (await orderRow(r.orderId))?.termsAcceptedAt;
+    expect(accepted).toBeInstanceOf(Date);
+    // The server's clock, so it cannot predate the call that produced it.
+    expect(accepted?.getTime() ?? 0).toBeGreaterThanOrEqual(before.getTime() - 1000);
+  });
+
+  /*
+   * A shop that is not asking cannot accumulate proof of agreement to nothing.
+   * The flag is in the request either way — a stale client, a copied script —
+   * and the shop's own column is what decides.
+   */
+  it("records no agreement for a shop that never asked, whatever the request claims", async () => {
+    const shop = await withRail();
+    const p = await makeProduct(shop.id);
+    const r = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 1 }],
+      paymentMethod: "cod",
+      acceptedTerms: true,
+      ...buyer,
+    });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect((await orderRow(r.orderId))?.termsAcceptedAt).toBeNull();
+  });
+
+  it("records consent with the moment it was given", async () => {
+    const shop = await withRail({ askMarketingConsent: true });
+    const p = await makeProduct(shop.id);
+    const r = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 1 }],
+      paymentMethod: "cod",
+      marketingOptIn: true,
+      ...buyer,
+    });
+    expect(r.ok).toBe(true);
+    expect((await clientRow(shop.id))?.marketingConsentAt).toBeInstanceOf(Date);
+  });
+
+  it("leaves consent null when the box is left empty", async () => {
+    const shop = await withRail({ askMarketingConsent: true });
+    const p = await makeProduct(shop.id);
+    await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 1 }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect((await clientRow(shop.id))?.marketingConsentAt).toBeNull();
+  });
+
+  it("ignores an opt-in from a shop that never showed the box", async () => {
+    const shop = await withRail();
+    const p = await makeProduct(shop.id);
+    await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 1 }],
+      paymentMethod: "cod",
+      marketingOptIn: true,
+      ...buyer,
+    });
+    expect((await clientRow(shop.id))?.marketingConsentAt).toBeNull();
+  });
+
+  /*
+   * The grant-only merge, which is the rule most easily lost in a refactor.
+   *
+   * The same buyer orders twice. The second time they skip the optional box —
+   * which is what optional boxes are for — and their consent has to survive
+   * it. Writing the second order's `null` over the first order's timestamp
+   * would silently shrink the seller's lawful audience with every repeat
+   * customer, and nothing anywhere would report it.
+   */
+  it("keeps consent granted by an earlier order when a later one omits it", async () => {
+    const shop = await withRail({ askMarketingConsent: true });
+    const p = await makeProduct(shop.id);
+
+    const first = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 1 }],
+      paymentMethod: "cod",
+      marketingOptIn: true,
+      ...buyer,
+    });
+    expect(first.ok).toBe(true);
+    const granted = (await clientRow(shop.id))?.marketingConsentAt;
+    expect(granted).toBeInstanceOf(Date);
+
+    const second = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 1 }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(second.ok).toBe(true);
+
+    const after = (await clientRow(shop.id))?.marketingConsentAt;
+    expect(after).toBeInstanceOf(Date);
+    // The original moment, not a refreshed one: consent was given once.
+    expect(after?.getTime()).toBe(granted?.getTime());
+  });
+
+  it("carries the consent timestamp into the clients export", async () => {
+    const shop = await withRail({ askMarketingConsent: true });
+    const p = await makeProduct(shop.id);
+    await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 1 }],
+      paymentMethod: "cod",
+      marketingOptIn: true,
+      ...buyer,
+    });
+
+    const csv = await exportClients(shop.id, shop.currency);
+    expect(csv).toContain("Marketing Consent At");
+
+    const consented = (await clientRow(shop.id))?.marketingConsentAt;
+    expect(consented).toBeInstanceOf(Date);
+    // The seller downloads the proof, not just the address.
+    expect(csv).toContain(String(consented?.getFullYear()));
+  });
+
+  it("leaves the export column blank for a buyer who never opted in", async () => {
+    const shop = await withRail({ askMarketingConsent: true });
+    const p = await makeProduct(shop.id);
+    await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 1 }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+
+    const csv = await exportClients(shop.id, shop.currency);
+    /*
+     * Read by header rather than by position.
+     *
+     * This asserted that the row ended with a comma, which only held while
+     * `Marketing Consent At` happened to be the last column — so appending
+     * `Tags` and `Source` to the export broke a test about consent for
+     * reasons that had nothing to do with consent. Naming the column is what
+     * makes the assertion survive the next one.
+     */
+    const [header, ...rows] = csv.trim().split("\n");
+    const at = (header ?? "").split(",").indexOf("Marketing Consent At");
+    expect(at).toBeGreaterThan(-1);
+
+    // Blank means never opted in, which is not the same as opted out and must
+    // not arrive as a date. None of the fixture's values contain a comma, so
+    // a plain split is enough to index the row.
+    expect((rows.at(-1) ?? "").split(",")[at]).toBe("");
   });
 });

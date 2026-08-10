@@ -7,9 +7,11 @@ import { upsertClient } from "@/lib/orders/clients";
 import { referralFor } from "@/lib/orders/referral";
 import type { OrderIntentInput, OrderIntentResult } from "@/lib/orders/types";
 import { firstRow } from "@/lib/invariant";
-import { and, eq, isNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
+import { liveShop } from "@/lib/shop-visibility";
 import { rateLimit } from "@/lib/redis";
+import { publishAffiliateEvent, publishShopEvent } from "@/lib/events";
 import { callerIp } from "@/lib/client-ip";
 import { orderItems, orders, shops, tickets, type PaymentConfig } from "@/db/schema";
 import { formatAddress, formatMoney } from "@/lib/utils";
@@ -27,6 +29,7 @@ import { downloadUrl, newDownloadToken, releasesImmediately } from "@/lib/downlo
 import { resolveDigitalDelivery } from "@/lib/orders/digital-delivery";
 import { eventSalesOpen, ticketValues } from "@/lib/tickets";
 import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";
+import { notifySellerOfOrder } from "@/lib/orders/notify-seller";
 
 
 /**
@@ -95,7 +98,7 @@ export async function createOrderIntent(
   const [gate, shop] = await Promise.all([
     rateLimit(`order:${await callerIp()}`, 10, 60),
     db.query.shops.findFirst({
-      where: and(eq(shops.id, input.shopId), eq(shops.isPublished, true), isNull(shops.suspendedAt)),
+      where: liveShop(eq(shops.id, input.shopId)),
     }),
   ]);
 
@@ -103,6 +106,27 @@ export async function createOrderIntent(
     return { ok: false, error: "Too many attempts. Wait a moment and try again." };
   }
   if (!shop) return { ok: false, error: "Shop not found." };
+
+  /*
+   * The terms gate, before anything at all is written.
+   *
+   * The checkbox on the panel is `required`, which stops an honest buyer from
+   * missing it and does nothing whatsoever about a hand-rolled POST — a server
+   * action takes what the client sends, and "the form wouldn't submit" is not
+   * a property of the request. So the shop's own switch is what decides, read
+   * from the row rather than from the body.
+   *
+   * Here rather than lower down because everything below this line writes:
+   * `upsertClient` creates the buyer, and past that stock comes off the shelf.
+   * Refusing after a reservation would hold units for an order that was never
+   * allowed to exist, and only the hourly sweep would hand them back.
+   */
+  if (shop.requireTerms && !input.acceptedTerms) {
+    return {
+      ok: false,
+      error: "Please agree to the terms and conditions to place this order.",
+    };
+  }
 
   const now = new Date();
 
@@ -153,12 +177,28 @@ export async function createOrderIntent(
    */
   const totals = toChargeableTotals(priced.totals, shop.currency, shop.taxInclusive);
 
-  const clientId = await upsertClient(shop.id, {
-    name,
-    email,
-    phone,
-    ...address,
-  });
+  /*
+   * Consent is only ever *taken* from a shop that asked for it.
+   *
+   * Reading `input.marketingOptIn` on its own would let a request opt a buyer
+   * in to a shop whose checkout never showed the box — the client composes the
+   * body, so a flag that nobody was offered is a flag anyone can set. Gating on
+   * the shop's own switch means the record can only say what the buyer was
+   * actually asked.
+   */
+  const marketingConsentAt =
+    shop.askMarketingConsent && input.marketingOptIn ? now : null;
+
+  const clientId = await upsertClient(
+    shop.id,
+    {
+      name,
+      email,
+      phone,
+      ...address,
+    },
+    { marketingConsentAt },
+  );
 
   /* ---- Stock ----------------------------------------------------------- */
 
@@ -329,6 +369,14 @@ export async function createOrderIntent(
       customerPhone: phone,
       ...address,
       note,
+      /*
+       * The server's clock, not the client's claim — and only when the shop
+       * was asking. `input.acceptedTerms` was already the difference between
+       * this order existing and being refused above; what gets written down is
+       * the moment the server agreed, which is the only part an audit can
+       * lean on.
+       */
+      termsAcceptedAt: shop.requireTerms ? now : null,
       paymentMethod: method.type,
       // COD is collected on delivery; transfers are owed until confirmed.
       paymentStatus: "unpaid",
@@ -544,6 +592,17 @@ export async function createOrderIntent(
     );
   }
 
+  /*
+   * The seller's copy, on the same discriminator as the buyer's: the rails
+   * that settle at checkout notify here, and the card rail notifies from the
+   * Connect webhook when the money actually lands — exactly one of the two
+   * fires per order. Subject to the shop's notification prefs, best-effort,
+   * and off the buyer's critical path.
+   */
+  if (settlesAtCheckout) {
+    after(() => notifySellerOfOrder({ shop, orderId: order.id }));
+  }
+
   // Buyers who leave an email can be offered their own referral link.
   const referral =
     shop.affiliatesEnabled && can(shop, "affiliates") && email
@@ -555,6 +614,20 @@ export async function createOrderIntent(
   // No `/admin/invoices` — there is no such route. Invoices are shown on the
   // order, and revalidating a path nothing serves is a line that reads like
   // cache invalidation while invalidating nothing.
+
+  /*
+   * Tell the seller's open dashboard, after the buyer has their answer —
+   * this is the buyer's request, and none of its latency belongs to the
+   * seller's convenience. One hint covers the order, the client upsert and
+   * any booking on it: the dashboard re-reads everything either way. The
+   * affiliate hears too, if this sale carried their code — on the card rail
+   * their commission still says "pending" until the webhook settles it,
+   * which is exactly what their portal shows for it.
+   */
+  after(() => publishShopEvent(shop.id, "order"));
+  if (affiliate) {
+    after(() => publishAffiliateEvent(affiliate.id, "order"));
+  }
 
   // A card buyer's handoff is Stripe's redirect, settled above. Every other
   // rail builds a message for the seller, and that message carries the invoice
