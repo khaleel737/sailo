@@ -1,0 +1,619 @@
+src/app/hq/(panel)/partners/payouts/page.tsx
+  s_dd301ddfe52e8d::t_4805ed0120b046 1-287
+src/i18n/admin/vi.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 229-230
+src/app/admin/settings/data/_components/import-panel.tsx
+  s_c89fc4f89ffcd2::t_bfa16e6af1b4e6 25,27,31-36
+  s_c89fc4f89ffcd2::t_0f7e16cc31dbd4 69-71
+scripts/social/run-daily.sh
+  s_f41a67ad13d848::t_f53c8d7929aa22 1-39
+src/i18n/admin/pt.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 420-421
+src/i18n/dictionaries/bs.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 349-352
+src/app/admin/settings/_components/notifications-card.tsx
+  s_f3cdd013c7df01::t_0c9f3d129eabc9 78-90
+  s_f3cdd013c7df01::t_3a09163b06a3a1 22,27-36
+src/i18n/admin/ja.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 418-419
+drizzle/0013_lifecycle_emails.sql
+  s_f3cdd013c7df01::t_7acd2085bf259f 105,108-114
+  s_f3cdd013c7df01::t_ddd49eab65e799 1-104,106-107
+src/lib/lifecycle/unsubscribe.test.ts
+  s_f3cdd013c7df01::t_428f88da2b1afc 1-30,42-43,45-52,54,57-72,74-100,102-120,123,125-139,141-150
+  s_f3cdd013c7df01::t_52845eca2e8fa4 31-41,44,53,55-56,73,101,121-122,124,140
+src/i18n/dictionaries/ar.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 439-442
+src/i18n/dictionaries/mk.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 349-352
+scripts/social/content.ts
+  s_f41a67ad13d848::t_2734b331696fe3 690,695-698
+  s_f41a67ad13d848::t_f3277bb01d3b66 748-750
+  s_f41a67ad13d848::t_d8f1b93a31dbee 186,238,470
+  s_f41a67ad13d848::t_1fb04391265b90 1-185,187-237,239-469,471-689,691-694,699-747,751
+src/app/admin/settings/page.tsx
+  s_f3cdd013c7df01::t_c866eb039771cf 4,13-21,24-29
+src/i18n/admin/da.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 416-417
+scripts/social/publish.ts
+  s_f41a67ad13d848::t_4cdbf982e093fb 201-214
+  s_f41a67ad13d848::t_22b3119a1a5787 1-160,172,175,183,190-200,215-235,250,252-259
+  s_f41a67ad13d848::t_51f6277f26c566 236-249,251
+  s_f41a67ad13d848::t_bd9dd48070308d 161-171,173-174,176-182,184-189
+src/app/door/[token]/page.tsx
+  s_c89fc4f89ffcd2::t_5034c1619eb67c 1-93
+src/i18n/admin/sv.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 417-418
+src/lib/exporters.ts
+  s_c89fc4f89ffcd2::t_dfd551f2ce4ae5 318-371,396-399
+  s_c89fc4f89ffcd2::t_ab0f4cad94533c 5-10
+  s_c89fc4f89ffcd2::t_c0fb41ca9f75bf 16-21
+  s_dd301ddfe52e8d::t_94e89e739510cd 317,400
+src/i18n/dictionaries/el.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 403-406
+src/app/[handle]/_components/cart/express-checkout.tsx
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 16,192-194
+src/app/admin/_components/referral-card.tsx
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 1-2,8-9,12,15-18,22-33,36,41,47-87,90-93,107,111,139,144-147
+src/lib/lifecycle/steps.ts
+  s_f3cdd013c7df01::t_1fa02af78b33e6 298-326
+  s_f3cdd013c7df01::t_27ee21d0ac99de 1-297,327-339
+src/lib/door-pass.ts
+  s_c89fc4f89ffcd2::t_737f52330dedc3 1-162
+src/lib/email/lifecycle-messages.ts
+  s_f3cdd013c7df01::t_61925ba1cb862b 280-282
+  s_f3cdd013c7df01::t_7d5a6648babd38 71-76,79-80
+  s_f3cdd013c7df01::t_02b9ee563a7cb7 1-70,77-78,81-279,283-467,469-512,514-525
+  s_f3cdd013c7df01::t_144e72c90b6341 468,513
+src/app/admin/page.tsx
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 17,80,91-94,96,423-424,426-431
+src/i18n/admin/zh.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 417-418
+src/app/hq/(panel)/partners/page.tsx
+  s_dd301ddfe52e8d::t_8e5a2f437dfb23 1-5,7-262
+  s_dd301ddfe52e8d::t_7a7aa82306a0f0 6
+src/i18n/admin/fi.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 416-417
+package.json
+  s_dd301ddfe52e8d::t_7ba641bee79fd0 37
+  s_f41a67ad13d848::t_7c38e8833244c2 38-42
+  s_dd301ddfe52e8d::t_d48410a1abb7b4 75-76
+scripts/scenarios/checkout.scenario.ts
+  s_3fd229194f6299::t_41a00b86828f06 366-382
+src/lib/partners/connect.ts
+  s_dd301ddfe52e8d::t_1172f66e9038ca 201-211,214,216-220,224-226,228-230
+  s_dd301ddfe52e8d::t_438f90a4f8337e 1-80,138-141,143,149-151,153,157-200,212-213,215,221-223,227,231-323
+  s_dd301ddfe52e8d::t_c982160cc65cbf 81-137,142,144-148,152,154-156
+src/lib/lifecycle/state.ts
+  s_f3cdd013c7df01::t_761a8ad35b732e 241-263
+  s_f3cdd013c7df01::t_9003eb94d73686 131-133
+  s_f3cdd013c7df01::t_f053cf396cabae 1,3-13,15-89,100-130,134-221,264-335
+  s_f3cdd013c7df01::t_62145837788582 222-240
+  s_f3cdd013c7df01::t_73662ae328c913 14
+  s_f3cdd013c7df01::t_a40cae2b56c832 90-99
+  s_dd301ddfe52e8d::t_ee916cb4ae671d 2
+src/app/[handle]/p/[slug]/_components/buy-box.tsx
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 3,14-15,24-25,29,116-128,130-136,138,142,145,189-195
+  s_3fd229194f6299::t_208ac53975a2c3 137
+src/app/partners/_components/country-select.tsx
+  s_dd301ddfe52e8d::t_a8ea554c250853 1-70
+src/app/api/unsubscribe/marketing/[token]/route.ts
+  s_f3cdd013c7df01::t_d469cb22a2da71 1-76
+src/components/legal/legal-kit.tsx
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 63-119
+scripts/social/templates.ts
+  s_f41a67ad13d848::t_3536fe3f8ed7af 382-389
+  s_f41a67ad13d848::t_3eb0f31314f689 1-214,216-237,254-258,283-304,306-307,319-337,343-344,370-371,381,390-392,399,401-407,409-410,431-452,455-495
+  s_f41a67ad13d848::t_e78e0c157d986c 408,411-418,420-422
+  s_f41a67ad13d848::t_750caf33a09085 393-398,400
+  s_f41a67ad13d848::t_53f202f98b035b 338-342,345,353-365,367-369,372-380
+  s_f41a67ad13d848::t_4ab5a22540c9be 346-352,366
+  s_f41a67ad13d848::t_c8003325c55013 259-282
+  s_f41a67ad13d848::t_bed3db064dcf85 427-429
+  s_f41a67ad13d848::t_3b1a8e0d5dc59e 453-454
+  s_f41a67ad13d848::t_f47128c7fb7b25 215
+  s_f41a67ad13d848::t_2d632ec3e3048c 305,308-318
+  s_f41a67ad13d848::t_4fb45d63014c0b 419
+  s_f41a67ad13d848::t_5e7a5602d75fa3 238-253
+  s_f41a67ad13d848::t_421bfe819754a5 423-426,430
+README.md
+  s_f3cdd013c7df01::t_e8f58732e44455 73-76,106-115,233-236
+src/app/admin/checkin/[productId]/passes/_components/pass-list.tsx
+  s_c89fc4f89ffcd2::t_1de53c01010092 1-157
+src/app/hq/(panel)/partners/_components/payout-buttons.tsx
+  s_dd301ddfe52e8d::t_d28385ee9b2736 1-131
+src/app/hq/(panel)/partners/settings/page.tsx
+  s_dd301ddfe52e8d::t_bf2653faa16b06 1-54
+src/lib/tickets.ts
+  s_c89fc4f89ffcd2::t_e223406dc632a6 42-43,129-133,167,191-193,207-208,275-279,327,336,417-421,440-442
+  s_c89fc4f89ffcd2::t_4b06cbc1d2a0f4 381
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 2,4-5,11-16,37-41,46-57,72-75,78-81,86-90,95-98,109-122,124-128,134-166,168-190,197-200,204-206,209-266,270,280-298,300-318,322-326,328-335,337-380,382,385,387,390-392,394-412,414-416,422-430,432-439,443-448
+src/lib/actions/unsubscribe.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 8-9,60-92
+  s_f3cdd013c7df01::t_63483f245ff0ed 93
+src/app/[handle]/_components/product-card.tsx
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 8-13,18,24-28,49,71-74,110-127,130,143-159
+src/app/admin/checkin/_components/door-console.tsx
+  s_c89fc4f89ffcd2::t_bbc394e4b948ad 678-723
+  s_c89fc4f89ffcd2::t_eed9fd4468af5d 628-643
+  s_c89fc4f89ffcd2::t_9a4440faac150f 32
+  s_c89fc4f89ffcd2::t_a5f73f1566af00 88-94
+  s_c89fc4f89ffcd2::t_34c40dab263a7c 449-453,458,463,465,467-470
+  s_c89fc4f89ffcd2::t_c68055abf76841 3-10
+  s_c89fc4f89ffcd2::t_68037af7416179 107
+  s_c89fc4f89ffcd2::t_7ef255a85c306e 141-157
+  s_c89fc4f89ffcd2::t_8687d83a7d5fa9 13,26,604-606
+  s_c89fc4f89ffcd2::t_9d4373876b8c52 70,80-81
+  s_c89fc4f89ffcd2::t_50efe4e1669f47 1-2,11-12,14-25,27-31,34-48,58-69,71-79,82-87,95-106,108-137,139-140,158-191,193-448,454-457,459-462,464,466,471-603,607-627,644-659,661-677,724-793,795-800
+  s_c89fc4f89ffcd2::t_0e6879266dacb2 794
+  s_c89fc4f89ffcd2::t_5b47b987391bfa 49-57
+  s_c89fc4f89ffcd2::t_719e2f4732d2df 33
+  s_c89fc4f89ffcd2::t_1346585da885d6 660
+  s_c89fc4f89ffcd2::t_2d53096aff0224 192
+  s_c89fc4f89ffcd2::t_4e1cc6750f2365 138
+src/i18n/admin/mk.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 230-231
+scripts/scenarios/tickets.scenario.ts
+  s_c89fc4f89ffcd2::t_f4dc4cd1ef885c 16-25
+  s_c89fc4f89ffcd2::t_656ed5495cc7ab 367-641
+src/lib/payments/rails.ts
+  s_3fd229194f6299::t_52dc253c008586 254-262,271,273,276
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 65,68,73,251-253,263-270,272,274-275,277
+  s_e1b3f5c4cba510::t_2779de123600c4 278-279
+  s_3fd229194f6299::t_49f7d0cf4f48fd 66-67,69-72,74
+  s_3fd229194f6299::t_43429f6e6a7daf 226,231
+src/i18n/dictionaries/ro.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 398-401
+src/app/u/marketing/[token]/page.tsx
+  s_f3cdd013c7df01::t_63375d7fe5d918 1-90
+src/i18n/dictionaries/it.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 407-410
+scripts/social/render.ts
+  s_f41a67ad13d848::t_e34709181c5741 1-92
+src/i18n/admin/bs.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 228-229
+src/lib/partners/store.ts
+  s_dd301ddfe52e8d::t_1125ee6b8c8cae 354-406
+  s_dd301ddfe52e8d::t_9f7c051ad67f61 1-5,7-11,13,16,18,22-24,26-32,34-56,62-63,65,71-73,75-82,84,89-90,94-95,99,103-108,110-123,125-129,135,141-150,165,178,180-182,184-187,190-200,202-206,208,213-226,236-250,255-259,265-268,270-280,283-300,302-303,306-312,318-326,328-332,334-340,342-346,348-351,462
+  s_dd301ddfe52e8d::t_aeab7a4b5f61f8 6,12,14-15,17,19-21,25,33,57-61,64,66-70,74,83,85-88,91-93,96-98,100-102,109,124,130-134,136-140,151-164,166-177,179,183,188-189,201,207,209-212,227-235,251-254,260-264,269,281-282,301,304-305,313-317,327,333,341,347,352-353,407-461
+src/i18n/dictionaries/tr.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 403-406
+src/app/partners/_components/apply-form.tsx
+  s_dd301ddfe52e8d::t_97b700209a8ea5 1-131
+src/i18n/admin/nl.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 420-421
+docs/specs/README.md
+  s_f3cdd013c7df01::t_5014bc74879060 82,126-144
+  s_f3cdd013c7df01::t_5ee6865645de75 145
+src/lib/actions/tickets.ts
+  s_c89fc4f89ffcd2::t_c24f30b8c611f8 22,34-37,42,62-63,129,159-162,178-180,183-187,220,249-250,259-260,263,265,272,280-281
+  s_dd301ddfe52e8d::t_d48410a1abb7b4 3,5-21,23-26,30-33,38-41,43-61,64-76,78-128,130-141,143-158,163-177,181-182,188-211,214-219,221-248,251-258,261-262,264,266-271,273-279,282-299
+  s_f3cdd013c7df01::t_8338e803f7f04b 142
+src/app/hq/(panel)/partners/_components/status-filter.tsx
+  s_dd301ddfe52e8d::t_fc2fcc08a81b1f 1-42
+src/components/shared/unsubscribe-form.tsx
+  s_f3cdd013c7df01::t_3fef0351fb72a2 1-82
+src/i18n/admin/id.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 230-231
+src/db/schema/index.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 17
+src/lib/lifecycle/unsubscribe.ts
+  s_f3cdd013c7df01::t_ea27b72bc1f152 1-129
+src/i18n/dictionaries/pt.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 405-408
+src/i18n/dictionaries/sl.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 347-350
+drizzle/0014_ticket_ops.sql
+  s_c89fc4f89ffcd2::t_eede92af6c1ed2 1-118
+scripts/check-partners.ts
+  s_dd301ddfe52e8d::t_687d9eabd14040 198
+  s_dd301ddfe52e8d::t_b713c3b78c96d4 303-313,315,321
+  s_dd301ddfe52e8d::t_1f27075af4051a 236-241
+  s_dd301ddfe52e8d::t_25bd33cfbaf033 67-73,78,80-85,88,107-111,119-149,151-173
+  s_dd301ddfe52e8d::t_611b3ec73bd47f 377,382
+  s_dd301ddfe52e8d::t_5a7d76c7805682 1-66,74-77,79,86-87,89-106,112-118,150,174-197,199-235,242-302,314,316-320,322-376,378-381,383-459
+src/i18n/dictionaries/sr.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 350-353
+src/db/schema/growth.ts
+  s_dd301ddfe52e8d::t_9f7c051ad67f61 184,264
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 3,13,17,20-31,34-37,39-183,185,189,198,200,206-208,218,222-225,227,232-235,255-263,266-278,280-281,302-447
+src/i18n/dictionaries/ms.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 346-349
+src/app/[handle]/_components/cart/checkout.types.ts
+  s_3fd229194f6299::t_eef141d8bd333d 86-88
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 74-77,80-85
+src/lib/restricted-businesses.test.ts
+  s_9c769ca5084452::t_61ee8c74e01b7b 150
+  s_9c769ca5084452::t_343314b08cd4bd 1-149,151-183
+vercel.json
+  s_dd301ddfe52e8d::t_9f7c051ad67f61 26-29
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 22-25
+src/i18n/admin/ms.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 228-229
+src/i18n/admin/sq.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 229-230
+src/i18n/dictionaries/uk.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 401-404
+src/app/[handle]/p/[slug]/_components/variant-photo.tsx
+  s_e1b3f5c4cba510::t_bc3b92a804d0db 1-44
+src/lib/email/lifecycle-messages.test.ts
+  s_f3cdd013c7df01::t_3dbc4308f06e4f 1-196
+src/i18n/dictionaries/id.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 348-351
+src/app/(legal)/privacy/page.tsx
+  s_f3cdd013c7df01::t_156f27cfa0828b 172-176
+src/i18n/dictionaries/en.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 587-590
+src/i18n/admin/sr.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 229-230
+src/i18n/admin/de.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 416-417
+src/i18n/dictionaries/ko.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 348-351
+src/i18n/admin/tr.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 417-418
+src/app/hq/_components/hq-sidebar.tsx
+  s_dd301ddfe52e8d::t_d48410a1abb7b4 48
+src/app/admin/checkin/page.tsx
+  s_c89fc4f89ffcd2::t_7c198fed541c42 2-7,10-12,14,19-24,31,34-64,69-131
+src/i18n/dictionaries/no.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 398-401
+src/lib/partners/program.test.ts
+  s_dd301ddfe52e8d::t_a5d07cfec5c7d9 1-351
+src/i18n/admin/fr.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 418-419
+src/app/admin/checkin/[productId]/passes/page.tsx
+  s_c89fc4f89ffcd2::t_4451ee14d378a7 1-26,28-56
+  s_c89fc4f89ffcd2::t_fec2c46d89c890 27
+scripts/scenarios/partner-program.scenario.ts
+  s_dd301ddfe52e8d::t_9f7c051ad67f61 1-2,4-5,13,15-16,21-23,25-26,30-31,33-34,38-41,43-45,47-62,64-87,124,130-133,154,159,219-220,224-228,230,232-242,244,246-254,257-258,261-264,266-267,269,271-279,292-300,302-308,331-334,337-339,341,343-357,362-364,465-467,469-471,473,475-504,506-508,510,512-522,524-540,542-544,546,548-571,573-574,577,579-585,587-589,591,593-598,600-612,614,616-623,626-629,631-633,635,637-642,644-649,735-737,741-743,745,747-748,750-752,754-756,758,762,764,766-767,769-770,772,775-777,779-781,783,785-793,796-798,802,807-821
+  s_dd301ddfe52e8d::t_9d3c9a9257fe72 3,6-12,14,17-20,24,27-29,32,35-37,42,46,63,88-123,125-129,134-153,155-158,160-218,221-223,229,231,243,245,255-256,259-260,265,268,270,280-291,301,309-330,335-336,340,342,358-361,365-464,468,472,474,505,509,511,523,541,545,547,572,575-576,578,586,590,592,599,613,615,624-625,630,634,636,643,650-734,738-740,744,746,749,753,757,759-761,763,765,768,771,773-774,778,782,784,794-795,799-801,803-806
+src/i18n/dictionaries/es.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 409-412
+src/lib/handle.ts
+  s_dd301ddfe52e8d::t_ac3e4e91b2cff0 34
+  s_dd301ddfe52e8d::t_0db55d9ff5889a 29-33
+src/app/partners/_components/partner-stats.tsx
+  s_dd301ddfe52e8d::t_423095b2144fc5 1-75
+scripts/social/daily.ts
+  s_f41a67ad13d848::t_07a4cfbacb6bb5 1-20,22-87,98-153
+  s_f41a67ad13d848::t_c4a5d9b564d848 21
+  s_f41a67ad13d848::t_a8095775cbac8e 88-97
+src/lib/hq/index.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 21
+src/app/(legal)/terms/page.tsx
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 6-7,15-20,25,74-80,182-184,200,289,291-294,296-327,329-388,391,421,463,479,501,516,539,551,558-559,573,587,628
+src/lib/import/types.ts
+  s_c89fc4f89ffcd2::t_7b56b40da214b6 9
+src/lib/variants.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 280-305
+  s_3fd229194f6299::t_8a11fa06c0fea6 328-342
+src/app/[handle]/_components/option-chips.tsx
+  s_f9c0a952c26c6a::t_2bf091045e3b98 1-14,22-35,74-75,121,158-160
+  s_e1b3f5c4cba510::t_1cd6922c5d0b18 15-21,36-73,76-77,90-98,102-120,122-138,140-157
+  s_e1b3f5c4cba510::t_5dde8b66ad2b39 78-89
+  s_3fd229194f6299::t_deb64323469a86 99-101
+  s_e1b3f5c4cba510::t_72bd59bd48197b 139
+src/lib/actions/import.ts
+  s_c89fc4f89ffcd2::t_b5ff367dd04bdf 8-14
+  s_c89fc4f89ffcd2::t_059428848fd4b9 80,84-88
+  s_c89fc4f89ffcd2::t_7df68f9eccd445 60-70
+scripts/seed.ts
+  s_e1b3f5c4cba510::t_1a5f1b483cd7fe 227-229,237-242,244-249,257
+  s_e1b3f5c4cba510::t_24d0816f0d3a22 483
+  s_e1b3f5c4cba510::t_b6470be5ecc84c 76-77
+src/i18n/admin/ro.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 420-421
+src/i18n/dictionaries/fil.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 348-351
+docs/specs/27-lifecycle-email.md
+  s_f3cdd013c7df01::t_f86f1907f8ff79 1-113
+src/app/u/[token]/page.tsx
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 9-10,92
+src/i18n/admin/it.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 418-419
+src/db/schema/types.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 4-11,14-19,35,48-51
+src/app/admin/checkin/[productId]/page.tsx
+  s_c89fc4f89ffcd2::t_4863d8f1122c58 17
+  s_c89fc4f89ffcd2::t_aa4f2f9281d1a8 1-16,18-96,114-117
+  s_c89fc4f89ffcd2::t_3b13dabe231a39 97-113
+src/i18n/dictionaries/sv.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 400-403
+src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 13,58-60
+src/lib/tickets.test.ts
+  s_c89fc4f89ffcd2::t_9f78295b042d57 1-165
+src/i18n/admin/hr.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 230-231
+next.config.ts
+  s_dd301ddfe52e8d::t_d48410a1abb7b4 160-173,221-235
+src/lib/partners/connect.test.ts
+  s_dd301ddfe52e8d::t_ac0a560df9c7ac 86-101
+  s_dd301ddfe52e8d::t_1499e143e95fce 1-85,102-174
+src/i18n/admin/uk.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 417-418
+src/app/hq/(panel)/partners/_components/settings-form.tsx
+  s_dd301ddfe52e8d::t_ec0fcdf101d327 1-231
+src/lib/actions/shop.ts
+  s_f3cdd013c7df01::t_aa2628342a6f7a 603-618
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 33-34,341
+  s_f3cdd013c7df01::t_27f74041d4e8af 25,457
+src/i18n/dictionaries/fi.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 398-401
+src/lib/variants.test.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 5,136-198
+  s_dd301ddfe52e8d::t_4d6641be9fc60e 199
+src/i18n/admin/pl.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 420-421
+src/i18n/dictionaries/fr.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 410-413
+src/lib/partners/applications.ts
+  s_dd301ddfe52e8d::t_ae7301ec7ab9c2 1-310
+src/i18n/admin/ar.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 416-417
+src/i18n/dictionaries/sq.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 350-353
+src/lib/actions/order-admin.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 18,86-95,108-109,333-340
+src/app/partners/_components/connect-panel.tsx
+  s_dd301ddfe52e8d::t_924f932c049f32 1-125
+src/lib/import/tickets.ts
+  s_c89fc4f89ffcd2::t_0dca8f3c5589a0 1-262
+src/lib/payments/rails.test.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 10,121-124,128-134,136-142,144-149,153-158,160-167,169-171,173-174
+  s_e1b3f5c4cba510::t_4a2b0396147694 175-176
+  s_3fd229194f6299::t_8992e1b3519401 125-127,135,143,150-152,159,168,172
+src/app/hq/(panel)/partners/_components/decide-buttons.tsx
+  s_dd301ddfe52e8d::t_6d890bd4e4bb2c 1-82
+src/app/api/resend/webhook/route.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 6-10,21-25,128-136,139,144-164,166-182
+src/i18n/admin/ru.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 420-421
+src/lib/partners/payouts.ts
+  s_e1b3f5c4cba510::t_c0a780fa1f3859 1-104,106-315,327-332,334-519
+  s_dd301ddfe52e8d::t_0df45725c15602 105
+  s_dd301ddfe52e8d::t_dd70122453a11d 316-326,333
+src/i18n/admin/cs.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 416-417
+src/i18n/dictionaries/th.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 350-353
+src/app/hq/(panel)/partners/[id]/page.tsx
+  s_dd301ddfe52e8d::t_ad60672dc86845 1-372
+src/i18n/dictionaries/cs.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 399-402
+src/lib/legal.ts
+  s_f3cdd013c7df01::t_91ec5bfabcc497 97-98
+e2e/checkout.spec.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 50,54-55,59,65-82,86-91
+  s_e1b3f5c4cba510::t_5305cdb7ea3c69 83-85
+  s_e1b3f5c4cba510::t_ede0c643ec035a 32-48
+  s_e1b3f5c4cba510::t_c2e19086104bab 92,144-219
+src/app/partners/connect/page.tsx
+  s_dd301ddfe52e8d::t_ad12a75fcda8a5 1-42
+src/i18n/dictionaries/pl.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 404-407
+src/lib/email/transport.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 31-42
+src/lib/lifecycle/opt-out.ts
+  s_f3cdd013c7df01::t_ea9132cef32e96 1-4,6-19,21-94
+  s_f3cdd013c7df01::t_07a6e5dcfa76c6 5,20
+src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_3fd229194f6299::t_97d0ebd7dbd89c 36
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 9-13,58,77-82,95-100,102-112,388,394,409
+  s_3fd229194f6299::t_ed6a728bf8e747 37
+  s_dd301ddfe52e8d::t_799bc25cfcbe9c 59
+  s_dd301ddfe52e8d::t_4e322b3bdbe4fd 101
+src/i18n/dictionaries/hr.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 348-351
+src/app/partners/page.tsx
+  s_dd301ddfe52e8d::t_5e583dc58c833b 61-70,72,74-76
+  s_dd301ddfe52e8d::t_50b7742f42eeb8 165-173,182-183,190-192
+  s_dd301ddfe52e8d::t_5325c4221d72f7 1-60,71,73,77-164,174-181,184-189,193-386
+src/lib/restricted-businesses.ts
+  s_9c769ca5084452::t_aca32526939f16 21-25
+  s_e1b3f5c4cba510::t_fe4ea5f4ce13b1 129,164,208,270,275,296,319
+  s_9c769ca5084452::t_cc2e5f432d8235 1-20,26-29,32-36,38-42,44-48,50-55,58-128,130-158,160-163,165-207,209-269,271-274,276-295,297-318,320-351,353-388
+  s_9c769ca5084452::t_2bf88727a08ee9 30-31
+  s_9c769ca5084452::t_1c465a1a3d7a31 37,43,49,56-57
+  s_9c769ca5084452::t_a99637cd51539e 159
+  s_9c769ca5084452::t_6c397ce4937581 352
+src/i18n/dictionaries/ja.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 440-443
+src/db/schema/orders.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 392-396,405-408,418-435,442-485
+src/i18n/dictionaries/zh.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 439-442
+src/lib/actions/partner-program.ts
+  s_e1b3f5c4cba510::t_c0a780fa1f3859 1-407
+src/i18n/admin/el.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 416-417
+src/i18n/dictionaries/nl.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 405-408
+src/app/api/cron/lifecycle/route.ts
+  s_f3cdd013c7df01::t_db93b3052ac3d3 1-42
+src/i18n/admin/sl.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 228-229
+src/i18n/admin/en.ts
+  s_dd301ddfe52e8d::t_341687f1645c72 975-979
+  s_dd301ddfe52e8d::t_651001e32cde28 328,330,332-370,373-413
+  s_c89fc4f89ffcd2::t_7556b5b92a149f 371-372
+  s_c89fc4f89ffcd2::t_a50b728132bf97 701-702
+src/i18n/admin/hu.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 418-419
+src/db/schema/lifecycle.ts
+  s_f3cdd013c7df01::t_55a1acb7cf60aa 1-120
+src/app/r/[code]/route.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 5,8-9,12-29,85
+  s_dd301ddfe52e8d::t_d52e1dbf119ea3 10-11
+src/i18n/admin/th.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 229-230
+.gitignore
+  s_f41a67ad13d848::t_bd5b320de2896b 56-61
+  s_3fd229194f6299::t_4dcaf128cafcc3 62
+src/lib/stripe-webhooks/platform.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 13
+src/lib/hq/partners.ts
+  s_dd301ddfe52e8d::t_0f32f6db381239 16-30
+  s_dd301ddfe52e8d::t_f40ddd0a079eaf 1-15,31-511,514-518,520-530
+  s_dd301ddfe52e8d::t_647cff07171baf 512-513
+  s_dd301ddfe52e8d::t_71539579754345 519
+src/lib/email/markup.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 4,214-243,248-253,258,266-268
+src/app/[handle]/p/[slug]/_components/product-gallery.tsx
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 3,7,35,38-55,66,68,73,80,82-100,131,133,137-138,150,152,154,164,172
+  s_e1b3f5c4cba510::t_8cd5bc8865935d 36-37
+src/lib/queries/tickets.ts
+  s_c89fc4f89ffcd2::t_fa62b8bc7132be 1-339,381-392
+  s_c89fc4f89ffcd2::t_c8c4930e4fd755 340-380
+src/i18n/admin/es.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 416-417
+src/lib/import/index.ts
+  s_c89fc4f89ffcd2::t_df2cafdf003a2d 13
+src/app/admin/checkin/_components/scanner.tsx
+  s_c89fc4f89ffcd2::t_c7fc317e5062a6 1-256
+src/i18n/admin/no.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 420-421
+src/i18n/admin/ko.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 230-231
+src/app/api/cron/partner-payouts/route.ts
+  s_dd301ddfe52e8d::t_9361bf3611f527 1-76
+scripts/social/preview.ts
+  s_f41a67ad13d848::t_7c06c2a4d1ac1b 1-39
+src/lib/partners/program.ts
+  s_dd301ddfe52e8d::t_bee96dac667a96 2-13,15-18,21,24-34,36,42-44,46,48-50,52,54-58,60-81,84-90,92-94,96-98,100-114,116-136,138-156,160-161,199,211,215,218,220-223,226,231-250,252-257,259-261,266-270,273-274,278-284,289-291,293,298
+  s_dd301ddfe52e8d::t_9f7c051ad67f61 1,14,19-20,22-23,35,37-41,45,47,51,53,59,82-83,91,95,99,115,137,157-159,162-198,200-210,212-214,216-217,219,224-225,227-230,251,258,262-265,271-272,275-277,285-288,292,294-297,299-300
+src/app/[handle]/_components/cart/use-checkout-quote.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 36-44,46,128-129,131
+  s_3fd229194f6299::t_8f0120d80c2a65 133-136
+src/lib/actions/order-preview.ts
+  s_3fd229194f6299::t_e53d9ae18ab46f 13
+  s_3fd229194f6299::t_15cb0ea640dcda 173-178
+src/i18n/admin/fil.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 230-231
+src/i18n/dictionaries/de.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 410-413
+src/i18n/dictionaries/hu.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 398-401
+src/i18n/admin/coverage.test.ts
+  s_c89fc4f89ffcd2::t_2a0a992aaa1442 54-60
+src/lib/partners/settings.ts
+  s_dd301ddfe52e8d::t_7361fa82b5bbcc 1-175
+src/app/hq/(panel)/partners/_components/partner-controls.tsx
+  s_dd301ddfe52e8d::t_60601a40061db8 1-107
+src/lib/lifecycle/send.ts
+  s_f3cdd013c7df01::t_fa41daf46014c0 1-320
+src/i18n/dictionaries/vi.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 351-354
+src/lib/orders/resolve-intent.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 123,142,166,168,175,177-178
+  s_3fd229194f6299::t_5b2acab920d0a4 176
+  s_3fd229194f6299::t_031c6fe31535df 122,124-128
+  s_3fd229194f6299::t_eaff7524ed3190 167,169-174
+  s_e1b3f5c4cba510::t_5389c5875f9a77 179
+  s_3fd229194f6299::t_8e0aea02c7389e 16
+src/i18n/dictionaries/da.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 399-402
+src/app/admin/settings/_components/settings-form.tsx
+  s_f3cdd013c7df01::t_cf33e55ffa3404 50,56-57,134-138
+src/i18n/dictionaries/ru.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 401-404
+src/app/[handle]/_components/cart/quick-add.tsx
+  s_f9c0a952c26c6a::t_891f2f40945a35 1-202
+src/i18n/dictionaries/bg.ts
+  s_f3cdd013c7df01::t_9a3f7ed8e5c05e 349-352
+src/i18n/admin/bg.ts
+  s_f3cdd013c7df01::t_1f378b93bf181c 228-229
+src/lib/lifecycle/steps.test.ts
+  s_f3cdd013c7df01::t_16df23361ae1a3 1-200,202,206-363,371-373,376-386,388-395
+  s_f3cdd013c7df01::t_02cb72f2a0728a 201,203-205
+  s_f3cdd013c7df01::t_497abc7b2c8d6a 364-370,374-375,387
+docs/social.md
+  s_f41a67ad13d848::t_c5de431af3b0dd 1-164
+src/app/[handle]/p/[slug]/page.tsx
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 12,26,28,32,97-110,139,206-208,342
+src/lib/queries/index.ts
+  s_dd301ddfe52e8d::t_3e46cd425b7e33 17
+scripts/social/report.ts
+  s_f41a67ad13d848::t_761bf901d849d1 1-126
+src/app/admin/checkin/_components/feedback.ts
+  s_c89fc4f89ffcd2::t_ca5c0c5f5cb00c 1-68
+src/lib/orders/types.ts
+  s_3fd229194f6299::t_c88c9d35a43d8a 141-143
+drizzle/0015_partner_program.sql
+  s_3fd229194f6299::t_7e56b2423f127a 1-220
+package-lock.json
+  s_f3cdd013c7df01::t_2b4280a5888c41 41-42,3399-3404,10987-10998,11218-11232,12264-12276
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "5005887d40ebfc592becc10c396074f1bfd79f1f",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_9c769ca5084452": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "602650c4-aa4d-4516-b672-1127c9a996bb",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    },
+    "s_c89fc4f89ffcd2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40a39518-4f04-42ee-bbdf-092c54cde208",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_dd301ddfe52e8d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc79176d-a8af-4c93-b350-60b13e4bb26e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e1b3f5c4cba510": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b1ddc7fd-dfe0-4823-afe0-6595cdedf124",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_f3cdd013c7df01": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0b7cab12-e38a-4981-97f5-99f60fd1a5af",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_f41a67ad13d848": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c062b434-3565-4ab6-a11d-3ca28a464e26",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_f9c0a952c26c6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "29ecefeb-aa26-4f75-a87a-abc78f30c37e",
+        "model": "claude-fable-5"
+      },
+      "human_author": null
+    }
+  }
+}
