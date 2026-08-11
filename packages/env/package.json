@@ -1,0 +1,23 @@
+{
+  "name": "@sailo/env",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    "./server": "./src/server.ts",
+    "./client": "./src/client.ts"
+  },
+  "dependencies": {
+    "@t3-oss/env-core": "^0.13.4",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@sailo/config": "*"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src || true"
+  }
+}

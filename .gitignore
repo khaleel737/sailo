@@ -60,3 +60,15 @@ scripts/social/.log/
 scripts/social/.paused
 scripts/social/.render-*.html
 .turbo/
+
+# monorepo
+node_modules/
+.turbo
+apps/*/.next
+apps/*/.turbo
+apps/*/dist
+packages/*/dist
+# expo
+apps/mobile/.expo
+apps/mobile/ios
+apps/mobile/android
