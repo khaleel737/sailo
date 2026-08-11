@@ -325,11 +325,92 @@ export const adminEn = {
   /** Read by key — `a.supportTopics[topic]` — so the whole section is live. */
   checkin: {
     title: "Check-in",
-    description:
-      "Type or scan a ticket code at the door. Each code admits once.",
+    description: "Pick the event you're working the door for.",
     codeLabel: "Ticket code",
-    scanHint: "scanning a ticket QR opens this page with the code filled in",
+    scanHint: "or scan it with the camera",
     submit: "Check in",
+    wrongEvent: "That ticket is for {event}, not this door.",
+    wrongEventUnknown: "That ticket is for a different event.",
+    revoked: "Cancelled — this ticket was refunded or withdrawn.",
+    cancel: "Cancel",
+
+    /* The picker */
+    noEvents: "No events yet",
+    noEventsBody: "Set a product's type to Event and its door opens here.",
+    inOf: "{checkedIn} of {issued} in",
+    startsAt: "Starts {when}",
+
+    /* The console */
+    tabScan: "Scan",
+    tabList: "Guest list",
+    tabManual: "Type a code",
+    statIn: "Checked in",
+    statOut: "Still to come",
+    statIssued: "Tickets",
+    statCapacity: "Capacity",
+    scanStarting: "Starting the camera…",
+    scanReady: "Point at a ticket",
+    scanBlocked: "No camera here",
+    scanBlockedBody:
+      "Allow camera access in your browser, or use the guest list and the keypad instead.",
+
+    /* The list */
+    searchLabel: "Search by name, email or code",
+    searchPlaceholder: "Name, email or code…",
+    filterAll: "Everyone",
+    filterIn: "Checked in",
+    filterOut: "Not in yet",
+    filterRevoked: "Cancelled",
+    allTiers: "All tiers",
+    emptyList: "Nobody here yet",
+    emptyListBody: "Sold tickets and imported guests both show up in this list.",
+    noMatches: "Nobody matching that",
+    showingOf: "Showing {shown} of {total}",
+    admit: "Let in",
+    undo: "Undo",
+    revoke: "Cancel this ticket",
+    reinstate: "Restore ticket",
+    unpaid: "Unpaid",
+    comp: "Guest list",
+    walkUp: "Walk-up",
+    inAt: "In at {time}",
+    byWhom: "by {name}",
+
+    /* Walk-ups */
+    addGuest: "Add someone at the door",
+    addGuestBody:
+      "Writes them onto the list and lets them in. Recorded as a walk-up, not a sale.",
+    guestName: "Name",
+    guestEmail: "Email (optional)",
+    addAndAdmit: "Add and let in",
+
+    /* Guest list CSV */
+    importTitle: "Import a guest list",
+    importBody:
+      "Comps, VIPs, sponsor allocations, anyone who paid you outside the shop. Re-uploading the same file adds only what's new.",
+    exportDoorList: "Download door list",
+
+    /* Door passes */
+    passes: "Door passes",
+    passesBody:
+      "A link that opens this door and nothing else — no orders, no customers, no payouts. Give one to each person working the door, so you can see who admitted whom, and revoke it when the night is over.",
+    passName: "Who's holding it",
+    passNamePlaceholder: "Front gate — Ana",
+    passExpiry: "Stops working after",
+    passHours: "{count} hours",
+    passWeek: "A week",
+    passCreate: "Create pass",
+    passScope: "Which door",
+    passThisEvent: "This event only",
+    passAllEvents: "Every event",
+    passRevoke: "Revoke",
+    passRevoked: "Revoked",
+    passExpired: "Expired",
+    passNeverUsed: "Never used",
+    passUsed: "{count} checked in",
+    passNone: "No passes yet.",
+    passCopy: "Copy link",
+    passCopied: "Copied",
     checkedIn: "Checked in \u2014 let them through.",
     alreadyUsed: "Already used.",
     alreadyUsedAt: "Already used at {time}.",
@@ -617,6 +698,8 @@ export const adminEn = {
     notifyOrderNeedsAction: "Payments to confirm",
     notifyOrderNeedsActionBody:
       "A buyer says they've sent a bank transfer, so the money needs checking.",
+    notifyProductTips: "Tips & product news",
+    notifyProductTipsBody: "Occasional email from Sailo about getting set up and selling more. Never about your orders.",
     taxIdPlaceholder: "GB123456789",
     identity: "Identity",
     appearance: "Appearance",
@@ -889,6 +972,11 @@ export const adminEn = {
     unpaid: "Unpaid",
     /** The threshold, stated rather than discovered. */
     terms: "We send your earnings once they pass {minimum}. Referring yourself doesn't count.",
+    /** The card's four states — see `ReferralCard`. */
+    join: "Become a partner",
+    underReview: "Your partner application is with us — we'll email you when it's reviewed.",
+    notActive: "Your partner account isn't active. Open the partner portal for details.",
+    dashboard: "Open the partner portal",
   },
 
   /** Words for the bars-or-line control, handed to `<Chart shape={a.chart}>`. */

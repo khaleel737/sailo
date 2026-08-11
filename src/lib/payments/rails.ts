@@ -62,6 +62,16 @@ export type PaymentMethodDef = {
   };
   /** True when payment confirms itself and the seller never marks it paid. */
   settlesItself: boolean;
+  /**
+   * True when the rail collects payment in person, at a moment the seller
+   * controls — a doorstep, a venue door, an appointment.
+   *
+   * Cash on delivery is the only one. It belongs on any order with such a
+   * moment (a physical good, an event ticket, a booked service, or a file held
+   * until paid) and nowhere else: an instant download unlocks on order, so
+   * "pay when we meet" is an offer it cannot keep.
+   */
+  payInPerson?: boolean;
   name: string;
   /** Button text on the public shop. */
   action: string;
@@ -213,11 +223,12 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
     type: "cod",
     requires: { contact: true },
     settlesItself: false,
+    payInPerson: true,
     kind: "manual",
     name: "Cash on delivery",
     action: "Pay on delivery",
     description:
-      "Buyer pays when the order arrives. Preferred by most shoppers in the Middle East, Africa and South Asia.",
+      "Buyer pays in person — on delivery, at the door, or at the appointment. Preferred by most shoppers in the Middle East, Africa and South Asia.",
     fields: [
       {
         key: "instructions",
@@ -235,6 +246,35 @@ export const PAYMENT_METHOD_LIST = PAYMENT_METHOD_TYPES.map(
 
 export function isPaymentMethodType(value: string): value is PaymentMethodType {
   return (PAYMENT_METHOD_TYPES as readonly string[]).includes(value);
+}
+
+/**
+ * The rails that can take *this* order.
+ *
+ * `canPayInPerson` asks whether the basket has a moment where the seller
+ * collects payment in person — a doorstep, a venue door, an appointment. A
+ * pay-in-person rail (cash on delivery) belongs only when it does. A shop
+ * selling both a mug and an instant download enables cash on delivery once,
+ * for the mug; nothing then took it off the download's checkout, so a buyer of
+ * a file that unlocks on order was offered a rail whose whole promise is
+ * collecting cash later — after the file was already gone. Everything with a
+ * controlled collection moment (physical, event, appointment, or a file held
+ * until paid) keeps the rail.
+ *
+ * Typed on the shape rather than on `CheckoutMethod`, so the storefront's
+ * trimmed object and a database row both pass through the one filter — and so
+ * the server can re-decide, which it does, because this list is a suggestion
+ * the browser is free to ignore.
+ */
+export function railsForOrder<T extends { type: string }>(
+  methods: readonly T[],
+  canPayInPerson: boolean,
+): T[] {
+  if (canPayInPerson) return [...methods];
+  return methods.filter(
+    (m) =>
+      !isPaymentMethodType(m.type) || !PAYMENT_METHOD_DEFS[m.type].payInPerson,
+  );
 }
 
 /** A rail is only usable once its required fields are filled in. */

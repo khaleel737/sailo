@@ -226,6 +226,8 @@ export const adminSq: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Dikush kërkoi një takim dhe po pret ta konfirmoni orën.",
     notifyOrderNeedsAction: "Pagesa për t'u konfirmuar",
     notifyOrderNeedsActionBody: "Një blerës thotë se ka nisur një transfertë bankare, ndaj paraja duhet kontrolluar.",
+    notifyProductTips: "Këshilla dhe lajme për produktin",
+    notifyProductTipsBody: "Email herë pas here nga Sailo për konfigurimin dhe si të shesësh më shumë. Kurrë për porositë e tua.",
     taxIdPlaceholder: "K12345678L",
     identity: "Identiteti",
     appearance: "Pamja",

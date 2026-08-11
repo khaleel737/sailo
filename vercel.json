@@ -19,6 +19,14 @@
     {
       "path": "/api/cron/broadcasts",
       "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/lifecycle",
+      "schedule": "17 * * * *"
+    },
+    {
+      "path": "/api/cron/partner-payouts",
+      "schedule": "40 6 * * *"
     }
   ]
 }

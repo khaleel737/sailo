@@ -14,11 +14,7 @@ import {
   getVisitSeries,
 } from "@/lib/queries";
 import { setupSteps } from "@/lib/onboarding";
-import { REFERRAL_PAYOUT_MINIMUM_CENTS } from "@/lib/creator-referrals/program";
-import {
-  ensureReferralCode,
-  getReferralSummary,
-} from "@/lib/creator-referrals/store";
+import { getPartnerCard } from "@/lib/partners/store";
 import { Chart } from "@/components/shared/chart";
 import { TrafficPanel } from "@/app/admin/_components/traffic-panel";
 import { ProductPerformancePanel } from "@/app/admin/_components/product-performance";
@@ -81,8 +77,7 @@ export default async function AdminOverviewPage({
      * no way to pay.
      */
     usableRails,
-    referrals,
-    referralCode,
+    partnerCard,
   ] = await Promise.all([
     getDashboardStats(shop.id, window.query),
     getVisitSeries(shop.id, chartQuery),
@@ -92,15 +87,13 @@ export default async function AdminOverviewPage({
     getProductPerformance(shop.id, window.query, Number(params.pp) || 1),
     getShopOrders(shop.id, 5),
     getCheckoutMethods(shop.id),
-    getReferralSummary(shop.id),
     /*
-     * A write, on a page render, on purpose — and only ever the first one.
-     * The code is already on the shop row this page loaded, so a seller who
-     * has one pays nothing; a seller who does not gets theirs minted the
-     * first time the card is rendered, which is the first time it could
-     * possibly be copied.
+     * Read-only, unlike the version this replaces. A seller used to have a
+     * referral code minted for them on this render; now they are a *partner*
+     * or they are not, and joining is a decision they make on /partners rather
+     * than one a page render makes on their behalf.
      */
-    ensureReferralCode(shop),
+    getPartnerCard(shop.userId),
   ]);
 
   const steps = setupSteps({
@@ -427,20 +420,15 @@ export default async function AdminOverviewPage({
       </Card>
 
       {/*
-        No code, no card. `ensureReferralCode` returns null only if it could
-        not mint one, and a card whose whole content is a link is nothing
-        without the link.
+        Always drawn now. Every state it can be in says something worth saying
+        — a pitch, a decision pending, or a link and what it has earned.
       */}
-      {referralCode ? (
-        <ReferralCard
-          code={referralCode}
-          summary={referrals}
-          currency={shop.currency}
-          locale={locale}
-          minimumCents={REFERRAL_PAYOUT_MINIMUM_CENTS}
-          a={a}
-        />
-      ) : null}
+      <ReferralCard
+        card={partnerCard}
+        currency={shop.currency}
+        locale={locale}
+        a={a}
+      />
     </>
   );
 }

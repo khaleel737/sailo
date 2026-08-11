@@ -437,5 +437,9 @@ export const ja: Dictionary = {
     doneBody: "{shop} からのマーケティングメールは今後送信されません。注文確認はこれまでどおり届きます。",
     invalidTitle: "このリンクは無効です",
     invalidBody: "ショップからのメールに返信して、配信停止を依頼してください。",
+    sailoTitle: "Sailo からのマーケティングメールを停止しますか？",
+    sailoBody: "{email} 宛の Sailo からのヒントや製品のお知らせを停止します。注文・請求・アカウントに関するメールはこれまでどおり届きます。",
+    sailoDoneBody: "Sailo からヒントや製品のお知らせは今後送信されません。注文・請求・アカウントに関するメールはこれまでどおり届きます。",
+    sailoInvalidBody: "support@sailo.store までご連絡いただければ、リストから削除します。",
   },
 };

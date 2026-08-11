@@ -33,8 +33,17 @@ export function useCheckoutQuote(input: {
   shopId: string;
   items: OrderLineInput[];
   deliveryId: string | null;
+  /**
+   * What the caller already knows about whether this order travels, from the
+   * kinds it holds. Used for the first paint only — the server's answer
+   * replaces it the moment it lands, and it is the server's that the order is
+   * priced and placed on. Without it the panel opens as though nothing ships
+   * and then grows a delivery block, which is a worse first frame than the
+   * one the page can work out for itself.
+   */
+  needsDeliveryHint?: boolean;
 }) {
-  const { shopId, items, deliveryId } = input;
+  const { shopId, items, deliveryId, needsDeliveryHint = false } = input;
 
   const [coupon, dispatchCoupon] = useReducer(couponReducer, NO_COUPON);
   const [preview, setPreview] = useState<OrderPreview | null>(null);
@@ -116,9 +125,14 @@ export function useCheckoutQuote(input: {
     tax: (preview?.tax ?? null) as PreviewTax,
     /*
      * Both decided by the server, not inferred here: a basket of downloads is
-     * not shipped, and a collection order has nowhere to deliver to.
+     * not shipped, and a collection order has nowhere to deliver to. The hint
+     * only stands in for the first, and only until the first quote answers.
      */
-    needsDelivery: preview?.needsDelivery ?? false,
+    needsDelivery: preview?.needsDelivery ?? needsDeliveryHint,
     needsAddress: preview?.needsAddress ?? false,
+    // Optimistic until the first quote: show the pay-in-person rail, and let
+    // the server withdraw it for the one basket that can't have it (an instant
+    // download). Better first frame than hiding it and growing it back.
+    canPayInPerson: preview?.canPayInPerson ?? true,
   };
 }

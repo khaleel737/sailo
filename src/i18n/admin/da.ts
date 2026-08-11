@@ -413,6 +413,8 @@ export const adminDa: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Nogen har bedt om en tid og venter på, at du bekræfter tidspunktet.",
     notifyOrderNeedsAction: "Betalinger, der skal bekræftes",
     notifyOrderNeedsActionBody: "En køber siger, at pengene er sendt via bankoverførsel, så beløbet skal tjekkes.",
+    notifyProductTips: "Tips og produktnyheder",
+    notifyProductTipsBody: "En sjælden mail fra Sailo om at komme i gang og sælge mere. Aldrig om dine ordrer.",
     taxIdPlaceholder: "DK12345678",
     identity: "Identitet",
     appearance: "Udseende",

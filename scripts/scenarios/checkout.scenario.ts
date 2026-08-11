@@ -363,6 +363,23 @@ describe("digital delivery", () => {
     expect(o?.downloadReleasedAt).toBeNull();
   });
 
+  it("refuses cash-in-person for a file that unlocks before payment", async () => {
+    // The safety boundary of the pay-in-person rule: a held file (above) is
+    // fine on cod because the seller confirms the cash before releasing it. A
+    // file that unlocks on order is not — "pay when we meet" would hand it over
+    // for free — so the rail is refused. This is the one case that must stay
+    // closed, whatever else the rail rule allows.
+    const shop = await withRail();
+    const instant = await makeDigitalProduct(shop.id, { releaseOnPayment: false });
+    const r = await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: instant.id, quantity: 1 }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect(r.ok).toBe(false);
+  });
+
   it("gives a mixed basket its token too", async () => {
     /*
      * The bug this pins cost a buyer their files permanently: delivery was

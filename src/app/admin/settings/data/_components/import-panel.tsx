@@ -22,11 +22,18 @@ export function ImportPanel({
   title,
   description,
   columns,
+  productId,
 }: {
-  type: "products" | "clients";
+  type: "products" | "clients" | "tickets";
   title: string;
   description: string;
   columns: { name: string; note: string }[];
+  /**
+   * The event a guest list belongs to, when the panel was opened from that
+   * event's own door. Without it every row needs an `Event` column, which is
+   * a paper cut on the common case of one spreadsheet per event.
+   */
+  productId?: string;
 }) {
   const a = useAdminT();
   const [state, action] = useActionState<ImportState, FormData>(runImport, {
@@ -59,6 +66,9 @@ export function ImportPanel({
 
       <form action={action} className="mt-4 space-y-4">
         <input type="hidden" name="type" value={type} />
+        {productId ? (
+          <input type="hidden" name="productId" value={productId} />
+        ) : null}
         {/* The file is read in the browser so the same content can be reused
             for the confirm step without a second upload. */}
         <input type="hidden" name="csv" value={csv} />

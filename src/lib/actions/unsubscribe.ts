@@ -5,6 +5,8 @@ import { getDb } from "@/db";
 import { shops } from "@/db/schema";
 import { suppress } from "@/lib/broadcasts/audience";
 import { readUnsubscribeToken } from "@/lib/broadcasts/unsubscribe";
+import { optOut } from "@/lib/lifecycle/opt-out";
+import { readMarketingOptOutToken } from "@/lib/lifecycle/unsubscribe";
 import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
 
@@ -54,4 +56,38 @@ export async function confirmUnsubscribe(
   });
 
   return { done: true, shopName: shop.name };
+}
+
+/**
+ * The same button, for Sailo's own marketing rather than a shop's.
+ *
+ * Beside its twin because the two are read together and their differences are
+ * the interesting part: no shop to resolve, so no lookup and no way for the
+ * answer to depend on whether a row exists; a platform-wide opt-out rather
+ * than a shop-scoped suppression; and a separate signing domain, so a token
+ * from the other flow fails the signature check here instead of quietly
+ * unsubscribing somebody from the wrong list.
+ *
+ * Public and unauthenticated by necessity — somebody leaving a mailing list
+ * should not have to sign in to do it, and the person clicking may have
+ * forgotten the account exists. All the authority is in the signature.
+ */
+export async function confirmMarketingUnsubscribe(
+  _prev: UnsubscribeState,
+  formData: FormData,
+): Promise<UnsubscribeState> {
+  const gate = await rateLimit(`unsub-mkt-form:${await callerIp()}`, 30, 60);
+  if (!gate.allowed) {
+    // Throttled is unknown, never a negative answer — and never a false
+    // positive. Saying "done" here would be the worst of both: they walk away
+    // believing they are off the list, and the next email proves otherwise.
+    return { done: false, error: "Too many attempts — try again in a minute." };
+  }
+
+  const claim = readMarketingOptOutToken(String(formData.get("token") ?? ""));
+  if (!claim) return { done: false, error: "That link isn't valid any more." };
+
+  await optOut({ email: claim.email, reason: "unsubscribed" });
+
+  return { done: true };
 }

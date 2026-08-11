@@ -13,7 +13,7 @@ import { SlotPicker } from "./slot-picker";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import { formatDuration, formatMoney } from "@/lib/utils";
-import { variantLabel, type CheckoutVariant } from "@/lib/variants";
+import { needsDelivery, variantLabel, type CheckoutVariant } from "@/lib/variants";
 import type { ProductOption } from "@/db/schema";
 
 export type {
@@ -189,6 +189,9 @@ export function ExpressCheckout({
       ]}
       methods={methods}
       deliveryOptions={deliveryOptions}
+      // One product, so its kind settles the question outright — no quote
+      // needed to know that a download is not delivered.
+      needsDeliveryHint={needsDelivery(kind)}
       contactEmail={contactEmail}
       compliance={compliance}
       hasFiles={hasFiles}

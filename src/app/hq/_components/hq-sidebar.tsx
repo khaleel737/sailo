@@ -45,7 +45,7 @@ const GROUPS = [
        * paid by us out of our subscription revenue — so it belongs next to
        * the revenue it comes out of.
        */
-      { href: "/hq/referrals", label: "Referrals", icon: Handshake },
+      { href: "/hq/partners", label: "Partners", icon: Handshake },
     ],
   },
   {

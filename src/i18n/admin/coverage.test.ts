@@ -51,6 +51,13 @@ const WHOLESALE = new Set([
    */
   "broadcastStatus",
   "deliveryStatus",
+  /*
+   * Handed to the door console whole — `labels={a.checkin}` — because that
+   * component renders on two routes and only one of them has the admin i18n
+   * context around it: a volunteer on `/door/[token]` has no admin shell.
+   * Inside, every read is `a.tabScan`, which the regex below cannot see.
+   */
+  "checkin",
 ]);
 
 /*

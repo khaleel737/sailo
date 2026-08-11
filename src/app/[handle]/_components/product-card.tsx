@@ -5,21 +5,27 @@ import type { ProductCard as ProductCardData } from "@/lib/queries";
 import type { Shop } from "@/db/schema";
 import type { Dictionary } from "@/i18n";
 import { cn, formatDuration, formatMoney } from "@/lib/utils";
-import { anySellable, priceRange } from "@/lib/variants";
+import {
+  anySellable,
+  priceRange,
+  toCheckoutVariants,
+  unitsLeft,
+} from "@/lib/variants";
 import { eventSalesOpen } from "@/lib/tickets";
 import { interpolate } from "@/i18n";
 import { StarRating } from "./star-rating";
 import { FavoriteButton } from "./favorites/favorite-button";
+import { QuickAdd } from "./cart/quick-add";
 
 /**
  * One product on the shop page.
  *
  * The card's whole job is to earn a tap through to the product page — so the
- * entire card is the link, and the only other control on it is the heart.
- * Buying happens on the product page, where the buyer can actually see what
- * they're choosing; the pair of buy buttons that used to sit here asked for a
- * commitment the card had never shown enough to justify, and silently added
- * whichever variant came first.
+ * entire card is the link, and the two controls riding on it stay out of the
+ * way: the heart, and a quick-add bag that either drops a one-of-a-kind
+ * product straight in the basket or opens a small picker for one with
+ * options. "Buy now" is not on the card — checkout is a commitment to a
+ * specific thing, and that choice belongs to the product page.
  */
 export function ProductCard({
   product,
@@ -40,6 +46,7 @@ export function ProductCard({
 
   // With options, the card quotes the cheapest combination rather than a price
   // the buyer might not be able to get.
+  const variants = toCheckoutVariants(product, product.variants);
   const range = priceRange(product, product.variants);
   const displayPrice = range.min;
   const salesOpen = eventSalesOpen(product);
@@ -61,9 +68,10 @@ export function ProductCard({
   return (
     <article
       className={cn(
-        // Shadow only, never a transform: a transformed ancestor would become
-        // the containing block for any `position: fixed` overlay a descendant
-        // opens, and the heart is not worth re-learning that lesson over.
+        // Shadow only, never a transform: the quick-add opens a
+        // `position: fixed` sheet from inside this card, and a transformed
+        // ancestor would become its containing block — rendering the whole
+        // sheet inside this grid cell.
         "surface-card group relative overflow-hidden rounded-2xl transition hover:shadow-md",
         layout === "list" && "flex gap-4 p-3",
       )}
@@ -99,9 +107,27 @@ export function ProductCard({
             {t.shop.sale}
           </span>
         ) : null}
+
+        {/* The photo's lower corner, opposite the heart. Above the stretched
+            link, or the tap would navigate instead of adding. */}
+        {sellable && layout === "grid" ? (
+          <QuickAdd
+            productId={product.id}
+            productTitle={product.title}
+            priceCents={product.priceCents}
+            currency={shop.currency}
+            kind={product.kind}
+            options={product.options}
+            variants={variants}
+            unitsLeft={unitsLeft(product)}
+            imageUrl={image?.url ?? null}
+            className="absolute bottom-2 end-2 z-[2] size-8"
+            t={t}
+          />
+        ) : null}
       </div>
 
-      {/* Above the stretched link, or every tap on it would navigate. */}
+      {/* Above the stretched link, or every tap on them would navigate. */}
       <FavoriteButton
         shopId={shop.id}
         item={{
@@ -114,6 +140,23 @@ export function ProductCard({
         label={t.shop.saveToFavorites}
         className="absolute end-2 top-2 z-[2] size-8"
       />
+      {/* In a list row the photo is a thumbnail, so the bag takes the row's
+          own corner instead of covering a third of the picture. */}
+      {sellable && layout === "list" ? (
+        <QuickAdd
+          productId={product.id}
+          productTitle={product.title}
+          priceCents={product.priceCents}
+          currency={shop.currency}
+          kind={product.kind}
+          options={product.options}
+          variants={variants}
+          unitsLeft={unitsLeft(product)}
+          imageUrl={image?.url ?? null}
+          className="absolute bottom-2 end-2 z-[2] size-8"
+          t={t}
+        />
+      ) : null}
 
       <div
         className={cn(

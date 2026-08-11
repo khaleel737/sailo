@@ -169,7 +169,11 @@ export default function PrivacyPage() {
                 Page-view counts, rate limiting and abuse prevention. Sellers need to
                 know whether their link works, and the service needs to stay standing.
                 We have kept this to the minimum that achieves it, which is why no IP
-                address is stored.
+                address is stored. This also covers the small number of emails we
+                send account holders about setting up and using Sailo itself —
+                sent because you opened an account, capped at a handful, and every
+                one of them carries a one-click unsubscribe that stops them for
+                good without touching your order, billing or account email.
               </>,
               <>
                 <strong className="font-medium text-[var(--ink)]">

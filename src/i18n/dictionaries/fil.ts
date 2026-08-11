@@ -345,5 +345,9 @@ export const fil: Dictionary = {
     doneBody: "Hindi ka na padadalhan ng {shop} ng marketing emails. Darating pa rin ang order confirmations.",
     invalidTitle: "Hindi na gumagana ang link na ito",
     invalidBody: "Sagutin ang kahit anong email mula sa shop at hilinging alisin ka nila.",
+    sailoTitle: "Ihinto ang mga marketing email mula sa Sailo?",
+    sailoBody: "Hindi na makakatanggap ang {email} ng mga tip at balita tungkol sa produkto mula sa Sailo. Patuloy pa ring darating ang mga email tungkol sa order, bayad at account.",
+    sailoDoneBody: "Hindi ka na padadalhan ng Sailo ng mga tip o balita tungkol sa produkto. Patuloy pa ring darating ang mga email tungkol sa order, bayad at account.",
+    sailoInvalidBody: "Mag-email sa support@sailo.store at aalisin ka namin sa listahan.",
   },
 };

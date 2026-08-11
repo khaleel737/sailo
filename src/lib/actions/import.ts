@@ -5,7 +5,13 @@ import { after } from "next/server";
 import { revalidateShop } from "@/lib/cache";
 import { publishShopEvent } from "@/lib/events";
 import { requireShop } from "@/lib/session";
-import { importClients, importProducts, isImportType, type ImportReport } from "@/lib/importers";
+import {
+  importClients,
+  importProducts,
+  importTickets,
+  isImportType,
+  type ImportReport,
+} from "@/lib/importers";
 
 export type ImportState =
   | { ok: false; error?: string }
@@ -51,7 +57,17 @@ export async function runImport(
             currency: shop.currency,
             plan: shop,
           })
-        : await importClients({ shopId: shop.id, csv, dryRun: !commit });
+        : type === "tickets"
+          ? await importTickets({
+              shopId: shop.id,
+              csv,
+              dryRun: !commit,
+              // Set when the importer was opened from an event's own door, so
+              // a file with no Event column still knows which room it is for.
+              defaultProductId:
+                String(formData.get("productId") ?? "") || null,
+            })
+          : await importClients({ shopId: shop.id, csv, dryRun: !commit });
 
     if (report.parsed === 0) {
       return { ok: false, error: "No rows found — is the header row present?" };
@@ -61,10 +77,15 @@ export async function runImport(
       revalidatePath("/admin/products");
       revalidatePath("/admin/clients");
       revalidatePath("/admin/categories");
+      revalidatePath("/admin/checkin", "layout");
       revalidatePath(`/${shop.handle}`);
       // The catalogue is cached per shop; a write has to drop it.
       revalidateShop(shop.id, shop.handle);
-      after(() => publishShopEvent(shop.id, "catalog"));
+      // A door screen open on somebody's phone has just gained names, and it
+      // is the one screen where a stale list is somebody standing outside.
+      after(() =>
+        publishShopEvent(shop.id, type === "tickets" ? "booking" : "catalog"),
+      );
     }
 
     return { ok: true, report, committed: commit };

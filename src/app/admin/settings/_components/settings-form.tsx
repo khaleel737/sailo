@@ -47,11 +47,14 @@ export function SettingsForm({
   shop,
   t,
   accountEmail,
+  marketingOptIn,
 }: {
   shop: Shop;
   t: Dictionary;
   /** Where seller notifications go when no contact address is set. */
   accountEmail: string;
+  /** Whether Sailo's own product mail is still switched on for this account. */
+  marketingOptIn: boolean;
 }) {
   const a = useAdminT();
   const [state, action] = useActionState(updateShop, { ok: false });
@@ -128,7 +131,11 @@ export function SettingsForm({
 
       <SocialLinksCard socialByPlatform={socialByPlatform} />
 
-      <NotificationsCard shop={shop} accountEmail={accountEmail} />
+      <NotificationsCard
+        shop={shop}
+        accountEmail={accountEmail}
+        marketingOptIn={marketingOptIn}
+      />
 
       <TrackingCard shop={shop} />
 

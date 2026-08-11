@@ -3,6 +3,11 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { broadcastDeliveries } from "@/db/schema";
 import { suppress } from "@/lib/broadcasts/audience";
+import { optOut } from "@/lib/lifecycle/opt-out";
+import {
+  lifecycleDeliveryByProviderId,
+  markLifecycleFailed,
+} from "@/lib/lifecycle/send";
 
 /**
  * Bounces and complaints, from Resend.
@@ -12,6 +17,11 @@ import { suppress } from "@/lib/broadcasts/audience";
  * somebody pressing "report spam" — and continuing to mail either is how a
  * sending domain gets blocked, which takes every seller's order confirmations
  * down with it. So both write the same suppression row an unsubscribe does.
+ *
+ * It answers for both kinds of bulk mail Sailo sends — a shop's broadcast to
+ * its buyers, and Sailo's own lifecycle mail to its sellers — because Resend
+ * has one webhook and the payload names only a message id. Which of the two
+ * tables owns that id is what decides whose list the address comes off.
  *
  * Verified the way the Stripe webhooks are, and for the same reason: this
  * endpoint is public and writes rows that stop mail being sent, so an
@@ -115,34 +125,61 @@ export async function POST(request: Request) {
   if (!providerId) return Response.json({ ok: true });
 
   /*
-   * The shop is found through the delivery row rather than taken from the
-   * payload. Suppression is per shop, and a webhook body is not a statement
-   * about which shop's list an address belongs on — the row we wrote when we
-   * sent the message is.
+   * Two tables can own a provider id, because Sailo sends two kinds of bulk
+   * mail: a shop's broadcast to its buyers, and Sailo's own lifecycle mail to
+   * its sellers. The id is looked up in both, and whichever owns it decides
+   * *which list* the address comes off — a shop's, or ours.
+   *
+   * Never both, and never inferred from the payload. Suppressing a seller
+   * from Sailo's marketing because a buyer bounced would be scoped from a
+   * webhook body rather than from the row we wrote when we sent the message,
+   * and the row is the only thing that actually knows.
    */
   const db = getDb();
+
   const delivery = await db.query.broadcastDeliveries.findFirst({
     where: eq(broadcastDeliveries.providerId, providerId),
   });
-  if (!delivery) return Response.json({ ok: true });
 
-  await suppress({
-    shopId: delivery.shopId,
-    email: delivery.email,
-    reason,
-  });
+  if (delivery) {
+    await suppress({
+      shopId: delivery.shopId,
+      email: delivery.email,
+      reason,
+    });
 
-  await db
-    .update(broadcastDeliveries)
-    .set({ status: "failed", error: reason })
-    .where(
-      and(
-        eq(broadcastDeliveries.id, delivery.id),
-        // Only a delivery we believed had succeeded. A row already marked
-        // failed keeps its original reason, which is the more specific one.
-        eq(broadcastDeliveries.status, "sent"),
-      ),
-    );
+    await db
+      .update(broadcastDeliveries)
+      .set({ status: "failed", error: reason })
+      .where(
+        and(
+          eq(broadcastDeliveries.id, delivery.id),
+          // Only a delivery we believed had succeeded. A row already marked
+          // failed keeps its original reason, which is the more specific one.
+          eq(broadcastDeliveries.status, "sent"),
+        ),
+      );
+
+    return Response.json({ ok: true });
+  }
+
+  /*
+   * Sailo's own marketing. The opt-out is platform-wide because Sailo is one
+   * sender — and it is written whichever way the address failed, since a
+   * seller who reports our onboarding mail as spam has said something about
+   * every future onboarding mail, not about one of them.
+   *
+   * Note what this deliberately does *not* touch: `email_suppressions`. A
+   * seller bouncing our product mail says nothing about whether their buyers
+   * want their shop's newsletter, and quietly muting a shop's marketing
+   * because its owner's inbox was full would be a data-loss bug the seller
+   * could never find.
+   */
+  const lifecycle = await lifecycleDeliveryByProviderId(providerId);
+  if (!lifecycle) return Response.json({ ok: true });
+
+  await optOut({ email: lifecycle.email, reason });
+  await markLifecycleFailed([lifecycle.id], reason);
 
   return Response.json({ ok: true });
 }

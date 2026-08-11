@@ -9,6 +9,7 @@ import {
 } from "@/lib/queries";
 import { ProductGallery } from "@/app/[handle]/p/[slug]/_components/product-gallery";
 import { BuyBox } from "@/app/[handle]/p/[slug]/_components/buy-box";
+import { VariantPhotoProvider } from "@/app/[handle]/p/[slug]/_components/variant-photo";
 import { ShareButton } from "@/app/[handle]/_components/share-button";
 import { CartRegion } from "@/app/[handle]/_components/cart/cart-region";
 import { complianceOf } from "@/app/[handle]/_components/cart/checkout.types";
@@ -22,10 +23,13 @@ import { interpolate } from "@/i18n";
 import { formatDuration, isShopLive, shopThemeVars } from "@/lib/utils";
 import {
   anySellable,
+  needsDelivery,
   priceRange,
+  releasesBeforePayment,
   toCheckoutVariants,
   unitsLeft,
 } from "@/lib/variants";
+import { railsForOrder } from "@/lib/payments";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { absolute, breadcrumbJsonLd, productJsonLd } from "@/lib/seo";
 import { eventSalesOpen } from "@/lib/tickets";
@@ -90,6 +94,20 @@ export default async function ProductPage({
           : t.shop.kindPhysical;
 
   const variants = toCheckoutVariants(product, product.variants);
+  /*
+   * What this product can honestly claim in a search result. A download is not
+   * carried by a parcel service and cannot be paid for at a door, so neither
+   * term belongs in its structured data — the shop's full list was being
+   * repeated onto every product regardless of what it was.
+   */
+  const travels = needsDelivery(product.kind);
+  const productRails = {
+    payment: railsForOrder(
+      checkout.methods,
+      !releasesBeforePayment(product.kind, product.releaseOnPayment),
+    ),
+    delivery: travels ? checkout.deliveryOptions : [],
+  };
   const range = priceRange(product, product.variants);
   const salesOpen = eventSalesOpen(product);
   const sellable =
@@ -118,7 +136,7 @@ export default async function ProductPage({
               avgRating: product.avgRating,
               reviewCount: product.reviewCount,
               shop: { name: shop.name, handle: shop.handle },
-            }, { payment: checkout.methods, delivery: checkout.deliveryOptions }),
+            }, productRails),
           ),
         }}
       />
@@ -185,6 +203,9 @@ export default async function ProductPage({
           />
         </div>
 
+        {/* The gallery and the buy box are siblings with the title between
+            them, so the chosen combination's photo travels through here. */}
+        <VariantPhotoProvider>
         <ProductGallery images={product.images} title={product.title} />
 
         <div className="mt-6">
@@ -318,6 +339,7 @@ export default async function ProductPage({
           ) : null}
 
         </div>
+        </VariantPhotoProvider>
 
         <section className="mt-12">
           <div className="mb-4 flex items-center justify-between gap-4">

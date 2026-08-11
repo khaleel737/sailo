@@ -417,6 +417,8 @@ export const adminRu: PartialAdminDictionary = {
     notifyOrderNeedsAction: "Платежи, которые нужно подтвердить",
     notifyOrderNeedsActionBody:
       "Покупатель говорит, что отправил банковский перевод, — деньги нужно проверить.",
+    notifyProductTips: "Советы и новости продукта",
+    notifyProductTipsBody: "Нечастые письма от Sailo о настройке и о том, как продавать больше. Никогда о ваших заказах.",
     taxIdPlaceholder: "7712345678",
     identity: "Профиль",
     appearance: "Оформление",

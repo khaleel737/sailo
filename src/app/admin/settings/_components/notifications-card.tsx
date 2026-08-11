@@ -19,10 +19,21 @@ import type { Shop } from "@/db/schema";
 export function NotificationsCard({
   shop,
   accountEmail,
+  marketingOptIn,
 }: {
   shop: Shop;
   /** Where these land: the shop's contact address, else the login email. */
   accountEmail: string;
+  /**
+   * Whether Sailo may still send this seller product mail.
+   *
+   * Passed in rather than read off `shop`, because unlike every other switch
+   * on this card it is not a shop setting. It is keyed on the *account*
+   * address in `marketing_opt_outs`, platform-wide and outliving the shop —
+   * which is what lets an unsubscribe from a cold mail client, with no
+   * session and no shop, still be honoured here.
+   */
+  marketingOptIn: boolean;
 }) {
   const a = useAdminT();
   const prefs = shop.notificationPrefs;
@@ -64,6 +75,19 @@ export function NotificationsCard({
             description={row.description}
           />
         ))}
+
+        {/*
+          Sailo's own mail, under the same heading because this is where a
+          seller looks for "stop emailing me" — but it is a different promise
+          from the three above, which are about their shop, and the
+          description says so rather than leaving them to find out.
+        */}
+        <Switch
+          name="marketing_opt_in"
+          defaultChecked={marketingOptIn}
+          label={a.settings.notifyProductTips}
+          description={a.settings.notifyProductTipsBody}
+        />
       </div>
 
       <p className="text-xs text-ink-500">

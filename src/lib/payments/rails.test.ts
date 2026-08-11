@@ -7,6 +7,7 @@ import {
   isRailUsable,
   PAYMENT_METHOD_DEFS,
   PAYMENT_METHOD_TYPES,
+  railsForOrder,
 } from "./rails";
 
 /**
@@ -115,5 +116,61 @@ describe("the card rail's description", () => {
   it("does not write the fee out by hand", () => {
     const withoutLabel = PAYMENT_METHOD_DEFS.card.description.replace("0.5%", "");
     expect(withoutLabel).not.toMatch(/\d+(\.\d+)?\s?%/);
+  });
+});
+
+describe("the rails an order can use", () => {
+  /*
+   * A shop enables cash on delivery once, for the mug. Nothing then took it
+   * off the instant download's checkout, so a buyer of a file that unlocks on
+   * order was offered a rail whose whole promise is collecting cash in person
+   * — after the file was already gone.
+   */
+  const ALL = [
+    { type: "whatsapp" },
+    { type: "cod" },
+    { type: "bank_transfer" },
+  ];
+
+  it("offers every rail when the order can be paid for in person", () => {
+    expect(railsForOrder(ALL, true).map((m) => m.type)).toEqual([
+      "whatsapp",
+      "cod",
+      "bank_transfer",
+    ]);
+  });
+
+  it("withdraws cash on delivery when it can't be collected in person", () => {
+    expect(railsForOrder(ALL, false).map((m) => m.type)).toEqual([
+      "whatsapp",
+      "bank_transfer",
+    ]);
+  });
+
+  it("leaves a shop with no rails at all rather than a pay-in-person one", () => {
+    // A shop whose only rail is cash on delivery genuinely cannot sell an
+    // instant download. Saying so is the honest answer; the buy button reads
+    // "unavailable" rather than opening a sheet with nothing in it.
+    expect(railsForOrder([{ type: "cod" }], false)).toEqual([]);
+  });
+
+  it("keeps a rail it doesn't recognise", () => {
+    // An unknown type is a row from a newer version of the app, not a
+    // pay-in-person rail — dropping it would hide a working payment option.
+    expect(railsForOrder([{ type: "bitcoin" }], false)).toHaveLength(1);
+  });
+
+  it("copies rather than hands back the caller's array", () => {
+    const methods = [{ type: "whatsapp" }];
+    expect(railsForOrder(methods, true)).not.toBe(methods);
+  });
+
+  it("marks exactly one rail as pay-in-person", () => {
+    // If a second rail ever earns the flag this test should be updated
+    // deliberately, not discovered by a buyer who can't check out.
+    const needy = PAYMENT_METHOD_TYPES.filter(
+      (t) => PAYMENT_METHOD_DEFS[t].payInPerson,
+    );
+    expect(needy).toEqual(["cod"]);
   });
 });

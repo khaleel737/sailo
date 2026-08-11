@@ -227,6 +227,8 @@ export const adminKo: PartialAdminDictionary = {
     notifyBookingRequestedBody: "누군가 예약을 신청하고 시간 확정을 기다리고 있어요.",
     notifyOrderNeedsAction: "확인이 필요한 결제",
     notifyOrderNeedsActionBody: "구매자가 계좌 이체를 했다고 알려서 입금을 확인해야 해요.",
+    notifyProductTips: "팁 & 제품 소식",
+    notifyProductTipsBody: "설정과 매출을 늘리는 방법에 대해 Sailo가 가끔 보내는 이메일입니다. 주문 관련 내용은 아닙니다.",
     taxIdPlaceholder: "123-45-67890",
     identity: "기본 정보",
     appearance: "외형",

@@ -413,6 +413,8 @@ export const adminEl: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Κάποιος ζήτησε ραντεβού και περιμένει να επιβεβαιώσετε την ώρα.",
     notifyOrderNeedsAction: "Πληρωμές προς επιβεβαίωση",
     notifyOrderNeedsActionBody: "Ένας αγοραστής λέει ότι έκανε τραπεζικό έμβασμα, οπότε τα χρήματα χρειάζονται έλεγχο.",
+    notifyProductTips: "Συμβουλές & νέα προϊόντος",
+    notifyProductTipsBody: "Περιστασιακό email από το Sailo για τη ρύθμιση και για περισσότερες πωλήσεις. Ποτέ για τις παραγγελίες σου.",
     taxIdPlaceholder: "EL123456789",
     identity: "Ταυτότητα",
     appearance: "Εμφάνιση",

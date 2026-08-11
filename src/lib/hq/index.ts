@@ -18,7 +18,7 @@ export * from "./overview";
 export * from "./accounts";
 export * from "./subscriptions";
 export * from "./lists";
-export * from "./referrals";
+export * from "./partners";
 export * from "./support";
 export * from "./system";
 export * from "./exports";

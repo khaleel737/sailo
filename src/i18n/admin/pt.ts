@@ -417,6 +417,8 @@ export const adminPt: PartialAdminDictionary = {
     notifyOrderNeedsAction: "Pagamentos por confirmar",
     notifyOrderNeedsActionBody:
       "Um comprador diz que fez uma transferência bancária, por isso é preciso verificar o dinheiro.",
+    notifyProductTips: "Dicas e novidades",
+    notifyProductTipsBody: "E-mails ocasionais da Sailo sobre configuração e como vender mais. Nunca sobre as tuas encomendas.",
     taxIdPlaceholder: "PT123456789",
     identity: "Identidade",
     appearance: "Aspeto",

@@ -277,6 +277,32 @@ export function toCheckoutVariants(
   }));
 }
 
+/**
+ * The combination a picker should land on after choosing `value` for `name`.
+ *
+ * Keeps the rest of the selection when that exact combination is for sale,
+ * and otherwise jumps to the nearest sellable one carrying the value — so a
+ * buyer who picks "red" on a sold-out large lands on a red that exists. Null
+ * only when nothing at all carries the value, which is when the chip should
+ * have been disabled.
+ *
+ * One function because two pickers offer it — the card's quick-add and the
+ * product page — and a buyer who meets both must meet one behaviour.
+ */
+export function retargetSelection(
+  variants: CheckoutVariant[],
+  selection: VariantOptions,
+  name: string,
+  value: string,
+): CheckoutVariant | null {
+  const next = { ...selection, [name]: value };
+  const exact = findVariant(variants, next) ?? null;
+  if (exact?.available) return exact;
+  return (
+    variants.find((v) => v.available && v.options[name] === value) ?? exact
+  );
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Kinds                                                                      */
 /* -------------------------------------------------------------------------- */
@@ -297,6 +323,21 @@ export function isProductKind(value: string): value is ProductKind {
 /** Only physical goods get delivered; a file and an appointment don't. */
 export function needsDelivery(kind: string): boolean {
   return kind === "physical";
+}
+
+/**
+ * Whether a line hands the buyer its value *before* they have paid — the one
+ * thing that makes a pay-in-person rail (cash on delivery / at the door / at
+ * the appointment) unsafe, because there "pay later" can become "pay never".
+ *
+ * Only an instant-unlock digital file does this. A file held until payment, a
+ * physical good, an appointment and an event ticket are all collected at a
+ * moment the seller controls — the doorstep, the venue door, the appointment —
+ * so cash-in-person is safe for them. `heldUntilPaid` is the product's
+ * `releaseOnPayment`: true means the download waits for the seller to confirm.
+ */
+export function releasesBeforePayment(kind: string, heldUntilPaid: boolean): boolean {
+  return kind === "digital" && !heldUntilPaid;
 }
 
 export type ServiceMode = "in_person" | "online";

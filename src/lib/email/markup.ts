@@ -1,6 +1,7 @@
 import type { Order, Shop } from "@/db/schema";
 import { badgeHref, showsBadge } from "@/components/shared/powered-by";
 import { isRenderableImageUrl } from "@/lib/file-urls";
+import { LEGAL } from "@/lib/legal";
 import { APP_URL, absolute } from "@/lib/seo";
 import { formatMoney } from "@/lib/utils";
 
@@ -211,14 +212,50 @@ function sailoHref(): string {
 }
 
 /**
+ * The two extra lines a marketing email carries and a transactional one must
+ * not.
+ *
+ * Both are law rather than decoration, and each fails in a different
+ * direction. The postal address is CAN-SPAM's flat requirement on any
+ * commercial message — it is the sender being findable, and there is no
+ * version of "we'd rather not" — so it comes from `LEGAL`, the same single
+ * source the privacy policy and the terms are built from, and not from a
+ * string typed here that could go out of date on its own.
+ *
+ * The unsubscribe line is the one people actually use, and its wording does
+ * as much work as its presence: somebody who wants the tips to stop but has
+ * an order arriving needs to know, *before* they click, that the two are
+ * different. Told that, they unsubscribe. Not told, a good share of them
+ * press "report spam" instead, which is the outcome this whole footer exists
+ * to avoid.
+ */
+function marketingFooter(unsubscribeUrl: string) {
+  const postal = `${LEGAL.operator} · ${LEGAL.street}, ${LEGAL.city}, ${LEGAL.state} ${LEGAL.postalCode}, ${LEGAL.country}`;
+  return `
+    <a href="${esc(sailoHref())}" style="${FOOTER_LINK}">Sailo</a><br />
+    <span style="display:inline-block;margin-top:8px;">${esc(postal)}</span><br />
+    <span style="display:inline-block;margin-top:8px;">
+      You're getting this because you opened a Sailo account.
+      <a href="${esc(unsubscribeUrl)}" style="${FOOTER_LINK}">Unsubscribe from tips</a> —
+      order, billing and account emails are separate and keep arriving.
+    </span>`;
+}
+
+/**
  * The shell for mail Sailo sends as itself — the mark and wordmark where a
  * shop's identity would sit, because no shop is involved. `layout` is the
  * other one: a shop talking to its buyer.
+ *
+ * `unsubscribeUrl` is what separates the two kinds of mail Sailo sends under
+ * its own name. A password reset must not offer to unsubscribe from password
+ * resets, so the line only appears when a caller passes a link — and the
+ * marketing senders are the only callers that do, because the send pass
+ * refuses to run at all without a signing secret to build one from.
  */
 export function sailoLayout(
   heading: string,
   body: string,
-  opts: { preheader?: string } = {},
+  opts: { preheader?: string; unsubscribeUrl?: string } = {},
 ) {
   return shell({
     preheader: opts.preheader,
@@ -226,7 +263,9 @@ export function sailoLayout(
     header: sailoHeader(),
     heading,
     body,
-    footer: `<a href="${esc(sailoHref())}" style="${FOOTER_LINK}">Sailo</a>`,
+    footer: opts.unsubscribeUrl
+      ? marketingFooter(opts.unsubscribeUrl)
+      : `<a href="${esc(sailoHref())}" style="${FOOTER_LINK}">Sailo</a>`,
   });
 }
 

@@ -2,13 +2,23 @@ import "server-only";
 import { asc, desc, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { orders, productImages, products, productVariants } from "@/db/schema";
-import { getShopClients, getInvoiceMap, getOrderItemsMap } from "@/lib/queries";
+import {
+  getShopAttendees,
+  getShopClients,
+  getInvoiceMap,
+  getOrderItemsMap,
+} from "@/lib/queries";
 import { bool, date, money, toCsv } from "@/lib/csv";
 import { tagsToCsv } from "@/lib/client-tags";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatPercent } from "@/lib/pricing";
 
-export const EXPORT_TYPES = ["products", "orders", "clients"] as const;
+export const EXPORT_TYPES = [
+  "products",
+  "orders",
+  "clients",
+  "attendees",
+] as const;
 export type ExportType = (typeof EXPORT_TYPES)[number];
 
 export function isExportType(value: string): value is ExportType {
@@ -305,6 +315,61 @@ export async function exportClients(shopId: string, currency: string) {
 }
 
 /**
+ * The door list, printable.
+ *
+ * This is the file every organiser actually wants and the one nothing here
+ * produced: a paper list is what a door falls back to when the venue wifi
+ * dies, and it is what an event gets reconciled against the next morning.
+ * The columns are also the import's columns, so a list exported from one
+ * event can be fed straight back in as the guest list for the next one.
+ */
+export const ATTENDEE_HEADERS = [
+  "Event",
+  "Event Starts At",
+  "Attendee Name",
+  "Attendee Email",
+  "Tier",
+  "Ticket Code",
+  "Status",
+  "Checked In At",
+  "Checked In By",
+  "Source",
+  "Note",
+  "Buyer",
+  "Buyer Email",
+  "Order",
+];
+
+export async function exportAttendees(shopId: string) {
+  const rows = await getShopAttendees(shopId);
+
+  return toCsv(
+    ATTENDEE_HEADERS,
+    rows.map((row) => [
+      row.eventTitle ?? "",
+      date(row.eventStartsAt),
+      // The attendee's own name when the guest list gave one, otherwise
+      // whoever paid — the same fallback the door screen reads by, so the
+      // paper list and the phone agree about what a person is called.
+      row.attendeeName ?? row.buyerName ?? "",
+      row.attendeeEmail ?? row.buyerEmail ?? "",
+      row.tier ?? "",
+      row.code,
+      row.status,
+      date(row.usedAt),
+      row.checkedInBy ?? "",
+      row.source,
+      row.note ?? "",
+      row.buyerName ?? "",
+      row.buyerEmail ?? "",
+      // Short form: the full uuid is unreadable on paper and the seller only
+      // ever needs enough of it to find the order in their own list.
+      row.orderId ? row.orderId.slice(0, 8) : "",
+    ]),
+  );
+}
+
+/**
  * `currency` is the shop's, and it is threaded rather than looked up here so
  * every exporter states which currency its numbers are in. An order carries
  * its own — the shop may have changed currency since — so `exportOrders`
@@ -327,6 +392,11 @@ export async function runExport(
       return {
         filename: "sailo-customers.csv",
         body: await exportClients(shopId, currency),
+      };
+    case "attendees":
+      return {
+        filename: "sailo-attendees.csv",
+        body: await exportAttendees(shopId),
       };
   }
 }

@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   check,
   index,
   integer,
@@ -9,26 +10,183 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
+import { user } from "./auth";
 import { shops } from "./shop";
 
 /**
- * Creators bringing other creators to Sailo, and what we owe them for it.
+ * The partner programme: people who bring Sailo creators, and what we owe them.
  *
  * Deliberately not in `commerce.ts` beside `affiliates`. That table is a
- * seller paying someone to sell *their products*; this is Sailo paying a
- * seller for bringing us *another seller*. The two are one word apart in
- * English and nothing alike in the money they move — the affiliate ledger
- * lives on a shop's own orders, and this one lives on our subscription
- * invoices. Keeping them in separate files is the cheapest way to stop the
- * next person reaching for the wrong one.
+ * seller paying someone to sell *their products*; this is Sailo paying someone
+ * for bringing us *another seller*. The two are one word apart in English and
+ * nothing alike in the money they move — the affiliate ledger lives on a
+ * shop's own orders, and this one lives on our subscription invoices. Keeping
+ * them in separate files is the cheapest way to stop the next person reaching
+ * for the wrong one.
+ *
+ * A partner is its own identity rather than a column on `shops`, because the
+ * people who actually drive referral volume — newsletter writers, YouTubers,
+ * agencies — are frequently not sellers themselves and never will be. A seller
+ * who becomes a partner gets a row here linked back to their user; a stranger
+ * with an audience gets one that isn't.
  */
 
+/* -------------------------------------------------------------------------- */
+/*  The partner                                                                */
+/* -------------------------------------------------------------------------- */
+
 /**
- * One creator brought in by another. First touch, and permanent.
+ * One person or company in the programme, at whatever stage they've reached.
+ *
+ * `status` is the whole lifecycle: `pending` while a human decides,
+ * `approved` once they can earn, `rejected` if we said no, `suspended` if we
+ * stopped them after saying yes. Only `approved` earns — enforced in
+ * `attributeReferral` and again at payout, because a suspended partner whose
+ * old links keep paying out is the failure this column exists to prevent.
+ */
+export const partners = pgTable(
+  "partners",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    /**
+     * The account they sign in with. Required — the portal is behind a real
+     * session rather than a bearer token in a URL, because unlike a seller's
+     * affiliate portal this one can move money by changing where it goes.
+     */
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+
+    /**
+     * Their shop, when they have one. Nullable and *not* the identity: a
+     * partner who later opens a shop keeps the same partner row, the same
+     * code and the same ledger.
+     */
+    shopId: uuid("shop_id").references(() => shops.id, { onDelete: "set null" }),
+
+    /** pending | approved | rejected | suspended */
+    status: text("status").default("pending").notNull(),
+
+    /** Display name for the partner, as they gave it. */
+    name: text("name").notNull(),
+    /** Where they'll be promoting us — the thing review actually reads. */
+    website: text("website"),
+    audience: text("audience"),
+    /** Their own words on why they're a fit. */
+    pitch: text("pitch"),
+
+    /**
+     * The code in their links. Minted at approval, not at application, so a
+     * rejected applicant never holds a live code.
+     *
+     * Public by design — it appears in every link they post — so nothing may
+     * be derived from it and nothing may be read with it.
+     */
+    code: text("code"),
+
+    /**
+     * Their rate in basis points, when it differs from the programme default.
+     *
+     * Null means "whatever the programme says today", which is the case for
+     * almost everyone. A number here is a negotiated deal and it *overrides*
+     * the default permanently — that is the point, and it is why the rate
+     * actually used is copied onto every earning row rather than re-derived.
+     */
+    commissionBp: integer("commission_bp"),
+
+    /* ---- Stripe Connect, transfers only ---------------------------------- */
+
+    /**
+     * A `recipient` connected account: it can receive transfers and pay them
+     * out to a bank, and it cannot process a payment. That is exactly what an
+     * affiliate is, and it is why partners onboard through
+     * `lib/partners/connect.ts` rather than the seller flow in `lib/connect.ts`
+     * — the seller flow requests `card_payments` and puts them under the full
+     * service agreement, which asks a newsletter writer for a great deal of
+     * merchant information they have no reason to give.
+     */
+    stripeAccountId: text("stripe_account_id"),
+    /** Mirrored from Stripe: the `transfers` capability is active. */
+    stripeTransfersEnabled: boolean("stripe_transfers_enabled")
+      .default(false)
+      .notNull(),
+    /** Mirrored from Stripe: they finished the onboarding form. */
+    stripeDetailsSubmitted: boolean("stripe_details_submitted")
+      .default(false)
+      .notNull(),
+    /** Drives the cross-border rules in `canReceiveTransfer`. */
+    stripeAccountCountry: text("stripe_account_country"),
+    stripeConnectedAt: timestamp("stripe_connected_at"),
+
+    /* ---- Review trail ---------------------------------------------------- */
+
+    appliedAt: timestamp("applied_at").defaultNow().notNull(),
+    reviewedAt: timestamp("reviewed_at"),
+    /** The staff email, not a user id — it stays readable forever. */
+    reviewedBy: text("reviewed_by"),
+    /** Shown to the applicant on rejection; internal `notes` are not. */
+    reviewNote: text("review_note"),
+    /** HQ's private scratchpad on this partner. */
+    notes: text("notes"),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    /*
+     * One partner per account. The application form is a public, logged-in
+     * POST and "apply twice quickly" is the ordinary double-submit, so the
+     * refusal belongs here rather than in a read-then-write two requests can
+     * both pass.
+     */
+    uniqueIndex("partners_user_key").on(t.userId),
+    /*
+     * Unique, and the lookup `/r/<code>` runs on every click of every partner
+     * link anyone has ever posted. Postgres treats NULLs as distinct, so
+     * every applicant still awaiting a decision coexists under it without a
+     * partial-index clause.
+     */
+    uniqueIndex("partners_code_key").on(t.code),
+    index("partners_status_idx").on(t.status),
+    index("partners_shop_idx").on(t.shopId),
+    /*
+     * An approved partner must have a code — approval that left someone with
+     * nothing to share would be a dead end they could only discover by asking.
+     *
+     * Deliberately one-directional. The converse ("only approved partners hold
+     * a code") would force suspension to null the column, and a partner who
+     * was suspended for a fortnight and then reinstated would come back with a
+     * different code than the one already printed in their newsletter. A
+     * suspended partner keeps their code and stops earning by `canEarn`, which
+     * both `attributeReferral` and `recordReferralEarning` consult.
+     */
+    check(
+      "partners_approved_has_code",
+      sql`${t.status} <> 'approved' or ${t.code} is not null`,
+    ),
+    /*
+     * A negotiated rate is still a rate. 0 is meaningful (a partner kept on
+     * the books but earning nothing); above 100% would mean paying out more
+     * than the invoice brought in, which is never a deal, only a typo.
+     */
+    check(
+      "partners_commission_bp_range",
+      sql`${t.commissionBp} is null or (${t.commissionBp} >= 0 and ${t.commissionBp} <= 10000)`,
+    ),
+  ],
+);
+
+/* -------------------------------------------------------------------------- */
+/*  Attribution                                                                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * One creator brought in by a partner. First touch, and permanent.
  *
  * `referredShopId` is unique, which is the whole attribution policy expressed
  * as a constraint rather than as a rule someone has to remember: a shop has
- * at most one referrer, ever, and the second link to reach the same signup
+ * at most one partner, ever, and the second link to reach the same signup
  * loses. Doing it in the index rather than in a read-then-write also means
  * two links arriving at once cannot both win.
  */
@@ -37,17 +195,17 @@ export const creatorReferrals = pgTable(
   {
     id: uuid("id").defaultRandom().primaryKey(),
 
-    referrerShopId: uuid("referrer_shop_id")
+    partnerId: uuid("partner_id")
       .notNull()
-      .references(() => shops.id, { onDelete: "cascade" }),
+      .references(() => partners.id, { onDelete: "cascade" }),
     referredShopId: uuid("referred_shop_id")
       .notNull()
       .references(() => shops.id, { onDelete: "cascade" }),
 
     /**
-     * The code exactly as it was used, kept even though `referrerShopId`
-     * already identifies who earned it. A referrer can rotate their code; the
-     * question "which link produced this signup" then has no other answer.
+     * The code exactly as it was used, kept even though `partnerId` already
+     * identifies who earned it. A partner can rotate their code; the question
+     * "which link produced this signup" then has no other answer.
      */
     code: text("code").notNull(),
 
@@ -57,33 +215,24 @@ export const creatorReferrals = pgTable(
   },
   (t) => [
     uniqueIndex("creator_referrals_referred_key").on(t.referredShopId),
-    index("creator_referrals_referrer_idx").on(t.referrerShopId),
-    /*
-     * Self-referral, refused by the database.
-     *
-     * The application refuses it too — `attributeReferral` checks the owner's
-     * email before it writes — but a referral programme is a thing people
-     * attack, and the application check is one code path that a future
-     * refactor can route around. This one cannot be routed around, and it
-     * costs nothing.
-     */
-    check(
-      "creator_referrals_not_self",
-      sql`${t.referrerShopId} <> ${t.referredShopId}`,
-    ),
+    index("creator_referrals_partner_idx").on(t.partnerId),
   ],
 );
 
+/* -------------------------------------------------------------------------- */
+/*  The money                                                                  */
+/* -------------------------------------------------------------------------- */
+
 /**
- * The money, append-only.
+ * The ledger, append-only.
  *
  * Every row is one Stripe invoice's worth of commission: a positive
  * `earning` when the referred creator pays us, a negative `reversal` when
  * that payment is refunded. Nothing is ever updated in place except
- * `paidOutAt`, which is a stamp rather than an amount — the same shape
- * `orders.commissionPaid` uses, and for the same reason: a balance you can
- * recompute from rows is a balance you can audit, and one you overwrite is a
- * number you have to trust.
+ * `paidOutAt` and `payoutId`, which are stamps rather than amounts — the same
+ * shape `orders.commissionPaid` uses, and for the same reason: a balance you
+ * can recompute from rows is a balance you can audit, and one you overwrite is
+ * a number you have to trust.
  */
 export const referralEarnings = pgTable(
   "referral_earnings",
@@ -103,9 +252,33 @@ export const referralEarnings = pgTable(
     /** The invoice's currency, not the shop's — this is Sailo paying, not them. */
     currency: text("currency").notNull(),
 
+    /**
+     * The rate this row was computed at, copied rather than referenced.
+     *
+     * The programme default can change and a partner can be moved onto a
+     * negotiated rate; neither may retroactively restate what we owed for an
+     * invoice paid last March. Recording it also makes the ledger checkable —
+     * amount ÷ rate should reproduce the invoice.
+     */
+    commissionBp: integer("commission_bp").notNull(),
+
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    /** Stamped when a human in /hq sends the money. */
+
+    /**
+     * When the money became eligible to send.
+     *
+     * Later than `createdAt` by the programme's hold period, so a refund that
+     * lands in the first fortnight reverses against a balance we still hold
+     * rather than against money already gone. Stored rather than computed at
+     * read time because the hold period is a setting, and a row must keep the
+     * terms it was written under.
+     */
+    matureAt: timestamp("mature_at").defaultNow().notNull(),
+
+    /** Stamped when the transfer for this row actually settled. */
     paidOutAt: timestamp("paid_out_at"),
+    /** The payout that settled it — null until then. */
+    payoutId: uuid("payout_id"),
   },
   (t) => [
     /*
@@ -126,7 +299,151 @@ export const referralEarnings = pgTable(
       t.kind,
     ),
     index("referral_earnings_referral_idx").on(t.referralId),
-    // "Who are we still short with" — the only query /hq runs on this table.
-    index("referral_earnings_unpaid_idx").on(t.paidOutAt),
+    // "Who are we still short with, and is it out of hold yet" — the only
+    // question the payout run asks of this table.
+    index("referral_earnings_unpaid_idx").on(t.paidOutAt, t.matureAt),
+    index("referral_earnings_payout_idx").on(t.payoutId),
+  ],
+);
+
+/* -------------------------------------------------------------------------- */
+/*  Payouts                                                                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * One attempt to send a partner their balance.
+ *
+ * Written `pending` *before* Stripe is called and only then stamped, which is
+ * what makes a crashed payout run recoverable: a row stuck in `pending` names
+ * an attempt whose outcome we do not know, and `reconcilePendingPayouts` asks
+ * Stripe rather than guessing. Creating the row afterwards would lose exactly
+ * the cases worth keeping.
+ *
+ * A `failed` row is kept, not deleted. "We tried on the 1st and Stripe said
+ * the balance was short" is the answer to a support question that otherwise
+ * has none.
+ */
+export const partnerPayouts = pgTable(
+  "partner_payouts",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    partnerId: uuid("partner_id")
+      .notNull()
+      .references(() => partners.id, { onDelete: "cascade" }),
+
+    /** Minor units, always positive — we never "pay" a negative balance. */
+    amountCents: integer("amount_cents").notNull(),
+    currency: text("currency").notNull(),
+
+    /** pending | paid | failed */
+    status: text("status").default("pending").notNull(),
+
+    /** The Stripe transfer, once there is one. */
+    stripeTransferId: text("stripe_transfer_id"),
+    /**
+     * The key we sent Stripe, generated before the call and stored with the
+     * attempt. A retry reuses it, so a payout that timed out after Stripe had
+     * already accepted it cannot become two transfers.
+     */
+    idempotencyKey: text("idempotency_key").notNull(),
+
+    /** Stripe's message when it refused, kept verbatim for support. */
+    failureReason: text("failure_reason"),
+
+    /** auto | manual — a cron run or a human in /hq. */
+    initiatedBy: text("initiated_by").default("auto").notNull(),
+    /** The staff email when `initiatedBy` is manual. */
+    initiatedByEmail: text("initiated_by_email"),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    paidAt: timestamp("paid_at"),
+  },
+  (t) => [
+    uniqueIndex("partner_payouts_idempotency_key").on(t.idempotencyKey),
+    index("partner_payouts_partner_idx").on(t.partnerId),
+    index("partner_payouts_status_idx").on(t.status),
+    uniqueIndex("partner_payouts_transfer_key").on(t.stripeTransferId),
+    check("partner_payouts_amount_positive", sql`${t.amountCents} > 0`),
+  ],
+);
+
+/* -------------------------------------------------------------------------- */
+/*  Programme settings                                                         */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The terms of the programme, as one editable row.
+ *
+ * A single row, pinned by the `singleton` check — settings that can exist
+ * twice are settings that disagree. Everything here is something HQ can change
+ * without a deploy, and `lib/partners/settings.ts` is the only reader; the
+ * defaults it falls back to when the row is missing are the same numbers, so
+ * a fresh database behaves like a configured one.
+ *
+ * The rate lives here rather than in code because it is a commercial term
+ * someone will want to move for a campaign. What does *not* live here is the
+ * rate any given earning was paid at — see `referralEarnings.commissionBp`.
+ */
+export const partnerProgramSettings = pgTable(
+  "partner_program_settings",
+  {
+    id: integer("id").default(1).primaryKey(),
+
+    /** Whether the application form accepts anything at all. */
+    acceptingApplications: boolean("accepting_applications")
+      .default(true)
+      .notNull(),
+    /**
+     * Approve applicants who already run a paying shop, without review.
+     *
+     * They are a known, billed customer with a verified email; making them
+     * wait days for a link is friction with no fraud story behind it. Cold
+     * applicants still queue.
+     */
+    autoApproveSellers: boolean("auto_approve_sellers").default(true).notNull(),
+
+    /** The default share, in basis points. 3000 = 30%. */
+    commissionBp: integer("commission_bp").default(3000).notNull(),
+
+    /** Smallest balance we'll send, in minor units. */
+    payoutMinimumCents: integer("payout_minimum_cents").default(2500).notNull(),
+
+    /** How long a click stays attributable. */
+    cookieDays: integer("cookie_days").default(90).notNull(),
+
+    /**
+     * Days an earning sits before it can be paid.
+     *
+     * Covers the window in which the referred creator can be refunded: pay on
+     * day one and a day-nine refund claws back money that is already in
+     * someone else's bank.
+     */
+    holdDays: integer("hold_days").default(30).notNull(),
+
+    /** Whether the cron actually sends, or only computes what it would send. */
+    autoPayout: boolean("auto_payout").default(true).notNull(),
+    /** Day of the month the payout run fires, 1–28. */
+    payoutDayOfMonth: integer("payout_day_of_month").default(1).notNull(),
+
+    /** The programme terms, shown on the landing page and the portal. */
+    terms: text("terms"),
+
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    updatedBy: text("updated_by"),
+  },
+  (t) => [
+    check("partner_program_settings_singleton", sql`${t.id} = 1`),
+    check(
+      "partner_program_settings_commission_bp_range",
+      sql`${t.commissionBp} >= 0 and ${t.commissionBp} <= 10000`,
+    ),
+    check(
+      "partner_program_settings_payout_day_range",
+      sql`${t.payoutDayOfMonth} >= 1 and ${t.payoutDayOfMonth} <= 28`,
+    ),
+    check(
+      "partner_program_settings_non_negative",
+      sql`${t.payoutMinimumCents} >= 0 and ${t.cookieDays} >= 0 and ${t.holdDays} >= 0`,
+    ),
   ],
 );

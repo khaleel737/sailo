@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useVariantPhoto } from "./variant-photo";
 import type { ProductImage } from "@/db/schema";
 
 /**
@@ -31,6 +32,27 @@ export function ProductGallery({
 }) {
   const [active, setActive] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
+  const variantPhoto = useVariantPhoto()?.url ?? null;
+
+  /*
+   * The photos, plus the chosen combination's own when it isn't already one of
+   * them. A variant photo is uploaded separately from the product's gallery,
+   * so it usually isn't — and dropping it because it wasn't on the list would
+   * mean picking "Charcoal" changed the price and left the natural one on
+   * screen. When the seller did put it in the gallery, it is shown from where
+   * it already is rather than added twice.
+   */
+  const slides = useMemo(() => {
+    const gallery = images.map((image) => ({
+      key: image.id,
+      url: image.url,
+      alt: image.alt,
+    }));
+    if (!variantPhoto || gallery.some((s) => s.url === variantPhoto)) {
+      return gallery;
+    }
+    return [{ key: `variant:${variantPhoto}`, url: variantPhoto, alt: null }, ...gallery];
+  }, [images, variantPhoto]);
 
   /*
    * Which photo is on screen, answered by the browser rather than by
@@ -41,23 +63,41 @@ export function ProductGallery({
    */
   useEffect(() => {
     const track = trackRef.current;
-    if (!track || images.length < 2) return;
+    if (!track || slides.length < 2) return;
 
-    const slides = Array.from(track.children) as HTMLElement[];
+    const frames = Array.from(track.children) as HTMLElement[];
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
-          const index = slides.indexOf(entry.target as HTMLElement);
+          const index = frames.indexOf(entry.target as HTMLElement);
           if (index >= 0) setActive(index);
         }
       },
       { root: track, threshold: 0.6 },
     );
 
-    for (const slide of slides) observer.observe(slide);
+    for (const frame of frames) observer.observe(frame);
     return () => observer.disconnect();
-  }, [images.length]);
+  }, [slides.length]);
+
+  /*
+   * Bring the chosen combination's photo into view when it changes.
+   *
+   * Scrolled to rather than swapped in place, so the buyer keeps the rest of
+   * the gallery and can swipe back through it. Runs on the URL rather than on
+   * the slide list so that re-picking the same photo doesn't yank the track
+   * back while somebody is mid-swipe through the other pictures.
+   */
+  useEffect(() => {
+    if (!variantPhoto) return;
+    const index = slides.findIndex((s) => s.url === variantPhoto);
+    if (index < 0) return;
+    const frame = trackRef.current?.children[index];
+    frame?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    setActive(index);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [variantPhoto]);
 
   if (images.length === 0) {
     return (
@@ -88,14 +128,14 @@ export function ProductGallery({
         ref={trackRef}
         className="no-scrollbar flex w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-2xl bg-black/5"
       >
-        {images.map((image, i) => (
+        {slides.map((slide, i) => (
           <div
-            key={image.id}
+            key={slide.key}
             className="relative aspect-square w-full shrink-0 snap-center"
           >
             <Image
-              src={image.url}
-              alt={image.alt ?? title}
+              src={slide.url}
+              alt={slide.alt ?? title}
               fill
               sizes="(max-width: 680px) 100vw, 640px"
               className="object-cover"
@@ -107,11 +147,11 @@ export function ProductGallery({
         ))}
       </div>
 
-      {images.length > 1 ? (
+      {slides.length > 1 ? (
         <div className="no-scrollbar flex gap-2 overflow-x-auto">
-          {images.map((image, i) => (
+          {slides.map((slide, i) => (
             <button
-              key={image.id}
+              key={slide.key}
               type="button"
               onClick={() => show(i)}
               /*
@@ -121,7 +161,7 @@ export function ProductGallery({
                 thirty-five languages, for the one visitor least likely to
                 read it.
               */
-              aria-label={image.alt ?? title}
+              aria-label={slide.alt ?? title}
               aria-current={i === active}
               className={cn(
                 "relative size-16 shrink-0 overflow-hidden rounded-lg bg-black/5 transition",
@@ -129,7 +169,7 @@ export function ProductGallery({
               )}
             >
               <Image
-                src={image.url}
+                src={slide.url}
                 alt=""
                 fill
                 sizes="64px"

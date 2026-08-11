@@ -225,6 +225,8 @@ export const adminMs: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Seseorang meminta temu janji dan sedang menunggu anda mengesahkan waktunya.",
     notifyOrderNeedsAction: "Pembayaran untuk disahkan",
     notifyOrderNeedsActionBody: "Pembeli berkata dia telah membuat pindahan bank, jadi wangnya perlu disemak.",
+    notifyProductTips: "Tip & berita produk",
+    notifyProductTipsBody: "E-mel sesekali daripada Sailo tentang persediaan dan cara menjual lebih banyak. Tidak pernah tentang pesanan anda.",
     taxIdPlaceholder: "C1234567890",
     identity: "Identiti",
     appearance: "Rupa",

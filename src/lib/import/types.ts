@@ -6,7 +6,7 @@
  * decides whether to commit based on what the first one said.
  */
 
-export const IMPORT_TYPES = ["products", "clients"] as const;
+export const IMPORT_TYPES = ["products", "clients", "tickets"] as const;
 
 export type ImportType = (typeof IMPORT_TYPES)[number];
 

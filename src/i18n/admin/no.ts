@@ -417,6 +417,8 @@ export const adminNo: PartialAdminDictionary = {
     notifyOrderNeedsAction: "Betalinger som må bekreftes",
     notifyOrderNeedsActionBody:
       "En kjøper sier at pengene er overført, så beløpet må sjekkes.",
+    notifyProductTips: "Tips og produktnyheter",
+    notifyProductTipsBody: "En og annen e-post fra Sailo om oppsett og hvordan du selger mer. Aldri om bestillingene dine.",
     taxIdPlaceholder: "NO123456789MVA",
     identity: "Identitet",
     appearance: "Utseende",

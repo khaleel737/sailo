@@ -10,3 +10,4 @@ export * from "./types";
 export * from "./parse";
 export * from "./products";
 export * from "./clients";
+export * from "./tickets";

@@ -414,6 +414,8 @@ export const adminZh: PartialAdminDictionary = {
     notifyBookingRequestedBody: "有人申请预约，正等你确认时间。",
     notifyOrderNeedsAction: "待确认的付款",
     notifyOrderNeedsActionBody: "买家称已经转账，这笔钱需要你核对。",
+    notifyProductTips: "使用技巧与产品动态",
+    notifyProductTipsBody: "Sailo 偶尔发送的邮件，内容关于如何设置店铺和卖得更多，绝不涉及你的订单。",
     taxIdPlaceholder: "91310000MA1K12345X",
     identity: "身份信息",
     appearance: "外观",

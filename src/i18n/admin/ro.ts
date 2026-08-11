@@ -417,6 +417,8 @@ export const adminRo: PartialAdminDictionary = {
     notifyOrderNeedsAction: "Plăți de confirmat",
     notifyOrderNeedsActionBody:
       "Un cumpărător spune că a făcut transferul bancar, deci banii trebuie verificați.",
+    notifyProductTips: "Sfaturi și noutăți",
+    notifyProductTipsBody: "E-mailuri ocazionale de la Sailo despre configurare și cum să vinzi mai mult. Niciodată despre comenzile tale.",
     taxIdPlaceholder: "RO12345678",
     identity: "Identitate",
     appearance: "Aspect",

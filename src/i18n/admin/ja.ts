@@ -415,6 +415,8 @@ export const adminJa: PartialAdminDictionary = {
     notifyBookingRequestedBody: "予約の申し込みがあり、日時の確定を待っています。",
     notifyOrderNeedsAction: "確認が必要な入金",
     notifyOrderNeedsActionBody: "購入者が銀行振込をしたと申告したので、入金の確認が必要です。",
+    notifyProductTips: "ヒントと製品のお知らせ",
+    notifyProductTipsBody: "設定や売上を伸ばすコツについて、Sailo からときどき届くメール。注文に関する内容は含みません。",
     taxIdPlaceholder: "T1234567890123",
     identity: "基本情報",
     appearance: "外観",

@@ -225,6 +225,8 @@ export const adminSl: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Nekdo je zaprosil za termin in čaka, da potrdite uro.",
     notifyOrderNeedsAction: "Plačila za potrditev",
     notifyOrderNeedsActionBody: "Kupec pravi, da je poslal bančno nakazilo, zato je treba denar preveriti.",
+    notifyProductTips: "Nasveti in novice o izdelku",
+    notifyProductTipsBody: "Občasno e-sporočilo od Sailo o nastavitvah in večji prodaji. Nikoli o vaših naročilih.",
     taxIdPlaceholder: "SI12345678",
     identity: "Identiteta",
     appearance: "Videz",

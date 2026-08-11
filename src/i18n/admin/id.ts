@@ -227,6 +227,8 @@ export const adminId: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Ada yang meminta janji temu dan menunggu kamu mengonfirmasi waktunya.",
     notifyOrderNeedsAction: "Pembayaran yang perlu dicek",
     notifyOrderNeedsActionBody: "Pembeli mengaku sudah mentransfer, jadi uangnya perlu diperiksa.",
+    notifyProductTips: "Tips & kabar produk",
+    notifyProductTipsBody: "Email sesekali dari Sailo tentang persiapan dan cara menjual lebih banyak. Tidak pernah tentang pesananmu.",
     taxIdPlaceholder: "01.234.567.8-901.000",
     identity: "Identitas",
     appearance: "Tampilan",

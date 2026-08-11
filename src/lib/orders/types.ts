@@ -138,6 +138,9 @@ export type OrderPreview = {
   needsDelivery: boolean;
   needsAddress: boolean;
   hasService: boolean;
+  /** Whether a pay-in-person rail (cash on delivery) may be offered. False
+   * only when the basket holds an instant download, which unlocks on order. */
+  canPayInPerson: boolean;
   couponError?: string;
   couponApplied?: string;
 };

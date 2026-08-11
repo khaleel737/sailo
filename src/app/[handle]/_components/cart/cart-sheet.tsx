@@ -10,7 +10,7 @@ import {
 import { useCart } from "./cart-provider";
 import { SlotPicker } from "./slot-picker";
 import { lineKey, toOrderItems, type CartLine } from "@/lib/cart";
-import { isLowStock } from "@/lib/variants";
+import { isLowStock, needsDelivery } from "@/lib/variants";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import { formatMoney } from "@/lib/utils";
@@ -55,6 +55,9 @@ export function CartSheet({
       items={items}
       methods={methods}
       deliveryOptions={deliveryOptions}
+      // One physical line makes the whole basket travel, which is the same
+      // rule the server applies to it.
+      needsDeliveryHint={cart.lines.some((line) => needsDelivery(line.kind))}
       contactEmail={contactEmail}
       compliance={compliance}
       title={t.cart.title}

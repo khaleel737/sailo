@@ -343,5 +343,9 @@ export const ms: Dictionary = {
     doneBody: "{shop} tidak akan menghantar e-mel pemasaran lagi. Pengesahan pesanan masih akan tiba.",
     invalidTitle: "Pautan ini sudah tidak sah",
     invalidBody: "Balas mana-mana e-mel daripada kedai dan minta mereka mengeluarkan anda.",
+    sailoTitle: "Hentikan e-mel pemasaran daripada Sailo?",
+    sailoBody: "{email} tidak akan lagi menerima tip dan berita produk daripada Sailo. E-mel pesanan, bil dan akaun tetap sampai seperti biasa.",
+    sailoDoneBody: "Sailo tidak akan menghantar tip atau berita produk kepada anda lagi. E-mel pesanan, bil dan akaun tetap sampai seperti biasa.",
+    sailoInvalidBody: "E-mel kami di support@sailo.store dan kami akan keluarkan anda daripada senarai.",
   },
 };

@@ -414,6 +414,8 @@ export const adminUk: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Хтось попросив зустріч і чекає, поки ви підтвердите час.",
     notifyOrderNeedsAction: "Оплати на підтвердження",
     notifyOrderNeedsActionBody: "Покупець каже, що зробив банківський переказ, тож гроші треба перевірити.",
+    notifyProductTips: "Поради та новини продукту",
+    notifyProductTipsBody: "Нечасті листи від Sailo про налаштування й про те, як продавати більше. Ніколи про ваші замовлення.",
     taxIdPlaceholder: "1234567890",
     identity: "Профіль",
     appearance: "Оформлення",

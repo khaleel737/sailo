@@ -10,7 +10,7 @@ import { freePlanFields, subscriptionFields } from "@/lib/billing-map";
 import {
   recordReferralEarning,
   reverseReferralEarning,
-} from "@/lib/creator-referrals/store";
+} from "@/lib/partners/store";
 import { shopIdFor } from "./ownership";
 
 /**

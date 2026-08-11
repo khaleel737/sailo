@@ -227,6 +227,8 @@ export const adminFil: PartialAdminDictionary = {
     notifyBookingRequestedBody: "May humiling ng appointment at naghihintay na kumpirmahin mo ang oras.",
     notifyOrderNeedsAction: "Mga bayad na kailangang kumpirmahin",
     notifyOrderNeedsActionBody: "May bumibiling nagsasabing nagpadala siya ng bank transfer, kaya kailangang tingnan ang pera.",
+    notifyProductTips: "Mga tip at balita sa produkto",
+    notifyProductTipsBody: "Paminsan-minsang email mula sa Sailo tungkol sa pag-setup at pagbebenta nang mas marami. Hindi kailanman tungkol sa iyong mga order.",
     taxIdPlaceholder: "123-456-789-000",
     identity: "Pagkakakilanlan",
     appearance: "Itsura",

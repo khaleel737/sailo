@@ -413,6 +413,8 @@ export const adminCs: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Někdo si řekl o termín a čeká, až čas potvrdíte.",
     notifyOrderNeedsAction: "Platby k potvrzení",
     notifyOrderNeedsActionBody: "Zákazník tvrdí, že poslal bankovní převod, takže je potřeba peníze zkontrolovat.",
+    notifyProductTips: "Tipy a novinky o produktu",
+    notifyProductTipsBody: "Občasný e-mail od Sailo o nastavení a o tom, jak prodávat víc. Nikdy o vašich objednávkách.",
     taxIdPlaceholder: "CZ12345678",
     identity: "Identita",
     appearance: "Vzhled",

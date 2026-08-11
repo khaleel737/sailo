@@ -13,6 +13,7 @@ import {
   type PaymentMethodType,
 } from "@/lib/payments";
 import { cartNeedsDelivery, cartSubtotal, quote, type Quote } from "@/lib/quote";
+import { releasesBeforePayment } from "@/lib/variants";
 import { readBuyer } from "@/lib/orders/buyer";
 import { commissionBpFor } from "@/lib/orders/commission";
 import { resolveCoupon } from "@/lib/orders/resolve-coupon";
@@ -118,6 +119,13 @@ export async function resolveOrderIntent(
    * network timing.
    */
   const subtotalCents = cartSubtotal(lines);
+  // Decides the delivery rate below: only a physical good is shipped.
+  const delivered = cartNeedsDelivery(lines);
+  // Decides whether a pay-in-person rail may be used. It may, unless something
+  // in the basket hands itself over before payment — an instant download.
+  const canPayInPerson = !lines.some((line) =>
+    releasesBeforePayment(line.product.kind, line.product.releaseOnPayment),
+  );
   const affiliatesLive = shop.affiliatesEnabled && can(shop, "affiliates");
   const wantsAffiliate = affiliatesLive && Boolean(input.affiliateCode?.trim());
 
@@ -131,7 +139,7 @@ export async function resolveOrderIntent(
     }),
     // One fee for the order, and only when something in it has to travel: a
     // basket of downloads and appointments is never shipped.
-    resolveDelivery(shop.id, cartNeedsDelivery(lines), input.deliveryMethodId),
+    resolveDelivery(shop.id, delivered, input.deliveryMethodId),
     resolveCoupon({ shopId: shop.id, code: input.couponCode, subtotalCents, now }),
     wantsAffiliate
       ? db.query.affiliates.findFirst({
@@ -154,6 +162,20 @@ export async function resolveOrderIntent(
   }
 
   const def = PAYMENT_METHOD_DEFS[input.paymentMethod];
+
+  /*
+   * A pay-in-person rail needs a moment to collect the cash.
+   *
+   * The panel stops offering cash on delivery when the basket has nothing the
+   * seller hands over in person — that is a decision made in a browser, and
+   * this is the same one made where it counts. Physical goods, event tickets,
+   * booked services and files held until paid all keep it; an instant download
+   * is the only thing that does not, because it unlocks on order, so "pay when
+   * we meet" would leave the seller an unpaid order for a file already gone.
+   */
+  if (def.payInPerson && !canPayInPerson) {
+    return { ok: false, error: "That option isn't available right now." };
+  }
 
   if (delivery === "unavailable") {
     return { ok: false, error: "Pick how you'd like to receive it." };

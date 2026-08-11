@@ -1,9 +1,22 @@
 import type { shops } from "./shop";
 import type { categories, productFiles, productImages, productVariants, products, reviews } from "./catalog";
 import type { affiliates, coupons, deliveryMethods, paymentMethods } from "./commerce";
-import type { clients, invoices, orderItems, orders, tickets } from "./orders";
+import type {
+  clients,
+  doorPasses,
+  invoices,
+  orderItems,
+  orders,
+  tickets,
+} from "./orders";
 import type { broadcasts } from "./audience";
 import type { staffActions, visitDaily, visits } from "./analytics";
+import type {
+  creatorReferrals,
+  partnerPayouts,
+  partners,
+  referralEarnings,
+} from "./growth";
 import type { supportTickets } from "./support";
 import type { user } from "./auth";
 
@@ -19,6 +32,7 @@ export type Review = typeof reviews.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
 export type Ticket = typeof tickets.$inferSelect;
+export type DoorPass = typeof doorPasses.$inferSelect;
 export type Broadcast = typeof broadcasts.$inferSelect;
 export type Visit = typeof visits.$inferSelect;
 export type VisitDaily = typeof visitDaily.$inferSelect;
@@ -31,3 +45,7 @@ export type Invoice = typeof invoices.$inferSelect;
 export type StaffActionRow = typeof staffActions.$inferSelect;
 export type SupportTicket = typeof supportTickets.$inferSelect;
 export type User = typeof user.$inferSelect;
+export type Partner = typeof partners.$inferSelect;
+export type PartnerPayout = typeof partnerPayouts.$inferSelect;
+export type CreatorReferral = typeof creatorReferrals.$inferSelect;
+export type ReferralEarning = typeof referralEarnings.$inferSelect;

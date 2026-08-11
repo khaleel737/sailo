@@ -3,6 +3,8 @@ import {
   Callout,
   Clause,
   ContactBlock,
+  DefList,
+  Group,
   List,
   Mail,
   P,
@@ -10,11 +12,17 @@ import {
 } from "@/components/legal/legal-kit";
 import { LEGAL } from "@/lib/legal";
 import { PLATFORM_FEE_LABEL } from "@/lib/plans";
+import {
+  ACCEPTED_BUSINESSES,
+  CONDITIONAL_BUSINESSES,
+  DECLINED_BUSINESSES,
+  STRIPE_RESTRICTED_URL,
+} from "@/lib/restricted-businesses";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "The agreement between Sailo and the people who use it: what the platform does, what sellers are responsible for, how card payments and fees work, and where each side's liability ends.",
+    "The agreement between Sailo and the people who use it: which businesses we accept and which we decline, what sellers are responsible for, how card payments and fees work, and where each side's liability ends.",
   alternates: { canonical: "/terms" },
 };
 
@@ -62,6 +70,13 @@ export default function TermsPage() {
                 <strong>You carry the chargebacks.</strong> You are the merchant
                 of record on card sales, so a disputed payment is debited from
                 your account, not ours.
+              </>,
+              <>
+                <strong>Not every business fits.</strong>{" "}
+                <Ref href="#accepted">Clause 6</Ref> says what we accept,{" "}
+                <Ref href="#conditional">clause 7</Ref> what we accept on
+                conditions, and <Ref href="#declined">clause 8</Ref> what we
+                decline — and clause 8 holds whether you take cards or cash.
               </>,
               <>
                 <strong>Fraud ends the account.</strong> Immediately, and without
@@ -164,7 +179,9 @@ export default function TermsPage() {
                 needs — before you list, not after a complaint — and you keep
                 them current for as long as you sell. Food, alcohol, cosmetics,
                 supplements, electronics and regulated services all carry them,
-                and none of them is our licence to hold.
+                and none of them is our licence to hold —{" "}
+                <Ref href="#conditional">clause 7</Ref> says which of these we
+                will ask you to evidence.
               </>,
               <>
                 Any message you send through {LEGAL.product} to your buyers
@@ -180,7 +197,7 @@ export default function TermsPage() {
                 accounts, shops or referral links, and you do not manufacture
                 referral activity that did not happen. Promoting your own shop
                 is the point; inventing traffic to earn commission on it is
-                fraud, and clause 7 applies.
+                fraud, and <Ref href="#fraud">clause 9</Ref> applies.
               </>,
               <>
                 Where the law gives your buyers rights — a distance-selling
@@ -269,60 +286,109 @@ export default function TermsPage() {
           />
         </Clause>
 
-        <Clause id="prohibited" n={6} title="What may not be sold or done">
+        <Clause id="accepted" n={6} title="Businesses we accept">
           <P>
-            Some of this is our choice and some of it is required by the payment
-            networks we and our sellers depend on. Either way it is not
-            negotiable, and a shop that breaks it can be suspended without
-            notice.
+            Almost every small business fits here. {LEGAL.product} was built for
+            people selling things they make, things they buy in, their own time,
+            or a file — and if you recognise your trade in this list, there is
+            nothing further you need from us before you start.
           </P>
-          <List
-            items={[
-              <>
-                Anything illegal where you are or where your buyer is, and
-                anything you are not licensed to sell.
-              </>,
-              <>
-                Weapons, ammunition, explosives, controlled drugs, drug
-                paraphernalia, prescription medicines and tobacco or vaping
-                products.
-              </>,
-              <>
-                Counterfeits, replicas, and anything infringing a trademark,
-                copyright or design right.
-              </>,
-              <>
-                Sexual services, sexual content involving minors or non-consenting
-                adults, and content that sexualises anyone under 18.
-              </>,
-              <>
-                Stolen goods, hacked accounts, credentials, personal data sold as
-                a product, and services designed to defraud.
-              </>,
-              <>
-                Financial products, investments, lending, gambling, lotteries,
-                cryptocurrency exchange, and anything requiring a licence we have
-                not seen.
-              </>,
-              <>
-                Human parts, live animals, endangered species and products made
-                from them.
-              </>,
-              <>
-                Multi-level marketing, pyramid schemes, get-rich-quick offers, and
-                unsolicited bulk messaging of any kind.
-              </>,
-              <>
-                Using a shop to process payments for a business other than the one
-                the account describes — the practice card networks call
-                transaction laundering, and the single fastest way to lose the
-                account.
-              </>,
-            ]}
+          <DefList
+            items={ACCEPTED_BUSINESSES.map((b) => ({
+              term: b.name,
+              detail: b.examples,
+            }))}
           />
+          <P>
+            The list is not exhaustive and is not meant to be. Something similar
+            to these, sold honestly, is accepted whether or not it has a line of
+            its own.
+          </P>
+
+          <Callout>
+            Accepting a shop is not us saying your business is lawful, licensed
+            or insured where you are. That stays yours to establish under{" "}
+            <Ref href="#seller">clause 4</Ref>, and we do not check it for you.
+          </Callout>
         </Clause>
 
-        <Clause id="fraud" n={7} title="Fraud, risk and enforcement">
+        <Clause id="conditional" n={7} title="Accepted, with conditions">
+          <P>
+            These are real businesses and they are welcome here, but each one
+            carries a licence, an age restriction, or a gap between when the
+            buyer pays and when they receive — and the gap is where chargebacks
+            come from. The condition attached to each is part of these terms:
+            trading outside it is a breach, not a technicality.
+          </P>
+          <DefList
+            items={CONDITIONAL_BUSINESSES.map((b) => ({
+              term: b.name,
+              detail: b.condition,
+            }))}
+          />
+          <P>
+            We may ask you for a licence, a registration number, proof that you
+            hold the stock, or identification — before you start or at any point
+            afterwards. Card payments may stay off until we have it, and a shop
+            that cannot produce it may be limited to chat, bank transfer and
+            cash orders or closed.
+          </P>
+        </Clause>
+
+        <Clause id="declined" n={8} title="Businesses we decline">
+          <P>
+            Some of this is our choice. Most of it is the condition on which the
+            whole platform keeps card acceptance: the card networks bind Stripe,
+            Stripe binds every seller who switches card payments on, and a
+            platform that says yes to a trade its processor will refuse is only
+            postponing the answer until after you have built a catalogue. So
+            this list is shaped like Stripe&rsquo;s own{" "}
+            <Ref href={STRIPE_RESTRICTED_URL}>restricted businesses list</Ref>,
+            which applies to you in addition to this one. Where they differ, the
+            stricter applies.
+          </P>
+          <Callout>
+            This clause holds on every channel. Most orders on {LEGAL.product}{" "}
+            arrive by chat, bank transfer or cash and never touch a payment
+            system — that does not make any of the following acceptable here.
+          </Callout>
+
+          <div className="space-y-8 pt-2">
+            {DECLINED_BUSINESSES.map((g) => (
+              <Group key={g.id} id={g.id} title={g.group}>
+                <P>{g.why}</P>
+                <List items={[...g.items]} />
+              </Group>
+            ))}
+          </div>
+
+          <P>
+            No list of this kind is complete, and this one is not. We may add to
+            it when a new category of harm turns up or a payment provider
+            requires it, and we may decline or close a shop that is plainly the
+            same thing under another name. Where we add a category that affects
+            a shop already trading, we give the notice in{" "}
+            <Ref href="#misc">clause 18</Ref>.
+          </P>
+          <P>
+            If you are not sure which side of the line your business falls on,
+            ask before you build it. Email{" "}
+            <Mail address={LEGAL.supportEmail} /> with what you sell, who to,
+            and how it reaches them, and you will get a straight answer. That is
+            considerably cheaper for both of us than a catalogue built against a
+            shop we then have to close.
+          </P>
+          <P>
+            When we decline a shop, we say why unless the law stops us, your
+            data stays exportable for the period in the{" "}
+            <Ref href="/privacy">Privacy Policy</Ref>, and we refund the unused
+            part of any paid plan. The exception is the child-safety item in
+            &ldquo;Adult content and services&rdquo;, which is reported rather
+            than answered.
+          </P>
+        </Clause>
+
+        <Clause id="fraud" n={9} title="Fraud, risk and enforcement">
           <P>
             Card acceptance is a shared privilege. One shop laundering payments or
             running stolen cards puts every other seller on the platform at risk,
@@ -352,7 +418,7 @@ export default function TermsPage() {
           </P>
         </Clause>
 
-        <Clause id="plans" n={8} title="Plans, billing and cancellation">
+        <Clause id="plans" n={10} title="Plans, billing and cancellation">
           <P>
             Free is free and stays free. Paid plans are billed in advance, monthly
             or yearly, through Stripe, and renew automatically until cancelled.
@@ -394,7 +460,7 @@ export default function TermsPage() {
           />
         </Clause>
 
-        <Clause id="buyers" n={9} title="If you buy from a shop on Sailo">
+        <Clause id="buyers" n={11} title="If you buy from a shop on Sailo">
           <P>
             Your contract is with the seller. They take your money, they owe you
             the goods, and their refund and delivery terms apply — not ours.
@@ -410,7 +476,7 @@ export default function TermsPage() {
           </P>
         </Clause>
 
-        <Clause id="content" n={10} title="Who owns what">
+        <Clause id="content" n={12} title="Who owns what">
           <P>
             You keep everything you upload. You grant us a non-exclusive,
             worldwide, royalty-free licence to host, store, resize, cache and
@@ -432,7 +498,7 @@ export default function TermsPage() {
           </P>
         </Clause>
 
-        <Clause id="availability" n={11} title="Availability">
+        <Clause id="availability" n={13} title="Availability">
           <P>
             We aim to keep {LEGAL.product} running and we work at it, but the
             service is provided as it is. We do not promise it will be
@@ -447,7 +513,7 @@ export default function TermsPage() {
           </P>
         </Clause>
 
-        <Clause id="liability" n={12} title="Limits of liability">
+        <Clause id="liability" n={14} title="Limits of liability">
           <P>
             Nothing in these terms limits liability for death or personal injury
             caused by negligence, for fraud or fraudulent misrepresentation, or
@@ -470,7 +536,7 @@ export default function TermsPage() {
           </P>
         </Clause>
 
-        <Clause id="indemnity" n={13} title="Indemnity">
+        <Clause id="indemnity" n={15} title="Indemnity">
           <P>
             If you sell on {LEGAL.product}, you agree to indemnify{" "}
             {LEGAL.operator} against claims, losses, fines and reasonable legal
@@ -482,14 +548,15 @@ export default function TermsPage() {
           </P>
         </Clause>
 
-        <Clause id="termination" n={14} title="Ending the agreement">
+        <Clause id="termination" n={16} title="Ending the agreement">
           <P>
             You may close your account at any time from your settings, for any
             reason or none.
           </P>
           <P>
             We may end it on 30 days&rsquo; notice for any reason, and immediately
-            where you breach these terms, where clause 7 applies, where the law
+            where you breach these terms, where <Ref href="#fraud">clause 9</Ref>{" "}
+            applies, where the law
             requires it, or where a payment provider we depend on refuses to keep
             serving your account.
           </P>
@@ -503,7 +570,7 @@ export default function TermsPage() {
           </P>
         </Clause>
 
-        <Clause id="law" n={15} title="Governing law and disputes">
+        <Clause id="law" n={17} title="Governing law and disputes">
           <P>
             These terms are governed by the laws of {LEGAL.governingLaw}, and the
             courts of {LEGAL.venue} have exclusive jurisdiction — except that if
@@ -517,7 +584,7 @@ export default function TermsPage() {
           </P>
         </Clause>
 
-        <Clause id="misc" n={16} title="The rest">
+        <Clause id="misc" n={18} title="The rest">
           <List
             items={[
               <>
@@ -558,7 +625,7 @@ export default function TermsPage() {
           />
         </Clause>
 
-        <Clause id="contact" n={17} title="Contact">
+        <Clause id="contact" n={19} title="Contact">
           <P>
             {LEGAL.operator}, {LEGAL.operatorForm}, trading as {LEGAL.product}.
           </P>

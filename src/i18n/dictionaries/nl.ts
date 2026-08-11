@@ -402,5 +402,9 @@ export const nl: Dictionary = {
     doneBody: "{shop} stuurt je geen marketingmails meer. Orderbevestigingen blijven gewoon komen.",
     invalidTitle: "Deze link is niet meer geldig",
     invalidBody: "Reageer op een e-mail van de winkel en vraag of ze je van de lijst halen.",
+    sailoTitle: "Marketingmails van Sailo stoppen?",
+    sailoBody: "{email} ontvangt geen tips en productnieuws meer van Sailo. Mails over bestellingen, facturatie en je account blijven gewoon komen.",
+    sailoDoneBody: "Sailo stuurt je geen tips of productnieuws meer. Mails over bestellingen, facturatie en je account blijven gewoon komen.",
+    sailoInvalidBody: "Mail ons op support@sailo.store en we halen je van de lijst.",
   },
 };

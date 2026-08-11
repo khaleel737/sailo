@@ -348,5 +348,9 @@ export const vi: Dictionary = {
     doneBody: "{shop} sẽ không gửi email tiếp thị cho bạn nữa. Xác nhận đơn hàng vẫn được gửi.",
     invalidTitle: "Liên kết này không còn hiệu lực",
     invalidBody: "Trả lời bất kỳ email nào từ cửa hàng và yêu cầu họ xóa bạn khỏi danh sách.",
+    sailoTitle: "Dừng email tiếp thị từ Sailo?",
+    sailoBody: "{email} sẽ không còn nhận mẹo và tin tức sản phẩm từ Sailo. Email về đơn hàng, thanh toán và tài khoản vẫn được gửi như thường.",
+    sailoDoneBody: "Sailo sẽ không gửi mẹo hay tin tức sản phẩm cho bạn nữa. Email về đơn hàng, thanh toán và tài khoản vẫn được gửi như thường.",
+    sailoInvalidBody: "Gửi email tới support@sailo.store và chúng tôi sẽ xóa bạn khỏi danh sách.",
   },
 };

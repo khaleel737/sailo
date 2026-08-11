@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Minus, Plus, ShoppingBag } from "lucide-react";
 import {
   ExpressCheckout,
@@ -11,6 +11,8 @@ import {
 } from "@/app/[handle]/_components/cart/express-checkout";
 import { useCart } from "@/app/[handle]/_components/cart/cart-provider";
 import { FavoriteButton } from "@/app/[handle]/_components/favorites/favorite-button";
+import { OptionChips } from "@/app/[handle]/_components/option-chips";
+import { useVariantPhoto } from "./variant-photo";
 import { isSoldOut } from "@/app/[handle]/_lib/availability";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
@@ -19,9 +21,12 @@ import {
   findVariant,
   isLowStock,
   MAX_QUANTITY,
+  releasesBeforePayment,
+  retargetSelection,
   variantLabel,
   type CheckoutVariant,
 } from "@/lib/variants";
+import { railsForOrder } from "@/lib/payments";
 import type { ProductOption, VariantOptions } from "@/db/schema";
 
 /**
@@ -108,27 +113,36 @@ export function BuyBox({
   const [justAdded, setJustAdded] = useState(false);
   const [buying, setBuying] = useState(false);
 
+  /*
+   * Tell the gallery which photo the buyer is looking at, so choosing
+   * "Charcoal" shows the charcoal one. In an effect because the gallery is a
+   * sibling component: this is a render of one telling another to update, and
+   * doing it during render is the one thing React genuinely forbids.
+   */
+  const photo = useVariantPhoto();
+  const showPhoto = photo?.show;
+  const chosenPhoto = variant?.imageUrl ?? null;
+  useEffect(() => {
+    showPhoto?.(chosenPhoto);
+  }, [showPhoto, chosenPhoto]);
+
   const soldOut = isSoldOut({ inStock, variants, unitsLeft });
-  const noRails = methods.length === 0;
+  /*
+   * The rails this product can be bought on, which is not always every rail
+   * the shop runs: cash on delivery is a promise about a doorstep, and a
+   * download has none. A shop whose only rail is that one genuinely cannot
+   * sell a file, and saying so on the button beats opening a sheet with
+   * nothing in it.
+   */
+  const rails = railsForOrder(methods, !releasesBeforePayment(kind, heldUntilPaid));
+  const noRails = rails.length === 0;
   const disabled = soldOut || !salesOpen || noRails;
 
-  /**
-   * Picking a value keeps the rest of the selection when that combination
-   * exists, and otherwise jumps to the nearest one that's actually for sale —
-   * so a buyer who picks "red" on a sold-out large lands on a red that exists.
-   */
   function chooseOption(name: string, value: string) {
-    const next = { ...selection, [name]: value };
-    const exact = findVariant(variants, next);
-    const target =
-      exact && exact.available
-        ? exact
-        : (variants.find((v) => v.available && v.options[name] === value) ??
-          exact ??
-          null);
-
+    const target = retargetSelection(variants, selection, name, value);
     if (!target) return;
     setSelection(target.options);
+    // The new combination may hold fewer units than the old quantity.
     const left = target.unitsLeft;
     if (left !== null) setQuantity((q) => Math.min(q, Math.max(1, left)));
   }
@@ -172,55 +186,13 @@ export function BuyBox({
         ) : null}
       </div>
 
-      {options.map((option) => (
-        <fieldset key={option.name}>
-          <legend className="mb-1.5 text-sm font-medium">
-            {interpolate(t.checkout.choose, { option: option.name })}
-          </legend>
-          <div className="flex flex-wrap gap-1.5">
-            {option.values.map((value) => {
-              const active = selection[option.name] === value;
-              // Grey out a value only when nothing sellable carries it
-              // alongside what's already picked.
-              const reachable = variants.some(
-                (v) =>
-                  v.available &&
-                  v.options[option.name] === value &&
-                  options.every(
-                    (o) =>
-                      o.name === option.name ||
-                      v.options[o.name] === selection[o.name],
-                  ),
-              );
-              const anywhere = variants.some(
-                (v) => v.available && v.options[option.name] === value,
-              );
-
-              return (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => chooseOption(option.name, value)}
-                  disabled={!anywhere}
-                  title={anywhere ? undefined : t.shop.soldOut}
-                  aria-pressed={active}
-                  className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
-                    active ? "accent-bg" : "surface-elevated hover:opacity-70"
-                  } ${
-                    !anywhere
-                      ? "cursor-not-allowed line-through opacity-40"
-                      : !reachable
-                        ? "opacity-60"
-                        : ""
-                  }`}
-                >
-                  {value}
-                </button>
-              );
-            })}
-          </div>
-        </fieldset>
-      ))}
+      <OptionChips
+        options={options}
+        variants={variants}
+        selection={selection}
+        onChoose={chooseOption}
+        t={t}
+      />
 
       {salesOpen && isLowStock(stockLeft) ? (
         <p className="text-sm font-medium text-amber-600">

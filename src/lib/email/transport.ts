@@ -28,6 +28,18 @@ export const PARTNERS = `partners@${MAIL_DOMAIN}`;
 export const ACCOUNTS = `accounts@${MAIL_DOMAIN}`;
 /** Sellers asking us for help — the inbox the team answers from. */
 export const SUPPORT = `support@${MAIL_DOMAIN}`;
+/**
+ * Sailo's own lifecycle and product mail to sellers.
+ *
+ * Its own address rather than a reuse of `ACCOUNTS`, and the separation is
+ * the point rather than tidiness. Mailbox providers score reputation per
+ * sending address as well as per domain, and marketing is the traffic that
+ * earns complaints. Keeping it off the address that carries password resets
+ * and email confirmations means a bad campaign cannot land a seller's
+ * *sign-in* mail in spam — which is the one failure they could never diagnose
+ * and we could never see.
+ */
+export const MARKETING = `marketing@${MAIL_DOMAIN}`;
 
 /**
  * Builds a From header.

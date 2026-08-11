@@ -2,10 +2,31 @@ import { NextResponse } from "next/server";
 import { ipFromHeaders } from "@/lib/client-ip";
 import { rateLimit } from "@/lib/redis";
 import {
+  DEFAULT_COOKIE_DAYS,
   REFERRAL_COOKIE,
-  REFERRAL_COOKIE_DAYS,
   normalizeReferralCode,
-} from "@/lib/creator-referrals/program";
+} from "@/lib/partners/program";
+import { getProgramSettings } from "@/lib/partners/settings";
+
+/**
+ * How long the cookie lives, from the programme's own settings.
+ *
+ * The one database read this route does, and it is worth it: the attribution
+ * window is something /hq can change, and a cookie hard-coded to 90 days would
+ * make a 180-day setting a promise the browser silently breaks.
+ *
+ * Wrapped, because the property this route is built around is that a click
+ * never fails. A settings table that cannot be reached falls back to the
+ * default rather than five-hundreding somebody's referral link.
+ */
+async function cookieMaxAge(): Promise<number> {
+  try {
+    const { cookieDays } = await getProgramSettings();
+    return cookieDays * 24 * 60 * 60;
+  } catch {
+    return DEFAULT_COOKIE_DAYS * 24 * 60 * 60;
+  }
+}
 
 /**
  * `sailo.store/r/<code>` — the link a creator shares to bring in another one.
@@ -61,7 +82,7 @@ export async function GET(
 
   if (code) {
     response.cookies.set(REFERRAL_COOKIE, code, {
-      maxAge: REFERRAL_COOKIE_DAYS * 24 * 60 * 60,
+      maxAge: await cookieMaxAge(),
       path: "/",
       /*
        * `httpOnly` even though nothing secret is in here. No client code reads

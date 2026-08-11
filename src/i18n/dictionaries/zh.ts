@@ -436,5 +436,9 @@ export const zh: Dictionary = {
     doneBody: "{shop} 不会再向你发送营销邮件。订单确认仍会照常发送。",
     invalidTitle: "此链接已失效",
     invalidBody: "回复商店的任意一封邮件，请他们把你从名单中移除。",
+    sailoTitle: "停止接收 Sailo 的营销邮件？",
+    sailoBody: "{email} 将不再收到 Sailo 的使用技巧和产品动态。订单、账单和账户相关邮件仍会照常发送。",
+    sailoDoneBody: "Sailo 不会再向你发送使用技巧或产品动态。订单、账单和账户相关邮件仍会照常发送。",
+    sailoInvalidBody: "发邮件到 support@sailo.store，我们会把你从名单中移除。",
   },
 };

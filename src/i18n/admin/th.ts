@@ -226,6 +226,8 @@ export const adminTh: PartialAdminDictionary = {
     notifyBookingRequestedBody: "มีคนขอนัดหมายและกำลังรอให้คุณยืนยันเวลา",
     notifyOrderNeedsAction: "การชำระเงินที่ต้องยืนยัน",
     notifyOrderNeedsActionBody: "ผู้ซื้อแจ้งว่าโอนเงินแล้ว จึงต้องตรวจสอบยอดเงิน",
+    notifyProductTips: "เคล็ดลับและข่าวผลิตภัณฑ์",
+    notifyProductTipsBody: "อีเมลเป็นครั้งคราวจาก Sailo เกี่ยวกับการตั้งค่าและการขายให้ได้มากขึ้น ไม่เกี่ยวกับคำสั่งซื้อของคุณ",
     taxIdPlaceholder: "0105551234567",
     identity: "ข้อมูลร้าน",
     appearance: "หน้าตา",

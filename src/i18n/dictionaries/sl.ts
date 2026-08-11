@@ -344,5 +344,9 @@ export const sl: Dictionary = {
     doneBody: "{shop} ti ne bo več pošiljal tržnih e-sporočil. Potrditve naročil še vedno prihajajo.",
     invalidTitle: "Ta povezava ni več veljavna",
     invalidBody: "Odgovori na katero koli e-sporočilo trgovine in prosi, da te odstranijo s seznama.",
+    sailoTitle: "Ustaviti trženjska e-sporočila od Sailo?",
+    sailoBody: "{email} ne bo več prejemal nasvetov in novic o izdelku od Sailo. E-sporočila o naročilih, obračunu in računu še naprej prihajajo kot doslej.",
+    sailoDoneBody: "Sailo vam ne bo več pošiljal nasvetov ali novic o izdelku. E-sporočila o naročilih, obračunu in računu še naprej prihajajo kot doslej.",
+    sailoInvalidBody: "Pišite nam na support@sailo.store in odstranili vas bomo s seznama.",
   },
 };

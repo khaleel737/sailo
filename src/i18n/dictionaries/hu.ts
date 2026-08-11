@@ -395,5 +395,9 @@ export const hu: Dictionary = {
     doneBody: "A(z) {shop} nem küld több marketing e-mailt. A rendelés-visszaigazolások továbbra is megérkeznek.",
     invalidTitle: "Ez a link már nem érvényes",
     invalidBody: "Válaszolj a bolt bármelyik e-mailjére, és kérd, hogy töröljenek a listáról.",
+    sailoTitle: "Leállítod a Sailo marketinges e-mailjeit?",
+    sailoBody: "A(z) {email} nem kap több tippet és termékhírt a Sailótól. A rendelésekről, a számlázásról és a fiókról szóló e-mailek továbbra is megérkeznek.",
+    sailoDoneBody: "A Sailo nem küld több tippet vagy termékhírt. A rendelésekről, a számlázásról és a fiókról szóló e-mailek továbbra is megérkeznek.",
+    sailoInvalidBody: "Írj a support@sailo.store címre, és levesszük a listáról.",
   },
 };

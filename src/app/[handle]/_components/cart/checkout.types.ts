@@ -71,8 +71,21 @@ export type CheckoutPanelProps = {
   currency: string;
   /** What's being bought. The server re-prices all of it. */
   items: OrderLineInput[];
+  /**
+   * Every rail the shop has live. The panel narrows them to the ones this
+   * order can actually use — cash on delivery is not on offer for a download.
+   */
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
+  /**
+   * Whether anything here travels, as the caller already knows it from the
+   * kinds in the basket. The server re-decides on the first quote; this only
+   * spares the panel a frame of asking the wrong questions.
+   */
+  needsDeliveryHint?: boolean;
+  /** First-frame guess for whether cash-in-person shows; the server's quote
+   * decides. Defaults to showing it — only an instant download hides it. */
+  payInPersonHint?: boolean;
   contactEmail: string | null;
   compliance: CheckoutCompliance;
   /** True when a digital line has files attached. */

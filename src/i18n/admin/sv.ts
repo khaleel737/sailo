@@ -414,6 +414,8 @@ export const adminSv: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Någon har bett om en tid och väntar på att du bekräftar den.",
     notifyOrderNeedsAction: "Betalningar att bekräfta",
     notifyOrderNeedsActionBody: "En köpare säger sig ha gjort en banköverföring, så pengarna behöver kontrolleras.",
+    notifyProductTips: "Tips och produktnyheter",
+    notifyProductTipsBody: "Enstaka mejl från Sailo om att komma igång och sälja mer. Aldrig om dina beställningar.",
     taxIdPlaceholder: "SE123456789001",
     identity: "Identitet",
     appearance: "Utseende",

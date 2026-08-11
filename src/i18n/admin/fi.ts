@@ -413,6 +413,8 @@ export const adminFi: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Joku pyysi aikaa ja odottaa, että vahvistat ajankohdan.",
     notifyOrderNeedsAction: "Vahvistettavat maksut",
     notifyOrderNeedsActionBody: "Ostaja sanoo tehneensä tilisiirron, joten raha pitää tarkistaa.",
+    notifyProductTips: "Vinkit ja tuoteuutiset",
+    notifyProductTipsBody: "Satunnainen viesti Sailolta käyttöönotosta ja myynnin kasvattamisesta. Ei koskaan tilauksistasi.",
     taxIdPlaceholder: "FI12345678",
     identity: "Tiedot",
     appearance: "Ulkoasu",

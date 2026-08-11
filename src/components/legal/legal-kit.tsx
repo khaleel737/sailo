@@ -60,6 +60,63 @@ export function P({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * A named group inside a clause, with its own anchor.
+ *
+ * The restricted-business clause is thirteen categories long, and the way that
+ * clause is actually used is a support reply saying "your shop falls under
+ * this" — which is only useful if the sentence can carry a link to the exact
+ * category rather than to the top of a clause the reader then has to search.
+ */
+export function Group({
+  id,
+  title,
+  children,
+}: {
+  id: string;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section id={id} className="scroll-mt-24">
+      <h3 className="text-[0.9375rem] font-semibold leading-[1.4] text-[var(--ink)]">
+        <a href={`#${id}`} className="focus-line hover:underline">
+          {title}
+        </a>
+      </h3>
+      <div className="mt-2.5 space-y-3">{children}</div>
+    </section>
+  );
+}
+
+/**
+ * Term and detail, for the two lists a reader scans for their own trade.
+ *
+ * A `dl` rather than a bulleted list because that is what it is, and because
+ * the term has to stay findable when the detail underneath it runs to three
+ * lines — which is the whole reason someone opened this clause.
+ */
+export function DefList({
+  items,
+}: {
+  items: { term: string; detail: ReactNode }[];
+}) {
+  return (
+    <dl className="space-y-4">
+      {items.map((item) => (
+        <div key={item.term}>
+          <dt className="text-[0.9375rem] font-semibold leading-[1.5] text-[var(--ink)]">
+            {item.term}
+          </dt>
+          <dd className="mt-1 text-[0.9375rem] leading-[1.75] text-[var(--mute-600)]">
+            {item.detail}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
 /** For the sentence that a reader must not skim past. */
 export function Callout({ children }: { children: ReactNode }) {
   return (

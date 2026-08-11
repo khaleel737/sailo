@@ -226,6 +226,8 @@ export const adminVi: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Có người xin một lịch hẹn và đang chờ bạn xác nhận giờ.",
     notifyOrderNeedsAction: "Thanh toán cần xác nhận",
     notifyOrderNeedsActionBody: "Người mua báo đã chuyển khoản, nên cần kiểm tra tiền về.",
+    notifyProductTips: "Mẹo & tin tức sản phẩm",
+    notifyProductTipsBody: "Email thỉnh thoảng từ Sailo về cách thiết lập và bán được nhiều hơn. Không bao giờ về đơn hàng của bạn.",
     taxIdPlaceholder: "0312345678",
     identity: "Thông tin",
     appearance: "Giao diện",

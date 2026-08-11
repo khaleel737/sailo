@@ -70,6 +70,10 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 RESEND_API_KEY=
 SAILO_FROM_EMAIL="Sailo <orders@yourdomain.com>"
 
+# Bulk email ceilings (optional — sensible defaults if unset)
+BROADCAST_DAILY_CEILING=   # a seller's marketing to their buyers, platform-wide
+LIFECYCLE_DAILY_CEILING=   # Sailo's own onboarding email to sellers
+
 # Billing (optional — subscriptions)
 STRIPE_SECRET_KEY=
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
@@ -99,7 +103,16 @@ so, rather than breaking.
 
 Without `RESEND_API_KEY` the app runs fine and simply skips emails — a failed or
 unconfigured send is logged and never blocks an order. The from-address domain
-must be verified in Resend.
+must be verified in Resend, and so must every address on it: `orders@`,
+`accounts@`, `partners@`, `support@` and `marketing@`.
+
+`marketing@` is deliberately its own address. Mailbox providers score
+reputation per sending address as well as per domain, and lifecycle mail is the
+traffic that earns complaints — keeping it off `accounts@` means a bad campaign
+cannot land a seller's password reset in spam. Unsubscribe links are signed with
+a key *derived* from `BETTER_AUTH_SECRET`, so no new secret is needed; without
+that variable the lifecycle pass refuses to send at all rather than mailing a
+dead link.
 
 `NEXT_PUBLIC_APP_URL` is used to build the product links embedded in outgoing
 WhatsApp messages — set it to the real origin in production.
@@ -217,7 +230,10 @@ it forwards with the one secret, while production uses two.
 ```
 /api/stripe/webhook           Sellers paying us — subscriptions
 /api/stripe/connect/webhook   Buyers paying sellers — every card sale
-/api/cron/{rollup,sitemap,sweep}   Bearer-secret only, scheduled in vercel.json
+/api/cron/{rollup,sitemap,sweep,reminders,broadcasts,lifecycle}
+                              Bearer-secret only, scheduled in vercel.json
+/api/unsubscribe/[token]      One-click out of a shop's marketing (RFC 8058)
+/api/unsubscribe/marketing/[token]  One-click out of Sailo's own
 /api/download/[token]/[fileId]     Tokened file delivery
 /api/export/[type]            Seller CSV export
 /api/booking/[productId]      Free appointment slots

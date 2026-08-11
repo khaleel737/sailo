@@ -53,3 +53,10 @@ graphify-out/
 /playwright-report
 /coverage
 .env.local.test
+
+# Generated social post art, run logs and the pause flag
+scripts/social/.out/
+scripts/social/.log/
+scripts/social/.paused
+scripts/social/.render-*.html
+.turbo/

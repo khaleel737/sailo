@@ -400,5 +400,9 @@ export const tr: Dictionary = {
     doneBody: "{shop} artık size pazarlama e-postası göndermeyecek. Sipariş onayları gelmeye devam eder.",
     invalidTitle: "Bu bağlantı artık geçerli değil",
     invalidBody: "Mağazadan gelen herhangi bir e-postayı yanıtlayın ve sizi listeden çıkarmalarını isteyin.",
+    sailoTitle: "Sailo'dan gelen pazarlama e-postaları dursun mu?",
+    sailoBody: "{email} adresine Sailo'dan artık ipucu ve ürün haberi gönderilmeyecek. Sipariş, fatura ve hesap e-postaları her zamanki gibi gelmeye devam eder.",
+    sailoDoneBody: "Sailo sana artık ipucu veya ürün haberi göndermeyecek. Sipariş, fatura ve hesap e-postaları her zamanki gibi gelmeye devam eder.",
+    sailoInvalidBody: "support@sailo.store adresine yaz, seni listeden çıkaralım.",
   },
 };

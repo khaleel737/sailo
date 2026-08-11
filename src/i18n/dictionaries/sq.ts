@@ -347,5 +347,9 @@ export const sq: Dictionary = {
     doneBody: "{shop} nuk do të të dërgojë më emaile marketingu. Konfirmimet e porosive vijnë si zakonisht.",
     invalidTitle: "Kjo lidhje nuk vlen më",
     invalidBody: "Përgjigju çdo emaili nga dyqani dhe kërko të të heqin nga lista.",
+    sailoTitle: "Të ndalen email-et e marketingut nga Sailo?",
+    sailoBody: "{email} nuk do të marrë më këshilla dhe lajme për produktin nga Sailo. Email-et për porositë, faturimin dhe llogarinë vazhdojnë si zakonisht.",
+    sailoDoneBody: "Sailo nuk do të të dërgojë më këshilla ose lajme për produktin. Email-et për porositë, faturimin dhe llogarinë vazhdojnë si zakonisht.",
+    sailoInvalidBody: "Na shkruaj në support@sailo.store dhe të heqim nga lista.",
   },
 };

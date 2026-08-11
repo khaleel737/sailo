@@ -15,6 +15,7 @@ import { claimRefundAmount, releaseRefundClaim } from "@/lib/orders/refund-claim
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
 import { isOrderStatus } from "@/lib/order-status";
 import { releaseDownloads } from "@/lib/downloads";
+import { reinstateTicketsForOrder, voidTicketsForOrder } from "@/lib/tickets";
 import { sendBookingDecision, sendRefundNotification, sendShippingNotification } from "@/lib/email";
 import type { ActionState } from "./shop";
 
@@ -82,6 +83,16 @@ export async function updateOrderStatus(formData: FormData) {
    */
   if (isStockReleasingStatus(status)) {
     await restoreStock(order);
+    /*
+     * And the admissions, for exactly the same reason the units go back.
+     *
+     * A ticket is stock that walks through a door. Cancelling or refunding an
+     * event order used to give the seller their seat back in the count while
+     * leaving the code in the buyer's inbox still working — so the seat could
+     * be sold twice and both people could turn up, or a buyer could refund on
+     * the afternoon of the show and walk in on it that evening.
+     */
+    await voidTicketsForOrder(order.id);
   } else if (order.status === "cancelled" && order.restockedAt) {
     /*
      * Only *cancelled* is reversible, and the asymmetry is deliberate.
@@ -94,6 +105,8 @@ export async function updateOrderStatus(formData: FormData) {
      * taken off the shelf again, with the refund still standing.
      */
     await retakeStock(order);
+    // The buyer's tickets come back with their order, for the same reason.
+    await reinstateTicketsForOrder(order.id);
   }
 
   revalidatePath("/admin");
@@ -317,7 +330,14 @@ export async function refundOrder(
 
   // A fully refunded order is one the buyer no longer has, so the units are
   // available again. A partial refund is a price adjustment, not a return.
-  if (isFull) await restoreStock(order);
+  //
+  // Admissions go with them: a ticket whose money has been given back must
+  // stop opening a door, and it did not — this is the second of the two
+  // routes to a refund, and both have to reach the same conclusion.
+  if (isFull) {
+    await restoreStock(order);
+    await voidTicketsForOrder(order.id);
+  }
 
   const updated = await db.query.orders.findFirst({ where: eq(orders.id, id) });
   const amount = formatMoney(requested, order.currency);

@@ -413,6 +413,8 @@ export const adminAr: PartialAdminDictionary = {
     notifyBookingRequestedBody: "طلب أحدهم موعدًا وينتظر منك تأكيد الوقت.",
     notifyOrderNeedsAction: "مدفوعات بحاجة إلى تأكيد",
     notifyOrderNeedsActionBody: "يقول مشترٍ إنه أرسل حوالة بنكية، فالمبلغ بحاجة إلى تحقّق.",
+    notifyProductTips: "نصائح وأخبار المنتج",
+    notifyProductTipsBody: "رسائل من حين لآخر من Sailo حول الإعداد وزيادة المبيعات. لا تتعلق أبدًا بطلباتك.",
     taxIdPlaceholder: "300123456700003",
     identity: "الهوية",
     appearance: "المظهر",

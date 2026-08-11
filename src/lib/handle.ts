@@ -26,7 +26,12 @@ export const RESERVED_HANDLES = new Set([
    * validated, saved, and then served somebody else's page at their URL —
    * their shop simply never rendered, with nothing anywhere to explain why.
    */
-  "partner", "download", "dev", "gdpr", "refunds",
+  /*
+   * `partner` is a seller's affiliate portal; `partners` is Sailo's own
+   * partner programme. Two routes, one letter apart, and both have to be here
+   * — a seller who claimed either would shadow a live page with their shop.
+   */
+  "partner", "partners", "door", "download", "dev", "gdpr", "refunds",
   "forgot-password", "reset-password", "verify-2fa",
   // Locale prefixes. `/fr/blog` is a real URL, so a shop called `fil` would
   // shadow the Filipino blog. Only three-letter codes need listing: every other

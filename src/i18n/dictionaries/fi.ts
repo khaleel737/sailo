@@ -395,5 +395,9 @@ export const fi: Dictionary = {
     doneBody: "{shop} ei lähetä sinulle enää markkinointia. Tilausvahvistukset tulevat edelleen.",
     invalidTitle: "Tämä linkki ei ole enää voimassa",
     invalidBody: "Vastaa mihin tahansa kaupan viestiin ja pyydä poistamaan sinut listalta.",
+    sailoTitle: "Lopetetaanko Sailon markkinointiviestit?",
+    sailoBody: "{email} ei enää saa vinkkejä ja tuoteuutisia Sailolta. Tilauksia, laskutusta ja tiliä koskevat viestit tulevat kuten ennenkin.",
+    sailoDoneBody: "Sailo ei enää lähetä sinulle vinkkejä tai tuoteuutisia. Tilauksia, laskutusta ja tiliä koskevat viestit tulevat kuten ennenkin.",
+    sailoInvalidBody: "Lähetä viesti osoitteeseen support@sailo.store, niin poistamme sinut listalta.",
   },
 };

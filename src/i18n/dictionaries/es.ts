@@ -406,5 +406,9 @@ export const es: Dictionary = {
     doneBody: "{shop} no volverá a enviarte emails de marketing. Las confirmaciones de pedido seguirán llegando.",
     invalidTitle: "Este enlace ya no es válido",
     invalidBody: "Responde a cualquier email de la tienda y pídeles que te eliminen de la lista.",
+    sailoTitle: "¿Dejar de recibir correos de marketing de Sailo?",
+    sailoBody: "{email} dejará de recibir consejos y novedades del producto de Sailo. Los correos de pedidos, facturación y cuenta seguirán llegando igual.",
+    sailoDoneBody: "Sailo no volverá a enviarte consejos ni novedades del producto. Los correos de pedidos, facturación y cuenta seguirán llegando igual.",
+    sailoInvalidBody: "Escríbenos a support@sailo.store y te quitamos de la lista.",
   },
 };

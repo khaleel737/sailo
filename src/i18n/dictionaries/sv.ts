@@ -397,5 +397,9 @@ export const sv: Dictionary = {
     doneBody: "{shop} skickar inte mer marknadsföring till dig. Orderbekräftelser kommer fortfarande.",
     invalidTitle: "Den här länken gäller inte längre",
     invalidBody: "Svara på valfritt mejl från butiken och be dem ta bort dig från listan.",
+    sailoTitle: "Sluta få marknadsföringsmejl från Sailo?",
+    sailoBody: "{email} får inte längre tips och produktnyheter från Sailo. Mejl om beställningar, fakturering och konto kommer som vanligt.",
+    sailoDoneBody: "Sailo skickar inte längre tips eller produktnyheter till dig. Mejl om beställningar, fakturering och konto kommer som vanligt.",
+    sailoInvalidBody: "Mejla support@sailo.store så tar vi bort dig från listan.",
   },
 };

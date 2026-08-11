@@ -417,6 +417,8 @@ export const adminNl: PartialAdminDictionary = {
     notifyOrderNeedsAction: "Betalingen om te bevestigen",
     notifyOrderNeedsActionBody:
       "Een koper zegt een overboeking te hebben gedaan, dus het geld moet gecontroleerd worden.",
+    notifyProductTips: "Tips & productnieuws",
+    notifyProductTipsBody: "Af en toe een mail van Sailo over instellen en meer verkopen. Nooit over je bestellingen.",
     taxIdPlaceholder: "NL123456789B01",
     identity: "Identiteit",
     appearance: "Uiterlijk",

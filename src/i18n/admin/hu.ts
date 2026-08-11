@@ -415,6 +415,8 @@ export const adminHu: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Valaki időpontot kért, és arra vár, hogy megerősítsd.",
     notifyOrderNeedsAction: "Jóváhagyandó fizetések",
     notifyOrderNeedsActionBody: "Egy vásárló azt írja, hogy elutalta az összeget, ezért ellenőrizni kell, megérkezett-e.",
+    notifyProductTips: "Tippek és termékhírek",
+    notifyProductTipsBody: "Alkalmi e-mail a Sailótól a beállításról és a több eladásról. Sosem a rendeléseidről.",
     taxIdPlaceholder: "HU12345678",
     identity: "Azonosság",
     appearance: "Megjelenés",

@@ -415,6 +415,8 @@ export const adminIt: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Qualcuno ha chiesto un appuntamento e aspetta che tu confermi l'orario.",
     notifyOrderNeedsAction: "Pagamenti da confermare",
     notifyOrderNeedsActionBody: "Un cliente dice di aver fatto un bonifico, quindi bisogna verificare che il denaro sia arrivato.",
+    notifyProductTips: "Consigli e novità sul prodotto",
+    notifyProductTipsBody: "Email occasionali da Sailo su come configurare il negozio e vendere di più. Mai sui tuoi ordini.",
     taxIdPlaceholder: "IT12345678901",
     identity: "Identità",
     appearance: "Aspetto",

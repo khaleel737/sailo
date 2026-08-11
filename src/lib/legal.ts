@@ -94,7 +94,8 @@ export const SUBPROCESSORS = [
   },
   {
     name: "Resend",
-    purpose: "Sending transactional email: order notifications, password resets, invoices",
+    purpose:
+      "Sending email: order notifications, password resets and invoices; a seller's own marketing to contacts who opted in; and Sailo's own onboarding email to account holders",
     data: "Recipient email address and the contents of that message",
     region: "United States",
   },

@@ -10,7 +10,7 @@ import { resolveLines } from "@/lib/orders/resolve-lines";
 import { resolveDelivery } from "@/lib/orders/delivery";
 import { cartNeedsDelivery, cartSubtotal, quote } from "@/lib/quote";
 import { checkCoupon, COUPON_MESSAGES, normalizeCode } from "@/lib/pricing";
-import { unitsLeft } from "@/lib/variants";
+import { releasesBeforePayment, unitsLeft } from "@/lib/variants";
 import type { OrderLineInput, OrderPreview } from "@/lib/orders/types";
 
 /**
@@ -170,6 +170,12 @@ export async function previewOrder(input: {
     needsDelivery: priced.needsDelivery,
     needsAddress: priced.needsAddress,
     hasService: priced.hasService,
+    // A pay-in-person rail is fine unless something in the basket unlocks
+    // before payment — an instant download. Computed from the resolved
+    // products, which carry `releaseOnPayment`.
+    canPayInPerson: !resolved.lines.some((line) =>
+      releasesBeforePayment(line.product.kind, line.product.releaseOnPayment),
+    ),
     couponError,
     couponApplied,
   };

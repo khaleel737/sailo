@@ -414,6 +414,8 @@ export const adminTr: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Biri randevu istedi ve saati onaylamanızı bekliyor.",
     notifyOrderNeedsAction: "Onaylanacak ödemeler",
     notifyOrderNeedsActionBody: "Bir alıcı havale yaptığını söylüyor, paranın kontrol edilmesi gerekiyor.",
+    notifyProductTips: "İpuçları ve ürün haberleri",
+    notifyProductTipsBody: "Kurulum ve daha çok satmak üzerine Sailo'dan ara sıra gelen e-postalar. Siparişlerinle ilgili değil.",
     taxIdPlaceholder: "1234567890",
     identity: "Kimlik",
     appearance: "Görünüm",

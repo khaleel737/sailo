@@ -14,3 +14,4 @@ export * from "./coupons";
 export * from "./affiliates";
 export * from "./invoices";
 export * from "./reviews";
+export * from "./tickets";

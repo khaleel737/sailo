@@ -225,6 +225,8 @@ export const adminBg: PartialAdminDictionary = {
     notifyBookingRequestedBody: "Някой е поискал час и чака да потвърдите времето.",
     notifyOrderNeedsAction: "Плащания за потвърждаване",
     notifyOrderNeedsActionBody: "Купувач твърди, че е направил банков превод, така че сумата трябва да се провери.",
+    notifyProductTips: "Съвети и новини за продукта",
+    notifyProductTipsBody: "Случаен имейл от Sailo за настройката и как да продавате повече. Никога за поръчките ви.",
     taxIdPlaceholder: "BG123456789",
     identity: "Самоличност",
     appearance: "Външен вид",

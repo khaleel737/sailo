@@ -389,6 +389,11 @@ export const bookingClaims = pgTable(
  * order and become valid when `orders.downloadReleasedAt` is set — the same
  * instant, and the same webhook-retry-safe claim, that opens a digital
  * order's files. A ticket is never its own authority on payment.
+ *
+ * Unless there is no order. A comp, a walk-up and an imported guest list are
+ * all issued by the seller directly, which is a stronger claim than a settled
+ * payment, so `orderId` is nullable and the door treats null as released —
+ * see the note in `drizzle/0014` and the `isNull` branch in `lib/tickets.ts`.
  */
 export const tickets = pgTable(
   "tickets",
@@ -397,9 +402,10 @@ export const tickets = pgTable(
     shopId: uuid("shop_id")
       .notNull()
       .references(() => shops.id, { onDelete: "cascade" }),
-    orderId: uuid("order_id")
-      .notNull()
-      .references(() => orders.id, { onDelete: "cascade" }),
+    /** Null when the seller issued this directly rather than selling it. */
+    orderId: uuid("order_id").references(() => orders.id, {
+      onDelete: "cascade",
+    }),
     /** Which line this admission came from; null if the product was deleted. */
     productId: uuid("product_id").references(() => products.id, {
       onDelete: "set null",
@@ -409,12 +415,74 @@ export const tickets = pgTable(
     /** valid | used | void — `used` is claimed atomically, once. */
     status: text("status").default("valid").notNull(),
     usedAt: timestamp("used_at"),
+    /**
+     * Who this admission is for, when that is not simply whoever paid. Null
+     * for anything sold through checkout — nothing collects a per-head name
+     * there — so the door list falls back to the order's `customerName`.
+     */
+    attendeeName: text("attendee_name"),
+    attendeeEmail: text("attendee_email"),
+    /**
+     * The tier as it read when the ticket was minted, not a join. Variants
+     * get renamed and deleted between the on-sale and the night, and neither
+     * may change what is printed beside a name on a past event's door list.
+     */
+    tier: text("tier"),
+    /** order | import | manual — a comp is not a sale, and no count may mix them. */
+    source: text("source").default("order").notNull(),
+    /** Which door pass admitted them; null means the owner's own session. */
+    checkedInBy: text("checked_in_by"),
+    note: text("note"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [
     uniqueIndex("tickets_code_key").on(t.code),
     index("tickets_order_idx").on(t.orderId),
     index("tickets_shop_idx").on(t.shopId),
+    // Every counter and every door-list page is "this shop, this event, this
+    // status", and at five hundred admissions the shop-wide index is not it.
+    index("tickets_shop_product_status_idx").on(t.shopId, t.productId, t.status),
+    index("tickets_attendee_email_idx").on(t.shopId, t.attendeeEmail),
+  ],
+);
+
+/**
+ * A credential for whoever is actually standing on the door.
+ *
+ * Until this existed, letting a volunteer scan meant handing them the
+ * seller's login — which is also the payouts, the customer list and the bank
+ * details. A pass is an unguessable token on a row, the same shape the
+ * affiliate portal uses: nothing to create an account for, and revoking is
+ * one UPDATE that bites on the next request rather than whenever a session
+ * would have expired.
+ *
+ * Named, because `tickets.checkedInBy` needs something to record. Three
+ * volunteers behind one shared credential cannot answer "who let this person
+ * in", and that is only ever asked after something has gone wrong.
+ */
+export const doorPasses = pgTable(
+  "door_passes",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+    /** Null means every event in the shop — a venue running four rooms. */
+    productId: uuid("product_id").references(() => products.id, {
+      onDelete: "cascade",
+    }),
+    name: text("name").notNull(),
+    token: text("token").notNull(),
+    /** A pass that outlives the event is a credential nobody remembers. */
+    expiresAt: timestamp("expires_at"),
+    revokedAt: timestamp("revoked_at"),
+    lastUsedAt: timestamp("last_used_at"),
+    checkInCount: integer("check_in_count").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("door_passes_token_key").on(t.token),
+    index("door_passes_shop_idx").on(t.shopId),
   ],
 );
 

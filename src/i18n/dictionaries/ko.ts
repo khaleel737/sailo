@@ -345,5 +345,9 @@ export const ko: Dictionary = {
     doneBody: "{shop}이(가) 더 이상 마케팅 이메일을 보내지 않습니다. 주문 확인은 계속 받습니다.",
     invalidTitle: "이 링크는 더 이상 유효하지 않습니다",
     invalidBody: "상점에서 온 아무 이메일에나 답장해 목록에서 삭제해 달라고 요청하세요.",
+    sailoTitle: "Sailo의 마케팅 이메일을 중단할까요?",
+    sailoBody: "{email} 주소로 Sailo의 팁과 제품 소식을 더 이상 보내지 않습니다. 주문, 결제, 계정 관련 이메일은 계속 발송됩니다.",
+    sailoDoneBody: "Sailo가 더 이상 팁이나 제품 소식을 보내지 않습니다. 주문, 결제, 계정 관련 이메일은 계속 발송됩니다.",
+    sailoInvalidBody: "support@sailo.store로 메일을 보내주시면 목록에서 제외해 드립니다.",
   },
 };

@@ -6,7 +6,11 @@ import { createOrderIntent } from "@/lib/actions/orders";
 import { markPendingOrder } from "@/lib/cart";
 import type { OrderIntentResult } from "@/lib/orders/types";
 import { useCheckoutQuote } from "./use-checkout-quote";
-import { PAYMENT_METHOD_DEFS, type PaymentMethodType } from "@/lib/payments";
+import {
+  PAYMENT_METHOD_DEFS,
+  railsForOrder,
+  type PaymentMethodType,
+} from "@/lib/payments";
 import { formatPercent } from "@/lib/pricing";
 import { readReferralCode } from "@/lib/referral";
 import { trackClick } from "@/lib/track-click";
@@ -29,6 +33,8 @@ export function CheckoutPanel({
   items,
   methods,
   deliveryOptions,
+  needsDeliveryHint = false,
+  payInPersonHint = true,
   contactEmail,
   compliance,
   hasFiles = false,
@@ -49,8 +55,8 @@ export function CheckoutPanel({
    * populated cart; the formatter falls back to English on its own.
    */
   const locale = useCart()?.locale;
-  const [method, setMethod] = useState<PaymentMethodType>(
-    methods[0]?.type ?? "whatsapp",
+  const [chosen, setChosen] = useState<PaymentMethodType>(
+    railsForOrder(methods, payInPersonHint)[0]?.type ?? "whatsapp",
   );
   const [deliveryId, setDeliveryId] = useState<string | null>(
     deliveryOptions[0]?.id ?? null,
@@ -68,7 +74,12 @@ export function CheckoutPanel({
    * two questions only the server can answer about whether this basket needs
    * delivering or an address at all.
    */
-  const quote = useCheckoutQuote({ shopId, items, deliveryId });
+  const quote = useCheckoutQuote({
+    shopId,
+    items,
+    deliveryId,
+    needsDeliveryHint,
+  });
   const { preview, coupon, dispatchCoupon, totals, tax } = quote;
 
   useEffect(() => {
@@ -81,15 +92,28 @@ export function CheckoutPanel({
     };
   }, [onClose]);
 
+  const selectedDelivery = deliveryOptions.find((d) => d.id === deliveryId);
+  // The server decides all three: a basket of downloads isn't shipped, a
+  // collection order has nowhere to deliver to, and a rail whose promise is a
+  // doorstep is not on offer to an order that never reaches one.
+  const showDelivery = quote.needsDelivery && deliveryOptions.length > 0;
+  const needsAddress = quote.needsAddress;
+  const rails = railsForOrder(methods, quote.canPayInPerson);
+
+  /*
+   * The rail in force, which is not always the one last clicked: the quote can
+   * withdraw it. A cart holding a mug and a PDF offers cash on delivery, and
+   * removing the mug takes it away again — so the choice is read back through
+   * what is still on offer rather than trusted, or the order would go out on a
+   * rail the panel had stopped showing.
+   */
+  const method = rails.some((m) => m.type === chosen)
+    ? chosen
+    : (rails[0]?.type ?? chosen);
   const def = PAYMENT_METHOD_DEFS[method];
   const rail = railCopy(method, t);
   const needsContact = Boolean(def.requires.contact);
   const needsEmail = Boolean(def.requires.email);
-  const selectedDelivery = deliveryOptions.find((d) => d.id === deliveryId);
-  // The server decides both of these: a basket of downloads isn't shipped, and
-  // a collection order has nowhere to deliver to.
-  const showDelivery = quote.needsDelivery && deliveryOptions.length > 0;
-  const needsAddress = quote.needsAddress;
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -361,13 +385,13 @@ export function CheckoutPanel({
                 </fieldset>
               ) : null}
 
-              {methods.length > 1 ? (
+              {rails.length > 1 ? (
                 <fieldset>
                   <legend className="mb-1.5 text-sm font-medium">
                     {t.checkout.howOrder}
                   </legend>
                   <div className="space-y-1.5">
-                    {methods.map((m) => {
+                    {rails.map((m) => {
                       const d = railCopy(m.type, t);
                       const active = method === m.type;
                       return (
@@ -382,7 +406,7 @@ export function CheckoutPanel({
                             name="paymentMethod"
                             value={m.type}
                             checked={active}
-                            onChange={() => setMethod(m.type)}
+                            onChange={() => setChosen(m.type)}
                             className="mt-0.5 size-4 accent-current"
                           />
                           <span className="min-w-0">

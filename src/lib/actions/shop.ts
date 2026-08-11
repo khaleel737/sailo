@@ -22,6 +22,7 @@ import {
   NOTIFICATION_EVENTS,
   notificationPrefsSchema,
 } from "@/lib/notification-prefs";
+import { setMarketingOptIn } from "@/lib/lifecycle/opt-out";
 import { isStaff, requireShop, requireUser } from "@/lib/session";
 import { normalizePhone, SOCIAL_PLATFORMS } from "@/lib/utils";
 import { isPublicLinkUrl, isRenderableImageUrl } from "@/lib/file-urls";
@@ -29,8 +30,8 @@ import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
 import { BRAND_HANDLE, HANDLE_MESSAGES, normalizeHandle, suggestHandles, validateHandleFormat } from "@/lib/handle";
 import { readPixelIds } from "@/lib/shop-pixels";
-import { attributeReferral } from "@/lib/creator-referrals/store";
-import { REFERRAL_COOKIE } from "@/lib/creator-referrals/program";
+import { attributeReferral } from "@/lib/partners/store";
+import { REFERRAL_COOKIE } from "@/lib/partners/program";
 
 /**
  * What the calendar-feed field means, given that it is a secret.
@@ -337,6 +338,7 @@ export async function createShop(
       try {
         await attributeReferral({
           referredShopId: shopId,
+          referredUserId: user.id,
           referredEmail: user.email,
           rawCode: referralCookie,
         });
@@ -452,7 +454,7 @@ export async function updateShop(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { user, shop } = await requireShop();
 
   const name = String(formData.get("name") ?? "").trim();
   if (!name) return { ok: false, error: "Shop name can't be empty." };
@@ -597,6 +599,22 @@ export async function updateShop(
    * nothing and it working on the next page load.
    */
   if (calendarFeed.changed) await forgetExternalBusy(shop.id);
+
+  /*
+   * The one switch on this form that is not a shop setting.
+   *
+   * Sailo's product mail is keyed on the *account* address in
+   * `marketing_opt_outs` — platform-wide, and outliving the shop — because an
+   * unsubscribe arrives from a mail client with no session and no shop id,
+   * and has to stick whatever any column later says. So it is written through
+   * its own module rather than folded into the UPDATE above.
+   *
+   * Written after the shop, and deliberately not inside its error handling: a
+   * failure here must not roll back a saved shop, and a seller who came to
+   * this page to rename their shop should not lose that because a mailing
+   * preference did not take.
+   */
+  await setMarketingOptIn(user.email, formData.get("marketing_opt_in") === "on");
 
   return {
     ok: true,

@@ -584,6 +584,10 @@ export const en = {
     doneBody: "{shop} won't send you marketing emails again. Order confirmations still arrive as usual.",
     invalidTitle: "This link has expired",
     invalidBody: "Reply to any email from the shop and ask them to remove you, and they will.",
+    sailoTitle: "Stop marketing emails from Sailo?",
+    sailoBody: "{email} will stop receiving tips and product news from Sailo. Order, billing and account emails still arrive as usual.",
+    sailoDoneBody: "Sailo won't send you tips or product news again. Order, billing and account emails still arrive as usual.",
+    sailoInvalidBody: "Email support@sailo.store and we'll take you off the list.",
   },
 } as const;
 

@@ -157,7 +157,20 @@ const nextConfig: NextConfig = {
        * here is blocked. Deliberate — Meta and TikTok are first-class fields
        * precisely so nobody needs a container that pulls in arbitrary hosts.
        */
-      `script-src 'self' 'unsafe-inline'${devEval} https://js.stripe.com https://*.stripe.com https://www.googletagmanager.com https://va.vercel-scripts.com https://connect.facebook.net https://analytics.tiktok.com`,
+      /*
+       * `'wasm-unsafe-eval'` is the QR decoder, and it is narrower than it
+       * sounds: it permits WebAssembly compilation and nothing else — no
+       * `eval`, no `new Function`. Without it Chrome refuses to instantiate
+       * any module once a CSP is present, and the door scanner fails on the
+       * one platform where it was already going to be hardest to notice,
+       * because `'unsafe-eval'` masks it in development and is deliberately
+       * absent in production.
+       *
+       * Safari needs it too and iOS needs the wasm at all: Safari has never
+       * shipped `BarcodeDetector`, so on an iPhone — which is what a seller
+       * is holding at a door — this decoder is the only scanner there is.
+       */
+      `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${devEval} https://js.stripe.com https://*.stripe.com https://www.googletagmanager.com https://va.vercel-scripts.com https://connect.facebook.net https://analytics.tiktok.com`,
       "style-src 'self' 'unsafe-inline'",
       // Google Analytics still falls back to a tracking pixel in some paths,
       // and the Meta pixel's namesake fallback is an image request to /tr.
@@ -205,9 +218,21 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Permissions-Policy",
-            // Nothing here needs a camera or a microphone; payment is Stripe's
-            // iframe, which asks for its own permission.
-            value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+            /*
+             * `camera=(self)`, because the check-in screen is a camera.
+             *
+             * This said `camera=()` — off for everyone including us — which
+             * is the correct default for a shop and was the correct default
+             * right up until a door had to scan five hundred QR codes. A
+             * header is a harder no than a permission prompt: `getUserMedia`
+             * rejects before the browser ever asks, so the scanner would have
+             * shipped as a black rectangle with no error a seller could act
+             * on. Still nothing for third parties — `self` is this origin
+             * only, and the Stripe iframes are unaffected.
+             *
+             * The microphone stays off. Nothing here records anything.
+             */
+            value: "camera=(self), microphone=(), geolocation=(), interest-cohort=()",
           },
           {
             key: "Strict-Transport-Security",

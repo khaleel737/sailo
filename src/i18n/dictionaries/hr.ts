@@ -345,5 +345,9 @@ export const hr: Dictionary = {
     doneBody: "{shop} ti više neće slati marketinške e-poruke. Potvrde narudžbi i dalje stižu.",
     invalidTitle: "Ova poveznica više ne vrijedi",
     invalidBody: "Odgovori na bilo koju e-poruku trgovine i zamoli ih da te uklone.",
+    sailoTitle: "Zaustaviti marketinške e-poruke od Sailo?",
+    sailoBody: "{email} više neće primati savjete i novosti o proizvodu od Sailo. E-poruke o narudžbama, naplati i računu i dalje stižu kao i obično.",
+    sailoDoneBody: "Sailo vam više neće slati savjete ni novosti o proizvodu. E-poruke o narudžbama, naplati i računu i dalje stižu kao i obično.",
+    sailoInvalidBody: "Pišite nam na support@sailo.store i skinut ćemo vas s popisa.",
   },
 };

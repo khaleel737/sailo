@@ -404,5 +404,9 @@ export const it: Dictionary = {
     doneBody: "{shop} non ti invierà più email di marketing. Le conferme d'ordine continuano ad arrivare.",
     invalidTitle: "Questo link non è più valido",
     invalidBody: "Rispondi a una qualsiasi email del negozio e chiedi di essere rimosso.",
+    sailoTitle: "Vuoi bloccare le email di marketing da Sailo?",
+    sailoBody: "{email} non riceverà più consigli e novità sul prodotto da Sailo. Le email su ordini, fatturazione e account continuano ad arrivare.",
+    sailoDoneBody: "Sailo non ti invierà più consigli o novità sul prodotto. Le email su ordini, fatturazione e account continuano ad arrivare.",
+    sailoInvalidBody: "Scrivici a support@sailo.store e ti togliamo dalla lista.",
   },
 };

@@ -13,7 +13,16 @@ import {
 } from "@/db/schema";
 import { createOrderIntent } from "@/lib/actions/orders";
 import { releaseDownloads } from "@/lib/downloads";
-import { checkInTicketForShop } from "@/lib/tickets";
+import {
+  checkInTicketById,
+  checkInTicketForShop,
+  issueTickets,
+  reinstateTicketsForOrder,
+  undoCheckIn,
+  voidTicketsForOrder,
+} from "@/lib/tickets";
+import { importTickets } from "@/lib/import/tickets";
+import { eventDoorList, eventDoorStats } from "@/lib/queries/tickets";
 
 /**
  * Event tickets, end to end: minted with the order, gated by the release
@@ -353,5 +362,280 @@ describe("the door", () => {
       "not_found",
     );
     expect((await checkInTicketForShop(shop.id, "")).status).toBe("not_found");
+  });
+});
+
+/**
+ * Everything the door gained when it stopped being one text box: a scope, an
+ * undo, admissions nobody bought, and the rule that a refunded ticket stops
+ * opening a door.
+ */
+describe("working a door at scale", () => {
+  async function releasedTicketFor(shopId: string, productId: string) {
+    const orderId = await placedOrder(shopId, productId);
+    await releaseDownloads(orderId);
+    const [ticket] = await ticketRows(orderId);
+    if (!ticket) throw new Error("fixture: no ticket");
+    return { orderId, ticket };
+  }
+
+  it("a door scoped to one event names the other event rather than denying it", async () => {
+    /*
+     * A shop running two rooms on one night. Answering "not found" for the
+     * wrong room is the worst possible reading: the volunteer sends away a
+     * guest who is standing outside the right building with a valid ticket.
+     */
+    const shop = await makeShop();
+    const tonight = await makeEvent(shop.id, { title: "Rooftop Show" });
+    const other = await makeEvent(shop.id, { title: "Basement Set" });
+    const { ticket } = await releasedTicketFor(shop.id, other.id);
+
+    const scoped = await checkInTicketForShop(shop.id, ticket.code, {
+      productId: tonight.id,
+    });
+    expect(scoped.status).toBe("wrong_event");
+    if (scoped.status === "wrong_event") {
+      expect(scoped.productTitle).toBe("Basement Set");
+    }
+
+    // And it was not spent by the refusal — it still admits at its own door.
+    const right = await checkInTicketForShop(shop.id, ticket.code, {
+      productId: other.id,
+    });
+    expect(right.status).toBe("checked_in");
+  });
+
+  it("records who admitted them", async () => {
+    const shop = await makeShop();
+    const ev = await makeEvent(shop.id);
+    const { ticket } = await releasedTicketFor(shop.id, ev.id);
+
+    const r = await checkInTicketForShop(shop.id, ticket.code, {
+      productId: ev.id,
+      by: "Front gate — Ana",
+    });
+    expect(r.status).toBe("checked_in");
+    if (r.status === "checked_in") expect(r.checkedInBy).toBe("Front gate — Ana");
+  });
+
+  it("undo puts a mis-scanned ticket back, and it admits again", async () => {
+    const shop = await makeShop();
+    const ev = await makeEvent(shop.id);
+    const { ticket } = await releasedTicketFor(shop.id, ev.id);
+
+    await checkInTicketForShop(shop.id, ticket.code);
+    expect(await undoCheckIn(shop.id, ticket.id)).toBe(true);
+
+    const row = await db.query.tickets.findFirst({
+      where: eq(tickets.id, ticket.id),
+    });
+    expect(row?.status).toBe("valid");
+    expect(row?.usedAt).toBeNull();
+    expect(row?.checkedInBy).toBeNull();
+
+    expect((await checkInTicketForShop(shop.id, ticket.code)).status).toBe(
+      "checked_in",
+    );
+    // Undoing a ticket nobody has used is not an error, it is a no-op.
+    expect(await undoCheckIn(shop.id, ticket.id)).toBe(true);
+    expect(await undoCheckIn(shop.id, ticket.id)).toBe(false);
+  });
+
+  it("a refunded order stops admitting people", async () => {
+    /*
+     * The bug this closes: money went back and the code kept working, so a
+     * buyer could refund on the afternoon of the show and walk in that
+     * evening. `voidTicketsForOrder` is what the refund and cancel paths call.
+     */
+    const shop = await makeShop();
+    const ev = await makeEvent(shop.id);
+    const { orderId, ticket } = await releasedTicketFor(shop.id, ev.id);
+
+    expect(await voidTicketsForOrder(orderId)).toBe(1);
+    expect((await checkInTicketForShop(shop.id, ticket.code)).status).toBe(
+      "revoked",
+    );
+
+    // Un-cancelling gives it back, and it admits again.
+    expect(await reinstateTicketsForOrder(orderId)).toBe(1);
+    expect((await checkInTicketForShop(shop.id, ticket.code)).status).toBe(
+      "checked_in",
+    );
+  });
+
+  it("never rewrites the attendance record of an event that happened", async () => {
+    // Voiding must not touch a ticket somebody already walked in on.
+    const shop = await makeShop();
+    const ev = await makeEvent(shop.id);
+    const { orderId, ticket } = await releasedTicketFor(shop.id, ev.id);
+
+    await checkInTicketForShop(shop.id, ticket.code);
+    expect(await voidTicketsForOrder(orderId)).toBe(0);
+    expect(
+      (await db.query.tickets.findFirst({ where: eq(tickets.id, ticket.id) }))
+        ?.status,
+    ).toBe("used");
+  });
+
+  it("a comp has no order and admits on the seller's authority alone", async () => {
+    /*
+     * `order_id` is nullable since 0014 and EXISTS over a null is false, so
+     * without the explicit `isNull` branch every comp would be refused at the
+     * door for not being paid for — with no order to point the seller at.
+     */
+    const shop = await makeShop();
+    const ev = await makeEvent(shop.id);
+
+    const [comp] = await issueTickets(shop.id, [
+      {
+        productId: ev.id,
+        attendeeName: "Ada Okonkwo",
+        attendeeEmail: "ada@example.com",
+        source: "import",
+      },
+    ]);
+    if (!comp) throw new Error("fixture: no comp was issued");
+    expect(comp.orderId).toBeNull();
+
+    const r = await checkInTicketForShop(shop.id, comp.code, {
+      productId: ev.id,
+    });
+    expect(r.status).toBe("checked_in");
+    if (r.status === "checked_in") expect(r.attendee).toBe("Ada Okonkwo");
+  });
+
+  it("re-running a guest list adds only what is new", async () => {
+    /*
+     * The normal way a seller uses this is to add twenty names to the
+     * spreadsheet and upload the whole file again. Without the dedupe the
+     * first forty guests get a second ticket each and the door list doubles.
+     */
+    const shop = await makeShop();
+    const ev = await makeEvent(shop.id, { title: "Rooftop Show" });
+    const csv = [
+      "Attendee Name,Attendee Email,Quantity",
+      "Ada Okonkwo,ada@example.com,1",
+      "Bo Lindqvist,bo@example.com,2",
+    ].join("\n");
+
+    const first = await importTickets({
+      shopId: shop.id,
+      csv,
+      dryRun: false,
+      defaultProductId: ev.id,
+    });
+    expect(first.created).toBe(3);
+
+    const again = await importTickets({
+      shopId: shop.id,
+      csv,
+      dryRun: false,
+      defaultProductId: ev.id,
+    });
+    expect(again.created).toBe(0);
+    expect(again.skipped).toBe(2);
+
+    // Bumping somebody from two to three writes exactly one more.
+    const bumped = await importTickets({
+      shopId: shop.id,
+      csv: csv.replace("bo@example.com,2", "bo@example.com,3"),
+      dryRun: false,
+      defaultProductId: ev.id,
+    });
+    expect(bumped.updated).toBe(1);
+
+    const stats = await eventDoorStats(shop.id, ev.id);
+    expect(stats.issued).toBe(4);
+    expect(stats.comped).toBe(4);
+    expect(stats.checkedIn).toBe(0);
+  });
+
+  it("a dry run writes nothing", async () => {
+    const shop = await makeShop();
+    const ev = await makeEvent(shop.id);
+    const report = await importTickets({
+      shopId: shop.id,
+      csv: "Attendee Name\nAda Okonkwo",
+      dryRun: true,
+      defaultProductId: ev.id,
+    });
+    expect(report.created).toBe(1);
+    expect((await eventDoorStats(shop.id, ev.id)).issued).toBe(0);
+  });
+
+  it("resolves the event by name when one file covers several", async () => {
+    const shop = await makeShop();
+    const rooftop = await makeEvent(shop.id, { title: "Rooftop Show" });
+    const basement = await makeEvent(shop.id, { title: "Basement Set" });
+
+    await importTickets({
+      shopId: shop.id,
+      csv: [
+        "Event,Attendee Name",
+        "Rooftop Show,Ada Okonkwo",
+        "Basement Set,Bo Lindqvist",
+        "Nowhere At All,Cy Mbeki",
+      ].join("\n"),
+      dryRun: false,
+    });
+
+    expect((await eventDoorStats(shop.id, rooftop.id)).issued).toBe(1);
+    expect((await eventDoorStats(shop.id, basement.id)).issued).toBe(1);
+  });
+
+  it("finds a guest by the name on the list, not just by their code", async () => {
+    // The dead-phone case, which is the entire reason the list exists.
+    const shop = await makeShop();
+    const ev = await makeEvent(shop.id);
+    await importTickets({
+      shopId: shop.id,
+      csv: "Attendee Name,Attendee Email\nAda Okonkwo,ada@example.com",
+      dryRun: false,
+      defaultProductId: ev.id,
+    });
+
+    const byName = await eventDoorList(shop.id, ev.id, { search: "okonkwo" });
+    expect(byName.rows).toHaveLength(1);
+    const found = byName.rows[0];
+    if (!found) throw new Error("no row");
+    expect(found.name).toBe("Ada Okonkwo");
+
+    const byEmail = await eventDoorList(shop.id, ev.id, { search: "ada@" });
+    expect(byEmail.rows).toHaveLength(1);
+
+    // Admitting from the list goes through the same claim a scan does.
+    expect(
+      (await checkInTicketById(shop.id, found.id, { productId: ev.id })).status,
+    ).toBe("checked_in");
+    expect(
+      (await checkInTicketById(shop.id, found.id, { productId: ev.id })).status,
+    ).toBe("already_used");
+
+    const stillOut = await eventDoorList(shop.id, ev.id, { status: "out" });
+    expect(stillOut.rows).toHaveLength(0);
+  });
+
+  it("counts the room without mixing two audiences together", async () => {
+    const shop = await makeShop();
+    const rooftop = await makeEvent(shop.id, {
+      trackInventory: true,
+      stockQuantity: 10,
+    });
+    const basement = await makeEvent(shop.id);
+
+    const { ticket } = await releasedTicketFor(shop.id, rooftop.id);
+    await placedOrder(shop.id, basement.id, 2);
+    await checkInTicketForShop(shop.id, ticket.code, { productId: rooftop.id });
+
+    const stats = await eventDoorStats(shop.id, rooftop.id);
+    expect(stats.issued).toBe(1);
+    expect(stats.checkedIn).toBe(1);
+    expect(stats.remaining).toBe(0);
+    // Nine seats still for sale plus the one in hand.
+    expect(stats.capacity).toBe(10);
+
+    // An event that doesn't track inventory has no capacity to report, and
+    // showing "0 of 0" for an uncapped door would read as sold out.
+    expect((await eventDoorStats(shop.id, basement.id)).capacity).toBeNull();
   });
 });

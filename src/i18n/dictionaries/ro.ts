@@ -395,5 +395,9 @@ export const ro: Dictionary = {
     doneBody: "{shop} nu îți va mai trimite emailuri de marketing. Confirmările de comandă sosesc în continuare.",
     invalidTitle: "Acest link nu mai este valid",
     invalidBody: "Răspunde la orice email de la magazin și cere-le să te scoată de pe listă.",
+    sailoTitle: "Oprești e-mailurile de marketing de la Sailo?",
+    sailoBody: "{email} nu va mai primi sfaturi și noutăți despre produs de la Sailo. E-mailurile despre comenzi, facturare și cont continuă să sosească.",
+    sailoDoneBody: "Sailo nu îți va mai trimite sfaturi sau noutăți despre produs. E-mailurile despre comenzi, facturare și cont continuă să sosească.",
+    sailoInvalidBody: "Scrie-ne la support@sailo.store și te scoatem de pe listă.",
   },
 };

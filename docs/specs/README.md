@@ -79,6 +79,7 @@ Security tab).
 | 16 | `17-booking-integrations.md` | L | **Built, reshaped** — iCal feed, not Google OAuth |
 | 17 | `23-crm-upgrades.md` | M | **Built**, minus the seller phone field |
 | 18 | `14-email-broadcasts.md` | L | **Built**, minus flows and scheduling |
+| 19 | `27-lifecycle-email.md` | M | **Built** — Sailo's own onboarding funnel to sellers |
 
 ### The bookings & audience block, as built
 
@@ -121,6 +122,26 @@ New environment variables: `RESEND_WEBHOOK_SECRET` (the bounce webhook refuses
 to run without it) and the optional `BROADCAST_DAILY_CEILING`. Unsubscribe
 tokens are signed with a key *derived* from `BETTER_AUTH_SECRET`, so they need
 no new secret and cannot be confused with anything the auth library signs.
+
+### Lifecycle email, as built
+
+**`27-lifecycle-email.md`** is the other direction: Sailo mailing its own
+sellers about getting set up, from `marketing@sailo.store`, on an hourly cron.
+Twelve rungs anchored on real timestamps (signup, shop, first product, first
+order) with eligibility re-checked at send time, so nobody is told to add a
+product ten minutes after adding one. Every rung expires except `catch_up`,
+which is the one honest thing to send a fleet that predates the feature — one
+email that reads their current state and names where they actually stopped.
+
+No stored funnel stage: the rung is derived from shops, products,
+`payment_methods` and orders, exactly as the setup checklist derives its ticks.
+The two tables are the *claim* (`lifecycle_emails`, unique on user+step) and the
+platform-wide opt-out (`marketing_opt_outs`, keyed on the address so it outlives
+the account). *Not built:* open/click tracking, A/B copy, a scheduling UI.
+
+New environment variable: the optional `LIFECYCLE_DAILY_CEILING`. Marketing
+opt-out tokens are signed under their own domain, so a broadcast token cannot
+unsubscribe anybody from Sailo's own list, or the reverse.
 
 ### The growth block, as built
 

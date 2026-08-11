@@ -73,6 +73,8 @@ type SeedProduct = {
     stock?: number;
     sku?: string;
     available?: boolean;
+    /** This combination's own photo — the charcoal apron, not the apron. */
+    image?: string;
   }[];
   trackInventory?: boolean;
   stockQuantity?: number;
@@ -222,7 +224,9 @@ const PRODUCTS: SeedProduct[] = [
       "Heavy cotton canvas with a split leg and a deep tool pocket. Softens with every wash.",
     tags: ["apron", "studio", "cotton"],
     images: ["photo-1618354691373-d851c5c3a990", "photo-1620799140408-edc6dcb6d633"],
-    // Two axes: every size in every colour, counted separately.
+    // Two axes: every size in every colour, counted separately. The charcoal
+    // ones carry their own photo, which is what the gallery follows when a
+    // buyer picks the colour.
     options: [
       { name: "Size", values: ["S", "M", "L"] },
       { name: "Colour", values: ["Natural", "Charcoal"] },
@@ -230,9 +234,19 @@ const PRODUCTS: SeedProduct[] = [
     trackInventory: true,
     variants: [
       { options: { Size: "S", Colour: "Natural" }, stock: 4, sku: "APR-S-NAT" },
-      { options: { Size: "S", Colour: "Charcoal" }, stock: 2, sku: "APR-S-CHR" },
+      {
+        options: { Size: "S", Colour: "Charcoal" },
+        stock: 2,
+        sku: "APR-S-CHR",
+        image: "photo-1503341504253-dff4815485f1",
+      },
       { options: { Size: "M", Colour: "Natural" }, stock: 7, sku: "APR-M-NAT" },
-      { options: { Size: "M", Colour: "Charcoal" }, stock: 5, sku: "APR-M-CHR" },
+      {
+        options: { Size: "M", Colour: "Charcoal" },
+        stock: 5,
+        sku: "APR-M-CHR",
+        image: "photo-1503341504253-dff4815485f1",
+      },
       // Sold out in one combination only — the picker greys it out.
       { options: { Size: "L", Colour: "Natural" }, stock: 0, sku: "APR-L-NAT" },
       {
@@ -240,6 +254,7 @@ const PRODUCTS: SeedProduct[] = [
         stock: 3,
         sku: "APR-L-CHR",
         priceCents: 4500,
+        image: "photo-1503341504253-dff4815485f1",
       },
     ],
   },
@@ -465,6 +480,7 @@ async function main() {
           priceCents: v.priceCents ?? null,
           stockQuantity: p.trackInventory ? (v.stock ?? null) : null,
           isAvailable: v.available ?? true,
+          imageUrl: v.image ? img(v.image) : null,
           position: index,
         })),
       );

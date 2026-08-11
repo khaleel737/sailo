@@ -345,5 +345,9 @@ export const id: Dictionary = {
     doneBody: "{shop} tidak akan mengirimimu email pemasaran lagi. Konfirmasi pesanan tetap dikirim.",
     invalidTitle: "Tautan ini sudah tidak berlaku",
     invalidBody: "Balas email mana pun dari toko dan minta mereka menghapusmu dari daftar.",
+    sailoTitle: "Hentikan email pemasaran dari Sailo?",
+    sailoBody: "{email} tidak akan lagi menerima tips dan kabar produk dari Sailo. Email pesanan, tagihan, dan akun tetap dikirim seperti biasa.",
+    sailoDoneBody: "Sailo tidak akan mengirimimu tips atau kabar produk lagi. Email pesanan, tagihan, dan akun tetap dikirim seperti biasa.",
+    sailoInvalidBody: "Kirim email ke support@sailo.store dan kami akan menghapusmu dari daftar.",
   },
 };

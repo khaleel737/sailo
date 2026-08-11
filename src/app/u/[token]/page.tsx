@@ -6,7 +6,8 @@ import { getShopT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
 import { readUnsubscribeToken } from "@/lib/broadcasts/unsubscribe";
 import { isSuppressed } from "@/lib/broadcasts/audience";
-import { UnsubscribeForm } from "./_components/unsubscribe-form";
+import { confirmUnsubscribe } from "@/lib/actions/unsubscribe";
+import { UnsubscribeForm } from "@/components/shared/unsubscribe-form";
 import { shopThemeVars } from "@/lib/utils";
 
 /* Not yet converted — see the note in `next.config.ts`. */
@@ -88,6 +89,7 @@ export default async function UnsubscribePage({
             </p>
 
             <UnsubscribeForm
+              action={confirmUnsubscribe}
               token={token}
               label={t.unsubscribe.confirm}
               doneTitle={t.unsubscribe.doneTitle}

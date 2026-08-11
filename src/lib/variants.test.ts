@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { ProductOption } from "@/db/schema";
 import {
   combinations,
+  retargetSelection,
   MAX_VARIANTS,
   normalizeOptions,
   optionKey,
@@ -130,5 +131,69 @@ describe("variantPrice", () => {
   it("honours a variant priced at zero rather than inheriting", () => {
     // A deliberately free variant must not silently cost the product's price.
     expect(variantPrice({ priceCents: 1999, compareAtCents: null }, { priceCents: 0 })).toBe(0);
+  });
+});
+
+describe("retargetSelection", () => {
+  const v = (
+    id: string,
+    options: Record<string, string>,
+    available = true,
+    unitsLeft: number | null = null,
+  ) => ({
+    id,
+    options,
+    priceCents: 1000,
+    compareAtCents: null,
+    available,
+    unitsLeft,
+    imageUrl: null,
+  });
+
+  const variants = [
+    v("s-red", { Size: "S", Colour: "Red" }),
+    v("s-blue", { Size: "S", Colour: "Blue" }),
+    v("l-red", { Size: "L", Colour: "Red" }),
+    v("l-blue", { Size: "L", Colour: "Blue" }, false),
+  ];
+
+  it("keeps the rest of the selection when the combination is for sale", () => {
+    const target = retargetSelection(
+      variants,
+      { Size: "S", Colour: "Red" },
+      "Colour",
+      "Blue",
+    );
+    expect(target?.id).toBe("s-blue");
+  });
+
+  it("jumps to the nearest sellable combination carrying the value", () => {
+    // L/Blue is sold out, so picking Blue from L lands on the Blue that exists.
+    const target = retargetSelection(
+      variants,
+      { Size: "L", Colour: "Red" },
+      "Colour",
+      "Blue",
+    );
+    expect(target?.id).toBe("s-blue");
+  });
+
+  it("returns the sold-out exact match when nothing sellable carries the value", () => {
+    // The caller shows it as unavailable rather than pretending it's gone.
+    const only = [v("l-blue", { Size: "L", Colour: "Blue" }, false)];
+    const target = retargetSelection(
+      only,
+      { Size: "L", Colour: "Blue" },
+      "Colour",
+      "Blue",
+    );
+    expect(target?.id).toBe("l-blue");
+    expect(target?.available).toBe(false);
+  });
+
+  it("returns null for a value no combination carries", () => {
+    expect(
+      retargetSelection(variants, { Size: "S", Colour: "Red" }, "Colour", "Green"),
+    ).toBeNull();
   });
 });
