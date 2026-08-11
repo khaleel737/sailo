@@ -1,0 +1,23 @@
+apps/mobile/lib/models.ts
+  s_3fd229194f6299::t_fee28feb13fe03 1-9
+apps/mobile/package.json
+  s_3fd229194f6299::t_df717bc1792212 29-30
+package-lock.json
+  s_3fd229194f6299::t_b507a4fb73cc1d 36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "30ae366ca18465fe8910e6b9001507d8e230f9e6",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
