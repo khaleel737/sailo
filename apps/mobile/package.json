@@ -26,6 +26,7 @@
   "devDependencies": {
     "@sailo/config": "*",
     "@types/react": "~19.1.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@sailo/db": "*"
   }
 }
