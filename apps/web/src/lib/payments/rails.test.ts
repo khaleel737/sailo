@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { PaymentConfig } from "@/db/schema";
+import type { PaymentConfig } from "@sailo/db/schema";
 import {
   isConfigured,
   isElectronic,

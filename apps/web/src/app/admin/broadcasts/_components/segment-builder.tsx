@@ -10,7 +10,7 @@ import {
   PRODUCT_KINDS_SEGMENT,
   type RuleType,
 } from "@/lib/broadcasts/segments";
-import type { SegmentRule } from "@/db/schema/json-types";
+import type { SegmentRule } from "@sailo/db/schema/json-types";
 import type { SegmentPickers } from "@/lib/broadcasts/pickers";
 import { countAudience } from "@/lib/actions/broadcasts";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";

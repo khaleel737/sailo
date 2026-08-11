@@ -1,5 +1,5 @@
 import { and, eq, isNotNull, isNull, ne, notInArray, or, type SQL } from "drizzle-orm";
-import { shops } from "@/db/schema";
+import { shops } from "@sailo/db/schema";
 import type { BillingState } from "@/lib/hq-metrics";
 
 /** Which shops count as paying, expressed once so every figure agrees. */

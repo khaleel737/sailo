@@ -10,8 +10,8 @@ import { revalidateShop } from "@/lib/cache";
 import { publishHqEvent, publishShopEvent } from "@/lib/events";
 import { redirect } from "next/navigation";
 import { and, eq, ne } from "drizzle-orm";
-import { getDb } from "@/db";
-import { paymentMethods, shops, type NotificationPrefs, type Shop, type ShopSocial } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { paymentMethods, shops, type NotificationPrefs, type Shop, type ShopSocial } from "@sailo/db/schema";
 import {
   fetchExternalBusy,
   forgetExternalBusy,

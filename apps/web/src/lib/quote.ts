@@ -1,4 +1,4 @@
-import type { Coupon, DeliveryMethod, ProductOption, VariantOptions } from "@/db/schema";
+import type { Coupon, DeliveryMethod, ProductOption, VariantOptions } from "@sailo/db/schema";
 import { computeTotals, type TaxSettings, type Totals } from "@/lib/pricing";
 import { needsDelivery as kindNeedsDelivery, variantLabel } from "@/lib/variants";
 

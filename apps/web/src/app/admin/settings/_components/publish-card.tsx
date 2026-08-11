@@ -2,7 +2,7 @@
 
 import { Card, Switch } from "@/components/ui";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 export function PublishCard({ shop }: { shop: Shop }) {
   const a = useAdminT();

@@ -9,7 +9,7 @@ import { firstRow, present } from "@/lib/invariant";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import { hashPassword } from "better-auth/crypto";
-import * as schema from "../src/db/schema";
+import * as schema from "@sailo/db/schema";
 import { slugify } from "../src/lib/utils";
 import { computeTotals } from "../src/lib/pricing";
 

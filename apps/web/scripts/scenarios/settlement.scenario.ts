@@ -2,7 +2,7 @@ import type Stripe from "stripe";
 import { assertLocalDatabase } from "./local-only";
 import { beforeAll, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   invoices,
   orderItems,
@@ -13,7 +13,7 @@ import {
   shops,
   stripeEvents,
   user,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { claimEvent, handleConnectEvent, releaseEvent } from "@/lib/stripe-webhooks";
 
 /**

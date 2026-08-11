@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Affiliate } from "@/db/schema";
+import type { Affiliate } from "@sailo/db/schema";
 import { commissionBpFor } from "./commission";
 
 /**

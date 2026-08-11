@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { marketingOptOuts } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { marketingOptOuts } from "@sailo/db/schema";
 import type { SuppressionReason } from "@/lib/broadcasts/audience";
 
 /**

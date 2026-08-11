@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { esc, formatWhen, itemRows, layout, moneyRows, sailoLayout } from "./markup";
-import type { Order, Shop } from "@/db/schema";
+import type { Order, Shop } from "@sailo/db/schema";
 
 /**
  * Escaping, for markup nobody can inspect after the fact.

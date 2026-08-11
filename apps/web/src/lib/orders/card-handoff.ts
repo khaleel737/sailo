@@ -1,7 +1,7 @@
 import "server-only";
 import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { orders, type Shop } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { orders, type Shop } from "@sailo/db/schema";
 import { createCheckoutSession } from "@/lib/connect";
 import { abandonOrder } from "@/lib/inventory";
 import type { Handoff } from "@/lib/payments";

@@ -17,7 +17,7 @@ import {
   Select,
   Textarea,
 } from "@/components/ui";
-import type { Affiliate, Shop } from "@/db/schema";
+import type { Affiliate, Shop } from "@sailo/db/schema";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit({ label }: { label: string }) {

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { MapPin, Store } from "lucide-react";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 import { SocialIcons } from "./social-icons";
 
 /**

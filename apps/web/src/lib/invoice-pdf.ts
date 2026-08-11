@@ -1,6 +1,6 @@
 import "server-only";
 import PDFDocument from "pdfkit";
-import type { Invoice, Order, Shop } from "@/db/schema";
+import type { Invoice, Order, Shop } from "@sailo/db/schema";
 import type { OrderLine } from "@/lib/order-lines";
 import { getDictionary } from "@/i18n";
 import {

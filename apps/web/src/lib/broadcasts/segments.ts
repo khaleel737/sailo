@@ -1,4 +1,4 @@
-import type { SegmentFilter, SegmentRule } from "@/db/schema/json-types";
+import type { SegmentFilter, SegmentRule } from "@sailo/db/schema/json-types";
 import { normalizeTag } from "@/lib/client-tags";
 import { isUuid } from "@/lib/utils";
 

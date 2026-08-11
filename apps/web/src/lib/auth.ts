@@ -8,8 +8,8 @@ import {
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { magicLink, twoFactor } from "better-auth/plugins";
-import { getDb } from "@/db";
-import { account, session, twoFactor as twoFactorTable, user, verification } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { account, session, twoFactor as twoFactorTable, user, verification } from "@sailo/db/schema";
 import {
   sendEmailConfirmation,
   sendHqSignInLink,

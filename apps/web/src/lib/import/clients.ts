@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { clients } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { clients } from "@sailo/db/schema";
 import { field } from "@/lib/csv";
 import { normalizePhone } from "@/lib/utils";
 import { normalizeTags } from "@/lib/client-tags";

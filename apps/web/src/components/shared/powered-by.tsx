@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import { can } from "@/lib/plans";

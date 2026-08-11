@@ -12,11 +12,9 @@
  * an instant would not.
  */
 
-/** `09:00` to `17:00`, in the shop's local reckoning. */
-export type OpeningWindow = { from: string; to: string };
-
-/** Indexed 0–6, Sunday first, matching `Date.getUTCDay`. */
-export type WeeklyHours = OpeningWindow[][];
+// The stored shape lives with the schema that persists it.
+import type { OpeningWindow, WeeklyHours } from "@sailo/db/schema";
+export type { OpeningWindow, WeeklyHours };
 
 export const WEEKDAYS = [
   "sunday",

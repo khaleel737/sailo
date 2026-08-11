@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq, gte, isNotNull, lt, ne, notInArray } from "drizzle-orm";
-import { getDb } from "@/db";
-import { bookingClaims, orderItems, orders, type Shop } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { bookingClaims, orderItems, orders, type Shop } from "@sailo/db/schema";
 import { hoursOf } from "./hours";
 import { zoneOf } from "./time-zone";
 import { externalBusyFor } from "./external-busy";

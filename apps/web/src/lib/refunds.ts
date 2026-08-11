@@ -1,5 +1,5 @@
 import "server-only";
-import type { Order } from "@/db/schema";
+import type { Order } from "@sailo/db/schema";
 import { refundCharge } from "@/lib/connect";
 import { isPaymentMethodType, type PaymentMethodType } from "@/lib/payments";
 

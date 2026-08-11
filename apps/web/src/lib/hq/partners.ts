@@ -1,6 +1,6 @@
 import "server-only";
 import { and, desc, eq, isNull, lte, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   creatorReferrals,
   partnerPayouts,
@@ -8,7 +8,7 @@ import {
   referralEarnings,
   shops,
   user,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { maybeRow } from "@/lib/invariant";
 import { requireStaff } from "@/lib/session";
 import { canReceiveTransfer, partnerConnectState } from "@/lib/partners/connect";

@@ -2,7 +2,7 @@
 
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
-import type { ProductOption, VariantOptions } from "@/db/schema";
+import type { ProductOption, VariantOptions } from "@sailo/db/schema";
 import type { CheckoutVariant } from "@/lib/variants";
 
 /**

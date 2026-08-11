@@ -1,6 +1,6 @@
 import "server-only";
 import { sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 
 /**
  * Monthly partitions for `visits`, and the retention that drops them.

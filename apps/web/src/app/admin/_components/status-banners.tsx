@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, ShieldAlert, Wallet } from "lucide-react";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 import { getCheckoutOptions } from "@/lib/queries";
 import { getAdminT } from "@/i18n/server";
 import { VerifyEmailBanner } from "./verify-email-banner";

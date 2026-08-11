@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { categories, productImages, products, productVariants, type ProductOption, type VariantOptions } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { categories, productImages, products, productVariants, type ProductOption, type VariantOptions } from "@sailo/db/schema";
 import { firstRow, maybeRow } from "@/lib/invariant";
 import { field, parseBool, parseMoneyField } from "@/lib/csv";
 import { slugify } from "@/lib/utils";

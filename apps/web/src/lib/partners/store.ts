@@ -1,13 +1,13 @@
 import "server-only";
 import { and, desc, eq, isNull, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   creatorReferrals,
   partners,
   referralEarnings,
   shops,
   user,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { maybeRow } from "@/lib/invariant";
 import { getProgramSettings } from "./settings";
 import {

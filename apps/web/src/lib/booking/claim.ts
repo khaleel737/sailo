@@ -1,7 +1,7 @@
 import "server-only";
 import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { bookingClaims, orderItems, products } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { bookingClaims, orderItems, products } from "@sailo/db/schema";
 
 /**
  * Taking an appointment, and giving it back.

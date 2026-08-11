@@ -13,7 +13,7 @@ import {
   optionKey,
   variantLabel,
 } from "@/lib/variants";
-import type { ProductOption, ProductVariant } from "@/db/schema";
+import type { ProductOption, ProductVariant } from "@sailo/db/schema";
 
 /**
  * Options are typed as free text — "Size" with "Small, Medium, Large" — and

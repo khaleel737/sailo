@@ -1,8 +1,8 @@
 import "server-only";
 import { requireStaff } from "@/lib/session";
 import { and, eq, gte, inArray, isNotNull, isNull, ne, or, sql } from "drizzle-orm";
-import { getDb, getReadDb } from "@/db";
-import { clients, orders, products, shops, user, visits } from "@/db/schema";
+import { getDb, getReadDb } from "@sailo/db";
+import { clients, orders, products, shops, user, visits } from "@sailo/db/schema";
 import { mergeCurrencyTotals, rollUpRevenue } from "@/lib/hq-metrics";
 import type { BillingGroup, CurrencyTotal } from "@/lib/hq-metrics";
 import { ENTITLED } from "./billing-state";

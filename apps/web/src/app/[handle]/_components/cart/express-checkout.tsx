@@ -14,7 +14,7 @@ import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import { formatDuration, formatMoney } from "@/lib/utils";
 import { needsDelivery, variantLabel, type CheckoutVariant } from "@/lib/variants";
-import type { ProductOption } from "@/db/schema";
+import type { ProductOption } from "@sailo/db/schema";
 
 export type {
   CheckoutCompliance,

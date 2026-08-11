@@ -1,6 +1,6 @@
 import "server-only";
 import { and, asc, eq, inArray, isNull } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import { orderLines } from "@/lib/order-lines";
 import {
   orders,
@@ -9,7 +9,7 @@ import {
   shops,
   type Order,
   type Product,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { sendDownloadReady } from "@/lib/email";
 import { eventAccessForOrder } from "@/lib/event-access";
 

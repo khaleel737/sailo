@@ -27,7 +27,7 @@ import {
   type CheckoutVariant,
 } from "@/lib/variants";
 import { railsForOrder } from "@/lib/payments";
-import type { ProductOption, VariantOptions } from "@/db/schema";
+import type { ProductOption, VariantOptions } from "@sailo/db/schema";
 
 /**
  * The buying half of the product page: price, choices, quantity, and the two

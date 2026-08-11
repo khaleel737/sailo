@@ -1,7 +1,7 @@
 import type { Handoff } from "@/lib/payments";
 import type { Totals } from "@/lib/pricing";
 import type { QuoteLine } from "@/lib/quote";
-import type { Product, ProductVariant } from "@/db/schema";
+import type { Product, ProductVariant } from "@sailo/db/schema";
 
 /**
  * The shapes an order passes through, in one place.

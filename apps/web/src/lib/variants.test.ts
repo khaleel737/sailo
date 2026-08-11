@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { ProductOption } from "@/db/schema";
+import type { ProductOption } from "@sailo/db/schema";
 import {
   combinations,
   retargetSelection,

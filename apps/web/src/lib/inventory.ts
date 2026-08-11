@@ -3,7 +3,7 @@ import { publishShopEvent } from "@/lib/events";
 import { maybeRow } from "@/lib/invariant";
 import { releaseCouponRedemption } from "@/lib/orders/coupon-redemption";
 import { and, asc, eq, gte, inArray, isNull, isNotNull, lt, or, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import { releaseSlots, retakeSlots } from "@/lib/booking/claim";
 import {
   bookingClaims,
@@ -12,7 +12,7 @@ import {
   products,
   productVariants,
   type Order,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 
 /**
  * Stock movements. A null quantity means nobody is counting, and Postgres

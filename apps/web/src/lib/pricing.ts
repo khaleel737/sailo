@@ -1,4 +1,4 @@
-import type { Coupon, DeliveryMethod } from "@/db/schema";
+import type { Coupon, DeliveryMethod } from "@sailo/db/schema";
 import { chargeStep } from "@/lib/currency";
 
 /**

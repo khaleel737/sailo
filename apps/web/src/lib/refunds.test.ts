@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { canReverse, checkRefund, refundableCents, reversePayment } from "@/lib/refunds";
-import type { Order } from "@/db/schema";
+import type { Order } from "@sailo/db/schema";
 
 /**
  * Which rail gets asked to give the money back.

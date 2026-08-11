@@ -1,8 +1,8 @@
 import "server-only";
 import type Stripe from "stripe";
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { orders, shops } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { orders, shops } from "@sailo/db/schema";
 import { revalidateShop } from "@/lib/cache";
 import { publishAffiliateEvent, publishShopEvent } from "@/lib/events";
 import { abandonOrder, restoreStock } from "@/lib/inventory";

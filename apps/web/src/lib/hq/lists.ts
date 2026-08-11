@@ -1,8 +1,8 @@
 import "server-only";
 import { requireStaff } from "@/lib/session";
 import { and, desc, eq, gte, ilike, or, sql, type SQL } from "drizzle-orm";
-import { getDb } from "@/db";
-import { affiliates, clients, orders, products, shops, user } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { affiliates, clients, orders, products, shops, user } from "@sailo/db/schema";
 import { HQ_PAGE_SIZE, like, num, paginate } from "./pagination";
 import { daysAgo } from "./pagination";
 import { mergeCurrencyTotals } from "@/lib/hq-metrics";

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { shops } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { shops } from "@sailo/db/schema";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
 import { readUnsubscribeToken } from "@/lib/broadcasts/unsubscribe";

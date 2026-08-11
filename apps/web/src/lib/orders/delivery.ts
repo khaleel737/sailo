@@ -1,7 +1,7 @@
 import "server-only";
 import { and, asc, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { deliveryMethods } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { deliveryMethods } from "@sailo/db/schema";
 import { isDeliveryConfigured } from "@/lib/delivery";
 
 /**

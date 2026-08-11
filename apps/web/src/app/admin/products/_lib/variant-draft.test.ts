@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { ProductVariant } from "@/db/schema";
+import type { ProductVariant } from "@sailo/db/schema";
 import {
   BLANK,
   probablyMissingCommas,

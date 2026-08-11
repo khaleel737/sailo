@@ -1,7 +1,7 @@
 import "server-only";
 import { inArray } from "drizzle-orm";
-import { getDb } from "@/db";
-import { products, type Order } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { products, type Order } from "@sailo/db/schema";
 import { orderLines } from "@/lib/order-lines";
 
 /**

@@ -1,8 +1,8 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { and, asc, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { deliveryMethods, paymentMethods, shops } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { deliveryMethods, paymentMethods, shops } from "@sailo/db/schema";
 import { shopTag } from "@/lib/cache";
 import { can } from "@/lib/plans";
 import { isRailUsable, type PaymentMethodType } from "@/lib/payments";

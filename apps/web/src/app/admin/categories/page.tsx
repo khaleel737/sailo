@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { count, eq } from "drizzle-orm";
 import { Tag, Trash2 } from "lucide-react";
-import { getDb } from "@/db";
-import { products } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { products } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { getShopCategories } from "@/lib/queries";

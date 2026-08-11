@@ -1,6 +1,6 @@
 import "server-only";
 import { and, eq, gt, isNull, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   lifecycleEmails,
   marketingOptOuts,
@@ -10,7 +10,7 @@ import {
   shops,
   user,
   type ShopSocial,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { RETIRED_STEP } from "./steps";
 
 /**

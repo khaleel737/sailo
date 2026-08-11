@@ -4,8 +4,8 @@ import { notFound, redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { auth } from "./auth";
 import { isStaffEmail, staffEmails } from "./staff";
-import { getDb } from "@/db";
-import { shops } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { shops } from "@sailo/db/schema";
 
 /**
  * Wrapped in React's `cache` so one request pays for one session lookup, no

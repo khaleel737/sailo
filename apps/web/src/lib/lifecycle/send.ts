@@ -1,7 +1,7 @@
 import "server-only";
 import { eq, inArray } from "drizzle-orm";
-import { getDb } from "@/db";
-import { lifecycleEmails } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { lifecycleEmails } from "@sailo/db/schema";
 import { lifecycleMessage } from "@/lib/email/lifecycle-messages";
 import { MAX_BATCH, sendBatch } from "@/lib/email/transport";
 import {

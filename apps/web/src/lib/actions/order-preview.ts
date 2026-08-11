@@ -1,9 +1,9 @@
 "use server";
 
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import { liveShop } from "@/lib/shop-visibility";
-import { coupons, shops, type Coupon } from "@/db/schema";
+import { coupons, shops, type Coupon } from "@sailo/db/schema";
 import { rateLimit, refundRateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
 import { resolveLines } from "@/lib/orders/resolve-lines";

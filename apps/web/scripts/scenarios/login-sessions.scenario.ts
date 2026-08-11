@@ -1,8 +1,8 @@
 import { assertLocalDatabase } from "./local-only";
 import { beforeAll, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { session as sessionTable, user } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { session as sessionTable, user } from "@sailo/db/schema";
 import { listLoginSessions } from "@/lib/queries/sessions";
 
 /**

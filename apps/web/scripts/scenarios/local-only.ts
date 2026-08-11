@@ -1,4 +1,4 @@
-import { hostnameOf, isLocalDatabaseUrl } from "@/lib/local-database";
+import { hostnameOf, isLocalDatabaseUrl } from "@sailo/db/local-database";
 
 /**
  * Refuses to run against anything but a database on this machine.

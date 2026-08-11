@@ -3,7 +3,7 @@ import type {
   ProductFile,
   ProductImage,
   ProductVariant,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 
 /** A product with everything the form edits alongside it. */
 export type ProductWithRelations = Product & {

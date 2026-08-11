@@ -1,6 +1,6 @@
 import "server-only";
 import { notInArray, sql } from "drizzle-orm";
-import { user } from "@/db/schema";
+import { user } from "@sailo/db/schema";
 import { staffEmails } from "@/lib/staff";
 
 /**

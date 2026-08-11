@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { affiliates, paymentMethods, type Affiliate, type Shop } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { affiliates, paymentMethods, type Affiliate, type Shop } from "@sailo/db/schema";
 import { present } from "@/lib/invariant";
 import { can } from "@/lib/plans";
 import { normalizeCode } from "@/lib/pricing";
@@ -21,7 +21,7 @@ import { resolveDelivery } from "@/lib/orders/delivery";
 import { resolveLines } from "@/lib/orders/resolve-lines";
 import type { BuyerDetails } from "@/lib/orders/buyer";
 import type { OrderIntentInput, ResolvedLine } from "@/lib/orders/types";
-import type { Coupon, DeliveryMethod, PaymentMethod } from "@/db/schema";
+import type { Coupon, DeliveryMethod, PaymentMethod } from "@sailo/db/schema";
 
 /**
  * Everything an order is, worked out before anything is written down.

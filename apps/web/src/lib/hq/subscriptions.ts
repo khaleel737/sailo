@@ -1,12 +1,12 @@
 import "server-only";
 import { requireStaff } from "@/lib/session";
 import { and, desc, eq, isNotNull, ne, or, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { shops, user } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { shops, user } from "@sailo/db/schema";
 import { num } from "./pagination";
-import { paymentMethods } from "@/db/schema";
+import { paymentMethods } from "@sailo/db/schema";
 import { DAY_MS } from "./pagination";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 /** Who is paying, when they renew, and which rails sellers actually use. */
 

@@ -1,4 +1,4 @@
-import type { DeliveryConfig } from "@/db/schema";
+import type { DeliveryConfig } from "@sailo/db/schema";
 
 export const DELIVERY_METHOD_TYPES = ["shipping", "collection"] as const;
 export type DeliveryMethodType = (typeof DELIVERY_METHOD_TYPES)[number];

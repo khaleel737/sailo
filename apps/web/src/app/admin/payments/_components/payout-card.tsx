@@ -1,5 +1,5 @@
 import { AlertTriangle, ArrowUpRight, Banknote } from "lucide-react";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 import { getPayoutOverview } from "@/lib/connect-payouts";
 import { openStripeDashboard } from "@/lib/actions/connect";
 import { refreshPayouts } from "@/lib/actions/payouts";

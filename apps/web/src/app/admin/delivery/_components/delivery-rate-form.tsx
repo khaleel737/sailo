@@ -19,7 +19,7 @@ import {
   Select,
   Textarea,
 } from "@/components/ui";
-import type { DeliveryConfig, DeliveryMethod } from "@/db/schema";
+import type { DeliveryConfig, DeliveryMethod } from "@sailo/db/schema";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit({ isEdit }: { isEdit: boolean }) {

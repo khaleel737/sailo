@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { coupons, type Coupon } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { coupons, type Coupon } from "@sailo/db/schema";
 import { maybeRow } from "@/lib/invariant";
 
 /**

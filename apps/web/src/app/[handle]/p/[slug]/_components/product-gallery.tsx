@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useVariantPhoto } from "./variant-photo";
-import type { ProductImage } from "@/db/schema";
+import type { ProductImage } from "@sailo/db/schema";
 
 /**
  * A product's photos.

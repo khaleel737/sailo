@@ -1,13 +1,13 @@
 import "server-only";
 import type Stripe from "stripe";
 import { and, eq, isNull, lte, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   creatorReferrals,
   partnerPayouts,
   partners,
   referralEarnings,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { maybeRow } from "@/lib/invariant";
 import { stripe } from "@/lib/stripe";
 import { canReceiveTransfer } from "./connect";

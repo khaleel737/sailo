@@ -7,8 +7,8 @@ import { toDataURL } from "qrcode";
 import { APIError } from "better-auth/api";
 import { auth } from "@/lib/auth";
 import { getSession } from "@/lib/session";
-import { getDb } from "@/db";
-import { session as sessionTable, user as userTable } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { session as sessionTable, user as userTable } from "@sailo/db/schema";
 import { rateLimit } from "@/lib/redis";
 import { sendTwoFactorChanged } from "@/lib/email";
 

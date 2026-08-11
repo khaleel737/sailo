@@ -3,7 +3,7 @@
 import { Card, Field, Input } from "@/components/ui";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { PIXEL_PROVIDERS } from "@/lib/shop-pixels";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 /**
  * The seller's own tracking tags — ids only, never snippets.

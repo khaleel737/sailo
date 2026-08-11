@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq, or } from "drizzle-orm";
-import { getDb } from "@/db";
-import { clients } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { clients } from "@sailo/db/schema";
 import { maybeRow } from "@/lib/invariant";
 
 /**

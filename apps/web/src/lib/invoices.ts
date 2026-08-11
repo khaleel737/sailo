@@ -1,8 +1,8 @@
 import "server-only";
 import { firstRow, maybeRow } from "@/lib/invariant";
 import { eq, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { invoices, shops } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { invoices, shops } from "@sailo/db/schema";
 
 /**
  * Claims the next invoice number for a shop. The increment and read happen in

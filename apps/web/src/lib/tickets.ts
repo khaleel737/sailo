@@ -1,7 +1,7 @@
 import "server-only";
 import { and, asc, eq, exists, isNotNull, isNull, or, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { orders, products, tickets, type Ticket } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { orders, products, tickets, type Ticket } from "@sailo/db/schema";
 import { variantLabel } from "@/lib/variants";
 import type { QuoteLine } from "@/lib/quote";
 

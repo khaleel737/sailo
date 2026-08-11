@@ -6,7 +6,7 @@ import { CURRENCY_CODES, currencyLabel } from "@/lib/currency";
 import { LOCALES } from "@/i18n/config";
 import type { Dictionary } from "@/i18n";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 export function OrdersContactCard({ shop, t }: { shop: Shop; t: Dictionary }) {
   const a = useAdminT();

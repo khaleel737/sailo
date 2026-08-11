@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Coupon, DeliveryMethod } from "@/db/schema";
+import type { Coupon, DeliveryMethod } from "@sailo/db/schema";
 import { toStripeAmount } from "@/lib/currency";
 import type { Totals } from "@/lib/pricing";
 import {

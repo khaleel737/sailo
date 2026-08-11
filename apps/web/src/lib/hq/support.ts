@@ -1,7 +1,7 @@
 import "server-only";
 import { and, desc, eq, ilike, or, sql, type SQL } from "drizzle-orm";
-import { getDb } from "@/db";
-import { shops, supportTickets } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { shops, supportTickets } from "@sailo/db/schema";
 import { requireStaff } from "@/lib/session";
 import { HQ_PAGE_SIZE, like, num, paginate } from "./pagination";
 

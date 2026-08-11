@@ -12,7 +12,7 @@ import {
   Field,
   Select,
 } from "@/components/ui";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@/i18n";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { IdentityCard } from "./identity-card";

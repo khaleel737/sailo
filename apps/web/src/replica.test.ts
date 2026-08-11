@@ -61,7 +61,7 @@ describe("read replica", () => {
       vi.stubEnv(key, "");
     }
 
-    const { getDb, getReadDb } = await import("./index");
+    const { getDb, getReadDb } = await import("@sailo/db");
     expect(getReadDb()).toBe(getDb());
 
     vi.unstubAllEnvs();
@@ -73,7 +73,7 @@ describe("read replica", () => {
       vi.stubEnv("DATABASE_URL", "postgresql://u:p@primary.example/db");
       vi.stubEnv(key, "postgresql://u:p@replica.example/db");
 
-      const { getDb, getReadDb } = await import("./index");
+      const { getDb, getReadDb } = await import("@sailo/db");
       expect(getReadDb(), key).not.toBe(getDb());
 
       vi.unstubAllEnvs();
@@ -92,7 +92,7 @@ describe("read replica", () => {
     vi.stubEnv("READ_REPLICA_URL_2", "postgresql://u:p@r2.example/db");
     vi.stubEnv("READ_REPLICA_URL_3", "postgresql://u:p@r3.example/db");
 
-    const { getReadDb } = await import("./index");
+    const { getReadDb } = await import("@sailo/db");
     const first = getReadDb();
     for (let i = 0; i < 20; i++) expect(getReadDb()).toBe(first);
 
@@ -134,7 +134,9 @@ describe("read replica", () => {
       // behind `requireStaff`, informing nothing but what is on screen. The
       // staff actions that *do* write re-read on the primary first.
       "src/lib/hq/overview.ts",
-      "src/db/index.ts",
+      // `src/db/index.ts` used to be here; the connection (and getReadDb) now
+      // live in the @sailo/db package, outside this app's source tree, so it
+      // no longer appears in an app-source grep.
     ]);
     const actual = files("src").filter((f) => !f.endsWith(".test.ts"));
     expect(actual.toSorted()).toEqual([...allowed].toSorted());

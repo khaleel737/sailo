@@ -1,7 +1,7 @@
 import "server-only";
 import type Stripe from "stripe";
-import { getDb } from "@/db";
-import { stripeEvents } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { stripeEvents } from "@sailo/db/schema";
 import { eq } from "drizzle-orm";
 
 /**

@@ -1,4 +1,4 @@
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import { configuredPixels, pixelIdsOf } from "@/lib/shop-pixels";

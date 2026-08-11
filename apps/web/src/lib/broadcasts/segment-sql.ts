@@ -6,8 +6,8 @@ import {
   orders,
   products,
   tickets,
-} from "@/db/schema";
-import type { SegmentRule } from "@/db/schema/json-types";
+} from "@sailo/db/schema";
+import type { SegmentRule } from "@sailo/db/schema/json-types";
 import type { RuleType, Segment } from "./segments";
 
 /**

@@ -1,7 +1,7 @@
 import "server-only";
 import { and, desc, asc, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { categories, coupons, products } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { categories, coupons, products } from "@sailo/db/schema";
 import { getShopClients } from "@/lib/queries";
 import { tagVocabulary } from "@/lib/client-tags";
 

@@ -1,7 +1,7 @@
 import { and, eq, gt, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { maybeRow } from "@/lib/invariant";
-import { getDb } from "@/db";
-import { orders, productFiles } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { orders, productFiles } from "@sailo/db/schema";
 import { orderedProductIds } from "@/lib/downloads";
 import { isUuid } from "@/lib/utils";
 import { isStoredFileUrl } from "@/lib/file-urls";

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { desc, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { supportTickets } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { supportTickets } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { isSupportTopic } from "@/lib/support";

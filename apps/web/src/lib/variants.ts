@@ -1,4 +1,4 @@
-import type { Product, ProductOption, VariantOptions } from "@/db/schema";
+import type { Product, ProductOption, VariantOptions } from "@sailo/db/schema";
 
 /**
  * Variants are the sellable combinations of a product's options — the medium

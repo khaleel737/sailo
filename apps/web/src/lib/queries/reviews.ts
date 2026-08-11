@@ -1,7 +1,7 @@
 import "server-only";
 import { desc, eq, inArray } from "drizzle-orm";
-import { getDb } from "@/db";
-import { products, reviews } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { products, reviews } from "@sailo/db/schema";
 
 /** Reviews awaiting approval, and those already published. */
 

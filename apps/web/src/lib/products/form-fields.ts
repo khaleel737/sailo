@@ -1,4 +1,4 @@
-import type { ProductOption, VariantOptions } from "@/db/schema";
+import type { ProductOption, VariantOptions } from "@sailo/db/schema";
 import { parseMoneyToCents } from "@/lib/utils";
 import { combinations, MAX_VARIANTS, optionKey } from "@/lib/variants";
 import { isRenderableImageUrl } from "@/lib/file-urls";

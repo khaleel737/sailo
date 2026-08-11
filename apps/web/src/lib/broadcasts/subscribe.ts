@@ -1,8 +1,8 @@
 import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { and, eq, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { clients, emailSuppressions } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { clients, emailSuppressions } from "@sailo/db/schema";
 import { appUrl } from "@/lib/app-url";
 import { maybeRow } from "@/lib/invariant";
 

@@ -1,8 +1,8 @@
 "use server";
 
 import { and, eq, isNull } from "drizzle-orm";
-import { getDb } from "@/db";
-import { shops } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { shops } from "@sailo/db/schema";
 import { getDictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 import { callerIp } from "@/lib/client-ip";

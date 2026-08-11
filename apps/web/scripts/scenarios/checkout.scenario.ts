@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { assertLocalDatabase } from "./local-only";
 import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   bookingClaims,
   clients,
@@ -14,7 +14,7 @@ import {
   products,
   shops,
   user,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { createOrderIntent } from "@/lib/actions/orders";
 import { abandonOrder, releaseAbandonedCheckouts, restoreStock } from "@/lib/inventory";
 import { exportClients } from "@/lib/exporters";

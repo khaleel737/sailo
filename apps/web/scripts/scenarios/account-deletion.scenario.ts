@@ -1,7 +1,7 @@
 import { assertLocalDatabase } from "./local-only";
 import { beforeAll, describe, expect, it } from "vitest";
 import { and, eq, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   categories,
   coupons,
@@ -14,7 +14,7 @@ import {
   session,
   shops,
   user,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { deleteAccountFor, openObligations, tombstoneHandle } from "@/lib/account-deletion";
 import { createInvoiceForOrder } from "@/lib/invoices";
 import { liveShop } from "@/lib/shop-visibility";

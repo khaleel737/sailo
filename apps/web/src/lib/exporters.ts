@@ -1,7 +1,7 @@
 import "server-only";
 import { asc, desc, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { orders, productImages, products, productVariants } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { orders, productImages, products, productVariants } from "@sailo/db/schema";
 import {
   getShopAttendees,
   getShopClients,

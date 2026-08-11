@@ -1,0 +1,27 @@
+{
+  "name": "@sailo/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema/index.ts",
+    "./schema/json-types": "./src/schema/json-types.ts",
+    "./local-database": "./src/local-database.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src || true",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "drizzle-orm": "^0.45.2",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@sailo/config": "*",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  }
+}

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { affiliates } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { affiliates } from "@sailo/db/schema";
 import { subscribeAffiliateEvents } from "@/lib/events";
 import { eventStreamResponse } from "@/lib/event-stream";
 import { rateLimit } from "@/lib/redis";

@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq, gt, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { del } from "@vercel/blob";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   account,
   affiliates,
@@ -21,7 +21,7 @@ import {
   supportTickets,
   user as userTable,
   visits,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { stripe, billingEnabled } from "@/lib/stripe";
 import { isStoredFileUrl } from "@/lib/file-urls";
 import { sendAccountDeleted } from "@/lib/email";

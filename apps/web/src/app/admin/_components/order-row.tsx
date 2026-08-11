@@ -18,7 +18,7 @@ import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
 import { taxName } from "@/lib/tax-label";
 import { formatAddress, formatMoney } from "@/lib/utils";
-import type { Order } from "@/db/schema";
+import type { Order } from "@sailo/db/schema";
 import type { OrderLine } from "@/lib/order-lines";
 
 export async function OrderRow({

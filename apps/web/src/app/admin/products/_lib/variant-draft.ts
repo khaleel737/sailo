@@ -1,4 +1,4 @@
-import type { ProductVariant } from "@/db/schema";
+import type { ProductVariant } from "@sailo/db/schema";
 import { optionKey } from "@/lib/variants";
 import { centsToAmount } from "@/lib/utils";
 

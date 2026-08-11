@@ -1,7 +1,7 @@
 import "server-only";
 import { and, asc, desc, eq, gte, isNotNull, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { affiliates, orders, shops, type Affiliate, type Shop } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { affiliates, orders, shops, type Affiliate, type Shop } from "@sailo/db/schema";
 
 /**
  * The affiliate's own view of what they've earned.

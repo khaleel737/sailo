@@ -5,7 +5,7 @@ import { ImageUploader } from "@/app/admin/products/_components/image-uploader";
 import { Card, Field, Input, Textarea } from "@/components/ui";
 import type { Dictionary } from "@/i18n";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 export function IdentityCard({ shop, t }: { shop: Shop; t: Dictionary }) {
   const a = useAdminT();

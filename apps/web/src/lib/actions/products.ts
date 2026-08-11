@@ -6,7 +6,7 @@ import { revalidateShop } from "@/lib/cache";
 import { publishShopEvent } from "@/lib/events";
 import { firstRow } from "@/lib/invariant";
 import { and, eq, inArray, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import { isStoredFileUrl, isRenderableImageUrl, isPublicLinkUrl } from "@/lib/file-urls";
 import {
   optionalCents,
@@ -20,7 +20,7 @@ import {
   type FileRow,
   type VariantRow,
 } from "@/lib/products/form-fields";
-import { categories, productFiles, productImages, products, productVariants, type ProductOption } from "@/db/schema";
+import { categories, productFiles, productImages, products, productVariants, type ProductOption } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { parseMoneyToCents, slugify } from "@/lib/utils";
 import { atProductLimit, planFor, productLimit } from "@/lib/plans";

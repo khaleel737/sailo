@@ -1,7 +1,7 @@
 import { writeFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { getDb } from "@/db";
-import { orders, paymentMethods, products, shops, user } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { orders, paymentMethods, products, shops, user } from "@sailo/db/schema";
 import { createOrderIntent } from "@/lib/actions/orders";
 import { eq, sql } from "drizzle-orm";
 import { assertLocalDatabase } from "./local-only";

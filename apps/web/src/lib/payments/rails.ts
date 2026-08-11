@@ -1,4 +1,4 @@
-import type { PaymentConfig } from "@/db/schema";
+import type { PaymentConfig } from "@sailo/db/schema";
 import { PLATFORM_FEE_LABEL } from "@/lib/plans";
 
 /**

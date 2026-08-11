@@ -26,7 +26,7 @@ import type { ProductWithRelations } from "./product.types";
 import { interpolate } from "@/i18n";
 import type {
   Category,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 
 
 function Submit({ isEdit }: { isEdit: boolean }) {

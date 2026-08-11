@@ -1,5 +1,5 @@
 import type { OrderLineInput, OrderPreview } from "@/lib/orders/types";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@/i18n";
 import type { PaymentMethodType } from "@/lib/payments";
 import type { DeliveryMethodType } from "@/lib/delivery";

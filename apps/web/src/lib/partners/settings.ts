@@ -1,7 +1,7 @@
 import "server-only";
 import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { partnerProgramSettings } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { partnerProgramSettings } from "@sailo/db/schema";
 import { maybeRow } from "@/lib/invariant";
 import {
   DEFAULT_COMMISSION_BP,

@@ -1,4 +1,4 @@
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 /**
  * The seller's own tracking tags, in one place: which providers exist, what a

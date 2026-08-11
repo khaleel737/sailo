@@ -18,7 +18,7 @@ import {
 import { Panel } from "@/components/overlays";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@/i18n";
-import type { PaymentConfig, PaymentMethod } from "@/db/schema";
+import type { PaymentConfig, PaymentMethod } from "@sailo/db/schema";
 
 /*
  * One rail, one panel. The summary row has to answer "can a buyer use this

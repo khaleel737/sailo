@@ -1,8 +1,8 @@
 import "server-only";
 import type Stripe from "stripe";
 import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { partners, type Partner } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { partners, type Partner } from "@sailo/db/schema";
 import { appUrl } from "@/lib/app-url";
 import { stripe } from "@/lib/stripe";
 

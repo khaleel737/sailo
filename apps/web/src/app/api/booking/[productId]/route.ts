@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import { liveShop } from "@/lib/shop-visibility";
-import { products, shops } from "@/db/schema";
+import { products, shops } from "@sailo/db/schema";
 import { isUuid } from "@/lib/utils";
 import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";

@@ -1,14 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 import type * as sessionModule from "@/lib/session";
 import { and, eq, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   creatorReferrals,
   partners,
   referralEarnings,
   shops,
   user,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import {
   attributeReferral,
   getPartnerSummary,

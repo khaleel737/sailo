@@ -1,6 +1,6 @@
 import { boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import type { NotificationPrefs, ShopSocial } from "./json-types";
-import type { WeeklyHours } from "@/lib/booking/hours";
+import type { WeeklyHours } from "./hours";
 import { user } from "./auth";
 
 /** The seller's shop, and the Stripe events we have already acted on. */

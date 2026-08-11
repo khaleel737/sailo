@@ -14,7 +14,7 @@ import {
   Textarea,
 } from "@/components/ui";
 import { PAID_PLAN_IDS, PLANS } from "@/lib/plans";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 /* ===========================================================================
    The staff-side controls on an account.

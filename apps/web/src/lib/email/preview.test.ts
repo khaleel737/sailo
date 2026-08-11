@@ -25,7 +25,7 @@ vi.mock("@/lib/email/transport", async (importOriginal) => {
   };
 });
 
-import type { Order, Shop } from "@/db/schema";
+import type { Order, Shop } from "@sailo/db/schema";
 import {
   sendAffiliateWelcome,
   sendBookingDecision,

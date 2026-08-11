@@ -1,7 +1,7 @@
 "use client";
 
 import { trackClick } from "@/lib/track-click";
-import type { ClickKind } from "@/db/schema";
+import type { ClickKind } from "@sailo/db/schema";
 
 /**
  * An external `<a>` that counts itself before it navigates.

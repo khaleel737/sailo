@@ -21,3 +21,4 @@ export * from "./support";
 
 export * from "./relations";
 export * from "./types";
+export type { OpeningWindow, WeeklyHours } from "./hours";

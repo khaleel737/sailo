@@ -1,7 +1,7 @@
 import "server-only";
 import { eq, inArray } from "drizzle-orm";
-import { getDb } from "@/db";
-import { invoices, orders, shops } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { invoices, orders, shops } from "@sailo/db/schema";
 import { getOrderItems } from "./orders";
 
 /** Invoices, by token for the buyer and by order for the seller. */

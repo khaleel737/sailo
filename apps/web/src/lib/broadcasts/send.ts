@@ -1,6 +1,6 @@
 import "server-only";
 import { and, eq, inArray, lte, sql } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   broadcastDeliveries,
   broadcasts,
@@ -10,7 +10,7 @@ import {
   shops,
   type Broadcast,
   type Shop,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { ORDERS, MAX_BATCH, sendBatch, sender } from "@/lib/email/transport";
 import { getDictionary } from "@/i18n";
 import { appUrl } from "@/lib/app-url";

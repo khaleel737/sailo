@@ -1,7 +1,7 @@
 import "server-only";
 import { asc, eq, inArray } from "drizzle-orm";
-import { getDb } from "@/db";
-import { orderItems, type Order, type OrderItem } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { orderItems, type Order, type OrderItem } from "@sailo/db/schema";
 
 /**
  * The one way to ask what an order contains.

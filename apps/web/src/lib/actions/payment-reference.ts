@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { and, eq, inArray } from "drizzle-orm";
-import { getDb } from "@/db";
-import { orders } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { orders } from "@sailo/db/schema";
 import { publishShopEvent } from "@/lib/events";
 import { maybeRow } from "@/lib/invariant";
 import { rateLimit } from "@/lib/redis";
@@ -12,7 +12,7 @@ import { callerIp } from "@/lib/client-ip";
 import { checkPaymentReference } from "@/lib/payments/status";
 import { PAYMENT_METHOD_DEFS, PAYMENT_METHOD_TYPES } from "@/lib/payments";
 import { notifySellerOfPaymentReport } from "@/lib/orders/notify-seller";
-import { shops } from "@/db/schema";
+import { shops } from "@sailo/db/schema";
 
 /**
  * A buyer telling the seller they have sent the money.

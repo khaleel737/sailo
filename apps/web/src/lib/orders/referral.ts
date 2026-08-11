@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { affiliates, type Shop } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { affiliates, type Shop } from "@sailo/db/schema";
 import { ensurePortalToken } from "@/lib/affiliate-portal";
 import { maybeRow } from "@/lib/invariant";
 import { generateCode } from "@/lib/pricing";

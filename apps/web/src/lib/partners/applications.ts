@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq, isNull } from "drizzle-orm";
-import { getDb } from "@/db";
-import { partners, shops, type Partner } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { partners, shops, type Partner } from "@sailo/db/schema";
 import { maybeRow } from "@/lib/invariant";
 import { getProgramSettings } from "./settings";
 import { newReferralCode, type PartnerStatus } from "./program";

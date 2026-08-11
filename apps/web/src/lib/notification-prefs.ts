@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { NotificationPrefs } from "@/db/schema/json-types";
+import type { NotificationPrefs } from "@sailo/db/schema/json-types";
 
 /**
  * The seller-facing email switches, and the rule that makes them safe to

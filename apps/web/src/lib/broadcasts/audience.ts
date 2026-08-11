@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq, isNotNull, sql, type SQL } from "drizzle-orm";
-import { getDb } from "@/db";
-import { clients, emailSuppressions } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { clients, emailSuppressions } from "@sailo/db/schema";
 import { EVERYONE, type Segment } from "./segments";
 import { segmentSql } from "./segment-sql";
 

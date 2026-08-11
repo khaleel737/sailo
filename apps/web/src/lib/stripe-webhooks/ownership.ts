@@ -1,8 +1,8 @@
 import "server-only";
 import type Stripe from "stripe";
 import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { orders, shops } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { orders, shops } from "@sailo/db/schema";
 
 /**
  * Resolving an event to the row it is allowed to touch.

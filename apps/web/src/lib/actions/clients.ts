@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { clients } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { clients } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { normalizeTags, MAX_TAGS } from "@/lib/client-tags";
 import { normalizePhone } from "@/lib/utils";

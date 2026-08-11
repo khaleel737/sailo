@@ -1,4 +1,4 @@
-import type { Order, Shop } from "@/db/schema";
+import type { Order, Shop } from "@sailo/db/schema";
 import { badgeHref, showsBadge } from "@/components/shared/powered-by";
 import { isRenderableImageUrl } from "@/lib/file-urls";
 import { LEGAL } from "@/lib/legal";

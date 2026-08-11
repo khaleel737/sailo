@@ -1,8 +1,8 @@
 import "server-only";
 import { orderSummaryTitle } from "@/lib/order-lines";
 import { and, desc, eq, gt, isNull, or } from "drizzle-orm";
-import { getDb } from "@/db";
-import { affiliates, orders, reviews } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { affiliates, orders, reviews } from "@sailo/db/schema";
 import type { Dictionary } from "@/i18n";
 import { interpolate, plural } from "@/i18n";
 import { formatMoney } from "@/lib/utils";

@@ -6,7 +6,7 @@ import { Loader2, RotateCcw, Truck } from "lucide-react";
 import { markOrderShipped, refundOrder } from "@/lib/actions/order-admin";
 import { Alert, Button, Field, Input } from "@/components/ui";
 import { centsToAmount, formatMoney } from "@/lib/utils";
-import type { Order } from "@/db/schema";
+import type { Order } from "@sailo/db/schema";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit({ label }: { label: string }) {

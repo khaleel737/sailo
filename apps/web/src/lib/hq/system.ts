@@ -2,10 +2,10 @@ import "server-only";
 import { requireStaff } from "@/lib/session";
 import type { PgTable } from "drizzle-orm/pg-core";
 import { desc, eq, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { invoices, orders, reviews, shops, staffActions, stripeEvents, user, visits } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { invoices, orders, reviews, shops, staffActions, stripeEvents, user, visits } from "@sailo/db/schema";
 import { DAY_MS, num } from "./pagination";
-import { affiliates, clients, coupons, products, visitDaily } from "@/db/schema";
+import { affiliates, clients, coupons, products, visitDaily } from "@sailo/db/schema";
 
 /** The staff audit trail, and whether the platform itself is healthy. */
 

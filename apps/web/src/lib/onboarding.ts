@@ -1,4 +1,4 @@
-import type { ShopSocial } from "@/db/schema";
+import type { ShopSocial } from "@sailo/db/schema";
 
 /**
  * "Store setup — 2 of 4": what a seller who just signed up still has to do.

@@ -1,9 +1,9 @@
 import "server-only";
 import { and, eq, gte, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { broadcastDeliveries } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { broadcastDeliveries } from "@sailo/db/schema";
 import { planFor, type PlanId } from "@/lib/plans";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 /**
  * How much marketing mail one shop may send in a day, and how much the

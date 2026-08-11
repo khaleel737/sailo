@@ -1,7 +1,7 @@
 import "server-only";
 import { eq, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { affiliates, orders, type Affiliate } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { affiliates, orders, type Affiliate } from "@sailo/db/schema";
 
 /** The referral programme: who promotes a shop and what they have earned. */
 

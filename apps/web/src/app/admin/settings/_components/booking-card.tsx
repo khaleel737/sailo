@@ -10,7 +10,7 @@ import {
   WEEKDAYS,
   type WeeklyHours,
 } from "@/lib/booking/hours";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 /**
  * When the shop takes appointments.

@@ -1,4 +1,4 @@
-import type { ClickKind } from "@/db/schema";
+import type { ClickKind } from "@sailo/db/schema";
 
 /**
  * Fire-and-forget outbound click beacon.

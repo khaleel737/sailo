@@ -1,4 +1,6 @@
 import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { BETTER_AUTH_MESSAGES } from "@/lib/auth";
 
@@ -20,8 +22,17 @@ import { BETTER_AUTH_MESSAGES } from "@/lib/auth";
  * rather than quietly making the refusal distinguishable again.
  */
 describe("the staff refusal is indistinguishable", () => {
+  // Resolved through better-auth's own module context rather than a hardcoded
+  // node_modules path, so it works whether the workspace hoists @better-auth
+  // to the root or nests it under better-auth.
+  const req = createRequire(import.meta.url);
+  // Resolve the package's main entry (which its `exports` allows), then read
+  // the codes file by path from its dist dir — `exports` blocks resolving the
+  // internal file directly, but the filesystem does not.
+  const coreEntry = createRequire(req.resolve("better-auth")).resolve("@better-auth/core");
+  const codesPath = path.join(path.dirname(coreEntry), "error/codes.mjs");
   const codes = readFileSync(
-    "node_modules/better-auth/node_modules/@better-auth/core/dist/error/codes.mjs",
+    codesPath,
     "utf8",
   );
 

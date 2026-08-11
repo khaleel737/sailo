@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { shops, staffActions, supportTickets, type Shop } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { shops, staffActions, supportTickets, type Shop } from "@sailo/db/schema";
 import { publishShopEvent } from "@/lib/events";
 import { maybeRow } from "@/lib/invariant";
 import { requireStaff } from "@/lib/session";

@@ -1,6 +1,6 @@
 import "server-only";
 import { and, desc, eq, gte, inArray, isNotNull, lt, ne, or, sql } from "drizzle-orm";
-import { getReadDb } from "@/db";
+import { getReadDb } from "@sailo/db";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import {
   clicks,
@@ -10,7 +10,7 @@ import {
   reviews,
   visitDaily,
   visits,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import type { DateWindow } from "@/lib/analytics-window";
 import {
   mergePerformance,

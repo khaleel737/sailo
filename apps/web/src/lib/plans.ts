@@ -1,5 +1,5 @@
 import type { Dictionary } from "@/i18n";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 import { taxOn } from "@/lib/pricing";
 
 export const PLAN_IDS = ["free", "pro", "business"] as const;

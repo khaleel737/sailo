@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
-import { getDb } from "@/db";
-import { supportTickets } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { supportTickets } from "@sailo/db/schema";
 import { publishShopEvent } from "@/lib/events";
 import { sendSupportTicket } from "@/lib/email";
 import { isStoredFileUrl } from "@/lib/file-urls";

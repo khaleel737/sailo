@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CalendarDays, Clock, Download, ImageIcon } from "lucide-react";
 import type { ProductCard as ProductCardData } from "@/lib/queries";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@/i18n";
 import { cn, formatDuration, formatMoney } from "@/lib/utils";
 import {

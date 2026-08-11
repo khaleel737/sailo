@@ -2,7 +2,7 @@
 
 import { Card, Field, Input } from "@/components/ui";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 /**
  * The two checkout compliance switches.

@@ -9,7 +9,7 @@ import {
   YouTube,
   type BrandIconProps,
 } from "@/components/shared/brand-icons";
-import type { ShopSocial } from "@/db/schema";
+import type { ShopSocial } from "@sailo/db/schema";
 import { OutboundLink } from "./outbound-link";
 
 /**

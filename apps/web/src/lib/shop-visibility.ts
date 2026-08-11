@@ -1,5 +1,5 @@
 import { and, eq, isNull, type SQL } from "drizzle-orm";
-import { shops } from "@/db/schema";
+import { shops } from "@sailo/db/schema";
 
 /**
  * `isShopLive`, as a WHERE clause.

@@ -1,7 +1,7 @@
 import "server-only";
 import { asc, eq, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { shops } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { shops } from "@sailo/db/schema";
 import { fetchExternalBusy } from "./external-busy";
 
 /**

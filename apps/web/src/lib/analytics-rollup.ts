@@ -1,14 +1,14 @@
 import "server-only";
 import { and, desc, eq, gte, inArray, isNotNull, lt, sql } from "drizzle-orm";
 import type { PgColumn } from "drizzle-orm/pg-core";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   affiliates,
   clicks,
   visitDaily,
   visits,
   type VisitBreakdownJson,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { publishAffiliateEvent, publishShopEvent } from "@/lib/events";
 import { drainAffiliateClicks } from "@/lib/redis";
 import {

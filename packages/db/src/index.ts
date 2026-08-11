@@ -1,6 +1,6 @@
 import { neon, neonConfig } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
-import { isLocalDatabaseUrl } from "@/lib/local-database";
+import { isLocalDatabaseUrl } from "./local-database";
 import * as schema from "./schema";
 
 /**

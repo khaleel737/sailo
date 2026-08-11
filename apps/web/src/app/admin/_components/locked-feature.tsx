@@ -2,7 +2,7 @@ import { Lock } from "lucide-react";
 import { cheapestPlanWith, planFor, type Features } from "@/lib/plans";
 import { UpgradeButton } from "./upgrade-modal";
 import { Card } from "@/components/ui";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@/i18n";
 import { interpolate } from "@/i18n";
 

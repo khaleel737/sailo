@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { AlertTriangle, ArrowUpRight, CreditCard, Lock } from "lucide-react";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 import { connectState } from "@/lib/connect";
 import { PLATFORM_FEE_LABEL, can, cheapestPlanWith } from "@/lib/plans";
 import {

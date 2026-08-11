@@ -1,8 +1,8 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { orders } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { orders } from "@sailo/db/schema";
 import { callerIp } from "@/lib/client-ip";
 import { rateLimit } from "@/lib/redis";
 import type { CheckoutOutcome } from "@/lib/orders/types";

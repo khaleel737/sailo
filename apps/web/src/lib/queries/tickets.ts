@@ -1,7 +1,7 @@
 import "server-only";
 import { and, asc, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { orders, productVariants, products, tickets } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { orders, productVariants, products, tickets } from "@sailo/db/schema";
 import { normalizeTicketCode } from "@/lib/tickets";
 
 /**

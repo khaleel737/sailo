@@ -1,8 +1,8 @@
 import "server-only";
 import { requireStaff } from "@/lib/session";
 import { desc, eq, sql } from "drizzle-orm";
-import { getReadDb } from "@/db";
-import { affiliates, clients, orders, products, shops, user } from "@/db/schema";
+import { getReadDb } from "@sailo/db";
+import { affiliates, clients, orders, products, shops, user } from "@sailo/db/schema";
 import { num } from "./pagination";
 import { notStaff } from "./roster";
 

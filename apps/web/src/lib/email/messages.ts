@@ -1,5 +1,5 @@
 import "server-only";
-import type { Order, Shop } from "@/db/schema";
+import type { Order, Shop } from "@sailo/db/schema";
 import { orderSummaryTitle, type OrderLine } from "@/lib/order-lines";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatAddress, formatMoney } from "@/lib/utils";

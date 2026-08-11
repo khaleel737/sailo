@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { getDb } from "@/db";
-import { coupons, products, shops, user } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { coupons, products, shops, user } from "@sailo/db/schema";
 import { previewOrder } from "@/lib/actions/order-preview";
 import { eq } from "drizzle-orm";
 import { assertLocalDatabase } from "./local-only";

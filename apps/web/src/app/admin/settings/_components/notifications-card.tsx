@@ -4,7 +4,7 @@ import { Card, Switch } from "@/components/ui";
 import { interpolate } from "@/i18n";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { wantsNotification } from "@/lib/notification-prefs";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 /**
  * Which emails Sailo sends the *seller* about their own shop — as opposed to

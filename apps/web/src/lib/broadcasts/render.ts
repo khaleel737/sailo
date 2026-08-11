@@ -1,7 +1,7 @@
 import { esc, fine, layout } from "@/lib/email/markup";
 import { isRenderableImageUrl } from "@/lib/file-urls";
 import { formatMoney } from "@/lib/utils";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 import {
   applyMergeTags,
   renderBody,

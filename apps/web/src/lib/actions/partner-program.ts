@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getDb } from "@/db";
-import { staffActions } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { staffActions } from "@sailo/db/schema";
 import { requireStaff, requireUser } from "@/lib/session";
 import {
   applyToProgram,

@@ -1,8 +1,8 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { and, asc, desc, eq, sql } from "drizzle-orm";
-import { getDb } from "@/db";
-import { categories, products, reviews, shops, type Shop } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { categories, products, reviews, shops, type Shop } from "@sailo/db/schema";
 import { handleTag, shopTag } from "@/lib/cache";
 
 /** The shop itself, and what it stocks — for building its storefront filters. */

@@ -62,9 +62,9 @@ vi.mock("@/lib/email/transport", async (importOriginal) => {
   };
 });
 
-const { getDb } = await import("@/db");
+const { getDb } = await import("@sailo/db");
 const { orderItems, orders, paymentMethods, products, shops, user } = await import(
-  "@/db/schema"
+  "@sailo/db/schema"
 );
 const { createOrderIntent } = await import("@/lib/actions/orders");
 const { submitPaymentReference } = await import("@/lib/actions/payment-reference");

@@ -1,8 +1,8 @@
 import "server-only";
 import { requireStaff } from "@/lib/session";
 import { and, asc, desc, eq, ilike, isNotNull, isNull, or, sql, type SQL } from "drizzle-orm";
-import { getDb } from "@/db";
-import { products, shops, user, type Shop } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { products, shops, user, type Shop } from "@sailo/db/schema";
 import { stateFilter } from "./billing-state";
 import type { BillingState } from "@/lib/hq-metrics";
 import { HQ_PAGE_SIZE, like, num, paginate } from "./pagination";

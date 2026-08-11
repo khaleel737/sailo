@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { and, eq, inArray } from "drizzle-orm";
-import { getDb } from "@/db";
-import { broadcasts, shops } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { broadcasts, shops } from "@sailo/db/schema";
 import { revalidateShop } from "@/lib/cache";
 import { requireShop } from "@/lib/session";
 import { can, upgradeMessage } from "@/lib/plans";
@@ -28,7 +28,7 @@ import {
 import { ORDERS, send, sender } from "@/lib/email/transport";
 import { getDictionary } from "@/i18n";
 import { rateLimit } from "@/lib/redis";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 /** Writing, previewing, scheduling and sending a broadcast. */
 

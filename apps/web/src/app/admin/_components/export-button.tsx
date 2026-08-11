@@ -3,7 +3,7 @@ import { Download, Lock } from "lucide-react";
 import { can, cheapestPlanWith } from "@/lib/plans";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
-import type { Shop } from "@/db/schema";
+import type { Shop } from "@sailo/db/schema";
 
 /**
  * Export link for a list page. When the plan doesn't allow it, this points at

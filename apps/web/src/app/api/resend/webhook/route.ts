@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { broadcastDeliveries } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { broadcastDeliveries } from "@sailo/db/schema";
 import { suppress } from "@/lib/broadcasts/audience";
 import { optOut } from "@/lib/lifecycle/opt-out";
 import {

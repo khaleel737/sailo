@@ -1,6 +1,6 @@
 import { field } from "@/lib/csv";
 import { MAX_OPTIONS, normalizeOptions } from "@/lib/variants";
-import type { ProductOption } from "@/db/schema";
+import type { ProductOption } from "@sailo/db/schema";
 import type { Row } from "./parse";
 
 /**

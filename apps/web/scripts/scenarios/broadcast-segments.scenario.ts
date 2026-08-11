@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { assertLocalDatabase } from "./local-only";
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   broadcastDeliveries,
   broadcasts,
@@ -16,7 +16,7 @@ import {
   shops,
   tickets,
   user,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { audienceFor, audienceSize, suppress } from "@/lib/broadcasts/audience";
 import { parseSegment, type Segment } from "@/lib/broadcasts/segments";
 import { queueBroadcast, runBroadcastQueue } from "@/lib/broadcasts/send";

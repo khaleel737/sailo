@@ -1,5 +1,5 @@
 import { normalizePhone } from "@/lib/utils";
-import type { PaymentConfig } from "@/db/schema";
+import type { PaymentConfig } from "@sailo/db/schema";
 import { isPaymentMethodType } from "./rails";
 
 /** What happens to the buyer once they have chosen how to pay. */

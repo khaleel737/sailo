@@ -1,13 +1,13 @@
 import "server-only";
 import { and, asc, eq, inArray } from "drizzle-orm";
-import { getDb } from "@/db";
-import { productVariants, products } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { productVariants, products } from "@sailo/db/schema";
 import { clampQuantity, isSellable, maxOrderable, variantPrice } from "@/lib/variants";
 import { toStripeAmount } from "@/lib/currency";
 import type { OrderLineInput } from "./types";
 import type { ResolvedLine } from "./types";
 import { parseBooking } from "./booking";
-import type { ProductVariant } from "@/db/schema";
+import type { ProductVariant } from "@sailo/db/schema";
 import { isBookable, slotOptionsFor, type BookingShop } from "@/lib/booking/availability";
 import { isOfferedSlot } from "@/lib/booking/slots";
 

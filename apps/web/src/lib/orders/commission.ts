@@ -1,4 +1,4 @@
-import type { Affiliate, Shop } from "@/db/schema";
+import type { Affiliate, Shop } from "@sailo/db/schema";
 
 /**
  * What an affiliate earns on an order, in basis points.

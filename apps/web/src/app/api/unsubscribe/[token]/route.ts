@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { shops } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { shops } from "@sailo/db/schema";
 import { suppress } from "@/lib/broadcasts/audience";
 import {
   readUnsubscribeToken,

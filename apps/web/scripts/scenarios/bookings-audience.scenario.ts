@@ -1,7 +1,7 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { assertLocalDatabase } from "./local-only";
 import { and, eq } from "drizzle-orm";
-import { getDb } from "@/db";
+import { getDb } from "@sailo/db";
 import {
   broadcastDeliveries,
   broadcasts,
@@ -13,7 +13,7 @@ import {
   products,
   shops,
   user,
-} from "@/db/schema";
+} from "@sailo/db/schema";
 import { createOrderIntent } from "@/lib/actions/orders";
 import { releaseDownloads } from "@/lib/downloads";
 import { calendarFor } from "@/lib/booking/availability";

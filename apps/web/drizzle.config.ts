@@ -2,7 +2,7 @@ import { present } from "./src/lib/invariant";
 import type { Config } from "drizzle-kit";
 
 export default {
-  schema: "./src/db/schema/index.ts",
+  schema: "../../packages/db/src/schema/index.ts",
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {

@@ -1,7 +1,7 @@
 import "server-only";
 import { asc, eq } from "drizzle-orm";
-import { getDb } from "@/db";
-import { orderItems, orders, type Shop } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { orderItems, orders, type Shop } from "@sailo/db/schema";
 import { sendOrderConfirmation } from "@/lib/email";
 import { downloadUrl } from "@/lib/downloads";
 import type { DigitalDelivery } from "@/lib/orders/digital-delivery";

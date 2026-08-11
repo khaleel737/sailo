@@ -1,8 +1,8 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { and, asc, desc, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
-import { getDb } from "@/db";
-import { categories, productFiles, productImages, productVariants, products, reviews, type Category, type Product, type ProductImage, type ProductVariant } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { categories, productFiles, productImages, productVariants, products, reviews, type Category, type Product, type ProductImage, type ProductVariant } from "@sailo/db/schema";
 import { shopTag } from "@/lib/cache";
 import { minorPerMajor } from "@/lib/currency";
 import { nextOffsetFor, orderByIds } from "./pagination";

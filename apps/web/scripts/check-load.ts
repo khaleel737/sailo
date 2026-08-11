@@ -10,7 +10,7 @@
  *   SHOPS=20000 npm run check:load
  */
 import { present } from "@/lib/invariant";
-import { hostnameOf, isLocalDatabaseUrl } from "@/lib/local-database";
+import { hostnameOf, isLocalDatabaseUrl } from "@sailo/db/local-database";
 import { neon, neonConfig } from "@neondatabase/serverless";
 
 const url = present(process.env.DATABASE_URL, "DATABASE_URL");

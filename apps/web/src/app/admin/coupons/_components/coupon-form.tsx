@@ -14,7 +14,7 @@ import {
   Input,
   Select,
 } from "@/components/ui";
-import type { Coupon } from "@/db/schema";
+import type { Coupon } from "@sailo/db/schema";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit({ isEdit }: { isEdit: boolean }) {

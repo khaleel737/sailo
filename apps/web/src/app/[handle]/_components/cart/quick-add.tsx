@@ -14,7 +14,7 @@ import {
   variantLabel,
   type CheckoutVariant,
 } from "@/lib/variants";
-import type { ProductOption, VariantOptions } from "@/db/schema";
+import type { ProductOption, VariantOptions } from "@sailo/db/schema";
 
 /**
  * The bag on a product card.

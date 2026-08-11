@@ -1,7 +1,7 @@
 import "server-only";
 import { and, desc, eq, gt } from "drizzle-orm";
-import { getDb } from "@/db";
-import { session as sessionTable } from "@/db/schema";
+import { getDb } from "@sailo/db";
+import { session as sessionTable } from "@sailo/db/schema";
 import { parseUserAgent } from "@/lib/analytics";
 
 /** The signed-in devices a seller sees in Settings → Security. */
