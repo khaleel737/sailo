@@ -1,0 +1,39 @@
+package-lock.json
+  s_3fd229194f6299::t_714c6552009b30 3019-3030,3056-3081,11482,12459-12480
+packages/config/package.json
+  s_3fd229194f6299::t_116a4c8e2194ab 1-6
+packages/config/tsconfig.base.json
+  s_3fd229194f6299::t_8ccc985e9577fa 1-16
+packages/env/package.json
+  s_3fd229194f6299::t_7ce06589622afb 1-23
+packages/env/src/client.ts
+  s_3fd229194f6299::t_e77d5670919275 1-22
+packages/env/src/index.ts
+  s_3fd229194f6299::t_97a12bc68ae7dd 1-2
+packages/env/src/server.ts
+  s_3fd229194f6299::t_38411eeb08e186 1-30
+packages/env/tsconfig.json
+  s_3fd229194f6299::t_4ea8a5bf274b52 1-5
+packages/observability/package.json
+  s_3fd229194f6299::t_2da48ecbabeb8a 1-15
+packages/observability/src/index.ts
+  s_3fd229194f6299::t_0fc32b047e8bf1 1-81
+packages/observability/tsconfig.json
+  s_3fd229194f6299::t_daef5a1188ecf4 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "19c0bd9cd4fb202a06012056089429d7b9254f92",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
