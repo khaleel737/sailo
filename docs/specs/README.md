@@ -78,7 +78,7 @@ Security tab).
 | 15 | `20-webinar.md` | M | **Built, reshaped** — see the bookings & audience note below |
 | 16 | `17-booking-integrations.md` | L | **Built, reshaped** — iCal feed, not Google OAuth |
 | 17 | `23-crm-upgrades.md` | M | **Built**, minus the seller phone field |
-| 18 | `14-email-broadcasts.md` | L | **Built**, minus flows and scheduling |
+| 18 | `14-email-broadcasts.md` | L | **Built**, plus segments, promotions, scheduling and a signup page (`drizzle/0016`) — minus flows |
 | 19 | `27-lifecycle-email.md` | M | **Built** — Sailo's own onboarding funnel to sellers |
 
 ### The bookings & audience block, as built
@@ -122,6 +122,41 @@ New environment variables: `RESEND_WEBHOOK_SECRET` (the bounce webhook refuses
 to run without it) and the optional `BROADCAST_DAILY_CEILING`. Unsubscribe
 tokens are signed with a key *derived* from `BETTER_AUTH_SECRET`, so they need
 no new secret and cannot be confused with anything the auth library signs.
+
+**The second release (`drizzle/0016`)** answered the two things v1 could not
+do: address anybody but "everyone" or "one tag", and grow a list at all.
+
+*Segments.* `broadcasts.audience_filter` is a jsonb question rather than a
+member list, re-asked at queue time — nineteen rule types across who a contact
+is, what they bought and what they have done, each a correlated EXISTS ANDed
+onto the consent floor rather than a filter applied after it. `segments.ts`
+holds the vocabulary, parsing and wording and is import-safe in the browser;
+`segment-sql.ts` holds the SQL and is not. v1's `audience_tag` is still read
+when the filter is null, so a past send keeps describing the audience it
+actually went to. "Bought this" asks the order *lines* and the header both —
+pre-cart orders have no lines, and those are a shop's oldest customers.
+
+*Promotions.* A broadcast can carry a coupon, up to four product cards and one
+button; all three are references resolved at send time, so a price or expiry
+edited mid-send reaches the batches still to leave. The markdown pipeline moved
+to `markdown.ts` — every emitted tag now carries inline styling (a bare `<p>`
+is 16px Times in Gmail), images are https-only and width-capped, and merge tags
+are substituted into the finished HTML, escaped, so a customer named `**Ann**`
+cannot render bold.
+
+*Scheduling.* `status = 'scheduled'` with `scheduled_at`; the existing queue
+cron promotes what is due through the same claim the Send button uses, and
+re-checks the plan first — a seller who scheduled six weeks and then
+downgraded gets their drafts back, not their sends.
+
+*The signup page.* `/[handle]/subscribe`, plus an optional card under the
+storefront's products. Double opt-in and nothing written until the link is
+clicked: the form reads no rows, so it cannot become an address checker, and
+its answer is one sentence whether the address was new, known or blocked. A
+confirmed opt-in is the only thing that lifts an `unsubscribed` suppression —
+never a `bounced` or `complained` one. Signup tokens expire after seven days
+and are signed under their own domain string, so they cannot be swapped with
+unsubscribe tokens in either direction. *Not built:* flows.
 
 ### Lifecycle email, as built
 

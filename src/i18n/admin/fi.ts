@@ -796,13 +796,11 @@ export const adminFi: PartialAdminDictionary = {
     lockedBody: "Lähetä viestiä suostumuksen antaneille — peruutus ja palautusten käsittely mukana.",
     subject: "Aihe",
     audience: "Yleisö",
-    audienceHint: "{count} henkilöä saa tämän.",
     everyone: "Kaikki suostumuksen antaneet",
     body: "Viesti",
     bodyHint: "Markdown: **lihavointi**, *kursiivi*, [linkit](https://…), - listat.",
     consentNote: "Tämän saavat vain suostumuksen antaneet, ja jokaisessa viestissä on toimiva peruutuslinkki. Peruneille ja palautuneille ei enää lähetetä.",
     testSend: "Lähetä testi itselleni",
-    sendTo: "Lähetä {count} vastaanottajalle",
   },
 
   broadcastStatus: {

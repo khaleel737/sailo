@@ -814,13 +814,11 @@ export const adminSq: PartialAdminDictionary = {
     lockedBody: "Shkruaju klientëve që pranuan — me çregjistrim dhe trajtim kthimesh të integruara.",
     subject: "Subjekti",
     audience: "Audienca",
-    audienceHint: "{count} persona do ta marrin.",
     everyone: "Të gjithë ata që pranuan",
     body: "Mesazhi",
     bodyHint: "Markdown: **të trasha**, *të pjerrëta*, [lidhje](https://…), - lista.",
     consentNote: "Vetëm kontaktet që pranuan e marrin këtë, dhe çdo mesazh mban një lidhje çregjistrimi që funksionon. Atyre që çregjistrohen ose kthehen nuk u shkruhet më.",
     testSend: "Dërgo një test tek unë",
-    sendTo: "Dërgo te {count}",
   },
 
   broadcastStatus: {

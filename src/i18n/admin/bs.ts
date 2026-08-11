@@ -813,13 +813,11 @@ export const adminBs: PartialAdminDictionary = {
     lockedBody: "Piši kupcima koji su pristali — s ugrađenom odjavom i obradom odbijenih e-mailova.",
     subject: "Naslov",
     audience: "Publika",
-    audienceHint: "{count} osoba će ovo primiti.",
     everyone: "Svi koji su pristali",
     body: "Poruka",
     bodyHint: "Markdown: **podebljano**, *kurziv*, [linkovi](https://…), - liste.",
     consentNote: "Ovo primaju samo kontakti koji su pristali, a svaka poruka nosi ispravan link za odjavu. Onima koji se odjave ili čiji e-mail odbije, više se ne šalje.",
     testSend: "Pošalji test meni",
-    sendTo: "Pošalji na {count}",
   },
 
   broadcastStatus: {

@@ -799,13 +799,11 @@ export const adminZh: PartialAdminDictionary = {
     lockedBody: "给已同意的客户发邮件——内置退订与退信处理。",
     subject: "主题",
     audience: "受众",
-    audienceHint: "将有 {count} 人收到。",
     everyone: "所有已同意的人",
     body: "正文",
     bodyHint: "Markdown：**加粗**、*斜体*、[链接](https://…)、- 列表。",
     consentNote: "只有已同意的联系人才会收到，每封邮件都带有可用的退订链接。退订或退信的地址不会再被发送。",
     testSend: "给自己发测试",
-    sendTo: "发送给 {count} 人",
   },
 
   broadcastStatus: {

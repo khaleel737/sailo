@@ -463,7 +463,7 @@ describe("who a broadcast may reach", () => {
     await makeContact(shop.id, "yes@example.com");
     await makeContact(shop.id, "no@example.com", { marketingConsentAt: null });
 
-    const { recipients } = await audienceFor(shop.id, null);
+    const { recipients } = await audienceFor(shop.id);
     expect(recipients.map((r) => r.email)).toEqual(["yes@example.com"]);
   });
 
@@ -477,7 +477,7 @@ describe("who a broadcast may reach", () => {
       reason: "bounced",
     });
 
-    const { recipients } = await audienceFor(shop.id, null);
+    const { recipients } = await audienceFor(shop.id);
     expect(recipients.map((r) => r.email)).toEqual(["here@example.com"]);
   });
 
@@ -486,7 +486,7 @@ describe("who a broadcast may reach", () => {
     await makeContact(shop.id, "vip@example.com", { tags: ["vip"] });
     await makeContact(shop.id, "plain@example.com");
 
-    const { recipients } = await audienceFor(shop.id, "vip");
+    const { recipients } = await audienceFor(shop.id, { match: "all", rules: [{ type: "tag", value: "vip" }] });
     expect(recipients.map((r) => r.email)).toEqual(["vip@example.com"]);
   });
 
@@ -502,8 +502,8 @@ describe("who a broadcast may reach", () => {
       reason: "unsubscribed",
     });
 
-    expect((await audienceFor(a.id, null)).recipients).toHaveLength(0);
-    expect((await audienceFor(b.id, null)).recipients).toHaveLength(1);
+    expect((await audienceFor(a.id)).recipients).toHaveLength(0);
+    expect((await audienceFor(b.id)).recipients).toHaveLength(1);
   });
 });
 
@@ -724,7 +724,7 @@ describe("contacts and tags", () => {
     expect(row?.tags).toEqual(["vip", "wholesale"]);
 
     // And therefore unreachable by a broadcast.
-    const { recipients } = await audienceFor(shop.id, null);
+    const { recipients } = await audienceFor(shop.id);
     expect(recipients).toHaveLength(0);
   });
 

@@ -5,9 +5,8 @@ import { notFound } from "next/navigation";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { can } from "@/lib/plans";
-import { getShopClients } from "@/lib/queries";
-import { tagVocabulary } from "@/lib/client-tags";
-import { audienceSize } from "@/lib/broadcasts/audience";
+import { segmentPickers } from "@/lib/broadcasts/pickers";
+import { MAX_PROMO_PRODUCTS } from "@/lib/broadcasts/send";
 import { PageHeader } from "@/components/shared/page-header";
 import { Composer } from "../_components/composer";
 
@@ -21,10 +20,7 @@ export default async function NewBroadcastPage() {
   // locked.
   if (!can(shop, "broadcasts")) notFound();
 
-  const [clients, audienceCount] = await Promise.all([
-    getShopClients(shop.id),
-    audienceSize(shop.id, null),
-  ]);
+  const pickers = await segmentPickers(shop.id);
 
   return (
     <>
@@ -43,8 +39,10 @@ export default async function NewBroadcastPage() {
 
       <Composer
         broadcast={null}
-        tags={tagVocabulary(clients)}
-        audienceCount={audienceCount}
+        pickers={pickers}
+        currency={shop.currency}
+        timeZone={shop.timeZone}
+        maxProducts={MAX_PROMO_PRODUCTS}
       />
     </>
   );

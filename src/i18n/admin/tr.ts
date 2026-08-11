@@ -799,13 +799,11 @@ export const adminTr: PartialAdminDictionary = {
     lockedBody: "İzin veren müşterilere e-posta gönderin — abonelikten çıkma ve geri dönen e-posta yönetimi dahil.",
     subject: "Konu",
     audience: "Kitle",
-    audienceHint: "Bunu {count} kişi alacak.",
     everyone: "İzin veren herkes",
     body: "Mesaj",
     bodyHint: "Markdown: **kalın**, *italik*, [bağlantılar](https://…), - listeler.",
     consentNote: "Bunu yalnızca izin veren kişiler alır ve her mesajda çalışan bir abonelikten çıkma bağlantısı bulunur. Abonelikten çıkanlara ve geri dönenlere bir daha gönderilmez.",
     testSend: "Kendime test gönder",
-    sendTo: "{count} kişiye gönder",
   },
 
   broadcastStatus: {

@@ -796,13 +796,11 @@ export const adminEs: PartialAdminDictionary = {
     lockedBody: "Escribe a los clientes que dieron su consentimiento, con baja y gestión de rebotes incluidas.",
     subject: "Asunto",
     audience: "Audiencia",
-    audienceHint: "Lo recibirán {count} personas.",
     everyone: "Todos los que dieron su consentimiento",
     body: "Mensaje",
     bodyHint: "Markdown: **negrita**, *cursiva*, [enlaces](https://…), - listas.",
     consentNote: "Solo lo reciben los contactos que dieron su consentimiento, y cada mensaje lleva un enlace de baja que funciona. A quien se da de baja o rebota no se le vuelve a escribir.",
     testSend: "Enviarme una prueba",
-    sendTo: "Enviar a {count}",
   },
 
   broadcastStatus: {

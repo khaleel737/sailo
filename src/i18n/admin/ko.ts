@@ -813,13 +813,11 @@ export const adminKo: PartialAdminDictionary = {
     lockedBody: "동의한 고객에게 이메일을 보내세요 — 수신 거부와 반송 처리가 내장돼 있습니다.",
     subject: "제목",
     audience: "대상",
-    audienceHint: "{count}명이 받게 됩니다.",
     everyone: "동의한 모든 사람",
     body: "메시지",
     bodyHint: "마크다운: **굵게**, *기울임*, [링크](https://…), - 목록.",
     consentNote: "동의한 연락처만 받으며, 모든 메일에 작동하는 수신 거부 링크가 들어갑니다. 수신 거부했거나 반송된 주소로는 다시 보내지 않습니다.",
     testSend: "나에게 테스트 발송",
-    sendTo: "{count}명에게 발송",
   },
 
   broadcastStatus: {

@@ -45,6 +45,37 @@ export type ProductOption = {
 /** A variant's pick on each axis, keyed by option name. */
 export type VariantOptions = Record<string, string>;
 
+/**
+ * Who a broadcast goes to, as stored.
+ *
+ * A rule is a tagged object rather than a column per question, because the
+ * questions a seller wants to ask — bought this, never bought anything,
+ * lapsed since March, came in through the signup form — do not stop arriving,
+ * and each one as a column would be a migration and a form field for a
+ * combination nobody had asked for yet. The tag is the only part the database
+ * knows about; `lib/broadcasts/segments.ts` owns what each one means and is
+ * the only thing allowed to turn one into SQL.
+ *
+ * Stored, not recomputed into a member list: an audience is a *question*, and
+ * the answer moves. A broadcast queued on Tuesday and sent on Friday asks it
+ * again at queue time, so somebody who bought on Wednesday is included and
+ * somebody who unsubscribed on Thursday is not.
+ */
+export type SegmentRule = {
+  /** See `SEGMENT_RULE_TYPES` — parsing rejects anything else. */
+  type: string;
+  /** A uuid, a tag, a country code — whatever the type names. */
+  value?: string;
+  /** Days, a count, or minor units, depending on the type. */
+  n?: number;
+};
+
+export type SegmentFilter = {
+  /** `all` intersects the rules, `any` unions them. */
+  match: "all" | "any";
+  rules: SegmentRule[];
+};
+
 /** Union of every rail's settings — only the keys for that type are used. */
 export type PaymentConfig = {
   // Contact rails

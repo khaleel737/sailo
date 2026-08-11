@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getShopByHandle, pickFilters } from "@/lib/queries";
+import { interpolate } from "@/i18n";
 import { absolute, shopJsonLd } from "@/lib/seo";
 import { shopThemeVars } from "@/lib/utils";
 import { getShopPageData } from "./_lib/get-shop-page-data";
@@ -14,6 +15,7 @@ import { ShareButton } from "./_components/share-button";
 import { ShopFooter } from "./_components/shop-footer";
 import { ShopHeader } from "./_components/shop-header";
 import { ShopTracking } from "./_components/shop-tracking";
+import { SubscribeCard } from "./_components/subscribe-card";
 import { VisitTracker } from "./_components/visit-tracker";
 
 export async function generateMetadata({
@@ -194,6 +196,30 @@ export default async function ShopPage({
               locale={locale}
             />
           </main>
+
+          {/*
+            Under the catalogue, not over it. A signup card above the products
+            asks for an address before the visitor has any reason to give one;
+            below, it catches the person who scrolled the whole shop and did
+            not buy — which is the largest group on any storefront and the one
+            a mailing list exists for.
+          */}
+          {shop.subscribeEnabled ? (
+            <SubscribeCard
+              handle={shop.handle}
+              incentive={shop.subscribeIncentive}
+              labels={{
+                title: t.mailing.title,
+                body: interpolate(t.mailing.body, { shop: shop.name }),
+                emailLabel: t.mailing.emailLabel,
+                nameLabel: t.mailing.nameLabel,
+                cta: t.mailing.cta,
+                checkInbox: t.mailing.checkInbox,
+                privacyNote: t.mailing.privacyNote,
+                optional: t.common.optional,
+              }}
+            />
+          ) : null}
 
           <ShopFooter
             shop={shop}

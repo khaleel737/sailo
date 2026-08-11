@@ -64,6 +64,29 @@ export const shops = pgTable(
       .default(false)
       .notNull(),
 
+    /*
+     * The signup form — the other half of broadcasts, and the half that was
+     * missing.
+     *
+     * A checkout opt-in only reaches people who already bought something, so
+     * a shop's mailing list could never grow faster than its sales. This is
+     * the form that lets somebody who has bought nothing ask to hear from the
+     * shop: a card on the storefront and a shareable page at
+     * `/[handle]/subscribe` for a bio link.
+     */
+    /** Show the signup card on the storefront. The page works regardless. */
+    subscribeEnabled: boolean("subscribe_enabled").default(false).notNull(),
+    /**
+     * What the seller offers for the address — "10% off your first order".
+     *
+     * Free text and not a coupon reference on purpose: the incentive is a
+     * promise made on a public page, and tying it to a code would mean either
+     * minting one per subscriber (a table this feature does not need) or
+     * printing a shared code where anybody can read it without subscribing.
+     * The seller sends the code in the welcome broadcast, where it is earned.
+     */
+    subscribeIncentive: text("subscribe_incentive"),
+
     // Affiliate programme
     affiliatesEnabled: boolean("affiliates_enabled").default(false).notNull(),
     /** Default commission in basis points — 1000 = 10%. */

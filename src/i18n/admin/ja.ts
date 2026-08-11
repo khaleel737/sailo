@@ -801,13 +801,11 @@ export const adminJa: PartialAdminDictionary = {
     lockedBody: "同意した顧客にメールを送れます。配信停止とバウンス処理も組み込み済みです。",
     subject: "件名",
     audience: "配信対象",
-    audienceHint: "{count} 人が受け取ります。",
     everyone: "同意した人すべて",
     body: "本文",
     bodyHint: "Markdown: **太字**、*斜体*、[リンク](https://…)、- 箇条書き。",
     consentNote: "同意した連絡先だけに届き、すべてのメールに有効な配信停止リンクが付きます。配信停止した人や不達だった宛先には二度と送りません。",
     testSend: "自分にテスト送信",
-    sendTo: "{count} 人に送信",
   },
 
   broadcastStatus: {

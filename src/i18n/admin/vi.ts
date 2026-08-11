@@ -814,13 +814,11 @@ export const adminVi: PartialAdminDictionary = {
     lockedBody: "Gửi email cho khách hàng đã đồng ý — có sẵn hủy đăng ký và xử lý email trả về.",
     subject: "Tiêu đề",
     audience: "Đối tượng",
-    audienceHint: "{count} người sẽ nhận được.",
     everyone: "Mọi người đã đồng ý",
     body: "Nội dung",
     bodyHint: "Markdown: **đậm**, *nghiêng*, [liên kết](https://…), - danh sách.",
     consentNote: "Chỉ những liên hệ đã đồng ý mới nhận được, và mọi email đều có liên kết hủy đăng ký hoạt động. Người đã hủy hoặc email trả về sẽ không bao giờ được gửi lại.",
     testSend: "Gửi thử cho tôi",
-    sendTo: "Gửi tới {count}",
   },
 
   broadcastStatus: {

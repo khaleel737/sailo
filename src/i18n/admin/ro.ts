@@ -808,13 +808,11 @@ export const adminRo: PartialAdminDictionary = {
     lockedBody: "Scrie clienților care au consimțit — cu dezabonare și gestionarea eșecurilor incluse.",
     subject: "Subiect",
     audience: "Public",
-    audienceHint: "{count} persoane îl vor primi.",
     everyone: "Toți cei care au consimțit",
     body: "Mesaj",
     bodyHint: "Markdown: **îngroșat**, *cursiv*, [linkuri](https://…), - liste.",
     consentNote: "Îl primesc doar contactele care au consimțit, iar fiecare mesaj conține un link de dezabonare funcțional. Cei dezabonați sau cu email eșuat nu mai sunt contactați.",
     testSend: "Trimite-mi un test",
-    sendTo: "Trimite către {count}",
   },
 
   broadcastStatus: {

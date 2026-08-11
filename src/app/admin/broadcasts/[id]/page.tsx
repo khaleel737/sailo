@@ -2,17 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { and, eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft, Copy, Trash2 } from "lucide-react";
 import { getDb } from "@/db";
 import { broadcasts } from "@/db/schema";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { can } from "@/lib/plans";
-import { getShopClients } from "@/lib/queries";
-import { tagVocabulary } from "@/lib/client-tags";
-import { audienceSize } from "@/lib/broadcasts/audience";
-import { broadcastProgress } from "@/lib/broadcasts/send";
-import { deleteBroadcast } from "@/lib/actions/broadcasts";
+import { segmentPickers } from "@/lib/broadcasts/pickers";
+import { broadcastProgress, MAX_PROMO_PRODUCTS } from "@/lib/broadcasts/send";
+import { deleteBroadcast, duplicateBroadcast } from "@/lib/actions/broadcasts";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button, Card } from "@/components/ui";
 import { Composer } from "../_components/composer";
@@ -35,13 +33,12 @@ export default async function BroadcastPage({
   });
   if (!broadcast) notFound();
 
-  const [clients, audienceCount, progress] = await Promise.all([
-    getShopClients(shop.id),
-    audienceSize(shop.id, broadcast.audienceTag),
+  const [pickers, progress] = await Promise.all([
+    segmentPickers(shop.id),
     broadcastProgress(broadcast.id),
   ]);
 
-  const started = broadcast.status !== "draft";
+  const started = broadcast.status !== "draft" && broadcast.status !== "scheduled";
 
   return (
     <>
@@ -61,15 +58,29 @@ export default async function BroadcastPage({
             : a.broadcasts.composeBody
         }
         action={
-          broadcast.status === "draft" ? (
-            <form action={deleteBroadcast}>
+          <div className="flex items-center gap-1">
+            {/*
+              Duplicating a sent campaign is how the next one gets written.
+              Without it the audience is retyped from memory, which is where
+              a segment quietly stops matching what the seller meant.
+            */}
+            <form action={duplicateBroadcast}>
               <input type="hidden" name="id" value={broadcast.id} />
               <Button variant="ghost" size="sm" type="submit">
-                <Trash2 className="size-4" />
-                {a.common.delete}
+                <Copy className="size-4" />
+                {a.broadcasts.duplicate}
               </Button>
             </form>
-          ) : null
+            {started ? null : (
+              <form action={deleteBroadcast}>
+                <input type="hidden" name="id" value={broadcast.id} />
+                <Button variant="ghost" size="sm" type="submit">
+                  <Trash2 className="size-4" />
+                  {a.common.delete}
+                </Button>
+              </form>
+            )}
+          </div>
         }
       />
 
@@ -106,8 +117,10 @@ export default async function BroadcastPage({
 
       <Composer
         broadcast={broadcast}
-        tags={tagVocabulary(clients)}
-        audienceCount={audienceCount}
+        pickers={pickers}
+        currency={shop.currency}
+        timeZone={shop.timeZone}
+        maxProducts={MAX_PROMO_PRODUCTS}
       />
     </>
   );

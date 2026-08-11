@@ -200,6 +200,8 @@ it forwards with the one secret, while production uses two.
 /onboarding           Claim a handle, create the shop
 /[handle]             THE TEMPLATE — public shop
 /[handle]/p/[slug]    Product detail + reviews
+/[handle]/subscribe   Join the shop's mailing list — the link a seller shares
+/s/[token]            Confirm that signup (double opt-in; a GET subscribes nobody)
 /admin                Overview: visits, orders, products
 /admin/products       Product CRUD with image upload
 /admin/categories     Category management
@@ -211,6 +213,7 @@ it forwards with the one secret, while production uses two.
 /admin/payments       Turn payment rails on/off and configure them
 /admin/delivery       Shipping and collection options
 /admin/reviews        Review moderation
+/admin/broadcasts     Marketing email: segments, promotions, scheduling, signups
 /admin/settings       Shop details, appearance, socials, address collection
 /admin/settings/billing   Plan and billing
 /admin/settings/security  Two-factor, login sessions, account deletion

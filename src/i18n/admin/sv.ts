@@ -799,13 +799,11 @@ export const adminSv: PartialAdminDictionary = {
     lockedBody: "Mejla kunderna som tackat ja — med avregistrering och studshantering inbyggt.",
     subject: "Ämne",
     audience: "Mottagare",
-    audienceHint: "{count} personer får det här.",
     everyone: "Alla som tackat ja",
     body: "Meddelande",
     bodyHint: "Markdown: **fet**, *kursiv*, [länkar](https://…), - listor.",
     consentNote: "Bara kontakter som tackat ja får det här, och varje meddelande har en fungerande avregistreringslänk. De som avregistrerar sig eller studsar kontaktas aldrig igen.",
     testSend: "Skicka ett test till mig",
-    sendTo: "Skicka till {count}",
   },
 
   broadcastStatus: {

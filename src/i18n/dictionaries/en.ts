@@ -589,6 +589,49 @@ export const en = {
     sailoDoneBody: "Sailo won't send you tips or product news again. Order, billing and account emails still arrive as usual.",
     sailoInvalidBody: "Email support@sailo.store and we'll take you off the list.",
   },
+
+  /*
+   * The mailing list, from both ends: the form somebody joins it with, the
+   * page that confirms they meant it, and the few words a shop's marketing
+   * email wears that are ours rather than the seller's.
+   *
+   * The seller writes the body of a broadcast and we never translate it —
+   * they know what language their customers read. Everything here is chrome
+   * around it, and chrome follows the shop's own language.
+   */
+  mailing: {
+    title: "Join the list",
+    body: "New arrivals, offers and news from {shop} — straight to your inbox.",
+    emailLabel: "Email address",
+    nameLabel: "First name",
+    cta: "Subscribe",
+    // Deliberately the same sentence whether the address was already on the
+    // list, never seen, or blocked. The form is not an address checker.
+    checkInbox: "Almost there — open the email we just sent and tap confirm.",
+    invalidEmail: "That address doesn't look right.",
+    // Throttled is unknown, never "check your inbox": one office or one
+    // mobile network is many people behind one address, and a first-time
+    // subscriber can trip the limit having done nothing.
+    tooMany: "Too many sign-ups from here just now — try again in a few minutes.",
+    privacyNote: "Unsubscribe any time. Your address is never sold or shared.",
+    confirmTitle: "Confirm your subscription",
+    confirmBody: "Tap below and {shop} can email you news and offers. Order emails are separate and arrive either way.",
+    confirmCta: "Yes, subscribe me",
+    confirmedTitle: "You're on the list",
+    confirmedBody: "{shop} will be in touch when there's something worth knowing.",
+    expiredTitle: "This link has expired",
+    expiredBody: "Confirmation links last a few days. Sign up again and we'll send a fresh one.",
+    confirmSubject: "Confirm your subscription to {shop}",
+    confirmEmailBody: "someone asked to hear from {shop} at this address. Tap below and you're on the list. If it wasn't you, ignore this email — nothing has been added anywhere.",
+    // The promotion block a broadcast carries.
+    amountOff: "{amount} off",
+    useCode: "Use code {code}",
+    endsOn: "Ends {date}",
+    minSpend: "Minimum spend {amount}",
+    shopNow: "Visit the shop",
+    /** What a merge tag says when the contact has no name on file. */
+    friend: "there",
+  },
 } as const;
 
 /**

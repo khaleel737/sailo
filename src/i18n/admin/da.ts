@@ -798,13 +798,11 @@ export const adminDa: PartialAdminDictionary = {
     lockedBody: "Skriv til de kunder, der har sagt ja — med afmelding og bounce-håndtering indbygget.",
     subject: "Emne",
     audience: "Modtagere",
-    audienceHint: "{count} personer modtager det.",
     everyone: "Alle der har sagt ja",
     body: "Besked",
     bodyHint: "Markdown: **fed**, *kursiv*, [links](https://…), - lister.",
     consentNote: "Kun kontakter, der har sagt ja, modtager det, og hver besked har et fungerende afmeldingslink. Afmeldte og bouncede adresser skrives der aldrig til igen.",
     testSend: "Send en test til mig selv",
-    sendTo: "Send til {count}",
   },
 
   broadcastStatus: {

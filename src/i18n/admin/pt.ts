@@ -808,13 +808,11 @@ export const adminPt: PartialAdminDictionary = {
     lockedBody: "Envia email aos clientes que consentiram — com cancelamento e gestão de devoluções incluídos.",
     subject: "Assunto",
     audience: "Público",
-    audienceHint: "{count} pessoas vão recebê-lo.",
     everyone: "Todos os que consentiram",
     body: "Mensagem",
     bodyHint: "Markdown: **negrito**, *itálico*, [links](https://…), - listas.",
     consentNote: "Só os contactos que consentiram o recebem, e cada mensagem leva um link de cancelamento funcional. Quem cancela ou devolve nunca mais é contactado.",
     testSend: "Enviar um teste para mim",
-    sendTo: "Enviar a {count}",
   },
 
   broadcastStatus: {

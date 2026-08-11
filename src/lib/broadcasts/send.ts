@@ -1,18 +1,30 @@
 import "server-only";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray, lte, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import {
   broadcastDeliveries,
   broadcasts,
+  coupons,
+  productImages,
+  products,
   shops,
   type Broadcast,
   type Shop,
 } from "@/db/schema";
 import { ORDERS, MAX_BATCH, sendBatch, sender } from "@/lib/email/transport";
 import { getDictionary } from "@/i18n";
+import { appUrl } from "@/lib/app-url";
+import { can } from "@/lib/plans";
 import { audienceFor } from "./audience";
 import { budgetFor } from "./quota";
-import { renderBroadcast, renderText } from "./render";
+import { applyMergeTags, mergeValuesFor } from "./markdown";
+import { parseSegment } from "./segments";
+import {
+  renderBroadcast,
+  renderText,
+  type BroadcastContent,
+  type BroadcastLabels,
+} from "./render";
 import { unsubscribeToken, unsubscribePostUrl, unsubscribeUrl } from "./unsubscribe";
 
 /**
@@ -50,8 +62,20 @@ export type QueueResult =
 export async function queueBroadcast(opts: {
   shop: Shop;
   broadcastId: string;
+  /**
+   * The status this claim is allowed to take the broadcast out of.
+   *
+   * `draft` is a seller pressing Send; `scheduled` is the cron finding one
+   * due. They are separate values rather than "whatever it currently is"
+   * because the claim is the concurrency control: a scheduled broadcast that
+   * a seller opens and sends by hand must be claimable exactly once between
+   * the two paths, and a status this call did not expect means somebody else
+   * got there first.
+   */
+  from?: "draft" | "scheduled";
 }): Promise<QueueResult> {
   const db = getDb();
+  const from = opts.from ?? "draft";
 
   /*
    * The link has to work before a single message goes out. Without a signing
@@ -84,7 +108,7 @@ export async function queueBroadcast(opts: {
         eq(broadcasts.id, opts.broadcastId),
         eq(broadcasts.shopId, opts.shop.id),
         // The claim. A second press finds nothing to claim and stops here.
-        eq(broadcasts.status, "draft"),
+        eq(broadcasts.status, from),
       ),
     )
     .returning();
@@ -92,9 +116,15 @@ export async function queueBroadcast(opts: {
     return { ok: false, error: "That broadcast has already been sent." };
   }
 
+  /*
+   * The audience is resolved *now*, at queue time, and not when the draft was
+   * written. A broadcast scheduled on Monday for Friday reaches Thursday's
+   * new subscriber and skips Wednesday's unsubscribe, because the segment is
+   * a question and this is the moment it gets asked.
+   */
   const { recipients, clamped } = await audienceFor(
     opts.shop.id,
-    claimed.audienceTag,
+    parseSegment(claimed.audienceFilter, claimed.audienceTag),
   );
 
   if (recipients.length > 0) {
@@ -156,9 +186,73 @@ export async function queueBroadcast(opts: {
 const WORK_PER_TICK = 20;
 const CANDIDATES_PER_TICK = 200;
 
+/**
+ * Scheduled sends that have come due, turned into queues.
+ *
+ * The promotion is `queueBroadcast` with a different claim status and
+ * nothing else — the send path does not know or care that a broadcast was
+ * scheduled, which is what keeps scheduling from being a second, subtly
+ * different way to send.
+ *
+ * The plan is re-read here rather than trusted from when the schedule was
+ * set. A seller who scheduled six weeks of campaigns and then downgraded has
+ * not bought the right to keep sending them, and the check that gates the
+ * button is worth nothing if the cron does not make it too.
+ */
+async function promoteScheduled(now: Date) {
+  const db = getDb();
+
+  const due = await db.query.broadcasts.findMany({
+    where: and(eq(broadcasts.status, "scheduled"), lte(broadcasts.scheduledAt, now)),
+    orderBy: broadcasts.scheduledAt,
+    limit: WORK_PER_TICK,
+  });
+
+  let started = 0;
+  let skipped = 0;
+
+  for (const broadcast of due) {
+    const shop = await db.query.shops.findFirst({
+      where: eq(shops.id, broadcast.shopId),
+    });
+    if (!shop) continue;
+
+    if (!can(shop, "broadcasts")) {
+      /*
+       * Back to a draft, not deleted and not left due forever. The seller's
+       * words are still theirs, the schedule is what lapsed, and a row that
+       * stays `scheduled` past its time would be retried on every tick for
+       * as long as the shop exists.
+       */
+      await db
+        .update(broadcasts)
+        .set({ status: "draft", scheduledAt: null, updatedAt: new Date() })
+        .where(and(eq(broadcasts.id, broadcast.id), eq(broadcasts.status, "scheduled")));
+      console.warn(
+        `[sailo] broadcast ${broadcast.id} unscheduled: shop no longer on a plan with broadcasts`,
+      );
+      skipped += 1;
+      continue;
+    }
+
+    const result = await queueBroadcast({
+      shop,
+      broadcastId: broadcast.id,
+      from: "scheduled",
+    });
+    if (result.ok) started += 1;
+  }
+
+  return { started, skipped };
+}
+
 /** One tick of the queue: at most one batch per broadcast in flight. */
 export async function runBroadcastQueue(now = new Date()) {
   const db = getDb();
+
+  // Due schedules become queues first, so a broadcast set for 09:00 starts
+  // sending on the 09:00 tick rather than the one after it.
+  const scheduled = await promoteScheduled(now);
 
   const inFlight = await db.query.broadcasts.findMany({
     where: eq(broadcasts.status, "sending"),
@@ -207,7 +301,15 @@ export async function runBroadcastQueue(now = new Date()) {
     suppressed += result.suppressed;
   }
 
-  return { sent, failed, suppressed, held, broadcasts: inFlight.length };
+  return {
+    sent,
+    failed,
+    suppressed,
+    held,
+    broadcasts: inFlight.length,
+    started: scheduled.started,
+    unscheduled: scheduled.skipped,
+  };
 }
 
 async function sendOneBatch(opts: {
@@ -312,23 +414,56 @@ async function sendOneBatch(opts: {
     ? `${shop.name} · ${shop.location}`
     : shop.name;
 
+  /*
+   * The offer is resolved once for the batch, not once per recipient. A
+   * hundred people get one coupon lookup and one product query between them,
+   * and — more importantly — they get the *same* email: resolving per
+   * recipient would let a coupon edited mid-send split one campaign into two
+   * different promises.
+   */
+  const content = await resolveContent(shop, broadcast, t);
+  const labels = broadcastLabels(t);
+
+  /*
+   * Names, for `{{first_name}}`, read from the client rows this batch points
+   * at rather than snapshotted onto the delivery.
+   *
+   * A delivery row deliberately snapshots the *address* — who was mailed is a
+   * fact — but a name is not part of that fact, and someone who corrects the
+   * spelling of their own name between batch one and batch four should be
+   * greeted correctly in batch four. One query for a hundred rows.
+   */
+  const names = await namesFor(toSend.map((row) => row.clientId));
+
   const messages = toSend.map((row) => {
     const token = unsubscribeToken({ shopId: shop.id, email: row.email });
     const url = unsubscribeUrl(token ?? "");
     const oneClick = unsubscribePostUrl(token ?? "");
+    const merge = mergeValuesFor({
+      name: row.clientId ? (names.get(row.clientId) ?? null) : null,
+      shopName: shop.name,
+      couponCode: content.coupon?.code,
+      fallbackName: labels.friend,
+    });
     return {
       from,
       to: row.email,
-      subject: broadcast.subject,
+      subject: applyMergeTags(content.subject, merge, false),
       html: renderBroadcast({
         shop,
-        subject: broadcast.subject,
-        bodyMarkdown: broadcast.bodyMarkdown,
+        content,
         unsubscribeUrl: url,
         senderLine,
-        unsubscribeLabel: t.unsubscribe.link,
+        labels,
+        merge,
       }),
-      text: renderText(broadcast.bodyMarkdown, url),
+      text: renderText({
+        content,
+        unsubscribeUrl: url,
+        labels,
+        merge,
+        currency: shop.currency,
+      }),
       replyTo: shop.contactEmail ?? undefined,
       headers: {
         /*
@@ -407,6 +542,142 @@ async function finish(broadcastId: string, from: "sending" | "queuing" = "sendin
 function shopDictionary(shop: Shop) {
   return { t: getDictionary(shop.locale ?? "en") };
 }
+
+type ShopDictionary = ReturnType<typeof getDictionary>;
+
+/** The chrome's words, in the shop's language. The body is the seller's. */
+export function broadcastLabels(t: ShopDictionary): BroadcastLabels {
+  return {
+    unsubscribe: t.unsubscribe.link,
+    amountOff: t.mailing.amountOff,
+    useCode: t.mailing.useCode,
+    endsOn: t.mailing.endsOn,
+    minSpend: t.mailing.minSpend,
+    shopNow: t.mailing.shopNow,
+    friend: t.mailing.friend,
+  };
+}
+
+/** One query for a batch's worth of names. */
+async function namesFor(clientIds: (string | null)[]): Promise<Map<string, string>> {
+  const ids = [...new Set(clientIds.filter((id): id is string => Boolean(id)))];
+  if (ids.length === 0) return new Map();
+
+  const rows = await getDb().query.clients.findMany({
+    where: (t, { inArray: within }) => within(t.id, ids),
+    columns: { id: true, name: true },
+  });
+  return new Map(rows.map((row) => [row.id, row.name]));
+}
+
+/**
+ * The offer, as it stands at this moment.
+ *
+ * Read rather than snapshotted, and that is the deliberate choice: a seller
+ * who fixes a typo in a coupon's terms, or unpublishes a product they have
+ * sold out of, between two batches of the same send has that fix reach the
+ * batches still to go. The alternative — freezing everything at queue time —
+ * means a send that started at 9am is still promising, at noon, something the
+ * shop stopped offering at ten.
+ *
+ * Everything here degrades to nothing rather than to an error. A deleted
+ * coupon renders no coupon block; an unpublished product simply is not in the
+ * list. A broadcast is not worth failing over its decoration.
+ */
+export type BroadcastDraft = Pick<
+  Broadcast,
+  "subject" | "previewText" | "bodyMarkdown" | "couponId" | "productIds" | "ctaLabel" | "ctaUrl"
+>;
+
+export async function resolveContent(
+  shop: Shop,
+  broadcast: BroadcastDraft,
+  t: ShopDictionary = getDictionary(shop.locale ?? "en"),
+): Promise<BroadcastContent> {
+  const db = getDb();
+
+  const coupon = broadcast.couponId
+    ? await db.query.coupons.findFirst({
+        // Shop-scoped even though the id came from our own row: a coupon that
+        // somehow points elsewhere must not have its code mailed out.
+        where: and(eq(coupons.id, broadcast.couponId), eq(coupons.shopId, shop.id)),
+      })
+    : null;
+
+  const ids = Array.isArray(broadcast.productIds) ? broadcast.productIds.slice(0, MAX_PROMO_PRODUCTS) : [];
+  const rows =
+    ids.length > 0
+      ? await db
+          .select({
+            id: products.id,
+            title: products.title,
+            slug: products.slug,
+            priceCents: products.priceCents,
+            compareAtCents: products.compareAtCents,
+            imageUrl: sql<string | null>`(
+              select ${productImages.url} from ${productImages}
+              where ${productImages.productId} = ${products.id}
+              order by ${productImages.position}
+              limit 1
+            )`,
+          })
+          .from(products)
+          .where(
+            and(
+              eq(products.shopId, shop.id),
+              inArray(products.id, ids),
+              // An unpublished product's page 404s for a buyer, so a card
+              // pointing at one is a link to nothing in every inbox.
+              eq(products.isPublished, true),
+            ),
+          )
+      : [];
+
+  // The seller's order, not the database's — the first card is the one the
+  // campaign is about, and `inArray` has no opinion about which that is.
+  const byId = new Map(rows.map((row) => [row.id, row]));
+  const base = appUrl();
+
+  const cta = broadcast.ctaUrl || broadcast.ctaLabel
+    ? {
+        label: broadcast.ctaLabel || t.mailing.shopNow,
+        url: broadcast.ctaUrl || `${base}/${shop.handle}`,
+      }
+    : null;
+
+  return {
+    subject: broadcast.subject,
+    previewText: broadcast.previewText,
+    bodyMarkdown: broadcast.bodyMarkdown,
+    coupon: coupon
+      ? {
+          code: coupon.code,
+          discountType: coupon.discountType,
+          discountValue: coupon.discountValue,
+          minSubtotalCents: coupon.minSubtotalCents,
+          expiresAt: coupon.expiresAt,
+        }
+      : null,
+    products: ids.flatMap((id) => {
+      const row = byId.get(id);
+      return row
+        ? [
+            {
+              title: row.title,
+              priceCents: row.priceCents,
+              compareAtCents: row.compareAtCents,
+              imageUrl: row.imageUrl,
+              url: `${base}/${shop.handle}/p/${row.slug}`,
+            },
+          ]
+        : [];
+    }),
+    cta,
+  };
+}
+
+/** How many product cards one message may carry. */
+export const MAX_PROMO_PRODUCTS = 4;
 
 /** How a broadcast is doing, for the list and the detail screen. */
 export async function broadcastProgress(broadcastId: string) {

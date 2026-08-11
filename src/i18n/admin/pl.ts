@@ -808,13 +808,11 @@ export const adminPl: PartialAdminDictionary = {
     lockedBody: "Napisz do klientów, którzy wyrazili zgodę — z wypisem i obsługą odbić w pakiecie.",
     subject: "Temat",
     audience: "Odbiorcy",
-    audienceHint: "Otrzyma to {count} osób.",
     everyone: "Wszyscy, którzy wyrazili zgodę",
     body: "Wiadomość",
     bodyHint: "Markdown: **pogrubienie**, *kursywa*, [linki](https://…), - listy.",
     consentNote: "Otrzymają to tylko kontakty, które wyraziły zgodę, a każda wiadomość zawiera działający link do wypisu. Wypisanym i odbitym adresom już nie piszemy.",
     testSend: "Wyślij test do mnie",
-    sendTo: "Wyślij do {count}",
   },
 
   broadcastStatus: {

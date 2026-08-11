@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { boolean, index, integer, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { shops } from "./shop";
 import { products, productVariants } from "./catalog";
@@ -71,6 +72,15 @@ export const clients = pgTable(
      * tag" — and a btree cannot answer it. See `drizzle/0012`.
      */
     index("clients_tags_idx").using("gin", t.tags),
+    /*
+     * The signup form's lookup, and it has to be on the folded address.
+     * `clients_shop_email_key` indexes the stored casing, so a person
+     * subscribing as `Ada@x.com` when the row says `ada@x.com` would miss it,
+     * insert, and hit the unique index as an error — turning a second signup
+     * into a 500 and, worse, into an oracle that the address was already
+     * known. See `drizzle/0016`.
+     */
+    index("clients_shop_email_lower_idx").on(t.shopId, sql`lower(${t.email})`),
   ],
 );
 
@@ -291,6 +301,14 @@ export const orderItems = pgTable(
   (t) => [
     index("order_items_order_idx").on(t.orderId),
     index("order_items_product_idx").on(t.productId),
+    /*
+     * "Has this person ever bought this product" — the broadcast segment
+     * rule — starts from a product and needs the orders it appeared in.
+     * Carrying `order_id` in the index makes that an index-only scan instead
+     * of a heap fetch per line, which matters because the rule runs once per
+     * client the audience query considers.
+     */
+    index("order_items_product_order_idx").on(t.productId, t.orderId),
   ],
 );
 

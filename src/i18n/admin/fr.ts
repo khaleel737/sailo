@@ -801,13 +801,11 @@ export const adminFr: PartialAdminDictionary = {
     lockedBody: "Écrivez aux clients qui ont donné leur accord — désabonnement et gestion des rebonds inclus.",
     subject: "Objet",
     audience: "Audience",
-    audienceHint: "{count} personnes le recevront.",
     everyone: "Toutes les personnes ayant accepté",
     body: "Message",
     bodyHint: "Markdown : **gras**, *italique*, [liens](https://…), - listes.",
     consentNote: "Seuls les contacts ayant donné leur accord le reçoivent, et chaque message contient un lien de désabonnement fonctionnel. Les désabonnés et les adresses en erreur ne sont plus jamais contactés.",
     testSend: "M'envoyer un test",
-    sendTo: "Envoyer à {count}",
   },
 
   broadcastStatus: {

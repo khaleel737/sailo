@@ -39,7 +39,9 @@
     "social": "dotenv -e .env.local -- tsx scripts/social/daily.ts",
     "social:dry": "dotenv -e .env.local -- tsx scripts/social/daily.ts --dry-run",
     "social:preview": "tsx scripts/social/preview.ts",
-    "social:report": "tsx scripts/social/report.ts"
+    "social:report": "tsx scripts/social/report.ts",
+    "social:creators": "tsx scripts/social/creators.ts",
+    "social:outreach": "tsx scripts/social/outreach.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

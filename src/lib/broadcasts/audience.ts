@@ -1,7 +1,9 @@
 import "server-only";
-import { and, eq, isNotNull, sql } from "drizzle-orm";
+import { and, eq, isNotNull, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/db";
 import { clients, emailSuppressions } from "@/db/schema";
+import { EVERYONE, type Segment } from "./segments";
+import { segmentSql } from "./segment-sql";
 
 /**
  * Who a broadcast may be sent to, and the three conditions that decide it.
@@ -19,6 +21,11 @@ import { clients, emailSuppressions } from "@/db/schema";
  * than a filter afterwards.
  *
  * **Reachable.** An address, and one that looks like one.
+ *
+ * The seller's own narrowing — bought this, never bought anything, lapsed
+ * since spring — is a fourth condition ANDed onto those three, never a
+ * replacement for them. It arrives already parsed as a `Segment`; this file
+ * does not know what a rule means and cannot be made to skip one.
  */
 
 export type Recipient = {
@@ -36,11 +43,34 @@ export type Recipient = {
  */
 export const MAX_AUDIENCE = 5_000;
 
+/**
+ * The three conditions that are not the seller's to change.
+ *
+ * Built here and used by both the list and the count, so the two can never
+ * disagree about who is mailable — a count that includes a suppressed address
+ * is a seller told they will reach 900 people and a send that reaches 899,
+ * which reads as a bug in the send.
+ */
+function mailable(shopId: string): SQL[] {
+  return [
+    eq(clients.shopId, shopId),
+    isNotNull(clients.marketingConsentAt),
+    isNotNull(clients.email),
+    sql`not exists (
+      select 1 from ${emailSuppressions}
+      where ${emailSuppressions.shopId} = ${clients.shopId}
+        and ${emailSuppressions.email} = lower(${clients.email})
+    )`,
+  ];
+}
+
 export async function audienceFor(
   shopId: string,
-  tag: string | null,
+  segment: Segment = EVERYONE,
+  now = new Date(),
 ): Promise<{ recipients: Recipient[]; clamped: boolean }> {
   const db = getDb();
+  const narrowing = segmentSql(segment, now);
 
   const rows = await db
     .select({
@@ -49,19 +79,7 @@ export async function audienceFor(
       name: clients.name,
     })
     .from(clients)
-    .where(
-      and(
-        eq(clients.shopId, shopId),
-        isNotNull(clients.marketingConsentAt),
-        isNotNull(clients.email),
-        ...(tag ? [sql`${clients.tags} @> ARRAY[${tag}]::text[]`] : []),
-        sql`not exists (
-          select 1 from ${emailSuppressions}
-          where ${emailSuppressions.shopId} = ${clients.shopId}
-            and ${emailSuppressions.email} = lower(${clients.email})
-        )`,
-      ),
-    )
+    .where(and(...mailable(shopId), ...(narrowing ? [narrowing] : [])))
     .orderBy(clients.createdAt)
     .limit(MAX_AUDIENCE + 1);
 
@@ -75,13 +93,31 @@ export async function audienceFor(
   };
 }
 
-/** How many people a tag would reach, for the compose screen's own count. */
+/**
+ * How many people a segment would reach.
+ *
+ * A `count(*)`, not the length of the list. The compose screen asks this
+ * every time a rule changes, and fetching five thousand rows to discard all
+ * but their number is the difference between a segment builder that answers
+ * as fast as it is typed into and one nobody edits twice.
+ *
+ * Counted past the ceiling on purpose — the number a seller needs to see is
+ * how many people match, and the clamp is then explained beside it rather
+ * than hidden by reporting the clamped figure as the answer.
+ */
 export async function audienceSize(
   shopId: string,
-  tag: string | null,
+  segment: Segment = EVERYONE,
+  now = new Date(),
 ): Promise<number> {
-  const { recipients } = await audienceFor(shopId, tag);
-  return recipients.length;
+  const narrowing = segmentSql(segment, now);
+
+  const [row] = await getDb()
+    .select({ n: sql<string>`count(*)` })
+    .from(clients)
+    .where(and(...mailable(shopId), ...(narrowing ? [narrowing] : [])));
+
+  return Number(row?.n ?? 0);
 }
 
 export const SUPPRESSION_REASONS = [

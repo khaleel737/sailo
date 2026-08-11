@@ -811,13 +811,11 @@ export const adminFil: PartialAdminDictionary = {
     lockedBody: "I-email ang mga customer na pumayag — may built-in na unsubscribe at bounce handling.",
     subject: "Paksa",
     audience: "Audience",
-    audienceHint: "{count} tao ang makakatanggap nito.",
     everyone: "Lahat ng pumayag",
     body: "Mensahe",
     bodyHint: "Markdown: **bold**, *italic*, [links](https://…), - lists.",
     consentNote: "Ang mga pumayag lang ang makakatanggap nito, at may gumaganang unsubscribe link ang bawat mensahe. Hindi na muling papadalhan ang nag-unsubscribe o bounced.",
     testSend: "Magpadala ng test sa sarili",
-    sendTo: "Ipadala sa {count}",
   },
 
   broadcastStatus: {

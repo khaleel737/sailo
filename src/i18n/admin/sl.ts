@@ -813,13 +813,11 @@ export const adminSl: PartialAdminDictionary = {
     lockedBody: "Piši strankam, ki so privolile — z vgrajeno odjavo in obravnavo zavrnitev.",
     subject: "Zadeva",
     audience: "Občinstvo",
-    audienceHint: "To bo prejelo {count} ljudi.",
     everyone: "Vsi, ki so privolili",
     body: "Sporočilo",
     bodyHint: "Markdown: **krepko**, *ležeče*, [povezave](https://…), - seznami.",
     consentNote: "To prejmejo samo stiki, ki so privolili, in vsako sporočilo nosi delujočo povezavo za odjavo. Odjavljenim in zavrnjenim naslovom ne pišemo več.",
     testSend: "Pošlji test sebi",
-    sendTo: "Pošlji {count}",
   },
 
   broadcastStatus: {

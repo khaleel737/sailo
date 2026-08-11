@@ -808,13 +808,11 @@ export const adminNo: PartialAdminDictionary = {
     lockedBody: "Send e-post til kundene som samtykket — med avmelding og bounce-håndtering innebygd.",
     subject: "Emne",
     audience: "Mottakere",
-    audienceHint: "{count} personer mottar dette.",
     everyone: "Alle som har samtykket",
     body: "Melding",
     bodyHint: "Markdown: **fet**, *kursiv*, [lenker](https://…), - lister.",
     consentNote: "Bare kontakter som har samtykket, mottar dette, og hver melding har en fungerende avmeldingslenke. De som melder seg av eller bouncer, kontaktes aldri igjen.",
     testSend: "Send en test til meg selv",
-    sendTo: "Send til {count}",
   },
 
   broadcastStatus: {

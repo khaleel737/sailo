@@ -813,13 +813,11 @@ export const adminMs: PartialAdminDictionary = {
     lockedBody: "E-mel pelanggan yang bersetuju — dengan berhenti melanggan dan pengendalian bounce terbina dalam.",
     subject: "Subjek",
     audience: "Audiens",
-    audienceHint: "{count} orang akan menerimanya.",
     everyone: "Semua yang bersetuju",
     body: "Mesej",
     bodyHint: "Markdown: **tebal**, *condong*, [pautan](https://…), - senarai.",
     consentNote: "Hanya kenalan yang bersetuju menerimanya, dan setiap mesej membawa pautan berhenti melanggan yang berfungsi. Yang berhenti melanggan atau bounce tidak akan dihantar lagi.",
     testSend: "Hantar ujian kepada saya",
-    sendTo: "Hantar kepada {count}",
   },
 
   broadcastStatus: {

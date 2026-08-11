@@ -808,13 +808,11 @@ export const adminNl: PartialAdminDictionary = {
     lockedBody: "Mail de klanten die toestemming gaven — met afmelding en bounceafhandeling ingebouwd.",
     subject: "Onderwerp",
     audience: "Doelgroep",
-    audienceHint: "{count} mensen ontvangen dit.",
     everyone: "Iedereen die toestemming gaf",
     body: "Bericht",
     bodyHint: "Markdown: **vet**, *cursief*, [links](https://…), - lijsten.",
     consentNote: "Alleen contacten die toestemming gaven ontvangen dit, en elk bericht bevat een werkende afmeldlink. Wie zich afmeldt of bounct, krijgt nooit meer post.",
     testSend: "Test naar mezelf sturen",
-    sendTo: "Verstuur naar {count}",
   },
 
   broadcastStatus: {

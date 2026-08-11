@@ -798,13 +798,11 @@ export const adminCs: PartialAdminDictionary = {
     lockedBody: "Napište zákazníkům, kteří souhlasili — s odhlášením a řešením nedoručení v ceně.",
     subject: "Předmět",
     audience: "Publikum",
-    audienceHint: "Dostane to {count} lidí.",
     everyone: "Všichni, kdo souhlasili",
     body: "Zpráva",
     bodyHint: "Markdown: **tučně**, *kurzíva*, [odkazy](https://…), - seznamy.",
     consentNote: "Dostanou to jen kontakty, které souhlasily, a každá zpráva nese funkční odkaz na odhlášení. Odhlášeným a nedoručitelným už nic nepošleme.",
     testSend: "Poslat test sobě",
-    sendTo: "Odeslat {count} lidem",
   },
 
   broadcastStatus: {

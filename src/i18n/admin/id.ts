@@ -813,13 +813,11 @@ export const adminId: PartialAdminDictionary = {
     lockedBody: "Kirim email ke pelanggan yang setuju — lengkap dengan berhenti langganan dan penanganan bounce.",
     subject: "Subjek",
     audience: "Audiens",
-    audienceHint: "{count} orang akan menerimanya.",
     everyone: "Semua yang menyetujui",
     body: "Pesan",
     bodyHint: "Markdown: **tebal**, *miring*, [tautan](https://…), - daftar.",
     consentNote: "Hanya kontak yang menyetujui yang menerimanya, dan setiap pesan membawa tautan berhenti langganan yang berfungsi. Yang berhenti langganan atau bounce tidak dikirimi lagi.",
     testSend: "Kirim tes ke saya",
-    sendTo: "Kirim ke {count}",
   },
 
   broadcastStatus: {

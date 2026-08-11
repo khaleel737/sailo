@@ -800,13 +800,11 @@ export const adminAr: PartialAdminDictionary = {
     lockedBody: "راسل العملاء الذين وافقوا — مع إلغاء الاشتراك ومعالجة الارتداد مدمجين.",
     subject: "الموضوع",
     audience: "الجمهور",
-    audienceHint: "سيستلمها {count} شخصًا.",
     everyone: "كل من وافق",
     body: "الرسالة",
     bodyHint: "Markdown: **عريض**، *مائل*، [روابط](https://…)، - قوائم.",
     consentNote: "يستلمها فقط من وافق، وتحمل كل رسالة رابط إلغاء اشتراك يعمل. من يلغي الاشتراك أو يرتد بريده لا تصله رسائل مجددًا.",
     testSend: "أرسل نسخة تجريبية إليّ",
-    sendTo: "أرسل إلى {count}",
   },
 
   broadcastStatus: {

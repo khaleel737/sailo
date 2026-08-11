@@ -796,13 +796,11 @@ export const adminHu: PartialAdminDictionary = {
     lockedBody: "Írj a hozzájáruló vevőknek — beépített leiratkozással és visszapattanás-kezeléssel.",
     subject: "Tárgy",
     audience: "Címzettek",
-    audienceHint: "{count} ember kapja meg.",
     everyone: "Mindenki, aki hozzájárult",
     body: "Üzenet",
     bodyHint: "Markdown: **félkövér**, *dőlt*, [linkek](https://…), - listák.",
     consentNote: "Csak a hozzájáruló kapcsolatok kapják meg, és minden üzenetben működő leiratkozó link van. Aki leiratkozik vagy visszapattan, többé nem kap levelet.",
     testSend: "Teszt küldése magamnak",
-    sendTo: "Küldés {count} főnek",
   },
 
   broadcastStatus: {

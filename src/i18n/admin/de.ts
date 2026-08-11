@@ -801,13 +801,11 @@ export const adminDe: PartialAdminDictionary = {
     lockedBody: "Schreib den Kundinnen und Kunden, die zugestimmt haben — Abmeldung und Bounce-Handling inklusive.",
     subject: "Betreff",
     audience: "Zielgruppe",
-    audienceHint: "{count} Personen erhalten das.",
     everyone: "Alle, die zugestimmt haben",
     body: "Nachricht",
     bodyHint: "Markdown: **fett**, *kursiv*, [Links](https://…), - Listen.",
     consentNote: "Das erhalten nur Kontakte, die zugestimmt haben, und jede Nachricht enthält einen funktionierenden Abmeldelink. Wer sich abmeldet oder bounct, wird nie wieder angeschrieben.",
     testSend: "Test an mich senden",
-    sendTo: "An {count} senden",
   },
 
   broadcastStatus: {

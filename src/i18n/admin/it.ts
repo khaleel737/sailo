@@ -798,13 +798,11 @@ export const adminIt: PartialAdminDictionary = {
     lockedBody: "Scrivi ai clienti che hanno acconsentito, con disiscrizione e gestione dei rimbalzi incluse.",
     subject: "Oggetto",
     audience: "Pubblico",
-    audienceHint: "Lo riceveranno {count} persone.",
     everyone: "Tutti quelli che hanno acconsentito",
     body: "Messaggio",
     bodyHint: "Markdown: **grassetto**, *corsivo*, [link](https://…), - elenchi.",
     consentNote: "Lo ricevono solo i contatti che hanno acconsentito e ogni messaggio contiene un link di disiscrizione funzionante. Chi si disiscrive o rimbalza non viene più contattato.",
     testSend: "Invia una prova a me",
-    sendTo: "Invia a {count}",
   },
 
   broadcastStatus: {
