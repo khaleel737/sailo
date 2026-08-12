@@ -1,0 +1,23 @@
+apps/web/scripts/social/creators.ts
+  s_3fd229194f6299::t_576f546e883007 121,123-127
+apps/web/src/lib/booking/hours.ts
+  s_3fd229194f6299::t_372281612e46d1 17-20
+apps/web/scripts/scenarios/memberships-live.scenario.ts
+  s_3fd229194f6299::t_7e39064fab1c2d 496
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4afa7e20bb49a0d8a84f1ec80ec9333474696982",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
