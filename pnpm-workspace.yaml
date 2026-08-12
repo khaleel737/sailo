@@ -1,13 +1,10 @@
 packages:
   - "apps/*"
   - "packages/*"
-allowBuilds:
-  esbuild: set this to true or false
-  unrs-resolver: set this to true or false
 
-# pnpm 10+ blocks dependency install scripts by default. These build native
-# helpers the toolchain needs; the CSS/native runtime binaries (lightningcss,
-# @tailwindcss/oxide) ship prebuilt and need no script.
+# pnpm 10+ blocks dependency install scripts by default. esbuild and
+# unrs-resolver need theirs to place a native binary; the CSS/runtime binaries
+# (lightningcss, @tailwindcss/oxide) ship prebuilt and need no script.
 onlyBuiltDependencies:
   - esbuild
   - unrs-resolver
