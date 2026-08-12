@@ -1,0 +1,19 @@
+CUTOVER.md
+  s_3fd229194f6299::t_a5c846ef0d6fc1 1-101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "467a9c2ed75b69dc83cb6b86d1b4a6286024e421",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
