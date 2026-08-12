@@ -1,0 +1,28 @@
+packages/api/src/router.test.ts
+  s_3fd229194f6299::t_71a5311f7defbc 28-33
+  s_3fd229194f6299::t_8a278a92ce1cef 1-27,34-94
+packages/api/package.json
+  s_3fd229194f6299::t_c0d4b8f2695262 12-13,25-26
+packages/api/vitest.config.mts
+  s_3fd229194f6299::t_9fefa979f86ecb 1-5
+pnpm-lock.yaml
+  s_3fd229194f6299::t_8e0e39a21c8e99 293-295
+turbo.json
+  s_3fd229194f6299::t_cae400afb8aefa 9-10,31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3a1b75f2a0b82bc5707f82708aefa27331d92ada",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
