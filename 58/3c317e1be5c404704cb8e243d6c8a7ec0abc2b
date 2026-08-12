@@ -1,0 +1,47 @@
+.npmrc
+  s_3fd229194f6299::t_657a4a30c0a757 1
+apps/mobile/package.json
+  s_3fd229194f6299::t_f47746bb2cb9c0 15-17,31,34
+apps/web/package.json
+  s_3fd229194f6299::t_1fab0c6f63748e 50-53
+package.json
+  s_3fd229194f6299::t_2e3e4974030b42 5,14-16
+packages/api/package.json
+  s_3fd229194f6299::t_56e03a55be4182 15-16,23
+packages/auth/package.json
+  s_3fd229194f6299::t_38a79eea6b8ecb 18
+packages/config/package.json
+  s_3fd229194f6299::t_0fc3fa04641740 5-7
+packages/core/package.json
+  s_3fd229194f6299::t_93773241146a41 19,24
+packages/db/package.json
+  s_3fd229194f6299::t_2e7d71d4978f70 23
+packages/env/package.json
+  s_3fd229194f6299::t_1852136650e06a 17
+packages/i18n/package.json
+  s_3fd229194f6299::t_92631ebf3715c3 20
+packages/observability/package.json
+  s_3fd229194f6299::t_ca23facd250b34 9
+pnpm-lock.yaml
+  s_3fd229194f6299::t_71e1fa3a005b7b 1-14602
+pnpm-workspace.yaml
+  s_3fd229194f6299::t_3a6dadfda72dae 1-13
+turbo.json
+  s_3fd229194f6299::t_739421b2b473c1 3-5,7-21,23-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "583c317e1be5c404704cb8e243d6c8a7ec0abc2b",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
