@@ -64,8 +64,9 @@ Security tab).
 |---|---|---|---|
 | 5 | `05-checkout-compliance.md` | S–M | **Built** — server-enforced terms, timestamped consent, in exports |
 | 6 | `07-lead-capture.md` | M | **Next up** — not built; consent column (05) now exists |
-| 7 | `06-recurring-memberships.md` | XL | Not built — largest remaining feature |
+| 7 | `06-recurring-memberships.md` | XL | **Built** — card *and* manual rails, `drizzle/0017`+`0018` |
 | 8 | `08-order-bumps.md` | M | Not built |
+| 8b | `28-shipping-zones.md` | M | **Built** — per-rate country zones, `drizzle/0019`; checkout country is a real list now |
 
 | Order | Spec | Effort | Notes |
 |---|---|---|---|
@@ -158,6 +159,92 @@ never a `bounced` or `complained` one. Signup tokens expire after seven days
 and are signed under their own domain string, so they cannot be swapped with
 unsubscribe tokens in either direction. *Not built:* flows.
 
+### Recurring memberships, as built
+
+**`06-recurring-memberships.md`** shipped as specified, on the Connect side:
+`mode: "subscription"` Checkout Sessions on the seller's own account, with
+Sailo's cut as `application_fee_percent` (derived from `platformFeeBp`, so a
+membership and a one-time sale can never drift onto two fee policies).
+
+`products` gained `billingInterval`, `trialDays` and a cached Stripe Price —
+a Price is immutable, so a re-priced membership mints a new one and existing
+members stay where they signed up. The staleness check compares the *interval*
+as well as the amount: £30 monthly and £30 yearly are the same number, and an
+amount-only check would go on billing monthly for something now sold annually.
+
+`subscriptions` is the access source of truth and Stripe is the billing source
+of truth; the webhook reconciles them and nothing here computes an amount.
+Every paid invoice writes an ordinary order, so Income, the CSV export and the
+invoice sequence needed no changes — with a partial unique index on
+`stripe_invoice_id` so the same invoice under two event ids cannot record a
+month of revenue twice.
+
+Three things the scenario suite caught that reading did not. `ON CONFLICT`
+cannot infer a *partial* unique index without repeating its predicate, so every
+renewal failed outright until the `where` was added. `customer.subscription.*`
+can arrive before the checkout session that caused it, so the signup order is
+linked from every path that learns about a subscription rather than only from
+the session — otherwise the first payment was recorded as a renewal and the
+signup sat unpaid for ever. And the 24-hour abandoned-checkout sweep would have
+cancelled a trialling member's signup order mid-trial, so `membership` is
+exempt from it.
+
+Access is decided at *download* time, never at token-mint time, with grace to
+`currentPeriodEnd`: a cancelled member keeps the month they paid for, and
+`past_due` stays open while Stripe retries a card rather than locking somebody
+out over their bank's fraud check. Cancellation is Stripe's — `cancel_at_period_end`
+from the seller's members list, and Stripe's own billing portal from the
+member's delivery page — so a button can never say "cancelled" while the card
+keeps being charged.
+
+**Memberships on every rail (`drizzle/0018`).** The spec assumed card-only, and
+that was too narrow: a gym taking cash at the door, a class settling by bank
+transfer and a club arranging everything over WhatsApp all have members, and
+none of them can take a recurring card payment. What makes something a
+membership is that it *renews*, not that the renewal is automatic.
+
+So `subscriptions.billing_mode` picks who runs the cycle. On `stripe` it is
+Stripe, unchanged. On `manual` it is Sailo: a daily cron raises the next
+period's order five days before the current one lapses, emails the member with
+the shop's own payment instructions, and the seller marking that order paid —
+the same dropdown they use for every other manual order — is what extends the
+membership. The lead is five days because a transfer takes days to arrive and
+the seller then has to see it.
+
+Nothing about *access* forked. `membershipAccess` reads `status` and
+`current_period_end` and has never known who wrote them, which is why the
+grace rule, the members list, the download gate and cancellation all needed no
+second implementation. The one deliberate asymmetry is grace: a `past_due`
+card member keeps access while Stripe retries, and a manual one does not,
+because nothing is retrying.
+
+Idempotency without a webhook to lean on: `orders.membership_period_end`
+records which period a payment bought, claimed in a conditional UPDATE, so a
+seller toggling an order paid → unpaid → paid buys one month rather than
+three. And `subscriptions.renewal_ordered_for` is claimed against the period
+end, so overlapping cron ticks ask a member once.
+
+Two traps worth remembering. The unique index on `stripe_subscription_id` was
+briefly made *partial* when the column became nullable — which broke every
+card membership write with `42P10`, because `ON CONFLICT` cannot infer a
+partial index unless the upsert repeats its predicate. It is plain again;
+Postgres already allows many NULLs. And the branch creating the manual
+subscription was missing from `createOrderIntent` for a while, so every
+membership still routed to Stripe: the scenario tests all passed because they
+called the renewal module directly, and only lint caught it. There is now a
+test that goes through the real checkout action.
+
+*Not built:* free trials on manual rails — `trial_period_days` is Stripe's and
+nothing else reads it, so a trial set on a cash or transfer membership does
+nothing. The product form says so beside the field rather than leaving it
+silent; making it real means the signup order being zero-value and the first
+paid period being raised when the trial ends, which is a money-path change
+worth doing on its own.
+
+Also not built: proration UI, plan switching, seats/quantities, and coupons on
+memberships (refused with a message rather than silently ignored — Stripe's
+subscription discounts are their own system with their own duration rules).
+
 ### Lifecycle email, as built
 
 **`27-lifecycle-email.md`** is the other direction: Sailo mailing its own
@@ -228,7 +315,90 @@ Left in place at the bottom of the list.
 
 | Order | Spec | Effort | Notes |
 |---|---|---|---|
-| 19 | `16-outbound-webhooks.md` | M | Zapier substrate; SSRF rules inside |
+| 19 | `16-outbound-webhooks.md` | M | **Built, widened** — webhooks *and* a REST API *and* an MCP server (`drizzle/0020`) |
+
+### The integrations block, as built
+
+**`16-outbound-webhooks.md` shipped, and grew two halves the spec assumed
+would follow it.** A webhook that fires and cannot look anything up is half an
+integration; an API with nothing to trigger it is the other half. Both are
+behind one `integrations` feature flag on Business, and one credential opens
+both — a seller who revokes a key revokes everything, which is what they will
+expect.
+
+*What is deliberately still absent: an app directory.* Zapier, n8n, Make,
+Pipedream and everything behind them consume a plain signed POST, so the first
+build reaches all of them. Each named connector would be an OAuth client, a
+refresh token at rest and a support surface, per logo, forever — the same trade
+`17-booking-integrations.md` refused when it chose iCal over Google OAuth.
+
+**Signing is [Standard Webhooks](https://www.standardwebhooks.com), not the
+Stripe scheme the spec named.** The spec's stated reason was "so consumers can
+reuse verifiers", and this meets it better: Standard Webhooks has maintained
+libraries in nine languages, so a consumer writes one line instead of
+transcribing our recipe and getting the concatenation wrong. It is also what
+Svix speaks, so moving behind Svix later would be invisible to every endpoint
+already receiving. Three headers — `webhook-id`, `webhook-timestamp`,
+`webhook-signature` — over `<id>.<timestamp>.<body>`, keyed on the *decoded*
+bytes of the `whsec_`-prefixed secret.
+
+**The SSRF guard is at connect time, and that is why it does not use `fetch`.**
+The tempting shape — resolve, check, then fetch — has a hole exactly where the
+spec warned: the check and the connection are two separate resolutions, and
+whoever controls the domain answers the second with `169.254.169.254`.
+`lib/webhooks/post.ts` uses `node:https` with a `lookup` hook, so the address
+approved is the address connected to, with no window between them and TLS still
+validating against the hostname. `lib/ip-ranges.ts` is the predicate, and it
+unwraps IPv4-mapped, NAT64 and 6to4 IPv6 — `::ffff:169.254.169.254` is the
+metadata endpoint written in a notation a prefix check waves straight through.
+Redirects are never followed, the response body is capped and discarded, and
+only 443 is allowed: arbitrary ports would make the test button a port scanner
+with our IP on it.
+
+**The claim is a lease, not a status.** One conditional UPDATE increments
+`attempt` and pushes `nextAttemptAt` forward; only the winner posts. Unlike
+`broadcast_deliveries`, a tick that dies mid-POST leaves a row that becomes due
+again rather than one stranded — at-least-once is already the contract here and
+consumers are told to dedupe on `webhook-id`, so a silently lost event is the
+worse failure. Retries run 1m, 5m, 30m, 2h, 12h, then stop; twenty consecutive
+failures disable the endpoint and email the seller.
+
+**Seven events, each with a real emit point**, because a catalogue longer than
+its emit points is a checkbox a seller ticks and then waits on for ever. The
+card rail's `order.created` fires from the Connect webhook alongside
+`order.paid`, not at checkout — a third of Stripe sessions are abandoned and
+swept, and emitting there would fire every seller's Zap for orders that never
+existed. Manual rails emit at checkout, where the order *is* the commitment.
+
+**The API and the webhooks describe objects identically.** `lib/api/resources.ts`
+owns the shapes and both surfaces use it, so a consumer that receives
+`order.paid` and then fetches the order sees the same field names — one field
+map works against both. Amounts carry `cents`, a currency-correct decimal
+`amount` and the code, because the single most common integration bug is
+someone mapping the integer and emailing a customer "you paid 4999".
+
+**`POST /contacts` cannot grant marketing consent, by design.** It is the same
+invariant `addClient` states: consent is a thing a person gave, and a field in
+a request body is a claim that they did. `sendOptIn: true` is the supported
+route, and it reuses the public double opt-in flow unchanged, so consent is
+written when *they* click.
+
+**The MCP endpoint is dual-era.** Revision `2026-07-28` removed sessions, the
+GET stream and the `initialize` handshake, which is what makes a stateless
+serverless endpoint correct rather than a compromise — but a great many
+shipping clients still open with `initialize`, so both are served on one URL
+and dispatch to the same tools. A read-only key never sees the write tools at
+all: a model that cannot see a tool does not promise the user something it then
+cannot do.
+
+*Not built:* `lead.created` (spec 07 has not landed), a Zapier app listing,
+OAuth for the MCP endpoint (a static bearer key is what it takes), and
+`contact.created` on the order and CSV-import paths — a buyer arrives inside
+`order.created` with their `clientId`, and an import would fire thousands of
+events for one click.
+
+New route: `/docs/api`, public and unauthenticated, because somebody deciding
+whether Sailo fits their stack has to read it before they have an account.
 
 ## Deferred (`deferred/` — not work)
 

@@ -1,125 +1,124 @@
 import { AlertTriangle, BadgeCheck, Clock, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui";
+import Link from "next/link";
 import { formatMoney } from "@/lib/utils";
-import { startPartnerConnect } from "@/lib/actions/partner-program";
-import type { PartnerConnectState } from "@/lib/partners/connect";
-import { CountrySelect } from "./country-select";
+import type { PayoutBlocker } from "@/lib/partners/eligibility";
 
 /**
  * Where the money lands.
  *
- * Five states, and each one gets a different sentence because each has a
- * different next action — "verifying" and "not connected" look similar and
- * mean completely different things to somebody sitting on a balance.
+ * There is no partner onboarding here any more, and that is the point of the
+ * whole redesign: commission goes to the Stripe account the seller already
+ * connected to take payments from their own buyers. So this panel never asks
+ * anyone to set anything up — it either confirms they are ready, or points at
+ * the one Stripe step they already had to finish to sell at all.
  *
- * The onboarding button is a server action that redirects, not a link:
- * account links are single-use and expire in minutes, so one is minted per
- * press rather than rendered into the page and left to go stale.
+ * It used to be five states with its own country picker, its own onboarding
+ * redirect and a hand-payment fallback. A partner who cannot be paid by Stripe
+ * cannot sell on Sailo either, so none of that had a case left to serve.
  */
 export function ConnectPanel({
-  state,
+  blocker,
+  subscribed,
   country,
   availableCents,
   currency,
 }: {
-  state: PartnerConnectState;
+  blocker: PayoutBlocker | null;
+  subscribed: boolean;
   country: string | null;
   availableCents: number;
   currency: string;
 }) {
-  if (state === "active") {
-    return (
-      <div className="mt-6 flex items-start gap-3 rounded-2xl bg-emerald-50 p-4">
-        <BadgeCheck className="mt-0.5 size-5 shrink-0 text-emerald-700" />
-        <div className="min-w-0">
-          <p className="text-sm font-medium text-emerald-900">
-            You&rsquo;re set up to get paid
-          </p>
-          <p className="mt-0.5 text-sm leading-relaxed text-emerald-800">
-            Payouts go to the bank account on your Stripe profile
-            {country ? ` (${country})` : ""}. Transfers to partner accounts take
-            about a day longer than a normal Stripe payout to land.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const waiting =
+    availableCents > 0 ? (
+      <>
+        {" "}
+        <span className="font-medium">
+          You have {formatMoney(availableCents, currency)} waiting.
+        </span>
+      </>
+    ) : null;
 
-  if (state === "unsupported_country") {
+  /*
+   * The lapsed case is checked first and reads differently from the rest: it
+   * is the only one where nothing is broken. They are still owed what they
+   * earned — `payPartner` has no subscription test — they have simply stopped
+   * accruing, and the fix is a billing page rather than a Stripe form.
+   */
+  if (!subscribed) {
     return (
       <div className="mt-6 flex items-start gap-3 rounded-2xl bg-amber-50 p-4">
         <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-700" />
         <div className="min-w-0">
           <p className="text-sm font-medium text-amber-900">
-            We can&rsquo;t transfer to {country ?? "your country"} automatically
+            Your plan lapsed, so you&rsquo;ve stopped earning
           </p>
           <p className="mt-0.5 text-sm leading-relaxed text-amber-800">
-            Stripe doesn&rsquo;t support cross-border transfers between our
-            country and yours. You still earn normally — email us and
-            we&rsquo;ll settle your balance another way.
+            Commission only accrues while your Sailo subscription is active.
+            Anything you already earned is still yours and still gets paid.
+            {waiting}
           </p>
+          <Link
+            href="/admin/settings/billing"
+            className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-amber-900 underline hover:no-underline"
+          >
+            Restart your plan
+          </Link>
         </div>
       </div>
     );
   }
 
-  if (state === "verifying") {
+  if (blocker) {
+    const copy: Record<PayoutBlocker, { title: string; body: string }> = {
+      no_shop: {
+        title: "You need a shop to be paid",
+        body: "The partner programme pays commission into your shop's Stripe account, so there has to be one.",
+      },
+      no_stripe: {
+        title: "Connect Stripe to get paid",
+        body: "Your commission goes to the same Stripe account your shop takes payments through — the one you set up to sell. You haven't connected it yet.",
+      },
+      stripe_incomplete: {
+        title: "Stripe is still verifying your shop",
+        body: "This usually takes a few minutes but can take a day. Your commission keeps accruing either way — nothing is lost while you wait.",
+      },
+    };
+    const { title, body } = copy[blocker];
+
     return (
       <div className="mt-6 flex items-start gap-3 rounded-2xl bg-amber-50 p-4">
         <Clock className="mt-0.5 size-5 shrink-0 text-amber-700" />
         <div className="min-w-0">
-          <p className="text-sm font-medium text-amber-900">
-            Stripe is still verifying you
-          </p>
+          <p className="text-sm font-medium text-amber-900">{title}</p>
           <p className="mt-0.5 text-sm leading-relaxed text-amber-800">
-            This usually takes a few minutes but can take a day. Your earnings
-            keep accruing either way — nothing is lost while you wait.
+            {body}
+            {waiting}
           </p>
-          <form action={startPartnerConnect} className="mt-3">
-            <Button type="submit" variant="secondary" size="sm">
-              Check or finish setup
-              <ExternalLink className="size-3.5" />
-            </Button>
-          </form>
+          <Link
+            href="/admin/payments"
+            className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-amber-900 underline hover:no-underline"
+          >
+            Open payment settings
+            <ExternalLink className="size-3.5" />
+          </Link>
         </div>
       </div>
     );
   }
 
-  const resuming = state === "onboarding";
-
   return (
-    <div className="mt-6 rounded-2xl border border-ink-200 p-4">
-      <p className="text-sm font-medium text-ink-900">
-        {resuming ? "Finish setting up payouts" : "Set up how you get paid"}
-      </p>
-      <p className="mt-0.5 text-sm leading-relaxed text-ink-600">
-        {resuming
-          ? "You started this but didn't finish — Stripe still needs a few details before we can send you anything."
-          : "Connect a Stripe account so we can pay your commission straight to your bank. It only ever receives money; you're not signing up to take payments."}
-        {availableCents > 0 ? (
-          <>
-            {" "}
-            <span className="font-medium text-ink-900">
-              You have {formatMoney(availableCents, currency)} waiting.
-            </span>
-          </>
-        ) : null}
-      </p>
-
-      <form action={startPartnerConnect} className="mt-3 flex flex-wrap items-end gap-2">
-        {/*
-          Asked rather than geolocated: the country decides which bank details
-          Stripe collects and which agreement is even available, and reading it
-          off an IP address would strand anyone onboarding from an airport.
-          Only on the first pass — once the account exists the country is fixed.
-        */}
-        {resuming ? null : <CountrySelect />}
-        <Button type="submit">
-          {resuming ? "Continue with Stripe" : "Connect with Stripe"}
-          <ExternalLink className="size-3.5" />
-        </Button>
-      </form>
+    <div className="mt-6 flex items-start gap-3 rounded-2xl bg-emerald-50 p-4">
+      <BadgeCheck className="mt-0.5 size-5 shrink-0 text-emerald-700" />
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-emerald-900">
+          You&rsquo;re set up to get paid
+        </p>
+        <p className="mt-0.5 text-sm leading-relaxed text-emerald-800">
+          Commission goes to the same Stripe account your shop sells through
+          {country ? ` (${country})` : ""}. Nothing else to set up.
+        </p>
+      </div>
     </div>
   );
 }

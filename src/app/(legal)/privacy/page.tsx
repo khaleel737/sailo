@@ -364,8 +364,7 @@ export default function PrivacyPage() {
         <Clause id="cookies" n={10} title="Cookies">
           <P>
             Three, all first-party, on every page Sailo itself runs. There are no
-            advertising cookies, no cross-site trackers, and no third-party tag
-            managers on any of them.
+            advertising cookies and no cross-site trackers among them.
           </P>
           <DataTable
             caption="Cookies"
@@ -376,6 +375,15 @@ export default function PrivacyPage() {
             You can clear or block all of them in your browser. Blocking the session
             cookie means you cannot stay signed in; blocking the other two costs you
             nothing but a language preference.
+          </P>
+          <P>
+            Sailo&rsquo;s own pages also load a Google Tag Manager container. It is a
+            loader rather than a tracker: it sets no cookie of its own and collects
+            nothing by itself, and it does not load at all unless you accept
+            analytics. What it is permitted to fetch is fixed by the content security
+            policy this site sends, so its contents cannot be widened without a new
+            deployment of the code. If anything in it ever comes to store something on
+            your device, it belongs in the table above before it ships.
           </P>
           <P>
             A seller can connect their own measurement tools to their own storefront

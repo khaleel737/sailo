@@ -17,9 +17,9 @@ export const marketingPt: MarketingDictionary = {
 
   hero: {
     badge: "Grátis para começar, grátis para continuar",
-    title: "O link da tua bio já devia estar a {highlight}.",
-    titleHighlight: "receber encomendas",
-    body: "O Sailo transforma-o numa loja a sério — fotos, preços, pesquisa, pagamento — e envia cada encomenda para a aplicação de mensagens que já andas a responder.",
+    title: "A tua loja inteira, em {highlight}.",
+    titleHighlight: "um só link",
+    body: "Já recebes encomendas nas mensagens. O Sailo põe à frente uma loja a sério — fotos, preços, pesquisa e pagamento atrás de um só link — e cada encomenda continua a chegar à conversa que já respondes.",
     ctaPrimary: "Criar a minha loja — grátis",
     ctaSecondary: "Abrir uma loja real",
     proof1: "No ar em menos de um minuto",
@@ -56,18 +56,6 @@ export const marketingPt: MarketingDictionary = {
     shop4: "Visitas, encomendas e clientes que voltam",
   },
 
-  versus: {
-    title: "Um link. Uma loja. Sem cedências.",
-    body: "Uma página de links não recebe encomendas. Uma loja completa é um segundo emprego. O Sailo é o meio-termo que toda a gente pedia.",
-    us: "Sailo",
-    r1: "Um link curto para a tua bio",
-    r2: "Produtos com fotos, preços e stock",
-    r3: "As encomendas chegam ao WhatsApp, sem checkout para configurar",
-    r4: "Marcações e descargas digitais imediatas",
-    r5: "Um plano gratuito com que dá mesmo para vender",
-    r6: "35 idiomas, da direita para a esquerda incluído",
-    note: "Como cada ferramenta se posiciona, agosto de 2026. Confirma os planos atuais antes de mudar.",
-  },
 
   steps: {
     eyebrow: "Como funciona",
@@ -130,7 +118,7 @@ export const marketingPt: MarketingDictionary = {
   pricing: {
     eyebrow: "Preços",
     title: "Grátis para começar, e grátis para continuar.",
-    body: "O Sailo nunca fica com uma percentagem das tuas vendas — nem nos planos pagos, nem no gratuito.",
+    body: "As encomendas por chat, transferência e dinheiro são inteiramente tuas, em todos os planos. As vendas com cartão levam {fee} da mercadoria — nunca do envio nem do imposto.",
     freeTagline: "Tudo o que precisas para as primeiras encomendas.",
     proTagline: "Espaço para crescer, e uma loja com a tua cara.",
     bizTagline: "Pagamentos com cartão, promoções e referências — as ferramentas que fazem crescer a receita.",
@@ -207,7 +195,7 @@ export const marketingPt: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — transforma o link da tua bio numa loja",
+    title: "Sailo — uma loja online tão simples como um link na bio",
     description:
       "O Sailo transforma o link da tua bio numa loja a sério. Vende produtos, ficheiros digitais ou serviços e recebe encomendas por WhatsApp ou cartão, em 35 idiomas. Grátis para começar e sem comissões.",
     ogTitle: "Sailo — um link, a tua loja inteira",

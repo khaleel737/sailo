@@ -17,9 +17,9 @@ export const marketingFr: MarketingDictionary = {
 
   hero: {
     badge: "Gratuit au départ, gratuit ensuite",
-    title: "Le lien de votre bio devrait déjà {highlight}.",
-    titleHighlight: "prendre des commandes",
-    body: "Sailo en fait une vraie boutique — photos, prix, recherche, paiement — et envoie chaque commande dans la messagerie à laquelle vous répondez déjà.",
+    title: "Toute votre boutique, en {highlight}.",
+    titleHighlight: "un seul lien",
+    body: "Vous prenez déjà des commandes en messages privés. Sailo place devant elles une vraie boutique — photos, prix, recherche et paiement derrière un seul lien — et chaque commande arrive toujours dans la conversation que vous suivez de toute façon.",
     ctaPrimary: "Créer ma boutique — gratuit",
     ctaSecondary: "Ouvrir une boutique réelle",
     proof1: "En ligne en moins d'une minute",
@@ -56,18 +56,6 @@ export const marketingFr: MarketingDictionary = {
     shop4: "Visites, commandes et clients fidèles, comptés",
   },
 
-  versus: {
-    title: "Un lien. Une boutique. Sans compromis.",
-    body: "Une page de liens ne prend pas de commande. Une boutique complète est un second métier. Sailo est le milieu que tout le monde réclamait.",
-    us: "Sailo",
-    r1: "Un lien court pour votre bio",
-    r2: "Des produits avec photos, prix et stock",
-    r3: "Les commandes arrivent sur WhatsApp, sans paiement à configurer",
-    r4: "Rendez-vous et téléchargements immédiats",
-    r5: "Une formule gratuite avec laquelle on vend vraiment",
-    r6: "35 langues, de droite à gauche comprise",
-    note: "Positionnement affiché par chaque outil, août 2026. Vérifiez les formules actuelles avant de changer.",
-  },
 
   steps: {
     eyebrow: "Comment ça marche",
@@ -130,7 +118,7 @@ export const marketingFr: MarketingDictionary = {
   pricing: {
     eyebrow: "Tarifs",
     title: "Gratuit au départ, et gratuit pour durer.",
-    body: "Sailo ne prend jamais de pourcentage sur vos ventes — ni sur les formules payantes, ni sur la gratuite.",
+    body: "Les commandes par chat, virement et espèces vous reviennent entièrement, sur toutes les formules. Les ventes par carte portent {fee} de la marchandise — jamais de la livraison ni de la taxe.",
     freeTagline: "Tout ce qu'il faut pour vos premières commandes.",
     proTagline: "De la place pour grandir, et une boutique à votre image.",
     bizTagline: "Paiements par carte, promotions et parrainage — les outils qui font grimper le chiffre.",
@@ -207,7 +195,7 @@ export const marketingFr: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — transformez le lien de votre bio en boutique",
+    title: "Sailo — une boutique en ligne aussi simple qu'un lien en bio",
     description:
       "Sailo transforme le lien de votre bio en vraie boutique. Vendez des produits, des fichiers numériques ou des services, recevez les commandes sur WhatsApp ou par carte, en 35 langues. Gratuit au départ, sans commission.",
     ogTitle: "Sailo — un lien, toute votre boutique",

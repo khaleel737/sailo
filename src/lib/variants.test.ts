@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ProductOption } from "@/db/schema";
 import {
+  cartCanPayInPerson,
   combinations,
   retargetSelection,
   MAX_VARIANTS,
@@ -195,5 +196,65 @@ describe("retargetSelection", () => {
     expect(
       retargetSelection(variants, { Size: "S", Colour: "Red" }, "Colour", "Green"),
     ).toBeNull();
+  });
+});
+
+/**
+ * Whether "pay when we meet" is an offer this order can keep.
+ *
+ * Two ways to get it wrong, and each was live at some point. Offering the rail
+ * on an online video call promised a doorstep the order does not have —
+ * nothing reaches anyone on a call. Withdrawing it from anything non-physical
+ * took it off an in-person workshop, which is exactly the kind of shop that
+ * needs it most.
+ */
+const item = (
+  kind: string,
+  over: { serviceMode?: string; releaseOnPayment?: boolean } = {},
+) => ({
+  kind,
+  serviceMode: over.serviceMode ?? "in_person",
+  releaseOnPayment: over.releaseOnPayment ?? true,
+});
+
+describe("cartCanPayInPerson", () => {
+  it("keeps the rail for a physical good", () => {
+    expect(cartCanPayInPerson([item("physical")])).toBe(true);
+  });
+
+  it("keeps it for the workshop the buyer turns up to", () => {
+    expect(cartCanPayInPerson([item("service")])).toBe(true);
+    expect(cartCanPayInPerson([item("event")])).toBe(true);
+  });
+
+  it("withdraws it from a video call, which nothing reaches", () => {
+    expect(cartCanPayInPerson([item("service", { serviceMode: "online" })])).toBe(false);
+    expect(cartCanPayInPerson([item("event", { serviceMode: "online" })])).toBe(false);
+  });
+
+  it("withdraws it from a download, held or not", () => {
+    // A held file is safe from being taken and never paid for, but there is
+    // still no moment anywhere in the order at which cash could change hands.
+    expect(cartCanPayInPerson([item("digital", { releaseOnPayment: true })])).toBe(false);
+    expect(cartCanPayInPerson([item("digital", { releaseOnPayment: false })])).toBe(false);
+  });
+
+  it("keeps it for a mug bought alongside a held file", () => {
+    // The door is where both arrive, so the order has its moment.
+    expect(
+      cartCanPayInPerson([item("physical"), item("digital", { releaseOnPayment: true })]),
+    ).toBe(true);
+  });
+
+  it("withdraws it when anything in the basket unlocks first", () => {
+    // The instant download is gone before the doorstep, so "pay later" could
+    // become "pay never" for something already handed over.
+    expect(
+      cartCanPayInPerson([item("physical"), item("digital", { releaseOnPayment: false })]),
+    ).toBe(false);
+  });
+
+  it("withdraws it from an empty order rather than assuming one", () => {
+    expect(cartCanPayInPerson([])).toBe(false);
   });
 });

@@ -3,12 +3,18 @@ import { toStripeAmount } from "@/lib/currency";
 import type Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/db";
-import { shops, type Order, type Shop } from "@/db/schema";
+import { products, shops, type Order, type Product, type Shop } from "@/db/schema";
 import { lineTitle, orderLines, orderSummaryTitle } from "@/lib/order-lines";
 import { stripe } from "@/lib/stripe";
 import { appUrl } from "@/lib/app-url";
 import { taxName } from "@/lib/tax-label";
-import { platformFeeCents } from "@/lib/plans";
+import { platformFeeCents, platformFeePercent } from "@/lib/plans";
+import {
+  intervalOf,
+  membershipSellable,
+  normalizeTrialDays,
+  priceIsStale,
+} from "@/lib/memberships";
 
 /**
  * Card payments through the seller's own Stripe account, using Connect.
@@ -76,6 +82,73 @@ export function publicShopUrl(handle: string): string | null {
 }
 
 /**
+ * What a connected account is allowed to take money through.
+ *
+ * `createCheckoutSession` deliberately does not pin `payment_method_types`, so
+ * Stripe decides at runtime which of these to show — from the buyer's country
+ * and device and the account's active capabilities. Everything here therefore
+ * reaches the checkout with no code behind it beyond this list. Apple Pay and
+ * Google Pay need no entry at all; they ride `card_payments`.
+ *
+ * Deliberately short. Stripe's own guidance: "The capabilities you request for
+ * a connected account determine the information you're required to collect for
+ * it… Requesting more capabilities means the onboarding flow must verify more
+ * information." Every extra line here is another question between a seller and
+ * their first sale, so a rail earns its place by being one a small US seller
+ * actually gets asked for.
+ *
+ * Not here on purpose:
+ *  - Affirm, Klarna and Afterpay decide eligibility on the account's merchant
+ *    category code, and `business_profile` below sets no `mcc`. Requesting
+ *    them before that exists buys the onboarding questions and none of the
+ *    payments. They also finance a purchase, and nobody finances a $45 cake.
+ *  - PayPal and Venmo are not obtainable at all: Stripe lists no US business
+ *    location for PayPal, does not support it on direct charges, and does not
+ *    offer it to platforms whose connected accounts take payment directly.
+ *    Venmo has no Stripe support anywhere. Both ship as manual rails instead —
+ *    see `PAYMENT_METHOD_DEFS`.
+ */
+const BASE_CAPABILITIES = {
+  card_payments: { requested: true },
+  transfers: { requested: true },
+} as const;
+
+export const WALLET_CAPABILITIES = {
+  /** Stripe's own wallet. One tap for anyone who has used Link anywhere. */
+  link_payments: { requested: true },
+  /** US only, USD only, and Stripe simply won't offer it elsewhere. */
+  cashapp_payments: { requested: true },
+  /** Cheap on larger orders, where card fees start to hurt a small seller. */
+  us_bank_account_ach_payments: { requested: true },
+} as const;
+
+/**
+ * Adds the wallet capabilities to an account, and shrugs if Stripe says no.
+ *
+ * Separate from account *creation* on purpose, and swallowing its own error on
+ * purpose, because these three are country-scoped and Sailo's sellers are not
+ * all in those countries. Stripe rejects a capability the account's country
+ * cannot have rather than leaving it inactive — so requesting them inside
+ * `accounts.create` would mean a seller in a country without Cash App could not
+ * open a Stripe account at all, which is a far worse failure than not being
+ * offered a wallet they could never use.
+ *
+ * Idempotent: re-requesting an active capability is a no-op, so this is safe to
+ * run on every visit and safe to run over every shop after adding a line above.
+ */
+export async function requestWalletCapabilities(accountId: string) {
+  try {
+    return await stripe().accounts.update(accountId, {
+      capabilities: WALLET_CAPABILITIES,
+    });
+  } catch (error) {
+    // Not an error the seller can act on, and nothing they were promised.
+    console.warn("[sailo] wallet capabilities not available for", accountId, error);
+    return null;
+  }
+}
+
+/**
  * Creates the seller's connected account if they don't have one, then returns
  * a fresh onboarding link.
  *
@@ -102,15 +175,27 @@ export async function startOnboarding(shop: Shop) {
                 `Products and services sold through ${shop.name}.`,
             }),
       },
-      capabilities: { card_payments: { requested: true }, transfers: { requested: true } },
+      capabilities: BASE_CAPABILITIES,
       metadata: { shopId: shop.id, handle: shop.handle },
     });
     accountId = account.id;
+
+    // After creation, never inside it — see `requestWalletCapabilities`.
+    await requestWalletCapabilities(accountId);
 
     await db
       .update(shops)
       .set({ ...accountFields(account), stripeConnectedAt: new Date(), updatedAt: new Date() })
       .where(eq(shops.id, shop.id));
+  } else {
+    /*
+     * The backfill, at the one moment it is free: a seller who already has an
+     * account and has come back to the payments screen. Accounts created
+     * before a capability was added never requested it, so without this a
+     * shop connected last month keeps offering card alone for ever. Requesting
+     * an already-active capability is a no-op, so this is safe every time.
+     */
+    await requestWalletCapabilities(accountId);
   }
 
   const link = await stripe().accountLinks.create({
@@ -420,6 +505,189 @@ export async function refundCharge(opts: {
        */
       refund_application_fee: true,
     },
+    actingAs(opts.accountId),
+  );
+}
+
+/* --------------------------------------------------------------------------
+   Memberships
+
+   A recurring charge on the seller's own account. Everything above bills once
+   from amounts we computed; this hands Stripe a Price and lets it bill on its
+   own schedule forever, which changes three things and only three:
+
+     - the amount is Stripe's to compute at each renewal, not ours to restate;
+     - the fee is a percentage rather than a fixed amount, because we do not
+       know what the next invoice will come to;
+     - the money arrives on `invoice.paid` rather than on the session.
+-------------------------------------------------------------------------- */
+
+/**
+ * The Stripe Price this product currently sells at, minting one if needed.
+ *
+ * A Price is immutable in Stripe: there is no edit. So a seller who changes
+ * what a membership costs gets a *new* Price, this column is repointed at it,
+ * and existing members keep billing at the one they signed up on until they
+ * cancel and resubscribe. That is not a limitation being worked around — it is
+ * the correct behaviour for a subscription, and Stripe enforcing it is
+ * convenient.
+ *
+ * Created on the connected account, so the Price belongs to the seller and
+ * disappears with them if they disconnect.
+ */
+export async function membershipPrice(shop: Shop, product: Product): Promise<string> {
+  if (!shop.stripeAccountId) throw new Error("Shop has no connected Stripe account");
+  if (!product.stripePriceId || priceIsStale(product)) {
+    const price = await stripe().prices.create(
+      {
+        currency: shop.currency.toLowerCase(),
+        unit_amount: toStripeAmount(product.priceCents, shop.currency),
+        recurring: { interval: intervalOf(product) },
+        product_data: { name: product.title },
+        metadata: { productId: product.id, shopId: shop.id },
+      },
+      actingAs(shop.stripeAccountId),
+    );
+
+    /*
+     * Written back with the amount it was minted for, not just the id. The
+     * id alone cannot answer "is this still the right price", so a later edit
+     * to `priceCents` would go unnoticed and every new member would be
+     * charged the old amount — silently, forever, on a row that looks correct.
+     */
+    await getDb()
+      .update(products)
+      .set({
+        stripePriceId: price.id,
+        stripePriceCents: product.priceCents,
+        stripePriceInterval: intervalOf(product),
+        updatedAt: new Date(),
+      })
+      .where(eq(products.id, product.id));
+
+    return price.id;
+  }
+
+  return product.stripePriceId;
+}
+
+/**
+ * The Checkout Session a member subscribes through.
+ *
+ * `mode: "subscription"`, on the connected account, so the arrangement belongs
+ * to the seller: their customer, their subscription, their billing portal, and
+ * their money — Sailo takes a percentage and never holds the rest.
+ *
+ * One line, quantity one. A subscription checkout cannot carry a mug as well,
+ * which is why `resolveLines` refuses a mixed basket before anybody gets here;
+ * this function asserts it rather than trusting it.
+ */
+export async function createSubscriptionSession(opts: {
+  shop: Shop;
+  order: Order;
+  product: Product;
+  successUrl: string;
+  cancelUrl: string;
+}) {
+  const { shop, order, product } = opts;
+  if (!shop.stripeAccountId) throw new Error("Shop has no connected Stripe account");
+  if (!membershipSellable(product)) {
+    throw new Error(`Product ${product.id} is not a sellable membership`);
+  }
+
+  const price = await membershipPrice(shop, product);
+  const feePercent = platformFeePercent(shop);
+  const trialDays = normalizeTrialDays(product.trialDays);
+
+  return stripe().checkout.sessions.create(
+    {
+      mode: "subscription",
+      line_items: [{ price, quantity: 1 }],
+      customer_email: order.customerEmail ?? undefined,
+      client_reference_id: order.id,
+      /*
+       * On the session *and* on the subscription.
+       *
+       * They are read by different events: `checkout.session.completed`
+       * carries the session's, and every later `customer.subscription.*` and
+       * `invoice.*` carries only the subscription's. A renewal eleven months
+       * from now has no session to look at, so metadata that lived only there
+       * would leave the webhook unable to say which shop was being paid.
+       */
+      metadata: {
+        orderId: order.id,
+        shopId: shop.id,
+        productId: product.id,
+        ...(order.clientId ? { clientId: order.clientId } : {}),
+      },
+      subscription_data: {
+        metadata: {
+          orderId: order.id,
+          shopId: shop.id,
+          productId: product.id,
+          ...(order.clientId ? { clientId: order.clientId } : {}),
+        },
+        ...(trialDays ? { trial_period_days: trialDays } : {}),
+        /*
+         * Sailo's cut, as a percentage rather than an amount.
+         *
+         * A one-time charge names `application_fee_amount` because we know
+         * what the total is. Here we do not: Stripe raises each invoice, and
+         * a proration, a coupon the seller applies in their own dashboard, or
+         * a tax line all change what it comes to. A percentage is applied to
+         * whatever the invoice actually is, which is the only version of the
+         * fee that stays correct at renewal number fourteen.
+         */
+        ...(feePercent > 0 ? { application_fee_percent: feePercent } : {}),
+      },
+      // The shop picked its currency and the order records it; letting Stripe
+      // convert would put our books and the seller's payout in two currencies.
+      adaptive_pricing: { enabled: false },
+      success_url: opts.successUrl,
+      cancel_url: opts.cancelUrl,
+    },
+    actingAs(shop.stripeAccountId),
+  );
+}
+
+/**
+ * A link into Stripe's own billing portal, for the member rather than the
+ * seller.
+ *
+ * Created on the connected account with the member's customer id, so it shows
+ * their card and their subscription to this one shop and nothing else. This is
+ * how a member cancels: Stripe hosts the page, handles the confirmation, and
+ * sends us `customer.subscription.updated` — which means we never write a
+ * cancellation flow, never store a card, and never have a bug where the
+ * button said "cancelled" and Stripe kept charging.
+ */
+export async function billingPortalSession(opts: {
+  accountId: string;
+  customerId: string;
+  returnUrl: string;
+}) {
+  return stripe().billingPortal.sessions.create(
+    { customer: opts.customerId, return_url: opts.returnUrl },
+    actingAs(opts.accountId),
+  );
+}
+
+/**
+ * Stops a subscription at the end of the period the member already paid for.
+ *
+ * Never immediately, and not as a kindness: they have paid for the month, so
+ * ending it today would be taking money for access we then withdrew. Stripe
+ * reports the change back through `customer.subscription.updated`, which is
+ * what actually writes it here — this function's return value is not the
+ * source of truth and no caller treats it as one.
+ */
+export async function cancelSubscriptionAtPeriodEnd(opts: {
+  accountId: string;
+  subscriptionId: string;
+}) {
+  return stripe().subscriptions.update(
+    opts.subscriptionId,
+    { cancel_at_period_end: true },
     actingAs(opts.accountId),
   );
 }

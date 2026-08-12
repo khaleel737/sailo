@@ -3,6 +3,7 @@ import { and, asc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/db";
 import { productVariants, products } from "@/db/schema";
 import { clampQuantity, isSellable, maxOrderable, variantPrice } from "@/lib/variants";
+import { isMembership, membershipSellable } from "@/lib/memberships";
 import { toStripeAmount } from "@/lib/currency";
 import type { OrderLineInput } from "./types";
 import type { ResolvedLine } from "./types";
@@ -137,6 +138,23 @@ export async function resolveLines(
     }
 
     /*
+     * A membership that cannot be billed is not for sale.
+     *
+     * A seller can save a membership with no interval chosen, or priced at
+     * nothing, and both are configuration mistakes rather than states Stripe
+     * can be asked to handle: it will not create a recurring price for zero,
+     * and it has no idea how often to charge without an interval. Refusing
+     * here turns a Stripe error the buyer cannot act on into an ordinary
+     * "not available" — and leaves the seller's own product form to say what
+     * is missing, which it does.
+     */
+    if (isMembership(product) && !membershipSellable(product)) {
+      const stop = fail(item, `${product.title} isn't available right now.`);
+      if (stop) return stop;
+      continue;
+    }
+
+    /*
      * A service books its own slot, against its own notice period.
      *
      * `isBookable`, not `bookingEnabled` alone. A product with booking turned
@@ -217,7 +235,18 @@ export async function resolveLines(
       }
     }
 
-    const quantity = clampQuantity(item.quantity, maxOrderable(product, variant));
+    /*
+     * A membership is always one.
+     *
+     * Not a clamp for tidiness: the Checkout Session sends `quantity: 1`
+     * against a recurring price, so a line claiming two would have priced the
+     * basket at double what Stripe then billed every month — an order row and
+     * a card statement disagreeing forever, on the one kind of sale where the
+     * disagreement repeats. Nobody subscribes to the same gym twice.
+     */
+    const quantity = isMembership(product)
+      ? 1
+      : clampQuantity(item.quantity, maxOrderable(product, variant));
 
     lines.push({
       productId: product.id,

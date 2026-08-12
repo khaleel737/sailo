@@ -893,3 +893,170 @@ export async function sendSubscribeConfirmation(opts: {
     replyTo: shop.contactEmail ?? undefined,
   });
 }
+
+/**
+ * Welcome to the thing you now pay for every month.
+ *
+ * Sent once, on the first invoice that actually settles — not when the
+ * subscription is created, because a trial creates one and takes no money, and
+ * "thanks for your payment" about a payment that has not happened is the kind
+ * of email that produces a support ticket.
+ *
+ * The manage link is not decoration. A member who cannot find how to cancel
+ * cancels through their bank instead, and a chargeback costs the seller the
+ * month, the fee, and a mark against their account.
+ */
+export async function sendMembershipStarted(opts: {
+  shop: Shop;
+  to: string;
+  name: string | null;
+  productTitle: string;
+  interval: string;
+  priceCents: number;
+  currency: string;
+  manageUrl: string | null;
+}): Promise<SendResult> {
+  const { shop } = opts;
+  const every = opts.interval === "year" ? "a year" : "a month";
+
+  const body = `
+    ${para(
+      `${opts.name ? `${esc(opts.name)}, y` : "Y"}our ${strong(esc(opts.productTitle))} membership is active.`,
+    )}
+    ${section(
+      "Your membership",
+      detailTable([
+        { label: "Membership", value: opts.productTitle },
+        {
+          label: "Price",
+          value: `${formatMoney(opts.priceCents, opts.currency)} every ${every}`,
+        },
+      ]),
+    )}
+    ${opts.manageUrl ? button(opts.manageUrl, "Manage your membership") : ""}
+    ${fine(
+      `It renews automatically until you cancel, and you can cancel any time — you keep access until the end of the period you've paid for.`,
+    )}
+  `;
+
+  return send({
+    from: sender(shop.name, ORDERS),
+    to: opts.to,
+    subject: `You're a member of ${shop.name}`,
+    html: layout(shop, "Membership active", body, {
+      preheader: `${opts.productTitle} — ${formatMoney(opts.priceCents, opts.currency)} every ${every}.`,
+    }),
+    replyTo: shop.contactEmail ?? undefined,
+  });
+}
+
+/**
+ * The card did not work.
+ *
+ * Sent because Stripe's own dunning mail is the seller's setting to make on
+ * their connected account and is off by default — so without this the first a
+ * member hears about a failed payment is the day their access stops working,
+ * which is both a bad experience and a support ticket for the seller.
+ *
+ * Deliberately calm, and deliberately specific about what has *not* happened
+ * yet: nothing has been cancelled, the card will be retried, and there is a
+ * link to fix it in one tap. A panicked "YOUR MEMBERSHIP HAS BEEN TERMINATED"
+ * for a bank's routine fraud check loses the member.
+ */
+export async function sendMembershipPaymentFailed(opts: {
+  shop: Shop;
+  to: string;
+  name: string | null;
+  productTitle: string;
+  payUrl: string | null;
+  /** How long their access lasts regardless, so the copy can be honest. */
+  until: Date | null;
+}): Promise<SendResult> {
+  const { shop } = opts;
+
+  const body = `
+    ${para(
+      `${opts.name ? `${esc(opts.name)}, w` : "W"}e couldn't take the payment for ${strong(esc(opts.productTitle))}.`,
+    )}
+    ${mutedPara(
+      "It's usually an expired card or a bank check rather than anything wrong. We'll try again over the next few days.",
+    )}
+    ${opts.payUrl ? button(opts.payUrl, "Update your payment details") : ""}
+    ${
+      opts.until
+        ? fine(
+            `Your access continues until ${esc(
+              formatWhen(opts.until, shop.timeZone, "long"),
+            )} while we retry.`,
+          )
+        : ""
+    }
+  `;
+
+  return send({
+    from: sender(shop.name, ORDERS),
+    to: opts.to,
+    subject: `Payment problem — ${opts.productTitle}`,
+    html: layout(shop, "We couldn't take your payment", body, {
+      preheader: `We'll retry the card for ${opts.productTitle} over the next few days.`,
+    }),
+    replyTo: shop.contactEmail ?? undefined,
+  });
+}
+
+/**
+ * Your membership is up for renewal, and here is how to pay for it.
+ *
+ * The card path never needs this — Stripe just charges the card and the member
+ * finds out from their bank statement. On every other rail the member has to
+ * *do* something, so somebody has to ask them, and nobody else is going to.
+ *
+ * Sent a few days ahead rather than on the day, because a bank transfer takes
+ * a day or two to arrive and the seller then has to see it and confirm it. A
+ * request that lands the morning access expires is a request that arrives too
+ * late to be acted on.
+ */
+export async function sendMembershipRenewalDue(opts: {
+  shop: Shop;
+  to: string;
+  name: string | null;
+  productTitle: string;
+  priceCents: number;
+  currency: string;
+  /** When the current period runs out — the deadline, stated plainly. */
+  until: Date | null;
+  /** Their own membership page, which carries the shop's payment details. */
+  manageUrl: string | null;
+}): Promise<SendResult> {
+  const { shop } = opts;
+
+  const body = `
+    ${para(
+      `${opts.name ? `${esc(opts.name)}, y` : "Y"}our ${strong(esc(opts.productTitle))} membership is due for renewal.`,
+    )}
+    ${section(
+      "This period",
+      detailTable([
+        { label: "Amount", value: formatMoney(opts.priceCents, opts.currency) },
+        {
+          label: "Paid up to",
+          value: opts.until ? formatWhen(opts.until, shop.timeZone, "long") : "",
+        },
+      ]),
+    )}
+    ${opts.manageUrl ? button(opts.manageUrl, "How to pay") : ""}
+    ${fine(
+      `${esc(shop.name)} will confirm your payment and your membership carries straight on. Reply to this email if anything has changed.`,
+    )}
+  `;
+
+  return send({
+    from: sender(shop.name, ORDERS),
+    to: opts.to,
+    subject: `Time to renew — ${opts.productTitle}`,
+    html: layout(shop, "Your membership is due", body, {
+      preheader: `${formatMoney(opts.priceCents, opts.currency)} to carry on with ${opts.productTitle}.`,
+    }),
+    replyTo: shop.contactEmail ?? undefined,
+  });
+}

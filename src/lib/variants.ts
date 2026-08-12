@@ -307,13 +307,19 @@ export function retargetSelection(
 /*  Kinds                                                                      */
 /* -------------------------------------------------------------------------- */
 
-export type ProductKind = "physical" | "digital" | "service" | "event";
+export type ProductKind =
+  | "physical"
+  | "digital"
+  | "service"
+  | "event"
+  | "membership";
 
 export const PRODUCT_KIND_VALUES: ProductKind[] = [
   "physical",
   "digital",
   "service",
   "event",
+  "membership",
 ];
 
 export function isProductKind(value: string): value is ProductKind {
@@ -338,6 +344,77 @@ export function needsDelivery(kind: string): boolean {
  */
 export function releasesBeforePayment(kind: string, heldUntilPaid: boolean): boolean {
   return kind === "digital" && !heldUntilPaid;
+}
+
+/**
+ * Whether this line ever puts the buyer and the seller in the same place — the
+ * doorstep, the studio, the venue door.
+ *
+ * The other half of the pay-in-person question, and the half that was missing.
+ * `releasesBeforePayment` asks whether cash *can safely* be collected later;
+ * this asks whether there is a later at which anyone is standing there. An
+ * online appointment and an online event have none, and neither does a
+ * download of any kind — nothing reaches anyone on a video call, so "pay when
+ * the order reaches you" was an offer with no moment behind it.
+ */
+export function handedOverInPerson(product: {
+  kind: string;
+  serviceMode: string;
+}): boolean {
+  if (product.kind === "physical") return true;
+  // A service and an event both carry the seller's own online/in-person
+  // switch, and a link is not a place.
+  if (product.kind === "service" || product.kind === "event") {
+    return product.serviceMode !== "online";
+  }
+  /*
+   * A membership is somewhere you turn up — that is very often the entire
+   * product. A gym taking cash at the door is the single most common manual
+   * membership there is, and refusing it here would have left exactly those
+   * sellers unable to sell the thing they sell.
+   *
+   * Safe on the other half of the pay-in-person question too: a manual
+   * membership grants nothing until the seller confirms the money, because
+   * the subscription sits `incomplete` until then. There is no version of
+   * this where somebody gets in before paying.
+   */
+  if (product.kind === "membership") return product.serviceMode !== "online";
+  return false;
+}
+
+/**
+ * Whether a pay-in-person rail belongs on this order at all.
+ *
+ * Both halves have to hold, and each catches what the other misses:
+ *
+ *   somewhere to hand the cash over — otherwise the rail promises a doorstep
+ *   the order does not have, which is how an online video call came to offer
+ *   "pay when the order reaches you";
+ *
+ *   and nothing in the basket that has already gone by then — otherwise the
+ *   seller hands over an instant download and waits for money that never
+ *   comes.
+ *
+ * One function rather than the expression written out at each sink, because it
+ * was written out at four — the checkout quote, the order itself, the product
+ * page's structured data and the buy box — and four copies of a rule are four
+ * chances for the button a buyer presses to disagree with the answer the
+ * server gives them.
+ *
+ * A mixed basket is judged as one order: a mug alongside a held file can be
+ * paid for at the door, because the door is where both arrive.
+ */
+export function cartCanPayInPerson(
+  items: readonly {
+    kind: string;
+    serviceMode: string;
+    releaseOnPayment: boolean;
+  }[],
+): boolean {
+  if (!items.some(handedOverInPerson)) return false;
+  return !items.some((item) =>
+    releasesBeforePayment(item.kind, item.releaseOnPayment),
+  );
 }
 
 export type ServiceMode = "in_person" | "online";

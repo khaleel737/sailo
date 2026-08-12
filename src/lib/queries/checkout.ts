@@ -84,6 +84,17 @@ async function readCheckoutOptions(shopId: string) {
       estimate: d.config.estimate,
       address: d.config.address,
       hours: d.config.hours,
+      /*
+       * The zone travels to the browser so the panel can narrow the country
+       * list and the rates together, in one frame, without a round trip per
+       * keystroke. It is public information — it is the answer to "do you
+       * post to me", which is a question any buyer may ask — and it decides
+       * nothing: `resolveDelivery` re-checks it against the row when the
+       * order is actually placed.
+       *
+       * Empty means anywhere.
+       */
+      countries: d.countries,
     })),
   };
 }

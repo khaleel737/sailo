@@ -153,7 +153,10 @@ export function PricingSection({
       <SectionHead
         eyebrow={m.pricing.eyebrow}
         title={m.pricing.title}
-        body={m.pricing.body}
+        /* `pricing.body` names the card fee, so it carries {fee} like every
+           other sentence that does. Passing it straight through printed the
+           placeholder itself on the live page. */
+        body={interpolate(m.pricing.body, { fee: PLATFORM_FEE_LABEL })}
       />
 
       {/* A 1px gap filled by the surface behind draws the dividers, so the

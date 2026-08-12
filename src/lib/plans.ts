@@ -21,6 +21,26 @@ export type Features = {
   calendarSync: boolean;
   /** Marketing email to contacts who opted in. */
   broadcasts: boolean;
+  /**
+   * Products the buyer keeps paying for — a gym month, a club, a course.
+   *
+   * Gated with `cardRails` rather than beside it by accident: a recurring
+   * charge needs a card on file, and every other rail here settles out of
+   * band with a human confirming each payment. A membership on a bank
+   * transfer would be a monthly reminder to pay, not a subscription.
+   */
+  memberships: boolean;
+  /**
+   * Outbound webhooks, the REST API and the MCP endpoint — one flag, because
+   * they are one feature.
+   *
+   * A key without events to trigger it and events with nothing to query are
+   * each half an integration, and gating them separately would mean a seller
+   * on one tier discovering their Zap can fire but cannot look anything up.
+   * Business, alongside `affiliates` and `coupons`: this is the tier bought by
+   * somebody running a business on other tools as well as this one.
+   */
+  integrations: boolean;
 };
 
 export type Limits = {
@@ -59,6 +79,8 @@ export const PLANS: Record<PlanId, Plan> = {
       csvExport: false,
       calendarSync: false,
       broadcasts: false,
+      memberships: false,
+      integrations: false,
     },
     highlights: [
       "free1", "free2", "free3", "free4", "free5",
@@ -82,6 +104,8 @@ export const PLANS: Record<PlanId, Plan> = {
       csvExport: true,
       calendarSync: true,
       broadcasts: false,
+      memberships: false,
+      integrations: false,
     },
     highlights: ["pro1", "pro2", "pro3", "pro4", "pro5"],
   },
@@ -102,6 +126,8 @@ export const PLANS: Record<PlanId, Plan> = {
       csvExport: true,
       calendarSync: true,
       broadcasts: true,
+      memberships: true,
+      integrations: true,
     },
     highlights: ["biz1", "biz2", "biz3", "biz4", "biz5", "biz6"],
   },
@@ -203,7 +229,7 @@ export function cheapestPlanWith(feature: keyof Features): Plan | null {
  * the day there are several, and every caller already passes the shop.
  */
 export function platformFeeBp(_shop: BillingShape): number {
-  return 50;
+  return 100;
 }
 
 /**
@@ -229,6 +255,23 @@ export const PLATFORM_FEE_LABEL = formatFeeBp(platformFeeBp({
  */
 function formatFeeBp(bp: number): string {
   return `${Number((bp / 100).toFixed(2))}%`;
+}
+
+/**
+ * The same fee, as the percentage a Stripe subscription wants.
+ *
+ * A recurring charge cannot name a fixed fee amount the way a one-time charge
+ * does — the amount is not known until Stripe raises each invoice, and a
+ * proration or a coupon changes it. `application_fee_percent` is Stripe's
+ * answer, applied to whatever the invoice comes to.
+ *
+ * Derived from `platformFeeBp` rather than written again, because the whole
+ * point of that function is that the number lives in one place: a membership
+ * charged at a different rate from a one-time sale would be a second fee
+ * policy nobody decided on, discovered in a payout months later.
+ */
+export function platformFeePercent(shop: BillingShape): number {
+  return platformFeeBp(shop) / 100;
 }
 
 /**
@@ -273,7 +316,7 @@ export function platformFeeCents(
   return Math.round(((net - includedTax) * platformFeeBp(shop)) / 10_000);
 }
 
-/** "0.5%" — for the places that have to state the fee to a seller. */
+/** "1%" — for the places that have to state the fee to a seller. */
 export function platformFeeLabel(shop: BillingShape): string {
   return formatFeeBp(platformFeeBp(shop));
 }

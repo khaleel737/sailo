@@ -12,6 +12,8 @@ import { getShopT } from "@/i18n/server";
 import { interpolate } from "@/i18n";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { formatBytes, shopThemeVars } from "@/lib/utils";
+import { accessForOrder } from "@/lib/membership-access";
+import { MembershipCard } from "./_components/membership-card";
 
 /* Not yet converted — see the note in `next.config.ts`. */
 export const instant = false;
@@ -30,7 +32,7 @@ export default async function DownloadPage({
   const record = await getDownloadByToken(token);
   if (!record) notFound();
 
-  const { order, shop, files } = record;
+  const { order, shop, product, files } = record;
   const state = downloadState(order);
   const { locale, t, dir } = await getShopT(shop.locale);
 
@@ -52,6 +54,16 @@ export default async function DownloadPage({
    * basket holding a mug and a webinar still shows the webinar.
    */
   const events = await eventAccessForOrder(order);
+
+  /*
+   * The membership behind this order, if it is one.
+   *
+   * Read here rather than gating the files above, because the files are
+   * already gated where it counts — the streaming route asks the same question
+   * on every request. This is the buyer's *view* of the arrangement, and the
+   * only place they can act on it.
+   */
+  const membership = await accessForOrder(order);
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
   const ticketQrs = state.released
     ? await Promise.all(
@@ -89,6 +101,37 @@ export default async function DownloadPage({
         <p className="text-muted mt-1 text-sm">
           {orderSummaryTitle(order)}
         </p>
+
+        {membership.isMembership ? (
+          <MembershipCard
+            token={token}
+            title={product?.title ?? orderSummaryTitle(order)}
+            status={membership.subscription?.status ?? "canceled"}
+            open={membership.access.open}
+            endingSoon={membership.access.endingSoon}
+            until={
+              membership.access.until
+                ? membership.access.until.toLocaleDateString(locale, {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })
+                : null
+            }
+            manual={membership.subscription?.billingMode === "manual"}
+            awaitingPayment={membership.awaitingPayment}
+            labels={{
+              title: t.membership.title,
+              activeUntil: t.membership.activeUntil,
+              endingOn: t.membership.endingOn,
+              pastDue: t.membership.pastDue,
+              ended: t.membership.ended,
+              manage: t.membership.manage,
+              manualRenew: t.membership.manualRenew,
+              manualPending: t.membership.manualPending,
+            }}
+          />
+        ) : null}
 
         {files.length > 0 && state.open ? (
           <>

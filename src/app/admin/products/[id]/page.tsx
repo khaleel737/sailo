@@ -8,6 +8,8 @@ import { ProductForm } from "@/app/admin/products/_components/product-form";
 import { PageHeader } from "@/components/shared/page-header";
 import { isUuid } from "@/lib/utils";
 import { getAdminT } from "@/i18n/server";
+import { connectState } from "@/lib/connect";
+import { can } from "@/lib/plans";
 
 export const metadata: Metadata = { title: "Edit product" };
 
@@ -43,6 +45,7 @@ export default async function EditProductPage({
         product={product}
         categories={categories}
         currency={shop.currency}
+        cardReady={connectState(shop) === "active" && can(shop, "cardRails")}
       />
     </>
   );

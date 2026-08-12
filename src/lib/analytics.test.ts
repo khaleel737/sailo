@@ -1,13 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
   classifyVisit,
-  countryFlag,
-  countryName,
   hostLabel,
   normalizeHost,
   outboundHost,
   parseUserAgent,
 } from "./analytics";
+import { countryFlag, countryName } from "./countries";
 
 /**
  * Where a visitor came from.

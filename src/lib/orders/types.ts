@@ -137,6 +137,12 @@ export type OrderPreview = {
   unavailable: { productId: string; variantId: string | null }[];
   needsDelivery: boolean;
   needsAddress: boolean;
+  /**
+   * True when the basket holds something that also arrives by email — a
+   * download or a ticket — so the panel can ask for one before the buyer
+   * commits rather than the server refusing them afterwards.
+   */
+  needsEmail: boolean;
   hasService: boolean;
   /** Whether a pay-in-person rail (cash on delivery) may be offered. False
    * only when the basket holds an instant download, which unlocks on order. */

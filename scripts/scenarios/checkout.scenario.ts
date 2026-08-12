@@ -80,7 +80,16 @@ async function withRail(over: Partial<typeof shops.$inferInsert> = {}, type = "c
     shopId: shop.id,
     type,
     label: type,
-    config: {} as never,
+    // Bank transfer names one required field; the pay-in-person rails name
+    // none. Filling it here lets a test pick bank transfer for the settles-
+    // later behaviour without the rail being judged unconfigured.
+    config: (type === "bank_transfer"
+      ? {
+          bankName: "Test Bank",
+          accountName: "Checkout Ltd",
+          accountNumber: "12345678",
+        }
+      : {}) as never,
     isEnabled: true,
     position: 0,
   });
@@ -276,6 +285,179 @@ describe("what the order costs", () => {
     expect(o?.totalCents).toBe(2500);
   });
 
+  /*
+   * Shipping zones, end to end.
+   *
+   * The panel narrows the country list and hides the rates that can't reach
+   * it, but the panel is a browser and this is the only place the answer
+   * counts. Every case here is a request the panel would never send.
+   */
+  describe("shipping zones", () => {
+    async function withRate(countries: string[]) {
+      const shop = await withRail();
+      const [rate] = await db
+        .insert(deliveryMethods)
+        .values({
+          shopId: shop.id,
+          type: "shipping",
+          name: "Post",
+          feeCents: 500,
+          countries,
+          isEnabled: true,
+          position: 0,
+        })
+        .returning();
+      if (!rate) throw new Error("fixture: delivery method was not inserted");
+      const product = await makeProduct(shop.id, { priceCents: 2000 });
+      return { shop, rate, product };
+    }
+
+    it("refuses an order for a country the rate does not reach", async () => {
+      const { shop, rate, product } = await withRate(["HR"]);
+      const r = await createOrderIntent({
+        shopId: shop.id,
+        items: [{ productId: product.id, quantity: 1 }],
+        paymentMethod: "cod",
+        deliveryMethodId: rate.id,
+        ...buyer,
+        country: "DE",
+      });
+      expect(r.ok).toBe(false);
+      // Named, because the seller reads this in a support thread as often as
+      // the buyer reads it at checkout.
+      if (!r.ok) expect(r.error).toContain("Germany");
+    });
+
+    it("takes the order when the country is in the zone", async () => {
+      const { shop, rate, product } = await withRate(["HR", "DE"]);
+      const r = await createOrderIntent({
+        shopId: shop.id,
+        items: [{ productId: product.id, quantity: 1 }],
+        paymentMethod: "cod",
+        deliveryMethodId: rate.id,
+        ...buyer,
+        country: "de",
+      });
+      expect(r.ok).toBe(true);
+      if (!r.ok) return;
+      const o = await orderRow(r.orderId);
+      expect(o?.deliveryFeeCents).toBe(500);
+      // Stored as the code, which is what a zone, a filter and an export can
+      // all be asked about.
+      expect(o?.country).toBe("DE");
+    });
+
+    it("refuses a restricted rate when no country was given at all", async () => {
+      /*
+       * The direction that matters. Letting a blank field through would make
+       * the whole feature opt-out: anyone posting the form without a country
+       * would be shipped to.
+       */
+      const { shop, rate, product } = await withRate(["HR"]);
+      const r = await createOrderIntent({
+        shopId: shop.id,
+        items: [{ productId: product.id, quantity: 1 }],
+        paymentMethod: "cod",
+        deliveryMethodId: rate.id,
+        ...buyer,
+        country: "",
+      });
+      expect(r.ok).toBe(false);
+    });
+
+    it("does not quietly fall back to another rate", async () => {
+      /*
+       * `resolveDelivery` falls back to the shop's first option when the id it
+       * was handed is stale, which is right — a cached page is the buyer's
+       * fault least of all. Applied after the zone filter it would have been a
+       * hole: ask for the excluded Croatia-only rate from Germany and get the
+       * worldwide one, at its price, with the seller none the wiser. The
+       * fallback still has to happen *within* what reaches the buyer.
+       */
+      const shop = await withRail();
+      await db.insert(deliveryMethods).values([
+        {
+          shopId: shop.id,
+          type: "shipping",
+          name: "Domestic",
+          feeCents: 300,
+          countries: ["HR"],
+          isEnabled: true,
+          position: 0,
+        },
+        {
+          shopId: shop.id,
+          type: "shipping",
+          name: "International",
+          feeCents: 900,
+          countries: [],
+          isEnabled: true,
+          position: 1,
+        },
+      ]);
+      const product = await makeProduct(shop.id, { priceCents: 2000 });
+      const r = await createOrderIntent({
+        shopId: shop.id,
+        items: [{ productId: product.id, quantity: 1 }],
+        paymentMethod: "cod",
+        // No id at all: the fallback path, from a country only one rate reaches.
+        ...buyer,
+        country: "DE",
+      });
+      expect(r.ok).toBe(true);
+      if (!r.ok) return;
+      const o = await orderRow(r.orderId);
+      expect(o?.deliveryFeeCents).toBe(900);
+    });
+
+    it("leaves a shop with no zones exactly as it was", async () => {
+      // The backfill, asserted rather than assumed: an empty `countries` is
+      // anywhere, and every rate that existed before this feature has one.
+      const { shop, rate, product } = await withRate([]);
+      const r = await createOrderIntent({
+        shopId: shop.id,
+        items: [{ productId: product.id, quantity: 1 }],
+        paymentMethod: "cod",
+        deliveryMethodId: rate.id,
+        ...buyer,
+        country: "JP",
+      });
+      expect(r.ok).toBe(true);
+      if (!r.ok) return;
+      expect((await orderRow(r.orderId))?.deliveryFeeCents).toBe(500);
+    });
+
+    it("ignores a zone on a collection", async () => {
+      // A pickup happens at the seller's address; where the buyer lives is not
+      // the seller's business, even if a zone somehow reached the row.
+      const shop = await withRail();
+      const [rate] = await db
+        .insert(deliveryMethods)
+        .values({
+          shopId: shop.id,
+          type: "collection",
+          name: "Studio pickup",
+          feeCents: 0,
+          countries: ["HR"],
+          config: { address: "412 NE Alberta Street" },
+          isEnabled: true,
+          position: 0,
+        })
+        .returning();
+      if (!rate) throw new Error("fixture: delivery method was not inserted");
+      const product = await makeProduct(shop.id, { priceCents: 2000 });
+      const r = await createOrderIntent({
+        shopId: shop.id,
+        items: [{ productId: product.id, quantity: 1 }],
+        paymentMethod: "cod",
+        deliveryMethodId: rate.id,
+        ...buyer,
+        country: "JP",
+      });
+      expect(r.ok).toBe(true);
+    });
+  });
+
   it.each([
     ["zero", 0],
     ["negative", -5],
@@ -348,12 +530,17 @@ describe("stock", () => {
 
 describe("digital delivery", () => {
   it("mints a token and holds the files until payment", async () => {
-    const shop = await withRail();
+    // Bank transfer, not cash on delivery: a download sold on its own has no
+    // doorstep for cash to change hands at, so the pay-in-person rail is now
+    // refused for it. Bank transfer settles later in the same way, which is
+    // what this test is really about — the file waits for the seller to
+    // confirm the money.
+    const shop = await withRail({}, "bank_transfer");
     const p = await makeDigitalProduct(shop.id);
     const r = await createOrderIntent({
       shopId: shop.id,
       items: [{ productId: p.id, quantity: 1 }],
-      paymentMethod: "cod",
+      paymentMethod: "bank_transfer",
       ...buyer,
     });
     expect(r.ok).toBe(true);

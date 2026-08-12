@@ -9,7 +9,12 @@ import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { deliveryMethods, type DeliveryConfig } from "@/db/schema";
 import { requireShop } from "@/lib/session";
-import { DELIVERY_METHOD_DEFS, isDeliveryConfigured, isDeliveryMethodType } from "@/lib/delivery";
+import {
+  DELIVERY_METHOD_DEFS,
+  isDeliveryConfigured,
+  isDeliveryMethodType,
+  parseCountries,
+} from "@/lib/delivery";
 import { parseMoneyToCents } from "@/lib/utils";
 import type { ActionState } from "./shop";
 
@@ -52,12 +57,37 @@ export async function saveDeliveryMethod(
   const freeOverRaw = String(formData.get("freeOver") ?? "").trim();
   const freeOverCents = freeOverRaw ? parseMoneyToCents(freeOverRaw, shop.currency) : null;
 
+  /*
+   * Where this rate reaches. Empty is "anywhere", which is why the form sends
+   * the *mode* as well as the list: "selected countries" with nothing ticked
+   * would otherwise be stored as an empty array and mean the exact opposite of
+   * what the seller asked for. So it is refused instead of saved.
+   *
+   * Collection never carries a zone whatever the form says — a pickup happens
+   * at the seller's own address, so filtering it by where the buyer lives
+   * would be a rule about the buyer rather than about the delivery.
+   *
+   * The raw value is capped before it is split: the whole world is 244 codes
+   * and under a kilobyte, and this is a string from a request.
+   */
+  const wantsZone = type === "shipping" && formData.get("zone") === "selected";
+  const countries = wantsZone
+    ? parseCountries(String(formData.get("countries") ?? "").slice(0, 4000).split(","))
+    : [];
+  if (wantsZone && countries.length === 0) {
+    return {
+      ok: false,
+      error: "Pick at least one country to ship to, or choose Anywhere.",
+    };
+  }
+
   const values = {
     type,
     name,
     feeCents,
     freeOverCents,
     config,
+    countries,
     isEnabled,
     updatedAt: new Date(),
   };

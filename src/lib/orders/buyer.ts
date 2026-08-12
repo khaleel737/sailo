@@ -1,15 +1,26 @@
 import type { PaymentMethodDef } from "@/lib/payments";
+import { normalizeCountry } from "@/lib/countries";
 import { normalizePhone } from "@/lib/utils";
 import { clean } from "./sanitize";
 
 /**
- * What the buyer told us, checked against what the payment rail needs.
+ * What the buyer told us, checked against what the order cannot be fulfilled
+ * without.
  *
- * Each rail states its own requirements rather than having them inferred from
- * its kind: a bank transfer settles later and needs a way to reach the buyer,
- * a card settles immediately and needs an address only if the seller ships.
- * Reading the rail's own `requires` is what keeps a new rail from silently
- * inheriting the wrong rule.
+ * There is a floor under every order, and then the rail and the goods each add
+ * to it. The floor is a name and one way to reach the buyer, and it took a
+ * while to get here: the contact rails ask for `requires: {}`, on the reasoning
+ * that WhatsApp identifies the buyer by itself. It does — but the order row is
+ * written *before* the handoff, and a buyer who never presses send leaves the
+ * seller an order from nobody, for an address nowhere, that no one can chase.
+ * So an anonymous order is not a lighter checkout; it is an order the seller
+ * cannot act on.
+ *
+ * Above the floor the rules stay derived rather than configurable, because
+ * none of them is a matter of taste: a card receipt needs an inbox, a download
+ * link needs one to be sent to twice, and something being posted needs
+ * somewhere to post it. A seller switch here would only offer the choice of
+ * taking orders that cannot be filled.
  */
 
 export type BuyerAddress = {
@@ -58,17 +69,30 @@ export type BuyerResult =
 export function readBuyer(
   input: BuyerInput,
   opts: {
-    /** The chosen rail, which states what it needs. */
+    /** The chosen rail, which states what it needs on top of the floor. */
     def: Pick<PaymentMethodDef, "requires">;
     /** False for collection orders, which have nowhere to deliver. */
     wantsAddress: boolean;
+    /**
+     * True when the order carries something that arrives by email — a
+     * download link, a ticket. The confirmation screen shows both, and a
+     * closed tab is all it takes to lose them.
+     */
+    sendsByEmail?: boolean;
   },
 ): BuyerResult {
+  const name = clean(input.customerName, 120);
   const email = clean(input.customerEmail, 160)?.toLowerCase() ?? null;
   const phoneRaw = clean(input.customerPhone, 40);
   const phone = phoneRaw ? normalizePhone(phoneRaw) || null : null;
 
-  if (opts.def.requires.email && !email) {
+  // Whose order this is. Without it the order list, the seller's notification
+  // and the packing slip all name nobody.
+  if (!name) {
+    return { ok: false, error: "Add your name so the seller knows who to expect." };
+  }
+
+  if ((opts.def.requires.email || opts.sendsByEmail) && !email) {
     return { ok: false, error: "Add your email so we can send your receipt." };
   }
   /*
@@ -87,17 +111,44 @@ export function readBuyer(
   if (email && !/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(email)) {
     return { ok: false, error: "That email address doesn't look right." };
   }
-  if (opts.def.requires.contact && !email && !phone) {
+  /*
+   * One way to reach them, on every rail — not only the ones that settle
+   * later. This replaced the rails' own `contact` flag, which is gone: a rule
+   * that holds for every rail is not something a rail should be asked about.
+   */
+  if (!email && !phone) {
     return {
       ok: false,
       error: "Add an email or phone number so the seller can reach you.",
     };
   }
 
+  /*
+   * Somewhere to send it, when something is being sent.
+   *
+   * The panel has always asked for an address on a delivery order and nothing
+   * has ever checked the answer, so a shipping order could be placed with the
+   * fields left blank — the seller finding out only when they came to post it.
+   * The street and the town are the floor; the region, the postcode and the
+   * country are left alone because plenty of addresses genuinely have none of
+   * them, and a required field an honest buyer cannot fill is worse than a
+   * blank one.
+   */
+  if (opts.wantsAddress) {
+    const street = clean(input.addressLine1, 200);
+    const city = clean(input.city, 100);
+    if (!street || !city) {
+      return {
+        ok: false,
+        error: "Add the street and town this should be delivered to.",
+      };
+    }
+  }
+
   return {
     ok: true,
     buyer: {
-      name: clean(input.customerName, 120),
+      name,
       email,
       phone,
       note: clean(input.note, 500),
@@ -110,7 +161,19 @@ export function readBuyer(
             city: clean(input.city, 100),
             region: clean(input.region, 100),
             postalCode: clean(input.postalCode, 32),
-            country: clean(input.country, 100),
+            /*
+             * The code when it is one, and otherwise whatever was typed.
+             *
+             * The checkout sends an alpha-2 from a real list now, so new
+             * orders store `HR` — which is what a shipping zone, a CSV filter
+             * and a broadcast segment can all be asked about. What arrives
+             * from an older cached page is still a person's honest answer, so
+             * it is kept as written rather than guessed at: turning
+             * "Hrvatska" into a code we inferred would be writing down a
+             * conclusion as though it were a fact, and `formatAddress` reads
+             * both shapes anyway.
+             */
+            country: normalizeCountry(input.country) ?? clean(input.country, 100),
           }
         : NO_ADDRESS,
     },

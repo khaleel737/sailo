@@ -154,18 +154,39 @@ export default async function HqPartnerDetailPage({
             <h2 className="mb-1 text-sm font-semibold text-ink-900">Payouts</h2>
             <p className="mb-3 text-xs leading-relaxed text-ink-500">
               {partner.connectReady
-                ? "Stripe will accept a transfer to this partner."
-                : "Stripe won't accept a transfer yet — see the state below."}
+                ? "Commission goes to the same Stripe account their shop sells through."
+                : "Their shop's Stripe account can't take a transfer yet."}
             </p>
             <dl className="space-y-2.5">
               <Detail label="Connect">
-                <span className="capitalize">
-                  {partner.connectState.replace(/_/g, " ")}
+                <span>
+                  {partner.payoutBlocker
+                    ? {
+                        no_shop: "No shop",
+                        no_stripe: "Stripe not connected",
+                        stripe_incomplete: "Stripe still verifying",
+                      }[partner.payoutBlocker]
+                    : "Ready"}
                 </span>
               </Detail>
               <Detail label="Country">
                 {partner.stripeAccountCountry ?? (
                   <span className="text-ink-400">—</span>
+                )}
+              </Detail>
+              {/*
+                Whether they can accrue at all. Separate from Connect on
+                purpose: a lapsed partner is payable (we still owe them) but
+                not earning, and one line conflating the two would have HQ
+                chasing a Stripe problem that isn't there.
+              */}
+              <Detail label="Subscription">
+                {partner.subscribed ? (
+                  "Active"
+                ) : (
+                  <span className="text-amber-700">
+                    Lapsed — not accruing new commission
+                  </span>
                 )}
               </Detail>
             </dl>

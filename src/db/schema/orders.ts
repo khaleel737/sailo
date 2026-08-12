@@ -185,6 +185,42 @@ export const orders = pgTable(
     /** Set once cancelled or refunded stock has gone back on the shelf. */
     restockedAt: timestamp("restocked_at"),
 
+    /**
+     * The subscription this order is a payment of, if it is one.
+     *
+     * A column rather than nothing at all, which is what the spec sketched.
+     * Every paid invoice writes an ordinary order — that is what keeps Income,
+     * the CSV export and the invoice sequence working without any of them
+     * learning what a membership is — and "ordinary" is exactly the problem:
+     * without this, month four of a gym membership is indistinguishable from
+     * somebody buying a mug, so nothing can list a member's payments, skip
+     * stock and delivery logic for a renewal, or tell a seller why an order
+     * they never saw a checkout for exists.
+     *
+     * `set null`, because the money is a fact that outlives the arrangement.
+     */
+    subscriptionId: uuid("subscription_id"),
+    /**
+     * Stripe's invoice behind a renewal, so a payment can be traced to the
+     * thing that charged for it — and so a redelivered `invoice.paid` writes
+     * one order rather than a second identical one.
+     */
+    stripeInvoiceId: text("stripe_invoice_id"),
+    /**
+     * Which period a *manual* membership payment bought.
+     *
+     * The idempotency marker for the one path that has no webhook to
+     * de-duplicate against: a seller confirming money by hand. Null means the
+     * payment has not been counted yet, and `extendForPaidOrder` claims it in
+     * a conditional UPDATE — so an order toggled paid → unpaid → paid buys one
+     * month rather than three.
+     *
+     * Deliberately not reusing `stripeInvoiceId` with a made-up value. That
+     * column means "Stripe raised this", and a row where it means something
+     * else is a row every future reader has to be warned about.
+     */
+    membershipPeriodEnd: timestamp("membership_period_end"),
+
     // Email dispatch
     confirmationSentAt: timestamp("confirmation_sent_at"),
 
@@ -253,6 +289,20 @@ export const orders = pgTable(
     uniqueIndex("orders_download_token_key").on(t.downloadToken),
     // The Connect webhook finds the order by session id, on every card payment.
     index("orders_stripe_session_idx").on(t.stripeSessionId),
+    /*
+     * One order per Stripe invoice, decided by Postgres.
+     *
+     * `invoice.paid` is delivered at least once and can arrive under two
+     * different event ids for the same invoice, which the `stripeEvents`
+     * claim does not cover. Without this a renewal charged once is recorded
+     * as two sales — the seller's revenue for the month is simply wrong, and
+     * nothing anywhere reports it. Partial, so the millions of rows that are
+     * not renewals cost nothing.
+     */
+    uniqueIndex("orders_stripe_invoice_key")
+      .on(t.stripeInvoiceId)
+      .where(sql`${t.stripeInvoiceId} is not null`),
+    index("orders_subscription_idx").on(t.subscriptionId),
   ],
 );
 

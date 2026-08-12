@@ -102,7 +102,15 @@ export function ruleArg(type: RuleType) {
 export const CLIENT_SOURCES = ["order", "subscribe", "manual", "import"] as const;
 
 /** What a shop sells, for "bought any digital product". */
-export const PRODUCT_KINDS_SEGMENT = ["physical", "digital", "service", "event"] as const;
+export const PRODUCT_KINDS_SEGMENT = [
+  "physical",
+  "digital",
+  "service",
+  "event",
+  // Every membership payment writes an ordinary order with this kind, so
+  // "email everyone who has ever been a member" needs no new rule.
+  "membership",
+] as const;
 
 /**
  * A ceiling on how many rules one audience may carry.

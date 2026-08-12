@@ -17,9 +17,9 @@ export const marketingZh: MarketingDictionary = {
 
   hero: {
     badge: "免费开始，一直免费",
-    title: "你简介里的那条链接，早就该{highlight}了。",
-    titleHighlight: "开始接单",
-    body: "Sailo 把它变成一间真正的店：照片、价格、搜索、结账一应俱全，每一笔订单都会送到你本来就在回消息的那个聊天工具里。",
+    title: "{highlight}，整间店。",
+    titleHighlight: "一条链接",
+    body: "你本来就在私信里接单。Sailo 在它前面摆上一间真正的店：照片、价格、搜索、结账都在一条链接后面，而每一笔订单依旧落进你原本就在回的那个对话里。",
     ctaPrimary: "创建店铺 — 免费",
     ctaSecondary: "打开一间真实店铺",
     proof1: "不到一分钟就能上线",
@@ -56,18 +56,6 @@ export const marketingZh: MarketingDictionary = {
     shop4: "访问、订单和回头客，都有数",
   },
 
-  versus: {
-    title: "一条链接。一间店。不必取舍。",
-    body: "链接页接不了单，完整的网店又是第二份工作。Sailo 就是大家一直在要的那个中间选项。",
-    us: "Sailo",
-    r1: "简介里的一条短链接",
-    r2: "有照片、价格和库存的商品",
-    r3: "订单落到 WhatsApp，不用配置结账",
-    r4: "预约，以及即时交付的数字商品",
-    r5: "真的能拿来卖东西的免费方案",
-    r6: "35 种语言，包括从右往左书写的",
-    note: "各家自己的定位说明，2026 年 8 月。更换前请查看最新方案。",
-  },
 
   steps: {
     eyebrow: "怎么用",
@@ -130,7 +118,7 @@ export const marketingZh: MarketingDictionary = {
   pricing: {
     eyebrow: "价格",
     title: "开始免费，一直用下去也免费。",
-    body: "Sailo 从不抽你销售额的成——付费方案不抽，免费方案也不抽。",
+    body: "通过聊天、银行转账和现金的订单，在所有方案下都全额归你。刷卡销售按货品金额收取 {fee}——运费和税费从不计入。",
     freeTagline: "接下第一批订单所需的一切。",
     proTagline: "更多空间，以及一间看起来像你自己的店。",
     bizTagline: "刷卡收款、促销和推广分成——真正推高营收的工具。",
@@ -207,7 +195,7 @@ export const marketingZh: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — 把简介里的链接变成一间店",
+    title: "Sailo — 像简介链接一样简单的网店",
     description:
       "Sailo 把你简介里的链接变成一间真正的店。卖实物、数字文件或服务，订单通过 WhatsApp 或刷卡收，支持 35 种语言。免费开始，聊天和银行转账订单不抽成。",
     ogTitle: "Sailo — 一条链接，整间店",

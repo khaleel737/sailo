@@ -13,10 +13,12 @@ export * from "./shop";
 export * from "./catalog";
 export * from "./commerce";
 export * from "./orders";
+export * from "./memberships";
 export * from "./audience";
 export * from "./lifecycle";
 export * from "./analytics";
 export * from "./growth";
+export * from "./integrations";
 export * from "./support";
 
 export * from "./relations";

@@ -17,9 +17,9 @@ export const marketingMs: MarketingDictionary = {
 
   hero: {
     badge: "Percuma untuk mula, percuma seterusnya",
-    title: "Pautan dalam bio anda sepatutnya {highlight}.",
-    titleHighlight: "menerima pesanan",
-    body: "Sailo menjadikannya kedai sebenar — gambar, harga, carian, pembayaran — dan menghantar setiap pesanan ke aplikasi sembang yang memang anda balas setiap hari.",
+    title: "Seluruh kedai anda, dalam {highlight}.",
+    titleHighlight: "satu pautan",
+    body: "Anda sudah menerima pesanan dalam DM. Sailo meletakkan kedai sebenar di hadapannya — gambar, harga, carian dan pembayaran di sebalik satu pautan — dan setiap pesanan tetap sampai ke chat yang anda balas juga.",
     ctaPrimary: "Cipta kedai anda — percuma",
     ctaSecondary: "Buka kedai sebenar",
     proof1: "Siap dalam masa kurang seminit",
@@ -56,18 +56,6 @@ export const marketingMs: MarketingDictionary = {
     shop4: "Lawatan, pesanan dan pembeli berulang, dikira",
   },
 
-  versus: {
-    title: "Satu pautan. Satu kedai. Tanpa kompromi.",
-    body: "Halaman pautan tidak boleh menerima pesanan. Kedai penuh pula kerja kedua. Sailo ialah jalan tengah yang semua orang minta.",
-    us: "Sailo",
-    r1: "Satu pautan pendek untuk bio anda",
-    r2: "Produk dengan gambar, harga dan stok",
-    r3: "Pesanan tiba di WhatsApp, tanpa pembayaran untuk disediakan",
-    r4: "Tempahan dan muat turun digital serta-merta",
-    r5: "Pelan percuma yang benar-benar boleh anda gunakan untuk berjualan",
-    r6: "35 bahasa, termasuk yang dibaca dari kanan ke kiri",
-    note: "Bagaimana setiap alat memposisikan dirinya, Ogos 2026. Semak pelan semasa sebelum bertukar.",
-  },
 
   steps: {
     eyebrow: "Cara ia berfungsi",
@@ -130,7 +118,7 @@ export const marketingMs: MarketingDictionary = {
   pricing: {
     eyebrow: "Harga",
     title: "Percuma untuk bermula, dan percuma untuk terus berjalan.",
-    body: "Sailo tidak pernah mengambil bahagian daripada jualan anda — bukan pada pelan berbayar, dan bukan pada yang percuma.",
+    body: "Pesanan melalui chat, pindahan bank dan tunai sepenuhnya milik anda, pada semua pelan. Jualan kad dikenakan {fee} daripada nilai barang — tidak pernah daripada penghantaran atau cukai.",
     freeTagline: "Semua yang anda perlukan untuk pesanan pertama anda.",
     proTagline: "Ruang untuk berkembang, dan kedai yang kelihatan seperti milik anda sendiri.",
     bizTagline: "Bayaran kad, promosi dan rujukan — alat yang menumbuhkan hasil.",
@@ -207,7 +195,7 @@ export const marketingMs: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — jadikan pautan dalam bio anda sebuah kedai",
+    title: "Sailo — kedai dalam talian semudah pautan dalam bio",
     description:
       "Sailo menjadikan pautan dalam bio anda kedai sebenar. Jual produk, fail digital atau perkhidmatan, terima pesanan di WhatsApp atau dengan kad, dalam 35 bahasa. Percuma untuk bermula, dan Sailo tidak mengambil komisen.",
     ogTitle: "Sailo — satu pautan, seluruh kedai anda",

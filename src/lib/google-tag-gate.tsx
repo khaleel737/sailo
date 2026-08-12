@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import { CONSENT_EVENT, hasAnalyticsConsent } from "@/lib/consent";
 
 /**
- * Loads the Google tag only once the visitor has agreed to it.
+ * Loads the Google tags only once the visitor has agreed to them.
  *
  * Not Google Consent Mode. Consent Mode keeps `gtag.js` on the page and asks
  * it to behave, which still fetches the script and still pings Google from
@@ -17,8 +17,19 @@ import { CONSENT_EVENT, hasAnalyticsConsent } from "@/lib/consent";
  * pageview of a consenting visitor's first session is not measured. That is a
  * real cost, it is the honest one to pay, and it is why the preconnect hints
  * in `google-tag.tsx` exist — the handshake is warm by the time this mounts.
+ *
+ * The GTM container is gated by the same answer rather than by one of its own.
+ * A container is only ever as invasive as the tags inside it, and those are
+ * configured outside this repository — so the strict reading is the only safe
+ * one: nothing loads until the visitor has said yes.
  */
-export function GoogleTagGate({ gaId }: { gaId: string }) {
+export function GoogleTagGate({
+  gaId,
+  gtmId,
+}: {
+  gaId: string | null;
+  gtmId: string | null;
+}) {
   const [allowed, setAllowed] = useState(false);
 
   useEffect(() => {
@@ -34,5 +45,10 @@ export function GoogleTagGate({ gaId }: { gaId: string }) {
   }, []);
 
   if (!allowed) return null;
-  return <GoogleAnalytics gaId={gaId} />;
+  return (
+    <>
+      {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
+      {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
+    </>
+  );
 }

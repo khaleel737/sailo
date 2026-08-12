@@ -52,6 +52,12 @@ const WHOLESALE = new Set([
   "broadcastStatus",
   "deliveryStatus",
   /*
+   * `a.memberStatus[subscription.status]` on the members list — the same
+   * bracket read, for the same reason: Stripe hands us the status as a string
+   * and the row renders whichever one arrives.
+   */
+  "memberStatus",
+  /*
    * Handed to the door console whole — `labels={a.checkin}` — because that
    * component renders on two routes and only one of them has the admin i18n
    * context around it: a volunteer on `/door/[token]` has no admin shell.

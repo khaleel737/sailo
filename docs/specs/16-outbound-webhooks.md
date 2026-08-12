@@ -1,5 +1,17 @@
 # 16 — Outbound Webhooks (Zapier-style)
 
+> **Built (`drizzle/0020_integrations.sql`), and widened.** This shipped
+> together with a REST API and an MCP endpoint, because a webhook that fires
+> and cannot look anything up is half an integration. Read the *integrations
+> block, as built* section of `README.md` for what departed from this document
+> and why — chiefly: signing is
+> [Standard Webhooks](https://www.standardwebhooks.com) rather than Stripe's
+> scheme (better libraries, and Svix-compatible), the SSRF guard runs at
+> *connect* time through a `node:https` `lookup` hook rather than as a
+> pre-flight resolve, the claim is a lease rather than a `sending` status, and
+> the retry ladder tops out at six attempts. `lead.created` is still absent —
+> spec 07 has not landed.
+
 **Priority:** P3 · **Effort:** M · **Depends on:** nothing (07 adds the
 `lead.created` event)
 

@@ -7,12 +7,26 @@ import {
   partnerPayouts,
   partners,
   referralEarnings,
+  shops,
 } from "@/db/schema";
 import { maybeRow } from "@/lib/invariant";
 import { stripe } from "@/lib/stripe";
-import { canReceiveTransfer } from "./connect";
+import { canBePaid, payoutBlocker, type PayoutBlocker } from "./eligibility";
 import { getProgramSettings } from "./settings";
 import { isPayableBalance } from "./program";
+
+/**
+ * Why a payout was refused, in words HQ can act on.
+ *
+ * Every one of these is an ordinary state a run meets several times a month
+ * and none is an error — a refusal names what the seller has to finish, and
+ * the run moves to the next partner.
+ */
+const PAYOUT_BLOCKED: Record<PayoutBlocker, string> = {
+  no_shop: "They have no shop — the programme is for active sellers.",
+  no_stripe: "Their shop hasn't connected Stripe yet.",
+  stripe_incomplete: "Their Stripe account isn't finished verifying.",
+};
 
 /**
  * Sending partners their money.
@@ -222,13 +236,28 @@ export async function payPartner(params: {
   });
   if (!partner) return { ok: false, reason: "No such partner." };
 
-  if (!canReceiveTransfer(partner)) {
-    return {
-      ok: false,
-      reason: partner.stripeAccountId
-        ? "Their Stripe account can't receive transfers yet."
-        : "They haven't connected a Stripe account.",
-    };
+  /*
+   * Their shop's Stripe account is the destination — the same one their buyers
+   * pay into. No subscription test here on purpose: this money was earned
+   * under the terms in force when the invoice was paid, and a partner who
+   * cancelled last week did not un-earn it. Cancelling stops `canAccrue`; it
+   * does not empty the ledger.
+   */
+  const shop = partner.shopId
+    ? await db.query.shops.findFirst({
+        where: eq(shops.id, partner.shopId),
+        columns: {
+          plan: true,
+          subscriptionStatus: true,
+          compPlan: true,
+          stripeAccountId: true,
+          stripeChargesEnabled: true,
+        },
+      })
+    : null;
+
+  if (!canBePaid(shop)) {
+    return { ok: false, reason: PAYOUT_BLOCKED[payoutBlocker(shop) ?? "no_shop"] };
   }
 
   const currency = params.currency.toUpperCase();
@@ -314,11 +343,11 @@ export async function payPartner(params: {
   }
 
   /*
-   * `canReceiveTransfer` above already established this, but narrowing it here
-   * keeps the assertion out of the call and means a future edit that loosens
-   * that check fails to compile rather than sending a transfer to nowhere.
+   * `canBePaid` above already established this, but narrowing it here keeps
+   * the assertion out of the call and means a future edit that loosens that
+   * check fails to compile rather than sending a transfer to nowhere.
    */
-  const destination = partner.stripeAccountId;
+  const destination = shop?.stripeAccountId;
   if (!destination) {
     await failPayout(payout.id, "Partner has no connected account.");
     return { ok: false, reason: "They haven't connected a Stripe account.", payoutId: payout.id };
@@ -460,11 +489,19 @@ export async function reconcilePendingPayouts(): Promise<{
       amountCents: partnerPayouts.amountCents,
       currency: partnerPayouts.currency,
       idempotencyKey: partnerPayouts.idempotencyKey,
-      stripeAccountId: partners.stripeAccountId,
+      // The seller's own account, reached through the partner's shop.
+      stripeAccountId: shops.stripeAccountId,
       partnerName: partners.name,
     })
     .from(partnerPayouts)
     .innerJoin(partners, eq(partners.id, partnerPayouts.partnerId))
+    /*
+     * A left join, not an inner one. A partner whose shop was deleted still
+     * has a pending row, and it has to be *failed* with a reason rather than
+     * disappear from the reconciliation — a payout nobody looks at again is
+     * how money in flight goes missing.
+     */
+    .leftJoin(shops, eq(shops.id, partners.shopId))
     .where(eq(partnerPayouts.status, "pending"));
 
   let settled = 0;
@@ -472,7 +509,7 @@ export async function reconcilePendingPayouts(): Promise<{
 
   for (const row of pending) {
     if (!row.stripeAccountId) {
-      await failPayout(row.id, "Partner has no connected account.");
+      await failPayout(row.id, "Their shop has no connected Stripe account.");
       failed++;
       continue;
     }

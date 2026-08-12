@@ -1,12 +1,7 @@
 import { ExternalLink, Globe, MapPin, Megaphone, Monitor, Share2 } from "lucide-react";
 import type { ClickBreakdown, VisitBreakdown } from "@/lib/queries";
-import {
-  SOURCE_LABELS,
-  countryFlag,
-  countryName,
-  hostLabel,
-  type TrafficSource,
-} from "@/lib/analytics";
+import { SOURCE_LABELS, hostLabel, type TrafficSource } from "@/lib/analytics";
+import { countryFlag, countryName } from "@/lib/countries";
 import { Card } from "@/components/ui";
 import { getAdminT } from "@/i18n/server";
 import { CHART } from "@/lib/chart-palette";

@@ -17,9 +17,9 @@ export const marketingSq: MarketingDictionary = {
 
   hero: {
     badge: "Falas për të filluar, falas për të vazhduar",
-    title: "Lidhja në bio-n tuaj duhet të {highlight}.",
-    titleHighlight: "marrë porosi",
-    body: "Sailo e kthen atë në një dyqan të vërtetë — foto, çmime, kërkim, arkë — dhe e dërgon çdo porosi te aplikacioni i mesazheve që tashmë po i përgjigjeni.",
+    title: "I gjithë dyqani juaj, në {highlight}.",
+    titleHighlight: "një lidhje të vetme",
+    body: "Ju tashmë merrni porosi në mesazhe. Sailo vendos përpara tyre një dyqan të vërtetë — foto, çmime, kërkim dhe pagesë pas një lidhjeje të vetme — dhe çdo porosi vjen sërish në bisedën ku përgjigjeni gjithsesi.",
     ctaPrimary: "Krijoni dyqanin tuaj — falas",
     ctaSecondary: "Hapni një dyqan të gjallë",
     proof1: "Gati për më pak se një minutë",
@@ -56,18 +56,6 @@ export const marketingSq: MarketingDictionary = {
     shop4: "Vizita, porosi dhe blerës të përsëritur, të numëruara",
   },
 
-  versus: {
-    title: "Një lidhje. Një dyqan. Pa kompromis.",
-    body: "Një faqe lidhjesh nuk mund të marrë porosi. Një dyqan i plotë është një punë e dytë. Sailo është mesi që të gjithë e kërkonin.",
-    us: "Sailo",
-    r1: "Një lidhje e shkurtër për bio-n tuaj",
-    r2: "Produkte me foto, çmime dhe gjendje",
-    r3: "Porositë mbërrijnë në WhatsApp, pa arkë për të konfiguruar",
-    r4: "Rezervime dhe shkarkime dixhitale të menjëhershme",
-    r5: "Një plan falas ku vërtet mund të shisni",
-    r6: "35 gjuhë, përfshirë ato nga e djathta në të majtë",
-    note: "Si e pozicionon veten çdo mjet, gusht 2026. Kontrolloni planet aktuale para se të ndërroni.",
-  },
 
   steps: {
     eyebrow: "Si funksionon",
@@ -130,7 +118,7 @@ export const marketingSq: MarketingDictionary = {
   pricing: {
     eyebrow: "Çmimet",
     title: "Falas për të filluar dhe falas për të vazhduar.",
-    body: "Sailo nuk merr kurrë pjesë nga shitjet tuaja — as në planet me pagesë, as në atë falas.",
+    body: "Porositë me chat, transfertë bankare dhe para në dorë janë tërësisht tuajat, në çdo plan. Shitjet me kartë mbajnë {fee} të mallit — asnjëherë të transportit apo taksës.",
     freeTagline: "Gjithçka që ju duhet për porositë e para.",
     proTagline: "Hapësirë për t'u rritur dhe një dyqan që duket i juaji.",
     bizTagline: "Pagesa me kartë, promocione dhe rekomandime — mjetet që rrisin të ardhurat.",
@@ -207,7 +195,7 @@ export const marketingSq: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — kthejeni lidhjen në bio-n tuaj në një dyqan",
+    title: "Sailo — një dyqan online i thjeshtë sa një lidhje në bio",
     description:
       "Sailo e kthen lidhjen në bio-n tuaj në një dyqan të vërtetë. Shisni produkte, skedarë dixhitalë ose shërbime, merrni porosi në WhatsApp ose me kartë, në 35 gjuhë. Falas për të filluar, dhe Sailo nuk merr komision.",
     ogTitle: "Sailo — një lidhje, i gjithë dyqani juaj",

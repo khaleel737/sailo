@@ -171,15 +171,13 @@ export default async function HqPartnerPayoutsPage() {
                 </Td>
                 <Td label="Why">
                   <span className="text-xs text-ink-500">
-                    {row.connectState === "not_connected"
-                      ? "No Stripe account connected"
-                      : row.connectState === "onboarding"
-                        ? "Started onboarding, never finished"
-                        : row.connectState === "verifying"
-                          ? "Stripe is still verifying them"
-                          : row.connectState === "unsupported_country"
-                            ? "Cross-border transfers unsupported"
-                            : row.connectState}
+                    {row.payoutBlocker
+                      ? {
+                          no_shop: "No shop — not an active seller",
+                          no_stripe: "Their shop hasn't connected Stripe",
+                          stripe_incomplete: "Stripe is still verifying them",
+                        }[row.payoutBlocker]
+                      : "Ready — nothing blocking"}
                   </span>
                 </Td>
                 <Td align="end">

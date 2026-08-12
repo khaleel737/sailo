@@ -153,6 +153,26 @@ describe("quote", () => {
     expect(result.totals.deliveryFeeCents).toBe(599);
   });
 
+  it("asks for an email when something in the order arrives in one", () => {
+    /*
+     * A download link and a ticket are both handed over on the confirmation
+     * screen as well, and that screen is one closed tab away from being gone —
+     * so the order has to have somewhere to send them again.
+     */
+    expect(quote({ ...base, lines: [line({ kind: "digital" })] }).needsEmail).toBe(true);
+    expect(quote({ ...base, lines: [line({ kind: "event" })] }).needsEmail).toBe(true);
+    expect(quote({ ...base, lines: [line()] }).needsEmail).toBe(false);
+    expect(quote({ ...base, lines: [line({ kind: "service" })] }).needsEmail).toBe(false);
+  });
+
+  it("asks for an email when only one line of a mixed basket needs it", () => {
+    const mixed = quote({
+      ...base,
+      lines: [line(), line({ productId: "p2", kind: "digital" })],
+    });
+    expect(mixed.needsEmail).toBe(true);
+  });
+
   it("asks for an address only when something is being shipped to one", () => {
     const shipped = quote({
       ...base,

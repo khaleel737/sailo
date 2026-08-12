@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cronAuthFailure } from "@/lib/cron-auth";
 import { releaseAbandonedCheckouts } from "@/lib/inventory";
 import { refreshCalendarFeeds } from "@/lib/booking/feed-health";
+import { pruneWebhookDeliveries } from "@/lib/webhooks/deliver";
 
 /**
  * Housekeeping that must happen whether or not a webhook arrived.
@@ -35,10 +36,21 @@ export async function GET(request: Request) {
    */
   const calendars = await refreshCalendarFeeds();
 
+  /*
+   * Webhook deliveries older than thirty days.
+   *
+   * Here rather than in the delivery cron because pruning is housekeeping, not
+   * delivery, and because this is the one table in the schema whose row count
+   * grows with a shop's *traffic* times its endpoints rather than with its
+   * orders. Nothing reads a delivery older than the log's own window.
+   */
+  const webhookRowsPruned = await pruneWebhookDeliveries();
+
   return NextResponse.json({
     ok: true,
     abandonedCheckoutsReleased: abandoned.swept,
     calendarsChecked: calendars.checked,
     calendarsBroken: calendars.broken,
+    webhookRowsPruned,
   });
 }

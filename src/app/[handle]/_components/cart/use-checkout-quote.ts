@@ -34,6 +34,12 @@ export function useCheckoutQuote(input: {
   items: OrderLineInput[];
   deliveryId: string | null;
   /**
+   * Where the buyer says it's going. Sent so the total is priced against a
+   * rate they can actually have — the panel has already stopped offering the
+   * ones that don't reach, and this is the server agreeing.
+   */
+  country?: string;
+  /**
    * What the caller already knows about whether this order travels, from the
    * kinds it holds. Used for the first paint only — the server's answer
    * replaces it the moment it lands, and it is the server's that the order is
@@ -43,7 +49,7 @@ export function useCheckoutQuote(input: {
    */
   needsDeliveryHint?: boolean;
 }) {
-  const { shopId, items, deliveryId, needsDeliveryHint = false } = input;
+  const { shopId, items, deliveryId, country, needsDeliveryHint = false } = input;
 
   const [coupon, dispatchCoupon] = useReducer(couponReducer, NO_COUPON);
   const [preview, setPreview] = useState<OrderPreview | null>(null);
@@ -64,6 +70,7 @@ export function useCheckoutQuote(input: {
           items,
           deliveryMethodId: deliveryId ?? undefined,
           couponCode: couponFor(coupon),
+          country,
         });
         if (cancelled || "error" in res) return;
         setPreview(res);
@@ -83,18 +90,22 @@ export function useCheckoutQuote(input: {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shopId, itemsKey, deliveryId, coupon.applied]);
+  }, [shopId, itemsKey, deliveryId, country, coupon.applied]);
 
   async function applyCoupon() {
     const code = coupon.input.trim();
     if (!code) return;
     dispatchCoupon({ type: "checking" });
 
+    // The same four inputs as the effect above, country included: this reply
+    // replaces the preview wholesale, so a narrower call here would price the
+    // basket against a delivery rate the buyer can't have.
     const res = await previewOrder({
       shopId,
       items,
       deliveryMethodId: deliveryId ?? undefined,
       couponCode: code,
+      country,
     });
     if ("error" in res) {
       dispatchCoupon({ type: "rejected", message: res.error });
@@ -130,6 +141,13 @@ export function useCheckoutQuote(input: {
      */
     needsDelivery: preview?.needsDelivery ?? needsDeliveryHint,
     needsAddress: preview?.needsAddress ?? false,
+    /*
+     * Whether an inbox is required rather than merely welcome. False until the
+     * first quote, so the field starts optional and firms up — the opposite
+     * order would mark a field required and then release it, which reads as
+     * the form changing its mind.
+     */
+    needsEmail: preview?.needsEmail ?? false,
     // Optimistic until the first quote: show the pay-in-person rail, and let
     // the server withdraw it for the one basket that can't have it (an instant
     // download). Better first frame than hiding it and growing it back.

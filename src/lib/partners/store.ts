@@ -9,6 +9,7 @@ import {
   user,
 } from "@/db/schema";
 import { maybeRow } from "@/lib/invariant";
+import { canAccrue } from "./eligibility";
 import { getProgramSettings } from "./settings";
 import {
   canEarn,
@@ -95,6 +96,19 @@ export async function attributeReferral(params: {
 
   const partner = maybeRow(found);
   if (!partner) return "unknown_code";
+
+  /*
+   * Attribution is deliberately gated on `canEarn` alone, not `canAccrue`.
+   *
+   * A partner whose subscription has lapsed keeps their attributions: the
+   * creator they brought is still theirs, and if they resubscribe the earnings
+   * resume on a referral that was never lost. Refusing the attribution instead
+   * would silently hand that creator to nobody, permanently — `creatorReferrals`
+   * is first-touch and there is no second chance to record it.
+   *
+   * The subscription test belongs at `recordReferralEarning`, which is where
+   * money is actually decided.
+   */
   if (!canEarn(partner.status)) return "unknown_code";
 
   if (partner.userId === params.referredUserId) return "self";
@@ -149,21 +163,53 @@ export async function recordReferralEarning(params: {
 }): Promise<boolean> {
   const db = getDb();
 
+  /*
+   * The partner's own shop comes along for the ride, because earning now
+   * depends on it: a partner must be an active paying seller at the moment the
+   * invoice is paid, not merely at the moment they were approved. One join
+   * rather than a second round trip — this runs inside a webhook, on every
+   * subscription invoice Stripe sends us.
+   *
+   * Left, not inner: a partner whose shop was deleted must fail `canAccrue`
+   * rather than vanish from the lookup, or the reason they stopped earning
+   * becomes invisible.
+   */
   const found = await db
     .select({
       referralId: creatorReferrals.id,
       convertedAt: creatorReferrals.convertedAt,
       partnerStatus: partners.status,
       partnerCommissionBp: partners.commissionBp,
+      partnerPlan: shops.plan,
+      partnerSubscriptionStatus: shops.subscriptionStatus,
+      partnerCompPlan: shops.compPlan,
     })
     .from(creatorReferrals)
     .innerJoin(partners, eq(partners.id, creatorReferrals.partnerId))
+    .leftJoin(shops, eq(shops.id, partners.shopId))
     .where(eq(creatorReferrals.referredShopId, params.referredShopId))
     .limit(1);
 
   const referral = maybeRow(found);
   if (!referral) return false;
-  if (!canEarn(referral.partnerStatus)) return false;
+
+  /*
+   * Approved *and* currently subscribed. A partner who cancels stops accruing
+   * from that moment — the rule is "you earn while you're a customer", and a
+   * rule checked only at approval is not a rule.
+   *
+   * What already sits in the ledger is untouched by this: `payPartner` has no
+   * subscription test, so a lapsed partner still receives what they earned
+   * while they were one.
+   */
+  const partnerShop = referral.partnerPlan
+    ? {
+        plan: referral.partnerPlan,
+        subscriptionStatus: referral.partnerSubscriptionStatus,
+        compPlan: referral.partnerCompPlan,
+      }
+    : null;
+  if (!canAccrue(referral.partnerStatus, partnerShop)) return false;
 
   const settings = await getProgramSettings();
   const bp = resolveCommissionBp(
@@ -459,4 +505,31 @@ export async function getReferredCreators(
     earnedCents: Number(row.earnedCents),
     currency: row.currency,
   }));
+}
+
+/**
+ * The partner's shop, in the columns that decide money.
+ *
+ * A partner *is* a seller now, so both questions the portal asks — may they
+ * still accrue, and can we send them anything — are answered by this one row.
+ * Narrow on purpose: everything else on `shops` is somebody else's concern,
+ * and a `findFirst` with no `columns` would drag the whole record into a page
+ * that only needs five fields.
+ */
+export async function getPartnerShop(shopId: string | null) {
+  if (!shopId) return null;
+
+  const row = await getDb().query.shops.findFirst({
+    where: eq(shops.id, shopId),
+    columns: {
+      plan: true,
+      subscriptionStatus: true,
+      compPlan: true,
+      stripeAccountId: true,
+      stripeChargesEnabled: true,
+      stripeAccountCountry: true,
+    },
+  });
+
+  return row ?? null;
 }

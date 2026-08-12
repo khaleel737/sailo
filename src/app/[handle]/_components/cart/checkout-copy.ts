@@ -25,6 +25,10 @@ export function railCopy(type: PaymentMethodType, t: Dictionary) {
       return { name: t.rails.phoneName, action: t.rails.phoneAction, description: t.rails.phoneDesc };
     case "bank_transfer":
       return { name: t.rails.bankName, action: t.rails.bankAction, description: t.rails.bankDesc };
+    case "venmo":
+      return { name: "Venmo", action: t.rails.venmoAction, description: t.rails.venmoDesc };
+    case "paypal":
+      return { name: "PayPal", action: t.rails.paypalAction, description: t.rails.paypalDesc };
     case "cod":
       return { name: t.rails.codName, action: t.rails.codAction, description: t.rails.codDesc };
   }

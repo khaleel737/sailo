@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy, Download, FileText, Loader2 } from "lucide-react";
+import { Check, Copy, Download, ExternalLink, FileText, Loader2 } from "lucide-react";
 import { submitPaymentReference } from "@/lib/actions/payment-reference";
 import type { OrderIntentResult } from "@/lib/orders/types";
 import type { Dictionary } from "@/i18n";
@@ -38,6 +38,18 @@ export function Confirmation({
 
   const bank = result.bankDetails ?? [];
   const hasBank = bank.length > 0;
+
+  /*
+   * Venmo and PayPal hand the buyer a wallet to open. It is a link and not a
+   * redirect on purpose — the order is unpaid until they come back and submit
+   * a reference, so the page they return to has to still be here. `noopener`
+   * for the same reason every outbound link needs it, and `_blank` so the
+   * back button is not the only way home.
+   */
+  const pay =
+    result.handoff?.kind === "instructions" && result.handoff.payUrl
+      ? { url: result.handoff.payUrl, label: result.handoff.payLabel }
+      : null;
 
   async function onSubmitReference() {
     setPending(true);
@@ -81,6 +93,18 @@ export function Confirmation({
           ? t.checkout.bankInstructions
           : interpolate(t.checkout.paidBy, { method: methodName })}
       </p>
+
+      {pay ? (
+        <a
+          href={pay.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="accent-bg mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition hover:opacity-90"
+        >
+          {interpolate(t.checkout.payWith, { method: pay.label ?? methodName })}
+          <ExternalLink className="size-4" />
+        </a>
+      ) : null}
 
       {hasBank ? (
         <div className="surface-elevated mt-4 rounded-xl p-3">

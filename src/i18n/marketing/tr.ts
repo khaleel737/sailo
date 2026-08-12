@@ -17,9 +17,9 @@ export const marketingTr: MarketingDictionary = {
 
   hero: {
     badge: "Başlaması ücretsiz, kalması ücretsiz",
-    title: "Biyografindeki bağlantı çoktan {highlight}.",
-    titleHighlight: "sipariş alıyor olmalıydı",
-    body: "Sailo onu gerçek bir dükkâna çevirir — fotoğraf, fiyat, arama, ödeme — ve her siparişi zaten cevapladığın mesajlaşma uygulamasına yollar.",
+    title: "Bütün dükkânın, {highlight}.",
+    titleHighlight: "tek bağlantıda",
+    body: "Siparişleri zaten mesajlardan alıyorsun. Sailo onların önüne gerçek bir dükkân koyar — fotoğraf, fiyat, arama ve ödeme tek bir bağlantının ardında — ve her sipariş yine zaten cevapladığın sohbete düşer.",
     ctaPrimary: "Dükkânını aç — ücretsiz",
     ctaSecondary: "Gerçek bir dükkân aç",
     proof1: "Bir dakikadan kısa sürede yayında",
@@ -56,18 +56,6 @@ export const marketingTr: MarketingDictionary = {
     shop4: "Ziyaret, sipariş ve geri dönen müşteri sayılır",
   },
 
-  versus: {
-    title: "Tek bağlantı. Tek dükkân. Ödün yok.",
-    body: "Bağlantı sayfası sipariş alamaz. Tam bir mağaza ise ikinci bir iştir. Sailo, herkesin sorup durduğu orta yol.",
-    us: "Sailo",
-    r1: "Biyografin için tek kısa bağlantı",
-    r2: "Fotoğraflı, fiyatlı ve stoklu ürünler",
-    r3: "Siparişler WhatsApp'a düşer, kurulacak ödeme yok",
-    r4: "Randevular ve anında dijital indirmeler",
-    r5: "Gerçekten satış yapabileceğin ücretsiz plan",
-    r6: "35 dil, sağdan sola yazılanlar dâhil",
-    note: "Her aracın kendini nasıl konumlandırdığı, Ağustos 2026. Geçmeden önce güncel planları kontrol et.",
-  },
 
   steps: {
     eyebrow: "Nasıl çalışır",
@@ -130,7 +118,7 @@ export const marketingTr: MarketingDictionary = {
   pricing: {
     eyebrow: "Fiyatlar",
     title: "Başlaması ücretsiz, sürdürmesi de ücretsiz.",
-    body: "Sailo satışlarından asla pay almaz — ne ücretli planlarda ne de ücretsiz olanda.",
+    body: "Sohbet, havale ve nakit siparişler her planda tamamen senindir. Kartlı satışlarda ürün bedelinin {fee} kadarı alınır — kargodan ve vergiden asla.",
     freeTagline: "İlk siparişlerini almak için gereken her şey.",
     proTagline: "Büyümek için yer, ve sana benzeyen bir dükkân.",
     bizTagline: "Kartlı ödeme, kampanyalar ve tavsiye programı — ciroyu büyüten araçlar.",
@@ -207,7 +195,7 @@ export const marketingTr: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — biyografindeki bağlantıyı dükkâna çevir",
+    title: "Sailo — biyografideki bağlantı kadar basit bir online dükkân",
     description:
       "Sailo, biyografindeki bağlantıyı gerçek bir dükkâna çevirir. Ürün, dijital dosya veya hizmet sat; siparişleri WhatsApp'tan ya da kartla al, 35 dilde. Başlaması ücretsiz, komisyon yok.",
     ogTitle: "Sailo — tek bağlantı, bütün dükkânın",

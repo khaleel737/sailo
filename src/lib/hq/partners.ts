@@ -11,23 +11,15 @@ import {
 } from "@/db/schema";
 import { maybeRow } from "@/lib/invariant";
 import { requireStaff } from "@/lib/session";
-import { canReceiveTransfer, partnerConnectState } from "@/lib/partners/connect";
+import {
+  canBePaid,
+  hasLiveSubscription,
+  payoutBlocker,
+  type PayoutBlocker,
+} from "@/lib/partners/eligibility";
 import { getProgramSettings } from "@/lib/partners/settings";
 import { isPayableBalance, resolveCommissionBp } from "@/lib/partners/program";
 
-/**
- * The columns both `canReceiveTransfer` and `partnerConnectState` read.
- *
- * Named once so the roster query builds a single object and hands it to both,
- * rather than assembling two subtly different literals that could drift.
- */
-type PartnerConnectStateLike = {
-  status: string;
-  stripeAccountId: string | null;
-  stripeTransfersEnabled: boolean;
-  stripeDetailsSubmitted: boolean;
-  stripeAccountCountry: string | null;
-};
 
 /**
  * The partner programme as /hq sees it: who applied, who earns, what we owe.
@@ -64,10 +56,13 @@ export type PartnerRow = {
   heldCents: number;
   currency: string;
   payable: boolean;
-  /** Whether Stripe would actually accept a transfer to them. */
+  /** Whether their shop's Stripe account would accept the transfer. */
   connectReady: boolean;
-  connectState: string;
-  /** Drives the cross-border rules, and worth showing on the detail page. */
+  /** Null when payable; otherwise what they have to finish. */
+  payoutBlocker: PayoutBlocker | null;
+  /** Whether their Sailo subscription is live, which is what lets them accrue. */
+  subscribed: boolean;
+  /** Their shop's Stripe country, worth showing on the detail page. */
   stripeAccountCountry: string | null;
   appliedAt: Date;
   lastEarnedAt: Date | null;
@@ -101,11 +96,18 @@ export async function getPartners(filter?: {
       website: partners.website,
       audience: partners.audience,
       appliedAt: partners.appliedAt,
-      stripeAccountId: partners.stripeAccountId,
-      stripeTransfersEnabled: partners.stripeTransfersEnabled,
-      stripeDetailsSubmitted: partners.stripeDetailsSubmitted,
-      stripeAccountCountry: partners.stripeAccountCountry,
+      /*
+       * Their shop is now both the subscription test and the payout
+       * destination, so the roster reads it instead of a second Stripe account
+       * per partner.
+       */
       shopHandle: shops.handle,
+      shopPlan: shops.plan,
+      shopSubscriptionStatus: shops.subscriptionStatus,
+      shopCompPlan: shops.compPlan,
+      shopStripeAccountId: shops.stripeAccountId,
+      shopStripeChargesEnabled: shops.stripeChargesEnabled,
+      shopStripeCountry: shops.stripeAccountCountry,
 
       referredCount: sql<string>`count(distinct ${creatorReferrals.id})`,
       convertedCount: sql<string>`count(distinct ${creatorReferrals.id}) filter (where ${creatorReferrals.convertedAt} is not null)`,
@@ -141,13 +143,19 @@ export async function getPartners(filter?: {
 
   return rows.map((row) => {
     const availableCents = Number(row.availableCents);
-    const connect: PartnerConnectStateLike = {
-      status: row.status,
-      stripeAccountId: row.stripeAccountId,
-      stripeTransfersEnabled: row.stripeTransfersEnabled,
-      stripeDetailsSubmitted: row.stripeDetailsSubmitted,
-      stripeAccountCountry: row.stripeAccountCountry,
-    };
+    /*
+     * Built once and handed to every predicate, so the roster cannot show a
+     * partner as subscribed by one test and lapsed by another.
+     */
+    const shop = row.shopPlan
+      ? {
+          plan: row.shopPlan,
+          subscriptionStatus: row.shopSubscriptionStatus,
+          compPlan: row.shopCompPlan,
+          stripeAccountId: row.shopStripeAccountId,
+          stripeChargesEnabled: row.shopStripeChargesEnabled ?? false,
+        }
+      : null;
 
     return {
       id: row.id,
@@ -168,25 +176,14 @@ export async function getPartners(filter?: {
       heldCents: Number(row.heldCents),
       currency: row.currency ?? "USD",
       payable: isPayableBalance(availableCents, settings.payoutMinimumCents),
-      connectReady: canReceiveTransfer(connect),
-      connectState: partnerConnectState(connect),
-      stripeAccountCountry: row.stripeAccountCountry,
+      connectReady: canBePaid(shop),
+      payoutBlocker: payoutBlocker(shop),
+      subscribed: hasLiveSubscription(shop),
+      stripeAccountCountry: row.shopStripeCountry,
       appliedAt: row.appliedAt,
       lastEarnedAt: row.lastEarnedAt ? new Date(row.lastEarnedAt) : null,
     };
   });
-}
-
-/** How many are waiting on a decision — the sidebar's badge. */
-export async function countPendingApplications(): Promise<number> {
-  await requireStaff();
-  const row = maybeRow(
-    await getDb()
-      .select({ n: sql<string>`count(*)` })
-      .from(partners)
-      .where(eq(partners.status, "pending")),
-  );
-  return Number(row?.n ?? 0);
 }
 
 /** Programme totals for the page header. */

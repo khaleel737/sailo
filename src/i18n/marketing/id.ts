@@ -17,9 +17,9 @@ export const marketingId: MarketingDictionary = {
 
   hero: {
     badge: "Gratis mulai, gratis seterusnya",
-    title: "Tautan di bio Anda seharusnya {highlight}.",
-    titleHighlight: "menerima pesanan",
-    body: "Sailo mengubahnya jadi toko sungguhan — foto, harga, pencarian, checkout — dan mengirim setiap pesanan ke aplikasi chat yang memang sudah Anda balas tiap hari.",
+    title: "Seluruh toko Anda, dalam {highlight}.",
+    titleHighlight: "satu tautan",
+    body: "Anda sudah menerima pesanan lewat DM. Sailo menaruh toko sungguhan di depannya — foto, harga, pencarian, dan pembayaran di balik satu tautan — dan setiap pesanan tetap masuk ke chat yang memang Anda balas.",
     ctaPrimary: "Buat toko Anda — gratis",
     ctaSecondary: "Buka toko sungguhan",
     proof1: "Aktif dalam kurang dari satu menit",
@@ -56,18 +56,6 @@ export const marketingId: MarketingDictionary = {
     shop4: "Kunjungan, pesanan, dan pembeli berulang, terhitung",
   },
 
-  versus: {
-    title: "Satu tautan. Satu toko. Tanpa kompromi.",
-    body: "Halaman tautan tidak bisa menerima pesanan. Toko penuh adalah pekerjaan kedua. Sailo adalah jalan tengah yang terus diminta orang.",
-    us: "Sailo",
-    r1: "Satu tautan pendek untuk bio Anda",
-    r2: "Produk dengan foto, harga, dan stok",
-    r3: "Pesanan masuk ke WhatsApp, tanpa checkout yang perlu disiapkan",
-    r4: "Pemesanan jadwal dan unduhan digital instan",
-    r5: "Paket gratis yang benar-benar bisa dipakai berjualan",
-    r6: "35 bahasa, termasuk yang dibaca dari kanan ke kiri",
-    note: "Bagaimana tiap alat memposisikan dirinya, Agustus 2026. Periksa paket terbaru sebelum pindah.",
-  },
 
   steps: {
     eyebrow: "Cara kerjanya",
@@ -130,7 +118,7 @@ export const marketingId: MarketingDictionary = {
   pricing: {
     eyebrow: "Harga",
     title: "Gratis untuk mulai, dan gratis untuk terus berjalan.",
-    body: "Sailo tidak pernah mengambil bagian dari penjualan Anda — tidak di paket berbayar, dan tidak di paket gratis.",
+    body: "Pesanan lewat chat, transfer bank, dan tunai sepenuhnya milik Anda, di semua paket. Penjualan kartu dikenakan {fee} dari nilai barang — tidak pernah dari ongkir atau pajak.",
     freeTagline: "Semua yang Anda butuhkan untuk pesanan pertama.",
     proTagline: "Ruang untuk tumbuh, dan toko yang terlihat seperti milik Anda sendiri.",
     bizTagline: "Pembayaran kartu, promosi, dan rujukan — alat yang menumbuhkan pendapatan.",
@@ -207,7 +195,7 @@ export const marketingId: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — ubah tautan di bio Anda jadi toko",
+    title: "Sailo — toko online semudah tautan di bio",
     description:
       "Sailo mengubah tautan di bio Anda menjadi toko sungguhan. Jual produk, berkas digital, atau jasa, terima pesanan lewat WhatsApp atau kartu, dalam 35 bahasa. Gratis untuk mulai, dan Sailo tidak mengambil komisi.",
     ogTitle: "Sailo — satu tautan, seluruh toko Anda",

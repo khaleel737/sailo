@@ -22,7 +22,9 @@ import { can } from "@/lib/plans";
 import { type QuoteLine } from "@/lib/quote";
 import { variantLabel } from "@/lib/variants";
 import { releaseStock, reserveStock } from "@/lib/inventory";
-import { handOffToStripe } from "@/lib/orders/card-handoff";
+import { handOffSubscription, handOffToStripe } from "@/lib/orders/card-handoff";
+import { intervalOf, isMembership } from "@/lib/memberships";
+import { createManualSubscription } from "@/lib/membership-renewals";
 import { claimCouponRedemption } from "@/lib/orders/coupon-redemption";
 import { claimSlots, releaseSlots, slotEnd } from "@/lib/booking/claim";
 import { downloadUrl, newDownloadToken, releasesImmediately } from "@/lib/downloads";
@@ -30,6 +32,7 @@ import { resolveDigitalDelivery } from "@/lib/orders/digital-delivery";
 import { eventSalesOpen, ticketValues } from "@/lib/tickets";
 import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";
 import { notifySellerOfOrder } from "@/lib/orders/notify-seller";
+import { emitOrderWebhook } from "@/lib/webhooks/emit";
 
 
 /**
@@ -274,8 +277,19 @@ export async function createOrderIntent(
         paymentStatus: "unpaid",
       }),
     );
+  /*
+   * A membership always gets a token, whether or not it delivers a file.
+   *
+   * The token is what addresses the member's own page, and that page is where
+   * cancelling lives. Without one there is no link to put in the welcome
+   * email, and a member who cannot find how to stop paying rings their bank
+   * instead — a chargeback costs the seller the month, the card fee, a
+   * dispute fee and a mark against their Stripe account.
+   */
+  const isMembershipOrder = isMembership(head.product);
   const downloadToken =
-    digital.downloadToken ?? (sellsTickets ? newDownloadToken() : null);
+    digital.downloadToken ??
+    (sellsTickets || isMembershipOrder ? newDownloadToken() : null);
   const unlockNow =
     (deliversFiles ? digital.unlockNow : true) &&
     (sellsTickets ? eventsUnlockNow : true) &&
@@ -515,7 +529,83 @@ export async function createOrderIntent(
   }
 
   let cardHandoff: Handoff | null = null;
-  if (method.type === "card") {
+
+  /*
+   * A membership is handed to a different kind of session.
+   *
+   * Everything above this line was the same for it as for any other order —
+   * the buyer, the order row, the totals — and that is on purpose: a
+   * membership's *first* payment is an ordinary sale, and every renewal after
+   * it writes an ordinary order too. Only the handoff differs, because a
+   * recurring charge is a Stripe subscription rather than a one-off payment
+   * intent, and only one of the two modes can exist on a session.
+   *
+   * `resolveOrderIntent` has already refused a mixed basket, a non-card rail
+   * and a coupon, so by here `head` is the only line and it is the membership.
+   */
+  /*
+   * A membership on a manual rail: the arrangement is recorded now, and starts
+   * when the seller says the money arrived.
+   *
+   * `incomplete` until then, which means no access — somebody who has *said*
+   * they will pay by bank transfer has not paid, and letting them in on the
+   * promise is how a gym ends up with members it is not being paid for. The
+   * order itself is an ordinary unpaid order on their chosen rail, so the
+   * buyer gets the same handoff and the seller the same dropdown as for
+   * anything else they sell.
+   */
+  if (isMembershipOrder && method.type !== "card") {
+    const subscription = await createManualSubscription({
+      shop,
+      order: {
+        id: order.id,
+        clientId,
+        productId: head.productId,
+        paymentMethod: method.type,
+        totalCents: totals.totalCents,
+        currency: shop.currency,
+      },
+      interval: intervalOf(head.product),
+    });
+
+    /*
+     * No subscription row, no membership. `createManualSubscription` returns
+     * null only when the insert comes back empty — rare, but if the order were
+     * allowed to stand it would take the buyer's money (invoice and "we have
+     * your order" are both issued below) for an arrangement that never starts:
+     * `extendForPaidOrder` needs `subscriptionId` and no-ops forever without
+     * it. Rolled back like the coupon claim above, and for the same reason —
+     * this is still before anything irreversible.
+     */
+    if (!subscription) {
+      await releaseStockFor(taken);
+      await releaseSlots(order.id);
+      await db.delete(orders).where(eq(orders.id, order.id));
+      return { ok: false, error: "Couldn't start the membership. Try again." };
+    }
+
+    await db
+      .update(orders)
+      .set({ subscriptionId: subscription.id, updatedAt: new Date() })
+      .where(eq(orders.id, order.id));
+  }
+
+  /*
+   * And on a card, where Stripe runs the cycle instead. The two are mutually
+   * exclusive by rail, not by preference: a subscription-mode Checkout Session
+   * needs a card, and a shop with no Stripe connection has none to offer.
+   */
+  if (isMembershipOrder && method.type === "card") {
+    const member = await handOffSubscription({
+      shop,
+      orderId: order.id,
+      product: head.product,
+      successUrl: `${base}/${shop.handle}/p/${head.product.slug}?subscribed=1`,
+      cancelUrl: `${base}/${shop.handle}/p/${head.product.slug}?cancelled=1`,
+    });
+    if (!member.ok) return { ok: false, error: member.error };
+    cardHandoff = member.handoff;
+  } else if (method.type === "card") {
     const card = await handOffToStripe({
       shop,
       orderId: order.id,
@@ -557,6 +647,16 @@ export async function createOrderIntent(
    * "we have your order" hands them something un-recallable for an order the
    * sweep will cancel in 24 hours. Both move to
    * `checkout.session.completed`, which is where the money actually arrives.
+   */
+  /*
+   * The card rail is the only one that defers, membership or not.
+   *
+   * A manual membership signup is an ordinary manual order: the order *is* the
+   * commitment, the seller confirms the money later by hand, and no webhook is
+   * ever coming — so its invoice and its "we have your order" have to be
+   * issued here or they never will be. Deferring them because it happens to be
+   * a membership would leave a bank-transfer member with no invoice to pay
+   * against and nothing in their inbox saying how.
    */
   const settlesAtCheckout = method.type !== "card";
 
@@ -603,6 +703,34 @@ export async function createOrderIntent(
     after(() => notifySellerOfOrder({ shop, orderId: order.id }));
   }
 
+  /*
+   * The same discriminator again, and for the same reason.
+   *
+   * On the rails that settle here, this order *is* the commitment and nothing
+   * else is coming, so `order.created` belongs at this moment. On the card
+   * rail the buyer has only opened a Stripe session — a third of which are
+   * abandoned and swept — and emitting here would fire every seller's Zap for
+   * checkouts that never became orders. That rail's `order.created` is
+   * published by the Connect webhook alongside `order.paid`, so a consumer
+   * subscribing to `order.created` gets exactly one event per real order
+   * whichever way the shop takes money.
+   *
+   * Inside `after()`, like the mail above: the row is committed by the time it
+   * runs, and a webhook for an order that failed to commit would be a lie
+   * already delivered to somebody's CRM.
+   *
+   * No `order.paid` alongside it. Every order this function writes is
+   * `paymentStatus: "unpaid"` — even a cash sale, because on these rails the
+   * money arrives after the order and the seller confirming it in the admin is
+   * the event that means it came. That confirmation is where `order.paid` is
+   * emitted, in `updatePaymentStatus`.
+   */
+  if (settlesAtCheckout) {
+    after(() =>
+      emitOrderWebhook({ shop, event: "order.created", orderId: order.id }),
+    );
+  }
+
   // Buyers who leave an email can be offered their own referral link.
   const referral =
     shop.affiliatesEnabled && can(shop, "affiliates") && email
@@ -647,6 +775,10 @@ export async function createOrderIntent(
     // Already spelled out per line above; repeating it would read as double.
     quantity: lines.length > 1 ? 1 : head.quantity,
     priceLabel: formatMoney(totals.totalCents, shop.currency),
+    // Venmo and PayPal put the amount inside the URL, and neither accepts a
+    // formatted one. Same number as `priceLabel`, from the same totals.
+    totalCents: totals.totalCents,
+    currency: shop.currency,
     productUrl:
       base && lines.length === 1
         ? `${base}/${shop.handle}/p/${head.product.slug}`

@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Download, Loader2, X } from "lucide-react";
 import { createOrderIntent } from "@/lib/actions/orders";
 import { markPendingOrder } from "@/lib/cart";
+import { countriesByName, countryName } from "@/lib/countries";
+import { shippableCountries, shipsTo } from "@/lib/delivery";
 import type { OrderIntentResult } from "@/lib/orders/types";
 import { useCheckoutQuote } from "./use-checkout-quote";
 import {
@@ -61,12 +63,57 @@ export function CheckoutPanel({
   const [deliveryId, setDeliveryId] = useState<string | null>(
     deliveryOptions[0]?.id ?? null,
   );
+  /*
+   * Where it's going, which now decides what may be offered rather than merely
+   * being copied onto the packing slip.
+   *
+   * Seeded with the shop's only destination when it has exactly one. A shop
+   * that posts only within Croatia has a country list holding Croatia, and
+   * making the buyer pick it out of a list of one would be asking a question
+   * whose answer we already have — while leaving it blank would open the panel
+   * with no delivery options at all. It is not a guess about the buyer: it is
+   * the only place this shop posts to, and if that isn't where they are, the
+   * panel says so as soon as the rest of the form is filled.
+   */
+  const [country, setCountry] = useState(() => {
+    const reachable = shippableCountries(deliveryOptions);
+    return reachable?.length === 1 ? (reachable[0] ?? "") : "";
+  });
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /*
+   * Tracked only to answer "has the other one been filled in?" — the fields
+   * stay uncontrolled and the values are read off the form on submit, so this
+   * is about which field is required, not about who owns the text.
+   */
+  const [emailTyped, setEmailTyped] = useState("");
+  const [phoneTyped, setPhoneTyped] = useState("");
   const [result, setResult] = useState<Extract<
     OrderIntentResult,
     { ok: true }
   > | null>(null);
+
+  /*
+   * Which rates this order could have, given where it's going.
+   *
+   * `shipsTo` is the same function the server asks — an empty zone is
+   * anywhere, a collection is unaffected, and a rate that names countries
+   * refuses one it cannot check. Filtering here rather than round-tripping
+   * keeps the country and the rates in step within a single frame; the server
+   * asks again before anything is charged, so this is presentation and not
+   * enforcement.
+   */
+  const deliverable = deliveryOptions.filter((option) => shipsTo(option, country));
+  /*
+   * The rate in force, read back through what is still on offer rather than
+   * trusted — the same rule the payment rail below follows, and for the same
+   * reason. Changing the country from Croatia to Germany can withdraw the rate
+   * that was selected, and an order placed on a rate the panel had stopped
+   * showing is the bug that rule exists to prevent.
+   */
+  const deliveryChoice = deliverable.some((d) => d.id === deliveryId)
+    ? deliveryId
+    : (deliverable[0]?.id ?? null);
 
   /*
    * Every figure on this panel comes from the server. `useCheckoutQuote` owns
@@ -77,7 +124,8 @@ export function CheckoutPanel({
   const quote = useCheckoutQuote({
     shopId,
     items,
-    deliveryId,
+    deliveryId: deliveryChoice,
+    country,
     needsDeliveryHint,
   });
   const { preview, coupon, dispatchCoupon, totals, tax } = quote;
@@ -92,13 +140,54 @@ export function CheckoutPanel({
     };
   }, [onClose]);
 
-  const selectedDelivery = deliveryOptions.find((d) => d.id === deliveryId);
+  const selectedDelivery = deliverable.find((d) => d.id === deliveryChoice);
   // The server decides all three: a basket of downloads isn't shipped, a
   // collection order has nowhere to deliver to, and a rail whose promise is a
   // doorstep is not on offer to an order that never reaches one.
   const showDelivery = quote.needsDelivery && deliveryOptions.length > 0;
   const needsAddress = quote.needsAddress;
   const rails = railsForOrder(methods, quote.canPayInPerson);
+
+  /* ---- Where it's going ------------------------------------------------- */
+
+  /*
+   * The countries this shop actually posts to, or null when nothing narrows
+   * it. Null is the common case and means the dropdown holds every country;
+   * a list means the dropdown holds only those, which is the whole feature in
+   * one glance — a Croatia-only shop offers Croatia and nothing else, so the
+   * buyer learns the rule by reading it instead of by being refused at the end.
+   */
+  const reachable = shippableCountries(deliveryOptions);
+  const countryChoices = useMemo(() => {
+    const all = countriesByName(locale);
+    return reachable ? all.filter((c) => reachable.includes(c.code)) : all;
+    // `reachable` is rebuilt each render from a prop that rarely changes;
+    // joined so an identical list doesn't re-sort 244 names.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locale, reachable?.join(",")]);
+
+  /*
+   * Ask only when the answer changes something. An unrestricted shop keeps the
+   * field exactly as optional as it has always been — the reasoning for
+   * leaving region, postcode and country alone was that a required field an
+   * honest buyer cannot fill is worse than a blank one, and a shop that posts
+   * everywhere has no reason to overturn it. A collection order never needs
+   * one either: the buyer is coming to the seller.
+   */
+  const countryMatters =
+    quote.needsDelivery && (reachable !== null || needsAddress);
+  const countryRequired =
+    quote.needsDelivery &&
+    reachable !== null &&
+    selectedDelivery?.type !== "collection";
+
+  /*
+   * The shop has rates and not one of them reaches the buyer. Distinct from
+   * "this shop has no delivery options at all", which is an existing and
+   * perfectly good configuration that takes physical orders with no fee — and
+   * which `showDelivery` already keeps this block out of.
+   */
+  const noRoute = showDelivery && deliverable.length === 0;
 
   /*
    * The rail in force, which is not always the one last clicked: the quote can
@@ -112,8 +201,23 @@ export function CheckoutPanel({
     : (rails[0]?.type ?? chosen);
   const def = PAYMENT_METHOD_DEFS[method];
   const rail = railCopy(method, t);
-  const needsContact = Boolean(def.requires.contact);
-  const needsEmail = Boolean(def.requires.email);
+
+  /*
+   * Which of the two ways of reaching the buyer is doing the work.
+   *
+   * The rule is "one of them", which HTML has no attribute for — so each field
+   * is required exactly while the other is empty, and both stop being required
+   * as soon as either is filled. That gets the browser's own validation, in the
+   * buyer's own language, for a rule it cannot otherwise express; the server
+   * checks the same thing, because a form is a courtesy and not a guarantee.
+   *
+   * An email specifically is needed when the rail settles by receipt, or when
+   * the order carries something that arrives by email. Then the phone is
+   * genuinely optional and says so.
+   */
+  const needsEmail = Boolean(def.requires.email) || quote.needsEmail;
+  const emailRequired = needsEmail || !phoneTyped.trim();
+  const phoneRequired = !needsEmail && !emailTyped.trim();
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -154,7 +258,7 @@ export function CheckoutPanel({
         shopId,
         items,
         paymentMethod: method,
-        deliveryMethodId: deliveryId ?? undefined,
+        deliveryMethodId: deliveryChoice ?? undefined,
         couponCode: quote.couponCode,
         affiliateCode: readReferralCode() ?? undefined,
         customerName: String(data.get("customerName") ?? ""),
@@ -165,7 +269,18 @@ export function CheckoutPanel({
         city: String(data.get("city") ?? ""),
         region: String(data.get("region") ?? ""),
         postalCode: String(data.get("postalCode") ?? ""),
-        country: String(data.get("country") ?? ""),
+        /*
+         * From state rather than off the form, unlike every field around it.
+         *
+         * This is the one value the panel *reasoned* with — it decided which
+         * delivery rates were on offer and which the order is being placed on
+         * — so sending it is what makes the server check the same country the
+         * buyer was shown rates for. Read back off the form it could differ by
+         * a frame, and a rate filtered on one country and charged against
+         * another is precisely the drift the server-side check exists to
+         * catch.
+         */
+        country,
         note: String(data.get("note") ?? ""),
         /*
          * Sent as what the buyer did, not as what the shop requires. The
@@ -317,15 +432,69 @@ export function CheckoutPanel({
                 </p>
               ) : null}
 
+              {/*
+                Where it's going, above what it costs to send there — because
+                it now decides that, and because a buyer answers "where am I"
+                before "which courier". One render site on purpose: this used
+                to be a free-text box inside the address fieldset, and a
+                country asked in two places is the same guard-at-one-sink bug
+                in the UI that the server-side rules keep guarding against.
+              */}
+              {countryMatters ? (
+                <div>
+                  <label
+                    htmlFor="checkout-country"
+                    className="mb-1.5 block text-sm font-medium"
+                  >
+                    {t.checkout.shipTo}
+                  </label>
+                  <select
+                    id="checkout-country"
+                    name="country"
+                    required={countryRequired}
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    // `country`, not `country-name`: the value is an alpha-2
+                    // code now, which is what this token tells the browser to
+                    // fill and what every stored address wants.
+                    autoComplete="country"
+                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none"
+                  >
+                    <option value="">{t.checkout.country}</option>
+                    {countryChoices.map((choice) => (
+                      <option key={choice.code} value={choice.code}>
+                        {choice.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : null}
+
               {showDelivery ? (
                 <fieldset>
                   <legend className="mb-1.5 text-sm font-medium">
                     {t.checkout.howReceive}
                   </legend>
+                  {noRoute ? (
+                    /*
+                     * Said here, in the buyer's language, next to the country
+                     * they just chose — rather than by the server after they
+                     * have filled in a whole checkout. The order is refused
+                     * there too; this is so nobody has to reach it.
+                     */
+                    <p className="surface-elevated rounded-xl p-2.5 text-sm">
+                      {country
+                        ? interpolate(t.checkout.noShippingTo, {
+                            shop: shopName,
+                            country: countryName(country, locale),
+                          })
+                        : t.checkout.chooseCountryFirst}
+                    </p>
+                  ) : (
                   <div className="space-y-1.5">
-                    {deliveryOptions.map((option) => {
+                    {deliverable.map((option) => {
                       const d = deliveryCopy(option.type, t);
-                      const active = deliveryId === option.id;
+                      const active = deliveryChoice === option.id;
                       const free =
                         option.freeOverCents !== null &&
                         totals.subtotalCents - totals.discountCents >=
@@ -382,6 +551,7 @@ export function CheckoutPanel({
                       );
                     })}
                   </div>
+                  )}
                 </fieldset>
               ) : null}
 
@@ -427,6 +597,9 @@ export function CheckoutPanel({
               <div className="space-y-2.5">
                 <input
                   name="customerName"
+                  // Whose order it is. Every list, email and packing slip
+                  // names the buyer, and named nobody without this.
+                  required
                   placeholder={t.checkout.yourName}
                   autoComplete="name"
                   className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
@@ -435,12 +608,13 @@ export function CheckoutPanel({
                   <input
                     name="customerEmail"
                     type="email"
-                    // A card receipt has nowhere to go without one.
-                    required={needsEmail}
+                    // Required outright when a receipt, a download or a ticket
+                    // has to reach an inbox; otherwise required only while no
+                    // phone number has been given.
+                    required={emailRequired}
+                    onChange={(e) => setEmailTyped(e.target.value)}
                     placeholder={
-                      needsContact || needsEmail
-                        ? t.checkout.email
-                        : t.checkout.emailOptional
+                      emailRequired ? t.checkout.email : t.checkout.emailOptional
                     }
                     autoComplete="email"
                     className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
@@ -448,16 +622,20 @@ export function CheckoutPanel({
                   <input
                     name="customerPhone"
                     type="tel"
-                    placeholder={needsContact ? t.checkout.phone : t.checkout.phoneOptional}
+                    required={phoneRequired}
+                    onChange={(e) => setPhoneTyped(e.target.value)}
+                    placeholder={
+                      phoneRequired ? t.checkout.phone : t.checkout.phoneOptional
+                    }
                     autoComplete="tel"
                     className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                   />
                 </div>
-                {needsContact ? (
-                  <p className="text-muted text-xs">
-                    {interpolate(t.checkout.contactHint, { shop: shopName })}
-                  </p>
-                ) : null}
+                {/* Why the shop is asking. Shown on every rail now, because
+                    every rail needs one of the two fields above it. */}
+                <p className="text-muted text-xs">
+                  {interpolate(t.checkout.contactHint, { shop: shopName })}
+                </p>
               </div>
 
               {needsAddress ? (
@@ -467,6 +645,13 @@ export function CheckoutPanel({
                   </legend>
                   <input
                     name="addressLine1"
+                    // The street and the town are what make this postable. The
+                    // region and the postcode are left alone: plenty of real
+                    // addresses have neither, and a required field an honest
+                    // buyer cannot fill is worse than a blank one. The country
+                    // is asked above the delivery options instead, because it
+                    // decides which of them are on offer.
+                    required
                     placeholder={t.checkout.street}
                     autoComplete="address-line1"
                     className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
@@ -480,6 +665,7 @@ export function CheckoutPanel({
                   <div className="grid grid-cols-2 gap-2">
                     <input
                       name="city"
+                      required
                       placeholder={t.checkout.city}
                       autoComplete="address-level2"
                       className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
@@ -491,20 +677,12 @@ export function CheckoutPanel({
                       className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <input
-                      name="postalCode"
-                      placeholder={t.checkout.postalCode}
-                      autoComplete="postal-code"
-                      className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
-                    />
-                    <input
-                      name="country"
-                      placeholder={t.checkout.country}
-                      autoComplete="country-name"
-                      className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
-                    />
-                  </div>
+                  <input
+                    name="postalCode"
+                    placeholder={t.checkout.postalCode}
+                    autoComplete="postal-code"
+                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
+                  />
                 </fieldset>
               ) : null}
 
@@ -692,7 +870,11 @@ export function CheckoutPanel({
 
               <button
                 type="submit"
-                disabled={pending || !preview}
+                // `noRoute` is the shop having nowhere to send this. The
+                // server refuses it anyway, but letting the button be pressed
+                // means filling in a whole checkout to be told no by an
+                // answer the panel already had.
+                disabled={pending || !preview || noRoute}
                 className="accent-bg flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition hover:opacity-90 disabled:opacity-60"
               >
                 {pending ? <Loader2 className="size-4 animate-spin" /> : null}

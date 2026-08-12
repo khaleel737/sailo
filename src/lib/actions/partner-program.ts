@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { getDb } from "@/db";
 import { staffActions } from "@/db/schema";
 import { requireStaff, requireUser } from "@/lib/session";
@@ -9,12 +8,10 @@ import {
   applyToProgram,
   approvePartner,
   getPartnerById,
-  getPartnerForUser,
   setPartnerCommission,
   setPartnerNotes,
   setPartnerStatus,
 } from "@/lib/partners/applications";
-import { startPartnerOnboarding, syncPartnerAccount } from "@/lib/partners/connect";
 import { payPartner, runPayouts } from "@/lib/partners/payouts";
 import { markPaidManually } from "@/lib/hq/partners";
 import { updateProgramSettings } from "@/lib/partners/settings";
@@ -73,37 +70,6 @@ export async function applyToPartnerProgram(
         ? "You're in. Your link is ready below."
         : "Application received — we'll email you when it's reviewed.",
   };
-}
-
-/**
- * Sends the partner to Stripe to set up where their money lands.
- *
- * A redirect rather than a returned URL: account links are single-use and
- * expire in minutes, so one is minted per press and followed immediately.
- * `redirect()` throws, which is why it sits outside the try — catching it
- * would swallow the navigation.
- */
-export async function startPartnerConnect(formData: FormData): Promise<void> {
-  const user = await requireUser();
-  const partner = await getPartnerForUser(user.id);
-  if (!partner) redirect("/partners");
-
-  const country = String(formData.get("country") ?? "").trim() || undefined;
-  const url = await startPartnerOnboarding(partner, country);
-  redirect(url);
-}
-
-/**
- * Re-reads the partner's account from Stripe after they come back.
- *
- * Onboarding finishing is not the same as being payable — Stripe may still be
- * verifying — so the return path syncs rather than assuming.
- */
-export async function refreshPartnerConnect(): Promise<void> {
-  const user = await requireUser();
-  const partner = await getPartnerForUser(user.id);
-  if (partner) await syncPartnerAccount(partner);
-  revalidatePath("/partners");
 }
 
 /* -------------------------------------------------------------------------- */

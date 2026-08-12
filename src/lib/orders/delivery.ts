@@ -2,7 +2,7 @@ import "server-only";
 import { and, asc, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { deliveryMethods } from "@/db/schema";
-import { isDeliveryConfigured } from "@/lib/delivery";
+import { isDeliveryConfigured, shipsTo } from "@/lib/delivery";
 
 /**
  * Picks the delivery method for an order.
@@ -10,12 +10,33 @@ import { isDeliveryConfigured } from "@/lib/delivery";
  * A requested id has to belong to this shop and be usable; anything else falls
  * back to the shop's first option rather than failing the order, because a
  * stale id from a cached page is the buyer's fault least of all.
+ *
+ * The three ways this answers "no delivery" are three different facts and must
+ * not be collapsed:
+ *
+ *   `undefined`       Nothing to price. Either the basket doesn't travel, or
+ *                     the shop has configured no delivery options at all —
+ *                     which is a shop that takes physical orders with no
+ *                     delivery choice and no fee, and has always worked. A
+ *                     zone must never turn that into a refusal.
+ *
+ *   `"unavailable"`   The rate the buyer asked for is not one this shop can
+ *                     use. A stale id from a cached page.
+ *
+ *   `"unserviceable"` The shop has rates and none of them reaches this
+ *                     country. The one refusal zones add — and the reason the
+ *                     country has to be passed in rather than checked by the
+ *                     caller afterwards: the `available[0]` fallback below
+ *                     would otherwise quietly post an order to a country the
+ *                     seller had just excluded.
  */
 
 export async function resolveDelivery(
   shopId: string,
   needed: boolean,
   requestedId: string | undefined,
+  /** Where it's going. Unset only narrows to rates that reach everywhere. */
+  country?: string | null,
 ) {
   if (!needed) return undefined;
   const db = getDb();
@@ -31,8 +52,15 @@ export async function resolveDelivery(
   ).filter((d) => isDeliveryConfigured(d.type, d.config));
 
   if (available.length === 0) return undefined;
-  if (!requestedId) return available[0];
-  return available.find((d) => d.id === requestedId) ?? ("unavailable" as const);
+
+  // Zones are applied before anything is chosen, so neither the fallback nor
+  // the requested id can reach past them. An empty `countries` is "anywhere",
+  // so a shop that has never touched this narrows to exactly what it had.
+  const servable = available.filter((d) => shipsTo(d, country));
+  if (servable.length === 0) return "unserviceable" as const;
+
+  if (!requestedId) return servable[0];
+  return servable.find((d) => d.id === requestedId) ?? ("unavailable" as const);
 }
 
 /** The earliest of several deadlines, ignoring the ones that never expire. */

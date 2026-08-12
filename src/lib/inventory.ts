@@ -2,7 +2,7 @@ import "server-only";
 import { publishShopEvent } from "@/lib/events";
 import { maybeRow } from "@/lib/invariant";
 import { releaseCouponRedemption } from "@/lib/orders/coupon-redemption";
-import { and, asc, eq, gte, inArray, isNull, isNotNull, lt, or, sql } from "drizzle-orm";
+import { and, asc, eq, gte, inArray, isNull, isNotNull, lt, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { releaseSlots, retakeSlots } from "@/lib/booking/claim";
 import {
@@ -339,6 +339,19 @@ export async function releaseAbandonedCheckouts(opts?: {
        * buyer walked away.
        */
       eq(orders.paymentMethod, "card"),
+      /*
+       * A membership signup is not an abandoned checkout, however long it
+       * sits `unpaid`.
+       *
+       * Its first payment arrives on `invoice.paid`, and on a fourteen-day
+       * trial that is a fortnight away — so the 24-hour rule would cancel the
+       * order of somebody who had already subscribed, in the middle of their
+       * trial, and hand the seller a cancelled sale that Stripe went on
+       * billing. `subscription_id` is null until the webhook links it, so the
+       * *kind* is what identifies these: it is written when the order is
+       * created, before any webhook has been anywhere near it.
+       */
+      ne(orders.productKind, "membership"),
       isNull(orders.restockedAt),
       lt(orders.createdAt, cutoff),
       ...(opts?.shopId ? [eq(orders.shopId, opts.shopId)] : []),

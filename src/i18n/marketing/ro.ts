@@ -17,9 +17,9 @@ export const marketingRo: MarketingDictionary = {
 
   hero: {
     badge: "Gratuit la început, gratuit în continuare",
-    title: "Linkul din bio ar trebui deja să {highlight}.",
-    titleHighlight: "primească comenzi",
-    body: "Sailo îl transformă într-un magazin adevărat — poze, prețuri, căutare, plată — și trimite fiecare comandă în aplicația de mesaje la care oricum răspunzi deja.",
+    title: "Tot magazinul tău, la {highlight}.",
+    titleHighlight: "un singur link",
+    body: "Deja primești comenzi în mesaje. Sailo pune în fața lor un magazin adevărat — poze, prețuri, căutare și plată în spatele unui singur link — iar fiecare comandă ajunge tot în conversația la care răspunzi oricum.",
     ctaPrimary: "Creează-ți magazinul — gratuit",
     ctaSecondary: "Deschide un magazin real",
     proof1: "Online în mai puțin de un minut",
@@ -56,18 +56,6 @@ export const marketingRo: MarketingDictionary = {
     shop4: "Vizite, comenzi și clienți care revin, numărați",
   },
 
-  versus: {
-    title: "Un link. Un magazin. Fără compromis.",
-    body: "O pagină de linkuri nu poate prelua o comandă. Un magazin complet e a doua slujbă. Sailo e mijlocul pe care îl cerea toată lumea.",
-    us: "Sailo",
-    r1: "Un singur link scurt pentru bio",
-    r2: "Produse cu poze, prețuri și stocuri",
-    r3: "Comenzile ajung pe WhatsApp, fără plată de configurat",
-    r4: "Programări și descărcări digitale instantanee",
-    r5: "Un plan gratuit cu care chiar poți vinde",
-    r6: "35 de limbi, inclusiv de la dreapta la stânga",
-    note: "Cum se poziționează fiecare instrument, august 2026. Verifică planurile curente înainte să schimbi.",
-  },
 
   steps: {
     eyebrow: "Cum funcționează",
@@ -130,7 +118,7 @@ export const marketingRo: MarketingDictionary = {
   pricing: {
     eyebrow: "Prețuri",
     title: "Gratuit la început și gratuit mai departe.",
-    body: "Sailo nu ia niciodată un procent din vânzările tale — nici pe planurile plătite, nici pe cel gratuit.",
+    body: "Comenzile prin chat, transfer bancar și numerar sunt integral ale tale, pe orice plan. Vânzările cu cardul au {fee} din valoarea mărfii — niciodată din livrare sau taxă.",
     freeTagline: "Tot ce îți trebuie pentru primele comenzi.",
     proTagline: "Loc de creștere și un magazin care arată ca al tău.",
     bizTagline: "Plăți cu cardul, promoții și recomandări — uneltele care cresc încasările.",
@@ -207,7 +195,7 @@ export const marketingRo: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — transformă linkul din bio într-un magazin",
+    title: "Sailo — un magazin online simplu ca un link în bio",
     description:
       "Sailo transformă linkul din bio într-un magazin adevărat. Vinde produse, fișiere digitale sau servicii și primește comenzi pe WhatsApp ori cu cardul, în 35 de limbi. Gratuit la început, fără comision.",
     ogTitle: "Sailo — un link, tot magazinul tău",

@@ -9,8 +9,14 @@ import { callerIp } from "@/lib/client-ip";
 import { resolveLines } from "@/lib/orders/resolve-lines";
 import { resolveDelivery } from "@/lib/orders/delivery";
 import { cartNeedsDelivery, cartSubtotal, quote } from "@/lib/quote";
-import { checkCoupon, COUPON_MESSAGES, normalizeCode } from "@/lib/pricing";
-import { releasesBeforePayment, unitsLeft } from "@/lib/variants";
+import {
+  checkCoupon,
+  COUPON_MESSAGES,
+  normalizeCode,
+  toChargeableTotals,
+} from "@/lib/pricing";
+import { isMembership } from "@/lib/memberships";
+import { cartCanPayInPerson, unitsLeft } from "@/lib/variants";
 import type { OrderLineInput, OrderPreview } from "@/lib/orders/types";
 
 /**
@@ -27,6 +33,11 @@ export async function previewOrder(input: {
   items: OrderLineInput[];
   deliveryMethodId?: string;
   couponCode?: string;
+  /**
+   * Where the buyer says it's going, so a rate they cannot have is not priced
+   * into the total they're reading. Optional: most baskets never travel.
+   */
+  country?: string;
 }): Promise<OrderPreview | { error: string }> {
   // Read-only, but it prices a whole basket on every keystroke in the coupon
   // field, so the ceiling is high enough never to reach a real shopper.
@@ -64,6 +75,7 @@ export async function previewOrder(input: {
     shop.id,
     cartNeedsDelivery(resolved.lines),
     input.deliveryMethodId,
+    input.country,
   );
 
   let coupon: Coupon | null = null;
@@ -126,27 +138,46 @@ export async function previewOrder(input: {
     }
   }
 
-  const deliveryRate = delivery === "unavailable" ? undefined : delivery;
+  /*
+   * A rate that can't be had is a rate that isn't charged for — and that is
+   * the whole of this function's response to it.
+   *
+   * "we don't post to Germany" is a sentence, and a sentence belongs in the
+   * panel, in the buyer's own language, next to the country they just picked.
+   * Refusing here instead would blank the basket mid-shop over a field they
+   * are still filling in, which is exactly the leniency this action exists to
+   * provide. The refusal that counts happens in `createOrderIntent`.
+   */
+  const deliveryRate =
+    delivery === "unavailable" || delivery === "unserviceable" ? undefined : delivery;
+  // A membership carries no shop tax — see the same decision, and why, in
+  // `resolveOrderIntent`. The panel must reach it too, or it would show a tax
+  // line on a total the checkout then charges without one.
+  const isMembershipBasket = resolved.lines.some((line) => isMembership(line.product));
   const priced = quote({
     lines: resolved.lines,
     coupon,
     deliveryMethod: deliveryRate,
-    tax: shop,
+    tax: isMembershipBasket ? null : shop,
     collectAddress: shop.collectAddress,
     deliveryType: deliveryRate?.type ?? null,
     now,
   });
 
   return {
-    totals: priced.totals,
+    // Rounded to the charge step, exactly as `createOrderIntent` rounds the
+    // order it writes — so the total the buyer reads here is the one their card
+    // is asked for, down to the last fils in the five three-decimal currencies.
+    totals: toChargeableTotals(priced.totals, shop.currency, shop.taxInclusive),
     currency: shop.currency,
-    tax: shop.taxEnabled
-      ? {
-          name: shop.taxName,
-          rateBp: shop.taxRateBp,
-          inclusive: shop.taxInclusive,
-        }
-      : null,
+    tax:
+      !isMembershipBasket && shop.taxEnabled
+        ? {
+            name: shop.taxName,
+            rateBp: shop.taxRateBp,
+            inclusive: shop.taxInclusive,
+          }
+        : null,
     lines: priced.lines.map((line, index) => ({
       productId: line.productId,
       variantId: line.variantId,
@@ -169,13 +200,12 @@ export async function previewOrder(input: {
     })),
     needsDelivery: priced.needsDelivery,
     needsAddress: priced.needsAddress,
+    needsEmail: priced.needsEmail,
     hasService: priced.hasService,
     // A pay-in-person rail is fine unless something in the basket unlocks
     // before payment — an instant download. Computed from the resolved
     // products, which carry `releaseOnPayment`.
-    canPayInPerson: !resolved.lines.some((line) =>
-      releasesBeforePayment(line.product.kind, line.product.releaseOnPayment),
-    ),
+    canPayInPerson: cartCanPayInPerson(resolved.lines.map((line) => line.product)),
     couponError,
     couponApplied,
   };

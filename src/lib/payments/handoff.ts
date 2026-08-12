@@ -1,4 +1,5 @@
 import { normalizePhone } from "@/lib/utils";
+import { currencyDecimals, minorPerMajor } from "@/lib/currency";
 import type { PaymentConfig } from "@/db/schema";
 import { isPaymentMethodType } from "./rails";
 
@@ -17,7 +18,39 @@ export type OrderSummary = {
   delivery?: string;
   discount?: string;
   invoiceNumber?: string;
+  /**
+   * The same total as `priceLabel`, unformatted, for the rails that put the
+   * amount inside a URL. Venmo rejects a currency symbol and PayPal.Me reads
+   * the trailing code, so neither can be handed the display string.
+   */
+  totalCents?: number;
+  /** ISO 4217, for the same two links. */
+  currency?: string;
 };
+
+/**
+ * A decimal amount for a pay link: `45`, `45.50`, `1200` for a zero-decimal
+ * currency like JPY.
+ *
+ * Not `toFixed(2)`. That is wrong in both directions — it invents two decimal
+ * places on JPY, where the whole amount is already in major units, and it
+ * truncates the third on JOD. `currencyDecimals` is the same source the
+ * checkout and the invoice already use, so the link cannot quote a total the
+ * order does not.
+ */
+export function payAmount(minor: number, code: string): string {
+  return (minor / minorPerMajor(code)).toFixed(currencyDecimals(code));
+}
+
+/** `@handle`, `$handle`, or a pasted `https://venmo.com/handle` → `handle`. */
+function bareHandle(value: string | undefined) {
+  return (value ?? "")
+    .trim()
+    .replace(/^https?:\/\/[^/]+\//i, "")
+    .replace(/^[@$]/, "")
+    .replace(/[/?#].*$/, "")
+    .trim();
+}
 
 export function orderMessage(order: OrderSummary) {
   const lines = [
@@ -39,8 +72,21 @@ export function orderMessage(order: OrderSummary) {
 
 export type Handoff =
   | { kind: "redirect"; url: string }
-  /** Buyer stays on the page; `message` is offered for copy/paste. */
-  | { kind: "instructions"; message?: string };
+  /**
+   * Buyer stays on the page; `message` is offered for copy/paste.
+   *
+   * `payUrl` is a wallet the buyer can open *and still come back from*, which
+   * is why it lives here rather than as a `redirect`. Venmo and PayPal settle
+   * off platform, so the order stays unpaid until the buyer submits a
+   * reference — send them away with no way back and the seller never learns
+   * the money arrived, then ships nothing.
+   */
+  | {
+      kind: "instructions";
+      message?: string;
+      payUrl?: string;
+      payLabel?: string;
+    };
 
 /**
  * Turns a configured rail plus an order into the buyer's next step. Returns
@@ -93,6 +139,45 @@ export function buildHandoff(
       const phone = (config.phone ?? "").trim();
       if (!phone) return null;
       return { kind: "redirect", url: `tel:${phone.replace(/[^\d+]/g, "")}` };
+    }
+    case "venmo": {
+      const handle = bareHandle(config.venmoHandle);
+      if (!handle) return null;
+      const url = new URL(`https://venmo.com/${encodeURIComponent(handle)}`);
+      url.searchParams.set("txn", "pay");
+      if (order.totalCents !== undefined && order.currency) {
+        url.searchParams.set("amount", payAmount(order.totalCents, order.currency));
+      }
+      /*
+       * The invoice number and nothing else. A Venmo note is public on the
+       * sender's feed by default, so `orderMessage` — which carries the
+       * buyer's name, address and what they bought — must never go in it.
+       */
+      url.searchParams.set(
+        "note",
+        order.invoiceNumber ? `${order.shopName} ${order.invoiceNumber}` : order.shopName,
+      );
+      return { kind: "instructions", message, payUrl: url.toString(), payLabel: "Venmo" };
+    }
+    case "paypal": {
+      const handle = bareHandle(config.paypalMe);
+      if (!handle) return null;
+      /*
+       * PayPal.Me reads the amount from the path and the currency from the
+       * code glued to it — `paypal.me/shop/25USD`. A link with no amount is
+       * still a working link, so an order in a currency we cannot state falls
+       * back to the bare profile rather than to nothing.
+       */
+      const amount =
+        order.totalCents !== undefined && order.currency
+          ? `/${payAmount(order.totalCents, order.currency)}${order.currency.toUpperCase()}`
+          : "";
+      return {
+        kind: "instructions",
+        message,
+        payUrl: `https://paypal.me/${encodeURIComponent(handle)}${amount}`,
+        payLabel: "PayPal",
+      };
     }
     case "bank_transfer":
     case "cod":

@@ -6,6 +6,7 @@ import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { Metric, MetricRow } from "@/app/hq/_components/hq-ui";
 import { getPartners, getProgramTotals } from "@/lib/hq/partners";
 import { getProgramSettings } from "@/lib/partners/settings";
+import type { PayoutBlocker } from "@/lib/partners/eligibility";
 import { shareLabel } from "@/lib/partners/program";
 import { formatMoney } from "@/lib/utils";
 import { DecideButtons } from "./_components/decide-buttons";
@@ -189,7 +190,7 @@ export default async function HqPartnersPage({
               </Td>
 
               <Td label="Payouts">
-                <ConnectPill state={row.connectState} />
+                <ConnectPill blocker={row.payoutBlocker} subscribed={row.subscribed} />
               </Td>
 
               <Td align="end" label="Decide">
@@ -242,21 +243,31 @@ function StatusPill({ status }: { status: string }) {
  * receive is a support problem rather than a payout problem, and it is
  * invisible if you only look at what is owed.
  */
-function ConnectPill({ state }: { state: string }) {
-  const label: Record<string, string> = {
-    active: "Ready",
-    verifying: "Verifying",
-    onboarding: "Unfinished",
-    not_connected: "Not set up",
-    unsupported_country: "Unsupported",
-  };
+function ConnectPill({
+  blocker,
+  subscribed,
+}: {
+  blocker: PayoutBlocker | null;
+  subscribed: boolean;
+}) {
+  /*
+   * Two independent facts in one cell, and the order matters. A partner can be
+   * payable but lapsed — we owe them and they are no longer earning — and
+   * showing only "Ready" would hide the thing HQ would actually want to know.
+   */
+  if (blocker) {
+    const label: Record<PayoutBlocker, string> = {
+      no_shop: "No shop",
+      no_stripe: "No Stripe",
+      stripe_incomplete: "Verifying",
+    };
+    const tone = blocker === "stripe_incomplete" ? "text-amber-700" : "text-ink-400";
+    return <span className={`text-xs font-medium ${tone}`}>{label[blocker]}</span>;
+  }
 
-  const tone =
-    state === "active"
-      ? "text-emerald-700"
-      : state === "verifying"
-        ? "text-amber-700"
-        : "text-ink-400";
-
-  return <span className={`text-xs font-medium ${tone}`}>{label[state] ?? state}</span>;
+  return (
+    <span className="text-xs font-medium text-emerald-700">
+      Ready{subscribed ? "" : " · lapsed"}
+    </span>
+  );
 }
