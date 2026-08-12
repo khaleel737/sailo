@@ -1,0 +1,23 @@
+{
+  "name": "@sailo/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src || true"
+  },
+  "dependencies": {
+    "@better-auth/expo": "^1.6.25",
+    "better-auth": "^1.6.25"
+  },
+  "devDependencies": {
+    "@sailo/config": "*",
+    "@types/react": "^19",
+    "react": "^19",
+    "typescript": "^5"
+  }
+}

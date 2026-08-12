@@ -7,7 +7,8 @@ import {
 } from "better-auth/api";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { magicLink, twoFactor } from "better-auth/plugins";
+import { bearer, magicLink, twoFactor } from "better-auth/plugins";
+import { expo } from "@better-auth/expo";
 import { getDb } from "@sailo/db";
 import { account, session, twoFactor as twoFactorTable, user, verification } from "@sailo/db/schema";
 import {
@@ -97,6 +98,13 @@ export const auth = betterAuth({
    * every existing enrolment under the old label, so don't.
    */
   appName: "Sailo",
+  /*
+   * The mobile app signs in against this same server, and its deep-link scheme
+   * is not a web origin — better-auth rejects an unknown one, so `sailo://` is
+   * named here for the OAuth/magic-link return leg to be allowed back into the
+   * app. Web origins keep coming from the request host as before.
+   */
+  trustedOrigins: ["sailo://"],
   database: drizzleAdapter(getDb(), {
     provider: "pg",
     schema: { user, session, account, verification, twoFactor: twoFactorTable },
@@ -444,6 +452,16 @@ export const auth = betterAuth({
      */
     twoFactor(),
     // Must stay last so Server Actions can set cookies.
+    /*
+     * The mobile app carries its session as a bearer token, not a cookie — a
+     * native app has no cookie jar. `bearer()` lets the server read
+     * `Authorization: Bearer <token>` and issue the token on sign-in; `expo()`
+     * adds the deep-link handling the Expo client needs on the return leg.
+     * Both sit before `nextCookies()`, which better-auth requires to stay last
+     * so it can write the Set-Cookie for the web after everything else has run.
+     */
+    bearer(),
+    expo(),
     nextCookies(),
   ],
 });
