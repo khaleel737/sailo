@@ -7,12 +7,25 @@
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": { "supportsTablet": true, "bundleIdentifier": "store.sailo.app" },
-    "android": { "package": "store.sailo.app" },
-    "plugins": ["expo-router", "expo-secure-store"],
-    "experiments": { "typedRoutes": true },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "store.sailo.app"
+    },
+    "android": {
+      "package": "store.sailo.app"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
     "extra": {
-      "eas": { "projectId": "SET_BY_eas_init" },
+      "eas": {
+        "projectId": "SET_BY_eas_init"
+      },
       "apiUrl": "https://sailo.store"
     }
   }
