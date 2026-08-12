@@ -5,6 +5,7 @@ import {
   planFor,
   platformFeeBp,
   platformFeeCents,
+  platformFeePercent,
   platformFeeLabel,
 } from "./plans";
 
@@ -85,20 +86,20 @@ describe("the platform fee on a card sale", () => {
     taxInclusive: tax.taxInclusive ?? false,
   });
 
-  it("takes half a percent of the goods", () => {
-    expect(platformFeeBp(free)).toBe(50);
-    expect(platformFeeCents(free, order(4800))).toBe(24);
-    expect(platformFeeLabel(free)).toBe("0.5%");
+  it("takes one percent of the goods", () => {
+    expect(platformFeeBp(free)).toBe(100);
+    expect(platformFeeCents(free, order(4800))).toBe(48);
+    expect(platformFeeLabel(free)).toBe("1%");
   });
 
-  it("takes the discount off first — 0.5% of a price nobody paid is not a sale", () => {
-    expect(platformFeeCents(free, order(10_000, 2_000))).toBe(40);
+  it("takes the discount off first — 1% of a price nobody paid is not a sale", () => {
+    expect(platformFeeCents(free, order(10_000, 2_000))).toBe(80);
   });
 
   it("rounds to the nearest cent", () => {
-    // 0.5% of $2.45 is 1.225 cents; of $2.55 it is 1.275.
-    expect(platformFeeCents(free, order(245))).toBe(1);
-    expect(platformFeeCents(free, order(255))).toBe(1);
+    // 1% of $2.45 is 2.45 cents; of $2.55 it is 2.55.
+    expect(platformFeeCents(free, order(245))).toBe(2);
+    expect(platformFeeCents(free, order(255))).toBe(3);
   });
 
   it("charges nothing on a free order", () => {
@@ -121,29 +122,29 @@ describe("the platform fee on a card sale", () => {
    */
   it("never charges on delivery, which is not in the subtotal", () => {
     // Delivery genuinely is a separate field the function never receives.
-    expect(platformFeeCents(free, order(5_000))).toBe(25);
+    expect(platformFeeCents(free, order(5_000))).toBe(50);
   });
 
   it("charges the full subtotal when tax is added on top", () => {
     // US-style: the $50 is pre-tax and the tax is charged beside it, so the
     // subtotal is already the goods.
-    expect(platformFeeCents(free, order(5_000, 0, { taxRateBp: 2_000 }))).toBe(25);
+    expect(platformFeeCents(free, order(5_000, 0, { taxRateBp: 2_000 }))).toBe(50);
   });
 
   it("strips tax that is baked into the price before charging", () => {
     /*
      * The bug. A €100 VAT-inclusive sale at 20% earns the seller €83.33; the
-     * remaining €16.67 is the government's. Charging 0.5% of €100 billed them
-     * for holding it. `pricing.ts` already strips inclusive tax before paying
-     * affiliate commission — this did not.
+     * remaining €16.67 is the government's. Charging the fee on the full €100
+     * billed them for holding it. `pricing.ts` already strips inclusive tax
+     * before paying affiliate commission — this did not.
      */
     const fee = platformFeeCents(
       free,
       order(10_000, 0, { taxRateBp: 2_000, taxInclusive: true }),
     );
-    // 0.5% of the €83.33 that is actually the seller's, not of the €100.
-    expect(fee).toBe(42);
-    expect(fee).toBeLessThan(50);
+    // 1% of the €83.33 that is actually the seller's, not of the €100.
+    expect(fee).toBe(83);
+    expect(fee).toBeLessThan(100);
   });
 
   it("takes the discount off before extracting the tax", () => {
@@ -153,7 +154,7 @@ describe("the platform fee on a card sale", () => {
         free,
         order(10_000, 2_000, { taxRateBp: 2_000, taxInclusive: true }),
       ),
-    ).toBe(33);
+    ).toBe(67);
   });
 
   it("charges nothing on an inclusive order that is entirely tax", () => {
@@ -161,5 +162,39 @@ describe("the platform fee on a card sale", () => {
     expect(
       platformFeeCents(free, order(100, 0, { taxRateBp: 1_000_000, taxInclusive: true })),
     ).toBe(0);
+  });
+});
+
+/**
+ * The same fee, quoted the way a subscription needs it.
+ *
+ * A recurring charge cannot name an amount — Stripe raises each invoice and a
+ * proration or a coupon changes what it comes to — so the fee goes on as a
+ * percentage. The number has to be the *same* number: a membership charged at
+ * a different rate from a one-time sale would be a second fee policy nobody
+ * decided on, found months later in a payout.
+ */
+describe("the fee on a subscription", () => {
+  const free = { plan: "free", subscriptionStatus: null };
+
+  it("is the one-time rate expressed as a percentage", () => {
+    // 100bp on a 4800 sale is 48 — and 1% of 4800 is the same 48.
+    expect(platformFeePercent(free)).toBe(1);
+    expect(Math.round((4_800 * platformFeePercent(free)) / 100)).toBe(
+      platformFeeCents(free, {
+        subtotalCents: 4_800,
+        discountCents: 0,
+        taxRateBp: 0,
+        taxInclusive: false,
+      }),
+    );
+  });
+
+  it("is a number Stripe will accept", () => {
+    // `application_fee_percent` is a percentage, not basis points: handing it
+    // 50 would take half of every invoice.
+    const percent = platformFeePercent(free);
+    expect(percent).toBeGreaterThan(0);
+    expect(percent).toBeLessThanOrEqual(100);
   });
 });

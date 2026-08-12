@@ -17,9 +17,9 @@ export const marketingKo: MarketingDictionary = {
 
   hero: {
     badge: "무료로 시작, 계속 무료",
-    title: "프로필의 그 링크, 이제 {highlight}.",
-    titleHighlight: "주문을 받아야 합니다",
-    body: "Sailo는 그 링크를 진짜 가게로 바꿉니다 — 사진, 가격, 검색, 결제 — 그리고 모든 주문을 이미 답장하고 계신 그 메신저로 보내드립니다.",
+    title: "{highlight}에, 가게 전부.",
+    titleHighlight: "링크 하나",
+    body: "이미 DM으로 주문을 받고 계십니다. Sailo는 그 앞에 진짜 가게를 놓습니다 — 사진, 가격, 검색, 결제가 링크 하나 뒤에 — 주문은 여전히 원래 답장하시던 그 채팅으로 옵니다.",
     ctaPrimary: "내 가게 만들기 — 무료",
     ctaSecondary: "실제 가게 열어보기",
     proof1: "1분 안에 오픈",
@@ -56,18 +56,6 @@ export const marketingKo: MarketingDictionary = {
     shop4: "방문, 주문, 재구매 고객까지 집계됩니다",
   },
 
-  versus: {
-    title: "링크 하나. 가게 하나. 타협 없이.",
-    body: "링크 페이지는 주문을 받을 수 없습니다. 풀 쇼핑몰은 또 하나의 직업입니다. Sailo는 모두가 찾던 그 중간입니다.",
-    us: "Sailo",
-    r1: "프로필에 넣을 짧은 링크 하나",
-    r2: "사진, 가격, 재고가 있는 상품",
-    r3: "주문은 WhatsApp으로, 결제 설정 없이",
-    r4: "예약과 즉시 디지털 다운로드",
-    r5: "실제로 장사가 되는 무료 플랜",
-    r6: "오른쪽에서 왼쪽으로 읽는 언어를 포함해 35개 언어",
-    note: "각 서비스가 스스로를 소개하는 방식, 2026년 8월 기준. 옮기기 전에 현재 요금제를 확인하세요.",
-  },
 
   steps: {
     eyebrow: "이용 방법",
@@ -130,7 +118,7 @@ export const marketingKo: MarketingDictionary = {
   pricing: {
     eyebrow: "요금",
     title: "시작도 무료, 계속 쓰는 것도 무료.",
-    body: "Sailo는 회원님의 매출에서 몫을 가져가지 않습니다 — 유료 플랜에서도, 무료 플랜에서도.",
+    body: "채팅, 계좌이체, 현금 주문은 모든 플랜에서 전액 회원님의 것입니다. 카드 결제는 상품 금액의 {fee}가 붙습니다 — 배송비나 세금에는 붙지 않습니다.",
     freeTagline: "첫 주문을 받는 데 필요한 모든 것.",
     proTagline: "성장할 공간과, 내 것처럼 보이는 가게.",
     bizTagline: "카드 결제, 프로모션, 추천 — 매출을 키우는 도구들.",
@@ -207,7 +195,7 @@ export const marketingKo: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — 프로필 링크를 가게로 바꾸세요",
+    title: "Sailo — 프로필 링크만큼 간단한 온라인 가게",
     description:
       "Sailo는 프로필의 링크를 진짜 가게로 바꿉니다. 상품, 디지털 파일, 서비스를 판매하고 WhatsApp이나 카드로 주문을 받으세요. 35개 언어 지원. 시작은 무료이며 Sailo는 수수료를 가져가지 않습니다.",
     ogTitle: "Sailo — 링크 하나에, 가게 전부",

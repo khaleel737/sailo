@@ -17,9 +17,9 @@ export const marketingDa: MarketingDictionary = {
 
   hero: {
     badge: "Gratis at starte, gratis at fortsætte",
-    title: "Linket i din bio burde for længst {highlight}.",
-    titleHighlight: "tage imod bestillinger",
-    body: "Sailo gør det til en rigtig butik — billeder, priser, søgning, betaling — og sender hver bestilling til den chatapp, du alligevel allerede svarer i.",
+    title: "Hele din butik på {highlight}.",
+    titleHighlight: "ét link",
+    body: "Du tager allerede imod bestillinger i beskederne. Sailo sætter en rigtig butik foran dem — billeder, priser, søgning og betaling bag ét link — og hver bestilling lander stadig i den chat, du alligevel svarer i.",
     ctaPrimary: "Opret din butik — gratis",
     ctaSecondary: "Åbn en rigtig butik",
     proof1: "Oppe på under et minut",
@@ -56,18 +56,6 @@ export const marketingDa: MarketingDictionary = {
     shop4: "Besøg, bestillinger og faste kunder bliver talt",
   },
 
-  versus: {
-    title: "Ét link. Én butik. Ingen kompromis.",
-    body: "En linkside kan ikke tage imod en bestilling. En fuld webshop er et job nummer to. Sailo er den mellemvej alle bad om.",
-    us: "Sailo",
-    r1: "Ét kort link til din bio",
-    r2: "Varer med billeder, priser og lager",
-    r3: "Bestillinger lander i WhatsApp, ingen betaling at sætte op",
-    r4: "Tider og øjeblikkelige downloads",
-    r5: "En gratis plan, man rent faktisk kan sælge på",
-    r6: "35 sprog, højre mod venstre inklusive",
-    note: "Sådan positionerer hvert værktøj sig selv, august 2026. Tjek de aktuelle planer, før du skifter.",
-  },
 
   steps: {
     eyebrow: "Sådan virker det",
@@ -130,7 +118,7 @@ export const marketingDa: MarketingDictionary = {
   pricing: {
     eyebrow: "Priser",
     title: "Gratis at starte, og gratis at blive ved.",
-    body: "Sailo tager aldrig en andel af dit salg — hverken på de betalte planer eller den gratis.",
+    body: "Bestillinger via chat, bankoverførsel og kontant er helt dine, på alle planer. Kortsalg bærer {fee} af varens pris — aldrig af fragt eller moms.",
     freeTagline: "Alt hvad du skal bruge til dine første bestillinger.",
     proTagline: "Plads til at vokse, og en butik der ligner din egen.",
     bizTagline: "Kortbetaling, kampagner og henvisninger — værktøjerne der løfter omsætningen.",
@@ -207,7 +195,7 @@ export const marketingDa: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — gør linket i din bio til en butik",
+    title: "Sailo — en netbutik så enkel som et link i bio",
     description:
       "Sailo gør linket i din bio til en rigtig butik. Sælg varer, digitale filer eller ydelser, og tag imod bestillinger på WhatsApp eller med kort, på 35 sprog. Gratis at starte, uden provision.",
     ogTitle: "Sailo — ét link, hele din butik",

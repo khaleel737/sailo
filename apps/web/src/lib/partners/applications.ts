@@ -161,19 +161,23 @@ export async function applyToProgram(params: {
       .values({
         userId: params.userId,
         shopId: shop?.id ?? null,
-        status: approveNow ? "approved" : "pending",
+        /*
+         * Always `pending` on the way in, even when we intend to approve.
+         *
+         * `partners_approved_has_code` refuses an approved row with no code,
+         * and the code cannot be minted until the row exists for `claimCode`
+         * to retry against. Inserting `approved` here threw for every
+         * auto-approved applicant — invisible only because auto-approval
+         * requires a paying seller, and nothing exercised that until the
+         * programme started requiring one. The approval is applied below,
+         * after the code.
+         */
+        status: "pending",
         name,
         website: params.website?.trim() || null,
         audience: params.audience?.trim() || null,
         pitch: params.pitch?.trim() || null,
         appliedAt: now,
-        ...(approveNow
-          ? {
-              reviewedAt: now,
-              reviewedBy: "auto",
-              reviewNote: "Auto-approved: active paying seller.",
-            }
-          : {}),
       })
       .returning();
   } catch (error) {
@@ -190,22 +194,22 @@ export async function applyToProgram(params: {
   if (!inserted) return { ok: false, error: "Couldn't file your application. Try again." };
 
   /*
-   * The code comes after the row exists, not in the same insert, because
-   * `claimCode` needs something to retry *against* when it collides. An
-   * auto-approved partner without one would violate the check constraint, so a
-   * failure here has to undo the approval rather than leave a half-made
-   * partner behind.
+   * Code first, then the status — the same order `approvePartner` uses and for
+   * the same reason. A failure to mint leaves an ordinary pending application
+   * that HQ can approve by hand, rather than a half-made partner.
    */
   if (approveNow) {
-    try {
-      await claimCode(inserted.id);
-    } catch (error) {
-      await db
-        .update(partners)
-        .set({ status: "pending", reviewedAt: null, reviewedBy: null, reviewNote: null })
-        .where(eq(partners.id, inserted.id));
-      throw error;
-    }
+    await claimCode(inserted.id);
+    await db
+      .update(partners)
+      .set({
+        status: "approved",
+        reviewedAt: now,
+        reviewedBy: "auto",
+        reviewNote: "Auto-approved: active paying seller.",
+        updatedAt: now,
+      })
+      .where(eq(partners.id, inserted.id));
   }
 
   return {

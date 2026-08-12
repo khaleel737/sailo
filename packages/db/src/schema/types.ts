@@ -9,6 +9,7 @@ import type {
   orders,
   tickets,
 } from "./orders";
+import type { subscriptions } from "./memberships";
 import type { broadcasts } from "./audience";
 import type { staffActions, visitDaily, visits } from "./analytics";
 import type {
@@ -17,6 +18,7 @@ import type {
   partners,
   referralEarnings,
 } from "./growth";
+import type { apiKeys } from "./integrations";
 import type { supportTickets } from "./support";
 import type { user } from "./auth";
 
@@ -33,6 +35,7 @@ export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
 export type Ticket = typeof tickets.$inferSelect;
 export type DoorPass = typeof doorPasses.$inferSelect;
+export type Subscription = typeof subscriptions.$inferSelect;
 export type Broadcast = typeof broadcasts.$inferSelect;
 export type Visit = typeof visits.$inferSelect;
 export type VisitDaily = typeof visitDaily.$inferSelect;
@@ -49,3 +52,14 @@ export type Partner = typeof partners.$inferSelect;
 export type PartnerPayout = typeof partnerPayouts.$inferSelect;
 export type CreatorReferral = typeof creatorReferrals.$inferSelect;
 export type ReferralEarning = typeof referralEarnings.$inferSelect;
+/*
+ * `ApiKey` alone, not a row type per table in `integrations.ts`.
+ *
+ * Nothing holds a whole `webhook_endpoints` or `webhook_deliveries` row: the
+ * delivery path selects the four columns it needs joined across both, and the
+ * settings page selects the ones it renders precisely so `secret` never
+ * reaches a client component. A row type for either would be an export with no
+ * reader — which `knip` counts, and which would invite the next screen to
+ * select everything.
+ */
+export type ApiKey = typeof apiKeys.$inferSelect;

@@ -95,29 +95,16 @@ export const partners = pgTable(
      */
     commissionBp: integer("commission_bp"),
 
-    /* ---- Stripe Connect, transfers only ---------------------------------- */
-
-    /**
-     * A `recipient` connected account: it can receive transfers and pay them
-     * out to a bank, and it cannot process a payment. That is exactly what an
-     * affiliate is, and it is why partners onboard through
-     * `lib/partners/connect.ts` rather than the seller flow in `lib/connect.ts`
-     * — the seller flow requests `card_payments` and puts them under the full
-     * service agreement, which asks a newsletter writer for a great deal of
-     * merchant information they have no reason to give.
+    /*
+     * There are no Stripe columns here, and that is the design.
+     *
+     * A partner must be an active paying seller, so they already have a
+     * connected account — the one their own buyers pay into — and commission
+     * is transferred there. Mirroring a *second* account per partner is what
+     * this table used to do, and it brought a recipient service agreement, a
+     * country picker, a cross-border zone and a hand-payment fallback with it.
+     * `lib/partners/eligibility.ts` answers both questions from `shops` now.
      */
-    stripeAccountId: text("stripe_account_id"),
-    /** Mirrored from Stripe: the `transfers` capability is active. */
-    stripeTransfersEnabled: boolean("stripe_transfers_enabled")
-      .default(false)
-      .notNull(),
-    /** Mirrored from Stripe: they finished the onboarding form. */
-    stripeDetailsSubmitted: boolean("stripe_details_submitted")
-      .default(false)
-      .notNull(),
-    /** Drives the cross-border rules in `canReceiveTransfer`. */
-    stripeAccountCountry: text("stripe_account_country"),
-    stripeConnectedAt: timestamp("stripe_connected_at"),
 
     /* ---- Review trail ---------------------------------------------------- */
 

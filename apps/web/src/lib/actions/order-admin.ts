@@ -15,8 +15,10 @@ import { claimRefundAmount, releaseRefundClaim } from "@/lib/orders/refund-claim
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
 import { isOrderStatus } from "@/lib/order-status";
 import { releaseDownloads } from "@/lib/downloads";
+import { extendForPaidOrder } from "@/lib/membership-renewals";
 import { reinstateTicketsForOrder, voidTicketsForOrder } from "@/lib/tickets";
 import { sendBookingDecision, sendRefundNotification, sendShippingNotification } from "@/lib/email";
+import { emitOrderWebhook } from "@/lib/webhooks/emit";
 import type { ActionState } from "./shop";
 
 /**
@@ -125,6 +127,23 @@ export async function updateOrderStatus(formData: FormData) {
     const affiliateId = order.affiliateId;
     after(() => publishAffiliateEvent(affiliateId, "order"));
   }
+
+  /*
+   * Both guarded on the status the order had *before* this write, exactly as
+   * the booking email above is. A seller re-saving an order that was already
+   * cancelled has changed nothing, and firing a Zap for it is how a customer
+   * receives the same "your order was cancelled" message four times.
+   */
+  if (status === "cancelled" && order.status !== "cancelled") {
+    after(() =>
+      emitOrderWebhook({ shop, event: "order.cancelled", orderId: id }),
+    );
+  }
+  if (order.scheduledFor && order.status === "new" && status !== "new" && status !== "cancelled") {
+    after(() =>
+      emitOrderWebhook({ shop, event: "booking.confirmed", orderId: id }),
+    );
+  }
 }
 
 export async function updatePaymentStatus(formData: FormData) {
@@ -140,6 +159,21 @@ export async function updatePaymentStatus(formData: FormData) {
    * from a dropdown, while the `if (updated && …)` below sat there as
    * unreachable code proving `undefined` was what the author expected.
    */
+  /*
+   * Read first, for one reason only: `order.paid` must describe a transition.
+   *
+   * `UPDATE … RETURNING` hands back the *new* row, so nothing after the write
+   * can tell "the seller just confirmed the money" from "the seller re-saved a
+   * dropdown that already said paid". The webhook cares about the difference —
+   * a Zap that raises an invoice would raise a second one — and everything
+   * else here is idempotent and deliberately left running either way, so this
+   * read adds a question rather than changing an answer.
+   */
+  const before = await getDb().query.orders.findFirst({
+    where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
+    columns: { paymentStatus: true },
+  });
+
   const updated = maybeRow(await getDb()
     .update(orders)
     .set({ paymentStatus, updatedAt: new Date() })
@@ -150,11 +184,26 @@ export async function updatePaymentStatus(formData: FormData) {
   // is emailed the link rather than being left to check back.
   if (updated && paymentStatus === "paid") {
     await releaseDownloads(updated.id);
+
+    /*
+     * And, on a manual membership, it is the whole billing system.
+     *
+     * There is no card and no webhook on a bank transfer or a handful of cash;
+     * this dropdown is the only event in the product that means "the money
+     * arrived". So it is what starts a membership and what extends it by
+     * another period — `extendForPaidOrder` does nothing for any other kind of
+     * order, and is idempotent for this one.
+     */
+    await extendForPaidOrder(updated.id);
   }
 
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
   if (updated) after(() => publishShopEvent(shop.id, "payment"));
+
+  if (updated && paymentStatus === "paid" && before?.paymentStatus !== "paid") {
+    after(() => emitOrderWebhook({ shop, event: "order.paid", orderId: id }));
+  }
 }
 
 /**
@@ -214,6 +263,17 @@ export async function markOrderShipped(
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
   after(() => publishShopEvent(shop.id, "order"));
+
+  /*
+   * Emitted on every save, not only the first.
+   *
+   * Unlike a cancellation, re-saving this form is how a seller *corrects* a
+   * tracking number they mistyped — so the second event is not a duplicate,
+   * it is the fix, and a consumer that only ever saw the first would be
+   * holding the wrong number for ever. `shippedAt` is preserved above, so the
+   * dispatch date does not move when they do it.
+   */
+  after(() => emitOrderWebhook({ shop, event: "order.shipped", orderId: id }));
   return { ok: true, message: note };
 }
 
@@ -361,6 +421,14 @@ export async function refundOrder(
     const affiliateId = order.affiliateId;
     after(() => publishAffiliateEvent(affiliateId, "payment"));
   }
+
+  /*
+   * One event per refund, including each partial one — the payload's
+   * `refunded` total says how much has come back altogether, and `total` says
+   * what the order was, so a consumer can tell a £10 refund on a £50 order
+   * from the second £10 refund on the same order.
+   */
+  after(() => emitOrderWebhook({ shop, event: "order.refunded", orderId: id }));
   return { ok: true, message: note };
 }
 

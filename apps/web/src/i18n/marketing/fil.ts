@@ -17,9 +17,9 @@ export const marketingFil: MarketingDictionary = {
 
   hero: {
     badge: "Libreng magsimula, libreng manatili",
-    title: "Ang link sa bio mo ay dapat {highlight}.",
-    titleHighlight: "tumatanggap ng order",
-    body: "Ginagawa itong totoong tindahan ng Sailo — larawan, presyo, paghahanap, checkout — at ipinapadala ang bawat order sa chat app na sinasagot mo naman araw-araw.",
+    title: "Ang buong tindahan mo, sa {highlight}.",
+    titleHighlight: "isang link",
+    body: "Tumatanggap ka na ng order sa DM. Naglalagay ang Sailo ng totoong tindahan sa harap nito — larawan, presyo, paghahanap at bayad sa likod ng isang link — at dumarating pa rin ang bawat order sa chat na sinasagot mo naman.",
     ctaPrimary: "Gumawa ng tindahan — libre",
     ctaSecondary: "Buksan ang totoong tindahan",
     proof1: "Handa sa wala pang isang minuto",
@@ -56,18 +56,6 @@ export const marketingFil: MarketingDictionary = {
     shop4: "Bisita, order at ulit-bumibili, nabibilang lahat",
   },
 
-  versus: {
-    title: "Isang link. Isang tindahan. Walang kompromiso.",
-    body: "Hindi makakatanggap ng order ang pahina ng link. Ang buong store naman ay parang pangalawang trabaho. Ang Sailo ang gitnang hinahanap ng lahat.",
-    us: "Sailo",
-    r1: "Isang maikling link para sa bio mo",
-    r2: "Mga produktong may larawan, presyo at stock",
-    r3: "Dumarating ang order sa WhatsApp, walang checkout na ise-set up",
-    r4: "Mga booking at agarang digital download",
-    r5: "Librengplano na talagang mapagbebentahan",
-    r6: "35 wika, kasama ang mga binabasa mula kanan pakaliwa",
-    note: "Kung paano ipinapakilala ng bawat tool ang sarili nito, Agosto 2026. Tingnan ang kasalukuyang mga plano bago lumipat.",
-  },
 
   steps: {
     eyebrow: "Paano ito gumagana",
@@ -130,7 +118,7 @@ export const marketingFil: MarketingDictionary = {
   pricing: {
     eyebrow: "Presyo",
     title: "Libreng simulan, at libreng ipagpatuloy.",
-    body: "Hindi kailanman kumukuha ang Sailo ng bahagi sa benta mo — hindi sa mga bayad na plano, at hindi rin sa libre.",
+    body: "Ang mga order sa chat, bank transfer at cash ay buong-buo mong sa iyo, sa lahat ng plano. Ang mga benta sa card ay may {fee} ng halaga ng produkto — hindi kailanman ng delivery o buwis.",
     freeTagline: "Lahat ng kailangan mo para sa unang mga order mo.",
     proTagline: "Puwang para lumago, at tindahang mukhang sa iyo talaga.",
     bizTagline: "Bayad sa card, promo at referral — ang mga tool na nagpapalago ng kita.",
@@ -207,7 +195,7 @@ export const marketingFil: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — gawing tindahan ang link sa bio mo",
+    title: "Sailo — online na tindahan kasingdali ng link sa bio",
     description:
       "Ginagawang totoong tindahan ng Sailo ang link sa bio mo. Magbenta ng produkto, digital na file o serbisyo, tumanggap ng order sa WhatsApp o sa card, sa 35 wika. Libreng simulan, at walang kinukuhang komisyon ang Sailo.",
     ogTitle: "Sailo — isang link, ang buong tindahan mo",

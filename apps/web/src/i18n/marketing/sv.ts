@@ -17,9 +17,9 @@ export const marketingSv: MarketingDictionary = {
 
   hero: {
     badge: "Gratis att börja, gratis att fortsätta",
-    title: "Länken i din bio borde redan {highlight}.",
-    titleHighlight: "ta emot beställningar",
-    body: "Sailo gör den till en riktig butik — bilder, priser, sök, kassa — och skickar varje beställning till chattappen du ändå redan svarar i.",
+    title: "Hela din butik på {highlight}.",
+    titleHighlight: "en länk",
+    body: "Du tar redan emot beställningar i meddelandena. Sailo sätter en riktig butik framför dem — bilder, priser, sök och kassa bakom en länk — och varje beställning landar fortfarande i chatten du ändå svarar i.",
     ctaPrimary: "Skapa din butik — gratis",
     ctaSecondary: "Öppna en riktig butik",
     proof1: "Uppe på under en minut",
@@ -56,18 +56,6 @@ export const marketingSv: MarketingDictionary = {
     shop4: "Besök, beställningar och återkommande kunder räknas",
   },
 
-  versus: {
-    title: "En länk. En butik. Ingen kompromiss.",
-    body: "En länksida kan inte ta emot en beställning. En full webbutik är ett andra jobb. Sailo är mitten som alla efterfrågade.",
-    us: "Sailo",
-    r1: "En kort länk till din bio",
-    r2: "Produkter med bilder, priser och lager",
-    r3: "Beställningar landar i WhatsApp, ingen kassa att sätta upp",
-    r4: "Bokningar och direkta nedladdningar",
-    r5: "Ett gratispaket man faktiskt kan sälja på",
-    r6: "35 språk, höger-till-vänster inräknat",
-    note: "Hur varje verktyg positionerar sig, augusti 2026. Kontrollera aktuella planer innan du byter.",
-  },
 
   steps: {
     eyebrow: "Så funkar det",
@@ -130,7 +118,7 @@ export const marketingSv: MarketingDictionary = {
   pricing: {
     eyebrow: "Priser",
     title: "Gratis att börja, och gratis att fortsätta.",
-    body: "Sailo tar aldrig en andel av din försäljning — varken på de betalda planerna eller på den fria.",
+    body: "Beställningar via chatt, banköverföring och kontant är helt dina, på alla planer. Kortförsäljning bär {fee} av varan — aldrig av frakt eller skatt.",
     freeTagline: "Allt du behöver för dina första beställningar.",
     proTagline: "Plats att växa, och en butik som ser ut som din egen.",
     bizTagline: "Kortbetalningar, kampanjer och tips — verktygen som ökar omsättningen.",
@@ -207,7 +195,7 @@ export const marketingSv: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — gör länken i din bio till en butik",
+    title: "Sailo — en webbutik så enkel som en länk i bion",
     description:
       "Sailo gör länken i din bio till en riktig butik. Sälj produkter, digitala filer eller tjänster och ta emot beställningar på WhatsApp eller med kort, på 35 språk. Gratis att börja, utan provision.",
     ogTitle: "Sailo — en länk, hela din butik",

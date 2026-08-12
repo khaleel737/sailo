@@ -136,6 +136,7 @@ export function SegmentBuilder({
     digital: a.broadcasts.kindDigital,
     service: a.broadcasts.kindService,
     event: a.broadcasts.kindEvent,
+    membership: a.broadcasts.kindMembership,
   };
 
   /*

@@ -17,9 +17,9 @@ export const marketingJa: MarketingDictionary = {
 
   hero: {
     badge: "無料で始めて、ずっと無料",
-    title: "プロフィールのリンクは、とっくに{highlight}はずです。",
-    titleHighlight: "注文を受けていていい",
-    body: "Sailo はそれを本物のショップに変えます。写真も価格も検索も決済もそろい、注文はあなたが普段返信しているチャットアプリに届きます。",
+    title: "{highlight}に、ショップまるごと。",
+    titleHighlight: "リンク一本",
+    body: "注文はもう DM で受けているはずです。Sailo はその手前に本物のショップを置きます。写真も価格も検索も決済もリンク一本の向こうにあり、注文はこれまでどおり、あなたが返信しているチャットに届きます。",
     ctaPrimary: "ショップを作る — 無料",
     ctaSecondary: "実際のショップを見る",
     proof1: "1分かからず公開",
@@ -56,18 +56,6 @@ export const marketingJa: MarketingDictionary = {
     shop4: "訪問数・注文数・リピーターが数えられる",
   },
 
-  versus: {
-    title: "リンク一本。ショップ一つ。妥協なし。",
-    body: "リンク集は注文を受けられません。本格的なネットショップは二つ目の仕事です。Sailo はみんなが求めていた真ん中です。",
-    us: "Sailo",
-    r1: "プロフィールに置く短いリンク一本",
-    r2: "写真と価格と在庫を持つ商品",
-    r3: "注文は WhatsApp に届き、決済の設定は不要",
-    r4: "予約と、すぐ渡せるデジタル商品",
-    r5: "本当に売れる無料プラン",
-    r6: "35言語、右から左に読む言語も含めて",
-    note: "各サービスが自ら掲げる位置づけです（2026年8月時点）。乗り換える前に最新のプランをご確認ください。",
-  },
 
   steps: {
     eyebrow: "使い方",
@@ -130,7 +118,7 @@ export const marketingJa: MarketingDictionary = {
   pricing: {
     eyebrow: "料金",
     title: "始めるのも無料、続けるのも無料。",
-    body: "Sailo が売上の一部を取ることはありません。有料プランでも、無料プランでも同じです。",
+    body: "チャット、銀行振込、現金の注文は、どのプランでも全額あなたのものです。カード決済には商品代金の {fee} がかかります。送料や税にはかかりません。",
     freeTagline: "最初の注文を受けるのに必要なものはすべて。",
     proTagline: "伸びる余地と、自分のものに見えるショップ。",
     bizTagline: "カード決済、販促、紹介制度。売上を伸ばすための道具。",
@@ -207,7 +195,7 @@ export const marketingJa: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — プロフィールのリンクをショップに変える",
+    title: "Sailo — プロフィールのリンクくらい手軽なオンラインショップ",
     description:
       "Sailo はプロフィールのリンクを本物のショップに変えます。商品、デジタルファイル、サービスを売り、注文は WhatsApp かカード決済で受け取れます。35言語対応、無料で開始、手数料なし。",
     ogTitle: "Sailo — リンク一本に、ショップまるごと",

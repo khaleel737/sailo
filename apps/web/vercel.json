@@ -21,12 +21,20 @@
       "schedule": "*/5 * * * *"
     },
     {
+      "path": "/api/cron/webhooks",
+      "schedule": "*/5 * * * *"
+    },
+    {
       "path": "/api/cron/lifecycle",
       "schedule": "17 * * * *"
     },
     {
       "path": "/api/cron/partner-payouts",
       "schedule": "40 6 * * *"
+    },
+    {
+      "path": "/api/cron/memberships",
+      "schedule": "10 5 * * *"
     }
   ]
 }

@@ -45,9 +45,9 @@ import { assertLocalDatabase } from "./local-only";
 /*
  * `markPaidManually` guards itself with `requireStaff()` — deliberately, and
  * that guard is not what this file is testing. With no request there is no
- * session, so it would redirect to /hq/login before touching a row. Only that
- * one export is replaced; everything else in the module stays real, so a
- * future read that starts using it is not silently unguarded here.
+ * session, so it would redirect to /hq/login before touching a row. Only the
+ * two session reads are replaced; everything else in the module stays real, so
+ * a future read that starts using it is not silently unguarded here.
  */
 vi.mock("@/lib/session", async (importOriginal) => ({
   ...(await importOriginal<typeof sessionModule>()),
@@ -82,6 +82,16 @@ async function makeSeller(label: string) {
       name: `Shop ${label}`,
       currency: "USD",
       isPublished: true,
+      /*
+       * On a paid plan with Stripe connected, because that is what the
+       * programme now requires of a partner. A free-plan fixture would make
+       * every earning test fail for the right reason and the wrong one — the
+       * subscription gate is exercised deliberately in its own block below.
+       */
+      plan: "pro",
+      subscriptionStatus: "active",
+      stripeAccountId: `acct_${userId.slice(0, 16)}`,
+      stripeChargesEnabled: true,
     })
     .returning();
   if (!shop) throw new Error("fixture: shop was not inserted");
@@ -104,12 +114,14 @@ async function makePartner(label: string) {
 }
 
 /**
- * A partner with no shop at all — the case the whole redesign exists for.
+ * A partner with no shop — now an ineligible one.
  *
- * A newsletter writer who will never sell on Sailo still needs an identity, a
- * code and a ledger, and none of those may depend on a `shops` row.
+ * The programme requires an active Sailo subscription, so somebody with no
+ * shop has nothing to subscribe with and no account to be paid into. Kept as a
+ * fixture precisely so the tests below can prove they cannot earn, rather than
+ * proving it by never constructing one.
  */
-async function makeAudiencePartner(label: string) {
+async function makeShoplessPartner(label: string) {
   assertLocalDatabase();
   const db = getDb();
   const userId = crypto.randomUUID();
@@ -164,17 +176,18 @@ const summaryFor = async (partnerId: string) => {
 };
 
 describe("applying", () => {
-  it("gives a partner with no shop a code and a ledger of their own", async () => {
-    const writer = await makeAudiencePartner("solo");
+  it("links an approved partner to the shop they subscribe with", async () => {
+    const seller = await makePartner("linked");
 
     const row = await getDb().query.partners.findFirst({
-      where: eq(partners.id, writer.partnerId),
+      where: eq(partners.id, seller.partnerId),
     });
 
-    expect(row?.shopId).toBeNull();
+    // The shop is the whole identity now: it carries the subscription that
+    // lets them earn and the Stripe account the commission is paid into.
+    expect(row?.shopId).toBe(seller.shop.id);
     expect(row?.status).toBe("approved");
-    expect(row?.code).toBe(writer.code);
-    expect((await summaryFor(writer.partnerId)).lifetimeCents).toBe(0);
+    expect(row?.code).toBe(seller.code);
   });
 
   it("files one application per person however many times they submit", async () => {
@@ -193,7 +206,7 @@ describe("applying", () => {
     // `partners_approved_has_code` is the floor under `approvePartner`: an
     // approved partner with nothing to share is a dead end they could only
     // discover by asking us.
-    const writer = await makeAudiencePartner("coded");
+    const writer = await makeShoplessPartner("coded");
     const row = await getDb().query.partners.findFirst({
       where: eq(partners.id, writer.partnerId),
     });
@@ -208,7 +221,7 @@ describe("applying", () => {
   });
 
   it("keeps one code however many times approval is re-run", async () => {
-    const writer = await makeAudiencePartner("stable");
+    const writer = await makeShoplessPartner("stable");
     // Re-approving a reinstated partner must not rotate a code that is already
     // printed in somebody's newsletter.
     expect(await approvePartner(writer.partnerId, "scenario@sailo.store")).toBe(
@@ -817,5 +830,207 @@ describe("settlement", () => {
         ),
       );
     expect(reversal?.paidOutAt).toBeNull();
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/*  Getting paid without Stripe                                                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The partner who never connects Stripe.
+ *
+ * Every rule in the ledger above is about a partner Stripe can pay. This block
+ * is about the one it can't — someone banking in a country we have not
+ * verified, someone who declines Connect onboarding, someone stuck in
+ * verification with a balance growing behind them. They earn on exactly the
+ * same terms, and the money has to be able to reach them anyway.
+ */
+
+/* -------------------------------------------------------------------------- */
+/*  The subscription requirement                                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * "You earn while you're a customer" — the rule the programme is built on.
+ *
+ * Two halves that must not be confused, and most of this block exists to keep
+ * them apart:
+ *
+ *   - a lapsed partner stops *accruing*, immediately, at the next invoice;
+ *   - a lapsed partner is still *paid* everything already in the ledger.
+ *
+ * Getting the first wrong pays commission to somebody who left. Getting the
+ * second wrong keeps money somebody already earned. Neither is recoverable by
+ * apologising afterwards.
+ */
+describe("the subscription requirement", () => {
+  /** Puts a partner's own shop on a plan, the way billing would. */
+  async function setPlan(
+    shopId: string,
+    plan: string,
+    subscriptionStatus: string | null,
+  ) {
+    await getDb()
+      .update(shops)
+      .set({ plan, subscriptionStatus })
+      .where(eq(shops.id, shopId));
+  }
+
+  async function referAndInvoice(
+    partner: { code: string; partnerId: string },
+    label: string,
+    cents = 1999,
+  ) {
+    const referred = await makeSeller(label);
+    await attributeReferral({
+      referredShopId: referred.shop.id,
+      referredUserId: referred.userId,
+      referredEmail: referred.email,
+      rawCode: partner.code,
+    });
+    await recordReferralEarning({
+      referredShopId: referred.shop.id,
+      stripeInvoiceId: invoiceId(),
+      invoiceAmountCents: cents,
+      currency: "usd",
+    });
+    return referred;
+  }
+
+  it("earns while the partner is on a paid plan", async () => {
+    const partner = await makePartner("subbed");
+    await referAndInvoice(partner, "subbed-ref");
+
+    expect((await summaryFor(partner.partnerId)).lifetimeCents).toBe(
+      await share(1999),
+    );
+  });
+
+  it("earns nothing once the partner cancels", async () => {
+    const partner = await makePartner("cancelled");
+    await setPlan(partner.shop.id, "free", "canceled");
+
+    await referAndInvoice(partner, "cancelled-ref");
+
+    expect((await summaryFor(partner.partnerId)).lifetimeCents).toBe(0);
+  });
+
+  /*
+   * `past_due` is the one worth its own test. Stripe is still retrying, so the
+   * money may yet arrive — but commission paid before it does comes out of
+   * revenue we never received.
+   */
+  it("earns nothing while the partner's own payment is failing", async () => {
+    const partner = await makePartner("pastdue");
+    await setPlan(partner.shop.id, "pro", "past_due");
+
+    await referAndInvoice(partner, "pastdue-ref");
+
+    expect((await summaryFor(partner.partnerId)).lifetimeCents).toBe(0);
+  });
+
+  it("earns on a trial, before a penny has been charged", async () => {
+    const partner = await makePartner("trialing");
+    await setPlan(partner.shop.id, "pro", "trialing");
+
+    await referAndInvoice(partner, "trialing-ref");
+
+    expect((await summaryFor(partner.partnerId)).lifetimeCents).toBe(
+      await share(1999),
+    );
+  });
+
+  it("never earns for a partner with no shop to subscribe with", async () => {
+    const writer = await makeShoplessPartner("noshop");
+    await referAndInvoice(writer, "noshop-ref");
+
+    expect((await summaryFor(writer.partnerId)).lifetimeCents).toBe(0);
+  });
+
+  /*
+   * The rule stated as a sequence, because a gate checked only at approval
+   * would pass every test above and still be wrong: earning has to stop and
+   * restart with the subscription, invoice by invoice.
+   */
+  it("stops and resumes with the subscription, per invoice", async () => {
+    const partner = await makePartner("resub");
+    const referred = await makeSeller("resub-ref");
+    await attributeReferral({
+      referredShopId: referred.shop.id,
+      referredUserId: referred.userId,
+      referredEmail: referred.email,
+      rawCode: partner.code,
+    });
+
+    const bill = async () =>
+      recordReferralEarning({
+        referredShopId: referred.shop.id,
+        stripeInvoiceId: invoiceId(),
+        invoiceAmountCents: 1999,
+        currency: "usd",
+      });
+
+    await bill(); // subscribed
+    await setPlan(partner.shop.id, "free", "canceled");
+    await bill(); // lapsed — earns nothing
+    await setPlan(partner.shop.id, "pro", "active");
+    await bill(); // back
+
+    const cut = await share(1999);
+    expect((await summaryFor(partner.partnerId)).lifetimeCents).toBe(cut * 2);
+  });
+
+  /*
+   * Attribution deliberately survives a lapse. `creatorReferrals` is
+   * first-touch with no second chance, so refusing the link would hand that
+   * creator to nobody, permanently — and the partner would come back to
+   * nothing after resubscribing.
+   */
+  it("still attributes a lapsed partner's link, so resubscribing recovers it", async () => {
+    const partner = await makePartner("lapsedlink");
+    await setPlan(partner.shop.id, "free", "canceled");
+
+    const referred = await makeSeller("lapsedlink-ref");
+    expect(
+      await attributeReferral({
+        referredShopId: referred.shop.id,
+        referredUserId: referred.userId,
+        referredEmail: referred.email,
+        rawCode: partner.code,
+      }),
+    ).toBe("attributed");
+
+    await setPlan(partner.shop.id, "pro", "active");
+    await recordReferralEarning({
+      referredShopId: referred.shop.id,
+      stripeInvoiceId: invoiceId(),
+      invoiceAmountCents: 1999,
+      currency: "usd",
+    });
+
+    expect((await summaryFor(partner.partnerId)).lifetimeCents).toBe(
+      await share(1999),
+    );
+  });
+
+  /*
+   * The other half of the rule, and the one that costs us money to get right.
+   * Cancelling stops the tap; it does not empty the bucket.
+   */
+  it("still pays a lapsed partner what they already earned", async () => {
+    const partner = await makePartner("owed");
+    await referAndInvoice(partner, "owed-ref");
+    await matureEverything(partner.partnerId);
+
+    const owed = await share(1999);
+    await setPlan(partner.shop.id, "free", "canceled");
+
+    // Nothing about the balance moves when the subscription lapses.
+    expect((await summaryFor(partner.partnerId)).availableCents).toBe(owed);
+
+    const paid = await markPaidManually(partner.partnerId, "staff@sailo.store");
+    expect(paid.cents).toBe(owed);
+    expect((await summaryFor(partner.partnerId)).paidCents).toBe(owed);
   });
 });

@@ -10,8 +10,16 @@ import { releaseDownloads } from "@/lib/downloads";
 import { createInvoiceForOrder } from "@/lib/invoices";
 import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";
 import { notifySellerOfOrder } from "@/lib/orders/notify-seller";
+import { emitOrderWebhook } from "@/lib/webhooks/emit";
 import { intentIdOf, orderForIntent, orderForSession } from "./ownership";
 import { handleSubscriptionRefund } from "./platform";
+import {
+  handleMembershipInvoiceFailed,
+  handleMembershipInvoicePaid,
+  handleSubscriptionChanged,
+  handleSubscriptionCheckout,
+  handleSubscriptionDeleted,
+} from "./memberships";
 
 /**
  * A buyer's payment on a seller's connected account.
@@ -32,6 +40,20 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
     case "checkout.session.completed":
     case "checkout.session.async_payment_succeeded": {
       const session = event.data.object as Stripe.Checkout.Session;
+
+      /*
+       * A membership checkout is a different animal and forks here.
+       *
+       * Everything below this line assumes a payment: it marks the order paid,
+       * issues an invoice against money that has arrived, and emails the buyer
+       * a receipt. A subscription session has taken nothing yet — on a trial it
+       * will take nothing for a fortnight — so running that path would confirm
+       * an order nobody has paid for and claim an invoice number for it.
+       */
+      if (session.mode === "subscription") {
+        return handleSubscriptionCheckout(session, accountId);
+      }
+
       const order = await orderForSession(session, accountId);
       if (!order) return "order not found";
 
@@ -174,6 +196,34 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
          */
         if (order.paymentStatus !== "paid") {
           await notifySellerOfOrder({ shop: paidShop, orderId: order.id });
+
+          /*
+           * The card rail's `order.created`, and its `order.paid`, together.
+           *
+           * `createOrderIntent` deliberately emits neither for this rail: the
+           * order it wrote was a Stripe session the buyer had not paid, and a
+           * third of those are abandoned and swept. This is the moment the
+           * order becomes real, so both events belong here — a consumer
+           * subscribed to `order.created` then sees one event per real order
+           * whichever way the shop takes money, and one subscribed to both
+           * sees them arrive together, which is the truth about a card sale.
+           *
+           * Guarded by the same `paymentStatus !== "paid"` read as the mail
+           * above, so a second settling event for an order already marked paid
+           * adds nothing. Awaited rather than deferred: this is a webhook
+           * handler, not a request somebody is waiting on, and `after()` here
+           * would race the function shutting down.
+           */
+          await emitOrderWebhook({
+            shop: paidShop,
+            event: "order.created",
+            orderId: order.id,
+          });
+          await emitOrderWebhook({
+            shop: paidShop,
+            event: "order.paid",
+            orderId: order.id,
+          });
         }
       }
 
@@ -237,6 +287,46 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
       await publishShopEvent(order.shopId, "order");
       return `order ${order.id} expired and restocked`;
     }
+
+    /*
+     * The member's standing arrangement, as Stripe sees it.
+     *
+     * These arrive on the *connected* account, which is what separates them
+     * from their identically-named siblings in `platform.ts`: those are a
+     * seller paying Sailo, these are a buyer paying a seller. Two endpoints,
+     * two signing secrets, two meanings — and the only reason they can share
+     * a name safely is that neither handler is ever reached by the other's
+     * events.
+     */
+    case "customer.subscription.created":
+    case "customer.subscription.updated":
+      return handleSubscriptionChanged(
+        event.data.object as Stripe.Subscription,
+        accountId,
+      );
+
+    case "customer.subscription.deleted":
+      return handleSubscriptionDeleted(
+        event.data.object as Stripe.Subscription,
+        accountId,
+      );
+
+    /*
+     * The money, which for a subscription arrives here rather than on the
+     * session — once at signup and again on every renewal for as long as the
+     * member stays. This is what writes the order that keeps Income truthful.
+     */
+    case "invoice.paid":
+      return handleMembershipInvoicePaid(
+        event.data.object as Stripe.Invoice,
+        accountId,
+      );
+
+    case "invoice.payment_failed":
+      return handleMembershipInvoiceFailed(
+        event.data.object as Stripe.Invoice,
+        accountId,
+      );
 
     case "charge.refunded": {
       const charge = event.data.object as Stripe.Charge;

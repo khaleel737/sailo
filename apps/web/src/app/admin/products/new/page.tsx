@@ -4,6 +4,8 @@ import { getShopCategories } from "@/lib/queries";
 import { ProductForm } from "@/app/admin/products/_components/product-form";
 import { PageHeader } from "@/components/shared/page-header";
 import { getAdminT } from "@/i18n/server";
+import { connectState } from "@/lib/connect";
+import { can } from "@/lib/plans";
 
 export const metadata: Metadata = { title: "Add product" };
 
@@ -18,7 +20,11 @@ export default async function NewProductPage() {
         title={a.products.add}
         description={a.products.newSubtitle}
       />
-      <ProductForm categories={categories} currency={shop.currency} />
+      <ProductForm
+        categories={categories}
+        currency={shop.currency}
+        cardReady={connectState(shop) === "active" && can(shop, "cardRails")}
+      />
     </>
   );
 }

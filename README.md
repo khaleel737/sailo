@@ -214,6 +214,7 @@ it forwards with the one secret, while production uses two.
 /admin/delivery       Shipping and collection options
 /admin/reviews        Review moderation
 /admin/broadcasts     Marketing email: segments, promotions, scheduling, signups
+/admin/members        Recurring memberships — card or collected by hand
 /admin/settings       Shop details, appearance, socials, address collection
 /admin/settings/billing   Plan and billing
 /admin/settings/security  Two-factor, login sessions, account deletion
@@ -233,7 +234,7 @@ it forwards with the one secret, while production uses two.
 ```
 /api/stripe/webhook           Sellers paying us — subscriptions
 /api/stripe/connect/webhook   Buyers paying sellers — every card sale
-/api/cron/{rollup,sitemap,sweep,reminders,broadcasts,lifecycle}
+/api/cron/{rollup,sitemap,sweep,reminders,broadcasts,lifecycle,memberships}
                               Bearer-secret only, scheduled in vercel.json
 /api/unsubscribe/[token]      One-click out of a shop's marketing (RFC 8058)
 /api/unsubscribe/marketing/[token]  One-click out of Sailo's own

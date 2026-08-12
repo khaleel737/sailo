@@ -78,11 +78,19 @@ async function makeShop(over: Partial<typeof shops.$inferInsert> = {}) {
     })
     .returning();
   if (!shop) throw new Error("fixture: shop was not inserted");
+  // Bank transfer, not cash on delivery: these events are online, and cash
+  // on delivery now needs somewhere to hand the cash over — a video call has
+  // no door. Bank transfer settles later just the same, so the "held until the
+  // seller confirms payment" behaviour these tests turn on is unchanged.
   await db.insert(paymentMethods).values({
     shopId: shop.id,
-    type: "cod",
-    label: "cod",
-    config: {} as never,
+    type: "bank_transfer",
+    label: "bank_transfer",
+    config: {
+      bankName: "Test Bank",
+      accountName: "Bookings Ltd",
+      accountNumber: "12345678",
+    } as never,
     isEnabled: true,
     position: 0,
   });
@@ -143,7 +151,7 @@ async function placeOrder(shopId: string, productId: string, quantity = 1) {
   const r = await createOrderIntent({
     shopId,
     items: [{ productId, quantity }],
-    paymentMethod: "cod",
+    paymentMethod: "bank_transfer",
     ...buyer,
   });
   if (!r.ok) throw new Error(`order refused: ${r.error}`);
@@ -441,7 +449,7 @@ describe("event reminders", () => {
         { productId: soon.id, quantity: 1 },
         { productId: alsoSoon.id, quantity: 1 },
       ],
-      paymentMethod: "cod",
+      paymentMethod: "bank_transfer",
       ...buyer,
     });
     if (!r.ok) throw new Error(`order refused: ${r.error}`);

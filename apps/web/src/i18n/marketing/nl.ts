@@ -17,9 +17,9 @@ export const marketingNl: MarketingDictionary = {
 
   hero: {
     badge: "Gratis starten, gratis blijven",
-    title: "De link in je bio zou allang {highlight} moeten.",
-    titleHighlight: "bestellingen aannemen",
-    body: "Sailo maakt er een echte winkel van — foto's, prijzen, zoeken, afrekenen — en stuurt elke bestelling naar de chat-app waar je toch al antwoordt.",
+    title: "Je hele winkel, op {highlight}.",
+    titleHighlight: "één link",
+    body: "Je neemt al bestellingen aan in de DM's. Sailo zet daar een echte winkel voor — foto's, prijzen, zoeken en afrekenen achter één link — en elke bestelling komt nog steeds binnen in de chat waar je toch al antwoordt.",
     ctaPrimary: "Maak je winkel — gratis",
     ctaSecondary: "Open een echte winkel",
     proof1: "Binnen een minuut online",
@@ -56,18 +56,6 @@ export const marketingNl: MarketingDictionary = {
     shop4: "Bezoeken, bestellingen en terugkerende klanten geteld",
   },
 
-  versus: {
-    title: "Eén link. Eén winkel. Geen concessies.",
-    body: "Een linkpagina kan geen bestelling aannemen. Een volledige webshop is een tweede baan. Sailo is het midden waar iedereen om vroeg.",
-    us: "Sailo",
-    r1: "Eén korte link voor je bio",
-    r2: "Producten met foto's, prijzen en voorraad",
-    r3: "Bestellingen komen binnen in WhatsApp, niets in te stellen",
-    r4: "Afspraken en directe downloads",
-    r5: "Een gratis pakket waarmee je echt verkoopt",
-    r6: "35 talen, van rechts naar links inbegrepen",
-    note: "Hoe elk product zichzelf positioneert, augustus 2026. Controleer de huidige pakketten voordat je overstapt.",
-  },
 
   steps: {
     eyebrow: "Hoe het werkt",
@@ -130,7 +118,7 @@ export const marketingNl: MarketingDictionary = {
   pricing: {
     eyebrow: "Prijzen",
     title: "Gratis om te beginnen, en gratis om door te gaan.",
-    body: "Sailo neemt nooit een deel van je omzet — niet op de betaalde pakketten, en niet op het gratis pakket.",
+    body: "Bestellingen via chat, overboeking en contant zijn helemaal van jou, op elk pakket. Kaartverkopen dragen {fee} van de goederen — nooit van verzending of belasting.",
     freeTagline: "Alles wat je nodig hebt voor je eerste bestellingen.",
     proTagline: "Ruimte om te groeien, en een winkel die op jou lijkt.",
     bizTagline: "Kaartbetalingen, acties en doorverwijzingen — het gereedschap dat de omzet laat groeien.",
@@ -207,7 +195,7 @@ export const marketingNl: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — maak van de link in je bio een winkel",
+    title: "Sailo — een webshop zo eenvoudig als een link in je bio",
     description:
       "Sailo maakt van de link in je bio een echte winkel. Verkoop producten, digitale bestanden of diensten en ontvang bestellingen via WhatsApp of met kaart, in 35 talen. Gratis om te beginnen, zonder commissie.",
     ogTitle: "Sailo — één link, je hele winkel",

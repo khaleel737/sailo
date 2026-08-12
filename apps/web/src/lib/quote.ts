@@ -49,8 +49,34 @@ export type Quote = {
   /** True when at least one line is a service, or a file. */
   hasService: boolean;
   hasDigital: boolean;
+  /**
+   * True when something here can only reach the buyer through an inbox — a
+   * download link or a ticket. Both are handed over on the confirmation
+   * screen too, and that screen is one closed tab away from being gone, so
+   * an order carrying either has to have somewhere to send it again.
+   */
+  needsEmail: boolean;
   unitCount: number;
 };
+
+/** The kinds that arrive by email as well as on screen. */
+export function cartNeedsEmail(lines: Pick<QuoteLine, "kind">[]) {
+  return lines.some(
+    (line) =>
+      line.kind === "digital" ||
+      line.kind === "event" ||
+      /*
+       * A membership needs an inbox more than either of them.
+       *
+       * It is the only kind that keeps charging the card after the buyer has
+       * closed the tab, so the receipt for month four, the warning that a card
+       * failed, and the link that stops the whole thing all have to land
+       * somewhere. A membership bought without an address is one the buyer can
+       * only cancel through their bank.
+       */
+      line.kind === "membership",
+  );
+}
 
 export function lineSubtotal(line: Pick<QuoteLine, "unitPriceCents" | "quantity">) {
   return Math.max(0, line.unitPriceCents) * Math.max(0, line.quantity);
@@ -101,6 +127,7 @@ export function quote(input: QuoteInput): Quote {
       input.deliveryType !== "collection",
     hasService: lines.some((l) => l.kind === "service"),
     hasDigital: lines.some((l) => l.kind === "digital"),
+    needsEmail: cartNeedsEmail(lines),
     unitCount: lines.reduce((sum, l) => sum + Math.max(0, l.quantity), 0),
   };
 }

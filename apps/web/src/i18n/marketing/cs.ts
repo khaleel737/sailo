@@ -17,9 +17,9 @@ export const marketingCs: MarketingDictionary = {
 
   hero: {
     badge: "Zdarma na začátek, zdarma i potom",
-    title: "Odkaz ve vašem biu by měl už dávno {highlight}.",
-    titleHighlight: "přijímat objednávky",
-    body: "Sailo z něj udělá skutečný obchod — fotky, ceny, vyhledávání, pokladna — a každou objednávku pošle do chatu, ve kterém stejně už odpovídáte.",
+    title: "Celý váš obchod na {highlight}.",
+    titleHighlight: "jednom odkazu",
+    body: "Objednávky už teď berete ve zprávách. Sailo před ně postaví skutečný obchod — fotky, ceny, vyhledávání a platbu za jedním odkazem — a každá objednávka pořád přijde do chatu, kde stejně odpovídáte.",
     ctaPrimary: "Založit obchod — zdarma",
     ctaSecondary: "Otevřít skutečný obchod",
     proof1: "Hotovo za necelou minutu",
@@ -56,18 +56,6 @@ export const marketingCs: MarketingDictionary = {
     shop4: "Návštěvy, objednávky a vracející se zákazníci spočítáni",
   },
 
-  versus: {
-    title: "Jeden odkaz. Jeden obchod. Bez kompromisu.",
-    body: "Stránka s odkazy objednávku nepřijme. Plnohodnotný e-shop je druhá práce. Sailo je ten střed, na který se všichni ptali.",
-    us: "Sailo",
-    r1: "Jeden krátký odkaz do bia",
-    r2: "Zboží s fotkami, cenami a skladem",
-    r3: "Objednávky přijdou na WhatsApp, nic nenastavujete",
-    r4: "Rezervace a okamžité soubory ke stažení",
-    r5: "Bezplatný tarif, na kterém se opravdu dá prodávat",
-    r6: "35 jazyků, včetně psaní zprava doleva",
-    note: "Jak se každý nástroj sám staví, srpen 2026. Před přechodem si ověřte aktuální tarify.",
-  },
 
   steps: {
     eyebrow: "Jak to funguje",
@@ -130,7 +118,7 @@ export const marketingCs: MarketingDictionary = {
   pricing: {
     eyebrow: "Ceník",
     title: "Zdarma na start a zdarma i dál.",
-    body: "Sailo si nikdy nebere podíl z vašich prodejů — ani v placených tarifech, ani v bezplatném.",
+    body: "Objednávky přes chat, bankovní převod a hotovost jsou celé vaše, v každém tarifu. Z prodejů kartou se bere {fee} z ceny zboží — nikdy z dopravy ani daně.",
     freeTagline: "Všechno, co potřebujete k prvním objednávkám.",
     proTagline: "Prostor růst a obchod, který vypadá jako váš.",
     bizTagline: "Platby kartou, akce a doporučení — nástroje, které zvedají tržby.",
@@ -207,7 +195,7 @@ export const marketingCs: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — proměňte odkaz v biu v obchod",
+    title: "Sailo — online obchod tak jednoduchý jako odkaz v biu",
     description:
       "Sailo promění odkaz ve vašem biu ve skutečný obchod. Prodávejte zboží, digitální soubory nebo služby a přijímejte objednávky přes WhatsApp či kartou, v 35 jazycích. Start zdarma, bez provizí.",
     ogTitle: "Sailo — jeden odkaz, celý váš obchod",

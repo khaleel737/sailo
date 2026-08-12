@@ -17,9 +17,9 @@ export const marketingNo: MarketingDictionary = {
 
   hero: {
     badge: "Gratis å starte, gratis å fortsette",
-    title: "Lenken i bioen din burde for lengst {highlight}.",
-    titleHighlight: "ta imot bestillinger",
-    body: "Sailo gjør den om til en ekte butikk — bilder, priser, søk, kasse — og sender hver bestilling til chatteappen du uansett allerede svarer i.",
+    title: "Hele butikken din på {highlight}.",
+    titleHighlight: "én lenke",
+    body: "Du tar allerede imot bestillinger i meldingene. Sailo setter en ekte butikk foran dem — bilder, priser, søk og betaling bak én lenke — og hver bestilling havner fortsatt i chatten du svarer i uansett.",
     ctaPrimary: "Lag butikken din — gratis",
     ctaSecondary: "Åpne en ekte butikk",
     proof1: "Oppe på under ett minutt",
@@ -56,18 +56,6 @@ export const marketingNo: MarketingDictionary = {
     shop4: "Besøk, bestillinger og faste kunder telles",
   },
 
-  versus: {
-    title: "Én lenke. Én butikk. Ingen kompromiss.",
-    body: "En lenkeside kan ikke ta imot en bestilling. En full nettbutikk er en jobb nummer to. Sailo er mellomtingen alle spurte etter.",
-    us: "Sailo",
-    r1: "Én kort lenke til bioen din",
-    r2: "Varer med bilder, priser og lager",
-    r3: "Bestillinger lander i WhatsApp, ingen kasse å sette opp",
-    r4: "Timer og umiddelbare nedlastinger",
-    r5: "En gratisplan man faktisk kan selge på",
-    r6: "35 språk, høyre-til-venstre inkludert",
-    note: "Slik posisjonerer hvert verktøy seg selv, august 2026. Sjekk gjeldende planer før du bytter.",
-  },
 
   steps: {
     eyebrow: "Slik virker det",
@@ -130,7 +118,7 @@ export const marketingNo: MarketingDictionary = {
   pricing: {
     eyebrow: "Priser",
     title: "Gratis å starte, og gratis å fortsette.",
-    body: "Sailo tar aldri en andel av salget ditt — verken på de betalte planene eller den gratis.",
+    body: "Bestillinger via chat, bankoverføring og kontant er helt dine, på alle planer. Kortsalg bærer {fee} av varen — aldri av frakt eller avgift.",
     freeTagline: "Alt du trenger for de første bestillingene.",
     proTagline: "Plass til å vokse, og en butikk som ser ut som din egen.",
     bizTagline: "Kortbetaling, kampanjer og henvisninger — verktøyene som løfter omsetningen.",
@@ -207,7 +195,7 @@ export const marketingNo: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — gjør lenken i bioen din til en butikk",
+    title: "Sailo — en nettbutikk så enkel som en lenke i bio",
     description:
       "Sailo gjør lenken i bioen din til en ekte butikk. Selg varer, digitale filer eller tjenester, og ta imot bestillinger på WhatsApp eller med kort, på 35 språk. Gratis å starte, uten provisjon.",
     ogTitle: "Sailo — én lenke, hele butikken din",

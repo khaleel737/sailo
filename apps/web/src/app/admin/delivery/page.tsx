@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Info, Package, Plus, Store, Truck } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate, plural } from "@/i18n";
+import { countryName } from "@/lib/countries";
 import { getShopDeliveryMethods } from "@/lib/queries";
 import {
   DELIVERY_METHOD_DEFS,
@@ -117,6 +118,28 @@ export default async function AdminDeliveryPage() {
                       : formatMoney(method.feeCents, shop.currency, locale)}
                     {method.freeOverCents !== null
                       ? ` · free over ${formatMoney(method.freeOverCents, shop.currency, locale)}`
+                      : ""}
+                    {/*
+                      Only when it's restricted. An empty zone is "anywhere",
+                      which is the default and the overwhelming majority — a
+                      row saying so on every rate would be noise, and the point
+                      of this line is to make a *narrowed* rate visible without
+                      opening it.
+                    */}
+                    {method.countries.length > 0
+                      ? ` · ${
+                          // Named rather than counted when there is one,
+                          // because "1 country" is a worse answer to "where
+                          // does this go" than "Croatia" — and one country is
+                          // the case this whole feature was built for.
+                          method.countries.length === 1 && method.countries[0]
+                            ? countryName(method.countries[0], locale)
+                            : plural(
+                                method.countries.length,
+                                a.delivery.zoneCountOne,
+                                a.delivery.zoneCount,
+                              )
+                        }`
                       : ""}
                     {method.config.estimate ? ` · ${method.config.estimate}` : ""}
                     {method.config.address ? ` · ${method.config.address}` : ""}

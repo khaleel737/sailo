@@ -2,9 +2,10 @@ import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { clients, emailSuppressions } from "@sailo/db/schema";
+import { clients, emailSuppressions, shops } from "@sailo/db/schema";
 import { appUrl } from "@/lib/app-url";
 import { maybeRow } from "@/lib/invariant";
+import { emitContactWebhook } from "@/lib/webhooks/emit";
 
 /**
  * How somebody joins a shop's mailing list without buying anything first.
@@ -271,7 +272,27 @@ export async function confirmSubscriber(
       .onConflictDoNothing()
       .returning({ id: clients.id }),
   );
-  if (created) return "subscribed";
+  if (created) {
+    /*
+     * The one `contact.created` a seller actually asked for.
+     *
+     * This is a person who typed their address into a signup form and then
+     * clicked the link in their own inbox — so `marketingConsentAt` on the
+     * payload is real, and an integration pushing this into Kit or Mailchimp
+     * is pushing a consented subscriber rather than someone who once bought a
+     * mug. The other three places a `clients` row is written are deliberately
+     * silent: a buyer arrives inside `order.created` with their `clientId`
+     * already on it, and a CSV import would fire thousands of events for one
+     * click, which is a stampede rather than a feature.
+     *
+     * Loaded rather than passed in because the caller here is a link click
+     * that holds only the signed claim. Awaited: the visitor is looking at a
+     * confirmation page and this costs one indexed read on the common path
+     * where the shop has no endpoints at all.
+     */
+    await emitNewContact(claim.shopId, created.id);
+    return "subscribed";
+  }
 
   /*
    * Lost the race with a concurrent write — two clicks on the same link, or a
@@ -298,3 +319,19 @@ export async function confirmSubscriber(
 
 /** What `upsertClient` calls a buyer who gave no name. Matched, not invented. */
 const ANONYMOUS = "Anonymous";
+
+/**
+ * `contact.created` for a confirmed subscriber, shop loaded on the way.
+ *
+ * Swallows everything. A visitor who has just confirmed their address must see
+ * a confirmation page whatever a webhook queue is doing, and `emitContactWebhook`
+ * already logs its own failures — this catch is for the shop lookup above it.
+ */
+async function emitNewContact(shopId: string, clientId: string): Promise<void> {
+  try {
+    const shop = await getDb().query.shops.findFirst({ where: eq(shops.id, shopId) });
+    if (shop) await emitContactWebhook({ shop, clientId });
+  } catch (error) {
+    console.error("[sailo] subscriber webhook failed", error);
+  }
+}

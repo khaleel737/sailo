@@ -88,7 +88,15 @@ export type PaymentConfig = {
   accountNumber?: string;
   iban?: string;
   swift?: string;
-  // Free text shown to the buyer after ordering (bank_transfer, cod)
+  /**
+   * US wallet handles, stored bare — no `@`, no `$`, no URL. `buildHandoff`
+   * strips those on the way in rather than at every read, because a handle
+   * that is sometimes decorated and sometimes not builds a link that is
+   * sometimes broken.
+   */
+  venmoHandle?: string;
+  paypalMe?: string;
+  // Free text shown to the buyer after ordering (bank_transfer, cod, venmo, paypal)
   instructions?: string;
 };
 

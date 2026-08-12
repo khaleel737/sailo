@@ -108,9 +108,23 @@ const PAYMENT_SCHEMA: Record<
   // Stripe Checkout offers the wallets alongside the card, so all three are
   // genuinely accepted and worth naming — a buyer scanning a result for
   // "Apple Pay" is looking for exactly this.
-  card: { label: "Credit Card, Debit Card, Apple Pay, Google Pay", uri: "https://schema.org/CreditCard" },
+  card: {
+    label: "Credit Card, Debit Card, Apple Pay, Google Pay, Link, Cash App Pay",
+    uri: "https://schema.org/CreditCard",
+  },
   bank_transfer: {
     label: "Bank Transfer",
+    uri: "http://purl.org/goodrelations/v1#ByBankTransferInAdvance",
+  },
+  /*
+   * Both are real payment methods rather than order channels, so unlike the
+   * chat rails they belong here. GoodRelations has `PayPal` and nothing for
+   * Venmo, so Venmo borrows the generic prepayment term — the label carries
+   * the name a buyer is actually scanning for.
+   */
+  paypal: { label: "PayPal", uri: "http://purl.org/goodrelations/v1#PayPal" },
+  venmo: {
+    label: "Venmo",
     uri: "http://purl.org/goodrelations/v1#ByBankTransferInAdvance",
   },
   cod: { label: "Cash on Delivery", uri: "http://purl.org/goodrelations/v1#COD" },

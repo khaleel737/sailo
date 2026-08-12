@@ -17,9 +17,9 @@ export const marketingHu: MarketingDictionary = {
 
   hero: {
     badge: "Ingyen kezdhetsz, ingyen maradhatsz",
-    title: "A bióban lévő linkednek már rég {highlight} kellene.",
-    titleHighlight: "rendeléseket fogadnia",
-    body: "A Sailo igazi bolttá alakítja — fotók, árak, kereső, fizetés — és minden rendelést abba a chatalkalmazásba küld, amelyben amúgy is válaszolsz.",
+    title: "Az egész boltod {highlight}.",
+    titleHighlight: "egyetlen linken",
+    body: "A rendeléseket már most is üzenetben veszed fel. A Sailo egy igazi boltot állít eléjük — fotók, árak, kereső és fizetés egyetlen link mögött — és minden rendelés továbbra is abba a chatbe érkezik, ahol amúgy is válaszolsz.",
     ctaPrimary: "Boltot indítok — ingyen",
     ctaSecondary: "Nyiss meg egy élő boltot",
     proof1: "Egy percen belül él",
@@ -56,18 +56,6 @@ export const marketingHu: MarketingDictionary = {
     shop4: "Látogatás, rendelés és visszatérő vevő, megszámolva",
   },
 
-  versus: {
-    title: "Egy link. Egy bolt. Kompromisszum nélkül.",
-    body: "Egy linkoldal nem tud rendelést felvenni. Egy teljes webáruház második állás. A Sailo az a középút, amit mindenki kért.",
-    us: "Sailo",
-    r1: "Egyetlen rövid link a biódba",
-    r2: "Termékek fotóval, árral és készlettel",
-    r3: "A rendelések WhatsAppra érkeznek, nincs mit beállítani",
-    r4: "Időpontok és azonnali digitális letöltések",
-    r5: "Ingyenes csomag, amivel tényleg lehet eladni",
-    r6: "35 nyelv, a jobbról balra írottakkal együtt",
-    note: "Ahogy az egyes eszközök pozicionálják magukat, 2026. augusztus. Váltás előtt nézd meg az aktuális csomagokat.",
-  },
 
   steps: {
     eyebrow: "Hogyan működik",
@@ -130,7 +118,7 @@ export const marketingHu: MarketingDictionary = {
   pricing: {
     eyebrow: "Árak",
     title: "Ingyen elindulni, ingyen működtetni.",
-    body: "A Sailo soha nem kér részesedést az eladásaidból — sem a fizetős, sem az ingyenes csomagban.",
+    body: "A chaten, banki átutalással és készpénzzel érkező rendelések teljes egészében a tieid, minden csomagban. A kártyás eladások az áru értékének {fee}-át viszik — sosem a szállításét vagy az adóét.",
     freeTagline: "Minden, ami az első rendelésekhez kell.",
     proTagline: "Hely a növekedéshez, és bolt, ami rád hasonlít.",
     bizTagline: "Kártyás fizetés, akciók és ajánlások — az eszközök, amik emelik a bevételt.",
@@ -207,7 +195,7 @@ export const marketingHu: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — alakítsd bolttá a biódban lévő linket",
+    title: "Sailo — webbolt olyan egyszerűen, mint egy link a bióban",
     description:
       "A Sailo igazi bolttá alakítja a biódban lévő linket. Adj el termékeket, digitális fájlokat vagy szolgáltatásokat, és fogadj rendelést WhatsAppon vagy kártyával, 35 nyelven. Ingyenes kezdés, jutalék nélkül.",
     ogTitle: "Sailo — egy link, az egész boltod",

@@ -10,10 +10,15 @@ import { GoogleTagGate } from "@/lib/google-tag-gate";
    one, so an `analytics.tsx` here silently shadowed that module and broke an
    import in `traffic-panel` that had nothing to do with this feature.
 
-   One place that knows the measurement id, one component that loads it, and
-   one rule about where it may go. `@next/third-parties` is Vercel's package,
-   pinned to the same version as Next itself, so the script strategy and the
+   One place that knows the ids, one component that loads them, and one rule
+   about where they may go. `@next/third-parties` is Vercel's package, pinned
+   to the same version as Next itself, so the script strategy and the
    route-change pageviews are handled rather than hand-rolled.
+
+   Two tags ship from here: GA4, which measures, and a GTM container, which
+   measures nothing on its own and exists to load tags configured outside this
+   repository. They are deliberately siblings rather than nested — see
+   `containerId()` for why GA4 is not configured inside the container.
 
    ---------------------------------------------------------------------------
    Where this may be mounted, and why it is not in the root layout
@@ -59,6 +64,31 @@ export function measurementId(): string | null {
 }
 
 /**
+ * The GTM container id, or null when this deployment should not load one.
+ *
+ * Read from the environment for the same reason as the measurement id above:
+ * a container baked into the bundle follows a branch into preview.
+ *
+ * Two things about this container are worth knowing before adding a tag to it,
+ * because both fail quietly:
+ *
+ *   1. It cannot be used to add a vendor without a deploy, which is the usual
+ *      reason to run GTM at all. `script-src` in `next.config.ts` is an
+ *      allowlist, so a tag added in the GTM console that fetches from a host
+ *      not named there is blocked by the browser — the page renders perfectly
+ *      and the tag simply never runs. `googletagmanager.com`, Stripe, Meta and
+ *      TikTok are allowed today; anything else is a change to that policy.
+ *   2. A GA4 configuration tag must not be added to it. GA4 is already loaded
+ *      directly, beside this container, by the component below. Configuring it
+ *      here as well sends two `page_view` hits per navigation to the same
+ *      property, which inflates every number built on them.
+ */
+export function containerId(): string | null {
+  const id = process.env.NEXT_PUBLIC_GTM_ID?.trim();
+  return id ? id : null;
+}
+
+/**
  * The Google tag, for one Sailo-owned surface.
  *
  * Renders nothing when `NEXT_PUBLIC_GA_ID` is unset, which is the case in
@@ -78,14 +108,18 @@ export function measurementId(): string | null {
  * paying for twice.
  */
 export function GoogleTag() {
-  const id = measurementId();
-  if (!id) return null;
+  const gaId = measurementId();
+  const gtmId = containerId();
+  if (!gaId && !gtmId) return null;
 
+  // Both tags are served from the same script host, so the preconnect pays for
+  // either. The collect endpoints are hinted whichever way GA4 arrives — the
+  // container can carry tags that talk to them too.
   preconnect("https://www.googletagmanager.com");
   prefetchDNS("https://region1.google-analytics.com");
   prefetchDNS("https://www.google-analytics.com");
 
-  // Gated: the script only loads once the visitor has agreed. See
+  // Gated: the scripts only load once the visitor has agreed. See
   // `google-tag-gate.tsx` for why this is not Consent Mode.
-  return <GoogleTagGate gaId={id} />;
+  return <GoogleTagGate gaId={gaId} gtmId={gtmId} />;
 }

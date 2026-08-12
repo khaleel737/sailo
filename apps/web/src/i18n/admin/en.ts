@@ -58,8 +58,8 @@ export const adminEn = {
     expires: "Expires",
     never: "Never",
     orders: "Orders",
-    price: "Price",
     product: "Product",
+    price: "Price",
     products: "Products",
     spent: "Spent",
     status: "Status",
@@ -207,6 +207,25 @@ export const adminEn = {
       "Events sell tickets. Stock is the capacity, variants are the tiers, and sales close when the doors open.",
     serviceHint:
       "Services skip delivery. Add a duration and let buyers pick a time below.",
+    membershipHint:
+      "Memberships renew every month or year until cancelled. With Stripe connected the card is charged automatically; on your other payment options Sailo asks the member to pay and you confirm it, exactly like any other order.",
+
+    membershipTitle: "Membership billing",
+    membershipBody: "How often the member is charged, and whether they get a run-up first.",
+    membershipNeedsStripe:
+      "Without Stripe connected, members pay the same way your other buyers do — Sailo raises the next period's order a few days early, emails them, and you mark it paid. Connect Stripe if you'd rather the card was charged automatically.",
+    membershipPriceNote:
+      "The price above is what they pay each interval, in {currency}. Changing it later applies to new members only: people already subscribed keep the price they signed up at until they cancel and rejoin.",
+    billingInterval: "Charge them",
+    billingIntervalHint: "Stripe bills the card automatically on this cycle.",
+    everyMonth: "Every month",
+    everyYear: "Every year",
+    trialDays: "Free trial",
+    trialDaysHint: "Days before the first charge. Leave blank for none.",
+    /* Said where the field is, because a setting that quietly does nothing is
+       worse than one that isn't offered. */
+    trialDaysCardOnly:
+      "Free trials need Stripe. On your other payment options the first period is due at signup — leave this blank.",
     optionsTitle: "Options & stock",
     optionsBody:
       "Sizes, colours, session lengths — anything the buyer chooses between.",
@@ -617,6 +636,14 @@ export const adminEn = {
     chatHandoffBody: "The buyer is sent to a chat app with their order written out. Nothing is charged online — you agree payment between yourselves.",
     manualBody: "The buyer stays on your shop and sees your instructions. You confirm the payment from the Orders page.",
     notSetUp: "Not set up",
+    unavailableHere: "Not available",
+    /*
+     * Names the shop's own currency as well as the supported ones, because
+     * "PayPal settles in 22 currencies" reads as trivia and "your shop is in
+     * JOD" reads as the reason.
+     */
+    currencyOnly:
+      "{method} doesn't support {currency}, so it can't be switched on. It settles in: {currencies}.",
     buttonText: "Button text",
     buttonTextHint: "defaults to \"{name}\"",
     showOnShop: "Show on my shop",
@@ -667,6 +694,20 @@ export const adminEn = {
     nameBuyersSee: "Name buyers see",
     physicalOnly:
       "Only physical products ask about delivery — digital downloads and services skip it. Collection options never ask the buyer for an address.",
+    shipsTo: "Ships to",
+    zoneHelp:
+      "Buyers anywhere else won't be offered this rate. Anywhere means worldwide.",
+    zoneAnywhere: "Anywhere",
+    zoneSelected: "Selected countries",
+    zoneEu: "European Union",
+    zoneEea: "EEA",
+    zoneEurope: "Europe",
+    zoneNorthAmerica: "North America",
+    zoneClear: "Clear",
+    zoneSearch: "Search countries",
+    zoneNone: "No countries match that.",
+    zoneCountOne: "{count} country",
+    zoneCount: "{count} countries",
   },
 
   weekdays: {
@@ -1138,6 +1179,7 @@ export const adminEn = {
     kindDigital: "download",
     kindService: "booking",
     kindEvent: "event ticket",
+    kindMembership: "membership",
 
     // Where people join the list
     grow: "Growing your list",
@@ -1151,6 +1193,41 @@ export const adminEn = {
     incentiveHint: "Shown on the form. Send the code itself in your first broadcast.",
     incentivePlaceholder: "10% off your first order",
     subscribers: "{count} joined from the signup form",
+  },
+
+  /** The members list, and the states a subscription passes through. */
+  members: {
+    title: "Members",
+    description: "Everyone paying you on a recurring basis.",
+    empty: "No members yet",
+    emptyBody:
+      "Add a product, set its type to Membership, and share it. Subscribers show up here.",
+    lockedBody:
+      "Sell memberships — a gym month, a club, a course — and let Stripe bill the card every month.",
+    renews: "Renews",
+    monthly: "{amount}/month",
+    yearly: "{amount}/year",
+    activeMembers: "Active members",
+    monthlyRevenue: "Monthly",
+    revenueHint: "Roughly what active memberships bill each month — a yearly one counts as a twelfth.",
+    endsOn: "Ends {date}",
+    cancelling: "Cancelling",
+    cancel: "Cancel membership",
+    noEmail: "No email on file",
+    /* Which of the two cycles a member is on — a card that charges itself, or
+       money the seller collects and confirms. */
+    byCard: "Card",
+    byHand: "You collect",
+    awaitingPayment: "Waiting on payment",
+  },
+
+  memberStatus: {
+    incomplete: "Not started",
+    trialing: "Trial",
+    active: "Active",
+    past_due: "Payment failed",
+    canceled: "Cancelled",
+    unpaid: "Unpaid",
   },
 
   broadcastStatus: {
@@ -1167,6 +1244,80 @@ export const adminEn = {
     sending: "Unconfirmed",
     failed: "Failed",
     suppressed: "Opted out",
+  },
+
+  integrations: {
+    title: "Integrations",
+    body: "Connect your shop to Zapier, n8n, Make — or to an AI assistant.",
+    upgrade: "Webhooks and the API are available on {plan}.",
+    alsoTitle: "Also connected",
+    alsoBody: "Analytics tags and your calendar feed live on the Details tab.",
+    alsoLink: "Open Details",
+
+    webhooksTitle: "Webhooks",
+    webhooksBody:
+      "We POST signed JSON to your address when something happens. Any tool that accepts a webhook — Zapier, n8n, Make — can receive it.",
+    addEndpoint: "Add endpoint",
+    urlLabel: "Endpoint URL",
+    urlHint: "https:// on port 443. Paste the URL your tool gave you.",
+    nameLabel: "Name",
+    nameHint: "For you — “Zapier, new orders”.",
+    eventsLabel: "Events",
+    eventsHint: "Only ticked events are sent.",
+    noEndpoints: "No endpoints yet.",
+    endpointLimit: "{count} of {max} endpoints used.",
+    active: "Active",
+    disabled: "Switched off",
+    disabledBecause: "Switched off after repeated failures: {reason}",
+    lastAttempt: "Last attempt {when}",
+    neverSent: "Nothing sent yet",
+    sendTest: "Send test",
+    rotate: "Rotate secret",
+    remove: "Delete",
+    save: "Save",
+
+    secretTitle: "Signing secret",
+    secretBody:
+      "Copy this now — it is not shown again. Verify with any Standard Webhooks library.",
+    tokenTitle: "Your API key",
+    tokenBody: "Copy this now — it is not shown again.",
+    copy: "Copy",
+    copied: "Copied",
+
+    logTitle: "Recent deliveries",
+    logBody: "The last 20 attempts. Rows are kept for 30 days.",
+    logEmpty: "Nothing delivered yet.",
+    colEvent: "Event",
+    colStatus: "Status",
+    colWhen: "When",
+    colResult: "Result",
+    attemptCount: "Attempt {n}",
+
+    keysTitle: "API keys",
+    keysBody:
+      "A key reads your orders, products and contacts over the REST API — and is what an AI assistant uses to reach your shop.",
+    addKey: "Create key",
+    keyNameLabel: "What is it for?",
+    keyNameHint: "For you — “Zapier”, “my dashboard”.",
+    scopeRead: "Read",
+    scopeReadHint: "Orders, products and contacts. Always granted.",
+    scopeWrite: "Write",
+    scopeWriteHint: "Add contacts and change their tags.",
+    noKeys: "No keys yet.",
+    keyLimit: "{count} of {max} keys used.",
+    revoke: "Revoke",
+    lastUsed: "Last used {when}",
+    neverUsed: "Never used",
+    readable: "{count} contacts are readable with a key.",
+
+    mcpTitle: "AI assistants",
+    mcpBody:
+      "Point Claude or any MCP client at this address and give it a key above. It can then read your shop and answer questions about it.",
+    mcpUrlLabel: "MCP server URL",
+
+    docsTitle: "How to connect",
+    docsBody: "Endpoints, payload shapes and how to verify a signature.",
+    docsLink: "Read the guide",
   },
 
 } as const;

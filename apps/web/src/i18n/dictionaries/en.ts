@@ -88,6 +88,13 @@ export const en = {
     kindDigital: "Instant download",
     kindService: "Book a time",
     kindEvent: "Event ticket",
+    // The badge answers "what happens after I pay?" — and for a membership
+    // the answer people most need before paying is that it happens again.
+    kindMembershipMonth: "Renews monthly",
+    kindMembershipYear: "Renews yearly",
+    perMonth: "per month",
+    perYear: "per year",
+    subscribeNow: "Subscribe",
     labelDigital: "Download",
     labelService: "Booking",
     from: "From {price}",
@@ -151,6 +158,9 @@ export const en = {
     region: "State / region",
     postalCode: "Postal code",
     country: "Country",
+    shipTo: "Where are we sending it?",
+    noShippingTo: "{shop} doesn't ship to {country} yet.",
+    chooseCountryFirst: "Choose a country to see delivery options.",
     notes: "Size, colour, delivery notes…",
     discountCode: "Discount code",
     apply: "Apply",
@@ -167,6 +177,7 @@ export const en = {
     manualNote: "The seller gets your order and confirms payment.",
     orderSent: "Order sent to {shop}",
     paidBy: "Paid by {method}.",
+    payWith: "Pay with {method}",
     bankInstructions:
       "Transfer the total using the details below, then add your reference.",
     bankDetails: "Bank details",
@@ -264,7 +275,15 @@ export const en = {
   rails: {
     cardName: "Card",
     cardAction: "Pay by card",
-    cardDesc: "Pay securely by card, Apple Pay or Google Pay.",
+    /*
+     * Every wallet Stripe can settle by itself, named — because a button that
+     * says only "card" is a button an Apple Pay user scrolls past looking for
+     * their own. Which ones actually appear is Stripe's decision at runtime
+     * from the buyer's country and device, so the sentence promises the set
+     * and not any one of them.
+     */
+    cardDesc:
+      "Card, Apple Pay, Google Pay, Link and Cash App Pay — you'll see the ones available where you are.",
     whatsappAction: "Order on WhatsApp",
     whatsappDesc: "Opens WhatsApp with your order already written out.",
     telegramAction: "Order on Telegram",
@@ -284,6 +303,10 @@ export const en = {
     codName: "Cash on delivery",
     codAction: "Pay on delivery",
     codDesc: "Pay when the order reaches you.",
+    venmoAction: "Pay with Venmo",
+    venmoDesc: "Opens Venmo with the amount filled in. Come back here to confirm.",
+    paypalAction: "Pay with PayPal",
+    paypalDesc: "Opens PayPal with the amount filled in. Come back here to confirm.",
     shippingName: "Shipping",
     shippingDesc: "Delivered to your address.",
     collectionName: "Collection",
@@ -498,6 +521,7 @@ export const en = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     broadcasts: "Broadcasts",
+    members: "Members",
   },
 
   notifications: {
@@ -599,6 +623,18 @@ export const en = {
    * they know what language their customers read. Everything here is chrome
    * around it, and chrome follows the shop's own language.
    */
+  /** A member's own view of what they pay for, on their delivery page. */
+  membership: {
+    title: "Your membership",
+    activeUntil: "Active — renews {date}.",
+    endingOn: "Ends {date}. You keep access until then.",
+    pastDue: "We couldn't take the last payment. We'll retry — update your card to be sure.",
+    ended: "This membership has ended.",
+    manage: "Manage or cancel",
+    manualRenew: "Time to renew — your access runs to {date}. Pay the shop and they'll confirm it.",
+    manualPending: "You arrange payment directly with the shop — there's no card on file.",
+  },
+
   mailing: {
     title: "Join the list",
     body: "New arrivals, offers and news from {shop} — straight to your inbox.",

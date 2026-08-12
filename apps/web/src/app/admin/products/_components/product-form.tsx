@@ -22,6 +22,7 @@ import { Toggle } from "./toggle";
 import { DigitalDeliveryCard } from "./digital-delivery-card";
 import { ServiceSettingsCard } from "./service-settings-card";
 import { EventSettingsCard } from "./event-settings-card";
+import { MembershipSettingsCard } from "./membership-settings-card";
 import type { ProductWithRelations } from "./product.types";
 import { interpolate } from "@/i18n";
 import type {
@@ -44,10 +45,13 @@ export function ProductForm({
   product,
   categories,
   currency,
+  /** Whether the shop can take a card — a membership cannot be sold without one. */
+  cardReady = false,
 }: {
   product?: ProductWithRelations;
   categories: Category[];
   currency: string;
+  cardReady?: boolean;
 }) {
   const a = useAdminT();
   const [state, action] = useActionState(saveProduct, { ok: false });
@@ -185,7 +189,9 @@ export function ProductForm({
               ? a.productForm.serviceHint
               : kind === "event"
                 ? a.productForm.eventHint
-                : a.productForm.physicalHint}
+                : kind === "membership"
+                  ? a.productForm.membershipHint
+                  : a.productForm.physicalHint}
         </p>
 
         <Field
@@ -249,6 +255,16 @@ export function ProductForm({
           product={product}
           bookingEnabled={bookingEnabled}
           onBookingEnabledChange={setBookingEnabled}
+        />
+      ) : null}
+
+      {/* ---- Membership settings ------------------------------------------ */}
+
+      {kind === "membership" ? (
+        <MembershipSettingsCard
+          product={product}
+          currency={currency}
+          connected={cardReady}
         />
       ) : null}
 

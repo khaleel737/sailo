@@ -48,6 +48,29 @@ export const deliveryMethods = pgTable(
     freeOverCents: integer("free_over_cents"),
     config: jsonb("config").$type<DeliveryConfig>().default({}).notNull(),
 
+    /**
+     * Where this rate reaches: ISO 3166-1 alpha-2, uppercase.
+     *
+     * **Empty means anywhere**, not nowhere. That is what every row written
+     * before this column existed meant, so the default is the whole backfill —
+     * but it is also the one thing a reader can get backwards, and getting it
+     * backwards stops a shop selling. Every site that reads this says so.
+     *
+     * Expanded codes, never a group token. Storing "EU" would mean the day a
+     * country joins or leaves, every rate ever saved silently changes what it
+     * promised — including on orders already placed.
+     *
+     * A text array rather than jsonb for the same reason `clients.tags` is
+     * one: the question asked of it is containment, which Postgres answers
+     * natively. There is no index because the containment test happens in
+     * `lib/delivery.ts` over the handful of rates one shop has, not in SQL.
+     *
+     * Only `shipping` carries one. Collection is a pickup at a fixed address,
+     * so where the buyer lives is not the seller's business — `saveDeliveryMethod`
+     * writes `{}` for it whatever the form says.
+     */
+    countries: text("countries").array().default([]).notNull(),
+
     isEnabled: boolean("is_enabled").default(true).notNull(),
     position: integer("position").default(0).notNull(),
 

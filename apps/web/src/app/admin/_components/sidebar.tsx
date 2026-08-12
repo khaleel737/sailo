@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  BadgeCheck,
   CreditCard,
   ExternalLink,
   Gift,
@@ -51,6 +52,7 @@ const GROUPS = [
       { href: "/admin/orders", key: "orders", icon: ShoppingBag },
       { href: "/admin/checkin", key: "checkin", icon: ScanLine },
       { href: "/admin/clients", key: "clients", icon: Users },
+      { href: "/admin/members", key: "members", icon: BadgeCheck },
       { href: "/admin/reviews", key: "reviews", icon: MessageSquare },
     ],
   },

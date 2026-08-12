@@ -3,7 +3,7 @@ import { AlertTriangle, CreditCard, MessageCircle, Wallet } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { getShopPaymentMethods } from "@/lib/queries";
-import { isConfigured, PAYMENT_METHOD_LIST } from "@/lib/payments";
+import { isConfigured, isRailAvailable, PAYMENT_METHOD_LIST } from "@/lib/payments";
 import { PageHeader } from "@/components/shared/page-header";
 import { PaymentMethodCard } from "@/app/admin/payments/_components/payment-method-card";
 import { PayoutCard } from "@/app/admin/payments/_components/payout-card";
@@ -75,7 +75,13 @@ export default async function AdminPaymentsPage({
 
   const isLive = (type: string) => {
     const method = byType.get(type);
-    return Boolean(method?.isEnabled) && isConfigured(type, method?.config ?? {});
+    return (
+      Boolean(method?.isEnabled) &&
+      isConfigured(type, method?.config ?? {}) &&
+      // A rail the shop's currency rules out is not one of its ways to order,
+      // however enabled the row says it is.
+      isRailAvailable(type, shop.currency)
+    );
   };
 
   const liveCount = PAYMENT_METHOD_LIST.filter((d) => isLive(d.type)).length;
@@ -163,6 +169,7 @@ export default async function AdminPaymentsPage({
                   key={def.type}
                   def={def}
                   method={byType.get(def.type)}
+                  currency={shop.currency}
                 />
               ))}
             </div>

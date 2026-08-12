@@ -18,6 +18,7 @@ export function SettingsNav() {
   const TABS = [
     { href: "/admin/settings", label: a.settings.tabDetails, exact: true },
     { href: "/admin/settings/billing", label: a.settings.tabBilling },
+    { href: "/admin/settings/integrations", label: a.integrations.title },
     { href: "/admin/settings/security", label: a.settings.tabSecurity },
     { href: "/admin/settings/data", label: a.settings.tabData },
   ];

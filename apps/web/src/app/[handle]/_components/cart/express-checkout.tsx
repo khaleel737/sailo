@@ -53,6 +53,7 @@ export function ExpressCheckout({
   methods,
   deliveryOptions,
   kind,
+  canPayInPerson,
   service = null,
   serviceLocation = null,
   imageUrl = null,
@@ -76,6 +77,8 @@ export function ExpressCheckout({
   deliveryOptions: CheckoutDelivery[];
   /** physical | digital | service | event — only physical goods get delivered. */
   kind: string;
+  /** Whether this product has a moment where cash can change hands. */
+  canPayInPerson: boolean;
   service?: CheckoutService | null;
   serviceLocation?: string | null;
   /** The product's cover, when the combination has no photo of its own. */
@@ -192,6 +195,9 @@ export function ExpressCheckout({
       // One product, so its kind settles the question outright — no quote
       // needed to know that a download is not delivered.
       needsDeliveryHint={needsDelivery(kind)}
+      // Already decided on the server for this one product, so the sheet opens
+      // showing the rails it will still be showing a moment later.
+      payInPersonHint={canPayInPerson}
       contactEmail={contactEmail}
       compliance={compliance}
       hasFiles={hasFiles}

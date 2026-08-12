@@ -25,7 +25,7 @@ import {
   anySellable,
   needsDelivery,
   priceRange,
-  releasesBeforePayment,
+  cartCanPayInPerson,
   toCheckoutVariants,
   unitsLeft,
 } from "@/lib/variants";
@@ -91,7 +91,14 @@ export default async function ProductPage({
         ? t.shop.kindService
         : product.kind === "event"
           ? t.shop.kindEvent
-          : t.shop.kindPhysical;
+          : product.kind === "membership"
+            ? // "Renews monthly" rather than "Membership": the badge's job is
+              // to answer "what happens after I pay", and for this one the
+              // answer is the part people most need to see before they do.
+              product.billingInterval === "year"
+              ? t.shop.kindMembershipYear
+              : t.shop.kindMembershipMonth
+            : t.shop.kindPhysical;
 
   const variants = toCheckoutVariants(product, product.variants);
   /*
@@ -101,11 +108,15 @@ export default async function ProductPage({
    * repeated onto every product regardless of what it was.
    */
   const travels = needsDelivery(product.kind);
+  /*
+   * Worked out once, on the server, and used three times: the structured data,
+   * the buy box's rails and the sheet's first paint. The buy box used to
+   * re-derive it in the browser from two of its props, which is one copy of
+   * the rule too many.
+   */
+  const payInPerson = cartCanPayInPerson([product]);
   const productRails = {
-    payment: railsForOrder(
-      checkout.methods,
-      !releasesBeforePayment(product.kind, product.releaseOnPayment),
-    ),
+    payment: railsForOrder(checkout.methods, payInPerson),
     delivery: travels ? checkout.deliveryOptions : [],
   };
   const range = priceRange(product, product.variants);
@@ -293,6 +304,8 @@ export default async function ProductPage({
               methods={checkout.methods}
               deliveryOptions={checkout.deliveryOptions}
               kind={product.kind}
+              billingInterval={product.billingInterval}
+              canPayInPerson={payInPerson}
               options={product.options}
               variants={variants}
               unitsLeft={stockLeft}

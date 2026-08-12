@@ -3,6 +3,7 @@ import { maybeRow } from "@/lib/invariant";
 import { getDb } from "@sailo/db";
 import { orders, productFiles } from "@sailo/db/schema";
 import { orderedProductIds } from "@/lib/downloads";
+import { membershipOpenForOrder } from "@/lib/membership-access";
 import { isUuid } from "@/lib/utils";
 import { isStoredFileUrl } from "@/lib/file-urls";
 import { rateLimit } from "@/lib/redis";
@@ -73,6 +74,23 @@ export async function GET(
   });
   if (!order) {
     return new Response("Not found", { status: 404 });
+  }
+
+  /*
+   * A membership's entitlement is checked here, not when the link was minted.
+   *
+   * The token was emailed once and lives in an inbox for good. Deciding
+   * entitlement at mint time would mean a member who cancelled in March still
+   * downloading September's files — the link keeps working because nothing
+   * ever asks again. So this asks on every request, and a lapsed member gets
+   * the same 410 as an expired link rather than a 404 that would suggest
+   * their order never existed.
+   *
+   * Before the file lookup and before the download claim: refusing after
+   * claiming would spend an allowance on bytes we then decline to send.
+   */
+  if (!(await membershipOpenForOrder(order))) {
+    return new Response("This membership is no longer active.", { status: 410 });
   }
 
   /*

@@ -117,9 +117,38 @@ describe("the tag itself", () => {
     expect(source).not.toMatch(/["']G-[A-Z0-9]{6,}["']/);
   });
 
+  /* Same rule for the container, and the same reason. */
+  it("reads the container id from the environment", () => {
+    expect(source).toContain("NEXT_PUBLIC_GTM_ID");
+    expect(source).not.toMatch(/["']GTM-[A-Z0-9]{4,}["']/);
+  });
+
   /* Unset must mean no script and no dataLayer, not a tag with an empty id. */
   it("renders nothing when the id is unset", () => {
     expect(source).toContain("return null");
+  });
+});
+
+describe("the consent banner covers every tag that can load", () => {
+  /*
+   * The banner used to gate on the measurement id alone, which was correct
+   * while GA4 was the only tag. It is not correct now: `GoogleTag` loads the
+   * GTM container whenever `NEXT_PUBLIC_GTM_ID` is set, so a deployment
+   * carrying only the container would have loaded it with no banner on screen
+   * — a third-party script running on a visitor who was never asked.
+   *
+   * Asserted rather than trusted, because the failure is invisible in the UI:
+   * the page looks right, and the only symptom is a request nobody consented
+   * to.
+   */
+  const source = readFileSync(
+    join(import.meta.dirname, "..", "components", "shared", "consent-gate.tsx"),
+    "utf8",
+  );
+
+  it("asks whenever either tag would load", () => {
+    expect(source).toContain("measurementId");
+    expect(source).toContain("containerId");
   });
 });
 

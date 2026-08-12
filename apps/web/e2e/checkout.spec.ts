@@ -143,10 +143,17 @@ test.describe("checkout", () => {
 
 test.describe("what each kind is asked", () => {
   /*
-   * Shipping is a physical product's business and nobody else's. The delivery
-   * block was already the server's decision, but cash on delivery was not —
-   * so a download's checkout offered a rail whose whole promise is a doorstep,
-   * and a video call's did too.
+   * Two separate questions, and they do not have the same answer.
+   *
+   * How it arrives is a physical product's business and nobody else's: a
+   * download and an appointment are never posted, so neither is offered a
+   * delivery choice or charged a fee.
+   *
+   * Whether it can be paid for in person is the wider one — it asks whether
+   * the order has a moment the seller controls, which a doorstep, a venue and
+   * an appointment all have. Only an instant download has none: it unlocks the
+   * moment the order is placed, so "pay when we meet" is a promise it cannot
+   * keep.
    */
   test("a physical product is asked how it should arrive, and may be paid for at the door", async ({
     page,
@@ -156,8 +163,10 @@ test.describe("what each kind is asked", () => {
     await expect(dialog).toContainText(/cash on delivery/i);
   });
 
-  test("a download is asked neither", async ({ page }) => {
-    const dialog = await checkoutFor(page, /kiln notes — digital bundle/i);
+  test("an instant download is offered neither", async ({ page }) => {
+    // The glaze log unlocks on order — nothing is held back to collect
+    // payment against.
+    const dialog = await checkoutFor(page, /studio glaze log/i);
     await expect(dialog).not.toContainText(/how would you like to receive/i);
     await expect(dialog).not.toContainText(/cash on delivery/i);
     // It still has to be orderable — withdrawing one rail must not take the
@@ -166,10 +175,109 @@ test.describe("what each kind is asked", () => {
       .toBeGreaterThan(0);
   });
 
-  test("an appointment is asked neither", async ({ page }) => {
+  test("a download held until paid is offered neither either", async ({ page }) => {
+    /*
+     * Holding the file back makes "pay later" safe, which is not the same as
+     * making it possible: an order of nothing but files puts the buyer and the
+     * seller in the same place at no point, so there is no moment at which
+     * cash could be handed over. Safe and possible are separate questions, and
+     * this rail needs both.
+     */
+    const dialog = await checkoutFor(page, /kiln notes — digital bundle/i);
+    await expect(dialog).not.toContainText(/how would you like to receive/i);
+    await expect(dialog).not.toContainText(/cash on delivery/i);
+  });
+
+  test("an in-person workshop is never posted, but can be paid for on the day", async ({
+    page,
+  }) => {
+    const dialog = await checkoutFor(page, /beginner wheel throwing/i);
+    await expect(dialog).not.toContainText(/how would you like to receive/i);
+    await expect(dialog).toContainText(/cash on delivery/i);
+  });
+
+  test("an online call is offered neither, because nothing reaches anyone", async ({
+    page,
+  }) => {
     const dialog = await checkoutFor(page, /glaze troubleshooting call/i);
     await expect(dialog).not.toContainText(/how would you like to receive/i);
     await expect(dialog).not.toContainText(/cash on delivery/i);
+  });
+});
+
+test.describe("what the buyer has to tell the shop", () => {
+  /*
+   * An order used to be placeable with no name, no contact and, on a delivery,
+   * no address — the panel asked and nothing checked the answers. That is not
+   * a lighter checkout; it is an order the seller cannot act on.
+   */
+  const invalid = (dialog: ReturnType<Page["locator"]>, name: string) =>
+    dialog
+      .locator(`input[name="${name}"]`)
+      .evaluate((el) => !(el as HTMLInputElement).validity.valid);
+
+  test("will not take an order from nobody", async ({ page }) => {
+    const dialog = await checkoutFor(page, /studio apron/i);
+    await dialog.getByRole("button", { name: /order on whatsapp/i }).click();
+
+    expect(await invalid(dialog, "customerName")).toBe(true);
+    // Still on the form, not on a confirmation.
+    await expect(dialog).toContainText(/total/i);
+  });
+
+  test("wants somewhere to send a delivery", async ({ page }) => {
+    const dialog = await checkoutFor(page, /studio apron/i);
+    await dialog.locator('input[name="customerName"]').fill("Sam Okafor");
+    await dialog.locator('input[name="customerEmail"]').fill("sam@example.com");
+    await dialog.getByRole("button", { name: /order on whatsapp/i }).click();
+
+    expect(await invalid(dialog, "addressLine1")).toBe(true);
+  });
+
+  test("takes an email or a phone, and stops asking once it has one", async ({
+    page,
+  }) => {
+    // The rule is "one of the two", which HTML has no attribute for: each is
+    // required exactly while the other is empty.
+    const dialog = await checkoutFor(page, /studio apron/i);
+    const email = dialog.locator('input[name="customerEmail"]');
+    const phone = dialog.locator('input[name="customerPhone"]');
+
+    await expect(email).toHaveAttribute("required", "");
+    await expect(phone).toHaveAttribute("required", "");
+
+    await phone.fill("+15551234567");
+    await expect(email).not.toHaveAttribute("required", "");
+  });
+
+  test("the server refuses it too, when the form is bypassed", async ({
+    page,
+  }) => {
+    /*
+     * The `required` attributes are a courtesy to an honest buyer. They are
+     * one dev-tools click from gone, and a hand-rolled POST never sees them at
+     * all — so the rule that counts is the one in `readBuyer`, and this is the
+     * test that it is really there. Nothing is written when it fires: the
+     * buyer is read before any stock moves.
+     */
+    const dialog = await checkoutFor(page, /studio apron/i);
+    await dialog.locator("form").evaluate((form) => {
+      form.setAttribute("novalidate", "");
+    });
+    await dialog.getByRole("button", { name: /order on whatsapp/i }).click();
+    await expect(dialog).toContainText(/add your name/i);
+  });
+
+  test("insists on an inbox for something that arrives in one", async ({
+    page,
+  }) => {
+    // A download link is shown on the confirmation screen and emailed. Only
+    // one of those survives the tab being closed.
+    const dialog = await checkoutFor(page, /kiln notes — digital bundle/i);
+    const email = dialog.locator('input[name="customerEmail"]');
+    await dialog.locator('input[name="customerPhone"]').fill("+15551234567");
+    // Still required, because a phone cannot be sent a file.
+    await expect(email).toHaveAttribute("required", "");
   });
 });
 

@@ -197,3 +197,58 @@ export async function sendSellerOrderNeedsAction(opts: {
     replyTo: order.customerEmail ?? undefined,
   });
 }
+
+/**
+ * Sent when we stop delivering to a webhook endpoint that has failed
+ * `failures` times in a row.
+ *
+ * The only message here that is not about an order, and it exists because the
+ * failure it reports is otherwise completely silent. A seller's Zap stops
+ * firing; nothing in their inbox, nothing on their dashboard, and the shop
+ * carries on selling perfectly — so the first sign is a customer asking why
+ * they never got the thing the Zap was supposed to send. An email is the only
+ * channel that reaches somebody who is not currently looking at the admin.
+ *
+ * The URL is named because a shop may have several endpoints and "one of your
+ * webhooks" is not actionable. `reason` is whatever the last attempt actually
+ * said — a status code, a timeout, a refused address — since that is the
+ * sentence they will forward to whoever runs the receiving end.
+ */
+export async function sendSellerWebhookDisabled(opts: {
+  shop: Shop;
+  to: string;
+  url: string;
+  label: string | null;
+  reason: string;
+  failures: number;
+}): Promise<SendResult> {
+  const { shop, to, url, label, reason, failures } = opts;
+
+  const body = `
+    ${mutedPara(
+      `We've stopped sending events to a webhook endpoint on ${esc(shop.name)} after ${failures} failed attempts in a row.`,
+    )}
+    ${section(
+      "The endpoint",
+      detailTable([
+        { label: "Name", value: label ?? "—" },
+        { label: "URL", value: url },
+        { label: "Last error", value: reason },
+      ]),
+    )}
+    ${mutedPara(
+      "Nothing has been lost from your shop — orders, payments and customers were all recorded normally. What stopped is the copy we were forwarding to this address.",
+    )}
+    ${fine("Fix the receiving end, then switch the endpoint back on in Settings → Integrations. Events that failed while it was off are not resent.")}
+    ${button(`${appUrl()}/admin/settings/integrations`, "Open integrations")}
+  `;
+
+  return send({
+    from: sender("Sailo", ORDERS),
+    to,
+    subject: `Webhook switched off — ${label ?? url}`,
+    html: sailoLayout("A webhook endpoint stopped working", body, {
+      preheader: `${failures} failed attempts in a row. Last error: ${reason}`,
+    }),
+  });
+}

@@ -25,6 +25,7 @@ import { requireShop } from "@/lib/session";
 import { parseMoneyToCents, slugify } from "@/lib/utils";
 import { atProductLimit, planFor, productLimit } from "@/lib/plans";
 import { isProductKind, isServiceMode, normalizeOptions, optionKey } from "@/lib/variants";
+import { isBillingInterval, normalizeTrialDays } from "@/lib/memberships";
 import type { ActionState } from "./shop";
 
 const MAX_FILES = 10;
@@ -220,6 +221,28 @@ export async function saveProduct(
   }
   const compareRaw = String(formData.get("compareAtPrice") ?? "").trim();
   const priceCents = parseMoneyToCents(String(formData.get("price") ?? "0"), shop.currency);
+
+  /*
+   * A membership has to be billable before it can be saved as one.
+   *
+   * Both refusals turn a Stripe error the *buyer* would have met at checkout
+   * into a sentence the seller can act on while they are looking at the form:
+   * Stripe will not create a recurring price for nothing, and it has no way
+   * to guess how often to charge. Checked here rather than only in
+   * `membershipSellable` so a shop can never publish one that cannot be sold.
+   */
+  const billingInterval = isBillingInterval(formData.get("billingInterval"))
+    ? String(formData.get("billingInterval"))
+    : null;
+  if (kind === "membership") {
+    if (!billingInterval) {
+      return { ok: false, error: "Choose how often a membership is charged." };
+    }
+    if (priceCents <= 0) {
+      return { ok: false, error: "A membership needs a price to charge." };
+    }
+  }
+
   const compareAtCents = compareRaw ? parseMoneyToCents(compareRaw, shop.currency) : null;
 
   const values = {
@@ -265,6 +288,21 @@ export async function saveProduct(
      * never be handed to the buyer of something else.
      */
     eventJoinUrl: kind === "event" && mode === "online" ? joinRaw || null : null,
+
+    /*
+     * Memberships. Cleared on every other kind, so a product switched away
+     * from being one cannot keep a billing interval that nothing reads and
+     * that a later switch back would silently resurrect.
+     *
+     * `stripePriceId` is deliberately *not* cleared on a price change. A
+     * Stripe Price is immutable, so existing members stay on the one they
+     * signed up at; `priceIsStale` notices the difference at the next
+     * subscribe and mints a new Price then. Clearing it here would orphan the
+     * cached id without telling anybody, and re-create an identical Price on
+     * every save.
+     */
+    billingInterval: kind === "membership" ? billingInterval : null,
+    trialDays: kind === "membership" ? normalizeTrialDays(formData.get("trialDays")) : null,
 
     inStock: formData.get("inStock") === "on",
     isFeatured: formData.get("isFeatured") === "on",

@@ -1,6 +1,7 @@
 import "server-only";
 import type { Order } from "@sailo/db/schema";
 import { refundCharge } from "@/lib/connect";
+import { toStripeAmount } from "@/lib/currency";
 import { isPaymentMethodType, type PaymentMethodType } from "@/lib/payments";
 
 /**
@@ -44,10 +45,25 @@ const REVERSERS: Partial<Record<PaymentMethodType, Reverser>> = {
       return { kind: "manual", reason: "never_charged" };
     }
 
+    /*
+     * Snap to what the currency can actually settle.
+     *
+     * The charge was rounded to `chargeStep` on the way out; the refund has to
+     * be too. In the three-decimal currencies — KWD, BHD, JOD, OMR, TND — card
+     * networks settle to two places, so Stripe refuses any amount that is not
+     * a multiple of ten rather than rounding it. The seller types a partial
+     * refund into a form, so the request is arbitrary: without this, a partial
+     * refund in Kuwait fails at the processor with an error naming a field the
+     * seller never filled in.
+     *
+     * Everywhere else `chargeStep` is 1 and this is the identity.
+     */
+    const settleable = toStripeAmount(amountCents, order.currency);
+
     const refund = await refundCharge({
       accountId: order.stripeAccountId,
       paymentIntentId: order.stripePaymentIntentId,
-      amountCents,
+      amountCents: settleable,
     });
 
     return { kind: "reversed", reference: refund.id };

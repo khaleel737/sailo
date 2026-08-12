@@ -5,7 +5,7 @@ import { useFormStatus } from "react-dom";
 import { Banknote, Mail, Phone, Wallet } from "lucide-react";
 import { PLATFORM_ICONS } from "@/app/[handle]/_components/social-icons";
 import { savePaymentMethod } from "@/lib/actions/payments";
-import { isConfigured, type PaymentMethodDef } from "@/lib/payments";
+import { isConfigured, isRailAvailable, type PaymentMethodDef } from "@/lib/payments";
 import {
   Alert,
   Badge,
@@ -57,15 +57,25 @@ function Submit({ label }: { label: string }) {
 export function PaymentMethodCard({
   def,
   method,
+  currency,
 }: {
   def: PaymentMethodDef;
   method?: PaymentMethod;
+  /** The shop's currency — some rails can only settle a few. */
+  currency: string;
 }) {
   const a = useAdminT();
   const [state, action] = useActionState(savePaymentMethod, { ok: false });
   const config = (method?.config ?? {}) as PaymentConfig;
   const configured = method ? isConfigured(def.type, config) : false;
-  const live = Boolean(method?.isEnabled) && configured;
+  /*
+   * A rail that cannot settle this shop's currency is shown and explained
+   * rather than hidden. Hiding it answers "why can't I take PayPal?" with
+   * silence; naming the currency answers it, and tells a seller who *could*
+   * switch currency that switching is the lever.
+   */
+  const available = isRailAvailable(def.type, currency);
+  const live = Boolean(method?.isEnabled) && configured && available;
 
   const Icon = ICONS[def.type] ?? Wallet;
 
@@ -79,7 +89,11 @@ export function PaymentMethodCard({
       // yet and the next thing to do is fill it in.
       defaultOpen={!method}
       status={
-        live ? (
+        !available ? (
+          <Badge tone="neutral" dot>
+            {a.payments.unavailableHere}
+          </Badge>
+        ) : live ? (
           <Badge tone="green" dot>
             {a.common.live}
           </Badge>
@@ -94,7 +108,17 @@ export function PaymentMethodCard({
         )
       }
     >
-      <form action={action} className="space-y-4">
+      {available ? null : (
+        <Alert>
+          {interpolate(a.payments.currencyOnly, {
+            method: def.name,
+            currencies: (def.availability?.currencies ?? []).join(", "),
+            currency,
+          })}
+        </Alert>
+      )}
+
+      <form action={action} className="space-y-4" hidden={!available}>
         <input type="hidden" name="type" value={def.type} />
 
         {state.error ? <Alert>{state.error}</Alert> : null}

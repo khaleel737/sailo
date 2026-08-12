@@ -85,7 +85,15 @@ function ruleSql(rule: SegmentRule, now: Date): SQL | null {
     case "source":
       return sql`${clients.source} = ${value}`;
     case "country":
-      // Stored as the buyer typed it at checkout; compared folded.
+      /*
+       * An alpha-2 code on anything ordered since the checkout grew a country
+       * list, and free text on everything before it — so this matches the new
+       * rows and misses the old ones. Said out loud rather than papered over:
+       * the rule has always compared against a two-letter code (`parseCountry`
+       * refuses anything else), which means it silently matched nothing at all
+       * until the checkout started storing one. Widening it to guess that
+       * "Hrvatska" means HR would be inventing membership of an audience.
+       */
       return sql`upper(${clients.country}) = ${value}`;
 
     /* ---- what they bought ---- */

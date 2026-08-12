@@ -21,7 +21,7 @@
 import { existsSync } from "node:fs";
 import { appendFile, mkdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { postForDate, type Post } from "./content";
+import { POSTS, postForDate, type Post } from "./content";
 import { renderBoth } from "./render";
 import {
   postFacebook,
@@ -96,7 +96,22 @@ async function main() {
   }
 
   const day = today();
-  const post = postForDate(new Date());
+
+  /*
+   * `--post=<id>` publishes a chosen entry instead of the day's rotation, and
+   * `--force` ignores the same-day guard. Both exist for the case the schedule
+   * cannot serve: something already went out today and a different post needs
+   * to go with it. Neither is used by the scheduled run.
+   */
+  const wanted = process.argv.find((a) => a.startsWith("--post="))?.slice(7);
+  const force = process.argv.includes("--force");
+  const chosen = wanted ? POSTS.find((p) => p.id === wanted) : undefined;
+  if (wanted && !chosen) {
+    console.error(`No post with id "${wanted}". Known ids:\n  ${POSTS.map((p) => p.id).join("\n  ")}`);
+    process.exitCode = 1;
+    return;
+  }
+  const post = chosen ?? postForDate(new Date());
   const targets: Platform[] = only.length ? only : [...ALL];
 
   console.log(`\nSailo daily — ${day}`);
@@ -116,8 +131,9 @@ async function main() {
     return;
   }
 
-  const done = await alreadyPosted(day);
-  if (done.size) console.log(`already posted today: ${[...done].join(", ")}\n`);
+  const done = force ? new Set<string>() : await alreadyPosted(day);
+  if (force) console.log("--force: same-day guard bypassed\n");
+  else if (done.size) console.log(`already posted today: ${[...done].join(", ")}\n`);
 
   const squareUrl = await uploadArt(art.square, `${day}/${post.id}`);
   const wideUrl = await uploadArt(art.wide, `${day}/${post.id}`);

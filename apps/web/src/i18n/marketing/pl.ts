@@ -17,9 +17,9 @@ export const marketingPl: MarketingDictionary = {
 
   hero: {
     badge: "Za darmo na start, za darmo dalej",
-    title: "Link w twoim bio powinien już {highlight}.",
-    titleHighlight: "przyjmować zamówienia",
-    body: "Sailo zamienia go w prawdziwy sklep — zdjęcia, ceny, wyszukiwarka, płatność — i wysyła każde zamówienie do komunikatora, w którym i tak już odpisujesz.",
+    title: "Cały twój sklep pod {highlight}.",
+    titleHighlight: "jednym linkiem",
+    body: "Zamówienia już teraz przyjmujesz w wiadomościach. Sailo stawia przed nimi prawdziwy sklep — zdjęcia, ceny, wyszukiwarkę i płatność za jednym linkiem — a każde zamówienie nadal trafia na czat, na który i tak odpisujesz.",
     ctaPrimary: "Załóż sklep — za darmo",
     ctaSecondary: "Otwórz prawdziwy sklep",
     proof1: "Działa w niecałą minutę",
@@ -56,18 +56,6 @@ export const marketingPl: MarketingDictionary = {
     shop4: "Wizyty, zamówienia i powracający klienci — policzone",
   },
 
-  versus: {
-    title: "Jeden link. Jeden sklep. Bez kompromisów.",
-    body: "Strona z linkami nie przyjmie zamówienia. Pełny sklep to druga praca. Sailo to środek, o który wszyscy prosili.",
-    us: "Sailo",
-    r1: "Jeden krótki link do bio",
-    r2: "Produkty ze zdjęciami, cenami i stanem magazynu",
-    r3: "Zamówienia trafiają na WhatsAppa, nic nie konfigurujesz",
-    r4: "Rezerwacje i natychmiastowe pliki do pobrania",
-    r5: "Darmowy plan, na którym naprawdę da się sprzedawać",
-    r6: "35 języków, łącznie z pisanymi od prawej",
-    note: "Jak każde narzędzie samo się pozycjonuje, sierpień 2026. Sprawdź aktualne plany przed zmianą.",
-  },
 
   steps: {
     eyebrow: "Jak to działa",
@@ -130,7 +118,7 @@ export const marketingPl: MarketingDictionary = {
   pricing: {
     eyebrow: "Cennik",
     title: "Za darmo na start i za darmo na dłużej.",
-    body: "Sailo nigdy nie bierze procentu od twojej sprzedaży — ani w planach płatnych, ani w darmowym.",
+    body: "Zamówienia przez czat, przelew i gotówkę są w całości twoje, w każdym planie. Sprzedaż kartą niesie {fee} od wartości towaru — nigdy od dostawy ani podatku.",
     freeTagline: "Wszystko, czego trzeba, by przyjąć pierwsze zamówienia.",
     proTagline: "Miejsce na rozwój i sklep, który wygląda jak twój.",
     bizTagline: "Płatności kartą, promocje i polecenia — narzędzia, które podnoszą przychód.",
@@ -207,7 +195,7 @@ export const marketingPl: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — zamień link w bio w sklep",
+    title: "Sailo — sklep internetowy prosty jak link w bio",
     description:
       "Sailo zamienia link w twoim bio w prawdziwy sklep. Sprzedawaj produkty, pliki cyfrowe albo usługi i przyjmuj zamówienia przez WhatsAppa lub kartą, w 35 językach. Start za darmo, bez prowizji.",
     ogTitle: "Sailo — jeden link, cały twój sklep",

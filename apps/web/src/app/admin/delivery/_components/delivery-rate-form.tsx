@@ -21,6 +21,7 @@ import {
 } from "@/components/ui";
 import type { DeliveryConfig, DeliveryMethod } from "@sailo/db/schema";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
+import { CountryPicker } from "./country-picker";
 
 function Submit({ isEdit }: { isEdit: boolean }) {
   const { pending } = useFormStatus();
@@ -128,6 +129,23 @@ export function DeliveryRateForm({
             />
           </Field>
         </div>
+
+        {/*
+          Shipping only. Collection is a pickup at one fixed address, so where
+          the buyer lives is not something the seller gets to filter on — and
+          `saveDeliveryMethod` writes an empty zone for it whatever this form
+          happens to be showing when the type is switched.
+
+          No `htmlFor` on the field: what it labels is a radio pair and a list
+          of checkboxes rather than one input, and the only input carrying the
+          value is hidden — the last thing a label should point at. Each
+          control inside names itself.
+        */}
+        {type === "shipping" ? (
+          <Field label={a.delivery.shipsTo} help={a.delivery.zoneHelp}>
+            <CountryPicker defaultCountries={method?.countries ?? []} />
+          </Field>
+        ) : null}
 
         {def.fields.map((field) =>
           field.multiline ? (

@@ -17,9 +17,9 @@ export const marketingBs: MarketingDictionary = {
 
   hero: {
     badge: "Besplatno za početak, besplatno i dalje",
-    title: "Link u vašem bio-u trebao bi {highlight}.",
-    titleHighlight: "primati narudžbe",
-    body: "Sailo ga pretvara u pravu prodavnicu — fotografije, cijene, pretraga, kasa — i šalje svaku narudžbu u aplikaciju za poruke na koju ionako već odgovarate.",
+    title: "Cijela vaša prodavnica, na {highlight}.",
+    titleHighlight: "jednom linku",
+    body: "Već primate narudžbe u porukama. Sailo pred njih stavlja pravu prodavnicu — fotografije, cijene, pretragu i plaćanje iza jednog linka — a svaka narudžba i dalje stiže u chat u kojem ionako odgovarate.",
     ctaPrimary: "Otvorite prodavnicu — besplatno",
     ctaSecondary: "Otvorite živu prodavnicu",
     proof1: "Spremno za manje od minute",
@@ -56,18 +56,6 @@ export const marketingBs: MarketingDictionary = {
     shop4: "Posjete, narudžbe i stalni kupci, prebrojani",
   },
 
-  versus: {
-    title: "Jedan link. Jedna prodavnica. Bez kompromisa.",
-    body: "Stranica s linkovima ne može primiti narudžbu. Cijela prodavnica je drugi posao. Sailo je sredina koju su svi tražili.",
-    us: "Sailo",
-    r1: "Jedan kratak link za vaš bio",
-    r2: "Proizvodi s fotografijama, cijenama i stanjem",
-    r3: "Narudžbe stižu na WhatsApp, bez postavljanja kase",
-    r4: "Rezervacije i trenutna digitalna preuzimanja",
-    r5: "Besplatan paket na kojem zaista možete prodavati",
-    r6: "35 jezika, uključujući pisma zdesna nalijevo",
-    note: "Kako se svaki alat predstavlja, august 2026. Provjerite aktuelne pakete prije prelaska.",
-  },
 
   steps: {
     eyebrow: "Kako radi",
@@ -130,7 +118,7 @@ export const marketingBs: MarketingDictionary = {
   pricing: {
     eyebrow: "Cijene",
     title: "Besplatno za početak i besplatno za dalje.",
-    body: "Sailo nikada ne uzima dio vaše prodaje — ni na plaćenim paketima ni na besplatnom.",
+    body: "Narudžbe putem chata, bankovnog transfera i gotovine u cijelosti su vaše, na svakom paketu. Prodaja karticom nosi {fee} od vrijednosti robe — nikada od dostave ni poreza.",
     freeTagline: "Sve što vam treba za prve narudžbe.",
     proTagline: "Prostor za rast i prodavnica koja izgleda kao vaša.",
     bizTagline: "Plaćanje karticom, promocije i preporuke — alati koji povećavaju prihod.",
@@ -207,7 +195,7 @@ export const marketingBs: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — pretvorite link u bio-u u prodavnicu",
+    title: "Sailo — online prodavnica jednostavna kao link u biju",
     description:
       "Sailo pretvara link u vašem bio-u u pravu prodavnicu. Prodajte proizvode, digitalne fajlove ili usluge, primajte narudžbe na WhatsAppu ili karticom, na 35 jezika. Besplatno za početak, a Sailo ne uzima proviziju.",
     ogTitle: "Sailo — jedan link, cijela vaša prodavnica",

@@ -17,9 +17,9 @@ export const marketingDe: MarketingDictionary = {
 
   hero: {
     badge: "Kostenlos starten, kostenlos bleiben",
-    title: "Der Link in deiner Bio sollte längst {highlight}.",
-    titleHighlight: "Bestellungen annehmen",
-    body: "Sailo macht daraus einen echten Shop — Fotos, Preise, Suche, Kasse — und schickt jede Bestellung in den Messenger, in dem du ohnehin schon antwortest.",
+    title: "Dein ganzer Shop, unter {highlight}.",
+    titleHighlight: "einem Link",
+    body: "Du nimmst Bestellungen längst in den DMs entgegen. Sailo stellt einen echten Shop davor — Fotos, Preise, Suche und Kasse hinter einem Link — und jede Bestellung landet weiter in dem Chat, in dem du ohnehin antwortest.",
     ctaPrimary: "Shop erstellen — kostenlos",
     ctaSecondary: "Echten Shop ansehen",
     proof1: "In unter einer Minute online",
@@ -56,18 +56,6 @@ export const marketingDe: MarketingDictionary = {
     shop4: "Besuche, Bestellungen und Stammkundschaft, gezählt",
   },
 
-  versus: {
-    title: "Ein Link. Ein Shop. Ohne Kompromiss.",
-    body: "Eine Linkseite nimmt keine Bestellung an. Ein voller Onlineshop ist ein Zweitjob. Sailo ist die Mitte, nach der alle gefragt haben.",
-    us: "Sailo",
-    r1: "Ein kurzer Link für die Bio",
-    r2: "Produkte mit Fotos, Preisen und Beständen",
-    r3: "Bestellungen landen in WhatsApp, ohne Kasse einzurichten",
-    r4: "Termine und sofortige Downloads",
-    r5: "Ein kostenloser Tarif, mit dem man wirklich verkauft",
-    r6: "35 Sprachen, von rechts nach links inklusive",
-    note: "Wie sich die Anbieter selbst positionieren, Stand August 2026. Prüfe die aktuellen Tarife vor einem Wechsel.",
-  },
 
   steps: {
     eyebrow: "So funktioniert's",
@@ -130,7 +118,7 @@ export const marketingDe: MarketingDictionary = {
   pricing: {
     eyebrow: "Preise",
     title: "Kostenlos zum Start, und kostenlos im Betrieb.",
-    body: "Sailo nimmt nie einen Anteil an deinen Verkäufen — weder in den bezahlten Tarifen noch im kostenlosen.",
+    body: "Bestellungen per Chat, Überweisung und Bar gehören dir ganz, in jedem Tarif. Kartenverkäufe tragen {fee} vom Warenwert — nie von Versand oder Steuer.",
     freeTagline: "Alles, was du für deine ersten Bestellungen brauchst.",
     proTagline: "Platz zum Wachsen, und ein Shop, der nach dir aussieht.",
     bizTagline: "Kartenzahlung, Aktionen und Empfehlungen — die Werkzeuge, die den Umsatz heben.",
@@ -207,7 +195,7 @@ export const marketingDe: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — mach aus dem Link in deiner Bio einen Shop",
+    title: "Sailo — ein Onlineshop so einfach wie ein Link in der Bio",
     description:
       "Sailo macht aus dem Link in deiner Bio einen echten Shop. Verkaufe Produkte, digitale Dateien oder Dienstleistungen und nimm Bestellungen per WhatsApp oder Karte an, in 35 Sprachen. Kostenlos starten, ohne Provision.",
     ogTitle: "Sailo — ein Link, dein ganzer Shop",

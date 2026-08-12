@@ -267,45 +267,10 @@ export function parseUserAgent(ua: string | null | undefined): DeviceInfo {
   return { device: tablet ? "tablet" : mobile ? "mobile" : "desktop", os, browser };
 }
 
-/** ISO 3166-1 alpha-2 → the flag emoji, by offsetting into the indicator block. */
-export function countryFlag(code: string | null): string {
-  if (!code || code.length !== 2 || !/^[a-z]{2}$/i.test(code)) return "🌍";
-  /*
-   * ZZ is CLDR's code for "Unknown Region" and arrives from GeoIP whenever an
-   * address cannot be placed. It is two letters, so it would otherwise build a
-   * flag for a country that does not exist — which renders as two letter-boxes
-   * beside a name that already reads "Unknown Region".
-   */
-  if (code.toUpperCase() === "ZZ") return "🌍";
-  return String.fromCodePoint(
-    ...[...code.toUpperCase()].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65),
-  );
-}
-
-/**
- * Cached per locale. `Intl.DisplayNames` is expensive to construct and this
- * runs once per row, but a single shared instance would pin every later caller
- * to whichever locale happened to ask first.
+/*
+ * `countryFlag` and `countryName` used to live here, because the traffic panel
+ * was the only thing that had a country code to render. Shipping zones gave
+ * the checkout and the delivery settings one too, and a second copy of "turn a
+ * code into something a person reads" is how the two drift. They are in
+ * `lib/countries.ts` now, next to the list of codes they answer for.
  */
-const countryNames = new Map<string, Intl.DisplayNames>();
-
-/** "DE" → "Germany". Falls back to the code when the runtime doesn't know it. */
-export function countryName(code: string | null, locale = "en"): string {
-  if (!code) return "Unknown";
-  try {
-    let names = countryNames.get(locale);
-    if (!names) {
-      // `fallback: "code"` returns "ZZ" for an unrecognised code. The default
-      // returns the literal string "Unknown Region", which a seller reads as a
-      // bug in the dashboard rather than as a country we couldn't place.
-      names = new Intl.DisplayNames([locale], {
-        type: "region",
-        fallback: "code",
-      });
-      countryNames.set(locale, names);
-    }
-    return names.of(code.toUpperCase()) ?? code;
-  } catch {
-    return code;
-  }
-}

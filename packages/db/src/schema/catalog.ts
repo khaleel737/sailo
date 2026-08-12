@@ -49,7 +49,7 @@ export const products = pgTable(
     priceCents: integer("price_cents").default(0).notNull(),
     compareAtCents: integer("compare_at_cents"),
 
-    kind: text("kind").default("physical").notNull(), // physical | digital | service | event
+    kind: text("kind").default("physical").notNull(), // physical | digital | service | event | membership
     tags: jsonb("tags").$type<string[]>().default([]).notNull(),
 
     /**
@@ -110,6 +110,55 @@ export const products = pgTable(
      * event is online at all, exactly as it does for a service.
      */
     eventJoinUrl: text("event_join_url"),
+
+    /* ----------------------------------------------------------------------
+       Memberships
+
+       A product the buyer keeps paying for — a gym month, a club, a course
+       with a monthly fee. `priceCents` is the price *per interval*, which is
+       why no new price column exists: one price meaning two things would be
+       the first thing to drift.
+    ---------------------------------------------------------------------- */
+
+    /** `month` or `year`, for `kind: "membership"`. Null for everything else. */
+    billingInterval: text("billing_interval"),
+    /**
+     * Days before the first charge. Null and zero both mean "charge now" —
+     * and they mean the same thing on purpose, because a trial of zero days
+     * is not a trial and Stripe rejects it as one.
+     */
+    trialDays: integer("trial_days"),
+    /**
+     * The Stripe Price this product currently sells at, on the seller's own
+     * connected account.
+     *
+     * Created lazily on the first subscribe and cached here, because a Price
+     * is immutable in Stripe: a seller who changes what a membership costs
+     * gets a *new* Price, and existing members keep the one they signed up
+     * on until they resubscribe. That is the correct behaviour and it is also
+     * the only behaviour Stripe offers.
+     */
+    stripePriceId: text("stripe_price_id"),
+    /**
+     * What `stripePriceId` was minted for.
+     *
+     * The staleness check, and it has to be a stored number rather than a
+     * comparison against `priceCents` at read time: the Price object lives on
+     * the seller's Stripe account where we cannot see it cheaply, and
+     * charging last month's price because nobody noticed the edit is the
+     * failure this column exists to make impossible.
+     */
+    stripePriceCents: integer("stripe_price_cents"),
+    /**
+     * And the interval it was minted on.
+     *
+     * The amount alone cannot answer "is this Price still right": a seller who
+     * switches a £30 membership from monthly to yearly changes no number, so a
+     * cents-only check sees nothing and keeps billing every month at a price
+     * the product now says is annual. Cheap to store, and the alternative is a
+     * comparison this module cannot make.
+     */
+    stripePriceInterval: text("stripe_price_interval"),
 
     inStock: boolean("in_stock").default(true).notNull(),
     isFeatured: boolean("is_featured").default(false).notNull(),

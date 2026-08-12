@@ -32,9 +32,9 @@ export const marketingEn = {
   hero: {
     badge: "Free to start, free to stay",
     /** `{highlight}` is emphasised in place, so it can land anywhere a language needs it. */
-    title: "The link in your bio should be {highlight}.",
-    titleHighlight: "taking orders",
-    body: "Sailo turns it into a real shop — photos, prices, search, checkout — and sends every order to the chat app you're already answering.",
+    title: "Your whole shop, at {highlight}.",
+    titleHighlight: "one link",
+    body: "You're already taking orders in your DMs. Sailo puts a real shop in front of them — photos, prices, search and checkout behind one link, and every order still lands in the chat you're answering anyway.",
     ctaPrimary: "Create your shop — free",
     ctaSecondary: "Open a live shop",
     proof1: "Live in under a minute",
@@ -71,18 +71,6 @@ export const marketingEn = {
     shop4: "Visits, orders and repeat buyers, counted",
   },
 
-  versus: {
-    title: "One link. One shop. No compromise.",
-    body: "A link page cannot take an order. A full store is a second job. Sailo is the middle everyone kept asking for.",
-    us: "Sailo",
-    r1: "One short link for your bio",
-    r2: "Products with photos, prices and stock",
-    r3: "Orders land in WhatsApp, no checkout to set up",
-    r4: "Bookings and instant digital downloads",
-    r5: "A free plan you can actually sell on",
-    r6: "35 languages, right to left included",
-    note: "How each tool positions itself, August 2026. Check current plans before you switch.",
-  },
 
   steps: {
     eyebrow: "How it works",
@@ -214,9 +202,9 @@ export const marketingEn = {
   },
 
   seo: {
-    title: "Sailo — turn the link in your bio into a shop",
+    title: "Sailo — an online store as simple as a link in bio",
     description:
-      "Sailo turns the link in your bio into a real shop. Sell products, digital files or services, take orders on WhatsApp or by card, in 35 languages. Free to start, with no commission on chat and bank orders.",
+      "Sailo is an online store you run from one link. Sell products, digital files or services, take orders on WhatsApp or by card, in 35 languages. Free to start, with no commission on chat and bank orders.",
     ogTitle: "Sailo — one link, your whole shop",
     ogDescription:
       "Photos, prices, variants, stock, bookings and downloads behind a single link in bio. Orders land in WhatsApp or on your own card checkout.",

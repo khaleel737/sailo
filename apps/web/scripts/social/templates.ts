@@ -21,6 +21,7 @@
 import type { Post } from "./content";
 
 export type Canvas = "square" | "wide";
+export type Tone = "paper" | "ink";
 
 export const CANVAS = {
   square: { width: 540, height: 540 },
@@ -55,8 +56,32 @@ const GRAIN =
     `<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3"/></filter><rect width="140" height="140" filter="url(#n)" opacity="0.55"/></svg>`,
   );
 
-function shell(canvas: Canvas, body: string, extraCss = ""): string {
+/**
+ * Ink is the same palette inverted, not a second design.
+ *
+ * A feed is a hostile place for a cream card: it sits on a white app
+ * background and reads as empty space. The product already has an ink surface
+ * — `Section tone="ink"` carries the demos on the landing page — so a dark
+ * post is on-brand rather than a departure, and alternating the two down the
+ * library makes the profile *grid* look composed instead of accidental, which
+ * is the surface a new visitor actually judges.
+ */
+const INK_TOKENS = `
+  --paper: #0d0d0c;
+  --paper-sunk: #17171500;
+  --surface: #191816;
+  --ink: #f7f6f2;
+  --mute-100: #24231f;
+  --mute-200: #2f2e29;
+  --mute-300: #56544d;
+  --mute-400: #97938a;
+  --mute-500: #a8a49a;
+  --signal: #2ecc84;
+`;
+
+function shell(canvas: Canvas, body: string, extraCss = "", tone: Tone = "paper"): string {
   const { width, height } = CANVAS[canvas];
+  const ink = tone === "ink";
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -75,6 +100,7 @@ function shell(canvas: Canvas, body: string, extraCss = ""): string {
   --signal: #12b76a;
   --pad: ${canvas === "square" ? "52px" : "44px"};
 }
+${ink ? `:root {${INK_TOKENS}}` : ""}
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   position: relative;
@@ -93,7 +119,9 @@ body::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 85% at 50% 0%, #ffffff 0%, transparent 60%);
+  background: ${ink
+    ? "radial-gradient(120% 85% at 50% 0%, rgb(255 255 255 / 0.07) 0%, transparent 62%)"
+    : "radial-gradient(120% 85% at 50% 0%, #ffffff 0%, transparent 60%)"};
   pointer-events: none;
 }
 body::after {
@@ -101,7 +129,7 @@ body::after {
   position: absolute;
   inset: 0;
   background-image: url("${GRAIN}");
-  opacity: 0.03;
+  opacity: ${ink ? "0.05" : "0.03"};
   pointer-events: none;
   z-index: 40;
 }
@@ -163,17 +191,19 @@ em, .hl {
 /* Doppelrand: an outer tray with a hairline ring, an inner plate with its own
    ground and a mathematically smaller radius so the curves stay concentric. */
 .tray {
-  background: var(--mute-100);
+  background: ${ink ? "rgb(255 255 255 / 0.045)" : "var(--mute-100)"};
   border-radius: 26px;
   padding: 7px;
-  box-shadow: 0 1px 0 rgb(255 255 255 / 0.7) inset, 0 0 0 1px rgb(13 13 12 / 0.045);
+  box-shadow: ${ink
+    ? "0 1px 0 rgb(255 255 255 / 0.05) inset, 0 0 0 1px rgb(255 255 255 / 0.06)"
+    : "0 1px 0 rgb(255 255 255 / 0.7) inset, 0 0 0 1px rgb(13 13 12 / 0.045)"};
 }
 .plate {
-  background: #fff;
+  background: ${ink ? "var(--surface)" : "#fff"};
   border-radius: 19px;
-  box-shadow:
-    0 1px 1px rgb(13 13 12 / 0.03),
-    0 18px 36px -22px rgb(13 13 12 / 0.28);
+  box-shadow: ${ink
+    ? "0 0 0 1px rgb(255 255 255 / 0.05)"
+    : "0 1px 1px rgb(13 13 12 / 0.03), 0 18px 36px -22px rgb(13 13 12 / 0.28)"};
 }
 ${extraCss}
 </style>
@@ -182,10 +212,12 @@ ${extraCss}
 </html>`;
 }
 
-const LOGO = `<img class="wordmark" src="../../public/brand/sailo-logo.svg" alt="Sailo">`;
+const logo = (tone: Tone) =>
+  `<img class="wordmark" src="../../public/brand/sailo-logo${tone === "ink" ? "-white" : ""}.svg" alt="Sailo">`;
+const LOGO = logo("paper");
 
-function foot(note?: string): string {
-  return `<div class="foot">${LOGO}${note ? `<div class="note">${note}</div>` : "<span></span>"}</div>`;
+function foot(note?: string, tone: Tone = "paper"): string {
+  return `<div class="foot">${logo(tone)}${note ? `<div class="note">${note}</div>` : "<span></span>"}</div>`;
 }
 
 function phone(slug: string, dy = 0): string {
@@ -254,6 +286,7 @@ const PHONE_CSS = `
 `;
 
 const s = (v: unknown) => String(v ?? "");
+const toneOf = (p: Post): Tone => (s(p.art.tone) === "ink" ? "ink" : "paper");
 const arr = (v: unknown) => (Array.isArray(v) ? (v as string[]) : []);
 
 /**
@@ -268,13 +301,13 @@ const SPLIT_CSS = `
 .right { flex: 1; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
 `;
 
-function split(eyebrow: string, headline: string, right: string): string {
+function split(eyebrow: string, headline: string, right: string, tone: Tone = "paper"): string {
   return `<div class="split">
     <div class="left">
       <div class="eyebrow"><span class="dot"></span>${eyebrow}</div>
       <h1 class="display headline">${headline}</h1>
       <div class="spacer"></div>
-      ${LOGO}
+      ${logo(tone)}
     </div>
     <div class="right">${right}</div>
   </div>`;
@@ -283,6 +316,7 @@ function split(eyebrow: string, headline: string, right: string): string {
 /* ---------------------------------------------------------------- templates */
 
 function statement(post: Post, c: Canvas): string {
+  const tone = toneOf(post);
   const size = c === "square" ? 54 : 40;
   return shell(
     c,
@@ -290,13 +324,15 @@ function statement(post: Post, c: Canvas): string {
      <div class="spacer"></div>
      <h1 class="display headline">${s(post.art.headline)}</h1>
      <div class="spacer"></div>
-     ${foot(s(post.art.footnote))}`,
+     ${foot(s(post.art.footnote), tone)}`,
     `.headline { font-size: ${size}px; max-width: ${c === "square" ? "96%" : "78%"}; }
      .eyebrow { align-self: flex-start; }`,
+    tone,
   );
 }
 
 function playbook(post: Post, c: Canvas): string {
+  const tone = toneOf(post);
   const lines = arr(post.art.lines)
     .map(
       (l, i) => `<li><span class="idx">${String(i + 1).padStart(2, "0")}</span><span>${l}</span></li>`,
@@ -311,8 +347,8 @@ function playbook(post: Post, c: Canvas): string {
          <h1 class="display headline">${s(post.art.headline)}</h1>
          ${tray}
          <div class="spacer"></div>
-         ${foot()}`
-      : split(s(post.art.eyebrow), s(post.art.headline), tray),
+         ${foot(undefined, tone)}`
+      : split(s(post.art.eyebrow), s(post.art.headline), tray, tone),
     `${c === "square" ? "" : SPLIT_CSS}
      .headline { font-size: ${c === "square" ? 38 : 27}px; max-width: ${c === "square" ? "94%" : "100%"}; margin-top: ${c === "square" ? 0 : 12}px; }
      .listwrap { margin-top: ${c === "square" ? 26 : 0}px; }
@@ -332,6 +368,7 @@ function playbook(post: Post, c: Canvas): string {
        letter-spacing: 0.06em;
        min-width: ${c === "square" ? 20 : 17}px;
      }`,
+    tone,
   );
 }
 
@@ -341,6 +378,7 @@ function playbook(post: Post, c: Canvas): string {
  * two honest layouts, rather than one layout squeezed until it breaks.
  */
 function phones(post: Post, c: Canvas): string {
+  const tone = toneOf(post);
   const slugs = arr(post.art.shops);
   const square = c === "square";
   /*
@@ -359,7 +397,7 @@ function phones(post: Post, c: Canvas): string {
        <h1 class="display headline">${s(post.art.headline)}</h1>
        <div class="shops">${body}</div>
        <div class="spacer"></div>
-       ${foot()}`,
+       ${foot(undefined, tone)}`,
       `${PHONE_CSS}
        .shop { --w: ${w}px; }
        .headline { font-size: 40px; margin-top: 16px; max-width: 90%; }
@@ -387,6 +425,7 @@ function phones(post: Post, c: Canvas): string {
      .left { display: flex; flex-direction: column; width: 42%; flex: none; }
      .headline { font-size: 30px; margin-top: 14px; }
      .shops { flex: 1; align-items: center; justify-content: center; }`,
+    tone,
   );
 }
 
@@ -397,7 +436,20 @@ function phones(post: Post, c: Canvas): string {
  * that post with the default would tell the reader the opposite of the caption.
  */
 function contrast(post: Post, c: Canvas): string {
-  const muted = s(post.art.rightTone) === "muted";
+  const tone = toneOf(post);
+  /*
+   * Three tones, because a two-column comparison carries three different
+   * arguments and only one of them is "pick the right-hand one".
+   *
+   *   default  right column is the recommendation — full strength, green
+   *   muted    neither side is good (the empty-middle case) — both dimmed
+   *   neutral  the right column is the important truth but not a thing to
+   *            want, e.g. what a discount actually costs. Full strength so it
+   *            carries the post, grey bullets so it doesn't read as advice.
+   */
+  const rightTone = s(post.art.rightTone);
+  const muted = rightTone === "muted";
+  const plainBullets = muted || rightTone === "neutral";
   const col = (label: string, lines: string[], dim: boolean) => `
     <div class="tray col${dim ? " dim" : ""}">
       <div class="plate colin">
@@ -416,8 +468,8 @@ function contrast(post: Post, c: Canvas): string {
          <h1 class="display headline">${s(post.art.headline)}</h1>
          ${cols}
          <div class="spacer"></div>
-         ${foot(s(post.art.footnote))}`
-      : split(s(post.art.eyebrow), s(post.art.headline), cols),
+         ${foot(s(post.art.footnote), tone)}`
+      : split(s(post.art.eyebrow), s(post.art.headline), cols, tone),
     `${c === "square" ? "" : SPLIT_CSS}
      .headline { font-size: ${c === "square" ? 38 : 27}px; margin-top: ${c === "square" ? 16 : 12}px; max-width: ${c === "square" ? "86%" : "100%"}; }
      /* The spacer below collapses to nothing when the columns run tall, which
@@ -450,12 +502,14 @@ function contrast(post: Post, c: Canvas): string {
        background: var(--mute-300);
        transform: translateY(-2px);
      }
-     .col:not(.dim) .colin li::before { background: ${muted ? "var(--mute-300)" : "var(--signal)"}; }
+     .col:not(.dim) .colin li::before { background: ${plainBullets ? "var(--mute-300)" : "var(--signal)"}; }
      ${muted ? ".col:not(.dim) { opacity: 0.62; }" : ""}`,
+    tone,
   );
 }
 
 function stat(post: Post, c: Canvas): string {
+  const tone = toneOf(post);
   return shell(
     c,
     `<div class="eyebrow"><span class="dot"></span>${s(post.art.eyebrow)}</div>
@@ -466,7 +520,7 @@ function stat(post: Post, c: Canvas): string {
      </div>
      <h1 class="display headline">${s(post.art.headline)}</h1>
      <div class="spacer"></div>
-     ${foot(s(post.art.footnote))}`,
+     ${foot(s(post.art.footnote), tone)}`,
     `.figure { display: flex; align-items: baseline; gap: ${c === "square" ? 14 : 10}px; }
      .value { font-size: ${c === "square" ? 150 : 104}px; line-height: 0.86; letter-spacing: -0.05em; }
      .unit {
@@ -479,6 +533,7 @@ function stat(post: Post, c: Canvas): string {
        margin-top: ${c === "square" ? 22 : 14}px;
        max-width: ${c === "square" ? "88%" : "68%"};
      }`,
+    tone,
   );
 }
 

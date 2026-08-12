@@ -57,14 +57,22 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: m.seo.description,
     applicationName: "Sailo",
+    /*
+     * Google has ignored this tag since 2009, so it is not an SEO lever — it is
+     * a statement of which category we are in, read by smaller engines and by
+     * the crawlers that summarise pages. Kept store-first for that reason: the
+     * head noun is a store, and "link in bio" appears once, as the mechanic.
+     */
     keywords: [
-      "link in bio shop",
+      "online store for small business",
       "sell on WhatsApp",
       "online store builder",
-      "link in bio store",
+      "sell online without a website",
       "sell digital downloads",
       "booking page",
-      "Linktree alternative",
+      "Big Cartel alternative",
+      "online store without card payments",
+      "link in bio shop",
       "low fee ecommerce",
     ],
     /*

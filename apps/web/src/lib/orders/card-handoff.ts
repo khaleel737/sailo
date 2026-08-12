@@ -1,8 +1,8 @@
 import "server-only";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { orders, type Shop } from "@sailo/db/schema";
-import { createCheckoutSession } from "@/lib/connect";
+import { orders, type Product, type Shop } from "@sailo/db/schema";
+import { createCheckoutSession, createSubscriptionSession } from "@/lib/connect";
 import { abandonOrder } from "@/lib/inventory";
 import type { Handoff } from "@/lib/payments";
 
@@ -78,6 +78,74 @@ export async function handOffToStripe(opts: {
     return {
       ok: false,
       error: "Card payment isn't available right now. Try another way to order.",
+    };
+  }
+}
+
+/**
+ * Sending a member to Stripe.
+ *
+ * The sibling of `handOffToStripe`, and deliberately not a flag on it. The two
+ * differ in what happens *after* a failure as much as in the session they
+ * create: both roll the order back, but this one has no stock to hand back and
+ * no coupon to release, and — more importantly — the thing it creates is a
+ * standing arrangement rather than a payment, so the row it leaves behind on
+ * success means "waiting for the first invoice" rather than "waiting for a
+ * charge".
+ *
+ * No invoice token. A membership's invoice is raised by Stripe on each billing
+ * cycle and our own invoice row is written when `invoice.paid` arrives, so
+ * there is nothing to name in the success URL before the money exists.
+ */
+export async function handOffSubscription(opts: {
+  shop: Shop;
+  orderId: string;
+  product: Product;
+  successUrl: string;
+  cancelUrl: string;
+}): Promise<CardHandoffResult> {
+  const db = getDb();
+
+  const saved = await db.query.orders.findFirst({
+    where: eq(orders.id, opts.orderId),
+  });
+  if (!saved) return { ok: false, error: "Couldn't start the payment." };
+
+  try {
+    const session = await createSubscriptionSession({
+      shop: opts.shop,
+      order: saved,
+      product: opts.product,
+      successUrl: opts.successUrl,
+      cancelUrl: opts.cancelUrl,
+    });
+    if (!session.url) throw new Error("Stripe returned no checkout URL");
+
+    await db
+      .update(orders)
+      .set({
+        stripeSessionId: session.id,
+        stripeAccountId: opts.shop.stripeAccountId,
+        updatedAt: new Date(),
+      })
+      .where(eq(orders.id, saved.id));
+
+    return { ok: true, handoff: { kind: "redirect", url: session.url } };
+  } catch (error) {
+    /*
+     * The order goes, exactly as it does on the one-time path.
+     *
+     * `abandonOrder` is not called: a membership reserves no stock and carries
+     * no coupon, so there is nothing to give back — and calling it would mean
+     * a restock pass over a product that never held units, which reads as if
+     * memberships had inventory.
+     */
+    await db.delete(orders).where(eq(orders.id, saved.id));
+
+    console.error("[sailo] stripe subscription session failed", error);
+    return {
+      ok: false,
+      error: "Memberships aren't available right now. Try again in a moment.",
     };
   }
 }

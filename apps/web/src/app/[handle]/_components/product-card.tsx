@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CalendarDays, Clock, Download, ImageIcon } from "lucide-react";
+import { CalendarDays, Clock, Download, ImageIcon, RefreshCw } from "lucide-react";
 import type { ProductCard as ProductCardData } from "@/lib/queries";
 import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@/i18n";
@@ -109,8 +109,13 @@ export function ProductCard({
         ) : null}
 
         {/* The photo's lower corner, opposite the heart. Above the stretched
-            link, or the tap would navigate instead of adding. */}
-        {sellable && layout === "grid" ? (
+            link, or the tap would navigate instead of adding.
+
+            Never for a membership: it needs a subscription-mode checkout that
+            a basket cannot be, so a quick-add would build a cart the buyer
+            only finds out is unpayable after filling in the whole form. The
+            product page's Subscribe button is the only way in. */}
+        {sellable && layout === "grid" && product.kind !== "membership" ? (
           <QuickAdd
             productId={product.id}
             productTitle={product.title}
@@ -253,6 +258,16 @@ function KindMeta({
     return (
       <Meta icon={<Download className="size-3 shrink-0 opacity-70" />}>
         {t.shop.kindDigital}
+      </Meta>
+    );
+  }
+
+  if (product.kind === "membership") {
+    return (
+      <Meta icon={<RefreshCw className="size-3 shrink-0 opacity-70" />}>
+        {product.billingInterval === "year"
+          ? t.shop.kindMembershipYear
+          : t.shop.kindMembershipMonth}
       </Meta>
     );
   }

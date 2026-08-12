@@ -21,7 +21,6 @@ import {
   findVariant,
   isLowStock,
   MAX_QUANTITY,
-  releasesBeforePayment,
   retargetSelection,
   variantLabel,
   type CheckoutVariant,
@@ -53,6 +52,8 @@ export function BuyBox({
   methods,
   deliveryOptions,
   kind,
+  billingInterval,
+  canPayInPerson,
   options,
   variants,
   unitsLeft,
@@ -79,6 +80,14 @@ export function BuyBox({
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
   kind: string;
+  /** `month` or `year` for a membership; null for everything else. */
+  billingInterval?: string | null;
+  /**
+   * Whether a pay-in-person rail belongs on this product, decided on the
+   * server by `cartCanPayInPerson` so the button, the sheet and the order all
+   * answer from the same place.
+   */
+  canPayInPerson: boolean;
   options: ProductOption[];
   variants: CheckoutVariant[];
   /** Units left on the product itself, when it has no options. */
@@ -129,12 +138,12 @@ export function BuyBox({
   const soldOut = isSoldOut({ inStock, variants, unitsLeft });
   /*
    * The rails this product can be bought on, which is not always every rail
-   * the shop runs: cash on delivery is a promise about a doorstep, and a
-   * download has none. A shop whose only rail is that one genuinely cannot
-   * sell a file, and saying so on the button beats opening a sheet with
-   * nothing in it.
+   * the shop runs: cash on delivery promises a moment where the money changes
+   * hands, and a download and a video call have none. A shop whose only rail
+   * is that one genuinely cannot sell either, and saying so on the button
+   * beats opening a sheet with nothing in it.
    */
-  const rails = railsForOrder(methods, !releasesBeforePayment(kind, heldUntilPaid));
+  const rails = railsForOrder(methods, canPayInPerson);
   const noRails = rails.length === 0;
   const disabled = soldOut || !salesOpen || noRails;
 
@@ -163,13 +172,25 @@ export function BuyBox({
     window.setTimeout(() => setJustAdded(false), 1600);
   }
 
+  /*
+   * A membership never joins a basket.
+   *
+   * The checkout it needs is a different Stripe mode, and one session cannot
+   * be both — so "Add to basket" beside it would build a cart that has no way
+   * to be paid for, and the buyer would only find out at the end. The button
+   * says what it does instead, and goes straight to the subscribe flow.
+   */
+  const isMembership = kind === "membership";
+
   const primaryLabel = noRails
     ? t.shop.unavailable
     : soldOut
       ? t.shop.soldOut
       : !salesOpen
         ? t.shop.salesClosed
-        : null;
+        : isMembership
+          ? t.shop.subscribeNow
+          : null;
 
   return (
     <div className="space-y-4">
@@ -179,6 +200,14 @@ export function BuyBox({
             ? formatMoney(unitPriceCents, currency, locale)
             : t.common.free}
         </span>
+        {/* The interval belongs beside the number, not in a line underneath:
+            a price with no cadence is the single most misread thing on a
+            membership page. */}
+        {isMembership ? (
+          <span className="text-muted text-sm">
+            {billingInterval === "year" ? t.shop.perYear : t.shop.perMonth}
+          </span>
+        ) : null}
         {wasPriced !== null && wasPriced > unitPriceCents ? (
           <span className="text-muted text-sm line-through tabular-nums">
             {formatMoney(wasPriced, currency, locale)}
@@ -230,7 +259,7 @@ export function BuyBox({
 
       <div className="space-y-2">
         <div className="flex gap-2">
-          {cart ? (
+          {cart && !isMembership ? (
             <button
               type="button"
               disabled={disabled}
@@ -276,7 +305,7 @@ export function BuyBox({
               : "accent-bg hover:opacity-90"
           }`}
         >
-          {cart
+          {cart && !isMembership
             ? t.cart.buyNow
             : (primaryLabel ?? t.shop.orderNow)}
         </button>
@@ -296,6 +325,7 @@ export function BuyBox({
           methods={methods}
           deliveryOptions={deliveryOptions}
           kind={kind}
+          canPayInPerson={canPayInPerson}
           service={service}
           serviceLocation={serviceLocation}
           imageUrl={imageUrl}

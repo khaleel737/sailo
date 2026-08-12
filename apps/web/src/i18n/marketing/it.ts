@@ -17,9 +17,9 @@ export const marketingIt: MarketingDictionary = {
 
   hero: {
     badge: "Gratis per iniziare, gratis per restare",
-    title: "Il link in bio dovrebbe già {highlight}.",
-    titleHighlight: "prendere ordini",
-    body: "Sailo lo trasforma in un negozio vero — foto, prezzi, ricerca, pagamento — e manda ogni ordine nell'app di messaggi a cui stai già rispondendo.",
+    title: "Tutto il tuo negozio, in {highlight}.",
+    titleHighlight: "un solo link",
+    body: "Prendi già ordini nei messaggi. Sailo ci mette davanti un negozio vero — foto, prezzi, ricerca e pagamento dietro un solo link — e ogni ordine arriva sempre nella chat a cui rispondi comunque.",
     ctaPrimary: "Crea il tuo negozio — gratis",
     ctaSecondary: "Apri un negozio vero",
     proof1: "Online in meno di un minuto",
@@ -56,18 +56,6 @@ export const marketingIt: MarketingDictionary = {
     shop4: "Visite, ordini e clienti che tornano, contati",
   },
 
-  versus: {
-    title: "Un link. Un negozio. Nessun compromesso.",
-    body: "Una pagina di link non prende ordini. Un negozio completo è un secondo lavoro. Sailo è la via di mezzo che tutti chiedevano.",
-    us: "Sailo",
-    r1: "Un link corto per la bio",
-    r2: "Prodotti con foto, prezzi e giacenze",
-    r3: "Gli ordini arrivano su WhatsApp, senza checkout da configurare",
-    r4: "Appuntamenti e download immediati",
-    r5: "Un piano gratuito con cui si vende davvero",
-    r6: "35 lingue, da destra a sinistra comprese",
-    note: "Come si posiziona ciascuno strumento, agosto 2026. Controlla i piani attuali prima di cambiare.",
-  },
 
   steps: {
     eyebrow: "Come funziona",
@@ -130,7 +118,7 @@ export const marketingIt: MarketingDictionary = {
   pricing: {
     eyebrow: "Prezzi",
     title: "Gratis per iniziare, e gratis per andare avanti.",
-    body: "Sailo non prende mai una percentuale sulle tue vendite — né sui piani a pagamento, né su quello gratuito.",
+    body: "Gli ordini via chat, bonifico e contanti sono tuoi per intero, su ogni piano. Le vendite con carta portano {fee} sulla merce — mai sulla spedizione né sull'imposta.",
     freeTagline: "Tutto il necessario per i primi ordini.",
     proTagline: "Spazio per crescere, e un negozio che sembra tuo.",
     bizTagline: "Pagamenti con carta, promozioni e segnalazioni: gli strumenti che fanno crescere il fatturato.",
@@ -207,7 +195,7 @@ export const marketingIt: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — trasforma il link in bio in un negozio",
+    title: "Sailo — un negozio online semplice come un link in bio",
     description:
       "Sailo trasforma il link in bio in un negozio vero. Vendi prodotti, file digitali o servizi e ricevi ordini su WhatsApp o con carta, in 35 lingue. Gratis per iniziare, senza commissioni.",
     ogTitle: "Sailo — un link, tutto il tuo negozio",

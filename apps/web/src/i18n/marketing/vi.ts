@@ -17,9 +17,9 @@ export const marketingVi: MarketingDictionary = {
 
   hero: {
     badge: "Miễn phí để bắt đầu, miễn phí để tiếp tục",
-    title: "Liên kết trong bio của bạn nên {highlight}.",
-    titleHighlight: "nhận đơn hàng",
-    body: "Sailo biến nó thành một cửa hàng thật — ảnh, giá, tìm kiếm, thanh toán — và gửi mọi đơn hàng vào ứng dụng chat mà bạn vốn đã trả lời hằng ngày.",
+    title: "Cả cửa hàng của bạn, trong {highlight}.",
+    titleHighlight: "một liên kết",
+    body: "Bạn vốn đã nhận đơn trong tin nhắn. Sailo đặt trước đó một cửa hàng thật — ảnh, giá, tìm kiếm và thanh toán sau một liên kết — và mọi đơn hàng vẫn về đúng cuộc trò chuyện bạn vẫn trả lời.",
     ctaPrimary: "Tạo cửa hàng — miễn phí",
     ctaSecondary: "Mở một cửa hàng thật",
     proof1: "Hoạt động trong chưa đầy một phút",
@@ -56,18 +56,6 @@ export const marketingVi: MarketingDictionary = {
     shop4: "Lượt xem, đơn hàng và khách quay lại, đều được đếm",
   },
 
-  versus: {
-    title: "Một liên kết. Một cửa hàng. Không đánh đổi.",
-    body: "Trang liên kết không nhận được đơn hàng. Một cửa hàng đầy đủ là một công việc thứ hai. Sailo là điểm giữa mà ai cũng mong.",
-    us: "Sailo",
-    r1: "Một liên kết ngắn cho bio của bạn",
-    r2: "Sản phẩm có ảnh, giá và tồn kho",
-    r3: "Đơn về thẳng WhatsApp, không phải dựng cổng thanh toán",
-    r4: "Đặt lịch và tải tệp số tức thì",
-    r5: "Gói miễn phí mà bạn thật sự bán được",
-    r6: "35 ngôn ngữ, gồm cả ngôn ngữ viết từ phải sang trái",
-    note: "Cách mỗi công cụ tự giới thiệu, tháng 8 năm 2026. Hãy kiểm tra gói hiện hành trước khi chuyển.",
-  },
 
   steps: {
     eyebrow: "Cách hoạt động",
@@ -130,7 +118,7 @@ export const marketingVi: MarketingDictionary = {
   pricing: {
     eyebrow: "Giá",
     title: "Miễn phí để bắt đầu, và miễn phí để tiếp tục.",
-    body: "Sailo không bao giờ lấy phần trăm doanh số của bạn — không ở gói trả phí, cũng không ở gói miễn phí.",
+    body: "Đơn hàng qua chat, chuyển khoản và tiền mặt hoàn toàn thuộc về bạn, ở mọi gói. Bán qua thẻ chịu {fee} giá trị hàng hóa — không bao giờ tính trên phí giao hàng hay thuế.",
     freeTagline: "Mọi thứ bạn cần cho những đơn hàng đầu tiên.",
     proTagline: "Chỗ để lớn lên, và một cửa hàng trông như của riêng bạn.",
     bizTagline: "Thanh toán thẻ, khuyến mãi và giới thiệu — những công cụ làm tăng doanh thu.",
@@ -207,7 +195,7 @@ export const marketingVi: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — biến liên kết trong bio thành cửa hàng",
+    title: "Sailo — cửa hàng online đơn giản như một liên kết trong bio",
     description:
       "Sailo biến liên kết trong bio của bạn thành một cửa hàng thật. Bán sản phẩm, tệp số hoặc dịch vụ, nhận đơn qua WhatsApp hoặc bằng thẻ, trong 35 ngôn ngữ. Miễn phí để bắt đầu, và Sailo không lấy hoa hồng.",
     ogTitle: "Sailo — một liên kết, cả cửa hàng của bạn",

@@ -10,7 +10,7 @@ import { BioCard } from "@/components/marketing/bio-card";
 import { PhoneFrame } from "@/components/marketing/frames";
 import { DemoGallery } from "@/components/marketing/demo-gallery";
 import { ShopMarquee } from "@/components/marketing/shop-marquee";
-import { Versus } from "@/components/marketing/versus";
+import { ComparePanels } from "@/components/marketing/compare-panels";
 import { Counter, MotionProvider } from "@/components/marketing/motion";
 import {
   Chip,
@@ -226,13 +226,36 @@ export default async function HomePage() {
         <ShopMarquee label={m.proof.title} />
 
         {/* ---------------------------------------------------------------
-            Where Sailo sits against the tools this audience already knows
+            Live shops.
+
+            This sits directly under the hero, ahead of any argument, because
+            five real pages are more persuasive than a paragraph claiming they
+            exist — and a visitor who bounces before scrolling should still
+            have seen the product working.
+        --------------------------------------------------------------- */}
+        <Section id="demos" tone="ink">
+          <SectionHead
+            eyebrow={m.demos.eyebrow}
+            title={m.demos.title}
+            body={m.demos.body}
+            tone="paper"
+          />
+          <div className="mt-16">
+            <DemoGallery t={m} />
+          </div>
+        </Section>
+
+        {/* ---------------------------------------------------------------
+            The two kinds of page, shown side by side. No competitor is named:
+            see the note in `compare-panels.tsx`.
         --------------------------------------------------------------- */}
         <Section id="compare">
-          <SectionHead title={m.versus.title} body={m.versus.body} />
-          <div className="reveal">
-            <Versus t={m} />
-          </div>
+          <SectionHead
+            eyebrow={m.compare.eyebrow}
+            title={m.compare.title}
+            body={m.compare.body}
+          />
+          <ComparePanels t={m} />
         </Section>
 
         {/* ---------------------------------------------------------------
@@ -256,21 +279,6 @@ export default async function HomePage() {
               </li>
             ))}
           </ol>
-        </Section>
-
-        {/* ---------------------------------------------------------------
-            Live shops
-        --------------------------------------------------------------- */}
-        <Section id="demos" tone="ink">
-          <SectionHead
-            eyebrow={m.demos.eyebrow}
-            title={m.demos.title}
-            body={m.demos.body}
-            tone="paper"
-          />
-          <div className="mt-16">
-            <DemoGallery t={m} />
-          </div>
         </Section>
 
         {/* ---------------------------------------------------------------

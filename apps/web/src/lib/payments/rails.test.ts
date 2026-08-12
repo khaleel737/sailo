@@ -4,6 +4,7 @@ import {
   isConfigured,
   isElectronic,
   isPaymentMethodType,
+  isRailAvailable,
   isRailUsable,
   PAYMENT_METHOD_DEFS,
   PAYMENT_METHOD_TYPES,
@@ -17,8 +18,8 @@ import {
  * strands a buyer who picks it, and hiding one that is loses the sale.
  */
 
-const NO_STRIPE = { stripeAccountId: null, stripeChargesEnabled: false };
-const STRIPE_LIVE = { stripeAccountId: "acct_1", stripeChargesEnabled: true };
+const NO_STRIPE = { stripeAccountId: null, stripeChargesEnabled: false, currency: "USD" };
+const STRIPE_LIVE = { stripeAccountId: "acct_1", stripeChargesEnabled: true, currency: "USD" };
 const cfg = (o: Record<string, string> = {}) => o as PaymentConfig;
 
 describe("the rail catalogue", () => {
@@ -28,6 +29,45 @@ describe("the rail catalogue", () => {
       expect(PAYMENT_METHOD_DEFS[type]).toBeTruthy();
       expect(PAYMENT_METHOD_DEFS[type].kind).toBeTruthy();
     }
+  });
+
+  it("lets the global rails settle any currency", () => {
+    // The chat rails, bank transfer and cash carry no amount of their own and
+    // name no account we have to be right about, so a currency gate on them
+    // would be an invented restriction.
+    for (const type of ["whatsapp", "telegram", "instagram", "email", "phone", "bank_transfer", "cod", "card"]) {
+      expect(isRailAvailable(type, "JOD")).toBe(true);
+      expect(isRailAvailable(type, "USD")).toBe(true);
+    }
+  });
+
+  it("holds Venmo to dollars", () => {
+    // Venmo reads a bare number as USD. A shop pricing in euros would send a
+    // buyer to pay 45.50 dollars for a 45.50 euro order.
+    expect(isRailAvailable("venmo", "USD")).toBe(true);
+    expect(isRailAvailable("venmo", "EUR")).toBe(false);
+    expect(isRailAvailable("venmo", "usd")).toBe(true);
+  });
+
+  it("holds PayPal to the currencies PayPal actually takes", () => {
+    expect(isRailAvailable("paypal", "EUR")).toBe(true);
+    expect(isRailAvailable("paypal", "GBP")).toBe(true);
+    // Three-decimal Gulf currencies are on none of PayPal's lists.
+    expect(isRailAvailable("paypal", "JOD")).toBe(false);
+    expect(isRailAvailable("paypal", "KWD")).toBe(false);
+    // PayPal takes no decimals on these two and Sailo stores them at two, so
+    // the link would name an amount PayPal refuses.
+    expect(isRailAvailable("paypal", "HUF")).toBe(false);
+    expect(isRailAvailable("paypal", "TWD")).toBe(false);
+  });
+
+  it("stops offering a rail when the shop's currency moves out from under it", () => {
+    // Nothing re-validates a saved rail when the seller changes currency, so
+    // the check has to live where the storefront and the order action both
+    // ask — otherwise a fully configured Venmo keeps taking euro orders.
+    const config = cfg({ venmoHandle: "clayandco" });
+    expect(isRailUsable("venmo", config, { ...STRIPE_LIVE, currency: "USD" })).toBe(true);
+    expect(isRailUsable("venmo", config, { ...STRIPE_LIVE, currency: "EUR" })).toBe(false);
   });
 
   it("recognises only the rails it defines", () => {
@@ -84,6 +124,7 @@ describe("isRailUsable", () => {
       isRailUsable("card", cfg(), {
         stripeAccountId: "acct_1",
         stripeChargesEnabled: false,
+        currency: "USD",
       }),
     ).toBe(false);
   });
@@ -113,8 +154,19 @@ describe("the card rail's description", () => {
     expect(PAYMENT_METHOD_DEFS.card.description).toContain(PLATFORM_FEE_LABEL);
   });
 
-  it("does not write the fee out by hand", () => {
-    const withoutLabel = PAYMENT_METHOD_DEFS.card.description.replace("0.5%", "");
+  it("does not write the fee out by hand", async () => {
+    /*
+     * The label is imported rather than typed out. Spelling the current rate
+     * here made this guard need editing every time the rate moved — and a
+     * drift check that has to be hand-edited to stay green is one somebody
+     * eventually edits without reading, which is the failure it exists to
+     * prevent.
+     */
+    const { PLATFORM_FEE_LABEL } = await import("@/lib/plans");
+    const withoutLabel = PAYMENT_METHOD_DEFS.card.description.replace(
+      PLATFORM_FEE_LABEL,
+      "",
+    );
     expect(withoutLabel).not.toMatch(/\d+(\.\d+)?\s?%/);
   });
 });

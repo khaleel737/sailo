@@ -1,5 +1,5 @@
 import { getT } from "@/i18n/server";
-import { measurementId } from "@/lib/google-tag";
+import { containerId, measurementId } from "@/lib/google-tag";
 import { CookieConsent } from "./cookie-consent";
 
 /**
@@ -12,12 +12,17 @@ import { CookieConsent } from "./cookie-consent";
  * storefront's own request instead — `shop-consent.tsx` under `[handle]`,
  * asking about the seller's tools, per shop.
  *
- * Renders nothing when there is no measurement id — on a laptop, or on a
- * preview branch, there is no tag to consent to, and asking anyway would train
- * the one person who sees it to dismiss the thing without reading it.
+ * Renders nothing when neither id is set — on a laptop, or on a preview
+ * branch, there is no tag to consent to, and asking anyway would train the one
+ * person who sees it to dismiss the thing without reading it.
+ *
+ * Both ids are checked, not just the measurement one. `GoogleTag` loads the
+ * GTM container whenever its id is present, so gating this banner on GA4 alone
+ * would let a deployment that runs only the container load it with nothing on
+ * screen to consent to it — the exact failure the gate exists to prevent.
  */
 export async function ConsentGate() {
-  if (!measurementId()) return null;
+  if (!measurementId() && !containerId()) return null;
 
   const { t } = await getT();
 

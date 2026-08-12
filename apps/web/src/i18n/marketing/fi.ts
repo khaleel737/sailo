@@ -17,9 +17,9 @@ export const marketingFi: MarketingDictionary = {
 
   hero: {
     badge: "Aloita ilmaiseksi, jatka ilmaiseksi",
-    title: "Biosi linkin pitäisi jo {highlight}.",
-    titleHighlight: "ottaa tilauksia vastaan",
-    body: "Sailo tekee siitä oikean kaupan — kuvat, hinnat, haku, kassa — ja lähettää jokaisen tilauksen siihen viestisovellukseen, jossa muutenkin vastaat.",
+    title: "Koko kauppasi {highlight}.",
+    titleHighlight: "yhdessä linkissä",
+    body: "Otat tilauksia jo viesteissä. Sailo asettaa niiden eteen oikean kaupan — kuvat, hinnat, haun ja maksun yhden linkin taakse — ja jokainen tilaus tulee yhä siihen chattiin, johon vastaat muutenkin.",
     ctaPrimary: "Luo kauppasi — ilmaiseksi",
     ctaSecondary: "Avaa oikea kauppa",
     proof1: "Pystyssä alle minuutissa",
@@ -56,18 +56,6 @@ export const marketingFi: MarketingDictionary = {
     shop4: "Käynnit, tilaukset ja palaavat asiakkaat laskettuina",
   },
 
-  versus: {
-    title: "Yksi linkki. Yksi kauppa. Ei kompromissia.",
-    body: "Linkkisivu ei ota tilausta vastaan. Täysi verkkokauppa on toinen työ. Sailo on se väliltä, jota kaikki kyselivät.",
-    us: "Sailo",
-    r1: "Yksi lyhyt linkki bioosi",
-    r2: "Tuotteet kuvineen, hintoineen ja saldoineen",
-    r3: "Tilaukset päätyvät WhatsAppiin, ei kassaa pystytettäväksi",
-    r4: "Ajanvaraukset ja välittömät lataukset",
-    r5: "Ilmainen paketti, jolla oikeasti myy",
-    r6: "35 kieltä, oikealta vasemmalle mukaan lukien",
-    note: "Miten kukin palvelu asemoi itsensä, elokuu 2026. Tarkista voimassa olevat paketit ennen vaihtoa.",
-  },
 
   steps: {
     eyebrow: "Näin se toimii",
@@ -130,7 +118,7 @@ export const marketingFi: MarketingDictionary = {
   pricing: {
     eyebrow: "Hinnat",
     title: "Ilmainen aloittaa, ilmainen jatkaa.",
-    body: "Sailo ei koskaan ota osuutta myynnistäsi — ei maksullisissa paketeissa eikä ilmaisessa.",
+    body: "Chatin, tilisiirron ja käteisen kautta tulleet tilaukset ovat kokonaan sinun, kaikissa paketeissa. Korttimyynnistä menee {fee} tavaran hinnasta — ei koskaan toimituksesta tai verosta.",
     freeTagline: "Kaikki mitä ensimmäisiin tilauksiin tarvitaan.",
     proTagline: "Tilaa kasvaa, ja kauppa joka näyttää omaltasi.",
     bizTagline: "Korttimaksut, kampanjat ja suositukset — työkalut jotka kasvattavat liikevaihtoa.",
@@ -207,7 +195,7 @@ export const marketingFi: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — tee biosi linkistä kauppa",
+    title: "Sailo — verkkokauppa yhtä helppo kuin linkki biossa",
     description:
       "Sailo tekee biosi linkistä oikean kaupan. Myy tuotteita, digitaalisia tiedostoja tai palveluita ja ota tilaukset vastaan WhatsAppissa tai kortilla, 35 kielellä. Ilmainen aloittaa, ei provisiota.",
     ogTitle: "Sailo — yksi linkki, koko kauppasi",

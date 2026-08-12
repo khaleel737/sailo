@@ -12,9 +12,13 @@ import {
 import { getSession } from "@/lib/session";
 import { getPartnerForUser } from "@/lib/partners/applications";
 import { getPartnerPayouts } from "@/lib/partners/payouts";
-import { getPartnerSummary, getReferredCreators } from "@/lib/partners/store";
+import {
+  getPartnerShop,
+  getPartnerSummary,
+  getReferredCreators,
+} from "@/lib/partners/store";
 import { getProgramSettings } from "@/lib/partners/settings";
-import { partnerConnectState } from "@/lib/partners/connect";
+import { hasLiveSubscription, payoutBlocker } from "@/lib/partners/eligibility";
 import { referralUrl, resolveCommissionBp, shareLabel } from "@/lib/partners/program";
 import { PLANS } from "@/lib/plans";
 import { formatMoney } from "@/lib/utils";
@@ -69,13 +73,20 @@ export default async function PartnersPage() {
       ? { ...partner, code: partner.code }
       : null;
 
-  const [summary, referrals, payouts] = live
+  const [summary, referrals, payouts, shop] = live
     ? await Promise.all([
         getPartnerSummary(live.id, settings.payoutMinimumCents),
         getReferredCreators(live.id),
         getPartnerPayouts(live.id),
+        /*
+         * Their shop answers both questions this page asks about money: it
+         * carries the subscription that lets them accrue, and the Stripe
+         * account the commission is transferred into. There is no partner-side
+         * Stripe state left to read.
+         */
+        getPartnerShop(live.shopId),
       ])
-    : [null, [], []];
+    : [null, [], [], null];
 
   const currency = summary?.currency ?? "USD";
 
@@ -187,8 +198,9 @@ export default async function PartnersPage() {
               />
 
               <ConnectPanel
-                state={partnerConnectState(live)}
-                country={live.stripeAccountCountry}
+                blocker={payoutBlocker(shop)}
+                subscribed={hasLiveSubscription(shop)}
+                country={shop?.stripeAccountCountry ?? null}
                 availableCents={summary.availableCents}
                 currency={currency}
               />

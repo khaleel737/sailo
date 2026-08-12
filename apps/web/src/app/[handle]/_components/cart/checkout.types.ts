@@ -53,6 +53,13 @@ export type CheckoutDelivery = {
   estimate?: string;
   address?: string;
   hours?: string;
+  /**
+   * Where this rate reaches, as ISO 3166-1 alpha-2. **Empty is anywhere**, not
+   * nowhere — every rate created before zones existed has an empty one.
+   * Shaped to satisfy `DeliveryZone`, so the panel asks `shipsTo` the same
+   * question the server does rather than re-implementing the rule.
+   */
+  countries: string[];
 };
 
 /**

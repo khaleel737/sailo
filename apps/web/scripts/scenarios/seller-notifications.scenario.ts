@@ -109,6 +109,11 @@ async function makeShop(over: Partial<typeof shops.$inferInsert> = {}) {
       currency: "USD",
       isPublished: true,
       plan: "business",
+      // These tests are about which email fires, not about shipping. A buyer of
+      // a physical good must now give an address on a shop that collects one,
+      // so this shop doesn't — otherwise every order below would need a street
+      // and town it has no reason to assert.
+      collectAddress: false,
       ...over,
     })
     .returning();

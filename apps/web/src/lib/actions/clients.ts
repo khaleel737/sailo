@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { clients } from "@sailo/db/schema";
@@ -9,6 +10,7 @@ import { normalizeTags, MAX_TAGS } from "@/lib/client-tags";
 import { normalizePhone } from "@/lib/utils";
 import { rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
+import { emitContactWebhook } from "@/lib/webhooks/emit";
 
 /** Editing the people in a shop's list, by hand. */
 
@@ -115,6 +117,17 @@ export async function addClient(
     .returning({ id: clients.id });
 
   revalidatePath("/admin/clients");
+
+  /*
+   * Only on a genuine insert. `onConflictDoNothing` returning nothing means
+   * the shop already had this person, and a `contact.created` for somebody
+   * who has been a customer for a year is how a mailing list gets a welcome
+   * sequence sent to people who already finished it.
+   */
+  if (created) {
+    const clientId = created.id;
+    after(() => emitContactWebhook({ shop, clientId }));
+  }
 
   return created
     ? { ok: true, message: "Contact added." }
