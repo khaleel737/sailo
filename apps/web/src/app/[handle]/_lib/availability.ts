@@ -1,4 +1,4 @@
-import type { CheckoutVariant } from "@/lib/variants";
+import type { CheckoutVariant } from "@sailo/core/variants";
 
 /**
  * Whether a product can be bought right now.

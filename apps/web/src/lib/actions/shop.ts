@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { after } from "next/server";
-import { toCurrencyCode } from "@/lib/currency";
+import { toCurrencyCode } from "@sailo/core/currency";
 import { normalizeWeeklyHours, type WeeklyHours } from "@/lib/booking/hours";
 import { isTimeZone } from "@/lib/booking/time-zone";
 import { revalidateShop } from "@/lib/cache";

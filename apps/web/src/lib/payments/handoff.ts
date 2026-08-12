@@ -1,5 +1,5 @@
 import { normalizePhone } from "@/lib/utils";
-import { currencyDecimals, minorPerMajor } from "@/lib/currency";
+import { currencyDecimals, minorPerMajor } from "@sailo/core/currency";
 import type { PaymentConfig } from "@sailo/db/schema";
 import { isPaymentMethodType } from "./rails";
 

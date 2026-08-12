@@ -7,7 +7,7 @@ import { getDb } from "@sailo/db";
 import { coupons } from "@sailo/db/schema";
 import { publishShopEvent } from "@/lib/events";
 import { requireShop } from "@/lib/session";
-import { normalizeCode, percentToBp } from "@/lib/pricing";
+import { normalizeCode, percentToBp } from "@sailo/core/pricing";
 import { parseMoneyToCents } from "@/lib/utils";
 import { can, upgradeMessage } from "@/lib/plans";
 import type { ActionState } from "./shop";

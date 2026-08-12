@@ -8,8 +8,8 @@ import {
   minorPerMajor,
   toCurrencyCode,
   toStripeAmount,
-} from "./currency";
-import { formatMoney, moneyToCents, parseMoneyToCents } from "./utils";
+} from "@sailo/core/currency";
+import { formatMoney, moneyToCents, parseMoneyToCents } from "@/lib/utils";
 
 /*
  * The whole table exists for one number, so most of these test that number

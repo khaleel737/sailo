@@ -1,0 +1,26 @@
+{
+  "name": "@sailo/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./currency": "./src/currency.ts",
+    "./pricing": "./src/pricing.ts",
+    "./variants": "./src/variants.ts",
+    "./quote": "./src/quote.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src || true",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@sailo/config": "*",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "@sailo/db": "*"
+  }
+}

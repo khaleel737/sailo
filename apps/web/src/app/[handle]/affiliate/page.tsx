@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Gift, Link2, Share2, Wallet } from "lucide-react";
 import { getShopByHandle } from "@/lib/queries";
 import { AffiliateSignupForm } from "@/app/[handle]/affiliate/_components/affiliate-signup-form";
-import { formatPercent } from "@/lib/pricing";
+import { formatPercent } from "@sailo/core/pricing";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { getShopT } from "@/i18n/server";

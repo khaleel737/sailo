@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Card, Field, Input, Select, Switch } from "@/components/ui";
-import { CURRENCY_CODES, currencyLabel } from "@/lib/currency";
+import { CURRENCY_CODES, currencyLabel } from "@sailo/core/currency";
 import { LOCALES } from "@sailo/i18n/config";
 import type { Dictionary } from "@sailo/i18n";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";

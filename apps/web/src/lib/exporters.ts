@@ -11,7 +11,7 @@ import {
 import { bool, date, money, toCsv } from "@/lib/csv";
 import { tagsToCsv } from "@/lib/client-tags";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
-import { formatPercent } from "@/lib/pricing";
+import { formatPercent } from "@sailo/core/pricing";
 
 export const EXPORT_TYPES = [
   "products",

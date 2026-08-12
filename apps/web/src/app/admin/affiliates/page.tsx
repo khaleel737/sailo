@@ -7,7 +7,7 @@ import {
   markCommissionsPaid,
   setAffiliateStatus,
 } from "@/lib/actions/affiliates";
-import { bpToPercent } from "@/lib/pricing";
+import { bpToPercent } from "@sailo/core/pricing";
 import { PageHeader } from "@/components/shared/page-header";
 import {
   AffiliateForm,

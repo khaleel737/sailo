@@ -1,7 +1,7 @@
 import "server-only";
 import type { Order } from "@sailo/db/schema";
 import { refundCharge } from "@/lib/connect";
-import { toStripeAmount } from "@/lib/currency";
+import { toStripeAmount } from "@sailo/core/currency";
 import { isPaymentMethodType, type PaymentMethodType } from "@/lib/payments";
 
 /**

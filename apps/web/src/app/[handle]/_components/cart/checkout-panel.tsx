@@ -13,7 +13,7 @@ import {
   railsForOrder,
   type PaymentMethodType,
 } from "@/lib/payments";
-import { formatPercent } from "@/lib/pricing";
+import { formatPercent } from "@sailo/core/pricing";
 import { readReferralCode } from "@/lib/referral";
 import { trackClick } from "@/lib/track-click";
 import { interpolate } from "@sailo/i18n";

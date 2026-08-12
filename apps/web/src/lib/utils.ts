@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { countryName, normalizeCountry } from "@/lib/countries";
-import { currencyDecimals } from "@/lib/currency";
+import { currencyDecimals } from "@sailo/core/currency";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {

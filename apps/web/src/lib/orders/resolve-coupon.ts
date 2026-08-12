@@ -2,7 +2,7 @@ import "server-only";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { coupons, type Coupon } from "@sailo/db/schema";
-import { checkCoupon, COUPON_MESSAGES, normalizeCode } from "@/lib/pricing";
+import { checkCoupon, COUPON_MESSAGES, normalizeCode } from "@sailo/core/pricing";
 
 /**
  * Looking up a discount code and deciding whether it applies.

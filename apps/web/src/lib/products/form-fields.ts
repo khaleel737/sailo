@@ -1,6 +1,6 @@
 import type { ProductOption, VariantOptions } from "@sailo/db/schema";
 import { parseMoneyToCents } from "@/lib/utils";
-import { combinations, MAX_VARIANTS, optionKey } from "@/lib/variants";
+import { combinations, MAX_VARIANTS, optionKey } from "@sailo/core/variants";
 import { isRenderableImageUrl } from "@/lib/file-urls";
 
 /**

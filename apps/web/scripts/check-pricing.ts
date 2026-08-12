@@ -11,8 +11,8 @@
  */
 import type { Coupon, DeliveryMethod, ProductOption } from "@sailo/db/schema";
 import { present } from "../src/lib/invariant";
-import { quote, cartNeedsDelivery, type QuoteLine } from "../src/lib/quote";
-import { checkCoupon, type TaxSettings } from "../src/lib/pricing";
+import { quote, cartNeedsDelivery, type QuoteLine } from "@sailo/core/quote";
+import { checkCoupon, type TaxSettings } from "@sailo/core/pricing";
 
 /* -------------------------------------------------------------------------- */
 /*  Harness                                                                    */

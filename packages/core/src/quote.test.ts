@@ -6,7 +6,7 @@ import {
   quote,
   summarise,
   type QuoteLine,
-} from "@/lib/quote";
+} from "./quote";
 
 /**
  * What a basket costs and what it needs from the buyer.

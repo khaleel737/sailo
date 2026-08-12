@@ -5,7 +5,7 @@ import { affiliates, paymentMethods, type Affiliate, type Shop } from "@sailo/db
 import { present } from "@/lib/invariant";
 import { countryName, normalizeCountry } from "@/lib/countries";
 import { can } from "@/lib/plans";
-import { normalizeCode } from "@/lib/pricing";
+import { normalizeCode } from "@sailo/core/pricing";
 import {
   isPaymentMethodType,
   isRailUsable,
@@ -13,8 +13,8 @@ import {
   type PaymentMethodDef,
   type PaymentMethodType,
 } from "@/lib/payments";
-import { cartNeedsDelivery, cartSubtotal, quote, type Quote } from "@/lib/quote";
-import { cartCanPayInPerson } from "@/lib/variants";
+import { cartNeedsDelivery, cartSubtotal, quote, type Quote } from "@sailo/core/quote";
+import { cartCanPayInPerson } from "@sailo/core/variants";
 import { readBuyer } from "@/lib/orders/buyer";
 import { commissionBpFor } from "@/lib/orders/commission";
 import { resolveCoupon } from "@/lib/orders/resolve-coupon";

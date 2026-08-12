@@ -1,4 +1,4 @@
-import { formatPercent } from "@/lib/pricing";
+import { formatPercent } from "@sailo/core/pricing";
 
 /**
  * What to call the tax line.

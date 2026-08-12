@@ -24,7 +24,7 @@ import {
   retargetSelection,
   variantLabel,
   type CheckoutVariant,
-} from "@/lib/variants";
+} from "@sailo/core/variants";
 import { railsForOrder } from "@/lib/payments";
 import type { ProductOption, VariantOptions } from "@sailo/db/schema";
 

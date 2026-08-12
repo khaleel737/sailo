@@ -7,7 +7,7 @@ import {
   saveAffiliate,
   updateAffiliateSettings,
 } from "@/lib/actions/affiliates";
-import { bpToPercent } from "@/lib/pricing";
+import { bpToPercent } from "@sailo/core/pricing";
 import {
   Alert,
   Button,

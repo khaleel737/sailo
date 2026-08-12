@@ -3,7 +3,7 @@
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
 import type { ProductOption, VariantOptions } from "@sailo/db/schema";
-import type { CheckoutVariant } from "@/lib/variants";
+import type { CheckoutVariant } from "@sailo/core/variants";
 
 /**
  * The choice chips — one fieldset per option, one pressable chip per value.

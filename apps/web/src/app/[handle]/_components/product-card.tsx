@@ -10,7 +10,7 @@ import {
   priceRange,
   toCheckoutVariants,
   unitsLeft,
-} from "@/lib/variants";
+} from "@sailo/core/variants";
 import { eventSalesOpen } from "@/lib/tickets";
 import { interpolate } from "@sailo/i18n";
 import { StarRating } from "./star-rating";

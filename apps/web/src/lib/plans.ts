@@ -1,6 +1,6 @@
 import type { Dictionary } from "@sailo/i18n";
 import type { Shop } from "@sailo/db/schema";
-import { taxOn } from "@/lib/pricing";
+import { taxOn } from "@sailo/core/pricing";
 
 export const PLAN_IDS = ["free", "pro", "business"] as const;
 export type PlanId = (typeof PLAN_IDS)[number];

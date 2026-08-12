@@ -12,7 +12,7 @@ import {
   normalizeOptions,
   optionKey,
   variantLabel,
-} from "@/lib/variants";
+} from "@sailo/core/variants";
 import type { ProductOption, ProductVariant } from "@sailo/db/schema";
 
 /**

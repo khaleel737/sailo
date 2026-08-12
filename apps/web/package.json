@@ -46,6 +46,7 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
     "@next/third-parties": "16.3.0",
+    "@sailo/core": "*",
     "@sailo/db": "*",
     "@sailo/i18n": "*",
     "@vercel/analytics": "^2.0.1",

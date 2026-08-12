@@ -4,7 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Loader2, Plus } from "lucide-react";
 import { saveCoupon } from "@/lib/actions/coupons";
-import { bpToPercent } from "@/lib/pricing";
+import { bpToPercent } from "@sailo/core/pricing";
 import { centsToAmount } from "@/lib/utils";
 import {
   Alert,

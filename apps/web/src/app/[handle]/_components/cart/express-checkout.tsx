@@ -13,7 +13,7 @@ import { SlotPicker } from "./slot-picker";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
 import { formatDuration, formatMoney } from "@/lib/utils";
-import { needsDelivery, variantLabel, type CheckoutVariant } from "@/lib/variants";
+import { needsDelivery, variantLabel, type CheckoutVariant } from "@sailo/core/variants";
 import type { ProductOption } from "@sailo/db/schema";
 
 export type {

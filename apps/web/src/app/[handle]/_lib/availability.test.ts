@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { CheckoutVariant } from "@/lib/variants";
+import type { CheckoutVariant } from "@sailo/core/variants";
 import { isSoldOut } from "./availability";
 
 /**

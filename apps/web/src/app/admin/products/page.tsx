@@ -12,7 +12,7 @@ import { ExportButton } from "@/app/admin/_components/export-button";
 import { Table, Td, Th, Tr } from "@/components/shared/table";
 import { Badge, Button, EmptyState } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
-import { anySellable, priceRange, unitsLeft } from "@/lib/variants";
+import { anySellable, priceRange, unitsLeft } from "@sailo/core/variants";
 
 export const metadata: Metadata = { title: "Products" };
 

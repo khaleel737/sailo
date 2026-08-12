@@ -11,7 +11,7 @@ import { eq } from "drizzle-orm";
 import { hashPassword } from "better-auth/crypto";
 import * as schema from "@sailo/db/schema";
 import { slugify } from "../src/lib/utils";
-import { computeTotals } from "../src/lib/pricing";
+import { computeTotals } from "@sailo/core/pricing";
 
 const {
   account,

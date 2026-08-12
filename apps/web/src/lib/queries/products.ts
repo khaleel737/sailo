@@ -4,7 +4,7 @@ import { and, asc, desc, eq, gte, inArray, lte, sql, type SQL } from "drizzle-or
 import { getDb } from "@sailo/db";
 import { categories, productFiles, productImages, productVariants, products, reviews, type Category, type Product, type ProductImage, type ProductVariant } from "@sailo/db/schema";
 import { shopTag } from "@/lib/cache";
-import { minorPerMajor } from "@/lib/currency";
+import { minorPerMajor } from "@sailo/core/currency";
 import { nextOffsetFor, orderByIds } from "./pagination";
 
 /** Reading the catalogue, for the storefront and for the admin. */

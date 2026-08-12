@@ -1,6 +1,6 @@
 import type { Handoff } from "@/lib/payments";
-import type { Totals } from "@/lib/pricing";
-import type { QuoteLine } from "@/lib/quote";
+import type { Totals } from "@sailo/core/pricing";
+import type { QuoteLine } from "@sailo/core/quote";
 import type { Product, ProductVariant } from "@sailo/db/schema";
 
 /**

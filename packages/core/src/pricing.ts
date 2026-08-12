@@ -1,5 +1,5 @@
 import type { Coupon, DeliveryMethod } from "@sailo/db/schema";
-import { chargeStep } from "@/lib/currency";
+import { chargeStep } from "./currency";
 
 /**
  * Percentages are stored in basis points so fractional rates (7.5%) survive a

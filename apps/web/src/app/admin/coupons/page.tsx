@@ -3,7 +3,7 @@ import { Tags, Trash2 } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getShopCoupons } from "@/lib/queries";
 import { deleteCoupon, toggleCoupon } from "@/lib/actions/coupons";
-import { bpToPercent } from "@/lib/pricing";
+import { bpToPercent } from "@sailo/core/pricing";
 import { PageHeader } from "@/components/shared/page-header";
 import { CouponForm } from "@/app/admin/coupons/_components/coupon-form";
 import { Table, Td, Th, Tr } from "@/components/shared/table";

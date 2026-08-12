@@ -1,4 +1,4 @@
-import { minorPerMajor } from "@/lib/currency";
+import { minorPerMajor } from "@sailo/core/currency";
 import type {
   Client,
   Order,

@@ -24,7 +24,7 @@ import { categories, productFiles, productImages, products, productVariants, typ
 import { requireShop } from "@/lib/session";
 import { parseMoneyToCents, slugify } from "@/lib/utils";
 import { atProductLimit, planFor, productLimit } from "@/lib/plans";
-import { isProductKind, isServiceMode, normalizeOptions, optionKey } from "@/lib/variants";
+import { isProductKind, isServiceMode, normalizeOptions, optionKey } from "@sailo/core/variants";
 import { isBillingInterval, normalizeTrialDays } from "@/lib/memberships";
 import type { ActionState } from "./shop";
 

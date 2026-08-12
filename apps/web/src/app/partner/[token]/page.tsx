@@ -14,7 +14,7 @@ import { rotatePortalToken } from "@/lib/actions/partner";
 import { maskPayoutDetails } from "@/lib/payouts";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
-import { formatPercent } from "@/lib/pricing";
+import { formatPercent } from "@sailo/core/pricing";
 import { formatMoney, shopThemeVars } from "@/lib/utils";
 import { CopyLink } from "@/components/shared/copy-link";
 import { LiveRefresh } from "@/components/shared/live-refresh";

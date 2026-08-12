@@ -4,7 +4,7 @@ import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
 import type { Locale } from "@sailo/i18n/config";
-import { formatPercent } from "@/lib/pricing";
+import { formatPercent } from "@sailo/core/pricing";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";

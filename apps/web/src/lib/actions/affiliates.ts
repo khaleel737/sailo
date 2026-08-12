@@ -15,7 +15,7 @@ import { sendAffiliateWelcome } from "@/lib/email";
 import { requireShop } from "@/lib/session";
 import { bufferAffiliateClick, rateLimit } from "@/lib/redis";
 import { callerIp } from "@/lib/client-ip";
-import { formatPercent, generateCode, normalizeCode, percentToBp } from "@/lib/pricing";
+import { formatPercent, generateCode, normalizeCode, percentToBp } from "@sailo/core/pricing";
 import { can, upgradeMessage } from "@/lib/plans";
 import type { ActionState } from "./shop";
 

@@ -2,8 +2,8 @@ import "server-only";
 import { and, asc, eq, exists, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders, products, tickets, type Ticket } from "@sailo/db/schema";
-import { variantLabel } from "@/lib/variants";
-import type { QuoteLine } from "@/lib/quote";
+import { variantLabel } from "@sailo/core/variants";
+import type { QuoteLine } from "@sailo/core/quote";
 
 /**
  * Event tickets. One row per admission, minted with the order and gated by

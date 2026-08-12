@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Coupon, DeliveryMethod } from "@sailo/db/schema";
-import { toStripeAmount } from "@/lib/currency";
-import type { Totals } from "@/lib/pricing";
+import { toStripeAmount } from "./currency";
+import type { Totals } from "./pricing";
 import {
   toChargeableTotals,
   bpToPercent,

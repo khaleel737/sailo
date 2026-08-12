@@ -1,5 +1,5 @@
 import "server-only";
-import { toStripeAmount } from "@/lib/currency";
+import { toStripeAmount } from "@sailo/core/currency";
 import type Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";

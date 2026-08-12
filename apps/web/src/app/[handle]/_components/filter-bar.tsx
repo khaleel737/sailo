@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { minorPerMajor } from "@/lib/currency";
+import { minorPerMajor } from "@sailo/core/currency";
 import type { ShopFacets } from "@/lib/queries";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate, plural } from "@sailo/i18n";

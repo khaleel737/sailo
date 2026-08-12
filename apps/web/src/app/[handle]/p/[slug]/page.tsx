@@ -28,7 +28,7 @@ import {
   cartCanPayInPerson,
   toCheckoutVariants,
   unitsLeft,
-} from "@/lib/variants";
+} from "@sailo/core/variants";
 import { railsForOrder } from "@/lib/payments";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { absolute, breadcrumbJsonLd, productJsonLd } from "@/lib/seo";

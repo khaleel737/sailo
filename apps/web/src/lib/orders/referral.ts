@@ -4,8 +4,8 @@ import { getDb } from "@sailo/db";
 import { affiliates, type Shop } from "@sailo/db/schema";
 import { ensurePortalToken } from "@/lib/affiliate-portal";
 import { maybeRow } from "@/lib/invariant";
-import { generateCode } from "@/lib/pricing";
-import { formatPercent } from "@/lib/pricing";
+import { generateCode } from "@sailo/core/pricing";
+import { formatPercent } from "@sailo/core/pricing";
 
 /**
  * The buyer's own referral link, offered right after they order.
