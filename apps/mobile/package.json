@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@better-auth/expo": "^1.6.25",
-    "@sailo/api": "*",
-    "@sailo/auth": "*",
-    "@sailo/observability": "*",
+    "@sailo/api": "workspace:*",
+    "@sailo/auth": "workspace:*",
+    "@sailo/observability": "workspace:*",
     "better-auth": "^1.6.25",
     "expo": "~54.0.0",
     "expo-constants": "~18.0.0",
@@ -28,9 +28,9 @@
     "react-native-screens": "~4.16.0"
   },
   "devDependencies": {
-    "@sailo/config": "*",
+    "@sailo/config": "workspace:*",
     "@types/react": "~19.1.0",
     "typescript": "^5",
-    "@sailo/db": "*"
+    "@sailo/db": "workspace:*"
   }
 }

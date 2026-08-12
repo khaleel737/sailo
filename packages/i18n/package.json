@@ -17,7 +17,7 @@
     "lint": "oxlint src || true"
   },
   "devDependencies": {
-    "@sailo/config": "*",
+    "@sailo/config": "workspace:*",
     "typescript": "^5"
   }
 }

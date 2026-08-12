@@ -20,7 +20,7 @@
     "server-only": "^0.0.1"
   },
   "devDependencies": {
-    "@sailo/config": "*",
+    "@sailo/config": "workspace:*",
     "typescript": "^5",
     "vitest": "^4.1.10"
   }

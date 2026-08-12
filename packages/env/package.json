@@ -14,7 +14,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@sailo/config": "*"
+    "@sailo/config": "workspace:*"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

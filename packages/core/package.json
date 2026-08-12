@@ -16,11 +16,11 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@sailo/config": "*",
+    "@sailo/config": "workspace:*",
     "typescript": "^5",
     "vitest": "^4.1.10"
   },
   "dependencies": {
-    "@sailo/db": "*"
+    "@sailo/db": "workspace:*"
   }
 }

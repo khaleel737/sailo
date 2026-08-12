@@ -2,8 +2,7 @@
   "name": "sailo-monorepo",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "npm@10.9.4",
-  "workspaces": ["apps/*", "packages/*"],
+  "packageManager": "pnpm@10.34.5",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
@@ -12,5 +11,7 @@
     "typecheck": "turbo typecheck",
     "web": "npm run dev -w @sailo/web"
   },
-  "devDependencies": { "turbo": "^2.5.5" }
+  "devDependencies": {
+    "turbo": "^2.5.5"
+  }
 }

@@ -15,7 +15,7 @@
     "better-auth": "^1.6.25"
   },
   "devDependencies": {
-    "@sailo/config": "*",
+    "@sailo/config": "workspace:*",
     "@types/react": "^19",
     "react": "^19",
     "typescript": "^5"
