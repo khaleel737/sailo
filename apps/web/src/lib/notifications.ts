@@ -3,8 +3,8 @@ import { orderSummaryTitle } from "@/lib/order-lines";
 import { and, desc, eq, gt, isNull, or } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { affiliates, orders, reviews } from "@sailo/db/schema";
-import type { Dictionary } from "@/i18n";
-import { interpolate, plural } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
+import { interpolate, plural } from "@sailo/i18n";
 import { formatMoney } from "@/lib/utils";
 
 export type NotificationKind =

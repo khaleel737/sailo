@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
 import { getShopT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { readUnsubscribeToken } from "@/lib/broadcasts/unsubscribe";
 import { isSuppressed } from "@/lib/broadcasts/audience";
 import { confirmUnsubscribe } from "@/lib/actions/unsubscribe";

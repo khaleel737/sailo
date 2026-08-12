@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Heart, X } from "lucide-react";
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 import { formatMoney } from "@/lib/utils";
 import { useFavorites } from "./use-favorites";
 

@@ -4,7 +4,7 @@ import { useCallback, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, X } from "lucide-react";
 import { Card, Progress } from "@/components/ui";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { setupProgress, type SetupStep, type SetupStepId } from "@/lib/onboarding";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
 

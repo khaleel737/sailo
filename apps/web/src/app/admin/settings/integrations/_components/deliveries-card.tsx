@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 
 export type DeliveryRow = {
   id: string;

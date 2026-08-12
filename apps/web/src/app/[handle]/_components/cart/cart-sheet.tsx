@@ -11,8 +11,8 @@ import { useCart } from "./cart-provider";
 import { SlotPicker } from "./slot-picker";
 import { lineKey, toOrderItems, type CartLine } from "@/lib/cart";
 import { isLowStock, needsDelivery } from "@/lib/variants";
-import type { Dictionary } from "@/i18n";
-import { interpolate } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
+import { interpolate } from "@sailo/i18n";
 import { formatMoney } from "@/lib/utils";
 import type { PreviewLine } from "@/lib/orders/types";
 

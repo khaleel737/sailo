@@ -1,5 +1,5 @@
 import { Star } from "lucide-react";
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 import { cn } from "@/lib/utils";
 
 export function StarRating({

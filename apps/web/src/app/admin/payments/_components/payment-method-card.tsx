@@ -17,7 +17,7 @@ import {
 } from "@/components/ui";
 import { Panel } from "@/components/overlays";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import type { PaymentConfig, PaymentMethod } from "@sailo/db/schema";
 
 /*

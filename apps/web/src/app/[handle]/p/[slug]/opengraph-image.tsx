@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { getProductBySlug, getShopByHandle } from "@/lib/queries";
 import { priceRange } from "@/lib/variants";
 import { formatMoney, isShopLive } from "@/lib/utils";
-import { getDictionary, interpolate } from "@/i18n";
+import { getDictionary, interpolate } from "@sailo/i18n";
 import {
   SailoMark,
   cardTheme,

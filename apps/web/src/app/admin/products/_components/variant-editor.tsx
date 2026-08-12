@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { Button, Input } from "@/components/ui";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import {
   combinations,
   MAX_OPTIONS,

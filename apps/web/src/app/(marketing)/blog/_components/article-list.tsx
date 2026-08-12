@@ -3,8 +3,8 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { ArticleSummary } from "@/lib/blog";
 import { articlePath, blogIndexPath } from "@/lib/blog-urls";
-import { directionOf, type Locale } from "@/i18n/config";
-import type { MarketingDictionary } from "@/i18n/marketing";
+import { directionOf, type Locale } from "@sailo/i18n/config";
+import type { MarketingDictionary } from "@sailo/i18n/marketing";
 
 /*
  * The index's cards and its pager, shared by `/blog` and `/blog/page/[page]`.

@@ -11,7 +11,7 @@ import {
 } from "@/lib/actions/connect";
 import { Alert, Badge, Button, Card } from "@/components/ui";
 import { getAdminT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { cn } from "@/lib/utils";
 
 /**

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Check, MessageSquare, Star, Trash2 } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { getShopReviews } from "@/lib/queries";
 import { approveReview, deleteReview } from "@/lib/actions/reviews";
 import { PageHeader } from "@/components/shared/page-header";

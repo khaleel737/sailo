@@ -26,7 +26,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { SailoMark } from "@/components/brand";
 import { useAdminT } from "./admin-i18n";
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 import { cn } from "@/lib/utils";
 
 /*

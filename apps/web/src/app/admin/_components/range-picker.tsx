@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CalendarRange, Lock } from "lucide-react";
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 import { ANALYTICS_RANGES, cheapestPlanWith, PLANS, PLAN_IDS } from "@/lib/plans";
 import { UpgradeModal } from "./upgrade-modal";
 import { cn } from "@/lib/utils";

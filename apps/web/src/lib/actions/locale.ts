@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { DEFAULT_LOCALE, LOCALES, LOCALE_COOKIE, type Locale } from "@/i18n/config";
+import { DEFAULT_LOCALE, LOCALES, LOCALE_COOKIE, type Locale } from "@sailo/i18n/config";
 import { getContentLocales, getSlugLocales } from "@/lib/blog";
 import { articlePath, blogIndexPath } from "@/lib/blog-urls";
 

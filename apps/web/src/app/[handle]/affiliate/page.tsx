@@ -8,7 +8,7 @@ import { formatPercent } from "@/lib/pricing";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { getShopT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { isShopLive, shopThemeVars } from "@/lib/utils";
 import { can } from "@/lib/plans";
 

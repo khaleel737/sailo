@@ -8,7 +8,7 @@ import {
   countryFlag,
   type CountryGroupKey,
 } from "@/lib/countries";
-import { plural } from "@/i18n";
+import { plural } from "@sailo/i18n";
 import { Input } from "@/components/ui";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
 

@@ -15,8 +15,8 @@ import { SegmentedControl } from "@/components/ui/segmented-control";
 import { Dialog } from "@/components/overlays";
 import { formatMoney } from "@/lib/utils";
 import { useAdminLocale } from "@/app/admin/_components/admin-i18n";
-import type { Dictionary } from "@/i18n";
-import { interpolate } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
+import { interpolate } from "@sailo/i18n";
 import { cn } from "@/lib/utils";
 
 /*

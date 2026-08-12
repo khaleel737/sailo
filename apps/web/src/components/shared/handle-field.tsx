@@ -9,8 +9,8 @@ import {
   validateHandleFormat,
   type HandleProblem,
 } from "@/lib/handle";
-import type { Dictionary } from "@/i18n";
-import { interpolate } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
+import { interpolate } from "@sailo/i18n";
 import { cn } from "@/lib/utils";
 
 type State =

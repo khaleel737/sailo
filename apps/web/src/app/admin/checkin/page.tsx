@@ -7,7 +7,7 @@ import { getDb } from "@sailo/db";
 import { tickets } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { shopEvents } from "@/lib/queries/tickets";
 import { normalizeTicketCode } from "@/lib/tickets";
 import { PageHeader } from "@/components/shared/page-header";

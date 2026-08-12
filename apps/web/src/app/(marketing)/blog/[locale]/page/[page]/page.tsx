@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getArticlePageIn } from "@/lib/blog";
-import { isLocale } from "@/i18n/config";
-import { getMarketingDictionary } from "@/i18n/marketing";
+import { isLocale } from "@sailo/i18n/config";
+import { getMarketingDictionary } from "@sailo/i18n/marketing";
 import { Container } from "@/components/marketing/kit";
 import { absolute } from "@/lib/seo";
 import { ArticleList, Pagination } from "../../../_components/article-list";

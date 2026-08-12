@@ -4,7 +4,7 @@ import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 import { updateShop } from "@/lib/actions/shop";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import {
   Alert,
   Button,
@@ -13,7 +13,7 @@ import {
   Select,
 } from "@/components/ui";
 import type { Shop } from "@sailo/db/schema";
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { IdentityCard } from "./identity-card";
 import { OrdersContactCard } from "./orders-contact-card";

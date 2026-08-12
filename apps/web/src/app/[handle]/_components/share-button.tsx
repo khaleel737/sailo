@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Check, Download, Link2, Mail, MoreHorizontal, Share, X } from "lucide-react";
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 import { cn } from "@/lib/utils";
 
 /**

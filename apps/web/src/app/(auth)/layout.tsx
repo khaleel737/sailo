@@ -7,7 +7,7 @@ import { SailoLogo } from "@/components/brand";
 import { PhoneFrame } from "@/components/marketing/frames";
 import { HERO_DEMO, phoneShotUrl } from "@/lib/demos";
 import { getT } from "@/i18n/server";
-import { getMarketingDictionary } from "@/i18n/marketing";
+import { getMarketingDictionary } from "@sailo/i18n/marketing";
 
 /*
  * Not yet converted. The copy on these pages is chosen by a cookie, so the

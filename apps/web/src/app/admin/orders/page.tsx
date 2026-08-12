@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { ShoppingBag } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";

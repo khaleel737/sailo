@@ -1,6 +1,6 @@
 import type { Shop } from "@sailo/db/schema";
-import type { Dictionary } from "@/i18n";
-import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@sailo/i18n";
+import type { Locale } from "@sailo/i18n/config";
 import type {
   CheckoutOptions,
   ProductCard,

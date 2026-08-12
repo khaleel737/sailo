@@ -1,4 +1,4 @@
-import type { MarketingDictionary } from "@/i18n/marketing";
+import type { MarketingDictionary } from "@sailo/i18n/marketing";
 
 /**
  * The showcase shops the landing page puts on display.

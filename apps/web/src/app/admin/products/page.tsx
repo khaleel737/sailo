@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, EyeOff, ImageIcon, Package, Plus, Trash2 } from "lucide-react";

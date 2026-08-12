@@ -5,7 +5,7 @@ import { useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 import { savePayoutDetails } from "@/lib/actions/partner";
 import { PAYOUT_METHOD_TYPES, type PayoutMethodType } from "@/lib/payouts";
-import { interpolate, type Dictionary } from "@/i18n";
+import { interpolate, type Dictionary } from "@sailo/i18n";
 
 function Submit({ label }: { label: string }) {
   const { pending } = useFormStatus();

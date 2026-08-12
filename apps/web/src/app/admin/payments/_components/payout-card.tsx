@@ -5,7 +5,7 @@ import { openStripeDashboard } from "@/lib/actions/connect";
 import { refreshPayouts } from "@/lib/actions/payouts";
 import { Alert, Badge, Button, Card } from "@/components/ui";
 import { getAdminT, getLocale } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { formatMoney } from "@/lib/utils";
 
 /** Badge tone per Stripe payout status — green is money that arrived. */

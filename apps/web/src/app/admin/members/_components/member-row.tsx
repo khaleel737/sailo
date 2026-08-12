@@ -9,7 +9,7 @@ import {
 } from "@/lib/actions/memberships";
 import { Alert, Badge, Button } from "@/components/ui";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { formatMoney } from "@/lib/utils";
 import type { Subscription } from "@sailo/db/schema";
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { badgeHref, badgeLabel, showsBadge, type BadgeShop } from "./powered-by";
-import { getDictionary } from "@/i18n";
-import { LOCALES } from "@/i18n/config";
+import { getDictionary } from "@sailo/i18n";
+import { LOCALES } from "@sailo/i18n/config";
 
 /**
  * The gate itself is covered in `src/lib/plans.test.ts`. What is tested here is

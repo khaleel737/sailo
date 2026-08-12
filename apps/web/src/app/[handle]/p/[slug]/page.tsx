@@ -19,7 +19,7 @@ import { ShopTracking } from "@/app/[handle]/_components/shop-tracking";
 import { VisitTracker } from "@/app/[handle]/_components/visit-tracker";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { getShopT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { formatDuration, isShopLive, shopThemeVars } from "@/lib/utils";
 import {
   anySellable,

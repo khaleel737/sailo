@@ -9,7 +9,7 @@ import { getDownloadByToken, downloadState } from "@/lib/downloads";
 import { ticketsForOrder } from "@/lib/tickets";
 import { eventAccessForOrder } from "@/lib/event-access";
 import { getShopT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { formatBytes, shopThemeVars } from "@/lib/utils";
 import { accessForOrder } from "@/lib/membership-access";

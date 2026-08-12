@@ -6,8 +6,8 @@ import { Search, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { minorPerMajor } from "@/lib/currency";
 import type { ShopFacets } from "@/lib/queries";
-import type { Dictionary } from "@/i18n";
-import { interpolate, plural } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
+import { interpolate, plural } from "@sailo/i18n";
 
 export function FilterBar({
   facets,

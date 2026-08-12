@@ -12,7 +12,7 @@ import {
   type Shop,
 } from "@sailo/db/schema";
 import { ORDERS, MAX_BATCH, sendBatch, sender } from "@/lib/email/transport";
-import { getDictionary } from "@/i18n";
+import { getDictionary } from "@sailo/i18n";
 import { appUrl } from "@/lib/app-url";
 import { can } from "@/lib/plans";
 import { audienceFor } from "./audience";

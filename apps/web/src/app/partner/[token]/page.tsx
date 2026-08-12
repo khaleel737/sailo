@@ -13,7 +13,7 @@ import { getPortalByToken } from "@/lib/affiliate-portal";
 import { rotatePortalToken } from "@/lib/actions/partner";
 import { maskPayoutDetails } from "@/lib/payouts";
 import { getShopT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { formatPercent } from "@/lib/pricing";
 import { formatMoney, shopThemeVars } from "@/lib/utils";
 import { CopyLink } from "@/components/shared/copy-link";

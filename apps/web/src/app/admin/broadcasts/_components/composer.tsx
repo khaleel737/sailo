@@ -14,7 +14,7 @@ import {
 import { parseSegment } from "@/lib/broadcasts/segments";
 import { Alert, Button, Card, Field, Input } from "@/components/ui";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import type { Broadcast } from "@sailo/db/schema";
 import { MarkdownEditor } from "./markdown-editor";
 import { PromoPicker } from "./promo-picker";

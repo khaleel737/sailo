@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Download, Lock } from "lucide-react";
 import { can, cheapestPlanWith } from "@/lib/plans";
 import { getAdminT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import type { Shop } from "@sailo/db/schema";
 
 /**

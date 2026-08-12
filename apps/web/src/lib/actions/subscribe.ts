@@ -3,8 +3,8 @@
 import { and, eq, isNull } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
-import { getDictionary } from "@/i18n";
-import { interpolate } from "@/i18n";
+import { getDictionary } from "@sailo/i18n";
+import { interpolate } from "@sailo/i18n";
 import { callerIp } from "@/lib/client-ip";
 import { rateLimit } from "@/lib/redis";
 import { sendSubscribeConfirmation } from "@/lib/email/messages";

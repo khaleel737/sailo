@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import type { Dictionary } from "@/i18n";
-import type { MarketingDictionary } from "@/i18n/marketing";
-import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@sailo/i18n";
+import type { MarketingDictionary } from "@sailo/i18n/marketing";
+import type { Locale } from "@sailo/i18n/config";
 import { DEMOS } from "@/lib/demos";
 import { APP_URL } from "@/lib/seo";
 import { SailoLogo } from "@/components/brand";

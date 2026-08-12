@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, Switch } from "@/components/ui";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { wantsNotification } from "@/lib/notification-prefs";
 import type { Shop } from "@sailo/db/schema";

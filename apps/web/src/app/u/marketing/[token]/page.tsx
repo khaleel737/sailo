@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { confirmMarketingUnsubscribe } from "@/lib/actions/unsubscribe";
 import { hasOptedOut } from "@/lib/lifecycle/opt-out";
 import { readMarketingOptOutToken } from "@/lib/lifecycle/unsubscribe";

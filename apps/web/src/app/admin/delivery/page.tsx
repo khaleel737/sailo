@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Info, Package, Plus, Store, Truck } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { interpolate, plural } from "@/i18n";
+import { interpolate, plural } from "@sailo/i18n";
 import { countryName } from "@/lib/countries";
 import { getShopDeliveryMethods } from "@/lib/queries";
 import {

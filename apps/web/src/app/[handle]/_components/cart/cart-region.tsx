@@ -8,7 +8,7 @@ import type {
   CheckoutDelivery,
   CheckoutMethod,
 } from "./checkout-panel";
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 import { shopThemeVars } from "@/lib/utils";
 
 /**

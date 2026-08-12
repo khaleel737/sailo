@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { renderBody, readingSeconds, MERGE_TAGS } from "@/lib/broadcasts/markdown";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { Textarea } from "@/components/ui";
 import { cn } from "@/lib/utils";
 

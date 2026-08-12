@@ -1,6 +1,6 @@
 import type { Shop } from "@sailo/db/schema";
-import type { Dictionary } from "@/i18n";
-import { interpolate } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
+import { interpolate } from "@sailo/i18n";
 import { configuredPixels, pixelIdsOf } from "@/lib/shop-pixels";
 import { ShopConsent } from "./shop-consent";
 import { ShopPixels } from "./shop-pixels";

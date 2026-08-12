@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useMemo } from "react";
-import type { AdminDictionary } from "@/i18n/admin/en";
+import type { AdminDictionary } from "@sailo/i18n/admin/en";
 
 /**
  * The admin's strings, for client components.

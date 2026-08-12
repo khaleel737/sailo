@@ -2,7 +2,7 @@
 
 import { Plus, X } from "lucide-react";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { Field, Input, Select } from "@/components/ui";
 import type { PickerOption } from "@/lib/broadcasts/pickers";
 

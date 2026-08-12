@@ -9,7 +9,7 @@ import {
 } from "@/lib/actions/broadcasts";
 import { Alert, Button, Card, Field, Input } from "@/components/ui";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 
 /**
  * Where people join the list — the question this feature had no answer to.

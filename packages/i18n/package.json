@@ -1,0 +1,23 @@
+{
+  "name": "@sailo/i18n",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./config": "./src/config.ts",
+    "./admin": "./src/admin/index.ts",
+    "./admin/*": "./src/admin/*.ts",
+    "./marketing": "./src/marketing/index.ts",
+    "./marketing/*": "./src/marketing/*.ts",
+    "./dictionaries/*": "./src/dictionaries/*.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src || true"
+  },
+  "devDependencies": {
+    "@sailo/config": "*",
+    "typescript": "^5"
+  }
+}

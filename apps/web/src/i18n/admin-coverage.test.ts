@@ -1,7 +1,18 @@
 import { execSync } from "node:child_process";
+import { createRequire } from "node:module";
+import { dirname, join } from "node:path";
 import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { adminEn } from "./en";
+import { adminEn } from "@sailo/i18n/admin/en";
+
+/*
+ * The admin locale files live in @sailo/i18n now, not under this app. The
+ * usage scan below still reads this app's source (that is the point — a key is
+ * "shown" only if a screen here reads it), but the section-parity check reads
+ * the locale files themselves, so it resolves the package's own admin folder
+ * rather than a path that used to sit inside apps/web.
+ */
+const ADMIN_DIR = dirname(createRequire(import.meta.url).resolve("@sailo/i18n/admin/en"));
 
 /**
  * Translations that never reach a screen.
@@ -136,14 +147,14 @@ describe("admin translation coverage", () => {
      * Section-level on purpose: a new key in an existing section still merges
      * over English quietly, but a whole new screen must land everywhere.
      */
-    const en = readFileSync("src/i18n/admin/en.ts", "utf8");
+    const en = readFileSync(join(ADMIN_DIR, "en.ts"), "utf8");
     const sections = [...en.matchAll(/^ {2}([a-zA-Z]+): \{/gm)].map((m) => m[1]);
-    const languages = readdirSync("src/i18n/admin")
+    const languages = readdirSync(ADMIN_DIR)
       .filter((f) => f.endsWith(".ts"))
       .map((f) => f.replace(/\.ts$/, ""))
       .filter((f) => !["en", "index", "coverage.test"].includes(f));
     for (const file of languages) {
-      const other = readFileSync(`src/i18n/admin/${file}.ts`, "utf8");
+      const other = readFileSync(join(ADMIN_DIR, `${file}.ts`), "utf8");
       for (const section of sections) {
         expect(other, `${file} is missing the ${section} section`).toContain(
           `${section}: {`,

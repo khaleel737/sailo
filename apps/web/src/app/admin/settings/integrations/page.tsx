@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { can, cheapestPlanWith } from "@/lib/plans";
 import { appUrl } from "@/lib/app-url";
 import { readIntegrations } from "@/lib/actions/integrations";

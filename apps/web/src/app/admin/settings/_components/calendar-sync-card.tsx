@@ -5,7 +5,7 @@ import { Card, Field, Input } from "@/components/ui";
 import { PlanBadge } from "@/app/admin/_components/locked-feature";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { can } from "@/lib/plans";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import type { Shop } from "@sailo/db/schema";
 
 /**

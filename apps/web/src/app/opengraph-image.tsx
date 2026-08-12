@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getLocale } from "@/i18n/server";
-import { getMarketingDictionary } from "@/i18n/marketing";
+import { getMarketingDictionary } from "@sailo/i18n/marketing";
 import { SailoMark } from "@/lib/og";
 
 export const alt = "Sailo — one link, your whole shop";

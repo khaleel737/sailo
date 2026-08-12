@@ -2,7 +2,7 @@
 
 import { Field, Input, Select } from "@/components/ui";
 import { CURRENCY_CODES, currencyLabel } from "@/lib/currency";
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 import type { SetField, Values } from "./onboarding.types";
 
 export function SellingStep({

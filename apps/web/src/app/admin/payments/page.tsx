@@ -9,7 +9,7 @@ import { PaymentMethodCard } from "@/app/admin/payments/_components/payment-meth
 import { PayoutCard } from "@/app/admin/payments/_components/payout-card";
 import { StripeCard } from "@/app/admin/payments/_components/stripe-card";
 import { Alert, Badge } from "@/components/ui";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { syncAccount } from "@/lib/connect";
 
 export const metadata: Metadata = { title: "Payments" };

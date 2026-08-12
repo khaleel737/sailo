@@ -3,7 +3,7 @@ import path from "node:path";
 import { cacheLife, cacheTag } from "next/cache";
 import matter from "gray-matter";
 import { Marked } from "marked";
-import { DEFAULT_LOCALE, isLocale, LOCALES, type Locale } from "@/i18n/config";
+import { DEFAULT_LOCALE, isLocale, LOCALES, type Locale } from "@sailo/i18n/config";
 
 /*
  * The blog, read off disk.

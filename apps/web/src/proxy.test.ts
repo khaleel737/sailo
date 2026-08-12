@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { config } from "./proxy";
-import { LOCALES } from "./i18n/config";
+import { LOCALES } from "@sailo/i18n/config";
 
 /*
  * The proxy's matcher has to be a static literal — Next reads it at build time

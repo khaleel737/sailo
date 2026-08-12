@@ -4,8 +4,8 @@ import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Loader2, Star } from "lucide-react";
 import { submitReview } from "@/lib/actions/reviews";
-import type { Dictionary } from "@/i18n";
-import { plural } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
+import { plural } from "@sailo/i18n";
 import { cn } from "@/lib/utils";
 
 function Submit({ label }: { label: string }) {

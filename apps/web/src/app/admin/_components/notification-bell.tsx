@@ -19,8 +19,8 @@ import {
 } from "@/lib/actions/notifications";
 import { cn } from "@/lib/utils";
 import type { Notification, NotificationKind } from "@/lib/notifications";
-import type { Dictionary } from "@/i18n";
-import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@sailo/i18n";
+import type { Locale } from "@sailo/i18n/config";
 
 const ICONS: Record<NotificationKind, typeof Bell> = {
   order: ShoppingBag,

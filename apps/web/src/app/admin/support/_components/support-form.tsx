@@ -4,7 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { createSupportTicket } from "@/lib/actions/support";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { Alert, Button, Card, Field, Input, Select, Textarea } from "@/components/ui";
 import {
   MAX_MESSAGE_LENGTH,

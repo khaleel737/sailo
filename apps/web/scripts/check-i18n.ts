@@ -7,12 +7,12 @@
  *
  *   npm run check:i18n
  */
-import { LOCALES } from "../src/i18n/config";
-import { adminCoverage } from "../src/i18n/admin";
-import { en } from "../src/i18n/dictionaries/en";
-import { getDictionary } from "../src/i18n";
-import { marketingEn } from "../src/i18n/marketing/en";
-import { getMarketingDictionary } from "../src/i18n/marketing";
+import { LOCALES } from "@sailo/i18n/config";
+import { adminCoverage } from "@sailo/i18n/admin";
+import { en } from "@sailo/i18n/dictionaries/en";
+import { getDictionary } from "@sailo/i18n";
+import { marketingEn } from "@sailo/i18n/marketing/en";
+import { getMarketingDictionary } from "@sailo/i18n/marketing";
 
 let storefrontGaps = 0;
 let marketingGaps = 0;

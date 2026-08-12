@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { ArrowUpRight, Check, Copy, Gift } from "lucide-react";
-import type { Dictionary } from "@/i18n";
-import { interpolate } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
+import { interpolate } from "@sailo/i18n";
 
 /**
  * Shown right after ordering — the one moment we know for certain the buyer

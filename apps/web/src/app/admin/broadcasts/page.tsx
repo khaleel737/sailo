@@ -15,7 +15,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { LockedFeature } from "@/app/admin/_components/locked-feature";
 import { Badge, Button, Card, EmptyState } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { GrowCard } from "./_components/grow-card";
 
 export const metadata: Metadata = { title: "Broadcasts" };

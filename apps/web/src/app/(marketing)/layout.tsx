@@ -3,7 +3,7 @@ import { GoogleTag } from "@/lib/google-tag";
 import { ConsentGate } from "@/components/shared/consent-gate";
 import { SiteNav } from "@/components/marketing/site-nav";
 import { getT, getLocale } from "@/i18n/server";
-import { getMarketingDictionary } from "@/i18n/marketing";
+import { getMarketingDictionary } from "@sailo/i18n/marketing";
 import { SiteFooter } from "./_components/site-footer";
 
 /*

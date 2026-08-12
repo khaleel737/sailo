@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
 import { usePathname, useRouter } from "next/navigation";
 import { Check } from "lucide-react";
-import { LOCALES, type Locale } from "@/i18n/config";
+import { LOCALES, type Locale } from "@sailo/i18n/config";
 import { setLocale } from "@/lib/actions/locale";
 import { cn } from "@/lib/utils";
 

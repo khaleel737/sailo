@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CalendarDays, Clock, Download, ImageIcon, RefreshCw } from "lucide-react";
 import type { ProductCard as ProductCardData } from "@/lib/queries";
 import type { Shop } from "@sailo/db/schema";
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 import { cn, formatDuration, formatMoney } from "@/lib/utils";
 import {
   anySellable,
@@ -12,7 +12,7 @@ import {
   unitsLeft,
 } from "@/lib/variants";
 import { eventSalesOpen } from "@/lib/tickets";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { StarRating } from "./star-rating";
 import { FavoriteButton } from "./favorites/favorite-button";
 import { QuickAdd } from "./cart/quick-add";

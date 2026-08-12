@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { Check, ShoppingBag, X } from "lucide-react";
 import { useCart } from "./cart-provider";
 import { OptionChips } from "../option-chips";
-import type { Dictionary } from "@/i18n";
-import { interpolate } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
+import { interpolate } from "@sailo/i18n";
 import { cn, formatMoney } from "@/lib/utils";
 import {
   findVariant,

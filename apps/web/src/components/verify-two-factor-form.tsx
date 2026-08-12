@@ -9,7 +9,7 @@ import {
   AuthInput,
   AuthSubmit,
 } from "@/components/auth/auth-kit";
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 
 /**
  * The second factor, spent.

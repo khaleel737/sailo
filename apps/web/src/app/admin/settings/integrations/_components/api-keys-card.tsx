@@ -10,7 +10,7 @@ import {
   type IntegrationState,
 } from "@/lib/actions/integrations";
 import { MAX_API_KEYS_PER_SHOP } from "@/lib/webhooks/events";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { RevealOnce } from "./reveal-once";
 
 const IDLE: IntegrationState = { ok: false };

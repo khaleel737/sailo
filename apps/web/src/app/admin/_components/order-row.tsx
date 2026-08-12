@@ -15,7 +15,7 @@ import { OrderActions } from "@/app/admin/orders/_components/order-actions";
 import { Badge, Button } from "@/components/ui";
 import { orderStatusLabel, orderStatusTone } from "@/lib/order-status";
 import { getAdminT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { taxName } from "@/lib/tax-label";
 import { formatAddress, formatMoney } from "@/lib/utils";
 import type { Order } from "@sailo/db/schema";

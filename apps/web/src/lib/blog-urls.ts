@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
+import { DEFAULT_LOCALE, type Locale } from "@sailo/i18n/config";
 import { getContentLocales } from "@/lib/blog";
 import { absolute } from "@/lib/seo";
 

@@ -6,8 +6,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { Instagram } from "@/components/shared/brand-icons";
 import { DEMOS, phoneShotUrl, shotUrl } from "@/lib/demos";
-import type { MarketingDictionary } from "@/i18n/marketing";
-import { interpolate } from "@/i18n";
+import type { MarketingDictionary } from "@sailo/i18n/marketing";
+import { interpolate } from "@sailo/i18n";
 import { BrowserFrame, PhoneFrame } from "./frames";
 import { cn } from "@/lib/utils";
 

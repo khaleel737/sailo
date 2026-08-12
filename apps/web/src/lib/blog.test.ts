@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getArticle, getArticleSlugs, getArticles, getEveryArticle } from "./blog";
-import { LOCALES, type Locale } from "@/i18n/config";
+import { LOCALES, type Locale } from "@sailo/i18n/config";
 
 /*
  * These read the real `content/blog` directory rather than a fixture.

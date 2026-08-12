@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { Gift } from "lucide-react";
 import type { Shop } from "@sailo/db/schema";
-import type { Dictionary } from "@/i18n";
-import { interpolate } from "@/i18n";
-import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@sailo/i18n";
+import { interpolate } from "@sailo/i18n";
+import type { Locale } from "@sailo/i18n/config";
 import { formatPercent } from "@/lib/pricing";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { PoweredBy } from "@/components/shared/powered-by";
-import { getMarketingDictionary } from "@/i18n/marketing";
+import { getMarketingDictionary } from "@sailo/i18n/marketing";
 import { hasPixels } from "@/lib/shop-pixels";
 import { ShopCookieSettings } from "./shop-cookie-settings";
 

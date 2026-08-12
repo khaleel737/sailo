@@ -13,7 +13,7 @@ import { billingEnabled } from "@/lib/stripe";
 import { IntervalToggle } from "@/app/admin/settings/billing/_components/interval-toggle";
 import { Alert, Badge, Button, Card, Progress } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Billing" };

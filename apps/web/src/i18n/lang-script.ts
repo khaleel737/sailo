@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALES } from "./config";
+import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALES } from "@sailo/i18n/config";
 
 /**
  * Sets `<html lang>` and `<html dir>` in the browser, before the first paint.

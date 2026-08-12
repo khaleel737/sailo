@@ -113,7 +113,7 @@ function imageUrlOrNull(value: FormDataEntryValue | null): string | null {
   const url = String(value ?? "").trim();
   return isRenderableImageUrl(url) ? url : null;
 }
-import { LOCALES, type Locale } from "@/i18n/config";
+import { LOCALES, type Locale } from "@sailo/i18n/config";
 
 export type ActionState = { ok: boolean; error?: string; message?: string };
 

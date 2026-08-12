@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Menu } from "lucide-react";
 import { SailoLogo, SailoMark } from "@/components/brand";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
-import type { Locale } from "@/i18n/config";
-import type { MarketingDictionary } from "@/i18n/marketing";
+import type { Locale } from "@sailo/i18n/config";
+import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import { Container, Cta } from "./kit";
 
 /**

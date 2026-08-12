@@ -10,7 +10,7 @@ import {
   AuthNotice,
   AuthSubmit,
 } from "@/components/auth/auth-kit";
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 
 /**
  * Sets the new password.

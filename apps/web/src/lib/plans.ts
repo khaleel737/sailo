@@ -1,4 +1,4 @@
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 import type { Shop } from "@sailo/db/schema";
 import { taxOn } from "@/lib/pricing";
 

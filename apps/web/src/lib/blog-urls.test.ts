@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { articlePath, blogIndexLanguages, blogIndexPath } from "./blog-urls";
 import { getContentLocales, getEveryArticleByLocale } from "./blog";
-import { DEFAULT_LOCALE } from "@/i18n/config";
+import { DEFAULT_LOCALE } from "@sailo/i18n/config";
 
 /*
  * These read the real `content/blog` directory, like `blog.test.ts` does, and

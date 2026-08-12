@@ -3,8 +3,8 @@ import { cheapestPlanWith, planFor, type Features } from "@/lib/plans";
 import { UpgradeButton } from "./upgrade-modal";
 import { Card } from "@/components/ui";
 import type { Shop } from "@sailo/db/schema";
-import type { Dictionary } from "@/i18n";
-import { interpolate } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
+import { interpolate } from "@sailo/i18n";
 
 /**
  * Small chip naming the plan that unlocks something. Locked features stay

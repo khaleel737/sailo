@@ -6,7 +6,7 @@ import {
   LOCALE_COOKIE,
   LOCALES,
   matchAcceptLanguage,
-} from "@/i18n/config";
+} from "@sailo/i18n/config";
 
 /*
  * Locale-prefixed blog URLs.

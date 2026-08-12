@@ -28,7 +28,7 @@ import { Badge, Card, EmptyState, Stat } from "@/components/ui";
 import { orderStatusLabel, orderStatusTone } from "@/lib/order-status";
 import { formatMoney } from "@/lib/utils";
 import { getAdminT, getLocale, getT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 
 export const metadata: Metadata = { title: "Overview" };
 

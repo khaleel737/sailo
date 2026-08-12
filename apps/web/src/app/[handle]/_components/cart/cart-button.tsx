@@ -3,8 +3,8 @@
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "./cart-provider";
 import { formatMoney } from "@/lib/utils";
-import { interpolate } from "@/i18n";
-import type { Dictionary } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
+import type { Dictionary } from "@sailo/i18n";
 
 /**
  * The basket, pinned to the bottom of every page of the shop.

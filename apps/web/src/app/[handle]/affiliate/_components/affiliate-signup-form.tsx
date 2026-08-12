@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 import { applyAsAffiliate } from "@/lib/actions/affiliates";
-import type { Dictionary } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
 
 function Submit({ label }: { label: string }) {
   const { pending } = useFormStatus();

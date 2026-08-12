@@ -16,7 +16,7 @@ import {
 import { formatPercent } from "@/lib/pricing";
 import { readReferralCode } from "@/lib/referral";
 import { trackClick } from "@/lib/track-click";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { formatMoney } from "@/lib/utils";
 import { deliveryCopy, railCopy } from "./checkout-copy";
 import { useCart } from "./cart-provider";

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getLocale } from "@/i18n/server";
-import { directionOf } from "@/i18n/config";
-import { getMarketingDictionary } from "@/i18n/marketing";
+import { directionOf } from "@sailo/i18n/config";
+import { getMarketingDictionary } from "@sailo/i18n/marketing";
 
 /**
  * Sellers run this from a phone, usually a cheap one, and a good number of

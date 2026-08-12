@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getShopByHandle, pickFilters } from "@/lib/queries";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { absolute, shopJsonLd } from "@/lib/seo";
 import { shopThemeVars } from "@/lib/utils";
 import { getShopPageData } from "./_lib/get-shop-page-data";

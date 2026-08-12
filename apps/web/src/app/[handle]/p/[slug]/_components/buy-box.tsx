@@ -14,8 +14,8 @@ import { FavoriteButton } from "@/app/[handle]/_components/favorites/favorite-bu
 import { OptionChips } from "@/app/[handle]/_components/option-chips";
 import { useVariantPhoto } from "./variant-photo";
 import { isSoldOut } from "@/app/[handle]/_lib/availability";
-import type { Dictionary } from "@/i18n";
-import { interpolate } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
+import { interpolate } from "@sailo/i18n";
 import { formatMoney } from "@/lib/utils";
 import {
   findVariant,

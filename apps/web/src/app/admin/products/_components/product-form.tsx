@@ -24,7 +24,7 @@ import { ServiceSettingsCard } from "./service-settings-card";
 import { EventSettingsCard } from "./event-settings-card";
 import { MembershipSettingsCard } from "./membership-settings-card";
 import type { ProductWithRelations } from "./product.types";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import type {
   Category,
 } from "@sailo/db/schema";

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getShopByHandle } from "@/lib/queries";
 import { getShopT } from "@/i18n/server";
-import { interpolate } from "@/i18n";
+import { interpolate } from "@sailo/i18n";
 import { shopThemeVars } from "@/lib/utils";
 import { absolute } from "@/lib/seo";
 import { SubscribeCard } from "../_components/subscribe-card";

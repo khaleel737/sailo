@@ -16,8 +16,8 @@ import { HandleField } from "@/components/shared/handle-field";
 import { ShopPreview } from "./shop-preview";
 import { slugify } from "@/lib/utils";
 import { normalizeHandle } from "@/lib/handle";
-import type { Dictionary } from "@/i18n";
-import { interpolate } from "@/i18n";
+import type { Dictionary } from "@sailo/i18n";
+import { interpolate } from "@sailo/i18n";
 import { cn } from "@/lib/utils";
 
 /*

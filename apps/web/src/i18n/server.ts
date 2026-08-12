@@ -7,9 +7,9 @@ import {
   isLocale,
   matchAcceptLanguage,
   type Locale,
-} from "./config";
-import { getDictionary } from ".";
-import { getAdminDictionary } from "./admin";
+} from "@sailo/i18n/config";
+import { getDictionary } from "@sailo/i18n";
+import { getAdminDictionary } from "@sailo/i18n/admin";
 
 /**
  * The viewer's own preference: an explicit cookie first, then the browser's

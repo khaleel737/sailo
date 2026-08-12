@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { Card, Field, Input, Select, Switch } from "@/components/ui";
 import { CURRENCY_CODES, currencyLabel } from "@/lib/currency";
-import { LOCALES } from "@/i18n/config";
-import type { Dictionary } from "@/i18n";
+import { LOCALES } from "@sailo/i18n/config";
+import type { Dictionary } from "@sailo/i18n";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
 import type { Shop } from "@sailo/db/schema";
 
