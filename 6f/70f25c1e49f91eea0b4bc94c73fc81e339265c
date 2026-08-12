@@ -1,0 +1,573 @@
+README.md
+  s_3fd229194f6299::t_97b89f79df51db 217,237
+apps/web/drizzle/0017_memberships.sql
+  s_3fd229194f6299::t_71c2f4ed550d5b 1-110
+apps/web/drizzle/0018_manual_memberships.sql
+  s_3fd229194f6299::t_34fa4cfd04ab24 1-61
+apps/web/drizzle/0019_shipping_zones.sql
+  s_3fd229194f6299::t_44dd1304c53f9c 1-39
+apps/web/drizzle/0020_integrations.sql
+  s_3fd229194f6299::t_c24a79e79906ae 1-149
+apps/web/drizzle/0021_partner_pays_to_shop.sql
+  s_3fd229194f6299::t_b13436d50f3a4b 1-72
+apps/web/e2e/checkout.spec.ts
+  s_3fd229194f6299::t_f0cae9a7a9b1eb 146-156,166-169,178-201,208-283
+apps/web/scripts/check-partners.ts
+  s_3fd229194f6299::t_a803da7aa502b1 6-10,12-15,17-25,70-123,131,134,137,139-140,142-143,145-148,151-153,158,161,163-164,170-172,184-186,188-193,195,197,199-200,205-208,210,213-215,218,221,229-231,233-234,237-252,254,256-259,262,266,270,272,275-276,278,281,288-289,292-294,297-300
+apps/web/scripts/scenarios/api.scenario.ts
+  s_3fd229194f6299::t_580d95f6631e9e 1-519
+apps/web/scripts/scenarios/bookings-audience.scenario.ts
+  s_3fd229194f6299::t_2358abbb5e95c3 81-84,87-93,154,452
+apps/web/scripts/scenarios/checkout.scenario.ts
+  s_3fd229194f6299::t_b0da98395d5dd5 83-92,288-460,533-538,543
+apps/web/scripts/scenarios/memberships-e2e.md
+  s_3fd229194f6299::t_344169abcb96ea 1-122
+apps/web/scripts/scenarios/memberships-live.scenario.ts
+  s_3fd229194f6299::t_c8ba736b3a78b0 1-537
+apps/web/scripts/scenarios/memberships.scenario.ts
+  s_3fd229194f6299::t_cf4771ec3ecbb5 1-1253
+apps/web/scripts/scenarios/partner-program.scenario.ts
+  s_3fd229194f6299::t_61b7c21358fb0f 48-50,85-94,117,119-122,124,179-180,183,186-188,190,209,224,835-1036
+apps/web/scripts/scenarios/seller-notifications.scenario.ts
+  s_3fd229194f6299::t_f85f7be9b837c8 112-116
+apps/web/scripts/scenarios/us-wallets.scenario.ts
+  s_3fd229194f6299::t_8a79c377a2b4aa 1-303
+apps/web/scripts/scenarios/webhooks.scenario.ts
+  s_3fd229194f6299::t_989c83e1a6c74b 1-560
+apps/web/scripts/social/content.ts
+  s_3fd229194f6299::t_d843a87502f04c 4-8,10-13,15-23,30,38-43,45-49,52-55,57-61,63-67,69-73,82-83,85,87-88,91-143,145,147,149,151,153,155,157,159-160,162,164,166-167,169,171,173,175-176,178,180,183-185,187-191,193,195,197,199,201,203,205,207-208,210,212,214-215,217,219,221,223-224,226,228,231-233,235-238,240,242-244,246,248,250,252,254-255,257,259,261-262,264,266,268,270-271,273,275,278-280,282-291,293,295,297,299-301,303,305,307-308,310,312,314-315,317,319-321,323,325-328,330,332-333,335-337,339-347,349,351,353,355,357-359,361-364,366,368,370,372-373,375,377,379-381,383,385-386,388,390,393-394,397-401,403,405,407,409,411,413,415-416,418,420,422-423,425,427,429,431-432,434,436,439,441,443-446,448,450,452,454,456-458,460,463,465,467,470,472,474-476,479,481,483,486-488,490-497,499,501,503,505-507,509,511-512,514,516,518-519,521,523,525,527-528,530,532,534-535,537-539,541-549,551,553-555,557,559,561-563,565,567-568,570,572,574-575,577,579,581-582,584,586,589-591,593-599,601-603,605,607,609-611,613,615-616,618,620,622-623,625,627,629,631-632,634,636,638-639,641-642,645-648,650,652,654-656,658,660,662-663,665,667,669,671-672,674,676-678,680,682-685,687,690-692,694-703,705,707-711,713,715-717,719,721-722,724,726,728-729,731,733,735,737-740,742,745-747,749-757,759,761,763,765-767,769,771,773-774,776,778,780-781,783,785,787-790,792,794,796-797,799-801,803-812,814-820,822,824,826-863,865,867,869-871,873,875-876,878,880-881,883,885,887-888,890,892,898
+apps/web/scripts/social/creators.ts
+  s_3fd229194f6299::t_e82eb69522fa22 1-235
+apps/web/scripts/social/daily.ts
+  s_3fd229194f6299::t_98b1ef2dbddccb 24,99-114,134-136
+apps/web/scripts/social/outreach.ts
+  s_3fd229194f6299::t_64a9235cd4e759 1-145
+apps/web/scripts/social/templates.ts
+  s_3fd229194f6299::t_c0a0c6fee1f3f4 24,59-82,84,103,122-124,132,194,197-199,202,204-206,215-217,219-220,289,304,310,319,327,330,335,350-351,371,381,400,428,439-452,471-472,505,507,512,523,536
+apps/web/src/app/(legal)/privacy/page.tsx
+  s_3fd229194f6299::t_63113ad9ae0931 367,379-387
+apps/web/src/app/(marketing)/_components/pricing-section.tsx
+  s_3fd229194f6299::t_d1153f8feb7bf9 156-159
+apps/web/src/app/(marketing)/docs/api/page.tsx
+  s_3fd229194f6299::t_9318f84b44e65f 1-310
+apps/web/src/app/(marketing)/page.tsx
+  s_3fd229194f6299::t_3a2764801258e9 13,229-234,236-244,248-260
+apps/web/src/app/[handle]/_components/cart/checkout-copy.ts
+  s_3fd229194f6299::t_6e718cec0ba310 28-31
+apps/web/src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_3fd229194f6299::t_df3915c21907cd 3,7-8,66-81,84-90,96-117,127-128,143,151-191,204-220,261,272-283,435-472,478-493,495,497,554,600-602,611-615,617,625-629,634-638,648-654,668,680-685,873-877
+apps/web/src/app/[handle]/_components/cart/checkout.types.ts
+  s_3fd229194f6299::t_7fe7ac6f191174 56-62
+apps/web/src/app/[handle]/_components/cart/confirmation.tsx
+  s_3fd229194f6299::t_91887a96e1f0ba 4,42-53,97-108
+apps/web/src/app/[handle]/_components/cart/express-checkout.tsx
+  s_3fd229194f6299::t_fe3de51fba8ab9 56,80-81,198-200
+apps/web/src/app/[handle]/_components/cart/use-checkout-quote.ts
+  s_3fd229194f6299::t_4f14764e09f72e 36-41,52,73,93,100-102,108,144-150
+apps/web/src/app/[handle]/_components/product-card.tsx
+  s_3fd229194f6299::t_a78d98a697b3d1 3,112-118,265-274
+apps/web/src/app/[handle]/p/[slug]/_components/buy-box.tsx
+  s_3fd229194f6299::t_0e664f3996b3e1 55-56,83-90,141-144,146,175-184,191-193,203-210,262,308,328
+apps/web/src/app/[handle]/p/[slug]/page.tsx
+  s_3fd229194f6299::t_6ba864851a7e64 28,94-101,111-117,119,307-308
+apps/web/src/app/admin/_components/sidebar.tsx
+  s_3fd229194f6299::t_aa6cf46c9090e7 7,55
+apps/web/src/app/admin/_components/traffic-panel.tsx
+  s_3fd229194f6299::t_066891859655a7 3-4
+apps/web/src/app/admin/broadcasts/_components/segment-builder.tsx
+  s_3fd229194f6299::t_f0860255e709f7 139
+apps/web/src/app/admin/delivery/_components/country-picker.tsx
+  s_3fd229194f6299::t_be125904e9cb2a 1-204
+apps/web/src/app/admin/delivery/_components/delivery-rate-form.tsx
+  s_3fd229194f6299::t_c883a074962413 24,133-149
+apps/web/src/app/admin/delivery/page.tsx
+  s_3fd229194f6299::t_d53b3d94af8d6a 5-6,122-143
+apps/web/src/app/admin/members/_components/member-row.tsx
+  s_3fd229194f6299::t_d5bc2954ad0d61 1-155
+apps/web/src/app/admin/members/page.tsx
+  s_3fd229194f6299::t_2d2aa9411a86cf 1-127
+apps/web/src/app/admin/payments/_components/payment-method-card.tsx
+  s_3fd229194f6299::t_e95b8442e24f2d 8,60,64-65,71-78,92-96,111-121
+apps/web/src/app/admin/payments/page.tsx
+  s_3fd229194f6299::t_d0f758060f5a32 6,78-84,172
+apps/web/src/app/admin/products/[id]/page.tsx
+  s_3fd229194f6299::t_1a53f3af52dc90 11-12,48
+apps/web/src/app/admin/products/_components/membership-settings-card.tsx
+  s_3fd229194f6299::t_df6d3b4289e57c 1-117
+apps/web/src/app/admin/products/_components/product-form.tsx
+  s_3fd229194f6299::t_43e1baee05feac 25,48-49,54,192-194,261-270
+apps/web/src/app/admin/products/new/page.tsx
+  s_3fd229194f6299::t_8dd8c7cffe9f28 7-8,23-27
+apps/web/src/app/admin/settings/_components/settings-nav.tsx
+  s_3fd229194f6299::t_44360dcd4c0903 21
+apps/web/src/app/admin/settings/integrations/_components/api-keys-card.tsx
+  s_3fd229194f6299::t_50f281341ba2df 1-198
+apps/web/src/app/admin/settings/integrations/_components/deliveries-card.tsx
+  s_3fd229194f6299::t_555d83ed587d2d 1-103
+apps/web/src/app/admin/settings/integrations/_components/reveal-once.tsx
+  s_3fd229194f6299::t_12eb0f32bf6796 1,3-6,9,11-14,16-19,21-31,33,35-41,45-66
+apps/web/src/app/admin/settings/integrations/_components/webhooks-card.tsx
+  s_3fd229194f6299::t_0dc7dc7fd25d64 1-277
+apps/web/src/app/admin/settings/integrations/page.tsx
+  s_3fd229194f6299::t_803410b3fae01f 1-93
+apps/web/src/app/admin/settings/security/_components/sessions-card.tsx
+  s_3fd229194f6299::t_b4be9fa222000d 11
+apps/web/src/app/api/cron/memberships/route.ts
+  s_3fd229194f6299::t_b60a9f6a99bdac 1-32
+apps/web/src/app/api/cron/sweep/route.ts
+  s_3fd229194f6299::t_f481bad2ca1719 5,39-48,54
+apps/web/src/app/api/cron/webhooks/route.ts
+  s_3fd229194f6299::t_44b7c03d9c44f1 1-33
+apps/web/src/app/api/download/[token]/[fileId]/route.ts
+  s_3fd229194f6299::t_188e14bb6db840 6,79-95
+apps/web/src/app/api/mcp/route.ts
+  s_3fd229194f6299::t_80e3703b5c5aa9 1-353
+apps/web/src/app/api/v1/contacts/[id]/route.ts
+  s_3fd229194f6299::t_e7852fa0e513fd 1-11
+apps/web/src/app/api/v1/contacts/[id]/tags/route.ts
+  s_3fd229194f6299::t_f61d726b6525d8 1-30
+apps/web/src/app/api/v1/contacts/route.ts
+  s_3fd229194f6299::t_92503f52c5cc26 1-4,7,9-33,35-37,39-41,43-47
+apps/web/src/app/api/v1/orders/[id]/route.ts
+  s_3fd229194f6299::t_ba83cceb160960 1-18
+apps/web/src/app/api/v1/orders/route.ts
+  s_3fd229194f6299::t_5231ad329c9ef7 1-21
+apps/web/src/app/api/v1/products/[id]/route.ts
+  s_3fd229194f6299::t_c87f92ffc033b5 1-11
+apps/web/src/app/api/v1/products/route.ts
+  s_3fd229194f6299::t_db3d1d9208748c 1-22
+apps/web/src/app/api/v1/shop/route.ts
+  s_3fd229194f6299::t_93630641ff33a6 1-13
+apps/web/src/app/download/[token]/_components/membership-card.tsx
+  s_3fd229194f6299::t_74c21d38428190 1-138
+apps/web/src/app/download/[token]/page.tsx
+  s_3fd229194f6299::t_d24013bdb24678 15-16,35,57-66,105-135
+apps/web/src/app/hq/(panel)/partners/[id]/page.tsx
+  s_3fd229194f6299::t_10724b4c8b2002 157-158,162-169,177-191
+apps/web/src/app/hq/(panel)/partners/page.tsx
+  s_3fd229194f6299::t_445f3ef61e66f4 9,193,246-266,268-272
+apps/web/src/app/hq/(panel)/partners/payouts/page.tsx
+  s_3fd229194f6299::t_2ba581fe099892 174-180
+apps/web/src/app/layout.tsx
+  s_3fd229194f6299::t_cde514232e4ced 60-65,67,70,73-75
+apps/web/src/app/partners/_components/connect-panel.tsx
+  s_3fd229194f6299::t_8f3244572414ac 2,4,9-13,15-17,20-21,26-27,32-40,42-48,54,57-59,61-66,72-88,93,95-96,98-104,111-121
+apps/web/src/app/partners/page.tsx
+  s_3fd229194f6299::t_3e716ee9ab4af0 15-19,21,76,81-87,89,201-203
+apps/web/src/components/marketing/compare-panels.tsx
+  s_3fd229194f6299::t_e723af439f0a85 1-2,6-9,11-19,21-26,28-29,32-54,56-82,84-95,97-107,109-142,150,152-169
+apps/web/src/components/shared/consent-gate.tsx
+  s_3fd229194f6299::t_66978d3f1856b8 2,15-22,25
+apps/web/src/i18n/admin/ar.ts
+  s_3fd229194f6299::t_4fbe6e7cd2aa58 346-347,378-390,838-927
+apps/web/src/i18n/admin/bg.ts
+  s_3fd229194f6299::t_27c46223a04e75 320-332,362-363,851-940
+apps/web/src/i18n/admin/bs.ts
+  s_3fd229194f6299::t_f03ac777b4fd5f 320-332,362-363,851-940
+apps/web/src/i18n/admin/coverage.test.ts
+  s_3fd229194f6299::t_636db1034a8069 54-59
+apps/web/src/i18n/admin/cs.ts
+  s_3fd229194f6299::t_2bce112f127fe9 346-347,378-390,836-925
+apps/web/src/i18n/admin/da.ts
+  s_3fd229194f6299::t_b86e1bdee1f673 346-347,378-390,836-925
+apps/web/src/i18n/admin/de.ts
+  s_3fd229194f6299::t_28d122f5a7fc69 346-347,378-390,839-928
+apps/web/src/i18n/admin/el.ts
+  s_3fd229194f6299::t_7264cc6ea78abd 346-347,378-390,836-925
+apps/web/src/i18n/admin/en.ts
+  s_3fd229194f6299::t_716cec52261923 62,210-228,639-646,697-710,1182,1198-1232,1249-1322
+apps/web/src/i18n/admin/es.ts
+  s_3fd229194f6299::t_cd240a6f96375d 346-347,378-390,834-923
+apps/web/src/i18n/admin/fi.ts
+  s_3fd229194f6299::t_7ace3ee81a7b17 346-347,378-390,834-923
+apps/web/src/i18n/admin/fil.ts
+  s_3fd229194f6299::t_a4e3a30e7addbc 322-334,364-365,849-938
+apps/web/src/i18n/admin/fr.ts
+  s_3fd229194f6299::t_fd011498177336 346-347,378-390,839-928
+apps/web/src/i18n/admin/hr.ts
+  s_3fd229194f6299::t_87e2cee2997a5c 322-334,364-365,849-938
+apps/web/src/i18n/admin/hu.ts
+  s_3fd229194f6299::t_5d670545fe1bd6 346-347,378-390,834-923
+apps/web/src/i18n/admin/id.ts
+  s_3fd229194f6299::t_1c99e54c5b8b05 322-334,364-365,851-940
+apps/web/src/i18n/admin/it.ts
+  s_3fd229194f6299::t_893737b874b2b4 346-347,378-390,836-925
+apps/web/src/i18n/admin/ja.ts
+  s_3fd229194f6299::t_9682e634a6aceb 346-347,378-390,839-928
+apps/web/src/i18n/admin/ko.ts
+  s_3fd229194f6299::t_dcd186222a4cd3 322-334,364-365,851-940
+apps/web/src/i18n/admin/mk.ts
+  s_3fd229194f6299::t_15a39d3346103c 322-334,364-365,851-940
+apps/web/src/i18n/admin/ms.ts
+  s_3fd229194f6299::t_29e8ddcb68d0f8 320-332,362-363,851-940
+apps/web/src/i18n/admin/nl.ts
+  s_3fd229194f6299::t_f3af1e8cf18082 346-347,378-390,846-935
+apps/web/src/i18n/admin/no.ts
+  s_3fd229194f6299::t_c4221e4085b739 346-347,378-390,846-935
+apps/web/src/i18n/admin/pl.ts
+  s_3fd229194f6299::t_6f8f4a5b126fbc 346-347,378-390,846-935
+apps/web/src/i18n/admin/pt.ts
+  s_3fd229194f6299::t_8dc5d3b0b67055 346-347,378-390,846-935
+apps/web/src/i18n/admin/ro.ts
+  s_3fd229194f6299::t_b4cbcf081ba46f 346-347,378-390,846-935
+apps/web/src/i18n/admin/ru.ts
+  s_3fd229194f6299::t_6b499022ce249a 346-347,378-390,846-935
+apps/web/src/i18n/admin/sl.ts
+  s_3fd229194f6299::t_99a69962b58b86 320-332,362-363,851-940
+apps/web/src/i18n/admin/sq.ts
+  s_3fd229194f6299::t_11effcee0d1826 321-333,363-364,852-941
+apps/web/src/i18n/admin/sr.ts
+  s_3fd229194f6299::t_cf21196f31cc18 321-333,363-364,852-941
+apps/web/src/i18n/admin/sv.ts
+  s_3fd229194f6299::t_8a7a53e8cf042d 346-347,378-390,837-926
+apps/web/src/i18n/admin/th.ts
+  s_3fd229194f6299::t_d999ee17b5ad99 321-333,363-364,852-941
+apps/web/src/i18n/admin/tr.ts
+  s_3fd229194f6299::t_9bd3db5f8d63bc 346-347,378-390,837-926
+apps/web/src/i18n/admin/uk.ts
+  s_3fd229194f6299::t_1fa990bb0f9801 346-347,378-390,837-926
+apps/web/src/i18n/admin/vi.ts
+  s_3fd229194f6299::t_ed0468875283f5 321-333,363-364,852-941
+apps/web/src/i18n/admin/zh.ts
+  s_3fd229194f6299::t_7c81ccffee0d95 346-347,378-390,837-926
+apps/web/src/i18n/dictionaries/ar.ts
+  s_3fd229194f6299::t_0a5890f3376bcb 74-78,113-115,124,205,225-228,378,485-495
+apps/web/src/i18n/dictionaries/bg.ts
+  s_3fd229194f6299::t_f8e1ba8219bdc7 54-58,84-86,94,156,171-174,298,395-405
+apps/web/src/i18n/dictionaries/bs.ts
+  s_3fd229194f6299::t_5a645d57fe93e3 54-58,84-86,94,156,171-174,298,395-405
+apps/web/src/i18n/dictionaries/cs.ts
+  s_3fd229194f6299::t_234bc18132d003 56-60,86-89,96,174,194-197,339,445-455
+apps/web/src/i18n/dictionaries/da.ts
+  s_3fd229194f6299::t_3f8953702cd473 56-60,86-89,96,174,194-197,339,445-455
+apps/web/src/i18n/dictionaries/de.ts
+  s_3fd229194f6299::t_c3dca37deeda4c 59-63,92-94,102,181,201-204,349,456-466
+apps/web/src/i18n/dictionaries/el.ts
+  s_3fd229194f6299::t_ff779cfab415f6 58-62,88-91,98,176,196-199,343,449-459
+apps/web/src/i18n/dictionaries/en.ts
+  s_3fd229194f6299::t_8c9b906951e11f 91-97,161-163,180,278-286,306-309,524,626-637
+apps/web/src/i18n/dictionaries/es.ts
+  s_3fd229194f6299::t_66119dc78d1a99 58-62,91-93,101,180,200-203,348,455-465
+apps/web/src/i18n/dictionaries/fi.ts
+  s_3fd229194f6299::t_f605e1aab97110 55-59,85-88,95,173,193-196,338,444-454
+apps/web/src/i18n/dictionaries/fil.ts
+  s_3fd229194f6299::t_36d0fed789f402 54-58,84-86,94,156,171-174,297,394-404
+apps/web/src/i18n/dictionaries/fr.ts
+  s_3fd229194f6299::t_1c24f08c3eae7d 58-62,92-94,102,181,201-204,349,456-466
+apps/web/src/i18n/dictionaries/hr.ts
+  s_3fd229194f6299::t_649b0e8dffa900 54-58,84-86,94,156,171-174,297,394-404
+apps/web/src/i18n/dictionaries/hu.ts
+  s_3fd229194f6299::t_a020961c7565a9 55-59,85-88,95,173,193-196,338,444-454
+apps/web/src/i18n/dictionaries/id.ts
+  s_3fd229194f6299::t_77489b93f99b08 54-58,84-86,94,156,171-174,297,394-404
+apps/web/src/i18n/dictionaries/it.ts
+  s_3fd229194f6299::t_8a81c6f4e58761 58-62,89-92,99,177,197-200,346,453-463
+apps/web/src/i18n/dictionaries/ja.ts
+  s_3fd229194f6299::t_a72d5b125a8230 74-78,113-115,124,205,225-228,379,486-496
+apps/web/src/i18n/dictionaries/ko.ts
+  s_3fd229194f6299::t_b54d9b00c0c356 54-58,84-86,94,156,171-174,297,394-404
+apps/web/src/i18n/dictionaries/mk.ts
+  s_3fd229194f6299::t_0a47f12ab8c9ea 55-59,85-87,95,157,172-175,298,395-405
+apps/web/src/i18n/dictionaries/ms.ts
+  s_3fd229194f6299::t_f5539bc7cc39f7 55-59,85-87,95,157,172-175,295,392-402
+apps/web/src/i18n/dictionaries/nl.ts
+  s_3fd229194f6299::t_1c6394f46a334c 56-60,87-90,97,175,195-198,344,451-461
+apps/web/src/i18n/dictionaries/no.ts
+  s_3fd229194f6299::t_d60d59f99c8ea9 54-58,84-87,94,172,192-195,338,444-454
+apps/web/src/i18n/dictionaries/pl.ts
+  s_3fd229194f6299::t_97efd156438145 56-60,87-90,97,175,195-198,343,450-460
+apps/web/src/i18n/dictionaries/pt.ts
+  s_3fd229194f6299::t_b955e81b887dcb 56-60,87-90,97,175,195-198,344,451-461
+apps/web/src/i18n/dictionaries/ro.ts
+  s_3fd229194f6299::t_b4997f9c01dfe8 54-58,84-87,94,172,192-195,338,444-454
+apps/web/src/i18n/dictionaries/ru.ts
+  s_3fd229194f6299::t_6ab56589116e60 55-59,85-88,95,173,193-196,341,447-457
+apps/web/src/i18n/dictionaries/sl.ts
+  s_3fd229194f6299::t_7ef6d74d9619d1 55-59,85-87,95,157,172-175,296,393-403
+apps/web/src/i18n/dictionaries/sq.ts
+  s_3fd229194f6299::t_af2badfa82d98c 55-59,85-87,95,157,172-175,299,396-406
+apps/web/src/i18n/dictionaries/sr.ts
+  s_3fd229194f6299::t_2248624aef7e8a 55-59,85-87,95,157,172-175,299,396-406
+apps/web/src/i18n/dictionaries/sv.ts
+  s_3fd229194f6299::t_21a1bc8648bdc9 55-59,85-88,95,173,193-196,340,446-456
+apps/web/src/i18n/dictionaries/th.ts
+  s_3fd229194f6299::t_cd9f7c0b94da9a 55-59,85-87,95,157,172-175,299,396-406
+apps/web/src/i18n/dictionaries/tr.ts
+  s_3fd229194f6299::t_e0a4792e9ebf05 57-61,87-90,97,175,195-198,343,449-459
+apps/web/src/i18n/dictionaries/uk.ts
+  s_3fd229194f6299::t_4ad91037217c5b 55-59,85-88,95,173,193-196,341,447-457
+apps/web/src/i18n/dictionaries/vi.ts
+  s_3fd229194f6299::t_7d2d0b0c4114e7 55-59,85-87,95,158,173-176,300,397-407
+apps/web/src/i18n/dictionaries/zh.ts
+  s_3fd229194f6299::t_adc68f61634c9e 74-78,113-115,124,205,225-228,378,485-495
+apps/web/src/i18n/marketing/ar.ts
+  s_3fd229194f6299::t_44802d63685f7e 20-22,121,198
+apps/web/src/i18n/marketing/bg.ts
+  s_3fd229194f6299::t_8f9963d7a788a9 20-22,121,198
+apps/web/src/i18n/marketing/bs.ts
+  s_3fd229194f6299::t_0de3b068e258b9 20-22,121,198
+apps/web/src/i18n/marketing/cs.ts
+  s_3fd229194f6299::t_6aa709c136ed58 20-22,121,198
+apps/web/src/i18n/marketing/da.ts
+  s_3fd229194f6299::t_141da93e05405f 20-22,121,198
+apps/web/src/i18n/marketing/de.ts
+  s_3fd229194f6299::t_155699e1c7adff 20-22,121,198
+apps/web/src/i18n/marketing/el.ts
+  s_3fd229194f6299::t_d0fb347e10c615 20-22,121,198
+apps/web/src/i18n/marketing/en.ts
+  s_3fd229194f6299::t_f03ef1539116ac 35-37,205,207
+apps/web/src/i18n/marketing/es.ts
+  s_3fd229194f6299::t_34cfc1caaf1ded 20-22,121,198
+apps/web/src/i18n/marketing/fi.ts
+  s_3fd229194f6299::t_d8426352946fc1 20-22,121,198
+apps/web/src/i18n/marketing/fil.ts
+  s_3fd229194f6299::t_0008a38e26922f 20-22,121,198
+apps/web/src/i18n/marketing/fr.ts
+  s_3fd229194f6299::t_c45a2de2b3a894 20-22,121,198
+apps/web/src/i18n/marketing/hr.ts
+  s_3fd229194f6299::t_ce42f2b3bfcb2c 20-22,121,198
+apps/web/src/i18n/marketing/hu.ts
+  s_3fd229194f6299::t_127361e9bc462e 20-22,121,198
+apps/web/src/i18n/marketing/id.ts
+  s_3fd229194f6299::t_36e052d620855d 20-22,121,198
+apps/web/src/i18n/marketing/it.ts
+  s_3fd229194f6299::t_e96d8db5b30676 20-22,121,198
+apps/web/src/i18n/marketing/ja.ts
+  s_3fd229194f6299::t_b2b0ce70c87014 20-22,121,198
+apps/web/src/i18n/marketing/ko.ts
+  s_3fd229194f6299::t_60b3872b6967a2 20-22,121,198
+apps/web/src/i18n/marketing/mk.ts
+  s_3fd229194f6299::t_be004fddaec4a1 20-22,121,198
+apps/web/src/i18n/marketing/ms.ts
+  s_3fd229194f6299::t_49680bec1c6c85 20-22,121,198
+apps/web/src/i18n/marketing/nl.ts
+  s_3fd229194f6299::t_f6b8fa4b0ecc32 20-22,121,198
+apps/web/src/i18n/marketing/no.ts
+  s_3fd229194f6299::t_4814f644effc62 20-22,121,198
+apps/web/src/i18n/marketing/pl.ts
+  s_3fd229194f6299::t_d1edb953595000 20-22,121,198
+apps/web/src/i18n/marketing/pt.ts
+  s_3fd229194f6299::t_1f0228d0ed6b79 20-22,121,198
+apps/web/src/i18n/marketing/ro.ts
+  s_3fd229194f6299::t_6bf88bf8340d39 20-22,121,198
+apps/web/src/i18n/marketing/ru.ts
+  s_3fd229194f6299::t_c95f9cfbf861a7 20-21,23,122,199
+apps/web/src/i18n/marketing/sl.ts
+  s_3fd229194f6299::t_e10e5694cc837e 20-22,121,198
+apps/web/src/i18n/marketing/sq.ts
+  s_3fd229194f6299::t_10407fa9ceab37 20-22,121,198
+apps/web/src/i18n/marketing/sr.ts
+  s_3fd229194f6299::t_6adc556a6aa1a0 20-22,121,198
+apps/web/src/i18n/marketing/sv.ts
+  s_3fd229194f6299::t_ce4089ed357fcc 20-22,121,198
+apps/web/src/i18n/marketing/th.ts
+  s_3fd229194f6299::t_5ac6d8a2466a8f 20-22,121,198
+apps/web/src/i18n/marketing/tr.ts
+  s_3fd229194f6299::t_f126c59989fb14 20-22,121,198
+apps/web/src/i18n/marketing/uk.ts
+  s_3fd229194f6299::t_2ee8a5734d9a69 20-22,121,198
+apps/web/src/i18n/marketing/vi.ts
+  s_3fd229194f6299::t_f2b33c82748f03 20-22,121,198
+apps/web/src/i18n/marketing/zh.ts
+  s_3fd229194f6299::t_fb992936217894 20-22,121,198
+apps/web/src/lib/actions/clients.ts
+  s_3fd229194f6299::t_db99c0f49ba412 4,13,121-131
+apps/web/src/lib/actions/delivery.ts
+  s_3fd229194f6299::t_7ae670358408d5 12-17,60-83,90
+apps/web/src/lib/actions/integrations.ts
+  s_3fd229194f6299::t_3d4b43f6f92ee5 1-500
+apps/web/src/lib/actions/memberships.ts
+  s_3fd229194f6299::t_a75c2618a592a0 1-157
+apps/web/src/lib/actions/order-admin.ts
+  s_3fd229194f6299::t_5b0e14b979bed2 18,21,130-146,162-176,187-197,203-206,266-276,424-431
+apps/web/src/lib/actions/order-preview.ts
+  s_3fd229194f6299::t_e13f537e910375 12-19,36-40,78,141-156,161,168-171,173-180,203,208
+apps/web/src/lib/actions/orders.ts
+  s_3fd229194f6299::t_577811564bec75 25-27,35,280-289,291-292,532-608,651-660,706-733,778-781
+apps/web/src/lib/actions/products.ts
+  s_3fd229194f6299::t_b3f2afe7379f40 28,224-245,292-306
+apps/web/src/lib/analytics.test.ts
+  s_3fd229194f6299::t_b030b29aeeba02 9
+apps/web/src/lib/analytics.ts
+  s_3fd229194f6299::t_a56f90b9ec6e3f 270-275
+apps/web/src/lib/api/auth.ts
+  s_3fd229194f6299::t_fe81d432b5da30 1-198
+apps/web/src/lib/api/handlers.ts
+  s_3fd229194f6299::t_048006bd24e351 1-548
+apps/web/src/lib/api/keys.ts
+  s_3fd229194f6299::t_a678a681ff6f66 1-167
+apps/web/src/lib/api/resources.test.ts
+  s_3fd229194f6299::t_b606e65e7ae1aa 1-158
+apps/web/src/lib/api/resources.ts
+  s_3fd229194f6299::t_a10c19b9a31c4e 1-380
+apps/web/src/lib/api/respond.test.ts
+  s_3fd229194f6299::t_780f9d8f604a85 1-89
+apps/web/src/lib/api/respond.ts
+  s_3fd229194f6299::t_b5eca15b38a3b1 1-147
+apps/web/src/lib/api/route.ts
+  s_3fd229194f6299::t_8e0fd4751bd009 1-119
+apps/web/src/lib/broadcasts/segment-sql.ts
+  s_3fd229194f6299::t_bcabb7e1391629 88-96
+apps/web/src/lib/broadcasts/segments.ts
+  s_3fd229194f6299::t_84eea0e3feae63 105-113
+apps/web/src/lib/broadcasts/subscribe.ts
+  s_3fd229194f6299::t_86b071188585f3 5,8,275-295,322-337
+apps/web/src/lib/connect.ts
+  s_3fd229194f6299::t_4cb10ceb7195ee 6,11-17,84-150,178,183-185,190-198,511-693
+apps/web/src/lib/countries.test.ts
+  s_3fd229194f6299::t_1d2d154aea610a 1-112
+apps/web/src/lib/countries.ts
+  s_3fd229194f6299::t_340764a0461b10 1-182
+apps/web/src/lib/delivery.test.ts
+  s_3fd229194f6299::t_75125f28c6b506 1-140
+apps/web/src/lib/delivery.ts
+  s_3fd229194f6299::t_585b4723dc3587 2,87-178
+apps/web/src/lib/email/messages.ts
+  s_3fd229194f6299::t_2ec72176b6e4fb 896-1062
+apps/web/src/lib/email/seller-messages.ts
+  s_3fd229194f6299::t_0f3e2086cdfeec 200-254
+apps/web/src/lib/google-tag-gate.tsx
+  s_3fd229194f6299::t_a3e8e1b2223e0f 4,8,20-24,26-32,48-53
+apps/web/src/lib/google-tag.test.ts
+  s_3fd229194f6299::t_c67cb5bb9abc3f 120-125,132-154
+apps/web/src/lib/google-tag.tsx
+  s_3fd229194f6299::t_9f5ddbbc427477 13-15,18-22,66-90,111-113,115-117,122,124
+apps/web/src/lib/hq/partners.ts
+  s_3fd229194f6299::t_2e276620cbf862 14-19,59,61-65,99-103,105-110,146-158,179-182
+apps/web/src/lib/inventory.ts
+  s_3fd229194f6299::t_44892ed0bbbc4b 5,342-354
+apps/web/src/lib/ip-ranges.test.ts
+  s_3fd229194f6299::t_dd41ac5af147ee 1-146
+apps/web/src/lib/ip-ranges.ts
+  s_3fd229194f6299::t_886746008d07c1 1-204
+apps/web/src/lib/mcp/protocol.test.ts
+  s_3fd229194f6299::t_c0918d261e389b 1-178
+apps/web/src/lib/mcp/protocol.ts
+  s_3fd229194f6299::t_14658da7a94690 1-259
+apps/web/src/lib/mcp/tools.ts
+  s_3fd229194f6299::t_775d3ac72f5b2c 1-346
+apps/web/src/lib/membership-access.ts
+  s_3fd229194f6299::t_6a35f47de23b95 1-180
+apps/web/src/lib/membership-renewals.ts
+  s_3fd229194f6299::t_1744ff8e8de3d9 1-380
+apps/web/src/lib/memberships.test.ts
+  s_3fd229194f6299::t_41a8e6e0569b0e 1-285
+apps/web/src/lib/memberships.ts
+  s_3fd229194f6299::t_2d148e38ba2bbe 1-299
+apps/web/src/lib/orders/buyer.test.ts
+  s_3fd229194f6299::t_236375c9fd30b9 5-10,13-17,24-31,35-43,46-52,57-62,65-84,86-88,90-92,95,97-98,100,105,111,113-147,149,152-153,156-161,185,203,208-210,212-213
+apps/web/src/lib/orders/buyer.ts
+  s_3fd229194f6299::t_d1b36552108296 2,7-8,10-23,72,76-81,84,89-95,114-119,126-147,151,164-176
+apps/web/src/lib/orders/card-handoff.ts
+  s_3fd229194f6299::t_91fbd7cadc620a 4-5,84-151
+apps/web/src/lib/orders/delivery.ts
+  s_3fd229194f6299::t_4c35670333a3ac 5,13-31,38-39,55-63
+apps/web/src/lib/orders/resolve-intent.ts
+  s_3fd229194f6299::t_5e55f24031c753 6,17,23,108-152,173,185-195,236-262,277-290,297-302
+apps/web/src/lib/orders/resolve-lines.ts
+  s_3fd229194f6299::t_3954cdb0f666aa 6,140-156,238-249
+apps/web/src/lib/orders/types.ts
+  s_3fd229194f6299::t_3965fe09c22883 140-145
+apps/web/src/lib/partners/applications.ts
+  s_3fd229194f6299::t_ac512a752529f2 164-175,197-199,202-212
+apps/web/src/lib/partners/eligibility.test.ts
+  s_3fd229194f6299::t_b7fbd809348417 3-7,10,12-15,18-25,27-29,33-34,36-37,41-43,45-53,57-58,60-67,70-73,77-82,86-87,89-103,107-110,112-114,118-123,127-129,131-139
+apps/web/src/lib/partners/eligibility.ts
+  s_3fd229194f6299::t_bdb6db970e709e 1-124
+apps/web/src/lib/partners/payouts.ts
+  s_3fd229194f6299::t_f37841b3dbe9bb 10,14,18-30,239-260,346-348,350,492-493,498-504,512
+apps/web/src/lib/partners/store.ts
+  s_3fd229194f6299::t_9e227f5a1166da 12,99-111,166-176,183-185,189,195-212,509-535
+apps/web/src/lib/payments/handoff.test.ts
+  s_3fd229194f6299::t_bc4f7188f6ba52 1-151
+apps/web/src/lib/payments/handoff.ts
+  s_3fd229194f6299::t_084bbfe64710fb 2,21-28,31-54,75-89,143-181
+apps/web/src/lib/payments/rails.test.ts
+  s_3fd229194f6299::t_36da87c0001f1b 7,21-22,34-72,127,157-169
+apps/web/src/lib/payments/rails.ts
+  s_3fd229194f6299::t_468c8287926cc8 20-21,49-70,74-86,95-104,236,266-326,329,404-408,411,417-435
+apps/web/src/lib/plans.test.ts
+  s_3fd229194f6299::t_d83a655f6c54cf 8,89-92,95-96,100-102,125,131,137-139,145-147,157,167-200
+apps/web/src/lib/plans.ts
+  s_3fd229194f6299::t_fbf76f9993cfc2 24-43,82-83,107-108,129-130,232,260-276,319
+apps/web/src/lib/queries/checkout.ts
+  s_3fd229194f6299::t_ef920937ad3435 87-97
+apps/web/src/lib/quote.test.ts
+  s_3fd229194f6299::t_b11adeab029fcc 156-175
+apps/web/src/lib/quote.ts
+  s_3fd229194f6299::t_654d55a197a309 52-58,62-80,130
+apps/web/src/lib/refunds.ts
+  s_3fd229194f6299::t_2ad23857db10a5 4,48-62,66
+apps/web/src/lib/seo.ts
+  s_3fd229194f6299::t_e2ba9bd4a153c0 111-114,119-129
+apps/web/src/lib/stripe-webhooks/connect.ts
+  s_3fd229194f6299::t_0f1e0215502ef3 13,16-22,43-56,199-226,291-330
+apps/web/src/lib/stripe-webhooks/memberships.ts
+  s_3fd229194f6299::t_658201172fae6f 1-695
+apps/web/src/lib/utils.ts
+  s_3fd229194f6299::t_46410d8089728e 2,223-248,255,353
+apps/web/src/lib/variants.test.ts
+  s_3fd229194f6299::t_14d53497a0c5a0 4,201-260
+apps/web/src/lib/variants.ts
+  s_3fd229194f6299::t_c5d4db8369dd09 310-315,322,349-419
+apps/web/src/lib/webhooks/deliver.ts
+  s_3fd229194f6299::t_46c6192685cfab 2,4-13,16,18-19,21-25,27-31,33-35,38-40,43,45-49,51-59,62,64-66,68,70-71,73-143,145-159,162-221,224-227,229,231-234,236-251,253-254,257-262,265-269,272-289,291-293,295-341,343-345,347-349,351,353,355-359,361-368,370-380,382,385-388,390,392-394,396-428,430-435,437-440,442-451,453-468,471-489,492-502,504
+apps/web/src/lib/webhooks/emit.test.ts
+  s_3fd229194f6299::t_a404c008ff7470 1-163
+apps/web/src/lib/webhooks/emit.ts
+  s_3fd229194f6299::t_f1fd3afdbbd0ee 1-196
+apps/web/src/lib/webhooks/events.ts
+  s_3fd229194f6299::t_ea91f6a08643b9 1-157
+apps/web/src/lib/webhooks/post.test.ts
+  s_3fd229194f6299::t_77caf8211a4ede 1-89
+apps/web/src/lib/webhooks/post.ts
+  s_3fd229194f6299::t_9e596c3d2ca4b1 1-320
+apps/web/src/lib/webhooks/signature.test.ts
+  s_3fd229194f6299::t_c22810a5775e06 1-180
+apps/web/src/lib/webhooks/signature.ts
+  s_3fd229194f6299::t_b09141edf759ff 1-208
+apps/web/vercel.json
+  s_3fd229194f6299::t_d252580260a165 23-26,34-37
+docs/specs/16-outbound-webhooks.md
+  s_3fd229194f6299::t_be381869dda1e1 3-14
+docs/specs/28-shipping-zones.md
+  s_3fd229194f6299::t_9c822914135aac 1-184
+docs/specs/29-us-payment-rails.md
+  s_3fd229194f6299::t_0fecc2bbec27c0 1-298
+docs/specs/README.md
+  s_3fd229194f6299::t_7dc64258bab310 67,69,162-247,318-401
+packages/db/src/schema/catalog.ts
+  s_3fd229194f6299::t_71d29a3d7b3d12 52,114-162
+packages/db/src/schema/commerce.ts
+  s_3fd229194f6299::t_cc703fc74b67dd 51-73
+packages/db/src/schema/growth.ts
+  s_3fd229194f6299::t_bd537cf1fb23d2 98-106
+packages/db/src/schema/index.ts
+  s_3fd229194f6299::t_1f539ab9c7974a 16,21
+packages/db/src/schema/integrations.ts
+  s_3fd229194f6299::t_c47f9734b1d255 1-344
+packages/db/src/schema/json-types.ts
+  s_3fd229194f6299::t_513cb6e54b5355 91-99
+packages/db/src/schema/memberships.ts
+  s_3fd229194f6299::t_d909ec2c089503 1-169
+packages/db/src/schema/orders.ts
+  s_3fd229194f6299::t_abfcebae3224c6 188-223,292-305
+packages/db/src/schema/types.ts
+  s_3fd229194f6299::t_331c0ef090c763 12,21,38,55-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6f70f25c1e49f91eea0b4bc94c73fc81e339265c",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
