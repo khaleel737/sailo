@@ -118,9 +118,13 @@ const n = (v: unknown) => {
 
 function median(xs: number[]): number | undefined {
   if (!xs.length) return undefined;
-  const s = [...xs].sort((a, b) => a - b);
+  const s = xs.toSorted((a, b) => a - b);
   const mid = Math.floor(s.length / 2);
-  return s.length % 2 ? s[mid]! : Math.round((s[mid - 1]! + s[mid]!) / 2);
+  const hi = s[mid];
+  if (hi === undefined) return undefined;
+  if (s.length % 2) return hi;
+  const lo = s[mid - 1];
+  return lo === undefined ? hi : Math.round((lo + hi) / 2);
 }
 
 /** Pull whatever shape the tool returns without guessing one nesting depth. */

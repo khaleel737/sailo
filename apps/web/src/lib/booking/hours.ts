@@ -14,7 +14,10 @@
 
 // The stored shape lives with the schema that persists it.
 import type { OpeningWindow, WeeklyHours } from "@sailo/db/schema";
-export type { OpeningWindow, WeeklyHours };
+// Only `WeeklyHours` is re-exported: callers that persist opening hours read it
+// from here. `OpeningWindow` is used just below to type-guard a stored window,
+// and anything that needs the type itself takes it from @sailo/db/schema.
+export type { WeeklyHours };
 
 export const WEEKDAYS = [
   "sunday",
