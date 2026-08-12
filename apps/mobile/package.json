@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@better-auth/expo": "^1.6.25",
+    "@sailo/api": "*",
     "@sailo/auth": "*",
     "@sailo/observability": "*",
     "better-auth": "^1.6.25",

@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@sailo/db", "@sailo/i18n", "@sailo/core"],
+  transpilePackages: ["@sailo/db", "@sailo/i18n", "@sailo/core", "@sailo/api"],
   /*
    * Static shells with dynamic holes, instead of every route being
    * request-bound. See `src/i18n/lang-script.ts` for the one await that was
