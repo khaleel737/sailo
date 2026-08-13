@@ -32,7 +32,7 @@ export const RESERVED_HANDLES = new Set([
    * — a seller who claimed either would shadow a live page with their shop.
    */
   "partner", "partners", "door", "download", "dev", "gdpr", "refunds",
-  "forgot-password", "reset-password", "verify-2fa", "anti-spam",
+  "forgot-password", "reset-password", "verify-2fa", "anti-spam", "home",
   // Locale prefixes. `/fr/blog` is a real URL, so a shop called `fil` would
   // shadow the Filipino blog. Only three-letter codes need listing: every other
   // locale is two characters and already too short to be a handle.
