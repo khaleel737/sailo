@@ -1,0 +1,84 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": [],
+      "project": []
+    },
+    "apps/web": {
+      "entry": [
+        "e2e/**/*.spec.ts",
+        "e2e/stubs/*.{ts,mts}",
+        "scripts/**/*.ts",
+        "sw.mjs"
+      ],
+      "project": [
+        "src/**/*.{ts,tsx}",
+        "scripts/**/*.ts",
+        "e2e/**/*.ts"
+      ],
+      "ignore": [
+        "src/i18n/**"
+      ],
+      "ignoreDependencies": [
+        "@vitejs/plugin-react",
+        "tailwindcss"
+      ],
+      "drizzle": {
+        "config": [
+          "drizzle.config.ts"
+        ]
+      }
+    },
+    "apps/api": {
+      "project": [
+        "src/**/*.{ts,tsx}"
+      ]
+    },
+    "apps/mobile": {
+      "entry": [
+        "app/**/*.{ts,tsx}",
+        "lib/**/*.ts"
+      ],
+      "project": [
+        "app/**/*.{ts,tsx}",
+        "lib/**/*.ts"
+      ]
+    },
+    "packages/*": {
+      "entry": [
+        "src/index.ts"
+      ],
+      "project": [
+        "src/**/*.ts"
+      ]
+    },
+    "packages/env": {
+      "entry": [
+        "src/index.ts"
+      ],
+      "project": [
+        "src/**/*.ts"
+      ],
+      "ignoreDependencies": [
+        "@sailo/config"
+      ]
+    },
+    "packages/observability": {
+      "entry": [
+        "src/index.ts"
+      ],
+      "project": [
+        "src/**/*.ts"
+      ],
+      "ignoreDependencies": [
+        "@sailo/config"
+      ]
+    },
+    "packages/config": {
+      "entry": [],
+      "project": []
+    }
+  },
+  "ignoreExportsUsedInFile": true
+}

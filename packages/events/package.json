@@ -14,12 +14,12 @@
   },
   "dependencies": {
     "@sailo/rate-limit": "workspace:*",
-    "redis": "^6.2.0",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",
     "typescript": "^5",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "redis": "^6.2.0"
   }
 }

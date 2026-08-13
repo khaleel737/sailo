@@ -10,9 +10,11 @@
     "test": "turbo test",
     "typecheck": "turbo typecheck",
     "web": "npm run dev -w @sailo/web",
-    "boundaries": "turbo boundaries"
+    "boundaries": "turbo boundaries",
+    "knip": "knip"
   },
   "devDependencies": {
+    "knip": "^6.32.2",
     "turbo": "^2.5.5"
   }
 }
