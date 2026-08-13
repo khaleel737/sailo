@@ -17,14 +17,14 @@ export const marketingSl: MarketingDictionary = {
 
   hero: {
     badge: "Brezplačno zdaj in vedno",
-    title: "Vsa vaša trgovina na {highlight}.",
-    titleHighlight: "eni povezavi",
-    body: "Naročila že zdaj sprejemate v sporočilih. Sailo prednje postavi pravo trgovino — fotografije, cene, iskanje in plačilo za eno povezavo — vsako naročilo pa še vedno pride v klepet, kjer tako ali tako odgovarjate.",
+    title: "Nehajte prepisovati naročila iz {highlight}.",
+    titleHighlight: "sporočil",
+    body: "Naročila že sprejemate v sporočilih. Sailo iz tega naredi pravo trgovino — fotografije, cene, možnosti in zalogo za eno povezavo, brez gradnje spletne strani. Naročila še vedno pridejo v isti klepet, le da izpisana.",
     ctaPrimary: "Odprite trgovino — brezplačno",
     ctaSecondary: "Odprite živo trgovino",
     proof1: "Pripravljeno v manj kot minuti",
     proof2: "Brez kartice",
-    proof3: "Brez provizije pri naročilih prek klepeta in banke",
+    proof3: "Brez provizije razen pri kartici",
     proof4: "35 jezikov",
     igBio: "Pica iz krušne peči, Neapelj. Naročite spodaj.",
     igPosts: "Objave",
@@ -118,7 +118,7 @@ export const marketingSl: MarketingDictionary = {
   pricing: {
     eyebrow: "Cene",
     title: "Brezplačno za začetek in brezplačno naprej.",
-    body: "Naročila prek klepeta, bančnega nakazila in gotovine so v celoti vaša, pri vseh paketih. Prodaja s kartico nosi {fee} od vrednosti blaga — nikoli od dostave ali davka.",
+    body: "Vsak način prejemanja plačila razen kartice je v celoti vaš, na vseh paketih. Prodaja s kartico nosi {fee} od blaga — nikoli od dostave ali davka.",
     freeTagline: "Vse, kar potrebujete za prva naročila.",
     proTagline: "Prostor za rast in trgovina, ki izgleda kot vaša.",
     bizTagline: "Plačila s kartico, promocije in priporočila — orodja, ki povečujejo prihodek.",
@@ -136,7 +136,7 @@ export const marketingSl: MarketingDictionary = {
     q2: "Kako mi kupci dejansko plačajo?",
     a2: "Tako, kot že sprejemate denar. S kartico, prek vašega računa Stripe, tako da plačilo pristane neposredno pri vas. Ali z bančnim nakazilom, plačilom po povzetju in mobilnim denarjem, z navodili, ki jih napišete sami. Sailo denarja nikoli ne zadrži.",
     q3: "Ali Sailo vzame provizijo?",
-    a3: "Pri naročilih prek klepeta, nakazila in gotovine ne — ta so v celoti vaša. Pri plačilu s kartico velja {fee} od blaga, zaračunano kot provizija Stripe. Nikoli od dostave ali davka.",
+    a3: "Samo pri kartici. WhatsApp, Venmo, PayPal, nakazilo in gotovina so v celoti vaši, na vseh paketih. Prodaja s kartico nosi {fee} od blaga, obračunano kot provizija Stripe — nikoli od dostave ali davka.",
     q4: "Ali lahko prodajam storitve ali digitalne datoteke?",
     a4: "Da, in obnašajo se pravilno. Storitev lahko nosi trajanje, lokacijo in izbirnik datuma z odpovednim rokom. Digitalni izdelek dostavi datoteke, ki se odklenejo takoj, ko potrdite plačilo, z omejitvijo prenosov in potekom, če ju želite.",
     q5: "Že imam Linktree. Zakaj bi menjal?",
@@ -195,11 +195,11 @@ export const marketingSl: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — spletna trgovina, preprosta kot povezava v biu",
+    title: "Sprejemajte naročila brez spletne strani — Sailo",
     description:
-      "Sailo spremeni povezavo v vašem bio-u v pravo trgovino. Prodajajte izdelke, digitalne datoteke ali storitve, sprejemajte naročila na WhatsAppu ali s kartico, v 35 jezikih. Brezplačno za začetek, in Sailo ne vzame provizije.",
-    ogTitle: "Sailo — ena povezava, vsa vaša trgovina",
+      "Spremenite Instagram v pravo trgovino: fotografije, cene, možnosti, zaloga. Naročila pridejo izpisana. Brez provizije na WhatsAppu, nakazilu ali gotovini.",
+    ogTitle: "Nehajte prepisovati naročila iz sporočil",
     ogDescription:
-      "Fotografije, cene, različice, zaloga, rezervacije in prenosi za eno samo povezavo v bio-u. Naročila pridejo na WhatsApp ali na vašo lastno kartično blagajno.",
+      "Prava trgovina za eno povezavo — fotografije, cene, zaloga in blagajna. Naročila pridejo pripravljena, in nihče ne vzame deleža od strank, ki ste jih našli sami.",
   },
 };

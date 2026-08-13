@@ -17,14 +17,14 @@ export const marketingHu: MarketingDictionary = {
 
   hero: {
     badge: "Ingyen kezdhetsz, ingyen maradhatsz",
-    title: "Az egész boltod {highlight}.",
-    titleHighlight: "egyetlen linken",
-    body: "A rendeléseket már most is üzenetben veszed fel. A Sailo egy igazi boltot állít eléjük — fotók, árak, kereső és fizetés egyetlen link mögött — és minden rendelés továbbra is abba a chatbe érkezik, ahol amúgy is válaszolsz.",
+    title: "Ne másolgassa többé a rendeléseket az {highlight}.",
+    titleHighlight: "üzenetekből",
+    body: "A rendeléseket már most üzenetben veszi fel. A Sailo ebből igazi boltot csinál — fotók, árak, változatok és készlet egyetlen link mögött, weboldal építése nélkül. A rendelés ugyanabba a beszélgetésbe érkezik, csak már kiírva.",
     ctaPrimary: "Boltot indítok — ingyen",
     ctaSecondary: "Nyiss meg egy élő boltot",
     proof1: "Egy percen belül él",
     proof2: "Bankkártya nélkül",
-    proof3: "Nincs jutalék a chates és átutalásos rendeléseknél",
+    proof3: "Nincs jutalék, csak kártyán",
     proof4: "35 nyelv",
     igBio: "Fatüzelésű pizza, Nápoly. Rendelés a lenti linken.",
     igPosts: "Bejegyzés",
@@ -118,7 +118,7 @@ export const marketingHu: MarketingDictionary = {
   pricing: {
     eyebrow: "Árak",
     title: "Ingyen elindulni, ingyen működtetni.",
-    body: "A chaten, banki átutalással és készpénzzel érkező rendelések teljes egészében a tieid, minden csomagban. A kártyás eladások az áru értékének {fee}-át viszik — sosem a szállításét vagy az adóét.",
+    body: "A kártyán kívül minden fizetési mód teljes egészében az Öné, minden csomagban. A kártyás eladás {fee} díjat visel az áruból — soha nem a szállításból vagy az adóból.",
     freeTagline: "Minden, ami az első rendelésekhez kell.",
     proTagline: "Hely a növekedéshez, és bolt, ami rád hasonlít.",
     bizTagline: "Kártyás fizetés, akciók és ajánlások — az eszközök, amik emelik a bevételt.",
@@ -136,7 +136,7 @@ export const marketingHu: MarketingDictionary = {
     q2: "Hogyan fizetnek nekem valójában?",
     a2: "Ugyanúgy, ahogy ma is felveszed a pénzt. Kártyával, a saját Stripe-fiókodon át, így az összeg közvetlenül hozzád érkezik. Vagy átutalással, utánvéttel és mobilpénzzel, a te útmutatóddal. A Sailo soha nem tartja a pénzt.",
     q3: "Kér a Sailo jutalékot?",
-    a3: "Chates, átutalásos és készpénzes rendeléseknél nem — azok teljes egészében a tiéd. A kártyás eladásokat {fee} terheli az áru értékéből, Stripe-díjként levonva. Szállításra és adóra soha.",
+    a3: "Csak kártyán. A WhatsApp, a Venmo, a PayPal, az utalás és a készpénz teljes egészében az Öné, minden csomagban. A kártyás eladás {fee} díjat visel az áruból, Stripe-díjként levonva — soha nem a szállításból vagy az adóból.",
     q4: "Árulhatok szolgáltatást vagy digitális fájlt?",
     a4: "Igen, és úgy is viselkednek, ahogy kell. Egy szolgáltatásnak lehet időtartama, helyszíne és dátumválasztója előjelzési idővel. A digitális termék olyan fájlokat ad át, amelyek a fizetés visszaigazolásakor nyílnak meg — ha akarod, letöltési korláttal és lejárattal.",
     q5: "Már van Linktree-m. Miért váltsak?",
@@ -195,11 +195,11 @@ export const marketingHu: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — webbolt olyan egyszerűen, mint egy link a bióban",
+    title: "Fogadjon rendeléseket weboldal nélkül — Sailo",
     description:
-      "A Sailo igazi bolttá alakítja a biódban lévő linket. Adj el termékeket, digitális fájlokat vagy szolgáltatásokat, és fogadj rendelést WhatsAppon vagy kártyával, 35 nyelven. Ingyenes kezdés, jutalék nélkül.",
-    ogTitle: "Sailo — egy link, az egész boltod",
+      "Alakítsa az Instagramot igazi bolttá: fotók, árak, változatok, készlet. A rendelés kiírva érkezik. Nincs jutalék WhatsAppon, utaláson vagy készpénzen.",
+    ogTitle: "Ne másolgassa többé a rendeléseket az üzenetekből",
     ogDescription:
-      "Fotók, árak, változatok, készlet, foglalások és letöltések egyetlen bio-link mögött. A rendelések WhatsAppra vagy a saját kártyás fizetésedre érkeznek.",
+      "Igazi bolt egyetlen link mögött — fotók, árak, készlet és fizetés. A rendelések készen érkeznek, és senki nem kér részesedést az Ön által szerzett vevőkből.",
   },
 };

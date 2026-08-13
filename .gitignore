@@ -32,6 +32,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# The one exception: placeholder names and no values, so a new checkout knows
+# what to fill in. Nothing real ever goes in it.
+!.env.example
 
 # vercel
 .vercel

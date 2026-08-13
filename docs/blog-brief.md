@@ -52,7 +52,7 @@ something not on it, verify it in the codebase first or leave it out.
 | Fact | Detail |
 |---|---|
 | Commission — manual rails | **None.** Bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email and phone: Sailo never touches the money and takes nothing |
-| Commission — card | **0.5% of the goods**, on every plan including free. A Stripe application fee, charged on goods after discount, excluding delivery and tax. `plans.ts:194`, `connect.ts:304` |
+| Commission — card | **1% of the goods**, on every plan including free. A Stripe application fee, charged on goods after discount, excluding delivery and tax. Read it from `PLATFORM_FEE_LABEL` (`platformFeeBp` in `plans.ts`) — this row said 0.5% for months while the code charged double, which is exactly the drift §2 warns about |
 | Who holds the money | Never Sailo. Card charges land in the seller's own Stripe account |
 | Free plan | $0 — 20 products, 30 days of analytics, chat and manual payment rails. **No card payments** |
 | Pro | $9.99/month or $95.90/year — 250 products, 1 year analytics, no Sailo badge, CSV export. **No card payments** |

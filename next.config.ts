@@ -111,6 +111,29 @@ const nextConfig: NextConfig = {
      */
     const devEval = process.env.NODE_ENV === "production" ? "" : " 'unsafe-eval'";
 
+    /*
+     * Transport hardening is production-only, and not as a matter of taste.
+     *
+     * `upgrade-insecure-requests` rewrites every subresource to `https://`,
+     * and `localhost` is not exempt in WebKit the way it is in Chromium. So
+     * `next dev` over http served a page whose own CSS and JS were fetched
+     * from `https://localhost:3000`, where nothing is listening — every asset
+     * failed the TLS handshake and Safari rendered an unstyled, unhydrated
+     * page with dead buttons. Chrome hid it by exempting loopback, which is
+     * why this survived: it is invisible on the browser most of the work is
+     * done in and total on the other one.
+     *
+     * HSTS is here for the sequel. It pins the upgrade for two years, so a
+     * developer who loads http://localhost once keeps being redirected to a
+     * port serving no TLS long after this header is gone — and the fix is
+     * buried in the browser's internal HSTS store, not in this repo. A header
+     * whose failure mode outlives its removal has no business in development.
+     *
+     * Both are exactly right in production, where the site is https anyway
+     * and the upgrade is a no-op that costs nothing.
+     */
+    const isProd = process.env.NODE_ENV === "production";
+
     const csp = [
       "default-src 'self'",
       /*
@@ -192,7 +215,8 @@ const nextConfig: NextConfig = {
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "object-src 'none'",
-      "upgrade-insecure-requests",
+      // See `isProd`: this one is a no-op in production and fatal in dev.
+      ...(isProd ? ["upgrade-insecure-requests"] : []),
     ].join("; ");
 
     return [
@@ -234,10 +258,16 @@ const nextConfig: NextConfig = {
              */
             value: "camera=(self), microphone=(), geolocation=(), interest-cohort=()",
           },
-          {
-            key: "Strict-Transport-Security",
-            value: "max-age=63072000; includeSubDomains; preload",
-          },
+          // Production only — see `isProd`. A two-year pin set from a dev
+          // server outlives the header that set it.
+          ...(isProd
+            ? [
+                {
+                  key: "Strict-Transport-Security",
+                  value: "max-age=63072000; includeSubDomains; preload",
+                },
+              ]
+            : []),
         ],
       },
     ];

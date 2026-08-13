@@ -5,6 +5,7 @@ import { desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@/db";
 import { invoices, orders, reviews, shops, staffActions, stripeEvents, user, visits } from "@/db/schema";
 import { DAY_MS, num } from "./pagination";
+import { readLastCheck } from "@/lib/blocklist/state";
 import { affiliates, clients, coupons, products, visitDaily } from "@/db/schema";
 
 /** The staff audit trail, and whether the platform itself is healthy. */
@@ -40,6 +41,48 @@ export async function getStaffLog({
 /** Reports only whether an environment variable is set — never its value. */
 function flag(name: string, key: string, detail?: string) {
   return { name, ok: Boolean(process.env[key]), detail };
+}
+
+/**
+ * The daily blocklist check, reported rather than performed.
+ *
+ * This page must not run the DNS queries itself: the zones throttle, and a
+ * staff member refreshing HQ would spend the day's quota on a question that was
+ * already answered at 04:42. So it reads what the cron recorded, and says
+ * plainly when there is nothing to read.
+ *
+ * Not-ok covers three different situations on purpose — listed, never
+ * recorded, and recorded too long ago — because they share the only response
+ * that matters here: do not assume the sending domains are clean.
+ */
+function blocklistFlag(last: Awaited<ReturnType<typeof readLastCheck>>) {
+  const name = "Domain blocklists";
+  if (!last) {
+    return {
+      name,
+      ok: false,
+      detail: "No result recorded — needs REDIS_URL and a cron run",
+    };
+  }
+
+  const when = new Date(last.at);
+  const stale = Date.now() - when.getTime() > 2 * DAY_MS;
+  const on = when.toISOString().replace("T", " ").slice(0, 16);
+
+  if (last.listings.length > 0) {
+    const which = last.listings
+      .map((listing) => `${listing.domain} on ${listing.label} (${listing.code})`)
+      .join("; ");
+    return { name, ok: false, detail: `LISTED — ${which}` };
+  }
+
+  return {
+    name,
+    ok: !stale,
+    detail: stale
+      ? `Last checked ${on} UTC — the daily job may have stopped`
+      : `Clear as of ${on} UTC`,
+  };
 }
 
 /**
@@ -86,6 +129,7 @@ export async function getSystemHealth() {
     reviewCount,
     couponCount,
     visitCount,
+    lastBlocklistCheck,
   ] = await Promise.all([
     db
       .select({
@@ -112,6 +156,9 @@ export async function getSystemHealth() {
     countOf(reviews),
     countOf(coupons),
     countOf(visits),
+    // Redis, not Postgres — and it fails to null rather than throwing, so a
+    // cold cache costs this one line of the page and nothing else.
+    readLastCheck(),
   ]);
 
   return {
@@ -135,6 +182,23 @@ export async function getSystemHealth() {
             : `Missing: ${missingPrices.join(", ")}`,
       },
       flag("Email", "RESEND_API_KEY", "Order and invoice mail"),
+      /*
+       * The two sending domains, which nothing else in this panel reported.
+       * Unset is not a fault — both fall back to the brand domain — but it is
+       * the state in which a marketing complaint can blocklist the domain the
+       * *website* answers on, so it should be visible rather than implicit.
+       */
+      flag(
+        "Transactional domain",
+        "SAILO_TX_DOMAIN",
+        process.env.SAILO_TX_DOMAIN ?? "Unset — receipts send from the brand domain",
+      ),
+      flag(
+        "Marketing domain",
+        "SAILO_MKT_DOMAIN",
+        process.env.SAILO_MKT_DOMAIN ?? "Unset — campaigns send from the brand domain",
+      ),
+      blocklistFlag(lastBlocklistCheck),
       flag("File storage", "BLOB_READ_WRITE_TOKEN", "Product images and files"),
       { name: "Redis", ok: Boolean(process.env.REDIS_URL), detail: "Optional — rate limiting" },
       flag("Cron secret", "CRON_SECRET", "Guards the nightly rollup"),

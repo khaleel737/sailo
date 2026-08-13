@@ -1326,6 +1326,27 @@ describe("checkout compliance", () => {
   });
 
   /*
+   * The fourth corner, which completes the pair of conditions rather than
+   * repeating them.
+   *
+   * Consent is written when the shop asked *and* the buyer ticked; the three
+   * tests above cover ticked-and-asked, asked-and-not-ticked, and
+   * ticked-but-never-asked. Neither is the case nothing looks at, and it is
+   * the one a `??` in the wrong place would quietly turn into a grant.
+   */
+  it("records nothing for a shop that never asked and a buyer who never ticked", async () => {
+    const shop = await withRail();
+    const p = await makeProduct(shop.id);
+    await createOrderIntent({
+      shopId: shop.id,
+      items: [{ productId: p.id, quantity: 1 }],
+      paymentMethod: "cod",
+      ...buyer,
+    });
+    expect((await clientRow(shop.id))?.marketingConsentAt).toBeNull();
+  });
+
+  /*
    * The grant-only merge, which is the rule most easily lost in a refactor.
    *
    * The same buyer orders twice. The second time they skip the optional box —

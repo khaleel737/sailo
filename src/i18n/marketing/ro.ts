@@ -17,14 +17,14 @@ export const marketingRo: MarketingDictionary = {
 
   hero: {
     badge: "Gratuit la început, gratuit în continuare",
-    title: "Tot magazinul tău, la {highlight}.",
-    titleHighlight: "un singur link",
-    body: "Deja primești comenzi în mesaje. Sailo pune în fața lor un magazin adevărat — poze, prețuri, căutare și plată în spatele unui singur link — iar fiecare comandă ajunge tot în conversația la care răspunzi oricum.",
+    title: "Nu mai rescrie comenzile din {highlight}.",
+    titleHighlight: "mesaje",
+    body: "Deja primești comenzi în mesaje. Sailo transformă asta într-un magazin adevărat — poze, prețuri, opțiuni și stoc în spatele unui link, fără să construiești un site. Comenzile ajung tot în aceeași conversație, dar deja scrise.",
     ctaPrimary: "Creează-ți magazinul — gratuit",
     ctaSecondary: "Deschide un magazin real",
     proof1: "Online în mai puțin de un minut",
     proof2: "Fără card",
-    proof3: "Fără comision la comenzile prin chat și transfer",
+    proof3: "Fără comision, în afară de card",
     proof4: "35 de limbi",
     igBio: "Pizza la cuptor cu lemne, Napoli. Comandă mai jos.",
     igPosts: "Postări",
@@ -118,7 +118,7 @@ export const marketingRo: MarketingDictionary = {
   pricing: {
     eyebrow: "Prețuri",
     title: "Gratuit la început și gratuit mai departe.",
-    body: "Comenzile prin chat, transfer bancar și numerar sunt integral ale tale, pe orice plan. Vânzările cu cardul au {fee} din valoarea mărfii — niciodată din livrare sau taxă.",
+    body: "Orice mod de a încasa în afară de card este integral al tău, pe toate planurile. Vânzările cu cardul poartă {fee} din marfă — niciodată din livrare sau taxe.",
     freeTagline: "Tot ce îți trebuie pentru primele comenzi.",
     proTagline: "Loc de creștere și un magazin care arată ca al tău.",
     bizTagline: "Plăți cu cardul, promoții și recomandări — uneltele care cresc încasările.",
@@ -136,7 +136,7 @@ export const marketingRo: MarketingDictionary = {
     q2: "Cum mă plătesc de fapt cumpărătorii?",
     a2: "Așa cum încasezi deja azi. Cu cardul, prin propriul cont Stripe, deci încasarea ajunge direct la tine. Sau prin transfer, plata la livrare și bani pe mobil, cu instrucțiuni scrise de tine. Sailo nu ține niciodată banii.",
     q3: "Ia Sailo comision?",
-    a3: "La comenzile prin chat, transfer bancar și numerar, nu — sunt integral ale tale. Vânzările cu cardul au {fee} din valoarea produselor, reținut ca taxă Stripe. Niciodată din livrare sau taxe.",
+    a3: "Doar la card. WhatsApp, Venmo, PayPal, transferul bancar și numerarul sunt integral ale tale, pe toate planurile. Vânzările cu cardul poartă {fee} din marfă, reținut ca taxă Stripe — niciodată din livrare sau taxe.",
     q4: "Pot vinde servicii sau fișiere digitale?",
     a4: "Da, și se comportă cum trebuie. Un serviciu poate avea durată, loc și un selector de dată cu preaviz. Un produs digital livrează fișiere care se deblochează imediat ce confirmi plata, cu limită de descărcări și expirare dacă vrei.",
     q5: "Am deja un Linktree. De ce să schimb?",
@@ -195,11 +195,11 @@ export const marketingRo: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — un magazin online simplu ca un link în bio",
+    title: "Preia comenzi online fără site — Sailo",
     description:
-      "Sailo transformă linkul din bio într-un magazin adevărat. Vinde produse, fișiere digitale sau servicii și primește comenzi pe WhatsApp ori cu cardul, în 35 de limbi. Gratuit la început, fără comision.",
-    ogTitle: "Sailo — un link, tot magazinul tău",
+      "Transformă Instagramul într-un magazin adevărat: poze, prețuri, opțiuni, stoc. Comenzile ajung scrise. Fără comision pe WhatsApp, transfer bancar sau numerar.",
+    ogTitle: "Nu mai rescrie comenzile din mesaje",
     ogDescription:
-      "Poze, prețuri, variante, stocuri, programări și descărcări în spatele unui singur link din bio. Comenzile ajung pe WhatsApp sau la propria ta plată cu cardul.",
+      "Un magazin adevărat în spatele unui singur link — poze, prețuri, stoc și plată. Comenzile ajung gata, iar nimeni nu ia un procent din clienții găsiți de tine.",
   },
 };

@@ -14,6 +14,8 @@ import {
 import { Chart } from "@/components/shared/chart";
 import { PageHeader } from "@/components/shared/page-header";
 import { AccountActions } from "./_components/account-actions";
+import { AccountSecurityActions } from "./_components/account-security-actions";
+import { SecurityPanel } from "./_components/security-panel";
 import { Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import {
   BillingBadge,
@@ -83,6 +85,22 @@ export default async function HqAccountPage({
             signing up and finishing onboarding.
           </p>
         </Card>
+
+        {/* No shop is not no account: they can still be signed in, still be
+            locked out of their authenticator, and still be the person on the
+            other end of a support mail about either. */}
+        <SecurityPanel
+          security={detail.security}
+          emailVerified={owner.emailVerified}
+          twoFactorEnabled={owner.twoFactorEnabled}
+        />
+        <div className="mt-4 max-w-md">
+          <AccountSecurityActions
+            userId={owner.id}
+            security={detail.security}
+            twoFactorEnabled={owner.twoFactorEnabled}
+          />
+        </div>
       </>
     );
   }
@@ -401,6 +419,12 @@ export default async function HqAccountPage({
             </>
           ) : null}
 
+          <SecurityPanel
+            security={detail.security}
+            emailVerified={owner.emailVerified}
+            twoFactorEnabled={owner.twoFactorEnabled}
+          />
+
           <SectionTitle>Staff activity on this account</SectionTitle>
           <Card className="divide-y divide-ink-100">
             {detail.log.length === 0 ? (
@@ -568,6 +592,11 @@ export default async function HqAccountPage({
           </Card>
 
           <AccountActions shop={shop} />
+          <AccountSecurityActions
+            userId={owner.id}
+            security={detail.security}
+            twoFactorEnabled={owner.twoFactorEnabled}
+          />
         </aside>
       </div>
     </>

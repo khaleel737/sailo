@@ -16,7 +16,7 @@ import {
   queueBroadcast,
   resolveContent,
 } from "@/lib/broadcasts/send";
-import { budgetFor } from "@/lib/broadcasts/quota";
+import { budgetFor, type Budget } from "@/lib/broadcasts/quota";
 import { audienceSize } from "@/lib/broadcasts/audience";
 import { mergeValuesFor } from "@/lib/broadcasts/markdown";
 import { parseSegment, toFilter } from "@/lib/broadcasts/segments";
@@ -27,6 +27,7 @@ import {
 } from "@/lib/broadcasts/unsubscribe";
 import { ORDERS, send, sender } from "@/lib/email/transport";
 import { getDictionary } from "@/i18n";
+import { LEGAL } from "@/lib/legal";
 import { rateLimit } from "@/lib/redis";
 import type { Shop } from "@/db/schema";
 
@@ -328,6 +329,29 @@ export async function testSendBroadcast(
     : { ok: false, error: `Couldn't send: ${result.reason}` };
 }
 
+/**
+ * Why a send was refused, in words the seller can act on.
+ *
+ * Each ceiling gets its own sentence because each has a different answer, and
+ * a generic "try later" is wrong for two of the four: waiting does nothing for
+ * a reputation pause, and a warm-up is not something the seller has done
+ * wrong. The pause deliberately does not print the internal reason string — it
+ * says what happened and where to reply, because the conversation that follows
+ * is with a person and not with this screen.
+ */
+function refusal(limitedBy: Budget["limitedBy"]): string {
+  switch (limitedBy) {
+    case "paused":
+      return `Marketing sending is paused on this shop: too many of your recent emails bounced or were reported as spam. Everything else — orders, receipts, your storefront — is unaffected. Email ${LEGAL.supportEmail} and we'll go through it with you.`;
+    case "warmup":
+      return "New shops send a smaller number of marketing emails each day for the first couple of weeks, so mailboxes learn to trust your address. You've reached today's — it lifts tomorrow, and the limit rises as you go.";
+    case "platform":
+      return "Sending is paused across Sailo for the next little while. Nothing is lost — try again shortly.";
+    default:
+      return "You've reached today's sending limit. It resets on a rolling 24 hours.";
+  }
+}
+
 /** Builds the queue and hands it to the cron. */
 export async function sendBroadcast(
   _prev: BroadcastState,
@@ -352,13 +376,7 @@ export async function sendBroadcast(
 
   const budget = await budgetFor(shop);
   if (budget.available === 0) {
-    return {
-      ok: false,
-      error:
-        budget.limitedBy === "plan"
-          ? "You've reached today's sending limit. It resets on a rolling 24 hours."
-          : "Sending is paused across Sailo for the next little while. Nothing is lost — try again shortly.",
-    };
+    return { ok: false, error: refusal(budget.limitedBy) };
   }
 
   const result = await queueBroadcast({ shop, broadcastId: id });

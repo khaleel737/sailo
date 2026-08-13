@@ -17,14 +17,14 @@ export const marketingTr: MarketingDictionary = {
 
   hero: {
     badge: "Başlaması ücretsiz, kalması ücretsiz",
-    title: "Bütün dükkânın, {highlight}.",
-    titleHighlight: "tek bağlantıda",
-    body: "Siparişleri zaten mesajlardan alıyorsun. Sailo onların önüne gerçek bir dükkân koyar — fotoğraf, fiyat, arama ve ödeme tek bir bağlantının ardında — ve her sipariş yine zaten cevapladığın sohbete düşer.",
+    title: "Siparişleri {highlight} yeniden yazmayı bırakın.",
+    titleHighlight: "DM'den",
+    body: "Siparişleri zaten mesajlardan alıyorsunuz. Sailo bunu gerçek bir dükkâna çevirir — fotoğraf, fiyat, seçenek ve stok tek bir bağlantının ardında, site kurmadan. Siparişler yine aynı sohbete düşer, sadece yazılmış olarak.",
     ctaPrimary: "Dükkânını aç — ücretsiz",
     ctaSecondary: "Gerçek bir dükkân aç",
     proof1: "Bir dakikadan kısa sürede yayında",
     proof2: "Kart gerekmez",
-    proof3: "Sohbet ve havale siparişlerinde komisyon yok",
+    proof3: "Kart dışında komisyon yok",
     proof4: "35 dil",
     igBio: "Odun ateşinde pizza, Napoli. Aşağıdan sipariş ver.",
     igPosts: "Gönderi",
@@ -118,7 +118,7 @@ export const marketingTr: MarketingDictionary = {
   pricing: {
     eyebrow: "Fiyatlar",
     title: "Başlaması ücretsiz, sürdürmesi de ücretsiz.",
-    body: "Sohbet, havale ve nakit siparişler her planda tamamen senindir. Kartlı satışlarda ürün bedelinin {fee} kadarı alınır — kargodan ve vergiden asla.",
+    body: "Kart dışındaki her tahsilat yolu, tüm planlarda tamamen sizindir. Kartlı satışlar mal bedelinin {fee} kadarını taşır — kargoda ve vergide asla.",
     freeTagline: "İlk siparişlerini almak için gereken her şey.",
     proTagline: "Büyümek için yer, ve sana benzeyen bir dükkân.",
     bizTagline: "Kartlı ödeme, kampanyalar ve tavsiye programı — ciroyu büyüten araçlar.",
@@ -136,7 +136,7 @@ export const marketingTr: MarketingDictionary = {
     q2: "Alıcılar bana gerçekte nasıl ödeme yapıyor?",
     a2: "Bugün nasıl tahsil ediyorsan öyle. Kendi Stripe hesabınla kartla; tahsilat doğrudan sana geçer. Ya da havale, kapıda ödeme ve mobil parayla, kendi yazdığın talimatlarla. Sailo parayı asla tutmaz.",
     q3: "Sailo komisyon alıyor mu?",
-    a3: "Sohbet, havale ve nakit siparişlerde hayır — tamamı sizindir. Kartlı satışlarda ürün bedelinin {fee} kadarı Stripe ücreti olarak alınır. Kargo ya da vergiden asla alınmaz.",
+    a3: "Yalnızca kartta. WhatsApp, Venmo, PayPal, havale ve nakit tüm planlarda tamamen sizindir. Kartlı satışlar mal bedelinin {fee} kadarını Stripe ücreti olarak taşır — kargoda veya vergide asla.",
     q4: "Hizmet veya dijital dosya satabilir miyim?",
     a4: "Evet, hem de düzgün biçimde. Bir hizmet süre, konum ve ön bildirim süreli tarih seçici taşıyabilir. Dijital ürün ise ödemeyi onayladığın anda açılan dosyalar gönderir; istersen indirme sınırı ve son kullanma tarihiyle.",
     q5: "Zaten Linktree'm var. Neden değiştireyim?",
@@ -195,11 +195,11 @@ export const marketingTr: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — biyografideki bağlantı kadar basit bir online dükkân",
+    title: "Web sitesi olmadan online sipariş alın — Sailo",
     description:
-      "Sailo, biyografindeki bağlantıyı gerçek bir dükkâna çevirir. Ürün, dijital dosya veya hizmet sat; siparişleri WhatsApp'tan ya da kartla al, 35 dilde. Başlaması ücretsiz, komisyon yok.",
-    ogTitle: "Sailo — tek bağlantı, bütün dükkânın",
+      "Instagram'ınızı gerçek bir dükkâna çevirin: fotoğraflar, fiyatlar, seçenekler, stok. Siparişler yazılmış olarak gelir. WhatsApp, havale ve nakitte komisyon yok.",
+    ogTitle: "Siparişleri DM'den yeniden yazmayı bırakın",
     ogDescription:
-      "Tek bir biyografi bağlantısının arkasında fotoğraflar, fiyatlar, seçenekler, stok, randevular ve indirmeler. Siparişler WhatsApp'a ya da kendi kartlı ödemene düşer.",
+      "Tek bir bağlantının ardında gerçek bir dükkân — fotoğraf, fiyat, stok ve ödeme. Siparişler hazır gelir ve kendi bulduğunuz müşterilerden kimse pay almaz.",
   },
 };

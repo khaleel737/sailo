@@ -493,7 +493,7 @@ describe.skipIf(!ACCOUNT)("memberships against real Stripe", () => {
     ).toBeGreaterThanOrEqual(2);
 
     // Oldest first, so the signup is handled before the renewal.
-    const ordered = [...invoices.data].sort((a, b) => a.created - b.created);
+    const ordered = invoices.data.toSorted((a, b) => a.created - b.created);
     for (const invoice of ordered) {
       expect(subscriptionIdOf(invoice)).toBe(clockSub.id);
       await handleConnectEvent(asEvent("invoice.paid", invoice), ACCOUNT ?? null);

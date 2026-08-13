@@ -17,14 +17,14 @@ export const marketingFi: MarketingDictionary = {
 
   hero: {
     badge: "Aloita ilmaiseksi, jatka ilmaiseksi",
-    title: "Koko kauppasi {highlight}.",
-    titleHighlight: "yhdessä linkissä",
-    body: "Otat tilauksia jo viesteissä. Sailo asettaa niiden eteen oikean kaupan — kuvat, hinnat, haun ja maksun yhden linkin taakse — ja jokainen tilaus tulee yhä siihen chattiin, johon vastaat muutenkin.",
+    title: "Lopeta tilausten uudelleenkirjoittaminen {highlight}.",
+    titleHighlight: "viesteistä",
+    body: "Otat tilauksia jo vastaan viesteissä. Sailo tekee siitä oikean kaupan — kuvat, hinnat, vaihtoehdot ja varasto yhden linkin takana, ilman verkkosivun rakentamista. Tilaukset tulevat yhä samaan chattiin, mutta valmiiksi kirjoitettuina.",
     ctaPrimary: "Luo kauppasi — ilmaiseksi",
     ctaSecondary: "Avaa oikea kauppa",
     proof1: "Pystyssä alle minuutissa",
     proof2: "Korttia ei tarvita",
-    proof3: "Ei provisiota chat- ja tilisiirtotilauksista",
+    proof3: "Ei komissiota paitsi kortilla",
     proof4: "35 kieltä",
     igBio: "Puu-uunipizzaa, Napoli. Tilaa alta.",
     igPosts: "Julkaisua",
@@ -118,7 +118,7 @@ export const marketingFi: MarketingDictionary = {
   pricing: {
     eyebrow: "Hinnat",
     title: "Ilmainen aloittaa, ilmainen jatkaa.",
-    body: "Chatin, tilisiirron ja käteisen kautta tulleet tilaukset ovat kokonaan sinun, kaikissa paketeissa. Korttimyynnistä menee {fee} tavaran hinnasta — ei koskaan toimituksesta tai verosta.",
+    body: "Jokainen maksutapa korttia lukuun ottamatta on kokonaan sinun, kaikissa paketeissa. Korttimyynnistä menee {fee} tavarasta — ei koskaan toimituksesta tai verosta.",
     freeTagline: "Kaikki mitä ensimmäisiin tilauksiin tarvitaan.",
     proTagline: "Tilaa kasvaa, ja kauppa joka näyttää omaltasi.",
     bizTagline: "Korttimaksut, kampanjat ja suositukset — työkalut jotka kasvattavat liikevaihtoa.",
@@ -136,7 +136,7 @@ export const marketingFi: MarketingDictionary = {
     q2: "Miten ostajat oikeasti maksavat minulle?",
     a2: "Samoin kuin otat rahaa vastaan jo nyt. Kortilla oman Stripe-tilisi kautta, jolloin suoritus tulee suoraan sinulle. Tai tilisiirtona, postiennakolla ja mobiilirahalla, ohjeilla jotka kirjoitat itse. Sailo ei koskaan pidä rahoja hallussaan.",
     q3: "Ottaako Sailo provisiota?",
-    a3: "Chat-, tilisiirto- ja käteistilauksista ei — ne ovat kokonaan sinun. Korttimyynnistä peritään {fee} tuotteista Stripe-maksuna. Ei koskaan toimituksesta tai verosta.",
+    a3: "Vain kortilla. WhatsApp, Venmo, PayPal, tilisiirto ja käteinen ovat kokonaan sinun, kaikissa paketeissa. Korttimyynnistä menee {fee} tavarasta Stripe-maksuna — ei koskaan toimituksesta tai verosta.",
     q4: "Voinko myydä palveluita tai digitaalisia tiedostoja?",
     a4: "Kyllä, ja ne käyttäytyvät oikein. Palvelulla voi olla kesto, paikka ja päivämäärävalitsin varoitusaikoineen. Digitaalinen tuote toimittaa tiedostot, jotka aukeavat heti kun vahvistat maksun — halutessasi latausrajalla ja vanhenemisella.",
     q5: "Minulla on jo Linktree. Miksi vaihtaisin?",
@@ -195,11 +195,11 @@ export const marketingFi: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — verkkokauppa yhtä helppo kuin linkki biossa",
+    title: "Ota tilauksia vastaan ilman verkkosivua — Sailo",
     description:
-      "Sailo tekee biosi linkistä oikean kaupan. Myy tuotteita, digitaalisia tiedostoja tai palveluita ja ota tilaukset vastaan WhatsAppissa tai kortilla, 35 kielellä. Ilmainen aloittaa, ei provisiota.",
-    ogTitle: "Sailo — yksi linkki, koko kauppasi",
+      "Muuta Instagram oikeaksi kaupaksi: kuvat, hinnat, vaihtoehdot, varasto. Tilaukset saapuvat valmiiksi kirjoitettuina. Ei komissiota WhatsAppista, tilisiirrosta tai käteisestä.",
+    ogTitle: "Lopeta tilausten uudelleenkirjoittaminen viesteistä",
     ogDescription:
-      "Kuvat, hinnat, variaatiot, saldot, varaukset ja lataukset yhden bio-linkin takana. Tilaukset päätyvät WhatsAppiin tai omaan korttimaksuusi.",
+      "Oikea kauppa yhden linkin takana — kuvat, hinnat, varasto ja kassa. Tilaukset tulevat valmiina, eikä kukaan ota osuutta itse hankkimistasi asiakkaista.",
   },
 };

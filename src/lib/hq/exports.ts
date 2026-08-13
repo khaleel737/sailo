@@ -17,6 +17,9 @@ export async function getAllAccountsForExport(limit = 5000) {
       name: user.name,
       email: user.email,
       emailVerified: user.emailVerified,
+      // The column the "mail every seller who hasn't turned 2FA on" merge is
+      // filtered by — which is the whole point of measuring adoption.
+      twoFactorEnabled: user.twoFactorEnabled,
       joinedAt: user.createdAt,
       shop: shops,
       productCount: sql<string>`(select count(*) from products p where p.shop_id = shops.id)`,

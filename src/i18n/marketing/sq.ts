@@ -17,14 +17,14 @@ export const marketingSq: MarketingDictionary = {
 
   hero: {
     badge: "Falas për të filluar, falas për të vazhduar",
-    title: "I gjithë dyqani juaj, në {highlight}.",
-    titleHighlight: "një lidhje të vetme",
-    body: "Ju tashmë merrni porosi në mesazhe. Sailo vendos përpara tyre një dyqan të vërtetë — foto, çmime, kërkim dhe pagesë pas një lidhjeje të vetme — dhe çdo porosi vjen sërish në bisedën ku përgjigjeni gjithsesi.",
+    title: "Mos i rishkruaj më porositë nga {highlight}.",
+    titleHighlight: "mesazhet",
+    body: "Ti tashmë merr porosi në mesazhe. Sailo e kthen këtë në një dyqan të vërtetë — foto, çmime, opsione dhe stok pas një lidhjeje, pa ndërtuar faqe interneti. Porositë vijnë prapë në të njëjtin bisedim, por të shkruara.",
     ctaPrimary: "Krijoni dyqanin tuaj — falas",
     ctaSecondary: "Hapni një dyqan të gjallë",
     proof1: "Gati për më pak se një minutë",
     proof2: "Pa kartë",
-    proof3: "Pa komision për porositë me chat dhe bankë",
+    proof3: "Pa komision, përveç kartës",
     proof4: "35 gjuhë",
     igBio: "Pica në furrë me dru, Napoli. Porosisni më poshtë.",
     igPosts: "Postime",
@@ -118,7 +118,7 @@ export const marketingSq: MarketingDictionary = {
   pricing: {
     eyebrow: "Çmimet",
     title: "Falas për të filluar dhe falas për të vazhduar.",
-    body: "Porositë me chat, transfertë bankare dhe para në dorë janë tërësisht tuajat, në çdo plan. Shitjet me kartë mbajnë {fee} të mallit — asnjëherë të transportit apo taksës.",
+    body: "Çdo mënyrë pagese përveç kartës është plotësisht e jotja, në çdo plan. Shitjet me kartë mbajnë {fee} të mallit — kurrë të dërgesës, kurrë të taksës.",
     freeTagline: "Gjithçka që ju duhet për porositë e para.",
     proTagline: "Hapësirë për t'u rritur dhe një dyqan që duket i juaji.",
     bizTagline: "Pagesa me kartë, promocione dhe rekomandime — mjetet që rrisin të ardhurat.",
@@ -136,7 +136,7 @@ export const marketingSq: MarketingDictionary = {
     q2: "Si më paguajnë vërtet blerësit?",
     a2: "Ashtu si i merrni tashmë paratë. Me kartë, përmes llogarisë suaj Stripe, që pagesa të vijë drejtpërdrejt te ju. Ose me transfertë bankare, pagesë në dorëzim dhe para celulare, me udhëzime që i shkruani vetë. Sailo nuk i mban kurrë paratë.",
     q3: "A merr Sailo komision?",
-    a3: "Për porositë me chat, transfertë bankare dhe para në dorë, jo — ato janë plotësisht tuajat. Shitjet me kartë kanë {fee} të mallit, marrë si tarifë Stripe. Kurrë mbi dërgesën apo taksën.",
+    a3: "Vetëm me kartë. WhatsApp, Venmo, PayPal, transferta bankare dhe paratë në dorë janë plotësisht të tuat, në çdo plan. Shitjet me kartë mbajnë {fee} të mallit, si tarifë e Stripe — kurrë mbi dërgesën apo taksën.",
     q4: "A mund të shes shërbime ose skedarë dixhitalë?",
     a4: "Po, dhe sillen siç duhet. Një shërbim mund të mbajë kohëzgjatje, vendndodhje dhe zgjedhës date me afat njoftimi. Një produkt dixhital dërgon skedarë që hapen sapo konfirmoni pagesën, me kufij shkarkimi dhe skadim nëse i doni.",
     q5: "Kam tashmë një Linktree. Pse të ndërroj?",
@@ -195,11 +195,11 @@ export const marketingSq: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — një dyqan online i thjeshtë sa një lidhje në bio",
+    title: "Merr porosi online pa faqe interneti — Sailo",
     description:
-      "Sailo e kthen lidhjen në bio-n tuaj në një dyqan të vërtetë. Shisni produkte, skedarë dixhitalë ose shërbime, merrni porosi në WhatsApp ose me kartë, në 35 gjuhë. Falas për të filluar, dhe Sailo nuk merr komision.",
-    ogTitle: "Sailo — një lidhje, i gjithë dyqani juaj",
+      "Kthe Instagramin në dyqan të vërtetë: foto, çmime, opsione, stok. Porositë vijnë të shkruara. Pa komision në WhatsApp, transfertë bankare ose para në dorë.",
+    ogTitle: "Mos i rishkruaj më porositë nga mesazhet",
     ogDescription:
-      "Foto, çmime, variante, gjendje, rezervime dhe shkarkime pas një lidhjeje të vetme në bio. Porositë mbërrijnë në WhatsApp ose te arka juaj me kartë.",
+      "Një dyqan i vërtetë pas një lidhjeje — foto, çmime, stok dhe arkë. Porositë vijnë gati, dhe askush nuk merr përqindje nga klientët që i gjete vetë.",
   },
 };

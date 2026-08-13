@@ -33,7 +33,10 @@ export function SiteNav({
     { href: "/#compare", label: t.nav.how },
     { href: "/#demos", label: t.nav.demos },
     { href: "/#features", label: t.nav.features },
-    { href: "/#pricing", label: t.nav.pricing },
+    // A real page now, not an anchor. Linking the page rather than "/#pricing"
+    // is also what gives it internal links from every marketing page, which is
+    // the cheapest ranking signal a new page can get.
+    { href: "/pricing", label: t.nav.pricing },
     { href: "/#faq", label: t.nav.faq },
     // The only entry that leaves the page, so it goes last — everything
     // above it scrolls, and a route change in the middle of a scroll menu

@@ -87,6 +87,25 @@ export const shops = pgTable(
      */
     subscribeIncentive: text("subscribe_incentive"),
 
+    /*
+     * Marketing sending, stopped for this shop.
+     *
+     * Deliberately not `suspendedAt`. That one is a staff decision that takes
+     * the whole storefront off the air; this one is narrow and usually
+     * automatic — a shop whose complaint or bounce rate crossed the line keeps
+     * selling, keeps sending order confirmations, and only stops sending
+     * broadcasts. Reusing the suspension column would mean a bounce rate could
+     * close a shop, which is not a thing a bounce rate may do.
+     *
+     * Written by `lib/broadcasts/reputation.ts` when a bounce or complaint
+     * webhook pushes the rolling window past a threshold, and cleared from /hq
+     * by a human who has looked at the list. Read in `budgetFor`, the one seam
+     * every marketing send already passes through.
+     */
+    marketingPausedAt: timestamp("marketing_paused_at"),
+    /** `complaint_rate` | `bounce_rate` | free text when a human paused it. */
+    marketingPausedReason: text("marketing_paused_reason"),
+
     // Affiliate programme
     affiliatesEnabled: boolean("affiliates_enabled").default(false).notNull(),
     /** Default commission in basis points — 1000 = 10%. */

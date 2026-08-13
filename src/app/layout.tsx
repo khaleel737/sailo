@@ -60,19 +60,23 @@ export async function generateMetadata(): Promise<Metadata> {
     /*
      * Google has ignored this tag since 2009, so it is not an SEO lever — it is
      * a statement of which category we are in, read by smaller engines and by
-     * the crawlers that summarise pages. Kept store-first for that reason: the
-     * head noun is a store, and "link in bio" appears once, as the mechanic.
+     * the crawlers that summarise pages.
+     *
+     * Led by the job rather than by the thing: a seller searches for how to
+     * take an order, not for a category of software. "Link in bio" is gone
+     * deliberately — it is Linktree's term, unwinnable, and it files us beside
+     * creator tools that ship no catalogue and are not who we lose deals to.
      */
     keywords: [
-      "online store for small business",
-      "sell on WhatsApp",
-      "online store builder",
+      "take orders online",
       "sell online without a website",
-      "sell digital downloads",
-      "booking page",
-      "Big Cartel alternative",
-      "online store without card payments",
-      "link in bio shop",
+      "online order form for small business",
+      "take orders on Instagram",
+      "sell on WhatsApp",
+      "custom order form",
+      "take deposits online",
+      "online store for small business",
+      "Etsy alternative",
       "low fee ecommerce",
     ],
     /*

@@ -17,14 +17,14 @@ export const marketingSv: MarketingDictionary = {
 
   hero: {
     badge: "Gratis att börja, gratis att fortsätta",
-    title: "Hela din butik på {highlight}.",
-    titleHighlight: "en länk",
-    body: "Du tar redan emot beställningar i meddelandena. Sailo sätter en riktig butik framför dem — bilder, priser, sök och kassa bakom en länk — och varje beställning landar fortfarande i chatten du ändå svarar i.",
+    title: "Sluta skriva av beställningar från dina {highlight}.",
+    titleHighlight: "DM",
+    body: "Du tar redan emot beställningar i meddelanden. Sailo gör det till en riktig butik — bilder, priser, varianter och lager bakom en länk, utan att bygga en webbplats. Beställningarna hamnar fortfarande i samma chatt, fast färdigskrivna.",
     ctaPrimary: "Skapa din butik — gratis",
     ctaSecondary: "Öppna en riktig butik",
     proof1: "Uppe på under en minut",
     proof2: "Inget kort behövs",
-    proof3: "Ingen provision på chatt- och banköverföringsordrar",
+    proof3: "Ingen provision utom på kort",
     proof4: "35 språk",
     igBio: "Vedugnsbakad pizza, Neapel. Beställ nedan.",
     igPosts: "Inlägg",
@@ -118,7 +118,7 @@ export const marketingSv: MarketingDictionary = {
   pricing: {
     eyebrow: "Priser",
     title: "Gratis att börja, och gratis att fortsätta.",
-    body: "Beställningar via chatt, banköverföring och kontant är helt dina, på alla planer. Kortförsäljning bär {fee} av varan — aldrig av frakt eller skatt.",
+    body: "Alla sätt att få betalt utom kort är helt dina, på alla planer. Kortförsäljning bär {fee} av varorna — aldrig frakt, aldrig skatt.",
     freeTagline: "Allt du behöver för dina första beställningar.",
     proTagline: "Plats att växa, och en butik som ser ut som din egen.",
     bizTagline: "Kortbetalningar, kampanjer och tips — verktygen som ökar omsättningen.",
@@ -136,7 +136,7 @@ export const marketingSv: MarketingDictionary = {
     q2: "Hur betalar köpare mig egentligen?",
     a2: "Som du redan tar betalt idag. Med kort, via ditt eget Stripe-konto, så pengarna landar direkt hos dig. Eller med banköverföring, postförskott och mobila betalningar, med instruktioner du skriver själv. Sailo håller aldrig i pengarna.",
     q3: "Tar Sailo provision?",
-    a3: "På chatt-, banköverförings- och kontantordrar nej — de är helt dina. Kortförsäljning kostar {fee} av varorna, taget som en Stripe-avgift. Aldrig på frakt eller skatt.",
+    a3: "Bara på kort. WhatsApp, Venmo, PayPal, banköverföring och kontant är helt dina, på alla planer. Kortförsäljning bär {fee} av varorna, taget som en Stripe-avgift — aldrig på frakt eller skatt.",
     q4: "Kan jag sälja tjänster eller digitala filer?",
     a4: "Ja, och de beter sig som de ska. En tjänst kan ha längd, plats och en datumväljare med framförhållning. En digital produkt levererar filer som låses upp så fort du bekräftar betalningen, med nedladdningsgräns och utgångsdatum om du vill.",
     q5: "Jag har redan ett Linktree. Varför byta?",
@@ -195,11 +195,11 @@ export const marketingSv: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — en webbutik så enkel som en länk i bion",
+    title: "Ta emot beställningar utan webbplats — Sailo",
     description:
-      "Sailo gör länken i din bio till en riktig butik. Sälj produkter, digitala filer eller tjänster och ta emot beställningar på WhatsApp eller med kort, på 35 språk. Gratis att börja, utan provision.",
-    ogTitle: "Sailo — en länk, hela din butik",
+      "Gör din Instagram till en riktig butik: bilder, priser, varianter, lager. Beställningar kommer färdigskrivna. Ingen provision på WhatsApp, banköverföring eller kontant.",
+    ogTitle: "Sluta skriva av beställningar från dina DM",
     ogDescription:
-      "Bilder, priser, varianter, lager, bokningar och nedladdningar bakom en enda länk i bion. Beställningar landar i WhatsApp eller i din egen kortbetalning.",
+      "En riktig butik bakom en länk — bilder, priser, lager och kassa. Beställningar kommer färdiga, och ingen tar en andel av kunder du hittat själv.",
   },
 };

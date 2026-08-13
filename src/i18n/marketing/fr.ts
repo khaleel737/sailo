@@ -17,14 +17,14 @@ export const marketingFr: MarketingDictionary = {
 
   hero: {
     badge: "Gratuit au départ, gratuit ensuite",
-    title: "Toute votre boutique, en {highlight}.",
-    titleHighlight: "un seul lien",
-    body: "Vous prenez déjà des commandes en messages privés. Sailo place devant elles une vraie boutique — photos, prix, recherche et paiement derrière un seul lien — et chaque commande arrive toujours dans la conversation que vous suivez de toute façon.",
+    title: "Arrêtez de recopier les commandes depuis vos {highlight}.",
+    titleHighlight: "messages",
+    body: "Vous prenez déjà des commandes dans vos messages. Sailo en fait une vraie boutique — photos, prix, options et stock derrière un seul lien, sans site à construire. Les commandes arrivent toujours dans la même conversation, mais déjà rédigées.",
     ctaPrimary: "Créer ma boutique — gratuit",
     ctaSecondary: "Ouvrir une boutique réelle",
     proof1: "En ligne en moins d'une minute",
     proof2: "Sans carte bancaire",
-    proof3: "Aucune commission sur les commandes par chat et virement",
+    proof3: "Aucune commission sauf par carte",
     proof4: "35 langues",
     igBio: "Pizza au feu de bois, Naples. Commandez ci-dessous.",
     igPosts: "Publications",
@@ -118,7 +118,7 @@ export const marketingFr: MarketingDictionary = {
   pricing: {
     eyebrow: "Tarifs",
     title: "Gratuit au départ, et gratuit pour durer.",
-    body: "Les commandes par chat, virement et espèces vous reviennent entièrement, sur toutes les formules. Les ventes par carte portent {fee} de la marchandise — jamais de la livraison ni de la taxe.",
+    body: "Tous les moyens d'encaisser sauf la carte sont entièrement à vous, sur tous les forfaits. Les ventes par carte portent {fee} de la marchandise — jamais la livraison, jamais la taxe.",
     freeTagline: "Tout ce qu'il faut pour vos premières commandes.",
     proTagline: "De la place pour grandir, et une boutique à votre image.",
     bizTagline: "Paiements par carte, promotions et parrainage — les outils qui font grimper le chiffre.",
@@ -136,7 +136,7 @@ export const marketingFr: MarketingDictionary = {
     q2: "Comment mes clients me paient-ils vraiment ?",
     a2: "Comme aujourd'hui. Par carte, via votre propre compte Stripe, donc l'encaissement vous revient directement. Ou par virement, paiement à la livraison et mobile money, avec vos propres instructions. Sailo ne détient jamais l'argent.",
     q3: "Sailo prend-il une commission ?",
-    a3: "Sur les commandes par chat, virement et espèces, non : elles vous reviennent intégralement. Les ventes par carte comportent {fee} sur les produits, prélevés comme frais Stripe. Jamais sur la livraison ni la taxe.",
+    a3: "Uniquement sur la carte. WhatsApp, Venmo, PayPal, virement et espèces sont entièrement à vous, sur tous les forfaits. Les ventes par carte portent {fee} de la marchandise, prélevé comme frais Stripe — jamais sur la livraison ou la taxe.",
     q4: "Puis-je vendre des services ou des fichiers ?",
     a4: "Oui, et ils se comportent correctement. Une prestation peut porter une durée, un lieu et un calendrier avec délai de prévenance. Un produit numérique livre des fichiers débloqués dès la confirmation du paiement, avec limite de téléchargements et expiration si vous le souhaitez.",
     q5: "J'ai déjà un Linktree. Pourquoi changer ?",
@@ -195,11 +195,11 @@ export const marketingFr: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — une boutique en ligne aussi simple qu'un lien en bio",
+    title: "Prenez des commandes en ligne sans site web — Sailo",
     description:
-      "Sailo transforme le lien de votre bio en vraie boutique. Vendez des produits, des fichiers numériques ou des services, recevez les commandes sur WhatsApp ou par carte, en 35 langues. Gratuit au départ, sans commission.",
-    ogTitle: "Sailo — un lien, toute votre boutique",
+      "Transformez votre Instagram en vraie boutique : photos, prix, options, stock. Les commandes arrivent rédigées. Aucune commission sur WhatsApp, virement ou espèces.",
+    ogTitle: "Arrêtez de recopier les commandes depuis vos messages",
     ogDescription:
-      "Photos, prix, variantes, stock, réservations et téléchargements derrière un seul lien en bio. Les commandes arrivent sur WhatsApp ou sur votre propre paiement par carte.",
+      "Une vraie boutique derrière un seul lien — photos, prix, stock et paiement. Les commandes arrivent prêtes, et personne ne prélève sur les clients que vous avez trouvés vous-même.",
   },
 };

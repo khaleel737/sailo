@@ -3,6 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@/db";
 import { broadcastDeliveries } from "@/db/schema";
 import { suppress } from "@/lib/broadcasts/audience";
+import { evaluateShop } from "@/lib/broadcasts/reputation";
 import { optOut } from "@/lib/lifecycle/opt-out";
 import {
   lifecycleDeliveryByProviderId,
@@ -159,6 +160,29 @@ export async function POST(request: Request) {
           eq(broadcastDeliveries.status, "sent"),
         ),
       );
+
+    /*
+     * One address off the list is the small half of this. The large half is
+     * whether the *shop* should still be sending at all — one seller's bought
+     * list is paid for by every other seller's order confirmations, since they
+     * share a sending domain.
+     *
+     * After the flip, not before, so the event that triggered this is counted
+     * in its own verdict. The flip is guarded on `status = 'sent'`, so a
+     * redelivered webhook writes nothing the second time and cannot inflate
+     * the rate by being counted twice.
+     *
+     * Caught, and only here. By this line the thing this request came to do —
+     * the suppression — is already written, so throwing would answer 500 to a
+     * request that succeeded and make Resend redeliver it. The verdict is not
+     * a one-shot: the window is rolling and the next bounce asks again, so a
+     * failed evaluation costs a few minutes rather than a pause.
+     */
+    try {
+      await evaluateShop(delivery.shopId);
+    } catch (error) {
+      console.error(`[sailo] reputation check failed for shop ${delivery.shopId}`, error);
+    }
 
     return Response.json({ ok: true });
   }

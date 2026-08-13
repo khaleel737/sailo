@@ -7,6 +7,7 @@ import {
   getAllBuyersForExport,
   getAllOrdersForExport,
   getAllProductsForExport,
+  getAllSessionsForExport,
   getPaidAccounts,
 } from "@/lib/hq";
 import { billingState, planMonthlyCents } from "@/lib/hq-metrics";
@@ -37,6 +38,7 @@ const EXPORTS = [
   "products",
   "affiliates",
   "buyers",
+  "sessions",
 ] as const;
 type ExportType = (typeof EXPORTS)[number];
 
@@ -72,6 +74,7 @@ async function build(
           "Name",
           "Email",
           "Email verified",
+          "Two-factor",
           "Shop",
           "Handle",
           "Shop created",
@@ -95,6 +98,7 @@ async function build(
             a.name,
             a.email,
             bool(a.emailVerified),
+            bool(a.twoFactorEnabled),
             shop?.name ?? "",
             shop?.handle ?? "",
             date(shop?.createdAt),
@@ -311,6 +315,46 @@ async function build(
           r.orderCount,
           r.currency,
           money(r.spentCents, r.currency),
+        ]),
+      };
+    }
+
+    case "sessions": {
+      const rows = await getAllSessionsForExport();
+      return {
+        headers: [
+          "Signed in",
+          "Last seen",
+          "Expires",
+          "Name",
+          "Email",
+          "Staff",
+          "Handle",
+          "Email verified",
+          "Two-factor",
+          "City",
+          "Country",
+          "IP",
+          "Device",
+          "OS",
+          "Browser",
+        ],
+        rows: rows.map((r) => [
+          date(r.createdAt),
+          date(r.lastSeenAt),
+          date(r.expiresAt),
+          r.name,
+          r.email,
+          bool(r.staff),
+          r.handle ?? "",
+          bool(r.emailVerified),
+          bool(r.twoFactorEnabled),
+          r.city ?? "",
+          r.country ?? "",
+          r.ipAddress ?? "",
+          r.device,
+          r.os ?? "",
+          r.browser ?? "",
         ]),
       };
     }

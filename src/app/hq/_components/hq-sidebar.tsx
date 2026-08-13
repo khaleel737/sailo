@@ -13,6 +13,7 @@ import {
   LogOut,
   Menu,
   Package,
+  ShieldCheck,
   ShoppingBag,
   UserRound,
   Users,
@@ -63,6 +64,15 @@ const GROUPS = [
     label: "Platform",
     items: [
       { href: "/hq/support", label: "Support", icon: LifeBuoy },
+      /*
+       * Under Platform rather than beside Accounts. It reads per-account —
+       * this seller's devices, that seller's keys — but the thing it is for is
+       * the estate: one account signed in from two countries is a holiday, and
+       * the same shape across forty of them is an incident, and only this
+       * grouping puts it next to the other questions asked of the whole
+       * platform at once.
+       */
+      { href: "/hq/security", label: "Security", icon: ShieldCheck },
       { href: "/hq/system", label: "System", icon: Activity },
     ],
   },

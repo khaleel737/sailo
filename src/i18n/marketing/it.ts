@@ -17,14 +17,14 @@ export const marketingIt: MarketingDictionary = {
 
   hero: {
     badge: "Gratis per iniziare, gratis per restare",
-    title: "Tutto il tuo negozio, in {highlight}.",
-    titleHighlight: "un solo link",
-    body: "Prendi già ordini nei messaggi. Sailo ci mette davanti un negozio vero — foto, prezzi, ricerca e pagamento dietro un solo link — e ogni ordine arriva sempre nella chat a cui rispondi comunque.",
+    title: "Basta ricopiare gli ordini dai {highlight}.",
+    titleHighlight: "messaggi",
+    body: "Ricevi già ordini nei messaggi. Sailo li trasforma in un negozio vero — foto, prezzi, opzioni e scorte dietro un solo link, senza costruire un sito. Gli ordini arrivano ancora nella stessa chat, ma già scritti.",
     ctaPrimary: "Crea il tuo negozio — gratis",
     ctaSecondary: "Apri un negozio vero",
     proof1: "Online in meno di un minuto",
     proof2: "Nessuna carta richiesta",
-    proof3: "Nessuna commissione su ordini via chat e bonifico",
+    proof3: "Nessuna commissione tranne su carta",
     proof4: "35 lingue",
     igBio: "Pizza al forno a legna, Napoli. Ordina qui sotto.",
     igPosts: "Post",
@@ -118,7 +118,7 @@ export const marketingIt: MarketingDictionary = {
   pricing: {
     eyebrow: "Prezzi",
     title: "Gratis per iniziare, e gratis per andare avanti.",
-    body: "Gli ordini via chat, bonifico e contanti sono tuoi per intero, su ogni piano. Le vendite con carta portano {fee} sulla merce — mai sulla spedizione né sull'imposta.",
+    body: "Ogni modo di incassare tranne la carta è interamente tuo, su tutti i piani. Le vendite con carta portano {fee} della merce — mai la spedizione, mai le tasse.",
     freeTagline: "Tutto il necessario per i primi ordini.",
     proTagline: "Spazio per crescere, e un negozio che sembra tuo.",
     bizTagline: "Pagamenti con carta, promozioni e segnalazioni: gli strumenti che fanno crescere il fatturato.",
@@ -136,7 +136,7 @@ export const marketingIt: MarketingDictionary = {
     q2: "Come mi pagano davvero?",
     a2: "Come incassi già oggi. Con carta, tramite il tuo account Stripe, quindi l'incasso arriva direttamente a te. Oppure con bonifico, contrassegno e mobile money, con istruzioni scritte da te. Sailo non tiene mai i soldi.",
     q3: "Sailo prende una commissione?",
-    a3: "Su ordini via chat, bonifico e contanti no: sono interamente tuoi. Le vendite con carta hanno il {fee} sui prodotti, trattenuto come commissione Stripe. Mai su spedizione o imposte.",
+    a3: "Solo sulla carta. WhatsApp, Venmo, PayPal, bonifico e contanti sono interamente tuoi, su tutti i piani. Le vendite con carta portano {fee} della merce, trattenuto come commissione Stripe — mai su spedizione o tasse.",
     q4: "Posso vendere servizi o file digitali?",
     a4: "Sì, e si comportano come devono. Un servizio può avere durata, luogo e calendario con preavviso. Un prodotto digitale consegna file che si sbloccano appena confermi il pagamento, con limite di download e scadenza se li vuoi.",
     q5: "Ho già un Linktree. Perché cambiare?",
@@ -195,11 +195,11 @@ export const marketingIt: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — un negozio online semplice come un link in bio",
+    title: "Ricevi ordini online senza sito web — Sailo",
     description:
-      "Sailo trasforma il link in bio in un negozio vero. Vendi prodotti, file digitali o servizi e ricevi ordini su WhatsApp o con carta, in 35 lingue. Gratis per iniziare, senza commissioni.",
-    ogTitle: "Sailo — un link, tutto il tuo negozio",
+      "Trasforma Instagram in un negozio vero: foto, prezzi, opzioni, scorte. Gli ordini arrivano già scritti. Nessuna commissione su WhatsApp, bonifico o contanti.",
+    ogTitle: "Basta ricopiare gli ordini dai messaggi",
     ogDescription:
-      "Foto, prezzi, varianti, giacenze, prenotazioni e download dietro un solo link in bio. Gli ordini arrivano su WhatsApp o sul tuo pagamento con carta.",
+      "Un negozio vero dietro un solo link — foto, prezzi, scorte e cassa. Gli ordini arrivano pronti, e nessuno prende una percentuale sui clienti che hai trovato tu.",
   },
 };

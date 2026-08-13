@@ -172,7 +172,15 @@ export const staffActions = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     /** Who did it. The email, not a user id — it stays readable forever. */
     actorEmail: text("actor_email").notNull(),
-    /** comp_plan | clear_comp | suspend | unsuspend | note */
+    /**
+     * comp_plan | clear_comp | suspend | unsuspend | note | support_close |
+     * revoke_session | revoke_sessions | clear_two_factor | revoke_api_key
+     *
+     * The security four are here for the same reason as the rest and then some:
+     * clearing a second factor makes an account easier to get into, and the row
+     * naming who did it and why is the only thing separating that from the
+     * attack it would otherwise look exactly like.
+     */
     action: text("action").notNull(),
     shopId: uuid("shop_id").references(() => shops.id, { onDelete: "cascade" }),
     /** Human sentence, written at the time: "Comped Business — beta tester". */
