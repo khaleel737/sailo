@@ -20,14 +20,32 @@ function resend() {
  */
 const MAIL_DOMAIN = process.env.SAILO_MAIL_DOMAIN ?? "sailo.store";
 
+/**
+ * Two sending domains, split by stream — the lesson of the outage that took the
+ * whole site down.
+ *
+ * Marketing is the traffic that earns complaints, and a new sending domain that
+ * earns them gets blocklisted; on a `.store` the registry then suspends the
+ * *registered* domain, and if that is the domain the website resolves on, the
+ * site goes dark with it. So the risky stream must be able to live on its own
+ * domain, apart from both the reliable transactional stream and — crucially —
+ * the brand/website domain.
+ *
+ * Both default to `MAIL_DOMAIN` (which defaults to the brand domain), so nothing
+ * changes until `SAILO_TX_DOMAIN` / `SAILO_MKT_DOMAIN` are set to dedicated
+ * sending domains that are *not* the domain the website answers on.
+ */
+const TX_DOMAIN = process.env.SAILO_TX_DOMAIN ?? MAIL_DOMAIN;
+const MKT_DOMAIN = process.env.SAILO_MKT_DOMAIN ?? MAIL_DOMAIN;
+
 /** Anything a buyer gets about an order they placed. */
-export const ORDERS = `orders@${MAIL_DOMAIN}`;
+export const ORDERS = `orders@${TX_DOMAIN}`;
 /** Sailo speaking for itself, to the people who promote shops. */
-export const PARTNERS = `partners@${MAIL_DOMAIN}`;
+export const PARTNERS = `partners@${TX_DOMAIN}`;
 /** Anything about the seller's own Sailo login, not their shop. */
-export const ACCOUNTS = `accounts@${MAIL_DOMAIN}`;
+export const ACCOUNTS = `accounts@${TX_DOMAIN}`;
 /** Sellers asking us for help — the inbox the team answers from. */
-export const SUPPORT = `support@${MAIL_DOMAIN}`;
+export const SUPPORT = `support@${TX_DOMAIN}`;
 /**
  * Sailo's own lifecycle and product mail to sellers.
  *
@@ -39,7 +57,7 @@ export const SUPPORT = `support@${MAIL_DOMAIN}`;
  * *sign-in* mail in spam — which is the one failure they could never diagnose
  * and we could never see.
  */
-export const MARKETING = `marketing@${MAIL_DOMAIN}`;
+export const MARKETING = `marketing@${MKT_DOMAIN}`;
 
 /**
  * Builds a From header.
