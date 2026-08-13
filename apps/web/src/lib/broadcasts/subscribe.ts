@@ -4,7 +4,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { clients, emailSuppressions, shops } from "@sailo/db/schema";
 import { appUrl } from "@/lib/app-url";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 import { emitContactWebhook } from "@/lib/webhooks/emit";
 
 /**

@@ -89,12 +89,6 @@ export function markLeaving() {
   );
 }
 
-/** Testing seam; also what a `retry()` should clear. */
-export function clearLeaving() {
-  leftAt = 0;
-  departed = false;
-}
-
 /**
  * Whether a deliberate departure is still plausibly in progress.
  *

@@ -27,7 +27,7 @@ export type Template = "statement" | "playbook" | "phones" | "contrast" | "stat"
 
 export type Post = {
   id: string;
-  pillar: "payments" | "orders" | "stock" | "money" | "customers";
+  pillar: "payments" | "orders" | "stock" | "money" | "customers" | "audience";
   template: Template;
   art: Record<string, string | string[]>;
   caption: { instagram: string; facebook: string; linkedin: string; x: string };
@@ -71,6 +71,12 @@ const TAGS = {
     "#customerexperience", "#shopsmall", "#reviews", "#smallbiztips",
     "#loyalcustomers", "#sellonline", "#onlineselling", "#businessowner",
     "#retention", "#ecommercetips",
+  ],
+  audience: [
+    "#smallbusiness", "#creatorbusiness", "#smallbusinessowner", "#sellonline",
+    "#onlineselling", "#shopsmall", "#sidehustle", "#smallbiztips",
+    "#microbusiness", "#firstsale", "#solopreneur", "#nanoinfluencer",
+    "#socialselling", "#digitalproducts",
   ],
 } as const;
 
@@ -890,6 +896,72 @@ ${li("customers")}`,
 They've cleared every objection a stranger hasn't. ${x("customers")}`,
     },
     link: `${BLOG}/how-to-get-repeat-buyers`,
+  },
+
+  /* ---------------------------------------------------------- audience --- */
+  {
+    id: "count-your-replies",
+    pillar: "audience",
+    template: "stat",
+    art: {
+      eyebrow: "Audience",
+      value: "9",
+      unit: "replies",
+      headline: "Count your replies, not your followers.",
+      footnote: "Nine from 900 is a business. From 90,000, not.",
+    },
+    alt: "Nine replies from 900 followers is a business; nine from 90,000 is a warning. Count replies, not followers.",
+    caption: {
+      instagram: `Somebody in your comments has 40,000 followers and keeps saying they're too small to sell anything. You have 900 and you believed them.
+
+The number of followers you need to start selling is one buyer. That's arithmetic, not encouragement.
+
+The 100k figure was borrowed from a different business. YouTube wants 1,000 subscribers and 4,000 watch hours before it shares ad money. TikTok's Creator Rewards wants 10,000 followers and 100,000 views in 30 days. Those are the entry prices for selling your audience wholesale, by the thousand, to a brand.
+
+Selling your own thing runs the other way round. A brand pays for how many people can see you. A buyer pays for whether one of them believes you.
+
+So run the cheaper test. Post one offer, one sentence, with a price. No launch, no countdown, no story sequence. Wait 72 hours and count how many people asked how to pay.
+
+Two or more asked → you have a business. Go set up a way to be paid today.
+Questions, but nobody asked about paying → the price doesn't match the promise. That's a rewrite, not a growth problem.
+Nobody replied and reach was normal → wrong audience for this offer, or they don't believe you can deliver it yet. Both fixable. Neither about follower count.
+
+One tutor we wrote about took her first eight bookings at 1,100 followers. Three of them came from people who had followed her for six months and never once commented.
+
+They weren't waiting to be convinced. They were waiting for a link that could take the booking.
+
+${ig("audience")}`,
+      facebook: `Somebody in your comments has 40,000 followers and keeps saying they're too small to sell. You have 900 and you believed them.
+
+The number of followers you need to start selling is one buyer.
+
+The 100k figure is brand-deal economics in disguise. A brand pays for how many people can see you. A buyer pays for whether one of them believes you. Those are two different businesses and only one of them needs reach.
+
+So post one offer, one sentence, with a price. Wait 72 hours. Count how many people asked how to pay — not how many liked it. Two or more and you have a business.
+
+${fb("audience")}`,
+      linkedin: `The most expensive belief in small-scale selling is that you need a bigger audience first.
+
+The thresholds people quote are real, but they belong to someone else's business model. YouTube requires 1,000 subscribers and 4,000 watch hours before it shares ad revenue. TikTok's Creator Rewards requires 10,000 followers and 100,000 views in 30 days. Those are entry prices for selling an audience wholesale to advertisers — a reach business, priced per thousand.
+
+Selling your own product inverts it. A brand pays for how many people can see you; a buyer pays for whether one of them believes you. Reach is the primary input in the first model and close to irrelevant in the second.
+
+So follower count is the wrong instrument. On many small accounts, reach is roughly a third of followers and moves weekly for reasons nobody outside the platform understands. The number that actually predicts revenue is how many people would reply if you asked them something directly, and there is no dashboard for it.
+
+The test costs nothing: post one offer, one sentence, with a price, and wait 72 hours. Count how many people asked how to pay rather than how many engaged.
+
+Two or more is a business. Questions with no payment question is a clarity or pricing problem. Silence at normal reach is an offer-audience mismatch. None of those three are solved by growth.
+
+What's the smallest audience you've seen support a real income?
+
+${li("audience")}`,
+      x: `A brand pays for how many people can see you.
+
+A buyer pays for whether one of them believes you.
+
+Two different businesses. Only one of them needs 100k. ${x("audience")}`,
+    },
+    link: `${BLOG}/you-do-not-need-100k-followers`,
   },
 ];
 

@@ -6,7 +6,7 @@ import { affiliates, clients, orders, products, shops, user } from "@sailo/db/sc
 import { HQ_PAGE_SIZE, like, num, paginate } from "./pagination";
 import { daysAgo } from "./pagination";
 import { mergeCurrencyTotals } from "@/lib/hq-metrics";
-import { isOrderStatus } from "@/lib/order-status";
+import { isOrderStatus } from "@sailo/core/order-status";
 import { isPaymentStatus } from "@/lib/payments/status";
 
 /** Platform-wide lists: every order, product, affiliate and buyer. */

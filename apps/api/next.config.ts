@@ -12,23 +12,23 @@ const nextConfig: NextConfig = {
   /*
    * The workspace packages ship TypeScript source rather than built output
    * (`exports` points straight at `./src/index.ts`), so Next has to compile
-   * them itself. Every `@sailo/*` this app declares a dependency on is listed,
-   * including the five skeletons that are still empty — a package added to
-   * this list before it has code costs nothing, and a package missing from it
-   * fails at build time with an import error that reads like a bug in the
-   * package rather than a line missing from here.
+   * them itself.
+   *
+   * This is the transitive closure of what this app actually imports — the
+   * four it depends on directly plus what those pull in — and not a superset.
+   * The list used to name `@sailo/mcp` and `@sailo/rest` as "skeletons that
+   * are still empty"; no such packages exist, which made the comment above it
+   * the only record of a plan that was never built. A package missing from
+   * here fails at build time with an import error that reads like a bug in the
+   * package, so add to it when a dependency is added — not before.
    */
   transpilePackages: [
     "@sailo/api",
-    "@sailo/auth",
-    "@sailo/core",
     "@sailo/db",
+    "@sailo/env",
     "@sailo/events",
-    "@sailo/mcp",
     "@sailo/observability",
-    "@sailo/payments",
     "@sailo/rate-limit",
-    "@sailo/rest",
   ],
 };
 

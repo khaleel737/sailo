@@ -9,7 +9,7 @@ import {
   setTicketRevoked,
   undoCheckIn,
   type CheckInState,
-} from "@/lib/tickets";
+} from "@sailo/commerce/tickets";
 import {
   createDoorPass,
   readDoorPass,

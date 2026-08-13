@@ -2,7 +2,7 @@ import "server-only";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders } from "@sailo/db/schema";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 
 /**
  * Taking a slice of an order's refundable balance, and giving it back.

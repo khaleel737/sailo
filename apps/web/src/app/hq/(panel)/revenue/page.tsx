@@ -276,13 +276,13 @@ export default async function HqRevenuePage() {
               Volume, all time
             </p>
             <p className="mt-1 text-2xl font-semibold text-ink-900">
-              <Money totals={overview.gmv} limit={4} />
+              <Money totals={overview.gmv} stacked />
             </p>
           </div>
           <div className="text-right">
             <p className="text-xs font-medium text-ink-400">Last 30 days</p>
             <p className="mt-1 text-lg font-semibold text-ink-900">
-              <Money totals={overview.gmvMonth} limit={4} />
+              <Money totals={overview.gmvMonth} stacked />
             </p>
           </div>
         </div>

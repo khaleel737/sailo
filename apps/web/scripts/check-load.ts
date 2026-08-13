@@ -9,7 +9,7 @@
  *   npm run check:load          # 5000 shops × 10 products
  *   SHOPS=20000 npm run check:load
  */
-import { present } from "@/lib/invariant";
+import { present } from "@sailo/core/invariant";
 import { hostnameOf, isLocalDatabaseUrl } from "@sailo/db/local-database";
 import { neon, neonConfig } from "@neondatabase/serverless";
 

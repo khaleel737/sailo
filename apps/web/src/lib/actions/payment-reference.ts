@@ -6,7 +6,7 @@ import { and, eq, inArray } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders } from "@sailo/db/schema";
 import { publishShopEvent } from "@sailo/events";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { checkPaymentReference } from "@/lib/payments/status";

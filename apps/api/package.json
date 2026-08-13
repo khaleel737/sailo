@@ -7,26 +7,32 @@
     "build": "next build",
     "start": "next start -p 3002",
     "lint": "oxlint src || true",
-    "typecheck": "next typegen && tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@better-auth/expo": "^1.6.25",
     "@sailo/api": "workspace:*",
     "@sailo/db": "workspace:*",
+    "@sailo/env": "workspace:*",
     "@sailo/events": "workspace:*",
+    "@sailo/observability": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
+    "@t3-oss/env-core": "^0.13.4",
     "@trpc/server": "^11.6.0",
     "better-auth": "^1.6.25",
     "drizzle-orm": "^0.45.2",
     "next": "16.3.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",
     "@types/node": "^20",
     "@types/react": "^19",
     "oxlint": "^1.77.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.10"
   }
 }

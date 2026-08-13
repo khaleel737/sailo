@@ -11,7 +11,7 @@ import {
   toCheckoutVariants,
   unitsLeft,
 } from "@sailo/core/variants";
-import { eventSalesOpen } from "@/lib/tickets";
+import { eventSalesOpen } from "@sailo/commerce/tickets";
 import { interpolate } from "@sailo/i18n";
 import { StarRating } from "./star-rating";
 import { FavoriteButton } from "./favorites/favorite-button";

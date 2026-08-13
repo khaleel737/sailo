@@ -1,5 +1,5 @@
 import { and, eq, gt, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 import { getDb } from "@sailo/db";
 import { orders, productFiles } from "@sailo/db/schema";
 import { orderedProductIds } from "@/lib/downloads";

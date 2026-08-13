@@ -7,16 +7,17 @@ import { getDb } from "@sailo/db";
 import { clients, orders } from "@sailo/db/schema";
 import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
 import { requireShop } from "@/lib/session";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 import { formatMoney, parseMoneyToCents } from "@/lib/utils";
-import { isStockReleasingStatus, restoreStock, retakeStock } from "@/lib/inventory";
+import { restoreStock } from "@sailo/commerce/inventory";
+import { applyOrderStatus } from "@sailo/commerce/orders";
 import { checkRefund, refundableCents, reversePayment, type RefundOutcome } from "@/lib/refunds";
 import { claimRefundAmount, releaseRefundClaim } from "@/lib/orders/refund-claim";
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
-import { isOrderStatus } from "@/lib/order-status";
+import { isOrderStatus } from "@sailo/core/order-status";
 import { releaseDownloads } from "@/lib/downloads";
 import { extendForPaidOrder } from "@/lib/membership-renewals";
-import { reinstateTicketsForOrder, voidTicketsForOrder } from "@/lib/tickets";
+import { voidTicketsForOrder } from "@sailo/commerce/tickets";
 import { sendBookingDecision, sendRefundNotification, sendShippingNotification } from "@/lib/email";
 import { emitOrderWebhook } from "@/lib/webhooks/emit";
 import type { ActionState } from "./shop";
@@ -33,20 +34,31 @@ import type { ActionState } from "./shop";
 
 export async function updateOrderStatus(formData: FormData) {
   const { shop } = await requireShop();
-  const db = getDb();
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
   if (!id || !isOrderStatus(status)) return;
 
-  const order = await db.query.orders.findFirst({
-    where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
+  /*
+   * The write, and the stock and admissions that follow it.
+   *
+   * All of that used to be spelled out here, and it is now `applyOrderStatus`
+   * in `@sailo/commerce` — not to tidy this function, but because the mobile
+   * app changes statuses too and a second copy of the cascade is a second
+   * chance to forget the half that is silent. What that call does *not* do is
+   * everything below: the buyer's email, the outbound webhook and the cache
+   * are this app's, and a phone has none of them.
+   *
+   * `previous` is the order as it read before the write, which is what every
+   * guard below needs — each one asks whether something changed, not what it
+   * changed to.
+   */
+  const change = await applyOrderStatus({
+    shopId: shop.id,
+    orderId: id,
+    status,
   });
-  if (!order) return;
-
-  await db
-    .update(orders)
-    .set({ status, updatedAt: new Date() })
-    .where(eq(orders.id, id));
+  if (!change) return;
+  const { previous } = change;
 
   /*
    * An appointment the seller has now answered.
@@ -60,55 +72,15 @@ export async function updateOrderStatus(formData: FormData) {
    * Guarded on the *previous* status, so re-saving an order that was already
    * confirmed does not email the buyer a second time.
    */
-  if (order.scheduledFor && order.status === "new" && status !== "new") {
+  if (previous.scheduledFor && previous.status === "new" && status !== "new") {
     const decision = await sendBookingDecision({
       shop,
-      order,
+      order: previous,
       accepted: status !== "cancelled",
     });
     if (!decision.sent) {
       console.warn(`[sailo] booking decision not sent: ${decision.reason}`);
     }
-  }
-
-  /*
-   * A cancelled *or refunded* order's units go back on the shelf; moving it
-   * back out of either takes them off again, so the count follows the seller
-   * rather than drifting.
-   *
-   * This used to name "cancelled" twice and nothing else, while
-   * `isStockReleasingStatus` — written, tested, and wired to nothing — said
-   * refunded released stock too. A seller refunding from this dropdown got the
-   * goods back in their hands and the shop still counting them as sold. The
-   * refund *action* restocks on a full refund, so the two ways to refund an
-   * order disagreed with each other as well.
-   */
-  if (isStockReleasingStatus(status)) {
-    await restoreStock(order);
-    /*
-     * And the admissions, for exactly the same reason the units go back.
-     *
-     * A ticket is stock that walks through a door. Cancelling or refunding an
-     * event order used to give the seller their seat back in the count while
-     * leaving the code in the buyer's inbox still working — so the seat could
-     * be sold twice and both people could turn up, or a buyer could refund on
-     * the afternoon of the show and walk in on it that evening.
-     */
-    await voidTicketsForOrder(order.id);
-  } else if (order.status === "cancelled" && order.restockedAt) {
-    /*
-     * Only *cancelled* is reversible, and the asymmetry is deliberate.
-     *
-     * Un-cancelling is a seller correcting a mistake: the goods never left, so
-     * taking them back off the shelf is right. Refunding is not a mistake — the
-     * money went back and, ordinarily, so did the goods. Reading this branch as
-     * `isStockReleasingStatus(order.status)` meant a seller who refunded an
-     * order and then tidied it to `completed` silently had the returned units
-     * taken off the shelf again, with the refund still standing.
-     */
-    await retakeStock(order);
-    // The buyer's tickets come back with their order, for the same reason.
-    await reinstateTicketsForOrder(order.id);
   }
 
   revalidatePath("/admin");
@@ -123,8 +95,8 @@ export async function updateOrderStatus(formData: FormData) {
    * status. Scheduled with `after` so the seller's click never waits on it.
    */
   after(() => publishShopEvent(shop.id, "order"));
-  if (order.affiliateId) {
-    const affiliateId = order.affiliateId;
+  if (previous.affiliateId) {
+    const affiliateId = previous.affiliateId;
     after(() => publishAffiliateEvent(affiliateId, "order"));
   }
 
@@ -134,12 +106,12 @@ export async function updateOrderStatus(formData: FormData) {
    * cancelled has changed nothing, and firing a Zap for it is how a customer
    * receives the same "your order was cancelled" message four times.
    */
-  if (status === "cancelled" && order.status !== "cancelled") {
+  if (status === "cancelled" && previous.status !== "cancelled") {
     after(() =>
       emitOrderWebhook({ shop, event: "order.cancelled", orderId: id }),
     );
   }
-  if (order.scheduledFor && order.status === "new" && status !== "new" && status !== "cancelled") {
+  if (previous.scheduledFor && previous.status === "new" && status !== "new" && status !== "cancelled") {
     after(() =>
       emitOrderWebhook({ shop, event: "booking.confirmed", orderId: id }),
     );

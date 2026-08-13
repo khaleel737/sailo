@@ -25,7 +25,7 @@
  * deliberate act, not a side effect of a deploy.
  */
 import Stripe from "stripe";
-import { present } from "../src/lib/invariant";
+import { present } from "@sailo/core/invariant";
 import { PAID_PLAN_IDS, PLANS } from "../src/lib/plans";
 
 const CHECK_ONLY = process.argv.includes("--check");

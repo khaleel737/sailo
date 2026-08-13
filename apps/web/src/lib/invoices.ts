@@ -1,5 +1,5 @@
 import "server-only";
-import { firstRow, maybeRow } from "@/lib/invariant";
+import { firstRow, maybeRow } from "@sailo/core/invariant";
 import { eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { invoices, shops } from "@sailo/db/schema";

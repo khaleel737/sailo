@@ -13,7 +13,10 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@sailo/commerce": "workspace:*",
+    "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
+    "@sailo/events": "workspace:*",
     "@trpc/client": "^11.6.0",
     "@trpc/server": "^11.6.0",
     "drizzle-orm": "^0.45.2",
@@ -21,6 +24,7 @@
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",
+    "oxlint": "^1.77.0",
     "typescript": "^5",
     "vitest": "^4.1.10"
   }

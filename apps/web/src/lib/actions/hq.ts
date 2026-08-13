@@ -17,7 +17,7 @@ import {
 import { parseUserAgent } from "@/lib/analytics";
 import { sendTwoFactorChanged } from "@/lib/email";
 import { publishShopEvent } from "@sailo/events";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 import { requireStaff } from "@/lib/session";
 import { updateShopNow } from "@/lib/cache";
 import { isPlanId, PLANS } from "@/lib/plans";

@@ -3,7 +3,7 @@ import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { products, tickets } from "@sailo/db/schema";
 import { field } from "@/lib/csv";
-import { issueTickets, type TicketDraft } from "@/lib/tickets";
+import { issueTickets, type TicketDraft } from "@sailo/commerce/tickets";
 import { parse } from "./parse";
 import type { ImportReport } from "./types";
 

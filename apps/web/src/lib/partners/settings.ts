@@ -2,7 +2,7 @@ import "server-only";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { partnerProgramSettings } from "@sailo/db/schema";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 import {
   DEFAULT_COMMISSION_BP,
   DEFAULT_COOKIE_DAYS,

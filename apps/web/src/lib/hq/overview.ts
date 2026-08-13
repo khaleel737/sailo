@@ -1,6 +1,6 @@
 import "server-only";
 import { requireStaff } from "@/lib/session";
-import { and, eq, gte, inArray, isNotNull, isNull, ne, or, sql } from "drizzle-orm";
+import { and, gte, inArray, isNotNull, isNull, ne, or, sql } from "drizzle-orm";
 import { getDb, getReadDb } from "@sailo/db";
 import { clients, orders, products, shops, user, visits } from "@sailo/db/schema";
 import { mergeCurrencyTotals, rollUpRevenue } from "@/lib/hq-metrics";
@@ -304,27 +304,75 @@ export async function getPlatformOrderSeries(days = 30) {
   return keys.map((day) => ({ day, value: byDay.get(day) ?? 0 }));
 }
 
+/** One currency's daily volume, plus what it comes to over the window. */
+export type VolumeSeries = {
+  currency: string;
+  /** The window's total — what the currency switch is labelled with. */
+  cents: number;
+  /** One entry per day in the returned `days`, zero-filled. */
+  values: number[];
+};
+
 /**
- * Daily volume in one currency.
+ * Seller volume, by day and by currency.
  *
- * A single line can only honestly carry one currency, so the caller passes the
- * platform's biggest and the chart says which it is drawing.
+ * One line can only honestly carry one currency. A shared vertical axis would
+ * stand ₦2,000,000 well above €300 and call it the bigger week, so the reader
+ * picks a currency and the chart draws that one alone.
+ *
+ * Every currency comes back from this one grouped query rather than one query
+ * per currency, or — as it was — a second round trip after the overview had
+ * already resolved, purely to learn which currency was biggest. That await sat
+ * behind nine other queries and blocked the whole page on a thirty-row scan.
+ *
+ * The switch's totals and the chart's daily values are derived from the same
+ * rows, so the figure on a tab and the figure above the plot cannot disagree.
  */
-export async function getPlatformGmvSeries(currency: string, days = 30) {
+export async function getPlatformVolumeSeries(days = 30): Promise<{
+  days: string[];
+  currencies: VolumeSeries[];
+}> {
   await requireStaff();
   const { since, keys } = utcDayWindow(days);
 
   const rows = await getDb()
     .select({
       day: sql<string>`to_char(${orders.createdAt}::date, 'YYYY-MM-DD')`,
+      currency: orders.currency,
       cents: sql<string>`coalesce(sum(${orders.totalCents} - ${orders.refundedCents}) filter (where ${orders.status} <> 'cancelled'), 0)`,
     })
     .from(orders)
-    .where(and(gte(orders.createdAt, since), eq(orders.currency, currency)))
-    .groupBy(sql`${orders.createdAt}::date`);
+    .where(gte(orders.createdAt, since))
+    .groupBy(sql`${orders.createdAt}::date`, orders.currency);
 
-  const byDay = new Map(rows.map((r) => [r.day, num(r.cents)]));
-  return keys.map((day) => ({ day, value: byDay.get(day) ?? 0 }));
+  const dayIndex = new Map(keys.map((day, i) => [day, i]));
+  const byCurrency = new Map<string, number[]>();
+
+  for (const row of rows) {
+    const at = dayIndex.get(row.day);
+    if (at === undefined) continue;
+    // Folded on the same key `mergeCurrencyTotals` uses, so a row stored as
+    // "usd" lands on the USD tab rather than opening one of its own.
+    const code = (row.currency || "USD").toUpperCase();
+    const values =
+      byCurrency.get(code) ?? Array.from<number>({ length: keys.length }).fill(0);
+    values[at] = (values[at] ?? 0) + num(row.cents);
+    byCurrency.set(code, values);
+  }
+
+  return {
+    days: keys,
+    currencies: [...byCurrency.entries()]
+      .map(([currency, values]) => ({
+        currency,
+        cents: values.reduce((sum, value) => sum + value, 0),
+        values,
+      }))
+      // A currency whose orders in this window were all cancelled nets to zero
+      // and would be a tab that draws a flat line. Same filter as the totals.
+      .filter((series) => series.cents !== 0)
+      .toSorted((a, b) => b.cents - a.cents),
+  };
 }
 
 /* -------------------------------------------------------------------------- */

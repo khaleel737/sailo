@@ -1,4 +1,4 @@
-import { present } from "./src/lib/invariant";
+import { present } from "@sailo/core/invariant";
 import type { Config } from "drizzle-kit";
 
 export default {

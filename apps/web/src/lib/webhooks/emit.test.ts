@@ -97,8 +97,16 @@ describe("emit sites", () => {
   });
 
   it("guards order.cancelled and booking.confirmed on the previous status", () => {
-    expect(ORDER_ADMIN).toContain('order.status !== "cancelled"');
-    expect(ORDER_ADMIN).toContain('order.status === "new"');
+    /*
+     * `previous`, because the status change itself moved to
+     * `applyOrderStatus` in @sailo/commerce and hands back the row as it read
+     * *before* the write. The rule is unchanged and the name now says it: a
+     * seller re-saving an order that was already cancelled has changed
+     * nothing, and firing a Zap for it is how a customer receives the same
+     * "your order was cancelled" message four times.
+     */
+    expect(ORDER_ADMIN).toContain('previous.status !== "cancelled"');
+    expect(ORDER_ADMIN).toContain('previous.status === "new"');
   });
 
   it("emits contact.created only where a contact is genuinely new", () => {

@@ -25,7 +25,7 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq, inArray } from "drizzle-orm";
 import { hashPassword } from "better-auth/crypto";
-import { firstRow, present } from "@/lib/invariant";
+import { firstRow, present } from "@sailo/core/invariant";
 import * as schema from "@sailo/db/schema";
 import { slugify } from "../src/lib/utils";
 import type { ShopSocial } from "@sailo/db/schema";

@@ -7,7 +7,7 @@ import { supportTickets } from "@sailo/db/schema";
 import { publishShopEvent } from "@sailo/events";
 import { sendSupportTicket } from "@/lib/email";
 import { isStoredFileUrl } from "@/lib/file-urls";
-import { firstRow } from "@/lib/invariant";
+import { firstRow } from "@sailo/core/invariant";
 import { rateLimit } from "@sailo/rate-limit";
 import { requireShop } from "@/lib/session";
 import {

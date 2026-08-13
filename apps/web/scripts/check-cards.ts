@@ -19,7 +19,7 @@
 import Stripe from "stripe";
 import { neon } from "@neondatabase/serverless";
 import { randomUUID } from "node:crypto";
-import { firstRow } from "@/lib/invariant";
+import { firstRow } from "@sailo/core/invariant";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 // Buyer payments arrive on the Connect endpoint, so that is the secret and the

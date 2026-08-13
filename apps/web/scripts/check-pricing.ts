@@ -10,7 +10,7 @@
  *   npm test
  */
 import type { Coupon, DeliveryMethod, ProductOption } from "@sailo/db/schema";
-import { present } from "../src/lib/invariant";
+import { present } from "@sailo/core/invariant";
 import { quote, cartNeedsDelivery, type QuoteLine } from "@sailo/core/quote";
 import { checkCoupon, type TaxSettings } from "@sailo/core/pricing";
 

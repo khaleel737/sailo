@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui";
 import { PAYMENT_STATUS_TONES } from "@/lib/payments";
 import { orderSummaryTitle } from "@/lib/order-lines";
 import { formatMoney } from "@/lib/utils";
-import { orderStatusTone } from "@/lib/order-status";
+import { orderStatusTone } from "@sailo/core/order-status";
 import type { AccountDetail } from "./account.types";
 
 /** Every order this shop has taken, newest first. */

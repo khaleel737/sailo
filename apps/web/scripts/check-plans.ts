@@ -15,7 +15,7 @@
  */
 import Stripe from "stripe";
 import { PLANS } from "../src/lib/plans";
-import { present } from "../src/lib/invariant";
+import { present } from "@sailo/core/invariant";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 if (!secretKey) throw new Error("STRIPE_SECRET_KEY is not set");

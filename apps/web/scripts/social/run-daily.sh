@@ -10,8 +10,12 @@
 
 set -u
 
+# The `social` scripts live in the web workspace, not at the monorepo root, and
+# `daily.ts` resolves its own log directory from the working directory — so both
+# the cd below and LOG_DIR have to point at the workspace, not at REPO.
 REPO="/Users/khaleelmusleh/Desktop/Sailo"
-LOG_DIR="$REPO/scripts/social/.log"
+APP="$REPO/apps/web"
+LOG_DIR="$APP/scripts/social/.log"
 mkdir -p "$LOG_DIR"
 
 export NVM_DIR="$HOME/.nvm"
@@ -22,7 +26,7 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
 fi
 export PATH="$HOME/.local/bin:$PATH"
 
-cd "$REPO" || exit 1
+cd "$APP" || exit 1
 
 {
   echo "───────── $(date '+%Y-%m-%d %H:%M:%S %Z')"

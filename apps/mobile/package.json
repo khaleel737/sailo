@@ -11,17 +11,25 @@
     "lint": "oxlint app || true"
   },
   "dependencies": {
-    "@better-auth/expo": "^1.6.25",
     "@sailo/api": "workspace:*",
     "@sailo/auth": "workspace:*",
+    "@sailo/core": "workspace:*",
+    "@sailo/i18n": "workspace:*",
     "@sailo/observability": "workspace:*",
-    "better-auth": "^1.6.25",
+    "@tanstack/react-query": "^5.101.4",
+    "@trpc/client": "^11.18.0",
+    "@trpc/tanstack-react-query": "^11.18.0",
     "expo": "~54.0.0",
     "expo-constants": "~18.0.0",
+    "expo-device": "~8.0.10",
+    "expo-image": "~3.0.11",
     "expo-linking": "~8.0.0",
+    "expo-notifications": "~0.32.17",
     "expo-router": "~6.0.0",
     "expo-secure-store": "~15.0.0",
     "expo-status-bar": "~3.0.0",
+    "expo-system-ui": "~6.0.9",
+    "expo-updates": "~29.0.19",
     "expo-web-browser": "~15.0.11",
     "react": "19.1.0",
     "react-native": "0.81.5",
@@ -29,8 +37,8 @@
     "react-native-screens": "~4.16.0"
   },
   "devDependencies": {
-    "@sailo/db": "workspace:*",
     "@types/react": "~19.1.0",
+    "oxlint": "^1.77.0",
     "typescript": "^5"
   }
 }

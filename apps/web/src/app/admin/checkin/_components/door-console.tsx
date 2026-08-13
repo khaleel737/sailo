@@ -27,7 +27,7 @@ import {
   searchDoor,
   undoAdmission,
 } from "@/lib/actions/tickets";
-import type { CheckInState } from "@/lib/tickets";
+import type { CheckInState } from "@sailo/commerce/tickets";
 import type { DoorFilter, DoorRow, DoorStats } from "@/lib/queries/tickets";
 import { interpolate } from "@sailo/i18n";
 import type { AdminDictionary } from "@sailo/i18n/admin/en";

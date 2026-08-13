@@ -1,14 +1,20 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  /*
+   * The transitive closure of what this app depends on, and nothing else.
+   * `@sailo/api` was listed here without ever being imported or declared —
+   * that package is the mobile client's tRPC router and belongs to apps/api.
+   */
   transpilePackages: [
-    "@sailo/db",
-    "@sailo/i18n",
     "@sailo/core",
-    "@sailo/api",
-    "@sailo/rate-limit",
+    "@sailo/db",
+    "@sailo/env",
     "@sailo/events",
+    "@sailo/i18n",
+    "@sailo/observability",
     "@sailo/payments",
+    "@sailo/rate-limit",
   ],
   /*
    * Static shells with dynamic holes, instead of every route being

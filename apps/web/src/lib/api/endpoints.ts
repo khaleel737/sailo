@@ -1,5 +1,5 @@
 import { PRODUCT_KIND_VALUES } from "@sailo/core/variants";
-import { ORDER_STATUSES } from "@/lib/order-status";
+import { ORDER_STATUSES } from "@sailo/core/order-status";
 import { PAYMENT_STATUSES } from "@/lib/payments/status";
 import { MAX_TAGS, MAX_TAG_LENGTH } from "@/lib/client-tags";
 import { DEFAULT_LIMIT, MAX_LIMIT, type ApiErrorCode } from "./respond";
@@ -659,5 +659,3 @@ export const ENDPOINTS: readonly Endpoint[] = [
 export function endpointKey(endpoint: Pick<Endpoint, "method" | "path">): string {
   return `${endpoint.method} ${endpoint.path}`;
 }
-
-export const ENDPOINT_KEYS: readonly string[] = ENDPOINTS.map(endpointKey);

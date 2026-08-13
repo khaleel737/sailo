@@ -18,8 +18,9 @@
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",
+    "oxlint": "^1.77.0",
+    "redis": "^6.2.0",
     "typescript": "^5",
-    "vitest": "^4.1.10",
-    "redis": "^6.2.0"
+    "vitest": "^4.1.10"
   }
 }

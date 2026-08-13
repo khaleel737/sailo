@@ -2,7 +2,7 @@ import "server-only";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { affiliates, paymentMethods, type Affiliate, type Shop } from "@sailo/db/schema";
-import { present } from "@/lib/invariant";
+import { present } from "@sailo/core/invariant";
 import { countryName, normalizeCountry } from "@/lib/countries";
 import { can } from "@/lib/plans";
 import { normalizeCode } from "@sailo/core/pricing";

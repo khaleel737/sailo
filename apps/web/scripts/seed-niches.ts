@@ -13,7 +13,7 @@
  *   npm run db:seed:niches
  */
 import { neon } from "@neondatabase/serverless";
-import { firstRow } from "@/lib/invariant";
+import { firstRow } from "@sailo/core/invariant";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import { hashPassword } from "better-auth/crypto";

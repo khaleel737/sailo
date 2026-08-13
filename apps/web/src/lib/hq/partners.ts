@@ -9,7 +9,7 @@ import {
   shops,
   user,
 } from "@sailo/db/schema";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 import { requireStaff } from "@/lib/session";
 import {
   canBePaid,
@@ -127,7 +127,21 @@ export async function getPartners(filter?: {
       eq(referralEarnings.referralId, creatorReferrals.id),
     )
     .where(filter?.status ? eq(partners.status, filter.status) : undefined)
-    .groupBy(partners.id, user.email, shops.handle)
+    /*
+     * Grouped by primary keys, not by the columns that happen to be selected.
+     *
+     * Postgres lets a query select any column of a table whose *primary key*
+     * is grouped, because one key means one row and there is nothing to
+     * aggregate away. Group by `shops.handle` instead and that guarantee is
+     * gone: handle is not the key, so every other shop column in the select —
+     * plan, subscription status, the Stripe fields — becomes "must appear in
+     * the GROUP BY clause", and the whole page 500s no matter how many
+     * partners exist, because this is a planning error rather than a data one.
+     *
+     * `user.id` for the same reason: the select reads `user.email` today and
+     * would break the moment it read a second column of that row.
+     */
+    .groupBy(partners.id, user.id, shops.id)
     .orderBy(
       /*
        * Applications first, then by what we owe. The queue is the thing this

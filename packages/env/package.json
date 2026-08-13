@@ -6,15 +6,20 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
-    "./server": "./src/server.ts",
-    "./client": "./src/client.ts"
+    ".": "./src/index.ts",
+    "./keys": "./src/keys.ts",
+    "./client": "./src/client.ts",
+    "./report": "./src/report.ts",
+    "./schema": "./src/schema.ts"
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.13.4",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@sailo/config": "workspace:*"
+    "@sailo/config": "workspace:*",
+    "oxlint": "^1.77.0",
+    "typescript": "^5"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

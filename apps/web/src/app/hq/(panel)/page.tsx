@@ -25,11 +25,12 @@ import { Card } from "@/components/ui";
 import {
   getAccounts,
   getActivationFunnel,
-  getPlatformGmvSeries,
   getPlatformOrderSeries,
   getPlatformOverview,
+  getPlatformVolumeSeries,
   getSignupSeries,
 } from "@/lib/hq";
+import { VolumeChart } from "./_components/volume-chart";
 import { deltaOf, share } from "@/lib/hq-metrics";
 import { PLANS } from "@/lib/plans";
 import { formatMoney } from "@/lib/utils";
@@ -37,18 +38,15 @@ import { formatMoney } from "@/lib/utils";
 export const metadata: Metadata = { title: "Overview" };
 
 export default async function HqOverviewPage() {
-  const [overview, funnel, signups, orderSeries, recent] = await Promise.all([
-    getPlatformOverview(),
-    getActivationFunnel(),
-    getSignupSeries(30),
-    getPlatformOrderSeries(30),
-    getAccounts({ sort: "newest" }),
-  ]);
-
-  // Only one currency can honestly be drawn on one axis, so the chart takes
-  // the platform's biggest and says which it is.
-  const leadCurrency = overview.gmv[0]?.currency ?? "USD";
-  const gmvSeries = await getPlatformGmvSeries(leadCurrency, 30);
+  const [overview, funnel, signups, orderSeries, volume, recent] =
+    await Promise.all([
+      getPlatformOverview(),
+      getActivationFunnel(),
+      getSignupSeries(30),
+      getPlatformOrderSeries(30),
+      getPlatformVolumeSeries(30),
+      getAccounts({ sort: "newest" }),
+    ]);
 
   const { revenue } = overview;
   const attention = [
@@ -112,7 +110,7 @@ export default async function HqOverviewPage() {
         <Metric
           icon={<ShoppingBag className="size-4" />}
           label="Seller volume · 30d"
-          value={<Money totals={overview.gmvMonth} />}
+          value={<Money totals={overview.gmvMonth} stacked />}
           hint={`${overview.orders.month.toLocaleString()} orders`}
           href="/hq/orders?days=30"
         />
@@ -213,29 +211,7 @@ export default async function HqOverviewPage() {
 
       <div className="mt-3">
         <Card className="p-5">
-          <Chart
-            title={`Seller volume in ${leadCurrency} · last 30 days`}
-            defaultShape="line"
-            days={gmvSeries.map((d) => d.day)}
-            series={[
-              {
-                key: "gmv",
-                label: "Volume",
-                values: gmvSeries.map((d) => d.value),
-              },
-            ]}
-            tone="money"
-            unit="money"
-            currency={leadCurrency}
-            emptyLabel="No volume in the last 30 days."
-          />
-          {overview.gmv.length > 1 ? (
-            <p className="mt-3 text-xs text-ink-400">
-              Sellers price in their own currency. This chart shows{" "}
-              {leadCurrency} only — all-time totals across every currency are{" "}
-              <Money totals={overview.gmv} limit={6} />.
-            </p>
-          ) : null}
+          <VolumeChart days={volume.days} currencies={volume.currencies} />
         </Card>
       </div>
 

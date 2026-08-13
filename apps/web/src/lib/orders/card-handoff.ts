@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders, type Product, type Shop } from "@sailo/db/schema";
 import { createCheckoutSession, createSubscriptionSession } from "@/lib/connect";
-import { abandonOrder } from "@/lib/inventory";
+import { abandonOrder } from "@sailo/commerce/inventory";
 import type { Handoff } from "@/lib/payments";
 
 /**

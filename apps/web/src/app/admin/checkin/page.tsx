@@ -9,7 +9,7 @@ import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { shopEvents } from "@/lib/queries/tickets";
-import { normalizeTicketCode } from "@/lib/tickets";
+import { normalizeTicketCode } from "@sailo/commerce/tickets";
 import { PageHeader } from "@/components/shared/page-header";
 import { Card, EmptyState } from "@/components/ui";
 

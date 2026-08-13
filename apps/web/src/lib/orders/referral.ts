@@ -3,7 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { affiliates, type Shop } from "@sailo/db/schema";
 import { ensurePortalToken } from "@/lib/affiliate-portal";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 import { generateCode } from "@sailo/core/pricing";
 import { formatPercent } from "@sailo/core/pricing";
 

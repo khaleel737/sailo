@@ -30,11 +30,18 @@ const files = (dir: string) =>
  * a bug with money or authorisation attached, so they must use the primary.
  */
 const PRIMARY_ONLY = [
-  // Stock. A stale count is how two buyers are sold the last one.
-  "src/lib/inventory.ts",
+  /*
+   * Stock, the coupon claim and the shared status change now live in
+   * @sailo/commerce, because the mobile API changes orders too. Leaving this
+   * app's tree did not make them less of a write path — a stale count is still
+   * how two buyers are sold the last one — so they stay pinned here, by
+   * relative path. This test runs with apps/web as its cwd.
+   */
+  "../../packages/commerce/src/inventory.ts",
+  "../../packages/commerce/src/coupon-redemption.ts",
+  "../../packages/commerce/src/orders.ts",
   // Everything on the way to creating an order.
   "src/lib/actions/orders.ts",
-  "src/lib/orders/coupon-redemption.ts",
   "src/lib/orders/card-handoff.ts",
   // Settlement, whose idempotency depends on seeing its own last write.
   "src/lib/stripe-webhooks",

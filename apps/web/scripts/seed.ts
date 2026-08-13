@@ -5,7 +5,7 @@
  *   npm run db:seed
  */
 import { neon } from "@neondatabase/serverless";
-import { firstRow, present } from "@/lib/invariant";
+import { firstRow, present } from "@sailo/core/invariant";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import { hashPassword } from "better-auth/crypto";

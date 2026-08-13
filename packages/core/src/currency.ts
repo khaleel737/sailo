@@ -223,6 +223,59 @@ export function chargeStep(code: string): number {
 }
 
 /**
+ * A price, written the way the surface it sits on is written.
+ *
+ * Lives here rather than in apps/web because it is not a web concern: it is
+ * the display half of the same fact `currencyDecimals` above encodes, and the
+ * mobile app has to reach the identical answer. It used to sit in
+ * `apps/web/src/lib/utils.ts`, which a React Native bundle cannot import at
+ * all — so a phone screen's only options were to divide by 100 by hand, which
+ * is exactly the bug this whole module exists to prevent, or to copy the
+ * function and let the two drift.
+ *
+ * `locale` decides the separators and where the symbol goes: a German page
+ * says `1.234,56 €`, a French one `1 234,56 €`, and only an English one says
+ * `€1,234.56`. It was hardcoded to `en-US` for everyone, which meant every
+ * price on every storefront was punctuated in a way most of the world reads
+ * as wrong — and `1.234` means one thing to a German reader and something a
+ * thousand times larger to an American one, so this is not only cosmetic.
+ *
+ * `-u-nu-latn` pins the digits to 0-9. Arabic and a few other locales would
+ * otherwise render their own numerals, which is correct by the standard but
+ * is a change no seller asked for and every one of their buyers would notice.
+ * Everything else about the locale — separators, symbol position, the RTL
+ * marks Arabic needs — is left alone.
+ *
+ * Defaults to `en-US` rather than to the machine's locale: undefined would
+ * make a server's own configuration decide what a buyer sees, and the staff
+ * panel is deliberately English.
+ */
+export function formatMoney(minor: number, currency = "USD", locale = "en-US") {
+  /*
+   * How many minor units make one of this currency, rather than a flat 100.
+   * ¥1,000 is a thousand minor units, not a hundred thousand, and dividing by
+   * 100 showed a seller pricing in yen a hundredth of what they charged.
+   */
+  const decimals = currencyDecimals(currency);
+  const per = 10 ** decimals;
+
+  try {
+    return new Intl.NumberFormat(`${locale}-u-nu-latn`, {
+      style: "currency",
+      currency,
+      // A whole amount drops its fraction — "$20", not "$20.00" — while
+      // anything with a remainder shows every place the currency has, so a
+      // price never appears truncated. On a zero-decimal currency both
+      // branches are zero, which is the correct answer for yen.
+      minimumFractionDigits: minor % per === 0 ? 0 : decimals,
+      maximumFractionDigits: decimals,
+    }).format(minor / per);
+  } catch {
+    return `${(minor / per).toFixed(decimals)} ${currency}`;
+  }
+}
+
+/**
  * "JPY — Japanese Yen", in the reader's own language.
  *
  * `Intl.DisplayNames` already ships every one of these translated, in every

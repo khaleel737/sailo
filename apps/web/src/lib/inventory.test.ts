@@ -1,127 +1,29 @@
 import { readFileSync } from "node:fs";
 import { webhookSource } from "@/lib/webhook-source";
 import { describe, expect, it } from "vitest";
-import { ORDER_STATUSES } from "./order-status";
-import { isStockReleasingStatus } from "./inventory";
 
 /**
- * When units go back on the shelf.
+ * The web-side halves of the stock rules.
  *
- * Stock comes off when the order is written, before the money arrives —
- * otherwise two buyers racing for the last one can both be told yes. That
- * choice makes this rule load-bearing in both directions: releasing too
- * eagerly oversells, and never releasing leaves a shop reading as sold out
- * for sales that never happened.
+ * `inventory.ts` itself moved to `@sailo/commerce` — the mobile API changes
+ * order statuses now, and the units have to move the same way whichever
+ * surface the seller used. Its own tests went with it. What stays here is
+ * every assertion that reads *this* app's source: the Stripe webhook, the card
+ * handoff and the seller's status action are apps/web's and are not moving.
+ *
+ * These are pinned as source assertions rather than behaviour because each
+ * rule lives in a branch or a SQL clause, not in a function anyone can call —
+ * and a wrong one is silent.
  */
-describe("isStockReleasingStatus", () => {
-  it("gives units back once the order is cancelled or refunded", () => {
-    expect(isStockReleasingStatus("cancelled")).toBe(true);
-    expect(isStockReleasingStatus("refunded")).toBe(true);
-  });
-
-  it("holds units for every status where the order is still going somewhere", () => {
-    // `completed` included: the buyer has it, so the units are gone for good
-    // rather than back on the shelf.
-    for (const status of ["new", "confirmed", "shipped", "completed"]) {
-      expect(isStockReleasingStatus(status)).toBe(false);
-    }
-  });
-
-  it("covers every status the system can store", () => {
-    /*
-     * A status added to ORDER_STATUSES without a decision here silently holds
-     * stock forever — the failure is invisible until a seller notices their
-     * shop is sold out. This forces the decision to be made.
-     */
-    const decided = ORDER_STATUSES.filter(
-      (s) => isStockReleasingStatus(s) || !isStockReleasingStatus(s),
-    );
-    expect(decided).toHaveLength(ORDER_STATUSES.length);
-
-    const releasing = ORDER_STATUSES.filter(isStockReleasingStatus);
-    expect([...releasing].toSorted()).toEqual(["cancelled", "refunded"]);
-  });
-
-  it("holds stock for a status this build has never heard of", () => {
-    // Status arrives from the database as text. Releasing on an unknown value
-    // would hand back units for an order that may still be live.
-    expect(isStockReleasingStatus("awaiting-pickup")).toBe(false);
-    expect(isStockReleasingStatus("")).toBe(false);
-  });
-});
 
 /**
- * Which orders the abandoned-checkout sweep is allowed to reclaim.
+ * A completed-but-unsettled session, and why the sweep can be trusted.
  *
- * Stock comes off the shelf before the money arrives, so something has to put
- * it back when the buyer never pays. Getting the predicate wrong is expensive
- * in both directions, and it was wrong in both:
- *
- * - It required `stripeSessionId`, which is only written once Stripe accepts
- *   the handoff. An order that reserved stock and threw before that write was
- *   invisible to this sweep forever, and nothing else reclaims it.
- * - It matched every `unpaid` order with a session, which includes a delayed
- *   method still settling. Boleto takes three days; those orders were
- *   cancelled and restocked with the buyer's money still in flight.
- *
- * Asserted against the source because the rule lives in a SQL WHERE clause —
- * there is no pure function to call, and a wrong clause here is silent.
- */
-describe("the abandoned-checkout predicate", () => {
-  const source = readFileSync("src/lib/inventory.ts", "utf8");
-  const sweep = source.slice(source.indexOf("const stale = await"));
-  /*
-   * Comments stripped first. The prose here explains what the predicate no
-   * longer does, and naming a removed clause in a comment would otherwise read
-   * as the clause still being present — which is exactly what happened the
-   * first time this was written.
-   */
-  const predicate = sweep
-    .slice(0, sweep.indexOf("limit: 200"))
-    .replace(/\/\*[\s\S]*?\*\//g, "")
-    .replace(/\/\/.*$/gm, "");
-
-  it("reclaims only orders whose money never arrived", () => {
-    expect(predicate).toContain('eq(orders.paymentStatus, "unpaid")');
-  });
-
-  it("leaves a delayed payment that is still settling alone", () => {
-    /*
-     * `pending` is what the webhook promotes a completed-but-unsettled session
-     * to, and it is the only thing separating "the money is on its way" from
-     * "the buyer walked away". Sweeping it would cancel a paid-for order.
-     */
-    expect(predicate).not.toContain('"pending"');
-  });
-
-  it("finds an order that never reached the Stripe handoff", () => {
-    // The session id is written after the handoff, so requiring it here meant
-    // the orders most in need of reclaiming were the ones it could not see.
-    expect(predicate).not.toContain("stripeSessionId");
-  });
-
-  it("matches on the rail, so bank transfer and cash on delivery are safe", () => {
-    // Those are unpaid because the seller is waiting for money, not because
-    // the buyer abandoned anything. Cancelling them would destroy real orders.
-    expect(predicate).toContain('eq(orders.paymentMethod, "card")');
-  });
-
-  it("never restocks the same order twice", () => {
-    expect(predicate).toContain("isNull(orders.restockedAt)");
-  });
-
-  it("only touches orders older than the cutoff", () => {
-    expect(predicate).toContain("lt(orders.createdAt, cutoff)");
-  });
-});
-
-/**
- * The other half of that pair, in the webhook.
- *
- * The sweep above is only safe because a session that completes unpaid is
- * moved off `unpaid`. If that write is ever removed, the sweep silently starts
- * cancelling Boleto and SEPA orders again — so it is pinned here, next to the
- * predicate that depends on it, rather than in a file nobody reads together.
+ * `@sailo/commerce`'s abandoned-checkout sweep reclaims `unpaid` card orders
+ * past a cutoff. That is only safe because a session that completes without
+ * settling is moved off `unpaid` here. If this write is ever removed the sweep
+ * silently starts cancelling Boleto and SEPA orders again — so it is pinned,
+ * even though the thing it protects now lives in another package.
  */
 describe("a completed-but-unsettled session", () => {
   const webhook = webhookSource();
@@ -151,7 +53,7 @@ describe("a completed-but-unsettled session", () => {
 });
 
 /**
- * Every path that abandons an order gives back everything it holds.
+ * Every path in this app that abandons an order gives back everything it holds.
  *
  * There are four, and they were not equal. All of them released the stock;
  * exactly one released the coupon — the branch that runs when Stripe's API
@@ -159,15 +61,15 @@ describe("a completed-but-unsettled session", () => {
  * closed the tab (the common case) had their one-use code spent forever: their
  * own retry was refused, and so was every other buyer's.
  *
- * `abandonOrder` is now the single undo, and it hangs the coupon release off
+ * `abandonOrder` is the single undo, and it hangs the coupon release off
  * `restoreStock`'s `restockedAt` claim so calling it twice is safe. This pins
  * the wiring, because the bug was never in the undo — it was in three call
- * sites not using it.
+ * sites not using it. The fourth path, the sweep, is pinned in
+ * `@sailo/commerce` alongside the code it lives in.
  */
 describe("the abandonment paths", () => {
   const webhooks = webhookSource();
   const handoff = readFileSync("src/lib/orders/card-handoff.ts", "utf8");
-  const sweep = readFileSync("src/lib/inventory.ts", "utf8");
 
   /** A handler's body, from its `case` label to the next one. */
   function branch(source: string, label: string): string {
@@ -189,11 +91,6 @@ describe("the abandonment paths", () => {
   it("a failed Stripe handoff gives back the coupon as well as the stock", () => {
     expect(handoff).toContain("abandonOrder(saved)");
     expect(handoff).not.toContain("restoreStock(saved)");
-  });
-
-  it("the abandoned-checkout sweep gives back the coupon as well as the stock", () => {
-    const body = sweep.slice(sweep.indexOf("const orderIds"));
-    expect(body).toContain("abandonOrder(order)");
   });
 
   it("still only restores stock when a paid order reverses", () => {
@@ -257,10 +154,23 @@ describe("settlement side effects on the paid path", () => {
  *
  * Two halves, pinned together because either alone is wrong: payment must stop
  * confirming a booked order, and the seller's decision must reach the buyer.
+ *
+ * The decision email is the clearest thing apps/web still owns that the mobile
+ * API does not — see the gap named on `orders.updateStatus` in `@sailo/api`.
  */
 describe("a booked order waits for the seller", () => {
   const webhook = webhookSource();
   const admin = readFileSync("src/lib/actions/order-admin.ts", "utf8");
+
+  /**
+   * The seller-decision block, from the booking guard to the first cache
+   * revalidation after it. The stock cascade used to close this slice and now
+   * lives in `@sailo/commerce`, so the boundary moved with it.
+   */
+  const decision = admin.slice(
+    admin.indexOf("if (previous.scheduledFor"),
+    admin.indexOf('revalidatePath("/admin")'),
+  );
 
   it("does not let payment confirm an appointment", () => {
     const paid = webhook.slice(
@@ -280,11 +190,13 @@ describe("a booked order waits for the seller", () => {
     expect(paid).toContain('? "confirmed"');
   });
 
+  it("finds the seller-decision block", () => {
+    // Guards the guard: both slice boundaries are source strings, and a rename
+    // on either side would otherwise empty this and pass every assertion below.
+    expect(decision.length).toBeGreaterThan(0);
+  });
+
   it("tells the buyer when the seller answers", () => {
-    const decision = admin.slice(
-      admin.indexOf("if (order.scheduledFor"),
-      admin.indexOf("isStockReleasingStatus(status)"),
-    );
     expect(decision).toContain("sendBookingDecision(");
     // Declining is an answer too, and the buyer needs it more than acceptance.
     expect(decision).toContain('accepted: status !== "cancelled"');
@@ -296,10 +208,6 @@ describe("a booked order waits for the seller", () => {
      * is already confirmed must not send a second "your appointment is
      * confirmed" — the seller edits orders for all sorts of reasons.
      */
-    const decision = admin.slice(
-      admin.indexOf("if (order.scheduledFor"),
-      admin.indexOf("isStockReleasingStatus(status)"),
-    );
-    expect(decision).toContain('order.status === "new"');
+    expect(decision).toContain('previous.status === "new"');
   });
 });

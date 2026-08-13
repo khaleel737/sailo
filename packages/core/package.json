@@ -8,7 +8,9 @@
     "./currency": "./src/currency.ts",
     "./pricing": "./src/pricing.ts",
     "./variants": "./src/variants.ts",
-    "./quote": "./src/quote.ts"
+    "./quote": "./src/quote.ts",
+    "./order-status": "./src/order-status.ts",
+    "./invariant": "./src/invariant.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -17,6 +19,7 @@
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",
+    "oxlint": "^1.77.0",
     "typescript": "^5",
     "vitest": "^4.1.10"
   },

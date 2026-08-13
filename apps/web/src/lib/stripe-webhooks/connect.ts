@@ -5,7 +5,7 @@ import { getDb } from "@sailo/db";
 import { orders, shops } from "@sailo/db/schema";
 import { revalidateShop } from "@/lib/cache";
 import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
-import { abandonOrder, restoreStock } from "@/lib/inventory";
+import { abandonOrder, restoreStock } from "@sailo/commerce/inventory";
 import { releaseDownloads } from "@/lib/downloads";
 import { createInvoiceForOrder } from "@/lib/invoices";
 import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";

@@ -16,7 +16,7 @@ import {
   user,
 } from "@sailo/db/schema";
 import { createOrderIntent } from "@/lib/actions/orders";
-import { abandonOrder, releaseAbandonedCheckouts, restoreStock } from "@/lib/inventory";
+import { abandonOrder, releaseAbandonedCheckouts, restoreStock } from "@sailo/commerce/inventory";
 import { exportClients } from "@/lib/exporters";
 
 /**

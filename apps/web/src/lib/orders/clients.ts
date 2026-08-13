@@ -2,7 +2,7 @@ import "server-only";
 import { and, eq, or } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { clients } from "@sailo/db/schema";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 
 /**
  * Finds or creates the buyer's record.

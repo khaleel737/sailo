@@ -17,6 +17,7 @@
   "devDependencies": {
     "@sailo/config": "workspace:*",
     "@types/react": "^19",
+    "oxlint": "^1.77.0",
     "react": "^19",
     "typescript": "^5"
   }

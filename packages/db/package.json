@@ -7,7 +7,8 @@
     ".": "./src/index.ts",
     "./schema": "./src/schema/index.ts",
     "./schema/json-types": "./src/schema/json-types.ts",
-    "./local-database": "./src/local-database.ts"
+    "./local-database": "./src/local-database.ts",
+    "./keys": "./src/keys.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -16,10 +17,14 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
-    "drizzle-orm": "^0.45.2"
+    "@sailo/env": "workspace:*",
+    "@t3-oss/env-core": "^0.13.4",
+    "drizzle-orm": "^0.45.2",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",
+    "oxlint": "^1.77.0",
     "typescript": "^5",
     "vitest": "^4.1.10"
   }

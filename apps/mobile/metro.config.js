@@ -1,4 +1,4 @@
-// Metro, configured for the npm-workspaces monorepo.
+// Metro, configured for the pnpm-workspaces monorepo.
 //
 // The whole reason this file is hand-written: Metro resolves modules by
 // walking real node_modules trees, and in a workspace the mobile app's deps
@@ -7,6 +7,14 @@
 // "unable to resolve @sailo/core" — the classic monorepo-Expo wall. So:
 //   - watch the whole workspace, so edits to a shared package are seen;
 //   - resolve from both the app's and the root's node_modules.
+//
+// The hoisting is pnpm's, and deliberate: `.npmrc` sets `node-linker=hoisted`,
+// which lays out a flat root `node_modules` the way npm would. That is what
+// lets the app bundle a package it does not declare — `better-auth` and
+// `@better-auth/expo` are declared by `@sailo/auth`, which is where the app
+// reaches them from, and they resolve at the root. Flipping the linker to
+// pnpm's default isolated layout breaks that contract along with the @sailo/*
+// resolution below, so the two move together or not at all.
 const { getDefaultConfig } = require("expo/metro-config");
 const path = require("node:path");
 

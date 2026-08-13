@@ -4,6 +4,7 @@ import { getDb } from "@sailo/db";
 import { orderItems, orders, user, type Shop } from "@sailo/db/schema";
 import { rateLimit } from "@sailo/rate-limit";
 import { wantsNotification } from "@/lib/notification-prefs";
+import { pushSellerOrder } from "@/lib/orders/push";
 import {
   sendSellerBookingRequested,
   sendSellerOrderNeedsAction,
@@ -19,9 +20,17 @@ import {
  * Every failure is logged and swallowed; nothing here is awaited into a
  * position where a caller could care.
  *
- * What decides whether mail goes out at all lives here, not in the builders:
- * the shop's prefs (`notificationPrefs`, absence means on) and a per-shop
- * daily ceiling so a bug or an order bomb cannot burn the Resend quota.
+ * What decides whether anything goes out at all lives here, not in the
+ * builders: the shop's prefs (`notificationPrefs`, absence means on) and a
+ * per-shop daily ceiling so a bug or an order bomb cannot burn the Resend
+ * quota.
+ *
+ * There are two channels and one decision. An order also pushes to the
+ * seller's phone (`./push.ts`), and it does so from inside this function on
+ * purpose — behind the same preference and the same ceiling. A second entry
+ * point for "tell the seller" is how a shop ends up muted in one place and
+ * shouting in another, and the test beside this file pins the send sites for
+ * exactly that reason.
  */
 
 /**
@@ -97,6 +106,21 @@ export async function notifySellerOfOrder(opts: {
     );
     if (!wanted) return;
     if (!(await underDailyCeiling(shop.id))) return;
+
+    /*
+     * The phone, before the inbox and deliberately not after the `to` guard
+     * below. A seller who never set a contact email and whose account address
+     * has gone stale still has a handset in their pocket, and that is the one
+     * notification they actually feel — gating it on an email address existing
+     * would switch off the better channel whenever the worse one is missing.
+     *
+     * It rides the same preference and the same daily ceiling as the mail
+     * rather than getting its own: the switch means "tell me when an order is
+     * placed", not "email me", and a seller who turned it off has said no to
+     * being told. Its own ceiling would also be its own way to notify a seller
+     * five hundred times, which is the thing the ceiling exists to prevent.
+     */
+    await pushSellerOrder({ shop, order, booking });
 
     const to = await sellerAddress(shop);
     if (!to) return;

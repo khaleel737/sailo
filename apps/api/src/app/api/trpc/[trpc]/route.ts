@@ -1,9 +1,6 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { eq } from "drizzle-orm";
-import { appRouter, type Context } from "@sailo/api";
-import { getDb } from "@sailo/db";
-import { shops } from "@sailo/db/schema";
-import { getAuth } from "@/lib/auth";
+import { appRouter } from "@sailo/api";
+import { createContext } from "@/lib/context";
 
 /**
  * The mobile app's data endpoint.
@@ -63,24 +60,6 @@ function corsHeaders(req: Request): Record<string, string> {
     "Access-Control-Allow-Credentials": "true",
     "Access-Control-Expose-Headers": "set-auth-token",
   };
-}
-
-/**
- * What apps/web worked out about the caller, minus everything that isn't the
- * shop id.
- *
- * Unchanged in the move: `auth.api.getSession` reads whichever of the two
- * carriers the client used — `Authorization: Bearer <token>` via the bearer
- * plugin, or the `Cookie` header the Expo client keeps in the device keychain
- * — and either resolves to a session row or does not.
- */
-async function createContext(req: Request): Promise<Context> {
-  const session = await getAuth().api.getSession({ headers: req.headers });
-  if (!session?.user) return { shopId: null };
-  const shop = await getDb().query.shops.findFirst({
-    where: eq(shops.userId, session.user.id),
-  });
-  return { shopId: shop?.id ?? null };
 }
 
 async function handler(req: Request): Promise<Response> {

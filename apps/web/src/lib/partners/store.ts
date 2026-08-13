@@ -8,7 +8,7 @@ import {
   shops,
   user,
 } from "@sailo/db/schema";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 import { canAccrue } from "./eligibility";
 import { getProgramSettings } from "./settings";
 import {

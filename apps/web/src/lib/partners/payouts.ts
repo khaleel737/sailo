@@ -9,7 +9,7 @@ import {
   referralEarnings,
   shops,
 } from "@sailo/db/schema";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 import { stripe } from "@sailo/payments";
 import { canBePaid, payoutBlocker, type PayoutBlocker } from "./eligibility";
 import { getProgramSettings } from "./settings";

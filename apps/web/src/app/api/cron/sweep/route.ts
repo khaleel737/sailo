@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cronAuthFailure } from "@/lib/cron-auth";
-import { releaseAbandonedCheckouts } from "@/lib/inventory";
+import { releaseAbandonedCheckouts } from "@sailo/commerce/inventory";
 import { refreshCalendarFeeds } from "@/lib/booking/feed-health";
 import { pruneWebhookDeliveries } from "@/lib/webhooks/deliver";
 

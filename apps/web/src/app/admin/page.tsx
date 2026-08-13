@@ -25,7 +25,7 @@ import { analyticsLimit, planFor } from "@/lib/plans";
 import { resolveAnalyticsWindow, type DateWindow } from "@/lib/analytics-window";
 import { CopyLink } from "@/components/shared/copy-link";
 import { Badge, Card, EmptyState, Stat } from "@/components/ui";
-import { orderStatusLabel, orderStatusTone } from "@/lib/order-status";
+import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";
 import { formatMoney } from "@/lib/utils";
 import { getAdminT, getLocale, getT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";

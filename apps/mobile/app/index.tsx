@@ -1,16 +1,21 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
-  ActivityIndicator,
+  FlatList,
   Pressable,
+  RefreshControl,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useQueries, useQueryClient } from "@tanstack/react-query";
 import { captureError } from "@sailo/observability";
+import type { Order } from "../lib/models";
 import { authClient } from "../lib/auth";
-import { api } from "../lib/api";
+import { forgetDevice } from "../lib/push";
+import { useTRPC } from "../lib/query";
+import { Empty, ErrorState, Loading, errorMessage } from "../components/states";
 
 /**
  * The first real screen, and the reference the spec-built ones follow.
@@ -21,37 +26,34 @@ import { api } from "../lib/api";
  * queries, reached by a token instead of a cookie. Everything below the auth
  * gate is data the server already owns; nothing here re-implements it.
  *
+ * The data layer is the part worth copying. `useTRPC()` hands back a typed
+ * builder, `queryOptions()` turns a procedure into a cache entry with a key
+ * derived from the procedure path and its input — so nothing here invents a
+ * cache key, and two screens reading the same procedure share one fetch. The
+ * four states below (loading, error, empty, refreshing) are the whole reason
+ * this file exists rather than another `useState`/`useEffect` pair.
+ *
  * Until the monorepo is the production deploy, point `EXPO_PUBLIC_API_URL` at a
- * dev server running apps/web — production won't answer `/api/trpc` until the
+ * dev server running apps/api — production won't answer `/api/trpc` until the
  * cutover.
  */
-
-type Overview = {
-  shopName: string | null;
-  products: number;
-  orders: number;
-};
 
 export default function Home() {
   const { data: session, isPending } = authClient.useSession();
 
-  if (isPending) return <Splash />;
-  return session?.user ? (
-    <Dashboard email={session.user.email} />
-  ) : (
-    <SignIn />
-  );
+  if (isPending) {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <Loading />
+      </SafeAreaView>
+    );
+  }
+  return session?.user ? <Dashboard email={session.user.email} /> : <SignIn />;
 }
 
-function Splash() {
-  return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.center}>
-        <ActivityIndicator color="#4f46e5" />
-      </View>
-    </SafeAreaView>
-  );
-}
+/* -------------------------------------------------------------------------- */
+/*  Signed out                                                                 */
+/* -------------------------------------------------------------------------- */
 
 function SignIn() {
   const [email, setEmail] = useState("");
@@ -100,59 +102,133 @@ function SignIn() {
   );
 }
 
-function Dashboard({ email }: { email: string }) {
-  const [overview, setOverview] = useState<Overview | null>(null);
-  const [error, setError] = useState<string | null>(null);
+/* -------------------------------------------------------------------------- */
+/*  Signed in                                                                  */
+/* -------------------------------------------------------------------------- */
 
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const [shop, products, orders] = await Promise.all([
-          api.shop.get.query(),
-          api.products.list.query(),
-          api.orders.list.query(),
-        ]);
-        if (alive) {
-          setOverview({
-            shopName: shop?.name ?? null,
-            products: products.length,
-            orders: orders.length,
-          });
-        }
-      } catch (err) {
-        captureError(err, { scope: "mobile:dashboard" });
-        if (alive) setError("Couldn't reach your shop. Check the API URL.");
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
+function Dashboard({ email }: { email: string }) {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  /*
+   * Both reads as one unit, because the screen is one unit: a header that has
+   * arrived above a list that hasn't is a layout that jumps under the seller's
+   * thumb. `useQueries` gives a single place to ask "is any of this still
+   * loading" without either query knowing about the other.
+   */
+  const [shop, orders, products] = useQueries({
+    queries: [
+      trpc.shop.get.queryOptions(),
+      trpc.orders.list.queryOptions({ limit: 20 }),
+      trpc.products.list.queryOptions({ limit: 100 }),
+    ],
+  });
+
+  const queries = [shop, orders, products];
+  const failed = queries.find((q) => q.error);
+  const loading = queries.some((q) => q.isPending);
+  // `isFetching` rather than `isRefetching`, so the spinner is honest about a
+  // background refresh the seller did not ask for as well as one they did.
+  const refreshing = queries.some((q) => q.isFetching) && !loading;
+
+  const refresh = useCallback(() => {
+    void shop.refetch();
+    void orders.refetch();
+    void products.refetch();
+  }, [shop.refetch, orders.refetch, products.refetch]);
+
+  const signOut = useCallback(async () => {
+    /*
+     * Before `signOut`, because removing the row needs the session it is about
+     * to destroy. A push token left registered keeps delivering this shop's
+     * orders to the lock screen of a phone that has deliberately been signed
+     * out of — the one place the seller cannot dismiss them from.
+     */
+    await forgetDevice();
+    await authClient.signOut();
+    /*
+     * The cache is the previous seller's shop, and it outlives their session.
+     * Without this, signing out and signing in as somebody else on the same
+     * device paints their orders — from cache, before the first request even
+     * goes out — which looks exactly like a cross-tenant leak and is one, on
+     * the client side of the boundary the router defends on the server side.
+     */
+    queryClient.clear();
+  }, [queryClient]);
+
+  if (failed?.error) {
+    captureError(failed.error, { scope: "mobile:dashboard" });
+    return (
+      <SafeAreaView style={styles.safe}>
+        <ErrorState
+          message={errorMessage(failed.error, "Couldn't reach your shop.")}
+          onRetry={refresh}
+          retrying={refreshing}
+        />
+        <SignOut onPress={signOut} />
+      </SafeAreaView>
+    );
+  }
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <Loading />
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.body}>
-        <Text style={styles.brand}>{overview?.shopName ?? "Sailo"}</Text>
-        <Text style={styles.sub}>{email}</Text>
-        {error ? (
-          <Text style={styles.error}>{error}</Text>
-        ) : overview ? (
-          <View style={styles.stats}>
-            <Stat label="Products" value={overview.products} />
-            <Stat label="Orders" value={overview.orders} />
+    <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
+      <FlatList
+        data={orders.data ?? []}
+        keyExtractor={(order) => order.id}
+        renderItem={({ item }) => <OrderRow order={item} />}
+        contentContainerStyle={styles.list}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor="#4f46e5" />
+        }
+        ListHeaderComponent={
+          <View style={styles.header}>
+            <Text style={styles.brand}>{shop.data?.name ?? "Sailo"}</Text>
+            <Text style={styles.sub}>{email}</Text>
+            <View style={styles.stats}>
+              <Stat label="Products" value={products.data?.length ?? 0} />
+              <Stat label="Orders" value={orders.data?.length ?? 0} />
+            </View>
+            <Text style={styles.section}>Recent orders</Text>
           </View>
-        ) : (
-          <ActivityIndicator color="#4f46e5" style={{ marginTop: 24 }} />
-        )}
-        <Pressable
-          style={[styles.button, styles.buttonGhost]}
-          onPress={() => authClient.signOut()}
-        >
-          <Text style={styles.buttonGhostText}>Sign out</Text>
-        </Pressable>
-      </View>
+        }
+        /*
+         * Empty is a state, not an absence. `ListEmptyComponent` renders only
+         * once the query has actually answered — the loading branch above
+         * returns before this — so a seller never reads "No orders yet" about
+         * a request that is still in flight.
+         */
+        ListEmptyComponent={
+          <Empty title="No orders yet" hint="Orders from your shop will appear here." />
+        }
+        ListFooterComponent={<SignOut onPress={signOut} />}
+      />
     </SafeAreaView>
+  );
+}
+
+function OrderRow({ order }: { order: Order }) {
+  return (
+    <View style={styles.row}>
+      <View style={styles.rowMain}>
+        <Text style={styles.rowTitle} numberOfLines={1}>
+          {order.productTitle}
+        </Text>
+        <Text style={styles.rowSub}>
+          {order.customerName ?? "Someone"} · {order.status}
+        </Text>
+      </View>
+      <Text style={styles.rowAmount}>
+        {(order.totalCents / 100).toFixed(2)} {order.currency}
+      </Text>
+    </View>
   );
 }
 
@@ -165,12 +241,31 @@ function Stat({ label, value }: { label: string; value: number }) {
   );
 }
 
+function SignOut({ onPress }: { onPress: () => void }) {
+  return (
+    <Pressable style={[styles.button, styles.buttonGhost]} onPress={onPress}>
+      <Text style={styles.buttonGhostText}>Sign out</Text>
+    </Pressable>
+  );
+}
+
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#ffffff" },
-  center: { flex: 1, alignItems: "center", justifyContent: "center" },
   body: { flex: 1, alignItems: "center", justifyContent: "center", gap: 10, padding: 24 },
+  list: { flexGrow: 1, padding: 20 },
+  header: { alignItems: "center", gap: 6, paddingBottom: 8 },
   brand: { fontSize: 34, fontWeight: "800", color: "#4f46e5" },
   sub: { fontSize: 15, color: "#6b7280" },
+  section: {
+    alignSelf: "stretch",
+    marginTop: 24,
+    marginBottom: 4,
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#6b7280",
+    textTransform: "uppercase",
+    letterSpacing: 0.6,
+  },
   input: {
     width: "100%",
     borderWidth: 1,
@@ -204,4 +299,16 @@ const styles = StyleSheet.create({
   },
   statValue: { fontSize: 30, fontWeight: "800", color: "#111827" },
   statLabel: { fontSize: 13, color: "#6b7280", marginTop: 4 },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#e5e7eb",
+  },
+  rowMain: { flex: 1, gap: 2 },
+  rowTitle: { fontSize: 15, fontWeight: "600", color: "#111827" },
+  rowSub: { fontSize: 13, color: "#6b7280" },
+  rowAmount: { fontSize: 15, fontWeight: "700", color: "#111827" },
 });

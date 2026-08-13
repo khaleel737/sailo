@@ -65,21 +65,49 @@ export function Metric({
   return <Card className="p-4">{body}</Card>;
 }
 
-/** Money that may be in several currencies at once. Never a fictional sum. */
+/**
+ * Money that may be in several currencies at once. Never a fictional sum.
+ *
+ * Inline by default, which reads fine at hint size. `stacked` is for the
+ * places this lands in a 2xl tile: three currencies run together in a headline
+ * are a wall of glyphs nobody parses, and shrinking the type to fit them makes
+ * the tile stop being a headline. So the biggest keeps the headline and the
+ * rest drop to a line beneath it, which is the shape a figure with a
+ * qualifier wants anyway. Every currency is in the `title` either way.
+ */
 export function Money({
   totals,
   limit = 2,
   className,
+  stacked = false,
 }: {
   totals: CurrencyTotal[];
   limit?: number;
   className?: string;
+  /** Lead currency on its own line, the others small beneath it. */
+  stacked?: boolean;
 }) {
+  const full = totals.map((t) => formatMoney(t.cents, t.currency)).join(" · ");
+
+  if (!stacked) {
+    return (
+      <span className={cn("tabular", className)} title={full}>
+        {formatCurrencyTotals(totals, limit)}
+      </span>
+    );
+  }
+
+  const [lead, ...rest] = totals;
   return (
-    <span className={cn("tabular", className)} title={totals
-      .map((t) => formatMoney(t.cents, t.currency))
-      .join(" · ")}>
-      {formatCurrencyTotals(totals, limit)}
+    <span className={cn("tabular", className)} title={full}>
+      <span className="block">
+        {lead ? formatMoney(lead.cents, lead.currency) : formatMoney(0, "USD")}
+      </span>
+      {rest.length > 0 ? (
+        <span className="mt-0.5 block truncate text-xs font-normal text-ink-500">
+          {formatCurrencyTotals(rest, limit)}
+        </span>
+      ) : null}
     </span>
   );
 }

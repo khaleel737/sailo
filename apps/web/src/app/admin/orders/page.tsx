@@ -11,7 +11,7 @@ import {
   usedCouponCodes,
   type OrderFilters as Filters,
 } from "@/lib/queries";
-import { ORDER_STATUSES, isOrderStatus } from "@/lib/order-status";
+import { ORDER_STATUSES, isOrderStatus } from "@sailo/core/order-status";
 import {
   PAYMENT_METHOD_DEFS,
   PAYMENT_METHOD_TYPES,

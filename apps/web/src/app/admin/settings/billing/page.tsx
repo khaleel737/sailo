@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { firstRow } from "@/lib/invariant";
+import { firstRow } from "@sailo/core/invariant";
 import { Check, ExternalLink, Sparkles } from "lucide-react";
 import { count, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";

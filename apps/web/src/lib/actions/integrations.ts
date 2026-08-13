@@ -13,7 +13,7 @@ import {
   webhookEndpoints,
 } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
-import { maybeRow } from "@/lib/invariant";
+import { maybeRow } from "@sailo/core/invariant";
 import { can, cheapestPlanWith, upgradeMessage } from "@/lib/plans";
 import { rateLimit } from "@sailo/rate-limit";
 import { isApiScope, mintApiKey } from "@/lib/api/keys";

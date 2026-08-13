@@ -1,0 +1,75 @@
+name: CI
+
+# The gate, enforced by something other than memory.
+#
+# Vercel already builds every push and its build depends on `test`, so a broken
+# suite cannot deploy. What it cannot do is tell you *before* you merge, and it
+# never runs `typecheck` or `knip` at all. This closes both gaps: the same four
+# commands that pass locally have to pass on the pull request.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A second push supersedes the first. Nothing here is a deploy, so cancelling
+# an in-flight run costs nothing and stops a queue forming on a busy branch.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    name: typecheck · test · lint · knip · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      # Placeholders, not secrets. Nothing in the gate talks to a real service:
+      # the suites mock their clients, `next build` compiles without a
+      # connection, and knip's drizzle plugin only needs the variable to be
+      # present and well-formed to load `drizzle.config.ts`. They are shaped to
+      # satisfy the schemas in `*/keys.ts` so CI exercises the real config path.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      BETTER_AUTH_SECRET: ci-placeholder-not-a-real-secret
+      # Remote caching switches itself on the moment these exist. Absent, turbo
+      # falls back to its local cache and the run is merely slower.
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # No version pinned here on purpose — the action reads `packageManager`
+      # from package.json, so the lockfile and CI can never disagree.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # `--frozen-lockfile` is the point: a package.json edited without a
+      # matching lockfile update fails here rather than resolving to something
+      # different from what anyone tested.
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Separate steps rather than one chained command, so a red run names the
+      # thing that broke without anyone opening the log.
+      - name: Typecheck
+        run: pnpm turbo run typecheck
+
+      - name: Test
+        run: pnpm turbo run test
+
+      - name: Lint
+        run: pnpm turbo run lint
+
+      # Must run with DATABASE_URL set. Without it the drizzle plugin cannot
+      # load the config and floods the output with false "unused export" hits
+      # on every *Relations symbol.
+      - name: Knip
+        run: pnpm knip
+
+      - name: Build
+        run: pnpm turbo run build

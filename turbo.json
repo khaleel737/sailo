@@ -3,32 +3,69 @@
   "globalDependencies": [
     "**/.env.*local"
   ],
+  /*
+   * `inputs` keeps $TURBO_DEFAULT$ and subtracts only the two files `next dev`
+   * rewrites on every run. They are committed, so without this every dev
+   * server start invalidates build, test, lint and typecheck workspace-wide.
+   *
+   * Nothing else is excluded, on purpose: apps/web reads content/blog/**\/*.md
+   * at build time, so a blanket markdown exclusion would let a new post ship
+   * from a stale cache.
+   */
   "tasks": {
     "build": {
       "dependsOn": [
         "^build",
         "test"
       ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!AGENTS.md",
+        "!CLAUDE.md"
+      ],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
-        "dist/**",
-        ".expo/**"
+        "dist/**"
       ]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
-    "lint": {},
+    "lint": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!AGENTS.md",
+        "!CLAUDE.md"
+      ]
+    },
     "typecheck": {
       "dependsOn": [
         "^build"
+      ],
+      /*
+       * No `outputs`. What typecheck produces that is worth keeping is its
+       * exit code, which turbo caches for every task anyway. The only file it
+       * writes is `tsconfig.tsbuildinfo`, and only in the two Next apps —
+       * every package is `noEmit` without `incremental`, so declaring it here
+       * warns eleven times to cache a file tsc rebuilds on the runs that
+       * actually need it.
+       */
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!AGENTS.md",
+        "!CLAUDE.md"
       ]
     },
     "test": {
       "dependsOn": [
         "^test"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!AGENTS.md",
+        "!CLAUDE.md"
       ]
     }
   },

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { revalidateShop } from "@/lib/cache";
 import { publishShopEvent } from "@sailo/events";
-import { firstRow } from "@/lib/invariant";
+import { firstRow } from "@sailo/core/invariant";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { deliveryMethods, type DeliveryConfig } from "@sailo/db/schema";

@@ -24,19 +24,16 @@
  * behind an interface, which is a refactor of the money path rather than a
  * relocation of it.
  *
- * Re-exported here so `@/lib/stripe-webhooks` keeps resolving for both routes,
- * for the scenario suites, and for the tests that read this module's source.
+ * The package's seam is re-exported here only where something actually reaches
+ * it through this barrel — which is now just the scenario suites, for the two
+ * idempotency calls they make around a handler. Everything else imports
+ * `@sailo/payments` directly: the routes take `verifyEvent`, `signingSecrets`
+ * and `HANDLED` because those answer the signature question before any of this
+ * module's orchestration is in scope, and `connect.ts` takes `intentIdOf` and
+ * the scoped lookups because it is the caller. A second name for one thing is
+ * the name that goes stale.
  */
 
-export {
-  HANDLED,
-  claimEvent,
-  intentIdOf,
-  releaseEvent,
-  sameAccount,
-  sendingAccount,
-  signingSecrets,
-  verifyEvent,
-} from "@sailo/payments";
+export { claimEvent, releaseEvent } from "@sailo/payments";
 export { handleAccountEvent } from "./platform";
 export { handleConnectEvent } from "./connect";
