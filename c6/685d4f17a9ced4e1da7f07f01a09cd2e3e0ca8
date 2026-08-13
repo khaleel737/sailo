@@ -1,0 +1,219 @@
+apps/web/src/lib/broadcasts/consent-write-paths.test.ts
+  s_3fd229194f6299::t_a7661242fa40aa 72-75
+  s_3fd229194f6299::t_3ce46a293462e8 56-57
+  s_3fd229194f6299::t_3241596867c867 5,7,17,21,24,26-37,50,54
+  s_3fd229194f6299::t_f57e8dd1baf517 2-4
+  s_3fd229194f6299::t_87e6a656e631d5 6
+  s_3fd229194f6299::t_4312eec649dd0a 8-10,14-16
+  s_3fd229194f6299::t_c0a800e693c8ad 18-20
+  s_3fd229194f6299::t_496f8fe7e6d1c8 22-23
+  s_3fd229194f6299::t_389757b0c6e905 25
+  s_3fd229194f6299::t_ac575fc5feb160 38-40,47-49
+  s_3fd229194f6299::t_8795c63ebf577a 51-53
+  s_3fd229194f6299::t_049e1c0543f24e 55
+  s_3fd229194f6299::t_dfb2e4f054ed27 58-60,69-71
+  s_3fd229194f6299::t_c26c7d082751f9 76-78
+  s_3fd229194f6299::t_f02e3821daad0e 1,11-13,41-46,61-68,79-136
+.env.example
+  s_3fd229194f6299::t_f51ca8b09e1aa0 1-55
+.gitignore
+  s_3fd229194f6299::t_d984aac1b7dba7 35-37
+apps/web/docs/blog-brief.md
+  s_3fd229194f6299::t_67bcefb5d787c9 55
+apps/web/drizzle/0022_marketing_pause.sql
+  s_3fd229194f6299::t_8c714bdf46702e 1-12
+apps/web/e2e/whatsapp-handoff.spec.ts
+  s_3fd229194f6299::t_2c109855c13a76 1-127
+apps/web/next.config.ts
+  s_3fd229194f6299::t_5197c7e4deaa69 123-145,227-228,270-279
+apps/web/scripts/scenarios/checkout.scenario.ts
+  s_3fd229194f6299::t_2cf154efd826d0 1328-1348
+apps/web/scripts/scenarios/consent.scenario.ts
+  s_3fd229194f6299::t_d77cb484366e62 1-432
+apps/web/scripts/scenarios/seed-whatsapp.scenario.ts
+  s_3fd229194f6299::t_22603224c328f8 1-70
+apps/web/scripts/social/creators.ts
+  s_3fd229194f6299::t_e815d02fccfe54 122-128,131,133
+apps/web/src/app/(marketing)/pricing/page.tsx
+  s_3fd229194f6299::t_588b48b4275d15 1-107
+apps/web/src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_3fd229194f6299::t_b50a2174bb23bc 9,360-369
+apps/web/src/app/api/cron/blocklist/route.test.ts
+  s_3fd229194f6299::t_c8a8ca3d0fc9b9 1-96
+apps/web/src/app/api/cron/blocklist/route.ts
+  s_3fd229194f6299::t_d7bfef2f5dec33 1-52
+apps/web/src/app/api/hq/export/[type]/route.ts
+  s_3fd229194f6299::t_cda005e2ade0c1 10,41,77,101,321-360
+apps/web/src/app/api/resend/webhook/route.ts
+  s_3fd229194f6299::t_4522cd66b0c8d8 6,164-186
+apps/web/src/app/global-error.tsx
+  s_3fd229194f6299::t_f5289aa244283f 3-4,31-51
+apps/web/src/app/hq/(panel)/accounts/[id]/_components/account-actions.tsx
+  s_3fd229194f6299::t_9a4d27b9f41c21 5-11,53,170-249
+apps/web/src/app/hq/(panel)/accounts/[id]/_components/account-security-actions.tsx
+  s_3fd229194f6299::t_6e4c82369b894b 1-66
+apps/web/src/app/hq/(panel)/accounts/[id]/_components/security-panel.tsx
+  s_3fd229194f6299::t_470c777f7f51ec 1-379
+apps/web/src/app/hq/(panel)/accounts/[id]/page.tsx
+  s_3fd229194f6299::t_af44fdd6117a98 17-18,88-103,422-427,595-599
+apps/web/src/app/hq/(panel)/accounts/page.tsx
+  s_3fd229194f6299::t_a653781d8e7430 44-58,68,90,97,107,113,123,177-205,237
+apps/web/src/app/hq/(panel)/security/loading.tsx
+  s_3fd229194f6299::t_699ce1fa81dfc5 1-9
+apps/web/src/app/hq/(panel)/security/page.tsx
+  s_3fd229194f6299::t_1930fd7ed77e6e 1-504
+apps/web/src/app/hq/_components/hq-export.tsx
+  s_3fd229194f6299::t_eecc32a1e19cf8 9-10
+apps/web/src/app/hq/_components/hq-sidebar.tsx
+  s_3fd229194f6299::t_15cd777a7eb3f0 16,67-75
+apps/web/src/app/hq/_components/security-actions.tsx
+  s_3fd229194f6299::t_f1c8b7772deb6f 1-177
+apps/web/src/app/layout.tsx
+  s_3fd229194f6299::t_06208b6e65e2fd 63-68,71,73-79
+apps/web/src/app/sitemap.ts
+  s_3fd229194f6299::t_299e94a0265000 52-57
+apps/web/src/components/marketing/site-nav.tsx
+  s_3fd229194f6299::t_0269695a44ceb6 36-39
+apps/web/src/components/shared/error-panel.tsx
+  s_3fd229194f6299::t_1b0686df6530be 7,109,116-123
+apps/web/src/lib/actions/broadcasts.ts
+  s_3fd229194f6299::t_fdc709cc54114e 19,30,332-354,379
+apps/web/src/lib/actions/hq.ts
+  s_3fd229194f6299::t_32d16b9acab2f2 7-18,27,32-39,190-249,274-576
+apps/web/src/lib/blocklist/alert.ts
+  s_3fd229194f6299::t_97987cad771d5e 1-111
+apps/web/src/lib/blocklist/check.test.ts
+  s_3fd229194f6299::t_2225f8aedfb161 1-185
+apps/web/src/lib/blocklist/check.ts
+  s_3fd229194f6299::t_8a439a6e0f2975 1-233
+apps/web/src/lib/blocklist/state.test.ts
+  s_3fd229194f6299::t_e655c27a614b1e 1-74
+apps/web/src/lib/blocklist/state.ts
+  s_3fd229194f6299::t_d37a5e12b7914c 1-111
+apps/web/src/lib/broadcasts/quota.test.ts
+  s_3fd229194f6299::t_e3447e6aa5270a 1-60
+apps/web/src/lib/broadcasts/quota.ts
+  s_3fd229194f6299::t_06b84cc521410b 12-18,20-24,55-95,130-137,141-144,149-161,174-179,182
+apps/web/src/lib/broadcasts/reputation.test.ts
+  s_3fd229194f6299::t_d31affed322cc4 1-95
+apps/web/src/lib/broadcasts/reputation.ts
+  s_3fd229194f6299::t_0c8ffc505ea3ba 1-175
+apps/web/src/lib/broadcasts/send.ts
+  s_3fd229194f6299::t_c8b32a5e6e5170 286-290,293-295
+apps/web/src/lib/hq/accounts.ts
+  s_3fd229194f6299::t_6d5d4ad2570f0b 11,22-23,33,152-178,206,239,267-268,270-274,289,318,341
+apps/web/src/lib/hq/exports.ts
+  s_3fd229194f6299::t_31c183950adff8 20-22
+apps/web/src/lib/hq/index.ts
+  s_3fd229194f6299::t_c113147ec69393 23
+apps/web/src/lib/hq/security.ts
+  s_3fd229194f6299::t_629448681abf9b 1-790
+apps/web/src/lib/hq/system.ts
+  s_3fd229194f6299::t_043c42e88a6c3e 8,46-87,132,159-161,185-201
+apps/web/src/lib/leaving.ts
+  s_3fd229194f6299::t_2ed6d66aea82f4 1-119
+apps/web/vercel.json
+  s_3fd229194f6299::t_327dc0b816b8ff 38-41
+docs/blog-research-getting-paid.md
+  s_3fd229194f6299::t_b5d4a769114690 23-24,36,38,79,81-90,160,181-183
+packages/db/src/schema/analytics.ts
+  s_3fd229194f6299::t_e52cf2e95c6f0d 175-183
+packages/db/src/schema/shop.ts
+  s_3fd229194f6299::t_88134249655d87 90-108
+packages/i18n/src/marketing/ar.ts
+  s_3fd229194f6299::t_7d1836f6bfedb4 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/bg.ts
+  s_3fd229194f6299::t_495ede9063fc71 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/bs.ts
+  s_3fd229194f6299::t_17ca1b1deb547e 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/cs.ts
+  s_3fd229194f6299::t_101ef9c130a743 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/da.ts
+  s_3fd229194f6299::t_b5a82413648f34 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/de.ts
+  s_3fd229194f6299::t_5d2cf78cc1fdc0 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/el.ts
+  s_3fd229194f6299::t_d1f8cfa1734234 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/en.ts
+  s_3fd229194f6299::t_60732a0e1c069d 35-46,51-54,148-157,175,225-238,240,242-244,246
+packages/i18n/src/marketing/es.ts
+  s_3fd229194f6299::t_1450e5fbb6f146 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/fi.ts
+  s_3fd229194f6299::t_50f3ad1e853747 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/fil.ts
+  s_3fd229194f6299::t_f8bc524cba3891 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/fr.ts
+  s_3fd229194f6299::t_4ce80a710d99ca 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/hr.ts
+  s_3fd229194f6299::t_7260b43e369242 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/hu.ts
+  s_3fd229194f6299::t_97b20ec39e7cbc 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/id.ts
+  s_3fd229194f6299::t_677a14c23fe918 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/it.ts
+  s_3fd229194f6299::t_68409244958308 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/ja.ts
+  s_3fd229194f6299::t_67c4414055fcc6 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/ko.ts
+  s_3fd229194f6299::t_0eb679a80d5328 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/mk.ts
+  s_3fd229194f6299::t_2eb112285f69df 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/ms.ts
+  s_3fd229194f6299::t_70ca505498eb02 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/nl.ts
+  s_3fd229194f6299::t_767eb740e47b06 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/no.ts
+  s_3fd229194f6299::t_bc82998da3b368 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/pl.ts
+  s_3fd229194f6299::t_5948e13c14b7be 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/pt.ts
+  s_3fd229194f6299::t_6b3782b8c87288 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/ro.ts
+  s_3fd229194f6299::t_59a70468bb0de4 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/ru.ts
+  s_3fd229194f6299::t_a8b33265292275 20-21,23,28,122,140,199,201-202,204
+packages/i18n/src/marketing/sl.ts
+  s_3fd229194f6299::t_3d8cbd209c7bd6 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/sq.ts
+  s_3fd229194f6299::t_2d66f35b4f7746 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/sr.ts
+  s_3fd229194f6299::t_5f0a4c2e5a62a4 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/sv.ts
+  s_3fd229194f6299::t_94c1afc4dcdc84 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/th.ts
+  s_3fd229194f6299::t_62ce564abe94fc 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/tr.ts
+  s_3fd229194f6299::t_7e8831427c2e72 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/uk.ts
+  s_3fd229194f6299::t_b3b2dcf9dec738 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/vi.ts
+  s_3fd229194f6299::t_b74fb446cb676a 20-22,27,121,139,198,200-201,203
+packages/i18n/src/marketing/zh.ts
+  s_3fd229194f6299::t_b9e7cf528ea4b2 20-22,27,121,139,198,200-201,203
+src/app/(marketing)/pricing/page.tsx
+  s_3fd229194f6299::t_2f62a63a38b066 1-107
+src/app/api/cron/blocklist/route.test.ts
+  s_3fd229194f6299::t_6303ba9e08515a 1-96
+src/app/api/cron/blocklist/route.ts
+  s_3fd229194f6299::t_375f9dca89da26 1-52
+src/app/hq/(panel)/security/loading.tsx
+  s_3fd229194f6299::t_b74760e61051a8 1-9
+src/app/hq/(panel)/security/page.tsx
+  s_3fd229194f6299::t_79ac3cdc45025d 1-504
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c6685d4f17a9ced4e1da7f07f01a09cd2e3e0ca8",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
