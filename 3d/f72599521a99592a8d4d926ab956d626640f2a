@@ -1,0 +1,412 @@
+src/i18n/marketing/vi.ts
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/i18n/marketing/de.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/lib/broadcasts/send.ts
+  s_92b5a5b420affd::t_99bd328cb63158 286-290,293-295
+src/app/api/hq/export/[type]/route.ts
+  s_b7e427b57483cc::t_1b7a71320e8c0a 10
+  s_b7e427b57483cc::t_e755f7628e868d 101
+  s_b7e427b57483cc::t_e74aae80f4ff08 321-357
+  s_b7e427b57483cc::t_2b0c3bc63e0141 41
+  s_b7e427b57483cc::t_97336761303517 77
+  s_b7e427b57483cc::t_6675050f3fd6f2 358-360
+src/app/hq/(panel)/accounts/[id]/_components/security-panel.tsx
+  s_b7e427b57483cc::t_989a3a960860dd 1-379
+src/app/sitemap.ts
+  s_577b605f026675::t_8f9933e4de0c7d 52-57
+src/i18n/marketing/fr.ts
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+src/i18n/marketing/th.ts
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/i18n/marketing/id.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+src/i18n/marketing/ms.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+src/lib/broadcasts/reputation.test.ts
+  s_92b5a5b420affd::t_6b5915b7eb91d7 1-95
+src/lib/broadcasts/quota.test.ts
+  s_92b5a5b420affd::t_5577142b88f5a8 1-14,23-26,28-31,33-35,41-43,45-47,49-57,59-60
+  s_92b5a5b420affd::t_4b355a9d138ec8 15-22,27,32,36-40,44,48,58
+src/i18n/marketing/mk.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+.gitignore
+  s_1047a2e4bc7818::t_bc2744d2fe2678 35-37
+src/i18n/marketing/uk.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+src/app/hq/(panel)/security/page.tsx
+  s_b7e427b57483cc::t_987334481003f9 396
+  s_b7e427b57483cc::t_574a98e1cdb8a1 18
+  s_b7e427b57483cc::t_50e8c11bc679c8 93
+  s_b7e427b57483cc::t_567e74f20db7f3 119
+  s_b7e427b57483cc::t_dd85d587bd170b 1-17,19-92,94-118,120-395,397-504
+scripts/scenarios/memberships-live.scenario.ts
+  s_b7e427b57483cc::t_563163a8dbac4d 496
+src/lib/broadcasts/reputation.ts
+  s_92b5a5b420affd::t_32ebe6fc9f9851 1-149,153-175
+  s_92b5a5b420affd::t_a12f5c5ee1d976 150-152
+scripts/scenarios/checkout.scenario.ts
+  s_7c1f9de1865c45::t_9dd1830c7af139 1329-1348
+  s_92b5a5b420affd::t_e6fe519fa3b7ff 1328
+src/lib/leaving.ts
+  s_04f74d9b548275::t_6988efadf7e96b 48-64,72-89,95
+  s_04f74d9b548275::t_2cdb8c1d5896b1 1-47,65-71,90-94,96-105,108-109,113-115,117-119
+  s_04f74d9b548275::t_41fe0acbf7dd80 106-107,110-112,116
+src/i18n/marketing/hu.ts
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+src/app/api/cron/blocklist/route.test.ts
+  s_1047a2e4bc7818::t_202aa4a2aec85f 2
+  s_1047a2e4bc7818::t_849ff01152b978 1,3-22,24-96
+  s_1047a2e4bc7818::t_cff723defa8d39 23
+src/app/layout.tsx
+  s_577b605f026675::t_c3ed3906b6294a 71,73-79
+  s_577b605f026675::t_e585ea733351d2 63-68
+src/lib/hq/index.ts
+  s_b7e427b57483cc::t_169044795c2281 23
+src/lib/handle.ts
+  s_3fd229194f6299::t_d2e8046b4af3d3 35
+src/app/hq/_components/hq-sidebar.tsx
+  s_b7e427b57483cc::t_bd923d42113076 16
+  s_b7e427b57483cc::t_2a9013803c284d 67-75
+src/components/shared/error-panel.tsx
+  s_04f74d9b548275::t_3eeb76387c152c 7
+  s_04f74d9b548275::t_b48243a15fef15 109,116-122
+  s_04f74d9b548275::t_eddc0bd1ee51a9 123
+docs/blog-brief.md
+  s_577b605f026675::t_bd0201265b4bbe 55
+src/app/hq/_components/security-actions.tsx
+  s_b7e427b57483cc::t_da329457c83586 1-177
+src/i18n/marketing/ro.ts
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+src/lib/hq/exports.ts
+  s_b7e427b57483cc::t_1507d89c57c52e 20-22
+src/i18n/marketing/sq.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_04f74d9b548275::t_a30fffb63da5fa 9
+  s_04f74d9b548275::t_b708f6de4620aa 360-369
+src/i18n/marketing/nl.ts
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+src/i18n/marketing/sl.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+.env.example
+  s_1047a2e4bc7818::t_9f9fff83a62742 1-55
+src/i18n/marketing/zh.ts
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/app/api/resend/webhook/route.ts
+  s_92b5a5b420affd::t_f43378bbc244d4 164-173,180,186
+  s_92b5a5b420affd::t_eddb9f9b6d6c67 6
+  s_92b5a5b420affd::t_5d49b4239b8f35 174-179,181-185
+src/lib/blocklist/state.test.ts
+  s_1047a2e4bc7818::t_82230eaa530177 1-74
+drizzle/0022_marketing_pause.sql
+  s_92b5a5b420affd::t_2806535efe6f57 1-12
+src/lib/blocklist/check.test.ts
+  s_1047a2e4bc7818::t_53b36b1b787d63 1-17,19-148,154-185
+  s_1047a2e4bc7818::t_7ed38e20e2c32a 149-153
+  s_1047a2e4bc7818::t_72a83db8091187 18
+src/db/schema/shop.ts
+  s_92b5a5b420affd::t_f1281f14055ac2 90-108
+src/app/hq/(panel)/accounts/[id]/_components/account-security-actions.tsx
+  s_b7e427b57483cc::t_107ebe2dba524f 60
+  s_b7e427b57483cc::t_6be143400e5a9e 1-59,61-66
+src/lib/actions/broadcasts.ts
+  s_92b5a5b420affd::t_3635e52e298831 19
+  s_92b5a5b420affd::t_116205f4e68950 332-354
+  s_92b5a5b420affd::t_6df3245d64181d 30
+  s_92b5a5b420affd::t_6da021cf3e9b32 379
+src/i18n/marketing/es.ts
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+e2e/whatsapp-handoff.spec.ts
+  s_04f74d9b548275::t_fbbb14e968d566 6-9,11-17,19-22,38-41,54,63-64,66-68,70-73,81-82,84-86,96,106-111,121
+  s_04f74d9b548275::t_0863ec07ab06e0 62
+  s_04f74d9b548275::t_5dea44438b1550 1-5,10,18,23-26,31-37,42,52,55-61,65,69,97,127
+  s_b7e427b57483cc::t_ac9373ca046e7b 101
+  s_b7e427b57483cc::t_294535fe08d695 43-51,53
+  s_04f74d9b548275::t_c143ee59fed86c 27-30
+  s_b7e427b57483cc::t_d9a9851f38f71e 89
+  s_04f74d9b548275::t_020416027c6d5f 98-100,102-105
+  s_04f74d9b548275::t_2923d50eccc3f5 112-120,122-126
+  s_04f74d9b548275::t_b94f6abb393db3 74-80,83,87-88,90-95
+src/i18n/marketing/ar.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+src/i18n/marketing/cs.ts
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+src/i18n/marketing/bg.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/components/marketing/site-nav.tsx
+  s_577b605f026675::t_961e7f4d310459 36-39
+scripts/social/creators.ts
+  s_b7e427b57483cc::t_a2f095413d6412 120,122-133
+src/i18n/marketing/da.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+src/i18n/marketing/tr.ts
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/i18n/marketing/fil.ts
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+src/i18n/marketing/en.ts
+  s_577b605f026675::t_cd944aada22e8e 35-46
+  s_577b605f026675::t_7a6daf1133587f 225-238,240,242-244,246
+  s_577b605f026675::t_a338b4dbbfba37 175
+  s_577b605f026675::t_390d52c5756ca1 51-54
+  s_577b605f026675::t_cd93f0e690e19b 148-157
+src/lib/broadcasts/consent-write-paths.test.ts
+  s_7c1f9de1865c45::t_bbd6d612befee1 1-124
+src/app/global-error.tsx
+  s_04f74d9b548275::t_3f8d2e0c06f5ab 31-51
+  s_04f74d9b548275::t_4206ba8c0d8057 3-4
+src/lib/blocklist/state.ts
+  s_1047a2e4bc7818::t_79f87c78813392 86
+  s_1047a2e4bc7818::t_12c7f6f15706ad 1-85,87-111
+src/i18n/marketing/no.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/i18n/marketing/hr.ts
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+src/app/hq/_components/hq-export.tsx
+  s_b7e427b57483cc::t_52a4a6d7982d31 9-10
+src/app/(marketing)/pricing/page.tsx
+  s_577b605f026675::t_a22d57d2eac485 1-107
+src/i18n/marketing/ja.ts
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/i18n/marketing/sv.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/i18n/marketing/bs.ts
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/i18n/marketing/el.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/i18n/marketing/ko.ts
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+src/db/schema/analytics.ts
+  s_b7e427b57483cc::t_fbef36eeb757c8 175-183
+src/i18n/marketing/pt.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+src/app/hq/(panel)/accounts/page.tsx
+  s_b7e427b57483cc::t_f8e7933bcbb817 44-58
+  s_b7e427b57483cc::t_4d9531aab32b3a 237
+  s_b7e427b57483cc::t_304ed455b7efda 107,113,123
+  s_b7e427b57483cc::t_b1d375e69b0bb6 177-203
+  s_b7e427b57483cc::t_bef3e7674ad573 90,97
+  s_b7e427b57483cc::t_7dd467d9bde55b 68
+  s_3fd229194f6299::t_b68c1c9919dbe9 204-205
+src/lib/actions/hq.ts
+  s_b7e427b57483cc::t_861b39faf3fd9f 274-575
+  s_92b5a5b420affd::t_ee48f996dc9ec8 190-249
+  s_b7e427b57483cc::t_ea2ebb40c12590 7-18,27,32-39
+  s_b7e427b57483cc::t_4289ec4e165dab 576
+next.config.ts
+  s_04f74d9b548275::t_0ac7edb5768c13 114-136
+  s_04f74d9b548275::t_1012536d182e4f 261-270
+  s_04f74d9b548275::t_97714f8bbb765a 218-219
+scripts/scenarios/seed-whatsapp.scenario.ts
+  s_04f74d9b548275::t_4e6555e970bd24 1-70
+src/app/hq/(panel)/accounts/[id]/page.tsx
+  s_b7e427b57483cc::t_2e2e5422419044 595-599
+  s_b7e427b57483cc::t_0f9e9036e41614 17-18
+  s_b7e427b57483cc::t_6e05ca253438dd 422-426
+  s_b7e427b57483cc::t_b4905d54728286 88-103
+  s_04f74d9b548275::t_a5b7d860dc8e31 427
+src/i18n/marketing/pl.ts
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+src/lib/hq/accounts.ts
+  s_b7e427b57483cc::t_1dad185889d83a 11
+  s_b7e427b57483cc::t_b69e9ed17e2a77 289
+  s_b7e427b57483cc::t_682eec20ba5a77 267-268,270-274
+  s_b7e427b57483cc::t_744ceb62254e5a 206
+  s_b7e427b57483cc::t_734e2f4f2a2e08 239
+  s_b7e427b57483cc::t_ceb8434c2cbc15 318
+  s_b7e427b57483cc::t_f413ca31acd4c9 341
+  s_b7e427b57483cc::t_38ab56cd842c79 33
+  s_b7e427b57483cc::t_e42adba33d57b8 152-178
+  s_b7e427b57483cc::t_6f133c3847eff6 22-23
+src/i18n/marketing/sr.ts
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+src/i18n/marketing/fi.ts
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+src/lib/blocklist/check.ts
+  s_1047a2e4bc7818::t_6b0f519a07e183 1-233
+src/app/api/cron/blocklist/route.ts
+  s_1047a2e4bc7818::t_cdb0bb58b5cd84 1-52
+src/app/hq/(panel)/security/loading.tsx
+  s_b7e427b57483cc::t_3b0f1d3628a0ce 1-9
+src/lib/hq/system.ts
+  s_1047a2e4bc7818::t_75595998512371 8
+  s_1047a2e4bc7818::t_f7add7d1e7c036 159-161
+  s_1047a2e4bc7818::t_6f4e840615fbdb 47-87
+  s_1047a2e4bc7818::t_e6a9c3e4e09749 185-201
+  s_1047a2e4bc7818::t_9c788b0a04a11d 132
+  s_7c1f9de1865c45::t_a5b5483726e833 46
+scripts/scenarios/consent.scenario.ts
+  s_7c1f9de1865c45::t_14a0e1e03c0392 1-432
+src/lib/broadcasts/quota.ts
+  s_92b5a5b420affd::t_e2e2c841201a77 130-137,141-144,149-161,174-179,182
+  s_92b5a5b420affd::t_bf57f5956cfa9a 12-18,20-24
+  s_92b5a5b420affd::t_024453923ce810 55-95
+src/i18n/marketing/it.ts
+  s_577b605f026675::t_73ac3f1804c7ec 198,200-201,203
+  s_577b605f026675::t_13fc765cc6be1d 20-22,27
+  s_577b605f026675::t_a67adb79d52cc7 121,139
+vercel.json
+  s_1047a2e4bc7818::t_0a5279f32faa73 38-41
+src/lib/hq/security.ts
+  s_b7e427b57483cc::t_48c9ba94e6f54a 16
+  s_b7e427b57483cc::t_af259a701ed2fc 656-661
+  s_b7e427b57483cc::t_ccde42912a1fdd 409-448
+  s_b7e427b57483cc::t_1a28c5284f03e9 673-677
+  s_b7e427b57483cc::t_58179ca515d46b 1-15,17-48,58-78,80-81,83-152,162-174,180-265,267-352,354-408,449-451,453-545,547-655,662-672,678-709,715-782,784-790
+  s_b7e427b57483cc::t_bee6b54f19cb27 783
+  s_b7e427b57483cc::t_5c5aa6fbde4e4b 79
+  s_b7e427b57483cc::t_d1c20675de4aed 49-57
+  s_b7e427b57483cc::t_61bdeb8fc89cf6 175-179
+  s_b7e427b57483cc::t_629bc6ace48932 82,266,353,452,546
+  s_b7e427b57483cc::t_45afe19787bb03 710-714
+  s_b7e427b57483cc::t_30ddad597ce14d 153-161
+src/lib/blocklist/alert.ts
+  s_1047a2e4bc7818::t_7f9e73880f316f 3
+  s_1047a2e4bc7818::t_1c17e9aa7db892 40,42-43
+  s_1047a2e4bc7818::t_01a58c99e3014d 1-2,4-31,33-39,41,44-111
+  s_1047a2e4bc7818::t_2de772dbf34fba 32
+src/i18n/marketing/ru.ts
+  s_577b605f026675::t_13fc765cc6be1d 20-21,23,28
+  s_577b605f026675::t_a67adb79d52cc7 122,140
+  s_577b605f026675::t_73ac3f1804c7ec 199,201-202,204
+src/app/hq/(panel)/accounts/[id]/_components/account-actions.tsx
+  s_92b5a5b420affd::t_1e55ff9dd11d0d 174-249
+  s_92b5a5b420affd::t_4c700ae3441f30 53
+  s_92b5a5b420affd::t_b12900a3fbc8c7 5-11
+  s_92b5a5b420affd::t_2fafb3713a7d38 171-173
+  s_92b5a5b420affd::t_a69603290ec10d 170
+docs/blog-research-getting-paid.md
+  s_577b605f026675::t_34a2d8aaa1b3a4 79,81-90
+  s_577b605f026675::t_6a04590c98022c 160
+  s_577b605f026675::t_db5656344e1cd3 36,38
+  s_577b605f026675::t_4a1e1bcec83412 181-183
+  s_577b605f026675::t_5deb8634f51b0c 23-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3df72599521a99592a8d4d926ab956d626640f2a",
+  "prompts": {},
+  "sessions": {
+    "s_04f74d9b548275": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e16f0382-3a14-4a07-b144-cae303fabdb4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_1047a2e4bc7818": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1b99283f-cef1-4b26-b040-bbcf2c3ce50d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_577b605f026675": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4e35d9dc-8e82-483e-b81c-af3e5d790791",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_7c1f9de1865c45": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "25a714c0-3ba7-4ea2-9844-7190ad0c84a7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_92b5a5b420affd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ee895b7a-d9c4-421b-803c-fb17f2ec6616",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_b7e427b57483cc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1771ffb6-c8a5-4dfb-be77-e51b2832eac0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
