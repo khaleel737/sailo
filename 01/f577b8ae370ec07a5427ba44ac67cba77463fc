@@ -1,0 +1,23 @@
+apps/web/src/lib/handle.ts
+  s_3fd229194f6299::t_42930e8b7a3a81 35
+apps/web/src/app/(legal)/anti-spam/page.tsx
+  s_3fd229194f6299::t_640c17e42b4754 1-180
+apps/web/src/lib/email/transport.ts
+  s_3fd229194f6299::t_6332037a67747e 23-40,42,44,46,48,60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "01f577b8ae370ec07a5427ba44ac67cba77463fc",
+  "prompts": {},
+  "sessions": {
+    "s_3fd229194f6299": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8019e83c-dda9-47a8-b2f4-0bb8a20336c9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
