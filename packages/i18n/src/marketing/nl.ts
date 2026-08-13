@@ -17,14 +17,14 @@ export const marketingNl: MarketingDictionary = {
 
   hero: {
     badge: "Gratis starten, gratis blijven",
-    title: "Je hele winkel, op {highlight}.",
-    titleHighlight: "één link",
-    body: "Je neemt al bestellingen aan in de DM's. Sailo zet daar een echte winkel voor — foto's, prijzen, zoeken en afrekenen achter één link — en elke bestelling komt nog steeds binnen in de chat waar je toch al antwoordt.",
+    title: "Stop met bestellingen overtypen uit je {highlight}.",
+    titleHighlight: "DM's",
+    body: "Je neemt al bestellingen aan in je berichten. Sailo maakt daar een echte winkel van — foto's, prijzen, opties en voorraad achter één link, zonder website te bouwen. Bestellingen komen nog steeds in dezelfde chat, maar dan uitgeschreven.",
     ctaPrimary: "Maak je winkel — gratis",
     ctaSecondary: "Open een echte winkel",
     proof1: "Binnen een minuut online",
     proof2: "Geen creditcard nodig",
-    proof3: "Geen commissie op chat- en overboekingsbestellingen",
+    proof3: "Geen commissie behalve op kaart",
     proof4: "35 talen",
     igBio: "Houtoven-pizza, Napels. Bestel hieronder.",
     igPosts: "Berichten",
@@ -118,7 +118,7 @@ export const marketingNl: MarketingDictionary = {
   pricing: {
     eyebrow: "Prijzen",
     title: "Gratis om te beginnen, en gratis om door te gaan.",
-    body: "Bestellingen via chat, overboeking en contant zijn helemaal van jou, op elk pakket. Kaartverkopen dragen {fee} van de goederen — nooit van verzending of belasting.",
+    body: "Elke manier van betaald krijgen behalve kaart is helemaal van jou, op elk pakket. Kaartverkopen dragen {fee} van de goederen — nooit verzending, nooit belasting.",
     freeTagline: "Alles wat je nodig hebt voor je eerste bestellingen.",
     proTagline: "Ruimte om te groeien, en een winkel die op jou lijkt.",
     bizTagline: "Kaartbetalingen, acties en doorverwijzingen — het gereedschap dat de omzet laat groeien.",
@@ -136,7 +136,7 @@ export const marketingNl: MarketingDictionary = {
     q2: "Hoe betalen kopers me eigenlijk?",
     a2: "Zoals je nu al betaald wordt. Met kaart, via je eigen Stripe-account, dus de betaling komt rechtstreeks bij jou binnen. Of per overboeking, rembours en mobiel geld, met instructies die je zelf schrijft. Sailo houdt het geld nooit vast.",
     q3: "Neemt Sailo commissie?",
-    a3: "Bij chat-, overboekings- en contante bestellingen niet — die zijn volledig van jou. Kaartverkopen kosten {fee} van de goederen, ingehouden als Stripe-kosten. Nooit over verzending of belasting.",
+    a3: "Alleen op kaart. WhatsApp, Venmo, PayPal, overboeking en contant zijn helemaal van jou, op elk pakket. Kaartverkopen dragen {fee} van de goederen, ingehouden als Stripe-kosten — nooit op verzending of belasting.",
     q4: "Kan ik diensten of digitale bestanden verkopen?",
     a4: "Ja, en ze gedragen zich zoals het hoort. Een dienst kan een duur, een locatie en een datumkiezer met opzegtermijn hebben. Een digitaal product levert bestanden die opengaan zodra jij de betaling bevestigt, desgewenst met downloadlimiet en vervaldatum.",
     q5: "Ik heb al een Linktree. Waarom overstappen?",
@@ -195,11 +195,11 @@ export const marketingNl: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — een webshop zo eenvoudig als een link in je bio",
+    title: "Neem online bestellingen aan zonder website — Sailo",
     description:
-      "Sailo maakt van de link in je bio een echte winkel. Verkoop producten, digitale bestanden of diensten en ontvang bestellingen via WhatsApp of met kaart, in 35 talen. Gratis om te beginnen, zonder commissie.",
-    ogTitle: "Sailo — één link, je hele winkel",
+      "Maak van je Instagram een echte winkel: foto's, prijzen, opties, voorraad. Bestellingen komen uitgeschreven binnen. Geen commissie op WhatsApp, overboeking of contant.",
+    ogTitle: "Stop met bestellingen overtypen uit je DM's",
     ogDescription:
-      "Foto's, prijzen, varianten, voorraad, boekingen en downloads achter één link in je bio. Bestellingen komen binnen in WhatsApp of bij je eigen kaartbetaling.",
+      "Een echte winkel achter één link — foto's, prijzen, voorraad en afrekenen. Bestellingen komen kant-en-klaar binnen, en niemand pakt een deel van klanten die je zelf vond.",
   },
 };

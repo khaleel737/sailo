@@ -1,5 +1,7 @@
 "use client";
 
+import { useLeaving } from "@/lib/leaving";
+
 /*
  * The root layout itself failed.
  *
@@ -26,6 +28,27 @@ export default function GlobalError({
   error: Error & { digest?: string };
   retry: () => void;
 }) {
+  const leaving = useLeaving();
+
+  /*
+   * A deliberate departure cancelled something, and that is not a failure —
+   * see `lib/leaving`. This is the boundary an iPhone actually hit on the
+   * WhatsApp handoff, because the cancelled stream was the router's own.
+   *
+   * Still an `<html>`: this file replaces the root layout, so returning null
+   * would leave React with no document to commit. A bare page is what any
+   * navigation looks like on its way out.
+   */
+  if (leaving) {
+    return (
+      <html lang="en">
+        <body style={{ margin: 0, minHeight: "100dvh", background: "#faf9f7" }}>
+          <style>{`@media (prefers-color-scheme: dark) { body { background: #0d0d0c !important; } }`}</style>
+        </body>
+      </html>
+    );
+  }
+
   return (
     <html lang="en">
       <body

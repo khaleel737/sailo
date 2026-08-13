@@ -17,14 +17,14 @@ export const marketingId: MarketingDictionary = {
 
   hero: {
     badge: "Gratis mulai, gratis seterusnya",
-    title: "Seluruh toko Anda, dalam {highlight}.",
-    titleHighlight: "satu tautan",
-    body: "Anda sudah menerima pesanan lewat DM. Sailo menaruh toko sungguhan di depannya — foto, harga, pencarian, dan pembayaran di balik satu tautan — dan setiap pesanan tetap masuk ke chat yang memang Anda balas.",
+    title: "Berhenti mengetik ulang pesanan dari {highlight}.",
+    titleHighlight: "DM",
+    body: "Anda sudah menerima pesanan lewat pesan. Sailo mengubahnya jadi toko sungguhan — foto, harga, pilihan, dan stok di balik satu tautan, tanpa membuat website. Pesanan tetap masuk ke chat yang sama, hanya saja sudah tertulis lengkap.",
     ctaPrimary: "Buat toko Anda — gratis",
     ctaSecondary: "Buka toko sungguhan",
     proof1: "Aktif dalam kurang dari satu menit",
     proof2: "Tanpa kartu",
-    proof3: "Tanpa komisi untuk pesanan chat dan transfer bank",
+    proof3: "Tanpa komisi kecuali kartu",
     proof4: "35 bahasa",
     igBio: "Pizza panggang kayu, Napoli. Pesan di bawah.",
     igPosts: "Postingan",
@@ -118,7 +118,7 @@ export const marketingId: MarketingDictionary = {
   pricing: {
     eyebrow: "Harga",
     title: "Gratis untuk mulai, dan gratis untuk terus berjalan.",
-    body: "Pesanan lewat chat, transfer bank, dan tunai sepenuhnya milik Anda, di semua paket. Penjualan kartu dikenakan {fee} dari nilai barang — tidak pernah dari ongkir atau pajak.",
+    body: "Semua cara menerima pembayaran selain kartu sepenuhnya milik Anda, di semua paket. Penjualan kartu dikenakan {fee} dari nilai barang — tidak pernah dari ongkir atau pajak.",
     freeTagline: "Semua yang Anda butuhkan untuk pesanan pertama.",
     proTagline: "Ruang untuk tumbuh, dan toko yang terlihat seperti milik Anda sendiri.",
     bizTagline: "Pembayaran kartu, promosi, dan rujukan — alat yang menumbuhkan pendapatan.",
@@ -136,7 +136,7 @@ export const marketingId: MarketingDictionary = {
     q2: "Bagaimana pembeli benar-benar membayar saya?",
     a2: "Sama seperti cara Anda sudah menerima uang. Kartu, lewat akun Stripe Anda sendiri, jadi tagihannya mendarat langsung ke Anda. Atau transfer bank, bayar di tempat, dan uang elektronik, dengan instruksi yang Anda tulis sendiri. Sailo tidak pernah menahan uangnya.",
     q3: "Apakah Sailo mengambil komisi?",
-    a3: "Untuk pesanan chat, transfer bank dan tunai, tidak — semuanya milik Anda. Penjualan kartu dikenakan {fee} dari nilai barang, diambil sebagai biaya Stripe. Tidak pernah dari ongkir atau pajak.",
+    a3: "Hanya pada kartu. WhatsApp, Venmo, PayPal, transfer bank, dan tunai sepenuhnya milik Anda, di semua paket. Penjualan kartu dikenakan {fee} dari nilai barang sebagai biaya Stripe — bukan dari ongkir atau pajak.",
     q4: "Bisakah saya menjual jasa atau berkas digital?",
     a4: "Bisa, dan keduanya berperilaku semestinya. Sebuah jasa bisa membawa durasi, lokasi, dan pemilih tanggal dengan tenggat pemberitahuan. Produk digital mengirim berkas yang terbuka begitu Anda mengonfirmasi pembayaran, dengan batas unduhan dan masa berlaku kalau Anda mau.",
     q5: "Saya sudah punya Linktree. Kenapa harus pindah?",
@@ -195,11 +195,11 @@ export const marketingId: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — toko online semudah tautan di bio",
+    title: "Terima pesanan online tanpa website — Sailo",
     description:
-      "Sailo mengubah tautan di bio Anda menjadi toko sungguhan. Jual produk, berkas digital, atau jasa, terima pesanan lewat WhatsApp atau kartu, dalam 35 bahasa. Gratis untuk mulai, dan Sailo tidak mengambil komisi.",
-    ogTitle: "Sailo — satu tautan, seluruh toko Anda",
+      "Ubah Instagram jadi toko sungguhan: foto, harga, pilihan, stok. Pesanan datang sudah tertulis lengkap. Tanpa komisi lewat WhatsApp, transfer bank, atau tunai.",
+    ogTitle: "Berhenti mengetik ulang pesanan dari DM",
     ogDescription:
-      "Foto, harga, varian, stok, pemesanan, dan unduhan di balik satu tautan bio. Pesanan mendarat di WhatsApp atau di checkout kartu Anda sendiri.",
+      "Toko sungguhan di balik satu tautan — foto, harga, stok, dan checkout. Pesanan datang siap, dan tak ada yang memotong dari pelanggan yang Anda cari sendiri.",
   },
 };

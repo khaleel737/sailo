@@ -17,14 +17,14 @@ export const marketingPl: MarketingDictionary = {
 
   hero: {
     badge: "Za darmo na start, za darmo dalej",
-    title: "Cały twój sklep pod {highlight}.",
-    titleHighlight: "jednym linkiem",
-    body: "Zamówienia już teraz przyjmujesz w wiadomościach. Sailo stawia przed nimi prawdziwy sklep — zdjęcia, ceny, wyszukiwarkę i płatność za jednym linkiem — a każde zamówienie nadal trafia na czat, na który i tak odpisujesz.",
+    title: "Koniec z przepisywaniem zamówień z {highlight}.",
+    titleHighlight: "wiadomości",
+    body: "Zamówienia już przyjmujesz w wiadomościach. Sailo robi z tego prawdziwy sklep — zdjęcia, ceny, opcje i stany za jednym linkiem, bez budowania strony. Zamówienia nadal trafiają na ten sam czat, tylko już rozpisane.",
     ctaPrimary: "Załóż sklep — za darmo",
     ctaSecondary: "Otwórz prawdziwy sklep",
     proof1: "Działa w niecałą minutę",
     proof2: "Bez karty",
-    proof3: "Bez prowizji od zamówień przez czat i przelew",
+    proof3: "Bez prowizji poza kartą",
     proof4: "35 języków",
     igBio: "Pizza z pieca opalanego drewnem, Neapol. Zamów poniżej.",
     igPosts: "Posty",
@@ -118,7 +118,7 @@ export const marketingPl: MarketingDictionary = {
   pricing: {
     eyebrow: "Cennik",
     title: "Za darmo na start i za darmo na dłużej.",
-    body: "Zamówienia przez czat, przelew i gotówkę są w całości twoje, w każdym planie. Sprzedaż kartą niesie {fee} od wartości towaru — nigdy od dostawy ani podatku.",
+    body: "Każdy sposób przyjmowania płatności poza kartą jest w całości twój, w każdym planie. Sprzedaż kartą niesie {fee} od towaru — nigdy od dostawy ani podatku.",
     freeTagline: "Wszystko, czego trzeba, by przyjąć pierwsze zamówienia.",
     proTagline: "Miejsce na rozwój i sklep, który wygląda jak twój.",
     bizTagline: "Płatności kartą, promocje i polecenia — narzędzia, które podnoszą przychód.",
@@ -136,7 +136,7 @@ export const marketingPl: MarketingDictionary = {
     q2: "Jak właściwie klienci mi płacą?",
     a2: "Tak jak przyjmujesz pieniądze dzisiaj. Kartą, przez twoje własne konto Stripe, więc wpłata trafia prosto do ciebie. Albo przelewem, za pobraniem i przez płatności mobilne, z instrukcją, którą sam piszesz. Sailo nigdy nie trzyma pieniędzy.",
     q3: "Czy Sailo pobiera prowizję?",
-    a3: "Przy zamówieniach przez czat, przelew i gotówkę nie — są w całości Twoje. Sprzedaż kartą objęta jest {fee} od towaru, pobieranym jako opłata Stripe. Nigdy od dostawy ani podatku.",
+    a3: "Tylko przy karcie. WhatsApp, Venmo, PayPal, przelew i gotówka są w całości twoje, w każdym planie. Sprzedaż kartą niesie {fee} od towaru, pobierane jako opłata Stripe — nigdy od dostawy ani podatku.",
     q4: "Czy mogę sprzedawać usługi albo pliki cyfrowe?",
     a4: "Tak, i zachowują się jak należy. Usługa może mieć czas trwania, miejsce i kalendarz z wymaganym wyprzedzeniem. Produkt cyfrowy dostarcza pliki odblokowywane w chwili potwierdzenia płatności, z limitem pobrań i terminem ważności, jeśli chcesz.",
     q5: "Mam już Linktree. Po co zmieniać?",
@@ -195,11 +195,11 @@ export const marketingPl: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — sklep internetowy prosty jak link w bio",
+    title: "Przyjmuj zamówienia online bez strony — Sailo",
     description:
-      "Sailo zamienia link w twoim bio w prawdziwy sklep. Sprzedawaj produkty, pliki cyfrowe albo usługi i przyjmuj zamówienia przez WhatsAppa lub kartą, w 35 językach. Start za darmo, bez prowizji.",
-    ogTitle: "Sailo — jeden link, cały twój sklep",
+      "Zmień Instagram w prawdziwy sklep: zdjęcia, ceny, opcje, stany. Zamówienia przychodzą rozpisane. Bez prowizji na WhatsAppie, przelewie i gotówce.",
+    ogTitle: "Koniec z przepisywaniem zamówień z wiadomości",
     ogDescription:
-      "Zdjęcia, ceny, warianty, stany, rezerwacje i pliki do pobrania za jednym linkiem w bio. Zamówienia trafiają na WhatsAppa albo do twojej własnej płatności kartą.",
+      "Prawdziwy sklep za jednym linkiem — zdjęcia, ceny, stany i koszyk. Zamówienia przychodzą gotowe, a nikt nie bierze procentu od klientów, których znalazłeś sam.",
   },
 };

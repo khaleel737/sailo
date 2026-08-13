@@ -20,8 +20,8 @@ The second sentence is true. The first is not.
 
 | Evidence | What it says |
 |---|---|
-| `src/lib/plans.ts:194` | `platformFeeBp()` returns `50` basis points — **0.5%** |
-| `src/lib/plans.test.ts:83` | asserts `platformFeeBp(free) === 50`, `platformFeeLabel(free) === "0.5%"` |
+| `src/lib/plans.ts` | `platformFeeBp()` returns `100` basis points — **1%** |
+| `src/lib/plans.ts` | `PLATFORM_FEE_LABEL` derives the string from it, so no copy writes the number |
 | `src/lib/connect.ts:304` | charged as a Stripe `application_fee` on the connected account |
 | `src/lib/plans.ts:188-192` | one tier today, deliberately a function of the plan so it can vary later |
 
@@ -33,9 +33,9 @@ Scope of the fee, which matters and is defensible:
   email or phone** — Sailo never touches that money, so there is nothing to take
   a share of.
 - Charged on goods after discount, excluding delivery and tax (`plans.ts:232`).
-- **0.5% on every plan including free** — the plan argument is currently ignored.
+- **1% on every plan including free** — the plan argument is currently ignored.
 
-So the accurate claim is *"no commission on the rails you already use; 0.5% when
+So the accurate claim is *"no commission on the rails you already use; 1% when
 you take cards through your own Stripe."* That is still a strong line against
 Shopify's surcharge and against Payge's 5% (below) — but it is not "none".
 
@@ -76,11 +76,18 @@ free-text `instructions` field — but that is not a rail, and an article that s
 **Blocks the Kenya/M-Pesa and Philippines/GCash spokes** as briefed. Both are
 still writable reframed — see §3.
 
-### 0.4 Separate bug found on the way
+### 0.4 Separate bug found on the way — **resolved**
 
-`rails.ts:80` tells sellers Sailo *"keeps **1%** of the goods"*. The charge is
-0.5%. That string is rendered in the admin as the card rail's subtitle
-(`payment-method-card.tsx:77`), so sellers are being shown double the real fee.
+*Found:* `rails.ts` told sellers Sailo *"keeps 1% of the goods"* while
+`platformFeeBp` charged 50 basis points, so the admin's card rail showed double
+the real fee.
+
+*Resolved, and in the direction of the copy rather than the code:* the fee is
+now **1%** (`platformFeeBp` returns `100`), and `rails.ts` interpolates
+`PLATFORM_FEE_LABEL` instead of writing a number. Two tests in
+`rails.test.ts` now hold it there — one asserts the description contains the
+label, the other asserts no percentage is written by hand. Every `0.5%` below
+that survives is about someone else's pricing, not ours.
 
 It is the mistake `plans.ts:202` exists to prevent — that string hardcodes the
 number instead of interpolating `PLATFORM_FEE_LABEL`. Not a blog problem, but
@@ -150,7 +157,7 @@ Built only on rails that exist. Pillar first, spokes under it.
 | 2 | `how-to-know-a-bank-transfer-actually-arrived` | how to confirm a bank transfer for an order | informational | US | The reconciliation gap. Strongest row here |
 | 3 | `cash-on-delivery-for-small-sellers` | cash on delivery for online sellers | informational | US | COD rail exists with delivery notes |
 | 4 | `taking-orders-through-whatsapp` | how to take orders on whatsapp | informational | US | Pre-written order: item, options, address, total |
-| 5 | `when-card-payments-are-worth-it` | do i need card payments to sell online | commercial | US | Where the honest 0.5% + Business-plan cost gets stated plainly |
+| 5 | `when-card-payments-are-worth-it` | do i need card payments to sell online | commercial | US | Where the honest 1% + Business-plan cost gets stated plainly |
 | 6 | `what-to-say-when-a-buyer-says-they-paid` | buyer says they paid but no money | informational | US | Nobody covers this. Pure experience piece |
 
 Rows 2 and 6 are the ones I would actually bet on. They are the questions
@@ -171,8 +178,9 @@ requirement natively — but it changes the pitch, so it needs sign-off.
 
 ## 4. Decisions needed
 
-1. Is the commission **0.5%** or **1%**? `plans.ts` and `rails.ts` disagree, and
-   sellers currently see the wrong one.
+1. ~~Is the commission **0.5%** or **1%**?~~ **Settled: 1%.** `platformFeeBp`
+   returns `100` and every string interpolates `PLATFORM_FEE_LABEL`, so the two
+   can no longer disagree.
 2. Correct §2 of the brief — or tell me the roadmap makes it true soon and by
    when, since an undated claim ages into a lie (§9).
 3. Approve or cut rows 1–6.

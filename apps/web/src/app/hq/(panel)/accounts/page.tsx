@@ -41,6 +41,21 @@ const SHOP_OPTIONS = [
   { value: "connected", label: "Takes cards" },
 ];
 
+/*
+ * What guards the account, as a filter.
+ *
+ * "Takes cards, no 2FA" leads because it is the only one of these that is a
+ * job: money moves through those shops, and a single password is what stands
+ * between it and whoever buys the seller's email address in a breach dump.
+ */
+const SECURITY_OPTIONS = [
+  { value: "all", label: "Any security" },
+  { value: "cards_no2fa", label: "Takes cards, no 2FA" },
+  { value: "no2fa", label: "No two-factor" },
+  { value: "twofactor", label: "Two-factor on" },
+  { value: "unverified", label: "Email unverified" },
+];
+
 export default async function HqAccountsPage({
   searchParams,
 }: PageProps<"/hq/accounts">) {
@@ -50,6 +65,7 @@ export default async function HqAccountsPage({
     q: first(params.q),
     state: first(params.state),
     shopState: first(params.shopState),
+    security: first(params.security),
     sort: first(params.sort),
     page: pageNumber(params.page),
   };
@@ -71,12 +87,14 @@ export default async function HqAccountsPage({
           q: filters.q,
           state: filters.state,
           shopState: filters.shopState,
+          security: filters.security,
           sort: filters.sort,
         }}
         placeholder="Search name, email, shop or handle…"
         fields={[
           { name: "state", label: "Billing", options: STATE_OPTIONS },
           { name: "shopState", label: "Account", options: SHOP_OPTIONS },
+          { name: "security", label: "Security", options: SECURITY_OPTIONS },
           {
             name: "sort",
             label: "Sort",
@@ -86,11 +104,13 @@ export default async function HqAccountsPage({
       />
 
       <Table
+        minWidth="64rem"
         head={
           <>
             <Th>Account</Th>
             <Th>Shop</Th>
             <Th>Plan</Th>
+            <Th>Guards</Th>
             <Th align="end">Products</Th>
             <Th align="end">Orders</Th>
             <Th align="end">Volume</Th>
@@ -100,7 +120,7 @@ export default async function HqAccountsPage({
         }
       >
         {rows.length === 0 ? (
-          <EmptyRow colSpan={8}>
+          <EmptyRow colSpan={9}>
             No accounts match those filters.
           </EmptyRow>
         ) : (
@@ -154,6 +174,35 @@ export default async function HqAccountsPage({
                   ) : null}
                 </Td>
 
+                {/*
+                  Only what is missing gets a chip. A green "2FA on" beside a
+                  green "Verified" on every healthy row is forty badges to read
+                  past before the one row that matters — so the healthy state is
+                  the absence of a badge, and a clean column means a clean list.
+                */}
+                <Td label="Guards">
+                  <span className="flex flex-wrap gap-1.5">
+                    {row.twoFactorEnabled ? null : (
+                      <Badge
+                        tone={shop?.stripeChargesEnabled ? "red" : "amber"}
+                        title={
+                          shop?.stripeChargesEnabled
+                            ? "Takes card payments behind a password alone"
+                            : "No second factor on this account"
+                        }
+                      >
+                        No 2FA
+                      </Badge>
+                    )}
+                    {row.emailVerified ? null : (
+                      <Badge tone="amber">Unverified</Badge>
+                    )}
+                    {row.twoFactorEnabled && row.emailVerified ? (
+                      <span className="text-xs text-ink-400">—</span>
+                    ) : null}
+                  </span>
+                </Td>
+
                 <Td align="end" className="tabular" label="Products">
                   {row.productCount.toLocaleString()}
                 </Td>
@@ -185,6 +234,7 @@ export default async function HqAccountsPage({
           q: filters.q,
           state: filters.state,
           shopState: filters.shopState,
+          security: filters.security,
           sort: filters.sort,
         }}
       />

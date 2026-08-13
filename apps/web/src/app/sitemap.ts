@@ -49,6 +49,12 @@ async function buildSitemap(now: Date): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: absolute("/"), lastModified: now, changeFrequency: "weekly", priority: 1 },
+    /*
+     * Pricing is its own page rather than an anchor, so it gets its own row.
+     * High priority on purpose: after the homepage it is the page a stranger
+     * is most likely to be searching for by name.
+     */
+    { url: absolute("/pricing"), lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     // /login and /signup are deliberately absent: robots.ts disallows them, and
     // submitting a blocked URL in a sitemap is a Search Console error rather
     // than a ranking.

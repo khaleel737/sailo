@@ -17,14 +17,14 @@ export const marketingVi: MarketingDictionary = {
 
   hero: {
     badge: "Miễn phí để bắt đầu, miễn phí để tiếp tục",
-    title: "Cả cửa hàng của bạn, trong {highlight}.",
-    titleHighlight: "một liên kết",
-    body: "Bạn vốn đã nhận đơn trong tin nhắn. Sailo đặt trước đó một cửa hàng thật — ảnh, giá, tìm kiếm và thanh toán sau một liên kết — và mọi đơn hàng vẫn về đúng cuộc trò chuyện bạn vẫn trả lời.",
+    title: "Đừng gõ lại đơn hàng từ {highlight} nữa.",
+    titleHighlight: "tin nhắn",
+    body: "Bạn vốn đã nhận đơn qua tin nhắn. Sailo biến việc đó thành một cửa hàng thật — ảnh, giá, tùy chọn và tồn kho sau một đường link, không cần dựng website. Đơn hàng vẫn về đúng khung chat đó, chỉ khác là đã được ghi sẵn.",
     ctaPrimary: "Tạo cửa hàng — miễn phí",
     ctaSecondary: "Mở một cửa hàng thật",
     proof1: "Hoạt động trong chưa đầy một phút",
     proof2: "Không cần thẻ",
-    proof3: "Không hoa hồng với đơn qua chat và chuyển khoản",
+    proof3: "Không hoa hồng, trừ thẻ",
     proof4: "35 ngôn ngữ",
     igBio: "Pizza lò củi, Naples. Đặt hàng bên dưới.",
     igPosts: "Bài viết",
@@ -118,7 +118,7 @@ export const marketingVi: MarketingDictionary = {
   pricing: {
     eyebrow: "Giá",
     title: "Miễn phí để bắt đầu, và miễn phí để tiếp tục.",
-    body: "Đơn hàng qua chat, chuyển khoản và tiền mặt hoàn toàn thuộc về bạn, ở mọi gói. Bán qua thẻ chịu {fee} giá trị hàng hóa — không bao giờ tính trên phí giao hàng hay thuế.",
+    body: "Mọi cách nhận tiền trừ thẻ đều thuộc về bạn trọn vẹn, ở mọi gói. Bán qua thẻ chịu {fee} giá trị hàng — không bao giờ tính trên phí giao hàng hay thuế.",
     freeTagline: "Mọi thứ bạn cần cho những đơn hàng đầu tiên.",
     proTagline: "Chỗ để lớn lên, và một cửa hàng trông như của riêng bạn.",
     bizTagline: "Thanh toán thẻ, khuyến mãi và giới thiệu — những công cụ làm tăng doanh thu.",
@@ -136,7 +136,7 @@ export const marketingVi: MarketingDictionary = {
     q2: "Khách thật sự trả tiền cho tôi thế nào?",
     a2: "Đúng như cách bạn vẫn nhận tiền. Bằng thẻ, qua tài khoản Stripe của chính bạn, nên tiền về thẳng chỗ bạn. Hoặc chuyển khoản, thanh toán khi nhận hàng và ví di động, với hướng dẫn bạn tự viết. Sailo không bao giờ giữ tiền.",
     q3: "Sailo có lấy hoa hồng không?",
-    a3: "Với đơn qua chat, chuyển khoản và tiền mặt thì không — hoàn toàn là của bạn. Bán qua thẻ chịu {fee} trên giá hàng, thu dưới dạng phí Stripe. Không bao giờ tính trên phí giao hàng hay thuế.",
+    a3: "Chỉ với thẻ. WhatsApp, Venmo, PayPal, chuyển khoản và tiền mặt đều thuộc về bạn trọn vẹn, ở mọi gói. Bán qua thẻ chịu {fee} giá trị hàng, thu dưới dạng phí Stripe khi thanh toán — không tính trên phí giao hàng hay thuế.",
     q4: "Tôi bán dịch vụ hoặc tệp số được không?",
     a4: "Được, và chúng hoạt động đúng cách. Một dịch vụ có thể mang thời lượng, địa điểm và bộ chọn ngày kèm thời gian báo trước. Một sản phẩm số gửi tệp mở khoá ngay khi bạn xác nhận thanh toán, có giới hạn lượt tải và hạn dùng nếu bạn muốn.",
     q5: "Tôi đã có Linktree. Sao phải đổi?",
@@ -195,11 +195,11 @@ export const marketingVi: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — cửa hàng online đơn giản như một liên kết trong bio",
+    title: "Nhận đơn hàng online mà không cần website — Sailo",
     description:
-      "Sailo biến liên kết trong bio của bạn thành một cửa hàng thật. Bán sản phẩm, tệp số hoặc dịch vụ, nhận đơn qua WhatsApp hoặc bằng thẻ, trong 35 ngôn ngữ. Miễn phí để bắt đầu, và Sailo không lấy hoa hồng.",
-    ogTitle: "Sailo — một liên kết, cả cửa hàng của bạn",
+      "Biến Instagram thành cửa hàng thật: ảnh, giá, tùy chọn, tồn kho. Đơn hàng đến đã ghi sẵn. Không hoa hồng với WhatsApp, chuyển khoản hay tiền mặt.",
+    ogTitle: "Đừng gõ lại đơn hàng từ tin nhắn nữa",
     ogDescription:
-      "Ảnh, giá, biến thể, tồn kho, đặt lịch và tệp tải về nằm sau một liên kết duy nhất trong bio. Đơn hàng về WhatsApp hoặc cổng thanh toán thẻ của chính bạn.",
+      "Một cửa hàng thật sau một đường link — ảnh, giá, tồn kho và thanh toán. Đơn hàng đến đã sẵn sàng, và không ai lấy phần trăm từ khách bạn tự tìm được.",
   },
 };

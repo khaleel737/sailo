@@ -283,9 +283,16 @@ export async function runBroadcastQueue(now = new Date()) {
        * tick after the window rolls picks up exactly where this stopped, and
        * the seller's screen shows "412 of 900" rather than a broadcast that
        * claims to be finished.
+       *
+       * Which is true of three of the four ceilings. A shop paused for its
+       * reputation is not waiting for a window to roll — it is waiting for a
+       * person — so it is logged as the different thing it is, rather than as
+       * a limit that will lift on its own tonight.
        */
       console.warn(
-        `[sailo] broadcast ${broadcast.id} paused: ${budget.limitedBy} daily limit reached`,
+        budget.limitedBy === "paused"
+          ? `[sailo] broadcast ${broadcast.id} held: shop ${shop.id} marketing is paused`
+          : `[sailo] broadcast ${broadcast.id} paused: ${budget.limitedBy} daily limit reached`,
       );
       continue;
     }

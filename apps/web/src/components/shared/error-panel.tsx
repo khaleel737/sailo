@@ -4,6 +4,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { RotateCw } from "lucide-react";
 import type { Dictionary } from "@sailo/i18n";
+import { useLeaving } from "@/lib/leaving";
 import { cn } from "@/lib/utils";
 
 /* ===========================================================================
@@ -105,11 +106,20 @@ export function ErrorPanel({
   className?: string;
 }) {
   const t = useErrorStrings();
+  const leaving = useLeaving();
 
   useEffect(() => {
     // Server errors arrive already logged with this digest; client ones do not.
     console.error(error);
   }, [error]);
+
+  /*
+   * The page is on its way out and this error is the wake of that departure —
+   * see `lib/leaving`. Drawing anything here would flash a failure across a
+   * checkout that succeeded. The console line above still runs, so nothing is
+   * hidden from whoever is debugging; only the buyer is spared.
+   */
+  if (leaving) return null;
 
   return (
     <div

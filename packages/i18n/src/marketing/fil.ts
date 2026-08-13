@@ -17,14 +17,14 @@ export const marketingFil: MarketingDictionary = {
 
   hero: {
     badge: "Libreng magsimula, libreng manatili",
-    title: "Ang buong tindahan mo, sa {highlight}.",
-    titleHighlight: "isang link",
-    body: "Tumatanggap ka na ng order sa DM. Naglalagay ang Sailo ng totoong tindahan sa harap nito — larawan, presyo, paghahanap at bayad sa likod ng isang link — at dumarating pa rin ang bawat order sa chat na sinasagot mo naman.",
+    title: "Tigilan na ang pag-retype ng orders mula sa {highlight}.",
+    titleHighlight: "DM mo",
+    body: "Tumatanggap ka na ng orders sa mga mensahe mo. Ginagawa itong totoong tindahan ng Sailo — litrato, presyo, options at stock sa likod ng isang link, walang website na gagawin. Dumarating pa rin ang orders sa parehong chat, pero nakasulat na.",
     ctaPrimary: "Gumawa ng tindahan — libre",
     ctaSecondary: "Buksan ang totoong tindahan",
     proof1: "Handa sa wala pang isang minuto",
     proof2: "Walang kailangang card",
-    proof3: "Walang komisyon sa chat at bank orders",
+    proof3: "Walang komisyon maliban sa card",
     proof4: "35 wika",
     igBio: "Wood-fired pizza, Naples. Mag-order sa ibaba.",
     igPosts: "Mga post",
@@ -118,7 +118,7 @@ export const marketingFil: MarketingDictionary = {
   pricing: {
     eyebrow: "Presyo",
     title: "Libreng simulan, at libreng ipagpatuloy.",
-    body: "Ang mga order sa chat, bank transfer at cash ay buong-buo mong sa iyo, sa lahat ng plano. Ang mga benta sa card ay may {fee} ng halaga ng produkto — hindi kailanman ng delivery o buwis.",
+    body: "Lahat ng paraan ng pagbayad maliban sa card ay buo mong sa iyo, sa lahat ng plano. May {fee} ng halaga ng paninda ang benta sa card — hindi kailanman sa delivery o buwis.",
     freeTagline: "Lahat ng kailangan mo para sa unang mga order mo.",
     proTagline: "Puwang para lumago, at tindahang mukhang sa iyo talaga.",
     bizTagline: "Bayad sa card, promo at referral — ang mga tool na nagpapalago ng kita.",
@@ -136,7 +136,7 @@ export const marketingFil: MarketingDictionary = {
     q2: "Paano ba talaga ako babayaran ng mga bumibili?",
     a2: "Sa paraang tinatanggap mo na ang pera. Card, sa sarili mong Stripe account, kaya diretso sa iyo ang bayad. O bank transfer, cash on delivery at mobile money, na may tagubiling ikaw ang sumulat. Hindi kailanman hinahawakan ng Sailo ang pera.",
     q3: "Kumukuha ba ng komisyon ang Sailo?",
-    a3: "Sa chat, bank transfer at cash na order, wala — sa iyo ang buo. May {fee} ang benta sa card mula sa halaga ng produkto, kinukuha bilang Stripe fee. Hindi kailanman sa delivery o buwis.",
+    a3: "Sa card lang. Buo mong sa iyo ang WhatsApp, Venmo, PayPal, bank transfer at cash, sa lahat ng plano. May {fee} ng halaga ng paninda ang benta sa card, kinukuha bilang Stripe fee — hindi sa delivery o buwis.",
     q4: "Puwede ba akong magbenta ng serbisyo o digital na file?",
     a4: "Oo, at tama ang pagkilos nila. Ang serbisyo ay puwedeng may tagal, lokasyon at date picker na may panahon ng abiso. Ang digital na produkto ay naghahatid ng file na bumubukas sa oras na kumpirmahin mo ang bayad, may limitasyon sa download at pag-expire kung gusto mo.",
     q5: "May Linktree na ako. Bakit ako lilipat?",
@@ -195,11 +195,11 @@ export const marketingFil: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — online na tindahan kasingdali ng link sa bio",
+    title: "Tumanggap ng order online kahit walang website — Sailo",
     description:
-      "Ginagawang totoong tindahan ng Sailo ang link sa bio mo. Magbenta ng produkto, digital na file o serbisyo, tumanggap ng order sa WhatsApp o sa card, sa 35 wika. Libreng simulan, at walang kinukuhang komisyon ang Sailo.",
-    ogTitle: "Sailo — isang link, ang buong tindahan mo",
+      "Gawing totoong tindahan ang Instagram mo: litrato, presyo, options, stock. Nakasulat na ang dating orders. Walang komisyon sa WhatsApp, bank transfer o cash.",
+    ogTitle: "Tigilan na ang pag-retype ng orders sa DM",
     ogDescription:
-      "Mga larawan, presyo, variant, stock, booking at download sa likod ng iisang link sa bio. Dumarating ang order sa WhatsApp o sa sarili mong card checkout.",
+      "Totoong tindahan sa likod ng isang link — litrato, presyo, stock at checkout. Handa na ang orders pagdating, at walang kumukuha ng porsyento sa mga suking ikaw ang naghanap.",
   },
 };

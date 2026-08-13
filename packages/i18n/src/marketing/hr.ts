@@ -17,14 +17,14 @@ export const marketingHr: MarketingDictionary = {
 
   hero: {
     badge: "Besplatno za početak, besplatno i dalje",
-    title: "Cijela vaša trgovina na {highlight}.",
-    titleHighlight: "jednoj poveznici",
-    body: "Već primate narudžbe u porukama. Sailo pred njih stavlja pravu trgovinu — fotografije, cijene, pretragu i plaćanje iza jedne poveznice — a svaka narudžba i dalje stiže u chat u kojem ionako odgovarate.",
+    title: "Prestanite prepisivati narudžbe iz {highlight}.",
+    titleHighlight: "poruka",
+    body: "Već primate narudžbe u porukama. Sailo to pretvara u pravu trgovinu — fotografije, cijene, opcije i zalihe iza jednog linka, bez izrade web stranice. Narudžbe i dalje stižu u isti chat, ali ispisane.",
     ctaPrimary: "Otvorite trgovinu — besplatno",
     ctaSecondary: "Otvorite živu trgovinu",
     proof1: "Spremno za manje od minute",
     proof2: "Bez kartice",
-    proof3: "Bez provizije na chat i bankovne narudžbe",
+    proof3: "Bez provizije osim na kartici",
     proof4: "35 jezika",
     igBio: "Pizza iz krušne peći, Napulj. Naručite ispod.",
     igPosts: "Objave",
@@ -118,7 +118,7 @@ export const marketingHr: MarketingDictionary = {
   pricing: {
     eyebrow: "Cijene",
     title: "Besplatno za početak i besplatno za dalje.",
-    body: "Narudžbe putem chata, bankovnog prijenosa i gotovine u cijelosti su vaše, na svakom paketu. Prodaja karticom nosi {fee} od vrijednosti robe — nikada od dostave ni poreza.",
+    body: "Svaki način naplate osim kartice u cijelosti je vaš, na svim planovima. Prodaja karticom nosi {fee} od robe — nikada od dostave ni poreza.",
     freeTagline: "Sve što vam treba za prve narudžbe.",
     proTagline: "Prostor za rast i trgovina koja izgleda kao vaša.",
     bizTagline: "Plaćanje karticom, promocije i preporuke — alati koji povećavaju prihod.",
@@ -136,7 +136,7 @@ export const marketingHr: MarketingDictionary = {
     q2: "Kako mi kupci zapravo plaćaju?",
     a2: "Onako kako već primate novac. Karticom, preko vašeg Stripe računa, pa naplata stiže izravno vama. Ili bankovnom uplatom, pouzećem i mobilnim novcem, s uputama koje sami napišete. Sailo nikad ne drži novac.",
     q3: "Uzima li Sailo proviziju?",
-    a3: "Kod narudžbi putem chata, bankovnog prijenosa i gotovine ne — one su u cijelosti vaše. Prodaja karticom nosi {fee} od robe, naplaćeno kao Stripe naknada. Nikada na dostavu ili porez.",
+    a3: "Samo na kartici. WhatsApp, Venmo, PayPal, bankovni prijenos i gotovina u cijelosti su vaši, na svim planovima. Prodaja karticom nosi {fee} od robe, naplaćeno kao Stripe naknada — nikada od dostave ni poreza.",
     q4: "Mogu li prodavati usluge ili digitalne datoteke?",
     a4: "Da, i ponašaju se kako treba. Usluga može nositi trajanje, lokaciju i birač datuma s rokom najave. Digitalni proizvod isporučuje datoteke koje se otključavaju čim potvrdite uplatu, s ograničenjem preuzimanja i istekom ako ih želite.",
     q5: "Već imam Linktree. Zašto bih mijenjao?",
@@ -195,11 +195,11 @@ export const marketingHr: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — internetska trgovina jednostavna kao poveznica u biju",
+    title: "Primajte narudžbe online bez web stranice — Sailo",
     description:
-      "Sailo pretvara poveznicu u vašem bio-u u pravu trgovinu. Prodajte proizvode, digitalne datoteke ili usluge, primajte narudžbe na WhatsAppu ili karticom, na 35 jezika. Besplatno za početak, a Sailo ne uzima proviziju.",
-    ogTitle: "Sailo — jedna poveznica, cijela vaša trgovina",
+      "Pretvorite Instagram u pravu trgovinu: fotografije, cijene, opcije, zalihe. Narudžbe stižu ispisane. Bez provizije na WhatsApp, bankovni prijenos ili gotovinu.",
+    ogTitle: "Prestanite prepisivati narudžbe iz poruka",
     ogDescription:
-      "Fotografije, cijene, varijante, zalihe, rezervacije i preuzimanja iza jedne poveznice u bio-u. Narudžbe stižu na WhatsApp ili na vašu vlastitu naplatu karticom.",
+      "Prava trgovina iza jednog linka — fotografije, cijene, zalihe i blagajna. Narudžbe stižu gotove, i nitko ne uzima dio od kupaca koje ste sami pronašli.",
   },
 };

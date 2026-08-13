@@ -6,6 +6,7 @@ import { createOrderIntent } from "@/lib/actions/orders";
 import { markPendingOrder } from "@/lib/cart";
 import { countriesByName, countryName } from "@/lib/countries";
 import { shippableCountries, shipsTo } from "@/lib/delivery";
+import { markLeaving } from "@/lib/leaving";
 import type { OrderIntentResult } from "@/lib/orders/types";
 import { useCheckoutQuote } from "./use-checkout-quote";
 import {
@@ -356,6 +357,16 @@ export function CheckoutPanel({
       // mailto:/tel: never reach the server (no host to count) and are not
       // sent at all.
       if (leavesPage) trackClick(shopId, res.handoff.url, "contact");
+      /*
+       * Said before the assignment, not after: the navigation cancels the
+       * Server Action's still-open revalidation stream, and on WebKit that
+       * cancellation reaches React as a real error within milliseconds. The
+       * flag has to already be set when the boundary asks. See `lib/leaving`.
+       *
+       * Only for the http case. `mailto:` and `tel:` leave the page standing,
+       * so an error after one of those is the buyer's to see.
+       */
+      if (leavesPage) markLeaving();
       window.location.href = res.handoff.url;
       if (leavesPage) return;
     }

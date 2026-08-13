@@ -6,7 +6,8 @@ export type HqExportType =
   | "orders"
   | "products"
   | "affiliates"
-  | "buyers";
+  | "buyers"
+  | "sessions";
 
 /**
  * Downloads the whole list as CSV — not the page you happen to be looking at.

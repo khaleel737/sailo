@@ -17,14 +17,14 @@ export const marketingMs: MarketingDictionary = {
 
   hero: {
     badge: "Percuma untuk mula, percuma seterusnya",
-    title: "Seluruh kedai anda, dalam {highlight}.",
-    titleHighlight: "satu pautan",
-    body: "Anda sudah menerima pesanan dalam DM. Sailo meletakkan kedai sebenar di hadapannya — gambar, harga, carian dan pembayaran di sebalik satu pautan — dan setiap pesanan tetap sampai ke chat yang anda balas juga.",
+    title: "Berhenti menaip semula pesanan daripada {highlight}.",
+    titleHighlight: "DM anda",
+    body: "Anda sudah menerima pesanan melalui mesej. Sailo menjadikannya kedai sebenar — foto, harga, pilihan dan stok di sebalik satu pautan, tanpa membina laman web. Pesanan tetap masuk ke chat yang sama, cuma sudah tertulis.",
     ctaPrimary: "Cipta kedai anda — percuma",
     ctaSecondary: "Buka kedai sebenar",
     proof1: "Siap dalam masa kurang seminit",
     proof2: "Tiada kad diperlukan",
-    proof3: "Tiada komisen untuk pesanan sembang dan bank",
+    proof3: "Tiada komisen kecuali kad",
     proof4: "35 bahasa",
     igBio: "Piza bakar kayu, Naples. Pesan di bawah.",
     igPosts: "Siaran",
@@ -118,7 +118,7 @@ export const marketingMs: MarketingDictionary = {
   pricing: {
     eyebrow: "Harga",
     title: "Percuma untuk bermula, dan percuma untuk terus berjalan.",
-    body: "Pesanan melalui chat, pindahan bank dan tunai sepenuhnya milik anda, pada semua pelan. Jualan kad dikenakan {fee} daripada nilai barang — tidak pernah daripada penghantaran atau cukai.",
+    body: "Setiap cara menerima bayaran selain kad adalah milik anda sepenuhnya, pada semua pelan. Jualan kad dikenakan {fee} daripada barangan — tidak pernah penghantaran atau cukai.",
     freeTagline: "Semua yang anda perlukan untuk pesanan pertama anda.",
     proTagline: "Ruang untuk berkembang, dan kedai yang kelihatan seperti milik anda sendiri.",
     bizTagline: "Bayaran kad, promosi dan rujukan — alat yang menumbuhkan hasil.",
@@ -136,7 +136,7 @@ export const marketingMs: MarketingDictionary = {
     q2: "Bagaimana pembeli sebenarnya membayar saya?",
     a2: "Seperti cara anda sudah menerima wang. Kad, melalui akaun Stripe anda sendiri, jadi caj itu mendarat terus kepada anda. Atau pemindahan bank, bayar semasa terima dan wang mudah alih, dengan arahan yang anda tulis sendiri. Sailo tidak pernah memegang wang itu.",
     q3: "Adakah Sailo mengambil komisen?",
-    a3: "Untuk pesanan sembang, pindahan bank dan tunai, tidak — semuanya milik anda. Jualan kad dikenakan {fee} daripada barangan, diambil sebagai yuran Stripe. Tidak sekali pada penghantaran atau cukai.",
+    a3: "Pada kad sahaja. WhatsApp, Venmo, PayPal, pindahan bank dan tunai adalah milik anda sepenuhnya, pada semua pelan. Jualan kad dikenakan {fee} daripada barangan sebagai yuran Stripe — bukan penghantaran atau cukai.",
     q4: "Bolehkah saya menjual perkhidmatan atau fail digital?",
     a4: "Boleh, dan ia berkelakuan dengan betul. Perkhidmatan boleh membawa tempoh, lokasi dan pemilih tarikh dengan tempoh notis. Produk digital menghantar fail yang terbuka sebaik anda mengesahkan bayaran, dengan had muat turun dan tamat tempoh jika anda mahu.",
     q5: "Saya sudah ada Linktree. Kenapa perlu bertukar?",
@@ -195,11 +195,11 @@ export const marketingMs: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — kedai dalam talian semudah pautan dalam bio",
+    title: "Terima pesanan dalam talian tanpa laman web — Sailo",
     description:
-      "Sailo menjadikan pautan dalam bio anda kedai sebenar. Jual produk, fail digital atau perkhidmatan, terima pesanan di WhatsApp atau dengan kad, dalam 35 bahasa. Percuma untuk bermula, dan Sailo tidak mengambil komisen.",
-    ogTitle: "Sailo — satu pautan, seluruh kedai anda",
+      "Jadikan Instagram anda kedai sebenar: foto, harga, pilihan, stok. Pesanan tiba sudah tertulis. Tiada komisen untuk WhatsApp, pindahan bank atau tunai.",
+    ogTitle: "Berhenti menaip semula pesanan daripada DM",
     ogDescription:
-      "Gambar, harga, varian, stok, tempahan dan muat turun di sebalik satu pautan bio. Pesanan tiba di WhatsApp atau pada pembayaran kad anda sendiri.",
+      "Kedai sebenar di sebalik satu pautan — foto, harga, stok dan pembayaran. Pesanan tiba siap, dan tiada siapa mengambil bahagian daripada pelanggan yang anda cari sendiri.",
   },
 };

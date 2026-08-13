@@ -2,8 +2,13 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { Ban, Gift, PlayCircle, StickyNote } from "lucide-react";
-import { saveStaffNote, setCompPlan, setSuspended } from "@/lib/actions/hq";
+import { Ban, Gift, MailCheck, MailX, PlayCircle, StickyNote } from "lucide-react";
+import {
+  saveStaffNote,
+  setCompPlan,
+  setMarketingPaused,
+  setSuspended,
+} from "@/lib/actions/hq";
 import {
   Alert,
   Button,
@@ -45,6 +50,7 @@ export function AccountActions({ shop }: { shop: Shop }) {
     <div className="space-y-3">
       <CompForm shop={shop} />
       <SuspendForm shop={shop} />
+      <MarketingPauseForm shop={shop} />
       <NoteForm shop={shop} />
     </div>
   );
@@ -159,6 +165,86 @@ function SuspendForm({ shop }: { shop: Shop }) {
 
         <Submit variant={suspended ? "secondary" : "danger"}>
           {suspended ? "Lift suspension" : "Suspend"}
+        </Submit>
+      </form>
+    </Card>
+  );
+}
+
+/**
+ * What the automatic pause wrote, in English.
+ *
+ * The column holds a machine reason when `reputation.ts` set it and free text
+ * when a human did. Mapping the two known values rather than printing them raw
+ * is the difference between "complaint_rate" and a sentence support can read
+ * to a seller on the phone.
+ */
+const PAUSE_REASONS: Record<string, string> = {
+  complaint_rate: "Too many recipients reported it as spam (automatic).",
+  bounce_rate: "Too many addresses bounced (automatic).",
+};
+
+function MarketingPauseForm({ shop }: { shop: Shop }) {
+  const [state, action] = useActionState(setMarketingPaused, { ok: false });
+  const paused = Boolean(shop.marketingPausedAt);
+  const reason = shop.marketingPausedReason;
+
+  return (
+    <Card className={paused ? "border-amber-200 bg-amber-50/40 p-4" : "p-4"}>
+      <form action={action} className="space-y-3">
+        <input type="hidden" name="shopId" value={shop.id} />
+        <input type="hidden" name="pause" value={paused ? "0" : "1"} />
+
+        <div className="flex items-center gap-2">
+          {paused ? (
+            <MailCheck className="size-4 text-amber-600" />
+          ) : (
+            <MailX className="size-4 text-ink-400" />
+          )}
+          <h3 className="text-sm font-semibold text-ink-900">
+            {paused ? "Marketing paused" : "Pause marketing"}
+          </h3>
+        </div>
+
+        {paused ? (
+          <p className="text-xs leading-relaxed text-ink-600">
+            Since{" "}
+            {shop.marketingPausedAt?.toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })}
+            {reason ? ` — ${PAUSE_REASONS[reason] ?? reason}` : ""} Broadcasts
+            are held; orders, receipts and the storefront are unaffected.
+            Lifting it doesn&rsquo;t reset the 30-day window, so a fresh
+            complaint can pause them again.
+          </p>
+        ) : (
+          <p className="text-xs leading-relaxed text-ink-500">
+            Stops broadcasts only — the shop keeps trading and keeps sending
+            receipts. Usually set automatically when bounces or spam reports
+            cross a threshold.
+          </p>
+        )}
+
+        {state.error ? <Alert tone="error">{state.error}</Alert> : null}
+        {state.ok && state.message ? (
+          <Alert tone="success">{state.message}</Alert>
+        ) : null}
+
+        {paused ? null : (
+          <Field label="Reason" htmlFor={`marketing-${shop.id}`}>
+            <Input
+              id={`marketing-${shop.id}`}
+              name="reason"
+              required
+              placeholder="Bought list, unrelated promo to buyers…"
+            />
+          </Field>
+        )}
+
+        <Submit variant={paused ? "secondary" : "danger"}>
+          {paused ? "Let them send again" : "Pause marketing"}
         </Submit>
       </form>
     </Card>

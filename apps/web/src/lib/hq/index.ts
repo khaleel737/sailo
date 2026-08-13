@@ -20,5 +20,6 @@ export * from "./subscriptions";
 export * from "./lists";
 export * from "./partners";
 export * from "./support";
+export * from "./security";
 export * from "./system";
 export * from "./exports";

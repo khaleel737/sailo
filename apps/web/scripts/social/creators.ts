@@ -117,14 +117,20 @@ const n = (v: unknown) => {
 };
 
 function median(xs: number[]): number | undefined {
-  if (!xs.length) return undefined;
   const s = xs.toSorted((a, b) => a - b);
   const mid = Math.floor(s.length / 2);
+
+  /*
+   * The middle lookup doubles as the empty check: `noUncheckedIndexedAccess`
+   * types it as possibly undefined, and the only input for which it is, is the
+   * one with no median. So one guard replaces both the length test and the
+   * assertions that used to talk the compiler out of the same doubt.
+   */
   const hi = s[mid];
   if (hi === undefined) return undefined;
-  if (s.length % 2) return hi;
+
   const lo = s[mid - 1];
-  return lo === undefined ? hi : Math.round((lo + hi) / 2);
+  return s.length % 2 === 1 || lo === undefined ? hi : Math.round((lo + hi) / 2);
 }
 
 /** Pull whatever shape the tool returns without guessing one nesting depth. */

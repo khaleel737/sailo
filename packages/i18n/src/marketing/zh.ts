@@ -17,14 +17,14 @@ export const marketingZh: MarketingDictionary = {
 
   hero: {
     badge: "免费开始，一直免费",
-    title: "{highlight}，整间店。",
-    titleHighlight: "一条链接",
-    body: "你本来就在私信里接单。Sailo 在它前面摆上一间真正的店：照片、价格、搜索、结账都在一条链接后面，而每一笔订单依旧落进你原本就在回的那个对话里。",
+    title: "别再从{highlight}里重打订单了。",
+    titleHighlight: "私信",
+    body: "你本来就在消息里接单。Sailo 把这件事变成真正的店铺——照片、价格、款式和库存都在一个链接背后，不用建网站。订单照样落在同一个聊天里，只是到手时已经写好。",
     ctaPrimary: "创建店铺 — 免费",
     ctaSecondary: "打开一间真实店铺",
     proof1: "不到一分钟就能上线",
     proof2: "无需绑卡",
-    proof3: "聊天和银行转账订单不抽成",
+    proof3: "除刷卡外均不收佣金",
     proof4: "35 种语言",
     igBio: "那不勒斯柴火披萨。点下方链接下单。",
     igPosts: "帖子",
@@ -118,7 +118,7 @@ export const marketingZh: MarketingDictionary = {
   pricing: {
     eyebrow: "价格",
     title: "开始免费，一直用下去也免费。",
-    body: "通过聊天、银行转账和现金的订单，在所有方案下都全额归你。刷卡销售按货品金额收取 {fee}——运费和税费从不计入。",
+    body: "除刷卡外，所有收款方式的钱都全额归你，所有套餐皆如此。刷卡销售收取货品金额的 {fee}——从不计入运费或税费。",
     freeTagline: "接下第一批订单所需的一切。",
     proTagline: "更多空间，以及一间看起来像你自己的店。",
     bizTagline: "刷卡收款、促销和推广分成——真正推高营收的工具。",
@@ -136,7 +136,7 @@ export const marketingZh: MarketingDictionary = {
     q2: "买家到底怎么付钱给我？",
     a2: "跟你现在收钱的方式一样。刷卡走的是你自己的 Stripe 账户，钱直接进你账上。也可以银行转账、货到付款和移动支付，说明由你自己写。Sailo 从不经手这笔钱。",
     q3: "Sailo 抽成吗？",
-    a3: "聊天、银行转账和现金订单不收——全额归你。刷卡销售收取商品金额的 {fee}，作为 Stripe 手续费扣除。运费和税费从不计入。",
+    a3: "只有刷卡。WhatsApp、Venmo、PayPal、银行转账和现金在所有套餐中都全额归你。刷卡销售收取货品金额的 {fee}，在结账时作为 Stripe 手续费扣除——从不计入运费或税费。",
     q4: "能卖服务或数字文件吗？",
     a4: "能，而且是像模像样地卖。服务可以带时长、地点和需要提前多久预约的日期选择。数字商品会在你确认收款后立刻解锁文件，还能设下载次数和有效期。",
     q5: "我已经有 Linktree 了，为什么要换？",
@@ -195,11 +195,11 @@ export const marketingZh: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — 像简介链接一样简单的网店",
+    title: "不用建网站也能在线接单 — Sailo",
     description:
-      "Sailo 把你简介里的链接变成一间真正的店。卖实物、数字文件或服务，订单通过 WhatsApp 或刷卡收，支持 35 种语言。免费开始，聊天和银行转账订单不抽成。",
-    ogTitle: "Sailo — 一条链接，整间店",
+      "把 Instagram 变成真正的店铺：照片、价格、款式、库存一应俱全。订单送达时已写好，通过 WhatsApp、银行转账或现金收款不收佣金。",
+    ogTitle: "别再从私信里重打订单了",
     ogDescription:
-      "照片、价格、规格、库存、预约和下载，全都在简介的一条链接后面。订单会落到 WhatsApp，或者你自己的刷卡收款里。",
+      "一个链接背后是真正的店铺——照片、价格、库存和结账。订单到手即用，你自己找来的客人，没人抽成。",
   },
 };

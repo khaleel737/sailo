@@ -17,14 +17,14 @@ export const marketingCs: MarketingDictionary = {
 
   hero: {
     badge: "Zdarma na začátek, zdarma i potom",
-    title: "Celý váš obchod na {highlight}.",
-    titleHighlight: "jednom odkazu",
-    body: "Objednávky už teď berete ve zprávách. Sailo před ně postaví skutečný obchod — fotky, ceny, vyhledávání a platbu za jedním odkazem — a každá objednávka pořád přijde do chatu, kde stejně odpovídáte.",
+    title: "Přestaňte přepisovat objednávky ze {highlight}.",
+    titleHighlight: "zpráv",
+    body: "Objednávky už přijímáte ve zprávách. Sailo z toho udělá skutečný obchod — fotky, ceny, varianty a sklad za jedním odkazem, bez stavění webu. Objednávky chodí dál do stejného chatu, ale už vypsané.",
     ctaPrimary: "Založit obchod — zdarma",
     ctaSecondary: "Otevřít skutečný obchod",
     proof1: "Hotovo za necelou minutu",
     proof2: "Bez karty",
-    proof3: "Žádná provize u objednávek přes chat a převod",
+    proof3: "Bez provize kromě karty",
     proof4: "35 jazyků",
     igBio: "Pizza z pece na dřevo, Neapol. Objednávejte odkazem níže.",
     igPosts: "Příspěvky",
@@ -118,7 +118,7 @@ export const marketingCs: MarketingDictionary = {
   pricing: {
     eyebrow: "Ceník",
     title: "Zdarma na start a zdarma i dál.",
-    body: "Objednávky přes chat, bankovní převod a hotovost jsou celé vaše, v každém tarifu. Z prodejů kartou se bere {fee} z ceny zboží — nikdy z dopravy ani daně.",
+    body: "Každý způsob platby kromě karty je celý váš, na všech tarifech. Prodej kartou nese {fee} ze zboží — nikdy z dopravy ani z daně.",
     freeTagline: "Všechno, co potřebujete k prvním objednávkám.",
     proTagline: "Prostor růst a obchod, který vypadá jako váš.",
     bizTagline: "Platby kartou, akce a doporučení — nástroje, které zvedají tržby.",
@@ -136,7 +136,7 @@ export const marketingCs: MarketingDictionary = {
     q2: "Jak mi kupující doopravdy platí?",
     a2: "Stejně, jako přijímáte peníze dnes. Kartou přes váš vlastní účet Stripe, takže platba míří přímo k vám. Nebo převodem, na dobírku a mobilními platbami, s pokyny, které si napíšete sami. Sailo peníze nikdy nedrží.",
     q3: "Bere si Sailo provizi?",
-    a3: "U objednávek přes chat, převod a hotovost ne — ty jsou celé vaše. U plateb kartou je to {fee} z ceny zboží, strženo jako poplatek Stripe. Nikdy z dopravy nebo daně.",
+    a3: "Jen u karty. WhatsApp, Venmo, PayPal, převod i hotovost jsou celé vaše, na všech tarifech. Prodej kartou nese {fee} ze zboží, strženo jako poplatek Stripe — nikdy z dopravy ani z daně.",
     q4: "Můžu prodávat služby nebo digitální soubory?",
     a4: "Ano, a chovají se, jak mají. Služba může mít trvání, místo a výběr data s předstihem. Digitální produkt doručí soubory, které se odemknou hned po potvrzení platby — s limitem stažení a expirací, pokud chcete.",
     q5: "Už mám Linktree. Proč měnit?",
@@ -195,11 +195,11 @@ export const marketingCs: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — online obchod tak jednoduchý jako odkaz v biu",
+    title: "Přijímejte objednávky online bez webu — Sailo",
     description:
-      "Sailo promění odkaz ve vašem biu ve skutečný obchod. Prodávejte zboží, digitální soubory nebo služby a přijímejte objednávky přes WhatsApp či kartou, v 35 jazycích. Start zdarma, bez provizí.",
-    ogTitle: "Sailo — jeden odkaz, celý váš obchod",
+      "Proměňte Instagram ve skutečný obchod: fotky, ceny, varianty, sklad. Objednávky přijdou vypsané. Bez provize na WhatsApp, převod nebo hotovost.",
+    ogTitle: "Přestaňte přepisovat objednávky ze zpráv",
     ogDescription:
-      "Fotky, ceny, varianty, sklad, rezervace a soubory ke stažení za jediným odkazem v biu. Objednávky přijdou na WhatsApp nebo do vaší vlastní platby kartou.",
+      "Skutečný obchod za jedním odkazem — fotky, ceny, sklad a pokladna. Objednávky chodí hotové a nikdo si nebere podíl ze zákazníků, které jste našli sami.",
   },
 };

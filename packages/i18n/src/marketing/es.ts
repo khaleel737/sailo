@@ -17,14 +17,14 @@ export const marketingEs: MarketingDictionary = {
 
   hero: {
     badge: "Gratis para empezar, gratis para seguir",
-    title: "Toda tu tienda, en {highlight}.",
-    titleHighlight: "un solo enlace",
-    body: "Ya recibes pedidos por mensajes. Sailo pone delante una tienda de verdad — fotos, precios, buscador y pago detrás de un solo enlace — y cada pedido sigue llegando al chat que ya contestas.",
+    title: "Deja de copiar pedidos a mano desde tus {highlight}.",
+    titleHighlight: "mensajes",
+    body: "Ya recibes pedidos en tus mensajes. Sailo lo convierte en una tienda de verdad — fotos, precios, opciones y stock detrás de un enlace, sin montar una web. Los pedidos siguen llegando al mismo chat, pero ya escritos.",
     ctaPrimary: "Crea tu tienda — gratis",
     ctaSecondary: "Abrir una tienda real",
     proof1: "Lista en menos de un minuto",
     proof2: "Sin tarjeta",
-    proof3: "Sin comisión en pedidos por chat y transferencia",
+    proof3: "Sin comisión salvo con tarjeta",
     proof4: "35 idiomas",
     igBio: "Pizza al horno de leña, Nápoles. Pide abajo.",
     igPosts: "Publicaciones",
@@ -118,7 +118,7 @@ export const marketingEs: MarketingDictionary = {
   pricing: {
     eyebrow: "Precios",
     title: "Gratis para empezar, y gratis para seguir.",
-    body: "Los pedidos por chat, transferencia y efectivo son tuyos íntegros, en todos los planes. Las ventas con tarjeta llevan {fee} del producto — nunca del envío ni del impuesto.",
+    body: "Todas las formas de cobro menos la tarjeta son tuyas por completo, en todos los planes. Las ventas con tarjeta llevan {fee} de la mercancía — nunca del envío ni de impuestos.",
     freeTagline: "Todo lo necesario para recibir tus primeros pedidos.",
     proTagline: "Más espacio, y una tienda con tu propia cara.",
     bizTagline: "Pagos con tarjeta, promociones y referidos: las herramientas que hacen crecer los ingresos.",
@@ -136,7 +136,7 @@ export const marketingEs: MarketingDictionary = {
     q2: "¿Cómo me pagan de verdad?",
     a2: "Como ya cobras hoy. Con tarjeta, a través de tu propia cuenta de Stripe, así que el cobro te llega directamente. O por transferencia, contra reembolso y dinero móvil, con instrucciones escritas por ti. Sailo nunca retiene el dinero.",
     q3: "¿Sailo se lleva comisión?",
-    a3: "En pedidos por chat, transferencia y efectivo no: son íntegramente tuyos. Las ventas con tarjeta llevan un {fee} de los productos, cobrado como comisión de Stripe. Nunca sobre el envío ni los impuestos.",
+    a3: "Solo con tarjeta. WhatsApp, Venmo, PayPal, transferencia y efectivo son tuyos por completo, en todos los planes. Las ventas con tarjeta llevan {fee} de la mercancía, cobrado como comisión de Stripe — nunca del envío ni de impuestos.",
     q4: "¿Puedo vender servicios o archivos digitales?",
     a4: "Sí, y se comportan como deben. Un servicio puede llevar duración, lugar y calendario con antelación mínima. Un producto digital entrega archivos que se desbloquean al confirmar el pago, con límite de descargas y caducidad si los quieres.",
     q5: "Ya tengo un Linktree. ¿Por qué cambiar?",
@@ -195,11 +195,11 @@ export const marketingEs: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — una tienda online tan simple como un enlace en la bio",
+    title: "Recibe pedidos online sin tener web — Sailo",
     description:
-      "Sailo convierte el enlace de tu bio en una tienda de verdad. Vende productos, archivos digitales o servicios, y recibe pedidos por WhatsApp o con tarjeta, en 35 idiomas. Gratis para empezar y sin comisiones.",
-    ogTitle: "Sailo — un enlace, toda tu tienda",
+      "Convierte tu Instagram en una tienda de verdad: fotos, precios, opciones y stock. Los pedidos llegan escritos. Sin comisión en WhatsApp, transferencia o efectivo.",
+    ogTitle: "Deja de copiar pedidos a mano desde los mensajes",
     ogDescription:
-      "Fotos, precios, variantes, existencias, reservas y descargas detrás de un solo enlace en la bio. Los pedidos llegan a WhatsApp o a tu propio pago con tarjeta.",
+      "Una tienda real detrás de un enlace — fotos, precios, stock y checkout. Los pedidos llegan listos, y nadie se lleva un porcentaje de los clientes que conseguiste tú.",
   },
 };

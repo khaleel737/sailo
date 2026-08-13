@@ -8,6 +8,7 @@ import type { BillingState } from "@/lib/hq-metrics";
 import { HQ_PAGE_SIZE, like, num, paginate } from "./pagination";
 import { notStaff } from "./roster";
 import { getDashboardStats, getRevenueSeries, getShopAffiliates, getShopClients, getShopCoupons, getShopDeliveryMethods, getShopOrders, getShopPaymentMethods, getVisitSeries } from "@/lib/queries";
+import { getAccountSecurity } from "./security";
 import { getStaffLog } from "./system";
 
 /** Every seller, filterable and sortable — and one seller in full. */
@@ -18,6 +19,8 @@ export type AccountFilters = {
   state?: string;
   /** onboarded | none | live | unpublished | suspended | connected */
   shopState?: string;
+  /** What guards the account: no2fa | cards_no2fa | twofactor | unverified */
+  security?: string;
   sort?: string;
   page?: number;
 };
@@ -27,6 +30,7 @@ export type AccountRow = {
   name: string;
   email: string;
   emailVerified: boolean;
+  twoFactorEnabled: boolean;
   joinedAt: Date;
   shop: Shop | null;
   productCount: number;
@@ -145,6 +149,33 @@ function accountWhere(filters: AccountFilters): SQL | undefined {
       break;
   }
 
+  /*
+   * The security filters, so the answer to "who is exposed" is a list you can
+   * work rather than a number on a dashboard. `cards_no2fa` is the one that
+   * matters most and is deliberately its own option rather than two filters
+   * combined by hand: a shop taking card payments behind a single password is
+   * a different sentence from a shop with no second factor and nothing to
+   * steal, and the difference is what decides whether you email them today.
+   */
+  switch (filters.security) {
+    case "no2fa":
+      clauses.push(eq(user.twoFactorEnabled, false));
+      break;
+    case "cards_no2fa":
+      clauses.push(
+        and(eq(shops.stripeChargesEnabled, true), eq(user.twoFactorEnabled, false)),
+      );
+      break;
+    case "twofactor":
+      clauses.push(eq(user.twoFactorEnabled, true));
+      break;
+    case "unverified":
+      clauses.push(eq(user.emailVerified, false));
+      break;
+    default:
+      break;
+  }
+
   const present = clauses.filter(Boolean);
   return present.length > 0 ? and(...present) : undefined;
 }
@@ -172,6 +203,7 @@ export async function getAccounts(filters: AccountFilters = {}) {
           name: user.name,
           email: user.email,
           emailVerified: user.emailVerified,
+          twoFactorEnabled: user.twoFactorEnabled,
           joinedAt: user.createdAt,
           shop: shops,
           productCount: PRODUCT_COUNT,
@@ -204,6 +236,7 @@ export async function getAccounts(filters: AccountFilters = {}) {
         name: r.name,
         email: r.email,
         emailVerified: r.emailVerified,
+        twoFactorEnabled: r.twoFactorEnabled,
         joinedAt: r.joinedAt,
         shop: r.shop,
         productCount: num(r.productCount),
@@ -231,13 +264,14 @@ export async function getAccountDetail(userId: string) {
   });
 
   // Someone who registered and stopped. There is still something to say about
-  // them — when they arrived, and that they never got as far as a shop.
+  // them — when they arrived, that they never got as far as a shop, and who is
+  // signed in to the account in the meantime.
   if (!shop) {
-    return {
-      owner,
-      shop: null,
-      log: await getStaffLog({ limit: 20 }),
-    } as const;
+    const [security, log] = await Promise.all([
+      getAccountSecurity(owner.id, null),
+      getStaffLog({ limit: 20 }),
+    ]);
+    return { owner, shop: null, security, log } as const;
   }
 
   const [
@@ -252,6 +286,7 @@ export async function getAccountDetail(userId: string) {
     [extras],
     visitSeries,
     revenueSeries,
+    security,
     log,
   ] = await Promise.all([
     getDashboardStats(shop.id, 30),
@@ -280,6 +315,7 @@ export async function getAccountDetail(userId: string) {
       .where(eq(shops.id, shop.id)),
     getVisitSeries(shop.id, 30),
     getRevenueSeries(shop.id, 30),
+    getAccountSecurity(owner.id, shop.id),
     getStaffLog({ shopId: shop.id, limit: 20 }),
   ]);
 
@@ -302,6 +338,7 @@ export async function getAccountDetail(userId: string) {
     lastOrderAt: extras?.lastOrderAt ? new Date(extras.lastOrderAt) : null,
     visitSeries,
     revenueSeries,
+    security,
     log,
   } as const;
 }

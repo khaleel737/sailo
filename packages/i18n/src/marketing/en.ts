@@ -32,14 +32,26 @@ export const marketingEn = {
   hero: {
     badge: "Free to start, free to stay",
     /** `{highlight}` is emphasised in place, so it can land anywhere a language needs it. */
-    title: "Your whole shop, at {highlight}.",
-    titleHighlight: "one link",
-    body: "You're already taking orders in your DMs. Sailo puts a real shop in front of them — photos, prices, search and checkout behind one link, and every order still lands in the chat you're answering anyway.",
+    /*
+     * The headline names the job, not the mechanism.
+     *
+     * "Your whole shop, at one link" is what Linktree, Beacons and Stan all
+     * say, so it argued we were one of them — and it shared no vocabulary with
+     * the title tag, which is how Google ends up rewriting a title. This one
+     * matches `seo.ogTitle` word for word and the body carries the phrase the
+     * title tag is aiming at.
+     */
+    title: "Stop retyping orders from your {highlight}.",
+    titleHighlight: "DMs",
+    body: "You're already taking orders in your messages. Sailo turns that into a real shop — photos, prices, options and stock behind one link, with no website to build. Every order still lands in the chat you're answering anyway, and it arrives already written out.",
     ctaPrimary: "Create your shop — free",
     ctaSecondary: "Open a live shop",
     proof1: "Live in under a minute",
     proof2: "No card required",
-    proof3: "No commission on chat and bank orders",
+    // Was "chat and bank orders", which stopped being the whole list the day
+    // Venmo, PayPal and cash on delivery shipped. Card is the only rail we
+    // take anything on.
+    proof3: "No commission except on card",
     proof4: "35 languages",
     igBio: "Wood-fired pizza, Naples. Order below.",
     igPosts: "Posts",
@@ -133,7 +145,16 @@ export const marketingEn = {
   pricing: {
     eyebrow: "Pricing",
     title: "Free to start, and free to keep running.",
-    body: "Chat, bank-transfer and cash orders are yours in full, on every plan. Card sales carry {fee} of the goods — never delivery, never tax.",
+    /*
+     * Named by exclusion, not by listing the rails.
+     *
+     * This said "chat, bank-transfer and cash", which was the whole list on the
+     * day it was written and stopped being it the moment Venmo and PayPal
+     * shipped — leaving two free rails looking like they carried a fee. Card is
+     * the only thing we take anything on, so that is the sentence: it stays
+     * true the next time a rail is added, which listing them never does.
+     */
+    body: "Every way of getting paid except card is yours in full, on every plan. Card sales carry {fee} of the goods — never delivery, never tax.",
     freeTagline: "Everything you need to take your first orders.",
     proTagline: "Room to grow, and a shop that looks like your own.",
     bizTagline: "Card payments, promotions and referrals — the tools that grow revenue.",
@@ -151,7 +172,7 @@ export const marketingEn = {
     q2: "How do buyers actually pay me?",
     a2: "However you already take money. Card, through your own Stripe account, so the charge lands with you directly. Or bank transfer, cash on delivery and mobile money, with instructions you write yourself. Sailo never holds the money.",
     q3: "Does Sailo take a commission?",
-    a3: "On chat, bank-transfer and cash orders, no — those are yours in full. Card sales carry {fee} of the goods, taken as a Stripe fee at checkout. Never on delivery or tax.",
+    a3: "Only on card. WhatsApp, Venmo, PayPal, bank transfer and cash are yours in full, on every plan. Card sales carry {fee} of the goods, taken as a Stripe fee at checkout — never on delivery or tax.",
     q4: "Can I sell services or digital files?",
     a4: "Yes, and they behave properly. A service can carry a duration, a location and a date picker with a notice period. A digital product ships files that unlock as soon as you confirm payment, with download limits and expiry if you want them.",
     q5: "I already have a Linktree. Why swap?",
@@ -201,13 +222,28 @@ export const marketingEn = {
     gdpr: "GDPR",
   },
 
+  /*
+   * Written for the search a seller actually makes, which is never "link in
+   * bio". That phrase is Linktree's head term — unwinnable on a domain with no
+   * authority — and it files us under creator tools, beside products that
+   * don't ship a catalogue and aren't who we lose deals to.
+   *
+   * The job is: they are taking orders in their DMs and want to stop. So the
+   * title leads with that job rather than with the mechanism, and the
+   * description carries the two things that decide it — the order arriving
+   * written out, and nobody taking a cut.
+   *
+   * `title` is keyword-first rather than brand-first on purpose: brand-first
+   * wins when people already search your name, and nobody searches ours yet.
+   */
   seo: {
-    title: "Sailo — an online store as simple as a link in bio",
+    title: "Take orders online without a website — Sailo",
     description:
-      "Sailo is an online store you run from one link. Sell products, digital files or services, take orders on WhatsApp or by card, in 35 languages. Free to start, with no commission on chat and bank orders.",
-    ogTitle: "Sailo — one link, your whole shop",
+      "Turn your Instagram into a real shop: photos, prices, options, stock. Orders arrive written out. No commission on WhatsApp, Venmo, PayPal, bank or cash.",
+    /* Social, not search. Led by the pain, because a shared card is scrolled past, not queried. */
+    ogTitle: "Stop retyping orders from your DMs",
     ogDescription:
-      "Photos, prices, variants, stock, bookings and downloads behind a single link in bio. Orders land in WhatsApp or on your own card checkout.",
+      "A real shop behind one link — photos, prices, stock and checkout. Orders arrive already written out, and no marketplace takes a cut of the customers you found yourself.",
   },
 } as const;
 

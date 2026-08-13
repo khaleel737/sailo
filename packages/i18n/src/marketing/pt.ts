@@ -17,14 +17,14 @@ export const marketingPt: MarketingDictionary = {
 
   hero: {
     badge: "Grátis para começar, grátis para continuar",
-    title: "A tua loja inteira, em {highlight}.",
-    titleHighlight: "um só link",
-    body: "Já recebes encomendas nas mensagens. O Sailo põe à frente uma loja a sério — fotos, preços, pesquisa e pagamento atrás de um só link — e cada encomenda continua a chegar à conversa que já respondes.",
+    title: "Pare de redigitar pedidos vindos do {highlight}.",
+    titleHighlight: "direct",
+    body: "Você já recebe pedidos nas mensagens. O Sailo transforma isso numa loja de verdade — fotos, preços, opções e estoque atrás de um link, sem construir site. Os pedidos continuam chegando no mesmo chat, só que já escritos.",
     ctaPrimary: "Criar a minha loja — grátis",
     ctaSecondary: "Abrir uma loja real",
     proof1: "No ar em menos de um minuto",
     proof2: "Sem cartão",
-    proof3: "Sem comissão em encomendas por chat e transferência",
+    proof3: "Sem comissão, exceto no cartão",
     proof4: "35 idiomas",
     igBio: "Pizza em forno a lenha, Nápoles. Encomenda abaixo.",
     igPosts: "Publicações",
@@ -118,7 +118,7 @@ export const marketingPt: MarketingDictionary = {
   pricing: {
     eyebrow: "Preços",
     title: "Grátis para começar, e grátis para continuar.",
-    body: "As encomendas por chat, transferência e dinheiro são inteiramente tuas, em todos os planos. As vendas com cartão levam {fee} da mercadoria — nunca do envio nem do imposto.",
+    body: "Toda forma de receber, exceto cartão, é inteiramente sua, em todos os planos. Vendas no cartão levam {fee} da mercadoria — nunca do frete, nunca de imposto.",
     freeTagline: "Tudo o que precisas para as primeiras encomendas.",
     proTagline: "Espaço para crescer, e uma loja com a tua cara.",
     bizTagline: "Pagamentos com cartão, promoções e referências — as ferramentas que fazem crescer a receita.",
@@ -136,7 +136,7 @@ export const marketingPt: MarketingDictionary = {
     q2: "Como é que me pagam na prática?",
     a2: "Como já recebes hoje. Com cartão, pela tua própria conta Stripe, por isso o pagamento chega-te diretamente. Ou por transferência, pagamento na entrega e dinheiro móvel, com instruções escritas por ti. O Sailo nunca fica com o dinheiro.",
     q3: "O Sailo leva comissão?",
-    a3: "Em encomendas por chat, transferência e dinheiro, não — são inteiramente suas. As vendas com cartão têm {fee} sobre os produtos, cobrado como taxa Stripe. Nunca sobre portes ou impostos.",
+    a3: "Só no cartão. WhatsApp, Venmo, PayPal, transferência e dinheiro são inteiramente seus, em todos os planos. Vendas no cartão levam {fee} da mercadoria, cobrado como taxa da Stripe — nunca sobre frete ou imposto.",
     q4: "Posso vender serviços ou ficheiros digitais?",
     a4: "Sim, e comportam-se como devem. Um serviço pode ter duração, local e calendário com antecedência mínima. Um produto digital entrega ficheiros que abrem assim que confirmas o pagamento, com limite de descargas e validade se quiseres.",
     q5: "Já tenho um Linktree. Porquê mudar?",
@@ -195,11 +195,11 @@ export const marketingPt: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — uma loja online tão simples como um link na bio",
+    title: "Receba pedidos online sem ter site — Sailo",
     description:
-      "O Sailo transforma o link da tua bio numa loja a sério. Vende produtos, ficheiros digitais ou serviços e recebe encomendas por WhatsApp ou cartão, em 35 idiomas. Grátis para começar e sem comissões.",
-    ogTitle: "Sailo — um link, a tua loja inteira",
+      "Transforme o Instagram numa loja de verdade: fotos, preços, opções, estoque. Os pedidos chegam escritos. Sem comissão no WhatsApp, transferência ou dinheiro.",
+    ogTitle: "Pare de redigitar pedidos vindos do direct",
     ogDescription:
-      "Fotos, preços, variantes, stock, marcações e descargas por trás de um único link na bio. As encomendas chegam ao WhatsApp ou ao teu próprio pagamento com cartão.",
+      "Uma loja de verdade atrás de um link — fotos, preços, estoque e checkout. Os pedidos chegam prontos, e ninguém tira uma parte dos clientes que você mesmo trouxe.",
   },
 };

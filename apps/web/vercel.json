@@ -35,6 +35,10 @@
     {
       "path": "/api/cron/memberships",
       "schedule": "10 5 * * *"
+    },
+    {
+      "path": "/api/cron/blocklist",
+      "schedule": "42 4 * * *"
     }
   ]
 }

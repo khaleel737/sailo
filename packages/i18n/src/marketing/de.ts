@@ -17,14 +17,14 @@ export const marketingDe: MarketingDictionary = {
 
   hero: {
     badge: "Kostenlos starten, kostenlos bleiben",
-    title: "Dein ganzer Shop, unter {highlight}.",
-    titleHighlight: "einem Link",
-    body: "Du nimmst Bestellungen längst in den DMs entgegen. Sailo stellt einen echten Shop davor — Fotos, Preise, Suche und Kasse hinter einem Link — und jede Bestellung landet weiter in dem Chat, in dem du ohnehin antwortest.",
+    title: "Schluss mit dem Abtippen von Bestellungen aus {highlight}.",
+    titleHighlight: "den DMs",
+    body: "Sie nehmen Bestellungen längst in Nachrichten an. Sailo macht daraus einen echten Shop — Fotos, Preise, Varianten und Bestände hinter einem Link, ohne Website. Bestellungen landen weiter im selben Chat, nur fertig geschrieben.",
     ctaPrimary: "Shop erstellen — kostenlos",
     ctaSecondary: "Echten Shop ansehen",
     proof1: "In unter einer Minute online",
     proof2: "Keine Kreditkarte nötig",
-    proof3: "Keine Provision auf Chat- und Überweisungsbestellungen",
+    proof3: "Keine Provision außer auf Karte",
     proof4: "35 Sprachen",
     igBio: "Holzofenpizza, Neapel. Bestell unten.",
     igPosts: "Beiträge",
@@ -118,7 +118,7 @@ export const marketingDe: MarketingDictionary = {
   pricing: {
     eyebrow: "Preise",
     title: "Kostenlos zum Start, und kostenlos im Betrieb.",
-    body: "Bestellungen per Chat, Überweisung und Bar gehören dir ganz, in jedem Tarif. Kartenverkäufe tragen {fee} vom Warenwert — nie von Versand oder Steuer.",
+    body: "Jede Zahlungsart außer Karte gehört ganz Ihnen, in allen Tarifen. Kartenverkäufe tragen {fee} der Ware — nie auf Versand, nie auf Steuer.",
     freeTagline: "Alles, was du für deine ersten Bestellungen brauchst.",
     proTagline: "Platz zum Wachsen, und ein Shop, der nach dir aussieht.",
     bizTagline: "Kartenzahlung, Aktionen und Empfehlungen — die Werkzeuge, die den Umsatz heben.",
@@ -136,7 +136,7 @@ export const marketingDe: MarketingDictionary = {
     q2: "Wie zahlen mir Käufer tatsächlich?",
     a2: "So wie heute schon. Per Karte über dein eigenes Stripe-Konto, die Zahlung landet also direkt bei dir. Oder per Überweisung, Nachnahme und Mobile Money, mit Anweisungen, die du selbst schreibst. Sailo hält das Geld nie.",
     q3: "Nimmt Sailo eine Provision?",
-    a3: "Bei Chat-, Überweisungs- und Barbestellungen nein — die gehören ganz dir. Kartenzahlungen kosten {fee} der Ware, als Stripe-Gebühr abgezogen. Nie auf Versand oder Steuern.",
+    a3: "Nur auf Karte. WhatsApp, Venmo, PayPal, Überweisung und Bargeld gehören ganz Ihnen, in allen Tarifen. Kartenverkäufe tragen {fee} der Ware, als Stripe-Gebühr beim Checkout — nie auf Versand oder Steuer.",
     q4: "Kann ich Dienstleistungen oder Dateien verkaufen?",
     a4: "Ja, und zwar richtig. Eine Leistung kann Dauer, Ort und eine Datumsauswahl mit Vorlaufzeit haben. Ein digitales Produkt liefert Dateien, die sich mit der Zahlungsbestätigung öffnen — auf Wunsch mit Download-Limit und Ablaufdatum.",
     q5: "Ich habe schon ein Linktree. Warum wechseln?",
@@ -195,11 +195,11 @@ export const marketingDe: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sailo — ein Onlineshop so einfach wie ein Link in der Bio",
+    title: "Bestellungen online annehmen — ohne Website | Sailo",
     description:
-      "Sailo macht aus dem Link in deiner Bio einen echten Shop. Verkaufe Produkte, digitale Dateien oder Dienstleistungen und nimm Bestellungen per WhatsApp oder Karte an, in 35 Sprachen. Kostenlos starten, ohne Provision.",
-    ogTitle: "Sailo — ein Link, dein ganzer Shop",
+      "Machen Sie Instagram zum echten Shop: Fotos, Preise, Varianten, Bestände. Bestellungen kommen fertig geschrieben. Keine Provision auf WhatsApp, Überweisung oder Bar.",
+    ogTitle: "Schluss mit dem Abtippen von Bestellungen aus den DMs",
     ogDescription:
-      "Fotos, Preise, Varianten, Bestände, Buchungen und Downloads hinter einem einzigen Link in der Bio. Bestellungen landen in WhatsApp oder an deiner eigenen Kartenkasse.",
+      "Ein echter Shop hinter einem Link — Fotos, Preise, Bestände und Kasse. Bestellungen kommen fertig an, und niemand nimmt einen Anteil an Kunden, die Sie selbst gefunden haben.",
   },
 };
