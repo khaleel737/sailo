@@ -8,8 +8,8 @@ import {
   pickFilters,
 } from "@/lib/queries";
 import { getShopT } from "@/i18n/server";
-import { rateLimit } from "@/lib/redis";
-import { callerIp } from "@/lib/client-ip";
+import { rateLimit } from "@sailo/rate-limit";
+import { callerIp } from "@sailo/rate-limit/client-ip";
 import { isShopLive } from "@/lib/utils";
 import { ProductCard } from "../_components/product-card";
 

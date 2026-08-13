@@ -5,7 +5,7 @@ import { after } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops, staffActions, supportTickets, type Shop } from "@sailo/db/schema";
-import { publishShopEvent } from "@/lib/events";
+import { publishShopEvent } from "@sailo/events";
 import { maybeRow } from "@/lib/invariant";
 import { requireStaff } from "@/lib/session";
 import { updateShopNow } from "@/lib/cache";

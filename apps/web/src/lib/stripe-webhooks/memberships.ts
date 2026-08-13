@@ -12,13 +12,12 @@ import {
   type Subscription,
 } from "@sailo/db/schema";
 import { createInvoiceForOrder } from "@/lib/invoices";
-import { stripe } from "@/lib/stripe";
 import { actingAs } from "@/lib/connect";
 import { downloadUrl } from "@/lib/downloads";
-import { publishShopEvent } from "@/lib/events";
+import { publishShopEvent } from "@sailo/events";
 import { releaseDownloads } from "@/lib/downloads";
 import { sendMembershipPaymentFailed, sendMembershipStarted } from "@/lib/email/messages";
-import { sameAccount, sendingAccount } from "./ownership";
+import { sameAccount, sendingAccount, stripe } from "@sailo/payments";
 
 /**
  * A buyer paying a seller every month, as it arrives from Stripe.

@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { APIError } from "better-auth/api";
 import { auth } from "@/lib/auth";
 import { requireShop } from "@/lib/session";
-import { rateLimit } from "@/lib/redis";
+import { rateLimit } from "@sailo/rate-limit";
 import { deleteAccountFor } from "@/lib/account-deletion";
 
 /**

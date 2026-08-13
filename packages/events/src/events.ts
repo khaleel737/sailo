@@ -1,6 +1,6 @@
 import "server-only";
 import { EventEmitter } from "node:events";
-import { createSubscriber, rateLimit, withRedis } from "@/lib/redis";
+import { createSubscriber, rateLimit, withRedis } from "@sailo/rate-limit";
 
 /**
  * The realtime bus: how a write in one place becomes a repaint somewhere else.

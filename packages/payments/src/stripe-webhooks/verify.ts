@@ -1,6 +1,6 @@
 import "server-only";
 import type Stripe from "stripe";
-import { stripe } from "@/lib/stripe";
+import { stripe } from "../stripe";
 
 /**
  * Deciding whether an event is really Stripe's, and whether we care about it.

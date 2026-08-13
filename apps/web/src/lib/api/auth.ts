@@ -1,8 +1,8 @@
 import "server-only";
 import type { Shop } from "@sailo/db/schema";
 import { can, cheapestPlanWith } from "@/lib/plans";
-import { rateLimit, refundRateLimit } from "@/lib/redis";
-import { callerIp } from "@/lib/client-ip";
+import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
+import { callerIp } from "@sailo/rate-limit/client-ip";
 import { resolveApiKey, touchApiKey, type ApiScope } from "./keys";
 import { apiFail, type ApiFailure } from "./respond";
 

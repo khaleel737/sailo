@@ -13,9 +13,9 @@ import {
   maskPayoutDetails,
 } from "@/lib/payouts";
 import { sendPayoutDetailsChanged, sendPortalLinks } from "@/lib/email";
-import { publishAffiliateEvent, publishShopEvent } from "@/lib/events";
-import { rateLimit, refundRateLimit } from "@/lib/redis";
-import { callerIp } from "@/lib/client-ip";
+import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
+import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
+import { callerIp } from "@sailo/rate-limit/client-ip";
 import type { ActionState } from "./shop";
 
 /**

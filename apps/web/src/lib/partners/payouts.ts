@@ -10,7 +10,7 @@ import {
   shops,
 } from "@sailo/db/schema";
 import { maybeRow } from "@/lib/invariant";
-import { stripe } from "@/lib/stripe";
+import { stripe } from "@sailo/payments";
 import { canBePaid, payoutBlocker, type PayoutBlocker } from "./eligibility";
 import { getProgramSettings } from "./settings";
 import { isPayableBalance } from "./program";

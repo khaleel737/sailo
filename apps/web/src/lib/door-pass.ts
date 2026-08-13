@@ -2,7 +2,7 @@ import "server-only";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { doorPasses, products, type DoorPass } from "@sailo/db/schema";
-import { rateLimit } from "@/lib/redis";
+import { rateLimit } from "@sailo/rate-limit";
 
 /**
  * A credential for whoever is actually on the door.

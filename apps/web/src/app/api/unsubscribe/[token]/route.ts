@@ -6,8 +6,8 @@ import {
   readUnsubscribeToken,
   unsubscribeUrl,
 } from "@/lib/broadcasts/unsubscribe";
-import { rateLimit } from "@/lib/redis";
-import { callerIp } from "@/lib/client-ip";
+import { rateLimit } from "@sailo/rate-limit";
+import { callerIp } from "@sailo/rate-limit/client-ip";
 
 /**
  * One-click unsubscribe, RFC 8058.

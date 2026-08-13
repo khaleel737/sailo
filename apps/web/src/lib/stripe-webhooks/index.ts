@@ -17,12 +17,26 @@
  * - `platform`    — Sailo's own account: subscriptions and billing.
  * - `connect`     — a buyer paying a seller: sessions, charges, disputes.
  *
- * Re-exported here so `@/lib/stripe-webhooks` keeps resolving for both routes
- * and for the tests that read this module's source.
+ * The first three now live in `@sailo/payments`, because apps/api needs them
+ * too and they answer questions about the event alone — no stock, no email, no
+ * ledger. The last two stay here: they fan out into the rest of apps/web, and
+ * moving them would mean copying that fan-out into the package or inverting it
+ * behind an interface, which is a refactor of the money path rather than a
+ * relocation of it.
+ *
+ * Re-exported here so `@/lib/stripe-webhooks` keeps resolving for both routes,
+ * for the scenario suites, and for the tests that read this module's source.
  */
 
-export { HANDLED, signingSecrets, verifyEvent } from "./verify";
-export { claimEvent, releaseEvent } from "./idempotency";
-export { intentIdOf, sameAccount, sendingAccount } from "./ownership";
+export {
+  HANDLED,
+  claimEvent,
+  intentIdOf,
+  releaseEvent,
+  sameAccount,
+  sendingAccount,
+  signingSecrets,
+  verifyEvent,
+} from "@sailo/payments";
 export { handleAccountEvent } from "./platform";
 export { handleConnectEvent } from "./connect";

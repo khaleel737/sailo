@@ -3,8 +3,8 @@ import {
   marketingOptOutUrl,
   readMarketingOptOutToken,
 } from "@/lib/lifecycle/unsubscribe";
-import { rateLimit } from "@/lib/redis";
-import { callerIp } from "@/lib/client-ip";
+import { rateLimit } from "@sailo/rate-limit";
+import { callerIp } from "@sailo/rate-limit/client-ip";
 
 /**
  * One-click unsubscribe from Sailo's own marketing mail, RFC 8058.

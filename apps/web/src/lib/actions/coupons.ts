@@ -5,7 +5,7 @@ import { after } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { coupons } from "@sailo/db/schema";
-import { publishShopEvent } from "@/lib/events";
+import { publishShopEvent } from "@sailo/events";
 import { requireShop } from "@/lib/session";
 import { normalizeCode, percentToBp } from "@sailo/core/pricing";
 import { parseMoneyToCents } from "@/lib/utils";

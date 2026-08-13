@@ -3,12 +3,11 @@ import type Stripe from "stripe";
 import {
   HANDLED,
   claimEvent,
-  handleAccountEvent,
-  handleConnectEvent,
   releaseEvent,
   signingSecrets,
   verifyEvent,
-} from "@/lib/stripe-webhooks";
+} from "@sailo/payments";
+import { handleAccountEvent, handleConnectEvent } from "@/lib/stripe-webhooks";
 
 /**
  * Sailo's own Stripe account — sellers paying us.

@@ -5,8 +5,8 @@ import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
 import { getDictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
-import { callerIp } from "@/lib/client-ip";
-import { rateLimit } from "@/lib/redis";
+import { callerIp } from "@sailo/rate-limit/client-ip";
+import { rateLimit } from "@sailo/rate-limit";
 import { sendSubscribeConfirmation } from "@/lib/email/messages";
 import {
   confirmSubscriber,

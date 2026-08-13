@@ -3,7 +3,7 @@ import { requireShop } from "@/lib/session";
 import { can, cheapestPlanWith } from "@/lib/plans";
 import { csvResponse } from "@/lib/csv";
 import { isExportType, runExport } from "@/lib/exporters";
-import { rateLimit } from "@/lib/redis";
+import { rateLimit } from "@sailo/rate-limit";
 
 export async function GET(
   _request: Request,

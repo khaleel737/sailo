@@ -5,7 +5,7 @@ import { after } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { clients, orders } from "@sailo/db/schema";
-import { publishAffiliateEvent, publishShopEvent } from "@/lib/events";
+import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
 import { requireShop } from "@/lib/session";
 import { maybeRow } from "@/lib/invariant";
 import { formatMoney, parseMoneyToCents } from "@/lib/utils";

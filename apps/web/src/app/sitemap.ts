@@ -57,6 +57,25 @@ async function buildSitemap(now: Date): Promise<MetadataRoute.Sitemap> {
     { url: absolute("/privacy"), lastModified: now, changeFrequency: "yearly", priority: 0.4 },
     { url: absolute("/terms"), lastModified: now, changeFrequency: "yearly", priority: 0.4 },
     { url: absolute("/refunds"), lastModified: now, changeFrequency: "yearly", priority: 0.4 },
+    /*
+     * The developer documentation. `/docs/api` was live and linked from outside
+     * long before it was ever submitted here, which is the sort of page that
+     * gets found by the people who already know about it and by nobody else.
+     *
+     * No `alternates`: unlike the blog, these four exist only in English, so
+     * declaring an hreflang cluster would be claiming translations that are not
+     * there. Higher priority than the legal pages because "does it have an API"
+     * is a question that decides a signup.
+     *
+     * `/api/v1/openapi.json` is deliberately absent — `robots.ts` disallows
+     * `/api/`, and submitting a blocked URL is a Search Console error rather
+     * than a ranking. It is linked from the pages below, which is how the
+     * machines that want it arrive.
+     */
+    { url: absolute("/docs"), lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: absolute("/docs/api"), lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: absolute("/docs/webhooks"), lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: absolute("/docs/mcp"), lastModified: now, changeFrequency: "monthly", priority: 0.6 },
   ];
 
   /*

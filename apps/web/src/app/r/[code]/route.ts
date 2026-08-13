@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { ipFromHeaders } from "@/lib/client-ip";
-import { rateLimit } from "@/lib/redis";
+import { ipFromHeaders } from "@sailo/rate-limit/client-ip";
+import { rateLimit } from "@sailo/rate-limit";
 import {
   DEFAULT_COOKIE_DAYS,
   REFERRAL_COOKIE,

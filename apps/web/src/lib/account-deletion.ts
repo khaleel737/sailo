@@ -22,7 +22,7 @@ import {
   user as userTable,
   visits,
 } from "@sailo/db/schema";
-import { stripe, billingEnabled } from "@/lib/stripe";
+import { stripe, billingEnabled } from "@sailo/payments";
 import { isStoredFileUrl } from "@/lib/file-urls";
 import { sendAccountDeleted } from "@/lib/email";
 import { updateShopNow } from "@/lib/cache";

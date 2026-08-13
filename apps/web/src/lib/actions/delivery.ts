@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { revalidateShop } from "@/lib/cache";
-import { publishShopEvent } from "@/lib/events";
+import { publishShopEvent } from "@sailo/events";
 import { firstRow } from "@/lib/invariant";
 import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";

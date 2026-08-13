@@ -4,11 +4,11 @@ import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { getDb } from "@sailo/db";
 import { supportTickets } from "@sailo/db/schema";
-import { publishShopEvent } from "@/lib/events";
+import { publishShopEvent } from "@sailo/events";
 import { sendSupportTicket } from "@/lib/email";
 import { isStoredFileUrl } from "@/lib/file-urls";
 import { firstRow } from "@/lib/invariant";
-import { rateLimit } from "@/lib/redis";
+import { rateLimit } from "@sailo/rate-limit";
 import { requireShop } from "@/lib/session";
 import {
   MAX_MESSAGE_LENGTH,

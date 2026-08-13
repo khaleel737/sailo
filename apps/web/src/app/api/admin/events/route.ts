@@ -1,6 +1,6 @@
 import { requireShop } from "@/lib/session";
-import { subscribeShopEvents } from "@/lib/events";
-import { eventStreamResponse } from "@/lib/event-stream";
+import { subscribeShopEvents } from "@sailo/events";
+import { eventStreamResponse } from "@sailo/events/stream";
 
 /**
  * The seller dashboard's ear: one stream per open /admin tab, carrying

@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { requireShop } from "@/lib/session";
-import { stripe } from "@/lib/stripe";
+import { stripe } from "@sailo/payments";
 import { appUrl } from "@/lib/app-url";
 import { ensureCustomerId, resolveCustomerId } from "@/lib/billing-customer";
 import { isPlanId } from "@/lib/plans";

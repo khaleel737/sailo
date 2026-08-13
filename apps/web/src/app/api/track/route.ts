@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { after } from "next/server";
-import { rateLimit } from "@/lib/redis";
-import { ipFromHeaders } from "@/lib/client-ip";
-import { publishShopEvent } from "@/lib/events";
+import { rateLimit } from "@sailo/rate-limit";
+import { ipFromHeaders } from "@sailo/rate-limit/client-ip";
+import { publishShopEvent } from "@sailo/events";
 import { headers } from "next/headers";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";

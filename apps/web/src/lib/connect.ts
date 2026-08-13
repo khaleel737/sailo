@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { products, shops, type Order, type Product, type Shop } from "@sailo/db/schema";
 import { lineTitle, orderLines, orderSummaryTitle } from "@/lib/order-lines";
-import { stripe } from "@/lib/stripe";
+import { stripe } from "@sailo/payments";
 import { appUrl } from "@/lib/app-url";
 import { taxName } from "@/lib/tax-label";
 import { platformFeeCents, platformFeePercent } from "@/lib/plans";

@@ -4,14 +4,14 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders, shops } from "@sailo/db/schema";
 import { revalidateShop } from "@/lib/cache";
-import { publishAffiliateEvent, publishShopEvent } from "@/lib/events";
+import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
 import { abandonOrder, restoreStock } from "@/lib/inventory";
 import { releaseDownloads } from "@/lib/downloads";
 import { createInvoiceForOrder } from "@/lib/invoices";
 import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";
 import { notifySellerOfOrder } from "@/lib/orders/notify-seller";
 import { emitOrderWebhook } from "@/lib/webhooks/emit";
-import { intentIdOf, orderForIntent, orderForSession } from "./ownership";
+import { intentIdOf, orderForIntent, orderForSession } from "@sailo/payments";
 import { handleSubscriptionRefund } from "./platform";
 import {
   handleMembershipInvoiceFailed,

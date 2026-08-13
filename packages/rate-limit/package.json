@@ -1,0 +1,28 @@
+{
+  "name": "@sailo/rate-limit",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client-ip": "./src/client-ip.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src || true",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "redis": "^6.2.0",
+    "server-only": "^0.0.1"
+  },
+  "peerDependencies": {
+    "next": "16.3.0"
+  },
+  "devDependencies": {
+    "@sailo/config": "workspace:*",
+    "next": "16.3.0",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  }
+}

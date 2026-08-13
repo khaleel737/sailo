@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { affiliates } from "@sailo/db/schema";
-import { subscribeAffiliateEvents } from "@/lib/events";
-import { eventStreamResponse } from "@/lib/event-stream";
-import { rateLimit } from "@/lib/redis";
-import { ipFromHeaders } from "@/lib/client-ip";
+import { subscribeAffiliateEvents } from "@sailo/events";
+import { eventStreamResponse } from "@sailo/events/stream";
+import { rateLimit } from "@sailo/rate-limit";
+import { ipFromHeaders } from "@sailo/rate-limit/client-ip";
 
 /**
  * The partner portal's ear. The portal has no session — the unguessable

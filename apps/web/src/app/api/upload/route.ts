@@ -1,7 +1,7 @@
 import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 import { requireShop } from "@/lib/session";
-import { rateLimit } from "@/lib/redis";
+import { rateLimit } from "@sailo/rate-limit";
 
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8 MB
 const MAX_FILE_BYTES = 100 * 1024 * 1024; // 100 MB

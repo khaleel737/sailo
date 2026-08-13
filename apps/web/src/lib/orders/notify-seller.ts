@@ -2,7 +2,7 @@ import "server-only";
 import { asc, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orderItems, orders, user, type Shop } from "@sailo/db/schema";
-import { rateLimit } from "@/lib/redis";
+import { rateLimit } from "@sailo/rate-limit";
 import { wantsNotification } from "@/lib/notification-prefs";
 import {
   sendSellerBookingRequested,

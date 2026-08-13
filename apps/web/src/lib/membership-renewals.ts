@@ -11,7 +11,7 @@ import {
   type Shop,
   type Subscription,
 } from "@sailo/db/schema";
-import { publishShopEvent } from "@/lib/events";
+import { publishShopEvent } from "@sailo/events";
 import { downloadUrl } from "@/lib/downloads";
 import { sendMembershipRenewalDue } from "@/lib/email/messages";
 import { notifySellerOfOrder } from "@/lib/orders/notify-seller";

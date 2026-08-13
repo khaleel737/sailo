@@ -3,7 +3,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { and, eq, isNull } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { apiKeys, shops, type ApiKey, type Shop } from "@sailo/db/schema";
-import { withRedis } from "@/lib/redis";
+import { withRedis } from "@sailo/rate-limit";
 
 /**
  * Minting, storing and recognising the token that lets a program act on a

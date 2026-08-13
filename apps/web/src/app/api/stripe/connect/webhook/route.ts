@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import {
   HANDLED,
   claimEvent,
-  handleConnectEvent,
   releaseEvent,
   signingSecrets,
   verifyEvent,
-} from "@/lib/stripe-webhooks";
+} from "@sailo/payments";
+import { handleConnectEvent } from "@/lib/stripe-webhooks";
 
 /**
  * Connected accounts — buyers paying sellers.

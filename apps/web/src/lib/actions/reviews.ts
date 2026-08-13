@@ -3,13 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { revalidateShop } from "@/lib/cache";
-import { publishShopEvent } from "@/lib/events";
+import { publishShopEvent } from "@sailo/events";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { products, reviews, shops } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
-import { rateLimit } from "@/lib/redis";
-import { callerIp } from "@/lib/client-ip";
+import { rateLimit } from "@sailo/rate-limit";
+import { callerIp } from "@sailo/rate-limit/client-ip";
 import type { ActionState } from "./shop";
 
 /** Public submission — always lands unapproved so sellers moderate. */

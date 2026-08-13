@@ -1,0 +1,36 @@
+{
+  "name": "@sailo/api-server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start -p 3002",
+    "lint": "oxlint src || true",
+    "typecheck": "next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "@better-auth/expo": "^1.6.25",
+    "@sailo/api": "workspace:*",
+    "@sailo/auth": "workspace:*",
+    "@sailo/core": "workspace:*",
+    "@sailo/db": "workspace:*",
+    "@sailo/events": "workspace:*",
+    "@sailo/observability": "workspace:*",
+    "@sailo/payments": "workspace:*",
+    "@sailo/rate-limit": "workspace:*",
+    "@trpc/server": "^11.6.0",
+    "better-auth": "^1.6.25",
+    "drizzle-orm": "^0.45.2",
+    "next": "16.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@sailo/config": "workspace:*",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "oxlint": "^1.77.0",
+    "typescript": "^5"
+  }
+}

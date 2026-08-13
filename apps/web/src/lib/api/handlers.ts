@@ -20,7 +20,7 @@ import {
 } from "@/lib/broadcasts/subscribe";
 import { sendSubscribeConfirmation } from "@/lib/email";
 import { getDictionary, interpolate } from "@sailo/i18n";
-import { rateLimit } from "@/lib/redis";
+import { rateLimit } from "@sailo/rate-limit";
 import type { ApiCaller } from "./auth";
 import {
   contactResource,

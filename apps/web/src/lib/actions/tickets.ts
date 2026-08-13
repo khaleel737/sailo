@@ -24,7 +24,7 @@ import {
   type DoorRow,
   type DoorStats,
 } from "@/lib/queries/tickets";
-import { publishShopEvent } from "@/lib/events";
+import { publishShopEvent } from "@sailo/events";
 import { requireShop } from "@/lib/session";
 
 /**

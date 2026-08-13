@@ -5,7 +5,7 @@ import { after } from "next/server";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
-import { publishShopEvent } from "@/lib/events";
+import { publishShopEvent } from "@sailo/events";
 import { requireShop } from "@/lib/session";
 
 /** Clears the tray by marking everything up to now as read. */

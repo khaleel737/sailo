@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireShop } from "@/lib/session";
 import { payoutCacheKey } from "@/lib/connect-payouts";
-import { rateLimit, withRedis } from "@/lib/redis";
+import { rateLimit, withRedis } from "@sailo/rate-limit";
 
 /**
  * Drops the cached payout overview so the next render reads Stripe live.

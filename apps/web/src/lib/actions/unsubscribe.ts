@@ -7,8 +7,8 @@ import { suppress } from "@/lib/broadcasts/audience";
 import { readUnsubscribeToken } from "@/lib/broadcasts/unsubscribe";
 import { optOut } from "@/lib/lifecycle/opt-out";
 import { readMarketingOptOutToken } from "@/lib/lifecycle/unsubscribe";
-import { rateLimit } from "@/lib/redis";
-import { callerIp } from "@/lib/client-ip";
+import { rateLimit } from "@sailo/rate-limit";
+import { callerIp } from "@sailo/rate-limit/client-ip";
 
 /**
  * The confirm page's button.

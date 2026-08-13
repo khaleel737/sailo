@@ -1,0 +1,5 @@
+{
+  "extends": "@sailo/config/tsconfig.base.json",
+  "compilerOptions": { "noEmit": true, "jsx": "preserve" },
+  "include": ["src"]
+}

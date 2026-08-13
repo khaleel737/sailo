@@ -1,6 +1,6 @@
 import "server-only";
 import { isPublicLinkUrl } from "@/lib/file-urls";
-import { withRedis } from "@/lib/redis";
+import { withRedis } from "@sailo/rate-limit";
 import { busyFromFeed } from "./calendar-feed";
 import { zoneOf } from "./time-zone";
 import type { Busy } from "./slots";

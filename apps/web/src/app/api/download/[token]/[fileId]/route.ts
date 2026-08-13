@@ -6,8 +6,8 @@ import { orderedProductIds } from "@/lib/downloads";
 import { membershipOpenForOrder } from "@/lib/membership-access";
 import { isUuid } from "@/lib/utils";
 import { isStoredFileUrl } from "@/lib/file-urls";
-import { rateLimit } from "@/lib/redis";
-import { callerIp } from "@/lib/client-ip";
+import { rateLimit } from "@sailo/rate-limit";
+import { callerIp } from "@sailo/rate-limit/client-ip";
 
 /**
  * Streams one file of a digital order.

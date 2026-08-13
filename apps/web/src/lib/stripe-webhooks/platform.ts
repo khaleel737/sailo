@@ -3,15 +3,14 @@ import type Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
-import { stripe } from "@/lib/stripe";
 import { revalidateShop } from "@/lib/cache";
-import { publishShopEvent } from "@/lib/events";
+import { publishShopEvent } from "@sailo/events";
 import { freePlanFields, subscriptionFields } from "@/lib/billing-map";
 import {
   recordReferralEarning,
   reverseReferralEarning,
 } from "@/lib/partners/store";
-import { shopIdFor } from "./ownership";
+import { shopIdFor, stripe } from "@sailo/payments";
 
 /**
  * Sailo's own account: a seller paying us.

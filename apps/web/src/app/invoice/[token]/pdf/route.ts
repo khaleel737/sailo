@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { getInvoiceByToken } from "@/lib/queries";
 import { renderInvoicePdf } from "@/lib/invoice-pdf";
-import { rateLimit } from "@/lib/redis";
-import { callerIp } from "@/lib/client-ip";
+import { rateLimit } from "@sailo/rate-limit";
+import { callerIp } from "@sailo/rate-limit/client-ip";
 
 export async function GET(
   _request: Request,

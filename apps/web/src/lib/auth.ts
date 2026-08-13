@@ -17,7 +17,7 @@ import {
   sendPasswordReset,
 } from "@/lib/email";
 import { isStaffEmail, refusesPasswordAuth } from "@/lib/staff";
-import { rateLimit, refundRateLimit } from "@/lib/redis";
+import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
 
 /**
  * How long a reset link stays good. Set here rather than left to the default

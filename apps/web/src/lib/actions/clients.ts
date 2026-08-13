@@ -8,8 +8,8 @@ import { clients } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { normalizeTags, MAX_TAGS } from "@/lib/client-tags";
 import { normalizePhone } from "@/lib/utils";
-import { rateLimit } from "@/lib/redis";
-import { callerIp } from "@/lib/client-ip";
+import { rateLimit } from "@sailo/rate-limit";
+import { callerIp } from "@sailo/rate-limit/client-ip";
 import { emitContactWebhook } from "@/lib/webhooks/emit";
 
 /** Editing the people in a shop's list, by hand. */

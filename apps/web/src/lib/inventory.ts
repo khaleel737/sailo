@@ -1,5 +1,5 @@
 import "server-only";
-import { publishShopEvent } from "@/lib/events";
+import { publishShopEvent } from "@sailo/events";
 import { maybeRow } from "@/lib/invariant";
 import { releaseCouponRedemption } from "@/lib/orders/coupon-redemption";
 import { and, asc, eq, gte, inArray, isNull, isNotNull, lt, ne, or, sql } from "drizzle-orm";

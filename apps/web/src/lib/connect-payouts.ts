@@ -3,8 +3,8 @@ import type Stripe from "stripe";
 import type { Shop } from "@sailo/db/schema";
 import { actingAs } from "@/lib/connect";
 import { groupBalances, type PayoutOverview } from "@/lib/payout-summary";
-import { withRedis } from "@/lib/redis";
-import { stripe } from "@/lib/stripe";
+import { withRedis } from "@sailo/rate-limit";
+import { stripe } from "@sailo/payments";
 
 /**
  * The seller's money, as Stripe sees it: balance, recent payouts, and whether

@@ -23,10 +23,11 @@
       "typedRoutes": true
     },
     "extra": {
+      "router": {},
       "eas": {
-        "projectId": "SET_BY_eas_init"
-      },
-      "apiUrl": "https://sailo.store"
-    }
+        "projectId": "096eb8c1-02d5-48bf-b20d-407a6aa1deaa"
+      }
+    },
+    "owner": "khaleel737"
   }
 }

@@ -1,5 +1,5 @@
 import "server-only";
-import type { BusEvent, EventSubscription } from "@/lib/events";
+import type { BusEvent, EventSubscription } from "./events";
 
 /**
  * The response half of the realtime bus: one long-lived `text/event-stream`

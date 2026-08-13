@@ -9,7 +9,7 @@ import { auth } from "@/lib/auth";
 import { getSession } from "@/lib/session";
 import { getDb } from "@sailo/db";
 import { session as sessionTable, user as userTable } from "@sailo/db/schema";
-import { rateLimit } from "@/lib/redis";
+import { rateLimit } from "@sailo/rate-limit";
 import { sendTwoFactorChanged } from "@/lib/email";
 
 /**

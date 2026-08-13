@@ -1,6 +1,6 @@
 import { requireStaff } from "@/lib/session";
-import { subscribeHqEvents } from "@/lib/events";
-import { eventStreamResponse } from "@/lib/event-stream";
+import { subscribeHqEvents } from "@sailo/events";
+import { eventStreamResponse } from "@sailo/events/stream";
 
 /**
  * The staff panel's ear: platform-wide change hints, already folded and

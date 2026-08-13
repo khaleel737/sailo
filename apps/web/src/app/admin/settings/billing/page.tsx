@@ -9,7 +9,7 @@ import { getAdminT } from "@/i18n/server";
 import { openBillingPortal, startCheckout } from "@/lib/actions/billing";
 import { syncSubscriptionForShop } from "@/lib/billing-sync";
 import { PLAN_IDS, PLANS, planFor, productLimit } from "@/lib/plans";
-import { billingEnabled } from "@/lib/stripe";
+import { billingEnabled } from "@sailo/payments";
 import { IntervalToggle } from "@/app/admin/settings/billing/_components/interval-toggle";
 import { Alert, Badge, Button, Card, Progress } from "@/components/ui";
 import { formatMoney } from "@/lib/utils";

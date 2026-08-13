@@ -9,8 +9,8 @@ import {
   visits,
   type VisitBreakdownJson,
 } from "@sailo/db/schema";
-import { publishAffiliateEvent, publishShopEvent } from "@/lib/events";
-import { drainAffiliateClicks } from "@/lib/redis";
+import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
+import { drainAffiliateClicks } from "@sailo/rate-limit";
 import {
   dropExpiredPartitions,
   ensureUpcomingPartitions,

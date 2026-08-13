@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { isUuid } from "@/lib/utils";
-import { rateLimit } from "@/lib/redis";
-import { ipFromHeaders } from "@/lib/client-ip";
+import { rateLimit } from "@sailo/rate-limit";
+import { ipFromHeaders } from "@sailo/rate-limit/client-ip";
 import { recordAffiliateClick } from "@/lib/actions/affiliates";
 
 export async function POST(request: Request) {

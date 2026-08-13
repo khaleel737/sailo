@@ -1,310 +1,317 @@
-import type { Metadata } from "next";
-import { appUrl } from "@/lib/app-url";
-import { API_VERSION, MAX_LIMIT } from "@/lib/api/respond";
-import { WEBHOOK_EVENTS } from "@/lib/webhooks/events";
-import { MODERN_VERSION, SUPPORTED_VERSIONS } from "@/lib/mcp/protocol";
+import { APP_URL } from "@/lib/seo";
+import { API_ERROR_CODES, API_VERSION, DEFAULT_LIMIT, MAX_LIMIT } from "@/lib/api/respond";
+import { ENDPOINTS, MAX_BODY_KB, type Endpoint } from "@/lib/api/endpoints";
+import {
+  Code,
+  DefTable,
+  DocsShell,
+  Heading,
+  Pre,
+  Section,
+  Table,
+  docsMetadata,
+  docsPath,
+} from "../_components/docs-kit";
 
-export const metadata: Metadata = {
-  title: "API, webhooks and MCP — Sailo",
-  description:
-    "Connect Sailo to Zapier, n8n, Make or an AI assistant. Signed webhooks, a REST API and an MCP server.",
-};
+export const metadata = docsMetadata(
+  "api",
+  "REST API — Sailo",
+  "Read a Sailo shop's orders, products and contacts over HTTP, and add people to its list. Cursor-paged, one envelope for every answer.",
+);
 
 /**
- * The documentation for everything a program can do with a Sailo shop.
+ * The REST reference.
  *
- * Public and unauthenticated on purpose. Someone evaluating whether Sailo can
- * fit their stack needs to read this *before* they have an account, and an
- * integration guide behind a login is one nobody finds. It is also the only
- * honest place to put the signature recipe — a verifier written from a
- * half-remembered description is a verifier that rejects real messages.
+ * **Every endpoint below is rendered from `lib/api/endpoints.ts`**, which is
+ * also what `/api/v1/openapi.json` is built from and what `endpoints.test.ts`
+ * compares against the route tree. Prose describing an endpoint by hand is
+ * prose that stops being true the first time somebody adds a filter, and the
+ * page carries on looking authoritative while it lies. Adding a route without
+ * describing it there fails the gate rather than shipping.
  *
- * Rendered from the same constants the server uses — the event list, the
- * protocol versions, the page limit — rather than from prose repeating them.
- * Documentation that states a number by hand is documentation that is wrong
- * the first time the number changes, and nobody notices for months.
+ * This URL is unchanged from when it was the whole of the documentation. It is
+ * what is linked from outside and already indexed, so the split moved the
+ * webhook and MCP material *out* to siblings and left this page where it was.
  */
 export default function ApiDocsPage() {
-  const base = appUrl();
+  const base = APP_URL;
 
   return (
-    <main id="main" className="mx-auto max-w-3xl px-5 py-16">
-      <h1 className="text-3xl font-semibold tracking-tight text-ink-900">
-        API, webhooks and MCP
-      </h1>
-      <p className="mt-3 text-ink-600">
-        Sailo speaks three ways to the outside world, and one key opens all
-        three: webhooks push events to you, the REST API lets you ask questions,
-        and the MCP server lets an AI assistant do both. Create a key under{" "}
-        <strong>Settings → Integrations</strong>.
-      </p>
-
-      <Section title="Getting a key">
-        <p>
-          Keys are shown once, at creation, and stored hashed — there is no way
-          to recover one, so a lost key is rotated rather than looked up. Every
-          key is read-only unless you tick <Code>write</Code>.
-        </p>
-        <Pre>{`curl ${base}/api/v1/shop \\
-  -H "Authorization: Bearer sailo_sk_…"`}</Pre>
-        <p>
-          Send the key in the <Code>Authorization</Code> header and nowhere
-          else. A key in a query string is written into every access log and
-          proxy it passes through.
-        </p>
-      </Section>
-
-      <Section title="Webhooks">
-        <p>
-          Add an endpoint under Settings → Integrations, tick the events you
-          want, and Sailo will <Code>POST</Code> signed JSON to it. Anything
-          that accepts a webhook works — Zapier&rsquo;s{" "}
-          <em>Catch Hook</em>, n8n&rsquo;s <em>Webhook</em> node,
-          Make&rsquo;s <em>Custom webhook</em>, Pipedream, or your own server.
-        </p>
-
-        <h3 className="mt-6 text-sm font-semibold text-ink-900">Events</h3>
-        <ul className="mt-2 grid gap-1 sm:grid-cols-2">
-          {WEBHOOK_EVENTS.map((event) => (
-            <li key={event}>
-              <Code>{event}</Code>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-3">
-          On a card sale <Code>order.created</Code> and <Code>order.paid</Code>{" "}
-          arrive together, when the payment lands — not when the buyer opens the
-          checkout, because a third of those are abandoned. On bank transfer,
-          cash or any other manual rail, <Code>order.created</Code> fires at
-          checkout and <Code>order.paid</Code> when you confirm the money
-          arrived.
-        </p>
-
-        <h3 className="mt-6 text-sm font-semibold text-ink-900">The payload</h3>
-        <Pre>{`{
-  "id": "8f2b…",              // also the webhook-id header
-  "type": "order.paid",
-  "timestamp": "2026-08-12T09:41:07.221Z",
-  "version": 1,
-  "test": false,              // true only for the "Send test" button
-  "shop": { "id": "…", "handle": "acme" },
-  "data": { /* the same object GET /api/v1/orders/{id} returns */ }
-}`}</Pre>
-        <p>
-          New fields may appear inside <Code>data</Code> without the{" "}
-          <Code>version</Code> changing. It is bumped only when something
-          already there changes meaning or disappears, so build your mapping to
-          ignore fields it does not recognise.
-        </p>
-        <p>
-          Money is always an object:{" "}
-          <Code>{`{ "cents": 4999, "amount": "49.99", "currency": "GBP" }`}</Code>.
-          Use <Code>cents</Code> for arithmetic and <Code>amount</Code> for
-          anything a person will read — <Code>cents</Code> is correct for
-          zero-decimal currencies like JPY too, where dividing by 100 is not.
-        </p>
-
-        <h3 className="mt-6 text-sm font-semibold text-ink-900">
-          Verifying a signature
-        </h3>
-        <p>
-          Sailo signs with{" "}
-          <a
-            className="text-brand-600 underline underline-offset-2"
-            href="https://www.standardwebhooks.com"
-            rel="noreferrer noopener"
-            target="_blank"
-          >
-            Standard Webhooks
-          </a>
-          , so you can use an off-the-shelf library rather than transcribing a
-          recipe. Three headers arrive:
-        </p>
-        <Pre>{`webhook-id:        8f2b…             (unique per delivery)
-webhook-timestamp: 1786527667        (seconds since epoch)
-webhook-signature: v1,K5oZfzN95Z9…   (base64 HMAC-SHA256)`}</Pre>
-        <Pre>{`import { Webhook } from "standardwebhooks";
-
-const wh = new Webhook(process.env.SAILO_WEBHOOK_SECRET); // whsec_…
-const payload = wh.verify(rawBody, headers);              // throws if invalid`}</Pre>
-        <p>
-          By hand: the signed content is{" "}
-          <Code>{"`${id}.${timestamp}.${rawBody}`"}</Code>, HMAC-SHA256 with the{" "}
-          <em>base64-decoded</em> bytes of the secret (drop the{" "}
-          <Code>whsec_</Code> prefix first), base64-encoded. Sign the raw body
-          exactly as received — re-serialising the parsed JSON will not match.
-        </p>
-
-        <h3 className="mt-6 text-sm font-semibold text-ink-900">
-          Delivery and retries
-        </h3>
-        <p>
-          Delivery is at-least-once. A POST that succeeded on your side but
-          timed out on ours is retried, so <strong>deduplicate on{" "}
-          <Code>webhook-id</Code></strong> — it stays the same across every
-          retry of one event, while the timestamp and signature are fresh each
-          attempt.
-        </p>
-        <p>
-          Answer with any 2xx as soon as you have stored the event; do the work
-          afterwards. We wait five seconds. Failures are retried after 1m, 5m,
-          30m, 2h and 12h, then abandoned. Redirects are not followed — a 3xx
-          counts as a failure, so register the final URL. After 20 consecutive
-          failures the endpoint is switched off and you are emailed.
-        </p>
-      </Section>
-
-      <Section title="REST API">
-        <p>
+    <DocsShell
+      page="api"
+      title="REST API"
+      lede={
+        <>
           Base URL <Code>{`${base}/api/v1`}</Code>. Everything returns{" "}
           <Code>{`{ "data": … }`}</Code>; failures return{" "}
           <Code>{`{ "error": { "code", "message" } }`}</Code> with a matching
           HTTP status. Responses carry a <Code>sailo-version</Code> header,
           currently <Code>{API_VERSION}</Code>.
-        </p>
-
+        </>
+      }
+    >
+      <Section title="The endpoints">
         <Table
-          rows={[
-            ["GET", "/shop", "The shop this key belongs to"],
-            ["GET", "/orders", "Orders, newest first"],
-            ["GET", "/orders/{id}", "One order, with line items"],
-            ["GET", "/products", "Catalogue, newest first"],
-            ["GET", "/products/{id}", "One product, with variants"],
-            ["GET", "/contacts", "The shop's list"],
-            ["GET", "/contacts/{id}", "One contact"],
-            ["POST", "/contacts", "Create or update a contact (write)"],
-            ["POST", "/contacts/{id}/tags", "Add and remove tags (write)"],
-          ]}
+          rows={ENDPOINTS.map((endpoint) => [
+            endpoint.method,
+            endpoint.path,
+            endpoint.scope === "write" ? `${endpoint.summary} (write)` : endpoint.summary,
+          ])}
         />
-
-        <h3 className="mt-6 text-sm font-semibold text-ink-900">Paging</h3>
         <p>
-          Cursor-based, up to {MAX_LIMIT} per page. Pass the{" "}
-          <Code>next_cursor</Code> from one response as <Code>?cursor=</Code> on
-          the next, and stop when <Code>has_more</Code> is false. Cursors name a
-          position rather than an offset, so orders arriving mid-scan cannot
-          make you skip one.
+          A machine-readable description of all {ENDPOINTS.length} lives at{" "}
+          <a
+            className="text-brand-600 underline underline-offset-2"
+            href="/api/v1/openapi.json"
+          >
+            <Code>/api/v1/openapi.json</Code>
+          </a>{" "}
+          — OpenAPI 3.1, no key required, which is what you point Postman or an
+          SDK generator at.
         </p>
-        <Pre>{`curl "${base}/api/v1/orders?limit=50&payment_status=paid" \\
+      </Section>
+
+      <Section title="Authenticating">
+        <p>
+          Send the key in the <Code>Authorization</Code> header and nowhere
+          else. A key in a query string is written into every access log and
+          proxy it passes through.
+        </p>
+        <Pre>{`curl ${base}/api/v1/shop \\
   -H "Authorization: Bearer sailo_sk_…"`}</Pre>
-
-        <h3 className="mt-6 text-sm font-semibold text-ink-900">
-          Adding contacts
-        </h3>
         <p>
-          <Code>POST /contacts</Code> is idempotent by person: sending somebody
-          twice updates them and merges tags rather than duplicating them.
+          Keys are shown once, at creation, and stored hashed — there is no way
+          to recover one, so a lost key is rotated rather than looked up. Every
+          key is read-only unless you tick <Code>write</Code>, and a read-only
+          key reaching a write endpoint is told exactly that rather than given a
+          bare 403.
         </p>
         <p>
-          <strong>It cannot mark anyone as consenting to marketing email.</strong>{" "}
-          A contact created this way always has{" "}
+          A key we will not accept is refused identically whether it never
+          existed, was revoked, or belongs to a shop that has since been
+          deleted. That is deliberate: learning <em>which</em> would tell the
+          holder of a token that it used to be real.
+        </p>
+      </Section>
+
+      <Section title="Paging">
+        <p>
+          Cursor-based, {DEFAULT_LIMIT} per page by default and up to{" "}
+          {MAX_LIMIT}. Pass the <Code>next_cursor</Code> from one response as{" "}
+          <Code>?cursor=</Code> on the next, and stop when <Code>has_more</Code>{" "}
+          is false. Loop on <Code>has_more</Code> rather than on whether the
+          cursor is null — the two answer different questions, and a consumer
+          branching on the cursor gets the wrong one on the last full page.
+        </p>
+        <p>
+          Cursors name a position in the ordering rather than an offset, so
+          orders arriving mid-scan cannot make you skip one. They are opaque;
+          building anything on their internals is building on something that
+          will change. A cursor we did not issue is a{" "}
+          <Code>invalid_request</Code>, not an empty page.
+        </p>
+        <p>
+          Asking for more than {MAX_LIMIT} is clamped rather than refused, so a
+          caller who sends <Code>limit=1000</Code> gets {MAX_LIMIT} and a
+          working integration.
+        </p>
+      </Section>
+
+      <Section title="Errors">
+        <p>
+          Branch on <Code>code</Code>. It is stable — one is never renamed, only
+          added to — while <Code>message</Code> is a sentence for a person and
+          may be reworded at any time.
+        </p>
+        <DefTable
+          caption="Error codes and their HTTP statuses"
+          rows={Object.entries(API_ERROR_CODES).map(([code, status]) => ({
+            term: code,
+            note: String(status),
+            body: ERROR_MEANINGS[code as keyof typeof API_ERROR_CODES],
+          }))}
+        />
+        <p>
+          A <Code>server_error</Code> body never says what went wrong. A stack
+          trace, a Postgres message or a constraint name in a response is a
+          description of our schema handed to whoever provoked it.
+        </p>
+      </Section>
+
+      <Section title="Limits">
+        <p>
+          <strong>240 requests a minute per key.</strong> Per key rather than
+          per address, deliberately: an integration and a seller&rsquo;s browser
+          routinely share an office IP, and a Zap running flat out must not be
+          able to throttle its owner out of their own admin. High enough that no
+          ordinary integration will meet it.
+        </p>
+        <p>
+          Requests that fail to authenticate are separately and more tightly
+          limited, per source address. That budget is for guessing, so its size
+          is not published and you should not calibrate against it — a client
+          that has a valid key will never encounter it, and one that is probing
+          for keys learns nothing from the response either way.
+        </p>
+        <p>
+          Request bodies are capped at {MAX_BODY_KB} KB. There is no CORS on any
+          of this: keys are for servers, and a key a browser can send is a key
+          in somebody&rsquo;s bundle.
+        </p>
+      </Section>
+
+      <Section title="Consent, on the contact endpoints">
+        <p>
+          <strong>
+            Nothing here can mark anyone as consenting to marketing email.
+          </strong>{" "}
+          A contact created through the API always has{" "}
           <Code>marketingConsentAt: null</Code>, whatever you send — consent is
           something a person gave, not something a request body can assert. To
           get it, pass <Code>{`"sendOptIn": true`}</Code>: Sailo emails them the
           same double opt-in link the public signup form uses, and consent is
           recorded when they click it.
         </p>
-        <Pre>{`curl -X POST ${base}/api/v1/contacts \\
-  -H "Authorization: Bearer sailo_sk_…" \\
-  -H "Content-Type: application/json" \\
-  -d '{"email":"ada@example.com","name":"Ada","tags":["webinar"],"sendOptIn":true}'`}</Pre>
         <p>
           Filter with <Code>?consented=true</Code> when syncing to a newsletter
           tool. Everyone else on the list is a customer who never agreed to be
           emailed.
         </p>
-
-        <h3 className="mt-6 text-sm font-semibold text-ink-900">Limits</h3>
-        <p>
-          240 requests a minute per key. There is no CORS: keys are for servers,
-          and a key a browser can send is a key in somebody&rsquo;s bundle.
-        </p>
       </Section>
 
-      <Section title="MCP — connecting an AI assistant">
+      <Section title="Reference">
         <p>
-          Sailo runs a Model Context Protocol server at{" "}
-          <Code>{`${base}/api/mcp`}</Code>. Point Claude, or any MCP client, at
-          that address with an API key as a bearer token, and it can read your
-          orders, products and contacts — and, with a write key, add contacts
-          and change their tags.
+          Every endpoint, with what it takes and what it answers. Ids in the
+          examples are illustrative; yours are UUIDs.
         </p>
-        <Pre>{`{
-  "mcpServers": {
-    "sailo": {
-      "url": "${base}/api/mcp",
-      "headers": { "Authorization": "Bearer sailo_sk_…" }
-    }
-  }
-}`}</Pre>
-        <p>
-          The server is stateless and speaks protocol version{" "}
-          <Code>{MODERN_VERSION}</Code>, and still answers the{" "}
-          <Code>initialize</Code> handshake for older clients — supported
-          versions are {SUPPORTED_VERSIONS.join(", ")}. A read-only key does not
-          see the write tools at all, so an assistant given one cannot promise
-          to change something it may not.
-        </p>
+        {ENDPOINTS.map((endpoint) => (
+          <EndpointEntry base={base} endpoint={endpoint} key={endpoint.id} />
+        ))}
       </Section>
 
-      <Section title="What Sailo does not do">
+      <Section title="Next">
         <p>
-          There is no per-app directory and no OAuth app registration. A signed
-          webhook plus a key reaches Zapier, n8n, Make, Pipedream and everything
-          behind them, which is a larger set than any list of logos we could
-          maintain — and it means nothing you build here depends on us shipping
-          a connector for your tool.
+          Events pushed to you rather than polled for are on{" "}
+          <a className="text-brand-600 underline underline-offset-2" href={docsPath("webhooks")}>
+            webhooks
+          </a>
+          . The same endpoints, exposed to an AI assistant, are on{" "}
+          <a className="text-brand-600 underline underline-offset-2" href={docsPath("mcp")}>
+            MCP
+          </a>
+          .
         </p>
       </Section>
-    </main>
+    </DocsShell>
   );
 }
 
 /* -------------------------------------------------------------------------- */
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="mt-12">
-      <h2 className="text-xl font-semibold tracking-tight text-ink-900">{title}</h2>
-      <div className="mt-3 space-y-3 text-sm leading-relaxed text-ink-600">
-        {children}
-      </div>
-    </section>
-  );
-}
+const ERROR_MEANINGS: Record<keyof typeof API_ERROR_CODES, string> = {
+  unauthorized: "No credential, or one we do not recognise.",
+  forbidden: "A real key, but not one allowed to do this — the scope, or the shop's plan.",
+  not_found: "No such object in this shop. Never distinguishes 'not yours' from 'not there'.",
+  invalid_request: "Malformed input — a bad cursor, an unparseable body, a missing field.",
+  rate_limited: "Too many calls. Slow down and retry.",
+  server_error: "Our fault. Retry; the body says nothing about the cause.",
+};
 
-function Code({ children }: { children: React.ReactNode }) {
+/**
+ * One endpoint's entry.
+ *
+ * The heading renders `METHOD /path` as a single text node on purpose — that
+ * exact string is what `endpoints.test.ts` looks for in the rendered HTML, and
+ * splitting it across two elements would put markup in the middle of the thing
+ * being asserted.
+ */
+function EndpointEntry({ base, endpoint }: { base: string; endpoint: Endpoint }) {
   return (
-    <code className="rounded bg-ink-100 px-1.5 py-0.5 font-mono text-[0.8125rem] text-ink-900">
-      {children}
-    </code>
-  );
-}
+    <div className="mt-8 border-t border-ink-200 pt-6" id={endpoint.id}>
+      <h3 className="font-mono text-sm font-semibold text-ink-900">
+        {`${endpoint.method} ${endpoint.path}`}
+        {endpoint.scope === "write" ? (
+          <span className="ms-2 rounded bg-ink-100 px-1.5 py-0.5 font-sans text-[0.6875rem] font-medium text-ink-900">
+            write
+          </span>
+        ) : null}
+      </h3>
 
-function Pre({ children }: { children: string }) {
-  return (
-    <pre className="overflow-x-auto rounded-xl bg-ink-900 px-4 py-3 font-mono text-xs leading-relaxed text-ink-50">
-      {children}
-    </pre>
-  );
-}
+      <p className="mt-2">{endpoint.description}</p>
 
-function Table({ rows }: { rows: [string, string, string][] }) {
-  return (
-    <div className="overflow-x-auto">
-      <table className="mt-2 w-full min-w-[30rem] text-sm">
-        <tbody className="divide-y divide-ink-200">
-          {rows.map(([method, path, what]) => (
-            <tr key={`${method} ${path}`}>
-              <td className="py-2 pe-3 font-mono text-xs font-semibold text-ink-900">
-                {method}
-              </td>
-              <td className="py-2 pe-3 font-mono text-xs text-ink-900">{path}</td>
-              <td className="py-2 text-xs text-ink-600">{what}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {endpoint.params.length > 0 ? (
+        <>
+          <Heading>
+            {endpoint.params.some((p) => p.in === "path") && endpoint.params.length === 1
+              ? "Path parameter"
+              : "Parameters"}
+          </Heading>
+          <DefTable
+            caption={`Parameters for ${endpoint.method} ${endpoint.path}`}
+            rows={endpoint.params.map((param) => ({
+              term: param.name,
+              note: `${param.in}${param.required ? ", required" : ""}`,
+              body: param.description,
+            }))}
+          />
+        </>
+      ) : null}
+
+      {endpoint.body ? (
+        <>
+          <Heading>Body</Heading>
+          <DefTable
+            caption={`Body fields for ${endpoint.method} ${endpoint.path}`}
+            rows={endpoint.body.fields.map((field) => ({
+              term: field.name,
+              note: field.required ? "required" : "optional",
+              body: field.description,
+            }))}
+          />
+          <div className="mt-3">
+            <Pre>{endpoint.body.example}</Pre>
+          </div>
+        </>
+      ) : null}
+
+      <Heading>Example</Heading>
+      <Pre>{endpoint.curl(base)}</Pre>
+
+      <Heading>{endpoint.result.shape === "page" ? "200 — a page" : "200"}</Heading>
+      <Pre>{endpoint.successExample}</Pre>
+
+      {endpoint.resultExtra?.map((extra) => (
+        <p className="mt-2 text-xs" key={extra.name}>
+          <Code>{extra.name}</Code> — {extra.description}
+        </p>
+      ))}
+
+      <Heading>Failures</Heading>
+      <DefTable
+        caption={`Failure modes for ${endpoint.method} ${endpoint.path}`}
+        rows={dedupeErrors(endpoint).map((error) => ({
+          term: error.code,
+          note: String(API_ERROR_CODES[error.code]),
+          body: error.when,
+        }))}
+      />
     </div>
   );
+}
+
+/**
+ * Two entries can share a code — a write endpoint refuses a read-only key and a
+ * free plan with the same `forbidden` — and a table with the same term twice
+ * reads as a mistake. Merged into one row carrying both reasons.
+ */
+function dedupeErrors(endpoint: Endpoint): { code: keyof typeof API_ERROR_CODES; when: string }[] {
+  const merged = new Map<keyof typeof API_ERROR_CODES, string[]>();
+
+  for (const error of endpoint.errors) {
+    const reasons = merged.get(error.code) ?? [];
+    if (!reasons.includes(error.when)) reasons.push(error.when);
+    merged.set(error.code, reasons);
+  }
+
+  return [...merged.entries()].map(([code, reasons]) => ({ code, when: reasons.join(" ") }));
 }

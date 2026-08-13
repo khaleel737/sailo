@@ -3,8 +3,8 @@ import { getDb } from "@sailo/db";
 import { liveShop } from "@/lib/shop-visibility";
 import { products, shops } from "@sailo/db/schema";
 import { isUuid } from "@/lib/utils";
-import { rateLimit } from "@/lib/redis";
-import { callerIp } from "@/lib/client-ip";
+import { rateLimit } from "@sailo/rate-limit";
+import { callerIp } from "@sailo/rate-limit/client-ip";
 import { BOOKING_HORIZON_DAYS, calendarFor, isBookable } from "@/lib/booking/availability";
 
 /**

@@ -27,7 +27,7 @@ import {
 } from "@/lib/broadcasts/unsubscribe";
 import { ORDERS, send, sender } from "@/lib/email/transport";
 import { getDictionary } from "@sailo/i18n";
-import { rateLimit } from "@/lib/redis";
+import { rateLimit } from "@sailo/rate-limit";
 import type { Shop } from "@sailo/db/schema";
 
 /** Writing, previewing, scheduling and sending a broadcast. */
