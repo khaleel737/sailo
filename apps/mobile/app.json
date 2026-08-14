@@ -7,18 +7,55 @@
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff",
+      "dark": {
+        "image": "./assets/splash-icon-dark.png",
+        "backgroundColor": "#0d0d0c"
+      }
+    },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "store.sailo.app"
+      "supportsTablet": false,
+      "bundleIdentifier": "store.sailo.app",
+      "usesAppleSignIn": false,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Sailo uses the camera to scan a buyer's ticket at check-in and to photograph products for your shop.",
+        "NSPhotoLibraryUsageDescription": "Sailo needs your photo library so you can put pictures of your products on your shop."
+      },
+      "associatedDomains": ["applinks:sailo.store", "applinks:www.sailo.store"]
     },
     "android": {
-      "package": "store.sailo.app"
+      "package": "store.sailo.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#037740"
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            { "scheme": "https", "host": "sailo.store", "pathPrefix": "/admin" },
+            { "scheme": "https", "host": "www.sailo.store", "pathPrefix": "/admin" }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "plugins": [
       "expo-router",
       "expo-secure-store",
       "expo-web-browser",
-      "expo-notifications"
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#037740"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
