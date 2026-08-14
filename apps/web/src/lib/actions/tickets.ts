@@ -2,20 +2,16 @@
 
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
+import type { CheckInState } from "@sailo/commerce/tickets";
 import {
-  checkInTicketById,
-  checkInTicketForShop,
-  issueTickets,
-  setTicketRevoked,
-  undoCheckIn,
-  type CheckInState,
-} from "@sailo/commerce/tickets";
-import {
-  createDoorPass,
-  readDoorPass,
-  revokeDoorPass,
-  touchDoorPass,
-} from "@/lib/door-pass";
+  addWalkUp as addWalkUpAtDoor,
+  admitByCode as admitCodeAtDoor,
+  admitByTicket as admitTicketAtDoor,
+  revokeAdmission as revokeAtDoor,
+  undoAdmission as undoAtDoor,
+  type Door,
+} from "@sailo/commerce/door";
+import { createDoorPass, readDoorPass, revokeDoorPass } from "@/lib/door-pass";
 import {
   eventDoorList,
   eventDoorStats,
@@ -24,27 +20,22 @@ import {
   type DoorRow,
   type DoorStats,
 } from "@/lib/queries/tickets";
-import { publishShopEvent } from "@sailo/events";
 import { requireShop } from "@/lib/session";
 
 /**
- * The door, from either side of the credential.
+ * Who is asking, and what they are allowed to touch.
  *
- * A shop owner reaches these through their own session; a volunteer reaches
- * them through a door-pass token in the URL. Both end up as a `Door` below,
- * and nothing downstream knows or cares which — which is the point: the
- * scanner, the guest list and the undo button are one implementation, so a
- * volunteer gets exactly the tool the owner has and nothing else.
+ * All that is left in this app. What happens *after* the question is answered
+ * — the claim, the announcement, the pass's own usage counter — moved to
+ * `@sailo/commerce/door`, because the mobile app scans tickets too and a
+ * second copy of the admission cascade is a second chance to forget the half
+ * that is silent. A guest admitted from a phone has to move the same counters
+ * as one admitted from a laptop, on every other volunteer's screen.
+ *
+ * This half could not go with it. A session is `next/headers`, a door pass is
+ * a token in *this app's* URL, and `@sailo/api` has neither — it has
+ * `ctx.shopId` and builds its own `Door` from that.
  */
-
-type Door = {
-  shopId: string;
-  /** The event this caller may work, or null for an unscoped owner. */
-  productId: string | null;
-  /** Recorded on every row this door admits. Null is the owner in person. */
-  by: string | null;
-  passId: string | null;
-};
 
 type DoorInput = {
   /** Present when the caller is a volunteer on `/door/[token]`. */
@@ -54,8 +45,6 @@ type DoorInput = {
 };
 
 /**
- * Who is asking, and what they are allowed to touch.
- *
  * The scope resolution is the security boundary and is deliberately not
  * symmetric: a pass issued for one event ignores whatever `productId` the
  * client sends, because the client is a page a volunteer is holding and the
@@ -94,18 +83,11 @@ async function ownerShopId(): Promise<string> {
 const REFUSED: CheckInState = { status: "not_found", code: "" };
 
 /**
- * Announces a change so every other door screen sees it.
- *
- * Three volunteers on three phones is the case this exists for: one admits
- * somebody and the other two counters have to move, or the second volunteer
- * lets the same person in again while their screen still shows them outside.
+ * Handed to every call below. `after` is what keeps the volunteer's tap off
+ * the publish and the pass counter; `@sailo/api` has no scheduler and awaits
+ * instead.
  */
-function announce(door: Door, admitted: boolean) {
-  after(async () => {
-    await publishShopEvent(door.shopId, "booking");
-    if (door.passId) await touchDoorPass(door.passId, admitted);
-  });
-}
+const HOOKS = { defer: after };
 
 /* -------------------------------------------------------------------------- */
 /*  Admitting                                                                  */
@@ -116,14 +98,7 @@ export async function admitByCode(
 ): Promise<CheckInState> {
   const door = await doorFor(input);
   if (!door) return REFUSED;
-
-  const result = await checkInTicketForShop(door.shopId, input.code, {
-    productId: door.productId,
-    by: door.by,
-  });
-
-  announce(door, result.status === "checked_in");
-  return result;
+  return admitCodeAtDoor(door, input.code, HOOKS);
 }
 
 /** Admitting from the guest list, for somebody whose phone is dead. */
@@ -132,14 +107,7 @@ export async function admitByTicket(
 ): Promise<CheckInState> {
   const door = await doorFor(input);
   if (!door) return REFUSED;
-
-  const result = await checkInTicketById(door.shopId, input.ticketId, {
-    productId: door.productId,
-    by: door.by,
-  });
-
-  announce(door, result.status === "checked_in");
-  return result;
+  return admitTicketAtDoor(door, input.ticketId, HOOKS);
 }
 
 export async function undoAdmission(
@@ -147,10 +115,7 @@ export async function undoAdmission(
 ): Promise<{ ok: boolean }> {
   const door = await doorFor(input);
   if (!door) return { ok: false };
-
-  const ok = await undoCheckIn(door.shopId, input.ticketId);
-  if (ok) announce(door, false);
-  return { ok };
+  return undoAtDoor(door, input.ticketId, HOOKS);
 }
 
 /**
@@ -159,16 +124,14 @@ export async function undoAdmission(
  * Undo fixes a mis-scan and is safe in anyone's hands — the worst it can do
  * is let a ticket admit again. Revoking takes an admission away for good,
  * which is a decision about somebody's money, and it belongs to whoever owns
- * the shop.
+ * the shop. `ownerShopId`, not `doorFor`: a token must not reach this at all.
  */
 export async function revokeAdmission(input: {
   ticketId: string;
   revoked: boolean;
 }): Promise<{ ok: boolean }> {
   const shopId = await ownerShopId();
-  const ok = await setTicketRevoked(shopId, input.ticketId, input.revoked);
-  if (ok) after(() => publishShopEvent(shopId, "booking"));
-  return { ok };
+  return revokeAtDoor(shopId, input.ticketId, input.revoked, HOOKS);
 }
 
 /**
@@ -187,29 +150,12 @@ export async function addWalkUp(
   },
 ): Promise<CheckInState> {
   const door = await doorFor(input);
-  if (!door?.productId) return REFUSED;
-
-  const name = input.name.trim().slice(0, 120);
-  if (!name) return REFUSED;
-
-  const [ticket] = await issueTickets(door.shopId, [
-    {
-      productId: door.productId,
-      attendeeName: name,
-      attendeeEmail: input.email?.trim().toLowerCase().slice(0, 200) || null,
-      tier: input.tier?.trim().slice(0, 80) || null,
-      source: "manual",
-    },
-  ]);
-  if (!ticket) return REFUSED;
-
-  const result = await checkInTicketById(door.shopId, ticket.id, {
-    productId: door.productId,
-    by: door.by,
-  });
-
-  announce(door, result.status === "checked_in");
-  return result;
+  if (!door) return REFUSED;
+  return addWalkUpAtDoor(
+    door,
+    { name: input.name, email: input.email, tier: input.tier },
+    HOOKS,
+  );
 }
 
 /* -------------------------------------------------------------------------- */

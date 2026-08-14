@@ -9,6 +9,10 @@
     "./tickets": "./src/tickets.ts",
     "./booking-claim": "./src/booking-claim.ts",
     "./coupon-redemption": "./src/coupon-redemption.ts",
+    "./door": "./src/door.ts",
+    "./door-list": "./src/door-list.ts",
+    "./door-pass": "./src/door-pass.ts",
+    "./idempotency": "./src/idempotency.ts",
     "./orders": "./src/orders.ts",
     "./pagination": "./src/pagination.ts",
     "./products": "./src/products.ts",
@@ -23,6 +27,7 @@
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
     "@sailo/events": "workspace:*",
+    "@sailo/rate-limit": "workspace:*",
     "drizzle-orm": "^0.45.2",
     "server-only": "^0.0.1"
   },
