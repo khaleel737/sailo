@@ -1,0 +1,34 @@
+packages/analytics/src/chart-window.test.ts
+  s_5281c97e5b0f0a::t_33dd3376224cb6 1-81
+packages/api/package.json
+  s_5281c97e5b0f0a::t_8dcab9005ec773 16
+packages/api/src/routers/analytics.ts
+  s_5281c97e5b0f0a::t_77899541840dad 1-19,22,24-37,39-41,43-190
+apps/api/next.config.ts
+  s_5281c97e5b0f0a::t_b256b69a17bfc0 26
+packages/analytics/src/analytics-window.ts
+  s_5281c97e5b0f0a::t_ef4c34d0f3b123 117-176
+packages/api/src/routers/analytics.test.ts
+  s_5281c97e5b0f0a::t_e03f5130c0cdb7 21-22
+  s_5281c97e5b0f0a::t_33d59ac05298e5 50,52,58,62-65
+  s_5281c97e5b0f0a::t_84197d3c35bc28 1-20,23-49,66-218
+  s_5281c97e5b0f0a::t_f7f7e5fd95a97e 51,53-57,59-61
+pnpm-lock.yaml
+  s_5281c97e5b0f0a::t_a4c4983603e65a 405-407
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "530c91f6bb62c0909c7a961d876d3fd61079ac75",
+  "prompts": {},
+  "sessions": {
+    "s_5281c97e5b0f0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf4de1f0-8173-4904-b5cb-0ed8ca4d1781",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
