@@ -1,5 +1,5 @@
 import { Pressable, Text as RNText, View } from "react-native";
-import type { IconName } from "./types.ts";
+import type { IconName } from "./types";
 
 /**
  * One line in a list — the shape most of this app is made of.

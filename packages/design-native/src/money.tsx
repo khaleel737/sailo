@@ -1,6 +1,6 @@
 import { Text as RNText } from "react-native";
 import { formatMoney } from "@sailo/core/currency";
-import type { TextVariant, TextWeight, Tone } from "./types.ts";
+import type { TextVariant, TextWeight, Tone } from "./types";
 
 /**
  * An amount of money, in minor units, drawn the way the rest of Sailo draws it.

@@ -1,5 +1,5 @@
 import { Text as RNText, View } from "react-native";
-import type { StatusTone } from "./types.ts";
+import type { StatusTone } from "./types";
 
 /**
  * A message that appears, says one thing, and goes away.

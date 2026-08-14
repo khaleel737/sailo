@@ -42,37 +42,44 @@
  */
 
 /**
- * The palette, forwarded.
+ * A NOTE FOR WHOEVER ADDS THE STYLING
  *
- * Re-exported rather than left for each consumer to import from
- * `@sailo/tokens`, so there is one import for anything design-shaped and one
- * place to intercept it later. This is the object the styling layer builds its
- * Unistyles theme from — it is ramps and scales, not semantic roles, so a screen
- * reaching for `tokens.colors.ink[600]` is a screen that has skipped a variant
- * that should exist. Ask for the variant.
+ * `@sailo/tokens` is where the ramps and scales are, and it is deliberately not
+ * a dependency of this package yet: nothing here has a colour in it, and a
+ * declared-but-unused dependency is one the gate has to be argued out of.
+ * Add it when the bodies get filled in.
+ *
+ * When you do, **also add it to `apps/mobile/package.json`**, even though no
+ * screen imports it. `metro.config.js` sets `disableHierarchicalLookup`, so
+ * Metro only looks in the app's own `node_modules` and the workspace root's —
+ * and pnpm symlinks workspace packages per-package rather than at the root. A
+ * `@sailo/*` package that only this one depends on is therefore invisible to
+ * the bundler, and the failure is at bundle time rather than at typecheck: this
+ * package typechecked clean for a full commit before `expo export` found it.
+ * The same applies to every workspace package added anywhere in the app's
+ * import graph. Third-party dependencies are fine — those do hoist to the root.
  */
-export { theme as tokens, type Theme } from "@sailo/tokens";
 
-export { Avatar, type AvatarProps } from "./avatar.tsx";
-export { Button, type ButtonProps } from "./button.tsx";
-export { Card, type CardProps } from "./card.tsx";
-export { Chart, type ChartPoint, type ChartProps } from "./chart.tsx";
-export { EmptyState, type EmptyStateProps } from "./empty-state.tsx";
-export { ErrorState, type ErrorStateProps } from "./error-state.tsx";
-export { GroupedList, type GroupedListProps } from "./grouped-list.tsx";
-export { Icon, type IconProps } from "./icon.tsx";
-export { ListRow, type ListRowProps } from "./list-row.tsx";
-export { Money, type MoneyProps } from "./money.tsx";
-export { Progress, type ProgressProps } from "./progress.tsx";
-export { Segmented, type SegmentedOption, type SegmentedProps } from "./segmented.tsx";
-export { Sheet, type SheetProps } from "./sheet.tsx";
-export { Skeleton, type SkeletonProps } from "./skeleton.tsx";
-export { Stat, type StatDelta, type StatProps } from "./stat.tsx";
-export { StatusPill, type StatusPillProps } from "./status-pill.tsx";
-export { Switch, type SwitchProps } from "./switch.tsx";
-export { Text, type TextProps } from "./text.tsx";
-export { TextField, type TextFieldAutoComplete, type TextFieldKeyboard, type TextFieldProps } from "./text-field.tsx";
-export { Toast, type ToastProps } from "./toast.tsx";
+export { Avatar, type AvatarProps } from "./avatar";
+export { Button, type ButtonProps } from "./button";
+export { Card, type CardProps } from "./card";
+export { Chart, type ChartPoint, type ChartProps } from "./chart";
+export { EmptyState, type EmptyStateProps } from "./empty-state";
+export { ErrorState, type ErrorStateProps } from "./error-state";
+export { GroupedList, type GroupedListProps } from "./grouped-list";
+export { Icon, type IconProps } from "./icon";
+export { ListRow, type ListRowProps } from "./list-row";
+export { Money, type MoneyProps } from "./money";
+export { Progress, type ProgressProps } from "./progress";
+export { Segmented, type SegmentedOption, type SegmentedProps } from "./segmented";
+export { Sheet, type SheetProps } from "./sheet";
+export { Skeleton, type SkeletonProps } from "./skeleton";
+export { Stat, type StatDelta, type StatProps } from "./stat";
+export { StatusPill, type StatusPillProps } from "./status-pill";
+export { Switch, type SwitchProps } from "./switch";
+export { Text, type TextProps } from "./text";
+export { TextField, type TextFieldAutoComplete, type TextFieldKeyboard, type TextFieldProps } from "./text-field";
+export { Toast, type ToastProps } from "./toast";
 
 export type {
   Alignment,
@@ -83,4 +90,4 @@ export type {
   TextVariant,
   TextWeight,
   Tone,
-} from "./types.ts";
+} from "./types";

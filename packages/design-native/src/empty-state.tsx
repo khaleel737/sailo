@@ -1,5 +1,5 @@
 import { Text as RNText, View } from "react-native";
-import type { IconName } from "./types.ts";
+import type { IconName } from "./types";
 
 /**
  * Nothing here, and what to do about it.

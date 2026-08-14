@@ -1,5 +1,5 @@
 import { Image, Text as RNText, View } from "react-native";
-import type { Size } from "./types.ts";
+import type { Size } from "./types";
 
 /**
  * A shop's or a buyer's picture, with something to show when there isn't one.

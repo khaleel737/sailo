@@ -1,5 +1,5 @@
 import { Pressable, Text as RNText } from "react-native";
-import type { IconName, Edge, Size } from "./types.ts";
+import type { IconName, Edge, Size } from "./types";
 
 /**
  * The thing a seller taps.

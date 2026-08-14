@@ -14,6 +14,7 @@
     "@sailo/api": "workspace:*",
     "@sailo/auth": "workspace:*",
     "@sailo/core": "workspace:*",
+    "@sailo/design-native": "workspace:*",
     "@sailo/i18n": "workspace:*",
     "@sailo/observability": "workspace:*",
     "@tanstack/react-query": "^5.101.4",

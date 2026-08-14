@@ -1,18 +1,18 @@
 {
   "extends": "@sailo/config/tsconfig.base.json",
   /*
-   * `allowImportingTsExtensions` for the same reason `@sailo/tokens` has it:
-   * relative imports here carry `.ts`/`.tsx`, which keeps them resolvable by
-   * anything that reads the source directly. Safe only because `noEmit` means
-   * nothing is ever compiled to a `.js` with a broken specifier in it.
-   *
    * `react-jsx` rather than `preserve`, so the components typecheck as the
    * runtime will actually see them.
+   *
+   * Relative imports here are extensionless on purpose, unlike `@sailo/tokens`.
+   * This package is consumed as source: apps/mobile typechecks straight through
+   * `src/index.ts`, so an import ending in `.tsx` would demand
+   * `allowImportingTsExtensions` in every consumer's tsconfig rather than only
+   * in this one.
    */
   "compilerOptions": {
     "noEmit": true,
     "jsx": "react-jsx",
-    "allowImportingTsExtensions": true,
     "lib": ["es2023", "dom"]
   },
   "include": ["src"]

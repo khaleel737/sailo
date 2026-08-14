@@ -93,6 +93,9 @@ importers:
       '@sailo/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@sailo/design-native':
+        specifier: workspace:*
+        version: link:../../packages/design-native
       '@sailo/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
@@ -519,9 +522,6 @@ importers:
       '@sailo/core':
         specifier: workspace:*
         version: link:../core
-      '@sailo/tokens':
-        specifier: workspace:*
-        version: link:../tokens
     devDependencies:
       '@sailo/config':
         specifier: workspace:*

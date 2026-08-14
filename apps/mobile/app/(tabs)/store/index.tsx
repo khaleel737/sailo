@@ -118,7 +118,7 @@ export default function ProductsScreen() {
           <ProductRow
             product={item}
             currency={currency}
-            onPress={() => router.push(`/(tabs)/products/${item.id}`)}
+            onPress={() => router.push(`/(tabs)/store/${item.id}`)}
           />
         )}
         contentContainerStyle={styles.list}

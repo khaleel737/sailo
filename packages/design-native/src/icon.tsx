@@ -1,5 +1,5 @@
 import { Text as RNText } from "react-native";
-import type { IconName, Size, Tone } from "./types.ts";
+import type { IconName, Size, Tone } from "./types";
 
 /**
  * A glyph, named for what it means rather than for what it is called on this

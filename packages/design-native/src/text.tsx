@@ -1,5 +1,5 @@
 import { Text as RNText } from "react-native";
-import type { Alignment, TextVariant, TextWeight, Tone } from "./types.ts";
+import type { Alignment, TextVariant, TextWeight, Tone } from "./types";
 
 /**
  * Every string the app draws.

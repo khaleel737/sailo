@@ -1,5 +1,5 @@
 import { Text as RNText, View } from "react-native";
-import type { StatusTone } from "./types.ts";
+import type { StatusTone } from "./types";
 
 /**
  * A small coloured badge saying what state something is in.

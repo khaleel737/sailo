@@ -11,8 +11,7 @@
     "lint": "oxlint src -D correctness -D suspicious"
   },
   "dependencies": {
-    "@sailo/core": "workspace:*",
-    "@sailo/tokens": "workspace:*"
+    "@sailo/core": "workspace:*"
   },
   "peerDependencies": {
     "react": "19.1.0",
