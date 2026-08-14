@@ -1,0 +1,85 @@
+packages/design-native/package.json
+  s_8007e5069ec8c7::t_18bb2f7b4e1ca0 11-12,15-21,25-28,33-34
+packages/design-native/src/avatar.tsx
+  s_8007e5069ec8c7::t_aa19b4f60f0a5f 1,3,30-69,71-88,92-155
+packages/design-native/src/button.tsx
+  s_8007e5069ec8c7::t_a26bcf5eb6c6d6 1-10,53-67,71-77,82-104,106-152,155-264
+packages/design-native/src/card.tsx
+  s_8007e5069ec8c7::t_3a93c4c7f70b15 1,3-5,31-48,50-57,59,61-68,75,78-121
+packages/design-native/src/chart.tsx
+  s_8007e5069ec8c7::t_424f08fd10c977 1-6,58-67,69,71-72,75,79-90,93-99,103-117,119-225,229-336
+packages/design-native/src/empty-state.tsx
+  s_8007e5069ec8c7::t_0de93cb2d45d3f 1-2,4-6,26,28-54,58-85
+packages/design-native/src/error-state.tsx
+  s_8007e5069ec8c7::t_0f8510d57e1678 1-5,33-44,48-55,57-92,96-142
+packages/design-native/src/grouped-list.tsx
+  s_8007e5069ec8c7::t_e946bc21bcbb12 1-4,29-36,38-63,67-90
+packages/design-native/src/icon.tsx
+  s_8007e5069ec8c7::t_2b4a7ee748fa65 1-2,4-5,31-61,63-70,75,78-108
+packages/design-native/src/index.ts
+  s_8007e5069ec8c7::t_983298ae7006ce 2,4,6-17,50-71,73,75-81,83
+packages/design-native/src/list-row.tsx
+  s_8007e5069ec8c7::t_e5fc95384a601c 1-3,5-6,51,53,55-56,60-68,70-89,91-96,102-106,111,114,116-117,128-166
+packages/design-native/src/mobile-styling.test.ts
+  s_8007e5069ec8c7::t_f28c1ba81282f8 1-215
+packages/design-native/src/money.tsx
+  s_8007e5069ec8c7::t_f17a67807bfb65 3,45-54,56-81
+packages/design-native/src/progress.tsx
+  s_8007e5069ec8c7::t_7ca2a6ae80bfb9 1-6,34-35,39-55,58,61-65,69-91,95-135
+packages/design-native/src/segmented.tsx
+  s_8007e5069ec8c7::t_52caacff619180 1-3,37,41-42,44-49,51,53-54,56-57,62-172
+packages/design-native/src/sheet.tsx
+  s_8007e5069ec8c7::t_83027e80ea528e 1-8,39-49,53-81,86-94,96,99-154,159-232
+packages/design-native/src/skeleton.tsx
+  s_8007e5069ec8c7::t_c5b86760dca0af 2-4,26-31,33-45,50-105
+packages/design-native/src/stat.tsx
+  s_8007e5069ec8c7::t_d2bb06cd0f6e1b 1-5,43-62,64-97,101-112
+packages/design-native/src/status-pill.tsx
+  s_8007e5069ec8c7::t_cae108f4e22dd1 2,4,26-43,45-48,52-108
+packages/design-native/src/switch.tsx
+  s_8007e5069ec8c7::t_7a4d6fb29d75b5 1-4,35-36,39-44,46-96,99-126
+packages/design-native/src/text-field.tsx
+  s_8007e5069ec8c7::t_53d6b0e3c87f99 1-5,75-112,120-123,125-127,132-145,147-151,153,157,163,165-182,184-190,192-227,231-309
+packages/design-native/src/text.tsx
+  s_8007e5069ec8c7::t_19d3e6935975cf 2,4,38-66,69,79-145
+packages/design-native/src/theme/components.ts
+  s_8007e5069ec8c7::t_4523b559d14b91 1-174
+packages/design-native/src/theme/icons.ts
+  s_8007e5069ec8c7::t_0796728114d4c0 1-134
+packages/design-native/src/theme/motion.ts
+  s_8007e5069ec8c7::t_6ac041bdc281e0 1-157
+packages/design-native/src/theme/palette.test.ts
+  s_8007e5069ec8c7::t_c84c4c6bf27455 1-193
+packages/design-native/src/theme/palette.ts
+  s_8007e5069ec8c7::t_18842563d3f59e 1-225
+packages/design-native/src/theme/tone-color.ts
+  s_8007e5069ec8c7::t_3e8e18a5dc8510 1-40
+packages/design-native/src/theme/typography.test.ts
+  s_8007e5069ec8c7::t_ea1d5550624fd1 1-114
+packages/design-native/src/theme/typography.ts
+  s_8007e5069ec8c7::t_76db90092a1ca9 1-147
+packages/design-native/src/theme/unistyles.ts
+  s_8007e5069ec8c7::t_e6d35d55e9eedc 1-74
+packages/design-native/src/toast.tsx
+  s_8007e5069ec8c7::t_f8375cbc5f3bf8 1-5,7-9,44-70,72,74-104,107-145
+packages/design-native/vitest.config.mts
+  s_8007e5069ec8c7::t_a4b6dfedf4bcd0 1-15
+pnpm-lock.yaml
+  s_8007e5069ec8c7::t_a39da84da821f4 134,528-536,543-560,571-573,1200-1205,1242-1245,4179-4181,4387-4397,4550-4562,4711-4714,5089-5094,5976-5982,6016-6018,6314-6316,6674-6679,6686-6698,6711-6739,6959-6963,8344-8348,8409-8413,8876,8952,11463-11464,11686-11700,11827-11844,11902-11903,12511,12545,12552,12586,12608-12613,13545-13550,13581-13582,14076-14079,14495-14499,14509-14521,14524-14531,14560-14617,14965-14966
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "a475f4b587c1627e3af79e33a4629139f1a1a18d",
+  "prompts": {},
+  "sessions": {
+    "s_8007e5069ec8c7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2bea8322-3a3b-45d7-ad11-705faf06d6c6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
