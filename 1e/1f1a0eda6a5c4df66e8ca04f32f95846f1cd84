@@ -1,0 +1,19 @@
+apps/mobile/app/(tabs)/orders/index.tsx
+  s_70ca2e0516b978::t_96879c4c24da06 277-287,290-311,314-325,327
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "1e1f1a0eda6a5c4df66e8ca04f32f95846f1cd84",
+  "prompts": {},
+  "sessions": {
+    "s_70ca2e0516b978": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cb016c2-ed44-4df9-aca6-3905c4279739",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
