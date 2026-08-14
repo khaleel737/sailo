@@ -58,9 +58,14 @@ module.exports = {
   moduleNameMapper: react,
 
   /*
-   * `.test.tsx` only, and colocated. A separate `__tests__` tree puts the test
-   * a directory away from the thing it describes, and the first casualty is
-   * always the test nobody noticed had stopped covering anything.
+   * `.test.tsx` only. Colocated beside what they describe wherever that is
+   * allowed — a separate tree puts the test a directory away from its subject,
+   * and the first casualty is always the test nobody noticed had stopped
+   * covering anything.
+   *
+   * `tests/` is the exception the next rule forces: a screen's test cannot sit
+   * beside the screen, because the screen lives under `app/`. Everything that
+   * renders a route goes there; everything else stays next to its module.
    */
   testMatch: ["**/*.test.tsx"],
 

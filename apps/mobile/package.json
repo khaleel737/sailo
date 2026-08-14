@@ -9,7 +9,7 @@
     "ios": "expo run:ios",
     "typecheck": "tsc --noEmit",
     "test": "jest --passWithNoTests",
-    "lint": "oxlint app lib components -D correctness -D suspicious",
+    "lint": "oxlint app lib components tests -D correctness -D suspicious",
     "doctor": "expo-doctor"
   },
   "dependencies": {
