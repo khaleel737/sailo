@@ -1,0 +1,113 @@
+packages/i18n/src/admin/ru.ts
+  s_e8291a0f52c41e::t_b6fc53f94335b8 4-31
+packages/i18n/src/admin/ja.ts
+  s_e8291a0f52c41e::t_362a9d8fee63be 4-31
+packages/i18n/src/admin/ar.ts
+  s_e8291a0f52c41e::t_6dc387b7b342f4 4-31
+packages/i18n/src/admin/cs.ts
+  s_e8291a0f52c41e::t_7d104aff95753e 4-31
+packages/i18n/src/admin/nl.ts
+  s_e8291a0f52c41e::t_5cbdaceb72c7b2 4-31
+packages/i18n/src/admin/uk.ts
+  s_e8291a0f52c41e::t_05e913a39a950b 4-31
+packages/i18n/src/admin/da.ts
+  s_e8291a0f52c41e::t_1062a1ad34a1a9 4-31
+packages/i18n/src/admin/ko.ts
+  s_e8291a0f52c41e::t_255541a44f7010 4-31
+packages/i18n/src/admin/de.ts
+  s_e8291a0f52c41e::t_71fe2a95416237 4-31
+packages/i18n/src/admin/pl.ts
+  s_e8291a0f52c41e::t_aec9fba09bc112 4-31
+packages/i18n/src/admin/vi.ts
+  s_e8291a0f52c41e::t_d4d53e5b38b3f9 4-31
+packages/i18n/src/admin/tr.ts
+  s_e8291a0f52c41e::t_206c854ce4c983 4-31
+packages/i18n/src/admin/el.ts
+  s_e8291a0f52c41e::t_cbe171f2ddcd79 4-31
+packages/i18n/src/admin/fil.ts
+  s_e8291a0f52c41e::t_b3dcf0f7265763 4-31
+packages/i18n/src/admin/it.ts
+  s_e8291a0f52c41e::t_ad8e057a74f80b 4-31
+packages/i18n/src/admin/fr.ts
+  s_e8291a0f52c41e::t_fb7bb31d7e3130 4-31
+packages/i18n/src/admin/es.ts
+  s_e8291a0f52c41e::t_872eb2fa1e9324 4-31
+packages/i18n/src/admin/en.ts
+  s_e8291a0f52c41e::t_8a58ff04f81838 906-932,943-989
+  s_e8291a0f52c41e::t_e0974bf2adb00b 933-942
+packages/i18n/src/admin/ms.ts
+  s_e8291a0f52c41e::t_5a247dc02a046e 4-31
+packages/i18n/src/admin/hu.ts
+  s_e8291a0f52c41e::t_bf84c8779ec6e0 4-31
+packages/i18n/src/admin/mk.ts
+  s_e8291a0f52c41e::t_4c44aad4d7e32d 4-31
+packages/i18n/src/admin/bg.ts
+  s_e8291a0f52c41e::t_7c6518c82a21fb 4-31
+packages/i18n/src/admin/th.ts
+  s_e8291a0f52c41e::t_8b43bebb74fb13 4-31
+packages/i18n/src/admin/zh.ts
+  s_e8291a0f52c41e::t_193de091665531 4-31
+packages/i18n/src/admin/ro.ts
+  s_e8291a0f52c41e::t_842fcd2f719507 4-31
+packages/i18n/src/admin/fi.ts
+  s_e8291a0f52c41e::t_f7ef93cd867a8e 4-31
+packages/i18n/src/admin/pt.ts
+  s_e8291a0f52c41e::t_588693f4c1dfad 4-31
+packages/i18n/src/admin/bs.ts
+  s_e8291a0f52c41e::t_ee3f40100d8643 4-31
+packages/i18n/src/admin/sq.ts
+  s_e8291a0f52c41e::t_4fe3fd13ce4c9d 4-31
+packages/i18n/src/admin/sv.ts
+  s_e8291a0f52c41e::t_6c4779615728d8 4-31
+packages/i18n/src/admin/sl.ts
+  s_e8291a0f52c41e::t_0d4f2a1416dd43 4-31
+packages/i18n/src/admin/hr.ts
+  s_e8291a0f52c41e::t_e8f54d5e1fd10c 4-31
+packages/i18n/src/admin/no.ts
+  s_e8291a0f52c41e::t_cd501bec11d614 4-31
+apps/mobile/app/(tabs)/insights/_layout.tsx
+  s_e8291a0f52c41e::t_07abcfb34d6233 2,9-17,20-21,30
+packages/i18n/src/admin/sr.ts
+  s_e8291a0f52c41e::t_f468c30bdc8da5 4-31
+apps/web/src/i18n/admin-coverage.test.ts
+  s_e8291a0f52c41e::t_551a78773fd538 157-161
+  s_e8291a0f52c41e::t_e505840268cbad 80-101,107
+packages/i18n/src/admin/id.ts
+  s_e8291a0f52c41e::t_84dab10aa73255 4-31
+apps/mobile/app/(tabs)/insights/index.tsx
+  s_e8291a0f52c41e::t_4d912f55f41bef 716
+  s_e8291a0f52c41e::t_884b6c20c84bc1 784-797,799-800
+  s_e8291a0f52c41e::t_ca45eb8ba763fb 214-220,222-225,228,234,237,249
+  s_e8291a0f52c41e::t_f49963bf5d47d0 1154-1156
+  s_e8291a0f52c41e::t_cdce336f73c6a3 1-2,4-14,16-29,32,34,36-38,45-48,55-57,62-65,67-68,71-73,79-85,91-99,104-109,118-119,122-137,141-145,147-150,155-159,164-165,172-191,194-195,202-210,221,226-227,229-233,235-236,238-248,250-254,257-265,267,270-272,274-292,294-296,307,312-318,323-328,331,333-355,357-366,368-371,374-380,382-385,391-394,396,401-423,436-466,481,486-504,506-509,514-527,531-539,541-544,559-560,569-577,579-584,586,588-589,595,597-602,604-630,634-638,640-644,646-647,651-655,657-660,663-664,666-670,672,674-675,678,681-687,690-694,697-703,706-711,715,717,719-730,732-767,769-772,775-783,798,801,803-806,808-809,811-821,823-824,826-840,844-847,849-856,858-897,899-908,912,916-920,922-925,927,929-940,944-951,956-982,989-1011,1013-1023,1028-1033,1035-1040,1042-1043,1045-1054,1056-1061,1063-1072,1077-1090,1092-1100,1102-1111,1115,1117,1119,1122-1138,1141-1143,1148-1150,1153,1157-1169,1172-1179,1181-1186,1188-1205,1208,1214,1219-1228
+  s_e8291a0f52c41e::t_8cca437ac25f6e 1171,1180
+  s_e8291a0f52c41e::t_c6cac7681d7c39 15,39-44,49-54,58-61,66,69-70,74-78,86-90,100-103,110-117,120-121,138-140,146,151-154,160-163,166-170,192-193,196-201,211-213,255-256,266,268-269,293,305-306,308-311,329-330,332,367,372-373,381,386-390,395,397-400,424-435,467-480,482-485,505,510-512,528-530,540,545-558,578,585,590-594,596,639,645,648-650,656,661-662,671,673,679-680,688-689,695-696,704-705,712-714,718,731,768,773-774,802,807,810,822,825,841-843,848,857,898,909-911,913-915,921,926,928,941-943,952-955,983-988,1012,1024-1027,1034,1041,1044,1055,1062,1073-1076,1091,1101,1112-1114,1116,1118,1120-1121,1139-1140,1144-1147,1151-1152,1170,1187,1206-1207,1209-1213,1215-1218
+  s_215604f056587b::t_7ab0866f5b8e7d 171,568
+  s_e8291a0f52c41e::t_652fda5fecbdf0 561-567
+  s_e8291a0f52c41e::t_a66e2ab9ff578a 665,676-677
+  s_e8291a0f52c41e::t_b42dbab9992cb0 297-304,319-322
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "698937ad0b1eaeb7b2d7cd1c663ad3d48694ae1d",
+  "prompts": {},
+  "sessions": {
+    "s_215604f056587b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "85bd3789-aab6-46b5-bf51-8322157e96f9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e8291a0f52c41e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "16c7a8ff-5363-4f25-abf1-b9f479cbab82",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}
