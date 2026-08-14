@@ -1,6 +1,6 @@
-import { Text as RNText } from "react-native";
 import { formatMoney } from "@sailo/core/currency";
 import type { TextVariant, TextWeight, Tone } from "./types";
+import { Text } from "./text";
 
 /**
  * An amount of money, in minor units, drawn the way the rest of Sailo draws it.
@@ -42,7 +42,41 @@ export type MoneyProps = {
   testID?: string;
 };
 
-export function Money({ minor, currency, locale, negative, testID }: MoneyProps) {
+export function Money({
+  minor,
+  currency,
+  locale,
+  negative = false,
+  variant = "body",
+  tone = "default",
+  weight,
+  testID,
+}: MoneyProps) {
   const amount = formatMoney(minor, currency, locale);
-  return <RNText testID={testID}>{negative ? `− ${amount}` : amount}</RNText>;
+
+  return (
+    <Text
+      variant={variant}
+      tone={tone}
+      weight={weight}
+      /*
+       * An amount is a number a seller reads across a column, and a proportional
+       * font moves the digits around as the value changes. `numberOfLines` keeps
+       * it on one line: a wrapped total in a list row is a total that has
+       * silently become two rows tall.
+       */
+      numberOfLines={1}
+      /* Long-pressable, so a figure can be copied into a message to a buyer. */
+      selectable
+      testID={testID}
+    >
+      {/*
+       * U+2212 MINUS SIGN, not a hyphen-minus: at the sizes this is read at a
+       * hyphen is short enough to look like a stray dash. `formatMoney` has
+       * already put the currency symbol on whichever side the locale wants, so
+       * the sign goes outside all of it rather than being spliced in.
+       */}
+      {negative ? `− ${amount}` : amount}
+    </Text>
+  );
 }

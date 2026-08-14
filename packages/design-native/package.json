@@ -8,18 +8,29 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src -D correctness -D suspicious"
+    "lint": "oxlint src -D correctness -D suspicious",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@sailo/core": "workspace:*"
+    "@sailo/core": "workspace:*",
+    "@sailo/tokens": "workspace:*",
+    "expo-symbols": "~1.0.8",
+    "lucide-react-native": "1.31.0",
+    "react-native-reanimated": "~4.1.1",
+    "react-native-svg": "15.12.1",
+    "react-native-unistyles": "^3.3.0"
   },
   "peerDependencies": {
     "react": ">=19",
-    "react-native": ">=0.81"
+    "react-native": ">=0.81",
+    "react-native-edge-to-edge": ">=1.8",
+    "react-native-nitro-modules": ">=0.36",
+    "react-native-worklets": "0.5.1"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",
     "oxlint": "^1.77.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.10"
   }
 }
