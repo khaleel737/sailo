@@ -25,6 +25,12 @@ import type { ShopSocial } from "@sailo/db/schema";
  *
  * What is left is four things the seller does, in the admin, that each
  * change what a buyer sees.
+ *
+ * It lives in @sailo/core rather than apps/web because the phone shows the same
+ * checklist, and two derivations of "is this seller set up" would disagree the
+ * first time one of them gained a step. The `href` on each step is the web
+ * admin's path — the only part of this that is not portable. A native caller
+ * switches on `id` and routes itself rather than trying to parse it.
  */
 
 /** In the order they're shown. The card ticks them off in place. */

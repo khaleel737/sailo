@@ -13,7 +13,7 @@ import {
   getVisitBreakdown,
   getVisitSeries,
 } from "@/lib/queries";
-import { setupSteps } from "@/lib/onboarding";
+import { setupSteps } from "@sailo/core/onboarding";
 import { getPartnerCard } from "@/lib/partners/store";
 import { Chart } from "@/components/shared/chart";
 import { TrafficPanel } from "@/app/admin/_components/traffic-panel";

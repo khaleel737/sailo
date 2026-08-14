@@ -10,6 +10,7 @@
     "./variants": "./src/variants.ts",
     "./quote": "./src/quote.ts",
     "./order-status": "./src/order-status.ts",
+    "./onboarding": "./src/onboarding.ts",
     "./invariant": "./src/invariant.ts"
   },
   "scripts": {

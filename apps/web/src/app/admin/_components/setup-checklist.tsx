@@ -5,14 +5,14 @@ import Link from "next/link";
 import { ArrowRight, Check, X } from "lucide-react";
 import { Card, Progress } from "@/components/ui";
 import { interpolate } from "@sailo/i18n";
-import { setupProgress, type SetupStep, type SetupStepId } from "@/lib/onboarding";
+import { setupProgress, type SetupStep, type SetupStepId } from "@sailo/core/onboarding";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
 
 /**
  * "Store setup — 2 of 4", on the seller's dashboard until it isn't needed.
  *
- * The steps themselves are computed on the server (`lib/onboarding.ts`); this
- * is only the card that draws them, and the one piece of state it owns is
+ * The steps themselves are computed on the server (`@sailo/core/onboarding`);
+ * this is only the card that draws them, and the one piece of state it owns is
  * whether this browser has dismissed it.
  *
  * That state is `localStorage`, not a column, for the same reason the consent
