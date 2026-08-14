@@ -274,31 +274,57 @@ export default function OrdersScreen() {
    * The controls sit above the list rather than inside its header, so they stay
    * put while the rows move. A search box that scrolls away is one a seller has
    * to scroll back up to correct.
+   *
+   * The sheet travels with them, and that is not tidiness. All three of this
+   * screen's returns render this block, so a filter button that opened a sheet
+   * mounted only in the third would be a dead tap for as long as the first page
+   * is in flight — and a longer one after a failure, which is precisely when a
+   * seller wants to take a filter back off.
+   *
+   * The same reasoning puts the whole block above the early returns: the search
+   * text and the filter survive the screen going from skeletons to rows to an
+   * error and back, because React reconciles by position and this is position
+   * zero in every branch.
    */
   const controls = (
-    <View style={styles.controls}>
-      <View style={styles.search}>
-        <TextField
-          label={t.common.search}
-          value={typed}
-          onChangeText={setTyped}
-          returnKey="search"
+    <>
+      <View style={styles.controls}>
+        <View style={styles.search}>
+          <TextField
+            label={t.common.search}
+            value={typed}
+            onChangeText={setTyped}
+            returnKey="search"
+          />
+        </View>
+        {/*
+          A sheet rather than a row of chips, and that is `Segmented`'s own
+          instruction: it is for three or four options, and past that "the answer
+          is a `Sheet` with a list in it, not a smaller font". There are seven
+          here — six statuses and the absence of one.
+        */}
+        <Button
+          label={statusLabel}
+          icon="filter"
+          onPress={() => setPicking(true)}
+          accessibilityLabel={`${a.common.status}: ${statusLabel}`}
+          testID="orders-filter"
         />
       </View>
-      {/*
-        A sheet rather than a row of chips, and that is `Segmented`'s own
-        instruction: it is for three or four options, and past that "the answer
-        is a `Sheet` with a list in it, not a smaller font". There are seven
-        here — six statuses and the absence of one.
-      */}
-      <Button
-        label={statusLabel}
-        icon="filter"
-        onPress={() => setPicking(true)}
-        accessibilityLabel={`${a.common.status}: ${statusLabel}`}
-        testID="orders-filter"
+
+      <StatusFilter
+        visible={picking}
+        current={status}
+        title={t.shop.filters}
+        allLabel={t.shop.all}
+        labels={a.orderStatus}
+        onPick={(next) => {
+          setPicking(false);
+          setStatus(next);
+        }}
+        onClose={() => setPicking(false)}
       />
-    </View>
+    </>
   );
 
   if (orders.isPending) {
@@ -415,19 +441,6 @@ export default function OrdersScreen() {
             </View>
           ) : null
         }
-      />
-
-      <StatusFilter
-        visible={picking}
-        current={status}
-        title={t.shop.filters}
-        allLabel={t.shop.all}
-        labels={a.orderStatus}
-        onPick={(next) => {
-          setPicking(false);
-          setStatus(next);
-        }}
-        onClose={() => setPicking(false)}
       />
     </SafeAreaView>
   );
