@@ -1,5 +1,5 @@
 import { createAuthClient } from "better-auth/react";
-import { expoClient } from "@better-auth/expo/client";
+import { expoClient, getCookie } from "@better-auth/expo/client";
 import { magicLinkClient, twoFactorClient } from "better-auth/client/plugins";
 
 /**
@@ -61,3 +61,32 @@ export function createMobileAuthClient(opts: {
 }
 
 export type MobileAuthClient = ReturnType<typeof createMobileAuthClient>;
+
+/**
+ * The session, as a `Cookie` header value.
+ *
+ * **What is in the keychain is not a cookie header, and this is the only thing
+ * standing between the two.** `@better-auth/expo` keeps its jar under
+ * `<storagePrefix>_cookie` as a *JSON object* — `{"<name>":{"value":…,
+ * "expires":…}}` — because it has to remember expiries in order to drop a
+ * cookie the way a browser would. Read that string out and send it as a
+ * `Cookie` header and the server receives a JSON blob with no `name=value` pair
+ * in it, finds no session token, and answers UNAUTHORIZED to every request.
+ *
+ * The failure is quiet in the worst way: better-auth's *own* calls keep working,
+ * because its fetch plugin runs the jar through this same conversion before it
+ * sends. So sign-in succeeds, `useSession` reports a session, and only the calls
+ * the app makes itself — every tRPC query in the product — come back
+ * unauthenticated. It reads as "the API is broken", not "the header is wrong".
+ *
+ * `getCookie` is the plugin's own serialiser rather than a reimplementation
+ * here, so an expired entry is dropped by the same rule that wrote it, and a
+ * change to the jar's shape moves this with it. It cannot be reached through
+ * `authClient.getCookie()` — the `@ts-expect-error` above degrades the plugins
+ * array's element type, so better-auth's `InferActions` contributes none of the
+ * Expo plugin's actions to the client's type. The runtime has them; the type
+ * does not.
+ */
+export function sessionCookieHeader(storage: Pick<SecureStorage, "getItem">): string {
+  return getCookie(storage.getItem(`${MOBILE_SCHEME}_cookie`) ?? "{}");
+}

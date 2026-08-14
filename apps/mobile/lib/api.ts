@@ -1,6 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import { createApiClient } from "@sailo/api/client";
-import { MOBILE_SCHEME } from "@sailo/auth";
+import { sessionCookieHeader } from "@sailo/auth";
 
 /**
  * The *api* origin — apps/api, which serves `/api/trpc` and nothing that issues
@@ -23,10 +23,16 @@ const BASE = process.env.EXPO_PUBLIC_API_URL ?? "https://api.sailo.store";
 /**
  * The typed data client the screens read through.
  *
- * It reuses the session the auth client already put in the device keychain —
- * @better-auth/expo keeps the cookie under `<scheme>_cookie` — and returns it
- * as a Cookie header, which the server's better-auth reads exactly as it reads
- * a browser's. Read fresh on every request so a sign-out takes effect at once.
+ * It reuses the session the auth client already put in the device keychain and
+ * returns it as a Cookie header, which the server's better-auth reads exactly
+ * as it reads a browser's. Read fresh on every request so a sign-out takes
+ * effect at once.
+ *
+ * `sessionCookieHeader` rather than the stored string itself: the keychain
+ * holds better-auth's jar as JSON, not as a header, and the difference is
+ * invisible until every authenticated request comes back UNAUTHORIZED while
+ * sign-in keeps working. That note lives on the function, in the package that
+ * owns the jar's key.
  *
  * Carried explicitly rather than by a cookie jar, which is what lets the data
  * origin differ from the auth origin: nothing here depends on the browser rule
@@ -35,7 +41,7 @@ const BASE = process.env.EXPO_PUBLIC_API_URL ?? "https://api.sailo.store";
 export const api = createApiClient({
   url: `${BASE}/api/trpc`,
   headers: async () => {
-    const cookie = await SecureStore.getItemAsync(`${MOBILE_SCHEME}_cookie`);
+    const cookie = sessionCookieHeader(SecureStore);
     const headers: Record<string, string> = {};
     if (cookie) headers.Cookie = cookie;
     return headers;
