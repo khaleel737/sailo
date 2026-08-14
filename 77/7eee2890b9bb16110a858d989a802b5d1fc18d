@@ -1,0 +1,40 @@
+packages/auth/src/native-stub.ts
+  s_539474e13b1c99::t_d90d7a3277baec 1-34
+packages/auth/package.json
+  s_539474e13b1c99::t_fc390fd3379289 11-12
+  s_539474e13b1c99::t_f517f0618a08d7 23-24
+apps/mobile/lib/api.ts
+  s_539474e13b1c99::t_7d82eae1a26616 26-35,44
+  s_539474e13b1c99::t_c5151e6e20877f 3
+packages/auth/src/index.ts
+  s_539474e13b1c99::t_c6ca46049cdd34 64-92
+  s_539474e13b1c99::t_dd075e6c6c7e95 2
+packages/auth/vitest.config.mts
+  s_539474e13b1c99::t_b9d2b3f4b7c5dc 2-3,24,35
+  s_539474e13b1c99::t_be59d8fb38633a 6,18,23,25-28,34
+  s_539474e13b1c99::t_46eb6759eecd89 1,4-5,7-17,19-22,29-33
+packages/auth/src/index.test.ts
+  s_539474e13b1c99::t_c91919f99a2bf3 1-116
+apps/mobile/lib/api.test.tsx
+  s_539474e13b1c99::t_90676c2b665295 2-38
+  s_539474e13b1c99::t_2b6c8cc28cee49 1
+  s_539474e13b1c99::t_ab51536b30b17b 39-40
+pnpm-lock.yaml
+  s_539474e13b1c99::t_23d08bc7c465c4 561-563
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "777eee2890b9bb16110a858d989a802b5d1fc18d",
+  "prompts": {},
+  "sessions": {
+    "s_539474e13b1c99": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0869f10b-0867-4ace-87cb-a4824c1826de",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
