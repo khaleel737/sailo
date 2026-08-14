@@ -34,6 +34,41 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "ascAppId": "REPLACE_BEFORE_FIRST_SUBMIT",
+        "appleTeamId": "REPLACE_BEFORE_FIRST_SUBMIT",
+        "bundleIdentifier": "store.sailo.app",
+        "sku": "store.sailo.app",
+        "language": "en-US",
+        "companyName": "Khaleel Musleh",
+        "metadataPath": "./store.config.json"
+      },
+      "android": {
+        "applicationId": "store.sailo.app",
+        "track": "internal",
+        "releaseStatus": "completed",
+        "changesNotSentForReview": false
+      }
+    },
+    "beta": {
+      "extends": "production",
+      "android": {
+        "applicationId": "store.sailo.app",
+        "track": "beta",
+        "releaseStatus": "completed",
+        "changesNotSentForReview": false
+      }
+    },
+    "rollout": {
+      "extends": "production",
+      "android": {
+        "applicationId": "store.sailo.app",
+        "track": "production",
+        "releaseStatus": "inProgress",
+        "rollout": 0.1,
+        "changesNotSentForReview": false
+      }
+    }
   }
 }

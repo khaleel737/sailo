@@ -1,0 +1,310 @@
+name: Mobile release
+
+# Two things that look like one workflow, because they are two halves of the
+# same promise.
+#
+# The first job runs on every pull request and asserts the one rule that gets
+# this app rejected: no purchase path on iOS. That has to be checked
+# continuously rather than on release day — the mistake is made by somebody
+# adding a helpful "Upgrade" row months after anybody last read the App Store
+# guidelines, and it is invisible in review because it looks like a feature.
+#
+# The rest runs only when a human asks for it, and it is the release itself:
+# preflight, build, read what was built, hand it over. `ci.yml` already proves
+# the code is sound on the same pull request, so nothing here re-runs typecheck
+# or tests. This proves the *release* is sound, which is a different question
+# with different failure modes.
+
+on:
+  pull_request:
+    paths:
+      - "apps/mobile/**"
+      - "packages/**"
+      - ".github/workflows/mobile-release.yml"
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "What to do"
+        type: choice
+        required: true
+        default: build
+        options:
+          - build
+          - build-and-submit
+          - update
+      platform:
+        description: "Which platform"
+        type: choice
+        required: true
+        default: all
+        options: [all, ios, android]
+      submit_profile:
+        description: "Submit profile — production is TestFlight and the Play internal track, beta is the external track, rollout is a staged production release"
+        type: choice
+        required: true
+        default: production
+        options: [production, beta, rollout]
+      update_message:
+        description: "What this update changes (action: update)"
+        type: string
+        required: false
+        default: ""
+      rollout_percentage:
+        description: "Percent of installs an update reaches, 0-100. Empty sends it to everyone at once."
+        type: string
+        required: false
+        default: ""
+
+# A second pull-request push supersedes the first. A dispatched release does
+# not: cancelling half way through a submit leaves a binary uploaded and
+# nothing in this log saying so, which is worse than a queue.
+concurrency:
+  group: mobile-release-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # ── The rule that must never regress ────────────────────────────────────────
+  #
+  # Deliberately cheap: grep, no install, no network, no EAS account. A gate
+  # that adds three minutes to every pull request is a gate somebody eventually
+  # argues for removing.
+  purchase-path:
+    name: No purchase path on iOS
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: apps/mobile/store/no-purchase-path.sh
+
+  # ── Everything that has to be true before a store sees the build ───────────
+  #
+  # Gated on submitting rather than on building. A build you cannot submit is
+  # still worth having — it is how the app gets onto a device at all — and
+  # blocking that until the screenshots are cropped would mean nobody could
+  # test anything until the listing was finished.
+  preflight:
+    name: Preflight
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'build-and-submit'
+    needs: purchase-path
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      # Reaches the network on purpose: it checks that the privacy and support
+      # URLs the listing claims are real pages rather than the storefront
+      # catch-all, which answers 200 for every path that does not exist.
+      - name: Preflight
+        run: apps/mobile/store/preflight.sh
+
+  # ── Build, then read what was built ────────────────────────────────────────
+  build:
+    name: Build ${{ inputs.platform }}
+    if: github.event_name == 'workflow_dispatch' && inputs.action != 'update'
+    needs: purchase-path
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+    outputs:
+      builds: ${{ steps.build.outputs.builds }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          packager: pnpm
+
+      # `--wait`, because the whole point of the next step is to look inside
+      # what this produced. A fire-and-forget build cannot be verified, and an
+      # unverified build is the one that ships pointing at somebody's laptop.
+      - name: Build
+        id: build
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          eas build \
+            --platform "${{ inputs.platform }}" \
+            --profile production \
+            --non-interactive \
+            --wait \
+            --json > builds.json
+          jq -r '.[] | "\(.platform)  \(.id)  \(.artifacts.applicationArchiveUrl)"' builds.json
+          {
+            echo "builds<<PAIRS"
+            jq -r '.[] | "\(.platform) \(.id)"' builds.json
+            echo "PAIRS"
+          } >> "$GITHUB_OUTPUT"
+
+      # The work order's rule: check the artifact, not the source. eas.json
+      # says the production profile builds against api.sailo.store; this is the
+      # only thing that proves the binary agrees, and the only place a stale
+      # `.env` or a mis-set channel shows up before a seller finds it.
+      - name: Verify the artifacts
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          jq -r '.[].artifacts.applicationArchiveUrl // empty' builds.json | while read -r url; do
+            "$GITHUB_WORKSPACE/apps/mobile/store/verify-artifact.sh" "$url"
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eas-build-metadata
+          path: apps/mobile/builds.json
+
+  # ── Hand it to the store ───────────────────────────────────────────────────
+  #
+  # A separate job so a build can be produced, verified and deliberately *not*
+  # submitted. Most releases want that.
+  submit:
+    name: Submit (${{ inputs.submit_profile }})
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'build-and-submit'
+    needs: [preflight, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      # Through the environment rather than interpolated into the script, so a
+      # value from EAS cannot become a line of shell.
+      BUILDS: ${{ needs.build.outputs.builds }}
+      SUBMIT_PROFILE: ${{ inputs.submit_profile }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          packager: pnpm
+
+      # Both credentials live on EAS and never in this repo: the App Store
+      # Connect API key and the Google Play service account key are uploaded
+      # once with `eas credentials` and referenced by the project from then on.
+      # eas.json carries `ascAppId` and `appleTeamId`, which are identifiers,
+      # not secrets — a leaked App ID lets nobody do anything.
+      - name: Submit
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          printf '%s\n' "$BUILDS" | while read -r platform id; do
+            [ -z "${id:-}" ] && continue
+            echo "submitting $platform build $id on profile $SUBMIT_PROFILE"
+            eas submit \
+              --platform "$platform" \
+              --profile "$SUBMIT_PROFILE" \
+              --id "$id" \
+              --non-interactive \
+              --wait
+          done
+
+  # ── Over the air, for the fixes that are allowed to travel that way ────────
+  #
+  # `runtimeVersion.policy: "appVersion"` decides what may: an update only
+  # reaches a binary whose app version matches the one it was published
+  # against. A JS-only fix qualifies. A native change — a new Expo module, a
+  # permission string, an icon, an SDK bump, a version bump — does not, and the
+  # failure mode is silence: the update publishes, reports success, and reaches
+  # nobody. The last step exists to turn that silence into a red run.
+  update:
+    name: EAS Update
+    if: github.event_name == 'workflow_dispatch' && inputs.action == 'update'
+    needs: purchase-path
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      UPDATE_MESSAGE: ${{ inputs.update_message }}
+      ROLLOUT: ${{ inputs.rollout_percentage }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          packager: pnpm
+
+      # An update with no message cannot be rolled back by anyone who was not
+      # in the room: `eas update:list` is the only record of what shipped.
+      - name: Refuse to update without a message
+        if: inputs.update_message == ''
+        run: |
+          echo "::error::An update needs a message. eas update:list is the only"
+          echo "::error::record of what went over the air, and a rollback starts"
+          echo "::error::by reading it."
+          exit 1
+
+      - name: Publish
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          args=(--branch production --message "$UPDATE_MESSAGE" --non-interactive --json)
+          if [ -n "$ROLLOUT" ]; then
+            args+=(--rollout-percentage "$ROLLOUT")
+          else
+            echo "::warning::No rollout percentage — this reaches every install at"
+            echo "::warning::once. You have one channel and one rollback."
+          fi
+          eas update "${args[@]}" > update.json
+          cat update.json
+
+      # The check that separates "published" from "delivered".
+      - name: Prove the update can reach a production build
+        working-directory: apps/mobile
+        run: |
+          set -euo pipefail
+          published=$(jq -r '[.. | objects | .runtimeVersion? // empty] | first // empty' update.json)
+          if [ -z "$published" ]; then
+            echo "::error::could not read a runtimeVersion out of the update"
+            exit 1
+          fi
+          echo "published runtimeVersion: $published"
+
+          reachable=0
+          for platform in ios android; do
+            built=$(eas build:list \
+              --platform "$platform" \
+              --status finished \
+              --channel production \
+              --limit 1 \
+              --non-interactive \
+              --json 2>/dev/null | jq -r '.[0].runtimeVersion // empty')
+            echo "latest finished production $platform build: ${built:-none}"
+            [ -n "$built" ] && [ "$built" = "$published" ] && reachable=1
+          done
+
+          if [ "$reachable" -ne 1 ]; then
+            echo "::error::This update's runtimeVersion matches no finished production"
+            echo "::error::build, so it will reach nobody. A native change needs a new"
+            echo "::error::binary — apps/mobile/store/README.md says which is which."
+            exit 1
+          fi
