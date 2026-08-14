@@ -1,0 +1,50 @@
+apps/mobile/app/(auth)/sign-in.tsx
+  s_843d9fedb615e6::t_d2c8d6bffa0e61 2-11,15,17-21,23-28,31-32,34,38-45,49-81,83,87,89,95-96,98-159,161-165,168-201,205-263
+  s_3cdb570c98c30d::t_32114d5152b7d5 160
+apps/mobile/app/(auth)/sign-up.tsx
+  s_843d9fedb615e6::t_0e8111e13e73a1 1-256
+apps/mobile/app/(auth)/_layout.tsx
+  s_843d9fedb615e6::t_8088d170ee9a38 1-68
+apps/mobile/app/(auth)/verify-email.tsx
+  s_843d9fedb615e6::t_0e67c4cdef4c29 1-55,65,67-73,75-114,116-124,126-222
+  s_843d9fedb615e6::t_478f9d546e2057 56-64,66,74
+  s_843d9fedb615e6::t_72b105e3009e6a 115,125
+apps/mobile/lib/auth.ts
+  s_843d9fedb615e6::t_ea710d99fbc6d0 448-477
+  s_843d9fedb615e6::t_3aa2b4913631c6 3
+  s_843d9fedb615e6::t_abcc52419dc335 227-230
+  s_843d9fedb615e6::t_6275d5534ee418 317-447,478-516
+  s_843d9fedb615e6::t_fc95d4f7ca9a8f 177-208
+  s_843d9fedb615e6::t_5d0953dfe3b7fb 27-176,209-226,231-316
+apps/mobile/app/(auth)/two-factor.tsx
+  s_843d9fedb615e6::t_6407b9fc950956 1-204
+apps/mobile/app/(auth)/welcome.tsx
+  s_843d9fedb615e6::t_59709b62fc7fe3 1-88
+apps/mobile/app/(auth)/get-paid.tsx
+  s_843d9fedb615e6::t_6bc4bb55e36de1 1-108,110-112,114-237
+  s_843d9fedb615e6::t_5ed208eef7c89c 109,113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "11d54d5ea36c6b3985847807d7182dce06b5f0a9",
+  "prompts": {},
+  "sessions": {
+    "s_3cdb570c98c30d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e1fafd90-c8cf-4e41-9ae5-be55e17f277d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_843d9fedb615e6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2676e43-5b2b-421c-aafb-f749d4fe1c2f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
