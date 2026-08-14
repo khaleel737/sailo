@@ -1,0 +1,59 @@
+packages/analytics/vitest.config.mts
+  s_5281c97e5b0f0a::t_5d653f1e359eb9 1-5
+apps/web/src/lib/analytics-window.ts
+  s_5281c97e5b0f0a::t_5866f753d7eeb1 2,4-8,10-11,14
+apps/web/package.json
+  s_5281c97e5b0f0a::t_d1d34c68f631d6 50
+apps/web/src/lib/queries/analytics.ts
+  s_5281c97e5b0f0a::t_8d0aa46cbcfa46 4,6-13,15-17,20
+apps/web/src/replica.test.ts
+  s_5281c97e5b0f0a::t_0567fb866c8b02 136-143,146,156-157
+packages/analytics/src/analytics-window.ts
+  s_5281c97e5b0f0a::t_f22eecdbd8bf20 4
+  s_5281c97e5b0f0a::t_9d7156dd777ea1 1-3
+  s_5281c97e5b0f0a::t_3e3fb8b6d7fecf 5-7
+  s_5281c97e5b0f0a::t_cdd7ee8f2b58e7 8-116
+packages/analytics/tsconfig.json
+  s_5281c97e5b0f0a::t_94917b9de0eb1b 1-5
+packages/analytics/package.json
+  s_5281c97e5b0f0a::t_2033ec4ac97425 1-28
+packages/analytics/src/index.ts
+  s_5281c97e5b0f0a::t_6456e034ae487f 1-29
+packages/analytics/src/queries.ts
+  s_5281c97e5b0f0a::t_a96c789d6ade9c 13-18
+  s_96fcd386f2ab10::t_9127ff75b1f02f 1-12,19-624
+pnpm-lock.yaml
+  s_8007e5069ec8c7::t_bd277c2b904a52 187-189,378-402
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c7f6731e1c769fd294850786550a7ee624294f75",
+  "prompts": {},
+  "sessions": {
+    "s_5281c97e5b0f0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf4de1f0-8173-4904-b5cb-0ed8ca4d1781",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_8007e5069ec8c7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2bea8322-3a3b-45d7-ad11-705faf06d6c6",
+        "model": "unknown"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_96fcd386f2ab10": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61e85d78-cff5-436c-a216-8b6abb358a82",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
