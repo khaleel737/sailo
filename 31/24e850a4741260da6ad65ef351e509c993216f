@@ -1,0 +1,25 @@
+apps/mobile/eas.json
+  s_53b732a7f2ed11::t_18acf37af6deb0 13-17,21-25,29-33
+.env.example
+  s_53b732a7f2ed11::t_78ceba222c9daf 1
+  s_53b732a7f2ed11::t_57334d86f911c2 60-70,76-87
+  s_53b732a7f2ed11::t_43279b6377e135 71-75
+apps/mobile/lib/api.ts
+  s_53b732a7f2ed11::t_d2aedbce0d6c91 10-19,21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3124e850a4741260da6ad65ef351e509c993216f",
+  "prompts": {},
+  "sessions": {
+    "s_53b732a7f2ed11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0c828826-76a5-46cb-9656-e034319aeb80",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
