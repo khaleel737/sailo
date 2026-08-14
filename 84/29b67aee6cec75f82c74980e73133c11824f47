@@ -1,0 +1,85 @@
+packages/commerce/src/orders.test.ts
+  s_30d2807222b629::t_fabb15e7479d13 1-262
+apps/web/src/lib/inventory.test.ts
+  s_30d2807222b629::t_4071a97c978d3a 166-171,174-175,178-186
+  s_30d2807222b629::t_5be5cf633e4dbe 215,223-238,240-241
+  s_30d2807222b629::t_6674a14d3bd486 187
+apps/web/src/lib/broadcasts/consent-write-paths.test.ts
+  s_30d2807222b629::t_c96c283fa66e9a 29-40,44
+  s_30d2807222b629::t_f3a687c0df8c2f 75-83
+packages/api/src/router.test.ts
+  s_30d2807222b629::t_2836776d70dd66 228,230-238
+  s_30d2807222b629::t_bf689245e3beb9 43
+  s_30d2807222b629::t_b2de89a6938abd 12-24
+  s_30d2807222b629::t_12829bbd7699ac 44-48,50-51
+apps/web/src/lib/webhooks/emit.test.ts
+  s_30d2807222b629::t_b2dbe022ceb32c 100-101,106-116,125-134,136-161
+  s_30d2807222b629::t_d03048d9de15d4 23-32,42-43,45-52
+packages/api/src/routers/orders.test.ts
+  s_30d2807222b629::t_314f30ee6a108e 111-117
+  s_30d2807222b629::t_005ea728854065 1-110,118-234
+apps/web/src/lib/api/resources.ts
+  s_5281c97e5b0f0a::t_8f0c6153020303 2-13,16
+apps/web/src/lib/webhooks/events.ts
+  s_5281c97e5b0f0a::t_a04fe31338b7e1 2,4-6,8-12,15
+packages/api/src/routers/orders.ts
+  s_5281c97e5b0f0a::t_44410d39e0708d 4,6,40,43-44,46-58,63-77
+packages/commerce/src/index.ts
+  s_056bdfb8c9d7ba::t_fcc395f198f17d 20
+packages/commerce/src/orders.ts
+  s_5281c97e5b0f0a::t_ac677af1e0e223 4,8,20-32,114-243
+packages/core/package.json
+  s_5281c97e5b0f0a::t_32fe04b75a4a04 15-17
+apps/web/src/lib/actions/order-admin.ts
+  s_30d2807222b629::t_b1ace4ffa9a1c6 13,42,44-49,51-54,56-67,69,80-86,88,92
+apps/web/src/lib/webhooks/emit.ts
+  s_056bdfb8c9d7ba::t_ff117a91c60a6c 2-14,17
+packages/commerce/package.json
+  s_30d2807222b629::t_213ab0dbfc667d 12-13
+packages/commerce/src/webhooks.ts
+  s_8007e5069ec8c7::t_f935461693a824 1-210
+packages/core/src/resources.ts
+  s_8007e5069ec8c7::t_13269c61432a3c 1-387
+packages/core/src/webhook-events.ts
+  s_30d2807222b629::t_9ec07968d8a8b7 1-165
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8429b67aee6cec75f82c74980e73133c11824f47",
+  "prompts": {},
+  "sessions": {
+    "s_056bdfb8c9d7ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc641a58-523f-45e7-9014-79d37344c31d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_30d2807222b629": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7b99f355-9689-4406-9f99-ae62e80eae10",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_5281c97e5b0f0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf4de1f0-8173-4904-b5cb-0ed8ca4d1781",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_8007e5069ec8c7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2bea8322-3a3b-45d7-ad11-705faf06d6c6",
+        "model": "unknown"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
