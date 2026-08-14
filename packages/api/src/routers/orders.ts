@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { and, asc, desc, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { orderItems, orders } from "@sailo/db/schema";
+import { orderItems, orders, shops } from "@sailo/db/schema";
 import { ORDER_STATUSES } from "@sailo/core/order-status";
-import { applyOrderStatus } from "@sailo/commerce/orders";
+import { changeOrderStatus } from "@sailo/commerce/orders";
 import { publishShopEvent } from "@sailo/events";
 import { router, shopProcedure } from "../trpc";
 import { byId, found, listInput } from "../shared";
@@ -37,25 +37,44 @@ export const ordersRouter = router({
    *
    * The status list and the cascade behind it are both imported, not
    * restated: `ORDER_STATUSES` from `@sailo/core` is the same list the web
-   * dropdown offers, and `applyOrderStatus` from `@sailo/commerce` is the
+   * dropdown offers, and `changeOrderStatus` from `@sailo/commerce` is the
    * same function the web action calls. That is the point of both packages
    * existing — a status set from a phone puts the same units back on the
-   * shelf and voids the same tickets as one set from a browser.
+   * shelf, voids the same tickets and fires the same webhooks as one set from
+   * a browser.
    *
-   * KNOWN GAP, and it is a real one. apps/web does three further things this
-   * does not: it emails the buyer a booking decision, emits the
-   * `order.cancelled` / `booking.confirmed` webhooks, and revalidates the
-   * storefront cache. All three need a `Shop` row and Next's request scope,
-   * and neither was lifted. So a seller who confirms an *appointment* from
-   * the phone leaves the buyer un-emailed, where the same click on the web
-   * would have told them. Until those move too, the app is safe for ordinary
-   * orders and lossy for booked ones.
+   * KNOWN GAP, and it is a real one, though it is now one thing rather than
+   * three. apps/web also emails the buyer a booking decision, and this does
+   * not — so a seller who *declines or confirms an appointment* from the phone
+   * leaves the buyer un-emailed, where the same click on the web would have
+   * told them. `sendBookingDecision` lives in a 3,000-line module in apps/web
+   * that owns Resend and the HTML layout, and `apps/api` cannot import from
+   * that app; `packages/email` is the work order that frees it, and
+   * `changeOrderStatus` already returns the `transition` its guard needs.
+   *
+   * The other two closed. The webhooks moved into `@sailo/commerce` and fire
+   * from here; `revalidatePath` is a callback the web action passes and this
+   * one does not, because there is no Next request scope here and no page of
+   * the seller's that this process caches.
    */
   updateStatus: shopProcedure
     .input(byId.extend({ status: z.enum(ORDER_STATUSES) }))
     .mutation(async ({ ctx, input }) => {
-      const change = await applyOrderStatus({
-        shopId: ctx.shopId,
+      /*
+       * The row, not just the id. The webhook's plan gate reads the shop's
+       * billing and its envelope carries the handle, and inventing either from
+       * `ctx.shopId` would be a payload that differs from the web app's for the
+       * same event. `shopProcedure` has already proved the caller owns it.
+       */
+      const shop = found(
+        await getDb().query.shops.findFirst({ where: eq(shops.id, ctx.shopId) }),
+        "shop",
+      );
+
+      // No `defer` and no `revalidate`: the emission is awaited, for the same
+      // reason the publish below is.
+      const change = await changeOrderStatus({
+        shop,
         orderId: input.id,
         status: input.status,
       });

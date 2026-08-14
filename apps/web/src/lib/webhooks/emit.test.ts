@@ -20,6 +20,16 @@ import { WEBHOOK_EVENTS, knownEvents, isWebhookEvent, envelope } from "./events"
  *
  * `notify-seller.test.ts` established this pattern in this codebase for
  * exactly the same reason.
+ *
+ * **Two of the sites are no longer in this app**, and following them across
+ * the boundary is the point rather than an inconvenience. `order.cancelled` and
+ * `booking.confirmed` hang off a status change, and a status change is made
+ * from a phone as well as from this admin — so they moved into
+ * `@sailo/commerce`, which both surfaces call. They were written here, where
+ * `after()` was to hand, and the consequence was that the surface without
+ * `after()` emitted nothing at all. The rules are unchanged and are asserted
+ * below at their new address; what replaced `after()` there is the `defer` hook,
+ * which this app passes and a phone does not.
  */
 
 const read = (path: string) => readFileSync(path, "utf8");
@@ -29,8 +39,17 @@ const ORDER_ADMIN = read("src/lib/actions/order-admin.ts");
 const CONNECT = read("src/lib/stripe-webhooks/connect.ts");
 const CLIENTS = read("src/lib/actions/clients.ts");
 const SUBSCRIBE = read("src/lib/broadcasts/subscribe.ts");
+/** Read by relative path, as `replica.test.ts` reads its own. Cwd is apps/web. */
+const COMMERCE_ORDERS = read("../../packages/commerce/src/orders.ts");
 
-const ALL_SOURCES = [ORDERS, ORDER_ADMIN, CONNECT, CLIENTS, SUBSCRIBE].join("\n");
+const ALL_SOURCES = [
+  ORDERS,
+  ORDER_ADMIN,
+  CONNECT,
+  CLIENTS,
+  SUBSCRIBE,
+  COMMERCE_ORDERS,
+].join("\n");
 
 describe("emit sites", () => {
   it("wraps every emit on a request path in after()", () => {
@@ -78,16 +97,21 @@ describe("emit sites", () => {
     expect(CONNECT).toContain('if (order.paymentStatus !== "paid")');
   });
 
-  it("emits the four seller-driven order events", () => {
-    for (const event of [
-      "order.paid",
-      "order.shipped",
-      "order.cancelled",
-      "order.refunded",
-      "booking.confirmed",
-    ]) {
+  it("emits the three events this app still owns", () => {
+    for (const event of ["order.paid", "order.shipped", "order.refunded"]) {
       expect(ORDER_ADMIN, event).toContain(`event: "${event}"`);
     }
+  });
+
+  it("emits the two that hang off a status change, where both surfaces call", () => {
+    // In @sailo/commerce, so a seller cancelling from a phone fires the same
+    // Zap as one cancelling from this dropdown. That is the whole reason they
+    // are not in the file above.
+    for (const event of ["order.cancelled", "booking.confirmed"]) {
+      expect(COMMERCE_ORDERS, event).toContain(`event: "${event}"`);
+    }
+    expect(ORDER_ADMIN).not.toContain('event: "order.cancelled"');
+    expect(ORDER_ADMIN).not.toContain('event: "booking.confirmed"');
   });
 
   it("guards order.paid on a transition rather than a save", () => {
@@ -98,15 +122,43 @@ describe("emit sites", () => {
 
   it("guards order.cancelled and booking.confirmed on the previous status", () => {
     /*
-     * `previous`, because the status change itself moved to
-     * `applyOrderStatus` in @sailo/commerce and hands back the row as it read
-     * *before* the write. The rule is unchanged and the name now says it: a
-     * seller re-saving an order that was already cancelled has changed
-     * nothing, and firing a Zap for it is how a customer receives the same
-     * "your order was cancelled" message four times.
+     * `previous`, because `applyOrderStatus` hands back the row as it read
+     * *before* the write. The rule is unchanged by the move and the assertions
+     * are the same two strings they always were, now read at the address that
+     * holds them: a seller re-saving an order that was already cancelled has
+     * changed nothing, and firing a Zap for it is how a customer receives the
+     * same "your order was cancelled" message four times.
+     *
+     * Both live in `orderTransition`, which is a plain function over the
+     * previous row and the new status — so unlike every other assertion in this
+     * file the rule can also be *called*, and `@sailo/commerce` does call it.
      */
-    expect(ORDER_ADMIN).toContain('previous.status !== "cancelled"');
-    expect(ORDER_ADMIN).toContain('previous.status === "new"');
+    expect(COMMERCE_ORDERS).toContain('previous.status !== "cancelled"');
+    expect(COMMERCE_ORDERS).toContain('previous.status === "new"');
+  });
+
+  it("keeps the moved emits off the caller's critical path too", () => {
+    /*
+     * The replacement for `after()` on the other side of the boundary.
+     *
+     * `@sailo/commerce` cannot import `after` — there is no Next request scope
+     * in apps/api — so it takes a `defer` hook and awaits when given none. Both
+     * halves are asserted: that the package routes its emits through the seam
+     * rather than calling them inline, and that this app, which does have
+     * `after`, hands it over. A web action that stopped passing it would put a
+     * webhook queue insert back in front of the seller's click.
+     */
+    const emits = [...COMMERCE_ORDERS.matchAll(/emitOrderWebhook\(/g)].filter(
+      (match) => !COMMERCE_ORDERS.slice(0, match.index).endsWith("import { "),
+    );
+    expect(emits.length, "@sailo/commerce emits nothing").toBeGreaterThan(0);
+    for (const emit of emits) {
+      const before = COMMERCE_ORDERS.slice(Math.max(0, emit.index - 40), emit.index);
+      expect(before, `emit outside the defer seam at ${emit.index}`).toContain(
+        "settle(",
+      );
+    }
+    expect(ORDER_ADMIN).toContain("defer: after");
   });
 
   it("emits contact.created only where a contact is genuinely new", () => {

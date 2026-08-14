@@ -10,7 +10,7 @@ import { requireShop } from "@/lib/session";
 import { maybeRow } from "@sailo/core/invariant";
 import { formatMoney, parseMoneyToCents } from "@/lib/utils";
 import { restoreStock } from "@sailo/commerce/inventory";
-import { applyOrderStatus } from "@sailo/commerce/orders";
+import { changeOrderStatus } from "@sailo/commerce/orders";
 import { checkRefund, refundableCents, reversePayment, type RefundOutcome } from "@/lib/refunds";
 import { claimRefundAmount, releaseRefundClaim } from "@/lib/orders/refund-claim";
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
@@ -39,26 +39,34 @@ export async function updateOrderStatus(formData: FormData) {
   if (!id || !isOrderStatus(status)) return;
 
   /*
-   * The write, and the stock and admissions that follow it.
+   * The write, everything that follows from it, and everyone who is told.
    *
-   * All of that used to be spelled out here, and it is now `applyOrderStatus`
-   * in `@sailo/commerce` — not to tidy this function, but because the mobile
-   * app changes statuses too and a second copy of the cascade is a second
-   * chance to forget the half that is silent. What that call does *not* do is
-   * everything below: the buyer's email, the outbound webhook and the cache
-   * are this app's, and a phone has none of them.
+   * All of it used to be spelled out here, and it is now `changeOrderStatus` in
+   * `@sailo/commerce` — not to tidy this function, but because the mobile app
+   * changes statuses too and a second copy of any of it is a second chance to
+   * forget the half that is silent. It was: the phone cancelled orders and
+   * fired no `order.cancelled`, so a seller's Zap ran for a browser and not for
+   * a thumb, and nothing anywhere said so.
    *
-   * `previous` is the order as it read before the write, which is what every
-   * guard below needs — each one asks whether something changed, not what it
-   * changed to.
+   * The two things handed in are the two that are genuinely this app's.
+   * `revalidatePath` needs Next's request scope, which `apps/api` does not
+   * have. `after` is the scheduler that keeps the seller's click off the
+   * webhook queue; with none, the package awaits instead.
    */
-  const change = await applyOrderStatus({
-    shopId: shop.id,
-    orderId: id,
-    status,
-  });
+  const change = await changeOrderStatus(
+    { shop, orderId: id, status },
+    {
+      defer: after,
+      revalidate: () => {
+        revalidatePath("/admin");
+        revalidatePath("/admin/orders");
+        revalidatePath("/admin/clients");
+        revalidatePath("/admin/products");
+      },
+    },
+  );
   if (!change) return;
-  const { previous } = change;
+  const { previous, transition } = change;
 
   /*
    * An appointment the seller has now answered.
@@ -69,24 +77,24 @@ export async function updateOrderStatus(formData: FormData) {
    * `cancelled` is them declining it. Either way the buyer is told, because a
    * promised confirmation that arrives as silence is worse than none.
    *
-   * Guarded on the *previous* status, so re-saving an order that was already
-   * confirmed does not email the buyer a second time.
+   * The last side effect still stranded in this app, and the only one the phone
+   * does not perform. `sendBookingDecision` sits in a 3,000-line module that
+   * owns Resend and fifteen other messages; extracting it is `packages/email`'s
+   * job, not something to do on the way past. `transition` is the same decision
+   * the webhook above was guarded on, so when that package lands this branch
+   * moves rather than being rewritten — and until then the two cannot disagree
+   * about whether a booking was answered.
    */
-  if (previous.scheduledFor && previous.status === "new" && status !== "new") {
+  if (transition.answeredBooking) {
     const decision = await sendBookingDecision({
       shop,
       order: previous,
-      accepted: status !== "cancelled",
+      accepted: transition.bookingAccepted,
     });
     if (!decision.sent) {
       console.warn(`[sailo] booking decision not sent: ${decision.reason}`);
     }
   }
-
-  revalidatePath("/admin");
-  revalidatePath("/admin/orders");
-  revalidatePath("/admin/clients");
-  revalidatePath("/admin/products");
 
   /*
    * The action's own response repaints the tab it came from; the publish is
@@ -98,23 +106,6 @@ export async function updateOrderStatus(formData: FormData) {
   if (previous.affiliateId) {
     const affiliateId = previous.affiliateId;
     after(() => publishAffiliateEvent(affiliateId, "order"));
-  }
-
-  /*
-   * Both guarded on the status the order had *before* this write, exactly as
-   * the booking email above is. A seller re-saving an order that was already
-   * cancelled has changed nothing, and firing a Zap for it is how a customer
-   * receives the same "your order was cancelled" message four times.
-   */
-  if (status === "cancelled" && previous.status !== "cancelled") {
-    after(() =>
-      emitOrderWebhook({ shop, event: "order.cancelled", orderId: id }),
-    );
-  }
-  if (previous.scheduledFor && previous.status === "new" && status !== "new" && status !== "cancelled") {
-    after(() =>
-      emitOrderWebhook({ shop, event: "booking.confirmed", orderId: id }),
-    );
   }
 }
 

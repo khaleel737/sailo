@@ -17,3 +17,4 @@ export * from "./inventory";
 export * from "./tickets";
 export * from "./booking-claim";
 export * from "./coupon-redemption";
+export * from "./webhooks";

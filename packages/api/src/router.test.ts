@@ -1,5 +1,4 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { ORDER_STATUSES } from "@sailo/core/order-status";
 
 /**
  * The one property this router exists to hold: every read is scoped to the
@@ -10,6 +9,19 @@ import { ORDER_STATUSES } from "@sailo/core/order-status";
  * that forgot `ctx.shopId`, or reached for an id the client sent, would show up
  * as a missing or wrong `eq(..., shopId)` right here rather than as a
  * cross-tenant leak in production.
+ *
+ * **This file is the catch-all, and it is meant to shrink.** `routers/` was
+ * split so ten agents could write at once, and a single test module holding all
+ * ten routers' cases puts the merge conflict back — in a shared working tree,
+ * where there is no merge at all and the last writer simply wins. Each router
+ * that grows enough behaviour to be worth its own file takes its cases with it:
+ * `routers/analytics.test.ts`, `routers/uploads.test.ts` and
+ * `routers/orders.test.ts` are already out. What stays here is what is genuinely
+ * about the *composition* — the scoping property, asserted across routers, and
+ * the fact that the namespaces are mounted at all.
+ *
+ * (`src/push.test.ts` is the one exception, and only because it predates the
+ * split. It belongs at `routers/push.test.ts`.)
  */
 
 const findFirst = vi.fn();
@@ -28,19 +40,15 @@ vi.mock("@sailo/db", () => ({
   }),
 }));
 
-/**
- * The shared status change, stubbed.
- *
- * What this router is responsible for is *which shop* the change is applied
- * to — the cascade itself (units back on the shelf, tickets voided) is
- * @sailo/commerce's, and is tested there against its own source. Mocking it
- * keeps that boundary honest and keeps `server-only` out of this test run.
+/*
+ * Stubbed to keep them out of this run, not to be asserted on. `router.ts`
+ * imports every router, so loading it loads `orders.ts`'s imports too —
+ * @sailo/commerce reaches for `server-only` and @sailo/events for redis, and
+ * neither belongs in a test about WHERE clauses. What the write actually does
+ * with them is asserted in `routers/orders.test.ts`.
  */
-const applyOrderStatus = vi.fn();
-vi.mock("@sailo/commerce/orders", () => ({ applyOrderStatus }));
-
-const publishShopEvent = vi.fn();
-vi.mock("@sailo/events", () => ({ publishShopEvent }));
+vi.mock("@sailo/commerce/orders", () => ({ changeOrderStatus: vi.fn() }));
+vi.mock("@sailo/events", () => ({ publishShopEvent: vi.fn() }));
 
 // Tag `eq`/`desc`/`and`/`asc` so the test can read back the predicate each query
 // builds, but keep the rest of drizzle real — @sailo/db/schema imports `sql` and
@@ -78,8 +86,6 @@ beforeEach(() => {
   ordersFindMany.mockReset();
   productsFindFirst.mockReset();
   ordersFindFirst.mockReset();
-  applyOrderStatus.mockReset();
-  publishShopEvent.mockReset();
 });
 
 /** Real uuids, because `byId` refuses anything that isn't one. */
@@ -219,107 +225,15 @@ describe("the shop-scoped router", () => {
     ).rejects.toThrow();
     expect(ordersFindFirst).not.toHaveBeenCalled();
   });
-
-  /* ------------------------------------------------------------------------ */
-  /*  The first mutation                                                       */
-  /*                                                                           */
-  /*  A write is where a missing shop scope stops being a leak and becomes     */
-  /*  damage: the id comes from the client, so without `ctx.shopId` in the     */
-  /*  call a seller could cancel — and restock, and void the tickets of — an   */
-  /*  order belonging to somebody else's shop.                                 */
-  /* ------------------------------------------------------------------------ */
-
-  describe("orders.updateStatus", () => {
-    const change = { previous: { id: ORDER_ID, status: "new" }, status: "confirmed" };
-
-    it("refuses the write when no shop resolved", async () => {
-      await expect(
-        appRouter
-          .createCaller({ shopId: null })
-          .orders.updateStatus({ id: ORDER_ID, status: "confirmed" }),
-      ).rejects.toThrow(/sign in/i);
-      // Nothing may reach the shared cascade on a refused call.
-      expect(applyOrderStatus).not.toHaveBeenCalled();
-      expect(publishShopEvent).not.toHaveBeenCalled();
-    });
-
-    it("applies the change against the caller's own shop", async () => {
-      applyOrderStatus.mockResolvedValue(change);
-      const result = await appRouter
-        .createCaller({ shopId: "shop_A" })
-        .orders.updateStatus({ id: ORDER_ID, status: "confirmed" });
-
-      expect(applyOrderStatus).toHaveBeenCalledWith({
-        shopId: "shop_A",
-        orderId: ORDER_ID,
-        status: "confirmed",
-      });
-      expect(result).toEqual({ id: ORDER_ID, status: "confirmed" });
-    });
-
-    /*
-     * The ownership test. `applyOrderStatus` scopes its own WHERE to the shop
-     * id it is handed and answers null when nothing matched — so a row in
-     * another shop is refused, and the caller is told the same "no such order"
-     * a missing row gets.
-     */
-    it("cannot write to an order belonging to another shop", async () => {
-      applyOrderStatus.mockResolvedValue(null);
-      await expect(
-        appRouter
-          .createCaller({ shopId: "shop_B" })
-          .orders.updateStatus({ id: ORDER_ID, status: "cancelled" }),
-      ).rejects.toThrow(/no such order/i);
-
-      // And it was the caller's own shop that was used to look, not an id the
-      // client sent — there is no shopId in the input schema to send.
-      expect(applyOrderStatus).toHaveBeenCalledWith({
-        shopId: "shop_B",
-        orderId: ORDER_ID,
-        status: "cancelled",
-      });
-    });
-
-    it("does not announce a change that did not happen", async () => {
-      applyOrderStatus.mockResolvedValue(null);
-      await expect(
-        appRouter
-          .createCaller({ shopId: "shop_B" })
-          .orders.updateStatus({ id: ORDER_ID, status: "cancelled" }),
-      ).rejects.toThrow();
-      // A publish on a refused write wakes every other screen to re-read
-      // nothing, and on the staff panel it reads as an order that moved.
-      expect(publishShopEvent).not.toHaveBeenCalled();
-    });
-
-    it("tells the shop's other screens once the write lands", async () => {
-      applyOrderStatus.mockResolvedValue(change);
-      await appRouter
-        .createCaller({ shopId: "shop_A" })
-        .orders.updateStatus({ id: ORDER_ID, status: "confirmed" });
-      expect(publishShopEvent).toHaveBeenCalledWith("shop_A", "order");
-    });
-
-    it("refuses a status the system cannot store", async () => {
-      await expect(
-        appRouter
-          .createCaller({ shopId: "shop_A" })
-          // @ts-expect-error — the enum is the point; this is what a
-          // hand-rolled POST sends, and it must not reach the cascade.
-          .orders.updateStatus({ id: ORDER_ID, status: "deleted" }),
-      ).rejects.toThrow();
-      expect(applyOrderStatus).not.toHaveBeenCalled();
-    });
-
-    it("accepts every status the shared list declares", async () => {
-      applyOrderStatus.mockResolvedValue(change);
-      const caller = appRouter.createCaller({ shopId: "shop_A" });
-      for (const status of ORDER_STATUSES) {
-        await expect(
-          caller.orders.updateStatus({ id: ORDER_ID, status }),
-        ).resolves.toBeTruthy();
-      }
-      expect(applyOrderStatus).toHaveBeenCalledTimes(ORDER_STATUSES.length);
-    });
-  });
 });
+
+/* -------------------------------------------------------------------------- */
+/*  Moved out                                                                  */
+/*                                                                             */
+/*  `orders.updateStatus` — the app's only write — used to be asserted here.   */
+/*  It now has `routers/orders.test.ts` to itself, because it grew a shop      */
+/*  read, a webhook emission and two hook seams, and none of that is about     */
+/*  the composition this file describes. The scoping property it held is       */
+/*  held there, in more detail than it was here.                               */
+/* -------------------------------------------------------------------------- */
+

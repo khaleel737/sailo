@@ -163,14 +163,27 @@ describe("a booked order waits for the seller", () => {
   const admin = readFileSync("src/lib/actions/order-admin.ts", "utf8");
 
   /**
-   * The seller-decision block, from the booking guard to the first cache
-   * revalidation after it. The stock cascade used to close this slice and now
-   * lives in `@sailo/commerce`, so the boundary moved with it.
+   * The seller-decision block, from the booking guard to the publish after it.
+   *
+   * Both boundaries have moved twice now: the stock cascade used to close the
+   * slice, then the cache revalidation did, and both are now `@sailo/commerce`'s
+   * — the revalidation as a callback this app hands in. What is left between
+   * them is the one side effect the phone still cannot perform.
    */
   const decision = admin.slice(
-    admin.indexOf("if (previous.scheduledFor"),
-    admin.indexOf('revalidatePath("/admin")'),
+    admin.indexOf("if (transition.answeredBooking)"),
+    admin.indexOf("after(() => publishShopEvent"),
   );
+
+  /**
+   * Where the guard itself now lives.
+   *
+   * `orderTransition` decides "the seller has just answered a booking" once,
+   * and both the email below and the `booking.confirmed` webhook read that one
+   * answer — so the two can no longer disagree about whether a booking was
+   * answered, which they could when each carried its own copy of the condition.
+   */
+  const commerce = readFileSync("../../packages/commerce/src/orders.ts", "utf8");
 
   it("does not let payment confirm an appointment", () => {
     const paid = webhook.slice(
@@ -199,7 +212,7 @@ describe("a booked order waits for the seller", () => {
   it("tells the buyer when the seller answers", () => {
     expect(decision).toContain("sendBookingDecision(");
     // Declining is an answer too, and the buyer needs it more than acceptance.
-    expect(decision).toContain('accepted: status !== "cancelled"');
+    expect(decision).toContain("accepted: transition.bookingAccepted");
   });
 
   it("does not email the same decision twice", () => {
@@ -207,7 +220,24 @@ describe("a booked order waits for the seller", () => {
      * Guarded on the previous status, not the new one. Re-saving an order that
      * is already confirmed must not send a second "your appointment is
      * confirmed" — the seller edits orders for all sorts of reasons.
+     *
+     * The condition itself is `orderTransition`'s now, so it is asserted at its
+     * new address. Nothing is given up by following it there: the same string
+     * decides the email and the `booking.confirmed` webhook, where before this
+     * action spelled it out twice and could have been changed in one place.
      */
-    expect(decision).toContain('previous.status === "new"');
+    expect(commerce).toContain('previous.status === "new"');
+    expect(commerce).toContain("answeredBooking");
+  });
+
+  it("reads that decision rather than re-deriving it", () => {
+    /*
+     * The point of the previous assertion. A branch here that re-tested
+     * `previous.scheduledFor && previous.status === "new"` by hand would pass
+     * every test in this file and still be a second copy of the rule — the kind
+     * that stays right until the day one of the two is edited.
+     */
+    expect(decision).toContain("transition.answeredBooking");
+    expect(decision).not.toContain("previous.scheduledFor");
   });
 });

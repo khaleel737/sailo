@@ -9,7 +9,8 @@
     "./tickets": "./src/tickets.ts",
     "./booking-claim": "./src/booking-claim.ts",
     "./coupon-redemption": "./src/coupon-redemption.ts",
-    "./orders": "./src/orders.ts"
+    "./orders": "./src/orders.ts",
+    "./webhooks": "./src/webhooks.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

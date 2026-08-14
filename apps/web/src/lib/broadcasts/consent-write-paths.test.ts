@@ -26,15 +26,22 @@ import { describe, expect, it } from "vitest";
 /**
  * Every file naming the column, tests aside.
  *
- * Two roots, because the column and the code that writes it no longer live in
- * the same package: the table is declared in `@sailo/db` and every writer sits
- * in this app. Scanning only `src/` would quietly stop covering the schema —
- * the invariant would still pass, having simply looked away from the one file
- * that defines what it is guarding.
+ * Three roots, because the column and the code around it do not live in the
+ * same package: the table is declared in `@sailo/db`, the shape a contact takes
+ * on its way out of Sailo is in `@sailo/core`, and the writers sit in this app.
+ * Scanning only `src/` would quietly stop covering the other two — the
+ * invariant would still pass, having simply looked away from the files it is
+ * guarding.
+ *
+ * `@sailo/core` was added when `resources.ts` left this app, and that move is
+ * the argument for this list existing at all: nothing failed, nothing looked
+ * wrong, and a file naming the column had silently stepped outside the only
+ * check on it. A root is added here whenever code crosses a package boundary,
+ * never a file removed from the list below to make this pass.
  */
 function filesNaming(pattern: string): string[] {
   return execSync(
-    `grep -rl "${pattern}" src/ ../../packages/db/src --include="*.ts" --include="*.tsx" || true`,
+    `grep -rl "${pattern}" src/ ../../packages/db/src ../../packages/core/src --include="*.ts" --include="*.tsx" || true`,
     { encoding: "utf8" },
   )
     .split("\n")
@@ -65,8 +72,15 @@ const MAY_NAME_THE_COLUMN = [
   "src/lib/actions/clients.ts",
   // The public API's contact upsert. Writes a literal null.
   "src/lib/api/handlers.ts",
-  // Serialising a contact back out — a read, not a write.
-  "src/lib/api/resources.ts",
+  /*
+   * Serialising a contact back out — a read, not a write.
+   *
+   * In `@sailo/core` since the webhook emitter moved to `@sailo/commerce`: the
+   * same shape has to be built for a `contact.created` payload and for
+   * `GET /api/v1/contacts/{id}`, and the emitter is no longer in this app.
+   * `src/lib/api/resources.ts` is a re-export of it and names nothing itself.
+   */
+  "../../packages/core/src/resources.ts",
   // The API docs, telling integrators the field is ignored.
   "src/app/(marketing)/docs/api/page.tsx",
   // The MCP tool reference, saying the same thing to an assistant.

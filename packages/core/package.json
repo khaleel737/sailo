@@ -12,7 +12,9 @@
     "./order-status": "./src/order-status.ts",
     "./onboarding": "./src/onboarding.ts",
     "./invariant": "./src/invariant.ts",
-    "./plans": "./src/plans.ts"
+    "./plans": "./src/plans.ts",
+    "./resources": "./src/resources.ts",
+    "./webhook-events": "./src/webhook-events.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
