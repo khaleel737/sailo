@@ -1,0 +1,41 @@
+packages/api/src/routers/events.ts
+  s_215604f056587b::t_97ef3ed5bc2843 1-17
+packages/api/src/shared.ts
+  s_215604f056587b::t_30dde33d706f37 1-61
+packages/api/src/routers/orders.ts
+  s_215604f056587b::t_9ce0faed0aadff 1-75
+packages/api/src/router.ts
+  s_215604f056587b::t_6e096fa236a131 1-11,14,16-21,23-25,27-30,33-42
+packages/api/src/routers/push.ts
+  s_215604f056587b::t_3dc68a8cbae0fc 1-95
+packages/api/src/routers/tickets.ts
+  s_215604f056587b::t_6409d0120a35b0 1-12
+packages/api/src/routers/analytics.ts
+  s_215604f056587b::t_c339a9d8571804 1-15
+packages/api/src/routers/uploads.ts
+  s_215604f056587b::t_418af8ae22cda1 1-13
+packages/api/src/routers/account.ts
+  s_215604f056587b::t_690388337e66d0 1-13
+packages/api/src/routers/shop.ts
+  s_215604f056587b::t_7646ed864104f8 1-18
+packages/api/src/routers/products.ts
+  s_215604f056587b::t_0b765f4d38ec6c 1-38
+packages/api/src/routers/payments.ts
+  s_215604f056587b::t_f5fccb576ca393 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "fa8035d87a5d77e39919cad3446a20dd1cc29969",
+  "prompts": {},
+  "sessions": {
+    "s_215604f056587b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "85bd3789-aab6-46b5-bf51-8322157e96f9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
