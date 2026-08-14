@@ -1,0 +1,19 @@
+apps/mobile/app.json
+  s_215604f056587b::t_bc03528cc983a4 10-19,21-28,31-46,52-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "eeb958b9960c856beb9888da48a90b75e553ea56",
+  "prompts": {},
+  "sessions": {
+    "s_215604f056587b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "85bd3789-aab6-46b5-bf51-8322157e96f9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
