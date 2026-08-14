@@ -10,6 +10,8 @@
     "./booking-claim": "./src/booking-claim.ts",
     "./coupon-redemption": "./src/coupon-redemption.ts",
     "./orders": "./src/orders.ts",
+    "./pagination": "./src/pagination.ts",
+    "./products": "./src/products.ts",
     "./webhooks": "./src/webhooks.ts"
   },
   "scripts": {

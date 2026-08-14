@@ -5,9 +5,8 @@ import { after } from "next/server";
 import { revalidateShop } from "@/lib/cache";
 import { publishShopEvent } from "@sailo/events";
 import { firstRow } from "@sailo/core/invariant";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { isStoredFileUrl, isRenderableImageUrl, isPublicLinkUrl } from "@/lib/file-urls";
 import {
   optionalCents,
   optionalCount,
@@ -20,128 +19,156 @@ import {
   type FileRow,
   type VariantRow,
 } from "@/lib/products/form-fields";
-import { categories, productFiles, productImages, products, productVariants, type ProductOption } from "@sailo/db/schema";
+import { categories, type ProductOption } from "@sailo/db/schema";
+import {
+  deleteProduct as deleteProductRow,
+  saveProduct as saveProductRow,
+  toggleProductPublished as togglePublishedRow,
+  type ProductInput,
+  type SaveProductRefusal,
+} from "@sailo/commerce/products";
 import { requireShop } from "@/lib/session";
 import { parseMoneyToCents, slugify } from "@/lib/utils";
-import { atProductLimit, planFor, productLimit } from "@/lib/plans";
-import { isProductKind, isServiceMode, normalizeOptions, optionKey } from "@sailo/core/variants";
-import { isBillingInterval, normalizeTrialDays } from "@/lib/memberships";
+import { isProductKind } from "@sailo/core/variants";
 import type { ActionState } from "./shop";
 
-const MAX_FILES = 10;
+/**
+ * The product form, and nothing else.
+ *
+ * What is left here after `@sailo/commerce/products` took the write: reading a
+ * `FormData`, saying no in English, and dropping the caches this app keeps.
+ * The 245-line function these three used to share a body with was the most
+ * entangled in the repo, and the reason it had to come apart is that a phone
+ * posts JSON to `products.save` and needs every rule in the middle of it —
+ * the category check, the membership refusals, the file-URL guard, the product
+ * limit — without needing any of the three things above.
+ *
+ * The division is by what the input is. Anything that reads `formData` is
+ * here; anything that would be equally true of a product posted as JSON is
+ * there. `saveProduct` below should stay boring: if a rule ever needs adding,
+ * it almost certainly belongs on the other side of this file.
+ */
 
-/** Appends -2, -3 … until the slug is free within the shop. */
-async function uniqueSlug(shopId: string, base: string, exceptId?: string) {
-  const db = getDb();
-  let slug = base;
-  let n = 1;
-  for (;;) {
-    const clash = await db.query.products.findFirst({
-      where: and(eq(products.shopId, shopId), eq(products.slug, slug)),
-      columns: { id: true },
-    });
-    if (!clash || clash.id === exceptId) return slug;
-    n += 1;
-    slug = `${base}-${n}`;
+/** The seller's own words for each refusal the domain can return. */
+function sentenceFor(refusal: SaveProductRefusal): string {
+  switch (refusal.kind) {
+    case "no_title":
+      return "Product needs a title.";
+    case "unknown_category":
+      return "That category doesn't exist.";
+    case "event_needs_start":
+      return "An event needs a date and time.";
+    case "membership_needs_interval":
+      return "Choose how often a membership is charged.";
+    case "membership_needs_price":
+      return "A membership needs a price to charge.";
+    case "join_url_not_public":
+      return "The join link must be a public https:// address.";
+    case "product_limit":
+      return `You've reached the ${refusal.limit}-product limit on ${refusal.planName}. Upgrade to add more.`;
+    case "not_found":
+      return "Product not found.";
   }
 }
 
 /**
- * Variants are matched on their combination rather than replaced wholesale:
- * past orders point at a variant row, and dropping it would blank the link
- * every time the seller saves an unrelated edit.
+ * A `datetime-local` value, read as an instant in the server's clock.
+ *
+ * The form labels it with the shop's time zone, and a seller placing a 7pm show
+ * wants "7pm where the event is", which for a link-in-bio seller is
+ * overwhelmingly their own zone.
  */
-async function syncVariants(
-  productId: string,
-  options: ProductOption[],
-  rows: VariantRow[],
-  trackInventory: boolean,
-  currency: string,
-) {
-  const db = getDb();
-  const wanted = usableVariants(options, rows);
-
-  const existing = await db.query.productVariants.findMany({
-    where: eq(productVariants.productId, productId),
-  });
-  const byKey = new Map(existing.map((v) => [optionKey(v.options), v]));
-
-  for (const [position, row] of wanted.entries()) {
-    const priceCents = optionalCents(row.price, currency);
-    const values = {
-      options: row.options,
-      sku: text(row.sku, 60),
-      priceCents,
-      // A strike-through only means something next to its own price.
-      compareAtCents: (() => {
-        const compare = optionalCents(row.compareAt, currency);
-        return compare !== null && priceCents !== null && compare <= priceCents
-          ? null
-          : compare;
-      })(),
-      stockQuantity: trackInventory ? optionalCount(row.stock) : null,
-      isAvailable: row.available !== false,
-      // Fetched server-side by the social card, so it gets the same host
-      // check the product's own gallery does.
-      imageUrl: isRenderableImageUrl(row.image) ? row.image : null,
-      position,
-      updatedAt: new Date(),
-    };
-
-    const match = byKey.get(optionKey(row.options));
-    if (match) {
-      await db
-        .update(productVariants)
-        .set(values)
-        .where(eq(productVariants.id, match.id));
-      byKey.delete(optionKey(row.options));
-    } else {
-      await db.insert(productVariants).values({ ...values, productId });
-    }
-  }
-
-  const stale = [...byKey.values()].map((v) => v.id);
-  if (stale.length) {
-    await db.delete(productVariants).where(inArray(productVariants.id, stale));
-  }
+function readEventStart(formData: FormData): Date | null {
+  const raw = String(formData.get("eventStartsAt") ?? "").trim();
+  if (!raw) return null;
+  const parsed = new Date(raw);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
-async function syncFiles(productId: string, rows: FileRow[]) {
-  const db = getDb();
-  /*
-   * The host, not just the scheme.
-   *
-   * `flatMap` rather than `filter` because `filter` narrows nothing: a later
-   * `f.url` would have to be asserted despite the line above having proved it.
-   *
-   * This checked `^https?://` and nothing else, which is no check at all: a
-   * server action takes whatever the client posts, so the upload widget is not
-   * a gate. Any URL stored here is later fetched *server-side* by
-   * `/api/download/[token]/[fileId]`, whose response is streamed back to the
-   * caller — so a seller, and signup is open, could point a file at a cloud
-   * metadata endpoint or anything else the function can reach, buy their own
-   * product, and read the reply.
-   */
-  const usable = rows
-    .flatMap((f) => (isStoredFileUrl(f.url) ? [{ ...f, url: f.url }] : []))
-    .slice(0, MAX_FILES);
+/** The form, as the domain understands it. Every string is already a value. */
+function readProduct(formData: FormData, currency: string): ProductInput {
+  const kindRaw = String(formData.get("kind") ?? "physical");
+  const kind = isProductKind(kindRaw) ? kindRaw : "physical";
 
-  await db.delete(productFiles).where(eq(productFiles.productId, productId));
-  if (!usable.length) return;
+  const options = readJson<ProductOption[]>(formData.get("options")) ?? [];
+  const variantRows = readJsonRows<VariantRow>(formData, "variants");
 
-  await db.insert(productFiles).values(
-    usable.map((f, position) => ({
-      productId,
-      name: text(f.name, 200) ?? "Download",
-      url: f.url,
-      sizeBytes:
-        typeof f.sizeBytes === "number" && Number.isFinite(f.sizeBytes)
-          ? Math.max(0, Math.trunc(f.sizeBytes))
-          : null,
-      contentType: text(f.contentType, 120),
-      position,
+  return {
+    id: String(formData.get("id") ?? "").trim() || null,
+    title: String(formData.get("title") ?? ""),
+    description: String(formData.get("description") ?? ""),
+    priceCents: parseMoneyToCents(String(formData.get("price") ?? "0"), currency),
+    compareAtCents: optionalCents(formData.get("compareAtPrice"), currency),
+    kind,
+    categoryId: String(formData.get("categoryId") ?? ""),
+    tags: readTags(formData),
+    options,
+
+    /*
+     * Filtered here as well as in the package, and the two are not the same
+     * filter. This one drops rows the *form* cannot mean — a combination left
+     * behind by an option rename, posted as strings by a browser — before any
+     * of them become numbers. The package applies the same rule from the same
+     * source, `@sailo/core/variants`, to whatever any caller hands it.
+     */
+    variants: usableVariants(options, variantRows).map((row) => ({
+      options: row.options,
+      sku: text(row.sku, 60),
+      // Blank is "same as the product", which is not the same as free.
+      priceCents: optionalCents(row.price, currency),
+      compareAtCents: optionalCents(row.compareAt, currency),
+      // Blank is "nobody is counting", which is not the same as sold out.
+      stockQuantity: optionalCount(row.stock),
+      isAvailable: row.available !== false,
+      imageUrl: typeof row.image === "string" ? row.image : null,
     })),
-  );
+
+    files: readJsonRows<FileRow>(formData, "files").flatMap((f) =>
+      typeof f.url === "string" ? [{ ...f, url: f.url }] : [],
+    ),
+    imageUrls: readImageUrls(formData),
+
+    trackInventory: formData.get("trackInventory") === "on",
+    stockQuantity: optionalCount(formData.get("stockQuantity")),
+
+    releaseOnPayment: formData.get("releaseOnPayment") === "on",
+    downloadLimit: optionalCount(formData.get("downloadLimit"), 1000),
+    downloadExpiryDays: optionalCount(formData.get("downloadExpiryDays"), 3650),
+
+    durationMinutes: optionalCount(formData.get("durationMinutes"), 60 * 24 * 30),
+    serviceMode: String(formData.get("serviceMode") ?? "in_person"),
+    serviceLocation: text(formData.get("serviceLocation"), 500),
+    bookingEnabled: formData.get("bookingEnabled") === "on",
+    bookingLeadHours: optionalCount(formData.get("bookingLeadHours"), 24 * 365) ?? 0,
+
+    eventStartsAt: readEventStart(formData),
+    eventJoinUrl: String(formData.get("eventJoinUrl") ?? ""),
+
+    billingInterval: String(formData.get("billingInterval") ?? ""),
+    trialDays: optionalCount(formData.get("trialDays")),
+
+    inStock: formData.get("inStock") === "on",
+    isFeatured: formData.get("isFeatured") === "on",
+    isPublished: formData.get("isPublished") === "on",
+  };
+}
+
+/**
+ * Drops everything this app caches about a shop's catalogue.
+ *
+ * Handed to nothing — called after the write rather than passed into it —
+ * because unlike `changeOrderStatus`'s seam there is no shared orchestration
+ * here to hand it to. Both writers below need the same four, so it is one
+ * function rather than four lines copied twice.
+ */
+function dropCatalogueCaches(shop: { id: string; handle: string }, slug?: string) {
+  revalidatePath("/admin/products");
+  revalidatePath(`/${shop.handle}`);
+  // The catalogue is cached per shop; a write has to drop it.
+  revalidateShop(shop.id, shop.handle);
+  after(() => publishShopEvent(shop.id, "catalog"));
+  // Variant prices and stock live on the detail page too.
+  if (slug) revalidatePath(`/${shop.handle}/p/${slug}`);
 }
 
 export async function saveProduct(
@@ -149,246 +176,15 @@ export async function saveProduct(
   formData: FormData,
 ): Promise<ActionState> {
   const { shop } = await requireShop();
-  const db = getDb();
 
-  const id = String(formData.get("id") ?? "").trim() || null;
-  const title = String(formData.get("title") ?? "").trim();
-  if (!title) return { ok: false, error: "Product needs a title." };
+  const result = await saveProductRow(shop, readProduct(formData, shop.currency));
+  if (!result.ok) return { ok: false, error: sentenceFor(result.refusal) };
 
-  const kindRaw = String(formData.get("kind") ?? "physical");
-  const kind = isProductKind(kindRaw) ? kindRaw : "physical";
-
-  const categoryId = String(formData.get("categoryId") ?? "").trim() || null;
-  if (categoryId) {
-    const owned = await db.query.categories.findFirst({
-      where: and(eq(categories.id, categoryId), eq(categories.shopId, shop.id)),
-      columns: { id: true },
-    });
-    if (!owned) return { ok: false, error: "That category doesn't exist." };
-  }
-
-  /* ---- Options and variants -------------------------------------------- */
-
-  const options = normalizeOptions(
-    readJson<ProductOption[]>(formData.get("options")) ?? [],
-  );
-  const variantRows = usableVariants(
-    options,
-    readJsonRows<VariantRow>(formData, "variants"),
-  );
-  // Options with nothing sellable under them would render a picker that can't
-  // produce an order, so the product falls back to being sold as one thing.
-  const hasVariants = variantRows.length > 0;
-
-  /* ---- Inventory -------------------------------------------------------- */
-
-  const trackInventory = formData.get("trackInventory") === "on";
-
-  /*
-   * The event's start, from a `datetime-local` value. Parsed as an instant in
-   * the server's clock — the form labels it with the shop's time zone, and a
-   * seller placing a 7pm show wants "7pm where the event is", which for a
-   * link-in-bio seller is overwhelmingly their own zone.
-   */
-  const eventRaw = String(formData.get("eventStartsAt") ?? "").trim();
-  const eventParsed = eventRaw ? new Date(eventRaw) : null;
-  const eventStartsAt =
-    eventParsed && !Number.isNaN(eventParsed.getTime()) ? eventParsed : null;
-  if (kind === "event" && !eventStartsAt) {
-    return { ok: false, error: "An event needs a date and time." };
-  }
-
-  const modeRaw = String(formData.get("serviceMode") ?? "in_person");
-  const mode = isServiceMode(modeRaw) ? modeRaw : "in_person";
-
-  /*
-   * The join link for an online event — refused rather than quietly dropped.
-   *
-   * A dropped link saves the rest of the form and leaves the seller believing
-   * their webinar has a way in. Nobody finds out until the reminder goes out
-   * an hour before it starts with nothing to click, which is the worst
-   * possible moment to discover a typo. `isPublicLinkUrl` is the same check
-   * the terms link gets: this is rendered as an anchor in an email and on the
-   * buyer's page, so `javascript:` and internal hosts are not things a seller
-   * may put in front of their buyers.
-   */
-  const joinRaw = String(formData.get("eventJoinUrl") ?? "").trim();
-  if (joinRaw && !isPublicLinkUrl(joinRaw)) {
-    return {
-      ok: false,
-      error: "The join link must be a public https:// address.",
-    };
-  }
-  const compareRaw = String(formData.get("compareAtPrice") ?? "").trim();
-  const priceCents = parseMoneyToCents(String(formData.get("price") ?? "0"), shop.currency);
-
-  /*
-   * A membership has to be billable before it can be saved as one.
-   *
-   * Both refusals turn a Stripe error the *buyer* would have met at checkout
-   * into a sentence the seller can act on while they are looking at the form:
-   * Stripe will not create a recurring price for nothing, and it has no way
-   * to guess how often to charge. Checked here rather than only in
-   * `membershipSellable` so a shop can never publish one that cannot be sold.
-   */
-  const billingInterval = isBillingInterval(formData.get("billingInterval"))
-    ? String(formData.get("billingInterval"))
-    : null;
-  if (kind === "membership") {
-    if (!billingInterval) {
-      return { ok: false, error: "Choose how often a membership is charged." };
-    }
-    if (priceCents <= 0) {
-      return { ok: false, error: "A membership needs a price to charge." };
-    }
-  }
-
-  const compareAtCents = compareRaw ? parseMoneyToCents(compareRaw, shop.currency) : null;
-
-  const values = {
-    title,
-    description: String(formData.get("description") ?? "").trim() || null,
-    priceCents,
-    compareAtCents:
-      compareAtCents !== null && compareAtCents <= priceCents
-        ? null
-        : compareAtCents,
-    kind,
-    categoryId,
-    tags: readTags(formData),
-    options: hasVariants ? options : [],
-
-    trackInventory,
-    // Stock lives on the variants when there are any, so the product-level
-    // count must not linger and contradict them.
-    stockQuantity:
-      trackInventory && !hasVariants
-        ? optionalCount(formData.get("stockQuantity"))
-        : null,
-
-    // Digital delivery
-    releaseOnPayment: formData.get("releaseOnPayment") === "on",
-    downloadLimit: optionalCount(formData.get("downloadLimit"), 1000),
-    downloadExpiryDays: optionalCount(formData.get("downloadExpiryDays"), 3650),
-
-    // Services
-    durationMinutes: optionalCount(formData.get("durationMinutes"), 60 * 24 * 30),
-    serviceMode: mode,
-    serviceLocation: text(formData.get("serviceLocation"), 500),
-    bookingEnabled: formData.get("bookingEnabled") === "on",
-    bookingLeadHours: optionalCount(formData.get("bookingLeadHours"), 24 * 365) ?? 0,
-
-    // Events. Cleared on other kinds so a product switched away from being
-    // an event doesn't keep silently closing its own sales at a stale date.
-    eventStartsAt: kind === "event" ? eventStartsAt : null,
-    /*
-     * Held to the same two conditions the buyer's page checks. An in-person
-     * event keeps no link — a venue is not joined — and a product switched
-     * away from being an event keeps none either, so a stale Zoom room can
-     * never be handed to the buyer of something else.
-     */
-    eventJoinUrl: kind === "event" && mode === "online" ? joinRaw || null : null,
-
-    /*
-     * Memberships. Cleared on every other kind, so a product switched away
-     * from being one cannot keep a billing interval that nothing reads and
-     * that a later switch back would silently resurrect.
-     *
-     * `stripePriceId` is deliberately *not* cleared on a price change. A
-     * Stripe Price is immutable, so existing members stay on the one they
-     * signed up at; `priceIsStale` notices the difference at the next
-     * subscribe and mints a new Price then. Clearing it here would orphan the
-     * cached id without telling anybody, and re-create an identical Price on
-     * every save.
-     */
-    billingInterval: kind === "membership" ? billingInterval : null,
-    trialDays: kind === "membership" ? normalizeTrialDays(formData.get("trialDays")) : null,
-
-    inStock: formData.get("inStock") === "on",
-    isFeatured: formData.get("isFeatured") === "on",
-    isPublished: formData.get("isPublished") === "on",
-    updatedAt: new Date(),
+  dropCatalogueCaches(shop, result.slug);
+  return {
+    ok: true,
+    message: result.created ? "Product added." : "Product updated.",
   };
-
-  // Product cap applies to new products only — a downgrade never deletes work.
-  if (!id) {
-    const { count: existing } = firstRow(await db
-      .select({ count: sql<string>`count(*)` })
-      .from(products)
-      .where(eq(products.shopId, shop.id)), "count aggregate");
-
-    if (atProductLimit(shop, Number(existing))) {
-      const limit = productLimit(shop);
-      return {
-        ok: false,
-        error: `You've reached the ${limit}-product limit on ${planFor(shop).name}. Upgrade to add more.`,
-      };
-    }
-  }
-
-  const urls = readImageUrls(formData);
-  let productId = id;
-  const slug = await uniqueSlug(shop.id, slugify(title), id ?? undefined);
-
-  if (id) {
-    const owned = await db.query.products.findFirst({
-      where: and(eq(products.id, id), eq(products.shopId, shop.id)),
-      columns: { id: true, slug: true },
-    });
-    if (!owned) return { ok: false, error: "Product not found." };
-
-    await db
-      .update(products)
-      .set({ ...values, slug })
-      .where(eq(products.id, id));
-
-    // Images are managed as a set — replace wholesale.
-    await db.delete(productImages).where(eq(productImages.productId, id));
-  } else {
-    const { max } = firstRow(await db
-      .select({ max: sql<string>`coalesce(max(${products.position}), 0)` })
-      .from(products)
-      .where(eq(products.shopId, shop.id)), "max aggregate");
-
-    const created = firstRow(await db
-      .insert(products)
-      .values({
-        ...values,
-        shopId: shop.id,
-        slug,
-        position: Number(max) + 1,
-      })
-      .returning({ id: products.id }), "created");
-    productId = created.id;
-  }
-
-  if (productId && urls.length) {
-    // Bound outside the closure, which cannot see the guard above it.
-    const savedId = productId;
-    await db.insert(productImages).values(
-      urls.map((url, i) => ({ productId: savedId, url, position: i })),
-    );
-  }
-
-  if (productId) {
-    await syncVariants(
-      productId,
-      hasVariants ? options : [],
-      variantRows,
-      trackInventory,
-      shop.currency,
-    );
-    await syncFiles(productId, readJsonRows<FileRow>(formData, "files"));
-  }
-
-  revalidatePath("/admin/products");
-  revalidatePath(`/${shop.handle}`);
-  // The catalogue is cached per shop; a write has to drop it.
-  revalidateShop(shop.id, shop.handle);
-  after(() => publishShopEvent(shop.id, "catalog"));
-  // Variant prices and stock live on the detail page too.
-  revalidatePath(`/${shop.handle}/p/${slug}`);
-  return { ok: true, message: id ? "Product updated." : "Product added." };
 }
 
 export async function deleteProduct(formData: FormData) {
@@ -396,15 +192,8 @@ export async function deleteProduct(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
-  await getDb()
-    .delete(products)
-    .where(and(eq(products.id, id), eq(products.shopId, shop.id)));
-
-  revalidatePath("/admin/products");
-  revalidatePath(`/${shop.handle}`);
-  // The catalogue is cached per shop; a write has to drop it.
-  revalidateShop(shop.id, shop.handle);
-  after(() => publishShopEvent(shop.id, "catalog"));
+  await deleteProductRow(shop.id, id);
+  dropCatalogueCaches(shop);
 }
 
 export async function toggleProductPublished(formData: FormData) {
@@ -412,16 +201,8 @@ export async function toggleProductPublished(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
-  await getDb()
-    .update(products)
-    .set({ isPublished: sql`not ${products.isPublished}`, updatedAt: new Date() })
-    .where(and(eq(products.id, id), eq(products.shopId, shop.id)));
-
-  revalidatePath("/admin/products");
-  revalidatePath(`/${shop.handle}`);
-  // The catalogue is cached per shop; a write has to drop it.
-  revalidateShop(shop.id, shop.handle);
-  after(() => publishShopEvent(shop.id, "catalog"));
+  await togglePublishedRow(shop.id, id);
+  dropCatalogueCaches(shop);
 }
 
 /* -------------------------------------------------------------------------- */

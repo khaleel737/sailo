@@ -1,22 +1,74 @@
 import { z } from "zod";
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, or } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orderItems, orders, shops } from "@sailo/db/schema";
 import { ORDER_STATUSES } from "@sailo/core/order-status";
 import { changeOrderStatus } from "@sailo/commerce/orders";
+import { decodeCursor, olderThan, pageOf } from "@sailo/commerce/pagination";
 import { publishShopEvent } from "@sailo/events";
 import { router, shopProcedure } from "../trpc";
 import { byId, found, listInput } from "../shared";
 
+/**
+ * A page of orders, and what a seller may narrow it to.
+ *
+ * Built on `listInput` so the page-size ceiling is the one `shared.ts` states
+ * rather than a second copy of it. The search spans the three things a seller
+ * actually has in front of them when they go looking — a name, an email, or the
+ * reference the buyer typed on a bank transfer — and every one of them is
+ * `and`-ed onto a predicate that already carries `ctx.shopId`.
+ */
+const pageInput = listInput
+  .unwrap()
+  .extend({
+    /** The previous page's `nextCursor`, opaque. Absent starts at the top. */
+    cursor: z.string().max(200).optional(),
+    search: z.string().trim().max(120).optional(),
+    status: z.enum(ORDER_STATUSES).optional(),
+  })
+  .optional();
+
 /** What the seller came to the app for: the orders, and moving them along. */
 export const ordersRouter = router({
-  list: shopProcedure.input(listInput).query(({ ctx, input }) =>
-    getDb().query.orders.findMany({
-      where: eq(orders.shopId, ctx.shopId),
-      orderBy: desc(orders.createdAt),
-      limit: input?.limit ?? 50,
-    }),
-  ),
+  /**
+   * Newest first, keyset-paged.
+   *
+   * The cursor is the last row of the previous page rather than a count of
+   * rows skipped, and on this list in particular that is not a refinement:
+   * orders arrive at the *front*, so a seller scrolling while an order comes
+   * in would have offset paging hand them page two starting one row late —
+   * skipping an order they had never seen, silently. See
+   * `@sailo/commerce/pagination`.
+   *
+   * The rows are order *headers*. `productTitle` and `quantity` on them
+   * summarise the first line only, so anything asking what was actually bought
+   * reads `items` from `get` rather than inferring it here.
+   */
+  list: shopProcedure.input(pageInput).query(async ({ ctx, input }) => {
+    const limit = input?.limit ?? 50;
+    const search = input?.search?.trim();
+
+    const rows = await getDb().query.orders.findMany({
+      where: and(
+        eq(orders.shopId, ctx.shopId),
+        olderThan(orders, decodeCursor(input?.cursor)),
+        input?.status ? eq(orders.status, input.status) : undefined,
+        search
+          ? or(
+              ilike(orders.customerName, `%${search}%`),
+              ilike(orders.customerEmail, `%${search}%`),
+              ilike(orders.paymentReference, `%${search}%`),
+            )
+          : undefined,
+      ),
+      // Both halves of the key, or the cursor cannot resume a tie — and an
+      // import writing fifty orders in one millisecond is a real tie.
+      orderBy: [desc(orders.createdAt), desc(orders.id)],
+      limit: limit + 1,
+    });
+
+    return pageOf(rows, limit);
+  }),
   /**
    * One order and its lines. `orderItems` is the authoritative list — the
    * header's `productTitle`/`quantity` columns are a summary of the first

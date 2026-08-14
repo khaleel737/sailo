@@ -13,6 +13,8 @@
  */
 
 export * from "./orders";
+export * from "./products";
+export * from "./pagination";
 export * from "./inventory";
 export * from "./tickets";
 export * from "./booking-claim";

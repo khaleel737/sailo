@@ -62,7 +62,9 @@ export default function ProductsScreen() {
   }, [products.refetch, shop.refetch]);
 
   const currency = shop.data?.currency ?? "USD";
-  const all = useMemo(() => products.data ?? [], [products.data]);
+  // `.items`, because the list is paged — `nextCursor` beside it says whether
+  // there is another page, which is what the footnote below now reads.
+  const all = useMemo(() => products.data?.items ?? [], [products.data]);
 
   /*
    * Case- and whitespace-insensitive, because a seller hunting for "Blue Mug"
@@ -98,9 +100,15 @@ export default function ProductsScreen() {
         edit the term while looking at what it matched.
       */}
       <View style={styles.searchWrap}>
+        {/*
+          The placeholder vanishes as soon as the seller types, taking the only
+          description of the field with it — see the same note on the sign-in
+          inputs. Same words, said durably.
+        */}
         <TextInput
           style={styles.search}
           placeholder="Search products"
+          accessibilityLabel="Search products"
           placeholderTextColor="#9ca3af"
           value={search}
           onChangeText={setSearch}
@@ -147,7 +155,7 @@ export default function ProductsScreen() {
           )
         }
         ListFooterComponent={
-          all.length >= LIMIT ? (
+          products.data?.nextCursor ? (
             <Text style={styles.footnote}>
               Showing your {LIMIT} most recent products.
             </Text>
@@ -182,7 +190,16 @@ function ProductRow({
       style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={`${product.title}, ${product.isPublished ? "live" : "draft"}`}
+      /*
+       * The price was the one thing the old label left out, and it is the
+       * thing a seller opens this list to check. `from` is carried across for
+       * the same reason it is drawn: a flat number on a product whose variants
+       * cost more is a price the seller does not actually charge.
+       */
+      accessibilityLabel={`${product.title}, ${varies ? `from ${price}` : price}, ${
+        product.isPublished ? "live" : "draft"
+      }`}
+      accessibilityHint="Opens this product"
     >
       <View style={styles.rowMain}>
         <Text style={styles.rowTitle} numberOfLines={1}>
