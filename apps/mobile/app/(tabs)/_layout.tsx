@@ -2,6 +2,7 @@ import { Redirect } from "expo-router";
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { authClient } from "../../lib/auth";
+import { useNotificationRouting } from "../../lib/push";
 import { Loading } from "../../components/states";
 
 /**
@@ -37,6 +38,16 @@ import { Loading } from "../../components/states";
  */
 export default function TabsLayout() {
   const { data: session, isPending } = authClient.useSession();
+
+  /*
+   * Tapping an order notification lands on that order, from a warm start and
+   * from a cold one. Here rather than at the root because this is the first
+   * point with both a signed-in seller and a router that has `/orders/[id]` in
+   * it; `lib/push.ts` carries the note on why the cold case needs its own
+   * lookup. Above the early returns, because hooks do not get to be conditional
+   * — it no-ops until there is somewhere to navigate to.
+   */
+  useNotificationRouting();
 
   /*
    * The session is read from the keychain, so on a cold start there is a real

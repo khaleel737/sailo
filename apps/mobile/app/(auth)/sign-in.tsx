@@ -31,8 +31,10 @@ export default function SignIn() {
   const submit = useCallback(async () => {
     setBusy(true);
     setError(null);
-    const { error } = await authClient.signIn.email({ email, password });
-    if (error) setError(error.message ?? "Could not sign in.");
+    // Not `error`, which is the state above — the shadow read as if the reply
+    // were being stored, and it is only being inspected.
+    const reply = await authClient.signIn.email({ email, password });
+    if (reply.error) setError(reply.error.message ?? "Could not sign in.");
     setBusy(false);
   }, [email, password]);
 
