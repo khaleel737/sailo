@@ -1,166 +1,448 @@
-import { useCallback, useMemo, useState } from "react";
-import {
-  FlatList,
-  Pressable,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Alert, FlatList, View } from "react-native";
 import { useRouter } from "expo-router";
-import { useQueries } from "@tanstack/react-query";
-import { formatMoney } from "@sailo/core/currency";
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { TRPCClientError } from "@trpc/client";
+import { currencyDecimals, formatMoney } from "@sailo/core/currency";
+import { isProductKind, variantLabel } from "@sailo/core/variants";
+import { interpolate } from "@sailo/i18n/native";
 import { captureError } from "@sailo/observability";
-import type { Product } from "../../../lib/models";
+import {
+  Button,
+  Card,
+  EmptyState,
+  ErrorState,
+  GroupedList,
+  ListRow,
+  Segmented,
+  Sheet,
+  Skeleton,
+  StatusPill,
+  Switch,
+  Text,
+  TextField,
+  type SegmentedOption,
+} from "@sailo/design-native";
+import { useT } from "../../../lib/i18n";
 import { useTRPC } from "../../../lib/query";
-import { Empty, ErrorState, Loading, errorMessage } from "../../../components/states";
+import type { Product, ProductDetail, RouterInputs } from "../../../lib/models";
 
 /**
- * The catalogue, as the seller's phone shows it.
+ * The catalogue, as the seller's phone shows it — and the editor behind it.
  *
- * Two reads, not one: `products.list` is the catalogue, and `shop.get` is the
- * currency every price on this screen is written in — products carry
- * `priceCents` and no currency of their own, because the shop owns that
- * choice. Both go through the same query cache the dashboard already filled,
- * so arriving here from the home screen paints instantly and revalidates in
- * the background rather than re-fetching from scratch.
+ * Two screens' worth of code in one file, and not by preference. Expo Router
+ * turns *every* `.ts` and `.tsx` file under `app/` into a route: the context in
+ * `expo-router/_ctx.ios.js` ignores only `+api`, `+html` and `+middleware`, and
+ * `_layout` is the one filename `getRoutesCore` treats specially. A
+ * `product-editor.tsx` beside this file would become a linkable route with no
+ * default export, warning on every dev boot and landing in the typed-`href`
+ * union. A06 put its shared half in `lib/auth.ts` for exactly this reason and
+ * says so; this work order owns no path outside `app/`, so the shared half
+ * lives here and `[id].tsx` imports it — which is also why `PublishBadge` has
+ * always been exported from this file rather than from a component module.
+ *
+ * WHAT READS WHAT
+ *
+ * `products.list` is keyset-paged and filters server-side: status and search
+ * are both in the WHERE, `and`-ed onto `ctx.shopId`. So the search box is a
+ * query rather than the honest-but-limited filter over one loaded page it used
+ * to be, and the footnote that admitted that limit is gone with it. `shop.get`
+ * sits beside it because a product carries `priceCents` and no currency of its
+ * own — the shop owns that choice, and every price here is written in it.
  */
+
+/* -------------------------------------------------------------------------- */
+/*  Copy                                                                       */
+/* -------------------------------------------------------------------------- */
 
 /**
- * One page, and the search below filters within it.
+ * The sentences this screen needs that `@sailo/i18n/admin` does not have.
  *
- * `products.list` takes a `limit` and nothing else — there is no server-side
- * search in the contract — so "search" here is honestly a filter over what
- * has been loaded, not a query. At 100 that covers the whole catalogue for
- * almost every shop on the platform; past it the seller is filtering their
- * hundred most recent products and the footer below says so rather than
- * quietly implying the rest do not match.
+ * Everything the admin dictionary already says is read from it — `a.products`,
+ * `a.productForm`, `a.variants`, `a.images`, `a.common` — because the web
+ * product form and this one are the same form, and translating it twice is how
+ * the two drift. What is left is the handful of strings that exist only because
+ * this is a phone: a search box the web page does not have, a native discard
+ * confirmation, and wording for the refusals `products.save` answers with.
+ *
+ * Held here rather than in `packages/i18n` because that package is outside this
+ * work order's write scope, and following A06's convention exactly: a typed
+ * constant, in one place, read through a hook, so that lifting it later is
+ * `return useT().a.store` and **no screen changes**. The placeholder syntax is
+ * the dictionaries' own — `{term}`, substituted by `interpolate` — so the
+ * strings move without being rewritten.
  */
-const LIMIT = 100;
+const STORE_COPY = {
+  searchLabel: "Search products",
+  searchPlaceholder: "Title or link…",
+  filterAll: "All",
+  filterLive: "Live",
+  filterDraft: "Drafts",
+  noMatches: "Nothing matches “{term}”",
+  noMatchesBody: "Try a shorter word, or clear the search.",
+  loadFailed: "Couldn't load your products.",
 
-export default function ProductsScreen() {
+  /* The editor. */
+  newTitle: "New product",
+  saving: "Saving…",
+  unsavedTitle: "Discard this product?",
+  unsavedBody: "Your changes haven't been saved.",
+  discard: "Discard",
+  keepEditing: "Keep editing",
+
+  /* Deleting, as the native alert says it. */
+  deleteBody: "“{title}” will be removed from your shop. This cannot be undone.",
+  deleting: "Deleting…",
+
+  /*
+   * The detail screen. Here rather than in a second constant beside it: two
+   * copy objects for one tab is two places to forget when these lift into
+   * `a.store`, and `[id].tsx` already reads this file for `PublishBadge`.
+   */
+  noProductSelected: "No product was selected.",
+  detailFailed: "Couldn't load this product.",
+  noImages: "No images",
+  noDescription: "No description.",
+  /** Stock, in the four answers that are genuinely different from each other. */
+  stockPerVariant: "Counted per variant",
+  stockUntracked: "Not tracked",
+  stockUncounted: "Not counted",
+  stockOut: "Out of stock",
+  stockLeft: "{count} left",
+  stockLow: "Running low.",
+  available: "Available",
+  unavailable: "Unavailable",
+  /** An unlabelled variant is one with no options set. Rare, and it needs a word. */
+  variantDefault: "Default",
+  /** Said aloud, because the strike-through that means it is a drawing. */
+  wasPrice: "Was {price}",
+
+  /**
+   * The refusals `products.save` answers with, keyed by the `kind` it puts in
+   * the error message. Anything not listed falls back to `saveFailed`: a
+   * refusal added server-side must never reach a seller as
+   * `membership_needs_interval`.
+   */
+  refusal: {
+    no_title: "Give the product a title.",
+    unknown_category: "That category no longer exists.",
+    event_needs_start: "An event needs a start time. Add one on the web admin.",
+    join_url_not_public: "That join link can't be used.",
+    membership_needs_interval: "A membership needs a billing interval.",
+    membership_needs_price: "A membership needs a price above zero.",
+    product_limit: "You've used every product slot on your plan.",
+    not_found: "That product no longer exists.",
+  } as Record<string, string>,
+  saveFailed: "Couldn't save this product.",
+  deleteFailed: "Couldn't delete this product.",
+  publishFailed: "Couldn't change whether this is live.",
+
+  /**
+   * The two things this screen cannot do yet, said where a seller would look
+   * for them rather than left as controls that do nothing.
+   *
+   * Both are dependencies rather than decisions, and both are in the PR.
+   * Downloads are unreadable because `products.get` returns `images` and
+   * `variants` and not `files`, while `saveProduct` replaces the file set
+   * wholesale — saving a digital product from a screen that cannot see its
+   * files would delete every one of them. Photos need `expo-image-picker`,
+   * which is not in `apps/mobile/package.json`, a file this work order may not
+   * write.
+   */
+  digitalOnWeb:
+    "Digital products are edited on the web admin — the phone can't read their files yet, and saving here would remove them.",
+  photosOnWeb: "Photos are added on the web admin for now.",
+} as const;
+
+type StoreCopy = typeof STORE_COPY;
+
+/**
+ * The dictionary, the local copy and the locale, in one call.
+ *
+ * `useT()` is what subscribes a component to a language change, so it is called
+ * even where only `STORE_COPY` is read — without it a seller switching language
+ * would keep the old strings until something unrelated re-rendered. `locale`
+ * comes back because money is punctuated per-locale, and a screen that forgot
+ * it would write a German seller's prices as an American's.
+ */
+export function useStoreCopy(): {
+  a: ReturnType<typeof useT>["a"];
+  locale: string;
+  s: StoreCopy;
+} {
+  const { a, locale } = useT();
+  return { a, locale, s: STORE_COPY };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Money, in and out of a text field                                          */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The character this locale puts between the units and the fraction.
+ *
+ * Asked of `Intl` rather than assumed: a seller typing `12,50` in French means
+ * twelve fifty, and the same keystrokes in English mean one thousand two
+ * hundred and fifty. Both are reachable from a phone keypad, so the only safe
+ * answer is the one the reader's own locale gives.
+ */
+function decimalSeparator(locale: string): string {
+  return (
+    new Intl.NumberFormat(locale)
+      .formatToParts(1.1)
+      .find((part) => part.type === "decimal")?.value ?? "."
+  );
+}
+
+/**
+ * Minor units, as something to type over.
+ *
+ * Not `toFixed(2)`. `currencyDecimals` is the function `formatMoney` itself
+ * asks, so a yen price opens as `1000` rather than `1000.00` and a dinar price
+ * keeps all three of its places. The two-decimal assumption this avoids is the
+ * one that shows a seller a hundredth of what they charge.
+ */
+function priceToText(minor: number, currency: string, locale: string): string {
+  const decimals = currencyDecimals(currency);
+  if (decimals === 0) return String(Math.trunc(minor));
+  return new Intl.NumberFormat(`${locale}-u-nu-latn`, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+    useGrouping: false,
+  }).format(minor / 10 ** decimals);
+}
+
+/**
+ * What the seller typed, as minor units — or null if it is not a number yet.
+ *
+ * Null and zero are kept apart deliberately: a blank compare-at price means "no
+ * strike-through" and zero means "free", and a parser answering 0 for an empty
+ * field would advertise every product as reduced to nothing.
+ *
+ * Everything that is not a digit or *this locale's* decimal separator is
+ * dropped, which is what makes `1 234,50`, `1.234,50` and `1234,50` one price
+ * in French. The digits are Latin because `priceToText` writes them that way,
+ * for the reason `formatMoney`'s own `-u-nu-latn` note gives.
+ */
+function textToPrice(text: string, currency: string, locale: string): number | null {
+  const separator = decimalSeparator(locale);
+  const cleaned = text
+    .split("")
+    .filter((ch) => /[0-9]/.test(ch) || ch === separator)
+    .join("")
+    .replace(separator, ".");
+  if (!cleaned || cleaned === ".") return null;
+
+  const value = Number.parseFloat(cleaned);
+  if (!Number.isFinite(value) || value < 0) return null;
+  return Math.round(value * 10 ** currencyDecimals(currency));
+}
+
+/** A whole count — units in stock. Blank stays blank, which is "not counting". */
+function textToCount(text: string): number | null {
+  const digits = text.replace(/[^0-9]/g, "");
+  if (!digits) return null;
+  const value = Number.parseInt(digits, 10);
+  return Number.isFinite(value) ? value : null;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  The catalogue                                                              */
+/* -------------------------------------------------------------------------- */
+
+/** One page. Fifty is `listInput`'s own default; its ceiling is 100. */
+const PAGE = 50;
+
+/** Long enough that a word is finished before it is sent; short enough to feel live. */
+const SEARCH_DEBOUNCE = 300;
+
+type Status = "all" | "published" | "draft";
+
+export default function StoreScreen() {
   const trpc = useTRPC();
   const router = useRouter();
+  const { a, s } = useStoreCopy();
+
+  const [status, setStatus] = useState<Status>("all");
+  const [typed, setTyped] = useState("");
   const [search, setSearch] = useState("");
+  const [creating, setCreating] = useState(false);
 
-  const [products, shop] = useQueries({
-    queries: [
-      trpc.products.list.queryOptions({ limit: LIMIT }),
-      trpc.shop.get.queryOptions(),
-    ],
-  });
+  useEffect(() => {
+    const timer = setTimeout(() => setSearch(typed.trim()), SEARCH_DEBOUNCE);
+    return () => clearTimeout(timer);
+  }, [typed]);
 
-  const queries = [products, shop];
-  const failed = queries.find((q) => q.error);
-  const loading = queries.some((q) => q.isPending);
-  const refreshing = queries.some((q) => q.isFetching) && !loading;
+  const shop = useQuery(trpc.shop.get.queryOptions());
+  const products = useInfiniteQuery(
+    trpc.products.list.infiniteQueryOptions(
+      {
+        limit: PAGE,
+        // `undefined` rather than "all" and "": the router's input is optional
+        // on both, and an empty search would be a `%%` LIKE across the whole
+        // table for no reason.
+        status: status === "all" ? undefined : status,
+        search: search || undefined,
+      },
+      {
+        // `null` is the end of the list; `undefined` is what TanStack reads as
+        // "no next page". Mapped onto each other here rather than left for
+        // `hasNextPage` to guess at.
+        getNextPageParam: (page) => page.nextCursor ?? undefined,
+        // Keeps the rows the seller is looking at on screen while a changed
+        // filter loads, so a debounce does not end in a flash of skeletons
+        // where their results were.
+        placeholderData: keepPreviousData,
+      },
+    ),
+  );
+
+  const currency = shop.data?.currency ?? "USD";
+
+  /*
+   * One list out of however many pages have been fetched, memoised on the pages
+   * themselves — scrolling changes nothing about them, and rebuilding the array
+   * on every render would hand `FlatList` a new `data` identity to diff.
+   */
+  const rows = useMemo(
+    () => products.data?.pages.flatMap((page) => page.items) ?? [],
+    [products.data?.pages],
+  );
+
+  const narrowed = status !== "all" || search !== "";
+  // The next page is excluded: a pull-to-refresh control spinning because the
+  // seller reached the bottom is a lie.
+  const refreshing =
+    products.isFetching && !products.isPending && !products.isFetchingNextPage;
+
+  const loadMore = useCallback(() => {
+    if (!products.hasNextPage || products.isFetchingNextPage) return;
+    void products.fetchNextPage();
+  }, [products.hasNextPage, products.isFetchingNextPage, products.fetchNextPage]);
 
   const refresh = useCallback(() => {
     void products.refetch();
     void shop.refetch();
   }, [products.refetch, shop.refetch]);
 
-  const currency = shop.data?.currency ?? "USD";
-  // `.items`, because the list is paged — `nextCursor` beside it says whether
-  // there is another page, which is what the footnote below now reads.
-  const all = useMemo(() => products.data?.items ?? [], [products.data]);
-
-  /*
-   * Case- and whitespace-insensitive, because a seller hunting for "Blue Mug"
-   * types `blue mug`, ` mug`, or `MUG` and means the same product every time.
-   * Memoised on the query and the term rather than recomputed per keystroke
-   * render — a hundred rows is cheap, but this also runs on every unrelated
-   * re-render the list does while scrolling.
-   */
-  const term = search.trim().toLowerCase();
-  const visible = useMemo(
-    () => (term ? all.filter((p) => p.title.toLowerCase().includes(term)) : all),
-    [all, term],
+  const open = useCallback(
+    (id: string) => router.push({ pathname: "/(tabs)/store/[id]", params: { id } }),
+    [router],
   );
 
-  if (failed?.error) {
-    captureError(failed.error, { scope: "mobile:products:list" });
-    return (
-      <ErrorState
-        message={errorMessage(failed.error, "Couldn't load your products.")}
-        onRetry={refresh}
-        retrying={refreshing}
-      />
-    );
+  const failed = products.error ?? shop.error;
+  if (failed) {
+    captureError(failed, { scope: "mobile:store:list" });
+    return <ErrorState message={s.loadFailed} onRetry={refresh} retrying={refreshing} />;
   }
 
-  if (loading) return <Loading />;
+  const filters: readonly SegmentedOption<Status>[] = [
+    { value: "all", label: s.filterAll },
+    { value: "published", label: s.filterLive },
+    { value: "draft", label: s.filterDraft },
+  ];
 
   return (
-    <View style={styles.screen}>
-      {/*
-        Rendered above the list rather than as `ListHeaderComponent` so it does
-        not scroll away: a seller filtering a long catalogue needs to see and
-        edit the term while looking at what it matched.
-      */}
-      <View style={styles.searchWrap}>
-        {/*
-          The placeholder vanishes as soon as the seller types, taking the only
-          description of the field with it — see the same note on the sign-in
-          inputs. Same words, said durably.
-        */}
-        <TextInput
-          style={styles.search}
-          placeholder="Search products"
-          accessibilityLabel="Search products"
-          placeholderTextColor="#9ca3af"
-          value={search}
-          onChangeText={setSearch}
-          autoCapitalize="none"
-          autoCorrect={false}
-          clearButtonMode="while-editing"
-          returnKeyType="search"
-        />
-      </View>
+    <View>
+      <Segmented
+        options={filters}
+        value={status}
+        onChange={setStatus}
+        accessibilityLabel={a.products.title}
+      />
 
-      <FlatList
-        data={visible}
-        keyExtractor={(product) => product.id}
-        renderItem={({ item }) => (
-          <ProductRow
-            product={item}
-            currency={currency}
-            onPress={() => router.push(`/(tabs)/store/${item.id}`)}
-          />
-        )}
-        contentContainerStyle={styles.list}
-        keyboardDismissMode="on-drag"
-        keyboardShouldPersistTaps="handled"
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor="#4f46e5" />
-        }
-        /*
-         * "Nothing matched" and "nothing exists" are different facts and get
-         * different words. Telling a seller with a full catalogue that they
-         * have no products because they mistyped a search is how a working
-         * screen reads as a broken one.
-         */
-        ListEmptyComponent={
-          term ? (
-            <Empty
-              title={`No products match “${search.trim()}”`}
-              hint="Try a shorter word, or clear the search."
-            />
-          ) : (
-            <Empty
-              title="No products yet"
-              hint="Products you add to your shop will appear here."
-            />
-          )
-        }
-        ListFooterComponent={
-          products.data?.nextCursor ? (
-            <Text style={styles.footnote}>
-              Showing your {LIMIT} most recent products.
-            </Text>
-          ) : null
-        }
+      {/*
+        Drawn above the list rather than as its header, so it does not scroll
+        away: a seller filtering a long catalogue needs to see and edit the term
+        while looking at what it matched.
+      */}
+      <TextField
+        label={s.searchLabel}
+        placeholder={s.searchPlaceholder}
+        value={typed}
+        onChangeText={setTyped}
+        returnKey="search"
+      />
+
+      <Button
+        label={a.products.add}
+        icon="add"
+        variant="primary"
+        onPress={() => setCreating(true)}
+      />
+
+      {products.isPending ? (
+        <Skeleton shape="row" count={6} />
+      ) : (
+        <FlatList
+          data={rows}
+          keyExtractor={(product) => product.id}
+          renderItem={({ item }) => (
+            <ProductRow product={item} currency={currency} onPress={() => open(item.id)} />
+          )}
+          onRefresh={refresh}
+          refreshing={refreshing}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.5}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled"
+          /*
+           * `FlatList`, not `FlashList`. `@shopify/flash-list` is not a
+           * dependency of `apps/mobile`, and `package.json` is outside this
+           * work order's write scope — the PR says so rather than this quietly
+           * shipping a slower list. These four are what FlatList can be told to
+           * do on its own about a long catalogue: recycle a bounded window, and
+           * stop re-measuring rows it has already drawn.
+           */
+          initialNumToRender={12}
+          maxToRenderPerBatch={12}
+          windowSize={7}
+          removeClippedSubviews
+          ListEmptyComponent={
+            /*
+             * "Nothing matched" and "nothing exists" are different facts and
+             * get different words — telling a seller with a full catalogue that
+             * they have no products because they mistyped is how a working
+             * screen reads as a broken one. Only the second gets a button:
+             * clearing a search is not what an empty shop needs, and one
+             * heading, one line and one action is the whole of an empty state.
+             */
+            narrowed ? (
+              <EmptyState
+                title={interpolate(s.noMatches, { term: search })}
+                message={s.noMatchesBody}
+                icon="search"
+              />
+            ) : (
+              <EmptyState
+                title={a.products.empty}
+                message={a.products.emptyBody}
+                icon="store"
+                action={{ label: a.products.addFirst, onPress: () => setCreating(true) }}
+              />
+            )
+          }
+          ListFooterComponent={
+            products.isFetchingNextPage ? <Skeleton shape="row" count={2} /> : null
+          }
+        />
+      )}
+
+      <ProductEditor
+        visible={creating}
+        product={null}
+        currency={currency}
+        onClose={() => setCreating(false)}
+        onSaved={(id) => {
+          setCreating(false);
+          open(id);
+        }}
       />
     </View>
   );
@@ -175,40 +457,45 @@ function ProductRow({
   currency: string;
   onPress: () => void;
 }) {
+  const { a, locale } = useStoreCopy();
+
   /*
    * A product with options prices each combination separately, and the list
-   * query does not load them — so the base price is the only figure this row
-   * can stand behind. "from" is what keeps that honest: quoting a flat number
-   * for a product whose medium costs more would be wrong on the row that the
-   * seller is most likely to trust at a glance.
+   * query loads neither the variants nor their prices — so the base price is
+   * the only figure this row can stand behind, and the count of combinations
+   * beside it is what keeps that honest. Derived from `options`, which the row
+   * does carry: the product of the value counts is exactly what `combinations`
+   * would enumerate, without loading them in order to count them.
    */
-  const varies = product.options.length > 0;
-  const price = formatMoney(product.priceCents, currency);
+  const choices = product.options.reduce(
+    (total, option) => total * Math.max(1, option.values.length),
+    product.options.length > 0 ? 1 : 0,
+  );
+  const subtitle =
+    choices === 1
+      ? a.products.variantCountOne
+      : choices > 1
+        ? interpolate(a.products.variantCount, { count: choices })
+        : undefined;
+
+  const price = formatMoney(product.priceCents, currency, locale);
+  const state = product.isPublished ? a.common.live : a.common.hidden;
 
   return (
-    <Pressable
-      style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+    <ListRow
+      title={product.title}
+      subtitle={subtitle}
+      value={price}
+      accessory={<PublishBadge published={product.isPublished} />}
+      trailing="chevron"
       onPress={onPress}
-      accessibilityRole="button"
       /*
-       * The price was the one thing the old label left out, and it is the
-       * thing a seller opens this list to check. `from` is carried across for
-       * the same reason it is drawn: a flat number on a product whose variants
-       * cost more is a price the seller does not actually charge.
+       * Read as one sentence rather than four fragments. The price is in it
+       * because it is what a seller opens this list to check, and it is the one
+       * thing the title and the badge between them do not say.
        */
-      accessibilityLabel={`${product.title}, ${varies ? `from ${price}` : price}, ${
-        product.isPublished ? "live" : "draft"
-      }`}
-      accessibilityHint="Opens this product"
-    >
-      <View style={styles.rowMain}>
-        <Text style={styles.rowTitle} numberOfLines={1}>
-          {product.title}
-        </Text>
-        <Text style={styles.rowSub}>{varies ? `from ${price}` : price}</Text>
-      </View>
-      <PublishBadge published={product.isPublished} />
-    </Pressable>
+      accessibilityLabel={`${product.title}, ${price}, ${state}`}
+    />
   );
 }
 
@@ -218,57 +505,495 @@ function ProductRow({
  * app to check after adding something.
  */
 export function PublishBadge({ published }: { published: boolean }) {
+  const { a } = useStoreCopy();
   return (
-    <View style={[styles.badge, published ? styles.badgeLive : styles.badgeDraft]}>
-      <Text style={[styles.badgeText, published ? styles.badgeTextLive : styles.badgeTextDraft]}>
-        {published ? "Live" : "Draft"}
-      </Text>
-    </View>
+    <StatusPill
+      label={published ? a.common.live : a.common.hidden}
+      tone={published ? "success" : "neutral"}
+      size="sm"
+    />
   );
 }
 
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#ffffff" },
-  searchWrap: {
-    paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e5e7eb",
-  },
-  search: {
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    fontSize: 15,
-    color: "#111827",
-    backgroundColor: "#f9fafb",
-  },
-  list: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 24 },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    paddingVertical: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e5e7eb",
-  },
-  rowPressed: { opacity: 0.6 },
-  rowMain: { flex: 1, gap: 2 },
-  rowTitle: { fontSize: 15, fontWeight: "600", color: "#111827" },
-  rowSub: { fontSize: 13, color: "#6b7280" },
-  footnote: {
-    paddingTop: 16,
-    fontSize: 12,
-    color: "#9ca3af",
-    textAlign: "center",
-  },
-  badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999 },
-  badgeLive: { backgroundColor: "#ecfdf5" },
-  badgeDraft: { backgroundColor: "#f3f4f6" },
-  badgeText: { fontSize: 12, fontWeight: "700" },
-  badgeTextLive: { color: "#047857" },
-  badgeTextDraft: { color: "#6b7280" },
-});
+/* -------------------------------------------------------------------------- */
+/*  The editor                                                                 */
+/* -------------------------------------------------------------------------- */
+
+type SaveInput = RouterInputs["products"]["save"];
+
+/**
+ * The draft, as fields rather than as a row.
+ *
+ * Text, not numbers, for everything the seller types into. A price mid-edit is
+ * `"12."` and a stock count mid-edit is `""`, and neither is a number yet;
+ * parsing on every keystroke would fight the keyboard, turning `12.` back into
+ * `12` and moving the cursor so the fraction can never be typed at all.
+ */
+type Draft = {
+  title: string;
+  description: string;
+  price: string;
+  compareAt: string;
+  tags: string;
+  trackInventory: boolean;
+  stockQuantity: string;
+  inStock: boolean;
+  isFeatured: boolean;
+  isPublished: boolean;
+  /** Keyed by the variant's own id, so a re-render cannot re-key the map. */
+  variants: Record<string, { price: string; stock: string; available: boolean }>;
+};
+
+function draftFrom(
+  product: ProductDetail | null,
+  currency: string,
+  locale: string,
+): Draft {
+  if (!product) {
+    return {
+      title: "",
+      description: "",
+      price: "",
+      compareAt: "",
+      tags: "",
+      trackInventory: false,
+      stockQuantity: "",
+      /*
+       * The defaults the web form opens a new product on. A product created on
+       * the phone has to be row-identical to one created there, and these are
+       * two of the columns that would otherwise quietly differ.
+       */
+      inStock: true,
+      isFeatured: false,
+      isPublished: true,
+      variants: {},
+    };
+  }
+
+  return {
+    title: product.title,
+    description: product.description ?? "",
+    price: priceToText(product.priceCents, currency, locale),
+    compareAt:
+      product.compareAtCents === null
+        ? ""
+        : priceToText(product.compareAtCents, currency, locale),
+    tags: product.tags.join(", "),
+    trackInventory: product.trackInventory,
+    stockQuantity: product.stockQuantity === null ? "" : String(product.stockQuantity),
+    inStock: product.inStock,
+    isFeatured: product.isFeatured,
+    isPublished: product.isPublished,
+    variants: Object.fromEntries(
+      product.variants.map((variant) => [
+        variant.id,
+        {
+          price:
+            variant.priceCents === null
+              ? ""
+              : priceToText(variant.priceCents, currency, locale),
+          stock: variant.stockQuantity === null ? "" : String(variant.stockQuantity),
+          available: variant.isAvailable,
+        },
+      ]),
+    ),
+  };
+}
+
+/**
+ * The draft as `products.save` wants it — the whole product, every time.
+ *
+ * **This is a replace, not a patch.** `saveProduct` rewrites every editable
+ * column from what it is handed and re-derives the image, variant and file sets
+ * wholesale, so a field left out of this object is not left alone: it is reset
+ * to the column default. That is why everything `products.get` returned is
+ * carried back whether or not this sheet drew it — the event's start time, the
+ * membership's interval, the service's duration, the digital delivery settings.
+ * A product edited on a phone comes out of the database identical to the same
+ * edit made in a browser, which is the bar this screen is held to.
+ *
+ * The one set that cannot be carried back is `files`, because `products.get`
+ * does not return it. That is why a digital product is refused outright rather
+ * than saved with an empty file list — see `digitalOnWeb`.
+ */
+function toSaveInput(
+  draft: Draft,
+  product: ProductDetail | null,
+  currency: string,
+  locale: string,
+): SaveInput {
+  return {
+    id: product?.id ?? null,
+    title: draft.title.trim(),
+    description: draft.description.trim() || null,
+    priceCents: textToPrice(draft.price, currency, locale) ?? 0,
+    compareAtCents: textToPrice(draft.compareAt, currency, locale),
+    // `kind` is a text column, so it is narrowed rather than asserted: a row
+    // holding something this build has never heard of falls back to the same
+    // default `saveProduct` would have chosen for it.
+    kind: product && isProductKind(product.kind) ? product.kind : "physical",
+    categoryId: product?.categoryId ?? null,
+    tags: draft.tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean),
+    options: product?.options ?? [],
+    variants: (product?.variants ?? []).map((variant) => {
+      const edited = draft.variants[variant.id];
+      return {
+        options: variant.options,
+        sku: variant.sku,
+        priceCents: edited
+          ? textToPrice(edited.price, currency, locale)
+          : variant.priceCents,
+        compareAtCents: variant.compareAtCents,
+        stockQuantity: edited ? textToCount(edited.stock) : variant.stockQuantity,
+        isAvailable: edited ? edited.available : variant.isAvailable,
+        imageUrl: variant.imageUrl,
+      };
+    }),
+    // In the order the router returned them, which is `position`. The gallery's
+    // order is the seller's, and re-sorting it here would shuffle their shop.
+    imageUrls: (product?.images ?? []).map((image) => image.url),
+
+    trackInventory: draft.trackInventory,
+    stockQuantity: draft.trackInventory ? textToCount(draft.stockQuantity) : null,
+
+    releaseOnPayment: product?.releaseOnPayment ?? true,
+    downloadLimit: product?.downloadLimit ?? null,
+    downloadExpiryDays: product?.downloadExpiryDays ?? null,
+
+    durationMinutes: product?.durationMinutes ?? null,
+    serviceMode: product?.serviceMode === "online" ? "online" : "in_person",
+    serviceLocation: product?.serviceLocation ?? null,
+    bookingEnabled: product?.bookingEnabled ?? false,
+    bookingLeadHours: product?.bookingLeadHours ?? 0,
+
+    eventStartsAt: product?.eventStartsAt ?? null,
+    eventJoinUrl: product?.eventJoinUrl ?? null,
+
+    billingInterval: product?.billingInterval ?? null,
+    trialDays: product?.trialDays ?? null,
+
+    inStock: draft.inStock,
+    isFeatured: draft.isFeatured,
+    isPublished: draft.isPublished,
+  };
+}
+
+/**
+ * The refusal `products.save` answered with, as something to show a seller.
+ *
+ * The server puts the machine-readable kind in `message` and leaves the wording
+ * to us — its own comment says so, and points here. An unrecognised kind falls
+ * back rather than rendering a raw enum.
+ */
+function refusalText(error: unknown, copy: StoreCopy): string {
+  if (error instanceof TRPCClientError) {
+    const known = copy.refusal[error.message];
+    if (known) return known;
+  }
+  return copy.saveFailed;
+}
+
+/**
+ * Create or edit, in a sheet.
+ *
+ * `size="large"` because this scrolls, and the sheet owns that scrolling rather
+ * than the screen — a `ScrollView` in here would nest inside the one the design
+ * system draws. `dismissible` goes off the moment there is unsaved input, so a
+ * swipe-down cannot throw away a product the seller spent two minutes typing;
+ * that is the single case the component permits it for, and Cancel then asks
+ * before discarding rather than taking the way out away entirely.
+ */
+export function ProductEditor({
+  visible,
+  product,
+  currency,
+  onClose,
+  onSaved,
+}: {
+  visible: boolean;
+  /** `null` creates. Anything else is a full read from `products.get`. */
+  product: ProductDetail | null;
+  currency: string;
+  onClose: () => void;
+  onSaved: (id: string) => void;
+}) {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const { a, locale, s } = useStoreCopy();
+
+  const [draft, setDraft] = useState<Draft>(() => draftFrom(product, currency, locale));
+  const [dirty, setDirty] = useState(false);
+  const [refused, setRefused] = useState<string | null>(null);
+
+  /*
+   * Re-seeded when the sheet opens, not on every render. Reopening on a product
+   * the seller just edited has to show what is now stored; a sheet that kept
+   * its old draft would silently re-submit a stale price over a newer one.
+   */
+  useEffect(() => {
+    if (!visible) return;
+    setDraft(draftFrom(product, currency, locale));
+    setDirty(false);
+    setRefused(null);
+  }, [visible, product, currency, locale]);
+
+  const edit = useCallback((patch: Partial<Draft>) => {
+    setDraft((current) => ({ ...current, ...patch }));
+    setDirty(true);
+  }, []);
+
+  const setVariant = useCallback(
+    (id: string, patch: Partial<Draft["variants"][string]>) => {
+      setDraft((current) => {
+        const existing = current.variants[id];
+        if (!existing) return current;
+        return {
+          ...current,
+          variants: { ...current.variants, [id]: { ...existing, ...patch } },
+        };
+      });
+      setDirty(true);
+    },
+    [],
+  );
+
+  const save = useMutation(
+    trpc.products.save.mutationOptions({
+      onSuccess: (result) => {
+        /*
+         * The whole namespace rather than the one page. A saved product changes
+         * its own row, the page it sits on, and — for a new one — every
+         * filtered list that should now contain it. `shop` and `analytics` go
+         * with it because the Home checklist counts products: a draft still
+         * ticks the `product` step, and a seller who just added their first one
+         * must not have to pull to refresh to watch it tick.
+         */
+        void queryClient.invalidateQueries(trpc.products.pathFilter());
+        void queryClient.invalidateQueries(trpc.shop.pathFilter());
+        void queryClient.invalidateQueries(trpc.analytics.pathFilter());
+        setDirty(false);
+        onSaved(result.id);
+      },
+      onError: (error) => {
+        captureError(error, { scope: "mobile:store:save" });
+        setRefused(refusalText(error, s));
+      },
+    }),
+  );
+
+  /*
+   * A digital product's files are invisible to this screen, and `saveProduct`
+   * rebuilds the file set from what it is handed — so saving one here would
+   * delete every download the seller sells. Refused as a rendered state with
+   * somewhere to go, rather than as a Save button that quietly destroys data.
+   */
+  const refusesDigital = product?.kind === "digital";
+
+  const canSave =
+    !refusesDigital &&
+    draft.title.trim().length > 0 &&
+    textToPrice(draft.price, currency, locale) !== null &&
+    !save.isPending;
+
+  const close = useCallback(() => {
+    if (!dirty) {
+      onClose();
+      return;
+    }
+    Alert.alert(s.unsavedTitle, s.unsavedBody, [
+      { text: s.keepEditing, style: "cancel" },
+      { text: s.discard, style: "destructive", onPress: onClose },
+    ]);
+  }, [dirty, onClose, s]);
+
+  return (
+    <Sheet
+      visible={visible}
+      onClose={close}
+      title={product ? a.products.edit : s.newTitle}
+      size="large"
+      dismissible={!dirty}
+    >
+      {refusesDigital ? (
+        <Card variant="outlined">
+          <Text tone="warning">{s.digitalOnWeb}</Text>
+        </Card>
+      ) : null}
+
+      {refused ? (
+        <Card variant="outlined">
+          <Text tone="danger">{refused}</Text>
+        </Card>
+      ) : null}
+
+      {product ? null : <Text tone="muted">{a.products.newSubtitle}</Text>}
+
+      <TextField
+        label={a.productForm.titleLabel}
+        placeholder={a.productForm.titlePlaceholder}
+        value={draft.title}
+        onChangeText={(title) => edit({ title })}
+        maxLength={200}
+        autoFocus={!product}
+        disabled={refusesDigital}
+      />
+
+      <TextField
+        label={a.productForm.descriptionLabel}
+        placeholder={a.productForm.descriptionPlaceholder}
+        value={draft.description}
+        onChangeText={(description) => edit({ description })}
+        multiline
+        maxLength={10_000}
+        disabled={refusesDigital}
+      />
+
+      <TextField
+        label={interpolate(a.productForm.price, { currency })}
+        value={draft.price}
+        onChangeText={(price) => edit({ price })}
+        keyboard="decimal"
+        disabled={refusesDigital}
+      />
+
+      <TextField
+        label={a.productForm.compareAt}
+        value={draft.compareAt}
+        onChangeText={(compareAt) => edit({ compareAt })}
+        keyboard="decimal"
+        disabled={refusesDigital}
+      />
+
+      <TextField
+        label={a.productForm.tags}
+        hint={a.productForm.tagsHint}
+        placeholder={a.productForm.tagsPlaceholder}
+        value={draft.tags}
+        onChangeText={(tags) => edit({ tags })}
+        disabled={refusesDigital}
+      />
+
+      <GroupedList header={a.productForm.optionsTitle}>
+        <Switch
+          label={a.productForm.trackStock}
+          hint={a.productForm.trackStockBody}
+          value={draft.trackInventory}
+          onValueChange={(trackInventory) => edit({ trackInventory })}
+          disabled={refusesDigital}
+        />
+        {/*
+          Drawn only where it can mean something. Stock lives on the variants
+          once a product has options — `saveProduct` nulls the product-level
+          count in that case — so showing the field there would offer a number
+          the server throws away.
+        */}
+        {draft.trackInventory && (product?.variants.length ?? 0) === 0 ? (
+          <TextField
+            label={a.variants.unitsInStock}
+            hint={a.variants.unitsHint}
+            value={draft.stockQuantity}
+            onChangeText={(stockQuantity) => edit({ stockQuantity })}
+            keyboard="number"
+            disabled={refusesDigital}
+          />
+        ) : null}
+        <Switch
+          label={a.productForm.inStock}
+          hint={a.productForm.inStockBody}
+          value={draft.inStock}
+          onValueChange={(inStock) => edit({ inStock })}
+          disabled={refusesDigital}
+        />
+        <Switch
+          label={a.productForm.featured}
+          hint={a.productForm.featuredBody}
+          value={draft.isFeatured}
+          onValueChange={(isFeatured) => edit({ isFeatured })}
+          disabled={refusesDigital}
+        />
+        <Switch
+          label={a.productForm.published}
+          hint={a.productForm.publishedBody}
+          value={draft.isPublished}
+          onValueChange={(isPublished) => edit({ isPublished })}
+          disabled={refusesDigital}
+        />
+      </GroupedList>
+
+      {/*
+        Prices and counts for combinations that already exist. Defining the
+        options themselves — adding a Size, renaming a Colour — stays on the web
+        admin: `saveProduct` drops every variant whose combination the new
+        options no longer describe, so a half-built option set typed on a phone
+        would delete rows that past orders point at.
+      */}
+      {product && product.variants.length > 0 ? (
+        <GroupedList header={a.variants.variant} footer={a.variants.footnote}>
+          {product.variants.map((variant) => {
+            const edited = draft.variants[variant.id];
+            if (!edited) return null;
+            const label = variantLabel(variant.options, product.options);
+            return (
+              <View key={variant.id}>
+                <TextField
+                  label={`${label} · ${interpolate(a.variants.priceIn, { currency })}`}
+                  hint={a.variants.intro}
+                  value={edited.price}
+                  onChangeText={(price) => setVariant(variant.id, { price })}
+                  keyboard="decimal"
+                  disabled={refusesDigital}
+                />
+                {draft.trackInventory ? (
+                  <TextField
+                    label={`${label} · ${a.variants.stock}`}
+                    hint={a.variants.unitsHint}
+                    value={edited.stock}
+                    onChangeText={(stock) => setVariant(variant.id, { stock })}
+                    keyboard="number"
+                    disabled={refusesDigital}
+                  />
+                ) : null}
+                <Switch
+                  label={`${label} · ${a.variants.forSale}`}
+                  value={edited.available}
+                  onValueChange={(available) => setVariant(variant.id, { available })}
+                  disabled={refusesDigital}
+                />
+              </View>
+            );
+          })}
+        </GroupedList>
+      ) : null}
+
+      {/*
+        The gallery, in `position` order, so a seller can see what a buyer sees.
+        There is no add and no reorder here — both need a picker this build does
+        not have, and a footer that says so beats a control that opens nothing.
+      */}
+      {product && product.images.length > 0 ? (
+        <GroupedList header={a.productForm.photos} footer={s.photosOnWeb}>
+          {product.images.map((image, index) => (
+            <ListRow
+              key={image.id}
+              title={index === 0 ? a.images.cover : String(index + 1)}
+              subtitle={image.alt ?? undefined}
+            />
+          ))}
+        </GroupedList>
+      ) : null}
+
+      <Button
+        label={save.isPending ? s.saving : a.common.save}
+        variant="primary"
+        fullWidth
+        loading={save.isPending}
+        disabled={!canSave}
+        onPress={() => save.mutate(toSaveInput(draft, product, currency, locale))}
+      />
+      <Button label={a.common.cancel} variant="ghost" fullWidth onPress={close} />
+    </Sheet>
+  );
+}

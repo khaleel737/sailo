@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import { useT } from "../../../lib/i18n";
 
 /**
  * The Store tab's own stack — the catalogue, and the product behind each row.
@@ -16,9 +17,19 @@ import { Stack } from "expo-router";
  *
  * This file was `products/_layout.tsx` until the tab shell landed. The tab is
  * "Store" because that is what a seller calls the thing buyers see; the
- * catalogue is what it opens on, and the product editor A08 builds goes here.
+ * catalogue is what it opens on, and the editor is a sheet rather than a third
+ * route — it is opened from both screens under here, and a route would have
+ * given a half-typed product a back button and a URL.
  */
 export default function StoreLayout() {
+  /*
+   * The stack's own title, from the same dictionary the catalogue under it
+   * reads. A layout is where a title has to come from — `Stack.Screen` sets it
+   * before the screen mounts — so this is the one component in the tab that
+   * needs the dictionary without rendering a word of its own.
+   */
+  const { a } = useT();
+
   return (
     <Stack
       screenOptions={{
@@ -27,8 +38,7 @@ export default function StoreLayout() {
         headerShadowVisible: false,
       }}
     >
-      {/* i18n: A05 */}
-      <Stack.Screen name="index" options={{ title: "Products" }} />
+      <Stack.Screen name="index" options={{ title: a.products.title }} />
       {/*
         Titled by the screen itself once the product has loaded — naming it
         here as well would flash "Product" before the real title arrives.
