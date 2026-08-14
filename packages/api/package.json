@@ -13,6 +13,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@sailo/analytics": "workspace:*",
     "@sailo/commerce": "workspace:*",
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",

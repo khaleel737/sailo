@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
    * package, so add to it when a dependency is added — not before.
    */
   transpilePackages: [
+    "@sailo/analytics",
     "@sailo/api",
     "@sailo/db",
     "@sailo/env",

@@ -402,6 +402,9 @@ importers:
 
   packages/api:
     dependencies:
+      '@sailo/analytics':
+        specifier: workspace:*
+        version: link:../analytics
       '@sailo/commerce':
         specifier: workspace:*
         version: link:../commerce

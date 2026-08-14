@@ -114,3 +114,63 @@ export function resolveAnalyticsWindow(
     until,
   };
 }
+
+/**
+ * How many bars a chart will plot. A three-year window is a legitimate thing
+ * to ask a *table* for and an unreadable thing to draw, so the series reads
+ * the most recent sixty days of it rather than every day at a pixel each.
+ */
+export const MAX_CHART_BARS = 60;
+
+/**
+ * The stretch of a window a chart actually draws.
+ *
+ * Split out of the admin overview, which has applied this rule inline since
+ * custom ranges existed, because the phone's Insights tab has to apply the
+ * same one — and a cap re-derived at the second call site is how two screens
+ * come to disagree about which sixty days they are showing.
+ *
+ * `truncated` is the part that matters to a caller. A window longer than the
+ * chart can plot is not an error and not something to hide: the tiles above
+ * still count the whole range, so a chart quietly showing a different period
+ * from the numbers beside it would be the page lying about its own axis. The
+ * caller says so instead.
+ */
+export type ChartWindow = {
+  /** What the series queries consume — the same two shapes as `query`. */
+  query: number | DateWindow;
+  days: number;
+  /** The window outran the chart; this is its most recent tail. */
+  truncated: boolean;
+  since: Date;
+  /** Exclusive, as everywhere else here. */
+  until: Date;
+};
+
+export function chartWindow(window: AnalyticsWindow): ChartWindow {
+  const days = Math.min(window.days, MAX_CHART_BARS);
+  const truncated = window.days > MAX_CHART_BARS;
+
+  /*
+   * A preset stays a rolling day-count, so the series queries build exactly
+   * the query they built before any of this existed. Only a custom window has
+   * to be narrowed by hand, and it is narrowed at its *near* edge — a seller
+   * who asked for last year and got a chart of last month should be looking
+   * at the most recent month, not the oldest one.
+   */
+  if (!window.custom) {
+    return {
+      query: days,
+      days,
+      truncated,
+      since: new Date(window.until.getTime() - days * DAY_MS),
+      until: window.until,
+    };
+  }
+
+  const until = window.until;
+  const since = truncated
+    ? new Date(until.getTime() - MAX_CHART_BARS * DAY_MS)
+    : window.since;
+  return { query: { since, until }, days, truncated, since, until };
+}
