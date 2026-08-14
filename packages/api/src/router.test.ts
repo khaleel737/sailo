@@ -115,24 +115,48 @@ describe("the shop-scoped router", () => {
     expect(scopedValueOf(findFirst.mock.calls[0]?.[0]?.where)).toBe("shop_1");
   });
 
+  /*
+   * The lists are paged now, so their predicate is an `and(...)` of a shop
+   * scope and up to three optional filters. `filter(Boolean)` drops the
+   * filters that were not asked for — what is asserted is that the *only*
+   * surviving comparison is the caller's own shop id. A filter that quietly
+   * replaced the scope rather than narrowing it fails right here.
+   */
   it("scopes products.list to the caller's shop, never a client-sent id", async () => {
     productsFindMany.mockResolvedValue([{ id: "p1" }]);
     await appRouter.createCaller({ shopId: "shop_A" }).products.list();
-    expect(scopedValueOf(productsFindMany.mock.calls[0]?.[0]?.where)).toBe("shop_A");
+    const where = productsFindMany.mock.calls[0]?.[0]?.where;
+    expect(scopedValuesOf(where).filter(Boolean)).toEqual(["shop_A"]);
   });
 
-  it("scopes orders.list to the caller's shop and clamps the limit", async () => {
+  it("keeps the shop scope when a search narrows the list", async () => {
+    // A search term is a filter on top of the scope. There is no input that
+    // removes the other half, and this is where that would show.
+    productsFindMany.mockResolvedValue([]);
+    await appRouter
+      .createCaller({ shopId: "shop_A" })
+      .products.list({ search: "mug", status: "published" });
+    const where = productsFindMany.mock.calls[0]?.[0]?.where;
+    expect(scopedValuesOf(where)).toContain("shop_A");
+  });
+
+  it("scopes orders.list to the caller's shop and over-fetches by exactly one", async () => {
     ordersFindMany.mockResolvedValue([]);
     await appRouter.createCaller({ shopId: "shop_B" }).orders.list({ limit: 10 });
     const call = ordersFindMany.mock.calls[0]?.[0];
-    expect(scopedValueOf(call?.where)).toBe("shop_B");
-    expect(call?.limit).toBe(10);
+    expect(scopedValuesOf(call?.where).filter(Boolean)).toEqual(["shop_B"]);
+    /*
+     * Eleven for a page of ten. Getting the extra row back is how "there is
+     * more" is known without a second `count(*)`; `pageOf` drops it before the
+     * page is returned, and `@sailo/commerce/pagination` tests that it does.
+     */
+    expect(call?.limit).toBe(11);
   });
 
   it("defaults the page size when none is asked for", async () => {
     productsFindMany.mockResolvedValue([]);
     await appRouter.createCaller({ shopId: "shop_1" }).products.list();
-    expect(productsFindMany.mock.calls[0]?.[0]?.limit).toBe(50);
+    expect(productsFindMany.mock.calls[0]?.[0]?.limit).toBe(51);
   });
 
   it("refuses a page size beyond the ceiling", async () => {

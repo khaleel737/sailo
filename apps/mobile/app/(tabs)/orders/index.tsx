@@ -54,13 +54,14 @@ export default function OrdersScreen() {
     ),
   );
 
-  const rows = orders.data ?? [];
+  const rows = orders.data?.items ?? [];
   /*
-   * A short page is the end of the list: the server gave back fewer than it was
-   * asked for, so there is nothing behind it. That check is what stops this
-   * firing a pointless request every time the seller bounces off the bottom.
+   * The server says whether there is more, rather than this inferring it from a
+   * short page. `nextCursor` is null exactly when the list is exhausted — a page
+   * can come back short for other reasons, and guessing is what fired a
+   * pointless request every time the seller bounced off the bottom.
    */
-  const more = rows.length >= limit && limit < MAX;
+  const more = Boolean(orders.data?.nextCursor) && limit < MAX;
   // `isFetching` rather than `isRefetching`, matching the dashboard: the spinner
   // is honest about a background refresh as well as a pulled one.
   const refreshing = orders.isFetching && !orders.isPending;
@@ -121,7 +122,7 @@ export default function OrdersScreen() {
           <Empty title={adminEn.orders.empty} hint={adminEn.orders.emptyBody} />
         }
         ListFooterComponent={
-          <ListFooter loading={orders.isFetching && more} capped={limit >= MAX && rows.length >= MAX} />
+          <ListFooter loading={orders.isFetching && more} capped={limit >= MAX && Boolean(orders.data?.nextCursor)} />
         }
       />
     </SafeAreaView>

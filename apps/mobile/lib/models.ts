@@ -21,13 +21,19 @@ import type { RouterInputs, RouterOutputs } from "@sailo/api/client";
 /** `undefined` when the seller's session resolved to no shop row. */
 export type Shop = RouterOutputs["shop"]["get"];
 
-/** A row as the list returns it — the order header, without its lines. */
-export type Order = RouterOutputs["orders"]["list"][number];
+/**
+ * A row as the list returns it — the order header, without its lines.
+ *
+ * `["items"]` because the list is keyset-paged: it answers
+ * `{ items, nextCursor }` rather than a bare array, so that a page boundary
+ * cannot move when an order arrives mid-scroll. The row type is unchanged.
+ */
+export type Order = RouterOutputs["orders"]["list"]["items"][number];
 /** One order with `items`, the authoritative list of what was bought. */
 export type OrderDetail = RouterOutputs["orders"]["get"];
 export type OrderItem = OrderDetail["items"][number];
 
-export type Product = RouterOutputs["products"]["list"][number];
+export type Product = RouterOutputs["products"]["list"]["items"][number];
 /** One product with its `images` and `variants`, ordered by position. */
 export type ProductDetail = RouterOutputs["products"]["get"];
 export type ProductImage = ProductDetail["images"][number];

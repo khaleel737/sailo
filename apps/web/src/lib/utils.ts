@@ -7,19 +7,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** URL-safe slug. Falls back to a short random suffix if input has no word chars. */
-export function slugify(input: string) {
-  const base = input
-    .toLowerCase()
-    .trim()
-    .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "") // strip combining accents
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  return base || `item-${Math.random().toString(36).slice(2, 8)}`;
-}
-
 /**
  * Re-exported, not defined here. `formatMoney` moved to `@sailo/core/currency`
  * so the mobile app can reach it — a React Native bundle cannot import
@@ -30,6 +17,14 @@ export function slugify(input: string) {
  * imports it from here, and the move is not one of them's business.
  */
 export { formatMoney } from "@sailo/core/currency";
+
+/**
+ * The same trade, for the same reason. `slugify` moved to `@sailo/core/slug`
+ * when `products.save` arrived in `@sailo/api`: the slug is derived from the
+ * title by whichever server took the write, and the phone's answer and this
+ * app's answer have to be the same string or the product has two addresses.
+ */
+export { slugify } from "@sailo/core/slug";
 
 /**
  * Which of the two separators in a number is the decimal point, if either.

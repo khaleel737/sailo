@@ -101,7 +101,7 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
       <FlatList
-        data={orders.data ?? []}
+        data={orders.data?.items ?? []}
         keyExtractor={(order) => order.id}
         renderItem={({ item }) => <OrderRow order={item} />}
         contentContainerStyle={styles.list}
@@ -113,8 +113,8 @@ export default function Home() {
             <Text style={styles.brand}>{shop.data?.name ?? "Sailo"}</Text>
             <Text style={styles.sub}>{session?.user?.email ?? ""}</Text>
             <View style={styles.stats}>
-              <Stat label="Products" value={products.data?.length ?? 0} />
-              <Stat label="Orders" value={orders.data?.length ?? 0} />
+              <Stat label="Products" value={products.data?.items.length ?? 0} />
+              <Stat label="Orders" value={orders.data?.items.length ?? 0} />
             </View>
             <Text style={styles.section}>Recent orders</Text>
           </View>

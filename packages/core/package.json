@@ -14,7 +14,10 @@
     "./invariant": "./src/invariant.ts",
     "./plans": "./src/plans.ts",
     "./resources": "./src/resources.ts",
-    "./webhook-events": "./src/webhook-events.ts"
+    "./webhook-events": "./src/webhook-events.ts",
+    "./file-urls": "./src/file-urls.ts",
+    "./memberships": "./src/memberships.ts",
+    "./slug": "./src/slug.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
