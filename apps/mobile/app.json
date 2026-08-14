@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "store.sailo.app",
-      "usesAppleSignIn": false,
+      "usesAppleSignIn": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Sailo uses the camera to scan a buyer's ticket at check-in and to photograph products for your shop.",
         "NSPhotoLibraryUsageDescription": "Sailo needs your photo library so you can put pictures of your products on your shop."
@@ -54,6 +54,13 @@
         {
           "icon": "./assets/notification-icon.png",
           "color": "#037740"
+        }
+      ],
+      "expo-apple-authentication",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.EXPO-PUBLIC-GOOGLE-IOS-CLIENT-ID"
         }
       ]
     ],

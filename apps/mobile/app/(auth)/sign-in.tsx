@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect } from "expo-router";
 import { authClient } from "../../lib/auth";
 import { Loading } from "../../components/states";
+import { SocialSignIn } from "../../components/social-sign-in";
 
 /**
  * Sign in — a placeholder, and the only route outside the tab shell.
@@ -81,6 +82,13 @@ export default function SignIn() {
         >
           <Text style={styles.buttonText}>{busy ? "Signing in…" : "Sign in"}</Text>
         </Pressable>
+        {/*
+         * The social slot. Everything about how these two buttons look and what
+         * they do lives in `components/social-sign-in.tsx`; this is the one line
+         * that puts them on the screen, kept to one line on purpose so that the
+         * rewrite of this screen can move it without having to understand it.
+         */}
+        <SocialSignIn disabled={busy} />
       </View>
     </SafeAreaView>
   );
