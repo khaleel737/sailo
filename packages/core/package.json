@@ -11,7 +11,8 @@
     "./quote": "./src/quote.ts",
     "./order-status": "./src/order-status.ts",
     "./onboarding": "./src/onboarding.ts",
-    "./invariant": "./src/invariant.ts"
+    "./invariant": "./src/invariant.ts",
+    "./plans": "./src/plans.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -25,6 +26,7 @@
     "vitest": "^4.1.10"
   },
   "dependencies": {
-    "@sailo/db": "workspace:*"
+    "@sailo/db": "workspace:*",
+    "@sailo/i18n": "workspace:*"
   }
 }

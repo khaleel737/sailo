@@ -475,6 +475,9 @@ importers:
       '@sailo/db':
         specifier: workspace:*
         version: link:../db
+      '@sailo/i18n':
+        specifier: workspace:*
+        version: link:../i18n
     devDependencies:
       '@sailo/config':
         specifier: workspace:*
