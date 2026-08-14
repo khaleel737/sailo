@@ -1,0 +1,55 @@
+apps/mobile/components/states.tsx
+  s_3cdb570c98c30d::t_6b7d89ae092b21 57-71,76-83,91-96,99
+  s_3cdb570c98c30d::t_438626562cdc30 16-24,27-32
+apps/mobile/lib/a11y.ts
+  s_3cdb570c98c30d::t_ac5583b519a62c 1-63
+apps/mobile/app/(tabs)/settings/index.tsx
+  s_3cdb570c98c30d::t_bfaabf45287628 189-191,197-203,206-210
+  s_3cdb570c98c30d::t_17ea31d8bce0d1 70-72
+  s_3cdb570c98c30d::t_3433d524c99681 101-112,124-130,135-145
+  s_70ca2e0516b978::t_40eba01e56eeef 155-156
+apps/mobile/maestro/flows/handover-clears-the-cache.yaml
+  s_3cdb570c98c30d::t_a02d1c166b1e16 1-63
+apps/mobile/maestro/flows/sign-in.yaml
+  s_3cdb570c98c30d::t_87e5df0711b19c 19-27,30-31,34-44,48-49
+  s_3cdb570c98c30d::t_a2c8ed241216b0 1-18,28-29,32-33,45-47,50-51
+apps/mobile/maestro/flows/order-status.yaml
+  s_3cdb570c98c30d::t_3d2ee278833b17 1-60
+apps/mobile/app/(tabs)/store/[id].tsx
+  s_3cdb570c98c30d::t_02e5dd8741f7ec 22
+  s_3cdb570c98c30d::t_8858dd2a87d60e 134-136,147-151,154-159
+  s_3cdb570c98c30d::t_8bc7becc5b0df4 275-282,284-293,298,300,308-310
+  s_3cdb570c98c30d::t_5f4ee7f10fcff2 222-227
+  s_3cdb570c98c30d::t_da53861c02a872 256
+apps/mobile/maestro/README.md
+  s_3cdb570c98c30d::t_36dab996257eed 1-70
+apps/mobile/maestro/config.yaml
+  s_3cdb570c98c30d::t_5df6b67cf697ac 1-8
+apps/mobile/components/order-status.tsx
+  s_3cdb570c98c30d::t_542ae899584216 87-92
+  s_3cdb570c98c30d::t_facbb61e221d30 34-46,49,51-57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "26ae3a7cf7e593456a4f5796a658dd23f3f3a20b",
+  "prompts": {},
+  "sessions": {
+    "s_3cdb570c98c30d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e1fafd90-c8cf-4e41-9ae5-be55e17f277d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_70ca2e0516b978": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cb016c2-ed44-4df9-aca6-3905c4279739",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
