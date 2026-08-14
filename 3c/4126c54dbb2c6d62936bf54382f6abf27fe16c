@@ -1,0 +1,72 @@
+packages/design-native/src/grouped-list.tsx
+  s_215604f056587b::t_5f59775aafcbc2 1-33
+packages/design-native/src/empty-state.tsx
+  s_215604f056587b::t_ea364df0520f22 1-29
+packages/design-native/tsconfig.json
+  s_215604f056587b::t_27204a9fc9ab47 1-19
+packages/design-native/src/switch.tsx
+  s_215604f056587b::t_8726782e607e87 1-49
+packages/design-native/src/icon.tsx
+  s_215604f056587b::t_51d7b61c5973c7 1-39
+packages/design-native/src/list-row.tsx
+  s_215604f056587b::t_74561189a02de0 1-81
+knip.json
+  s_215604f056587b::t_a3e89b28b5adff 47,52
+packages/design-native/package.json
+  s_215604f056587b::t_55c1b56dcdedb7 27
+  s_215604f056587b::t_a06b21a624bc30 11
+  s_215604f056587b::t_65bd6423ccfcd9 1-10,12-26,28-29
+packages/design-native/src/card.tsx
+  s_215604f056587b::t_ab12be6a8be595 1-45
+packages/design-native/src/money.tsx
+  s_215604f056587b::t_2d5cecc7226ef2 1-48
+packages/design-native/src/segmented.tsx
+  s_215604f056587b::t_a30a8813d0309b 1-54
+packages/design-native/src/avatar.tsx
+  s_215604f056587b::t_cf6a79a89dadd0 1-34
+packages/design-native/src/sheet.tsx
+  s_215604f056587b::t_aaf594b8d37511 1-50
+packages/design-native/src/toast.tsx
+  s_215604f056587b::t_85e43e1e9e789e 1-44
+packages/design-native/src/button.tsx
+  s_215604f056587b::t_9585280e8905d3 1-67
+packages/design-native/src/chart.tsx
+  s_215604f056587b::t_92b3b72d5849b8 1-72
+packages/design-native/src/error-state.tsx
+  s_215604f056587b::t_facb519194f3da 1-39
+packages/design-native/src/text.tsx
+  s_215604f056587b::t_a160b7eb960911 1-47
+packages/design-native/src/text-field.tsx
+  s_215604f056587b::t_0c244ac8e95285 1-108
+packages/design-native/src/skeleton.tsx
+  s_215604f056587b::t_45df302747d54c 1-31
+packages/design-native/src/index.ts
+  s_215604f056587b::t_1f07841fd46dd3 1-43,56-86
+  s_215604f056587b::t_d89faf258b1748 44-55
+packages/design-native/src/types.ts
+  s_215604f056587b::t_42b802262599f9 1-134
+packages/design-native/src/stat.tsx
+  s_215604f056587b::t_bbdb177fc3333c 1-48
+packages/design-native/src/progress.tsx
+  s_215604f056587b::t_4f807b57f4fde2 1-44
+packages/design-native/src/status-pill.tsx
+  s_215604f056587b::t_26b133d37a602f 1-30
+pnpm-lock.yaml
+  s_215604f056587b::t_6ff54ff1d38189 517-544
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3c4126c54dbb2c6d62936bf54382f6abf27fe16c",
+  "prompts": {},
+  "sessions": {
+    "s_215604f056587b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "85bd3789-aab6-46b5-bf51-8322157e96f9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
