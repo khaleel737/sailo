@@ -7,8 +7,18 @@ import { MOBILE_SCHEME } from "@sailo/auth";
  * a session. Separate from `EXPO_PUBLIC_AUTH_URL` on purpose: the two halves
  * answer on different hosts in every environment except the one where a single
  * dev server happens to serve both.
+ *
+ * The fallback is the api host, not the web one. It used to be
+ * `https://sailo.store`, written when the plan was to put both halves behind a
+ * single origin; that cutover never happened, and apps/web has no `/api/trpc`
+ * to answer with, so an unset variable meant every request 404ed rather than
+ * failing anywhere near the missing configuration. Now the default is simply
+ * where the API actually is.
+ *
+ * Point it at `http://localhost:3002` in `.env.local` to work against a local
+ * `pnpm --filter @sailo/api-server dev`.
  */
-const BASE = process.env.EXPO_PUBLIC_API_URL ?? "https://sailo.store";
+const BASE = process.env.EXPO_PUBLIC_API_URL ?? "https://api.sailo.store";
 
 /**
  * The typed data client the screens read through.
