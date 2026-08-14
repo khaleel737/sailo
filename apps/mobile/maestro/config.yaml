@@ -1,0 +1,8 @@
+# Maestro's own configuration. `maestro test apps/mobile/maestro` reads this.
+#
+# `flows` is explicit rather than a glob so that adding a file to this
+# directory is a decision about CI, not a side effect of writing one.
+flows:
+  - flows/sign-in.yaml
+  - flows/order-status.yaml
+  - flows/handover-clears-the-cache.yaml

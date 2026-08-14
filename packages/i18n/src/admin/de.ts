@@ -332,6 +332,8 @@ export const adminDe: PartialAdminDictionary = {
     description: "Zahle anderen einen Anteil an dem, was sie für dich verkaufen.",
   },
   payments: {
+    wallets: "Bezahl-Apps",
+    walletsBody: "Der Käufer öffnet PayPal oder Venmo mit bereits eingetragenem Betrag und bestätigt danach hier. Als bezahlt markierst du sie auf der Bestellseite.",
     stripeErrorTitle: "Stripe konnte die Einrichtung nicht starten",
     stripeNoResponse: "Stripe hat nicht geantwortet. Versuch es gleich noch einmal.",
     waysToOrder: "{count} Bestellwege",

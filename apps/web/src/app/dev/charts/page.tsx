@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Chart } from "@/components/shared/chart";
 import { Card } from "@/components/ui";
-import type { Series } from "@/lib/chart/types";
+import type { Series } from "@/lib/chart";
 
 /* Not yet converted — see the note in `next.config.ts`. */
 export const instant = false;

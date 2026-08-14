@@ -87,7 +87,7 @@ describe("orders.updateStatus", () => {
   it("refuses the write when no shop resolved", async () => {
     await expect(
       appRouter
-        .createCaller({ shopId: null })
+        .createCaller({ shopId: null, userId: null })
         .orders.updateStatus({ id: ORDER_ID, status: "confirmed" }),
     ).rejects.toThrow(/sign in/i);
     // Nothing may reach the database or the shared cascade on a refused call.
@@ -98,14 +98,14 @@ describe("orders.updateStatus", () => {
 
   it("reads the shop row by the caller's own id, never one the client sent", async () => {
     await appRouter
-      .createCaller({ shopId: "shop_A" })
+      .createCaller({ shopId: "shop_A", userId: "user_test" })
       .orders.updateStatus({ id: ORDER_ID, status: "confirmed" });
     expect(scopedValueOf(shopsFindFirst.mock.calls[0]?.[0]?.where)).toBe("shop_A");
   });
 
   it("applies the change against the caller's own shop", async () => {
     const result = await appRouter
-      .createCaller({ shopId: "shop_A" })
+      .createCaller({ shopId: "shop_A", userId: "user_test" })
       .orders.updateStatus({ id: ORDER_ID, status: "confirmed" });
 
     // One argument and no second one — `toHaveBeenCalledWith` asserts the whole
@@ -128,7 +128,7 @@ describe("orders.updateStatus", () => {
    */
   it("hands the package the shop row it read", async () => {
     await appRouter
-      .createCaller({ shopId: "shop_A" })
+      .createCaller({ shopId: "shop_A", userId: "user_test" })
       .orders.updateStatus({ id: ORDER_ID, status: "confirmed" });
     expect(changeOrderStatus.mock.calls[0]?.[0]?.shop).toBe(SHOP_A);
   });
@@ -144,7 +144,7 @@ describe("orders.updateStatus", () => {
    */
   it("hands the package no scheduler, so the emission is awaited", async () => {
     await appRouter
-      .createCaller({ shopId: "shop_A" })
+      .createCaller({ shopId: "shop_A", userId: "user_test" })
       .orders.updateStatus({ id: ORDER_ID, status: "confirmed" });
     expect(changeOrderStatus.mock.calls[0]?.[1]?.defer).toBeUndefined();
   });
@@ -156,7 +156,7 @@ describe("orders.updateStatus", () => {
    */
   it("revalidates nothing, because it caches nothing", async () => {
     await appRouter
-      .createCaller({ shopId: "shop_A" })
+      .createCaller({ shopId: "shop_A", userId: "user_test" })
       .orders.updateStatus({ id: ORDER_ID, status: "confirmed" });
     expect(changeOrderStatus.mock.calls[0]?.[1]?.revalidate).toBeUndefined();
   });
@@ -172,7 +172,7 @@ describe("orders.updateStatus", () => {
     changeOrderStatus.mockResolvedValue(null);
     await expect(
       appRouter
-        .createCaller({ shopId: "shop_B" })
+        .createCaller({ shopId: "shop_B", userId: "user_test" })
         .orders.updateStatus({ id: ORDER_ID, status: "cancelled" }),
     ).rejects.toThrow(/no such order/i);
 
@@ -185,7 +185,7 @@ describe("orders.updateStatus", () => {
     shopsFindFirst.mockResolvedValue(undefined);
     await expect(
       appRouter
-        .createCaller({ shopId: "shop_A" })
+        .createCaller({ shopId: "shop_A", userId: "user_test" })
         .orders.updateStatus({ id: ORDER_ID, status: "confirmed" }),
     ).rejects.toThrow(/no such shop/i);
     // A shop that no longer exists must not reach a write at all.
@@ -196,7 +196,7 @@ describe("orders.updateStatus", () => {
     changeOrderStatus.mockResolvedValue(null);
     await expect(
       appRouter
-        .createCaller({ shopId: "shop_B" })
+        .createCaller({ shopId: "shop_B", userId: "user_test" })
         .orders.updateStatus({ id: ORDER_ID, status: "cancelled" }),
     ).rejects.toThrow();
     // A publish on a refused write wakes every other screen to re-read
@@ -206,7 +206,7 @@ describe("orders.updateStatus", () => {
 
   it("tells the shop's other screens once the write lands", async () => {
     await appRouter
-      .createCaller({ shopId: "shop_A" })
+      .createCaller({ shopId: "shop_A", userId: "user_test" })
       .orders.updateStatus({ id: ORDER_ID, status: "confirmed" });
     expect(publishShopEvent).toHaveBeenCalledWith("shop_A", "order");
   });
@@ -214,7 +214,7 @@ describe("orders.updateStatus", () => {
   it("refuses a status the system cannot store", async () => {
     await expect(
       appRouter
-        .createCaller({ shopId: "shop_A" })
+        .createCaller({ shopId: "shop_A", userId: "user_test" })
         // @ts-expect-error — the enum is the point; this is what a
         // hand-rolled POST sends, and it must not reach the cascade.
         .orders.updateStatus({ id: ORDER_ID, status: "deleted" }),
@@ -223,7 +223,7 @@ describe("orders.updateStatus", () => {
   });
 
   it("accepts every status the shared list declares", async () => {
-    const caller = appRouter.createCaller({ shopId: "shop_A" });
+    const caller = appRouter.createCaller({ shopId: "shop_A", userId: "user_test" });
     for (const status of ORDER_STATUSES) {
       await expect(
         caller.orders.updateStatus({ id: ORDER_ID, status }),

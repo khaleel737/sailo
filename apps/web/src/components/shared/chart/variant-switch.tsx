@@ -1,6 +1,6 @@
 "use client";
 
-import type { ChartShape } from "@/lib/chart/types";
+import type { ChartShape } from "@/lib/chart";
 
 /**
  * Bars or a line, chosen by the reader.

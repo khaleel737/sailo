@@ -1,4 +1,4 @@
-import type { Peak } from "@/lib/chart/domain";
+import type { Peak } from "@/lib/chart";
 
 /**
  * The title, the headline figure, and the day worth calling out.

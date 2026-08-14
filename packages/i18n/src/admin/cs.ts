@@ -332,6 +332,8 @@ export const adminCs: PartialAdminDictionary = {
     description: "Plaťte ostatním podíl z toho, co pro vás prodají.",
   },
   payments: {
+    wallets: "Platební aplikace",
+    walletsBody: "Kupující otevře PayPal nebo Venmo s už vyplněnou částkou a pak se vrátí potvrdit. Zaplaceno označíte na stránce Objednávky.",
     stripeErrorTitle: "Stripe nemohl spustit nastavení",
     stripeNoResponse: "Stripe neodpověděl. Zkuste to za chvíli znovu.",
     waysToOrder: "{count} způsobů objednání",

@@ -40,6 +40,9 @@
       "project": [
         "app/**/*.{ts,tsx}",
         "lib/**/*.ts"
+      ],
+      "ignoreDependencies": [
+        "expo-network"
       ]
     },
     "packages/*": {

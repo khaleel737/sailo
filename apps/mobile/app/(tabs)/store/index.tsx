@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, FlatList, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 import { useRouter } from "expo-router";
 import {
   keepPreviousData,
@@ -12,14 +13,16 @@ import { TRPCClientError } from "@trpc/client";
 import { currencyDecimals, formatMoney } from "@sailo/core/currency";
 import { isProductKind, variantLabel } from "@sailo/core/variants";
 import { interpolate } from "@sailo/i18n/native";
-import { captureError } from "@sailo/observability";
 import {
   Button,
   Card,
+  Divider,
   EmptyState,
   ErrorState,
   GroupedList,
+  IconButton,
   ListRow,
+  Screen,
   Segmented,
   Sheet,
   Skeleton,
@@ -27,10 +30,11 @@ import {
   Switch,
   Text,
   TextField,
+  haptics,
   type SegmentedOption,
 } from "@sailo/design-native";
 import { useT } from "../../../lib/i18n";
-import { useTRPC } from "../../../lib/query";
+import { reportQueryError, useTRPC } from "../../../lib/query";
 import type { Product, ProductDetail, RouterInputs } from "../../../lib/models";
 
 /**
@@ -308,7 +312,7 @@ export default function StoreScreen() {
   /*
    * One list out of however many pages have been fetched, memoised on the pages
    * themselves — scrolling changes nothing about them, and rebuilding the array
-   * on every render would hand `FlatList` a new `data` identity to diff.
+   * on every render would hand the list a new `data` identity to diff.
    */
   const rows = useMemo(
     () => products.data?.pages.flatMap((page) => page.items) ?? [],
@@ -338,8 +342,16 @@ export default function StoreScreen() {
 
   const failed = products.error ?? shop.error;
   if (failed) {
-    captureError(failed, { scope: "mobile:store:list" });
-    return <ErrorState message={s.loadFailed} onRetry={refresh} retrying={refreshing} />;
+    reportQueryError(failed, { scope: "mobile:store:list" });
+    return (
+      <Screen scroll={false} edges={EDGES}>
+        <ErrorState
+          message={s.loadFailed}
+          onRetry={refresh}
+          retrying={refreshing}
+        />
+      </Screen>
+    );
   }
 
   const filters: readonly SegmentedOption<Status>[] = [
@@ -349,38 +361,75 @@ export default function StoreScreen() {
   ];
 
   return (
-    <View>
-      <Segmented
-        options={filters}
-        value={status}
-        onChange={setStatus}
-        accessibilityLabel={a.products.title}
-      />
+    /*
+     * `Screen`, and the root it replaces was a bare `<View>` with no `flex` on
+     * it at all.
+     *
+     * That is not a styling nicety. A `View` with no flex sizes to its content,
+     * and `FlashList` measures against its parent — so the catalogue was a list
+     * with no height to draw in, inside a container that had not claimed the
+     * window. `Screen` owns the fill, the page colour and the safe area, and
+     * the list gets a bounded height to recycle rows into.
+     *
+     * `scroll={false}` because the list does the scrolling. A `FlashList` inside
+     * a `ScrollView` is a list with unbounded height, which is the same bug
+     * from the other direction.
+     */
+    <Screen scroll={false} padding="none" gap="none" edges={EDGES} testID="store">
+      <View style={styles.controls}>
+        <Segmented
+          options={filters}
+          value={status}
+          onChange={setStatus}
+          accessibilityLabel={a.products.title}
+        />
 
-      {/*
-        Drawn above the list rather than as its header, so it does not scroll
-        away: a seller filtering a long catalogue needs to see and edit the term
-        while looking at what it matched.
-      */}
-      <TextField
-        label={s.searchLabel}
-        placeholder={s.searchPlaceholder}
-        value={typed}
-        onChangeText={setTyped}
-        returnKey="search"
-      />
+        {/*
+          Drawn above the list rather than as its header, so it does not scroll
+          away: a seller filtering a long catalogue needs to see and edit the term
+          while looking at what it matched.
+        */}
+        <View style={styles.searchRow}>
+          <View style={styles.search}>
+            <TextField
+              label={s.searchLabel}
+              placeholder={s.searchPlaceholder}
+              value={typed}
+              onChangeText={setTyped}
+              returnKey="search"
+            />
+          </View>
+          {/*
+            An icon-only add, beside the search rather than under it.
 
-      <Button
-        label={a.products.add}
-        icon="add"
-        variant="primary"
-        onPress={() => setCreating(true)}
-      />
+            A full-width primary button between the controls and the list is a
+            third band of chrome above a catalogue somebody opened to look at —
+            and on a small handset it pushed the first product off the screen.
+            `IconButton` requires its own accessible name, which is the whole
+            reason it is safe to reduce a labelled button to a glyph.
+          */}
+          <View style={styles.add}>
+            <IconButton
+              icon="add"
+              variant="tinted"
+              size="lg"
+              accessibilityLabel={a.products.add}
+              onPress={() => setCreating(true)}
+            />
+          </View>
+        </View>
+      </View>
+
+      <Divider spacing="none" />
 
       {products.isPending ? (
-        <Skeleton shape="row" count={6} />
+        <View style={styles.list}>
+          <Skeleton shape="row" count={6} />
+        </View>
       ) : (
-        <FlatList
+        <FlashList
+          style={styles.listFill}
+          contentContainerStyle={styles.list}
           data={rows}
           keyExtractor={(product) => product.id}
           renderItem={({ item }) => (
@@ -393,17 +442,10 @@ export default function StoreScreen() {
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           /*
-           * `FlatList`, not `FlashList`. `@shopify/flash-list` is not a
-           * dependency of `apps/mobile`, and `package.json` is outside this
-           * work order's write scope — the PR says so rather than this quietly
-           * shipping a slower list. These four are what FlatList can be told to
-           * do on its own about a long catalogue: recycle a bounded window, and
-           * stop re-measuring rows it has already drawn.
+           * `FlashList` recycles row views rather than mounting one per item,
+           * which is what holds a long catalogue at sixty frames. Its own
+           * windowing is why `FlatList`'s knobs are absent rather than tuned.
            */
-          initialNumToRender={12}
-          maxToRenderPerBatch={12}
-          windowSize={7}
-          removeClippedSubviews
           ListEmptyComponent={
             /*
              * "Nothing matched" and "nothing exists" are different facts and
@@ -444,7 +486,7 @@ export default function StoreScreen() {
           open(id);
         }}
       />
-    </View>
+    </Screen>
   );
 }
 
@@ -763,6 +805,9 @@ export function ProductEditor({
   const save = useMutation(
     trpc.products.save.mutationOptions({
       onSuccess: (result) => {
+        // Publishing or unpublishing changes what a buyer can see, which is
+        // worth confirming through the hand as well as the screen.
+        haptics.success();
         /*
          * The whole namespace rather than the one page. A saved product changes
          * its own row, the page it sits on, and — for a new one — every
@@ -778,7 +823,7 @@ export function ProductEditor({
         onSaved(result.id);
       },
       onError: (error) => {
-        captureError(error, { scope: "mobile:store:save" });
+        reportQueryError(error, { scope: "mobile:store:save" });
         setRefused(refusalText(error, s));
       },
     }),
@@ -997,3 +1042,34 @@ export function ProductEditor({
     </Sheet>
   );
 }
+
+/** No safe-area edges — the stack header owns the top, the tab bar the bottom.
+ *  `orders/index.tsx` carries the longer note on why an empty list is the
+ *  right answer here rather than an omission. */
+const EDGES = [] as const;
+
+/*
+ * Layout only — flex and spacing, nothing with a colour, a radius or a font
+ * size in it. Every visual decision on this screen belongs to
+ * `@sailo/design-native`.
+ */
+const styles = StyleSheet.create({
+  /*
+   * The list has to be told to fill what is left of the screen.
+   *
+   * `FlashList` sets no `flex` of its own, and a scroller inside a column that
+   * does not claim one is sized to its *content* — which for a virtualised list
+   * is whatever it has rendered so far. The symptom is a list that draws one
+   * screenful and then refuses to scroll, or one that pushes the tab bar off
+   * the bottom. One line, and it is the line every FlashList needs.
+   */
+  listFill: { flex: 1 },
+  controls: { paddingHorizontal: 16, paddingTop: 8, paddingBottom: 12, gap: 12 },
+  searchRow: { flexDirection: "row", alignItems: "flex-end", gap: 8 },
+  search: { flex: 1 },
+  /* Nudged up so the glyph sits on the field's centre line rather than on its
+     baseline, which is where `alignItems: "flex-end"` would otherwise put it —
+     the field is taller than the button by its label. */
+  add: { paddingBottom: 0 },
+  list: { flexGrow: 1, paddingHorizontal: 16, paddingVertical: 8 },
+});

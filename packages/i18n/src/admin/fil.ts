@@ -350,6 +350,8 @@ export const adminFil: PartialAdminDictionary = {
   },
 
   payments: {
+    wallets: "Mga payment app",
+    walletsBody: "Bubuksan ng mamimili ang PayPal o Venmo na nakalagay na ang halaga, tapos babalik para kumpirmahin. Ikaw ang magmamarkang bayad mula sa page ng Mga order.",
     stripeErrorTitle: "Hindi nasimulan ng Stripe ang setup",
     stripeNoResponse: "Hindi tumugon ang Stripe. Subukan ulit maya-maya.",
     waysToOrder: "{count} paraan ng pag-order",

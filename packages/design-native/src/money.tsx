@@ -1,5 +1,5 @@
-import { Text as RNText } from "react-native";
 import { formatMoney } from "@sailo/core/currency";
+import { Text } from "./text";
 import type { TextVariant, TextWeight, Tone } from "./types";
 
 /**
@@ -34,7 +34,13 @@ export type MoneyProps = {
    * sign wrong in Arabic.
    */
   negative?: boolean;
-  /** @default "body" */
+  /**
+   * @default "numeric"
+   *
+   * Body-sized, in tabular figures. A column of amounts set in the
+   * proportional default visibly shivers as the numbers change under a
+   * refetch, because `1` is narrower than `8`.
+   */
   variant?: TextVariant;
   /** @default "default" */
   tone?: Tone;
@@ -42,7 +48,39 @@ export type MoneyProps = {
   testID?: string;
 };
 
-export function Money({ minor, currency, locale, negative, testID }: MoneyProps) {
+export function Money({
+  minor,
+  currency,
+  locale,
+  negative,
+  variant = "numeric",
+  tone = "default",
+  weight,
+  testID,
+}: MoneyProps) {
+  /*
+   * `variant`, `tone` and `weight` are used, which they were not.
+   *
+   * All three were declared on `MoneyProps`, documented, and then dropped on
+   * the floor: the implementation destructured only `minor`, `currency`,
+   * `locale` and `negative`, and rendered a bare `RNText` with no style at all.
+   * So `<Money variant="display" tone="danger" />` — which is what the order
+   * detail screen writes for a refund — drew a body-sized amount in the default
+   * ink, and every call site that had asked for emphasis silently got none.
+   * Worse, a bare `RNText` takes no colour from the theme, so every amount in
+   * the app was **black in dark mode**.
+   */
   const amount = formatMoney(minor, currency, locale);
-  return <RNText testID={testID}>{negative ? `− ${amount}` : amount}</RNText>;
+
+  return (
+    <Text variant={variant} tone={tone} weight={weight} testID={testID}>
+      {/*
+        U+2212 MINUS SIGN, not a hyphen. It is the character the figure dash is
+        drawn to align with, and it is what `Intl.NumberFormat` itself emits —
+        so a hand-built negative made of a hyphen sits at a different height
+        and a different width from a formatted one on the row below it.
+      */}
+      {negative ? `− ${amount}` : amount}
+    </Text>
+  );
 }

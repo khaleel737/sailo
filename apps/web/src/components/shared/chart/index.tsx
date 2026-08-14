@@ -2,10 +2,10 @@
 
 import { useId, useMemo, useState } from "react";
 import { ParentSize } from "@visx/responsive";
-import { snapshotAt, sumOf } from "@/lib/chart/cursor";
-import { chartDomain, hasData, peak } from "@/lib/chart/domain";
-import { plotted } from "@/lib/chart/types";
-import type { ChartShape, ChartTone, Series } from "@/lib/chart/types";
+import { snapshotAt, sumOf } from "@/lib/chart";
+import { chartDomain, hasData, peak } from "@/lib/chart";
+import { plotted } from "@/lib/chart";
+import type { ChartShape, ChartTone, Series } from "@/lib/chart";
 import { formatMoney } from "@/lib/utils";
 import { ChartHeader } from "./chart-header";
 import { ChartPlot, PLOT_HEIGHT } from "./chart-plot";

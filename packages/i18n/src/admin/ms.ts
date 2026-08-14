@@ -348,6 +348,8 @@ export const adminMs: PartialAdminDictionary = {
   },
 
   payments: {
+    wallets: "Apl pembayaran",
+    walletsBody: "Pembeli membuka PayPal atau Venmo dengan jumlah sudah diisi, kemudian kembali untuk mengesahkan. Anda menandakannya dibayar dari halaman Pesanan.",
     stripeErrorTitle: "Stripe tidak dapat memulakan penyediaan",
     stripeNoResponse: "Stripe tidak memberi respons. Cuba lagi sebentar.",
     waysToOrder: "{count} cara memesan",

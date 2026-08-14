@@ -1,15 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Platform } from "react-native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import * as SystemUI from "expo-system-ui";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { init } from "@sailo/observability";
+import { BrandSplash, useTheme } from "@sailo/design-native";
 import { api } from "../lib/api";
+import { authClient, useAuthCopy } from "../lib/auth";
 import { usePushRegistration } from "../lib/push";
 import { TRPCProvider, makeQueryClient, useAppFocusRefetch } from "../lib/query";
+import { startSentry } from "../lib/sentry";
 
-// One call, at the app's entry: today it logs; a Sentry DSN swaps the sink in
-// without touching a single captureError elsewhere.
-init();
+/*
+ * One call, at the app's entry, and the only place a vendor is named.
+ *
+ * `startSentry` returns null when `EXPO_PUBLIC_SENTRY_DSN` is unset, and `init`
+ * treats that as "keep the console sink" — which is what local dev and CI want,
+ * and what keeps the app runnable for anyone who has not been given the DSN.
+ * Every `captureError` elsewhere in the app is unchanged either way; that was
+ * the point of `@sailo/observability` being a seam rather than a wrapper.
+ */
+init(startSentry(process.env.EXPO_PUBLIC_SENTRY_DSN) ?? undefined);
 
 export default function RootLayout() {
   /*
@@ -35,9 +47,108 @@ export default function RootLayout() {
         outside React still goes through one transport with one token.
       */}
       <TRPCProvider trpcClient={api} queryClient={queryClient}>
-        <StatusBar style="auto" />
-        <Stack screenOptions={{ headerShown: false }} />
+        <Shell />
       </TRPCProvider>
     </QueryClientProvider>
   );
+}
+
+/**
+ * Everything that needs the theme, which the root cannot have.
+ *
+ * `useTheme()` is a hook, and the providers above have to be mounted before
+ * anything under them renders — so the chrome that reads a colour lives one
+ * component down rather than being wrapped around the providers.
+ */
+function Shell() {
+  const { colors, dark } = useTheme();
+  const copy = useAuthCopy();
+
+  /*
+   * The window's own background, set natively.
+   *
+   * React Native paints the root view, but there is a layer *under* it — the
+   * Android window and the iOS root view controller — that the framework leaves
+   * at the platform default, which is white. It shows in exactly three places,
+   * all of which are visible and none of which a screen can reach: behind an
+   * over-scroll bounce, behind the native stack's push animation, and for the
+   * frame between the launch image going away and React mounting. On a dark
+   * page every one of those is a white flash.
+   */
+  useEffect(() => {
+    void SystemUI.setBackgroundColorAsync(colors.background);
+  }, [colors.background]);
+
+  return (
+    <>
+      {/*
+        `style` explicitly, not `auto`.
+
+        `auto` asks the *system* appearance, which is right until the app is
+        ever given a theme override — and it is wrong right now on Android,
+        where `auto` resolves once at mount and does not re-evaluate on a
+        scheme flip. Reading the same `dark` the rest of the app reads means the
+        bar and the page can never disagree.
+      */}
+      <StatusBar style={dark ? "light" : "dark"} />
+
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          /* The colour behind a push. Without it the native stack animates a
+             white card in from the edge on a dark page. */
+          contentStyle: { backgroundColor: colors.background },
+        }}
+      >
+        {/* The scanner is a task, not a place — it comes up over the tabs
+            rather than replacing them. `checkin/_layout.tsx` says why. */}
+        <Stack.Screen
+          name="checkin"
+          options={{ presentation: Platform.OS === "ios" ? "modal" : "card" }}
+        />
+      </Stack>
+
+      <LaunchCover tagline={copy.welcome.tagline} />
+    </>
+  );
+}
+
+/**
+ * The brand screen that covers the app until it knows who is using it.
+ *
+ * WHAT IT REPLACES
+ *
+ * The session is read from the keychain, so on a cold start there is a real
+ * moment where the answer to "is anybody signed in" is "not yet". Four files
+ * handled that moment and all four handled it identically and wrongly — a bare
+ * `ActivityIndicator` centred on an unpainted background. So the launch
+ * sequence was: the native splash, a white flash, a spinner, and then either
+ * the app or a sign-up prompt. On a warm start the spinner was up for two
+ * frames, which does not read as loading; it reads as the app stuttering.
+ *
+ * Each of those four screens still has its own `isPending` branch, and that is
+ * correct — they are guards against rendering the wrong thing, and they must
+ * stay. This simply means nobody ever sees one.
+ *
+ * `BrandSplash` itself is `pointerEvents="none"` for its whole life, so the app
+ * underneath is live and interactive the entire time. It covers; it does not
+ * gate.
+ */
+function LaunchCover({ tagline }: { tagline: string }) {
+  const { isPending } = authClient.useSession();
+  /*
+   * One-way, and that is the point.
+   *
+   * `useSession` reports `isPending` again on a *re-fetch* — which happens on
+   * every foreground, and on the sign-out that clears it. Driving the cover
+   * from `isPending` alone would put the launch screen back over the app every
+   * time the seller returned to it from their messages. It goes up once, comes
+   * down once, and never returns for the life of the process.
+   */
+  const [settled, setSettled] = useState(false);
+  useEffect(() => {
+    if (!isPending) setSettled(true);
+  }, [isPending]);
+
+  return <BrandSplash visible={!settled} tagline={tagline} testID="brand-splash" />;
 }

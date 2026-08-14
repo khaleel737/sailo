@@ -332,6 +332,8 @@ export const adminHu: PartialAdminDictionary = {
     description: "Fizess másoknak részesedést abból, amit neked eladnak.",
   },
   payments: {
+    wallets: "Fizetési alkalmazások",
+    walletsBody: "A vásárló a már kitöltött összeggel nyitja meg a PayPalt vagy a Venmót, aztán visszatér megerősíteni. Te a Rendelések oldalon jelölöd fizetettnek.",
     stripeErrorTitle: "A Stripe nem tudta elindítani a beállítást",
     stripeNoResponse: "A Stripe nem válaszolt. Próbáld újra egy pillanat múlva.",
     waysToOrder: "{count} rendelési mód",

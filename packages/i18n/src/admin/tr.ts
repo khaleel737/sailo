@@ -332,6 +332,8 @@ export const adminTr: PartialAdminDictionary = {
     description: "Sizin için sattıklarından başkalarına pay verin.",
   },
   payments: {
+    wallets: "Ödeme uygulamaları",
+    walletsBody: "Alıcı, tutarı önceden girilmiş PayPal ya da Venmo’yu açar, sonra geri dönüp onaylar. Ödendi işaretini siz Siparişler sayfasından koyarsınız.",
     stripeErrorTitle: "Stripe kurulumu başlatamadı",
     stripeNoResponse: "Stripe yanıt vermedi. Birazdan tekrar deneyin.",
     waysToOrder: "{count} sipariş yolu",

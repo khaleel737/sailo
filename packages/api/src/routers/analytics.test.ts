@@ -90,7 +90,7 @@ beforeEach(() => {
 
 describe("analytics procedures", () => {
   it("refuses every read when no shop resolved", async () => {
-    const caller = appRouter.createCaller({ shopId: null });
+    const caller = appRouter.createCaller({ shopId: null, userId: null });
     await expect(caller.analytics.stats()).rejects.toThrow(/sign in/i);
     await expect(caller.analytics.series()).rejects.toThrow(/sign in/i);
     await expect(caller.analytics.breakdown()).rejects.toThrow(/sign in/i);
@@ -101,7 +101,7 @@ describe("analytics procedures", () => {
 
   it("reads the plan from the caller's own shop row, never from the request", async () => {
     findFirst.mockResolvedValue(FREE);
-    await appRouter.createCaller({ shopId: "shop_A" }).analytics.stats();
+    await appRouter.createCaller({ shopId: "shop_A", userId: "user_test" }).analytics.stats();
     expect(scopedValueOf(findFirst.mock.calls[0]?.[0]?.where)).toBe("shop_A");
     expect(getDashboardStats).toHaveBeenCalledWith("shop_A", expect.anything());
   });
@@ -109,14 +109,14 @@ describe("analytics procedures", () => {
   it("answers NOT_FOUND when the shop row is gone", async () => {
     findFirst.mockResolvedValue(undefined);
     await expect(
-      appRouter.createCaller({ shopId: "shop_gone" }).analytics.stats(),
+      appRouter.createCaller({ shopId: "shop_gone", userId: "user_test" }).analytics.stats(),
     ).rejects.toThrow(/no such shop/i);
   });
 
   it("clamps a business-length preset asked for by a free shop", async () => {
     findFirst.mockResolvedValue(FREE);
     const result = await appRouter
-      .createCaller({ shopId: "shop_1" })
+      .createCaller({ shopId: "shop_1", userId: "user_test" })
       // 1095 days is the business allowance. A free shop may not have it.
       .analytics.stats({ range: 1095 });
 
@@ -129,7 +129,7 @@ describe("analytics procedures", () => {
   it("honours the same preset for a shop that pays for it", async () => {
     findFirst.mockResolvedValue(BUSINESS);
     const result = await appRouter
-      .createCaller({ shopId: "shop_2" })
+      .createCaller({ shopId: "shop_2", userId: "user_test" })
       .analytics.stats({ range: 1095 });
 
     expect(result.window.days).toBe(1095);
@@ -139,7 +139,7 @@ describe("analytics procedures", () => {
   it("pulls a custom range forward to the plan's floor, and says it did", async () => {
     findFirst.mockResolvedValue(FREE);
     const result = await appRouter
-      .createCaller({ shopId: "shop_1" })
+      .createCaller({ shopId: "shop_1", userId: "user_test" })
       .analytics.stats({ from: "2020-01-01", to: today() });
 
     expect(result.window.clamped).toBe(true);
@@ -155,7 +155,7 @@ describe("analytics procedures", () => {
   it("caps the chart at sixty bars and admits it", async () => {
     findFirst.mockResolvedValue(BUSINESS);
     const result = await appRouter
-      .createCaller({ shopId: "shop_2" })
+      .createCaller({ shopId: "shop_2", userId: "user_test" })
       .analytics.series({ range: 365 });
 
     // The tiles still count the whole year the seller asked for...
@@ -170,7 +170,7 @@ describe("analytics procedures", () => {
   it("does not claim truncation when the window fits", async () => {
     findFirst.mockResolvedValue(BUSINESS);
     const result = await appRouter
-      .createCaller({ shopId: "shop_2" })
+      .createCaller({ shopId: "shop_2", userId: "user_test" })
       .analytics.series({ range: 30 });
 
     expect(result.chart.truncated).toBe(false);
@@ -180,7 +180,7 @@ describe("analytics procedures", () => {
   it("gives both breakdowns the full window, not the chart's", async () => {
     findFirst.mockResolvedValue(BUSINESS);
     await appRouter
-      .createCaller({ shopId: "shop_2" })
+      .createCaller({ shopId: "shop_2", userId: "user_test" })
       .analytics.breakdown({ range: 365 });
 
     expect(getVisitBreakdown).toHaveBeenCalledWith("shop_2", 365);
@@ -197,7 +197,7 @@ describe("analytics procedures", () => {
     });
 
     const result = await appRouter
-      .createCaller({ shopId: "shop_2" })
+      .createCaller({ shopId: "shop_2", userId: "user_test" })
       .analytics.products({ range: 30, page: 3 });
 
     expect(getProductPerformance).toHaveBeenCalledWith("shop_2", 30, 3);
@@ -208,7 +208,7 @@ describe("analytics procedures", () => {
   it("sends dates as strings, because nothing transforms them on the way", async () => {
     findFirst.mockResolvedValue(BUSINESS);
     const result = await appRouter
-      .createCaller({ shopId: "shop_2" })
+      .createCaller({ shopId: "shop_2", userId: "user_test" })
       .analytics.stats({ range: 30 });
 
     expect(typeof result.window.since).toBe("string");

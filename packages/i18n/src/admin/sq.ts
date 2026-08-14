@@ -349,6 +349,8 @@ export const adminSq: PartialAdminDictionary = {
   },
 
   payments: {
+    wallets: "Aplikacione pagese",
+    walletsBody: "Blerësi hap PayPal-in ose Venmo-n me shumën tashmë të plotësuar, pastaj kthehet për ta konfirmuar. Ti e shënon si të paguar te faqja Porositë.",
     stripeErrorTitle: "Stripe nuk mundi ta nisë konfigurimin",
     stripeNoResponse: "Stripe nuk u përgjigj. Provoni sërish pas pak.",
     waysToOrder: "{count} mënyra për të porositur",

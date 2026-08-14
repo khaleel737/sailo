@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { AppState, type AppStateStatus } from "react-native";
 import { QueryClient, focusManager } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
+import { captureError } from "@sailo/observability";
 import { createTRPCContext } from "@trpc/tanstack-react-query";
 import type { AppRouter } from "@sailo/api/client";
 
@@ -46,7 +47,7 @@ function worthRetrying(failureCount: number, error: unknown): boolean {
 }
 
 export function makeQueryClient(): QueryClient {
-  return new QueryClient({
+  const client = new QueryClient({
     defaultOptions: {
       queries: {
         /*
@@ -76,6 +77,8 @@ export function makeQueryClient(): QueryClient {
       },
     },
   });
+
+  return client;
 }
 
 /**
@@ -96,4 +99,32 @@ export function useAppFocusRefetch(): void {
     const subscription = AppState.addEventListener("change", onChange);
     return () => subscription.remove();
   }, []);
+}
+
+/**
+ * Report a query failure, unless the failure is an answer.
+ *
+ * `lib/query.ts` already refuses to *retry* a 4xx, on the grounds that nothing
+ * about it changes if you ask again. This is the same judgement applied to
+ * reporting: an `UNAUTHORIZED` is the server correctly telling a signed-out
+ * caller to sign in, and every tab fires its queries on mount before the gate
+ * in `(tabs)/_layout.tsx` has redirected — so a cold start with no session
+ * produced five "errors" that were all the system working.
+ *
+ * The cost of getting this wrong is not noise, it is deafness. Those five
+ * filled LogBox on every launch and would have filled Sentry the day a DSN was
+ * set, at which point nobody reads the reports and a real failure arrives in a
+ * pile of expected ones.
+ *
+ * `NOT_FOUND` is deliberately *not* on this list. A missing procedure is what a
+ * stale deployment looks like from the client, and that is exactly the thing
+ * worth waking somebody for.
+ */
+export function reportQueryError(error: unknown, context: { scope: string }): void {
+  const code =
+    error instanceof TRPCClientError
+      ? (error.data as { code?: string } | null | undefined)?.code
+      : undefined;
+  if (code === "UNAUTHORIZED") return;
+  captureError(error, context);
 }

@@ -332,6 +332,8 @@ export const adminFi: PartialAdminDictionary = {
     description: "Maksa muille osuus siitä, mitä he myyvät puolestasi.",
   },
   payments: {
+    wallets: "Maksusovellukset",
+    walletsBody: "Ostaja avaa PayPalin tai Venmon summa valmiiksi täytettynä ja palaa sitten vahvistamaan. Merkitset sen maksetuksi Tilaukset-sivulla.",
     stripeErrorTitle: "Stripe ei saanut käyttöönottoa käyntiin",
     stripeNoResponse: "Stripe ei vastannut. Yritä hetken päästä uudelleen.",
     waysToOrder: "{count} tapaa tilata",

@@ -10,7 +10,8 @@
     "./admin/*": "./src/admin/*.ts",
     "./marketing": "./src/marketing/index.ts",
     "./marketing/*": "./src/marketing/*.ts",
-    "./dictionaries/*": "./src/dictionaries/*.ts"
+    "./dictionaries/*": "./src/dictionaries/*.ts",
+    "./native": "./src/native/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

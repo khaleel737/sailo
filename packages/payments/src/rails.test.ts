@@ -6,7 +6,9 @@ import {
   isPaymentMethodType,
   isRailAvailable,
   isRailUsable,
+  PAYMENT_CATEGORIES,
   PAYMENT_METHOD_DEFS,
+  PAYMENT_METHOD_LIST,
   PAYMENT_METHOD_TYPES,
   railsForOrder,
 } from "./rails";
@@ -28,6 +30,39 @@ describe("the rail catalogue", () => {
     for (const type of PAYMENT_METHOD_TYPES) {
       expect(PAYMENT_METHOD_DEFS[type]).toBeTruthy();
       expect(PAYMENT_METHOD_DEFS[type].kind).toBeTruthy();
+    }
+  });
+
+  it("files every rail under a section the screen renders", () => {
+    /*
+     * The payments screen draws one section per category and fills it by
+     * matching on this field. A rail with a category nothing lists — a typo,
+     * or a new category added here and not there — would be configured
+     * nowhere: it disappears off the admin while still working at checkout.
+     */
+    for (const type of PAYMENT_METHOD_TYPES) {
+      expect(PAYMENT_CATEGORIES, type).toContain(PAYMENT_METHOD_DEFS[type].category);
+    }
+    // And the other way: an empty section would draw a heading over nothing.
+    for (const category of PAYMENT_CATEGORIES) {
+      expect(
+        PAYMENT_METHOD_LIST.filter((d) => d.category === category),
+        category,
+      ).not.toHaveLength(0);
+    }
+  });
+
+  it("splits the payment apps out of the manual rails", () => {
+    // The reason `category` exists beside `kind`: these four settle the same
+    // way — the seller confirms them by hand — and a seller reading a list
+    // does not think of a PayPal link and a doorstep as one thing.
+    for (const type of ["venmo", "paypal"] as const) {
+      expect(PAYMENT_METHOD_DEFS[type].kind, type).toBe("manual");
+      expect(PAYMENT_METHOD_DEFS[type].category, type).toBe("wallet");
+    }
+    for (const type of ["bank_transfer", "cod"] as const) {
+      expect(PAYMENT_METHOD_DEFS[type].kind, type).toBe("manual");
+      expect(PAYMENT_METHOD_DEFS[type].category, type).toBe("manual");
     }
   });
 
@@ -150,7 +185,7 @@ describe("the card rail's description", () => {
    * assertions are what stop it drifting apart again.
    */
   it("quotes the fee the code actually charges", async () => {
-    const { PLATFORM_FEE_LABEL } = await import("@/lib/plans");
+    const { PLATFORM_FEE_LABEL } = await import("@sailo/core/plans");
     expect(PAYMENT_METHOD_DEFS.card.description).toContain(PLATFORM_FEE_LABEL);
   });
 
@@ -162,7 +197,7 @@ describe("the card rail's description", () => {
      * eventually edits without reading, which is the failure it exists to
      * prevent.
      */
-    const { PLATFORM_FEE_LABEL } = await import("@/lib/plans");
+    const { PLATFORM_FEE_LABEL } = await import("@sailo/core/plans");
     const withoutLabel = PAYMENT_METHOD_DEFS.card.description.replace(
       PLATFORM_FEE_LABEL,
       "",

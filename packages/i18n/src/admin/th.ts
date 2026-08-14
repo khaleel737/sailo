@@ -349,6 +349,8 @@ export const adminTh: PartialAdminDictionary = {
   },
 
   payments: {
+    wallets: "แอปชำระเงิน",
+    walletsBody: "ผู้ซื้อเปิด PayPal หรือ Venmo โดยกรอกยอดไว้ให้แล้ว จากนั้นกลับมายืนยัน คุณเป็นคนทำเครื่องหมายว่าจ่ายแล้วจากหน้าคำสั่งซื้อ",
     stripeErrorTitle: "Stripe เริ่มการตั้งค่าไม่สำเร็จ",
     stripeNoResponse: "Stripe ไม่ตอบสนอง ลองอีกครั้งในอีกสักครู่",
     waysToOrder: "{count} วิธีสั่งซื้อ",

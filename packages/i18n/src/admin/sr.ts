@@ -349,6 +349,8 @@ export const adminSr: PartialAdminDictionary = {
   },
 
   payments: {
+    wallets: "Апликације за плаћање",
+    walletsBody: "Купац отвара PayPal или Venmo са већ уписаним износом, па се враћа да потврди. Ви означавате уплату на страници Поруџбине.",
     stripeErrorTitle: "Stripe није могао да покрене постављање",
     stripeNoResponse: "Stripe није одговорио. Покушајте за тренутак.",
     waysToOrder: "{count} начина наручивања",

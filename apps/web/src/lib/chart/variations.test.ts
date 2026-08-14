@@ -1,7 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { indexAtPointer, snapshotAt, sumOf } from "./cursor";
-import { barRect, chartDomain, hasData, peak, toPercent } from "./domain";
-import { plotted, type Series } from "./types";
+import {
+  barRect,
+  chartDomain,
+  hasData,
+  indexAtPointer,
+  peak,
+  plotted,
+  snapshotAt,
+  sumOf,
+  toPercent,
+  type Series,
+} from "@sailo/core/chart";
 
 /**
  * The same invariants, over a lot of different shops.

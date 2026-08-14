@@ -94,7 +94,7 @@ const PRODUCT_ID = "1c8e5a70-3b2d-4e91-a6f4-8d0b7c2e519a";
 
 describe("the shop-scoped router", () => {
   it("refuses every read when no shop resolved", async () => {
-    const caller = appRouter.createCaller({ shopId: null });
+    const caller = appRouter.createCaller({ shopId: null, userId: null });
     await expect(caller.shop.get()).rejects.toThrow(/sign in/i);
     await expect(caller.products.list()).rejects.toThrow(/sign in/i);
     await expect(caller.orders.list()).rejects.toThrow(/sign in/i);
@@ -110,7 +110,7 @@ describe("the shop-scoped router", () => {
 
   it("scopes shop.get to the caller's own shop id", async () => {
     findFirst.mockResolvedValue({ id: "shop_1", name: "Clay & Co" });
-    const shop = await appRouter.createCaller({ shopId: "shop_1" }).shop.get();
+    const shop = await appRouter.createCaller({ shopId: "shop_1", userId: "user_test" }).shop.get();
     expect(shop).toEqual({ id: "shop_1", name: "Clay & Co" });
     expect(scopedValueOf(findFirst.mock.calls[0]?.[0]?.where)).toBe("shop_1");
   });
@@ -124,7 +124,7 @@ describe("the shop-scoped router", () => {
    */
   it("scopes products.list to the caller's shop, never a client-sent id", async () => {
     productsFindMany.mockResolvedValue([{ id: "p1" }]);
-    await appRouter.createCaller({ shopId: "shop_A" }).products.list();
+    await appRouter.createCaller({ shopId: "shop_A", userId: "user_test" }).products.list();
     const where = productsFindMany.mock.calls[0]?.[0]?.where;
     expect(scopedValuesOf(where).filter(Boolean)).toEqual(["shop_A"]);
   });
@@ -134,7 +134,7 @@ describe("the shop-scoped router", () => {
     // removes the other half, and this is where that would show.
     productsFindMany.mockResolvedValue([]);
     await appRouter
-      .createCaller({ shopId: "shop_A" })
+      .createCaller({ shopId: "shop_A", userId: "user_test" })
       .products.list({ search: "mug", status: "published" });
     const where = productsFindMany.mock.calls[0]?.[0]?.where;
     expect(scopedValuesOf(where)).toContain("shop_A");
@@ -142,7 +142,7 @@ describe("the shop-scoped router", () => {
 
   it("scopes orders.list to the caller's shop and over-fetches by exactly one", async () => {
     ordersFindMany.mockResolvedValue([]);
-    await appRouter.createCaller({ shopId: "shop_B" }).orders.list({ limit: 10 });
+    await appRouter.createCaller({ shopId: "shop_B", userId: "user_test" }).orders.list({ limit: 10 });
     const call = ordersFindMany.mock.calls[0]?.[0];
     expect(scopedValuesOf(call?.where).filter(Boolean)).toEqual(["shop_B"]);
     /*
@@ -155,13 +155,13 @@ describe("the shop-scoped router", () => {
 
   it("defaults the page size when none is asked for", async () => {
     productsFindMany.mockResolvedValue([]);
-    await appRouter.createCaller({ shopId: "shop_1" }).products.list();
+    await appRouter.createCaller({ shopId: "shop_1", userId: "user_test" }).products.list();
     expect(productsFindMany.mock.calls[0]?.[0]?.limit).toBe(51);
   });
 
   it("refuses a page size beyond the ceiling", async () => {
     await expect(
-      appRouter.createCaller({ shopId: "shop_1" }).products.list({ limit: 1000 }),
+      appRouter.createCaller({ shopId: "shop_1", userId: "user_test" }).products.list({ limit: 1000 }),
     ).rejects.toThrow();
   });
 
@@ -177,7 +177,7 @@ describe("the shop-scoped router", () => {
   it("scopes orders.get to the caller's shop as well as the id", async () => {
     ordersFindFirst.mockResolvedValue({ id: ORDER_ID, items: [] });
     const order = await appRouter
-      .createCaller({ shopId: "shop_A" })
+      .createCaller({ shopId: "shop_A", userId: "user_test" })
       .orders.get({ id: ORDER_ID });
 
     expect(order).toEqual({ id: ORDER_ID, items: [] });
@@ -190,7 +190,7 @@ describe("the shop-scoped router", () => {
   it("scopes products.get to the caller's shop as well as the id", async () => {
     productsFindFirst.mockResolvedValue({ id: PRODUCT_ID, images: [], variants: [] });
     const product = await appRouter
-      .createCaller({ shopId: "shop_A" })
+      .createCaller({ shopId: "shop_A", userId: "user_test" })
       .products.get({ id: PRODUCT_ID });
 
     expect(product).toEqual({ id: PRODUCT_ID, images: [], variants: [] });
@@ -210,7 +210,7 @@ describe("the shop-scoped router", () => {
   it("cannot reach an order belonging to another shop", async () => {
     ordersFindFirst.mockResolvedValue(undefined);
     await expect(
-      appRouter.createCaller({ shopId: "shop_B" }).orders.get({ id: ORDER_ID }),
+      appRouter.createCaller({ shopId: "shop_B", userId: "user_test" }).orders.get({ id: ORDER_ID }),
     ).rejects.toThrow(/no such order/i);
     expect(scopedValuesOf(ordersFindFirst.mock.calls[0]?.[0]?.where)).toEqual([
       ORDER_ID,
@@ -221,7 +221,7 @@ describe("the shop-scoped router", () => {
   it("cannot reach a product belonging to another shop", async () => {
     productsFindFirst.mockResolvedValue(undefined);
     await expect(
-      appRouter.createCaller({ shopId: "shop_B" }).products.get({ id: PRODUCT_ID }),
+      appRouter.createCaller({ shopId: "shop_B", userId: "user_test" }).products.get({ id: PRODUCT_ID }),
     ).rejects.toThrow(/no such product/i);
     expect(scopedValuesOf(productsFindFirst.mock.calls[0]?.[0]?.where)).toEqual([
       PRODUCT_ID,
@@ -235,7 +235,7 @@ describe("the shop-scoped router", () => {
    */
   it("answers a missing row and another shop's row the same way", async () => {
     ordersFindFirst.mockResolvedValue(undefined);
-    const caller = appRouter.createCaller({ shopId: "shop_B" });
+    const caller = appRouter.createCaller({ shopId: "shop_B", userId: "user_test" });
     const missing = await caller.orders.get({ id: ORDER_ID }).catch((e) => e);
     const foreign = await caller.orders.get({ id: ORDER_ID }).catch((e) => e);
     expect(missing.code).toBe("NOT_FOUND");
@@ -245,7 +245,7 @@ describe("the shop-scoped router", () => {
 
   it("refuses an id that is not a uuid before it reaches the database", async () => {
     await expect(
-      appRouter.createCaller({ shopId: "shop_1" }).orders.get({ id: "../../etc" }),
+      appRouter.createCaller({ shopId: "shop_1", userId: "user_test" }).orders.get({ id: "../../etc" }),
     ).rejects.toThrow();
     expect(ordersFindFirst).not.toHaveBeenCalled();
   });

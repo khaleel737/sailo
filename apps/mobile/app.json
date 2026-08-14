@@ -11,21 +11,28 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff",
+      "backgroundColor": "#faf9f7",
       "dark": {
         "image": "./assets/splash-icon-dark.png",
         "backgroundColor": "#0d0d0c"
       }
     },
+    "backgroundColor": "#faf9f7",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "store.sailo.app",
       "usesAppleSignIn": false,
       "infoPlist": {
         "NSCameraUsageDescription": "Sailo uses the camera to scan a buyer's ticket at check-in and to photograph products for your shop.",
-        "NSPhotoLibraryUsageDescription": "Sailo needs your photo library so you can put pictures of your products on your shop."
+        "NSPhotoLibraryUsageDescription": "Sailo needs your photo library so you can put pictures of your products on your shop.",
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
       },
-      "associatedDomains": ["applinks:sailo.store", "applinks:www.sailo.store"]
+      "associatedDomains": [
+        "applinks:sailo.store",
+        "applinks:www.sailo.store"
+      ]
     },
     "android": {
       "package": "store.sailo.app",
@@ -38,10 +45,21 @@
           "action": "VIEW",
           "autoVerify": true,
           "data": [
-            { "scheme": "https", "host": "sailo.store", "pathPrefix": "/admin" },
-            { "scheme": "https", "host": "www.sailo.store", "pathPrefix": "/admin" }
+            {
+              "scheme": "https",
+              "host": "sailo.store",
+              "pathPrefix": "/admin"
+            },
+            {
+              "scheme": "https",
+              "host": "www.sailo.store",
+              "pathPrefix": "/admin"
+            }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -55,7 +73,8 @@
           "icon": "./assets/notification-icon.png",
           "color": "#037740"
         }
-      ]
+      ],
+      "@sentry/react-native"
     ],
     "experiments": {
       "typedRoutes": true

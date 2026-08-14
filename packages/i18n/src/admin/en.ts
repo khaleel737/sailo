@@ -42,6 +42,8 @@ export const adminEn = {
     expires: "Expires",
     day: "Day",
     viewAsTable: "View as table",
+    /** A read that failed on its own, where the rest of the screen is fine. */
+    couldntLoad: "Couldn't load",
   },
 
   /**
@@ -69,6 +71,27 @@ export const adminEn = {
   },
 
   shell: {
+    /*
+     * The phone's five tabs, and the titles of the stacks behind them.
+     *
+     * In `shell` because that is where the app's own chrome lives — the words
+     * that name the product's structure rather than any one screen's content.
+     * It is also already on `admin-coverage.test.ts`'s WHOLESALE list, which is
+     * correct for chrome: these are read by a layout, not by a screen the usage
+     * scan can see.
+     */
+    /** The phone's own sign-out. Distinct from `security.signOutOthers`, which
+     * ends every *other* session and leaves this one alive. */
+    signOut: "Sign out",
+    /** Shown under it, so a bug report can name the build it came from. */
+    version: "Version {version}",
+
+    tabHome: "Home",
+    tabOrders: "Orders",
+    tabStore: "Store",
+    tabInsights: "Insights",
+    tabSettings: "Settings",
+
     suspended: "Your shop is suspended.",
     staffNotice: "You're signed in as Sailo staff.",
     openHq: "Open HQ",
@@ -146,6 +169,27 @@ export const adminEn = {
     /** Chart titles when the window is a picked date range, not a preset. */
     visitsCustom: "Visits · {range}",
     revenueCustom: "Revenue · {range}",
+
+    /*
+     * The phone's Insights tab. Here rather than in a section of its own
+     * because a new section has to land in all thirty-five languages at once —
+     * `admin-coverage.test.ts` enforces that, and it is right to: a whole
+     * screen appearing in English inside a translated app reads as a bug. A new
+     * key in an existing section merges over English quietly, which is what a
+     * single new tab actually needs.
+     */
+    rangeLabel: "Date range",
+    rangeDays: "{days} days",
+    /** The plan reached less far back than they asked for, and says so. */
+    rangeClamped: "Your plan covers a shorter period than this. Showing what it reaches.",
+    /** The window is longer than the chart plots; these are its recent days. */
+    chartTruncated: "Showing the most recent 60 days.",
+    sources: "Where visitors came from",
+    countries: "Where visitors are",
+    insightsEmpty: "Nothing to measure yet",
+    insightsEmptyBody:
+      "Once your shop has visitors and orders, this tab shows how it is doing.",
+    insightsFailed: "Couldn't load your numbers.",
   },
 
   /** The date-range control above the dashboard. */
@@ -483,6 +527,14 @@ export const adminEn = {
   },
 
   orders: {
+    /**
+     * The appointment an order is for. The same word as `settings.booking`,
+     * which the order detail borrowed while it had no key of its own — but a
+     * label on an order belongs with the order keys, and a shared string that
+     * two screens read for two different reasons is one a translator cannot
+     * safely change for either.
+     */
+    booking: "Booking",
     carrier: "Carrier",
     trackingNumber: "Tracking number",
     trackingNumberPlaceholder: "JD0002890124",
@@ -673,6 +725,15 @@ export const adminEn = {
     payOnline: "Pay online",
     chatHandoff: "Chat handoff",
     manual: "Manual payment",
+    /*
+     * The wallets sit between the two: the buyer taps through a payment app
+     * rather than typing your bank details, and still has to come back and
+     * say they paid — so the copy has to promise the convenience without
+     * implying the order confirms itself.
+     */
+    wallets: "Payment apps",
+    walletsBody:
+      "The buyer opens PayPal or Venmo with the amount already filled in, then comes back to confirm. You mark it paid from the Orders page.",
   },
 
   delivery: {

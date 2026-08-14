@@ -1,9 +1,20 @@
 import type { Metadata } from "next";
-import { AlertTriangle, CreditCard, MessageCircle, Wallet } from "lucide-react";
+import {
+  AlertTriangle,
+  Banknote,
+  CreditCard,
+  MessageCircle,
+  Wallet,
+} from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { getShopPaymentMethods } from "@/lib/queries";
-import { isConfigured, isRailAvailable, PAYMENT_METHOD_LIST } from "@/lib/payments";
+import {
+  isConfigured,
+  isRailAvailable,
+  PAYMENT_METHOD_LIST,
+  type PaymentCategory,
+} from "@/lib/payments";
 import { PageHeader } from "@/components/shared/page-header";
 import { PaymentMethodCard } from "@/app/admin/payments/_components/payment-method-card";
 import { PayoutCard } from "@/app/admin/payments/_components/payout-card";
@@ -15,43 +26,76 @@ import { syncAccount } from "@/lib/connect";
 export const metadata: Metadata = { title: "Payments" };
 
 /**
- * Three families of rail, in the order a seller cares about them: the one that
- * settles itself, the one that hands the conversation over, and the one they
- * have to reconcile by hand.
+ * The four families of rail, in the order a seller cares about them: the one
+ * that settles itself, the payment apps the buyer taps through, the ones they
+ * arrange out of their own account, and the one that hands the whole
+ * conversation over.
+ *
+ * `category` on the rail definition decides membership — see `PaymentCategory`
+ * for why that is a different question from `kind`. Adding a rail puts it in a
+ * section here without touching this file.
  */
 const SECTIONS = [
-  { kind: "contact", icon: MessageCircle, title: "chatHandoff", body: "chatHandoffBody" },
-  { kind: "manual", icon: Wallet, title: "manual", body: "manualBody" },
-] as const;
+  { key: "online", icon: CreditCard, title: "payOnline", body: "payOnlineBody" },
+  { key: "wallet", icon: Wallet, title: "wallets", body: "walletsBody" },
+  { key: "manual", icon: Banknote, title: "manual", body: "manualBody" },
+  { key: "chat", icon: MessageCircle, title: "chatHandoff", body: "chatHandoffBody" },
+] as const satisfies readonly {
+  key: PaymentCategory;
+  icon: typeof Wallet;
+  title: string;
+  body: string;
+}[];
 
 function SectionHeading({
   icon: Icon,
   title,
   description,
-  count,
+  live,
+  total,
   liveLabel,
 }: {
   icon: typeof Wallet;
   title: string;
   description: string;
-  count: number;
+  live: number;
+  total: number;
   /** Pre-interpolated, because this is a server component with no dictionary. */
   liveLabel: string;
 }) {
   return (
-    <div className="mb-3">
-      <div className="flex items-center gap-2">
-        <Icon className="size-4 text-ink-400" />
-        <h2 className="text-sm font-semibold text-ink-900">{title}</h2>
-        {count > 0 ? (
-          <Badge tone="green" dot>
-            {liveLabel}
-          </Badge>
-        ) : null}
+    <div className="mb-3 flex items-start gap-3">
+      {/*
+        The icon carries the section on a scan of the page, so it gets a tile
+        of its own rather than sitting inline at text size — the same tile the
+        rail rows below it use, so the two read as one column.
+      */}
+      <span
+        className={
+          live > 0
+            ? "flex size-9 shrink-0 items-center justify-center rounded-xl border border-brand-200 bg-brand-50 text-brand-700"
+            : "flex size-9 shrink-0 items-center justify-center rounded-xl border border-ink-200 bg-ink-50 text-ink-400"
+        }
+      >
+        <Icon className="size-4.5" />
+      </span>
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 className="text-sm font-semibold text-ink-900">{title}</h2>
+          {live > 0 ? (
+            <Badge tone="green" dot>
+              {liveLabel}
+            </Badge>
+          ) : (
+            // Not a red badge: a section nobody has switched on is the normal
+            // state of most of this page, not a fault to be shouted about.
+            <span className="text-xs text-ink-400">{total}</span>
+          )}
+        </div>
+        <p className="mt-1 max-w-prose text-sm leading-relaxed text-ink-500">
+          {description}
+        </p>
       </div>
-      <p className="mt-1.5 max-w-prose text-sm leading-relaxed text-ink-500">
-        {description}
-      </p>
     </div>
   );
 }
@@ -84,9 +128,17 @@ export default async function AdminPaymentsPage({
     );
   };
 
-  const liveCount = PAYMENT_METHOD_LIST.filter((d) => isLive(d.type)).length;
+  /*
+   * Counted over everything *except* card, which is counted separately below
+   * from Stripe's own verdict. Counting the full list double-counted it —
+   * `refreshStripeAccount` writes an enabled `card` row the moment Stripe
+   * clears the account, so a shop with card and WhatsApp live read "3 ways to
+   * order" with two on screen.
+   */
   const cardLive = shop.stripeChargesEnabled;
-  const totalLive = liveCount + (cardLive ? 1 : 0);
+  const totalLive =
+    PAYMENT_METHOD_LIST.filter((d) => d.type !== "card" && isLive(d.type)).length +
+    (cardLive ? 1 : 0);
 
   return (
     <>
@@ -137,41 +189,46 @@ export default async function AdminPaymentsPage({
         </Alert>
       ) : null}
 
-      <section className="mb-8">
-        <SectionHeading
-          icon={CreditCard}
-          title={a.payments.payOnline}
-          description={a.payments.payOnlineBody}
-          count={cardLive ? 1 : 0}
-          liveLabel={interpolate(a.payments.liveCount, { count: 1 })}
-        />
-        <StripeCard shop={shop} />
-        {/* Balance, payouts and account health — only once an account exists. */}
-        <PayoutCard shop={shop} />
-      </section>
-
       {SECTIONS.map((section) => {
-        const rails = PAYMENT_METHOD_LIST.filter((d) => d.kind === section.kind);
+        const rails = PAYMENT_METHOD_LIST.filter((d) => d.category === section.key);
+        // Card is the one rail configured by connecting an account rather than
+        // by filling in fields, so its section shows the Connect card instead
+        // of a form — and counts Stripe's verdict rather than a stored row.
+        const live =
+          section.key === "online"
+            ? cardLive
+              ? 1
+              : 0
+            : rails.filter((d) => isLive(d.type)).length;
+
         return (
-          <section key={section.kind} className="mb-8 last:mb-0">
+          <section key={section.key} className="mb-8 last:mb-0">
             <SectionHeading
               icon={section.icon}
               title={a.payments[section.title]}
               description={a.payments[section.body]}
-              count={rails.filter((d) => isLive(d.type)).length}
-              liveLabel={interpolate(a.payments.liveCount, {
-                count: rails.filter((d) => isLive(d.type)).length,
-              })}
+              live={live}
+              total={rails.length}
+              liveLabel={interpolate(a.payments.liveCount, { count: live })}
             />
             <div className="space-y-3">
-              {rails.map((def) => (
-                <PaymentMethodCard
-                  key={def.type}
-                  def={def}
-                  method={byType.get(def.type)}
-                  currency={shop.currency}
-                />
-              ))}
+              {section.key === "online" ? (
+                <>
+                  <StripeCard shop={shop} />
+                  {/* Balance, payouts and account health — only once an
+                      account exists. */}
+                  <PayoutCard shop={shop} />
+                </>
+              ) : (
+                rails.map((def) => (
+                  <PaymentMethodCard
+                    key={def.type}
+                    def={def}
+                    method={byType.get(def.type)}
+                    currency={shop.currency}
+                  />
+                ))
+              )}
             </div>
           </section>
         );

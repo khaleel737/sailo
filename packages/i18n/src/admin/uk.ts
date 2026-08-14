@@ -332,6 +332,8 @@ export const adminUk: PartialAdminDictionary = {
     description: "Платіть іншим частку з того, що вони продають для вас.",
   },
   payments: {
+    wallets: "Платіжні застосунки",
+    walletsBody: "Покупець відкриває PayPal або Venmo з уже вписаною сумою, а потім повертається підтвердити. Ви позначаєте оплату на сторінці «Замовлення».",
     stripeErrorTitle: "Stripe не зміг розпочати налаштування",
     stripeNoResponse: "Stripe не відповів. Спробуйте ще раз за хвилину.",
     waysToOrder: "{count} способів замовити",

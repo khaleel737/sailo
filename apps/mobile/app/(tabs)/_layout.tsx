@@ -1,16 +1,15 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Redirect } from "expo-router";
-import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
-import { SafeAreaView } from "react-native-safe-area-context";
+/* `VectorIcon` ships from the native-tabs entry point rather than the package
+   root, alongside the `Icon` it is passed to. */
+import { Icon, Label, NativeTabs, VectorIcon } from "expo-router/unstable-native-tabs";
 import { authClient } from "../../lib/auth";
 import { useNotificationRouting } from "../../lib/push";
-import { Loading } from "../../components/states";
+import { Screen, Skeleton, useTheme } from "@sailo/design-native";
+import { useT } from "../../lib/i18n";
 
 /**
  * The five tabs, and the gate in front of them.
- *
- * Until now `app/(tabs)/` had no layout at all, which meant there was no tab
- * bar and four of the six screens in it were unreachable — you could only get
- * to a route by typing it. This file is what makes the app navigable.
  *
  * `NativeTabs` rather than a JavaScript tab bar: it is a real `UITabBarController`
  * on iOS and a real `BottomNavigationView` on Android, so it inherits the
@@ -37,6 +36,8 @@ import { Loading } from "../../components/states";
  * hosts the sign-in route — a gate there would have nowhere to send anybody.
  */
 export default function TabsLayout() {
+  const { a } = useT();
+  const { colors } = useTheme();
   const { data: session, isPending } = authClient.useSession();
 
   /*
@@ -53,68 +54,125 @@ export default function TabsLayout() {
    * The session is read from the keychain, so on a cold start there is a real
    * moment where the answer is "not yet". Redirecting during it would bounce a
    * signed-in seller to the sign-in screen and back on every launch.
+   *
+   * Nobody sees this: `app/_layout.tsx` holds the brand splash over the whole
+   * app for exactly as long as this branch is live. It is still here because a
+   * guard whose correctness depends on something two files away covering it is
+   * not a guard. What changed is *what* it draws — a skeleton of the screen
+   * that is coming rather than the spinner that used to be here, so on the one
+   * path where the splash has already lifted and a refetch is in flight, the
+   * layout does not collapse and jump.
    */
   if (isPending) {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <Loading />
-      </SafeAreaView>
+      <Screen scroll={false} edges={["top", "bottom"]} testID="tabs-loading">
+        <Skeleton shape="title" />
+        <Skeleton shape="card" count={3} />
+      </Screen>
     );
   }
 
-  if (!session?.user) return <Redirect href="/sign-in" />;
+  /*
+   * A fresh install lands on Welcome, not on a password form.
+   *
+   * This was `/sign-in`, and `(auth)/_layout.tsx` has carried a note about it
+   * since Welcome was written: dropping somebody who has just installed the app
+   * onto a password form asks the one question a new seller cannot answer, and
+   * every app that does it loses the people who do not yet have an account to
+   * answer it with. The note called it "a one-line follow-up" that A06 could not
+   * make because this is a tab layout it was not allowed to write to.
+   *
+   * A returning seller loses nothing: Welcome's second button is sign-in, and
+   * `unstable_settings.initialRouteName` in the auth stack already anchors the
+   * flow so the back gesture works from either direction.
+   */
+  if (!session?.user) return <Redirect href="/welcome" />;
 
   return (
     /*
-     * The green from the mark, for the selected tab and nothing else.
-     * Hard-coded against the token package here because the design system does
-     * not own the tab bar yet; A01 replaces this with the themed value, which
-     * is the one that knows what to do in dark mode.
+     * The green from the mark, for the selected tab and nothing else. Read from
+     * the theme rather than hard-coded, so dark mode gets the lifted accent —
+     * `brand-700` is a deep green that reads as near-black on a dark tab bar.
      */
-    <NativeTabs tintColor="#037740">
+    <NativeTabs tintColor={colors.accent}>
       {/*
-        SF Symbols only. Android renders these tabs with their labels and no
-        icon, which is a real gap and a deliberate one: the icon-name-to-glyph
-        mapping belongs to `@sailo/design-native`'s `Icon`, A01 owns it, and
-        picking an Android icon family here would commit the whole product to
-        that choice from a layout file.
+        SF Symbols on iOS, and — new here — real icons on Android.
 
-        The filled variant on selection is the iOS convention — an outline that
-        stays an outline when active reads as nothing having happened.
+        This used to be `sf` only, with a comment calling the Android gap "real
+        and deliberate": the icon-name-to-glyph mapping belongs to
+        `@sailo/design-native`, and picking an Android icon family from a layout
+        file would have committed the product to it. So Android rendered five
+        tabs with labels and no icons at all, which on Material is not a style
+        choice — it is a bottom bar that looks unfinished.
 
-        Every label below is an English literal, which breaks the rule that
-        mobile strings come from `@sailo/i18n/native`. That module does not
-        exist yet — A05 creates it, and A05 runs after this — so these five are
-        marked rather than hidden. They are the first strings A05 should move.
+        `androidSrc` closes it without making that commitment. expo-router
+        rasterises a `VectorIcon` into a drawable at mount, and the family it
+        rasterises is **Ionicons — the same one `Icon` in the design system
+        already draws from**, so there is no second icon set and no second
+        optical weight. The names below are the exact values that component's
+        own `GLYPHS` table maps `home`, `orders`, `store`, `insights` and
+        `settings` to.
+
+        The filled variant on selection is the convention on both platforms —
+        an outline that stays an outline when active reads as nothing having
+        happened.
+
+        The labels come from `a.shell.*` — the section that holds the app's own
+        chrome, as opposed to any one screen's content.
       */}
-      <NativeTabs.Trigger name="index">
-        <Icon sf={{ default: "house", selected: "house.fill" }} />
-        {/* i18n: A05 */}
-        <Label>Home</Label>
+      <NativeTabs.Trigger name="(home)">
+        <Icon
+          sf={{ default: "house", selected: "house.fill" }}
+          androidSrc={{
+            default: <VectorIcon family={Ionicons} name="home-outline" />,
+            selected: <VectorIcon family={Ionicons} name="home" />,
+          }}
+        />
+        <Label>{a.shell.tabHome}</Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="orders">
-        <Icon sf={{ default: "bag", selected: "bag.fill" }} />
-        {/* i18n: A05 */}
-        <Label>Orders</Label>
+        <Icon
+          sf={{ default: "bag", selected: "bag.fill" }}
+          androidSrc={{
+            default: <VectorIcon family={Ionicons} name="receipt-outline" />,
+            selected: <VectorIcon family={Ionicons} name="receipt" />,
+          }}
+        />
+        <Label>{a.shell.tabOrders}</Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="store">
-        <Icon sf={{ default: "square.grid.2x2", selected: "square.grid.2x2.fill" }} />
-        {/* i18n: A05 */}
-        <Label>Store</Label>
+        <Icon
+          sf={{ default: "square.grid.2x2", selected: "square.grid.2x2.fill" }}
+          androidSrc={{
+            default: <VectorIcon family={Ionicons} name="grid-outline" />,
+            selected: <VectorIcon family={Ionicons} name="grid" />,
+          }}
+        />
+        <Label>{a.shell.tabStore}</Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="insights">
-        <Icon sf={{ default: "chart.bar", selected: "chart.bar.fill" }} />
-        {/* i18n: A05 */}
-        <Label>Insights</Label>
+        <Icon
+          sf={{ default: "chart.bar", selected: "chart.bar.fill" }}
+          androidSrc={{
+            default: <VectorIcon family={Ionicons} name="stats-chart-outline" />,
+            selected: <VectorIcon family={Ionicons} name="stats-chart" />,
+          }}
+        />
+        <Label>{a.shell.tabInsights}</Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="settings">
-        <Icon sf={{ default: "gearshape", selected: "gearshape.fill" }} />
-        {/* i18n: A05 */}
-        <Label>Settings</Label>
+        <Icon
+          sf={{ default: "gearshape", selected: "gearshape.fill" }}
+          androidSrc={{
+            default: <VectorIcon family={Ionicons} name="settings-outline" />,
+            selected: <VectorIcon family={Ionicons} name="settings" />,
+          }}
+        />
+        <Label>{a.shell.tabSettings}</Label>
       </NativeTabs.Trigger>
     </NativeTabs>
   );

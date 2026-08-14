@@ -1,11 +1,25 @@
 import { useCallback, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import { Redirect, useRouter } from "expo-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
-import { Button, Text } from "@sailo/design-native";
-import { authClient, useAuthCopy, type AuthCopy } from "../../lib/auth";
+import {
+  Banner,
+  Button,
+  Icon,
+  Screen,
+  StepDots,
+  Text,
+  useTheme,
+} from "@sailo/design-native";
+import {
+  JOURNEY_STEPS,
+  authClient,
+  journeyLabel,
+  useAuthCopy,
+  type AuthCopy,
+} from "../../lib/auth";
 import { useTRPC } from "../../lib/query";
 
 /**
@@ -61,6 +75,7 @@ export default function GetPaid() {
   const copy = useAuthCopy();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const { colors, space } = useTheme();
   const { data: session } = authClient.useSession();
 
   const [status, setStatus] = useState<
@@ -155,34 +170,70 @@ export default function GetPaid() {
   const busy = status === "opening" || status === "reopening";
 
   return (
-    <ScrollView style={styles.fill} contentInsetAdjustmentBehavior="automatic">
+    <Screen
+      /*
+       * Both ways out are pinned, and "later" is a real one rather than a
+       * consolation. Cash, a bank transfer and a WhatsApp handoff are all ways
+       * to be paid; a seller in a market where nobody uses cards is fully set
+       * up without ever touching this screen, and burying the skip at the end
+       * of a scroll is how an optional step becomes one people feel tricked by.
+       */
+      footer={
+        <>
+          <Button
+            label={
+              status === "reopening"
+                ? copy.getPaid.reopening
+                : busy
+                  ? copy.getPaid.connecting
+                  : copy.getPaid.connect
+            }
+            variant="primary"
+            size="lg"
+            fullWidth
+            loading={busy}
+            onPress={() => void connect()}
+            testID="get-paid-connect"
+          />
+          <Button
+            label={copy.getPaid.skip}
+            variant="ghost"
+            fullWidth
+            onPress={() => router.replace("/")}
+            testID="get-paid-skip"
+          />
+        </>
+      }
+      testID="get-paid"
+    >
+      <StepDots
+        count={JOURNEY_STEPS}
+        index={2}
+        accessibilityLabel={journeyLabel(copy, 2)}
+        testID="get-paid-progress"
+      />
+
+      <View style={{ alignItems: "center", gap: space.md }}>
+        <View
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: 999,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: colors.accentSurface,
+          }}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+        >
+          <Icon name="card" size="lg" tone="brand" />
+        </View>
+      </View>
+
       <Text variant="body">{copy.getPaid.body}</Text>
 
-      <Button
-        label={
-          status === "reopening"
-            ? copy.getPaid.reopening
-            : busy
-              ? copy.getPaid.connecting
-              : copy.getPaid.connect
-        }
-        variant="primary"
-        fullWidth
-        loading={busy}
-        onPress={() => void connect()}
-        testID="get-paid-connect"
-      />
-
       <Outcome status={status} failure={failure} copy={copy} />
-
-      <Button
-        label={copy.getPaid.skip}
-        variant="ghost"
-        fullWidth
-        onPress={() => router.replace("/")}
-        testID="get-paid-skip"
-      />
-    </ScrollView>
+    </Screen>
   );
 }
 
@@ -204,34 +255,24 @@ function Outcome({
 }) {
   if (failure === "forbidden") {
     return (
-      <Text variant="callout" tone="warning" testID="get-paid-forbidden">
-        {copy.getPaid.forbidden}
-      </Text>
+      <Banner tone="warning" message={copy.getPaid.forbidden} testID="get-paid-forbidden" />
     );
   }
   if (failure === "failed") {
-    return (
-      <Text variant="callout" tone="danger" testID="get-paid-failed">
-        {copy.getPaid.failed}
-      </Text>
-    );
+    return <Banner tone="danger" message={copy.getPaid.failed} testID="get-paid-failed" />;
   }
   if (status === "done") {
-    return (
-      <Text variant="callout" tone="success" testID="get-paid-done">
-        {copy.getPaid.done}
-      </Text>
-    );
+    return <Banner tone="success" message={copy.getPaid.done} testID="get-paid-done" />;
   }
   if (status === "cancelled") {
+    /*
+     * `neutral`, not `warning`. Closing Stripe's pages is a normal thing to do
+     * and this step is optional by design; drawing it in amber tells a seller
+     * who made a deliberate choice that something went wrong.
+     */
     return (
-      <Text variant="callout" tone="muted" testID="get-paid-cancelled">
-        {copy.getPaid.cancelled}
-      </Text>
+      <Banner tone="neutral" message={copy.getPaid.cancelled} testID="get-paid-cancelled" />
     );
   }
-  return <View />;
+  return null;
 }
-
-/** See the note at the foot of `_layout.tsx`. Fill only; no look. */
-const styles = StyleSheet.create({ fill: { flex: 1 } });

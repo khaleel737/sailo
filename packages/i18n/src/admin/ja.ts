@@ -332,6 +332,8 @@ export const adminJa: PartialAdminDictionary = {
     description: "代わりに売ってくれた人に取り分を支払います。",
   },
   payments: {
+    wallets: "決済アプリ",
+    walletsBody: "購入者は金額が入力された状態でPayPalやVenmoを開き、戻ってきて支払い済みと伝えます。入金確認は注文ページから行います。",
     stripeErrorTitle: "Stripeが設定を開始できませんでした",
     stripeNoResponse: "Stripeから応答がありませんでした。少し経ってからもう一度お試しください。",
     waysToOrder: "注文方法{count}件",

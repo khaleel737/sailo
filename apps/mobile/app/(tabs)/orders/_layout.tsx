@@ -1,4 +1,6 @@
 import { Stack } from "expo-router";
+import { useT } from "../../../lib/i18n";
+import { useStackScreenOptions } from "../../../lib/navigation";
 
 /**
  * The Orders tab's own stack.
@@ -7,23 +9,17 @@ import { Stack } from "expo-router";
  * stack turns them off because the old dashboard painted its own, and a pushed
  * detail screen that inherits that has no back button on iOS.
  *
- * Note for whoever takes the orders screens: `[id].tsx` still draws its own
- * `TopBar` with a "‹ Orders" control, from when there was no header to rely on.
- * With this stack in place that is now a second back affordance under the real
- * one. Removing it is a change to a screen body, which this work order does not
- * make — it is the first thing to delete when that screen is next opened.
+ * The hand-rolled "‹ Orders" control `[id].tsx` used to draw — from before this
+ * stack existed — is gone, so the back affordance under this header is the
+ * system's own and there is only one of it.
  */
 export default function OrdersLayout() {
+  const { a } = useT();
+  const screenOptions = useStackScreenOptions();
+
   return (
-    <Stack
-      screenOptions={{
-        headerTintColor: "#037740",
-        headerTitleStyle: { color: "#1a1917" },
-        headerShadowVisible: false,
-      }}
-    >
-      {/* i18n: A05 */}
-      <Stack.Screen name="index" options={{ title: "Orders" }} />
+    <Stack screenOptions={screenOptions}>
+      <Stack.Screen name="index" options={{ title: a.shell.tabOrders }} />
       {/* Titled by the screen once the order has loaded, like the product one. */}
       <Stack.Screen name="[id]" options={{ title: "" }} />
     </Stack>

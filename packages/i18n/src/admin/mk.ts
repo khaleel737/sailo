@@ -350,6 +350,8 @@ export const adminMk: PartialAdminDictionary = {
   },
 
   payments: {
+    wallets: "Апликации за плаќање",
+    walletsBody: "Купувачот отвора PayPal или Venmo со веќе внесен износ, па се враќа да потврди. Вие го означувате плаќањето на страницата Нарачки.",
     stripeErrorTitle: "Stripe не можеше да го започне поставувањето",
     stripeNoResponse: "Stripe не одговори. Обидете се за момент.",
     waysToOrder: "{count} начини на нарачување",

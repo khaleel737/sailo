@@ -1,7 +1,16 @@
 import { useCallback, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { Redirect } from "expo-router";
-import { Button, Text, TextField } from "@sailo/design-native";
+import {
+  Banner,
+  Button,
+  CodeField,
+  Icon,
+  Screen,
+  Text,
+  TextField,
+  useTheme,
+} from "@sailo/design-native";
 import {
   authClient,
   useAuthCopy,
@@ -32,10 +41,12 @@ const TOTP_LENGTH = 6;
  * you count: the server allows five attempts per fifteen minutes, keyed on the
  * user, and a fat-fingered digit that submits itself spends one of them without
  * the seller having decided to. An explicit tap costs a moment and keeps the
- * budget in the seller's hands.
+ * budget in the seller's hands. `CodeField` offers an `onComplete` for exactly
+ * that behaviour and this screen deliberately does not pass one.
  */
 export default function TwoFactor() {
   const copy = useAuthCopy();
+  const { colors, space } = useTheme();
   const { data: session } = authClient.useSession();
 
   const [using, setUsing] = useState<"totp" | "backupCode">("totp");
@@ -73,43 +84,81 @@ export default function TwoFactor() {
   const submittable =
     !busy && (totp ? code.trim().length === TOTP_LENGTH : code.trim().length > 0);
 
+  /*
+   * The refusal is passed *into* the field as well as drawn beside it.
+   *
+   * A wrong code is a fact about the field, and a form that reports it only in
+   * a line underneath leaves six boxes looking exactly as they did when the
+   * code was still being typed. Red boxes plus a sentence is one message told
+   * twice, which is what an error is supposed to be.
+   */
+  const invalid = refused !== null && refused.kind !== "throttled";
+
   return (
-    <ScrollView
-      style={styles.fill}
-      contentInsetAdjustmentBehavior="automatic"
-      keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets
+    <Screen
+      footer={
+        <Button
+          label={busy ? copy.twoFactor.submitting : copy.twoFactor.submit}
+          variant="primary"
+          size="lg"
+          fullWidth
+          loading={busy}
+          disabled={!submittable}
+          onPress={() => void submit()}
+          testID="two-factor-submit"
+        />
+      }
+      testID="two-factor"
     >
-      <Text variant="body" tone="muted">
-        {totp ? copy.twoFactor.body : copy.twoFactor.backupBody}
-      </Text>
+      <View style={{ alignItems: "center", gap: space.md, marginBottom: space.sm }}>
+        {/* The one glyph on the screen, and it is doing a job: this is the
+            only point in the flow where a seller is asked for something they
+            have to fetch from somewhere else, and the lock is what says the
+            app is not stuck. */}
+        <View
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: 999,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: colors.accentSurface,
+          }}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+        >
+          <Icon name="lock" size="lg" tone="brand" />
+        </View>
+        <Text variant="callout" tone="muted" align="center">
+          {totp ? copy.twoFactor.body : copy.twoFactor.backupBody}
+        </Text>
+      </View>
 
       {/*
-        `autoComplete="one-time-code"` is what makes iOS offer the code from
-        the seller's own authenticator or from a message, which is the
-        difference between tapping once and switching apps to read six digits
-        off a screen that is counting down. A backup code gets `"off"` for the
-        opposite reason: it is written on paper, the OS has never seen it, and
+        Six boxes rather than a text field, for the TOTP case only.
+
+        This screen used a general `TextField` with `maxLength={6}`, and a
+        general text field cannot do three things this one needs. It cannot ask
+        iOS for the SMS autofill bar — that requires `textContentType="oneTimeCode"`,
+        which is meaningless on a field that is not a one-time code. It cannot
+        show how far through six digits the seller is. And it accepts every
+        character on the keyboard, so a code read out over the phone and typed
+        with a space fails as "incorrect code" rather than working.
+        `code-field.tsx` carries the rest.
+
+        A backup code stays a text field, and that is the right split: it is
+        written on paper, it is not six digits, the OS has never seen it, and
         offering to autofill it would put a suggestion bar over the keyboard
         that can only ever be wrong.
-
-        `maxLength` on the TOTP field only. `TextField` shows a counter with it,
-        which is right for six digits and noise on a backup code whose length
-        is better not implied.
       */}
       {totp ? (
-        <TextField
+        <CodeField
           label={copy.twoFactor.code}
           value={code}
           onChangeText={setCode}
-          keyboard="number"
-          autoComplete="one-time-code"
-          maxLength={TOTP_LENGTH}
+          length={TOTP_LENGTH}
+          invalid={invalid}
           autoFocus
-          returnKey="go"
-          onSubmitEditing={() => {
-            if (submittable) void submit();
-          }}
           testID="two-factor-code"
         />
       ) : (
@@ -130,26 +179,15 @@ export default function TwoFactor() {
 
       {refused ? <Refusal outcome={refused} copy={copy} /> : null}
 
-      <Button
-        label={busy ? copy.twoFactor.submitting : copy.twoFactor.submit}
-        variant="primary"
-        fullWidth
-        loading={busy}
-        disabled={!submittable}
-        onPress={() => void submit()}
-        testID="two-factor-submit"
-      />
-
-      <View>
+      <View style={{ alignItems: "center" }}>
         <Button
           label={totp ? copy.twoFactor.useBackup : copy.twoFactor.useApp}
           variant="ghost"
-          fullWidth
           onPress={() => switchTo(totp ? "backupCode" : "totp")}
           testID="two-factor-switch"
         />
       </View>
-    </ScrollView>
+    </Screen>
   );
 }
 
@@ -161,7 +199,9 @@ export default function TwoFactor() {
  * be legitimate, and "a throttled attempt is *unknown*, not *wrong*" — the
  * refusal never says "invalid code" because the throttle has not looked at the
  * code. This is that sentence reaching the seller, and the reason it is a
- * separate branch rather than one message for every failure.
+ * separate branch rather than one message for every failure. It is also why the
+ * throttle case does not turn the boxes red: nothing about the code is known to
+ * be wrong.
  *
  * The rejection line mentions the thirty-second window, because the most common
  * genuine cause of a wrong TOTP code is a seller reading one that has just
@@ -171,34 +211,33 @@ function Refusal({ outcome, copy }: { outcome: TwoFactorOutcome; copy: AuthCopy 
   switch (outcome.kind) {
     case "throttled":
       return (
-        <Text variant="callout" tone="warning" testID="two-factor-throttled">
-          {copy.twoFactor.throttled}
-        </Text>
+        <Banner
+          tone="warning"
+          message={copy.twoFactor.throttled}
+          testID="two-factor-throttled"
+        />
       );
     case "rejected":
     // falls through — a 422 cannot reach these endpoints, but an unhandled
     // refusal must never render as an empty space where an explanation goes.
     case "conflict":
       return (
-        <Text variant="callout" tone="danger" testID="two-factor-rejected">
-          {copy.twoFactor.rejected}
-        </Text>
+        <Banner
+          tone="danger"
+          message={copy.twoFactor.rejected}
+          testID="two-factor-rejected"
+        />
       );
-    default:
+    default: {
+      const detail = outcome.kind === "failed" ? outcome.detail : undefined;
       return (
-        <View>
-          <Text variant="callout" tone="danger" testID="two-factor-failed">
-            {copy.twoFactor.failed}
-          </Text>
-          {outcome.kind === "failed" && outcome.detail ? (
-            <Text variant="caption" tone="muted">
-              {outcome.detail}
-            </Text>
-          ) : null}
-        </View>
+        <Banner
+          tone="danger"
+          title={detail ? copy.twoFactor.failed : undefined}
+          message={detail ?? copy.twoFactor.failed}
+          testID="two-factor-failed"
+        />
       );
+    }
   }
 }
-
-/** See the note at the foot of `_layout.tsx`. Fill only; no look. */
-const styles = StyleSheet.create({ fill: { flex: 1 } });

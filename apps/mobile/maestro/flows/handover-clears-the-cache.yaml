@@ -1,0 +1,63 @@
+appId: store.sailo.app
+name: A shared handset never paints the previous seller's shop
+tags:
+  - auth
+  - tenancy
+env:
+  SELLER_EMAIL: ${MAESTRO_SELLER_EMAIL}
+  SELLER_PASSWORD: ${MAESTRO_SELLER_PASSWORD}
+  # A *different* seller, with a different shop. The whole flow is meaningless
+  # if these two resolve to the same account.
+  OTHER_EMAIL: ${MAESTRO_OTHER_EMAIL}
+  OTHER_PASSWORD: ${MAESTRO_OTHER_PASSWORD}
+  # The first seller's shop name, exactly as the app draws it.
+  SHOP_NAME: ${MAESTRO_SHOP_NAME}
+  OTHER_SHOP_NAME: ${MAESTRO_OTHER_SHOP_NAME}
+---
+# The client half of the tenant boundary.
+#
+# The server filters every query by `ctx.shopId`, and that is not what this
+# tests. This tests the thing the server cannot defend: the *cache*. It
+# outlives the session, so without `queryClient.clear()` on sign-out the next
+# seller to use this handset gets the previous one's orders painted from
+# memory before the first request even leaves the phone. Both `signOut`
+# callbacks — the dashboard's and Settings' — carry a comment saying so. This
+# is the flow that proves the comment.
+#
+# WHAT THIS CANNOT PROVE. The work order asks that *no frame ever* paints the
+# first seller's data. Maestro polls the view hierarchy; it does not sample
+# every frame, so a single-frame flash between the sign-in resolving and the
+# first fetch landing could slip between two polls. This flow catches a cache
+# that was never cleared, which is the failure that actually ships. Catching a
+# one-frame flash needs an instrumented render, and there is no mobile unit
+# test harness to hang one off yet — see maestro/README.md.
+- runFlow: sign-in.yaml
+
+# Seller one is in, and their shop is on screen.
+- tapOn: "Settings"
+- assertVisible:
+    text: "Shop: ${SHOP_NAME}"
+
+- tapOn: "Sign out"
+- assertVisible: "Sign in to your shop"
+
+# Deliberately no `clearState` and no relaunch. Killing the app would clear the
+# in-memory query cache for free and the flow would pass whether or not
+# anything cleared it — which is the trap this is written to avoid.
+- tapOn: "Email"
+- inputText: ${OTHER_EMAIL}
+- tapOn: "Password"
+- inputText: ${OTHER_PASSWORD}
+- tapOn: "^Sign in$"
+
+# The first assertion after the gate opens. If the cache survived the sign-out
+# this is where the previous seller's shop is still on screen.
+- assertNotVisible: ${SHOP_NAME}
+
+- tapOn: "Settings"
+- assertVisible:
+    text: "Shop: ${OTHER_SHOP_NAME}"
+- assertNotVisible: ${SHOP_NAME}
+
+- tapOn: "Orders"
+- assertNotVisible: ${SHOP_NAME}

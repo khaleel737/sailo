@@ -332,6 +332,8 @@ export const adminEl: PartialAdminDictionary = {
     description: "Πληρώστε σε άλλους μερίδιο από όσα πουλούν για εσάς.",
   },
   payments: {
+    wallets: "Εφαρμογές πληρωμών",
+    walletsBody: "Ο αγοραστής ανοίγει το PayPal ή το Venmo με το ποσό ήδη συμπληρωμένο και μετά επιστρέφει για επιβεβαίωση. Το σημειώνετε ως πληρωμένο από τις Παραγγελίες.",
     stripeErrorTitle: "Το Stripe δεν μπόρεσε να ξεκινήσει τη ρύθμιση",
     stripeNoResponse: "Το Stripe δεν απάντησε. Δοκιμάστε ξανά σε λίγο.",
     waysToOrder: "{count} τρόποι παραγγελίας",

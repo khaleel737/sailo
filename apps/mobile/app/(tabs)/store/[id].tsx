@@ -19,13 +19,14 @@ import {
   ErrorState,
   GroupedList,
   ListRow,
+  Screen,
   Skeleton,
   Switch,
   Text,
 } from "@sailo/design-native";
 import type { ProductDetail, ProductVariant } from "../../../lib/models";
 import { useReduceMotion } from "../../../lib/a11y";
-import { useTRPC } from "../../../lib/query";
+import { reportQueryError, useTRPC } from "../../../lib/query";
 import { PublishBadge, ProductEditor, useStoreCopy } from "./index";
 
 /**
@@ -86,29 +87,37 @@ export default function ProductDetailScreen() {
    */
   if (!id) {
     return (
-      <>
+      <Screen scroll={false} edges={EDGES}>
         <Stack.Screen options={{ title: "" }} />
         <ErrorState message={s.noProductSelected} />
-      </>
+      </Screen>
     );
   }
 
   if (failed?.error) {
-    captureError(failed.error, { scope: "mobile:store:detail" });
+    reportQueryError(failed.error, { scope: "mobile:store:detail" });
     return (
-      <>
+      <Screen scroll={false} edges={EDGES}>
         <Stack.Screen options={{ title: "" }} />
         <ErrorState message={s.detailFailed} onRetry={refresh} retrying={refreshing} />
-      </>
+      </Screen>
     );
   }
 
   if (loading || !product.data) {
     return (
-      <>
+      /*
+       * The shape that is coming, not a lone card. This screen opens with a
+       * full-width gallery, a title, a price and two panels; standing one card
+       * in for all of it made the layout jump the moment the product landed.
+       */
+      <Screen scroll={false} edges={EDGES} testID="product-loading">
         <Stack.Screen options={{ title: "" }} />
         <Skeleton shape="card" />
-      </>
+        <Skeleton shape="title" />
+        <Skeleton shape="text" count={2} />
+        <Skeleton shape="row" count={3} />
+      </Screen>
     );
   }
 
@@ -174,7 +183,7 @@ function Detail({ product, currency }: { product: ProductDetail; currency: strin
         router.back();
       },
       onError: (error) => {
-        captureError(error, { scope: "mobile:store:delete" });
+        reportQueryError(error, { scope: "mobile:store:delete" });
         Alert.alert(s.deleteFailed);
       },
     }),
@@ -204,8 +213,23 @@ function Detail({ product, currency }: { product: ProductDetail; currency: strin
   }, [a, s, product.title, product.id, remove]);
 
   return (
-    <ScrollView contentContainerStyle={styles.content}>
+    /*
+     * `padding="none"` on the screen, and the padding put back on a wrapper
+     * below the gallery.
+     *
+     * The gallery is full-bleed by design — a paged carousel inset by 16pt on
+     * each side is a carousel whose pages do not line up with the screen it is
+     * being swiped across. Everything under it is body content and wants the
+     * app's ordinary margins, which is what `styles.body` restores.
+     *
+     * What this replaces is a `contentContainerStyle` holding
+     * `{ paddingBottom: 48 }` and nothing else — so the title, the price and
+     * both panels ran edge to edge against the bezel.
+     */
+    <Screen padding="none" gap="none" edges={EDGES} testID="product-detail">
       <Gallery product={product} />
+
+      <View style={styles.body}>
 
       <Text variant="title" heading>
         {product.title}
@@ -320,9 +344,10 @@ function Detail({ product, currency }: { product: ProductDetail; currency: strin
         product={product}
         currency={currency}
         onClose={() => setEditing(false)}
-        onSaved={() => setEditing(false)}
-      />
-    </ScrollView>
+          onSaved={() => setEditing(false)}
+        />
+      </View>
+    </Screen>
   );
 }
 
@@ -417,7 +442,14 @@ function VariantRow({
   );
 }
 
+/** No safe-area edges — the stack header owns the top, the tab bar the bottom.
+ *  `orders/index.tsx` carries the longer note. */
+const EDGES = [] as const;
+
 const styles = StyleSheet.create({
-  content: { paddingBottom: 48 },
+  /* The margins the rest of the app uses, restored under the full-bleed
+     gallery. `paddingBottom` clears the home indicator and gives the last
+     button somewhere to end. */
+  body: { padding: 16, paddingTop: 20, paddingBottom: 48, gap: 16 },
   placeholder: { alignItems: "center", justifyContent: "center" },
 });

@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StatusPill } from "@sailo/design-native";
+import type { StatusTone } from "@sailo/design-native";
 import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";
 import { adminEn } from "@sailo/i18n/admin/en";
 
@@ -16,29 +17,67 @@ import { adminEn } from "@sailo/i18n/admin/en";
  * locale plumbing on mobile yet, so `adminEn` is imported directly rather than
  * resolved per-locale. Wiring the seller's language through is app-wide work,
  * and when it lands this is the only file that has to learn about it.
+ *
+ * WHAT CHANGED: THE BADGE IS NOW THE ONE BADGE
+ *
+ * These two drew themselves — a local `StyleSheet` and a five-row table of hex
+ * pairs lifted from a framework's default palette (`#eff6ff`/`#1d4ed8`,
+ * `#f0fdf4`/`#15803d`, …). None of those colours is Sailo's, none of them has a
+ * dark variant, and there was already a `StatusPill` in the design system doing
+ * the same job in the same shape. So on the order detail screen, in dark mode,
+ * two near-white pills sat on a near-black page — and the *same* status
+ * rendered in two different greens depending on which screen you were on.
+ *
+ * What is left here is the only part that is genuinely this app's: the mapping
+ * from a stored status string to a tone, and the accessibility label that says
+ * which of the two questions a bare adjective is answering.
  */
 
 /** The seller-facing words, straight from the dictionary the web admin uses. */
 export const ORDER_STATUS_LABELS = adminEn.orderStatus;
 export const PAYMENT_STATUS_LABELS = adminEn.paymentStatus;
 
-/** Tone → the two colours a badge is drawn in. Ordinary React Native styles. */
-const TONES = {
-  blue: { bg: "#eff6ff", fg: "#1d4ed8" },
-  amber: { bg: "#fffbeb", fg: "#b45309" },
-  green: { bg: "#f0fdf4", fg: "#15803d" },
-  red: { bg: "#fef2f2", fg: "#b91c1c" },
-  neutral: { bg: "#f3f4f6", fg: "#4b5563" },
-} as const;
+/**
+ * `@sailo/core`'s tone vocabulary, in the design system's.
+ *
+ * The two lists exist for different reasons and are deliberately not merged:
+ * core names a *colour family* because the web's Tailwind classes are written
+ * in those terms, and the design system names a *meaning* because a phone has
+ * one palette and a screen must not pick a hex. This table is the seam, and it
+ * is four lines rather than a shared enum because making core depend on a React
+ * Native package to spell "warning" would put a phone dependency on the API
+ * server, which imports core.
+ */
+const TONES: Record<string, StatusTone> = {
+  blue: "info",
+  amber: "warning",
+  green: "success",
+  red: "danger",
+  neutral: "neutral",
+};
 
+/**
+ * WHY THESE BADGES SAY WHAT THEY ARE, NOT JUST WHAT THEY SAY
+ *
+ * Tone is decoration and never the carrier: the word is always drawn, so a
+ * seller who cannot separate the amber pill from the green one still reads
+ * "Pending" and "Confirmed". That much the markup already got right.
+ *
+ * What it did not carry is *which question* the word answers. The detail
+ * screen puts an order badge and a payment badge side by side, and VoiceOver
+ * reads them as two bare adjectives — "Confirmed, Paid" — with nothing saying
+ * which is which. The label supplies the missing half. It is the same
+ * dictionary the visible word comes from, so the two cannot drift.
+ */
 export function OrderStatusBadge({ status }: { status: string }) {
-  const tone = TONES[orderStatusTone(status)] ?? TONES.neutral;
+  const label = orderStatusLabel(status, ORDER_STATUS_LABELS);
   return (
-    <View style={[styles.badge, { backgroundColor: tone.bg }]}>
-      <Text style={[styles.badgeText, { color: tone.fg }]}>
-        {orderStatusLabel(status, ORDER_STATUS_LABELS)}
-      </Text>
-    </View>
+    <StatusPill
+      label={label}
+      tone={TONES[orderStatusTone(status)] ?? "neutral"}
+      accessibilityLabel={`${adminEn.orders.statusLabel}: ${label}`}
+      testID="order-status-badge"
+    />
   );
 }
 
@@ -54,31 +93,23 @@ export function OrderStatusBadge({ status }: { status: string }) {
  * The tone mapping is local because payment states are not order states: a
  * refund is a *neutral* fact about an order and a red one about a payment.
  */
-const PAYMENT_TONES: Record<string, keyof typeof TONES> = {
+const PAYMENT_TONES: Record<string, StatusTone> = {
   unpaid: "neutral",
-  pending: "amber",
-  paid: "green",
-  refunded: "red",
-  disputed: "red",
+  pending: "warning",
+  paid: "success",
+  refunded: "danger",
+  disputed: "danger",
 };
 
 export function PaymentStatusBadge({ status }: { status: string }) {
-  const tone = TONES[PAYMENT_TONES[status] ?? "neutral"];
   const label =
     PAYMENT_STATUS_LABELS[status as keyof typeof PAYMENT_STATUS_LABELS] ?? status;
   return (
-    <View style={[styles.badge, { backgroundColor: tone.bg }]}>
-      <Text style={[styles.badgeText, { color: tone.fg }]}>{label}</Text>
-    </View>
+    <StatusPill
+      label={label}
+      tone={PAYMENT_TONES[status] ?? "neutral"}
+      accessibilityLabel={`${adminEn.orders.paymentStatusLabel}: ${label}`}
+      testID="payment-status-badge"
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  badge: {
-    alignSelf: "flex-start",
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  badgeText: { fontSize: 12, fontWeight: "700" },
-});

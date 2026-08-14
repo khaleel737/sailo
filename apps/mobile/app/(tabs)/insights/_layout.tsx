@@ -1,4 +1,6 @@
 import { Stack } from "expo-router";
+import { useT } from "../../../lib/i18n";
+import { useStackScreenOptions } from "../../../lib/navigation";
 
 /**
  * The Insights tab's own stack.
@@ -7,16 +9,12 @@ import { Stack } from "expo-router";
  * and every per-tab stack turns them back on.
  */
 export default function InsightsLayout() {
+  const { a } = useT();
+  const screenOptions = useStackScreenOptions();
+
   return (
-    <Stack
-      screenOptions={{
-        headerTintColor: "#037740",
-        headerTitleStyle: { color: "#1a1917" },
-        headerShadowVisible: false,
-      }}
-    >
-      {/* i18n: A05 */}
-      <Stack.Screen name="index" options={{ title: "Insights" }} />
+    <Stack screenOptions={screenOptions}>
+      <Stack.Screen name="index" options={{ title: a.shell.tabInsights }} />
     </Stack>
   );
 }

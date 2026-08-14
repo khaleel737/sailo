@@ -43,6 +43,18 @@ export type StatusTone = "neutral" | "info" | "success" | "warning" | "danger";
 export type Size = "sm" | "md" | "lg";
 
 /**
+ * A step on the spacing scale, by name.
+ *
+ * The same names `@sailo/tokens` exports, restated as a union so a component
+ * can take one as a prop. `"none"` is deliberately absent: a component that
+ * offers zero padding as a *named step* invites a caller to zero out the
+ * rhythm the scale exists to keep, and the two places that genuinely need it
+ * — a full-bleed card, a screen that is one list — spell it as a separate
+ * literal so it reads as the exception it is.
+ */
+export type Space = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
+
+/**
  * Where something sits along the writing direction.
  *
  * `start`/`end`, never `left`/`right`. Arabic is a shipped language, and a
@@ -62,6 +74,14 @@ export type Edge = "start" | "end";
  * which is the whole reason not to let screens pass a font size.
  */
 export type TextVariant =
+  /**
+   * The brand moment, and the only step above `display`.
+   *
+   * There is exactly one of these per launch — the welcome screen's opening
+   * line — and a second one anywhere else means two screens are both claiming
+   * to be the beginning of the app.
+   */
+  | "hero"
   /** The one big number or name a screen opens with. */
   | "display"
   /** A screen's own title, where the navigation bar isn't carrying it. */
@@ -75,7 +95,15 @@ export type TextVariant =
   /** The small print: hints, timestamps, footnotes. */
   | "caption"
   /** The all-caps group label above a list section. */
-  | "label";
+  | "label"
+  /**
+   * A figure that has to line up with the figure under it.
+   *
+   * Body-sized, but set in tabular figures so every digit is one width. A
+   * column of amounts in the proportional default visibly shivers as the
+   * numbers change, because `1` is narrower than `8`.
+   */
+  | "numeric";
 
 /** Weight, as four names rather than a number nobody remembers the mapping of. */
 export type TextWeight = "regular" | "medium" | "semibold" | "bold";
@@ -101,9 +129,12 @@ export type IconName =
   | "settings"
   | "chevronEnd"
   | "chevronDown"
+  | "chevronUp"
   | "close"
   | "back"
   | "external"
+  | "arrowUp"
+  | "arrowDown"
   // Actions
   | "add"
   | "edit"
@@ -114,6 +145,10 @@ export type IconName =
   | "copy"
   | "refresh"
   | "scan"
+  /** The eye on a password field. `show` is offered while it is masked. */
+  | "show"
+  | "hide"
+  | "signOut"
   // Objects
   | "camera"
   | "photo"
@@ -127,6 +162,15 @@ export type IconName =
   | "bell"
   | "ticket"
   | "tag"
+  | "mail"
+  | "lock"
+  | "globe"
+  | "language"
+  | "shield"
+  | "package"
+  | "sparkle"
+  | "star"
+  | "help"
   // Feedback
   | "check"
   | "warning"

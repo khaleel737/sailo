@@ -61,21 +61,30 @@
  */
 
 export { Avatar, type AvatarProps } from "./avatar";
+export { Banner, type BannerProps } from "./banner";
+export { BrandMark, type BrandMarkProps, Wordmark, type WordmarkProps } from "./brand";
 export { Button, type ButtonProps } from "./button";
 export { Card, type CardProps } from "./card";
 export { Chart, type ChartPoint, type ChartProps } from "./chart";
+export { Chip, type ChipProps } from "./chip";
+export { CodeField, type CodeFieldProps } from "./code-field";
+export { Divider, type DividerProps } from "./divider";
 export { EmptyState, type EmptyStateProps } from "./empty-state";
 export { ErrorState, type ErrorStateProps } from "./error-state";
 export { GroupedList, type GroupedListProps } from "./grouped-list";
 export { Icon, type IconProps } from "./icon";
+export { IconButton, type IconButtonProps } from "./icon-button";
 export { ListRow, type ListRowProps } from "./list-row";
 export { Money, type MoneyProps } from "./money";
 export { Progress, type ProgressProps } from "./progress";
+export { Screen, type ScreenProps } from "./screen";
 export { Segmented, type SegmentedOption, type SegmentedProps } from "./segmented";
 export { Sheet, type SheetProps } from "./sheet";
 export { Skeleton, type SkeletonProps } from "./skeleton";
+export { BrandSplash, type BrandSplashProps, MARK_RATIO } from "./splash";
 export { Stat, type StatDelta, type StatProps } from "./stat";
 export { StatusPill, type StatusPillProps } from "./status-pill";
+export { StepDots, type StepDotsProps } from "./step-dots";
 export { Switch, type SwitchProps } from "./switch";
 export { Text, type TextProps } from "./text";
 export { TextField, type TextFieldAutoComplete, type TextFieldKeyboard, type TextFieldProps } from "./text-field";
@@ -86,8 +95,39 @@ export type {
   Edge,
   IconName,
   Size,
+  Space,
   StatusTone,
   TextVariant,
   TextWeight,
   Tone,
 } from "./types";
+
+/**
+ * The two things a screen is allowed to reach past a component for.
+ *
+ * `haptics` because feedback is a *product* decision rather than a component
+ * one: the primitives buzz on their own presses, but only the screen knows
+ * that a scan matched, that a payout landed, or that the code the seller just
+ * typed was the wrong one. `useReducedMotion` for the same reason in reverse —
+ * a screen composing its own animation has to honour the setting the
+ * primitives already honour, and the alternative is each screen reimplementing
+ * the `AccessibilityInfo` subscription.
+ *
+ * Everything else in `./motion` is deliberately not exported. A screen that
+ * needs an entrance gets one from `Screen`; a screen that needs a press scale
+ * gets one from the control it is pressing. Exporting the hooks would make
+ * "write your own animation" as easy as "use the one the system has", and the
+ * whole reason the app looks like one app is that it is not.
+ */
+export { haptics, type Haptic } from "./haptics";
+export { useReducedMotion } from "./motion";
+
+/**
+ * The theme itself, for the handful of places a component cannot reach.
+ *
+ * Screens should not need this — the whole point of the primitives is that a
+ * screen never picks a colour. The exception is a native container the package
+ * does not own: `NativeTabs` takes a `tintColor` prop and there is no Sailo
+ * component wrapping it, so the layout has to read the accent to hand over.
+ */
+export { useTheme, type Theme, type Palette } from "./theme";

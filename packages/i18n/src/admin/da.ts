@@ -332,6 +332,8 @@ export const adminDa: PartialAdminDictionary = {
     description: "Betal andre en andel af det, de sælger for dig.",
   },
   payments: {
+    wallets: "Betalingsapps",
+    walletsBody: "Køberen åbner PayPal eller Venmo med beløbet allerede udfyldt og vender så tilbage for at bekræfte. Du markerer den betalt fra Ordrer.",
     stripeErrorTitle: "Stripe kunne ikke starte opsætningen",
     stripeNoResponse: "Stripe svarede ikke. Prøv igen om lidt.",
     waysToOrder: "{count} måder at bestille på",

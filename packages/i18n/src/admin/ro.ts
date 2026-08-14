@@ -332,6 +332,8 @@ export const adminRo: PartialAdminDictionary = {
     description: "Plătește altora o parte din ce vând pentru tine.",
   },
   payments: {
+    wallets: "Aplicații de plată",
+    walletsBody: "Cumpărătorul deschide PayPal sau Venmo cu suma deja completată, apoi revine să confirme. Tu o marchezi plătită din pagina Comenzi.",
     stripeErrorTitle: "Stripe nu a putut porni configurarea",
     stripeNoResponse: "Stripe nu a răspuns. Încearcă din nou într-o clipă.",
     waysToOrder: "{count} moduri de a comanda",

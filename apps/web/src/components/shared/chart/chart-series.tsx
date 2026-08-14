@@ -2,8 +2,8 @@ import { curveMonotoneX } from "@visx/curve";
 import { Group } from "@visx/group";
 import { Bar, LinePath } from "@visx/shape";
 import { chartColour } from "@/lib/chart-palette";
-import { barOffset, barWidth } from "@/lib/chart/domain";
-import type { ChartShape, ChartTone, Series } from "@/lib/chart/types";
+import { barOffset, barWidth } from "@/lib/chart";
+import type { ChartShape, ChartTone, Series } from "@/lib/chart";
 import type { ScaleBand, ScaleLinear } from "./scales";
 
 /**

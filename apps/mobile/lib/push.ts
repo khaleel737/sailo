@@ -161,7 +161,22 @@ async function ensureAndroidChannel(): Promise<void> {
       name: "Orders",
       importance: Notifications.AndroidImportance.HIGH,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#4f46e5",
+      /*
+       * The notification LED, in the brand's green.
+       *
+       * It was `#4f46e5` — an indigo that appears nowhere else in the product
+       * and belongs to the framework default palette this codebase spent a
+       * release removing. It is a small surface, but it is the same green
+       * `app.json` gives the notification icon two files away, and the two
+       * disagreeing is a light of one colour behind an icon of another.
+       *
+       * `brand-700`, spelled out rather than imported: this module runs from a
+       * notification handler with no React tree, so `useTheme()` is not
+       * reachable here — and Android's channel colour is a single value that
+       * cannot follow the phone's scheme in any case, since the channel is
+       * created once and the OS owns it from then on.
+       */
+      lightColor: "#037740",
     });
   } catch (error) {
     captureError(error, { scope: "mobile:push:channel" });

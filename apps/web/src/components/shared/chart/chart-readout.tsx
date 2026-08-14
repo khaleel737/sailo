@@ -1,5 +1,5 @@
 import { chartColour } from "@/lib/chart-palette";
-import type { ChartTone, Series } from "@/lib/chart/types";
+import type { ChartTone, Series } from "@/lib/chart";
 
 /**
  * What the pointed-at day was worth, per series.

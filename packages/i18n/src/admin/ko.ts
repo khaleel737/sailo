@@ -350,6 +350,8 @@ export const adminKo: PartialAdminDictionary = {
   },
 
   payments: {
+    wallets: "결제 앱",
+    walletsBody: "구매자가 금액이 미리 채워진 PayPal이나 Venmo를 열고, 돌아와 결제했다고 알립니다. 입금 확인은 주문 페이지에서 합니다.",
     stripeErrorTitle: "Stripe가 설정을 시작하지 못했어요",
     stripeNoResponse: "Stripe가 응답하지 않았어요. 잠시 후 다시 시도해 주세요.",
     waysToOrder: "주문 방법 {count}개",

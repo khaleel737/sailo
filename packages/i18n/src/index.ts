@@ -61,30 +61,13 @@ export function getDictionary(locale: string | undefined | null): Dictionary {
   return DICTIONARIES[isLocale(locale) ? locale : DEFAULT_LOCALE];
 }
 
-/** Substitutes `{name}` placeholders. Unknown keys are left as-is. */
-export function interpolate(
-  template: string,
-  values?: Record<string, string | number>,
-): string {
-  if (!values) return template;
-  return template.replace(/\{(\w+)\}/g, (match, key: string) =>
-    key in values ? String(values[key]) : match,
-  );
-}
-
-/**
- * Chooses between a singular and plural string. English-style two-form
- * selection covers the dictionary's counted phrases; locales with richer
- * plural rules phrase those keys so one form reads correctly for any count.
+/*
+ * Re-exported rather than defined here. They live in `./interpolate` so the
+ * phone can import them without dragging the thirty-five dictionaries above
+ * into its bundle; every existing caller of `@sailo/i18n` reads them from the
+ * same place it always has.
  */
-export function plural(
-  count: number,
-  one: string,
-  many: string,
-  values?: Record<string, string | number>,
-) {
-  return interpolate(count === 1 ? one : many, { count, ...values });
-}
+export { interpolate, plural } from "./interpolate";
 
 export type { Dictionary };
 export { DEFAULT_LOCALE, isLocale };

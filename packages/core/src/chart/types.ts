@@ -1,4 +1,4 @@
-import type { ChartTone } from "@/lib/chart-palette";
+import type { ChartTone } from "./palette";
 
 /**
  * How a chart draws its measures. One shape for the whole chart, never one per

@@ -332,6 +332,8 @@ export const adminAr: PartialAdminDictionary = {
     description: "ادفع لغيرك حصة مما يبيعونه لك.",
   },
   payments: {
+    wallets: "تطبيقات الدفع",
+    walletsBody: "يفتح المشتري PayPal أو Venmo والمبلغ مُعبّأ مسبقًا، ثم يعود ليؤكّد. وأنت تضع الطلب كمدفوع من صفحة الطلبات.",
     stripeErrorTitle: "تعذّر على Stripe بدء الإعداد",
     stripeNoResponse: "لم يستجب Stripe. حاول بعد قليل.",
     waysToOrder: "{count} طرق للطلب",

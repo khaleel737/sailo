@@ -1,4 +1,6 @@
-import { Text as RNText, View } from "react-native";
+import { View } from "react-native";
+import { Text } from "./text";
+import { useTheme } from "./theme";
 
 /**
  * A section of rows, with the separators and the corner radius handled once.
@@ -23,11 +25,39 @@ export type GroupedListProps = {
 };
 
 export function GroupedList({ children, header, footer, testID }: GroupedListProps) {
+  const { colors, radius, space } = useTheme();
+
   return (
-    <View testID={testID}>
-      {header ? <RNText accessibilityRole="header">{header}</RNText> : null}
-      <View>{children}</View>
-      {footer ? <RNText>{footer}</RNText> : null}
+    <View style={{ gap: space.xs }} testID={testID}>
+      {header ? (
+        <Text variant="label" tone="muted" heading>
+          {header}
+        </Text>
+      ) : null}
+      {/*
+        The separators are drawn by the rows, not here: a group cannot know
+        which of its children is last without cloning them, and a hairline under
+        the final row is the one that reads as a mistake. `ListRow` owns its own
+        bottom border and `:last-child` is expressed by the group's overflow
+        clipping it away.
+      */}
+      <View
+        style={{
+          backgroundColor: colors.surface,
+          borderRadius: radius["2xl"],
+          borderCurve: "continuous",
+          borderWidth: 1,
+          borderColor: colors.border,
+          overflow: "hidden",
+        }}
+      >
+        {children}
+      </View>
+      {footer ? (
+        <Text variant="caption" tone="muted">
+          {footer}
+        </Text>
+      ) : null}
     </View>
   );
 }

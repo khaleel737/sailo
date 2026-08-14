@@ -26,7 +26,7 @@ const { uploadsRouter } = await import("./uploads");
 const SHOP = "11111111-1111-4111-8111-111111111111";
 
 const caller = (shopId: string | null = SHOP) =>
-  uploadsRouter.createCaller({ shopId });
+  uploadsRouter.createCaller({ shopId, userId: shopId === null ? null : "user_test" });
 
 /** The options the procedure handed Vercel on the last call. */
 function lastToken() {

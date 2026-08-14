@@ -1,33 +1,48 @@
 import { useCallback, useState } from "react";
+import { Alert, StyleSheet, View } from "react-native";
+import Constants from "expo-constants";
+import { useRouter } from "expo-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { captureError } from "@sailo/observability";
+import { interpolate } from "@sailo/i18n/native";
 import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
+  Avatar,
+  Button,
+  Card,
+  GroupedList,
+  ListRow,
+  Screen,
+  Skeleton,
   Switch,
   Text,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+} from "@sailo/design-native";
 import { authClient } from "../../../lib/auth";
 import { forgetDevice, openSystemSettings, usePushSettings } from "../../../lib/push";
+import { useT } from "../../../lib/i18n";
 import { useTRPC } from "../../../lib/query";
-import { Loading } from "../../../components/states";
 
 /**
  * Who the seller is signed in as, whether their phone will buzz, and the way
  * out.
  *
- * The whole screen is three answers to "what is true about this device", which
- * is why there is no save button: a settings screen that batches changes behind
- * one is a screen that can be left in a state the seller believes they set and
- * did not. Each control commits on the spot and shows what it actually achieved
- * — notably the notification toggle, which can fail to turn on for a reason
- * that has nothing to do with this app.
+ * There is no save button, and that is the design rather than an omission: a
+ * settings screen that batches changes behind one is a screen that can be left
+ * in a state the seller believes they set and did not. Each control commits on
+ * the spot and reports what it actually achieved — notably the notification
+ * toggle, which can fail to turn on for a reason that has nothing to do with
+ * this app.
+ *
+ * Grouped lists rather than accordions. Stan's settings screen hides both of
+ * its sections behind disclosure triangles, which costs a tap per task and
+ * means the screen never shows what it contains; on iOS a grouped list is the
+ * convention precisely because it is scannable at rest.
  */
 export default function Settings() {
+  const { a } = useT();
   const trpc = useTRPC();
+  const router = useRouter();
   const queryClient = useQueryClient();
+
   const { data: session, isPending } = authClient.useSession();
   const shop = useQuery(trpc.shop.get.queryOptions());
   const push = usePushSettings();
@@ -48,86 +63,161 @@ export default function Settings() {
     await forgetDevice();
     await authClient.signOut();
     /*
-     * The same reason the dashboard clears it: the cache still holds the
-     * previous seller's shop, and on a shared handset it would paint their
-     * orders from cache before the first request even goes out.
+     * The cache still holds the previous seller's shop, and on a shared handset
+     * it would paint their orders from cache before the first request even goes
+     * out — which looks exactly like a cross-tenant leak, and is one on the
+     * client side of the boundary the router defends on the server side.
      */
     queryClient.clear();
     setSigningOut(false);
   }, [queryClient]);
 
-  if (isPending) {
-    return (
-      <SafeAreaView style={styles.safe}>
-        <Loading />
-      </SafeAreaView>
-    );
-  }
+  const deleteAccount = useCallback(() => {
+    /*
+     * The native alert, not a custom sheet: this is the most destructive thing
+     * in the app and the system dialog is the one users have learned to read
+     * rather than dismiss.
+     *
+     * Deletion itself lives on the web, and the button opens it rather than
+     * doing it. That is deliberate — `account.delete` refuses while a shop has
+     * outstanding obligations, and the refusal needs to explain which ones and
+     * offer the way through. Reproducing that whole flow on a phone to serve an
+     * action taken once per account would be a screen nobody sees and nobody
+     * maintains. What matters for App Store 5.1.1(v) is that the path starts
+     * inside the app and is easy to find, which it does and is.
+     */
+    Alert.alert(a.security.deleteTitle, a.security.deleteBody, [
+      { text: a.common.cancel, style: "cancel" },
+      {
+        text: a.common.view,
+        style: "destructive",
+        onPress: () => {
+          void openAccountSettings().catch((error: unknown) => {
+            captureError(error, { scope: "mobile:settings:delete" });
+          });
+        },
+      },
+    ]);
+  }, [a]);
+
+  const refresh = useCallback(() => {
+    void shop.refetch();
+    void push.refresh();
+  }, [shop.refetch, push.refresh]);
 
   return (
-    <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Settings</Text>
+    /*
+     * `Screen` owns the inset, and the edge it does *not* claim is the top one:
+     * the stack header above this screen already consumes it, and taking it
+     * again is the second gap under a large title that nobody can find the
+     * source of. It also sets `contentInsetAdjustmentBehavior="automatic"`, so
+     * the large title collapses correctly as this scrolls.
+     */
+    <Screen onRefresh={refresh} refreshing={shop.isFetching} testID="settings">
+      {/*
+        Who is signed in, as a face rather than as two rows of a table.
 
-        <Section title="Account">
-          <Row label="Name" value={session?.user?.name || "—"} />
-          <Row label="Email" value={session?.user?.email ?? "—"} />
-          {/*
-            The shop is a separate read and can still be in flight, or can fail
-            on its own. It says so rather than rendering an em dash, which would
-            claim the seller has no shop name.
-          */}
-          <Row
-            label="Shop"
-            value={
-              shop.isPending
-                ? "Loading…"
-                : shop.isError
-                  ? "Couldn't load"
-                  : (shop.data?.name ?? "—")
-            }
-            last
-          />
-        </Section>
-
-        <Section title="Notifications">
-          <View style={styles.toggleRow}>
-            <View style={styles.toggleMain}>
-              <Text style={styles.rowLabel}>Order alerts</Text>
-              <Text style={styles.hint}>{explain(push)}</Text>
-            </View>
-            <Switch
-              value={push.enabled}
-              /*
-               * Disabled while a decision is in flight, and when the OS will
-               * not let the app ask. A switch that flips back a second later is
-               * how a seller concludes the feature is broken — better that it
-               * does not move and the line underneath says why.
-               */
-              disabled={push.busy || push.blocked}
-              onValueChange={(next) => void push.setEnabled(next)}
-              trackColor={{ true: "#4f46e5", false: "#e5e7eb" }}
-            />
+        The name and the address are also in the list below, and that is not a
+        duplication to remove: the list is where a seller *checks* a value, and
+        this is where they confirm at a glance that they are in the right
+        account — which on a shared handset is the first question the screen has
+        to answer. `Avatar` derives its initials from the same name.
+      */}
+      <Card padding="lg">
+        <View style={styles.identity}>
+          <Avatar name={session?.user?.name || session?.user?.email || "?"} size="lg" />
+          <View style={styles.identityText}>
+            <Text variant="heading" numberOfLines={1}>
+              {session?.user?.name || a.common.name}
+            </Text>
+            <Text variant="callout" tone="muted" numberOfLines={1}>
+              {session?.user?.email ?? "—"}
+            </Text>
           </View>
+        </View>
+      </Card>
 
-          {push.permission === "blocked" ? (
-            <Pressable style={styles.link} onPress={() => void openSystemSettings()}>
-              <Text style={styles.linkText}>Open iOS settings</Text>
-            </Pressable>
-          ) : null}
-        </Section>
+      <GroupedList header={a.settings.identity}>
+        <ListRow title={a.common.name} value={session?.user?.name || "—"} />
+        <ListRow title={a.common.email} value={session?.user?.email ?? "—"} />
+        {/*
+          The shop is its own read and can still be in flight, or can fail on
+          its own. It says which rather than rendering an em dash, which would
+          claim the seller has no shop name.
+        */}
+        <ListRow
+          title={a.settings.shopName}
+          value={shop.isError ? a.common.couldntLoad : (shop.data?.name ?? undefined)}
+          accessory={shop.isPending ? <Skeleton shape="text" /> : undefined}
+        />
+      </GroupedList>
 
-        <Pressable
-          style={[styles.signOut, signingOut && styles.busy]}
-          disabled={signingOut}
+      <GroupedList header={a.settings.notifications} footer={explain(push, a)}>
+        <Switch
+          value={push.enabled}
+          /*
+           * Disabled while a decision is in flight, and when the OS will not
+           * let the app ask. A switch that flips back a second later is how a
+           * seller concludes the feature is broken — better that it does not
+           * move and the line underneath says why.
+           */
+          disabled={push.busy || push.blocked}
+          busy={push.busy}
+          onValueChange={(next) => void push.setEnabled(next)}
+          label={a.settings.notifyOrderPlaced}
+          hint={a.settings.notifyOrderPlacedBody}
+        />
+        {push.permission === "blocked" ? (
+          <ListRow
+            title={a.settings.notifications}
+            trailing="chevron"
+            onPress={() => void openSystemSettings()}
+          />
+        ) : null}
+      </GroupedList>
+
+      {/*
+        The door, reachable. It is a whole feature that is otherwise only a URL:
+        the scanner is presented from here rather than living in a tab, because
+        a volunteer works one event for one evening and a tab bar under a camera
+        is four ways to lose it mid-shift.
+      */}
+      <GroupedList header={a.checkin.title}>
+        <ListRow
+          title={a.checkin.title}
+          subtitle={a.checkin.description}
+          icon="scan"
+          trailing="chevron"
+          onPress={() => router.push("/checkin")}
+        />
+      </GroupedList>
+
+      <GroupedList header={a.settings.tabSecurity}>
+        <ListRow
+          title={a.security.deleteTitle}
+          icon="delete"
+          destructive
+          onPress={deleteAccount}
+        />
+      </GroupedList>
+
+      <View style={styles.out}>
+        <Button
+          label={a.shell.signOut}
+          icon="signOut"
           onPress={() => void signOut()}
-        >
-          <Text style={styles.signOutText}>
-            {signingOut ? "Signing out…" : "Sign out"}
-          </Text>
-        </Pressable>
-      </ScrollView>
-    </SafeAreaView>
+          loading={signingOut}
+          disabled={isPending}
+          variant="secondary"
+          fullWidth
+        />
+        {/* The build, so a bug report can name it. Selectable because the
+            person reading it out is usually on a call. */}
+        <Text variant="caption" tone="muted" align="center" selectable>
+          {interpolate(a.shell.version, { version: version() })}
+        </Text>
+      </View>
+    </Screen>
   );
 }
 
@@ -136,91 +226,40 @@ export default function Settings() {
  * "off, and tapping this will not help" — the case where the seller said no
  * once and the OS will not let the app ask again.
  */
-function explain(push: ReturnType<typeof usePushSettings>): string {
-  if (push.busy) return "Checking…";
+function explain(
+  push: ReturnType<typeof usePushSettings>,
+  a: ReturnType<typeof useT>["a"],
+): string {
+  if (push.busy) return a.common.pending;
   switch (push.permission) {
     case "unsupported":
-      return "This device can't receive push notifications.";
+      return a.settings.notifyOrderPlacedBody;
     case "blocked":
-      return "Notifications are off for Sailo in your device settings.";
+      return a.checkin.scanBlockedBody;
     default:
-      return push.enabled
-        ? "You'll get an alert the moment an order comes in."
-        : "Turn on to hear about orders without opening the app.";
+      return a.settings.notificationsBody;
   }
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <View style={styles.card}>{children}</View>
-    </View>
-  );
+async function openAccountSettings(): Promise<void> {
+  const { openBrowserAsync } = await import("expo-web-browser");
+  const base = process.env.EXPO_PUBLIC_AUTH_URL ?? "https://sailo.store";
+  await openBrowserAsync(`${base}/admin/settings/security`);
 }
 
-function Row({ label, value, last }: { label: string; value: string; last?: boolean }) {
-  return (
-    <View style={[styles.row, last && styles.rowLast]}>
-      <Text style={styles.rowLabel}>{label}</Text>
-      <Text style={styles.rowValue} numberOfLines={1}>
-        {value}
-      </Text>
-    </View>
-  );
+/**
+ * The build, read from the manifest rather than from an env var.
+ *
+ * `expo-constants` reports what the running bundle actually is, which is the
+ * thing a bug report has to name — an env var baked at a different time can
+ * disagree with it after an over-the-air update.
+ */
+function version(): string {
+  return Constants.expoConfig?.version ?? "0.0.0";
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#ffffff" },
-  content: { padding: 20, paddingBottom: 48 },
-  title: { fontSize: 30, fontWeight: "800", color: "#111827", marginBottom: 20 },
-  section: { marginBottom: 26 },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: "#6b7280",
-    textTransform: "uppercase",
-    letterSpacing: 0.6,
-    marginBottom: 8,
-  },
-  card: {
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-    borderRadius: 14,
-    backgroundColor: "#f9fafb",
-    paddingHorizontal: 14,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 16,
-    paddingVertical: 13,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e5e7eb",
-  },
-  rowLast: { borderBottomWidth: 0 },
-  rowLabel: { fontSize: 15, color: "#111827", fontWeight: "600" },
-  rowValue: { fontSize: 15, color: "#6b7280", flexShrink: 1, textAlign: "right" },
-  toggleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 16,
-    paddingVertical: 13,
-  },
-  toggleMain: { flex: 1, gap: 3 },
-  hint: { fontSize: 13, color: "#6b7280", lineHeight: 18 },
-  link: { paddingVertical: 12 },
-  linkText: { color: "#4f46e5", fontWeight: "700", fontSize: 14 },
-  signOut: {
-    marginTop: 6,
-    paddingVertical: 14,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-    alignItems: "center",
-  },
-  busy: { opacity: 0.6 },
-  signOutText: { color: "#dc2626", fontWeight: "700", fontSize: 15 },
+  identity: { flexDirection: "row", alignItems: "center", gap: 12 },
+  identityText: { flex: 1, gap: 2 },
+  out: { gap: 8, marginTop: 8 },
 });

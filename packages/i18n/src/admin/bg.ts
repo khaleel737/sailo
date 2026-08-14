@@ -348,6 +348,8 @@ export const adminBg: PartialAdminDictionary = {
   },
 
   payments: {
+    wallets: "Платежни приложения",
+    walletsBody: "Купувачът отваря PayPal или Venmo с вече попълнена сума, после се връща да потвърди. Вие отбелязвате плащането от страницата Поръчки.",
     stripeErrorTitle: "Stripe не можа да започне настройката",
     stripeNoResponse: "Stripe не отговори. Опитайте пак след малко.",
     waysToOrder: "{count} начина за поръчка",

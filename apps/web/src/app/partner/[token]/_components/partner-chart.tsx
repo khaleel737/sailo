@@ -4,8 +4,8 @@ import { useId, useMemo, useState } from "react";
 import { localPoint } from "@visx/event";
 import { ParentSize } from "@visx/responsive";
 import { scaleBand, scaleLinear } from "@visx/scale";
-import { indexAtPointer } from "@/lib/chart/cursor";
-import { barOffset, barWidth, chartDomain } from "@/lib/chart/domain";
+import { indexAtPointer } from "@/lib/chart";
+import { barOffset, barWidth, chartDomain } from "@/lib/chart";
 import { formatMoney } from "@/lib/utils";
 
 const PLOT_HEIGHT = 132;

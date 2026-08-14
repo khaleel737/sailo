@@ -349,6 +349,8 @@ export const adminVi: PartialAdminDictionary = {
   },
 
   payments: {
+    wallets: "Ứng dụng thanh toán",
+    walletsBody: "Người mua mở PayPal hoặc Venmo với số tiền đã điền sẵn, rồi quay lại xác nhận. Bạn đánh dấu đã thanh toán ở trang Đơn hàng.",
     stripeErrorTitle: "Stripe không khởi động được phần thiết lập",
     stripeNoResponse: "Stripe không phản hồi. Hãy thử lại sau ít phút.",
     waysToOrder: "{count} cách đặt hàng",

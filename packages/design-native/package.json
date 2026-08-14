@@ -11,11 +11,17 @@
     "lint": "oxlint src -D correctness -D suspicious"
   },
   "dependencies": {
-    "@sailo/core": "workspace:*"
+    "@sailo/core": "workspace:*",
+    "@sailo/tokens": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=19",
-    "react-native": ">=0.81"
+    "react-native": ">=0.81",
+    "@expo/vector-icons": "*",
+    "expo-haptics": "*",
+    "expo-image": "*",
+    "react-native-safe-area-context": "*",
+    "react-native-svg": "*"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

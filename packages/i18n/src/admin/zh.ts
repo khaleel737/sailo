@@ -332,6 +332,8 @@ export const adminZh: PartialAdminDictionary = {
     description: "把销售额的一部分分给替你带货的人。",
   },
   payments: {
+    wallets: "支付应用",
+    walletsBody: "买家打开已填好金额的 PayPal 或 Venmo，然后回来确认。你在订单页面标记为已付款。",
     stripeErrorTitle: "Stripe 无法开始设置",
     stripeNoResponse: "Stripe 没有响应。请稍后再试。",
     waysToOrder: "{count} 种下单方式",

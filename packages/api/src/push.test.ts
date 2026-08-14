@@ -114,7 +114,7 @@ const BEN = { shopId: "shop_ben", userId: "user_ben" };
 
 function callerFor(seller: { shopId: string; userId: string }) {
   shopsFindFirst.mockResolvedValue({ userId: seller.userId });
-  return appRouter.createCaller({ shopId: seller.shopId });
+  return appRouter.createCaller({ shopId: seller.shopId, userId: seller.userId });
 }
 
 beforeEach(() => {
@@ -207,7 +207,7 @@ describe("registering a device", () => {
 
   it("refuses when no shop resolved, without touching the table", async () => {
     await expect(
-      appRouter.createCaller({ shopId: null }).push.register({
+      appRouter.createCaller({ shopId: null, userId: null }).push.register({
         token: DEVICE,
         platform: "ios",
       }),

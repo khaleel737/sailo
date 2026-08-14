@@ -22,9 +22,16 @@ import { getAuth } from "@/lib/auth";
  */
 export async function createContext(req: Request): Promise<Context> {
   const session = await getAuth().api.getSession({ headers: req.headers });
-  if (!session?.user) return { shopId: null };
+  if (!session?.user) return { shopId: null, userId: null };
   const shop = await getDb().query.shops.findFirst({
     where: eq(shops.userId, session.user.id),
   });
-  return { shopId: shop?.id ?? null };
+  /*
+   * A signed-in seller with no shop row is not an error, and this is the one
+   * place that has to say so. It is the state between creating an account and
+   * claiming a handle, and `shop.create` is the procedure that ends it — so
+   * resolving the caller only by their shop would have made the sign-up flow
+   * unreachable by the very calls that complete it.
+   */
+  return { shopId: shop?.id ?? null, userId: session.user.id };
 }

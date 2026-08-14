@@ -1,5 +1,7 @@
 import * as SecureStore from "expo-secure-store";
+import { captureError } from "@sailo/observability";
 import { createMobileAuthClient } from "@sailo/auth";
+import { interpolate } from "@sailo/i18n/native";
 import { useT } from "./i18n";
 
 /**
@@ -115,6 +117,19 @@ function classify(error: Refusal): AuthRefusal {
     case 422:
       return { kind: "conflict" };
     default:
+      /*
+       * The one branch worth reporting, and the reason it is worth it: 401,
+       * 429 and 422 are answers — the seller sees a sentence that tells them
+       * what to do next. Everything else lands here as "something went wrong",
+       * which is the honest thing to *show* and useless to debug from. A
+       * transport failure, a 500, a TLS refusal and a body the client could not
+       * parse are all indistinguishable on the screen and all different in the
+       * log.
+       */
+      captureError(new Error(error?.message || "Sign-in failed with no status"), {
+        scope: "mobile:auth:unclassified",
+        extra: { status: error?.status ?? null },
+      });
       return { kind: "failed", detail: error?.message?.trim() || null };
   }
 }
@@ -352,6 +367,45 @@ export const AUTH_COPY = {
     body: "Take orders, get paid and see what's selling — without opening a laptop.",
     create: "Create an account",
     signIn: "I already have an account",
+    /*
+     * The three lines beside the marks on the welcome screen.
+     *
+     * They are the product's promise in the seller's terms rather than a
+     * feature list: what they will be able to *do*, one verb each. A welcome
+     * screen with two buttons and nothing else asks somebody to commit to an
+     * app they have been told nothing about, and this is the cheapest possible
+     * answer to "what is this".
+     */
+    sellTitle: "Take orders anywhere",
+    sellBody: "A shop link buyers can open, and orders that land on your phone.",
+    payTitle: "Get paid properly",
+    payBody: "Card, cash or bank transfer — whatever works where you are.",
+    knowTitle: "Know what's selling",
+    knowBody: "Revenue, visits and your best products, without a spreadsheet.",
+  },
+
+  /**
+   * Words that belong to a *control* rather than to a screen.
+   *
+   * `@sailo/design-native` deliberately holds no dictionary — it is consumed by
+   * one app and threading a locale into it would make every primitive take a
+   * translation prop — so the two or three strings its controls cannot invent
+   * are passed in from here. `TextField`'s show/hide button is the only one on
+   * these screens.
+   */
+  field: {
+    showPassword: "Show password",
+    hidePassword: "Hide password",
+  },
+
+  /**
+   * Where the seller is in the run of screens between an install and a shop.
+   *
+   * `{step}` and `{total}` rather than a baked "of", because "2 of 4" is not
+   * the word order every language uses and several put the total first.
+   */
+  journey: {
+    step: "Step {step} of {total}",
   },
 
   signIn: {
@@ -496,6 +550,37 @@ export const AUTH_COPY = {
 
 /** The shape `a.auth` will have once this moves. Screens type against it. */
 export type AuthCopy = typeof AUTH_COPY;
+
+/**
+ * How many screens there are between "create an account" and a shop that can
+ * take an order.
+ *
+ * Four: the account form, the email confirmation, the payout connection, and
+ * the app itself. Two-factor is deliberately not counted — it only appears for
+ * a seller who has already turned it on, which is to say never during sign-up,
+ * and a progress indicator whose total changes depending on your settings is
+ * worse than none.
+ *
+ * Here rather than in the screens because three of them draw the same dots and
+ * a fourth is coming; a count copied into each is a count that will be `3` in
+ * one file the first time a step is added.
+ */
+export const JOURNEY_STEPS = 4;
+
+/**
+ * "Step 2 of 4", in the seller's language.
+ *
+ * `StepDots` requires this rather than composing it, because the dots are pure
+ * geometry — there is no text in them for a screen reader to find — and because
+ * the sentence's word order is not the same in every language. `index` counts
+ * from zero, like the component's; the string counts from one, like a person.
+ */
+export function journeyLabel(copy: AuthCopy, index: number): string {
+  return interpolate(copy.journey.step, {
+    step: index + 1,
+    total: JOURNEY_STEPS,
+  });
+}
 
 /**
  * How every screen in `(auth)/` reads a word.

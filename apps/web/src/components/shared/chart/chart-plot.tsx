@@ -5,8 +5,8 @@ import { AxisBottom } from "@visx/axis";
 import { GridRows } from "@visx/grid";
 import { localPoint } from "@visx/event";
 import { scaleBand, scaleLinear } from "@visx/scale";
-import { indexAtPointer } from "@/lib/chart/cursor";
-import type { ChartShape, ChartTone, Domain, Series } from "@/lib/chart/types";
+import { indexAtPointer } from "@/lib/chart";
+import type { ChartShape, ChartTone, Domain, Series } from "@/lib/chart";
 import { ChartSeries } from "./chart-series";
 
 export const PLOT_HEIGHT = 132;

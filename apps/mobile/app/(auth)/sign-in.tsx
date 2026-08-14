@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { Redirect, useRouter } from "expo-router";
-import { Button, Text, TextField } from "@sailo/design-native";
+import { Banner, Button, Divider, Screen, Text, TextField, useTheme } from "@sailo/design-native";
 import {
   attemptSignIn,
   authClient,
@@ -9,7 +9,6 @@ import {
   type AuthCopy,
   type SignInOutcome,
 } from "../../lib/auth";
-import { Loading } from "../../components/states";
 
 /**
  * Email and password, and the two things that go wrong underneath them.
@@ -30,6 +29,7 @@ import { Loading } from "../../components/states";
 export default function SignIn() {
   const router = useRouter();
   const copy = useAuthCopy();
+  const { space } = useTheme();
   const { data: session, isPending } = authClient.useSession();
 
   const [email, setEmail] = useState("");
@@ -82,28 +82,40 @@ export default function SignIn() {
     setBusy(false);
   }, [email, password, router]);
 
-  if (isPending) {
-    return (
-      <View style={styles.fill}>
-        <Loading />
-      </View>
-    );
-  }
+  /* Nothing rather than a spinner — `app/_layout.tsx`'s brand cover is over
+     this screen for exactly as long as this branch is live. */
+  if (isPending) return null;
 
   if (session?.user) return <Redirect href="/" />;
 
   const submittable = email.trim().length > 0 && password.length > 0 && !busy;
 
   return (
-    <ScrollView
-      style={styles.fill}
-      contentInsetAdjustmentBehavior="automatic"
-      keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets
+    <Screen
+      /*
+       * The submit is pinned above the keyboard rather than sitting after the
+       * two fields.
+       *
+       * On a small handset with the keyboard up, a form whose button is the
+       * last item in the scroll is a form whose button is under the keyboard —
+       * so the seller's move is to dismiss the keyboard, scroll, and then tap.
+       * `Screen` keeps the footer above it.
+       */
+      footer={
+        <Button
+          label={busy ? copy.signIn.submitting : copy.signIn.submit}
+          variant="primary"
+          size="lg"
+          fullWidth
+          loading={busy}
+          disabled={!submittable}
+          onPress={() => void submit()}
+          testID="sign-in-submit"
+        />
+      }
+      testID="sign-in"
     >
-      <Text variant="body" tone="muted">
-        {copy.signIn.subtitle}
-      </Text>
+      <Text variant="title">{copy.signIn.subtitle}</Text>
 
       {/*
         `keyboard` and `autoComplete` on every field, because the iOS keyboard
@@ -111,61 +123,64 @@ export default function SignIn() {
         to switch to the numbers-and-symbols keyboard to type an `@` is a seller
         typing their address wrong.
 
-        `autoComplete` is also what `TextField` needs in order to set iOS's
-        `textContentType`. That prop is deliberately not on the frozen API and
-        should not be added: the mapping from *what a field is* to a platform's
-        autofill token is exactly the platform detail the design system exists
-        to hold, and putting it in screens means re-deciding it in every form.
-        Flagged for A01 in the PR — the information it needs is already here.
+        `autoComplete` is also what `TextField` uses to set iOS's
+        `textContentType` — the mapping from *what a field is* to a platform's
+        autofill token lives in the design system, which is where that platform
+        detail belongs. It is worth knowing that the mapping was **broken for
+        exactly this screen**: the lookup table had no entry for `password`, so
+        iOS was told nothing about the field and the keychain never offered to
+        fill it. `text-field.tsx` carries the story.
       */}
-      <TextField
-        label={copy.signIn.email}
-        value={email}
-        onChangeText={setEmail}
-        keyboard="email"
-        autoComplete="email"
-        returnKey="next"
-        testID="sign-in-email"
-      />
-      <TextField
-        label={copy.signIn.password}
-        value={password}
-        onChangeText={setPassword}
-        secure
-        autoComplete="password"
-        returnKey="go"
-        onSubmitEditing={() => {
-          if (submittable) void submit();
-        }}
-        testID="sign-in-password"
-      />
+      <View style={{ gap: space.md }}>
+        <TextField
+          label={copy.signIn.email}
+          value={email}
+          onChangeText={setEmail}
+          keyboard="email"
+          autoComplete="email"
+          returnKey="next"
+          testID="sign-in-email"
+        />
+        <TextField
+          label={copy.signIn.password}
+          value={password}
+          onChangeText={setPassword}
+          secure
+          revealLabels={{ show: copy.field.showPassword, hide: copy.field.hidePassword }}
+          autoComplete="password"
+          returnKey="go"
+          onSubmitEditing={() => {
+            if (submittable) void submit();
+          }}
+          testID="sign-in-password"
+        />
+      </View>
 
+      {/*
+        The refusal as a banner rather than a loose red line.
+
+        It used to be a bare `<Text tone="danger">` dropped into the form's gap
+        — no edge, no glyph, no announcement, on the one screen where a seller
+        is already unsure whether they did something wrong. `Banner` gives it a
+        surface and, for the danger tone, an assertive live region, so a
+        screen-reader user hears the refusal instead of pressing a button that
+        keeps not working.
+      */}
       {refused ? <Refusal outcome={refused} copy={copy} /> : null}
-
-      <Button
-        label={busy ? copy.signIn.submitting : copy.signIn.submit}
-        variant="primary"
-        fullWidth
-        loading={busy}
-        disabled={!submittable}
-        onPress={() => void submit()}
-        testID="sign-in-submit"
-      />
 
       <SocialSlot copy={copy} />
 
-      <View>
+      <View style={{ alignItems: "center", gap: space.xs }}>
         <Text variant="caption" tone="muted" align="center">
           {copy.signIn.noAccount}
         </Text>
         <Button
           label={copy.signIn.createAccount}
           variant="ghost"
-          fullWidth
           onPress={() => router.push("/sign-up")}
         />
       </View>
-    </ScrollView>
+    </Screen>
   );
 }
 
@@ -192,9 +207,10 @@ export default function SignIn() {
 function SocialSlot({ copy }: { copy: AuthCopy }) {
   return (
     <View testID="social-slot">
-      <Text variant="caption" tone="muted" align="center">
-        {copy.social.divider}
-      </Text>
+      {/* The rule with the word set into it, rather than a centred caption
+          floating between two blocks — which is what this was, and which reads
+          as a stray line rather than as a separator. */}
+      <Divider label={copy.social.divider} spacing="sm" />
       <Text variant="caption" tone="muted" align="center">
         {copy.social.pending}
       </Text>
@@ -217,9 +233,11 @@ function Refusal({ outcome, copy }: { outcome: SignInOutcome; copy: AuthCopy }) 
   switch (outcome.kind) {
     case "throttled":
       return (
-        <Text variant="callout" tone="warning" testID="sign-in-throttled">
-          {copy.signIn.throttled}
-        </Text>
+        <Banner
+          tone="warning"
+          message={copy.signIn.throttled}
+          testID="sign-in-throttled"
+        />
       );
     case "rejected":
     /*
@@ -234,30 +252,25 @@ function Refusal({ outcome, copy }: { outcome: SignInOutcome; copy: AuthCopy }) 
     // falls through
     case "conflict":
       return (
-        <Text variant="callout" tone="danger" testID="sign-in-rejected">
-          {copy.signIn.rejected}
-        </Text>
+        <Banner tone="danger" message={copy.signIn.rejected} testID="sign-in-rejected" />
       );
-    default:
+    default: {
+      /*
+       * The server's sentence sits *beside* ours, never instead of it. A raw
+       * transport error is not an explanation, and on a phone the real answer
+       * is nearly always that the seller is on a train — so ours is the
+       * heading and theirs is the small print under it. With no detail there
+       * is no second line, rather than the same sentence twice.
+       */
+      const detail = outcome.kind === "failed" ? outcome.detail : undefined;
       return (
-        <View>
-          <Text variant="callout" tone="danger" testID="sign-in-failed">
-            {copy.signIn.failed}
-          </Text>
-          {/*
-            The server's sentence sits *beside* ours, never instead of it. A
-            raw transport error is not an explanation, and on a phone the real
-            answer is nearly always that the seller is on a train.
-          */}
-          {outcome.kind === "failed" && outcome.detail ? (
-            <Text variant="caption" tone="muted">
-              {outcome.detail}
-            </Text>
-          ) : null}
-        </View>
+        <Banner
+          tone="danger"
+          title={detail ? copy.signIn.failed : undefined}
+          message={detail ?? copy.signIn.failed}
+          testID="sign-in-failed"
+        />
       );
+    }
   }
 }
-
-/** See the note at the foot of `_layout.tsx`. Fill only; no look. */
-const styles = StyleSheet.create({ fill: { flex: 1 } });

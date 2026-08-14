@@ -348,6 +348,8 @@ export const adminSl: PartialAdminDictionary = {
   },
 
   payments: {
+    wallets: "Plačilne aplikacije",
+    walletsBody: "Kupec odpre PayPal ali Venmo z že vpisanim zneskom, nato se vrne potrdit. Plačilo označite na strani Naročila.",
     stripeErrorTitle: "Stripe ni mogel začeti nastavitve",
     stripeNoResponse: "Stripe se ni odzval. Poskusite čez trenutek.",
     waysToOrder: "{count} načinov naročanja",

@@ -38,6 +38,7 @@ describe("createContext", () => {
 
     await expect(createContext(new Request("https://api.sailo.store/api/trpc"))).resolves.toEqual({
       shopId: null,
+      userId: null,
     });
   });
 
@@ -55,14 +56,14 @@ describe("createContext", () => {
     // that as authenticated would dereference it a line later.
     getSession.mockResolvedValue({ session: { id: "sess_1" } });
 
-    await expect(createContext(bearer("tok"))).resolves.toEqual({ shopId: null });
+    await expect(createContext(bearer("tok"))).resolves.toEqual({ shopId: null, userId: null });
   });
 
   it("resolves a bearer token to that seller's shop", async () => {
     getSession.mockResolvedValue({ user: { id: "user_1" } });
     findFirst.mockResolvedValue({ id: "shop_1" });
 
-    await expect(createContext(bearer("tok_abc"))).resolves.toEqual({ shopId: "shop_1" });
+    await expect(createContext(bearer("tok_abc"))).resolves.toEqual({ shopId: "shop_1", userId: "user_1" });
   });
 
   it("hands better-auth the request's own headers, so the bearer plugin sees the token", async () => {
@@ -90,12 +91,20 @@ describe("createContext", () => {
     expect(findFirst).toHaveBeenCalledWith({ where: eq(shops.userId, "user_1") });
   });
 
-  it("gives a signed-in seller who has no shop yet no shop", async () => {
-    // A real state: the account exists, onboarding has not finished. It must
-    // read as null rather than as undefined leaking through.
+  it("gives a signed-in seller who has no shop yet an identity but no shop", async () => {
+    /*
+     * A real state, and the one the sign-up flow lives in: the account exists,
+     * onboarding has not finished. `shopId` must read as null rather than as
+     * undefined leaking through — and `userId` must **not**, because
+     * `shop.create` is the procedure that ends this state and it has nothing
+     * to file the new row against otherwise.
+     */
     getSession.mockResolvedValue({ user: { id: "user_1" } });
     findFirst.mockResolvedValue(undefined);
 
-    await expect(createContext(bearer("tok_abc"))).resolves.toEqual({ shopId: null });
+    await expect(createContext(bearer("tok_abc"))).resolves.toEqual({
+      shopId: null,
+      userId: "user_1",
+    });
   });
 });

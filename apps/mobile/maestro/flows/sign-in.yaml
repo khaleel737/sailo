@@ -1,0 +1,51 @@
+appId: store.sailo.app
+name: Sign in
+tags:
+  - auth
+env:
+  SELLER_EMAIL: ${MAESTRO_SELLER_EMAIL}
+  SELLER_PASSWORD: ${MAESTRO_SELLER_PASSWORD}
+---
+# The transport, end to end: a real account, a real session out of the
+# keychain, and the tab shell that only renders once the gate in
+# `(tabs)/_layout.tsx` has a session to let through.
+#
+# `clearState` on purpose. The gate reads the session from the keychain, so a
+# run that inherited one from the last would skip the entire screen under test
+# and still pass — which is the way an auth E2E rots without anybody noticing.
+- launchApp:
+    clearState: true
+
+# Selected by `testID`, not by the words on screen. The sign-in copy resolves
+# through `@sailo/i18n/native`, so it is different in each of the shipped
+# locales and a text selector would pin this flow to English. The ids are the
+# contract the screen publishes for exactly this.
+- assertVisible:
+    id: "sign-in-email"
+
+- tapOn:
+    id: "sign-in-email"
+- inputText: ${SELLER_EMAIL}
+
+- tapOn:
+    id: "sign-in-password"
+- inputText: ${SELLER_PASSWORD}
+
+- tapOn:
+    id: "sign-in-submit"
+
+# A throttle is not a wrong password. `sign-in-throttled` is the screen's own
+# marker for a 429, and it means the answer is *unknown* — failing the run on
+# it is right, but failing it as "these credentials are bad" would send whoever
+# reads the report to reset a password that was never the problem.
+- assertNotVisible:
+    id: "sign-in-throttled"
+- assertNotVisible:
+    id: "sign-in-rejected"
+
+# The tab bar is the proof. It lives under the gate, so it cannot paint until
+# a session exists — asserting on it is asserting the sign-in actually took,
+# rather than that a spinner appeared. Tab labels come from the native tab bar
+# and are the one place the app still draws its own English.
+- assertVisible: "Orders"
+- assertVisible: "Settings"

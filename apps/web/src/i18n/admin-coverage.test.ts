@@ -80,9 +80,17 @@ const WHOLESALE = new Set([
 /*
  * The boundary matters: without it, `schema.products.slug` matches on its own
  * tail and reports a dictionary read that isn't one.
+ *
+ * Both surfaces are scanned, not just this app. The admin dictionary stopped
+ * being this app's private property when the phone grew screens that read it —
+ * `apps/mobile` calls `useT()` and reads the same `a.*` keys — so a key shown
+ * only there is shown, and counting it as backlog would have pushed a real
+ * translation gap and a mobile-only string into the same number. This test runs
+ * with apps/web as its cwd, hence the relative hop, the same way
+ * `replica.test.ts` reaches the packages it pins.
  */
 const files = execSync(
-  `grep -rl 'a\\.' src/app src/components src/lib --include='*.ts' --include='*.tsx' || true`,
+  `grep -rl 'a\\.' src/app src/components src/lib ../../apps/mobile/app ../../apps/mobile/lib ../../apps/mobile/components --include='*.ts' --include='*.tsx' || true`,
   { encoding: "utf8" },
 )
   .split("\n")

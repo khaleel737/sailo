@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { useT } from "../../../lib/i18n";
+import { useStackScreenOptions } from "../../../lib/navigation";
 
 /**
  * The Store tab's own stack — the catalogue, and the product behind each row.
@@ -29,15 +30,10 @@ export default function StoreLayout() {
    * needs the dictionary without rendering a word of its own.
    */
   const { a } = useT();
+  const screenOptions = useStackScreenOptions();
 
   return (
-    <Stack
-      screenOptions={{
-        headerTintColor: "#037740",
-        headerTitleStyle: { color: "#1a1917" },
-        headerShadowVisible: false,
-      }}
-    >
+    <Stack screenOptions={screenOptions}>
       <Stack.Screen name="index" options={{ title: a.products.title }} />
       {/*
         Titled by the screen itself once the product has loaded — naming it

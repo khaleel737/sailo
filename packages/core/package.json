@@ -17,7 +17,10 @@
     "./webhook-events": "./src/webhook-events.ts",
     "./file-urls": "./src/file-urls.ts",
     "./memberships": "./src/memberships.ts",
-    "./slug": "./src/slug.ts"
+    "./slug": "./src/slug.ts",
+    "./handle": "./src/handle.ts",
+    "./chart": "./src/chart/index.ts",
+    "./chart/palette": "./src/chart/palette.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

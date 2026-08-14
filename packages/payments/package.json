@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./keys": "./src/keys.ts"
+    "./keys": "./src/keys.ts",
+    "./rails": "./src/rails.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -19,7 +20,8 @@
     "drizzle-orm": "^0.45.2",
     "server-only": "^0.0.1",
     "stripe": "^22.4.0",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+    "@sailo/core": "workspace:*"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

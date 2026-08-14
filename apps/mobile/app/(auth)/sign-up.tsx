@@ -1,12 +1,23 @@
 import { useCallback, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { Redirect, useRouter } from "expo-router";
 import { interpolate } from "@sailo/i18n/native";
-import { Button, Text, TextField } from "@sailo/design-native";
 import {
+  Banner,
+  Button,
+  Divider,
+  Screen,
+  StepDots,
+  Text,
+  TextField,
+  useTheme,
+} from "@sailo/design-native";
+import {
+  JOURNEY_STEPS,
   MIN_PASSWORD_LENGTH,
   attemptSignUp,
   authClient,
+  journeyLabel,
   useAuthCopy,
   type AuthCopy,
   type SignUpOutcome,
@@ -31,6 +42,7 @@ import {
 export default function SignUp() {
   const router = useRouter();
   const copy = useAuthCopy();
+  const { space } = useTheme();
   const { data: session } = authClient.useSession();
 
   const [name, setName] = useState("");
@@ -75,65 +87,95 @@ export default function SignUp() {
     password.length >= MIN_PASSWORD_LENGTH;
 
   return (
-    <ScrollView
-      style={styles.fill}
-      contentInsetAdjustmentBehavior="automatic"
-      keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets
+    <Screen
+      footer={
+        <Button
+          label={busy ? copy.signUp.submitting : copy.signUp.submit}
+          variant="primary"
+          size="lg"
+          fullWidth
+          loading={busy}
+          disabled={!submittable}
+          onPress={() => void submit()}
+          testID="sign-up-submit"
+        />
+      }
+      testID="sign-up"
     >
-      <Text variant="body" tone="muted">
-        {copy.signUp.subtitle}
-      </Text>
-
-      <TextField
-        label={copy.signUp.name}
-        value={name}
-        onChangeText={setName}
-        keyboard="text"
-        autoComplete="name"
-        returnKey="next"
-        testID="sign-up-name"
-      />
-      <TextField
-        label={copy.signUp.email}
-        value={email}
-        onChangeText={setEmail}
-        keyboard="email"
-        autoComplete="email"
-        returnKey="next"
-        testID="sign-up-email"
-      />
       {/*
-        `autoComplete="new-password"` and not `"password"`. It is what tells iOS
-        and Android this is the field to *offer a generated password for*
-        rather than the field to fill an existing one into — and getting it
-        wrong is how a password manager silently autofills the seller's
-        password for some other site into a brand-new account.
+        How much of this there is.
 
-        The minimum is a hint before it is an error, and it names the number.
-        `apps/web/src/lib/auth.ts` sets `minPasswordLength: 8`; a form that
-        knows the rule and waits for the server to state it spends a round trip
-        saying something it could have said while they typed.
+        Sign-up is four screens — account, email, two-factor when it applies,
+        payouts — and none of them said so. A form with no visible end is a form
+        people abandon at the second screen, because the only honest answer to
+        "how much more of this is there" is that they cannot tell.
       */}
-      <TextField
-        label={copy.signUp.password}
-        value={password}
-        onChangeText={setPassword}
-        onBlur={() => setPasswordTouched(true)}
-        secure
-        autoComplete="new-password"
-        hint={interpolate(copy.signUp.passwordHint, { min: MIN_PASSWORD_LENGTH })}
-        error={
-          passwordTouched && tooShort
-            ? interpolate(copy.signUp.passwordTooShort, { min: MIN_PASSWORD_LENGTH })
-            : undefined
-        }
-        returnKey="go"
-        onSubmitEditing={() => {
-          if (submittable) void submit();
-        }}
-        testID="sign-up-password"
+      <StepDots
+        count={JOURNEY_STEPS}
+        index={0}
+        accessibilityLabel={journeyLabel(copy, 0)}
+        testID="sign-up-progress"
       />
+
+      <Text variant="title">{copy.signUp.subtitle}</Text>
+
+      <View style={{ gap: space.md }}>
+        <TextField
+          label={copy.signUp.name}
+          value={name}
+          onChangeText={setName}
+          keyboard="text"
+          autoComplete="name"
+          returnKey="next"
+          testID="sign-up-name"
+        />
+        <TextField
+          label={copy.signUp.email}
+          value={email}
+          onChangeText={setEmail}
+          keyboard="email"
+          autoComplete="email"
+          returnKey="next"
+          testID="sign-up-email"
+        />
+        {/*
+          `autoComplete="new-password"` and not `"password"`. It is what tells iOS
+          and Android this is the field to *offer a generated password for*
+          rather than the field to fill an existing one into — and getting it
+          wrong is how a password manager silently autofills the seller's
+          password for some other site into a brand-new account.
+
+          The minimum is a hint before it is an error, and it names the number.
+          `apps/web/src/lib/auth.ts` sets `minPasswordLength: 8`; a form that
+          knows the rule and waits for the server to state it spends a round trip
+          saying something it could have said while they typed.
+
+          `revealLabels` turns on the show/hide control. It matters most here of
+          anywhere in the app: this is the one field whose value the seller is
+          *inventing*, and a typo in a masked field they cannot check becomes a
+          password they will never guess again.
+        */}
+        <TextField
+          label={copy.signUp.password}
+          value={password}
+          onChangeText={setPassword}
+          onBlur={() => setPasswordTouched(true)}
+          secure
+          revealLabels={{ show: copy.field.showPassword, hide: copy.field.hidePassword }}
+          autoComplete="new-password"
+          hint={interpolate(copy.signUp.passwordHint, { min: MIN_PASSWORD_LENGTH })}
+          error={
+            passwordTouched && tooShort
+              ? interpolate(copy.signUp.passwordTooShort, { min: MIN_PASSWORD_LENGTH })
+              : undefined
+          }
+          returnKey="go"
+          onSubmitEditing={() => {
+            if (submittable) void submit();
+          }}
+          testID="sign-up-password"
+        />
+      </View>
 
       {refused ? (
         <Refusal
@@ -143,34 +185,23 @@ export default function SignUp() {
         />
       ) : null}
 
-      <Button
-        label={busy ? copy.signUp.submitting : copy.signUp.submit}
-        variant="primary"
-        fullWidth
-        loading={busy}
-        disabled={!submittable}
-        onPress={() => void submit()}
-        testID="sign-up-submit"
-      />
-
       {/*
         The same slot as `sign-in.tsx`, from the same component, so A14 fills
         both screens with one edit. See the banner above `SocialSlot` there.
       */}
       <SocialSlot copy={copy} />
 
-      <View>
+      <View style={{ alignItems: "center", gap: space.xs }}>
         <Text variant="caption" tone="muted" align="center">
           {copy.signUp.haveAccount}
         </Text>
         <Button
           label={copy.signUp.signIn}
           variant="ghost"
-          fullWidth
           onPress={() => router.replace("/sign-in")}
         />
       </View>
-    </ScrollView>
+    </Screen>
   );
 }
 
@@ -178,9 +209,7 @@ export default function SignUp() {
 function SocialSlot({ copy }: { copy: AuthCopy }) {
   return (
     <View testID="social-slot">
-      <Text variant="caption" tone="muted" align="center">
-        {copy.social.divider}
-      </Text>
+      <Divider label={copy.social.divider} spacing="sm" />
       <Text variant="caption" tone="muted" align="center">
         {copy.social.pending}
       </Text>
@@ -194,7 +223,8 @@ function SocialSlot({ copy }: { copy: AuthCopy }) {
  * The conflict case carries a way out rather than only a complaint. "That email
  * already has an account" with nothing to tap is a dead end for the single most
  * likely mistake here — somebody who signed up months ago on a laptop and does
- * not remember — so it offers the sign-in screen directly.
+ * not remember — so it offers the sign-in screen directly, as the banner's own
+ * action rather than as a loose button underneath it.
  *
  * It says nothing about *why* the address is taken, and must not. `/sign-up/email`
  * answers the same 422 for a genuinely registered seller and for a staff address
@@ -214,12 +244,13 @@ function Refusal({
   switch (outcome.kind) {
     case "conflict":
       return (
-        <View testID="sign-up-conflict">
-          <Text variant="callout" tone="danger">
-            {copy.signUp.conflict}
-          </Text>
-          <Button label={copy.signUp.conflictAction} variant="ghost" onPress={onSignIn} />
-        </View>
+        <Banner
+          tone="danger"
+          message={copy.signUp.conflict}
+          actionLabel={copy.signUp.conflictAction}
+          onAction={onSignIn}
+          testID="sign-up-conflict"
+        />
       );
     case "throttled":
       /*
@@ -229,28 +260,21 @@ function Refusal({
        * says "this connection" for that reason: it is not about them.
        */
       return (
-        <Text variant="callout" tone="warning" testID="sign-up-throttled">
-          {copy.signUp.throttled}
-        </Text>
+        <Banner tone="warning" message={copy.signUp.throttled} testID="sign-up-throttled" />
       );
     case "rejected":
     // falls through — no 401 reaches sign-up, but an unhandled refusal must
     // not render as an empty space where the explanation goes.
-    default:
+    default: {
+      const detail = outcome.kind === "failed" ? outcome.detail : undefined;
       return (
-        <View>
-          <Text variant="callout" tone="danger" testID="sign-up-failed">
-            {copy.signUp.failed}
-          </Text>
-          {outcome.kind === "failed" && outcome.detail ? (
-            <Text variant="caption" tone="muted">
-              {outcome.detail}
-            </Text>
-          ) : null}
-        </View>
+        <Banner
+          tone="danger"
+          title={detail ? copy.signUp.failed : undefined}
+          message={detail ?? copy.signUp.failed}
+          testID="sign-up-failed"
+        />
       );
+    }
   }
 }
-
-/** See the note at the foot of `_layout.tsx`. Fill only; no look. */
-const styles = StyleSheet.create({ fill: { flex: 1 } });

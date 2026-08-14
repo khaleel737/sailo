@@ -1,10 +1,23 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { Redirect, useRouter } from "expo-router";
 import { interpolate } from "@sailo/i18n/native";
-import { Button, GroupedList, ListRow, Text } from "@sailo/design-native";
 import {
+  Banner,
+  Button,
+  Card,
+  GroupedList,
+  Icon,
+  ListRow,
+  Screen,
+  StepDots,
+  Text,
+  useTheme,
+} from "@sailo/design-native";
+import {
+  JOURNEY_STEPS,
   authClient,
+  journeyLabel,
   resendVerificationEmail,
   useAuthCopy,
   type AuthCopy,
@@ -36,10 +49,20 @@ const RESEND_COOLDOWN_SECONDS = 60;
  * The address is read from the session rather than passed from the sign-up
  * form, so what is shown is the address the account actually has. A seller who
  * mistyped theirs sees the typo here, which is the only place they will.
+ *
+ * ONE FIX WORTH NAMING
+ *
+ * This screen was a `ScrollView` with `style={styles.fill}` and **no
+ * `contentContainerStyle`** — the `styles.body` beside it holding the padding
+ * and the gap was declared and never applied. So every line on it ran edge to
+ * edge against the bezel with no space between blocks. `get-paid.tsx` had the
+ * same omission. `Screen` removes the class of mistake along with the instance:
+ * there is no longer a second style object that has to be remembered.
  */
 export default function VerifyEmail() {
   const router = useRouter();
   const copy = useAuthCopy();
+  const { colors, space } = useTheme();
   const { data: session } = authClient.useSession();
 
   const [busy, setBusy] = useState(false);
@@ -99,47 +122,95 @@ export default function VerifyEmail() {
   if (!session?.user) return <Redirect href="/welcome" />;
 
   return (
-    <ScrollView style={styles.fill} contentInsetAdjustmentBehavior="automatic">
-      <Text variant="body">
-        {interpolate(copy.verifyEmail.body, { email: session.user.email })}
-      </Text>
+    <Screen
+      /*
+       * "Continue to the app" is the primary action here, not the resend — and
+       * pinning it says so. This screen does not gate, so the most useful thing
+       * on it is the way past it; a seller who reads the nag, understands it and
+       * has to scroll to leave has been gated in every way except the technical
+       * one.
+       */
+      footer={
+        <Button
+          label={copy.verifyEmail.continue}
+          variant="primary"
+          size="lg"
+          fullWidth
+          onPress={() => router.replace("/")}
+          testID="verify-email-continue"
+        />
+      }
+      testID="verify-email"
+    >
+      <StepDots
+        count={JOURNEY_STEPS}
+        index={1}
+        accessibilityLabel={journeyLabel(copy, 1)}
+        testID="verify-email-progress"
+      />
+
+      <View style={{ alignItems: "center", gap: space.md }}>
+        <View
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: 999,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: colors.accentSurface,
+          }}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+        >
+          <Icon name="mail" size="lg" tone="brand" />
+        </View>
+      </View>
+
+      {/*
+        The address, set apart on its own surface.
+
+        It is the one thing on this screen a seller has to *check* — a typo in
+        it is why the mail never arrived — and it was previously a substring in
+        the middle of a paragraph, where nobody re-reads it. `selectable` so it
+        can be copied into whatever they are checking against.
+      */}
+      <Card variant="tinted">
+        <Text variant="callout" align="center">
+          {interpolate(copy.verifyEmail.body, { email: session.user.email })}
+        </Text>
+      </Card>
+
       <Text variant="callout" tone="muted">
         {copy.verifyEmail.notBlocking}
       </Text>
 
-      <Button
-        label={busy ? copy.verifyEmail.resending : copy.verifyEmail.resend}
-        variant="secondary"
-        fullWidth
-        loading={busy}
-        disabled={counting}
-        onPress={() => void resend()}
-        testID="verify-email-resend"
-      />
+      <View style={{ gap: space.xs }}>
+        <Button
+          label={busy ? copy.verifyEmail.resending : copy.verifyEmail.resend}
+          variant="secondary"
+          fullWidth
+          loading={busy}
+          disabled={counting}
+          onPress={() => void resend()}
+          testID="verify-email-resend"
+        />
 
-      {/*
-        The cooldown is stated, never merely enforced. A button that has gone
-        quiet for a minute with nothing to explain it is a button a seller taps
-        four more times and then concludes is broken.
-      */}
-      {counting ? (
-        <Text variant="caption" tone="muted" testID="verify-email-cooldown">
-          {interpolate(copy.verifyEmail.cooldown, { seconds: cooldown })}
-        </Text>
-      ) : null}
+        {/*
+          The cooldown is stated, never merely enforced. A button that has gone
+          quiet for a minute with nothing to explain it is a button a seller taps
+          four more times and then concludes is broken.
+        */}
+        {counting ? (
+          <Text variant="caption" tone="muted" align="center" testID="verify-email-cooldown">
+            {interpolate(copy.verifyEmail.cooldown, { seconds: cooldown })}
+          </Text>
+        ) : null}
+      </View>
 
       {outcome ? <ResendResult outcome={outcome} copy={copy} /> : null}
 
       <NextSteps copy={copy} />
-
-      <Button
-        label={copy.verifyEmail.continue}
-        variant="ghost"
-        fullWidth
-        onPress={() => router.replace("/")}
-        testID="verify-email-continue"
-      />
-    </ScrollView>
+    </Screen>
   );
 }
 
@@ -166,8 +237,13 @@ export default function VerifyEmail() {
  * → get-paid.
  */
 function NextSteps({ copy }: { copy: AuthCopy }) {
+  const { space } = useTheme();
+
   return (
-    <View testID="next-steps">
+    <View style={{ gap: space.sm }} testID="next-steps">
+      <Text variant="callout" tone="muted">
+        {copy.verifyEmail.nextBody}
+      </Text>
       <GroupedList
         header={copy.verifyEmail.nextTitle}
         footer={copy.verifyEmail.stepsUnavailable}
@@ -175,9 +251,6 @@ function NextSteps({ copy }: { copy: AuthCopy }) {
         <ListRow title={copy.verifyEmail.stepHandle} icon="link" disabled />
         <ListRow title={copy.verifyEmail.stepShop} icon="store" disabled />
       </GroupedList>
-      <Text variant="caption" tone="muted">
-        {copy.verifyEmail.nextBody}
-      </Text>
     </View>
   );
 }
@@ -187,9 +260,7 @@ function ResendResult({ outcome, copy }: { outcome: ResendOutcome; copy: AuthCop
   switch (outcome.kind) {
     case "sent":
       return (
-        <Text variant="callout" tone="success" testID="verify-email-sent">
-          {copy.verifyEmail.resent}
-        </Text>
+        <Banner tone="success" message={copy.verifyEmail.resent} testID="verify-email-sent" />
       );
     case "throttled":
       /*
@@ -198,25 +269,22 @@ function ResendResult({ outcome, copy }: { outcome: ResendOutcome; copy: AuthCop
        * something having gone wrong — because nothing has.
        */
       return (
-        <Text variant="callout" tone="warning" testID="verify-email-throttled">
-          {copy.verifyEmail.throttled}
-        </Text>
+        <Banner
+          tone="warning"
+          message={copy.verifyEmail.throttled}
+          testID="verify-email-throttled"
+        />
       );
-    default:
+    default: {
+      const detail = outcome.kind === "failed" ? outcome.detail : undefined;
       return (
-        <View>
-          <Text variant="callout" tone="danger" testID="verify-email-failed">
-            {copy.verifyEmail.failed}
-          </Text>
-          {outcome.kind === "failed" && outcome.detail ? (
-            <Text variant="caption" tone="muted">
-              {outcome.detail}
-            </Text>
-          ) : null}
-        </View>
+        <Banner
+          tone="danger"
+          title={detail ? copy.verifyEmail.failed : undefined}
+          message={detail ?? copy.verifyEmail.failed}
+          testID="verify-email-failed"
+        />
       );
+    }
   }
 }
-
-/** See the note at the foot of `_layout.tsx`. Fill only; no look. */
-const styles = StyleSheet.create({ fill: { flex: 1 } });
