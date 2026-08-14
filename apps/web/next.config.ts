@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
     "@sailo/observability",
     "@sailo/payments",
     "@sailo/rate-limit",
+    "@sailo/tokens",
   ],
   /*
    * Static shells with dynamic holes, instead of every route being

@@ -56,6 +56,7 @@
     "@sailo/observability": "workspace:*",
     "@sailo/payments": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
+    "@sailo/tokens": "workspace:*",
     "@t3-oss/env-core": "^0.13.4",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.6.1",

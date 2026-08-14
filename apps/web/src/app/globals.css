@@ -1,5 +1,32 @@
 @import "tailwindcss";
 
+/* --- Ink and brand -------------------------------------------------------
+   The two colour ramps, generated from `packages/tokens` rather than written
+   here, because the phone cannot read a CSS custom property and a second copy
+   of these hexes in the app would part company with this one the first time
+   somebody nudged a green. Edit `packages/tokens/src/index.ts` and regenerate;
+   the token package's tests fail if this file and that one disagree.
+
+   The prose stays here, where the ramps are used.
+
+   --- Ink ---
+   The product's one neutral, and the reason that ramp is warm.
+
+   There used to be two greys: a violet-tinted one here, driving the admin,
+   HQ and the storefront chrome, and a warm one on the brand pages. Same
+   lightness, different hue, so walking from the landing page into /admin
+   read as walking into a different product.
+
+   One family now. `brand.css` maps its own semantic names onto these exact
+   steps rather than redeclaring hexes, so there is a single place to change
+   the neutral and nowhere for the two to drift apart again.
+
+   --- Brand ---
+   Anchored on 700 — the green lifted straight off the mark. Used by the
+   logo, the marketing page, auth and onboarding; the admin and the
+   storefront only reach for it where a page explicitly asks. */
+@import "@sailo/tokens/theme.css";
+
 /* ===========================================================================
    Sailo, app-wide
 
@@ -34,44 +61,8 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  /* --- Ink ---------------------------------------------------------------
-     The product's one neutral, and the reason this ramp is warm.
-
-     There used to be two greys: a violet-tinted one here, driving the admin,
-     HQ and the storefront chrome, and a warm one on the brand pages. Same
-     lightness, different hue, so walking from the landing page into /admin
-     read as walking into a different product.
-
-     One family now. `brand.css` maps its own semantic names onto these exact
-     steps rather than redeclaring hexes, so there is a single place to change
-     the neutral and nowhere for the two to drift apart again. */
-  --color-ink-50: #faf9f7;
-  --color-ink-100: #f0efea;
-  --color-ink-200: #e0ddd5;
-  --color-ink-300: #c2beb3;
-  --color-ink-400: #96928a;
-  --color-ink-500: #6f6b64;
-  --color-ink-600: #55524b;
-  --color-ink-700: #403d38;
-  --color-ink-800: #2a2824;
-  --color-ink-900: #1a1917;
-  --color-ink-950: #0d0d0c;
-
-  /* --- Brand -------------------------------------------------------------
-     Anchored on 700 — the green lifted straight off the mark. Used by the
-     logo, the marketing page, auth and onboarding; the admin and the
-     storefront only reach for it where a page explicitly asks. */
-  --color-brand-50: #ecfdf3;
-  --color-brand-100: #d1fae0;
-  --color-brand-200: #a5f3c6;
-  --color-brand-300: #6ee7a7;
-  --color-brand-400: #34d98a;
-  --color-brand-500: #12b76a;
-  --color-brand-600: #059154;
-  --color-brand-700: #037740;
-  --color-brand-800: #065f37;
-  --color-brand-900: #064e2f;
-  --color-brand-950: #022c1a;
+  /* The ink and brand ramps are declared by the generated partial imported at
+     the top of this file. Everything below is still hand-written here. */
 
   /* --- Radius ------------------------------------------------------------
      Rounder than Tailwind's defaults, and shared. `xl` is the control radius

@@ -1,0 +1,26 @@
+{
+  "name": "@sailo/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./theme.css": "./theme.css"
+  },
+  "files": [
+    "src",
+    "theme.css"
+  ],
+  "scripts": {
+    "generate": "node src/generate.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src -D correctness -D suspicious",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@sailo/config": "workspace:*",
+    "oxlint": "^1.77.0",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  }
+}
