@@ -71,5 +71,51 @@ jobs:
       - name: Knip
         run: pnpm knip
 
+      # The four gates above say nothing about the app's *native* configuration —
+      # a missing icon, an SDK-mismatched package or a permission string Apple
+      # will reject all typecheck and test perfectly well. expo-doctor is the
+      # only thing that reads that half, and 16 of its 18 checks are exactly the
+      # things nobody notices until a build fails.
+      #
+      # Two of the eighteen are expected to fail, and neither is going to be
+      # "fixed":
+      #
+      #   - **Metro config.** metro.config.js deliberately overrides
+      #     `watchFolders` and `disableHierarchicalLookup`. That override is the
+      #     only reason pnpm workspace resolution works here at all; its own
+      #     comment explains what breaks without it. expo-doctor has no way to
+      #     be told a project meant it.
+      #   - **Duplicate dependencies.** apps/web is on React 19.2 and Expo SDK
+      #     54 pins 19.1, so a hoisted layout keeps both — and has since before
+      #     the mobile app existed. Metro never resolves the second one, for the
+      #     same reason the check above fires.
+      #
+      # So this fails on any *third* failure rather than on those two. That is
+      # the difference between a gate and a `|| true`: a new problem in the app
+      # config still turns this red, and the two known ones are named here
+      # rather than hidden behind a flag.
+      - name: Expo doctor
+        run: |
+          set -uo pipefail
+          # `run` is not optional: `pnpm doctor` is a built-in pnpm command, so
+          # without it this runs pnpm's own doctor and never touches Expo.
+          pnpm --filter @sailo/mobile run doctor > doctor.log 2>&1 || true
+          cat doctor.log
+
+          # Proves it actually ran. Without this, expo-doctor failing to start
+          # would produce an empty log and read as "nothing wrong".
+          if ! grep -qE 'checks? (passed|failed)' doctor.log; then
+            echo "::error::expo-doctor did not produce a summary — it did not run"
+            exit 1
+          fi
+
+          known='Check for issues with Metro config|Check that no duplicate dependencies are installed'
+          unexpected=$(grep '^✖' doctor.log | grep -vE "$known" || true)
+          if [ -n "$unexpected" ]; then
+            echo "::error::expo-doctor found something new:"
+            echo "$unexpected"
+            exit 1
+          fi
+
       - name: Build
         run: pnpm turbo run build

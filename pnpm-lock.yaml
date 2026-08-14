@@ -163,6 +163,9 @@ importers:
       '@types/react':
         specifier: ~19.1.0
         version: 19.1.17
+      expo-doctor:
+        specifier: ^1.20.1
+        version: 1.20.1
       oxlint:
         specifier: ^1.77.0
         version: 1.78.0
@@ -522,22 +525,19 @@ importers:
       '@sailo/core':
         specifier: workspace:*
         version: link:../core
+      react:
+        specifier: '>=19'
+        version: 19.2.8
+      react-native:
+        specifier: '>=0.81'
+        version: 0.81.5(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.8)
     devDependencies:
       '@sailo/config':
         specifier: workspace:*
         version: link:../config
-      '@types/react':
-        specifier: ~19.1.0
-        version: 19.1.17
       oxlint:
         specifier: ^1.77.0
         version: 1.78.0
-      react:
-        specifier: 19.1.0
-        version: 19.1.0
-      react-native:
-        specifier: 0.81.5
-        version: 0.81.5(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.1.0)
       typescript:
         specifier: ^5
         version: 5.9.3
@@ -4887,6 +4887,11 @@ packages:
     resolution: {integrity: sha512-jd5BxjaF7382JkDMaC+P04aXXknB2UhWaVx5WiQKA05ugm/8GH5uaz9P9ckWdMKZGQVVEOC8MHaUADoT26KmFA==}
     peerDependencies:
       expo: '*'
+
+  expo-doctor@1.20.1:
+    resolution: {integrity: sha512-u0QYTm3hTZbuMuNdnvscA1X6Xm31ilQ6uxrf8FfzO0ddpOEBrgVEYp8jXgFOBwrRf6DqJoD2j3eKUTWTqvKVzg==}
+    engines: {node: ^20.19.4 || ^22.13.0 || ^24.3.0 || >= 25.0.0}
+    hasBin: true
 
   expo-eas-client@1.0.8:
     resolution: {integrity: sha512-5or11NJhSeDoHHI6zyvQDW2cz/yFyE+1Cz8NTs5NK8JzC7J0JrkUgptWtxyfB6Xs/21YRNifd3qgbBN3hfKVgA==}
@@ -12195,6 +12200,8 @@ snapshots:
     dependencies:
       expo: 54.0.36(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3)
       ua-parser-js: 0.7.41
+
+  expo-doctor@1.20.1: {}
 
   expo-eas-client@1.0.8: {}
 
