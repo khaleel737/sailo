@@ -1,0 +1,117 @@
+apps/web/src/lib/memberships.ts
+  s_30d2807222b629::t_b1155a279281e2 2,4-5,7-12,15
+apps/web/src/lib/actions/products.test.ts
+  s_30d2807222b629::t_e125ec4418633d 1-82
+packages/api/src/routers/products.ts
+  s_30d2807222b629::t_3307e7adb0bd57 1-2,4,6-13,18-19,21,30,40-107,109-125,127-141,143-176,199-242
+  s_e8291a0f52c41e::t_f8f7892ce3392f 5,20,22-29,31-39,108,126
+packages/api/src/router.test.ts
+  s_30d2807222b629::t_3c31f941d54d32 118-124,128-129,132-143,147-153,159
+packages/commerce/src/pagination.test.ts
+  s_30d2807222b629::t_f6557dc79a9082 25-33,40-42
+  s_30d2807222b629::t_0f1f5dd4217968 1-24,34-39,43-200
+packages/commerce/package.json
+  s_30d2807222b629::t_346de286682813 13
+  s_30d2807222b629::t_46dc74faa6d4ce 14
+packages/core/src/memberships.test.ts
+  s_30d2807222b629::t_4902c865b01cce 1-285
+packages/core/src/file-urls.test.ts
+  s_30d2807222b629::t_4902c865b01cce 1-345
+packages/commerce/src/index.ts
+  s_30d2807222b629::t_33477111167d69 16
+  s_30d2807222b629::t_346de286682813 17
+packages/api/src/routers/orders.ts
+  s_30d2807222b629::t_81b38ed36bd0b1 2,7,12-16,20-30,33-59,61-71
+  s_30d2807222b629::t_225be706702cca 17-19
+  s_3cdb570c98c30d::t_9a7093fcbaef7a 60
+apps/web/src/lib/actions/products.ts
+  s_30d2807222b629::t_aa71e90dc14b1b 22
+  s_30d2807222b629::t_936c425bb95f9e 8,23-29,32,36-49,52-70,74-85,88-89,93-94,96-104,107-124,126-129,131-132,139,144-145,147-148,154,156-164,171-187,195-196,204-205
+apps/mobile/lib/models.ts
+  s_843d9fedb615e6::t_ede58ad731e3e1 24-31,36
+packages/core/src/file-urls.ts
+  s_30d2807222b629::t_61c81b3e7786c8 1-214
+packages/commerce/src/products.test.ts
+  s_30d2807222b629::t_a9665f82e20e45 1-320
+apps/mobile/app/(tabs)/orders/index.tsx
+  s_7cb340474aae6c::t_c24d66323c6467 57,59-62,64,125
+apps/mobile/app/(tabs)/index.tsx
+  s_3f71428ede17d3::t_9a7efbcd271197 104,116-117
+apps/web/src/lib/file-urls.ts
+  s_30d2807222b629::t_0e7e4e13371abf 2,4-5,7-12,15
+packages/core/src/slug.ts
+  s_30d2807222b629::t_1f25ad863f725b 1-25
+packages/core/src/memberships.ts
+  s_30d2807222b629::t_c3c4a87869b5b6 1-299
+packages/core/package.json
+  s_30d2807222b629::t_a85d942254995e 17-20
+apps/web/src/lib/utils.ts
+  s_30d2807222b629::t_d012128f68351f 28
+  s_30d2807222b629::t_b66a352a616cdc 21-27
+packages/commerce/src/pagination.ts
+  s_30d2807222b629::t_5759e6afb76991 1-95
+packages/commerce/src/products.ts
+  s_30d2807222b629::t_fdbb9d1ad5157a 1-225,227-301,304-543
+  s_30d2807222b629::t_9fb3f54d20312d 226
+  s_30d2807222b629::t_cf5df65818bb95 302-303
+apps/mobile/app/(tabs)/store/index.tsx
+  s_843d9fedb615e6::t_ede58ad731e3e1 65-67,158
+  s_3cdb570c98c30d::t_8e759bb2d609be 103-107,111
+  s_3cdb570c98c30d::t_7496477ccde4f5 193-202
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c5b9c61ab32999ec37cfbf1b97b8597b3f2e0eb2",
+  "prompts": {},
+  "sessions": {
+    "s_30d2807222b629": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7b99f355-9689-4406-9f99-ae62e80eae10",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3cdb570c98c30d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e1fafd90-c8cf-4e41-9ae5-be55e17f277d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3f71428ede17d3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bbebb399-4d24-4667-9bc2-022ffcf04186",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_7cb340474aae6c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "df88293a-eb1f-47df-854e-86d35e28eb45",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_843d9fedb615e6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2676e43-5b2b-421c-aafb-f749d4fe1c2f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e8291a0f52c41e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "16c7a8ff-5363-4f25-abf1-b9f479cbab82",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
