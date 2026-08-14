@@ -1,0 +1,149 @@
+apps/web/src/lib/notification-prefs.ts
+  s_056bdfb8c9d7ba::t_3df263875c654e 2-10,13
+apps/web/src/lib/account-deletion.ts
+  s_056bdfb8c9d7ba::t_5d4875671ace22 2-3,8-20,24-26,30
+  s_056bdfb8c9d7ba::t_51afcead127e94 31
+apps/api/next.config.ts
+  s_5281c97e5b0f0a::t_c2f2d39c07fe29 29
+  s_056bdfb8c9d7ba::t_dd9dbb1363bfc5 26,34
+packages/account/package.json
+  s_056bdfb8c9d7ba::t_5dd9bb51c400d1 1-30
+packages/account/src/index.ts
+  s_056bdfb8c9d7ba::t_89768fb8ce7346 1-11
+packages/account/tsconfig.json
+  s_056bdfb8c9d7ba::t_eab9a3544477a4 1-5
+packages/api/package.json
+  s_96fcd386f2ab10::t_f76d945d0a9086 16,21,23-24,27
+packages/payments/src/connect.ts
+  s_056bdfb8c9d7ba::t_70507fa2940192 1-219
+packages/api/test-stubs/server-only.ts
+  s_056bdfb8c9d7ba::t_224c273a9ccef0 1-6
+apps/web/src/lib/account-deletion.test.ts
+  s_056bdfb8c9d7ba::t_f742066d9be824 19-23,26-29
+  s_056bdfb8c9d7ba::t_764d1c1561f706 90-91
+  s_056bdfb8c9d7ba::t_c3320e6e12c434 36-38
+apps/web/src/lib/connect.ts
+  s_056bdfb8c9d7ba::t_e8b9d7455d6f3b 35-39
+  s_056bdfb8c9d7ba::t_7cfed6276461ac 51,53-55,58,62-63,65-67,70-72,74-76
+  s_056bdfb8c9d7ba::t_c9b0e1b477fa1b 8-13
+packages/payments/src/index.ts
+  s_056bdfb8c9d7ba::t_c41f3e7c56e91e 10-22,27-28,36-41
+apps/api/src/env.ts
+  s_056bdfb8c9d7ba::t_fd60239d880081 4,12-21,29,31-36
+packages/api/src/routers/account.ts
+  s_056bdfb8c9d7ba::t_fc7244fbe955c6 1-8,11-12,14-18,20-126
+packages/account/src/notification-prefs.ts
+  s_056bdfb8c9d7ba::t_f5f38e7c778e04 9-15
+  s_5281c97e5b0f0a::t_05a22e9c010e3e 1-8,16-55
+packages/account/vitest.config.mts
+  s_056bdfb8c9d7ba::t_616cd41be2862a 1-12
+packages/api/vitest.config.mts
+  s_056bdfb8c9d7ba::t_a53dd40d218f51 1-2,5-6,8-22
+apps/web/package.json
+  s_5281c97e5b0f0a::t_9eaadcb3cf3e8a 50
+packages/account/src/deletion.ts
+  s_056bdfb8c9d7ba::t_0492dd1bb362a6 47-57
+  s_056bdfb8c9d7ba::t_a3944a4c21ea9c 216-222
+  s_056bdfb8c9d7ba::t_55d2593b169545 187-190
+  s_056bdfb8c9d7ba::t_6b97b1def3ef54 419-420
+  s_056bdfb8c9d7ba::t_b99e359116451e 68,134-172,297,302,461
+  s_056bdfb8c9d7ba::t_0c9735693c2eaf 309
+  s_056bdfb8c9d7ba::t_610e895a44e425 27,29,36,41,45,58,70,72,76,82,104,110,114,117,122,133,174,177,186,201,232,284,312,314,316,321,325,330,339-340,349,351-378,380,385,422,427,434-435,437,439,444,447,476
+  s_056bdfb8c9d7ba::t_088f82372dd7ac 24-26
+  s_056bdfb8c9d7ba::t_22faf416a2e347 28
+  s_056bdfb8c9d7ba::t_ad4b827cd66b7e 30-35
+  s_056bdfb8c9d7ba::t_5c9f8f80fe980b 37-40
+  s_056bdfb8c9d7ba::t_4fea33b08f5530 42-44
+  s_056bdfb8c9d7ba::t_d4af9a5fd87e2f 46
+  s_056bdfb8c9d7ba::t_2672c0409f9c98 59-61,65-67
+  s_056bdfb8c9d7ba::t_9d0d887f106d6a 69
+  s_056bdfb8c9d7ba::t_94a7c9930568d3 71
+  s_056bdfb8c9d7ba::t_e544bd77531731 73-75
+  s_056bdfb8c9d7ba::t_2e460bff128eee 77-81
+  s_056bdfb8c9d7ba::t_245ca223c2f8c3 83-85,101-103
+  s_056bdfb8c9d7ba::t_9d139b12501a5e 105-109
+  s_056bdfb8c9d7ba::t_0e001459eeb5ff 111-113
+  s_056bdfb8c9d7ba::t_be612d37b28f62 115-116
+  s_056bdfb8c9d7ba::t_b7731abe602e41 118-121
+  s_056bdfb8c9d7ba::t_cccc24a6221b62 123-125,130-132
+  s_056bdfb8c9d7ba::t_c97772a27ee01b 173
+  s_056bdfb8c9d7ba::t_c0160b1d44b7bc 175-176
+  s_056bdfb8c9d7ba::t_4bcaa3047b4784 178-180,183-185
+  s_056bdfb8c9d7ba::t_08c7279557dd41 191-193,198-200
+  s_056bdfb8c9d7ba::t_6aafa1ba59de6b 202-204,213-215
+  s_056bdfb8c9d7ba::t_582c49622f5cf8 223-225,229-231
+  s_056bdfb8c9d7ba::t_69e651c32ec17a 233-235,281-283
+  s_056bdfb8c9d7ba::t_3dfacbb1b0a3d3 285-287,294-296
+  s_056bdfb8c9d7ba::t_85e173b8e34116 298-301
+  s_056bdfb8c9d7ba::t_7814cdf5fb47fb 303-308
+  s_056bdfb8c9d7ba::t_a1bc901c039076 310-311
+  s_056bdfb8c9d7ba::t_3dc2a262e47e74 313
+  s_056bdfb8c9d7ba::t_d16b1f9580502b 315
+  s_056bdfb8c9d7ba::t_e51b206c1749d4 317-320
+  s_056bdfb8c9d7ba::t_5bd988b811242b 322-324
+  s_056bdfb8c9d7ba::t_3c351ff8fda11b 326-329
+  s_056bdfb8c9d7ba::t_01e5fc73d3ef82 331-333,336-338
+  s_056bdfb8c9d7ba::t_6a01f075ad41a2 341-343,346-348
+  s_056bdfb8c9d7ba::t_dced6f28ee54f8 350
+  s_056bdfb8c9d7ba::t_b3bfed69feb0aa 379
+  s_056bdfb8c9d7ba::t_298ff77716f935 381-384
+  s_056bdfb8c9d7ba::t_f0204ed5417f3d 386-388,416-418
+  s_056bdfb8c9d7ba::t_63a114eb88b291 421
+  s_056bdfb8c9d7ba::t_81b62adb19afd5 423-426
+  s_056bdfb8c9d7ba::t_f29845db6c3fcb 428-433
+  s_056bdfb8c9d7ba::t_d939bf1e1ce95b 436
+  s_056bdfb8c9d7ba::t_381fc629035047 438
+  s_056bdfb8c9d7ba::t_b43ab51bfda228 440-443
+  s_056bdfb8c9d7ba::t_c33db9d7e62af2 445-446
+  s_056bdfb8c9d7ba::t_4781b03f7c633a 448-450,458-460
+  s_056bdfb8c9d7ba::t_82ff8da3781884 462-464,473-475
+  s_056bdfb8c9d7ba::t_c9a53e10b39079 1-23,62-64,86-100,126-129,181-182,194-197,205-212,226-228,236-280,288-293,334-335,344-345,389-415,451-457,465-472
+packages/api/src/routers/uploads.test.ts
+  s_056bdfb8c9d7ba::t_d5125178d78e4a 1-166,177-189,191-205
+  s_056bdfb8c9d7ba::t_badd790e420baf 167-176
+  s_056bdfb8c9d7ba::t_378954bc2c9fc8 190
+packages/account/test-stubs/server-only.ts
+  s_056bdfb8c9d7ba::t_1c14bbcbc715fc 1-6
+packages/api/src/routers/uploads.ts
+  s_056bdfb8c9d7ba::t_4d231f8684ac8d 19
+  s_056bdfb8c9d7ba::t_22b155cbdd79e8 100-107,110,112
+  s_056bdfb8c9d7ba::t_186416be8e0a86 1-5,8,10-15,17-18,20-21,23-99,108-109,111,113-206
+packages/api/src/routers/payments.ts
+  s_056bdfb8c9d7ba::t_1a26c7f9a6b77c 1-9,12,14-20,22-35,37-85
+apps/api/package.json
+  s_056bdfb8c9d7ba::t_f31c386b387571 20
+pnpm-lock.yaml
+  s_5281c97e5b0f0a::t_d9a9be7b92362d 38-40,190-192,384-417,445-447,460-462,466-471,478-480
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ce0e9964dbe438541955f8134e2ccb766b5c4513",
+  "prompts": {},
+  "sessions": {
+    "s_056bdfb8c9d7ba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fc641a58-523f-45e7-9014-79d37344c31d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_5281c97e5b0f0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf4de1f0-8173-4904-b5cb-0ed8ca4d1781",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_96fcd386f2ab10": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "61e85d78-cff5-436c-a216-8b6abb358a82",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
