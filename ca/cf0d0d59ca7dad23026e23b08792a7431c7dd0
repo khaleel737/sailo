@@ -1,0 +1,25 @@
+apps/mobile/jest.config.js
+  s_3cdb570c98c30d::t_5882b81691bb3d 61-68
+apps/mobile/package.json
+  s_3cdb570c98c30d::t_0d9b281dd6c31f 12
+apps/mobile/tests/money.test.tsx
+  s_3cdb570c98c30d::t_2db458ec78c2a4 1-164
+apps/mobile/tests/sign-out.test.tsx
+  s_3cdb570c98c30d::t_d0d1d547b313bd 1-218
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "cacf0d0d59ca7dad23026e23b08792a7431c7dd0",
+  "prompts": {},
+  "sessions": {
+    "s_3cdb570c98c30d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e1fafd90-c8cf-4e41-9ae5-be55e17f277d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
