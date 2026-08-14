@@ -19,4 +19,8 @@ export * from "./inventory";
 export * from "./tickets";
 export * from "./booking-claim";
 export * from "./coupon-redemption";
+export * from "./door";
+export * from "./door-list";
+export * from "./door-pass";
+export * from "./idempotency";
 export * from "./webhooks";
