@@ -1,4 +1,5 @@
 import { onInvalidEnv } from "@sailo/env/report";
+import { keys as auth } from "@sailo/auth/keys";
 import { keys as db } from "@sailo/db/keys";
 import { keys as shared } from "@sailo/env/keys";
 import { keys as payments } from "@sailo/payments/keys";
@@ -32,7 +33,7 @@ import { z } from "zod";
  * boot answer for a variable only a laptop ever sets.
  */
 export const env = createEnv({
-  extends: [db(), shared(), payments(), rateLimit()],
+  extends: [auth(), db(), shared(), payments(), rateLimit()],
   server: {
     /** Guards the nightly rollup and every other Vercel cron route. */
     CRON_SECRET: z.string().min(1).optional(),

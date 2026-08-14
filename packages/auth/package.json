@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./keys": "./src/keys.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -12,7 +13,10 @@
   },
   "dependencies": {
     "@better-auth/expo": "^1.6.25",
-    "better-auth": "^1.6.25"
+    "@sailo/env": "workspace:*",
+    "@t3-oss/env-core": "^0.13.4",
+    "better-auth": "^1.6.25",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

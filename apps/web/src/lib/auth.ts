@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { betterAuth } from "better-auth";
 import {
   APIError,
@@ -6,16 +7,24 @@ import {
   isAPIError,
 } from "better-auth/api";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { deleteSessionCookie } from "better-auth/cookies";
 import { nextCookies } from "better-auth/next-js";
 import { bearer, magicLink, twoFactor } from "better-auth/plugins";
 import { expo } from "@better-auth/expo";
 import { getDb } from "@sailo/db";
 import { account, session, twoFactor as twoFactorTable, user, verification } from "@sailo/db/schema";
+import { appUrl } from "@/lib/app-url";
 import {
   sendEmailConfirmation,
   sendHqSignInLink,
   sendPasswordReset,
 } from "@/lib/email";
+import {
+  appleClientSecret,
+  appleDisplayName,
+  isSocialSessionPath,
+  socialPathAnswersJson,
+} from "@/lib/social-auth";
 import { isStaffEmail, refusesPasswordAuth } from "@/lib/staff";
 import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
 
@@ -67,6 +76,9 @@ const TWO_FACTOR_WINDOW_SECONDS = 15 * 60;
 
 const twoFactorRateKey = (userId: string) => `2fa:${userId}`;
 
+/** What `hooks.before` and `hooks.after` are handed. */
+type AuthHookContext = Parameters<Parameters<typeof createAuthMiddleware>[0]>[0];
+
 /**
  * Whose codes are being guessed. Mid-sign-in there is no session — the
  * challenge cookie stands in for one, and its signed value resolves to the
@@ -74,9 +86,7 @@ const twoFactorRateKey = (userId: string) => `2fa:${userId}`;
  * itself makes (`verify-two-factor.mjs`). Read-only on purpose: consuming the
  * verification value here would break the endpoint this runs in front of.
  */
-async function twoFactorUserId(
-  ctx: Parameters<Parameters<typeof createAuthMiddleware>[0]>[0],
-): Promise<string | null> {
+async function twoFactorUserId(ctx: AuthHookContext): Promise<string | null> {
   const signedIn = await getSessionFromCtx(ctx);
   if (signedIn?.user) return signedIn.user.id;
 
@@ -90,6 +100,267 @@ async function twoFactorUserId(
     await ctx.context.internalAdapter.findVerificationValue(identifier);
   return pending?.value ?? null;
 }
+
+/* -------------------------------------------------------------------------
+ * Apple and Google
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Google's provider, or nothing at all.
+ *
+ * Absent credentials mean the provider is not registered, so `/sign-in/social`
+ * answers `PROVIDER_NOT_FOUND` rather than registering a client that fails at
+ * the first redirect. A preview deployment with no Google console behind it
+ * says "we don't do that here", which is true, instead of "something went
+ * wrong", which is not.
+ */
+function googleSignIn() {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  if (!clientId || !clientSecret) return undefined;
+  return { clientId, clientSecret };
+}
+
+/**
+ * Apple's provider, or nothing at all.
+ *
+ * Two things here have no counterpart in any other provider:
+ *
+ * **The client secret is minted, not configured.** Apple issues a `.p8`
+ * signing key and expects the secret to be an ES256 JWT signed with it, capped
+ * at six months. `appleClientSecret` mints a fresh one on every module
+ * evaluation, which is what stops this integration from failing on a Tuesday
+ * six months after launch with `invalid_client` and nothing in the diff to
+ * explain it. See `docs/auth/apple-sign-in.md`.
+ *
+ * **The Services ID and the bundle identifier are different strings.** The
+ * browser flow authenticates as the Services ID (`store.sailo.signin`); a
+ * device-issued identity token is audienced to the bundle identifier
+ * (`store.sailo.app`). Crossing them is the most common way an Apple setup
+ * fails, and it fails as a generic refusal from Apple, so equality is refused
+ * here where the cause is still visible.
+ */
+function appleSignIn() {
+  const clientId = process.env.APPLE_CLIENT_ID;
+  const teamId = process.env.APPLE_TEAM_ID;
+  const keyId = process.env.APPLE_KEY_ID;
+  const privateKey = process.env.APPLE_PRIVATE_KEY;
+  const appBundleIdentifier = process.env.APPLE_APP_BUNDLE_IDENTIFIER;
+
+  if (!clientId || !teamId || !keyId || !privateKey) return undefined;
+
+  if (appBundleIdentifier && clientId === appBundleIdentifier) {
+    console.error(
+      "[sailo] APPLE_CLIENT_ID must be the Services ID, not the bundle identifier — Apple sign-in is off",
+    );
+    return undefined;
+  }
+
+  let clientSecret: string;
+  try {
+    clientSecret = appleClientSecret({
+      clientId,
+      teamId,
+      keyId,
+      privateKey,
+      now: Date.now(),
+    });
+  } catch (error) {
+    /*
+     * An unreadable `.p8` must not take the site down. Everything else about
+     * this deployment still works — password sign-in, the admin, checkout —
+     * and a boot crash over one optional provider would trade a missing button
+     * for an outage.
+     */
+    console.error("[sailo] Apple sign-in is off: the private key would not sign", error);
+    return undefined;
+  }
+
+  return {
+    clientId,
+    clientSecret,
+    appBundleIdentifier,
+    /*
+     * **Apple sends the name once, on the first authorisation, and never
+     * again.** `user.name` is `notNull`, and better-auth's Apple provider
+     * falls back to `""` when the name is absent — which is every callback
+     * after the first, and every callback at all if the seller signed in on a
+     * device that had already authorised the app. See `appleDisplayName`.
+     */
+    mapProfileToUser: (profile: {
+      name?: unknown;
+      email?: unknown;
+      is_private_email?: unknown;
+    }) => ({ name: appleDisplayName(profile) }),
+  };
+}
+
+/* -------------------------------------------------------------------------
+ * What happens after a provider hands back a session
+ * ---------------------------------------------------------------------- */
+
+/**
+ * The challenge cookie's name and life, copied from the two-factor plugin.
+ *
+ * Copied rather than imported for the same reason `BETTER_AUTH_MESSAGES` is:
+ * both live in the plugin's internals rather than its public surface. The
+ * guard below writes a challenge that `verifyTwoFactor` then reads, so the two
+ * have to agree on the cookie name, on the identifier that keys the
+ * verification row, and on the `2fa-attempts-` prefix of its attempt counter.
+ * `auth-social.test.ts` reads all three back out of the library, so a rename
+ * upstream fails a test rather than silently producing a challenge that no
+ * endpoint can answer.
+ */
+const TWO_FACTOR_COOKIE = "two_factor";
+const TWO_FACTOR_CHALLENGE_SECONDS = 600;
+
+/** Ends the session a provider callback just created, cookie and row. */
+async function endSession(ctx: AuthHookContext, token: string): Promise<void> {
+  deleteSessionCookie(ctx, true);
+  await ctx.context.internalAdapter.deleteSession(token);
+  // Downstream hooks must not observe a session that no longer exists — the
+  // expo plugin's callback hook reads the response's cookies straight after.
+  ctx.context.setNewSession(null);
+}
+
+/**
+ * Puts a seller in front of the second factor, exactly as a password sign-in
+ * would have.
+ *
+ * The pair of verification rows is not optional: `verifyTwoFactor` consumes
+ * `2fa-attempts-<identifier>` before it will look at a code, and treats its
+ * absence as an invalid challenge. A cookie without its counter is a challenge
+ * that can never be answered.
+ */
+async function challengeForTwoFactor(
+  ctx: AuthHookContext,
+  userId: string,
+): Promise<void> {
+  const cookie = ctx.context.createAuthCookie(TWO_FACTOR_COOKIE, {
+    maxAge: TWO_FACTOR_CHALLENGE_SECONDS,
+  });
+  const identifier = `2fa-${randomUUID()}`;
+  const expiresAt = new Date(Date.now() + TWO_FACTOR_CHALLENGE_SECONDS * 1000);
+
+  await ctx.context.internalAdapter.createVerificationValue({
+    value: userId,
+    identifier,
+    expiresAt,
+  });
+  await ctx.context.internalAdapter.createVerificationValue({
+    value: "0",
+    identifier: `2fa-attempts-${identifier}`,
+    expiresAt,
+  });
+  await ctx.setSignedCookie(
+    cookie.name,
+    identifier,
+    ctx.context.secret,
+    cookie.attributes,
+  );
+}
+
+/**
+ * The two things a provider callback must not be allowed to do.
+ *
+ * **This runs because the two-factor plugin does not.** Its own hook matches
+ * `/sign-in/email`, `/sign-in/username` and `/sign-in/phone-number` and
+ * nothing else, so without this a seller who has enrolled in two-factor auth
+ * could sign in with Google and skip the second factor entirely — the strongest
+ * account on the platform reduced to whatever their Google password is. That is
+ * a regression the buttons would have shipped silently, since every existing
+ * test covers the password path.
+ *
+ * **And a staff address may not hold a provider either.** `staff.ts` says a
+ * roster account signs in by magic link and holds "no password anywhere for
+ * anyone to phish or reuse"; a linked Google account is exactly such a
+ * credential, and it widens /hq's door to whoever can reach that Google
+ * account. The `hooks.before` refusal above cannot cover this — it matches on
+ * the address in the request body, and a provider callback carries no address
+ * at all until the token comes back.
+ *
+ * The refusal here is deliberately *not* indistinguishable, unlike the
+ * password one. That doctrine exists because `/sign-up/email` will take any
+ * address anyone types, which makes a distinctive answer an enumeration
+ * oracle. Reaching this point instead costs a completed authorisation at Apple
+ * or Google **as the address in question**, so the only person who can see this
+ * refusal is someone who already holds the mailbox — the same bar the magic
+ * link itself sets. Saying where to sign in is more useful than hiding it.
+ *
+ * Note both branches run *after* the row is written: better-auth creates or
+ * links the account before any hook sees the result. So the session is torn
+ * down and the provider row deleted, rather than prevented — the outcome is
+ * the same, and it is the only place in the request where the verified address
+ * is known.
+ */
+async function guardSocialSignIn(ctx: AuthHookContext) {
+  const created = ctx.context.newSession;
+  // No session means no sign-in to guard: `/sign-in/social` without an
+  // identity token only hands back an authorize URL, and a failed callback
+  // has already redirected to the error page.
+  if (!created) return;
+
+  if (isStaffEmail(created.user.email)) {
+    console.warn(`[sailo] social sign-in refused for staff address on ${ctx.path}`);
+    await endSession(ctx, created.session.token);
+
+    for (const row of await ctx.context.internalAdapter.findAccounts(
+      created.user.id,
+    )) {
+      if (row.providerId === "apple" || row.providerId === "google") {
+        await ctx.context.internalAdapter.deleteAccount(row.id);
+      }
+    }
+
+    if (socialPathAnswersJson(ctx.path)) {
+      throw new APIError("UNAUTHORIZED", {
+        message: "This account signs in with a link, not with a provider.",
+      });
+    }
+    throw ctx.redirect(`${appUrl()}/hq/login`);
+  }
+
+  const enrolled = Boolean(
+    (created.user as { twoFactorEnabled?: boolean }).twoFactorEnabled,
+  );
+  if (!enrolled) return;
+
+  await endSession(ctx, created.session.token);
+  await challengeForTwoFactor(ctx, created.user.id);
+
+  if (socialPathAnswersJson(ctx.path)) {
+    /*
+     * The same body the password path answers with, so a client that already
+     * handles `twoFactorRedirect` needs no second branch. `twoFactorMethods`
+     * is `["totp"]` rather than computed: enrolment only ever flips
+     * `twoFactorEnabled` after a code has verified the secret
+     * (`actions/security.ts`), and no `sendOTP` is configured, so there is
+     * exactly one method a seller can be holding here.
+     */
+    return ctx.json({ twoFactorRedirect: true, twoFactorMethods: ["totp"] });
+  }
+
+  /*
+   * The browser gets the page the password path sends it to. `/verify-2fa`
+   * needs nothing but the challenge cookie just written — it reads no session
+   * and takes no parameters — so the existing screen finishes this sign-in
+   * unchanged.
+   *
+   * NATIVE, stated rather than assumed: this is a web URL, so a phone that
+   * walked the browser flow finishes two-factor in the browser and does not
+   * return to the app. A14 owns that leg and must handle it; the id-token
+   * path above, which is what the native app should use, answers in JSON and
+   * has no such gap.
+   */
+  throw ctx.redirect(`${appUrl()}/verify-2fa`);
+}
+
+/*
+ * Resolved once, at module scope. Apple's half signs a JWT, so calling it per
+ * request would mint a secret per request for no benefit.
+ */
+const google = googleSignIn();
+const apple = appleSignIn();
 
 export const auth = betterAuth({
   /*
@@ -145,6 +416,66 @@ export const auth = betterAuth({
         // comes and has nothing to report but "it didn't arrive".
         console.warn(`[sailo] password reset email not sent: ${result.reason}`);
       }
+    },
+  },
+  /*
+   * Apple and Google, and deliberately nothing else.
+   *
+   * Both **verify the email address they hand back**, which is what makes the
+   * linking policy below a single rule instead of two: there is no untrusted
+   * provider to branch on, and no takeover vector to reason about. Both also
+   * always return an address, so there is no emailless account to design
+   * around. Either provider is registered only when its credentials are
+   * configured — see `googleSignIn` and `appleSignIn`.
+   *
+   * **A provider that does not verify email may not be added to this list.**
+   * Doing so would make `trustedProviders` below a lie: it would let a caller
+   * who merely claims an address be linked into the account that already owns
+   * it. If one is ever wanted, the linking policy has to be reopened first and
+   * that provider kept out of `trustedProviders`.
+   */
+  socialProviders: {
+    ...(google ? { google } : {}),
+    ...(apple ? { apple } : {}),
+  },
+  /*
+   * THE COLLISION POLICY, decided rather than inherited.
+   *
+   * A seller signed up with a password months ago. Today they click "Continue
+   * with Google" on the same address. The answer is **link the two**, giving
+   * one account with two ways in — not a second account, and not a refusal.
+   *
+   * That is safe here *only* because of what these two providers are. Google
+   * and Apple both assert that they verified the address, so the callback is
+   * proof of ownership rather than a claim of it, and `trustedProviders` says
+   * so explicitly. A provider that merely echoed back whatever address the
+   * caller typed would, under this same setting, hand that caller the existing
+   * account.
+   *
+   * The mirror-image attack is closed by better-auth's default and not by
+   * anything written here, which is worth knowing before anyone turns it off:
+   * `requireLocalEmailVerified` (default true) additionally demands that the
+   * *local* row be verified before an implicit link. Without it, an attacker
+   * who registers an unverified password account at a victim's address first
+   * would have the victim's Google identity linked into the attacker's row on
+   * the victim's very first sign-in.
+   *
+   * The cost of keeping it is real and should not surprise anyone reading a
+   * support ticket: sign-up does not require verification (`emailAndPassword`
+   * above), so a seller who never clicked the confirmation email will find
+   * that "Continue with Google" refuses to link, with `account_not_linked`.
+   * The way out already exists — the admin's confirmation banner and its
+   * resend button — but the error itself does not say so.
+   *
+   * `allowDifferentEmails` and `allowUnlinkingAll` stay at their defaults
+   * (both false). The second is what makes the linked-accounts card's promise
+   * true on the server as well as in the UI: the last credential cannot be
+   * unlinked, so no seller can lock themselves out from that screen.
+   */
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["apple", "google"],
     },
   },
   emailVerification: {
@@ -268,6 +599,28 @@ export const auth = betterAuth({
       // The staff door. Only rostered addresses are ever mailed, but the
       // endpoint answers identically either way, so it is free to hammer.
       "/sign-in/magic-link": { window: 900, max: 8 },
+      /*
+       * The provider round trip, both legs.
+       *
+       * Sized loosely on purpose. Nothing here guesses at a credential —
+       * getting a useful answer out of either endpoint costs a completed
+       * authorisation at Apple or Google — so what these ration is a flood,
+       * not an attack, and the cost of a false positive is a seller on a
+       * shared address being turned away from the one button they clicked.
+       *
+       * `/callback/*` is a wildcard because rate limiting keys on the real
+       * request path (`/callback/google`), while the hooks above match on the
+       * route pattern (`/callback/:id`). The two are not interchangeable and
+       * a literal in either place would never fire.
+       *
+       * A throttled attempt answers 429, which is "ask again later" and never
+       * "no" — the same rule the two-factor limit above follows.
+       */
+      "/sign-in/social": { window: 300, max: 25 },
+      "/callback/*": { window: 300, max: 25 },
+      // Linking from Settings → Security. Session-guarded already, so this is
+      // only here to stop one signed-in seller from being a traffic source.
+      "/link-social": { window: 300, max: 20 },
     },
     customStorage: {
       consume: async (key, rule) => {
@@ -342,6 +695,28 @@ export const auth = betterAuth({
         return;
       }
 
+      /*
+       * Connecting a provider from Settings → Security is the same credential
+       * by another name, so the roster rule covers it too.
+       *
+       * `guardSocialSignIn` already refuses the *sign-in*, which would make
+       * this redundant — except that leaving the creation path open and
+       * relying on a teardown two steps later is the "guard applied at one
+       * sink and not its twin" shape this codebase keeps finding. Here the
+       * address needs no provider round trip: the caller is signed in, so it
+       * is already known.
+       */
+      if (ctx.path === "/link-social") {
+        const signedIn = await getSessionFromCtx(ctx);
+        if (isStaffEmail(signedIn?.user.email)) {
+          console.warn("[sailo] social link refused for staff address");
+          throw new APIError("FORBIDDEN", {
+            message: "This account signs in with a link, not with a provider.",
+          });
+        }
+        return;
+      }
+
       if (!refusesPasswordAuth(ctx.path, ctx.body?.email)) return;
 
       console.warn(`[sailo] password auth refused for staff address on ${ctx.path}`);
@@ -374,6 +749,11 @@ export const auth = betterAuth({
       });
     }),
     after: createAuthMiddleware(async (ctx) => {
+      // A provider callback has its own two things to answer for — the second
+      // factor the plugin's hook does not cover, and the staff roster. Both
+      // need the session that was just created, so they run here.
+      if (isSocialSessionPath(ctx.path)) return guardSocialSignIn(ctx);
+
       if (!TWO_FACTOR_VERIFY_PATHS.has(ctx.path)) return;
 
       /*

@@ -47,6 +47,7 @@
     "@better-auth/expo": "^1.6.25",
     "@neondatabase/serverless": "^1.1.0",
     "@next/third-parties": "16.3.0",
+    "@sailo/auth": "workspace:*",
     "@sailo/commerce": "workspace:*",
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",

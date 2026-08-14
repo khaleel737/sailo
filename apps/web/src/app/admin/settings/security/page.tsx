@@ -3,8 +3,10 @@ import { redirect } from "next/navigation";
 import { requireShop } from "@/lib/session";
 import { getSession } from "@/lib/session";
 import { listLoginSessions } from "@/lib/queries/sessions";
+import { listLinkedAccounts } from "@/lib/queries/linked-accounts";
 import { openObligations } from "@/lib/account-deletion";
 import { TwoFactorCard } from "./_components/two-factor-card";
+import { LinkedAccountsCard } from "./_components/linked-accounts-card";
 import { SessionsCard } from "./_components/sessions-card";
 import { DeleteAccountCard } from "./_components/delete-account-card";
 
@@ -23,14 +25,16 @@ export default async function SecuritySettingsPage() {
   // the type and covers the sliver where it expired mid-render.
   if (!session) redirect("/login");
 
-  const [sessions, obligations] = await Promise.all([
+  const [sessions, linked, obligations] = await Promise.all([
     listLoginSessions(user.id, session.session.token),
+    listLinkedAccounts(),
     openObligations(shop.id),
   ]);
 
   return (
     <div className="space-y-6">
       <TwoFactorCard enabled={Boolean(user.twoFactorEnabled)} />
+      <LinkedAccountsCard accounts={linked} />
       <SessionsCard sessions={sessions} />
       <DeleteAccountCard handle={shop.handle} blocked={obligations.blocked} />
     </div>
