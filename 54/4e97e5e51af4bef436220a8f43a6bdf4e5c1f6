@@ -1,0 +1,47 @@
+packages/tokens/src/css.ts
+  s_215604f056587b::t_3d421e8e7d781e 1
+  s_215604f056587b::t_0b291d71bbf4e1 2-42
+packages/tokens/theme.css
+  s_215604f056587b::t_7126831574b22d 1-37
+apps/web/package.json
+  s_215604f056587b::t_171a8a9f9ff613 59
+apps/web/next.config.ts
+  s_215604f056587b::t_31a380b3d8b157 18
+packages/tokens/package.json
+  s_215604f056587b::t_c7ae5613a25274 1-16,18-26
+  s_215604f056587b::t_835afa4f6e14cb 17
+packages/tokens/src/generate.ts
+  s_215604f056587b::t_3d421e8e7d781e 3
+  s_215604f056587b::t_6a709c69537270 1-2,4-22
+packages/tokens/tsconfig.json
+  s_215604f056587b::t_9d54d87733f0a9 1-2,12-13
+  s_215604f056587b::t_a7fa769c459459 3-11
+apps/web/src/app/globals.css
+  s_215604f056587b::t_2ec727b70af9d8 3-29
+  s_215604f056587b::t_acab5fddc561cc 64-65
+packages/tokens/src/index.ts
+  s_215604f056587b::t_a0ecc527458dd8 1-154
+packages/tokens/src/tokens.test.ts
+  s_215604f056587b::t_3d421e8e7d781e 4-5
+  s_215604f056587b::t_8216ba97ad0a82 1-3,6-99
+packages/tokens/vitest.config.mts
+  s_215604f056587b::t_eac501cab3a539 1-5
+pnpm-lock.yaml
+  s_215604f056587b::t_f408c1ece3db1b 208-210,656-670,8917,8997,11207
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "544e97e5e51af4bef436220a8f43a6bdf4e5c1f6",
+  "prompts": {},
+  "sessions": {
+    "s_215604f056587b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "85bd3789-aab6-46b5-bf51-8322157e96f9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
