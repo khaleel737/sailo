@@ -1,6 +1,7 @@
 import { onInvalidEnv } from "@sailo/env/report";
 import { keys as db } from "@sailo/db/keys";
 import { keys as shared } from "@sailo/env/keys";
+import { keys as payments } from "@sailo/payments/keys";
 import { keys as rateLimit } from "@sailo/rate-limit/keys";
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
@@ -8,10 +9,16 @@ import { z } from "zod";
 /**
  * What the API app needs, checked once at boot.
  *
- * Much shorter than apps/web's, and that is the split working: this app reads
- * sessions and serves JSON, so it needs the database, the shared auth secret
- * and Redis — and none of the mail, Stripe or storage configuration that
- * apps/web carries.
+ * Still much shorter than apps/web's, and that is the split working: this app
+ * reads sessions and serves JSON, so it needs the database, the shared auth
+ * secret and Redis — and none of the mail configuration apps/web carries.
+ *
+ * Stripe and Blob arrived with the phone's payments and uploads procedures.
+ * `payments.connectLink` opens a seller's connected account and
+ * `uploads.token` signs a blob upload, and both of those are things this app
+ * now does itself rather than proxies — so a key that is absent or pasted into
+ * the wrong variable has to fail here, at boot, with the offending name, and
+ * not as an unexplained error the first time a seller taps "get paid".
  *
  * `BETTER_AUTH_SECRET` arrives through `@sailo/env` rather than being declared
  * here, which is the point of putting it there: both apps read the same schema
@@ -19,8 +26,14 @@ import { z } from "zod";
  * secrets.
  */
 export const env = createEnv({
-  extends: [db(), shared(), rateLimit()],
+  extends: [db(), shared(), payments(), rateLimit()],
   server: {
+    /*
+     * Signs the short-lived client tokens `uploads.token` hands the phone.
+     * Optional like everything else that guards a feature: without it the
+     * upload procedure fails and the rest of the API is unaffected.
+     */
+    BLOB_READ_WRITE_TOKEN: z.string().min(1).optional(),
     /*
      * Browser origins allowed to call the tRPC endpoint. Empty is the correct
      * default — the only client today is the native app, and a native fetch is

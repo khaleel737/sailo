@@ -5,7 +5,12 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { products, shops, type Order, type Product, type Shop } from "@sailo/db/schema";
 import { lineTitle, orderLines, orderSummaryTitle } from "@/lib/order-lines";
-import { stripe } from "@sailo/payments";
+import {
+  accountFields,
+  connectOnboardingLink,
+  publicShopUrl as shopUrlUnder,
+  stripe,
+} from "@sailo/payments";
 import { appUrl } from "@/lib/app-url";
 import { taxName } from "@/lib/tax-label";
 import { platformFeeCents, platformFeePercent } from "@/lib/plans";
@@ -27,17 +32,12 @@ import {
  * named on the charge in `createCheckoutSession` and handed back in
  * `refundCharge`, so a refunded order refunds our share too. Both are the only
  * places in the codebase that move money to us, deliberately.
+ *
+ * Opening the account lives in `@sailo/payments/connect` rather than here,
+ * because the phone starts that flow too. What stays in this file is
+ * everything a browser is the only possible caller of, plus the two-line
+ * bindings that tell the shared code where *this* deployment sends people.
  */
-
-/** Fields we mirror from Stripe onto the shop. */
-export function accountFields(account: Stripe.Account) {
-  return {
-    stripeAccountId: account.id,
-    stripeChargesEnabled: Boolean(account.charges_enabled),
-    stripeDetailsSubmitted: Boolean(account.details_submitted),
-    stripeAccountCountry: account.country ?? null,
-  };
-}
 
 export const disconnectedFields = {
   stripeAccountId: null,
@@ -48,166 +48,33 @@ export const disconnectedFields = {
 };
 
 /**
- * The shop's public address, but only when Stripe will accept it.
+ * The shop's public address, as this deployment serves it.
  *
- * `business_profile.url` has to be a URL Stripe can actually reach. Anything
- * local — localhost, an IP, a bare hostname, a .local domain — is refused with
- * a flat "Not a valid URL" that names no field, so the first person to press
- * Connect on a dev machine gets a runtime error and no idea which of the eight
- * parameters was wrong. Returning null here means we send a description of the
- * business instead and let Stripe ask the seller for their address during
- * onboarding, which it does anyway.
+ * The rule about which addresses Stripe will accept is shared — the phone
+ * opens the same kind of account — so it lives in `@sailo/payments`. What is
+ * web's alone is knowing where "here" is, which is the one thing this adds.
  */
 export function publicShopUrl(handle: string): string | null {
-  let url: URL;
-  try {
-    url = new URL(`${appUrl()}/${handle}`);
-  } catch {
-    return null;
-  }
-
-  if (url.protocol !== "https:" && url.protocol !== "http:") return null;
-
-  const host = url.hostname.toLowerCase();
-  const isLocal =
-    host === "localhost" ||
-    host.endsWith(".localhost") ||
-    host.endsWith(".local") ||
-    // A bare hostname with no dot can't resolve publicly either.
-    !host.includes(".") ||
-    /^\d{1,3}(\.\d{1,3}){3}$/.test(host) ||
-    host.startsWith("[");
-
-  return isLocal ? null : url.toString();
+  return shopUrlUnder(appUrl(), handle);
 }
 
 /**
- * What a connected account is allowed to take money through.
+ * Sends the seller to Stripe to create or finish their account, and comes
+ * back to the admin.
  *
- * `createCheckoutSession` deliberately does not pin `payment_method_types`, so
- * Stripe decides at runtime which of these to show — from the buyer's country
- * and device and the account's active capabilities. Everything here therefore
- * reaches the checkout with no code behind it beyond this list. Apple Pay and
- * Google Pay need no entry at all; they ride `card_payments`.
- *
- * Deliberately short. Stripe's own guidance: "The capabilities you request for
- * a connected account determine the information you're required to collect for
- * it… Requesting more capabilities means the onboarding flow must verify more
- * information." Every extra line here is another question between a seller and
- * their first sale, so a rail earns its place by being one a small US seller
- * actually gets asked for.
- *
- * Not here on purpose:
- *  - Affirm, Klarna and Afterpay decide eligibility on the account's merchant
- *    category code, and `business_profile` below sets no `mcc`. Requesting
- *    them before that exists buys the onboarding questions and none of the
- *    payments. They also finance a purchase, and nobody finances a $45 cake.
- *  - PayPal and Venmo are not obtainable at all: Stripe lists no US business
- *    location for PayPal, does not support it on direct charges, and does not
- *    offer it to platforms whose connected accounts take payment directly.
- *    Venmo has no Stripe support anywhere. Both ship as manual rails instead —
- *    see `PAYMENT_METHOD_DEFS`.
- */
-const BASE_CAPABILITIES = {
-  card_payments: { requested: true },
-  transfers: { requested: true },
-} as const;
-
-export const WALLET_CAPABILITIES = {
-  /** Stripe's own wallet. One tap for anyone who has used Link anywhere. */
-  link_payments: { requested: true },
-  /** US only, USD only, and Stripe simply won't offer it elsewhere. */
-  cashapp_payments: { requested: true },
-  /** Cheap on larger orders, where card fees start to hurt a small seller. */
-  us_bank_account_ach_payments: { requested: true },
-} as const;
-
-/**
- * Adds the wallet capabilities to an account, and shrugs if Stripe says no.
- *
- * Separate from account *creation* on purpose, and swallowing its own error on
- * purpose, because these three are country-scoped and Sailo's sellers are not
- * all in those countries. Stripe rejects a capability the account's country
- * cannot have rather than leaving it inactive — so requesting them inside
- * `accounts.create` would mean a seller in a country without Cash App could not
- * open a Stripe account at all, which is a far worse failure than not being
- * offered a wallet they could never use.
- *
- * Idempotent: re-requesting an active capability is a no-op, so this is safe to
- * run on every visit and safe to run over every shop after adding a line above.
- */
-export async function requestWalletCapabilities(accountId: string) {
-  try {
-    return await stripe().accounts.update(accountId, {
-      capabilities: WALLET_CAPABILITIES,
-    });
-  } catch (error) {
-    // Not an error the seller can act on, and nothing they were promised.
-    console.warn("[sailo] wallet capabilities not available for", accountId, error);
-    return null;
-  }
-}
-
-/**
- * Creates the seller's connected account if they don't have one, then returns
- * a fresh onboarding link.
- *
- * Account links are single-use and expire in minutes, so one is minted per
- * click rather than stored.
+ * The flow itself is shared; only these two URLs are web's. The app calls the
+ * same function with `sailo://` redirects, which is what lets its browser
+ * sheet close itself instead of asking the seller to find a Close button.
  */
 export async function startOnboarding(shop: Shop) {
-  const db = getDb();
-  let accountId = shop.stripeAccountId;
-
-  if (!accountId) {
-    const shopUrl = publicShopUrl(shop.handle);
-
-    const account = await stripe().accounts.create({
-      type: "express",
-      email: shop.contactEmail ?? undefined,
-      business_profile: {
-        name: shop.name,
-        ...(shopUrl
-          ? { url: shopUrl }
-          : {
-              product_description:
-                shop.description?.trim().slice(0, 500) ||
-                `Products and services sold through ${shop.name}.`,
-            }),
-      },
-      capabilities: BASE_CAPABILITIES,
-      metadata: { shopId: shop.id, handle: shop.handle },
-    });
-    accountId = account.id;
-
-    // After creation, never inside it — see `requestWalletCapabilities`.
-    await requestWalletCapabilities(accountId);
-
-    await db
-      .update(shops)
-      .set({ ...accountFields(account), stripeConnectedAt: new Date(), updatedAt: new Date() })
-      .where(eq(shops.id, shop.id));
-  } else {
-    /*
-     * The backfill, at the one moment it is free: a seller who already has an
-     * account and has come back to the payments screen. Accounts created
-     * before a capability was added never requested it, so without this a
-     * shop connected last month keeps offering card alone for ever. Requesting
-     * an already-active capability is a no-op, so this is safe every time.
-     */
-    await requestWalletCapabilities(accountId);
-  }
-
-  const link = await stripe().accountLinks.create({
-    account: accountId,
+  return connectOnboardingLink(shop, {
+    siteUrl: appUrl(),
+    returnUrl: `${appUrl()}/admin/payments?stripe=return`,
     // Refresh is what Stripe calls when the link has expired — it must start
-    // the flow again, not dead-end on an error page.
-    refresh_url: `${appUrl()}/admin/payments?stripe=refresh`,
-    return_url: `${appUrl()}/admin/payments?stripe=return`,
-    type: "account_onboarding",
+    // the flow again, not dead-end on an error page. `/admin/payments` renders
+    // the Connect card, from which the seller presses Connect again.
+    refreshUrl: `${appUrl()}/admin/payments?stripe=refresh`,
   });
-
-  return link.url;
 }
 
 /**

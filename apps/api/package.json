@@ -17,6 +17,7 @@
     "@sailo/env": "workspace:*",
     "@sailo/events": "workspace:*",
     "@sailo/observability": "workspace:*",
+    "@sailo/payments": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
     "@t3-oss/env-core": "^0.13.4",
     "@trpc/server": "^11.6.0",

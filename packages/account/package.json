@@ -1,11 +1,12 @@
 {
-  "name": "@sailo/api",
+  "name": "@sailo/account",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./client": "./src/client.ts"
+    "./deletion": "./src/deletion.ts",
+    "./notification-prefs": "./src/notification-prefs.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -13,20 +14,12 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@sailo/account": "workspace:*",
-    "@sailo/analytics": "workspace:*",
-    "@sailo/commerce": "workspace:*",
-    "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
-    "@sailo/env": "workspace:*",
-    "@sailo/events": "workspace:*",
     "@sailo/payments": "workspace:*",
-    "@sailo/rate-limit": "workspace:*",
-    "@trpc/client": "^11.6.0",
-    "@trpc/server": "^11.6.0",
     "@vercel/blob": "^2.6.1",
     "drizzle-orm": "^0.45.2",
-    "zod": "^4.1.13"
+    "server-only": "^0.0.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

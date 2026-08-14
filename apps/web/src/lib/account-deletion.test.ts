@@ -16,18 +16,26 @@ import { HANDLE_MAX, normalizeHandle, validateHandleFormat } from "./handle";
  * overwritten, blob URLs collected before the rows naming them are deleted,
  * sessions revoked last — and each of those is a silent, unrecoverable data
  * loss if it moves.
+ *
+ * The sequence moved to `@sailo/account/deletion` when the phone needed to run
+ * it too; this test followed it there rather than being rewritten, because it
+ * is the record of *why* the order is what it is. It stays in this app because
+ * the tombstoned handle has to satisfy `./handle`, which is web's.
  */
 
-const source = readFileSync("src/lib/account-deletion.ts", "utf8");
+const source = readFileSync(
+  "../../packages/account/src/deletion.ts",
+  "utf8",
+);
 
 /** Where a step happens, with a failure that says what to do about it. */
 function positionOf(label: string, needle: string): number {
   const at = source.indexOf(needle);
   if (at === -1) {
     throw new Error(
-      `account-deletion.ts: this test pins the order of operations and the ` +
-        `anchor for "${label}" (${needle}) no longer matches. Re-anchor it ` +
-        `rather than deleting it — the ordering is the thing under test.`,
+      `@sailo/account/deletion: this test pins the order of operations and ` +
+        `the anchor for "${label}" (${needle}) no longer matches. Re-anchor ` +
+        `it rather than deleting it — the ordering is the thing under test.`,
     );
   }
   return at;
@@ -79,7 +87,8 @@ describe("the order of operations", () => {
     "stripe cancellation",
     "await cancelPlatformSubscription(",
   );
-  const email = positionOf("farewell email", "await sendAccountDeleted(");
+  // Injected rather than imported since the move — see `DeletionEffects`.
+  const email = positionOf("farewell email", "await effects.notifyDeleted(");
   const collect = positionOf("blob snapshot", "await collectBlobUrls(");
   const tombstone = positionOf("user tombstone", "email: tombstoneEmail(owner.id)");
   const hardDelete = positionOf("hard delete", "await hardDeleteShopContent(");
