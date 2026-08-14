@@ -514,6 +514,34 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(vite@8.2.1(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
 
+  packages/design-native:
+    dependencies:
+      '@sailo/core':
+        specifier: workspace:*
+        version: link:../core
+      '@sailo/tokens':
+        specifier: workspace:*
+        version: link:../tokens
+    devDependencies:
+      '@sailo/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/react':
+        specifier: ~19.1.0
+        version: 19.1.17
+      oxlint:
+        specifier: ^1.77.0
+        version: 1.78.0
+      react:
+        specifier: 19.1.0
+        version: 19.1.0
+      react-native:
+        specifier: 0.81.5
+        version: 0.81.5(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.1.0)
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
   packages/env:
     dependencies:
       '@t3-oss/env-core':

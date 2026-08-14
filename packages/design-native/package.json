@@ -1,0 +1,29 @@
+{
+  "name": "@sailo/design-native",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src -D correctness -D suspicious"
+  },
+  "dependencies": {
+    "@sailo/core": "workspace:*",
+    "@sailo/tokens": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "19.1.0",
+    "react-native": "0.81.5"
+  },
+  "devDependencies": {
+    "@sailo/config": "workspace:*",
+    "@types/react": "~19.1.0",
+    "oxlint": "^1.77.0",
+    "react": "19.1.0",
+    "react-native": "0.81.5",
+    "typescript": "^5"
+  }
+}

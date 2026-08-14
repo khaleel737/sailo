@@ -44,12 +44,12 @@
     },
     "packages/*": {
       "project": [
-        "src/**/*.ts"
+        "src/**/*.{ts,tsx}"
       ]
     },
     "packages/events": {
       "project": [
-        "src/**/*.ts"
+        "src/**/*.{ts,tsx}"
       ],
       "ignoreDependencies": [
         "redis"
