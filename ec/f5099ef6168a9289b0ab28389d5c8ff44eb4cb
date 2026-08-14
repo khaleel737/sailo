@@ -18,6 +18,8 @@ packages/i18n/src/native/index.ts
   s_96fcd386f2ab10::t_bc91beb963bf56 1-47
 packages/i18n/src/native/negotiate.ts
   s_96fcd386f2ab10::t_d3b637b8ddb3e9 1-36
+pnpm-lock.yaml
+  s_3cdb570c98c30d::t_6c230de00067b5 5574-5575,5578-5579,5582,5583,5586,5587,5590-5591,5594-5595,5598-5599,5602,5603,6647-6648,11484,13047,13053,13054,13058,13059,13061,13443-13457
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -25,10 +27,58 @@ packages/i18n/src/native/negotiate.ts
   "base_commit_sha": "ecf5099ef6168a9289b0ab28389d5c8ff44eb4cb",
   "prompts": {},
   "sessions": {
+    "s_30d2807222b629": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7b99f355-9689-4406-9f99-ae62e80eae10",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3c685a70414382": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73e5ccd3-9abb-4615-8a11-6632b58cf89a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3cdb570c98c30d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e1fafd90-c8cf-4e41-9ae5-be55e17f277d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_6822a80b95d750": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "aa620530-3e7a-410b-9554-ce9298ed88ca",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_70ca2e0516b978": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3cb016c2-ed44-4df9-aca6-3905c4279739",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
     "s_96fcd386f2ab10": {
       "agent_id": {
         "tool": "claude",
         "id": "61e85d78-cff5-436c-a216-8b6abb358a82",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_9e77592806d568": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8b65bf90-e96f-4b89-bd49-0482bf02e64d",
         "model": "claude-opus-5"
       },
       "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
