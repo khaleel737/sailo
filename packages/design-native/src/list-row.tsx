@@ -1,5 +1,9 @@
-import { Pressable, Text as RNText, View } from "react-native";
+import { useState } from "react";
+import { Pressable, View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 import type { IconName } from "./types";
+import { Icon } from "./icon";
+import { Text } from "./text";
 
 /**
  * One line in a list — the shape most of this app is made of.
@@ -44,31 +48,73 @@ export function ListRow({
   title,
   subtitle,
   value,
+  icon,
   accessory,
+  trailing = "none",
   onPress,
-  disabled,
+  disabled = false,
+  destructive = false,
   accessibilityLabel,
   testID,
 }: ListRowProps) {
+  const [pressed, setPressed] = useState(false);
+
+  styles.useVariants({ pressed: pressed && !disabled, disabled });
+
+  /*
+   * A row does not scale under the thumb. It sits between hairlines, and
+   * shrinking it drags the separators either side in with it — so the press
+   * feedback here is the background, which is what iOS does too.
+   */
   const body = (
-    <View>
-      <RNText>{title}</RNText>
-      {subtitle ? <RNText>{subtitle}</RNText> : null}
-      {value ? <RNText>{value}</RNText> : null}
+    <View style={styles.row}>
+      {icon ? <Icon name={icon} size="md" tone={destructive ? "danger" : "muted"} /> : null}
+
+      <View style={styles.textColumn}>
+        <Text variant="body" tone={destructive ? "danger" : "default"} numberOfLines={2}>
+          {title}
+        </Text>
+        {subtitle ? (
+          <Text variant="caption" tone="muted" numberOfLines={2}>
+            {subtitle}
+          </Text>
+        ) : null}
+      </View>
+
+      {value ? (
+        <Text variant="callout" tone="muted" align="end" numberOfLines={1}>
+          {value}
+        </Text>
+      ) : null}
+
       {accessory}
+
+      {/*
+       * `chevronEnd` and not a right-pointing one: it means "forward", and
+       * forward is leftward in Arabic. The registry mirrors it.
+       */}
+      {trailing === "chevron" ? <Icon name="chevronEnd" size="sm" tone="muted" /> : null}
     </View>
   );
 
   if (!onPress) {
     return (
-      <View accessibilityLabel={accessibilityLabel} testID={testID}>
+      <View
+        style={styles.surface}
+        accessibilityLabel={accessibilityLabel}
+        testID={testID}
+      >
         {body}
       </View>
     );
   }
+
   return (
     <Pressable
+      style={styles.surface}
       onPress={onPress}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
       disabled={disabled}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
@@ -79,3 +125,42 @@ export function ListRow({
     </Pressable>
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  surface: {
+    backgroundColor: theme.colors.surface,
+
+    variants: {
+      pressed: {
+        true: { backgroundColor: theme.colors.surfaceSunken },
+        false: {},
+      },
+      disabled: {
+        true: { opacity: theme.components.button.disabledOpacity },
+        false: {},
+      },
+    },
+  },
+  /*
+   * `minHeight`, never `height`. At the largest accessibility text size a
+   * two-line title needs three times this, and a fixed height would clip it —
+   * see the header of `theme/typography.ts` for why nothing here caps.
+   */
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    minHeight: theme.components.listRow.minHeight,
+    paddingHorizontal: theme.components.listRow.paddingInline,
+    paddingVertical: theme.components.listRow.paddingBlock,
+    gap: theme.components.listRow.gap,
+  },
+  /*
+   * The text column takes what is left after the icon and the trailing slots,
+   * and `flexShrink` lets a long value push it rather than overflow the row.
+   */
+  textColumn: {
+    flexGrow: 1,
+    flexShrink: 1,
+    gap: 2,
+  },
+}));

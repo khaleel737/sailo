@@ -1,15 +1,20 @@
 /**
- * The design system the app is built out of — the API, ahead of the styling.
+ * The design system the app is built out of.
  *
- * WHAT THIS PACKAGE IS RIGHT NOW
+ * WHAT THIS PACKAGE IS
  *
- * Twenty components with their final prop types and stub bodies. Every one of
- * them renders unstyled React Native primitives with the accessibility roles
- * and states already wired, and none of them has a colour, a radius or a font
- * size in it yet. That is on purpose: the screens can be written, typechecked
- * and run against these today, and the work that fills the bodies in — Unistyles
- * themes, the light and dark palettes, the motion — lands underneath them
- * without a single screen changing.
+ * Twenty components, themed for light and dark, sized off iOS's own text
+ * styles, and drawn out of three layers of tokens:
+ *
+ *   - raw — the ink, brand and status ramps in `@sailo/tokens`, shared with the
+ *     web so a green nudged in one place moves in both;
+ *   - semantic — `theme/palette.ts`, which answers "what colour is a card" once
+ *     per ground, with the contrast measured in `theme/palette.test.ts`;
+ *   - component — `theme/components.ts`, the measurements each component is
+ *     made of, including the 44pt touch target every control inherits.
+ *
+ * The arrangement A00 set up held: the screens were written against these prop
+ * types before any of this existed, and filling the bodies in changed no screen.
  *
  * **The prop types are frozen.** The whole arrangement only works if they are:
  * a screen written against `ListRow` today must still compile when `ListRow`
@@ -42,23 +47,40 @@
  */
 
 /**
- * A NOTE FOR WHOEVER ADDS THE STYLING
+ * WHAT THE APP HAS TO DO FOR THIS TO RUN
  *
- * `@sailo/tokens` is where the ramps and scales are, and it is deliberately not
- * a dependency of this package yet: nothing here has a colour in it, and a
- * declared-but-unused dependency is one the gate has to be argued out of.
- * Add it when the bodies get filled in.
+ * Unistyles 3 is built on Nitro Modules, so **Expo Go no longer works** — a dev
+ * client is mandatory from the commit that added this. Three things live in
+ * `apps/mobile`, which this package does not own and could not change:
  *
- * When you do, **also add it to `apps/mobile/package.json`**, even though no
- * screen imports it. `metro.config.js` sets `disableHierarchicalLookup`, so
- * Metro only looks in the app's own `node_modules` and the workspace root's —
- * and pnpm symlinks workspace packages per-package rather than at the root. A
- * `@sailo/*` package that only this one depends on is therefore invisible to
- * the bundler, and the failure is at bundle time rather than at typecheck: this
- * package typechecked clean for a full commit before `expo export` found it.
- * The same applies to every workspace package added anywhere in the app's
- * import graph. Third-party dependencies are fine — those do hoist to the root.
+ *   1. `babel.config.js` needs `react-native-unistyles/plugin` and
+ *      `react-native-worklets/plugin`. Neither library works without its
+ *      plugin, and both fail at runtime rather than at build.
+ *   2. `package.json` needs `@sailo/tokens` listed, even though no screen
+ *      imports it. `metro.config.js` sets `disableHierarchicalLookup`, so Metro
+ *      only looks in the app's own `node_modules` and the workspace root's —
+ *      and pnpm symlinks workspace packages per-package rather than at the
+ *      root. A `@sailo/*` package that only this one depends on is invisible to
+ *      the bundler, and the failure is at bundle time rather than at typecheck.
+ *      The same applies to every workspace package added anywhere in the app's
+ *      import graph. Third-party dependencies are fine — those hoist to the
+ *      root, which is how the five native libraries below are reached.
+ *   3. The five native modules need to be autolinked, which means the app has
+ *      to declare them too: `react-native-unistyles`, `react-native-nitro-modules`,
+ *      `react-native-edge-to-edge`, `react-native-reanimated` and
+ *      `react-native-worklets`, plus `react-native-svg` and `expo-symbols`.
+ *
+ * WHERE THE RUNTIME IS STARTED
+ *
+ * `./theme/unistyles` is imported below for its side effect, and it is imported
+ * *first*. `StyleSheet.configure` has to run before the first
+ * `StyleSheet.create`, every component calls `create` at module scope, and ES
+ * modules evaluate their dependencies in order — so a screen that imports
+ * `Button` from this package has already configured the runtime by the time
+ * `button.tsx` is evaluated. There is deliberately no `initTheme()` for a
+ * screen to call and forget.
  */
+import "./theme/unistyles";
 
 export { Avatar, type AvatarProps } from "./avatar";
 export { Button, type ButtonProps } from "./button";

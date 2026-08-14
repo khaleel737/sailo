@@ -109,6 +109,81 @@ export const space = {
 } as const;
 
 /**
+ * The four hues a status can be, and the one place they are written down.
+ *
+ * Native-only, for the same reason `space` is: the web already draws its
+ * badges out of Tailwind's own `emerald`, `amber`, `red` and `blue`
+ * (`apps/web/src/components/ui/feedback.tsx`), and emitting a `--color-red-*`
+ * override into `theme.css` would repaint every existing badge to make a point
+ * about where the value lives. So the web keeps reading Tailwind's ramps and
+ * the phone reads these, and `tokens.test.ts` fails if the two stop agreeing.
+ *
+ * The hexes are converted, not typed in. Tailwind 4 declares these in `oklch`,
+ * which React Native cannot parse, so the test re-derives them from
+ * `node_modules/tailwindcss/theme.css` and compares — which means a Tailwind
+ * upgrade that nudges a green is a red test rather than an admin and an app
+ * that quietly disagree about what "shipped" looks like.
+ *
+ * Named for the hue and not the meaning. Which step is a success message is a
+ * decision that differs between light and dark, and it belongs to the design
+ * system — see the header. This package only answers "what is emerald-700".
+ */
+export const status = {
+  emerald: {
+    50: "#ecfdf5",
+    100: "#d0fae5",
+    200: "#a4f4cf",
+    300: "#5ee9b5",
+    400: "#00d492",
+    500: "#00bc7d",
+    600: "#009966",
+    700: "#007a55",
+    800: "#006045",
+    900: "#004f3b",
+    950: "#002c22",
+  },
+  amber: {
+    50: "#fffbeb",
+    100: "#fef3c6",
+    200: "#fee685",
+    300: "#ffd230",
+    400: "#ffb900",
+    500: "#fe9a00",
+    600: "#e17100",
+    700: "#bb4d00",
+    800: "#973c00",
+    900: "#7b3306",
+    950: "#461901",
+  },
+  red: {
+    50: "#fef2f2",
+    100: "#ffe2e2",
+    200: "#ffc9c9",
+    300: "#ffa2a2",
+    400: "#ff6467",
+    500: "#fb2c36",
+    600: "#e7000b",
+    700: "#c10007",
+    800: "#9f0712",
+    900: "#82181a",
+    950: "#460809",
+  },
+  blue: {
+    50: "#eff6ff",
+    100: "#dbeafe",
+    200: "#bedbff",
+    300: "#8ec5ff",
+    400: "#51a2ff",
+    500: "#2b7fff",
+    600: "#155dfc",
+    700: "#1447e6",
+    800: "#193cb8",
+    900: "#1c398e",
+    950: "#162456",
+  },
+} as const;
+
+/**
  * Everything decelerates. Nothing here should feel like it is still
  * accelerating when it arrives.
  *
@@ -123,12 +198,39 @@ export const easing = {
   spring: [0.34, 1.56, 0.64, 1],
 } as const satisfies Record<string, readonly [number, number, number, number]>;
 
+/**
+ * How long, in milliseconds.
+ *
+ * Native-only, and the same figures `globals.css` gives its `--animate-*`
+ * shorthands: 280ms for a backdrop, 300ms for a fade, 320ms for a pop, 340ms
+ * for a sheet. Named for the job because the point of a shared scale is that a
+ * sheet on the phone takes as long to arrive as a sheet on the web.
+ *
+ * `instant` is not zero-as-a-mistake — it is what every duration collapses to
+ * when the reader has asked for reduced motion, and having a name for it is
+ * what stops that being spelled as a magic `0` in nine components.
+ */
+export const duration = {
+  instant: 0,
+  /** A press, a tint change — anything that must feel like a direct response. */
+  fast: 120,
+  /** The default. Fades, cross-dissolves. */
+  base: 300,
+  /** Something with a spring in it. */
+  pop: 320,
+  /** A sheet or a toast travelling a real distance. */
+  slow: 340,
+} as const;
+
 export type Ink = typeof ink;
 export type Brand = typeof brand;
+export type Status = typeof status;
+export type StatusHue = keyof Status;
 export type Radius = typeof radius;
 export type Space = typeof space;
 export type Easing = typeof easing;
 export type EasingName = keyof Easing;
+export type Duration = typeof duration;
 
 /**
  * The whole set as one object, which is the shape `@sailo/design-native` wants
@@ -140,10 +242,11 @@ export type EasingName = keyof Easing;
  * answers "what is ink-600"; it does not answer "what colour is a card".
  */
 export const theme = {
-  colors: { ink, brand },
+  colors: { ink, brand, status },
   radius,
   space,
   easing,
+  duration,
 } as const;
 
 export type Theme = typeof theme;
