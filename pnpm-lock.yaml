@@ -184,6 +184,9 @@ importers:
       '@next/third-parties':
         specifier: 16.3.0
         version: 16.3.0(next@16.3.0(@babel/core@7.29.7)(@playwright/test@1.62.1)(@types/node@20.19.43)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)
+      '@sailo/analytics':
+        specifier: workspace:*
+        version: link:../../packages/analytics
       '@sailo/commerce':
         specifier: workspace:*
         version: link:../../packages/commerce
@@ -365,6 +368,31 @@ importers:
       tsx:
         specifier: ^4.23.5
         version: 4.23.12
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(vite@8.2.1(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/analytics:
+    dependencies:
+      '@sailo/core':
+        specifier: workspace:*
+        version: link:../core
+      '@sailo/db':
+        specifier: workspace:*
+        version: link:../db
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(@neondatabase/serverless@1.1.0)(@types/pg@8.21.0)(kysely@0.29.5)
+    devDependencies:
+      '@sailo/config':
+        specifier: workspace:*
+        version: link:../config
+      oxlint:
+        specifier: ^1.77.0
+        version: 1.78.0
       typescript:
         specifier: ^5
         version: 5.9.3

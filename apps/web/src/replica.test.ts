@@ -133,9 +133,17 @@ describe("read replica", () => {
     /*
      * Not a blanket ban on new callers — an allowlist, so adding one is a
      * deliberate act that comes with reading the rules in `db/index.ts`.
+     *
+     * Scoped across the package boundary as well as this app's tree, the way
+     * `PRIMARY_ONLY` above already is. The dashboard reads left for
+     * @sailo/analytics when the phone grew an Insights tab, and reporting is
+     * reporting whichever app asks — but an app-source grep alone would have
+     * stopped seeing them, which is how a rule quietly starts measuring
+     * nothing. `src/lib/queries/analytics.ts` is a re-export now and holds no
+     * `getReadDb` of its own; the file that does is listed below it.
      */
     const allowed = new Set([
-      "src/lib/queries/analytics.ts",
+      "../../packages/analytics/src/queries.ts",
       "src/lib/hq/exports.ts",
       // The /hq dashboard: full-table counts over the three biggest tables,
       // behind `requireStaff`, informing nothing but what is on screen. The
@@ -145,7 +153,8 @@ describe("read replica", () => {
       // live in the @sailo/db package, outside this app's source tree, so it
       // no longer appears in an app-source grep.
     ]);
-    const actual = files("src").filter((f) => !f.endsWith(".test.ts"));
+    const actual = [...files("src"), ...files("../../packages/analytics/src")]
+      .filter((f) => !f.endsWith(".test.ts"));
     expect(actual.toSorted()).toEqual([...allowed].toSorted());
   });
 
