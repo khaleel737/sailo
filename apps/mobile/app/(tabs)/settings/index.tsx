@@ -67,7 +67,9 @@ export default function Settings() {
   return (
     <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Settings</Text>
+        <Text style={styles.title} accessibilityRole="header">
+          Settings
+        </Text>
 
         <Section title="Account">
           <Row label="Name" value={session?.user?.name || "—"} />
@@ -96,6 +98,18 @@ export default function Settings() {
               <Text style={styles.rowLabel}>Order alerts</Text>
               <Text style={styles.hint}>{explain(push)}</Text>
             </View>
+            {/*
+              The switch's name and its explanation are both drawn beside it,
+              which leaves the control itself anonymous — VoiceOver reaches it
+              and says "switch, off" with no clue what would be off. Naming it
+              here attaches both to the thing the seller actually operates.
+
+              The hint carries `explain()` verbatim, which is the sentence that
+              distinguishes "off" from "off, and this switch cannot fix it".
+              That distinction is the entire reason the line exists, and it is
+              worth nothing if it is read out three swipes away from the
+              control it is about.
+            */}
             <Switch
               value={push.enabled}
               /*
@@ -107,11 +121,28 @@ export default function Settings() {
               disabled={push.busy || push.blocked}
               onValueChange={(next) => void push.setEnabled(next)}
               trackColor={{ true: "#4f46e5", false: "#e5e7eb" }}
+              accessibilityLabel="Order alerts"
+              accessibilityHint={explain(push)}
+              accessibilityState={{
+                checked: push.enabled,
+                disabled: push.busy || push.blocked,
+                busy: push.busy,
+              }}
             />
           </View>
 
           {push.permission === "blocked" ? (
-            <Pressable style={styles.link} onPress={() => void openSystemSettings()}>
+            <Pressable
+              style={styles.link}
+              onPress={() => void openSystemSettings()}
+              accessibilityRole="button"
+              /*
+               * This one leaves the app. Saying so is the difference between a
+               * seller expecting a screen and a seller wondering why Sailo
+               * disappeared.
+               */
+              accessibilityHint="Leaves Sailo and opens your device settings"
+            >
               <Text style={styles.linkText}>Open iOS settings</Text>
             </Pressable>
           ) : null}
@@ -121,6 +152,8 @@ export default function Settings() {
           style={[styles.signOut, signingOut && styles.busy]}
           disabled={signingOut}
           onPress={() => void signOut()}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: signingOut, busy: signingOut }}
         >
           <Text style={styles.signOutText}>
             {signingOut ? "Signing out…" : "Sign out"}
@@ -153,15 +186,28 @@ function explain(push: ReturnType<typeof usePushSettings>): string {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+      <Text style={styles.sectionTitle} accessibilityRole="header">
+        {title}
+      </Text>
       <View style={styles.card}>{children}</View>
     </View>
   );
 }
 
+/**
+ * Label and value as one stop, for the same reason the order screen's rows are
+ * — and with one extra: `numberOfLines={1}` truncates a long email visually,
+ * and the accessible label deliberately carries the whole thing. Reading out a
+ * shortened address would be worse than useless to somebody checking which
+ * account they are signed in to.
+ */
 function Row({ label, value, last }: { label: string; value: string; last?: boolean }) {
   return (
-    <View style={[styles.row, last && styles.rowLast]}>
+    <View
+      style={[styles.row, last && styles.rowLast]}
+      accessible
+      accessibilityLabel={`${label}: ${value}`}
+    >
       <Text style={styles.rowLabel}>{label}</Text>
       <Text style={styles.rowValue} numberOfLines={1}>
         {value}

@@ -13,9 +13,23 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-nati
  * so a screen drops one in wherever its list would have gone.
  */
 
+/**
+ * A spinner is invisible to a screen reader.
+ *
+ * `ActivityIndicator` renders no text, so VoiceOver lands on an empty screen
+ * and says nothing — indistinguishable from the app having hung. The role and
+ * the label are what turn "nothing here" into "loading". Grouped with
+ * `accessible` so the optional caption is read as part of the same element
+ * rather than as a second stop after it.
+ */
 export function Loading({ label }: { label?: string }) {
   return (
-    <View style={styles.center}>
+    <View
+      style={styles.center}
+      accessible
+      accessibilityRole="progressbar"
+      accessibilityLabel={label ?? "Loading"}
+    >
       <ActivityIndicator color="#4f46e5" />
       {label ? <Text style={styles.muted}>{label}</Text> : null}
     </View>
@@ -40,11 +54,33 @@ export function ErrorState({
 }) {
   return (
     <View style={styles.center}>
-      <Text style={styles.error}>{message}</Text>
+      {/*
+        A failure that replaces the screen has to announce itself. A seller
+        whose focus was on the list gets moved nowhere by the swap, so without
+        this they are sitting on a screen that silently changed under them.
+        `alert` is what iOS reads on; `accessibilityLiveRegion` is the Android
+        half of the same instruction, and both are needed because neither
+        platform honours the other's.
+      */}
+      <Text
+        style={styles.error}
+        accessibilityRole="alert"
+        accessibilityLiveRegion="assertive"
+      >
+        {message}
+      </Text>
       <Pressable
         style={[styles.retry, retrying && styles.retryBusy]}
         disabled={retrying}
         onPress={onRetry}
+        accessibilityRole="button"
+        /*
+         * `busy` rather than only `disabled`: the difference the seller needs
+         * is "this is working on it" versus "this is not for you", and a
+         * button that only says disabled reads as the second when it means
+         * the first.
+         */
+        accessibilityState={{ disabled: Boolean(retrying), busy: Boolean(retrying) }}
       >
         <Text style={styles.retryText}>{retrying ? "Trying…" : "Try again"}</Text>
       </Pressable>
@@ -52,9 +88,15 @@ export function ErrorState({
   );
 }
 
+/**
+ * Title and hint are one thought, so they are one stop. Two separate elements
+ * make a seller swipe twice to learn one fact — and the hint on its own
+ * ("Orders from your shop will appear here") is meaningless without the title
+ * it explains.
+ */
 export function Empty({ title, hint }: { title: string; hint?: string }) {
   return (
-    <View style={styles.center}>
+    <View style={styles.center} accessible accessibilityRole="text">
       <Text style={styles.emptyTitle}>{title}</Text>
       {hint ? <Text style={styles.muted}>{hint}</Text> : null}
     </View>

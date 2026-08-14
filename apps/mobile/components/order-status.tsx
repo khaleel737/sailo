@@ -31,13 +31,30 @@ const TONES = {
   neutral: { bg: "#f3f4f6", fg: "#4b5563" },
 } as const;
 
+/**
+ * WHY THESE BADGES SAY WHAT THEY ARE, NOT JUST WHAT THEY SAY
+ *
+ * Tone is decoration and never the carrier: the word is always drawn, so a
+ * seller who cannot separate the amber pill from the green one still reads
+ * "Pending" and "Confirmed". That much the markup already got right.
+ *
+ * What it did not carry is *which question* the word answers. The detail
+ * screen puts an order badge and a payment badge side by side, and VoiceOver
+ * reads them as two bare adjectives — "Confirmed, Paid" — with nothing saying
+ * which is which. The label supplies the missing half. It is the same
+ * dictionary the visible word comes from, so the two cannot drift.
+ */
 export function OrderStatusBadge({ status }: { status: string }) {
   const tone = TONES[orderStatusTone(status)] ?? TONES.neutral;
+  const label = orderStatusLabel(status, ORDER_STATUS_LABELS);
   return (
-    <View style={[styles.badge, { backgroundColor: tone.bg }]}>
-      <Text style={[styles.badgeText, { color: tone.fg }]}>
-        {orderStatusLabel(status, ORDER_STATUS_LABELS)}
-      </Text>
+    <View
+      style={[styles.badge, { backgroundColor: tone.bg }]}
+      accessible
+      accessibilityRole="text"
+      accessibilityLabel={`${adminEn.orders.statusLabel}: ${label}`}
+    >
+      <Text style={[styles.badgeText, { color: tone.fg }]}>{label}</Text>
     </View>
   );
 }
@@ -67,7 +84,12 @@ export function PaymentStatusBadge({ status }: { status: string }) {
   const label =
     PAYMENT_STATUS_LABELS[status as keyof typeof PAYMENT_STATUS_LABELS] ?? status;
   return (
-    <View style={[styles.badge, { backgroundColor: tone.bg }]}>
+    <View
+      style={[styles.badge, { backgroundColor: tone.bg }]}
+      accessible
+      accessibilityRole="text"
+      accessibilityLabel={`${adminEn.orders.paymentStatusLabel}: ${label}`}
+    >
       <Text style={[styles.badgeText, { color: tone.fg }]}>{label}</Text>
     </View>
   );
