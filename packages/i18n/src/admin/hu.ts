@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminHu: PartialAdminDictionary = {
+  insights: {
+    title: "Elemzés",
+    rangeLabel: "Időszak",
+    rangeDays: "{days} nap",
+    lastDays: "Utolsó {days} nap",
+    customRange: "{from} – {to}",
+    locked: "A {days} napos előzmény a(z) {plan} csomagban van",
+    lockedBody: "A hosszabb előzmény fizetős csomaggal jár, több termékkel és saját arculattal együtt. A meglévő időszakai továbbra is működnek.",
+    clamped: "A csomagja {days} napra nyúlik vissza, tehát ezek a számok ezt az időszakot fedik le.",
+    vsPrevious: "Az azt megelőző {days} naphoz mérve",
+    noPrevious: "A csomagja nem ér el korábbi időszakot, így nincs mihez hasonlítani",
+    fromNothing: "nulláról felfelé",
+    chartTail: "A diagram az utolsó {days} napot rajzolja ki. A fenti számok mind a(z) {total} napot számolják.",
+    tooLittle: "Még nincs elég a diagramhoz",
+    tooLittleBody: "Egy nap adata pont, nem tendencia. Akkor lesz belőle diagram, ha két napban is van valami.",
+    revenueChartLabel: "Napi bevétel, {from} és {to} között.",
+    visitsChartLabel: "Napi látogatás, {from} és {to} között.",
+    topOnly: "A(z) {count} leggyakoribb — lehet, hogy több is van.",
+    nothingYet: "Még nincs mit mérni",
+    nothingYetBody: "Amint a boltjának látogatói és rendelései lesznek, ez a fül megmutatja, hogyan áll.",
+    failed: "Nem sikerült betölteni a számait.",
+    retry: "Próbálja újra",
+    dayFormat: "Év-hónap-nap formában, például {example}.",
+    earliest: "A csomagja eddig nyúlik vissza: {day}.",
+    inverted: "A második napnak az első után kell lennie.",
+    close: "Bezárás",
+  },
+
   traffic: {
     geoEdge: "A földrajzi adat a peremen dől el — akkor jelenik meg, ha a boltod élesben fut.",
     noLocation: "Még nincs helyadat.",

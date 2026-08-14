@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminEs: PartialAdminDictionary = {
+  insights: {
+    title: "Estadísticas",
+    rangeLabel: "Periodo",
+    rangeDays: "{days} días",
+    lastDays: "Últimos {days} días",
+    customRange: "{from} – {to}",
+    locked: "El historial de {days} días está en {plan}",
+    lockedBody: "Un historial más largo viene con un plan de pago, junto con más productos y tu propia marca. Los periodos que ya tienes siguen funcionando.",
+    clamped: "Tu plan llega {days} días atrás, así que ese es el periodo que cubren estas cifras.",
+    vsPrevious: "Comparado con los {days} días anteriores",
+    noPrevious: "Tu plan no alcanza un periodo anterior, así que no hay nada con qué comparar",
+    fromNothing: "sube desde cero",
+    chartTail: "El gráfico dibuja los últimos {days} días. Las cifras de arriba cuentan los {total}.",
+    tooLittle: "Aún no hay suficiente para un gráfico",
+    tooLittleBody: "Un día de cifras es un punto, no una tendencia. Esto pasa a ser un gráfico en cuanto dos días tengan algo dentro.",
+    revenueChartLabel: "Ingresos por día, del {from} al {to}.",
+    visitsChartLabel: "Visitas por día, del {from} al {to}.",
+    topOnly: "Los {count} más frecuentes — puede haber más.",
+    nothingYet: "Todavía no hay nada que medir",
+    nothingYetBody: "En cuanto tu tienda tenga visitantes y pedidos, esta pestaña muestra cómo le va.",
+    failed: "No se pudieron cargar tus cifras.",
+    retry: "Reintentar",
+    dayFormat: "Usa año-mes-día, por ejemplo {example}.",
+    earliest: "Tu plan llega hasta el {day}.",
+    inverted: "El segundo día tiene que ir después del primero.",
+    close: "Cerrar",
+  },
+
   traffic: {
     geoEdge: "La geolocalización se resuelve en el edge — aparece en cuanto tu tienda está en línea.",
     noLocation: "Aún no hay datos de ubicación.",

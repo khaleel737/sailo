@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminFil: PartialAdminDictionary = {
+  insights: {
+    title: "Mga Insight",
+    rangeLabel: "Saklaw ng panahon",
+    rangeDays: "{days} araw",
+    lastDays: "Huling {days} araw",
+    customRange: "{from} – {to}",
+    locked: "Ang {days} araw na kasaysayan ay nasa {plan}",
+    lockedBody: "Kasama ang mas mahabang kasaysayan sa bayad na plano, pati na ang mas maraming produkto at sarili mong branding. Patuloy pa ring gumagana ang mga saklaw na mayroon ka.",
+    clamped: "Umaabot ang plano mo ng {days} araw pabalik, kaya iyon ang panahong saklaw ng mga numerong ito.",
+    vsPrevious: "Kumpara sa nakaraang {days} araw",
+    noPrevious: "Walang mas naunang panahon na maaabot ng plano mo, kaya walang maihahambing",
+    fromNothing: "taas mula sa wala",
+    chartTail: "Ang huling {days} araw ang iginuguhit ng tsart. Binibilang ng mga numero sa itaas ang buong {total}.",
+    tooLittle: "Kulang pa para sa tsart",
+    tooLittleBody: "Ang isang araw na datos ay tuldok, hindi tunguhin. Magiging tsart ito kapag may laman na ang dalawang araw.",
+    revenueChartLabel: "Kita bawat araw, {from} hanggang {to}.",
+    visitsChartLabel: "Bisita bawat araw, {from} hanggang {to}.",
+    topOnly: "Ang {count} pinakakaraniwan — maaaring may iba pa.",
+    nothingYet: "Wala pang masusukat",
+    nothingYetBody: "Kapag may bisita at order na ang tindahan mo, ipapakita ng tab na ito kung kumusta ito.",
+    failed: "Hindi makuha ang mga numero mo.",
+    retry: "Subukan ulit",
+    dayFormat: "Gamitin ang taon-buwan-araw, tulad ng {example}.",
+    earliest: "Umaabot ang plano mo hanggang {day}.",
+    inverted: "Kailangang mas huli ang pangalawang araw kaysa sa una.",
+    close: "Isara",
+  },
+
   variants: {
     untick: "Alisin ang tsek",
     notSold: "Hindi ibinebenta ang kombinasyong ito",

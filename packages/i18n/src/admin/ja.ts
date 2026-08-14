@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminJa: PartialAdminDictionary = {
+  insights: {
+    title: "分析",
+    rangeLabel: "期間",
+    rangeDays: "{days}日",
+    lastDays: "直近{days}日",
+    customRange: "{from} – {to}",
+    locked: "{days}日分の履歴は{plan}プランに含まれます",
+    lockedBody: "より長い履歴は有料プランに含まれ、商品数の上限や独自ブランド表示も一緒に増えます。今お使いの期間はそのまま使えます。",
+    clamped: "ご利用のプランは{days}日前までさかのぼれるため、これらの数値はその期間のものです。",
+    vsPrevious: "その前の{days}日間との比較",
+    noPrevious: "プランでさかのぼれる前の期間がないため、比較できません",
+    fromNothing: "ゼロからの増加",
+    chartTail: "グラフは直近{days}日分を描いています。上の数値は{total}日分すべてを数えています。",
+    tooLittle: "グラフにするにはまだ足りません",
+    tooLittleBody: "1日分の数値は点であって傾向ではありません。2日分に中身が入った時点でグラフになります。",
+    revenueChartLabel: "1日あたりの売上、{from}から{to}まで。",
+    visitsChartLabel: "1日あたりの訪問数、{from}から{to}まで。",
+    topOnly: "上位{count}件です。ほかにもある場合があります。",
+    nothingYet: "まだ測るものがありません",
+    nothingYetBody: "ショップに訪問者と注文が入ると、このタブが状況を表示します。",
+    failed: "数値を読み込めませんでした。",
+    retry: "再試行",
+    dayFormat: "年-月-日の形式で入力してください（例：{example}）。",
+    earliest: "ご利用のプランは {day} までさかのぼれます。",
+    inverted: "2つ目の日付は1つ目より後にしてください。",
+    close: "閉じる",
+  },
+
   traffic: {
     geoEdge: "地域はエッジで判定されます — ショップが公開されると表示されます。",
     noLocation: "まだ地域データはありません。",

@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminRo: PartialAdminDictionary = {
+  insights: {
+    title: "Statistici",
+    rangeLabel: "Interval de timp",
+    rangeDays: "{days} zile",
+    lastDays: "Ultimele {days} zile",
+    customRange: "{from} – {to}",
+    locked: "Istoricul de {days} zile este în planul {plan}",
+    lockedBody: "Istoricul mai lung vine cu un plan plătit, împreună cu mai multe produse și brandul tău. Intervalele pe care le ai funcționează în continuare.",
+    clamped: "Planul tău ajunge cu {days} zile în urmă, deci aceasta este perioada acoperită de aceste cifre.",
+    vsPrevious: "Față de cele {days} zile dinainte",
+    noPrevious: "Planul tău nu ajunge la o perioadă anterioară, deci nu există cu ce compara",
+    fromNothing: "în creștere de la zero",
+    chartTail: "Graficul desenează ultimele {days} zile. Cifrele de mai sus numără toate cele {total}.",
+    tooLittle: "Încă nu e destul pentru un grafic",
+    tooLittleBody: "O zi de cifre este un punct, nu o tendință. Devine grafic imediat ce două zile au ceva în ele.",
+    revenueChartLabel: "Venit pe zi, de la {from} la {to}.",
+    visitsChartLabel: "Vizite pe zi, de la {from} la {to}.",
+    topOnly: "Cele mai frecvente {count} — pot fi mai multe.",
+    nothingYet: "Încă nu e nimic de măsurat",
+    nothingYetBody: "Imediat ce magazinul tău are vizitatori și comenzi, această filă arată cum merge.",
+    failed: "Cifrele tale nu au putut fi încărcate.",
+    retry: "Încearcă din nou",
+    dayFormat: "Folosește an-lună-zi, de exemplu {example}.",
+    earliest: "Planul tău ajunge până la {day}.",
+    inverted: "A doua zi trebuie să vină după prima.",
+    close: "Închide",
+  },
+
   traffic: {
     geoEdge: "Geolocalizarea se rezolvă la margine — apare de îndată ce magazinul tău e live.",
     noLocation: "Încă niciun fel de date de localizare.",

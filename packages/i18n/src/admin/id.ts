@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminId: PartialAdminDictionary = {
+  insights: {
+    title: "Wawasan",
+    rangeLabel: "Rentang waktu",
+    rangeDays: "{days} hari",
+    lastDays: "{days} hari terakhir",
+    customRange: "{from} – {to}",
+    locked: "Riwayat {days} hari ada di {plan}",
+    lockedBody: "Riwayat yang lebih panjang hadir bersama paket berbayar, beserta lebih banyak produk dan merek Anda sendiri. Rentang yang sudah Anda miliki tetap berjalan.",
+    clamped: "Paket Anda menjangkau {days} hari ke belakang, jadi itulah periode yang dicakup angka-angka ini.",
+    vsPrevious: "Dibandingkan dengan {days} hari sebelumnya",
+    noPrevious: "Paket Anda tidak menjangkau periode sebelumnya, jadi tidak ada pembandingnya",
+    fromNothing: "naik dari nol",
+    chartTail: "Grafik menggambar {days} hari terakhir. Angka di atas menghitung seluruh {total} hari.",
+    tooLittle: "Belum cukup untuk grafik",
+    tooLittleBody: "Satu hari angka adalah titik, bukan tren. Ini menjadi grafik begitu dua hari punya isi.",
+    revenueChartLabel: "Pendapatan per hari, {from} sampai {to}.",
+    visitsChartLabel: "Kunjungan per hari, {from} sampai {to}.",
+    topOnly: "{count} yang paling umum — mungkin masih ada lagi.",
+    nothingYet: "Belum ada yang bisa diukur",
+    nothingYetBody: "Begitu toko Anda punya pengunjung dan pesanan, tab ini menunjukkan bagaimana kinerjanya.",
+    failed: "Angka Anda gagal dimuat.",
+    retry: "Coba lagi",
+    dayFormat: "Gunakan tahun-bulan-hari, misalnya {example}.",
+    earliest: "Paket Anda menjangkau sampai {day}.",
+    inverted: "Hari kedua harus setelah hari pertama.",
+    close: "Tutup",
+  },
+
   variants: {
     untick: "Hapus centang",
     notSold: "Kombinasi ini tidak dijual",

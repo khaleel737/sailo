@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminMs: PartialAdminDictionary = {
+  insights: {
+    title: "Analitik",
+    rangeLabel: "Julat masa",
+    rangeDays: "{days} hari",
+    lastDays: "{days} hari lepas",
+    customRange: "{from} – {to}",
+    locked: "Sejarah {days} hari ada pada {plan}",
+    lockedBody: "Sejarah yang lebih panjang datang dengan pelan berbayar, bersama lebih banyak produk dan penjenamaan anda sendiri. Julat yang anda ada terus berfungsi.",
+    clamped: "Pelan anda mencapai {days} hari ke belakang, jadi itulah tempoh yang diliputi angka ini.",
+    vsPrevious: "Berbanding {days} hari sebelumnya",
+    noPrevious: "Pelan anda tidak mencapai tempoh terdahulu, jadi tiada apa untuk dibandingkan",
+    fromNothing: "naik dari sifar",
+    chartTail: "Carta melukis {days} hari terakhir. Angka di atas mengira kesemua {total} hari.",
+    tooLittle: "Belum cukup untuk carta",
+    tooLittleBody: "Sehari angka ialah satu titik, bukan aliran. Ini menjadi carta sebaik dua hari mempunyai isinya.",
+    revenueChartLabel: "Hasil sehari, {from} hingga {to}.",
+    visitsChartLabel: "Lawatan sehari, {from} hingga {to}.",
+    topOnly: "{count} yang paling lazim — mungkin ada lagi.",
+    nothingYet: "Belum ada apa-apa untuk diukur",
+    nothingYetBody: "Sebaik kedai anda mempunyai pelawat dan pesanan, tab ini menunjukkan prestasinya.",
+    failed: "Angka anda tidak dapat dimuatkan.",
+    retry: "Cuba lagi",
+    dayFormat: "Gunakan tahun-bulan-hari, contohnya {example}.",
+    earliest: "Pelan anda mencapai sehingga {day}.",
+    inverted: "Hari kedua mesti selepas hari pertama.",
+    close: "Tutup",
+  },
+
   variants: {
     untick: "Nyahtanda",
     notSold: "Kombinasi ini tidak dijual",

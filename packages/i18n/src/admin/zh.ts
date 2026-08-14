@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminZh: PartialAdminDictionary = {
+  insights: {
+    title: "数据",
+    rangeLabel: "时间范围",
+    rangeDays: "{days} 天",
+    lastDays: "最近 {days} 天",
+    customRange: "{from} – {to}",
+    locked: "{days} 天的历史数据属于 {plan} 方案",
+    lockedBody: "更长的历史数据随付费方案提供，同时还有更多商品位和你自己的品牌样式。你现有的时间范围照常可用。",
+    clamped: "你的方案可回溯 {days} 天，所以这些数字覆盖的就是这段时间。",
+    vsPrevious: "与之前 {days} 天相比",
+    noPrevious: "你的方案回溯不到更早的时段，因此没有可比较的对象",
+    fromNothing: "从零增长",
+    chartTail: "图表绘制的是最近 {days} 天。上方数字统计的是全部 {total} 天。",
+    tooLittle: "数据还不够画图",
+    tooLittleBody: "一天的数字是一个点，不是趋势。等有两天出现数据后，这里就会变成图表。",
+    revenueChartLabel: "每日收入，{from} 至 {to}。",
+    visitsChartLabel: "每日访问，{from} 至 {to}。",
+    topOnly: "最常见的 {count} 项 — 可能还有更多。",
+    nothingYet: "还没有可衡量的数据",
+    nothingYetBody: "当你的店铺有了访客和订单，这个标签页就会显示经营情况。",
+    failed: "无法加载你的数据。",
+    retry: "重试",
+    dayFormat: "请使用年-月-日格式，例如 {example}。",
+    earliest: "你的方案可回溯至 {day}。",
+    inverted: "第二个日期必须晚于第一个。",
+    close: "关闭",
+  },
+
   traffic: {
     geoEdge: "地理位置在边缘节点解析 — 店铺上线后即可显示。",
     noLocation: "还没有位置数据。",

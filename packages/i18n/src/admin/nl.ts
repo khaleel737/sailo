@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminNl: PartialAdminDictionary = {
+  insights: {
+    title: "Inzichten",
+    rangeLabel: "Periode",
+    rangeDays: "{days} dagen",
+    lastDays: "Laatste {days} dagen",
+    customRange: "{from} – {to}",
+    locked: "{days} dagen geschiedenis zit in {plan}",
+    lockedBody: "Langere geschiedenis hoort bij een betaald pakket, samen met meer producten en je eigen merk. De periodes die je hebt blijven gewoon werken.",
+    clamped: "Je pakket reikt {days} dagen terug, dus dat is de periode die deze cijfers beslaan.",
+    vsPrevious: "Vergeleken met de {days} dagen ervoor",
+    noPrevious: "Je pakket reikt niet tot een eerdere periode, dus er valt niets te vergelijken",
+    fromNothing: "omhoog vanaf nul",
+    chartTail: "De grafiek tekent de laatste {days} dagen. De cijfers hierboven tellen alle {total}.",
+    tooLittle: "Nog niet genoeg voor een grafiek",
+    tooLittleBody: "Eén dag cijfers is een punt, geen trend. Dit wordt een grafiek zodra twee dagen iets bevatten.",
+    revenueChartLabel: "Omzet per dag, {from} tot {to}.",
+    visitsChartLabel: "Bezoeken per dag, {from} tot {to}.",
+    topOnly: "De {count} meest voorkomende — er kunnen er meer zijn.",
+    nothingYet: "Nog niets te meten",
+    nothingYetBody: "Zodra je winkel bezoekers en bestellingen heeft, laat dit tabblad zien hoe het gaat.",
+    failed: "Je cijfers konden niet worden geladen.",
+    retry: "Opnieuw proberen",
+    dayFormat: "Gebruik jaar-maand-dag, bijvoorbeeld {example}.",
+    earliest: "Je pakket reikt terug tot {day}.",
+    inverted: "De tweede dag moet na de eerste liggen.",
+    close: "Sluiten",
+  },
+
   traffic: {
     geoEdge: "Locatiegegevens worden aan de edge bepaald — ze verschijnen zodra je winkel online staat.",
     noLocation: "Nog geen locatiegegevens.",

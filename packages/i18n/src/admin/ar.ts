@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminAr: PartialAdminDictionary = {
+  insights: {
+    title: "الإحصاءات",
+    rangeLabel: "النطاق الزمني",
+    rangeDays: "{days} يوم",
+    lastDays: "آخر {days} يوم",
+    customRange: "{from} – {to}",
+    locked: "سجل {days} يوم متاح في باقة {plan}",
+    lockedBody: "يأتي السجل الأطول مع الباقات المدفوعة، إلى جانب منتجات أكثر وهويتك الخاصة. والنطاقات المتاحة لديك تبقى تعمل كما هي.",
+    clamped: "تصل باقتك إلى {days} يوم مضت، لذا هذه هي الفترة التي تغطيها هذه الأرقام.",
+    vsPrevious: "مقارنةً بالـ {days} يوم السابقة",
+    noPrevious: "لا توجد فترة سابقة تصل إليها باقتك، فلا شيء للمقارنة به",
+    fromNothing: "ارتفاع من لا شيء",
+    chartTail: "يرسم المخطط آخر {days} يوم. أما الأرقام أعلاه فتحتسب الـ {total} يوم كاملة.",
+    tooLittle: "لا توجد بيانات كافية للرسم بعد",
+    tooLittleBody: "يوم واحد من الأرقام نقطة وليس اتجاهاً. يتحوّل هذا إلى مخطط بمجرد أن يحتوي يومان على بيانات.",
+    revenueChartLabel: "الإيرادات لكل يوم، من {from} إلى {to}.",
+    visitsChartLabel: "الزيارات لكل يوم، من {from} إلى {to}.",
+    topOnly: "الأكثر شيوعاً: {count} — وقد يكون هناك المزيد.",
+    nothingYet: "لا شيء لقياسه بعد",
+    nothingYetBody: "بمجرد أن يصبح لمتجرك زوّار وطلبات، تعرض هذه التبويبة أداءه.",
+    failed: "تعذّر تحميل أرقامك.",
+    retry: "أعد المحاولة",
+    dayFormat: "استخدم صيغة سنة-شهر-يوم، مثل {example}.",
+    earliest: "تصل باقتك إلى {day}.",
+    inverted: "يجب أن يأتي اليوم الثاني بعد الأول.",
+    close: "إغلاق",
+  },
+
   traffic: {
     geoEdge: "يُحدَّد الموقع الجغرافي على الحافة — ويظهر بمجرد أن يصبح متجرك على الإنترنت.",
     noLocation: "لا بيانات موقع بعد.",

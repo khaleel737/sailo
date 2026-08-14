@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminDa: PartialAdminDictionary = {
+  insights: {
+    title: "Indsigt",
+    rangeLabel: "Tidsrum",
+    rangeDays: "{days} dage",
+    lastDays: "Seneste {days} dage",
+    customRange: "{from} – {to}",
+    locked: "{days} dages historik følger med {plan}",
+    lockedBody: "Længere historik følger med en betalt plan sammen med flere produkter og dit eget brand. De perioder, du har, virker fortsat.",
+    clamped: "Din plan rækker {days} dage tilbage, så det er den periode, disse tal dækker.",
+    vsPrevious: "Sammenlignet med de {days} dage før",
+    noPrevious: "Din plan når ikke tilbage til en tidligere periode, så der er intet at sammenligne med",
+    fromNothing: "op fra ingenting",
+    chartTail: "Grafen tegner de seneste {days} dage. Tallene ovenfor tæller alle {total}.",
+    tooLittle: "Ikke nok endnu til en graf",
+    tooLittleBody: "Én dags tal er en prik, ikke en tendens. Det bliver en graf, så snart to dage har noget i sig.",
+    revenueChartLabel: "Omsætning pr. dag, fra {from} til {to}.",
+    visitsChartLabel: "Besøg pr. dag, fra {from} til {to}.",
+    topOnly: "De {count} hyppigste — der kan være flere.",
+    nothingYet: "Der er endnu intet at måle",
+    nothingYetBody: "Så snart din butik har besøgende og ordrer, viser denne fane, hvordan det går.",
+    failed: "Dine tal kunne ikke hentes.",
+    retry: "Prøv igen",
+    dayFormat: "Brug år-måned-dag, for eksempel {example}.",
+    earliest: "Din plan rækker tilbage til {day}.",
+    inverted: "Den anden dag skal ligge efter den første.",
+    close: "Luk",
+  },
+
   traffic: {
     geoEdge: "Geografi bestemmes på kanten — det dukker op, når din shop er live.",
     noLocation: "Ingen placeringsdata endnu.",

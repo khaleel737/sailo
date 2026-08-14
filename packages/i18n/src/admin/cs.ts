@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminCs: PartialAdminDictionary = {
+  insights: {
+    title: "Přehledy",
+    rangeLabel: "Časové období",
+    rangeDays: "{days} dní",
+    lastDays: "Posledních {days} dní",
+    customRange: "{from} – {to}",
+    locked: "{days} dní historie je v tarifu {plan}",
+    lockedBody: "Delší historie patří k placenému tarifu, spolu s více produkty a vlastní značkou. Období, která máte, fungují dál.",
+    clamped: "Váš tarif sahá {days} dní zpět, takže to je období, které tato čísla pokrývají.",
+    vsPrevious: "Oproti předchozím {days} dnům",
+    noPrevious: "Váš tarif nedosáhne na dřívější období, takže není s čím porovnat",
+    fromNothing: "nárůst z nuly",
+    chartTail: "Graf vykresluje posledních {days} dní. Čísla nahoře počítají všech {total}.",
+    tooLittle: "Zatím není dost na graf",
+    tooLittleBody: "Jeden den čísel je bod, ne trend. Graf z toho bude, jakmile budou mít obsah dva dny.",
+    revenueChartLabel: "Tržby za den, od {from} do {to}.",
+    visitsChartLabel: "Návštěvy za den, od {from} do {to}.",
+    topOnly: "{count} nejčastějších — může jich být víc.",
+    nothingYet: "Zatím není co měřit",
+    nothingYetBody: "Jakmile bude mít váš obchod návštěvníky a objednávky, tato záložka ukáže, jak si vede.",
+    failed: "Vaše čísla se nepodařilo načíst.",
+    retry: "Zkusit znovu",
+    dayFormat: "Použijte rok-měsíc-den, například {example}.",
+    earliest: "Váš tarif sahá k {day}.",
+    inverted: "Druhý den musí být až po prvním.",
+    close: "Zavřít",
+  },
+
   traffic: {
     geoEdge: "Geolokace se určuje na okraji sítě — objeví se, jakmile bude váš obchod online.",
     noLocation: "Zatím žádná data o poloze.",

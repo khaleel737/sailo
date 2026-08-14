@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminSq: PartialAdminDictionary = {
+  insights: {
+    title: "Statistika",
+    rangeLabel: "Intervali kohor",
+    rangeDays: "{days} ditë",
+    lastDays: "{days} ditët e fundit",
+    customRange: "{from} – {to}",
+    locked: "Historiku {days} ditor është te {plan}",
+    lockedBody: "Historiku më i gjatë vjen me një plan me pagesë, bashkë me më shumë produkte dhe markën tuaj. Intervalet që keni vazhdojnë të punojnë.",
+    clamped: "Plani juaj arrin {days} ditë prapa, ndaj kjo është periudha që mbulojnë këto shifra.",
+    vsPrevious: "Krahasuar me {days} ditët përpara",
+    noPrevious: "Plani juaj nuk arrin te një periudhë e mëparshme, ndaj nuk ka me çfarë të krahasohet",
+    fromNothing: "rritje nga zeroja",
+    chartTail: "Grafiku vizaton {days} ditët e fundit. Shifrat lart numërojnë të gjitha {total}.",
+    tooLittle: "Ende jo mjaftueshëm për grafik",
+    tooLittleBody: "Një ditë shifrash është një pikë, jo një prirje. Kjo bëhet grafik sapo dy ditë të kenë diçka brenda.",
+    revenueChartLabel: "Të ardhurat për ditë, nga {from} deri më {to}.",
+    visitsChartLabel: "Vizitat për ditë, nga {from} deri më {to}.",
+    topOnly: "{count} më të shpeshtat — mund të ketë më shumë.",
+    nothingYet: "Ende s'ka çfarë të matet",
+    nothingYetBody: "Sapo dyqani juaj të ketë vizitorë dhe porosi, kjo skedë tregon si po shkon.",
+    failed: "Shifrat tuaja nuk u ngarkuan dot.",
+    retry: "Provoni sërish",
+    dayFormat: "Përdorni vit-muaj-ditë, për shembull {example}.",
+    earliest: "Plani juaj arrin deri më {day}.",
+    inverted: "Dita e dytë duhet të vijë pas së parës.",
+    close: "Mbyll",
+  },
+
   variants: {
     untick: "Hiq shenjën",
     notSold: "Ky kombinim nuk shitet",

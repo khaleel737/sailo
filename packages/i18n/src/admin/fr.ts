@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminFr: PartialAdminDictionary = {
+  insights: {
+    title: "Statistiques",
+    rangeLabel: "Période",
+    rangeDays: "{days} jours",
+    lastDays: "{days} derniers jours",
+    customRange: "{from} – {to}",
+    locked: "L'historique de {days} jours est inclus dans {plan}",
+    lockedBody: "Un historique plus long vient avec une formule payante, avec davantage de produits et votre propre identité visuelle. Les périodes dont vous disposez continuent de fonctionner.",
+    clamped: "Votre formule remonte à {days} jours : c'est donc la période que couvrent ces chiffres.",
+    vsPrevious: "Comparé aux {days} jours précédents",
+    noPrevious: "Votre formule ne remonte pas jusqu'à une période antérieure, il n'y a donc rien à comparer",
+    fromNothing: "en hausse depuis zéro",
+    chartTail: "Le graphique trace les {days} derniers jours. Les chiffres ci-dessus comptent les {total} jours.",
+    tooLittle: "Pas encore assez pour un graphique",
+    tooLittleBody: "Un jour de chiffres est un point, pas une tendance. Cela devient un graphique dès que deux jours contiennent quelque chose.",
+    revenueChartLabel: "Recettes par jour, du {from} au {to}.",
+    visitsChartLabel: "Visites par jour, du {from} au {to}.",
+    topOnly: "Les {count} plus fréquents — il peut y en avoir d'autres.",
+    nothingYet: "Rien à mesurer pour l'instant",
+    nothingYetBody: "Dès que votre boutique aura des visiteurs et des commandes, cet onglet montrera comment elle se porte.",
+    failed: "Impossible de charger vos chiffres.",
+    retry: "Réessayer",
+    dayFormat: "Utilisez année-mois-jour, par exemple {example}.",
+    earliest: "Votre formule remonte jusqu'au {day}.",
+    inverted: "Le second jour doit venir après le premier.",
+    close: "Fermer",
+  },
+
   traffic: {
     geoEdge: "La géolocalisation est résolue en périphérie — elle apparaît dès que votre boutique est en ligne.",
     noLocation: "Pas encore de données de localisation.",

@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminVi: PartialAdminDictionary = {
+  insights: {
+    title: "Thống kê",
+    rangeLabel: "Khoảng thời gian",
+    rangeDays: "{days} ngày",
+    lastDays: "{days} ngày gần nhất",
+    customRange: "{from} – {to}",
+    locked: "Lịch sử {days} ngày có ở gói {plan}",
+    lockedBody: "Lịch sử dài hơn đi kèm gói trả phí, cùng với nhiều sản phẩm hơn và thương hiệu riêng của bạn. Các khoảng thời gian bạn đang có vẫn hoạt động.",
+    clamped: "Gói của bạn xem lại được {days} ngày, nên đó là khoảng thời gian mà những con số này bao phủ.",
+    vsPrevious: "So với {days} ngày trước đó",
+    noPrevious: "Gói của bạn không xem lại được kỳ trước đó, nên không có gì để so sánh",
+    fromNothing: "tăng từ số không",
+    chartTail: "Biểu đồ vẽ {days} ngày gần nhất. Các con số phía trên tính đủ {total} ngày.",
+    tooLittle: "Chưa đủ để vẽ biểu đồ",
+    tooLittleBody: "Một ngày số liệu là một điểm, không phải xu hướng. Nó thành biểu đồ ngay khi có hai ngày có dữ liệu.",
+    revenueChartLabel: "Doanh thu mỗi ngày, từ {from} đến {to}.",
+    visitsChartLabel: "Lượt truy cập mỗi ngày, từ {from} đến {to}.",
+    topOnly: "{count} mục phổ biến nhất — có thể còn nữa.",
+    nothingYet: "Chưa có gì để đo",
+    nothingYetBody: "Ngay khi cửa hàng của bạn có khách và đơn hàng, tab này sẽ cho biết tình hình.",
+    failed: "Không tải được số liệu của bạn.",
+    retry: "Thử lại",
+    dayFormat: "Dùng định dạng năm-tháng-ngày, ví dụ {example}.",
+    earliest: "Gói của bạn xem lại được đến {day}.",
+    inverted: "Ngày thứ hai phải sau ngày thứ nhất.",
+    close: "Đóng",
+  },
+
   variants: {
     untick: "Bỏ chọn",
     notSold: "Tổ hợp này không được bán",

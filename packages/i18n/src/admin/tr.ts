@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminTr: PartialAdminDictionary = {
+  insights: {
+    title: "İstatistikler",
+    rangeLabel: "Zaman aralığı",
+    rangeDays: "{days} gün",
+    lastDays: "Son {days} gün",
+    customRange: "{from} – {to}",
+    locked: "{days} günlük geçmiş {plan} planında",
+    lockedBody: "Daha uzun geçmiş ücretli planla birlikte gelir; yanında daha fazla ürün ve kendi markanız da. Elinizdeki aralıklar çalışmaya devam eder.",
+    clamped: "Planınız {days} gün geriye uzanıyor, dolayısıyla bu rakamların kapsadığı dönem bu.",
+    vsPrevious: "Önceki {days} güne kıyasla",
+    noPrevious: "Planınızın ulaşabildiği daha erken bir dönem yok, bu yüzden karşılaştıracak bir şey de yok",
+    fromNothing: "sıfırdan artış",
+    chartTail: "Grafik son {days} günü çiziyor. Yukarıdaki rakamlar {total} günün tamamını sayıyor.",
+    tooLittle: "Grafik için henüz yeterli değil",
+    tooLittleBody: "Bir günlük rakam bir noktadır, eğilim değil. İki günde de bir şeyler olduğunda bu bir grafiğe dönüşür.",
+    revenueChartLabel: "Günlük gelir, {from} – {to}.",
+    visitsChartLabel: "Günlük ziyaret, {from} – {to}.",
+    topOnly: "En sık görülen {count} tanesi — daha fazlası olabilir.",
+    nothingYet: "Henüz ölçülecek bir şey yok",
+    nothingYetBody: "Dükkânınız ziyaretçi ve sipariş almaya başladığında bu sekme nasıl gittiğini gösterir.",
+    failed: "Rakamlarınız yüklenemedi.",
+    retry: "Tekrar deneyin",
+    dayFormat: "Yıl-ay-gün biçimini kullanın, örneğin {example}.",
+    earliest: "Planınız {day} tarihine kadar uzanıyor.",
+    inverted: "İkinci gün birinciden sonra olmalı.",
+    close: "Kapat",
+  },
+
   traffic: {
     geoEdge: "Coğrafi konum uçta çözülür — dükkânınız yayına girdiğinde görünür.",
     noLocation: "Henüz konum verisi yok.",

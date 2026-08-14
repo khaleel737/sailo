@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminSv: PartialAdminDictionary = {
+  insights: {
+    title: "Statistik",
+    rangeLabel: "Tidsintervall",
+    rangeDays: "{days} dagar",
+    lastDays: "Senaste {days} dagarna",
+    customRange: "{from} – {to}",
+    locked: "{days} dagars historik ingår i {plan}",
+    lockedBody: "Längre historik ingår i ett betalt paket, tillsammans med fler produkter och din egen profil. De intervall du har fortsätter att fungera.",
+    clamped: "Ditt paket når {days} dagar bakåt, så det är den perioden dessa siffror täcker.",
+    vsPrevious: "Jämfört med de {days} dagarna innan",
+    noPrevious: "Ditt paket når inte tillbaka till en tidigare period, så det finns inget att jämföra med",
+    fromNothing: "upp från noll",
+    chartTail: "Diagrammet ritar de senaste {days} dagarna. Siffrorna ovan räknar alla {total}.",
+    tooLittle: "Ännu inte nog för ett diagram",
+    tooLittleBody: "En dags siffror är en punkt, inte en trend. Det blir ett diagram så snart två dagar har något i sig.",
+    revenueChartLabel: "Intäkter per dag, {from} till {to}.",
+    visitsChartLabel: "Besök per dag, {from} till {to}.",
+    topOnly: "De {count} vanligaste — det kan finnas fler.",
+    nothingYet: "Inget att mäta ännu",
+    nothingYetBody: "Så snart din butik har besökare och beställningar visar den här fliken hur det går.",
+    failed: "Dina siffror kunde inte laddas.",
+    retry: "Försök igen",
+    dayFormat: "Använd år-månad-dag, till exempel {example}.",
+    earliest: "Ditt paket når tillbaka till {day}.",
+    inverted: "Den andra dagen måste ligga efter den första.",
+    close: "Stäng",
+  },
+
   traffic: {
     geoEdge: "Geografi avgörs vid kanten — det dyker upp så fort din butik är live.",
     noLocation: "Inga platsdata än.",

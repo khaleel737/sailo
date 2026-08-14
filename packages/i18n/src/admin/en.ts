@@ -903,6 +903,90 @@ export const adminEn = {
     destinationsEmpty:
       "No outbound clicks yet — taps on your social icons and contact handoffs count here.",
   },
+
+  /**
+   * The Insights tab in the phone app.
+   *
+   * Read through `useT()` in `apps/mobile`, not by anything in this website —
+   * which is why the coverage test scans both apps rather than this one.
+   *
+   * Nearly every string here exists to stop a number lying. The dashboard on
+   * the web can afford a chart that shrugs, because a seller reading it has the
+   * whole page around it for context; a phone shows one figure at a time, and a
+   * figure with nothing beside it reads as the whole truth. So the window says
+   * how far back it reaches, the chart says when it is drawing a tail rather
+   * than the range, a comparison says what it is comparing against, and the
+   * cases with no honest answer — no earlier period, a previous period of zero
+   * — say that instead of inventing a percentage.
+   */
+  insights: {
+    title: "Insights",
+
+    /** The range control. `rangeDays` labels each segment: "7 days". */
+    rangeLabel: "Time range",
+    rangeDays: "{days} days",
+    lastDays: "Last {days} days",
+    /** A picked window, in the caption under a figure. */
+    customRange: "{from} – {to}",
+
+    /**
+     * Typing a custom window. There is no date picker in the phone's design
+     * system, so the two days are typed — which means the format, the plan's
+     * floor and the order of the pair all have to be sayable.
+     */
+    dayFormat: "Use year-month-day, like {example}.",
+    earliest: "Your plan reads back to {day}.",
+    inverted: "The second day has to come after the first.",
+    close: "Close",
+
+    /**
+     * A range the plan does not reach. Locked rather than hidden, so a seller
+     * can see that ninety days exists and what it costs — the same choice the
+     * web range picker makes.
+     */
+    locked: "{days} days of history is on {plan}",
+    lockedBody:
+      "Longer history comes with a paid plan, along with more products and your own branding. The ranges you have keep working.",
+    /**
+     * The window was pulled forward server-side. Without this the shorter
+     * answer passes as the one that was asked for.
+     */
+    clamped:
+      "Your plan reads back {days} days, so that is the window these numbers cover.",
+
+    /**
+     * The period-over-period comparison, and the two cases where a percentage
+     * would be a lie. `fromNothing` is what a rise from zero says instead of
+     * "+100%", which is true of one visit and useless.
+     */
+    vsPrevious: "Compared with the {days} days before",
+    noPrevious: "No earlier period your plan can reach, so there is nothing to compare with",
+    fromNothing: "up from none",
+
+    /**
+     * The chart, admitting its bounds. A window longer than sixty days is
+     * drawn as its most recent tail while the figures above still count the
+     * whole range, and a chart that did not say so would disagree with them.
+     */
+    chartTail:
+      "The chart draws the most recent {days} days. The figures above count all {total}.",
+    tooLittle: "Not enough yet to chart",
+    tooLittleBody:
+      "One day of figures is a dot, not a trend. This becomes a chart once two days have something in them.",
+    /** Read aloud in place of the plot, which a screen reader cannot see. */
+    revenueChartLabel: "Revenue per day, {from} to {to}.",
+    visitsChartLabel: "Visits per day, {from} to {to}.",
+
+    /** A ranked list that is only the head of a longer one. */
+    topOnly: "The {count} most common — there may be more.",
+
+    nothingYet: "Nothing to measure yet",
+    nothingYetBody:
+      "Once your shop has visitors and orders, this tab shows how it is doing.",
+    failed: "Couldn't load your numbers.",
+    retry: "Try again",
+  },
+
   /**
    * Where the money for one order currently stands, as opposed to where the
    * order does. Read by bracket in `payment-status-select`, so the coverage

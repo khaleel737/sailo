@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminPl: PartialAdminDictionary = {
+  insights: {
+    title: "Statystyki",
+    rangeLabel: "Zakres czasu",
+    rangeDays: "{days} dni",
+    lastDays: "Ostatnie {days} dni",
+    customRange: "{from} – {to}",
+    locked: "Historia {days} dni jest w planie {plan}",
+    lockedBody: "Dłuższa historia jest częścią planu płatnego, razem z większą liczbą produktów i własną marką. Zakresy, które masz, działają dalej.",
+    clamped: "Twój plan sięga {days} dni wstecz, więc to jest okres, który obejmują te liczby.",
+    vsPrevious: "W porównaniu z poprzednimi {days} dniami",
+    noPrevious: "Twój plan nie sięga wcześniejszego okresu, więc nie ma z czym porównać",
+    fromNothing: "wzrost od zera",
+    chartTail: "Wykres rysuje ostatnie {days} dni. Liczby powyżej liczą wszystkie {total}.",
+    tooLittle: "Za mało jeszcze na wykres",
+    tooLittleBody: "Jeden dzień liczb to punkt, a nie trend. Wykres pojawi się, gdy dwa dni będą miały jakąkolwiek zawartość.",
+    revenueChartLabel: "Przychód dziennie, od {from} do {to}.",
+    visitsChartLabel: "Wizyty dziennie, od {from} do {to}.",
+    topOnly: "{count} najczęstszych — może być ich więcej.",
+    nothingYet: "Nie ma jeszcze czego mierzyć",
+    nothingYetBody: "Gdy tylko Twój sklep będzie miał odwiedzających i zamówienia, ta zakładka pokaże, jak mu idzie.",
+    failed: "Nie udało się wczytać Twoich liczb.",
+    retry: "Spróbuj ponownie",
+    dayFormat: "Użyj formatu rok-miesiąc-dzień, na przykład {example}.",
+    earliest: "Twój plan sięga do {day}.",
+    inverted: "Drugi dzień musi być po pierwszym.",
+    close: "Zamknij",
+  },
+
   traffic: {
     geoEdge: "Geolokalizacja jest ustalana na brzegu sieci — pojawi się, gdy twój sklep będzie online.",
     noLocation: "Jeszcze brak danych o lokalizacji.",

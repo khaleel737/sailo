@@ -77,12 +77,34 @@ const WHOLESALE = new Set([
   "checkin",
 ]);
 
+/**
+ * Both surfaces that read this dictionary, not just this one.
+ *
+ * `useT()` in `apps/mobile` hands a screen the same `a` object `getAdminT()`
+ * hands a server component — that is the whole point of the shape — so a string
+ * the phone shows is a string that is shown. Scanning only this app counted
+ * every one of them as a translation nobody reads, and the Insights tab put
+ * twenty-one of them on the pile at once.
+ *
+ * Relative to this app because vitest runs from here. `|| true` keeps the check
+ * working if any of these directories is absent, which is also what makes the
+ * mobile paths safe to name from the web's test.
+ */
+const SOURCES = [
+  "src/app",
+  "src/components",
+  "src/lib",
+  "../mobile/app",
+  "../mobile/components",
+  "../mobile/lib",
+];
+
 /*
  * The boundary matters: without it, `schema.products.slug` matches on its own
  * tail and reports a dictionary read that isn't one.
  */
 const files = execSync(
-  `grep -rl 'a\\.' src/app src/components src/lib --include='*.ts' --include='*.tsx' || true`,
+  `grep -rl 'a\\.' ${SOURCES.join(" ")} --include='*.ts' --include='*.tsx' || true`,
   { encoding: "utf8" },
 )
   .split("\n")
@@ -132,6 +154,11 @@ describe("admin translation coverage", () => {
      * The fifteen left are genuinely unshown. Each needs reading on its own:
      * some are keys left behind by a rewrite and should be deleted, others
      * are screens still hardcoding English that has no key yet.
+     *
+     * The number held when the phone arrived, and that is the point of `SOURCES`
+     * above rather than a raised ceiling: the Insights tab added twenty-five
+     * keys and reads all twenty-five, so it moved the total by nothing. A screen
+     * on either app that defines a string and does not show it still lands here.
      */
     expect(unreferenced.length).toBeLessThanOrEqual(15);
   });

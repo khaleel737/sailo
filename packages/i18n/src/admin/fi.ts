@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminFi: PartialAdminDictionary = {
+  insights: {
+    title: "Tilastot",
+    rangeLabel: "Aikaväli",
+    rangeDays: "{days} päivää",
+    lastDays: "Viimeiset {days} päivää",
+    customRange: "{from} – {to}",
+    locked: "{days} päivän historia kuuluu tasoon {plan}",
+    lockedBody: "Pidempi historia tulee maksullisen tason mukana, samoin useammat tuotteet ja oma ilmeesi. Nykyiset aikavälisi toimivat edelleen.",
+    clamped: "Tasosi ulottuu {days} päivää taaksepäin, joten nämä luvut kattavat juuri sen jakson.",
+    vsPrevious: "Verrattuna edeltäviin {days} päivään",
+    noPrevious: "Tasosi ei yllä aiempaan jaksoon, joten vertailukohtaa ei ole",
+    fromNothing: "nousu nollasta",
+    chartTail: "Kaavio piirtää viimeiset {days} päivää. Yllä olevat luvut laskevat kaikki {total}.",
+    tooLittle: "Ei vielä tarpeeksi kaavioon",
+    tooLittleBody: "Yhden päivän luvut ovat piste, eivät suunta. Tästä tulee kaavio heti kun kahdessa päivässä on jotain.",
+    revenueChartLabel: "Myynti päivässä, {from}–{to}.",
+    visitsChartLabel: "Käynnit päivässä, {from}–{to}.",
+    topOnly: "{count} yleisintä — niitä voi olla enemmän.",
+    nothingYet: "Ei vielä mitään mitattavaa",
+    nothingYetBody: "Heti kun kaupassasi käy ihmisiä ja tulee tilauksia, tämä välilehti näyttää miten menee.",
+    failed: "Lukujasi ei voitu ladata.",
+    retry: "Yritä uudelleen",
+    dayFormat: "Käytä muotoa vuosi-kuukausi-päivä, esimerkiksi {example}.",
+    earliest: "Tasosi ulottuu päivään {day}.",
+    inverted: "Toisen päivän on oltava ensimmäisen jälkeen.",
+    close: "Sulje",
+  },
+
   traffic: {
     geoEdge: "Sijainti selvitetään reunalla — se ilmestyy heti kun kauppasi on julkaistu.",
     noLocation: "Ei vielä sijaintitietoja.",

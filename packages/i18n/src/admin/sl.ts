@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminSl: PartialAdminDictionary = {
+  insights: {
+    title: "Vpogledi",
+    rangeLabel: "Časovni obseg",
+    rangeDays: "{days} dni",
+    lastDays: "Zadnjih {days} dni",
+    customRange: "{from} – {to}",
+    locked: "{days} dni zgodovine je v paketu {plan}",
+    lockedBody: "Daljša zgodovina pride s plačljivim paketom, skupaj z več izdelki in lastno blagovno znamko. Obsegi, ki jih imate, delujejo naprej.",
+    clamped: "Vaš paket sega {days} dni nazaj, zato te številke pokrivajo prav to obdobje.",
+    vsPrevious: "V primerjavi s prejšnjimi {days} dnevi",
+    noPrevious: "Vaš paket ne seže do prejšnjega obdobja, zato ni s čim primerjati",
+    fromNothing: "rast z nič",
+    chartTail: "Graf riše zadnjih {days} dni. Številke zgoraj štejejo vseh {total}.",
+    tooLittle: "Za graf še ni dovolj",
+    tooLittleBody: "En dan številk je pika, ne trend. Graf nastane, ko imata dva dneva kaj v sebi.",
+    revenueChartLabel: "Prihodek na dan, od {from} do {to}.",
+    visitsChartLabel: "Obiski na dan, od {from} do {to}.",
+    topOnly: "Najpogostejših {count} — morda jih je več.",
+    nothingYet: "Še ni česa meriti",
+    nothingYetBody: "Takoj ko bo vaša trgovina imela obiskovalce in naročila, bo ta zavihek pokazal, kako ji gre.",
+    failed: "Vaših številk ni bilo mogoče naložiti.",
+    retry: "Poskusite znova",
+    dayFormat: "Uporabite leto-mesec-dan, na primer {example}.",
+    earliest: "Vaš paket seže do {day}.",
+    inverted: "Drugi dan mora biti za prvim.",
+    close: "Zapri",
+  },
+
   variants: {
     untick: "Odkljukaj",
     notSold: "Ta kombinacija se ne prodaja",

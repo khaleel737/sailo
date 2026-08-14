@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminKo: PartialAdminDictionary = {
+  insights: {
+    title: "분석",
+    rangeLabel: "기간",
+    rangeDays: "{days}일",
+    lastDays: "최근 {days}일",
+    customRange: "{from} – {to}",
+    locked: "{days}일 기록은 {plan} 플랜에 있습니다",
+    lockedBody: "더 긴 기록은 유료 플랜에 포함되며, 더 많은 상품과 자체 브랜딩도 함께 제공됩니다. 지금 쓰는 기간은 그대로 작동합니다.",
+    clamped: "플랜이 {days}일 전까지 조회할 수 있어 이 수치는 그 기간을 다룹니다.",
+    vsPrevious: "직전 {days}일과 비교",
+    noPrevious: "플랜으로 조회할 수 있는 이전 기간이 없어 비교할 대상이 없습니다",
+    fromNothing: "0에서 증가",
+    chartTail: "차트는 최근 {days}일을 그립니다. 위 수치는 {total}일 전체를 셉니다.",
+    tooLittle: "아직 차트를 그리기에 부족합니다",
+    tooLittleBody: "하루치 수치는 점이지 추세가 아닙니다. 이틀에 값이 들어오면 차트가 됩니다.",
+    revenueChartLabel: "일별 매출, {from}부터 {to}까지.",
+    visitsChartLabel: "일별 방문, {from}부터 {to}까지.",
+    topOnly: "가장 많은 {count}개입니다 — 더 있을 수 있습니다.",
+    nothingYet: "아직 측정할 것이 없습니다",
+    nothingYetBody: "상점에 방문자와 주문이 생기면 이 탭이 상황을 보여줍니다.",
+    failed: "수치를 불러오지 못했습니다.",
+    retry: "다시 시도",
+    dayFormat: "연-월-일 형식으로 입력하세요. 예: {example}",
+    earliest: "플랜은 {day}까지 조회할 수 있습니다.",
+    inverted: "두 번째 날짜는 첫 번째 날짜보다 뒤여야 합니다.",
+    close: "닫기",
+  },
+
   variants: {
     untick: "체크 해제",
     notSold: "이 조합은 판매하지 않습니다",

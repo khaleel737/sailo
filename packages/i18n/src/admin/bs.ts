@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminBs: PartialAdminDictionary = {
+  insights: {
+    title: "Uvidi",
+    rangeLabel: "Vremenski raspon",
+    rangeDays: "{days} dana",
+    lastDays: "Zadnjih {days} dana",
+    customRange: "{from} – {to}",
+    locked: "{days} dana historije dolazi uz {plan}",
+    lockedBody: "Duža historija dolazi uz plaćeni plan, zajedno s više proizvoda i vlastitim brendom. Rasponi koje već imate nastavljaju raditi.",
+    clamped: "Vaš plan seže {days} dana unazad, pa je to period koji ovi brojevi pokrivaju.",
+    vsPrevious: "U poređenju s prethodnih {days} dana",
+    noPrevious: "Nema ranijeg perioda do kojeg vaš plan seže, pa nema s čim uporediti",
+    fromNothing: "porast s nule",
+    chartTail: "Grafikon crta posljednjih {days} dana. Brojevi iznad broje svih {total}.",
+    tooLittle: "Još nema dovoljno za grafikon",
+    tooLittleBody: "Jedan dan brojeva je tačka, a ne trend. Ovo postaje grafikon čim dva dana imaju nešto u sebi.",
+    revenueChartLabel: "Prihod po danu, od {from} do {to}.",
+    visitsChartLabel: "Posjete po danu, od {from} do {to}.",
+    topOnly: "Najčešćih {count} — možda ih ima još.",
+    nothingYet: "Još nema šta mjeriti",
+    nothingYetBody: "Čim vaša trgovina dobije posjetioce i narudžbe, ova kartica pokazuje kako joj ide.",
+    failed: "Nismo mogli učitati vaše brojeve.",
+    retry: "Pokušajte ponovo",
+    dayFormat: "Koristite godina-mjesec-dan, npr. {example}.",
+    earliest: "Vaš plan seže do {day}.",
+    inverted: "Drugi dan mora doći nakon prvog.",
+    close: "Zatvori",
+  },
+
   variants: {
     untick: "Odznači",
     notSold: "Ova se kombinacija ne prodaje",

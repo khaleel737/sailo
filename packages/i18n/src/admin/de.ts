@@ -1,6 +1,34 @@
 import type { PartialAdminDictionary } from "./en";
 
 export const adminDe: PartialAdminDictionary = {
+  insights: {
+    title: "Auswertung",
+    rangeLabel: "Zeitraum",
+    rangeDays: "{days} Tage",
+    lastDays: "Letzte {days} Tage",
+    customRange: "{from} – {to}",
+    locked: "{days} Tage Verlauf gibt es ab {plan}",
+    lockedBody: "Längerer Verlauf gehört zu einem bezahlten Tarif, zusammen mit mehr Produkten und eigenem Branding. Die Zeiträume, die Sie haben, funktionieren weiter.",
+    clamped: "Ihr Tarif reicht {days} Tage zurück, also deckt genau dieser Zeitraum diese Zahlen ab.",
+    vsPrevious: "Verglichen mit den {days} Tagen davor",
+    noPrevious: "Ihr Tarif reicht nicht bis zu einem früheren Zeitraum, es gibt also nichts zum Vergleichen",
+    fromNothing: "vorher null",
+    chartTail: "Das Diagramm zeichnet die letzten {days} Tage. Die Zahlen darüber zählen alle {total}.",
+    tooLittle: "Noch zu wenig für ein Diagramm",
+    tooLittleBody: "Ein Tag mit Zahlen ist ein Punkt, kein Trend. Sobald zwei Tage etwas enthalten, wird daraus ein Diagramm.",
+    revenueChartLabel: "Umsatz pro Tag, von {from} bis {to}.",
+    visitsChartLabel: "Besuche pro Tag, von {from} bis {to}.",
+    topOnly: "Die {count} häufigsten — es können mehr sein.",
+    nothingYet: "Noch nichts zu messen",
+    nothingYetBody: "Sobald Ihr Shop Besucher und Bestellungen hat, zeigt dieser Tab, wie er läuft.",
+    failed: "Ihre Zahlen konnten nicht geladen werden.",
+    retry: "Erneut versuchen",
+    dayFormat: "Jahr-Monat-Tag, zum Beispiel {example}.",
+    earliest: "Ihr Tarif reicht zurück bis {day}.",
+    inverted: "Der zweite Tag muss nach dem ersten liegen.",
+    close: "Schließen",
+  },
+
   traffic: {
     geoEdge: "Die Geodaten werden am Edge aufgelöst — sie erscheinen, sobald dein Shop online ist.",
     noLocation: "Noch keine Standortdaten.",
