@@ -1,4 +1,5 @@
 import { adminEn, type AdminDictionary, type PartialAdminDictionary } from "./en";
+import { mergeAdmin } from "../admin-merge";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "../config";
 
 /**
@@ -98,24 +99,13 @@ const OVERRIDES: Partial<Record<Locale, PartialAdminDictionary>> = {
 /** Merged dictionaries are built once per locale, not per request. */
 const cache = new Map<Locale, AdminDictionary>();
 
-function merge(overrides: PartialAdminDictionary): AdminDictionary {
-  const out: Record<string, Record<string, string>> = {};
-  for (const section of Object.keys(adminEn) as (keyof AdminDictionary)[]) {
-    out[section] = {
-      ...adminEn[section],
-      // Spreading undefined is a no-op, so a missing section needs no guard.
-      ...overrides[section],
-    };
-  }
-  return out as AdminDictionary;
-}
-
 export function getAdminDictionary(locale: string | undefined | null): AdminDictionary {
   const code = isLocale(locale) ? locale : DEFAULT_LOCALE;
   const hit = cache.get(code);
   if (hit) return hit;
 
-  const built = code === DEFAULT_LOCALE ? merge({}) : merge(OVERRIDES[code] ?? {});
+  const built =
+    code === DEFAULT_LOCALE ? mergeAdmin({}) : mergeAdmin(OVERRIDES[code] ?? {});
   cache.set(code, built);
   return built;
 }
