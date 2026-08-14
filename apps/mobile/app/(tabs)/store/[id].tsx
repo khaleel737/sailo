@@ -19,6 +19,7 @@ import {
 } from "@sailo/core/variants";
 import { captureError } from "@sailo/observability";
 import type { ProductDetail, ProductVariant } from "../../../lib/models";
+import { useReduceMotion } from "../../../lib/a11y";
 import { useTRPC } from "../../../lib/query";
 import { ErrorState, Loading, errorMessage } from "../../../components/states";
 import { PublishBadge } from "./index";
@@ -130,7 +131,9 @@ function Detail({ product, currency }: { product: ProductDetail; currency: strin
       <Gallery product={product} />
 
       <View style={styles.headline}>
-        <Text style={styles.title}>{product.title}</Text>
+        <Text style={styles.title} accessibilityRole="header">
+          {product.title}
+        </Text>
         <PublishBadge published={product.isPublished} />
       </View>
 
@@ -141,9 +144,19 @@ function Detail({ product, currency }: { product: ProductDetail; currency: strin
         {/*
           Only when it is genuinely more than the price — a compare-at at or
           below what the buyer pays advertises a saving that does not exist.
+
+          The strike-through is the entire difference between this number and
+          the one beside it, and a strike-through is a drawing. Read aloud the
+          two are just two prices for one product, in an order the seller has
+          no reason to trust. The label is what says which is which.
         */}
         {compareAt !== null && compareAt > min ? (
-          <Text style={styles.compareAt}>{money(compareAt)}</Text>
+          <Text
+            style={styles.compareAt}
+            accessibilityLabel={`Was ${money(compareAt)}`}
+          >
+            {money(compareAt)}
+          </Text>
         ) : null}
       </View>
 
@@ -206,6 +219,12 @@ function Detail({ product, currency }: { product: ProductDetail; currency: strin
  */
 function Gallery({ product }: { product: ProductDetail }) {
   const { width } = useWindowDimensions();
+  /*
+   * The cross-fade as a photo decodes is small, but Reduce Motion is a request
+   * about all of it, not about the big pieces — and a seller paging through
+   * eight product shots meets this one eight times.
+   */
+  const reduceMotion = useReduceMotion();
   // Full-bleed minus the screen's own gutters, so a photo lines up with the
   // text beneath it at every device width rather than at one hardcoded one.
   const size = width - 40;
@@ -234,7 +253,7 @@ function Gallery({ product }: { product: ProductDetail }) {
           alt={image.alt ?? product.title}
           style={{ width: size, height: size * 0.66, borderRadius: 16 }}
           contentFit="cover"
-          transition={150}
+          transition={reduceMotion ? 0 : 150}
         />
       ))}
     </ScrollView>
@@ -253,23 +272,32 @@ function VariantRow({
   const left = unitsLeft(product, variant);
   const label = variantLabel(variant.options, product.options);
 
+  const stock =
+    !product.trackInventory || left === null
+      ? variant.isAvailable
+        ? "Available"
+        : "Unavailable"
+      : `${left} left`;
+  const price = formatMoney(variantPrice(product, variant), currency);
+
   return (
-    <View style={styles.variant}>
+    /*
+     * One variant, one stop. Split, the price of the Medium arrives after the
+     * stock count of the Large, which is a way to misread a catalogue that
+     * only exists for somebody navigating by swipe.
+     */
+    <View
+      style={styles.variant}
+      accessible
+      accessibilityLabel={`${label || "Default"}. ${stock}. ${price}`}
+    >
       <View style={styles.variantMain}>
         {/* An unlabelled variant is one with no options set — rare, but it
             renders as an empty row unless it says something. */}
         <Text style={styles.variantLabel}>{label || "Default"}</Text>
-        <Text style={styles.variantSub}>
-          {!product.trackInventory || left === null
-            ? variant.isAvailable
-              ? "Available"
-              : "Unavailable"
-            : `${left} left`}
-        </Text>
+        <Text style={styles.variantSub}>{stock}</Text>
       </View>
-      <Text style={styles.variantPrice}>
-        {formatMoney(variantPrice(product, variant), currency)}
-      </Text>
+      <Text style={styles.variantPrice}>{price}</Text>
     </View>
   );
 }
@@ -277,7 +305,9 @@ function VariantRow({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <View style={styles.field}>
-      <Text style={styles.fieldLabel}>{label}</Text>
+      <Text style={styles.fieldLabel} accessibilityRole="header">
+        {label}
+      </Text>
       {children}
     </View>
   );

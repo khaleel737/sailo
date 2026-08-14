@@ -1,0 +1,60 @@
+appId: store.sailo.app
+name: Change an order's status
+tags:
+  - orders
+env:
+  SELLER_EMAIL: ${MAESTRO_SELLER_EMAIL}
+  SELLER_PASSWORD: ${MAESTRO_SELLER_PASSWORD}
+  # The status to move the order to. Must differ from whatever it is already
+  # on, or the screen short-circuits: `setStatus` returns without mutating
+  # when the picked status equals the current one.
+  TARGET_STATUS: ${MAESTRO_TARGET_STATUS}
+---
+# The one write the phone can make, driven the way a seller makes it.
+#
+# THIS MUTATES REAL DATA. `orders.updateStatus` calls `applyOrderStatus`, which
+# puts units back on the shelf and voids tickets when an order is cancelled —
+# there is no dry-run path. Point this at a test shop, never at a live one.
+- runFlow: sign-in.yaml
+
+- tapOn: "Orders"
+- assertVisible: "^Orders$"
+
+# The list row is a single accessibility element whose merged label contains
+# the status badge's wording, so this selects "the first row that is an order"
+# without depending on any particular product name being in the shop.
+- tapOn:
+    text: ".*Order status:.*"
+    index: 0
+
+# The detail screen's status control. Same label the badge uses, which is what
+# keeps this selector honest: if the button stopped announcing which status it
+# was on, this would stop finding it.
+- assertVisible:
+    text: "Order status:.*"
+- tapOn:
+    text: "Order status:.*"
+
+# The sheet. Its title is a header and its six options are radios; Maestro
+# reads the visible word, which is the same string `orderStatusLabel` renders.
+- assertVisible: ${TARGET_STATUS}
+- tapOn: ${TARGET_STATUS}
+
+# The optimistic patch means this is visible before the round trip finishes,
+# which is the point of it. What matters is that it is *still* true afterwards:
+# a rejected write rolls the badge back, so a stable assertion here is the
+# rollback path not having fired.
+- assertVisible:
+    text: "Order status: ${TARGET_STATUS}"
+
+# The inline error banner is the only thing the screen shows when the write was
+# refused. Asserting its absence is what separates "the badge flipped" from
+# "the badge flipped and the server agreed".
+- assertNotVisible: "Couldn't update this order."
+
+# Back out to the list and check the row agrees. Both caches are patched in
+# `onMutate` for exactly this reason — a seller who taps back to a row
+# contradicting the screen they just used has found a bug.
+- tapOn: "Back to Orders"
+- assertVisible:
+    text: ".*Order status: ${TARGET_STATUS}.*"
