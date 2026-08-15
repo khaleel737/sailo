@@ -1,0 +1,127 @@
+packages/i18n/src/marketing/en.ts
+  s_e40b2895acea02::t_22f8a135f35c33 53
+  s_e40b2895acea02::t_8b9227d75462a8 234-238,240-246,252,254-256
+  s_e40b2895acea02::t_5f21899376f46b 230
+  s_e40b2895acea02::t_3be6a50b04f13a 33-34,37-38,40-49,51-52
+packages/i18n/src/marketing/ko.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/fr.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/ar.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/ru.ts
+  s_e40b2895acea02::t_5f21899376f46b 196
+packages/i18n/src/marketing/sv.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/bs.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/hu.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/vi.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/tr.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/th.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/de.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/cs.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/sq.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/zh.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/mk.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/nl.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/email/src/order-mail.ts
+  s_42380745c8f8fb::t_a7896f16e8537d 1-207
+packages/i18n/src/marketing/pt.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/no.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/es.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/ms.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+apps/web/src/lib/email/messages.ts
+  s_42380745c8f8fb::t_d4b09a7717d525 2-15
+packages/i18n/src/marketing/ja.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/email/package.json
+  s_42380745c8f8fb::t_d4b09a7717d525 9-10,18
+packages/i18n/src/marketing/pl.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/commerce/src/refunds.ts
+  s_42380745c8f8fb::t_f416272044b84e 3,5
+packages/commerce/src/refunds.test.ts
+  s_42380745c8f8fb::t_eac77e6143e5d8 1-160
+packages/commerce/src/refund-order.ts
+  s_42380745c8f8fb::t_d371e6ecf8daf0 72-79,163-170
+  s_42380745c8f8fb::t_c633547d4ebb3f 1-71,80-162,171
+packages/api/src/routers/orders.ts
+  s_42380745c8f8fb::t_659d4fac185468 6,8-9
+  s_42380745c8f8fb::t_34b1cc6c146278 149-233
+packages/api/package.json
+  s_42380745c8f8fb::t_659d4fac185468 21
+apps/web/src/lib/actions/order-admin.ts
+  s_42380745c8f8fb::t_dff0344f37fb23 14
+  s_42380745c8f8fb::t_7798d6905c73ee 242-249,261-265,267-271,273-288,290-308,311-313,315,324-325
+  s_42380745c8f8fb::t_e29f9d06cc9249 339
+packages/i18n/src/marketing/fil.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/commerce/package.json
+  s_42380745c8f8fb::t_6adb019d6839ce 25-26
+  s_42380745c8f8fb::t_f416272044b84e 23-24,37
+packages/i18n/src/marketing/sl.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/fi.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/bg.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/email/src/index.ts
+  s_42380745c8f8fb::t_d4b09a7717d525 27
+packages/i18n/src/marketing/uk.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/el.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/sr.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/id.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/ro.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/da.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/it.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+packages/i18n/src/marketing/hr.ts
+  s_e40b2895acea02::t_5f21899376f46b 195
+pnpm-lock.yaml
+  s_42380745c8f8fb::t_6c7d1bc165b0e9 520-522,603-605,738-740
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "58066fa8250c5a05d723b330bd33b53365c87fff",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e40b2895acea02": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "55c7c294-ac33-4825-8db2-84621f15322b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
