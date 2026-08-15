@@ -1,0 +1,50 @@
+packages/api/src/routers/payments.ts
+  s_42380745c8f8fb::t_198b5fa4608250 88-182
+  s_42380745c8f8fb::t_d8348d8b9a7d6b 1,8,10
+packages/commerce/src/coupons.ts
+  s_42380745c8f8fb::t_61e570fef4e805 1-176
+packages/api/src/routers/coupons.ts
+  s_42380745c8f8fb::t_710a1577705c80 1-139
+packages/api/src/routers/categories.ts
+  s_42380745c8f8fb::t_0cc66eecabbf94 1-168
+apps/web/src/lib/actions/coupons.ts
+  s_42380745c8f8fb::t_144b40f26633b9 18-28,40,43,47-54,62-70,72-77,80-82,86,89-105
+  s_42380745c8f8fb::t_90b4f771ff864c 10-13
+  s_42380745c8f8fb::t_1d221e854b4443 106
+packages/commerce/src/coupons.test.ts
+  s_42380745c8f8fb::t_f556687bf24ebe 1-183
+packages/payments/src/rail-settings.ts
+  s_42380745c8f8fb::t_5b2891a1910acf 1-9,11-200,202-214
+  s_42380745c8f8fb::t_f79733a3644f74 201
+  s_42380745c8f8fb::t_853d48149331a9 10
+packages/payments/package.json
+  s_42380745c8f8fb::t_18e11dbecd85d4 9-10
+packages/api/src/router.ts
+  s_42380745c8f8fb::t_eb84da3f0b8e0b 4-5,7
+  s_42380745c8f8fb::t_87ab5fb68460e3 38,42-43
+packages/commerce/package.json
+  s_42380745c8f8fb::t_2a2a70f99e7ea0 19-20
+packages/payments/src/rail-settings.test.ts
+  s_42380745c8f8fb::t_8c12b39b085c72 1-210,212-257
+  s_42380745c8f8fb::t_d5cd0775386bb3 211
+apps/web/src/lib/actions/payments.ts
+  s_42380745c8f8fb::t_9dc1180e8b1bb4 7,9-10,14-26,40-45,49,52-65
+packages/api/src/routers/reviews.ts
+  s_42380745c8f8fb::t_943afc8898b859 1-131
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "9d2725271077ce3516e07e82a0c114c020d1a1ce",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
