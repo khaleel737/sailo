@@ -26,6 +26,21 @@ export type TextProps = {
   /** Long-pressable to copy — order references, tracking numbers. */
   selectable?: boolean;
   /**
+   * Monospaced digits, at whatever size the variant already chose.
+   *
+   * The `numeric` variant exists for a figure in a column and is body-sized, so
+   * until this prop there was no way to set a *large* number in tabular figures
+   * — and the chart's headline total is exactly that: a money figure at
+   * `title` size whose digits change as the reader scrubs. In the proportional
+   * default `1` is narrower than `8`, so the total visibly shivers, which reads
+   * as the layout being unstable rather than as the number being live.
+   *
+   * Additive rather than a new variant, because size and figure-style are
+   * genuinely separate decisions and folding them together is what produced the
+   * gap: `numeric` had to pick one size and picked the one a table needs.
+   */
+  tabular?: boolean;
+  /**
    * Announce this as a heading to a screen reader.
    *
    * Separate from `variant` because the two are different questions: a
@@ -73,6 +88,7 @@ export function Text({
   align = "start",
   numberOfLines,
   selectable,
+  tabular,
   heading,
   testID,
 }: TextProps) {
@@ -93,7 +109,9 @@ export function Text({
          * would otherwise take, since a bundled Latin face would have nothing
          * to fall back to for the Arabic and CJK locales.
          */
-        variant === "numeric" ? { fontVariant: ["tabular-nums"] as const } : null,
+        variant === "numeric" || tabular
+          ? { fontVariant: ["tabular-nums"] as const }
+          : null,
         weight ? { fontWeight: WEIGHTS[weight] } : null,
       ]}
       numberOfLines={numberOfLines}

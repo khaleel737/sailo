@@ -184,6 +184,18 @@ export const adminEn = {
     rangeClamped: "Your plan covers a shorter period than this. Showing what it reaches.",
     /** The window is longer than the chart plots; these are its recent days. */
     chartTruncated: "Showing the most recent 60 days.",
+    /**
+     * The callout beside a chart's headline: the biggest single day in the
+     * window, and which measure it belonged to.
+     *
+     * `{label}` is the series' own name, substituted rather than concatenated.
+     * The web card renders this as the literal `peak {label.toLowerCase()}`,
+     * which is untranslated in thirty-four languages and lowercases through
+     * `toLowerCase()` — the operation that turns Turkish "İstanbul" into
+     * "ıstanbul" and quietly decapitalises every German noun. Neither happens
+     * here: the label arrives cased the way its own language wants it.
+     */
+    peak: "Peak · {label}",
     sources: "Where visitors came from",
     countries: "Where visitors are",
     insightsEmpty: "Nothing to measure yet",

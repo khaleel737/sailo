@@ -87,61 +87,150 @@ describe("Progress", () => {
 });
 
 describe("Chart", () => {
+  /**
+   * The props every case here shares, so each test states only what it is
+   * about. `formatDay` and `formatValue` are identity-ish on purpose: what is
+   * under test is which figures reach the card, not how a locale writes them.
+   */
+  const base = {
+    tone: "money" as const,
+    unit: "money" as const,
+    currency: "AED",
+    locale: "en-US",
+    labels: { peak: "Peak · Sales", window: "2 days" },
+    formatDay: (iso: string) => iso.slice(5),
+    formatValue: (value: number) => String(value),
+  };
+
   /*
    * The rule the whole Insights tab rests on, and the one Stan's app breaks:
    * it draws a $0.00–$0.08 revenue axis on an account that has never sold
    * anything. An axis over nothing invents precision, and it is the first
    * thing a new seller ever sees.
    */
-  it("shows the empty message instead of a plot when there are no points", () => {
+  it("shows the empty message instead of a plot when there is no series", () => {
     render(
-      <Chart
-        points={[]}
-        unit="count"
-        emptyMessage="No visits yet"
-        accessibilityLabel="Visits"
-      />,
+      <Chart {...base} title="Revenue" days={[]} series={[]} emptyLabel="No revenue yet" />,
     );
-    expect(screen.getByText("No visits yet")).toBeOnTheScreen();
-    expect(screen.queryByLabelText(/Visits\./)).toBeNull();
+    expect(screen.getByText("No revenue yet")).toBeOnTheScreen();
   });
 
   it("treats a run of zeroes as nothing to plot, not as a flat line", () => {
     /*
      * The series always returns one row per day, so a month with no sales is
-     * thirty points rather than none. Checking `points.length` would happily
+     * thirty points rather than none. Checking `values.length` would happily
      * draw a flat line along the axis and call it data.
      */
     render(
       <Chart
-        points={[
-          { label: "1 Jan", value: 0 },
-          { label: "2 Jan", value: 0 },
-        ]}
-        unit="currency"
-        currency="AED"
-        emptyMessage="No revenue yet"
-        accessibilityLabel="Revenue"
+        {...base}
+        title="Revenue"
+        days={["2026-01-01", "2026-01-02"]}
+        series={[{ key: "sales", label: "Sales", values: [0, 0] }]}
+        emptyLabel="No revenue yet"
       />,
     );
     expect(screen.getByText("No revenue yet")).toBeOnTheScreen();
   });
 
-  it("summarises the series for a screen reader rather than reading every bar", () => {
-    // A chart is one image to VoiceOver. Sixty bars would be sixty stops on the
-    // way to the next control.
+  /*
+   * The regression this whole rewrite exists for. The old component took a flat
+   * list of points, so a card could hold exactly one measure — which is why the
+   * phone drew net revenue as a bare line while the web drew sales, refunds
+   * below the axis, and net beside them. Every series has to reach the readout,
+   * including the one that is deliberately never plotted.
+   */
+  it("names and totals every series, including one that is never drawn", () => {
     render(
       <Chart
-        points={[
-          { label: "1 Jan", value: 2 },
-          { label: "2 Jan", value: 8 },
+        {...base}
+        title="Net revenue"
+        days={["2026-01-01", "2026-01-02"]}
+        series={[
+          { key: "sales", label: "Sales", depth: 1, values: [10, 30] },
+          { key: "refunds", label: "Refunds", negative: true, depth: 2, values: [0, 5] },
+          { key: "net", label: "Net", depth: 0, readoutOnly: true, values: [10, 25] },
         ]}
-        unit="count"
-        emptyMessage="Nothing yet"
-        accessibilityLabel="Visits"
+        totalKey="net"
+        emptyLabel="No revenue yet"
       />,
     );
-    expect(screen.getByLabelText(/Visits\. Total 10\. Highest 8 on 2 Jan\./)).toBeOnTheScreen();
+
+    for (const label of ["Sales", "Refunds", "Net"]) {
+      expect(screen.getByText(label)).toBeOnTheScreen();
+    }
+    // Window totals at rest: 40 sold, 5 refunded, 35 net.
+    expect(screen.getByText("40")).toBeOnTheScreen();
+    expect(screen.getByText("5")).toBeOnTheScreen();
+    expect(screen.getAllByText("35").length).toBeGreaterThan(0);
+  });
+
+  /*
+   * `totalKey` names the headline when it is derived. Net is third in the array
+   * a dashboard builds, so defaulting to the first series would put gross sales
+   * in the slot labelled "Net revenue" — a card that overstates every month it
+   * has ever had a refund in.
+   */
+  it("takes its headline from the named series, not the first one", () => {
+    render(
+      <Chart
+        {...base}
+        title="Net revenue"
+        days={["2026-01-01"]}
+        series={[
+          { key: "sales", label: "Sales", values: [100] },
+          { key: "net", label: "Net", readoutOnly: true, values: [60] },
+        ]}
+        totalKey="net"
+        emptyLabel="No revenue yet"
+      />,
+    );
+    expect(screen.getAllByText("60").length).toBeGreaterThan(0);
+  });
+
+  /*
+   * A chart is not read bar by bar. The readout is one grouped stop that says
+   * the whole sentence — the period, then each measure and what it was worth —
+   * rather than five stops a listener has to pair up themselves.
+   */
+  it("announces the readout as one sentence rather than as separate figures", () => {
+    render(
+      <Chart
+        {...base}
+        title="Visits"
+        days={["2026-01-01", "2026-01-02"]}
+        series={[{ key: "visits", label: "Views", values: [2, 8] }]}
+        emptyLabel="Nothing yet"
+      />,
+    );
+    expect(screen.getByLabelText("2 days. Views 10")).toBeOnTheScreen();
+  });
+
+  /*
+   * The shape switch is a control over the plot, so it has no business existing
+   * when there is no plot — on an empty card it would offer a reader a choice
+   * between two ways of drawing nothing.
+   */
+  it("offers the shape switch only once there is something to draw", () => {
+    const shapeLabels = { bar: "Bars", line: "Line", legend: "Chart shape" };
+    const props = {
+      ...base,
+      title: "Revenue",
+      days: ["2026-01-01"],
+      emptyLabel: "No revenue yet",
+      switchable: true,
+      shapeLabels,
+    };
+
+    const empty = render(
+      <Chart {...props} series={[{ key: "sales", label: "Sales", values: [0] }]} />,
+    );
+    expect(empty.queryByLabelText("Chart shape")).toBeNull();
+
+    empty.rerender(
+      <Chart {...props} series={[{ key: "sales", label: "Sales", values: [12] }]} />,
+    );
+    expect(screen.getByLabelText("Chart shape")).toBeOnTheScreen();
   });
 });
 

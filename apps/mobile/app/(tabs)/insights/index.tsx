@@ -2,6 +2,13 @@ import { useCallback, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useQueries } from "@tanstack/react-query";
 import { formatMoney } from "@sailo/core/currency";
+/*
+ * The same "is there anything worth drawing" test the chart runs on the same
+ * series, rather than a local `.some(v => v > 0)`. The screen and the component
+ * asking the question two different ways is how a card ends up empty inside a
+ * screen that has decided it is not.
+ */
+import { hasData } from "@sailo/core/chart";
 import { interpolate } from "@sailo/i18n/native";
 import {
   Banner,
@@ -15,7 +22,6 @@ import {
   Segmented,
   Skeleton,
   Stat,
-  Text,
 } from "@sailo/design-native";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";
@@ -84,37 +90,94 @@ export default function Insights() {
   const currency = shop.data?.currency ?? "USD";
 
   /*
-   * The revenue series as the chart wants it: a label per day and a major-unit
-   * value. Cents are divided here rather than inside `Chart`, because the
-   * component is told what `unit` it is drawing and a currency chart that also
-   * had to know about minor units would be two decisions in one prop.
+   * The days every series is measured over. One array, shared by both charts,
+   * because they cover the same window and a card holding a month of visits
+   * beside a fortnight of revenue would be a bug nobody could see.
    */
-  const revenuePoints = useMemo(
-    () =>
-      (series.data?.revenue ?? []).map((row) => ({
-        label: shortDay(row.day, locale),
-        value: row.cents / 100,
-      })),
-    [series.data?.revenue, locale],
-  );
-
-  const visitPoints = useMemo(
-    () =>
-      (series.data?.visits ?? []).map((row) => ({
-        label: shortDay(row.day, locale),
-        value: row.count,
-      })),
-    [series.data?.visits, locale],
+  const days = useMemo(
+    () => (series.data?.revenue ?? []).map((row) => row.day),
+    [series.data?.revenue],
   );
 
   /*
-   * "Has this shop ever had a day worth drawing?" — asked of the values, not of
-   * the array's length. The series always returns one row per day in the
-   * window, so a month of zeroes is sixty points and an `if (points.length)`
-   * would happily draw a flat line at nothing.
+   * Revenue, as the three measures the web card has always drawn and this
+   * screen could not.
+   *
+   * **Nothing new is fetched for this.** `getRevenueSeries` has always returned
+   * `grossCents` and `refundedCents` alongside the net `cents`, and
+   * `analytics.series` has always passed the rows straight through — the old
+   * `Chart` simply had no way to be handed a second measure, so two thirds of
+   * what the server sent was thrown away on arrival.
+   *
+   * Cents are divided here rather than inside `Chart`, because the component is
+   * told what `unit` it is drawing and a currency chart that also had to know
+   * about minor units would be two decisions in one prop.
    */
-  const hasRevenue = revenuePoints.some((point) => point.value > 0);
-  const hasVisits = visitPoints.some((point) => point.value > 0);
+  const revenueSeries = useMemo(
+    () => [
+      {
+        key: "sales",
+        label: a.dashboard.sales,
+        depth: 1,
+        values: (series.data?.revenue ?? []).map((row) => row.grossCents / 100),
+      },
+      /* Below the axis: money leaving, on the day it left. Held positive — the
+         chart decides which side of the line that belongs on. */
+      {
+        key: "refunds",
+        label: a.dashboard.refunds,
+        negative: true,
+        depth: 2,
+        values: (series.data?.revenue ?? []).map((row) => row.refundedCents / 100),
+      },
+      /*
+       * Reported, never plotted. Net is sales minus refunds and is already on
+       * the card twice over; drawing it as a third measure would compete with
+       * the two it is derived from while stretching nothing about the axis.
+       */
+      {
+        key: "net",
+        label: a.dashboard.net,
+        depth: 0,
+        readoutOnly: true,
+        values: (series.data?.revenue ?? []).map((row) => row.cents / 100),
+      },
+    ],
+    [series.data?.revenue, a],
+  );
+
+  /* The gap between the two lines is repeat viewing — the number that tells a
+     link that is working from one being refreshed. */
+  const visitSeries = useMemo(
+    () => [
+      {
+        key: "visits",
+        label: a.dashboard.views,
+        values: (series.data?.visits ?? []).map((row) => row.count),
+      },
+      {
+        key: "unique",
+        label: a.dashboard.visitors,
+        depth: 1,
+        values: (series.data?.visits ?? []).map((row) => row.unique),
+      },
+    ],
+    [series.data?.visits, a],
+  );
+
+  /*
+   * How a day and a figure are written here. Passed to `Chart` rather than
+   * decided by it: the component knows the number, not what it is denominated
+   * in, and money is punctuated per-locale.
+   */
+  const formatDay = useCallback((iso: string) => shortDay(iso, locale), [locale]);
+  const formatMoneyValue = useCallback(
+    (value: number) => formatMoney(Math.round(value * 100), currency, locale),
+    [currency, locale],
+  );
+  const formatCount = useCallback((value: number) => count(value, locale), [locale]);
+
+  const windowLabel = interpolate(a.dashboard.rangeDays, { days: String(days.length) });
 
   const sources = breakdown.data?.visits?.sources ?? [];
   const countries = breakdown.data?.visits?.countries ?? [];
@@ -138,9 +201,13 @@ export default function Insights() {
   return (
     <Screen onRefresh={refresh} refreshing={refreshing} testID="insights">
       <Segmented
-        options={RANGES.map((days) => ({
-          value: String(days),
-          label: interpolate(a.dashboard.rangeDays, { days: String(days) }),
+        /* `preset`, not `days` — the charts below now hold the window's actual
+           days in a variable of that name, and one shadowing the other is a
+           rename away from a control that offers 7/30/90 and plots something
+           else. */
+        options={RANGES.map((preset) => ({
+          value: String(preset),
+          label: interpolate(a.dashboard.rangeDays, { days: String(preset) }),
         }))}
         value={range}
         onChange={setRange}
@@ -181,40 +248,67 @@ export default function Insights() {
         </View>
       </Card>
 
+      {/*
+        The card no longer carries a heading of its own. `Chart` has one — with
+        the window's total under it and the biggest day beside it — and a
+        `Text` above that was a second title for the same thing, which is what
+        made the old card look like a plot somebody had labelled rather than a
+        figure somebody had explained.
+      */}
       <Card padding="lg">
-        <Text variant="heading">{a.dashboard.netRevenue}</Text>
         {loading ? (
           <Skeleton shape="card" />
         ) : (
           <Chart
-            kind="line"
-            points={hasRevenue ? revenuePoints : []}
-            unit="currency"
+            title={a.dashboard.netRevenue}
+            days={days}
+            series={revenueSeries}
+            tone="money"
+            unit="money"
             currency={currency}
-            emptyMessage={a.dashboard.noRevenue}
-            /* Tapping the plot reads out that day. The value arrives in major
-               units — the chart was handed cents/100 — so it goes back through
-               formatMoney rather than being printed raw. */
-            formatValue={(value) => formatMoney(Math.round(value * 100), currency, locale)}
+            /* Net, not sales. It is the figure a seller means by "how did this
+               month go", and it is third in the array above. */
+            totalKey="net"
+            defaultShape="bar"
+            switchable
+            shapeLabels={a.chart}
+            labels={{
+              peak: interpolate(a.dashboard.peak, { label: a.dashboard.sales }),
+              window: windowLabel,
+            }}
+            emptyLabel={a.dashboard.noRevenue}
             truncatedNote={series.data?.chart.truncated ? a.dashboard.chartTruncated : undefined}
-            accessibilityLabel={a.dashboard.netRevenue}
+            locale={locale}
+            formatDay={formatDay}
+            formatValue={formatMoneyValue}
+            testID="chart-revenue"
           />
         )}
       </Card>
 
       <Card padding="lg">
-        <Text variant="heading">{a.dashboard.visits}</Text>
         {loading ? (
           <Skeleton shape="card" />
         ) : (
           <Chart
-            kind="bar"
-            points={hasVisits ? visitPoints : []}
+            title={a.dashboard.visits}
+            days={days}
+            series={visitSeries}
+            tone="activity"
             unit="count"
-            emptyMessage={a.dashboard.noVisits}
-            formatValue={(value) => count(value, locale)}
+            defaultShape="line"
+            switchable
+            shapeLabels={a.chart}
+            labels={{
+              peak: interpolate(a.dashboard.peak, { label: a.dashboard.views }),
+              window: windowLabel,
+            }}
+            emptyLabel={a.dashboard.noVisits}
             truncatedNote={series.data?.chart.truncated ? a.dashboard.chartTruncated : undefined}
-            accessibilityLabel={a.dashboard.visits}
+            locale={locale}
+            formatDay={formatDay}
+            formatValue={formatCount}
+            testID="chart-visits"
           />
         )}
       </Card>
@@ -263,7 +357,7 @@ export default function Insights() {
         that sent the seller somewhere else would be a dashboard admitting it
         has nothing to say by changing the subject.
       */}
-      {!loading && !hasVisits && !hasRevenue ? (
+      {!loading && !hasData(visitSeries) && !hasData(revenueSeries) ? (
         <EmptyState
           icon="insights"
           title={a.dashboard.insightsEmpty}

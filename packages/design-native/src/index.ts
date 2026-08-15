@@ -65,7 +65,18 @@ export { Banner, type BannerProps } from "./banner";
 export { BrandMark, type BrandMarkProps, Wordmark, type WordmarkProps } from "./brand";
 export { Button, type ButtonProps } from "./button";
 export { Card, type CardProps } from "./card";
-export { Chart, type ChartPoint, type ChartProps } from "./chart";
+/*
+ * `Chart`'s props changed shape, which the rules above say has to be said out
+ * loud rather than done. It is said in `./chart/index.tsx`: the component could
+ * only ever hold one measure, so the phone drew net revenue as a bare line
+ * while the web drew sales, refunds below the axis and net in the readout. The
+ * new signature is `apps/web`'s, prop for prop.
+ *
+ * `ChartPoint` is gone with it — a flat label/value pair is what made a second
+ * series unspellable. `Series` from `@sailo/core/chart` is what replaces it,
+ * and it is the same type the web builds its cards from.
+ */
+export { Chart, type ChartProps } from "./chart";
 export { Chip, type ChipProps } from "./chip";
 export { CodeField, type CodeFieldProps } from "./code-field";
 export { Divider, type DividerProps } from "./divider";
