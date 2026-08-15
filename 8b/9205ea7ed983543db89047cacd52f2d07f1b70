@@ -1,0 +1,27 @@
+apps/mobile/app/(tabs)/store/payments/index.tsx
+  s_42380745c8f8fb::t_621a6c24162258 277,280
+apps/mobile/tests/seller-decisions.test.tsx
+  s_42380745c8f8fb::t_187eefbe805ec1 4,89-94,99
+  s_42380745c8f8fb::t_519b9bc1a912e6 1-3,5-88,95-98,100-165
+apps/mobile/app/(tabs)/store/coupons.tsx
+  s_42380745c8f8fb::t_621a6c24162258 161-162,347,421,430
+apps/mobile/app/(tabs)/insights/products.tsx
+  s_42380745c8f8fb::t_621a6c24162258 132,172-183
+  s_42380745c8f8fb::t_e54808bd7048de 184-185
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8b9205ea7ed983543db89047cacd52f2d07f1b70",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
