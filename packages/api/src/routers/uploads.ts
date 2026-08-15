@@ -2,6 +2,22 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { generateClientTokenFromReadWriteToken } from "@vercel/blob/client";
 import { rateLimit } from "@sailo/rate-limit";
+/*
+ * The lists, ceilings and path shape are `@sailo/core/upload-rules`' now.
+ *
+ * This file's header used to call its copy of them "TWIN, and a known one",
+ * and it was right to: the web route receives the bytes and can look at them
+ * while this mints every constraint into a signed token instead, so the two
+ * enforce the same rules in different places. Different enforcement is fine.
+ * Two copies of *what the rules are* is a drifted allowlist, and a drifted
+ * allowlist is a stored cross-site-scripting hole that fails no test.
+ */
+import {
+  FILE_TYPES,
+  IMAGE_TYPES,
+  maxBytesFor,
+  uploadPath,
+} from "@sailo/core/upload-rules";
 import { router, shopProcedure } from "../trpc";
 
 /**
@@ -24,59 +40,6 @@ import { router, shopProcedure } from "../trpc";
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8 MB
 const MAX_FILE_BYTES = 100 * 1024 * 1024; // 100 MB
 
-const IMAGE_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/gif",
-  "image/avif",
-] as const;
-
-/**
- * What a digital product may deliver. Anything the browser will happily run as
- * a page — html, svg, javascript — stays out: those files are served from our
- * own domain and would be a stored cross-site scripting hole.
- *
- * TWIN, and a known one. `apps/web/src/app/api/upload/route.ts` holds the same
- * two lists for the browser's upload path, and that route is outside this work
- * order's write scope, so it could not be made to import these. The lists are
- * identical today and `uploads.test.ts` pins the property that matters — that
- * an executable type is refused — but a type added to one and not the other is
- * a real divergence with nothing to catch it. Unifying them means lifting the
- * allowlist into a package and having the route import back; it is a small
- * follow-up and it should happen.
- */
-const FILE_TYPES = [
-  ...IMAGE_TYPES,
-  "application/pdf",
-  "application/epub+zip",
-  "application/zip",
-  "application/x-zip-compressed",
-  "application/x-7z-compressed",
-  "application/vnd.rar",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.ms-excel",
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  "application/vnd.ms-powerpoint",
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-  "text/plain",
-  "text/csv",
-  "text/markdown",
-  "application/json",
-  "audio/mpeg",
-  "audio/wav",
-  "audio/ogg",
-  "audio/mp4",
-  "video/mp4",
-  "video/quicktime",
-  "video/webm",
-  "font/otf",
-  "font/ttf",
-  "font/woff",
-  "font/woff2",
-] as const;
-
 /**
  * How long a token is good for.
  *
@@ -92,25 +55,6 @@ const FILE_TTL_MS = 20 * 60 * 1000;
 
 /** The two things a seller uploads, and they are not interchangeable. */
 const PURPOSES = ["image", "download"] as const;
-
-/**
- * The extension, taken from the name the phone offers.
- *
- * Cosmetic — the pathname is a uuid and nothing routes on the suffix — but a
- * stored URL ending `.png` is what makes a blob listing readable, and the web
- * route derives one the same way.
- *
- * Read as "the run of letters and digits after the last dot", and it has to be
- * that rather than "everything after the last dot": this is concatenated into
- * a path we then *sign*, so a name like `passwd.jpg?x=1` or one carrying a
- * slash must contribute a suffix and nothing else. A name with no dot at all
- * has no extension to take, which is the `bin` case.
- */
-function extensionOf(filename: string): string {
-  if (!filename.includes(".")) return "bin";
-  const last = filename.split(".").pop() ?? "";
-  return /^[a-z0-9]{1,12}/.exec(last.toLowerCase())?.[0] ?? "bin";
-}
 
 export const uploadsRouter = router({
   /**
@@ -173,9 +117,13 @@ export const uploadsRouter = router({
         });
       }
 
-      const folder = isDownload ? "downloads/" : "";
-      const pathname = `shops/${ctx.shopId}/${folder}${crypto.randomUUID()}.${extensionOf(input.filename)}`;
-      const maxBytes = isDownload ? MAX_FILE_BYTES : MAX_IMAGE_BYTES;
+      const pathname = uploadPath(
+        ctx.shopId,
+        isDownload ? "download" : "image",
+        crypto.randomUUID(),
+        input.filename,
+      );
+      const maxBytes = maxBytesFor(isDownload ? "download" : "image");
       const expiresAt = Date.now() + (isDownload ? FILE_TTL_MS : IMAGE_TTL_MS);
 
       const token = await generateClientTokenFromReadWriteToken({

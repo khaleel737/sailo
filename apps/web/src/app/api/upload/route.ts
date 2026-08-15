@@ -2,53 +2,19 @@ import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 import { requireShop } from "@/lib/session";
 import { rateLimit } from "@sailo/rate-limit";
+import { isAllowedType, maxBytesFor, uploadPath } from "@sailo/core/upload-rules";
 
-const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8 MB
-const MAX_FILE_BYTES = 100 * 1024 * 1024; // 100 MB
-
-const IMAGE_TYPES = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/gif",
-  "image/avif",
-]);
-
-/**
- * What a digital product may deliver. Anything the browser will happily run as
- * a page — html, svg, javascript — stays out: those files are served from our
- * own domain and would be a stored cross-site scripting hole.
+/*
+ * The lists and ceilings moved to `@sailo/core/upload-rules` when the phone
+ * grew a third upload path. `uploads.ts` in packages/api used to carry a note
+ * calling its copy of them "TWIN, and a known one"; there is one now.
+ *
+ * `FILE_TYPES` is the one that matters. Anything a browser will run as a page —
+ * html, svg, javascript — stays out, because these are served from our own
+ * domain and one that executed would be a stored cross-site-scripting hole. A
+ * copy that drifted by a single entry is a vulnerability, and nothing about a
+ * drifted allowlist fails a test.
  */
-const FILE_TYPES = new Set([
-  ...IMAGE_TYPES,
-  "application/pdf",
-  "application/epub+zip",
-  "application/zip",
-  "application/x-zip-compressed",
-  "application/x-7z-compressed",
-  "application/vnd.rar",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.ms-excel",
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  "application/vnd.ms-powerpoint",
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-  "text/plain",
-  "text/csv",
-  "text/markdown",
-  "application/json",
-  "audio/mpeg",
-  "audio/wav",
-  "audio/ogg",
-  "audio/mp4",
-  "video/mp4",
-  "video/quicktime",
-  "video/webm",
-  "font/otf",
-  "font/ttf",
-  "font/woff",
-  "font/woff2",
-]);
 
 export async function POST(request: Request) {
   // Redirects if unauthenticated, so only shop owners can write to the store.
@@ -78,8 +44,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No file provided." }, { status: 400 });
   }
 
-  const allowed = isDownload ? FILE_TYPES : IMAGE_TYPES;
-  if (!allowed.has(file.type)) {
+  const purpose = isDownload ? "download" : "image";
+  if (!isAllowedType(purpose, file.type)) {
     return NextResponse.json(
       {
         error: isDownload
@@ -90,8 +56,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const maxBytes = isDownload ? MAX_FILE_BYTES : MAX_IMAGE_BYTES;
-  if (file.size > maxBytes) {
+  if (file.size > maxBytesFor(purpose)) {
     return NextResponse.json(
       {
         error: isDownload
@@ -102,10 +67,8 @@ export async function POST(request: Request) {
     );
   }
 
-  const ext = file.name.includes(".") ? file.name.split(".").pop() : "bin";
-  const folder = isDownload ? "downloads" : "";
   const blob = await put(
-    `shops/${shop.id}/${folder ? `${folder}/` : ""}${crypto.randomUUID()}.${ext}`,
+    uploadPath(shop.id, purpose, crypto.randomUUID(), file.name),
     file,
     {
       // Buyers never receive this URL — the download route streams the bytes

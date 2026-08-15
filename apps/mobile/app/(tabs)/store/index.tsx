@@ -16,6 +16,7 @@ import { isProductKind, variantLabel, type ProductKind } from "@sailo/core/varia
 import { interpolate } from "@sailo/i18n/native";
 import {
   Button,
+  Banner,
   Card,
   Divider,
   EmptyState,
@@ -46,6 +47,7 @@ import {
  * charge a seller's buyers a hundred times the wrong amount.
  */
 import { priceToText, textToCount, textToPrice } from "../../../components/money";
+import { pickAndUploadImage } from "../../../lib/uploads";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";
 import type { Product, ProductDetail, RouterInputs } from "../../../lib/models";
@@ -174,7 +176,17 @@ const STORE_COPY = {
    */
   digitalOnWeb:
     "Digital products are edited on the web admin — the phone can't read their files yet, and saving here would remove them.",
-  photosOnWeb: "Photos are added on the web admin for now.",
+  /**
+   * What went wrong with a photo, keyed by the reason `pickAndUploadImage`
+   * answers with. `cancelled` is deliberately absent — the seller closed a
+   * picker they opened, which is not a failure and gets no message.
+   */
+  uploadFailed: {
+    permission: "Sailo needs access to your photos. You can allow it in Settings.",
+    too_big: "That image is over 8 MB. Try a smaller one.",
+    wrong_type: "Use a JPG, PNG, WebP, GIF or AVIF image.",
+    failed: "Couldn't upload that photo. Check your connection and try again.",
+  } as Record<string, string>,
   /*
    * A new digital product, which this screen can create and cannot finish.
    *
@@ -628,6 +640,18 @@ type Draft = {
   isPublished: boolean;
   /** Keyed by the variant's own id, so a re-render cannot re-key the map. */
   variants: Record<string, { price: string; stock: string; available: boolean }>;
+  /**
+   * The gallery, in the order a buyer sees it — first is the cover.
+   *
+   * In the draft rather than read off the product, because adding a photo is
+   * now an edit like any other: it uploads immediately (the bytes have to go
+   * somewhere) but does not touch the product until Save, so discarding the
+   * sheet discards the change. The uploaded blob is orphaned in that case,
+   * which is the right trade — an unreferenced object in storage costs a
+   * fraction of a cent, and the alternative is a photo appearing on a live
+   * shop because somebody opened a form and closed it.
+   */
+  imageUrls: string[];
 
   /*
    * The kind-specific columns.
@@ -683,6 +707,7 @@ function draftFrom(
       isFeatured: false,
       isPublished: true,
       variants: {},
+      imageUrls: [],
       /* The same defaults `saveProduct` would have chosen, spelled out so a
          product created on the phone is row-identical to one created on the
          web rather than differing in whichever column was left undefined. */
@@ -716,6 +741,7 @@ function draftFrom(
     inStock: product.inStock,
     isFeatured: product.isFeatured,
     isPublished: product.isPublished,
+    imageUrls: product.images.map((image) => image.url),
     eventStartsAt: product.eventStartsAt ? new Date(product.eventStartsAt) : null,
     eventJoinUrl: product.eventJoinUrl ?? "",
     billingInterval: product.billingInterval ?? "month",
@@ -800,9 +826,9 @@ function toSaveInput(
         imageUrl: variant.imageUrl,
       };
     }),
-    // In the order the router returned them, which is `position`. The gallery's
-    // order is the seller's, and re-sorting it here would shuffle their shop.
-    imageUrls: (product?.images ?? []).map((image) => image.url),
+    /* From the draft now. The order is the seller's — first is the cover — and
+       re-sorting it here would shuffle their shop. */
+    imageUrls: draft.imageUrls,
 
     trackInventory: draft.trackInventory,
     stockQuantity: draft.trackInventory ? textToCount(draft.stockQuantity) : null,
@@ -904,11 +930,41 @@ export function ProductEditor({
   /* Open only while the seller is choosing — a mounted picker on Android is
      a dialog, and one that never closes is a screen nobody can leave. */
   const [picking, setPicking] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
 
   const edit = useCallback((patch: Partial<Draft>) => {
     setDraft((current) => ({ ...current, ...patch }));
     setDirty(true);
   }, []);
+
+  /*
+   * Uploaded on pick, appended to the draft, saved with everything else.
+   *
+   * The bytes cannot wait for Save — they have to be somewhere before there is
+   * a URL to store — so the upload happens now and the *reference* happens on
+   * Save. `lib/uploads.ts` has the argument for why this posts to a route
+   * rather than using `uploads.token`.
+   */
+  const addPhoto = useCallback(async () => {
+    setUploadError(null);
+    setUploading(true);
+    try {
+      const result = await pickAndUploadImage();
+      if (result.ok) {
+        edit({ imageUrls: [...draft.imageUrls, result.url] });
+        return;
+      }
+      /* Cancelling is not a failure and gets no message — the seller closed a
+         picker they opened. */
+      if (result.reason !== "cancelled") {
+        setUploadError(s.uploadFailed[result.reason] ?? s.uploadFailed.failed);
+      }
+    } finally {
+      setUploading(false);
+    }
+  }, [draft.imageUrls, edit, s]);
 
   const setVariant = useCallback(
     (id: string, patch: Partial<Draft["variants"][string]>) => {
@@ -1270,21 +1326,40 @@ export function ProductEditor({
       ) : null}
 
       {/*
-        The gallery, in `position` order, so a seller can see what a buyer sees.
-        There is no add and no reorder here — both need a picker this build does
-        not have, and a footer that says so beats a control that opens nothing.
+        The gallery, and the add control that used to be a footer explaining why
+        there wasn't one.
+
+        Order is the seller's — the first image is the cover — so a new photo
+        appends rather than jumping the queue, and removing one leaves the rest
+        where they were. Reorder is still absent: dragging needs a gesture the
+        design system has no primitive for, and a column of arrows reads as a
+        mistake on iOS.
       */}
-      {product && product.images.length > 0 ? (
-        <GroupedList header={a.productForm.photos} footer={s.photosOnWeb}>
-          {product.images.map((image, index) => (
-            <ListRow
-              key={image.id}
-              title={index === 0 ? a.images.cover : String(index + 1)}
-              subtitle={image.alt ?? undefined}
-            />
-          ))}
-        </GroupedList>
-      ) : null}
+      <GroupedList header={a.productForm.photos} footer={a.images.hint}>
+        {draft.imageUrls.map((url, index) => (
+          <ListRow
+            key={url}
+            title={index === 0 ? a.images.cover : String(index + 1)}
+            subtitle={url.split("/").pop()}
+            icon="photo"
+            /* Destructive, because tapping removes it. There is no photo detail
+               to push to, so a chevron would promise a screen that is not
+               there. */
+            destructive
+            onPress={() =>
+              edit({ imageUrls: draft.imageUrls.filter((held) => held !== url) })
+            }
+          />
+        ))}
+        <ListRow
+          title={a.images.add}
+          icon="camera"
+          disabled={uploading}
+          onPress={() => void addPhoto()}
+        />
+      </GroupedList>
+
+      {uploadError ? <Banner tone="danger" message={uploadError} /> : null}
 
       <Button
         label={save.isPending ? s.saving : a.common.save}

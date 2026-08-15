@@ -13,6 +13,7 @@
   "dependencies": {
     "@better-auth/expo": "^1.6.25",
     "@sailo/api": "workspace:*",
+    "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
     "@sailo/env": "workspace:*",
     "@sailo/events": "workspace:*",
@@ -21,6 +22,7 @@
     "@sailo/rate-limit": "workspace:*",
     "@t3-oss/env-core": "^0.13.4",
     "@trpc/server": "^11.6.0",
+    "@vercel/blob": "^2.6.1",
     "better-auth": "^1.6.25",
     "drizzle-orm": "^0.45.2",
     "next": "16.3.0",
