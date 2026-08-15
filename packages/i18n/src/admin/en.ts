@@ -629,6 +629,22 @@ export const adminEn = {
     noneTaggedBody: "Add the tag to a customer and they'll show up here.",
     add: "Add contact",
     addBody: "Somebody who hasn't ordered yet — from a fair, a DM, a business card.",
+    /** Both refusals `clients.add` can answer with, as sentences. */
+    alreadyListed: "Somebody with that email or phone is already in your list.",
+    needsContact: "Add an email address or a phone number — one or the other.",
+    /** No silent caps: the seller is told which tags were dropped and why. */
+    tagsCapped: "Kept the first {max} tags.",
+    /** Whether this person may be sent a broadcast, and why not. */
+    marketing: "Marketing email",
+    /**
+     * What deleting a customer does.
+     *
+     * Their orders are not deleted with them — `orders.clientId` is `set null`
+     * — so the shop's takings do not change. Saying so is what stops a seller
+     * assuming a tidy-up will rewrite their own revenue history.
+     */
+    deleteBody:
+      "They're removed from your list. Their orders stay on your shop and in your figures.",
     addConsentNote: "Contacts you add yourself can't receive broadcasts. Only people who ticked the marketing box at checkout, or signed up through your own signup page, can.",
     email: "Email",
     phone: "Phone",
@@ -684,6 +700,21 @@ export const adminEn = {
     usageLimit: "Usage limit",
     minSpend: "Minimum spend",
     amount: "Amount",
+    /**
+     * The server's refusals, as sentences.
+     *
+     * `percentTooHigh` is the one that matters: `discountValue` holds basis
+     * points for a percentage and minor units for a fixed amount in one column,
+     * so nothing downstream can tell a 120% coupon from a $1.20 one — it just
+     * quotes the buyer a shop that owes them money.
+     */
+    codeTooShort: "A code needs at least 3 characters.",
+    valueNotPositive: "Enter a discount above zero.",
+    percentTooHigh: "A percentage discount can't be more than 100%.",
+    codeTaken: "You already have a code with that name.",
+    /** What deleting one does. Orders that already used it are unaffected. */
+    deleteBody:
+      "Buyers can't use this code any more. Orders that already used it keep their discount.",
   },
 
   affiliates: {
@@ -986,6 +1017,23 @@ export const adminEn = {
     free: "Free",
     monthly: "Monthly",
     yearly: "Yearly",
+    /** A plan given rather than bought — there is no subscription to manage. */
+    comped: "On the house",
+    renewsOn: "Renews {date}",
+    endsOn: "Ends {date}",
+    analyticsDays: "{days} days of history",
+    atProductLimit: "You've used every product slot on your plan.",
+    managePlan: "Manage plan on Stripe",
+    /**
+     * Why there is no upgrade button in the app.
+     *
+     * Apple takes a share of anything bought inside an iOS app, so a plan
+     * bought here would be a plan Sailo keeps a fraction of. Managing an
+     * existing subscription is not a purchase and stays; starting one moves to
+     * the web, and the seller is told rather than shown a control that cannot
+     * exist.
+     */
+    upgradeOnWeb: "You're on {plan}. Change your plan at sailo.store on the web.",
     cancelAnyTime: "Cancel any time. Downgrading never deletes products — you just can't add more until you're under the limit.",
     cancelled: "Checkout cancelled — nothing was charged.",
     currentPlan: "Current plan",
@@ -1351,6 +1399,33 @@ export const adminEn = {
     cancelling: "Cancelling",
     cancel: "Cancel membership",
     noEmail: "No email on file",
+    /** The filter, and the state a cancelled membership sits in. */
+    cancelled: "Cancelled",
+    /**
+     * The product a membership was for, when it has been deleted.
+     *
+     * `subscriptions.productId` is `set null` rather than cascade: deleting the
+     * product has not ended anybody's billing, and a row that vanished with it
+     * would leave a member being charged by Stripe with nothing here to cancel
+     * or even name.
+     */
+    productGone: "Product deleted",
+    /**
+     * The confirmation, and it names the date on purpose.
+     *
+     * "Cancel" with no date reads as "immediately", and a seller doing a member
+     * a favour needs to know what they actually promised — access runs to the
+     * end of the period already paid for.
+     */
+    cancelBody: "They keep access until {date}, then it won't renew.",
+    cancelBodyNoDate: "It won't renew. They keep the access they've paid for.",
+    /**
+     * Stripe refused and nothing was written, which is the ordering working.
+     * The member is still being billed until this succeeds, and saying so is
+     * the honest thing — a silent failure here is a chargeback later.
+     */
+    cancelFailed:
+      "Stripe wouldn't accept that just now. Nothing changed — they're still subscribed. Try again.",
     /* Which of the two cycles a member is on — a card that charges itself, or
        money the seller collects and confirms. */
     byCard: "Card",

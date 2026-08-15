@@ -58,6 +58,7 @@ export default function StoreLayout() {
           is grouped, and how it reaches them. */}
       <Stack.Screen name="categories" options={{ title: a.categories.title }} />
       <Stack.Screen name="delivery" options={{ title: a.delivery.title }} />
+      <Stack.Screen name="coupons" options={{ title: a.coupons.title }} />
     </Stack>
   );
 }

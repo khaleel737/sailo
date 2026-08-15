@@ -159,13 +159,28 @@ export default function Settings() {
       </GroupedList>
 
       {/*
-        What buyers wrote. Under Settings rather than under Store because
-        moderating is a thing done *to* the shop rather than a part of building
-        it — and because it is the one screen here a seller opens because
-        something is waiting for them rather than because they want to change
-        something.
+        The two screens about the people on the other side of the shop. Under
+        Settings rather than under Store because neither is part of building a
+        shop — one is a list of who has bought, and the other is a queue of
+        things waiting for a decision.
       */}
-      <GroupedList header={a.reviews.title}>
+      <GroupedList header={a.clients.title}>
+        <ListRow
+          title={a.clients.title}
+          subtitle={a.clients.emptyBody}
+          icon="person"
+          trailing="chevron"
+          onPress={() => router.push("/settings/customers")}
+          testID="settings-customers"
+        />
+        <ListRow
+          title={a.members.title}
+          subtitle={a.members.description}
+          icon="ticket"
+          trailing="chevron"
+          onPress={() => router.push("/settings/members")}
+          testID="settings-members"
+        />
         <ListRow
           title={a.reviews.title}
           subtitle={a.reviews.emptyBody}
@@ -213,6 +228,17 @@ export default function Settings() {
           icon="scan"
           trailing="chevron"
           onPress={() => router.push("/checkin")}
+        />
+      </GroupedList>
+
+      <GroupedList header={a.settings.tabBilling}>
+        <ListRow
+          title={a.settings.tabBilling}
+          subtitle={a.billing.cancelAnyTime}
+          icon="card"
+          trailing="chevron"
+          onPress={() => router.push("/settings/billing")}
+          testID="settings-billing"
         />
       </GroupedList>
 

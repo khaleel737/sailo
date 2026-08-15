@@ -25,6 +25,14 @@ export default function SettingsLayout() {
           from the settings list rather than living in a tab of their own. */}
       <Stack.Screen name="shop" options={{ title: a.settings.identity }} />
       <Stack.Screen name="reviews" options={{ title: a.reviews.title }} />
+      {/* The people behind the orders. Titled by the screen once the customer
+          is known, like every other detail route in the app. */}
+      <Stack.Screen name="customers/index" options={{ title: a.clients.title }} />
+      <Stack.Screen name="customers/[id]" options={{ title: "" }} />
+      {/* The account's own commercial terms — what the plan allows, and the
+          way to change the card behind it. */}
+      <Stack.Screen name="billing" options={{ title: a.settings.tabBilling }} />
+      <Stack.Screen name="members" options={{ title: a.members.title }} />
     </Stack>
   );
 }

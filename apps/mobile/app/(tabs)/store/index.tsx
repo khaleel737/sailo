@@ -416,6 +416,14 @@ export default function StoreScreen() {
                 testID="store-delivery"
               />
               <ListRow
+                title={a.coupons.title}
+                subtitle={a.coupons.description}
+                icon="tag"
+                trailing="chevron"
+                onPress={() => router.push("/store/coupons")}
+                testID="store-coupons"
+              />
+              <ListRow
                 title={a.categories.title}
                 subtitle={a.categories.description}
                 icon="tag"

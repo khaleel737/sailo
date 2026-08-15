@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
+    "@react-native-community/datetimepicker": "8.4.4",
     "@sailo/api": "workspace:*",
     "@sailo/auth": "workspace:*",
     "@sailo/core": "workspace:*",
