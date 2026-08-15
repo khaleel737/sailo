@@ -1,0 +1,42 @@
+packages/commerce/src/delivery.test.ts
+  s_42380745c8f8fb::t_33c1a298cab8a9 1-140
+packages/commerce/src/delivery-settings.ts
+  s_42380745c8f8fb::t_abdf1a1274cdc5 1-192
+packages/core/package.json
+  s_42380745c8f8fb::t_db67edb7e19b41 24-25
+packages/commerce/src/delivery.ts
+  s_42380745c8f8fb::t_33c1a298cab8a9 1-178
+packages/core/src/countries.test.ts
+  s_42380745c8f8fb::t_33c1a298cab8a9 1-112
+apps/web/src/lib/countries.ts
+  s_42380745c8f8fb::t_db67edb7e19b41 2,4-9,12
+packages/commerce/package.json
+  s_42380745c8f8fb::t_db67edb7e19b41 20
+  s_42380745c8f8fb::t_0fb636eb405ef2 21-22
+packages/api/src/router.ts
+  s_42380745c8f8fb::t_0fb636eb405ef2 8,51
+packages/api/src/routers/delivery.ts
+  s_42380745c8f8fb::t_1ac27654f570ca 1-113
+apps/web/src/lib/delivery.ts
+  s_42380745c8f8fb::t_db67edb7e19b41 2,4-5,7-11,14
+apps/web/src/lib/actions/delivery.ts
+  s_42380745c8f8fb::t_5168f3ca88ad25 7,11,13-15,22-26,43,48-50,52-54,56-68,70,77-82,85-96,120-128
+packages/core/src/countries.ts
+  s_42380745c8f8fb::t_c640ebb52aff16 1-182
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3759431795458ce6176b5e2f5dce6e67e3c4d27a",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
