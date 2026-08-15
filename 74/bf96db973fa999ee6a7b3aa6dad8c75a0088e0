@@ -1,0 +1,79 @@
+packages/design-native/src/chart/variant-switch.tsx
+  s_42380745c8f8fb::t_797f4163be718f 1-49
+apps/mobile/jest/quiet-known-warnings.js
+  s_42380745c8f8fb::t_831c7149c15f0a 29-44,54-57
+  s_42380745c8f8fb::t_f8b27ab2c2a581 1-28,45-53,58-64
+packages/design-native/src/chart/marks.tsx
+  s_42380745c8f8fb::t_e41641283e485e 1-246
+packages/design-native/src/text.tsx
+  s_42380745c8f8fb::t_937e3169546fa0 29-42
+  s_42380745c8f8fb::t_c96962f39504ae 112-114
+  s_42380745c8f8fb::t_8bd7e6e4332252 91
+  s_42380745c8f8fb::t_885d01a9365566 28
+packages/design-native/src/chart/plot.tsx
+  s_42380745c8f8fb::t_b5f48df12bdd47 44,47-52,54
+  s_42380745c8f8fb::t_4e93b68ed370cb 9-14
+  s_42380745c8f8fb::t_a806b0b29880ad 1-8,15-43,45-46,53,55-263,265-280
+  s_42380745c8f8fb::t_83e6c2e0f0b0cc 264
+apps/mobile/package.json
+  s_42380745c8f8fb::t_50443712d2b961 58
+packages/design-native/src/chart/header.tsx
+  s_42380745c8f8fb::t_f594c0dc2c2ec2 47-53,55
+  s_42380745c8f8fb::t_2f100297c7e299 1-46,54,56-62,64-82,87-88
+  s_42380745c8f8fb::t_b55462e4d9f025 83-86
+  s_42380745c8f8fb::t_02b37850c2cc9a 63
+packages/design-native/src/chart/index.tsx
+  s_42380745c8f8fb::t_46287331402c57 17
+  s_42380745c8f8fb::t_9385a35dfc77a6 216-219,222-223
+  s_42380745c8f8fb::t_0da65ced6baa58 1-16,18-215,220-221,224
+packages/i18n/src/admin/en.ts
+  s_42380745c8f8fb::t_71f433ff43538b 187-198
+apps/mobile/jest.config.js
+  s_42380745c8f8fb::t_0923ddd83f2137 139-143
+  s_42380745c8f8fb::t_d31615f03141e5 47,54-56,58-62,64-69,72,74-77,80-84
+  s_42380745c8f8fb::t_2ffbcdd30fa513 182-183,186-187,190-192,194-198
+  s_42380745c8f8fb::t_c47be32598d7b6 144-147
+  s_42380745c8f8fb::t_bb7802fd1b33ff 158
+  s_42380745c8f8fb::t_56ac6b41ea57a8 46,103-127,132-136
+  s_42380745c8f8fb::t_7f2a82be1d3b95 71,73,78-79,85-100
+  s_42380745c8f8fb::t_5811d15ec4596c 48-53,57,63,70,101-102
+  s_42380745c8f8fb::t_aaba4390e3ddaf 137-138
+  s_42380745c8f8fb::t_1a426c365579f8 159
+apps/mobile/app/(tabs)/insights/index.tsx
+  s_42380745c8f8fb::t_36b2759659e5f5 251-257,263-267,269-279,281-284,294-297,299-306,308-311
+  s_42380745c8f8fb::t_a05317ffb33db6 360
+  s_42380745c8f8fb::t_4519955de58042 204-210
+  s_42380745c8f8fb::t_ff33575d063a0c 5-11
+  s_42380745c8f8fb::t_79780839b70093 93-95,97-99,102-165,169-171,173-180
+apps/mobile/tests/design-system.test.tsx
+  s_42380745c8f8fb::t_99d1253b478a65 90-104,111,113,115,121,126-130,136-174,177-182,184-203,206-233
+packages/design-native/src/chart/font.ts
+  s_42380745c8f8fb::t_4fd479ab057872 1-82
+packages/design-native/src/index.ts
+  s_42380745c8f8fb::t_da3f679d914e7f 68-79
+packages/design-native/src/chart/rows.ts
+  s_42380745c8f8fb::t_f464c109b989d9 1-55,79-144
+  s_42380745c8f8fb::t_17f346521d45b7 56-78
+packages/design-native/src/chart/readout.tsx
+  s_42380745c8f8fb::t_db022dc576084b 1-97
+apps/mobile/jest/skia-env.js
+  s_42380745c8f8fb::t_80c8a6af4697e7 1-55
+pnpm-lock.yaml
+  s_42380745c8f8fb::t_813578d456fb6c 214-216
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "74bf96db973fa999ee6a7b3aa6dad8c75a0088e0",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
