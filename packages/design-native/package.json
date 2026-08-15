@@ -18,10 +18,14 @@
     "react": ">=19",
     "react-native": ">=0.81",
     "@expo/vector-icons": "*",
+    "@shopify/react-native-skia": ">=2.2",
     "expo-haptics": "*",
     "expo-image": "*",
+    "react-native-gesture-handler": ">=2.28",
+    "react-native-reanimated": ">=4.1",
     "react-native-safe-area-context": "*",
-    "react-native-svg": "*"
+    "react-native-svg": "*",
+    "victory-native": ">=41"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

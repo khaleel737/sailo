@@ -5,23 +5,41 @@ import { motion, PRESS_SCALE } from "./theme";
 /**
  * Every animation in the product, and the one switch that turns them all off.
  *
- * WHY THIS IS `Animated` AND NOT REANIMATED
+ * WHY THESE HOOKS ARE STILL `Animated` NOW THAT REANIMATED IS HERE
  *
- * Reanimated is the better library and this app does not get to use it. It is a
- * native module, so adding it means a regenerated lockfile and a dev-client
- * rebuild for every agent working in this tree, and Expo's autolinking builds
- * its module list from `apps/mobile`'s own dependencies — so the copy already
- * hoisted at the workspace root as an optional peer of `expo-router` is
- * resolvable by Metro and *absent from the binary*. That failure mode is a
- * runtime crash on the first animated screen, and it does not show up in Expo
- * Go, in a typecheck, or in the tests.
+ * This file used to open by arguing that Reanimated was the better library and
+ * that this app did not get to use it: it is a native module, and Expo's
+ * autolinking builds its module list from `apps/mobile`'s own dependencies, so
+ * the copy hoisted at the workspace root as an optional peer of `expo-router`
+ * was resolvable by Metro and *absent from the binary*. A runtime crash on the
+ * first animated screen, invisible to a typecheck, to the tests, and to Expo Go.
  *
- * What Reanimated buys over `Animated` is running the animation on the UI
- * thread. `Animated` does that too, for the properties this app animates —
- * `opacity` and `transform` are the two `useNativeDriver` supports, and they
- * are two of the three things anything here moves. The third is colour, which
- * has to interpolate on the JS thread either way; that is why the colour hooks
- * below are separate and say so.
+ * **That hazard has not gone away — it has been paid off.** `react-native-
+ * reanimated`, `react-native-worklets`, `react-native-gesture-handler` and
+ * `@shopify/react-native-skia` are now declared in `apps/mobile/package.json`
+ * itself, which is the only thing autolinking reads, and
+ * `apps/mobile/babel.config.js` carries the worklets plugin the whole scheme
+ * depends on. The chart is what bought it: `victory-native` draws on Skia and
+ * scrubs with Gesture Handler, and none of that has an `Animated` equivalent.
+ *
+ * So the note is kept rather than deleted, because the reasoning is what stops
+ * somebody re-introducing the bug. **The rule that survives it: a native module
+ * this package depends on must also be declared by `apps/mobile`, even when no
+ * screen imports it.** Metro will resolve it from the root and the binary will
+ * not have it. `metro.config.js` tells the same story about `expo-network`.
+ *
+ * What did not change is these seven hooks. `Animated` runs on the UI thread
+ * for exactly the properties they animate — `opacity` and `transform` are what
+ * `useNativeDriver` supports, and they are two of the three things anything
+ * here moves. The third is colour, which interpolates on the JS thread under
+ * either library; that is why the colour hooks below are separate and say so.
+ * Rewriting working, tested, native-driven animations to gain nothing is churn.
+ *
+ * **Where Reanimated belongs instead:** gestures, and anything that has to
+ * follow a finger. A drag reading its position on the JS thread is a frame
+ * behind by construction, and `Animated` has no answer to that. The chart's
+ * scrub is the first such surface; new ones should reach for Reanimated
+ * directly rather than extending these hooks to cover a case they cannot.
  *
  * THE RULE ABOUT REDUCED MOTION
  *
@@ -31,6 +49,10 @@ import { motion, PRESS_SCALE } from "./theme";
  * nausea. Opacity is the exception that stays: a cross-fade is not vestibular
  * motion, and removing it leaves content popping in, which is its own problem.
  * So reduced motion keeps fades and drops *movement*.
+ *
+ * It binds Reanimated code too. `useReducedMotion` is exported from the package
+ * index for exactly this reason, and a worklet-driven animation that ignores it
+ * is the same bug as a JS-driven one that does.
  */
 
 /**

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Platform } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { init } from "@sailo/observability";
 import { BrandSplash, useTheme } from "@sailo/design-native";
@@ -40,18 +41,40 @@ export default function RootLayout() {
   usePushRegistration();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {/*
-        `api` is the same vanilla tRPC client `lib/api.ts` has always exported —
-        the provider wraps it rather than replacing it, so an imperative call
-        outside React still goes through one transport with one token.
-      */}
-      <TRPCProvider trpcClient={api} queryClient={queryClient}>
-        <Shell />
-      </TRPCProvider>
-    </QueryClientProvider>
+    /*
+     * The gesture root, outermost and exactly once.
+     *
+     * Every `react-native-gesture-handler` gesture — including the ones inside
+     * the chart, which arrive through `victory-native` rather than through any
+     * file in this app — has to be a descendant of one of these or it simply
+     * never fires. There is no error: the touch lands, nothing happens, and the
+     * component looks broken rather than unmounted.
+     *
+     * It is at the root and not around the chart because the failure mode of a
+     * *second* root is worse than the failure mode of no root — nested roots
+     * fight over which one claims a touch, and the symptom is a gesture that
+     * works everywhere except when it is inside something that scrolls.
+     *
+     * `flex: 1` is load-bearing. Without a height the view collapses and takes
+     * the whole app with it; a blank screen is the usual first symptom of
+     * having written this without a style.
+     */
+    <GestureHandlerRootView style={styles.root}>
+      <QueryClientProvider client={queryClient}>
+        {/*
+          `api` is the same vanilla tRPC client `lib/api.ts` has always exported —
+          the provider wraps it rather than replacing it, so an imperative call
+          outside React still goes through one transport with one token.
+        */}
+        <TRPCProvider trpcClient={api} queryClient={queryClient}>
+          <Shell />
+        </TRPCProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({ root: { flex: 1 } });
 
 /**
  * Everything that needs the theme, which the root cannot have.
