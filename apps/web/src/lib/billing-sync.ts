@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
 import { stripe } from "@sailo/payments";
-import { resolveCustomerId } from "@/lib/billing-customer";
+import { resolveCustomerId } from "@sailo/payments/billing-customer";
 import { freePlanFields, subscriptionFields } from "@/lib/billing-map";
 
 /**

@@ -217,3 +217,89 @@ export async function connectOnboardingLink(
 
   return link.url;
 }
+
+/* --------------------------------------------------------------------------
+   The three calls the phone needed, and the header they all ride on.
+
+   The header comment above says onboarding was "the one part of
+   `apps/web/src/lib/connect.ts` that had to leave it", and that everything
+   else there "is called from a browser request and only ever will be." That
+   was true when it was written and is no longer: refunding an order, cancelling
+   a membership and opening a billing portal are all things a seller does
+   standing up, and `packages/api` cannot import from `apps/web`.
+
+   They are lifted rather than copied for the reason `refund_application_fee`
+   makes plain — a second copy that forgot that flag would refund the buyer in
+   full and leave Sailo as the only party that profited from a sale which got
+   undone. apps/web now re-exports these from here.
+-------------------------------------------------------------------------- */
+
+/**
+ * The `stripeAccount` header, unless the shop *is* the platform account.
+ *
+ * A real seller always has a distinct connected account and gets the header —
+ * that is what makes the charge land in their balance rather than ours. The
+ * exception exists so the platform's own Stripe account can be attached to a
+ * shop and exercise the whole flow end to end; Stripe rejects the header when
+ * it names the calling account itself.
+ */
+export function actingAs(accountId: string): { stripeAccount?: string } {
+  const platform = process.env.STRIPE_PLATFORM_ACCOUNT_ID;
+  return accountId && accountId !== platform ? { stripeAccount: accountId } : {};
+}
+
+/** Money back to the buyer, and Sailo's cut back with it. */
+export async function refundCharge(opts: {
+  accountId: string;
+  paymentIntentId: string;
+  amountCents: number;
+}) {
+  return stripe().refunds.create(
+    {
+      payment_intent: opts.paymentIntentId,
+      amount: opts.amountCents,
+      /*
+       * Give our fee back with the money.
+       *
+       * Without this the seller refunds the buyer in full and is still out
+       * Sailo's cut — we would be the only party who profited from a sale that
+       * got undone. Stripe returns it in proportion to the amount refunded, so
+       * a partial refund returns part of the fee.
+       */
+      refund_application_fee: true,
+    },
+    actingAs(opts.accountId),
+  );
+}
+
+/** Stripe's own hosted page for a member's card and subscription. */
+export async function billingPortalSession(opts: {
+  accountId: string;
+  customerId: string;
+  returnUrl: string;
+}) {
+  return stripe().billingPortal.sessions.create(
+    { customer: opts.customerId, return_url: opts.returnUrl },
+    actingAs(opts.accountId),
+  );
+}
+
+/**
+ * Stops a subscription at the end of the period the member already paid for.
+ *
+ * Never immediately, and not as a kindness: they have paid for the month, so
+ * ending it today would be taking money for access we then withdrew. Stripe
+ * reports the change back through `customer.subscription.updated`, which is
+ * what actually writes it here — this function's return value is not the
+ * source of truth and no caller treats it as one.
+ */
+export async function cancelSubscriptionAtPeriodEnd(opts: {
+  accountId: string;
+  subscriptionId: string;
+}) {
+  return stripe().subscriptions.update(
+    opts.subscriptionId,
+    { cancel_at_period_end: true },
+    actingAs(opts.accountId),
+  );
+}

@@ -35,8 +35,12 @@
 export { billingEnabled, stripe } from "./stripe";
 export {
   accountFields,
+  actingAs,
+  billingPortalSession,
+  cancelSubscriptionAtPeriodEnd,
   connectOnboardingLink,
   publicShopUrl,
+  refundCharge,
   type OnboardingRedirects,
 } from "./connect";
 export { HANDLED, signingSecrets, verifyEvent } from "./stripe-webhooks/verify";
