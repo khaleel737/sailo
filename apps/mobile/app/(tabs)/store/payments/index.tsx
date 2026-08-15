@@ -274,10 +274,10 @@ function CardRail({
 
 /** The one-word verdict on a rail, as a pill. */
 function RailState({ rail, a }: { rail: Rail; a: Admin }) {
-  return <StatusPill tone={stateTone(rail)} label={stateWord(rail, a)} />;
+  return <StatusPill tone={railTone(rail)} label={stateWord(rail, a)} />;
 }
 
-function stateTone(rail: Rail): StatusTone {
+export function railTone(rail: Rail): StatusTone {
   if (rail.usable) return "success";
   if (!rail.available) return "neutral";
   return rail.isEnabled ? "warning" : "neutral";

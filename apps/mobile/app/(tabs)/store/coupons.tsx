@@ -158,8 +158,8 @@ export default function Coupons() {
                  A single "inactive" would hide which. */
               accessory={
                 <StatusPill
-                  tone={state(coupon) === "live" ? "success" : "neutral"}
-                  label={stateLabel(state(coupon), a)}
+                  tone={couponState(coupon) === "live" ? "success" : "neutral"}
+                  label={stateLabel(couponState(coupon), a)}
                 />
               }
               trailing="chevron"
@@ -344,7 +344,7 @@ export default function Coupons() {
   );
 }
 
-type Coupon = {
+export type Coupon = {
   id: string;
   code: string;
   discountType: string;
@@ -418,7 +418,7 @@ function discountLabel(coupon: Coupon, currency: string, locale: string): string
  * it ran out of uses, or the date passed. A single "inactive" pill would send
  * all three to the same shrug.
  */
-function state(coupon: Coupon): "live" | "off" | "usedUp" | "expired" {
+export function couponState(coupon: Coupon): "live" | "off" | "usedUp" | "expired" {
   if (!coupon.isActive) return "off";
   if (coupon.maxRedemptions !== null && coupon.timesRedeemed >= coupon.maxRedemptions) {
     return "usedUp";
@@ -427,7 +427,7 @@ function state(coupon: Coupon): "live" | "off" | "usedUp" | "expired" {
   return "live";
 }
 
-function stateLabel(value: ReturnType<typeof state>, a: ReturnType<typeof useT>["a"]): string {
+function stateLabel(value: ReturnType<typeof couponState>, a: ReturnType<typeof useT>["a"]): string {
   switch (value) {
     case "live":
       return a.common.live;

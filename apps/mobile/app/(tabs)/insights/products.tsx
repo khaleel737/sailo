@@ -129,11 +129,7 @@ export default function ProductPerformance() {
                * different problem from people looking and not buying, and a
                * seller sent to fix the wrong one wastes an afternoon.
                */
-              value={
-                row.conversion === null
-                  ? "—"
-                  : `${(row.conversion * 100).toFixed(1).replace(/\.0$/, "")}%`
-              }
+              value={formatConversion(row.conversion)}
             />
           </View>
         </Card>
@@ -171,6 +167,20 @@ function Figure({ label, value }: { label: string; value: string }) {
       </Text>
     </View>
   );
+}
+
+/**
+ * A conversion rate, or the absence of one.
+ *
+ * Exported so the distinction can be pinned by a test: null renders as an em
+ * dash and never as `0%`. `conversionRate` returns null when a product had no
+ * views at all, and "nobody looked" is a different problem from "people looked
+ * and nobody bought" — one is a marketing failure and the other is a product
+ * failure, and a seller sent to fix the wrong one loses an afternoon.
+ */
+export function formatConversion(conversion: number | null): string {
+  if (conversion === null) return "—";
+  return `${(conversion * 100).toFixed(1).replace(/\.0$/, "")}%`;
 }
 
 function count(value: number, locale: string): string {
