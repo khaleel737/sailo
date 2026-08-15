@@ -887,6 +887,18 @@ export const adminEn = {
 
     /* Seller-facing email switches. Every one defaults to on. */
     notifications: "Email notifications",
+    /**
+     * The two layers a notifications screen has to keep apart.
+     *
+     * `thisDevice` is the handset's own permission — turning it off silences
+     * this phone and nothing else. The event switches below it are the
+     * account's, read by email senders too, which is why they stay live when
+     * the device is silenced: a seller who muted a spare phone has not asked to
+     * stop being emailed about a payment that needs confirming.
+     */
+    thisDevice: "Notify this device",
+    tabNotifications: "What to tell me about",
+    notifyAllDevices: "These apply everywhere you're signed in, and to email.",
     notificationsBody:
       "What Sailo emails you about your own shop. Your buyers' emails are unaffected.",
     notifySentTo: "Sent to {email}",

@@ -33,6 +33,7 @@ export default function SettingsLayout() {
           way to change the card behind it. */}
       <Stack.Screen name="billing" options={{ title: a.settings.tabBilling }} />
       <Stack.Screen name="members" options={{ title: a.members.title }} />
+      <Stack.Screen name="notifications" options={{ title: a.settings.notifications }} />
     </Stack>
   );
 }

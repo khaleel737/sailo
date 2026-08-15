@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { useQueries } from "@tanstack/react-query";
 import { formatMoney } from "@sailo/core/currency";
@@ -62,6 +63,7 @@ const MIN_BREAKDOWN_ROWS = 2;
 export default function Insights() {
   const { a, t, locale } = useT();
   const trpc = useTRPC();
+  const router = useRouter();
   const [range, setRange] = useState<string>("30");
 
   const [shop, stats, series, breakdown] = useQueries({
@@ -323,6 +325,23 @@ export default function Insights() {
         as two boxes where there is one thing. The grouped list already *is* the
         iOS idiom for "a titled set of rows".
       */}
+      {/*
+        The question the charts above cannot answer: which of these products is
+        carrying the others. Carries the range with it so the table covers the
+        window the seller is looking at rather than defaulting to thirty days
+        underneath a ninety-day chart.
+      */}
+      <GroupedList>
+        <ListRow
+          title={a.performance.title}
+          subtitle={a.performance.conversion}
+          icon="insights"
+          trailing="chevron"
+          onPress={() => router.push(`/insights/products?range=${range}`)}
+          testID="insights-products"
+        />
+      </GroupedList>
+
       {sources.length >= MIN_BREAKDOWN_ROWS ? (
         <GroupedList header={a.dashboard.sources}>
           {sources.slice(0, 6).map((row) => (

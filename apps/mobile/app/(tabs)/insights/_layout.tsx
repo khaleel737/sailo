@@ -15,6 +15,10 @@ export default function InsightsLayout() {
   return (
     <Stack screenOptions={screenOptions}>
       <Stack.Screen name="index" options={{ title: a.shell.tabInsights }} />
+      {/* Which products carry the shop. Pushed rather than stacked onto the
+          tab's own screen: it is a table, and a table under two charts is a
+          screen a seller scrolls past rather than reads. */}
+      <Stack.Screen name="products" options={{ title: a.performance.title }} />
     </Stack>
   );
 }

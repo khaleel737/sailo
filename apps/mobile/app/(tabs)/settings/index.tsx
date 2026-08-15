@@ -13,11 +13,10 @@ import {
   ListRow,
   Screen,
   Skeleton,
-  Switch,
   Text,
 } from "@sailo/design-native";
 import { authClient } from "../../../lib/auth";
-import { forgetDevice, openSystemSettings, usePushSettings } from "../../../lib/push";
+import { forgetDevice, usePushSettings } from "../../../lib/push";
 import { useT } from "../../../lib/i18n";
 import { useTRPC } from "../../../lib/query";
 
@@ -191,28 +190,27 @@ export default function Settings() {
         />
       </GroupedList>
 
+      {/*
+        One row where there were two switches.
+
+        This block used to hold the device toggle directly, labelled with the
+        one event it happened to control. That was honest when `orderPlaced`
+        was the only notification Sailo sent and became a lie the moment
+        `notificationPrefs` grew two more keys — a seller reading "Order
+        placed" here had no way to know a booking request was governed
+        somewhere they could not reach.
+
+        The footer still carries the device's own state, because whether this
+        handset can buzz at all is the thing worth knowing before tapping in.
+      */}
       <GroupedList header={a.settings.notifications} footer={explain(push, a)}>
-        <Switch
-          value={push.enabled}
-          /*
-           * Disabled while a decision is in flight, and when the OS will not
-           * let the app ask. A switch that flips back a second later is how a
-           * seller concludes the feature is broken — better that it does not
-           * move and the line underneath says why.
-           */
-          disabled={push.busy || push.blocked}
-          busy={push.busy}
-          onValueChange={(next) => void push.setEnabled(next)}
-          label={a.settings.notifyOrderPlaced}
-          hint={a.settings.notifyOrderPlacedBody}
+        <ListRow
+          title={a.settings.tabNotifications}
+          icon="bell"
+          trailing="chevron"
+          onPress={() => router.push("/settings/notifications")}
+          testID="settings-notifications"
         />
-        {push.permission === "blocked" ? (
-          <ListRow
-            title={a.settings.notifications}
-            trailing="chevron"
-            onPress={() => void openSystemSettings()}
-          />
-        ) : null}
       </GroupedList>
 
       {/*
