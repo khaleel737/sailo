@@ -1,0 +1,29 @@
+apps/mobile/app/(tabs)/store/index.tsx
+  s_42380745c8f8fb::t_396ff0384c4649 609-618,631-656
+  s_42380745c8f8fb::t_e5bcc7125378f8 178-187,963-971,997,999
+  s_42380745c8f8fb::t_5dab7ef8e422f3 15
+  s_42380745c8f8fb::t_fe1ab6a78f8a7c 1011-1028,1030-1033
+  s_42380745c8f8fb::t_14a02d3cb511a6 780-782,810-823,825-829,831-832,834-837
+  s_42380745c8f8fb::t_b7a45a2a832b3b 663-665,669,686-700,705,719-732
+  s_42380745c8f8fb::t_4ae6fc6323a919 1029,1117-1217
+  s_42380745c8f8fb::t_19e1f25fe3765e 2-3,214-244,904-906
+  s_42380745c8f8fb::t_082d09acb17169 907
+packages/i18n/src/admin/en.ts
+  s_42380745c8f8fb::t_adc6330abe0cf4 254-276
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6265e19e3eaa1891fa384fc5d04d075844e02ca9",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
