@@ -21,7 +21,8 @@
     "./handle": "./src/handle.ts",
     "./chart": "./src/chart/index.ts",
     "./chart/palette": "./src/chart/palette.ts",
-    "./client-tags": "./src/client-tags.ts"
+    "./client-tags": "./src/client-tags.ts",
+    "./countries": "./src/countries.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
