@@ -19,7 +19,8 @@
     "./webhooks": "./src/webhooks.ts",
     "./coupons": "./src/coupons.ts",
     "./delivery": "./src/delivery.ts",
-    "./delivery-settings": "./src/delivery-settings.ts"
+    "./delivery-settings": "./src/delivery-settings.ts",
+    "./order-lines": "./src/order-lines.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

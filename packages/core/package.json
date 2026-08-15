@@ -22,7 +22,10 @@
     "./chart": "./src/chart/index.ts",
     "./chart/palette": "./src/chart/palette.ts",
     "./client-tags": "./src/client-tags.ts",
-    "./countries": "./src/countries.ts"
+    "./countries": "./src/countries.ts",
+    "./legal": "./src/legal.ts",
+    "./badge": "./src/badge.ts",
+    "./address": "./src/address.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

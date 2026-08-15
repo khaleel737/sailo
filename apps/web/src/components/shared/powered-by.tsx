@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
-import { can } from "@/lib/plans";
+import { badgeHref as sharedBadgeHref, showsBadge } from "@sailo/core/badge";
 import { APP_URL } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import { SailoMark } from "@/components/brand";
@@ -37,34 +37,29 @@ export type BadgeShop = Pick<
 };
 
 /** Whether this shop's pages must carry the badge. */
-export function showsBadge(shop: BadgeShop): boolean {
-  return !can(shop, "removeBadge");
-}
-
-/**
- * Where the badge points. Absolute so the same builder serves the PDF, which
- * has no origin to resolve a relative path against.
+/*
+ * `showsBadge` and `badgeHref` moved to `@sailo/core/badge`.
  *
- * `medium` separates the surfaces the badge appears on. A shop page and an
- * order confirmation are different channels with different economics — the
- * page is seen by whoever browses, the email lands with someone who has
- * already bought — and rolling them into one figure hides which of the two
- * the free tier is actually being paid for.
+ * Re-exported so the eleven call sites here and in `lib/` are unchanged. They
+ * had to leave because `@sailo/email` builds the footer of every receipt the
+ * platform sends and cannot reach into this app — and a second copy of
+ * `showsBadge` would put the badge back on the order confirmations of a shop
+ * that had paid to remove it, which is the bug this file's own header records
+ * the invoice page having shipped.
+ *
+ * `badgeHref` takes its base explicitly now rather than defaulting to
+ * `APP_URL`; the wrapper below keeps the old signature for this app.
  */
+export { showsBadge };
+
 export function badgeHref(
   handle: string,
   base: string = APP_URL,
   medium: "shop" | "email" = "shop",
 ): string {
-  const url = new URL("/", base);
-  url.searchParams.set("utm_source", "sailo");
-  url.searchParams.set("utm_medium", medium);
-  url.searchParams.set("utm_campaign", "footer_badge");
-  url.searchParams.set("utm_content", handle);
-  return url.toString();
+  return sharedBadgeHref(handle, base, medium);
 }
 
-/** The badge label, e.g. "Join Irieti on Sailo". */
 export function badgeLabel(shop: BadgeShop, t: Dictionary): string {
   return interpolate(t.shop.joinOnSailo, { shop: shop.name });
 }

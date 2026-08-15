@@ -1,6 +1,6 @@
 import type Stripe from "stripe";
 import type * as nextServer from "next/server";
-import type * as transport from "@/lib/email/transport";
+import type * as transport from "@sailo/email/transport";
 import { assertLocalDatabase } from "./local-only";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { eq } from "drizzle-orm";
@@ -51,7 +51,7 @@ async function flushAfter() {
   }
 }
 
-vi.mock("@/lib/email/transport", async (importOriginal) => {
+vi.mock("@sailo/email/transport", async (importOriginal) => {
   const actual = await importOriginal<typeof transport>();
   return {
     ...actual,

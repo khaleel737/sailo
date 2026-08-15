@@ -25,7 +25,7 @@ import {
   unsubscribeToken,
   unsubscribeUrl,
 } from "@/lib/broadcasts/unsubscribe";
-import { ORDERS, send, sender } from "@/lib/email/transport";
+import { ORDERS, send, sender } from "@sailo/email/transport";
 import { getDictionary } from "@sailo/i18n";
 import { LEGAL } from "@/lib/legal";
 import { rateLimit } from "@sailo/rate-limit";

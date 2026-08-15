@@ -1,4 +1,4 @@
-import { esc, fine, layout } from "@/lib/email/markup";
+import { esc, fine, layout } from "@sailo/email/markup";
 import { isRenderableImageUrl } from "@/lib/file-urls";
 import { formatMoney } from "@/lib/utils";
 import type { Shop } from "@sailo/db/schema";

@@ -5,7 +5,7 @@ import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatAddress, formatMoney } from "@/lib/utils";
 import { appUrl } from "@/lib/app-url";
 import { SUPPORT_TOPIC_LABELS, type SupportTopic } from "@/lib/support";
-import { ACCOUNTS, ORDERS, PARTNERS, SUPPORT, send, sender, type SendResult } from "./transport";
+import { ACCOUNTS, ORDERS, PARTNERS, SUPPORT, send, sender, type SendResult } from "@sailo/email/transport";
 import {
   button,
   buttonGhost,
@@ -24,7 +24,7 @@ import {
   strong,
   well,
   type Detail,
-} from "./markup";
+} from "@sailo/email/markup";
 
 /** Every message Sailo sends. */
 

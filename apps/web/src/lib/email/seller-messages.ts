@@ -4,7 +4,7 @@ import { orderSummaryTitle, type OrderLine } from "@/lib/order-lines";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatMoney } from "@/lib/utils";
 import { appUrl } from "@/lib/app-url";
-import { ORDERS, send, sender, type SendResult } from "./transport";
+import { ORDERS, send, sender, type SendResult } from "@sailo/email/transport";
 import {
   button,
   detailTable,
@@ -19,7 +19,7 @@ import {
   section,
   strong,
   type Detail,
-} from "./markup";
+} from "@sailo/email/markup";
 
 /**
  * Every message Sailo sends to a *seller* about their own shop.

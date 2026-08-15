@@ -1,5 +1,4 @@
 import { clsx, type ClassValue } from "clsx";
-import { countryName, normalizeCountry } from "@/lib/countries";
 import { currencyDecimals } from "@sailo/core/currency";
 import { twMerge } from "tailwind-merge";
 
@@ -182,43 +181,16 @@ export function normalizePhone(input: string) {
 }
 
 /**
- * Single-line address for chat messages and admin tables.
+ * `formatAddress` moved to `@sailo/core/address`.
  *
- * The country is stored as an alpha-2 code on anything ordered since the
- * checkout grew a country list, and as free text on everything before it. Both
- * shapes pass through here and both have to read as a place: `HR` becomes
- * "Croatia" and "Hrvatska" stays "Hrvatska", because a seller reading a packing
- * slip should never be the one decoding a two-letter column — and a buyer's own
- * words are still the truest thing we have about an older order.
- *
- * One seam on purpose. Ten callers render an address; a code expanded at some
- * of them and not the others is how a WhatsApp message ends up saying `HR`
- * while the invoice beside it says Croatia.
+ * Re-exported so its callers here are unchanged. It had to leave because a
+ * shipping notice prints the address it was sent to, and `@sailo/email`
+ * composes that for two apps — and the comment it carries is the reason a
+ * second copy would be a bug: a country is stored as a code and rendered as a
+ * name, and formatting one surface and not another is how a WhatsApp message
+ * says `HR` while the invoice beside it says Croatia.
  */
-export function formatAddress(
-  parts: {
-    addressLine1?: string | null;
-    addressLine2?: string | null;
-    city?: string | null;
-    region?: string | null;
-    postalCode?: string | null;
-    country?: string | null;
-  },
-  locale = "en",
-) {
-  const country = normalizeCountry(parts.country);
-  return [
-    parts.addressLine1,
-    parts.addressLine2,
-    parts.city,
-    parts.region,
-    parts.postalCode,
-    country ? countryName(country, locale) : parts.country,
-  ]
-    .map((p) => p?.trim())
-    .filter(Boolean)
-    .join(", ");
-}
+export { formatAddress } from "@sailo/core/address";
 
 /**
  * Whether the public can reach a shop at all.

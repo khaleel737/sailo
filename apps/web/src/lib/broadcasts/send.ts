@@ -11,7 +11,7 @@ import {
   type Broadcast,
   type Shop,
 } from "@sailo/db/schema";
-import { ORDERS, MAX_BATCH, sendBatch, sender } from "@/lib/email/transport";
+import { ORDERS, MAX_BATCH, sendBatch, sender } from "@sailo/email/transport";
 import { getDictionary } from "@sailo/i18n";
 import { appUrl } from "@/lib/app-url";
 import { can } from "@/lib/plans";
