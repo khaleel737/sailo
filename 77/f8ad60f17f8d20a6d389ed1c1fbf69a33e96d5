@@ -1,0 +1,33 @@
+packages/payments/src/rail-settings.ts
+  s_42380745c8f8fb::t_84332b4b63b59f 199-200
+  s_42380745c8f8fb::t_037f3667f599ec 140-150
+apps/mobile/app/(tabs)/store/_layout.tsx
+  s_42380745c8f8fb::t_2feb00f3a2975e 43-55
+apps/mobile/app/(tabs)/store/index.tsx
+  s_42380745c8f8fb::t_9404222aa6e014 445-467
+  s_42380745c8f8fb::t_e03c400ca61870 444
+apps/mobile/app/(tabs)/store/payments/index.tsx
+  s_42380745c8f8fb::t_715c31138452d9 1-296
+  s_42380745c8f8fb::t_efe6855ffe2227 297-298
+apps/mobile/lib/models.ts
+  s_42380745c8f8fb::t_679b8825751ea0 37-48
+apps/mobile/app/(tabs)/store/payments/[type].tsx
+  s_42380745c8f8fb::t_bef14cf41da79a 2,48,117,142-146
+  s_42380745c8f8fb::t_83996136891d32 1,3-47,49-116,118-141,147-250
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "77f8ad60f17f8d20a6d389ed1c1fbf69a33e96d5",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
