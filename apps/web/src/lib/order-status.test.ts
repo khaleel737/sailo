@@ -20,7 +20,7 @@ import { describe, expect, it } from "vitest";
  * is the reason: it said "nothing outside apps/web sets a payment status".
  * The phone does — confirming that cash or a bank transfer arrived is the most
  * phone-shaped write in the product — so the list went to
- * `@sailo/payments/order-status` with the rule about which of them a seller
+ * `@sailo/core/payment-status` with the rule about which of them a seller
  * may set, and this app declares no copy of either.
  */
 describe("the status lists are declared once", () => {
@@ -49,7 +49,7 @@ describe("the status lists are declared once", () => {
    */
   it.each([
     ["@sailo/core/order-status"],
-    ["@sailo/payments/order-status"],
+    ["@sailo/core/payment-status"],
   ])("reads %s rather than doing without it", (module) => {
     const importers = execSync(
       `grep -rln "${module}" src --include="*.ts" --include="*.tsx" || true`,

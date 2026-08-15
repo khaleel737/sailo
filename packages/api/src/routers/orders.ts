@@ -346,9 +346,10 @@ export const ordersRouter = router({
    * unable to get the file they bought. `setPaymentStatus` does all three or
    * none.
    *
-   * `refunded` is not settable here and never will be: it is written by the
-   * refund path, which moves money. A dropdown that offered it would let a
-   * seller mark an order refunded with nothing sent back.
+   * Which statuses a seller may set is `@sailo/core/payment-status`'s and
+   * not this file's. `disputed` is the one withheld: a chargeback is a fact a
+   * bank reported, not an opinion the seller holds, and clearing it from a
+   * control would hide money that has already left their balance.
    */
   setPaymentStatus: shopProcedure
     .input(byId.extend({ paymentStatus: z.string().max(40) }))

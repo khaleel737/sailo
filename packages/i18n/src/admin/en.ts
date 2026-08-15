@@ -616,6 +616,15 @@ export const adminEn = {
       "Marked as shipped, but we couldn't email the buyer — they have no tracking link.",
     statusLabel: "Order status",
     paymentStatusLabel: "Payment status",
+    /**
+     * The consequence of confirming payment that the seller cannot see.
+     *
+     * A digital order held back pending payment is a buyer who has paid and
+     * cannot get their file. Marking it paid unlocks it and emails them the
+     * link, and saying so is the difference between a seller who knows the
+     * buyer is served and one who goes on to chase it by hand.
+     */
+    downloadsReleased: "Their download is unlocked — we've emailed them the link.",
     confirmPayment: "Confirm payment",
     unpaid: "Unpaid",
     track: "Track",

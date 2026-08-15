@@ -10,6 +10,7 @@ import {
 import { captureError } from "@sailo/observability";
 import { formatMoney } from "@sailo/core/currency";
 import { ORDER_STATUSES, orderStatusLabel, type OrderStatus } from "@sailo/core/order-status";
+import { SELLER_SETTABLE_PAYMENT_STATUSES } from "@sailo/core/payment-status";
 import { TRPCClientError } from "@trpc/client";
 import { interpolate } from "@sailo/i18n/native";
 import {
@@ -91,6 +92,7 @@ export default function OrderDetailScreen() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const [picking, setPicking] = useState(false);
+  const [pickingPayment, setPickingPayment] = useState(false);
 
   const order = useQuery(trpc.orders.get.queryOptions({ id }));
 
@@ -109,6 +111,31 @@ export default function OrderDetailScreen() {
    * from is still mounted behind this route, so leaving it stale means tapping
    * back to a row that contradicts the screen they just used.
    */
+  /*
+   * Confirming the money. Its own mutation rather than a branch of the status
+   * one, because they are different questions with different consequences: a
+   * status change moves an order along, and this one unlocks a download and
+   * can start a membership billing.
+   */
+  const pay = useMutation(
+    trpc.orders.setPaymentStatus.mutationOptions({
+      onSuccess: async (result) => {
+        haptics.success();
+        setPickingPayment(false);
+        /* Said out loud, because it is the part the seller cannot see: the
+           buyer's files were locked and now are not. */
+        if (result.releasedDownloads) {
+          Alert.alert(a.orders.paymentStatusLabel, a.orders.downloadsReleased);
+        }
+        await queryClient.invalidateQueries(trpc.orders.pathFilter());
+      },
+      onError: (error) => {
+        haptics.error();
+        captureError(error, { scope: "mobile:orders:paymentStatus" });
+      },
+    }),
+  );
+
   const update = useMutation(
     trpc.orders.updateStatus.mutationOptions({
       onMutate: async ({ status }) => {
@@ -298,6 +325,19 @@ export default function OrderDetailScreen() {
           accessibilityLabel={`${a.orders.statusLabel}, ${statusLabel}`}
           testID="order-status"
         />
+        {/*
+          The second question every order has, and the one a phone answers
+          better than a laptop: did the money turn up. On a card sale Stripe
+          has already said; on cash at a stall the seller is the only source.
+        */}
+        <ListRow
+          title={a.orders.paymentStatusLabel}
+          value={paymentLabel(data.paymentStatus, a)}
+          trailing="chevron"
+          disabled={pay.isPending}
+          onPress={() => setPickingPayment(true)}
+          testID="order-payment-status"
+        />
       </GroupedList>
       {update.error ? (
         <Banner
@@ -327,9 +367,28 @@ export default function OrderDetailScreen() {
         visible={picking}
         current={data.status}
         title={a.orders.statusLabel}
-        labels={a.orderStatus}
+        options={ORDER_STATUSES}
+        label={(status) => orderStatusLabel(status, a.orderStatus)}
         onPick={setStatus}
         onClose={() => setPicking(false)}
+        closeLabel={a.common.cancel}
+      />
+
+      {/*
+        Whether the money has arrived, which on a bank transfer or a cash sale
+        is a thing only the seller knows. `SELLER_SETTABLE_PAYMENT_STATUSES`
+        rather than the full list: `disputed` is a fact a bank reported, and a
+        control that let the seller clear it would hide money that has already
+        left their balance.
+      */}
+      <StatusPicker
+        visible={pickingPayment}
+        current={data.paymentStatus}
+        title={a.orders.paymentStatusLabel}
+        options={SELLER_SETTABLE_PAYMENT_STATUSES}
+        label={(status) => a.paymentStatus[status]}
+        onPick={(status) => pay.mutate({ id: data.id, paymentStatus: status })}
+        onClose={() => setPickingPayment(false)}
         closeLabel={a.common.cancel}
       />
     </Screen>
@@ -737,11 +796,25 @@ function Buyer({ order }: { order: OrderDetail }) {
  * and the back gesture are all its business, and so is what any of that looks
  * like when the seller has Reduce Motion on.
  */
-function StatusPicker({
+/**
+ * One picker for both status kinds.
+ *
+ * It used to iterate `ORDER_STATUSES` itself, which was right while there was
+ * one list to pick from. There are two now — an order's own state and whether
+ * its money has arrived — and they are picked the same way, told apart only by
+ * which options they offer. A second near-identical sheet is a second place to
+ * forget the tick, the close label and the grouping.
+ *
+ * `options` rather than a list name: the payment set a seller may choose from
+ * is narrower than the set that exists — `disputed` is a fact a bank reported,
+ * not an opinion they hold — and the caller is what knows which.
+ */
+function StatusPicker<T extends string>({
   visible,
   current,
   title,
-  labels,
+  options,
+  label,
   onPick,
   onClose,
   closeLabel,
@@ -749,8 +822,10 @@ function StatusPicker({
   visible: boolean;
   current: string;
   title: string;
-  labels: Record<string, string>;
-  onPick: (status: OrderStatus) => void;
+  options: readonly T[];
+  /** How each option is written in the seller's language. */
+  label: (value: T) => string;
+  onPick: (status: T) => void;
   onClose: () => void;
   /** The sheet's close button, in the seller's language — the design system
    *  holds no dictionary, so the word comes from here. */
@@ -759,12 +834,12 @@ function StatusPicker({
   return (
     <Sheet visible={visible} onClose={onClose} title={title} closeLabel={closeLabel}>
       <GroupedList>
-        {ORDER_STATUSES.map((status) => {
+        {options.map((status) => {
           const active = status === current;
           return (
             <ListRow
               key={status}
-              title={orderStatusLabel(status, labels)}
+              title={label(status)}
               /*
                * The tick is the only thing marking the current status, so it is
                * the one icon on this screen that gets a label of its own —
@@ -779,6 +854,22 @@ function StatusPicker({
       </GroupedList>
     </Sheet>
   );
+}
+
+/**
+ * A payment status, in the seller's language.
+ *
+ * Falls back to the stored value rather than an em dash. The column is text, so
+ * a row written by a build that knew a status this one does not would otherwise
+ * render as blank — and "no payment status" is a different and more alarming
+ * thing to read than a word you do not recognise.
+ */
+function paymentLabel(status: string, a: ReturnType<typeof useT>["a"]): string {
+  /* Indexed through a widened view rather than a `keyof` cast: the column is
+     text, so the value genuinely may not be a key, and a cast that claims it is
+     would hand back `undefined` typed as `string`. */
+  const labels: Record<string, string | undefined> = a.paymentStatus;
+  return labels[status] ?? status;
 }
 
 /* -------------------------------------------------------------------------- */

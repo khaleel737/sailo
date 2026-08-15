@@ -25,7 +25,8 @@
     "./countries": "./src/countries.ts",
     "./legal": "./src/legal.ts",
     "./badge": "./src/badge.ts",
-    "./address": "./src/address.ts"
+    "./address": "./src/address.ts",
+    "./payment-status": "./src/payment-status.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

@@ -8,8 +8,7 @@
     "./keys": "./src/keys.ts",
     "./rails": "./src/rails.ts",
     "./rail-settings": "./src/rail-settings.ts",
-    "./billing-customer": "./src/billing-customer.ts",
-    "./order-status": "./src/order-status.ts"
+    "./billing-customer": "./src/billing-customer.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

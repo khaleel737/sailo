@@ -2,7 +2,7 @@ import "server-only";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders, type Order, type Shop } from "@sailo/db/schema";
-import { isSellerSettablePaymentStatus } from "@sailo/payments/order-status";
+import { isSellerSettablePaymentStatus } from "@sailo/core/payment-status";
 import { maybeRow } from "@sailo/core/invariant";
 import { releaseDownloads, type ReleaseHooks } from "./downloads";
 import { extendForPaidOrder } from "./membership-renewals";
@@ -67,7 +67,16 @@ export type PayResult =
       releasedDownloads: boolean;
     }
   | { ok: false; reason: "not_found" }
-  /** A status a seller may not set — `refunded` is the refund path's alone. */
+  /**
+   * A status a seller may not set by hand.
+   *
+   * `disputed` is the one that is withheld, and `order-status.ts` has the
+   * argument: a chargeback is a fact a bank reported, not an opinion the
+   * seller holds, and letting them clear it from a control would hide money
+   * that has already left their balance. `refunded` *is* settable — recording
+   * an off-platform refund is a real thing a seller does — which is why this
+   * asks the shared list rather than hard-coding a comparison.
+   */
   | { ok: false; reason: "not_settable" };
 
 export async function setPaymentStatus(
