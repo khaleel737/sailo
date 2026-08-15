@@ -23,7 +23,8 @@
     "./order-lines": "./src/order-lines.ts",
     "./refunds": "./src/refunds.ts",
     "./refund-claim": "./src/refund-claim.ts",
-    "./refund-order": "./src/refund-order.ts"
+    "./refund-order": "./src/refund-order.ts",
+    "./ship-order": "./src/ship-order.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

@@ -6,7 +6,12 @@ import { ORDER_STATUSES } from "@sailo/core/order-status";
 import { TRPCError } from "@trpc/server";
 import { changeOrderStatus } from "@sailo/commerce/orders";
 import { refundOrder } from "@sailo/commerce/refund-order";
-import { sendRefundNotification } from "@sailo/email/orders";
+import { shipOrder } from "@sailo/commerce/ship-order";
+import {
+  sendBookingDecision,
+  sendRefundNotification,
+  sendShippingNotification,
+} from "@sailo/email/orders";
 import { decodeCursor, olderThan, pageOf } from "@sailo/commerce/pagination";
 import { publishShopEvent } from "@sailo/events";
 import { router, shopProcedure } from "../trpc";
@@ -135,7 +140,43 @@ export const ordersRouter = router({
       });
       // Null means no order in *this* shop has that id — the same answer,
       // for the same reason, as the reads above.
+      /*
+       * `found` narrows `undefined`, and this is `null` — so it throws
+       * correctly and does not narrow. The explicit check is what makes the
+       * transition below readable rather than a chain of `!`.
+       */
       found(change, "order");
+      if (!change) throw new TRPCError({ code: "NOT_FOUND", message: "No such order." });
+
+      /*
+       * The gap this procedure's own header has documented since it was
+       * written, now closed.
+       *
+       * Checkout promises that the shop confirms an appointment afterwards, so
+       * moving a booked order off `new` *is* the seller answering — and until
+       * `@sailo/email` existed, answering from the phone left the buyer with
+       * the promise and no reply. `sendBookingDecision` is the same message
+       * the web admin sends, from the same module.
+       *
+       * Awaited, like the publish below and for the same reason: there is no
+       * `after` outside a Next request scope, and a swallowed send would leave
+       * a seller believing they had told somebody their booking was confirmed.
+       */
+      if (change.transition.answeredBooking) {
+        /*
+         * `previous` is the row as it read *before* the write, and that is the
+         * right one to send: the message prints the appointment and what was
+         * ordered, neither of which a status change touches. The one field
+         * that did change is the status, which the email never names —
+         * `accepted` carries that, decided from the transition rather than
+         * re-read from a row.
+         */
+        await sendBookingDecision({
+          shop,
+          order: change.previous,
+          accepted: change.transition.bookingAccepted,
+        });
+      }
 
       /*
        * Every other screen looking at this shop: the seller's own browser,
@@ -230,5 +271,60 @@ export const ordersRouter = router({
            back themselves rather than being left to assume Stripe did. */
         reversed: result.outcome.kind === "reversed",
       };
+    }),
+
+  /**
+   * Recording dispatch, and telling the buyer.
+   *
+   * The other half of what `packages/email` unblocked. Nothing here can
+   * half-fail the way a refund can — there is no processor and no balance —
+   * so `shipOrder` is a much smaller function, and what it owns is the
+   * tracking URL: a carrier's link is pasted by hand, half of them arrive
+   * without a scheme, and the only place one is ever used is a button in the
+   * buyer's email.
+   *
+   * `notified` comes back rather than being swallowed. An order taken over the
+   * counter has no email address, which is a fact about the order — but a
+   * *send* that failed is a fact about the system, and a seller who believes
+   * their buyer has tracking when they do not will not chase it.
+   */
+  markShipped: shopProcedure
+    .input(
+      byId.extend({
+        carrier: z.string().max(80).nullish(),
+        trackingNumber: z.string().max(120).nullish(),
+        trackingUrl: z.string().max(500).nullish(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const shop = found(
+        await getDb().query.shops.findFirst({ where: eq(shops.id, ctx.shopId) }),
+        "shop",
+      );
+
+      const result = await shipOrder(
+        {
+          shop,
+          orderId: input.id,
+          carrier: input.carrier ?? null,
+          trackingNumber: input.trackingNumber ?? null,
+          trackingUrl: input.trackingUrl ?? null,
+        },
+        {
+          /* Awaited, not deferred — there is no scheduler outside a Next
+             request scope, and the seller is looking at the screen. */
+          notify: (args) => sendShippingNotification(args),
+        },
+      );
+
+      if (!result.ok) {
+        if (result.reason === "not_found") {
+          throw new TRPCError({ code: "NOT_FOUND", message: "No such order." });
+        }
+        throw new TRPCError({ code: "BAD_REQUEST", message: result.reason });
+      }
+
+      await publishShopEvent(ctx.shopId, "order");
+      return { id: input.id, notified: result.notified };
     }),
 });

@@ -12,6 +12,7 @@ import { formatMoney, parseMoneyToCents } from "@/lib/utils";
 import { restoreStock } from "@sailo/commerce/inventory";
 import { changeOrderStatus } from "@sailo/commerce/orders";
 import { refundOrder as refund } from "@sailo/commerce/refund-order";
+import { shipOrder as ship } from "@sailo/commerce/ship-order";
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
 import { isOrderStatus } from "@sailo/core/order-status";
 import { releaseDownloads } from "@/lib/downloads";
@@ -170,55 +171,53 @@ export async function updatePaymentStatus(formData: FormData) {
 /**
  * Records dispatch details and moves the order to `shipped`. Emails the buyer
  * their tracking info when we have an address for them.
+ *
+ * The rules moved to `@sailo/commerce/ship-order` when the phone grew the same
+ * button — notably the tracking-URL parse, which is the validation, because a
+ * carrier's link is pasted by hand and the only place it is ever used is a
+ * button in a buyer's inbox.
  */
 export async function markOrderShipped(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const { shop } = await requireShop();
-  const db = getDb();
-
   const id = String(formData.get("id") ?? "");
-  const order = await db.query.orders.findFirst({
-    where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
-  });
-  if (!order) return { ok: false, error: "Order not found." };
 
-  const carrier = String(formData.get("trackingCarrier") ?? "").trim().slice(0, 80);
-  const number = String(formData.get("trackingNumber") ?? "").trim().slice(0, 120);
-  const urlRaw = String(formData.get("trackingUrl") ?? "").trim().slice(0, 500);
-
-  let trackingUrl: string | null = null;
-  if (urlRaw) {
-    const candidate = /^https?:\/\//i.test(urlRaw) ? urlRaw : `https://${urlRaw}`;
-    try {
-      // Parsing is the validation — a carrier's tracking link is pasted by
-      // hand and half of them arrive without a scheme or with a stray space.
-      trackingUrl = new URL(candidate).toString();
-    } catch {
-      return { ok: false, error: "That tracking link isn't a valid URL." };
-    }
-  }
-
-  await db
-    .update(orders)
-    .set({
-      trackingCarrier: carrier || null,
-      trackingNumber: number || null,
-      trackingUrl,
-      shippedAt: order.shippedAt ?? new Date(),
-      status: "shipped",
-      updatedAt: new Date(),
-    })
-    .where(eq(orders.id, id));
-
-  const updated = await db.query.orders.findFirst({ where: eq(orders.id, id) });
   let note = "Marked as shipped.";
-  if (updated?.customerEmail) {
-    const result = await sendShippingNotification({ shop, order: updated });
-    note = result.sent
-      ? `Marked as shipped and emailed ${updated.customerEmail}.`
-      : `Marked as shipped, but the email failed: ${result.reason}`;
+
+  const result = await ship(
+    {
+      shop,
+      orderId: id,
+      carrier: String(formData.get("trackingCarrier") ?? ""),
+      trackingNumber: String(formData.get("trackingNumber") ?? ""),
+      trackingUrl: String(formData.get("trackingUrl") ?? ""),
+    },
+    {
+      /*
+       * Awaited rather than deferred, unlike the refund's. The seller is told
+       * whether the buyer was emailed, and `after()` runs once the response
+       * has gone — so deferring would mean the message could never say.
+       */
+      notify: async ({ shop: s, order }) => {
+        const sent = await sendShippingNotification({ shop: s, order });
+        note = sent.sent
+          ? `Marked as shipped and emailed ${order.customerEmail}.`
+          : `Marked as shipped, but the email failed: ${sent.reason}`;
+        return sent;
+      },
+    },
+  );
+
+  if (!result.ok) {
+    return {
+      ok: false,
+      error:
+        result.reason === "not_found"
+          ? "Order not found."
+          : "That tracking link isn't a valid URL.",
+    };
   }
 
   revalidatePath("/admin/orders");

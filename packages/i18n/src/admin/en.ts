@@ -595,6 +595,25 @@ export const adminEn = {
     refundReason: "Reason",
     refundReasonPlaceholder: "Arrived damaged",
     recordRefund: "Record refund",
+    /**
+     * What actually happened, which depends on the rail.
+     *
+     * A card refund reverses at the processor; a bank transfer or a cash sale
+     * settles between two people and nothing was reversed anywhere. A seller
+     * who assumed Stripe had done it leaves a buyer waiting for money nobody
+     * sent, so the two outcomes get different sentences.
+     */
+    refundSent: "The money is on its way back to the buyer.",
+    refundManual:
+      "Recorded. This payment settles between you and the buyer, so pay them back yourself.",
+    /** Another refund claimed the balance first — the screen is stale, not broken. */
+    refundRaced:
+      "Another refund on this order went through first. Pull to refresh and check what's left.",
+    refundFailed: "The payment couldn't be reversed. Nothing was changed — try again.",
+    refundTooMuch: "That's more than this order has left to refund.",
+    /** The order moved but the buyer was not told, and why that matters. */
+    shippedNotEmailed:
+      "Marked as shipped, but we couldn't email the buyer — they have no tracking link.",
     statusLabel: "Order status",
     paymentStatusLabel: "Payment status",
     confirmPayment: "Confirm payment",
