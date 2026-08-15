@@ -643,6 +643,29 @@ export const adminEn = {
     emptyBody: "Buyers can leave a review on any product page.",
     approveReview: "Approve review",
     deleteReview: "Delete review",
+    /** The filter, and the state a moderation queue is usually opened in. */
+    approved: "Approved",
+    /**
+     * The star row, for the ear.
+     *
+     * `★★★★☆` is instantly readable by eye and, read aloud, is five separate
+     * glyph names a listener has to count as they arrive.
+     */
+    ratingOf: "{rating} out of 5",
+    /**
+     * Distinct from `empty`: a shop with fifty approved reviews and nothing
+     * waiting has not "got no reviews yet", and telling them so reads as the
+     * screen having lost them.
+     */
+    nonePending: "Nothing waiting",
+    /**
+     * What rejecting does. A delete rather than a "rejected" flag, because
+     * nobody revisits a queue of things they already decided against — and the
+     * alternative leaves a buyer's name and words in the database forever
+     * because somebody once tapped no.
+     */
+    deleteBody:
+      "This review is removed for good. If it's already on your shop, it comes down.",
   },
 
   coupons: {
@@ -874,6 +897,15 @@ export const adminEn = {
     contactEmail: "Contact email",
     location: "Location",
     locationPlaceholder: "Portland, Oregon",
+    /**
+     * The one thing the shop-profile screen on the phone cannot do yet.
+     *
+     * Said where a seller looks for it rather than left as a control that does
+     * nothing: `shop.update` takes both images as URLs and `uploads.token`
+     * already mints permission to store one — what is missing is an image
+     * picker, which is a native module and therefore a dev-client rebuild.
+     */
+    imagesOnWeb: "Your profile picture and logo are changed on the web for now.",
     collectAddress: "Ask for a delivery address",
     collectAddressBody: "Shown on physical products only. Turn off if you sell digital goods or services.",
     waysToOrderLiveIn: "Ways to order live in",

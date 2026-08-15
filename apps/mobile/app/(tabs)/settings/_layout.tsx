@@ -20,6 +20,11 @@ export default function SettingsLayout() {
   return (
     <Stack screenOptions={screenOptions}>
       <Stack.Screen name="index" options={{ title: a.shell.tabSettings }} />
+      {/* The shop as a buyer sees it, and the words buyers wrote about it. Both
+          are about the storefront rather than about the account, and both push
+          from the settings list rather than living in a tab of their own. */}
+      <Stack.Screen name="shop" options={{ title: a.settings.identity }} />
+      <Stack.Screen name="reviews" options={{ title: a.reviews.title }} />
     </Stack>
   );
 }

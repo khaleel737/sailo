@@ -47,6 +47,20 @@ export type TextProps = {
    * `caption` can be the heading of a section and a `title` can be decorative.
    */
   heading?: boolean;
+  /**
+   * What to read instead of the characters.
+   *
+   * For text that is a *picture made of glyphs*. A rating drawn as `★★★★☆` is
+   * instantly readable by eye and, read aloud, is "black star black star black
+   * star black star white star" — five sounds that a listener has to count
+   * while they arrive. `"4 out of 5"` is the same fact in the form the ear
+   * takes it.
+   *
+   * Rarely right, and never for ordinary prose: an override on real words is
+   * how the spoken interface and the visible one drift into two different
+   * products, and only one of them gets looked at.
+   */
+  accessibilityLabel?: string;
   testID?: string;
 };
 
@@ -90,6 +104,7 @@ export function Text({
   selectable,
   tabular,
   heading,
+  accessibilityLabel,
   testID,
 }: TextProps) {
   const { colors } = useTheme();
@@ -118,6 +133,7 @@ export function Text({
       selectable={selectable}
       maxFontSizeMultiplier={MAX_SCALE[variant]}
       accessibilityRole={heading ? "header" : undefined}
+      accessibilityLabel={accessibilityLabel}
       testID={testID}
     >
       {children}

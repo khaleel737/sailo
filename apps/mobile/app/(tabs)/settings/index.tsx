@@ -144,11 +144,35 @@ export default function Settings() {
           The shop is its own read and can still be in flight, or can fail on
           its own. It says which rather than rendering an em dash, which would
           claim the seller has no shop name.
+
+          It is also the way in to editing it now, which is why it has a
+          chevron: the row was already answering "what is my shop called", and
+          the next question a seller has after reading it is how to change it.
         */}
         <ListRow
           title={a.settings.shopName}
           value={shop.isError ? a.common.couldntLoad : (shop.data?.name ?? undefined)}
           accessory={shop.isPending ? <Skeleton shape="text" /> : undefined}
+          trailing="chevron"
+          onPress={() => router.push("/settings/shop")}
+        />
+      </GroupedList>
+
+      {/*
+        What buyers wrote. Under Settings rather than under Store because
+        moderating is a thing done *to* the shop rather than a part of building
+        it — and because it is the one screen here a seller opens because
+        something is waiting for them rather than because they want to change
+        something.
+      */}
+      <GroupedList header={a.reviews.title}>
+        <ListRow
+          title={a.reviews.title}
+          subtitle={a.reviews.emptyBody}
+          icon="star"
+          trailing="chevron"
+          onPress={() => router.push("/settings/reviews")}
+          testID="settings-reviews"
         />
       </GroupedList>
 
