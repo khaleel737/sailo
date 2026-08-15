@@ -137,6 +137,17 @@ export type RailSetting = {
   category: (typeof PAYMENT_METHOD_DEFS)[PaymentMethodType]["category"];
   /** English, from the definition — see the note on `SaveRailResult`. */
   name: string;
+  /** What this rail does, in the seller's terms. English, same caveat. */
+  description: string;
+  /**
+   * The currencies this rail can settle, or null for "anywhere".
+   *
+   * Sent so a screen can *name* them when it refuses. "PayPal settles in 22
+   * currencies" reads as trivia; "PayPal settles in EUR, GBP, USD… and your
+   * shop is in JOD" reads as the reason, and the seller stops filling in a
+   * form that could never have worked.
+   */
+  currencies: readonly string[] | null;
   fields: (typeof PAYMENT_METHOD_DEFS)[PaymentMethodType]["fields"];
   label: string | null;
   config: PaymentConfig;
@@ -185,6 +196,8 @@ export async function listRails(shop: {
       type: def.type,
       category: def.category,
       name: def.name,
+      description: def.description,
+      currencies: def.availability?.currencies ?? null,
       fields: def.fields,
       label: row?.label ?? null,
       config,

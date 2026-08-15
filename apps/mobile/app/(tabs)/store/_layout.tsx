@@ -40,6 +40,19 @@ export default function StoreLayout() {
         here as well would flash "Product" before the real title arrives.
       */}
       <Stack.Screen name="[id]" options={{ title: "" }} />
+
+      {/*
+        Payments lives under Store rather than under Settings, and the choice
+        is about what a seller is doing when they come here. Setting up a way
+        to be paid is part of opening a shop — it sits beside the catalogue and
+        the delivery options, all three of which decide what a buyer sees. A
+        seller looking for it in Settings is looking for their own account.
+
+        The rail screen is titled by itself once the rail is known, for the
+        same reason the product screen is.
+      */}
+      <Stack.Screen name="payments/index" options={{ title: a.payments.title }} />
+      <Stack.Screen name="payments/[type]" options={{ title: "" }} />
     </Stack>
   );
 }

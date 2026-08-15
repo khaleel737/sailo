@@ -34,6 +34,18 @@ export type OrderDetail = RouterOutputs["orders"]["get"];
 export type OrderItem = OrderDetail["items"][number];
 
 export type Product = RouterOutputs["products"]["list"]["items"][number];
+
+/**
+ * One payment rail, as the settings screen receives it.
+ *
+ * Note what is *not* here: the rail's own `fields` are part of this type, and
+ * their `label`, `placeholder` and `hint` are English in every locale. They
+ * come from `PAYMENT_METHOD_DEFS`, which the web admin also renders raw — so
+ * this is parity rather than a gap introduced on the phone. The strings around
+ * them are translated.
+ */
+export type Rail = RouterOutputs["payments"]["rails"]["rails"][number];
+export type RailField = Rail["fields"][number];
 /** One product with its `images` and `variants`, ordered by position. */
 export type ProductDetail = RouterOutputs["products"]["get"];
 export type ProductImage = ProductDetail["images"][number];

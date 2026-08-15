@@ -442,6 +442,30 @@ export default function StoreScreen() {
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           /*
+           * The shop's own settings, above the catalogue and scrolling with it.
+           *
+           * Not in the fixed block with the search and the filter: those two
+           * are controls *over this list* and have to stay put while it moves,
+           * and a third thing up there that goes somewhere else entirely would
+           * push the catalogue down the screen on every visit to buy a
+           * destination a seller opens once a week.
+           *
+           * Here instead, where it is the first thing under the thumb on a
+           * pull-down and out of the way the moment they start scrolling.
+           */
+          ListHeaderComponent={
+            <GroupedList>
+              <ListRow
+                title={a.payments.title}
+                subtitle={a.payments.description}
+                icon="card"
+                trailing="chevron"
+                onPress={() => router.push("/store/payments")}
+                testID="store-payments"
+              />
+            </GroupedList>
+          }
+          /*
            * `FlashList` recycles row views rather than mounting one per item,
            * which is what holds a long catalogue at sixty frames. Its own
            * windowing is why `FlatList`'s knobs are absent rather than tuned.
