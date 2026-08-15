@@ -24,5 +24,6 @@
  */
 
 export * from "./transport";
+export * from "./order-mail";
 export * from "./markup";
 export { APP_URL, absolute } from "./origin";

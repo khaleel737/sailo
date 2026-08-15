@@ -11,13 +11,11 @@ import { maybeRow } from "@sailo/core/invariant";
 import { formatMoney, parseMoneyToCents } from "@/lib/utils";
 import { restoreStock } from "@sailo/commerce/inventory";
 import { changeOrderStatus } from "@sailo/commerce/orders";
-import { checkRefund, refundableCents, reversePayment, type RefundOutcome } from "@/lib/refunds";
-import { claimRefundAmount, releaseRefundClaim } from "@/lib/orders/refund-claim";
+import { refundOrder as refund } from "@sailo/commerce/refund-order";
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
 import { isOrderStatus } from "@sailo/core/order-status";
 import { releaseDownloads } from "@/lib/downloads";
 import { extendForPaidOrder } from "@/lib/membership-renewals";
-import { voidTicketsForOrder } from "@sailo/commerce/tickets";
 import { sendBookingDecision, sendRefundNotification, sendShippingNotification } from "@/lib/email";
 import { emitOrderWebhook } from "@/lib/webhooks/emit";
 import type { ActionState } from "./shop";
@@ -241,147 +239,90 @@ export async function markOrderShipped(
 }
 
 /**
- * Records a refund. The amount is capped at the order total and comes straight
- * off revenue; a full refund also moves the order to `refunded`.
+ * The seller giving money back.
+ *
+ * Every rule about *how* moved to `@sailo/commerce/refund-order` when the phone
+ * grew a refund button — the SQL claim before the processor call, the release
+ * on refusal, deciding fullness from the claim rather than from the row read
+ * before it. What is left here is this surface's own half: parsing an amount
+ * out of a form in the seller's locale, deferring the effects onto Next's
+ * `after`, and revalidating the four pages a refund changes.
  */
 export async function refundOrder(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const { shop } = await requireShop();
-  const db = getDb();
 
   const id = String(formData.get("id") ?? "");
-  const order = await db.query.orders.findFirst({
+  const raw = String(formData.get("amount") ?? "").trim();
+
+  /*
+   * The order is read once here for its currency, which the amount cannot be
+   * parsed without. `refundOrder` reads it again inside its own scope — that
+   * is not a duplicated query worth removing, because the row it acts on has
+   * to be the one it claims against, not one fetched before this function was
+   * even called.
+   */
+  const order = await getDb().query.orders.findFirst({
     where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
+    columns: { currency: true },
   });
   if (!order) return { ok: false, error: "Order not found." };
 
-  const raw = String(formData.get("amount") ?? "").trim();
-  // Blank means refund everything.
-  // Blank means refund whatever is left, not the whole order again.
-  const requested = raw ? parseMoneyToCents(raw, order.currency) : refundableCents(order);
-  const check = checkRefund(order, requested);
-  if (!check.ok) {
-    return {
-      ok: false,
-      error:
-        check.reason === "not_positive"
-          ? "Enter a refund amount above zero."
-          : `Only ${formatMoney(check.remaining, order.currency)} is left to refund on this order.`,
-    };
+  const result = await refund(
+    {
+      shop,
+      orderId: id,
+      // Blank means refund whatever is left, not the whole order again.
+      amountCents: raw ? parseMoneyToCents(raw, order.currency) : null,
+      reason: String(formData.get("reason") ?? ""),
+    },
+    {
+      defer: (task) => after(task),
+      notify: async ({ shop: s, order: o }) => {
+        const sent = await sendRefundNotification({ shop: s, order: o });
+        if (!sent.sent) console.error("[sailo] refund email failed:", sent.reason);
+      },
+    },
+  );
+
+  if (!result.ok) {
+    switch (result.reason) {
+      case "not_found":
+        return { ok: false, error: "Order not found." };
+      case "not_positive":
+        return { ok: false, error: "Enter a refund amount above zero." };
+      case "exceeds_remaining":
+        return {
+          ok: false,
+          error: `Only ${formatMoney(result.remaining, order.currency)} is left to refund on this order.`,
+        };
+      case "raced":
+        return {
+          ok: false,
+          error: "Another refund on this order went through first. Reload and check what's left.",
+        };
+      default:
+        return { ok: false, error: `The payment couldn't be reversed: ${result.message}` };
+    }
   }
 
-  /*
-   * Take the amount out of the order's refundable balance before spending it.
-   *
-   * `checkRefund` above is a read against a row fetched before this function
-   * calls Stripe, so two refunds issued in the same second both pass it. This
-   * is the statement that actually enforces the ceiling — it accumulates in
-   * SQL and compares column to column, so the loser is refused here rather
-   * than after it has already moved money.
-   */
-  const claimed = await claimRefundAmount(order.id, shop.id, requested);
-  if (!claimed) {
-    return {
-      ok: false,
-      error: "Another refund on this order went through first. Reload and check what's left.",
-    };
-  }
-
-  /*
-   * Whether this order is now fully refunded, decided by the claim rather than
-   * by the row read before it.
-   *
-   * `check.isFull` came from a snapshot taken before the claim, so two partial
-   * refunds that between them consumed the whole balance each read themselves
-   * as partial — and neither restocked nor moved the order to `refunded`. The
-   * order sat fully refunded and still looking paid.
-   */
-  const isFull = claimed.refundedTotal >= order.totalCents;
-
-  /*
-   * Give the money back before writing down that we did.
-   *
-   * This used to record the refund in our own table and email the buyer to say
-   * it had happened — without ever calling the processor. The order read
-   * "refunded", the buyer read "your money is on its way", and nothing moved.
-   * A payments product may fail to refund; it may never claim it refunded when
-   * it didn't.
-   *
-   * Which reversal to call is the order's own business: it records the rail it
-   * was paid on, and `reversePayment` asks that rail. See lib/refunds.ts.
-   */
-  let outcome: RefundOutcome;
-  try {
-    outcome = await reversePayment(order, requested);
-  } catch (error) {
-    console.error("[sailo] refund failed:", error);
-    // The claim above reserved this amount; a processor that refused it must
-    // not leave the balance spent, or the seller cannot retry.
-    await releaseRefundClaim(order.id, requested);
-    return {
-      ok: false,
-      error:
-        error instanceof Error
-          ? `The payment couldn't be reversed: ${error.message}`
-          : "The payment couldn't be reversed. Nothing was changed.",
-    };
-  }
-
-  // `refundedCents` is not set here — the claim above already added it.
-  await db
-    .update(orders)
-    .set({
-      refundedAt: new Date(),
-      refundReason:
-        String(formData.get("reason") ?? "").trim().slice(0, 300) || null,
-      /*
-       * Only ever written *to* `refunded`, never back from it.
-       *
-       * `order.status` is the row as it was before the claim, so a partial
-       * refund running beside a concurrent one that completed the balance
-       * would have written the stale value back over `refunded` — undoing the
-       * other caller's conclusion and leaving a fully refunded order looking
-       * active. A partial refund has nothing to say about the status, so it
-       * says nothing.
-       */
-      ...(isFull ? { status: "refunded", paymentStatus: "refunded" } : {}),
-      updatedAt: new Date(),
-    })
-    .where(eq(orders.id, id));
-
-  // A fully refunded order is one the buyer no longer has, so the units are
-  // available again. A partial refund is a price adjustment, not a return.
-  //
-  // Admissions go with them: a ticket whose money has been given back must
-  // stop opening a door, and it did not — this is the second of the two
-  // routes to a refund, and both have to reach the same conclusion.
-  if (isFull) {
-    await restoreStock(order);
-    await voidTicketsForOrder(order.id);
-  }
-
-  const updated = await db.query.orders.findFirst({ where: eq(orders.id, id) });
-  const amount = formatMoney(requested, order.currency);
-  let note =
-    outcome.kind === "reversed"
+  const amount = formatMoney(result.amountCents, order.currency);
+  const note =
+    result.outcome.kind === "reversed"
       ? `Refunded ${amount}. The money is on its way back to the buyer.`
-      : outcome.reason === "never_charged"
+      : result.outcome.reason === "never_charged"
         ? `Recorded a ${amount} refund. Nothing was ever charged for this order, so there is nothing to send back.`
         : `Recorded a ${amount} refund — this rail settles between you and the buyer, so pay them back yourself.`;
-  if (updated?.customerEmail) {
-    const result = await sendRefundNotification({ shop, order: updated });
-    if (!result.sent) note += ` Email failed: ${result.reason}`;
-  }
 
   revalidatePath("/admin");
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
   revalidatePath("/admin/products");
   after(() => publishShopEvent(shop.id, "payment"));
-  if (order.affiliateId) {
-    const affiliateId = order.affiliateId;
+  if (result.affiliateId) {
+    const affiliateId = result.affiliateId;
     after(() => publishAffiliateEvent(affiliateId, "payment"));
   }
 
@@ -394,6 +335,7 @@ export async function refundOrder(
   after(() => emitOrderWebhook({ shop, event: "order.refunded", orderId: id }));
   return { ok: true, message: note };
 }
+
 
 export async function deleteOrder(formData: FormData) {
   const { shop } = await requireShop();

@@ -6,7 +6,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./markup": "./src/markup.ts",
-    "./transport": "./src/transport.ts"
+    "./transport": "./src/transport.ts",
+    "./orders": "./src/order-mail.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -14,6 +15,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@sailo/commerce": "workspace:*",
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
     "resend": "^6.19.0",

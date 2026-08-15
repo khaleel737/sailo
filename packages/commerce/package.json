@@ -20,7 +20,10 @@
     "./coupons": "./src/coupons.ts",
     "./delivery": "./src/delivery.ts",
     "./delivery-settings": "./src/delivery-settings.ts",
-    "./order-lines": "./src/order-lines.ts"
+    "./order-lines": "./src/order-lines.ts",
+    "./refunds": "./src/refunds.ts",
+    "./refund-claim": "./src/refund-claim.ts",
+    "./refund-order": "./src/refund-order.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -31,6 +34,7 @@
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
     "@sailo/events": "workspace:*",
+    "@sailo/payments": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
     "drizzle-orm": "^0.45.2",
     "server-only": "^0.0.1"

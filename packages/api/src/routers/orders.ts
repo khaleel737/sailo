@@ -3,7 +3,10 @@ import { and, asc, desc, eq, ilike, or } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orderItems, orders, shops } from "@sailo/db/schema";
 import { ORDER_STATUSES } from "@sailo/core/order-status";
+import { TRPCError } from "@trpc/server";
 import { changeOrderStatus } from "@sailo/commerce/orders";
+import { refundOrder } from "@sailo/commerce/refund-order";
+import { sendRefundNotification } from "@sailo/email/orders";
 import { decodeCursor, olderThan, pageOf } from "@sailo/commerce/pagination";
 import { publishShopEvent } from "@sailo/events";
 import { router, shopProcedure } from "../trpc";
@@ -142,5 +145,90 @@ export const ordersRouter = router({
        */
       await publishShopEvent(ctx.shopId, "order");
       return { id: input.id, status: input.status };
+    }),
+
+  /**
+   * Giving money back.
+   *
+   * **The thing this app could not do**, and the reason it could not was never
+   * the money: `refundCharge` has been reachable since the Stripe seam moved
+   * into `@sailo/payments`. It was the buyer's email, which lived inside
+   * apps/web — and a refund that moves money while telling nobody is worse
+   * than a refund button that does not exist. `@sailo/email/orders` is what
+   * closed that, and `notify` below is the whole of the difference.
+   *
+   * Every rule about *how* a refund happens is `refundOrder`'s: claim the
+   * balance in SQL before calling the processor, reverse before recording,
+   * release the claim if the processor refuses, and decide fullness from the
+   * claim rather than from the row read before it. Five orderings, each one
+   * guarding a way to lose money that no screen would show.
+   *
+   * `defer` is deliberately not passed. apps/web hands Next's `after` so the
+   * seller is not made to wait on an email; there is no scheduler outside a
+   * Next request scope, so this awaits the send — which is the correct trade
+   * on a phone, where the seller is looking at the screen and a silent
+   * failure would be invisible.
+   */
+  refund: shopProcedure
+    .input(
+      byId.extend({
+        /** Minor units. Omitted refunds whatever is left, never the whole
+            order a second time. */
+        amountCents: z.number().int().positive().nullish(),
+        reason: z.string().max(300).nullish(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const shop = found(
+        await getDb().query.shops.findFirst({ where: eq(shops.id, ctx.shopId) }),
+        "shop",
+      );
+
+      const result = await refundOrder(
+        {
+          shop,
+          orderId: input.id,
+          amountCents: input.amountCents ?? null,
+          reason: input.reason ?? null,
+        },
+        {
+          notify: async ({ shop: s, order }) => {
+            await sendRefundNotification({ shop: s, order });
+          },
+        },
+      );
+
+      if (!result.ok) {
+        if (result.reason === "not_found") {
+          throw new TRPCError({ code: "NOT_FOUND", message: "No such order." });
+        }
+        if (result.reason === "reversal_failed") {
+          /*
+           * The processor refused and nothing was written — the claim was
+           * released, so the seller can try again. `BAD_GATEWAY` rather than
+           * `BAD_REQUEST` because nothing about their input was wrong.
+           */
+          throw new TRPCError({ code: "BAD_GATEWAY", message: "reversal_failed" });
+        }
+        if (result.reason === "raced") {
+          throw new TRPCError({ code: "CONFLICT", message: "raced" });
+        }
+        throw new TRPCError({ code: "BAD_REQUEST", message: result.reason });
+      }
+
+      /* Every other screen looking at this shop, and the money path in
+         particular — a refund changes the dashboard's net revenue. */
+      await publishShopEvent(ctx.shopId, "payment");
+
+      return {
+        id: input.id,
+        amountCents: result.amountCents,
+        refundedTotal: result.refundedTotal,
+        isFull: result.isFull,
+        /* Whether a processor actually moved money. A bank transfer or a cash
+           sale settles between two people, so the seller is told to pay them
+           back themselves rather than being left to assume Stripe did. */
+        reversed: result.outcome.kind === "reversed",
+      };
     }),
 });

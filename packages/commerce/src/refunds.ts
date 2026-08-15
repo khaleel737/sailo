@@ -1,8 +1,8 @@
 import "server-only";
 import type { Order } from "@sailo/db/schema";
-import { refundCharge } from "@/lib/connect";
+import { refundCharge } from "@sailo/payments";
 import { toStripeAmount } from "@sailo/core/currency";
-import { isPaymentMethodType, type PaymentMethodType } from "@/lib/payments";
+import { isPaymentMethodType, type PaymentMethodType } from "@sailo/payments/rails";
 
 /**
  * Giving money back, by the rail that took it.

@@ -517,6 +517,9 @@ importers:
       '@sailo/db':
         specifier: workspace:*
         version: link:../db
+      '@sailo/email':
+        specifier: workspace:*
+        version: link:../email
       '@sailo/env':
         specifier: workspace:*
         version: link:../env
@@ -597,6 +600,9 @@ importers:
       '@sailo/events':
         specifier: workspace:*
         version: link:../events
+      '@sailo/payments':
+        specifier: workspace:*
+        version: link:../payments
       '@sailo/rate-limit':
         specifier: workspace:*
         version: link:../rate-limit
@@ -729,6 +735,9 @@ importers:
 
   packages/email:
     dependencies:
+      '@sailo/commerce':
+        specifier: workspace:*
+        version: link:../commerce
       '@sailo/core':
         specifier: workspace:*
         version: link:../core

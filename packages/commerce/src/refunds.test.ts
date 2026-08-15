@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canReverse, checkRefund, refundableCents, reversePayment } from "@/lib/refunds";
+import { canReverse, checkRefund, refundableCents, reversePayment } from "./refunds";
 import type { Order } from "@sailo/db/schema";
 
 /**
