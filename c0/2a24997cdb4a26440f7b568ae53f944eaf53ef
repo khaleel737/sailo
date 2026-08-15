@@ -1,0 +1,74 @@
+apps/web/src/lib/invoices.ts
+  s_42380745c8f8fb::t_6b5ca716051b23 2,4-8,11
+apps/web/src/lib/membership-cron.ts
+  s_42380745c8f8fb::t_8e7229e39d41d0 1-3,6-7,11-219
+  s_42380745c8f8fb::t_f81b168ce94c28 4,8
+  s_42380745c8f8fb::t_d2c957db84e376 5
+  s_42380745c8f8fb::t_0230f1be12dba5 9-10
+apps/web/src/lib/webhooks/emit.test.ts
+  s_42380745c8f8fb::t_a719645ca716f2 119-132
+  s_42380745c8f8fb::t_b1a9cc950c4121 43
+apps/web/src/lib/membership-renewals.ts
+  s_42380745c8f8fb::t_6b5ca716051b23 2,4-8,11-12
+packages/commerce/src/pay-order.ts
+  s_42380745c8f8fb::t_4923b432a2049b 1-6,8-49,59-113,115-129
+  s_42380745c8f8fb::t_2ecb52299cbccd 7,50-58,114
+packages/commerce/src/invoices.ts
+  s_42380745c8f8fb::t_aecde21d0e8dfe 1-69
+packages/commerce/src/downloads.ts
+  s_42380745c8f8fb::t_55c0ebde10b425 12,110-137,179-188
+  s_42380745c8f8fb::t_aecde21d0e8dfe 1-11,13-109,138-178,189-251
+apps/web/src/lib/downloads.ts
+  s_42380745c8f8fb::t_6b5ca716051b23 2,4-8,11
+packages/payments/src/order-status.test.ts
+  s_42380745c8f8fb::t_47d73c6b59819c 1-132
+apps/web/src/lib/actions/order-admin.ts
+  s_42380745c8f8fb::t_5f3b9bfc74ec72 16,128-131
+  s_42380745c8f8fb::t_b574cd7319c998 15,109-121,126,132,136,138
+apps/web/src/lib/payments/status.ts
+  s_42380745c8f8fb::t_47d73c6b59819c 2-3,5-10,13
+packages/email/src/order-mail.ts
+  s_42380745c8f8fb::t_601f6188222563 9-10,210-211,260-320
+  s_42380745c8f8fb::t_e6c0c3fd08b9be 212-236,244-259,324
+  s_42380745c8f8fb::t_524eeede9cda65 237-243
+  s_42380745c8f8fb::t_9b5502ff33a93c 321-323
+apps/web/src/lib/order-status.test.ts
+  s_42380745c8f8fb::t_5079160a6c249f 19-24,40-41,50-53,55
+packages/commerce/src/membership-renewals.ts
+  s_42380745c8f8fb::t_aecde21d0e8dfe 1-184
+packages/commerce/src/event-access.ts
+  s_42380745c8f8fb::t_aecde21d0e8dfe 1-82
+packages/payments/package.json
+  s_42380745c8f8fb::t_47d73c6b59819c 11-12
+packages/api/src/routers/orders.ts
+  s_42380745c8f8fb::t_dc32ed2ee9c077 10,332-360,370-388
+  s_42380745c8f8fb::t_5f3b9bfc74ec72 13,361-369
+  s_42380745c8f8fb::t_8fa85aa55c03f2 389
+apps/web/src/lib/email/messages.ts
+  s_42380745c8f8fb::t_524eeede9cda65 12
+  s_42380745c8f8fb::t_e6c0c3fd08b9be 11
+  s_42380745c8f8fb::t_601f6188222563 15
+apps/web/src/lib/event-access.ts
+  s_42380745c8f8fb::t_6b5ca716051b23 2,4-8,11
+packages/commerce/package.json
+  s_42380745c8f8fb::t_aecde21d0e8dfe 27-30
+  s_42380745c8f8fb::t_3330b07f92f140 31-32
+packages/payments/src/order-status.ts
+  s_42380745c8f8fb::t_fd043d1a65e263 1-101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c02a24997cdb4a26440f7b568ae53f944eaf53ef",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
