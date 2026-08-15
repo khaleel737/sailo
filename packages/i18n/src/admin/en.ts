@@ -251,6 +251,29 @@ export const adminEn = {
     price: "Price ({currency})",
     compareAt: "Compare-at price",
     kind: "Type",
+    /**
+     * The five kinds, as a control's labels.
+     *
+     * Title case and one word each, where `kindPhysical` and friends further
+     * down are sentence fragments ("a physical product", "a download") built
+     * for prose. A segmented control on a phone has room for one word, and
+     * reusing the prose forms would render "physical product" truncated to
+     * "physical pr…".
+     */
+    kindPhysicalLabel: "Physical",
+    kindDigitalLabel: "Digital",
+    kindServiceLabel: "Service",
+    kindEventLabel: "Event",
+    kindMembershipLabel: "Membership",
+    /**
+     * Why the type cannot be changed after the fact.
+     *
+     * Each kind reads different columns — an event has a start time, a
+     * membership a billing interval — and switching one for another would
+     * leave a subscription billing against a product that no longer knows it
+     * is a subscription. The web form has the same rule.
+     */
+    kindFixed: "The type is set when a product is created and can't be changed.",
     category: "Category",
     noCategory: "No category",
     tags: "Tags",

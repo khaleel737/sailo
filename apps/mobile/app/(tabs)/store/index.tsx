@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, Platform, StyleSheet, View } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { FlashList } from "@shopify/flash-list";
 import { useRouter } from "expo-router";
 import {
@@ -11,7 +12,7 @@ import {
 } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { formatMoney } from "@sailo/core/currency";
-import { isProductKind, variantLabel } from "@sailo/core/variants";
+import { isProductKind, variantLabel, type ProductKind } from "@sailo/core/variants";
 import { interpolate } from "@sailo/i18n/native";
 import {
   Button,
@@ -174,6 +175,16 @@ const STORE_COPY = {
   digitalOnWeb:
     "Digital products are edited on the web admin — the phone can't read their files yet, and saving here would remove them.",
   photosOnWeb: "Photos are added on the web admin for now.",
+  /*
+   * A new digital product, which this screen can create and cannot finish.
+   *
+   * Different from `digitalOnWeb`, which refuses an *edit* because saving would
+   * delete files this screen cannot see. Here there are no files yet — the row
+   * is fine, it just cannot be sold until one is attached, and saying so is
+   * better than a product that publishes and delivers nothing.
+   */
+  digitalNeedsFiles:
+    "You can create it here, but add the file on the web admin before publishing — until you do, buyers get nothing.",
 } as const;
 
 type StoreCopy = typeof STORE_COPY;
@@ -199,6 +210,37 @@ export function useStoreCopy(): {
 /* -------------------------------------------------------------------------- */
 /*  Money, in and out of a text field                                          */
 /* -------------------------------------------------------------------------- */
+
+/**
+ * The five kinds, as a control's options.
+ *
+ * A function rather than a constant because the labels come from the
+ * dictionary, and a module-scope constant would be built once against
+ * whichever language happened to load first.
+ */
+function KIND_OPTIONS(a: ReturnType<typeof useT>["a"]): SegmentedOption<ProductKind>[] {
+  return [
+    { value: "physical", label: a.productForm.kindPhysicalLabel },
+    { value: "digital", label: a.productForm.kindDigitalLabel },
+    { value: "service", label: a.productForm.kindServiceLabel },
+    { value: "event", label: a.productForm.kindEventLabel },
+    { value: "membership", label: a.productForm.kindMembershipLabel },
+  ];
+}
+
+/** An event's start, with the time — sales close at the moment, not the day. */
+function whenLabel(date: Date, locale: string): string {
+  try {
+    return date.toLocaleString(locale, {
+      day: "numeric",
+      month: "short",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  } catch {
+    return date.toISOString().slice(0, 16).replace("T", " ");
+  }
+}
 
 /* -------------------------------------------------------------------------- */
 /*  The catalogue                                                              */
@@ -564,6 +606,16 @@ type SaveInput = RouterInputs["products"]["save"];
  * `12` and moving the cursor so the fraction can never be typed at all.
  */
 type Draft = {
+  /**
+   * Set once, at creation, and read-only after.
+   *
+   * Each kind reads different columns — an event has a start time, a
+   * membership a billing interval — so switching one for another would leave a
+   * live subscription billing against a product that no longer knows it is
+   * one. `products.save` accepts a change; the form does not offer it, which
+   * is the same rule the web form holds.
+   */
+  kind: ProductKind;
   title: string;
   description: string;
   price: string;
@@ -576,15 +628,45 @@ type Draft = {
   isPublished: boolean;
   /** Keyed by the variant's own id, so a re-render cannot re-key the map. */
   variants: Record<string, { price: string; stock: string; available: boolean }>;
+
+  /*
+   * The kind-specific columns.
+   *
+   * All of these were already carried through `toSaveInput` untouched, read
+   * straight off the loaded product — which is what stopped a phone edit from
+   * wiping an event's start time. Carrying them was never the same as being
+   * able to *set* them, so a seller who created an event on the web could edit
+   * its price here and nothing else about it.
+   *
+   * Held as strings where the field is typed into, because a half-typed number
+   * is a string and a `number | null` draft would have to decide what "12." is
+   * on every keystroke.
+   */
+  eventStartsAt: Date | null;
+  eventJoinUrl: string;
+  billingInterval: string;
+  trialDays: string;
+  durationMinutes: string;
+  serviceMode: "in_person" | "online";
+  serviceLocation: string;
+  bookingEnabled: boolean;
+  bookingLeadHours: string;
+  releaseOnPayment: boolean;
+  downloadLimit: string;
+  downloadExpiryDays: string;
 };
 
 function draftFrom(
   product: ProductDetail | null,
   currency: string,
   locale: string,
+  /* Only consulted when there is no product — an existing one's kind is its
+     own and is never overridden by whatever the caller last picked. */
+  kind: ProductKind = "physical",
 ): Draft {
   if (!product) {
     return {
+      kind,
       title: "",
       description: "",
       price: "",
@@ -601,10 +683,26 @@ function draftFrom(
       isFeatured: false,
       isPublished: true,
       variants: {},
+      /* The same defaults `saveProduct` would have chosen, spelled out so a
+         product created on the phone is row-identical to one created on the
+         web rather than differing in whichever column was left undefined. */
+      eventStartsAt: null,
+      eventJoinUrl: "",
+      billingInterval: "month",
+      trialDays: "",
+      durationMinutes: "",
+      serviceMode: "in_person",
+      serviceLocation: "",
+      bookingEnabled: false,
+      bookingLeadHours: "0",
+      releaseOnPayment: true,
+      downloadLimit: "",
+      downloadExpiryDays: "",
     };
   }
 
   return {
+    kind: isProductKind(product.kind) ? product.kind : "physical",
     title: product.title,
     description: product.description ?? "",
     price: priceToText(product.priceCents, currency, locale),
@@ -618,6 +716,20 @@ function draftFrom(
     inStock: product.inStock,
     isFeatured: product.isFeatured,
     isPublished: product.isPublished,
+    eventStartsAt: product.eventStartsAt ? new Date(product.eventStartsAt) : null,
+    eventJoinUrl: product.eventJoinUrl ?? "",
+    billingInterval: product.billingInterval ?? "month",
+    trialDays: product.trialDays === null ? "" : String(product.trialDays),
+    durationMinutes:
+      product.durationMinutes === null ? "" : String(product.durationMinutes),
+    serviceMode: product.serviceMode === "online" ? "online" : "in_person",
+    serviceLocation: product.serviceLocation ?? "",
+    bookingEnabled: product.bookingEnabled,
+    bookingLeadHours: String(product.bookingLeadHours ?? 0),
+    releaseOnPayment: product.releaseOnPayment,
+    downloadLimit: product.downloadLimit === null ? "" : String(product.downloadLimit),
+    downloadExpiryDays:
+      product.downloadExpiryDays === null ? "" : String(product.downloadExpiryDays),
     variants: Object.fromEntries(
       product.variants.map((variant) => [
         variant.id,
@@ -665,7 +777,9 @@ function toSaveInput(
     // `kind` is a text column, so it is narrowed rather than asserted: a row
     // holding something this build has never heard of falls back to the same
     // default `saveProduct` would have chosen for it.
-    kind: product && isProductKind(product.kind) ? product.kind : "physical",
+    /* The draft's, which for an existing product is the row's own kind — see
+       `Draft.kind`. A new product carries whichever the seller picked. */
+    kind: draft.kind,
     categoryId: product?.categoryId ?? null,
     tags: draft.tags
       .split(",")
@@ -693,21 +807,34 @@ function toSaveInput(
     trackInventory: draft.trackInventory,
     stockQuantity: draft.trackInventory ? textToCount(draft.stockQuantity) : null,
 
-    releaseOnPayment: product?.releaseOnPayment ?? true,
-    downloadLimit: product?.downloadLimit ?? null,
-    downloadExpiryDays: product?.downloadExpiryDays ?? null,
+    /*
+     * From the draft now, where these used to be copied straight back off the
+     * loaded product.
+     *
+     * Copying them was what stopped a phone edit from wiping an event's start
+     * time, and it was the right stopgap — but it also meant the phone could
+     * never *set* one. The fields below are the same columns, now editable,
+     * and the same rule still holds: `saveProduct` rewrites every one of them
+     * from what it is handed, so all of them travel on every save whether or
+     * not this product's kind draws them.
+     */
+    releaseOnPayment: draft.releaseOnPayment,
+    downloadLimit: textToCount(draft.downloadLimit),
+    downloadExpiryDays: textToCount(draft.downloadExpiryDays),
 
-    durationMinutes: product?.durationMinutes ?? null,
-    serviceMode: product?.serviceMode === "online" ? "online" : "in_person",
-    serviceLocation: product?.serviceLocation ?? null,
-    bookingEnabled: product?.bookingEnabled ?? false,
-    bookingLeadHours: product?.bookingLeadHours ?? 0,
+    durationMinutes: textToCount(draft.durationMinutes),
+    serviceMode: draft.serviceMode,
+    serviceLocation: draft.serviceLocation.trim() || null,
+    bookingEnabled: draft.bookingEnabled,
+    bookingLeadHours: textToCount(draft.bookingLeadHours) ?? 0,
 
-    eventStartsAt: product?.eventStartsAt ?? null,
-    eventJoinUrl: product?.eventJoinUrl ?? null,
+    eventStartsAt: draft.eventStartsAt,
+    eventJoinUrl: draft.eventJoinUrl.trim() || null,
 
-    billingInterval: product?.billingInterval ?? null,
-    trialDays: product?.trialDays ?? null,
+    /* Only a membership carries an interval. Sending one on a physical
+       product would put a billing cycle on a mug. */
+    billingInterval: draft.kind === "membership" ? draft.billingInterval : null,
+    trialDays: draft.kind === "membership" ? textToCount(draft.trialDays) : null,
 
     inStock: draft.inStock,
     isFeatured: draft.isFeatured,
@@ -774,6 +901,10 @@ export function ProductEditor({
     setRefused(null);
   }, [visible, product, currency, locale]);
 
+  /* Open only while the seller is choosing — a mounted picker on Android is
+     a dialog, and one that never closes is a screen nobody can leave. */
+  const [picking, setPicking] = useState(false);
+
   const edit = useCallback((patch: Partial<Draft>) => {
     setDraft((current) => ({ ...current, ...patch }));
     setDirty(true);
@@ -829,6 +960,15 @@ export function ProductEditor({
    */
   const refusesDigital = product?.kind === "digital";
 
+  /*
+   * A digital product created here would have no files, and this screen has no
+   * way to add one — so it would be publishable, orderable, and deliver
+   * nothing. Warned rather than removed from the picker: "you cannot sell
+   * downloads from the phone" is a different and wronger message than "finish
+   * this one on the web", and the seller may well want the row to exist now.
+   */
+  const newDigital = !product && draft.kind === "digital";
+
   const canSave =
     !refusesDigital &&
     draft.title.trim().length > 0 &&
@@ -854,9 +994,9 @@ export function ProductEditor({
       size="large"
       dismissible={!dirty}
     >
-      {refusesDigital ? (
+      {refusesDigital || newDigital ? (
         <Card variant="outlined">
-          <Text tone="warning">{s.digitalOnWeb}</Text>
+          <Text tone="warning">{refusesDigital ? s.digitalOnWeb : s.digitalNeedsFiles}</Text>
         </Card>
       ) : null}
 
@@ -867,6 +1007,29 @@ export function ProductEditor({
       ) : null}
 
       {product ? null : <Text tone="muted">{a.products.newSubtitle}</Text>}
+
+      {/*
+        The type, chosen once. `Draft.kind` explains why it does not change
+        after: each kind reads different columns, and switching one for another
+        would leave a live subscription billing against a product that no
+        longer knows it is one.
+
+        A new product gets the control; an existing one gets the sentence.
+        Neither gets a disabled control, which would read as a thing the seller
+        might be allowed to do later.
+      */}
+      {product ? (
+        <Text variant="caption" tone="muted">
+          {a.productForm.kindFixed}
+        </Text>
+      ) : (
+        <Segmented
+          options={KIND_OPTIONS(a)}
+          value={draft.kind}
+          onChange={(next) => edit({ kind: next })}
+          accessibilityLabel={a.productForm.kind}
+        />
+      )}
 
       <TextField
         label={a.productForm.titleLabel}
@@ -951,6 +1114,107 @@ export function ProductEditor({
           onValueChange={(isFeatured) => edit({ isFeatured })}
           disabled={refusesDigital}
         />
+        {/*
+          The columns only this kind uses.
+
+          Every one of them already travelled on every save — `toSaveInput`
+          copied them off the loaded product so a phone edit could not wipe an
+          event's start time. Carrying them was never the same as being able to
+          set them, so a seller who made an event on the web could change its
+          price here and nothing else about it.
+        */}
+        {draft.kind === "event" ? (
+          <>
+            <ListRow
+              title={a.productForm.eventStartsAt}
+              subtitle={a.productForm.eventStartsAtHint}
+              value={
+                draft.eventStartsAt ? whenLabel(draft.eventStartsAt, locale) : a.columns.never
+              }
+              icon="calendar"
+              onPress={() => setPicking(true)}
+            />
+            {picking ? (
+              <DateTimePicker
+                value={draft.eventStartsAt ?? new Date()}
+                /* Both halves. Ticket sales close at this exact moment, so a
+                   date without a time would close them at midnight. */
+                mode="datetime"
+                display={Platform.OS === "ios" ? "inline" : "default"}
+                onChange={(event, date) => {
+                  if (Platform.OS !== "ios") setPicking(false);
+                  if (event.type === "set" && date) edit({ eventStartsAt: date });
+                }}
+              />
+            ) : null}
+            <TextField
+              label={a.productForm.eventJoinUrl}
+              hint={a.productForm.eventJoinUrlHint}
+              value={draft.eventJoinUrl}
+              onChangeText={(next) => edit({ eventJoinUrl: next })}
+              keyboard="url"
+            />
+          </>
+        ) : null}
+
+        {draft.kind === "membership" ? (
+          <>
+            <Segmented
+              options={[
+                { value: "month", label: a.billing.monthly },
+                { value: "year", label: a.billing.yearly },
+              ]}
+              value={draft.billingInterval}
+              onChange={(next) => edit({ billingInterval: next })}
+              accessibilityLabel={a.productForm.billingInterval}
+            />
+            <Text variant="caption" tone="muted">
+              {a.productForm.billingIntervalHint}
+            </Text>
+            <TextField
+              label={a.productForm.trialDays}
+              hint={a.productForm.trialDaysHint}
+              value={draft.trialDays}
+              onChangeText={(next) => edit({ trialDays: next })}
+              keyboard="number"
+            />
+          </>
+        ) : null}
+
+        {draft.kind === "service" ? (
+          <>
+            <TextField
+              label={a.productForm.duration}
+              value={draft.durationMinutes}
+              onChangeText={(next) => edit({ durationMinutes: next })}
+              keyboard="number"
+            />
+            <Segmented
+              options={[
+                { value: "in_person", label: a.productForm.inPerson },
+                { value: "online", label: a.productForm.online },
+              ]}
+              value={draft.serviceMode}
+              onChange={(next) => edit({ serviceMode: next as Draft["serviceMode"] })}
+              accessibilityLabel={a.productForm.duration}
+            />
+            <TextField
+              label={a.productForm.serviceLocation}
+              hint={a.productForm.serviceLocationHint}
+              placeholder={a.productForm.serviceLocationPlaceholder}
+              value={draft.serviceLocation}
+              onChangeText={(next) => edit({ serviceLocation: next })}
+              multiline
+            />
+            <Switch
+              label={a.productForm.bookingEnabled}
+              hint={a.productForm.bookingEnabledBody}
+              value={draft.bookingEnabled}
+              onValueChange={(next) => edit({ bookingEnabled: next })}
+            />
+          </>
+        ) : null}
+
         <Switch
           label={a.productForm.published}
           hint={a.productForm.publishedBody}
