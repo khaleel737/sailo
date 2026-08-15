@@ -1,0 +1,51 @@
+apps/mobile/app/(tabs)/settings/_layout.tsx
+  s_42380745c8f8fb::t_3d68a73508b7db 32-34
+  s_42380745c8f8fb::t_883535a477dd15 35
+  s_42380745c8f8fb::t_b334901c8a7bab 28-31
+apps/mobile/app/(tabs)/settings/customers/[id].tsx
+  s_42380745c8f8fb::t_478508b87646e2 1-308
+apps/mobile/package.json
+  s_42380745c8f8fb::t_d2367ed92c2cc3 17
+packages/i18n/src/admin/en.ts
+  s_42380745c8f8fb::t_b334901c8a7bab 632-647
+  s_42380745c8f8fb::t_0784fc6895dce4 703-717
+  s_42380745c8f8fb::t_cf8c7250526c52 1020-1036
+  s_42380745c8f8fb::t_883535a477dd15 1402-1428
+apps/mobile/app/(tabs)/settings/billing.tsx
+  s_42380745c8f8fb::t_81a6e6a0b722da 1-202
+apps/mobile/app/(tabs)/settings/members.tsx
+  s_42380745c8f8fb::t_d861efe7efc6a5 1-81,83-131,133-160,162-165,167-170,172-179,181-221
+  s_42380745c8f8fb::t_883535a477dd15 82,132,161,166,171,180
+apps/mobile/app/(tabs)/store/_layout.tsx
+  s_42380745c8f8fb::t_0784fc6895dce4 61
+apps/mobile/app/(tabs)/store/index.tsx
+  s_42380745c8f8fb::t_0784fc6895dce4 419-425
+  s_42380745c8f8fb::t_935f221d4fb5db 418
+apps/mobile/app/(tabs)/store/coupons.tsx
+  s_42380745c8f8fb::t_7e80a1070203a6 1-474
+apps/mobile/app/(tabs)/settings/index.tsx
+  s_42380745c8f8fb::t_883535a477dd15 177-183
+  s_42380745c8f8fb::t_3d68a73508b7db 176,234-244
+  s_42380745c8f8fb::t_edc89a384f5caf 162-165,167-175
+apps/mobile/app/(tabs)/settings/customers/index.tsx
+  s_42380745c8f8fb::t_ff9ffa81c2bd57 1-151,156-246
+  s_42380745c8f8fb::t_4019a6bdb7a2f6 152-155
+pnpm-lock.yaml
+  s_42380745c8f8fb::t_c61316af1d3b12 93-95,3168-3180,11290-11297
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "88677e8fbf6a1a8233abc7af6d1563dd62c3af9d",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
