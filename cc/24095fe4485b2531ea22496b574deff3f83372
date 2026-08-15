@@ -1,0 +1,44 @@
+packages/commerce/src/pay-order.ts
+  s_42380745c8f8fb::t_da6afe9dec3c11 70-79
+  s_42380745c8f8fb::t_ef2cbfbecc81af 5
+packages/api/src/routers/orders.ts
+  s_42380745c8f8fb::t_ef2cbfbecc81af 349
+  s_42380745c8f8fb::t_da6afe9dec3c11 350-352
+packages/i18n/src/admin/en.ts
+  s_42380745c8f8fb::t_b2e4f08a145cb7 619-627
+apps/web/src/lib/order-status.test.ts
+  s_42380745c8f8fb::t_ef2cbfbecc81af 23,52
+apps/mobile/app/(tabs)/orders/[id].tsx
+  s_42380745c8f8fb::t_5e71c52d08bc56 799-812,816-817,825-828,837,842
+  s_42380745c8f8fb::t_b2e4f08a145cb7 95,114-138
+  s_42380745c8f8fb::t_37e890201b91e2 328-334,336-340,370-371,376-391
+  s_42380745c8f8fb::t_ef2cbfbecc81af 13
+  s_42380745c8f8fb::t_c5812d38745e50 335,859-867
+  s_42380745c8f8fb::t_3f3611f7106256 868-872
+  s_42380745c8f8fb::t_bbc68c32047000 392-393,873-874
+packages/core/src/payment-status.test.ts
+  s_42380745c8f8fb::t_ef2cbfbecc81af 1-132
+packages/payments/package.json
+  s_42380745c8f8fb::t_ef2cbfbecc81af 11
+apps/web/src/lib/payments/status.ts
+  s_42380745c8f8fb::t_ef2cbfbecc81af 3,18
+  s_42380745c8f8fb::t_3f3611f7106256 5-11
+packages/core/package.json
+  s_42380745c8f8fb::t_ef2cbfbecc81af 28-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "cc24095fe4485b2531ea22496b574deff3f83372",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
