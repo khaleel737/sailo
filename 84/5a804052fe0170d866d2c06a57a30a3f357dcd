@@ -1,0 +1,43 @@
+apps/mobile/jest.config.js
+  s_42380745c8f8fb::t_e244c9585b68aa 139-151
+packages/i18n/src/admin/en.ts
+  s_42380745c8f8fb::t_2c9333a20ba2c3 799-815
+  s_42380745c8f8fb::t_68a5720eb25ccd 529-543
+apps/mobile/app/(tabs)/store/delivery.tsx
+  s_42380745c8f8fb::t_55d5b7577f3a54 216-217,225-230,232-237,285,405-409,560,562
+  s_42380745c8f8fb::t_ef495b10d0ff95 1-215,218-219,221-224,231,238-284,286-404,410-559,561,563-575
+  s_42380745c8f8fb::t_c9bf691a40488d 220
+apps/mobile/jest/skia-env.js
+  s_42380745c8f8fb::t_f930d8adf572ae 43-58,62-63
+apps/mobile/tests/design-system.test.tsx
+  s_42380745c8f8fb::t_8e5afc6b9505c1 1-4,12-18
+  s_42380745c8f8fb::t_724ab0b898abb8 19
+apps/mobile/app/(tabs)/store/index.tsx
+  s_42380745c8f8fb::t_10b742697944db 410-425
+  s_42380745c8f8fb::t_70306c9aefbfab 36-47
+  s_42380745c8f8fb::t_880a301857fbb6 13
+apps/mobile/app/(tabs)/store/categories.tsx
+  s_42380745c8f8fb::t_02cf001fff8a3a 1-261
+apps/mobile/components/money.ts
+  s_42380745c8f8fb::t_daea109dbda3a1 48-115
+apps/mobile/app/(tabs)/store/_layout.tsx
+  s_42380745c8f8fb::t_655239a878ac05 56-60
+knip.json
+  s_42380745c8f8fb::t_a7558ced568469 45-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "845a804052fe0170d866d2c06a57a30a3f357dcd",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
