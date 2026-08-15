@@ -32,6 +32,22 @@
  * production EAS build would have failed the same way. `knip.json` ignores it
  * for this app for the same reason it exists.
  */
+/*
+ * TWO THINGS THAT WILL BITE A FIRST LOCAL BUILD, both verified on a simulator
+ * rather than guessed at:
+ *
+ * 1. **Sentry fails the build, it does not warn.** The `@sentry/react-native`
+ *    plugin in `app.json` adds a source-map upload phase, and with no org
+ *    configured `sentry-cli` exits non-zero and takes `xcodebuild` with it —
+ *    after every pod has compiled. Build with `SENTRY_DISABLE_AUTO_UPLOAD=true`
+ *    locally, or set the org in `sentry.properties`.
+ *
+ * 2. **A stale Metro cache outlives an install.** Adding a native dependency
+ *    and rebuilding without `--clear` leaves the resolver certain the module
+ *    does not exist: `Unable to resolve react-native-gesture-handler` from a
+ *    file that imports it, while `require.resolve` finds it happily. Start with
+ *    `npx expo start --clear` after any dependency change.
+ */
 const { getDefaultConfig } = require("expo/metro-config");
 const path = require("node:path");
 const fs = require("node:fs");
