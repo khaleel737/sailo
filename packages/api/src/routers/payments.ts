@@ -1,10 +1,13 @@
+import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
 import { can } from "@sailo/core/plans";
 import { clientEnv } from "@sailo/env";
+import { publishShopEvent } from "@sailo/events";
 import { connectOnboardingLink } from "@sailo/payments";
+import { listRails, saveRail } from "@sailo/payments/rail-settings";
 import { router, shopProcedure } from "../trpc";
 import { found } from "../shared";
 
@@ -82,4 +85,99 @@ export const paymentsRouter = router({
 
     return { url };
   }),
+
+  /**
+   * Every way this shop could take money, and which of them actually work.
+   *
+   * The full catalogue rather than the rows that exist — a settings screen has
+   * to show a seller the rails they have *not* turned on, and the table only
+   * knows about the ones they have. `listRails` merges the two.
+   *
+   * Three separate booleans come back per rail and none of them is redundant:
+   * `configured` is "you have filled this in", `available` is "this can settle
+   * your currency at all", `usable` is "a buyer could tap it right now". A
+   * seller who set Venmo up in dollars and then priced their shop in euros has
+   * a rail that is configured, unavailable and unusable, and a screen that
+   * collapsed those into one flag could only tell them to check their settings.
+   */
+  rails: shopProcedure.query(async ({ ctx }) => {
+    const shop = found(
+      await getDb().query.shops.findFirst({ where: eq(shops.id, ctx.shopId) }),
+      "shop",
+    );
+
+    return {
+      rails: await listRails(shop),
+      /*
+       * The card rail is entitlement-gated where the others are not, and the
+       * screen has to say which — a toggle that refuses with "upgrade" after
+       * the tap is worse than one that shows a lock before it. Read here rather
+       * than derived on the client, because `planFor` accounts for comped and
+       * past-due accounts that `shop.plan` alone does not.
+       */
+      cardAllowed: can(shop, "cardRails"),
+      currency: shop.currency,
+      stripe: {
+        connected: Boolean(shop.stripeAccountId),
+        chargesEnabled: shop.stripeChargesEnabled,
+        detailsSubmitted: shop.stripeDetailsSubmitted,
+      },
+    };
+  }),
+
+  /**
+   * Turn one rail on or off, and save what it needs to work.
+   *
+   * The refusal is the reason this is not a bare update. `saveRail` will not
+   * enable a rail whose required fields are blank, because a half-configured
+   * option puts a button on the storefront that takes a buyer somewhere broken
+   * — and the seller cannot see it, since their own screen shows the toggle as
+   * on. The same function answers the web form.
+   *
+   * `config` is `Record<string, string>` rather than a schema per rail: the
+   * fields are defined in `@sailo/payments/rails`, twenty-odd rails' worth, and
+   * a zod union restating them here would be a second definition to keep in
+   * step. `saveRail` rebuilds the object from the rail's own field list and
+   * drops anything else, so an unknown key is discarded rather than stored.
+   */
+  saveRail: shopProcedure
+    .input(
+      z.object({
+        type: z.string().max(40),
+        config: z.record(z.string().max(40), z.string().max(500)).default({}),
+        isEnabled: z.boolean(),
+        label: z.string().max(60).nullish(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const result = await saveRail({
+        shopId: ctx.shopId,
+        type: input.type,
+        config: input.config,
+        isEnabled: input.isEnabled,
+        label: input.label ?? null,
+      });
+
+      if (!result.ok) {
+        if (result.reason === "unknown") {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Unknown payment method." });
+        }
+        /*
+         * The blank fields, as keys, in `message`. The same arrangement
+         * `products.save` uses for its refusals and for the same reason: the
+         * server knows *which* fields are missing and the phone knows what they
+         * are called in the seller's language, so the wording is the client's
+         * and the fact is the server's.
+         */
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: `unconfigured:${result.missing.join(",")}`,
+        });
+      }
+
+      /* Every other screen looking at this shop — the seller's own browser, the
+         staff panel. Awaited: there is no `after` outside Next's request scope. */
+      await publishShopEvent(ctx.shopId, "account");
+      return { type: result.type };
+    }),
 });

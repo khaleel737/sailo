@@ -16,7 +16,8 @@
     "./orders": "./src/orders.ts",
     "./pagination": "./src/pagination.ts",
     "./products": "./src/products.ts",
-    "./webhooks": "./src/webhooks.ts"
+    "./webhooks": "./src/webhooks.ts",
+    "./coupons": "./src/coupons.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

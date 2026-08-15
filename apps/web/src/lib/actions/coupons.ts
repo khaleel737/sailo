@@ -7,55 +7,51 @@ import { getDb } from "@sailo/db";
 import { coupons } from "@sailo/db/schema";
 import { publishShopEvent } from "@sailo/events";
 import { requireShop } from "@/lib/session";
-import { normalizeCode, percentToBp } from "@sailo/core/pricing";
+/* Aliased because this file exports a `saveCoupon` of its own — the action that
+   wraps it. The two are deliberately the same name: one is the form, one is the
+   rule, and a reader following the call arrives where the rule actually is. */
+import { saveCoupon as save } from "@sailo/commerce/coupons";
 import { parseMoneyToCents } from "@/lib/utils";
 import { can, upgradeMessage } from "@/lib/plans";
 import type { ActionState } from "./shop";
 
+/**
+ * The rules moved to `@sailo/commerce/coupons` when the phone grew a coupons
+ * screen; what is left here is the form.
+ *
+ * The split is on parsing. A seller typing `12,50` means twelve fifty in French
+ * and one thousand two hundred and fifty in English, and only the surface that
+ * read the keyboard knows which — so this turns strings into numbers, and the
+ * shared function takes numbers and owns every decision about what they may be.
+ * The percentage ceiling in particular: a `percent` coupon above 100% is a
+ * negative order total, and nothing downstream refuses one.
+ */
 export async function saveCoupon(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const { shop } = await requireShop();
-  const db = getDb();
 
   if (!can(shop, "coupons")) {
     return { ok: false, error: upgradeMessage("coupons", "Discount codes") };
   }
 
-  const id = String(formData.get("id") ?? "").trim() || null;
-  const code = normalizeCode(String(formData.get("code") ?? ""));
-  if (code.length < 3) {
-    return { ok: false, error: "Code must be at least 3 characters." };
-  }
-
   const discountType =
-    String(formData.get("discountType") ?? "percent") === "fixed"
-      ? "fixed"
-      : "percent";
+    String(formData.get("discountType") ?? "percent") === "fixed" ? "fixed" : "percent";
 
   const rawValue = String(formData.get("value") ?? "").trim();
-  const numeric = Number(rawValue);
-  if (!rawValue || !Number.isFinite(numeric) || numeric <= 0) {
+  if (!rawValue || !Number.isFinite(Number(rawValue))) {
     return { ok: false, error: "Enter a discount greater than zero." };
   }
-  if (discountType === "percent" && numeric > 100) {
-    return { ok: false, error: "A percentage discount can't exceed 100%." };
-  }
 
-  const discountValue =
-    discountType === "percent" ? percentToBp(numeric) : parseMoneyToCents(rawValue, shop.currency);
-
-  const clash = await db.query.coupons.findFirst({
-    where: and(eq(coupons.shopId, shop.id), eq(coupons.code, code)),
-    columns: { id: true },
-  });
-  if (clash && clash.id !== id) {
-    return { ok: false, error: "You already have a coupon with that code." };
-  }
-
-  const maxRaw = String(formData.get("maxRedemptions") ?? "").trim();
-  const maxRedemptions = maxRaw ? Math.max(1, Math.trunc(Number(maxRaw))) : null;
+  /*
+   * A percentage stays a plain number and a fixed amount becomes minor units.
+   * `saveCoupon` converts the percentage to basis points itself — one column
+   * holds both units, and doing that conversion in two places is how they come
+   * to disagree.
+   */
+  const value =
+    discountType === "percent" ? Number(rawValue) : parseMoneyToCents(rawValue, shop.currency);
 
   const expiresRaw = String(formData.get("expiresAt") ?? "").trim();
   const expiresAt = expiresRaw ? new Date(expiresRaw) : null;
@@ -63,33 +59,50 @@ export async function saveCoupon(
     return { ok: false, error: "That expiry date isn't valid." };
   }
 
-  const values = {
-    code,
+  const maxRaw = String(formData.get("maxRedemptions") ?? "").trim();
+  const maxRedemptions = maxRaw && Number.isFinite(Number(maxRaw)) ? Number(maxRaw) : null;
+
+  const id = String(formData.get("id") ?? "").trim() || null;
+
+  const result = await save({
+    shopId: shop.id,
+    id,
+    code: String(formData.get("code") ?? ""),
     discountType,
-    discountValue,
-    minSubtotalCents: parseMoneyToCents(String(formData.get("minSubtotal") ?? "0"), shop.currency),
-    maxRedemptions:
-      maxRedemptions && Number.isFinite(maxRedemptions) ? maxRedemptions : null,
+    value,
+    minSubtotalCents: parseMoneyToCents(
+      String(formData.get("minSubtotal") ?? "0"),
+      shop.currency,
+    ),
+    maxRedemptions,
     expiresAt,
     isActive: formData.get("isActive") === "on",
-    updatedAt: new Date(),
-  };
+  });
 
-  if (id) {
-    const owned = await db.query.coupons.findFirst({
-      where: and(eq(coupons.id, id), eq(coupons.shopId, shop.id)),
-      columns: { id: true },
-    });
-    if (!owned) return { ok: false, error: "Coupon not found." };
-    await db.update(coupons).set(values).where(eq(coupons.id, id));
-  } else {
-    await db.insert(coupons).values({ ...values, shopId: shop.id });
-  }
+  if (!result.ok) return { ok: false, error: REFUSALS[result.reason] };
 
   revalidatePath("/admin/coupons");
   after(() => publishShopEvent(shop.id, "catalog"));
-  return { ok: true, message: id ? "Coupon updated." : "Coupon created." };
+  return { ok: true, message: result.created ? "Coupon created." : "Coupon updated." };
 }
+
+/**
+ * The shared refusals, in this surface's words.
+ *
+ * `saveCoupon` answers with a reason rather than a sentence, because the phone
+ * renders the same refusal in thirty-five languages and a shared function that
+ * returned English would have made that impossible.
+ */
+const REFUSALS: Record<
+  Exclude<Awaited<ReturnType<typeof save>>, { ok: true }>["reason"],
+  string
+> = {
+  code_too_short: "Code must be at least 3 characters.",
+  value_not_positive: "Enter a discount greater than zero.",
+  percent_too_high: "A percentage discount can't exceed 100%.",
+  code_taken: "You already have a coupon with that code.",
+  not_found: "Coupon not found.",
+};
 
 export async function deleteCoupon(formData: FormData) {
   const { shop } = await requireShop();

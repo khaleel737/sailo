@@ -4,18 +4,26 @@ import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { revalidateShop } from "@/lib/cache";
 import { publishShopEvent } from "@sailo/events";
-import { firstRow } from "@sailo/core/invariant";
-import { eq, sql } from "drizzle-orm";
-import { getDb } from "@sailo/db";
-import { paymentMethods, type PaymentConfig } from "@sailo/db/schema";
+import { saveRail } from "@sailo/payments/rail-settings";
 import { requireShop } from "@/lib/session";
-import { isConfigured, isPaymentMethodType, PAYMENT_METHOD_DEFS } from "@/lib/payments";
+import { isPaymentMethodType, PAYMENT_METHOD_DEFS } from "@/lib/payments";
+import type { PaymentConfig } from "@sailo/db/schema";
 import type { ActionState } from "./shop";
 
 /**
- * Saves one rail's settings. Enabling a rail whose required fields are blank
- * is rejected — a half-configured option that 404s the buyer is worse than a
- * missing one.
+ * Saves one rail's settings.
+ *
+ * The rule this used to hold — a rail may not be enabled while a required field
+ * is blank — now lives in `@sailo/payments/rail-settings`, because the phone
+ * needs to enforce the same one and cannot call a server action. What is left
+ * here is the half that is genuinely Next's: reading a `FormData`, deciding
+ * which paths to revalidate, and writing the refusal as a sentence.
+ *
+ * The sentence is still built here rather than returned by the shared function.
+ * `saveRail` answers with the *keys* of the fields that were blank, and this
+ * looks their labels up in the definitions — which are English literals, so a
+ * shared function that returned a finished sentence would have handed the
+ * phone an English one to show inside a Spanish app.
  */
 export async function savePaymentMethod(
   _prev: ActionState,
@@ -29,43 +37,35 @@ export async function savePaymentMethod(
   }
 
   const def = PAYMENT_METHOD_DEFS[type];
+
+  /*
+   * Read off the form by the rail's own field list. `saveRail` filters again
+   * on the same list — it has to, since the phone builds this object itself —
+   * so this is the form parser rather than the guard.
+   */
   const config: PaymentConfig = {};
   for (const field of def.fields) {
     const value = String(formData.get(field.key) ?? "").trim();
-    if (value) config[field.key] = value.slice(0, 500);
+    if (value) config[field.key] = value;
   }
 
-  const isEnabled = formData.get("isEnabled") === "on";
-  if (isEnabled && !isConfigured(type, config)) {
-    const missing = def.fields
-      .filter((f) => f.required && !config[f.key])
-      .map((f) => f.label.toLowerCase())
+  const result = await saveRail({
+    shopId: shop.id,
+    type,
+    config,
+    isEnabled: formData.get("isEnabled") === "on",
+    label: String(formData.get("label") ?? ""),
+  });
+
+  if (!result.ok) {
+    if (result.reason === "unknown") {
+      return { ok: false, error: "Unknown payment method." };
+    }
+    const missing = result.missing
+      .map((key) => def.fields.find((f) => f.key === key)?.label.toLowerCase() ?? key)
       .join(" and ");
     return { ok: false, error: `Add your ${missing} before turning this on.` };
   }
-
-  const label = String(formData.get("label") ?? "").trim().slice(0, 60) || null;
-  const db = getDb();
-
-  const { max } = firstRow(await db
-    .select({ max: sql<string>`coalesce(max(${paymentMethods.position}), 0)` })
-    .from(paymentMethods)
-    .where(eq(paymentMethods.shopId, shop.id)), "max aggregate");
-
-  await db
-    .insert(paymentMethods)
-    .values({
-      shopId: shop.id,
-      type,
-      label,
-      config,
-      isEnabled,
-      position: Number(max) + 1,
-    })
-    .onConflictDoUpdate({
-      target: [paymentMethods.shopId, paymentMethods.type],
-      set: { label, config, isEnabled, updatedAt: new Date() },
-    });
 
   revalidatePath("/admin/payments");
   revalidatePath(`/${shop.handle}`);

@@ -1,7 +1,10 @@
 import { router } from "./trpc";
 import { accountRouter } from "./routers/account";
 import { analyticsRouter } from "./routers/analytics";
+import { categoriesRouter } from "./routers/categories";
+import { couponsRouter } from "./routers/coupons";
 import { eventsRouter } from "./routers/events";
+import { reviewsRouter } from "./routers/reviews";
 import { ordersRouter } from "./routers/orders";
 import { paymentsRouter } from "./routers/payments";
 import { productsRouter } from "./routers/products";
@@ -32,9 +35,12 @@ import { uploadsRouter } from "./routers/uploads";
 export const appRouter = router({
   shop: shopRouter,
   products: productsRouter,
+  categories: categoriesRouter,
   orders: ordersRouter,
   analytics: analyticsRouter,
   payments: paymentsRouter,
+  coupons: couponsRouter,
+  reviews: reviewsRouter,
   events: eventsRouter,
   tickets: ticketsRouter,
   account: accountRouter,
