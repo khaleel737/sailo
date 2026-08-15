@@ -10,7 +10,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
-import { currencyDecimals, formatMoney } from "@sailo/core/currency";
+import { formatMoney } from "@sailo/core/currency";
 import { isProductKind, variantLabel } from "@sailo/core/variants";
 import { interpolate } from "@sailo/i18n/native";
 import {
@@ -33,6 +33,18 @@ import {
   haptics,
   type SegmentedOption,
 } from "@sailo/design-native";
+/*
+ * The price parsers live in `components/money.ts` rather than here.
+ *
+ * They were written in this file because everything under `app/` becomes a
+ * route and there was nowhere else this work order could put them — the header
+ * above says so. `components/` is outside `app/`, which makes it the right
+ * home now that Delivery and Coupons need the same arithmetic: a fee typed as
+ * `12,50` is twelve fifty in French and twelve hundred and fifty in English,
+ * and three screens each deciding that for themselves is three chances to
+ * charge a seller's buyers a hundred times the wrong amount.
+ */
+import { priceToText, textToCount, textToPrice } from "../../../components/money";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";
 import type { Product, ProductDetail, RouterInputs } from "../../../lib/models";
@@ -187,74 +199,6 @@ export function useStoreCopy(): {
 /* -------------------------------------------------------------------------- */
 /*  Money, in and out of a text field                                          */
 /* -------------------------------------------------------------------------- */
-
-/**
- * The character this locale puts between the units and the fraction.
- *
- * Asked of `Intl` rather than assumed: a seller typing `12,50` in French means
- * twelve fifty, and the same keystrokes in English mean one thousand two
- * hundred and fifty. Both are reachable from a phone keypad, so the only safe
- * answer is the one the reader's own locale gives.
- */
-function decimalSeparator(locale: string): string {
-  return (
-    new Intl.NumberFormat(locale)
-      .formatToParts(1.1)
-      .find((part) => part.type === "decimal")?.value ?? "."
-  );
-}
-
-/**
- * Minor units, as something to type over.
- *
- * Not `toFixed(2)`. `currencyDecimals` is the function `formatMoney` itself
- * asks, so a yen price opens as `1000` rather than `1000.00` and a dinar price
- * keeps all three of its places. The two-decimal assumption this avoids is the
- * one that shows a seller a hundredth of what they charge.
- */
-function priceToText(minor: number, currency: string, locale: string): string {
-  const decimals = currencyDecimals(currency);
-  if (decimals === 0) return String(Math.trunc(minor));
-  return new Intl.NumberFormat(`${locale}-u-nu-latn`, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-    useGrouping: false,
-  }).format(minor / 10 ** decimals);
-}
-
-/**
- * What the seller typed, as minor units — or null if it is not a number yet.
- *
- * Null and zero are kept apart deliberately: a blank compare-at price means "no
- * strike-through" and zero means "free", and a parser answering 0 for an empty
- * field would advertise every product as reduced to nothing.
- *
- * Everything that is not a digit or *this locale's* decimal separator is
- * dropped, which is what makes `1 234,50`, `1.234,50` and `1234,50` one price
- * in French. The digits are Latin because `priceToText` writes them that way,
- * for the reason `formatMoney`'s own `-u-nu-latn` note gives.
- */
-function textToPrice(text: string, currency: string, locale: string): number | null {
-  const separator = decimalSeparator(locale);
-  const cleaned = text
-    .split("")
-    .filter((ch) => /[0-9]/.test(ch) || ch === separator)
-    .join("")
-    .replace(separator, ".");
-  if (!cleaned || cleaned === ".") return null;
-
-  const value = Number.parseFloat(cleaned);
-  if (!Number.isFinite(value) || value < 0) return null;
-  return Math.round(value * 10 ** currencyDecimals(currency));
-}
-
-/** A whole count — units in stock. Blank stays blank, which is "not counting". */
-function textToCount(text: string): number | null {
-  const digits = text.replace(/[^0-9]/g, "");
-  if (!digits) return null;
-  const value = Number.parseInt(digits, 10);
-  return Number.isFinite(value) ? value : null;
-}
 
 /* -------------------------------------------------------------------------- */
 /*  The catalogue                                                              */
@@ -462,6 +406,22 @@ export default function StoreScreen() {
                 trailing="chevron"
                 onPress={() => router.push("/store/payments")}
                 testID="store-payments"
+              />
+              <ListRow
+                title={a.delivery.title}
+                subtitle={a.delivery.description}
+                icon="package"
+                trailing="chevron"
+                onPress={() => router.push("/store/delivery")}
+                testID="store-delivery"
+              />
+              <ListRow
+                title={a.categories.title}
+                subtitle={a.categories.description}
+                icon="tag"
+                trailing="chevron"
+                onPress={() => router.push("/store/categories")}
+                testID="store-categories"
               />
             </GroupedList>
           }

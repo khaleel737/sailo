@@ -1,9 +1,21 @@
+/**
+ * @jest-environment ./jest/skia-env.js
+ */
+
 import { render, screen } from "@testing-library/react-native";
 import { Button, Chart, Progress, StatusPill, Text } from "@sailo/design-native";
 
 /**
  * The design system's behaviour, tested where the React Native environment
  * already is.
+ *
+ * The docblock at the top of this file is load-bearing. `Chart` mounts a real
+ * Skia canvas, and Skia's own mock is backed by CanvasKit — a WebAssembly
+ * graphics runtime that has to exist on `global` before the module is first
+ * required. `jest/skia-env.js` puts it there. It is opted into here rather
+ * than configured as the default because Jest builds one environment per file
+ * across several worker processes, so a default would have every test in the
+ * app compile a graphics runtime in order to not use it.
  *
  * `@sailo/design-native` has no Jest configuration of its own, and that is a
  * decision rather than an omission: it is consumed by exactly one app, and a

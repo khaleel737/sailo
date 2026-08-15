@@ -42,7 +42,11 @@
         "lib/**/*.ts"
       ],
       "ignoreDependencies": [
-        "expo-network"
+        "expo-network",
+        "canvaskit-wasm"
+      ],
+      "ignoreUnresolved": [
+        "./jest/skia-env.js"
       ]
     },
     "packages/*": {

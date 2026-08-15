@@ -53,6 +53,11 @@ export default function StoreLayout() {
       */}
       <Stack.Screen name="payments/index" options={{ title: a.payments.title }} />
       <Stack.Screen name="payments/[type]" options={{ title: "" }} />
+
+      {/* The other two things that decide what a buyer sees: how the catalogue
+          is grouped, and how it reaches them. */}
+      <Stack.Screen name="categories" options={{ title: a.categories.title }} />
+      <Stack.Screen name="delivery" options={{ title: a.delivery.title }} />
     </Stack>
   );
 }

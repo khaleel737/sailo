@@ -40,16 +40,26 @@ const CanvasKitInit = require("canvaskit-wasm/bin/full/canvaskit");
  * still about the figures around the plot — but the plot is genuinely mounted,
  * so a component that crashes on real data fails here rather than in the store.
  */
+/**
+ * One CanvasKit per worker, not one per test file.
+ *
+ * Jest builds a fresh environment for every file, so an `await CanvasKitInit()`
+ * in `setup()` instantiates the WebAssembly module once per *file* — which
+ * took this suite from nine seconds to ninety-three, most of it spent
+ * compiling a graphics runtime for tests that never draw anything.
+ *
+ * Module scope is per worker process, and Jest reuses a worker across the files
+ * it hands it, so caching the promise here means the compile happens once per
+ * worker and every file after the first awaits an already-settled promise.
+ * The instance is shared rather than copied, which is safe because nothing in
+ * these tests draws: Skia's mock only ever asks it for geometry.
+ */
+let canvasKit;
+
 module.exports = class SkiaReactNativeEnv extends ReactNativeEnv {
   async setup() {
     await super.setup();
-    /*
-     * Initialised per environment, which is per test file. The WASM binary is
-     * read once by Node's module cache and instantiated per worker; the cost is
-     * a few hundred milliseconds on the files that mount a chart, and none on
-     * the ones that do not — the alternative was mocking `victory-native` by
-     * hand and maintaining a second, quietly diverging chart.
-     */
-    this.global.CanvasKit = await CanvasKitInit({});
+    canvasKit ??= CanvasKitInit({});
+    this.global.CanvasKit = await canvasKit;
   }
 };

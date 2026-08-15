@@ -136,10 +136,20 @@ module.exports = {
   ],
 
   /*
-   * React Native's own environment with CanvasKit added — see `jest/skia-env.js`
-   * for why it cannot be a setup file and why it cannot be Skia's own.
+   * `testEnvironment` is deliberately NOT set here, and `jest/skia-env.js` is
+   * opted into per file with a `@jest-environment` docblock instead.
+   *
+   * That environment compiles CanvasKit — a WebAssembly graphics runtime — so
+   * that a real chart can mount. Jest builds a fresh environment per test file
+   * and spreads files across worker processes, so making it the default made
+   * *every* file pay the compile: this suite went from nine seconds to
+   * ninety-three, almost all of it spent preparing to draw in files that never
+   * draw. Caching the module inside the environment only helps within one
+   * worker, which is why it is not the fix.
+   *
+   * Files that mount a `Chart` say so at the top of themselves. Everything
+   * else runs under the preset's own environment at the speed it always did.
    */
-  testEnvironment: require.resolve("./jest/skia-env.js"),
 
   /* After the framework, because it registers `beforeAll`. One known
      third-party warning, matched by name — the file argues its own case. */

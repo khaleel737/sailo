@@ -526,6 +526,21 @@ export const adminEn = {
     emptyBody:
       "Categories are optional — add a few once you have enough products to group.",
     namePlaceholder: "Mugs, Prints, Consulting…",
+    /**
+     * Two names can collide without looking alike: the clash is on the URL
+     * segment, so "T-Shirts" and "t shirts" are the same category.
+     */
+    taken: "You already have a category with that name.",
+    /**
+     * What deleting actually does, in the confirmation.
+     *
+     * The whole reason the dialog has a body: `products.categoryId` is `set
+     * null` on delete, so nothing is lost — and a seller who assumes otherwise
+     * will not tap, while a seller who assumes wrongly the other way has lost
+     * their catalogue. Neither should have to find out afterwards.
+     */
+    deleteBody:
+      "The products in it stay on your shop — they just stop being grouped.",
   },
 
   /** The order lifecycle, as a seller reads it. Keys match the stored enum. */
@@ -781,6 +796,23 @@ export const adminEn = {
     zoneNone: "No countries match that.",
     zoneCountOne: "{count} country",
     zoneCount: "{count} countries",
+    /**
+     * A delivery that costs nothing, which is a choice the seller made.
+     *
+     * Its own key rather than `billing.free`, which happens to be the same word
+     * in English and is the *name of a plan*. A translator reading that one
+     * translates a product tier; several languages inflect the two
+     * differently, and a rate row reading "Free tier" would be nonsense.
+     */
+    free: "Free",
+    /** What deleting a rate does, in the confirmation. */
+    deleteBody:
+      "Buyers won't be offered this option any more. Orders already placed keep the delivery they chose.",
+    /* The server's refusals, as sentences. `no_name` and `empty_zone` are the
+       two a seller hits by leaving something out rather than by getting it
+       wrong, so both name the missing thing rather than the rule. */
+    needsName: "Give this option a name buyers will recognise.",
+    needsCountry: "Pick at least one country to ship to, or choose Anywhere.",
   },
 
   weekdays: {
