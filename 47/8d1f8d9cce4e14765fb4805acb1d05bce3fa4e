@@ -1,0 +1,34 @@
+packages/api/src/routers/orders.ts
+  s_42380745c8f8fb::t_e2badcd46620fc 9,275-328
+  s_42380745c8f8fb::t_b58ecace6cddf6 10-14,150-164,174-175,178-179
+  s_42380745c8f8fb::t_7b055a804fa7d7 143-147,149,165-173,176-177
+  s_42380745c8f8fb::t_23387c1396c121 329
+packages/i18n/src/admin/en.ts
+  s_42380745c8f8fb::t_a16dcf94c6265e 598-616
+apps/web/src/lib/actions/order-admin.ts
+  s_42380745c8f8fb::t_28618420494c26 15,174-178,188-220
+apps/mobile/app/(tabs)/orders/[id].tsx
+  s_42380745c8f8fb::t_1639ce314bbf8e 311-319
+  s_42380745c8f8fb::t_6a2419c277d8cb 2,13-14,17,29,34,820-823
+  s_42380745c8f8fb::t_1fd17411bbecab 396-606
+packages/commerce/package.json
+  s_42380745c8f8fb::t_e2badcd46620fc 26-27
+packages/commerce/src/ship-order.ts
+  s_42380745c8f8fb::t_a6496b556a7b94 1-114
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "478d1f8d9cce4e14765fb4805acb1d05bce3fa4e",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
