@@ -16,8 +16,12 @@ import { describe, expect, it } from "vitest";
  * with the code and live in `packages/core/src/order-status.test.ts`; what
  * stays here is the grep, because this is the tree the copies were written in.
  *
- * `PAYMENT_STATUSES` has not moved — nothing outside apps/web sets a payment
- * status — so it is still pinned to its one module here.
+ * `PAYMENT_STATUSES` has now moved too, and the sentence that used to sit here
+ * is the reason: it said "nothing outside apps/web sets a payment status".
+ * The phone does — confirming that cash or a bank transfer arrived is the most
+ * phone-shaped write in the product — so the list went to
+ * `@sailo/payments/order-status` with the rule about which of them a seller
+ * may set, and this app declares no copy of either.
  */
 describe("the status lists are declared once", () => {
   const declarations = (name: string) =>
@@ -33,10 +37,8 @@ describe("the status lists are declared once", () => {
     expect(declarations("ORDER_STATUSES")).toEqual([]);
   });
 
-  it("declares PAYMENT_STATUSES only in payments/status.ts", () => {
-    expect(declarations("PAYMENT_STATUSES")).toEqual([
-      "src/lib/payments/status.ts",
-    ]);
+  it("declares no copy of PAYMENT_STATUSES — it comes from @sailo/payments", () => {
+    expect(declarations("PAYMENT_STATUSES")).toEqual([]);
   });
 
   /*
@@ -45,9 +47,12 @@ describe("the status lists are declared once", () => {
    * true of an app that stopped using the list at all, and the point is that
    * this app uses the shared one.
    */
-  it("reads the shared list rather than doing without it", () => {
+  it.each([
+    ["@sailo/core/order-status"],
+    ["@sailo/payments/order-status"],
+  ])("reads %s rather than doing without it", (module) => {
     const importers = execSync(
-      `grep -rln "@sailo/core/order-status" src --include="*.ts" --include="*.tsx" || true`,
+      `grep -rln "${module}" src --include="*.ts" --include="*.tsx" || true`,
       { encoding: "utf8" },
     )
       .split("\n")

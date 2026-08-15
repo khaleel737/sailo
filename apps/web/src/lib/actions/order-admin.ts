@@ -7,16 +7,14 @@ import { getDb } from "@sailo/db";
 import { clients, orders } from "@sailo/db/schema";
 import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
 import { requireShop } from "@/lib/session";
-import { maybeRow } from "@sailo/core/invariant";
 import { formatMoney, parseMoneyToCents } from "@/lib/utils";
 import { restoreStock } from "@sailo/commerce/inventory";
 import { changeOrderStatus } from "@sailo/commerce/orders";
 import { refundOrder as refund } from "@sailo/commerce/refund-order";
 import { shipOrder as ship } from "@sailo/commerce/ship-order";
-import { isSellerSettablePaymentStatus } from "@/lib/payments";
+import { setPaymentStatus as pay } from "@sailo/commerce/pay-order";
+import { sendDownloadReady } from "@sailo/email/orders";
 import { isOrderStatus } from "@sailo/core/order-status";
-import { releaseDownloads } from "@/lib/downloads";
-import { extendForPaidOrder } from "@/lib/membership-renewals";
 import { sendBookingDecision, sendRefundNotification, sendShippingNotification } from "@/lib/email";
 import { emitOrderWebhook } from "@/lib/webhooks/emit";
 import type { ActionState } from "./shop";
@@ -108,62 +106,36 @@ export async function updateOrderStatus(formData: FormData) {
   }
 }
 
+/**
+ * The seller confirming that money arrived.
+ *
+ * Everything this sets off — the held-back download opening, a manual
+ * membership starting or extending — moved to `@sailo/commerce/pay-order` when
+ * the phone grew the same control, because a surface that only flipped the
+ * column would leave a buyer who had paid unable to get their file.
+ *
+ * What is left here is the webhook, and it is still guarded on the
+ * *transition*: a Zap that raises an invoice would raise a second one on a
+ * re-save. `becamePaid` is the shared function answering that question rather
+ * than this one re-deriving it from a row it read for itself.
+ */
 export async function updatePaymentStatus(formData: FormData) {
   const { shop } = await requireShop();
   const id = String(formData.get("id") ?? "");
   const paymentStatus = String(formData.get("paymentStatus") ?? "");
-  if (!id || !isSellerSettablePaymentStatus(paymentStatus)) return;
+  if (!id) return;
 
-  /*
-   * `maybeRow`, not `firstRow`. The WHERE carries the ownership check, so an
-   * id belonging to another shop matches nothing — which is the guard working,
-   * not an invariant breaking. `firstRow` threw on it and the seller got a 500
-   * from a dropdown, while the `if (updated && …)` below sat there as
-   * unreachable code proving `undefined` was what the author expected.
-   */
-  /*
-   * Read first, for one reason only: `order.paid` must describe a transition.
-   *
-   * `UPDATE … RETURNING` hands back the *new* row, so nothing after the write
-   * can tell "the seller just confirmed the money" from "the seller re-saved a
-   * dropdown that already said paid". The webhook cares about the difference —
-   * a Zap that raises an invoice would raise a second one — and everything
-   * else here is idempotent and deliberately left running either way, so this
-   * read adds a question rather than changing an answer.
-   */
-  const before = await getDb().query.orders.findFirst({
-    where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
-    columns: { paymentStatus: true },
-  });
-
-  const updated = maybeRow(await getDb()
-    .update(orders)
-    .set({ paymentStatus, updatedAt: new Date() })
-    .where(and(eq(orders.id, id), eq(orders.shopId, shop.id)))
-    .returning({ id: orders.id }));
-
-  // Confirming the money is what unlocks a held-back download, and the buyer
-  // is emailed the link rather than being left to check back.
-  if (updated && paymentStatus === "paid") {
-    await releaseDownloads(updated.id);
-
-    /*
-     * And, on a manual membership, it is the whole billing system.
-     *
-     * There is no card and no webhook on a bank transfer or a handful of cash;
-     * this dropdown is the only event in the product that means "the money
-     * arrived". So it is what starts a membership and what extends it by
-     * another period — `extendForPaidOrder` does nothing for any other kind of
-     * order, and is idempotent for this one.
-     */
-    await extendForPaidOrder(updated.id);
-  }
+  const result = await pay(
+    { shop, orderId: id, paymentStatus },
+    { notifyDownloads: (args) => sendDownloadReady(args) },
+  );
+  if (!result.ok) return;
 
   revalidatePath("/admin/orders");
   revalidatePath("/admin/clients");
-  if (updated) after(() => publishShopEvent(shop.id, "payment"));
+  after(() => publishShopEvent(shop.id, "payment"));
 
-  if (updated && paymentStatus === "paid" && before?.paymentStatus !== "paid") {
+  if (result.becamePaid) {
     after(() => emitOrderWebhook({ shop, event: "order.paid", orderId: id }));
   }
 }

@@ -8,7 +8,7 @@ import {
   PAYMENT_STATUSES,
   SELLER_SETTABLE_PAYMENT_STATUSES,
   TRANSFERABLE_PAYMENT_STATUSES,
-} from "@/lib/payments/status";
+} from "./order-status";
 
 /**
  * Who may move an order's money, and from where.

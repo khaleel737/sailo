@@ -6,6 +6,8 @@ import { formatMoney } from "@sailo/core/currency";
 import { ORDERS, send, sender, type SendResult } from "./transport";
 import {
   button,
+  link,
+  mutedPara,
   detailTable,
   esc,
   fine,
@@ -201,6 +203,121 @@ export async function sendRefundNotification(opts: {
     subject: `Refund from ${shop.name}`,
     html: layout(shop, "Refund issued", body, {
       preheader: `${amount} refunded by ${shop.name}.`,
+    }),
+    replyTo: shop.contactEmail ?? undefined,
+  });
+}
+
+/**
+ * The event details an email may show, already gated.
+ *
+ * `joinUrl` arrives null unless the order has been released — see
+ * `lib/event-access.ts`, which is the only thing allowed to decide that. This
+ * module renders what it is given and does not re-derive the rule, because
+ * two places deciding the same thing is how one of them comes to decide it
+ * differently.
+ */
+export type EventDetails = {
+  title: string;
+  startsAt: Date | null;
+  joinUrl: string | null;
+  location: string | null;
+  online: boolean;
+};
+
+/**
+ * The block an event gets in any email: when it is, and how to get in.
+ *
+ * Both times are printed. The instant is one moment, but "18:00" means two
+ * different things to a seller in Lisbon and a buyer in Warsaw, and a
+ * webinar's single most common support ticket is somebody arriving an hour
+ * late. Naming the zone next to the time is what stops that, and it costs a
+ * parenthesis.
+ */
+/*
+ * Exported because `sendEventReminder` still lives in apps/web — it is sent by
+ * a cron rather than by a seller touching an order, so it stayed behind while
+ * the lifecycle messages moved. Both need to render an event the same way, and
+ * two renderings is a buyer told two different start times.
+ */
+export function eventBlock(event: EventDetails, timeZone: string | undefined): string {
+  const when = event.startsAt
+    ? `${esc(formatWhen(event.startsAt, timeZone, "long"))} (${esc(timeZone ?? "UTC")})`
+    : "";
+
+  return [
+    para(strong(esc(event.title))),
+    when ? mutedPara(when) : "",
+    event.joinUrl ? button(event.joinUrl, "Join the event") : "",
+    !event.joinUrl && event.online
+      ? fine("Your join link appears here once your payment is confirmed.")
+      : "",
+    event.location ? mutedPara(esc(event.location)) : "",
+  ].join("\n");
+}
+
+/**
+ * Sent when a digital order's files unlock — either right after ordering, or
+ * once the seller confirms the payment that was holding them back.
+ */
+export async function sendDownloadReady(opts: {
+  shop: Shop;
+  order: Order;
+  url: string;
+  /**
+   * Events this order registered for, with their join links.
+   *
+   * This is the moment an online event's link becomes deliverable — the
+   * release claim above it is the same one that unlocks a file — so the mail
+   * that announces the unlock is the mail that must carry it. Without this an
+   * event buyer got an email headed "Your files are ready" describing files
+   * that do not exist, and had to find the link by revisiting a page nobody
+   * told them to bookmark.
+   */
+  events?: EventDetails[];
+  /** Whether the order carries admissions, so the copy can say "tickets". */
+  hasTickets?: boolean;
+}): Promise<SendResult> {
+  const { shop, order, url } = opts;
+  if (!order.customerEmail) return { sent: false, reason: "no customer email" };
+
+  const events = opts.events ?? [];
+  const admits = opts.hasTickets || events.length > 0;
+  const noun = admits ? "tickets" : "files";
+
+  const expiresOn = order.downloadExpiresAt
+    ? order.downloadExpiresAt.toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : null;
+
+  const body = `
+    ${para(`Your ${noun} are ready — open them below.`)}
+    ${para(strong(orderSummaryTitle(order)))}
+    ${events.map((event) => section("Your event", eventBlock(event, shop.timeZone))).join("\n")}
+    ${button(url, admits ? "View your tickets" : "Download your files")}
+    ${
+      // Download terms, and only when there is a download. A ticket does not
+      // stop admitting because a file's cap ran out.
+      !admits && order.downloadLimit
+        ? fine(
+            `You can download ${order.downloadLimit} time${order.downloadLimit === 1 ? "" : "s"}.`,
+          )
+        : ""
+    }
+    ${!admits && expiresOn ? fine(`The link works until ${esc(expiresOn)}.`) : ""}
+  `;
+
+  return send({
+    from: sender(shop.name, ORDERS),
+    to: order.customerEmail,
+    subject: admits
+      ? `Your tickets from ${shop.name}`
+      : `Your download from ${shop.name}`,
+    html: layout(shop, admits ? "Your tickets are ready" : "Your download is ready", body, {
+      preheader: `Your ${noun} from ${shop.name} are ready.`,
     }),
     replyTo: shop.contactEmail ?? undefined,
   });

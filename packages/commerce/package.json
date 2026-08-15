@@ -24,7 +24,12 @@
     "./refunds": "./src/refunds.ts",
     "./refund-claim": "./src/refund-claim.ts",
     "./refund-order": "./src/refund-order.ts",
-    "./ship-order": "./src/ship-order.ts"
+    "./ship-order": "./src/ship-order.ts",
+    "./event-access": "./src/event-access.ts",
+    "./invoices": "./src/invoices.ts",
+    "./downloads": "./src/downloads.ts",
+    "./membership-renewals": "./src/membership-renewals.ts",
+    "./pay-order": "./src/pay-order.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

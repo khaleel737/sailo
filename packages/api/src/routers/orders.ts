@@ -7,8 +7,10 @@ import { TRPCError } from "@trpc/server";
 import { changeOrderStatus } from "@sailo/commerce/orders";
 import { refundOrder } from "@sailo/commerce/refund-order";
 import { shipOrder } from "@sailo/commerce/ship-order";
+import { setPaymentStatus } from "@sailo/commerce/pay-order";
 import {
   sendBookingDecision,
+  sendDownloadReady,
   sendRefundNotification,
   sendShippingNotification,
 } from "@sailo/email/orders";
@@ -326,5 +328,63 @@ export const ordersRouter = router({
 
       await publishShopEvent(ctx.shopId, "order");
       return { id: input.id, notified: result.notified };
+    }),
+
+  /**
+   * Confirming that money arrived.
+   *
+   * The most phone-shaped write in the product and the last one to arrive.
+   * There is no card and no webhook on a bank transfer or a handful of cash at
+   * a market stall — this *is* the event that means paid, and the seller
+   * standing in front of the buyer who just handed them notes is exactly who
+   * needs to make it.
+   *
+   * It waited this long because of what it sets off rather than what it
+   * writes. Marking an order paid unlocks a held-back download and starts or
+   * extends a manual membership, and both of those lived in apps/web — so a
+   * phone that only flipped the column would have left a buyer who had paid
+   * unable to get the file they bought. `setPaymentStatus` does all three or
+   * none.
+   *
+   * `refunded` is not settable here and never will be: it is written by the
+   * refund path, which moves money. A dropdown that offered it would let a
+   * seller mark an order refunded with nothing sent back.
+   */
+  setPaymentStatus: shopProcedure
+    .input(byId.extend({ paymentStatus: z.string().max(40) }))
+    .mutation(async ({ ctx, input }) => {
+      const shop = found(
+        await getDb().query.shops.findFirst({ where: eq(shops.id, ctx.shopId) }),
+        "shop",
+      );
+
+      const result = await setPaymentStatus(
+        { shop, orderId: input.id, paymentStatus: input.paymentStatus },
+        {
+          /* The sender comes from the caller, not from inside the domain —
+             composing it needs an order's lines, and importing it there made
+             the two packages depend on each other. */
+          notifyDownloads: (args) => sendDownloadReady(args),
+        },
+      );
+
+      if (!result.ok) {
+        if (result.reason === "not_found") {
+          throw new TRPCError({ code: "NOT_FOUND", message: "No such order." });
+        }
+        throw new TRPCError({ code: "BAD_REQUEST", message: result.reason });
+      }
+
+      /* `payment` rather than `order`: this changes the dashboard's takings,
+         and the staff panel watches that stream separately. */
+      await publishShopEvent(ctx.shopId, "payment");
+
+      return {
+        id: input.id,
+        paymentStatus: input.paymentStatus,
+        /* So the screen can say "and their download is now available" rather
+           than leaving the seller to wonder whether it was. */
+        releasedDownloads: result.releasedDownloads,
+      };
     }),
 });

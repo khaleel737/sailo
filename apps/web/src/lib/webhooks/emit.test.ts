@@ -40,6 +40,7 @@ const CONNECT = read("src/lib/stripe-webhooks/connect.ts");
 const CLIENTS = read("src/lib/actions/clients.ts");
 const SUBSCRIBE = read("src/lib/broadcasts/subscribe.ts");
 /** Read by relative path, as `replica.test.ts` reads its own. Cwd is apps/web. */
+const PAY_ORDER = read("../../packages/commerce/src/pay-order.ts");
 const COMMERCE_ORDERS = read("../../packages/commerce/src/orders.ts");
 
 const ALL_SOURCES = [
@@ -115,9 +116,20 @@ describe("emit sites", () => {
   });
 
   it("guards order.paid on a transition rather than a save", () => {
-    // Re-saving a dropdown that already said paid is not a payment, and a Zap
-    // that raises an invoice would raise a second one.
-    expect(ORDER_ADMIN).toContain('before?.paymentStatus !== "paid"');
+    /*
+     * Re-saving a dropdown that already said paid is not a payment, and a Zap
+     * that raises an invoice would raise a second one.
+     *
+     * The guard used to be spelled here as `before?.paymentStatus !== "paid"`,
+     * read off a row this file fetched for itself. It moved with the rest of
+     * what confirming a payment does — the phone sets a payment status now, and
+     * a surface that only flipped the column would leave a buyer who had paid
+     * unable to download what they bought. `becamePaid` is the same question,
+     * answered by the function that did the write, which is the only place that
+     * can answer it without a second read racing the first.
+     */
+    expect(ORDER_ADMIN).toContain("result.becamePaid");
+    expect(PAY_ORDER).toContain('before.paymentStatus !== "paid"');
   });
 
   it("guards order.cancelled and booking.confirmed on the previous status", () => {
