@@ -51,18 +51,32 @@ skills-lock.json
 # Generated knowledge-graph output — regenerated on demand, not source.
 graphify-out/
 
-# Test output
-/test-results
-/playwright-report
+# Test output.
+#
+# Unanchored on purpose. A pattern with a slash in the middle is anchored to
+# this file's directory, so `/test-results` only ever covered the repo root —
+# and Playwright writes into the workspace it runs from, which is
+# `apps/web/test-results`. That output was showing up as untracked after every
+# run, one directory per failed case, waiting to be committed by accident.
+test-results/
+playwright-report/
 /coverage
 .env.local.test
 
-# Generated social post art, run logs and the pause flag
+# Generated social post art, run logs and the pause flag. Same anchoring
+# problem: these are produced under `apps/web/scripts/social/`, not at the root.
 scripts/social/.out/
 scripts/social/.log/
 scripts/social/.paused
 scripts/social/.render-*.html
+apps/*/scripts/social/.out/
+apps/*/scripts/social/.log/
 .turbo/
+
+# Expo's local state. `apps/mobile/.expo` is covered below; this is the copy
+# the CLI writes at the workspace root, and `devices.json` in it names the
+# machine's own simulators.
+/.expo/
 
 # monorepo
 node_modules/
