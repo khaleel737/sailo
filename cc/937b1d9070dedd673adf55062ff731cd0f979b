@@ -1,0 +1,62 @@
+packages/rate-limit/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/tokens/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/payments/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/db/turbo.json
+  s_c7a7b98e0ed667::t_bc047a1baf874e 1-5
+apps/api/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/api/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/env/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/design-native/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/account/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+apps/web/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/commerce/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/auth/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/core/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/events/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+apps/mobile/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/analytics/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/observability/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+turbo.json
+  s_c7a7b98e0ed667::t_31d0555f7bd9a7 7-60
+  s_c7a7b98e0ed667::t_205d452ed38b53 6
+docs/architecture.md
+  s_c7a7b98e0ed667::t_5a3d5d352ea7ad 1-123
+packages/email/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/config/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+packages/i18n/turbo.json
+  s_c7a7b98e0ed667::t_7475717b581c97 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "cc937b1d9070dedd673adf55062ff731cd0f979b",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
