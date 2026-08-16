@@ -1,0 +1,94 @@
+packages/storage/src/blob.ts
+  s_c7a7b98e0ed667::t_b74d788a0d7a4a 1-101
+apps/web/src/app/api/upload/route.ts
+  s_c7a7b98e0ed667::t_6039a58230c8b2 4,7,9-12,37-41,43-61,72-73
+apps/web/src/lib/file-urls.ts
+  s_c7a7b98e0ed667::t_863558b015d799 2,15
+packages/api/src/routers/uploads.ts
+  s_c7a7b98e0ed667::t_863558b015d799 6,20
+packages/email/package.json
+  s_c7a7b98e0ed667::t_863558b015d799 21
+packages/api/package.json
+  s_c7a7b98e0ed667::t_863558b015d799 26
+packages/observability/src/web.ts
+  s_c7a7b98e0ed667::t_8d58ac42cfbfca 1-126
+packages/storage/package.json
+  s_c7a7b98e0ed667::t_81a6e61371acef 1-30
+apps/mobile/app/_layout.tsx
+  s_c7a7b98e0ed667::t_9c87075cd9d629 14
+packages/storage/src/index.ts
+  s_c7a7b98e0ed667::t_4a1962dbf76c0e 1-38
+packages/storage/src/keys.ts
+  s_c7a7b98e0ed667::t_fa3a2e20ff44f7 1-35
+packages/storage/src/urls.test.ts
+  s_c7a7b98e0ed667::t_f3470becef59a5 1-345
+packages/storage/turbo.json
+  s_c7a7b98e0ed667::t_81a6e61371acef 1-5
+apps/api/src/app/api/upload/route.ts
+  s_c7a7b98e0ed667::t_c24961993d3824 3,24-30,64,66-75,79-80
+packages/observability/src/keys.ts
+  s_c7a7b98e0ed667::t_d289b21fb32346 1-26
+packages/observability/src/native.ts
+  s_c7a7b98e0ed667::t_ee76b6c24463f6 1-117
+apps/mobile/package.json
+  s_c7a7b98e0ed667::t_863558b015d799 24
+apps/web/package.json
+  s_c7a7b98e0ed667::t_e52fd5281ea2a0 65
+  s_c7a7b98e0ed667::t_863558b015d799 56,64
+packages/storage/tsconfig.json
+  s_c7a7b98e0ed667::t_81a6e61371acef 1-15
+packages/observability/src/index.ts
+  s_c7a7b98e0ed667::t_86f65bb12d4526 2,4-7,9,11-19,22
+packages/observability/package.json
+  s_c7a7b98e0ed667::t_9c87075cd9d629 24
+  s_c7a7b98e0ed667::t_f757c98f79416d 8-12,18-23,25-36
+packages/core/package.json
+  s_c7a7b98e0ed667::t_a62eb534744532 26
+apps/api/src/instrumentation.ts
+  s_c7a7b98e0ed667::t_9918ba2c5501cc 13-22
+.env.example
+  s_c7a7b98e0ed667::t_fb56f634dd44aa 97-112
+apps/web/src/env.ts
+  s_c7a7b98e0ed667::t_5d3e8b9c9da96d 7
+  s_c7a7b98e0ed667::t_9f5fe6c8109052 6,37
+packages/email/src/markup.ts
+  s_c7a7b98e0ed667::t_863558b015d799 3
+apps/mobile/lib/uploads.ts
+  s_c7a7b98e0ed667::t_863558b015d799 2
+packages/commerce/package.json
+  s_c7a7b98e0ed667::t_863558b015d799 45
+apps/api/package.json
+  s_c7a7b98e0ed667::t_e52fd5281ea2a0 23
+  s_c7a7b98e0ed667::t_863558b015d799 22
+packages/commerce/src/products.ts
+  s_c7a7b98e0ed667::t_863558b015d799 19
+packages/commerce/src/products.test.ts
+  s_c7a7b98e0ed667::t_863558b015d799 19,119
+apps/api/src/env.ts
+  s_c7a7b98e0ed667::t_9f5fe6c8109052 6,31
+  s_c7a7b98e0ed667::t_5d3e8b9c9da96d 7
+packages/storage/vitest.config.mts
+  s_c7a7b98e0ed667::t_81a6e61371acef 1-5
+apps/web/src/instrumentation.ts
+  s_c7a7b98e0ed667::t_dd111dd76e05a6 23,26-36,38-39
+packages/observability/src/seam.ts
+  s_c7a7b98e0ed667::t_279fbf21b49799 1-81
+pnpm-lock.yaml
+  s_c7a7b98e0ed667::t_191af4b7d5eef7 22,44-49,58,61,64,92,120-122,255,261,301-306,312,342,345,360,454,469,488,500,513,547-549,561,577,583,586,605,624-626,629,645,669,684,700,751,791,804-806,825,863,869,884-902,930,952,964,977-1005,1014,1030-1040,2712-2749,3703-3706,3711-3747,3765-3768,4658-4661,4985-4987,6312-6315,7063-7066,7305-7307,7987-7990,8118-8120,9083-9106,9721,9732-9733,9735,9737,9740,9742,9744,9746,9755,9757,9762,9764,9767,9769,9772,9774,9777,9779,10409,10489,10925,10927,10953-10993,11961,11963,11965,11968-11969,11971,11973,11975,11977,11979,11981,12101-12102,12105-12144,12161-12176,12184-12200,12715,12717,12862,13091-13092,13231,13256,13258-13264,13277-13278,13281,13440-13441,13809,13812,15074-15079,16013-16014,16584-16585,16626,16645,17450,17452-17456,17518-17524,17657-17658,18436,18459
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "5dc9333568e42bc0789ee7795e53f6599636fbf4",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
