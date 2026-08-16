@@ -1,0 +1,66 @@
+.gitignore
+  s_230301a759e309::t_c1496901d637ce 54-62,66-67,72-73,76-79
+  s_230301a759e309::t_246837ded01396 80
+packages/design-native/src/keyboard.ts
+  s_2fda23e5be1e83::t_2305d07a657739 1-72
+packages/design-native/src/layout.ts
+  s_42380745c8f8fb::t_d321c4f9d7e54e 1-126
+packages/design-native/src/search-field.tsx
+  s_2fda23e5be1e83::t_4aa174b16e80db 1-144
+packages/design-native/src/stat-row.tsx
+  s_2fda23e5be1e83::t_f6d647f13e7d1b 1-87
+apps/web/src/lib/orders/checkout-lines.test.ts
+  s_ab1d5881d53908::t_6ca5b6c7d281bc 1-273
+apps/web/src/lib/orders/checkout-lines.ts
+  s_ab1d5881d53908::t_0069a61663b380 1-346
+packages/design-native/src/bottom-chrome.tsx
+  s_2fda23e5be1e83::t_00fab596839586 1-62
+packages/design-native/src/list-motion.ts
+  s_2fda23e5be1e83::t_1b4f2ffe2cd533 1-105
+packages/design-native/src/section.tsx
+  s_2fda23e5be1e83::t_267caf3b87cac2 1-136
+packages/payments/src/capabilities.test.ts
+  s_ab1d5881d53908::t_2ac9a0ceae68fd 1-151
+packages/payments/src/capabilities.ts
+  s_ab1d5881d53908::t_b106fda9ef570b 1-182
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "dfb63f68dc4b5362d051d326baf8613de4a6b08e",
+  "prompts": {},
+  "sessions": {
+    "s_230301a759e309": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "705f7061-20e5-4341-9262-bc5fa82ea217",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_2fda23e5be1e83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b9384242-4c6f-4cde-a45c-be2657da3935",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ab1d5881d53908": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a287916-8019-4c89-82cb-ea4c3a1311ea",
+        "model": "unknown"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
