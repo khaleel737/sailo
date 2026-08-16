@@ -137,11 +137,11 @@ Un messaggio fissato in cima al profilo con prezzi e modalità, e una nota sul t
 
 Sailo ti dà un link, `sailo.store/tuonome`, attivo dalla registrazione, dove il compratore compone l'ordine e te lo manda già scritto su WhatsApp con prodotto, opzioni, indirizzo e totale.
 
-Il limite che riguarda esattamente questa fase: **il piano gratuito dà 30 giorni di statistiche.** Cioè il primo mese e il quarto non sono confrontabili, e per chi ha come unica domanda «sta funzionando?» quella è precisamente la finestra sbagliata. Il Pro arriva a un anno, il Business a tre.
+Il limite che riguarda esattamente questa fase: **il piano gratuito dà {{free_analytics_days}} giorni di statistiche.** Cioè il primo mese e il quarto non sono confrontabili, e per chi ha come unica domanda «sta funzionando?» quella è precisamente la finestra sbagliata. Il Pro arriva a un anno, il Business a tre.
 
 Cosa fare invece, se stai sul piano gratuito e non hai intenzione di pagare adesso: apri un quaderno e ogni domenica sera scrivi tre numeri, aperture, conversazioni, ordini. Ci metti due minuti. Fra sei mesi quel quaderno vale più di qualsiasi cruscotto, perché contiene anche le note su cosa avevi cambiato quella settimana.
 
-Sul bonifico e sul contrassegno Sailo non prende niente e non tocca mai il denaro. L'unica commissione è lo 0,5% sul valore dei prodotti quando si paga con carta, e la carta richiede il piano Business da 19,99 USD al mese con un account Stripe approvato.
+Sul bonifico e sul contrassegno Sailo non prende niente e non tocca mai il denaro. L'unica commissione è lo {{fee_range}}% sul valore dei prodotti quando si paga con carta, e la carta richiede il piano Business da {{business_monthly}} USD al mese con un account Stripe approvato.
 
 ## Da fare adesso, non domani
 

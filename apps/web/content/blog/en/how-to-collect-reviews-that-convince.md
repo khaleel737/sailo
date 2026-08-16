@@ -141,7 +141,7 @@ You can only ask after the order is genuinely done, and on most of the rails sma
 
 Sailo cannot tell you a bank transfer arrived. Only your bank can. Cash on delivery is confirmed by you when the rider hands the money over, and a Venmo or a UPI payment lands in your own notifications, not in the shop. So the "order complete" moment that triggers your review ask is a moment you mark yourself, on manual rails, by hand. There's no mobile money rail either, so if that's how most of your money moves, the shop holds the catalogue and the order and you hold the ledger.
 
-Card payments do confirm themselves, but they sit behind the Business plan at $19.99 a month plus 0.5% of the goods. At 130 orders across a year that subscription is the expensive part, and it isn't the thing standing between you and better reviews.
+Card payments do confirm themselves, but they sit behind the Business plan at ${{business_monthly}} a month plus {{fee_range}}% of the goods. At 130 orders across a year that subscription is the expensive part, and it isn't the thing standing between you and better reviews.
 
 ## Send the question to ten people today
 

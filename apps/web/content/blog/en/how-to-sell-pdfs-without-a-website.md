@@ -54,7 +54,7 @@ A sample matters more here than in almost any other category, because nobody can
 
 On Sailo, digital files unlock on payment confirmation. That sentence hides the thing this article most needs to be honest about.
 
-If you take card payments, confirmation is instant, because Stripe tells the shop within seconds. Card on Sailo means the Business plan at $19.99 a month, a connected Stripe account, and a 0.5% commission on the goods. On a ₹399 file that commission is two rupees. The $19.99 is the real cost, and if you're selling ten copies a month it's not worth it yet.
+If you take card payments, confirmation is instant, because Stripe tells the shop within seconds. Card on Sailo means the Business plan at ${{business_monthly}} a month, a connected Stripe account, and a {{fee_range}}% commission on the goods. On a ₹399 file that commission is two rupees. The ${{business_monthly}} is the real cost, and if you're selling ten copies a month it's not worth it yet.
 
 If you take bank transfer, or a UPI ID, or an M-Pesa till number you've written into your payment instructions, then the thing confirming payment is you. Sailo can't see your bank account and can't tell you the money arrived. Only your bank can. So the buyer who pays at 11:40pm gets their download when you next open your banking app, and if you haven't said that anywhere, they spend those nine hours convinced they've been robbed by a stranger on Instagram.
 

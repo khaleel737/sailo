@@ -166,7 +166,7 @@ Otuzuncu günde sayfasında dört onaylı yorum vardı. Beşinciyi bekliyordu.
 
 Sailo sana trafik getirmiyor. Ne bir katalog aracı ne de başka bir araç bunu yapıyor. Ziyaretçisi olmayan mükemmel bir dükkân, dükkân değil, ve bu yazının tamamı zaten o yüzden var.
 
-Ücretsiz plan 20 ürün ve 30 gün istatistik tutuyor. İlk ay için 30 gün yeter, ama şunu baştan bil: ikinci ayı birinci ayla karşılaştıramayacaksın, çünkü birinci ay silinmiş olacak. Bu rakamlar senin için önemliyse, ilk ayın sonunu ekran görüntüsüyle kendin kaydet. Pro planı 9,99 USD/ay veya 95,90 USD/yıl, 250 ürüne ve bir yıl istatistiğe çıkıyor, ve onda da kart yöntemi yok.
+Ücretsiz plan {{free_products}} ürün ve {{free_analytics_days}} gün istatistik tutuyor. İlk ay için {{free_analytics_days}} gün yeter, ama şunu baştan bil: ikinci ayı birinci ayla karşılaştıramayacaksın, çünkü birinci ay silinmiş olacak. Bu rakamlar senin için önemliyse, ilk ayın sonunu ekran görüntüsüyle kendin kaydet. Pro planı {{pro_monthly}} USD/ay veya {{pro_yearly}} USD/yıl, {{pro_products}} ürüne ve bir yıl istatistiğe çıkıyor, ve onda da kart yöntemi yok.
 
 Kart konusunda tek cümle, çünkü lansmanını buna göre kurma. Sailo'da kart yöntemi Stripe üzerinde ve sadece Stripe üzerinde çalışıyor, ve düğmenin açılması Stripe'ın senin ülkenden hesap kabul etmesine bağlı. Stripe'ın ülke listesi değişiyor, o yüzden lansmanını kartın üzerine kurmadan önce stripe.com/global adresinden Türkiye'yi kendin kontrol et.
 

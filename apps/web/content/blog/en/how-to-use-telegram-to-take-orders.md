@@ -12,7 +12,7 @@ You have 900 people in a Telegram group, half of them ask prices in the group, a
 
 Somewhere in that mess are about forty real orders a month and you are tracking them in your head.
 
-Telegram works as an order desk for one reason that most guides skip: a link can arrive with the order already written. `t.me/yourshop?text=...` opens a chat with you and the message is sitting in the compose box, item, options, address, total, waiting for the buyer to hit send. Instagram cannot do that at all. WhatsApp can. Telegram can, and Telegram also gives you a public username so buyers never see your phone number, groups that hold up to 200,000 people, and channels with no subscriber ceiling at all. A Sailo shop is $0 on the free plan for 20 products, and Telegram is one of its order rails, so the prefilled message is built rather than pasted.
+Telegram works as an order desk for one reason that most guides skip: a link can arrive with the order already written. `t.me/yourshop?text=...` opens a chat with you and the message is sitting in the compose box, item, options, address, total, waiting for the buyer to hit send. Instagram cannot do that at all. WhatsApp can. Telegram can, and Telegram also gives you a public username so buyers never see your phone number, groups that hold up to 200,000 people, and channels with no subscriber ceiling at all. A Sailo shop is $0 on the free plan for {{free_products}} products, and Telegram is one of its order rails, so the prefilled message is built rather than pasted.
 
 Check the link behaviour on your own phone before you build on it. Send yourself one. Clients differ, and desktop, iOS and Android have not always agreed.
 
@@ -130,9 +130,9 @@ If you are still deciding where the time goes at all, [which platform should you
 
 ## What this costs, and what Sailo cannot do for you
 
-Sailo's free plan is $0, holds 20 products, and takes no commission on Telegram, WhatsApp, Instagram, email, phone, bank transfer or cash-on-delivery orders. The money never passes through Sailo on those rails, so there is nothing to take a cut of.
+Sailo's free plan is $0, holds {{free_products}} products, and takes no commission on Telegram, WhatsApp, Instagram, email, phone, bank transfer or cash-on-delivery orders. The money never passes through Sailo on those rails, so there is nothing to take a cut of.
 
-Cards are the exception. They need the Business plan at $19.99 a month plus a Stripe account Stripe has cleared for charges, and Sailo takes 0.5% of the goods on each card order, after discounts, excluding delivery and tax. On Preeti's ₹899 set that is about four and a half rupees to Sailo, plus Stripe's own fee.
+Cards are the exception. They need the Business plan at ${{business_monthly}} a month plus a Stripe account Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after discounts, excluding delivery and tax. On Preeti's ₹899 set that is about four and a half rupees to Sailo, plus Stripe's own fee.
 
 Now the part that matters for her and for a lot of readers. **There is no UPI rail.** Sailo does not integrate UPI, or M-Pesa, or GCash. What Preeti does is put her UPI ID and a QR into the bank transfer instructions field, which the buyer sees at checkout, and they pay exactly the way they always have. Sailo records the order, the options and the address. It cannot tell her the money arrived, and it never will. Only her bank can. She checks and marks it paid herself, every evening, and that is a real cost in minutes that no article should pretend away.
 

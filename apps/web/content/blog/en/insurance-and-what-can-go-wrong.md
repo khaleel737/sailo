@@ -115,7 +115,7 @@ Sailo isn't an insurer, doesn't offer buyer protection and doesn't hold your mon
 
 Because Sailo never touches money on bank transfer, cash on delivery, or orders that come through WhatsApp, Instagram, Telegram, email or phone, there's no balance to freeze, no payout to withhold, and no scheme a buyer can appeal to. The buyer's recourse is you. That cuts both ways: nobody can reverse a bank transfer on a whim, and nobody will step in and make a difficult customer go away either. You are the dispute process.
 
-Card is different, and worth being clear about. Card payments need the Business plan at $19.99 a month plus a Stripe account Stripe has cleared, the charge lands in your own Stripe account, and Sailo takes 0.5% of the goods as an application fee. Card also means chargebacks, and chargebacks are decided by the card networks. If a large share of your orders are card, that's a real risk category that manual rails don't have.
+Card is different, and worth being clear about. Card payments need the Business plan at ${{business_monthly}} a month plus a Stripe account Stripe has cleared, the charge lands in your own Stripe account, and Sailo takes {{fee_range}}% of the goods as an application fee. Card also means chargebacks, and chargebacks are decided by the card networks. If a large share of your orders are card, that's a real risk category that manual rails don't have.
 
 And Sailo won't confirm a bank transfer arrived. Only your bank can do that. Every payment on a manual rail is checked by you, which is the honest cost of the rails that cost nothing.
 

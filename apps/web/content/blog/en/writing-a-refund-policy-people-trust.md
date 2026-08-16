@@ -136,7 +136,7 @@ Not much, honestly. There's no returns flow, no RMA number, no label generation,
 
 So the policy lives wherever you write it, and honouring it is manual. What the shop gives you is somewhere to put the words in front of the buyer before they pay, which is the part that actually prevents the argument.
 
-Card payments, for what it's worth, need the Business plan at $19.99 a month plus a Stripe account cleared for charges, and Sailo takes 0.5% of the goods on each card order. If you're running 35 orders a month at $38 on bank transfer, none of that applies to you and you shouldn't upgrade to get a refund button you'd use twice a year.
+Card payments, for what it's worth, need the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order. If you're running 35 orders a month at $38 on bank transfer, none of that applies to you and you shouldn't upgrade to get a refund button you'd use twice a year.
 
 ## Write your five answers now
 

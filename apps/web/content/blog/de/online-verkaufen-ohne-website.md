@@ -12,7 +12,7 @@ tags: [verkaufen, grundlagen, deutschland]
 
 Beide Sätze sind vernünftig. Und der zweite ist der Grund, warum in Deutschland so viele Leute mit einem fertigen Produkt und guten Fotos monatelang nichts verkaufen. Nicht weil ihnen ein Onlineshop fehlt, sondern weil niemand ihnen sauber gesagt hat, was ab der ersten Bestellung tatsächlich für sie gilt.
 
-Also die kurze Antwort zuerst: Du brauchst keine Website. Du brauchst eine Seite, auf der Produkt, Preis und Bestellweg stehen, einen Weg, an das Geld zu kommen, und die Pflichtangaben, die auch für sehr kleine Verkäufer gelten. Die Seite ist der einfachste Teil davon. Bei Sailo kostet sie im kostenlosen Tarif 0 Dollar und trägt bis zu 20 Produkte. Die Pflichtangaben sind der Teil, der Arbeit macht, und der Teil, um den sich die meisten Ratgeber herumdrücken.
+Also die kurze Antwort zuerst: Du brauchst keine Website. Du brauchst eine Seite, auf der Produkt, Preis und Bestellweg stehen, einen Weg, an das Geld zu kommen, und die Pflichtangaben, die auch für sehr kleine Verkäufer gelten. Die Seite ist der einfachste Teil davon. Bei Sailo kostet sie im kostenlosen Tarif 0 Dollar und trägt bis zu {{free_products}} Produkte. Die Pflichtangaben sind der Teil, der Arbeit macht, und der Teil, um den sich die meisten Ratgeber herumdrücken.
 
 ## Warum die Reihenfolge in Deutschland anders ist
 
@@ -85,7 +85,7 @@ Bei Sailo hinterlegst du dafür Bankname, Kontoinhaber, Kontonummer, IBAN, BIC u
 
 Die anderen Wege, die es bei Sailo gibt, sind: Karte, WhatsApp, Telegram, Instagram, E-Mail, Telefon und Nachnahme. Das ist die vollständige Liste. Kein PayPal, kein Klarna, kein SEPA-Lastschriftverfahren, kein giropay. Wenn PayPal für dich der entscheidende Knopf ist, ist das ein Ausschlusskriterium, und es ist besser, das jetzt zu wissen als nach dem dritten Produktfoto.
 
-Karte funktioniert in Deutschland, weil Stripe hier verfügbar ist (Stand: 6. August 2026, geprüft auf stripe.com/global; die Liste ändert sich, prüf sie selbst). Dafür brauchst du den Business-Tarif für 19,99 Dollar im Monat oder 191,90 Dollar im Jahr und ein Stripe-Konto, das Stripe für Zahlungen freigegeben hat. Sailo nimmt dann 0,5 Prozent vom Warenwert nach Rabatt, ohne Versand und ohne Steuer. Stripes eigene Gebühr kommt oben drauf und steht auf Stripes Preisseite.
+Karte funktioniert in Deutschland, weil Stripe hier verfügbar ist (Stand: 6. August 2026, geprüft auf stripe.com/global; die Liste ändert sich, prüf sie selbst). Dafür brauchst du den Business-Tarif für {{business_monthly}} Dollar im Monat oder {{business_yearly}} Dollar im Jahr und ein Stripe-Konto, das Stripe für Zahlungen freigegeben hat. Sailo nimmt dann {{fee_range}} Prozent vom Warenwert nach Rabatt, ohne Versand und ohne Steuer. Stripes eigene Gebühr kommt oben drauf und steht auf Stripes Preisseite.
 
 Bei Überweisung, Nachnahme und allen Chat-Wegen nimmt Sailo nichts, weil das Geld nie durch Sailo läuft.
 
@@ -114,7 +114,7 @@ Eine typische Bestellung: zwei Tassen, 76 Euro, Versand 5,49 Euro (das ist der P
 
 Sailo kostet sie dabei: nichts. Kein Prozent, keine Gebühr, weil das Geld nie durch Sailo lief.
 
-Jetzt die andere Rechnung. Wenn Miriam Kartenzahlung will, weil ein Teil ihrer Kunden nicht überweisen mag, sind das 19,99 Dollar im Monat plus 0,5 Prozent auf den Warenwert plus Stripes Gebühr. Bei 25 Bestellungen à durchschnittlich 60 Euro Warenwert sind das 1.500 Euro Warenwert, also 7,50 Euro an Sailo. Der Abopreis ist der eigentliche Kostenblock, nicht die Provision. Bei fünf Bestellungen im Monat lohnt es sich nicht. Bei fünfzig sieht es anders aus.
+Jetzt die andere Rechnung. Wenn Miriam Kartenzahlung will, weil ein Teil ihrer Kunden nicht überweisen mag, sind das {{business_monthly}} Dollar im Monat plus {{fee_range}} Prozent auf den Warenwert plus Stripes Gebühr. Bei 25 Bestellungen à durchschnittlich 60 Euro Warenwert sind das 1.500 Euro Warenwert, also 7,50 Euro an Sailo. Der Abopreis ist der eigentliche Kostenblock, nicht die Provision. Bei fünf Bestellungen im Monat lohnt es sich nicht. Bei fünfzig sieht es anders aus.
 
 > Bei kleinen Stückzahlen ist die Kartenzahlung fast nie das, was dir fehlt. Was dir fehlt, sind Leute, die wissen, dass es dich gibt.
 

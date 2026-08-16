@@ -36,7 +36,7 @@ Sailo's complete list of payment rails is card, WhatsApp, Telegram, Instagram, e
 
 Sailo's card rail runs on Stripe. Only Stripe.
 
-On Stripe's own global availability page, read in August 2026, South Africa appears under the extended network served by Paystack rather than as a launched Stripe country. Sailo does not support Paystack, whatever the marketing site may say. Which means that for a South African seller, upgrading to the Business plan at $19.99 a month will not reliably produce a working card button, and you should not build a plan around one.
+On Stripe's own global availability page, read in August 2026, South Africa appears under the extended network served by Paystack rather than as a launched Stripe country. Sailo does not support Paystack, whatever the marketing site may say. Which means that for a South African seller, upgrading to the Business plan at ${{business_monthly}} a month will not reliably produce a working card button, and you should not build a plan around one.
 
 That's an unusual sentence for a product blog to write, so here's the practical version. If cards are essential to your business, use Yoco, Payfast, Peach or whoever your bank recommends, and use them directly. Sailo can hold your catalogue, your product options and your order flow while the money moves on a rail you set up yourself. Plenty of sellers run it that way. Just go in knowing which half is which.
 
@@ -121,7 +121,7 @@ Data costs are a real constraint here in a way they aren't in London. A page tha
 
 **Sailo can't tell you the money arrived.** There is no bank feed and there isn't going to be one, because Sailo never touches the money on manual rails. Your order sits at pending until you mark it paid, and you mark it paid by looking at your own account. That's the trade for a manual rail, which takes zero commission.
 
-**The free plan caps at 20 products.** For Thandeka's dozen designs that's fine. For someone listing every colourway of every item it isn't, and Pro at $9.99 a month raises it to 250.
+**The free plan caps at {{free_products}} products.** For Thandeka's dozen designs that's fine. For someone listing every colourway of every item it isn't, and Pro at ${{pro_monthly}} a month raises it to 250.
 
 None of these are reasons not to start. They're reasons to start with the rails you can actually run, which in South Africa are the ones your buyers prefer anyway.
 

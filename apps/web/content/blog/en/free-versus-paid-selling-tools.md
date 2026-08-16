@@ -70,13 +70,13 @@ Here's what the platform takes at that volume, before payment processing.
 | Payhip Free, 5% | $108.00 | 5.0% |
 | Payhip Plus, $29 + 2% | $72.20 | 3.3% |
 | Payhip Pro, $99 + 0% | $99.00 | 4.6% |
-| Sailo Business, $19.99 + 0.5% on card | $30.79 | 1.4% |
+| Sailo Business, ${{business_monthly}} + {{fee_range}}% on card | $30.79 | 1.4% |
 
 Two warnings before you read anything into that table.
 
-Gumroad's pricing page on 6 August 2026 did not itemise payment processing separately, so treat 10% + $0.50 as the all-in figure and check it against your own payout statement. Sailo's 0.5% is definitely not all-in: it's a Stripe application fee on top of whatever Stripe charges Marcus to process the card, and that lands separately. Stripe's rate varies by country, and the page localises. Mine showed 1.5% + €0.25 for standard European cards on 6 August 2026, and a US seller's rate is different. Read your own region's page and add it to the Sailo row before comparing.
+Gumroad's pricing page on 6 August 2026 did not itemise payment processing separately, so treat 10% + $0.50 as the all-in figure and check it against your own payout statement. Sailo's {{fee_range}}% is definitely not all-in: it's a Stripe application fee on top of whatever Stripe charges Marcus to process the card, and that lands separately. Stripe's rate varies by country, and the page localises. Mine showed 1.5% + €0.25 for standard European cards on 6 August 2026, and a US seller's rate is different. Read your own region's page and add it to the Sailo row before comparing.
 
-Now run the same table at 12 sales a month rather than 120, which is where Marcus was 18 months ago. $216 of sales. Gumroad takes $27.60. Payhip Free takes $10.80. Sailo Business takes $19.99 plus $1.08, because the subscription doesn't care that you only sold twelve things.
+Now run the same table at 12 sales a month rather than 120, which is where Marcus was 18 months ago. $216 of sales. Gumroad takes $27.60. Payhip Free takes $10.80. Sailo Business takes ${{business_monthly}} plus $1.08, because the subscription doesn't care that you only sold twelve things.
 
 At twelve sales a month, the free percentage plan wins and it isn't close. Marcus should have stayed on it, and he did.
 
@@ -126,7 +126,7 @@ The signals for that specific decision, with more detail, are in [when to move f
 
 Once you decide to pay, there's a second decision, and the annual discount is usually real and usually about a fifth.
 
-Sailo Pro is $9.99 a month or $95.90 a year, which works out at $7.99 a month and saves $23.98 over twelve. Business is $19.99 a month or $191.90 a year, saving $47.98. Shopify's Indian pricing page on 6 August 2026 showed Basic at ₹1,499 a month billed yearly against ₹1,994 billed monthly, which is a quarter off. Big Cartel's page the same day offered 7 days free before Platinum's $15 a month.
+Sailo Pro is ${{pro_monthly}} a month or ${{pro_yearly}} a year, which works out at $7.99 a month and saves $23.98 over twelve. Business is ${{business_monthly}} a month or ${{business_yearly}} a year, saving $47.98. Shopify's Indian pricing page on 6 August 2026 showed Basic at ₹1,499 a month billed yearly against ₹1,994 billed monthly, which is a quarter off. Big Cartel's page the same day offered 7 days free before Platinum's $15 a month.
 
 Take the annual deal when two things are true: you've already been selling for at least three months, and the tool has survived a busy week without annoying you. Take the monthly price when either of those is missing, and treat the extra couple of dollars a month as the cost of being able to walk away.
 
@@ -136,11 +136,11 @@ Trials have their own trap, which is that a trial with no products in it proves 
 
 ## Where Sailo's free plan will let you down
 
-Sailo's free plan is $0 with 20 products, 30 days of analytics, chat, and the manual payment rails: bank transfer, cash on delivery, and orders handed off to WhatsApp, Instagram, Telegram, email or phone. Sailo takes no commission on any of those, because it never holds that money.
+Sailo's free plan is $0 with {{free_products}} products, {{free_analytics_days}} days of analytics, chat, and the manual payment rails: bank transfer, cash on delivery, and orders handed off to WhatsApp, Instagram, Telegram, email or phone. Sailo takes no commission on any of those, because it never holds that money.
 
-What it can't do is take a card. Card payments need the Business plan at $19.99/mo or $191.90/yr, plus a Stripe account Stripe has cleared for charges, and then Sailo takes 0.5% of the goods, after discounts, excluding delivery and tax. That's a real limitation and it's the one most likely to affect you: if your buyers expect to pay by card, Sailo's free tier is not a free way to sell to them, it's a free way to take their order and then arrange payment some other way.
+What it can't do is take a card. Card payments need the Business plan at ${{business_monthly}}/mo or ${{business_yearly}}/yr, plus a Stripe account Stripe has cleared for charges, and then Sailo takes {{fee_range}}% of the goods, after discounts, excluding delivery and tax. That's a real limitation and it's the one most likely to affect you: if your buyers expect to pay by card, Sailo's free tier is not a free way to sell to them, it's a free way to take their order and then arrange payment some other way.
 
-Two more. CSV export starts on Pro at $9.99/mo, so on free you can see your customers but not export them, which by this article's own standard is one of the four currencies. And the 20-product cap is genuinely 20; a seller with 34 second-hand pieces hits it in week one.
+Two more. CSV export starts on Pro at ${{pro_monthly}}/mo, so on free you can see your customers but not export them, which by this article's own standard is one of the four currencies. And the 20-product cap is genuinely 20; a seller with 34 second-hand pieces hits it in week one.
 
 Card is also Stripe only. No Paystack, no mobile money rail, whatever you may read elsewhere.
 

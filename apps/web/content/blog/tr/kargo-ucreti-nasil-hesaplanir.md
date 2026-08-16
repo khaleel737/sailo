@@ -171,13 +171,13 @@ Desi başına ödediği rakam onun sözleşme fiyatı ve burada yazmıyorum. Ama
 
 Kısa cevap: siparişin ve toplamın tarafında, kargonun tarafında değil.
 
-Sipariş sana yazılı geliyor, içinde ürün, seçenekler, adres ve toplam oluyor. Teslimat, malın kendisinden ayrı bir kalem olarak duruyor. Kartla ödemede Sailo'nun aldığı %0,5'lik komisyon indirim sonrası mal bedeli üzerinden hesaplanıyor ve teslimat ile vergiyi kapsamıyor, yani kargo bedelinden Sailo'ya bir şey gitmiyor. Havale, kapıda ödeme, WhatsApp ve diğer manuel yöntemlerde Sailo zaten hiçbir şey almıyor ve paraya hiç dokunmuyor.
+Sipariş sana yazılı geliyor, içinde ürün, seçenekler, adres ve toplam oluyor. Teslimat, malın kendisinden ayrı bir kalem olarak duruyor. Kartla ödemede Sailo'nun aldığı %{{fee_range}}'lik komisyon indirim sonrası mal bedeli üzerinden hesaplanıyor ve teslimat ile vergiyi kapsamıyor, yani kargo bedelinden Sailo'ya bir şey gitmiyor. Havale, kapıda ödeme, WhatsApp ve diğer manuel yöntemlerde Sailo zaten hiçbir şey almıyor ve paraya hiç dokunmuyor.
 
 ## Bunun çözmediği şeyler
 
 Kutuları mezurayla ölçmek, sözleşmeyi pazarlık etmek, firmayı seçmek, alıcının ne kadar ödeyeceğine karar vermek ve takip numarasını mesaja yazmak senin işin. Hiçbir katalog aracı bunları yapmıyor, ve yapıyormuş gibi anlatan varsa sözleşmeyi okumamıştır.
 
-Ödeme tarafında da açık konuşalım. Manuel yöntemlerde paranın geldiğini sen doğruluyorsun, çünkü Sailo bankana bağlı değil ve havalenin hesabına düştüğünü ancak bankan biliyor. Kart yöntemi Stripe üzerinde ve sadece Stripe üzerinde çalışıyor, Business planı gerektiriyor (19,99 USD/ay veya 191,90 USD/yıl), ve düğmenin açılması Stripe'ın senin ülkenden hesap kabul etmesine bağlı. Stripe'ın ülke listesi zaman içinde değişiyor, o yüzden Business'a abone olmadan önce stripe.com/global adresinden Türkiye'yi kendin kontrol et. Taksit ise Sailo'nun bir özelliği değil, alıcının kendi kartından ve kendi bankasından geliyor.
+Ödeme tarafında da açık konuşalım. Manuel yöntemlerde paranın geldiğini sen doğruluyorsun, çünkü Sailo bankana bağlı değil ve havalenin hesabına düştüğünü ancak bankan biliyor. Kart yöntemi Stripe üzerinde ve sadece Stripe üzerinde çalışıyor, Business planı gerektiriyor ({{business_monthly}} USD/ay veya {{business_yearly}} USD/yıl), ve düğmenin açılması Stripe'ın senin ülkenden hesap kabul etmesine bağlı. Stripe'ın ülke listesi zaman içinde değişiyor, o yüzden Business'a abone olmadan önce stripe.com/global adresinden Türkiye'yi kendin kontrol et. Taksit ise Sailo'nun bir özelliği değil, alıcının kendi kartından ve kendi bankasından geliyor.
 
 Hesabını havale ve kapıda ödeme üzerine kur, çünkü bugün Türkiye'de çalışan yöntemler bunlar. [Havale ile ödeme almak](/tr/blog/havale-ile-odeme-almak) yazısında dekont geldiğinde ne yapacağını, kurgunun tamamını ise [website olmadan Instagram'dan satış](/tr/blog/website-olmadan-instagramdan-satis) yazısında bulursun.
 

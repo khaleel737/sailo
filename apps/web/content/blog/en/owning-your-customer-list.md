@@ -101,9 +101,9 @@ Every order in Sailo carries the buyer's details, whatever rail it came in on. A
 
 Now the limitations, and they're pointed.
 
-**Getting the list out as a file starts on Pro at $9.99 a month.** CSV export isn't on the free plan. On free you're copying orders into a spreadsheet by hand, which is entirely possible and which almost nobody sustains. If you're going to stay free, set a monthly reminder and treat it as the one non-negotiable ten minutes.
+**Getting the list out as a file starts on Pro at ${{pro_monthly}} a month.** CSV export isn't on the free plan. On free you're copying orders into a spreadsheet by hand, which is entirely possible and which almost nobody sustains. If you're going to stay free, set a monthly reminder and treat it as the one non-negotiable ten minutes.
 
-**Your history has a window.** Free keeps 30 days of analytics, Pro keeps a year, Business keeps three. Your list should outlive all of those, which is exactly why it needs to be in your file rather than in anyone's dashboard, including this one.
+**Your history has a window.** Free keeps {{free_analytics_days}} days of analytics, Pro keeps a year, Business keeps three. Your list should outlive all of those, which is exactly why it needs to be in your file rather than in anyone's dashboard, including this one.
 
 **Sailo is not a sending tool.** It won't email your list, run a campaign, schedule a broadcast or measure an open rate. It records orders. The list is yours to hold and yours to use somewhere else, which is the correct division of labour but does mean the second half of this article happens outside it.
 

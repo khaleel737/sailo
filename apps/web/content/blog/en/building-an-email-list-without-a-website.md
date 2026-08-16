@@ -132,7 +132,7 @@ And when you do have something to sell, the shape of a launch to a list this siz
 
 One thing worth being clear about before you assume your shop is quietly keeping a record for you.
 
-Sailo's free plan holds 30 days of analytics. Pro, at $9.99 a month, holds a year and adds CSV export. Business holds three years. If your plan for owning your audience is "the shop will remember who came", the free plan remembers for a month, and getting the data out in a file is a paid feature.
+Sailo's free plan holds {{free_analytics_days}} days of analytics. Pro, at ${{pro_monthly}} a month, holds a year and adds CSV export. Business holds three years. If your plan for owning your audience is "the shop will remember who came", the free plan remembers for a month, and getting the data out in a file is a paid feature.
 
 That's not an argument for upgrading. It's an argument for collecting addresses yourself, starting now, into a tool that's free at your size and that you can take with you. The addresses are the thing that survives you changing platform, changing product, or a feed deciding in November that it prefers video.
 

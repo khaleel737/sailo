@@ -120,9 +120,9 @@ En échange, sur le virement, Sailo ne prend aucune commission et ne touche jama
 | --- | --- | --- | --- |
 | Virement bancaire | Rien | Un IBAN | Vous, dans votre appli bancaire |
 | Paiement à la livraison | Rien | Rien de plus | Vous, quand l'acheteur a payé |
-| Carte | 0,5 % de la valeur des produits, hors livraison et hors taxes | La formule Business à 19,99 $ par mois et un compte Stripe validé | Stripe |
+| Carte | {{fee_range}} % de la valeur des produits, hors livraison et hors taxes | La formule Business à {{business_monthly}} $ par mois et un compte Stripe validé | Stripe |
 
-La seule commission qui existe chez Sailo, c'est ce 0,5 % sur la carte. Sur une commande de 140 €, 70 centimes, plus la part de Stripe que vous lisez sur leur grille. Et la carte demande la formule Business, donc à quinze ventes par mois, ce qui coûte, c'est l'abonnement, pas la commission. Stripe accepte les inscriptions en France, vérifié le 6 août 2026 sur leur page de disponibilité par pays. Cette liste bouge, revérifiez-la le jour où vous décidez.
+La seule commission qui existe chez Sailo, c'est ce {{fee_range}} % sur la carte. Sur une commande de 140 €, 70 centimes, plus la part de Stripe que vous lisez sur leur grille. Et la carte demande la formule Business, donc à quinze ventes par mois, ce qui coûte, c'est l'abonnement, pas la commission. Stripe accepte les inscriptions en France, vérifié le 6 août 2026 sur leur page de disponibilité par pays. Cette liste bouge, revérifiez-la le jour où vous décidez.
 
 ## Les comptes de Sofiane
 

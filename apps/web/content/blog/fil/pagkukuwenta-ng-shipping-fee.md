@@ -150,7 +150,7 @@ Diretsahan, dahil ito ang artikulong pinakamadaling sabihan ng kasinungalingan.
 
 Ang ginagawa niya ay ang mas nakakainis na parte: ang catalogue, ang presyo, at ang order na pumapasok nang kumpleto, kasama ang address, kaya hindi mo na kailangang habulin sa chat kung saan nga ba talaga ipapadala. Sa manual na rails, kasama ang bank transfer at COD, hindi hinahawakan ng Sailo ang pera at walang kinukuha.
 
-Sa card lang may bayad, 0.5% ng halaga ng produkto matapos ang diskwento, **hindi kasama ang delivery at buwis**, at kailangan ang Business plan na $19.99 kada buwan kasama ang Stripe account na na-approve na. Sa artikulong ito, may kahalagahan ang "hindi kasama ang delivery", kasi ibig sabihin hindi kinakaltasan ang shipping fee na sinisingil mo.
+Sa card lang may bayad, {{fee_range}}% ng halaga ng produkto matapos ang diskwento, **hindi kasama ang delivery at buwis**, at kailangan ang Business plan na ${{business_monthly}} kada buwan kasama ang Stripe account na na-approve na. Sa artikulong ito, may kahalagahan ang "hindi kasama ang delivery", kasi ibig sabihin hindi kinakaltasan ang shipping fee na sinisingil mo.
 
 Pero may mas mahalagang bagay sa card, at kailangan mong malaman bago ka magbayad ng kahit ano. Stripe lang ang card rail ng Sailo, at **noong 6 Agosto 2026, wala ang Pilipinas sa listahan ng mga bansang suportado ng Stripe sa stripe.com/global.** Ibig sabihin, pwedeng hindi available ang card button dito kahit anong plan ang bayaran mo. Nagbabago ang listahang iyon, kaya buksan mo mismo ang stripe.com/global at i-check bago ka magdesisyon. Sa ngayon, COD at bank transfer ang nagbubuhat ng lahat dito, at iyon ang dalawang rail na walang kinukuha ang Sailo.
 

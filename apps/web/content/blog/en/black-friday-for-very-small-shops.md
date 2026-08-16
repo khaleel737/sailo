@@ -145,11 +145,11 @@ There's also a positioning argument. A shop that has never discounted has a pric
 
 ## The honest limitation
 
-If you want to run a discount code on Sailo, coupons are a Business-plan feature, which is $19.99 a month or $191.90 a year. On the free plan and on Pro at $9.99 a month, there's no coupon field. You'd be editing the price on the product itself and putting the reason in the description, then editing it back on the Monday.
+If you want to run a discount code on Sailo, coupons are a Business-plan feature, which is ${{business_monthly}} a month or ${{business_yearly}} a year. On the free plan and on Pro at ${{pro_monthly}} a month, there's no coupon field. You'd be editing the price on the product itself and putting the reason in the description, then editing it back on the Monday.
 
 That's fine for the one-product, one-price, capped promotion described above. It's genuinely annoying if you wanted a code to give to a specific group. Worth knowing before you plan around a feature you don't have.
 
-And on card payments specifically, Sailo takes 0.5% of the goods after discount, excluding delivery and tax, on top of whatever Stripe charges. On Dana's $56 set that's 28 cents. The subscription is the real cost at her volume, not the percentage.
+And on card payments specifically, Sailo takes {{fee_range}}% of the goods after discount, excluding delivery and tax, on top of whatever Stripe charges. On Dana's $56 set that's 28 cents. The subscription is the real cost at her volume, not the percentage.
 
 ## Do this in October
 

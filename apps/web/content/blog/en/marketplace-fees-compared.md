@@ -121,11 +121,11 @@ The way to find out is to ask. Add one question to your packing note: how did yo
 
 Sailo isn't a marketplace and never sends you a buyer, which is the biggest single difference in this whole comparison. There's no search, no browse page, no recommendations. If you have no audience, the fee structure below is irrelevant, because the traffic is zero and a percentage of zero is zero.
 
-The charges: nothing at all on bank transfer, cash on delivery, or orders handed off to WhatsApp, Instagram, Telegram, email or phone, because Sailo never holds that money. On card, 0.5% of the goods, after discounts, excluding delivery and tax, taken as a Stripe application fee, with the charge landing in your own Stripe account. Plans are $0 free with a 20-product cap, $9.99/mo Pro, $19.99/mo Business, and card requires Business plus a Stripe account cleared for charges.
+The charges: nothing at all on bank transfer, cash on delivery, or orders handed off to WhatsApp, Instagram, Telegram, email or phone, because Sailo never holds that money. On card, {{fee_range}}% of the goods, after discounts, excluding delivery and tax, taken as a Stripe application fee, with the charge landing in your own Stripe account. Plans are $0 free with a 20-product cap, ${{pro_monthly}}/mo Pro, ${{business_monthly}}/mo Business, and card requires Business plus a Stripe account cleared for charges.
 
 The honest limitation for a marketplace seller reading this: card is Stripe only. There's no Paystack and no mobile money rail, so if your buyers pay by M-Pesa or GCash or UPI, Sailo handles the catalogue and the order and the money stays entirely between you and your buyer. You can put a till number in the bank transfer instructions and it works fine, but that's a workaround rather than a rail, and I'm not going to dress it up as one.
 
-The other honest limitation: at very low volume a flat $19.99 is worse than any commission on this page. Ten card orders of $15 a month is $150 of sales, and a $19.99 subscription is 13% of it. A commission-based marketplace beats that comfortably.
+The other honest limitation: at very low volume a flat ${{business_monthly}} is worse than any commission on this page. Ten card orders of $15 a month is $150 of sales, and a ${{business_monthly}} subscription is 13% of it. A commission-based marketplace beats that comfortably.
 
 > A fee you pay for a customer you found yourself is the most expensive money in retail.
 

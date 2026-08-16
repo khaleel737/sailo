@@ -118,15 +118,15 @@ Fem ting gør den besked. Den takker. Den anklager ikke. Den forklarer, hvorfor 
 
 Det du ikke gør: sender bare denne ene gang, fordi samtalen blev akavet og du gerne ville have den overstået. Gør du det én gang, gør du det altid, og du finder først ud af, hvad det kostede, når det har kostet dig det.
 
-## Kort koster 0,5 procent og et abonnement
+## Kort koster {{fee_range}} procent og et abonnement
 
 Kort findes, og det virker i Danmark, fordi Stripe er tilgængeligt her. Kontrolleret 6. august 2026 på stripe.com/global. Den liste flytter sig, så slå den op selv, inden du betaler for noget.
 
-Betingelserne er Business-planen til 19,99 dollar om måneden eller 191,90 dollar om året, og en Stripe-konto, som Stripe har godkendt til at modtage betalinger. Sailo tager 0,5 procent af varernes værdi efter rabat, uden fragt og uden moms. Stripes eget gebyr kommer oven i og står på Stripes egen prisside.
+Betingelserne er Business-planen til {{business_monthly}} dollar om måneden eller {{business_yearly}} dollar om året, og en Stripe-konto, som Stripe har godkendt til at modtage betalinger. Sailo tager {{fee_range}} procent af varernes værdi efter rabat, uden fragt og uden moms. Stripes eget gebyr kommer oven i og står på Stripes egen prisside.
 
-Regn det på Rasmus. Fyrre ordrer, gennemsnitligt 138 kr., altså 5.520 kr. i varer. 0,5 procent af det er 27,60 kr. om måneden til Sailo.
+Regn det på Rasmus. Fyrre ordrer, gennemsnitligt 138 kr., altså 5.520 kr. i varer. {{fee_range}} procent af det er 27,60 kr. om måneden til Sailo.
 
-Syvogtyve kroner og tres øre. Det er kommissionen. Abonnementet er 19,99 dollar, og det er mange gange kommissionen. Ved lavt volumen er procenten ikke udgiften. Abonnementet er.
+Syvogtyve kroner og tres øre. Det er kommissionen. Abonnementet er {{business_monthly}} dollar, og det er mange gange kommissionen. Ved lavt volumen er procenten ikke udgiften. Abonnementet er.
 
 Og så det ærlige. Den knap, du køber, er en kortknap. Det er ikke den knap, din danske køber rakte ud efter, og den bliver det ikke. Kort løser til gengæld ét rigtigt problem: ordren afstemmer sig selv, du åbner ikke to apps, og du kan tage på ferie. Det er bare dit problem, ikke købernes.
 

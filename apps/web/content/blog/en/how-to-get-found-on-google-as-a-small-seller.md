@@ -138,7 +138,7 @@ That timeline is the honest argument for why search shouldn't be your first chan
 
 Your Sailo shop lives at `sailo.store/yourname`. That's a real page on a real domain, and it can rank, but it's a domain you don't own. Rankings you build accrue to a URL that isn't yours. For most small sellers that trade is fine, because the alternative is buying a domain and building authority on it from zero, which is slower. It's a genuine trade-off and it's worth knowing now rather than in year three.
 
-The second limit is measurement. On the free plan, Sailo keeps 30 days of analytics. Search work pays off over months, so 30 days won't show you the shape of a trend that took four months to appear. Pro extends that to a year and Business to three years. Either way, connect a free search console account as well, because the search side of the picture lives there and not in your shop.
+The second limit is measurement. On the free plan, Sailo keeps {{free_analytics_days}} days of analytics. Search work pays off over months, so {{free_analytics_days}} days won't show you the shape of a trend that took four months to appear. Pro extends that to a year and Business to three years. Either way, connect a free search console account as well, because the search side of the picture lives there and not in your shop.
 
 ## The next hour
 

@@ -52,7 +52,7 @@ The crossover isn't a revenue number. It's a complexity number. Revenue only tel
 | --- | --- | --- |
 | 11 products, 15 orders, €450/mo | About 4% | No. You have no inventory problem |
 | 40 products, 90 orders, €2,700/mo | Under 1% | Only if stock or shipping is already hurting |
-| 420 SKUs, 300 orders, two channels, €9,000/mo | Well under 0.5% | Yes, and the higher tiers start paying for themselves too |
+| 420 SKUs, 300 orders, two channels, €9,000/mo | Well under {{fee_range}}% | Yes, and the higher tiers start paying for themselves too |
 
 ## The fee nobody reads until they've committed
 
@@ -116,7 +116,7 @@ Sailo loses this comparison for anyone matching three or more of the five signal
 
 There's no inventory sync across channels. No point of sale. No shipping rate engine that computes by weight and zone. No staff accounts with permissions. No app ecosystem. No tax calculation by jurisdiction. If those are your problems, Shopify solves them and Sailo does not pretend to.
 
-On price: Sailo's free plan is $0 and caps at 20 products, Pro is $9.99/mo or $95.90/yr for 250 products, and Business is $19.99/mo or $191.90/yr for unlimited products and card payments. Card takes 0.5% of the goods, after discounts and excluding delivery and tax, charged as a Stripe application fee, with the payment landing in your own Stripe account. Bank transfer, cash on delivery and orders handed to WhatsApp, Instagram, Telegram, email or phone cost nothing per order, because Sailo never holds that money.
+On price: Sailo's free plan is $0 and caps at {{free_products}} products, Pro is ${{pro_monthly}}/mo or ${{pro_yearly}}/yr for {{pro_products}} products, and Business is ${{business_monthly}}/mo or ${{business_yearly}}/yr for unlimited products and card payments. Card takes {{fee_range}}% of the goods, after discounts and excluding delivery and tax, charged as a Stripe application fee, with the payment landing in your own Stripe account. Bank transfer, cash on delivery and orders handed to WhatsApp, Instagram, Telegram, email or phone cost nothing per order, because Sailo never holds that money.
 
 The limitation that matters most in this particular comparison: card is Stripe only. No Paystack, no mobile money rail, whatever a marketing page anywhere might say. If Stripe isn't available to you, Sailo's card option isn't available to you either, and you're on manual rails, confirming every payment yourself.
 

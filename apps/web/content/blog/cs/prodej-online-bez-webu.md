@@ -157,9 +157,9 @@ Sailo je ten jeden odkaz s produkty, cenami a objednávkou. Adresa je sailo.stor
 
 Metody platby, které jdou zapnout, jsou přesně tyhle: karta, WhatsApp, Telegram, Instagram, e-mail, telefon, bankovní převod a dobírka. To je celý seznam. U převodu vyplníš název banky, jméno majitele účtu, číslo účtu, IBAN, SWIFT/BIC a vlastní instrukce textem. U dobírky máš pole na poznámku k doručení.
 
-Na všech ručních metodách si Sailo nebere nic a na peníze nesahá. U karty si bere 0,5 % z hodnoty zboží po slevě, bez dopravy a bez daně, a ta sazba je stejná na každém plánu. Karta vyžaduje plán Business za 19,99 USD měsíčně nebo 191,90 USD ročně a účet Stripe, který Stripe schválil pro příjem plateb. Stripe je v Česku dostupný, ověřeno 6. srpna 2026 na stripe.com/global, jenže ten seznam se hýbe, tak si ho před zaplacením plánu otevři sám.
+Na všech ručních metodách si Sailo nebere nic a na peníze nesahá. U karty si bere {{fee_range}} % z hodnoty zboží po slevě, bez dopravy a bez daně, a ta sazba je stejná na každém plánu. Karta vyžaduje plán Business za {{business_monthly}} USD měsíčně nebo {{business_yearly}} USD ročně a účet Stripe, který Stripe schválil pro příjem plateb. Stripe je v Česku dostupný, ověřeno 6. srpna 2026 na stripe.com/global, jenže ten seznam se hýbe, tak si ho před zaplacením plánu otevři sám.
 
-Bezplatný plán je 20 produktů, 30 dní statistik a všechny ruční metody. Pro je 9,99 USD měsíčně, 250 produktů, rok statistik, export do CSV a bez patičky Sailo.
+Bezplatný plán je {{free_products}} produktů, {{free_analytics_days}} dní statistik a všechny ruční metody. Pro je {{pro_monthly}} USD měsíčně, {{pro_products}} produktů, rok statistik, export do CSV a bez patičky Sailo.
 
 Recenze produktů fungují na každém plánu. Kupující nechá jméno, hodnocení 1 až 5 a nepovinný text, a veřejně se neobjeví nic, dokud to neschválíš ty.
 

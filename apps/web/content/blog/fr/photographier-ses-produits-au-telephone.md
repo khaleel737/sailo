@@ -149,7 +149,7 @@ Faites le test de la vignette avant de publier. Réduisez la première photo à 
 
 Une fois les photos faites, elles vont sur une fiche, la fiche porte un prix, le prix porte un bouton de commande. C'est tout l'intérêt d'un lien qui est la boutique au lieu de pointer vers elle.
 
-La limite à connaître avant de vous lancer dans une grosse séance : la formule gratuite s'arrête à 20 produits et à 30 jours de statistiques. Si vous photographiez une collection de 40 pièces, vous n'en mettrez pas 40 en ligne, vous choisirez lesquelles. Et au moment de décider ce que vous refaites l'an prochain, vous n'aurez pas les chiffres de la saison passée sous les yeux : 30 jours en arrière, c'est 30 jours, pas six mois.
+La limite à connaître avant de vous lancer dans une grosse séance : la formule gratuite s'arrête à {{free_products}} produits et à {{free_analytics_days}} jours de statistiques. Si vous photographiez une collection de 40 pièces, vous n'en mettrez pas 40 en ligne, vous choisirez lesquelles. Et au moment de décider ce que vous refaites l'an prochain, vous n'aurez pas les chiffres de la saison passée sous les yeux : 30 jours en arrière, c'est 30 jours, pas six mois.
 
 Sur douze bagues, ça ne se sent pas. Le jour où la collection d'automne compte 45 références et que vous voulez savoir laquelle a marché au marché de Noël, si.
 

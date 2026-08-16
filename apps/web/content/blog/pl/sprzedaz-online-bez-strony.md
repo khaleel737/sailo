@@ -137,9 +137,9 @@ Sailo daje ci ten jeden link, z produktami, cenami i zamówieniem. Adres to sail
 
 Metody płatności, które da się włączyć, to dokładnie te: karta, WhatsApp, Telegram, Instagram, e-mail, telefon, przelew bankowy i pobranie. To pełna lista. Przy przelewie wpisujesz nazwę banku, nazwę odbiorcy, numer konta, IBAN, SWIFT/BIC oraz własne instrukcje tekstem, i to ty potwierdzasz, że pieniądze przyszły. Przy pobraniu masz pole na uwagi do doręczenia.
 
-Na wszystkich metodach ręcznych Sailo nie bierze nic i nie dotyka pieniędzy. Przy karcie bierze 0,5% od wartości towaru po rabacie, bez dostawy i bez podatku, i ta stawka nie zmienia się wraz z planem. Karta wymaga planu Business, 19,99 USD miesięcznie albo 191,90 USD rocznie, oraz konta Stripe zaakceptowanego do przyjmowania płatności. Stripe jest w Polsce dostępny, sprawdzone 6 sierpnia 2026 na stripe.com/global, ale ta lista się zmienia, więc sprawdź ją sam przed opłaceniem planu.
+Na wszystkich metodach ręcznych Sailo nie bierze nic i nie dotyka pieniędzy. Przy karcie bierze {{fee_range}}% od wartości towaru po rabacie, bez dostawy i bez podatku, i ta stawka nie zmienia się wraz z planem. Karta wymaga planu Business, {{business_monthly}} USD miesięcznie albo {{business_yearly}} USD rocznie, oraz konta Stripe zaakceptowanego do przyjmowania płatności. Stripe jest w Polsce dostępny, sprawdzone 6 sierpnia 2026 na stripe.com/global, ale ta lista się zmienia, więc sprawdź ją sam przed opłaceniem planu.
 
-Plan darmowy to 20 produktów, 30 dni statystyk i wszystkie metody ręczne. Plan Pro to 9,99 USD miesięcznie, 250 produktów, rok statystyk, eksport do CSV i brak plakietki Sailo.
+Plan darmowy to {{free_products}} produktów, 30 dni statystyk i wszystkie metody ręczne. Plan Pro to {{pro_monthly}} USD miesięcznie, {{pro_products}} produktów, rok statystyk, eksport do CSV i brak plakietki Sailo.
 
 Opinie o produktach działają na każdym planie: kupujący zostawia imię, ocenę od 1 do 5 i opcjonalny tekst, a nic nie pojawia się publicznie, dopóki tego nie zatwierdzisz.
 
@@ -149,7 +149,7 @@ Nie ma BLIK-a. Nie ma Przelewów24 ani PayU. Jeśli twoja sprzedaż stoi na BLIK
 
 Sailo nie wie, że przelew przyszedł, bo nie jest podłączone do twojego banku. Wie o tym twój bank i tylko on.
 
-Cennik jest w dolarach, więc twój realny koszt zależy od kursu i od przewalutowania w twoim banku. Przy planie Business to nie jest drobiazg, bo 19,99 USD miesięcznie musi się zwrócić z marży, a nie z nadziei. Przy dziesięciu zamówieniach miesięcznie po 59 zł karta jest wydatkiem, nie inwestycją.
+Cennik jest w dolarach, więc twój realny koszt zależy od kursu i od przewalutowania w twoim banku. Przy planie Business to nie jest drobiazg, bo {{business_monthly}} USD miesięcznie musi się zwrócić z marży, a nie z nadziei. Przy dziesięciu zamówieniach miesięcznie po 59 zł karta jest wydatkiem, nie inwestycją.
 
 Nie ma też aplikacji. Wszystko robisz w przeglądarce, także z telefonu.
 

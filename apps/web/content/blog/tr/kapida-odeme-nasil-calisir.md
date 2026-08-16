@@ -167,7 +167,7 @@ Kapıda ödeme, Sailo'nun sekiz ödeme yönteminden biri. Tam liste şu, başka 
 
 Sailo kargo firmanla konuşmuyor. Tahsilatı yapmıyor. Paketinin reddedildiğini sana söyleyemez, çünkü bunu kargo firması biliyor. Teyit mesajını sen atıyorsun, takip numarasını sen yazıyorsun, red oranını sen sayıyorsun. Sipariş yazılı geliyor, gerisi senin işin, ve bunu telefonun tarayıcısından yönetiyorsun.
 
-Kart tarafında da net olalım. Sailo'da kart yöntemi Stripe üzerinde çalışıyor, sadece Stripe üzerinde. Business planı gerekiyor, ayda 19,99 USD veya yılda 191,90 USD, artı Stripe'ın tahsilat için onayladığı bir hesap. Sailo maldan yüzde 0,5 alıyor, indirim sonrası, kargo ve vergi hariç, ve para senin kendi Stripe hesabına düşüyor.
+Kart tarafında da net olalım. Sailo'da kart yöntemi Stripe üzerinde çalışıyor, sadece Stripe üzerinde. Business planı gerekiyor, ayda {{business_monthly}} USD veya yılda {{business_yearly}} USD, artı Stripe'ın tahsilat için onayladığı bir hesap. Sailo maldan yüzde {{fee_range}} alıyor, indirim sonrası, kargo ve vergi hariç, ve para senin kendi Stripe hesabına düşüyor.
 
 Ama şunu sırasıyla yapman gerekiyor, yoksa para boşa gidiyor. Kart düğmesinin açılması Stripe'ın senin ülkenden hesap kabul etmesine bağlı, ve Stripe'ın ülke listesi değişiyor. Business için ödeme yapmadan önce stripe.com/global adresini kendin aç ve Türkiye'yi orada ara. Önce orayı gör, ödemeyi sonra yap.
 

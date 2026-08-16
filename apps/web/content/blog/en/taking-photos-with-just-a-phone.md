@@ -131,7 +131,7 @@ And they won't compensate for shooting at the wrong time of day. No setting reco
 
 There's no Sailo app. Everything you do goes through a mobile browser, so uploading a full catalogue of images is a browser upload on a phone connection, and it is exactly as slow as that sounds. Do it on wifi, in one sitting, with resized files.
 
-And plan for the product count before you shoot. The free plan holds 20 products. If you photograph 35 things over a weekend and then find you can only list 20 without moving to Pro at $9.99 a month, that's an afternoon you don't get back. Decide what's going in the shop, then photograph that.
+And plan for the product count before you shoot. The free plan holds {{free_products}} products. If you photograph 35 things over a weekend and then find you can only list 20 without moving to Pro at ${{pro_monthly}} a month, that's an afternoon you don't get back. Decide what's going in the shop, then photograph that.
 
 ## What to do next
 

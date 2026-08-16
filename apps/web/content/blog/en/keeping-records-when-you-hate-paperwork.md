@@ -10,7 +10,7 @@ tags: [admin, bookkeeping]
 
 You know you should be writing this down. You've known for four months. There's a folder on your phone called "receipts" with eleven blurry photos in it, a bank account with your rent and your fabric supplier in the same list, and a growing suspicion that January is going to be unpleasant.
 
-The whole system is four columns and ten minutes a week. Date, what it was, money in, money out. A fifth column for which account it went through if you're mixing cash and bank, which you probably are. That's it. You don't need software, you don't need a bookkeeper, and you don't need the $9.99 a month for a plan with CSV export until your order count makes exporting faster than typing.
+The whole system is four columns and ten minutes a week. Date, what it was, money in, money out. A fifth column for which account it went through if you're mixing cash and bank, which you probably are. That's it. You don't need software, you don't need a bookkeeper, and you don't need the ${{pro_monthly}} a month for a plan with CSV export until your order count makes exporting faster than typing.
 
 What you do need is to record it *at the time*. Everything painful about bookkeeping comes from doing it later.
 
@@ -50,7 +50,7 @@ Here's a real week for a seller doing about twenty orders a month, half online a
 | 4 Aug | Market stall fee, Saturday | Fees | | 45.00 | Cash |
 | 4 Aug | Market sales, 6 prints | Sales | 210.00 | | Cash |
 | 5 Aug | Ink, two colours | Materials | | 38.40 | Card |
-| 6 Aug | Sailo Business | Subscription | | 19.99 | Card |
+| 6 Aug | Sailo Business | Subscription | | {{business_monthly}} | Card |
 | 7 Aug | Order 1044, 1 print, Okafor | Sales | 35.00 | | Bank |
 
 Eight rows, one week, maybe ninety seconds of typing spread across seven days.
@@ -133,7 +133,7 @@ Accounting software is worth it when the typing becomes the bottleneck, and typi
 
 The order that usually works: spreadsheet, then spreadsheet plus CSV exports from wherever your orders live, then real software when your accountant asks for it or when you hire someone.
 
-Sailo's free plan gives you 30 days of analytics, Pro gives you a year and CSV export at $9.99 a month, Business gives you three years. Which brings up the limitation worth stating plainly, because it applies to every shop platform and not just this one: **your shop knows what came in, and it has no idea what went out.** It doesn't know you spent $62 on tubes or $45 on a stall. It can't tell you whether you're profitable, only what you sold. And on the free plan the analytics window is 30 days, which is shorter than the period any tax authority will expect you to be able to account for. Your sheet is the record. The shop is one input to it.
+Sailo's free plan gives you {{free_analytics_days}} days of analytics, Pro gives you a year and CSV export at ${{pro_monthly}} a month, Business gives you three years. Which brings up the limitation worth stating plainly, because it applies to every shop platform and not just this one: **your shop knows what came in, and it has no idea what went out.** It doesn't know you spent $62 on tubes or $45 on a stall. It can't tell you whether you're profitable, only what you sold. And on the free plan the analytics window is {{free_analytics_days}} days, which is shorter than the period any tax authority will expect you to be able to account for. Your sheet is the record. The shop is one input to it.
 
 That's also why exporting matters more than it sounds. Export your orders on a schedule and keep the file, whatever platform you're on. Data inside somebody's product is data you're renting.
 

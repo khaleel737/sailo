@@ -122,7 +122,7 @@ Onaylanmış yorumların fiyatın yanında dursun, sayfanın en altında değil.
 
 ## Ölçmek, ve ne zaman ölçmemek
 
-Ücretsiz planda 30 gün istatistik tutuluyor. Pro planında (9,99 USD/ay veya 95,90 USD/yıl) bir yıl tutuluyor, ve bunun tek gerçek faydası şu: geçen ağustosla bu ağustosu karşılaştırabiliyorsun. Sessiz bir ağustosun senin hatan mı yoksa herkesin ağustosu mu olduğunu başka türlü bilemiyorsun.
+Ücretsiz planda {{free_analytics_days}} gün istatistik tutuluyor. Pro planında ({{pro_monthly}} USD/ay veya {{pro_yearly}} USD/yıl) bir yıl tutuluyor, ve bunun tek gerçek faydası şu: geçen ağustosla bu ağustosu karşılaştırabiliyorsun. Sessiz bir ağustosun senin hatan mı yoksa herkesin ağustosu mu olduğunu başka türlü bilemiyorsun.
 
 Ama ayda on beş siparişin varsa o ekrandan çıkaracağın hiçbir şey yok. O hacimde sayılar gürültü, ve gürültüye bakarak karar veren insan yanlış şeyi düzeltiyor. Pro'ya geçmene gerek yok. Beş alıcına "beni nereden buldun" diye sor. Cevabı yirmi dakikada alırsın, ve grafikten öğreneceğinden daha doğru olur.
 
@@ -151,9 +151,9 @@ Tek adetli satmanın sayfaya getirdiği fazladan bir yük de var. Selin'in on al
 
 ## Bunun çözmediği şeyler
 
-Ücretsiz planda sayfanda bir Sailo rozeti duruyor, 20 ürün sınırı var ve istatistikler 30 gün geriye gidiyor. Rozeti kaldırmak Pro'ya geçmek demek. Yirmi ürün de bedenleri ayrı ürün olarak listeleyen bir giyim satıcısı için hiçbir şey, iki hafta içinde doluyor.
+Ücretsiz planda sayfanda bir Sailo rozeti duruyor, {{free_products}} ürün sınırı var ve istatistikler {{free_analytics_days}} gün geriye gidiyor. Rozeti kaldırmak Pro'ya geçmek demek. Yirmi ürün de bedenleri ayrı ürün olarak listeleyen bir giyim satıcısı için hiçbir şey, iki hafta içinde doluyor.
 
-Kart tarafında söylenmesi gereken şey daha net. Sailo'nun kart yöntemi Stripe üzerinde ve sadece Stripe üzerinde çalışıyor, Business planı gerektiriyor (19,99 USD/ay veya 191,90 USD/yıl), ve Sailo iskontodan sonraki mal bedelinin yüzde 0,5'ini alıyor, kargo ve vergi hariç. Para senin kendi Stripe hesabına düşüyor, hiçbir aşamada Sailo'ya uğramıyor.
+Kart tarafında söylenmesi gereken şey daha net. Sailo'nun kart yöntemi Stripe üzerinde ve sadece Stripe üzerinde çalışıyor, Business planı gerektiriyor ({{business_monthly}} USD/ay veya {{business_yearly}} USD/yıl), ve Sailo iskontodan sonraki mal bedelinin yüzde {{fee_range}}'ini alıyor, kargo ve vergi hariç. Para senin kendi Stripe hesabına düşüyor, hiçbir aşamada Sailo'ya uğramıyor.
 
 Ama para ödemeden önce bakman gereken bir yer var. Kart düğmesinin açılıp açılmayacağı Sailo'da değil, Stripe tarafında belli oluyor, çünkü Stripe'ın senin ülkenden hesap kabul etmesi gerekiyor, ve Stripe'ın ülke listesi zaman içinde değişiyor. Business için ödeme yapmadan önce stripe.com/global adresini kendin aç ve Türkiye'yi orada ara. Sırayı ters kurma.
 

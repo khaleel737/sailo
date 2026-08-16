@@ -148,9 +148,9 @@ Amit viszont megcsinál: egy linken tartja a termékeket, az árakat és a rende
 
 A fizetési módok teljes listája: kártya, WhatsApp, Telegram, Instagram, e-mail, telefon, banki átutalás és utánvét. Nincs qvik, nincs Barion, nincs SimplePay. Minden kézi módszernél a Sailo nem visz el semmit, és hozzá sem nyúl a pénzhez.
 
-A kártya a te saját Stripe-fiókodra érkezik, és ott a Sailo 0,5 százalékot vesz le az áru kedvezmény utáni értékéből, szállítás és adó nélkül. Ehhez Business csomag kell, havi 19,99 vagy évi 191,90 dollár, plusz egy Stripe által jóváhagyott fiók. A Stripe Magyarországon elérhető, 2026. augusztus 6-án ellenőrizve a stripe.com/global oldalon, de az országlista változik, úgyhogy fizetés előtt nézd meg magad.
+A kártya a te saját Stripe-fiókodra érkezik, és ott a Sailo {{fee_range}} százalékot vesz le az áru kedvezmény utáni értékéből, szállítás és adó nélkül. Ehhez Business csomag kell, havi {{business_monthly}} vagy évi {{business_yearly}} dollár, plusz egy Stripe által jóváhagyott fiók. A Stripe Magyarországon elérhető, 2026. augusztus 6-án ellenőrizve a stripe.com/global oldalon, de az országlista változik, úgyhogy fizetés előtt nézd meg magad.
 
-Az ingyenes csomag 20 termék, 30 nap statisztika, és benne van minden kézi fizetési mód, tehát az utánvét is. Ha havi húsz csomagod van és mind utánvétes, akkor a fizetős csomagra semmi szükséged.
+Az ingyenes csomag {{free_products}} termék, 30 nap statisztika, és benne van minden kézi fizetési mód, tehát az utánvét is. Ha havi húsz csomagod van és mind utánvétes, akkor a fizetős csomagra semmi szükséged.
 
 A termékértékelés minden csomagban működik, és semmi nem jelenik meg addig, amíg te jóvá nem hagyod. Utánvétes piacon ez többet ér, mint gondolnád, mert a jóváhagyott értékelés az egyetlen dolog, ami az új vevőt előre fizetésre viheti.
 

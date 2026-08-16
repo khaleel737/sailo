@@ -150,7 +150,7 @@ Dobírka je v Sailu volba při objednávce plus textové pole na poznámku k dor
 
 V zemi, kde dobírka veze velkou část objednávek, je tohle nejvážnější omezení, na které u tohohle nástroje narazíš. Pokud čekáš, že ti někde svítí seznam „zaplaceno kurýrovi", nesvítí a svítit nebude.
 
-Co Sailo naopak dělá, je zbytek objednávky. Katalog, varianty, adresa, celková částka a záznam, který nezmizí v chatu. Na dobírce, převodu a všech dalších ručních metodách si nebere nic a na peníze nesahá vůbec. U karty si bere 0,5 % z hodnoty zboží po slevě, bez dopravy a bez daně, karta ale vyžaduje plán Business za 19,99 USD měsíčně nebo 191,90 USD ročně a účet Stripe schválený pro příjem plateb. Stripe je v Česku dostupný, ověřeno 6. srpna 2026 na stripe.com/global, a ten seznam se mění, takže si ho před placením ověř sám.
+Co Sailo naopak dělá, je zbytek objednávky. Katalog, varianty, adresa, celková částka a záznam, který nezmizí v chatu. Na dobírce, převodu a všech dalších ručních metodách si nebere nic a na peníze nesahá vůbec. U karty si bere {{fee_range}} % z hodnoty zboží po slevě, bez dopravy a bez daně, karta ale vyžaduje plán Business za {{business_monthly}} USD měsíčně nebo {{business_yearly}} USD ročně a účet Stripe schválený pro příjem plateb. Stripe je v Česku dostupný, ověřeno 6. srpna 2026 na stripe.com/global, a ten seznam se mění, takže si ho před placením ověř sám.
 
 Kompletní seznam metod je karta, WhatsApp, Telegram, Instagram, e-mail, telefon, bankovní převod a dobírka. Žádná česká platební brána v něm není.
 

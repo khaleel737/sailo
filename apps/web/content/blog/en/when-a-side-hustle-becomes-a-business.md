@@ -140,7 +140,7 @@ Sailo has no hobby mode and no quiet mode. The moment you publish a link with pr
 
 There's also nothing in the product that checks your position, warns you about a threshold, or knows what your country requires. It won't tell you that food needs a registration or that you've started trading. It'll take the order.
 
-And a plain limitation: the free plan caps at 20 products and keeps 30 days of analytics. That's genuinely enough to test whether a hobby has a business in it, which is the useful thing about it. It is not enough to run a second year off, and if you're going to need to account for a period longer than a month, export your orders and keep the file yourself.
+And a plain limitation: the free plan caps at {{free_products}} products and keeps {{free_analytics_days}} days of analytics. That's genuinely enough to test whether a hobby has a business in it, which is the useful thing about it. It is not enough to run a second year off, and if you're going to need to account for a period longer than a month, export your orders and keep the file yourself.
 
 ## Do this today
 

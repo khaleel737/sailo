@@ -111,7 +111,7 @@ Two honest limits, and the first one matters more in Nigeria than almost anywher
 
 **Sailo can't tell you the money arrived.** The order sits at pending until you mark it paid. There's no integration with your bank and there isn't going to be one, because Sailo never touches the money. That ten minutes a day of checking is yours. It's what a rail Sailo takes nothing on actually costs you.
 
-The free plan is $0 and caps at 20 products, which for Chidinma's two sizes is not a constraint and for someone selling 60 SKUs of hair bundles absolutely is.
+The free plan is $0 and caps at {{free_products}} products, which for Chidinma's two sizes is not a constraint and for someone selling 60 SKUs of hair bundles absolutely is.
 
 ## What to do next
 

@@ -75,9 +75,9 @@ Sekarang bagian yang harus jujur, dan ini batasan nyata bukan basa-basi.
 
 Sailo punya delapan cara bayar: kartu, WhatsApp, Telegram, Instagram, email, telepon, transfer bank, dan COD. Itu daftar lengkapnya. **Nggak ada rail DANA, OVO, GoPay, atau QRIS.** Yang bisa kamu lakukan: tulis nomor DANA atau nomor rekeningmu di kolom instruksi pada metode transfer bank, kolom teks bebas yang muncul ke pembeli setelah dia order. Itu akal-akalan, bukan fitur. Sailo nggak tahu uangnya masuk. Kamu yang buka m-banking, lihat mutasi, lalu tandai pesanan itu lunas sendiri.
 
-Kartu juga punya syarat yang perlu kamu tahu sebelum bayar apa pun. Kartu butuh paket Business, USD 19,99 per bulan atau USD 191,90 per tahun, plus akun Stripe milikmu yang sudah disetujui Stripe untuk menerima pembayaran. Dan ini bagian pentingnya: **Stripe mencantumkan Indonesia sebagai "preview", artinya undangan, bukan pendaftaran terbuka.** Jadi tombol kartu bisa saja tetap nggak tersedia buat kamu, berapa pun paket yang kamu bayar. Kalau kamu berpikir "oke nanti upgrade biar bisa terima kartu", jangan berpikir begitu dulu. Cek dulu apakah kamu bisa buka akun Stripe sama sekali.
+Kartu juga punya syarat yang perlu kamu tahu sebelum bayar apa pun. Kartu butuh paket Business, USD {{business_monthly}} per bulan atau USD {{business_yearly}} per tahun, plus akun Stripe milikmu yang sudah disetujui Stripe untuk menerima pembayaran. Dan ini bagian pentingnya: **Stripe mencantumkan Indonesia sebagai "preview", artinya undangan, bukan pendaftaran terbuka.** Jadi tombol kartu bisa saja tetap nggak tersedia buat kamu, berapa pun paket yang kamu bayar. Kalau kamu berpikir "oke nanti upgrade biar bisa terima kartu", jangan berpikir begitu dulu. Cek dulu apakah kamu bisa buka akun Stripe sama sekali.
 
-Kalau kartunya jalan, komisinya 0,5% dari nilai barang setelah diskon, di luar ongkir dan pajak, dan uangnya masuk ke akun Stripe-mu sendiri, bukan ke Sailo. Untuk semua jalur manual, COD, transfer, WhatsApp, Instagram, Telegram, email, telepon, Sailo nggak menyentuh uangnya dan nggak ambil apa pun.
+Kalau kartunya jalan, komisinya {{fee_range}}% dari nilai barang setelah diskon, di luar ongkir dan pajak, dan uangnya masuk ke akun Stripe-mu sendiri, bukan ke Sailo. Untuk semua jalur manual, COD, transfer, WhatsApp, Instagram, Telegram, email, telepon, Sailo nggak menyentuh uangnya dan nggak ambil apa pun.
 
 ## Ongkir dan ekspedisi: angka yang harus kamu putuskan sendiri
 
@@ -118,7 +118,7 @@ Daftar ini akan menghemat waktumu lebih banyak daripada bagian mana pun di atas.
 
 **Belum butuh: badan usaha, sampai titik tertentu.** Aturan izin dan pajak untuk penjual online di Indonesia berubah dan tergantung skala serta jenis barangnya. Jangan pakai angka dari artikel, termasuk artikel ini. Kalau kamu mulai jual makanan, kosmetik, atau suplemen, itu punya aturan sendiri dan sebaiknya kamu cek ke instansi terkait sejak awal, bukan setelah ada yang komplain.
 
-**Belum butuh: 40 produk.** Sepuluh produk yang kamu tahu untung berapa jauh lebih mudah dikelola daripada empat puluh yang kamu nggak yakin. Paket gratis Sailo dibatasi 20 produk, dan buat sebagian besar orang yang baru mulai, batas itu belum terasa selama beberapa bulan.
+**Belum butuh: 40 produk.** Sepuluh produk yang kamu tahu untung berapa jauh lebih mudah dikelola daripada empat puluh yang kamu nggak yakin. Paket gratis Sailo dibatasi {{free_products}} produk, dan buat sebagian besar orang yang baru mulai, batas itu belum terasa selama beberapa bulan.
 
 ## Kapan website baru masuk akal
 

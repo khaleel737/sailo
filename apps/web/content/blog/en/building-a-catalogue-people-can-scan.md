@@ -38,7 +38,7 @@ If you've had the same shop for six months and never deliberately reordered it, 
 
 ## The order that works
 
-Slot by slot, for a shop with fewer than about 20 products:
+Slot by slot, for a shop with fewer than about {{free_products}} products:
 
 1. **Whatever you posted this week.** The person tapping through just saw it. If it isn't first, they assume it isn't available yet.
 2. **Your bestseller.** The thing that sells without being pushed. It's also the item most likely to be what a stranger wants, because that's what "bestseller" means.
@@ -141,9 +141,9 @@ If most of what you sell is one-of-one, read [selling thrift and vintage clothes
 
 Nothing about this happens on its own. Deciding what your bestseller is, dragging last week's post to the top, and deleting the dead listings are all jobs you do yourself, on a Sunday, for ten minutes. Skip three Sundays and the page is back to whatever order things happened to go up in.
 
-Knowing which product to promote to slot two also needs history, and on Sailo's free plan you get 30 days of analytics. That's enough to see what sold last month and not enough to see that your candles always slow down in June. Pro is $9.99 a month for a year of it. If you're on free, write your monthly totals down somewhere yourself, because in 31 days the detail is gone.
+Knowing which product to promote to slot two also needs history, and on Sailo's free plan you get {{free_analytics_days}} days of analytics. That's enough to see what sold last month and not enough to see that your candles always slow down in June. Pro is ${{pro_monthly}} a month for a year of it. If you're on free, write your monthly totals down somewhere yourself, because in 31 days the detail is gone.
 
-The other constraint worth planning around before you start photographing things: the free plan holds 20 products. For most shops reading this, that's already more than you should have on the page, which is why the cap tends to bite hardest on the sellers who most need to cut. Pro is $9.99 a month for 250 products and Business is $19.99 for unlimited, and the honest advice is to hit the cap properly before you pay to lift it. [How many products should you launch with](/en/blog/how-many-products-should-you-launch-with) makes the case for a much smaller number than most people expect.
+The other constraint worth planning around before you start photographing things: the free plan holds {{free_products}} products. For most shops reading this, that's already more than you should have on the page, which is why the cap tends to bite hardest on the sellers who most need to cut. Pro is ${{pro_monthly}} a month for {{pro_products}} products and Business is ${{business_monthly}} for unlimited, and the honest advice is to hit the cap properly before you pay to lift it. [How many products should you launch with](/en/blog/how-many-products-should-you-launch-with) makes the case for a much smaller number than most people expect.
 
 ## What to do next
 

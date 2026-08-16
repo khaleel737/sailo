@@ -120,7 +120,7 @@ Sailo will let you type anything you like into a product description. There's no
 
 What it does do is hold the ingredient list, the batch code note, the patch test instruction and the shelf life in a place buyers can read before they order, which is where they belong rather than in a story that vanishes in 24 hours. Writing those sections so they're actually read is a craft in itself and it's covered in [writing product descriptions that sell](/en/blog/writing-product-descriptions-that-sell).
 
-On money: Sailo takes nothing at all on bank transfer, cash on delivery or chat orders, because it never touches the funds on those rails. Card payments cost 0.5% of the goods and require the Business plan at $19.99 a month. On 60 orders of $28 that's 84c of commission and a subscription worth paying. On six orders it isn't. Do that division before you upgrade.
+On money: Sailo takes nothing at all on bank transfer, cash on delivery or chat orders, because it never touches the funds on those rails. Card payments cost {{fee_range}}% of the goods and require the Business plan at ${{business_monthly}} a month. On 60 orders of $28 that's 84c of commission and a subscription worth paying. On six orders it isn't. Do that division before you upgrade.
 
 ## Shipping a product that melts
 

@@ -79,11 +79,11 @@ Sailo will sell a course. It's a shop, not a learning platform, and it does not 
 
 ## The free plan will run out before you expect
 
-One specific trap. Sailo's free plan caps you at 20 products. If you decide to sell your course as twelve separate module products so people can buy them individually, you've just spent more than half your catalogue on one course and you've got eight slots left for everything else you'll ever sell.
+One specific trap. Sailo's free plan caps you at {{free_products}} products. If you decide to sell your course as twelve separate module products so people can buy them individually, you've just spent more than half your catalogue on one course and you've got eight slots left for everything else you'll ever sell.
 
 Sell the course as one product. Two or three at most, if you want tiers. Modules-as-products is a structure that makes sense on a platform built for courses and no sense at all on a shop, where every module is a line item competing for attention on your own page.
 
-If you outgrow 20 products, Pro is $9.99 a month for 250 of them. That's a fine problem to have and a cheap one to fix, but it's better to not walk into it in week one.
+If you outgrow {{free_products}} products, Pro is ${{pro_monthly}} a month for {{pro_products}} of them. That's a fine problem to have and a cheap one to fix, but it's better to not walk into it in week one.
 
 ## Delivery, and the lag nobody mentions
 
@@ -91,7 +91,7 @@ On Sailo, digital files unlock on payment confirmation, and you can set a downlo
 
 The thing to be honest about: if you're taking payment by bank transfer, or into a GCash or M-Pesa number you've written into your payment instructions, then the payment confirmation is you. Sailo can't see your bank account and can't tell you the money arrived. Someone who buys your course at midnight gets it when you check your phone in the morning.
 
-For a ₱2,500 purchase, that lag is more dangerous than it is for a ₱200 one, because the buyer has spent real money on a stranger and has nine hours to think about it. So say it on the page, above the button, in plain words: "Access is released once I've confirmed your payment. Usually within a few hours, always by 10am." Then keep to it. Card payments make it instant, and they need the Business plan at $19.99 a month plus a connected Stripe account, with a 0.5% commission on the goods. At ₱2,500 a sale, that's a much easier trade than it is at ₱200.
+For a ₱2,500 purchase, that lag is more dangerous than it is for a ₱200 one, because the buyer has spent real money on a stranger and has nine hours to think about it. So say it on the page, above the button, in plain words: "Access is released once I've confirmed your payment. Usually within a few hours, always by 10am." Then keep to it. Card payments make it instant, and they need the Business plan at ${{business_monthly}} a month plus a connected Stripe account, with a {{fee_range}}% commission on the goods. At ₱2,500 a sale, that's a much easier trade than it is at ₱200.
 
 ## Worked example: Joy in Cebu, ₱2,500
 

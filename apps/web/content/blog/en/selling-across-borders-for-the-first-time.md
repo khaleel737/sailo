@@ -135,7 +135,7 @@ The limits, plainly:
 
 **Sailo does not calculate duties or destination taxes.** There's no landed-cost engine. The warning line about import charges is a sentence you write yourself, and you should write it.
 
-**Card needs the Business plan at $19.99 a month plus 0.5% of the goods, and needs a Stripe account Stripe has cleared for charges.** Stripe's own availability varies a lot by country, so check that your country is covered before you plan an international strategy around cards. For sellers in several large markets, it isn't.
+**Card needs the Business plan at ${{business_monthly}} a month plus {{fee_range}}% of the goods, and needs a Stripe account Stripe has cleared for charges.** Stripe's own availability varies a lot by country, so check that your country is covered before you plan an international strategy around cards. For sellers in several large markets, it isn't.
 
 **Sailo cannot tell you an international transfer arrived, or that it arrived short.** Only your bank can. That check is yours, and on cross-border transfers it genuinely matters, for the reason in the section above.
 

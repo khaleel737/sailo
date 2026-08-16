@@ -166,7 +166,7 @@ At sa libreng plan, tatlumpung araw lang ang analytics. Kung gusto mong ihambing
 
 Ang ginagawa niya ay ang parteng nagpapabilis sa sampung mensahe. Isang link na may presyo, litrato at paraan ng pag-order, para hindi ka na mag-type ng ₱420 nang apatnapung beses. Isang order na pumapasok nang kumpleto, kasama ang address at kabuuan, imbes na kalat sa apat na chat. At ang review na maaaring maglagay ng patunay sa page mo bago pa dumating ang ikasampung buyer.
 
-Sa manual na rails, kasama ang bank transfer at COD, hindi hinahawakan ng Sailo ang pera at walang kinukuha, kahit sa libreng plan. Sa card lang may 0.5% ng halaga ng produkto matapos ang diskwento, hindi kasama ang delivery at buwis, at kailangan niyon ang Business plan na $19.99 kada buwan.
+Sa manual na rails, kasama ang bank transfer at COD, hindi hinahawakan ng Sailo ang pera at walang kinukuha, kahit sa libreng plan. Sa card lang may {{fee_range}}% ng halaga ng produkto matapos ang diskwento, hindi kasama ang delivery at buwis, at kailangan niyon ang Business plan na ${{business_monthly}} kada buwan.
 
 Na hindi mo kailangan ngayon, at posibleng hindi mo makukuha dito. Stripe lang ang card rail ng Sailo, at **noong 6 Agosto 2026, wala ang Pilipinas sa listahan ng mga bansang suportado ng Stripe sa stripe.com/global.** Ibig sabihin, pwedeng hindi available ang card button para sa isang seller dito kahit anong plan. Buksan mo mismo ang stripe.com/global at i-check, kasi nagbabago ang listahan. Sa unang limang order, wala kang pakialam doon: COD at bank transfer ang gagamitin mo, at iyon mismo ang inaasahan ng buyer mo sa GenSan.
 

@@ -84,15 +84,15 @@ It would be dishonest to write this article and exempt the product it's publishe
 
 **The address is not yours.** Sailo gives you `sailo.store/yourname`, live at signup. That domain belongs to Sailo. If Sailo disappeared, the link disappears with it, and every QR code you printed with it on becomes a dead end. Owning your own domain and pointing people at it is the mitigation, and it's on you.
 
-**Your history has a window, not a permanent home.** The free plan keeps 30 days of analytics, Pro keeps a year, Business keeps three. Nothing keeps them forever. Whatever you'd need to file a return or rebuild elsewhere, you should be holding a copy of yourself.
+**Your history has a window, not a permanent home.** The free plan keeps {{free_analytics_days}} days of analytics, Pro keeps a year, Business keeps three. Nothing keeps them forever. Whatever you'd need to file a return or rebuild elsewhere, you should be holding a copy of yourself.
 
-**Export is a paid feature.** CSV export starts on Pro at $9.99 a month. Which means the free plan is the worst plan to be on when something ends, because your route out is copying by hand, and the pressure of a deadline is exactly when nobody does that. If you're on free and intending to stay, put a monthly reminder in your phone and copy your orders into a spreadsheet. It's ten minutes and it's the whole difference.
+**Export is a paid feature.** CSV export starts on Pro at ${{pro_monthly}} a month. Which means the free plan is the worst plan to be on when something ends, because your route out is copying by hand, and the pressure of a deadline is exactly when nobody does that. If you're on free and intending to stay, put a monthly reminder in your phone and copy your orders into a spreadsheet. It's ten minutes and it's the whole difference.
 
 **The 20-product cap on free** means less to move, which is a small mercy and not a plan.
 
 Now the part that genuinely is better, and it's structural rather than a promise.
 
-Sailo never holds your money. On bank transfer, cash on delivery, and orders handed to WhatsApp, Instagram, Telegram, email or phone, the money goes directly between you and your buyer and Sailo takes nothing at all, because it never touches it. On card, the charge lands in your own Stripe account and Sailo takes 0.5% of the goods as an application fee on top of that. There is no Sailo balance, no payout schedule and no minimum threshold, so there is no scenario in which a Sailo problem strands your money. What Dana went through with the eleven-day hold cannot happen through Sailo, because there is nothing to hold.
+Sailo never holds your money. On bank transfer, cash on delivery, and orders handed to WhatsApp, Instagram, Telegram, email or phone, the money goes directly between you and your buyer and Sailo takes nothing at all, because it never touches it. On card, the charge lands in your own Stripe account and Sailo takes {{fee_range}}% of the goods as an application fee on top of that. There is no Sailo balance, no payout schedule and no minimum threshold, so there is no scenario in which a Sailo problem strands your money. What Dana went through with the eleven-day hold cannot happen through Sailo, because there is nothing to hold.
 
 That also means there's no buyer protection scheme and no dispute team, and it means Sailo can't confirm a bank transfer arrived. Only your bank can. Same design, both consequences.
 

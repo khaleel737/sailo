@@ -116,13 +116,13 @@ Sailo gives you `sailo.store/yourname`, live at signup, with your designs, lengt
 
 The honest parts:
 
-**Card is the only rail with a fee, and it needs a subscription.** 0.5% of the goods after discount, excluding delivery and tax, plus the $19.99 a month Business plan, plus Stripe's own cut. On Layla's 20 or so cross-border card orders a month at AED 320, the 0.5% is small and the subscription is the real number. Do the division before you switch it on, and if it doesn't clear, don't.
+**Card is the only rail with a fee, and it needs a subscription.** {{fee_range}}% of the goods after discount, excluding delivery and tax, plus the ${{business_monthly}} a month Business plan, plus Stripe's own cut. On Layla's 20 or so cross-border card orders a month at AED 320, the {{fee_range}}% is small and the subscription is the real number. Do the division before you switch it on, and if it doesn't clear, don't.
 
 **Card also needs a Stripe account Stripe has cleared for charges.** Stripe lists the UAE as available, which is more than sellers in Nigeria or the Philippines get, but "listed" and "your account approved" are two different mornings.
 
 **Sailo cannot tell you a bank transfer arrived.** Only your bank can. The order sits at pending until you mark it paid, and that check is yours to do, every day.
 
-**The free plan caps at 20 products.** Two lines in five colours is ten. A full seasonal collection is not.
+**The free plan caps at {{free_products}} products.** Two lines in five colours is ten. A full seasonal collection is not.
 
 ## What to do next
 

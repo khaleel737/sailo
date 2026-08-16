@@ -161,9 +161,9 @@ Ang tulong niya ay nasa ibang parte. Kumpleto ang pumapasok na order: pangalan, 
 
 Nasa lahat ng plan ang product reviews. Naglalagay ang buyer ng pangalan, isa hanggang limang bituin, at teksto kung gusto niya, at **walang lumalabas hangga't hindi mo ina-approve.** Ang totoong review ng taong nakabili na ay nagpapababa ng pag-aalinlangan sa pintuan, at ang pag-aalinlangan sa pintuan ay tinanggihang parcel.
 
-Sa manual na rails, kasama ang COD at bank transfer, hindi hinahawakan ng Sailo ang pera at walang kinukuha. Walang komisyon, kahit sa libreng plan. Sa card lang may 0.5% sa halaga ng produkto matapos ang diskwento, hindi kasama ang delivery at buwis, at kailangan niyon ang Business plan na $19.99 kada buwan kasama ang Stripe account na na-clear na.
+Sa manual na rails, kasama ang COD at bank transfer, hindi hinahawakan ng Sailo ang pera at walang kinukuha. Walang komisyon, kahit sa libreng plan. Sa card lang may {{fee_range}}% sa halaga ng produkto matapos ang diskwento, hindi kasama ang delivery at buwis, at kailangan niyon ang Business plan na ${{business_monthly}} kada buwan kasama ang Stripe account na na-clear na.
 
-Na dinadala tayo sa bagay na kailangan mong malaman bago ka magbayad ng kahit ano. **Noong 6 Agosto 2026, hindi kasama ang Pilipinas sa listahan ng suportadong bansa ng Stripe sa stripe.com/global.** Stripe lang ang card rail ng Sailo. Ibig sabihin, pwedeng hindi mo makuha ang card button dito kahit anong plan ang bayaran mo. Nagbabago ang listahang iyon, kaya buksan mo mismo ang stripe.com/global bago ka magdesisyon. **Wag kang magbayad ng $19.99 kada buwan para maghintay na lumitaw ang button na iyon.**
+Na dinadala tayo sa bagay na kailangan mong malaman bago ka magbayad ng kahit ano. **Noong 6 Agosto 2026, hindi kasama ang Pilipinas sa listahan ng suportadong bansa ng Stripe sa stripe.com/global.** Stripe lang ang card rail ng Sailo. Ibig sabihin, pwedeng hindi mo makuha ang card button dito kahit anong plan ang bayaran mo. Nagbabago ang listahang iyon, kaya buksan mo mismo ang stripe.com/global bago ka magdesisyon. **Wag kang magbayad ng ${{business_monthly}} kada buwan para maghintay na lumitaw ang button na iyon.**
 
 Kaya nga COD at bank transfer ang nagbubuhat ng buong negosyo dito, at iyon mismo ang dalawang rail na walang kinukuha ang Sailo.
 

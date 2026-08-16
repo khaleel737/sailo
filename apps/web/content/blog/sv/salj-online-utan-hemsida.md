@@ -12,7 +12,7 @@ tags: [sälja, kanaler, sverige]
 
 Vad kostar den. Ingår frakten. Kan jag swisha.
 
-Du behöver ingen hemsida för att sälja det du gör. Du behöver en sida där produkten, priset inklusive frakt och beställningsknappen står på samma skärm, och ett sätt att få in pengarna. Sidan är den lätta delen. Hos Sailo kostar den 0 dollar i gratisplanen, rymmer 20 produkter och ligger uppe på sailo.store/dittnamn samma minut du registrerar dig.
+Du behöver ingen hemsida för att sälja det du gör. Du behöver en sida där produkten, priset inklusive frakt och beställningsknappen står på samma skärm, och ett sätt att få in pengarna. Sidan är den lätta delen. Hos Sailo kostar den 0 dollar i gratisplanen, rymmer {{free_products}} produkter och ligger uppe på sailo.store/dittnamn samma minut du registrerar dig.
 
 Det svåra är något annat. Det är att sluta låta varje beställning bli ett samtal.
 
@@ -106,13 +106,13 @@ Bråka inte med folk som hellre skriver än klickar. En del kommer alltid att g�
 
 | Plan | Pris | Vad du får |
 |---|---|---|
-| Gratis | 0 dollar | 20 produkter, 30 dagars statistik, chattbeställningar och manuella betalsätt |
-| Pro | 9,99 dollar i månaden eller 95,90 dollar per år | 250 produkter, ett års statistik, ingen Sailo-logga, CSV-export |
-| Business | 19,99 dollar i månaden eller 191,90 dollar per år | Obegränsat antal produkter, tre års statistik, kortbetalning, rabattkoder, affiliates |
+| Gratis | 0 dollar | {{free_products}} produkter, {{free_analytics_days}} dagars statistik, chattbeställningar och manuella betalsätt |
+| Pro | {{pro_monthly}} dollar i månaden eller {{pro_yearly}} dollar per år | {{pro_products}} produkter, ett års statistik, ingen Sailo-logga, CSV-export |
+| Business | {{business_monthly}} dollar i månaden eller {{business_yearly}} dollar per år | Obegränsat antal produkter, tre års statistik, kortbetalning, rabattkoder, affiliates |
 
 Kortbetalning finns bara i Business, och kräver dessutom ett Stripe-konto som Stripe har godkänt för betalningar. Stripe finns i Sverige, kontrollerat 6 augusti 2026 på stripe.com/global. Läser du det här senare, kolla själv, listan rör på sig.
 
-Vid kort tar Sailo 0,5 procent av varuvärdet, räknat efter rabatt och utan frakt och skatt. Stripes egen avgift ligger utanpå och står på Stripes prissida. Vid banköverföring, kontant vid leverans och alla beställningar som kommer in via chatt tar Sailo ingenting och rör aldrig pengarna. De går rakt från köparens konto till ditt.
+Vid kort tar Sailo {{fee_range}} procent av varuvärdet, räknat efter rabatt och utan frakt och skatt. Stripes egen avgift ligger utanpå och står på Stripes prissida. Vid banköverföring, kontant vid leverans och alla beställningar som kommer in via chatt tar Sailo ingenting och rör aldrig pengarna. De går rakt från köparens konto till ditt.
 
 Priserna är i dollar. Din faktiska kostnad flyttar sig alltså med växelkursen, och den siffran skriver jag inte ut, av samma skäl som jag inte skriver ut skattesatser.
 
@@ -126,7 +126,7 @@ En typisk order: en weekendbag och en necessär, 1 010 kr, fri frakt eftersom su
 
 Av de 1 010 kronorna tar Sailo noll. Pengarna gick aldrig genom Sailo.
 
-Räkningen ser annorlunda ut om hon vill ha en kortknapp. Då är det 19,99 dollar i månaden, plus 0,5 procent på varuvärdet, plus Stripes avgift. Arton ordrar med ett snittvaruvärde på 560 kr blir 10 080 kr, alltså omkring 50 kr till Sailo. Abonnemanget är kostnaden, inte procenten.
+Räkningen ser annorlunda ut om hon vill ha en kortknapp. Då är det {{business_monthly}} dollar i månaden, plus {{fee_range}} procent på varuvärdet, plus Stripes avgift. Arton ordrar med ett snittvaruvärde på 560 kr blir 10 080 kr, alltså omkring 50 kr till Sailo. Abonnemanget är kostnaden, inte procenten.
 
 > Den som efterfrågar kortbetalning vid arton ordrar i månaden har hittat fel problem. Räkna i stället hur många som hoppade av i DM.
 

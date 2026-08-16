@@ -12,7 +12,7 @@ You ran a giveaway. Fourteen hundred new followers in four days, 900 comments, t
 
 Two months on, your posts reach fewer people than they did before it, and not one of those 1,400 has bought anything.
 
-That is the normal outcome, and it is not because you ran it badly. It is because the standard mechanic, follow me, like this, tag three friends, win something expensive, recruits people who want a free thing. It is very good at that. The version that produces orders does three things differently: the **prize is your own product** and nothing else, the **entry costs a prize-hunter more effort than it costs a real buyer**, and the giveaway ends with **a contact and an offer**, not just a winner. Nadia in Birmingham gave away one £45 pair of mugs and took £680 in orders off it, which we will come back to. A Sailo shop is $0 on the free plan for up to 20 products, which matters here because a giveaway with nowhere to send people is a party with no door.
+That is the normal outcome, and it is not because you ran it badly. It is because the standard mechanic, follow me, like this, tag three friends, win something expensive, recruits people who want a free thing. It is very good at that. The version that produces orders does three things differently: the **prize is your own product** and nothing else, the **entry costs a prize-hunter more effort than it costs a real buyer**, and the giveaway ends with **a contact and an offer**, not just a winner. Nadia in Birmingham gave away one £45 pair of mugs and took £680 in orders off it, which we will come back to. A Sailo shop is $0 on the free plan for up to {{free_products}} products, which matters here because a giveaway with nowhere to send people is a party with no door.
 
 ## Why the standard giveaway costs you money
 
@@ -135,11 +135,11 @@ Three situations where the honest answer is do not bother.
 
 ## What this costs
 
-Sailo's free plan is $0, holds 20 products, and takes no commission on bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email or phone orders. The money never goes through Sailo on those rails.
+Sailo's free plan is $0, holds {{free_products}} products, and takes no commission on bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email or phone orders. The money never goes through Sailo on those rails.
 
-The honest catch for this particular article: **coupons are a Business plan feature**, at $19.99 a month. The consolation discount code is the part of this method that Sailo charges for, and if you are on the free plan you do not get one. There are two ways round it that cost nothing. Put the offer up as its own product at the discounted price and only send the link to entrants, or just say "reply to this email and I'll take £5 off" and adjust it by hand, which for 214 people is genuinely fine and for 2,000 is not.
+The honest catch for this particular article: **coupons are a Business plan feature**, at ${{business_monthly}} a month. The consolation discount code is the part of this method that Sailo charges for, and if you are on the free plan you do not get one. There are two ways round it that cost nothing. Put the offer up as its own product at the discounted price and only send the link to entrants, or just say "reply to this email and I'll take £5 off" and adjust it by hand, which for 214 people is genuinely fine and for 2,000 is not.
 
-Card payments need that same Business plan plus a Stripe account Stripe has cleared for charges, with Sailo taking 0.5% of the goods after discounts and excluding delivery and tax. On Nadia's £24 mug that is about 12p to Sailo, plus Stripe's own fee. If your buyers pay by bank transfer, none of that applies and you can run this entire method on the free plan, confirming payments yourself from your own bank statement, because Sailo cannot see your bank and will not tell you the money landed.
+Card payments need that same Business plan plus a Stripe account Stripe has cleared for charges, with Sailo taking {{fee_range}}% of the goods after discounts and excluding delivery and tax. On Nadia's £24 mug that is about 12p to Sailo, plus Stripe's own fee. If your buyers pay by bank transfer, none of that applies and you can run this entire method on the free plan, confirming payments yourself from your own bank statement, because Sailo cannot see your bank and will not tell you the money landed.
 
 ## Do this
 

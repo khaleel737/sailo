@@ -131,7 +131,7 @@ Selling time and files instead of objects removes the warehouse and adds two pro
 
 **Digital delivery on a manual payment rail isn't instant.** On Sailo, a digital file unlocks when the payment is confirmed. If the buyer paid by card, that's automatic. If they paid by bank transfer or M-Pesa or GCash, it unlocks when you mark the order paid, and you're asleep at 2am when they buy. That's not a bug, it's what "the platform never touches the money" means in practice, but it does mean a buyer can pay at midnight and wait until morning. Say so on the page. "Files are sent within 12 hours" is a promise you can keep. Silence is a complaint waiting to happen.
 
-Card payments would close that gap, and they need the Business plan at $19.99 a month plus a Stripe account cleared for charges, with Sailo taking 0.5% of the goods. At six orders a month that's an expensive way to buy eight hours of sleep. At sixty it's obvious. Do the arithmetic before you upgrade.
+Card payments would close that gap, and they need the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, with Sailo taking {{fee_range}}% of the goods. At six orders a month that's an expensive way to buy eight hours of sleep. At sixty it's obvious. Do the arithmetic before you upgrade.
 
 ## Turning the first sale into the second
 

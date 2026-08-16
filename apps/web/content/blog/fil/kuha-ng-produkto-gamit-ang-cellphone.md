@@ -141,7 +141,7 @@ Diretsahan, kasi mas mabuting malaman mo ngayon.
 
 **Walang ini-edit ang Sailo.** Walang auto-brighten, walang auto-crop, walang background remover, walang filter, walang AI na gagawa ng litrato para sa iyo. Ipinapakita niya ang eksaktong ina-upload mo. Kung dilaw ang pilak sa litrato mo, dilaw siya sa page mo.
 
-Pangalawa, may limitasyon ang libreng plan sa **20 produkto**. Kung anim na oras kang kumuha ng litrato ng animnapung piraso ngayong weekend, dalawang bagay lang ang pagpipilian mo: pumili ka ng 20 na iaakyat, o magbayad ka ng Pro na $9.99 kada buwan para sa 250. Hindi lahat ng seller ay dapat kaagad umakyat. Kung 20 pa lang ang totoong stock mo, hindi mo pa kailangan.
+Pangalawa, may limitasyon ang libreng plan sa **{{free_products}} produkto**. Kung anim na oras kang kumuha ng litrato ng animnapung piraso ngayong weekend, dalawang bagay lang ang pagpipilian mo: pumili ka ng 20 na iaakyat, o magbayad ka ng Pro na ${{pro_monthly}} kada buwan para sa 250. Hindi lahat ng seller ay dapat kaagad umakyat. Kung 20 pa lang ang totoong stock mo, hindi mo pa kailangan.
 
 May review naman sa lahat ng plan. Nag-iiwan ang buyer ng pangalan, bituin mula 1 hanggang 5, at teksto kung gusto niya, at **walang lumalabas hanggang hindi mo ina-approve**. Kasama ang review sa parehong trabaho ng flaw shot: binabawasan nito ang pagdududa bago pa dumating sa pinto.
 

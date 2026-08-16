@@ -141,7 +141,7 @@ Analytics can count people who opened your shop link and didn't order. It cannot
 
 Two more specifics. On manual payment rails, an order placed and not paid for looks identical to an abandoned one until you check your bank, and nothing automates that check. Sailo can't tell you a bank transfer or UPI payment arrived, only your bank can, which means "abandoned" and "paid, and I haven't looked" are the same row in your list until you do the looking.
 
-And on the free plan, analytics only go back 30 days. That's enough for a one-month tally like Sneha's and not enough to see whether a change you made in March is still working in September. Pro holds a year, Business three. The tally in your notes app has no expiry date, which is the argument for keeping it regardless of which plan you're on.
+And on the free plan, analytics only go back {{free_analytics_days}} days. That's enough for a one-month tally like Sneha's and not enough to see whether a change you made in March is still working in September. Pro holds a year, Business three. The tally in your notes app has no expiry date, which is the argument for keeping it regardless of which plan you're on.
 
 ## Send five messages this week
 

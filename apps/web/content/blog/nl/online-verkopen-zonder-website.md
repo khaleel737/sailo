@@ -56,7 +56,7 @@ Ten eerste: een Nederlandse overboeking tussen twee banken is vaak binnen second
 
 Ten tweede: op een overboeking rekent Sailo geen enkele commissie en raakt het het geld nooit aan. Het gaat rechtstreeks van de rekening van de koper naar die van jou. Hetzelfde geldt voor rembours en voor bestellingen die via WhatsApp, Instagram of e-mail binnenkomen.
 
-De enige commissie die bestaat is 0,5% over de productwaarde als er met kaart betaald wordt, en dat kan alleen op het Business-abonnement van $19,99 per maand met een goedgekeurde Stripe-account. Stripe is in Nederland gewoon beschikbaar, gecontroleerd op 6 augustus 2026 op stripe.com/global. Die lijst verandert, dus kijk zelf even als je dit later leest. Met kaart krijg je wel een echte afrekenknop, alleen is het een kaartknop en geen iDEAL-knop, en dat is voor een deel van je kopers niet hetzelfde.
+De enige commissie die bestaat is {{fee_range}}% over de productwaarde als er met kaart betaald wordt, en dat kan alleen op het Business-abonnement van ${{business_monthly}} per maand met een goedgekeurde Stripe-account. Stripe is in Nederland gewoon beschikbaar, gecontroleerd op 6 augustus 2026 op stripe.com/global. Die lijst verandert, dus kijk zelf even als je dit later leest. Met kaart krijg je wel een echte afrekenknop, alleen is het een kaartknop en geen iDEAL-knop, en dat is voor een deel van je kopers niet hetzelfde.
 
 ## Tikkie is geen kassa
 
@@ -118,7 +118,7 @@ Wel: je krijgt een link, sailo.store/jouwnaam, die live staat zodra je je aanmel
 
 Ook wel: diensten met een duur, een locatie, een datumkiezer en een opzegtermijn, als je tijd verkoopt in plaats van spullen. Digitale bestanden die vrijkomen zodra jij de betaling bevestigt, met een limiet op het aantal downloads. Beoordelingen op elk abonnement, waarbij een koper een naam, één tot vijf sterren en eventueel tekst achterlaat, en er niets zichtbaar wordt tot jij het goedkeurt. En 35 talen, wat uitmaakt als je ook aan Duitse of Belgische kopers verkoopt.
 
-Niet: iDEAL. Geen automatische bevestiging van een overboeking, want Sailo praat niet met je bank en gaat dat ook niet doen. Geen app in de App Store. En op het gratis abonnement maximaal 20 producten, met 30 dagen aan cijfers. Pro is $9,99 per maand voor 250 producten, een jaar cijfers, geen Sailo-badge en een CSV-export. Business is $19,99 per maand en dat is het enige abonnement waarop kaartbetalingen bestaan.
+Niet: iDEAL. Geen automatische bevestiging van een overboeking, want Sailo praat niet met je bank en gaat dat ook niet doen. Geen app in de App Store. En op het gratis abonnement maximaal {{free_products}} producten, met 30 dagen aan cijfers. Pro is ${{pro_monthly}} per maand voor {{pro_products}} producten, een jaar cijfers, geen Sailo-badge en een CSV-export. Business is ${{business_monthly}} per maand en dat is het enige abonnement waarop kaartbetalingen bestaan.
 
 Dat gratis abonnement is voor de meeste beginners geen beperking maar een gunst. Twintig producten is meer dan de meeste mensen goed kunnen fotograferen, laat staan op voorraad hebben.
 
@@ -130,7 +130,7 @@ Vier daarvan zijn opgehaald in Utrecht, dus die kostten haar niets aan verzendin
 
 Ze was er twee keer twintig minuten mee kwijt om betalingen af te vinken, verspreid over de maand. Eén keer kwam er €35 binnen op een bestelling van €41 omdat iemand de verzendkosten was vergeten. Ze heeft één zin gestuurd en het verschil kwam dezelfde avond binnen.
 
-Zou kaart haar iets opleveren? Op €738 aan producten is 0,5% precies €3,69, plus wat Stripe zelf rekent. Dat is het probleem niet. Het probleem is $19,99 per maand, en dat is bij dit volume gewoon te veel. Ze moet daar op een gegeven moment naartoe, waarschijnlijk als ze richting de zestig bestellingen per maand gaat of als ze merkt dat mensen afhaken bij het IBAN. Nu nog niet.
+Zou kaart haar iets opleveren? Op €738 aan producten is {{fee_range}}% precies €3,69, plus wat Stripe zelf rekent. Dat is het probleem niet. Het probleem is ${{business_monthly}} per maand, en dat is bij dit volume gewoon te veel. Ze moet daar op een gegeven moment naartoe, waarschijnlijk als ze richting de zestig bestellingen per maand gaat of als ze merkt dat mensen afhaken bij het IBAN. Nu nog niet.
 
 Dat is het eerlijke antwoord op de vraag of je kaartbetalingen nodig hebt: waarschijnlijk nog niet, en je merkt het vanzelf als het wel zo is.
 

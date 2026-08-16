@@ -151,7 +151,7 @@ Disons la limite d'abord, elle est nette.
 
 Ce que ça fait quand même : le total de la commande inclut le port que vous avez saisi, donc l'acheteur voit le bon montant avant de payer. Par WhatsApp, le message arrive pré-rédigé avec l'article, les options, l'adresse et le total, ce qui évite l'aller-retour où l'un des deux additionne de tête à 23 h.
 
-Un détail utile ici : la commission de 0,5 % que Sailo prélève sur les paiements par carte est calculée sur les produits après remise, hors livraison et hors taxes. Vos frais de port ne sont pas commissionnés. Sur les canaux manuels, virement, paiement à la livraison, WhatsApp, DM Instagram, Telegram, e-mail ou téléphone, Sailo ne prend rien et ne touche jamais l'argent. La carte demande la formule Business à 19,99 $ par mois et un compte Stripe validé, ce qui, à faible volume, coûte plus cher que la commission elle-même.
+Un détail utile ici : la commission de {{fee_range}} % que Sailo prélève sur les paiements par carte est calculée sur les produits après remise, hors livraison et hors taxes. Vos frais de port ne sont pas commissionnés. Sur les canaux manuels, virement, paiement à la livraison, WhatsApp, DM Instagram, Telegram, e-mail ou téléphone, Sailo ne prend rien et ne touche jamais l'argent. La carte demande la formule Business à {{business_monthly}} $ par mois et un compte Stripe validé, ce qui, à faible volume, coûte plus cher que la commission elle-même.
 
 Si vous encaissez par virement, mettez le port dans le total que vous annoncez et répétez ce total dans le message : l'acheteur qui saisit un montant à la main saisit souvent le prix du produit seul. Le détail est dans [se faire payer par virement](/fr/blog/se-faire-payer-par-virement).
 

@@ -76,7 +76,7 @@ Read the first two rows again. At the traffic most small shops actually have, th
 
 The consequence is practical, not academic. Do not A/B test at this size. Do not change your prices because the rate dipped from 2.4% to 1.8%. Do not conclude your new photos worked because it went up. At a few hundred visits a month, a run of good luck and a genuine improvement look identical, and you'll spend months chasing your own noise.
 
-What you can conclude at small numbers: zero orders from 400 visits is a real signal. Going from 0.5% to 4% is a real signal. Anything in between needs more data or a different question, and [what to do when nobody is buying](/en/blog/what-to-do-when-nobody-is-buying) is the diagnostic that doesn't require statistics.
+What you can conclude at small numbers: zero orders from 400 visits is a real signal. Going from {{fee_range}}% to 4% is a real signal. Anything in between needs more data or a different question, and [what to do when nobody is buying](/en/blog/what-to-do-when-nobody-is-buying) is the diagnostic that doesn't require statistics.
 
 ## The average of your traffic describes none of your traffic
 
@@ -147,7 +147,7 @@ Every one of those is a fix you can make this week, and each of them affects the
 
 Two honest ones, and both matter specifically for this question.
 
-On the free plan you get 30 days of analytics. Pro gives you a year, Business three. If you're on free and you want to know whether this August is better than last August, you can't, because the data isn't there to look at. Keep your own monthly tally in a spreadsheet from day one and you'll never be stuck behind that, on this tool or any other.
+On the free plan you get {{free_analytics_days}} days of analytics. Pro gives you a year, Business three. If you're on free and you want to know whether this August is better than last August, you can't, because the data isn't there to look at. Keep your own monthly tally in a spreadsheet from day one and you'll never be stuck behind that, on this tool or any other.
 
 The second is more subtle. On manual rails, Sailo cannot tell you the money arrived. Bank transfer, cash on delivery, a UPI payment straight to your own ID: the shop records that an order was placed, and only you and your bank know whether it was paid. So any conversion number you get counts intent, not settlement, and Anjali's three refused deliveries sit inside her 47 looking exactly like a sale. Whatever you measure, keep a separate count of orders that actually turned into money, because that's the one your rent is paid from.
 

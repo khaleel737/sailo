@@ -160,7 +160,7 @@ One thing to check before renaming anything: whether the name is doing work in s
 
 A name won't sell anything on its own. It removes friction, and removing friction only helps if there's demand pushing against it. If nobody is buying, renaming your catalogue is displacement activity and it will feel productive for an afternoon.
 
-On the Sailo side, the free plan holds 20 products, which for a shop with nine soaps is generous and for a vintage seller with 70 one-off pieces is not. If your naming scheme involves a unique name per physical item, count your items first and know that Pro at $9.99 a month is what takes you to 250.
+On the Sailo side, the free plan holds {{free_products}} products, which for a shop with nine soaps is generous and for a vintage seller with 70 one-off pieces is not. If your naming scheme involves a unique name per physical item, count your items first and know that Pro at ${{pro_monthly}} a month is what takes you to 250.
 
 ## What to do next
 

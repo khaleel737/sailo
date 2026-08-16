@@ -147,7 +147,7 @@ Opinie o produktach działają na każdym planie: kupujący zostawia imię, ocen
 
 ## Czego zdjęcia nie naprawią
 
-Plan darmowy mieści 20 produktów. Jeśli po sobotniej sesji masz sześćdziesiąt rzeczy do wystawienia, potrzebujesz planu Pro za 9,99 USD miesięcznie, który daje 250 produktów. To jest realne ograniczenie i lepiej je znać przed sesją niż po niej.
+Plan darmowy mieści {{free_products}} produktów. Jeśli po sobotniej sesji masz sześćdziesiąt rzeczy do wystawienia, potrzebujesz planu Pro za {{pro_monthly}} USD miesięcznie, który daje {{pro_products}} produktów. To jest realne ograniczenie i lepiej je znać przed sesją niż po niej.
 
 Nie ma aplikacji. Zdjęcia wgrywasz przez przeglądarkę, także na telefonie, i to działa, ale nie jest tym samym co natywna aplikacja z galerią.
 

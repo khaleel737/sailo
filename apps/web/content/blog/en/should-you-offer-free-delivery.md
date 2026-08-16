@@ -110,7 +110,7 @@ Some businesses shouldn't do this at all, and the tool-vendor version of this ar
 | Big variation in delivery distance | A flat free rate averages a cost you can't average, and remote orders eat the lot |
 | You sell mostly single items | There's nothing to step up to. A threshold is meaningless |
 
-If two or three of those describe you, charge honestly for delivery and compete on something else. Buyers are not as allergic to a shipping line as the internet insists, particularly when the number looks like a real cost rather than a made-up one. $4.50 reads as postage. $9.99 reads as a margin grab.
+If two or three of those describe you, charge honestly for delivery and compete on something else. Buyers are not as allergic to a shipping line as the internet insists, particularly when the number looks like a real cost rather than a made-up one. $4.50 reads as postage. ${{pro_monthly}} reads as a margin grab.
 
 If you don't know your gross margin to within a couple of points, work that out before you decide anything here. [Working out if you are actually profitable](/en/blog/working-out-if-you-are-actually-profitable) is the prerequisite for this whole article.
 

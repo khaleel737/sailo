@@ -154,7 +154,7 @@ Sailo has no mobile money rail. No GCash, no M-Pesa, no UPI. If half your repeat
 
 That's fine for a repeat customer, arguably better, because a returning buyer sending you GCash directly is the lowest-friction payment in the world and you've already built the trust that makes it work. It is not fine if you were expecting the reorder to complete itself while you slept.
 
-Card payments do settle themselves, but they need the Business plan at $19.99 a month plus 0.5% of the goods, and if repeat orders are ₱410 each, that subscription needs a fair number of them before it pays for itself.
+Card payments do settle themselves, but they need the Business plan at ${{business_monthly}} a month plus {{fee_range}}% of the goods, and if repeat orders are ₱410 each, that subscription needs a fair number of them before it pays for itself.
 
 ## Start with the last twenty people who bought
 

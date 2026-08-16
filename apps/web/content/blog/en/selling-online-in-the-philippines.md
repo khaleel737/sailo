@@ -112,9 +112,9 @@ Now the limits, and the first one is significant for you specifically.
 
 **There is no GCash rail and there won't be one.** The complete list of payment rails is card, WhatsApp, Telegram, Instagram, email, phone, bank transfer and cash on delivery. What you can do is put your GCash number and QR into the bank transfer instructions field with the exact reference you want, and confirm it yourself in the GCash app. Plenty of sellers run exactly that way. Be honest with yourself about what it is: Sailo holds the catalogue and the order record, your phone holds the money.
 
-**Card payments aren't available to you at all.** Sailo's card rail runs on Stripe, and when I checked Stripe's own global availability page in August 2026 the Philippines wasn't listed on it. Upgrading to the $19.99 Business plan will not produce a card button in a country Stripe doesn't cover. That's not a gap you can pay your way out of, and any tool telling you otherwise is describing a different country.
+**Card payments aren't available to you at all.** Sailo's card rail runs on Stripe, and when I checked Stripe's own global availability page in August 2026 the Philippines wasn't listed on it. Upgrading to the ${{business_monthly}} Business plan will not produce a card button in a country Stripe doesn't cover. That's not a gap you can pay your way out of, and any tool telling you otherwise is describing a different country.
 
-**The free plan caps at 20 products.** Two hat colours and four bag colours is six. Forty preloved items, each unique, is not going to fit, and that's a real constraint for anyone doing ukay or thrift.
+**The free plan caps at {{free_products}} products.** Two hat colours and four bag colours is six. Forty preloved items, each unique, is not going to fit, and that's a real constraint for anyone doing ukay or thrift.
 
 ## What to do next
 

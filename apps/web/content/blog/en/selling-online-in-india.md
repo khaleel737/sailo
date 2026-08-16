@@ -92,13 +92,13 @@ You can run all of the above with a WhatsApp Business catalogue and a notebook. 
 
 The point where it stops working is usually around order 25 in a month, when you can no longer remember which of the four Kavithas ordered the maroon one. That's when a shop link starts paying for itself: the products, the prices, the sizes and the order all live in one place, and the buyer's message arrives already written out rather than as "hi is this available".
 
-That's what Sailo does. You get a link like `sailo.store/yourname` live the moment you sign up, put your products and prices on it, and a buyer tapping "order" sends you a WhatsApp message with the item, the options, the address and the total already filled in. Free plan is $0 and caps at 20 products.
+That's what Sailo does. You get a link like `sailo.store/yourname` live the moment you sign up, put your products and prices on it, and a buyer tapping "order" sends you a WhatsApp message with the item, the options, the address and the total already filled in. Free plan is $0 and caps at {{free_products}} products.
 
 Now the part that matters more for you than for a seller in London.
 
 **Sailo has no UPI rail.** None. The full list of payment rails is card, WhatsApp, Telegram, Instagram, email, phone, bank transfer and cash on delivery, and UPI isn't on it. What you can do is put your UPI ID and your QR into the bank transfer instructions field, tell the buyer exactly what to send and what reference to use, and confirm it yourself in your own UPI app. That works, and it's what Indian sellers on Sailo actually do. Be clear about what it is, though: Sailo is holding your catalogue and your order record, and your phone is holding the money. Sailo cannot tell you a payment arrived. Only your bank can.
 
-**Card payments may not be available to you at all.** Sailo's card rail runs on Stripe and only Stripe, and Stripe's own global availability page listed India as "preview" when I checked it in August 2026. Cards also need Sailo's Business plan at $19.99 a month, which at ₹1,150 an order is roughly a day and a half of Priya's revenue every month for a rail her buyers weren't asking for. If someone tells you that you need card payments to sell in India, work through [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online) before you believe them. For most Indian sellers at this size the answer is no, and UPI is the reason.
+**Card payments may not be available to you at all.** Sailo's card rail runs on Stripe and only Stripe, and Stripe's own global availability page listed India as "preview" when I checked it in August 2026. Cards also need Sailo's Business plan at ${{business_monthly}} a month, which at ₹1,150 an order is roughly a day and a half of Priya's revenue every month for a rail her buyers weren't asking for. If someone tells you that you need card payments to sell in India, work through [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online) before you believe them. For most Indian sellers at this size the answer is no, and UPI is the reason.
 
 ## The order of operations that actually works
 

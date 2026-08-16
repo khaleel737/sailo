@@ -138,7 +138,7 @@ Ce nu a mers: a încercat o lună livrare gratuită la orice comandă, ca test. 
 
 Suma de livrare din Sailo e o sumă pe care o stabilești tu. **Nu există integrare cu curierii.** Sailo nu se conectează la FAN, la Sameday, la Cargus sau la oricine altcineva, nu îți aduce tarife, nu generează AWB și nu îți calculează greutatea volumetrică. Socoteala din articolul ăsta o faci într-un tabel, o dată, și rezultatul îl scrii ca preț de livrare.
 
-Partea bună a aceleiași limitări: comisionul de 0,5% pe plățile cu cardul se calculează pe valoarea produselor după reducere, **fără livrare și fără taxe**. Livrarea nu e comisionată de Sailo niciodată. Pe metodele manuale, adică transfer bancar, ramburs, WhatsApp, Telegram, Instagram, e-mail și telefon, nu există comision deloc, pentru că banii nu trec pe la Sailo. Lista completă de metode e asta, opt la număr, și nu conține niciun procesator românesc.
+Partea bună a aceleiași limitări: comisionul de {{fee_range}}% pe plățile cu cardul se calculează pe valoarea produselor după reducere, **fără livrare și fără taxe**. Livrarea nu e comisionată de Sailo niciodată. Pe metodele manuale, adică transfer bancar, ramburs, WhatsApp, Telegram, Instagram, e-mail și telefon, nu există comision deloc, pentru că banii nu trec pe la Sailo. Lista completă de metode e asta, opt la număr, și nu conține niciun procesator românesc.
 
 Pentru ramburs ai un câmp liber de note de livrare. Acolo scrii zonele, plafonul, taxa de încasare dacă pui una și faptul că livrezi implicit la locker. Cumpărătorul le citește înainte să comande, ceea ce e jumătate din treaba de reducere a refuzurilor.
 

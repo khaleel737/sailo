@@ -92,7 +92,7 @@ Resale margins look better in your head than in your bank account.
 | Outbound shipping | $14.50 | Shoe box inside an outer box, dimensional weight bites |
 | Outer box and filler | $1.80 | |
 | Card processing | $6.68 | A typical 2.9% plus 30c card rate, check your own |
-| Sailo card commission | $1.10 | 0.5% of the goods, after discount, excluding delivery and tax |
+| Sailo card commission | $1.10 | {{fee_range}}% of the goods, after discount, excluding delivery and tax |
 | **Net before returns** | **$50.92** | 23% of the sale price |
 
 Now the part that decides whether this is a business. One return in ten wipes out roughly a fifth of that. One chargeback on a $220 pair wipes out four sales. A pair that sits for eight months has cost you the money you could have rolled into three faster pairs.
@@ -131,7 +131,7 @@ Three notes on that.
 
 **A chargeback is not a return.** If you take card, the money lands in your own Stripe account, because Sailo never holds it, and a chargeback is then between you and Stripe. Nobody at Sailo can reverse it or argue it for you. That's the honest limitation of a setup where the money goes straight to you: you keep all the control and you also keep all the exposure. Your defence is the evidence pack, which is the ten listing photos, the packed box photo, the tracking number showing delivery, and the message thread. Have it in one folder per order. [What to do about a chargeback](/en/blog/what-to-do-about-a-chargeback) covers how to put it together and what actually persuades.
 
-While we're on the money: card payments need the Business plan at $19.99 a month and a Stripe account cleared for charges, and the commission is 0.5% of the goods on top of Stripe's own fee. On bank transfer, cash on delivery, WhatsApp, Instagram DM, Telegram, email or phone orders, Sailo takes nothing at all and never touches the money. At four pairs a week averaging $186, card volume is around $3,200 a month and the subscription is about 0.6% of it, which is easily worth it. At four pairs a month it isn't, and you should be taking transfers and meeting people in a supermarket car park like everyone else starting out.
+While we're on the money: card payments need the Business plan at ${{business_monthly}} a month and a Stripe account cleared for charges, and the commission is {{fee_range}}% of the goods on top of Stripe's own fee. On bank transfer, cash on delivery, WhatsApp, Instagram DM, Telegram, email or phone orders, Sailo takes nothing at all and never touches the money. At four pairs a week averaging $186, card volume is around $3,200 a month and the subscription is about 0.6% of it, which is easily worth it. At four pairs a month it isn't, and you should be taking transfers and meeting people in a supermarket car park like everyone else starting out.
 
 Handling the actual return logistics without a warehouse, including what to do with a pair that comes back smelling of someone else's feet, is in [handling returns without a warehouse](/en/blog/handling-returns-without-a-warehouse).
 

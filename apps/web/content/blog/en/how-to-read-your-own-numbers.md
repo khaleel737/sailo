@@ -144,9 +144,9 @@ The most common misread is falling orders with steady enquiries. That's not a ma
 
 Here's the constraint worth knowing before you rely on any dashboard, including Sailo's.
 
-Sailo keeps **30 days of analytics on the free plan, one year on Pro at $9.99 a month, and three years on Business at $19.99 a month.**
+Sailo keeps **{{free_analytics_days}} days of analytics on the free plan, one year on Pro at ${{pro_monthly}} a month, and three years on Business at ${{business_monthly}} a month.**
 
-Thirty days means you can see whether last week was better than the week before, and nothing else. You cannot compare this December to last December. You cannot see whether your average order value has drifted over eight months. For seasonality, which is most of what a small shop needs from analytics, 30 days is the wrong tool, and no amount of checking it more often fixes that.
+{{free_analytics_days}} days means you can see whether this week is working, and nothing else. You cannot hold it against the week before, let alone this December against last December. You cannot see whether your average order value has drifted over eight months. For seasonality, which is most of what a small shop needs from analytics, {{free_analytics_days}} days is the wrong tool, and no amount of checking it more often fixes that.
 
 A year on Pro is the minimum that lets you do a year-on-year comparison at all, and it's the main reason a seller with a seasonal business ends up on Pro rather than because of the product limit.
 

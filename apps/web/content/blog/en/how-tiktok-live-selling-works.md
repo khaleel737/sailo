@@ -128,7 +128,7 @@ Plainly: Sailo has nothing to do with your live. There's no overlay, no comment 
 
 What a shop page does is hold the prices and take the order after the fact, so you're sending one link instead of typing five messages per claimant.
 
-The other limits worth knowing before you build a week around it. There's no GCash rail, and no mobile money rail of any kind. You can put your GCash number in the bank transfer instructions so buyers see it at checkout, and then you reconcile by hand, which is what Joy does on Monday morning. The free plan holds 20 products, which is genuinely tight for a bale seller where every piece is unique, and 250 products needs Pro at $9.99 a month. There's no native app either, so everything you do is in a browser on the same phone you were just streaming from.
+The other limits worth knowing before you build a week around it. There's no GCash rail, and no mobile money rail of any kind. You can put your GCash number in the bank transfer instructions so buyers see it at checkout, and then you reconcile by hand, which is what Joy does on Monday morning. The free plan holds {{free_products}} products, which is genuinely tight for a bale seller where every piece is unique, and {{pro_products}} products needs Pro at ${{pro_monthly}} a month. There's no native app either, so everything you do is in a browser on the same phone you were just streaming from.
 
 ## Before your first live
 

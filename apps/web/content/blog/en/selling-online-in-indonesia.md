@@ -109,11 +109,11 @@ Sailo gives you the page. `sailo.store/yourname`, live the moment you sign up, w
 
 Two limits you should know before you build around it.
 
-**The card button may simply not be available to you.** Sailo's card rail runs on Stripe and only Stripe. On Stripe's own global availability page, read in August 2026, Indonesia is listed as "preview" rather than launched. Preview means invite, not sign-up. So no amount of upgrading to the Business plan at $19.99 a month will necessarily produce a card button for an Indonesian seller, and you should plan on transfer, QRIS-by-instructions and COD, which is what your buyers wanted anyway.
+**The card button may simply not be available to you.** Sailo's card rail runs on Stripe and only Stripe. On Stripe's own global availability page, read in August 2026, Indonesia is listed as "preview" rather than launched. Preview means invite, not sign-up. So no amount of upgrading to the Business plan at ${{business_monthly}} a month will necessarily produce a card button for an Indonesian seller, and you should plan on transfer, QRIS-by-instructions and COD, which is what your buyers wanted anyway.
 
 **Nothing confirms your payments but you.** Sailo can't see your bank account and can't see your DANA. The order sits at pending until you mark it paid. That eight minutes a day is yours, permanently, and it is the price of a manual rail, which takes no commission.
 
-The free plan is $0 and caps at 20 products. For Dewi's three sambals in two sizes that's irrelevant. For someone listing 60 variants of hijab colours it's a wall you'll hit in week two.
+The free plan is $0 and caps at {{free_products}} products. For Dewi's three sambals in two sizes that's irrelevant. For someone listing 60 variants of hijab colours it's a wall you'll hit in week two.
 
 ## What to do next
 

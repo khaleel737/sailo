@@ -174,7 +174,7 @@ Two useful things. On card, the card details go to Stripe, not to you: the charg
 
 The limits are real. A WhatsApp order still arrives in WhatsApp, so that thread, with the address and everything else the buyer typed, lives on your phone under your control, not the shop's. Your bank statement is yours. Your camera roll is yours. No shop tool can tidy those, and they're where most of the exposure actually is.
 
-Worth knowing when you pick a plan: how far back your analytics go depends on it, 30 days on free, a year on Pro, three years on Business. That's a data retention decision you're making whether you think of it that way or not, and less history is not automatically worse. And the privacy note that describes your business has to be written by you, because most of what it needs to describe happens outside the shop.
+Worth knowing when you pick a plan: how far back your analytics go depends on it, {{free_analytics_days}} days on free, a year on Pro, three years on Business. That's a data retention decision you're making whether you think of it that way or not, and less history is not automatically worse. And the privacy note that describes your business has to be written by you, because most of what it needs to describe happens outside the shop.
 
 The wider job, being someone a stranger is comfortable handing an address to in the first place, is in [building trust before money moves](/en/blog/building-trust-before-money-moves).
 

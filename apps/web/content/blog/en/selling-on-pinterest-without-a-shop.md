@@ -12,7 +12,7 @@ You made forty pins in one weekend, got 12,000 impressions, and sold nothing. Me
 
 That second thing is the whole reason to bother with Pinterest, and the first thing is why most sellers quit before they see it.
 
-You sell on Pinterest without a merchant account or a product feed by using the thing every pin already has: a destination link. Point it at a page with the price on it, write the pin for the search box, and let it sit. No catalogue upload, no verification queue, no approval. A Sailo shop is free at $0 for up to 20 products, and a $34 digital template pinned in February can still be selling in October, which is not true of anything you post anywhere else.
+You sell on Pinterest without a merchant account or a product feed by using the thing every pin already has: a destination link. Point it at a page with the price on it, write the pin for the search box, and let it sit. No catalogue upload, no verification queue, no approval. A Sailo shop is free at $0 for up to {{free_products}} products, and a $34 digital template pinned in February can still be selling in October, which is not true of anything you post anywhere else.
 
 ## Pinterest is a search engine that happens to look like a feed
 
@@ -127,7 +127,7 @@ What you keep: the ability to link to your page from every pin, which is the par
 
 For most small sellers that trade is fine. If Pinterest is going to be your main channel for the next two years, buy a domain. It's the one case where a website, or at least a domain, genuinely earns its keep.
 
-The other limit worth planning around: the free plan holds 20 products. Pinterest rewards variety, and if you sell templates or printables you'll pass 20 quickly. Two hundred and fifty needs Pro at $9.99 a month, unlimited needs Business at $19.99. Digital products also mean card payments in practice, since a buyer in another timezone at 2am isn't going to do a bank transfer and wait for you to wake up and confirm it, and cards need the Business plan plus a Stripe account cleared for charges, with Sailo taking 0.5% of the goods after discounts. On a $34 template that's seventeen cents. The $19.99 is the real number.
+The other limit worth planning around: the free plan holds {{free_products}} products. Pinterest rewards variety, and if you sell templates or printables you'll pass {{free_products}} quickly. {{pro_products}} needs Pro at ${{pro_monthly}} a month, unlimited needs Business at ${{business_monthly}}. Digital products also mean card payments in practice, since a buyer in another timezone at 2am isn't going to do a bank transfer and wait for you to wake up and confirm it, and cards need the Business plan plus a Stripe account cleared for charges, with Sailo taking {{fee_range}}% of the goods after discounts. On a $34 template that's seventeen cents. The ${{business_monthly}} is the real number.
 
 ## Do this with your next five products
 

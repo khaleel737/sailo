@@ -59,7 +59,7 @@ Everything between those two edges should be one screen. Product, price, button.
 
 **A seven-email sequence.** Written in a weekend, scheduled, never revised, arriving to people who already know everything in email three. Two emails written this week about something that actually happened will outperform seven written in advance about nothing.
 
-**Product variants as funnel steps.** Basic, plus, premium, plus an order bump and a downsell. That's five products for one thing. Sailo's free plan holds 20 products, which sounds like plenty until you've turned one wallet into five listings. It's a real cap and it's worth knowing before you architect something with tiers.
+**Product variants as funnel steps.** Basic, plus, premium, plus an order bump and a downsell. That's five products for one thing. Sailo's free plan holds {{free_products}} products, which sounds like plenty until you've turned one wallet into five listings. It's a real cap and it's worth knowing before you architect something with tiers.
 
 ## The piece that is genuinely worth building
 

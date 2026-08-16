@@ -12,7 +12,7 @@ tags: [recht, impressum, deutschland]
 
 Das ist der häufigste Grund, warum kleine deutsche Shops fertig auf der Festplatte liegen und nie live gehen. Nicht fehlende Produkte, nicht schlechte Fotos. Die Adresse.
 
-Die kurze Antwort: Wenn du geschäftsmäßig auftrittst, gilt die Impressumspflicht für dich, unabhängig davon, wie klein du bist. Sie hängt nicht an einer Umsatzgrenze. Sie hängt daran, dass deine Seite ein Angebot ist und kein Tagebuch. Und Sailo hat keine Impressum-Seite: kein Feld, kein Generator, keine Vorlage. Du schreibst die Angaben selbst, legst sie irgendwo ab, das du kontrollierst, und verlinkst sie von deinem Shop aus. Das ist ab dem kostenlosen Tarif für 0 Dollar so und ändert sich auch im Business-Tarif für 19,99 Dollar im Monat nicht.
+Die kurze Antwort: Wenn du geschäftsmäßig auftrittst, gilt die Impressumspflicht für dich, unabhängig davon, wie klein du bist. Sie hängt nicht an einer Umsatzgrenze. Sie hängt daran, dass deine Seite ein Angebot ist und kein Tagebuch. Und Sailo hat keine Impressum-Seite: kein Feld, kein Generator, keine Vorlage. Du schreibst die Angaben selbst, legst sie irgendwo ab, das du kontrollierst, und verlinkst sie von deinem Shop aus. Das ist ab dem kostenlosen Tarif für 0 Dollar so und ändert sich auch im Business-Tarif für {{business_monthly}} Dollar im Monat nicht.
 
 Dieser Text sagt dir, welche Form die Pflicht hat und wie du praktisch damit umgehst. Er nennt dir keine Paragrafen, keine Bußgeldhöhen und keine Fristen.
 

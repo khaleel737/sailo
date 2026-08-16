@@ -184,7 +184,7 @@ Ele te dá um endereço, `sailo.store/seunome`, que existe no minuto do cadastro
 
 E vale saber o que ele não faz enquanto você começa. Os canais de pedido e pagamento são cartão, WhatsApp, Telegram, Instagram, e-mail, telefone, transferência bancária e pagamento na entrega. Essa é a lista completa e **Pix não é um deles**. Quem vende no Brasil escreve a chave Pix no campo de instruções da transferência bancária, que é texto livre, e confirma cada pagamento olhando o próprio extrato. Solução manual, não recurso, e está descrita em [como receber por Pix vendendo online](/pt/blog/como-receber-por-pix-vendendo-online). O botão de cartão depende do Stripe, que atende o Brasil, verifiquei em agosto de 2026, e do plano Business, então ele não faz parte de começar com custo zero.
 
-Se você tem menos de dez pedidos, nada disso deveria estar tomando o seu tempo. O plano gratuito dá conta, com 20 produtos, e você tem coisa mais importante pra fazer: mandar as trinta mensagens.
+Se você tem menos de dez pedidos, nada disso deveria estar tomando o seu tempo. O plano gratuito dá conta, com {{free_products}} produtos, e você tem coisa mais importante pra fazer: mandar as trinta mensagens.
 
 ## O próximo passo
 

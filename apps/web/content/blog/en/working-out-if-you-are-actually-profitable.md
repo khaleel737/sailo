@@ -12,7 +12,7 @@ You did about $2,600 last month. You know roughly what your materials cost. And 
 
 Because profit is three numbers in a specific order, and almost everyone only calculates the first. What one unit costs to make. What one *order* costs to fulfil, which is a different and larger number. And what's left at the end of the month after the costs that arrive whether you sell anything or not.
 
-A candle that costs $7.24 in materials and sells for $24 is not a 70% margin product. By the time it's in a box, through the postal system and past a card processor, it's closer to 57%, and that's before the $19.99 subscription, the market stall, the insurance and the eleven hours you spent pouring. The rest of this is one seller's actual month, line by line, so you can do yours.
+A candle that costs $7.24 in materials and sells for $24 is not a 70% margin product. By the time it's in a box, through the postal system and past a card processor, it's closer to 57%, and that's before the ${{business_monthly}} subscription, the market stall, the insurance and the eleven hours you spent pouring. The rest of this is one seller's actual month, line by line, so you can do yours.
 
 ## The three numbers, in the order they matter
 
@@ -58,7 +58,7 @@ Here's where it stops being obvious. This is the table that matters.
 | **Left on the goods** | **$13.73** | **$16.11** | **$1.10** | **$18.05** |
 | As a share of the price | 57% | 67% | 9% | 30% |
 
-The processor figures above assume 2.9% plus 30 cents on a card, which is a common shape and not a promise. Take your own rate off your own processor's pricing page for your own country, because the fixed piece per transaction differs and it's the piece that does the damage on small baskets. The 0.5% on the goods that Sailo charges on card sales is in there too: 12 cents on the single, 30 cents on the gift set, and nothing at all on the market sales, because those never went through a card rail Sailo touched.
+The processor figures above assume 2.9% plus 30 cents on a card, which is a common shape and not a promise. Take your own rate off your own processor's pricing page for your own country, because the fixed piece per transaction differs and it's the piece that does the damage on small baskets. The {{fee_range}}% on the goods that Sailo charges on card sales is in there too: 12 cents on the single, 30 cents on the gift set, and nothing at all on the market sales, because those never went through a card rail Sailo touched.
 
 Now read the last row.
 
@@ -81,7 +81,7 @@ The gift set is the other surprise. It's her highest-value order, it's the one s
 | Payment fees, all rails | −$122.81 |
 | Market stall, 2 Saturdays at $45 | −$90.00 |
 | Liability insurance | −$22.00 |
-| Sailo Business | −$19.99 |
+| Sailo Business | −${{business_monthly}} |
 | Domain, email, design tool | −$20.00 |
 | **Operating profit** | **$1,011.62** |
 
@@ -121,7 +121,7 @@ Do this calculation for yourself, because it reframes a quiet month. Thirteen or
 
 **The postage gap.** It hides because you set the shipping price once and postal rates move. Re-weigh and re-price every product twice a year. Rosa's gap was 47 cents on a single and $3.15 on tea lights, and she'd have sworn she was breaking even on both.
 
-**The fixed fee per transaction.** In August, the percentage side of Rosa's card fees came to about $76. The 30-cents-per-transaction side came to about $26 across 86 online orders, and Sailo's 0.5% came to $11.40. At small basket sizes the flat fee is the part that hurts and the percentage is the part everyone argues about. [How payment fees eat a small order](/en/blog/how-payment-fees-eat-a-small-order) has the full shape of that.
+**The fixed fee per transaction.** In August, the percentage side of Rosa's card fees came to about $76. The 30-cents-per-transaction side came to about $26 across 86 online orders, and Sailo's {{fee_range}}% came to $11.40. At small basket sizes the flat fee is the part that hurts and the percentage is the part everyone argues about. [How payment fees eat a small order](/en/blog/how-payment-fees-eat-a-small-order) has the full shape of that.
 
 **Subscriptions.** They hide because they're small and monthly. Rosa's came to $40 a month across three tools, which is three and a half orders.
 
@@ -147,9 +147,9 @@ That order is not a coincidence. Price and product mix are worth several times w
 
 Sailo shows you what came in. It has no idea what went out. It doesn't know your wax costs $2.80 a pour or that you spent $62 on tubes, and it cannot tell you that your tea lights lose money, because from its side a tea light sale and a gift set sale look equally like revenue.
 
-The analytics window is worth planning around too: 30 days on free, a year on Pro at $9.99 a month, three years on Business at $19.99. If you want to compare this August with last August, either be on a plan that keeps it or export your orders on a schedule and keep the file yourself. CSV export starts on Pro, which means on the free plan the comparison you'll want in a year is a copy-and-paste job you almost certainly won't do.
+The analytics window is worth planning around too: {{free_analytics_days}} days on free, a year on Pro at ${{pro_monthly}} a month, three years on Business at ${{business_monthly}}. If you want to compare this August with last August, either be on a plan that keeps it or export your orders on a schedule and keep the file yourself. CSV export starts on Pro, which means on the free plan the comparison you'll want in a year is a copy-and-paste job you almost certainly won't do.
 
-And the subscription itself is a fixed cost that belongs in your table like any other. At Rosa's 100 orders a month, $19.99 is 20 cents an order and barely worth discussing. At 12 orders a month it's $1.67 an order, which is more than the payment fees, and at that volume the honest advice is not to be on it.
+And the subscription itself is a fixed cost that belongs in your table like any other. At Rosa's 100 orders a month, ${{business_monthly}} is 20 cents an order and barely worth discussing. At 12 orders a month it's $1.67 an order, which is more than the payment fees, and at that volume the honest advice is not to be on it.
 
 ## Do this before the end of the week
 

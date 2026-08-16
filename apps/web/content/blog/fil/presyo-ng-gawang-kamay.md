@@ -154,13 +154,13 @@ Ang ginagawa niya ay ito. Isang page kung saan nakikita ang presyo bago pa magta
 
 Tatlong bagay na kailangan mong malaman bago ka magbayad ng kahit ano.
 
-Una, **dalawampung produkto lang ang libreng plan** at tatlumpung araw ng analytics. Kung labindalawang bag at limang pouch ang ginagawa mo kada buwan, sapat na sapat iyon. Kung may limampung variation ka, Pro na iyon sa $9.99 kada buwan.
+Una, **dalawampung produkto lang ang libreng plan** at tatlumpung araw ng analytics. Kung labindalawang bag at limang pouch ang ginagawa mo kada buwan, sapat na sapat iyon. Kung may limampung variation ka, Pro na iyon sa ${{pro_monthly}} kada buwan.
 
-Ikalawa, ang coupon codes ay nasa Business plan lang, $19.99 kada buwan. Sa labindalawang bag kada buwan, mas malaki ang subscription kaysa sa diskwentong ibibigay mo. **Hindi mo pa kailangan iyon.**
+Ikalawa, ang coupon codes ay nasa Business plan lang, ${{business_monthly}} kada buwan. Sa labindalawang bag kada buwan, mas malaki ang subscription kaysa sa diskwentong ibibigay mo. **Hindi mo pa kailangan iyon.**
 
 Ikatlo, at ito ang pinakamahalaga sa isang seller sa Pilipinas. Stripe lang ang card rail ng Sailo, at **noong 6 Agosto 2026, wala ang Pilipinas sa listahan ng mga bansang suportado ng Stripe sa stripe.com/global.** Ibig sabihin, pwedeng hindi mo makuha ang card button dito kahit anong plan ang bayaran mo. Buksan mo mismo ang stripe.com/global at i-check, kasi nagbabago ang listahan. Wag kang magbayad ng Business plan para lang maghintay na lumitaw ang button.
 
-Sa manual na rails, kasama ang bank transfer at COD, hindi hinahawakan ng Sailo ang pera at walang kinukuha, kahit sa libreng plan. Sa card lang may 0.5% ng halaga ng produkto matapos ang diskwento, hindi kasama ang delivery at buwis. Sa handmade sa Pilipinas, ibig sabihin niyon: ang ₱750 mo ay ₱750 mo.
+Sa manual na rails, kasama ang bank transfer at COD, hindi hinahawakan ng Sailo ang pera at walang kinukuha, kahit sa libreng plan. Sa card lang may {{fee_range}}% ng halaga ng produkto matapos ang diskwento, hindi kasama ang delivery at buwis. Sa handmade sa Pilipinas, ibig sabihin niyon: ang ₱750 mo ay ₱750 mo.
 
 At isang linaw: **walang GCash rail ang Sailo, walang Maya, walang e-wallet.** Kung sa GCash mo tinatanggap ang deposit para sa custom order, isusulat mo ang number sa free-text instructions box ng bank transfer at ikaw mismo ang magko-confirm sa app mo. Manwal, hindi feature.
 

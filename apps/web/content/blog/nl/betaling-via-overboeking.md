@@ -124,7 +124,7 @@ Op bankoverboeking rekent Sailo geen commissie en het raakt het geld nooit aan. 
 
 En dan de echte beperking, in gewone woorden: **Sailo kan niet weten of jouw overboeking binnen is.** Het heeft geen verbinding met je bank en die komt er niet. Als je een bestelling op betaald zet, is dat omdat jij je bankapp hebt geopend en gekeken hebt. Niemand doet dat voor je. Ga je drie dagen weg, dan gebeurt het drie dagen niet en staan je bestellingen te wachten.
 
-Het alternatief is kaart. Die kost 0,5% over de productwaarde, gerekend na korting en zonder de verzendkosten en belasting, en hij zit alleen op het Business-abonnement van $19,99 per maand met een Stripe-account die goedgekeurd is voor betalingen. Stripe is in Nederland beschikbaar, gecontroleerd op 6 augustus 2026 op stripe.com/global. Kijk zelf even als je dit later leest, want die lijst beweegt. Let wel op wat je dan koopt: een kaartknop, geen iDEAL-knop.
+Het alternatief is kaart. Die kost {{fee_range}}% over de productwaarde, gerekend na korting en zonder de verzendkosten en belasting, en hij zit alleen op het Business-abonnement van ${{business_monthly}} per maand met een Stripe-account die goedgekeurd is voor betalingen. Stripe is in Nederland beschikbaar, gecontroleerd op 6 augustus 2026 op stripe.com/global. Kijk zelf even als je dit later leest, want die lijst beweegt. Let wel op wat je dan koopt: een kaartknop, geen iDEAL-knop.
 
 ## Joost rekent het na
 

@@ -136,9 +136,9 @@ Sailo ti daje taj jedan link, s proizvodima, cijenama i narudžbom. Adresa je sa
 
 Načini plaćanja koje možeš uključiti su točno ovi: kartica, WhatsApp, Telegram, Instagram, e-mail, telefon, bankovna uplata i pouzeće. To je potpun popis. Kod bankovne uplate upisuješ naziv banke, naziv primatelja, broj računa, IBAN, SWIFT/BIC i vlastite upute slobodnim tekstom, a ti si taj koji potvrđuje da je novac stigao. Kod pouzeća imaš polje za napomenu uz dostavu.
 
-Na svim ručnim načinima Sailo ne uzima ništa i ne dira novac. Kod kartice uzima 0,5 % od vrijednosti robe nakon popusta, bez dostave i bez poreza, i ta stopa je ista na svakom planu. Kartica traži plan Business, 19,99 USD mjesečno ili 191,90 USD godišnje, i povezan Stripe račun koji je Stripe odobrio za naplatu. Stripe je u Hrvatskoj dostupan, provjereno 6. kolovoza 2026. na stripe.com/global, ali taj se popis mijenja pa ga provjeri prije nego platiš plan.
+Na svim ručnim načinima Sailo ne uzima ništa i ne dira novac. Kod kartice uzima {{fee_range}} % od vrijednosti robe nakon popusta, bez dostave i bez poreza, i ta stopa je ista na svakom planu. Kartica traži plan Business, {{business_monthly}} USD mjesečno ili {{business_yearly}} USD godišnje, i povezan Stripe račun koji je Stripe odobrio za naplatu. Stripe je u Hrvatskoj dostupan, provjereno 6. kolovoza 2026. na stripe.com/global, ali taj se popis mijenja pa ga provjeri prije nego platiš plan.
 
-Besplatni plan nosi 20 proizvoda, 30 dana statistike i sve ručne načine plaćanja. Pro je 9,99 USD mjesečno ili 95,90 USD godišnje, 250 proizvoda, godinu dana statistike, izvoz u CSV i uklonjenu Sailo oznaku.
+Besplatni plan nosi {{free_products}} proizvoda, {{free_analytics_days}} dana statistike i sve ručne načine plaćanja. Pro je {{pro_monthly}} USD mjesečno ili {{pro_yearly}} USD godišnje, {{pro_products}} proizvoda, godinu dana statistike, izvoz u CSV i uklonjenu Sailo oznaku.
 
 Recenzije proizvoda rade na svakom planu. Kupac ostavlja ime, ocjenu od 1 do 5 i po želji tekst, a javno se ne pojavljuje ništa dok to ti ne odobriš.
 
@@ -150,7 +150,7 @@ Sailo ne zna da je uplata sjela, jer nije spojen na tvoju banku. To zna tvoja ba
 
 Kod pouzeća je iskrena granica još oštrija. Sailo ne zbraja gotovinu koju dostavljač pokupi, ne zna je li paket uopće preuzet i ne prati kada ti prijevoznik doznači novac. To polje je napomena, ne knjigovodstvo.
 
-Cjenik je u dolarima, pa tvoj stvarni trošak ovisi o tečaju i o naknadi tvoje banke za konverziju. Kod plana Business to nije sitnica, jer se 19,99 USD mjesečno mora vratiti iz marže, a ne iz nade. Kod deset narudžbi mjesečno po 18 eura kartica je trošak, a ne ulaganje.
+Cjenik je u dolarima, pa tvoj stvarni trošak ovisi o tečaju i o naknadi tvoje banke za konverziju. Kod plana Business to nije sitnica, jer se {{business_monthly}} USD mjesečno mora vratiti iz marže, a ne iz nade. Kod deset narudžbi mjesečno po 18 eura kartica je trošak, a ne ulaganje.
 
 Aplikacije nema. Sve radiš u pregledniku, i s mobitela isto.
 

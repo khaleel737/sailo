@@ -52,7 +52,7 @@ Ses chiffres à elle, premier mois de son lien, janvier.
 | D'où viennent les acheteurs | de la recherche dans l'appli | de son Instagram (940 abonnés) et de ses clientes fidèles |
 | Ce qu'elle garde après la vente | un pseudo | prénom, e-mail, historique |
 | Temps par vente | environ 4 min | environ 9 min |
-| Ce que ça lui coûte | la grille en vigueur, plus les mises en avant si elle en prend | 0 € sur virement, 0,5 % sur carte, plus l'abonnement |
+| Ce que ça lui coûte | la grille en vigueur, plus les mises en avant si elle en prend | 0 € sur virement, {{fee_range}} % sur carte, plus l'abonnement |
 
 Le panier est plus élevé sur son lien, et ce n'est pas un hasard : c'est là qu'elle met les pièces retouchées et c'est là que les gens prennent deux ou trois articles d'un coup, parce qu'ils achètent chez elle, pas une pièce précise trouvée dans une recherche.
 
@@ -113,9 +113,9 @@ Sailo vous donne une page à l'adresse sailo.store/votrenom, en ligne dès l'ins
 
 C'est exactement l'inverse de Vinted, et c'est à la fois le défaut et l'intérêt.
 
-Le reste est simple. Sur virement, paiement à la livraison, WhatsApp, Instagram, Telegram, e-mail et téléphone, Sailo ne touche jamais l'argent et ne prend aucune commission. La seule commission qui existe est de 0,5 % sur la valeur des produits quand l'acheteur paie par carte, hors livraison et hors taxes, et le paiement par carte demande la formule Business à 19,99 $ par mois avec un compte Stripe validé. Stripe est disponible en France au 6 août 2026, donc la carte fonctionne réellement ici, mais revérifiez à votre date.
+Le reste est simple. Sur virement, paiement à la livraison, WhatsApp, Instagram, Telegram, e-mail et téléphone, Sailo ne touche jamais l'argent et ne prend aucune commission. La seule commission qui existe est de {{fee_range}} % sur la valeur des produits quand l'acheteur paie par carte, hors livraison et hors taxes, et le paiement par carte demande la formule Business à {{business_monthly}} $ par mois avec un compte Stripe validé. Stripe est disponible en France au 6 août 2026, donc la carte fonctionne réellement ici, mais revérifiez à votre date.
 
-Faites le calcul avec les chiffres de Léa. Sur son panier de 25 €, la commission carte représente environ 12 centimes. Sur 6 ventes par mois, l'abonnement à 19,99 $ représente environ 3,30 $ par vente. C'est l'abonnement qui coûte, pas la commission, et c'est vrai tant que le volume ne monte pas. Tant qu'elle est à 6 ventes, l'encaissement par virement, sans abonnement, est le choix raisonnable.
+Faites le calcul avec les chiffres de Léa. Sur son panier de 25 €, la commission carte représente environ 12 centimes. Sur 6 ventes par mois, l'abonnement à {{business_monthly}} $ représente environ 3,30 $ par vente. C'est l'abonnement qui coûte, pas la commission, et c'est vrai tant que le volume ne monte pas. Tant qu'elle est à 6 ventes, l'encaissement par virement, sans abonnement, est le choix raisonnable.
 
 Enfin, il n'y a aucun rail de paiement français dans Sailo. Ni Lydia, ni Paylib, ni PayPal. Si une acheteuse propose Lydia, vous pouvez écrire ce qu'il faut dans le champ d'instructions du virement et confirmer vous-même l'encaissement. C'est une solution manuelle qui marche tous les jours, mais c'est une solution manuelle, pas une fonctionnalité.
 

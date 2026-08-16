@@ -111,7 +111,7 @@ Sailon maksutavat ovat: kortti, WhatsApp, Telegram, Instagram, sähköposti, puh
 
 Kaikissa muissa paitsi kortissa Sailo ei koske rahaan eikä ota siitä mitään. Raha kulkee suoraan ostajan tililtä sinun tilillesi tai käteisenä ovella. Sailo hoitaa katalogin ja tilauksen, ei rahaa.
 
-Kortti on ainoa, jossa Sailo ottaa komission: 0,5 prosenttia tavaran arvosta alennuksen jälkeen, ilman toimituskulua ja ilman veroa. Kortti vaatii Business-tason, joka maksaa 19,99 dollaria kuussa tai 191,90 dollaria vuodessa, sekä Stripe-tilin, jonka Stripe on hyväksynyt maksujen vastaanottamiseen. Stripe on Suomessa saatavilla, tarkistettu 6.8.2026 osoitteessa stripe.com/global. Tarkista se itse, koska lista elää.
+Kortti on ainoa, jossa Sailo ottaa komission: {{fee_range}} prosenttia tavaran arvosta alennuksen jälkeen, ilman toimituskulua ja ilman veroa. Kortti vaatii Business-tason, joka maksaa {{business_monthly}} dollaria kuussa tai {{business_yearly}} dollaria vuodessa, sekä Stripe-tilin, jonka Stripe on hyväksynyt maksujen vastaanottamiseen. Stripe on Suomessa saatavilla, tarkistettu 6.8.2026 osoitteessa stripe.com/global. Tarkista se itse, koska lista elää.
 
 ## MobilePayta ei ole, ja se pitää sanoa suoraan
 
@@ -149,7 +149,7 @@ Tyypillinen tilaus: kaksi mukia, 68 euroa, toimitus 6,90 euroa, yhteensä 74,90 
 
 Sailo ottaa tästä nolla euroa, koska raha ei kulkenut Sailon kautta.
 
-Entä jos Riikka haluaisi korttimaksun? 22 tilausta, keskimäärin 62 euroa tavaraa, on 1 364 euroa tavaran arvoa kuussa. Siitä 0,5 prosenttia on 6,82 euroa. Tilaus maksaa 19,99 dollaria kuussa. Komissio ei ole se kustannus. Tilaus on.
+Entä jos Riikka haluaisi korttimaksun? 22 tilausta, keskimäärin 62 euroa tavaraa, on 1 364 euroa tavaran arvoa kuussa. Siitä {{fee_range}} prosenttia on 6,82 euroa. Tilaus maksaa {{business_monthly}} dollaria kuussa. Komissio ei ole se kustannus. Tilaus on.
 
 > Pienillä määrillä korttimaksu ei ole se, mikä sinulta puuttuu. Sinulta puuttuu ihmisiä, jotka tietävät että olet olemassa.
 

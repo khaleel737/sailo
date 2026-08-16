@@ -118,7 +118,7 @@ That's 21 photographs, two hours including setup and a coffee, and it covers a w
 
 Her costs: £3 for the card, £0 for the light, and one Tuesday. The photographs are now the second most valuable asset in her business after the customer list.
 
-The candle sells for £14. If she took card payments on that, Sailo's fee would be 7p, which is not the number that matters. The number that matters is that the Business plan required for card payments is $19.99 a month, and at 40 orders a month she'd rather spend that on wax. She takes bank transfers and cash at markets, confirms them herself, and puts the money into stock. That's a completely reasonable way to run a shop, and it's covered properly in [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller).
+The candle sells for £14. If she took card payments on that, Sailo's fee would be 7p, which is not the number that matters. The number that matters is that the Business plan required for card payments is ${{business_monthly}} a month, and at 40 orders a month she'd rather spend that on wax. She takes bank transfers and cash at markets, confirms them herself, and puts the money into stock. That's a completely reasonable way to run a shop, and it's covered properly in [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller).
 
 ## What "good enough" actually looks like
 
@@ -138,7 +138,7 @@ The one thing that genuinely reads as amateur, every time, in every market: a ph
 
 Photographs don't fix a shop that doesn't work. They also don't fix a price nobody will pay, and Sailo doesn't help you with either of those. It shows the images you upload and passes the order to whichever rail you've set up. That's the deal.
 
-Worth knowing before you plan a big shoot: the free plan holds 20 products. If you photograph 40 things and then discover you can only list half of them without moving to Pro at $9.99 a month, you've wasted an afternoon. Count your products first, decide what's actually going in the shop, and photograph that. Most sellers should be listing fewer things than they think anyway.
+Worth knowing before you plan a big shoot: the free plan holds {{free_products}} products. If you photograph 40 things and then discover you can only list half of them without moving to Pro at ${{pro_monthly}} a month, you've wasted an afternoon. Count your products first, decide what's actually going in the shop, and photograph that. Most sellers should be listing fewer things than they think anyway.
 
 And on a phone, all of this happens in a mobile browser, because there's no native Sailo app. Uploading twenty images over a weak connection is a slow, boring job. Do it sitting down, on wifi, in one go.
 

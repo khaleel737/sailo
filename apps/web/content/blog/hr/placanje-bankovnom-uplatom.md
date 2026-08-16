@@ -107,7 +107,7 @@ Ako cijela tvoja prodaja stoji na jednoj takvoj aplikaciji, reci si to iskreno n
 | Obična uplata | Isti ili sljedeći radni dan, ovisno o vremenu presjeka | Ništa iznad naknada tvoje banke | Kupac koji se nestrpi dok čeka |
 | Instant uplata | U nekoliko sekundi, kad obje banke podržavaju | Naknadu snosi kupac, ako je ima | Ne nude je sve banke i ne za svaki iznos |
 | Pouzeće | Nekoliko dana nakon uručenja, kad prijevoznik doznači | Naknada prijevoznika i rizik odbijanja | Odbijena pošiljka i trošak u oba smjera |
-| Kartica | Nakon obrade kod Stripea, na tvoj Stripe račun | Stripeova naknada plus 0,5 % za Sailo | Traži plan Business i odobren račun |
+| Kartica | Nakon obrade kod Stripea, na tvoj Stripe račun | Stripeova naknada plus {{fee_range}} % za Sailo | Traži plan Business i odobren račun |
 
 Ta tablica je jedino mjesto na kojem se načine plaćanja isplati uspoređivati, jer usporedba po „praktičnosti" ne daje ništa. Bitan je trenutak u kojem je novac tvoj i ono što se dogodi kad transakcija pođe po zlu.
 
@@ -146,7 +146,7 @@ Kod bankovne uplate popunjavaš naziv banke, naziv primatelja, broj računa, IBA
 
 Kod uplate, pouzeća, WhatsAppa, Instagrama, Telegrama, e-maila i telefona Sailo ne uzima proviziju i ne dira novac. Nikad. Novac ide izravno između kupca i tebe.
 
-Kartica radi drukčije. Sjeda na tvoj vlastiti Stripe račun, Sailo uzima 0,5 % od vrijednosti robe nakon popusta, bez dostave i bez poreza, i traži plan Business od 19,99 USD mjesečno ili 191,90 USD godišnje te Stripe račun odobren za naplatu. Stripe je u Hrvatskoj dostupan, provjereno 6. kolovoza 2026. na stripe.com/global, ali popis zemalja se mijenja pa ga provjeri prije nego platiš plan.
+Kartica radi drukčije. Sjeda na tvoj vlastiti Stripe račun, Sailo uzima {{fee_range}} % od vrijednosti robe nakon popusta, bez dostave i bez poreza, i traži plan Business od {{business_monthly}} USD mjesečno ili {{business_yearly}} USD godišnje te Stripe račun odobren za naplatu. Stripe je u Hrvatskoj dostupan, provjereno 6. kolovoza 2026. na stripe.com/global, ali popis zemalja se mijenja pa ga provjeri prije nego platiš plan.
 
 Narudžba s WhatsAppa dolazi ti gotova: proizvod, varijante, adresa i ukupan iznos. Ne slažeš je iz šest poruka.
 

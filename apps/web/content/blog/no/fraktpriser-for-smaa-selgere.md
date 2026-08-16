@@ -123,7 +123,7 @@ Det betyr at én sats som dekker både Lillestrøm og Alta er noe du bestemte, i
 
 Det betyr også at ingen varsler deg. Har du skrevet 79 kroner og det koster deg 123,22, sier ingen ifra, fordi ingen andre enn du kjenner det andre tallet.
 
-En ting til, som går i din favør: kortprovisjonen på 0,5 prosent regnes av varene etter rabatt, uten frakt og uten mva. Av de 109 kronene Kaja tar for sending går det ikke én øre til Sailo. Kort krever uansett Business-planen, 19,99 dollar i måneden eller 191,90 dollar i året, pluss en Stripe-konto som er godkjent for betalinger. Stripe er tilgjengelig i Norge, sjekket 6. august 2026 på stripe.com/global, men sjekk selv før du betaler for noe. Og planprisen er i dollar, så det du faktisk betaler i kroner flytter seg med kursen og med bankens valutapåslag.
+En ting til, som går i din favør: kortprovisjonen på {{fee_range}} prosent regnes av varene etter rabatt, uten frakt og uten mva. Av de 109 kronene Kaja tar for sending går det ikke én øre til Sailo. Kort krever uansett Business-planen, {{business_monthly}} dollar i måneden eller {{business_yearly}} dollar i året, pluss en Stripe-konto som er godkjent for betalinger. Stripe er tilgjengelig i Norge, sjekket 6. august 2026 på stripe.com/global, men sjekk selv før du betaler for noe. Og planprisen er i dollar, så det du faktisk betaler i kroner flytter seg med kursen og med bankens valutapåslag.
 
 Ved overføring, betaling ved levering, WhatsApp, Instagram, Telegram, e-post og telefon tar Sailo ingenting og tar aldri i pengene.
 

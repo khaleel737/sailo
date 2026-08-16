@@ -130,7 +130,7 @@ C'è poi tutto quello che non passa da nessuna piattaforma, i contanti alla cons
 
 Se scegli WhatsApp come canale, l'ordine ti arriva già scritto: prodotto, opzioni scelte, indirizzo e totale, in un messaggio solo. Non ricopi niente e non sommi la spedizione a memoria. È la differenza fra quaranta conversazioni da gestire e quaranta ordini da leggere.
 
-Sailo su WhatsApp non prende nessuna commissione e non tocca mai il denaro, perché il denaro non ci passa proprio: il pagamento lo concordi tu con il cliente. L'unica commissione che esiste è lo 0,5% sul valore dei prodotti quando si paga con carta, e la carta richiede il piano Business da 19,99 USD al mese con un account Stripe approvato.
+Sailo su WhatsApp non prende nessuna commissione e non tocca mai il denaro, perché il denaro non ci passa proprio: il pagamento lo concordi tu con il cliente. L'unica commissione che esiste è lo {{fee_range}}% sul valore dei prodotti quando si paga con carta, e la carta richiede il piano Business da {{business_monthly}} USD al mese con un account Stripe approvato.
 
 Due limiti veri, detti chiari.
 

@@ -133,9 +133,9 @@ If a whole line went dead because the thing it was riding stopped being interest
 
 ## The honest limitation
 
-To do this exercise properly you need to see roughly a year of sales per product, and on Sailo's free plan you get **30 days of analytics**. Thirty days won't tell you which product is dead. It'll tell you what sold last month, which is the one thing you already know.
+To do this exercise properly you need to see roughly a year of sales per product, and on Sailo's free plan you get **{{free_analytics_days}} days of analytics**. {{free_analytics_days}} days won't tell you which product is dead. It'll tell you what sold this week, which is the one thing you already know.
 
-Pro is $9.99 a month and gives you a year, which is exactly the window this decision needs. Business at $19.99 gives three years and also gives you coupon codes, which is the only way to run a discount code rather than editing the price on the product itself and putting the reason in the description.
+Pro is ${{pro_monthly}} a month and gives you a year, which is exactly the window this decision needs. Business at ${{business_monthly}} gives three years and also gives you coupon codes, which is the only way to run a discount code rather than editing the price on the product itself and putting the reason in the description.
 
 If you're on free and doing this now, you'll need your own record: a spreadsheet with units bought, units sold and last sale date per product. That's not a bad thing to keep anyway, and it's the thing you'll wish you'd started in January.
 

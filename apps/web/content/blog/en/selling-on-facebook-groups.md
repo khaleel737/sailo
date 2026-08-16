@@ -12,7 +12,7 @@ Forty-one comments saying "mine po" and you've been paid for three of them. Two 
 
 Buy-and-sell groups are still the biggest, cheapest, most reliable source of buyers a small Filipino seller has, and they run on rules that no platform ever wrote down.
 
-Selling in Facebook groups works when you do three things: post in the group's own listing format with the price visible, treat a "mine" comment as an inquiry rather than a sale, and move anything with numbers in it out of the comment thread and onto a page. That last one is the difference between a busy post and a paid one. A Sailo shop is free at $0 for up to 20 products, and the reason it matters here is that a link plus a price survives an admin deleting your post.
+Selling in Facebook groups works when you do three things: post in the group's own listing format with the price visible, treat a "mine" comment as an inquiry rather than a sale, and move anything with numbers in it out of the comment thread and onto a page. That last one is the difference between a busy post and a paid one. A Sailo shop is free at $0 for up to {{free_products}} products, and the reason it matters here is that a link plus a price survives an admin deleting your post.
 
 ## Read the pins before you post anything
 
@@ -140,7 +140,7 @@ If you want the full checklist for looking like a real seller when nobody knows 
 
 Sailo has no GCash rail. None. No mobile money integration of any kind, no GCash, no Maya. What you can do is put your GCash number and name into the bank transfer instructions so buyers see it at checkout, and then reconcile payments yourself, which is what Rhea does on Sunday nights. Sailo handles the catalogue and the order. It doesn't handle that money and can't tell you the money arrived.
 
-The free plan also caps at 20 products, which is genuinely awkward for preloved sellers, because every item is unique. Rhea runs at that ceiling constantly and rotates stock through it. Two hundred and fifty products needs Pro at $9.99 a month; unlimited needs Business at $19.99. If you sell one-of-a-kind items in volume, work out which of those you'd actually need before you build a week around the free plan.
+The free plan also caps at {{free_products}} products, which is genuinely awkward for preloved sellers, because every item is unique. Rhea runs at that ceiling constantly and rotates stock through it. {{pro_products}} products needs Pro at ${{pro_monthly}} a month; unlimited needs Business at ${{business_monthly}}. If you sell one-of-a-kind items in volume, work out which of those you'd actually need before you build a week around the free plan.
 
 ## What to change before you post again
 

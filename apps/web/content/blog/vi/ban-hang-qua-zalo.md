@@ -151,13 +151,13 @@ Dù chọn đường nào thì **bạn vẫn là người nói chuyện**. Sailo
 
 Kèm theo đó là giới hạn thứ hai, cùng bản chất: **Sailo không biết tiền đã vào tài khoản bạn hay chưa.** Nó không nối với ngân hàng nào. Khi bạn đánh dấu một đơn là đã thanh toán, đó là vì bạn đã mở app ngân hàng ra nhìn. Không ai làm hộ. Đi vắng ba ngày thì không có ai đánh dấu, và đơn nằm đó chờ.
 
-Bù lại, ở kênh chuyển khoản, COD, điện thoại, WhatsApp, Instagram, Telegram và email, Sailo không thu phí hoa hồng và không bao giờ chạm vào tiền. Tiền đi thẳng từ khách sang bạn. Khoản phí duy nhất tồn tại là 0,5% trên giá trị hàng sau giảm giá, không tính phí giao hàng và thuế, và nó chỉ áp dụng khi khách trả bằng thẻ.
+Bù lại, ở kênh chuyển khoản, COD, điện thoại, WhatsApp, Instagram, Telegram và email, Sailo không thu phí hoa hồng và không bao giờ chạm vào tiền. Tiền đi thẳng từ khách sang bạn. Khoản phí duy nhất tồn tại là {{fee_range}}% trên giá trị hàng sau giảm giá, không tính phí giao hàng và thuế, và nó chỉ áp dụng khi khách trả bằng thẻ.
 
-Về kênh thẻ thì có một chuyện phải nói rõ, vì nó quyết định bạn có nên trả tiền gói nào hay không. Kênh thẻ của Sailo chạy trên Stripe, và chỉ Stripe. Tính đến tháng 8 năm 2026, Việt Nam không nằm trong danh sách quốc gia Stripe hỗ trợ. Nghĩa là nút thẻ có thể không dùng được với người bán ở Việt Nam dù bạn trả gói nào đi nữa, nên đừng đăng ký Business 19,99 USD/tháng với kỳ vọng mở được thanh toán thẻ. Danh sách quốc gia của Stripe có thay đổi, nên tự mở stripe.com/global kiểm tra lại vào ngày bạn cần.
+Về kênh thẻ thì có một chuyện phải nói rõ, vì nó quyết định bạn có nên trả tiền gói nào hay không. Kênh thẻ của Sailo chạy trên Stripe, và chỉ Stripe. Tính đến tháng 8 năm 2026, Việt Nam không nằm trong danh sách quốc gia Stripe hỗ trợ. Nghĩa là nút thẻ có thể không dùng được với người bán ở Việt Nam dù bạn trả gói nào đi nữa, nên đừng đăng ký Business {{business_monthly}} USD/tháng với kỳ vọng mở được thanh toán thẻ. Danh sách quốc gia của Stripe có thay đổi, nên tự mở stripe.com/global kiểm tra lại vào ngày bạn cần.
 
 Cộng cả hai chuyện lại, người bán qua Zalo ở Việt Nam thực tế còn ba đường: chuyển khoản ngân hàng, COD, và kênh điện thoại. Ba đường đó đều là kênh thủ công, đều không mất phí hoa hồng, và đều có mặt trên gói miễn phí.
 
-Gói miễn phí 0 USD cho 20 sản phẩm, 30 ngày số liệu, và đủ mọi kênh thủ công. Với danh mục 15 món rau củ thì 20 sản phẩm là vừa đủ, và đó cũng là giới hạn thật đầu tiên bạn sẽ chạm phải, chứ không phải chuyện thanh toán.
+Gói miễn phí 0 USD cho {{free_products}} sản phẩm, 30 ngày số liệu, và đủ mọi kênh thủ công. Với danh mục 15 món rau củ thì {{free_products}} sản phẩm là vừa đủ, và đó cũng là giới hạn thật đầu tiên bạn sẽ chạm phải, chứ không phải chuyện thanh toán.
 
 ## Sổ tính của chị Hoa
 

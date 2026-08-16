@@ -12,7 +12,7 @@ tags: [salg, facebookgruppe, kom i gang]
 
 Det er sjældent publikummet, der mangler. Du sælger allerede et sted. En købs- og salgsgruppe for din by, Marketplace, DBA, en stand på loppemarkedet den første søndag i måneden, eller din egen Instagram, hvor folk skriver i DM'en og spørger om prisen.
 
-Det korte svar er, at du ikke har brug for en hjemmeside. Du har brug for én side, hvor der står hvad varen er, hvad den koster, hvordan den kommer frem, og en knap der laver en ordre ud af interessen. Hos Sailo koster den side 0 kroner på den gratis plan og kan bære 20 produkter. Selve siden er den nemme del. Det er rækkefølgen omkring den, der afgør, om du sælger noget.
+Det korte svar er, at du ikke har brug for en hjemmeside. Du har brug for én side, hvor der står hvad varen er, hvad den koster, hvordan den kommer frem, og en knap der laver en ordre ud af interessen. Hos Sailo koster den side 0 kroner på den gratis plan og kan bære {{free_products}} produkter. Selve siden er den nemme del. Det er rækkefølgen omkring den, der afgør, om du sælger noget.
 
 ## Du får ikke ét eneste tal om moms og registrering her
 
@@ -88,7 +88,7 @@ På alle andre end kort rører Sailo aldrig pengene, og der er ingen kommission.
 
 Bankoverførsel er stadig helt normalt i Danmark mellem private og mindre handlende. Feltet i Sailo har plads til banknavn, kontohaver, kontonummer, IBAN, SWIFT eller BIC, og et frit tekstfelt til instruktioner. Det frie felt er vigtigere end de fem andre tilsammen, for det er der, du skriver hvad køberen skal skrive som tekst på overførslen, og hvornår du sender. Hvordan du formulerer de linjer, og hvad du svarer klokken 22.45 om fredagen, står i [sådan tager du imod betaling via bankoverførsel](/da/blog/betaling-via-bankoverfoersel).
 
-Kort findes også, og det virker i Danmark, fordi Stripe er tilgængeligt her. Kontrolleret 6. august 2026 på stripe.com/global, og den liste flytter sig, så slå den op selv. Kort kræver Business-planen til 19,99 dollar om måneden eller 191,90 dollar om året plus en Stripe-konto, som Stripe har godkendt til at modtage betalinger. Sailo tager 0,5 procent af varernes værdi efter rabat, uden fragt og uden moms. Stripes eget gebyr kommer oven i og står på Stripes prisside.
+Kort findes også, og det virker i Danmark, fordi Stripe er tilgængeligt her. Kontrolleret 6. august 2026 på stripe.com/global, og den liste flytter sig, så slå den op selv. Kort kræver Business-planen til {{business_monthly}} dollar om måneden eller {{business_yearly}} dollar om året plus en Stripe-konto, som Stripe har godkendt til at modtage betalinger. Sailo tager {{fee_range}} procent af varernes værdi efter rabat, uden fragt og uden moms. Stripes eget gebyr kommer oven i og står på Stripes prisside.
 
 ## Der er ingen MobilePay i Sailo
 
@@ -120,7 +120,7 @@ Nu har hun atten produkter på en side. Gratis plan, fordi atten er under 20. To
 
 Sailo koster hende 0 kr. om måneden og 0 kr. pr. ordre, fordi pengene aldrig går gennem Sailo.
 
-Ville hun have kortbetaling, ser regnestykket sådan ud. 4.200 kr. i varer giver 21 kr. i kommission til Sailo. Abonnementet er 19,99 dollar om måneden, og hvad det bliver i kroner, afhænger af kursen den dag, kortet bliver trukket. Procenten er ikke udgiften. Abonnementet er udgiften, og ved 30 ordrer om måneden tjener det sig ikke ind.
+Ville hun have kortbetaling, ser regnestykket sådan ud. 4.200 kr. i varer giver 21 kr. i kommission til Sailo. Abonnementet er {{business_monthly}} dollar om måneden, og hvad det bliver i kroner, afhænger af kursen den dag, kortet bliver trukket. Procenten er ikke udgiften. Abonnementet er udgiften, og ved 30 ordrer om måneden tjener det sig ikke ind.
 
 Hun har ikke brug for det endnu. Det skriver jeg, fordi det er sandt.
 

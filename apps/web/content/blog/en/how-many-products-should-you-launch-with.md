@@ -12,7 +12,7 @@ tags: [launch, catalogue]
 
 Five. The workable range is three to eight, and almost nobody who asks this question guesses low enough. A product costs you roughly 90 minutes of work before it earns a single pound, and that's before you buy any stock, so a launch of forty is sixty hours of unpaid setup spread across products you have no evidence anyone wants. Five products, properly photographed, priced and described, will out-sell twenty half-finished ones and take a fifth of the time to build.
 
-If you're planning to use a free plan anywhere, there's usually a cap on it too. Sailo's is 20 products, and that number turns out to be a more useful constraint than it looks.
+If you're planning to use a free plan anywhere, there's usually a cap on it too. Sailo's is {{free_products}} products, and that number turns out to be a more useful constraint than it looks.
 
 ## What a product costs before it earns anything
 
@@ -70,7 +70,7 @@ One t-shirt design in four colours and five sizes is **one product**. It has 20 
 
 Sellers who think they need 60 listings usually need six. The rest is options, and putting them in as separate listings makes the catalogue unreadable and the stock impossible to track. Which photos have to be shot per variant and which can be shared is a real question with a practical answer, and it's covered in [how to handle sizes and variants](/en/blog/how-to-handle-sizes-and-variants).
 
-So when you hear "20 products", read it as "20 distinct things", not "20 items you can sell". For most makers that's a far bigger allowance than it sounds.
+So when you hear "{{free_products}} products", read it as "20 distinct things", not "{{free_products}} items you can sell". For most makers that's a far bigger allowance than it sounds.
 
 ## Where a 20-product cap genuinely bites
 
@@ -135,13 +135,13 @@ If you're in a range business, the answer isn't fewer products. It's better orde
 
 ## The honest limitation
 
-Sailo's free plan holds 20 products. That's a real cap, it isn't negotiable, and it will annoy you eventually.
+Sailo's free plan holds {{free_products}} products. That's a real cap, it isn't negotiable, and it will annoy you eventually.
 
 The awkward thing to say, given we'd rather you paid us, is that most people reading this should not be anywhere near it in year one. Twenty distinct products, each properly photographed and described, is a serious catalogue. If you're hitting the cap in month two, the likeliest explanation is that you've listed variants as separate products or you've listed things you don't really sell.
 
-When you do genuinely outgrow it, Pro is $9.99 a month for 250 products and Business is $19.99 for unlimited. If you're a one-of-one seller, you'll need one of those from the start, and that's a cost to build into your pricing rather than a surprise in month three.
+When you do genuinely outgrow it, Pro is ${{pro_monthly}} a month for {{pro_products}} products and Business is ${{business_monthly}} for unlimited. If you're a one-of-one seller, you'll need one of those from the start, and that's a cost to build into your pricing rather than a surprise in month three.
 
-One more thing to know before you plan around the free plan: it also keeps 30 days of analytics. Deciding which five products to keep wants more history than that, so if you're running lean, write your monthly totals down yourself. In 31 days the detail is gone and you'll be choosing from memory, which is the worst input available.
+One more thing to know before you plan around the free plan: it also keeps {{free_analytics_days}} days of analytics. Deciding which five products to keep wants more history than that, so if you're running lean, write your monthly totals down yourself. In 31 days the detail is gone and you'll be choosing from memory, which is the worst input available.
 
 ## What to do next
 

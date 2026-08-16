@@ -101,7 +101,7 @@ Then write the name down next to the order. A column in whatever you already use
 
 What you do with it: thank the referrer, specifically and quickly. A message the same week saying "Amaka, Chinedu said you sent him, thank you" costs one minute. People who get thanked refer again. People who don't, mostly don't, because they never found out it worked.
 
-If you want this tracked automatically rather than by hand, Sailo has affiliate links on the Business plan at $19.99 a month, which attributes the order to the referrer without you asking anyone anything. On free or Pro you're doing it manually with a question and a spreadsheet column. For most sellers the manual version is fine and honestly better, because the thank-you message is the bit that generates the next referral, and software doesn't send that.
+If you want this tracked automatically rather than by hand, Sailo has affiliate links on the Business plan at ${{business_monthly}} a month, which attributes the order to the referrer without you asking anyone anything. On free or Pro you're doing it manually with a question and a spreadsheet column. For most sellers the manual version is fine and honestly better, because the thank-you message is the bit that generates the next referral, and software doesn't send that.
 
 ## Halima's chain, in Abuja
 
@@ -160,7 +160,7 @@ It won't scale on its own past a certain point. A referral chain runs through so
 
 It's also slow to start and impossible to schedule. You cannot run a word-of-mouth campaign in a week because you need orders first, and each order takes its own time to produce a story. Which is why it's the wrong thing to lean on if you need money this month, and the right thing to build if you want month nine to be easier than month three.
 
-One more honest note on measurement: on Sailo's free plan you get 30 days of analytics, which is shorter than a referral chain takes to run. A tally in a notebook covers it, and costs nothing.
+One more honest note on measurement: on Sailo's free plan you get {{free_analytics_days}} days of analytics, which is shorter than a referral chain takes to run. A tally in a notebook covers it, and costs nothing.
 
 ## Do this on your next order
 

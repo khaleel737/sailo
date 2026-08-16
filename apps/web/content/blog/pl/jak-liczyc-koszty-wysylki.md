@@ -150,17 +150,17 @@ Sprawdzian jest jeden. Czy potrafisz odpowiedzieć na pytanie „ile wyjdzie z w
 
 ## Gdzie w tym jest Sailo
 
-Dostawa jest w zamówieniu osobną pozycją. Ma to konkretne przełożenie na pieniądze: prowizja 0,5%, którą Sailo pobiera przy płatności kartą, liczona jest od wartości towaru po rabacie, bez dostawy i bez podatku. Z tych 16 zł za przesyłkę do Sailo nie idzie ani grosz.
+Dostawa jest w zamówieniu osobną pozycją. Ma to konkretne przełożenie na pieniądze: prowizja {{fee_range}}%, którą Sailo pobiera przy płatności kartą, liczona jest od wartości towaru po rabacie, bez dostawy i bez podatku. Z tych 16 zł za przesyłkę do Sailo nie idzie ani grosz.
 
 Przy przelewie, pobraniu, WhatsAppie, Instagramie, Telegramie, e-mailu i telefonie Sailo nie bierze nic i nie dotyka pieniędzy w ogóle.
 
-Karta wymaga planu Business, 19,99 USD miesięcznie albo 191,90 USD rocznie, oraz konta Stripe zaakceptowanego do przyjmowania płatności. Stripe jest w Polsce dostępny, sprawdzone 6 sierpnia 2026 na stripe.com/global, ale sprawdź to sam przed opłaceniem planu.
+Karta wymaga planu Business, {{business_monthly}} USD miesięcznie albo {{business_yearly}} USD rocznie, oraz konta Stripe zaakceptowanego do przyjmowania płatności. Stripe jest w Polsce dostępny, sprawdzone 6 sierpnia 2026 na stripe.com/global, ale sprawdź to sam przed opłaceniem planu.
 
 ## Czego to nie policzy za ciebie
 
 Sailo nie zna twojego cennika u przewoźnika, nie kupuje etykiet i nie wie, ile kosztuje twój karton. Kwota dostawy w zamówieniu to liczba, którą wpisałeś ty. Jeśli wpisałeś 12 zł, a kosztuje cię 19,10 zł, to nikt cię nie ostrzeże, bo nikt poza tobą nie zna tej drugiej liczby.
 
-Warto też uczciwie powiedzieć, że cennik planów jest w dolarach. Przy planie Business to 19,99 USD miesięcznie plus przewalutowanie w twoim banku, więc twój realny koszt zmienia się z kursem. Przy trzydziestu ośmiu zamówieniach po 59 zł ta kwota musi się zwrócić z marży, a nie z nadziei, że karta podniesie konwersję.
+Warto też uczciwie powiedzieć, że cennik planów jest w dolarach. Przy planie Business to {{business_monthly}} USD miesięcznie plus przewalutowanie w twoim banku, więc twój realny koszt zmienia się z kursem. Przy trzydziestu ośmiu zamówieniach po 59 zł ta kwota musi się zwrócić z marży, a nie z nadziei, że karta podniesie konwersję.
 
 ## Co zrobić z najbliższymi dziesięcioma paczkami
 

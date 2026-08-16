@@ -76,7 +76,7 @@ Le virement ne coûte rien à personne, et Sailo ne prend aucune commission dess
 
 Beaucoup d'acheteurs proposeront aussi Lydia ou Paylib. Sailo n'a aucun rail de paiement français, ni Lydia, ni Paylib, ni PayPal, ni Wero. Vous pouvez coller votre identifiant dans le champ d'instructions du virement et confirmer l'encaissement à la main. Ça marche tous les jours, mais c'est une solution manuelle, pas une fonctionnalité.
 
-Pour la carte, c'est autre chose. Il faut la formule Business, 19,99 $ par mois ou 191,90 $ à l'année, et un compte Stripe validé. Au 6 août 2026, la France figure bien dans la liste des pays où Stripe ouvre les inscriptions : ce rail fonctionne réellement ici, ce n'est pas un « bientôt ». La liste bouge, revérifiez chez Stripe avant de bâtir dessus. Sailo prélève 0,5 % de la valeur des produits, après remise, hors livraison et hors taxes. Sur une bougie à 22 €, ça fait 11 centimes, plus la part de Stripe. À faible volume, ce n'est pas la commission qui coûte, c'est l'abonnement.
+Pour la carte, c'est autre chose. Il faut la formule Business, {{business_monthly}} $ par mois ou {{business_yearly}} $ à l'année, et un compte Stripe validé. Au 6 août 2026, la France figure bien dans la liste des pays où Stripe ouvre les inscriptions : ce rail fonctionne réellement ici, ce n'est pas un « bientôt ». La liste bouge, revérifiez chez Stripe avant de bâtir dessus. Sailo prélève {{fee_range}} % de la valeur des produits, après remise, hors livraison et hors taxes. Sur une bougie à 22 €, ça fait 11 centimes, plus la part de Stripe. À faible volume, ce n'est pas la commission qui coûte, c'est l'abonnement.
 
 ## Le port décide plus de paniers que le prix
 
@@ -114,7 +114,7 @@ Sailo vous donne un lien du type sailo.store/votrenom, actif dès l'inscription,
 
 Trois limites, à connaître avant de décider.
 
-La formule gratuite s'arrête à 20 produits et 30 jours de statistiques. Pour Camille, sept parfums et trois formats, ça passe largement. Pour quelqu'un qui vend des pièces uniques et en publie quatre par semaine, ça sature en un mois et demi.
+La formule gratuite s'arrête à {{free_products}} produits et {{free_analytics_days}} jours de statistiques. Pour Camille, sept parfums et trois formats, ça passe largement. Pour quelqu'un qui vend des pièces uniques et en publie quatre par semaine, ça sature en un mois et demi.
 
 Instagram reste un rail manuel. Sailo met la commande en forme et vous l'envoie au propre, mais c'est vous qui répondez dans les messages privés, vous qui vérifiez le virement, vous qui confirmez.
 

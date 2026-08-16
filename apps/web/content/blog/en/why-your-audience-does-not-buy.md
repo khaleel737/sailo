@@ -166,7 +166,7 @@ Work through it in this order, because each step is cheaper than the one after:
 5. Ask three people who nearly bought.
 6. Only then change the product.
 
-One honest constraint if you're doing this on Sailo's free plan: analytics there covers 30 days. That's enough to check last month's traffic against last month's sales, and it isn't enough to compare this September with last September, or to see the shape of a slow quarter. Pro extends it to a year and Business to three. If you're diagnosing a long-running decline rather than a flat launch, you'll need a longer window than the free plan gives you, or your own notes, which is what most people end up keeping anyway.
+One honest constraint if you're doing this on Sailo's free plan: analytics there covers {{free_analytics_days}} days. That's enough to check last month's traffic against last month's sales, and it isn't enough to compare this September with last September, or to see the shape of a slow quarter. Pro extends it to a year and Business to three. If you're diagnosing a long-running decline rather than a flat launch, you'll need a longer window than the free plan gives you, or your own notes, which is what most people end up keeping anyway.
 
 ## What to do this week
 

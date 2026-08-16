@@ -12,7 +12,7 @@ You made one video on Sunday. It went to TikTok, then Reels, then a Facebook pag
 
 Cross-posting is not the mistake. Cross-posting the *file* is.
 
-Repeat the idea, the product, the price and the shop link everywhere, every time, without apology. Re-export the video for each platform instead of downloading it from one and uploading it to the next, rewrite the first line of every caption, and delete any phrase that only makes sense somewhere else. That is most of the work, it takes about twenty minutes a week, and it is the difference between four posts and one post shown four times badly. A Sailo shop is $0 on the free plan for up to 20 products and sits at `sailo.store/yourname`, which is the one thing that genuinely should be identical on all four.
+Repeat the idea, the product, the price and the shop link everywhere, every time, without apology. Re-export the video for each platform instead of downloading it from one and uploading it to the next, rewrite the first line of every caption, and delete any phrase that only makes sense somewhere else. That is most of the work, it takes about twenty minutes a week, and it is the difference between four posts and one post shown four times badly. A Sailo shop is $0 on the free plan for up to {{free_products}} products and sits at `sailo.store/yourname`, which is the one thing that genuinely should be identical on all four.
 
 ## What is safe to repeat and what is not
 
@@ -124,7 +124,7 @@ There is also a version of this that is purely about your week. Four platforms d
 
 Sailo's free plan is $0 and takes no commission on cash on delivery, bank transfer, WhatsApp, Instagram, Telegram, email or phone orders. The money never goes through Sailo on those rails.
 
-The free plan holds **20 products**, and for a cross-poster that is the limit you will hit first. If you make crochet bags in eleven colourways and you list each one separately, you are at the ceiling before you have added the pouches. Two ways out: use options on one product rather than eleven listings, which is better for buyers anyway, or move to Pro at $9.99 a month for 250 products. Card payments are a separate thing again, needing the Business plan at $19.99 a month plus a Stripe account cleared for charges, with Sailo taking 0.5% of the goods after discounts and excluding delivery and tax. On Mika's ₱850 bag that is a little over four pesos. Her buyers pay cash on delivery anyway, so she is on the free plan and Sailo earns nothing from her, which is the honest shape of it.
+The free plan holds **{{free_products}} products**, and for a cross-poster that is the limit you will hit first. If you make crochet bags in eleven colourways and you list each one separately, you are at the ceiling before you have added the pouches. Two ways out: use options on one product rather than eleven listings, which is better for buyers anyway, or move to Pro at ${{pro_monthly}} a month for {{pro_products}} products. Card payments are a separate thing again, needing the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, with Sailo taking {{fee_range}}% of the goods after discounts and excluding delivery and tax. On Mika's ₱850 bag that is a little over four pesos. Her buyers pay cash on delivery anyway, so she is on the free plan and Sailo earns nothing from her, which is the honest shape of it.
 
 ## Do this with your next post
 

@@ -102,7 +102,7 @@ Wat je zonder juridisch advies alvast kunt doen: schrijf op je pagina in gewone 
 
 ## Wat Sailo hier wel en niet doet
 
-Wel: je bestelling houdt de productprijs en het bezorgbedrag apart. Dat is niet alleen netjes voor je administratie, het scheelt ook geld als je kaart gebruikt, want de commissie van 0,5% wordt gerekend over de producten na korting en dus zonder de bezorgkosten en zonder belasting. Wat jij voor verzending rekent, blijft buiten die berekening.
+Wel: je bestelling houdt de productprijs en het bezorgbedrag apart. Dat is niet alleen netjes voor je administratie, het scheelt ook geld als je kaart gebruikt, want de commissie van {{fee_range}}% wordt gerekend over de producten na korting en dus zonder de bezorgkosten en zonder belasting. Wat jij voor verzending rekent, blijft buiten die berekening.
 
 Op bankoverboeking, rembours en bestellingen via WhatsApp, Instagram, Telegram, e-mail of telefoon rekent Sailo helemaal geen commissie en raakt het het geld nooit aan.
 

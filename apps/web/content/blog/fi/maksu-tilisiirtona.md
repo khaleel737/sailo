@@ -152,11 +152,11 @@ Jos MobilePay on sinulle se nappi, jota ilman et pärjää, tämä on poissulkev
 
 Kortti toimii Suomessa, koska Stripe on täällä saatavilla. Tarkistettu 6.8.2026 osoitteessa stripe.com/global. Katso itse ennen kuin maksat mistään, koska lista muuttuu.
 
-Kortti vaatii Business-tason, joka on 19,99 dollaria kuussa tai 191,90 dollaria vuodessa, sekä Stripe-tilin, jonka Stripe on hyväksynyt maksujen vastaanottamiseen. Sailo ottaa siitä 0,5 prosenttia tavaran arvosta alennuksen jälkeen, ilman toimituskulua ja ilman arvonlisäveroa. Stripen oma osuus tulee tämän päälle ja se lukee Stripen hinnastossa.
+Kortti vaatii Business-tason, joka on {{business_monthly}} dollaria kuussa tai {{business_yearly}} dollaria vuodessa, sekä Stripe-tilin, jonka Stripe on hyväksynyt maksujen vastaanottamiseen. Sailo ottaa siitä {{fee_range}} prosenttia tavaran arvosta alennuksen jälkeen, ilman toimituskulua ja ilman arvonlisäveroa. Stripen oma osuus tulee tämän päälle ja se lukee Stripen hinnastossa.
 
 Lasketaan Mikon luvuilla. 42 tilausta, keskiostos 27,40 euroa, josta toimitusta 5,90 euroa. Tavaraa siis noin 21,50 euroa tilauksessa, eli 903 euroa kuussa. Sailon osuus siitä olisi 4,52 euroa.
 
-Neljä ja puoli euroa. Tilaus maksaa 19,99 dollaria. Prosentti ei ole se kustannus. Kuukausimaksu on.
+Neljä ja puoli euroa. Tilaus maksaa {{business_monthly}} dollaria. Prosentti ei ole se kustannus. Kuukausimaksu on.
 
 Mikko ei tarvitse korttia vielä. Hänen ostajansa ovat pääosin Turusta ja lähikunnista, ja he ovat tottuneet maksamaan tilisiirrolla, koska hän on kertonut sen etukäteen. Kortti alkaisi kannattaa siinä kohtaa, kun hän myy muualle Suomeen ihmisille, jotka eivät tunne häntä, tai kun pankin katsominen ei enää mahdu päivään.
 

@@ -133,7 +133,7 @@ Il faut le dire clairement avant que vous n'organisiez votre boutique autour d'u
 
 En pratique, pour le relais : demandez le point souhaité dans le champ de notes ou dans le message, ou écrivez à l'acheteur après la commande. Un aller-retour. Ce n'est pas élégant, c'est honnête, et ça fonctionne tous les jours pour des gens qui expédient quarante colis par mois.
 
-Ce que Sailo fait bien ici : le total affiché à l'acheteur inclut le port que vous avez saisi, donc personne n'additionne de tête. Les commandes qui arrivent par WhatsApp sont pré-rédigées avec l'article, les options, l'adresse et le total. Et si vous encaissez par virement ou en paiement à la livraison, Sailo ne prend aucune commission et ne touche jamais l'argent. La seule commission qui existe est de 0,5 % sur les paiements par carte, calculée hors livraison.
+Ce que Sailo fait bien ici : le total affiché à l'acheteur inclut le port que vous avez saisi, donc personne n'additionne de tête. Les commandes qui arrivent par WhatsApp sont pré-rédigées avec l'article, les options, l'adresse et le total. Et si vous encaissez par virement ou en paiement à la livraison, Sailo ne prend aucune commission et ne touche jamais l'argent. La seule commission qui existe est de {{fee_range}} % sur les paiements par carte, calculée hors livraison.
 
 C'est aussi pour ça que [Vinted ou sa propre boutique](/fr/blog/vinted-ou-sa-propre-boutique) reste une vraie question. Sur Vinted, le choix du relais est intégré et l'acheteur ne vous demande rien. Vinted amène aussi ses propres acheteurs. Votre lien, lui, ne les amène pas, et c'est le point le plus honnête de cette comparaison.
 

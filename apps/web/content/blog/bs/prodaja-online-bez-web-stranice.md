@@ -14,7 +14,7 @@ Ne treba ti web stranica. Treba ti jedan link koji jeste radnja, sa cijenama i d
 
 Da to odmah skinemo s dnevnog reda, jer je to najskuplja zabluda u ovom poslu.
 
-Sailo kartično plaćanje ide isključivo preko Stripea. Provjereno 6. augusta 2026. na stripe.com/global, Bosna i Hercegovina nije na Stripeovoj listi podržanih zemalja. Znači da dugme za plaćanje karticom na tvojoj stranici ne možeš dobiti ni po koju cijenu, jer nema tog plana i nema te uplate koja to mijenja. Nemoj plaćati Business plan, 19,99 dolara mjesečno ili 191,90 godišnje, očekujući karticu. Taj plan ti donosi neograničen broj proizvoda, tri godine analitike, kupone i afilijate. Karticu u BiH ne donosi. Lista zemalja se s vremenom mijenja, pa prije nego išta platiš otvori stripe.com/global i provjeri sam.
+Sailo kartično plaćanje ide isključivo preko Stripea. Provjereno 6. augusta 2026. na stripe.com/global, Bosna i Hercegovina nije na Stripeovoj listi podržanih zemalja. Znači da dugme za plaćanje karticom na tvojoj stranici ne možeš dobiti ni po koju cijenu, jer nema tog plana i nema te uplate koja to mijenja. Nemoj plaćati Business plan, {{business_monthly}} dolara mjesečno ili {{business_yearly}} godišnje, očekujući karticu. Taj plan ti donosi neograničen broj proizvoda, tri godine analitike, kupone i afilijate. Karticu u BiH ne donosi. Lista zemalja se s vremenom mijenja, pa prije nego išta platiš otvori stripe.com/global i provjeri sam.
 
 Ostatak teksta je o onome što ostaje. A ostaje dosta.
 
@@ -51,7 +51,7 @@ Ovo je cijela lista, nema devetog:
 | Bankovni prijenos | ti | podaci računa | redovno |
 | Pouzeće | kurir, pa ti | bilješke o dostavi | najviše od svega |
 
-Kod svih osim kartice Sailo ne dodiruje novac i ne uzima ništa. Kod kartice uzima 0,5 posto od robe, ali taj kanal u BiH ionako ne postoji, pa ta brojka za tebe nije ni relevantna. Bitno je da nikad ne kažeš sam sebi „bez provizije" kao opštu rečenicu, nego znaš na koji kanal misliš.
+Kod svih osim kartice Sailo ne dodiruje novac i ne uzima ništa. Kod kartice uzima {{fee_range}} posto od robe, ali taj kanal u BiH ionako ne postoji, pa ta brojka za tebe nije ni relevantna. Bitno je da nikad ne kažeš sam sebi „bez provizije" kao opštu rečenicu, nego znaš na koji kanal misliš.
 
 ### Viber nije jedan od tih kanala
 
@@ -81,7 +81,7 @@ U malom tržištu to nije apstraktna šteta. Pošalješ jedan loš paket u Zenic
 
 > Stavi u radnju samo ono što možeš spakovati danas. Sve ostalo dodaješ kad stigne.
 
-Besplatan plan ide do 20 proizvoda, što je za početak najčešće više nego što ti stvarno treba. Ako ti je tijesno, Pro plan je 9,99 dolara mjesečno ili 95,90 godišnje i diže te na 250 proizvoda, godinu dana analitike, izvoz u CSV i skida Sailo oznaku sa stranice.
+Besplatan plan ide do {{free_products}} proizvoda, što je za početak najčešće više nego što ti stvarno treba. Ako ti je tijesno, Pro plan je {{pro_monthly}} dolara mjesečno ili {{pro_yearly}} godišnje i diže te na {{pro_products}} proizvoda, godinu dana analitike, izvoz u CSV i skida Sailo oznaku sa stranice.
 
 ## Deveti dan, kad sve krene naopako
 

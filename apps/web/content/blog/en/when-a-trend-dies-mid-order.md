@@ -119,9 +119,9 @@ Manual rails cost you nothing, because Sailo never touches that money. Bank tran
 
 Three honest limits.
 
-Discount coupons are a Business plan feature, and Business is $19.99 a month. So a coupon-code clearance costs $19.99 before it recovers a peso. On the free plan or on Pro at $9.99, you clear by editing prices by hand, which works fine but means you can't run a code for a specific group of buyers.
+Discount coupons are a Business plan feature, and Business is ${{business_monthly}} a month. So a coupon-code clearance costs ${{business_monthly}} before it recovers a peso. On the free plan or on Pro at ${{pro_monthly}}, you clear by editing prices by hand, which works fine but means you can't run a code for a specific group of buyers.
 
-The free plan caps at 20 products, so a dead line in four variants is a fifth of your catalogue sitting there doing nothing. Hiding or removing it is the right move regardless.
+The free plan caps at {{free_products}} products, so a dead line in four variants is a fifth of your catalogue sitting there doing nothing. Hiding or removing it is the right move regardless.
 
 And Sailo can't tell you a bank transfer arrived. Only your bank can. A clearance push generates a lot of small payments to confirm by hand, and 80 of them is a genuinely different job from 8. [Keeping track of who has paid](/en/blog/keeping-track-of-who-has-paid) is the system worth having in place before you start rather than after.
 

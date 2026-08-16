@@ -151,7 +151,7 @@ Two things help, and neither is inspirational. Know the shape of your year, so s
 
 This is where the honest limitation is worth naming, because it bites exactly on this topic.
 
-Sailo's free plan keeps 30 days of analytics. Thirty days is fine for checking whether last week's post did anything and useless for seasonality, because seasonality is a comparison between this June and last June. Pro at $9.99 a month holds a year, which is the minimum for a year-on-year comparison, and Business holds three.
+Sailo's free plan keeps {{free_analytics_days}} days of analytics. {{free_analytics_days}} days is fine for checking whether a post did anything and useless for seasonality, because seasonality is a comparison between this June and last June. Pro at ${{pro_monthly}} a month holds a year, which is the minimum for a year-on-year comparison, and Business holds three.
 
 Even three years runs out eventually. So keep your own tally somewhere permanent: a spreadsheet with one row per month, orders and revenue, updated on the first of the month. It takes two minutes and it's the only record that will still exist in year five. [How to read your own numbers](/en/blog/how-to-read-your-own-numbers) covers what's worth putting in it.
 

@@ -188,7 +188,7 @@ Chuyển khoản có các ô riêng cho tên ngân hàng, tên chủ tài khoả
 
 Đánh giá sản phẩm có trên mọi gói. Khách để tên, chấm từ 1 tới 5 sao, viết chữ nếu muốn, và không có gì hiện lên trang cho tới khi bạn duyệt. Đánh giá thật của người đã mua làm giảm sự do dự ở cửa, mà do dự ở cửa chính là bom hàng.
 
-Về phí: với các kênh thủ công, gồm chuyển khoản ngân hàng, COD, WhatsApp, Instagram, Telegram, email và điện thoại, Sailo không chạm vào tiền và không thu gì cả. Riêng thanh toán thẻ có phí 0,5% trên giá trị hàng sau giảm giá, không tính phí giao hàng và thuế, thu dưới dạng Stripe application fee, và cần gói Business 19,99 USD/tháng cùng một tài khoản Stripe đã được duyệt.
+Về phí: với các kênh thủ công, gồm chuyển khoản ngân hàng, COD, WhatsApp, Instagram, Telegram, email và điện thoại, Sailo không chạm vào tiền và không thu gì cả. Riêng thanh toán thẻ có phí {{fee_range}}% trên giá trị hàng sau giảm giá, không tính phí giao hàng và thuế, thu dưới dạng Stripe application fee, và cần gói Business {{business_monthly}} USD/tháng cùng một tài khoản Stripe đã được duyệt.
 
 Bây giờ ba thứ Sailo không làm, nói thẳng vì bài này là bài về tiền của bạn.
 
@@ -196,7 +196,7 @@ Thứ nhất, **không có tính năng đặt cọc**. Cọc là một đơn ri�
 
 Thứ hai, **không có danh sách đen, không có xác minh số điện thoại, không có chấm điểm khách hàng, và không kết nối với bên vận chuyển nào**. Cuộc gọi xác nhận là bạn gọi. Đối soát là bạn đối soát.
 
-Thứ ba, và đây là thứ ảnh hưởng tới túi tiền nhiều nhất: kênh thẻ của Sailo chạy trên Stripe và chỉ Stripe. Tính đến tháng 8 năm 2026, Việt Nam không nằm trong danh sách quốc gia Stripe hỗ trợ trên stripe.com/global. Nghĩa là nút thanh toán thẻ có thể không dùng được với người bán ở Việt Nam, dù trả gói nào. **Đừng trả 19,99 USD một tháng để chờ nút đó hiện ra.** Danh sách của Stripe có thay đổi, nên tự mở stripe.com/global kiểm tra trước khi quyết định bất cứ điều gì.
+Thứ ba, và đây là thứ ảnh hưởng tới túi tiền nhiều nhất: kênh thẻ của Sailo chạy trên Stripe và chỉ Stripe. Tính đến tháng 8 năm 2026, Việt Nam không nằm trong danh sách quốc gia Stripe hỗ trợ trên stripe.com/global. Nghĩa là nút thanh toán thẻ có thể không dùng được với người bán ở Việt Nam, dù trả gói nào. **Đừng trả {{business_monthly}} USD một tháng để chờ nút đó hiện ra.** Danh sách của Stripe có thay đổi, nên tự mở stripe.com/global kiểm tra trước khi quyết định bất cứ điều gì.
 
 Điều đó nghe như tin xấu, nhưng với bài này thì không hẳn. Công cụ chống bom hàng mạnh nhất bạn có là chuyển khoản trước, và chuyển khoản là kênh Sailo không thu của bạn một đồng nào.
 

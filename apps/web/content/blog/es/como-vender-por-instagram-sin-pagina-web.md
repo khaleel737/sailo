@@ -81,7 +81,7 @@ Esta es la parte donde la mayoría de los artículos sobre el tema te dicen que 
 
 **Contra reembolso.** El comprador paga en efectivo cuando recibe. Elimina la fricción de la confianza y la reemplaza por el riesgo de que nadie abra la puerta. [Contra reembolso para vendedores](/es/blog/contra-reembolso-para-vendedores) tiene las cuentas de cuánto te cuesta realmente un paquete rechazado.
 
-**Tarjeta.** Aquí hay que ser preciso, porque es donde más se exagera. En Sailo, el botón de tarjeta funciona sobre Stripe y solo sobre Stripe. Requiere el plan Business, que cuesta 19,99 USD al mes o 191,90 USD al año, más una cuenta de Stripe aprobada para recibir cargos. Sailo cobra 0,5% del valor de los productos, después de descuentos y sin contar el envío ni los impuestos, y el dinero cae directamente en tu cuenta de Stripe: nunca pasa por Sailo.
+**Tarjeta.** Aquí hay que ser preciso, porque es donde más se exagera. En Sailo, el botón de tarjeta funciona sobre Stripe y solo sobre Stripe. Requiere el plan Business, que cuesta {{business_monthly}} USD al mes o {{business_yearly}} USD al año, más una cuenta de Stripe aprobada para recibir cargos. Sailo cobra {{fee_range}}% del valor de los productos, después de descuentos y sin contar el envío ni los impuestos, y el dinero cae directamente en tu cuenta de Stripe: nunca pasa por Sailo.
 
 Y falta el detalle que decide el asunto en esta región. En agosto de 2026, la página de países de Stripe listaba a Brasil y México como los únicos países de América Latina donde se puede abrir una cuenta. Colombia, Argentina, Chile, Perú, Ecuador y Uruguay no estaban en esa lista. Si vendes desde uno de esos países, el botón de tarjeta no se te va a activar por pagar el plan más caro. Revisa stripe.com/global antes de decidir nada, porque la lista cambia.
 
@@ -111,7 +111,7 @@ Vender por Instagram sin página web te ahorra el sitio web. No te ahorra el tra
 
 En todos los medios de pago manuales, tú confirmas. Sailo no puede saber si una transferencia llegó, porque no está conectado a tu banco; solo tu banco lo sabe. Cuando marcas un pedido como pagado, es porque tú lo miraste. Nadie lo hace por ti, y si te vas de viaje, no se hace.
 
-El plan gratuito llega hasta 20 productos y guarda 30 días de estadísticas. Para la mayoría de la gente que empieza eso sobra, pero si vendes ropa con tallas y colores como productos separados, 20 se acaban rápido. El plan Pro cuesta 9,99 USD al mes o 95,90 USD al año y sube a 250 productos y un año de estadísticas, y tampoco incluye tarjeta: la tarjeta solo está en Business.
+El plan gratuito llega hasta {{free_products}} productos y guarda 30 días de estadísticas. Para la mayoría de la gente que empieza eso sobra, pero si vendes ropa con tallas y colores como productos separados, 20 se acaban rápido. El plan Pro cuesta {{pro_monthly}} USD al mes o {{pro_yearly}} USD al año y sube a {{pro_products}} productos y un año de estadísticas, y tampoco incluye tarjeta: la tarjeta solo está en Business.
 
 Tampoco hay aplicación propia. Se administra desde el navegador del teléfono, que en la práctica está bien, pero no vas a encontrar un ícono en tu pantalla de inicio.
 

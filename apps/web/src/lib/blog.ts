@@ -4,6 +4,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import matter from "gray-matter";
 import { Marked } from "marked";
 import { DEFAULT_LOCALE, isLocale, LOCALES, type Locale } from "@sailo/i18n/config";
+import { applyFacts } from "@/lib/blog-facts";
 
 /*
  * The blog, read off disk.
@@ -301,7 +302,7 @@ export async function getArticleIn(slug: string, locale: Locale): Promise<Articl
   if (!available?.includes(wanted)) return null;
 
   const { body, ...rest } = await readArticle(slug, wanted);
-  return { ...rest, html: await marked.parse(body) };
+  return { ...rest, html: await marked.parse(applyFacts(body)) };
 }
 
 /**
@@ -398,5 +399,5 @@ export async function getArticle(
   if (!from) return null;
 
   const { body, ...rest } = await readArticle(slug, from);
-  return { ...rest, html: await marked.parse(body) };
+  return { ...rest, html: await marked.parse(applyFacts(body)) };
 }

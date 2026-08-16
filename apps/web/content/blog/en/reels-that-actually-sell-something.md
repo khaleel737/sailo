@@ -12,7 +12,7 @@ Twenty-six thousand views, 340 saves, eleven new followers and not one order. Yo
 
 The reel was probably fine. The first second was not, and the caption was doing a job it cannot do.
 
-Three things decide whether a reel sells. **The first second** has to contain the product, not a title card or your face saying "so". **The middle** has to show the thing being used, worn, poured, opened, worn out, rather than sitting on a table looking expensive. And **the price has to be on screen**, because the caption is not the sale: a caption is not tappable on Instagram, it truncates at roughly 125 characters in the feed, and most of the people who buy from you will never open it. A Sailo shop is $0 on the free plan for up to 20 products and sits at `sailo.store/yourname`, which is short enough to type across the bottom of a frame.
+Three things decide whether a reel sells. **The first second** has to contain the product, not a title card or your face saying "so". **The middle** has to show the thing being used, worn, poured, opened, worn out, rather than sitting on a table looking expensive. And **the price has to be on screen**, because the caption is not the sale: a caption is not tappable on Instagram, it truncates at roughly 125 characters in the feed, and most of the people who buy from you will never open it. A Sailo shop is $0 on the free plan for up to {{free_products}} products and sits at `sailo.store/yourname`, which is short enough to type across the bottom of a frame.
 
 ## The first second, and the half-second you should delete
 
@@ -127,9 +127,9 @@ And if you are making one reel a week and it is taking you three hours, that is 
 
 ## What this costs
 
-Sailo's free plan is $0, holds 20 products, and takes no commission on WhatsApp, Instagram, Telegram, bank transfer, cash on delivery, email or phone orders, because Sailo never touches the money on those rails.
+Sailo's free plan is $0, holds {{free_products}} products, and takes no commission on WhatsApp, Instagram, Telegram, bank transfer, cash on delivery, email or phone orders, because Sailo never touches the money on those rails.
 
-Card is the paid one. It needs the Business plan at $19.99 a month plus a Stripe account that Stripe has cleared for charges, and Sailo takes 0.5% of the goods on each card order, after any discount and excluding delivery and tax. On Layla's AED 120 roller that is around 60 fils to Sailo, plus Stripe's own fee.
+Card is the paid one. It needs the Business plan at ${{business_monthly}} a month plus a Stripe account that Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after any discount and excluding delivery and tax. On Layla's AED 120 roller that is around 60 fils to Sailo, plus Stripe's own fee.
 
 For her, though, the honest position is that she does not use it. Her buyers pay by bank transfer or on delivery, the way Gulf buyers largely do, and Sailo cannot tell her when a transfer lands. Her bank can. She checks in the evening and marks orders paid herself, and on that setup Sailo earns nothing from her at all. If your buyers are the same, stay on the free plan until somebody actually asks to pay by card.
 

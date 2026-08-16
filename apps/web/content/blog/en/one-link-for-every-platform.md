@@ -104,7 +104,7 @@ Three rules that stop this becoming a mess:
 
 That third rule is the one people get wrong. A tagged URL on a printed card is worse than no tag at all, because it turns a sayable link into an unsayable one.
 
-Analytics retention on the free plan is 30 days, which is enough to answer "did that reel do anything" and not enough to answer "is October always slow". Pro holds a year, Business holds three. If you're going to build a habit around the campaign report, the 30-day window is the constraint to plan around. There's more on reading these numbers without over-reacting to them in [how to read your own numbers](/en/blog/how-to-read-your-own-numbers).
+Analytics retention on the free plan is {{free_analytics_days}} days, which is enough to answer "did that reel do anything" and not enough to answer "is October always slow". Pro holds a year, Business holds three. If you're going to build a habit around the campaign report, the 30-day window is the constraint to plan around. There's more on reading these numbers without over-reacting to them in [how to read your own numbers](/en/blog/how-to-read-your-own-numbers).
 
 ## Devon's three platforms and one page in Columbus
 
@@ -141,7 +141,7 @@ Two limits worth knowing before you commit a handle to print.
 
 Sailo doesn't support a custom domain. Your address is `sailo.store/yourname` and there's no way to put `frankiemakes.com` on it. For most sellers that's fine, and `sailo.store/frankiemakes` is shorter and more sayable than most custom domains anyway. If having your own domain on the address bar matters to you, for a wholesale buyer, for a grant application, for your own pride, this isn't the tool and you should know that now rather than after you've printed 500 cards.
 
-The other one is the free plan's 20-product ceiling. If you have 40 designs, one link for everything means either a paid plan at $9.99 a month for 250 products, or a genuine decision about which 20 are worth listing. The second option is usually better than sellers expect.
+The other one is the free plan's 20-product ceiling. If you have 40 designs, one link for everything means either a paid plan at ${{pro_monthly}} a month for {{pro_products}} products, or a genuine decision about which 20 are worth listing. The second option is usually better than sellers expect.
 
 ## Do the boring twenty minutes
 

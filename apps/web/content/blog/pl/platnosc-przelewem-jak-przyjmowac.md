@@ -103,7 +103,7 @@ Jeśli BLIK jest tym, na czym stoi cała twoja sprzedaż, powiedz to sobie uczci
 | Przelew zwykły | Po sesji Elixir, ten sam albo następny dzień roboczy | Nic ponad prowizje twojego banku | Kupujący zniecierpliwiony czekaniem |
 | Przelew natychmiastowy | W kilka minut | Opłatę ponosi kupujący | Nie każdy wie, że ma taką opcję |
 | Pobranie | Kilka dni roboczych po doręczeniu | Dopłata do przesyłki, zależna od przewoźnika | Odmowa odbioru i koszt w obie strony |
-| Karta | Po rozliczeniu przez Stripe na twoje konto Stripe | Prowizja Stripe plus 0,5% dla Sailo | Wymaga planu Business i zaakceptowanego konta |
+| Karta | Po rozliczeniu przez Stripe na twoje konto Stripe | Prowizja Stripe plus {{fee_range}}% dla Sailo | Wymaga planu Business i zaakceptowanego konta |
 
 Ta tabela jest jedynym miejscem, w którym warto porównywać metody płatności, bo porównywanie ich po „wygodzie" nic nie daje. Liczy się moment, w którym pieniądze są twoje, i to, co się dzieje, gdy transakcja idzie nie tak.
 
@@ -142,7 +142,7 @@ Przy przelewie bankowym wypełniasz nazwę banku, nazwę odbiorcy, numer konta, 
 
 Przy przelewie, pobraniu, WhatsAppie, Instagramie, Telegramie, e-mailu i telefonie Sailo nie bierze prowizji i nie dotyka pieniędzy. Nigdy. Pieniądze idą bezpośrednio między kupującym a tobą.
 
-Karta działa inaczej. Trafia na twoje własne konto Stripe, Sailo pobiera 0,5% od wartości towaru po rabacie, bez dostawy i bez podatku, i wymaga planu Business za 19,99 USD miesięcznie albo 191,90 USD rocznie oraz konta Stripe zaakceptowanego do przyjmowania płatności. Stripe jest w Polsce dostępny, sprawdzone 6 sierpnia 2026 na stripe.com/global, ale lista krajów się zmienia, więc sprawdź ją, zanim opłacisz plan.
+Karta działa inaczej. Trafia na twoje własne konto Stripe, Sailo pobiera {{fee_range}}% od wartości towaru po rabacie, bez dostawy i bez podatku, i wymaga planu Business za {{business_monthly}} USD miesięcznie albo {{business_yearly}} USD rocznie oraz konta Stripe zaakceptowanego do przyjmowania płatności. Stripe jest w Polsce dostępny, sprawdzone 6 sierpnia 2026 na stripe.com/global, ale lista krajów się zmienia, więc sprawdź ją, zanim opłacisz plan.
 
 Zamówienie z WhatsAppa przychodzi do ciebie gotowe: produkt, warianty, adres i suma. Nie musisz go składać z sześciu wiadomości.
 

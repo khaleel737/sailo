@@ -176,9 +176,9 @@ Fotoğraf trafik getirmiyor. İyi kare, seni bulan kişinin sipariş verme ihtim
 
 Kırpma ve düzenleme sende kalıyor. Yüklediğin kare neyse kartta duran o.
 
-Ücretsiz plan 20 ürün ve 30 gün istatistik tutuyor. Takıda ya da giyimde her rengi ve her bedeni ayrı ürün olarak yazıyorsan 20 çok çabuk doluyor; Deniz'in 22 ürünü zaten o sınırın üstünde. Pro 9,99 USD/ay ya da 95,90 USD/yıl, 250 ürün ve bir yıl istatistik veriyor, Sailo rozetini de kaldırıyor. Kart yöntemi Pro'da yok.
+Ücretsiz plan {{free_products}} ürün ve {{free_analytics_days}} gün istatistik tutuyor. Takıda ya da giyimde her rengi ve her bedeni ayrı ürün olarak yazıyorsan 20 çok çabuk doluyor; Deniz'in 22 ürünü zaten o sınırın üstünde. Pro {{pro_monthly}} USD/ay ya da {{pro_yearly}} USD/yıl, {{pro_products}} ürün ve bir yıl istatistik veriyor, Sailo rozetini de kaldırıyor. Kart yöntemi Pro'da yok.
 
-Kart tarafında net konuşayım, çünkü burası yanlış planlanıyor. Kart yöntemi Stripe üzerinde ve sadece Stripe üzerinde çalışıyor, Business planı gerektiriyor (19,99 USD/ay ya da 191,90 USD/yıl), ve düğmenin açılması Stripe'ın senin ülkenden hesap kabul etmesine bağlı. Stripe'ın ülke listesi zaman içinde değişiyor. Abone olmadan önce stripe.com/global adresini kendin aç ve Türkiye'yi orada ara.
+Kart tarafında net konuşayım, çünkü burası yanlış planlanıyor. Kart yöntemi Stripe üzerinde ve sadece Stripe üzerinde çalışıyor, Business planı gerektiriyor ({{business_monthly}} USD/ay ya da {{business_yearly}} USD/yıl), ve düğmenin açılması Stripe'ın senin ülkenden hesap kabul etmesine bağlı. Stripe'ın ülke listesi zaman içinde değişiyor. Abone olmadan önce stripe.com/global adresini kendin aç ve Türkiye'yi orada ara.
 
 Fotoğraf için ise hiçbir plana para vermene gerek yok. Ücretsiz planda çektiğin kareler, ücretli planda çektiğin karelerle birebir aynı görünüyor. Önce fotoğrafı düzelt. Para vermeyi sonra düşünürsün, ve büyük ihtimalle uzun süre düşünmezsin.
 

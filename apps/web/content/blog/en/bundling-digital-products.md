@@ -134,9 +134,9 @@ The thing she'd tell you: she should have looked at repeat purchases before laun
 
 ## Coupons, and what they cost
 
-If you'd rather run a bundle as a discount code than as a separate listing, that's a Business plan feature on Sailo, at $19.99 a month. So is the affiliate system. Worth knowing before you plan a launch around a code.
+If you'd rather run a bundle as a discount code than as a separate listing, that's a Business plan feature on Sailo, at ${{business_monthly}} a month. So is the affiliate system. Worth knowing before you plan a launch around a code.
 
-That's not a reason to upgrade on its own. A separate bundle product costs you nothing, works on the free plan, and is arguably clearer to the buyer than a code they have to remember. The free plan does cap you at 20 products, and every bundle is another listing, so a catalogue of eight files with four bundle combinations is fifteen of your twenty gone.
+That's not a reason to upgrade on its own. A separate bundle product costs you nothing, works on the free plan, and is arguably clearer to the buyer than a code they have to remember. The free plan does cap you at {{free_products}} products, and every bundle is another listing, so a catalogue of eight files with four bundle combinations is fifteen of your twenty gone.
 
 The honest version: most people building their first bundle do not need to upgrade. Build it as a product, price it at 2 to 2.5 times a single item, and see whether it moves before you pay for anything.
 

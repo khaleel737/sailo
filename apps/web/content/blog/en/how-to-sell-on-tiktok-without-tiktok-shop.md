@@ -12,7 +12,7 @@ Your video did 92,000 views overnight. Eleven people commented "where do I buy t
 
 That gap has one cause. TikTok is excellent at making people want something and gives you almost nowhere to sell it.
 
-You sell on TikTok without TikTok Shop by accepting that split and building for it: TikTok does discovery, and a page you control does the price, the options and the order. The bridge is your bio link, a spoken shop name, and a caption that assumes half your viewers will never tap anything. That's the whole method. A Sailo shop is free at $0 for up to 20 products and lives at `sailo.store/yourname`, which matters here for one reason you'll see in a minute: it's short enough to say out loud in a video.
+You sell on TikTok without TikTok Shop by accepting that split and building for it: TikTok does discovery, and a page you control does the price, the options and the order. The bridge is your bio link, a spoken shop name, and a caption that assumes half your viewers will never tap anything. That's the whole method. A Sailo shop is free at $0 for up to {{free_products}} products and lives at `sailo.store/yourname`, which matters here for one reason you'll see in a minute: it's short enough to say out loud in a video.
 
 ## TikTok Shop isn't available everywhere, and that's often the whole answer
 
@@ -130,9 +130,9 @@ Plenty of sellers run both. Shop for the cheap volume item, own page for everyth
 
 ## What this costs, honestly
 
-Sailo's free plan is $0, holds 20 products and takes no commission on bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email or phone orders, because the money never passes through Sailo.
+Sailo's free plan is $0, holds {{free_products}} products and takes no commission on bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email or phone orders, because the money never passes through Sailo.
 
-Card payments are where it stops being free, and TikTok is exactly where you'll feel it. A viewer who found you fifteen seconds ago wants to tap and pay, not open their banking app and type your account number. Taking cards needs the Business plan at $19.99 a month plus a Stripe account Stripe has cleared for charges, and Sailo takes 0.5% of the goods on each card order, after discounts and excluding delivery and tax. On Deja's $28 kit that's fourteen cents to Sailo, on top of Stripe's own fee. The fourteen cents isn't the issue. The $19.99 is, if you're doing nine orders a month and half your traffic is impulse.
+Card payments are where it stops being free, and TikTok is exactly where you'll feel it. A viewer who found you fifteen seconds ago wants to tap and pay, not open their banking app and type your account number. Taking cards needs the Business plan at ${{business_monthly}} a month plus a Stripe account Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after discounts and excluding delivery and tax. On Deja's $28 kit that's fourteen cents to Sailo, on top of Stripe's own fee. The fourteen cents isn't the issue. The ${{business_monthly}} is, if you're doing nine orders a month and half your traffic is impulse.
 
 There's no mobile money rail either. No M-Pesa, no GCash, no UPI. You can put a till number or UPI ID into the bank transfer instructions and buyers will see it at checkout, but you're the one matching payments to orders afterwards.
 

@@ -154,7 +154,7 @@ Customer photos will not carry a product nobody wants. If you've got photos from
 
 They also don't replace a written review. A photo says it exists. A sentence says it was worth £22. You want both, and asking for both in the same message is more efficient than asking twice.
 
-On the Sailo side, one thing worth saying plainly: there's no Sailo app. You'll be doing all of this in a phone browser, cropping in your camera roll first and uploading to the product from there. It works, and it's a couple more taps than a native app would be. If you're on the free plan you've also got 20 product slots, which is fine while you're photographing one listing properly and less fine once you've got four colourways of three things.
+On the Sailo side, one thing worth saying plainly: there's no Sailo app. You'll be doing all of this in a phone browser, cropping in your camera roll first and uploading to the product from there. It works, and it's a couple more taps than a native app would be. If you're on the free plan you've also got {{free_products}} product slots, which is fine while you're photographing one listing properly and less fine once you've got four colourways of three things.
 
 ## Do this today
 

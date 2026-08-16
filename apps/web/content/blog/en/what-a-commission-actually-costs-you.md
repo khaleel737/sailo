@@ -10,7 +10,7 @@ tags: [comparison, fees]
 
 Ten percent sounded fine when somebody said it out loud. Then you added up a year of it and the number was a holiday.
 
-The short answer: a commission is cheap when your volume is low and brutal when it's high, and a flat subscription is exactly the reverse. There's a specific order count where they cross, it's computable in one line, and for a $19.99 monthly fee against a 10% commission it lands at about $210 of monthly sales. Below that, the percentage wins. Above it, the subscription does, and it keeps winning by a wider margin every month you grow.
+The short answer: a commission is cheap when your volume is low and brutal when it's high, and a flat subscription is exactly the reverse. There's a specific order count where they cross, it's computable in one line, and for a ${{business_monthly}} monthly fee against a 10% commission it lands at about $210 of monthly sales. Below that, the percentage wins. Above it, the subscription does, and it keeps winning by a wider margin every month you grow.
 
 The second answer, which matters more: measure a commission against your margin, not your revenue. A 10% cut on a $40 item with $13 of margin in it is taking 30.8% of your actual profit. That's the number that should decide anything.
 
@@ -20,21 +20,21 @@ The second answer, which matters more: measure a commission against your margin,
 
 **A percentage plus a fixed amount.** 10% + $0.50. Behaves like a much higher percentage on cheap items and converges toward the headline rate as prices rise. On a $6 product, that 50 cents alone is 8.3%.
 
-**A flat subscription.** $9.99, $19.99, $29. Costs the same whether you sell two things or two thousand. Terrible at low volume, excellent at high volume, and the only shape where growth doesn't cost you more.
+**A flat subscription.** ${{pro_monthly}}, ${{business_monthly}}, $29. Costs the same whether you sell two things or two thousand. Terrible at low volume, excellent at high volume, and the only shape where growth doesn't cost you more.
 
 Most real products are a blend. A subscription with a small percentage, or a percentage with a floor.
 
 ## The arithmetic at 10, 50 and 300 orders
 
-Set an average order value of $25 and run four fee structures across three volumes. The Sailo rows are its real published numbers: Business at $19.99/mo with 0.5% of the goods on card, and Pro at $9.99/mo with no per-order fee at all on the manual rails.
+Set an average order value of $25 and run four fee structures across three volumes. The Sailo rows are its real published numbers: Business at ${{business_monthly}}/mo with {{fee_range}}% of the goods on card, and Pro at ${{pro_monthly}}/mo with no per-order fee at all on the manual rails.
 
-| Monthly orders at $25 | Monthly sales | 5% commission | 10% commission | $19.99/mo + 0.5% card | $9.99/mo flat, manual rails |
+| Monthly orders at $25 | Monthly sales | 5% commission | 10% commission | ${{business_monthly}}/mo + {{fee_range}}% card | ${{pro_monthly}}/mo flat, manual rails |
 | --- | --- | --- | --- | --- | --- |
-| 10 | $250 | $12.50 | $25.00 | $21.24 | $9.99 |
-| 50 | $1,250 | $62.50 | $125.00 | $26.24 | $9.99 |
-| 300 | $7,500 | $375.00 | $750.00 | $57.49 | $9.99 |
+| 10 | $250 | $12.50 | $25.00 | $21.24 | ${{pro_monthly}} |
+| 50 | $1,250 | $62.50 | $125.00 | $26.24 | ${{pro_monthly}} |
+| 300 | $7,500 | $375.00 | $750.00 | $57.49 | ${{pro_monthly}} |
 
-Over a year at 300 orders a month, the 10% commission costs $9,000 and the $19.99 plan costs $689.88. That gap is not a rounding error. It's a person's part-time wage.
+Over a year at 300 orders a month, the 10% commission costs $9,000 and the ${{business_monthly}} plan costs $689.88. That gap is not a rounding error. It's a person's part-time wage.
 
 At 10 orders a month the picture inverts, and it inverts hard against the subscription. $21.24 versus $12.50 means the 5% commission is 41% cheaper. If you sell ten things a month, paying a monthly fee to save a percentage is a mistake with a receipt.
 
@@ -46,11 +46,11 @@ A flat fee `F` with a residual rate `s` beats a commission rate `c` once your mo
 S = F / (c - s)
 ```
 
-For Sailo Business, `F` is $19.99 and `s` is 0.005. So:
+For Sailo Business, `F` is ${{business_monthly}} and `s` is 0.005. So:
 
-- Against a 5% commission: $19.99 ÷ 0.045 = **$444 of monthly sales**
-- Against a 10% commission: $19.99 ÷ 0.095 = **$210 of monthly sales**
-- Against a 20% commission: $19.99 ÷ 0.195 = **$103 of monthly sales**
+- Against a 5% commission: ${{business_monthly}} ÷ 0.045 = **$444 of monthly sales**
+- Against a 10% commission: ${{business_monthly}} ÷ 0.095 = **$210 of monthly sales**
+- Against a 20% commission: ${{business_monthly}} ÷ 0.195 = **$103 of monthly sales**
 
 Turn those into orders by dividing by your average order value. This table is the one to screenshot.
 
@@ -61,11 +61,11 @@ Turn those into orders by dividing by your average order value. This table is th
 | $50 | 9 | 5 | 3 |
 | $100 | 5 | 3 | 2 |
 
-Read a row. If you sell $50 items and you do more than nine card orders a month, a $19.99 subscription with a 0.5% residual costs you less than a 5% commission. If you sell $10 items, you need 45 of them.
+Read a row. If you sell $50 items and you do more than nine card orders a month, a ${{business_monthly}} subscription with a {{fee_range}}% residual costs you less than a 5% commission. If you sell $10 items, you need 45 of them.
 
-Against a fee shaped like 10% + $0.50 per order, the crossover is `19.99 ÷ (0.095A + 0.50)` where `A` is your average order. At $18 that's about 10 orders a month. At $25, seven. At $50, four.
+Against a fee shaped like 10% + $0.50 per order, the crossover is `{{business_monthly}} ÷ (0.095A + 0.50)` where `A` is your average order. At $18 that's about 10 orders a month. At $25, seven. At $50, four.
 
-One thing to hold in mind before you act on any of that: Sailo's 0.5% is a Stripe application fee, and Stripe's own processing cost is separate and lands on you directly. Several commission-based products bundle processing into their headline rate. Gumroad's pricing page on 6 August 2026 did not itemise processing separately, for instance. So add your own Stripe rate to the Sailo rows to compare like with like. Stripe's page localises by country; mine showed 1.5% + €0.25 for standard European cards on 6 August 2026, and yours will differ.
+One thing to hold in mind before you act on any of that: Sailo's {{fee_range}}% is a Stripe application fee, and Stripe's own processing cost is separate and lands on you directly. Several commission-based products bundle processing into their headline rate. Gumroad's pricing page on 6 August 2026 did not itemise processing separately, for instance. So add your own Stripe rate to the Sailo rows to compare like with like. Stripe's page localises by country; mine showed 1.5% + €0.25 for standard European cards on 6 August 2026, and yours will differ.
 
 ## The number nobody computes: commission as a share of margin
 
@@ -109,7 +109,7 @@ Most of her buyers pay by M-Pesa till number, which is how Kenyan small business
 
 Here's where the honest comparison gets awkward. Sailo has no M-Pesa rail. None. She can put her till number and paybill instructions in the bank transfer instructions field, and it works, and her buyers see the registered business name before they confirm. But that's a workaround using a text box, not an integration, and I'm not going to call it a payment method.
 
-For her card orders, Sailo's card option needs the $19.99 Business plan, and that's billed in dollars on a card, which for a Kenyan seller is its own small monthly annoyance with a conversion spread attached. She has maybe eight card orders a month. That's KSh 14,400 of card volume, which at any plausible exchange rate is well short of the $444 of monthly sales where a $19.99 plan starts beating a 5% commission.
+For her card orders, Sailo's card option needs the ${{business_monthly}} Business plan, and that's billed in dollars on a card, which for a Kenyan seller is its own small monthly annoyance with a conversion spread attached. She has maybe eight card orders a month. That's KSh 14,400 of card volume, which at any plausible exchange rate is well short of the $444 of monthly sales where a ${{business_monthly}} plan starts beating a 5% commission.
 
 So the honest recommendation for Wanjiru is that she should not pay for card at all this year. She takes M-Pesa on a free plan, hands her international buyers a payment link some other way, and keeps her KSh 129,600. That's the answer even though it's the answer that sells nothing.
 
@@ -129,15 +129,15 @@ The dividing question is always the same. Would this order have happened without
 
 Nothing on the manual rails. Bank transfer, cash on delivery, and orders handed off to WhatsApp, Instagram, Telegram, email or phone cost zero per order, on every plan including free, because Sailo never holds that money.
 
-On card, 0.5% of the goods, after discounts, excluding delivery and tax, taken as a Stripe application fee. The charge lands in your own Stripe account. Card requires the Business plan at $19.99/mo or $191.90/yr, plus a Stripe account Stripe has cleared for charges.
+On card, {{fee_range}}% of the goods, after discounts, excluding delivery and tax, taken as a Stripe application fee. The charge lands in your own Stripe account. Card requires the Business plan at ${{business_monthly}}/mo or ${{business_yearly}}/yr, plus a Stripe account Stripe has cleared for charges.
 
 Now the parts that lose this comparison.
 
-At low card volume, that $19.99 is worse than any commission on this page. Ten card orders of $15 is $150 of sales, and $19.99 is 13% of it. Every table above says the commission wins there, and every table above is right.
+At low card volume, that ${{business_monthly}} is worse than any commission on this page. Ten card orders of $15 is $150 of sales, and ${{business_monthly}} is 13% of it. Every table above says the commission wins there, and every table above is right.
 
 Card is Stripe only. There's no Paystack, and there's no mobile money rail of any kind, whatever a marketing page may say. If Stripe doesn't operate where you are, Sailo's card fee is irrelevant to you because the option doesn't exist.
 
-And the free plan caps at 20 products, with CSV export starting on Pro.
+And the free plan caps at {{free_products}} products, with CSV export starting on Pro.
 
 > A commission is rent on a customer. Ask who found that customer before you decide whether the rent was fair.
 

@@ -54,11 +54,11 @@ Britain is a card country. Buyers expect a card field, and the friction of askin
 
 "Usually" is doing work in that sentence. The maths depends entirely on your volume.
 
-Card payments on Sailo need the Business plan at $19.99 a month, plus Sailo's 0.5% of the goods after discount and excluding delivery and tax, plus your processor's own cut. Stripe's UK pricing page in August 2026 listed standard UK cards at 1.5% + 20p, UK premium cards at 2.8% + 20p, EEA cards at 2.5% + 20p, and cards issued elsewhere at 3.15% + 20p, with a further 2% if a currency has to be converted.
+Card payments on Sailo need the Business plan at ${{business_monthly}} a month, plus Sailo's {{fee_range}}% of the goods after discount and excluding delivery and tax, plus your processor's own cut. Stripe's UK pricing page in August 2026 listed standard UK cards at 1.5% + 20p, UK premium cards at 2.8% + 20p, EEA cards at 2.5% + 20p, and cards issued elsewhere at 3.15% + 20p, with a further 2% if a currency has to be converted.
 
 Run it at two volumes on an £18 candle:
 
-| Card orders a month | Goods value | Sailo 0.5% | Subscription | Platform cost as % of card revenue |
+| Card orders a month | Goods value | Sailo {{fee_range}}% | Subscription | Platform cost as % of card revenue |
 | --- | --- | --- | --- | --- |
 | 12 | £216 | £1.08 | ~£19.99 equivalent | roughly 10% |
 | 70 | £1,260 | £6.30 | ~£19.99 equivalent | roughly 2% |
@@ -95,17 +95,17 @@ Her returns run at about two a month, mostly "the scent isn't what I expected". 
 
 ## Where Sailo fits, and where it doesn't
 
-Sailo gives you a link like `sailo.store/yourname`, live at signup, with your products, options and prices on it. Bank transfer, cash on delivery, WhatsApp, Instagram and email orders cost you nothing in commission, because on those Sailo never touches the money. Card is the exception: 0.5% of the goods, on the Business plan, through your own Stripe account, so the money lands with you rather than with Sailo.
+Sailo gives you a link like `sailo.store/yourname`, live at signup, with your products, options and prices on it. Bank transfer, cash on delivery, WhatsApp, Instagram and email orders cost you nothing in commission, because on those Sailo never touches the money. Card is the exception: {{fee_range}}% of the goods, on the Business plan, through your own Stripe account, so the money lands with you rather than with Sailo.
 
 The honest limitations for a UK seller:
 
-**Cards need $19.99 a month before the button appears.** At low volume that is the dominant cost and it will be worse than doing nothing. The table above is not marketing; it's the reason to wait.
+**Cards need ${{business_monthly}} a month before the button appears.** At low volume that is the dominant cost and it will be worse than doing nothing. The table above is not marketing; it's the reason to wait.
 
 **Nothing here handles VAT for you, and nothing here files anything with HMRC.** Sailo is a shop, not an accountant. Your rolling turnover, your returns, your Self Assessment: yours.
 
 **There's no native app.** You run it in a browser, on your phone or your laptop.
 
-**The free plan caps at 20 products.** Six scents in two sizes is twelve, which fits. Six scents in two sizes plus seasonal one-offs does not, so use options rather than separate products where you can.
+**The free plan caps at {{free_products}} products.** Six scents in two sizes is twelve, which fits. Six scents in two sizes plus seasonal one-offs does not, so use options rather than separate products where you can.
 
 ## What to do next
 

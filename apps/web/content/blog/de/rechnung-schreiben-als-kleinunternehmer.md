@@ -136,7 +136,7 @@ Ihre Einrichtung, einmalig:
 
 Eine typische Bestellung: drei Seifen zu 8,50 Euro, macht 25,50 Euro, plus 4,99 Euro Versand, also 30,49 Euro. Rechnung `KS-0287`, ausgestellt in dem Moment, in dem die Bestellung reinkommt, Status "Offen". Zwei Tage später ist das Geld da, sie setzt den Status auf "Bezahlt", und die Rechnung zeigt das Häkchen.
 
-Was sie ihrer Steuerberaterin einmal im Quartal schickt: den CSV-Export. Der enthält pro Position Datum, Rechnungsnummer, Artikel, Menge, Zwischensumme, Rabatt, Versand, Steuer, Gesamtbetrag, Erstattungen und die Provision. Der Export gibt es ab dem Pro-Tarif für 9,99 Dollar im Monat oder 95,90 Dollar im Jahr, im kostenlosen Tarif nicht. Für Kerstin ist das der Grund, warum sie zahlt, und nicht die 250 Produkte, die sie nie brauchen wird.
+Was sie ihrer Steuerberaterin einmal im Quartal schickt: den CSV-Export. Der enthält pro Position Datum, Rechnungsnummer, Artikel, Menge, Zwischensumme, Rabatt, Versand, Steuer, Gesamtbetrag, Erstattungen und die Provision. Der Export gibt es ab dem Pro-Tarif für {{pro_monthly}} Dollar im Monat oder {{pro_yearly}} Dollar im Jahr, im kostenlosen Tarif nicht. Für Kerstin ist das der Grund, warum sie zahlt, und nicht die {{pro_products}} Produkte, die sie nie brauchen wird.
 
 Bei den beiden Läden, die bei ihr bestellen, schreibt sie die Rechnungen weiterhin von Hand, weil es Geschäftskunden sind und ihr Fall dort anders liegt. Das ist die richtige Antwort und keine Niederlage: Vierzig Privatbestellungen automatisch, zwei Geschäftsrechnungen bewusst.
 

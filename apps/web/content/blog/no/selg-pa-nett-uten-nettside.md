@@ -10,7 +10,7 @@ tags: [salg, nettbutikk, finn]
 
 «Jeg har tolv ting jeg vil selge, og jeg gidder ikke å lage nettbutikk for det.»
 
-Du har rett. Du trenger ingen nettside. Du trenger én side som svarer på tre ting uten at kjøperen må spørre om noe: hva du selger, hva det koster med frakt, og hvordan man bestiller. Hos Sailo koster den siden 0 dollar på gratisplanen og tar 20 produkter. Selve siden er den enkle delen. Det som tar tid er hvor folk finner deg, og hvordan pengene kommer inn.
+Du har rett. Du trenger ingen nettside. Du trenger én side som svarer på tre ting uten at kjøperen må spørre om noe: hva du selger, hva det koster med frakt, og hvordan man bestiller. Hos Sailo koster den siden 0 dollar på gratisplanen og tar {{free_products}} produkter. Selve siden er den enkle delen. Det som tar tid er hvor folk finner deg, og hvordan pengene kommer inn.
 
 ## Instinktet ditt er Finn Torget, og det er som regel riktig
 
@@ -106,7 +106,7 @@ Sailo har egne felt for banknavn, kontohaver, kontonummer, IBAN, SWIFT eller BIC
 
 Betaling ved levering er mer brukbart enn nordmenn tror, men ikke som postoppkrav. Det er henting. Selger du lokalt og halvparten av kjøperne dine bor i samme by, er «hent hos meg, betal når du henter» den raskeste ordren du kan lage, og det er null gebyr i begge ender.
 
-Kort finnes også, og det fungerer her. Det krever Business-planen til 19,99 dollar i måneden eller 191,90 dollar i året, pluss en Stripe-konto som Stripe har godkjent for betalinger. Stripe er tilgjengelig i Norge, sjekket 6. august 2026 på stripe.com/global, men den listen flytter seg, så sjekk selv før du betaler for noe. Sailo tar da 0,5 prosent av varene etter rabatt, uten frakt og uten mva. Stripes eget gebyr kommer i tillegg og står på deres egen prisside.
+Kort finnes også, og det fungerer her. Det krever Business-planen til {{business_monthly}} dollar i måneden eller {{business_yearly}} dollar i året, pluss en Stripe-konto som Stripe har godkjent for betalinger. Stripe er tilgjengelig i Norge, sjekket 6. august 2026 på stripe.com/global, men den listen flytter seg, så sjekk selv før du betaler for noe. Sailo tar da {{fee_range}} prosent av varene etter rabatt, uten frakt og uten mva. Stripes eget gebyr kommer i tillegg og står på deres egen prisside.
 
 Bare vær klar over hva du kjøper. En kortknapp, ikke en Vipps-knapp.
 
@@ -148,7 +148,7 @@ En typisk ordre er en lue og et par votter. 1140 kroner i varer, 79 kroner i fra
 
 Sailo tar null av dette. Ikke en prosent, ikke et gebyr, fordi pengene aldri gikk gjennom Sailo.
 
-Det andre regnestykket ser sånn ut. Vil Ingvild ha kortknapp, betaler hun 19,99 dollar i måneden pluss 0,5 prosent av varene. Snittordren hennes er 980 kroner i varer, så 22 ordrer er 21 560 kroner, altså 107,80 kroner til Sailo. Abonnementet er den store posten, ikke provisjonen. Ved fem ordrer i måneden lønner det seg ikke i det hele tatt. Ved seksti ser det annerledes ut.
+Det andre regnestykket ser sånn ut. Vil Ingvild ha kortknapp, betaler hun {{business_monthly}} dollar i måneden pluss {{fee_range}} prosent av varene. Snittordren hennes er 980 kroner i varer, så 22 ordrer er 21 560 kroner, altså 107,80 kroner til Sailo. Abonnementet er den store posten, ikke provisjonen. Ved fem ordrer i måneden lønner det seg ikke i det hele tatt. Ved seksti ser det annerledes ut.
 
 ## Frakten er der marginen forsvinner
 

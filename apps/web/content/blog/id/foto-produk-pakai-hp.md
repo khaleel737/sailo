@@ -145,7 +145,7 @@ Cara mendapatkannya: minta, dengan alasan yang jelas, beberapa hari setelah pake
 
 Di Sailo, pembeli bisa meninggalkan nama, bintang 1 sampai 5, dan tulisan pada produk, di semua paket termasuk yang gratis, dan nggak ada yang tampil sebelum kamu setujui. Yang perlu kamu putuskan sendiri adalah seberapa jujur kamu memakai kontrol itu. Halaman yang isinya bintang lima semua bikin curiga. Satu ulasan empat bintang yang menyebut kekurangan kecil justru menaikkan kepercayaan pada semua ulasan lainnya.
 
-Dan batasan yang perlu disebut supaya harapanmu benar: **Sailo menampilkan fotomu, bukan memperbaikinya.** Foto gelap tetap gelap di halaman produk. Di paket gratis kamu juga dibatasi 20 produk, jadi kalau kamu punya enam puluh SKU, kamu memilih dulu atau naik paket.
+Dan batasan yang perlu disebut supaya harapanmu benar: **Sailo menampilkan fotomu, bukan memperbaikinya.** Foto gelap tetap gelap di halaman produk. Di paket gratis kamu juga dibatasi {{free_products}} produk, jadi kalau kamu punya enam puluh SKU, kamu memilih dulu atau naik paket.
 
 ## Sesi satu jam minggu ini
 

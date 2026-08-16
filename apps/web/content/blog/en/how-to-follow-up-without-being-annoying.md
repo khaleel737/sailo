@@ -164,7 +164,7 @@ Some silences should stay silent.
 
 Sailo won't chase anybody on your behalf. There's no automatic sequence that messages a buyer who didn't pay, and on the manual rails, bank transfer, cash on delivery, WhatsApp and the rest, you are the one who checks whether the money arrived and you are the one who sends the reminder. That's a real cost in your week and it's worth being honest about before you build a process that assumes otherwise.
 
-The related limit is memory. Sailo's free plan keeps 30 days of analytics, so an enquiry from six weeks ago isn't going to be sitting in a report waiting for you. Pro takes that to a year, Business to three. Whichever you're on, the follow-up list has to live somewhere you'll actually look, and for most sellers that's a note on the phone with four names in it, not a system.
+The related limit is memory. Sailo's free plan keeps {{free_analytics_days}} days of analytics, so an enquiry from six weeks ago isn't going to be sitting in a report waiting for you. Pro takes that to a year, Business to three. Whichever you're on, the follow-up list has to live somewhere you'll actually look, and for most sellers that's a note on the phone with four names in it, not a system.
 
 ## Set the two reminders now
 

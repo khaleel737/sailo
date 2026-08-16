@@ -126,7 +126,7 @@ She sells about 45 rings a month, mostly as sets. Roughly $2,100 of revenue, abo
 
 The thing she changed in year one: she stopped selling nine designs and started selling three, in more sizes. The catalogue was 54 listings and half of them had never sold. Cutting to three designs meant she could keep every size in stock, photograph properly, and stop remaking a design she'd already decided she disliked.
 
-That, incidentally, is where you'll meet Sailo's honest limitation. The free plan holds 20 products. If you sell one-of-a-kind pieces, each with its own listing, you'll pass 20 in a fortnight and you'll be choosing between deleting sold pieces and paying $9.99 a month for the 250-product plan. For a maker running repeatable designs with size options, 20 is plenty for a year. For a one-of-one maker, it isn't, and it's better to know that now.
+That, incidentally, is where you'll meet Sailo's honest limitation. The free plan holds {{free_products}} products. If you sell one-of-a-kind pieces, each with its own listing, you'll pass 20 in a fortnight and you'll be choosing between deleting sold pieces and paying ${{pro_monthly}} a month for the {{pro_products}}-product plan. For a maker running repeatable designs with size options, 20 is plenty for a year. For a one-of-one maker, it isn't, and it's better to know that now.
 
 ## Shipping something small and expensive
 
@@ -134,7 +134,7 @@ A padded envelope with a $180 ring in it is a bad idea, because the one that goe
 
 Box the piece so it can't move. Movement is what breaks chains and loosens stones in transit. The general method for parcels that arrive intact is in [shipping fragile things](/en/blog/shipping-fragile-things), and jewellery has the additional problem that the damage is often invisible until the customer wears it.
 
-On payment: Sailo takes nothing on bank transfer, cash on delivery or chat orders, since it never touches the money on those. Card payments cost 0.5% of the goods and need the Business plan at $19.99 a month. On a $150 set that commission is 75c. On Dani's volume the subscription is under 1% of revenue, so it's an easy call. At six orders a month it isn't, and taking transfers while you build up is not a compromise.
+On payment: Sailo takes nothing on bank transfer, cash on delivery or chat orders, since it never touches the money on those. Card payments cost {{fee_range}}% of the goods and need the Business plan at ${{business_monthly}} a month. On a $150 set that commission is 75c. On Dani's volume the subscription is under 1% of revenue, so it's an easy call. At six orders a month it isn't, and taking transfers while you build up is not a compromise.
 
 ## What to do next
 

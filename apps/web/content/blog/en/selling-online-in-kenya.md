@@ -102,9 +102,9 @@ Now the honest part, and in Kenya it's a big one.
 
 **Sailo has no M-Pesa rail.** The complete list is card, WhatsApp, Telegram, Instagram, email, phone, bank transfer and cash on delivery. That's it. What you can do is put your paybill number, your account-number instruction and your registered business name into the bank transfer instructions field, and confirm every payment yourself against your own M-Pesa messages. That works and it's what Kenyan sellers on Sailo actually do. But name it accurately: Sailo is holding your catalogue and your order record, and Safaricom is holding your money. Sailo cannot tell you a payment arrived, and there is no integration coming that would let it.
 
-**Card payments aren't available to you.** Sailo's card rail runs on Stripe and only Stripe, and Stripe's own global availability page in August 2026 listed Kenya under "extended network" pointing at Paystack rather than as a launched Stripe country. Sailo doesn't support Paystack. So the $19.99 Business plan won't give you a card button here, and anything you've read saying otherwise is out of date. It matters less than it sounds, because your buyers weren't asking for cards.
+**Card payments aren't available to you.** Sailo's card rail runs on Stripe and only Stripe, and Stripe's own global availability page in August 2026 listed Kenya under "extended network" pointing at Paystack rather than as a launched Stripe country. Sailo doesn't support Paystack. So the ${{business_monthly}} Business plan won't give you a card button here, and anything you've read saying otherwise is out of date. It matters less than it sounds, because your buyers weren't asking for cards.
 
-**The free plan caps at 20 products.** Six sandal designs is comfortable. Six designs across seven sizes, if you list each as a separate product rather than an option, is not, so use options.
+**The free plan caps at {{free_products}} products.** Six sandal designs is comfortable. Six designs across seven sizes, if you list each as a separate product rather than an option, is not, so use options.
 
 ## What to do next
 

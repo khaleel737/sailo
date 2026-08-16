@@ -139,9 +139,9 @@ Et ce que vous devez se retire du prix, pas de la marge que vous aviez déjà co
 
 Sur le virement, sur WhatsApp, sur les DM Instagram, sur le paiement à la livraison, Sailo ne prend rien du tout et ne touche jamais l'argent. Ces canaux ne rentrent donc pas dans votre calcul de prix.
 
-Le paiement par carte, lui, coûte 0,5 % de la valeur des produits et exige la formule Business à 19,99 $ par mois avec un compte Stripe validé. Sur le sac à 180 € d'Hélène, ces 0,5 % font 90 centimes pour Sailo, plus la part que Stripe prélève de son côté. Ce n'est rien.
+Le paiement par carte, lui, coûte {{fee_range}} % de la valeur des produits et exige la formule Business à {{business_monthly}} $ par mois avec un compte Stripe validé. Sur le sac à 180 € d'Hélène, ces {{fee_range}} % font 90 centimes pour Sailo, plus la part que Stripe prélève de son côté. Ce n'est rien.
 
-Ce qui compte, sur six sacs par mois, c'est l'abonnement. Une ligne fixe qui tombe que vous vendiez six sacs ou zéro, et qui à ce volume pèse bien plus lourd que la commission. La bonne question n'est donc pas « est-ce que 0,5 % est cher », c'est « est-ce que la carte me fait vendre au moins un sac de plus par an ». Si vos acheteurs proposent d'eux-mêmes le virement, ce qui est très courant en France dès qu'on dépasse la quarantaine d'euros, la réponse est peut-être non.
+Ce qui compte, sur six sacs par mois, c'est l'abonnement. Une ligne fixe qui tombe que vous vendiez six sacs ou zéro, et qui à ce volume pèse bien plus lourd que la commission. La bonne question n'est donc pas « est-ce que {{fee_range}} % est cher », c'est « est-ce que la carte me fait vendre au moins un sac de plus par an ». Si vos acheteurs proposent d'eux-mêmes le virement, ce qui est très courant en France dès qu'on dépasse la quarantaine d'euros, la réponse est peut-être non.
 
 Stripe est disponible en France, vérifié le 6 août 2026 sur leur page de couverture, donc le rail carte fonctionne réellement ici. Cette liste bouge, revérifiez avant de construire quoi que ce soit dessus.
 

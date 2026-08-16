@@ -116,15 +116,15 @@ If you're moving upward because your operations have outgrown a simple link, [wh
 
 ## What migrating to Sailo actually involves, limitations included
 
-Sailo's plans are $0 free with 20 products and 30 days of analytics, $9.99/mo or $95.90/yr for Pro with 250 products and CSV export, and $19.99/mo or $191.90/yr for Business with unlimited products and card payments.
+Sailo's plans are $0 free with {{free_products}} products and {{free_analytics_days}} days of analytics, ${{pro_monthly}}/mo or ${{pro_yearly}}/yr for Pro with {{pro_products}} products and CSV export, and ${{business_monthly}}/mo or ${{business_yearly}}/yr for Business with unlimited products and card payments.
 
 Three things to know before you move in.
 
-CSV export starts on Pro. On the free plan you can see your orders but you can't export them, and by this article's own standard a platform you can't export from is a platform you can't leave cleanly. If exportability matters to you, and it should, that's $9.99 a month you should count from day one.
+CSV export starts on Pro. On the free plan you can see your orders but you can't export them, and by this article's own standard a platform you can't export from is a platform you can't leave cleanly. If exportability matters to you, and it should, that's ${{pro_monthly}} a month you should count from day one.
 
 The 20-product cap on free is real. If you're migrating 60 products, free is not a plan you can migrate into.
 
-And card is Stripe only, requiring the Business plan plus a Stripe account cleared for charges, with Sailo taking 0.5% of the goods after discounts and excluding delivery and tax. There's no Paystack and no mobile money rail. If your current platform takes card in a way Stripe doesn't cover in your country, that part of your business does not migrate, and you should know that before you export anything rather than after.
+And card is Stripe only, requiring the Business plan plus a Stripe account cleared for charges, with Sailo taking {{fee_range}}% of the goods after discounts and excluding delivery and tax. There's no Paystack and no mobile money rail. If your current platform takes card in a way Stripe doesn't cover in your country, that part of your business does not migrate, and you should know that before you export anything rather than after.
 
 On the manual rails, bank transfer, cash on delivery, and orders handed to WhatsApp, Instagram, Telegram, email or phone, Sailo takes nothing and never holds the money. It also can't tell you a transfer arrived. Only your bank can.
 

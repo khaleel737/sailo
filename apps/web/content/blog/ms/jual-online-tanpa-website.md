@@ -48,7 +48,7 @@ Yang buat katalog berfungsi bukan reka bentuknya. Gambar yang jelas, nama barang
 
 ### Sepuluh produk cukup untuk enam bulan pertama
 
-Sepuluh produk yang anda tahu untung berapa lebih senang diurus daripada empat puluh yang anda tak pasti. Pelan percuma Sailo dihadkan kepada 20 produk, dan untuk kebanyakan orang yang baru mula, had itu belum terasa selama beberapa bulan. Kalau anda dah ada 40 SKU dengan saiz dan warna, itu cerita lain, dan anda memang perlu tempat yang boleh susun varian.
+Sepuluh produk yang anda tahu untung berapa lebih senang diurus daripada empat puluh yang anda tak pasti. Pelan percuma Sailo dihadkan kepada {{free_products}} produk, dan untuk kebanyakan orang yang baru mula, had itu belum terasa selama beberapa bulan. Kalau anda dah ada 40 SKU dengan saiz dan warna, itu cerita lain, dan anda memang perlu tempat yang boleh susun varian.
 
 ## WhatsApp ialah tempat jualan ditutup, jadi pesanan kena sampai siap
 
@@ -79,7 +79,7 @@ Sekarang bahagian yang kena jujur, dan ini batasan sebenar, bukan basa-basi.
 
 Sailo ada lapan cara bayar: kad, WhatsApp, Telegram, Instagram, emel, telefon, transfer bank, dan cash on delivery. Itu senarai penuhnya. **Tiada rel DuitNow, Touch 'n Go eWallet, GrabPay atau FPX.** Apa yang anda boleh buat: taip nombor akaun bank atau DuitNow ID anda dalam ruangan arahan pada kaedah transfer bank, ruangan teks bebas yang pembeli nampak selepas dia buat pesanan. Itu jalan pintas manual, bukan ciri. Sailo tak tahu duit dah masuk. Anda yang buka Maybank2u atau CIMB Clicks, tengok penyata, dan tanda pesanan itu sebagai dibayar sendiri.
 
-Kad pula ada syarat yang anda patut tahu sebelum bayar apa-apa langganan. Kad memerlukan pelan Business, USD 19.99 sebulan atau USD 191.90 setahun, dan satu akaun Stripe milik anda sendiri yang Stripe dah luluskan untuk terima bayaran. Komisennya 0.5% daripada nilai barang selepas diskaun, tak termasuk kos penghantaran dan cukai, dan duitnya masuk ke akaun Stripe anda sendiri, bukan ke Sailo.
+Kad pula ada syarat yang anda patut tahu sebelum bayar apa-apa langganan. Kad memerlukan pelan Business, USD {{business_monthly}} sebulan atau USD {{business_yearly}} setahun, dan satu akaun Stripe milik anda sendiri yang Stripe dah luluskan untuk terima bayaran. Komisennya {{fee_range}}% daripada nilai barang selepas diskaun, tak termasuk kos penghantaran dan cukai, dan duitnya masuk ke akaun Stripe anda sendiri, bukan ke Sailo.
 
 Bahagian penting: **rel kad ini Stripe sahaja, dan senarai negara yang Stripe terima berubah dari semasa ke semasa.** Artikel ini tak mengesahkan status Malaysia dalam senarai itu, ke arah mana sekalipun. Kalau anda merancang nak terima kad, buka stripe.com/global dan semak Malaysia sendiri dahulu, sebelum anda naik taraf pelan. Jangan bina rancangan di atas andaian.
 

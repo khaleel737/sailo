@@ -85,9 +85,9 @@ Wanjiru takes M-Pesa. Her buyers send to a till number, they see her registered 
 
 Sailo has no mobile money rail. There's no M-Pesa button, no GCash, no UPI. The complete rail list is card, WhatsApp, Telegram, Instagram, email, phone, bank transfer and cash on delivery, and that's it. What Wanjiru does, and what plenty of sellers do, is put her till number and the business name into the bank transfer instructions field, so the buyer sees exactly what to send and what to reference. Sailo runs her catalogue and her orders. Her phone runs the money. That's an honest description of the arrangement and it works fine, but nobody should discover it after upgrading.
 
-Cards are the other option and they're the one worth doing arithmetic on rather than intuition. Sailo charges 0.5% of the goods on a card sale, taken after discount and excluding delivery and tax, and card payments require the Business plan at $19.99 a month plus a Stripe account cleared for charges.
+Cards are the other option and they're the one worth doing arithmetic on rather than intuition. Sailo charges {{fee_range}}% of the goods on a card sale, taken after discount and excluding delivery and tax, and card payments require the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges.
 
-On a KSh 850 order, 0.5% is about KSh 4. That's not the number that decides anything. The $19.99 is.
+On a KSh 850 order, {{fee_range}}% is about KSh 4. That's not the number that decides anything. The ${{business_monthly}} is.
 
 | Card orders a month | Average order | Card revenue | Subscription as % of it |
 | --- | --- | --- | --- |
@@ -136,7 +136,7 @@ Separating the shipping cost out per parcel is the single fastest way to find ou
 
 Pricing well requires knowing what actually arrived, and on manual rails you're the one who checks. Sailo can't tell you a bank transfer landed. Only your bank can. So an order marked paid is paid because you marked it, and if you're sloppy about that your revenue figures are fiction and every margin calculation built on them is fiction too.
 
-The 30-day analytics window on the free plan is the other thing to know before you plan around it. Pricing decisions want a year of data, not a month, and a year of history means Pro at $9.99 a month or Business at $19.99. If you're on free, export or write down your monthly totals yourself, because in 31 days the detail is gone.
+The 30-day analytics window on the free plan is the other thing to know before you plan around it. Pricing decisions want a year of data, not a month, and a year of history means Pro at ${{pro_monthly}} a month or Business at ${{business_monthly}}. If you're on free, export or write down your monthly totals yourself, because in 31 days the detail is gone.
 
 ## What to do next
 

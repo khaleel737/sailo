@@ -144,7 +144,7 @@ Operacyjnie zwrot do paczkomatu jest dla obu stron najprostszym wariantem, bo ku
 
 ## Gdzie w tym jest Sailo
 
-Dostawa jest w zamówieniu osobną pozycją, obok towaru. Ma to jedną konkretną konsekwencję finansową: prowizja 0,5%, którą Sailo pobiera od płatności kartą, liczy się od wartości towaru po rabacie, bez dostawy i bez podatku. Z kwoty za przesyłkę nie idzie do Sailo nic.
+Dostawa jest w zamówieniu osobną pozycją, obok towaru. Ma to jedną konkretną konsekwencję finansową: prowizja {{fee_range}}%, którą Sailo pobiera od płatności kartą, liczy się od wartości towaru po rabacie, bez dostawy i bez podatku. Z kwoty za przesyłkę nie idzie do Sailo nic.
 
 Przy przelewie, pobraniu i wszystkich metodach opartych na wiadomościach Sailo nie bierze nic i w ogóle nie dotyka pieniędzy. Pobranie jako metoda płatności ma pole na uwagi do doręczenia, które możesz wypełnić własnym tekstem.
 

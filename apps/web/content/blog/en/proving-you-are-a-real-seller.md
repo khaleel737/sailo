@@ -135,7 +135,7 @@ She also stopped apologising for asking for payment first. Her line now is one s
 
 ## What a shop link proves, and what it doesn't
 
-Be clear-eyed about this, because it's where sellers overestimate their tools. A Sailo shop at `sailo.store/yourname` goes live the moment you sign up. That means anyone can have one in five minutes, including the person copying your page. It is not verification, there's no badge that means "this seller has been checked", and nobody at Sailo has confirmed you exist. On the free plan there's actually a Sailo badge on your shop, which the Pro plan at $9.99 a month removes, and neither state tells a buyer a single thing about whether you'll ship.
+Be clear-eyed about this, because it's where sellers overestimate their tools. A Sailo shop at `sailo.store/yourname` goes live the moment you sign up. That means anyone can have one in five minutes, including the person copying your page. It is not verification, there's no badge that means "this seller has been checked", and nobody at Sailo has confirmed you exist. On the free plan there's actually a Sailo badge on your shop, which the Pro plan at ${{pro_monthly}} a month removes, and neither state tells a buyer a single thing about whether you'll ship.
 
 What a shop page genuinely does is narrower and still useful: it puts your prices, your delivery terms and your policies in one place that doesn't change between conversations, and inconsistency is one of the loudest scam signals there is. A seller whose price is ₦12,500 in the DM, ₦11,000 in the comments and ₦14,000 on the page looks like someone making it up, whether or not they are.
 

@@ -139,7 +139,7 @@ Sailo lets you set up as many delivery methods as you want. Each one is a type (
 
 Here's the limitation, and it's the one that matters for this article: **the fee is a flat amount per named method. There's no weight table, no dimension lookup, no postcode zones and no live carrier rates.** If you want bands, you create three methods called something like "Small parcel", "Medium parcel" and "Large box" and you rely on the buyer choosing correctly, which they sometimes won't. That's fine for a shop with two or three parcel shapes. It is not fine for a catalogue where every product weighs something different, and if that's you, you want a platform with a real rate engine and you should go and get one.
 
-One more detail worth knowing if you take card payments: Sailo's 0.5% card commission is calculated on the goods after discount and never on the delivery fee. So folding $6 of shipping into the item price does add three cents to the commission on that order. It's small enough to ignore. It's not small enough to be wrong about, which is why it's here.
+One more detail worth knowing if you take card payments: Sailo's {{fee_range}}% card commission is calculated on the goods after discount and never on the delivery fee. So folding $6 of shipping into the item price does add three cents to the commission on that order. It's small enough to ignore. It's not small enough to be wrong about, which is why it's here.
 
 ## Do this before your next order goes out
 

@@ -141,9 +141,9 @@ Short version, no rankings.
 
 If you do run ads, the ad spend is not the only new cost, and this is the part where I'll be plain about the tool I work on.
 
-Cold traffic from an ad won't send you a bank transfer. A stranger who's never heard of you wants to pay by card, right then. So running ads usually means adding card payments, and on Sailo that's the Business plan at $19.99 a month plus 0.5% of the goods on each card order, on top of whatever Stripe charges you. That's three new costs at once: the ads, the subscription, and the processing.
+Cold traffic from an ad won't send you a bank transfer. A stranger who's never heard of you wants to pay by card, right then. So running ads usually means adding card payments, and on Sailo that's the Business plan at ${{business_monthly}} a month plus {{fee_range}}% of the goods on each card order, on top of whatever Stripe charges you. That's three new costs at once: the ads, the subscription, and the processing.
 
-On Tomas's seven orders, the 0.5% would have been about 10p a set. Trivial. The $19.99 a month is not trivial against £35 of margin, and it doesn't stop when the campaign does.
+On Tomas's seven orders, the {{fee_range}}% would have been about 10p a set. Trivial. The ${{business_monthly}} a month is not trivial against £35 of margin, and it doesn't stop when the campaign does.
 
 There's no mobile money rail either, so if you're advertising into a market where buyers expect M-Pesa or GCash, the shop will carry the catalogue and the order and you'll still be confirming the money yourself from your own notifications.
 

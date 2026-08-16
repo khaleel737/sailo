@@ -14,7 +14,7 @@ Bankovni prijenos je najjeftiniji način naplate koji imaš, jer kroz njega niko
 
 Sistem koji radi ima tri dijela. Tačni podaci, oznaka po kojoj prepoznaješ ko je šta platio, i jedno vrijeme u danu kad otvaraš izvod.
 
-Da odmah raščistimo zašto uopšte pričamo o prijenosu umjesto o kartici. Sailo kartično plaćanje ide preko Stripea, a provjereno 6. augusta 2026. na stripe.com/global, Bosna i Hercegovina nije na Stripeovoj listi podržanih zemalja. Karticu na svojoj stranici ne možeš dobiti ni po koju cijenu. Nemoj uzimati Business plan, 19,99 dolara mjesečno ili 191,90 godišnje, misleći da ćeš time otključati dugme za karticu, jer nećeš. Provjeri i sam na stripe.com/global, jer se ta lista mijenja.
+Da odmah raščistimo zašto uopšte pričamo o prijenosu umjesto o kartici. Sailo kartično plaćanje ide preko Stripea, a provjereno 6. augusta 2026. na stripe.com/global, Bosna i Hercegovina nije na Stripeovoj listi podržanih zemalja. Karticu na svojoj stranici ne možeš dobiti ni po koju cijenu. Nemoj uzimati Business plan, {{business_monthly}} dolara mjesečno ili {{business_yearly}} godišnje, misleći da ćeš time otključati dugme za karticu, jer nećeš. Provjeri i sam na stripe.com/global, jer se ta lista mijenja.
 
 Prijenos i pouzeće su ono s čime radiš. Hajmo onda ozbiljno o prijenosu.
 

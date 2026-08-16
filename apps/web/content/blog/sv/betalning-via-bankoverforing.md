@@ -120,7 +120,7 @@ Dubbelbetalningar är samma sak fast åt andra hållet, och de är obehagligare 
 
 Kortbetalning fungerar här, eftersom Stripe finns i Sverige. Kontrollerat 6 augusti 2026 på stripe.com/global, och listan rör på sig, så kolla själv innan du betalar för något.
 
-Det kräver Business-planen, 19,99 dollar i månaden eller 191,90 dollar per år, och ett Stripe-konto som Stripe har godkänt för betalningar. Sailo tar då 0,5 procent av varuvärdet, räknat efter rabatt och utan frakt och moms, som en avgift ovanpå Stripes egen. Pengarna landar i ditt eget Stripe-konto, aldrig hos Sailo.
+Det kräver Business-planen, {{business_monthly}} dollar i månaden eller {{business_yearly}} dollar per år, och ett Stripe-konto som Stripe har godkänt för betalningar. Sailo tar då {{fee_range}} procent av varuvärdet, räknat efter rabatt och utan frakt och moms, som en avgift ovanpå Stripes egen. Pengarna landar i ditt eget Stripe-konto, aldrig hos Sailo.
 
 Räkna på Sofias juli. Snittordern var 340 kr, varav 49 kr frakt, alltså 291 kr i varor. Fyrtiofem ordrar ger 13 095 kr i varuvärde. Noll komma fem procent av det är 65 kr.
 

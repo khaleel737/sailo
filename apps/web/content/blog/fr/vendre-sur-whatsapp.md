@@ -104,13 +104,13 @@ Un message d'absence bien écrit fait la moitié du travail : « Je réponds à 
 
 Sur Sailo, l'acheteur choisit ses articles et ses options sur votre page, remplit l'adresse, et la commande arrive dans WhatsApp déjà rédigée : article, options, adresse, total. Vous n'assemblez rien. Vous répondez.
 
-WhatsApp fait partie des moyens de paiement disponibles, au même titre que le virement, Instagram, Telegram, le téléphone, l'e-mail et le paiement à la livraison. Sur tous ceux-là, Sailo ne prend aucune commission et ne touche jamais l'argent. La seule commission qui existe est de 0,5 % sur la valeur des produits quand le paiement se fait par carte, et la carte demande la formule Business à 19,99 $ par mois avec un compte Stripe validé.
+WhatsApp fait partie des moyens de paiement disponibles, au même titre que le virement, Instagram, Telegram, le téléphone, l'e-mail et le paiement à la livraison. Sur tous ceux-là, Sailo ne prend aucune commission et ne touche jamais l'argent. La seule commission qui existe est de {{fee_range}} % sur la valeur des produits quand le paiement se fait par carte, et la carte demande la formule Business à {{business_monthly}} $ par mois avec un compte Stripe validé.
 
 Maintenant les limites, et elles comptent.
 
 WhatsApp est un canal manuel de bout en bout. Sailo écrit la commande, il ne confirme jamais le paiement. Personne ne le fait à votre place. Si vous partez trois jours, rien n'est confirmé, et les commandes attendent votre retour. Sur un jeudi soir à 60 parts, ça se tient très bien. Sur un canal où l'argent doit être constaté automatiquement, non.
 
-Deux autres choses à savoir avant de vous organiser autour. Il n'y a pas d'application native : c'est une page web, sur votre téléphone comme sur celui de l'acheteur. Et la formule gratuite s'arrête à 20 produits, ce qui suffit largement pour une carte de traiteur, beaucoup moins pour un catalogue de créateur.
+Deux autres choses à savoir avant de vous organiser autour. Il n'y a pas d'application native : c'est une page web, sur votre téléphone comme sur celui de l'acheteur. Et la formule gratuite s'arrête à {{free_products}} produits, ce qui suffit largement pour une carte de traiteur, beaucoup moins pour un catalogue de créateur.
 
 ## Les comptes d'Awa
 

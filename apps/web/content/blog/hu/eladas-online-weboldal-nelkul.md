@@ -163,9 +163,9 @@ A bekapcsolható fizetési módok pontosan ezek: kártya, WhatsApp, Telegram, In
 
 Az összes kézi módszernél a Sailo nem visz el semmit, és hozzá sem nyúl a pénzhez. A pénz közvetlenül közted és a vevő között mozog.
 
-A kártya más. Az a te saját Stripe-fiókodra érkezik, a Sailo pedig 0,5 százalékot vesz le az áru kedvezmény utáni értékéből, szállítás és adó nélkül. Ez az arány minden csomagban ugyanennyi, az ingyenesben is. A kártyához Business csomag kell, havi 19,99 vagy évi 191,90 dollár, és egy olyan Stripe-fiók, amit a Stripe jóváhagyott a fizetések fogadására. A Stripe Magyarországon elérhető, ezt 2026. augusztus 6-án ellenőriztem a stripe.com/global oldalon, de az országlista változik, úgyhogy nézd meg magad, mielőtt csomagot fizetsz.
+A kártya más. Az a te saját Stripe-fiókodra érkezik, a Sailo pedig {{fee_range}} százalékot vesz le az áru kedvezmény utáni értékéből, szállítás és adó nélkül. Ez az arány minden csomagban ugyanennyi, az ingyenesben is. A kártyához Business csomag kell, havi {{business_monthly}} vagy évi {{business_yearly}} dollár, és egy olyan Stripe-fiók, amit a Stripe jóváhagyott a fizetések fogadására. A Stripe Magyarországon elérhető, ezt 2026. augusztus 6-án ellenőriztem a stripe.com/global oldalon, de az országlista változik, úgyhogy nézd meg magad, mielőtt csomagot fizetsz.
 
-Az ingyenes csomagban 20 termék, 30 nap statisztika és minden kézi fizetési mód benne van. A Pro havi 9,99 vagy évi 95,90 dollár, 250 termék, egy év statisztika, CSV-export, és nincs Sailo-jelvény a boltodon.
+Az ingyenes csomagban {{free_products}} termék, 30 nap statisztika és minden kézi fizetési mód benne van. A Pro havi {{pro_monthly}} vagy évi {{pro_yearly}} dollár, {{pro_products}} termék, egy év statisztika, CSV-export, és nincs Sailo-jelvény a boltodon.
 
 A termékértékelés minden csomagban működik. A vevő nevet, egy 1-től 5-ig terjedő értékelést és opcionális szöveget hagy, és semmi nem jelenik meg addig, amíg te jóvá nem hagyod.
 

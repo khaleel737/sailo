@@ -117,7 +117,7 @@ Dat geldt extra als je ook op [Marktplaats of Vinted verkoopt naast je eigen win
 
 Je foto's staan bij het product met de prijs eronder, en de bestelling begint op dezelfde pagina. Dat is het hele punt: mensen hoeven niet van je foto naar een andere plek om te kopen.
 
-Wat je moet weten over het gratis abonnement: dat stopt bij 20 producten. Voor Marloes met haar twintig kaarsvarianten is dat precies raak, en voor de meeste beginners is die grens eerder een gunst dan een beperking. Twintig producten fotograferen zoals hierboven beschreven is al een middag werk. Pro geeft er 250 voor $9,99 per maand, Business is onbeperkt voor $19,99.
+Wat je moet weten over het gratis abonnement: dat stopt bij {{free_products}} producten. Voor Marloes met haar twintig kaarsvarianten is dat precies raak, en voor de meeste beginners is die grens eerder een gunst dan een beperking. Twintig producten fotograferen zoals hierboven beschreven is al een middag werk. Pro geeft er {{pro_products}} voor ${{pro_monthly}} per maand, Business is onbeperkt voor ${{business_monthly}}.
 
 Een detail dat met foto's te maken heeft en dat mensen verrast: beoordelingen in Sailo bestaan uit een naam, één tot vijf sterren en eventueel tekst. Geen foto's van kopers. En er wordt niets zichtbaar tot jij het goedkeurt. Dat betekent dat je niet kunt leunen op foto's die klanten insturen om je product te verkopen. Jouw foto's dragen het hele gewicht.
 

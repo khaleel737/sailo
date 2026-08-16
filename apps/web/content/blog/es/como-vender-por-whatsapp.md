@@ -109,7 +109,7 @@ Aquí conviene ser exacto, porque es donde más humo hay.
 
 **Contra reembolso.** El comprador paga en efectivo al recibir. En Sailo, contra reembolso tiene un campo de notas de entrega de texto libre y nada más: el efectivo lo maneja tu repartidor o tú, no Sailo.
 
-**Tarjeta.** El botón de tarjeta de Sailo funciona sobre Stripe, requiere el plan Business de 19,99 USD al mes o 191,90 USD al año, y una cuenta de Stripe aprobada para recibir cargos. Sailo cobra 0,5% sobre el valor de los productos después de descuentos, sin contar envío ni impuestos, y el dinero llega directo a tu cuenta de Stripe. Un dato que decide el asunto en buena parte de la región: en agosto de 2026 la página de países de Stripe listaba a Brasil y México como los únicos países latinoamericanos donde se puede abrir cuenta. Si vendes desde Colombia, Argentina, Chile o Perú, el plan más caro no te va a activar el botón. Revisa stripe.com/global, porque la lista cambia.
+**Tarjeta.** El botón de tarjeta de Sailo funciona sobre Stripe, requiere el plan Business de {{business_monthly}} USD al mes o {{business_yearly}} USD al año, y una cuenta de Stripe aprobada para recibir cargos. Sailo cobra {{fee_range}}% sobre el valor de los productos después de descuentos, sin contar envío ni impuestos, y el dinero llega directo a tu cuenta de Stripe. Un dato que decide el asunto en buena parte de la región: en agosto de 2026 la página de países de Stripe listaba a Brasil y México como los únicos países latinoamericanos donde se puede abrir cuenta. Si vendes desde Colombia, Argentina, Chile o Perú, el plan más caro no te va a activar el botón. Revisa stripe.com/global, porque la lista cambia.
 
 En todos los medios que no son tarjeta, Sailo no cobra nada y nunca toca el dinero.
 

@@ -114,7 +114,7 @@ The thing she'd tell you: the free sampler needed a cover that looked like a rea
 
 Two honest limitations, and the second one surprises people.
 
-The first is the product slot. A sample is a separate product in your catalogue, so every paid file with a sampler attached uses two of your listings. Sailo's free plan caps you at 20 products. Five paid files with five samplers is ten, which is fine, but a template shop with twelve packs and twelve samplers is over the line and looking at the Pro plan at $9.99 a month. Worth knowing before you build a sampler for everything.
+The first is the product slot. A sample is a separate product in your catalogue, so every paid file with a sampler attached uses two of your listings. Sailo's free plan caps you at {{free_products}} products. Five paid files with five samplers is ten, which is fine, but a template shop with twelve packs and twelve samplers is over the line and looking at the Pro plan at ${{pro_monthly}} a month. Worth knowing before you build a sampler for everything.
 
 The second is that a free product still generates support. People who paid nothing message you about install problems, ask questions the read-me answers, and occasionally complain. That's the deal. Budget for it and put the same read-me inside the sample that you put inside the paid pack, because it halves the volume. The mechanics of getting a file onto a stranger's phone cleanly are in [how to sell a PDF without a website](/en/blog/how-to-sell-pdfs-without-a-website), and they apply to free files exactly the same.
 

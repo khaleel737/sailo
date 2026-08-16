@@ -142,7 +142,7 @@ The line he wishes he'd added sooner is the "size down for a regular fit" one. T
 
 ## The honest limitation
 
-Variants multiply against your product count, so know how the counting works before you plan a big catalogue. The free plan holds 20 products. That's 20 products, and a product with twelve size and colour combinations is one of them, which is exactly why structuring variants correctly matters more on a small plan than a large one. If you've listed the same hoodie twelve times, you've spent more than half your free plan on one garment.
+Variants multiply against your product count, so know how the counting works before you plan a big catalogue. The free plan holds {{free_products}} products. That's {{free_products}} products, and a product with twelve size and colour combinations is one of them, which is exactly why structuring variants correctly matters more on a small plan than a large one. If you've listed the same hoodie twelve times, you've spent more than half your free plan on one garment.
 
 The other thing to be straight about: on manual payment rails, nothing about a variant is reserved until you say so. An order sits pending until you confirm it, and Sailo can't tell you a bank transfer arrived. Only your bank can. So the last medium isn't sold when the order appears. It's sold when you've checked the money and marked it. Two people can be holding an order for it in the meantime, and if you're not checking daily, they will be.
 

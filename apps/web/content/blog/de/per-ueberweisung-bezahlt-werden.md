@@ -112,13 +112,13 @@ Wenn jemand zu viel überweist, ist die Sache einfacher, aber nicht egal: Zurüc
 
 Das heißt konkret: kein PayPal, kein Klarna, kein SEPA-Lastschriftverfahren, kein giropay als eigene Zahlart. Wenn deine Käufer PayPal erwarten, kannst du deine PayPal-Adresse zwar in den Hinweistext schreiben, aber Sailo weiß dann nichts davon, ordnet nichts zu und zeigt es dem Käufer nicht als eigenen Knopf. Das ist ein Behelf, keine Funktion, und ich nenne es hier als Behelf.
 
-Kartenzahlung gibt es, weil Stripe in Deutschland verfügbar ist (Stand: 6. August 2026, geprüft auf stripe.com/global). Sie hängt am Business-Tarif für 19,99 Dollar im Monat oder 191,90 Dollar im Jahr, plus einem Stripe-Konto, das Stripe für Zahlungen freigegeben hat. Sailo nimmt dann 0,5 Prozent vom Warenwert nach Rabatt, ohne Versand und ohne Steuer. Stripes eigene Gebühr kommt dazu und steht auf deren Preisseite.
+Kartenzahlung gibt es, weil Stripe in Deutschland verfügbar ist (Stand: 6. August 2026, geprüft auf stripe.com/global). Sie hängt am Business-Tarif für {{business_monthly}} Dollar im Monat oder {{business_yearly}} Dollar im Jahr, plus einem Stripe-Konto, das Stripe für Zahlungen freigegeben hat. Sailo nimmt dann {{fee_range}} Prozent vom Warenwert nach Rabatt, ohne Versand und ohne Steuer. Stripes eigene Gebühr kommt dazu und steht auf deren Preisseite.
 
 Der Vergleich, der in der Praxis zählt, ist nicht Gebühr gegen Gebühr. Er ist Gebühr gegen deine Zeit.
 
 | | Überweisung | Karte |
 |---|---|---|
-| Kosten an Sailo | 0 € | 0,5 % vom Warenwert plus 19,99 $ Abo im Monat |
+| Kosten an Sailo | 0 € | {{fee_range}} % vom Warenwert plus {{business_monthly}} $ Abo im Monat |
 | Wann das Geld da ist | Meist nächster Bankarbeitstag | Sofort autorisiert, Auszahlung nach Stripes Rhythmus |
 | Wer prüft den Eingang | Du, im Onlinebanking | Niemand, es passiert von selbst |
 | Was schiefgeht | Falscher Verwendungszweck, zu wenig überwiesen | Ablehnung durch die Bank des Käufers, Rückbuchung |
@@ -136,7 +136,7 @@ Eine durchschnittliche Bestellung sind zwei Packungen zu 250 Gramm plus Versand,
 
 Sein Ablauf, jeden Abend um halb neun: Banking auf, offene Bestellungen in Sailo daneben, abhaken. Bei dreißig Bestellungen im Monat sind das im Schnitt eine pro Tag, also unter einer Minute Arbeit. Am Freitag druckt er die Etiketten, am Samstag früh bringt er alles zur Filiale.
 
-Was er an Sailo zahlt: 0 Euro. Was ihn Kartenzahlung kosten würde: 19,99 Dollar im Monat plus 0,5 Prozent auf rund 890 Euro Warenwert, also etwa 4,45 Euro Provision, plus Stripes Gebühr. Für ihn ergibt das keinen Sinn, solange niemand danach fragt. Und danach gefragt hat in acht Monaten genau eine Person.
+Was er an Sailo zahlt: 0 Euro. Was ihn Kartenzahlung kosten würde: {{business_monthly}} Dollar im Monat plus {{fee_range}} Prozent auf rund 890 Euro Warenwert, also etwa 4,45 Euro Provision, plus Stripes Gebühr. Für ihn ergibt das keinen Sinn, solange niemand danach fragt. Und danach gefragt hat in acht Monaten genau eine Person.
 
 ## Was Überweisung nicht kann
 

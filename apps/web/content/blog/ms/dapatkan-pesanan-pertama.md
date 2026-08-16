@@ -164,7 +164,7 @@ Yang paling penting berlaku pada hari kesembilan. Dua orang daripada enam pembel
 
 ## Apa yang link buat, dan apa yang tidak
 
-Sailo memberi anda satu link, sailo.store/namaanda, hidup sebaik anda daftar. Pelan percuma menampung 20 produk, dan itu memadai untuk beberapa bulan pertama kebanyakan orang.
+Sailo memberi anda satu link, sailo.store/namaanda, hidup sebaik anda daftar. Pelan percuma menampung {{free_products}} produk, dan itu memadai untuk beberapa bulan pertama kebanyakan orang.
 
 Batasannya perlu dinyatakan terus terang, sebab ia menentukan jangkaan minggu pertama anda. **Link itu tak membawa sesiapa dengan sendirinya.** Tiada trafik di dalamnya, tiada senarai pembeli, tiada carian orang boleh guna untuk menjumpai anda. Ia tempat orang mendarat selepas anda beri mereka sebab untuk mendarat. Kalau anda mahu platform yang sudah ada pembeli di dalamnya, itu marketplace, dan pertukarannya ialah komisen serta persaingan harga sebelah menyebelah dengan lapan penjual lain.
 

@@ -117,13 +117,13 @@ Se il numero è basso e i messaggi sono tanti, la pagina non risponde alle doman
 
 Sailo ti dà un link, `sailo.store/tuonome`, attivo dalla registrazione, che è la pagina stessa e non un ponte verso un'altra pagina. Ci metti prodotti, prezzi, opzioni, i dati per il bonifico e le note per il contrassegno. Il compratore compone l'ordine lì e te lo manda dove preferisci, WhatsApp compreso, già scritto con prodotto, opzioni, indirizzo e totale.
 
-Il limite che riguarda esattamente questa pagina: **il pulsante per pagare con carta richiede il piano Business, 19,99 USD al mese, e un account Stripe approvato per gli incassi.** Sul piano gratuito e sul Pro la pagina non ha nessun bottone carta, solo i canali manuali: bonifico, contrassegno, WhatsApp, Telegram, Instagram, email, telefono. Stripe in Italia c'è, verificato il 6 agosto 2026, quindi la carta funziona davvero, ma la lista dei paesi si muove e conviene ricontrollarla prima di contarci.
+Il limite che riguarda esattamente questa pagina: **il pulsante per pagare con carta richiede il piano Business, {{business_monthly}} USD al mese, e un account Stripe approvato per gli incassi.** Sul piano gratuito e sul Pro la pagina non ha nessun bottone carta, solo i canali manuali: bonifico, contrassegno, WhatsApp, Telegram, Instagram, email, telefono. Stripe in Italia c'è, verificato il 6 agosto 2026, quindi la carta funziona davvero, ma la lista dei paesi si muove e conviene ricontrollarla prima di contarci.
 
-Facciamo il conto su Elena, perché la percentuale da sola non dice niente. Sette ordini a settimana a 30 € medi sono circa 840 € al mese di prodotto. Con la carta, la commissione di Sailo sarebbe lo 0,5% sul valore dei prodotti dopo lo sconto, esclusa la spedizione, quindi circa 4,20 € al mese. La commissione non è il costo. Il costo è l'abbonamento da 19,99 USD, più la quota che si prende Stripe, che è la sua e non c'entra con Sailo.
+Facciamo il conto su Elena, perché la percentuale da sola non dice niente. Sette ordini a settimana a 30 € medi sono circa 840 € al mese di prodotto. Con la carta, la commissione di Sailo sarebbe lo {{fee_range}}% sul valore dei prodotti dopo lo sconto, esclusa la spedizione, quindi circa 4,20 € al mese. La commissione non è il costo. Il costo è l'abbonamento da {{business_monthly}} USD, più la quota che si prende Stripe, che è la sua e non c'entra con Sailo.
 
 A quel volume, il conto lo devi fare così: la carta ti conviene se ti fa vendere più di quanto costa. Se il tuo cliente tipo paga volentieri con bonifico, non ti serve. Se stai perdendo ordini da persone che vogliono finire in trenta secondi e non hanno voglia di aprire l'app della banca, allora sì. Elena ci è passata al quarto mese, non al primo.
 
-Il piano gratuito, per inciso, arriva a 20 prodotti. Per un illustratore con dodici stampe va benissimo. Per chi ne ha ottanta, no.
+Il piano gratuito, per inciso, arriva a {{free_products}} prodotti. Per un illustratore con dodici stampe va benissimo. Per chi ne ha ottanta, no.
 
 ## Da fare oggi
 

@@ -12,7 +12,7 @@ You posted nine story frames yesterday. Four hundred people saw the first one, s
 
 Stories work, but not the way most sellers use them. They're not a broadcast channel. They're a queue with a leak in it, and the leak gets worse with every frame you add.
 
-Selling on Instagram stories comes down to three things: put the price in the first frame, put the link sticker on the same frame as the price, and stop at three frames when you're selling. The link sticker is available to every account now, with no follower minimum and no verification, which is a change a lot of sellers still haven't noticed. Your shop page does the rest, and a Sailo one is free at $0 for up to 20 products with the price and options already on it.
+Selling on Instagram stories comes down to three things: put the price in the first frame, put the link sticker on the same frame as the price, and stop at three frames when you're selling. The link sticker is available to every account now, with no follower minimum and no verification, which is a change a lot of sellers still haven't noticed. Your shop page does the rest, and a Sailo one is free at $0 for up to {{free_products}} products with the price and options already on it.
 
 The rest of this is what to put in those three frames, and what to do on the other six days.
 
@@ -136,7 +136,7 @@ The buyer taps a sticker, opens a browser inside the app, closes it, thinks abou
 
 What you can do instead is crude and works: post a selling story at a fixed time, and look at the orders in the two hours after it. Do it four Tuesdays in a row. The pattern shows up even though the attribution never will.
 
-This is also where Sailo's honest limit sits. The free plan keeps 30 days of analytics. That's enough to compare this Tuesday to last Tuesday, and not enough to answer "was December better than last December", which is exactly the question you'll want in January. A year of history needs the Pro plan at $9.99 a month, three years needs Business at $19.99. If you're going to run a shop on a seasonal rhythm, know that going in rather than discovering it when the data has already rolled off.
+This is also where Sailo's honest limit sits. The free plan keeps {{free_analytics_days}} days of analytics. That's enough to compare this Tuesday to last Tuesday, and not enough to answer "was December better than last December", which is exactly the question you'll want in January. A year of history needs the Pro plan at ${{pro_monthly}} a month, three years needs Business at ${{business_monthly}}. If you're going to run a shop on a seasonal rhythm, know that going in rather than discovering it when the data has already rolled off.
 
 There's no mobile money rail either, so Njeri's M-Pesa till isn't something Sailo processes. She puts the till number in the bank transfer instructions, buyers see it at checkout, and the reconciliation is hers. That's the arrangement for most sellers outside the card economy, and it's worth reading [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller) before you design your week around it.
 

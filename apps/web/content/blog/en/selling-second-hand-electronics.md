@@ -125,7 +125,7 @@ Nothing in a shop platform makes a used-phone deal safe. Sailo holds your listin
 
 It also has no M-Pesa rail. The complete list of payment rails is card, WhatsApp, Telegram, Instagram, email, phone, bank transfer and cash on delivery. What you can do is put your till number and your registered business name into the bank transfer instructions, which is a real advantage in Kenya because the buyer sees the registered name before they confirm, and that's a trust signal a bare account number can't match. But the money moves through Safaricom and your own phone, not through Sailo, and Sailo cannot tell you it arrived. You check that yourself, every time, before the device leaves your hand.
 
-Card payments, if you want them, cost 0.5% of the goods and require the Business plan at $19.99 a month. There's a further wrinkle worth checking before you plan around them at all: Sailo's card rail runs on Stripe and only Stripe, with no Paystack support, and Stripe isn't available to sellers in every country. Check whether you can actually open a Stripe account where you are before you upgrade, because if you can't, no plan will produce a card button.
+Card payments, if you want them, cost {{fee_range}}% of the goods and require the Business plan at ${{business_monthly}} a month. There's a further wrinkle worth checking before you plan around them at all: Sailo's card rail runs on Stripe and only Stripe, with no Paystack support, and Stripe isn't available to sellers in every country. Check whether you can actually open a Stripe account where you are before you upgrade, because if you can't, no plan will produce a card button.
 
 ## What to do next
 

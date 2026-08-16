@@ -113,7 +113,7 @@ On a card payment, the price is locked at the moment the buyer pays. Money moves
 
 The fix is procedural, not technical. Anything you've quoted, you honour for the window you stated, and you state a window. Anything you haven't quoted moves with the page.
 
-And in Nigeria and Ghana specifically, the card rail isn't the escape hatch. Sailo's card payments run on Stripe and only Stripe, and on Stripe's own global availability page read in August 2026, Nigeria and Ghana both sit in an extended network served by Paystack rather than as launched Stripe countries. Sailo doesn't support Paystack. So the Business plan at $19.99 a month won't buy you a locked-in-at-payment price button in either market. You're running manual rails, which means quoting windows and repricing discipline are doing the job that a checkout does elsewhere.
+And in Nigeria and Ghana specifically, the card rail isn't the escape hatch. Sailo's card payments run on Stripe and only Stripe, and on Stripe's own global availability page read in August 2026, Nigeria and Ghana both sit in an extended network served by Paystack rather than as launched Stripe countries. Sailo doesn't support Paystack. So the Business plan at ${{business_monthly}} a month won't buy you a locked-in-at-payment price button in either market. You're running manual rails, which means quoting windows and repricing discipline are doing the job that a checkout does elsewhere.
 
 Sailo also can't tell you a transfer arrived, in any currency, at any speed. The order sits at pending until you mark it paid, and you mark it paid by looking at your own account. That's the permanent trade for a manual rail, which takes no commission at all.
 

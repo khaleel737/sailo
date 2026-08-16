@@ -123,9 +123,9 @@ Sailo handles the first two reasonably. Your link is live at signup and products
 
 Two real limits, and both bite specifically on drops.
 
-The free plan caps you at 20 products. A drop with four designs in three sizes is 12 variants before you've listed anything permanent, so a serious drop calendar pushes you off free faster than a steady catalogue does.
+The free plan caps you at {{free_products}} products. A drop with four designs in three sizes is 12 variants before you've listed anything permanent, so a serious drop calendar pushes you off free faster than a steady catalogue does.
 
-And the free plan keeps 30 days of analytics. Drop planning is entirely a year-over-year exercise. You want to know what last autumn's drop did, which sizes ran out first, and how the pre-Christmas week compared to the one before it. Thirty days cannot tell you any of that. Pro at $9.99 a month keeps a year, Business at $19.99 keeps three, and if you're staying free the only way to have the history is to export or screenshot your numbers after every drop and keep them yourself. Nobody does this. Set a reminder for the day after launch week and be the exception.
+And the free plan keeps {{free_analytics_days}} days of analytics. Drop planning is entirely a year-over-year exercise. You want to know what last autumn's drop did, which sizes ran out first, and how the pre-Christmas week compared to the one before it. {{free_analytics_days}} days cannot tell you any of that. Pro at ${{pro_monthly}} a month keeps a year, Business at ${{business_monthly}} keeps three, and if you're staying free the only way to have the history is to export or screenshot your numbers after every drop and keep them yourself. Nobody does this. Set a reminder for the day after launch week and be the exception.
 
 ## What to do this weekend
 

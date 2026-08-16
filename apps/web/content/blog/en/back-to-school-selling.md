@@ -129,7 +129,7 @@ Revenue went up about a third, and the late shipments went to two. The change th
 
 ## The honest limitation
 
-Back-to-school catalogues get big fast, and Sailo's free plan caps you at **20 products**. Between three grade bundles, five singles, colour variants and the second-wave replacements, twenty is genuinely tight for this category. Pro is $9.99 a month for 250 products, which is the plan most sellers in this position end up on.
+Back-to-school catalogues get big fast, and Sailo's free plan caps you at **{{free_products}} products**. Between three grade bundles, five singles, colour variants and the second-wave replacements, twenty is genuinely tight for this category. Pro is ${{pro_monthly}} a month for {{pro_products}} products, which is the plan most sellers in this position end up on.
 
 The other one worth knowing before you build a plan around it: **Sailo has no GCash rail.** There's no mobile money integration at all. The payment rails are card, bank transfer, cash on delivery, and orders via WhatsApp, Telegram, Instagram, email or phone. What sellers here actually do is put their GCash number and name in the bank transfer instructions field, which is free text, and confirm the payment themselves when it lands. That works, and plenty of people run their whole business on it, but be clear about what it is: a workaround using a text box, not a feature. Nothing checks the money for you.
 

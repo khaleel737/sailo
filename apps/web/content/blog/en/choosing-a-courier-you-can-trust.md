@@ -151,7 +151,7 @@ Every Sailo order has fields for the carrier, the tracking number and a tracking
 
 The limitation: **none of that is a courier integration.** Sailo doesn't fetch rates, print labels, generate manifests, push orders to a panel or read a tracking status back. You copy the AWB in from wherever you booked it. At 240 orders a month that's a couple of minutes a day; at 2,000 it's a job, and you'd want a panel that does it for you.
 
-The bigger limitation for an Indian seller is on the money side. The most effective way to cut RTO is to get more orders prepaid, and the obvious lever here is UPI. **Sailo has no UPI rail.** There's a bank transfer method where you can write your UPI ID into the instructions, and buyers will pay it perfectly happily, but Sailo won't know they did and can't confirm it. Card payments need the Business plan at $19.99 a month plus 0.5% of the goods, which is a lot of subscription for a seller whose buyers were going to pay by UPI anyway. Being clear about that is more useful than pretending otherwise.
+The bigger limitation for an Indian seller is on the money side. The most effective way to cut RTO is to get more orders prepaid, and the obvious lever here is UPI. **Sailo has no UPI rail.** There's a bank transfer method where you can write your UPI ID into the instructions, and buyers will pay it perfectly happily, but Sailo won't know they did and can't confirm it. Card payments need the Business plan at ${{business_monthly}} a month plus {{fee_range}}% of the goods, which is a lot of subscription for a seller whose buyers were going to pay by UPI anyway. Being clear about that is more useful than pretending otherwise.
 
 ## Do this this week
 

@@ -12,7 +12,7 @@ tags: [povzetje, dostava, plačila]
 
 Povzetje ti proda prvemu kupcu, ki te ne pozna, in te stane v treh valutah, od katerih nobena ni prevoznikova tarifa: v denarnem toku, v zavrnjenih prevzemih in v ročnem usklajevanju, ki ga namesto tebe ne bo naredil nihče. Vrednotiš ga po enem samem merilu, po tem, koliko naročil ti prinese, ki jih drugače ne bi bilo. Če jih ne prinese, ga ne rabiš.
 
-Špela dela naravno kozmetiko v Celju. Balzam za ustnice 6 evrov, krema 19 evrov, darilni komplet 34 evrov. Junija je poslala 52 paketov, 39 po povzetju in 13 po nakazilu. Dva paketa nista bila prevzeta. Tista dva sta jo, skupaj s potjo v obe smeri in prepakiranjem, stala več, kot bi znašalo 0,5 odstotka od vrednosti vseh 52 naročil skupaj.
+Špela dela naravno kozmetiko v Celju. Balzam za ustnice 6 evrov, krema 19 evrov, darilni komplet 34 evrov. Junija je poslala 52 paketov, 39 po povzetju in 13 po nakazilu. Dva paketa nista bila prevzeta. Tista dva sta jo, skupaj s potjo v obe smeri in prepakiranjem, stala več, kot bi znašalo {{fee_range}} odstotka od vrednosti vseh 52 naročil skupaj.
 
 Kje povzetje sedi v celotni sestavljanki prodaje brez spletne trgovine, je razpisano v besedilu o tem, [kako prodajati na spletu brez svoje strani](/sl/blog/prodaja-na-spletu-brez-strani). Tukaj gre samo za gotovino, ki jo pobere kurir.
 
@@ -144,9 +144,9 @@ Kar Sailo pri povzetju naredi, je to, da naročilo pride napisano. Izdelek, razl
 
 Pri povzetju, nakazilu, WhatsAppu, Instagramu, Telegramu, e-pošti in telefonu Sailo ne vzame provizije in se denarja ne dotakne. Nikoli.
 
-Kartica je edina izjema. Pristane na tvojem računu Stripe, Sailo vzame 0,5 odstotka od vrednosti blaga po popustu, brez dostave in brez davka, in zahteva paket Business za 19,99 dolarja na mesec ali 191,90 dolarja na leto ter račun Stripe, ki ga je Stripe odobril za sprejemanje plačil. Stripe v Sloveniji deluje, preverjeno 6. avgusta 2026 na stripe.com/global, seznam držav pa se spreminja, zato ga preveri sam.
+Kartica je edina izjema. Pristane na tvojem računu Stripe, Sailo vzame {{fee_range}} odstotka od vrednosti blaga po popustu, brez dostave in brez davka, in zahteva paket Business za {{business_monthly}} dolarja na mesec ali {{business_yearly}} dolarja na leto ter račun Stripe, ki ga je Stripe odobril za sprejemanje plačil. Stripe v Sloveniji deluje, preverjeno 6. avgusta 2026 na stripe.com/global, seznam držav pa se spreminja, zato ga preveri sam.
 
-Za koga se to izplača, je preprost račun. Pri Špelinih 52 naročilih po povprečno okoli 20 evrov znese 0,5 odstotka približno 5 evrov na mesec, naročnina pa 19,99 dolarja. Kartica se pri takem obsegu ne splača zaradi nizke provizije, ampak samo takrat, ko ti prinese naročila, ki jih drugače ne bi bilo. Če ti jih ne prinese, ostani pri nakazilu in povzetju in denar prihrani.
+Za koga se to izplača, je preprost račun. Pri Špelinih 52 naročilih po povprečno okoli 20 evrov znese {{fee_range}} odstotka približno 5 evrov na mesec, naročnina pa {{business_monthly}} dolarja. Kartica se pri takem obsegu ne splača zaradi nizke provizije, ampak samo takrat, ko ti prinese naročila, ki jih drugače ne bi bilo. Če ti jih ne prinese, ostani pri nakazilu in povzetju in denar prihrani.
 
 Mnenja o izdelkih so tu bolj uporabna, kot se sliši. Delujejo na vsakem paketu, kupec pusti ime, oceno od 1 do 5 in po želji besedilo, javno pa se ne pokaže nič, dokler tega ne odobriš. Pet zapisanih mnenj domačih kupcev naredi za pripravljenost plačati vnaprej več kot katera koli nastavitev v košarici.
 

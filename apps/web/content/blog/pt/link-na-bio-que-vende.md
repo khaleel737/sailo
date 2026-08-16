@@ -124,7 +124,7 @@ O que vale medir, mesmo de forma tosca:
 
 - **Quantas mensagens chegam perguntando preço.** Se ainda chegam muitas, o preço não está visível o bastante.
 - **Quantas perguntam frete ou prazo.** Se chegam muitas, falta a linha de entrega.
-- **Quantas pessoas abrem o link por semana.** O Sailo guarda 30 dias de analytics no plano gratuito e um ano no Pro, então se você quer comparar agosto com março, precisa do plano pago ou de anotar o número toda semana.
+- **Quantas pessoas abrem o link por semana.** O Sailo guarda {{free_analytics_days}} dias de analytics no plano gratuito e um ano no Pro, então se você quer comparar agosto com março, precisa do plano pago ou de anotar o número toda semana.
 
 Duas semanas por mudança é um intervalo honesto pra loja pequena. Menos que isso e você está lendo ruído.
 
@@ -140,7 +140,7 @@ A parte que exige trabalho seu: pedir. Ninguém avalia sozinho. Mande uma mensag
 
 O endereço é `sailo.store/seunome` e ele existe no minuto em que você cria a conta. É esse link que vai na bio.
 
-No plano gratuito você tem 20 produtos, 30 dias de histórico de analytics, e os canais de pedido manuais. Vinte produtos é bastante pra quem está montando a primeira página e é apertado se você vende variação como item separado. O plano Pro (US$ 9,99 por mês ou US$ 95,90 por ano) sobe pra 250 produtos, um ano de analytics, exportação em CSV e tira o selo do Sailo da página.
+No plano gratuito você tem {{free_products}} produtos, {{free_analytics_days}} dias de histórico de analytics, e os canais de pedido manuais. Vinte produtos é bastante pra quem está montando a primeira página e é apertado se você vende variação como item separado. O plano Pro (US$ {{pro_monthly}} por mês ou US$ {{pro_yearly}} por ano) sobe pra {{pro_products}} produtos, um ano de analytics, exportação em CSV e tira o selo do Sailo da página.
 
 Os canais de pedido e pagamento disponíveis são cartão, WhatsApp, Telegram, Instagram, e-mail, telefone, transferência bancária e pagamento na entrega. Essa é a lista inteira, e **Pix não está nela**. Quem vende no Brasil normalmente usa a opção de transferência bancária e escreve a chave Pix no campo de instruções, que é texto livre. O comprador lê, paga pelo banco dele, avisa, e você confere no seu extrato. Funciona, e é uma solução manual: o Sailo não vê o Pix cair e não dá baixa sozinho. O detalhe de como montar isso sem virar bagunça está em [como receber por Pix vendendo online](/pt/blog/como-receber-por-pix-vendendo-online).
 

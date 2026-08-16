@@ -138,9 +138,9 @@ Give it four weeks minimum. A week is noise. If you sell fewer than about ten or
 
 ## Two limits worth naming
 
-Sailo's free plan caps you at 20 products. That's usually described as a limitation and for this particular job it's closer to a favour, because almost every small shop with 40 listings would sell more with 12. If you genuinely need more than 20, Pro gives you 250 and Business is unlimited, but check your table first. The number of products that earn under ₱1,000 of contribution a quarter is normally larger than anyone wants to admit.
+Sailo's free plan caps you at {{free_products}} products. That's usually described as a limitation and for this particular job it's closer to a favour, because almost every small shop with 40 listings would sell more with 12. If you genuinely need more than 20, Pro gives you 250 and Business is unlimited, but check your table first. The number of products that earn under ₱1,000 of contribution a quarter is normally larger than anyone wants to admit.
 
-The real limitation is history. On free, analytics go back 30 days, which isn't long enough to rank products by anything meaningful. Ninety days is the minimum useful window and a year is better. Pro holds a year, Business holds three. If you're on free, you'll need to build the table from your own order records rather than from a dashboard, which is the honest answer and also what most sellers end up doing anyway.
+The real limitation is history. On free, analytics go back {{free_analytics_days}} days, which isn't long enough to rank products by anything meaningful. Ninety days is the minimum useful window and a year is better. Pro holds a year, Business holds three. If you're on free, you'll need to build the table from your own order records rather than from a dashboard, which is the honest answer and also what most sellers end up doing anyway.
 
 ## Build the table this week
 

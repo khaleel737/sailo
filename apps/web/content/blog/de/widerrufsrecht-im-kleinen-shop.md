@@ -79,7 +79,7 @@ Was dann passiert, hängt am Zahlungsweg:
 
 | Zahlungsweg | Was Sailo tut |
 |---|---|
-| Karte | Die Erstattung läuft tatsächlich über Stripe zurück, aus deinem eigenen Stripe-Konto. Sailos Anteil von 0,5 % kommt anteilig mit zurück |
+| Karte | Die Erstattung läuft tatsächlich über Stripe zurück, aus deinem eigenen Stripe-Konto. Sailos Anteil von {{fee_range}} % kommt anteilig mit zurück |
 | Überweisung | Sailo hält die Erstattung fest. Das Geld überweist du selbst |
 | Nachnahme | Genauso: festhalten, selbst zurückzahlen |
 | WhatsApp, Telegram, Instagram, E-Mail, Telefon | Genauso |

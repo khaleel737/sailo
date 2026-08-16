@@ -130,7 +130,7 @@ None of those offend a genuine buyer. All of them lose the person who was never 
 
 A written price on a page you control is the single most useful anti-haggling tool there is, and it's free. Sailo gives you `sailo.store/yourname` with your products, options and prices, live at signup, and an order button that opens WhatsApp with the item, options, address and total already written out. Buyers arrive at the chat with the number already in front of them, which changes the conversation before it starts.
 
-Coupons exist, and they're the disciplined version of a discount: a code with a fixed value that you can hand to a specific buyer instead of inventing a number in a chat. They're on the Business plan at $19.99 a month, which is a real cost and worth checking against how much you're actually giving away.
+Coupons exist, and they're the disciplined version of a discount: a code with a fixed value that you can hand to a specific buyer instead of inventing a number in a chat. They're on the Business plan at ${{business_monthly}} a month, which is a real cost and worth checking against how much you're actually giving away.
 
 Three honest limits.
 

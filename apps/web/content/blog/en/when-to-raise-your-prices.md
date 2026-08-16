@@ -159,7 +159,7 @@ If keeping the people you already have is the real worry, that's a different job
 
 ## The honest limitation
 
-You're going to base this decision on your own sales history, and on Sailo that history is shorter than you'd like on the free plan. Thirty days of analytics is enough to spot a trend and not nearly enough to compare this September with last September, which is exactly the comparison a price decision wants. Pro is $9.99 a month for a year of history, Business is $19.99 for three years. If you're on free and thinking about a rise, write your monthly totals down somewhere yourself, because in 31 days the detail is gone.
+You're going to base this decision on your own sales history, and on Sailo that history is shorter than you'd like on the free plan. {{free_analytics_days}} days of analytics is barely enough to notice a good week, let alone compare this September with last September, which is exactly the comparison a price decision wants. Pro is ${{pro_monthly}} a month for a year of history, Business is ${{business_monthly}} for three years. If you're on free and thinking about a rise, write your monthly totals down somewhere yourself, because a week later the detail is gone.
 
 The second thing to be straight about: on bank transfer, cash on delivery or an order handed to WhatsApp, Sailo never touches the money and can't tell you a payment arrived. Only your bank can. An order is marked paid because you marked it. If you're casual about that, the revenue figures underneath your price decision are a guess wearing a chart.
 

@@ -131,9 +131,9 @@ Sailo shows you what came in. Orders, totals, which rail they arrived on, over a
 
 It has no idea what anything cost you. Not your materials, not your postage, not your studio electricity. So the number on your dashboard is turnover, and turnover is the number in the first section of this article that you were warned not to pay yourself out of. Sailo will never tell you your profit, because it only sees one side of the ledger.
 
-Two specific limits worth planning around. The free plan keeps 30 days of history, which is not enough to find your worst month, and the worst month is the entire basis of the method above. Pro at $9.99 a month keeps a year, which is the minimum useful window for this, and Business at $19.99 keeps three. And if you're on Business because you want card payments, that $19.99 is a fixed cost that comes out of the business before your pay does, every month, whether you sold anything or not.
+Two specific limits worth planning around. The free plan keeps 30 days of history, which is not enough to find your worst month, and the worst month is the entire basis of the method above. Pro at ${{pro_monthly}} a month keeps a year, which is the minimum useful window for this, and Business at ${{business_monthly}} keeps three. And if you're on Business because you want card payments, that ${{business_monthly}} is a fixed cost that comes out of the business before your pay does, every month, whether you sold anything or not.
 
-That last one is worth a moment. On card orders Sailo takes 0.5% of the goods, which on a $32 shirt is 16 cents. The percentage is not what makes Business expensive at low volume. The subscription is. Twelve slow months of $19.99 is $239.88, and at 20 orders a month you'd rather have that as five weeks of your own pay.
+That last one is worth a moment. On card orders Sailo takes {{fee_range}}% of the goods, which on a $32 shirt is 16 cents. The percentage is not what makes Business expensive at low volume. The subscription is. Twelve slow months of ${{business_monthly}} is $239.88, and at 20 orders a month you'd rather have that as five weeks of your own pay.
 
 ## Do this before the end of the week
 

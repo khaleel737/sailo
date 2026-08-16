@@ -10,7 +10,7 @@ tags: [admin, starting-out]
 
 You've taken six orders, someone has asked for a receipt with a company number on it, and now you're wondering whether you were supposed to sort something out before you started.
 
-In most countries, no. Not before your first sale. You can almost certainly sell as yourself, under your own name, with nothing filed and nothing paid. Sailo will hand you a shop link for $0 and let you publish 20 products without asking one question about your legal status, and no payment app you already use will ask either. What you can't do is stay unregistered forever. The thing that eventually forces the change is almost never a rule you read in an article. It's a bank clerk, a business customer, or a payment processor asking for a number you don't have.
+In most countries, no. Not before your first sale. You can almost certainly sell as yourself, under your own name, with nothing filed and nothing paid. Sailo will hand you a shop link for $0 and let you publish {{free_products}} products without asking one question about your legal status, and no payment app you already use will ask either. What you can't do is stay unregistered forever. The thing that eventually forces the change is almost never a rule you read in an article. It's a bank clerk, a business customer, or a payment processor asking for a number you don't have.
 
 So the useful question isn't "am I allowed to do this." It's "which of those three arrives first, and what happens when it does."
 
@@ -59,7 +59,7 @@ This is the trigger that arrives with money attached, which makes it the most pe
 
 Card payments are the point where an anonymous side income stops being anonymous. Every card processor is legally obliged to know who it's paying. That means identity documents, a business description, sometimes a registration number, sometimes bank statements, and a real possibility of being told no.
 
-On Sailo, cards run through your own Stripe account and need the Business plan at $19.99 a month. Sailo takes 0.5% of the goods on a card sale, on top of Stripe's own cut, and nothing at all on bank transfer, cash on delivery or chat orders. Whether you need that button at all is a maths question rather than a status question, and it's worked through in [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller).
+On Sailo, cards run through your own Stripe account and need the Business plan at ${{business_monthly}} a month. Sailo takes {{fee_range}}% of the goods on a card sale, on top of Stripe's own cut, and nothing at all on bank transfer, cash on delivery or chat orders. Whether you need that button at all is a maths question rather than a status question, and it's worked through in [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller).
 
 ### 4. A licence rule catches you
 

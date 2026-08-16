@@ -38,7 +38,7 @@ What sellers do instead is run MoMo as a manual rail. Put your MoMo number or yo
 
 Sailo's card rail runs on Stripe and nothing else.
 
-On Stripe's own global availability page, read in August 2026, Ghana appears under the extended network served by Paystack rather than as a launched Stripe country. Sailo does not support Paystack, whatever you may have read on the marketing site. Which means paying $19.99 a month for the Business plan will not reliably give a Ghanaian seller a working card checkout.
+On Stripe's own global availability page, read in August 2026, Ghana appears under the extended network served by Paystack rather than as a launched Stripe country. Sailo does not support Paystack, whatever you may have read on the marketing site. Which means paying ${{business_monthly}} a month for the Business plan will not reliably give a Ghanaian seller a working card checkout.
 
 That's a sentence that costs Sailo money to write, and it's true, so here it is plainly. If you genuinely need card acceptance, set it up directly with a Ghanaian provider and run it alongside. Sailo can hold your products, options, prices and order flow while the money arrives by MoMo or by a card link you generate elsewhere. Just don't build your plan around a button that isn't going to switch on.
 
@@ -129,7 +129,7 @@ What you can do today, with no registration at all: keep every order in one plac
 
 **Sailo can't tell you money arrived.** Your order sits at pending until you mark it paid, and you mark it paid by looking at your own balance. That's the permanent trade for a manual rail, which carries no commission at all.
 
-The free plan is $0 and caps at 20 products. For Efua's two sizes that's nowhere near a constraint. For someone listing thirty shades of foundation it is.
+The free plan is $0 and caps at {{free_products}} products. For Efua's two sizes that's nowhere near a constraint. For someone listing thirty shades of foundation it is.
 
 ## What to do next
 

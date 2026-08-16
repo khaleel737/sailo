@@ -32,7 +32,7 @@ Now the honest bit, up front, because it changes what you plan.
 
 Sailo's complete list of payment rails is card, WhatsApp, Telegram, Instagram, email, phone, bank transfer and cash on delivery. There is no JazzCash rail and no Easypaisa rail. What sellers do is put their JazzCash or Easypaisa number into the bank transfer instructions field, which is free text, alongside their IBAN and their Raast ID, and then confirm the payment themselves from their own app or the SMS. That works fine. It is a workaround you should understand as one. Sailo holds the catalogue and the order. Your phone holds the money.
 
-And on cards: Sailo's card rail runs on Stripe and only Stripe. Pakistan does not appear on Stripe's own global availability page at all, read in August 2026. So the card button is not going to appear for a Pakistani seller regardless of volume, and upgrading to the Business plan at $19.99 a month would buy you unlimited products and coupons, not a card checkout. Build on COD and transfer, which is what your buyers wanted anyway.
+And on cards: Sailo's card rail runs on Stripe and only Stripe. Pakistan does not appear on Stripe's own global availability page at all, read in August 2026. So the card button is not going to appear for a Pakistani seller regardless of volume, and upgrading to the Business plan at ${{business_monthly}} a month would buy you unlimited products and coupons, not a card checkout. Build on COD and transfer, which is what your buyers wanted anyway.
 
 ## Cash on delivery, and the number that decides your year
 
@@ -115,7 +115,7 @@ Pakistani buyers have been burned and they check. The signals that work are ungl
 
 **Sailo can't tell you a payment arrived.** The order sits at pending until you mark it paid. There's no bank feed and there isn't going to be one, because on manual rails Sailo never touches the money and takes no commission on it.
 
-The free plan is $0 and caps at 20 products, which for a lawn seller with eleven designs in four colourways is a wall you'll hit in the first week. Pro at $9.99 a month takes it to 250.
+The free plan is $0 and caps at {{free_products}} products, which for a lawn seller with eleven designs in four colourways is a wall you'll hit in the first week. Pro at ${{pro_monthly}} a month takes it to 250.
 
 ## What to do next
 

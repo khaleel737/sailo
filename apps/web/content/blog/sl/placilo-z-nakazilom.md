@@ -116,7 +116,7 @@ Prodajalci, ki Flik vseeno sprejemajo, naredijo eno stvar. Svoje podatke vpišej
 | Navadno nakazilo | Isti ali naslednji delovni dan, odvisno od urne meje banke | Nič nad stroški tvoje banke | Nestrpen kupec, ki čaka |
 | Takojšnje plačilo | V nekaj sekundah | Odvisno od banke, običajno plača kupec | Kupec ne ve, da to možnost ima |
 | Povzetje | Šele ko ti prevoznik nakaže pobrano gotovino | Doplačilo pri prevozniku in tvoje ročno usklajevanje | Zavrnjen prevzem in strošek v obe smeri |
-| Kartica | Po poravnavi Stripa na tvoj račun Stripe | Provizija Stripa in 0,5 odstotka za Sailo | Zahteva paket Business in odobren račun Stripe |
+| Kartica | Po poravnavi Stripa na tvoj račun Stripe | Provizija Stripa in {{fee_range}} odstotka za Sailo | Zahteva paket Business in odobren račun Stripe |
 
 Ta tabela je edino mesto, kjer se načine plačila splača primerjati, ker primerjanje po »udobju« ne pove ničesar. Šteje trenutek, ko je denar tvoj, in to, kaj se zgodi, ko gre nekaj narobe.
 
@@ -153,11 +153,11 @@ Pri bančnem nakazilu izpolniš ime banke, ime prejemnika, številko računa, IB
 
 Pri nakazilu, povzetju, WhatsAppu, Instagramu, Telegramu, e-pošti in telefonu Sailo ne vzame provizije in se denarja ne dotakne. Nikoli. Denar gre neposredno med kupcem in tabo.
 
-Kartica dela drugače. Pristane na tvojem računu Stripe, Sailo vzame 0,5 odstotka od vrednosti blaga po popustu, brez dostave in brez davka, in zahteva paket Business za 19,99 dolarja na mesec ali 191,90 dolarja na leto ter račun Stripe, ki ga je Stripe odobril za sprejemanje plačil. Stripe je v Sloveniji na voljo, preverjeno 6. avgusta 2026 na stripe.com/global, seznam držav pa se spreminja, zato ga preveri, preden plačaš naročnino.
+Kartica dela drugače. Pristane na tvojem računu Stripe, Sailo vzame {{fee_range}} odstotka od vrednosti blaga po popustu, brez dostave in brez davka, in zahteva paket Business za {{business_monthly}} dolarja na mesec ali {{business_yearly}} dolarja na leto ter račun Stripe, ki ga je Stripe odobril za sprejemanje plačil. Stripe je v Sloveniji na voljo, preverjeno 6. avgusta 2026 na stripe.com/global, seznam držav pa se spreminja, zato ga preveri, preden plačaš naročnino.
 
 Naročilo z WhatsAppa pride k tebi napisano: izdelek, različice, naslov in vsota. Ni ti ga treba sestavljati iz šestih sporočil.
 
-Pri Mateju je račun preprost. Pri 35 naročilih po 47 evrov bi bilo 0,5 odstotka približno 8 evrov na mesec, naročnina pa 19,99 dolarja. Kartica se pri takem obsegu ne splača zaradi provizije, ampak samo takrat, ko ti prinese naročila, ki jih drugače ne bi bilo. Če ti jih ne prinese, ostani pri nakazilu in prihrani denar.
+Pri Mateju je račun preprost. Pri 35 naročilih po 47 evrov bi bilo {{fee_range}} odstotka približno 8 evrov na mesec, naročnina pa {{business_monthly}} dolarja. Kartica se pri takem obsegu ne splača zaradi provizije, ampak samo takrat, ko ti prinese naročila, ki jih drugače ne bi bilo. Če ti jih ne prinese, ostani pri nakazilu in prihrani denar.
 
 ## Česa Sailo ne bo naredil
 

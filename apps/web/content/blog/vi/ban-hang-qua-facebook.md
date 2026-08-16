@@ -134,11 +134,11 @@ Về tiền, có hai nhóm khác hẳn nhau và phải nói rõ từng nhóm.
 
 Nhóm thủ công gồm chuyển khoản ngân hàng, COD, WhatsApp, Telegram, Instagram, email và điện thoại. Với những kênh này Sailo không chạm vào tiền và không lấy đồng nào. Tiền đi thẳng từ khách sang bạn, hoặc qua shipper về bạn.
 
-Nhóm thẻ thì có phí: 0,5% trên giá trị hàng sau giảm giá, không tính phí giao hàng và thuế, thu dưới dạng application fee của Stripe. Thẻ đòi gói Business 19,99 USD/tháng hoặc 191,90 USD/năm, kèm một tài khoản Stripe đã được Stripe duyệt cho phép thu tiền.
+Nhóm thẻ thì có phí: {{fee_range}}% trên giá trị hàng sau giảm giá, không tính phí giao hàng và thuế, thu dưới dạng application fee của Stripe. Thẻ đòi gói Business {{business_monthly}} USD/tháng hoặc {{business_yearly}} USD/năm, kèm một tài khoản Stripe đã được Stripe duyệt cho phép thu tiền.
 
-Và đây là chỗ phải nói thẳng. Kênh thẻ của Sailo chạy qua Stripe và chỉ Stripe. Tính đến tháng 8 năm 2026, Việt Nam không nằm trong danh sách quốc gia Stripe hỗ trợ. Nghĩa là nút thanh toán bằng thẻ có thể không dùng được với người bán ở Việt Nam dù trả gói nào đi nữa, nên đừng bỏ 19,99 USD/tháng mua Business để chờ nó hiện ra. Danh sách đó có thay đổi, tự kiểm tra lại ở stripe.com/global trước khi quyết định.
+Và đây là chỗ phải nói thẳng. Kênh thẻ của Sailo chạy qua Stripe và chỉ Stripe. Tính đến tháng 8 năm 2026, Việt Nam không nằm trong danh sách quốc gia Stripe hỗ trợ. Nghĩa là nút thanh toán bằng thẻ có thể không dùng được với người bán ở Việt Nam dù trả gói nào đi nữa, nên đừng bỏ {{business_monthly}} USD/tháng mua Business để chờ nó hiện ra. Danh sách đó có thay đổi, tự kiểm tra lại ở stripe.com/global trước khi quyết định.
 
-Gói miễn phí là 0 USD, 20 sản phẩm, 30 ngày số liệu, đủ các kênh thủ công, không có thẻ. Gói Pro 9,99 USD/tháng hoặc 95,90 USD/năm cho 250 sản phẩm, 1 năm số liệu, bỏ badge Sailo, xuất CSV, cũng không có thẻ.
+Gói miễn phí là 0 USD, {{free_products}} sản phẩm, 30 ngày số liệu, đủ các kênh thủ công, không có thẻ. Gói Pro {{pro_monthly}} USD/tháng hoặc {{pro_yearly}} USD/năm cho {{pro_products}} sản phẩm, 1 năm số liệu, bỏ badge Sailo, xuất CSV, cũng không có thẻ.
 
 Đánh giá sản phẩm có trên mọi gói. Khách để tên, chấm từ 1 đến 5 sao, viết thêm chữ nếu muốn, và không có gì hiện lên trang cho tới khi bạn duyệt. Với người bán trên Facebook, mấy dòng đánh giá đó là thứ thay cho câu "shop uy tín" mà ai cũng tự viết về mình.
 

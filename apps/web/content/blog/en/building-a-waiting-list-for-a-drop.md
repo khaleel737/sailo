@@ -101,9 +101,9 @@ If you're on manual rails, bank transfer or cash on delivery, you're going to be
 
 Bank transfers are the slow part. You cannot see them arrive in real time, and neither can any shop tool, including Sailo. Only your bank knows, and on drop night that means you're refreshing a banking app with 30 unread WhatsApp messages. [How to know a bank transfer actually arrived](/en/blog/how-to-know-a-bank-transfer-actually-arrived) is worth reading before drop day rather than during it.
 
-If you want card payments so the money confirms itself, there are two conditions worth knowing weeks ahead. Card on Sailo needs the Business plan at $19.99 a month, and it needs a Stripe account that Stripe has actually cleared for charges. Stripe's checks aren't instant and they sometimes come back asking for a document. Do not schedule a drop for four days after you sign up and assume cards will be live. Sort it a fortnight out, run one real test charge on a cheap product, and then you know.
+If you want card payments so the money confirms itself, there are two conditions worth knowing weeks ahead. Card on Sailo needs the Business plan at ${{business_monthly}} a month, and it needs a Stripe account that Stripe has actually cleared for charges. Stripe's checks aren't instant and they sometimes come back asking for a document. Do not schedule a drop for four days after you sign up and assume cards will be live. Sort it a fortnight out, run one real test charge on a cheap product, and then you know.
 
-Sailo takes 0.5% of the goods on card orders, after any discount, excluding delivery and tax. On a $34 hoodie that's 17 cents, plus whatever Stripe charges you. The subscription is the real cost at 60 units a drop, not the half a percent.
+Sailo takes {{fee_range}}% of the goods on card orders, after any discount, excluding delivery and tax. On a $34 hoodie that's 17 cents, plus whatever Stripe charges you. The subscription is the real cost at 60 units a drop, not the half a percent.
 
 ## Devon's second drop, in Atlanta
 

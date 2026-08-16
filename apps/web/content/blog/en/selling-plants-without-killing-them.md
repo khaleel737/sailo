@@ -121,7 +121,7 @@ November to March she stops posting tropicals entirely. Instead she sells rooted
 
 Her loss rate ran at 11% in her first autumn because she was still posting on Thursdays. It's under 3% now. That single scheduling change was worth more than every packing improvement she made.
 
-She takes payment by bank transfer and card. The transfers cost her nothing on Sailo, since it never touches the money on that rail, and the card orders cost 0.5% of the goods, which is 14c on a £28 order, on top of the Business plan at $19.99 a month. At 60 orders a month that subscription is under 2% of revenue. She'd have been better off on transfers alone in her first three months, and she knows it.
+She takes payment by bank transfer and card. The transfers cost her nothing on Sailo, since it never touches the money on that rail, and the card orders cost {{fee_range}}% of the goods, which is 14c on a £28 order, on top of the Business plan at ${{business_monthly}} a month. At 60 orders a month that subscription is under 2% of revenue. She'd have been better off on transfers alone in her first three months, and she knows it.
 
 ## The honest limitation
 

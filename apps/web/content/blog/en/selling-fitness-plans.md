@@ -10,7 +10,7 @@ tags: [fitness, digital, niches]
 
 You've written the same twelve-week programme for eleven different people now, mostly for free, and someone finally said "you should sell this". They're right. What they're wrong about is the word passive.
 
-Selling a plan works, at a modest scale, if you do three things. Build it for one specific person with one specific set of equipment, price it where a $39 file makes sense against the $19.99 a month it costs to take card payments, and write your claims so carefully that nobody could reasonably say you promised an outcome. That last one isn't legal caution for its own sake. It's the part that decides whether your refund rate is 3% or 15%, and whether you sleep well.
+Selling a plan works, at a modest scale, if you do three things. Build it for one specific person with one specific set of equipment, price it where a $39 file makes sense against the ${{business_monthly}} a month it costs to take card payments, and write your claims so carefully that nobody could reasonably say you promised an outcome. That last one isn't legal caution for its own sake. It's the part that decides whether your refund rate is 3% or 15%, and whether you sleep well.
 
 Expect around 30 support messages per 100 sales. That's the number nobody mentions.
 
@@ -107,9 +107,9 @@ She got 31 messages in the first two weeks. Most were "can I swap this exercise"
 
 She refunded 3 of the first 55. One had a shoulder injury she hadn't mentioned, one wanted a gym plan and hadn't read the title, and one just didn't like it.
 
-Her costs are almost nothing except the card setup. Card payments need the Business plan at $19.99 a month and a Stripe account cleared for charges, plus 0.5% of the goods to Sailo, which is 20 cents on a $39 plan, and Stripe's own fee on top. In a 14-sale month that's $546 of revenue and about $20 of subscription, so roughly 3.7%. In launch month it was under 1%. That's the honest shape of it: the subscription is cheap when you're selling and it's the main cost when you're not, and if you have a quiet quarter you're paying $60 to have a shop that took two orders.
+Her costs are almost nothing except the card setup. Card payments need the Business plan at ${{business_monthly}} a month and a Stripe account cleared for charges, plus {{fee_range}}% of the goods to Sailo, which is 20 cents on a $39 plan, and Stripe's own fee on top. In a 14-sale month that's $546 of revenue and about $20 of subscription, so roughly 3.7%. In launch month it was under 1%. That's the honest shape of it: the subscription is cheap when you're selling and it's the main cost when you're not, and if you have a quiet quarter you're paying $60 to have a shop that took two orders.
 
-That's the limitation worth planning for, and it's real. You need card to sell a $39 file to a stranger in another country, because nobody's doing a bank transfer for that. So the $19.99 is not optional the way it is for a baker taking transfers locally. Budget it as a fixed cost, not as a percentage.
+That's the limitation worth planning for, and it's real. You need card to sell a $39 file to a stranger in another country, because nobody's doing a bank transfer for that. So the ${{business_monthly}} is not optional the way it is for a baker taking transfers locally. Budget it as a fixed cost, not as a percentage.
 
 The thing she'd do differently: she'd have sold the plan to her existing followers as a pre-order before building it. Thirty people paying $29 for something arriving in six weeks would have told her exactly what to write and funded the video kit. [Testing a product before you make it](/en/blog/testing-a-product-before-you-make-it) is the method for that.
 

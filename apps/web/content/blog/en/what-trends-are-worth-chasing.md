@@ -119,11 +119,11 @@ For the pre-order version, a link you can update in minutes matters more than an
 
 Three limits that bite specifically on this decision.
 
-The free plan caps at 20 products. A trend buy in five variants eats a quarter of your catalogue for something that might be dead in eight weeks, and the slots you spend on it are slots your permanent line needs.
+The free plan caps at {{free_products}} products. A trend buy in five variants eats a quarter of your catalogue for something that might be dead in eight weeks, and the slots you spend on it are slots your permanent line needs.
 
-The free plan keeps 30 days of analytics. Reading a trend curve is precisely a question about whether this month is better or worse than three months ago, and 30 days cannot answer it. Pro at $9.99 a month gives you a year; Business at $19.99 gives you three.
+The free plan keeps {{free_analytics_days}} days of analytics. Reading a trend curve is precisely a question about whether this month is better or worse than three months ago, and 30 days cannot answer it. Pro at ${{pro_monthly}} a month gives you a year; Business at ${{business_monthly}} gives you three.
 
-And discount coupons only exist on Business at $19.99. So if your clearance plan involves running a code, that's a plan that costs $19.99 a month before it saves you anything. On free or Pro you're editing prices by hand, which works, but it's a different job.
+And discount coupons only exist on Business at ${{business_monthly}}. So if your clearance plan involves running a code, that's a plan that costs ${{business_monthly}} a month before it saves you anything. On free or Pro you're editing prices by hand, which works, but it's a different job.
 
 Sailo also can't tell you whether anything will sell. Nothing can. It can tell you what did, over a window you're paying for.
 

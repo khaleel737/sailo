@@ -178,7 +178,7 @@ Where the shop is relevant is the one line you print: a card that sends someone 
 
 The honest limitation is the one Divya hit, and it's worth taking seriously before you order 500 of anything. Printed material outlives the link on it. If you change your handle, move platforms, or stop paying for a plan, the cards in your drawer point at nothing. Two defences: print in batches of about 100, and always put something on the card that you own outright as well, your phone number, your email or your own domain if you have one. The link is the convenience; the way to reach you is the thing that has to survive.
 
-The other limit worth knowing: the free plan caps at 20 products, so a printed card that promises "everything I make is in the shop" needs your shop to actually be able to hold everything you make.
+The other limit worth knowing: the free plan caps at {{free_products}} products, so a printed card that promises "everything I make is in the shop" needs your shop to actually be able to hold everything you make.
 
 ## Print one care card this week
 

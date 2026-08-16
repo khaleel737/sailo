@@ -156,7 +156,7 @@ The thing she'd tell someone starting: the buyers who ask the most questions are
 
 Worth being straight about the limits here, because it's where sellers over-trust their tools.
 
-A Sailo shop at sailo.store/yourname is live the moment you sign up. That means anyone can have one in five minutes, including the person copying your photos. There's no verification, no check that you exist, and no badge that means a human looked at you. On the free plan there's actually a Sailo badge on the page, which the Pro plan at $9.99 a month removes, and neither state says anything at all about whether you'll ship.
+A Sailo shop at sailo.store/yourname is live the moment you sign up. That means anyone can have one in five minutes, including the person copying your photos. There's no verification, no check that you exist, and no badge that means a human looked at you. On the free plan there's actually a Sailo badge on the page, which the Pro plan at ${{pro_monthly}} a month removes, and neither state says anything at all about whether you'll ship.
 
 There's also no escrow. On bank transfer and cash on delivery, Sailo never touches the money and takes nothing from it, which is why those rails are free, and it's also why the platform cannot vouch for either side or hold anything in the middle. If you and a buyer want a third party holding the money, that's an arrangement the two of you make elsewhere.
 

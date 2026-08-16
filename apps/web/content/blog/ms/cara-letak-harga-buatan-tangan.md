@@ -158,11 +158,11 @@ Gambar pula menyokong harga baharu lebih daripada mana-mana ayat penerangan. Beg
 
 ## Apa yang alat buat, dan apa yang tidak
 
-Dalam Sailo, harga ialah angka yang anda taip. Anda boleh ada varian dengan harga berbeza, dan kupon pula hanya ada pada pelan Business, USD 19.99 sebulan. Ulasan produk ada pada semua pelan, pembeli tinggalkan nama, bintang satu hingga lima dan teks, dan tiada apa muncul sehingga anda meluluskannya. Untuk barang buatan tangan berharga tinggi, ulasan yang diluluskan itu menyokong harga lebih kuat daripada mana-mana perenggan penerangan.
+Dalam Sailo, harga ialah angka yang anda taip. Anda boleh ada varian dengan harga berbeza, dan kupon pula hanya ada pada pelan Business, USD {{business_monthly}} sebulan. Ulasan produk ada pada semua pelan, pembeli tinggalkan nama, bintang satu hingga lima dan teks, dan tiada apa muncul sehingga anda meluluskannya. Untuk barang buatan tangan berharga tinggi, ulasan yang diluluskan itu menyokong harga lebih kuat daripada mana-mana perenggan penerangan.
 
 Batasannya, dan ini yang paling relevan di sini: **tiada apa-apa dalam alat ini yang memberitahu anda harga anda terlalu rendah.** Sailo tak tahu berapa jam anda ambil, tak tahu harga benang naik, dan tak akan menghalang anda meletak RM85 untuk barang yang berkos RM119.50. Kiraan itu kerja anda, dengan pen, sekali setiap suku tahun.
 
-Satu perkara lagi yang menolong perspektif. Untuk jalur manual seperti transfer bank, COD dan WhatsApp, Sailo tak sentuh duit itu dan tak ambil apa-apa. Untuk bayaran kad, komisennya 0.5 peratus daripada nilai barang selepas diskaun. Pada beg RM139 itu bersamaan kira-kira 70 sen. Bandingkan dengan RM67.50 upah yang tak masuk kiraan selama ini, dan anda tahu di mana wang anda sebenarnya hilang. Rel kad itu Stripe sahaja, dan senarai negara yang Stripe terima berubah dari semasa ke semasa, jadi semak stripe.com/global untuk Malaysia sebelum anda merancang apa-apa di sekelilingnya.
+Satu perkara lagi yang menolong perspektif. Untuk jalur manual seperti transfer bank, COD dan WhatsApp, Sailo tak sentuh duit itu dan tak ambil apa-apa. Untuk bayaran kad, komisennya {{fee_range}} peratus daripada nilai barang selepas diskaun. Pada beg RM139 itu bersamaan kira-kira 70 sen. Bandingkan dengan RM67.50 upah yang tak masuk kiraan selama ini, dan anda tahu di mana wang anda sebenarnya hilang. Rel kad itu Stripe sahaja, dan senarai negara yang Stripe terima berubah dari semasa ke semasa, jadi semak stripe.com/global untuk Malaysia sebelum anda merancang apa-apa di sekelilingnya.
 
 ## Langkah minggu ini
 

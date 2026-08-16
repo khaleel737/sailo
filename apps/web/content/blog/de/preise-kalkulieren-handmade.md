@@ -73,7 +73,7 @@ Zähl deine echten Posten zusammen und teile durch die Stückzahl, die du realis
 
 Diese Zahl fällt, wenn du mehr verkaufst, und das ist der ehrliche Grund, warum Wachstum bei Handmade hilft. Sie fällt nicht, wenn du nur mehr herstellst.
 
-Zum Shopsystem, weil es hier in der Tabelle steht: Bei Sailo ist der kostenlose Tarif 0 Dollar und trägt 20 Produkte. Pro kostet 9,99 Dollar im Monat oder 95,90 Dollar im Jahr und bringt 250 Produkte, ein Jahr Auswertungen, den CSV-Export und entfernt den Sailo-Hinweis. Business kostet 19,99 Dollar im Monat oder 191,90 Dollar im Jahr und bringt Kartenzahlung, Gutscheine und ein Partnerprogramm dazu. Die Abrechnung läuft in Dollar, was für dich einen Wechselkurs bedeutet, den du in deiner Kalkulation nicht steuerst.
+Zum Shopsystem, weil es hier in der Tabelle steht: Bei Sailo ist der kostenlose Tarif 0 Dollar und trägt {{free_products}} Produkte. Pro kostet {{pro_monthly}} Dollar im Monat oder {{pro_yearly}} Dollar im Jahr und bringt {{pro_products}} Produkte, ein Jahr Auswertungen, den CSV-Export und entfernt den Sailo-Hinweis. Business kostet {{business_monthly}} Dollar im Monat oder {{business_yearly}} Dollar im Jahr und bringt Kartenzahlung, Gutscheine und ein Partnerprogramm dazu. Die Abrechnung läuft in Dollar, was für dich einen Wechselkurs bedeutet, den du in deiner Kalkulation nicht steuerst.
 
 ## Die Marge, und wofür sie da ist
 

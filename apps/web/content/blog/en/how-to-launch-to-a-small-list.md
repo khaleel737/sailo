@@ -111,9 +111,9 @@ What doesn't work is pricing so low that twenty sales don't cover the week you s
 
 If you're planning to take card payments for the first time during a launch, sort it out three weeks early, not three days.
 
-Card on Sailo needs the Business plan at $19.99 a month, and a connected Stripe account that Stripe has actually cleared for charges. Stripe's review isn't instant and it isn't always predictable. It can ask for documents. It can ask again. Building a launch calendar around a card rail that goes live "probably Monday" is how people end up posting a link on Tuesday morning that takes no money.
+Card on Sailo needs the Business plan at ${{business_monthly}} a month, and a connected Stripe account that Stripe has actually cleared for charges. Stripe's review isn't instant and it isn't always predictable. It can ask for documents. It can ask again. Building a launch calendar around a card rail that goes live "probably Monday" is how people end up posting a link on Tuesday morning that takes no money.
 
-Sailo also takes 0.5% of the goods on card, after discount, excluding delivery and tax. On a KSh 1,800 plan that's about KSh 9. The 0.5% is not your problem. The $19.99 and the clearance timeline are.
+Sailo also takes {{fee_range}}% of the goods on card, after discount, excluding delivery and tax. On a KSh 1,800 plan that's about KSh 9. The {{fee_range}}% is not your problem. The ${{business_monthly}} and the clearance timeline are.
 
 If you're not sure card is worth switching on at all yet, [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online) does the arithmetic at low volume, and the answer for a first launch is usually no.
 

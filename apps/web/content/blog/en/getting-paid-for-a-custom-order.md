@@ -168,7 +168,7 @@ What does work:
 - **The services setup** if what you're selling is time. Duration, location, a date picker and a notice period, which is the field that stops someone booking you for tomorrow morning.
 - **Digital delivery** if the output is a file. It unlocks on payment confirmation, with download limits and expiry available.
 
-Sailo takes nothing on bank transfer, cash on delivery or chat orders, because it never touches the money. Cards are 0.5% of the goods plus the $19.99 Business plan and your own Stripe account, which for a maker doing twelve orders a month at $400 is easily worth it and for someone doing two is not.
+Sailo takes nothing on bank transfer, cash on delivery or chat orders, because it never touches the money. Cards are {{fee_range}}% of the goods plus the ${{business_monthly}} Business plan and your own Stripe account, which for a maker doing twelve orders a month at $400 is easily worth it and for someone doing two is not.
 
 Before you decide any of that, the honest comparison of the rails is in [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller), and the wider habit of telling customers what will happen before it happens is in [setting expectations before the sale](/en/blog/setting-expectations-before-the-sale).
 

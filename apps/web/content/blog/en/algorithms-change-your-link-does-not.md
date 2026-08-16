@@ -12,7 +12,7 @@ In February one of your reels did 180,000 views. In March you posted eleven time
 
 You didn't get worse. Nobody sent you a message explaining it, and nobody will. That's not a glitch in the system, it's the system.
 
-You need your own link because everything else in your business is borrowed. Your reach is decided by a ranking system that changes without notice, your account exists at a platform's discretion, and the clever feature you built your ordering around can be removed in an update. What survives all three is a name people can type, a page that's still there when they type it, and a list of people who have bought from you before. A shop at `sailo.store/yourname` is free at $0 for 20 products, and the reason to have one is not this month's orders. It's next March's.
+You need your own link because everything else in your business is borrowed. Your reach is decided by a ranking system that changes without notice, your account exists at a platform's discretion, and the clever feature you built your ordering around can be removed in an update. What survives all three is a name people can type, a page that's still there when they type it, and a list of people who have bought from you before. A shop at `sailo.store/yourname` is free at $0 for {{free_products}} products, and the reason to have one is not this month's orders. It's next March's.
 
 ## Reach is a loan, not an asset
 
@@ -141,11 +141,11 @@ The name repetition is the one people skip because it feels self-conscious. It's
 
 ## What this costs, and what you can't do on free
 
-The free plan is $0, holds 20 products, keeps 30 days of analytics, and takes no commission on bank transfer, cash on delivery, WhatsApp, Telegram, Instagram, email or phone orders, because the money never passes through Sailo.
+The free plan is $0, holds {{free_products}} products, keeps {{free_analytics_days}} days of analytics, and takes no commission on bank transfer, cash on delivery, WhatsApp, Telegram, Instagram, email or phone orders, because the money never passes through Sailo.
 
-The limitation that matters for this article specifically: CSV export starts on the Pro plan at $9.99 a month. On free you can see your orders, but you can't pull them out as a file. If the argument you just read persuaded you, and the whole point is having your customer list somewhere you control, then either pay for the plan that exports it or copy the details into your own spreadsheet by hand as they come in. Don't assume the list is portable because it exists.
+The limitation that matters for this article specifically: CSV export starts on the Pro plan at ${{pro_monthly}} a month. On free you can see your orders, but you can't pull them out as a file. If the argument you just read persuaded you, and the whole point is having your customer list somewhere you control, then either pay for the plan that exports it or copy the details into your own spreadsheet by hand as they come in. Don't assume the list is portable because it exists.
 
-Card payments, separately, need the Business plan at $19.99 a month plus a Stripe account cleared for charges, with Sailo taking 0.5% of the goods after discounts, excluding delivery and tax.
+Card payments, separately, need the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, with Sailo taking {{fee_range}}% of the goods after discounts, excluding delivery and tax.
 
 ## Do this today
 

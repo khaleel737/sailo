@@ -109,7 +109,7 @@ Which is an argument for taking deposits on everything, not just the customs. Ev
 
 Your buyers will pay by transfer, and some will want to pay part now and part on delivery. That's normal here and it's workable.
 
-Here's the limitation, and for a Nigerian seller it's the one that matters. Sailo's card payments run through Stripe and only Stripe. There is no Paystack integration, whatever you may have read, and there's no mobile money rail either. If you can't open and get cleared on a Stripe account where you are, the card button will not appear no matter which plan you're on, and the Business plan at $19.99 a month buys you nothing at all. Check that first, before you build a plan around cards.
+Here's the limitation, and for a Nigerian seller it's the one that matters. Sailo's card payments run through Stripe and only Stripe. There is no Paystack integration, whatever you may have read, and there's no mobile money rail either. If you can't open and get cleared on a Stripe account where you are, the card button will not appear no matter which plan you're on, and the Business plan at ${{business_monthly}} a month buys you nothing at all. Check that first, before you build a plan around cards.
 
 What does work: bank transfer, with your account details and any instructions you like in the checkout, and cash or transfer on delivery. Sailo never touches that money and takes nothing from it. The catalogue, the options and the address all arrive properly written, and the payment happens between the buyer's bank and yours.
 

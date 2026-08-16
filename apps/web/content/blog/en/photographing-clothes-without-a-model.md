@@ -121,7 +121,7 @@ The fourth photograph is the one that changed her business. Photographing the fl
 
 She writes the flaw into the listing too: "small mark on the left hem, about 1cm, shown in photo 4". Buyers trust the whole listing more because of it, including the pieces with no flaw photo at all.
 
-Her volume also runs into a real limit worth knowing about: the free Sailo plan holds 20 products. At 70 unique pieces a month, she's on Pro at $9.99 a month for the 250-product ceiling, and she clears sold pieces out regularly to stay under it. For a one-of-a-kind seller, product count is a running cost, not a one-time decision.
+Her volume also runs into a real limit worth knowing about: the free Sailo plan holds {{free_products}} products. At 70 unique pieces a month, she's on Pro at ${{pro_monthly}} a month for the {{pro_products}}-product ceiling, and she clears sold pieces out regularly to stay under it. For a one-of-a-kind seller, product count is a running cost, not a one-time decision.
 
 ## Shooting a rail of forty in one session
 

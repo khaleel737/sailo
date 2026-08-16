@@ -48,7 +48,7 @@ Kies daarom je beste product en verkoop dat. Eén product, één prijs, één zi
 
 Dat heeft nog een voordeel: je leert sneller. Als vijftien mensen nee zeggen tegen hetzelfde product voor dezelfde prijs, weet je iets. Als vijftien mensen niet reageren op een pagina met achttien producten, weet je niets.
 
-Het gratis abonnement van Sailo stopt trouwens bij 20 producten, en in deze fase is dat geen beperking maar een gunst. Twintig producten fotograferen en beschrijven zoals het hoort is al meer werk dan je denkt.
+Het gratis abonnement van Sailo stopt trouwens bij {{free_products}} producten, en in deze fase is dat geen beperking maar een gunst. Twintig producten fotograferen en beschrijven zoals het hoort is al meer werk dan je denkt.
 
 ## Waar Nederlandse kopers al aan het zoeken zijn
 
@@ -126,9 +126,9 @@ Wel: een link op sailo.store/jouwnaam die live staat op het moment dat je je aan
 
 Niet: publiek. Die link is live én leeg op dag één, en er komt niemand langs die niet door jou is gestuurd. Sailo verkoopt niets voor je, adverteert niet voor je en heeft geen zoekbalk waar Nederlanders in typen. Dat is het echte werk van je eerste maand en dat kan geen enkel hulpmiddel van je overnemen.
 
-Ook niet: iDEAL, zoals hierboven. En op bankoverboeking, rembours en berichtenbestellingen rekent Sailo geen commissie en raakt het het geld nooit aan. De enige commissie is 0,5% over de productwaarde bij kaartbetalingen, en die zitten alleen op Business van $19,99 per maand met een goedgekeurde Stripe-account. Stripe is in Nederland beschikbaar, gecontroleerd op 6 augustus 2026 op stripe.com/global.
+Ook niet: iDEAL, zoals hierboven. En op bankoverboeking, rembours en berichtenbestellingen rekent Sailo geen commissie en raakt het het geld nooit aan. De enige commissie is {{fee_range}}% over de productwaarde bij kaartbetalingen, en die zitten alleen op Business van ${{business_monthly}} per maand met een goedgekeurde Stripe-account. Stripe is in Nederland beschikbaar, gecontroleerd op 6 augustus 2026 op stripe.com/global.
 
-In je eerste maand is dat abonnement bijna zeker weggegooid geld. Bij tien bestellingen van €12,50 praat je over €125 aan omzet en $19,99 aan kosten. Begin gratis.
+In je eerste maand is dat abonnement bijna zeker weggegooid geld. Bij tien bestellingen van €12,50 praat je over €125 aan omzet en ${{business_monthly}} aan kosten. Begin gratis.
 
 ## Bram rekent het na
 

@@ -122,9 +122,9 @@ Bestem grensen på forhånd, så slipper du å forhandle med deg selv hver gang:
 
 Kort fungerer i Norge. Stripe er tilgjengelig her, sjekket 6. august 2026 på stripe.com/global, men den listen flytter seg, så sjekk den selv før du betaler for noe.
 
-Det krever Business-planen, 19,99 dollar i måneden eller 191,90 dollar i året, pluss en Stripe-konto Stripe har godkjent for betalinger. Sailo tar da 0,5 prosent av varene etter rabatt, uten frakt og uten mva. Stripes eget gebyr kommer i tillegg og står på deres prisside.
+Det krever Business-planen, {{business_monthly}} dollar i måneden eller {{business_yearly}} dollar i året, pluss en Stripe-konto Stripe har godkjent for betalinger. Sailo tar da {{fee_range}} prosent av varene etter rabatt, uten frakt og uten mva. Stripes eget gebyr kommer i tillegg og står på deres prisside.
 
-Regn på det med dine egne tall. Siljes 45 ordrer har et snitt på 340 kroner i varer, altså 15 300 kroner i måneden. 0,5 prosent av det er 76,50 kroner. Abonnementet er 19,99 dollar, pluss det banken din tar i valutapåslag, så det reelle kronebeløpet flytter seg med kursen.
+Regn på det med dine egne tall. Siljes 45 ordrer har et snitt på 340 kroner i varer, altså 15 300 kroner i måneden. {{fee_range}} prosent av det er 76,50 kroner. Abonnementet er {{business_monthly}} dollar, pluss det banken din tar i valutapåslag, så det reelle kronebeløpet flytter seg med kursen.
 
 Se på de to tallene ved siden av hverandre. Provisjonen er ikke kostnaden. Abonnementet er kostnaden, og det er en fast utgift som løper videre i den måneden du selger seks ting fordi du var syk.
 

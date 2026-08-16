@@ -114,9 +114,9 @@ Get in the habit of quoting the third number to yourself even while quoting the 
 
 At Hannah's volume the card decision is genuinely close, and it's worth doing the sum rather than assuming.
 
-Sailo takes 0.5% of the goods on card payments, calculated after any discount and excluding delivery and tax. On her £28 kit that's 14p, plus whatever Stripe charges her, which depends on the card and the country. Fourteen pence is nothing.
+Sailo takes {{fee_range}}% of the goods on card payments, calculated after any discount and excluding delivery and tax. On her £28 kit that's 14p, plus whatever Stripe charges her, which depends on the card and the country. Fourteen pence is nothing.
 
-The subscription isn't nothing. Card payments need Sailo's Business plan at $19.99 a month, and a Stripe account that Stripe has actually cleared for charges. If 26 kit buyers a month use a card, you're paying roughly $20 for the convenience of not chasing 26 transfers. That's about 75 cents an order, and against 45 minutes a day of reconciliation it's obviously worth it.
+The subscription isn't nothing. Card payments need Sailo's Business plan at ${{business_monthly}} a month, and a Stripe account that Stripe has actually cleared for charges. If 26 kit buyers a month use a card, you're paying roughly $20 for the convenience of not chasing 26 transfers. That's about 75 cents an order, and against 45 minutes a day of reconciliation it's obviously worth it.
 
 At six orders a month it obviously isn't. The line sits somewhere between, and it's your line, not a general one. [Do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online) does that arithmetic properly.
 

@@ -12,7 +12,7 @@ tags: [dërgesa, pagesa, kurier]
 
 Pagesa në dorëzim të kushton tri gjëra që nuk duken në asnjë faturë: paketat e refuzuara në derë, paratë e tua që rrinë te kurieri për disa ditë, dhe kohën që harxhon duke përputhur raportin e tij me listën tënde. Nëse nuk i mat këto tri, muaji nuk të del kurrë siç e ke në kokë. Kjo është përgjigjja. Pjesa tjetër është si t'i masësh pa u kthyer në kontabilist.
 
-Dhe një gjë që duhet vënë në tryezë që në fillim, sepse ndryshon gjithçka. Më 6 gusht 2026, as Shqipëria as Kosova nuk janë në listën e shteteve që mbulon Stripe. Butoni i kartës te Sailo punon vetëm përmes Stripe, prandaj karta nuk merret këtu me asnjë çmim dhe në asnjë plan. Kontrollo vetë te stripe.com/global, se ajo listë ndryshon dhe kjo faqe mban një datë. Mos e paguaj planin Business, 19,99 dollarë në muaj ose 191,90 dollarë në vit, duke pritur një buton karte, sepse ai plan të jep produkte pa limit, tre vjet analitikë, kupona dhe afiliatë, jo kartë.
+Dhe një gjë që duhet vënë në tryezë që në fillim, sepse ndryshon gjithçka. Më 6 gusht 2026, as Shqipëria as Kosova nuk janë në listën e shteteve që mbulon Stripe. Butoni i kartës te Sailo punon vetëm përmes Stripe, prandaj karta nuk merret këtu me asnjë çmim dhe në asnjë plan. Kontrollo vetë te stripe.com/global, se ajo listë ndryshon dhe kjo faqe mban një datë. Mos e paguaj planin Business, {{business_monthly}} dollarë në muaj ose {{business_yearly}} dollarë në vit, duke pritur një buton karte, sepse ai plan të jep produkte pa limit, tre vjet analitikë, kupona dhe afiliatë, jo kartë.
 
 Domethënë pagesa në dorëzim nuk është zgjidhje e përkohshme derisa "të vijë karta". Është shina kryesore e biznesit tënd dhe ia vlen ta trajtosh si të tillë.
 
@@ -24,7 +24,7 @@ Te Sailo, pagesa në dorëzim është një fushë teksti të lirë me shënime d
 
 Ajo që Sailo nuk bën, dhe këtu po e them sa më troç: **Sailo nuk e di se çfarë mblodhi kurieri.** Nuk ka lidhje me sistemin e kurierit, nuk merr raport prej tij dhe nuk përputh shuma. Raporti i pagesave të kurierit dhe lista jote e porosive janë dy lista të ndara, dhe ai që i përputh je ti, me dorë, një herë në javë.
 
-Kjo nuk është dobësi e fshehur. Është thjesht ndarje pune. Për të gjitha shinat manuale, pagesë në dorëzim, transfertë, WhatsApp, Instagram, Telegram, email dhe telefon, Sailo nuk merr asnjë komision dhe nuk i prek paratë fare. Nuk i prek, prandaj as nuk i sheh. Komisioni prej 0,5% ekziston vetëm për kartën, e cila këtu nuk ekziston.
+Kjo nuk është dobësi e fshehur. Është thjesht ndarje pune. Për të gjitha shinat manuale, pagesë në dorëzim, transfertë, WhatsApp, Instagram, Telegram, email dhe telefon, Sailo nuk merr asnjë komision dhe nuk i prek paratë fare. Nuk i prek, prandaj as nuk i sheh. Komisioni prej {{fee_range}}% ekziston vetëm për kartën, e cila këtu nuk ekziston.
 
 ## Tri kostot që nuk i sheh në faturë
 

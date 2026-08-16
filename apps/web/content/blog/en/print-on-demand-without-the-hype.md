@@ -27,7 +27,7 @@ Prices move, so check today's rates with your own printer and your own blank. Th
 | Printing | $5.00 |
 | Fulfilment shipping paid to printer | $5.95 |
 | Card processing at 2.9% plus 30c | $1.28 |
-| Sailo card commission, 0.5% of the goods | $0.14 |
+| Sailo card commission, {{fee_range}}% of the goods | $0.14 |
 | **Costs** | **$21.87** |
 | **Net** | **$12.08** |
 
@@ -134,9 +134,9 @@ His conclusion, which I'd endorse: print on demand was a good way to find out wh
 
 ## The honest limitation, and the shop side
 
-Whatever you print, a merch shop grows listings fast. Eight designs is eight listings before you decide whether a different colourway gets its own page, and the Sailo free plan stops at 20 products. Pro at $9.99 a month takes it to 250 and Business at $19.99 makes it unlimited, and you'll want the Business plan anyway if you're taking card, which for merch you almost certainly are.
+Whatever you print, a merch shop grows listings fast. Eight designs is eight listings before you decide whether a different colourway gets its own page, and the Sailo free plan stops at {{free_products}} products. Pro at ${{pro_monthly}} a month takes it to {{pro_products}} and Business at ${{business_monthly}} makes it unlimited, and you'll want the Business plan anyway if you're taking card, which for merch you almost certainly are.
 
-The division of labour is worth stating plainly, because it's the whole risk in this model. Sailo holds the catalogue, takes the order and puts the money in your own account. Your printer prints the shirt and posts it. Nobody in that chain is the person the customer messages when it arrives crooked, except you. On bank transfer, cash, WhatsApp, Instagram DM, Telegram, email and phone orders Sailo takes nothing at all and never touches the money. On card it's 0.5% of the goods, after discount and excluding delivery and tax, on top of your Stripe fee, and card needs the Business plan plus a Stripe account cleared for charges. On a $28 shirt that's 14 cents to Sailo and about $1.11 to Stripe, which tells you where to look if you're trying to save money on fees. [What a commission actually costs you](/en/blog/what-a-commission-actually-costs-you) does the same comparison across marketplaces.
+The division of labour is worth stating plainly, because it's the whole risk in this model. Sailo holds the catalogue, takes the order and puts the money in your own account. Your printer prints the shirt and posts it. Nobody in that chain is the person the customer messages when it arrives crooked, except you. On bank transfer, cash, WhatsApp, Instagram DM, Telegram, email and phone orders Sailo takes nothing at all and never touches the money. On card it's {{fee_range}}% of the goods, after discount and excluding delivery and tax, on top of your Stripe fee, and card needs the Business plan plus a Stripe account cleared for charges. On a $28 shirt that's 14 cents to Sailo and about $1.11 to Stripe, which tells you where to look if you're trying to save money on fees. [What a commission actually costs you](/en/blog/what-a-commission-actually-costs-you) does the same comparison across marketplaces.
 
 One more thing worth budgeting: the shipping you charge and the shipping you pay are two different numbers and they drift apart when someone orders two shirts. [How to work out delivery charges](/en/blog/how-to-work-out-delivery-charges) covers how to set a flat rate that doesn't quietly lose money on multi-item orders.
 

@@ -12,7 +12,7 @@ You've had a link in bio for eight months and it has never once made you money. 
 
 That's not a tool problem yet. It's a category problem. You picked a tool built to point at things, and you've been asking it to sell things.
 
-Here's the short answer, before the detail. The best link in bio tool for selling is whichever one lets a buyer see a price and pay without opening a second app, on the payment rail your buyers already use, at a cost you can actually name. There are only four kinds of product competing for that link, they charge in completely different shapes, and the difference between them at 30 orders a month is a few hundred dollars a year. Gumroad, to pick one with published numbers, was charging 10% plus $0.50 on every sale made through your own link on 6 August 2026, and no monthly fee at all. That is a completely different bet from a $19.99 subscription, and neither is obviously better until you know your order count.
+Here's the short answer, before the detail. The best link in bio tool for selling is whichever one lets a buyer see a price and pay without opening a second app, on the payment rail your buyers already use, at a cost you can actually name. There are only four kinds of product competing for that link, they charge in completely different shapes, and the difference between them at 30 orders a month is a few hundred dollars a year. Gumroad, to pick one with published numbers, was charging 10% plus $0.50 on every sale made through your own link on 6 August 2026, and no monthly fee at all. That is a completely different bet from a ${{business_monthly}} subscription, and neither is obviously better until you know your order count.
 
 ## Four kinds of tool, not one crowded market
 
@@ -118,9 +118,9 @@ That twenty minutes is the honest cost of the no-commission route, and it's a co
 
 Sailo is in that last category, and it does not win the other four.
 
-What it charges: nothing on bank transfer, cash on delivery, or orders handed off to WhatsApp, Instagram, Telegram, email or phone, because Sailo never touches that money. On card payments it takes 0.5% of the goods, after discounts, excluding delivery and tax, charged as a Stripe application fee. The card charge itself lands in your own Stripe account, not in Sailo's.
+What it charges: nothing on bank transfer, cash on delivery, or orders handed off to WhatsApp, Instagram, Telegram, email or phone, because Sailo never touches that money. On card payments it takes {{fee_range}}% of the goods, after discounts, excluding delivery and tax, charged as a Stripe application fee. The card charge itself lands in your own Stripe account, not in Sailo's.
 
-What it costs: $0 for the free plan, capped at 20 products and 30 days of analytics. $9.99/mo or $95.90/yr for Pro, which lifts you to 250 products, a year of analytics, CSV export and no Sailo badge. $19.99/mo or $191.90/yr for Business, which is the only plan that can take card at all, and needs a Stripe account that Stripe has cleared for charges.
+What it costs: $0 for the free plan, capped at {{free_products}} products and {{free_analytics_days}} days of analytics. ${{pro_monthly}}/mo or ${{pro_yearly}}/yr for Pro, which lifts you to {{pro_products}} products, a year of analytics, CSV export and no Sailo badge. ${{business_monthly}}/mo or ${{business_yearly}}/yr for Business, which is the only plan that can take card at all, and needs a Stripe account that Stripe has cleared for charges.
 
 Now the parts that should put you off.
 

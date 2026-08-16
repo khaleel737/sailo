@@ -158,7 +158,7 @@ Selepas dua minggu, tengok tiga nombor, bukan satu:
 
 Jurang antara nombor satu dan dua ialah masalah halaman. Jurang antara dua dan tiga ialah masalah bayaran, kos pos, atau balasan anda yang lambat.
 
-Sailo menyimpan data analitik 30 hari pada pelan percuma, setahun pada pelan Pro USD 9.99 sebulan, dan tiga tahun pada pelan Business. Untuk kebanyakan penjual kecil, 30 hari sudah cukup untuk menjawab soalan di atas, sebab anda membandingkan minggu ini dengan minggu lepas, bukan tahun ini dengan tahun lepas.
+Sailo menyimpan data analitik 30 hari pada pelan percuma, setahun pada pelan Pro USD {{pro_monthly}} sebulan, dan tiga tahun pada pelan Business. Untuk kebanyakan penjual kecil, 30 hari sudah cukup untuk menjawab soalan di atas, sebab anda membandingkan minggu ini dengan minggu lepas, bukan tahun ini dengan tahun lepas.
 
 ## Batasan yang jujur
 
@@ -166,7 +166,7 @@ Sailo menyimpan data analitik 30 hari pada pelan percuma, setahun pada pelan Pro
 
 **Bayaran masih kerja anda.** Senarai penuh jalur bayaran ialah kad, WhatsApp, Telegram, Instagram, emel, telefon, transfer bank dan cash on delivery. Tiada rel DuitNow, Touch 'n Go eWallet, GrabPay atau FPX. DuitNow ID atau nombor akaun anda ditaip dalam ruangan arahan pada kaedah transfer bank, dan anda yang menyemak penyata bank sebelum menanda pesanan sebagai dibayar. Untuk semua jalur manual itu, Sailo tak sentuh duit dan tak ambil apa-apa.
 
-**Butang kad ada syarat.** Kad memerlukan pelan Business, USD 19.99 sebulan atau USD 191.90 setahun, dan akaun Stripe milik anda yang telah diluluskan Stripe, dengan komisen 0.5 peratus daripada nilai barang selepas diskaun. Rel kad itu Stripe sahaja, dan senarai negara Stripe berubah dari semasa ke semasa. Artikel ini tak mengesahkan status Malaysia ke arah mana pun, jadi semak stripe.com/global sendiri sebelum anda merancang di sekelilingnya. Pelan percuma pula menampung 20 produk, yang bermakna halaman bio anda memang tak sepatutnya memaparkan segala-galanya.
+**Butang kad ada syarat.** Kad memerlukan pelan Business, USD {{business_monthly}} sebulan atau USD {{business_yearly}} setahun, dan akaun Stripe milik anda yang telah diluluskan Stripe, dengan komisen {{fee_range}} peratus daripada nilai barang selepas diskaun. Rel kad itu Stripe sahaja, dan senarai negara Stripe berubah dari semasa ke semasa. Artikel ini tak mengesahkan status Malaysia ke arah mana pun, jadi semak stripe.com/global sendiri sebelum anda merancang di sekelilingnya. Pelan percuma pula menampung {{free_products}} produk, yang bermakna halaman bio anda memang tak sepatutnya memaparkan segala-galanya.
 
 ## Buat hari ini, tiga puluh minit
 

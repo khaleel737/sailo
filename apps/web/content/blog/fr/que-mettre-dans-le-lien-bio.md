@@ -120,9 +120,9 @@ Trois limites, dites clairement.
 
 Il n'y a pas d'application native. Vous gérez tout depuis le navigateur de votre téléphone, ce qui marche bien mais ne mettra jamais d'icône sur votre écran d'accueil ni de notification quand une commande arrive.
 
-La formule gratuite s'arrête à 20 produits. Pour Nadia, avec douze affiches et trois formats, ça devient serré au bout de deux séries.
+La formule gratuite s'arrête à {{free_products}} produits. Pour Nadia, avec douze affiches et trois formats, ça devient serré au bout de deux séries.
 
-Et la formule gratuite garde 30 jours de statistiques. Vous saurez donc ce que les gens ont regardé le mois dernier, pas ce qu'ils regardaient en décembre. Si vous voulez comparer une rentrée à l'autre, notez vos chiffres à la main chaque fin de mois, ou passez à une formule qui conserve un historique plus long.
+Et la formule gratuite garde {{free_analytics_days}} jours de statistiques. Vous saurez donc ce que les gens ont regardé le mois dernier, pas ce qu'ils regardaient en décembre. Si vous voulez comparer une rentrée à l'autre, notez vos chiffres à la main chaque fin de mois, ou passez à une formule qui conserve un historique plus long.
 
 ## À faire ce soir, en dix minutes
 

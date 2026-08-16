@@ -97,7 +97,7 @@ Once claims are written down, the order itself should live somewhere structured 
 
 ## Grace in Nairobi: 40 items a week
 
-Grace sells thrifted clothing from Nairobi. Pieces run KSh 800 to KSh 3,500. She posts a batch of 20 items on Tuesday evening and another on Friday, and the good ones are claimed inside four minutes.
+Grace sells thrifted clothing from Nairobi. Pieces run KSh 800 to KSh 3,500. She posts a batch of {{free_products}} items on Tuesday evening and another on Friday, and the good ones are claimed inside four minutes.
 
 Her worst week involved a KSh 2,200 leather jacket claimed by two women eleven seconds apart. She'd replied to the second one because Instagram showed it first. The first claimant had already sent the money to her till. She refunded, apologised, and lost both of them, because the one who got the jacket felt the whole thing was uncomfortable and the one who didn't felt cheated.
 
@@ -132,7 +132,7 @@ The threshold is lower than for DM selling, usually around 20 to 25 claimed item
 
 Being direct about it: Sailo does not watch your comments. There's no comment-claiming feature, no bot that replies "sold" for you, no automatic hold. Claims stay a manual, human job. What Sailo gives you is the thing you send after the claim, which is a link to a numbered item with its price, options and delivery already on it, so the buyer types their own address and the order arrives assembled instead of dictated across six comments.
 
-The payment side has a real limit too. There's no M-Pesa rail. You can put your till number into the bank transfer instructions so it shows at checkout, and that's a workaround rather than an integration. Sailo can't see your till, so it can't tell you the KSh 2,200 landed. Only Safaricom and your own eyes can do that. On bank transfer, cash on delivery and orders handed to WhatsApp or Instagram, Sailo takes no commission and never touches the money, which is exactly why it can't confirm it either. Card payments, where confirmation is automatic, need the Business plan at $19.99 a month plus a Stripe account cleared for charges, and Sailo takes 0.5% of the goods on those.
+The payment side has a real limit too. There's no M-Pesa rail. You can put your till number into the bank transfer instructions so it shows at checkout, and that's a workaround rather than an integration. Sailo can't see your till, so it can't tell you the KSh 2,200 landed. Only Safaricom and your own eyes can do that. On bank transfer, cash on delivery and orders handed to WhatsApp or Instagram, Sailo takes no commission and never touches the money, which is exactly why it can't confirm it either. Card payments, where confirmation is automatic, need the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods on those.
 
 ## Number your items before the next post
 

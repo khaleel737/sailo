@@ -12,7 +12,7 @@ You have around 900 followers, three posts that did unusually well, and a growin
 
 Short answer: take one thing you already do for people for free, put a price on it, and put that price somewhere a person can act on within two taps. Not a course. Not a funnel. One thing, one price, one link. At 900 followers you aren't running a media business. You're running a very small shop with an unusually warm queue outside it.
 
-Sailo's free plan costs $0 and holds 20 products, which is 19 more than you need this month. That's not a pitch, it's the point. The tooling isn't what stands between you and your first sale, and if you spend three weekends choosing a platform, you've answered a question nobody asked.
+Sailo's free plan costs $0 and holds {{free_products}} products, which is 19 more than you need this month. That's not a pitch, it's the point. The tooling isn't what stands between you and your first sale, and if you spend three weekends choosing a platform, you've answered a question nobody asked.
 
 ## Your follower count is the least useful number you have
 
@@ -130,7 +130,7 @@ In Lagos and much of Nigeria, a bank transfer is how one person pays another and
 
 Sailo supports card, WhatsApp, Telegram, Instagram, email, phone, bank transfer and cash on delivery. That's the complete list. There's no mobile money rail, no M-Pesa, no GCash, no UPI integration. If that's how your buyers pay, you can put your till number or UPI ID in the bank transfer instructions box and confirm each payment yourself against your phone. That works, and a lot of sellers run exactly that way. But be clear about the trade: Sailo would be handling your catalogue, your offer page and your order record, while your phone handles the money.
 
-Card payments are the one rail that finishes the job without you. They need the Business plan at $19.99 a month, plus a Stripe account Stripe has actually cleared, and Sailo takes 0.5% of the goods on top of whatever Stripe charges. At five orders a month, that subscription is a bigger cost than every fee combined, and turning it on early is paying to solve a problem you don't have. At sixty orders a month it's obviously worth it. Somewhere in between is your line, and the arithmetic for finding it is in [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online).
+Card payments are the one rail that finishes the job without you. They need the Business plan at ${{business_monthly}} a month, plus a Stripe account Stripe has actually cleared, and Sailo takes {{fee_range}}% of the goods on top of whatever Stripe charges. At five orders a month, that subscription is a bigger cost than every fee combined, and turning it on early is paying to solve a problem you don't have. At sixty orders a month it's obviously worth it. Somewhere in between is your line, and the arithmetic for finding it is in [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online).
 
 ## When the right answer is not yet
 

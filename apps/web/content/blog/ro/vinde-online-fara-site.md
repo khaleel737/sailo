@@ -83,7 +83,7 @@ Poți copia orice sfat de pe un blog american despre vânzare online, mai puțin
 
 **Transfer bancar.** Normal și așteptat pentru lucruri scumpe: mobilă, electronice, comenzi personalizate, orice trece de câteva sute de lei. Costul pentru tine e zero. Munca e a ta: cineva trebuie să verifice că au intrat banii, și acel cineva ești tu. Cum arată în practică, inclusiv conversația „ți-am dat transferul" când tu nu vezi nimic în cont, e în [cum primești plata prin transfer bancar](/ro/blog/plata-prin-transfer-bancar).
 
-**Card.** Butonul de card din Sailo merge pe Stripe și numai pe Stripe. Îți trebuie planul Business, 19,99 USD pe lună sau 191,90 USD pe an, și un cont Stripe aprobat să încaseze. Sailo ia 0,5% din valoarea produselor după reducere, fără livrare și fără taxe, iar peste asta vine comisionul propriu al Stripe. Banii intră direct în contul tău de Stripe și nu trec niciodată prin Sailo. La 6 august 2026, Stripe era disponibil în România, deci aici decizia e economică, nu de disponibilitate. Verifică lista pe stripe.com/global la data la care citești, pentru că se schimbă.
+**Card.** Butonul de card din Sailo merge pe Stripe și numai pe Stripe. Îți trebuie planul Business, {{business_monthly}} USD pe lună sau {{business_yearly}} USD pe an, și un cont Stripe aprobat să încaseze. Sailo ia {{fee_range}}% din valoarea produselor după reducere, fără livrare și fără taxe, iar peste asta vine comisionul propriu al Stripe. Banii intră direct în contul tău de Stripe și nu trec niciodată prin Sailo. La 6 august 2026, Stripe era disponibil în România, deci aici decizia e economică, nu de disponibilitate. Verifică lista pe stripe.com/global la data la care citești, pentru că se schimbă.
 
 Și partea pe care trebuie să o spun clar: **Sailo nu are niciun procesator românesc.** Fără PayU, fără Netopia, fără plată cu cardul la livrare gestionată de platformă. Metodele existente sunt opt și asta e lista completă: card, WhatsApp, Telegram, Instagram, e-mail, telefon, transfer bancar și ramburs. IBAN-ul îl scrii tu în câmpul de instrucțiuni pentru transfer, iar plata o confirmi tot tu.
 
@@ -121,7 +121,7 @@ A fotografiat șapte produse într-o după-amiază, lângă geamul din bucătăr
 
 A pus link-ul în bio pe Instagram și l-a lipit ca prim comentariu la fiecare postare nouă.
 
-A activat trei metode: ramburs pentru comenzi sub 200 de lei, transfer pentru orice trece de atât și pentru comenzile corporate, și WhatsApp ca să-i intre comanda scrisă. Card nu a activat, pentru că la douăzeci de comenzi pe lună abonamentul de 19,99 USD nu-și scotea banii.
+A activat trei metode: ramburs pentru comenzi sub 200 de lei, transfer pentru orice trece de atât și pentru comenzile corporate, și WhatsApp ca să-i intre comanda scrisă. Card nu a activat, pentru că la douăzeci de comenzi pe lună abonamentul de {{business_monthly}} USD nu-și scotea banii.
 
 A trimis apoi mesaj la nouăsprezece oameni din vechile conversații, cu link și cu o singură frază: „Am pus în sfârșit totul într-un loc, cu prețuri. Dacă mai vrei una, aici e."
 

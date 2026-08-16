@@ -136,15 +136,15 @@ Basahin mong maigi 'yan, kasi may dalawang wala doon na malamang ginagamit mo ar
 
 **Wala ring Messenger sa listahan.** Kaya mong i-paste ang link mo sa Messenger chat at doon mag-o-order ang tao, pero 'yung pre-written na order na natatanggap ng mga WhatsApp seller, walang katumbas 'yon sa Messenger.
 
-Ngayon ang parteng dapat mong malaman bago ka magbayad ng kahit ano. **Noong 6 Agosto 2026, sa stripe.com/global, wala ang Pilipinas sa listahan ng mga bansang suportado ng Stripe.** Stripe lang ang card rail ng Sailo. Ibig sabihin, maaaring hindi mo makuha ang card button dito kahit anong plan ang bayaran mo, pati na ang Business plan na $19.99 kada buwan. Nagbabago ang listahang 'yon, kaya buksan mo mismo ang stripe.com/global at i-check bago ka magdesisyon.
+Ngayon ang parteng dapat mong malaman bago ka magbayad ng kahit ano. **Noong 6 Agosto 2026, sa stripe.com/global, wala ang Pilipinas sa listahan ng mga bansang suportado ng Stripe.** Stripe lang ang card rail ng Sailo. Ibig sabihin, maaaring hindi mo makuha ang card button dito kahit anong plan ang bayaran mo, pati na ang Business plan na ${{business_monthly}} kada buwan. Nagbabago ang listahang 'yon, kaya buksan mo mismo ang stripe.com/global at i-check bago ka magdesisyon.
 
-Kaya ang parte ng bayad sa page mo ay magsasabi ng COD at bank transfer, hindi card. At maayos naman 'yon, kasi 'yon din ang hinahanap ng bumibili dito bago pa siya magtanong ng presyo. Ang dagdag pa: ang dalawang paraan na 'yon ay eksaktong dalawa na walang kinukuha ang Sailo. Sa card lang may 0.5% sa halaga ng paninda pagkatapos ng diskwento, hindi kasama ang delivery at buwis.
+Kaya ang parte ng bayad sa page mo ay magsasabi ng COD at bank transfer, hindi card. At maayos naman 'yon, kasi 'yon din ang hinahanap ng bumibili dito bago pa siya magtanong ng presyo. Ang dagdag pa: ang dalawang paraan na 'yon ay eksaktong dalawa na walang kinukuha ang Sailo. Sa card lang may {{fee_range}}% sa halaga ng paninda pagkatapos ng diskwento, hindi kasama ang delivery at buwis.
 
 ## Ang hindi kayang gawin ng page mo
 
 Sabihin ko na para hindi ka magulat.
 
-Ang libreng plan, 20 produkto. Kung 26 na kandila ang meron ka, pipili ka ng 20 o magbabayad ka ng Pro na $9.99 kada buwan. Hindi ko sasabihing kasya ang 20 kung hindi.
+Ang libreng plan, {{free_products}} produkto. Kung 26 na kandila ang meron ka, pipili ka ng 20 o magbabayad ka ng Pro na ${{pro_monthly}} kada buwan. Hindi ko sasabihing kasya ang 20 kung hindi.
 
 May maliit na Sailo badge sa page mo sa libreng plan. Nawawala 'yon sa Pro. Kung mahalaga sa'yo 'yon, alam mo na ang presyo.
 

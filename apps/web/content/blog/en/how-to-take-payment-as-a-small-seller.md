@@ -12,7 +12,7 @@ You have a buyer, a price, and a gap in the middle where the money is supposed t
 
 The short version: take payment on the rail your buyer already has open on their phone. In Lagos that's a bank transfer. In Metro Manila it's cash when the rider knocks. In Nairobi it's a till number. In Bengaluru it's UPI. In Chicago it's a card, because in Chicago nearly everyone has one and expects to use it. Cards aren't the grown-up option and the rest aren't training wheels. They're four different trades, and each one bills you in a different currency: money, buyer effort, or your own Sunday evening.
 
-Sailo takes 0.5% of the goods on a card sale and nothing at all on bank transfer, cash on delivery or chat orders, because on those it never touches the money. Cards also need the Business plan at $19.99 a month before the button will even appear. Hold those two numbers. We'll do the arithmetic further down, and for a lot of sellers it comes out against cards.
+Sailo takes {{fee_range}}% of the goods on a card sale and nothing at all on bank transfer, cash on delivery or chat orders, because on those it never touches the money. Cards also need the Business plan at ${{business_monthly}} a month before the button will even appear. Hold those two numbers. We'll do the arithmetic further down, and for a lot of sellers it comes out against cards.
 
 ## The three questions that decide the rail
 
@@ -34,7 +34,7 @@ Every payment method answers these three differently, and the answers are what y
 | Cash on delivery | Hands cash to whoever knocks | Nothing to Sailo. Courier COD handling, plus every refused parcel | Chase courier remittances, carry change, absorb returns |
 | WhatsApp, Instagram DM, Telegram | Taps through to a chat with the order already written out | Nothing to Sailo | Agree payment inside the chat, then chase it |
 | Cash in person | Hands you a note | Nothing | Bank it, write it down before you forget |
-| Card | Types card details into Stripe's checkout | 0.5% of goods to Sailo, plus Stripe's own cut, plus $19.99 a month | Nothing. It confirms itself |
+| Card | Types card details into Stripe's checkout | {{fee_range}}% of goods to Sailo, plus Stripe's own cut, plus ${{business_monthly}} a month | Nothing. It confirms itself |
 
 Read that last column twice. It's the column that decides whether you're still enjoying this in six months.
 
@@ -83,8 +83,8 @@ Cards are the only rail on this list that finishes the job by itself. The buyer 
 You rent that. Three separate charges, and people usually only count one:
 
 1. **Stripe's cut.** A percentage plus a fixed amount per transaction. On Stripe's UK pricing page in August 2026, standard UK cards were 1.5% + 20p, premium UK cards 2.8% + 20p, and cards issued outside the EEA 3.15% + 20p with another 2% if a currency has to be converted. Stripe's India page listed 2% on domestic Visa and Mastercard.
-2. **Sailo's 0.5%**, taken on the goods after discount, excluding delivery and tax. On a £40 order that's 20p.
-3. **The $19.99 Business plan**, every month, whether you sell forty card orders or none.
+2. **Sailo's {{fee_range}}%**, taken on the goods after discount, excluding delivery and tax. On a £40 order that's 20p.
+3. **The ${{business_monthly}} Business plan**, every month, whether you sell forty card orders or none.
 
 That third one is the real cost, and it's the one that makes the decision. Forty card orders a month at an average of £40 makes the subscription cost 1.2% of card revenue. Eight card orders a month at £18 makes it 13.9%. Same product, same plan, wildly different verdict. Work your own numbers in [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online) before you turn it on.
 
@@ -106,7 +106,7 @@ Marisol makes three chilli sauces and sells them in a three-bottle box at $28, m
 
 She has four realistic options.
 
-**All cards.** She'd pay $19.99 for Business, plus Sailo's 0.5% on $980, which is $4.90, plus whatever her processor charges on 35 separate transactions. Call the platform side of it $24.89 a month, or about 2.5% of revenue, before Stripe's own fees. In exchange she never chases a payment again and every order confirms itself.
+**All cards.** She'd pay ${{business_monthly}} for Business, plus Sailo's {{fee_range}}% on $980, which is $4.90, plus whatever her processor charges on 35 separate transactions. Call the platform side of it $24.89 a month, or about 2.5% of revenue, before Stripe's own fees. In exchange she never chases a payment again and every order confirms itself.
 
 **All bank transfer.** Zero platform cost. Thirty-five reconciliations a month, which is about six minutes a day if she's disciplined and forty minutes on a Sunday if she isn't, plus two or three awkward conversations a month about payments she can't find.
 

@@ -151,7 +151,7 @@ Sailo has no inbox. It does not read your comments, it does not read your DMs, a
 
 The money is the same story. There's no GCash or Maya rail. You can put your GCash number and name into the bank transfer instructions field so buyers see it at checkout, but Sailo can't see your GCash account, so it can't tell you a ₱630 payment landed. Only your GCash app can. Every manual rail on the platform works this way: you're the one who marks an order paid.
 
-The free plan holds 20 products, which for a one-of-each thrift drop of 60 pieces means you're either listing in batches or paying $9.99 a month for the 250-product tier. Worth knowing before you build your Saturday around it.
+The free plan holds {{free_products}} products, which for a one-of-each thrift drop of 60 pieces means you're either listing in batches or paying ${{pro_monthly}} a month for the {{pro_products}}-product tier. Worth knowing before you build your Saturday around it.
 
 ## Start with one drop, not your whole week
 

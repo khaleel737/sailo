@@ -47,7 +47,7 @@ Take a £28 mug. Materials and packaging £7, postage £4.20, so £16.80 left be
 | Marketplace at an example 10% commission plus payment processing | £2.80 plus roughly £0.90 | About £13.10 |
 | Marketplace at an example 20% all-in | £5.60 | About £11.20 |
 | Own link, bank transfer | Nothing | £16.80 |
-| Own link, card | Card processing, plus 0.5% of goods to Sailo | About £16.00 |
+| Own link, card | Card processing, plus {{fee_range}}% of goods to Sailo | About £16.00 |
 
 Do not take those commission percentages as anyone's actual rate. Marketplace fees vary by category, by country, by whether you've opted into their ads, and they change. Open the marketplace's own fee page and work out your real number before you decide anything, because a guess here is worth several hundred pounds a year.
 
@@ -127,9 +127,9 @@ Send everything you post on social to your own link. Every single time. That is 
 
 Sailo is not a marketplace and it will never send you a customer. There is no search, no directory, no browse page, no recommendation engine. Every person who lands on `sailo.store/yourname` got there because you sent them. If you have no audience, a shop page on Sailo is a very tidy room with nobody in it, and a marketplace is the honest recommendation for you this year.
 
-The costs, since this is a comparison and you should be able to check the arithmetic. The free plan is $0 for 20 products. On bank transfer, cash on delivery, and orders handed off to WhatsApp, Instagram, Telegram, email or phone, Sailo takes no commission at all, because Sailo never holds the money. Card payments need the Business plan at $19.99 a month plus a Stripe account Stripe has cleared for charges, and Sailo takes 0.5% of the goods on each card order, after discounts and excluding delivery and tax. Charges land in your own Stripe account, not in Sailo's.
+The costs, since this is a comparison and you should be able to check the arithmetic. The free plan is $0 for {{free_products}} products. On bank transfer, cash on delivery, and orders handed off to WhatsApp, Instagram, Telegram, email or phone, Sailo takes no commission at all, because Sailo never holds the money. Card payments need the Business plan at ${{business_monthly}} a month plus a Stripe account Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after discounts and excluding delivery and tax. Charges land in your own Stripe account, not in Sailo's.
 
-At three orders a month, that $19.99 is worse than any marketplace commission you'll find. At sixty orders a month of £28 mugs, it isn't close in the other direction. Work out where your own crossover sits rather than trusting either of us. The wider question of which payment rails are worth setting up at all is covered in [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller).
+At three orders a month, that ${{business_monthly}} is worse than any marketplace commission you'll find. At sixty orders a month of £28 mugs, it isn't close in the other direction. Work out where your own crossover sits rather than trusting either of us. The wider question of which payment rails are worth setting up at all is covered in [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller).
 
 ## Sort your products into two piles
 

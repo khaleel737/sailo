@@ -121,7 +121,7 @@ Merită spus fără ocolișuri.
 
 **Sailo nu reconciliază banii încasați de curierul tău.** Nu vede borderoul, nu știe dacă un colet a fost livrat, nu știe dacă a fost refuzat și nu poate marca singur o comandă drept plătită. Când o marchezi tu, o marchezi pentru că ai verificat în aplicația curierului sau pe borderou. Aceeași limitare e valabilă și pe transfer, unde doar banca ta știe ce a intrat.
 
-Comision Sailo pe ramburs nu există, pe niciun plan, pentru simplul motiv că banii nu trec pe acolo. Singura metodă cu comision e cardul, 0,5% din valoarea produselor după reducere, fără livrare și fără taxe, și ea cere planul Business, 19,99 USD pe lună sau 191,90 USD pe an, plus un cont Stripe aprobat să încaseze. La 6 august 2026, Stripe era disponibil în România. Verifică pe stripe.com/global când citești, lista se mai schimbă.
+Comision Sailo pe ramburs nu există, pe niciun plan, pentru simplul motiv că banii nu trec pe acolo. Singura metodă cu comision e cardul, {{fee_range}}% din valoarea produselor după reducere, fără livrare și fără taxe, și ea cere planul Business, {{business_monthly}} USD pe lună sau {{business_yearly}} USD pe an, plus un cont Stripe aprobat să încaseze. La 6 august 2026, Stripe era disponibil în România. Verifică pe stripe.com/global când citești, lista se mai schimbă.
 
 ## Bogdan, accesorii în Craiova
 

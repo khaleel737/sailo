@@ -22,7 +22,7 @@ The story needs five things: the date, the amount, who the other party was, what
 
 A record that's missing one of them is usually recoverable. A bank line saying "TRF 4,500" tells you the date and the amount and nothing else. Add "150 mailers, Ade at the packaging shop, Computer Village" in your own notes and it's now evidence. A photo of the mailers on your table, taken that day, makes it better.
 
-That reframing matters because it stops you throwing things away for being the wrong format. A WhatsApp message from your supplier saying "sent, ₦4,500 for 150 mailers" is a receipt. A screenshot of an M-Pesa confirmation SMS is a receipt. The email confirming a $19.99 monthly plan is a receipt, and it's one almost nobody keeps, because a subscription never feels like buying anything.
+That reframing matters because it stops you throwing things away for being the wrong format. A WhatsApp message from your supplier saying "sent, ₦4,500 for 150 mailers" is a receipt. A screenshot of an M-Pesa confirmation SMS is a receipt. The email confirming a ${{business_monthly}} monthly plan is a receipt, and it's one almost nobody keeps, because a subscription never feels like buying anything.
 
 ## Four piles, not one shoebox
 
@@ -107,9 +107,9 @@ Sailo records what came in. Every order sits in your dashboard with its date, it
 
 It has no idea what went out. Not one of your costs exists inside it. Sailo has never heard of the fabric, the postage, the storage unit or the estate sale cash, and it will never produce a profit figure or a tax figure, because it only ever sees half the equation. If you want profit, that's a separate exercise, and [working out if you are actually profitable](/en/blog/working-out-if-you-are-actually-profitable) does it properly.
 
-The limitation worth planning around is the analytics window. The free plan keeps 30 days of history, Pro keeps a year, Business keeps three years. No country's record retention period is 30 days. Which means if you're on the free plan, your own sales history ages out of the product long before you're allowed to stop being able to produce it, and the responsibility for keeping a copy is entirely yours.
+The limitation worth planning around is the analytics window. The free plan keeps {{free_analytics_days}} days of history, Pro keeps a year, Business keeps three years. No country's record retention period is 30 days. Which means if you're on the free plan, your own sales history ages out of the product long before you're allowed to stop being able to produce it, and the responsibility for keeping a copy is entirely yours.
 
-CSV export arrives on Pro at $9.99 a month. On the free plan you're copying orders by hand into a spreadsheet, and copying by hand is a job people don't do. If you're going to stay free, put a monthly reminder in your phone and treat that export as non-negotiable, because the alternative is a gap in your money-in records that no amount of receipts for money-out will fix.
+CSV export arrives on Pro at ${{pro_monthly}} a month. On the free plan you're copying orders by hand into a spreadsheet, and copying by hand is a job people don't do. If you're going to stay free, put a monthly reminder in your phone and treat that export as non-negotiable, because the alternative is a gap in your money-in records that no amount of receipts for money-out will fix.
 
 For the sales side of the story, an invoice is a stronger record than an order line, and [invoices that get paid](/en/blog/invoices-that-get-paid) covers what has to be on one.
 

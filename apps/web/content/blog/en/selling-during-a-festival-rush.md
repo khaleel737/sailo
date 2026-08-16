@@ -131,7 +131,7 @@ Be clear about this before you build anything around it: **Sailo has no UPI rail
 
 What Indian sellers actually do is put their UPI ID into the bank transfer instructions field, which is free text, alongside the account number and IFSC, and then confirm the payment themselves when it shows up in the bank app. That works. Plenty of people run a whole business that way, and UPI to a plain UPI ID needs no gateway and no setup fee. But be honest with yourself about what it is: a text box, not a feature. **Nothing checks the money for you**, and during festival season, when 40 payments land overnight, that reconciliation is a daily job that belongs to you.
 
-Card payments are available, on the Business plan at $19.99 a month, through your own connected Stripe account, with Sailo taking 0.5% of the goods after discount and excluding delivery and tax. For most Indian sellers at festival volumes, UPI in the instructions field plus COD is what actually gets used.
+Card payments are available, on the Business plan at ${{business_monthly}} a month, through your own connected Stripe account, with Sailo taking {{fee_range}}% of the goods after discount and excluding delivery and tax. For most Indian sellers at festival volumes, UPI in the instructions field plus COD is what actually gets used.
 
 If reconciling that many manual payments is the part that worries you, [how to know a bank transfer actually arrived](/en/blog/how-to-know-a-bank-transfer-actually-arrived) is the daily routine.
 

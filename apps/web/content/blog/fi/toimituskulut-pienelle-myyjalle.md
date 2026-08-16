@@ -164,9 +164,9 @@ Se tarkoittaa käytännössä yhtä asiaa. Jos sama 5,90 euron toimitustapa katt
 
 Korjaus ei ole parempi järjestelmä vaan kaksi selvästi nimettyä toimitustapaa. Esimerkiksi ”Pakettiautomaatti” ja ”Toimitus perille”, tai automaatti ja erikseen nimetty tapa niihin osoitteisiin, jotka maksavat sinulle enemmän. Koska Sailo ei tarkista postinumeroa, nimeäminen on sinun työtäsi: kirjoita toimitustavan vapaaseen tekstiin selvästi kenelle se on tarkoitettu, ja katso osoite ennen kuin pakkaat. Jos ostaja valitsi väärän, laita viesti ennen lähetystä, älä sen jälkeen.
 
-Yksi asia menee tässä sinun eduksesi. Kortin 0,5 prosentin komissio lasketaan tavaran arvosta alennuksen jälkeen, ilman toimitusta ja ilman veroa. Siitä 8,90 eurosta ei mene Sailolle senttiäkään. Tilisiirrossa, postiennakossa ja kaikissa viestikanavissa Sailo ei ota mitään eikä koske rahaan lainkaan.
+Yksi asia menee tässä sinun eduksesi. Kortin {{fee_range}} prosentin komissio lasketaan tavaran arvosta alennuksen jälkeen, ilman toimitusta ja ilman veroa. Siitä 8,90 eurosta ei mene Sailolle senttiäkään. Tilisiirrossa, postiennakossa ja kaikissa viestikanavissa Sailo ei ota mitään eikä koske rahaan lainkaan.
 
-Kortti vaatii Business-tason, 19,99 dollaria kuussa tai 191,90 dollaria vuodessa, ja Stripe-tilin, jonka Stripe on hyväksynyt. Stripe on Suomessa saatavilla, tarkistettu 6.8.2026 osoitteessa stripe.com/global. Tarkista se itse ennen kuin maksat mistään.
+Kortti vaatii Business-tason, {{business_monthly}} dollaria kuussa tai {{business_yearly}} dollaria vuodessa, ja Stripe-tilin, jonka Stripe on hyväksynyt. Stripe on Suomessa saatavilla, tarkistettu 6.8.2026 osoitteessa stripe.com/global. Tarkista se itse ennen kuin maksat mistään.
 
 ## Miten kerrot hinnan ostajalle
 

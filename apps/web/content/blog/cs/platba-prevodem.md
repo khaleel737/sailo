@@ -129,7 +129,7 @@ Napiš do popisu, jestli je záloha vratná, a napiš to dřív, než ji někdo 
 | Běžný převod | Po zúčtování, týž nebo následující pracovní den | Nic nad poplatky tvojí banky | Netrpělivý kupující, který čeká přes víkend |
 | Okamžitá platba | Do minuty, i o víkendu | Podle sazebníku banky odesílatele | Kupující o ní neví, dokud mu to nenapíšeš |
 | Dobírka | Po vyúčtování dopravce, obvykle v řádu týdnů | Příplatek k zásilce a riziko nepřevzetí | Balík se vrátí a ty platíš cestu tam i zpět |
-| Karta | Po zúčtování Stripem na tvůj účet u Stripe | Poplatek Stripu plus 0,5 % pro Sailo | Vyžaduje plán Business a schválený účet |
+| Karta | Po zúčtování Stripem na tvůj účet u Stripe | Poplatek Stripu plus {{fee_range}} % pro Sailo | Vyžaduje plán Business a schválený účet |
 
 Tahle tabulka je jediné místo, kde má smysl metody porovnávat, protože porovnávat je podle „pohodlí" nikam nevede. Rozhoduje okamžik, kdy jsou peníze tvoje, a to, co se stane, když transakce nedopadne.
 
@@ -168,9 +168,9 @@ Napiš to tam ve tvaru, který kupující jenom opíše. „Variabilní symbol j
 
 U převodu, dobírky, WhatsAppu, Instagramu, Telegramu, e-mailu a telefonu si Sailo nebere provizi a na peníze nesahá. Nikdy. Peníze jdou přímo mezi kupujícím a tebou. Objednávka z WhatsAppu ti navíc přijde už napsaná, tedy zboží, varianty, adresa a celková částka, takže ji nemusíš skládat ze šesti zpráv.
 
-Karta funguje jinak. Chodí na tvůj vlastní účet u Stripe, Sailo si bere 0,5 % z hodnoty zboží po slevě, bez dopravy a bez daně, a vyžaduje plán Business za 19,99 USD měsíčně nebo 191,90 USD ročně a účet Stripe schválený pro příjem plateb. Stripe je v Česku dostupný, ověřeno 6. srpna 2026 na stripe.com/global. Ten seznam se ale mění, tak si ho ověř dřív, než plán zaplatíš.
+Karta funguje jinak. Chodí na tvůj vlastní účet u Stripe, Sailo si bere {{fee_range}} % z hodnoty zboží po slevě, bez dopravy a bez daně, a vyžaduje plán Business za {{business_monthly}} USD měsíčně nebo {{business_yearly}} USD ročně a účet Stripe schválený pro příjem plateb. Stripe je v Česku dostupný, ověřeno 6. srpna 2026 na stripe.com/global. Ten seznam se ale mění, tak si ho ověř dřív, než plán zaplatíš.
 
-Na bezplatném plánu je karta vypnutá, máš 20 produktů a 30 dní statistik. Pro za 9,99 USD měsíčně přidá 250 produktů, rok statistik a export do CSV, kartu ale nezapne.
+Na bezplatném plánu je karta vypnutá, máš {{free_products}} produktů a {{free_analytics_days}} dní statistik. Pro za {{pro_monthly}} USD měsíčně přidá {{pro_products}} produktů, rok statistik a export do CSV, kartu ale nezapne.
 
 ## Co Sailo neudělá
 

@@ -158,7 +158,7 @@ If you genuinely need a code whose destination can change, that's what paid dyna
 
 Sailo doesn't generate QR codes. There's no button for it, no download, no sticker template. You make the code yourself with any free generator, paste in `sailo.store/yourname`, and print it. That's a two-minute job and it costs nothing, but if you were expecting the tool to hand you a print-ready sticker, it won't.
 
-What Sailo provides is the destination worth pointing at: a page with prices, options and a working order button, free for up to 20 products, live at signup. If you have more than 20 items, the 250-product tier is $9.99 a month, and that's a real decision to make before you commit to a printed campaign around a catalogue that doesn't fit.
+What Sailo provides is the destination worth pointing at: a page with prices, options and a working order button, free for up to {{free_products}} products, live at signup. If you have more than {{free_products}} items, the {{pro_products}}-product tier is ${{pro_monthly}} a month, and that's a real decision to make before you commit to a printed campaign around a catalogue that doesn't fit.
 
 One more honest note for this market. There's no UPI rail. Sailo can't take a UPI payment, and there's no integration with any Indian payment app. What you can do is put your UPI ID into the bank-transfer instructions field so buyers see it at checkout and pay you directly, exactly as they do now. You'll match the UTR to the order by hand, the same way you do today. The catalogue and the order are what Sailo handles. The money is still between you and your bank, and the broader picture for this market is in [selling online in India](/en/blog/selling-online-in-india).
 

@@ -120,7 +120,7 @@ Sailo is not a tax tool and won't behave like one. It issues an invoice for ever
 
 What it doesn't do: work out what you owe, know your country's rules, apply a rate for you, or account for a single thing you spent money on. It sees what came in. It has no idea what went out.
 
-The limitation worth planning around is the analytics window. The free plan keeps 30 days, Pro keeps a year, Business keeps three. Most tax authorities expect you to be able to account for a longer period than that, so export your orders on a schedule and keep the file yourself. CSV export is on Pro at $9.99 a month and above, which means on the free plan you're copying by hand, and copying by hand is a job people don't do.
+The limitation worth planning around is the analytics window. The free plan keeps {{free_analytics_days}} days, Pro keeps a year, Business keeps three. Most tax authorities expect you to be able to account for a longer period than that, so export your orders on a schedule and keep the file yourself. CSV export is on Pro at ${{pro_monthly}} a month and above, which means on the free plan you're copying by hand, and copying by hand is a job people don't do.
 
 ## What to do this week
 

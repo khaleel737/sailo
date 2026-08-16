@@ -122,7 +122,7 @@ Your own link is the other half, and it's not a replacement, it's an addition. T
 
 The honest way to think about it is that marketplaces sell to strangers and your own link sells to people who already know you. You want both. The circumstances where one genuinely beats the other are laid out in [when a marketplace beats your own shop](/en/blog/when-a-marketplace-beats-your-own-shop).
 
-Here's the limitation that matters for this specific trade. Sailo's free plan caps you at 20 products. Thrift stock is one-of-one, so 20 products is 20 garments, and if you're listing ten a week you've filled it in a fortnight. The Pro plan at $9.99 a month takes you to 250, which is roughly what an active solo flipper carries. That's a real cost and you should put it in the spreadsheet next to the fees, not discover it in week three.
+Here's the limitation that matters for this specific trade. Sailo's free plan caps you at {{free_products}} products. Thrift stock is one-of-one, so {{free_products}} products is 20 garments, and if you're listing ten a week you've filled it in a fortnight. The Pro plan at ${{pro_monthly}} a month takes you to 250, which is roughly what an active solo flipper carries. That's a real cost and you should put it in the spreadsheet next to the fees, not discover it in week three.
 
 The other limitation, and it's a good one: if all your selling happens on a marketplace and you have no audience anywhere, your own shop link will get about four visitors this month. A shop is not traffic. Build the first, then the second, and don't be surprised by the order.
 

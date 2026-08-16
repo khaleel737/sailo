@@ -127,9 +127,9 @@ Chuyển khoản có các ô riêng cho tên ngân hàng, tên chủ tài khoả
 
 Đánh giá sản phẩm có trên mọi gói. Khách để tên, chấm từ 1 tới 5 sao, viết chữ nếu muốn, và không có gì hiện lên trang cho tới khi bạn duyệt.
 
-Gói Free là 0 đồng: 20 sản phẩm, 30 ngày số liệu, các kênh chat và các hình thức thanh toán thủ công. Pro là 9,99 USD/tháng hoặc 95,90 USD/năm: 250 sản phẩm, 1 năm số liệu, bỏ badge Sailo, xuất CSV. Business là 19,99 USD/tháng hoặc 191,90 USD/năm: không giới hạn sản phẩm, 3 năm số liệu, mã giảm giá, affiliate, và thanh toán thẻ.
+Gói Free là 0 đồng: {{free_products}} sản phẩm, 30 ngày số liệu, các kênh chat và các hình thức thanh toán thủ công. Pro là {{pro_monthly}} USD/tháng hoặc {{pro_yearly}} USD/năm: {{pro_products}} sản phẩm, 1 năm số liệu, bỏ badge Sailo, xuất CSV. Business là {{business_monthly}} USD/tháng hoặc {{business_yearly}} USD/năm: không giới hạn sản phẩm, 3 năm số liệu, mã giảm giá, affiliate, và thanh toán thẻ.
 
-Phí: với các kênh thủ công, gồm chuyển khoản, COD, WhatsApp, Instagram, Telegram, email và điện thoại, Sailo không chạm vào tiền và không thu gì cả. Riêng thẻ có phí 0,5% trên giá trị hàng sau giảm giá, không tính phí giao hàng và thuế, thu dưới dạng Stripe application fee.
+Phí: với các kênh thủ công, gồm chuyển khoản, COD, WhatsApp, Instagram, Telegram, email và điện thoại, Sailo không chạm vào tiền và không thu gì cả. Riêng thẻ có phí {{fee_range}}% trên giá trị hàng sau giảm giá, không tính phí giao hàng và thuế, thu dưới dạng Stripe application fee.
 
 Bây giờ ba thứ phải nói thẳng, vì bài này là bài tổng và người đọc nó đang cân nhắc bỏ tiền.
 
@@ -137,7 +137,7 @@ Bây giờ ba thứ phải nói thẳng, vì bài này là bài tổng và ngư�
 
 **Không có MoMo, ZaloPay, VNPay hay bất kỳ ví điện tử nào.** Nếu bạn nhận ví, bạn ghi số ví hoặc hướng dẫn quét mã vào ô hướng dẫn của phần chuyển khoản, rồi tự xác nhận khi tiền về. Cách đó chạy được hằng ngày, nhưng nó là cách làm thủ công chứ không phải một tính năng.
 
-**Thanh toán thẻ chạy trên Stripe và chỉ Stripe.** Tính đến tháng 8 năm 2026, Việt Nam không nằm trong danh sách quốc gia Stripe hỗ trợ trên stripe.com/global. Nghĩa là nút thẻ có thể không dùng được với người bán ở Việt Nam, dù trả gói nào. Đừng bỏ 19,99 USD một tháng cho gói Business để chờ nút đó hiện ra. Danh sách của Stripe có thay đổi, nên tự mở stripe.com/global kiểm tra trước khi quyết định.
+**Thanh toán thẻ chạy trên Stripe và chỉ Stripe.** Tính đến tháng 8 năm 2026, Việt Nam không nằm trong danh sách quốc gia Stripe hỗ trợ trên stripe.com/global. Nghĩa là nút thẻ có thể không dùng được với người bán ở Việt Nam, dù trả gói nào. Đừng bỏ {{business_monthly}} USD một tháng cho gói Business để chờ nút đó hiện ra. Danh sách của Stripe có thay đổi, nên tự mở stripe.com/global kiểm tra trước khi quyết định.
 
 Điều đó nghe như tin xấu. Trên thực tế nó chỉ nói lại đúng cái mà bài này nói từ đầu: ở Việt Nam, COD và chuyển khoản gánh gần như toàn bộ, và cả hai đều nằm trên gói miễn phí, cả hai đều không mất phí cho Sailo.
 

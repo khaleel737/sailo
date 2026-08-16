@@ -128,7 +128,7 @@ Two ways people structure the money:
 
 **Full payment up front for small sessions.** Under about $200, just take the whole thing. The admin of chasing a balance is worth more than the flexibility.
 
-On bank transfer, cash, WhatsApp, Instagram DM, Telegram, email and phone orders, Sailo never touches the money and takes nothing. Card is 0.5% of the goods, taken after discount and excluding delivery and tax, so $3.25 on a $650 half day, and it requires the Business plan at $19.99 a month plus a Stripe account cleared for charges. For commercial clients who need an invoice and pay by transfer on 30-day terms, cards are irrelevant. For consumer sessions where someone books at 10pm on a Sunday, cards are most of why they book at all.
+On bank transfer, cash, WhatsApp, Instagram DM, Telegram, email and phone orders, Sailo never touches the money and takes nothing. Card is {{fee_range}}% of the goods, taken after discount and excluding delivery and tax, so $3.25 on a $650 half day, and it requires the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges. For commercial clients who need an invoice and pay by transfer on 30-day terms, cards are irrelevant. For consumer sessions where someone books at 10pm on a Sunday, cards are most of why they book at all.
 
 Business clients are a different animal to consumers and they'll want a proper invoice with your details on it, sometimes a purchase order number, and they'll pay when their finance run happens rather than when you'd like. [Getting paid by a business not a person](/en/blog/getting-paid-by-a-business-not-a-person) covers what to put on the invoice so it doesn't sit in someone's inbox for six weeks.
 

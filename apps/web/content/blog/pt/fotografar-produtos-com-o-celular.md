@@ -146,7 +146,7 @@ Duas coisas práticas sobre o Sailo aqui.
 
 **As avaliações ajudam onde a foto não alcança.** O Sailo tem avaliação de produto em todos os planos, incluindo o gratuito: o comprador deixa nome, nota de 1 a 5 e um texto opcional. Nada aparece na página até você aprovar, porque a avaliação entra como não aprovada e espera na página de moderação. Isso é bom contra spam e ruim se você esquecer, então olhe a moderação uma vez por semana.
 
-**E o limite honesto:** o plano gratuito para em 20 produtos. Se você tem 40 itens e trata cada cor como produto separado, você não cabe, e vai precisar do Pro (US$ 9,99 por mês ou US$ 95,90 por ano, até 250 produtos) ou vai precisar agrupar variação dentro do produto. O lado bom dessa restrição é que ela força a decisão certa: vinte produtos bem fotografados vendem mais que quarenta com foto ruim, e o trabalho de fotografia é a razão prática pra você não querer quarenta.
+**E o limite honesto:** o plano gratuito para em {{free_products}} produtos. Se você tem 40 itens e trata cada cor como produto separado, você não cabe, e vai precisar do Pro (US$ {{pro_monthly}} por mês ou US$ {{pro_yearly}} por ano, até {{pro_products}} produtos) ou vai precisar agrupar variação dentro do produto. O lado bom dessa restrição é que ela força a decisão certa: vinte produtos bem fotografados vendem mais que quarenta com foto ruim, e o trabalho de fotografia é a razão prática pra você não querer quarenta.
 
 Nenhuma ferramenta melhora uma foto. O Sailo mostra o que você subiu, do jeito que você subiu.
 

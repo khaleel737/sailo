@@ -111,7 +111,7 @@ Three things that make it survivable:
 
 **A running list with names, amounts and dates, updated as you go.** Whatever the format. A notebook is fine. What isn't fine is reconstructing it on Sunday from three apps.
 
-The card option exists and it's worth knowing what it costs. Card needs Sailo's Business plan at $19.99 a month plus a Stripe account Stripe has cleared for charges, and Sailo takes 0.5% of the goods after discount, excluding delivery and tax. On a ₦6,500 jar that's about ₦33. What card actually buys you in this situation is not the fee saving, it's that the confirmation happens without you at 2am. Stripe's clearance isn't instant, though, so that's a decision for a quiet month, not for the night the post takes off.
+The card option exists and it's worth knowing what it costs. Card needs Sailo's Business plan at ${{business_monthly}} a month plus a Stripe account Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods after discount, excluding delivery and tax. On a ₦6,500 jar that's about ₦33. What card actually buys you in this situation is not the fee saving, it's that the confirmation happens without you at 2am. Stripe's clearance isn't instant, though, so that's a decision for a quiet month, not for the night the post takes off.
 
 ## Worked example: Chidera, Port Harcourt
 

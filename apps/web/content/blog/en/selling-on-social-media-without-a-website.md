@@ -12,7 +12,7 @@ You have a few thousand followers, "how much?" under every third post, and you s
 
 You don't. You need three things and only one of them is a page.
 
-Selling on social media without a website works because the jobs a website normally does can be pulled apart and handed to different places. People find you on social. People decide on one page with prices on it. People pay on whatever rail they already trust, which in Lagos is a bank transfer, in Manila is cash on delivery, and in Dubai is a WhatsApp message with the total already typed into it. Sailo covers the middle piece: a shop at `sailo.store/yourname`, live the minute you sign up, free for up to 20 products.
+Selling on social media without a website works because the jobs a website normally does can be pulled apart and handed to different places. People find you on social. People decide on one page with prices on it. People pay on whatever rail they already trust, which in Lagos is a bank transfer, in Manila is cash on delivery, and in Dubai is a WhatsApp message with the total already typed into it. Sailo covers the middle piece: a shop at `sailo.store/yourname`, live the minute you sign up, free for up to {{free_products}} products.
 
 That's the architecture. The rest of this is how each of the three parts fails, and which one is worth your attention.
 
@@ -148,9 +148,9 @@ If you're selling something people search for by name, and you have no audience 
 
 ## What this honestly costs
 
-Sailo's free plan is $0, holds 20 products, keeps 30 days of analytics, and supports the manual rails: bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email and phone. Sailo takes no commission on any of those, because Sailo never touches the money.
+Sailo's free plan is $0, holds {{free_products}} products, keeps {{free_analytics_days}} days of analytics, and supports the manual rails: bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email and phone. Sailo takes no commission on any of those, because Sailo never touches the money.
 
-Card payments are the exception and the limitation worth knowing before you start. They need the Business plan at $19.99 a month, plus a Stripe account that Stripe has cleared to take charges, and Sailo takes 0.5% of the goods on each card order, after discounts and excluding delivery and tax. On a $12 order that's six cents to Sailo, on top of whatever Stripe charges. The six cents is not your problem. The $19.99 is, if you're doing eleven orders a month.
+Card payments are the exception and the limitation worth knowing before you start. They need the Business plan at ${{business_monthly}} a month, plus a Stripe account that Stripe has cleared to take charges, and Sailo takes {{fee_range}}% of the goods on each card order, after discounts and excluding delivery and tax. On a $12 order that's six cents to Sailo, on top of whatever Stripe charges. The six cents is not your problem. The ${{business_monthly}} is, if you're doing eleven orders a month.
 
 The other thing to know: there is no mobile money rail. No M-Pesa integration, no GCash, no UPI, no Pix. If that's how you get paid, and for a great many sellers it is, you can put your till number or UPI ID into the bank transfer instructions field and the buyer will see it at checkout, but you're the one matching payments to orders. Sailo handles the catalogue and the order. It doesn't handle that money.
 

@@ -138,11 +138,11 @@ Run it again after any change. Five people over a month will teach you more than
 
 ## The limit you'll hit, and it's a real one
 
-Sailo's free plan holds 20 products. That is a genuine cap and it will annoy you eventually, especially if you sell one-of-one items like vintage clothing where every piece is its own listing.
+Sailo's free plan holds {{free_products}} products. That is a genuine cap and it will annoy you eventually, especially if you sell one-of-one items like vintage clothing where every piece is its own listing.
 
-The awkward part is that for most sellers reading this, 20 is already more than they should have on the page. Twelve well-photographed products with prices will out-earn 60 half-finished ones, and the cap is only a problem once you've genuinely outgrown it. When you do, Pro is $9.99 a month for 250 products, and unlimited comes with Business at $19.99.
+The awkward part is that for most sellers reading this, 20 is already more than they should have on the page. Twelve well-photographed products with prices will out-earn 60 half-finished ones, and the cap is only a problem once you've genuinely outgrown it. When you do, Pro is ${{pro_monthly}} a month for {{pro_products}} products, and unlimited comes with Business at ${{business_monthly}}.
 
-The other thing worth knowing before you plan around it: card payments need the Business plan plus a Stripe account cleared for charges, and Sailo takes 0.5% of the goods on card orders. On bank transfer, UPI written into your transfer instructions, cash on delivery, or an order handed to WhatsApp, Sailo takes nothing and never touches the money. There's no UPI rail as such. You put your UPI ID in the payment instructions and the buyer pays you directly, which is how most Indian sellers already work, and it means matching a UTR to an order is a job you do yourself. Whether that's a problem worth $19.99 a month to solve is covered in [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online).
+The other thing worth knowing before you plan around it: card payments need the Business plan plus a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods on card orders. On bank transfer, UPI written into your transfer instructions, cash on delivery, or an order handed to WhatsApp, Sailo takes nothing and never touches the money. There's no UPI rail as such. You put your UPI ID in the payment instructions and the buyer pays you directly, which is how most Indian sellers already work, and it means matching a UTR to an order is a job you do yourself. Whether that's a problem worth ${{business_monthly}} a month to solve is covered in [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online).
 
 ## Cut three things before you add one
 

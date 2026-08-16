@@ -147,11 +147,11 @@ Two things you should keep in a file regardless of what else you adopt: your orp
 
 The orders list is the tracker, up to a point. Every order carries the item, options, total, customer details and the payment rail, and it sits at `unpaid`, `pending`, `paid` or `refunded`. On bank transfer, the buyer types the reference in after paying, which moves the order to `pending` and shows you the reference next to the order. You mark it `paid` when you've seen the money yourself.
 
-CSV export comes with the Pro plan at $9.99 a month, which is the thing to look at if you want the order list and your own sums in the same place. Analytics go back 30 days on the free plan, a year on Pro and three years on Business at $19.99.
+CSV export comes with the Pro plan at ${{pro_monthly}} a month, which is the thing to look at if you want the order list and your own sums in the same place. Analytics go back {{free_analytics_days}} days on the free plan, a year on Pro and three years on Business at ${{business_monthly}}.
 
 Now the honest part, and it's a real limit rather than a caveat.
 
-Sailo has no bank connection. It doesn't import statements, doesn't read your GCash, and cannot tell you a payment arrived. There's no partial payment status, so a ₱1,000-of-₱2,300 order has no state that describes it. There are no automatic payment reminders. There's no field for a courier remittance date, and no record of a refund amount. Free plan caps at 20 products.
+Sailo has no bank connection. It doesn't import statements, doesn't read your GCash, and cannot tell you a payment arrived. There's no partial payment status, so a ₱1,000-of-₱2,300 order has no state that describes it. There are no automatic payment reminders. There's no field for a courier remittance date, and no record of a refund amount. Free plan caps at {{free_products}} products.
 
 So for anything on a manual rail, the shop holds the order and you hold the truth about the money. That's why bank transfer, cash on delivery and chat orders cost nothing at all on Sailo: it never touches the money, so it charges nothing and it knows nothing. Which of those rails is worth running, and what each one leaves on your desk afterwards, is worked out properly in [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller). And if your personal and business money are still in the same account, fix that before you fix your tracker, because [separating business and personal money](/en/blog/separating-business-and-personal-money) makes every step above roughly twice as fast.
 

@@ -136,7 +136,7 @@ Almost nobody objects. People who are serious about a £420 sideboard find £50 
 
 Here's the honest limitation on the money side. Sailo takes nothing on bank transfer, which is how most furniture sales get paid here, and it never touches that money. What it can't do is tell you the transfer arrived. Only your bank statement can, so confirming the deposit is a thing you do yourself before you take the listing down.
 
-If you want to take cards, that's the Business plan at $19.99 a month plus a Stripe account cleared for charges, and Sailo's cut is 0.5% of the goods after any discount, excluding delivery. On a £420 sideboard that's about £2.10, plus Stripe's own fee. The 0.5% is not your problem. The monthly subscription is, if you're selling two pieces a month. At four or five pieces a month it stops mattering, and that's roughly where it starts being worth it.
+If you want to take cards, that's the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, and Sailo's cut is {{fee_range}}% of the goods after any discount, excluding delivery. On a £420 sideboard that's about £2.10, plus Stripe's own fee. The {{fee_range}}% is not your problem. The monthly subscription is, if you're selling two pieces a month. At four or five pieces a month it stops mattering, and that's roughly where it starts being worth it.
 
 ## Worked example: Ruth, Leeds
 

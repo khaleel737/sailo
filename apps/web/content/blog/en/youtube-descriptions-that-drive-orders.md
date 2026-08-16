@@ -12,7 +12,7 @@ Your video has 1,800 views, three comments asking what it costs, and your shop l
 
 Nobody scrolled that far. Almost nobody ever does.
 
-The description is not a footer. It is the only tappable thing on the page you fully control, and roughly the first hundred characters of it are doing all the work. So put the shop link and the price in the opening line, above the point where YouTube cuts you off with "...more". Repeat it in a pinned comment. Say the shop name out loud in the video. Everything under the fold is for search and for people who were already going to buy. A Sailo shop is $0 on the free plan for up to 20 products and lives at `sailo.store/yourname`, which matters here because it is short enough to fit in that first line with a price beside it.
+The description is not a footer. It is the only tappable thing on the page you fully control, and roughly the first hundred characters of it are doing all the work. So put the shop link and the price in the opening line, above the point where YouTube cuts you off with "...more". Repeat it in a pinned comment. Say the shop name out loud in the video. Everything under the fold is for search and for people who were already going to buy. A Sailo shop is $0 on the free plan for up to {{free_products}} products and lives at `sailo.store/yourname`, which matters here because it is short enough to fit in that first line with a price beside it.
 
 ## The fold is about a hundred characters and you should go and measure yours
 
@@ -126,9 +126,9 @@ She also stopped getting the grind question. It was in the pin.
 
 ## What this costs, and where Sailo will not help you
 
-Sailo's free plan is $0, holds 20 products, and takes no commission at all on bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email or phone orders. Sailo never touches the money on those rails, so there is nothing to take a cut of.
+Sailo's free plan is $0, holds {{free_products}} products, and takes no commission at all on bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email or phone orders. Sailo never touches the money on those rails, so there is nothing to take a cut of.
 
-Card payments are the paid part. They need the Business plan at $19.99 a month plus a Stripe account that Stripe has cleared for charges, and Sailo takes 0.5% of the goods on each card order, after any discount and excluding delivery and tax. On Wanjiru's KSh 1,200 bag that is about six shillings to Sailo, on top of Stripe's own fee. The six shillings is not the problem. The $19.99 is, if you are doing twenty orders a month.
+Card payments are the paid part. They need the Business plan at ${{business_monthly}} a month plus a Stripe account that Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after any discount and excluding delivery and tax. On Wanjiru's KSh 1,200 bag that is about six shillings to Sailo, on top of Stripe's own fee. The six shillings is not the problem. The ${{business_monthly}} is, if you are doing twenty orders a month.
 
 And for Wanjiru specifically, the honest answer is that Sailo has no M-Pesa rail. None. Her buyers expect to pay a till number and that is not a payment method Sailo offers. What she does instead is put the till number into the bank transfer instructions field, where the buyer sees it at checkout and pays exactly as they always have. Sailo handles the catalogue, the options and the order record. She matches the payments to the orders herself, in the evening, off her own statement. Sailo cannot tell her the money arrived. Only Safaricom can.
 

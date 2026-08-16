@@ -150,7 +150,7 @@ Ce nu a mers: o serie făcută afară, în parc, într-o zi însorită. Arătau 
 
 Pozele le încarci de pe telefon, prin browser. **Sailo nu are aplicație nativă**, nici pe Android, nici pe iPhone. În practică nu e o problemă mare, pentru că galeria telefonului se deschide oricum, dar merită spus înainte să te aștepți la altceva.
 
-A doua limitare, mai relevantă pentru un început: planul gratuit se oprește la 20 de produse. Pentru cele mai multe magazine mici asta e suficient un an întreg, iar constrângerea e mai degrabă utilă. Te obligă să fotografiezi cele douăzeci de produse care contează, în loc să încarci o sută pe care nu le-ai fotografiat pe niciuna ca lumea.
+A doua limitare, mai relevantă pentru un început: planul gratuit se oprește la {{free_products}} de produse. Pentru cele mai multe magazine mici asta e suficient un an întreg, iar constrângerea e mai degrabă utilă. Te obligă să fotografiezi cele douăzeci de produse care contează, în loc să încarci o sută pe care nu le-ai fotografiat pe niciuna ca lumea.
 
 Recenziile funcționează pe orice plan, inclusiv pe cel gratuit, iar cumpărătorii pot lăsa nume, notă de la 1 la 5 stele și un text. Nimic nu apare public până nu aprobi tu. Pozele bune și recenziile împreună fac ce nu poate face niciuna singură: transformă un magazin necunoscut într-unul de la care se poate cumpăra fără să întrebi mai întâi ceva.
 

@@ -12,7 +12,7 @@ You opened the app and it said your account has been disabled. No warning you ca
 
 Then you noticed the orders you had not shipped were in a DM thread you can no longer open.
 
-Do four things, in this order. **Read the notice properly**, because it tells you which kind of removal this is and gives you a date. **Appeal once, carefully, inside that window**, which on Meta has typically been around 30 days before deletion starts and longer in the EU. **Do not open a replacement account** while the first is under review. And **reach the customers you can reach by other means today**, because the appeal may take a fortnight and your business does not pause for it. A Sailo shop is $0 on the free plan for 20 products and lives at `sailo.store/yourname`, which is worth setting up on a quiet Tuesday rather than on the morning this happens.
+Do four things, in this order. **Read the notice properly**, because it tells you which kind of removal this is and gives you a date. **Appeal once, carefully, inside that window**, which on Meta has typically been around 30 days before deletion starts and longer in the EU. **Do not open a replacement account** while the first is under review. And **reach the customers you can reach by other means today**, because the appeal may take a fortnight and your business does not pause for it. A Sailo shop is $0 on the free plan for {{free_products}} products and lives at `sailo.store/yourname`, which is worth setting up on a quiet Tuesday rather than on the morning this happens.
 
 The rest of this is what nobody writes down: what you actually lose, how the appeal is really read, and what to do when the answer is no.
 
@@ -149,9 +149,9 @@ The mitigation is the same one either way. Keep the buyer list in a file you can
 
 ## What this costs
 
-Sailo's free plan is $0, holds 20 products, and takes no commission on bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email or phone orders, because the money never passes through Sailo on those rails. CSV export of your data sits on the Pro plan at $9.99 a month, which is the thing worth knowing in an article about not losing your records.
+Sailo's free plan is $0, holds {{free_products}} products, and takes no commission on bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email or phone orders, because the money never passes through Sailo on those rails. CSV export of your data sits on the Pro plan at ${{pro_monthly}} a month, which is the thing worth knowing in an article about not losing your records.
 
-Card payments need the Business plan at $19.99 a month plus a Stripe account Stripe has cleared for charges, and Sailo takes 0.5% of the goods on each card order, after discounts, excluding delivery and tax. On Chidinma's ₦45,000 unit that is ₦225 to Sailo, plus Stripe's own fee.
+Card payments need the Business plan at ${{business_monthly}} a month plus a Stripe account Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after discounts, excluding delivery and tax. On Chidinma's ₦45,000 unit that is ₦225 to Sailo, plus Stripe's own fee.
 
 And the manual rails are manual all the way down. When a buyer sends a transfer, Sailo does not know. It cannot see your bank. You open your banking app, check the money is there, and mark the order paid yourself. In a week where your main platform has vanished and you are running the business off WhatsApp broadcasts, that is one more thing on your list, and it is worth knowing that nobody is doing it for you.
 

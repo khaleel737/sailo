@@ -162,11 +162,11 @@ The honest version.
 
 Sailo can't tell you what to sell and neither can anything else. What it does is make the three-week test cheap: a link at `sailo.store/yourname` that's live at signup, $0 for the free plan, and no commission at all on bank transfer, cash on delivery, or orders handed off to WhatsApp, Instagram, Telegram, email or phone, because Sailo never touches that money. A WhatsApp order arrives pre-written with the item, options, address and total, which is what you want when twenty people message about a pre-order in one evening.
 
-The free plan caps at 20 products, and for this specific decision that cap is closer to a feature than a limit. If you're choosing what to sell, you should have fewer than 20 things, not more. Shops that sprawl to 60 SKUs in year one are usually shops that never made this decision at all.
+The free plan caps at {{free_products}} products, and for this specific decision that cap is closer to a feature than a limit. If you're choosing what to sell, you should have fewer than 20 things, not more. Shops that sprawl to 60 SKUs in year one are usually shops that never made this decision at all.
 
 Three limitations worth knowing before you plan around it.
 
-Card payments need the Business plan at $19.99 a month plus a Stripe account Stripe has cleared for charges, and Stripe isn't launched in every country. On the free plan and on Pro at $9.99, there is no card. If your market expects card, budget for that from the start.
+Card payments need the Business plan at ${{business_monthly}} a month plus a Stripe account Stripe has cleared for charges, and Stripe isn't launched in every country. On the free plan and on Pro at ${{pro_monthly}}, there is no card. If your market expects card, budget for that from the start.
 
 There's no mobile money rail. No M-Pesa, no GCash, no UPI, and no Paystack whatever you read elsewhere. Sellers put a till number or a UPI ID into the bank transfer instructions field and it works, and that's a workaround rather than a feature. Sailo also can't tell you a payment arrived. Only your bank can.
 

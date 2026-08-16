@@ -146,7 +146,7 @@ Ask "how did you hear about me?" at the point of order. Not in a form. In the co
 
 Write it in your customer list next to the order. Over three months that column tells you which four customers are actually generating your growth, and those four are the people who get the first look at the next batch, the free samples, and the message when something new lands. Not because it's a loyalty scheme, but because they're doing your marketing and you should know their names.
 
-This is where Sailo's limits are worth stating rather than glossing. There is an affiliate feature, but it lives on the Business plan at $19.99 a month, alongside card payments and coupons. Below that plan, referral tracking is you and a spreadsheet column, and honestly at 31 customers a spreadsheet column is more accurate anyway, because most of your referrals arrive as a forwarded WhatsApp message that no link tracker will ever see.
+This is where Sailo's limits are worth stating rather than glossing. There is an affiliate feature, but it lives on the Business plan at ${{business_monthly}} a month, alongside card payments and coupons. Below that plan, referral tracking is you and a spreadsheet column, and honestly at 31 customers a spreadsheet column is more accurate anyway, because most of your referrals arrive as a forwarded WhatsApp message that no link tracker will ever see.
 
 The other limit is worth repeating: on a manual rail, Sailo cannot tell you that money arrived and it cannot tell you where a buyer came from. Both of those are your job, and both are one question each.
 

@@ -117,9 +117,9 @@ Sticker sheets, washi tape, pen loops, dashboards, bookmarks. Low ticket, high f
 
 They also fix your average order value. A planner at $32 plus two sticker sheets at $5 each is a $42 order for the same box and the same postage. Bundling them at checkout is worth more than a discount on the planner.
 
-Here's the honest limitation, and it lands squarely on this business. Sailo's free plan caps you at 20 products, and a stationery shop passes twenty on sticker sheets alone before it has listed a single planner. The Pro plan at $9.99 a month takes you to 250, which is realistic for this kind of catalogue.
+Here's the honest limitation, and it lands squarely on this business. Sailo's free plan caps you at {{free_products}} products, and a stationery shop passes twenty on sticker sheets alone before it has listed a single planner. The Pro plan at ${{pro_monthly}} a month takes you to 250, which is realistic for this kind of catalogue.
 
-The second one matters more in January. Coupon codes are a Business plan feature, at $19.99 a month, and a planner business runs on a clearance code in the second half of January. If your whole markdown plan depends on a code, that's a cost you need in the budget before December, not a discovery you make on the 16th. You can run the clearance by changing prices instead, which works and is more work.
+The second one matters more in January. Coupon codes are a Business plan feature, at ${{business_monthly}} a month, and a planner business runs on a clearance code in the second half of January. If your whole markdown plan depends on a code, that's a cost you need in the budget before December, not a discovery you make on the 16th. You can run the clearance by changing prices instead, which works and is more work.
 
 ## The markdown ladder, written in November
 

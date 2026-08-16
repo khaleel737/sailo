@@ -109,7 +109,7 @@ Ha az egész eladásod egy ilyen helyi megoldáson áll, mondd ki magadnak az el
 | Hagyományos átutalás | A bankok feldolgozási rendje szerint, aznap vagy a következő munkanapon | Semmi a bankod díjain felül | A vevő türelmetlen lesz a várakozástól |
 | Azonnali átutalás | Másodpercek, éjjel és hétvégén is | A díjat a küldő oldalon a vevő bankja szabja | Nem mindenki tudja, hogy ez egy külön választás |
 | Utánvét | A szállító elszámolása után, több nappal a kézbesítés után | A szállító díja, és a vissza nem vett csomag két útja | Visszautasítás, és a te időd az egyeztetésre |
-| Kártya | A Stripe elszámolása után a saját Stripe-fiókodra | A Stripe díja, plusz 0,5 százalék a Sailónak | Business csomag és jóváhagyott Stripe-fiók kell hozzá |
+| Kártya | A Stripe elszámolása után a saját Stripe-fiókodra | A Stripe díja, plusz {{fee_range}} százalék a Sailónak | Business csomag és jóváhagyott Stripe-fiók kell hozzá |
 
 Ez a táblázat az egyetlen értelmes összehasonlítás, mert a fizetési módokat „kényelem" alapján összevetni semmit nem ad. Az számít, mikor lesz tényleg a tiéd a pénz, és mi történik, ha a tranzakció félrecsúszik.
 
@@ -148,9 +148,9 @@ Banki átutalásnál kitöltöd a bank nevét, a számlatulajdonos nevét, a sz�
 
 Átutalásnál, utánvétnél, WhatsAppon, Instagramon, Telegramon, e-mailben és telefonon a Sailo nem vesz el jutalékot, és hozzá sem nyúl a pénzhez. Soha. A pénz közvetlenül közted és a vevő között mozog.
 
-A kártya másképp működik. A te saját Stripe-fiókodra érkezik, a Sailo pedig 0,5 százalékot vesz le az áru kedvezmény utáni értékéből, szállítás és adó nélkül. Business csomag kell hozzá, havi 19,99 vagy évi 191,90 dollár, és egy olyan Stripe-fiók, amit a Stripe jóváhagyott a fizetések fogadására. A Stripe Magyarországon elérhető, ezt 2026. augusztus 6-án ellenőriztem a stripe.com/global oldalon, de ez a lista mozog, úgyhogy nézd meg magad, mielőtt csomagot fizetsz.
+A kártya másképp működik. A te saját Stripe-fiókodra érkezik, a Sailo pedig {{fee_range}} százalékot vesz le az áru kedvezmény utáni értékéből, szállítás és adó nélkül. Business csomag kell hozzá, havi {{business_monthly}} vagy évi {{business_yearly}} dollár, és egy olyan Stripe-fiók, amit a Stripe jóváhagyott a fizetések fogadására. A Stripe Magyarországon elérhető, ezt 2026. augusztus 6-án ellenőriztem a stripe.com/global oldalon, de ez a lista mozog, úgyhogy nézd meg magad, mielőtt csomagot fizetsz.
 
-Egy 12 400 Ft-os rendelésnél a 0,5 százalék hatvankét forint. A havidíj a valódi költség, nem ez, és havi negyven rendelésnél másképp jön ki, mint havi négynél.
+Egy 12 400 Ft-os rendelésnél a {{fee_range}} százalék hatvankét forint. A havidíj a valódi költség, nem ez, és havi negyven rendelésnél másképp jön ki, mint havi négynél.
 
 A WhatsAppon érkező rendelés készen jön: termék, változatok, cím és végösszeg. Nem kell hat üzenetből összeraknod.
 

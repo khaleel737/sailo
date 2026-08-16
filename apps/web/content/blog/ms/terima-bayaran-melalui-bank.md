@@ -163,7 +163,7 @@ Sailo ada lapan cara bayar: kad, WhatsApp, Telegram, Instagram, e-mel, telefon, 
 
 Untuk semua jalur manual, pemindahan bank, bayaran semasa hantar, WhatsApp, Instagram, Telegram, e-mel dan telefon, Sailo tak ambil apa-apa daripada jualan anda.
 
-Bayaran kad pula berbeza dan ada syarat yang perlu anda tahu sebelum bayar apa-apa. Kad memerlukan pelan Business, USD 19.99 sebulan atau USD 191.90 setahun, dan akaun Stripe milik anda sendiri yang sudah diluluskan Stripe untuk terima bayaran. Komisennya 0.5% daripada nilai barang selepas diskaun, tidak termasuk kos penghantaran dan cukai, dan duitnya mendarat dalam akaun Stripe anda, bukan akaun Sailo. Rel kad ini Stripe sahaja, tiada penyedia lain. Ketersediaan Stripe berbeza mengikut negara dan senarai itu berubah dari masa ke masa, jadi sebelum anda merancang apa-apa berdasarkan bayaran kad, buka stripe.com/global dan semak status Malaysia di situ dahulu.
+Bayaran kad pula berbeza dan ada syarat yang perlu anda tahu sebelum bayar apa-apa. Kad memerlukan pelan Business, USD {{business_monthly}} sebulan atau USD {{business_yearly}} setahun, dan akaun Stripe milik anda sendiri yang sudah diluluskan Stripe untuk terima bayaran. Komisennya {{fee_range}}% daripada nilai barang selepas diskaun, tidak termasuk kos penghantaran dan cukai, dan duitnya mendarat dalam akaun Stripe anda, bukan akaun Sailo. Rel kad ini Stripe sahaja, tiada penyedia lain. Ketersediaan Stripe berbeza mengikut negara dan senarai itu berubah dari masa ke masa, jadi sebelum anda merancang apa-apa berdasarkan bayaran kad, buka stripe.com/global dan semak status Malaysia di situ dahulu.
 
 ## Kalau anda masih tertanya sama ada perlu kad langsung
 

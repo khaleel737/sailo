@@ -188,9 +188,9 @@ Sailo ti da tisto eno povezavo, z izdelki, cenami in naročilom. Naslov je sailo
 
 Načini plačila, ki jih lahko vklopiš, so natanko ti: kartica, WhatsApp, Telegram, Instagram, e-pošta, telefon, bančno nakazilo in povzetje. To je celoten seznam. Pri nakazilu vpišeš ime banke, ime prejemnika, številko računa, IBAN, SWIFT ali BIC in svoja navodila v prosto besedilo, priliv pa potrdiš ti. Pri povzetju imaš polje za opombe o dostavi. Kaj v to prosto polje sploh napisati, je razdelano v besedilu o [sprejemanju plačil z nakazilom](/sl/blog/placilo-z-nakazilom).
 
-Pri vseh ročnih načinih Sailo ne vzame ničesar in se denarja ne dotakne. Pri kartici vzame 0,5 odstotka od vrednosti blaga po popustu, brez dostave in brez davka, in ta odstotek je enak na vseh paketih. Kartica zahteva paket Business, 19,99 dolarja na mesec ali 191,90 dolarja na leto, in račun Stripe, ki ga je Stripe odobril za sprejemanje plačil. Denar pri tem pristane na tvojem računu Stripe in ne na Sailovem.
+Pri vseh ročnih načinih Sailo ne vzame ničesar in se denarja ne dotakne. Pri kartici vzame {{fee_range}} odstotka od vrednosti blaga po popustu, brez dostave in brez davka, in ta odstotek je enak na vseh paketih. Kartica zahteva paket Business, {{business_monthly}} dolarja na mesec ali {{business_yearly}} dolarja na leto, in račun Stripe, ki ga je Stripe odobril za sprejemanje plačil. Denar pri tem pristane na tvojem računu Stripe in ne na Sailovem.
 
-Brezplačni paket je 20 izdelkov, 30 dni statistike in vsi ročni načini plačila. Paket Pro je 9,99 dolarja na mesec ali 95,90 dolarja na leto, 250 izdelkov, leto dni statistike, izvoz v CSV in brez Sailove oznake.
+Brezplačni paket je {{free_products}} izdelkov, {{free_analytics_days}} dni statistike in vsi ročni načini plačila. Paket Pro je {{pro_monthly}} dolarja na mesec ali {{pro_yearly}} dolarja na leto, {{pro_products}} izdelkov, leto dni statistike, izvoz v CSV in brez Sailove oznake.
 
 Mnenja o izdelkih delujejo na vsakem paketu. Kupec pusti ime, oceno od 1 do 5 in po želji besedilo, javno pa se ne pokaže nič, dokler tega ne odobriš. Na majhnem trgu je to bolj uporabno, kot se sliši, ker je pet resničnih mnenj domačih kupcev prepričljivejših od stotih tujih.
 
@@ -204,7 +204,7 @@ Sailo ne ve, da je nakazilo prišlo, ker ni povezan s tvojo banko. To ve tvoja b
 
 Pri povzetju je resnica še bolj gola. Polje za povzetje je polje za prosto besedilo o dostavi in nič drugega. Sailo ne ve, ali je kupec paket prevzel, ne ve, koliko gotovine je kurir pobral, in ne ve, kdaj ti bo prevoznik denar nakazal. To usklajuješ ti, s svojim seznamom naročil in prevoznikovim obračunom.
 
-Cenik je v dolarjih, zato je tvoj resnični strošek odvisen od tečaja in od pretvorbe pri tvoji banki. Pri paketu Business to ni malenkost, ker se 19,99 dolarja na mesec mora vrniti iz razlike v ceni in ne iz upanja. Pri desetih naročilih po 24 evrov na mesec je kartica strošek in ne naložba.
+Cenik je v dolarjih, zato je tvoj resnični strošek odvisen od tečaja in od pretvorbe pri tvoji banki. Pri paketu Business to ni malenkost, ker se {{business_monthly}} dolarja na mesec mora vrniti iz razlike v ceni in ne iz upanja. Pri desetih naročilih po 24 evrov na mesec je kartica strošek in ne naložba.
 
 Aplikacije ni. Vse delaš v brskalniku, tudi na telefonu.
 

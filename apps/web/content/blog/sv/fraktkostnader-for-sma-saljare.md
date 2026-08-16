@@ -151,7 +151,7 @@ Det innebär att en enda fast avgift för både Malmö och Kiruna är ett beslut
 
 Och lösningen är inte ett bättre system. Lösningen är två leveranssätt med namn som inte går att missförstå. ”Ombud, hela landet” och ”Ombud, Norrland och Gotland”, med olika avgift, och i fritexten till varje sätt skriver du vilka län eller postnummer det gäller. Sailo läser inte postnumret, så den som bor i Kiruna måste välja rätt själv. En del gör inte det, och då får du skriva och be dem betala mellanskillnaden, vilket är precis den sortens samtal du vill ha så få som möjligt av. Ju tydligare namn, desto färre.
 
-En detalj till som faktiskt spelar roll för pengarna: tar du kortbetalning räknas Sailos avgift på 0,5 procent på varuvärdet efter rabatt, utan frakt och utan moms. Av de 79 kronorna i fraktavgift går ingenting till Sailo. Vid banköverföring, kontant vid leverans och beställningar via WhatsApp, Instagram, Telegram, e-post eller telefon tar Sailo ingenting alls och rör aldrig pengarna.
+En detalj till som faktiskt spelar roll för pengarna: tar du kortbetalning räknas Sailos avgift på {{fee_range}} procent på varuvärdet efter rabatt, utan frakt och utan moms. Av de 79 kronorna i fraktavgift går ingenting till Sailo. Vid banköverföring, kontant vid leverans och beställningar via WhatsApp, Instagram, Telegram, e-post eller telefon tar Sailo ingenting alls och rör aldrig pengarna.
 
 ## När det är värt att förhandla, och när det inte är det
 

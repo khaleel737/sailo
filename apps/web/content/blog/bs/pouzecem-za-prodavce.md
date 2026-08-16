@@ -14,7 +14,7 @@ Pouzeće ćeš primati, jer ga kupac očekuje i jer bez njega gubiš narudžbe. 
 
 I još jedna stvar, odmah na početku. Pouzeće u Sailu je polje sa slobodnim tekstom za bilješke o dostavi. To je sve što ono jeste. Sailo ne razgovara sa kurirskom službom, ne zna je li paket uručen i ne usklađuje ono što je kurir naplatio sa onim što piše u tvojim narudžbama.
 
-Zašto uopšte ne postoji jednostavnija varijanta, sa karticom unaprijed. Sailo kartično plaćanje ide preko Stripea, a provjereno 6. augusta 2026. na stripe.com/global, Bosna i Hercegovina nije na Stripeovoj listi podržanih zemalja. Kartica na tvojoj stranici se ne može dobiti ni po koju cijenu, pa nemoj plaćati Business plan, 19,99 dolara mjesečno ili 191,90 godišnje, u nadi da će se to dugme pojaviti. Lista se mijenja, provjeri je sam na stripe.com/global.
+Zašto uopšte ne postoji jednostavnija varijanta, sa karticom unaprijed. Sailo kartično plaćanje ide preko Stripea, a provjereno 6. augusta 2026. na stripe.com/global, Bosna i Hercegovina nije na Stripeovoj listi podržanih zemalja. Kartica na tvojoj stranici se ne može dobiti ni po koju cijenu, pa nemoj plaćati Business plan, {{business_monthly}} dolara mjesečno ili {{business_yearly}} godišnje, u nadi da će se to dugme pojaviti. Lista se mijenja, provjeri je sam na stripe.com/global.
 
 Znači, pouzeće i prijenos. Hajmo onda o pouzeću ozbiljno.
 
@@ -131,7 +131,7 @@ Kako se radi bez greške:
 
 Nespojen red je skoro uvijek jedno od troje: paket koji je uručen ali još nije u ciklusu isplate, paket koji se vratio, ili narudžba u kojoj nisi upisao broj pošiljke. Prva dva se rješavaju čekanjem. Treći se rješava time da prestaneš to raditi.
 
-Ako radiš na besplatnom planu, imaš 30 dana analitike i do 20 proizvoda, što je za ovaj obim posla sasvim dovoljno. Pro plan, 9,99 dolara mjesečno ili 95,90 godišnje, daje ti izvoz u CSV, i to je jedina stavka koja ti ovdje stvarno pomaže, jer izvezenu listu narudžbi možeš poredati pored kurirskog izvještaja u istoj tabeli.
+Ako radiš na besplatnom planu, imaš 30 dana analitike i do {{free_products}} proizvoda, što je za ovaj obim posla sasvim dovoljno. Pro plan, {{pro_monthly}} dolara mjesečno ili {{pro_yearly}} godišnje, daje ti izvoz u CSV, i to je jedina stavka koja ti ovdje stvarno pomaže, jer izvezenu listu narudžbi možeš poredati pored kurirskog izvještaja u istoj tabeli.
 
 ## Kad pouzeće nije pravi izbor
 

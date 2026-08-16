@@ -12,7 +12,7 @@ You posted a clean photo of the thing you make, wrote "back in stock", and it go
 
 Meanwhile a throwaway reply you left on somebody else's post got 40,000 views.
 
-That is the whole lesson about selling on Threads, and most of the lesson about X. Neither is a shopfront. There is no product tag, no cart, no checkout, and no meaningful product search. What they are is conversation, and conversation is where a stranger decides whether you are worth buying from. The order itself happens on a page you own, reached from your bio or from a link in a reply. Threads has been rolling out multiple profile links, up to five last time we looked, and X gives you one website field. A Sailo shop is $0 on the free plan for 20 products and sits at `sailo.store/yourname`, so it fits in a bio with room left over for an actual sentence.
+That is the whole lesson about selling on Threads, and most of the lesson about X. Neither is a shopfront. There is no product tag, no cart, no checkout, and no meaningful product search. What they are is conversation, and conversation is where a stranger decides whether you are worth buying from. The order itself happens on a page you own, reached from your bio or from a link in a reply. Threads has been rolling out multiple profile links, up to five last time we looked, and X gives you one website field. A Sailo shop is $0 on the free plan for {{free_products}} products and sits at `sailo.store/yourname`, so it fits in a bio with room left over for an actual sentence.
 
 Go and look at your own edit-profile screen before you plan around any of that. Link fields on both platforms have changed repeatedly and they will change again.
 
@@ -122,9 +122,9 @@ And if you are already getting orders from one platform, adding a second one bad
 
 ## What this costs
 
-Sailo's free plan is $0, holds 20 products, and takes nothing on bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email or phone orders, because the money never passes through Sailo on those rails.
+Sailo's free plan is $0, holds {{free_products}} products, and takes nothing on bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email or phone orders, because the money never passes through Sailo on those rails.
 
-Cards are the paid part and on these platforms you will feel it. A stranger who found you through a hot sauce argument wants to tap and pay before the feeling wears off, not open a banking app. Taking cards needs the Business plan at $19.99 a month plus a Stripe account Stripe has cleared for charges, and Sailo takes 0.5% of the goods on each card order, after discounts, excluding delivery and tax. On Marcus's $11 bottle that is about six cents to Sailo, plus Stripe's own fee. Six cents is nothing. Nineteen ninety-nine a month against eleven orders is not nothing, and if that is where you are, stay on the free plan and take bank transfers until the volume argues otherwise.
+Cards are the paid part and on these platforms you will feel it. A stranger who found you through a hot sauce argument wants to tap and pay before the feeling wears off, not open a banking app. Taking cards needs the Business plan at ${{business_monthly}} a month plus a Stripe account Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after discounts, excluding delivery and tax. On Marcus's $11 bottle that is about six cents to Sailo, plus Stripe's own fee. Six cents is nothing. Nineteen ninety-nine a month against eleven orders is not nothing, and if that is where you are, stay on the free plan and take bank transfers until the volume argues otherwise.
 
 There is also no Sailo app. Everything runs in a browser, on your phone or your laptop, which is fine right up until you are trying to mark six orders paid on a train with bad signal.
 

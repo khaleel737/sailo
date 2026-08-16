@@ -115,7 +115,7 @@ When an order comes through a shop link into WhatsApp, the message arrives alrea
 
 On payment, bank transfer is the rail your buyers already use, and Sailo takes nothing on it because it never touches the money. What Sailo can't do is tell you the transfer arrived. Only your bank can, which means you check and mark it paid yourself. Ten minutes a day, and the method for doing it without getting scammed by a doctored screenshot is in [how to know a bank transfer actually arrived](/en/blog/how-to-know-a-bank-transfer-actually-arrived).
 
-One more honest limitation, and it matters in Nigeria specifically. Sailo's card rail runs on Stripe, and only Stripe. There's no Paystack support and no mobile money rail. If you can't open a Stripe account where you are, the card button won't appear no matter which plan you're on, and the Business plan at $19.99 a month buys you nothing. Check that before you plan around cards. For most Lagos thrift sellers the answer is transfers and cash, and that's a working answer, not a downgrade.
+One more honest limitation, and it matters in Nigeria specifically. Sailo's card rail runs on Stripe, and only Stripe. There's no Paystack support and no mobile money rail. If you can't open a Stripe account where you are, the card button won't appear no matter which plan you're on, and the Business plan at ${{business_monthly}} a month buys you nothing. Check that before you plan around cards. For most Lagos thrift sellers the answer is transfers and cash, and that's a working answer, not a downgrade.
 
 ## Cash on delivery and one-of-one stock
 

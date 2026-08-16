@@ -16,9 +16,9 @@ So the first thing to fix is almost never your processor. It's your minimum orde
 
 ## The effective rate, by basket size
 
-Using the verified 1.5% + 20p, and adding Sailo's 0.5% of goods, which is charged as an application fee on card sales only.
+Using the verified 1.5% + 20p, and adding Sailo's {{fee_range}}% of goods, which is charged as an application fee on card sales only.
 
-| Basket | Processor at 1.5% + 20p | Sailo 0.5% | Total taken | Effective rate |
+| Basket | Processor at 1.5% + 20p | Sailo {{fee_range}}% | Total taken | Effective rate |
 | --- | --- | --- | --- | --- |
 | £3 | 24.5p | 1.5p | 26.0p | 8.7% |
 | £5 | 27.5p | 2.5p | 30.0p | 6.0% |
@@ -51,7 +51,7 @@ This is worth knowing if you're selling in India, because the shape of the fee c
 
 Stripe's India pricing page in August 2026 listed 2% for domestic Visa and Mastercard, with no fixed per-transaction component quoted alongside it. No fixed fee means no penalty for small baskets. A ₹249 order costs the same 2% as a ₹2,490 one.
 
-| Basket | Processor at 2% | Sailo 0.5% | Total | Effective rate |
+| Basket | Processor at 2% | Sailo {{fee_range}}% | Total | Effective rate |
 | --- | --- | --- | --- | --- |
 | ₹249 | ₹4.98 | ₹1.25 | ₹6.23 | 2.5% |
 | ₹999 | ₹19.98 | ₹5.00 | ₹24.98 | 2.5% |
@@ -73,7 +73,7 @@ Stripe's pricing page states it plainly: "The payment processing, Connect and cu
 
 Read that with a small basket in mind. You sell a £10 print, pay 40p in fees, the buyer changes their mind, you refund £10 in full. You are now 40p down and you have the print back, minus the postage you already paid. A 10% refund rate on £10 orders costs you 4p per order sold, permanently, and it's invisible because it never appears as a line item anywhere.
 
-Sailo's 0.5% is taken as an application fee on the original charge, so treat it the same way: assume it doesn't come back. On the manual rails there's nothing to come back, because nothing was taken.
+Sailo's {{fee_range}}% is taken as an application fee on the original charge, so treat it the same way: assume it doesn't come back. On the manual rails there's nothing to come back, because nothing was taken.
 
 The practical consequence: on cheap items, replacing a faulty product usually costs you less than refunding it. Work out which is true for your two cheapest lines and write the rule down.
 
@@ -97,10 +97,10 @@ The manual rails don't have this at all. A bank transfer cannot be reversed by t
 
 Worth knowing precisely, because the base differs between the two charges on a card order.
 
-- **Sailo's 0.5%** is on the goods, after any discount, **excluding delivery and tax**. Delivery is money you hand to a courier and tax is money you collect for a government, so neither is billed.
+- **Sailo's {{fee_range}}%** is on the goods, after any discount, **excluding delivery and tax**. Delivery is money you hand to a courier and tax is money you collect for a government, so neither is billed.
 - **The processor's percentage** is on the whole amount charged to the card, delivery and tax included, because that's the amount that moved.
 
-On a £29 mug with £4.50 postage: Sailo takes 0.5% of £29, which is 14.5p. Stripe takes 1.5% of £33.50 plus 20p, which is 70p. Total 84.5p on a £33.50 charge, or 2.5%.
+On a £29 mug with £4.50 postage: Sailo takes {{fee_range}}% of £29, which is 14.5p. Stripe takes 1.5% of £33.50 plus 20p, which is 70p. Total 84.5p on a £33.50 charge, or 2.5%.
 
 Small difference, and worth knowing anyway, because a fee you can predict to the penny is a fee you stop worrying about.
 
@@ -110,7 +110,7 @@ Rahul prints vinyl sticker packs and sells them at ₹249 through Instagram and 
 
 Most of his buyers pay by UPI to his UPI ID, which he keeps in the instructions box on his bank transfer rail along with the exact line "send ₹249 to rahul@[bank] and put SL1042 in the note". Cost to receive: nothing. He confirms each one against his own app, which takes him about six minutes a day.
 
-He priced up cards and decided against them, twice, for different reasons. The first time the arithmetic killed it: at 25 orders a month, ₹249 each, the Business plan at $19.99 would have been a large share of ₹6,225 of monthly revenue, which is a worse rate than any processor charges. The second time, a year later at 140 orders a month, the arithmetic worked but the availability didn't. Stripe's global availability page listed India as "preview" in August 2026 rather than fully launched, so a Stripe account cleared for charges is not something he can assume he'll get.
+He priced up cards and decided against them, twice, for different reasons. The first time the arithmetic killed it: at 25 orders a month, ₹249 each, the Business plan at ${{business_monthly}} would have been a large share of ₹6,225 of monthly revenue, which is a worse rate than any processor charges. The second time, a year later at 140 orders a month, the arithmetic worked but the availability didn't. Stripe's global availability page listed India as "preview" in August 2026 rather than fully launched, so a Stripe account cleared for charges is not something he can assume he'll get.
 
 What he changed instead was the basket. Single packs at ₹249 became "any 3 for ₹599", which raised his average order to ₹430 and cut his order count by a third at the same revenue. Fewer parcels, fewer reconciliations, fewer conversations, same money. He describes it as the only pricing decision he's ever made that made his life easier rather than harder.
 
@@ -118,9 +118,9 @@ What he changed instead was the basket. Single packs at ₹249 became "any 3 for
 
 One last number that belongs in this article even though it isn't a transaction fee. If you're on a paid plan, divide it by your monthly orders and add it to the table above.
 
-At $19.99 a month and 20 orders, that's a dollar an order. On a £10 basket that's a bigger cost than the processing, the platform commission and the dispute risk combined. At 200 orders it's ten cents and it disappears.
+At ${{business_monthly}} a month and 20 orders, that's a dollar an order. On a £10 basket that's a bigger cost than the processing, the platform commission and the dispute risk combined. At 200 orders it's ten cents and it disappears.
 
-Sailo's free plan takes no commission on the manual rails and caps you at 20 products. If you have fewer than 20 products and you're not taking cards, the honest total cost of getting paid through Sailo is zero, and the only thing you're spending is the eight minutes a day it takes to confirm payments yourself. That's the trade. Nobody confirms them for you.
+Sailo's free plan takes no commission on the manual rails and caps you at {{free_products}} products. If you have fewer than {{free_products}} products and you're not taking cards, the honest total cost of getting paid through Sailo is zero, and the only thing you're spending is the eight minutes a day it takes to confirm payments yourself. That's the trade. Nobody confirms them for you.
 
 ## Do this now
 

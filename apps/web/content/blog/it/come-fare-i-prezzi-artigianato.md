@@ -116,9 +116,9 @@ La cosa che riguarda i prezzi, però, e che vale sempre: qualunque cosa dovrai v
 
 Sailo mostra il prezzo che scrivi e non fa nessun conto al posto tuo. Il prezzo lo decidi con il metodo di sopra, con un foglio o con una calcolatrice.
 
-Il limite che riguarda proprio te, se fai pezzi unici: **il piano gratuito arriva a 20 prodotti e il Pro a 250.** Per chi vende venti pezzi uguali è tanto. Per chi fa pezzi tutti diversi, venti caselle si riempiono in un mese, e ogni pezzo venduto che cancelli è una foto e una descrizione che dovrai rifare se produci qualcosa di simile. Se lavori così, conviene organizzare il catalogo per modelli con varianti invece che per pezzo singolo, e usare la descrizione per dire che ogni esemplare ha piccole differenze. È anche più onesto verso il compratore.
+Il limite che riguarda proprio te, se fai pezzi unici: **il piano gratuito arriva a {{free_products}} prodotti e il Pro a 250.** Per chi vende venti pezzi uguali è tanto. Per chi fa pezzi tutti diversi, venti caselle si riempiono in un mese, e ogni pezzo venduto che cancelli è una foto e una descrizione che dovrai rifare se produci qualcosa di simile. Se lavori così, conviene organizzare il catalogo per modelli con varianti invece che per pezzo singolo, e usare la descrizione per dire che ogni esemplare ha piccole differenze. È anche più onesto verso il compratore.
 
-Sulle vendite incassate con bonifico o contrassegno Sailo non prende nessuna commissione e non tocca mai il denaro. L'unica commissione esistente è lo 0,5% sul valore dei prodotti quando il pagamento è con carta, e la carta richiede il piano Business da 19,99 USD al mese con un account Stripe approvato.
+Sulle vendite incassate con bonifico o contrassegno Sailo non prende nessuna commissione e non tocca mai il denaro. L'unica commissione esistente è lo {{fee_range}}% sul valore dei prodotti quando il pagamento è con carta, e la carta richiede il piano Business da {{business_monthly}} USD al mese con un account Stripe approvato.
 
 ## Da fare oggi
 

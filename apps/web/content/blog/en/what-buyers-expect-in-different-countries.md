@@ -87,7 +87,7 @@ The card rail runs on Stripe and only Stripe. Checking Stripe's own global avail
 
 So if you're selling from any of those places into a market where buyers expect a card checkout, that mismatch is real and no plan upgrade solves it. The workable answer is usually the one Chinelo used: bank transfer with a clear reference, quoted properly, with the trust built before the money moves rather than after.
 
-And card costs money even where it works. Sailo takes 0.5% of the goods on card, after discount and excluding delivery and tax, and the card rail requires the Business plan at $19.99 a month plus a Stripe account cleared for charges. On eight international orders a month that subscription is a much bigger number than the percentage.
+And card costs money even where it works. Sailo takes {{fee_range}}% of the goods on card, after discount and excluding delivery and tax, and the card rail requires the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges. On eight international orders a month that subscription is a much bigger number than the percentage.
 
 ## What doesn't change anywhere
 

@@ -73,7 +73,7 @@ At the end of a market day you have cash, card reader payments that settle in a 
 
 Count the cash before you leave the pitch. Not at home. On the table, into an envelope, with the date and the market written on it. You will not remember on Wednesday whether the £340 was Chatsworth Road or the school fair, and the two have different pitch costs, so your profit per market becomes a guess.
 
-The card reader is a separate thing to your online payments and should stay that way. A SumUp or Zettle reader is for a person standing in front of you. Sailo's card checkout is for a person on their phone somewhere else, and it needs the Business plan at $19.99 a month plus a Stripe account cleared for charges, with 0.5% of the goods taken on each card order. Running your stall through an online checkout would be slower and more expensive than the reader you already have in your apron. Don't.
+The card reader is a separate thing to your online payments and should stay that way. A SumUp or Zettle reader is for a person standing in front of you. Sailo's card checkout is for a person on their phone somewhere else, and it needs the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, with {{fee_range}}% of the goods taken on each card order. Running your stall through an online checkout would be slower and more expensive than the reader you already have in your apron. Don't.
 
 If the tax side of running both is nagging at you, that's a real question with a real answer and it's in [what to do about tax on online sales](/en/blog/what-to-do-about-tax-on-online-sales). The wider UK picture, including registration and what buyers here expect, is in [selling online in the UK](/en/blog/selling-online-in-the-uk).
 

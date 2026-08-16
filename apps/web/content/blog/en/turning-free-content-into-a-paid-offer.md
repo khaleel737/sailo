@@ -115,7 +115,7 @@ The call is his better business per hour. The checklist is what makes the call g
 
 The number that surprised him: eleven of the 31 checklist buyers had never liked or commented on a single one of his videos. They'd been watching for months in silence. He'd have told you before this that he had about 300 real followers.
 
-He takes payment by card, which for him is worth it: at 35 or so orders a month across both offers, the Business plan at $19.99 plus Sailo's 0.5% on the goods works out to a small percentage of revenue, and the checklist file unlocks the moment the payment clears without him touching anything. That last part is why he chose it. He works a day job and can't be marking orders paid at lunchtime.
+He takes payment by card, which for him is worth it: at 35 or so orders a month across both offers, the Business plan at ${{business_monthly}} plus Sailo's {{fee_range}}% on the goods works out to a small percentage of revenue, and the checklist file unlocks the moment the payment clears without him touching anything. That last part is why he chose it. He works a day job and can't be marking orders paid at lunchtime.
 
 ## When your free content can't become a paid offer
 
@@ -141,7 +141,7 @@ That's fine as long as you say so. "Files are sent within 12 hours" on the page 
 
 If you sell your time, decide your notice period before you take the first booking. Twenty-four hours minimum, or you'll get a same-day request at 6am from a buyer in a different timezone who was being perfectly reasonable.
 
-And if you're on the free plan, you have 20 product slots. That's not a constraint you'll feel this year, but it's worth knowing that a growing library of files eventually needs a paid plan, and that the decision arrives quietly.
+And if you're on the free plan, you have {{free_products}} product slots. That's not a constraint you'll feel this year, but it's worth knowing that a growing library of files eventually needs a paid plan, and that the decision arrives quietly.
 
 ## What to do this week
 
