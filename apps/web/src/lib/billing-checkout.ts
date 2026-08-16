@@ -112,9 +112,9 @@ export function checkoutSessionParams({
     allow_promotion_codes: true,
 
     /*
-     * Adaptive Pricing would convert $19.99 into the seller's local currency
+     * Adaptive Pricing would convert $49 into the seller's local currency
      * at checkout. The plan table quotes USD and nothing localises it, so a
-     * German seller would read "$19.99" here and "€18.04" there. Turn it back
+     * German seller would read "$49" here and "€44" there. Turn it back
      * on the day plan prices are localised too.
      *
      * `managed_payments` is not a second opinion about the same thing — it is
@@ -159,8 +159,8 @@ export function checkoutSessionParams({
      * state or country with none is charged no tax and sees no error, which
      * is the most commonly misread part of this feature. The account's
      * default `tax_behavior` decides whether the plan price is inclusive or
-     * exclusive of that tax; on `exclusive` the advertised $9.99 becomes
-     * $9.99 plus whatever the jurisdiction adds.
+     * exclusive of that tax; on `exclusive` the advertised $19 becomes
+     * $19 plus whatever the jurisdiction adds.
      */
     automatic_tax: { enabled: true },
     customer_update: { address: "auto" },

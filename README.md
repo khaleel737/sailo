@@ -404,19 +404,25 @@ without a backfill.
 
 ## Plans
 
-| | Free | Pro — $9.99/mo | Business — $19.99/mo |
+| | Free | Pro — $19/mo | Business — $49/mo |
 |---|---|---|---|
-| Products | 20 | 250 | Unlimited |
+| **Card fee** | **3%** | **2%** | **1%** |
+| Products | 10 | 100 | Unlimited |
 | Chat ordering + bank transfer + COD | ✓ | ✓ | ✓ |
+| Card payments (seller's own gateway) | ✓ | ✓ | ✓ |
 | Delivery, reviews, filters, PDF invoices | ✓ | ✓ | ✓ |
 | Import products and customers | ✓ | ✓ | ✓ |
 | Sailo badge removed | — | ✓ | ✓ |
 | CSV export | — | ✓ | ✓ |
-| Card payments (seller's own gateway) | — | — | ✓ |
-| Coupons and referrals | — | — | ✓ |
-| Analytics window | 30 days | 1 year | 3 years |
+| Coupons | — | ✓ | ✓ |
+| Referrals, broadcasts, memberships, API | — | — | ✓ |
+| Analytics window | 7 days | 1 year | 3 years |
 
-Yearly billing is ~20% off. Sailo takes **no cut of any sale** on any plan.
+Yearly billing is ~20% off. Sailo takes **nothing** on chat, bank-transfer and
+cash orders — it never touches that money. Card sales carry the fee in the top
+row, charged on goods after discount, never on delivery or tax. The rate falls
+as the plan rises rather than the other way round, so the fee shrinks exactly
+when a seller starts caring about it.
 
 Free is deliberately enough to take real orders — a paywall before the first
 sale converts nobody, and every free shop carries the badge, so free shops are

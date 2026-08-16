@@ -95,7 +95,7 @@ iPad screenshots are mandatory and the app must actually work on iPad.
 
 **Ship no purchase path on iOS.**
 
-Sailo charges sellers $9.99/month (`pro`) and $19.99/month (`business`) through
+Sailo charges sellers $19/month (`pro`) and $49/month (`business`) through
 Stripe Checkout — see `apps/web/src/lib/plans.ts` and
 `apps/web/src/lib/actions/billing.ts`. Putting that upgrade flow in the iOS app
 triggers Apple's in-app-purchase rules, and the outcome is a 30% cut or a

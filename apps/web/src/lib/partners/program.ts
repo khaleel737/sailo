@@ -26,10 +26,11 @@
  *
  * 30% rather than the 20% Stan pays, and the difference is not generosity.
  * Stan takes 20% of a $29–$99 plan, so their partners see $5.80–$19.80 a
- * month. Sailo's plans are $9.99 and $19.99; matching their *percentage* would
- * pay a third of their *money*, and a partner choosing where to point an
- * audience compares dollars. 30% puts a Business referral at $6.00/month,
- * level with Stan's entry tier, and beats Kajabi's current 10–20% ladder,
+ * month. Sailo's plans are $19 and $49; matching their *percentage* would
+ * pay well under their *money*, and a partner choosing where to point an
+ * audience compares dollars. 30% puts a Business referral at $14.70/month,
+ * near the top of Stan's range rather than at its floor, and beats Kajabi's
+ * current 10–20% ladder,
  * ConvertKit's 30%-for-24-months and Podia's 25%-for-12-months on duration —
  * ours has no cap and no expiry.
  */
