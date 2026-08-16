@@ -18,7 +18,7 @@ import { createSubscriptionSession, membershipPrice } from "@/lib/connect";
 import { periodEndOf, subscriptionIdOf } from "@/lib/stripe-webhooks/memberships";
 import { handleConnectEvent } from "@/lib/stripe-webhooks";
 import { membershipAccess } from "@/lib/memberships";
-import { platformFeePercent } from "@/lib/plans";
+import { platformFeePercent } from "@sailo/core/plans";
 
 /**
  * Memberships against real Stripe.

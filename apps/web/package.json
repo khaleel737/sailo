@@ -50,6 +50,7 @@
     "@next/third-parties": "16.3.0",
     "@sailo/account": "workspace:*",
     "@sailo/analytics": "workspace:*",
+    "@sailo/billing": "workspace:*",
     "@sailo/commerce": "workspace:*",
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",

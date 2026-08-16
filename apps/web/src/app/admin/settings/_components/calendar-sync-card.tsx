@@ -4,7 +4,7 @@ import { CalendarCheck, CalendarX, Lock } from "lucide-react";
 import { Card, Field, Input } from "@sailo/design-system/web";
 import { PlanBadge } from "@/app/admin/_components/locked-feature";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { interpolate } from "@sailo/i18n";
 import type { Shop } from "@sailo/db/schema";
 

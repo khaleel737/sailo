@@ -137,3 +137,8 @@ recursively and dies on the first workspace with no `build` script.
 If typecheck fails inside `.next/dev/types/routes.d.ts` with a syntax error, the
 generated file is corrupt from an interrupted dev server — `rm -rf
 apps/web/.next/dev/types` and run again.
+
+If it fails with `EPERM: operation not permitted, open '.next/types/routes.d.ts'`
+in **both** apps at once, that is the two `next typegen` runs racing, not a
+problem with the tree — the same command passes 34/34 with
+`npx turbo typecheck --concurrency=1`. Re-run it that way before believing it.

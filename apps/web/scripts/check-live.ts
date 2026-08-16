@@ -25,7 +25,8 @@ import {
   checkoutSessionParams,
   priceEnvKey,
   priceMismatch,
-} from "../src/lib/billing-checkout";
+} from "@sailo/billing/checkout";
+import { appUrl } from "../src/lib/app-url";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 const databaseUrl = process.env.DATABASE_URL;
@@ -149,6 +150,10 @@ async function main() {
             plan: "pro",
             price: priceId,
             customer: probeCustomer.id,
+            returnTo: {
+              success: `${appUrl()}/admin/settings/billing?checkout=success`,
+              cancelled: `${appUrl()}/admin/settings/billing?checkout=cancelled`,
+            },
           }),
         );
         check(`Stripe returns a ${interval}ly checkout URL`, Boolean(session.url), true);

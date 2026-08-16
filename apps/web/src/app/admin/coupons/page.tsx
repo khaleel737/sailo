@@ -9,7 +9,7 @@ import { CouponForm } from "@/app/admin/coupons/_components/coupon-form";
 import { Table, Td, Th, Tr } from "@sailo/design-system/web";
 import { Badge, Button, EmptyState } from "@sailo/design-system/web";
 import { LockedFeature } from "@/app/admin/_components/locked-feature";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { formatMoney } from "@/lib/utils";
 import { getT, getAdminT } from "@/i18n/server";
 

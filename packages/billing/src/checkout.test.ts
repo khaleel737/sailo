@@ -5,8 +5,8 @@ import {
   priceEnvKey,
   priceMismatch,
   type BillingInterval,
-} from "./billing-checkout";
-import { PLANS } from "./plans";
+} from "./checkout";
+import { PLANS } from "@sailo/core/plans";
 
 /**
  * The upgrade button had no tests at all, and shipped broken twice: once
@@ -84,6 +84,10 @@ describe("checkoutSessionParams", () => {
     plan: "pro",
     price: "price_123",
     customer: "cus_123",
+    returnTo: {
+      success: "https://sailo.store/admin/settings/billing?checkout=success",
+      cancelled: "https://sailo.store/admin/settings/billing?checkout=cancelled",
+    },
   });
 
   it("subscribes the given customer to the given price", () => {

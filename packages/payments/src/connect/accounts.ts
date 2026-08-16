@@ -5,7 +5,7 @@ import { getDb } from "@sailo/db";
 import { shops, type Shop } from "@sailo/db/schema";
 import { isStripeAccountCountry } from "@sailo/core/countries";
 import { baseCapabilities, capabilitiesFor, requestCapabilities } from "./capabilities";
-import { stripe } from "./stripe";
+import { stripe } from "../stripe/client";
 
 /**
  * Opening a seller's connected account, and the single-use link that walks

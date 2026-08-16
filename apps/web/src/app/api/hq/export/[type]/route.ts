@@ -18,7 +18,7 @@ import { billingState, planMonthlyCents } from "@/lib/hq-metrics";
  * on the same row, which is why each one names its own.
  */
 const PLATFORM_CURRENCY = "USD";
-import { planFor } from "@/lib/plans";
+import { planFor } from "@sailo/core/plans";
 
 /**
  * Platform-wide CSV exports, for the spreadsheet work no dashboard replaces —

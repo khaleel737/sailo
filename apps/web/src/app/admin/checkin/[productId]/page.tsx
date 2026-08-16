@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Download, KeyRound } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import {
   eventDoorList,
   eventDoorStats,

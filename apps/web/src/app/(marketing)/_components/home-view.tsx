@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getDictionary, interpolate } from "@sailo/i18n";
-import { PLATFORM_FEE_RANGE_LABEL } from "@/lib/plans";
+import { PLATFORM_FEE_RANGE_LABEL } from "@sailo/core/plans";
 import { ArrowRight } from "lucide-react";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
 import { LOCALES, directionOf, type Locale } from "@sailo/i18n/config";

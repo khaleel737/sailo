@@ -1,7 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { PLANS } from "@/lib/plans";
+import { PLANS } from "@sailo/core/plans";
 import { applyFacts, blogFacts, FACT_KEYS } from "./blog-facts";
 
 /**

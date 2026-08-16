@@ -6,7 +6,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders, subscriptions } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { isUuid } from "@/lib/utils";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";

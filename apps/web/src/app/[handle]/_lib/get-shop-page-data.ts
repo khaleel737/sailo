@@ -8,7 +8,7 @@ import {
   type ShopFilters,
 } from "@/lib/queries";
 import { getShopT } from "@/i18n/server";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { isShopLive } from "@/lib/utils";
 import type { ShopLayout, ShopPageData } from "../_types/shop-page.types";
 

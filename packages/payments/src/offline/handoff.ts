@@ -1,4 +1,4 @@
-import { normalizePhone } from "@/lib/utils";
+import { normalizePhone } from "@sailo/core/phone";
 import { currencyDecimals, minorPerMajor } from "@sailo/core/currency";
 import type { PaymentConfig } from "@sailo/db/schema";
 import { isPaymentMethodType } from "./rails";

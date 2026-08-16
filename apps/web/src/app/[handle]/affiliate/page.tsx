@@ -10,7 +10,7 @@ import { PoweredBy } from "@/components/shared/powered-by";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { isShopLive, shopThemeVars } from "@/lib/utils";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 
 export async function generateMetadata({
   params,

@@ -6,7 +6,7 @@ import { getDb } from "@sailo/db";
 import { broadcasts, clients } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { getAdminT, getT } from "@/i18n/server";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { audienceSize } from "@/lib/broadcasts/audience";
 import { segmentPickers } from "@/lib/broadcasts/pickers";
 import { subscribePageUrl } from "@/lib/broadcasts/subscribe";

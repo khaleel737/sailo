@@ -5,7 +5,7 @@ import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
 import { revalidateShop } from "@/lib/cache";
 import { publishShopEvent } from "@sailo/events";
-import { freePlanFields, subscriptionFields } from "@/lib/billing-map";
+import { freePlanFields, subscriptionFields } from "@sailo/billing/map";
 import {
   recordReferralEarning,
   reverseReferralEarning,

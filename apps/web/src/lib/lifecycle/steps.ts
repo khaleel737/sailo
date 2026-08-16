@@ -1,4 +1,4 @@
-import { planFor } from "@/lib/plans";
+import { planFor } from "@sailo/core/plans";
 import type { LifecycleState } from "./state";
 
 /**

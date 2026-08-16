@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 import { interpolate } from "@sailo/i18n";
 import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import type { Dictionary } from "@sailo/i18n";
-import { PLANS, PLATFORM_FEE_RANGE_LABEL, type Plan } from "@/lib/plans";
+import { PLANS, PLATFORM_FEE_RANGE_LABEL, type Plan } from "@sailo/core/plans";
 import { formatMoney } from "@/lib/utils";
 import { Cta, Section, SectionHead } from "@/components/marketing/kit";
 

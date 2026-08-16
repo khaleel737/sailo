@@ -1,5 +1,5 @@
 import { interpolate } from "@sailo/i18n";
-import { PLATFORM_FEE_RANGE_LABEL } from "@/lib/plans";
+import { PLATFORM_FEE_RANGE_LABEL } from "@sailo/core/plans";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { getT } from "@/i18n/server";

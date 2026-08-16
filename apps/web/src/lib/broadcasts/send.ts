@@ -14,7 +14,7 @@ import {
 import { ORDERS, MAX_BATCH, sendBatch, sender } from "@sailo/email/transport";
 import { getDictionary } from "@sailo/i18n";
 import { appUrl } from "@/lib/app-url";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { audienceFor } from "./audience";
 import { budgetFor } from "./quota";
 import { applyMergeTags, mergeValuesFor } from "./markdown";

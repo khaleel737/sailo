@@ -16,7 +16,7 @@ import {
 } from "@/app/admin/affiliates/_components/affiliate-widgets";
 import { Badge, Button, Card, EmptyState } from "@sailo/design-system/web";
 import { LockedFeature } from "@/app/admin/_components/locked-feature";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { formatMoney } from "@/lib/utils";
 import { CopyLink } from "@sailo/design-system/web";
 import { ensurePortalToken, portalUrl } from "@/lib/affiliate-portal";

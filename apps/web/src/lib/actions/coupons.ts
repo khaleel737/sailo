@@ -12,7 +12,7 @@ import { requireShop } from "@/lib/session";
    rule, and a reader following the call arrives where the rule actually is. */
 import { saveCoupon as save } from "@sailo/commerce/coupons";
 import { parseMoneyToCents } from "@/lib/utils";
-import { can, upgradeMessage } from "@/lib/plans";
+import { can, upgradeMessage } from "@sailo/core/plans";
 import type { ActionState } from "./shop";
 
 /**

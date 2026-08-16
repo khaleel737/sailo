@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ExternalLink, Sparkles } from "lucide-react";
-import { planFor } from "@/lib/plans";
+import { planFor } from "@sailo/core/plans";
 import { HelpLink } from "./help-link";
 import { NotificationBell } from "./notification-bell";
 import { UpgradeButton } from "./upgrade-modal";

@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { segmentPickers } from "@/lib/broadcasts/pickers";
 import { MAX_PROMO_PRODUCTS } from "@/lib/broadcasts/send";
 import { PageHeader } from "@sailo/design-system/web";

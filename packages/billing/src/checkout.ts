@@ -4,8 +4,7 @@
  * live deployment accepts these exact parameters.
  */
 import type Stripe from "stripe";
-import { appUrl } from "@/lib/app-url";
-import { PLANS, type PlanId } from "@/lib/plans";
+import { PLANS, type PlanId } from "@sailo/core/plans";
 
 /* ===========================================================================
    The Checkout Session, described once
@@ -90,6 +89,7 @@ export function checkoutSessionParams({
   plan,
   price,
   customer,
+  returnTo,
 }: {
   shopId: string;
   plan: Exclude<PlanId, "free">;
@@ -99,8 +99,22 @@ export function checkoutSessionParams({
    * sources for one fact is how a yearly plan ends up billed monthly.
    */
   price: string;
-  /** A customer id already known to exist — see `billing-customer.ts`. */
+  /** A customer id already known to exist — see `./customer`. */
   customer: string;
+  /**
+   * Where the seller lands afterwards, passed in rather than read.
+   *
+   * This used to call `appUrl()` and build both URLs from
+   * `NEXT_PUBLIC_APP_URL`. That was fine while `apps/web` was the only caller
+   * and stopped being fine the moment this moved into a package: a package with
+   * no opinion about which app is asking cannot know whose settings page to
+   * return to, and reading the web app's variable from here would have quietly
+   * sent an upgrade started anywhere else to the wrong host.
+   *
+   * Same shape and same reason as `OnboardingRedirects` in
+   * `@sailo/payments/connect`, which had this problem first.
+   */
+  returnTo: { success: string; cancelled: string };
 }): Stripe.Checkout.SessionCreateParams {
   return {
     mode: "subscription",
@@ -165,7 +179,7 @@ export function checkoutSessionParams({
     automatic_tax: { enabled: true },
     customer_update: { address: "auto" },
 
-    success_url: `${appUrl()}/admin/settings/billing?checkout=success`,
-    cancel_url: `${appUrl()}/admin/settings/billing?checkout=cancelled`,
+    success_url: returnTo.success,
+    cancel_url: returnTo.cancelled,
   };
 }

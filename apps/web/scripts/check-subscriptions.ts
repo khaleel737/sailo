@@ -17,12 +17,13 @@
 import Stripe from "stripe";
 import { neon } from "@neondatabase/serverless";
 import { randomUUID } from "node:crypto";
-import { can, planFor, productLimit } from "@/lib/plans";
+import { can, planFor, productLimit } from "@sailo/core/plans";
 import {
   checkoutSessionParams,
   priceEnvKey,
   priceMismatch,
-} from "@/lib/billing-checkout";
+} from "@sailo/billing/checkout";
+import { appUrl } from "../src/lib/app-url";
 import { payHostedCheckout } from "./lib/hosted-checkout";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -184,6 +185,10 @@ async function main() {
         plan: "pro",
         price: doorPrice,
         customer: doorCustomer.id,
+        returnTo: {
+          success: `${appUrl()}/admin/settings/billing?checkout=success`,
+          cancelled: `${appUrl()}/admin/settings/billing?checkout=cancelled`,
+        },
       }),
     );
     // The check above reports it; binding it here is what lets the next line

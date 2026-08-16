@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@sailo/design-system/web";
 import { getProgramSettings, getSettingsAudit } from "@/lib/partners/settings";
-import { PLANS } from "@/lib/plans";
+import { PLANS } from "@sailo/core/plans";
 import { SettingsForm } from "../_components/settings-form";
 
 export const metadata: Metadata = { title: "Partner programme settings" };

@@ -185,10 +185,15 @@ export function formatDuration(minutes: number) {
   return rest === 0 ? `${hours} h` : `${hours} h ${rest} min`;
 }
 
-/** Strips everything but digits — wa.me wants a bare E.164 number. */
-export function normalizePhone(input: string) {
-  return input.replace(/\D/g, "");
-}
+/**
+ * `normalizePhone` moved to `@sailo/core/phone`.
+ *
+ * It had to leave because `@sailo/payments/offline` builds the `wa.me` link a
+ * buyer is handed, and a package cannot reach into this app. The string is
+ * both a stored value and a URL path segment, so two normalisations that
+ * disagreed would store the same buyer twice and open a chat with nobody.
+ */
+export { normalizePhone } from "@sailo/core/phone";
 
 /**
  * `formatAddress` moved to `@sailo/core/address`.

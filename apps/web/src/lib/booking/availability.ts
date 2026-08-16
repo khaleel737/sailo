@@ -5,7 +5,7 @@ import { bookingClaims, orderItems, orders, type Shop } from "@sailo/db/schema";
 import { hoursOf } from "./hours";
 import { zoneOf } from "./time-zone";
 import { externalBusyFor } from "./external-busy";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { slotsForDays, todayIn, type Busy, type DaySlots, type SlotOptions } from "./slots";
 
 /**

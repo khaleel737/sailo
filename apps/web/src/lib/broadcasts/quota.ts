@@ -2,7 +2,7 @@ import "server-only";
 import { and, eq, gte, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { broadcastDeliveries } from "@sailo/db/schema";
-import { planFor, type PlanId } from "@/lib/plans";
+import { planFor, type PlanId } from "@sailo/core/plans";
 import type { Shop } from "@sailo/db/schema";
 
 /**

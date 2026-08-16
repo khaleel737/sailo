@@ -20,7 +20,7 @@ import {
 import { getProgramSettings } from "@/lib/partners/settings";
 import { hasLiveSubscription, payoutBlocker } from "@/lib/partners/eligibility";
 import { referralUrl, resolveCommissionBp, shareLabel } from "@/lib/partners/program";
-import { PLANS } from "@/lib/plans";
+import { PLANS } from "@sailo/core/plans";
 import { formatMoney } from "@/lib/utils";
 import { ApplyForm } from "./_components/apply-form";
 import { ConnectPanel } from "./_components/connect-panel";

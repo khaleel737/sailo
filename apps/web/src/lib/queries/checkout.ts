@@ -4,7 +4,7 @@ import { and, asc, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { deliveryMethods, paymentMethods, shops } from "@sailo/db/schema";
 import { shopTag } from "@/lib/cache";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { isRailUsable, type PaymentMethodType } from "@/lib/payments";
 import { isDeliveryConfigured, type DeliveryMethodType } from "@/lib/delivery";
 

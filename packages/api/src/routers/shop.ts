@@ -4,7 +4,7 @@ import { and, asc, count, eq, ne } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { paymentMethods, products, shops } from "@sailo/db/schema";
 import { can } from "@sailo/core/plans";
-import { isRailUsable } from "@sailo/payments/rails";
+import { isRailUsable } from "@sailo/payments/offline";
 import {
   HANDLE_MAX,
   HANDLE_MESSAGES,

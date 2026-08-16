@@ -6,10 +6,10 @@
   "exports": {
     ".": "./src/index.ts",
     "./keys": "./src/keys.ts",
-    "./capabilities": "./src/capabilities.ts",
-    "./rails": "./src/rails.ts",
-    "./rail-settings": "./src/rail-settings.ts",
-    "./billing-customer": "./src/billing-customer.ts"
+    "./stripe": "./src/stripe/index.ts",
+    "./connect": "./src/connect/index.ts",
+    "./offline": "./src/offline/index.ts",
+    "./offline/settings": "./src/offline/settings.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -17,14 +17,14 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
     "@sailo/env": "workspace:*",
     "@t3-oss/env-core": "^0.13.4",
     "drizzle-orm": "^0.45.2",
     "server-only": "^0.0.1",
     "stripe": "^22.4.0",
-    "zod": "^4.4.3",
-    "@sailo/core": "workspace:*"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

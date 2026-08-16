@@ -1,4 +1,4 @@
-import { isPlanId, PLAN_IDS } from "./plans";
+import { isPlanId, PLAN_IDS } from "@sailo/core/plans";
 
 export type SubscriptionLike = {
   id: string;

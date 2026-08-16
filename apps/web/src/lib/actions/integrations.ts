@@ -14,7 +14,7 @@ import {
 } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { maybeRow } from "@sailo/core/invariant";
-import { can, cheapestPlanWith, upgradeMessage } from "@/lib/plans";
+import { can, cheapestPlanWith, upgradeMessage } from "@sailo/core/plans";
 import { rateLimit } from "@sailo/rate-limit";
 import { isApiScope, mintApiKey } from "@/lib/api/keys";
 import { orderResource, sampleOrderResource } from "@/lib/api/resources";

@@ -1,4 +1,4 @@
-import { PLANS, PLATFORM_FEE_RANGE_LABEL, type PlanId } from "@/lib/plans";
+import { PLANS, PLATFORM_FEE_RANGE_LABEL, type PlanId } from "@sailo/core/plans";
 
 /**
  * The pricing facts an article is allowed to state, resolved at render time.

@@ -11,7 +11,7 @@ import {
   type BillingRow,
 } from "@/lib/hq-metrics";
 import { isStaffEmail, staffEmails } from "@/lib/staff";
-import { PLANS } from "@/lib/plans";
+import { PLANS } from "@sailo/core/plans";
 
 const shop = (over: Partial<BillingRow> = {}): BillingRow => ({
   plan: "free",

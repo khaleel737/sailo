@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { PLANS } from "@/lib/plans";
+import { PLANS } from "@sailo/core/plans";
 
 /**
  * The homepage once advertised $19.99 while Stripe charged $29.99.

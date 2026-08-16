@@ -16,7 +16,7 @@ import { requireShop } from "@/lib/session";
 import { bufferAffiliateClick, rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { formatPercent, generateCode, normalizeCode, percentToBp } from "@sailo/core/pricing";
-import { can, upgradeMessage } from "@/lib/plans";
+import { can, upgradeMessage } from "@sailo/core/plans";
 import type { ActionState } from "./shop";
 
 const STATUSES = new Set(["pending", "active", "disabled"]);

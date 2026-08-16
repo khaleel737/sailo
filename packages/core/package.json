@@ -16,6 +16,7 @@
     "./resources": "./src/resources.ts",
     "./webhook-events": "./src/webhook-events.ts",
     "./memberships": "./src/memberships.ts",
+    "./phone": "./src/phone.ts",
     "./slug": "./src/slug.ts",
     "./handle": "./src/handle.ts",
     "./client-tags": "./src/client-tags.ts",

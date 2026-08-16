@@ -4,7 +4,7 @@ import { getDb } from "@sailo/db";
 import { affiliates, paymentMethods, type Affiliate, type Shop } from "@sailo/db/schema";
 import { present } from "@sailo/core/invariant";
 import { countryName, normalizeCountry } from "@/lib/countries";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { normalizeCode } from "@sailo/core/pricing";
 import {
   isPaymentMethodType,

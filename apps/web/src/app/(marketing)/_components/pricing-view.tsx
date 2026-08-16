@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getDictionary, interpolate } from "@sailo/i18n";
 import { LOCALES, type Locale } from "@sailo/i18n/config";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
-import { PLATFORM_FEE_RANGE_LABEL } from "@/lib/plans";
+import { PLATFORM_FEE_RANGE_LABEL } from "@sailo/core/plans";
 import { Container, Display, Lede, Section } from "@/components/marketing/kit";
 import { faqJsonLd } from "@/lib/seo";
 import { marketingUrl, pricingLanguages, pricingPath } from "@/lib/marketing-urls";

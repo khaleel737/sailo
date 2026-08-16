@@ -9,7 +9,7 @@ import {
   PLATFORM_FEE_RANGE_LABEL,
   type Features,
   type PlanId,
-} from "@/lib/plans";
+} from "@sailo/core/plans";
 import { Badge, Button } from "@sailo/design-system/web";
 import { SegmentedControl } from "@sailo/design-system/web";
 import { Dialog } from "@sailo/design-system/web";

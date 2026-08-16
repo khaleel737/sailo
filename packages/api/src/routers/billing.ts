@@ -11,7 +11,7 @@ import {
 } from "@sailo/core/plans";
 import { clientEnv } from "@sailo/env";
 import { stripe } from "@sailo/payments";
-import { resolveCustomerId } from "@sailo/payments/billing-customer";
+import { resolveCustomerId } from "@sailo/billing/customer";
 import { router, shopProcedure } from "../trpc";
 import { found } from "../shared";
 

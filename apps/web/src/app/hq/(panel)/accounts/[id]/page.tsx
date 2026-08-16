@@ -31,7 +31,7 @@ import { Badge, Card } from "@sailo/design-system/web";
 import { getAccountDetail } from "@/lib/hq";
 import { billingState } from "@/lib/hq-metrics";
 import { isPaymentMethodType, PAYMENT_METHOD_DEFS } from "@/lib/payments";
-import { planFor } from "@/lib/plans";
+import { planFor } from "@sailo/core/plans";
 import { formatMoney, isShopLive } from "@/lib/utils";
 import { OrdersTable } from "./_components/orders-table";
 import { CatalogueTable } from "./_components/catalogue-table";

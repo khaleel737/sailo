@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { interpolate } from "@sailo/i18n";
 import { getT } from "@/i18n/server";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
-import { PLATFORM_FEE_RANGE_LABEL } from "@/lib/plans";
+import { PLATFORM_FEE_RANGE_LABEL } from "@sailo/core/plans";
 import { Container, Display, Lede, Section } from "@/components/marketing/kit";
 import { faqJsonLd } from "@/lib/seo";
 import { PricingSection } from "../_components/pricing-section";

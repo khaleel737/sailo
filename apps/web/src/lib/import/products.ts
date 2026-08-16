@@ -6,7 +6,7 @@ import { firstRow, maybeRow } from "@sailo/core/invariant";
 import { field, parseBool, parseMoneyField } from "@/lib/csv";
 import { slugify } from "@/lib/utils";
 import { isRenderableImageUrl } from "@/lib/file-urls";
-import { atProductLimit } from "@/lib/plans";
+import { atProductLimit } from "@sailo/core/plans";
 import { MAX_VARIANTS, optionKey } from "@sailo/core/variants";
 import { parse, type Row } from "./parse";
 import { KINDS, readGroupOptions, readRowOptions, readStock } from "./product-rows";

@@ -5,7 +5,7 @@
  * $29.99-for-a-$19.99-plan bug lived.
  */
 import Stripe from "stripe";
-import { priceMismatch } from "../src/lib/billing-checkout";
+import { priceMismatch } from "@sailo/billing/checkout";
 import { PLANS, platformFeeLabel, type PlanId } from "../src/lib/plans";
 
 async function main() {

@@ -14,7 +14,7 @@ const { constructEvent, parseEventNotification } = vi.hoisted(() => ({
   parseEventNotification: vi.fn(),
 }));
 
-vi.mock("../stripe", () => ({
+vi.mock("./client", () => ({
   stripe: () => ({
     webhooks: { constructEvent },
     parseEventNotification,

@@ -20,7 +20,7 @@ import { publishShopEvent } from "@sailo/events";
 import { maybeRow } from "@sailo/core/invariant";
 import { requireStaff } from "@/lib/session";
 import { updateShopNow } from "@/lib/cache";
-import { isPlanId, PLANS } from "@/lib/plans";
+import { isPlanId, PLANS } from "@sailo/core/plans";
 import type { ActionState } from "./shop";
 
 /* ===========================================================================

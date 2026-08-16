@@ -15,6 +15,7 @@
   "dependencies": {
     "@sailo/account": "workspace:*",
     "@sailo/analytics": "workspace:*",
+    "@sailo/billing": "workspace:*",
     "@sailo/commerce": "workspace:*",
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",

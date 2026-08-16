@@ -54,7 +54,7 @@ vi.mock("@sailo/db", () => ({
   }),
 }));
 
-const { listRails, saveRail, deleteRail } = await import("./rail-settings");
+const { listRails, saveRail, deleteRail } = await import("./settings");
 
 const SHOP = {
   id: "shop-1",

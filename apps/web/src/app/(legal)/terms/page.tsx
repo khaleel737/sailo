@@ -11,7 +11,7 @@ import {
   Ref,
 } from "@/components/legal/legal-kit";
 import { LEGAL } from "@/lib/legal";
-import { PLATFORM_FEE_RANGE_LABEL } from "@/lib/plans";
+import { PLATFORM_FEE_RANGE_LABEL } from "@sailo/core/plans";
 import {
   ACCEPTED_BUSINESSES,
   CONDITIONAL_BUSINESSES,

@@ -18,7 +18,7 @@
  * `checkout.session.async_payment_succeeded`.
  */
 import Stripe from "stripe";
-import { capabilitiesFor, requestCapabilities } from "@sailo/payments/capabilities";
+import { capabilitiesFor, requestCapabilities } from "@sailo/payments/connect";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 if (!secretKey) throw new Error("STRIPE_SECRET_KEY is not set");

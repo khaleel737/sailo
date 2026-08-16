@@ -18,7 +18,7 @@ import { formatAddress, formatMoney } from "@/lib/utils";
 import { bankDetailLines, buildHandoff, type Handoff } from "@/lib/payments";
 import { COUPON_MESSAGES, toChargeableTotals } from "@sailo/core/pricing";
 import { createInvoiceForOrder, newInvoiceToken } from "@/lib/invoices";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { type QuoteLine } from "@sailo/core/quote";
 import { variantLabel } from "@sailo/core/variants";
 import { releaseStock, reserveStock } from "@sailo/commerce/inventory";

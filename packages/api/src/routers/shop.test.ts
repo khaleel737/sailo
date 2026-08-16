@@ -37,7 +37,7 @@ vi.mock("@sailo/db", () => ({
 }));
 
 const isRailUsable = vi.fn();
-vi.mock("@sailo/payments/rails", () => ({ isRailUsable }));
+vi.mock("@sailo/payments/offline", () => ({ isRailUsable }));
 
 const can = vi.fn();
 vi.mock("@sailo/core/plans", () => ({ can }));

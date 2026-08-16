@@ -23,12 +23,18 @@ import { dirname, join } from "node:path";
  * package finds the one legitimate lookup while no longer reading `connect.ts`
  * — the very handler that once went direct. Counting across both is what keeps
  * "exactly one" mean what it says.
+ *
+ * The package half is `src/stripe` since `@sailo/payments` was foldered by
+ * rail — `stripe`, `connect`, `offline` — and the throw below is what caught
+ * the move rather than a reviewer. That is the whole design of this function
+ * working: a scan that reads less than it claims to has to fail loudly, or
+ * every assertion built on it passes over an empty string.
  */
 function sourceDirs(): string[] {
   const require = createRequire(import.meta.url);
   return [
     join(process.cwd(), "src/lib/stripe-webhooks"),
-    join(dirname(require.resolve("@sailo/payments")), "stripe-webhooks"),
+    join(dirname(require.resolve("@sailo/payments")), "stripe"),
   ];
 }
 

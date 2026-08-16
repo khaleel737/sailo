@@ -13,7 +13,7 @@ import {
   getAccounts,
   pageNumber,
 } from "@/lib/hq";
-import { planFor } from "@/lib/plans";
+import { planFor } from "@sailo/core/plans";
 import { formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Accounts" };

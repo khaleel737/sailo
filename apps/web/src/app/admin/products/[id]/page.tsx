@@ -9,7 +9,7 @@ import { PageHeader } from "@sailo/design-system/web";
 import { isUuid } from "@/lib/utils";
 import { getAdminT } from "@/i18n/server";
 import { connectState } from "@/lib/connect";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 
 export const metadata: Metadata = { title: "Edit product" };
 

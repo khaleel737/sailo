@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Download, Lock } from "lucide-react";
 import { requireShop } from "@/lib/session";
-import { can, cheapestPlanWith } from "@/lib/plans";
+import { can, cheapestPlanWith } from "@sailo/core/plans";
 import { ImportPanel } from "@/app/admin/settings/data/_components/import-panel";
 import { Badge, Card } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";

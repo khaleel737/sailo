@@ -5,7 +5,7 @@ import { getDb } from "@sailo/db";
 import { clients, products } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { getAdminT, getT } from "@/i18n/server";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 import { shopSubscriptions } from "@/lib/membership-access";
 import { membershipAccess } from "@/lib/memberships";
 import { PageHeader } from "@sailo/design-system/web";

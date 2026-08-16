@@ -8,7 +8,7 @@ import { clientEnv } from "@sailo/env";
 import { publishShopEvent } from "@sailo/events";
 import { isStripeAccountCountry } from "@sailo/core/countries";
 import { connectOnboardingLink, MissingStripeCountryError } from "@sailo/payments";
-import { listRails, saveRail } from "@sailo/payments/rail-settings";
+import { listRails, saveRail } from "@sailo/payments/offline/settings";
 import { router, shopProcedure } from "../trpc";
 import { found } from "../shared";
 
@@ -190,7 +190,7 @@ export const paymentsRouter = router({
    * on. The same function answers the web form.
    *
    * `config` is `Record<string, string>` rather than a schema per rail: the
-   * fields are defined in `@sailo/payments/rails`, twenty-odd rails' worth, and
+   * fields are defined in `@sailo/payments/offline`, twenty-odd rails' worth, and
    * a zod union restating them here would be a second definition to keep in
    * step. `saveRail` rebuilds the object from the rail's own field list and
    * drops anything else, so an unknown key is discarded rather than stored.

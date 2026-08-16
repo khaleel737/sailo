@@ -1,5 +1,5 @@
 import { Lock } from "lucide-react";
-import { cheapestPlanWith, planFor, type Features } from "@/lib/plans";
+import { cheapestPlanWith, planFor, type Features } from "@sailo/core/plans";
 import { UpgradeButton } from "./upgrade-modal";
 import { Card } from "@sailo/design-system/web";
 import type { Shop } from "@sailo/db/schema";

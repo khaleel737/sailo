@@ -4,13 +4,13 @@ import { redirect } from "next/navigation";
 import { requireShop } from "@/lib/session";
 import { stripe } from "@sailo/payments";
 import { appUrl } from "@/lib/app-url";
-import { ensureCustomerId, resolveCustomerId } from "@sailo/payments/billing-customer";
-import { isPlanId } from "@/lib/plans";
+import { ensureCustomerId, resolveCustomerId } from "@sailo/billing/customer";
+import { isPlanId } from "@sailo/core/plans";
 import {
   checkoutSessionParams,
   priceEnvKey,
   priceMismatch,
-} from "@/lib/billing-checkout";
+} from "@sailo/billing/checkout";
 
 /**
  * Sends the seller to Stripe Checkout. The subscription is only applied when
@@ -35,7 +35,21 @@ export async function startCheckout(formData: FormData) {
 
   const customer = await ensureCustomerId(shop.id);
   const session = await stripe().checkout.sessions.create(
-    checkoutSessionParams({ shopId: shop.id, plan, price, customer }),
+    checkoutSessionParams({
+      shopId: shop.id,
+      plan,
+      price,
+      customer,
+      /*
+       * This app's own settings page. Passed in rather than read inside
+       * `@sailo/billing`: a package with no opinion about which app is asking
+       * cannot know whose billing page to return to.
+       */
+      returnTo: {
+        success: `${appUrl()}/admin/settings/billing?checkout=success`,
+        cancelled: `${appUrl()}/admin/settings/billing?checkout=cancelled`,
+      },
+    }),
   );
 
   if (!session.url) throw new Error("Stripe did not return a checkout URL");

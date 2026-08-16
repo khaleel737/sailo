@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { revalidateShop } from "@/lib/cache";
 import { publishShopEvent } from "@sailo/events";
-import { saveRail } from "@sailo/payments/rail-settings";
+import { saveRail } from "@sailo/payments/offline/settings";
 import { requireShop } from "@/lib/session";
 import { isPaymentMethodType, PAYMENT_METHOD_DEFS } from "@/lib/payments";
 import type { PaymentConfig } from "@sailo/db/schema";
@@ -14,7 +14,7 @@ import type { ActionState } from "./shop";
  * Saves one rail's settings.
  *
  * The rule this used to hold — a rail may not be enabled while a required field
- * is blank — now lives in `@sailo/payments/rail-settings`, because the phone
+ * is blank — now lives in `@sailo/payments/offline`, because the phone
  * needs to enforce the same one and cannot call a server action. What is left
  * here is the half that is genuinely Next's: reading a `FormData`, deciding
  * which paths to revalidate, and writing the refusal as a sentence.

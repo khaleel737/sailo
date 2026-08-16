@@ -34,7 +34,7 @@ export {
 } from "@sailo/payments";
 import { appUrl } from "@/lib/app-url";
 import { taxName } from "@/lib/tax-label";
-import { platformFeeCents, platformFeePercent } from "@/lib/plans";
+import { platformFeeCents, platformFeePercent } from "@sailo/core/plans";
 import {
   intervalOf,
   membershipSellable,

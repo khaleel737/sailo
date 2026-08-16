@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireShop } from "@/lib/session";
-import { can, cheapestPlanWith } from "@/lib/plans";
+import { can, cheapestPlanWith } from "@sailo/core/plans";
 import { csvResponse } from "@/lib/csv";
 import { isExportType, runExport } from "@/lib/exporters";
 import { rateLimit } from "@sailo/rate-limit";

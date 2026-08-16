@@ -23,7 +23,7 @@
  * against a live key.
  */
 import Stripe from "stripe";
-import { capabilitiesFor, requestCapabilities } from "@sailo/payments/capabilities";
+import { capabilitiesFor, requestCapabilities } from "@sailo/payments/connect";
 import {
   checkoutLabels,
   checkoutShipping,

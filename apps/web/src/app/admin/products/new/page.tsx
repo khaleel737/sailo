@@ -5,7 +5,7 @@ import { ProductForm } from "@/app/admin/products/_components/product-form";
 import { PageHeader } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";
 import { connectState } from "@/lib/connect";
-import { can } from "@/lib/plans";
+import { can } from "@sailo/core/plans";
 
 export const metadata: Metadata = { title: "Add product" };
 
