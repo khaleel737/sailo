@@ -1,0 +1,21 @@
+packages/commerce/src/products.test.ts
+  s_230301a759e309::t_000a7972078ff3 1
+  s_230301a759e309::t_db98305f028d57 107-131,142-173
+  s_230301a759e309::t_2a7e78a969139b 174
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "355ba122ce4d47ea16637714c416cc52201cf3ff",
+  "prompts": {},
+  "sessions": {
+    "s_230301a759e309": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "705f7061-20e5-4341-9262-bc5fa82ea217",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
