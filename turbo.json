@@ -4,6 +4,61 @@
     "**/.env.*local"
   ],
   /*
+   * Dependency direction, enforced rather than reviewed.
+   *
+   * Every workspace carries one layer tag in its own turbo.json, and a layer
+   * may only import downwards:
+   *
+   *   app  ->  transport  ->  domain  ->  capability  ->  foundation
+   *
+   * - foundation  primitives and vendor-free seams. Knows nothing above it.
+   *               config, env, db, core, i18n, observability, design-system.
+   * - capability  a single external capability behind a seam, no business
+   *               rules: auth, payments, billing, rate-limit, events, security.
+   * - domain      Sailo's rules, built on capabilities: commerce, analytics,
+   *               customers, partners, marketing, email, notifications,
+   *               webhooks.
+   * - transport   shape only, owns no rules: api (tRPC routers, REST handlers).
+   * - app         routes, components, wiring. Deployable, and never imported.
+   *
+   * The rules are written as `deny` on what is above, not `allow` on what is
+   * below, so adding a package to a layer does not mean editing every other
+   * layer's allow-list to let it be seen.
+   *
+   * `app` denies `app`: an app is deployed on its own, so importing another
+   * one is a dependency the deploy cannot satisfy. This is next-forge's rule
+   * and the reason apps/web and apps/api share code only through packages.
+   */
+  "boundaries": {
+    "tags": {
+      "foundation": {
+        "dependencies": {
+          "deny": ["capability", "domain", "transport", "app"]
+        }
+      },
+      "capability": {
+        "dependencies": {
+          "deny": ["domain", "transport", "app"]
+        }
+      },
+      "domain": {
+        "dependencies": {
+          "deny": ["transport", "app"]
+        }
+      },
+      "transport": {
+        "dependencies": {
+          "deny": ["app"]
+        }
+      },
+      "app": {
+        "dependencies": {
+          "deny": ["app"]
+        }
+      }
+    }
+  },
+  /*
    * `inputs` keeps $TURBO_DEFAULT$ and subtracts only the two files `next dev`
    * rewrites on every run. They are committed, so without this every dev
    * server start invalidates build, test, lint and typecheck workspace-wide.
