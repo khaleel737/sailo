@@ -43,7 +43,7 @@ export const adminZh: PartialAdminDictionary = {
     productSlots: "已用商品位",
     active: "有效",
     slotsUsed: "已用 {used}/{limit} 个商品位",
-    zeroFee: "刷卡支付 0% 手续费",
+    cardFee: "刷卡支付 {fee} 手续费",
     accessEnds: "访问权限截止",
     renews: "续费日期",
     atLimit: "你已用完 {plan} 套餐的所有商品位。已有商品照常使用 — 升级套餐即可添加更多。",

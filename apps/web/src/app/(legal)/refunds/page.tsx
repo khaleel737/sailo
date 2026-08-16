@@ -9,7 +9,7 @@ import {
   Ref,
 } from "@/components/legal/legal-kit";
 import { LEGAL } from "@/lib/legal";
-import { PLATFORM_FEE_LABEL } from "@/lib/plans";
+import { PLATFORM_FEE_RANGE_LABEL } from "@/lib/plans";
 
 export const metadata: Metadata = {
   title: "Refund Policy",
@@ -55,7 +55,7 @@ export default function RefundsPage() {
             software the shop runs on; we are not the merchant and the payment
             never passes through us. Card payments go straight into the
             seller&rsquo;s own Stripe account; bank transfers and cash never touch
-            the platform at all. We do take {PLATFORM_FEE_LABEL} of the goods on
+            the platform at all. We do take {PLATFORM_FEE_RANGE_LABEL} of the goods on
             a card sale as a fee from the seller — it comes out of their side of
             the sale, never out of what you paid, and it is refunded with the
             order if they refund you.
@@ -286,7 +286,7 @@ export default function RefundsPage() {
           </Callout>
           <P>
             The one part that is ours is our fee. {LEGAL.product} takes{" "}
-            {PLATFORM_FEE_LABEL} of the goods on a card sale, and when a seller
+            {PLATFORM_FEE_RANGE_LABEL} of the goods on a card sale, and when a seller
             refunds an order that fee is refunded with it, in proportion to the
             amount returned. You are never left paying our share of a sale that
             was undone.

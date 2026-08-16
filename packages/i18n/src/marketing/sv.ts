@@ -121,7 +121,7 @@ export const marketingSv: MarketingDictionary = {
     body: "Alla sätt att få betalt utom kort är helt dina, på alla planer. Kortförsäljning bär {fee} av varorna — aldrig frakt, aldrig skatt.",
     freeTagline: "Allt du behöver för dina första beställningar.",
     proTagline: "Plats att växa, och en butik som ser ut som din egen.",
-    bizTagline: "Kortbetalningar, kampanjer och tips — verktygen som ökar omsättningen.",
+    bizTagline: "Den lägsta kortavgiften, kampanjer och tips — verktygen som ökar omsättningen.",
     start: "Börja gratis",
     choose: "Välj {plan}",
     everythingFree: "Allt i Free, plus",

@@ -43,7 +43,7 @@ export const adminAr: PartialAdminDictionary = {
     productSlots: "خانات المنتجات المستخدمة",
     active: "نشط",
     slotsUsed: "استُخدم {used} من {limit} منتجًا",
-    zeroFee: "0% عمولة على الدفع بالبطاقة",
+    cardFee: "{fee} عمولة على الدفع بالبطاقة",
     accessEnds: "ينتهي الوصول",
     renews: "يتجدد",
     atLimit: "استهلكت كل خانات المنتجات في باقة {plan}. المنتجات الحالية تظل تعمل — ارفع الباقة لإضافة المزيد.",

@@ -177,7 +177,7 @@ export const adminSq: PartialAdminDictionary = {
     productSlots: "Vendet e produkteve të përdorura",
     active: "Aktive",
     slotsUsed: "{used} nga {limit} produkte të përdorura",
-    zeroFee: "0 % tarifë mbi pagesat me kartë",
+    cardFee: "{fee} tarifë mbi pagesat me kartë",
     accessEnds: "Aksesi mbaron",
     renews: "Rinovohet",
     atLimit: "Keni përdorur të gjitha vendet për produkte në {plan}. Produktet ekzistuese vazhdojnë të funksionojnë — kaloni në një plan më të lartë për të shtuar të tjera.",

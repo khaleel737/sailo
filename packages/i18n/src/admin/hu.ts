@@ -43,7 +43,7 @@ export const adminHu: PartialAdminDictionary = {
     productSlots: "Felhasznált termékhelyek",
     active: "Aktív",
     slotsUsed: "{limit} termékhelyből {used} felhasználva",
-    zeroFee: "0 % jutalék a kártyás fizetéseken",
+    cardFee: "{fee} jutalék a kártyás fizetéseken",
     accessEnds: "A hozzáférés véget ér",
     renews: "Megújul",
     atLimit: "Elhasználtad a(z) {plan} csomag összes termékhelyét. A meglévő termékek működnek tovább — válts nagyobb csomagra, ha többet szeretnél.",

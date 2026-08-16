@@ -121,7 +121,7 @@ export const marketingCs: MarketingDictionary = {
     body: "Každý způsob platby kromě karty je celý váš, na všech tarifech. Prodej kartou nese {fee} ze zboží — nikdy z dopravy ani z daně.",
     freeTagline: "Všechno, co potřebujete k prvním objednávkám.",
     proTagline: "Prostor růst a obchod, který vypadá jako váš.",
-    bizTagline: "Platby kartou, akce a doporučení — nástroje, které zvedají tržby.",
+    bizTagline: "Nejnižší poplatek z karty, akce a doporučení — nástroje, které zvedají tržby.",
     start: "Začít zdarma",
     choose: "Zvolit {plan}",
     everythingFree: "Vše z Free, a navíc",

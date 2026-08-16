@@ -10,7 +10,7 @@ import {
   Ref,
 } from "@/components/legal/legal-kit";
 import { COOKIES, LEGAL, SUBPROCESSORS } from "@/lib/legal";
-import { PLATFORM_FEE_LABEL } from "@/lib/plans";
+import { PLATFORM_FEE_RANGE_LABEL } from "@/lib/plans";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -205,7 +205,7 @@ export default function PrivacyPage() {
             not hold seller funds at any point.
           </P>
           <P>
-            Sailo does take a fee. {PLATFORM_FEE_LABEL} of the goods on each card
+            Sailo does take a fee. {PLATFORM_FEE_RANGE_LABEL} of the goods on each card
             sale reaches us as a Stripe application fee, and the record of it —
             the amount, the order it belongs to and the account it came from —
             is data we hold. It is stated here because a privacy policy that

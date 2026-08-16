@@ -121,7 +121,7 @@ export const marketingKo: MarketingDictionary = {
     body: "카드를 제외한 모든 수금 방식은 모든 요금제에서 전액 판매자의 것입니다. 카드 결제에만 상품 금액의 {fee}가 붙습니다 — 배송비나 세금에는 붙지 않습니다.",
     freeTagline: "첫 주문을 받는 데 필요한 모든 것.",
     proTagline: "성장할 공간과, 내 것처럼 보이는 가게.",
-    bizTagline: "카드 결제, 프로모션, 추천 — 매출을 키우는 도구들.",
+    bizTagline: "가장 낮은 카드 수수료, 프로모션, 추천 — 매출을 키우는 도구들.",
     start: "무료로 시작",
     choose: "{plan} 선택",
     everythingFree: "무료 플랜의 모든 기능에 더해",

@@ -177,7 +177,7 @@ export const adminFil: PartialAdminDictionary = {
     productSlots: "Nagamit na product slot",
     active: "Aktibo",
     slotsUsed: "{used} sa {limit} produkto ang nagamit",
-    zeroFee: "0% bayad sa mga card payment",
+    cardFee: "{fee} bayad sa mga card payment",
     accessEnds: "Matatapos ang access",
     renews: "Magre-renew",
     atLimit: "Naubos mo na ang lahat ng product slot sa {plan}. Gumagana pa rin ang mga dati mong produkto — mag-upgrade para makadagdag pa.",

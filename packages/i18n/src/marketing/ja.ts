@@ -121,7 +121,7 @@ export const marketingJa: MarketingDictionary = {
     body: "カード以外の受け取り方法は、どのプランでも全額あなたのものです。カード決済のみ商品代金の{fee}がかかります。配送料や税にはかかりません。",
     freeTagline: "最初の注文を受けるのに必要なものはすべて。",
     proTagline: "伸びる余地と、自分のものに見えるショップ。",
-    bizTagline: "カード決済、販促、紹介制度。売上を伸ばすための道具。",
+    bizTagline: "最も低いカード手数料、販促、紹介制度。売上を伸ばすための道具。",
     start: "無料で始める",
     choose: "{plan} を選ぶ",
     everythingFree: "Free のすべてに加えて",

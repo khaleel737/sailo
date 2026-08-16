@@ -1078,7 +1078,7 @@ export const adminEn = {
     productSlots: "Product slots used",
     active: "Active",
     slotsUsed: "{used} of {limit} products used",
-    zeroFee: "0% fee on card payments",
+    cardFee: "{fee} fee on card payments",
     accessEnds: "Access ends",
     renews: "Renews",
     atLimit: "You've used every product slot on {plan}. Existing products keep working — upgrade to add more.",

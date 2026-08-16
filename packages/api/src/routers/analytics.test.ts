@@ -120,10 +120,10 @@ describe("analytics procedures", () => {
       // 1095 days is the business allowance. A free shop may not have it.
       .analytics.stats({ range: 1095 });
 
-    expect(result.window.days).toBe(30);
+    expect(result.window.days).toBe(7);
     // The clamp reached the query, not just the response: this is the
     // assertion that would have caught a window resolved and then ignored.
-    expect(getDashboardStats).toHaveBeenCalledWith("shop_1", 30);
+    expect(getDashboardStats).toHaveBeenCalledWith("shop_1", 7);
   });
 
   it("honours the same preset for a shop that pays for it", async () => {
@@ -144,8 +144,8 @@ describe("analytics procedures", () => {
 
     expect(result.window.clamped).toBe(true);
     expect(result.window.custom).toBe(true);
-    // Thirty days of allowance: twenty-nine back, plus today.
-    expect(result.window.days).toBe(30);
+    // Seven days of allowance: six back, plus today.
+    expect(result.window.days).toBe(7);
 
     // And the query was given the clamped bounds rather than the asked-for ones.
     const passed = getDashboardStats.mock.calls[0]?.[1] as { since: Date };

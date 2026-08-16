@@ -43,7 +43,7 @@ export const adminRo: PartialAdminDictionary = {
     productSlots: "Sloturi de produs folosite",
     active: "Activ",
     slotsUsed: "{used} din {limit} produse folosite",
-    zeroFee: "0 % comision la plățile cu cardul",
+    cardFee: "{fee} comision la plățile cu cardul",
     accessEnds: "Accesul se încheie",
     renews: "Se reînnoiește",
     atLimit: "Ai folosit toate sloturile de produs din {plan}. Produsele existente funcționează în continuare — treci la un plan superior ca să adaugi altele.",

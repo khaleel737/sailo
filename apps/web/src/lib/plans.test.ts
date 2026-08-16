@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   PLANS,
+  PLAN_IDS,
+  PLATFORM_FEE_RANGE_LABEL,
   can,
   planFor,
   platformFeeBp,
@@ -74,7 +76,7 @@ describe("removeBadge entitlement", () => {
  * seller to us, so what it is charged *on* matters as much as the rate.
  */
 describe("the platform fee on a card sale", () => {
-  const free = shop("free", null);
+  const biz = shop("business", "active");
   const order = (
     subtotalCents: number,
     discountCents = 0,
@@ -86,28 +88,55 @@ describe("the platform fee on a card sale", () => {
     taxInclusive: tax.taxInclusive ?? false,
   });
 
-  it("takes one percent of the goods", () => {
-    expect(platformFeeBp(free)).toBe(100);
-    expect(platformFeeCents(free, order(4800))).toBe(48);
-    expect(platformFeeLabel(free)).toBe("1%");
+  /**
+   * The ladder falls as the plan rises. Asserted as a whole rather than one
+   * plan at a time because the ordering is the product decision — a tier that
+   * costs more and charges more is the inverted ladder this replaced, and it
+   * would pass three separate equality checks without complaint.
+   */
+  it("falls as the plan rises — 3% free, 2% pro, 1% business", () => {
+    expect(platformFeeBp(shop("free", null))).toBe(300);
+    expect(platformFeeBp(shop("pro", "active"))).toBe(200);
+    expect(platformFeeBp(biz)).toBe(100);
+
+    const bps = PLAN_IDS.map((id) => PLANS[id].feeBp);
+    expect(bps).toEqual([...bps].sort((a, b) => b - a));
   });
 
-  it("takes the discount off first — 1% of a price nobody paid is not a sale", () => {
-    expect(platformFeeCents(free, order(10_000, 2_000))).toBe(80);
+  it("charges the plan a shop is entitled to, not the column it typed", () => {
+    // A cancelled Business shop is a Free shop, and pays Free's rate.
+    expect(platformFeeBp(shop("business", "canceled"))).toBe(300);
+    // A comped plan outranks Stripe here exactly as it does for features.
+    expect(platformFeeBp(shop("free", null, "business"))).toBe(100);
+  });
+
+  it("takes one percent of the goods on business", () => {
+    expect(platformFeeCents(biz, order(4800))).toBe(48);
+    expect(platformFeeLabel(biz)).toBe("1%");
+  });
+
+  it("quotes the ladder as a range where no shop is in scope", () => {
+    // Marketing and legal copy interpolates this into an existing `{fee}`
+    // slot, so it has to read as a noun phrase, not a list.
+    expect(PLATFORM_FEE_RANGE_LABEL).toBe("1–3%");
+  });
+
+  it("takes the discount off first — a cut of a price nobody paid is not a sale", () => {
+    expect(platformFeeCents(biz, order(10_000, 2_000))).toBe(80);
   });
 
   it("rounds to the nearest cent", () => {
     // 1% of $2.45 is 2.45 cents; of $2.55 it is 2.55.
-    expect(platformFeeCents(free, order(245))).toBe(2);
-    expect(platformFeeCents(free, order(255))).toBe(3);
+    expect(platformFeeCents(biz, order(245))).toBe(2);
+    expect(platformFeeCents(biz, order(255))).toBe(3);
   });
 
   it("charges nothing on a free order", () => {
-    expect(platformFeeCents(free, order(0))).toBe(0);
+    expect(platformFeeCents(biz, order(0))).toBe(0);
   });
 
   it("never goes negative when a discount exceeds the subtotal", () => {
-    expect(platformFeeCents(free, order(1_000, 5_000))).toBe(0);
+    expect(platformFeeCents(biz, order(1_000, 5_000))).toBe(0);
   });
 
   /*
@@ -122,13 +151,13 @@ describe("the platform fee on a card sale", () => {
    */
   it("never charges on delivery, which is not in the subtotal", () => {
     // Delivery genuinely is a separate field the function never receives.
-    expect(platformFeeCents(free, order(5_000))).toBe(50);
+    expect(platformFeeCents(biz, order(5_000))).toBe(50);
   });
 
   it("charges the full subtotal when tax is added on top", () => {
     // US-style: the $50 is pre-tax and the tax is charged beside it, so the
     // subtotal is already the goods.
-    expect(platformFeeCents(free, order(5_000, 0, { taxRateBp: 2_000 }))).toBe(50);
+    expect(platformFeeCents(biz, order(5_000, 0, { taxRateBp: 2_000 }))).toBe(50);
   });
 
   it("strips tax that is baked into the price before charging", () => {
@@ -139,7 +168,7 @@ describe("the platform fee on a card sale", () => {
      * before paying affiliate commission — this did not.
      */
     const fee = platformFeeCents(
-      free,
+      biz,
       order(10_000, 0, { taxRateBp: 2_000, taxInclusive: true }),
     );
     // 1% of the €83.33 that is actually the seller's, not of the €100.
@@ -151,7 +180,7 @@ describe("the platform fee on a card sale", () => {
     // €100 less a €20 coupon is an €80 inclusive sale: €66.67 of goods.
     expect(
       platformFeeCents(
-        free,
+        biz,
         order(10_000, 2_000, { taxRateBp: 2_000, taxInclusive: true }),
       ),
     ).toBe(67);
@@ -160,7 +189,7 @@ describe("the platform fee on a card sale", () => {
   it("charges nothing on an inclusive order that is entirely tax", () => {
     // Degenerate, but it must not go negative.
     expect(
-      platformFeeCents(free, order(100, 0, { taxRateBp: 1_000_000, taxInclusive: true })),
+      platformFeeCents(biz, order(100, 0, { taxRateBp: 1_000_000, taxInclusive: true })),
     ).toBe(0);
   });
 });
@@ -175,13 +204,13 @@ describe("the platform fee on a card sale", () => {
  * decided on, found months later in a payout.
  */
 describe("the fee on a subscription", () => {
-  const free = { plan: "free", subscriptionStatus: null };
+  const biz = { plan: "business", subscriptionStatus: "active" };
 
   it("is the one-time rate expressed as a percentage", () => {
     // 100bp on a 4800 sale is 48 — and 1% of 4800 is the same 48.
-    expect(platformFeePercent(free)).toBe(1);
-    expect(Math.round((4_800 * platformFeePercent(free)) / 100)).toBe(
-      platformFeeCents(free, {
+    expect(platformFeePercent(biz)).toBe(1);
+    expect(Math.round((4_800 * platformFeePercent(biz)) / 100)).toBe(
+      platformFeeCents(biz, {
         subtotalCents: 4_800,
         discountCents: 0,
         taxRateBp: 0,
@@ -193,7 +222,7 @@ describe("the fee on a subscription", () => {
   it("is a number Stripe will accept", () => {
     // `application_fee_percent` is a percentage, not basis points: handing it
     // 50 would take half of every invoice.
-    const percent = platformFeePercent(free);
+    const percent = platformFeePercent(biz);
     expect(percent).toBeGreaterThan(0);
     expect(percent).toBeLessThanOrEqual(100);
   });

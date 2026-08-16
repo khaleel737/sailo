@@ -121,7 +121,7 @@ export const marketingRo: MarketingDictionary = {
     body: "Orice mod de a încasa în afară de card este integral al tău, pe toate planurile. Vânzările cu cardul poartă {fee} din marfă — niciodată din livrare sau taxe.",
     freeTagline: "Tot ce îți trebuie pentru primele comenzi.",
     proTagline: "Loc de creștere și un magazin care arată ca al tău.",
-    bizTagline: "Plăți cu cardul, promoții și recomandări — uneltele care cresc încasările.",
+    bizTagline: "Cel mai mic comision pe card, promoții și recomandări — uneltele care cresc încasările.",
     start: "Începe gratuit",
     choose: "Alege {plan}",
     everythingFree: "Tot din Free, plus",

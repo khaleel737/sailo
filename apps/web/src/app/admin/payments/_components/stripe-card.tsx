@@ -8,7 +8,7 @@ import {
 } from "@sailo/core/countries";
 import type { Shop } from "@sailo/db/schema";
 import { connectState } from "@/lib/connect";
-import { PLATFORM_FEE_LABEL, can, cheapestPlanWith } from "@/lib/plans";
+import { can, cheapestPlanWith, platformFeeLabel } from "@/lib/plans";
 import {
   connectStripe,
   disconnectStripe,
@@ -98,7 +98,11 @@ export async function StripeCard({ shop }: { shop: Shop }) {
             )}
           </div>
           <p className="mt-1 max-w-lg text-xs leading-relaxed text-ink-500">
-            {interpolate(a.payments.cardBody, { fee: PLATFORM_FEE_LABEL })}
+            {/* This seller's own rate, not the ladder: they have a plan, so
+                naming the range here would make them work out which third of
+                it applies to them. The marketing pages, which have no shop,
+                are the only place the range belongs. */}
+            {interpolate(a.payments.cardBody, { fee: platformFeeLabel(shop) })}
           </p>
         </div>
       </div>

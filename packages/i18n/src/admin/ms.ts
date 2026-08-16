@@ -177,7 +177,7 @@ export const adminMs: PartialAdminDictionary = {
     productSlots: "Slot produk digunakan",
     active: "Aktif",
     slotsUsed: "{used} daripada {limit} produk digunakan",
-    zeroFee: "0 % caj bagi pembayaran kad",
+    cardFee: "{fee} caj bagi pembayaran kad",
     accessEnds: "Akses tamat",
     renews: "Diperbaharui",
     atLimit: "Anda telah menggunakan semua slot produk pada pelan {plan}. Produk sedia ada terus berfungsi — naik taraf untuk menambah lagi.",

@@ -43,7 +43,7 @@ export const adminTr: PartialAdminDictionary = {
     productSlots: "Kullanılan ürün alanı",
     active: "Etkin",
     slotsUsed: "{limit} üründen {used} tanesi kullanıldı",
-    zeroFee: "Kartlı ödemelerde {fee} komisyon",
+    cardFee: "Kartlı ödemelerde {fee} komisyon",
     accessEnds: "Erişim bitiyor",
     renews: "Yenileniyor",
     atLimit: "{plan} paketindeki tüm ürün alanlarını doldurdunuz. Mevcut ürünler çalışmaya devam eder — daha fazlası için paketi yükseltin.",

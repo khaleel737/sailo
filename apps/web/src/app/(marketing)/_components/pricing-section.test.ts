@@ -21,8 +21,20 @@ const source = readFileSync(
 describe("advertised pricing", () => {
   it("names the plans the checkout can actually sell", () => {
     expect(PLANS.free.monthlyCents).toBe(0);
-    expect(PLANS.pro.monthlyCents).toBe(999);
-    expect(PLANS.business.monthlyCents).toBe(1999);
+    expect(PLANS.pro.monthlyCents).toBe(1900);
+    expect(PLANS.business.monthlyCents).toBe(4900);
+  });
+
+  /*
+   * The fee is advertised on the same page as the price, so it drifts the same
+   * way — and a fee that rose with the plan would read as a typo on the page
+   * while quietly charging the biggest sellers the most, which is the shape
+   * this pricing replaced.
+   */
+  it("charges less on card as the plan costs more", () => {
+    expect(PLANS.free.feeBp).toBe(300);
+    expect(PLANS.pro.feeBp).toBe(200);
+    expect(PLANS.business.feeBp).toBe(100);
   });
 
   it("bills yearly below twelve months, or the yearly option is a penalty", () => {

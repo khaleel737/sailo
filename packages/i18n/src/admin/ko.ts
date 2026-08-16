@@ -177,7 +177,7 @@ export const adminKo: PartialAdminDictionary = {
     productSlots: "사용 중인 상품 슬롯",
     active: "사용 중",
     slotsUsed: "{limit}개 중 {used}개 사용",
-    zeroFee: "카드 결제 수수료 0%",
+    cardFee: "카드 결제 수수료 {fee}",
     accessEnds: "이용 종료",
     renews: "갱신일",
     atLimit: "{plan} 요금제의 상품 슬롯을 모두 사용했어요. 기존 상품은 그대로 작동합니다 — 더 추가하려면 상위 요금제로 올려 주세요.",

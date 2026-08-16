@@ -43,7 +43,7 @@ export const adminUk: PartialAdminDictionary = {
     productSlots: "Використано місць під товари",
     active: "Активний",
     slotsUsed: "Використано {used} товарів із {limit}",
-    zeroFee: "0 % комісії на оплату карткою",
+    cardFee: "{fee} комісії на оплату карткою",
     accessEnds: "Доступ завершується",
     renews: "Поновлюється",
     atLimit: "Ви зайняли всі місця під товари на тарифі {plan}. Уже додані товари працюють далі — перейдіть вище, щоб додати ще.",

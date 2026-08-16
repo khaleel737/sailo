@@ -121,7 +121,7 @@ export const marketingPt: MarketingDictionary = {
     body: "Toda forma de receber, exceto cartão, é inteiramente sua, em todos os planos. Vendas no cartão levam {fee} da mercadoria — nunca do frete, nunca de imposto.",
     freeTagline: "Tudo o que precisas para as primeiras encomendas.",
     proTagline: "Espaço para crescer, e uma loja com a tua cara.",
-    bizTagline: "Pagamentos com cartão, promoções e referências — as ferramentas que fazem crescer a receita.",
+    bizTagline: "A menor taxa no cartão, promoções e referências — as ferramentas que fazem crescer a receita.",
     start: "Começar grátis",
     choose: "Escolher {plan}",
     everythingFree: "Tudo do Free, mais",

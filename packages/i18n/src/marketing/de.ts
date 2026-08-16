@@ -121,7 +121,7 @@ export const marketingDe: MarketingDictionary = {
     body: "Jede Zahlungsart außer Karte gehört ganz Ihnen, in allen Tarifen. Kartenverkäufe tragen {fee} der Ware — nie auf Versand, nie auf Steuer.",
     freeTagline: "Alles, was du für deine ersten Bestellungen brauchst.",
     proTagline: "Platz zum Wachsen, und ein Shop, der nach dir aussieht.",
-    bizTagline: "Kartenzahlung, Aktionen und Empfehlungen — die Werkzeuge, die den Umsatz heben.",
+    bizTagline: "Die niedrigste Kartengebühr, Aktionen und Empfehlungen — die Werkzeuge, die den Umsatz heben.",
     start: "Kostenlos starten",
     choose: "{plan} wählen",
     everythingFree: "Alles aus Free, plus",

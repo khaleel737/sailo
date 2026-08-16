@@ -121,7 +121,7 @@ export const marketingMs: MarketingDictionary = {
     body: "Setiap cara menerima bayaran selain kad adalah milik anda sepenuhnya, pada semua pelan. Jualan kad dikenakan {fee} daripada barangan — tidak pernah penghantaran atau cukai.",
     freeTagline: "Semua yang anda perlukan untuk pesanan pertama anda.",
     proTagline: "Ruang untuk berkembang, dan kedai yang kelihatan seperti milik anda sendiri.",
-    bizTagline: "Bayaran kad, promosi dan rujukan — alat yang menumbuhkan hasil.",
+    bizTagline: "Yuran kad terendah, promosi dan rujukan — alat yang menumbuhkan hasil.",
     start: "Mula percuma",
     choose: "Pilih {plan}",
     everythingFree: "Semua dalam Percuma, tambah",

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { interpolate } from "@sailo/i18n";
 import { getT } from "@/i18n/server";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
-import { PLATFORM_FEE_LABEL } from "@/lib/plans";
+import { PLATFORM_FEE_RANGE_LABEL } from "@/lib/plans";
 import { Container, Display, Lede, Section } from "@/components/marketing/kit";
 import { faqJsonLd } from "@/lib/seo";
 import { PricingSection } from "../_components/pricing-section";
@@ -37,7 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
    * number that decides it goes.
    */
   const title = m.pricing.eyebrow;
-  const description = interpolate(m.pricing.body, { fee: PLATFORM_FEE_LABEL });
+  const description = interpolate(m.pricing.body, { fee: PLATFORM_FEE_RANGE_LABEL });
 
   return {
     title,
@@ -62,7 +62,7 @@ export default async function PricingPage() {
    * same answers and let the crawler pick which one to rank.
    */
   const faqs = [
-    { q: m.faq.q3, a: interpolate(m.faq.a3, { fee: PLATFORM_FEE_LABEL }) },
+    { q: m.faq.q3, a: interpolate(m.faq.a3, { fee: PLATFORM_FEE_RANGE_LABEL }) },
     { q: m.faq.q2, a: m.faq.a2 },
     { q: m.faq.q1, a: m.faq.a1 },
   ];
@@ -79,7 +79,7 @@ export default async function PricingPage() {
       <Section>
         <Container>
           <Display>{m.pricing.title}</Display>
-          <Lede>{interpolate(m.pricing.body, { fee: PLATFORM_FEE_LABEL })}</Lede>
+          <Lede>{interpolate(m.pricing.body, { fee: PLATFORM_FEE_RANGE_LABEL })}</Lede>
         </Container>
       </Section>
 

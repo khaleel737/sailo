@@ -43,7 +43,7 @@ export const adminNo: PartialAdminDictionary = {
     productSlots: "Brukte produktplasser",
     active: "Aktiv",
     slotsUsed: "{used} av {limit} produkter brukt",
-    zeroFee: "0 % gebyr på kortbetalinger",
+    cardFee: "{fee} gebyr på kortbetalinger",
     accessEnds: "Tilgangen slutter",
     renews: "Fornyes",
     atLimit: "Du har brukt alle produktplassene på {plan}. Eksisterende produkter virker fortsatt — oppgrader for å legge til flere.",

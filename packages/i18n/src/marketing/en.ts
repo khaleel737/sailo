@@ -164,7 +164,7 @@ export const marketingEn = {
     body: "Every way of getting paid except card is yours in full, on every plan. Card sales carry {fee} of the goods — never delivery, never tax.",
     freeTagline: "Everything you need to take your first orders.",
     proTagline: "Room to grow, and a shop that looks like your own.",
-    bizTagline: "Card payments, promotions and referrals — the tools that grow revenue.",
+    bizTagline: "The lowest card fee, promotions and referrals — the tools that grow revenue.",
     start: "Start free",
     choose: "Choose {plan}",
     everythingFree: "Everything in Free, plus",

@@ -121,7 +121,7 @@ export const marketingTr: MarketingDictionary = {
     body: "Kart dışındaki her tahsilat yolu, tüm planlarda tamamen sizindir. Kartlı satışlar mal bedelinin {fee} kadarını taşır — kargoda ve vergide asla.",
     freeTagline: "İlk siparişlerini almak için gereken her şey.",
     proTagline: "Büyümek için yer, ve sana benzeyen bir dükkân.",
-    bizTagline: "Kartlı ödeme, kampanyalar ve tavsiye programı — ciroyu büyüten araçlar.",
+    bizTagline: "En düşük kart komisyonu, kampanyalar ve tavsiye programı — ciroyu büyüten araçlar.",
     start: "Ücretsiz başla",
     choose: "{plan} planını seç",
     everythingFree: "Free'deki her şey, ayrıca",

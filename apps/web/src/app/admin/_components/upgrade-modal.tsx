@@ -6,7 +6,7 @@ import { startCheckout } from "@/lib/actions/billing";
 import {
   PLANS,
   PLAN_IDS,
-  PLATFORM_FEE_LABEL,
+  PLATFORM_FEE_RANGE_LABEL,
   type Features,
   type PlanId,
 } from "@/lib/plans";
@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils";
 /** Copy for the headline when a specific locked feature triggered the modal. */
 function featureCopy(feature: keyof Features, t: Dictionary) {
   const map: Partial<Record<keyof Features, { title: string; body: string }>> = {
-    cardRails: { title: t.billing.cardTitle, body: interpolate(t.billing.cardBody, { fee: PLATFORM_FEE_LABEL }) },
+    cardRails: { title: t.billing.cardTitle, body: interpolate(t.billing.cardBody, { fee: PLATFORM_FEE_RANGE_LABEL }) },
     coupons: { title: t.billing.couponsTitle, body: t.billing.couponsBody },
     affiliates: {
       title: t.billing.affiliatesTitle,
@@ -86,7 +86,7 @@ export function UpgradeModal({
       }
       footer={
         <p className="w-full text-center text-xs text-ink-400">
-          {interpolate(t.billing.cancelAnyTime, { fee: PLATFORM_FEE_LABEL })}
+          {interpolate(t.billing.cancelAnyTime, { fee: PLATFORM_FEE_RANGE_LABEL })}
         </p>
       }
     >

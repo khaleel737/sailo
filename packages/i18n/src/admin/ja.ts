@@ -43,7 +43,7 @@ export const adminJa: PartialAdminDictionary = {
     productSlots: "使用中の商品枠",
     active: "有効",
     slotsUsed: "{limit}件中{used}件の商品枠を使用中",
-    zeroFee: "カード決済の手数料0%",
+    cardFee: "カード決済の手数料{fee}",
     accessEnds: "アクセス終了日",
     renews: "更新日",
     atLimit: "{plan}の商品枠をすべて使い切りました。既存の商品はそのまま使えます — さらに追加するにはプランを上げてください。",

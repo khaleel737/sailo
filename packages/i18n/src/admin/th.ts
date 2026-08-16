@@ -177,7 +177,7 @@ export const adminTh: PartialAdminDictionary = {
     productSlots: "ช่องสินค้าที่ใช้ไป",
     active: "ใช้งานอยู่",
     slotsUsed: "ใช้ไป {used} จาก {limit} รายการ",
-    zeroFee: "ค่าธรรมเนียม 0% สำหรับการชำระด้วยบัตร",
+    cardFee: "ค่าธรรมเนียม {fee} สำหรับการชำระด้วยบัตร",
     accessEnds: "สิทธิ์สิ้นสุด",
     renews: "ต่ออายุ",
     atLimit: "คุณใช้ช่องสินค้าของแพ็กเกจ {plan} จนหมดแล้ว สินค้าเดิมยังใช้ได้ตามปกติ — อัปเกรดเพื่อเพิ่มได้อีก",

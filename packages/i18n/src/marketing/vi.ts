@@ -121,7 +121,7 @@ export const marketingVi: MarketingDictionary = {
     body: "Mọi cách nhận tiền trừ thẻ đều thuộc về bạn trọn vẹn, ở mọi gói. Bán qua thẻ chịu {fee} giá trị hàng — không bao giờ tính trên phí giao hàng hay thuế.",
     freeTagline: "Mọi thứ bạn cần cho những đơn hàng đầu tiên.",
     proTagline: "Chỗ để lớn lên, và một cửa hàng trông như của riêng bạn.",
-    bizTagline: "Thanh toán thẻ, khuyến mãi và giới thiệu — những công cụ làm tăng doanh thu.",
+    bizTagline: "Phí thẻ thấp nhất, khuyến mãi và giới thiệu — những công cụ làm tăng doanh thu.",
     start: "Bắt đầu miễn phí",
     choose: "Chọn {plan}",
     everythingFree: "Mọi thứ trong gói Miễn phí, cộng thêm",

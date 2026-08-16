@@ -1,5 +1,5 @@
 import type { PaymentConfig } from "@sailo/db/schema";
-import { PLATFORM_FEE_LABEL } from "@sailo/core/plans";
+import { PLATFORM_FEE_RANGE_LABEL } from "@sailo/core/plans";
 
 /**
  * The rails a shop can take money through, and what each one needs.
@@ -160,9 +160,14 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
     // The fee is interpolated, never written out. This string said "1%" while
     // `platformFeeBp` charged half that, so every seller reading this card was
     // shown double what they were billed — exactly the drift the note on
-    // `PLATFORM_FEE_LABEL` exists to prevent.
+    // `PLATFORM_FEE_RANGE_LABEL` exists to prevent.
+    //
+    // The range rather than a rate: these defs are a module-level constant
+    // with no shop in scope, so there is no plan to read a single number off.
+    // Surfaces that do hold a shop should say `platformFeeLabel(shop)` instead
+    // of rendering this sentence.
     description:
-      `Buyers pay by card, Apple Pay or Google Pay on Stripe's checkout. The money lands in your own Stripe account — Sailo never holds it, and keeps ${PLATFORM_FEE_LABEL} of the goods.`,
+      `Buyers pay by card, Apple Pay or Google Pay on Stripe's checkout. The money lands in your own Stripe account — Sailo never holds it, and keeps ${PLATFORM_FEE_RANGE_LABEL} of the goods depending on your plan.`,
     // Configured by connecting a Stripe account, not by typing anything, so
     // the admin form for this rail is the Connect button instead of fields.
     fields: [],

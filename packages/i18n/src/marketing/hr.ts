@@ -121,7 +121,7 @@ export const marketingHr: MarketingDictionary = {
     body: "Svaki način naplate osim kartice u cijelosti je vaš, na svim planovima. Prodaja karticom nosi {fee} od robe — nikada od dostave ni poreza.",
     freeTagline: "Sve što vam treba za prve narudžbe.",
     proTagline: "Prostor za rast i trgovina koja izgleda kao vaša.",
-    bizTagline: "Plaćanje karticom, promocije i preporuke — alati koji povećavaju prihod.",
+    bizTagline: "Najniža naknada na kartice, promocije i preporuke — alati koji povećavaju prihod.",
     start: "Počnite besplatno",
     choose: "Odaberite {plan}",
     everythingFree: "Sve iz Besplatnog, plus",

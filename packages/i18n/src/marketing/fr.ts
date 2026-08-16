@@ -121,7 +121,7 @@ export const marketingFr: MarketingDictionary = {
     body: "Tous les moyens d'encaisser sauf la carte sont entièrement à vous, sur tous les forfaits. Les ventes par carte portent {fee} de la marchandise — jamais la livraison, jamais la taxe.",
     freeTagline: "Tout ce qu'il faut pour vos premières commandes.",
     proTagline: "De la place pour grandir, et une boutique à votre image.",
-    bizTagline: "Paiements par carte, promotions et parrainage — les outils qui font grimper le chiffre.",
+    bizTagline: "La commission la plus basse sur carte, promotions et parrainage — les outils qui font grimper le chiffre.",
     start: "Commencer gratuitement",
     choose: "Choisir {plan}",
     everythingFree: "Tout Free, plus",

@@ -99,6 +99,17 @@ async function main() {
     console.log(`  product ${product.id}`);
 
     const planPrices: string[] = [];
+    /*
+     * Archiving is deferred until after `default_price` is repointed.
+     *
+     * Stripe refuses to archive a price that is still its product's default,
+     * and the old monthly price always is — so archiving in place threw
+     * `This price cannot be archived because it is the default price of its
+     * product` the first time an amount actually changed, leaving the account
+     * half-migrated: new prices created, old ones live, default still stale.
+     * Create, repoint, then archive is the only order Stripe permits.
+     */
+    const staleToArchive: { id: string; interval: string }[] = [];
 
     for (const [interval, amount] of [
       ["month", plan.monthlyCents],
@@ -137,14 +148,15 @@ async function main() {
         });
       }
 
-      // Archive anything left over so a stale id can't be charged by mistake.
+      // Queued, not archived — see `staleToArchive` above for why the order
+      // matters. A stale id must not stay chargeable, but Stripe will not let
+      // it go until the product points somewhere else.
       for (const old of stale) {
         if (CHECK_ONLY) {
           note(`${interval}ly price ${old.id} should be archived`);
           continue;
         }
-        await stripe.prices.update(old.id, { active: false });
-        note(`archived stale ${interval}ly price ${old.id}`);
+        staleToArchive.push({ id: old.id, interval });
       }
 
       console.log(
@@ -167,6 +179,13 @@ async function main() {
         note(`default price → ${monthly}`);
       }
     }
+
+    // Now that nothing points at them, the old prices can go.
+    for (const { id, interval } of staleToArchive) {
+      await stripe.prices.update(id, { active: false });
+      note(`archived stale ${interval}ly price ${id}`);
+    }
+
     resolved.push({ product: product.id, prices: planPrices });
     console.log("");
   }
@@ -240,13 +259,29 @@ async function main() {
   if (!endpoint) {
     note(`no endpoint for ${WEBHOOK_URL}`);
     if (!CHECK_ONLY) {
-      const created = await stripe.webhookEndpoints.create({
-        url: WEBHOOK_URL,
-        enabled_events: EVENTS,
-        description: "Sailo subscription lifecycle",
-      });
-      console.log(`  created ${created.id}`);
-      console.log(`\n  Put this in STRIPE_WEBHOOK_SECRET:\n  ${created.secret}\n`);
+      /*
+       * A localhost URL is not an error to fix, it is what running against a
+       * dev machine looks like — Stripe cannot reach it, and `stripe listen`
+       * is the supported answer. Thrown, it aborted the whole script *after*
+       * the prices had been rewritten and *before* the env block printed, so
+       * the one output the operator actually needs was the only thing lost.
+       * Everything above this point is already committed to the account.
+       */
+      try {
+        const created = await stripe.webhookEndpoints.create({
+          url: WEBHOOK_URL,
+          enabled_events: EVENTS,
+          description: "Sailo subscription lifecycle",
+        });
+        console.log(`  created ${created.id}`);
+        console.log(`\n  Put this in STRIPE_WEBHOOK_SECRET:\n  ${created.secret}\n`);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.log(`  skipped — ${message}`);
+        console.log(
+          `  For local work run:  stripe listen --forward-to ${WEBHOOK_URL}`,
+        );
+      }
     }
   } else {
     const missing = EVENTS.filter((e) => !endpoint.enabled_events.includes(e));

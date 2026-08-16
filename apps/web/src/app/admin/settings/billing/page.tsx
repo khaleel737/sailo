@@ -8,7 +8,7 @@ import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { openBillingPortal, startCheckout } from "@/lib/actions/billing";
 import { syncSubscriptionForShop } from "@/lib/billing-sync";
-import { PLAN_IDS, PLANS, planFor, productLimit } from "@/lib/plans";
+import { PLAN_IDS, PLANS, planFor, platformFeeLabel, productLimit } from "@/lib/plans";
 import { billingEnabled } from "@sailo/payments";
 import { IntervalToggle } from "@/app/admin/settings/billing/_components/interval-toggle";
 import { Alert, Badge, Button, Card, Progress } from "@/components/ui";
@@ -81,7 +81,11 @@ export default async function BillingPage({
                 used: productCount,
                 limit: limit ?? a.common.unlimited.toLowerCase(),
               })}
-              {current.features.cardRails ? ` · ${a.billing.zeroFee}` : ""}
+              {/* Every plan takes card now, so this line always renders — and
+                  it used to read "0% fee on card payments" unconditionally,
+                  which became a lie for all three tiers the moment the fee
+                  ladder shipped. It states this shop's own rate instead. */}
+              {` · ${interpolate(a.billing.cardFee, { fee: platformFeeLabel(fresh) })}`}
             </p>
             {fresh.currentPeriodEnd ? (
               <p className="mt-0.5 text-xs text-ink-400">

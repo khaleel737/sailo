@@ -52,13 +52,13 @@ something not on it, verify it in the codebase first or leave it out.
 | Fact | Detail |
 |---|---|
 | Commission — manual rails | **None.** Bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email and phone: Sailo never touches the money and takes nothing |
-| Commission — card | **1% of the goods**, on every plan including free. A Stripe application fee, charged on goods after discount, excluding delivery and tax. Read it from `PLATFORM_FEE_LABEL` (`platformFeeBp` in `plans.ts`) — this row said 0.5% for months while the code charged double, which is exactly the drift §2 warns about |
+| Commission — card | **Falls as the plan rises: 3% free, 2% Pro, 1% Business.** A Stripe application fee, charged on goods after discount, excluding delivery and tax. Never write a single number here — one rate has not been true since the fee ladder shipped. Read the range from `PLATFORM_FEE_RANGE_LABEL` and a given shop's rate from `platformFeeLabel(shop)` (`plans.ts`). This row said 0.5% for months while the code charged double, which is exactly the drift §2 warns about |
 | Who holds the money | Never Sailo. Card charges land in the seller's own Stripe account |
-| Free plan | $0 — 20 products, 30 days of analytics, chat and manual payment rails. **No card payments** |
-| Pro | $9.99/month or $95.90/year — 250 products, 1 year analytics, no Sailo badge, CSV export. **No card payments** |
-| Business | $19.99/month or $191.90/year — unlimited products, 3 years analytics, card payments, coupons, affiliates |
+| Free plan | $0 — 10 products, 7 days of analytics, chat and manual rails, **and card at 3%**. No subscription, ever |
+| Pro | $19/month or $180/year — 100 products, 1 year analytics, no Sailo badge, CSV export, discount codes, calendar sync, **card at 2%** |
+| Business | $49/month or $468/year — unlimited products, 3 years analytics, **card at 1%**, affiliates, broadcasts, memberships, REST API and webhooks |
 | The link | `sailo.store/yourname`, live the moment you sign up. No custom domains |
-| Card payments | Through the seller's **own Stripe** account, on Business only, and only once Stripe has cleared them for charges |
+| Card payments | Through the seller's **own Stripe** account, on **every plan** including free, and only once Stripe has cleared them for charges |
 | The complete rail list | `card`, `whatsapp`, `telegram`, `instagram`, `email`, `phone`, `bank_transfer`, `cod`. `rails.ts:11` |
 | Other payment | Bank transfer and cash on delivery, with instructions the seller writes |
 | WhatsApp orders | The order arrives pre-written: item, options, address, total |

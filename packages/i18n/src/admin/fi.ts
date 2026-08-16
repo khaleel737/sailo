@@ -43,7 +43,7 @@ export const adminFi: PartialAdminDictionary = {
     productSlots: "Käytetyt tuotepaikat",
     active: "Aktiivinen",
     slotsUsed: "{used}/{limit} tuotepaikkaa käytössä",
-    zeroFee: "0 %:n palkkio korttimaksuista",
+    cardFee: "{fee}:n palkkio korttimaksuista",
     accessEnds: "Käyttöoikeus päättyy",
     renews: "Uusiutuu",
     atLimit: "Olet käyttänyt kaikki paketin {plan} tuotepaikat. Nykyiset tuotteet toimivat edelleen — päivitä pakettia lisätäksesi enemmän.",

@@ -121,7 +121,7 @@ export const marketingNl: MarketingDictionary = {
     body: "Elke manier van betaald krijgen behalve kaart is helemaal van jou, op elk pakket. Kaartverkopen dragen {fee} van de goederen — nooit verzending, nooit belasting.",
     freeTagline: "Alles wat je nodig hebt voor je eerste bestellingen.",
     proTagline: "Ruimte om te groeien, en een winkel die op jou lijkt.",
-    bizTagline: "Kaartbetalingen, acties en doorverwijzingen — het gereedschap dat de omzet laat groeien.",
+    bizTagline: "De laagste kaartkosten, acties en doorverwijzingen — het gereedschap dat de omzet laat groeien.",
     start: "Gratis beginnen",
     choose: "Kies {plan}",
     everythingFree: "Alles uit Free, plus",

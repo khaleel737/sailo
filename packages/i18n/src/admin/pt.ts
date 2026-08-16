@@ -43,7 +43,7 @@ export const adminPt: PartialAdminDictionary = {
     productSlots: "Espaços de produto usados",
     active: "Ativo",
     slotsUsed: "{used} de {limit} produtos usados",
-    zeroFee: "0 % de comissão nos pagamentos com cartão",
+    cardFee: "{fee} de comissão nos pagamentos com cartão",
     accessEnds: "O acesso termina",
     renews: "Renova",
     atLimit: "Usaste todos os espaços de produto do {plan}. Os produtos existentes continuam a funcionar — muda de plano para acrescentar mais.",

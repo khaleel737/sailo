@@ -121,7 +121,7 @@ export const marketingPl: MarketingDictionary = {
     body: "Każdy sposób przyjmowania płatności poza kartą jest w całości twój, w każdym planie. Sprzedaż kartą niesie {fee} od towaru — nigdy od dostawy ani podatku.",
     freeTagline: "Wszystko, czego trzeba, by przyjąć pierwsze zamówienia.",
     proTagline: "Miejsce na rozwój i sklep, który wygląda jak twój.",
-    bizTagline: "Płatności kartą, promocje i polecenia — narzędzia, które podnoszą przychód.",
+    bizTagline: "Najniższa prowizja od karty, promocje i polecenia — narzędzia, które podnoszą przychód.",
     start: "Zacznij za darmo",
     choose: "Wybierz {plan}",
     everythingFree: "Wszystko z Free, a do tego",

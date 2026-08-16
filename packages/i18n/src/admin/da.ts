@@ -43,7 +43,7 @@ export const adminDa: PartialAdminDictionary = {
     productSlots: "Brugte produktpladser",
     active: "Aktiv",
     slotsUsed: "{used} af {limit} produkter brugt",
-    zeroFee: "0 % gebyr på kortbetalinger",
+    cardFee: "{fee} gebyr på kortbetalinger",
     accessEnds: "Adgang slutter",
     renews: "Fornyes",
     atLimit: "Du har brugt alle produktpladser på {plan}. Eksisterende produkter virker fortsat — opgrader for at tilføje flere.",

@@ -121,7 +121,7 @@ export const marketingSq: MarketingDictionary = {
     body: "Çdo mënyrë pagese përveç kartës është plotësisht e jotja, në çdo plan. Shitjet me kartë mbajnë {fee} të mallit — kurrë të dërgesës, kurrë të taksës.",
     freeTagline: "Gjithçka që ju duhet për porositë e para.",
     proTagline: "Hapësirë për t'u rritur dhe një dyqan që duket i juaji.",
-    bizTagline: "Pagesa me kartë, promocione dhe rekomandime — mjetet që rrisin të ardhurat.",
+    bizTagline: "Komisioni më i ulët me kartë, promocione dhe rekomandime — mjetet që rrisin të ardhurat.",
     start: "Filloni falas",
     choose: "Zgjidhni {plan}",
     everythingFree: "Gjithçka nga Falas, plus",

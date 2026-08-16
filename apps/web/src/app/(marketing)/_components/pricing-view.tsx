@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getDictionary, interpolate } from "@sailo/i18n";
 import { LOCALES, type Locale } from "@sailo/i18n/config";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
-import { PLATFORM_FEE_LABEL } from "@/lib/plans";
+import { PLATFORM_FEE_RANGE_LABEL } from "@/lib/plans";
 import { Container, Display, Lede, Section } from "@/components/marketing/kit";
 import { faqJsonLd } from "@/lib/seo";
 import { marketingUrl, pricingLanguages, pricingPath } from "@/lib/marketing-urls";
@@ -25,7 +25,7 @@ import { PricingSection } from "./pricing-section";
  */
 function moneyFaqs(m: ReturnType<typeof getMarketingDictionary>) {
   return [
-    { q: m.faq.q3, a: interpolate(m.faq.a3, { fee: PLATFORM_FEE_LABEL }) },
+    { q: m.faq.q3, a: interpolate(m.faq.a3, { fee: PLATFORM_FEE_RANGE_LABEL }) },
     { q: m.faq.q2, a: m.faq.a2 },
     { q: m.faq.q1, a: m.faq.a1 },
   ];
@@ -40,7 +40,7 @@ function moneyFaqs(m: ReturnType<typeof getMarketingDictionary>) {
 export function pricingMetadata(locale: Locale): Metadata {
   const m = getMarketingDictionary(locale);
   const title = m.pricing.eyebrow;
-  const description = interpolate(m.pricing.body, { fee: PLATFORM_FEE_LABEL });
+  const description = interpolate(m.pricing.body, { fee: PLATFORM_FEE_RANGE_LABEL });
   const path = pricingPath(locale);
 
   return {
@@ -75,7 +75,7 @@ export function PricingView({ locale }: { locale: Locale }) {
       <Section>
         <Container>
           <Display>{m.pricing.title}</Display>
-          <Lede>{interpolate(m.pricing.body, { fee: PLATFORM_FEE_LABEL })}</Lede>
+          <Lede>{interpolate(m.pricing.body, { fee: PLATFORM_FEE_RANGE_LABEL })}</Lede>
         </Container>
       </Section>
 

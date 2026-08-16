@@ -121,7 +121,7 @@ export const marketingId: MarketingDictionary = {
     body: "Semua cara menerima pembayaran selain kartu sepenuhnya milik Anda, di semua paket. Penjualan kartu dikenakan {fee} dari nilai barang — tidak pernah dari ongkir atau pajak.",
     freeTagline: "Semua yang Anda butuhkan untuk pesanan pertama.",
     proTagline: "Ruang untuk tumbuh, dan toko yang terlihat seperti milik Anda sendiri.",
-    bizTagline: "Pembayaran kartu, promosi, dan rujukan — alat yang menumbuhkan pendapatan.",
+    bizTagline: "Biaya kartu terendah, promosi, dan rujukan — alat yang menumbuhkan pendapatan.",
     start: "Mulai gratis",
     choose: "Pilih {plan}",
     everythingFree: "Semua di paket Gratis, plus",

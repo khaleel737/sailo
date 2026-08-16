@@ -43,7 +43,7 @@ export const adminSv: PartialAdminDictionary = {
     productSlots: "Använda produktplatser",
     active: "Aktiv",
     slotsUsed: "{used} av {limit} produkter använda",
-    zeroFee: "0 % avgift på kortbetalningar",
+    cardFee: "{fee} avgift på kortbetalningar",
     accessEnds: "Åtkomsten slutar",
     renews: "Förnyas",
     atLimit: "Du har använt alla produktplatser i {plan}. Befintliga produkter fungerar vidare — uppgradera för att lägga till fler.",

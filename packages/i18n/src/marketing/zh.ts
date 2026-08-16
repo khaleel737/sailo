@@ -121,7 +121,7 @@ export const marketingZh: MarketingDictionary = {
     body: "除刷卡外，所有收款方式的钱都全额归你，所有套餐皆如此。刷卡销售收取货品金额的 {fee}——从不计入运费或税费。",
     freeTagline: "接下第一批订单所需的一切。",
     proTagline: "更多空间，以及一间看起来像你自己的店。",
-    bizTagline: "刷卡收款、促销和推广分成——真正推高营收的工具。",
+    bizTagline: "最低刷卡费率、促销和推广分成——真正推高营收的工具。",
     start: "免费开始",
     choose: "选择 {plan}",
     everythingFree: "包含 Free 的全部，另加",

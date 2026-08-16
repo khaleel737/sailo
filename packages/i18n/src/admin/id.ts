@@ -177,7 +177,7 @@ export const adminId: PartialAdminDictionary = {
     productSlots: "Slot produk terpakai",
     active: "Aktif",
     slotsUsed: "{used} dari {limit} produk terpakai",
-    zeroFee: "Biaya 0 % untuk pembayaran kartu",
+    cardFee: "Biaya {fee} untuk pembayaran kartu",
     accessEnds: "Akses berakhir",
     renews: "Diperpanjang",
     atLimit: "Kamu sudah memakai semua slot produk di paket {plan}. Produk yang ada tetap berjalan — naikkan paket untuk menambah lagi.",

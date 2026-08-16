@@ -121,7 +121,7 @@ export const marketingFil: MarketingDictionary = {
     body: "Lahat ng paraan ng pagbayad maliban sa card ay buo mong sa iyo, sa lahat ng plano. May {fee} ng halaga ng paninda ang benta sa card — hindi kailanman sa delivery o buwis.",
     freeTagline: "Lahat ng kailangan mo para sa unang mga order mo.",
     proTagline: "Puwang para lumago, at tindahang mukhang sa iyo talaga.",
-    bizTagline: "Bayad sa card, promo at referral — ang mga tool na nagpapalago ng kita.",
+    bizTagline: "Ang pinakamababang bayad sa card, promo at referral — ang mga tool na nagpapalago ng kita.",
     start: "Magsimula nang libre",
     choose: "Piliin ang {plan}",
     everythingFree: "Lahat sa Libre, plus",

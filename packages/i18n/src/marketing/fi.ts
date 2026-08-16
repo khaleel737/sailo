@@ -121,7 +121,7 @@ export const marketingFi: MarketingDictionary = {
     body: "Jokainen maksutapa korttia lukuun ottamatta on kokonaan sinun, kaikissa paketeissa. Korttimyynnistä menee {fee} tavarasta — ei koskaan toimituksesta tai verosta.",
     freeTagline: "Kaikki mitä ensimmäisiin tilauksiin tarvitaan.",
     proTagline: "Tilaa kasvaa, ja kauppa joka näyttää omaltasi.",
-    bizTagline: "Korttimaksut, kampanjat ja suositukset — työkalut jotka kasvattavat liikevaihtoa.",
+    bizTagline: "Pienin korttipalkkio, kampanjat ja suositukset — työkalut jotka kasvattavat liikevaihtoa.",
     start: "Aloita ilmaiseksi",
     choose: "Valitse {plan}",
     everythingFree: "Kaikki Freestä, ja lisäksi",

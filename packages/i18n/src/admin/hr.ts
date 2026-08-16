@@ -177,7 +177,7 @@ export const adminHr: PartialAdminDictionary = {
     productSlots: "Iskorištena mjesta za proizvode",
     active: "Aktivno",
     slotsUsed: "Iskorišteno {used} od {limit} proizvoda",
-    zeroFee: "0 % naknade na plaćanja karticom",
+    cardFee: "{fee} naknade na plaćanja karticom",
     accessEnds: "Pristup istječe",
     renews: "Obnavlja se",
     atLimit: "Iskoristili ste sva mjesta za proizvode na paketu {plan}. Postojeći proizvodi i dalje rade — nadogradite paket da dodate još.",

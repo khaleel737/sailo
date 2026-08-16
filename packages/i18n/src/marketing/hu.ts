@@ -121,7 +121,7 @@ export const marketingHu: MarketingDictionary = {
     body: "A kártyán kívül minden fizetési mód teljes egészében az Öné, minden csomagban. A kártyás eladás {fee} díjat visel az áruból — soha nem a szállításból vagy az adóból.",
     freeTagline: "Minden, ami az első rendelésekhez kell.",
     proTagline: "Hely a növekedéshez, és bolt, ami rád hasonlít.",
-    bizTagline: "Kártyás fizetés, akciók és ajánlások — az eszközök, amik emelik a bevételt.",
+    bizTagline: "A legalacsonyabb kártyadíj, akciók és ajánlások — az eszközök, amik emelik a bevételt.",
     start: "Kezdés ingyen",
     choose: "{plan} választása",
     everythingFree: "Minden a Free-ből, plusz",

@@ -121,7 +121,7 @@ export const marketingEs: MarketingDictionary = {
     body: "Todas las formas de cobro menos la tarjeta son tuyas por completo, en todos los planes. Las ventas con tarjeta llevan {fee} de la mercancía — nunca del envío ni de impuestos.",
     freeTagline: "Todo lo necesario para recibir tus primeros pedidos.",
     proTagline: "Más espacio, y una tienda con tu propia cara.",
-    bizTagline: "Pagos con tarjeta, promociones y referidos: las herramientas que hacen crecer los ingresos.",
+    bizTagline: "La comisión más baja en tarjeta, promociones y referidos: las herramientas que hacen crecer los ingresos.",
     start: "Empezar gratis",
     choose: "Elegir {plan}",
     everythingFree: "Todo lo de Free, más",

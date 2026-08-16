@@ -40,10 +40,12 @@ export type Features = {
   /**
    * Products the buyer keeps paying for — a gym month, a club, a course.
    *
-   * Gated with `cardRails` rather than beside it by accident: a recurring
-   * charge needs a card on file, and every other rail here settles out of
-   * band with a human confirming each payment. A membership on a bank
-   * transfer would be a monthly reminder to pay, not a subscription.
+   * A card on file is *necessary* for this and no longer *sufficient*: card
+   * settles on every tier now, so the old reasoning — that this tracked
+   * `cardRails` because a recurring charge needs a card — would drop
+   * memberships onto Free the day the fee ladder shipped. It stays on
+   * Business as a deliberate entitlement, and the two flags are independent.
+   * Anything that reads one to infer the other is a bug.
    */
   memberships: boolean;
   /**
@@ -71,6 +73,15 @@ export type Plan = {
   tagline: string;
   monthlyCents: number;
   yearlyCents: number;
+  /**
+   * What Sailo keeps from a card sale on this plan, in basis points.
+   *
+   * On the plan rather than in a `switch` inside `platformFeeBp` so that the
+   * price, the entitlements and the fee for a tier are one object a reader can
+   * take in at once — the three numbers that decide whether a seller should be
+   * on this tier should not live in three places.
+   */
+  feeBp: number;
   limits: Limits;
   features: Features;
   /** Dictionary keys under `highlights`, resolved at render time. */
@@ -84,11 +95,21 @@ export const PLANS: Record<PlanId, Plan> = {
     tagline: "Everything you need to take your first orders.",
     monthlyCents: 0,
     yearlyCents: 0,
-    limits: { products: 20, analyticsDays: 30 },
+    feeBp: 300,
+    limits: { products: 10, analyticsDays: 7 },
     features: {
       chatRails: true,
       manualRails: true,
-      cardRails: false,
+      /*
+       * Card settles on every tier, including this one.
+       *
+       * It was Business-only, which put the most-wanted feature in the product
+       * behind the highest price and left the other 95% of shops worth nothing
+       * at all — Sailo carried their Stripe webhooks, storage and support and
+       * billed for none of it. The fee ladder replaces that wall: everyone can
+       * take a card, and what a plan buys is a smaller cut of it.
+       */
+      cardRails: true,
       coupons: false,
       affiliates: false,
       removeBadge: false,
@@ -100,21 +121,27 @@ export const PLANS: Record<PlanId, Plan> = {
     },
     highlights: [
       "free1", "free2", "free3", "free4", "free5",
-      "free6", "free7", "free8", "free9",
+      "free6", "free7", "free8", "free9", "biz2",
     ],
   },
   pro: {
     id: "pro",
     name: "Pro",
     tagline: "Room to grow, and your shop looks like your own.",
-    monthlyCents: 999,
-    yearlyCents: 9590, // ~20% off
-    limits: { products: 250, analyticsDays: 365 },
+    monthlyCents: 1900,
+    yearlyCents: 18000, // ~21% off
+    feeBp: 200,
+    limits: { products: 100, analyticsDays: 365 },
     features: {
       chatRails: true,
       manualRails: true,
-      cardRails: false,
-      coupons: false,
+      cardRails: true,
+      /*
+       * Discount codes came down from Business. A code is a basic selling
+       * tool, not a growth-team feature, and Pro needed a reason to exist
+       * beyond removing a badge now that card no longer marks the boundary.
+       */
+      coupons: true,
       affiliates: false,
       removeBadge: true,
       csvExport: true,
@@ -123,14 +150,15 @@ export const PLANS: Record<PlanId, Plan> = {
       memberships: false,
       integrations: false,
     },
-    highlights: ["pro1", "pro2", "pro3", "pro4", "pro5"],
+    highlights: ["pro1", "pro2", "biz3", "pro3", "pro4", "pro5"],
   },
   business: {
     id: "business",
     name: "Business",
-    tagline: "Card payments, promotions and referrals — the tools that grow revenue.",
-    monthlyCents: 1999,
-    yearlyCents: 19190,
+    tagline: "The lowest fee on card, plus the tools that grow revenue.",
+    monthlyCents: 4900,
+    yearlyCents: 46800, // ~20% off
+    feeBp: 100,
     limits: { products: null, analyticsDays: 365 * 3 },
     features: {
       chatRails: true,
@@ -145,7 +173,18 @@ export const PLANS: Record<PlanId, Plan> = {
       memberships: true,
       integrations: true,
     },
-    highlights: ["biz1", "biz2", "biz3", "biz4", "biz5", "biz6"],
+    /*
+     * `biz2` (card through your own Stripe) moved to Free and `biz3` (discount
+     * codes) to Pro, because both are true of those tiers now. The keys keep
+     * their names rather than being renamed across 35 dictionaries — a rename
+     * touches every translation and risks the drift `PLATFORM_FEE_RANGE_LABEL`
+     * exists to prevent, while reusing them costs nothing but an odd prefix.
+     *
+     * This list is short for what Business actually carries — memberships,
+     * broadcasts and the API have never had highlight strings. New copy for
+     * them is the one piece of this change that needs a translator.
+     */
+    highlights: ["biz1", "biz4", "biz5", "biz6"],
   },
 };
 
@@ -238,31 +277,50 @@ export function cheapestPlanWith(feature: keyof Features): Plan | null {
 /**
  * The platform fee, in basis points — 100 = 1%.
  *
- * Taken as a function of the plan rather than a constant because that is where
- * this ends up: Shopify's equivalent surcharge runs 2% on Basic down to 0.2%
- * on Plus, so the bigger the subscription the smaller the cut. Cards are a
- * single tier here today, so there is one number — but the shape is ready for
- * the day there are several, and every caller already passes the shop.
+ * Falls as the plan rises: 3% on Free, 2% on Pro, 1% on Business. That is the
+ * shape every comparable platform converged on — Linktree runs 12/9/0, Podia
+ * 5/0, Shopify 2/1/0.6 — and Sailo had it inverted, charging its largest
+ * sellers a percentage while the smallest paid nothing on any rail.
+ *
+ * Read off the plan rather than branched on here, so the fee cannot disagree
+ * with the table a reader just looked at.
  */
-export function platformFeeBp(_shop: BillingShape): number {
-  return 100;
+export function platformFeeBp(shop: BillingShape): number {
+  return planFor(shop).feeBp;
 }
 
 /**
- * The fee as a percentage, for copy that has no shop to hand — the pricing
- * page, the marketing site, the legal documents.
+ * The fee ladder as one phrase — "1–3%".
  *
- * Exported so that no sentence anywhere writes the number itself. Every
- * translated string that mentions the fee interpolates this, because the
- * alternative was measured and it failed: the English copy was updated when
- * the fee was introduced and thirty-four translations were not, so every
- * non-English seller was told on the pricing page that Sailo took no
- * commission while Stripe collected one on every card sale.
+ * For the sentences that have no shop to hand: the marketing pages, the FAQ
+ * and the legal documents, all of which describe the fee to somebody who has
+ * not chosen a plan yet. A single number cannot be right for them any more,
+ * and picking one plan's rate to stand for all three would understate or
+ * overstate it depending on which was picked.
+ *
+ * Written as a range, low first, because it drops into the `{fee}` slot the
+ * copy already has — "card sales carry a {fee} fee" — and stays grammatical
+ * in all thirty-five languages without a translator touching one of them. A
+ * list ("3%, 2% or 1%") does not: it collides with the article in front of it
+ * in English and with case endings in the Slavic dictionaries.
+ *
+ * Derived from `PLANS` rather than typed out, for the reason the old
+ * single-fee constant existed: the English copy was updated when the fee was
+ * introduced and thirty-four translations were not, so every non-English
+ * seller was told Sailo took no commission while Stripe collected one on
+ * every card sale. Renamed from `PLATFORM_FEE_RANGE_LABEL` on purpose — the old
+ * name promised one number, and every call site had to be re-read rather than
+ * silently inheriting a new meaning.
  */
-export const PLATFORM_FEE_LABEL = formatFeeBp(platformFeeBp({
-  plan: "free",
-  subscriptionStatus: null,
-}));
+export const PLATFORM_FEE_RANGE_LABEL = (() => {
+  const bps = PLAN_IDS.map((id) => PLANS[id].feeBp);
+  const low = Math.min(...bps);
+  const high = Math.max(...bps);
+  return low === high
+    ? formatFeeBp(low)
+    // En dash, not a hyphen: this is a range, and it is set in running prose.
+    : `${Number((low / 100).toFixed(2))}–${formatFeeBp(high)}`;
+})();
 
 /**
  * Basis points as a percentage, with no trailing zero to explain away: 50 is
@@ -296,8 +354,8 @@ export function platformFeePercent(shop: BillingShape): number {
  * Charged on the goods alone. Delivery is usually money the seller hands to a
  * courier, and tax is money they collect for a government and never owned —
  * billing a percentage of either means charging them for holding someone
- * else's money. A discount comes off first, because 1% of a price nobody paid
- * is not 1% of a sale.
+ * else's money. A discount comes off first, because a percentage of a price
+ * nobody paid is not a percentage of a sale.
  */
 export function platformFeeCents(
   shop: BillingShape,
@@ -332,7 +390,7 @@ export function platformFeeCents(
   return Math.round(((net - includedTax) * platformFeeBp(shop)) / 10_000);
 }
 
-/** "1%" — for the places that have to state the fee to a seller. */
+/** "2%" — this shop's own rate, for the places that state it to its seller. */
 export function platformFeeLabel(shop: BillingShape): string {
   return formatFeeBp(platformFeeBp(shop));
 }

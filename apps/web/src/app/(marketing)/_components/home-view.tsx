@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getDictionary, interpolate } from "@sailo/i18n";
-import { PLATFORM_FEE_LABEL } from "@/lib/plans";
+import { PLATFORM_FEE_RANGE_LABEL } from "@/lib/plans";
 import { ArrowRight } from "lucide-react";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
 import { LOCALES, directionOf, type Locale } from "@sailo/i18n/config";
@@ -165,7 +165,7 @@ export function HomeView({ locale }: { locale: Locale }) {
   const faqs = [
     { q: m.faq.q1, a: m.faq.a1 },
     { q: m.faq.q2, a: m.faq.a2 },
-    { q: m.faq.q3, a: interpolate(m.faq.a3, { fee: PLATFORM_FEE_LABEL }) },
+    { q: m.faq.q3, a: interpolate(m.faq.a3, { fee: PLATFORM_FEE_RANGE_LABEL }) },
     { q: m.faq.q4, a: m.faq.a4 },
     { q: m.faq.q5, a: m.faq.a5 },
     { q: m.faq.q6, a: m.faq.a6 },

@@ -60,7 +60,7 @@ describe("priceMismatch", () => {
   it("catches a price that charges more than the table shows", () => {
     const reason = priceMismatch("pro", "month", price({ unit_amount: 2999 }));
     expect(reason).toContain("$29.99");
-    expect(reason).toContain("$9.99");
+    expect(reason).toContain("$19.00");
   });
 
   it("catches an archived price", () => {

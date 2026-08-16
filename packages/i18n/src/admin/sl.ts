@@ -177,7 +177,7 @@ export const adminSl: PartialAdminDictionary = {
     productSlots: "Porabljena mesta za izdelke",
     active: "Aktivno",
     slotsUsed: "Porabljenih {used} od {limit} izdelkov",
-    zeroFee: "0 % provizije pri plačilih s kartico",
+    cardFee: "{fee} provizije pri plačilih s kartico",
     accessEnds: "Dostop se konča",
     renews: "Se obnovi",
     atLimit: "Porabili ste vsa mesta za izdelke v paketu {plan}. Obstoječi izdelki delujejo naprej — za več nadgradite paket.",

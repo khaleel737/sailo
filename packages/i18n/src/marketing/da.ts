@@ -121,7 +121,7 @@ export const marketingDa: MarketingDictionary = {
     body: "Alle måder at få betaling på undtagen kort er helt dine, på alle planer. Kortsalg bærer {fee} af varerne — aldrig af fragt eller moms.",
     freeTagline: "Alt hvad du skal bruge til dine første bestillinger.",
     proTagline: "Plads til at vokse, og en butik der ligner din egen.",
-    bizTagline: "Kortbetaling, kampagner og henvisninger — værktøjerne der løfter omsætningen.",
+    bizTagline: "Det laveste kortgebyr, kampagner og henvisninger — værktøjerne der løfter omsætningen.",
     start: "Start gratis",
     choose: "Vælg {plan}",
     everythingFree: "Alt i Free, plus",

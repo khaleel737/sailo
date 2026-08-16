@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 import { interpolate } from "@sailo/i18n";
 import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import type { Dictionary } from "@sailo/i18n";
-import { PLANS, PLATFORM_FEE_LABEL, type Plan } from "@/lib/plans";
+import { PLANS, PLATFORM_FEE_RANGE_LABEL, type Plan } from "@/lib/plans";
 import { formatMoney } from "@/lib/utils";
 import { Cta, Section, SectionHead } from "@/components/marketing/kit";
 
@@ -156,7 +156,7 @@ export function PricingSection({
         /* `pricing.body` names the card fee, so it carries {fee} like every
            other sentence that does. Passing it straight through printed the
            placeholder itself on the live page. */
-        body={interpolate(m.pricing.body, { fee: PLATFORM_FEE_LABEL })}
+        body={interpolate(m.pricing.body, { fee: PLATFORM_FEE_RANGE_LABEL })}
       />
 
       {/* A 1px gap filled by the surface behind draws the dividers, so the
@@ -168,7 +168,7 @@ export function PricingSection({
       </div>
 
       <p className="mt-10 text-center text-[0.8125rem] text-[var(--mute-400)]">
-        {interpolate(t.billing.cancelAnyTime, { fee: PLATFORM_FEE_LABEL })}
+        {interpolate(t.billing.cancelAnyTime, { fee: PLATFORM_FEE_RANGE_LABEL })}
       </p>
     </Section>
   );

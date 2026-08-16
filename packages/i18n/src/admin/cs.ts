@@ -43,7 +43,7 @@ export const adminCs: PartialAdminDictionary = {
     productSlots: "Využitá místa na produkty",
     active: "Aktivní",
     slotsUsed: "Využito {used} z {limit} produktů",
-    zeroFee: "0 % poplatek z plateb kartou",
+    cardFee: "{fee} poplatek z plateb kartou",
     accessEnds: "Přístup končí",
     renews: "Obnovuje se",
     atLimit: "Vyčerpali jste všechna místa na produkty v tarifu {plan}. Stávající produkty fungují dál — pro další si tarif navyšte.",

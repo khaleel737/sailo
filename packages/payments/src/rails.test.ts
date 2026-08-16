@@ -181,12 +181,12 @@ describe("the card rail's description", () => {
    * This string is shown to sellers on the payments screen, and it once said
    * "1%" while `platformFeeCents` charged half that — so every seller reading
    * it was quoted double what they were billed. It now interpolates
-   * `PLATFORM_FEE_LABEL` rather than writing the number out, and these two
+   * `PLATFORM_FEE_RANGE_LABEL` rather than writing the number out, and these two
    * assertions are what stop it drifting apart again.
    */
   it("quotes the fee the code actually charges", async () => {
-    const { PLATFORM_FEE_LABEL } = await import("@sailo/core/plans");
-    expect(PAYMENT_METHOD_DEFS.card.description).toContain(PLATFORM_FEE_LABEL);
+    const { PLATFORM_FEE_RANGE_LABEL } = await import("@sailo/core/plans");
+    expect(PAYMENT_METHOD_DEFS.card.description).toContain(PLATFORM_FEE_RANGE_LABEL);
   });
 
   it("does not write the fee out by hand", async () => {
@@ -197,9 +197,9 @@ describe("the card rail's description", () => {
      * eventually edits without reading, which is the failure it exists to
      * prevent.
      */
-    const { PLATFORM_FEE_LABEL } = await import("@sailo/core/plans");
+    const { PLATFORM_FEE_RANGE_LABEL } = await import("@sailo/core/plans");
     const withoutLabel = PAYMENT_METHOD_DEFS.card.description.replace(
-      PLATFORM_FEE_LABEL,
+      PLATFORM_FEE_RANGE_LABEL,
       "",
     );
     expect(withoutLabel).not.toMatch(/\d+(\.\d+)?\s?%/);

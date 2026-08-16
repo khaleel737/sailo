@@ -121,7 +121,7 @@ export const marketingSl: MarketingDictionary = {
     body: "Vsak način prejemanja plačila razen kartice je v celoti vaš, na vseh paketih. Prodaja s kartico nosi {fee} od blaga — nikoli od dostave ali davka.",
     freeTagline: "Vse, kar potrebujete za prva naročila.",
     proTagline: "Prostor za rast in trgovina, ki izgleda kot vaša.",
-    bizTagline: "Plačila s kartico, promocije in priporočila — orodja, ki povečujejo prihodek.",
+    bizTagline: "Najnižja provizija za kartice, promocije in priporočila — orodja, ki povečujejo prihodek.",
     start: "Začnite brezplačno",
     choose: "Izberite {plan}",
     everythingFree: "Vse iz Brezplačnega, plus",

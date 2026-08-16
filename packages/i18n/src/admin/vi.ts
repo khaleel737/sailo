@@ -177,7 +177,7 @@ export const adminVi: PartialAdminDictionary = {
     productSlots: "Số chỗ sản phẩm đã dùng",
     active: "Đang hoạt động",
     slotsUsed: "Đã dùng {used}/{limit} sản phẩm",
-    zeroFee: "0 % phí cho thanh toán thẻ",
+    cardFee: "{fee} phí cho thanh toán thẻ",
     accessEnds: "Quyền truy cập kết thúc",
     renews: "Gia hạn",
     atLimit: "Bạn đã dùng hết số chỗ sản phẩm của gói {plan}. Sản phẩm hiện có vẫn hoạt động — nâng gói để thêm nữa.",

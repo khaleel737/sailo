@@ -121,7 +121,7 @@ export const marketingIt: MarketingDictionary = {
     body: "Ogni modo di incassare tranne la carta è interamente tuo, su tutti i piani. Le vendite con carta portano {fee} della merce — mai la spedizione, mai le tasse.",
     freeTagline: "Tutto il necessario per i primi ordini.",
     proTagline: "Spazio per crescere, e un negozio che sembra tuo.",
-    bizTagline: "Pagamenti con carta, promozioni e segnalazioni: gli strumenti che fanno crescere il fatturato.",
+    bizTagline: "La commissione più bassa su carta, promozioni e segnalazioni: gli strumenti che fanno crescere il fatturato.",
     start: "Inizia gratis",
     choose: "Scegli {plan}",
     everythingFree: "Tutto di Free, più",

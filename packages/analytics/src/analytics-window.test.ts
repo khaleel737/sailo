@@ -6,7 +6,7 @@ import { resolveAnalyticsWindow } from "./analytics-window";
  * hand-typed URL asks for, what comes out must fit the plan's allowance.
  */
 
-/** A shop on the free plan — 30 days of analytics. */
+/** A shop on the free plan — 7 days of analytics. */
 const freeShop = { plan: "free", subscriptionStatus: null } as const;
 /** Business — three years. */
 const bizShop = { plan: "business", subscriptionStatus: "active" } as const;
@@ -33,7 +33,7 @@ describe("resolveAnalyticsWindow", () => {
     expect(window.days).toBe(31);
   });
 
-  it("clamps a free shop reaching past its 30 days, and says so", () => {
+  it("clamps a free shop reaching past its 7 days, and says so", () => {
     const window = resolveAnalyticsWindow(
       freeShop,
       { from: "2025-08-10", to: "2026-08-10" },
@@ -41,8 +41,8 @@ describe("resolveAnalyticsWindow", () => {
     );
     expect(window.custom).toBe(true);
     expect(window.clamped).toBe(true);
-    // 30 days of allowance = 29 back plus today.
-    expect(window.since.toISOString()).toBe("2026-07-12T00:00:00.000Z");
+    // 7 days of allowance = 6 back plus today.
+    expect(window.since.toISOString()).toBe("2026-08-04T00:00:00.000Z");
   });
 
   it("does not let a range run into the future", () => {
@@ -67,12 +67,12 @@ describe("resolveAnalyticsWindow", () => {
     ]) {
       const window = resolveAnalyticsWindow(freeShop, params, now);
       expect(window.custom, JSON.stringify(params)).toBe(false);
-      expect(window.query).toBe(30);
+      expect(window.query).toBe(7);
     }
   });
 
   it("still clamps the preset path, as before", () => {
     const window = resolveAnalyticsWindow(freeShop, { range: "365" }, now);
-    expect(window.query).toBe(30);
+    expect(window.query).toBe(7);
   });
 });

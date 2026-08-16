@@ -11,7 +11,7 @@ import {
   Ref,
 } from "@/components/legal/legal-kit";
 import { LEGAL } from "@/lib/legal";
-import { PLATFORM_FEE_LABEL } from "@/lib/plans";
+import { PLATFORM_FEE_RANGE_LABEL } from "@/lib/plans";
 import {
   ACCEPTED_BUSINESSES,
   CONDITIONAL_BUSINESSES,
@@ -62,7 +62,7 @@ export default function TermsPage() {
                 cash orders never touch a payment system of ours at all.
               </>,
               <>
-                <strong>Our fee is {PLATFORM_FEE_LABEL} of the goods on card
+                <strong>Our fee is {PLATFORM_FEE_RANGE_LABEL} of the goods on card
                 sales.</strong> Nothing on chat, bank-transfer or cash orders,
                 and never on delivery or tax.
               </>,
@@ -240,7 +240,7 @@ export default function TermsPage() {
             items={[
               <>
                 <strong>Our fee.</strong> {LEGAL.product} takes{" "}
-                {PLATFORM_FEE_LABEL} of the goods on each card sale, collected as
+                {PLATFORM_FEE_RANGE_LABEL} of the goods on each card sale, collected as
                 a Stripe application fee at the moment of the charge. It is
                 calculated on the price of the goods after any discount, and
                 never on delivery or tax: money you hand to a courier, or collect
