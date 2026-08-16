@@ -1,0 +1,25 @@
+apps/web/src/lib/partners/program.ts
+  s_bf0a07651522e4::t_282bceab492b92 29-33
+README.md
+  s_bf0a07651522e4::t_a4c43c29fe124b 407,409-410,412,417-425
+apps/web/src/lib/billing-checkout.ts
+  s_bf0a07651522e4::t_14230e0023dc51 115,117,162-163
+docs/mobile/A12-release.md
+  s_bf0a07651522e4::t_ea2be35b322053 98
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "11b2028da9aecdef1ffb2ddbe83de99d7cc8d176",
+  "prompts": {},
+  "sessions": {
+    "s_bf0a07651522e4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95e13e06-d59c-4d66-8ed4-cb6169c22cc6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
