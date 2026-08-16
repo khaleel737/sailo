@@ -5,8 +5,8 @@ import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { getShopReviews } from "@/lib/queries";
 import { approveReview, deleteReview } from "@/lib/actions/reviews";
-import { PageHeader } from "@/components/shared/page-header";
-import { Badge, Button, Card, EmptyState } from "@/components/ui";
+import { PageHeader } from "@sailo/design-system/web";
+import { Badge, Button, Card, EmptyState } from "@sailo/design-system/web";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Reviews" };

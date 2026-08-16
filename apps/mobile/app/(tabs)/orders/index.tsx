@@ -28,7 +28,7 @@ import {
   Skeleton,
   StatusPill,
   type StatusTone,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import type { Order } from "../../../lib/models";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";
@@ -604,7 +604,7 @@ function OrderRow({
 /*
  * Layout only — flex and spacing, nothing with a colour, a radius or a font
  * size in it. Every visual decision on this screen belongs to
- * `@sailo/design-native`; what is left is where the boxes sit relative to each
+ * `@sailo/design-system`; what is left is where the boxes sit relative to each
  * other, which is the one thing no component can decide on a screen's behalf.
  */
 /**

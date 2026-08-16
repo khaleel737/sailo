@@ -3,7 +3,7 @@
 import { useCallback, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, X } from "lucide-react";
-import { Card, Progress } from "@/components/ui";
+import { Card, Progress } from "@sailo/design-system/web";
 import { interpolate } from "@sailo/i18n";
 import { setupProgress, type SetupStep, type SetupStepId } from "@sailo/core/onboarding";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";

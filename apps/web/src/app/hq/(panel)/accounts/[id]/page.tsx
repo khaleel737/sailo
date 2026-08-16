@@ -11,8 +11,8 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { Chart } from "@/components/shared/chart";
-import { PageHeader } from "@/components/shared/page-header";
+import { Chart } from "@sailo/design-system/web/chart";
+import { PageHeader } from "@sailo/design-system/web";
 import { AccountActions } from "./_components/account-actions";
 import { AccountSecurityActions } from "./_components/account-security-actions";
 import { SecurityPanel } from "./_components/security-panel";
@@ -27,7 +27,7 @@ import {
   StripeLink,
   When,
 } from "@/app/hq/_components/hq-ui";
-import { Badge, Card } from "@/components/ui";
+import { Badge, Card } from "@sailo/design-system/web";
 import { getAccountDetail } from "@/lib/hq";
 import { billingState } from "@/lib/hq-metrics";
 import { isPaymentMethodType, PAYMENT_METHOD_DEFS } from "@/lib/payments";

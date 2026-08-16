@@ -19,11 +19,11 @@ import {
   isPaymentMethodType,
   isPaymentStatus,
 } from "@/lib/payments";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { ExportButton } from "@/app/admin/_components/export-button";
 import { OrderRow } from "@/app/admin/_components/order-row";
 import { OrderFilters } from "./_components/order-filters";
-import { Card, EmptyState } from "@/components/ui";
+import { Card, EmptyState } from "@sailo/design-system/web";
 
 export const metadata: Metadata = { title: "Orders" };
 

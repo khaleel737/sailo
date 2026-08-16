@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/shared/skeleton";
+import { Skeleton } from "@sailo/design-system/web";
 
 /* The affiliate sign-up, mid-load. A single centred card, as `page.tsx` is. */
 export default function Loading() {

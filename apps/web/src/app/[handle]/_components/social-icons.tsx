@@ -8,7 +8,7 @@ import {
   XMark,
   YouTube,
   type BrandIconProps,
-} from "@/components/shared/brand-icons";
+} from "@sailo/design-system/web";
 import type { ShopSocial } from "@sailo/db/schema";
 import { OutboundLink } from "./outbound-link";
 

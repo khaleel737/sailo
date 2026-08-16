@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/shared/skeleton";
+import { Skeleton } from "@sailo/design-system/web";
 
 /*
  * The download page, mid-load. It is reached from an email link straight after

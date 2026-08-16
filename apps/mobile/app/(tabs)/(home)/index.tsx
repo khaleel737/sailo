@@ -22,7 +22,7 @@ import {
   StatRow,
   StatusPill,
   Text,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import type { SetupStep, SetupStepId, SetupProgress } from "@sailo/core/onboarding";
 import type { Order } from "../../../lib/models";
 import { useT } from "../../../lib/i18n";
@@ -675,7 +675,7 @@ function SetupChecklist({
 /*
  * Layout only — flex and spacing, nothing with a colour, a radius or a font
  * size in it. Every visual decision on this screen belongs to
- * `@sailo/design-native`; what is left is where the boxes sit relative to each
+ * `@sailo/design-system`; what is left is where the boxes sit relative to each
  * other, which is the one thing no component can decide on a screen's behalf.
  */
 const styles = StyleSheet.create({

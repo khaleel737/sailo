@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { toString as qrSvg } from "qrcode";
 import { Clock, Download, FileDown, Lock, MapPin, Store, Ticket, Video } from "lucide-react";
-import { LocalTime } from "@/components/shared/local-time";
+import { LocalTime } from "@sailo/design-system/web";
 import { getDownloadByToken, downloadState } from "@/lib/downloads";
 import { ticketsForOrder } from "@sailo/commerce/tickets";
 import { eventAccessForOrder } from "@/lib/event-access";

@@ -7,7 +7,7 @@ import { getAdminT } from "@/i18n/server";
 import { can } from "@/lib/plans";
 import { segmentPickers } from "@/lib/broadcasts/pickers";
 import { MAX_PROMO_PRODUCTS } from "@/lib/broadcasts/send";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { Composer } from "../_components/composer";
 
 export const metadata: Metadata = { title: "New broadcast" };

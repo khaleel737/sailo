@@ -20,7 +20,7 @@ import {
   Text,
   TextField,
   haptics,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import { formatMoney } from "../../../../components/money";
 import { orderTone } from "../../orders/index";
 import { useT } from "../../../../lib/i18n";

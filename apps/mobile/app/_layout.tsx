@@ -6,7 +6,7 @@ import * as SystemUI from "expo-system-ui";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { init } from "@sailo/observability";
-import { BrandSplash, useTheme } from "@sailo/design-native";
+import { BrandSplash, useTheme } from "@sailo/design-system/native";
 import { api } from "../lib/api";
 import { authClient, useAuthCopy } from "../lib/auth";
 import { usePushRegistration } from "../lib/push";

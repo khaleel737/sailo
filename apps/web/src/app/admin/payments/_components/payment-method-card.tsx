@@ -14,8 +14,8 @@ import {
   Input,
   Switch,
   Textarea,
-} from "@/components/ui";
-import { Panel } from "@/components/overlays";
+} from "@sailo/design-system/web";
+import { Panel } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
 import type { PaymentConfig, PaymentMethod } from "@sailo/db/schema";

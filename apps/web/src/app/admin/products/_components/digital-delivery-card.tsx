@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Field, Input } from "@/components/ui";
+import { Card, Field, Input } from "@sailo/design-system/web";
 import { Toggle } from "./toggle";
 import { FileUploader } from "./file-uploader";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";

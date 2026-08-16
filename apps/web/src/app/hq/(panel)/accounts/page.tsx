@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { ExportCsv } from "@/app/hq/_components/hq-export";
 import { HqFilters } from "@/app/hq/_components/hq-filters";
 import { Pagination } from "@/app/hq/_components/hq-pagination";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { BillingBadge, When } from "@/app/hq/_components/hq-ui";
-import { Badge } from "@/components/ui";
+import { Badge } from "@sailo/design-system/web";
 import {
   ACCOUNT_SORT_OPTIONS,
   first,

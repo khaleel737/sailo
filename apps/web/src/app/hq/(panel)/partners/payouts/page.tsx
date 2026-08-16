@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AlertTriangle, Wallet } from "lucide-react";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { Metric, MetricRow, Mono, When } from "@/app/hq/_components/hq-ui";
 import { getPayoutPreview, getRecentPayouts } from "@/lib/hq/partners";

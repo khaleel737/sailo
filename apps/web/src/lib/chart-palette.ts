@@ -1,5 +1,5 @@
 /**
- * The chart palette, now in `@sailo/core/chart`.
+ * The chart palette, now in `@sailo/design-system/chart`.
  *
  * Re-exported rather than moved-and-rewritten: it is imported by the visx
  * components, the HQ dashboard and the partner chart. It had to leave because
@@ -9,4 +9,4 @@
  * Pure hex, so both renderers can use the values as well as the type.
  */
 
-export * from "@sailo/core/chart/palette";
+export * from "@sailo/design-system/chart/palette";

@@ -13,7 +13,7 @@ import {
   RevokeApiKey,
   RevokeSession,
 } from "@/app/hq/_components/security-actions";
-import { Badge, Card } from "@/components/ui";
+import { Badge, Card } from "@sailo/design-system/web";
 import { countryFlag, countryName } from "@/lib/countries";
 import type { AccountSecurity } from "@/lib/hq";
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Clock, Gift } from "lucide-react";
-import { Card } from "@/components/ui";
-import { CopyLink } from "@/components/shared/copy-link";
+import { Card } from "@sailo/design-system/web";
+import { CopyLink } from "@sailo/design-system/web";
 import { interpolate } from "@sailo/i18n";
 import type { AdminDictionary } from "@sailo/i18n/admin/en";
 import { formatMoney } from "@/lib/utils";

@@ -19,8 +19,6 @@
     "./memberships": "./src/memberships.ts",
     "./slug": "./src/slug.ts",
     "./handle": "./src/handle.ts",
-    "./chart": "./src/chart/index.ts",
-    "./chart/palette": "./src/chart/palette.ts",
     "./client-tags": "./src/client-tags.ts",
     "./countries": "./src/countries.ts",
     "./legal": "./src/legal.ts",

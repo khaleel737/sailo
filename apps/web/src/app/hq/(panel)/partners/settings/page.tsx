@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { getProgramSettings, getSettingsAudit } from "@/lib/partners/settings";
 import { PLANS } from "@/lib/plans";
 import { SettingsForm } from "../_components/settings-form";

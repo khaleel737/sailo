@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { HqSidebar } from "@/app/hq/_components/hq-sidebar";
 import { PanelFooter } from "@/components/shared/panel-footer";
-import { LiveRefresh } from "@/components/shared/live-refresh";
+import { LiveRefresh } from "@sailo/design-system/web";
 import { requireStaff } from "@/lib/session";
 
 /*

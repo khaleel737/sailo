@@ -12,9 +12,9 @@ import {
 import { tagVocabulary } from "@/lib/client-tags";
 import { TagEditor } from "../_components/tag-editor";
 import { deleteClient, updateClientNotes } from "@/lib/actions/order-admin";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { OrderRow } from "@/app/admin/_components/order-row";
-import { Button, Card, Textarea } from "@/components/ui";
+import { Button, Card, Textarea } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";
 import { formatAddress, formatMoney, isUuid } from "@/lib/utils";
 

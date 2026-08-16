@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { requireShop } from "@/lib/session";
 import { getShopCategories } from "@/lib/queries";
 import { ProductForm } from "@/app/admin/products/_components/product-form";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";
 import { connectState } from "@/lib/connect";
 import { can } from "@/lib/plans";

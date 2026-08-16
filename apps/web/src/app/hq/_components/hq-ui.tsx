@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { Badge, Card } from "@/components/ui";
+import { Badge, Card } from "@sailo/design-system/web";
 import { billingState, type BillingState, type CurrencyTotal } from "@/lib/hq-metrics";
 import { formatCurrencyTotals } from "@/lib/hq-metrics";
 import { cn, formatMoney } from "@/lib/utils";

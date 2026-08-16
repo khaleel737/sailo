@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
-import { Alert, Button, Card, Field, Input, Switch, Textarea } from "@/components/ui";
+import { Alert, Button, Card, Field, Input, Switch, Textarea } from "@sailo/design-system/web";
 import { saveProgramSettings } from "@/lib/actions/partner-program";
 import type { ProgramSettings } from "@/lib/partners/settings";
 import { formatMoney } from "@/lib/utils";

@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/shared/skeleton";
+import { Skeleton } from "@sailo/design-system/web";
 
 /*
  * The storefront, mid-load.

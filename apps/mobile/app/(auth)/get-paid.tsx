@@ -12,7 +12,7 @@ import {
   StepDots,
   Text,
   useTheme,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import {
   JOURNEY_STEPS,
   authClient,

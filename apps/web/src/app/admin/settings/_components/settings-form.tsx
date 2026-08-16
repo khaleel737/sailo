@@ -11,7 +11,7 @@ import {
   Card,
   Field,
   Select,
-} from "@/components/ui";
+} from "@sailo/design-system/web";
 import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";

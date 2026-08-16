@@ -31,8 +31,8 @@ import type { CheckInState } from "@sailo/commerce/tickets";
 import type { DoorFilter, DoorRow, DoorStats } from "@/lib/queries/tickets";
 import { interpolate } from "@sailo/i18n";
 import type { AdminDictionary } from "@sailo/i18n/admin/en";
-import { Badge, Button, Card, Field, Input, Select } from "@/components/ui";
-import { SegmentedControl } from "@/components/ui/segmented-control";
+import { Badge, Button, Card, Field, Input, Select } from "@sailo/design-system/web";
+import { SegmentedControl } from "@sailo/design-system/web";
 import { Scanner } from "./scanner";
 import { signal } from "./feedback";
 

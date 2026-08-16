@@ -4,7 +4,7 @@ import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { Loader2, Plus } from "lucide-react";
 import { createCategory } from "@/lib/actions/products";
-import { Alert, Button, Input } from "@/components/ui";
+import { Alert, Button, Input } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit() {

@@ -8,7 +8,7 @@ import {
   Alert,
   Button,
   Stepper,
-} from "@/components/ui";
+} from "@sailo/design-system/web";
 import { ShopDetailsStep } from "./shop-details-step";
 import { SellingStep } from "./selling-step";
 import type { Values } from "./onboarding.types";

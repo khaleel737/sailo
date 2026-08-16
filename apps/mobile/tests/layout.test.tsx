@@ -6,7 +6,7 @@ import {
   StatRow,
   useLayout,
   type Layout,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 
 /**
  * The layout decisions, at every width the app actually meets.

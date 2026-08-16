@@ -14,7 +14,7 @@ import {
   Screen,
   Skeleton,
   Text,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import { authClient } from "../../../lib/auth";
 import { forgetDevice, usePushSettings } from "../../../lib/push";
 import { useT } from "../../../lib/i18n";

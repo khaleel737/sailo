@@ -13,7 +13,7 @@ import {
   Field,
   Input,
   Select,
-} from "@/components/ui";
+} from "@sailo/design-system/web";
 import type { Coupon } from "@sailo/db/schema";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 

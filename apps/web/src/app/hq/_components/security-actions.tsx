@@ -9,7 +9,7 @@ import {
   revokeAccountSession,
   revokeAccountSessions,
 } from "@/lib/actions/hq";
-import { Alert, Button, Card, Field, Input } from "@/components/ui";
+import { Alert, Button, Card, Field, Input } from "@sailo/design-system/web";
 import type { ActionState } from "@/lib/actions/shop";
 
 /* ===========================================================================

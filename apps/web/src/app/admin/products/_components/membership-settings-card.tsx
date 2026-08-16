@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Field, Input, Select } from "@/components/ui";
+import { Card, Field, Input, Select } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { BILLING_INTERVALS } from "@/lib/memberships";
 import type { ProductWithRelations } from "./product.types";

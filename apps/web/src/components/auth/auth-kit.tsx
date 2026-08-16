@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Field, Input } from "@/components/ui";
+import { Field, Input } from "@sailo/design-system/web";
 import { cn } from "@/lib/utils";
 
 /*

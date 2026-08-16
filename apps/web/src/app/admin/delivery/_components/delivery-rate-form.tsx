@@ -18,7 +18,7 @@ import {
   Input,
   Select,
   Textarea,
-} from "@/components/ui";
+} from "@sailo/design-system/web";
 import type { DeliveryConfig, DeliveryMethod } from "@sailo/db/schema";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { CountryPicker } from "./country-picker";

@@ -12,7 +12,7 @@ import {
   TAB_BAR_HEIGHT,
   useLayout,
   useTheme,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import { useT } from "../../lib/i18n";
 
 /**
@@ -139,7 +139,7 @@ export default function TabsLayout() {
 
           This used to be `sf` only, with a comment calling the Android gap "real
           and deliberate": the icon-name-to-glyph mapping belongs to
-          `@sailo/design-native`, and picking an Android icon family from a layout
+          `@sailo/design-system`, and picking an Android icon family from a layout
           file would have committed the product to it. So Android rendered five
           tabs with labels and no icons at all, which on Material is not a style
           choice — it is a bottom bar that looks unfinished.

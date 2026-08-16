@@ -67,5 +67,8 @@
       "project": []
     }
   },
+  "exclude": [
+    "optionalPeerDependencies"
+  ],
   "ignoreExportsUsedInFile": true
 }

@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { Alert, Button, Card, Field, Input } from "@/components/ui";
+import { Alert, Button, Card, Field, Input } from "@sailo/design-system/web";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
 import {
   createApiKey,

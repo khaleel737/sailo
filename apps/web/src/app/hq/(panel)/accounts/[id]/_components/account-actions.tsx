@@ -17,7 +17,7 @@ import {
   Input,
   Select,
   Textarea,
-} from "@/components/ui";
+} from "@sailo/design-system/web";
 import { PAID_PLAN_IDS, PLANS } from "@/lib/plans";
 import type { Shop } from "@sailo/db/schema";
 

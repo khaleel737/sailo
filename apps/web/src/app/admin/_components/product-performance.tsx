@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BarChart3 } from "lucide-react";
 import type { ProductPerformance } from "@/lib/queries";
-import { Card, EmptyState } from "@/components/ui";
+import { Card, EmptyState } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { formatMoney } from "@/lib/utils";

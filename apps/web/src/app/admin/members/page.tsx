@@ -8,9 +8,9 @@ import { getAdminT, getT } from "@/i18n/server";
 import { can } from "@/lib/plans";
 import { shopSubscriptions } from "@/lib/membership-access";
 import { membershipAccess } from "@/lib/memberships";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { LockedFeature } from "@/app/admin/_components/locked-feature";
-import { Card, EmptyState, Stat } from "@/components/ui";
+import { Card, EmptyState, Stat } from "@sailo/design-system/web";
 import { formatMoney } from "@/lib/utils";
 import { MemberRow } from "./_components/member-row";
 

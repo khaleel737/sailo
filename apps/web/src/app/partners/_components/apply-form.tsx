@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { Alert, Button, Field, Input, Textarea } from "@/components/ui";
+import { Alert, Button, Field, Input, Textarea } from "@sailo/design-system/web";
 import { applyToPartnerProgram } from "@/lib/actions/partner-program";
 
 /**

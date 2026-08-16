@@ -8,7 +8,7 @@ import {
   Wordmark,
   useTheme,
   type IconName,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import { authClient, useAuthCopy } from "../../lib/auth";
 
 /**

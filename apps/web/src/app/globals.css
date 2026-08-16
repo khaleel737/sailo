@@ -1,11 +1,29 @@
 @import "tailwindcss";
 
+/* --- Where the classes are ----------------------------------------------
+   Tailwind v4 finds its own sources, and what it deliberately never looks in
+   is `node_modules` — which is exactly where a workspace package resolves
+   from, `@sailo/design-system` being a symlink into `packages/`. So the
+   design system's web components have to be pointed at by hand.
+
+   The failure this prevents is silent and total: every utility class used
+   *only* by a package component — a Button's `rounded-xl`, a Table's
+   `divide-ink-200` — is absent from the generated stylesheet, so the build
+   succeeds, the page renders, and the component is unstyled. Nothing in
+   typecheck, test or lint can see it.
+
+   Only `src/web` is scanned. `src/native` writes React Native styles that
+   have no class names in them, and `src/tokens` is the source the `@theme`
+   partial below is generated from. */
+@source "../../../../packages/design-system/src/web";
+
 /* --- Ink and brand -------------------------------------------------------
-   The two colour ramps, generated from `packages/tokens` rather than written
-   here, because the phone cannot read a CSS custom property and a second copy
-   of these hexes in the app would part company with this one the first time
-   somebody nudged a green. Edit `packages/tokens/src/index.ts` and regenerate;
-   the token package's tests fail if this file and that one disagree.
+   The two colour ramps, generated from `packages/design-system/src/tokens`
+   rather than written here, because the phone cannot read a CSS custom
+   property and a second copy of these hexes in the app would part company
+   with this one the first time somebody nudged a green. Edit
+   `packages/design-system/src/tokens/index.ts` and regenerate; the design
+   system's tests fail if this file and that one disagree.
 
    The prose stays here, where the ramps are used.
 
@@ -25,7 +43,7 @@
    Anchored on 700 — the green lifted straight off the mark. Used by the
    logo, the marketing page, auth and onboarding; the admin and the
    storefront only reach for it where a page explicitly asks. */
-@import "@sailo/tokens/theme.css";
+@import "@sailo/design-system/theme.css";
 
 /* ===========================================================================
    Sailo, app-wide

@@ -12,7 +12,7 @@ import {
   Skeleton,
   Text,
   haptics,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import { interpolate } from "@sailo/i18n/native";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";

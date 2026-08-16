@@ -5,8 +5,8 @@ import { supportTickets } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { isSupportTopic } from "@/lib/support";
-import { PageHeader } from "@/components/shared/page-header";
-import { Badge, Card } from "@/components/ui";
+import { PageHeader } from "@sailo/design-system/web";
+import { Badge, Card } from "@sailo/design-system/web";
 import { SupportForm } from "./_components/support-form";
 
 export const metadata: Metadata = { title: "Support" };

@@ -1,4 +1,4 @@
-import { CardSkeleton, Skeleton } from "@/components/shared/skeleton";
+import { CardSkeleton, Skeleton } from "@sailo/design-system/web";
 
 /*
  * The receipt a buyer opens from their order link. Fixed chrome — no seller

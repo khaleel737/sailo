@@ -16,8 +16,8 @@ import { getShopT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { formatPercent } from "@sailo/core/pricing";
 import { formatMoney, shopThemeVars } from "@/lib/utils";
-import { CopyLink } from "@/components/shared/copy-link";
-import { LiveRefresh } from "@/components/shared/live-refresh";
+import { CopyLink } from "@sailo/design-system/web";
+import { LiveRefresh } from "@sailo/design-system/web";
 import { PartnerChart } from "./_components/partner-chart";
 import { PayoutForm } from "./_components/payout-form";
 

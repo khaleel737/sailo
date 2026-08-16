@@ -10,7 +10,7 @@ import {
   sumOf,
   toPercent,
   type Series,
-} from "@sailo/core/chart";
+} from "@sailo/design-system/chart";
 
 /**
  * The same invariants, over a lot of different shops.

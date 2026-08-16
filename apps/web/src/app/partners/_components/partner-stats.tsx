@@ -1,4 +1,4 @@
-import { CopyLink } from "@/components/shared/copy-link";
+import { CopyLink } from "@sailo/design-system/web";
 import { formatMoney } from "@/lib/utils";
 import type { PartnerSummary } from "@/lib/partners/store";
 

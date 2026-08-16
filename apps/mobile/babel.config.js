@@ -12,7 +12,7 @@
  * silently does nothing on device while working in a test.
  *
  * Nothing in `apps/mobile` writes a worklet directly. The chart does — it
- * lives in `@sailo/design-native` and rides `victory-native`'s gesture handling
+ * lives in `@sailo/design-system/native` and rides `victory-native`'s gesture handling
  * — and Metro compiles that package through *this* config, because a workspace
  * package has no babel config of its own. Deleting this line because the app's
  * own files do not use it is therefore a change that breaks a different

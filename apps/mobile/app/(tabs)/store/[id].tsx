@@ -24,7 +24,7 @@ import {
   Switch,
   Text,
   useLayout,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import type { ProductDetail, ProductVariant } from "../../../lib/models";
 import { useReduceMotion } from "../../../lib/a11y";
 import { reportQueryError, useTRPC } from "../../../lib/query";
@@ -358,7 +358,7 @@ function Detail({ product, currency }: { product: ProductDetail; currency: strin
  *
  * The one place on this screen still holding a `StyleSheet`, and deliberately.
  * A paged gallery is sized against the device width at runtime, and
- * `@sailo/design-native` has no image component to ask for one: `Avatar` draws
+ * `@sailo/design-system` has no image component to ask for one: `Avatar` draws
  * a single rounded thumbnail, which is not this. Requesting a `Gallery` from
  * A01 is the right fix and is in the PR; inlining a local imitation of one
  * would be the thing rule 9 exists to stop.

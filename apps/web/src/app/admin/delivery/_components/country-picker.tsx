@@ -9,7 +9,7 @@ import {
   type CountryGroupKey,
 } from "@/lib/countries";
 import { plural } from "@sailo/i18n";
-import { Input } from "@/components/ui";
+import { Input } from "@sailo/design-system/web";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
 
 /**

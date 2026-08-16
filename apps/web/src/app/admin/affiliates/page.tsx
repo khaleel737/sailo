@@ -8,17 +8,17 @@ import {
   setAffiliateStatus,
 } from "@/lib/actions/affiliates";
 import { bpToPercent } from "@sailo/core/pricing";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import {
   AffiliateForm,
   AffiliateLink,
   AffiliateSettingsForm,
 } from "@/app/admin/affiliates/_components/affiliate-widgets";
-import { Badge, Button, Card, EmptyState } from "@/components/ui";
+import { Badge, Button, Card, EmptyState } from "@sailo/design-system/web";
 import { LockedFeature } from "@/app/admin/_components/locked-feature";
 import { can } from "@/lib/plans";
 import { formatMoney } from "@/lib/utils";
-import { CopyLink } from "@/components/shared/copy-link";
+import { CopyLink } from "@sailo/design-system/web";
 import { ensurePortalToken, portalUrl } from "@/lib/affiliate-portal";
 import { getT, getAdminT } from "@/i18n/server";
 

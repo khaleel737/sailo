@@ -9,7 +9,7 @@ import {
   Skeleton,
   Switch,
   haptics,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import { openSystemSettings, usePushSettings } from "../../../lib/push";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";

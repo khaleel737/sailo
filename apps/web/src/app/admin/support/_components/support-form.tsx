@@ -5,7 +5,7 @@ import { ImagePlus, Loader2, X } from "lucide-react";
 import { createSupportTicket } from "@/lib/actions/support";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
-import { Alert, Button, Card, Field, Input, Select, Textarea } from "@/components/ui";
+import { Alert, Button, Card, Field, Input, Select, Textarea } from "@sailo/design-system/web";
 import {
   MAX_MESSAGE_LENGTH,
   MAX_SUBJECT_LENGTH,

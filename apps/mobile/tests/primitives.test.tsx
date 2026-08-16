@@ -13,7 +13,7 @@ import {
   StatusPill,
   StepDots,
   TextField,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 
 /**
  * The primitives that were added, and the four that were quietly broken.

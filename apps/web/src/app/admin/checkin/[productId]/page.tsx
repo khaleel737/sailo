@@ -11,8 +11,8 @@ import {
   eventTiers,
   getShopEvent,
 } from "@/lib/queries/tickets";
-import { PageHeader } from "@/components/shared/page-header";
-import { Button } from "@/components/ui";
+import { PageHeader } from "@sailo/design-system/web";
+import { Button } from "@sailo/design-system/web";
 import { DoorConsole } from "../_components/door-console";
 import { ImportPanel } from "@/app/admin/settings/data/_components/import-panel";
 

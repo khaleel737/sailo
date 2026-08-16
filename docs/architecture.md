@@ -111,13 +111,29 @@ and the public values a browser and a native bundle both read under different pr
 
 ## Checks
 
-A change is done when all five are clean:
+A change is done when all five are clean. **Run them in this order**, and one at a
+time:
 
 ```bash
 nvm use 22.22.1        # vitest will not start on the default v20.10
-pnpm typecheck
-pnpm test
-pnpm build
+set -a; source .env.local; set +a   # knip loads apps/web/drizzle.config.ts
+
+npx turbo build        # must come first — see below
+npx turbo typecheck
+npx turbo test
 npx knip               # 0 unused files, exports, dependencies
 npx turbo boundaries   # 0 layer violations
 ```
+
+Build first because `apps/web`'s `typecheck` is `next typegen && tsc`, and its
+tsconfig includes `.next/types/**/*.ts` — files that only `next build` writes.
+Run in one `turbo typecheck build` invocation the two race, the build clears
+`.next/types` while tsc is reading it, and typecheck fails with `TS6053: File
+'.next/types/cache-life.d.ts' not found` on a tree that is perfectly fine.
+
+`npx turbo …` rather than `pnpm …`: `pnpm build` at the root is interpreted
+recursively and dies on the first workspace with no `build` script.
+
+If typecheck fails inside `.next/dev/types/routes.d.ts` with a syntax error, the
+generated file is corrupt from an interrupted dev server — `rm -rf
+apps/web/.next/dev/types` and run again.

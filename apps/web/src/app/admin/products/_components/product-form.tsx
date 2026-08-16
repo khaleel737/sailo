@@ -15,7 +15,7 @@ import {
   Input,
   Select,
   Textarea,
-} from "@/components/ui";
+} from "@sailo/design-system/web";
 import { centsToAmount, PRODUCT_KINDS } from "@/lib/utils";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { Toggle } from "./toggle";

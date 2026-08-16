@@ -1,6 +1,6 @@
 "use client";
 
-import { Field, Input, Textarea } from "@/components/ui";
+import { Field, Input, Textarea } from "@sailo/design-system/web";
 import type { Dictionary } from "@sailo/i18n";
 import type { SetField, Values } from "./onboarding.types";
 

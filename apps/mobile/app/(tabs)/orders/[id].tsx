@@ -30,7 +30,7 @@ import {
   TextField,
   haptics,
   type StatusTone,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import type { Order, OrderDetail, OrderItem, RouterOutputs } from "../../../lib/models";
 import { textToPrice } from "../../../components/money";
 import { useT } from "../../../lib/i18n";
@@ -902,7 +902,7 @@ function placedOn(value: string | Date, locale: string): string {
 /*
  * Layout only — flex and spacing, nothing with a colour, a radius or a font
  * size in it. Every visual decision on this screen belongs to
- * `@sailo/design-native`.
+ * `@sailo/design-system`.
  */
 /** No safe-area edges — the stack header owns the top, the tab bar the bottom.
  *  `orders/index.tsx` carries the longer note. */

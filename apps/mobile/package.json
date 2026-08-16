@@ -18,7 +18,7 @@
     "@sailo/api": "workspace:*",
     "@sailo/auth": "workspace:*",
     "@sailo/core": "workspace:*",
-    "@sailo/design-native": "workspace:*",
+    "@sailo/design-system": "workspace:*",
     "@sailo/i18n": "workspace:*",
     "@sailo/observability": "workspace:*",
     "@sentry/react-native": "~7.2.0",

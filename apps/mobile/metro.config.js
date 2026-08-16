@@ -69,7 +69,7 @@ config.resolver.nodeModulesPaths = [
  *
  * pnpm does not hoist a *workspace* link, however `node-linker=hoisted` is set:
  * a package depended on by another package is linked inside that package. So
- * `@sailo/tokens`, which only `@sailo/design-native` depends on, lives at
+ * `@sailo/tokens`, which only the native design system depended on, lived at
  * `packages/design-native/node_modules/@sailo/tokens` — a path neither entry in
  * `nodeModulesPaths` covers. The bundle failed with "Unable to resolve module
  * @sailo/tokens" while `tsc`, the tests, the lint and knip all stayed green,

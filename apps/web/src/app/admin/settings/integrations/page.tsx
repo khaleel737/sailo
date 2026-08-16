@@ -6,7 +6,7 @@ import { interpolate } from "@sailo/i18n";
 import { can, cheapestPlanWith } from "@/lib/plans";
 import { appUrl } from "@/lib/app-url";
 import { readIntegrations } from "@/lib/actions/integrations";
-import { Alert, Card } from "@/components/ui";
+import { Alert, Card } from "@sailo/design-system/web";
 import { WebhooksCard } from "./_components/webhooks-card";
 import { ApiKeysCard } from "./_components/api-keys-card";
 import { DeliveriesCard } from "./_components/deliveries-card";

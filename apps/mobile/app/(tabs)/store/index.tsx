@@ -37,7 +37,7 @@ import {
   rowEntering,
   rowLayout,
   type SegmentedOption,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 /*
  * The price parsers live in `components/money.ts` rather than here.
  *
@@ -1391,7 +1391,7 @@ const EDGES = [] as const;
 /*
  * Layout only — flex and spacing, nothing with a colour, a radius or a font
  * size in it. Every visual decision on this screen belongs to
- * `@sailo/design-native`.
+ * `@sailo/design-system`.
  */
 const styles = StyleSheet.create({
   /*

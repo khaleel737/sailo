@@ -1,0 +1,32 @@
+{
+  "extends": "@sailo/config/tsconfig.hermes.json",
+  /*
+   * The Hermes floor, for a package that is only partly bundled by Hermes.
+   *
+   * `src/tokens`, `src/chart` and `src/native` all end up inside the iOS
+   * bundle, so this package has to be held to the shorter standard library
+   * `tsconfig.hermes.json` describes — the ES2023 change-by-copy array methods
+   * typecheck everywhere and are `undefined` on the phone, and the only gate
+   * that has ever caught that is `tsc`.
+   *
+   * `src/web` is floored with them rather than beside them. It could have had
+   * its own config, but a second tsconfig in one package is a second place to
+   * forget something, and the cost is only that a web component reaches for
+   * `.sort()` instead of `.toSorted()`.
+   *
+   * `dom` is added to the Hermes `lib` rather than replacing it: `lib` replaces
+   * and does not merge, so both have to be named. The web half genuinely needs
+   * it, and the native half already carried it before this package existed.
+   *
+   * `allowImportingTsExtensions` for `src/tokens/generate.ts` alone, which Node
+   * runs directly under its own type stripping and whose ESM resolver wants the
+   * real filename. It only permits the extension; nothing else here uses one.
+   */
+  "compilerOptions": {
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "lib": ["es2022", "dom"],
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src"]
+}

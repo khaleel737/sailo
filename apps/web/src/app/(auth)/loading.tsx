@@ -1,4 +1,4 @@
-import { FormSkeleton, Skeleton } from "@/components/shared/skeleton";
+import { FormSkeleton, Skeleton } from "@sailo/design-system/web";
 
 /*
  * Sign in, sign up, and the two password screens.

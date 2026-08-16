@@ -7,10 +7,10 @@ import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { ADMIN_PRODUCT_LIMIT, getAdminProducts } from "@/lib/queries";
 import { deleteProduct, toggleProductPublished } from "@/lib/actions/products";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { ExportButton } from "@/app/admin/_components/export-button";
-import { Table, Td, Th, Tr } from "@/components/shared/table";
-import { Badge, Button, EmptyState } from "@/components/ui";
+import { Table, Td, Th, Tr } from "@sailo/design-system/web";
+import { Badge, Button, EmptyState } from "@sailo/design-system/web";
 import { formatMoney } from "@/lib/utils";
 import { anySellable, priceRange, unitsLeft } from "@sailo/core/variants";
 

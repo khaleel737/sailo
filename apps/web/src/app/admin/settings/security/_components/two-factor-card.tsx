@@ -5,7 +5,7 @@ import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useFormStatus } from "react-dom";
 import { Check, Copy, ShieldCheck } from "lucide-react";
-import { Alert, Badge, Button, Card, Field, Input } from "@/components/ui";
+import { Alert, Badge, Button, Card, Field, Input } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import {
   beginTwoFactorEnrolment,

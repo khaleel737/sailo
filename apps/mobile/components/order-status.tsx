@@ -1,5 +1,5 @@
-import { StatusPill } from "@sailo/design-native";
-import type { StatusTone } from "@sailo/design-native";
+import { StatusPill } from "@sailo/design-system/native";
+import type { StatusTone } from "@sailo/design-system/native";
 import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";
 import { adminEn } from "@sailo/i18n/admin/en";
 

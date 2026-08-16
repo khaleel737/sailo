@@ -1,0 +1,126 @@
+{
+  "name": "@sailo/design-system",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/tokens/index.ts",
+    "./chart": "./src/chart/index.ts",
+    "./chart/palette": "./src/chart/palette.ts",
+    "./web": "./src/web/index.ts",
+    "./web/cn": "./src/web/cn.ts",
+    "./web/chart": "./src/web/chart/index.tsx",
+    "./native": "./src/native/index.ts",
+    "./theme.css": "./theme.css"
+  },
+  "files": [
+    "src",
+    "theme.css"
+  ],
+  "scripts": {
+    "generate": "node src/tokens/generate.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src -D correctness -D suspicious",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@sailo/core": "workspace:*",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.6.0"
+  },
+  "peerDependencies": {
+    "@expo/vector-icons": "*",
+    "@shopify/react-native-skia": ">=2.2",
+    "@visx/axis": "^4.0.0",
+    "@visx/curve": "^4.0.0",
+    "@visx/event": "^4.0.0",
+    "@visx/grid": "^4.0.0",
+    "@visx/group": "^4.0.0",
+    "@visx/responsive": "^4.0.0",
+    "@visx/scale": "^4.0.0",
+    "@visx/shape": "^4.0.0",
+    "expo-haptics": "*",
+    "expo-image": "*",
+    "lucide-react": "^1.28.0",
+    "next": "16.3.0",
+    "react": ">=19",
+    "react-dom": ">=19",
+    "react-native": ">=0.81",
+    "react-native-gesture-handler": ">=2.28",
+    "react-native-reanimated": ">=4.1",
+    "react-native-safe-area-context": "*",
+    "react-native-svg": "*",
+    "victory-native": ">=41"
+  },
+  "peerDependenciesMeta": {
+    "@expo/vector-icons": {
+      "optional": true
+    },
+    "@shopify/react-native-skia": {
+      "optional": true
+    },
+    "@visx/axis": {
+      "optional": true
+    },
+    "@visx/curve": {
+      "optional": true
+    },
+    "@visx/event": {
+      "optional": true
+    },
+    "@visx/grid": {
+      "optional": true
+    },
+    "@visx/group": {
+      "optional": true
+    },
+    "@visx/responsive": {
+      "optional": true
+    },
+    "@visx/scale": {
+      "optional": true
+    },
+    "@visx/shape": {
+      "optional": true
+    },
+    "expo-haptics": {
+      "optional": true
+    },
+    "expo-image": {
+      "optional": true
+    },
+    "lucide-react": {
+      "optional": true
+    },
+    "next": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    },
+    "react-native-gesture-handler": {
+      "optional": true
+    },
+    "react-native-reanimated": {
+      "optional": true
+    },
+    "react-native-safe-area-context": {
+      "optional": true
+    },
+    "react-native-svg": {
+      "optional": true
+    },
+    "victory-native": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@sailo/config": "workspace:*",
+    "oxlint": "^1.77.0",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  }
+}

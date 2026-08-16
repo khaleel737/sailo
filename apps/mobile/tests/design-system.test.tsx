@@ -3,7 +3,7 @@
  */
 
 import { render, screen } from "@testing-library/react-native";
-import { Button, Chart, Progress, StatusPill, Text } from "@sailo/design-native";
+import { Button, Chart, Progress, StatusPill, Text } from "@sailo/design-system/native";
 
 /**
  * The design system's behaviour, tested where the React Native environment
@@ -17,7 +17,7 @@ import { Button, Chart, Progress, StatusPill, Text } from "@sailo/design-native"
  * across several worker processes, so a default would have every test in the
  * app compile a graphics runtime in order to not use it.
  *
- * `@sailo/design-native` has no Jest configuration of its own, and that is a
+ * `@sailo/design-system` has no Jest configuration of its own, and that is a
  * decision rather than an omission: it is consumed by exactly one app, and a
  * second runner for one consumer is a second preset to keep working through
  * every Expo upgrade. What it needs is a React Native renderer, and this app

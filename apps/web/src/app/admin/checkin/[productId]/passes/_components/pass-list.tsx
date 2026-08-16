@@ -6,8 +6,8 @@ import { KeyRound, Loader2 } from "lucide-react";
 import { issueDoorPass, revokePass } from "@/lib/actions/tickets";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
-import { Alert, Badge, Button, Card, Field, Input, Select } from "@/components/ui";
-import { CopyLink } from "@/components/shared/copy-link";
+import { Alert, Badge, Button, Card, Field, Input, Select } from "@sailo/design-system/web";
+import { CopyLink } from "@sailo/design-system/web";
 
 export type PassView = {
   id: string;

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { HqFilters } from "@/app/hq/_components/hq-filters";
 import { Pagination } from "@/app/hq/_components/hq-pagination";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { ShopCell } from "@/app/hq/_components/hq-ui";
-import { Badge, Button } from "@/components/ui";
+import { Badge, Button } from "@sailo/design-system/web";
 import { closeSupportTicket } from "@/lib/actions/hq";
 import { first, getSupportTickets, pageNumber } from "@/lib/hq";
 import { SUPPORT_TOPIC_LABELS, isSupportTopic } from "@/lib/support";

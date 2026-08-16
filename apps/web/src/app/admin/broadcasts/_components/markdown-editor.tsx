@@ -15,7 +15,7 @@ import {
 import { renderBody, readingSeconds, MERGE_TAGS } from "@/lib/broadcasts/markdown";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
-import { Textarea } from "@/components/ui";
+import { Textarea } from "@sailo/design-system/web";
 import { cn } from "@/lib/utils";
 
 /**

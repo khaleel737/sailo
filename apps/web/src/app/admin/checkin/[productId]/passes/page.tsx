@@ -5,7 +5,7 @@ import { getAdminT } from "@/i18n/server";
 import { getShopEvent } from "@/lib/queries/tickets";
 import { doorUrl, listDoorPasses } from "@/lib/door-pass";
 import { appUrl } from "@/lib/app-url";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { PassList } from "./_components/pass-list";
 
 export const metadata: Metadata = {

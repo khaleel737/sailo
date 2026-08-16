@@ -11,8 +11,8 @@ import { can } from "@/lib/plans";
 import { segmentPickers } from "@/lib/broadcasts/pickers";
 import { broadcastProgress, MAX_PROMO_PRODUCTS } from "@/lib/broadcasts/send";
 import { deleteBroadcast, duplicateBroadcast } from "@/lib/actions/broadcasts";
-import { PageHeader } from "@/components/shared/page-header";
-import { Button, Card } from "@/components/ui";
+import { PageHeader } from "@sailo/design-system/web";
+import { Button, Card } from "@sailo/design-system/web";
 import { Composer } from "../_components/composer";
 import { isUuid } from "@/lib/utils";
 

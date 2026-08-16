@@ -13,15 +13,15 @@ import {
   Tablet,
   Webhook,
 } from "lucide-react";
-import { Chart } from "@/components/shared/chart";
-import { PageHeader } from "@/components/shared/page-header";
+import { Chart } from "@sailo/design-system/web/chart";
+import { PageHeader } from "@sailo/design-system/web";
 import { ExportCsv } from "@/app/hq/_components/hq-export";
 import { HqFilters } from "@/app/hq/_components/hq-filters";
 import { Pagination } from "@/app/hq/_components/hq-pagination";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { RevokeSession } from "@/app/hq/_components/security-actions";
 import { Metric, MetricRow, SectionTitle, When } from "@/app/hq/_components/hq-ui";
-import { Badge, Card } from "@/components/ui";
+import { Badge, Card } from "@sailo/design-system/web";
 import { countryFlag, countryName } from "@/lib/countries";
 import {
   first,

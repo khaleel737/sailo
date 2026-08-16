@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import { Chart } from "@/components/shared/chart";
+import { Chart } from "@sailo/design-system/web/chart";
 import type { VolumeSeries } from "@/lib/hq";
 import { formatMoney } from "@/lib/utils";
 

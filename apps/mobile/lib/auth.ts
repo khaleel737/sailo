@@ -387,7 +387,7 @@ export const AUTH_COPY = {
   /**
    * Words that belong to a *control* rather than to a screen.
    *
-   * `@sailo/design-native` deliberately holds no dictionary — it is consumed by
+   * `@sailo/design-system` deliberately holds no dictionary — it is consumed by
    * one app and threading a locale into it would make every primitive take a
    * translation prop — so the two or three strings its controls cannot invent
    * are passed in from here. `TextField`'s show/hide button is the only one on

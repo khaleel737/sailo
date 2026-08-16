@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react-native";
-import { BrandSplash, MARK_RATIO } from "@sailo/design-native";
+import { BrandSplash, MARK_RATIO } from "@sailo/design-system/native";
 
 /**
  * The first second of the app.

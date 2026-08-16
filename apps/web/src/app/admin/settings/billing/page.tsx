@@ -11,7 +11,7 @@ import { syncSubscriptionForShop } from "@/lib/billing-sync";
 import { PLAN_IDS, PLANS, planFor, platformFeeLabel, productLimit } from "@/lib/plans";
 import { billingEnabled } from "@sailo/payments";
 import { IntervalToggle } from "@/app/admin/settings/billing/_components/interval-toggle";
-import { Alert, Badge, Button, Card, Progress } from "@/components/ui";
+import { Alert, Badge, Button, Card, Progress } from "@sailo/design-system/web";
 import { formatMoney } from "@/lib/utils";
 import { interpolate } from "@sailo/i18n";
 import { cn } from "@/lib/utils";

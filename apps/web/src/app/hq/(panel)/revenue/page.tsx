@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AlertTriangle, TrendingUp, Users, Wallet } from "lucide-react";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { ExportCsv } from "@/app/hq/_components/hq-export";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import {
@@ -13,7 +13,7 @@ import {
   StripeLink,
   When,
 } from "@/app/hq/_components/hq-ui";
-import { Badge, Card } from "@/components/ui";
+import { Badge, Card } from "@sailo/design-system/web";
 import {
   getPaidAccounts,
   getPlatformOverview,

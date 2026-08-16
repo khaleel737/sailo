@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { View } from "react-native";
 import { Redirect, useRouter } from "expo-router";
-import { Banner, Button, Divider, Screen, Text, TextField, useTheme } from "@sailo/design-native";
+import { Banner, Button, Divider, Screen, Text, TextField, useTheme } from "@sailo/design-system/native";
 import {
   attemptSignIn,
   authClient,

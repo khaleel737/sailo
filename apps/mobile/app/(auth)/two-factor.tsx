@@ -10,7 +10,7 @@ import {
   Text,
   TextField,
   useTheme,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import {
   authClient,
   useAuthCopy,

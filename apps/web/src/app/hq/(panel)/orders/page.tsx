@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { ExportCsv } from "@/app/hq/_components/hq-export";
 import { HqFilters } from "@/app/hq/_components/hq-filters";
 import { Pagination } from "@/app/hq/_components/hq-pagination";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { Money, ShopCell, When } from "@/app/hq/_components/hq-ui";
-import { Badge } from "@/components/ui";
+import { Badge } from "@sailo/design-system/web";
 import { first, getPlatformOrders, pageNumber } from "@/lib/hq";
 import { PAYMENT_STATUS_TONES } from "@/lib/payments";
 import { orderSummaryTitle } from "@/lib/order-lines";

@@ -15,7 +15,7 @@ import type { SegmentPickers } from "@/lib/broadcasts/pickers";
 import { countAudience } from "@/lib/actions/broadcasts";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
-import { Input, Select } from "@/components/ui";
+import { Input, Select } from "@sailo/design-system/web";
 import { cn } from "@/lib/utils";
 
 /**

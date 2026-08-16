@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Field, Input, Select, Textarea } from "@/components/ui";
+import { Card, Field, Input, Select, Textarea } from "@sailo/design-system/web";
 import { Toggle } from "./toggle";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import type { ProductWithRelations } from "./product.types";

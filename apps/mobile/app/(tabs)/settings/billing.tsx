@@ -17,7 +17,7 @@ import {
   Skeleton,
   StatusPill,
   Text,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";
 import { errorMessage } from "../../../components/states";

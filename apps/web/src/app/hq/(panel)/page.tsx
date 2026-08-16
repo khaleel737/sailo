@@ -10,8 +10,8 @@ import {
   Users,
   Wallet,
 } from "lucide-react";
-import { Chart } from "@/components/shared/chart";
-import { PageHeader } from "@/components/shared/page-header";
+import { Chart } from "@sailo/design-system/web/chart";
+import { PageHeader } from "@sailo/design-system/web";
 import { Table, Td, Th, Tr, EmptyRow } from "@/app/hq/_components/hq-table";
 import {
   BillingBadge,
@@ -21,7 +21,7 @@ import {
   SectionTitle,
   When,
 } from "@/app/hq/_components/hq-ui";
-import { Card } from "@/components/ui";
+import { Card } from "@sailo/design-system/web";
 import {
   getAccounts,
   getActivationFunnel,

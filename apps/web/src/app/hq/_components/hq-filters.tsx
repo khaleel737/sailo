@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Search, X } from "lucide-react";
-import { Button, Input, Select, Spinner } from "@/components/ui";
+import { Button, Input, Select, Spinner } from "@sailo/design-system/web";
 
 export type FilterField = {
   name: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Card, Field, Input, Select, Switch } from "@/components/ui";
+import { Card, Field, Input, Select, Switch } from "@sailo/design-system/web";
 import { CURRENCY_CODES, currencyLabel } from "@sailo/core/currency";
 import { LOCALES } from "@sailo/i18n/config";
 import type { Dictionary } from "@sailo/i18n";

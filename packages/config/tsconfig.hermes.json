@@ -30,7 +30,7 @@
    *
    * WHO EXTENDS THIS: the packages whose *runtime* code Metro bundles into the
    * app — `@sailo/core`, `@sailo/i18n`, `@sailo/auth`, `@sailo/observability`,
-   * `@sailo/design-native`. Their source is bundled rather than consumed as
+   * `@sailo/design-system`. Their source is bundled rather than consumed as
    * built output, so what typechecks here is what Hermes executes. Adding a
    * `@sailo/*` runtime dependency to the phone means pointing that package's
    * tsconfig here too.

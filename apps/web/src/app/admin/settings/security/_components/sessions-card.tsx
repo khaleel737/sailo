@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { Laptop, Smartphone, Tablet } from "lucide-react";
-import { Alert, Badge, Button, Card } from "@/components/ui";
+import { Alert, Badge, Button, Card } from "@sailo/design-system/web";
 import {
   useAdminLocale,
   useAdminT,

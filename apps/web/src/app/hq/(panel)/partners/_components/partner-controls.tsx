@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { Button, Card, Field, Input, Textarea } from "@/components/ui";
+import { Button, Card, Field, Input, Textarea } from "@sailo/design-system/web";
 import { savePartnerNotes, setPartnerRate } from "@/lib/actions/partner-program";
 import { shareLabel } from "@/lib/partners/program";
 

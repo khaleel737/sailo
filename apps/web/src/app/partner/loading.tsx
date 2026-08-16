@@ -1,4 +1,4 @@
-import { FormSkeleton, Skeleton } from "@/components/shared/skeleton";
+import { FormSkeleton, Skeleton } from "@sailo/design-system/web";
 
 /*
  * The affiliate's way in, and the report behind it. One centred column, so a

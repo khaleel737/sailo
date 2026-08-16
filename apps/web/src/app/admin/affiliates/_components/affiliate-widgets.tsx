@@ -16,7 +16,7 @@ import {
   Input,
   Select,
   Textarea,
-} from "@/components/ui";
+} from "@sailo/design-system/web";
 import type { Affiliate, Shop } from "@sailo/db/schema";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 

@@ -11,4 +11,4 @@ export {
   Td,
   Tr,
   EmptyRow,
-} from "@/components/shared/table";
+} from "@sailo/design-system/web";

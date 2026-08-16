@@ -14,10 +14,10 @@ import {
   deleteDeliveryMethod,
   toggleDeliveryMethod,
 } from "@/lib/actions/delivery";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { DeliveryRateForm } from "@/app/admin/delivery/_components/delivery-rate-form";
-import { Panel } from "@/components/overlays";
-import { Alert, Badge, Button, EmptyState } from "@/components/ui";
+import { Panel } from "@sailo/design-system/web";
+import { Alert, Badge, Button, EmptyState } from "@sailo/design-system/web";
 import { formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Delivery" };

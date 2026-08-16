@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { Chart } from "@/components/shared/chart";
-import { Card } from "@/components/ui";
+import { Chart } from "@sailo/design-system/web/chart";
+import { Card } from "@sailo/design-system/web";
 import type { Series } from "@/lib/chart";
 
 /* Not yet converted — see the note in `next.config.ts`. */

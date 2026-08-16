@@ -81,7 +81,7 @@ export default function AuthLayout() {
  * `get-paid` rendered with no padding and no gap, edge to edge against the
  * bezel, for as long as they have existed.
  *
- * `Screen` in `@sailo/design-native` is the component that was missing. It owns
+ * `Screen` in `@sailo/design-system` is the component that was missing. It owns
  * the fill, the page colour, the safe-area edges, the keyboard behaviour, the
  * padding and the entrance, and every `styles.fill` in this directory is
  * deleted with it. The class of mistake goes with the instances: there is no

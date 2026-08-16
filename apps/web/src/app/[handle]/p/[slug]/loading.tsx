@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/shared/skeleton";
+import { Skeleton } from "@sailo/design-system/web";
 
 /*
  * A product, mid-load. Traces `page.tsx`: the gallery is a square that becomes

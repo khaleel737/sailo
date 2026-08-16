@@ -3,7 +3,7 @@ import {
   ClearTwoFactor,
   RevokeAllSessions,
 } from "@/app/hq/_components/security-actions";
-import { Card } from "@/components/ui";
+import { Card } from "@sailo/design-system/web";
 import type { AccountSecurity } from "@/lib/hq";
 
 /**

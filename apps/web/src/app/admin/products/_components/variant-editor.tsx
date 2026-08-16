@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
-import { Button, Input } from "@/components/ui";
+import { Button, Input } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
 import {

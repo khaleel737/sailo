@@ -5,11 +5,11 @@ import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { CLIENT_LIMIT, getShopClients } from "@/lib/queries";
 import { normalizeTag, tagVocabulary } from "@/lib/client-tags";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { ExportButton } from "@/app/admin/_components/export-button";
 import { AddContact } from "./_components/add-contact";
-import { Table, Td, Th, Tr } from "@/components/shared/table";
-import { Badge, EmptyState } from "@/components/ui";
+import { Table, Td, Th, Tr } from "@sailo/design-system/web";
+import { Badge, EmptyState } from "@sailo/design-system/web";
 import { formatAddress, formatMoney } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Clients" };

@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/shared/skeleton";
+import { Skeleton } from "@sailo/design-system/web";
 import { Container } from "@/components/marketing/kit";
 
 /* The index, mid-load: one lead card over a two-across grid, as `page.tsx` is. */

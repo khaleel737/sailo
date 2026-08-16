@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react";
 import type { Stack } from "expo-router";
-import { useTheme } from "@sailo/design-native";
+import { useTheme } from "@sailo/design-system/native";
 
 /**
  * What every navigation header in the app looks like.
@@ -19,7 +19,7 @@ import { useTheme } from "@sailo/design-native";
  * is the back chevron and every header button — those were unreadable too.
  *
  * It was known. Each of those files carries a comment saying the two colours
- * are "A00's placeholders for a theme `@sailo/design-native` does not own yet"
+ * are "A00's placeholders for a theme `@sailo/design-system` does not own yet"
  * and that "A01 replaces all four together". This is that replacement, and it
  * is one function rather than five pairs of literals so the sixth layout cannot
  * reintroduce them.
@@ -27,7 +27,7 @@ import { useTheme } from "@sailo/design-native";
  * WHY IT IS HERE AND NOT IN THE DESIGN SYSTEM
  *
  * These are navigation options, which is the router's vocabulary. Putting them
- * in `@sailo/design-native` would give a package that draws boxes a dependency
+ * in `@sailo/design-system` would give a package that draws boxes a dependency
  * on the router — and the package is consumed by exactly one app, so the seam
  * buys nothing. The colours come from the theme; only their *spelling* as
  * navigation options lives here.

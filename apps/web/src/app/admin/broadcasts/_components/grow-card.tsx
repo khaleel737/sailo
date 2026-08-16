@@ -7,7 +7,7 @@ import {
   saveSubscribeSettings,
   type BroadcastState,
 } from "@/lib/actions/broadcasts";
-import { Alert, Button, Card, Field, Input } from "@/components/ui";
+import { Alert, Button, Card, Field, Input } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
 

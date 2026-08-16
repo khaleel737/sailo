@@ -1,6 +1,6 @@
 import { Text as RNText } from "react-native";
 import { render, screen } from "@testing-library/react-native";
-import { useTheme } from "@sailo/design-native";
+import { useTheme } from "@sailo/design-system/native";
 import { useStackScreenOptions } from "../lib/navigation";
 
 /**

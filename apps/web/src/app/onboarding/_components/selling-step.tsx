@@ -1,6 +1,6 @@
 "use client";
 
-import { Field, Input, Select } from "@/components/ui";
+import { Field, Input, Select } from "@sailo/design-system/web";
 import { CURRENCY_CODES, currencyLabel } from "@sailo/core/currency";
 import type { Dictionary } from "@sailo/i18n";
 import type { SetField, Values } from "./onboarding.types";

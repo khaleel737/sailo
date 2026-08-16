@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Field, Input } from "@/components/ui";
+import { Card, Field, Input } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { PIXEL_PROVIDERS } from "@/lib/shop-pixels";
 import type { Shop } from "@sailo/db/schema";

@@ -108,9 +108,9 @@ importers:
       '@sailo/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@sailo/design-native':
+      '@sailo/design-system':
         specifier: workspace:*
-        version: link:../../packages/design-native
+        version: link:../../packages/design-system
       '@sailo/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
@@ -271,6 +271,9 @@ importers:
       '@sailo/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@sailo/design-system':
+        specifier: workspace:*
+        version: link:../../packages/design-system
       '@sailo/email':
         specifier: workspace:*
         version: link:../../packages/email
@@ -292,9 +295,6 @@ importers:
       '@sailo/rate-limit':
         specifier: workspace:*
         version: link:../../packages/rate-limit
-      '@sailo/tokens':
-        specifier: workspace:*
-        version: link:../../packages/tokens
       '@t3-oss/env-core':
         specifier: ^0.13.4
         version: 0.13.11(typescript@5.9.3)(zod@4.4.3)
@@ -690,7 +690,7 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(jsdom@20.0.3)(vite@8.2.1(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
 
-  packages/design-native:
+  packages/design-system:
     dependencies:
       '@expo/vector-icons':
         specifier: '*'
@@ -698,21 +698,54 @@ importers:
       '@sailo/core':
         specifier: workspace:*
         version: link:../core
-      '@sailo/tokens':
-        specifier: workspace:*
-        version: link:../tokens
       '@shopify/react-native-skia':
         specifier: '>=2.2'
         version: 2.2.12(react-native-reanimated@4.1.7(react-native-worklets@0.8.3(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.2.8))(react@19.2.8))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.2.8))(react@19.2.8))(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.2.8))(react@19.2.8)
+      '@visx/axis':
+        specifier: ^4.0.0
+        version: 4.0.0(@types/react@19.1.17)(react@19.2.8)
+      '@visx/curve':
+        specifier: ^4.0.0
+        version: 4.0.0
+      '@visx/event':
+        specifier: ^4.0.0
+        version: 4.0.0(@types/react@19.1.17)(react@19.2.8)
+      '@visx/grid':
+        specifier: ^4.0.0
+        version: 4.0.0(@types/react@19.1.17)(react@19.2.8)
+      '@visx/group':
+        specifier: ^4.0.0
+        version: 4.0.0(@types/react@19.1.17)(react@19.2.8)
+      '@visx/responsive':
+        specifier: ^4.0.0
+        version: 4.0.0(@types/react@19.1.17)(react@19.2.8)
+      '@visx/scale':
+        specifier: ^4.0.0
+        version: 4.0.0
+      '@visx/shape':
+        specifier: ^4.0.0
+        version: 4.0.0(@types/react@19.1.17)(react@19.2.8)
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       expo-haptics:
         specifier: '*'
         version: 15.0.8(expo@54.0.36)
       expo-image:
         specifier: '*'
         version: 3.0.11(expo@54.0.36)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.2.8))(react@19.2.8)
+      lucide-react:
+        specifier: ^1.28.0
+        version: 1.31.0(react@19.2.8)
+      next:
+        specifier: 16.3.0
+        version: 16.3.0(@babel/core@7.29.7)(@playwright/test@1.62.1)(@types/node@20.19.43)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react:
         specifier: '>=19'
         version: 19.2.8
+      react-dom:
+        specifier: '>=19'
+        version: 19.2.8(react@19.2.8)
       react-native:
         specifier: '>=0.81'
         version: 0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.2.8)
@@ -728,6 +761,9 @@ importers:
       react-native-svg:
         specifier: '*'
         version: 15.12.1(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.2.8))(react@19.2.8)
+      tailwind-merge:
+        specifier: ^3.6.0
+        version: 3.6.0
       victory-native:
         specifier: '>=41'
         version: 41.26.0(af2190ba24888d62ff668222eeb998a8)
@@ -741,6 +777,9 @@ importers:
       typescript:
         specifier: ^5
         version: 5.9.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(jsdom@20.0.3)(vite@8.2.1(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
 
   packages/email:
     dependencies:
@@ -905,21 +944,6 @@ importers:
       next:
         specifier: 16.3.0
         version: 16.3.0(@babel/core@7.29.7)(@playwright/test@1.62.1)(@types/node@20.19.43)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      oxlint:
-        specifier: ^1.77.0
-        version: 1.78.0
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-      vitest:
-        specifier: ^4.1.10
-        version: 4.1.10(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(jsdom@20.0.3)(vite@8.2.1(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
-
-  packages/tokens:
-    devDependencies:
-      '@sailo/config':
-        specifier: workspace:*
-        version: link:../config
       oxlint:
         specifier: ^1.77.0
         version: 1.78.0
@@ -10178,7 +10202,7 @@ snapshots:
       postcss: 8.4.49
       resolve-from: 5.0.0
     optionalDependencies:
-      expo: 54.0.36(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.2.8))(react@19.2.8)(typescript@5.9.3)
+      expo: 54.0.36(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3)
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -10258,7 +10282,7 @@ snapshots:
       '@expo/json-file': 10.2.0
       '@react-native/normalize-colors': 0.81.5
       debug: 4.4.3
-      expo: 54.0.36(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.2.8))(react@19.2.8)(typescript@5.9.3)
+      expo: 54.0.36(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3)
       resolve-from: 5.0.0
       semver: 7.8.5
       xml2js: 0.6.0
@@ -12880,7 +12904,7 @@ snapshots:
       resolve-from: 5.0.0
     optionalDependencies:
       '@babel/runtime': 7.29.7
-      expo: 54.0.36(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.2.8))(react@19.2.8)(typescript@5.9.3)
+      expo: 54.0.36(@babel/core@7.29.7)(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.81.5(@babel/core@7.29.7)(@react-native/metro-config@0.87.0(@babel/core@7.29.7))(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)(typescript@5.9.3)
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color

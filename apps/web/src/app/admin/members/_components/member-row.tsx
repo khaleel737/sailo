@@ -7,7 +7,7 @@ import {
   cancelMembership,
   type MembershipState,
 } from "@/lib/actions/memberships";
-import { Alert, Badge, Button } from "@/components/ui";
+import { Alert, Badge, Button } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
 import { formatMoney } from "@/lib/utils";

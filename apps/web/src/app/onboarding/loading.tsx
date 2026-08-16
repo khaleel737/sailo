@@ -1,4 +1,4 @@
-import { FormSkeleton, Skeleton } from "@/components/shared/skeleton";
+import { FormSkeleton, Skeleton } from "@sailo/design-system/web";
 
 /*
  * The multi-step shop setup. Matches the `max-w-4xl` column it renders in,

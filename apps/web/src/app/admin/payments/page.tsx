@@ -15,11 +15,11 @@ import {
   PAYMENT_METHOD_LIST,
   type PaymentCategory,
 } from "@/lib/payments";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { PaymentMethodCard } from "@/app/admin/payments/_components/payment-method-card";
 import { PayoutCard } from "@/app/admin/payments/_components/payout-card";
 import { StripeCard } from "@/app/admin/payments/_components/stripe-card";
-import { Alert, Badge } from "@/components/ui";
+import { Alert, Badge } from "@sailo/design-system/web";
 import { interpolate } from "@sailo/i18n";
 import { syncAccount } from "@/lib/connect";
 

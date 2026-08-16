@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Check, Minus, X } from "lucide-react";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { SectionTitle, When } from "@/app/hq/_components/hq-ui";
-import { Card } from "@/components/ui";
+import { Card } from "@sailo/design-system/web";
 import { getStaffLog, getSystemHealth } from "@/lib/hq";
 import { staffEmails } from "@/lib/staff";
 

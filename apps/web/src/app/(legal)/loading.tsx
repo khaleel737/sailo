@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/shared/skeleton";
+import { Skeleton } from "@sailo/design-system/web";
 
 /*
  * Terms, privacy, refunds. The layout keeps the header and the document tabs;

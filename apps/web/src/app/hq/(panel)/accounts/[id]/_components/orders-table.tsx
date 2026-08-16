@@ -1,6 +1,6 @@
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { SectionTitle, When } from "@/app/hq/_components/hq-ui";
-import { Badge } from "@/components/ui";
+import { Badge } from "@sailo/design-system/web";
 import { PAYMENT_STATUS_TONES } from "@/lib/payments";
 import { orderSummaryTitle } from "@/lib/order-lines";
 import { formatMoney } from "@/lib/utils";

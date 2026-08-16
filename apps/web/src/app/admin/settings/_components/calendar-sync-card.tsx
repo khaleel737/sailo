@@ -1,7 +1,7 @@
 "use client";
 
 import { CalendarCheck, CalendarX, Lock } from "lucide-react";
-import { Card, Field, Input } from "@/components/ui";
+import { Card, Field, Input } from "@sailo/design-system/web";
 import { PlanBadge } from "@/app/admin/_components/locked-feature";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { can } from "@/lib/plans";

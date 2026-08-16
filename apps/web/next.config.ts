@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
    */
   transpilePackages: [
     "@sailo/core",
+    "@sailo/design-system",
     "@sailo/db",
     "@sailo/env",
     "@sailo/events",
@@ -15,7 +16,6 @@ const nextConfig: NextConfig = {
     "@sailo/observability",
     "@sailo/payments",
     "@sailo/rate-limit",
-    "@sailo/tokens",
   ],
   /*
    * Static shells with dynamic holes, instead of every route being

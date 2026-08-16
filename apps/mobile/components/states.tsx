@@ -5,8 +5,8 @@ import {
   Skeleton,
   Text,
   useTheme,
-} from "@sailo/design-native";
-import type { IconName } from "@sailo/design-native";
+} from "@sailo/design-system/native";
+import type { IconName } from "@sailo/design-system/native";
 
 /**
  * The three things a screen shows when it has no data to show.
@@ -37,7 +37,7 @@ import type { IconName } from "@sailo/design-native";
  * Insights, Home and the check-in list — the first thing a new seller sees on
  * five of the six screens they have.
  *
- * Everything below now goes through `@sailo/design-native`, which has both
+ * Everything below now goes through `@sailo/design-system`, which has both
  * modes and one ramp. The exported names are unchanged so no screen has to be
  * edited to get the fix.
  */

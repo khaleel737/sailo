@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { ExportCsv } from "@/app/hq/_components/hq-export";
 import { HqFilters } from "@/app/hq/_components/hq-filters";
 import { Pagination } from "@/app/hq/_components/hq-pagination";

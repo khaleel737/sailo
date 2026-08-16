@@ -1,5 +1,5 @@
 /**
- * The chart's arithmetic, now in `@sailo/core/chart`.
+ * The chart's arithmetic, now in `@sailo/design-system/chart`.
  *
  * Re-exported rather than moved-and-rewritten: the visx components next door
  * import `@/lib/chart/domain` and `@/lib/chart/types`, and the maths had to
@@ -10,4 +10,4 @@
  * components, not against the domain.
  */
 
-export * from "@sailo/core/chart";
+export * from "@sailo/design-system/chart";

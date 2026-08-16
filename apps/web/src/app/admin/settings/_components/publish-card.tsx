@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Switch } from "@/components/ui";
+import { Card, Switch } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import type { Shop } from "@sailo/db/schema";
 

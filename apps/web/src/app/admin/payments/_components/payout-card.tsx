@@ -3,7 +3,7 @@ import type { Shop } from "@sailo/db/schema";
 import { getPayoutOverview } from "@/lib/connect-payouts";
 import { openStripeDashboard } from "@/lib/actions/connect";
 import { refreshPayouts } from "@/lib/actions/payouts";
-import { Alert, Badge, Button, Card } from "@/components/ui";
+import { Alert, Badge, Button, Card } from "@sailo/design-system/web";
 import { getAdminT, getLocale } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { formatMoney } from "@/lib/utils";

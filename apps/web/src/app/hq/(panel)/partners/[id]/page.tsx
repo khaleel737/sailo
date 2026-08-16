@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Card } from "@/components/ui";
-import { PageHeader } from "@/components/shared/page-header";
+import { Card } from "@sailo/design-system/web";
+import { PageHeader } from "@sailo/design-system/web";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { Detail, Metric, MetricRow, Mono, When } from "@/app/hq/_components/hq-ui";
 import { getPartnerDetail } from "@/lib/hq/partners";

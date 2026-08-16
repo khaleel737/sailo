@@ -12,7 +12,7 @@ import { getAdminT } from "@/i18n/server";
 import { AdminI18nProvider } from "@/app/admin/_components/admin-i18n";
 import { StatusBanners } from "@/app/admin/_components/status-banners";
 import { PanelFooter } from "@/components/shared/panel-footer";
-import { LiveRefresh } from "@/components/shared/live-refresh";
+import { LiveRefresh } from "@sailo/design-system/web";
 
 /*
  * Per-seller, behind a session, and re-read on every visit — there is no

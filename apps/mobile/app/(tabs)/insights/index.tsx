@@ -8,7 +8,7 @@ import { formatMoney } from "@sailo/core/currency";
  * asking the question two different ways is how a card ends up empty inside a
  * screen that has decided it is not.
  */
-import { hasData } from "@sailo/core/chart";
+import { hasData } from "@sailo/design-system/chart";
 import { interpolate } from "@sailo/i18n/native";
 import {
   Banner,
@@ -23,7 +23,7 @@ import {
   Segmented,
   Skeleton,
   StatRow,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";
 import { errorMessage } from "../../../components/states";

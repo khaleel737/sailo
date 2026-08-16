@@ -12,7 +12,7 @@ import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { OrderStatusSelect } from "@/app/admin/orders/_components/order-status-select";
 import { PaymentStatusSelect } from "@/app/admin/orders/_components/payment-status-select";
 import { OrderActions } from "@/app/admin/orders/_components/order-actions";
-import { Badge, Button } from "@/components/ui";
+import { Badge, Button } from "@sailo/design-system/web";
 import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";

@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { TriangleAlert } from "lucide-react";
-import { Alert, Button, Card, Field, Input } from "@/components/ui";
+import { Alert, Button, Card, Field, Input } from "@sailo/design-system/web";
 import { interpolate } from "@sailo/i18n";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { deleteAccount, type DeleteAccountState } from "@/lib/actions/account";

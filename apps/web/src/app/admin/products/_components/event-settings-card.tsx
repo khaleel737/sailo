@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card, Field, Input, Select } from "@/components/ui";
+import { Card, Field, Input, Select } from "@sailo/design-system/web";
 import { Toggle } from "./toggle";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import type { ProductWithRelations } from "./product.types";

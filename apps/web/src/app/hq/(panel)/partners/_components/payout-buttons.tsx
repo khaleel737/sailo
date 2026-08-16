@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { Button } from "@/components/ui";
+import { Button } from "@sailo/design-system/web";
 import {
   markPartnerPaidManually,
   payPartnerNow,

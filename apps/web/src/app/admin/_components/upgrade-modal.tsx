@@ -10,9 +10,9 @@ import {
   type Features,
   type PlanId,
 } from "@/lib/plans";
-import { Badge, Button } from "@/components/ui";
-import { SegmentedControl } from "@/components/ui/segmented-control";
-import { Dialog } from "@/components/overlays";
+import { Badge, Button } from "@sailo/design-system/web";
+import { SegmentedControl } from "@sailo/design-system/web";
+import { Dialog } from "@sailo/design-system/web";
 import { formatMoney } from "@/lib/utils";
 import { useAdminLocale } from "@/app/admin/_components/admin-i18n";
 import type { Dictionary } from "@sailo/i18n";

@@ -4,7 +4,7 @@ import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import { getLocale, getT } from "@/i18n/server";
 import { DEFAULT_LOCALE } from "@sailo/i18n/config";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
-import { RouteProgress } from "@/components/shared/route-progress";
+import { RouteProgress } from "@sailo/design-system/web";
 import { ErrorStringsSource } from "@/components/shared/error-panel";
 import { VercelAnalytics } from "@/lib/vercel-analytics";
 import { APP_URL } from "@/lib/seo";

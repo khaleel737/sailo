@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { FileUp, Loader2, Paperclip, X } from "lucide-react";
-import { Button } from "@/components/ui";
+import { Button } from "@sailo/design-system/web";
 import { formatBytes } from "@/lib/utils";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 

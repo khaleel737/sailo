@@ -4,7 +4,7 @@ import { useActionState, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { AlertTriangle, Check, Loader2, Upload } from "lucide-react";
 import { runImport, type ImportState } from "@/lib/actions/import";
-import { Alert, Button, Card } from "@/components/ui";
+import { Alert, Button, Card } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 function Submit({ label, variant }: { label: string; variant?: "primary" | "secondary" }) {

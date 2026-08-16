@@ -7,10 +7,10 @@ import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { getShopCategories } from "@/lib/queries";
 import { deleteCategory } from "@/lib/actions/products";
-import { PageHeader } from "@/components/shared/page-header";
+import { PageHeader } from "@sailo/design-system/web";
 import { CategoryForm } from "@/app/admin/categories/_components/category-form";
-import { Table, Td, Th, Tr } from "@/components/shared/table";
-import { Button, Card, EmptyState } from "@/components/ui";
+import { Table, Td, Th, Tr } from "@sailo/design-system/web";
+import { Button, Card, EmptyState } from "@sailo/design-system/web";
 
 export const metadata: Metadata = { title: "Categories" };
 

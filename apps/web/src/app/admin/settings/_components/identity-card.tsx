@@ -2,7 +2,7 @@
 
 import { HandleField } from "@/components/shared/handle-field";
 import { ImageUploader } from "@/app/admin/products/_components/image-uploader";
-import { Card, Field, Input, Textarea } from "@/components/ui";
+import { Card, Field, Input, Textarea } from "@sailo/design-system/web";
 import type { Dictionary } from "@sailo/i18n";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import type { Shop } from "@sailo/db/schema";

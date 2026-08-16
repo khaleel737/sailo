@@ -13,7 +13,7 @@ import {
   Stat,
   Text,
   haptics,
-} from "@sailo/design-native";
+} from "@sailo/design-system/native";
 import { useT } from "../../lib/i18n";
 import { useTRPC } from "../../lib/query";
 import { useScanQueue, type ScanOutcome } from "../../lib/scan-queue";

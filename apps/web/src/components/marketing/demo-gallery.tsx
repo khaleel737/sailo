@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { Instagram } from "@/components/shared/brand-icons";
+import { Instagram } from "@sailo/design-system/web";
 import { DEMOS, phoneShotUrl, shotUrl } from "@/lib/demos";
 import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import { interpolate } from "@sailo/i18n";
