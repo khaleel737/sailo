@@ -103,7 +103,14 @@ describe("countriesByName", () => {
     // Sorting by code puts Germany under D-E and Austria under A-T in every
     // language, which is only right in one of them.
     const names = countriesByName("en").map((c) => c.name);
-    expect(names).toEqual(names.toSorted(new Intl.Collator("en").compare));
+    /*
+     * `[...names].sort(…)` — the spread is load-bearing, not decoration. This
+     * asserts the list equals a *sorted copy of itself*, so sorting `names` in
+     * place would compare it to itself and pass however `countriesByName`
+     * ordered things. `toSorted` copied for us; `.sort` does not, and this
+     * package is typed against Hermes now, which has no `toSorted`.
+     */
+    expect(names).toEqual([...names].sort(new Intl.Collator("en").compare));
   });
 
   it("returns the whole list whatever the language", () => {

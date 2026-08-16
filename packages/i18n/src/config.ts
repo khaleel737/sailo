@@ -74,7 +74,9 @@ export function matchAcceptLanguage(header: string | null): Locale | null {
       return { tag: tag.trim().toLowerCase(), q: q ? Number(q) : 1 };
     })
     .filter((p) => p.tag && Number.isFinite(p.q))
-    .toSorted((a, b) => b.q - a.q);
+    // `.sort()`: Hermes has no `toSorted`. `.filter()` just made the array, so
+    // mutating it disturbs nothing. See the note in `@sailo/core/countries`.
+    .sort((a, b) => b.q - a.q);
 
   for (const { tag } of wanted) {
     if (isLocale(tag)) return tag;

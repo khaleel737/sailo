@@ -1,5 +1,5 @@
 {
-  "extends": "@sailo/config/tsconfig.base.json",
+  "extends": "@sailo/config/tsconfig.hermes.json",
   "compilerOptions": { "noEmit": true, "jsx": "preserve" },
   "include": ["src"]
 }

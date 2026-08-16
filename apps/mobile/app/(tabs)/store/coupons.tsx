@@ -143,6 +143,31 @@ export default function Coupons() {
 
   return (
     <Screen onRefresh={refresh} refreshing={coupons.isFetching} testID="coupons">
+      {/*
+        ADD SITS ABOVE THE LIST, NOT UNDER IT.
+
+        `a.coupons.emptyBody` is the web's string — "Create a code *above* and
+        share it with your customers" — and the web's form genuinely is above
+        its list. With the button underneath, the empty state pointed at
+        nothing: the only way to make a coupon was the control below the
+        sentence telling you to look up. Moving one element makes the sentence
+        true in all thirty-five locales, which adding a phone-only string would
+        not have done for any of them until it was translated.
+
+        It also matches `./categories.tsx`, where the name field and its Add
+        have always been the first thing on the screen.
+      */}
+      <Button
+        label={a.common.add}
+        icon="add"
+        variant="secondary"
+        onPress={() => {
+          setRefusal(null);
+          setDraft(blank());
+        }}
+        fullWidth
+      />
+
       {coupons.isPending ? (
         <Skeleton shape="card" count={2} />
       ) : rows.length === 0 ? (
@@ -171,17 +196,6 @@ export default function Coupons() {
           ))}
         </GroupedList>
       )}
-
-      <Button
-        label={a.common.add}
-        icon="add"
-        variant="secondary"
-        onPress={() => {
-          setRefusal(null);
-          setDraft(blank());
-        }}
-        fullWidth
-      />
 
       <Sheet
         visible={draft !== null}

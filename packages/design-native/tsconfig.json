@@ -1,5 +1,5 @@
 {
-  "extends": "@sailo/config/tsconfig.base.json",
+  "extends": "@sailo/config/tsconfig.hermes.json",
   /*
    * `react-jsx` rather than `preserve`, so the components typecheck as the
    * runtime will actually see them.
@@ -13,7 +13,9 @@
   "compilerOptions": {
     "noEmit": true,
     "jsx": "react-jsx",
-    "lib": ["es2023", "dom"]
+    // `es2022` from the Hermes config, re-stated because `dom` has to be added
+    // to it rather than beside it — `lib` replaces, it does not merge.
+    "lib": ["es2022", "dom"]
   },
   "include": ["src"]
 }

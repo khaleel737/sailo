@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+
+  /*
+   * THE BASE, LOWERED TO WHAT THE PHONE CAN ACTUALLY RUN.
+   *
+   * Hermes is not a JavaScript engine that lags a little behind Node — it is a
+   * separate implementation with its own list of what landed, and the list is
+   * shorter. `tsconfig.base.json` says `lib: ["es2023"]`, which is true of
+   * every runtime Sailo has *except* the one in the app, so TypeScript happily
+   * offers the ES2023 change-by-copy array methods — `toSorted`, `toReversed`,
+   * `toSpliced`, `with` — to code that is about to be bundled into an iOS app
+   * where they are `undefined`.
+   *
+   * That is not hypothetical. `countriesByName` in `@sailo/core` was written as
+   * `.map(…).toSorted(…)`, typechecked clean, passed jest, passed the web
+   * build, shipped — and then threw `toSorted is not a function` the moment a
+   * seller opened the screen that picks a country, taking the Clients and
+   * Categories screens down with it. Four more sites had the same bug.
+   *
+   * What makes it worth a config file rather than a code review note: the
+   * failure is invisible to every gate we run. Node has these methods. Browsers
+   * have these methods. jsdom has these methods. The ONLY thing that catches it
+   * is launching the app and walking to the screen. Lowering `lib` moves the
+   * catch to `tsc`, where it costs seconds instead of a release.
+   *
+   * `target` deliberately stays at the base's `es2023`: target governs what
+   * Babel/Metro down-level, and Hermes handles modern *syntax* fine. It is the
+   * standard library that is short, which is `lib`.
+   *
+   * WHO EXTENDS THIS: the packages whose *runtime* code Metro bundles into the
+   * app — `@sailo/core`, `@sailo/i18n`, `@sailo/auth`, `@sailo/observability`,
+   * `@sailo/design-native`. Their source is bundled rather than consumed as
+   * built output, so what typechecks here is what Hermes executes. Adding a
+   * `@sailo/*` runtime dependency to the phone means pointing that package's
+   * tsconfig here too.
+   *
+   * `@sailo/api` is the deliberate exception, and the reason is worth keeping.
+   * The phone does depend on it, but only through `src/client.ts` — thirty-nine
+   * lines that import the router as a *type*, which the compiler erases. There
+   * is no array in it to sort. Meanwhile `packages/api` typechecks straight
+   * through `@sailo/commerce`'s source, so flooring it would constrain a
+   * Node-only package by transitivity, for no runtime the phone ever reaches.
+   * The guard belongs where the code runs.
+   *
+   * Packages the phone does not bundle — `@sailo/commerce`, `@sailo/payments`,
+   * `apps/web`, `apps/api` — keep the es2023 base, where `toSorted` is
+   * genuinely available and genuinely better, being the non-mutating one.
+   */
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["es2022"]
+  }
+}

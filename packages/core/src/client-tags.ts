@@ -108,5 +108,7 @@ export function tagVocabulary(clients: { tags: string[] }[]): string[] {
   for (const client of clients) {
     for (const tag of client.tags) seen.add(tag);
   }
-  return [...seen].toSorted((a, b) => a.localeCompare(b));
+  // `.sort()`: Hermes has no `toSorted`. The spread just made the array, so
+  // mutating it disturbs nothing. See the note in `./countries.ts`.
+  return [...seen].sort((a, b) => a.localeCompare(b));
 }

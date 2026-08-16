@@ -124,10 +124,23 @@ export function countryFlag(code: string | null): string {
 /** Every country there is, sorted by its name in the reader's language. */
 export function countriesByName(locale = "en"): { code: CountryCode; name: string }[] {
   const collator = new Intl.Collator(locale);
+  /*
+   * `.sort()` rather than `.toSorted()`, and it is not a style choice: Hermes
+   * does not implement the ES2023 change-by-copy array methods, so `toSorted`
+   * is `undefined` on the phone and this threw a render error on the screen
+   * that picks a country. Node and every browser we target have it, which is
+   * why it survived typecheck, jest and the web build — the only thing that
+   * catches it is running the app.
+   *
+   * Mutating is safe here because `.map()` above just built the array; there
+   * is no caller's copy to disturb. That is the condition for this swap, and
+   * it holds at all five sites that had to make it. `eslint.config.mjs`
+   * restricts the method so a sixth cannot appear.
+   */
   return COUNTRY_CODES.map((code) => ({
     code,
     name: countryName(code, locale),
-  })).toSorted((a, b) => collator.compare(a.name, b.name));
+  })).sort((a, b) => collator.compare(a.name, b.name));
 }
 
 /* -------------------------------------------------------------------------- */

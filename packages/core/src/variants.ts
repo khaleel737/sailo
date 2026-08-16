@@ -102,8 +102,10 @@ export function combinations(options: ProductOption[]): VariantOptions[] {
  * describe the same shirt.
  */
 export function optionKey(options: VariantOptions): string {
+  // `.sort()`: Hermes has no `toSorted`. `Object.keys` just made the array, so
+  // mutating it disturbs nothing. See the note in `./countries.ts`.
   return Object.keys(options)
-    .toSorted()
+    .sort()
     .map((k) => `${k.toLowerCase()}=${String(options[k]).toLowerCase()}`)
     .join("|");
 }

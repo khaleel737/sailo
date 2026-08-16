@@ -68,7 +68,7 @@ describe("combinations", () => {
   it("produces every pairing across two axes", () => {
     const all = combinations([opt("Size", ["S", "M"]), opt("Colour", ["Red", "Blue"])]);
     expect(all).toHaveLength(4);
-    expect(all.map(optionKey).toSorted()).toEqual(
+    expect(all.map(optionKey).sort()).toEqual(
       [
         { Size: "S", Colour: "Red" },
         { Size: "S", Colour: "Blue" },
@@ -76,14 +76,14 @@ describe("combinations", () => {
         { Size: "M", Colour: "Blue" },
       ]
         .map(optionKey)
-        .toSorted(),
+        .sort(),
     );
   });
 
   it("gives every combination a complete answer on every axis", () => {
     // A combination missing an axis is one the picker can never satisfy.
     for (const combo of combinations([opt("Size", ["S", "M"]), opt("Colour", ["Red"])])) {
-      expect(Object.keys(combo).toSorted()).toEqual(["Colour", "Size"]);
+      expect(Object.keys(combo).sort()).toEqual(["Colour", "Size"]);
     }
   });
 
