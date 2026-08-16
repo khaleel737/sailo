@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Shop } from "@sailo/db/schema";
 
 /**
@@ -104,6 +104,31 @@ beforeEach(() => {
 /* -------------------------------------------------------------------------- */
 
 describe("file URLs", () => {
+  /*
+   * THIS BLOCK USED TO DEPEND ON A VARIABLE BEING ABSENT, AND THAT IS WHY IT
+   * BROKE THE DEPLOYMENT.
+   *
+   * `isStoredFileUrl` pins the host to *our* blob store when
+   * `BLOB_READ_WRITE_TOKEN` is set, and falls back to "any Vercel blob host"
+   * when it is not. `abc123...` below is a made-up store, so it only passes on
+   * the fallback — which is to say the test passed on a laptop because the
+   * variable was missing there, and failed on Vercel because Vercel is the one
+   * environment that actually has it. `turbo run build` depends on `test`, so
+   * a green suite locally still took production down.
+   *
+   * Cleared and restored per test, the way `@sailo/core/file-urls.test.ts`
+   * already does it, so both branches are chosen here rather than inherited
+   * from whatever machine is running.
+   */
+  const original = process.env.BLOB_READ_WRITE_TOKEN;
+  beforeEach(() => {
+    delete process.env.BLOB_READ_WRITE_TOKEN;
+  });
+  afterEach(() => {
+    if (original === undefined) delete process.env.BLOB_READ_WRITE_TOKEN;
+    else process.env.BLOB_READ_WRITE_TOKEN = original;
+  });
+
   it("stores a file on a host the app already serves from", async () => {
     const result = await saveProduct(SHOP, {
       ...BASICS,
@@ -112,6 +137,39 @@ describe("file URLs", () => {
 
     expect(result.ok).toBe(true);
     expect(rowsFor("product_files")).toHaveLength(1);
+  });
+
+  /*
+   * The branch every deployed environment takes, and the one nothing covered.
+   *
+   * With a token present the host must be the store that token belongs to.
+   * Another account's Vercel blob store is still a Vercel blob host, so the
+   * suffix check waves it through — and that is the open-proxy hole the
+   * pinning exists to close. Worth a test of its own precisely because the
+   * only environment that exercised it was production.
+   */
+  it("keeps a file on our own store when the store is pinned", async () => {
+    process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_OurStore1_secret";
+
+    const result = await saveProduct(SHOP, {
+      ...BASICS,
+      files: [{ url: "https://ourstore1.public.blob.vercel-storage.com/a.pdf" }],
+    });
+
+    expect(result.ok).toBe(true);
+    expect(rowsFor("product_files")).toHaveLength(1);
+  });
+
+  it("drops a file on somebody else's blob store", async () => {
+    process.env.BLOB_READ_WRITE_TOKEN = "vercel_blob_rw_OurStore1_secret";
+
+    const result = await saveProduct(SHOP, {
+      ...BASICS,
+      files: [{ url: "https://someoneelse.public.blob.vercel-storage.com/a.pdf" }],
+    });
+
+    expect(result.ok).toBe(true);
+    expect(rowsFor("product_files")).toHaveLength(0);
   });
 
   it("drops a file pointed anywhere else, including at ourselves", async () => {
