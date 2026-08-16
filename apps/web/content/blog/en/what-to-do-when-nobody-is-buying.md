@@ -145,7 +145,7 @@ If people are getting all the way to the last screen and stopping there, that's 
 
 You will read, on a lot of sites including tool vendors', that the fix for no sales is a proper checkout with card payments. Sometimes it is. Usually it isn't, and it's worth knowing what that fix actually costs before you reach for it.
 
-On Sailo, card payments need the Business plan at ${{business_monthly}} a month, plus {{fee_range}}% of the goods on each card order, taken as a Stripe application fee on top of whatever Stripe charges you. If you're doing nine orders a month at £23.70, that subscription is the expensive part by a long way, and it will not fix a broken link or a hidden postage cost.
+On Sailo, card payments carry {{fee_range}}% of the goods on each card order, taken as a Stripe application fee on top of whatever Stripe charges you. If you're doing nine orders a month at £23.70, that subscription is the expensive part by a long way, and it will not fix a broken link or a hidden postage cost.
 
 There's no mobile money rail either. If your buyers pay by M-Pesa or GCash, that stays where it always was: in your own account, confirmed by you, from your own notifications. Sailo carries the catalogue and the order. Your bank still tells you about the money.
 

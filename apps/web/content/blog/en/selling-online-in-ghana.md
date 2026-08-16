@@ -38,7 +38,7 @@ What sellers do instead is run MoMo as a manual rail. Put your MoMo number or yo
 
 Sailo's card rail runs on Stripe and nothing else.
 
-On Stripe's own global availability page, read in August 2026, Ghana appears under the extended network served by Paystack rather than as a launched Stripe country. Sailo does not support Paystack, whatever you may have read on the marketing site. Which means paying ${{business_monthly}} a month for the Business plan will not reliably give a Ghanaian seller a working card checkout.
+On Stripe's own global availability page, read in August 2026, Ghana appears under the extended network served by Paystack rather than as a launched Stripe country. Sailo does not support Paystack, whatever you may have read on the marketing site. Which means no Sailo plan, paid or free, will reliably give a Ghanaian seller a working card checkout.
 
 That's a sentence that costs Sailo money to write, and it's true, so here it is plainly. If you genuinely need card acceptance, set it up directly with a Ghanaian provider and run it alongside. Sailo can hold your products, options, prices and order flow while the money arrives by MoMo or by a card link you generate elsewhere. Just don't build your plan around a button that isn't going to switch on.
 

@@ -120,7 +120,7 @@ Sailo is in that last category, and it does not win the other four.
 
 What it charges: nothing on bank transfer, cash on delivery, or orders handed off to WhatsApp, Instagram, Telegram, email or phone, because Sailo never touches that money. On card payments it takes {{fee_range}}% of the goods, after discounts, excluding delivery and tax, charged as a Stripe application fee. The card charge itself lands in your own Stripe account, not in Sailo's.
 
-What it costs: $0 for the free plan, capped at {{free_products}} products and {{free_analytics_days}} days of analytics. ${{pro_monthly}}/mo or ${{pro_yearly}}/yr for Pro, which lifts you to {{pro_products}} products, a year of analytics, CSV export and no Sailo badge. ${{business_monthly}}/mo or ${{business_yearly}}/yr for Business, which is the only plan that can take card at all, and needs a Stripe account that Stripe has cleared for charges.
+What it costs: $0 for the free plan, capped at {{free_products}} products and {{free_analytics_days}} days of analytics. ${{pro_monthly}}/mo or ${{pro_yearly}}/yr for Pro, which lifts you to {{pro_products}} products, a year of analytics, CSV export and no Sailo badge. ${{business_monthly}}/mo or ${{business_yearly}}/yr for Business, which drops the card fee to {{fee_business}}%. Card works on every plan, and needs a Stripe account that Stripe has cleared for charges.
 
 Now the parts that should put you off.
 

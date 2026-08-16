@@ -140,7 +140,7 @@ Across in Lagos, Iyanu runs the same shape with two price lists: naira for Niger
 
 ## The money, and its one real weakness
 
-On bank transfer, cash, WhatsApp, Instagram DM, Telegram, email and phone orders, Sailo never touches the money and takes nothing at all. Card is {{fee_range}}% of the goods, taken after discount and excluding delivery and tax, so 90 cents on a $180 half-body, and it needs the Business plan at ${{business_monthly}} a month plus a Stripe account that Stripe has cleared for charges. That clearance depends on where your business is registered, which is a genuine gate for artists in some countries and no obstacle at all in others.
+On bank transfer, cash, WhatsApp, Instagram DM, Telegram, email and phone orders, Sailo never touches the money and takes nothing at all. Card is {{fee_range}}% of the goods, taken after discount and excluding delivery and tax, so 90 cents on a $180 half-body, and it needs a Stripe account that Stripe has cleared for charges. That clearance depends on where your business is registered, which is a genuine gate for artists in some countries and no obstacle at all in others.
 
 For commission work specifically, card is usually worth it, because your clients are strangers on the internet in other countries and a bank transfer across borders is expensive, slow and often refused. At four commissions a month averaging $220, that's $880 of card volume and the subscription is 2.3% of it, on top of Stripe's own cut.
 

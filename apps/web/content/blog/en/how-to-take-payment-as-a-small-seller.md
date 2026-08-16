@@ -12,7 +12,7 @@ You have a buyer, a price, and a gap in the middle where the money is supposed t
 
 The short version: take payment on the rail your buyer already has open on their phone. In Lagos that's a bank transfer. In Metro Manila it's cash when the rider knocks. In Nairobi it's a till number. In Bengaluru it's UPI. In Chicago it's a card, because in Chicago nearly everyone has one and expects to use it. Cards aren't the grown-up option and the rest aren't training wheels. They're four different trades, and each one bills you in a different currency: money, buyer effort, or your own Sunday evening.
 
-Sailo takes {{fee_range}}% of the goods on a card sale and nothing at all on bank transfer, cash on delivery or chat orders, because on those it never touches the money. Cards also need the Business plan at ${{business_monthly}} a month before the button will even appear. Hold those two numbers. We'll do the arithmetic further down, and for a lot of sellers it comes out against cards.
+Sailo takes {{fee_range}}% of the goods on a card sale and nothing at all on bank transfer, cash on delivery or chat orders, because on those it never touches the money. Cards carry {{fee_free}}% on the free plan, falling to {{fee_business}}% on Business. Hold those two numbers. We'll do the arithmetic further down, and for a lot of sellers it comes out against cards.
 
 ## The three questions that decide the rail
 

@@ -212,7 +212,7 @@ Ang ginagawa niya ay ito. Isang page na may presyo, at isang listahan ng order n
 
 Nasa lahat ng plan ang product reviews, kasama ang libre. Nagsusulat ang buyer ng pangalan, isa hanggang limang bituin, at teksto kung gusto, at **walang lumalabas hangga't hindi mo ina-approve.**
 
-Sa manual na rails, kasama ang bank transfer at COD, hindi hinahawakan ng Sailo ang pera at walang kinukuha. Sa card lang may {{fee_range}}% sa halaga ng produkto matapos ang diskwento, at kailangan niyon ang Business plan na ${{business_monthly}} kada buwan.
+Sa manual na rails, kasama ang bank transfer at COD, hindi hinahawakan ng Sailo ang pera at walang kinukuha. Sa card lang may {{fee_range}}% sa halaga ng produkto matapos ang diskwento, at nag-iiba ito ayon sa plan: {{fee_free}}% sa libre, {{fee_business}}% sa Business.
 
 Na dapat mong basahin kasabay nito. **Noong 6 Agosto 2026, wala ang Pilipinas sa listahan ng mga bansang suportado ng Stripe sa stripe.com/global**, at Stripe lang ang card rail ng Sailo. Ibig sabihin, pwedeng hindi available ang card button sa isang seller dito kahit anong plan. Buksan mo mismo ang stripe.com/global at i-check, kasi nagbabago ang listahan. Sa ngayon, hindi ito problema para sa iyo: sa buy and sell group, ang inaasahan ng buyer ay COD, meetup o GCash, at wala sa tatlo ang nangangailangan ng card.
 

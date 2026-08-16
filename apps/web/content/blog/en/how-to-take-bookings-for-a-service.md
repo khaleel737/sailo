@@ -82,7 +82,7 @@ If the deposit comes by bank transfer, or into an M-Pesa till number you've writ
 
 So build the checking into your day. Twice: once mid-morning, once in the evening, at times you'll actually keep. There's a longer piece on getting this right without refreshing your banking app forty times a day in [how to know a bank transfer actually arrived](/en/blog/how-to-know-a-bank-transfer-actually-arrived).
 
-Two other things that are true and worth saying. There's no Sailo app, so your bookings live in a browser rather than behind an icon with a red badge on your home screen. And if you want deposits confirmed automatically, that means card payments, which need the Business plan at ${{business_monthly}} a month plus a connected Stripe account and cost {{fee_range}}% of the goods. On a £10 deposit the commission is five pence. The subscription is the real decision, and at eight bookings a week it probably isn't worth it yet.
+Two other things that are true and worth saying. There's no Sailo app, so your bookings live in a browser rather than behind an icon with a red badge on your home screen. And if you want deposits confirmed automatically, that means card payments, which need a connected Stripe account and cost {{fee_range}}% of the goods. On a £10 deposit the commission is five pence. The subscription is the real decision, and at eight bookings a week it probably isn't worth it yet.
 
 ## The confirmation message, word by word
 

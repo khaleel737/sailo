@@ -150,7 +150,7 @@ If you're selling something people search for by name, and you have no audience 
 
 Sailo's free plan is $0, holds {{free_products}} products, keeps {{free_analytics_days}} days of analytics, and supports the manual rails: bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email and phone. Sailo takes no commission on any of those, because Sailo never touches the money.
 
-Card payments are the exception and the limitation worth knowing before you start. They need the Business plan at ${{business_monthly}} a month, plus a Stripe account that Stripe has cleared to take charges, and Sailo takes {{fee_range}}% of the goods on each card order, after discounts and excluding delivery and tax. On a $12 order that's six cents to Sailo, on top of whatever Stripe charges. The six cents is not your problem. The ${{business_monthly}} is, if you're doing eleven orders a month.
+Card payments are the exception and the limitation worth knowing before you start. They need a Stripe account that Stripe has cleared to take charges, and Sailo takes {{fee_range}}% of the goods on each card order, after discounts and excluding delivery and tax. On a $12 order that's six cents to Sailo, on top of whatever Stripe charges. The six cents is not your problem. The ${{business_monthly}} is, if you're doing eleven orders a month.
 
 The other thing to know: there is no mobile money rail. No M-Pesa integration, no GCash, no UPI, no Pix. If that's how you get paid, and for a great many sellers it is, you can put your till number or UPI ID into the bank transfer instructions field and the buyer will see it at checkout, but you're the one matching payments to orders. Sailo handles the catalogue and the order. It doesn't handle that money.
 

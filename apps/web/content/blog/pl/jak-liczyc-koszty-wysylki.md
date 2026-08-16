@@ -154,7 +154,7 @@ Dostawa jest w zamówieniu osobną pozycją. Ma to konkretne przełożenie na pi
 
 Przy przelewie, pobraniu, WhatsAppie, Instagramie, Telegramie, e-mailu i telefonie Sailo nie bierze nic i nie dotyka pieniędzy w ogóle.
 
-Karta wymaga planu Business, {{business_monthly}} USD miesięcznie albo {{business_yearly}} USD rocznie, oraz konta Stripe zaakceptowanego do przyjmowania płatności. Stripe jest w Polsce dostępny, sprawdzone 6 sierpnia 2026 na stripe.com/global, ale sprawdź to sam przed opłaceniem planu.
+Karta wymaga konta Stripe zaakceptowanego do przyjmowania płatności. Stripe jest w Polsce dostępny, sprawdzone 6 sierpnia 2026 na stripe.com/global, ale sprawdź to sam przed opłaceniem planu.
 
 ## Czego to nie policzy za ciebie
 

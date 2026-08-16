@@ -88,7 +88,7 @@ På alle andre end kort rører Sailo aldrig pengene, og der er ingen kommission.
 
 Bankoverførsel er stadig helt normalt i Danmark mellem private og mindre handlende. Feltet i Sailo har plads til banknavn, kontohaver, kontonummer, IBAN, SWIFT eller BIC, og et frit tekstfelt til instruktioner. Det frie felt er vigtigere end de fem andre tilsammen, for det er der, du skriver hvad køberen skal skrive som tekst på overførslen, og hvornår du sender. Hvordan du formulerer de linjer, og hvad du svarer klokken 22.45 om fredagen, står i [sådan tager du imod betaling via bankoverførsel](/da/blog/betaling-via-bankoverfoersel).
 
-Kort findes også, og det virker i Danmark, fordi Stripe er tilgængeligt her. Kontrolleret 6. august 2026 på stripe.com/global, og den liste flytter sig, så slå den op selv. Kort kræver Business-planen til {{business_monthly}} dollar om måneden eller {{business_yearly}} dollar om året plus en Stripe-konto, som Stripe har godkendt til at modtage betalinger. Sailo tager {{fee_range}} procent af varernes værdi efter rabat, uden fragt og uden moms. Stripes eget gebyr kommer oven i og står på Stripes prisside.
+Kort findes også, og det virker i Danmark, fordi Stripe er tilgængeligt her. Kontrolleret 6. august 2026 på stripe.com/global, og den liste flytter sig, så slå den op selv. Kort kræver en Stripe-konto, som Stripe har godkendt til at modtage betalinger. Sailo tager {{fee_range}} procent af varernes værdi efter rabat, uden fragt og uden moms. Stripes eget gebyr kommer oven i og står på Stripes prisside.
 
 ## Der er ingen MobilePay i Sailo
 

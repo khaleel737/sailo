@@ -112,11 +112,11 @@ Nói thẳng, kể cả khi câu này khiến bạn không đăng ký.
 
 Nếu bạn có năm sản phẩm và ba mươi số điện thoại, bạn không cần trang bán hàng để có đơn số một. Bạn cần chụp năm tấm ảnh tử tế, viết giá vào tin nhắn, và bấm gửi ba mươi lần. Trang bán hàng không làm hộ bạn việc đó.
 
-Bạn cũng chắc chắn không cần thanh toán thẻ. Thẻ trên Sailo đòi gói Business {{business_monthly}} USD một tháng, cộng thêm một tài khoản Stripe đã được Stripe duyệt cho phép thu tiền. Trả gần năm trăm nghìn đồng mỗi tháng để nhận đơn đầu tiên trị giá 180.000₫ là một phép tính không cần bàn.
+Bạn cũng chắc chắn không cần thanh toán thẻ. Thẻ trên Sailo đòi một tài khoản Stripe đã được Stripe duyệt cho phép thu tiền. Trả gần năm trăm nghìn đồng mỗi tháng để nhận đơn đầu tiên trị giá 180.000₫ là một phép tính không cần bàn.
 
 Cái thay đổi nằm ở khoảng đơn thứ hai mươi. Lúc đó bạn bắt đầu trả lời cùng một câu hỏi về giá và phí ship năm lần một ngày, bắt đầu quên mất ai đã chuyển khoản, và bắt đầu mất đơn vì người ta hỏi lúc bạn đang ngủ. Đó là lúc một trang có sẵn giá và nút đặt hàng bắt đầu trả lại nhiều hơn thời gian nó lấy đi.
 
-Khi tới lúc đó, gói miễn phí là 0 USD, cho {{free_products}} sản phẩm, 30 ngày số liệu, các kênh chat và các hình thức thanh toán thủ công. Đường dẫn dạng `sailo.store/tênbạn` chạy ngay khi đăng ký, và trang hiển thị được 35 ngôn ngữ. Với các hình thức thanh toán thủ công, gồm chuyển khoản ngân hàng và COD, Sailo không chạm vào tiền và không thu gì cả. Riêng thẻ thì thu {{fee_range}}% trên giá trị hàng sau giảm giá, không tính phí giao hàng và thuế, dưới dạng phí ứng dụng của Stripe.
+Khi tới lúc đó, gói miễn phí là 0 USD, cho {{free_products}} sản phẩm, {{free_analytics_days}} ngày số liệu, các kênh chat và các hình thức thanh toán thủ công. Đường dẫn dạng `sailo.store/tênbạn` chạy ngay khi đăng ký, và trang hiển thị được 35 ngôn ngữ. Với các hình thức thanh toán thủ công, gồm chuyển khoản ngân hàng và COD, Sailo không chạm vào tiền và không thu gì cả. Riêng thẻ thì thu {{fee_range}}% trên giá trị hàng sau giảm giá, không tính phí giao hàng và thuế, dưới dạng phí ứng dụng của Stripe.
 
 ### Điều Sailo không làm được cho bạn
 
@@ -132,7 +132,7 @@ Với người bán Việt Nam thì hai chỗ đó cần nói rõ. Nếu khách 
 
 Phần chuyển khoản có sẵn các ô cho tên ngân hàng, tên chủ tài khoản, số tài khoản, IBAN và SWIFT/BIC, cộng một ô hướng dẫn tự do. Phần COD có một ô ghi chú giao hàng tự do, chỗ để bạn viết những câu như giao giờ hành chính hoặc gọi trước mười lăm phút.
 
-Về thẻ thì có một điều phải nói thẳng, và nó là giới hạn lớn nhất của Sailo với người bán Việt Nam. Kênh thẻ chạy qua Stripe và chỉ qua Stripe. Tính đến tháng 8 năm 2026, Việt Nam không nằm trong danh sách quốc gia Stripe hỗ trợ. Nghĩa là nút thanh toán thẻ có thể không dùng được với bạn dù bạn trả gói nào đi nữa, nên đừng đóng {{business_monthly}} USD một tháng cho gói Business với kỳ vọng thẻ sẽ hiện ra. Danh sách quốc gia đó có thay đổi, nên tự mở stripe.com/global kiểm tra lại, đừng tin một bài viết trên mạng, kể cả bài này.
+Về thẻ thì có một điều phải nói thẳng, và nó là giới hạn lớn nhất của Sailo với người bán Việt Nam. Kênh thẻ chạy qua Stripe và chỉ qua Stripe. Tính đến tháng 8 năm 2026, Việt Nam không nằm trong danh sách quốc gia Stripe hỗ trợ. Nghĩa là nút thanh toán thẻ có thể không dùng được với bạn dù bạn trả gói nào đi nữa, nên đừng đóng tiền cho gói nào với kỳ vọng thẻ sẽ hiện ra. Danh sách quốc gia đó có thay đổi, nên tự mở stripe.com/global kiểm tra lại, đừng tin một bài viết trên mạng, kể cả bài này.
 
 Với người bán trà ở Huế thì chuyện đó gần như không đổi gì trong thực tế. COD và chuyển khoản gánh toàn bộ việc thu tiền, và cả hai đều nằm ở gói miễn phí.
 

@@ -141,7 +141,7 @@ Il limite che riguarda esattamente questa fase: **il piano gratuito dà {{free_a
 
 Cosa fare invece, se stai sul piano gratuito e non hai intenzione di pagare adesso: apri un quaderno e ogni domenica sera scrivi tre numeri, aperture, conversazioni, ordini. Ci metti due minuti. Fra sei mesi quel quaderno vale più di qualsiasi cruscotto, perché contiene anche le note su cosa avevi cambiato quella settimana.
 
-Sul bonifico e sul contrassegno Sailo non prende niente e non tocca mai il denaro. L'unica commissione è lo {{fee_range}}% sul valore dei prodotti quando si paga con carta, e la carta richiede il piano Business da {{business_monthly}} USD al mese con un account Stripe approvato.
+Sul bonifico e sul contrassegno Sailo non prende niente e non tocca mai il denaro. L'unica commissione è lo {{fee_range}}% sul valore dei prodotti quando si paga con carta, e la carta richiede un account Stripe approvato.
 
 ## Da fare adesso, non domani
 

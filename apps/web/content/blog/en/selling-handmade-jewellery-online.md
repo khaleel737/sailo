@@ -134,7 +134,7 @@ A padded envelope with a $180 ring in it is a bad idea, because the one that goe
 
 Box the piece so it can't move. Movement is what breaks chains and loosens stones in transit. The general method for parcels that arrive intact is in [shipping fragile things](/en/blog/shipping-fragile-things), and jewellery has the additional problem that the damage is often invisible until the customer wears it.
 
-On payment: Sailo takes nothing on bank transfer, cash on delivery or chat orders, since it never touches the money on those. Card payments cost {{fee_range}}% of the goods and need the Business plan at ${{business_monthly}} a month. On a $150 set that commission is 75c. On Dani's volume the subscription is under 1% of revenue, so it's an easy call. At six orders a month it isn't, and taking transfers while you build up is not a compromise.
+On payment: Sailo takes nothing on bank transfer, cash on delivery or chat orders, since it never touches the money on those. Card payments cost {{fee_free}}% of the goods on the free plan and {{fee_business}}% on Business. On a $150 set that commission is 75c. On Dani's volume the subscription is under 1% of revenue, so it's an easy call. At six orders a month it isn't, and taking transfers while you build up is not a compromise.
 
 ## What to do next
 

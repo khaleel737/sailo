@@ -146,7 +146,7 @@ The only thing you need to protect is the price, because a warm circle that has 
 
 None of this gets easier because you've got a shop link. Sending someone `sailo.store/yourname` instead of quoting a price by voice does help, in that the number is written down and impersonal, and impersonal is exactly what you want here.
 
-But nothing confirms a payment for you on the manual rails. If your cousin says the transfer's sent, only your bank can tell you it arrived, and you'll be the one checking. Card payments, where the money confirms itself, need Sailo's Business plan at ${{business_monthly}} a month plus {{fee_range}}% of the goods, which is 33 cents on a $65 cake. At twelve orders a month that subscription is the real number to weigh, not the third of a dollar.
+But nothing confirms a payment for you on the manual rails. If your cousin says the transfer's sent, only your bank can tell you it arrived, and you'll be the one checking. Card payments, where the money confirms itself, carry {{fee_range}}% of the goods, which is 33 cents on a $65 cake. At twelve orders a month that subscription is the real number to weigh, not the third of a dollar.
 
 ## Write the sentence tonight
 

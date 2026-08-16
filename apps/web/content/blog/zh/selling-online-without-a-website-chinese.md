@@ -129,7 +129,7 @@ Sailo 给你一个 `sailo.store/你的名字` 的链接,注册完就能用。上
 
 评价所有套餐都有。买家留下名字、1 到 5 星、想写就写几句;在你审核通过之前,页面上什么都不会出现。
 
-免费版 $0:{{free_products}} 个产品、30 天数据、聊天渠道和手动收款渠道,没有卡支付。Pro 是 ${{pro_monthly}}/月或 ${{pro_yearly}}/年:{{pro_products}} 个产品、1 年数据、去掉 Sailo 标记、导出 CSV,同样没有卡支付。Business 是 ${{business_monthly}}/月或 ${{business_yearly}}/年:产品数不限、3 年数据、优惠券、分销,以及卡支付。
+免费版 $0:{{free_products}} 个产品、30 天数据、聊天渠道和手动收款渠道,没有卡支付。Pro 是 ${{pro_monthly}}/月或 ${{pro_yearly}}/年:{{pro_products}} 个产品、1 年数据、去掉 Sailo 标记、导出 CSV,同样没有卡支付。Business 是 ${{business_monthly}}/月或 ${{business_yearly}}/年:产品数不限、3 年数据、分销,卡费率降到 {{fee_business}}%。
 
 费用:走手动渠道的时候,包括银行转账、货到付款、WhatsApp、Instagram、Telegram、邮件和电话,Sailo 不碰你的钱,也不收你一分。只有卡渠道收货款的 {{fee_range}}%,按打折后的货款算,不含运费和税,以 Stripe application fee 的形式收取。
 

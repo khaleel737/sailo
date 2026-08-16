@@ -12,7 +12,7 @@ tags: [pagesa, banka, transfertë]
 
 Nis paketën vetëm kur paratë duken në llogarinë tënde, jo kur klienti të dërgon foton e konfirmimit. Foto e konfirmimit do të thotë që urdhri u dha, jo që paratë mbërritën, dhe mes atyre dyjave ka nga disa orë deri në disa ditë pune. Kjo është e gjithë përgjigjja. Pjesa tjetër e këtij teksti është si ta bësh këtë pa u kthyer në punë me kohë të plotë.
 
-Një gjë tjetër që duhet ditur para se të vendosësh çfarëdo. Më 6 gusht 2026, as Shqipëria as Kosova nuk janë në listën e shteteve që mbulon Stripe, dhe butoni i kartës te Sailo punon vetëm përmes Stripe. Domethënë karta nuk merret këtu, në asnjë plan dhe për asnjë çmim. Kontrollo vetë te stripe.com/global, sepse ajo listë ndryshon. Dhe mos e paguaj planin Business, {{business_monthly}} dollarë në muaj ose {{business_yearly}} dollarë në vit, duke shpresuar që të hapet një buton karte. Ai plan të jep produkte pa limit, tre vjet analitikë, kupona dhe afiliatë. Kartën jo.
+Një gjë tjetër që duhet ditur para se të vendosësh çfarëdo. Më 6 gusht 2026, as Shqipëria as Kosova nuk janë në listën e shteteve që mbulon Stripe, dhe butoni i kartës te Sailo punon vetëm përmes Stripe. Domethënë karta nuk merret këtu, në asnjë plan dhe për asnjë çmim. Kontrollo vetë te stripe.com/global, sepse ajo listë ndryshon. Dhe mos paguaj asnjë plan duke shpresuar që të hapet një buton karte. Ai plan të jep produkte pa limit, tre vjet analitikë, kupona dhe afiliatë. Kartën jo.
 
 Prandaj transferta bankare nuk është "plani B" këtu. Për shitësit që nuk duan të presin kurierin, është plani kryesor.
 

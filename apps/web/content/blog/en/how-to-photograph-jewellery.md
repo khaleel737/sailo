@@ -180,7 +180,7 @@ If your metal is dark, your background is light. If your metal is bright, your b
 
 Jewellery sits at a price point where card payments start to make sense, so this is worth the arithmetic rather than a guess.
 
-On Sailo, card payments need the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods, calculated after any discount and excluding delivery and tax. On a $65 ring that's 33 cents, which is not the number that decides anything. The subscription is.
+On Sailo, card payments need a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods, calculated after any discount and excluding delivery and tax. On a $65 ring that's 33 cents, which is not the number that decides anything. The subscription is.
 
 | Card orders a month | Card revenue at $65 | Subscription as a share of it |
 | --- | --- | --- |

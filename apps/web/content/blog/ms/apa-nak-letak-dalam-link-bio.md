@@ -158,7 +158,7 @@ Selepas dua minggu, tengok tiga nombor, bukan satu:
 
 Jurang antara nombor satu dan dua ialah masalah halaman. Jurang antara dua dan tiga ialah masalah bayaran, kos pos, atau balasan anda yang lambat.
 
-Sailo menyimpan data analitik 30 hari pada pelan percuma, setahun pada pelan Pro USD {{pro_monthly}} sebulan, dan tiga tahun pada pelan Business. Untuk kebanyakan penjual kecil, 30 hari sudah cukup untuk menjawab soalan di atas, sebab anda membandingkan minggu ini dengan minggu lepas, bukan tahun ini dengan tahun lepas.
+Sailo menyimpan data analitik {{free_analytics_days}} hari pada pelan percuma, setahun pada pelan Pro USD {{pro_monthly}} sebulan, dan tiga tahun pada pelan Business. Untuk kebanyakan penjual kecil, 30 hari sudah cukup untuk menjawab soalan di atas, sebab anda membandingkan minggu ini dengan minggu lepas, bukan tahun ini dengan tahun lepas.
 
 ## Batasan yang jujur
 

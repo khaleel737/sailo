@@ -167,7 +167,7 @@ Det betyder, at din faste pris er præcis lige så god som det regnestykke, du l
 
 En lille ting, der faktisk hjælper: kortkommissionen på {{fee_range}} procent bliver regnet af varernes værdi efter rabat, uden fragt og uden moms. Af de 55 kr., Signe tager for at sende, går der ikke ét øre til Sailo. Ved bankoverførsel, efterkrav, WhatsApp, Instagram, Telegram, e-mail og telefon tager Sailo ingenting og rører aldrig pengene.
 
-Kort kræver Business-planen til {{business_monthly}} dollar om måneden eller {{business_yearly}} dollar om året plus en Stripe-konto, som Stripe har godkendt til at modtage betalinger. Stripe er tilgængeligt i Danmark, kontrolleret 6. august 2026 på stripe.com/global, men slå det op selv, inden du betaler for planen.
+Kort kræver en Stripe-konto, som Stripe har godkendt til at modtage betalinger. Stripe er tilgængeligt i Danmark, kontrolleret 6. august 2026 på stripe.com/global, men slå det op selv, inden du betaler for planen.
 
 ## De næste ti pakker
 

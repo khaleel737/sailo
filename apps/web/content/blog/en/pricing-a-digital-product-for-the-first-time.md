@@ -91,7 +91,7 @@ Whatever you charge, some of it leaves before it reaches you. How much depends e
 
 On manual rails, bank transfer, cash, a UPI ID or an M-Pesa till number written into your payment instructions, Sailo takes no commission at all. None, on any plan including the free one. The money goes straight to you and Sailo never touches it. Your only cost is whatever your bank charges, and your own time confirming each payment.
 
-On card, three things stack up. Sailo takes {{fee_range}}% of the goods, after discount, not counting delivery or tax. Stripe takes its own fee, and Stripe's fee has a fixed component, which is what quietly destroys small orders. And card payments require the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges.
+On card, three things stack up. Sailo takes {{fee_range}}% of the goods, after discount, not counting delivery or tax. Stripe takes its own fee, and Stripe's fee has a fixed component, which is what quietly destroys small orders. And card payments require a Stripe account cleared for charges.
 
 Run that against your price:
 

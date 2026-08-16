@@ -112,7 +112,7 @@ Wenn jemand zu viel überweist, ist die Sache einfacher, aber nicht egal: Zurüc
 
 Das heißt konkret: kein PayPal, kein Klarna, kein SEPA-Lastschriftverfahren, kein giropay als eigene Zahlart. Wenn deine Käufer PayPal erwarten, kannst du deine PayPal-Adresse zwar in den Hinweistext schreiben, aber Sailo weiß dann nichts davon, ordnet nichts zu und zeigt es dem Käufer nicht als eigenen Knopf. Das ist ein Behelf, keine Funktion, und ich nenne es hier als Behelf.
 
-Kartenzahlung gibt es, weil Stripe in Deutschland verfügbar ist (Stand: 6. August 2026, geprüft auf stripe.com/global). Sie hängt am Business-Tarif für {{business_monthly}} Dollar im Monat oder {{business_yearly}} Dollar im Jahr, plus einem Stripe-Konto, das Stripe für Zahlungen freigegeben hat. Sailo nimmt dann {{fee_range}} Prozent vom Warenwert nach Rabatt, ohne Versand und ohne Steuer. Stripes eigene Gebühr kommt dazu und steht auf deren Preisseite.
+Kartenzahlung gibt es, weil Stripe in Deutschland verfügbar ist (Stand: 6. August 2026, geprüft auf stripe.com/global). Sie hängt an einem Stripe-Konto, das Stripe für Zahlungen freigegeben hat. Sailo nimmt dann {{fee_range}} Prozent vom Warenwert nach Rabatt, ohne Versand und ohne Steuer. Stripes eigene Gebühr kommt dazu und steht auf deren Preisseite.
 
 Der Vergleich, der in der Praxis zählt, ist nicht Gebühr gegen Gebühr. Er ist Gebühr gegen deine Zeit.
 

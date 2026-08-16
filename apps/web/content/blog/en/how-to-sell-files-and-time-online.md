@@ -99,7 +99,7 @@ Sailo cannot tell you a bank transfer arrived. Only your bank can. So the buyer 
 
 Two things fix most of it. Say the lag out loud, in writing, before they pay: "Files are released once I've confirmed your transfer, usually within a few hours and always by 10am." And check twice a day at times you actually keep, rather than promising instant and delivering whenever.
 
-The alternative is card payments, which on Sailo need the Business plan at ${{business_monthly}} a month plus a connected Stripe account, and cost {{fee_range}}% of the goods on top of whatever Stripe charges. At a ₦12,000 template that commission is about ₦60. The subscription is the real cost, and at low volume it's a bad trade. Manual rails take no Sailo commission at all. Slower, cheaper, and yours to run.
+The alternative is card payments, which on Sailo need a connected Stripe account, and cost {{fee_range}}% of the goods on top of whatever Stripe charges. At a ₦12,000 template that commission is about ₦60. The subscription is the real cost, and at low volume it's a bad trade. Manual rails take no Sailo commission at all. Slower, cheaper, and yours to run.
 
 ## Selling both: the file feeds the hour, or the hour funds the file
 

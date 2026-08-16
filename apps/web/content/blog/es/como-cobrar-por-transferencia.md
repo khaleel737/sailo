@@ -94,7 +94,7 @@ La primera: no hay un campo que se llame CLABE, ni CBU, ni alias. Pon la CLABE e
 
 La segunda, que es la limitación de verdad: **Sailo no puede saber si tu transferencia llegó.** No está conectado a tu banco y no lo va a estar. Cuando marcas un pedido como pagado, es porque tú abriste la aplicación del banco y lo miraste. Nadie lo hace por ti. Si te vas tres días, no se hace, y los pedidos se quedan esperando.
 
-A cambio, en transferencia bancaria Sailo no cobra comisión de ninguna clase y nunca toca el dinero. Va de la cuenta del comprador a la tuya, directo. La única comisión que existe en Sailo es {{fee_range}}% sobre el valor de los productos cuando el pago es con tarjeta, y la tarjeta requiere el plan Business de {{business_monthly}} USD al mes con una cuenta de Stripe aprobada. En transferencia, cero.
+A cambio, en transferencia bancaria Sailo no cobra comisión de ninguna clase y nunca toca el dinero. Va de la cuenta del comprador a la tuya, directo. La única comisión que existe en Sailo es {{fee_range}}% sobre el valor de los productos cuando el pago es con tarjeta, y la tarjeta requiere una cuenta de Stripe aprobada. En transferencia, cero.
 
 Lo mismo aplica si cobras con una billetera o con un sistema local: no hay integración con SPEI, ni con Mercado Pago, ni con Nequi, ni con ninguna billetera. Puedes escribir tu número o tu alias en el campo de instrucciones y confirmar tú el pago. Es una solución manual que funciona todos los días, pero es una solución manual, no una función.
 

@@ -113,7 +113,7 @@ Va detto anche il contrario, senza fare la morale. Il contrassegno è caro, lent
 
 Nel canale contrassegno Sailo ha un campo note di consegna a testo libero. È lì che scrivi la tua regola, la soglia, l'eventuale supplemento, e cosa succede se il pacco viene rifiutato. Il compratore la legge prima di confermare, che è l'unico momento in cui serve leggerla.
 
-Su questo canale Sailo non prende nessuna commissione e non tocca mai il denaro: incassa il corriere e riversa a te. L'unica commissione che esiste in Sailo è lo {{fee_range}}% sul valore dei prodotti quando il pagamento è con carta, e la carta richiede il piano Business da {{business_monthly}} USD al mese con un account Stripe approvato.
+Su questo canale Sailo non prende nessuna commissione e non tocca mai il denaro: incassa il corriere e riversa a te. L'unica commissione che esiste in Sailo è lo {{fee_range}}% sul valore dei prodotti quando il pagamento è con carta, e la carta richiede un account Stripe approvato.
 
 Il limite, detto chiaro: **il contrassegno in Sailo è un campo di note e nient'altro.** Sailo non sa se il corriere ha consegnato, non sa se il pacco è stato rifiutato, non sa quando il riversamento è arrivato sul tuo conto e non riconcilia niente. Quella riconciliazione sei tu, seduto col report del corriere e il tuo estratto conto, una volta a settimana. Se non la fai, un contrassegno incassato dal corriere e mai riversato può restare invisibile per mesi, e succede più spesso di quanto dovrebbe.
 

@@ -188,7 +188,7 @@ Sailo ti da tisto eno povezavo, z izdelki, cenami in naročilom. Naslov je sailo
 
 Načini plačila, ki jih lahko vklopiš, so natanko ti: kartica, WhatsApp, Telegram, Instagram, e-pošta, telefon, bančno nakazilo in povzetje. To je celoten seznam. Pri nakazilu vpišeš ime banke, ime prejemnika, številko računa, IBAN, SWIFT ali BIC in svoja navodila v prosto besedilo, priliv pa potrdiš ti. Pri povzetju imaš polje za opombe o dostavi. Kaj v to prosto polje sploh napisati, je razdelano v besedilu o [sprejemanju plačil z nakazilom](/sl/blog/placilo-z-nakazilom).
 
-Pri vseh ročnih načinih Sailo ne vzame ničesar in se denarja ne dotakne. Pri kartici vzame {{fee_range}} odstotka od vrednosti blaga po popustu, brez dostave in brez davka, in ta odstotek je enak na vseh paketih. Kartica zahteva paket Business, {{business_monthly}} dolarja na mesec ali {{business_yearly}} dolarja na leto, in račun Stripe, ki ga je Stripe odobril za sprejemanje plačil. Denar pri tem pristane na tvojem računu Stripe in ne na Sailovem.
+Pri vseh ročnih načinih Sailo ne vzame ničesar in se denarja ne dotakne. Pri kartici vzame {{fee_range}} odstotka od vrednosti blaga po popustu, brez dostave in brez davka, in ta odstotek je enak na vseh paketih. Kartica zahteva račun Stripe, ki ga je Stripe odobril za sprejemanje plačil. Denar pri tem pristane na tvojem računu Stripe in ne na Sailovem.
 
 Brezplačni paket je {{free_products}} izdelkov, {{free_analytics_days}} dni statistike in vsi ročni načini plačila. Paket Pro je {{pro_monthly}} dolarja na mesec ali {{pro_yearly}} dolarja na leto, {{pro_products}} izdelkov, leto dni statistike, izvoz v CSV in brez Sailove oznake.
 

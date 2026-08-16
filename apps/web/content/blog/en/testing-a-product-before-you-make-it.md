@@ -141,7 +141,7 @@ Only the first one means stop. The other three mean adjust and rerun, and rerunn
 
 Sailo will carry the listing, the options and the order, and on the manual rails, bank transfer, cash on delivery, or an order that arrives through WhatsApp, it never touches the money. That's the right shape for a pre-order, because the deposits sit in your own account where you can send them straight back.
 
-It also means the work is yours. Nothing tells you a transfer arrived and nothing sends a refund. If your test fails with 22 deposits in hand, that's 22 manual refunds and about an hour of your evening. Card payments, where refunds are a button, need the Business plan at ${{business_monthly}} a month and a Stripe account that Stripe has cleared, which takes days rather than minutes and is not something to start the week of your launch.
+It also means the work is yours. Nothing tells you a transfer arrived and nothing sends a refund. If your test fails with 22 deposits in hand, that's 22 manual refunds and about an hour of your evening. Card payments, where refunds are a button, need a Stripe account that Stripe has cleared, which takes days rather than minutes and is not something to start the week of your launch.
 
 ## Have three conversations tonight
 

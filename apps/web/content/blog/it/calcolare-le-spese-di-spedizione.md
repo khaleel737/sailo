@@ -120,7 +120,7 @@ Sul sistema di incasso c'è una cosa da sapere, e va detta in tutti e due i vers
 
 La commissione di Sailo sulla carta è lo {{fee_range}}% sul valore dei prodotti dopo lo sconto, **esclusa la spedizione**. Quindi Sailo non prende un centesimo di quello che incassi di trasporto, e sulla carta la spedizione ti resta intera. Il rovescio: Sailo non fa niente per aiutarti a pagarla. Non ha nessuna integrazione con i corrieri, non calcola le tariffe al posto tuo, non conosce il tuo listino. Il numero della spedizione è aritmetica tua, margine tuo, e va scritto a mano.
 
-La carta, comunque, richiede il piano Business da {{business_monthly}} USD al mese e un account Stripe approvato per gli incassi. Sul bonifico e sul contrassegno Sailo non prende niente e non tocca mai il denaro.
+La carta, comunque, richiede un account Stripe approvato per gli incassi. Sul bonifico e sul contrassegno Sailo non prende niente e non tocca mai il denaro.
 
 ## Da fare oggi
 

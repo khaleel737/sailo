@@ -107,7 +107,7 @@ Ako cijela tvoja prodaja stoji na jednoj takvoj aplikaciji, reci si to iskreno n
 | Obična uplata | Isti ili sljedeći radni dan, ovisno o vremenu presjeka | Ništa iznad naknada tvoje banke | Kupac koji se nestrpi dok čeka |
 | Instant uplata | U nekoliko sekundi, kad obje banke podržavaju | Naknadu snosi kupac, ako je ima | Ne nude je sve banke i ne za svaki iznos |
 | Pouzeće | Nekoliko dana nakon uručenja, kad prijevoznik doznači | Naknada prijevoznika i rizik odbijanja | Odbijena pošiljka i trošak u oba smjera |
-| Kartica | Nakon obrade kod Stripea, na tvoj Stripe račun | Stripeova naknada plus {{fee_range}} % za Sailo | Traži plan Business i odobren račun |
+| Kartica | Nakon obrade kod Stripea, na tvoj Stripe račun | Stripeova naknada plus {{fee_range}} % za Sailo | Traži Stripe račun odobren za naplatu |
 
 Ta tablica je jedino mjesto na kojem se načine plaćanja isplati uspoređivati, jer usporedba po „praktičnosti" ne daje ništa. Bitan je trenutak u kojem je novac tvoj i ono što se dogodi kad transakcija pođe po zlu.
 

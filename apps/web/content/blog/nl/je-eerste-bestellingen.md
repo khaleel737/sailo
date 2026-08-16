@@ -100,7 +100,7 @@ Twee getallen, meer niet. Hoeveel mensen kwamen op je pagina, en hoeveel besteld
 
 Van die twee leer je waar je probleem zit. Weinig bezoekers en een redelijk deel dat bestelt betekent dat je product en je pagina kloppen en dat je meer mensen moet bereiken. Veel bezoekers en bijna niemand die bestelt betekent dat het aan de pagina ligt: de prijs staat er niet duidelijk, de foto's zijn onduidelijk, of het is niet helder hoe verzenden werkt.
 
-Op het gratis abonnement zie je 30 dagen aan cijfers. Voor deze fase is dat genoeg, want je kijkt toch naar deze week en vorige week. Pro geeft een jaar en Business drie jaar, wat pas gaat tellen als je seizoenen wilt vergelijken.
+Op het gratis abonnement zie je {{free_analytics_days}} dagen aan cijfers. Voor deze fase is dat genoeg, want je kijkt toch naar deze week en vorige week. Pro geeft een jaar en Business drie jaar, wat pas gaat tellen als je seizoenen wilt vergelijken.
 
 Wat je niet moet doen is elke dag kijken. Eén keer per week, op dezelfde dag, en schrijf de twee getallen op in een schrift. Dagelijkse cijfers bij lage aantallen zijn ruis en ze maken je zenuwachtig zonder je iets te leren.
 
@@ -126,7 +126,7 @@ Wel: een link op sailo.store/jouwnaam die live staat op het moment dat je je aan
 
 Niet: publiek. Die link is live én leeg op dag één, en er komt niemand langs die niet door jou is gestuurd. Sailo verkoopt niets voor je, adverteert niet voor je en heeft geen zoekbalk waar Nederlanders in typen. Dat is het echte werk van je eerste maand en dat kan geen enkel hulpmiddel van je overnemen.
 
-Ook niet: iDEAL, zoals hierboven. En op bankoverboeking, rembours en berichtenbestellingen rekent Sailo geen commissie en raakt het het geld nooit aan. De enige commissie is {{fee_range}}% over de productwaarde bij kaartbetalingen, en die zitten alleen op Business van ${{business_monthly}} per maand met een goedgekeurde Stripe-account. Stripe is in Nederland beschikbaar, gecontroleerd op 6 augustus 2026 op stripe.com/global.
+Ook niet: iDEAL, zoals hierboven. En op bankoverboeking, rembours en berichtenbestellingen rekent Sailo geen commissie en raakt het het geld nooit aan. De enige commissie is {{fee_range}}% over de productwaarde bij kaartbetalingen, en die vragen alleen een goedgekeurde Stripe-account. Stripe is in Nederland beschikbaar, gecontroleerd op 6 augustus 2026 op stripe.com/global.
 
 In je eerste maand is dat abonnement bijna zeker weggegooid geld. Bij tien bestellingen van €12,50 praat je over €125 aan omzet en ${{business_monthly}} aan kosten. Begin gratis.
 

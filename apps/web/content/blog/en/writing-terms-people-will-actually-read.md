@@ -108,7 +108,7 @@ What Sailo will not do is enforce a single line of it.
 
 On bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email and phone orders, Sailo never touches the money. There's no escrow, no hold, no balance to claw back, and no dispute team. If your terms say a deposit is non-refundable and the buyer disagrees, that conversation is entirely between you and them. Sailo can't even tell you the transfer arrived. Only your bank can.
 
-Card is the exception and it has its own shape. It needs the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, the money lands in your own Stripe account, and Sailo takes {{fee_range}}% of the goods after discounts, excluding delivery and tax. Card also brings chargebacks, which run on the card networks' rules rather than on your terms. A well-written returns policy helps you argue a chargeback. It doesn't decide it.
+Card is the exception and it has its own shape. It needs a Stripe account cleared for charges, the money lands in your own Stripe account, and Sailo takes {{fee_range}}% of the goods after discounts, excluding delivery and tax. Card also brings chargebacks, which run on the card networks' rules rather than on your terms. A well-written returns policy helps you argue a chargeback. It doesn't decide it.
 
 So the honest framing: your terms are a communication tool backed by your own willingness to honour them, plus whatever your payment rail gives you. On manual rails that's nothing, which is exactly why the words have to be clear enough that you never need to fall back on them.
 

@@ -113,7 +113,7 @@ Sailo vous donne une page à l'adresse sailo.store/votrenom, en ligne dès l'ins
 
 C'est exactement l'inverse de Vinted, et c'est à la fois le défaut et l'intérêt.
 
-Le reste est simple. Sur virement, paiement à la livraison, WhatsApp, Instagram, Telegram, e-mail et téléphone, Sailo ne touche jamais l'argent et ne prend aucune commission. La seule commission qui existe est de {{fee_range}} % sur la valeur des produits quand l'acheteur paie par carte, hors livraison et hors taxes, et le paiement par carte demande la formule Business à {{business_monthly}} $ par mois avec un compte Stripe validé. Stripe est disponible en France au 6 août 2026, donc la carte fonctionne réellement ici, mais revérifiez à votre date.
+Le reste est simple. Sur virement, paiement à la livraison, WhatsApp, Instagram, Telegram, e-mail et téléphone, Sailo ne touche jamais l'argent et ne prend aucune commission. La seule commission qui existe est de {{fee_range}} % sur la valeur des produits quand l'acheteur paie par carte, hors livraison et hors taxes, et le paiement par carte demande un compte Stripe validé. Stripe est disponible en France au 6 août 2026, donc la carte fonctionne réellement ici, mais revérifiez à votre date.
 
 Faites le calcul avec les chiffres de Léa. Sur son panier de 25 €, la commission carte représente environ 12 centimes. Sur 6 ventes par mois, l'abonnement à {{business_monthly}} $ représente environ 3,30 $ par vente. C'est l'abonnement qui coûte, pas la commission, et c'est vrai tant que le volume ne monte pas. Tant qu'elle est à 6 ventes, l'encaissement par virement, sans abonnement, est le choix raisonnable.
 

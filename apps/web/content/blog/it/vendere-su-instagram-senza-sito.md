@@ -130,7 +130,7 @@ Adesso la parte che devi sapere prima di iscriverti.
 
 **Sailo non ha nessun canale di pagamento italiano.** Niente Satispay, niente PostePay, niente PayPal, niente automazione del bonifico. La lista completa dei canali è questa e non ce ne sono altri: carta, WhatsApp, Telegram, Instagram, email, telefono, bonifico, contrassegno. Se tu incassi con Satispay, quello che puoi fare è scrivere il tuo riferimento nel campo istruzioni del bonifico, che è testo libero, e confermare tu il pagamento quando lo vedi. Funziona tutti i giorni. È una soluzione manuale, non una funzionalità, e chiamarla in un altro modo sarebbe prenderti in giro.
 
-Sul bonifico e sul contrassegno Sailo non prende niente e non tocca mai il denaro: va dal compratore a te, diretto. L'unica commissione che esiste è lo {{fee_range}}% sul valore dei prodotti quando il pagamento è con carta, calcolata dopo lo sconto ed esclusa la spedizione. La carta richiede il piano Business, {{business_monthly}} USD al mese, e un account Stripe approvato per gli incassi. Stripe in Italia c'è, verificato il 6 agosto 2026, ma la lista dei paesi si muove e vale la pena ricontrollarla prima di contare su quella riga.
+Sul bonifico e sul contrassegno Sailo non prende niente e non tocca mai il denaro: va dal compratore a te, diretto. L'unica commissione che esiste è lo {{fee_range}}% sul valore dei prodotti quando il pagamento è con carta, calcolata dopo lo sconto ed esclusa la spedizione. La carta richiede un account Stripe approvato per gli incassi. Stripe in Italia c'è, verificato il 6 agosto 2026, ma la lista dei paesi si muove e vale la pena ricontrollarla prima di contare su quella riga.
 
 Il piano gratuito arriva a {{free_products}} prodotti e {{free_analytics_days}} giorni di statistiche.
 

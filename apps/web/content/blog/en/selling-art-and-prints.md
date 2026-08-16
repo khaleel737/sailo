@@ -130,7 +130,7 @@ What lifts you off the floor:
 
 The full costing method, including your time and the failure rate, is in [how to price what you make](/en/blog/how-to-price-what-you-make). The print-specific line item people forget is the reject rate: about one sheet in fifteen comes back with a mark, a roller line or a colour problem, and that's a real 7% on your paper cost.
 
-On getting paid, most print buyers expect to pay by card, because they're buying from a stranger on the internet and there's no relationship yet. Card is {{fee_range}}% of the goods on Sailo, taken after any discount and excluding delivery and tax, which is 26 cents on a $52 print, and it needs the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges. Bank transfer, cash at a market stall, and orders that come in by WhatsApp, Instagram DM, Telegram, email or phone cost you nothing at all, because Sailo never touches that money. If you sell mostly at fairs and to people you've met, that's your whole payment system and you don't need the subscription yet.
+On getting paid, most print buyers expect to pay by card, because they're buying from a stranger on the internet and there's no relationship yet. Card is {{fee_range}}% of the goods on Sailo, taken after any discount and excluding delivery and tax, which is 26 cents on a $52 print, and it needs a Stripe account cleared for charges. Bank transfer, cash at a market stall, and orders that come in by WhatsApp, Instagram DM, Telegram, email or phone cost you nothing at all, because Sailo never touches that money. If you sell mostly at fairs and to people you've met, that's your whole payment system and you don't need the subscription yet.
 
 ## What to do next
 

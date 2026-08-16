@@ -159,7 +159,7 @@ Two things reduce your margin further, and both are calculated after the discoun
 
 **Platform commission,** if any. Worth knowing exactly what yours is charged on.
 
-For Sailo specifically, since this is the article where the number actually matters: card orders carry a {{fee_range}}% platform fee, taken on the **goods after discount, excluding delivery and tax**. On Meera's discounted ₹1,160 kurta that's about ₹5.80. That's not the number that hurts. The number that hurts is that card payments need the Business plan at ${{business_monthly}} a month, and that subscription doesn't get cheaper because you had a bad sale. Manual rails, including the UPI transfer she actually uses, carry no Sailo commission at all, because Sailo never touches that money. Coupon codes are also a Business plan feature, so on the free and Pro plans a discount is you changing the price and changing it back, by hand, on the day.
+For Sailo specifically, since this is the article where the number actually matters: card orders carry a {{fee_range}}% platform fee, taken on the **goods after discount, excluding delivery and tax**. On Meera's discounted ₹1,160 kurta that's about ₹5.80. That's not the number that hurts. The number that hurts is the rate itself: {{fee_free}}% on the free plan, and it doesn't get cheaper because you had a bad sale. Manual rails, including the UPI transfer she actually uses, carry no Sailo commission at all, because Sailo never touches that money. Coupon codes are also a Business plan feature, so on the free and Pro plans a discount is you changing the price and changing it back, by hand, on the day.
 
 That's a real constraint and it argues for the manual version at her volume, not for the upgrade.
 

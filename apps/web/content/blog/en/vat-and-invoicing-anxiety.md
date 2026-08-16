@@ -146,7 +146,7 @@ Sailo applies the rate you type in. It does not know German rules, does not deci
 
 And there is no Impressum page in Sailo. The shop has a description, a location and a contact email, all of which print on the invoice, and whether that constitutes a compliant Impressum is a question for a German lawyer rather than for a shop platform. Plan on hosting that page somewhere you control and linking it from your bio and your shop description.
 
-One more, unrelated to Germany but relevant to the cost of all this: card payments need the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods on card sales. At 150 orders a month averaging €8, that {{fee_range}}% is small change and the subscription is the real number. At 15 orders a month it isn't worth turning on.
+One more, unrelated to Germany but relevant to the cost of all this: card payments need a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods on card sales. At 150 orders a month averaging €8, that {{fee_range}}% is small change and the subscription is the real number. At 15 orders a month it isn't worth turning on.
 
 ## Do this, in this order
 

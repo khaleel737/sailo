@@ -76,7 +76,7 @@ Tatlong paraan lang ang aktwal na ginagamit ng maliliit na nagbebenta dito, at h
 | --- | --- | --- | --- |
 | COD | Pagkatapos ma-deliver at pagkatapos mag-remit ng courier, bawas ang fee nila | Ang courier, tapos ikaw sa remittance report | Wala |
 | Bank transfer o GCash sa pagitan ninyo | Bago mo pa ipadala, kung hihintayin mo bago mag-pack | Ikaw, sa app mismo ng bangko o GCash mo | Wala |
-| Card | Diretso sa sarili mong Stripe account | Awtomatiko | {{fee_range}}% ng halaga ng paninda, at kailangan ng Business plan |
+| Card | Diretso sa sarili mong Stripe account | Awtomatiko | {{fee_range}}% ng halaga ng paninda, at kailangan ng Stripe account na na-approve |
 
 ### COD ang hinihingi bago pa magtanong ng presyo
 
@@ -98,7 +98,7 @@ Isa pang bagay na maganda sa bank transfer dito: sa Pilipinas, ang ika-15 at ang
 
 Nasa Stripe lang ang card rail ng Sailo. Noong 6 Agosto 2026, sa stripe.com/global, wala ang Pilipinas sa listahan ng mga bansang suportado ng Stripe. Ang ibig sabihin, maaaring hindi mo makuha ang card button kahit anong plan ang bayaran mo, pati na ang Business plan na ${{business_monthly}} kada buwan.
 
-'Wag kang magbabayad ng Business plan para maghintay na lumitaw 'yon. Nagbabago ang listahan ng Stripe, kaya buksan mo mismo ang stripe.com/global para i-check bago ka magdesisyon ng kahit ano.
+'Wag kang magbabayad ng kahit anong plan para maghintay na lumitaw 'yon. Nagbabago ang listahan ng Stripe, kaya buksan mo mismo ang stripe.com/global para i-check bago ka magdesisyon ng kahit ano.
 
 Kung ako sa'yo, hindi ako magpapanic diyan. Ganito kasi ang totoo: ang dalawang paraan na talagang bumubuhay ng negosyo mo, ang COD at ang bank transfer, ay eksaktong dalawang paraan na walang kinukuha ang Sailo. Hindi nito hinahawakan ang pera mo at wala itong komisyon doon. Ang card lang ang may {{fee_range}}% sa halaga ng paninda pagkatapos ng diskwento, hindi kasama ang delivery at buwis, at 'yon lang ang parte na malabo dito ngayon.
 

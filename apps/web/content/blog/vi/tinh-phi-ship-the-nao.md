@@ -169,11 +169,11 @@ Các cách nhận đơn và nhận tiền có trong Sailo, đầy đủ: thẻ, 
 
 Về phí: với chuyển khoản, COD và các kênh nhắn tin, Sailo không chạm vào tiền và không thu gì cả. Với thẻ, Sailo thu {{fee_range}}% trên giá trị hàng sau giảm giá, **không tính trên phí giao hàng và thuế**. Nghĩa là 35.000₫ tiền ship trong đơn của Quân không bị tính phí đồng nào.
 
-Kèm theo đó là điều bạn nên biết trước khi trả tiền cho bất cứ gói nào. Kênh thẻ của Sailo chạy qua Stripe và chỉ qua Stripe. Tính đến tháng 8 năm 2026, Việt Nam không nằm trong danh sách quốc gia Stripe hỗ trợ. Nghĩa là nút thanh toán thẻ có thể không dùng được với một người bán ở Việt Nam, dù bạn có trả {{business_monthly}} USD/tháng cho gói Business hay không. Đừng mua gói Business vì mong có nút thẻ. Danh sách quốc gia của Stripe có thay đổi, nên nếu chuyện này quan trọng với bạn thì tự kiểm tra ở stripe.com/global.
+Kèm theo đó là điều bạn nên biết trước khi trả tiền cho bất cứ gói nào. Kênh thẻ của Sailo chạy qua Stripe và chỉ qua Stripe. Tính đến tháng 8 năm 2026, Việt Nam không nằm trong danh sách quốc gia Stripe hỗ trợ. Nghĩa là nút thanh toán thẻ có thể không dùng được với một người bán ở Việt Nam, dù bạn có trả {{business_monthly}} USD/tháng cho gói Business hay không. Đừng mua gói nào vì mong có nút thẻ. Danh sách quốc gia của Stripe có thay đổi, nên nếu chuyện này quan trọng với bạn thì tự kiểm tra ở stripe.com/global.
 
 Với người bán cà phê ở Buôn Ma Thuột thì điều đó không đổi được gì nhiều, vì tiền vẫn về qua COD và chuyển khoản như bấy lâu nay. Nhưng nó có nghĩa là bảng phí ship của bạn phải đúng, vì COD là nơi toàn bộ số tiền được thu, một lần, tại cửa.
 
-Gói miễn phí 0 USD cho {{free_products}} sản phẩm và 30 ngày số liệu, không có thẻ. Với một người bán cà phê có bốn loại hạt và ba mức xay, hai mươi sản phẩm là thoải mái. Với người bán quần áo thì không.
+Gói miễn phí 0 USD cho {{free_products}} sản phẩm và {{free_analytics_days}} ngày số liệu, và thẻ ở mức {{fee_free}}%. Với một người bán cà phê có bốn loại hạt và ba mức xay, hai mươi sản phẩm là thoải mái. Với người bán quần áo thì không.
 
 ## Việc cần làm hôm nay
 

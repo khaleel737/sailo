@@ -10,7 +10,7 @@ tags: [payments, cards]
 
 Every guide to selling online assumes you'll take cards, and most of them are written by companies that process them. So the honest answer gets skipped: for a lot of small sellers, cards are a cost with no matching benefit, and turning them on early is one of the more expensive mistakes available.
 
-If you're doing fewer than about twenty card-eligible orders a month, you almost certainly don't need them. Card payments on Sailo need the Business plan at ${{business_monthly}} a month, plus {{fee_range}}% of the goods, plus whatever your processor charges. At eight orders a month averaging $30, that ${{business_monthly}} works out at 8.3% of your card revenue before a single processing fee. No gateway on earth charges 8.3%.
+If you're doing fewer than about twenty card-eligible orders a month, you almost certainly don't need them. Card payments on Sailo carry {{fee_range}}% of the goods, plus whatever your processor charges. At eight orders a month averaging $30, that ${{business_monthly}} works out at 8.3% of your card revenue before a single processing fee. No gateway on earth charges 8.3%.
 
 At sixty orders a month it's 1.1%, and the same subscription is one of the better deals you'll find. Same product, same plan, opposite verdict. Which side of that you're on is arithmetic, and it takes four minutes.
 
@@ -59,7 +59,7 @@ If that's you, don't buy it. Take bank transfers, take cash, take chat orders, a
 
 Two things can make the table irrelevant in either direction.
 
-**The Business plan isn't only cards.** It's also unlimited products against the free plan's twenty, three years of analytics, coupons and affiliates. If you were going to pay for it anyway because you have eighty products, the cards are effectively free and the table above is answering the wrong question. Check what else is in the plan on the [Sailo pricing section](/#pricing) before you treat ${{business_monthly}} purely as a card fee.
+**The Business plan isn't only a lower card rate.** It's also unlimited products against the free plan's {{free_products}}, three years of analytics, affiliates and broadcasts. If you were going to pay for it anyway because you have eighty products, the cards are effectively free and the table above is answering the wrong question. Check what else is in the plan on the [Sailo pricing section](/#pricing) before you treat ${{business_monthly}} purely as a card fee.
 
 **Cards bring chargebacks, and the other rails don't.** A buyer who paid by transfer cannot reverse it unilaterally. A card buyer can, months later, and you pay a dispute fee whether you win or lose. Stripe's European pricing page in August 2026 listed a €20 dispute received fee, and a further €20 to counter one, refunded only if you win. On a £29 order, one dispute costs you the goods, the shipping and the fee, so it wipes out the margin on several successful orders.
 

@@ -129,7 +129,7 @@ And if you are making one reel a week and it is taking you three hours, that is 
 
 Sailo's free plan is $0, holds {{free_products}} products, and takes no commission on WhatsApp, Instagram, Telegram, bank transfer, cash on delivery, email or phone orders, because Sailo never touches the money on those rails.
 
-Card is the paid one. It needs the Business plan at ${{business_monthly}} a month plus a Stripe account that Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after any discount and excluding delivery and tax. On Layla's AED 120 roller that is around 60 fils to Sailo, plus Stripe's own fee.
+Card is the paid one. It needs a Stripe account that Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after any discount and excluding delivery and tax. On Layla's AED 120 roller that is around 60 fils to Sailo, plus Stripe's own fee.
 
 For her, though, the honest position is that she does not use it. Her buyers pay by bank transfer or on delivery, the way Gulf buyers largely do, and Sailo cannot tell her when a transfer lands. Her bank can. She checks in the evening and marks orders paid herself, and on that setup Sailo earns nothing from her at all. If your buyers are the same, stay on the free plan until somebody actually asks to pay by card.
 

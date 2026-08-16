@@ -135,11 +135,11 @@ Link działa od razu po rejestracji i wygląda tak: sailo.store/twojanazwa. Wkle
 
 Zamówienie z WhatsAppa przychodzi do ciebie gotowe: produkt, warianty, adres i suma w jednej wiadomości. Przy dziesiątym zamówieniu w tygodniu to jest różnica między dwiema godzinami a dwudziestoma minutami.
 
-Metody płatności, które istnieją, to karta, WhatsApp, Telegram, Instagram, e-mail, telefon, przelew bankowy i pobranie. Na wszystkich poza kartą Sailo nie bierze prowizji i w ogóle nie dotyka pieniędzy. Karta kosztuje {{fee_range}}% wartości towaru po rabacie, bez dostawy i bez podatku, i wymaga planu Business za {{business_monthly}} USD miesięcznie oraz konta Stripe zaakceptowanego do przyjmowania płatności.
+Metody płatności, które istnieją, to karta, WhatsApp, Telegram, Instagram, e-mail, telefon, przelew bankowy i pobranie. Na wszystkich poza kartą Sailo nie bierze prowizji i w ogóle nie dotyka pieniędzy. Karta kosztuje {{fee_range}}% wartości towaru po rabacie, bez dostawy i bez podatku, i wymaga konta Stripe zaakceptowanego do przyjmowania płatności.
 
 Opinie działają na każdym planie, także darmowym. Kupujący zostawia imię, ocenę od 1 do 5 i opcjonalny tekst, a nic nie pojawia się publicznie, dopóki tego nie zatwierdzisz.
 
-Plan darmowy to {{free_products}} produktów i 30 dni statystyk. Na pierwsze dziesięć zamówień to więcej, niż potrzebujesz.
+Plan darmowy to {{free_products}} produktów i {{free_analytics_days}} dni statystyk. Na pierwsze dziesięć zamówień to więcej, niż potrzebujesz.
 
 ## Czego to nie zrobi
 
@@ -147,7 +147,7 @@ Sailo nie przyprowadzi ci ani jednej osoby. Daje ci sklep pod adresem, a nie lud
 
 Nie ma BLIK-a, Przelewów24 ani PayU. Jeśli twoi kupujący pytają o BLIK-a, będziesz podawać numer w instrukcjach do przelewu i sam odhaczać wpłaty na wyciągu. To działa, ale to obejście, a nie funkcja, i szczegóły opisałem w tekście o tym, [jak przyjmować płatności przelewem](/pl/blog/platnosc-przelewem-jak-przyjmowac).
 
-Karta na starcie jest zwykle wydatkiem, nie inwestycją. Przy siedmiu zamówieniach miesięcznie po 120 zł plan Business za {{business_monthly}} USD musi się zwrócić z marży z tych siedmiu zamówień, a cennik jest w dolarach, więc dochodzi jeszcze kurs. Zacznij od przelewu.
+Karta na starcie jest zwykle wydatkiem, nie inwestycją. Przy siedmiu zamówieniach miesięcznie po 120 zł plan Business za {{business_monthly}} USD musi się zwrócić z niższej prowizji od karty, a cennik jest w dolarach, więc dochodzi jeszcze kurs. Zacznij od przelewu.
 
 ## Co zrobić w ciągu najbliższych siedmiu dni
 

@@ -162,7 +162,7 @@ Perlu jelas supaya harapanmu benar. **Link toko nggak mendatangkan siapa-siapa.*
 
 Kalau kamu justru ingin berjualan di tempat yang pembelinya sudah ada di dalam, itu keputusan berbeda dengan pertukaran yang berbeda pula, dan [jualan di marketplace atau toko sendiri](/id/blog/toko-sendiri-atau-marketplace) membahasnya jujur di kedua arah.
 
-Dua batasan lain yang relevan di awal. Paket gratis menyimpan data kunjungan 30 hari, jadi kamu nggak bisa membandingkan bulan ini dengan tiga bulan lalu sampai kamu naik paket. Dan pembayaran kartu butuh paket Business seharga USD {{business_monthly}} per bulan plus akun Stripe yang sudah disetujui, sementara Stripe mencantumkan Indonesia sebagai "preview" yang artinya undangan, bukan pendaftaran terbuka. Jadi jangan menyusun rencana yang bergantung pada tombol kartu. Untuk pembeli pertamamu, transfer dan COD sudah cukup, dan sebenarnya lebih dipercaya.
+Dua batasan lain yang relevan di awal. Paket gratis menyimpan data kunjungan {{free_analytics_days}} hari, jadi kamu nggak bisa membandingkan bulan ini dengan tiga bulan lalu sampai kamu naik paket. Dan pembayaran kartu butuh akun Stripe yang sudah disetujui, sementara Stripe mencantumkan Indonesia sebagai "preview" yang artinya undangan, bukan pendaftaran terbuka. Jadi jangan menyusun rencana yang bergantung pada tombol kartu. Untuk pembeli pertamamu, transfer dan COD sudah cukup, dan sebenarnya lebih dipercaya.
 
 ## Yang kamu kerjakan hari ini
 

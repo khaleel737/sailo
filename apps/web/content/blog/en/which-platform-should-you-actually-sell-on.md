@@ -125,7 +125,7 @@ Your own link brings you zero buyers. Not a few. None. Every visitor arrives bec
 
 And if your last ten orders came from a WhatsApp group of forty neighbours who all know you, the honest answer is to keep doing exactly that and build nothing. Some businesses genuinely don't need a shop page yet. You'll know when you do, because you'll start typing the same price more than ten times a week.
 
-When you do want one, the free plan is $0 with {{free_products}} products, {{free_analytics_days}} days of analytics and no commission on bank transfer, cash on delivery, or chat orders, because Sailo never touches the money. Card payments are the exception: they need the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods after discounts, excluding delivery and tax. There's no mobile money rail, so GCash, M-Pesa and UPI stay yours to reconcile. If most of your orders are cash on delivery in Manila or bank transfers in Lagos, the paid plan buys you very little and you should stay on free until the product cap bites.
+When you do want one, the free plan is $0 with {{free_products}} products, {{free_analytics_days}} days of analytics and no commission on bank transfer, cash on delivery, or chat orders, because Sailo never touches the money. Card payments are the exception: they need a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods after discounts, excluding delivery and tax. There's no mobile money rail, so GCash, M-Pesa and UPI stay yours to reconcile. If most of your orders are cash on delivery in Manila or bank transfers in Lagos, the paid plan buys you very little and you should stay on free until the product cap bites.
 
 ## Do this on Monday
 

@@ -106,7 +106,7 @@ Sailo har egne felt for banknavn, kontohaver, kontonummer, IBAN, SWIFT eller BIC
 
 Betaling ved levering er mer brukbart enn nordmenn tror, men ikke som postoppkrav. Det er henting. Selger du lokalt og halvparten av kjøperne dine bor i samme by, er «hent hos meg, betal når du henter» den raskeste ordren du kan lage, og det er null gebyr i begge ender.
 
-Kort finnes også, og det fungerer her. Det krever Business-planen til {{business_monthly}} dollar i måneden eller {{business_yearly}} dollar i året, pluss en Stripe-konto som Stripe har godkjent for betalinger. Stripe er tilgjengelig i Norge, sjekket 6. august 2026 på stripe.com/global, men den listen flytter seg, så sjekk selv før du betaler for noe. Sailo tar da {{fee_range}} prosent av varene etter rabatt, uten frakt og uten mva. Stripes eget gebyr kommer i tillegg og står på deres egen prisside.
+Kort finnes også, og det fungerer her. Det krever en Stripe-konto som Stripe har godkjent for betalinger. Stripe er tilgjengelig i Norge, sjekket 6. august 2026 på stripe.com/global, men den listen flytter seg, så sjekk selv før du betaler for noe. Sailo tar da {{fee_range}} prosent av varene etter rabatt, uten frakt og uten mva. Stripes eget gebyr kommer i tillegg og står på deres egen prisside.
 
 Bare vær klar over hva du kjøper. En kortknapp, ikke en Vipps-knapp.
 

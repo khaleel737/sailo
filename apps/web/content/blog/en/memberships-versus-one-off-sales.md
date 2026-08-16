@@ -129,7 +129,7 @@ Before you commit to a membership, answer one question about whatever tool you p
 
 On Sailo the payment rails are card, WhatsApp, Telegram, Instagram, email, phone, bank transfer and cash on delivery. That's the complete list. Every one of the manual rails means you confirm each payment yourself, so a membership run on bank transfer is a reminder you send and a payment you verify, multiplied by your member count, on roughly the same day every month.
 
-Card is the rail that finishes the job without you, and it has a price attached. It needs Sailo's Business plan at ${{business_monthly}} a month plus a Stripe account Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on top of Stripe's own fee. On a ₹499 charge the {{fee_range}}% is about ₹2.50. That's not the cost. The cost is the ${{business_monthly}}, which at 143 members is trivial and at 12 members is most of your margin.
+Card is the rail that finishes the job without you, and it has a price attached. It needs a Stripe account Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on top of Stripe's own fee. On a ₹499 charge the {{fee_range}}% is about ₹2.50. That's not the cost. The cost is the ${{business_monthly}}, which at 143 members is trivial and at 12 members is most of your margin.
 
 Failed payments are the part that surprises people. Cards expire. Banks decline things. Every declined renewal is a message you have to write, and it's an awkward one, because you're asking someone to pay you again for something they may have forgotten they subscribed to.
 

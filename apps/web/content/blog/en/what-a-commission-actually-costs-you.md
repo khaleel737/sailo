@@ -109,7 +109,7 @@ Most of her buyers pay by M-Pesa till number, which is how Kenyan small business
 
 Here's where the honest comparison gets awkward. Sailo has no M-Pesa rail. None. She can put her till number and paybill instructions in the bank transfer instructions field, and it works, and her buyers see the registered business name before they confirm. But that's a workaround using a text box, not an integration, and I'm not going to call it a payment method.
 
-For her card orders, Sailo's card option needs the ${{business_monthly}} Business plan, and that's billed in dollars on a card, which for a Kenyan seller is its own small monthly annoyance with a conversion spread attached. She has maybe eight card orders a month. That's KSh 14,400 of card volume, which at any plausible exchange rate is well short of the $444 of monthly sales where a ${{business_monthly}} plan starts beating a 5% commission.
+For her card orders, Sailo's card option is on every plan, though an upgrade is billed in dollars on a card, which for a Kenyan seller is its own small monthly annoyance with a conversion spread attached. She has maybe eight card orders a month. That's KSh 14,400 of card volume, which at any plausible exchange rate is well short of the $444 of monthly sales where a ${{business_monthly}} plan starts beating a 5% commission.
 
 So the honest recommendation for Wanjiru is that she should not pay for card at all this year. She takes M-Pesa on a free plan, hands her international buyers a payment link some other way, and keeps her KSh 129,600. That's the answer even though it's the answer that sells nothing.
 
@@ -129,7 +129,7 @@ The dividing question is always the same. Would this order have happened without
 
 Nothing on the manual rails. Bank transfer, cash on delivery, and orders handed off to WhatsApp, Instagram, Telegram, email or phone cost zero per order, on every plan including free, because Sailo never holds that money.
 
-On card, {{fee_range}}% of the goods, after discounts, excluding delivery and tax, taken as a Stripe application fee. The charge lands in your own Stripe account. Card requires the Business plan at ${{business_monthly}}/mo or ${{business_yearly}}/yr, plus a Stripe account Stripe has cleared for charges.
+On card, {{fee_range}}% of the goods, after discounts, excluding delivery and tax, taken as a Stripe application fee. The charge lands in your own Stripe account. Card requires a Stripe account Stripe has cleared for charges.
 
 Now the parts that lose this comparison.
 

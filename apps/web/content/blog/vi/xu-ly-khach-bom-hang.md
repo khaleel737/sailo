@@ -188,7 +188,7 @@ Chuyển khoản có các ô riêng cho tên ngân hàng, tên chủ tài khoả
 
 Đánh giá sản phẩm có trên mọi gói. Khách để tên, chấm từ 1 tới 5 sao, viết chữ nếu muốn, và không có gì hiện lên trang cho tới khi bạn duyệt. Đánh giá thật của người đã mua làm giảm sự do dự ở cửa, mà do dự ở cửa chính là bom hàng.
 
-Về phí: với các kênh thủ công, gồm chuyển khoản ngân hàng, COD, WhatsApp, Instagram, Telegram, email và điện thoại, Sailo không chạm vào tiền và không thu gì cả. Riêng thanh toán thẻ có phí {{fee_range}}% trên giá trị hàng sau giảm giá, không tính phí giao hàng và thuế, thu dưới dạng Stripe application fee, và cần gói Business {{business_monthly}} USD/tháng cùng một tài khoản Stripe đã được duyệt.
+Về phí: với các kênh thủ công, gồm chuyển khoản ngân hàng, COD, WhatsApp, Instagram, Telegram, email và điện thoại, Sailo không chạm vào tiền và không thu gì cả. Riêng thanh toán thẻ có phí {{fee_range}}% trên giá trị hàng sau giảm giá, không tính phí giao hàng và thuế, thu dưới dạng Stripe application fee, và cần một tài khoản Stripe đã được duyệt.
 
 Bây giờ ba thứ Sailo không làm, nói thẳng vì bài này là bài về tiền của bạn.
 

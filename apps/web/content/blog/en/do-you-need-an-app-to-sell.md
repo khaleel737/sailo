@@ -144,7 +144,7 @@ Say what that means in practice. If you're used to a marketplace app that pings 
 
 The trade is that your buyers never install anything. They tap a link, see a price, and order, which is the entire argument of this article applied to Sailo's own product decisions.
 
-While we're on costs: card payments on Sailo need the Business plan at ${{business_monthly}} a month plus {{fee_range}}% of the goods after discount, excluding delivery and tax, and that {{fee_range}}% goes through as a Stripe application fee on a charge that lands in your own Stripe account. Bank transfer, cash on delivery and orders handed to WhatsApp, Instagram, Telegram, email or phone carry no commission at all, because Sailo never touches that money. Whether the subscription is worth it at your order count is worked out properly in [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online).
+While we're on costs: card payments on Sailo carry {{fee_range}}% of the goods after discount, excluding delivery and tax, and that {{fee_range}}% goes through as a Stripe application fee on a charge that lands in your own Stripe account. Bank transfer, cash on delivery and orders handed to WhatsApp, Instagram, Telegram, email or phone carry no commission at all, because Sailo never touches that money. Whether the subscription is worth it at your order count is worked out properly in [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online).
 
 > An app is a shortcut you ask a stranger to install before they know whether they like you. That order of operations is the whole problem.
 

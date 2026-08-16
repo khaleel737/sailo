@@ -159,7 +159,7 @@ Ang pangatlo ang pinakamadalas laktawan. Ang "sent na po" na may kasamang screen
 
 ## Ano ang kinukuha ng Sailo, at ang isang bagay na dapat mong malaman bago magbayad
 
-Sa manual na rails, kasama ang bank transfer at COD, hindi hinahawakan ng Sailo ang pera at walang kinukuha, kahit sa libreng plan. Sa card lang may {{fee_range}}% sa halaga ng produkto matapos ang diskwento, hindi kasama ang delivery at buwis, at kailangan niyon ang Business plan na ${{business_monthly}} kada buwan kasama ang Stripe account na na-clear na.
+Sa manual na rails, kasama ang bank transfer at COD, hindi hinahawakan ng Sailo ang pera at walang kinukuha, kahit sa libreng plan. Sa card lang may {{fee_range}}% sa halaga ng produkto matapos ang diskwento, hindi kasama ang delivery at buwis, at kailangan niyon ang Stripe account na na-clear na.
 
 Ngayon ang parteng dapat basahin ng lahat ng nagbebenta dito bago magbayad ng subscription kahit saan. Stripe lang ang card rail ng Sailo. **Noong 6 Agosto 2026, wala ang Pilipinas sa listahan ng suportadong bansa ng Stripe sa stripe.com/global.** Ibig sabihin, pwedeng hindi lumitaw ang card button para sa isang seller dito, kahit anong plan pa ang bayaran mo. Buksan mo mismo ang stripe.com/global para i-check, nagbabago ang listahan. Pero wag kang magbayad ngayon para lang maghintay.
 

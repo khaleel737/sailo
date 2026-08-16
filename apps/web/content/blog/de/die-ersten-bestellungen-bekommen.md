@@ -109,7 +109,7 @@ Und dann ein Detail, das in Deutschland zählt: Wenn dein Shop deutschsprachige 
 
 ## Was du misst, wenn du noch nichts zu messen hast
 
-Sailo hat eine Auswertung: 30 Tage im kostenlosen Tarif, ein Jahr bei Pro, drei Jahre bei Business.
+Sailo hat eine Auswertung: {{free_analytics_days}} Tage im kostenlosen Tarif, ein Jahr bei Pro, drei Jahre bei Business.
 
 Bei vier Bestellungen sagt dir diese Auswertung nichts, was du nicht schon weißt. Statistik braucht Menge, und du hast keine. Was du in den ersten Wochen stattdessen zählst, passt auf einen Zettel:
 

@@ -80,7 +80,7 @@ Praktisch heißt das, du brauchst zusätzlich einen Zahlungsweg, und in Deutschl
 
 Was es bei Sailo nicht gibt, damit du es nicht suchst: kein PayPal, kein Klarna, keine SEPA-Lastschrift, kein giropay. Die vollständige Liste der Bestellwege ist Karte, WhatsApp, Telegram, Instagram, E-Mail, Telefon, Überweisung und Nachnahme. Wenn du deine PayPal-Adresse in den Chat schreibst, ist das ein Behelf, den Sailo nicht kennt und nicht zuordnet.
 
-Der Vorteil dieses Aufbaus: Auf dem WhatsApp-Weg nimmt Sailo nichts. Keine Provision, in keinem Tarif, weil kein Geld durch Sailo läuft. Nur bei Kartenzahlung fallen {{fee_range}} Prozent vom Warenwert an, und die hängt am Business-Tarif für {{business_monthly}} Dollar im Monat.
+Der Vorteil dieses Aufbaus: Auf dem WhatsApp-Weg nimmt Sailo nichts. Keine Provision, in keinem Tarif, weil kein Geld durch Sailo läuft. Nur bei Kartenzahlung fallen {{fee_range}} Prozent vom Warenwert an, und zwar {{fee_free}} Prozent im kostenlosen Tarif und {{fee_business}} Prozent auf Business.
 
 ## WhatsApp Business oder die normale App
 

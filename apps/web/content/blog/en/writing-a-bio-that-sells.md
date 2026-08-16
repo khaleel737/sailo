@@ -179,7 +179,7 @@ Then keep the bio still and change your posts instead. Rewriting your bio every 
 
 None of this brings you traffic. A bio converts attention you already earned; it doesn't create any. If nobody's looking at your profile, the bio is not the problem and rewriting it is a way of avoiding the problem.
 
-On the Sailo side, one thing worth knowing before a Nigerian or Kenyan seller builds a plan around it: there's no mobile money rail and no Paystack integration. Card payments go through Stripe, and they need the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, with Sailo taking {{fee_range}}% of the goods on card orders. Everything else, bank transfer, cash on delivery, an order handed to WhatsApp, costs nothing and Sailo never touches the money. Plenty of sellers put their account details or a till number into the bank transfer instructions and run the money themselves. That works, and it's honest to describe it that way, but you should know it's a workaround and not a button.
+On the Sailo side, one thing worth knowing before a Nigerian or Kenyan seller builds a plan around it: there's no mobile money rail and no Paystack integration. Card payments go through Stripe, and they need a Stripe account cleared for charges, with Sailo taking {{fee_range}}% of the goods on card orders. Everything else, bank transfer, cash on delivery, an order handed to WhatsApp, costs nothing and Sailo never touches the money. Plenty of sellers put their account details or a till number into the bank transfer instructions and run the money themselves. That works, and it's honest to describe it that way, but you should know it's a workaround and not a button.
 
 ## What to do next
 

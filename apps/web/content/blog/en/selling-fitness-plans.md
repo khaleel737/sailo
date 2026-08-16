@@ -107,7 +107,7 @@ She got 31 messages in the first two weeks. Most were "can I swap this exercise"
 
 She refunded 3 of the first 55. One had a shoulder injury she hadn't mentioned, one wanted a gym plan and hadn't read the title, and one just didn't like it.
 
-Her costs are almost nothing except the card setup. Card payments need the Business plan at ${{business_monthly}} a month and a Stripe account cleared for charges, plus {{fee_range}}% of the goods to Sailo, which is 20 cents on a $39 plan, and Stripe's own fee on top. In a 14-sale month that's $546 of revenue and about $20 of subscription, so roughly 3.7%. In launch month it was under 1%. That's the honest shape of it: the subscription is cheap when you're selling and it's the main cost when you're not, and if you have a quiet quarter you're paying $60 to have a shop that took two orders.
+Her costs are almost nothing except the card setup. Card payments need a Stripe account cleared for charges, plus {{fee_range}}% of the goods to Sailo, which is 20 cents on a $39 plan, and Stripe's own fee on top. In a 14-sale month that's $546 of revenue and about $20 of subscription, so roughly 3.7%. In launch month it was under 1%. That's the honest shape of it: the subscription is cheap when you're selling and it's the main cost when you're not, and if you have a quiet quarter you're paying $60 to have a shop that took two orders.
 
 That's the limitation worth planning for, and it's real. You need card to sell a $39 file to a stranger in another country, because nobody's doing a bank transfer for that. So the ${{business_monthly}} is not optional the way it is for a baker taking transfers locally. Budget it as a fixed cost, not as a percentage.
 

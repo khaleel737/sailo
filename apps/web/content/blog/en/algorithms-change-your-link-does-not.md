@@ -145,7 +145,7 @@ The free plan is $0, holds {{free_products}} products, keeps {{free_analytics_da
 
 The limitation that matters for this article specifically: CSV export starts on the Pro plan at ${{pro_monthly}} a month. On free you can see your orders, but you can't pull them out as a file. If the argument you just read persuaded you, and the whole point is having your customer list somewhere you control, then either pay for the plan that exports it or copy the details into your own spreadsheet by hand as they come in. Don't assume the list is portable because it exists.
 
-Card payments, separately, need the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, with Sailo taking {{fee_range}}% of the goods after discounts, excluding delivery and tax.
+Card payments, separately, need a Stripe account cleared for charges, with Sailo taking {{fee_range}}% of the goods after discounts, excluding delivery and tax.
 
 ## Do this today
 

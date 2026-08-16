@@ -138,7 +138,7 @@ Trials have their own trap, which is that a trial with no products in it proves 
 
 Sailo's free plan is $0 with {{free_products}} products, {{free_analytics_days}} days of analytics, chat, and the manual payment rails: bank transfer, cash on delivery, and orders handed off to WhatsApp, Instagram, Telegram, email or phone. Sailo takes no commission on any of those, because it never holds that money.
 
-What it can't do is take a card. Card payments need the Business plan at ${{business_monthly}}/mo or ${{business_yearly}}/yr, plus a Stripe account Stripe has cleared for charges, and then Sailo takes {{fee_range}}% of the goods, after discounts, excluding delivery and tax. That's a real limitation and it's the one most likely to affect you: if your buyers expect to pay by card, Sailo's free tier is not a free way to sell to them, it's a free way to take their order and then arrange payment some other way.
+What it can't do is take a card. Card payments need a Stripe account Stripe has cleared for charges, and then Sailo takes {{fee_range}}% of the goods, after discounts, excluding delivery and tax. That's a real limitation and it's the one most likely to affect you: if your buyers expect to pay by card, Sailo's free tier is not a free way to sell to them, it's a free way to take their order and then arrange payment some other way.
 
 Two more. CSV export starts on Pro at ${{pro_monthly}}/mo, so on free you can see your customers but not export them, which by this article's own standard is one of the four currencies. And the 20-product cap is genuinely 20; a seller with 34 second-hand pieces hits it in week one.
 

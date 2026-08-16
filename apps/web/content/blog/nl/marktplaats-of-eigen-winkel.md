@@ -52,7 +52,7 @@ Dus in de praktijk: een koper die op Marktplaats twee klikken nodig heeft, moet 
 
 Voor een terugkerende klant die je al kent, is dat geen enkel probleem. Voor een onbekende die je product via een advertentie tegenkwam, kost het je bestellingen. Hoeveel precies weet ik niet en ik ga geen percentage verzinnen, maar het is niet nul.
 
-Er zijn twee dingen die de schade beperken. Je kunt zelf een Tikkie sturen, waarmee je koper alsnog met iDEAL betaalt, alleen gebeurt dat volledig buiten je winkel om en moet jij de bestelling met de hand op betaald zetten. En je kunt kaartbetalingen aanzetten op het Business-abonnement van ${{business_monthly}} per maand met een goedgekeurde Stripe-account, waarmee je een echte afrekenknop krijgt. Stripe is in Nederland beschikbaar, gecontroleerd op 6 augustus 2026 op stripe.com/global, dus die route is voor Nederlandse verkopers gewoon open. Alleen blijft het een kaartknop en geen iDEAL-knop. De rest van de werkwijze staat in [betaling via overboeking ontvangen](/nl/blog/betaling-via-overboeking).
+Er zijn twee dingen die de schade beperken. Je kunt zelf een Tikkie sturen, waarmee je koper alsnog met iDEAL betaalt, alleen gebeurt dat volledig buiten je winkel om en moet jij de bestelling met de hand op betaald zetten. En je kunt kaartbetalingen op elk abonnement aanzetten met een goedgekeurde Stripe-account, waarmee je een echte afrekenknop krijgt. Stripe is in Nederland beschikbaar, gecontroleerd op 6 augustus 2026 op stripe.com/global, dus die route is voor Nederlandse verkopers gewoon open. Alleen blijft het een kaartknop en geen iDEAL-knop. De rest van de werkwijze staat in [betaling via overboeking ontvangen](/nl/blog/betaling-via-overboeking).
 
 ## Wat je waar verkoopt
 
@@ -113,9 +113,9 @@ Van de mensen die op zo'n kaartje reageren, weet je bovendien iets waardevols: d
 
 Aan de kant van je eigen pagina zijn de kosten helder.
 
-Gratis is $0 en geeft je {{free_products}} producten, 30 dagen aan cijfers, en de handmatige betaalmanieren inclusief bankoverboeking, rembours en bestellingen via WhatsApp, Instagram, Telegram, e-mail en telefoon. Op al die manieren rekent Sailo geen commissie en raakt het het geld nooit aan.
+Gratis is $0 en geeft je {{free_products}} producten, {{free_analytics_days}} dagen aan cijfers, en de handmatige betaalmanieren inclusief bankoverboeking, rembours en bestellingen via WhatsApp, Instagram, Telegram, e-mail en telefoon. Op al die manieren rekent Sailo geen commissie en raakt het het geld nooit aan.
 
-Pro is ${{pro_monthly}} per maand of ${{pro_yearly}} per jaar voor {{pro_products}} producten, een jaar aan cijfers, geen Sailo-badge en een CSV-export. Business is ${{business_monthly}} per maand of ${{business_yearly}} per jaar voor onbeperkt producten, drie jaar cijfers, kortingscodes, affiliates en als enige de kaartbetalingen. Die kaartbetalingen kosten {{fee_range}}% over de productwaarde na korting, exclusief bezorgkosten en belasting.
+Pro is ${{pro_monthly}} per maand of ${{pro_yearly}} per jaar voor {{pro_products}} producten, een jaar aan cijfers, geen Sailo-badge en een CSV-export. Business is ${{business_monthly}} per maand of ${{business_yearly}} per jaar voor onbeperkt producten, drie jaar cijfers, affiliates, en kaartbetalingen tegen {{fee_business}}%. Die kaartbetalingen kosten {{fee_range}}% over de productwaarde na korting, exclusief bezorgkosten en belasting.
 
 Voor Esther betekent dat: gratis beginnen, en pas naar Business als er genoeg volume is om die ${{business_monthly}} te dragen. Op vijf bestellingen van €38 per maand is dat een flink deel van je marge voor een knop die je nog niet nodig hebt.
 

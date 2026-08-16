@@ -129,7 +129,7 @@ Napiš do popisu, jestli je záloha vratná, a napiš to dřív, než ji někdo 
 | Běžný převod | Po zúčtování, týž nebo následující pracovní den | Nic nad poplatky tvojí banky | Netrpělivý kupující, který čeká přes víkend |
 | Okamžitá platba | Do minuty, i o víkendu | Podle sazebníku banky odesílatele | Kupující o ní neví, dokud mu to nenapíšeš |
 | Dobírka | Po vyúčtování dopravce, obvykle v řádu týdnů | Příplatek k zásilce a riziko nepřevzetí | Balík se vrátí a ty platíš cestu tam i zpět |
-| Karta | Po zúčtování Stripem na tvůj účet u Stripe | Poplatek Stripu plus {{fee_range}} % pro Sailo | Vyžaduje plán Business a schválený účet |
+| Karta | Po zúčtování Stripem na tvůj účet u Stripe | Poplatek Stripu plus {{fee_range}} % pro Sailo | Vyžaduje účet schválený Stripem |
 
 Tahle tabulka je jediné místo, kde má smysl metody porovnávat, protože porovnávat je podle „pohodlí" nikam nevede. Rozhoduje okamžik, kdy jsou peníze tvoje, a to, co se stane, když transakce nedopadne.
 

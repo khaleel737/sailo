@@ -137,7 +137,7 @@ Sailo'da banka havalesi, sekiz ödeme yönteminden biri. Listenin tamamı şu: k
 
 Dolduracağın alanlar belli: banka adı, hesap adı, hesap numarası, IBAN, SWIFT/BIC, ve bir de serbest metin talimat alanı. Kod kuralını, eşik cümleni ve "hesap kendi adıma" uyarını o serbest metin alanına yazıyorsun. Sipariş sana toplamı hesaplanmış hâlde geliyor, yani alıcının kaç lira göndereceği konusunda tahmin yürütmesi gerekmiyor.
 
-Kart tarafını da olduğu gibi yazalım, çünkü burası çoğu yerde şişiriliyor. Kart yöntemi Stripe üzerinde ve sadece Stripe üzerinde çalışıyor. Business planı gerekiyor, {{business_monthly}} USD/ay ya da {{business_yearly}} USD/yıl, artı Stripe'ın tahsilat için onayladığı bir Stripe hesabı. Sailo maldan {{fee_range}}% alıyor, indirim sonrası, kargo ve vergi hariç, ve para doğrudan senin kendi Stripe hesabına düşüyor.
+Kart tarafını da olduğu gibi yazalım, çünkü burası çoğu yerde şişiriliyor. Kart yöntemi Stripe üzerinde ve sadece Stripe üzerinde çalışıyor. Stripe'ın tahsilat için onayladığı bir Stripe hesabı gerekiyor. Sailo maldan {{fee_range}}% alıyor, indirim sonrası, kargo ve vergi hariç, ve para doğrudan senin kendi Stripe hesabına düşüyor.
 
 Asıl mesele fiyat değil. Kart düğmesinin açılması Sailo'ya değil, Stripe'ın senin ülkenden hesap kabul etmesine bağlı, ve Stripe'ın ülke listesi zaman içinde değişiyor. O yüzden bir karar vermeden önce stripe.com/global sayfasını kendin aç ve Türkiye'yi orada ara. Sırası da önemli. Önce Stripe tarafının açık olduğunu gör, sonra Business'a abone ol. Tersi değil.
 

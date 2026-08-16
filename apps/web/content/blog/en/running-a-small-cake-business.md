@@ -129,7 +129,7 @@ Most of her orders still start in a Facebook group comment. The rules for turnin
 
 Sailo has no GCash rail. The full list of payment rails is card, WhatsApp, Telegram, Instagram, email, phone, bank transfer and cash on delivery, and that's all of it. What you can do is put your GCash number and name into the bank transfer instructions with the exact deposit amount and a reference, which is what most Philippine sellers do and it works perfectly well. Just be clear about what's happening: Sailo is holding your menu, your dates and your order records, and your phone is holding the money. It cannot tell you a GCash payment landed. You check that yourself, and you mark the order paid yourself.
 
-Card payments, for the buyers who want them, cost {{fee_range}}% of the goods and need the Business plan at ${{business_monthly}} a month. On eleven orders a week that's not unreasonable. On three, it's a subscription buying you very little, and taking deposits by GCash is the better answer until your volume says otherwise.
+Card payments, for the buyers who want them, cost {{fee_free}}% of the goods on the free plan and {{fee_business}}% on Business. On eleven orders a week the upgrade pays for itself. On three, it's a subscription buying you very little, and taking deposits by GCash is the better answer until your volume says otherwise.
 
 ## What to do next
 

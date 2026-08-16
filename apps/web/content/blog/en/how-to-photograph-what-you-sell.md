@@ -118,7 +118,7 @@ That's 21 photographs, two hours including setup and a coffee, and it covers a w
 
 Her costs: £3 for the card, £0 for the light, and one Tuesday. The photographs are now the second most valuable asset in her business after the customer list.
 
-The candle sells for £14. If she took card payments on that, Sailo's fee would be 7p, which is not the number that matters. The number that matters is that the Business plan required for card payments is ${{business_monthly}} a month, and at 40 orders a month she'd rather spend that on wax. She takes bank transfers and cash at markets, confirms them herself, and puts the money into stock. That's a completely reasonable way to run a shop, and it's covered properly in [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller).
+The candle sells for £14. If she took card payments on that, Sailo's fee would be 7p, which is not the number that matters. The number that matters is the rate: {{fee_free}}% on the free plan against {{fee_business}}% on Business, and at 40 orders a month she'd rather spend the difference on wax. She takes bank transfers and cash at markets, confirms them herself, and puts the money into stock. That's a completely reasonable way to run a shop, and it's covered properly in [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller).
 
 ## What "good enough" actually looks like
 

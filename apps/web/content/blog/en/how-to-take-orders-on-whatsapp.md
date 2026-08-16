@@ -125,7 +125,7 @@ Sailo does not run inside WhatsApp. It hands you a finished message and then it'
 
 For manual rails, and that means bank transfer, cash on delivery, and orders that come through WhatsApp, Instagram, Telegram, email or phone, Sailo never touches the money and takes no commission on it. The flip side of never touching the money is never seeing it. Sailo cannot tell you a transfer arrived, because it can't see your bank account. Only your bank can. A buyer's screenshot is a claim, not a receipt, and there's a whole process for handling that gap in [how to know a bank transfer actually arrived](/en/blog/how-to-know-a-bank-transfer-actually-arrived).
 
-If you want the money confirmed automatically, that means card payments, which need the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order. There's no mobile money rail. If you take M-Pesa or GCash or UPI, you can put your till number or your ID into the bank transfer instructions and the buyer will see it at checkout, but matching those payments to orders stays a job you do by hand.
+If you want the money confirmed automatically, that means card payments, which need a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order. There's no mobile money rail. If you take M-Pesa or GCash or UPI, you can put your till number or your ID into the bank transfer instructions and the buyer will see it at checkout, but matching those payments to orders stays a job you do by hand.
 
 ## The point where a chat thread stops working
 

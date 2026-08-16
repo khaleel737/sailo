@@ -121,7 +121,7 @@ Metodele de plată din Sailo sunt opt și asta e lista completă: card, WhatsApp
 
 Pentru transfer ai câmpuri separate pentru numele băncii, numele titularului, numărul de cont, IBAN, SWIFT/BIC și un câmp liber de instrucțiuni. În câmpul liber pui exact ce trebuie să scrie omul la detaliile plății, ce sumă și în cât timp expediezi. Cumpărătorul le vede pe toate la finalizarea comenzii, în loc să ți le ceară pe mesaj.
 
-Comision pe transfer nu există, nici pe planul gratuit. Banii nu trec prin Sailo niciodată, deci nu are ce comision să ia. Singura metodă cu comision e cardul, {{fee_range}}% din valoarea produselor după reducere, fără livrare și fără taxe, și ea cere planul Business și un cont Stripe aprobat.
+Comision pe transfer nu există, nici pe planul gratuit. Banii nu trec prin Sailo niciodată, deci nu are ce comision să ia. Singura metodă cu comision e cardul, {{fee_range}}% din valoarea produselor după reducere, fără livrare și fără taxe, și ea cere un cont Stripe aprobat.
 
 Și limitarea, spusă direct: **Sailo nu poate ști că a intrat un transfer.** Nu e conectat la banca ta și nu are cum să fie. Când marchezi o comandă drept plătită, o marchezi pentru că ai verificat tu în extras. Pe rails-urile manuale, confirmarea e muncă de om, iar omul ești tu. Aceeași limitare o are și ramburs-ul, unde [banii încasați de curier nu se reconciliază singuri](/ro/blog/ramburs-pentru-vanzatori).
 

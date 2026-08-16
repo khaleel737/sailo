@@ -139,7 +139,7 @@ Files unlock on payment confirmation. On a card payment that's automatic and ins
 
 So the buyer who pays at midnight for a 1.1 GB pack waits for you to wake up, and then waits again for the download. Two lags, stacked, and only one of them is visible on the page unless you write the other one down. Say it: "Files are released once I've confirmed payment, usually within a few hours."
 
-Card payments remove the first lag. On Sailo they need the Business plan at ${{business_monthly}} a month plus a connected Stripe account, and cost {{fee_range}}% of the goods on top of Stripe's own fee. On a ₦15,000 pack that's about ₦75 to Sailo. The subscription is the real cost, and it only makes sense once the volume is there.
+Card payments remove the first lag. On Sailo they need a connected Stripe account, and cost {{fee_range}}% of the goods on top of Stripe's own fee. On a ₦15,000 pack that's about ₦75 to Sailo. The subscription is the real cost, and it only makes sense once the volume is there.
 
 ## Do this to your biggest file today
 

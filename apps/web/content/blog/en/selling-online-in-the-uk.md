@@ -54,7 +54,7 @@ Britain is a card country. Buyers expect a card field, and the friction of askin
 
 "Usually" is doing work in that sentence. The maths depends entirely on your volume.
 
-Card payments on Sailo need the Business plan at ${{business_monthly}} a month, plus Sailo's {{fee_range}}% of the goods after discount and excluding delivery and tax, plus your processor's own cut. Stripe's UK pricing page in August 2026 listed standard UK cards at 1.5% + 20p, UK premium cards at 2.8% + 20p, EEA cards at 2.5% + 20p, and cards issued elsewhere at 3.15% + 20p, with a further 2% if a currency has to be converted.
+Card payments on Sailo carry Sailo's {{fee_range}}% of the goods after discount and excluding delivery and tax, plus your processor's own cut. Stripe's UK pricing page in August 2026 listed standard UK cards at 1.5% + 20p, UK premium cards at 2.8% + 20p, EEA cards at 2.5% + 20p, and cards issued elsewhere at 3.15% + 20p, with a further 2% if a currency has to be converted.
 
 Run it at two volumes on an £18 candle:
 

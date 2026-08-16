@@ -111,7 +111,7 @@ Sailon maksutavat ovat: kortti, WhatsApp, Telegram, Instagram, sähköposti, puh
 
 Kaikissa muissa paitsi kortissa Sailo ei koske rahaan eikä ota siitä mitään. Raha kulkee suoraan ostajan tililtä sinun tilillesi tai käteisenä ovella. Sailo hoitaa katalogin ja tilauksen, ei rahaa.
 
-Kortti on ainoa, jossa Sailo ottaa komission: {{fee_range}} prosenttia tavaran arvosta alennuksen jälkeen, ilman toimituskulua ja ilman veroa. Kortti vaatii Business-tason, joka maksaa {{business_monthly}} dollaria kuussa tai {{business_yearly}} dollaria vuodessa, sekä Stripe-tilin, jonka Stripe on hyväksynyt maksujen vastaanottamiseen. Stripe on Suomessa saatavilla, tarkistettu 6.8.2026 osoitteessa stripe.com/global. Tarkista se itse, koska lista elää.
+Kortti on ainoa, jossa Sailo ottaa komission: {{fee_range}} prosenttia tavaran arvosta alennuksen jälkeen, ilman toimituskulua ja ilman veroa. Kortti vaatii Stripe-tilin, jonka Stripe on hyväksynyt maksujen vastaanottamiseen. Stripe on Suomessa saatavilla, tarkistettu 6.8.2026 osoitteessa stripe.com/global. Tarkista se itse, koska lista elää.
 
 ## MobilePayta ei ole, ja se pitää sanoa suoraan
 

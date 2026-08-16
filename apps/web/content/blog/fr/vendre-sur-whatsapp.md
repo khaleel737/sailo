@@ -104,7 +104,7 @@ Un message d'absence bien écrit fait la moitié du travail : « Je réponds à 
 
 Sur Sailo, l'acheteur choisit ses articles et ses options sur votre page, remplit l'adresse, et la commande arrive dans WhatsApp déjà rédigée : article, options, adresse, total. Vous n'assemblez rien. Vous répondez.
 
-WhatsApp fait partie des moyens de paiement disponibles, au même titre que le virement, Instagram, Telegram, le téléphone, l'e-mail et le paiement à la livraison. Sur tous ceux-là, Sailo ne prend aucune commission et ne touche jamais l'argent. La seule commission qui existe est de {{fee_range}} % sur la valeur des produits quand le paiement se fait par carte, et la carte demande la formule Business à {{business_monthly}} $ par mois avec un compte Stripe validé.
+WhatsApp fait partie des moyens de paiement disponibles, au même titre que le virement, Instagram, Telegram, le téléphone, l'e-mail et le paiement à la livraison. Sur tous ceux-là, Sailo ne prend aucune commission et ne touche jamais l'argent. La seule commission qui existe est de {{fee_range}} % sur la valeur des produits quand le paiement se fait par carte, et la carte demande un compte Stripe validé.
 
 Maintenant les limites, et elles comptent.
 

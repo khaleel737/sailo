@@ -139,7 +139,7 @@ Sailo's free plan is $0, holds {{free_products}} products, and takes no commissi
 
 The honest catch for this particular article: **coupons are a Business plan feature**, at ${{business_monthly}} a month. The consolation discount code is the part of this method that Sailo charges for, and if you are on the free plan you do not get one. There are two ways round it that cost nothing. Put the offer up as its own product at the discounted price and only send the link to entrants, or just say "reply to this email and I'll take £5 off" and adjust it by hand, which for 214 people is genuinely fine and for 2,000 is not.
 
-Card payments need that same Business plan plus a Stripe account Stripe has cleared for charges, with Sailo taking {{fee_range}}% of the goods after discounts and excluding delivery and tax. On Nadia's £24 mug that is about 12p to Sailo, plus Stripe's own fee. If your buyers pay by bank transfer, none of that applies and you can run this entire method on the free plan, confirming payments yourself from your own bank statement, because Sailo cannot see your bank and will not tell you the money landed.
+Card payments need a Stripe account Stripe has cleared for charges, with Sailo taking {{fee_range}}% of the goods after discounts and excluding delivery and tax. On Nadia's £24 mug that is about 12p to Sailo, plus Stripe's own fee. If your buyers pay by bank transfer, none of that applies and you can run this entire method on the free plan, confirming payments yourself from your own bank statement, because Sailo cannot see your bank and will not tell you the money landed.
 
 ## Do this
 

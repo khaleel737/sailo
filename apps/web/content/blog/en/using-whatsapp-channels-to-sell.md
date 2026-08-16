@@ -131,7 +131,7 @@ There's no UPI rail. None. Sailo's payment rails are card, bank transfer, cash o
 
 What Imran does, and what you'd do, is put the UPI ID into the bank transfer instructions field so buyers see it at checkout with the amount. Then you reconcile by hand. Sailo can record that the order exists and that you marked it paid. It cannot see your bank, so it cannot tell you the money landed. Only your bank app can do that.
 
-The free plan is $0 with {{free_products}} products, {{free_analytics_days}} days of analytics, and no commission on any manual rail, because the money never goes near Sailo. Card payments need the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods after discounts, excluding delivery and tax. For a Hyderabad dry fruits business taking UPI, none of that applies, and you shouldn't pay for it.
+The free plan is $0 with {{free_products}} products, {{free_analytics_days}} days of analytics, and no commission on any manual rail, because the money never goes near Sailo. Card payments need a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods after discounts, excluding delivery and tax. For a Hyderabad dry fruits business taking UPI, none of that applies, and you shouldn't pay for it.
 
 ## Set the channel up this week
 

@@ -134,7 +134,7 @@ Two hard fails and it's out, regardless of how good the rest looked.
 
 Sailo answers question three well and question two cleanly, because on bank transfer, cash on delivery and the messaging rails it never holds your money and takes nothing from it. Card is the exception: {{fee_range}}% of the goods, after discounts, excluding delivery and tax, landing in your own Stripe account.
 
-Where it fails: card payments need the Business plan at ${{business_monthly}}/mo or ${{business_yearly}}/yr, so a seller doing eight card orders a month is paying a subscription for a rail that's barely used. The free plan stops at {{free_products}} products. CSV export starts on Pro at ${{pro_monthly}}/mo, so on the free plan you can see your orders but you can't export them, which by question five's own standard is a real limitation. Card is Stripe only, no Paystack. There's no mobile money rail, and no native app.
+Where it fails: card payments carry {{fee_free}}% on the free plan, so a seller doing eight card orders a month is paying a subscription for a rail that's barely used. The free plan stops at {{free_products}} products. CSV export starts on Pro at ${{pro_monthly}}/mo, so on the free plan you can see your orders but you can't export them, which by question five's own standard is a real limitation. Card is Stripe only, no Paystack. There's no mobile money rail, and no native app.
 
 And Sailo cannot tell you a bank transfer arrived. Only your bank can. If you're on manual rails, question two's answer is that you hold the money and you also do the reconciliation.
 

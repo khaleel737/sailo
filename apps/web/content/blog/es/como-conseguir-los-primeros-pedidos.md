@@ -136,7 +136,7 @@ Después de treinta mensajes y cero pedidos, la causa está en una de tres y con
 
 **Entendieron y no confiaron.** Sin reseñas, sin fotos reales, sin una cara. Aquí la solución son las fotos y las primeras reseñas, no un descuento. El método de la ventana está en [cómo fotografiar productos con el móvil](/es/blog/fotografiar-productos-con-el-movil).
 
-Un aviso sobre los datos con los que vas a diagnosticar: el plan gratuito de Sailo guarda 30 días de estadísticas. Si en octubre quieres comparar contra agosto para saber si aquella publicación funcionó, en el plan gratuito ya no está. El plan Pro, a {{pro_monthly}} USD al mes o {{pro_yearly}} USD al año, guarda un año y permite exportar en CSV. Al principio 30 días alcanzan de sobra, pero si vas a hacer un lanzamiento estacional, exporta o anota los números tú.
+Un aviso sobre los datos con los que vas a diagnosticar: el plan gratuito de Sailo guarda {{free_analytics_days}} días de estadísticas. Si en octubre quieres comparar contra agosto para saber si aquella publicación funcionó, en el plan gratuito ya no está. El plan Pro, a {{pro_monthly}} USD al mes o {{pro_yearly}} USD al año, guarda un año y permite exportar en CSV. Al principio 30 días alcanzan de sobra, pero si vas a hacer un lanzamiento estacional, exporta o anota los números tú.
 
 Y la limitación de fondo, que aplica a todo esto: en los medios de pago manuales eres tú quien confirma que llegó el dinero. Sailo no está conectado a tu banco. Con siete pedidos eso es un minuto al día; conviene saberlo antes de que sean setenta.
 

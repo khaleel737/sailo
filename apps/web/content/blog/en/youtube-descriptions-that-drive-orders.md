@@ -128,7 +128,7 @@ She also stopped getting the grind question. It was in the pin.
 
 Sailo's free plan is $0, holds {{free_products}} products, and takes no commission at all on bank transfer, cash on delivery, WhatsApp, Instagram, Telegram, email or phone orders. Sailo never touches the money on those rails, so there is nothing to take a cut of.
 
-Card payments are the paid part. They need the Business plan at ${{business_monthly}} a month plus a Stripe account that Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after any discount and excluding delivery and tax. On Wanjiru's KSh 1,200 bag that is about six shillings to Sailo, on top of Stripe's own fee. The six shillings is not the problem. The ${{business_monthly}} is, if you are doing twenty orders a month.
+Card payments are the paid part. They need a Stripe account that Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after any discount and excluding delivery and tax. On Wanjiru's KSh 1,200 bag that is about six shillings to Sailo, on top of Stripe's own fee. The six shillings is not the problem. The ${{business_monthly}} is, if you are doing twenty orders a month.
 
 And for Wanjiru specifically, the honest answer is that Sailo has no M-Pesa rail. None. Her buyers expect to pay a till number and that is not a payment method Sailo offers. What she does instead is put the till number into the bank transfer instructions field, where the buyer sees it at checkout and pays exactly as they always have. Sailo handles the catalogue, the options and the order record. She matches the payments to the orders herself, in the evening, off her own statement. Sailo cannot tell her the money arrived. Only Safaricom can.
 

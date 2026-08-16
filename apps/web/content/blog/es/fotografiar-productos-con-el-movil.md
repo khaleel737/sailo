@@ -113,7 +113,7 @@ Menos de las que crees.
 
 Seis productos bien fotografiados sostienen una tienda un año. Cuarenta productos con fotos regulares no sostienen nada, porque la cuadrícula se ve desordenada y el comprador no sabe dónde mirar.
 
-Hay un límite práctico que ayuda aquí más de lo que estorba: el plan gratuito de Sailo permite {{free_products}} productos y guarda 30 días de estadísticas. Si tienes 45 referencias, vas a tener que elegir 20, y elegir 20 es exactamente el ejercicio que deberías hacer aunque no hubiera límite. El plan Pro cuesta {{pro_monthly}} USD al mes o {{pro_yearly}} USD al año y sube a {{pro_products}} productos, un año de estadísticas y exportación en CSV; el plan Business, a {{business_monthly}} USD al mes, quita el límite y añade el cobro con tarjeta.
+Hay un límite práctico que ayuda aquí más de lo que estorba: el plan gratuito de Sailo permite {{free_products}} productos y guarda {{free_analytics_days}} días de estadísticas. Si tienes 45 referencias, vas a tener que elegir 20, y elegir 20 es exactamente el ejercicio que deberías hacer aunque no hubiera límite. El plan Pro cuesta {{pro_monthly}} USD al mes o {{pro_yearly}} USD al año y sube a {{pro_products}} productos, un año de estadísticas y exportación en CSV; el plan Business, a {{business_monthly}} USD al mes, quita el límite y baja la comisión de tarjeta al {{fee_business}}%.
 
 Y lo obvio que conviene decir: Sailo no te edita las fotos ni te dice cuál está mal. Sube lo que subas, eso es lo que ve el comprador. La foto sigue siendo trabajo tuyo y sigue siendo la parte de la ficha que más decide.
 

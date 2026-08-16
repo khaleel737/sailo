@@ -14,7 +14,7 @@ Ne treba ti web stranica. Treba ti jedan link koji jeste radnja, sa cijenama i d
 
 Da to odmah skinemo s dnevnog reda, jer je to najskuplja zabluda u ovom poslu.
 
-Sailo kartično plaćanje ide isključivo preko Stripea. Provjereno 6. augusta 2026. na stripe.com/global, Bosna i Hercegovina nije na Stripeovoj listi podržanih zemalja. Znači da dugme za plaćanje karticom na tvojoj stranici ne možeš dobiti ni po koju cijenu, jer nema tog plana i nema te uplate koja to mijenja. Nemoj plaćati Business plan, {{business_monthly}} dolara mjesečno ili {{business_yearly}} godišnje, očekujući karticu. Taj plan ti donosi neograničen broj proizvoda, tri godine analitike, kupone i afilijate. Karticu u BiH ne donosi. Lista zemalja se s vremenom mijenja, pa prije nego išta platiš otvori stripe.com/global i provjeri sam.
+Sailo kartično plaćanje ide isključivo preko Stripea. Provjereno 6. augusta 2026. na stripe.com/global, Bosna i Hercegovina nije na Stripeovoj listi podržanih zemalja. Znači da dugme za plaćanje karticom na tvojoj stranici ne možeš dobiti ni po koju cijenu, jer nema tog plana i nema te uplate koja to mijenja. Nemoj plaćati nijedan plan očekujući karticu. Taj plan ti donosi neograničen broj proizvoda, tri godine analitike, kupone i afilijate. Karticu u BiH ne donosi. Lista zemalja se s vremenom mijenja, pa prije nego išta platiš otvori stripe.com/global i provjeri sam.
 
 Ostatak teksta je o onome što ostaje. A ostaje dosta.
 
@@ -42,7 +42,7 @@ Ovo je cijela lista, nema devetog:
 
 | Kanal | Ko drži novac | Šta ti treba | Koliko se koristi kod nas |
 | --- | --- | --- | --- |
-| Kartica | tvoj Stripe račun | Business plan i Stripe račun | nedostupno u BiH |
+| Kartica | tvoj Stripe račun | Stripe račun odobren za naplatu | nedostupno u BiH |
 | WhatsApp | ti | broj telefona | često, posebno s dijasporom |
 | Telegram | ti | korisničko ime | rijetko, ali postoji |
 | Instagram | ti | profil | tu se sve i počinje |

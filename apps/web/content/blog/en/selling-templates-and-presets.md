@@ -120,7 +120,7 @@ Files unlock on payment confirmation. If the buyer pays by card, the card networ
 
 So the buyer who pays at 11:40pm on a Saturday gets the file when you check your banking app on Sunday morning, and if that isn't written on the page they will spend eight hours assuming they've been robbed. Write it: "Presets are sent once I've confirmed your payment, usually within a few hours and always by 10am."
 
-Card payments remove the lag, and on Sailo they need the Business plan at ${{business_monthly}} a month plus a connected Stripe account, and cost {{fee_range}}% of the goods on top of Stripe's own fee. On a R290 pack that's about R1.45 to Sailo. The subscription is the real decision, and at 24 sales a month it's a close call rather than an obvious yes.
+Card payments remove the lag, and on Sailo they need a connected Stripe account, and cost {{fee_range}}% of the goods on top of Stripe's own fee. On a R290 pack that's about R1.45 to Sailo. The subscription is the real decision, and at 24 sales a month it's a close call rather than an obvious yes.
 
 One more limit worth knowing before you list: the free plan caps at {{free_products}} products. Three packs and a bundle is nothing. Listing every preset individually because it feels like more inventory will hit that wall by the end of the month, and it was a bad idea anyway, because 20 near-identical listings compete with each other and confuse the buyer.
 

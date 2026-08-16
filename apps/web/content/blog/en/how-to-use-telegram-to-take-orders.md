@@ -132,7 +132,7 @@ If you are still deciding where the time goes at all, [which platform should you
 
 Sailo's free plan is $0, holds {{free_products}} products, and takes no commission on Telegram, WhatsApp, Instagram, email, phone, bank transfer or cash-on-delivery orders. The money never passes through Sailo on those rails, so there is nothing to take a cut of.
 
-Cards are the exception. They need the Business plan at ${{business_monthly}} a month plus a Stripe account Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after discounts, excluding delivery and tax. On Preeti's ₹899 set that is about four and a half rupees to Sailo, plus Stripe's own fee.
+Cards are the exception. They need a Stripe account Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, after discounts, excluding delivery and tax. On Preeti's ₹899 set that is about four and a half rupees to Sailo, plus Stripe's own fee.
 
 Now the part that matters for her and for a lot of readers. **There is no UPI rail.** Sailo does not integrate UPI, or M-Pesa, or GCash. What Preeti does is put her UPI ID and a QR into the bank transfer instructions field, which the buyer sees at checkout, and they pay exactly the way they always have. Sailo records the order, the options and the address. It cannot tell her the money arrived, and it never will. Only her bank can. She checks and marks it paid herself, every evening, and that is a real cost in minutes that no article should pretend away.
 

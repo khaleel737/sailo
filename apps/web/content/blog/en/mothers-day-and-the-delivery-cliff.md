@@ -138,7 +138,7 @@ The number she keeps: 45 iced cookies a day. Everything else in the plan is deri
 
 ## The honest limitation
 
-If you want card payments on a Sailo shop, two things have to be true at once. You need the **Business plan at ${{business_monthly}} a month or ${{business_yearly}} a year**, and you need a connected Stripe account that Stripe has actually cleared for charges. Sailo takes {{fee_range}}% of the goods after discount, excluding delivery and tax, on top of Stripe's own cut. On Jess's $38 box that's 19 cents, which is nothing.
+If you want card payments on a Sailo shop, two things have to be true at once. You need a connected Stripe account that Stripe has actually cleared for charges. Sailo takes {{fee_range}}% of the goods after discount, excluding delivery and tax, on top of Stripe's own cut. On Jess's $38 box that's 19 cents, which is nothing.
 
 The subscription is the real cost, and the timing is the real risk. Stripe clearance is not instant and it can ask for documents. Signing up in the last week of April and expecting to take cards on the first of May is how sellers end up taking bank transfers by DM during their busiest fortnight instead. If cards matter to you for this peak, set it up in February.
 

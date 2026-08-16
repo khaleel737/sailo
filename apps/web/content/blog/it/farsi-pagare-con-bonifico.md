@@ -110,7 +110,7 @@ La prima: il campo istruzioni è testo libero ed è il posto dove va tutto quell
 
 La seconda, che è il limite vero: **Sailo non può sapere se il tuo bonifico è arrivato.** Non è collegato alla tua banca e non lo sarà. Quando segni un ordine come pagato, è perché hai aperto l'app e hai guardato. Non lo fa nessuno al posto tuo. Se stacchi tre giorni, non si fa, e gli ordini restano lì ad aspettare.
 
-In cambio, sul bonifico Sailo non prende nessuna commissione e non tocca mai il denaro. Va dal conto del compratore al tuo, diretto. L'unica commissione che esiste è lo {{fee_range}}% sul valore dei prodotti quando il pagamento è con carta, e la carta richiede il piano Business da {{business_monthly}} USD al mese con un account Stripe approvato. Sul bonifico, zero.
+In cambio, sul bonifico Sailo non prende nessuna commissione e non tocca mai il denaro. Va dal conto del compratore al tuo, diretto. L'unica commissione che esiste è lo {{fee_range}}% sul valore dei prodotti quando il pagamento è con carta, e la carta richiede un account Stripe approvato. Sul bonifico, zero.
 
 ## I conti di Alessia
 

@@ -56,7 +56,7 @@ Ten eerste: een Nederlandse overboeking tussen twee banken is vaak binnen second
 
 Ten tweede: op een overboeking rekent Sailo geen enkele commissie en raakt het het geld nooit aan. Het gaat rechtstreeks van de rekening van de koper naar die van jou. Hetzelfde geldt voor rembours en voor bestellingen die via WhatsApp, Instagram of e-mail binnenkomen.
 
-De enige commissie die bestaat is {{fee_range}}% over de productwaarde als er met kaart betaald wordt, en dat kan alleen op het Business-abonnement van ${{business_monthly}} per maand met een goedgekeurde Stripe-account. Stripe is in Nederland gewoon beschikbaar, gecontroleerd op 6 augustus 2026 op stripe.com/global. Die lijst verandert, dus kijk zelf even als je dit later leest. Met kaart krijg je wel een echte afrekenknop, alleen is het een kaartknop en geen iDEAL-knop, en dat is voor een deel van je kopers niet hetzelfde.
+De enige commissie die bestaat is {{fee_range}}% over de productwaarde als er met kaart betaald wordt, en dat vraagt alleen een goedgekeurde Stripe-account. Stripe is in Nederland gewoon beschikbaar, gecontroleerd op 6 augustus 2026 op stripe.com/global. Die lijst verandert, dus kijk zelf even als je dit later leest. Met kaart krijg je wel een echte afrekenknop, alleen is het een kaartknop en geen iDEAL-knop, en dat is voor een deel van je kopers niet hetzelfde.
 
 ## Tikkie is geen kassa
 
@@ -118,7 +118,7 @@ Wel: je krijgt een link, sailo.store/jouwnaam, die live staat zodra je je aanmel
 
 Ook wel: diensten met een duur, een locatie, een datumkiezer en een opzegtermijn, als je tijd verkoopt in plaats van spullen. Digitale bestanden die vrijkomen zodra jij de betaling bevestigt, met een limiet op het aantal downloads. Beoordelingen op elk abonnement, waarbij een koper een naam, één tot vijf sterren en eventueel tekst achterlaat, en er niets zichtbaar wordt tot jij het goedkeurt. En 35 talen, wat uitmaakt als je ook aan Duitse of Belgische kopers verkoopt.
 
-Niet: iDEAL. Geen automatische bevestiging van een overboeking, want Sailo praat niet met je bank en gaat dat ook niet doen. Geen app in de App Store. En op het gratis abonnement maximaal {{free_products}} producten, met 30 dagen aan cijfers. Pro is ${{pro_monthly}} per maand voor {{pro_products}} producten, een jaar cijfers, geen Sailo-badge en een CSV-export. Business is ${{business_monthly}} per maand en dat is het enige abonnement waarop kaartbetalingen bestaan.
+Niet: iDEAL. Geen automatische bevestiging van een overboeking, want Sailo praat niet met je bank en gaat dat ook niet doen. Geen app in de App Store. En op het gratis abonnement maximaal {{free_products}} producten, met {{free_analytics_days}} dagen aan cijfers. Pro is ${{pro_monthly}} per maand voor {{pro_products}} producten, een jaar cijfers, geen Sailo-badge en een CSV-export. Business is ${{business_monthly}} per maand en verlaagt de kaartcommissie naar {{fee_business}}%.
 
 Dat gratis abonnement is voor de meeste beginners geen beperking maar een gunst. Twintig producten is meer dan de meeste mensen goed kunnen fotograferen, laat staan op voorraad hebben.
 

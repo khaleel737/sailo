@@ -174,7 +174,7 @@ tags: [payments, bank-transfer]
 
 手动渠道不抽成。银行转账、货到付款、WhatsApp、Instagram、Telegram、邮件、电话,Sailo 不碰这笔钱,也不收你一分。
 
-卡渠道是唯一收费的:货款的 {{fee_range}}%,按打折后的货款算,不含运费和税,以 Stripe application fee 的形式收取。卡还要 Business 套餐(${{business_monthly}}/月或 ${{business_yearly}}/年)加上一个 Stripe 已经放行的账户。截至 2026 年 8 月,按 stripe.com/global 的支持国家名单,中国不在上面,所以在大陆这个按钮不管买哪个套餐都不会出现。名单会变,你自己去 stripe.com/global 核一眼再做决定。
+卡渠道是唯一收费的:货款的 {{fee_range}}%,按打折后的货款算,不含运费和税,以 Stripe application fee 的形式收取。卡还要一个 Stripe 已经放行的账户。截至 2026 年 8 月,按 stripe.com/global 的支持国家名单,中国不在上面,所以在大陆这个按钮不管买哪个套餐都不会出现。名单会变,你自己去 stripe.com/global 核一眼再做决定。
 
 那么最诚实的一句限制就在这里:**Sailo 不能告诉你钱到了。** 它没有连你的银行,也不会去查。一个转账订单被标成已付,原因只有一个,是你打开手机银行看见了那条记录然后自己去标的。这件事没有工具替你做,你放一周不管,你的订单列表就不准了,而不准的订单列表比没有订单列表更危险。
 

@@ -189,7 +189,7 @@ tags: [photography, product]
 
 产品数量在这里会咬你一口。免费版 $0 是 {{free_products}} 个产品、30 天数据、聊天渠道和手动收款渠道,不含卡支付。一款衬衫三个颜色两个码,如果你每个组合都开一个产品,一款就吃掉六个位置,三款你就满了。把颜色和尺码做成同一个产品下面的规格选项,一款就是一个位置,订单过来的时候规格也跟着过来。这件事在你录第一款的时候就要决定,不然录到第五款你会想全部重来。
 
-Pro 是 ${{pro_monthly}}/月或 ${{pro_yearly}}/年,250 个产品、1 年数据、去掉 Sailo 标记、能导出 CSV。Business 是 ${{business_monthly}}/月或 ${{business_yearly}}/年,产品不限、3 年数据、优惠券、分销,以及卡支付。
+Pro 是 ${{pro_monthly}}/月或 ${{pro_yearly}}/年,250 个产品、1 年数据、去掉 Sailo 标记、能导出 CSV。Business 是 ${{business_monthly}}/月或 ${{business_yearly}}/年,产品不限、3 年数据、分销,卡费率降到 {{fee_business}}%。
 
 费用上,手动渠道,包括银行转账、货到付款、WhatsApp、Instagram、Telegram、邮件和电话,Sailo 不碰钱也不收钱。卡渠道收货款的 {{fee_range}}%,按打折后的货款算,不含运费和税。而卡走 Stripe,截至 2026 年 8 月,按 stripe.com/global 的名单中国不在上面,所以大陆卖家买哪个套餐都拿不到那个按钮。名单会变,自己去核。
 

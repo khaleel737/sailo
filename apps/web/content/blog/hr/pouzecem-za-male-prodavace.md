@@ -138,7 +138,7 @@ To znači konkretno: Sailo ne zbraja gotovinu koju dostavljač pokupi, ne zna je
 
 Ostalo radi ovako. Sailo ti daje jedan link, sailo.store/tvojeime, s proizvodima, cijenama i narudžbom. Načini plaćanja koje možeš uključiti su kartica, WhatsApp, Telegram, Instagram, e-mail, telefon, bankovna uplata i pouzeće, i to je potpun popis. Kod bankovne uplate upisuješ naziv banke, naziv primatelja, broj računa, IBAN, SWIFT/BIC i vlastite upute slobodnim tekstom.
 
-Na svim ručnim načinima, uključujući pouzeće, Sailo ne uzima proviziju i ne dodiruje novac. Kod kartice uzima {{fee_range}} % od vrijednosti robe nakon popusta, bez dostave i bez poreza, a novac sjeda na tvoj Stripe račun. Kartica traži plan Business, {{business_monthly}} USD mjesečno ili {{business_yearly}} USD godišnje, i Stripe račun odobren za naplatu. Stripe je u Hrvatskoj dostupan, provjereno 6. kolovoza 2026. na stripe.com/global, ali popis se mijenja pa ga provjeri sam.
+Na svim ručnim načinima, uključujući pouzeće, Sailo ne uzima proviziju i ne dodiruje novac. Kod kartice uzima {{fee_range}} % od vrijednosti robe nakon popusta, bez dostave i bez poreza, a novac sjeda na tvoj Stripe račun. Kartica traži Stripe račun odobren za naplatu. Stripe je u Hrvatskoj dostupan, provjereno 6. kolovoza 2026. na stripe.com/global, ali popis se mijenja pa ga provjeri sam.
 
 Besplatni plan nosi {{free_products}} proizvoda i {{free_analytics_days}} dana statistike. Ako imaš četrdeset artikala, na besplatnom planu nećeš ih sve objaviti i to je granica na koju ćeš naletjeti prije svih ostalih.
 

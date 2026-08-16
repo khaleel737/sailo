@@ -166,7 +166,7 @@ The free plan caps at {{free_products}} products, and for this specific decision
 
 Three limitations worth knowing before you plan around it.
 
-Card payments need the Business plan at ${{business_monthly}} a month plus a Stripe account Stripe has cleared for charges, and Stripe isn't launched in every country. On the free plan and on Pro at ${{pro_monthly}}, there is no card. If your market expects card, budget for that from the start.
+Card payments need a Stripe account Stripe has cleared for charges, and Stripe isn't launched in every country. On the free plan and on Pro at ${{pro_monthly}}, there is no card. If your market expects card, budget for that from the start.
 
 There's no mobile money rail. No M-Pesa, no GCash, no UPI, and no Paystack whatever you read elsewhere. Sellers put a till number or a UPI ID into the bank transfer instructions field and it works, and that's a workaround rather than a feature. Sailo also can't tell you a payment arrived. Only your bank can.
 

@@ -85,7 +85,7 @@ Wanjiru takes M-Pesa. Her buyers send to a till number, they see her registered 
 
 Sailo has no mobile money rail. There's no M-Pesa button, no GCash, no UPI. The complete rail list is card, WhatsApp, Telegram, Instagram, email, phone, bank transfer and cash on delivery, and that's it. What Wanjiru does, and what plenty of sellers do, is put her till number and the business name into the bank transfer instructions field, so the buyer sees exactly what to send and what to reference. Sailo runs her catalogue and her orders. Her phone runs the money. That's an honest description of the arrangement and it works fine, but nobody should discover it after upgrading.
 
-Cards are the other option and they're the one worth doing arithmetic on rather than intuition. Sailo charges {{fee_range}}% of the goods on a card sale, taken after discount and excluding delivery and tax, and card payments require the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges.
+Cards are the other option and they're the one worth doing arithmetic on rather than intuition. Sailo charges {{fee_range}}% of the goods on a card sale, taken after discount and excluding delivery and tax, and card payments require a Stripe account cleared for charges.
 
 On a KSh 850 order, {{fee_range}}% is about KSh 4. That's not the number that decides anything. The ${{business_monthly}} is.
 

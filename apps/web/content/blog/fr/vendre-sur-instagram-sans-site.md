@@ -76,7 +76,7 @@ Le virement ne coûte rien à personne, et Sailo ne prend aucune commission dess
 
 Beaucoup d'acheteurs proposeront aussi Lydia ou Paylib. Sailo n'a aucun rail de paiement français, ni Lydia, ni Paylib, ni PayPal, ni Wero. Vous pouvez coller votre identifiant dans le champ d'instructions du virement et confirmer l'encaissement à la main. Ça marche tous les jours, mais c'est une solution manuelle, pas une fonctionnalité.
 
-Pour la carte, c'est autre chose. Il faut la formule Business, {{business_monthly}} $ par mois ou {{business_yearly}} $ à l'année, et un compte Stripe validé. Au 6 août 2026, la France figure bien dans la liste des pays où Stripe ouvre les inscriptions : ce rail fonctionne réellement ici, ce n'est pas un « bientôt ». La liste bouge, revérifiez chez Stripe avant de bâtir dessus. Sailo prélève {{fee_range}} % de la valeur des produits, après remise, hors livraison et hors taxes. Sur une bougie à 22 €, ça fait 11 centimes, plus la part de Stripe. À faible volume, ce n'est pas la commission qui coûte, c'est l'abonnement.
+Pour la carte, c'est autre chose. Il faut un compte Stripe validé. Au 6 août 2026, la France figure bien dans la liste des pays où Stripe ouvre les inscriptions : ce rail fonctionne réellement ici, ce n'est pas un « bientôt ». La liste bouge, revérifiez chez Stripe avant de bâtir dessus. Sailo prélève {{fee_range}} % de la valeur des produits, après remise, hors livraison et hors taxes. Sur une bougie à 22 €, ça fait 11 centimes, plus la part de Stripe. À faible volume, ce n'est pas la commission qui coûte, c'est l'abonnement.
 
 ## Le port décide plus de paniers que le prix
 

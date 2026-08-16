@@ -166,7 +166,7 @@ Korjaus ei ole parempi järjestelmä vaan kaksi selvästi nimettyä toimitustapa
 
 Yksi asia menee tässä sinun eduksesi. Kortin {{fee_range}} prosentin komissio lasketaan tavaran arvosta alennuksen jälkeen, ilman toimitusta ja ilman veroa. Siitä 8,90 eurosta ei mene Sailolle senttiäkään. Tilisiirrossa, postiennakossa ja kaikissa viestikanavissa Sailo ei ota mitään eikä koske rahaan lainkaan.
 
-Kortti vaatii Business-tason, {{business_monthly}} dollaria kuussa tai {{business_yearly}} dollaria vuodessa, ja Stripe-tilin, jonka Stripe on hyväksynyt. Stripe on Suomessa saatavilla, tarkistettu 6.8.2026 osoitteessa stripe.com/global. Tarkista se itse ennen kuin maksat mistään.
+Kortti vaatii Stripe-tilin, jonka Stripe on hyväksynyt. Stripe on Suomessa saatavilla, tarkistettu 6.8.2026 osoitteessa stripe.com/global. Tarkista se itse ennen kuin maksat mistään.
 
 ## Miten kerrot hinnan ostajalle
 

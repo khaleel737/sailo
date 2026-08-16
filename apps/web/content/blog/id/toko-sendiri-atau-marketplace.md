@@ -151,13 +151,13 @@ Sekarang batasannya, dan ada empat yang relevan untuk keputusan ini.
 
 **Nggak ada rail DANA, OVO, GoPay, atau QRIS.** Kalau kamu menerima e-wallet, caranya menulis nomormu di kolom instruksi pada metode transfer bank, kolom teks bebas yang ditampilkan ke pembeli setelah dia memesan. Itu jalan pintas manual, bukan fitur. Sailo nggak tahu uangnya masuk, dan kamu yang mengecek mutasi lalu menandai pesanan itu lunas.
 
-**Pembayaran kartu mungkin nggak tersedia untukmu sama sekali.** Kartu butuh paket Business, USD {{business_monthly}} per bulan atau USD {{business_yearly}} per tahun, plus akun Stripe milikmu yang sudah disetujui Stripe untuk menerima pembayaran. Dan Stripe mencantumkan Indonesia sebagai "preview", artinya undangan, bukan pendaftaran terbuka. Jangan menyusun rencana yang bergantung pada tombol kartu sebelum kamu memastikan bisa membuka akun Stripe.
+**Pembayaran kartu mungkin nggak tersedia untukmu sama sekali.** Kartu butuh akun Stripe milikmu yang sudah disetujui Stripe untuk menerima pembayaran. Dan Stripe mencantumkan Indonesia sebagai "preview", artinya undangan, bukan pendaftaran terbuka. Jangan menyusun rencana yang bergantung pada tombol kartu sebelum kamu memastikan bisa membuka akun Stripe.
 
 **Nggak ada penahanan dana dan nggak ada sistem sengketa.** Ini perbedaan paling mendasar dengan marketplace, dan ini alasan sah kenapa sebagian pembeli tetap lebih nyaman di sana untuk barang mahal. Kalau ada masalah, yang menyelesaikan kamu dan pembelimu.
 
 **Nggak ada pembeli di dalamnya.** Link toko nggak punya halaman pencarian dan nggak punya trafik. Semua orang yang masuk, kamu yang membawa. Kalau kamu belum punya siapa-siapa untuk dibawa, mulai dari [cara dapat pembeli pertama online](/id/blog/cara-dapat-pembeli-pertama), bukan dari memilih platform.
 
-Paket gratisnya nol rupiah dengan {{free_products}} produk dan 30 hari data kunjungan. Paket Pro USD {{pro_monthly}} per bulan atau USD {{pro_yearly}} per tahun untuk {{pro_products}} produk, data setahun, tanpa badge Sailo, dan ekspor CSV. Kartu nggak ada di kedua paket itu.
+Paket gratisnya nol rupiah dengan {{free_products}} produk dan {{free_analytics_days}} hari data kunjungan. Paket Pro USD {{pro_monthly}} per bulan atau USD {{pro_yearly}} per tahun untuk {{pro_products}} produk, data setahun, tanpa badge Sailo, dan ekspor CSV. Kartu nggak ada di kedua paket itu.
 
 ## Cara memutuskan minggu ini
 

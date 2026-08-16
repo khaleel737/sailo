@@ -14,7 +14,7 @@ Nuk të duhet faqe interneti. Të duhen tri gjëra të ndara qartë: një vend k
 
 Dhe këtu duhet thënë menjëherë gjëja që kushton më shumë kur nuk thuhet. Më 6 gusht 2026, as Shqipëria as Kosova nuk janë në listën e shteteve që mbulon Stripe. Butoni i kartës te Sailo punon vetëm përmes Stripe. Domethënë butoni i kartës nuk merret as me para, as me plan të paguar, as me durim. Nëse dikush të thotë ndryshe, hape vetë stripe.com/global dhe shiko listën, sepse ajo listë ndryshon dhe unë po e shkruaj këtë në një datë të caktuar.
 
-Prandaj mos paguaj {{business_monthly}} dollarë në muaj për planin Business duke pritur që të shfaqet një buton "paguaj me kartë". Ai plan të jep produkte pa limit, tre vjet analitikë, kupona dhe program afiliatësh. Kartën, në këto dy shtete, nuk ta jep, sepse nuk ka nga t'ua japë.
+Prandaj mos paguaj asnjë plan duke pritur që të shfaqet një buton "paguaj me kartë". Ai plan të jep produkte pa limit, tre vjet analitikë, kupona dhe program afiliatësh. Kartën, në këto dy shtete, nuk ta jep, sepse nuk ka nga t'ua japë.
 
 ## Ndaje dyqanin në tri pjesë dhe puna bëhet e thjeshtë
 
@@ -96,7 +96,7 @@ Për ata që të shkruajnë në Viber ose të marrin në telefon, mbaj një list
 
 ## Ku ta nisësh nëse fillon sot
 
-Plani falas të lejon {{free_products}} produkte dhe 30 ditë analitikë. Për shumicën e njerëzve që po e lexojnë këtë, {{free_products}} produkte janë më shumë se sa kanë. Nëse ke tridhjetë a dyzet artikuj, ai kufi është i vërtetë dhe do të të pengojë, prandaj është më mirë ta dish tani se pasi ta kesh ngarkuar gjysmën.
+Plani falas të lejon {{free_products}} produkte dhe {{free_analytics_days}} ditë analitikë. Për shumicën e njerëzve që po e lexojnë këtë, {{free_products}} produkte janë më shumë se sa kanë. Nëse ke tridhjetë a dyzet artikuj, ai kufi është i vërtetë dhe do të të pengojë, prandaj është më mirë ta dish tani se pasi ta kesh ngarkuar gjysmën.
 
 Plani Pro kushton {{pro_monthly}} dollarë në muaj ose {{pro_yearly}} dollarë në vit, të jep {{pro_products}} produkte, një vit analitikë, heq shenjën e Sailo-s dhe të lejon të nxjerrësh të dhënat në CSV. As ai nuk ka kartë, po kjo nuk ndryshon asgjë për ty, sepse karta këtu nuk merret në asnjë plan.
 

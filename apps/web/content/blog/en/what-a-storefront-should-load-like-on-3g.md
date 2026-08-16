@@ -125,7 +125,7 @@ Two honest limitations, and the India-specific one matters more here than the sp
 
 There's no native app. Everything is the web. For a repeat customer who visits twice a week, an app would cache your catalogue and open instantly, and Sailo can't do that. What it gets in exchange is that a first-time buyer coming off an Instagram story needs no install, which for most small sellers is the trade worth taking.
 
-And Sailo has no UPI rail. Card runs through Stripe, needs the Business plan at ${{business_monthly}} a month plus a Stripe account cleared for charges, and Stripe isn't launched in every country. There's no mobile money rail and no Paystack, whatever you read elsewhere. If your buyers pay by UPI, which in India they overwhelmingly do, what you can honestly do is put your UPI ID into the bank transfer instructions field along with your account details, and confirm each payment yourself. That works. It's a workaround, not a feature, and Sailo cannot tell you a UPI payment arrived. Only your bank or your UPI app can.
+And Sailo has no UPI rail. Card runs through Stripe, needs a Stripe account cleared for charges, and Stripe isn't launched in every country. There's no mobile money rail and no Paystack, whatever you read elsewhere. If your buyers pay by UPI, which in India they overwhelmingly do, what you can honestly do is put your UPI ID into the bank transfer instructions field along with your account details, and confirm each payment yourself. That works. It's a workaround, not a feature, and Sailo cannot tell you a UPI payment arrived. Only your bank or your UPI app can.
 
 ## Today, before you change anything else
 

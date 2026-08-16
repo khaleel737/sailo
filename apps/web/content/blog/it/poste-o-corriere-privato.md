@@ -114,7 +114,7 @@ Poco, e va detto subito: **Sailo non ha nessuna integrazione con i corrieri.** N
 
 Quindi il numero della spedizione lo calcoli tu con il listino del tuo corriere e lo scrivi tu, e il tracciamento lo guardi sul sito del corriere. Quello che Sailo fa è far arrivare l'ordine con indirizzo e totale già scritti, così non ricopi un CAP a mano alle undici di sera, che è il momento in cui si sbaglia.
 
-Sul bonifico e sul contrassegno Sailo non prende nessuna commissione e non tocca mai il denaro. L'unica commissione esistente è lo {{fee_range}}% sul valore dei prodotti quando si paga con carta, calcolata dopo lo sconto e **esclusa la spedizione**, e la carta richiede il piano Business da {{business_monthly}} USD al mese con un account Stripe approvato.
+Sul bonifico e sul contrassegno Sailo non prende nessuna commissione e non tocca mai il denaro. L'unica commissione esistente è lo {{fee_range}}% sul valore dei prodotti quando si paga con carta, calcolata dopo lo sconto e **esclusa la spedizione**, e la carta richiede un account Stripe approvato.
 
 ## Da fare questa settimana
 

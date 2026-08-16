@@ -144,7 +144,7 @@ No plano gratuito você tem {{free_products}} produtos, {{free_analytics_days}} 
 
 Os canais de pedido e pagamento disponíveis são cartão, WhatsApp, Telegram, Instagram, e-mail, telefone, transferência bancária e pagamento na entrega. Essa é a lista inteira, e **Pix não está nela**. Quem vende no Brasil normalmente usa a opção de transferência bancária e escreve a chave Pix no campo de instruções, que é texto livre. O comprador lê, paga pelo banco dele, avisa, e você confere no seu extrato. Funciona, e é uma solução manual: o Sailo não vê o Pix cair e não dá baixa sozinho. O detalhe de como montar isso sem virar bagunça está em [como receber por Pix vendendo online](/pt/blog/como-receber-por-pix-vendendo-online).
 
-E o botão de cartão tem um limite que importa aqui. Ele funciona sobre o Stripe, que atende o Brasil, verifiquei em stripe.com/global em agosto de 2026, mas exige o plano Business e uma conta Stripe aprovada para cobranças. O limite de verdade é outro: parcelamento não é um recurso do Sailo. Quem parcela é o cartão do comprador e o banco dele, não a sua página. Se a sua ideia de "link que vende" incluía controlar parcelas ali dentro, essa parte não existe, e é melhor saber antes de pagar.
+E o botão de cartão tem um limite que importa aqui. Ele funciona sobre o Stripe, que atende o Brasil, verifiquei em stripe.com/global em agosto de 2026, mas exige uma conta Stripe aprovada para cobranças. O limite de verdade é outro: parcelamento não é um recurso do Sailo. Quem parcela é o cartão do comprador e o banco dele, não a sua página. Se a sua ideia de "link que vende" incluía controlar parcelas ali dentro, essa parte não existe, e é melhor saber antes de pagar.
 
 ## Os erros que aparecem em quase toda página que eu abro
 

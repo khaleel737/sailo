@@ -208,7 +208,7 @@ Sailo siparişi yazıyor, konuşmayı yürütmüyor. Senin yerine konuşan bir b
 
 Havaleyi de sen onaylıyorsun. Sailo senin bankana bağlı değil, paranın geldiğini sadece bankan biliyor, ve bir siparişi ödendi diye işaretliyorsan gidip baktığın içindir. Dekont geldiğinde ne yapacağın ve ne yazacağın [havale ile ödeme almak](/tr/blog/havale-ile-odeme-almak) yazısında duruyor.
 
-Kart tarafında net konuşmak lazım. Sailo'da kart yöntemi Stripe üzerinde çalışıyor, sadece Stripe üzerinde, ve Business planı gerekiyor ({{business_monthly}} USD/ay veya {{business_yearly}} USD/yıl). Sailo maldan, indirim sonrası, kargo ve vergi hariç %{{fee_range}} alıyor, para da doğrudan senin Stripe hesabına düşüyor. Ama düğmenin açılması Stripe'ın senin ülkenden hesap kabul etmesine bağlı, ve Stripe'ın ülke listesi zaman içinde değişiyor. Business'a abone olmadan önce stripe.com/global adresine kendin bak ve Türkiye'yi orada ara.
+Kart tarafında net konuşmak lazım. Sailo'da kart yöntemi Stripe üzerinde çalışıyor, sadece Stripe üzerinde. Sailo maldan, indirim sonrası, kargo ve vergi hariç %{{fee_range}} alıyor, para da doğrudan senin Stripe hesabına düşüyor. Ama düğmenin açılması Stripe'ın senin ülkenden hesap kabul etmesine bağlı, ve Stripe'ın ülke listesi zaman içinde değişiyor. Business'a abone olmadan önce stripe.com/global adresine kendin bak ve Türkiye'yi orada ara.
 
 Taksit ise Sailo'nun yapabildiği bir şey hiç değil. Taksit alıcının kendi kartından ve kendi bankasından geliyor. "Taksit var mı?" sorusuna vereceğin cevabı buna göre kur, çünkü o soruyu haftada birkaç kere alacaksın.
 

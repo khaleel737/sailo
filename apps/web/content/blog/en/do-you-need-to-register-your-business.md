@@ -59,7 +59,7 @@ This is the trigger that arrives with money attached, which makes it the most pe
 
 Card payments are the point where an anonymous side income stops being anonymous. Every card processor is legally obliged to know who it's paying. That means identity documents, a business description, sometimes a registration number, sometimes bank statements, and a real possibility of being told no.
 
-On Sailo, cards run through your own Stripe account and need the Business plan at ${{business_monthly}} a month. Sailo takes {{fee_range}}% of the goods on a card sale, on top of Stripe's own cut, and nothing at all on bank transfer, cash on delivery or chat orders. Whether you need that button at all is a maths question rather than a status question, and it's worked through in [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller).
+On Sailo, cards run through your own Stripe account, on any plan. Sailo takes {{fee_range}}% of the goods on a card sale, on top of Stripe's own cut, and nothing at all on bank transfer, cash on delivery or chat orders. Whether you need that button at all is a maths question rather than a status question, and it's worked through in [how to take payment as a small seller](/en/blog/how-to-take-payment-as-a-small-seller).
 
 ### 4. A licence rule catches you
 
@@ -154,7 +154,7 @@ The gap between those two failure modes is the whole argument. Be relaxed about 
 
 Sailo will let you open a shop, publish products and take an order before you've registered anything, and it will never ask. That's deliberate, and it's also a limitation you should hold onto: nothing in the product checks whether you're allowed to sell what you're selling, or tells you that your country wants something from you. It'll put your tax ID and your legal details on the invoice if you enter them, and it'll leave those lines off if you don't.
 
-Stripe is the part that asks. Card payments need the Business plan and a Stripe account cleared for charges, and clearing means Stripe wants to know who you are and what you sell. If you're in a country Stripe hasn't launched, the card button may not be available to you at all, and no plan upgrade produces it. That isn't a registration problem and registering won't fix it.
+Stripe is the part that asks. Card payments need a Stripe account cleared for charges, and clearing means Stripe wants to know who you are and what you sell. If you're in a country Stripe hasn't launched, the card button may not be available to you at all, and no plan upgrade produces it. That isn't a registration problem and registering won't fix it.
 
 ## What to do this week
 
