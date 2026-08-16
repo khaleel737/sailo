@@ -1,0 +1,122 @@
+packages/email/src/lifecycle/subscribe.ts
+  s_c7a7b98e0ed667::t_22d5f26a7d1f91 1-5,7,9-12,14
+  s_c7a7b98e0ed667::t_3c317c6ceb4abd 6,8,13,18,64
+  s_c7a7b98e0ed667::t_e34e29ddc4fcab 15-17,19-63
+apps/web/src/lib/actions/subscribe.ts
+  s_c7a7b98e0ed667::t_f5674089c2d917 10
+apps/web/package.json
+  s_c7a7b98e0ed667::t_b1eefd74474ac3 62
+packages/account/package.json
+  s_c7a7b98e0ed667::t_b1eefd74474ac3 8
+  s_c7a7b98e0ed667::t_4fd28f807b5166 13
+  s_c7a7b98e0ed667::t_c0a95f087c31d7 7,20
+apps/web/src/lib/email/index.ts
+  s_c7a7b98e0ed667::t_f5674089c2d917 2-13,16-19
+packages/email/src/lifecycle/index.ts
+  s_c7a7b98e0ed667::t_29f802439c6f91 1-10
+packages/email/src/transactional/index.ts
+  s_c7a7b98e0ed667::t_29f802439c6f91 1-10
+packages/email/src/system/messages.ts
+  s_c7a7b98e0ed667::t_22d5f26a7d1f91 1-17,20,22-25,36
+  s_c7a7b98e0ed667::t_e34e29ddc4fcab 27-32,34-35,37-286
+  s_c7a7b98e0ed667::t_3c317c6ceb4abd 18-19,21,26,33,287
+packages/email/src/index.ts
+  s_c7a7b98e0ed667::t_29f802439c6f91 2,4,6-12,14-20,22-23
+packages/api/src/routers/orders.ts
+  s_c7a7b98e0ed667::t_f5674089c2d917 16
+apps/web/src/lib/membership-cron.ts
+  s_c7a7b98e0ed667::t_f5674089c2d917 6
+packages/email/src/shop/index.ts
+  s_c7a7b98e0ed667::t_29f802439c6f91 1-10
+packages/email/src/system/index.ts
+  s_c7a7b98e0ed667::t_29f802439c6f91 1-8
+packages/email/src/shop/seller.ts
+  s_c7a7b98e0ed667::t_90bb92c938e33f 1-257
+apps/web/src/app/admin/support/page.tsx
+  s_c7a7b98e0ed667::t_b5fc29e748e89b 7
+apps/web/src/lib/actions/support.ts
+  s_c7a7b98e0ed667::t_b5fc29e748e89b 18
+packages/email/package.json
+  s_c7a7b98e0ed667::t_29f802439c6f91 10-14,25
+apps/web/src/lib/webhooks/deliver.ts
+  s_c7a7b98e0ed667::t_f5674089c2d917 11
+packages/email/src/index-all.ts
+  s_c7a7b98e0ed667::t_53159bca86aa66 2,4-8,10-13
+packages/email/src/preview.test.ts
+  s_c7a7b98e0ed667::t_53159bca86aa66 1-212
+packages/notifications/tsconfig.json
+  s_c7a7b98e0ed667::t_39a6c56a06a7f7 1-5
+apps/web/src/lib/orders/notify-seller.ts
+  s_c7a7b98e0ed667::t_f5674089c2d917 12
+  s_c7a7b98e0ed667::t_b1eefd74474ac3 6-7
+packages/notifications/vitest.config.mts
+  s_c7a7b98e0ed667::t_39a6c56a06a7f7 1-5
+apps/web/src/app/admin/layout.tsx
+  s_c7a7b98e0ed667::t_b1eefd74474ac3 9
+apps/web/src/app/admin/settings/_components/notifications-card.tsx
+  s_c7a7b98e0ed667::t_b1eefd74474ac3 6
+apps/web/src/app/admin/_components/notification-bell.tsx
+  s_c7a7b98e0ed667::t_b1eefd74474ac3 21
+apps/web/src/lib/actions/shop.ts
+  s_c7a7b98e0ed667::t_b1eefd74474ac3 24
+apps/web/src/app/admin/support/_components/support-form.tsx
+  s_c7a7b98e0ed667::t_b5fc29e748e89b 14
+apps/web/src/app/hq/(panel)/support/page.tsx
+  s_c7a7b98e0ed667::t_b5fc29e748e89b 10
+packages/notifications/src/prefs.test.ts
+  s_c7a7b98e0ed667::t_4136923a8f2bd8 1-5,7-73
+  s_c7a7b98e0ed667::t_05307882e30c65 6
+packages/email/src/transactional/messages.ts
+  s_c7a7b98e0ed667::t_22d5f26a7d1f91 1-27,30-41
+  s_c7a7b98e0ed667::t_3c317c6ceb4abd 28-29,42-43
+  s_c7a7b98e0ed667::t_e34e29ddc4fcab 44-429
+packages/core/package.json
+  s_c7a7b98e0ed667::t_531ef43c3d3159 21
+packages/notifications/src/index.ts
+  s_c7a7b98e0ed667::t_39a6c56a06a7f7 1-29
+packages/notifications/turbo.json
+  s_c7a7b98e0ed667::t_39a6c56a06a7f7 1-5
+apps/web/src/app/admin/_components/admin-header.tsx
+  s_c7a7b98e0ed667::t_b1eefd74474ac3 7
+packages/notifications/src/push.ts
+  s_c7a7b98e0ed667::t_4136923a8f2bd8 1-175
+packages/notifications/src/prefs.ts
+  s_c7a7b98e0ed667::t_4136923a8f2bd8 1-55
+packages/notifications/src/feed.ts
+  s_c7a7b98e0ed667::t_4136923a8f2bd8 1-190
+packages/email/src/shop/messages.ts
+  s_c7a7b98e0ed667::t_3c317c6ceb4abd 13-14,20,23,106
+  s_c7a7b98e0ed667::t_22d5f26a7d1f91 1-12,16
+  s_c7a7b98e0ed667::t_e34e29ddc4fcab 15,17-19,21-22,24-105
+packages/api/package.json
+  s_c7a7b98e0ed667::t_b1eefd74474ac3 25
+apps/web/src/lib/stripe-webhooks/memberships.ts
+  s_c7a7b98e0ed667::t_f5674089c2d917 19
+apps/web/scripts/scenarios/consent.scenario.ts
+  s_c7a7b98e0ed667::t_f5674089c2d917 2,58
+packages/api/src/routers/account.ts
+  s_c7a7b98e0ed667::t_b1eefd74474ac3 4
+packages/notifications/package.json
+  s_c7a7b98e0ed667::t_39a6c56a06a7f7 1-22,24-32
+  s_c7a7b98e0ed667::t_15e8ab06a32bfc 23
+apps/web/src/lib/actions/order-admin.ts
+  s_c7a7b98e0ed667::t_f5674089c2d917 16
+pnpm-lock.yaml
+  s_c7a7b98e0ed667::t_57418012d261cb 295-297,547-549,847-849,929-965
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "9960509bbc09f4756e810fc97e26ce2775073aad",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
