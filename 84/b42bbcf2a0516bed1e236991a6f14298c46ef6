@@ -1,0 +1,270 @@
+packages/payments/src/offline/handoff.test.ts
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-151
+apps/web/src/lib/connect.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 37
+apps/web/src/app/admin/affiliates/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 19
+packages/billing/turbo.json
+  s_c7a7b98e0ed667::t_ba0f4980994bc1 1-5
+apps/web/src/app/admin/settings/integrations/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 6
+apps/web/src/lib/actions/coupons.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 15
+apps/web/src/app/admin/settings/data/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 5
+packages/payments/src/stripe/verify.test.ts
+  s_c7a7b98e0ed667::t_d94a9f148b431b 17
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-16,18-158
+apps/web/src/app/[handle]/_lib/get-shop-page-data.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 11
+apps/web/src/app/hq/(panel)/accounts/[id]/_components/account-actions.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 21
+apps/web/src/app/(marketing)/_components/pricing-view.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 5
+apps/web/scripts/scenarios/memberships-live.scenario.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 21
+apps/web/src/lib/webhook-source.ts
+  s_c7a7b98e0ed667::t_c099bfb9ade9c2 26-31,37
+apps/web/src/app/admin/coupons/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 12
+apps/web/src/lib/api/auth.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 3
+apps/web/src/app/hq/(panel)/accounts/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 16
+apps/web/src/app/admin/settings/billing/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 11
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 10
+apps/web/src/app/admin/_components/locked-feature.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 2
+packages/billing/package.json
+  s_c7a7b98e0ed667::t_ba0f4980994bc1 1-22,24-32
+  s_c7a7b98e0ed667::t_b7a1d627d4539a 23
+apps/web/src/lib/broadcasts/quota.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 5
+packages/payments/src/connect/index.ts
+  s_c7a7b98e0ed667::t_9b54bb0c9e9510 1-3
+apps/web/src/lib/payments/index.ts
+  s_c7a7b98e0ed667::t_a70e166e784f58 2,4-14,18
+apps/web/src/lib/queries/checkout.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 7
+packages/billing/src/customer.ts
+  s_c7a7b98e0ed667::t_ae315349fbbe9d 5
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-4,6-86
+apps/web/src/app/(marketing)/_components/pricing-section.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 5
+apps/web/src/app/(marketing)/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 2
+apps/web/src/lib/blog-facts.test.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 4
+apps/web/src/app/admin/products/new/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 8
+packages/billing/src/map.ts
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 2-64
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 1
+apps/web/src/lib/actions/broadcasts.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 10
+apps/web/src/app/admin/_components/export-button.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 3
+apps/web/src/app/admin/_components/admin-header.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 3
+apps/web/src/app/admin/settings/_components/calendar-sync-card.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 7
+apps/web/scripts/verify-prices.ts
+  s_c7a7b98e0ed667::t_74fd8d8b4283f1 8
+packages/payments/src/offline/index.ts
+  s_c7a7b98e0ed667::t_a91765d8a00913 2,7-21
+  s_c7a7b98e0ed667::t_9b54bb0c9e9510 1,3-6,22-24
+apps/web/src/app/hq/(panel)/revenue/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 25
+packages/api/src/routers/billing.ts
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 14
+packages/payments/src/offline/settings.test.ts
+  s_c7a7b98e0ed667::t_6016ae58d775bb 57
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-56,58-257
+apps/web/src/lib/actions/integrations.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 17
+apps/web/src/app/admin/broadcasts/[id]/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 10
+packages/api/src/routers/shop.ts
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 7
+packages/api/src/routers/shop.test.ts
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 40
+packages/api/package.json
+  s_c7a7b98e0ed667::t_2668339763cd57 18
+apps/web/src/app/(legal)/terms/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 14
+apps/web/src/lib/actions/payments.ts
+  s_c7a7b98e0ed667::t_327279feae6385 17
+  s_c7a7b98e0ed667::t_65a8d63950c1fa 7
+packages/payments/src/stripe/ownership.test.ts
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-89
+apps/web/scripts/check-checkout-content.ts
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 26
+apps/web/src/app/admin/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 24
+packages/payments/src/offline/handoff.ts
+  s_c7a7b98e0ed667::t_c5390bd39b9407 1
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 2-212
+apps/web/src/app/(marketing)/_components/home-view.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 3
+apps/web/scripts/check-payment-methods.ts
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 21
+apps/web/src/lib/broadcasts/send.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 17
+apps/web/src/lib/blog-facts.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 1
+apps/web/src/app/admin/_components/upgrade-modal.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 12
+apps/web/src/app/admin/products/[id]/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 12
+packages/payments/src/stripe/verify.ts
+  s_c7a7b98e0ed667::t_ae315349fbbe9d 3
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-2,4-107
+apps/web/src/lib/actions/affiliates.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 19
+apps/web/src/app/api/export/[type]/route.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 3
+apps/web/src/lib/utils.ts
+  s_c7a7b98e0ed667::t_c5390bd39b9407 188-196
+packages/payments/src/stripe/idempotency.test.ts
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-77
+packages/core/package.json
+  s_c7a7b98e0ed667::t_c5390bd39b9407 19
+packages/payments/src/index.ts
+  s_c7a7b98e0ed667::t_3afd614374ff6e 2,4-7,9-10,12-22,24-26,28-35,38-49,62-63
+apps/web/src/lib/actions/hq.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 23
+apps/web/src/app/admin/broadcasts/new/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 7
+apps/web/src/app/api/hq/export/[type]/route.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 21
+packages/billing/tsconfig.json
+  s_c7a7b98e0ed667::t_ba0f4980994bc1 1-5
+apps/web/src/app/admin/_components/range-picker.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 8,11
+apps/web/src/lib/booking/availability.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 8
+apps/web/src/app/hq/(panel)/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 35
+packages/payments/src/connect/accounts.ts
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-331
+apps/web/src/lib/actions/connect.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 11
+apps/web/src/lib/hq-metrics.test.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 14
+packages/billing/src/sync.ts
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 1-5,8-50
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 6-7
+packages/commerce/src/refunds.ts
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 5
+apps/web/package.json
+  s_c7a7b98e0ed667::t_2668339763cd57 53
+packages/payments/src/stripe/index.ts
+  s_c7a7b98e0ed667::t_9b54bb0c9e9510 1-5
+apps/web/src/app/(legal)/privacy/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 13
+apps/web/src/app/hq/(panel)/accounts/[id]/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 34
+apps/web/src/app/partners/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 23
+packages/core/src/phone.ts
+  s_c7a7b98e0ed667::t_c5390bd39b9407 2,4-7,9-11,14-17
+apps/web/src/lib/stripe-webhooks/platform.ts
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 8
+apps/web/src/app/hq/(panel)/partners/settings/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 4
+apps/web/src/app/admin/payments/_components/stripe-card.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 11
+packages/payments/src/stripe/client.ts
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-21
+apps/web/src/lib/import/products.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 9
+packages/billing/src/checkout.ts
+  s_c7a7b98e0ed667::t_f960586c566f88 182-183
+  s_c7a7b98e0ed667::t_7a661799ed31cc 92-117
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 7
+apps/web/src/app/(legal)/refunds/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 12
+apps/web/src/lib/lifecycle/steps.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 1
+apps/web/src/lib/actions/orders.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 21
+apps/web/src/app/admin/members/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 8
+apps/web/src/app/(marketing)/_components/pricing-section.test.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 4
+packages/payments/src/offline/rails.test.ts
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 1-187,189-199,201-263
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 188,200
+packages/payments/src/stripe/idempotency.ts
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-36
+docs/architecture.md
+  s_c7a7b98e0ed667::t_a5a1c265ddc1d9 140-144
+packages/payments/src/connect/capabilities.test.ts
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-151
+packages/billing/src/index.ts
+  s_c7a7b98e0ed667::t_e96da9d45eea75 1,3-39
+  s_c7a7b98e0ed667::t_25b73d84b32b3e 2
+apps/web/src/app/(marketing)/pricing/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 5
+packages/billing/src/checkout.test.ts
+  s_c7a7b98e0ed667::t_ae315349fbbe9d 8
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 9
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-7,10-86,91-142
+  s_c7a7b98e0ed667::t_46eb5fd61566de 87-90
+packages/payments/src/offline/settings.ts
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-227
+apps/web/src/app/[handle]/affiliate/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 13
+packages/billing/vitest.config.mts
+  s_c7a7b98e0ed667::t_ba0f4980994bc1 1-5
+apps/web/scripts/check-subscriptions.ts
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 25
+  s_c7a7b98e0ed667::t_46eb5fd61566de 26,188-191
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 20
+packages/payments/src/connect/capabilities.ts
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-182
+apps/web/src/lib/actions/memberships.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 9
+apps/web/scripts/check-live.ts
+  s_c7a7b98e0ed667::t_46eb5fd61566de 28-29,153-156
+packages/payments/src/offline/rails.ts
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 1,3-475
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 2
+packages/payments/package.json
+  s_c7a7b98e0ed667::t_9b54bb0c9e9510 9-10,20,27
+  s_c7a7b98e0ed667::t_955d45d46e965d 11-12
+packages/api/src/routers/payments.ts
+  s_c7a7b98e0ed667::t_327279feae6385 193
+  s_c7a7b98e0ed667::t_65a8d63950c1fa 11
+apps/web/src/app/admin/broadcasts/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 9
+packages/payments/src/stripe/ownership.ts
+  s_c7a7b98e0ed667::t_07d8c1c5ed4d81 1-165
+apps/web/src/app/admin/checkin/[productId]/page.tsx
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 7
+apps/web/src/lib/actions/billing.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 8
+  s_c7a7b98e0ed667::t_36c7cdc19e3159 7,13
+  s_c7a7b98e0ed667::t_46eb5fd61566de 38-52
+apps/web/src/lib/orders/resolve-intent.ts
+  s_c7a7b98e0ed667::t_a6a0ea283425a1 7
+pnpm-lock.yaml
+  s_c7a7b98e0ed667::t_2efeb3dc849308 268-270,526-528,613-646
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "84b42bbcf2a0516bed1e236991a6f14298c46ef6",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
