@@ -134,8 +134,13 @@ export function countriesByName(locale = "en"): { code: CountryCode; name: strin
    *
    * Mutating is safe here because `.map()` above just built the array; there
    * is no caller's copy to disturb. That is the condition for this swap, and
-   * it holds at all five sites that had to make it. `eslint.config.mjs`
-   * restricts the method so a sixth cannot appear.
+   * it holds at all five sites that had to make it — check it before making a
+   * sixth, because on an array a caller still holds the two are not the same
+   * function.
+   *
+   * What stops a sixth is `@sailo/config/tsconfig.hermes.json`, which this
+   * package extends: it lowers `lib` to es2022, so `toSorted` is not merely
+   * discouraged here, it does not typecheck.
    */
   return COUNTRY_CODES.map((code) => ({
     code,
