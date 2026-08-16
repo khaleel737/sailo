@@ -13,7 +13,7 @@ import {
   sendDownloadReady,
   sendRefundNotification,
   sendShippingNotification,
-} from "@sailo/email/orders";
+} from "@sailo/email/transactional";
 import { decodeCursor, olderThan, pageOf } from "@sailo/commerce/pagination";
 import { publishShopEvent } from "@sailo/events";
 import { router, shopProcedure } from "../trpc";

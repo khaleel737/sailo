@@ -8,7 +8,7 @@ import {
   webhookEndpoints,
 } from "@sailo/db/schema";
 import { maybeRow } from "@sailo/core/invariant";
-import { sendSellerWebhookDisabled } from "@/lib/email/seller-messages";
+import { sendSellerWebhookDisabled } from "@/lib/email";
 import { postWebhook } from "./post";
 import { signWebhook } from "./signature";
 

@@ -11,7 +11,7 @@ import {
   MAX_SUBJECT_LENGTH,
   MAX_TICKET_IMAGES,
   SUPPORT_TOPICS,
-} from "@/lib/support";
+} from "@sailo/core/support";
 
 /**
  * The ticket form. Screenshots upload as they're picked and travel as hidden

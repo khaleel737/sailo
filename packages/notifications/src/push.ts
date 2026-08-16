@@ -2,8 +2,8 @@ import "server-only";
 import { eq, inArray } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { pushTokens, type Order, type Shop } from "@sailo/db/schema";
-import { orderSummaryTitle } from "@/lib/order-lines";
-import { formatMoney } from "@/lib/utils";
+import { orderSummaryTitle } from "@sailo/commerce/order-lines";
+import { formatMoney } from "@sailo/core/currency";
 
 /**
  * The seller's phone, told that something happened in their shop.

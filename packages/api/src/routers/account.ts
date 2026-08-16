@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
-import { notificationPrefsSchema } from "@sailo/account/notification-prefs";
+import { notificationPrefsSchema } from "@sailo/notifications/prefs";
 import { deleteAccountFor } from "@sailo/account/deletion";
 import { TRPCError } from "@trpc/server";
 import { router, shopProcedure } from "../trpc";

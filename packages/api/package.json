@@ -22,6 +22,7 @@
     "@sailo/email": "workspace:*",
     "@sailo/env": "workspace:*",
     "@sailo/events": "workspace:*",
+    "@sailo/notifications": "workspace:*",
     "@sailo/payments": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
     "@sailo/storage": "workspace:*",

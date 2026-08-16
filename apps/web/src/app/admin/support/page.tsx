@@ -4,7 +4,7 @@ import { getDb } from "@sailo/db";
 import { supportTickets } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { isSupportTopic } from "@/lib/support";
+import { isSupportTopic } from "@sailo/core/support";
 import { PageHeader } from "@sailo/design-system/web";
 import { Badge, Card } from "@sailo/design-system/web";
 import { SupportForm } from "./_components/support-form";

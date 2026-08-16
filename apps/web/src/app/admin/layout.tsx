@@ -6,7 +6,7 @@ import {
   AdminHeaderCompact,
 } from "@/app/admin/_components/admin-header";
 import { getDashboardStats } from "@/lib/queries";
-import { getNotifications } from "@/lib/notifications";
+import { getNotifications } from "@sailo/notifications/feed";
 import { isStaff, requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { AdminI18nProvider } from "@/app/admin/_components/admin-i18n";

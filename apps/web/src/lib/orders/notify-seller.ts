@@ -3,13 +3,13 @@ import { asc, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orderItems, orders, user, type Shop } from "@sailo/db/schema";
 import { rateLimit } from "@sailo/rate-limit";
-import { wantsNotification } from "@/lib/notification-prefs";
-import { pushSellerOrder } from "@/lib/orders/push";
+import { wantsNotification } from "@sailo/notifications/prefs";
+import { pushSellerOrder } from "@sailo/notifications/push";
 import {
   sendSellerBookingRequested,
   sendSellerOrderNeedsAction,
   sendSellerOrderPlaced,
-} from "@/lib/email/seller-messages";
+} from "@/lib/email";
 
 /**
  * Telling the seller something happened in their shop.

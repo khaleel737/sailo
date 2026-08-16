@@ -1,29 +1,28 @@
 /**
- * Mail, in the two halves that two apps both need.
+ * Every message Sailo sends, grouped by who receives it and why.
  *
- * WHY THIS PACKAGE EXISTS
+ * WHY BY AUDIENCE
  *
- * `apps/web/src/lib/email` composed and sent every message Sailo produces, and
- * `packages/api` cannot import from an app — so the phone could change an
- * order's status and could not refund one, because a refund ends by telling the
- * buyer and there was no way to reach the sender. `orders.updateStatus` has
- * carried a note about that gap since it was written, naming this package as
- * the work order that closes it.
+ * These were one 810-line `messages.ts` inside `apps/web`, which meant two
+ * things at once: `packages/api` could not send any of them — so the phone
+ * could change an order's status but not refund one, because a refund ends by
+ * telling the buyer — and nothing in the file distinguished a receipt from a
+ * password reset from a marketing opt-in. Those three have different legal
+ * standing, different urgency and different rules about consent, and a grouping
+ * that hides the difference is how an unsubscribe link ends up on a receipt.
  *
- * WHAT MOVED AND WHAT DID NOT
+ *   ./transactional  a buyer's record of a purchase. No consent, no
+ *                    unsubscribe: a buyer cannot opt out of being told their
+ *                    order shipped.
+ *   ./shop           what a seller and their partners are told about the shop.
+ *   ./system         account and security. Never batched, never throttled,
+ *                    never subject to a preference.
+ *   ./lifecycle      mail that had to ask first.
  *
- * The transport and the markup moved whole: both are about *how mail is made
- * and sent*, which is the same on every surface. The messages themselves are
- * moving one path at a time, starting with the order lifecycle, because each
- * one has to be re-pointed at shared versions of the things it names — the
- * money formatter, the address formatter, the order's own lines.
- *
- * `lifecycle-messages.ts` and the support and marketing messages are staying in
- * apps/web. They reach into the marketing site's own content — a hero demo, the
- * support topic list, SEO metadata — and none of that is a thing a phone sends.
+ * The two halves underneath are shared by all four and stay at the root:
+ * `./transport` (how mail leaves) and `./markup` (what it is made of).
  */
 
 export * from "./transport";
-export * from "./order-mail";
 export * from "./markup";
 export { APP_URL, absolute } from "./origin";

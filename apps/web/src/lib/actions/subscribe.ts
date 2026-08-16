@@ -7,7 +7,7 @@ import { getDictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { rateLimit } from "@sailo/rate-limit";
-import { sendSubscribeConfirmation } from "@/lib/email/messages";
+import { sendSubscribeConfirmation } from "@/lib/email";
 import {
   confirmSubscriber,
   normalizeEmail,

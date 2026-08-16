@@ -21,7 +21,7 @@ import {
 import {
   NOTIFICATION_EVENTS,
   notificationPrefsSchema,
-} from "@/lib/notification-prefs";
+} from "@sailo/notifications/prefs";
 import { setMarketingOptIn } from "@/lib/lifecycle/opt-out";
 import { isStaff, requireShop, requireUser } from "@/lib/session";
 import { normalizePhone, SOCIAL_PLATFORMS } from "@/lib/utils";

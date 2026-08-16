@@ -59,6 +59,7 @@
     "@sailo/env": "workspace:*",
     "@sailo/events": "workspace:*",
     "@sailo/i18n": "workspace:*",
+    "@sailo/notifications": "workspace:*",
     "@sailo/observability": "workspace:*",
     "@sailo/payments": "workspace:*",
     "@sailo/rate-limit": "workspace:*",

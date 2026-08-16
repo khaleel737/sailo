@@ -15,7 +15,7 @@ import {
   MAX_SUBJECT_LENGTH,
   MAX_TICKET_IMAGES,
   isSupportTopic,
-} from "@/lib/support";
+} from "@sailo/core/support";
 import type { ActionState } from "./shop";
 
 /**

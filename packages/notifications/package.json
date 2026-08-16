@@ -1,17 +1,13 @@
 {
-  "name": "@sailo/email",
+  "name": "@sailo/notifications",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./markup": "./src/markup.ts",
-    "./transport": "./src/transport.ts",
-    "./orders": "./src/orders.ts",
-    "./transactional": "./src/transactional/index.ts",
-    "./shop": "./src/shop/index.ts",
-    "./system": "./src/system/index.ts",
-    "./lifecycle": "./src/lifecycle/index.ts"
+    "./prefs": "./src/prefs.ts",
+    "./push": "./src/push.ts",
+    "./feed": "./src/feed.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -22,10 +18,10 @@
     "@sailo/commerce": "workspace:*",
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
-    "@sailo/payments": "workspace:*",
-    "@sailo/storage": "workspace:*",
-    "resend": "^6.19.0",
-    "server-only": "^0.0.1"
+    "@sailo/i18n": "workspace:*",
+    "drizzle-orm": "^0.45.2",
+    "server-only": "^0.0.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

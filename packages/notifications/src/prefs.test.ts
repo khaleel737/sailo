@@ -3,7 +3,7 @@ import {
   NOTIFICATION_EVENTS,
   notificationPrefsSchema,
   wantsNotification,
-} from "./notification-prefs";
+} from "./prefs";
 
 /**
  * The one rule this column lives or dies by: **absence means on.**

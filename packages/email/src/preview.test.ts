@@ -6,11 +6,11 @@ import { mkdirSync, writeFileSync } from "node:fs";
  * EMAIL_PREVIEW_DIR names where to put them, so the ordinary suite skips it.
  */
 
-import type * as TransportModule from "@sailo/email/transport";
+import type * as TransportModule from "./transport";
 
 const DIR = process.env.EMAIL_PREVIEW_DIR;
 
-vi.mock("@sailo/email/transport", async (importOriginal) => {
+vi.mock("./transport", async (importOriginal) => {
   const actual = await importOriginal<typeof TransportModule>();
   return {
     ...actual,
@@ -38,7 +38,7 @@ import {
   sendRefundNotification,
   sendShippingNotification,
   sendSupportTicket,
-} from "./messages";
+} from "./index-all";
 
 const shop = (over: Partial<Shop> = {}) =>
   ({

@@ -1,5 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type * as messagesModule from "@/lib/email/messages";
+import type * as messagesModule from "@/lib/email";
 import type * as sessionModule from "@/lib/session";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
@@ -55,7 +55,7 @@ const uid = () => crypto.randomUUID();
  */
 const outbox = vi.hoisted(() => [] as { to: string; confirmUrl: string }[]);
 
-vi.mock("@/lib/email/messages", async (importOriginal) => ({
+vi.mock("@/lib/email", async (importOriginal) => ({
   ...(await importOriginal<typeof messagesModule>()),
   sendSubscribeConfirmation: async (
     opts: Parameters<typeof messagesModule.sendSubscribeConfirmation>[0],

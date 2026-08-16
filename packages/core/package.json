@@ -18,6 +18,7 @@
     "./memberships": "./src/memberships.ts",
     "./phone": "./src/phone.ts",
     "./slug": "./src/slug.ts",
+    "./support": "./src/support.ts",
     "./handle": "./src/handle.ts",
     "./client-tags": "./src/client-tags.ts",
     "./countries": "./src/countries.ts",

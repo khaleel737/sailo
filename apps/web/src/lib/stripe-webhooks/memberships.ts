@@ -16,7 +16,7 @@ import { actingAs } from "@/lib/connect";
 import { downloadUrl } from "@/lib/downloads";
 import { publishShopEvent } from "@sailo/events";
 import { releaseDownloads } from "@/lib/downloads";
-import { sendMembershipPaymentFailed, sendMembershipStarted } from "@/lib/email/messages";
+import { sendMembershipPaymentFailed, sendMembershipStarted } from "@/lib/email";
 import { sameAccount, sendingAccount, stripe } from "@sailo/payments";
 
 /**

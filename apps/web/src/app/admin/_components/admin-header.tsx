@@ -4,7 +4,7 @@ import { planFor } from "@sailo/core/plans";
 import { HelpLink } from "./help-link";
 import { NotificationBell } from "./notification-bell";
 import { UpgradeButton } from "./upgrade-modal";
-import type { Notification } from "@/lib/notifications";
+import type { Notification } from "@sailo/notifications/feed";
 import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
 import type { Locale } from "@sailo/i18n/config";

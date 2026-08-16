@@ -4,22 +4,20 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./deletion": "./src/deletion.ts",
-    "./notification-prefs": "./src/notification-prefs.ts"
+    ".": "./src/deletion.ts",
+    "./deletion": "./src/deletion.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "lint": "oxlint src || true",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@sailo/db": "workspace:*",
     "@sailo/payments": "workspace:*",
     "@vercel/blob": "^2.6.1",
     "drizzle-orm": "^0.45.2",
-    "server-only": "^0.0.1",
-    "zod": "^4.4.3"
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

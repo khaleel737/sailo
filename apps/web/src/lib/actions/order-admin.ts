@@ -13,7 +13,7 @@ import { changeOrderStatus } from "@sailo/commerce/orders";
 import { refundOrder as refund } from "@sailo/commerce/refund-order";
 import { shipOrder as ship } from "@sailo/commerce/ship-order";
 import { setPaymentStatus as pay } from "@sailo/commerce/pay-order";
-import { sendDownloadReady } from "@sailo/email/orders";
+import { sendDownloadReady } from "@sailo/email/transactional";
 import { isOrderStatus } from "@sailo/core/order-status";
 import { sendBookingDecision, sendRefundNotification, sendShippingNotification } from "@/lib/email";
 import { emitOrderWebhook } from "@/lib/webhooks/emit";

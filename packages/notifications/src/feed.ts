@@ -1,11 +1,11 @@
 import "server-only";
-import { orderSummaryTitle } from "@/lib/order-lines";
+import { orderSummaryTitle } from "@sailo/commerce/order-lines";
 import { and, desc, eq, gt, isNull, or } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { affiliates, orders, reviews } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate, plural } from "@sailo/i18n";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 
 export type NotificationKind =
   | "order"
