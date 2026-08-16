@@ -1,0 +1,274 @@
+apps/web/src/app/admin/payments/_components/stripe-card.tsx
+  s_bf0a07651522e4::t_ef0b03a62215ba 11,101-105
+packages/i18n/src/admin/no.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/dictionaries/ar.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 402,410-411
+packages/i18n/src/dictionaries/el.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 366,374-375
+packages/i18n/src/marketing/da.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+apps/web/src/app/admin/settings/billing/page.tsx
+  s_bf0a07651522e4::t_ef0b03a62215ba 11,84-88
+packages/i18n/src/marketing/bg.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/dictionaries/bg.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 319,324-325
+apps/web/scripts/verify-prices.ts
+  s_bf0a07651522e4::t_5c2bba639c52a0 1-43
+packages/i18n/src/marketing/ro.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/dictionaries/hr.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 318,323-324
+packages/i18n/src/marketing/vi.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/admin/nl.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+apps/web/src/app/(legal)/refunds/page.tsx
+  s_bf0a07651522e4::t_ef0b03a62215ba 12,58,289
+apps/web/src/app/admin/_components/upgrade-modal.tsx
+  s_bf0a07651522e4::t_ef0b03a62215ba 9,31,89
+packages/i18n/src/admin/el.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/marketing/hu.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/admin/da.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/dictionaries/da.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 362,370-371
+packages/i18n/src/admin/bg.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/i18n/src/admin/cs.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/dictionaries/fi.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 361,369-370
+packages/i18n/src/dictionaries/tr.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 366,374-375
+packages/i18n/src/marketing/fr.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/marketing/nl.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/marketing/uk.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/dictionaries/ro.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 361,369-370
+packages/i18n/src/admin/th.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/i18n/src/marketing/no.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/dictionaries/no.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 361,369-370
+packages/i18n/src/dictionaries/sl.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 317,322-323
+packages/i18n/src/marketing/ja.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/admin/fil.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/i18n/src/admin/sq.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/i18n/src/dictionaries/nl.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 368,376-377
+packages/i18n/src/dictionaries/pt.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 368,376-377
+packages/i18n/src/marketing/hr.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/dictionaries/fr.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 373,381-382
+packages/payments/src/rails.test.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 184,188-189,200,202
+packages/i18n/src/dictionaries/ru.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 364,372-373
+packages/i18n/src/marketing/ru.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 125
+packages/i18n/src/admin/ja.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/admin/hr.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/i18n/src/dictionaries/ko.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 318,323-324
+packages/i18n/src/admin/ro.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/admin/es.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/marketing/fil.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+apps/web/scripts/stripe-setup.ts
+  s_bf0a07651522e4::t_634beaed23f847 102-112
+  s_bf0a07651522e4::t_9a971d46bbf2f2 182-188
+  s_bf0a07651522e4::t_9c9eb71a3e512e 262-284
+  s_bf0a07651522e4::t_4d9843fda0b831 151-153,159
+packages/i18n/src/marketing/ko.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+apps/web/src/lib/plans.test.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 4-5,79,91-121,124-125,130-131,135,139,154,160,171,183,192,207,211-213,225
+packages/i18n/src/marketing/tr.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/dictionaries/mk.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 319,324-325
+packages/i18n/src/admin/de.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+apps/web/src/app/(marketing)/_components/pricing-section.test.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 24-37
+packages/i18n/src/dictionaries/hu.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 361,369-370
+packages/i18n/src/dictionaries/th.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 320,325-326
+packages/i18n/src/admin/ms.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/i18n/src/admin/uk.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/marketing/de.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/dictionaries/id.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 318,323-324
+apps/web/src/app/(marketing)/page.tsx
+  s_bf0a07651522e4::t_ef0b03a62215ba 2,99
+packages/i18n/src/admin/it.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/dictionaries/fil.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 318,323-324
+apps/web/src/app/(legal)/terms/page.tsx
+  s_bf0a07651522e4::t_ef0b03a62215ba 14,65,243
+packages/i18n/src/dictionaries/ms.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 316,321-322
+packages/i18n/src/admin/sl.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/i18n/src/admin/hu.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/marketing/sv.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/marketing/el.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/admin/vi.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/core/src/plans.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 43-48,76-84,98-99,103-112,124,131-134,138-144,153,158-161,176-187,280-286,288-289,293-305,307-313,315-323,357-358,393
+packages/i18n/src/admin/pl.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/analytics/src/analytics-window.test.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 9,36,44-45,70,76
+apps/web/src/app/(marketing)/pricing/page.tsx
+  s_bf0a07651522e4::t_ef0b03a62215ba 5,40,65,82
+packages/i18n/src/admin/ko.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/i18n/src/admin/pt.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/dictionaries/ja.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 403,411-412
+apps/web/src/app/(legal)/privacy/page.tsx
+  s_bf0a07651522e4::t_ef0b03a62215ba 13,208
+packages/i18n/src/dictionaries/pl.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 367,375-376
+packages/i18n/src/admin/sr.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/i18n/src/admin/fr.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/dictionaries/uk.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 364,372-373
+packages/i18n/src/marketing/cs.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/marketing/bs.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/marketing/en.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 167
+packages/i18n/src/marketing/mk.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+apps/web/src/lib/billing-checkout.test.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 63
+packages/i18n/src/marketing/pt.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/marketing/th.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/dictionaries/en.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 553,561-562
+packages/i18n/src/admin/fi.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/admin/sv.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/admin/ar.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/dictionaries/bs.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 319,324-325
+packages/i18n/src/admin/en.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 1081
+packages/i18n/src/admin/id.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/i18n/src/dictionaries/vi.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 321,326-327
+packages/i18n/src/marketing/it.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/marketing/sr.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+apps/web/src/app/(marketing)/_components/home-view.tsx
+  s_bf0a07651522e4::t_ef0b03a62215ba 3,168
+packages/i18n/src/dictionaries/sr.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 320,325-326
+packages/payments/src/rails.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 2,163-168,170
+packages/i18n/src/dictionaries/it.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 370,378-379
+packages/i18n/src/marketing/es.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/marketing/sl.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+apps/web/docs/blog-brief.md
+  s_bf0a07651522e4::t_ef0b03a62215ba 55,57-59,61
+packages/i18n/src/admin/mk.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/i18n/src/dictionaries/de.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 373,381-382
+packages/api/src/routers/analytics.test.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 123,126,147-148
+packages/i18n/src/admin/bs.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 180
+packages/i18n/src/dictionaries/sv.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 363,371-372
+packages/i18n/src/dictionaries/zh.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 402,410-411
+packages/i18n/src/marketing/sq.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/marketing/ar.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+apps/web/src/app/(marketing)/_components/pricing-section.tsx
+  s_bf0a07651522e4::t_ef0b03a62215ba 5,159,171
+packages/i18n/src/admin/tr.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/marketing/ms.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/marketing/fi.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+apps/web/src/app/(marketing)/_components/pricing-view.tsx
+  s_bf0a07651522e4::t_ef0b03a62215ba 5,28,43,78
+packages/i18n/src/admin/zh.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+packages/i18n/src/dictionaries/cs.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 362,370-371
+packages/i18n/src/dictionaries/es.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 372,380-381
+packages/i18n/src/marketing/zh.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/marketing/id.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/dictionaries/sq.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 320,325-326
+packages/i18n/src/marketing/pl.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 124
+packages/i18n/src/admin/ru.ts
+  s_bf0a07651522e4::t_ef0b03a62215ba 46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c2d7272ff84899039c92f242f5547f0808dae70d",
+  "prompts": {},
+  "sessions": {
+    "s_bf0a07651522e4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95e13e06-d59c-4d66-8ed4-cb6169c22cc6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
