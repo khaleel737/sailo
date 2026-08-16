@@ -1,0 +1,364 @@
+apps/web/src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_230301a759e309::t_081ec25354ec97 3,7-12,190-277,506,530,540-543,545-547,762-770
+apps/web/src/app/[handle]/affiliate/page.tsx
+  s_230301a759e309::t_d6c7e307d8e01b 70,133
+apps/web/src/app/[handle]/subscribe/page.tsx
+  s_230301a759e309::t_d6c7e307d8e01b 84
+apps/web/src/app/(marketing)/docs/_components/docs-kit.tsx
+  s_230301a759e309::t_b48851e71d6e1b 177
+apps/web/src/app/[handle]/_components/favorites/favorites-button.tsx
+  s_230301a759e309::t_081ec25354ec97 77
+  s_230301a759e309::t_3e1d3cda27b979 48
+apps/web/src/app/[handle]/p/[slug]/page.tsx
+  s_230301a759e309::t_7b2eb381edaf9b 201
+  s_230301a759e309::t_0b15128758a3d3 227
+  s_230301a759e309::t_91f3329213ff2b 232,236,243,250
+apps/mobile/app/(tabs)/_layout.tsx
+  s_230301a759e309::t_e6d813fb532611 135
+  s_230301a759e309::t_6b830e9e1b7b29 8-15
+  s_230301a759e309::t_4c2caa4f7fd5e3 48-68
+  s_230301a759e309::t_16e325753c37f1 132-134
+  s_230301a759e309::t_93161c43ea3c29 136-138
+  s_230301a759e309::t_59abd7409ebfad 125-131,140-145,147-153,155-157,159-171,173-182,184-193,195-204,206-217
+packages/core/src/countries.ts
+  s_42380745c8f8fb::t_58dab3322f8372 201-351
+apps/web/src/app/[handle]/p/[slug]/_components/buy-box.tsx
+  s_230301a759e309::t_eaf8915afbffa9 240-244
+  s_230301a759e309::t_1046ddecc40e9f 256
+apps/web/src/app/[handle]/_components/product-card.tsx
+  s_230301a759e309::t_80d1b5ff664ed5 129,146,161
+apps/web/src/components/marketing/site-nav.tsx
+  s_230301a759e309::t_b48851e71d6e1b 100
+apps/web/src/app/partners/page.tsx
+  s_230301a759e309::t_3e1d3cda27b979 322,329
+apps/web/e2e/responsive.spec.ts
+  s_230301a759e309::t_4b97573c5cf8da 59-67
+  s_230301a759e309::t_a7ff5206de5ae9 234-255
+  s_230301a759e309::t_25d93550ddcecd 84,86-124,148
+  s_230301a759e309::t_fa366e1520a666 416,423-434
+  s_230301a759e309::t_63e406f53546a7 3,5,7,12,24,28,30,41,43,49,51,54,69,71,78,156,158,162,169,173,175,201,203,205,209,257,266,285,298,312,318,322,344,346-415,435-436,438
+  s_230301a759e309::t_997d3309b2b099 1-2
+  s_230301a759e309::t_37517e253cb9ce 4
+  s_230301a759e309::t_4a98d29ebb05d7 6
+  s_230301a759e309::t_e535b9e13dfdf4 8-11
+  s_230301a759e309::t_1e3de711c81169 13-15,21-23
+  s_230301a759e309::t_8c524d1e3abaa8 25-27
+  s_230301a759e309::t_46316946851980 29
+  s_230301a759e309::t_88afbeb5832eb9 31-33,38-40
+  s_230301a759e309::t_ebf4c2b9d625d3 42
+  s_230301a759e309::t_0c053c02fb5eab 44-48
+  s_230301a759e309::t_10d1d2a996e16e 50
+  s_230301a759e309::t_ceada65851f326 52-53
+  s_230301a759e309::t_15c5f6a98280b5 55-58
+  s_230301a759e309::t_3b80892384fcf1 68
+  s_230301a759e309::t_bc0a23663219d0 70
+  s_230301a759e309::t_e2dfa9ec79951b 72-77
+  s_230301a759e309::t_c371e24035835a 79-83
+  s_230301a759e309::t_e7017d52073dfb 85
+  s_230301a759e309::t_dd6a12b7a563df 125-127,145-147
+  s_230301a759e309::t_39720f98e67b13 149-151,153-155
+  s_230301a759e309::t_7cd34cb0d86ad5 157
+  s_230301a759e309::t_e043b1ef1f3144 159-161
+  s_230301a759e309::t_1ee1a430dea06d 163-168
+  s_230301a759e309::t_6b38a125776b8e 170-172
+  s_230301a759e309::t_e2201b8efc4c59 174
+  s_230301a759e309::t_58be68d495701f 176-178,198-200
+  s_230301a759e309::t_4b7c063022ab91 202
+  s_230301a759e309::t_62ca9cd57fa639 204
+  s_230301a759e309::t_b8f51605920abb 206-208
+  s_230301a759e309::t_784ff1183f42ef 210-212,231-233
+  s_230301a759e309::t_2838cfcd9e5cff 256
+  s_230301a759e309::t_363de86aa83a41 258-260,263-265
+  s_230301a759e309::t_d4e06277e96e4f 267-269,282-284
+  s_230301a759e309::t_c4222b914ec2bc 286-288,295-297
+  s_230301a759e309::t_6a0f20abbedf4d 299-301,309-311
+  s_230301a759e309::t_221fc1c75265b2 313-317
+  s_230301a759e309::t_ebd0ef28a62577 319-321
+  s_230301a759e309::t_810539cb1698d9 323-325,341-343
+  s_230301a759e309::t_798ffe32f108ee 345
+  s_230301a759e309::t_0262561cc3e224 417-422
+  s_230301a759e309::t_b239a6b42d5594 437
+  s_230301a759e309::t_513a80a69f3b7d 16-20,34-37,128-144,152,179-197,213-230,261-262,270-281,289-294,302-308,326-340
+apps/web/src/components/marketing/demo-gallery.tsx
+  s_230301a759e309::t_0b15128758a3d3 69
+apps/web/src/app/[handle]/_components/shop-footer.tsx
+  s_230301a759e309::t_7b2eb381edaf9b 44,62-68
+apps/web/src/app/[handle]/_components/option-chips.tsx
+  s_230301a759e309::t_a53fc5b03aacfa 140-144
+apps/web/src/app/[handle]/_components/social-icons.tsx
+  s_230301a759e309::t_b48851e71d6e1b 69
+apps/web/src/app/[handle]/p/[slug]/_components/review-form.tsx
+  s_230301a759e309::t_0b15128758a3d3 50
+apps/web/src/components/marketing/kit.tsx
+  s_230301a759e309::t_19cbaadbd6f50f 217-223,225
+apps/web/src/app/[handle]/_components/cart/quick-add.tsx
+  s_230301a759e309::t_081ec25354ec97 144
+apps/web/src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_230301a759e309::t_081ec25354ec97 231,243,253
+  s_230301a759e309::t_c3f1dcf8f41aae 216-224
+apps/web/src/app/[handle]/_components/share-button.tsx
+  s_230301a759e309::t_b48851e71d6e1b 176
+  s_230301a759e309::t_081ec25354ec97 203
+apps/web/src/app/[handle]/_components/filter-bar.tsx
+  s_230301a759e309::t_8373207c9ae17d 303-307
+apps/mobile/app/(tabs)/(home)/index.tsx
+  s_ab1d5881d53908::t_b7020cc83fcaf5 11,20,22,29,82-88,344-359,398-433,446-458,472,524,627-641,671,684-699
+apps/mobile/app/(tabs)/insights/index.tsx
+  s_2fda23e5be1e83::t_8fa7b6ab501df3 22,25,233-263,363,377
+apps/mobile/app/(tabs)/orders/[id].tsx
+  s_2fda23e5be1e83::t_bc5c1715174566 435,673,677,682,698,702,704,735,781
+apps/mobile/app/(tabs)/orders/index.tsx
+  s_2fda23e5be1e83::t_2dbd5573037470 4,24-26,296-309,319,406-429,588,635-639,642
+apps/mobile/app/(tabs)/settings/_layout.tsx
+  s_2fda23e5be1e83::t_8b7ac7250bbf45 36-45
+apps/mobile/app/(tabs)/settings/customers/[id].tsx
+  s_2fda23e5be1e83::t_c869118ffeb35d 16-17,141-155,157-158,163-168
+apps/mobile/app/(tabs)/settings/customers/index.tsx
+  s_2fda23e5be1e83::t_c6fa45901b632a 148
+apps/mobile/app/(tabs)/settings/index.tsx
+  s_2fda23e5be1e83::t_d8e5b5a7f13213 169,178,187,228,239
+apps/mobile/app/(tabs)/settings/notifications.tsx
+  s_2fda23e5be1e83::t_8abd62eff8f752 133-148,151-176,180-195,208-227,234-238
+apps/mobile/app/(tabs)/store/delivery.tsx
+  s_2fda23e5be1e83::t_de31386545245b 215
+apps/mobile/app/(tabs)/store/index.tsx
+  s_2fda23e5be1e83::t_8622dcf9fa7acd 5,37-38,436-441,583,1195
+apps/mobile/app/(tabs)/store/payments/[type].tsx
+  s_2fda23e5be1e83::t_f2e2481dbda855 13,141-170,176-185,211-215,230,233-235,243
+apps/mobile/app/(tabs)/store/payments/index.tsx
+  s_2fda23e5be1e83::t_476958a17ea1fa 187,227-259,261,267-270
+apps/mobile/lib/navigation.ts
+  s_2fda23e5be1e83::t_cea1ed51b673e9 81,83-102,104
+apps/mobile/lib/push.ts
+  s_2fda23e5be1e83::t_0f7894f7fe98bc 79-95,135-138,236-257,260-261,265-270,275,289-290,292,294,366,368,371-372,375-399,404-452,578-594,601-612,615-619,622,635-643,646,657-658,661-666
+apps/mobile/scripts/sweep.sh
+  s_2fda23e5be1e83::t_991dd55aeb00d9 1-144
+apps/web/src/app/admin/_components/order-row.tsx
+  s_230301a759e309::t_91e7d71ddf9edc 187,205,276-287,291,298
+apps/web/src/app/admin/broadcasts/[id]/page.tsx
+  s_230301a759e309::t_349abe5dd01838 47
+apps/web/src/app/admin/broadcasts/_components/segment-builder.tsx
+  s_230301a759e309::t_57ce6a627bbb45 371
+apps/web/src/app/admin/broadcasts/new/page.tsx
+  s_230301a759e309::t_33389595bfd859 29
+apps/web/src/app/admin/clients/[id]/page.tsx
+  s_230301a759e309::t_55a2d116d56eaf 48
+apps/web/src/app/admin/settings/integrations/_components/api-keys-card.tsx
+  s_230301a759e309::t_dd30bdd96759e2 67,74,82,87
+packages/design-native/src/chart/header.tsx
+  s_2fda23e5be1e83::t_ada8fd00a66433 59-77,79-81,84-87
+packages/design-native/src/index.ts
+  s_2fda23e5be1e83::t_e12a041fea9d24 91-96,98-99,105,145-166
+packages/design-native/src/list-row.tsx
+  s_2fda23e5be1e83::t_1bc939fe619a6d 20-33,36-51,53-62,89,91,93,119,126-140,146-175,177
+packages/design-native/src/switch.tsx
+  s_2fda23e5be1e83::t_7c7874769ce6d1 88-96
+packages/i18n/src/marketing/ar.ts
+  s_e40b2895acea02::t_eb672959cbd335 195
+packages/i18n/src/marketing/bg.ts
+  s_e40b2895acea02::t_d6982254080bab 195
+packages/i18n/src/marketing/bs.ts
+  s_e40b2895acea02::t_a6cdbc333468df 195
+packages/i18n/src/marketing/cs.ts
+  s_e40b2895acea02::t_63ece14cdbf7c2 195
+packages/i18n/src/marketing/da.ts
+  s_e40b2895acea02::t_defcd022c4652d 195
+packages/i18n/src/marketing/de.ts
+  s_e40b2895acea02::t_b49f3a5a84b31b 195
+packages/i18n/src/marketing/el.ts
+  s_e40b2895acea02::t_156eb02ebc5d61 195
+packages/i18n/src/marketing/en.ts
+  s_e40b2895acea02::t_5980808ce005c7 33-34,37-38,40-49,51-53,230,234-238,240-246,252,254-256
+packages/i18n/src/marketing/es.ts
+  s_e40b2895acea02::t_5c43440b038f0d 195
+packages/i18n/src/marketing/fi.ts
+  s_e40b2895acea02::t_e9f2ea9894a3f4 195
+packages/i18n/src/marketing/fil.ts
+  s_e40b2895acea02::t_984f7a209f4e80 195
+packages/i18n/src/marketing/fr.ts
+  s_e40b2895acea02::t_95d13987325ce4 195
+packages/i18n/src/marketing/hr.ts
+  s_e40b2895acea02::t_326bfa2e6a395f 195
+packages/i18n/src/marketing/hu.ts
+  s_e40b2895acea02::t_64e54fae297b87 195
+packages/i18n/src/marketing/id.ts
+  s_e40b2895acea02::t_a5de062a0b7af5 195
+packages/i18n/src/marketing/it.ts
+  s_e40b2895acea02::t_d690ee51720330 195
+packages/i18n/src/marketing/ja.ts
+  s_e40b2895acea02::t_3f54abdbf5945d 195
+packages/i18n/src/marketing/ko.ts
+  s_e40b2895acea02::t_1a08395bf104f6 195
+packages/i18n/src/marketing/mk.ts
+  s_e40b2895acea02::t_bc14a9d85f4546 195
+packages/i18n/src/marketing/ms.ts
+  s_e40b2895acea02::t_1baabef47154af 195
+packages/i18n/src/marketing/nl.ts
+  s_e40b2895acea02::t_d731bf224238b5 195
+packages/i18n/src/marketing/no.ts
+  s_e40b2895acea02::t_1f0fd0b385541c 195
+packages/i18n/src/marketing/pl.ts
+  s_e40b2895acea02::t_61c5ea09fb5588 195
+packages/i18n/src/marketing/pt.ts
+  s_e40b2895acea02::t_25c637027bc073 195
+packages/i18n/src/marketing/ro.ts
+  s_e40b2895acea02::t_0c9e350450e123 195
+packages/i18n/src/marketing/ru.ts
+  s_e40b2895acea02::t_0051d27bb710d3 196
+packages/i18n/src/marketing/sl.ts
+  s_e40b2895acea02::t_461b7df9ca50b8 195
+packages/i18n/src/marketing/sq.ts
+  s_e40b2895acea02::t_7d7c453f4105e1 195
+packages/i18n/src/marketing/sr.ts
+  s_e40b2895acea02::t_46090ba54e7e48 195
+packages/i18n/src/marketing/sv.ts
+  s_e40b2895acea02::t_e8cb822bdf745f 195
+packages/i18n/src/marketing/th.ts
+  s_e40b2895acea02::t_059257bd1f6bd0 195
+packages/i18n/src/marketing/tr.ts
+  s_e40b2895acea02::t_3d9169abf75fc5 195
+packages/i18n/src/marketing/uk.ts
+  s_e40b2895acea02::t_380cec1ebbb0bc 195
+packages/i18n/src/marketing/vi.ts
+  s_e40b2895acea02::t_6071eaf5be6ac8 195
+packages/i18n/src/marketing/zh.ts
+  s_e40b2895acea02::t_c3419e88c7353f 195
+apps/mobile/app.json
+  s_230301a759e309::t_063232a1a7cd7d 22,28-37
+apps/mobile/app/(tabs)/store/[id].tsx
+  s_230301a759e309::t_1b9b0f076bf5c7 2,26,367,375-395
+apps/mobile/lib/push.test.tsx
+  s_2fda23e5be1e83::t_0b21537f90e396 1-244
+apps/mobile/tests/launch.test.tsx
+  s_230301a759e309::t_7279ce28aa68d0 122-186
+apps/mobile/tests/layout.test.tsx
+  s_230301a759e309::t_6cf947e061b3bf 1-280
+apps/web/e2e/checkout.spec.ts
+  s_ab1d5881d53908::t_1ad1834a2f5d0b 284-341
+apps/web/package.json
+  s_ab1d5881d53908::t_a2a2c6150d5ea6 23
+apps/web/scripts/check-checkout-content.ts
+  s_ab1d5881d53908::t_5438f6f3c85446 1-507
+apps/web/scripts/check-connect.ts
+  s_ab1d5881d53908::t_829c1f5fd4e439 16,144-185
+apps/web/scripts/check-payment-methods.ts
+  s_ab1d5881d53908::t_c0971920924834 21,95-101,131-149,153,155,165,177-255,290,292,309-328,330-332,357-363,365
+apps/web/src/app/(auth)/forgot-password/forgot-password-form.tsx
+  s_230301a759e309::t_39baa6d3b37346 54
+apps/web/src/app/(auth)/reset-password/reset-password-form.tsx
+  s_230301a759e309::t_3f53c7b80acfcc 79
+apps/web/src/app/(marketing)/_components/site-footer.tsx
+  s_42380745c8f8fb::t_f8490d806ce9e8 30
+apps/web/src/app/admin/_components/admin-header.tsx
+  s_230301a759e309::t_556308974bf380 55-60
+apps/web/src/app/admin/_components/referral-card.tsx
+  s_230301a759e309::t_b581ed0c046c05 70
+apps/web/src/app/admin/broadcasts/_components/markdown-editor.tsx
+  s_230301a759e309::t_7ff1cdfaf70354 58-63,199,214,243
+apps/web/src/app/admin/clients/page.tsx
+  s_230301a759e309::t_13b34841eb448a 126-132
+apps/web/src/app/admin/orders/_components/order-filters.tsx
+  s_230301a759e309::t_670c6d4ea6d742 58-60,90
+apps/web/src/app/admin/orders/_components/order-status-select.tsx
+  s_230301a759e309::t_358207c9033149 31-36
+apps/web/src/app/admin/orders/_components/payment-status-select.tsx
+  s_230301a759e309::t_81bf6a5b02929e 54-56
+apps/web/src/app/admin/payments/_components/stripe-card.tsx
+  s_ab1d5881d53908::t_8c70cfcfdf1cb1 2,4-8,28,35-53,120-156,159
+apps/web/src/app/admin/payments/page.tsx
+  s_ab1d5881d53908::t_eaf82a6267784d 181-196
+apps/web/src/app/admin/settings/integrations/_components/webhooks-card.tsx
+  s_230301a759e309::t_a003651608207c 74-77,84,205,210
+apps/web/src/app/hq/login/login-form.tsx
+  s_230301a759e309::t_c3790d20be10fc 51
+apps/web/src/app/partner/_components/partner-sign-in.tsx
+  s_230301a759e309::t_2a53fae32e68d8 38
+apps/web/src/components/auth-form.tsx
+  s_230301a759e309::t_94fc80743bca30 77-102,104
+apps/web/src/components/shared/language-switcher.tsx
+  s_230301a759e309::t_3f3590c232fe56 204-208,244-249
+apps/web/src/components/ui/form.tsx
+  s_230301a759e309::t_f95fc5d628cb50 21-43,45-47,64-67
+apps/web/src/components/verify-two-factor-form.tsx
+  s_230301a759e309::t_2b463cddb80cb0 65
+apps/web/src/lib/actions/connect.ts
+  s_ab1d5881d53908::t_78729b0850780c 8,13-43,53-55,59-62,67-78
+apps/web/src/lib/actions/orders.ts
+  s_ab1d5881d53908::t_66d46f6d2c86bf 26-27,605,612-622,626-664
+apps/web/src/lib/connect.ts
+  s_ab1d5881d53908::t_9e08ffe6021b1d 3,171-178,180,209-217,221,262-273,281-282,331-332,354-361,363-381,438-455,458-460,466-470,513-514,524
+apps/web/src/lib/orders/card-handoff.ts
+  s_ab1d5881d53908::t_39c51c7667dfbc 7,25-29,108-109,125
+apps/web/src/lib/orders/resolve-lines.ts
+  s_ab1d5881d53908::t_0f5fcba83278f5 4,87,103-120,124-129,283-293
+packages/api/src/routers/payments.ts
+  s_ab1d5881d53908::t_3f1440875cdbb4 9-10,68-99,101-110,112-139,141-142
+packages/core/src/countries.test.ts
+  s_ab1d5881d53908::t_1507d5b9d61090 8,10,122-173
+packages/db/src/schema/shop.ts
+  s_ab1d5881d53908::t_bc6461a95ee58e 150-170
+packages/design-native/src/chip.tsx
+  s_230301a759e309::t_af790a39bf7cb4 6,64-79
+packages/design-native/src/screen.tsx
+  s_230301a759e309::t_d7cec777546867 1-7,114-144,146-156,208-225,227-236,268-277,283-284,286-302,305-311,322-343,351,357-386
+packages/design-native/src/sheet.tsx
+  s_230301a759e309::t_c65a05e67c05f3 1-13,16-18,61-95,107-110,112-114,120-137,146-196,198-211,214-224,250-260,272,278,281-292,299,301-315,317-332,335
+packages/design-native/src/splash.tsx
+  s_230301a759e309::t_002e5c053eb400 83,144-156
+packages/i18n/src/admin/en.ts
+  s_ab1d5881d53908::t_bd317a720dec7a 844-852
+packages/payments/package.json
+  s_ab1d5881d53908::t_e22b46dd6db9a8 9
+packages/payments/src/connect.ts
+  s_ab1d5881d53908::t_b7b58772b32f47 6-7,77,79-92,94-99,101-106,109,111-119,121-124,126-136,138-139,176-194,197,209-212,217,226-231,233-234
+packages/payments/src/index.ts
+  s_ab1d5881d53908::t_50e27d7bddb080 42,45-46,49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "aa9cd0936245ec40cc9ba365a8d2a86b1407c5f6",
+  "prompts": {},
+  "sessions": {
+    "s_230301a759e309": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "705f7061-20e5-4341-9262-bc5fa82ea217",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_2fda23e5be1e83": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b9384242-4c6f-4cde-a45c-be2657da3935",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ab1d5881d53908": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a287916-8019-4c89-82cb-ea4c3a1311ea",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e40b2895acea02": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "55c7c294-ac33-4825-8db2-84621f15322b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
