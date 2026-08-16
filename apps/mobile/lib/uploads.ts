@@ -1,5 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
-import { isAllowedType, maxBytesFor } from "@sailo/core/upload-rules";
+import { isAllowedType, maxBytesFor } from "@sailo/storage/rules";
 import { sessionCookieHeader } from "@sailo/auth";
 
 /**

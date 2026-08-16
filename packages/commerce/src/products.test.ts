@@ -16,7 +16,7 @@ import type { Shop } from "@sailo/db/schema";
  * and read the reply. `isPublicLinkUrl` is the same shape of problem pointed at
  * a buyer's inbox rather than at us.
  *
- * So the guards are exercised here against the real `@sailo/core/file-urls` —
+ * So the guards are exercised here against the real `@sailo/storage/urls` —
  * stubbing them would leave this file asserting that a mock was called, which
  * is exactly the assertion that survives someone deleting the check.
  */
@@ -116,7 +116,7 @@ describe("file URLs", () => {
    * environment that actually has it. `turbo run build` depends on `test`, so
    * a green suite locally still took production down.
    *
-   * Cleared and restored per test, the way `@sailo/core/file-urls.test.ts`
+   * Cleared and restored per test, the way `@sailo/storage/urls.test.ts`
    * already does it, so both branches are chosen here rather than inherited
    * from whatever machine is running.
    */

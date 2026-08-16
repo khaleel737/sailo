@@ -16,7 +16,7 @@ import {
   isPublicLinkUrl,
   isRenderableImageUrl,
   isStoredFileUrl,
-} from "@sailo/core/file-urls";
+} from "@sailo/storage/urls";
 import { isBillingInterval, normalizeTrialDays } from "@sailo/core/memberships";
 import { slugify } from "@sailo/core/slug";
 import {

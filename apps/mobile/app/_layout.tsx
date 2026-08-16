@@ -11,7 +11,7 @@ import { api } from "../lib/api";
 import { authClient, useAuthCopy } from "../lib/auth";
 import { usePushRegistration } from "../lib/push";
 import { TRPCProvider, makeQueryClient, useAppFocusRefetch } from "../lib/query";
-import { startSentry } from "../lib/sentry";
+import { startSentry } from "@sailo/observability/native";
 
 /*
  * One call, at the app's entry, and the only place a vendor is named.

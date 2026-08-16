@@ -3,6 +3,8 @@ import { keys as db } from "@sailo/db/keys";
 import { keys as shared } from "@sailo/env/keys";
 import { keys as payments } from "@sailo/payments/keys";
 import { keys as rateLimit } from "@sailo/rate-limit/keys";
+import { keys as observability } from "@sailo/observability/keys";
+import { keys as storage } from "@sailo/storage/keys";
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
@@ -26,14 +28,8 @@ import { z } from "zod";
  * secrets.
  */
 export const env = createEnv({
-  extends: [db(), shared(), payments(), rateLimit()],
+  extends: [db(), shared(), observability(), payments(), rateLimit(), storage()],
   server: {
-    /*
-     * Signs the short-lived client tokens `uploads.token` hands the phone.
-     * Optional like everything else that guards a feature: without it the
-     * upload procedure fails and the rest of the API is unaffected.
-     */
-    BLOB_READ_WRITE_TOKEN: z.string().min(1).optional(),
     /*
      * Browser origins allowed to call the tRPC endpoint. Empty is the correct
      * default — the only client today is the native app, and a native fetch is

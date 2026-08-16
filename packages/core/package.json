@@ -15,7 +15,6 @@
     "./plans": "./src/plans.ts",
     "./resources": "./src/resources.ts",
     "./webhook-events": "./src/webhook-events.ts",
-    "./file-urls": "./src/file-urls.ts",
     "./memberships": "./src/memberships.ts",
     "./slug": "./src/slug.ts",
     "./handle": "./src/handle.ts",
@@ -24,8 +23,7 @@
     "./legal": "./src/legal.ts",
     "./badge": "./src/badge.ts",
     "./address": "./src/address.ts",
-    "./payment-status": "./src/payment-status.ts",
-    "./upload-rules": "./src/upload-rules.ts"
+    "./payment-status": "./src/payment-status.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

@@ -1,13 +1,14 @@
 {
-  "name": "@sailo/email",
+  "name": "@sailo/storage",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./markup": "./src/markup.ts",
-    "./transport": "./src/transport.ts",
-    "./orders": "./src/order-mail.ts"
+    "./rules": "./src/rules.ts",
+    "./urls": "./src/urls.ts",
+    "./blob": "./src/blob.ts",
+    "./keys": "./src/keys.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -15,12 +16,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@sailo/commerce": "workspace:*",
-    "@sailo/core": "workspace:*",
-    "@sailo/db": "workspace:*",
-    "@sailo/storage": "workspace:*",
-    "resend": "^6.19.0",
-    "server-only": "^0.0.1"
+    "@sailo/env": "workspace:*",
+    "@t3-oss/env-core": "^0.13.4",
+    "@vercel/blob": "^2.6.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

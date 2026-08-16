@@ -1,12 +1,6 @@
-import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 import { rateLimit } from "@sailo/rate-limit";
-import {
-  isAllowedType,
-  maxBytesFor,
-  uploadPath,
-  type UploadPurpose,
-} from "@sailo/core/upload-rules";
+import { storeUpload } from "@sailo/storage/blob";
 import { createContext } from "@/lib/context";
 
 /**
@@ -27,19 +21,18 @@ import { createContext } from "@/lib/context";
  * library's internals is the kind of code that looks right and fails on a
  * device, which is the one thing an upload path must not do.
  *
- * So the phone posts the bytes here and this puts them in Blob. That is what
- * `apps/web` has always done, for a reason worth restating: **a server that
- * receives the file can look at it.** The token path has to mint every
- * constraint in advance and trust Vercel's edge to enforce them; this one
- * checks the real size and the real media type of the real bytes.
+ * So the phone posts the bytes here and `@sailo/storage` puts them in Blob.
+ * That is what `apps/web` has always done, for a reason worth restating: **a
+ * server that receives the file can look at it.** The token path has to mint
+ * every constraint in advance and trust Vercel's edge to enforce them; this one
+ * checks the real size and the real media type of the real bytes — and it does
+ * it by calling the same function the web route calls, so the allowlist that
+ * keeps executable content off our origin has one definition.
  *
  * Images only, deliberately. A download can be a hundred megabytes and belongs
  * on the token path from a browser; a product photo is capped at eight and is
  * the thing a seller wants to do standing in front of the product.
  */
-
-/** Only photos. A hundred-megabyte download does not belong in a phone request. */
-const PURPOSE: UploadPurpose = "image";
 
 export async function POST(request: Request): Promise<Response> {
   /*
@@ -68,42 +61,21 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const form = await request.formData();
-  const file = form.get("file");
+  const result = await storeUpload(shopId, "image", form.get("file"));
 
-  if (!(file instanceof File)) {
-    return NextResponse.json({ error: "No file provided." }, { status: 400 });
-  }
-
-  /*
-   * Checked against the bytes rather than against what the client claimed.
-   * This is the whole advantage of receiving the file, and the reason the
-   * allowlist lives in `@sailo/core/upload-rules` rather than here: anything a
-   * browser would run as a page is excluded, and a copy of that list which
-   * drifted by one entry is a stored cross-site-scripting hole.
-   */
-  if (!isAllowedType(PURPOSE, file.type)) {
-    return NextResponse.json(
-      { error: "Use a JPG, PNG, WebP, GIF or AVIF image." },
-      { status: 415 },
-    );
-  }
-
-  if (file.size > maxBytesFor(PURPOSE)) {
+  if (!result.ok) {
+    if (result.reason === "missing") {
+      return NextResponse.json({ error: "No file provided." }, { status: 400 });
+    }
+    if (result.reason === "type") {
+      return NextResponse.json(
+        { error: "Use a JPG, PNG, WebP, GIF or AVIF image." },
+        { status: 415 },
+      );
+    }
     return NextResponse.json({ error: "Image must be under 8 MB." }, { status: 413 });
   }
 
-  const blob = await put(uploadPath(shopId, PURPOSE, crypto.randomUUID(), file.name), file, {
-    /* Public, and unguessable by the uuid in the path. A product photo is
-       shown to buyers by definition; what must not be derivable is the URL of
-       one belonging to a shop you happen to know the id of. */
-    access: "public",
-    contentType: file.type,
-  });
-
-  return NextResponse.json({
-    url: blob.url,
-    name: file.name,
-    sizeBytes: file.size,
-    contentType: file.type,
-  });
+  const { ok: _stored, ...file } = result;
+  return NextResponse.json(file);
 }

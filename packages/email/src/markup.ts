@@ -1,6 +1,6 @@
 import type { Order, Shop } from "@sailo/db/schema";
 import { badgeHref, showsBadge } from "@sailo/core/badge";
-import { isRenderableImageUrl } from "@sailo/core/file-urls";
+import { isRenderableImageUrl } from "@sailo/storage/urls";
 import { LEGAL } from "@sailo/core/legal";
 import { APP_URL, absolute } from "./origin";
 import { formatMoney } from "@sailo/core/currency";

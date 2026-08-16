@@ -21,6 +21,7 @@
     "@sailo/design-system": "workspace:*",
     "@sailo/i18n": "workspace:*",
     "@sailo/observability": "workspace:*",
+    "@sailo/storage": "workspace:*",
     "@sentry/react-native": "~7.2.0",
     "@shopify/flash-list": "^2.3.2",
     "@shopify/react-native-skia": "2.2.12",

@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/react-native";
 import Constants from "expo-constants";
-import type { Sink } from "@sailo/observability";
+import type { Sink } from "./seam";
 
 /**
  * Where a crash on a seller's phone actually goes.

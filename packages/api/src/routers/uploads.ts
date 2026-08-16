@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { generateClientTokenFromReadWriteToken } from "@vercel/blob/client";
 import { rateLimit } from "@sailo/rate-limit";
 /*
- * The lists, ceilings and path shape are `@sailo/core/upload-rules`' now.
+ * The lists, ceilings and path shape are `@sailo/storage/rules`' now.
  *
  * This file's header used to call its copy of them "TWIN, and a known one",
  * and it was right to: the web route receives the bytes and can look at them
@@ -17,7 +17,7 @@ import {
   IMAGE_TYPES,
   maxBytesFor,
   uploadPath,
-} from "@sailo/core/upload-rules";
+} from "@sailo/storage/rules";
 import { router, shopProcedure } from "../trpc";
 
 /**

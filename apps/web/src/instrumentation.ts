@@ -20,15 +20,23 @@ import type { Instrumentation } from "next";
  * prints. Importing inside the function keeps the failure ours to describe.
  */
 export async function register() {
-  await import("./env");
+  const { env } = await import("./env");
 
   /*
-   * One call, at the app's entry. Today it logs, so nothing depends on a
-   * vendor being configured; when a Sentry DSN (or another sink) exists,
-   * swapping it in here starts reporting every existing `captureError` call
-   * without touching a single call site.
+   * One call, at the app's entry, and the moment the seam pays for itself.
+   *
+   * `startSentry` returns null when `SENTRY_DSN` is unset, and `init` falls
+   * back to the console sink — so CI, previews and a fresh clone keep working
+   * with nothing configured, while a deployment that has a DSN starts
+   * reporting every `captureError` call already written, in this app and in
+   * every package it imports, without one of them changing.
+   *
+   * The sink is imported dynamically for the same reason `./env` is: it pulls
+   * `@sentry/node`, and nothing should load an APM agent while this module is
+   * still being linked.
    */
-  init();
+  const { startSentry } = await import("@sailo/observability/web");
+  init(startSentry(env.SENTRY_DSN) ?? undefined);
 }
 
 /**

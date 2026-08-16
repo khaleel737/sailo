@@ -23,6 +23,7 @@
     "@sailo/events": "workspace:*",
     "@sailo/payments": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
+    "@sailo/storage": "workspace:*",
     "@trpc/client": "^11.6.0",
     "@trpc/server": "^11.6.0",
     "@vercel/blob": "^2.6.1",

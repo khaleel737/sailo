@@ -1,5 +1,5 @@
 /**
- * The URL guards, now in `@sailo/core/file-urls`.
+ * The URL guards, now in `@sailo/storage/urls`.
  *
  * Kept as a re-export rather than deleted: twenty-two modules in this app
  * import `@/lib/file-urls`, and none of them care where the check lives.
@@ -12,4 +12,4 @@
  * second copy is a hole that opens the first time one of them is relaxed.
  */
 
-export * from "@sailo/core/file-urls";
+export * from "@sailo/storage/urls";

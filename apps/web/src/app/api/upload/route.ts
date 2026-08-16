@@ -1,19 +1,15 @@
-import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 import { requireShop } from "@/lib/session";
 import { rateLimit } from "@sailo/rate-limit";
-import { isAllowedType, maxBytesFor, uploadPath } from "@sailo/core/upload-rules";
+import { storeUpload } from "@sailo/storage/blob";
 
 /*
- * The lists and ceilings moved to `@sailo/core/upload-rules` when the phone
- * grew a third upload path. `uploads.ts` in packages/api used to carry a note
- * calling its copy of them "TWIN, and a known one"; there is one now.
+ * The browser's upload endpoint.
  *
- * `FILE_TYPES` is the one that matters. Anything a browser will run as a page —
- * html, svg, javascript — stays out, because these are served from our own
- * domain and one that executed would be a stored cross-site-scripting hole. A
- * copy that drifted by a single entry is a vulnerability, and nothing about a
- * drifted allowlist fails a test.
+ * What is decided here is who is asking and how often they may ask. Whether the
+ * bytes may be stored, and where they land, is `@sailo/storage` — the same
+ * function `apps/api` calls for the phone, so the media-type allowlist that
+ * keeps executable content off our own origin cannot differ between the two.
  */
 
 export async function POST(request: Request) {
@@ -36,27 +32,33 @@ export async function POST(request: Request) {
   }
 
   const form = await request.formData();
-  const file = form.get("file");
   // Digital goods, as opposed to product photography.
   const isDownload = String(form.get("purpose") ?? "") === "download";
+  const result = await storeUpload(
+    shop.id,
+    isDownload ? "download" : "image",
+    form.get("file"),
+  );
 
-  if (!(file instanceof File)) {
-    return NextResponse.json({ error: "No file provided." }, { status: 400 });
-  }
-
-  const purpose = isDownload ? "download" : "image";
-  if (!isAllowedType(purpose, file.type)) {
-    return NextResponse.json(
-      {
-        error: isDownload
-          ? "That file type can't be delivered. Try a PDF, zip, document, image, audio or video file."
-          : "Use a JPG, PNG, WebP, GIF or AVIF image.",
-      },
-      { status: 415 },
-    );
-  }
-
-  if (file.size > maxBytesFor(purpose)) {
+  /*
+   * The refusal's wording is this route's, not the package's. A browser can
+   * upload either a photo or a hundred-megabyte download, so both halves of
+   * each sentence have to be said; the phone's route says only the photo half.
+   */
+  if (!result.ok) {
+    if (result.reason === "missing") {
+      return NextResponse.json({ error: "No file provided." }, { status: 400 });
+    }
+    if (result.reason === "type") {
+      return NextResponse.json(
+        {
+          error: isDownload
+            ? "That file type can't be delivered. Try a PDF, zip, document, image, audio or video file."
+            : "Use a JPG, PNG, WebP, GIF or AVIF image.",
+        },
+        { status: 415 },
+      );
+    }
     return NextResponse.json(
       {
         error: isDownload
@@ -67,21 +69,6 @@ export async function POST(request: Request) {
     );
   }
 
-  const blob = await put(
-    uploadPath(shop.id, purpose, crypto.randomUUID(), file.name),
-    file,
-    {
-      // Buyers never receive this URL — the download route streams the bytes
-      // behind a per-order token, and the random path keeps it unguessable.
-      access: "public",
-      contentType: file.type,
-    },
-  );
-
-  return NextResponse.json({
-    url: blob.url,
-    name: file.name,
-    sizeBytes: file.size,
-    contentType: file.type,
-  });
+  const { ok: _stored, ...file } = result;
+  return NextResponse.json(file);
 }

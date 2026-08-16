@@ -10,8 +10,16 @@ import type { Instrumentation } from "next";
  * dynamic.
  */
 export async function register() {
-  await import("./env");
-  init();
+  const { env } = await import("./env");
+
+  /*
+   * The same sink apps/web installs, from the same package. Two servers that
+   * share a database and a signing secret should be readable in one place when
+   * either of them throws — `scope` is what tells them apart (`api:` here,
+   * `web:` there), not which project the report landed in.
+   */
+  const { startSentry } = await import("@sailo/observability/web");
+  init(startSentry(env.SENTRY_DSN) ?? undefined);
 }
 
 /**

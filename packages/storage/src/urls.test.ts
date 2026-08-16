@@ -3,7 +3,7 @@ import {
   isPublicLinkUrl,
   isRenderableImageUrl,
   isStoredFileUrl,
-} from "./file-urls";
+} from "./urls";
 
 /**
  * The allowlist standing between a seller and a server-side fetch.

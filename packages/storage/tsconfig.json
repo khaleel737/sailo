@@ -1,0 +1,15 @@
+{
+  "extends": "@sailo/config/tsconfig.hermes.json",
+  /*
+   * The Hermes floor, for the sake of one module.
+   *
+   * `apps/mobile/lib/uploads.ts` imports `./rules` so the phone can refuse an
+   * oversized photo before spending a seller's mobile data uploading it — so
+   * that file is bundled by Metro and has to typecheck against the shorter
+   * standard library Hermes actually ships. `./blob` and `./urls` never reach
+   * the phone, but a second tsconfig to say so would be a second place to
+   * forget something, and the cost of flooring them is nil.
+   */
+  "compilerOptions": { "noEmit": true },
+  "include": ["src"]
+}
