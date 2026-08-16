@@ -67,7 +67,7 @@ export default async function AffiliatePage({
       <div className="mx-auto w-full max-w-[680px] px-4 pb-20 pt-8">
         <Link
           href={`/${shop.handle}`}
-          className="text-muted mb-8 inline-flex items-center gap-1.5 text-sm transition hover:opacity-70"
+          className="text-muted mb-8 inline-flex items-center gap-1.5 text-sm transition pointer-coarse:min-h-11 hover:opacity-70"
         >
           <ArrowLeft className="size-4" />
           {shop.name}
@@ -130,7 +130,7 @@ export default async function AffiliatePage({
           {/* Someone who already has a link comes here looking for numbers. */}
           <Link
             href="/partner"
-            className="text-muted text-xs underline underline-offset-2 transition hover:opacity-70"
+            className="text-muted text-xs underline underline-offset-2 transition pointer-coarse:-my-3.5 pointer-coarse:inline-block pointer-coarse:py-3.5 hover:opacity-70"
           >
             {t.partner.signInTitle}
           </Link>

@@ -300,7 +300,11 @@ function CategoryChip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition",
+        /* 34px, in a horizontally scrolling row where every neighbour is
+           another category. This is how a buyer narrows a shop down to the
+           thing they came for, so it is the most-tapped control on the page
+           after the products themselves. */
+        "shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition pointer-coarse:inline-flex pointer-coarse:min-h-11 pointer-coarse:items-center",
         active
           ? "accent-bg"
           : "surface-card hover:opacity-70",

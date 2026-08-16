@@ -1,5 +1,4 @@
 import type { ComponentProps } from "react";
-import { Platform } from "react-native";
 import type { Stack } from "expo-router";
 import { useTheme } from "@sailo/design-native";
 
@@ -79,19 +78,30 @@ export function useStackScreenOptions(): StackScreenOptions {
      */
     headerStyle: { backgroundColor: colors.background },
     /*
-     * Large titles on iOS, which is the platform's own convention for a tab's
-     * root screen and the thing that makes a native stack read as native. It
-     * collapses into the bar as the content scrolls — behaviour a JavaScript
-     * header cannot reproduce and the main reason these are native stacks.
+     * NO LARGE TITLES, AND THIS IS THE DECISION THE SCREENS ARE BUILT ON.
      *
-     * iOS only: Android's Material top bar has no equivalent, and forcing one
-     * produces a very tall bar with a small title in it.
+     * They were on, and they broke two things at once on device:
+     *
+     *   - On a screen whose root is not a scroll view — Orders, Store, both of
+     *     which own a `FlashList` — iOS drew the large title *over* the top of
+     *     the content. The search field and the status filter on Orders were
+     *     underneath it, invisible, on the screen whose entire job is finding
+     *     an order.
+     *   - On a screen whose root *is* a scroll view nested inside a
+     *     `SafeAreaView`, iOS reserved the large title's height and then drew
+     *     nothing in it. Insights opened with about a hundred points of empty
+     *     page above the range control and no title anywhere.
+     *
+     * Both are the same underlying thing: a large title is a contract with a
+     * scroll view, and `Screen` legitimately does not always have one to offer.
+     *
+     * Beyond the bugs, they are the wrong idiom here. A large title is for a
+     * screen you *arrive at and read* — Notes, Mail, Settings. Every screen in
+     * this app opens with a control the seller came to use: a range, a filter,
+     * a search. Spending 52 points of a phone on a word the tab bar has already
+     * said, above the thing they came for, is the clutter this pass is removing.
      */
-    headerLargeTitle: Platform.OS === "ios",
-    headerLargeTitleStyle: { color: colors.content },
-    /* The large-title bar is transparent over the page until it collapses, so
-       it must not paint its own colour on top of the scrolled content. */
-    headerLargeTitleShadowVisible: false,
+    headerLargeTitle: false,
     headerShadowVisible: false,
     /*
      * The colour behind a push.

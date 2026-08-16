@@ -20,6 +20,7 @@
     "check:cards": "dotenv -e .env.local -- tsx scripts/check-cards.ts",
     "check:stores": "dotenv -e .env.local -- tsx scripts/check-stores.ts",
     "check:methods": "dotenv -e .env.local -- tsx scripts/check-payment-methods.ts",
+    "check:checkout": "dotenv -e .env.local -- tsx scripts/check-checkout-content.ts",
     "check:subs": "dotenv -e .env.local -- tsx scripts/check-subscriptions.ts",
     "check:plans": "dotenv -e .env.local -- tsx scripts/check-plans.ts",
     "check:live": "tsx scripts/check-live.ts",

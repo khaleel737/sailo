@@ -80,7 +80,7 @@ const MINIMUM_MS = 420;
 
 export function BrandSplash({ visible, tagline, onHidden, testID }: BrandSplashProps) {
   const { colors, motion, space } = useTheme();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const reduced = useReducedMotion();
 
   /* Separate from `visible`: the overlay outlives it by the length of the exit
@@ -141,8 +141,19 @@ export function BrandSplash({ visible, tagline, onHidden, testID }: BrandSplashP
 
   if (!mounted) return null;
 
-  /* The exact height the operating system just drew the mark at. */
-  const markSize = width * MARK_RATIO;
+  /*
+   * The exact height the operating system just drew the mark at.
+   *
+   * The *shorter* side, not the width — and on a portrait phone those are the
+   * same number, which is why `width` was right for as long as the app was
+   * portrait-only. `contain` fits a square image inside the window by whichever
+   * side is smaller: in portrait that is the width, in landscape it is the
+   * height. On an iPad held sideways `width` is the long edge, so this drew the
+   * mark around a third larger than the one the system had just drawn behind
+   * it, and the handover this whole component exists to hide became a visible
+   * jump on the first frame.
+   */
+  const markSize = Math.min(width, height) * MARK_RATIO;
 
   return (
     <Animated.View

@@ -201,7 +201,11 @@ export function LanguageSwitcher({
           "surface-card inline-flex items-center gap-1.5 rounded-full font-medium transition hover:opacity-70 disabled:opacity-50",
           size === "md"
             ? "min-h-11 px-4 py-2.5 text-[0.8125rem]"
-            : "px-3 py-1.5 text-xs",
+            /* `sm` is the admin header's size and lands at 30px. That is fine
+               under a mouse and under the floor under a thumb — and this
+               header renders on an iPad, which is both wide and touched. The
+               type stays at `text-xs`; only the box grows. */
+            : "px-3 py-1.5 text-xs pointer-coarse:min-h-11 pointer-coarse:px-4",
         )}
       >
         <span aria-hidden className="text-sm leading-none">
@@ -237,7 +241,12 @@ export function LanguageSwitcher({
                   // right-to-left inside an otherwise left-to-right list.
                   dir={locale.dir}
                   className={cn(
-                    "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-start text-sm transition hover:opacity-70",
+                    /* A scrolling list of twenty-odd languages, each row 30px
+                       tall. Picking the wrong one here changes the language of
+                       the whole panel, and the row above it is another
+                       language — so the floor matters more in this list than
+                       in most. */
+                    "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-start text-sm transition pointer-coarse:min-h-11 hover:opacity-70",
                     locale.code === current && "surface-elevated font-medium",
                   )}
                 >

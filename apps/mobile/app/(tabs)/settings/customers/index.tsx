@@ -145,6 +145,7 @@ export default function Customers() {
               /* Contact first, because it is what a seller acts on — the tags
                  are how they were *found*, not what to do next. */
               subtitle={client.email ?? client.phone ?? a.clients.noDetails}
+              valueTone="strong"
               value={formatMoney(client.spentCents, currency, locale)}
               icon="person"
               trailing="chevron"

@@ -4,6 +4,7 @@ import { getDb } from "@sailo/db";
 import { orders, type Product, type Shop } from "@sailo/db/schema";
 import { createCheckoutSession, createSubscriptionSession } from "@/lib/connect";
 import { abandonOrder } from "@sailo/commerce/inventory";
+import type { CheckoutLine } from "@/lib/orders/checkout-lines";
 import type { Handoff } from "@/lib/payments";
 
 /**
@@ -21,8 +22,11 @@ export type CardHandoffResult =
 export async function handOffToStripe(opts: {
   shop: Shop;
   orderId: string;
-  /** The basket, so Stripe's receipt itemises it rather than naming one line. */
-  items: { name: string; unitPriceCents: number; quantity: number }[];
+  /**
+   * The basket, described, so Stripe's page itemises it with pictures and
+   * subtitles rather than naming one line. Built by `toCheckoutLine`.
+   */
+  items: CheckoutLine[];
   successUrl: string;
   cancelUrl: string;
   /** Passed to Stripe so the webhook can issue the invoice after payment. */
@@ -101,6 +105,8 @@ export async function handOffSubscription(opts: {
   shop: Shop;
   orderId: string;
   product: Product;
+  /** The membership's cover image, for the Stripe Product behind its Price. */
+  imageUrl?: string | null;
   successUrl: string;
   cancelUrl: string;
 }): Promise<CardHandoffResult> {
@@ -116,6 +122,7 @@ export async function handOffSubscription(opts: {
       shop: opts.shop,
       order: saved,
       product: opts.product,
+      imageUrl: opts.imageUrl,
       successUrl: opts.successUrl,
       cancelUrl: opts.cancelUrl,
     });

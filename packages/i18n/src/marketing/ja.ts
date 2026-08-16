@@ -192,6 +192,7 @@ export const marketingJa: MarketingDictionary = {
     terms: "利用規約",
     refunds: "返金",
     gdpr: "GDPR",
+    antiSpam: "迷惑メール対策",
   },
 
   seo: {

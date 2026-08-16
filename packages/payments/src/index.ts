@@ -39,10 +39,14 @@ export {
   billingPortalSession,
   cancelSubscriptionAtPeriodEnd,
   connectOnboardingLink,
+  MissingStripeCountryError,
   publicShopUrl,
   refundCharge,
+  requireStripeCountry,
+  syncCapabilities,
   type OnboardingRedirects,
 } from "./connect";
+export { capabilitiesFor } from "./capabilities";
 export { HANDLED, signingSecrets, verifyEvent } from "./stripe-webhooks/verify";
 export { claimEvent, releaseEvent } from "./stripe-webhooks/idempotency";
 export {

@@ -18,8 +18,33 @@ const CONTROL = [
   "aria-[invalid=true]:border-red-400 aria-[invalid=true]:ring-red-500/12",
 ].join(" ");
 
+/**
+ * The 44pt touch floor, and why it is `min-h` on the two single-line controls
+ * rather than one line in `CONTROL` above.
+ *
+ * `Input` and `Select` set `h-11`, which is already the right height — but a
+ * dozen call sites pass `h-8`, `h-9` or `h-10` to make a control denser in a
+ * table or a filter bar, and `cn`'s tailwind-merge lets that override win, so
+ * the height the primitive promised is not the height that ships. Four filter
+ * selects on Orders were 36pt and the two per row that move an order to
+ * Cancelled or Refunded were 32pt. A *minimum* height is a different CSS
+ * property, so it survives the merge and then wins in the cascade, and one
+ * declaration holds every one of those sites to 44pt under a finger while
+ * leaving them dense under a mouse.
+ *
+ * It is deliberately not in `CONTROL`, because `Textarea` uses `CONTROL` and
+ * already sets `min-h-20`. Those are the same property, and the variant is
+ * emitted after the plain utility — so on a touch screen `pointer-coarse:min-h-11`
+ * would win and *shrink* every textarea in the panel from 80pt to 44pt. A
+ * "minimum" that is also a maximum for the one control that needs to be taller
+ * is how a floor becomes a ceiling.
+ */
+const TOUCH_FLOOR = "pointer-coarse:min-h-11";
+
 export function Input({ className, ...props }: React.ComponentProps<"input">) {
-  return <input className={cn(CONTROL, "h-11 px-3.5", className)} {...props} />;
+  return (
+    <input className={cn(CONTROL, TOUCH_FLOOR, "h-11 px-3.5", className)} {...props} />
+  );
 }
 
 export function Textarea({
@@ -36,7 +61,10 @@ export function Textarea({
 
 export function Select({ className, ...props }: React.ComponentProps<"select">) {
   return (
-    <select className={cn(CONTROL, "select-chevron h-11", className)} {...props} />
+    <select
+      className={cn(CONTROL, TOUCH_FLOOR, "select-chevron h-11", className)}
+      {...props}
+    />
   );
 }
 

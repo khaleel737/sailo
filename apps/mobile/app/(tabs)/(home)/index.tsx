@@ -8,6 +8,7 @@ import { formatMoney } from "@sailo/core/currency";
 import { orderStatusLabel } from "@sailo/core/order-status";
 import { interpolate } from "@sailo/i18n/native";
 import {
+  Banner,
   Button,
   Card,
   EmptyState,
@@ -16,14 +17,16 @@ import {
   ListRow,
   Progress,
   Screen,
+  Section,
   Skeleton,
-  Stat,
+  StatRow,
   StatusPill,
   Text,
 } from "@sailo/design-native";
 import type { SetupStep, SetupStepId, SetupProgress } from "@sailo/core/onboarding";
 import type { Order } from "../../../lib/models";
 import { useT } from "../../../lib/i18n";
+import { usePushPrimer } from "../../../lib/push";
 import { reportQueryError, useTRPC } from "../../../lib/query";
 import { errorMessage } from "../../../components/states";
 import { useRelativeTime } from "../orders/index";
@@ -76,6 +79,13 @@ export default function Home() {
   const trpc = useTRPC();
   const router = useRouter();
   const ago = useRelativeTime(locale);
+  /*
+   * The notification offer, made in the app's own words before iOS's one-shot
+   * prompt is spent. `lib/push.ts` carries why the launch no longer asks on its
+   * own: a "Don't Allow" on the first launch is permanent, and it used to be
+   * collected from a seller who had not yet seen the app.
+   */
+  const primer = usePushPrimer();
 
   /*
    * Today, spelled the way `resolveAnalyticsWindow` reads it. Computed during
@@ -332,6 +342,22 @@ export default function Home() {
       </View>
 
       {/*
+        The one thing worth interrupting Home for, and only while it is worth
+        it: `usePushPrimer` offers nothing once the answer is known either way.
+        Declining is remembered, and the Settings toggle is what undoes it.
+      */}
+      {primer.offer ? (
+        <Banner
+          tone="info"
+          title={a.settings.notifyOrderPlaced}
+          message={a.settings.notifyOrderPlacedBody}
+          actionLabel={a.security.turnOn}
+          onAction={() => void primer.accept()}
+          testID="push-primer"
+        />
+      ) : null}
+
+      {/*
         Above the numbers, because a shop that cannot take an order has
         nothing to measure. It removes itself the moment the last step ticks —
         a finished checklist is clutter, not a trophy — and because every step
@@ -369,28 +395,42 @@ export default function Home() {
         that happen to be adjacent, and one card is what says they are one
         reading of one day.
       */}
-      <Card padding="lg">
-        <View style={styles.stats}>
-          <Stat
-            label={a.dashboard.netRevenue}
-            value={formatMoney(numbers?.netRevenueCents ?? 0, currency, locale)}
-            caption={covers}
-            loading={stats.isPending}
-          />
-          <Stat
-            label={a.dashboard.orders}
-            value={count(numbers?.totalOrders ?? 0, locale)}
-            caption={covers}
-            loading={stats.isPending}
-          />
-          <Stat
-            label={a.dashboard.visits}
-            value={count(numbers?.visitsInRange ?? 0, locale)}
-            caption={covers}
-            loading={stats.isPending}
-          />
-        </View>
-      </Card>
+      {/*
+        Today's three numbers.
+
+        A `Section` on the page rather than a `Card`, and the window named once
+        rather than three times. Every `Stat` carried its own `caption`, so the
+        row rendered "Aug 15, 2026" under each of the three tiles — the same
+        eleven characters, three times, in the muted ink, directly under the
+        numbers they were supposed to be qualifying. `Stat`'s contract is that a
+        figure over a windowed query must say so; it does not say it has to say
+        so once per figure, and the section's description is where that belongs.
+
+        `StatRow` rather than a hand-built flex row: three tiles at 16pt margins
+        on a 320pt phone leave 89 points each, and a formatted amount needs
+        about 104. It wraps instead of truncating the number.
+      */}
+      <Section description={covers}>
+        <StatRow
+          stats={[
+            {
+              label: a.dashboard.netRevenue,
+              value: formatMoney(numbers?.netRevenueCents ?? 0, currency, locale),
+              loading: stats.isPending,
+            },
+            {
+              label: a.dashboard.orders,
+              value: count(numbers?.totalOrders ?? 0, locale),
+              loading: stats.isPending,
+            },
+            {
+              label: a.dashboard.visits,
+              value: count(numbers?.visitsInRange ?? 0, locale),
+              loading: stats.isPending,
+            },
+          ]}
+        />
+      </Section>
 
       {/*
         Renders only once the query has answered — the loading branch above
@@ -403,8 +443,19 @@ export default function Home() {
         control under it would be the card competing with the page it sits on.
       */}
       {latest.length > 0 ? (
-        <View style={styles.recent}>
-          <GroupedList header={a.dashboard.recentOrders}>
+        /*
+         * "View all" as the section's header action rather than a button under
+         * the list. Five rows is a bound the screen has to admit, and the
+         * admission belongs where the bound is stated — beside the heading, not
+         * after the thing it bounds, where the seller has to scroll past all
+         * five to discover there are more.
+         */
+        <Section
+          title={a.dashboard.recentOrders}
+          action={{ label: a.common.viewAll, onPress: () => router.navigate("/orders") }}
+          spacing="tight"
+        >
+          <GroupedList>
             {latest.map((order) => (
               <RecentRow
                 key={order.id}
@@ -418,18 +469,7 @@ export default function Home() {
               />
             ))}
           </GroupedList>
-          {/*
-            Five is a bound, so the screen admits it. This is the only route
-            from here to the rest of them.
-          */}
-          <Button
-            label={a.common.viewAll}
-            variant="ghost"
-            icon="chevronEnd"
-            iconPosition="end"
-            onPress={() => router.navigate("/orders")}
-          />
-        </View>
+        </Section>
       ) : (
         <EmptyState
           icon="orders"
@@ -481,6 +521,7 @@ function RecentRow({
     <ListRow
       title={order.productTitle}
       subtitle={subtitle}
+      valueTone="strong"
       value={formatMoney(order.totalCents, order.currency, locale)}
       trailing="chevron"
       onPress={() => onPress(order.id)}
@@ -583,14 +624,21 @@ function SetupChecklist({
   onOpen: (id: SetupStepId) => void;
 }) {
   return (
-    <Card variant="plain" padding="lg">
-      <View style={styles.setupHead}>
-        <Text variant="heading">{labels.title}</Text>
-        <Text variant="caption" tone="muted">
-          {labels.body}
-        </Text>
-      </View>
-
+    /*
+     * A `Section`, not a `Card` around a `GroupedList`.
+     *
+     * That is what it was, and it is the reason Home had **four different left
+     * edges** down one screen: the shop-link card at the page margin, the
+     * section heading at the margin plus the card's padding, the checklist's
+     * rows at the margin plus the card's padding plus the list's own inset, and
+     * the stats card back at the margin. Nothing lined up with anything, which
+     * is the single largest contributor to a screen reading as cluttered — the
+     * eye looks for a vertical rule and finds four.
+     *
+     * A grouped list already draws its own inset surface; that *is* the iOS
+     * idiom. Wrapping it in a card was a surface inside a surface.
+     */
+    <Section title={labels.title} description={labels.body}>
       <Progress
         value={progress.ratio}
         valueLabel={interpolate(labels.count, {
@@ -620,7 +668,7 @@ function SetupChecklist({
           />
         ))}
       </GroupedList>
-    </Card>
+    </Section>
   );
 }
 
@@ -631,10 +679,24 @@ function SetupChecklist({
  * other, which is the one thing no component can decide on a screen's behalf.
  */
 const styles = StyleSheet.create({
-  setupHead: { gap: 4, marginBottom: 12 },
   linkBlock: { gap: 12 },
   linkHead: { flexDirection: "row", alignItems: "center", gap: 8 },
-  linkActions: { flexDirection: "row", gap: 8 },
+  /*
+   * `wrap`, and it is an accessibility fix rather than a nicety.
+   *
+   * Two buttons in a fixed row is fine at the default type size and broken at
+   * the top of the Dynamic Type range: at
+   * `accessibility-extra-extra-extra-large` the labels are about three times
+   * as wide, the row overflows, and "Share this shop" is pushed off the right
+   * edge of the screen — not truncated, *gone*. A seller who has turned the
+   * text up cannot reach the control at all.
+   *
+   * Text scaling is not something a layout can predict, so the row has to be
+   * able to give way. Wrapping drops the second button onto its own line
+   * exactly when it no longer fits and changes nothing at any size where it
+   * does.
+   */
+  linkActions: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   stats: { flexDirection: "row", gap: 12 },
   recent: { gap: 8 },
 });

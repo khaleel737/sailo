@@ -13,6 +13,8 @@ import {
   GroupedList,
   ListRow,
   Screen,
+  Section,
+  StatRow,
   Skeleton,
   StatusPill,
   Text,
@@ -136,33 +138,34 @@ export default function Customer() {
     >
       <Stack.Screen options={{ title: client.name }} />
 
-      <Card padding="lg">
-        <View style={styles.stats}>
-          <View style={styles.stat}>
-            <Text variant="caption" tone="muted">
-              {a.clients.lifetimeValue}
-            </Text>
-            <Text variant="title" tabular>
-              {formatMoney(
+      {/*
+        A `Section` with a `StatRow`, matching Home and Insights.
+
+        It was a hand-built flex row of two figures inside a `padding="lg"`
+        card — the third copy of that pattern in the app, and the third one that
+        could not wrap. `StatRow` measures the tiles against the window, so a
+        lifetime value in a currency with a three-letter code stops truncating
+        on a narrow phone.
+      */}
+      <Section>
+        <StatRow
+          stats={[
+            {
+              label: a.clients.lifetimeValue,
+              value: formatMoney(
                 orders.reduce(
-                  (total, order) => total + (order.status === "cancelled" ? 0 : order.totalCents),
+                  (total, order) =>
+                    total + (order.status === "cancelled" ? 0 : order.totalCents),
                   0,
                 ),
                 currency,
                 locale,
-              )}
-            </Text>
-          </View>
-          <View style={styles.stat}>
-            <Text variant="caption" tone="muted">
-              {a.columns.orders}
-            </Text>
-            <Text variant="title" tabular>
-              {orders.length}
-            </Text>
-          </View>
-        </View>
-      </Card>
+              ),
+            },
+            { label: a.columns.orders, value: String(orders.length) },
+          ]}
+        />
+      </Section>
 
       <GroupedList header={a.clients.contact}>
         <ListRow title={a.common.email} value={client.email ?? "—"} />
@@ -302,7 +305,5 @@ function day(iso: string, locale: string): string {
 }
 
 const styles = StyleSheet.create({
-  stats: { flexDirection: "row", gap: 24 },
-  stat: { flex: 1, gap: 2 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
 });

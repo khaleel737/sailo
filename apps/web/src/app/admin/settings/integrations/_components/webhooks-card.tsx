@@ -71,14 +71,17 @@ function EventBoxes({ selected }: { selected: readonly string[] }) {
       {WEBHOOK_EVENTS.map((event) => (
         <label
           key={event}
-          className="flex items-center gap-2 text-xs text-ink-700"
+          /* The label is the tap target — a 14px checkbox is not one. Without
+             a floor this grid is a column of 16px rows, and picking the wrong
+             webhook event is silent until the wrong thing is delivered. */
+          className="flex items-center gap-2 text-xs text-ink-700 pointer-coarse:min-h-11"
         >
           <input
             type="checkbox"
             name="events"
             value={event}
             defaultChecked={selected.includes(event)}
-            className="size-3.5 rounded border-ink-300"
+            className="size-3.5 rounded border-ink-300 pointer-coarse:size-5"
           />
           <span className="font-mono">{event}</span>
         </label>
@@ -199,12 +202,12 @@ function EndpointRowForm({ endpoint }: { endpoint: EndpointRow }) {
           <EventBoxes selected={endpoint.events} />
         </Field>
 
-        <label className="flex items-center gap-2 text-xs text-ink-700">
+        <label className="flex items-center gap-2 text-xs text-ink-700 pointer-coarse:min-h-11">
           <input
             type="checkbox"
             name="isActive"
             defaultChecked={endpoint.isActive}
-            className="size-3.5 rounded border-ink-300"
+            className="size-3.5 rounded border-ink-300 pointer-coarse:size-5"
           />
           {a.integrations.active}
         </label>

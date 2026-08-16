@@ -81,7 +81,7 @@ export default async function SubscribePage({
             spends the visit on an address instead of a sale. */}
         <Link
           href={`/${shop.handle}`}
-          className="focus-ring-accent mt-8 inline-flex text-sm font-medium underline underline-offset-4 opacity-70 transition hover:opacity-100"
+          className="focus-ring-accent mt-8 inline-flex items-center text-sm font-medium underline underline-offset-4 pointer-coarse:min-h-11 opacity-70 transition hover:opacity-100"
         >
           {shop.name}
         </Link>

@@ -47,7 +47,7 @@ export function ReviewForm({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="surface-card h-10 rounded-xl px-4 text-sm font-medium transition hover:opacity-70"
+        className="surface-card h-10 rounded-xl px-4 text-sm font-medium transition pointer-coarse:h-11 hover:opacity-70"
       >
         {t.product.writeReview}
       </button>

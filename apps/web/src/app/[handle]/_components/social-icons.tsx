@@ -66,7 +66,7 @@ export function SocialIcons({
           "aria-label": label,
           title: label,
           className:
-            "surface-card flex size-9 items-center justify-center rounded-full transition hover:opacity-70",
+            "surface-card flex size-9 items-center justify-center rounded-full pointer-coarse:size-11 transition hover:opacity-70",
         };
 
         return (

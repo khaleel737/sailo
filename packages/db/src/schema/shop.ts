@@ -147,6 +147,27 @@ export const shops = pgTable(
      * lands there directly and Sailo never holds the money, so we store an
      * account reference and never their API keys.
      */
+    /**
+     * Where the seller says their business is, asked before the account exists.
+     *
+     * Not the same column as `stripeAccountCountry` below, and the difference
+     * is the whole point of it being here. This is an *input*: the answer to a
+     * question put to the seller, which `accounts.create` needs and which
+     * Stripe then fixes permanently. That one is an *output*, read back off
+     * the account afterwards for display.
+     *
+     * They exist separately because the input has to be collected while there
+     * is still nothing to read. Omitting `country` from `accounts.create` does
+     * not defer the question to onboarding — it silently answers it with the
+     * *platform's* country, which is how every seller on a US platform ended
+     * up with a US account and no European payment method could ever activate.
+     *
+     * Nullable, and nullable for ever: shops that never take card payments
+     * never need it, and asking for a business location before someone has
+     * decided to sell is a question with no reason behind it. `connectStripe`
+     * is the only thing that requires it, and it asks at the moment it needs it.
+     */
+    stripeCountry: text("stripe_country"),
     stripeAccountId: text("stripe_account_id"),
     /** Stripe's own verdict; a seller can be connected but not yet payable. */
     stripeChargesEnabled: boolean("stripe_charges_enabled")

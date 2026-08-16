@@ -319,14 +319,14 @@ function SignedOut() {
       <div className="mt-4 flex flex-wrap gap-2">
         <Link
           href="/signup?next=/partners"
-          className="focus-ring inline-flex h-10 items-center gap-1.5 rounded-xl bg-ink-900 px-4 text-sm font-medium text-white transition hover:bg-ink-800"
+          className="focus-ring inline-flex h-10 items-center gap-1.5 rounded-xl pointer-coarse:h-11 bg-ink-900 px-4 text-sm font-medium text-white transition hover:bg-ink-800"
         >
           Create an account
           <ArrowRight className="size-4" />
         </Link>
         <Link
           href="/login?next=/partners"
-          className="focus-ring inline-flex h-10 items-center rounded-xl border border-ink-200 px-4 text-sm font-medium text-ink-700 transition hover:bg-ink-50"
+          className="focus-ring inline-flex h-10 items-center rounded-xl pointer-coarse:h-11 border border-ink-200 px-4 text-sm font-medium text-ink-700 transition hover:bg-ink-50"
         >
           I already have one
         </Link>

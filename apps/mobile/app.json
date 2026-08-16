@@ -19,12 +19,22 @@
     },
     "backgroundColor": "#faf9f7",
     "ios": {
-      "supportsTablet": false,
+      "supportsTablet": true,
       "bundleIdentifier": "store.sailo.app",
       "usesAppleSignIn": false,
       "infoPlist": {
         "NSCameraUsageDescription": "Sailo uses the camera to scan a buyer's ticket at check-in and to photograph products for your shop.",
         "NSPhotoLibraryUsageDescription": "Sailo needs your photo library so you can put pictures of your products on your shop.",
+        "UISupportedInterfaceOrientations": [
+          "UIInterfaceOrientationPortrait",
+          "UIInterfaceOrientationPortraitUpsideDown"
+        ],
+        "UISupportedInterfaceOrientations~ipad": [
+          "UIInterfaceOrientationPortrait",
+          "UIInterfaceOrientationPortraitUpsideDown",
+          "UIInterfaceOrientationLandscapeLeft",
+          "UIInterfaceOrientationLandscapeRight"
+        ],
         "UIBackgroundModes": [
           "remote-notification"
         ]

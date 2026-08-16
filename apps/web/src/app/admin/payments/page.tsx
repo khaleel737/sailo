@@ -178,6 +178,22 @@ export default async function AdminPaymentsPage({
         </Alert>
       ) : null}
 
+      {/*
+        Reached only by a Connect request that arrived without a country — the
+        form requires one, so in practice this is a direct POST. Worth a real
+        message rather than a Stripe error, because it is the single thing on
+        this page that must be right before an account exists.
+      */}
+      {params.stripe === "country" ? (
+        <Alert
+          tone="warning"
+          icon={<AlertTriangle className="size-5" />}
+          className="mb-6"
+        >
+          {a.payments.businessCountryMissing}
+        </Alert>
+      ) : null}
+
       {totalLive === 0 ? (
         <Alert
           tone="warning"

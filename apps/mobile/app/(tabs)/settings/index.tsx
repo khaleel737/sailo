@@ -166,6 +166,7 @@ export default function Settings() {
       <GroupedList header={a.clients.title}>
         <ListRow
           title={a.clients.title}
+          subtitleLines={2}
           subtitle={a.clients.emptyBody}
           icon="person"
           trailing="chevron"
@@ -174,6 +175,7 @@ export default function Settings() {
         />
         <ListRow
           title={a.members.title}
+          subtitleLines={2}
           subtitle={a.members.description}
           icon="ticket"
           trailing="chevron"
@@ -182,6 +184,7 @@ export default function Settings() {
         />
         <ListRow
           title={a.reviews.title}
+          subtitleLines={2}
           subtitle={a.reviews.emptyBody}
           icon="star"
           trailing="chevron"
@@ -222,6 +225,7 @@ export default function Settings() {
       <GroupedList header={a.checkin.title}>
         <ListRow
           title={a.checkin.title}
+          subtitleLines={2}
           subtitle={a.checkin.description}
           icon="scan"
           trailing="chevron"
@@ -232,6 +236,7 @@ export default function Settings() {
       <GroupedList header={a.settings.tabBilling}>
         <ListRow
           title={a.settings.tabBilling}
+          subtitleLines={2}
           subtitle={a.billing.cancelAnyTime}
           icon="card"
           trailing="chevron"
@@ -280,8 +285,6 @@ function explain(
 ): string {
   if (push.busy) return a.common.pending;
   switch (push.permission) {
-    case "unsupported":
-      return a.settings.notifyOrderPlacedBody;
     case "blocked":
       return a.checkin.scanBlockedBody;
     default:

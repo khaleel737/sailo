@@ -281,6 +281,64 @@ test.describe("what the buyer has to tell the shop", () => {
   });
 });
 
+test.describe("where it's going", () => {
+  /*
+   * The country used to stand on its own above the delivery rates, because it
+   * decides which of them are on offer and a buyer who picked a courier first
+   * would have the choice withdrawn underneath them. It reads as a stray
+   * question there — a browser autofills a country at the end of an address,
+   * and that is where someone looks for one.
+   *
+   * Guessing it from the device clock is what made moving it safe: a country
+   * is already chosen before the rates first render, so nothing depends on the
+   * buyer having scrolled to the bottom of the form.
+   */
+  test.use({ timezoneId: "Europe/Berlin" });
+
+  test("the country is the last field of the address, not a question above it", async ({
+    page,
+  }) => {
+    const dialog = await checkoutFor(page, /studio apron/i);
+    const address = dialog.locator('fieldset:has(input[name="postalCode"])');
+
+    // Once, and inside the address — never both there and standing alone.
+    await expect(dialog.locator('select[name="country"]')).toHaveCount(1);
+    await expect(address.locator('select[name="country"]')).toHaveCount(1);
+
+    const order = await address
+      .locator("[name]")
+      .evaluateAll((fields) => fields.map((field) => field.getAttribute("name")));
+    expect(order).toEqual([
+      "addressLine1",
+      "addressLine2",
+      "city",
+      "region",
+      "postalCode",
+      "country",
+    ]);
+  });
+
+  test("it arrives already filled in, from the buyer's own clock", async ({ page }) => {
+    const dialog = await checkoutFor(page, /studio apron/i);
+    // Europe/Berlin, set above. Not typed by anyone.
+    await expect(dialog.locator('select[name="country"]')).toHaveValue("DE");
+  });
+
+  test("the buyer can still change it, and the rates follow", async ({ page }) => {
+    /*
+     * The guess is a starting value, not a decision. Changing it has to
+     * re-price the order, because delivery is filtered by where it's going —
+     * that filtering is the whole reason the field used to sit up top.
+     */
+    const dialog = await checkoutFor(page, /studio apron/i);
+    const country = dialog.locator('select[name="country"]');
+
+    await country.selectOption("FR");
+    await expect(country).toHaveValue("FR");
+    await expect(dialog).toContainText(/how would you like to receive/i);
+  });
+});
+
 test.describe("choosing a combination", () => {
   test("offers the values as one radio group per option", async ({ page }) => {
     // Not a row of unrelated toggle buttons: exactly one size is chosen, and

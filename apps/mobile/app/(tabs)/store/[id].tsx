@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Alert, ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Image } from "expo-image";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
@@ -23,6 +23,7 @@ import {
   Skeleton,
   Switch,
   Text,
+  useLayout,
 } from "@sailo/design-native";
 import type { ProductDetail, ProductVariant } from "../../../lib/models";
 import { useReduceMotion } from "../../../lib/a11y";
@@ -363,7 +364,7 @@ function Detail({ product, currency }: { product: ProductDetail; currency: strin
  * would be the thing rule 9 exists to stop.
  */
 function Gallery({ product }: { product: ProductDetail }) {
-  const { width } = useWindowDimensions();
+  const { width, gutter, maxWidth } = useLayout();
   const { s } = useStoreCopy();
   /*
    * The cross-fade as a photo decodes is small, but Reduce Motion is a request
@@ -371,9 +372,27 @@ function Gallery({ product }: { product: ProductDetail }) {
    * eight product shots meets this one eight times.
    */
   const reduceMotion = useReduceMotion();
-  // Full-bleed minus the screen's own gutters, so a photo lines up with the
-  // text beneath it at every device width rather than at one hardcoded one.
-  const size = width - 40;
+  /*
+   * The width of the column this actually sits in — asked for, not assumed.
+   *
+   * This was `width - 40`, with a comment claiming it lined the photo up with
+   * the text beneath it "at every device width". The 40 is what made that
+   * untrue: it hard-codes a 20pt gutter, and `Screen` has not had one since
+   * `useLayout` started deriving the margin from the window. The photo was
+   * 16pt narrower than its own caption on a 320pt SE and 8pt narrower on
+   * every normal phone — a misalignment small enough to read as a rendering
+   * artefact rather than as a bug, which is why it survived.
+   *
+   * On a tablet it stopped being subtle. `Screen` caps its content at a 620pt
+   * readable column and centres it; `width - 40` on a 1024pt iPad asks for
+   * 984, so the gallery would be a horizontal scroller nearly 400pt wider
+   * than the column containing it — the photo running off the edge of a page
+   * whose text stops in the middle.
+   *
+   * Both numbers come from the same hook `Screen` uses, so there is one
+   * definition of the column and this follows it.
+   */
+  const size = Math.min(maxWidth ?? width, width) - gutter * 2;
 
   if (product.images.length === 0) {
     return (

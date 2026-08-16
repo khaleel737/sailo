@@ -212,6 +212,7 @@ export default function Delivery() {
             <ListRow
               key={method.id}
               title={method.name}
+              subtitleLines={2}
               subtitle={zoneSummary(method.countries, locale, a)}
               /* A zero fee is free delivery, which is a thing a seller
                  chose — not a missing number, and not an em dash. */

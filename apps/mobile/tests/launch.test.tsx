@@ -119,3 +119,68 @@ describe("the handover from the native launch image", () => {
     expect(config.expo.backgroundColor.toLowerCase()).toBe("#faf9f7");
   });
 });
+
+/**
+ * Which devices the app will open on at all.
+ *
+ * THE STATE THIS REPLACES
+ *
+ * `supportsTablet` was `false`, which meant `TARGETED_DEVICE_FAMILY = 1` and an
+ * iPad running the app in the iPhone compatibility window — a phone-shaped
+ * rectangle in the middle of the screen with black either side. The layout
+ * system had already been built for the other case: `useLayout` carries a
+ * 768pt compact/regular split, `Screen` caps its content at a readable column
+ * and centres it, and `StatRow` re-flows its tiles. The docstring on
+ * `layout.ts` even says so — "**An iPad** — `supportsTablet` is false today".
+ * So the work existed and the manifest was switching it off.
+ *
+ * These three assertions are here rather than in a comment because the flag is
+ * one word in a JSON file with no room for a note, and turning it back off is a
+ * one-character edit that nothing else in the suite would notice.
+ */
+describe("the devices this opens on", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- reading
+  // the manifest is the point of the assertion.
+  const config = require("../app.json") as {
+    expo: {
+      orientation: string;
+      ios: {
+        supportsTablet: boolean;
+        infoPlist: Record<string, unknown>;
+      };
+    };
+  };
+
+  it("opens on an iPad, not in the phone compatibility window", () => {
+    expect(config.expo.ios.supportsTablet).toBe(true);
+  });
+
+  /*
+   * A tablet that will not rotate is a tablet in a keyboard case showing a
+   * portrait app sideways. It is also the case `useLayout().landscape` was
+   * written for and could never reach: with the app portrait-locked, `width >
+   * height` was false on every device, so that branch was dead code.
+   */
+  it("lets an iPad rotate", () => {
+    expect(config.expo.ios.infoPlist["UISupportedInterfaceOrientations~ipad"]).toEqual([
+      "UIInterfaceOrientationPortrait",
+      "UIInterfaceOrientationPortraitUpsideDown",
+      "UIInterfaceOrientationLandscapeLeft",
+      "UIInterfaceOrientationLandscapeRight",
+    ]);
+  });
+
+  /*
+   * And the phone does not. Rotating a phone buys this app nothing — there is
+   * no screen whose content is wider than it is tall — and it costs the
+   * scanner, which frames a QR code against a viewfinder sized for portrait.
+   * The two keys are separate on purpose; `orientation` alone cannot say
+   * "portrait here, free there".
+   */
+  it("keeps the phone in portrait", () => {
+    expect(config.expo.ios.infoPlist["UISupportedInterfaceOrientations"]).toEqual([
+      "UIInterfaceOrientationPortrait",
+      "UIInterfaceOrientationPortraitUpsideDown",
+    ]);
+  });
+});

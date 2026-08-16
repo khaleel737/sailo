@@ -193,6 +193,7 @@ export const marketingRu: MarketingDictionary = {
     terms: "Условия",
     refunds: "Возвраты",
     gdpr: "GDPR",
+    antiSpam: "Антиспам",
   },
 
   seo: {

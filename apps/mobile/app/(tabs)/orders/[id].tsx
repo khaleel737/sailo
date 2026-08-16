@@ -432,6 +432,7 @@ function Items({
             .filter(Boolean)
             .join(" · ")}
           // The line's own subtotal — unit price × quantity, as stored.
+          valueTone="strong"
           value={formatMoney(item.subtotalCents, currency, locale)}
         />
       ))}
@@ -669,15 +670,16 @@ function Totals({ order, locale }: { order: OrderDetail; locale: string }) {
 
   return (
     <GroupedList header={t.checkout.total}>
-      <ListRow title={t.checkout.subtotal} value={money(order.subtotalCents)} />
+      <ListRow title={t.checkout.subtotal} valueTone="strong" value={money(order.subtotalCents)} />
       {order.discountCents > 0 ? (
         <ListRow
           title={order.couponCode ?? t.checkout.discount}
+          valueTone="strong"
           value={`− ${money(order.discountCents)}`}
         />
       ) : null}
       {order.deliveryFeeCents > 0 ? (
-        <ListRow title={a.orders.delivery} value={money(order.deliveryFeeCents)} />
+        <ListRow title={a.orders.delivery} valueTone="strong" value={money(order.deliveryFeeCents)} />
       ) : null}
       {order.taxCents > 0 ? (
         <ListRow
@@ -693,12 +695,13 @@ function Totals({ order, locale }: { order: OrderDetail; locale: string }) {
               ? `${t.invoice.includes} ${order.taxName ?? t.invoice.tax}`
               : (order.taxName ?? t.invoice.tax)
           }
+          valueTone="strong"
           value={money(order.taxCents)}
         />
       ) : null}
-      <ListRow title={t.checkout.total} value={money(order.totalCents)} />
+      <ListRow title={t.checkout.total} valueTone="strong" value={money(order.totalCents)} />
       {order.refundedCents > 0 ? (
-        <ListRow title={a.orders.refunded} value={`− ${money(order.refundedCents)}`} />
+        <ListRow title={a.orders.refunded} valueTone="strong" value={`− ${money(order.refundedCents)}`} />
       ) : null}
     </GroupedList>
   );
@@ -729,7 +732,7 @@ function Fulfilment({ order, locale }: { order: OrderDetail; locale: string }) {
   return (
     <GroupedList header={a.orders.delivery}>
       {rows.map((row) => (
-        <ListRow key={row.label} title={row.label} value={row.value} />
+        <ListRow key={row.label} title={row.label} value={row.value} subtitleLines={2} />
       ))}
     </GroupedList>
   );
@@ -775,7 +778,7 @@ function Buyer({ order }: { order: OrderDetail }) {
   return (
     <GroupedList header={a.columns.client}>
       {rows.map((row) => (
-        <ListRow key={row.label} title={row.label} value={row.value} />
+        <ListRow key={row.label} title={row.label} value={row.value} subtitleLines={2} />
       ))}
     </GroupedList>
   );

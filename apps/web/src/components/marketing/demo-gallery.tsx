@@ -66,7 +66,7 @@ export function DemoGallery({ t }: { t: MarketingDictionary }) {
               onClick={() => setActive(i)}
               onKeyDown={onKeyDown}
               className={cn(
-                "focus-line push relative shrink-0 rounded-[var(--r-pill)] px-4 py-2.5 text-[0.875rem] transition-colors",
+                "focus-line push relative shrink-0 rounded-[var(--r-pill)] px-4 py-2.5 pointer-coarse:min-h-11 text-[0.875rem] transition-colors",
                 selected ? "text-[var(--ink)]" : "text-white/50 hover:text-white/85",
               )}
             >

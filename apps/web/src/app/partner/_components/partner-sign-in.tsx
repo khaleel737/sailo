@@ -35,7 +35,7 @@ export function PartnerSignIn({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-2.5">
+    <form method="post" onSubmit={onSubmit} className="space-y-2.5">
       <input
         type="email"
         required

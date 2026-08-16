@@ -76,7 +76,7 @@ export function ResetPasswordForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form method="post" onSubmit={onSubmit} className="space-y-5">
       {error ? <AuthError>{error}</AuthError> : null}
 
       <AuthField label={t.auth.newPassword} htmlFor="password" hint={t.auth.minChars}>

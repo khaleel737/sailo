@@ -173,7 +173,7 @@ export function ShareButton({
         aria-haspopup="dialog"
         aria-expanded={open}
         className={cn(
-          "surface-card text-muted inline-flex size-10 items-center justify-center rounded-full transition hover:opacity-70",
+          "surface-card text-muted inline-flex size-10 items-center justify-center rounded-full pointer-coarse:size-11 transition hover:opacity-70",
           className,
         )}
       >
@@ -200,7 +200,7 @@ export function ShareButton({
               onClick={close}
               aria-label={t.common.close}
               autoFocus
-              className="text-muted absolute end-4 top-4 z-10 transition hover:opacity-70"
+              className="text-muted absolute end-4 top-4 z-10 grid place-items-center transition pointer-coarse:-m-3 pointer-coarse:size-11 hover:opacity-70"
             >
               <X className="size-5" />
             </button>

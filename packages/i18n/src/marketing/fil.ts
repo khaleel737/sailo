@@ -192,6 +192,7 @@ export const marketingFil: MarketingDictionary = {
     terms: "Mga tuntunin",
     refunds: "Mga refund",
     gdpr: "GDPR",
+    antiSpam: "Anti-spam",
   },
 
   seo: {

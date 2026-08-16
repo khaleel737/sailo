@@ -192,6 +192,7 @@ export const marketingRo: MarketingDictionary = {
     terms: "Termeni",
     refunds: "Rambursări",
     gdpr: "GDPR",
+    antiSpam: "Antispam",
   },
 
   seo: {

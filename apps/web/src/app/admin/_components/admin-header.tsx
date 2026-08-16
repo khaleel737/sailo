@@ -52,7 +52,12 @@ export function AdminHeader({
         href={`/${shop.handle}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="focus-ring hidden h-9 items-center gap-1.5 rounded-xl px-3 text-sm font-medium text-ink-600 transition hover:bg-ink-100 hover:text-ink-900 sm:inline-flex"
+        /* This header is `lg:flex`, so on a phone it never renders and the
+           question never comes up. An iPad in portrait is 1024pt — past `lg`,
+           and a touch screen — so it renders here at 36px under a thumb. The
+           plan button beside it already carries the floor; this one and the
+           language switcher were the two that did not. */
+        className="focus-ring hidden h-9 items-center gap-1.5 rounded-xl px-3 text-sm font-medium text-ink-600 transition pointer-coarse:h-11 hover:bg-ink-100 hover:text-ink-900 sm:inline-flex"
       >
         {t.nav.viewShop}
         <ExternalLink className="size-3.5" />

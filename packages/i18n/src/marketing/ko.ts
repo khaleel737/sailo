@@ -192,6 +192,7 @@ export const marketingKo: MarketingDictionary = {
     terms: "이용약관",
     refunds: "환불 정책",
     gdpr: "GDPR",
+    antiSpam: "스팸 방지",
   },
 
   seo: {

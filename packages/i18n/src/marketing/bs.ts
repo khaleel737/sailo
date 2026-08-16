@@ -192,6 +192,7 @@ export const marketingBs: MarketingDictionary = {
     terms: "Uslovi",
     refunds: "Povrati",
     gdpr: "GDPR",
+    antiSpam: "Anti-spam",
   },
 
   seo: {

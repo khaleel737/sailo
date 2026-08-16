@@ -1,5 +1,6 @@
 import "server-only";
 import { toStripeAmount } from "@sailo/core/currency";
+import { checkoutShipping, type CheckoutLine } from "@/lib/orders/checkout-lines";
 import type Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
@@ -167,10 +168,16 @@ export async function createCheckoutSession(opts: {
   shop: Shop;
   order: Order;
   /**
-   * Every line. Required: the order's header columns describe one line, and
-   * charging from them billed a four-line basket for its first item.
+   * Every line, already described. Required: the order's header columns
+   * describe one line, and charging from them billed a four-line basket for
+   * its first item.
+   *
+   * `description` and `images` are what the buyer sees on Stripe's page beside
+   * the price. They are built by `toCheckoutLine` at the call site rather than
+   * here, because composing them needs the product row and the shop's
+   * dictionary, and this function has neither.
    */
-  items: { name: string; unitPriceCents: number; quantity: number }[];
+  items: CheckoutLine[];
   /** Where to send the buyer afterwards. */
   successUrl: string;
   cancelUrl: string;
@@ -199,10 +206,19 @@ export async function createCheckoutSession(opts: {
   // The basket, always from the order's own lines. `items` is a hand-off from
   // a caller that already priced them; the accessor is the same source either
   // way, so there is no path here that prices from the single-item header.
-  const goods = opts.items.length
+  /*
+   * The fallback carries a picture but no description. `orderItems` snapshots
+   * the image, the title and the variant — enough to render the line properly
+   * — but not the duration, the booked time or the seller's copy, which live
+   * on the product and would need it re-read. Every buyer-facing path passes
+   * `items`; this is for a caller that only has an order id, and a thumbnail
+   * without a subtitle is a long way better than what it replaced.
+   */
+  const goods: CheckoutLine[] = opts.items.length
     ? opts.items
     : (await orderLines(order)).map((l) => ({
         name: lineTitle(l),
+        ...(l.imageUrl?.startsWith("https://") ? { images: [l.imageUrl] } : {}),
         unitPriceCents: l.unitPriceCents,
         quantity: l.quantity,
       }));
@@ -243,9 +259,18 @@ export async function createCheckoutSession(opts: {
     );
   }
 
-  // The goods, at the unit price actually charged. Quantity is a separate
-  // field so Stripe's receipt reads "3 × Speckled Mug" rather than one lump.
-  for (const [index, item] of goods.entries()) {
+  /*
+   * The goods, at the unit price actually charged. Quantity is a separate
+   * field so Stripe's receipt reads "3 × Speckled Mug" rather than one lump.
+   *
+   * The buyer's note used to be squeezed into the first line's description.
+   * It has moved to `payment_intent_data.metadata` below — now that lines
+   * carry a real description of their own, putting the note there would
+   * overwrite "Takes 45 minutes · In person · Thu 3 Mar, 14:00" with a
+   * sentence about gift wrapping on one arbitrary line of the basket. The
+   * note's real reader is the seller, and metadata is where they find it.
+   */
+  for (const item of goods) {
     line_items.push({
       quantity: item.quantity,
       price_data: {
@@ -253,11 +278,8 @@ export async function createCheckoutSession(opts: {
         unit_amount: toStripeAmount(item.unitPriceCents, currency),
         product_data: {
           name: item.name,
-          // The buyer's note belongs to the order, so it rides on the first
-          // line rather than being repeated against every product.
-          ...(index === 0 && order.note
-            ? { description: order.note.slice(0, 500) }
-            : {}),
+          ...(item.description ? { description: item.description } : {}),
+          ...(item.images?.length ? { images: item.images } : {}),
         },
       },
     });
@@ -306,6 +328,8 @@ export async function createCheckoutSession(opts: {
     discounts = [{ coupon: coupon.id }];
   }
 
+  const shipping = checkoutShipping(order);
+
   return stripe().checkout.sessions.create(
     {
       mode: "payment",
@@ -327,8 +351,34 @@ export async function createCheckoutSession(opts: {
         ...(opts.invoiceToken ? { invoiceToken: opts.invoiceToken } : {}),
       },
       payment_intent_data: {
-        metadata: { orderId: order.id, shopId: shop.id },
+        metadata: {
+          orderId: order.id,
+          shopId: shop.id,
+          // The buyer's note, where the seller actually reads it: on the
+          // payment in their own Stripe dashboard, beside the money. It used
+          // to be the first line item's description, which is now spoken for.
+          ...(order.note ? { note: order.note.slice(0, 500) } : {}),
+        },
         description: `${shop.name} — ${orderSummaryTitle(order)}`,
+        /*
+         * Where the goods are going.
+         *
+         * Not `shipping_address_collection`, which would make Stripe ask for
+         * an address the buyer has already given us — Sailo's own cart
+         * collects it before the redirect, and asking twice is how a delivery
+         * fee gets quoted against one address and the parcel sent to another.
+         * This states the address we already hold instead.
+         *
+         * Its absence was quietly expensive: the seller's Stripe dashboard,
+         * the Stripe receipt and any dispute evidence all showed a payment
+         * with nowhere to send it, and "no shipping address on file" is a
+         * losing position in a chargeback over an undelivered parcel.
+         *
+         * Only for orders with something to ship. A download and an
+         * appointment have no destination, and a shipping address on a
+         * membership is a claim about the world that isn't true.
+         */
+        ...(shipping ? { shipping } : {}),
         /*
          * Sailo's cut, named on the charge itself.
          *
@@ -385,15 +435,39 @@ export async function createCheckoutSession(opts: {
  * Created on the connected account, so the Price belongs to the seller and
  * disappears with them if they disconnect.
  */
-export async function membershipPrice(shop: Shop, product: Product): Promise<string> {
+export async function membershipPrice(
+  shop: Shop,
+  product: Product,
+  /**
+   * The membership's cover image, so the subscribe page shows the thing being
+   * subscribed to. Optional because the two callers differ: the checkout has
+   * the gallery to hand, and the webhook that renews an existing member has no
+   * need to mint a Price at all.
+   *
+   * Only read when a Price is actually created. A Stripe Price is immutable
+   * and the Product behind it is created with it, so a seller who adds a photo
+   * to an existing membership will not see it on Stripe's page until the
+   * *price* changes and a new one is minted. Refreshing it otherwise would
+   * mean an extra `products.update` on every subscribe to keep a thumbnail
+   * current, which is not a trade worth making on the money path.
+   */
+  imageUrl?: string | null,
+): Promise<string> {
   if (!shop.stripeAccountId) throw new Error("Shop has no connected Stripe account");
   if (!product.stripePriceId || priceIsStale(product)) {
+    const image = imageUrl?.trim().startsWith("https://") ? imageUrl.trim() : null;
+    const description = product.description?.trim();
+
     const price = await stripe().prices.create(
       {
         currency: shop.currency.toLowerCase(),
         unit_amount: toStripeAmount(product.priceCents, shop.currency),
         recurring: { interval: intervalOf(product) },
-        product_data: { name: product.title },
+        product_data: {
+          name: product.title,
+          ...(description ? { description: description.slice(0, 300) } : {}),
+          ...(image ? { images: [image] } : {}),
+        },
         metadata: { productId: product.id, shopId: shop.id },
       },
       actingAs(shop.stripeAccountId),
@@ -436,6 +510,8 @@ export async function createSubscriptionSession(opts: {
   shop: Shop;
   order: Order;
   product: Product;
+  /** The membership's cover, for the Price's Product. See `membershipPrice`. */
+  imageUrl?: string | null;
   successUrl: string;
   cancelUrl: string;
 }) {
@@ -445,7 +521,7 @@ export async function createSubscriptionSession(opts: {
     throw new Error(`Product ${product.id} is not a sellable membership`);
   }
 
-  const price = await membershipPrice(shop, product);
+  const price = await membershipPrice(shop, product, opts.imageUrl);
   const feePercent = platformFeePercent(shop);
   const trialDays = normalizeTrialDays(product.trialDays);
 

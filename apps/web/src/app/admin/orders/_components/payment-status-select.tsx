@@ -51,7 +51,9 @@ export function PaymentStatusSelect({
         startTransition(() => updatePaymentStatus(data));
       }}
       className={cn(
-        "h-8 rounded-lg border border-ink-200 bg-white px-2 text-xs text-ink-700",
+        /* The 44px touch floor, for the same reason as the status select beside
+           it: this one moves an order to Refunded. */
+        "h-8 rounded-lg border border-ink-200 bg-white px-2 text-xs text-ink-700 pointer-coarse:h-11",
         "transition focus:border-ink-900 focus:outline-none",
         pending && "opacity-50",
       )}

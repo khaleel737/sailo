@@ -1,10 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Download, Loader2, X } from "lucide-react";
 import { createOrderIntent } from "@/lib/actions/orders";
 import { markPendingOrder } from "@/lib/cart";
-import { countriesByName, countryName } from "@/lib/countries";
+import {
+  countriesByName,
+  countryFromTimeZone,
+  countryName,
+  deviceTimeZone,
+} from "@/lib/countries";
 import { shippableCountries, shipsTo } from "@/lib/delivery";
 import { markLeaving } from "@/lib/leaving";
 import type { OrderIntentResult } from "@/lib/orders/types";
@@ -181,6 +186,94 @@ export function CheckoutPanel({
     quote.needsDelivery &&
     reachable !== null &&
     selectedDelivery?.type !== "collection";
+
+  /*
+   * A first guess at where the buyer is, taken from the clock on their device.
+   *
+   * This is what lets the country sit down in the address block with the rest
+   * of the address, where a buyer expects to find it, instead of on its own
+   * above the delivery rates. Those rates are filtered by country, so the
+   * field had to come first while the answer arrived only by being typed —
+   * ask afterwards and the buyer picks a courier before saying where they are,
+   * then has the choice withdrawn underneath them. A country that is already
+   * filled in by the time anything renders removes the ordering problem rather
+   * than working around it.
+   *
+   * Only ever a starting value. It runs once, never overwrites a country that
+   * is already set, and the field stays an ordinary dropdown the buyer can
+   * change — at which point the rates re-filter exactly as they always did.
+   *
+   * Scoped to `countryChoices`, so a Croatia-only shop cannot have Germany
+   * filled in because that is where the laptop thinks it is; an unplaceable
+   * zone leaves the field blank, which is the honest answer.
+   */
+  const guessed = useRef(false);
+  useEffect(() => {
+    /*
+     * Not on mount, and not for every basket.
+     *
+     * `countryMatters` is false until the server has said this order needs
+     * delivering, so guessing on mount meant a download and an online call —
+     * neither of which has anywhere to be sent — still got a country, a
+     * re-render and a second trip to the pricing endpoint for an answer
+     * nothing on the panel would read. Waiting for the question to become
+     * relevant costs nothing and skips that entirely.
+     *
+     * The ref is what keeps it a *first* guess: once it has fired, a buyer who
+     * blanks the field gets to leave it blank.
+     */
+    if (guessed.current || !countryMatters || country) return;
+    guessed.current = true;
+
+    const guess = countryFromTimeZone(
+      deviceTimeZone(),
+      countryChoices.map((choice) => choice.code),
+    );
+    if (guess) setCountry(guess);
+  }, [countryMatters, country, countryChoices]);
+
+  /*
+   * One field, two homes, and never both at once.
+   *
+   * It normally belongs at the end of the address, which is where a browser's
+   * autofill puts a country and where a buyer looks for one. A collection
+   * order has no address block, so it falls back to standing on its own — and
+   * the label changes with the position, because "Ship to" reads as a heading
+   * above a form and as a non-sequitur underneath a postcode.
+   *
+   * The label is always a real `<label>` even when it isn't drawn: the blank
+   * option reads as a placeholder to someone looking at the page and as
+   * nothing at all to someone listening to it.
+   */
+  const countryField = (label: string, hideLabel: boolean) => (
+    <div>
+      <label
+        htmlFor="checkout-country"
+        className={hideLabel ? "sr-only" : "mb-1.5 block text-sm font-medium"}
+      >
+        {label}
+      </label>
+      <select
+        id="checkout-country"
+        name="country"
+        required={countryRequired}
+        value={country}
+        onChange={(e) => setCountry(e.target.value)}
+        // `country`, not `country-name`: the value is an alpha-2 code, which
+        // is what this token tells the browser to fill and what every stored
+        // address wants.
+        autoComplete="country"
+        className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none"
+      >
+        <option value="">{t.checkout.country}</option>
+        {countryChoices.map((choice) => (
+          <option key={choice.code} value={choice.code}>
+            {choice.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
 
   /*
    * The shop has rates and not one of them reaches the buyer. Distinct from
@@ -410,7 +503,7 @@ export function CheckoutPanel({
           type="button"
           onClick={onClose}
           aria-label={t.common.close}
-          className="text-muted absolute end-4 top-4 z-10 transition hover:opacity-70"
+          className="text-muted absolute end-4 top-4 z-10 grid place-items-center transition pointer-coarse:-m-3 pointer-coarse:size-11 hover:opacity-70"
         >
           <X className="size-5" />
         </button>
@@ -434,7 +527,7 @@ export function CheckoutPanel({
           ) : items.length === 0 ? (
             <div className="pe-8">{empty}</div>
           ) : (
-            <form onSubmit={onSubmit} className="space-y-4">
+            <form method="post" onSubmit={onSubmit} className="space-y-4">
               {children?.(preview)}
 
               {error ? (
@@ -444,42 +537,14 @@ export function CheckoutPanel({
               ) : null}
 
               {/*
-                Where it's going, above what it costs to send there — because
-                it now decides that, and because a buyer answers "where am I"
-                before "which courier". One render site on purpose: this used
-                to be a free-text box inside the address fieldset, and a
-                country asked in two places is the same guard-at-one-sink bug
-                in the UI that the server-side rules keep guarding against.
+                Standing on its own only when there is no address block to live
+                in — a collection order from a shop that posts to a fixed list
+                still needs the question asked, and has no street or postcode
+                to ask it beside.
               */}
-              {countryMatters ? (
-                <div>
-                  <label
-                    htmlFor="checkout-country"
-                    className="mb-1.5 block text-sm font-medium"
-                  >
-                    {t.checkout.shipTo}
-                  </label>
-                  <select
-                    id="checkout-country"
-                    name="country"
-                    required={countryRequired}
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    // `country`, not `country-name`: the value is an alpha-2
-                    // code now, which is what this token tells the browser to
-                    // fill and what every stored address wants.
-                    autoComplete="country"
-                    className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none"
-                  >
-                    <option value="">{t.checkout.country}</option>
-                    {countryChoices.map((choice) => (
-                      <option key={choice.code} value={choice.code}>
-                        {choice.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              ) : null}
+              {countryMatters && !needsAddress
+                ? countryField(t.checkout.shipTo, false)
+                : null}
 
               {showDelivery ? (
                 <fieldset>
@@ -694,6 +759,15 @@ export function CheckoutPanel({
                     autoComplete="postal-code"
                     className="surface-elevated h-11 w-full rounded-xl px-3 text-sm outline-none placeholder:opacity-50"
                   />
+                  {/*
+                    Last, where an address ends and where a browser's autofill
+                    expects to put it. It decides which delivery rates are
+                    shown further up the form, which is why it used to sit
+                    above them — the timezone guess is what makes asking here
+                    safe, because a country is already filled in before the
+                    rates first render.
+                  */}
+                  {countryMatters ? countryField(t.checkout.country, true) : null}
                 </fieldset>
               ) : null}
 

@@ -192,6 +192,7 @@ export const marketingCs: MarketingDictionary = {
     terms: "Podmínky",
     refunds: "Vrácení peněz",
     gdpr: "GDPR",
+    antiSpam: "Antispam",
   },
 
   seo: {

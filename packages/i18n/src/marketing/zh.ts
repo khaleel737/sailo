@@ -192,6 +192,7 @@ export const marketingZh: MarketingDictionary = {
     terms: "条款",
     refunds: "退款",
     gdpr: "GDPR",
+    antiSpam: "反垃圾邮件",
   },
 
   seo: {

@@ -28,7 +28,12 @@ export function OrderStatusSelect({
         startTransition(() => updateOrderStatus(data));
       }}
       className={cn(
-        "h-8 rounded-lg border border-ink-200 bg-white px-2 text-xs text-ink-700",
+        /* 32px is a comfortable size in a dense table read with a mouse, and a
+           mis-tap on a phone — where this control moves an order to Cancelled
+           and is one row away from the next order's copy of itself. The floor
+           is 44px on a touch pointer; the type size stays put, so the table
+           keeps its density where density is safe. */
+        "h-8 rounded-lg border border-ink-200 bg-white px-2 text-xs text-ink-700 pointer-coarse:h-11",
         "transition focus:border-ink-900 focus:outline-none",
         pending && "opacity-50",
       )}

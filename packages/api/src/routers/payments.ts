@@ -6,7 +6,8 @@ import { shops } from "@sailo/db/schema";
 import { can } from "@sailo/core/plans";
 import { clientEnv } from "@sailo/env";
 import { publishShopEvent } from "@sailo/events";
-import { connectOnboardingLink } from "@sailo/payments";
+import { isStripeAccountCountry } from "@sailo/core/countries";
+import { connectOnboardingLink, MissingStripeCountryError } from "@sailo/payments";
 import { listRails, saveRail } from "@sailo/payments/rail-settings";
 import { router, shopProcedure } from "../trpc";
 import { found } from "../shared";
@@ -64,27 +65,81 @@ export const paymentsRouter = router({
    * same entitlement where buyers read it — leaving them with a Stripe
    * account, a completed onboarding, and no card button.
    */
-  connectLink: shopProcedure.mutation(async ({ ctx }) => {
-    const shop = found(
-      await getDb().query.shops.findFirst({ where: eq(shops.id, ctx.shopId) }),
-      "shop",
-    );
+  connectLink: shopProcedure
+    .input(
+      z
+        .object({
+          /**
+           * Where the seller says their business is.
+           *
+           * Optional only so a shop that already has an account can ask for a
+           * fresh link without restating it — for a first connection it is
+           * required in practice, and `connectOnboardingLink` refuses without
+           * one. It cannot be defaulted here for the same reason the web form
+           * cannot default it: Stripe fixes an account's country at creation
+           * and offers no way to change it, so a guess that turns out wrong
+           * costs the seller their whole verification.
+           */
+          country: z.string().length(2).optional(),
+        })
+        .optional(),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const db = getDb();
+      let shop = found(
+        await db.query.shops.findFirst({ where: eq(shops.id, ctx.shopId) }),
+        "shop",
+      );
 
-    if (!can(shop, "cardRails")) {
-      throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "Card payments are a Business feature.",
-      });
-    }
+      if (!can(shop, "cardRails")) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Card payments are a Business feature.",
+        });
+      }
 
-    const url = await connectOnboardingLink(shop, {
-      siteUrl: siteUrl(),
-      returnUrl: CONNECT_RETURN_URL,
-      refreshUrl: CONNECT_REFRESH_URL,
-    });
+      // Saved before Stripe is asked for anything, and only while there is
+      // still no account to contradict it. Same rule as the web action.
+      const country = input?.country?.toUpperCase();
+      if (!shop.stripeAccountId && isStripeAccountCountry(country)) {
+        await db
+          .update(shops)
+          .set({ stripeCountry: country, updatedAt: new Date() })
+          .where(eq(shops.id, shop.id));
+        shop = { ...shop, stripeCountry: country };
+      }
 
-    return { url };
-  }),
+      let url: string;
+      try {
+        url = await connectOnboardingLink(shop, {
+          siteUrl: siteUrl(),
+          returnUrl: CONNECT_RETURN_URL,
+          refreshUrl: CONNECT_REFRESH_URL,
+        });
+      } catch (error) {
+        /*
+         * The one failure the seller can act on, so it says what to do rather
+         * than "something went wrong".
+         *
+         * The phone has no country picker yet — it would need `expo-localization`
+         * for the guess and a searchable sheet for the correction, which is a
+         * native dependency and a rebuild. Until it has one, a first connection
+         * has to start on the web, and this message says so instead of leaving
+         * the seller tapping a button that never works. Shops that already
+         * chose a country connect from the phone exactly as before.
+         */
+        if (error instanceof MissingStripeCountryError) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message:
+              "Choose where your business is on the web first — Stripe can't change it later.",
+          });
+        }
+        throw error;
+      }
+
+      return { url };
+    }),
 
   /**
    * Every way this shop could take money, and which of them actually work.

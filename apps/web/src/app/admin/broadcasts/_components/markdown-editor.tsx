@@ -55,7 +55,12 @@ function ToolButton({
       onClick={onClick}
       title={label}
       aria-label={label}
-      className="focus-ring flex size-8 items-center justify-center rounded-lg text-ink-500 transition hover:bg-ink-100 hover:text-ink-900"
+      /* Eight icon buttons in a row, 32px each. On a mouse that is a compact
+         toolbar; under a thumb it is eight adjacent 32px targets with nothing
+         between them, which is the shape that produces a bold heading when
+         somebody meant a link. 44px on touch — the row wraps rather than
+         shrinking, because the alternative is hiding formatting on phones. */
+      className="focus-ring flex size-8 items-center justify-center rounded-lg text-ink-500 transition pointer-coarse:size-11 hover:bg-ink-100 hover:text-ink-900"
     >
       {children}
     </button>
@@ -191,7 +196,7 @@ export function MarkdownEditor({
             type="button"
             onClick={() => setTagsOpen((open) => !open)}
             aria-expanded={tagsOpen}
-            className="focus-ring flex h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-ink-500 transition hover:bg-ink-100 hover:text-ink-900"
+            className="focus-ring flex h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-ink-500 transition pointer-coarse:h-11 hover:bg-ink-100 hover:text-ink-900"
           >
             <Sparkles className="size-3.5" />
             {a.broadcasts.mergeTags}
@@ -206,7 +211,7 @@ export function MarkdownEditor({
                     apply({ kind: "insert", text: `{{${tag}}}` });
                     setTagsOpen(false);
                   }}
-                  className="focus-ring flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-start text-xs transition hover:bg-ink-50"
+                  className="focus-ring flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-start text-xs transition pointer-coarse:min-h-11 hover:bg-ink-50"
                 >
                   <span className="font-medium text-ink-800">
                     {tag === "first_name"
@@ -235,7 +240,7 @@ export function MarkdownEditor({
               onClick={() => setTab(key)}
               aria-pressed={tab === key}
               className={cn(
-                "focus-ring h-8 rounded-lg px-2.5 text-xs font-medium transition",
+                "focus-ring h-8 rounded-lg px-2.5 text-xs font-medium transition pointer-coarse:h-11 pointer-coarse:px-4",
                 tab === key
                   ? "bg-ink-900 text-white"
                   : "text-ink-500 hover:bg-ink-100 hover:text-ink-900",

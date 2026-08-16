@@ -192,6 +192,7 @@ export const marketingUk: MarketingDictionary = {
     terms: "Умови",
     refunds: "Повернення",
     gdpr: "GDPR",
+    antiSpam: "Антиспам",
   },
 
   seo: {

@@ -97,7 +97,7 @@ export function SiteNav({
           <details className="group relative lg:hidden">
             <summary
               aria-label={t.nav.openMenu}
-              className="focus-line flex size-10 cursor-pointer list-none items-center justify-center rounded-[var(--r-pill)] text-[var(--mute-600)] transition-colors hover:bg-[var(--mute-100)] [&::-webkit-details-marker]:hidden"
+              className="focus-line flex size-10 cursor-pointer list-none items-center justify-center pointer-coarse:size-11 rounded-[var(--r-pill)] text-[var(--mute-600)] transition-colors hover:bg-[var(--mute-100)] [&::-webkit-details-marker]:hidden"
             >
               <Menu className="size-5" />
             </summary>

@@ -62,7 +62,7 @@ export function VerifyTwoFactorForm({ t }: { t: Dictionary }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form method="post" onSubmit={onSubmit} className="space-y-5">
       {error ? <AuthError>{error}</AuthError> : null}
 
       <AuthField

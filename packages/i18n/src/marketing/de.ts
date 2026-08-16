@@ -192,6 +192,7 @@ export const marketingDe: MarketingDictionary = {
     terms: "AGB",
     refunds: "Rückerstattungen",
     gdpr: "GDPR",
+    antiSpam: "Anti-Spam",
   },
 
   seo: {

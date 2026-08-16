@@ -237,7 +237,11 @@ export function BuyBox({
               type="button"
               onClick={() => setQuantity((q) => Math.max(1, q - 1))}
               aria-label={t.checkout.decrease}
-              className="flex size-9 items-center justify-center transition hover:opacity-60"
+              /* 36px, and this is the control a buyer uses to say how many
+                 they want — sitting immediately beside its opposite. A miss
+                 here is not a dead tap, it is one fewer or one more of
+                 something they are about to pay for. */
+              className="flex size-9 items-center justify-center transition pointer-coarse:size-11 hover:opacity-60"
             >
               <Minus className="size-4" />
             </button>
@@ -249,7 +253,7 @@ export function BuyBox({
               disabled={quantity >= maxQuantity}
               onClick={() => setQuantity((q) => Math.min(maxQuantity, q + 1))}
               aria-label={t.checkout.increase}
-              className="flex size-9 items-center justify-center transition hover:opacity-60 disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex size-9 items-center justify-center transition pointer-coarse:size-11 hover:opacity-60 disabled:cursor-not-allowed disabled:opacity-30"
             >
               <Plus className="size-4" />
             </button>

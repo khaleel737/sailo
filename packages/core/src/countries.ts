@@ -198,3 +198,154 @@ export const COUNTRY_GROUPS = [
 ] as const;
 
 export type CountryGroupKey = (typeof COUNTRY_GROUPS)[number]["key"];
+
+/* -------------------------------------------------------------------------- */
+/*  Guessing where someone is                                                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The country a time zone belongs to, out of a list worth considering.
+ *
+ * Built from the runtime's own CLDR data rather than from a table shipped in
+ * the bundle. `Intl.Locale.prototype.getTimeZones()` answers the reverse
+ * question — "which zones does Germany use" — so asking it once per candidate
+ * and inverting the result gives the mapping for free, stays correct when the
+ * IANA database changes underneath us, and adds nothing to what a buyer
+ * downloads. A hand-maintained list of four hundred zones would have done all
+ * three worse.
+ *
+ * `candidates` is the point of the signature. A shop that posts only within
+ * Croatia has three countries to check, not two hundred and forty-four, and
+ * the caller already knows which. Passing the offered list keeps the work
+ * proportional to the question and means the guess can never land on a country
+ * the buyer would not have been allowed to pick anyway.
+ *
+ * Returns null rather than a fallback whenever it cannot be sure — an
+ * unsupported runtime, a zone CLDR doesn't place, or a zone belonging to a
+ * country that isn't on offer. A wrong guess here silently filters the
+ * delivery rates a buyer is shown, so "no guess" is the safe answer and an
+ * empty dropdown is the honest one.
+ */
+export function countryFromTimeZone(
+  timeZone: string | null | undefined,
+  candidates: readonly string[] = COUNTRY_CODES,
+): CountryCode | null {
+  if (!timeZone) return null;
+
+  for (const code of candidates) {
+    if (!isCountryCode(code)) continue;
+    for (const zone of zonesFor(code)) {
+      if (zone === timeZone) return code;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Cached because the caller may ask about the same country twice and because
+ * `Intl.Locale` is not cheap to construct — a shop posting everywhere asks
+ * this two hundred and forty-four times in one pass.
+ */
+const zonesByCountry = new Map<string, readonly string[]>();
+
+function zonesFor(code: CountryCode): readonly string[] {
+  const cached = zonesByCountry.get(code);
+  if (cached) return cached;
+
+  let zones: readonly string[] = [];
+  try {
+    /*
+     * `getTimeZones()` is the method; older engines exposed the same data as a
+     * `timeZones` getter. Both are read, and anything that has neither falls
+     * through to an empty list rather than throwing — a buyer on an old
+     * browser should get an unfilled dropdown, not a broken checkout.
+     */
+    const locale = new Intl.Locale(`und-${code}`) as Intl.Locale & {
+      getTimeZones?: () => string[];
+      timeZones?: string[];
+    };
+    zones = locale.getTimeZones?.() ?? locale.timeZones ?? [];
+  } catch {
+    zones = [];
+  }
+
+  zonesByCountry.set(code, zones);
+  return zones;
+}
+
+/** The zone this device is set to, or null where there is no `Intl` to ask. */
+export function deviceTimeZone(): string | null {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || null;
+  } catch {
+    return null;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Where a seller can hold a Stripe account                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The countries Stripe will open a connected account in.
+ *
+ * A shorter list than `COUNTRY_CODES` and a different question. That one asks
+ * "where will you post this" and is about the buyer; this asks "where is your
+ * business", and the answer has to be a country Stripe actually operates in.
+ * A seller in a country that isn't here cannot take card payments through
+ * Sailo at all, however much of the rest of the product works for them.
+ *
+ * It matters more than a list normally would because **Stripe fixes a
+ * connected account's country at creation and will not change it afterwards**.
+ * There is no edit: a seller who onboards under the wrong country has to have
+ * the account deleted and start again, losing whatever onboarding they had
+ * done. That is why `stripeCountry` is asked before the account exists rather
+ * than inferred after it, and why the picker offers only this list.
+ *
+ * Read from `GET /v1/country_specs` (121 entries, paginated) rather than from
+ * a docs page, because the API is what actually decides. `check:connect`
+ * re-reads it and fails when this drifts, so adding a country is a one-line
+ * change nobody has to remember to make.
+ */
+export const STRIPE_ACCOUNT_COUNTRIES = [
+  "AE", "AG", "AL", "AM", "AO", "AR", "AT", "AU", "AZ", "BA", "BD", "BE", "BG",
+  "BH", "BJ", "BN", "BO", "BR", "BS", "BT", "BW", "CA", "CH", "CI", "CL", "CO",
+  "CR", "CY", "CZ", "DE", "DK", "DO", "DZ", "EC", "EE", "EG", "ES", "ET", "FI",
+  "FR", "GA", "GB", "GH", "GI", "GM", "GR", "GT", "GY", "HK", "HR", "HU", "ID",
+  "IE", "IL", "IN", "IS", "IT", "JM", "JO", "JP", "KE", "KH", "KR", "KW", "KZ",
+  "LA", "LC", "LI", "LK", "LT", "LU", "LV", "MA", "MC", "MD", "MG", "MK", "MN",
+  "MO", "MT", "MU", "MX", "MY", "MZ", "NA", "NE", "NG", "NL", "NO", "NZ", "OM",
+  "PA", "PE", "PH", "PK", "PL", "PT", "PY", "QA", "RO", "RS", "RW", "SA", "SE",
+  "SG", "SI", "SK", "SM", "SN", "SV", "TH", "TN", "TR", "TT", "TW", "TZ", "US",
+  "UY", "UZ", "VN", "ZA",
+] as const satisfies readonly CountryCode[];
+
+export type StripeAccountCountry = (typeof STRIPE_ACCOUNT_COUNTRIES)[number];
+
+const STRIPE_CODES = new Set<string>(STRIPE_ACCOUNT_COUNTRIES);
+
+export function isStripeAccountCountry(
+  value: string | null | undefined,
+): value is StripeAccountCountry {
+  return Boolean(value) && STRIPE_CODES.has(value as string);
+}
+
+/**
+ * The same list, named and sorted for a picker.
+ *
+ * Sorted by the *translated* name, so a Croatian seller sees Njemačka filed
+ * under N. Sorting the codes instead would be stable and useless — nobody
+ * scans a dropdown looking for "DE".
+ */
+export function stripeAccountCountriesByName(
+  locale = "en",
+): { code: StripeAccountCountry; name: string }[] {
+  const collator = new Intl.Collator(locale);
+  // `.sort()` rather than `.toSorted()` for the Hermes reason above; `.map()`
+  // just built this array, so there is no caller's copy to disturb.
+  return STRIPE_ACCOUNT_COUNTRIES.map((code) => ({
+    code,
+    name: countryName(code, locale),
+  })).sort((a, b) => collator.compare(a.name, b.name));
+}

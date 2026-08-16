@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./keys": "./src/keys.ts",
+    "./capabilities": "./src/capabilities.ts",
     "./rails": "./src/rails.ts",
     "./rail-settings": "./src/rail-settings.ts",
     "./billing-customer": "./src/billing-customer.ts"

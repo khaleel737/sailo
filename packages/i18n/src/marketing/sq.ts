@@ -192,6 +192,7 @@ export const marketingSq: MarketingDictionary = {
     terms: "Kushtet",
     refunds: "Rimbursimet",
     gdpr: "GDPR",
+    antiSpam: "Anti-spam",
   },
 
   seo: {

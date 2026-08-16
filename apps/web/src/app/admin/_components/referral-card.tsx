@@ -67,7 +67,7 @@ export function ReferralCard({
         {card.state === "join" ? (
           <Link
             href="/partners"
-            className="focus-ring mt-4 inline-flex h-10 items-center gap-1.5 rounded-xl bg-ink-900 px-4 text-sm font-medium text-white transition hover:bg-ink-800"
+            className="focus-ring mt-4 inline-flex h-10 items-center gap-1.5 rounded-xl bg-ink-900 px-4 text-sm font-medium text-white transition pointer-coarse:h-11 hover:bg-ink-800"
           >
             {a.referral.join}
             <ArrowRight className="size-4" />

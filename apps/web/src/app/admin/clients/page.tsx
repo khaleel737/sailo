@@ -123,7 +123,13 @@ export default async function AdminClientsPage({
                 <Td>
                   <Link
                     href={`/admin/clients/${client.id}`}
-                    className="focus-ring flex min-w-0 items-center gap-3 rounded"
+                    /* The row is the tap target for the whole client, and the
+                       avatar sets its height at 36px — under the floor, and a
+                       row is exactly where a near-miss opens the wrong person's
+                       record. `min-h-11` on touch, with no change to the type
+                       or the avatar, so the table keeps its density on a
+                       mouse. */
+                    className="focus-ring flex min-w-0 items-center gap-3 rounded pointer-coarse:min-h-11"
                   >
                     <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-ink-100 text-xs font-semibold text-ink-600">
                       {client.name.slice(0, 1).toUpperCase()}

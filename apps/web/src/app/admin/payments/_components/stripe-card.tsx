@@ -1,5 +1,11 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { AlertTriangle, ArrowUpRight, CreditCard, Lock } from "lucide-react";
+import {
+  isStripeAccountCountry,
+  normalizeCountry,
+  stripeAccountCountriesByName,
+} from "@sailo/core/countries";
 import type { Shop } from "@sailo/db/schema";
 import { connectState } from "@/lib/connect";
 import { PLATFORM_FEE_LABEL, can, cheapestPlanWith } from "@/lib/plans";
@@ -19,12 +25,31 @@ import { cn } from "@/lib/utils";
  * fields, so it gets its own card rather than the generic method form.
  */
 export async function StripeCard({ shop }: { shop: Shop }) {
-  const { a } = await getAdminT();
+  const { a, locale } = await getAdminT();
   const entitled = can(shop, "cardRails");
   const state = connectState(shop);
   const needs = cheapestPlanWith("cardRails");
 
   const live = entitled && state === "active";
+
+  /*
+   * The country dropdown's contents and its starting value.
+   *
+   * Only the countries Stripe will actually open an account in — offering the
+   * full ISO list would let a seller pick one and meet a Stripe error instead
+   * of an onboarding form. Named and sorted in the seller's own language,
+   * because nobody scans a dropdown looking for "DE".
+   *
+   * The guess comes from the edge's view of where the request came from, which
+   * is the same signal `auth.ts` already records for sessions. It is a guess
+   * and is labelled as one: a seller on holiday, or behind a VPN, must find it
+   * easy to correct — this is the one field on the page that cannot be fixed
+   * afterwards.
+   */
+  const countries = stripeAccountCountriesByName(locale);
+  const guess = normalizeCountry((await headers()).get("x-vercel-ip-country"));
+  const defaultCountry = shop.stripeCountry ?? (isStripeAccountCountry(guess) ? guess : null);
+  const guessed = !shop.stripeCountry && Boolean(defaultCountry);
 
   return (
     // Tinted the same way a live chat rail is, so "working" looks identical
@@ -92,9 +117,46 @@ export async function StripeCard({ shop }: { shop: Shop }) {
         </p>
       ) : state === "not_connected" ? (
         <form action={connectStripe} className="mt-4">
+          {/*
+            Asked here, on the form that creates the account, because Stripe
+            fixes an account's country at creation and provides no way to
+            change it. Leaving it out does not defer the question — it answers
+            it with the platform's own country, which is how every seller
+            outside the US was silently onboarded as an American business and
+            no local payment method could ever activate.
+          */}
+          <label
+            htmlFor="stripe-country"
+            className="block text-sm font-medium text-ink-900"
+          >
+            {a.payments.businessCountry}
+          </label>
+          <select
+            id="stripe-country"
+            name="country"
+            defaultValue={defaultCountry ?? ""}
+            required
+            className="focus-ring mt-1.5 h-10 w-full max-w-xs rounded-xl border border-ink-200 bg-white px-3 text-sm text-ink-900 pointer-coarse:h-11"
+          >
+            {/* An empty option so a seller with no guess has to choose rather
+                than accept whichever country sorts first. */}
+            <option value="" disabled>
+              —
+            </option>
+            {countries.map((country) => (
+              <option key={country.code} value={country.code}>
+                {country.name}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1.5 max-w-lg text-xs text-ink-500">
+            {a.payments.businessCountryHint}
+            {guessed ? ` ${a.payments.businessCountryGuess}` : ""}
+          </p>
+
           <button
             type="submit"
-            className="focus-ring press inline-flex h-10 items-center gap-2 rounded-xl pointer-coarse:h-11 bg-[#635bff] px-4 text-sm font-medium text-white shadow-xs transition hover:bg-[#5148e8]"
+            className="focus-ring press mt-3 inline-flex h-10 items-center gap-2 rounded-xl pointer-coarse:h-11 bg-[#635bff] px-4 text-sm font-medium text-white shadow-xs transition hover:bg-[#5148e8]"
           >
             {a.payments.connectStripe}
             <ArrowUpRight className="size-4 rtl:-scale-x-100" />

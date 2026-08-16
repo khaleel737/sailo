@@ -85,6 +85,15 @@ export function Switch({ value, onValueChange, label, hint, disabled, busy, test
          * Ignored on iOS, which draws its own.
          */
         thumbColor={value ? "#ffffff" : dark ? colors.contentMuted : "#ffffff"}
+        /*
+         * The control gets its own id, not just the row.
+         *
+         * `testID` on the wrapper names a `View` whose centre is under the
+         * *label*, and tapping a label does not move an iOS switch — so a UI
+         * test that selected the row found an element and then failed to toggle
+         * anything. `-control` is the thing a finger actually has to hit.
+         */
+        testID={testID ? `${testID}-control` : undefined}
       />
     </View>
   );

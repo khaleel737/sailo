@@ -5,7 +5,9 @@ import {
   EEA,
   EU,
   countriesByName,
+  countryFromTimeZone,
   countryName,
+  deviceTimeZone,
   isCountryCode,
   normalizeCountry,
 } from "./countries";
@@ -115,5 +117,57 @@ describe("countriesByName", () => {
 
   it("returns the whole list whatever the language", () => {
     expect(countriesByName("hr")).toHaveLength(COUNTRY_CODES.length);
+  });
+});
+
+describe("countryFromTimeZone", () => {
+  it("places a zone in its country", () => {
+    expect(countryFromTimeZone("Europe/Zagreb")).toBe("HR");
+    expect(countryFromTimeZone("Europe/Berlin")).toBe("DE");
+    expect(countryFromTimeZone("America/New_York")).toBe("US");
+    expect(countryFromTimeZone("Asia/Tokyo")).toBe("JP");
+  });
+
+  it("handles a country with several zones", () => {
+    // Germany has Busingen as well as Berlin; the US has thirty.
+    expect(countryFromTimeZone("Europe/Busingen")).toBe("DE");
+    expect(countryFromTimeZone("America/Anchorage")).toBe("US");
+    expect(countryFromTimeZone("Pacific/Honolulu")).toBe("US");
+  });
+
+  it("only ever answers with a country the caller offered", () => {
+    // A Croatia-only shop must not have the dropdown filled with Germany just
+    // because that is where the buyer's laptop thinks it is.
+    expect(countryFromTimeZone("Europe/Berlin", ["HR"])).toBeNull();
+    expect(countryFromTimeZone("Europe/Zagreb", ["HR", "SI"])).toBe("HR");
+  });
+
+  it("returns null rather than guessing when it cannot tell", () => {
+    expect(countryFromTimeZone("Not/AZone")).toBeNull();
+    expect(countryFromTimeZone("")).toBeNull();
+    expect(countryFromTimeZone(null)).toBeNull();
+    expect(countryFromTimeZone(undefined)).toBeNull();
+  });
+
+  it("ignores junk in the candidate list instead of throwing", () => {
+    expect(countryFromTimeZone("Europe/Zagreb", ["", "ZZZ", "hr"])).toBeNull();
+    expect(countryFromTimeZone("Europe/Zagreb", ["ZZZ", "HR"])).toBe("HR");
+  });
+
+  it("is quick enough to run against every country on mount", () => {
+    // The unrestricted case asks about 244 countries in one pass. It runs in a
+    // buyer's checkout, so it has to be free rather than merely fast.
+    const started = performance.now();
+    countryFromTimeZone("Pacific/Auckland");
+    countryFromTimeZone("Africa/Lagos");
+    expect(performance.now() - started).toBeLessThan(250);
+  });
+});
+
+describe("deviceTimeZone", () => {
+  it("reports a zone Intl agrees is one", () => {
+    const zone = deviceTimeZone();
+    expect(zone).toBeTruthy();
+    expect(() => new Intl.DateTimeFormat("en", { timeZone: zone! })).not.toThrow();
   });
 });

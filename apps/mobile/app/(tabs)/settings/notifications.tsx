@@ -130,14 +130,69 @@ export default function Notifications() {
         and "off, and tapping this will not help" — the case where the seller
         said no once and the OS will not let the app ask again.
       */}
-      <GroupedList header={a.settings.notifications} footer={a.settings.notificationsBody}>
+      {/*
+        No header and no footer on this group, and that is a fix rather than an
+        omission.
+
+        It had `notifications` ("Email notifications") as its header and
+        `notificationsBody` ("What Sailo emails you about your own shop") as its
+        footer — around a switch that controls this handset's **push**
+        permission and has nothing to do with email. Two sentences, both wrong,
+        bracketing the one control on the screen a seller comes here to find.
+        The row's own label and hint say what it is; the group needed neither.
+
+        The right long-term fix is a dictionary key for the device layer.
+        `@sailo/i18n` is A05's path and adding one means thirty-five
+        translations, so the wrong words are removed rather than replaced.
+      */}
+      <GroupedList>
         <Switch
           value={push.enabled}
-          disabled={push.busy || push.blocked}
+          /*
+           * Inert where it cannot work, not merely ineffective.
+           *
+           * `unsupported` is a simulator, or a device with no push service.
+           * The switch was live in that state: a tap moved it, the
+           * registration came back `unsupported`, and it snapped back with
+           * nothing said — which is exactly what "I pressed enable and it
+           * didn't work" looks like. A control that refuses has to look
+           * refused.
+           */
+          /*
+           * `!__DEV__` on the last clause, and it is what makes the whole
+           * notification UI testable.
+           *
+           * A seller can never reach `unsupported` — `Device.isDevice` is false
+           * only in a simulator — so gating it on release builds changes
+           * nothing anyone using the app will see. In a dev build on a
+           * simulator the switch stays live, so tapping it raises the real iOS
+           * permission alert; granting that is the only way `simctl push` will
+           * *display* anything, which is what lets the banner, the tap-through
+           * and the routing be exercised outside a physical phone.
+           *
+           * Registration still fails there (no APNs token), so the switch
+           * lands on `failed` — which is the honest outcome, not a bug.
+           */
+          disabled={push.busy || push.blocked || (push.unsupported && !__DEV__)}
           busy={push.busy}
           onValueChange={(next) => void push.setEnabled(next)}
           label={a.settings.thisDevice}
-          hint={push.permission === "blocked" ? a.checkin.scanBlockedBody : undefined}
+          testID="notify-device"
+          hint={
+            push.permission === "blocked"
+              ? a.checkin.scanBlockedBody
+              : /*
+                 * Dev-only, and deliberately untranslated. `unsupported` is
+                 * unreachable on a seller's phone — `Device.isDevice` is false
+                 * only in a simulator — so this is a note to whoever is
+                 * testing, not copy. Shipping it through the dictionary would
+                 * put a sentence about simulators in front of thirty-five
+                 * translators for a state none of their users can reach.
+                 */
+                push.unsupported && __DEV__
+                ? "Push needs a physical device — a simulator has no APNs token."
+                : undefined
+          }
         />
       </GroupedList>
 
@@ -151,12 +206,36 @@ export default function Notifications() {
       ) : null}
 
       {/*
+        Allowed, and still not registered.
+
+        The state that used to be invisible: the OS said yes, the token or the
+        write to the server did not land, and the switch turned on anyway. The
+        seller then waits for notifications that can never arrive. Saying so —
+        with the one action that can fix it, trying again — is the whole
+        difference between a transient network failure and a silent one.
+      */}
+      {push.failed ? (
+        <Banner
+          tone="danger"
+          title={t.errors.title}
+          message={t.errors.body}
+          actionLabel={t.errors.retry}
+          onAction={() => void push.setEnabled(true)}
+          testID="push-failed"
+        />
+      ) : null}
+
+      {/*
         The account layer. Deliberately *not* disabled while the device switch
         is off: these decide email as well, and a seller who has silenced this
         handset has not asked to stop being emailed about a payment that needs
         confirming.
       */}
-      <GroupedList header={a.settings.tabNotifications} footer={a.settings.notifyAllDevices}>
+      {/* No header: the navigation bar above already says "What to tell me
+          about", and a screen that says its own name twice is the double-title
+          this pass removed everywhere else. The footer stays — it says
+          something the title does not, that these reach email too. */}
+      <GroupedList footer={a.settings.notifyAllDevices}>
         {EVENTS.map((event) => (
           <Switch
             key={event.key}

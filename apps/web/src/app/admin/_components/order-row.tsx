@@ -184,7 +184,7 @@ export async function OrderRow({
               <Link
                 href={`/download/${order.downloadToken}`}
                 target="_blank"
-                className="underline underline-offset-2 hover:text-ink-900"
+                className="underline underline-offset-2 pointer-coarse:-my-3.5 pointer-coarse:py-3.5 hover:text-ink-900"
               >
                 {a.common.view}
               </Link>
@@ -202,7 +202,7 @@ export async function OrderRow({
                   href={order.trackingUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline underline-offset-2 hover:text-ink-900"
+                  className="underline underline-offset-2 pointer-coarse:-my-3.5 pointer-coarse:py-3.5 hover:text-ink-900"
                 >
                   {a.orders.track}
                 </a>
@@ -273,17 +273,29 @@ export async function OrderRow({
             </span>
             {invoice ? (
               <>
+                {/*
+                  These two are inline in a metadata line, which is the one
+                  case WCAG 2.5.8 exempts from a minimum target — the position
+                  is set by the flow of the text around them, so growing the
+                  box would push the date off its own line. "PDF" is still a
+                  23x16 target next to another link.
+
+                  So the *hit area* grows and the *layout* does not: padding
+                  out to 44pt on touch, cancelled by an equal negative margin.
+                  The margin box is unchanged, so the row is the same height it
+                  was, and the thumb gets the whole line rather than the glyphs.
+                */}
                 <Link
                   href={`/invoice/${invoice.token}`}
                   target="_blank"
-                  className="inline-flex items-center gap-1 text-ink-500 transition hover:text-ink-900"
+                  className="inline-flex items-center gap-1 text-ink-500 transition pointer-coarse:-my-3.5 pointer-coarse:py-3.5 hover:text-ink-900"
                 >
                   <FileText className="size-3" />
                   {invoice.number}
                 </Link>
                 <a
                   href={`/invoice/${invoice.token}/pdf`}
-                  className="inline-flex items-center gap-1 text-ink-500 underline underline-offset-2 transition hover:text-ink-900"
+                  className="inline-flex items-center gap-1 text-ink-500 underline underline-offset-2 transition pointer-coarse:-my-3.5 pointer-coarse:py-3.5 hover:text-ink-900"
                 >
                   PDF
                 </a>

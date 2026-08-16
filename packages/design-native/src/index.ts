@@ -88,12 +88,21 @@ export { IconButton, type IconButtonProps } from "./icon-button";
 export { ListRow, type ListRowProps } from "./list-row";
 export { Money, type MoneyProps } from "./money";
 export { Progress, type ProgressProps } from "./progress";
+/**
+ * The floating tab bar, declared once by the app so Must be connected to a terminal.
+ can leave room for
+ * it — in its scroll extent and, more importantly, under a pinned footer.
+ */
+export { BottomChrome, TAB_BAR_HEIGHT, useBottomChrome } from "./bottom-chrome";
 export { Screen, type ScreenProps } from "./screen";
+export { SearchField, type SearchFieldProps } from "./search-field";
+export { Section, type SectionProps } from "./section";
 export { Segmented, type SegmentedOption, type SegmentedProps } from "./segmented";
 export { Sheet, type SheetProps } from "./sheet";
 export { Skeleton, type SkeletonProps } from "./skeleton";
 export { BrandSplash, type BrandSplashProps, MARK_RATIO } from "./splash";
 export { Stat, type StatDelta, type StatProps } from "./stat";
+export { StatRow, type StatRowProps } from "./stat-row";
 export { StatusPill, type StatusPillProps } from "./status-pill";
 export { StepDots, type StepDotsProps } from "./step-dots";
 export { Switch, type SwitchProps } from "./switch";
@@ -132,6 +141,28 @@ export type {
  */
 export { haptics, type Haptic } from "./haptics";
 export { useReducedMotion } from "./motion";
+
+/**
+ * How much room there is.
+ *
+ * The one hook a screen genuinely has to be able to ask, because the answer
+ * changes what it *renders* rather than how it looks — two columns or three, a
+ * detail beside a list or behind a push. `Screen`, `StatRow` and `GroupedList`
+ * consume it on a screen's behalf for the cases that are only about looks;
+ * this is for the ones that are not.
+ */
+export { useLayout, type Layout } from "./layout";
+
+/**
+ * The motion a list is allowed to have.
+ *
+ * Exported, unlike the hooks in `./motion`, because these are *declarations a
+ * screen hands to a row* rather than animations a component runs on its own —
+ * `entering={rowEntering(index)}` on a `FlashList` item, `layout={rowLayout}`
+ * on a group whose contents change. There is no component that could apply them
+ * on the screen's behalf, because only the screen knows the index.
+ */
+export { rowEntering, rowLayout, blockEntering, stagger } from "./list-motion";
 
 /**
  * The theme itself, for the handful of places a component cannot reach.

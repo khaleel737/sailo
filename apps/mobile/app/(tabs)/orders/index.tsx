@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RefreshControl, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
+import Animated from "react-native-reanimated";
 import { useRouter } from "expo-router";
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 import { formatMoney } from "@sailo/core/currency";
@@ -20,10 +21,12 @@ import {
   Icon,
   ListRow,
   Screen,
+  SearchField,
+  rowEntering,
+  rowLayout,
   Sheet,
   Skeleton,
   StatusPill,
-  TextField,
   type StatusTone,
 } from "@sailo/design-native";
 import type { Order } from "../../../lib/models";
@@ -290,14 +293,20 @@ export default function OrdersScreen() {
   const controls = (
     <>
       <View style={styles.controls}>
-        <View style={styles.search}>
-          <TextField
-            label={t.common.search}
-            value={typed}
-            onChangeText={setTyped}
-            returnKey="search"
-          />
-        </View>
+        {/*
+          A search bar, not a form field.
+          This was a `TextField`, which draws a floating label above its input —
+          so the control was two lines tall with the word "Search" stranded over
+          an empty slab, on the screen whose entire job is finding an order.
+          `search-field.tsx` carries the rest.
+        */}
+        <SearchField
+          value={typed}
+          onChangeText={setTyped}
+          placeholder={t.common.search}
+          clearLabel={a.common.cancel}
+          testID="orders-search"
+        />
         {/*
           A sheet rather than a row of chips, and that is `Segmented`'s own
           instruction: it is for three or four options, and past that "the answer
@@ -307,6 +316,7 @@ export default function OrdersScreen() {
         <Button
           label={statusLabel}
           icon="filter"
+          size="sm"
           onPress={() => setPicking(true)}
           accessibilityLabel={`${a.common.status}: ${statusLabel}`}
           testID="orders-filter"
@@ -393,16 +403,30 @@ export default function OrdersScreen() {
         style={styles.listFill}
         data={rows}
         keyExtractor={(order) => order.id}
-        renderItem={({ item }) => (
-          <OrderRow
-            order={item}
-            locale={locale}
-            statusLabels={a.orderStatus}
-            andMore={a.orders.andMore}
-            ago={ago}
-            now={now}
-            onPress={open}
-          />
+        renderItem={({ item, index }) => (
+          /*
+           * The rows arrive rather than appearing.
+           *
+           * A fade and a short rise, staggered by index and capped at the sixth
+           * row — `list-motion.ts` carries why the cap matters on a recycling
+           * list. It is the same entrance `Screen` gives its content, so a
+           * screen arriving and its list settling read as one gesture.
+           *
+           * There is deliberately no exit: a row leaves because a filter
+           * changed, and making its replacement wait for it makes the filter
+           * feel slower than it is.
+           */
+          <Animated.View entering={rowEntering(index)} layout={rowLayout}>
+            <OrderRow
+              order={item}
+              locale={locale}
+              statusLabels={a.orderStatus}
+              andMore={a.orders.andMore}
+              ago={ago}
+              now={now}
+              onPress={open}
+            />
+          </Animated.View>
         )}
         contentContainerStyle={styles.list}
         keyboardDismissMode="on-drag"
@@ -561,6 +585,7 @@ function OrderRow({
     <ListRow
       title={order.productTitle}
       subtitle={subtitle}
+      valueTone="strong"
       value={amount}
       accessory={<StatusPill label={status} tone={orderTone(order.status)} size="sm" />}
       trailing="chevron"
@@ -607,11 +632,14 @@ const styles = StyleSheet.create({
   listFill: { flex: 1 },
   controls: {
     flexDirection: "row",
-    alignItems: "flex-end",
+    /* `center`, not `flex-end`. The two controls are now the same height —
+       a 38pt search capsule and a 36pt small button — so aligning them on
+       their centres is what puts them on one line rather than on a shared
+       baseline they no longer have. */
+    alignItems: "center",
     gap: 8,
     paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 4,
+    paddingVertical: 10,
   },
   search: { flex: 1 },
   list: { flexGrow: 1, paddingHorizontal: 16, paddingVertical: 8, gap: 4 },

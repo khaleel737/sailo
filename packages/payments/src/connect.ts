@@ -3,6 +3,8 @@ import type Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops, type Shop } from "@sailo/db/schema";
+import { isStripeAccountCountry } from "@sailo/core/countries";
+import { baseCapabilities, capabilitiesFor, requestCapabilities } from "./capabilities";
 import { stripe } from "./stripe";
 
 /**
@@ -72,70 +74,69 @@ export function publicShopUrl(siteUrl: string, handle: string): string | null {
 }
 
 /**
- * What a connected account is allowed to take money through.
+ * Thrown when a shop tries to connect before saying where it is.
  *
- * `createCheckoutSession` deliberately does not pin `payment_method_types`, so
- * Stripe decides at runtime which of these to show — from the buyer's country
- * and device and the account's active capabilities. Everything here therefore
- * reaches the checkout with no code behind it beyond this list. Apple Pay and
- * Google Pay need no entry at all; they ride `card_payments`.
- *
- * Deliberately short. Stripe's own guidance: "The capabilities you request for
- * a connected account determine the information you're required to collect for
- * it… Requesting more capabilities means the onboarding flow must verify more
- * information." Every extra line here is another question between a seller and
- * their first sale, so a rail earns its place by being one a small US seller
- * actually gets asked for.
- *
- * Not here on purpose:
- *  - Affirm, Klarna and Afterpay decide eligibility on the account's merchant
- *    category code, and `business_profile` below sets no `mcc`. Requesting
- *    them before that exists buys the onboarding questions and none of the
- *    payments. They also finance a purchase, and nobody finances a $45 cake.
- *  - PayPal and Venmo are not obtainable at all: Stripe lists no US business
- *    location for PayPal, does not support it on direct charges, and does not
- *    offer it to platforms whose connected accounts take payment directly.
- *    Venmo has no Stripe support anywhere. Both ship as manual rails instead —
- *    see `PAYMENT_METHOD_DEFS`.
+ * Its own class so the two callers can tell it apart from Stripe being down.
+ * One sends the seller to the country picker; the other, on the phone, shows
+ * the same prompt in a sheet. A generic Error would have both of them
+ * pattern-matching on message text.
  */
-const BASE_CAPABILITIES = {
-  card_payments: { requested: true },
-  transfers: { requested: true },
-} as const;
-
-export const WALLET_CAPABILITIES = {
-  /** Stripe's own wallet. One tap for anyone who has used Link anywhere. */
-  link_payments: { requested: true },
-  /** US only, USD only, and Stripe simply won't offer it elsewhere. */
-  cashapp_payments: { requested: true },
-  /** Cheap on larger orders, where card fees start to hurt a small seller. */
-  us_bank_account_ach_payments: { requested: true },
-} as const;
+export class MissingStripeCountryError extends Error {
+  constructor() {
+    super("This shop has no business location set.");
+    this.name = "MissingStripeCountryError";
+  }
+}
 
 /**
- * Adds the wallet capabilities to an account, and shrugs if Stripe says no.
+ * The country Stripe will open the account in, or a refusal to guess.
  *
- * Separate from account *creation* on purpose, and swallowing its own error on
- * purpose, because these three are country-scoped and Sailo's sellers are not
- * all in those countries. Stripe rejects a capability the account's country
- * cannot have rather than leaving it inactive — so requesting them inside
- * `accounts.create` would mean a seller in a country without Cash App could not
- * open a Stripe account at all, which is a far worse failure than not being
- * offered a wallet they could never use.
- *
- * Idempotent: re-requesting an active capability is a no-op, so this is safe to
- * run on every visit and safe to run over every shop after adding a line above.
+ * Deliberately not defaulted. Every fallback available here is wrong often
+ * enough to matter: the platform's country is what caused this bug, the shop's
+ * currency maps to twenty countries for EUR alone, and the seller's IP is
+ * where they happened to be sitting. The value is unchangeable once the
+ * account exists, so the only acceptable source is a seller who was shown the
+ * question and answered it.
  */
-export async function requestWalletCapabilities(accountId: string) {
-  try {
-    return await stripe().accounts.update(accountId, {
-      capabilities: WALLET_CAPABILITIES,
-    });
-  } catch (error) {
-    // Not an error the seller can act on, and nothing they were promised.
-    console.warn("[sailo] wallet capabilities not available for", accountId, error);
-    return null;
+export function requireStripeCountry(shop: Shop): string {
+  if (!isStripeAccountCountry(shop.stripeCountry)) {
+    throw new MissingStripeCountryError();
   }
+  return shop.stripeCountry;
+}
+
+/**
+ * Brings an account's capabilities up to what its country allows.
+ *
+ * `createCheckoutSession` deliberately does not pin `payment_method_types`, so
+ * Stripe decides at runtime which methods to show — from the buyer, the
+ * currency, the amount, and the account's *active capabilities*. That last one
+ * is the only half Sailo controls, and for an Express account it is the half
+ * that decides everything: Stripe will not offer a payment method whose
+ * capability was never requested, no matter what the Dashboard says.
+ *
+ * Which capabilities, and why one call per refusal rather than one call, is
+ * `capabilities.ts`.
+ *
+ * Idempotent — re-requesting an active capability is a no-op — so this runs on
+ * every visit to the payments screen. That is also the backfill: a shop
+ * connected before a capability was added to the table picks it up the next
+ * time its owner opens the page, with no migration to run over old accounts.
+ */
+export async function syncCapabilities(account: Stripe.Account) {
+  const wanted = capabilitiesFor(account.country);
+  const outcome = await requestCapabilities(stripe(), account.id, wanted);
+
+  if (outcome.refused.length > 0) {
+    // Worth a line in the log and nothing more: the account still takes cards,
+    // and a seller cannot act on Stripe declining to offer them BLIK.
+    console.warn(
+      `[sailo] ${account.id} (${account.country ?? "??"}) refused ` +
+        outcome.refused.map((r) => r.name).join(", "),
+    );
+  }
+
+  return outcome;
 }
 
 /** Where Stripe sends the seller when it is done with them. */
@@ -172,8 +173,28 @@ export async function connectOnboardingLink(
   if (!accountId) {
     const shopUrl = publicShopUrl(redirects.siteUrl, shop.handle);
 
+    /*
+     * The seller's own country, and the one field on this call that cannot be
+     * corrected afterwards.
+     *
+     * Omitting it does not mean "ask the seller during onboarding" — it means
+     * the account is created in *the platform's* country. Sailo's platform is
+     * in the US, so every account made without this line was a US account: a
+     * German seller was asked for a US tax ID and a US bank account, and no
+     * European payment method was reachable however many capabilities were
+     * requested, because eligibility is decided by the connected account's
+     * business location.
+     *
+     * `requireStripeCountry` refuses rather than guessing. A wrong country is
+     * not an inconvenience here — Stripe fixes it at creation and offers no
+     * edit, so recovering means deleting the account and starting the whole
+     * verification again. Better to send the seller back to a dropdown.
+     */
+    const country = requireStripeCountry(shop);
+
     const account = await stripe().accounts.create({
       type: "express",
+      country,
       email: shop.contactEmail ?? undefined,
       business_profile: {
         name: shop.name,
@@ -185,13 +206,15 @@ export async function connectOnboardingLink(
                 `Products and services sold through ${shop.name}.`,
             }),
       },
-      capabilities: BASE_CAPABILITIES,
+      // Only the pair the account cannot take a card without. Everything else
+      // goes up separately, because a capability this country cannot have
+      // would otherwise fail the *creation* rather than just itself.
+      capabilities: baseCapabilities(),
       metadata: { shopId: shop.id, handle: shop.handle },
     });
     accountId = account.id;
 
-    // After creation, never inside it — see `requestWalletCapabilities`.
-    await requestWalletCapabilities(accountId);
+    await syncCapabilities(account);
 
     await db
       .update(shops)
@@ -200,12 +223,15 @@ export async function connectOnboardingLink(
   } else {
     /*
      * The backfill, at the one moment it is free: a seller who already has an
-     * account and has come back to the payments screen. Accounts created
-     * before a capability was added never requested it, so without this a
-     * shop connected last month keeps offering card alone for ever. Requesting
-     * an already-active capability is a no-op, so this is safe every time.
+     * account and has come back to the payments screen.
+     *
+     * Read the account first rather than trusting `shop.stripeCountry`. The
+     * country that decides which capabilities are obtainable is the one Stripe
+     * holds, and for every account created before this file asked for one it
+     * is US regardless of what the shop row now says.
      */
-    await requestWalletCapabilities(accountId);
+    const existing = await stripe().accounts.retrieve(accountId);
+    await syncCapabilities(existing);
   }
 
   const link = await stripe().accountLinks.create({

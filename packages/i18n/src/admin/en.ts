@@ -841,6 +841,15 @@ export const adminEn = {
     cardOnPlan: "Card payments are part of {plan}.",
     connectStripe: "Connect Stripe",
     connectHint: "Opens Stripe. You'll need your bank details and an ID — Sailo never sees either.",
+    // Asked before the account exists, because Stripe fixes it at creation and
+    // offers no way to change it afterwards. The warning is not boilerplate:
+    // getting this wrong means deleting the Stripe account and starting the
+    // whole verification over.
+    businessCountry: "Where is your business?",
+    businessCountryHint:
+      "Stripe decides which payment methods your buyers get from this, and it can't be changed once your account exists.",
+    businessCountryGuess: "We guessed this from where you are. Change it if it's wrong.",
+    businessCountryMissing: "Choose where your business is before connecting.",
     account: "Account",
     country: "Country",
     continueOnStripe: "Continue on Stripe",

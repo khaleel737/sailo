@@ -3,7 +3,7 @@ import { Icon } from "./icon";
 import { Text } from "./text";
 import { haptics } from "./haptics";
 import { usePressScale } from "./motion";
-import { ripple, useTheme } from "./theme";
+import { MIN_TAP, ripple, useTheme } from "./theme";
 import type { IconName } from "./types";
 
 /**
@@ -61,6 +61,22 @@ export function Chip({ label, selected, onPress, icon, count, disabled, testID }
         style={({ pressed }) => ({
           flexDirection: "row",
           alignItems: "center",
+          /*
+           * The floor, which this was the one interactive component in the
+           * package to be missing.
+           *
+           * `paddingVertical: space.sm` is 8pt each side, so a chip came out
+           * around 36pt tall — under the 44 that `ListRow`, `Switch`, `Button`
+           * and `TextField` all hold themselves to via this same constant. It
+           * matters more here than the number suggests: chips are drawn in a
+           * row, so the miss is not "nothing happened", it is the wrong filter
+           * turning on next to the one that was meant.
+           *
+           * `minHeight` rather than a bigger padding, so a chip whose label
+           * wraps still grows, and a chip on a screen with Dynamic Type turned
+           * up is not clipped to a fixed 44.
+           */
+          minHeight: MIN_TAP,
           gap: space.xs,
           paddingHorizontal: space.md,
           paddingVertical: space.sm,

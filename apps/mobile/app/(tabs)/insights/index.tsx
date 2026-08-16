@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
 import { useQueries } from "@tanstack/react-query";
 import { formatMoney } from "@sailo/core/currency";
 /*
@@ -20,9 +19,10 @@ import {
   GroupedList,
   ListRow,
   Screen,
+  Section,
   Segmented,
   Skeleton,
-  Stat,
+  StatRow,
 } from "@sailo/design-native";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";
@@ -230,25 +230,37 @@ export default function Insights() {
         <Banner tone="info" message={a.dashboard.rangeClamped} testID="range-clamped" />
       ) : null}
 
-      <Card padding="lg">
-        <View style={styles.stats}>
-          <Stat
-            label={a.dashboard.netRevenue}
-            value={formatMoney(numbers?.netRevenueCents ?? 0, currency, locale)}
-            loading={loading}
-          />
-          <Stat
-            label={a.dashboard.orders}
-            value={count(numbers?.totalOrders ?? 0, locale)}
-            loading={loading}
-          />
-          <Stat
-            label={a.dashboard.visits}
-            value={count(numbers?.visitsInRange ?? 0, locale)}
-            loading={loading}
-          />
-        </View>
-      </Card>
+      {/*
+        A `Section`, matching Home. The three numbers were in a `Card`, which
+        made this screen a stack of three identically-weighted surfaces — stat
+        card, chart card, chart card — with nothing saying which was the summary
+        and which were the detail. On the page they read as the summary they
+        are, and the two charts below keep their cards.
+
+        `StatRow` rather than a hand-built flex row, so the figures wrap on a
+        narrow phone instead of truncating the number the tile exists to show.
+      */}
+      <Section>
+        <StatRow
+          stats={[
+            {
+              label: a.dashboard.netRevenue,
+              value: formatMoney(numbers?.netRevenueCents ?? 0, currency, locale),
+              loading,
+            },
+            {
+              label: a.dashboard.orders,
+              value: count(numbers?.totalOrders ?? 0, locale),
+              loading,
+            },
+            {
+              label: a.dashboard.visits,
+              value: count(numbers?.visitsInRange ?? 0, locale),
+              loading,
+            },
+          ]}
+        />
+      </Section>
 
       {/*
         The card no longer carries a heading of its own. `Chart` has one — with
@@ -348,6 +360,7 @@ export default function Insights() {
             <ListRow
               key={row.key}
               title={row.key}
+              valueTone="strong"
               value={count(row.count, locale)}
               trailing="none"
             />
@@ -361,6 +374,7 @@ export default function Insights() {
             <ListRow
               key={row.key}
               title={row.key}
+              valueTone="strong"
               value={count(row.count, locale)}
               trailing="none"
             />
@@ -408,6 +422,3 @@ function count(value: number, locale: string): string {
   }
 }
 
-const styles = StyleSheet.create({
-  stats: { flexDirection: "row", gap: 12 },
-});

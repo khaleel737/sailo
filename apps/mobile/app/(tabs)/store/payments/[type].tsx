@@ -7,10 +7,10 @@ import { interpolate } from "@sailo/i18n/native";
 import {
   Banner,
   Button,
-  Card,
   ErrorState,
   GroupedList,
   Screen,
+  Section,
   Skeleton,
   Switch,
   Text,
@@ -138,19 +138,51 @@ export default function RailSettings() {
   }
 
   return (
-    <Screen testID={`rail-${rail.type}`}>
+    <Screen
+      /*
+       * The save is pinned, and this screen is why `Screen` grew a footer.
+       *
+       * It is a form with two text fields: tapping either raises the keyboard
+       * over the bottom half of the page, and the button that commits the edit
+       * was the last thing in the scroll — so the seller's move was to dismiss
+       * the keyboard, scroll, and only then save. In the footer it rides the
+       * keyboard's own frame (`keyboard.ts`), so it is above the thumb that is
+       * still typing.
+       */
+      footer={
+        <Button
+          label={a.common.save}
+          variant="primary"
+          size="lg"
+          fullWidth
+          loading={save.isPending}
+          onPress={() =>
+            save.mutate({
+              type: rail.type,
+              config,
+              isEnabled,
+              label: label.trim() || null,
+            })
+          }
+        />
+      }
+      testID={`rail-${rail.type}`}
+    >
       {/* The rail's own name, once it is known. Declared here rather than in
           the stack layout so the header does not flash a placeholder before
           the query lands. */}
       <Stack.Screen options={{ title: rail.name }} />
 
-      <Card padding="lg">
-        {/* English in every locale, from `PAYMENT_METHOD_DEFS` — the same
-            string the web admin renders. See the note in `index.tsx`. */}
-        <Text variant="callout" tone="muted">
-          {rail.description}
-        </Text>
-      </Card>
+      {/*
+        The description reads on the page, not inside a card.
+        A `Card` around a single paragraph of explanatory prose is a border
+        drawn around a sentence — it says "this is one thing, raised above the
+        page" about something that is neither. This screen had three of them,
+        which is how it came to look like a stack of empty boxes.
+      */}
+      <Text variant="callout" tone="muted">
+        {rail.description}
+      </Text>
 
       {/*
         The currency refusal, stated before the form rather than after a failed
@@ -176,7 +208,11 @@ export default function RailSettings() {
       ) : null}
 
       {rail.fields.length > 0 ? (
-        <Card padding="lg">
+        /* A `Section`, not a `Card`. Every `TextField` already draws its own
+           border and its own label; a card around a column of them is a
+           surface inside a surface, and it insets the fields from the page by
+           a different amount than everything else on the screen. */
+        <Section>
           {rail.fields.map((field) => (
             <TextField
               key={field.key}
@@ -191,10 +227,12 @@ export default function RailSettings() {
               error={missing.includes(field.key) ? a.payments.fillInFirst : undefined}
             />
           ))}
-        </Card>
+        </Section>
       ) : null}
 
-      <Card padding="lg">
+      {/* Same again: a field draws its own edge, so a card around one is two
+          borders and two insets for a single input. */}
+      <Section>
         <TextField
           label={a.payments.buttonText}
           hint={interpolate(a.payments.buttonTextHint, { name: rail.name })}
@@ -202,7 +240,7 @@ export default function RailSettings() {
           value={label}
           onChangeText={(value) => setDraft({ config, label: value })}
         />
-      </Card>
+      </Section>
 
       <GroupedList>
         <Switch
@@ -217,19 +255,6 @@ export default function RailSettings() {
         />
       </GroupedList>
 
-      <Button
-        label={a.common.save}
-        onPress={() =>
-          save.mutate({
-            type: rail.type,
-            config,
-            isEnabled,
-            label: label.trim() || null,
-          })
-        }
-        loading={save.isPending}
-        fullWidth
-      />
     </Screen>
   );
 }

@@ -41,7 +41,7 @@ export function ShopFooter({
       {affiliatesLive ? (
         <Link
           href={`/${shop.handle}/affiliate`}
-          className="surface-card inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition hover:opacity-70"
+          className="surface-card inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium pointer-coarse:min-h-11 transition hover:opacity-70"
         >
           <Gift className="size-3.5" />
           {interpolate(t.shop.earnBySharing, {
@@ -59,6 +59,13 @@ export function ShopFooter({
             { href: "/terms", label: m.footer.terms },
             { href: "/refunds", label: m.footer.refunds },
             { href: "/gdpr", label: m.footer.gdpr },
+            /*
+             * Here as well as on the marketing footer, because this is the
+             * side of the product that asks for an email address. A buyer
+             * handing one to the subscribe card is exactly the reader the
+             * policy is written for.
+             */
+            { href: "/anti-spam", label: m.footer.antiSpam },
           ].map((doc) => (
             <li key={doc.href}>
               <Link

@@ -33,7 +33,16 @@ export default function SettingsLayout() {
           way to change the card behind it. */}
       <Stack.Screen name="billing" options={{ title: a.settings.tabBilling }} />
       <Stack.Screen name="members" options={{ title: a.members.title }} />
-      <Stack.Screen name="notifications" options={{ title: a.settings.notifications }} />
+      {/*
+        `tabNotifications` ("What to tell me about"), not `notifications`
+        ("Email notifications"). The screen carries this device's *push*
+        permission as well as the account's preferences, and titling the whole
+        thing "Email" named the half that is not the reason a seller opens it.
+      */}
+      <Stack.Screen
+        name="notifications"
+        options={{ title: a.settings.tabNotifications }}
+      />
     </Stack>
   );
 }

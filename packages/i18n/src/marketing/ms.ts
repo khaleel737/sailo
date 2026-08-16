@@ -192,6 +192,7 @@ export const marketingMs: MarketingDictionary = {
     terms: "Terma",
     refunds: "Pemulangan wang",
     gdpr: "GDPR",
+    antiSpam: "Anti-spam",
   },
 
   seo: {

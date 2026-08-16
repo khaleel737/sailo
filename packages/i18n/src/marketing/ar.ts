@@ -192,6 +192,7 @@ export const marketingAr: MarketingDictionary = {
     terms: "الشروط",
     refunds: "الاسترجاع",
     gdpr: "GDPR",
+    antiSpam: "مكافحة السبام",
   },
 
   seo: {

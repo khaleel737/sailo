@@ -137,7 +137,11 @@ export function OptionChips({
                      * and the buy button.
                      */
                     tabIndex={value === tabStop ? 0 : -1}
-                    className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
+                    /* 36px. These pick the size, the colour, the number of
+                       seats — which is to say they pick the thing being
+                       bought, and they are drawn in a row so a miss lands on
+                       the neighbouring variant rather than on nothing. */
+                    className={`rounded-xl px-3 py-2 text-sm font-medium transition pointer-coarse:min-h-11 ${
                       active ? "accent-bg" : "surface-elevated hover:opacity-70"
                     } ${
                       !anywhere

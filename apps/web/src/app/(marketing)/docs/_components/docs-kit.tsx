@@ -174,7 +174,7 @@ function DocsTabs({ page }: { page: DocsPageKey }) {
           </span>
         ) : (
           <a
-            className="rounded-full bg-ink-100 px-3 py-1 text-xs font-medium text-ink-900 hover:bg-ink-200"
+            className="rounded-full bg-ink-100 px-3 py-1 text-xs font-medium text-ink-900 pointer-coarse:inline-flex pointer-coarse:min-h-11 pointer-coarse:items-center hover:bg-ink-200"
             href={docsPath(tab.key)}
             key={tab.key}
           >

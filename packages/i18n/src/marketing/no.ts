@@ -192,6 +192,7 @@ export const marketingNo: MarketingDictionary = {
     terms: "Vilkår",
     refunds: "Refusjoner",
     gdpr: "GDPR",
+    antiSpam: "Antispam",
   },
 
   seo: {

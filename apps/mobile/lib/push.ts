@@ -76,9 +76,23 @@ export type PushPermission =
    * Settings app. The distinction matters: showing an in-app "Allow" button
    * that silently does nothing is worse than sending them somewhere real.
    */
-  | "blocked"
-  /** A simulator, or a device with no push support. No token exists to fetch. */
-  | "unsupported";
+  | "blocked";
+
+/**
+ * Whether this build can be issued a push token at all.
+ *
+ * Separate from the permission, and that separation is a fix. `unsupported`
+ * used to be a *permission* value returned by checking `Device.isDevice` — so
+ * the function that claimed to report "what has the OS allowed" actually
+ * reported "what hardware is this", and on a simulator it answered a question
+ * nobody asked. The two are genuinely different: a simulator **can display a
+ * notification** and cannot **mint an APNs token**, and conflating them meant
+ * the app never even asked for permission there, which is why the notification
+ * UI could not be exercised anywhere except on a phone.
+ */
+export function pushSupported(): boolean {
+  return Device.isDevice;
+}
 
 /**
  * The keychain, treated as advisory.
@@ -118,12 +132,11 @@ async function writeOptOut(value: boolean): Promise<void> {
 /** What the OS says today, without prompting anyone. */
 export async function currentPermission(): Promise<PushPermission> {
   /*
-   * A simulator can display a local notification but can never be issued a push
-   * token, and `getExpoPushTokenAsync` fails there with an error that reads
-   * like a misconfiguration. Checking first is what keeps that out of the logs
-   * and out of the seller's face.
+   * No hardware check here any more — see `pushSupported`. This answers only
+   * "what has the OS allowed", which a simulator can answer perfectly well.
+   * Whether a *token* can be minted is `registerDevice`'s problem, and it is
+   * the one place `Device.isDevice` belongs.
    */
-  if (!Device.isDevice) return "unsupported";
   try {
     const { status, canAskAgain } = await Notifications.getPermissionsAsync();
     if (status === "granted") return "granted";
@@ -220,18 +233,46 @@ async function deviceToken(): Promise<string | null> {
  * shop. The settings toggle always asks, because there the seller reached for
  * it deliberately.
  */
+export type PushRegistration = {
+  /** What the OS says about showing notifications. */
+  permission: PushPermission;
+  /** False on a simulator — no APNs token exists to register. */
+  supported: boolean;
+  /**
+   * Whether the token actually reached the server.
+   *
+   * **This field was missing, and its absence was a lie told to the seller.**
+   * This function used to return the *permission* alone, and `usePushSettings`
+   * drove its switch off that — so "allow the prompt, then fail to mint a token
+   * or fail to reach the server" ended with `granted`, a switch that turned
+   * **on**, and a device registered nowhere. The seller believed they would be
+   * told about their next order, and they would not have been. Silently.
+   *
+   * Permission is what the OS allows. Registration is what happened. A switch
+   * that reports the first while meaning the second can only ever be wrong in
+   * the direction that costs somebody a sale.
+   */
+  registered: boolean;
+};
+
 export async function registerDevice(opts?: {
   ask?: boolean;
-}): Promise<PushPermission> {
+}): Promise<PushRegistration> {
+  const supported = pushSupported();
   const permission = opts?.ask
     ? await requestPermission()
     : await currentPermission();
-  if (permission !== "granted") return permission;
+
+  /* Asked for anyway, even on a simulator: granting it is what lets a notification
+     be *displayed* there, which is the only way the banner, the tap-through and
+     the routing get exercised outside a physical device. */
+  if (!supported) return { permission, supported, registered: false };
+  if (permission !== "granted") return { permission, supported, registered: false };
 
   await ensureAndroidChannel();
 
   const token = await deviceToken();
-  if (!token) return permission;
+  if (!token) return { permission, supported, registered: false };
 
   try {
     await api.push.register.mutate({
@@ -245,10 +286,12 @@ export async function registerDevice(opts?: {
     await remember(TOKEN_KEY, token);
   } catch (error) {
     // The seller is signed in and allowed; this is the network. Next launch
-    // re-registers, and the upsert on the server makes that free.
+    // re-registers, and the upsert on the server makes that free — but this
+    // attempt did *not* register, and the caller has to be told so.
     captureError(error, { scope: "mobile:push:register" });
+    return { permission, supported, registered: false };
   }
-  return permission;
+  return { permission, supported, registered: true };
 }
 
 /**
@@ -320,19 +363,91 @@ export function usePushRegistration(): void {
   const userId = session?.user?.id ?? null;
   /*
    * One attempt per signed-in user. Without this the effect re-runs on every
-   * session refresh, and on iOS a second `requestPermissionsAsync` while the
-   * first prompt is still up resolves to the wrong answer.
+   * session refresh, and a second registration mid-flight races the first.
    */
-  const asked = useRef<string | null>(null);
+  const done = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!userId || asked.current === userId) return;
-    asked.current = userId;
+    if (!userId || done.current === userId) return;
+    done.current = userId;
     void (async () => {
       if (await readOptOut()) return;
-      await registerDevice({ ask: true });
+      /*
+       * `ask: false`. THIS USED TO PROMPT, AND THAT WAS THE BUG.
+       *
+       * The first launch after signing in fired the system permission dialog
+       * with nothing on screen explaining it — a seller who had just finished
+       * creating an account got an iOS alert asking to send them notifications,
+       * about a shop with no orders in it, before they had seen the app.
+       *
+       * **iOS gives exactly one chance.** `requestPermissionsAsync` shows the
+       * system alert once per install; after a "Don't Allow" it resolves
+       * immediately with `canAskAgain: false` for ever, and the only route back
+       * is the system Settings app. So the cost of asking at the wrong moment
+       * is not a lower opt-in rate — it is a seller who can never be told an
+       * order arrived, permanently, from one tap on their first minute.
+       *
+       * Registering without asking still does the useful half: a seller who has
+       * already allowed notifications — a reinstall, a second device, anyone who
+       * granted it from Settings — gets their token registered silently on every
+       * launch, which is what keeps the row fresh.
+       *
+       * The *asking* moved to where there is room to say why: `usePushPrimer`
+       * below, which Home offers as a banner the seller can decline without
+       * spending the one prompt.
+       */
+      await registerDevice({ ask: false });
     })();
   }, [userId]);
+}
+
+/**
+ * Whether to offer notifications, and the way to accept.
+ *
+ * The other half of the change above. iOS's one-shot prompt has to be spent on
+ * a seller who has already said they want this, so something in the app has to
+ * ask first — in the app's own words, with a decline that costs nothing.
+ *
+ * `askable` is the only state that offers: `granted` needs nothing, `blocked`
+ * cannot be fixed from here (the banner would be a button that does nothing),
+ * and `unsupported` is a simulator or a device with no push service.
+ *
+ * A decline is remembered as the same opt-out a sign-out writes, so the offer
+ * does not reappear on the next launch. It is not permanent — the Settings
+ * toggle clears it, which is the deliberate reach that should always work.
+ */
+export function usePushPrimer(): {
+  /** True when there is a prompt worth making. */
+  offer: boolean;
+  /** Spend the one system prompt. */
+  accept: () => Promise<void>;
+  /** Not now — remembered, and undone by the Settings toggle. */
+  decline: () => Promise<void>;
+} {
+  const [offer, setOffer] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      const [permission, out] = await Promise.all([currentPermission(), readOptOut()]);
+      if (alive) setOffer(permission === "askable" && !out);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const accept = useCallback(async () => {
+    setOffer(false);
+    await registerDevice({ ask: true });
+  }, []);
+
+  const decline = useCallback(async () => {
+    setOffer(false);
+    await writeOptOut(true);
+  }, []);
+
+  return { offer, accept, decline };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -460,17 +575,51 @@ export function usePushSettings(): {
   busy: boolean;
   /** True when the seller must be sent to the system Settings app. */
   blocked: boolean;
+  /**
+   * True when this build cannot receive a push at all — a simulator, or a
+   * device with no push service. The switch has to be *inert* here rather than
+   * live: it was live, so a tap moved it, the registration returned
+   * `unsupported`, and it snapped back with nothing said. A control that
+   * refuses silently reads as a broken app.
+   */
+  unsupported: boolean;
+  /**
+   * True when the OS allowed it and the registration still did not land.
+   *
+   * Distinct from every other state, and the one that used to be invisible:
+   * permission `granted`, token null or the write refused, switch **on**, no
+   * device registered. The seller has to be told, because nothing else on the
+   * phone will tell them.
+   */
+  failed: boolean;
   setEnabled: (next: boolean) => Promise<void>;
   refresh: () => Promise<void>;
 } {
   const [permission, setPermission] = useState<PushPermission>("askable");
   const [optedOut, setOptedOutState] = useState(true);
   const [busy, setBusy] = useState(true);
+  /*
+   * Whether the last attempt actually put a token on the server.
+   *
+   * Seeded from the token this device remembers rather than from the
+   * permission: a launch that has not re-registered yet has a stored token and
+   * a `granted` permission, and that pair *is* a registered device. Asking the
+   * permission alone would show the switch off until the first refresh.
+   */
+  const [registered, setRegistered] = useState(false);
+  /* Hardware, not permission — see `pushSupported`. Read once: it cannot change
+     for the life of the process. */
+  const [supported] = useState(pushSupported);
 
   const refresh = useCallback(async () => {
-    const [next, out] = await Promise.all([currentPermission(), readOptOut()]);
+    const [next, out, token] = await Promise.all([
+      currentPermission(),
+      readOptOut(),
+      recall(TOKEN_KEY),
+    ]);
     setPermission(next);
     setOptedOutState(out);
+    setRegistered(supported && next === "granted" && Boolean(token));
     setBusy(false);
   }, []);
 
@@ -483,10 +632,18 @@ export function usePushSettings(): {
       setBusy(true);
       try {
         if (next) {
-          setPermission(await registerDevice({ ask: true }));
-          setOptedOutState(false);
+          const result = await registerDevice({ ask: true });
+          setPermission(result.permission);
+          setRegistered(result.registered);
+          /*
+           * Only clear the opt-out if it actually worked. Recording "they want
+           * this" after a failed attempt is how the next launch silently
+           * re-asks for something that cannot succeed.
+           */
+          if (result.registered) setOptedOutState(false);
         } else {
           await forgetDevice({ stayOff: true });
+          setRegistered(false);
           setOptedOutState(true);
         }
       } finally {
@@ -497,10 +654,16 @@ export function usePushSettings(): {
   );
 
   return {
-    enabled: permission === "granted" && !optedOut,
+    /* Registered, not merely permitted — see `PushRegistration.registered`. */
+    enabled: registered && !optedOut,
     permission,
     busy,
-    blocked: permission === "blocked" || permission === "unsupported",
+    unsupported: !supported,
+    failed: supported && permission === "granted" && !registered && !optedOut,
+    /* Only a genuine refusal sends the seller to the system Settings app. A
+       simulator is `unsupported`, which is a different sentence and a different
+       control state. */
+    blocked: permission === "blocked",
     setEnabled,
     refresh,
   };

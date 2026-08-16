@@ -30,20 +30,27 @@ export const marketingEn = {
   },
 
   hero: {
-    badge: "Free to start, free to stay",
+    /* The category we are claiming, said plainly, above the argument for it. */
+    badge: "The one-link shop",
     /** `{highlight}` is emphasised in place, so it can land anywhere a language needs it. */
     /*
-     * The headline names the job, not the mechanism.
+     * The headline borrows the reader's existing category and spends its whole
+     * length on the delta.
      *
-     * "Your whole shop, at one link" is what Linktree, Beacons and Stan all
-     * say, so it argued we were one of them — and it shared no vocabulary with
-     * the title tag, which is how Google ends up rewriting a title. This one
-     * matches `seo.ogTitle` word for word and the body carries the phrase the
-     * title tag is aiming at.
+     * "Stop retyping orders from your DMs" led with the seller's admin, which
+     * sells relief rather than sales, has no search demand behind it, and
+     * sizes us like the order-form tools — OrderPage, Store.link, Quickzu,
+     * onwhats.app — when we carry variants, stock, bookings, files and card.
+     *
+     * Claiming "one link" on its own is no better: it is Linktree's, Beacons'
+     * and Stan's sentence too. So the phrase is demoted to `badge`, where a
+     * category label belongs, and the headline names the one thing none of
+     * them can do. `seo.ogTitle` repeats it word for word, and `seo.title`
+     * shares its vocabulary — which is what stops Google rewriting a title.
      */
-    title: "Stop retyping orders from your {highlight}.",
-    titleHighlight: "DMs",
-    body: "You're already taking orders in your messages. Sailo turns that into a real shop — photos, prices, options and stock behind one link, with no website to build. Every order still lands in the chat you're answering anyway, and it arrives already written out.",
+    title: "Your link in bio, but it {highlight}.",
+    titleHighlight: "takes the orders",
+    body: "One link in your bio, and everything you sell sits behind it — photos, prices, options, stock. Buyers browse and buy without being sent anywhere else, and every order arrives already written out, in the chat you're answering anyway. No website to build, and no commission except on card.",
     ctaPrimary: "Create your shop — free",
     ctaSecondary: "Open a live shop",
     proof1: "Live in under a minute",
@@ -220,28 +227,33 @@ export const marketingEn = {
     terms: "Terms",
     refunds: "Refunds",
     gdpr: "GDPR",
+    antiSpam: "Anti-spam",
   },
 
   /*
-   * Written for the search a seller actually makes, which is never "link in
-   * bio". That phrase is Linktree's head term — unwinnable on a domain with no
-   * authority — and it files us under creator tools, beside products that
-   * don't ship a catalogue and aren't who we lose deals to.
+   * `title` used to aim at "take orders online without a website". The phrase
+   * describes the job correctly, but its results page is listicles — Jotform,
+   * PaymentForm, ChowNow, Chowly — because the intent behind it is someone
+   * reading up, not someone choosing. A homepage does not outrank a listicle
+   * on a listicle query; a blog post does. That query is now the blog's job.
    *
-   * The job is: they are taking orders in their DMs and want to stop. So the
-   * title leads with that job rather than with the mechanism, and the
-   * description carries the two things that decide it — the order arriving
-   * written out, and nobody taking a cut.
+   * What the homepage can win is the commercial-intent search next to it:
+   * someone shopping for a link-in-bio tool who has actually outgrown one.
+   * The earlier worry about that phrase was that it files us under creator
+   * tools — true if it were the page's only topical signal, but the copy
+   * around it is stock, variants, checkout and rails, and this is the highest
+   * intent traffic on offer. It is also the deal we win: FAQ q5 is already
+   * "I have a Linktree, why swap?".
    *
    * `title` is keyword-first rather than brand-first on purpose: brand-first
    * wins when people already search your name, and nobody searches ours yet.
    */
   seo: {
-    title: "Take orders online without a website — Sailo",
+    title: "Link in bio shop — sell without a website | Sailo",
     description:
-      "Turn your Instagram into a real shop: photos, prices, options, stock. Orders arrive written out. No commission on WhatsApp, Venmo, PayPal, bank or cash.",
-    /* Social, not search. Led by the pain, because a shared card is scrolled past, not queried. */
-    ogTitle: "Stop retyping orders from your DMs",
+      "One link, and a real shop behind it: photos, prices, options, stock and checkout. Orders arrive already written out. Free, with no commission except on card.",
+    /* Social, not search — so it repeats the headline rather than a keyword. */
+    ogTitle: "Your link in bio, but it takes the orders",
     ogDescription:
       "A real shop behind one link — photos, prices, stock and checkout. Orders arrive already written out, and no marketplace takes a cut of the customers you found yourself.",
   },

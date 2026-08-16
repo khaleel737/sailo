@@ -192,6 +192,7 @@ export const marketingSv: MarketingDictionary = {
     terms: "Villkor",
     refunds: "Återbetalningar",
     gdpr: "GDPR",
+    antiSpam: "Antispam",
   },
 
   seo: {

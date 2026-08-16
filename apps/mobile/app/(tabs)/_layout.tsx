@@ -5,7 +5,14 @@ import { Redirect } from "expo-router";
 import { Icon, Label, NativeTabs, VectorIcon } from "expo-router/unstable-native-tabs";
 import { authClient } from "../../lib/auth";
 import { useNotificationRouting } from "../../lib/push";
-import { Screen, Skeleton, useTheme } from "@sailo/design-native";
+import {
+  BottomChrome,
+  Screen,
+  Skeleton,
+  TAB_BAR_HEIGHT,
+  useLayout,
+  useTheme,
+} from "@sailo/design-native";
 import { useT } from "../../lib/i18n";
 
 /**
@@ -38,6 +45,27 @@ import { useT } from "../../lib/i18n";
 export default function TabsLayout() {
   const { a } = useT();
   const { colors } = useTheme();
+  /*
+   * Where the tab bar actually is, which is not the same on every device.
+   *
+   * `TAB_BAR_HEIGHT` describes iOS 26's floating capsule at the *bottom* of a
+   * phone, and every screen under these tabs reserves that much room so its
+   * last row and its Save button clear it.
+   *
+   * On a regular-width iPad the bar is not there. `react-native-screens`
+   * renders a plain `UITabBarController`, and iPadOS draws that as a segmented
+   * control in the *navigation bar at the top* — verified on an iPad Pro 11",
+   * where the five tabs sit in the header and the bottom edge is empty. So the
+   * reservation becomes a band of dead space at the foot of every tablet
+   * screen, with any pinned footer floating 88pt above the edge it is supposed
+   * to sit on.
+   *
+   * `regular` is the right question to ask because it is the same question
+   * UIKit asks: the bar returns to the bottom the moment the window goes
+   * horizontally compact, which on an iPad means Slide Over and a narrow split
+   * — and `useLayout` flips back to `compact` at exactly that point.
+   */
+  const { regular } = useLayout();
   const { data: session, isPending } = authClient.useSession();
 
   /*
@@ -94,86 +122,98 @@ export default function TabsLayout() {
      * the theme rather than hard-coded, so dark mode gets the lifted accent —
      * `brand-700` is a deep green that reads as near-black on a dark tab bar.
      */
-    <NativeTabs tintColor={colors.accent}>
-      {/*
-        SF Symbols on iOS, and — new here — real icons on Android.
+    /*
+     * One declaration, for every screen under the tabs.
+     *
+     * iOS 26's tab bar is a capsule floating *over* the content, so anything a
+     * screen pins to the bottom edge — a Save button, an Add button — is drawn
+     * underneath it. Nine screens had exactly that. `Screen` cannot know: the
+     * same component serves the auth flow, which has no tab bar and must leave
+     * no gap. So the knowledge lives here, in the one file that owns the tab
+     * bar, and context carries it to every screen every stack below renders.
+     */
+    <BottomChrome height={regular ? 0 : TAB_BAR_HEIGHT}>
+      <NativeTabs tintColor={colors.accent}>
+        {/*
+          SF Symbols on iOS, and — new here — real icons on Android.
 
-        This used to be `sf` only, with a comment calling the Android gap "real
-        and deliberate": the icon-name-to-glyph mapping belongs to
-        `@sailo/design-native`, and picking an Android icon family from a layout
-        file would have committed the product to it. So Android rendered five
-        tabs with labels and no icons at all, which on Material is not a style
-        choice — it is a bottom bar that looks unfinished.
+          This used to be `sf` only, with a comment calling the Android gap "real
+          and deliberate": the icon-name-to-glyph mapping belongs to
+          `@sailo/design-native`, and picking an Android icon family from a layout
+          file would have committed the product to it. So Android rendered five
+          tabs with labels and no icons at all, which on Material is not a style
+          choice — it is a bottom bar that looks unfinished.
 
-        `androidSrc` closes it without making that commitment. expo-router
-        rasterises a `VectorIcon` into a drawable at mount, and the family it
-        rasterises is **Ionicons — the same one `Icon` in the design system
-        already draws from**, so there is no second icon set and no second
-        optical weight. The names below are the exact values that component's
-        own `GLYPHS` table maps `home`, `orders`, `store`, `insights` and
-        `settings` to.
+          `androidSrc` closes it without making that commitment. expo-router
+          rasterises a `VectorIcon` into a drawable at mount, and the family it
+          rasterises is **Ionicons — the same one `Icon` in the design system
+          already draws from**, so there is no second icon set and no second
+          optical weight. The names below are the exact values that component's
+          own `GLYPHS` table maps `home`, `orders`, `store`, `insights` and
+          `settings` to.
 
-        The filled variant on selection is the convention on both platforms —
-        an outline that stays an outline when active reads as nothing having
-        happened.
+          The filled variant on selection is the convention on both platforms —
+          an outline that stays an outline when active reads as nothing having
+          happened.
 
-        The labels come from `a.shell.*` — the section that holds the app's own
-        chrome, as opposed to any one screen's content.
-      */}
-      <NativeTabs.Trigger name="(home)">
-        <Icon
-          sf={{ default: "house", selected: "house.fill" }}
-          androidSrc={{
-            default: <VectorIcon family={Ionicons} name="home-outline" />,
-            selected: <VectorIcon family={Ionicons} name="home" />,
-          }}
-        />
-        <Label>{a.shell.tabHome}</Label>
-      </NativeTabs.Trigger>
+          The labels come from `a.shell.*` — the section that holds the app's own
+          chrome, as opposed to any one screen's content.
+        */}
+        <NativeTabs.Trigger name="(home)">
+          <Icon
+            sf={{ default: "house", selected: "house.fill" }}
+            androidSrc={{
+              default: <VectorIcon family={Ionicons} name="home-outline" />,
+              selected: <VectorIcon family={Ionicons} name="home" />,
+            }}
+          />
+          <Label>{a.shell.tabHome}</Label>
+        </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="orders">
-        <Icon
-          sf={{ default: "bag", selected: "bag.fill" }}
-          androidSrc={{
-            default: <VectorIcon family={Ionicons} name="receipt-outline" />,
-            selected: <VectorIcon family={Ionicons} name="receipt" />,
-          }}
-        />
-        <Label>{a.shell.tabOrders}</Label>
-      </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="orders">
+          <Icon
+            sf={{ default: "bag", selected: "bag.fill" }}
+            androidSrc={{
+              default: <VectorIcon family={Ionicons} name="receipt-outline" />,
+              selected: <VectorIcon family={Ionicons} name="receipt" />,
+            }}
+          />
+          <Label>{a.shell.tabOrders}</Label>
+        </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="store">
-        <Icon
-          sf={{ default: "square.grid.2x2", selected: "square.grid.2x2.fill" }}
-          androidSrc={{
-            default: <VectorIcon family={Ionicons} name="grid-outline" />,
-            selected: <VectorIcon family={Ionicons} name="grid" />,
-          }}
-        />
-        <Label>{a.shell.tabStore}</Label>
-      </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="store">
+          <Icon
+            sf={{ default: "square.grid.2x2", selected: "square.grid.2x2.fill" }}
+            androidSrc={{
+              default: <VectorIcon family={Ionicons} name="grid-outline" />,
+              selected: <VectorIcon family={Ionicons} name="grid" />,
+            }}
+          />
+          <Label>{a.shell.tabStore}</Label>
+        </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="insights">
-        <Icon
-          sf={{ default: "chart.bar", selected: "chart.bar.fill" }}
-          androidSrc={{
-            default: <VectorIcon family={Ionicons} name="stats-chart-outline" />,
-            selected: <VectorIcon family={Ionicons} name="stats-chart" />,
-          }}
-        />
-        <Label>{a.shell.tabInsights}</Label>
-      </NativeTabs.Trigger>
+        <NativeTabs.Trigger name="insights">
+          <Icon
+            sf={{ default: "chart.bar", selected: "chart.bar.fill" }}
+            androidSrc={{
+              default: <VectorIcon family={Ionicons} name="stats-chart-outline" />,
+              selected: <VectorIcon family={Ionicons} name="stats-chart" />,
+            }}
+          />
+          <Label>{a.shell.tabInsights}</Label>
+        </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="settings">
-        <Icon
-          sf={{ default: "gearshape", selected: "gearshape.fill" }}
-          androidSrc={{
-            default: <VectorIcon family={Ionicons} name="settings-outline" />,
-            selected: <VectorIcon family={Ionicons} name="settings" />,
-          }}
-        />
-        <Label>{a.shell.tabSettings}</Label>
-      </NativeTabs.Trigger>
-    </NativeTabs>
+        <NativeTabs.Trigger name="settings">
+          <Icon
+            sf={{ default: "gearshape", selected: "gearshape.fill" }}
+            androidSrc={{
+              default: <VectorIcon family={Ionicons} name="settings-outline" />,
+              selected: <VectorIcon family={Ionicons} name="settings" />,
+            }}
+          />
+          <Label>{a.shell.tabSettings}</Label>
+        </NativeTabs.Trigger>
+      </NativeTabs>
+    </BottomChrome>
   );
 }

@@ -1,5 +1,10 @@
-import { Animated, KeyboardAvoidingView, Platform, RefreshControl, ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Animated, Platform, RefreshControl, ScrollView, View } from "react-native";
+import Reanimated from "react-native-reanimated";
+import { useContext } from "react";
+import { SafeAreaInsetsContext } from "react-native-safe-area-context";
+import { useBottomChrome } from "./bottom-chrome";
+import { useKeyboardLift } from "./keyboard";
+import { useLayout } from "./layout";
 import { useEntrance } from "./motion";
 import { useTheme } from "./theme";
 import type { Space } from "./types";
@@ -106,8 +111,49 @@ export function Screen({
 }: ScreenProps) {
   const { colors, space } = useTheme();
   const entrance = useEntrance({ disabled: staticEntrance });
+  const lift = useKeyboardLift();
+  const { gutter, maxWidth } = useLayout();
+  /* What is already covering the bottom of the window — the floating tab bar,
+     or nothing. `bottom-chrome.tsx` says why `Screen` cannot work this out. */
+  const chrome = useBottomChrome();
+  /*
+   * The insets applied as *padding on the content*, not by a `SafeAreaView`
+   * wrapper — and that swap is the fix for three separate bugs.
+   *
+   * iOS gives a scroll view its content inset automatically when it can see one:
+   * that is what draws a large title, what leaves room for a translucent tab
+   * bar, and what keeps the last row of a list off the home indicator.
+   * `contentInsetAdjustmentBehavior="automatic"` asks for it. But the lookup
+   * walks the *native* view hierarchy for the scroll view a screen owns, and a
+   * `SafeAreaView` between the screen and the scroller was enough to lose it.
+   * The symptoms were the large title reserving space and drawing nothing, the
+   * search field on Orders sitting underneath a title that was drawn over it,
+   * and content running under the floating tab bar.
+   *
+   * So the scroller is the screen's own child now, and the safe area is
+   * arithmetic on the content container. It is also more correct: a wrapper
+   * insets the *viewport*, so a list scrolls to a stop above the home indicator
+   * instead of passing under it.
+   */
+  /* The context rather than `useSafeAreaInsets()`, which throws outright when
+     no provider is mounted above it — see the same note in `keyboard.ts`. A
+     screen rendered in a test, or outside the navigator, should lay out without
+     insets rather than take its subtree down. */
+  const insets = useContext(SafeAreaInsetsContext);
+  const top = edges.includes("top") ? (insets?.top ?? 0) : 0;
+  const bottom = edges.includes("bottom") ? (insets?.bottom ?? 0) : 0;
 
-  const pad = padding === "none" ? 0 : space[padding];
+  /*
+   * The side margin comes from the window, not from a constant.
+   *
+   * `padding="lg"` used to mean a flat 16pt everywhere — the same margin on a
+   * 320pt SE, where it is most of the remaining room, and on a 430pt Pro Max,
+   * where the content ends up further from the bezel than the type is tall.
+   * `useLayout` derives it. A caller that names a step explicitly still gets
+   * that step; the default is the one that adapts, because the default is what
+   * forty screens use.
+   */
+  const pad = padding === "none" ? 0 : padding === "lg" ? gutter : space[padding];
   const rhythm = gap === "none" ? 0 : space[gap];
 
   const content = (
@@ -159,10 +205,35 @@ export function Screen({
       style={{ flex: 1 }}
       contentContainerStyle={{
         padding: pad,
-        /* Room past the last element for a thumb and for the home indicator.
-           A list whose final row ends exactly at the bezel reads as cut off. */
-        paddingBottom: pad + space["2xl"],
+        paddingTop: pad + top,
+        /*
+         * Room past the last element, and the number is larger than it looks
+         * like it should be.
+         *
+         * iOS 26 draws the tab bar as a floating capsule *over* the content —
+         * that is the idiom, and content is supposed to pass under it. What
+         * `contentInsetAdjustmentBehavior` does not reliably contribute is the
+         * matching *scroll extent*, so the last row of every tab screen came to
+         * rest underneath the bar with no way to scroll it clear. Measured on a
+         * 852pt window the capsule occupies about 72 points including its
+         * margin; this clears it, plus a thumb's worth.
+         *
+         * On a screen that is not in a tab it is simply extra room at the end
+         * of a scroll, which costs nothing — it is below the last element and
+         * invisible unless somebody scrolls past everything.
+         */
+        paddingBottom: pad + bottom + chrome + space["2xl"],
         ...(center ? { flexGrow: 1 } : null),
+        /*
+         * The readable column, centred, once the window is wider than one.
+         *
+         * ~620pt is roughly 70 characters at the body size — the measure past
+         * which the eye loses the line it was on during the return sweep. It
+         * only ever engages on a tablet, in landscape, or in a Stage Manager
+         * window; on every phone in portrait `maxWidth` is `undefined` and this
+         * is two properties that do nothing.
+         */
+        ...(maxWidth ? { maxWidth, width: "100%" as const, alignSelf: "center" as const } : null),
       }}
       /* iOS: let the system inset for the navigation bar and the tab bar
          rather than measuring either of them here. */
@@ -194,34 +265,50 @@ export function Screen({
       {content}
     </ScrollView>
   ) : (
-    <View style={{ flex: 1, padding: pad }} testID={testID}>
+    <View
+      style={{
+        flex: 1,
+        padding: pad,
+        paddingTop: pad + top,
+        paddingBottom: pad + bottom,
+        ...(maxWidth ? { maxWidth, width: "100%" as const, alignSelf: "center" as const } : null),
+      }}
+      testID={testID}
+    >
       {content}
     </View>
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={edges}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      {body}
       {/*
-        Only wrapped when there is a footer, and that is deliberate rather than
-        cautious. `KeyboardAvoidingView` measures and re-lays-out its child on
-        every keyboard frame; on a plain scrolling screen iOS's
-        `automaticallyAdjustKeyboardInsets` already does the job on the compositor
-        and Android's `adjustResize` does it in the window manager, so wrapping
-        would be a third mechanism fighting two that work. A pinned footer is
-        the one case neither covers, because it lives outside the scroller.
+        The footer rides the keyboard rather than reacting to it.
+
+        This was a `KeyboardAvoidingView` with `behavior="padding"` and no
+        `keyboardVerticalOffset`, which is wrong by the height of the navigation
+        bar on every screen in a stack — the view measures from the top of the
+        window, the content starts below the header, and the difference is 44 to
+        96 points of dead page shoved under the form. It was also a frame or two
+        late, because it responds to `keyboardWillShow` and then runs *its own*
+        animation to catch up with one the system is already running.
+
+        `useKeyboardLift` reads the keyboard's live height on the UI thread and
+        translates by it, so there is no duration to pick and no curve to match.
+        `keyboard.ts` carries the rest.
+
+        The scroller keeps its own inset handling — `automaticallyAdjustKeyboardInsets`
+        on iOS, the window resize on Android — because those move the *content*,
+        which is a different job from moving the bar.
       */}
       {footer ? (
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-        >
-          {body}
-          <FooterBar padding={pad}>{footer}</FooterBar>
-        </KeyboardAvoidingView>
-      ) : (
-        body
-      )}
-    </SafeAreaView>
+        <Reanimated.View style={lift}>
+          <FooterBar padding={pad} bottom={bottom + chrome} maxWidth={maxWidth}>
+            {footer}
+          </FooterBar>
+        </Reanimated.View>
+      ) : null}
+    </View>
   );
 }
 
@@ -232,7 +319,28 @@ export function Screen({
  * underneath reads as going *under* the bar rather than as ending at it. It is
  * the same separation a navigation bar gets, upside down.
  */
-function FooterBar({ children, padding }: { children: React.ReactNode; padding: number }) {
+function FooterBar({
+  children,
+  padding,
+  bottom,
+  maxWidth,
+}: {
+  children: React.ReactNode;
+  padding: number;
+  /**
+   * What the bar has to clear below it — the home-indicator inset, plus any
+   * floating chrome. Without the second half the footer draws *underneath* the
+   * tab bar, which is where nine screens' Save buttons were.
+   */
+  bottom: number;
+  /**
+   * The readable column the content above is using, when there is one.
+   *
+   * The *bar* ignores it and the *buttons inside it* do not, which is the
+   * whole point — see below.
+   */
+  maxWidth: number | undefined;
+}) {
   const { colors, space } = useTheme();
 
   return (
@@ -240,14 +348,42 @@ function FooterBar({ children, padding }: { children: React.ReactNode; padding: 
       style={{
         paddingHorizontal: padding,
         paddingTop: space.md,
-        paddingBottom: space.md,
-        gap: space.sm,
+        paddingBottom: space.md + bottom,
         borderTopWidth: 1,
         borderTopColor: colors.borderSubtle,
         backgroundColor: colors.background,
       }}
     >
-      {children}
+      {/*
+        The bar spans the window; what sits in it does not.
+
+        `Screen` caps its content at a readable column and centres it once the
+        window is wider than one. The footer used to be outside that entirely —
+        it is a sibling of the scroller, not a child — so on a tablet fifteen
+        screens drew a 620pt column of form fields above a Save button stretched
+        across the full 1366pt of the window, ending nowhere near the fields it
+        saves.
+
+        Capping the bar itself would fix the alignment and break something else:
+        a toolbar is chrome, and chrome that stops short of the window edges
+        reads as a floating card with a hairline on top of it. Both platforms
+        span the bar and lay its contents out in the readable width, so that is
+        what this does — the separator still runs edge to edge, and the button
+        lines up with the last field above it.
+
+        `gap` moved in here with the children, because it belongs to the row of
+        actions rather than to the bar.
+      */}
+      <View
+        style={{
+          gap: space.sm,
+          ...(maxWidth
+            ? { maxWidth, width: "100%" as const, alignSelf: "center" as const }
+            : null),
+        }}
+      >
+        {children}
+      </View>
     </View>
   );
 }

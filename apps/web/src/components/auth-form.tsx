@@ -74,8 +74,34 @@ export function AuthForm({
     router.refresh();
   }
 
+  /*
+   * `method="post"` on a form whose submit is handled in JavaScript, and it is
+   * not redundant — it is the only thing standing between a seller and their
+   * password in their address bar.
+   *
+   * `onSubmit` calls `preventDefault`, so the browser's own submission never
+   * runs *once this component has hydrated*. Before that it is plain HTML, and
+   * a form with no `method` submits with the HTML default, which is GET. So a
+   * tap on Sign in during the hydration window navigates to
+   * `/login?email=...&password=...`: the password goes into the URL bar, into
+   * browser history, into the referrer of the next request, and into any access
+   * log in front of this. The page then re-renders with the fields empty and no
+   * error, so the seller's own reading of it is "it didn't work", and they try
+   * again.
+   *
+   * This is not theoretical and it is not rare on the devices this panel is
+   * used from — it is exactly what happened the first time the responsive suite
+   * drove this form while the dev server was busy, which is a fair imitation of
+   * a phone on a slow connection. `method="post"` turns that worst case into a
+   * POST the route does not answer: still a failed sign-in, with the credential
+   * in the body where it belongs.
+   *
+   * The same one-word fix is on the other six client-side forms in this app
+   * that carry a secret — HQ login, the partner sign-in, both password-reset
+   * forms, the two-factor code, and the checkout panel.
+   */
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form method="post" onSubmit={onSubmit} className="space-y-5">
       {error ? <AuthError>{error}</AuthError> : null}
 
       {isSignup ? (

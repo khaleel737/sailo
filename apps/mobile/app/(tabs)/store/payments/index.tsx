@@ -184,6 +184,7 @@ export default function Payments() {
               <ListRow
                 key={rail.type}
                 title={rail.name}
+                subtitleLines={2}
                 subtitle={rail.name === rail.label ? undefined : (rail.label ?? undefined)}
                 icon={section.icon}
                 trailing="chevron"
@@ -223,21 +224,53 @@ function CardRail({
   const { a } = useT();
   const { stripe } = data;
 
+  /*
+   * Live card payments are a *row*, not a card — and this is the fix for the
+   * emptiest surface in the app.
+   *
+   * Every other rail on this screen is one `ListRow`: a name, a state pill, a
+   * chevron. Card payments rendered as a `padding="lg"` `Card` containing a
+   * heading and a pill and nothing else — about two hundred points of surface
+   * to say "Card payments · Live", directly above five siblings saying the same
+   * kind of thing in forty. It read as a broken card rather than as a finished
+   * one, because a card that large with two elements in it looks like something
+   * failed to load.
+   *
+   * A card is for the thing that needs attention. When Stripe is live there is
+   * nothing to do, so it is a row like its siblings. When it needs connecting or
+   * finishing there is an action *and* an explanation, and then it earns the
+   * card — which is also the only state where the seller has to read anything.
+   */
+  const live = data.cardAllowed && stripe.chargesEnabled;
+
+  if (live) {
+    return (
+      <GroupedList header={a.payments.cardTitle}>
+        <ListRow
+          title={a.payments.cardTitle}
+          icon="card"
+          accessory={<StatusPill tone="success" label={a.common.live} />}
+          accessibilityLabel={`${a.payments.cardTitle}. ${a.common.live}`}
+          testID="card-rail"
+        />
+      </GroupedList>
+    );
+  }
+
   return (
-    <Card padding="lg">
+    <Card padding="lg" testID="card-rail">
       <Text variant="heading" heading>
         {a.payments.cardTitle}
       </Text>
 
       {!data.cardAllowed ? (
-        /* The lock, before the tap rather than after it. `connectLink` refuses
-           an un-entitled shop, and a seller who found that out by finishing
-           Stripe's onboarding first would have an account and no card button. */
+        /* The plan gate, stated before the work rather than after it.
+           `connectLink` refuses outright for an un-entitled shop, and a seller
+           who found that out by finishing Stripe's onboarding first would have
+           an account and no card button. */
         <Text variant="callout" tone="muted">
           {interpolate(a.payments.cardOnPlan, { plan: "Business" })}
         </Text>
-      ) : stripe.chargesEnabled ? (
-        <StatusPill tone="success" label={a.common.live} />
       ) : stripe.connected ? (
         <>
           <StatusPill tone="warning" label={a.payments.stripeVerifying} />
@@ -272,7 +305,6 @@ function CardRail({
   );
 }
 
-/** The one-word verdict on a rail, as a pill. */
 function RailState({ rail, a }: { rail: Rail; a: Admin }) {
   return <StatusPill tone={railTone(rail)} label={stateWord(rail, a)} />;
 }

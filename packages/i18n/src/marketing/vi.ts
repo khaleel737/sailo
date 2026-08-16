@@ -192,6 +192,7 @@ export const marketingVi: MarketingDictionary = {
     terms: "Điều khoản",
     refunds: "Hoàn tiền",
     gdpr: "GDPR",
+    antiSpam: "Chống spam",
   },
 
   seo: {

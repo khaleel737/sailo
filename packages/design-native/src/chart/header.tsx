@@ -55,24 +55,36 @@ export function ChartHeader({
         <Text variant="title" tabular numberOfLines={1}>
           {total}
         </Text>
+
+        {/*
+          THE PEAK, ON ONE LINE, UNDER THE FIGURE IT QUALIFIES.
+
+          It was three right-aligned caption lines in a column of its own — the
+          value, the word, and the day, stacked in the card's top-right corner
+          with the shape switch beneath them. Four rows against the two on the
+          left, which made the header about 150 points tall before the plot
+          started, and made the right-hand side read as a fragment of a
+          paragraph rather than as a fact.
+
+          It also duplicated the headline on any window with a single active
+          day: the card said "$396" as the total and "$396" again as the peak,
+          eight points apart, which reads as the interface repeating itself.
+
+          One caption line, in the lead column, directly under the number it is
+          a footnote about — which is what it is. It truncates rather than
+          wrapping, because a two-line footnote reintroduces the ragged header
+          this replaced.
+        */}
+        {peak && peakDay ? (
+          <Text variant="caption" tone="muted" tabular numberOfLines={1}>
+            {`${peakWord} ${format(peak.value)} · ${peakDay}`}
+          </Text>
+        ) : null}
       </View>
 
-      <View style={[styles.trail, { gap: space.sm }]}>
-        {peak && peakDay ? (
-          <View style={styles.peak}>
-            <Text variant="caption" weight="semibold" tabular align="end">
-              {format(peak.value)}
-            </Text>
-            <Text variant="caption" tone="muted" align="end">
-              {peakWord}
-            </Text>
-            <Text variant="caption" tone="muted" align="end">
-              {peakDay}
-            </Text>
-          </View>
-        ) : null}
-        {action}
-      </View>
+      {/* The shape switch, top-aligned against the title rather than floating
+          below a stack of captions. */}
+      {action}
     </View>
   );
 }
@@ -80,9 +92,4 @@ export function ChartHeader({
 const styles = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between" },
   lead: { flex: 1, minWidth: 0 },
-  /* A column, so the peak and the shape switch stack rather than competing for
-     the same narrow corner. On the web these sit side by side; a phone card has
-     about half the width and would wrap them mid-word. */
-  trail: { flexShrink: 0, alignItems: "flex-end" },
-  peak: { alignItems: "flex-end" },
 });

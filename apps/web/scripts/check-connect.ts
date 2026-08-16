@@ -13,6 +13,7 @@
  * would a seller pressing "Connect Stripe" get through?
  */
 import Stripe from "stripe";
+import { STRIPE_ACCOUNT_COUNTRIES } from "@sailo/core/countries";
 
 const key = process.env.STRIPE_SECRET_KEY;
 if (!key) throw new Error("STRIPE_SECRET_KEY is not set");
@@ -138,6 +139,48 @@ async function main() {
         `        $${(goods / 100).toFixed(2)} basket -> $${(expectedFee / 100).toFixed(2)} to Sailo`,
       );
     }
+  }
+
+  /* ------------------------------------------------------ the country list */
+  /*
+   * `STRIPE_ACCOUNT_COUNTRIES` is the dropdown a seller picks their business
+   * location from, and a country missing from it is a seller who cannot take
+   * card payments at all. It is a hardcoded copy of something Stripe owns, so
+   * it drifts silently — and the only symptom is a country quietly absent from
+   * a list nobody reads.
+   *
+   * `GET /v1/country_specs` is what the list was built from, so this asks the
+   * same endpoint and reports the difference. Extra entries here matter less
+   * than missing ones — Stripe rejects an unsupported country at creation with
+   * a clear message — so only a shortfall fails.
+   */
+  console.log("\nThe business-location dropdown still matches Stripe");
+  const live = new Set<string>();
+  for await (const spec of stripe.countrySpecs.list({ limit: 100 })) {
+    live.add(spec.id);
+  }
+
+  const missing = [...live]
+    .filter((c) => !STRIPE_ACCOUNT_COUNTRIES.includes(c as never))
+    .toSorted();
+  const extra = STRIPE_ACCOUNT_COUNTRIES.filter((c) => !live.has(c)).toSorted();
+
+  await step(
+    `every country Stripe supports is offered (${live.size} live)`,
+    async () => {
+      if (missing.length) {
+        throw new Error(
+          `missing from STRIPE_ACCOUNT_COUNTRIES in packages/core/src/countries.ts: ${missing.join(", ")}`,
+        );
+      }
+    },
+  );
+
+  if (extra.length) {
+    console.log(
+      `  note: offered but no longer in country_specs: ${extra.join(", ")} — ` +
+        "harmless, Stripe refuses them at creation, but worth pruning",
+    );
   }
 
   /* ------------------------------------------------------------- teardown */

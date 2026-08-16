@@ -214,8 +214,15 @@ const CTA_TONES = {
     "border border-white/20 bg-transparent text-[var(--paper)] hover:border-white/50",
 } as const;
 
+/*
+ * `md` and `lg` clear 44pt on their own. `sm` is 40 — and `sm` is what the
+ * navigation bar's "Create your shop" uses, which is the single button this
+ * entire site exists to get pressed, on every marketing page, mostly from a
+ * phone. Four points under the floor is not a visible fault; it is a slightly
+ * higher miss rate on the one conversion that matters.
+ */
 const CTA_SIZES = {
-  sm: "h-10 px-5 text-[0.8125rem]",
+  sm: "h-10 px-5 text-[0.8125rem] pointer-coarse:h-11",
   md: "h-12 px-6 text-[0.875rem]",
   lg: "h-14 px-8 text-[0.9375rem]",
 } as const;

@@ -51,7 +51,7 @@ export function ForgotPasswordForm({ t }: { t: Dictionary }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form method="post" onSubmit={onSubmit} className="space-y-5">
       <AuthField label={t.auth.email} htmlFor="email">
         <AuthInput
           id="email"

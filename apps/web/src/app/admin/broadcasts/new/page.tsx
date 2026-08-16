@@ -26,7 +26,7 @@ export default async function NewBroadcastPage() {
     <>
       <Link
         href="/admin/broadcasts"
-        className="mb-4 inline-flex items-center gap-1.5 text-sm text-ink-500 transition hover:text-ink-900"
+        className="focus-ring mb-4 inline-flex items-center gap-1.5 text-sm text-ink-500 transition pointer-coarse:min-h-11 hover:text-ink-900"
       >
         <ArrowLeft className="size-4" />
         {a.broadcasts.title}

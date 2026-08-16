@@ -64,14 +64,14 @@ function CreateKey() {
           {a.integrations.scopeRead} / {a.integrations.scopeWrite}
         </legend>
 
-        <label className="flex items-start gap-2 text-xs text-ink-700">
+        <label className="flex items-start gap-2 text-xs text-ink-700 pointer-coarse:min-h-11 pointer-coarse:items-center">
           <input
             type="checkbox"
             name="scopes"
             value="read"
             defaultChecked
             readOnly
-            className="mt-0.5 size-3.5 rounded border-ink-300"
+            className="mt-0.5 size-3.5 rounded border-ink-300 pointer-coarse:size-5"
           />
           <span>
             <span className="font-medium">{a.integrations.scopeRead}</span>
@@ -79,12 +79,12 @@ function CreateKey() {
           </span>
         </label>
 
-        <label className="flex items-start gap-2 text-xs text-ink-700">
+        <label className="flex items-start gap-2 text-xs text-ink-700 pointer-coarse:min-h-11 pointer-coarse:items-center">
           <input
             type="checkbox"
             name="scopes"
             value="write"
-            className="mt-0.5 size-3.5 rounded border-ink-300"
+            className="mt-0.5 size-3.5 rounded border-ink-300 pointer-coarse:size-5"
           />
           <span>
             <span className="font-medium">{a.integrations.scopeWrite}</span>

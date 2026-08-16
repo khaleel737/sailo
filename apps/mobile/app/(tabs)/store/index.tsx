@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, Platform, StyleSheet, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { FlashList } from "@shopify/flash-list";
+import Animated from "react-native-reanimated";
 import { useRouter } from "expo-router";
 import {
   keepPreviousData,
@@ -33,6 +34,8 @@ import {
   Text,
   TextField,
   haptics,
+  rowEntering,
+  rowLayout,
   type SegmentedOption,
 } from "@sailo/design-native";
 /*
@@ -430,8 +433,12 @@ export default function StoreScreen() {
           contentContainerStyle={styles.list}
           data={rows}
           keyExtractor={(product) => product.id}
-          renderItem={({ item }) => (
-            <ProductRow product={item} currency={currency} onPress={() => open(item.id)} />
+          renderItem={({ item, index }) => (
+            /* Rows arrive rather than appearing — the same entrance the orders
+               list and `Screen` use, so the whole app settles one way. */
+            <Animated.View entering={rowEntering(index)} layout={rowLayout}>
+              <ProductRow product={item} currency={currency} onPress={() => open(item.id)} />
+            </Animated.View>
           )}
           onRefresh={refresh}
           refreshing={refreshing}
@@ -573,6 +580,7 @@ function ProductRow({
     <ListRow
       title={product.title}
       subtitle={subtitle}
+      valueTone="strong"
       value={price}
       accessory={<PublishBadge published={product.isPublished} />}
       trailing="chevron"
@@ -1184,6 +1192,7 @@ export function ProductEditor({
             <ListRow
               title={a.productForm.eventStartsAt}
               subtitle={a.productForm.eventStartsAtHint}
+              valueTone="strong"
               value={
                 draft.eventStartsAt ? whenLabel(draft.eventStartsAt, locale) : a.columns.never
               }

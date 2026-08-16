@@ -213,13 +213,22 @@ function CartRow({
           </div>
         ) : null}
 
+        {/*
+          Three 28pt targets in a row, and the third one deletes the line.
+
+          Minus, plus, and Trash sit `gap-2` apart in the basket a buyer is
+          looking at immediately before they pay. At 28pt the whole cluster is
+          narrower than a thumb, so "one more of these" and "remove this
+          entirely" are a few points apart — and the second has no undo. 44pt
+          on touch separates them by more than the error.
+        */}
         <div className="mt-1.5 flex items-center gap-2">
           <div className="surface-elevated flex items-center rounded-lg">
             <button
               type="button"
               onClick={() => onQuantity(line.quantity - 1)}
               aria-label={t.checkout.decrease}
-              className="flex size-7 items-center justify-center transition hover:opacity-60"
+              className="flex size-7 items-center justify-center transition pointer-coarse:size-11 hover:opacity-60"
             >
               <Minus className="size-3" />
             </button>
@@ -231,7 +240,7 @@ function CartRow({
               disabled={line.quantity >= max}
               onClick={() => onQuantity(line.quantity + 1)}
               aria-label={t.checkout.increase}
-              className="flex size-7 items-center justify-center transition hover:opacity-60 disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex size-7 items-center justify-center transition pointer-coarse:size-11 hover:opacity-60 disabled:cursor-not-allowed disabled:opacity-30"
             >
               <Plus className="size-3" />
             </button>
@@ -241,7 +250,7 @@ function CartRow({
             type="button"
             onClick={onRemove}
             aria-label={`${t.cart.remove} — ${line.title}`}
-            className="text-muted flex size-7 items-center justify-center rounded-lg transition hover:text-red-600"
+            className="text-muted flex size-7 items-center justify-center rounded-lg transition pointer-coarse:size-11 hover:text-red-600"
           >
             <Trash2 className="size-3.5" />
           </button>

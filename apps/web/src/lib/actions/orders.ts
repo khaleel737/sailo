@@ -23,6 +23,8 @@ import { type QuoteLine } from "@sailo/core/quote";
 import { variantLabel } from "@sailo/core/variants";
 import { releaseStock, reserveStock } from "@sailo/commerce/inventory";
 import { handOffSubscription, handOffToStripe } from "@/lib/orders/card-handoff";
+import { checkoutLabels, toCheckoutLine } from "@/lib/orders/checkout-lines";
+import { getShopT } from "@/i18n/server";
 import { intervalOf, isMembership } from "@/lib/memberships";
 import { createManualSubscription } from "@/lib/membership-renewals";
 import { claimCouponRedemption } from "@sailo/commerce/coupon-redemption";
@@ -600,22 +602,66 @@ export async function createOrderIntent(
       shop,
       orderId: order.id,
       product: head.product,
+      imageUrl: head.imageUrl,
       successUrl: `${base}/${shop.handle}/p/${head.product.slug}?subscribed=1`,
       cancelUrl: `${base}/${shop.handle}/p/${head.product.slug}?cancelled=1`,
     });
     if (!member.ok) return { ok: false, error: member.error };
     cardHandoff = member.handoff;
   } else if (method.type === "card") {
+    /*
+     * The shop's own language and clock, for the line subtitles.
+     *
+     * Read here rather than inside the session builder because this is the
+     * only place that has both the resolved product rows and the shop, and
+     * because a dictionary lookup on the money path should happen once for the
+     * basket rather than once per line.
+     */
+    const { locale, t } = await getShopT(shop.locale);
+    const labels = checkoutLabels(t, locale, shop.timeZone);
+
     const card = await handOffToStripe({
       shop,
       orderId: order.id,
-      // Stripe's receipt itemises the basket rather than lumping it under the
-      // first product's name.
-      items: priced.lines.map((line) => ({
-        name: line.label ? `${line.title} — ${line.label}` : line.title,
-        unitPriceCents: line.unitPriceCents,
-        quantity: line.quantity,
-      })),
+      /*
+       * Stripe's page itemises the basket — picture, name, and a line saying
+       * what the thing actually is — rather than lumping it under the first
+       * product's name. Everything `toCheckoutLine` needs was already resolved
+       * here; it simply never travelled.
+       */
+      /*
+       * From `lines` rather than `priced.lines`, which is the same basket in
+       * the same order but without the product rows — `quote` spreads each
+       * line and adds money, so the prices here are the priced ones. Taking
+       * the label from `variantLabel` rather than reaching across to
+       * `priced.lines[i].label` avoids pairing two arrays by index, which is
+       * a correctness bug waiting for the day one of them is filtered.
+       */
+      items: lines.map((line) =>
+        toCheckoutLine(
+          {
+            title: line.title,
+            variantLabel: line.variantOptions
+              ? variantLabel(line.variantOptions, line.options)
+              : null,
+            kind: line.kind,
+            sku: line.sku,
+            imageUrl: line.imageUrl,
+            description: line.product.description,
+            durationMinutes: line.product.durationMinutes,
+            // The variant is not asked about here: options change what a thing
+            // costs and what it is called, never where it happens or how long
+            // it takes.
+            serviceMode: line.product.serviceMode,
+            serviceLocation: line.product.serviceLocation,
+            scheduledFor: line.scheduledFor,
+            eventStartsAt: line.product.eventStartsAt,
+            unitPriceCents: line.unitPriceCents,
+            quantity: line.quantity,
+          },
+          labels,
+        ),
+      ),
       successUrl: `${base}/invoice/${invoiceToken}?paid=1`,
       invoiceToken,
       cancelUrl:

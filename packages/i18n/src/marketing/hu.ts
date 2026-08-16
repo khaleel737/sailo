@@ -192,6 +192,7 @@ export const marketingHu: MarketingDictionary = {
     terms: "Feltételek",
     refunds: "Visszatérítés",
     gdpr: "GDPR",
+    antiSpam: "Spamellenes",
   },
 
   seo: {

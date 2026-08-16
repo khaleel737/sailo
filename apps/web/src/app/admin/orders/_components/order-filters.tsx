@@ -55,6 +55,9 @@ export function OrderFilters({
         value={params.get(key) ?? ""}
         onChange={(e) => set(key, e.target.value)}
         aria-label={label}
+        /* `h-9` is the density a mouse rewards; the 44pt touch floor comes
+           from `CONTROL` in `components/ui/form.tsx`, which is why this
+           override does not have to think about it. */
         className="h-9 w-auto min-w-[9rem] text-xs"
       >
         <option value="">{label}</option>
@@ -84,7 +87,7 @@ export function OrderFilters({
         <button
           type="button"
           onClick={() => router.replace(pathname, { scroll: false })}
-          className="focus-ring inline-flex h-9 items-center gap-1 rounded-lg px-2.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-900"
+          className="focus-ring inline-flex h-9 items-center gap-1 rounded-lg px-2.5 text-xs font-medium text-ink-500 pointer-coarse:h-11 hover:bg-ink-100 hover:text-ink-900"
         >
           <X className="size-3.5" />
           {a.orders.clearFilters}

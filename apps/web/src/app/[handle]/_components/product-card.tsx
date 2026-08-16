@@ -126,7 +126,7 @@ export function ProductCard({
             variants={variants}
             unitsLeft={unitsLeft(product)}
             imageUrl={image?.url ?? null}
-            className="absolute bottom-2 end-2 z-[2] size-8"
+            className="absolute bottom-2 end-2 z-[2] size-8 pointer-coarse:size-11"
             t={t}
           />
         ) : null}
@@ -143,7 +143,7 @@ export function ProductCard({
           priceCents: displayPrice,
         }}
         label={t.shop.saveToFavorites}
-        className="absolute end-2 top-2 z-[2] size-8"
+        className="absolute end-2 top-2 z-[2] size-8 pointer-coarse:size-11"
       />
       {/* In a list row the photo is a thumbnail, so the bag takes the row's
           own corner instead of covering a third of the picture. */}
@@ -158,7 +158,7 @@ export function ProductCard({
           variants={variants}
           unitsLeft={unitsLeft(product)}
           imageUrl={image?.url ?? null}
-          className="absolute bottom-2 end-2 z-[2] size-8"
+          className="absolute bottom-2 end-2 z-[2] size-8 pointer-coarse:size-11"
           t={t}
         />
       ) : null}

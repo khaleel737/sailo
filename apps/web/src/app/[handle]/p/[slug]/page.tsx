@@ -198,7 +198,7 @@ export default async function ProductPage({
         <div className="mb-6 flex items-center justify-between gap-3">
           <Link
             href={`/${shop.handle}`}
-            className="text-muted inline-flex min-w-0 items-center gap-1.5 text-sm transition hover:opacity-70"
+            className="text-muted inline-flex min-w-0 items-center gap-1.5 text-sm transition pointer-coarse:-my-3 pointer-coarse:py-3 hover:opacity-70"
           >
             <ArrowLeft className="size-4 shrink-0" />
             <span className="truncate">{shop.name}</span>
@@ -224,30 +224,30 @@ export default async function ProductPage({
             {product.category ? (
               <Link
                 href={`/${shop.handle}?category=${product.category.slug}`}
-                className="surface-elevated text-muted rounded-full px-2.5 py-1 text-xs font-medium transition hover:opacity-70"
+                className="surface-elevated text-muted inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium pointer-coarse:min-h-11 transition hover:opacity-70"
               >
                 {product.category.name}
               </Link>
             ) : null}
-            <span className="surface-elevated text-muted rounded-full px-2.5 py-1 text-xs font-medium">
+            <span className="surface-elevated text-muted inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium">
               {kindLabel}
             </span>
             {product.kind === "service" && product.durationMinutes ? (
-              <span className="surface-elevated text-muted rounded-full px-2.5 py-1 text-xs font-medium">
+              <span className="surface-elevated text-muted inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium">
                 {interpolate(t.checkout.duration, {
                   duration: formatDuration(product.durationMinutes),
                 })}
               </span>
             ) : null}
             {product.kind === "service" ? (
-              <span className="surface-elevated text-muted rounded-full px-2.5 py-1 text-xs font-medium">
+              <span className="surface-elevated text-muted inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium">
                 {product.serviceMode === "online"
                   ? t.checkout.online
                   : t.checkout.inPerson}
               </span>
             ) : null}
             {product.kind === "event" && product.eventStartsAt ? (
-              <span className="surface-elevated text-muted rounded-full px-2.5 py-1 text-xs font-medium">
+              <span className="surface-elevated text-muted inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium">
                 {product.eventStartsAt.toLocaleString(locale, {
                   weekday: "short",
                   day: "numeric",

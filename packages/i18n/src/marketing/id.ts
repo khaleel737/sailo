@@ -192,6 +192,7 @@ export const marketingId: MarketingDictionary = {
     terms: "Ketentuan",
     refunds: "Pengembalian dana",
     gdpr: "GDPR",
+    antiSpam: "Anti-spam",
   },
 
   seo: {

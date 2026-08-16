@@ -1,7 +1,7 @@
 import "server-only";
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { productVariants, products } from "@sailo/db/schema";
+import { productImages, productVariants, products } from "@sailo/db/schema";
 import { clampQuantity, isSellable, maxOrderable, variantPrice } from "@sailo/core/variants";
 import { isMembership, membershipSellable } from "@/lib/memberships";
 import { toStripeAmount } from "@sailo/core/currency";
@@ -84,7 +84,7 @@ export async function resolveLines(
    * keeping in the WHERE where it cannot be forgotten.
    */
   const ids = [...new Set(wanted.map((i) => i.productId))];
-  const [found, allVariants] = await Promise.all([
+  const [found, allVariants, allImages] = await Promise.all([
     ids.length > 0
       ? db.query.products.findMany({
           where: and(
@@ -100,9 +100,33 @@ export async function resolveLines(
           orderBy: [asc(productVariants.position)],
         })
       : Promise.resolve([]),
+    /*
+     * The gallery, for the line's picture.
+     *
+     * A third batched query rather than a `with:` on the products one, because
+     * `ResolvedLine.product` is typed as the plain row and joining images onto
+     * it would change that type for all forty of its readers to serve one.
+     *
+     * Ordered by position and deduplicated below to the first per product,
+     * which is the same "first image is the cover" rule the storefront card,
+     * the broadcast email and the export all use.
+     */
+    ids.length > 0
+      ? db.query.productImages.findMany({
+          where: inArray(productImages.productId, ids),
+          orderBy: [asc(productImages.position)],
+          columns: { productId: true, url: true },
+        })
+      : Promise.resolve([]),
   ]);
 
   const byId = new Map(found.map((p) => [p.id, p]));
+  const coverByProduct = new Map<string, string>();
+  for (const image of allImages) {
+    if (!coverByProduct.has(image.productId)) {
+      coverByProduct.set(image.productId, image.url);
+    }
+  }
   const variantsByProduct = new Map<string, ProductVariant[]>();
   for (const v of allVariants) {
     const list = variantsByProduct.get(v.productId);
@@ -256,7 +280,17 @@ export async function resolveLines(
       options: product.options,
       variantOptions: variant?.options ?? null,
       sku: variant?.sku ?? null,
-      imageUrl: variant?.imageUrl ?? null,
+      /*
+       * The variant's own photo when the buyer picked one, the product's cover
+       * otherwise.
+       *
+       * It used to be `variant?.imageUrl ?? null` alone, which is null for
+       * every product sold without options — most of them. That null is copied
+       * onto `orderItems.imageUrl` and read by everything downstream, so a
+       * seller's order list, their emails and the Stripe checkout page all
+       * showed a placeholder for a product that has had a photo all along.
+       */
+      imageUrl: variant?.imageUrl ?? coverByProduct.get(product.id) ?? null,
       // The price the buyer is charged comes from the variant they picked.
       /*
        * Rounded to what this currency can actually settle. A no-op for

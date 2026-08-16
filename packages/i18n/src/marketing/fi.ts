@@ -192,6 +192,7 @@ export const marketingFi: MarketingDictionary = {
     terms: "Ehdot",
     refunds: "Hyvitykset",
     gdpr: "GDPR",
+    antiSpam: "Roskapostisäännöt",
   },
 
   seo: {

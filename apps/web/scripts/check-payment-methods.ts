@@ -18,6 +18,7 @@
  * `checkout.session.async_payment_succeeded`.
  */
 import Stripe from "stripe";
+import { capabilitiesFor, requestCapabilities } from "@sailo/payments/capabilities";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 if (!secretKey) throw new Error("STRIPE_SECRET_KEY is not set");
@@ -91,6 +92,13 @@ const ADDRESS: Record<string, Stripe.AddressParam> = {
 async function onboardedAccount(country: string) {
   const account = await stripe.accounts.create({
     type: "custom",
+    /*
+     * Stated, not inherited. An account created without this is opened in the
+     * *platform's* country — US here — and a US account can never activate a
+     * European payment method however many capabilities it is given. That was
+     * the production bug: `accounts.create` in `packages/payments` omitted it,
+     * so every seller in the world was an American business.
+     */
     country,
     business_profile: {
       name: `Methods ${country}`,
@@ -120,11 +128,31 @@ async function onboardedAccount(country: string) {
     tos_acceptance: { date: Math.floor(Date.now() / 1000), ip: "8.8.8.8" },
   });
 
+  /*
+   * The real capability table, not a copy of it.
+   *
+   * This is the step whose absence made the whole script misleading. It
+   * created accounts with `card_payments` alone and then reported that no
+   * local method was offered — which was true, and which read as a Dashboard
+   * setting rather than as the missing line of code it actually was. An
+   * Express account is offered a payment method only if the platform requested
+   * its capability, so asking Stripe what a buyer would see without requesting
+   * anything only ever measures the default.
+   */
+  const wanted = capabilitiesFor(country);
+  const outcome = await requestCapabilities(stripe, account.id, wanted);
+  if (outcome.refused.length) {
+    console.log(
+      `  ${country}: Stripe refused ${outcome.refused.map((r) => r.name).join(", ")}`,
+    );
+  }
+
   return account.id;
 }
 
+/** Prints the platform's own configurations, for context rather than for a verdict. */
 async function reportConfiguration() {
-  const list = await stripe.paymentMethodConfigurations.list({ limit: 5 });
+  const list = await stripe.paymentMethodConfigurations.list({ limit: 10 });
   for (const config of list.data) {
     const on: string[] = [];
     const off: string[] = [];
@@ -134,6 +162,7 @@ async function reportConfiguration() {
       if (!preference) continue;
       (preference.value === "on" ? on : off).push(key);
     }
+
     console.log(
       `Payment methods${config.is_default ? " (default configuration)" : ` — ${config.name}`}`,
     );
@@ -142,6 +171,85 @@ async function reportConfiguration() {
     console.log(
       "  Turning one on here is what makes it appear at checkout — no deploy needed.\n",
     );
+  }
+}
+
+/**
+ * What the *connected account's* own configuration switches on.
+ *
+ * Read per account with the account header, not once off the platform, and the
+ * distinction is not pedantic — it produced a wrong verdict. A platform holds
+ * "parent" configurations and every connected account gets a "child" derived
+ * from one, and the child is what a direct charge actually consults. The
+ * platform's own default has Przelewy24 switched on; the child a Polish
+ * account receives has it switched off, so reading the platform's copy makes
+ * the script report a bug in `capabilitiesFor` that isn't there.
+ *
+ * Returns an empty set on failure rather than throwing: an unreadable
+ * configuration should downgrade the assertion below to a report, not fail a
+ * market that might be perfectly healthy.
+ */
+async function enabledForAccount(accountId: string): Promise<Set<string>> {
+  const enabled = new Set<string>();
+  try {
+    const list = await stripe.paymentMethodConfigurations.list(
+      { limit: 10 },
+      { stripeAccount: accountId },
+    );
+    for (const config of list.data) {
+      if (!config.is_default) continue;
+      for (const [key, value] of Object.entries(config)) {
+        const preference = (value as { display_preference?: { value?: string } })
+          ?.display_preference;
+        if (preference?.value === "on") enabled.add(key);
+      }
+    }
+  } catch {
+    // Reported as "couldn't tell" by the caller.
+  }
+  return enabled;
+}
+
+/**
+ * What a buyer would be offered, retried until Stripe has caught up.
+ *
+ * Requesting a capability and opening a session in the same breath returns
+ * `card` alone — the capability is registered but has not propagated to the
+ * account's payment method configuration yet. That is a race in this script
+ * and not in production, where a seller finishes onboarding minutes or days
+ * before anybody buys anything, but it made the whole suite report false
+ * negatives: the one market that passed was the one whose verification was
+ * slow enough to give Stripe time.
+ *
+ * So it polls rather than measuring once, and gives up rather than hanging.
+ */
+async function offeredMethods(accountId: string, currency: string, want: string) {
+  const deadline = Date.now() + 90_000;
+  let offered: string[] = [];
+
+  for (;;) {
+    const session = await stripe.checkout.sessions.create(
+      {
+        mode: "payment",
+        line_items: [
+          {
+            quantity: 1,
+            price_data: {
+              currency,
+              unit_amount: 2400,
+              product_data: { name: "Speckled stoneware mug" },
+            },
+          },
+        ],
+        success_url: "https://sailo.store/ok",
+        cancel_url: "https://sailo.store/no",
+      },
+      { stripeAccount: accountId },
+    );
+
+    offered = session.payment_method_types ?? [];
+    if (offered.includes(want) || Date.now() > deadline) return offered;
+    await sleep(5000);
   }
 }
 
@@ -179,26 +287,9 @@ async function main() {
        * to accidentally restrict a store to cards — the skill's rule, and the
        * reason this test exists.
        */
-      let session: Stripe.Checkout.Session;
+      let offered: string[];
       try {
-        session = await stripe.checkout.sessions.create(
-          {
-            mode: "payment",
-            line_items: [
-              {
-                quantity: 1,
-                price_data: {
-                  currency: market.currency,
-                  unit_amount: 2400,
-                  product_data: { name: "Speckled stoneware mug" },
-                },
-              },
-            ],
-            success_url: "https://sailo.store/ok",
-            cancel_url: "https://sailo.store/no",
-          },
-          { stripeAccount: accountId },
-        );
+        offered = await offeredMethods(accountId, market.currency, market.expect);
       } catch (error) {
         check(
           `${market.label} (${market.currency.toUpperCase()}): session`,
@@ -208,21 +299,37 @@ async function main() {
         continue;
       }
 
-      const offered = session.payment_method_types ?? [];
       console.log(`${market.label} · ${market.currency.toUpperCase()} · charges ${live.charges_enabled ? "enabled" : "PENDING"}`);
       console.log(`  offered: ${offered.join(", ") || "(none)"}`);
 
-      // A market with nothing to pay with is broken. Which methods appear
-      // beyond that is a Dashboard decision, so it is reported, not asserted —
-      // failing a suite because someone chose not to sell via iDEAL yet would
-      // be noise, and noise is how a real failure gets ignored.
       check(
         `${market.label}: buyers get at least one way to pay`,
         offered.length > 0,
       );
-      if (!offered.includes(market.expect)) {
+
+      /*
+       * The local method, asserted or excused — and the difference is the
+       * whole value of this script.
+       *
+       * If the method is switched on in the default configuration then the
+       * only remaining reason it could be missing is that its capability was
+       * never requested, which is a bug in `capabilitiesFor` and should fail
+       * the suite. If it is switched *off* there, no amount of code will
+       * summon it, so the script says which switch to flip instead of failing
+       * over a decision somebody made deliberately.
+       */
+      const configured = await enabledForAccount(accountId);
+      if (configured.has(market.expect)) {
+        check(
+          `${market.label}: buyers are offered ${market.expect}`,
+          offered.includes(market.expect),
+          "its capability is requested and its configuration has it on, so it should appear",
+        );
+      } else {
         console.log(
-          `  note: ${market.expect} not offered — check it is on in the payment method configuration`,
+          `  ${market.expect} is OFF in this account's payment method configuration — ` +
+            "turn it on for connected accounts at " +
+            "dashboard.stripe.com/settings/payment_methods/connected_accounts, no deploy needed",
         );
       }
 
@@ -247,8 +354,15 @@ async function main() {
     );
 
     console.log("\nDelayed settlement is handled");
+    /*
+     * `src/lib/stripe-webhooks/connect.ts`, not `src/lib/stripe-webhooks.ts`.
+     * The module became a directory and this path was never updated, so the
+     * read threw and took the whole script down before it reached either
+     * assertion — the two that matter most for the local methods above, since
+     * every one of them settles after checkout rather than during it.
+     */
     const webhook = await import("node:fs").then((fs) =>
-      fs.promises.readFile("src/lib/stripe-webhooks.ts", "utf8"),
+      fs.promises.readFile("src/lib/stripe-webhooks/connect.ts", "utf8"),
     );
     check(
       "checkout.session.async_payment_succeeded is handled",

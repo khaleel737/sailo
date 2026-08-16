@@ -368,7 +368,7 @@ export function SegmentBuilder({
             <button
               type="button"
               onClick={addRule}
-              className="focus-ring inline-flex h-10 items-center gap-1.5 rounded-xl border border-ink-200 px-3 text-sm font-medium text-ink-800 transition hover:bg-ink-50"
+              className="focus-ring inline-flex h-10 items-center gap-1.5 rounded-xl border border-ink-200 px-3 text-sm font-medium text-ink-800 transition pointer-coarse:h-11 hover:bg-ink-50"
             >
               <Plus className="size-4" />
               {a.broadcasts.add}

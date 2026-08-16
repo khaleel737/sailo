@@ -192,6 +192,7 @@ export const marketingTh: MarketingDictionary = {
     terms: "เงื่อนไข",
     refunds: "การคืนเงิน",
     gdpr: "GDPR",
+    antiSpam: "ต่อต้านสแปม",
   },
 
   seo: {
