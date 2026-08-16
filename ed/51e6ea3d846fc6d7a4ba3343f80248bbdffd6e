@@ -1,0 +1,51 @@
+packages/auth/tsconfig.json
+  s_42380745c8f8fb::t_0212a1f6af9e76 2
+packages/core/tsconfig.json
+  s_42380745c8f8fb::t_0212a1f6af9e76 2
+packages/observability/tsconfig.json
+  s_42380745c8f8fb::t_0212a1f6af9e76 2
+packages/core/src/variants.ts
+  s_42380745c8f8fb::t_efa28b3c995660 105-106,108
+packages/core/src/countries.ts
+  s_42380745c8f8fb::t_6fc30f05d11150 127-139,143
+packages/i18n/tsconfig.json
+  s_42380745c8f8fb::t_0212a1f6af9e76 2
+packages/config/package.json
+  s_42380745c8f8fb::t_3089ded0b53c65 6-7
+packages/core/src/client-tags.ts
+  s_42380745c8f8fb::t_b17756365b449d 111-113
+packages/core/src/countries.test.ts
+  s_42380745c8f8fb::t_2f67334642a126 106-113
+packages/i18n/src/config.ts
+  s_42380745c8f8fb::t_48197e7ba62668 77-79
+packages/core/src/variants.test.ts
+  s_42380745c8f8fb::t_9573a35b94e3d4 79
+  s_42380745c8f8fb::t_1be635b1e6fb65 86
+  s_42380745c8f8fb::t_942ad596cc56f3 71
+packages/config/tsconfig.hermes.json
+  s_42380745c8f8fb::t_8e9cd1cbf48ec5 1-30,49-54
+  s_42380745c8f8fb::t_874806caeb66c2 31-48
+packages/core/src/order-status.test.ts
+  s_42380745c8f8fb::t_8cdae83716b094 25-26
+packages/design-native/tsconfig.json
+  s_42380745c8f8fb::t_1f1861883ec10f 2
+  s_42380745c8f8fb::t_02d5d65d0e8bc5 16-18
+apps/mobile/app/(tabs)/store/coupons.tsx
+  s_42380745c8f8fb::t_1577f62e03be3d 146-170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ed51e6ea3d846fc6d7a4ba3343f80248bbdffd6e",
+  "prompts": {},
+  "sessions": {
+    "s_42380745c8f8fb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23e4ad37-ab37-40ed-a1ea-557d1d496058",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
