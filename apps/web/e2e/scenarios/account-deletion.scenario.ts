@@ -15,7 +15,14 @@ import {
   shops,
   user,
 } from "@sailo/db/schema";
-import { deleteAccountFor, openObligations, tombstoneHandle } from "@/lib/account-deletion";
+import { deleteAccountFor, openObligations } from "@/lib/account-deletion";
+/*
+ * `tombstoneHandle` straight from the package: it is the package's own function, and
+ * routing it through this app's wrapper only meant the wrapper had to re-export
+ * something no app code used. `deleteAccountFor` still comes from the wrapper, because
+ * that is what supplies the farewell email and the cache drop.
+ */
+import { tombstoneHandle } from "@sailo/account/deletion";
 import { createInvoiceForOrder } from "@/lib/invoices";
 import { liveShop } from "@/lib/shop-visibility";
 

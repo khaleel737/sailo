@@ -4,14 +4,14 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/deletion.ts",
-    "./deletion": "./src/deletion.ts",
+    ".": "./src/deletion/index.ts",
+    "./deletion": "./src/deletion/index.ts",
     "./handle": "./src/handle.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "lint": "oxlint src --config ../../.oxlintrc.json",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run"
   },
   "dependencies": {
     "@sailo/core": "workspace:*",

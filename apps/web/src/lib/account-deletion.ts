@@ -27,5 +27,11 @@ export async function deleteAccountFor(userId: string): Promise<DeletionResult> 
   });
 }
 
-export { openObligations, tombstoneEmail, tombstoneHandle } from "@sailo/account/deletion";
+/*
+ * Only `openObligations`, which the security settings page calls to warn a seller before
+ * they commit. The tombstone helpers were re-exported here too, for a test that has since
+ * moved into the package beside them — a re-export with no caller is a shim, and this
+ * file already is one.
+ */
+export { openObligations } from "@sailo/account/deletion";
 export type { DeletionResult } from "@sailo/account/deletion";
