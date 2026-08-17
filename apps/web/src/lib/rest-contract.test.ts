@@ -6,7 +6,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import ApiDocsPage from "@/app/(marketing)/docs/api/page";
-import { APP_URL } from "@/lib/seo";
+import { appOrigin } from "@sailo/core/origin";
 import {
   API_ERROR_CODES,
   ENDPOINTS,
@@ -331,7 +331,7 @@ describe("the docs page", () => {
   it.each(ENDPOINTS.map((endpoint) => [endpointKey(endpoint), endpoint] as const))(
     "%s renders its curl example in full",
     (_key, endpoint) => {
-      expect(RENDERED).toContain(escape(endpoint.curl(APP_URL)));
+      expect(RENDERED).toContain(escape(endpoint.curl(appOrigin())));
     },
   );
 

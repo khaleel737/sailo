@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { APP_URL, absolute } from "@/lib/seo";
+import { absolute, appOrigin } from "@sailo/core/origin";
 
 /**
  * Storefronts and the marketing page are meant to be found. Everything behind
@@ -35,6 +35,6 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: absolute("/sitemap.xml"),
-    host: APP_URL,
+    host: appOrigin(),
   };
 }

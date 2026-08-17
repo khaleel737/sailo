@@ -33,7 +33,8 @@ import {
 } from "@sailo/core/variants";
 import { railsForOrder } from "@/lib/payments";
 import { PoweredBy } from "@/components/shared/powered-by";
-import { absolute, breadcrumbJsonLd, productJsonLd } from "@/lib/seo";
+import { absolute } from "@sailo/core/origin";
+import { breadcrumbJsonLd, productJsonLd } from "@/lib/seo";
 import { eventSalesOpen } from "@sailo/commerce/ticketing";
 
 export async function generateMetadata({

@@ -1,4 +1,4 @@
-import { APP_URL } from "@/lib/seo";
+import { appOrigin } from "@sailo/core/origin";
 import { MCP_TOOLS, type McpTool } from "@sailo/api/mcp";
 import { MODERN_VERSION, SERVER_INFO, SUPPORTED_VERSIONS } from "@sailo/api/mcp";
 import {
@@ -30,7 +30,7 @@ export const metadata = docsMetadata(
  * The protocol versions come from `lib/mcp/protocol.ts` for the same reason.
  */
 export default function McpDocsPage() {
-  const base = APP_URL;
+  const base = appOrigin();
   const url = `${base}/api/mcp`;
 
   return (

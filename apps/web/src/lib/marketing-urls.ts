@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, LOCALES, type Locale } from "@sailo/i18n/config";
-import { absolute } from "@/lib/seo";
+import { absolute } from "@sailo/core/origin";
 
 /**
  * The public shape of every marketing URL, in one place.

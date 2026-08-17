@@ -5,7 +5,7 @@ import { getShopByHandle } from "@/lib/queries";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { shopThemeVars } from "@sailo/design-system/web/cn";
-import { absolute } from "@/lib/seo";
+import { absolute } from "@sailo/core/origin";
 import { SubscribeCard } from "../_components/subscribe-card";
 
 /* Not yet converted — see the note in `next.config.ts`. */

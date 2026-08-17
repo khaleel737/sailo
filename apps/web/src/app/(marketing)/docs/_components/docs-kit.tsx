@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { absolute } from "@/lib/seo";
+import { absolute } from "@sailo/core/origin";
 
 /**
  * The furniture every docs page wears.

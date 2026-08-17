@@ -1,3 +1,4 @@
+import { absolute, appOrigin } from "@sailo/core/origin";
 import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import type { DeliveryMethodType } from "@sailo/commerce/delivery";
 import type { PaymentMethodType } from "@/lib/payments";
@@ -13,28 +14,21 @@ import { centsToAmount } from "@sailo/core/currency";
  * FAQ in the markup and the FAQ in the JSON-LD are the same six questions.
  */
 
-/**
- * The canonical origin. Vercel supplies the production domain at build time;
- * `NEXT_PUBLIC_APP_URL` wins where it's set, and localhost is the last resort
- * so a dev build doesn't emit absolute URLs pointing at production.
+/*
+ * The origin and `absolute` used to be defined here, and `@sailo/core/origin`
+ * held a second copy for mail to use. Its header explained the split by
+ * responsibility — canonicals are a website's job, not a mail package's — which
+ * is true about the *callers* and was never true about the code: both read the
+ * same two environment variables through the same `normalizeOrigin`.
+ *
+ * Only one of the two copies had been fixed. This one was
+ * `export const APP_URL = normalizeOrigin(process.env…)`, evaluated once at
+ * import; the package's is a function, because a constant computed at import
+ * time cannot see an environment a test sets afterwards, and a preview
+ * deployment is exactly the case this value exists to get right.
+ *
+ * This file keeps what is actually its own: canonicals, metadata and JSON-LD.
  */
-export const APP_URL = normalizeOrigin(
-  process.env.NEXT_PUBLIC_APP_URL ||
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : "http://localhost:3000"),
-);
-
-function normalizeOrigin(value: string) {
-  try {
-    // Trailing slashes turn every canonical into a near-duplicate of itself.
-    return new URL(value).origin;
-  } catch {
-    return "http://localhost:3000";
-  }
-}
-
-export const absolute = (path: string) => new URL(path, APP_URL).toString();
 
 /**
  * The product itself, for the knowledge panel and for anything that wants to
@@ -45,7 +39,7 @@ export function softwareJsonLd(m: MarketingDictionary) {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "Sailo",
-    url: APP_URL,
+    url: appOrigin(),
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     description: m.seo.description,
@@ -60,7 +54,7 @@ export function softwareJsonLd(m: MarketingDictionary) {
     publisher: {
       "@type": "Organization",
       name: "Sailo",
-      url: APP_URL,
+      url: appOrigin(),
       logo: absolute("/brand/sailo-mark-512.png"),
     },
   };
@@ -256,7 +250,7 @@ export function blogJsonLd(blog: {
     publisher: {
       "@type": "Organization",
       name: "Sailo",
-      url: APP_URL,
+      url: appOrigin(),
       logo: absolute("/brand/sailo-mark-512.png"),
     },
   };

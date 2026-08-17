@@ -1,4 +1,4 @@
-import { APP_URL } from "@/lib/seo";
+import { appOrigin } from "@sailo/core/origin";
 import { WEBHOOK_EVENTS } from "@sailo/webhooks/events";
 import { ENDPOINTS } from "@sailo/api/rest";
 import { MCP_TOOLS } from "@sailo/api/mcp";
@@ -22,7 +22,7 @@ export const metadata = docsMetadata(
  * eight once somebody adds one, and nobody notices for months.
  */
 export default function DocsIndexPage() {
-  const base = APP_URL;
+  const base = appOrigin();
 
   return (
     <DocsShell

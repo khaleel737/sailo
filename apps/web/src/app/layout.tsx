@@ -7,7 +7,7 @@ import { getMarketingDictionary } from "@sailo/i18n/marketing";
 import { RouteProgress } from "@sailo/design-system/web";
 import { ErrorStringsSource } from "@/components/shared/error-panel";
 import { VercelAnalytics } from "@/lib/vercel-analytics";
-import { APP_URL } from "@/lib/seo";
+import { appOrigin } from "@sailo/core/origin";
 import { LANG_SCRIPT } from "@/i18n/lang-script";
 import "./globals.css";
 import "./brand.css";
@@ -50,7 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const m = getMarketingDictionary(locale);
 
   return {
-    metadataBase: new URL(APP_URL),
+    metadataBase: new URL(appOrigin()),
     title: {
       default: m.seo.title,
       template: "%s · Sailo",

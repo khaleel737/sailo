@@ -4,7 +4,7 @@ import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
 import { badgeHref as sharedBadgeHref, showsBadge } from "@sailo/core/badge";
-import { APP_URL } from "@/lib/seo";
+import { appOrigin } from "@sailo/core/origin";
 import { cn } from "@sailo/design-system/web/cn";
 import { SailoMark } from "@/components/brand";
 
@@ -47,14 +47,15 @@ export type BadgeShop = Pick<
  * that had paid to remove it, which is the bug this file's own header records
  * the invoice page having shipped.
  *
- * `badgeHref` takes its base explicitly now rather than defaulting to
- * `APP_URL`; the wrapper below keeps the old signature for this app.
+ * `badgeHref` takes its base explicitly now rather than defaulting to this app's
+ * origin; the wrapper below keeps the old signature for this app, and reads the
+ * origin per call rather than once at import.
  */
 export { showsBadge };
 
 export function badgeHref(
   handle: string,
-  base: string = APP_URL,
+  base: string = appOrigin(),
   medium: "shop" | "email" = "shop",
 ): string {
   return sharedBadgeHref(handle, base, medium);

@@ -5,7 +5,8 @@ import { blogIndexLanguages, blogIndexPath } from "@/lib/blog-urls";
 import { isLocale } from "@sailo/i18n/config";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
 import { Container } from "@/components/marketing/kit";
-import { absolute, blogJsonLd } from "@/lib/seo";
+import { absolute } from "@sailo/core/origin";
+import { blogJsonLd } from "@/lib/seo";
 import { ArticleList, Pagination } from "../_components/article-list";
 
 /*

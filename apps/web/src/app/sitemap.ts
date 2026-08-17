@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { cacheLife, cacheTag } from "next/cache";
 import { and, desc, eq } from "drizzle-orm";
 import { getDb, schema } from "@sailo/db";
-import { absolute } from "@/lib/seo";
+import { absolute } from "@sailo/core/origin";
 import { getContentLocales, getEveryArticleByLocale } from "@/lib/blog";
 import { articlePath, blogIndexLanguages, blogIndexPath } from "@/lib/blog-urls";
 

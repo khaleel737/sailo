@@ -7,7 +7,8 @@ import { getArticleIn, getSlugLocales, getEveryArticleByLocale } from "@/lib/blo
 import { directionOf, isLocale } from "@sailo/i18n/config";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
 import { Container } from "@/components/marketing/kit";
-import { absolute, breadcrumbJsonLd } from "@/lib/seo";
+import { absolute } from "@sailo/core/origin";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { articlePath, blogIndexPath } from "@/lib/blog-urls";
 
 /**

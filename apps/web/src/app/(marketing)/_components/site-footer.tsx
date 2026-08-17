@@ -4,7 +4,7 @@ import type { Dictionary } from "@sailo/i18n";
 import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import type { Locale } from "@sailo/i18n/config";
 import { DEMOS } from "@sailo/marketing/demos";
-import { APP_URL } from "@/lib/seo";
+import { appOrigin } from "@sailo/core/origin";
 import { SailoLogo } from "@/components/brand";
 import { CookieSettingsButton } from "@/components/shared/cookie-settings-button";
 import { measurementId } from "@/lib/google-tag";
@@ -146,7 +146,7 @@ export function SiteFooter({
               {m.nav.createShop}
             </Link>
             {/* The domain reads left-to-right even when the page doesn't. */}
-            <span dir="ltr">{new URL(APP_URL).host}</span>
+            <span dir="ltr">{new URL(appOrigin()).host}</span>
           </div>
         </div>
       </Container>

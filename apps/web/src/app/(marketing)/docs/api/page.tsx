@@ -1,4 +1,4 @@
-import { APP_URL } from "@/lib/seo";
+import { appOrigin } from "@sailo/core/origin";
 import { API_ERROR_CODES, API_VERSION, DEFAULT_LIMIT, MAX_LIMIT } from "@sailo/api/rest";
 import { ENDPOINTS, MAX_BODY_KB, type Endpoint } from "@sailo/api/rest";
 import {
@@ -34,7 +34,7 @@ export const metadata = docsMetadata(
  * webhook and MCP material *out* to siblings and left this page where it was.
  */
 export default function ApiDocsPage() {
-  const base = APP_URL;
+  const base = appOrigin();
 
   return (
     <DocsShell

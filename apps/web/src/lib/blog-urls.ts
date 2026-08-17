@@ -1,6 +1,6 @@
 import { DEFAULT_LOCALE, type Locale } from "@sailo/i18n/config";
 import { getContentLocales } from "@/lib/blog";
-import { absolute } from "@/lib/seo";
+import { absolute } from "@sailo/core/origin";
 
 /**
  * The public shape of every blog URL, in one place.
