@@ -1,0 +1,60 @@
+packages/core/src/money/index.ts
+  s_c7a7b98e0ed667::t_2f4c7d0576e7b5 1-16
+packages/core/src/identity/badge.ts
+  s_c7a7b98e0ed667::t_a5106226c1409b 1-51
+packages/webhooks/src/events.ts
+  s_c7a7b98e0ed667::t_4fb21bbf26c535 2-9,11-12,19-39,41-46,48-64,66-71,73-83,85-167
+  s_c7a7b98e0ed667::t_9dafd5e12093e5 1,13-18
+  s_c7a7b98e0ed667::t_568cc2032623d8 10
+packages/core/src/money/quote.ts
+  s_c7a7b98e0ed667::t_a5106226c1409b 1-146
+packages/core/src/wire/index.ts
+  s_c7a7b98e0ed667::t_2f4c7d0576e7b5 1-9
+packages/commerce/src/orders/orders.test.ts
+  s_c7a7b98e0ed667::t_7392e9f80337a7 48
+packages/commerce/package.json
+  s_c7a7b98e0ed667::t_70b2b4664a4831 39
+packages/core/src/catalog/index.ts
+  s_c7a7b98e0ed667::t_2f4c7d0576e7b5 1-8
+packages/webhooks/src/emit.ts
+  s_c7a7b98e0ed667::t_568cc2032623d8 19,28-35
+  s_c7a7b98e0ed667::t_3ac91a1fccd7a5 1-18,20-27,36-78,80-86,88-204,206-215
+packages/core/src/identity/index.ts
+  s_c7a7b98e0ed667::t_2f4c7d0576e7b5 1-16
+packages/core/src/place/index.ts
+  s_c7a7b98e0ed667::t_2f4c7d0576e7b5 1-9
+packages/core/src/shop/plans.ts
+  s_c7a7b98e0ed667::t_a5106226c1409b 1-403
+packages/commerce/src/orders/orders.ts
+  s_c7a7b98e0ed667::t_4113816bc4b619 8
+packages/core/src/index.ts
+  s_c7a7b98e0ed667::t_2f4c7d0576e7b5 1-40
+packages/core/src/shop/index.ts
+  s_c7a7b98e0ed667::t_2f4c7d0576e7b5 1-16
+packages/core/package.json
+  s_c7a7b98e0ed667::t_9dafd5e12093e5 8-34,36
+packages/core/src/wire/resources.ts
+  s_c7a7b98e0ed667::t_a5106226c1409b 1-387
+packages/core/src/orders/index.ts
+  s_c7a7b98e0ed667::t_2f4c7d0576e7b5 1-14
+apps/web/src/lib/consent-write-paths.test.ts
+  s_c7a7b98e0ed667::t_4a22d60f92b271 91
+pnpm-lock.yaml
+  s_c7a7b98e0ed667::t_a7d18eb17cfd57 706-708
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7a43db6f0af6c9640e4038b4943f622de99d0284",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
