@@ -20,6 +20,26 @@ import { taxName } from "@sailo/core/tax-label";
 import { platformFeeCents } from "@sailo/core/plans";
 import type Stripe from "stripe";
 
+/*
+ * Four calls that used to be written out below and now live in
+ * `@sailo/payments/connect`, because the phone has to make them too and
+ * `packages/api` cannot import from this app.
+ *
+ * Re-exported rather than merely imported: twenty-odd call sites in here and
+ * in `lib/actions/` reach them through `@/lib/connect`, and the point of the
+ * lift was to have one implementation, not to make everyone update an import.
+ * `lib/payments/rails.ts` did the same thing for the same reason.
+ *
+ * `refundCharge` in particular must not be re-implemented here. It passes
+ * `refund_application_fee`, and a copy that forgot it would refund the buyer
+ * in full while Sailo kept its cut of a sale that got undone.
+ */
+export {
+  actingAs,
+  billingPortalSession,
+  cancelSubscriptionAtPeriodEnd,
+} from "@sailo/payments";
+
 export * from "./connect-account";
 export * from "./subscription-checkout";
 
