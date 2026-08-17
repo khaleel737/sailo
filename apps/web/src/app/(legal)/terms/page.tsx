@@ -347,6 +347,22 @@ export default function TermsPage() {
             which applies to you in addition to this one. Where they differ, the
             stricter applies.
           </P>
+          <P>
+            {/*
+              The same three lists are published at their own address, because a
+              bank asking for the acceptable-use policy wants a URL and a
+              declined seller should not have to read an indemnity clause on the
+              way to the reason. The country rules are only there: fifteen
+              countries of extra prohibitions would bury the list below, which is
+              the one nearly every reader of this clause actually needs.
+            */}
+            These three clauses are also published on their own at{" "}
+            <Ref href="/restricted-businesses">
+              Restricted Businesses
+            </Ref>
+            , together with the extra rules that apply to sellers in particular
+            countries. Those country rules are part of this clause.
+          </P>
           <Callout>
             This clause holds on every channel. Most orders on {LEGAL.product}{" "}
             arrive by chat, bank transfer or cash and never touch a payment

@@ -19,7 +19,7 @@ import { notStaff } from "./roster";
  * should not compete with a buyer paying.
  *
  * Safe on a replica because nothing here decides a write. A staff member who
- * suspends a shop or comps a plan does so through `actions/hq.ts`, which
+ * suspends a shop or comps a plan does so through `actions/hq/`, which
  * re-reads the shop on the primary under `requireStaff` before it writes — so
  * a dashboard a few hundred milliseconds behind changes what is displayed, and
  * never what happens.

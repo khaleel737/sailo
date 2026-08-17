@@ -5,7 +5,7 @@ import { Pagination } from "@/app/hq/_components/hq-pagination";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { ShopCell } from "@/app/hq/_components/hq-ui";
 import { Badge, Button } from "@sailo/design-system/web";
-import { closeSupportTicket } from "@/lib/actions/hq";
+import { closeSupportTicket } from "@/lib/actions/hq/notes";
 import { first, getSupportTickets, pageNumber } from "@/lib/hq";
 import { SUPPORT_TOPIC_LABELS, isSupportTopic } from "@sailo/core/support";
 

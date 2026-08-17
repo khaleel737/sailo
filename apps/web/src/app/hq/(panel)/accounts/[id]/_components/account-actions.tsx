@@ -3,12 +3,12 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { Ban, Gift, MailCheck, MailX, PlayCircle, StickyNote } from "lucide-react";
+import { saveStaffNote } from "@/lib/actions/hq/notes";
 import {
-  saveStaffNote,
   setCompPlan,
   setMarketingPaused,
   setSuspended,
-} from "@/lib/actions/hq";
+} from "@/lib/actions/hq/standing";
 import {
   Alert,
   Button,

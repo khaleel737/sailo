@@ -19,7 +19,12 @@ import {
 } from "@sailo/partners/store";
 import { getProgramSettings } from "@sailo/partners/settings";
 import { hasLiveSubscription, payoutBlocker } from "@sailo/partners/eligibility";
-import { referralUrl, resolveCommissionBp, shareLabel } from "@sailo/partners/program";
+import {
+  commissionCents,
+  referralUrl,
+  resolveCommissionBp,
+  shareLabel,
+} from "@sailo/partners/program";
 import { PLANS } from "@sailo/core/plans";
 import { formatMoney } from "@sailo/core/currency";
 import { ApplyForm } from "./_components/apply-form";
@@ -101,7 +106,22 @@ export default async function PartnersPage() {
     { name: PLANS.business.name, monthly: PLANS.business.monthlyCents },
   ].map((plan) => ({
     ...plan,
-    cut: Math.floor((plan.monthly * commissionBp) / 10_000),
+    /*
+     * `commissionCents`, not the same arithmetic written again here.
+     *
+     * It was inlined as `Math.floor((monthly * bp) / 10_000)` — which is what
+     * the ledger does today, and that is exactly the problem: this page is a
+     * promise about what the ledger will pay, so the two must not be two
+     * implementations that merely agree. `commissionCents` also floors and
+     * guards its inputs, so a 0% partner and a negative amount read the same
+     * here as they do in the payout run.
+     *
+     * One honest caveat this cannot fix: the ledger accrues on
+     * `invoice.amount_paid`, so a referral who used a promotion code or an
+     * annual plan pays less per month than the figure beside it. This is the
+     * list-price case, which is the right one to advertise.
+     */
+    cut: commissionCents(plan.monthly, commissionBp),
   }));
 
   return (

@@ -26,6 +26,13 @@ const DOCS = [
   { href: "/privacy", label: "Privacy Policy", short: "Privacy" },
   { href: "/terms", label: "Terms of Service", short: "Terms" },
   { href: "/refunds", label: "Refund Policy", short: "Refunds" },
+  /*
+   * The acceptable-use policy. It is also clauses 6 to 8 of the Terms, and it
+   * is listed here anyway because the people who go looking for it — a bank
+   * doing diligence, a seller who has just been declined — go looking for a
+   * document rather than for a clause.
+   */
+  { href: "/restricted-businesses", label: "Restricted Businesses", short: "Businesses" },
 ];
 
 export default function LegalLayout({ children }: LayoutProps<"/">) {
@@ -41,7 +48,13 @@ export default function LegalLayout({ children }: LayoutProps<"/">) {
             <SailoLogo className="h-[1.3rem] w-auto" />
           </Link>
           <nav aria-label="Legal documents">
-            <ul className="flex items-center gap-5 sm:gap-7">
+            {/*
+              gap-4 rather than gap-5 below sm: the fourth document takes the
+              row from three short labels to four, and the labels are
+              `whitespace-nowrap`, so an overflow here does not wrap — it pushes
+              the last one off the screen on a 390px phone.
+            */}
+            <ul className="flex items-center gap-4 sm:gap-7">
               {DOCS.map((doc) => (
                 <li key={doc.href}>
                   <Link

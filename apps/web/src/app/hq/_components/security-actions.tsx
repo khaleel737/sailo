@@ -8,7 +8,7 @@ import {
   revokeAccountApiKey,
   revokeAccountSession,
   revokeAccountSessions,
-} from "@/lib/actions/hq";
+} from "@/lib/actions/hq/access";
 import { Alert, Button, Card, Field, Input } from "@sailo/design-system/web";
 import type { ActionState } from "@/lib/actions/shop";
 

@@ -3,6 +3,7 @@ import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import type { DeliveryMethodType } from "@sailo/commerce/delivery";
 import type { PaymentMethodType } from "@/lib/payments";
 import { centsToAmount } from "@sailo/core/currency";
+import { PLAN_IDS, PLANS } from "@sailo/core/plans";
 
 /**
  * Everything a crawler reads.
@@ -43,12 +44,30 @@ export function softwareJsonLd(m: MarketingDictionary) {
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     description: m.seo.description,
-    // The free tier is real and unlimited in time, so this is a claim we can
-    // stand behind rather than a nominal zero.
+    /*
+     * Every tier, not just the free one.
+     *
+     * This was a single `Offer` at `price: "0"`, which is a true statement
+     * about the free plan and a false one about the product: Sailo has three
+     * tiers and two of them cost money, so a crawler reading this was told the
+     * application is free full stop. That is the kind of claim a structured-data
+     * validator accepts and a person notices — the pricing page shows two paid
+     * tiers and the knowledge panel says the whole thing is free.
+     *
+     * `AggregateOffer` is the schema.org shape for exactly this, and the free
+     * tier still gets to be the low end, which is the honest headline: the
+     * bottom of the range really is zero, unlimited in time, and not a trial.
+     *
+     * Derived from `PLANS` rather than typed, for the reason every other price
+     * in this codebase is: the last time a number was written twice, the
+     * homepage advertised $19.99 while Stripe charged $29.99.
+     */
     offers: {
-      "@type": "Offer",
-      price: "0",
+      "@type": "AggregateOffer",
       priceCurrency: "USD",
+      lowPrice: String(Math.min(...PLAN_IDS.map((id) => PLANS[id].monthlyCents)) / 100),
+      highPrice: String(Math.max(...PLAN_IDS.map((id) => PLANS[id].monthlyCents)) / 100),
+      offerCount: String(PLAN_IDS.length),
       availability: "https://schema.org/InStock",
     },
     publisher: {

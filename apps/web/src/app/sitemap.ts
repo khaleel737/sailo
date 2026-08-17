@@ -64,6 +64,19 @@ async function buildSitemap(now: Date): Promise<MetadataRoute.Sitemap> {
     { url: absolute("/terms"), lastModified: now, changeFrequency: "yearly", priority: 0.4 },
     { url: absolute("/refunds"), lastModified: now, changeFrequency: "yearly", priority: 0.4 },
     /*
+     * Higher than its neighbours, and not for search traffic. This is the page
+     * an acquirer, a bank or a partner asks for by name during diligence, and
+     * the one a seller is sent to when a shop is declined — so it should be the
+     * result for "sailo restricted businesses" rather than the terms page that
+     * happens to contain the phrase.
+     */
+    {
+      url: absolute("/restricted-businesses"),
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    /*
      * The developer documentation. `/docs/api` was live and linked from outside
      * long before it was ever submitted here, which is the sort of page that
      * gets found by the people who already know about it and by nobody else.
