@@ -1,3 +1,13 @@
+/**
+ * Saving, deleting and publishing a product.
+ *
+ * The write path. Its validation helpers stay beside it rather than moving with the types:
+ * `usable` decides what the *table* is allowed to hold — a stale row left by an option rename is
+ * an orphan no buyer can select — which is a fact about the write, not about the input.
+ *
+ * `@sailo/commerce/catalog` re-exports this folder, so no caller moved.
+ */
+
 import "server-only";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
@@ -9,14 +19,9 @@ import {
   products,
   type ProductOption,
   type Shop,
-  type VariantOptions,
 } from "@sailo/db/schema";
 import { atProductLimit, planFor, productLimit } from "@sailo/core/plans";
-import {
-  isPublicLinkUrl,
-  isRenderableImageUrl,
-  isStoredFileUrl,
-} from "@sailo/storage/urls";
+import { isPublicLinkUrl, isRenderableImageUrl, isStoredFileUrl } from "@sailo/storage/urls";
 import { isBillingInterval, normalizeTrialDays } from "@sailo/commerce/memberships";
 import { slugify } from "@sailo/core/slug";
 import {
@@ -27,120 +32,18 @@ import {
   normalizeOptions,
   optionKey,
 } from "@sailo/core/variants";
+import {
+  MAX_FILES,
+  MAX_IMAGES,
+  MAX_TAGS,
+  type ProductFileInput,
+  type ProductInput,
+  type ProductVariantInput,
+  type SaveProductRefusal,
+  type SaveProductResult,
+} from "./product-input";
 
-/**
- * Writing a product, from whichever surface the seller used.
- *
- * `saveProduct` was 245 lines inside a `"use server"` file: FormData parsing,
- * the session check, every domain refusal, four table writes and the cache
- * invalidation, in one body. Only the middle of that is about what a product
- * *is*, and only the middle of it can be shared — a phone posts JSON, not a
- * form, and has no cache to drop.
- *
- * So the split is by what the input is rather than by what the code does. Above
- * this line a caller turns whatever it received into `ProductInput`: strings to
- * numbers, checkboxes to booleans, its own wording for whatever it refuses.
- * Below it, everything that must be true of the row no matter who asked — and
- * that includes the refusals, because a rule enforced only in the web form is a
- * rule a phone does not have.
- *
- * Two of those refusals are not conveniences. `isStoredFileUrl` is what stands
- * between a seller and `/api/download/[token]/[fileId]` fetching a URL of their
- * choosing server-side and handing them the reply; `isPublicLinkUrl` is what
- * stops a `javascript:` join link being mailed to a buyer. Both were in the web
- * action, and a `products.save` that did not repeat them would have been the
- * hole reopened by a different door.
- */
-
-/** Images kept per product. The gallery is a set, replaced wholesale. */
-export const MAX_IMAGES = 8;
-/** Downloadable files per product. */
-export const MAX_FILES = 10;
-/** Tags per product. */
-export const MAX_TAGS = 12;
-
-export type ProductVariantInput = {
-  options: VariantOptions;
-  sku?: string | null;
-  /** Null means "same as the product" — not free. */
-  priceCents?: number | null;
-  compareAtCents?: number | null;
-  /** Null means "nobody is counting" — not sold out. */
-  stockQuantity?: number | null;
-  isAvailable?: boolean;
-  imageUrl?: string | null;
-};
-
-export type ProductFileInput = {
-  name?: string | null;
-  url: string;
-  sizeBytes?: number | null;
-  contentType?: string | null;
-};
-
-/**
- * A product as the caller has already understood it — no strings that still
- * need parsing, no `FormDataEntryValue`, no wording.
- */
-export type ProductInput = {
-  /** Null creates. An id updates, and must already belong to this shop. */
-  id: string | null;
-  title: string;
-  description?: string | null;
-  priceCents: number;
-  compareAtCents?: number | null;
-  kind: string;
-  categoryId?: string | null;
-  tags?: string[];
-  options?: ProductOption[];
-  variants?: ProductVariantInput[];
-  files?: ProductFileInput[];
-  imageUrls?: string[];
-
-  trackInventory?: boolean;
-  stockQuantity?: number | null;
-
-  releaseOnPayment?: boolean;
-  downloadLimit?: number | null;
-  downloadExpiryDays?: number | null;
-
-  durationMinutes?: number | null;
-  serviceMode?: string;
-  serviceLocation?: string | null;
-  bookingEnabled?: boolean;
-  bookingLeadHours?: number;
-
-  eventStartsAt?: Date | null;
-  eventJoinUrl?: string | null;
-
-  billingInterval?: string | null;
-  trialDays?: number | null;
-
-  inStock?: boolean;
-  isFeatured?: boolean;
-  isPublished?: boolean;
-};
-
-/**
- * Why a save was refused, as a value rather than a sentence.
- *
- * The web form answers in English inside an `ActionState`; a tRPC procedure
- * answers with a code the phone localises. Neither wording belongs here, and
- * putting one here would have meant the other translating it back.
- */
-export type SaveProductRefusal =
-  | { kind: "no_title" }
-  | { kind: "unknown_category" }
-  | { kind: "event_needs_start" }
-  | { kind: "membership_needs_interval" }
-  | { kind: "membership_needs_price" }
-  | { kind: "join_url_not_public" }
-  | { kind: "product_limit"; limit: number; planName: string }
-  | { kind: "not_found" };
-
-export type SaveProductResult =
-  | { ok: true; id: string; slug: string; created: boolean }
-  | { ok: false; refusal: SaveProductRefusal };
+export * from "./product-input";
 
 /** Appends -2, -3 … until the slug is free within the shop. */
 async function uniqueSlug(shopId: string, base: string, exceptId?: string) {
