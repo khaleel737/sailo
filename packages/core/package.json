@@ -34,7 +34,8 @@
     "./wire": "./src/wire/index.ts",
     "./resources": "./src/wire/resources.ts",
     "./invariant": "./src/invariant.ts",
-    "./origin": "./src/origin.ts"
+    "./origin": "./src/origin.ts",
+    "./paging": "./src/paging/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

@@ -14,10 +14,10 @@ import {
   sendRefundNotification,
   sendShippingNotification,
 } from "@sailo/email/transactional";
-import { decodeCursor, olderThan, pageOf } from "@sailo/commerce/pagination";
+import { olderThan, pageOf } from "@sailo/commerce/pagination";
 import { publishShopEvent } from "@sailo/events";
 import { router, shopProcedure } from "../trpc";
-import { byId, found, listInput } from "../shared";
+import { byId, found, listInput, cursorFrom } from "../shared";
 
 /**
  * A page of orders, and what a seller may narrow it to.
@@ -61,7 +61,7 @@ export const ordersRouter = router({
     const rows = await getDb().query.orders.findMany({
       where: and(
         eq(orders.shopId, ctx.shopId),
-        olderThan(orders, decodeCursor(input?.cursor)),
+        olderThan(orders, cursorFrom(input?.cursor)),
         input?.status ? eq(orders.status, input.status) : undefined,
         search
           ? or(

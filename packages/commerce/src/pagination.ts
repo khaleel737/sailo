@@ -1,4 +1,5 @@
 import { and, eq, lt, or, type SQL } from "drizzle-orm";
+import { encodeCursor, type Cursor } from "@sailo/core/paging";
 import type { PgColumn } from "drizzle-orm/pg-core";
 
 /**
@@ -21,36 +22,26 @@ import type { PgColumn } from "drizzle-orm/pg-core";
  * `(createdAt, id)`, compared as a pair.
  */
 
-export type Cursor = { createdAt: Date; id: string };
-
-/**
- * The wire format: `<iso8601>|<uuid>`, base64url.
+/*
+ * The cursor itself is `@sailo/core/paging` — one implementation, because there
+ * were two and only one of them checked that the id was uuid-shaped. `olderThan`
+ * below puts that id into a comparison against a `uuid` column and Postgres
+ * raises on a malformed one, so the loose copy turned a bad cursor into a 500
+ * where the strict copy answered 400. See that module's header.
  *
- * Encoded rather than sent as an object so a client cannot construct one by
- * hand and go fishing — not that it would reach anything, since every list
- * scopes to `ctx.shopId` in the WHERE regardless. What it really buys is that
- * the shape stays ours to change: A07 and A08 hold these as opaque strings and
- * pass them back, and adding a third component later breaks nobody.
+ * What stays here is the half that needs drizzle: the predicate and the
+ * over-fetch split. `@sailo/core` has no database in it and should not grow one.
+ *
+ * Re-exported so every existing importer of `@sailo/commerce/pagination` keeps
+ * resolving — but `decodeCursor` now returns `"invalid"` as a third state, and
+ * the compiler makes each caller say what that means to it.
  */
-export function encodeCursor(row: Cursor): string {
-  return Buffer.from(`${row.createdAt.toISOString()}|${row.id}`).toString(
-    "base64url",
-  );
-}
-
-/** Null for anything that isn't one of ours — a bad cursor starts at the top. */
-export function decodeCursor(raw: string | null | undefined): Cursor | null {
-  if (!raw) return null;
-  try {
-    const [iso, id] = Buffer.from(raw, "base64url").toString("utf8").split("|");
-    if (!iso || !id) return null;
-    const createdAt = new Date(iso);
-    if (Number.isNaN(createdAt.getTime())) return null;
-    return { createdAt, id };
-  } catch {
-    return null;
-  }
-}
+export {
+  decodeCursor,
+  decodeCursorOrTop,
+  encodeCursor,
+  type Cursor,
+} from "@sailo/core/paging";
 
 /**
  * "Strictly older than the cursor row", in the same order the list is sorted.

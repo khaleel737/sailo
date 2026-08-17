@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { decodeCursor } from "@sailo/core/paging";
 
 /**
  * The pieces every router file in `routers/` needs, kept in one place so there
@@ -58,4 +59,30 @@ export const pushToken = z
 export function found<T>(row: T | undefined | null, what: string): T {
   if (!row) throw new TRPCError({ code: "NOT_FOUND", message: `No such ${what}.` });
   return row;
+}
+
+/**
+ * A cursor from a client, or a refusal.
+ *
+ * `decodeCursor` answers with three states and this collapses two of them for a
+ * router: absent means the first page, and malformed means `BAD_REQUEST`.
+ *
+ * Refusing rather than silently starting at the top, which is what the tRPC path
+ * used to do. Both halves of that are worth stating. It used to *have* to
+ * swallow it, because the decoder it called did not distinguish a bad cursor
+ * from an absent one — and it did not check that the id was uuid-shaped either,
+ * so a hand-typed cursor reached `lt(column, id)` against a `uuid` column and
+ * Postgres raised. The phone got a 500 where `GET /api/v1/orders` got a clean
+ * 400, from two functions with the same name.
+ *
+ * Now both answer the same way. A cursor is opaque and ours: the client received
+ * it from us and passes it back untouched, so a malformed one is a bug or a
+ * probe, and neither deserves the first page dressed up as success.
+ */
+export function cursorFrom(raw: string | null | undefined) {
+  const cursor = decodeCursor(raw);
+  if (cursor === "invalid") {
+    throw new TRPCError({ code: "BAD_REQUEST", message: "That page cursor is not valid." });
+  }
+  return cursor;
 }

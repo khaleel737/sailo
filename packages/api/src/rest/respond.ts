@@ -93,51 +93,19 @@ export function apiFail(failure: ApiFailure, extra?: HeadersInit): Response {
 export const DEFAULT_LIMIT = 25;
 export const MAX_LIMIT = 100;
 
-/**
- * A cursor is the sort key of the last row handed out, not an offset.
+/*
+ * The cursor is `@sailo/core/paging` now — one implementation.
  *
- * Offsets are wrong for a feed that is being written to while it is read: a
- * new order arriving between page one and page two shifts every row down by
- * one, so the consumer sees one order twice and never sees another. A keyset
- * cursor names a position in the ordering rather than a distance from the
- * start, so concurrent writes cannot make it skip.
+ * This file held the strict decoder, the one that checks the id is uuid-shaped
+ * because it is interpolated into a comparison against a `uuid` column and
+ * Postgres raises on a malformed one. `@sailo/commerce/pagination` held a copy
+ * that did not, and the phone's `orders.list` used the copy — so the same bad
+ * cursor was a clean 400 here and a 500 there.
  *
- * Opaque on purpose — base64 of `<timestamp>|<id>`. Not encrypted, because it
- * encodes nothing the holder does not already have; opaque only so nobody
- * builds an integration on its internals and is broken when the ordering
- * changes.
+ * Re-exported so `./handlers` and every route keep importing it from the module
+ * that owns the API's envelope.
  */
-export type Cursor = { createdAt: Date; id: string };
-
-export function encodeCursor(cursor: Cursor): string {
-  return Buffer.from(`${cursor.createdAt.toISOString()}|${cursor.id}`, "utf8").toString(
-    "base64url",
-  );
-}
-
-export function decodeCursor(raw: string | null): Cursor | null | "invalid" {
-  if (!raw) return null;
-
-  try {
-    const [timestamp, id] = Buffer.from(raw, "base64url").toString("utf8").split("|", 2);
-    if (!timestamp || !id) return "invalid";
-
-    const createdAt = new Date(timestamp);
-    if (Number.isNaN(createdAt.getTime())) return "invalid";
-
-    /*
-     * The id half is checked for shape as well. It is interpolated into a
-     * comparison against a uuid column, and a value that is not a uuid makes
-     * Postgres raise rather than return nothing — a 500 where a 400 is the
-     * honest answer.
-     */
-    if (!/^[0-9a-f-]{36}$/i.test(id)) return "invalid";
-
-    return { createdAt, id };
-  } catch {
-    return "invalid";
-  }
-}
+export { decodeCursor, encodeCursor, type Cursor } from "@sailo/core/paging";
 
 /** `?limit=`, clamped. A caller asking for a million gets a hundred. */
 export function readLimit(url: URL): number {

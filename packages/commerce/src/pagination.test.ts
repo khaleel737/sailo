@@ -43,21 +43,33 @@ vi.mock("drizzle-orm", () => {
   };
 });
 
-const { decodeCursor, encodeCursor, olderThan, pageOf } = await import(
-  "./pagination"
-);
+const { decodeCursor, decodeCursorOrTop, encodeCursor, olderThan, pageOf } =
+  await import("./pagination");
 
 type Row = { id: string; createdAt: Date; label: string };
 
 // Columns are their own names here — see the drizzle stub above.
 const COLUMNS = { createdAt: "createdAt", id: "id" } as never;
 
+/**
+ * A row id that a `uuid` column could actually hold.
+ *
+ * These were `id-001`, `id-002` — and that is why this file never caught the
+ * defect it was closest to. `decodeCursor` had two implementations and only one
+ * checked that the id was uuid-shaped, because `olderThan` below puts it into a
+ * comparison against a `uuid` column and Postgres raises on a malformed one. A
+ * fixture using ids the real column cannot store is a fixture that cannot tell
+ * the two decoders apart.
+ *
+ * The ordering assertions still work, because a zero-padded counter in the last
+ * field sorts the same way `id-001` did.
+ */
+function uuidFor(n: number): string {
+  return `6f1d2b7e-0000-4000-8000-${String(n).padStart(12, "0")}`;
+}
+
 function row(n: number, ms: number, label = `row-${n}`): Row {
-  return {
-    id: `id-${String(n).padStart(3, "0")}`,
-    createdAt: new Date(ms),
-    label,
-  };
+  return { id: uuidFor(n), createdAt: new Date(ms), label };
 }
 
 /** The list as the database would return it: newest first, ties broken by id. */
@@ -68,9 +80,16 @@ function ordered(rows: Row[]): Row[] {
   );
 }
 
-/** One page, the way the router asks for it: `limit + 1`, then `pageOf`. */
+/**
+ * One page, the way the router asks for it: `limit + 1`, then `pageOf`.
+ *
+ * `decodeCursorOrTop` rather than `decodeCursor` because every cursor this
+ * harness passes is one it just encoded. The router itself uses `cursorFrom`,
+ * which refuses a malformed one with `BAD_REQUEST` — pinned in
+ * `packages/api/src/cursor-refusal.test.ts`, where the router lives.
+ */
 function page(rows: Row[], cursor: string | null, limit: number) {
-  const predicate = olderThan(COLUMNS, decodeCursor(cursor)) as unknown as
+  const predicate = olderThan(COLUMNS, decodeCursorOrTop(cursor)) as unknown as
     | ((r: Row) => boolean)
     | undefined;
   const matching = ordered(rows).filter((r) => !predicate || predicate(r));
@@ -79,20 +98,42 @@ function page(rows: Row[], cursor: string | null, limit: number) {
 
 describe("the cursor", () => {
   it("survives a round trip", () => {
-    const there = { createdAt: new Date("2026-08-14T09:41:07.221Z"), id: "abc" };
+    const there = { createdAt: new Date("2026-08-14T09:41:07.221Z"), id: uuidFor(7) };
     expect(decodeCursor(encodeCursor(there))).toEqual(there);
   });
 
-  it("starts at the top rather than throwing on anything it did not write", () => {
-    /*
-     * A cursor is a string a client held on to, and clients hold on to stale
-     * ones — across an app update, a logout, a paste. None of these may 500 a
-     * list screen, and none of them can reach another shop's rows either way:
-     * the scope is in the WHERE, not in the cursor.
-     */
-    for (const junk of ["", "!!!!", "Zm9v", null, undefined, "../../etc"]) {
-      expect(decodeCursor(junk)).toBeNull();
-    }
+  /*
+   * A STALE CURSOR IS NOT A MALFORMED ONE, AND THIS TEST USED TO CONFLATE THEM
+   *
+   * The version of this that asserted `decodeCursor(junk) === null` reasoned that
+   * "clients hold on to stale ones — across an app update, a logout, a paste.
+   * None of these may 500 a list screen." The concern is right and the conclusion
+   * was too broad, which is how the shape check went missing.
+   *
+   * A cursor we issued and a client kept is still `<iso8601>|<uuid>`: it decodes,
+   * and `olderThan` compares against a timestamp, so it does not matter whether
+   * the row it names still exists. Nothing about staleness is malformed.
+   *
+   * Garbage is a different thing. `"../../etc"` was never a cursor, and the id
+   * half of a malformed one reaches `lt(column, id)` against a `uuid` column —
+   * which is a 500 rather than an empty page. So garbage is refused, and a caller
+   * that genuinely wants the first page instead says so with `decodeCursorOrTop`.
+   */
+  it("reads a stale cursor of ours without complaint", () => {
+    const longAgo = { createdAt: new Date("2019-01-01T00:00:00.000Z"), id: uuidFor(1) };
+    expect(decodeCursor(encodeCursor(longAgo))).toEqual(longAgo);
+  });
+
+  it.each(["!!!!", "Zm9v", "../../etc"])("refuses %s, which was never a cursor", (junk) => {
+    expect(decodeCursor(junk)).toBe("invalid");
+  });
+
+  it.each(["", null, undefined])("still treats %s as the first page", (absent) => {
+    expect(decodeCursor(absent)).toBeNull();
+  });
+
+  it("offers the first page to a caller that cannot report a refusal", () => {
+    expect(decodeCursorOrTop("../../etc")).toBeNull();
   });
 });
 
@@ -100,9 +141,9 @@ describe("pageOf", () => {
   it("hands back the page without the row that proved there was more", () => {
     const rows = [row(1, 300), row(2, 200), row(3, 100)];
     const { items, nextCursor } = pageOf(rows, 2);
-    expect(items.map((r) => r.id)).toEqual(["id-001", "id-002"]);
+    expect(items.map((r) => r.id)).toEqual([uuidFor(1), uuidFor(2)]);
     // The cursor is the last row *kept*, not the one that overflowed.
-    expect(decodeCursor(nextCursor)?.id).toBe("id-002");
+    expect(decodeCursorOrTop(nextCursor)?.id).toBe(uuidFor(2));
   });
 
   it("says the list is finished rather than leaving it to be guessed", () => {

@@ -9,11 +9,11 @@ import {
   toggleProductPublished,
   type SaveProductRefusal,
 } from "@sailo/commerce/products";
-import { decodeCursor, olderThan, pageOf } from "@sailo/commerce/pagination";
+import { olderThan, pageOf } from "@sailo/commerce/pagination";
 import { sellerCataloguePage, sellerProduct } from "@sailo/commerce/catalog";
 import { TRPCError } from "@trpc/server";
 import { router, shopProcedure } from "../trpc";
-import { byId, found, listInput } from "../shared";
+import { byId, found, listInput, cursorFrom } from "../shared";
 
 /** The seller's catalogue, scoped by `ctx.shopId` in every WHERE. */
 
@@ -161,7 +161,7 @@ export const productsRouter = router({
     const rows = await sellerCataloguePage({
       shopId: ctx.shopId,
       filter: { status: input?.status === "all" ? undefined : input?.status, search: input?.search },
-      after: olderThan(products, decodeCursor(input?.cursor)),
+      after: olderThan(products, cursorFrom(input?.cursor)),
       limit,
     });
 
