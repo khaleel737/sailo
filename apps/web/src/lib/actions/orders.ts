@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { resolveOrderIntent } from "@sailo/commerce/orders/server";
 import { upsertClient } from "@sailo/commerce/orders/server";
-import { referralFor } from "@sailo/commerce/orders/server";
+import { referralFor } from "@sailo/workflows/orders";
 import type { OrderIntentInput, OrderIntentResult } from "@sailo/commerce/orders";
 import { firstRow } from "@sailo/core/invariant";
 import { eq } from "drizzle-orm";
@@ -33,8 +33,8 @@ import { claimSlots, releaseSlots, slotEnd } from "@sailo/commerce/booking/serve
 import { downloadUrl, newDownloadToken, releasesImmediately } from "@/lib/downloads";
 import { resolveDigitalDelivery } from "@sailo/commerce/orders/server";
 import { eventSalesOpen, ticketValues } from "@sailo/commerce/ticketing";
-import { confirmBuyerByEmail } from "@sailo/commerce/orders/server";
-import { notifySellerOfOrder } from "@sailo/commerce/orders/server";
+import { confirmBuyerByEmail } from "@sailo/workflows/orders";
+import { notifySellerOfOrder } from "@sailo/workflows/orders";
 import { emitOrderWebhook } from "@sailo/webhooks/emit";
 
 

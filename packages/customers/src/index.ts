@@ -13,4 +13,3 @@ export * from "./consent";
 export * from "./favorites";
 export * from "./shop-consent";
 export * from "./shop-pixels";
-export * from "./tags";

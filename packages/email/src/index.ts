@@ -19,12 +19,25 @@
  *                    never subject to a preference.
  *   ./lifecycle      mail that had to ask first.
  *
- * The two halves underneath are shared by all four and stay at the root:
- * `./transport` (how mail leaves) and `./markup` (what it is made of).
+ * WHAT LEFT, AND WHY
+ *
+ * `transport` and `markup` are `@sailo/mailer` now. They were here, and holding
+ * them forced three other domain packages into a sibling dependency on this one:
+ * `@sailo/marketing` wanted `layout` and `sendBatch` to compose a broadcast,
+ * `@sailo/security` wanted them to email the staff about a blocklisting, and
+ * `@sailo/webhooks` wanted them to tell a seller it had disabled their endpoint.
+ * None of the three wants an order receipt, and all three had to depend on the
+ * package that holds one.
+ *
+ * A Resend client and a set of HTML table helpers are a *capability*. The
+ * messages — which know about orders, shops and sellers — are domain. Split, the
+ * three reach downwards for the capability instead of sideways for this package.
+ *
+ * Still re-exported from here, because a caller that composes and sends a message
+ * in one function should not have to name two packages to do it.
  */
 
-export * from "./transport";
-export * from "./markup";
+export * from "@sailo/mailer";
 /*
  * Re-exported, not owned. `origin` moved to `@sailo/core/origin` when
  * `@sailo/commerce` needed the same base to build a Stripe return URL from —

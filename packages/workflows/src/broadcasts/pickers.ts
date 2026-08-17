@@ -3,7 +3,7 @@ import { and, desc, asc, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { categories, coupons, products } from "@sailo/db/schema";
 import { getShopClients } from "@sailo/customers/roster";
-import { tagVocabulary } from "@sailo/customers/tags";
+import { tagVocabulary } from "@sailo/core/tags";
 
 /**
  * Everything the compose screen's dropdowns need, in one round trip.

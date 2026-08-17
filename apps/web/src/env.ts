@@ -4,7 +4,7 @@ import { keys as shared } from "@sailo/env/keys";
 import { keys as payments } from "@sailo/payments/keys";
 import { keys as rateLimit } from "@sailo/rate-limit/keys";
 import { keys as observability } from "@sailo/observability/keys";
-import { keys as email } from "@sailo/email/keys";
+import { keys as mailer } from "@sailo/mailer/keys";
 import { keys as security } from "@sailo/security/keys";
 import { keys as storage } from "@sailo/storage/keys";
 import { createEnv } from "@t3-oss/env-core";
@@ -39,7 +39,7 @@ export const env = createEnv({
   extends: [
     db(),
     shared(),
-    email(),
+    mailer(),
     observability(),
     payments(),
     rateLimit(),

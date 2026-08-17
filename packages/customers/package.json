@@ -5,7 +5,6 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./tags": "./src/tags.ts",
     "./consent": "./src/consent.ts",
     "./shop-consent": "./src/shop-consent.ts",
     "./pixels": "./src/shop-pixels.ts",

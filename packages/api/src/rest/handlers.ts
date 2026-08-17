@@ -9,7 +9,7 @@ import {
   products,
   type Order,
 } from "@sailo/db/schema";
-import { MAX_TAGS, normalizeTag, normalizeTags } from "@sailo/customers/tags";
+import { MAX_TAGS, normalizeTag, normalizeTags } from "@sailo/core/tags";
 import { normalizePhone } from "@sailo/core/phone";
 import { MAX_EMAIL_LENGTH, confirmUrl, normalizeEmail, normalizeName, subscribeToken } from "@sailo/marketing/broadcasts/server";
 import { sendSubscribeConfirmation } from "@sailo/email/lifecycle";

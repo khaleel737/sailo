@@ -17,7 +17,7 @@ import { mergeValuesFor } from "@sailo/marketing/broadcasts";
 import { parseSegment, toFilter } from "@sailo/marketing/broadcasts";
 import { renderBroadcast, renderText } from "@sailo/marketing/broadcasts";
 import { unsubscribeToken, unsubscribeUrl } from "@sailo/marketing/broadcasts/server";
-import { ORDERS, send, sender } from "@sailo/email/transport";
+import { ORDERS, send, sender } from "@sailo/mailer/transport";
 import { getDictionary } from "@sailo/i18n";
 import { LEGAL } from "@sailo/core/legal";
 import { rateLimit } from "@sailo/rate-limit";

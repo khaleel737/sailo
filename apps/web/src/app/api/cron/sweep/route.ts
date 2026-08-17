@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cronAuthFailure } from "@sailo/security/cron-auth";
 import { releaseAbandonedCheckouts } from "@sailo/commerce/catalog";
 import { refreshCalendarFeeds } from "@sailo/commerce/booking/server";
-import { pruneWebhookDeliveries } from "@sailo/webhooks/deliver";
+import { pruneWebhookDeliveries } from "@sailo/workflows/webhooks";
 
 /**
  * Housekeeping that must happen whether or not a webhook arrived.

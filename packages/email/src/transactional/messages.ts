@@ -5,7 +5,7 @@ import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@sailo/payments/offlin
 import { formatAddress } from "@sailo/core/address";
 import { formatMoney } from "@sailo/core/currency";
 import { eventBlock, type EventDetails } from "../orders";
-import { ORDERS, PARTNERS, send, sender, type SendResult } from "../transport";
+import { ORDERS, PARTNERS, send, sender, type SendResult } from "@sailo/mailer/transport";
 import {
   button,
   buttonGhost,
@@ -24,7 +24,7 @@ import {
   strong,
   well,
   type Detail,
-} from "../markup";
+} from "@sailo/mailer/markup";
 
 /**
  * A buyer's record of what they bought.

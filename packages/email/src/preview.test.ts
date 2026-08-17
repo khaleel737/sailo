@@ -6,7 +6,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
  * EMAIL_PREVIEW_DIR names where to put them, so the ordinary suite skips it.
  */
 
-import type * as TransportModule from "./transport";
+import type * as TransportModule from "@sailo/mailer/transport";
 
 const DIR = process.env.EMAIL_PREVIEW_DIR;
 

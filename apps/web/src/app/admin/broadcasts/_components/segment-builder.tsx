@@ -11,7 +11,7 @@ import {
   type RuleType,
 } from "@sailo/marketing/broadcasts";
 import type { SegmentRule } from "@sailo/db/schema/json-types";
-import type { SegmentPickers } from "@sailo/marketing/broadcasts/server";
+import type { SegmentPickers } from "@sailo/workflows/broadcasts";
 import { countAudience } from "@/lib/actions/broadcasts";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";

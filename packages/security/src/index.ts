@@ -24,7 +24,6 @@
  * these names.
  */
 export * from "./blocklist";
-export * from "./ip-ranges";
 export * from "./restricted-businesses";
 export * from "./staff";
 export * from "./cron-auth";

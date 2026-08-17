@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isPublicAddress } from "./ip-ranges";
+import { isPublicAddress } from "./ip";
 
 /**
  * The guard that decides whether Sailo will open a socket to an address.

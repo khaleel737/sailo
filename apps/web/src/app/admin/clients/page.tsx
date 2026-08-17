@@ -4,7 +4,7 @@ import { Users } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { CLIENT_LIMIT, getShopClients } from "@/lib/queries";
-import { normalizeTag, tagVocabulary } from "@sailo/customers/tags";
+import { normalizeTag, tagVocabulary } from "@sailo/core/tags";
 import { PageHeader } from "@sailo/design-system/web";
 import { ExportButton } from "@/app/admin/_components/export-button";
 import { AddContact } from "./_components/add-contact";

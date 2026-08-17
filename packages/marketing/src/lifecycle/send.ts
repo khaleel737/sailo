@@ -3,7 +3,7 @@ import { eq, inArray } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { lifecycleEmails } from "@sailo/db/schema";
 import { lifecycleMessage } from "./messages";
-import { MAX_BATCH, sendBatch } from "@sailo/email/transport";
+import { MAX_BATCH, sendBatch } from "@sailo/mailer/transport";
 import {
   RETIRED_STEP,
   isRetirable,

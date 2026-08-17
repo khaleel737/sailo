@@ -6,7 +6,6 @@
   "exports": {
     ".": "./src/index.ts",
     "./blocklist": "./src/blocklist/index.ts",
-    "./ip-ranges": "./src/ip-ranges.ts",
     "./restricted-businesses": "./src/restricted-businesses.ts",
     "./staff": "./src/staff.ts",
     "./cron-auth": "./src/cron-auth.ts",
@@ -18,8 +17,8 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@sailo/email": "workspace:*",
     "@sailo/env": "workspace:*",
+    "@sailo/mailer": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
     "@t3-oss/env-core": "^0.13.4",
     "server-only": "^0.0.1",

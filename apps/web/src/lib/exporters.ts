@@ -9,7 +9,7 @@ import {
   getOrderItemsMap,
 } from "@/lib/queries";
 import { bool, date, money, toCsv } from "@/lib/csv";
-import { tagsToCsv } from "@sailo/customers/tags";
+import { tagsToCsv } from "@sailo/core/tags";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { formatPercent } from "@sailo/core/pricing";
 

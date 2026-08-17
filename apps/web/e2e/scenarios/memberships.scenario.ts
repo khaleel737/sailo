@@ -17,11 +17,8 @@ import {
 import { createOrderIntent } from "@/lib/actions/orders";
 import { handleConnectEvent } from "@/lib/stripe-webhooks";
 import { accessForOrder, membershipOpenForOrder } from "@/lib/membership-access";
-import {
-  createManualSubscription,
-  extendForPaidOrder,
-  runManualRenewals,
-} from "@sailo/commerce/memberships/server";
+import { createManualSubscription, extendForPaidOrder } from "@sailo/commerce/memberships/server";
+import { runManualRenewals } from "@sailo/workflows/memberships";
 import { RENEWAL_LEAD_DAYS } from "@sailo/commerce/memberships";
 
 /**

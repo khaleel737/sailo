@@ -1,6 +1,6 @@
 import "server-only";
 import { SUPPORT_TOPIC_LABELS, type SupportTopic } from "@sailo/core/support";
-import { ACCOUNTS, SUPPORT, send, sender, type SendResult } from "../transport";
+import { ACCOUNTS, SUPPORT, send, sender, type SendResult } from "@sailo/mailer/transport";
 import { appOrigin } from "@sailo/core/origin";
 import {
   button,
@@ -13,7 +13,7 @@ import {
   section,
   strong,
   well,
-} from "../markup";
+} from "@sailo/mailer/markup";
 
 /**
  * Mail about an account, not about a shop.

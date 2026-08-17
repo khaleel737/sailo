@@ -15,3 +15,4 @@ export * from "./badge";
 export * from "./uuid";
 export * from "./phone";
 export * from "./token";
+export * from "./tags";

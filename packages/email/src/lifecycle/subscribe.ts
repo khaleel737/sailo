@@ -1,7 +1,7 @@
 import "server-only";
 import type { Shop } from "@sailo/db/schema";
-import { ORDERS, send, sender, type SendResult } from "../transport";
-import { button, esc, layout, para } from "../markup";
+import { ORDERS, send, sender, type SendResult } from "@sailo/mailer/transport";
+import { button, esc, layout, para } from "@sailo/mailer/markup";
 
 /**
  * The one message that asks permission.

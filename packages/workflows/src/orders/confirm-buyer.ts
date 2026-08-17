@@ -3,8 +3,8 @@ import { asc, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orderItems, orders, type Shop } from "@sailo/db/schema";
 import { sendOrderConfirmation } from "@sailo/email/transactional";
-import { downloadUrl } from "../orders/downloads";
-import type { DigitalDelivery } from "../orders/digital-delivery";
+import { downloadUrl } from "@sailo/commerce/orders/server";
+import type { DigitalDelivery } from "@sailo/commerce/orders/server";
 
 /**
  * Telling the buyer their order landed.

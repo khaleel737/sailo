@@ -7,7 +7,7 @@ import { appOrigin } from "@sailo/core/origin";
 
 /** This deployment's origin — see `../origin` for why it is read, not passed. */
 const appUrl = appOrigin;
-import { ORDERS, send, sender, type SendResult } from "../transport";
+import { ORDERS, send, sender, type SendResult } from "@sailo/mailer/transport";
 import {
   button,
   detailTable,
@@ -22,7 +22,7 @@ import {
   section,
   strong,
   type Detail,
-} from "../markup";
+} from "@sailo/mailer/markup";
 
 /**
  * Every message Sailo sends to a *seller* about their own shop.

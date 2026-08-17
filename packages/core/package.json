@@ -37,7 +37,9 @@
     "./origin": "./src/origin.ts",
     "./paging": "./src/paging/index.ts",
     "./token": "./src/identity/token.ts",
-    "./time": "./src/time/index.ts"
+    "./time": "./src/time/index.ts",
+    "./tags": "./src/identity/tags.ts",
+    "./net": "./src/net/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

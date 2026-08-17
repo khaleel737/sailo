@@ -19,7 +19,7 @@ import type { Broadcast } from "@sailo/db/schema";
 import { MarkdownEditor } from "./markdown-editor";
 import { PromoPicker } from "./promo-picker";
 import { SegmentBuilder } from "./segment-builder";
-import type { SegmentPickers } from "@sailo/marketing/broadcasts/server";
+import type { SegmentPickers } from "@sailo/workflows/broadcasts";
 
 /**
  * Writing a broadcast.

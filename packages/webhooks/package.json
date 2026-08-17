@@ -5,7 +5,6 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./deliver": "./src/deliver.ts",
     "./emit": "./src/emit.ts",
     "./events": "./src/events.ts",
     "./post": "./src/post.ts",
@@ -20,8 +19,6 @@
   "dependencies": {
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
-    "@sailo/email": "workspace:*",
-    "@sailo/security": "workspace:*",
     "@sailo/storage": "workspace:*",
     "drizzle-orm": "^0.45.2",
     "server-only": "^0.0.1"

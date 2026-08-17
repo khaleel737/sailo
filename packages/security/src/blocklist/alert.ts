@@ -1,6 +1,6 @@
 import "server-only";
-import { SUPPORT, send, sender, type SendResult } from "@sailo/email/transport";
-import { detailTable, esc, fine, link, para, sailoLayout, section, strong } from "@sailo/email/markup";
+import { SUPPORT, send, sender, type SendResult } from "@sailo/mailer/transport";
+import { detailTable, esc, fine, link, para, sailoLayout, section, strong } from "@sailo/mailer/markup";
 import { staffEmails } from "../staff";
 import type { Listing } from "./check";
 

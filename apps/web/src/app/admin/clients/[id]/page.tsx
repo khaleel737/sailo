@@ -9,7 +9,7 @@ import {
   getOrderItemsMap,
   getShopClients,
 } from "@/lib/queries";
-import { tagVocabulary } from "@sailo/customers/tags";
+import { tagVocabulary } from "@sailo/core/tags";
 import { TagEditor } from "../_components/tag-editor";
 import { deleteClient, updateClientNotes } from "@/lib/actions/order-admin";
 import { PageHeader } from "@sailo/design-system/web";

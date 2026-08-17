@@ -2,7 +2,7 @@ import "server-only";
 import { request as httpsRequest, Agent } from "node:https";
 import { lookup as dnsLookup, type LookupAddress, type LookupOptions } from "node:dns";
 import type { LookupFunction } from "node:net";
-import { isPublicAddress } from "@sailo/security/ip-ranges";
+import { isPublicAddress } from "@sailo/core/net";
 import { isPublicLinkUrl } from "@sailo/storage/urls";
 
 /**

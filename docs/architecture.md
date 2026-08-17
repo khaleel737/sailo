@@ -46,14 +46,15 @@ Every workspace declares one layer tag in its own `turbo.json`. A layer may only
 downwards:
 
 ```
-app  →  transport  →  domain  →  capability  →  foundation
+app  →  transport  →  workflow  →  domain  →  capability  →  foundation
 ```
 
 | Layer | Owns | Packages |
 |---|---|---|
 | `foundation` | Primitives and vendor-free seams. Knows nothing above it. | `config` `env` `db` `core` `i18n` `observability` `design-system` `storage` |
 | `capability` | One external capability behind a seam. No business rules. | `auth` `payments` `billing` `rate-limit` `events` `security` |
-| `domain` | Sailo's rules, built on capabilities. | `commerce` `analytics` `customers` `partners` `marketing` `email` `notifications` `webhooks` |
+| `domain` | Sailo's rules, built on capabilities. Each one is about **one** subject. | `commerce` `analytics` `customers` `partners` `marketing` `email` `notifications` `webhooks` `security` `account` |
+| `workflow` | Work that spans contexts and belongs to none of them. | `workflows` |
 | `transport` | Shape only — validation, serialisation, status codes. | `api` |
 | `app` | Routes, components, wiring. Deployable, never imported. | `apps/web` `apps/api` `apps/mobile` |
 
@@ -71,6 +72,42 @@ npx turbo boundaries    # must report 0 issues
 To confirm the check is live rather than decorative, retag any foundation package as
 `domain` and re-run: it should report violations from every capability package that imports
 it.
+
+### The workflow layer, and the measurement that produced it
+
+Domain packages were importing each other: 18 sideways imports across 12 edges.
+Hashing where they came from gave one answer — a function that was not *about* the
+package holding it.
+
+`notifySellerOfOrder` is the clearest. It reads an order, checks a notification
+preference, sends an email, sends a push. Ask which package owns it: not commerce,
+which knows nothing about push; not email, which knows nothing about orders; not
+notifications, which knows neither. Sitting inside commerce, it made commerce
+depend on the other two.
+
+Seven such functions moved to `@sailo/workflows`. Two other causes were fixed at
+the source:
+
+- **`@sailo/email` was two things.** The messages are domain — they know about
+  orders and sellers. The Resend client and the HTML kit are a *capability*, and
+  holding them here forced `marketing`, `security` and `webhooks` to depend on the
+  package that also holds an order receipt. They are `@sailo/mailer` now, and
+  those three reach *downwards* for a capability instead of sideways.
+- **Two primitives were in the wrong home.** `normalizeTag` is the same class of
+  thing as `slug` and `handle` — one right normalisation of a typed string — and
+  `isPublicAddress` is address arithmetic with no opinion about Sailo. Both are in
+  `@sailo/core`, which is what removed `marketing → customers` and
+  `webhooks → security`.
+
+**Result: 2 sideways imports across 2 edges**, and both are the same deliberate
+case — `changeOrderStatus` calling `emitOrderWebhook`, and `broadcasts/subscribe`
+raising `contact.created`. Those announcements have to happen *inside* the write,
+after it and never before; lifting them out would make announcing something a
+caller has to remember.
+
+The test for whether something is a workflow: **is the function about its
+package?** An order write that announces itself is about the order. A function
+whose whole body is "tell three other systems" is about none of them.
 
 ### Deviation from next-forge, stated on purpose
 

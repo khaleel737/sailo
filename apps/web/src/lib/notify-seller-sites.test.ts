@@ -20,14 +20,21 @@ import { describe, expect, it } from "vitest";
 const orders = readFileSync("src/lib/actions/orders.ts", "utf8");
 const connect = readFileSync("src/lib/stripe-webhooks/connect.ts", "utf8");
 /*
- * `notifySellerOfOrder` moved to `@sailo/commerce/orders` — the phone settles
- * orders too, and a seller notice that only fires from the website is a seller
- * who finds out about half their sales. This test stayed here because the two
- * *send sites* it pins are both this app's, and what it guards is which branch
- * each one sits in rather than anything about the function itself.
+ * `notifySellerOfOrder` is `@sailo/workflows/orders` now.
+ *
+ * It started in this app, moved to `@sailo/commerce` so the phone could settle an
+ * order and still tell the seller, and then moved again — because its whole body
+ * is "read an order, check a preference, send an email, send a push", which makes
+ * it about none of commerce, email or notifications. Holding it inside commerce
+ * was what made commerce depend on the other two.
+ *
+ * This test stayed here through both moves, because the two *send sites* it pins
+ * are both this app's and what it guards is which branch each one sits in.
  */
 const notify = readFileSync(
-  createRequire(import.meta.url).resolve("@sailo/commerce/orders").replace(/index\.ts$/, "notify-seller.ts"),
+  createRequire(import.meta.url)
+    .resolve("@sailo/workflows/orders")
+    .replace(/index\.ts$/, "notify-seller.ts"),
   "utf8",
 );
 const reference = readFileSync("src/lib/actions/payment-reference.ts", "utf8");

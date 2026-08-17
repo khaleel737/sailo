@@ -11,7 +11,7 @@ import {
   type Product,
   type Shop,
 } from "@sailo/db/schema";
-import { downloadUrl } from "../orders/downloads";
+import { downloadUrl } from "@sailo/commerce/orders/server";
 import { sendEventReminder } from "@sailo/email/transactional";
 
 /**

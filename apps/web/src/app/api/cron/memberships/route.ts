@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cronAuthFailure } from "@sailo/security/cron-auth";
-import { runManualRenewals } from "@sailo/commerce/memberships/server";
+import { runManualRenewals } from "@sailo/workflows/memberships";
 
 /**
  * One pass of the manual renewal cycle.

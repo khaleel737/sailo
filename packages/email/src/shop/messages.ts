@@ -1,5 +1,5 @@
 import "server-only";
-import { PARTNERS, send, sender, type SendResult } from "../transport";
+import { PARTNERS, send, sender, type SendResult } from "@sailo/mailer/transport";
 import {
   button,
   esc,
@@ -9,7 +9,7 @@ import {
   sailoLayout,
   section,
   strong,
-} from "../markup";
+} from "@sailo/mailer/markup";
 
 /**
  * What the people running a shop are told about its arrangements.

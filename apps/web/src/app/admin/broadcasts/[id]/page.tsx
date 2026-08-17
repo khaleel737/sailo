@@ -8,7 +8,7 @@ import { broadcasts } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { can } from "@sailo/core/plans";
-import { segmentPickers } from "@sailo/marketing/broadcasts/server";
+import { segmentPickers } from "@sailo/workflows/broadcasts";
 import { broadcastProgress, MAX_PROMO_PRODUCTS } from "@sailo/marketing/broadcasts/server";
 import { deleteBroadcast, duplicateBroadcast } from "@/lib/actions/broadcasts";
 import { PageHeader } from "@sailo/design-system/web";

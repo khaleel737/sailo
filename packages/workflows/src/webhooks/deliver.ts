@@ -9,8 +9,8 @@ import {
 } from "@sailo/db/schema";
 import { maybeRow } from "@sailo/core/invariant";
 import { sendSellerWebhookDisabled } from "@sailo/email/shop";
-import { postWebhook } from "./post";
-import { signWebhook } from "./signature";
+import { postWebhook } from "@sailo/webhooks/post";
+import { signWebhook } from "@sailo/webhooks/signature";
 
 /**
  * Draining the delivery queue, and the four decisions that shape it.

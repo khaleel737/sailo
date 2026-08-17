@@ -18,10 +18,9 @@
   },
   "dependencies": {
     "@sailo/core": "workspace:*",
-    "@sailo/customers": "workspace:*",
     "@sailo/db": "workspace:*",
-    "@sailo/email": "workspace:*",
     "@sailo/i18n": "workspace:*",
+    "@sailo/mailer": "workspace:*",
     "@sailo/storage": "workspace:*",
     "@sailo/webhooks": "workspace:*",
     "drizzle-orm": "^0.45.2",

@@ -8,7 +8,7 @@ import { requireShop } from "@/lib/session";
 import { getAdminT, getT } from "@/i18n/server";
 import { can } from "@sailo/core/plans";
 import { audienceSize } from "@sailo/marketing/broadcasts/server";
-import { segmentPickers } from "@sailo/marketing/broadcasts/server";
+import { segmentPickers } from "@sailo/workflows/broadcasts";
 import { subscribePageUrl } from "@sailo/marketing/broadcasts/server";
 import { describeSegment, parseSegment } from "@sailo/marketing/broadcasts";
 import { PageHeader } from "@sailo/design-system/web";

@@ -1,5 +1,5 @@
 import type { SegmentFilter, SegmentRule } from "@sailo/db/schema/json-types";
-import { normalizeTag } from "@sailo/customers/tags";
+import { normalizeTag } from "@sailo/core/tags";
 import { isUuid } from "@sailo/core/uuid";
 
 /**

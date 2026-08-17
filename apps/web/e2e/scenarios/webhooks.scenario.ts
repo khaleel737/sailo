@@ -74,7 +74,7 @@ const {
   webhookEndpoints,
 } = await import("@sailo/db/schema");
 const { createOrderIntent } = await import("@/lib/actions/orders");
-const { runWebhookQueue, pruneWebhookDeliveries } = await import("@sailo/webhooks/deliver");
+const { runWebhookQueue, pruneWebhookDeliveries } = await import("@sailo/workflows/webhooks");
 const { verifyWebhook, newWebhookSecret } = await import("@sailo/webhooks/signature");
 const { isWebhookTargetUrl } = await import("@sailo/webhooks/post");
 

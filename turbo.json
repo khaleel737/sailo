@@ -9,7 +9,7 @@
    * Every workspace carries one layer tag in its own turbo.json, and a layer
    * may only import downwards:
    *
-   *   app  ->  transport  ->  domain  ->  capability  ->  foundation
+   *   app -> transport -> workflow -> domain -> capability -> foundation
    *
    * - foundation  primitives and vendor-free seams. Knows nothing above it.
    *               config, env, db, core, i18n, observability, design-system.
@@ -18,6 +18,9 @@
    * - domain      Sailo's rules, built on capabilities: commerce, analytics,
    *               customers, partners, marketing, email, notifications,
    *               webhooks.
+   * - workflow    work that spans contexts and belongs to none of them:
+   *               workflows. A function whose whole body is "tell three other
+   *               systems" is not about any of them.
    * - transport   shape only, owns no rules: api (tRPC routers, REST handlers).
    * - app         routes, components, wiring. Deployable, and never imported.
    *
@@ -42,6 +45,11 @@
         }
       },
       "domain": {
+        "dependencies": {
+          "deny": ["workflow", "transport", "app"]
+        }
+      },
+      "workflow": {
         "dependencies": {
           "deny": ["transport", "app"]
         }

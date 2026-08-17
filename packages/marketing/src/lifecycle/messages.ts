@@ -3,7 +3,7 @@ import { appOrigin } from "@sailo/core/origin";
 import { HERO_DEMO } from "../demos";
 import { lifecycleGap, type LifecycleStepId } from "./steps";
 import type { LifecycleState } from "./state";
-import { MARKETING, sender, type Message } from "@sailo/email/transport";
+import { MARKETING, sender, type Message } from "@sailo/mailer/transport";
 import {
   button,
   esc,
@@ -12,7 +12,7 @@ import {
   para,
   sailoLayout,
   well,
-} from "@sailo/email/markup";
+} from "@sailo/mailer/markup";
 
 /**
  * The words. Every lifecycle email Sailo sends a seller, and nothing else —

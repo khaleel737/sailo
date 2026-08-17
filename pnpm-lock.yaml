@@ -29,15 +29,15 @@ importers:
       '@sailo/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@sailo/email':
-        specifier: workspace:*
-        version: link:../../packages/email
       '@sailo/env':
         specifier: workspace:*
         version: link:../../packages/env
       '@sailo/events':
         specifier: workspace:*
         version: link:../../packages/events
+      '@sailo/mailer':
+        specifier: workspace:*
+        version: link:../../packages/mailer
       '@sailo/marketing':
         specifier: workspace:*
         version: link:../../packages/marketing
@@ -310,6 +310,9 @@ importers:
       '@sailo/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@sailo/mailer':
+        specifier: workspace:*
+        version: link:../../packages/mailer
       '@sailo/marketing':
         specifier: workspace:*
         version: link:../../packages/marketing
@@ -337,6 +340,9 @@ importers:
       '@sailo/webhooks':
         specifier: workspace:*
         version: link:../../packages/webhooks
+      '@sailo/workflows':
+        specifier: workspace:*
+        version: link:../../packages/workflows
       '@sentry/node':
         specifier: ^10.70.0
         version: 10.70.0(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))
@@ -574,9 +580,6 @@ importers:
       '@sailo/core':
         specifier: workspace:*
         version: link:../core
-      '@sailo/customers':
-        specifier: workspace:*
-        version: link:../customers
       '@sailo/db':
         specifier: workspace:*
         version: link:../db
@@ -709,18 +712,9 @@ importers:
       '@sailo/db':
         specifier: workspace:*
         version: link:../db
-      '@sailo/email':
-        specifier: workspace:*
-        version: link:../email
       '@sailo/events':
         specifier: workspace:*
         version: link:../events
-      '@sailo/notifications':
-        specifier: workspace:*
-        version: link:../notifications
-      '@sailo/partners':
-        specifier: workspace:*
-        version: link:../partners
       '@sailo/payments':
         specifier: workspace:*
         version: link:../payments
@@ -939,27 +933,15 @@ importers:
       '@sailo/db':
         specifier: workspace:*
         version: link:../db
-      '@sailo/env':
+      '@sailo/mailer':
         specifier: workspace:*
-        version: link:../env
+        version: link:../mailer
       '@sailo/payments':
         specifier: workspace:*
         version: link:../payments
-      '@sailo/storage':
-        specifier: workspace:*
-        version: link:../storage
-      '@t3-oss/env-core':
-        specifier: ^0.13.4
-        version: 0.13.11(typescript@5.9.3)(zod@4.4.3)
-      resend:
-        specifier: ^6.19.0
-        version: 6.19.0
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
-      zod:
-        specifier: ^4.4.3
-        version: 4.4.3
     devDependencies:
       '@sailo/config':
         specifier: workspace:*
@@ -1030,23 +1012,60 @@ importers:
         specifier: ^5
         version: 5.9.3
 
+  packages/mailer:
+    dependencies:
+      '@sailo/core':
+        specifier: workspace:*
+        version: link:../core
+      '@sailo/db':
+        specifier: workspace:*
+        version: link:../db
+      '@sailo/env':
+        specifier: workspace:*
+        version: link:../env
+      '@sailo/storage':
+        specifier: workspace:*
+        version: link:../storage
+      '@t3-oss/env-core':
+        specifier: ^0.13.4
+        version: 0.13.11(typescript@5.9.3)(zod@4.4.3)
+      resend:
+        specifier: ^6.19.0
+        version: 6.19.0
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@sailo/config':
+        specifier: workspace:*
+        version: link:../config
+      oxlint:
+        specifier: ^1.77.0
+        version: 1.78.0
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(jsdom@20.0.3)(vite@8.2.1(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
+
   packages/marketing:
     dependencies:
       '@sailo/core':
         specifier: workspace:*
         version: link:../core
-      '@sailo/customers':
-        specifier: workspace:*
-        version: link:../customers
       '@sailo/db':
         specifier: workspace:*
         version: link:../db
-      '@sailo/email':
-        specifier: workspace:*
-        version: link:../email
       '@sailo/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@sailo/mailer':
+        specifier: workspace:*
+        version: link:../mailer
       '@sailo/storage':
         specifier: workspace:*
         version: link:../storage
@@ -1251,12 +1270,12 @@ importers:
 
   packages/security:
     dependencies:
-      '@sailo/email':
-        specifier: workspace:*
-        version: link:../email
       '@sailo/env':
         specifier: workspace:*
         version: link:../env
+      '@sailo/mailer':
+        specifier: workspace:*
+        version: link:../mailer
       '@sailo/rate-limit':
         specifier: workspace:*
         version: link:../rate-limit
@@ -1319,15 +1338,61 @@ importers:
       '@sailo/db':
         specifier: workspace:*
         version: link:../db
-      '@sailo/email':
-        specifier: workspace:*
-        version: link:../email
-      '@sailo/security':
-        specifier: workspace:*
-        version: link:../security
       '@sailo/storage':
         specifier: workspace:*
         version: link:../storage
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(@neondatabase/serverless@1.1.0)(@opentelemetry/api@1.9.1)(@types/pg@8.21.0)(kysely@0.29.5)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
+    devDependencies:
+      '@sailo/config':
+        specifier: workspace:*
+        version: link:../config
+      oxlint:
+        specifier: ^1.77.0
+        version: 1.78.0
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(jsdom@20.0.3)(vite@8.2.1(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
+
+  packages/workflows:
+    dependencies:
+      '@sailo/commerce':
+        specifier: workspace:*
+        version: link:../commerce
+      '@sailo/core':
+        specifier: workspace:*
+        version: link:../core
+      '@sailo/customers':
+        specifier: workspace:*
+        version: link:../customers
+      '@sailo/db':
+        specifier: workspace:*
+        version: link:../db
+      '@sailo/email':
+        specifier: workspace:*
+        version: link:../email
+      '@sailo/events':
+        specifier: workspace:*
+        version: link:../events
+      '@sailo/notifications':
+        specifier: workspace:*
+        version: link:../notifications
+      '@sailo/partners':
+        specifier: workspace:*
+        version: link:../partners
+      '@sailo/rate-limit':
+        specifier: workspace:*
+        version: link:../rate-limit
+      '@sailo/webhooks':
+        specifier: workspace:*
+        version: link:../webhooks
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(@neondatabase/serverless@1.1.0)(@opentelemetry/api@1.9.1)(@types/pg@8.21.0)(kysely@0.29.5)
