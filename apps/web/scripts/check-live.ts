@@ -27,6 +27,7 @@ import {
   priceMismatch,
 } from "@sailo/billing/checkout";
 import { appUrl } from "../src/lib/app-url";
+import { check, report } from "./lib/expect";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 const databaseUrl = process.env.DATABASE_URL;
@@ -41,21 +42,6 @@ const sql = neon(databaseUrl);
 const SITE = process.env.CHECK_SITE ?? "https://sailo.store";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-let failures = 0;
-let checks = 0;
-
-function check(label: string, actual: unknown, expected: unknown) {
-  checks++;
-  const ok = JSON.stringify(actual) === JSON.stringify(expected);
-  if (!ok) failures++;
-  console.log(
-    `  ${ok ? "PASS" : "FAIL"}  ${label}` +
-      (ok
-        ? ""
-        : `\n        expected ${JSON.stringify(expected)}\n        actual   ${JSON.stringify(actual)}`),
-  );
-}
-
 /** Polls the shop row until the webhook has landed, or gives up. */
 async function waitForShop(
   shopId: string,
@@ -243,12 +229,7 @@ async function main() {
     }
   }
 
-  console.log(
-    failures === 0
-      ? `\nAll ${checks} checks passed against LIVE Stripe and the deployed site.`
-      : `\n${failures} of ${checks} checks failed.`,
-  );
-  if (failures > 0) process.exitCode = 1;
+  report("That was against LIVE Stripe and the deployed site.");
 }
 
 main().catch((error) => {

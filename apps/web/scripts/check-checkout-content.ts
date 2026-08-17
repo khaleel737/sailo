@@ -30,6 +30,7 @@ import {
   toCheckoutLine,
   type CheckoutDictionary,
 } from "@sailo/commerce/orders";
+import { ok as check, report } from "./lib/expect";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 if (!secretKey) throw new Error("STRIPE_SECRET_KEY is not set");
@@ -37,15 +38,6 @@ if (!secretKey.startsWith("sk_test")) {
   throw new Error("check:checkout creates and deletes accounts — test keys only");
 }
 const stripe = new Stripe(secretKey, { apiVersion: "2026-07-29.dahlia" });
-
-let failures = 0;
-let checks = 0;
-
-function check(label: string, ok: boolean, detail = "") {
-  checks++;
-  if (!ok) failures++;
-  console.log(`  ${ok ? "PASS" : "FAIL"}  ${label}${detail ? ` — ${detail}` : ""}`);
-}
 
 /** English, because the assertions read the strings back. */
 const DICTIONARY: CheckoutDictionary = {
@@ -486,8 +478,7 @@ async function main() {
   check("membership: session is a subscription", fullSub.mode === "subscription");
 
   /* ------------------------------------------------------------------ */
-  console.log(`\n${checks - failures}/${checks} checks passed`);
-  if (failures > 0) process.exitCode = 1;
+  report();
 }
 
 main()

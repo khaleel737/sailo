@@ -22,6 +22,7 @@
  */
 import Stripe from "stripe";
 import { readFileSync } from "node:fs";
+import { ok as check, report } from "./lib/expect";
 
 /**
  * `stripe-webhooks.ts` is `server-only`, so it cannot be imported here — the
@@ -48,15 +49,6 @@ if (!secretKey.startsWith("sk_live_")) {
 const stripe = new Stripe(secretKey, { apiVersion: "2026-07-29.dahlia" });
 const SITE = process.env.CHECK_SITE ?? "https://sailo.store";
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-let failures = 0;
-let checks = 0;
-
-function check(label: string, ok: boolean, detail = "") {
-  checks++;
-  if (!ok) failures++;
-  console.log(`  ${ok ? "PASS" : "FAIL"}  ${label}${detail ? ` — ${detail}` : ""}`);
-}
 
 /**
  * The seller-side events, which is `HANDLED` minus the ones that can only come
@@ -197,12 +189,7 @@ async function main() {
     }
   }
 
-  console.log(
-    failures === 0
-      ? `\nAll ${checks} checks passed. Sellers can connect, and their events reach us.`
-      : `\n${failures} of ${checks} checks failed.`,
-  );
-  if (failures > 0) process.exitCode = 1;
+  report("Sellers can connect, and their events reach us.");
 }
 
 main().catch((error) => {

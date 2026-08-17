@@ -19,21 +19,13 @@
  */
 import Stripe from "stripe";
 import { capabilitiesFor, requestCapabilities } from "@sailo/payments/connect";
+import { ok as check, report } from "./lib/expect";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 if (!secretKey) throw new Error("STRIPE_SECRET_KEY is not set");
 const stripe = new Stripe(secretKey, { apiVersion: "2026-07-29.dahlia" });
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-let failures = 0;
-let checks = 0;
-
-function check(label: string, ok: boolean, detail = "") {
-  checks++;
-  if (!ok) failures++;
-  console.log(`  ${ok ? "PASS" : "FAIL"}  ${label}${detail ? ` — ${detail}` : ""}`);
-}
-
 /**
  * The markets worth proving, and the method each is known for. Sailo sells in
  * 18 currencies; these are the ones where *not* offering the local method is
@@ -385,12 +377,7 @@ async function main() {
     await sleep(200);
   }
 
-  console.log(
-    failures === 0
-      ? `\nAll ${checks} checks passed.`
-      : `\n${failures} of ${checks} checks failed.`,
-  );
-  if (failures > 0) process.exitCode = 1;
+  report();
 }
 
 main().catch((error) => {

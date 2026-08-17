@@ -20,6 +20,7 @@ import Stripe from "stripe";
 import { neon } from "@neondatabase/serverless";
 import { randomUUID } from "node:crypto";
 import { firstRow } from "@sailo/core/invariant";
+import { check, report } from "./lib/expect";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 // Buyer payments arrive on the Connect endpoint, so that is the secret and the
@@ -42,19 +43,6 @@ const CONNECT_ROUTE = "/api/stripe/connect/webhook";
 const OWNER = "check-cards-seller";
 const HANDLE = "check-cards-shop";
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-let failures = 0;
-let checks = 0;
-
-function check(label: string, actual: unknown, expected: unknown) {
-  checks++;
-  const ok = JSON.stringify(actual) === JSON.stringify(expected);
-  if (!ok) failures++;
-  console.log(
-    `  ${ok ? "PASS" : "FAIL"}  ${label}` +
-      (ok ? "" : `\n        expected ${JSON.stringify(expected)}\n        actual   ${JSON.stringify(actual)}`),
-  );
-}
 
 /* -------------------------------------------------------------------------- */
 /*  Talking to our own webhook the way Stripe does                             */
@@ -535,12 +523,7 @@ async function main() {
     }
   }
 
-  console.log(
-    failures === 0
-      ? `\nAll ${checks} checks passed. The card rail behaves.`
-      : `\n${failures} of ${checks} checks failed.`,
-  );
-  if (failures > 0) process.exitCode = 1;
+  report("The card rail behaves.");
 }
 
 main().catch((error) => {

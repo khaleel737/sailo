@@ -28,6 +28,7 @@
  * is deleted on the way out.
  */
 import Stripe from "stripe";
+import { check, ok, report } from "./lib/expect";
 
 const key = process.env.STRIPE_SECRET_KEY;
 if (!key) throw new Error("STRIPE_SECRET_KEY is not set");
@@ -40,30 +41,18 @@ if (!key.startsWith("sk_test_") && !key.startsWith("rk_test_")) {
 const stripe = new Stripe(key, { apiVersion: "2026-07-29.dahlia" });
 
 const createdAccounts: string[] = [];
-let failures = 0;
-let passes = 0;
-
 async function step<T>(label: string, fn: () => Promise<T>): Promise<T | null> {
   try {
     const result = await fn();
-    passes++;
-    console.log(`  PASS  ${label}`);
+    ok(label, true);
     return result;
   } catch (error) {
-    failures++;
-    console.log(`  FAIL  ${label}\n        ${(error as Error).message}`);
+    /*
+     * A step that threw is a failed check, not a crash: the run continues so the
+     * later steps still report, and the exit code at the end carries the verdict.
+     */
+    ok(label, false, (error as Error).message);
     return null;
-  }
-}
-
-/** Asserts, with the actual value in the message so a failure is diagnosable. */
-function expect(label: string, actual: unknown, wanted: unknown) {
-  if (actual === wanted) {
-    passes++;
-    console.log(`  PASS  ${label}`);
-  } else {
-    failures++;
-    console.log(`  FAIL  ${label}\n        wanted ${wanted}, got ${actual}`);
   }
 }
 
@@ -147,7 +136,7 @@ async function main() {
      * onboard. If this ever stops being true, partners silently stop being
      * payable and the programme needs its own account back.
      */
-    expect(
+    check(
       "requests the transfers capability, not just card_payments",
       Boolean(fresh.capabilities?.transfers),
       true,
@@ -205,7 +194,7 @@ async function main() {
   const balance = await stripe.balance.retrieve();
   const available = balance.available.find((b) => b.currency === "usd")?.amount ?? 0;
   console.log(`        available: $${(available / 100).toFixed(2)}`);
-  expect("reads an available platform balance", available > 1000, true);
+  check("reads an available platform balance", available > 1000, true);
 
   const idempotencyKey = `check-partners-${crypto.randomUUID()}`;
 
@@ -230,8 +219,8 @@ async function main() {
   const payableId = payable?.id ?? "";
 
   if (transfer) {
-    expect("transfer amount is what we asked for", transfer.amount, 600);
-    expect("transfer landed on the seller account", transfer.destination, payable?.id);
+    check("transfer amount is what we asked for", transfer.amount, 600);
+    check("transfer landed on the seller account", transfer.destination, payable?.id);
     console.log(`        transfer: ${transfer.id}`);
 
     /*
@@ -251,7 +240,7 @@ async function main() {
         { idempotencyKey },
       ),
     );
-    if (replay) expect("replay returned the original transfer", replay.id, transfer.id);
+    if (replay) check("replay returned the original transfer", replay.id, transfer.id);
 
     await step("reverses a transfer, putting the money back", () =>
       stripe.transfers.createReversal(transfer.id, { amount: transfer.amount }),
@@ -290,8 +279,14 @@ async function main() {
     }
   }
 
-  console.log(`\n${passes} passed, ${failures} failed\n`);
-  if (failures > 0) process.exit(1);
+  /*
+   * A hard exit, unlike the other eight check scripts, which set `process.exitCode`
+   * and return. Kept as it was: this one holds a Stripe client and a database pool,
+   * and whether it terminates on its own has never been verified. Trading a wrong
+   * exit code for a hung script is not an improvement, so the difference is visible
+   * here rather than hidden in the shared helper.
+   */
+  if (report() > 0) process.exit(1);
 }
 
 main().catch((error) => {

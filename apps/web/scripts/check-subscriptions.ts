@@ -25,6 +25,7 @@ import {
 } from "@sailo/billing/checkout";
 import { appUrl } from "../src/lib/app-url";
 import { payHostedCheckout } from "./lib/hosted-checkout";
+import { check, report } from "./lib/expect";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -40,21 +41,6 @@ const BASE = process.env.CHECK_BASE ?? "http://localhost:3000";
 const ROUTE = "/api/stripe/webhook";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-let failures = 0;
-let checks = 0;
-
-function check(label: string, actual: unknown, expected: unknown) {
-  checks++;
-  const ok = JSON.stringify(actual) === JSON.stringify(expected);
-  if (!ok) failures++;
-  console.log(
-    `  ${ok ? "PASS" : "FAIL"}  ${label}` +
-      (ok
-        ? ""
-        : `\n        expected ${JSON.stringify(expected)}\n        actual   ${JSON.stringify(actual)}`),
-  );
-}
-
 /** Posts a real Stripe event to the real account endpoint, signed. */
 async function deliver(event: unknown) {
   const body = JSON.stringify(event);
@@ -447,12 +433,7 @@ async function main() {
     console.log("  fixture shop removed");
   }
 
-  console.log(
-    failures === 0
-      ? `\nAll ${checks} checks passed. Sailo's own billing works end to end.`
-      : `\n${failures} of ${checks} checks failed.`,
-  );
-  if (failures > 0) process.exitCode = 1;
+  report("Sailo's own billing works end to end.");
 }
 
 main().catch((error) => {

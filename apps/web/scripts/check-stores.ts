@@ -15,6 +15,7 @@ import Stripe from "stripe";
 import { neon } from "@neondatabase/serverless";
 import { randomUUID } from "node:crypto";
 import { firstRow } from "@sailo/core/invariant";
+import { check, report } from "./lib/expect";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;
 const connectSecret =
@@ -31,21 +32,6 @@ const BASE = process.env.CHECK_BASE ?? "http://localhost:3000";
 const ROUTE = "/api/stripe/connect/webhook";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-let failures = 0;
-let checks = 0;
-
-function check(label: string, actual: unknown, expected: unknown) {
-  checks++;
-  const ok = JSON.stringify(actual) === JSON.stringify(expected);
-  if (!ok) failures++;
-  console.log(
-    `  ${ok ? "PASS" : "FAIL"}  ${label}` +
-      (ok
-        ? ""
-        : `\n        expected ${JSON.stringify(expected)}\n        actual   ${JSON.stringify(actual)}`),
-  );
-}
-
 async function deliver(event: unknown, account: string) {
   const body = JSON.stringify({ ...(event as object), account });
   const signature = stripe.webhooks.generateTestHeaderString({
@@ -390,12 +376,7 @@ async function main() {
     }
   }
 
-  console.log(
-    failures === 0
-      ? `\nAll ${checks} checks passed across ${stores.length} shops and 3 product types.`
-      : `\n${failures} of ${checks} checks failed.`,
-  );
-  if (failures > 0) process.exitCode = 1;
+  report(`That is ${stores.length} shops and 3 product types.`);
 }
 
 main().catch((error) => {
