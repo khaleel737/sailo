@@ -66,7 +66,3 @@ export async function referralFor(
   };
 }
 
-/**
- * Buyer submits the reference for a transfer they've already sent. Moves the
- * order to `pending` for the seller to confirm.
- */

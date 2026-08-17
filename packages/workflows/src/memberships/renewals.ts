@@ -17,6 +17,15 @@ import { downloadUrl } from "@sailo/commerce/orders/server";
  * confirmed the money arrived" actually does. That half is now shared; this
  * one stayed.
  *
+ * WHERE THIS IS TESTED
+ *
+ * `apps/web/e2e/scenarios/memberships.scenario.ts`, against a real database — including
+ * three consecutive ticks asserting that a member is asked for one month and not three.
+ * There is no `renewals.test.ts` beside this file on purpose: what matters here is a set
+ * of SQL predicates (the lead window, the `cancelAtPeriodEnd` exclusion, the
+ * `renewalOrderedFor` comparison against *this* period), and a mocked `where` clause
+ * cannot be wrong in the way Postgres can. A unit test here would be asserting a stub.
+ *
  * It stayed because it is the only part that reaches things only a website
  * has: `notifySellerOfOrder` fans out into push tokens and seller email
  * preferences, and `sendMembershipRenewalDue` is a message the *platform*
