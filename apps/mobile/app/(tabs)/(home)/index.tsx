@@ -5,8 +5,6 @@ import * as WebBrowser from "expo-web-browser";
 import { useQueries } from "@tanstack/react-query";
 import { captureError } from "@sailo/observability";
 import { formatMoney } from "@sailo/core/currency";
-import { orderStatusLabel } from "@sailo/core/order-status";
-import { interpolate } from "@sailo/i18n/native";
 import {
   Banner,
   Button,
@@ -14,8 +12,6 @@ import {
   EmptyState,
   ErrorState,
   GroupedList,
-  ListRow,
-  Progress,
   Screen,
   Section,
   Skeleton,
@@ -23,13 +19,15 @@ import {
   StatusPill,
   Text,
 } from "@sailo/design-system/native";
-import type { SetupStep, SetupStepId, SetupProgress } from "@sailo/core/onboarding";
-import type { Order } from "../../../lib/models";
+import type { SetupStepId } from "@sailo/core/onboarding";
 import { useT } from "../../../lib/i18n";
 import { usePushPrimer } from "../../../lib/push";
 import { reportQueryError, useTRPC } from "../../../lib/query";
 import { errorMessage } from "../../../components/states";
 import { useRelativeTime } from "../../../components/order/relative-time";
+import { RecentRow } from "../../../components/home/recent-row";
+import { SetupChecklist } from "../../../components/home/setup-checklist";
+import { count, utcDay, windowLabel } from "../../../components/home/window";
 
 /**
  * Home — the seller's shop link, today's numbers, and what just came in.
@@ -481,203 +479,6 @@ export default function Home() {
   );
 }
 
-/**
- * One of the five most recent orders.
- *
- * No status pill, unlike the Orders tab's rows: this list is five lines under a
- * block of numbers, and the status reads better as the middle of a sentence
- * than as a third column competing with the amount. The word itself is the same
- * one — `orderStatusLabel` over the same dictionary — so the two surfaces
- * cannot disagree about what an order's state is called.
- */
-function RecentRow({
-  order,
-  locale,
-  statusLabels,
-  andMore,
-  ago,
-  now,
-  onPress,
-}: {
-  order: Order;
-  locale: string;
-  statusLabels: Record<string, string>;
-  /** `a.orders.andMore` — "+ {count} more", still holding its placeholder. */
-  andMore: string;
-  ago: (iso: string, now: number) => string;
-  now: number;
-  onPress: (id: string) => void;
-}) {
-  const subtitle = [
-    order.customerName,
-    orderStatusLabel(order.status, statusLabels),
-    order.itemCount > 1 ? interpolate(andMore, { count: order.itemCount - 1 }) : null,
-    ago(order.createdAt, now),
-  ]
-    .filter(Boolean)
-    .join(" · ");
-
-  return (
-    <ListRow
-      title={order.productTitle}
-      subtitle={subtitle}
-      valueTone="strong"
-      value={formatMoney(order.totalCents, order.currency, locale)}
-      trailing="chevron"
-      onPress={() => onPress(order.id)}
-      accessibilityLabel={[
-        order.productTitle,
-        subtitle,
-        formatMoney(order.totalCents, order.currency, locale),
-      ]
-        .filter(Boolean)
-        .join(", ")}
-      testID={`recent-${order.id}`}
-    />
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Dates and counts                                                           */
-/* -------------------------------------------------------------------------- */
-
-const DAY_MS = 86_400_000;
-
-/** `YYYY-MM-DD` in UTC — the spelling `resolveAnalyticsWindow` parses. */
-function utcDay(date: Date): string {
-  return date.toISOString().slice(0, 10);
-}
-
-/**
- * What the numbers above actually cover, named rather than assumed.
- *
- * `until` is exclusive, so the last day on screen is the one just inside it —
- * the same arithmetic the web dashboard does for its own range label. A window
- * of a single day reads as that day; anything wider reads as both ends, which
- * is what a seller sees when a plan clamp or a rejected input has quietly
- * widened what they asked for.
- *
- * Formatted in UTC, because the bounds are UTC midnights: rendering them in the
- * phone's zone would name a day either side of the one that was counted.
- */
-function windowLabel(
-  window: { since: string; until: string; days: number },
-  locale: string,
-): string {
-  const since = new Date(window.since);
-  const lastDay = new Date(new Date(window.until).getTime() - 1);
-  if (Number.isNaN(since.getTime()) || Number.isNaN(lastDay.getTime())) return "";
-
-  let format: (date: Date) => string;
-  try {
-    const formatter = new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" });
-    format = (date) => formatter.format(date);
-  } catch {
-    // No usable Intl. An ISO day is unambiguous in every locale, which is the
-    // property that matters at the point the runtime has stopped helping.
-    format = (date) => utcDay(date);
-  }
-
-  const oneDay = window.until && new Date(window.until).getTime() - since.getTime() <= DAY_MS;
-  return oneDay ? format(since) : `${format(since)} – ${format(lastDay)}`;
-}
-
-/**
- * A count, grouped the way the seller's language groups digits.
- *
- * Wrapped for the same reason every other formatter on the phone is: Hermes
- * ships a narrower ICU than a browser's, and an unrecognised locale throws
- * rather than degrading. The bare digits are still a truthful number.
- */
-function count(value: number, locale: string): string {
-  try {
-    return value.toLocaleString(locale);
-  } catch {
-    return String(value);
-  }
-}
-
-/**
- * "Store setup — 2 of 4", until there is nothing left to do.
- *
- * All four rows are on screen at once, deliberately. The obvious alternative —
- * one step at a time behind a pager — is what Stan's app does, and it reduces
- * progress to a line of text you have to read rather than a shape you can see.
- * Four rows and a bar answer "how much is left" without being read.
- *
- * A finished step stays on the list rather than disappearing, because "2 of 4"
- * has to be countable on the screen that claims it — but it stops being a link.
- * There is nothing left to go and do, and a chevron next to a tick invites a
- * trip to a page that will not change anything.
- */
-function SetupChecklist({
-  steps,
-  progress,
-  labels,
-  locale,
-  onOpen,
-}: {
-  steps: SetupStep[];
-  progress: SetupProgress;
-  labels: Record<SetupStepId, string> & Record<string, string>;
-  locale: string;
-  onOpen: (id: SetupStepId) => void;
-}) {
-  return (
-    /*
-     * A `Section`, not a `Card` around a `GroupedList`.
-     *
-     * That is what it was, and it is the reason Home had **four different left
-     * edges** down one screen: the shop-link card at the page margin, the
-     * section heading at the margin plus the card's padding, the checklist's
-     * rows at the margin plus the card's padding plus the list's own inset, and
-     * the stats card back at the margin. Nothing lined up with anything, which
-     * is the single largest contributor to a screen reading as cluttered — the
-     * eye looks for a vertical rule and finds four.
-     *
-     * A grouped list already draws its own inset surface; that *is* the iOS
-     * idiom. Wrapping it in a card was a surface inside a surface.
-     */
-    <Section title={labels.title} description={labels.body}>
-      <Progress
-        value={progress.ratio}
-        valueLabel={interpolate(labels.count, {
-          done: count(progress.done, locale),
-          total: count(progress.total, locale),
-        })}
-        accessibilityLabel={labels.title}
-      />
-
-      <GroupedList>
-        {steps.map((step) => (
-          <ListRow
-            key={step.id}
-            title={labels[step.id] ?? step.id}
-            subtitle={step.done ? undefined : labels[`${step.id}Hint`]}
-            icon={step.done ? "check" : undefined}
-            /*
-             * Done rows are inert, not hidden. `onPress` is what makes a row
-             * look tappable, so withholding it is the whole signal — no
-             * chevron, no press state, nothing to go and undo.
-             */
-            trailing={step.done ? "none" : "chevron"}
-            onPress={step.done ? undefined : () => onOpen(step.id)}
-            accessibilityLabel={
-              step.done ? `${labels[step.id]} — done` : labels[step.id]
-            }
-          />
-        ))}
-      </GroupedList>
-    </Section>
-  );
-}
-
-/*
- * Layout only — flex and spacing, nothing with a colour, a radius or a font
- * size in it. Every visual decision on this screen belongs to
- * `@sailo/design-system`; what is left is where the boxes sit relative to each
- * other, which is the one thing no component can decide on a screen's behalf.
- */
 const styles = StyleSheet.create({
   linkBlock: { gap: 12 },
   linkHead: { flexDirection: "row", alignItems: "center", gap: 8 },

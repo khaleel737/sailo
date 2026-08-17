@@ -1,33 +1,31 @@
-import { useCallback, useMemo, useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
+import { useCallback, useState } from "react";
+import { Alert } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { TRPCClientError } from "@trpc/client";
 import { captureError } from "@sailo/observability";
-import { countriesByName, countryFlag, countryName } from "@sailo/core/countries";
 import { interpolate } from "@sailo/i18n/native";
 import {
   Banner,
   Button,
-  Card,
-  Chip,
   EmptyState,
   ErrorState,
   GroupedList,
   ListRow,
   Screen,
-  Segmented,
   Sheet,
   Skeleton,
-  StatusPill,
   Switch,
-  Text,
-  TextField,
   haptics,
 } from "@sailo/design-system/native";
 import { formatMoney, priceToText, textToPrice } from "@sailo/core/currency";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";
 import { errorMessage } from "../../../components/states";
+import {
+  DeliveryForm,
+  type Draft,
+} from "../../../components/store/delivery-form";
+import { CountryPicker } from "../../../components/store/country-picker";
+import { refusalOf, zoneSummary } from "../../../components/store/delivery-copy";
 
 /**
  * How an order reaches the buyer: postage rates and collection points.
@@ -48,19 +46,12 @@ import { errorMessage } from "../../../components/states";
  * lives is a rule about the buyer rather than about the delivery. The server
  * drops any zone sent with a collection option; this screen does not offer one,
  * so the two agree rather than one silently correcting the other.
+ *
+ * The form, the country picker and the refusal copy are in `components/store/` — this file's
+ * own comment already called the form "split out so the screen above stays readable", and the
+ * only reason it could not finish the job is that a component beside a route in Expo Router
+ * becomes a route.
  */
-
-type Draft = {
-  id: string | null;
-  type: string;
-  name: string;
-  fee: string;
-  freeOver: string;
-  config: Record<string, string>;
-  isEnabled: boolean;
-  zone: "anywhere" | "selected";
-  countries: string[];
-};
 
 export default function Delivery() {
   const { a, t, locale } = useT();
@@ -309,268 +300,3 @@ export default function Delivery() {
     </Screen>
   );
 }
-
-/** The form inside the sheet, split out so the screen above stays readable. */
-function DeliveryForm({
-  draft,
-  currency,
-  refusal,
-  onChange,
-  onPickCountries,
-  onSave,
-  saving,
-  onDelete,
-  deleting,
-}: {
-  draft: Draft;
-  currency: string;
-  refusal: string | null;
-  onChange: (next: Draft) => void;
-  onPickCountries: () => void;
-  onSave: () => void;
-  saving: boolean;
-  onDelete?: () => void;
-  deleting: boolean;
-}) {
-  const { a, locale } = useT();
-  const set = <K extends keyof Draft>(key: K, value: Draft[K]) =>
-    onChange({ ...draft, [key]: value });
-
-  return (
-    <View style={styles.form}>
-      {refusal ? <Banner tone="danger" message={REFUSALS(a)[refusal] ?? a.common.couldntLoad} /> : null}
-
-      <Segmented
-        options={[
-          { value: "shipping", label: a.delivery.shipsTo },
-          { value: "collection", label: a.delivery.needsPickup },
-        ]}
-        value={draft.type}
-        onChange={(next) => set("type", next)}
-        accessibilityLabel={a.delivery.kind}
-      />
-
-      <TextField
-        label={a.delivery.nameBuyersSee}
-        value={draft.name}
-        onChangeText={(next) => set("name", next)}
-        maxLength={60}
-      />
-
-      <TextField
-        label={interpolate(a.productForm.price, { currency })}
-        value={draft.fee}
-        onChangeText={(next) => set("fee", next)}
-        keyboard="decimal"
-      />
-
-      <TextField
-        label={a.delivery.freeOverLabel}
-        hint={a.common.optional}
-        value={draft.freeOver}
-        onChangeText={(next) => set("freeOver", next)}
-        keyboard="decimal"
-      />
-
-      {/*
-        Only shipping asks where it reaches. Collection happens at the seller's
-        own address, so a zone on it would be a rule about the buyer.
-      */}
-      {draft.type === "shipping" ? (
-        <>
-          <Segmented
-            options={[
-              { value: "anywhere", label: a.delivery.zoneAnywhere },
-              { value: "selected", label: a.delivery.zoneSelected },
-            ]}
-            value={draft.zone}
-            onChange={(next) => set("zone", next as Draft["zone"])}
-            accessibilityLabel={a.delivery.shipsTo}
-          />
-          <Text variant="caption" tone="muted">
-            {a.delivery.zoneHelp}
-          </Text>
-
-          {draft.zone === "selected" ? (
-            <Card variant="outlined">
-              <View style={styles.chips}>
-                {draft.countries.length === 0 ? (
-                  <Text variant="caption" tone="muted">
-                    {a.delivery.zoneNone}
-                  </Text>
-                ) : (
-                  draft.countries.map((code) => (
-                    <Chip
-                      key={code}
-                      label={`${countryFlag(code)} ${countryName(code, locale)}`}
-                      /* Selected because it *is* in the zone; tapping takes it
-                         out. A chip is the design system's "one of a set", and
-                         removal is deselection rather than a second gesture. */
-                      selected
-                      onPress={() =>
-                        set(
-                          "countries",
-                          draft.countries.filter((c) => c !== code),
-                        )
-                      }
-                    />
-                  ))
-                )}
-              </View>
-              <Button
-                label={a.delivery.zoneSearch}
-                icon="search"
-                variant="ghost"
-                onPress={onPickCountries}
-                fullWidth
-              />
-            </Card>
-          ) : null}
-        </>
-      ) : null}
-
-      <Switch
-        value={draft.isEnabled}
-        onValueChange={(next) => set("isEnabled", next)}
-        label={a.delivery.offerAtCheckout}
-      />
-
-      <Button label={a.common.save} onPress={onSave} loading={saving} fullWidth />
-      {onDelete ? (
-        <Button
-          label={a.common.delete}
-          icon="delete"
-          variant="danger"
-          onPress={onDelete}
-          loading={deleting}
-          fullWidth
-        />
-      ) : null}
-    </View>
-  );
-}
-
-/**
- * The country list, searchable.
- *
- * Names come from `Intl.DisplayNames` through `countryName`, so a Croatian
- * seller reads "Njemačka" and an English one reads "Germany" without a
- * translated list existing anywhere. Search matches the *rendered* name for
- * that reason — a seller types what they can see.
- */
-function CountryPicker({
-  visible,
-  selected,
-  onClose,
-  onChange,
-}: {
-  visible: boolean;
-  selected: readonly string[];
-  onClose: () => void;
-  onChange: (next: string[]) => void;
-}) {
-  const { a, locale } = useT();
-  const [term, setTerm] = useState("");
-
-  const all = useMemo(() => countriesByName(locale), [locale]);
-  const matches = useMemo(() => {
-    const needle = term.trim().toLowerCase();
-    if (!needle) return all;
-    return all.filter((country) => country.name.toLowerCase().includes(needle));
-  }, [all, term]);
-
-  const chosen = new Set(selected);
-
-  return (
-    <Sheet
-      visible={visible}
-      onClose={onClose}
-      title={a.delivery.shipsTo}
-      closeLabel={a.common.cancel}
-      size="large"
-    >
-      <TextField
-        label={a.delivery.zoneSearch}
-        value={term}
-        onChangeText={setTerm}
-        returnKey="search"
-      />
-
-      {matches.length === 0 ? (
-        <Text variant="callout" tone="muted">
-          {a.delivery.zoneNone}
-        </Text>
-      ) : (
-        <GroupedList>
-          {/*
-            Capped at what a sheet can render without the list becoming its own
-            performance problem. The cap admits itself: a seller who searches
-            sees everything that matched, and one who scrolls the unfiltered
-            list is told there is more and how to reach it.
-          */}
-          {matches.slice(0, VISIBLE_COUNTRIES).map((country) => (
-            <ListRow
-              key={country.code}
-              title={`${countryFlag(country.code)} ${country.name}`}
-              accessory={
-                chosen.has(country.code) ? (
-                  <StatusPill tone="success" label={a.common.active} />
-                ) : undefined
-              }
-              onPress={() =>
-                onChange(
-                  chosen.has(country.code)
-                    ? selected.filter((code) => code !== country.code)
-                    : [...selected, country.code],
-                )
-              }
-            />
-          ))}
-        </GroupedList>
-      )}
-
-      {matches.length > VISIBLE_COUNTRIES ? (
-        <Text variant="caption" tone="muted">
-          {interpolate(a.delivery.zoneCount, {
-            count: String(matches.length - VISIBLE_COUNTRIES),
-          })}
-        </Text>
-      ) : null}
-    </Sheet>
-  );
-}
-
-/** How many rows the picker draws before asking the seller to narrow it. */
-const VISIBLE_COUNTRIES = 60;
-
-/** A zone, as one line under a row. */
-function zoneSummary(
-  countries: readonly string[],
-  locale: string,
-  a: ReturnType<typeof useT>["a"],
-): string {
-  if (countries.length === 0) return a.delivery.zoneAnywhere;
-  if (countries.length === 1) return countryName(countries[0] ?? null, locale);
-  return interpolate(a.delivery.zoneCount, { count: String(countries.length) });
-}
-
-/** The server's reasons, in this surface's words. */
-function REFUSALS(a: ReturnType<typeof useT>["a"]): Record<string, string> {
-  return {
-    unknown_type: a.common.couldntLoad,
-    no_name: a.delivery.needsName,
-    unconfigured: a.delivery.needsPickup,
-    empty_zone: a.delivery.needsCountry,
-  };
-}
-
-function refusalOf(error: unknown): string | null {
-  if (!(error instanceof TRPCClientError)) return null;
-  const message = String(error.message ?? "");
-  return /^[a-z_]+$/.test(message) ? message : null;
-}
-
-const styles = StyleSheet.create({
-  form: { gap: 16 },
-  chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-});
