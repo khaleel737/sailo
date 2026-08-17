@@ -1,0 +1,77 @@
+packages/partners/package.json
+  s_c7a7b98e0ed667::t_a1631f7a888fdb 13
+packages/partners/src/payouts/run.ts
+  s_c7a7b98e0ed667::t_a99e166eca430b 4-5,9-10
+  s_c7a7b98e0ed667::t_e2bea9319851df 12
+  s_c7a7b98e0ed667::t_01a0104e2a6e61 1-3,6-8,11,13-89
+packages/partners/src/payouts/pay.ts
+  s_c7a7b98e0ed667::t_e2bea9319851df 24
+  s_c7a7b98e0ed667::t_a99e166eca430b 4-7,16-20
+  s_c7a7b98e0ed667::t_01a0104e2a6e61 1-3,8-15,21,23,25-216
+  s_c7a7b98e0ed667::t_3292a98dddfcb0 22
+packages/mailer/src/blocks.ts
+  s_c7a7b98e0ed667::t_b9fd9ca8e053fc 1-263
+packages/mailer/src/markup.ts
+  s_c7a7b98e0ed667::t_b9fd9ca8e053fc 15,17-21,23-26,29-31
+  s_c7a7b98e0ed667::t_e75c2a1c26971a 33-37
+packages/partners/src/payouts/history.ts
+  s_c7a7b98e0ed667::t_01a0104e2a6e61 1-8,10-29
+  s_c7a7b98e0ed667::t_da518219c19580 9
+packages/commerce/src/booking/ics-time.ts
+  s_c7a7b98e0ed667::t_d0baec585c0440 10,13-15,17-32,34-119
+  s_c7a7b98e0ed667::t_ecefe0988d6dae 1-9,12,16,33
+  s_c7a7b98e0ed667::t_26c139f9e6177b 11
+packages/partners/src/payouts/balances.ts
+  s_c7a7b98e0ed667::t_01a0104e2a6e61 1-3,7-11,13-85
+  s_c7a7b98e0ed667::t_a99e166eca430b 4-6,12
+packages/partners/src/payouts/reconcile.ts
+  s_c7a7b98e0ed667::t_e2bea9319851df 15
+  s_c7a7b98e0ed667::t_01a0104e2a6e61 1-3,7-13,16-78
+  s_c7a7b98e0ed667::t_a99e166eca430b 4-6
+  s_c7a7b98e0ed667::t_3292a98dddfcb0 14
+packages/mailer/src/escape.ts
+  s_c7a7b98e0ed667::t_b9fd9ca8e053fc 1-17
+packages/commerce/src/booking/ics-events.ts
+  s_c7a7b98e0ed667::t_d0baec585c0440 9-10,13,15-17,19-40,42-281
+  s_c7a7b98e0ed667::t_34c341a0a5afce 11-12
+  s_c7a7b98e0ed667::t_ecefe0988d6dae 1-8,14,18,41
+packages/partners/src/payouts/index.ts
+  s_c7a7b98e0ed667::t_01a0104e2a6e61 1-33,36,40,43-50
+  s_c7a7b98e0ed667::t_a99e166eca430b 34-35,37-39,41-42
+packages/mailer/src/palette.ts
+  s_c7a7b98e0ed667::t_b9fd9ca8e053fc 1-56
+packages/commerce/src/booking/ics-lex.ts
+  s_c7a7b98e0ed667::t_ecefe0988d6dae 1-14,56,61,105
+  s_c7a7b98e0ed667::t_d0baec585c0440 15-55,57-60,62-104,106-107
+packages/commerce/src/booking/ics-recurrence.ts
+  s_c7a7b98e0ed667::t_d0baec585c0440 9-11,13-15,17,19-204
+  s_c7a7b98e0ed667::t_ecefe0988d6dae 1-8,12,16,18
+packages/partners/src/payouts/claim.ts
+  s_c7a7b98e0ed667::t_3292a98dddfcb0 16,61,70
+  s_c7a7b98e0ed667::t_688d9f4889f39e 13
+  s_c7a7b98e0ed667::t_a99e166eca430b 1-10,12,14-15,17-60,62-69,71-88
+  s_c7a7b98e0ed667::t_da518219c19580 11
+packages/partners/src/payouts/refusals.ts
+  s_c7a7b98e0ed667::t_a99e166eca430b 1-23
+packages/mailer/src/layout.ts
+  s_c7a7b98e0ed667::t_b9fd9ca8e053fc 1-224
+packages/commerce/src/booking/calendar-feed.ts
+  s_c7a7b98e0ed667::t_ecefe0988d6dae 22,24,26-28,30-33,35-36
+  s_c7a7b98e0ed667::t_26c139f9e6177b 39-44,46-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "0df9b1b6d799d2e786e67af8810e7db3c93afb36",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
