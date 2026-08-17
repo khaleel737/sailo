@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useSyncExternalStore } from "react";
+import { createStorageStore } from "@/lib/storage-store";
 import {
   favoritesKey,
   isFavorite,
@@ -12,62 +13,31 @@ import {
 } from "@sailo/customers/favorites";
 
 /*
- * localStorage read through `useSyncExternalStore`, exactly like the basket:
- * the server's empty list and the client's real one never disagree during
- * hydration, and a second tab is a subscriber for free. No provider — every
- * heart on the page subscribes on its own, and the snapshot cache below keeps
- * that from re-parsing the store once per card.
+ * localStorage read through `useSyncExternalStore`, exactly like the basket —
+ * and now through the same code as the basket. "Exactly like" used to mean a
+ * second copy of the listener set, the subscription and the snapshot cache, with
+ * a comment pointing at the file it was copied from.
+ *
+ * No provider: every heart on the page subscribes on its own, and the store's
+ * snapshot cache is what keeps that from re-parsing once per card.
  */
 
-const listeners = new Set<() => void>();
-const EMPTY: FavoriteItem[] = [];
-
-/** Parsed items, reused until the raw string actually changes. */
-let cache: {
-  shopId: string;
-  raw: string | null;
-  items: FavoriteItem[];
-} | null = null;
-
-function subscribe(onChange: () => void) {
-  listeners.add(onChange);
-  window.addEventListener("storage", onChange);
-  // Back/forward-cache revivals miss their `storage` events; see cart-provider.
-  window.addEventListener("pageshow", onChange);
-  return () => {
-    listeners.delete(onChange);
-    window.removeEventListener("storage", onChange);
-    window.removeEventListener("pageshow", onChange);
-  };
-}
-
-function emit() {
-  for (const listener of listeners) listener();
-}
-
-function snapshot(shopId: string): FavoriteItem[] {
-  let raw: string | null = null;
-  try {
-    raw = window.localStorage.getItem(favoritesKey(shopId));
-  } catch {
-    return EMPTY;
-  }
-  if (cache && cache.shopId === shopId && cache.raw === raw) return cache.items;
-  const items = readFavorites(shopId);
-  cache = { shopId, raw, items };
-  return items;
-}
+const store = createStorageStore<FavoriteItem[]>({
+  key: favoritesKey,
+  read: readFavorites,
+  empty: [],
+});
 
 /** One shop's saved products, live across every heart and tab. */
 export function useFavorites(shopId: string) {
   const items = useSyncExternalStore(
-    subscribe,
-    () => snapshot(shopId),
-    () => EMPTY,
+    store.subscribe,
+    () => store.snapshot(shopId),
+    store.serverSnapshot,
   );
   /** False until hydration, so nothing flashes the wrong hearts. */
   const ready = useSyncExternalStore(
-    subscribe,
+    store.subscribe,
     () => true,
     () => false,
   );
@@ -75,19 +45,19 @@ export function useFavorites(shopId: string) {
   const commit = useCallback(
     (next: FavoriteItem[]) => {
       writeFavorites(shopId, next);
-      emit();
+      store.emit();
     },
     [shopId],
   );
 
   const toggle = useCallback(
-    (item: FavoriteItem) => commit(toggleFavorite(snapshot(shopId), item)),
+    (item: FavoriteItem) => commit(toggleFavorite(store.snapshot(shopId), item)),
     [commit, shopId],
   );
 
   const remove = useCallback(
     (productId: string) =>
-      commit(removeFavorite(snapshot(shopId), productId)),
+      commit(removeFavorite(store.snapshot(shopId), productId)),
     [commit, shopId],
   );
 

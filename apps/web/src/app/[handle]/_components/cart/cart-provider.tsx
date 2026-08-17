@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { addLine, cachedTotal, cartCount, cartKey, clearPendingOrder, lineKey, readCart, readPendingOrder, removeLine, setQuantity, writeCart, type CartLine } from "@/lib/cart";
 import { checkoutOutcome } from "@/lib/actions/order-status";
+import { createStorageStore } from "@/lib/storage-store";
 
 /* -------------------------------------------------------------------------- */
 /*  The store                                                                  */
@@ -11,46 +12,18 @@ import { checkoutOutcome } from "@/lib/actions/order-status";
 /*  `useSyncExternalStore` rather than copied into state on mount. That keeps  */
 /*  the server's empty basket and the client's real one from disagreeing       */
 /*  during hydration, and makes a second tab a subscriber for free.            */
+/*                                                                             */
+/*  The mechanics — the listener set, the `storage`/`pageshow` subscription,   */
+/*  the snapshot cache — are `@/lib/storage-store`, because the saved-products */
+/*  list had a copy of all of it. What is specific to the basket is the key    */
+/*  and the parser, which is what this passes in.                              */
 /* -------------------------------------------------------------------------- */
 
-const listeners = new Set<() => void>();
-const EMPTY: CartLine[] = [];
-
-/** Parsed lines, reused until the raw string actually changes. */
-let cache: { shopId: string; raw: string | null; lines: CartLine[] } | null = null;
-
-function subscribe(onChange: () => void) {
-  listeners.add(onChange);
-  window.addEventListener("storage", onChange);
-  // A page revived from the back/forward cache wakes with the snapshot it fell
-  // asleep holding, and the missed `storage` events are not replayed — so a
-  // buyer pressing Back from the invoice would see the basket that page had
-  // just emptied. `pageshow` fires on every revival; re-reading is cheap.
-  window.addEventListener("pageshow", onChange);
-  return () => {
-    listeners.delete(onChange);
-    window.removeEventListener("storage", onChange);
-    window.removeEventListener("pageshow", onChange);
-  };
-}
-
-function emit() {
-  for (const listener of listeners) listener();
-}
-
-function snapshot(shopId: string): CartLine[] {
-  let raw: string | null = null;
-  try {
-    raw = window.localStorage.getItem(cartKey(shopId));
-  } catch {
-    return EMPTY;
-  }
-  // The snapshot has to be referentially stable or React re-renders forever.
-  if (cache && cache.shopId === shopId && cache.raw === raw) return cache.lines;
-  const lines = readCart(shopId);
-  cache = { shopId, raw, lines };
-  return lines;
-}
+const store = createStorageStore<CartLine[]>({
+  key: cartKey,
+  read: readCart,
+  empty: [],
+});
 
 type CartContext = {
   lines: CartLine[];
@@ -89,12 +62,12 @@ export function CartProvider({
   const [open, setOpen] = useState(false);
 
   const lines = useSyncExternalStore(
-    subscribe,
-    () => snapshot(shopId),
-    () => EMPTY,
+    store.subscribe,
+    () => store.snapshot(shopId),
+    store.serverSnapshot,
   );
   const ready = useSyncExternalStore(
-    subscribe,
+    store.subscribe,
     () => true,
     () => false,
   );
@@ -102,7 +75,7 @@ export function CartProvider({
   const commit = useCallback(
     (next: CartLine[]) => {
       writeCart(shopId, next);
-      emit();
+      store.emit();
     },
     [shopId],
   );
