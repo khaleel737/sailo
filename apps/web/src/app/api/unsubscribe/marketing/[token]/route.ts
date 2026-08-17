@@ -1,8 +1,5 @@
-import { optOut } from "@/lib/lifecycle/opt-out";
-import {
-  marketingOptOutUrl,
-  readMarketingOptOutToken,
-} from "@/lib/lifecycle/unsubscribe";
+import { optOut } from "@sailo/marketing/lifecycle/server";
+import { marketingOptOutUrl, readMarketingOptOutToken } from "@sailo/marketing/lifecycle/server";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 

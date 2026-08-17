@@ -18,14 +18,14 @@ import {
   NOTIFICATION_EVENTS,
   notificationPrefsSchema,
 } from "@sailo/notifications/prefs";
-import { setMarketingOptIn } from "@/lib/lifecycle/opt-out";
+import { setMarketingOptIn } from "@sailo/marketing/lifecycle/server";
 import { isStaff, requireShop, requireUser } from "@/lib/session";
 import { normalizePhone, SOCIAL_PLATFORMS } from "@/lib/utils";
 import { isPublicLinkUrl, isRenderableImageUrl } from "@/lib/file-urls";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { BRAND_HANDLE, HANDLE_MESSAGES, normalizeHandle, suggestHandles, validateHandleFormat } from "@/lib/handle";
-import { readPixelIds } from "@/lib/shop-pixels";
+import { readPixelIds } from "@sailo/customers/pixels";
 import { attributeReferral } from "@/lib/partners/store";
 import { REFERRAL_COOKIE } from "@/lib/partners/program";
 

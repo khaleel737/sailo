@@ -11,7 +11,7 @@ import {
   unscheduleBroadcast,
   type BroadcastState,
 } from "@/lib/actions/broadcasts";
-import { parseSegment } from "@/lib/broadcasts/segments";
+import { parseSegment } from "@sailo/marketing/broadcasts";
 import { Alert, Button, Card, Field, Input } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
@@ -19,7 +19,7 @@ import type { Broadcast } from "@sailo/db/schema";
 import { MarkdownEditor } from "./markdown-editor";
 import { PromoPicker } from "./promo-picker";
 import { SegmentBuilder } from "./segment-builder";
-import type { SegmentPickers } from "@/lib/broadcasts/pickers";
+import type { SegmentPickers } from "@sailo/marketing/broadcasts/server";
 
 /**
  * Writing a broadcast.

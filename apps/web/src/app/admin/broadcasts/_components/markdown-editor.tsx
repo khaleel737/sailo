@@ -12,7 +12,7 @@ import {
   Quote,
   Sparkles,
 } from "lucide-react";
-import { renderBody, readingSeconds, MERGE_TAGS } from "@/lib/broadcasts/markdown";
+import { renderBody, readingSeconds, MERGE_TAGS } from "@sailo/marketing/broadcasts";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
 import { Textarea } from "@sailo/design-system/web";

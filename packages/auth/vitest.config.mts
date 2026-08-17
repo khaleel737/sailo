@@ -1,10 +1,11 @@
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vitest/config";
+import { sailoTest } from "@sailo/config/vitest";
 
 const nativeStub = fileURLToPath(new URL("./src/native-stub.ts", import.meta.url));
 
 /**
- * Running this package's own code off a phone, which takes two accommodations.
+ * The shared preset, plus the two accommodations running this package's own
+ * code off a phone takes.
  *
  * **`inline`** — `@better-auth/expo` publishes a `dev-source` export condition
  * pointing at its uncompiled TypeScript (`./src/client.ts`). Vite resolves that
@@ -21,7 +22,7 @@ const nativeStub = fileURLToPath(new URL("./src/native-stub.ts", import.meta.url
  * of them is reachable from the cookie serialiser under test. See
  * `src/native-stub.ts`.
  */
-export default defineConfig({
+export default sailoTest({
   test: {
     environment: "node",
     include: ["src/**/*.test.ts"],

@@ -18,6 +18,7 @@
     "@sailo/billing": "workspace:*",
     "@sailo/commerce": "workspace:*",
     "@sailo/core": "workspace:*",
+    "@sailo/customers": "workspace:*",
     "@sailo/db": "workspace:*",
     "@sailo/email": "workspace:*",
     "@sailo/env": "workspace:*",

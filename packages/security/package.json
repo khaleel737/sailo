@@ -1,0 +1,30 @@
+{
+  "name": "@sailo/security",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./blocklist": "./src/blocklist/index.ts",
+    "./ip-ranges": "./src/ip-ranges.ts",
+    "./restricted-businesses": "./src/restricted-businesses.ts",
+    "./staff": "./src/staff.ts",
+    "./cron-auth": "./src/cron-auth.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src || true",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@sailo/email": "workspace:*",
+    "@sailo/rate-limit": "workspace:*",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@sailo/config": "workspace:*",
+    "oxlint": "^1.77.0",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  }
+}

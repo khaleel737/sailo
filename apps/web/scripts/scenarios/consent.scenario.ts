@@ -5,7 +5,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import type { Shop } from "@sailo/db/schema";
 import { clients, emailSuppressions, shops, user } from "@sailo/db/schema";
-import { audienceFor, audienceSize, suppress } from "@/lib/broadcasts/audience";
+import { audienceFor, audienceSize, suppress } from "@sailo/marketing/broadcasts/server";
 import { addClient } from "@/lib/actions/clients";
 import { confirmSubscription, subscribeToShop } from "@/lib/actions/subscribe";
 import { importClients } from "@/lib/import/clients";

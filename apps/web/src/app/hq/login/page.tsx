@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SailoLogo } from "@/components/brand";
 import { getSession } from "@/lib/session";
-import { isStaffEmail } from "@/lib/staff";
+import { isStaffEmail } from "@sailo/security/staff";
 import { HqLoginForm } from "./login-form";
 
 /* Not yet converted — see the note in `next.config.ts`. */

@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 import Script from "next/script";
 import { preconnect, prefetchDNS } from "react-dom";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
-import { SHOP_CONSENT_EVENT, hasShopMarketingConsent } from "@/lib/shop-consent";
-import type { ShopPixelIds } from "@/lib/shop-pixels";
+import { SHOP_CONSENT_EVENT, hasShopMarketingConsent } from "@sailo/customers/shop-consent";
+import type { ShopPixelIds } from "@sailo/customers/pixels";
 
 /**
  * The seller's tags, loaded only once this buyer has agreed — on this shop.

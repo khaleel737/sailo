@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { cronAuthFailure } from "@/lib/cron-auth";
-import { runBroadcastQueue } from "@/lib/broadcasts/send";
+import { cronAuthFailure } from "@sailo/security/cron-auth";
+import { runBroadcastQueue } from "@sailo/marketing/broadcasts/server";
 
 /**
  * One tick of the broadcast queue.

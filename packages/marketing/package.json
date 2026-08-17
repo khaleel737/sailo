@@ -1,0 +1,37 @@
+{
+  "name": "@sailo/marketing",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./broadcasts": "./src/broadcasts/index.ts",
+    "./lifecycle": "./src/lifecycle/index.ts",
+    "./demos": "./src/demos.ts",
+    "./broadcasts/server": "./src/broadcasts/server.ts",
+    "./lifecycle/server": "./src/lifecycle/server.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src || true",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@sailo/core": "workspace:*",
+    "@sailo/customers": "workspace:*",
+    "@sailo/db": "workspace:*",
+    "@sailo/email": "workspace:*",
+    "@sailo/i18n": "workspace:*",
+    "@sailo/storage": "workspace:*",
+    "@sailo/webhooks": "workspace:*",
+    "drizzle-orm": "^0.45.2",
+    "marked": "^18.0.9",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@sailo/config": "workspace:*",
+    "oxlint": "^1.77.0",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  }
+}

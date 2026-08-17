@@ -9,7 +9,7 @@ import {
   revokeApiKey,
   type IntegrationState,
 } from "@/lib/actions/integrations";
-import { MAX_API_KEYS_PER_SHOP } from "@/lib/webhooks/events";
+import { MAX_API_KEYS_PER_SHOP } from "@sailo/webhooks/events";
 import { interpolate } from "@sailo/i18n";
 import { RevealOnce } from "./reveal-once";
 

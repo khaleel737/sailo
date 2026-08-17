@@ -15,7 +15,7 @@ import {
 import {
   MAX_ENDPOINTS_PER_SHOP,
   WEBHOOK_EVENTS,
-} from "@/lib/webhooks/events";
+} from "@sailo/webhooks/events";
 import { interpolate } from "@sailo/i18n";
 import { RevealOnce } from "./reveal-once";
 

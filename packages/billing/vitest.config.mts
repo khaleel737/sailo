@@ -1,5 +1,3 @@
-import { defineConfig } from "vitest/config";
+import { sailoTest } from "@sailo/config/vitest";
 
-export default defineConfig({
-  test: { environment: "node", include: ["src/**/*.test.ts"] },
-});
+export default sailoTest();

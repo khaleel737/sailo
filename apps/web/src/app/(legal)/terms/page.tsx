@@ -17,7 +17,7 @@ import {
   CONDITIONAL_BUSINESSES,
   DECLINED_BUSINESSES,
   STRIPE_RESTRICTED_URL,
-} from "@/lib/restricted-businesses";
+} from "@sailo/security/restricted-businesses";
 
 export const metadata: Metadata = {
   title: "Terms of Service",

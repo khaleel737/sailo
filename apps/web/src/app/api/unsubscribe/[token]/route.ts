@@ -1,11 +1,8 @@
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
-import { suppress } from "@/lib/broadcasts/audience";
-import {
-  readUnsubscribeToken,
-  unsubscribeUrl,
-} from "@/lib/broadcasts/unsubscribe";
+import { suppress } from "@sailo/marketing/broadcasts/server";
+import { readUnsubscribeToken, unsubscribeUrl } from "@sailo/marketing/broadcasts/server";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { cronAuthFailure } from "@/lib/cron-auth";
-import { runWebhookQueue } from "@/lib/webhooks/deliver";
+import { cronAuthFailure } from "@sailo/security/cron-auth";
+import { runWebhookQueue } from "@sailo/webhooks/deliver";
 
 /**
  * One tick of the webhook delivery queue.

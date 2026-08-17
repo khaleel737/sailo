@@ -5,7 +5,7 @@ import { useFormStatus } from "react-dom";
 import { Loader2, Tag } from "lucide-react";
 import { setClientTags, type ClientActionState } from "@/lib/actions/clients";
 import { Alert, Button, Card, Field, Input } from "@sailo/design-system/web";
-import { MAX_TAGS, tagsToCsv } from "@/lib/client-tags";
+import { MAX_TAGS, tagsToCsv } from "@sailo/customers/tags";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 /**

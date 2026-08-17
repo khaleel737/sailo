@@ -22,7 +22,7 @@ import { RangePicker } from "@/app/admin/_components/range-picker";
 import { SetupChecklist } from "@/app/admin/_components/setup-checklist";
 import { ReferralCard } from "@/app/admin/_components/referral-card";
 import { analyticsLimit, planFor } from "@sailo/core/plans";
-import { resolveAnalyticsWindow, type DateWindow } from "@/lib/analytics-window";
+import { resolveAnalyticsWindow, type DateWindow } from "@sailo/analytics/window";
 import { CopyLink } from "@sailo/design-system/web";
 import { Badge, Card, EmptyState, Stat } from "@sailo/design-system/web";
 import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";

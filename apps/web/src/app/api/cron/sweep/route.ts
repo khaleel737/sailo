@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { cronAuthFailure } from "@/lib/cron-auth";
+import { cronAuthFailure } from "@sailo/security/cron-auth";
 import { releaseAbandonedCheckouts } from "@sailo/commerce/catalog";
 import { refreshCalendarFeeds } from "@sailo/commerce/booking/server";
-import { pruneWebhookDeliveries } from "@/lib/webhooks/deliver";
+import { pruneWebhookDeliveries } from "@sailo/webhooks/deliver";
 
 /**
  * Housekeeping that must happen whether or not a webhook arrived.

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { clearConsent } from "@/lib/consent";
+import { clearConsent } from "@sailo/customers/consent";
 
 /**
  * Reopens the consent request.

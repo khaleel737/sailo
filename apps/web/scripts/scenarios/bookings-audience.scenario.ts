@@ -20,12 +20,9 @@ import { calendarFor } from "@sailo/commerce/booking/server";
 import { forgetExternalBusy } from "@sailo/commerce/booking/server";
 import { sendDueEventReminders } from "@/lib/event-reminders";
 import { eventAccessForOrder } from "@/lib/event-access";
-import { audienceFor, suppress } from "@/lib/broadcasts/audience";
-import { queueBroadcast, runBroadcastQueue } from "@/lib/broadcasts/send";
-import {
-  readUnsubscribeToken,
-  unsubscribeToken,
-} from "@/lib/broadcasts/unsubscribe";
+import { audienceFor, suppress } from "@sailo/marketing/broadcasts/server";
+import { queueBroadcast, runBroadcastQueue } from "@sailo/marketing/broadcasts/server";
+import { readUnsubscribeToken, unsubscribeToken } from "@sailo/marketing/broadcasts/server";
 import { importClients } from "@/lib/import/clients";
 import { getShopClients, getShopOrders } from "@/lib/queries";
 

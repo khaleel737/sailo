@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { Instagram } from "@sailo/design-system/web";
-import { DEMOS, phoneShotUrl, shotUrl } from "@/lib/demos";
+import { DEMOS, phoneShotUrl, shotUrl } from "@sailo/marketing/demos";
 import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import { interpolate } from "@sailo/i18n";
 import { BrowserFrame, PhoneFrame } from "./frames";

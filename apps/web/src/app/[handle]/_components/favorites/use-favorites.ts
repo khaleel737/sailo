@@ -9,7 +9,7 @@ import {
   toggleFavorite,
   writeFavorites,
   type FavoriteItem,
-} from "@/lib/favorites";
+} from "@sailo/customers/favorites";
 
 /*
  * localStorage read through `useSyncExternalStore`, exactly like the basket:

@@ -23,9 +23,9 @@ import {
   user,
   webhookEndpoints,
 } from "@sailo/db/schema";
-import { parseUserAgent } from "@/lib/analytics";
+import { parseUserAgent } from "@sailo/analytics/traffic";
 import { requireStaff } from "@/lib/session";
-import { isStaffEmail } from "@/lib/staff";
+import { isStaffEmail } from "@sailo/security/staff";
 import { ENTITLED } from "./billing-state";
 import { HQ_PAGE_SIZE, daysAgo, like, num, paginate, utcDayWindow } from "./pagination";
 import { notStaff } from "./roster";

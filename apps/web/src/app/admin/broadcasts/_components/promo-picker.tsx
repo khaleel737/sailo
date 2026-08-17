@@ -4,7 +4,7 @@ import { Plus, X } from "lucide-react";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
 import { Field, Input, Select } from "@sailo/design-system/web";
-import type { PickerOption } from "@/lib/broadcasts/pickers";
+import type { PickerOption } from "@sailo/marketing/broadcasts/server";
 
 /**
  * The offer: a code, the things it is for, and one button.

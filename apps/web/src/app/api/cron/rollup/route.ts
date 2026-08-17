@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { cronAuthFailure } from "@/lib/cron-auth";
-import { rollUpVisits } from "@/lib/analytics-rollup";
+import { cronAuthFailure } from "@sailo/security/cron-auth";
+import { rollUpVisits } from "@sailo/analytics/rollup";
 
 /**
  * Nightly analytics fold. Scheduled from vercel.json.

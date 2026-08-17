@@ -1,5 +1,5 @@
 import { APP_URL } from "@/lib/seo";
-import { WEBHOOK_EVENTS } from "@/lib/webhooks/events";
+import { WEBHOOK_EVENTS } from "@sailo/webhooks/events";
 import { ENDPOINTS } from "@/lib/api/endpoints";
 import { MCP_TOOLS } from "@/lib/mcp/tools";
 import { Code, DocsShell, Pre, Section, docsMetadata, docsPath } from "./_components/docs-kit";

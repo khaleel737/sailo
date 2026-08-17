@@ -10,21 +10,13 @@ import { requireShop } from "@/lib/session";
 import { can, upgradeMessage } from "@sailo/core/plans";
 import { isUuid } from "@/lib/utils";
 import { zonedTimeToInstant } from "@sailo/commerce/booking";
-import {
-  broadcastLabels,
-  MAX_PROMO_PRODUCTS,
-  queueBroadcast,
-  resolveContent,
-} from "@/lib/broadcasts/send";
-import { budgetFor, type Budget } from "@/lib/broadcasts/quota";
-import { audienceSize } from "@/lib/broadcasts/audience";
-import { mergeValuesFor } from "@/lib/broadcasts/markdown";
-import { parseSegment, toFilter } from "@/lib/broadcasts/segments";
-import { renderBroadcast, renderText } from "@/lib/broadcasts/render";
-import {
-  unsubscribeToken,
-  unsubscribeUrl,
-} from "@/lib/broadcasts/unsubscribe";
+import { broadcastLabels, MAX_PROMO_PRODUCTS, queueBroadcast, resolveContent } from "@sailo/marketing/broadcasts/server";
+import { budgetFor, type Budget } from "@sailo/marketing/broadcasts/server";
+import { audienceSize } from "@sailo/marketing/broadcasts/server";
+import { mergeValuesFor } from "@sailo/marketing/broadcasts";
+import { parseSegment, toFilter } from "@sailo/marketing/broadcasts";
+import { renderBroadcast, renderText } from "@sailo/marketing/broadcasts";
+import { unsubscribeToken, unsubscribeUrl } from "@sailo/marketing/broadcasts/server";
 import { ORDERS, send, sender } from "@sailo/email/transport";
 import { getDictionary } from "@sailo/i18n";
 import { LEGAL } from "@/lib/legal";

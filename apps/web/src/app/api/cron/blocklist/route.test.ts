@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type * as blocklistState from "@/lib/blocklist/state";
+import type * as blocklistState from "@sailo/security/blocklist";
 
 /**
  * The guard, and that it comes first.
@@ -16,19 +16,26 @@ import type * as blocklistState from "@/lib/blocklist/state";
 const resolve4 = vi.hoisted(() => vi.fn<(name: string) => Promise<string[]>>());
 vi.mock("node:dns/promises", () => ({ resolve4 }));
 
-/* Redis and Resend have no business in a unit test. */
+/*
+ * Redis and Resend have no business in a unit test.
+ *
+ * One `vi.mock` for the whole of `@sailo/security/blocklist`, and it has to be
+ * one: the state store and the alert sender were `@/lib/blocklist/state` and
+ * `@/lib/blocklist/check` in this app, so there were two mocks for two paths.
+ * They are one module now, and two `vi.mock` calls for one specifier do not
+ * merge — the second silently replaces the first, which left `verdictFor` and
+ * `checkDomains` undefined while the suite still looked mocked.
+ */
 const readLastCheck = vi.hoisted(() => vi.fn(async () => null));
 const writeLastCheck = vi.hoisted(() => vi.fn(async () => true));
-vi.mock("@/lib/blocklist/state", async (importOriginal) => ({
+const sendBlocklistAlert = vi.hoisted(() => vi.fn(async () => []));
+const sendBlocklistCleared = vi.hoisted(() => vi.fn(async () => []));
+vi.mock("@sailo/security/blocklist", async (importOriginal) => ({
   ...(await importOriginal<typeof blocklistState>()),
   readLastCheck,
   writeLastCheck,
-}));
-
-const sendBlocklistAlert = vi.hoisted(() => vi.fn(async () => []));
-vi.mock("@/lib/blocklist/alert", () => ({
   sendBlocklistAlert,
-  sendBlocklistCleared: vi.fn(async () => []),
+  sendBlocklistCleared,
 }));
 
 import { GET } from "./route";

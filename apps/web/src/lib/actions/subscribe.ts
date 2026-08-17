@@ -8,14 +8,7 @@ import { interpolate } from "@sailo/i18n";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { rateLimit } from "@sailo/rate-limit";
 import { sendSubscribeConfirmation } from "@/lib/email";
-import {
-  confirmSubscriber,
-  normalizeEmail,
-  normalizeName,
-  readSubscribeToken,
-  subscribeToken,
-  confirmUrl,
-} from "@/lib/broadcasts/subscribe";
+import { confirmSubscriber, normalizeEmail, normalizeName, readSubscribeToken, subscribeToken, confirmUrl } from "@sailo/marketing/broadcasts/server";
 
 /**
  * The public end of a shop's mailing list.

@@ -5,7 +5,7 @@ import { desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { invoices, orders, reviews, shops, staffActions, stripeEvents, user, visits } from "@sailo/db/schema";
 import { DAY_MS, num } from "./pagination";
-import { readLastCheck } from "@/lib/blocklist/state";
+import { readLastCheck } from "@sailo/security/blocklist";
 import { affiliates, clients, coupons, products, visitDaily } from "@sailo/db/schema";
 
 /** The staff audit trail, and whether the platform itself is healthy. */

@@ -21,7 +21,7 @@ import {
 } from "@/lib/payments";
 import { formatPercent } from "@sailo/core/pricing";
 import { readReferralCode } from "@/lib/referral";
-import { trackClick } from "@/lib/track-click";
+import { trackClick } from "@sailo/analytics/clicks";
 import { interpolate } from "@sailo/i18n";
 import { formatMoney } from "@/lib/utils";
 import { deliveryCopy, railCopy } from "./checkout-copy";

@@ -1,0 +1,36 @@
+{
+  "name": "@sailo/webhooks",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./deliver": "./src/deliver.ts",
+    "./emit": "./src/emit.ts",
+    "./events": "./src/events.ts",
+    "./post": "./src/post.ts",
+    "./signature": "./src/signature.ts",
+    "./server": "./src/server.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src || true",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@sailo/commerce": "workspace:*",
+    "@sailo/core": "workspace:*",
+    "@sailo/db": "workspace:*",
+    "@sailo/email": "workspace:*",
+    "@sailo/security": "workspace:*",
+    "@sailo/storage": "workspace:*",
+    "drizzle-orm": "^0.45.2",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@sailo/config": "workspace:*",
+    "oxlint": "^1.77.0",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  }
+}

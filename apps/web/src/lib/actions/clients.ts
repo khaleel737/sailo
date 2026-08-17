@@ -6,11 +6,11 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { clients } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
-import { normalizeTags, MAX_TAGS } from "@/lib/client-tags";
+import { normalizeTags, MAX_TAGS } from "@sailo/customers/tags";
 import { normalizePhone } from "@/lib/utils";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
-import { emitContactWebhook } from "@/lib/webhooks/emit";
+import { emitContactWebhook } from "@sailo/webhooks/emit";
 
 /** Editing the people in a shop's list, by hand. */
 

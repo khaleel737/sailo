@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { clearShopConsent } from "@/lib/shop-consent";
+import { clearShopConsent } from "@sailo/customers/shop-consent";
 
 /**
  * Reopens this shop's consent request, from the storefront footer.

@@ -5,8 +5,8 @@ import { notFound } from "next/navigation";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { can } from "@sailo/core/plans";
-import { segmentPickers } from "@/lib/broadcasts/pickers";
-import { MAX_PROMO_PRODUCTS } from "@/lib/broadcasts/send";
+import { segmentPickers } from "@sailo/marketing/broadcasts/server";
+import { MAX_PROMO_PRODUCTS } from "@sailo/marketing/broadcasts/server";
 import { PageHeader } from "@sailo/design-system/web";
 import { Composer } from "../_components/composer";
 

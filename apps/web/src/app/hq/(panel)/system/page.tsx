@@ -5,7 +5,7 @@ import { PageHeader } from "@sailo/design-system/web";
 import { SectionTitle, When } from "@/app/hq/_components/hq-ui";
 import { Card } from "@sailo/design-system/web";
 import { getStaffLog, getSystemHealth } from "@/lib/hq";
-import { staffEmails } from "@/lib/staff";
+import { staffEmails } from "@sailo/security/staff";
 
 export const metadata: Metadata = { title: "System" };
 

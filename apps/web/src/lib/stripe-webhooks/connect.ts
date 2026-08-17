@@ -10,7 +10,7 @@ import { releaseDownloads } from "@/lib/downloads";
 import { createInvoiceForOrder } from "@/lib/invoices";
 import { confirmBuyerByEmail } from "@sailo/commerce/orders/server";
 import { notifySellerOfOrder } from "@sailo/commerce/orders/server";
-import { emitOrderWebhook } from "@/lib/webhooks/emit";
+import { emitOrderWebhook } from "@sailo/webhooks/emit";
 import { intentIdOf, orderForIntent, orderForSession } from "@sailo/payments";
 import { handleSubscriptionRefund } from "./platform";
 import {

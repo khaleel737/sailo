@@ -5,7 +5,7 @@ import { ArrowLeft, Check } from "lucide-react";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { SailoLogo } from "@/components/brand";
 import { PhoneFrame } from "@/components/marketing/frames";
-import { HERO_DEMO, phoneShotUrl } from "@/lib/demos";
+import { HERO_DEMO, phoneShotUrl } from "@sailo/marketing/demos";
 import { getT } from "@/i18n/server";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
 

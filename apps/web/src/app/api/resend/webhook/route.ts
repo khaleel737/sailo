@@ -2,13 +2,10 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { broadcastDeliveries } from "@sailo/db/schema";
-import { suppress } from "@/lib/broadcasts/audience";
-import { evaluateShop } from "@/lib/broadcasts/reputation";
-import { optOut } from "@/lib/lifecycle/opt-out";
-import {
-  lifecycleDeliveryByProviderId,
-  markLifecycleFailed,
-} from "@/lib/lifecycle/send";
+import { suppress } from "@sailo/marketing/broadcasts/server";
+import { evaluateShop } from "@sailo/marketing/broadcasts/server";
+import { optOut } from "@sailo/marketing/lifecycle/server";
+import { lifecycleDeliveryByProviderId, markLifecycleFailed } from "@sailo/marketing/lifecycle/server";
 
 /**
  * Bounces and complaints, from Resend.

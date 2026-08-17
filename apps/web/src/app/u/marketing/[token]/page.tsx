@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { getT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { confirmMarketingUnsubscribe } from "@/lib/actions/unsubscribe";
-import { hasOptedOut } from "@/lib/lifecycle/opt-out";
-import { readMarketingOptOutToken } from "@/lib/lifecycle/unsubscribe";
+import { hasOptedOut } from "@sailo/marketing/lifecycle/server";
+import { readMarketingOptOutToken } from "@sailo/marketing/lifecycle/server";
 import { UnsubscribeForm } from "@/components/shared/unsubscribe-form";
 
 /* Not yet converted — see the note in `next.config.ts`. */

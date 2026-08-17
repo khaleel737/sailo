@@ -8,9 +8,9 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { liveShop } from "@/lib/shop-visibility";
 import { CLICK_KINDS, clicks, products, shops, visits, type ClickKind } from "@sailo/db/schema";
-import { classifyVisit, outboundHost, parseUserAgent } from "@/lib/analytics";
-import { ensurePartition } from "@/lib/visit-partitions";
-import { visitorId } from "@/lib/visitor-id";
+import { classifyVisit, outboundHost, parseUserAgent } from "@sailo/analytics/traffic";
+import { ensurePartition } from "@sailo/analytics/partitions";
+import { visitorId } from "@sailo/analytics/visitor";
 import { isUuid } from "@/lib/utils";
 
 

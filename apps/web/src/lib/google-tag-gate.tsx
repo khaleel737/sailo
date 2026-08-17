@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
-import { CONSENT_EVENT, hasAnalyticsConsent } from "@/lib/consent";
+import { CONSENT_EVENT, hasAnalyticsConsent } from "@sailo/customers/consent";
 
 /**
  * Loads the Google tags only once the visitor has agreed to them.

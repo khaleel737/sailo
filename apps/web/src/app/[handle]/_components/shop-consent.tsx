@@ -7,7 +7,7 @@ import {
   readShopConsent,
   writeShopConsent,
   type ShopConsentChoice,
-} from "@/lib/shop-consent";
+} from "@sailo/customers/shop-consent";
 
 export type ShopConsentLabels = {
   title: string;

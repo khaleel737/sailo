@@ -14,7 +14,7 @@ import {
   user as userTable,
   type Shop,
 } from "@sailo/db/schema";
-import { parseUserAgent } from "@/lib/analytics";
+import { parseUserAgent } from "@sailo/analytics/traffic";
 import { sendTwoFactorChanged } from "@/lib/email";
 import { publishShopEvent } from "@sailo/events";
 import { maybeRow } from "@sailo/core/invariant";

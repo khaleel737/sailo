@@ -1,4 +1,4 @@
-import { cronAuthFailure } from "@/lib/cron-auth";
+import { cronAuthFailure } from "@sailo/security/cron-auth";
 import { getProgramSettings } from "@/lib/partners/settings";
 import { reconcilePendingPayouts, runPayouts } from "@/lib/partners/payouts";
 

@@ -9,15 +9,9 @@ import {
   products,
   type Order,
 } from "@sailo/db/schema";
-import { MAX_TAGS, normalizeTag, normalizeTags } from "@/lib/client-tags";
+import { MAX_TAGS, normalizeTag, normalizeTags } from "@sailo/customers/tags";
 import { normalizePhone } from "@/lib/utils";
-import {
-  MAX_EMAIL_LENGTH,
-  confirmUrl,
-  normalizeEmail,
-  normalizeName,
-  subscribeToken,
-} from "@/lib/broadcasts/subscribe";
+import { MAX_EMAIL_LENGTH, confirmUrl, normalizeEmail, normalizeName, subscribeToken } from "@sailo/marketing/broadcasts/server";
 import { sendSubscribeConfirmation } from "@/lib/email";
 import { getDictionary, interpolate } from "@sailo/i18n";
 import { rateLimit } from "@sailo/rate-limit";

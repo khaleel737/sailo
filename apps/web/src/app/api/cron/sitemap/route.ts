@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { cronAuthFailure } from "@/lib/cron-auth";
+import { cronAuthFailure } from "@sailo/security/cron-auth";
 import { revalidateTag } from "next/cache";
 
 /**

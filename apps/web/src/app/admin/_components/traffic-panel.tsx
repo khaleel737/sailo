@@ -1,6 +1,6 @@
 import { ExternalLink, Globe, MapPin, Megaphone, Monitor, Share2 } from "lucide-react";
 import type { ClickBreakdown, VisitBreakdown } from "@/lib/queries";
-import { SOURCE_LABELS, hostLabel, type TrafficSource } from "@/lib/analytics";
+import { SOURCE_LABELS, hostLabel, type TrafficSource } from "@sailo/analytics/traffic";
 import { countryFlag, countryName } from "@/lib/countries";
 import { Card } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";

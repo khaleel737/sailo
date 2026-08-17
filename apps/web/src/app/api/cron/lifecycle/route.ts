@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { cronAuthFailure } from "@/lib/cron-auth";
-import { runLifecyclePass } from "@/lib/lifecycle/send";
+import { cronAuthFailure } from "@sailo/security/cron-auth";
+import { runLifecyclePass } from "@sailo/marketing/lifecycle/server";
 
 /**
  * One tick of Sailo's own lifecycle mail — the onboarding and activation

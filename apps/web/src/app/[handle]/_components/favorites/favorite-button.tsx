@@ -2,7 +2,7 @@
 
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { FavoriteItem } from "@/lib/favorites";
+import type { FavoriteItem } from "@sailo/customers/favorites";
 import { useFavorites } from "./use-favorites";
 
 /**

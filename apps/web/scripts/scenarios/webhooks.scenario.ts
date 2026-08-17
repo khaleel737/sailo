@@ -1,5 +1,5 @@
 import type * as nextServer from "next/server";
-import type * as post from "@/lib/webhooks/post";
+import type * as post from "@sailo/webhooks/post";
 import { assertLocalDatabase } from "./local-only";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { and, eq } from "drizzle-orm";
@@ -26,7 +26,7 @@ const posted: { url: string; body: string; headers: Record<string, string> }[] =
 /** What the stub should answer next. Set per test. */
 let answer: post.PostResult = { ok: true, status: 200 };
 
-vi.mock("@/lib/webhooks/post", async (importOriginal) => {
+vi.mock("@sailo/webhooks/post", async (importOriginal) => {
   const actual = await importOriginal<typeof post>();
   return {
     ...actual,
@@ -74,9 +74,9 @@ const {
   webhookEndpoints,
 } = await import("@sailo/db/schema");
 const { createOrderIntent } = await import("@/lib/actions/orders");
-const { runWebhookQueue, pruneWebhookDeliveries } = await import("@/lib/webhooks/deliver");
-const { verifyWebhook, newWebhookSecret } = await import("@/lib/webhooks/signature");
-const { isWebhookTargetUrl } = await import("@/lib/webhooks/post");
+const { runWebhookQueue, pruneWebhookDeliveries } = await import("@sailo/webhooks/deliver");
+const { verifyWebhook, newWebhookSecret } = await import("@sailo/webhooks/signature");
+const { isWebhookTargetUrl } = await import("@sailo/webhooks/post");
 
 const db = getDb();
 const uid = () => crypto.randomUUID();
@@ -547,7 +547,7 @@ describe("the seller's own order events", () => {
      * no session for — so the emit is exercised directly, on the same guard
      * the action applies: a transition into `paid`, not a re-save of it.
      */
-    const { emitOrderWebhook } = await import("@/lib/webhooks/emit");
+    const { emitOrderWebhook } = await import("@sailo/webhooks/emit");
     await emitOrderWebhook({ shop, event: "order.paid", orderId: order?.id ?? "" });
 
     const rows = await deliveriesFor(shop.id);

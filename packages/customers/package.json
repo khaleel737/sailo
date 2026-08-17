@@ -1,0 +1,33 @@
+{
+  "name": "@sailo/customers",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tags": "./src/tags.ts",
+    "./consent": "./src/consent.ts",
+    "./shop-consent": "./src/shop-consent.ts",
+    "./pixels": "./src/shop-pixels.ts",
+    "./favorites": "./src/favorites.ts",
+    "./roster": "./src/roster.ts",
+    "./server": "./src/server.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src || true",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@sailo/commerce": "workspace:*",
+    "@sailo/db": "workspace:*",
+    "drizzle-orm": "^0.45.2",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@sailo/config": "workspace:*",
+    "oxlint": "^1.77.0",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  }
+}

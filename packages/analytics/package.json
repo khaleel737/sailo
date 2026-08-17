@@ -7,7 +7,12 @@
     ".": "./src/index.ts",
     "./queries": "./src/queries.ts",
     "./window": "./src/analytics-window.ts",
-    "./product-performance": "./src/product-performance.ts"
+    "./product-performance": "./src/product-performance.ts",
+    "./traffic": "./src/traffic.ts",
+    "./rollup": "./src/rollup.ts",
+    "./partitions": "./src/partitions.ts",
+    "./visitor": "./src/visitor.ts",
+    "./clicks": "./src/clicks.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -17,7 +22,10 @@
   "dependencies": {
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
-    "drizzle-orm": "^0.45.2"
+    "@sailo/events": "workspace:*",
+    "@sailo/rate-limit": "workspace:*",
+    "drizzle-orm": "^0.45.2",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

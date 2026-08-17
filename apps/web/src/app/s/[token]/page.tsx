@@ -4,7 +4,7 @@ import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
-import { readSubscribeToken } from "@/lib/broadcasts/subscribe";
+import { readSubscribeToken } from "@sailo/marketing/broadcasts/server";
 import { SubscribeConfirmForm } from "@/components/shared/subscribe-confirm-form";
 import { shopThemeVars } from "@/lib/utils";
 

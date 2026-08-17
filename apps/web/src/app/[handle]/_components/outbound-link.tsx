@@ -1,6 +1,6 @@
 "use client";
 
-import { trackClick } from "@/lib/track-click";
+import { trackClick } from "@sailo/analytics/clicks";
 import type { ClickKind } from "@sailo/db/schema";
 
 /**

@@ -3,10 +3,10 @@
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
-import { suppress } from "@/lib/broadcasts/audience";
-import { readUnsubscribeToken } from "@/lib/broadcasts/unsubscribe";
-import { optOut } from "@/lib/lifecycle/opt-out";
-import { readMarketingOptOutToken } from "@/lib/lifecycle/unsubscribe";
+import { suppress } from "@sailo/marketing/broadcasts/server";
+import { readUnsubscribeToken } from "@sailo/marketing/broadcasts/server";
+import { optOut } from "@sailo/marketing/lifecycle/server";
+import { readMarketingOptOutToken } from "@sailo/marketing/lifecycle/server";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 

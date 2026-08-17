@@ -9,9 +9,9 @@ import {
   MAX_RULES,
   PRODUCT_KINDS_SEGMENT,
   type RuleType,
-} from "@/lib/broadcasts/segments";
+} from "@sailo/marketing/broadcasts";
 import type { SegmentRule } from "@sailo/db/schema/json-types";
-import type { SegmentPickers } from "@/lib/broadcasts/pickers";
+import type { SegmentPickers } from "@sailo/marketing/broadcasts/server";
 import { countAudience } from "@/lib/actions/broadcasts";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";

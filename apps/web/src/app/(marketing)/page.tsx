@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { getT } from "@/i18n/server";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
 import { LOCALES } from "@sailo/i18n/config";
-import { HERO_DEMO, RTL_DEMO, phoneShotUrl, rtlShotUrl } from "@/lib/demos";
+import { HERO_DEMO, RTL_DEMO, phoneShotUrl, rtlShotUrl } from "@sailo/marketing/demos";
 import { BioCard } from "@/components/marketing/bio-card";
 import { PhoneFrame } from "@/components/marketing/frames";
 import { DemoGallery } from "@/components/marketing/demo-gallery";

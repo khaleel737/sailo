@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { requireShop } from "@/lib/session";
 import { SettingsForm } from "@/app/admin/settings/_components/settings-form";
-import { hasOptedOut } from "@/lib/lifecycle/opt-out";
+import { hasOptedOut } from "@sailo/marketing/lifecycle/server";
 import { getT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Settings" };

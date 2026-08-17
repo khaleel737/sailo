@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { auth } from "./auth";
-import { isStaffEmail, staffEmails } from "./staff";
+import { isStaffEmail, staffEmails } from "@sailo/security/staff";
 import { getDb } from "@sailo/db";
 import { shops } from "@sailo/db/schema";
 

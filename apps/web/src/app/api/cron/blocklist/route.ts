@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { cronAuthFailure } from "@/lib/cron-auth";
-import { checkDomains, listingsIn, sendingDomains } from "@/lib/blocklist/check";
-import { readLastCheck, verdictFor, writeLastCheck } from "@/lib/blocklist/state";
-import { sendBlocklistAlert, sendBlocklistCleared } from "@/lib/blocklist/alert";
+import { cronAuthFailure } from "@sailo/security/cron-auth";
+import { checkDomains, listingsIn, sendingDomains } from "@sailo/security/blocklist";
+import { readLastCheck, verdictFor, writeLastCheck } from "@sailo/security/blocklist";
+import { sendBlocklistAlert, sendBlocklistCleared } from "@sailo/security/blocklist";
 
 /**
  * Asks the public domain blocklists, once a day, whether they have anything to

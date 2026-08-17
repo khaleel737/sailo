@@ -4,6 +4,16 @@
   "private": true,
   "files": [
     "tsconfig.base.json",
-    "tsconfig.hermes.json"
-  ]
+    "tsconfig.hermes.json",
+    "vitest.base.mts",
+    "test-stubs"
+  ],
+  "exports": {
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./tsconfig.hermes.json": "./tsconfig.hermes.json",
+    "./vitest": "./vitest.base.mts"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.10"
+  }
 }

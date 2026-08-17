@@ -4,7 +4,7 @@ import { getDb } from "@sailo/db";
 import { clients } from "@sailo/db/schema";
 import { field } from "@/lib/csv";
 import { normalizePhone } from "@/lib/utils";
-import { normalizeTags } from "@/lib/client-tags";
+import { normalizeTags } from "@sailo/customers/tags";
 import { parse } from "./parse";
 import type { ImportReport } from "./types";
 

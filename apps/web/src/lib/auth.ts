@@ -16,7 +16,7 @@ import {
   sendHqSignInLink,
   sendPasswordReset,
 } from "@/lib/email";
-import { isStaffEmail, refusesPasswordAuth } from "@/lib/staff";
+import { isStaffEmail, refusesPasswordAuth } from "@sailo/security/staff";
 import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
 
 /**

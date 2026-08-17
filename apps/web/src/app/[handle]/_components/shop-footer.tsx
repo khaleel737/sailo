@@ -8,7 +8,7 @@ import { formatPercent } from "@sailo/core/pricing";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
-import { hasPixels } from "@/lib/shop-pixels";
+import { hasPixels } from "@sailo/customers/pixels";
 import { ShopCookieSettings } from "./shop-cookie-settings";
 
 /**

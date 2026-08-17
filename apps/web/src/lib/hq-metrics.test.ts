@@ -10,7 +10,7 @@ import {
   type BillingGroup,
   type BillingRow,
 } from "@/lib/hq-metrics";
-import { isStaffEmail, staffEmails } from "@/lib/staff";
+import { isStaffEmail, staffEmails } from "@sailo/security/staff";
 import { PLANS } from "@sailo/core/plans";
 
 const shop = (over: Partial<BillingRow> = {}): BillingRow => ({

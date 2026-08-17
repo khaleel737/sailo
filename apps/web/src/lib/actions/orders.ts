@@ -34,7 +34,7 @@ import { resolveDigitalDelivery } from "@sailo/commerce/orders/server";
 import { eventSalesOpen, ticketValues } from "@sailo/commerce/ticketing";
 import { confirmBuyerByEmail } from "@sailo/commerce/orders/server";
 import { notifySellerOfOrder } from "@sailo/commerce/orders/server";
-import { emitOrderWebhook } from "@/lib/webhooks/emit";
+import { emitOrderWebhook } from "@sailo/webhooks/emit";
 
 
 /**

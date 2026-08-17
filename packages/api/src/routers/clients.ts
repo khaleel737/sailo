@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { clients, orders } from "@sailo/db/schema";
-import { normalizeTags, MAX_TAGS } from "@sailo/core/client-tags";
+import { normalizeTags, MAX_TAGS } from "@sailo/customers/tags";
 import { publishShopEvent } from "@sailo/events";
 import { router, shopProcedure } from "../trpc";
 import { byId, found } from "../shared";

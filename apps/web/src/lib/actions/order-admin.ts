@@ -16,7 +16,7 @@ import { setPaymentStatus as pay } from "@sailo/commerce/orders/server";
 import { sendDownloadReady } from "@sailo/email/transactional";
 import { isOrderStatus } from "@sailo/core/order-status";
 import { sendBookingDecision, sendRefundNotification, sendShippingNotification } from "@/lib/email";
-import { emitOrderWebhook } from "@/lib/webhooks/emit";
+import { emitOrderWebhook } from "@sailo/webhooks/emit";
 import type { ActionState } from "./shop";
 
 /**

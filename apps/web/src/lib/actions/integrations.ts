@@ -23,9 +23,9 @@ import {
   MAX_ENDPOINTS_PER_SHOP,
   envelope,
   knownEvents,
-} from "@/lib/webhooks/events";
-import { isWebhookTargetUrl } from "@/lib/webhooks/post";
-import { newWebhookSecret } from "@/lib/webhooks/signature";
+} from "@sailo/webhooks/events";
+import { isWebhookTargetUrl } from "@sailo/webhooks/post";
+import { newWebhookSecret } from "@sailo/webhooks/signature";
 import type { Shop } from "@sailo/db/schema";
 
 /**

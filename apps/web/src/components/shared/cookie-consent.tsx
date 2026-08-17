@@ -7,7 +7,7 @@ import {
   readConsent,
   writeConsent,
   type ConsentChoice,
-} from "@/lib/consent";
+} from "@sailo/customers/consent";
 
 /*
  * Whether this browser has answered is external state — it lives in

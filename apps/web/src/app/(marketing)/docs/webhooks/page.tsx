@@ -1,4 +1,4 @@
-import { WEBHOOK_EVENTS } from "@/lib/webhooks/events";
+import { WEBHOOK_EVENTS } from "@sailo/webhooks/events";
 import { Code, DocsShell, Heading, Pre, Section, docsMetadata, docsPath } from "../_components/docs-kit";
 
 export const metadata = docsMetadata(

@@ -1,7 +1,7 @@
 import "server-only";
 import { notInArray, sql } from "drizzle-orm";
 import { user } from "@sailo/db/schema";
-import { staffEmails } from "@/lib/staff";
+import { staffEmails } from "@sailo/security/staff";
 
 /**
  * `user` rows that are customers, not us.

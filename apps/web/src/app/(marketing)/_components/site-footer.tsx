@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import type { Dictionary } from "@sailo/i18n";
 import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import type { Locale } from "@sailo/i18n/config";
-import { DEMOS } from "@/lib/demos";
+import { DEMOS } from "@sailo/marketing/demos";
 import { APP_URL } from "@/lib/seo";
 import { SailoLogo } from "@/components/brand";
 import { CookieSettingsButton } from "@/components/shared/cookie-settings-button";

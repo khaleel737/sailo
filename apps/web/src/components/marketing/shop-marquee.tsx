@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { DEMOS } from "@/lib/demos";
+import { DEMOS } from "@sailo/marketing/demos";
 
 /*
  * The five demo shops, as links, moving.
