@@ -786,9 +786,6 @@ importers:
 
   packages/customers:
     dependencies:
-      '@sailo/commerce':
-        specifier: workspace:*
-        version: link:../commerce
       '@sailo/db':
         specifier: workspace:*
         version: link:../db

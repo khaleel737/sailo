@@ -6,7 +6,6 @@ import { formatMoney } from "@sailo/core/currency";
 import { ORDERS, send, sender, type SendResult } from "./transport";
 import {
   button,
-  link,
   mutedPara,
   detailTable,
   esc,

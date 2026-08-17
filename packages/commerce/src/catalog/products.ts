@@ -486,8 +486,18 @@ export async function saveProduct(
     productId = row.id;
   }
 
-  // Bound outside the branch, which the closures below cannot see through.
-  const savedId = productId!;
+  /*
+   * Narrowed rather than asserted.
+   *
+   * This was `productId!`, with a comment explaining that the closures below
+   * cannot see through the branch. True, and the assertion made the compiler
+   * agree by fiat: if a future edit ever leaves a path where neither branch
+   * assigns, `!` says nothing and the id reaches an insert as `undefined`.
+   * Throwing states the invariant instead, and costs a comparison that never
+   * fires.
+   */
+  if (!productId) throw new Error("product id was never bound");
+  const savedId = productId;
 
   if (imageUrls.length) {
     await db.insert(productImages).values(

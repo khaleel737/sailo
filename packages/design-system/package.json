@@ -20,7 +20,7 @@
   "scripts": {
     "generate": "node src/tokens/generate.ts",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src -D correctness -D suspicious",
+    "lint": "oxlint src --config ../../.oxlintrc.json",
     "test": "vitest run"
   },
   "dependencies": {

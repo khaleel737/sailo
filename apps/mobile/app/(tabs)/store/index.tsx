@@ -10,7 +10,6 @@ import {
 } from "@tanstack/react-query";
 import { interpolate } from "@sailo/i18n/native";
 import {
-  Button,
   Divider,
   EmptyState,
   ErrorState,
@@ -19,18 +18,14 @@ import {
   ListRow,
   Screen,
   Segmented,
-  Sheet,
   Skeleton,
-  Text,
   TextField,
   rowEntering,
   rowLayout,
   type SegmentedOption,
 } from "@sailo/design-system/native";
-import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";
-import type { Product } from "../../../lib/models";
-import { KIND_OPTIONS, useStoreCopy } from "../../../components/store/copy";
+import { useStoreCopy } from "../../../components/store/copy";
 import { ProductRow } from "../../../components/store/row";
 import { ProductEditor } from "../../../components/store/editor";
 

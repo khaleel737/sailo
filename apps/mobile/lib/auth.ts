@@ -1,8 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import { captureError } from "@sailo/observability";
 import { createMobileAuthClient } from "@sailo/auth";
-import { interpolate } from "@sailo/i18n/native";
-import { useT } from "./i18n";
 
 /**
  * The seller's session on the phone.

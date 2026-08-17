@@ -1,7 +1,7 @@
 import "server-only";
-import { and, desc, eq, isNotNull, sql } from "drizzle-orm";
+import { and, desc, eq, isNotNull, } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { clients, orders, type Client, type Order } from "@sailo/db/schema";
+import { orders, type Order } from "@sailo/db/schema";
 import { orderLines, orderLinesMap } from "@/lib/order-lines";
 
 /** Orders and the people who placed them. */

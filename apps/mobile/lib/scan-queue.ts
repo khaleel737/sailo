@@ -149,8 +149,15 @@ export function useScanQueue(productId: string | null) {
     setDraining(true);
     try {
       let queue = await read();
+      /*
+       * `[0]` under `noUncheckedIndexedAccess` is `T | undefined` no matter what
+       * the loop condition says, so this used to assert with `!`. Destructuring
+       * and testing says the same thing to a reader and to the compiler, and
+       * would survive somebody changing the condition.
+       */
       while (queue.length > 0) {
-        const entry = queue[0]!;
+        const [entry] = queue;
+        if (!entry) break;
         try {
           await api.tickets.admit.mutate({
             code: entry.code,

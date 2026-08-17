@@ -41,7 +41,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src || true",
+    "lint": "oxlint src --config ../../.oxlintrc.json",
     "test": "vitest run"
   },
   "devDependencies": {

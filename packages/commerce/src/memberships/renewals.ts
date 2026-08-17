@@ -1,11 +1,8 @@
 import "server-only";
-import { and, asc, eq, isNotNull, isNull, lte, ne, or } from "drizzle-orm";
+import { and, eq, isNull, } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import {
-  clients,
   orders,
-  products,
-  shops,
   subscriptions,
   type Order,
   type Shop,
@@ -15,8 +12,6 @@ import { publishShopEvent } from "@sailo/events";
 import { releaseDownloads } from "../orders/downloads";
 import { createInvoiceForOrder } from "../orders/invoices";
 import {
-  MANUAL_LAPSE_DAYS,
-  RENEWAL_LEAD_DAYS,
   intervalOf,
   isBillingInterval,
   nextPeriodEnd,

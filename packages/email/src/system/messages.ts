@@ -1,5 +1,4 @@
 import "server-only";
-import type { Shop } from "@sailo/db/schema";
 import { SUPPORT_TOPIC_LABELS, type SupportTopic } from "@sailo/core/support";
 import { ACCOUNTS, SUPPORT, send, sender, type SendResult } from "../transport";
 import { appOrigin } from "@sailo/core/origin";

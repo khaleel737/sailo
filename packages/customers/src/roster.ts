@@ -2,7 +2,6 @@ import "server-only";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { clients, orders, type Client } from "@sailo/db/schema";
-import { orderLinesMap } from "@sailo/commerce/order-lines";
 
 /**
  * Reading a shop's customer list.

@@ -1,8 +1,6 @@
-import { StyleSheet, View } from "react-native";
 import { interpolate } from "@sailo/i18n/native";
 import { ListRow, StatusPill } from "@sailo/design-system/native";
 import { formatMoney } from "@sailo/core/currency";
-import { variantLabel } from "@sailo/core/variants";
 import type { Product } from "../../lib/models";
 import { useStoreCopy } from "./copy";
 

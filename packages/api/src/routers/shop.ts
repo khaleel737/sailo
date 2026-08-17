@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { and, asc, count, eq, ne } from "drizzle-orm";
+import { and, asc, count, eq, } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { paymentMethods, products, shops } from "@sailo/db/schema";
 import { can } from "@sailo/core/plans";

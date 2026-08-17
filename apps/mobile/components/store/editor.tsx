@@ -1,23 +1,18 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Alert, Platform, StyleSheet, View } from "react-native";
+import { Alert, Platform, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import Animated from "react-native-reanimated";
-import { formatMoney } from "@sailo/core/currency";
-import { isProductKind, variantLabel, type ProductKind } from "@sailo/core/variants";
+import { variantLabel, } from "@sailo/core/variants";
 import { interpolate } from "@sailo/i18n/native";
-import { priceToText, textToCount, textToPrice } from "../money";
+import { textToPrice } from "../money";
 import {
   Banner,
   Button,
   Card,
-  Divider,
   GroupedList,
-  IconButton,
   ListRow,
   Segmented,
   Sheet,
-  StatusPill,
   Switch,
   Text,
   TextField,
@@ -31,9 +26,8 @@ import {
   toSaveInput,
   type Draft,
 } from "./draft";
-import { useT } from "../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../lib/query";
-import type { ProductDetail, RouterInputs } from "../../lib/models";
+import type { ProductDetail, } from "../../lib/models";
 
 /**
  * The product editor, shared by the list screen's "new product" sheet and the

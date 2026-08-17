@@ -1,5 +1,5 @@
 import { TRPCClientError } from "@trpc/client";
-import { isProductKind, variantLabel, type ProductKind } from "@sailo/core/variants";
+import { isProductKind, type ProductKind } from "@sailo/core/variants";
 import { priceToText, textToCount, textToPrice } from "../money";
 import type { ProductDetail, RouterInputs } from "../../lib/models";
 import type { StoreCopy } from "./copy";

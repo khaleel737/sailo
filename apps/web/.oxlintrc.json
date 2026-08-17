@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "extends": [
+    "../../.oxlintrc.json"
+  ],
   "plugins": [
     "typescript",
     "unicorn",
@@ -20,41 +23,14 @@
     "perf": "warn"
   },
   "rules": {
-    "eqeqeq": [
-      "error",
-      "always"
-    ],
-    "no-console": [
-      "warn",
-      {
-        "allow": [
-          "warn",
-          "error"
-        ]
-      }
-    ],
-    "typescript/no-explicit-any": "error",
-    "typescript/consistent-type-imports": "error",
-    "typescript/no-non-null-assertion": "error",
-    "unicorn/no-array-reduce": "off",
-    "unicorn/filename-case": [
-      "error",
-      {
-        "case": "kebabCase"
-      }
-    ],
-    "import/no-cycle": "error",
-    "import/no-default-export": "off",
     "jsx-a11y/alt-text": "error",
     "jsx-a11y/anchor-is-valid": "error",
     "react/jsx-key": "error",
     "react-perf/jsx-no-new-object-as-prop": "off",
     "react/react-in-jsx-scope": "off",
-    "import/no-unassigned-import": "off",
     "jsx-a11y/prefer-tag-over-role": "warn",
     "jsx-a11y/no-autofocus": "warn",
-    "jsx-a11y/label-has-associated-control": "warn",
-    "unicorn/consistent-function-scoping": "warn"
+    "jsx-a11y/label-has-associated-control": "warn"
   },
   "overrides": [
     {

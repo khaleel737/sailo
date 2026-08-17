@@ -37,8 +37,14 @@ import { router, shopProcedure } from "../trpc";
  * edge and refuses the upload if the client lies about any of them.
  */
 
-const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8 MB
-const MAX_FILE_BYTES = 100 * 1024 * 1024; // 100 MB
+/*
+ * The ceilings are `maxBytesFor` from `@sailo/storage/rules`, which this file
+ * already calls — the two `MAX_*_BYTES` constants that sat here were left behind
+ * by that move and used by nothing. They are worth a note rather than a silent
+ * deletion: a stale copy of a size limit sitting beside the real one is how a
+ * later edit picks the wrong number, and lint being switched off is why it sat
+ * here long enough to be found by a tool rather than by a reader.
+ */
 
 /**
  * How long a token is good for.

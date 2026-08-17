@@ -13,7 +13,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src || true"
+    "lint": "oxlint src --config ../../.oxlintrc.json"
   },
   "dependencies": {
     "@sailo/env": "workspace:*",
@@ -26,9 +26,15 @@
     "expo-constants": "~18.0.0"
   },
   "peerDependenciesMeta": {
-    "@sentry/node": { "optional": true },
-    "@sentry/react-native": { "optional": true },
-    "expo-constants": { "optional": true }
+    "@sentry/node": {
+      "optional": true
+    },
+    "@sentry/react-native": {
+      "optional": true
+    },
+    "expo-constants": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

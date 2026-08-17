@@ -1,5 +1,4 @@
-import { interpolate } from "@sailo/i18n/native";
-import { isProductKind, type ProductKind } from "@sailo/core/variants";
+import { type ProductKind } from "@sailo/core/variants";
 import type { SegmentedOption } from "@sailo/design-system/native";
 import { useT } from "../../lib/i18n";
 

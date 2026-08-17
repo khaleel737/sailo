@@ -1,7 +1,4 @@
 import "server-only";
-import { desc, eq } from "drizzle-orm";
-import { getDb } from "@sailo/db";
-import { coupons } from "@sailo/db/schema";
 
 /** Discount codes. */
 

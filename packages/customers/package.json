@@ -15,11 +15,10 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint src || true",
+    "lint": "oxlint src --config ../../.oxlintrc.json",
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@sailo/commerce": "workspace:*",
     "@sailo/db": "workspace:*",
     "drizzle-orm": "^0.45.2",
     "server-only": "^0.0.1"

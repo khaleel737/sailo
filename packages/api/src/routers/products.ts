@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { and, asc, desc, eq, ilike, or } from "drizzle-orm";
+import { eq, } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { productImages, productVariants, products, shops } from "@sailo/db/schema";
+import { products, shops } from "@sailo/db/schema";
 import { PRODUCT_KIND_VALUES } from "@sailo/core/variants";
 import {
   deleteProduct,
