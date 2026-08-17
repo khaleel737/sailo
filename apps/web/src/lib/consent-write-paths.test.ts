@@ -9,7 +9,7 @@ import { describe, expect, it } from "vitest";
  * column, so it is the whole of Sailo's lawful basis for sending marketing
  * mail. Every behavioural rule around it — the checkout gate, the double
  * opt-in, the nulls written by the import, the admin form and the public API —
- * is pinned by `scripts/scenarios/consent.scenario.ts` against a real
+ * is pinned by `e2e/scenarios/consent.scenario.ts` against a real
  * database. What no behavioural test can pin is the *next* write: an admin
  * screen, a bulk action or an integration that starts setting the column
  * somewhere none of those tests look. It would not fail anything. It would

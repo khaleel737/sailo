@@ -62,7 +62,8 @@ jest.mock("../lib/i18n", () => ({
 
 import Welcome from "../app/(auth)/welcome";
 import SignIn from "../app/(auth)/sign-in";
-import { AUTH_COPY, JOURNEY_STEPS, authClient, journeyLabel } from "../lib/auth";
+import { authClient } from "../lib/auth";
+import { AUTH_COPY, JOURNEY_STEPS, journeyLabel } from "../lib/auth-copy";
 
 /** The faked client, reached back through the module that took it. */
 const client = authClient as unknown as {

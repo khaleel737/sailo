@@ -3,7 +3,7 @@
  *
  * Three callers ask this, and they are the three places where being wrong is
  * expensive: `src/db/index.ts` uses it to decide whether to route through the
- * local Neon HTTP proxy, `scripts/scenarios/local-only.ts` to refuse to run a
+ * local Neon HTTP proxy, `e2e/scenarios/local-only.ts` to refuse to run a
  * writing test suite anywhere else, and `scripts/check-load.ts` to refuse to
  * generate load against a database taking real orders. Each had its own copy
  * of the same triple, which is one loopback form away from disagreeing —

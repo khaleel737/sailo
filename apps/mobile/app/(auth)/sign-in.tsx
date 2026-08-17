@@ -2,13 +2,8 @@ import { useCallback, useState } from "react";
 import { View } from "react-native";
 import { Redirect, useRouter } from "expo-router";
 import { Banner, Button, Divider, Screen, Text, TextField, useTheme } from "@sailo/design-system/native";
-import {
-  attemptSignIn,
-  authClient,
-  useAuthCopy,
-  type AuthCopy,
-  type SignInOutcome,
-} from "../../lib/auth";
+import { attemptSignIn, authClient, type SignInOutcome } from "../../lib/auth";
+import { useAuthCopy, type AuthCopy } from "../../lib/auth-copy";
 
 /**
  * Email and password, and the two things that go wrong underneath them.

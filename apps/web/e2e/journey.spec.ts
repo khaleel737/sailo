@@ -11,7 +11,7 @@ import { expect, test, type Page } from "@playwright/test";
  *
  * Requires the local stack, because it writes:
  *
- *   ./scripts/scenarios/up.sh
+ *   ./e2e/scenarios/up.sh
  *   npx dotenv -e .env.local.test -- npx next dev -p 3100
  *   E2E_BASE_URL=http://localhost:3100 npx playwright test e2e/journey.spec.ts
  *
@@ -51,7 +51,7 @@ test.skip(!LOCAL, "journey writes real rows — localhost only");
  * orders into the production database through the local dev server.
  *
  * So writing suites do not run by accident at all. Point the server at the
- * scenario database (scripts/scenarios/up.sh) and say so explicitly:
+ * scenario database (e2e/scenarios/up.sh) and say so explicitly:
  *
  *   E2E_ALLOW_WRITES=1 npx playwright test e2e/journey.spec.ts
  */

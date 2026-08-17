@@ -87,7 +87,7 @@ secrets) are live and battle-tested — build on the **connect** side.
 ## Testing
 
 This is money-path code: scenario coverage is mandatory, run against the
-local stack (`scripts/scenarios/up.sh`) with `stripe listen` for a live
+local stack (`e2e/scenarios/up.sh`) with `stripe listen` for a live
 end-to-end pass (there is precedent in `card-e2e.scenario.ts`). Cover: mixed
 basket refused; subscribe → webhook activates → renewal order + invoice
 created idempotently under replay; failed invoice → past_due, access retained

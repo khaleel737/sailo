@@ -9,7 +9,7 @@ import { assertLocalDatabase } from "./local-only";
  * Places a real card order and prints the Stripe Checkout URL.
  *
  * Not an assertion suite — the driver for the one test nothing here could do
- * on its own: paying with a card. `scripts/scenarios/card-e2e.sh` runs this,
+ * on its own: paying with a card. `e2e/scenarios/card-e2e.sh` runs this,
  * opens the URL it prints in a browser, pays with 4242…, and then checks that
  * the webhook settled the order. That whole loop is what proves Stripe still
  * produces the event shapes the handlers expect, which unit tests of the

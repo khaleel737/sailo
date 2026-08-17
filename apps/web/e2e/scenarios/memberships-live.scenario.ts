@@ -48,7 +48,7 @@ import { platformFeePercent } from "@sailo/core/plans";
  *
  *   STRIPE_CONNECT_ACCOUNT=acct_… npx dotenv -e .env.local -- \
  *     npx vitest run --config vitest.scenarios.mts \
- *     scripts/scenarios/memberships-live.scenario.ts
+ *     e2e/scenarios/memberships-live.scenario.ts
  */
 
 const ACCOUNT = process.env.STRIPE_CONNECT_ACCOUNT;

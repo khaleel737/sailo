@@ -25,7 +25,7 @@ Same stack as `card-e2e.md` — a test connected account with `charges_enabled`,
 the scenario database, and `stripe listen` forwarding **connect** events.
 
 ```bash
-./scripts/scenarios/up.sh
+./e2e/scenarios/up.sh
 npx dotenv -e .env.local.test -- npx next dev -p 3100
 
 stripe listen \
@@ -43,10 +43,10 @@ Then, in the app: create a product with type **Membership**, a price, and
 Checkout page, and it does it against a real connected account:
 
 ```bash
-./scripts/scenarios/up.sh
+./e2e/scenarios/up.sh
 STRIPE_CONNECT_ACCOUNT=acct_… npx dotenv -e .env.local -- \
   npx vitest run --config vitest.scenarios.mts \
-  scripts/scenarios/memberships-live.scenario.ts
+  e2e/scenarios/memberships-live.scenario.ts
 ```
 
 Skipped without `STRIPE_CONNECT_ACCOUNT`, so the ordinary suite stays offline.

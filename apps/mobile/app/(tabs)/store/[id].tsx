@@ -28,7 +28,9 @@ import {
 import type { ProductDetail, ProductVariant } from "../../../lib/models";
 import { useReduceMotion } from "../../../lib/a11y";
 import { reportQueryError, useTRPC } from "../../../lib/query";
-import { PublishBadge, ProductEditor, useStoreCopy } from "./index";
+import { useStoreCopy } from "../../../components/store/copy";
+import { PublishBadge } from "../../../components/store/row";
+import { ProductEditor } from "../../../components/store/editor";
 
 /**
  * One product — read, edited, published and deleted.

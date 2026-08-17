@@ -36,9 +36,9 @@ import { assertLocalDatabase } from "./local-only";
  * fixtures it needs; the rest is here.
  *
  * Run with:
- *   ./scripts/scenarios/up.sh
+ *   ./e2e/scenarios/up.sh
  *   npx vitest run --config vitest.scenarios.mts \
- *     scripts/scenarios/consent.scenario.ts
+ *     e2e/scenarios/consent.scenario.ts
  */
 
 const db = getDb();

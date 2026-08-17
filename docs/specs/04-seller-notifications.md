@@ -84,7 +84,7 @@ Strings in all 35 `src/i18n/admin/*.ts`.
 ## Testing
 
 Scenario: place a manual order → seller email recorded (stub transport the way
-`scripts/scenarios/setup.ts` stubs Resend); toggle pref off → no send; card
+`e2e/scenarios/setup.ts` stubs Resend); toggle pref off → no send; card
 order → email fires on webhook settle, not at intent creation; webhook
 replayed → exactly one email.
 

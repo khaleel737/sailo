@@ -32,7 +32,7 @@ DATABASE_URL=postgres://k:k@localhost/k npx knip       # 0 unused files, 0 unuse
 
 **The number that matters most is the second row.** Until today no test in this
 repo had ever placed an order, because the only database the app could reach
-was production's. `scripts/scenarios/up.sh` now gives it one it may dirty, and
+was production's. `e2e/scenarios/up.sh` now gives it one it may dirty, and
 writing those 48 scenarios found four defects that reading had not: a
 check-then-act in `upsertClient` that ended a buyer's checkout on an error page
 for double-clicking, the concurrent double-booking, and two of my own fixtures
@@ -230,14 +230,14 @@ asserted as something the database never promised.
 they never could: the dev server runs against `.env.local`, whose
 `DATABASE_URL` is the same Neon database production uses.
 
-That is now worked around rather than lived with. `scripts/scenarios/up.sh`
+That is now worked around rather than lived with. `e2e/scenarios/up.sh`
 starts a throwaway Postgres behind a local Neon HTTP proxy — the proxy is the
 load-bearing part, because the app speaks Neon's HTTP protocol and a plain
 container cannot answer it — and `vitest.scenarios.mts` points the app's own
 `getDb()` at it with no change to application code:
 
 ```bash
-./scripts/scenarios/up.sh
+./e2e/scenarios/up.sh
 npx vitest run --config vitest.scenarios.mts     # 25 scenarios
 ```
 

@@ -29,9 +29,9 @@ import { exportClients } from "@/lib/exporters";
  * claim made while changing this function meant "the checkout panel still
  * renders", and nothing more.
  *
- * `scripts/scenarios/up.sh` gives it somewhere safe to write. Run with:
+ * `e2e/scenarios/up.sh` gives it somewhere safe to write. Run with:
  *
- *   ./scripts/scenarios/up.sh
+ *   ./e2e/scenarios/up.sh
  *   npx vitest run --config vitest.scenarios.mts
  */
 

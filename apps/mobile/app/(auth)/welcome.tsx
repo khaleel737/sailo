@@ -9,7 +9,8 @@ import {
   useTheme,
   type IconName,
 } from "@sailo/design-system/native";
-import { authClient, useAuthCopy } from "../../lib/auth";
+import { authClient } from "../../lib/auth";
+import { useAuthCopy } from "../../lib/auth-copy";
 
 /**
  * The first screen of the product.

@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { useAuthCopy } from "../../lib/auth";
+import { useAuthCopy } from "../../lib/auth-copy";
 import { useStackScreenOptions } from "../../lib/navigation";
 
 /**

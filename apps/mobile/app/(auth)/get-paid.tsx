@@ -13,13 +13,8 @@ import {
   Text,
   useTheme,
 } from "@sailo/design-system/native";
-import {
-  JOURNEY_STEPS,
-  authClient,
-  journeyLabel,
-  useAuthCopy,
-  type AuthCopy,
-} from "../../lib/auth";
+import { authClient } from "../../lib/auth";
+import { JOURNEY_STEPS, journeyLabel, useAuthCopy, type AuthCopy } from "../../lib/auth-copy";
 import { useTRPC } from "../../lib/query";
 
 /**

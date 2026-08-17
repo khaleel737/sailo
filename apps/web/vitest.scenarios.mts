@@ -9,7 +9,7 @@ const root = dirname(fileURLToPath(import.meta.url));
  *
  * Separate from `vitest.config.mts` because these need a live database, and
  * the only one the app could otherwise reach is production's — which is the
- * reason no test has ever called `createOrderIntent`. `scripts/scenarios/up.sh`
+ * reason no test has ever called `createOrderIntent`. `e2e/scenarios/up.sh`
  * starts a throwaway Postgres behind a local Neon HTTP proxy; this config
  * points the app's own driver at it.
  */
@@ -22,8 +22,8 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["scripts/scenarios/**/*.scenario.ts"],
-    setupFiles: ["scripts/scenarios/setup.ts"],
+    include: ["e2e/scenarios/**/*.scenario.ts"],
+    setupFiles: ["e2e/scenarios/setup.ts"],
     // Shared stock, coupons and invoice numbers — the contention is the point,
     // but it has to be deliberate rather than incidental.
     fileParallelism: false,

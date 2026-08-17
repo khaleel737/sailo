@@ -11,13 +11,8 @@ import {
   TextField,
   useTheme,
 } from "@sailo/design-system/native";
-import {
-  authClient,
-  useAuthCopy,
-  verifyTwoFactor,
-  type AuthCopy,
-  type TwoFactorOutcome,
-} from "../../lib/auth";
+import { authClient, verifyTwoFactor, type TwoFactorOutcome } from "../../lib/auth";
+import { useAuthCopy, type AuthCopy } from "../../lib/auth-copy";
 
 /** How many digits a TOTP code has. Used to know when the field is complete. */
 const TOTP_LENGTH = 6;

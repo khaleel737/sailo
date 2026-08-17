@@ -37,9 +37,9 @@ import { assertLocalDatabase } from "./local-only";
  *   - a double-clicked settle stamps once
  *
  * Run with:
- *   ./scripts/scenarios/up.sh
+ *   ./e2e/scenarios/up.sh
  *   npx vitest run --config vitest.scenarios.mts \
- *     scripts/scenarios/partner-program.scenario.ts
+ *     e2e/scenarios/partner-program.scenario.ts
  */
 
 /*

@@ -11,7 +11,7 @@ import * as schema from "./schema";
  * That is why, until now, the only database this app could reach was the
  * production one — and why no test had ever placed an order: doing so would
  * have written real rows and claimed a real invoice number.
- * `scripts/scenarios/up.sh` runs a local proxy that bridges the two, and this
+ * `e2e/scenarios/up.sh` runs a local proxy that bridges the two, and this
  * points the driver at it.
  *
  * **Keyed on the connection string being local, not on an environment flag.**

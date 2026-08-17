@@ -16,7 +16,7 @@ Custom account and fill it in over the API — the last thing it asks for is
 `individual.phone`, and Stripe's test value is `0000000000`.
 
 ```bash
-./scripts/scenarios/up.sh
+./e2e/scenarios/up.sh
 npx dotenv -e .env.local.test -- npx next dev -p 3100
 
 stripe listen \
@@ -24,7 +24,7 @@ stripe listen \
   --forward-connect-to http://localhost:3100/api/stripe/connect/webhook
 
 STRIPE_CONNECT_ACCOUNT=acct_… npx dotenv -e .env.local.test -- \
-  npx vitest run --config vitest.scenarios.mts scripts/scenarios/card-e2e.scenario.ts
+  npx vitest run --config vitest.scenarios.mts e2e/scenarios/card-e2e.scenario.ts
 ```
 
 That writes `/tmp/card-e2e.env` with the order id and the Checkout URL. Open the

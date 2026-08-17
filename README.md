@@ -136,12 +136,12 @@ database the app could reach was production's. Writing one would have taken
 real stock and claimed a real invoice number out of a sequence a tax authority
 expects unbroken.
 
-`scripts/scenarios/up.sh` gives it somewhere safe to write: a throwaway
+`e2e/scenarios/up.sh` gives it somewhere safe to write: a throwaway
 Postgres behind a local Neon HTTP proxy. The proxy is the load-bearing part —
 the app speaks Neon's HTTP protocol and a plain container cannot answer it.
 
 ```bash
-./scripts/scenarios/up.sh                        # needs Docker
+./e2e/scenarios/up.sh                        # needs Docker
 npx vitest run --config vitest.scenarios.mts     # 50 scenarios
 docker rm -f sailo-test-db sailo-neon-proxy      # when you are done
 ```
@@ -159,7 +159,7 @@ two buyers, one appointment).
 ### Testing webhooks with the Stripe CLI
 
 ```bash
-./scripts/scenarios/up.sh
+./e2e/scenarios/up.sh
 npx dotenv -e .env.local.test -- npx next dev -p 3100
 
 stripe listen \
@@ -189,7 +189,7 @@ it forwards with the one secret, while production uses two.
 | `npm test` | Unit tests |
 | `npm run test:e2e` | Playwright |
 | `npm run verify` | All of the above, in order |
-| `./scripts/scenarios/up.sh` | Throwaway Postgres + Neon proxy for the scenario suite |
+| `./e2e/scenarios/up.sh` | Throwaway Postgres + Neon proxy for the scenario suite |
 
 ## Routes
 

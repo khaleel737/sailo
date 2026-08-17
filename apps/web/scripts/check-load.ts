@@ -32,7 +32,7 @@ function assertSafeTarget(target: string): void {
 
   throw new Error(
     `check:load refused: ${hostnameOf(target)} is not this machine. Point ` +
-      `DATABASE_URL at a throwaway database (./scripts/scenarios/up.sh), or ` +
+      `DATABASE_URL at a throwaway database (./e2e/scenarios/up.sh), or ` +
       `set LOAD_TEST_ALLOW_REMOTE=1 if you mean a Neon branch.`,
   );
 }

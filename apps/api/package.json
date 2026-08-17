@@ -8,7 +8,8 @@
     "start": "next start -p 3002",
     "lint": "oxlint src || true",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "vitest run --config vitest.e2e.mts"
   },
   "dependencies": {
     "@better-auth/expo": "^1.6.25",

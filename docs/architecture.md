@@ -109,6 +109,54 @@ is asked for a variable it has no use for, and a missing key fails at build, not
 `packages/env` holds only what is genuinely shared: the secret both servers must agree on,
 and the public values a browser and a native bundle both read under different prefixes.
 
+## Where tests live
+
+**A package's tests sit beside the code they cover.** Not as a preference — as
+the only arrangement that survives a move. A test in one workspace asserting on
+code in another either breaks when the code moves or, worse, keeps passing while
+silently covering nothing, which is what happened to four `vi.mock` calls and
+six source scans during this restructure.
+
+So the rule is: **the test moves with its subject.** Where a file turned out to
+be two tests sharing a name, it was cut in half rather than dragged along —
+`consent.test.ts`, `emit.test.ts` and `notify-seller.test.ts` each left their
+behavioural half in the package and their "which files in this app do X" half in
+`apps/web`, because a source scan cannot follow its subjects across a package
+boundary.
+
+Every package runs the same preset, `@sailo/config/vitest`:
+
+```ts
+import { sailoTest } from "@sailo/config/vitest";
+export default sailoTest();
+```
+
+It aliases `server-only` to a stub — the real package throws on import outside a
+React Server Component, which is exactly what would stop a server module being
+unit-tested. That alias used to be copied into nine packages with nine stub
+files. `@sailo/auth` is the one package that extends the preset, for two
+accommodations its own header explains.
+
+**Each app owns its end-to-end layer**, and each app's is shaped by what it
+actually is:
+
+| App | Unit | End-to-end |
+|---|---|---|
+| `apps/web` | `src/**/*.test.ts` — its own actions, handlers, i18n, proxy | `e2e/*.spec.ts` (Playwright, a real browser) and `e2e/scenarios/*.scenario.ts` (against a real Postgres — `./e2e/scenarios/up.sh`) |
+| `apps/api` | `src/**/*.test.ts` | `e2e/*.e2e.ts` — every route driven through its real handler over real `Request` objects (`pnpm test:e2e`) |
+| `apps/mobile` | `lib/*.test.tsx`, `components/*.test.tsx` | `tests/*.test.tsx` — screens driven through `@testing-library/react-native`, plus a cold-launch check |
+
+`apps/api`'s suite is new and deliberately does not reach the database: a route's
+job there is to decide *who is asking* and refuse if the answer is nobody, and
+that happens before any query. What a procedure does with a valid `shopId` is
+covered where that logic lives.
+
+A note on writing them, learned the hard way in that suite: the first version of
+its "refuses an unauthenticated call" test asserted *any* 4xx and passed on a
+405, because it sent a POST to a query. **Assert the reason, not the shape** — a
+test that cannot tell "we refused you" from "you used the wrong verb" is not
+testing authorisation.
+
 ## Checks
 
 A change is done when all five are clean. **Run them in this order**, and one at a

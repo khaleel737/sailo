@@ -8,6 +8,8 @@
     "apps/web": {
       "entry": [
         "e2e/**/*.spec.ts",
+        "e2e/**/*.scenario.ts",
+        "e2e/scenarios/*.{ts,mts}",
         "e2e/stubs/*.{ts,mts}",
         "scripts/**/*.ts",
         "sw.mjs"

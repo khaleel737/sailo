@@ -14,15 +14,8 @@ import {
   Text,
   useTheme,
 } from "@sailo/design-system/native";
-import {
-  JOURNEY_STEPS,
-  authClient,
-  journeyLabel,
-  resendVerificationEmail,
-  useAuthCopy,
-  type AuthCopy,
-  type ResendOutcome,
-} from "../../lib/auth";
+import { authClient, resendVerificationEmail, type ResendOutcome } from "../../lib/auth";
+import { JOURNEY_STEPS, journeyLabel, useAuthCopy, type AuthCopy } from "../../lib/auth-copy";
 
 /**
  * How long before "send it again" can be tapped again.

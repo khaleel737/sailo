@@ -64,7 +64,7 @@ the rest.
 
 - Unit: enrolment state machine (cannot enable without verify; backup code is
   single-use; disable requires proof).
-- Scenario (`scripts/scenarios/`): password sign-in with 2FA on requires the
+- Scenario (`e2e/scenarios/`): password sign-in with 2FA on requires the
   second step; magic-link behaviour matches whatever was decided in (1).
 - Mutation check: remove the verify-before-enable guard and prove a test fails.
 

@@ -16,7 +16,7 @@ saying so.
    production.** Hand-write `drizzle/NNNN_<name>.sql`, apply to prod first,
    then push code. Green build/tests/types prove nothing about the database.
 2. **Verification gate before every commit:** `npx tsc --noEmit` →
-   `npx vitest run` → scenario suite (`./scripts/scenarios/up.sh` then
+   `npx vitest run` → scenario suite (`./e2e/scenarios/up.sh` then
    `npx vitest run --config vitest.scenarios.mts`) → `npm run build` →
    `npx oxlint` → `npx knip`. Money-path changes need scenario coverage, not
    just unit tests.

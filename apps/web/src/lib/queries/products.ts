@@ -78,7 +78,7 @@ export function pickFilters(input: Record<string, unknown>): ShopFilters {
  * of the shop's catalogue — no error, just a query that gets slower as the
  * catalogue grows.
  *
- * Exported only so scripts/scenarios/search.scenario.ts can plan the real
+ * Exported only so e2e/scenarios/search.scenario.ts can plan the real
  * expression instead of a copy of it, which is what makes that test able to
  * notice the drift this comment is asking you to avoid.
  */

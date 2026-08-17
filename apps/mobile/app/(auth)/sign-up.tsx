@@ -12,16 +12,8 @@ import {
   TextField,
   useTheme,
 } from "@sailo/design-system/native";
-import {
-  JOURNEY_STEPS,
-  MIN_PASSWORD_LENGTH,
-  attemptSignUp,
-  authClient,
-  journeyLabel,
-  useAuthCopy,
-  type AuthCopy,
-  type SignUpOutcome,
-} from "../../lib/auth";
+import { MIN_PASSWORD_LENGTH, attemptSignUp, authClient, type SignUpOutcome } from "../../lib/auth";
+import { JOURNEY_STEPS, journeyLabel, useAuthCopy, type AuthCopy } from "../../lib/auth-copy";
 
 /**
  * A new account, which until now the phone could not make at all.

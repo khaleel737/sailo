@@ -23,7 +23,7 @@ import { assertLocalDatabase } from "./local-only";
  *
  *   docker run -d --name sailo-test-redis -p 63790:6379 redis:7-alpine
  *   SCENARIO_REDIS_URL=redis://localhost:63790 \
- *     npx vitest run --config vitest.scenarios.mts scripts/scenarios/coupon-budget.scenario.ts
+ *     npx vitest run --config vitest.scenarios.mts e2e/scenarios/coupon-budget.scenario.ts
  *
  * **This file, not the whole suite.** The other scenarios place dozens of
  * orders a minute from one address, which is far past the ten `createOrderIntent`

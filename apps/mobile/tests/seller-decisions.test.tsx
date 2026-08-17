@@ -20,10 +20,16 @@ import type { Rail } from "../lib/models";
  * WHY THEY ARE IMPORTED FROM ROUTE FILES
  *
  * Expo Router only cares about a module's default export, so a named one is
- * free — `store/index.tsx` has exported `PublishBadge` and `useStoreCopy` on
- * the same reasoning since it was written. Moving these into a shared module
- * to make them testable would put three unrelated predicates in one grab-bag
- * for the sake of an import path.
+ * free. These three predicates each belong to the screen that asks them, and
+ * gathering them into a shared module to make them importable would put three
+ * unrelated questions in one grab-bag for the sake of an import path.
+ *
+ * That reasoning has a limit, and `store/index.tsx` found it: a 500-line
+ * product editor shared by two routes is not a predicate, and importing it out
+ * of the *list* screen meant opening the detail screen loaded the list. It is
+ * `components/store/editor.tsx` now — outside `app/`, so the router never sees
+ * it. A named export from a route is fine; a second screen living inside one is
+ * not.
  */
 
 describe("couponState", () => {

@@ -28,7 +28,7 @@ import type { Handoff } from "@/lib/payments";
  * a real order, through the real action, with delivery and stock and an
  * invoice in the way.
  *
- *   ./scripts/scenarios/up.sh
+ *   ./e2e/scenarios/up.sh
  *   npx vitest run --config vitest.scenarios.mts
  */
 
