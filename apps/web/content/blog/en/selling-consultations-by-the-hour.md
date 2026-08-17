@@ -113,7 +113,7 @@ Take the money at booking. On a manual rail that means the buyer sends a UPI pay
 
 If you'd rather take a deposit than the full amount, [how to take a deposit from a customer](/en/blog/taking-a-deposit-before-you-start) covers sizing it. For a single consulting hour, the full amount up front is usually simpler than a deposit, and buyers are used to it.
 
-Card payments confirm themselves, which removes the checking entirely. On Sailo that means a connected Stripe account, and {{fee_range}}% of the goods on top of Stripe's own fee. On a ₹2,500 call the Sailo commission is about ₹12.50. The monthly subscription is the real number to weigh, and at six calls a week you're paying about $20 a month to stop checking your bank app. Some people find that obviously worth it. Plenty don't.
+Card payments confirm themselves, which removes the checking entirely. On Sailo that means a connected Stripe account, and {{fee_range}}% of the goods on top of Stripe's own fee. On a ₹2,500 call the Sailo commission is ₹25 to ₹75, depending on your plan. You don't need a paid plan for this — the free plan takes cards at {{fee_free}}%, so at six calls a week the question isn't whether to subscribe, it's whether ₹75 a call to stop checking your bank app is worth it. Some people find that obviously worth it. Plenty don't.
 
 ## Worked example: Meera in Pune
 

@@ -58,7 +58,7 @@ Here's where it stops being obvious. This is the table that matters.
 | **Left on the goods** | **$13.73** | **$16.11** | **$1.10** | **$18.05** |
 | As a share of the price | 57% | 67% | 9% | 30% |
 
-The processor figures above assume 2.9% plus 30 cents on a card, which is a common shape and not a promise. Take your own rate off your own processor's pricing page for your own country, because the fixed piece per transaction differs and it's the piece that does the damage on small baskets. The {{fee_range}}% on the goods that Sailo charges on card sales is in there too: 12 cents on the single, 30 cents on the gift set, and nothing at all on the market sales, because those never went through a card rail Sailo touched.
+The processor figures above assume 2.9% plus 30 cents on a card, which is a common shape and not a promise. Take your own rate off your own processor's pricing page for your own country, because the fixed piece per transaction differs and it's the piece that does the damage on small baskets. The {{fee_range}}% on the goods that Sailo charges on card sales is in there too: 24 to 72 cents on the single, 60 cents to $1.80 on the gift set depending on the plan, and nothing at all on the market sales, because those never went through a card rail Sailo touched.
 
 Now read the last row.
 
@@ -121,7 +121,7 @@ Do this calculation for yourself, because it reframes a quiet month. Thirteen or
 
 **The postage gap.** It hides because you set the shipping price once and postal rates move. Re-weigh and re-price every product twice a year. Rosa's gap was 47 cents on a single and $3.15 on tea lights, and she'd have sworn she was breaking even on both.
 
-**The fixed fee per transaction.** In August, the percentage side of Rosa's card fees came to about $76. The 30-cents-per-transaction side came to about $26 across 86 online orders, and Sailo's {{fee_range}}% came to $11.40. At small basket sizes the flat fee is the part that hurts and the percentage is the part everyone argues about. [How payment fees eat a small order](/en/blog/how-payment-fees-eat-a-small-order) has the full shape of that.
+**The fixed fee per transaction.** In August, the percentage side of Rosa's card fees came to about $76. The 30-cents-per-transaction side came to about $26 across 86 online orders, and Sailo's {{fee_range}}% came to somewhere between $22.80 and $68.40 depending on her plan. At small basket sizes the flat fee is the part that hurts and the percentage is the part everyone argues about. [How payment fees eat a small order](/en/blog/how-payment-fees-eat-a-small-order) has the full shape of that.
 
 **Subscriptions.** They hide because they're small and monthly. Rosa's came to $40 a month across three tools, which is three and a half orders.
 

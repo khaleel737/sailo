@@ -101,13 +101,13 @@ The reason cards win with first-time buyers isn't the plastic. It's that the buy
 
 Sofia throws stoneware mugs and sells them at £29, plus £4.50 postage, through Instagram and a Sailo shop. She was doing about fourteen orders a month and paying nothing, taking bank transfers from a UK account with a reference on every order.
 
-The case against upgrading, in her numbers: 14 orders at £29 is £406 of card-eligible revenue a month. The ${{business_monthly}} subscription is somewhere near 5% of that. Add roughly 1.5% + 20p from Stripe and {{fee_range}}% to Sailo, and she'd be paying about 7.5% all in to solve a problem she described as "checking my banking app while the kettle boils".
+The case against turning cards on, in her numbers: 14 orders at £29 is £406 of card-eligible revenue a month. She doesn't need to pay a subscription for it — the free plan settles cards at {{fee_free}}% — so the cost is Sailo's £12.18 plus roughly 1.5% + 20p from Stripe, about £9. That's around 5% all in to solve a problem she described as "checking my banking app while the kettle boils". Upgrading is a separate question again: at £406 a month, two points off the rate is worth about £8 and Business costs ${{business_monthly}}, so it isn't close.
 
 The case for it arrived later, and it wasn't the arithmetic. She started getting orders from people who'd seen a repost, from cities she'd never sold to, and about one in four of them stopped replying after she sent her account details. She counted for a month: nine conversations that reached "here are my bank details", six that turned into money. Three lost orders at £29 is £87, which is more than four times the subscription.
 
 She turned cards on at that point, kept bank transfer switched on underneath it, and now roughly half her orders come by transfer from people who already know her and half by card from people who don't. The transfer half costs her nothing, which is the part that makes the card half affordable.
 
-One detail from her first card month that's worth stealing: her postage is £4.50 and Sailo's {{fee_range}}% doesn't apply to delivery, only to the goods after discount. On a £33.50 order she pays 15p to Sailo, not 17p. Two pence, which is nothing, except that knowing exactly what's charged on what is how you stop being nervous about a number you can't predict.
+One detail from her first card month that's worth stealing: her postage is £4.50 and Sailo's {{fee_range}}% doesn't apply to delivery, only to the goods after discount. On a £33.50 order at the free plan's {{fee_free}}% she pays 87p to Sailo, not £1.01. Fourteen pence, which is nothing, except that knowing exactly what's charged on what is how you stop being nervous about a number you can't predict.
 
 ## What to do this week
 

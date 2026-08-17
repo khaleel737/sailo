@@ -133,7 +133,7 @@ It has no idea what anything cost you. Not your materials, not your postage, not
 
 Two specific limits worth planning around. The free plan keeps {{free_analytics_days}} days of history, which is not enough to find your worst month, and the worst month is the entire basis of the method above. Pro at ${{pro_monthly}} a month keeps a year, which is the minimum useful window for this, and Business at ${{business_monthly}} keeps three. And if you're on Business because you want card payments, that ${{business_monthly}} is a fixed cost that comes out of the business before your pay does, every month, whether you sold anything or not.
 
-That last one is worth a moment. On card orders Sailo takes {{fee_range}}% of the goods, which on a $32 shirt is 16 cents. The percentage is not what makes Business expensive at low volume. The subscription is. Twelve slow months of ${{business_monthly}} is $239.88, and at 20 orders a month you'd rather have that as five weeks of your own pay.
+That last one is worth a moment. On card orders Sailo takes {{fee_range}}% of the goods, which on a $32 shirt is 32 cents to 96 cents depending on your plan. The percentage is not what makes Business expensive at low volume. The subscription is, and the free plan takes cards without one. Twelve slow months of ${{business_monthly}} is $588, and at 20 orders a month you'd rather have that as several weeks of your own pay.
 
 ## Do this before the end of the week
 

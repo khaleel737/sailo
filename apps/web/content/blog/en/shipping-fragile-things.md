@@ -153,7 +153,7 @@ Sailo takes the order. It doesn't book the courier, print a label, buy cover, fi
 
 Where the shop does help with fragile goods is before the sale, because most of the arguments about breakage are really arguments about expectation. Writing "hand-thrown, packed in a double box, and if it arrives broken I replace it, just send me a photo within 48 hours" on the product page costs nothing and changes the tone of every message that follows a breakage.
 
-One thing worth weighing if you sell high-value fragile items: card payments give the buyer a route to dispute a charge, which some buyers of expensive breakable things care about. Card on Sailo needs a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, which is 5 cents on a $9 bottle. At Deb's volume the subscription is the real number to weigh, not the 5 cents, and on bank transfer or cash there's no fee at all because Sailo never touches that money.
+One thing worth weighing if you sell high-value fragile items: card payments give the buyer a route to dispute a charge, which some buyers of expensive breakable things care about. Card on Sailo needs a Stripe account cleared for charges, and Sailo takes {{fee_range}}% of the goods on each card order, which is 9 cents to 27 cents on a $9 bottle. At Deb's volume the rate is the real number to weigh — the free plan settles cards without a subscription — and on bank transfer or cash there's no fee at all because Sailo never touches that money.
 
 The order of operations still holds on manual rails, and it matters more with fragile goods because your packing time is expensive: confirm the payment landed, then pack, then ship.
 

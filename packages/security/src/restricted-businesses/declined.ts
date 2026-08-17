@@ -1,52 +1,23 @@
 /**
- * Which businesses Sailo accepts, which it accepts with conditions, and which
- * it declines.
+ * Declined.
  *
- * Three lists, one place, because the same policy is read by three different
- * people for three different reasons: a seller deciding whether to bother
- * signing up, a support reply explaining why a shop was closed, and a payment
- * provider or bank checking that we have a policy at all. Three copies of that
- * drift apart, and the one that drifts is always the one being quoted back at
- * us.
+ * Ordered roughly by how often it comes up rather than by how bad it is. Every
+ * group carries the reason it exists, because the ones that get argued with are
+ * always the ones that look arbitrary — and most of these are not our
+ * preference, they are the condition on which the whole platform keeps card
+ * acceptance.
  *
- * ── WHY THIS LOOKS LIKE STRIPE'S LIST ────────────────────────────────────────
- * Card payments on Sailo are created on the seller's own Stripe connected
- * account, so Stripe's restricted-business list already binds every seller who
- * switches cards on, and the card networks' rules bind Stripe in turn. A
- * platform whose own policy is looser than its processor's is not more
- * permissive — it just tells sellers yes and lets Stripe tell them no later,
- * after they have built a catalogue. So the declined list below is deliberately
- * shaped like Stripe's, and where they differ the stricter one applies.
- *
- * One deliberate difference: this list holds on every channel. Most of Sailo's
- * orders arrive by chat, bank transfer or cash and never touch a payment system
- * at all, and a policy that only bound card sellers would decline a trade at
- * checkout while hosting a whole shop for it. Nothing here is switched off by
- * taking cash.
- * ─────────────────────────────────────────────────────────────────────────────
- *
- * Not legal advice, and not a legal opinion about anybody's business. A shop
- * passing this list is not us saying the trade is lawful or licensed where the
- * seller is — that stays the seller's to establish, and the seller-obligations
- * clause of the terms says so.
+ * Reconciled item by item against Stripe's published list — see
+ * `STRIPE_LIST_RECONCILED` in `./index`. Where Stripe prohibits, this declines.
+ * Where Stripe merely *restricts* — accepts subject to a review or a platform
+ * approval — this declines anyway if the approval is one Sailo does not hold,
+ * and attaches a condition in `./accepted` if it is one a seller can meet. The
+ * `unapproved` group below is where that distinction is written down, because
+ * "we would need a permission we do not have" is a different sentence from "we
+ * will not host this" and a seller deserves to be told which one they got.
  */
 
-/** Stripe's own list, which binds every seller taking card payments. */
-export const STRIPE_RESTRICTED_URL = "https://stripe.com/legal/restricted-businesses";
-
-type AcceptedBusiness = {
-  readonly name: string;
-  /** Concrete trades, so a reader recognises themselves rather than guessing. */
-  readonly examples: string;
-};
-
-type ConditionalBusiness = {
-  readonly name: string;
-  /** What has to be true. Written as an obligation, not as a caveat. */
-  readonly condition: string;
-};
-
-type DeclinedGroup = {
+export type DeclinedGroup = {
   /** Anchor fragment, so a support reply can link the exact group. */
   readonly id: string;
   readonly group: string;
@@ -59,136 +30,6 @@ type DeclinedGroup = {
   readonly items: readonly string[];
 };
 
-/**
- * What the product is for.
- *
- * Not an exhaustive list and it does not need to be: it is here so a seller
- * with an ordinary small business stops reading after thirty seconds and goes
- * and builds their shop.
- */
-export const ACCEPTED_BUSINESSES: readonly AcceptedBusiness[] = [
-  {
-    name: "Things you make",
-    examples:
-      "jewellery, ceramics, candles, clothing, art and prints, furniture, leather goods, plants, soap and skincare, anything that leaves your hands finished",
-  },
-  {
-    name: "Things you buy and resell",
-    examples:
-      "boutiques, thrift and vintage, sneakers, books, parts and spares, wholesale to trade buyers, second-hand goods you own outright",
-  },
-  {
-    name: "Food and drink",
-    examples:
-      "bakeries, home kitchens, coffee roasters, spice and sauce makers, catering, meal boxes, cakes to order, market stalls",
-  },
-  {
-    name: "Digital files",
-    examples:
-      "presets and LUTs, templates, e-books, fonts, sample packs, stock photography, notion boards, printables, recorded courses",
-  },
-  {
-    name: "Services and appointments",
-    examples:
-      "hairdressing, barbering, nails, tattooing, photography, repairs, cleaning, tutoring, translation, design, trades, consulting",
-  },
-  {
-    name: "Classes, workshops and events",
-    examples:
-      "a seat at a pottery class, a supper club, a workshop, a market pitch, a retreat place, a ticketed talk",
-  },
-  {
-    name: "Made to order and commissions",
-    examples:
-      "custom furniture, wedding cakes, portraits, tailoring, personalised gifts, print on demand, anything you start after the order arrives",
-  },
-  {
-    name: "Rentals and hire",
-    examples:
-      "equipment hire, party and event kit, tools, costumes, bikes, studio time — where you hold the item and the buyer collects or returns it",
-  },
-] as const;
-
-/**
- * Accepted, but not unconditionally.
- *
- * Every one of these is a legitimate trade that carries a licence, an age
- * restriction, or a gap between paying and receiving. The gap is the part that
- * matters commercially: a chargeback is filed against the shop months later,
- * and the seller has usually spent the money by then.
- */
-export const CONDITIONAL_BUSINESSES: readonly ConditionalBusiness[] = [
-  {
-    name: "Food prepared for sale",
-    condition:
-      "You are registered with whichever authority licenses food where you cook, you meet its hygiene and allergen-labelling rules, and a home kitchen is registered as one.",
-  },
-  {
-    name: "Alcohol",
-    condition:
-      "You hold the licence your country requires to sell it, you verify age at delivery or collection rather than with a checkbox, and you accept that card payments on alcohol are subject to Stripe’s rules and may be declined by them even when we accept the shop.",
-  },
-  {
-    name: "Cosmetics, skincare and supplements",
-    condition:
-      "The product meets the labelling, ingredient and registration rules where your buyers are, and you make no claim to diagnose, treat, cure or prevent anything. A moisturiser is a cosmetic; a moisturiser that cures eczema is an unlicensed medicine.",
-  },
-  {
-    name: "Health, wellness and body services",
-    condition:
-      "You hold the registration or licence your practice needs — massage, physiotherapy, tattooing, piercing, aesthetics, nutrition advice — and you describe it as what it is rather than as medical treatment.",
-  },
-  {
-    name: "Sexual wellness products",
-    condition:
-      "Ordinary retail goods only, listed and photographed as retail goods, with an age gate. Explicit content and services are a different thing and are declined outright below.",
-  },
-  {
-    name: "Pre-orders and long lead times",
-    condition:
-      "You state the dispatch date on the listing before the buyer pays, and you keep to it or refund. Taking payment more than 30 days before delivery is the single most common cause of a chargeback on this platform, and the chargeback is yours.",
-  },
-  {
-    name: "Tickets and dated events",
-    condition:
-      "You are the organiser or are authorised by them. Resale of tickets you did not issue is declined. If the event does not happen, you refund it — a credit for a future date is not a refund unless the buyer chooses it.",
-  },
-  {
-    name: "Memberships and anything that repeats",
-    condition:
-      "You state the price, the interval and how to stop it before the first payment is taken, and you make cancelling as easy as starting. Silent auto-renewal is declined as a deceptive practice, not merely discouraged.",
-  },
-  {
-    name: "Drop-shipping and long supplier chains",
-    condition:
-      "You are answerable for delivery times, customs charges and returns even though someone else ships. A shop that answers complaints with the supplier’s shipping policy is a shop we will close.",
-  },
-  {
-    name: "High-value single items",
-    condition:
-      "Above roughly 1,000 USD an order we may ask for identification, proof that you hold the goods, or proof of provenance before card payments continue. Resold luxury goods need documentation that they are authentic.",
-  },
-  {
-    name: "Charitable and community fundraising",
-    condition:
-      "You are the registered organisation or hold its written authority, you say plainly where the money goes, and you meet whatever registration your country requires of fundraisers.",
-  },
-  {
-    name: "Travel, and anything paid far in advance",
-    condition:
-      "Accepted case by case and reviewed before card payments are enabled, because the money is taken now and the service is delivered much later. Expect us to ask questions a bank would ask.",
-  },
-] as const;
-
-/**
- * Declined.
- *
- * Ordered roughly by how often it comes up rather than by how bad it is. Every
- * group carries the reason it exists, because the ones that get argued with are
- * always the ones that look arbitrary — and most of these are not our
- * preference, they are the condition on which the whole platform keeps card
- * acceptance.
- */
 export const DECLINED_BUSINESSES: readonly DeclinedGroup[] = [
   {
     id: "unlawful",
@@ -200,6 +41,7 @@ export const DECLINED_BUSINESSES: readonly DeclinedGroup[] = [
       "goods or services barred by the export, import or sanctions law that applies to us or to you",
       "trade with a person, organisation or region under sanctions",
       "anything sold in breach of an order of a court or a regulator",
+      "telecommunications manipulation equipment, including signal jammers and blockers",
     ],
   },
   {
@@ -209,13 +51,22 @@ export const DECLINED_BUSINESSES: readonly DeclinedGroup[] = [
     items: [
       "money transmission, remittance and money orders",
       "currency exchange and cheque cashing",
+      "ATMs, and any service whose product is access to cash",
+      "peer-to-peer money transfer between people who are not buying anything",
       "lending of any kind, including payday loans, cash advances and buy-now-pay-later",
+      "paying off a loan, a credit card or a mortgage by card",
       "debt collection, debt reduction, credit repair and mortgage relief",
+      "bankruptcy, debt settlement and debt-negotiation services",
+      "law firms and advisers taking client money for anything other than their own fee",
       "investment schemes, securities, brokerage and portfolio management",
+      "funded proprietary trading, and selling access to a funded trading account",
       "insurance, warranties and extended service plans",
       "bail bonds",
       "escrow, and holding money for a third party",
+      "neobanks, challenger banks, and anything presented to a buyer as a bank account",
+      "shell banks, payable-through accounts and the sale of bearer shares",
       "prepaid cards, stored value and the resale of gift cards",
+      "identity theft protection, credit monitoring and identity recovery services",
       "crowdfunding, and collecting pledges against something not yet made",
     ],
   },
@@ -225,7 +76,7 @@ export const DECLINED_BUSINESSES: readonly DeclinedGroup[] = [
     why: "Irreversible on one side and reversible on the other: a buyer pays by card, receives something that cannot be recalled, and files a chargeback. The platform carries that asymmetry, so it does not carry the trade.",
     items: [
       "buying, selling or exchanging cryptocurrency",
-      "mining, mining contracts and hosted hash rate",
+      "mining, staking, mining contracts and hosted hash rate",
       "token sales, initial coin offerings and presales",
       "NFTs and digital collectibles sold as an investment",
       "in-game currency, accounts and item trading for real money",
@@ -244,6 +95,7 @@ export const DECLINED_BUSINESSES: readonly DeclinedGroup[] = [
       "bidding-fee and penny auctions",
       "mystery boxes, loot boxes and anything where what the buyer receives is decided by chance",
       "sweepstakes and contests with an entry fee",
+      "games of skill played for a cash or material prize",
     ],
   },
   {
@@ -254,14 +106,20 @@ export const DECLINED_BUSINESSES: readonly DeclinedGroup[] = [
       "controlled drugs, and anything sold to imitate one",
       "drug paraphernalia",
       "nitrous oxide, research chemicals and novel psychoactive substances",
+      "kava, kratom and plant products sold for a psychoactive effect",
       "prescription medicines, pharmacies and telemedicine",
+      "prescription-only and regulated medical devices",
+      "ephedrine, HCG and weight-loss substances sold outside a pharmacy",
       "cannabis, CBD and hemp-derived products, including where they are lawful locally",
       "tobacco, cigarettes, cigars, e-cigarettes, vapes, e-liquid and nicotine pouches",
       "weapons, ammunition, gun parts, magazines and files for printing firearms",
+      "replica and imitation firearms that are not marked as the law requires, including toys",
       "knives sold as weapons, and anything restricted as an offensive weapon",
+      "stun guns, pepper spray and other self-defence weapons",
       "explosives, fireworks and pyrotechnics",
       "toxic, flammable, corrosive and radioactive materials",
-      "restricted pesticides, and chemicals sold outside their licensed use",
+      "restricted pesticides, chemicals sold outside their licensed use, and anything only a certified applicator may apply",
+      "goods a postal or courier service refuses to carry",
     ],
   },
   {
@@ -272,6 +130,7 @@ export const DECLINED_BUSINESSES: readonly DeclinedGroup[] = [
       "counterfeits, replicas, dupes and anything described as inspired by a brand it is not",
       "unauthorised copies of films, music, books, software or courses",
       "cracked software, licence keys and accounts obtained outside their terms",
+      "devices and services that modify a games console or defeat a copy protection",
       "unlicensed merchandise using someone else’s characters, logos, players or artwork",
       "resold stock images, fonts, templates or presets you are not licensed to redistribute",
       "reposted photography, designs or product images that are not yours",
@@ -285,6 +144,7 @@ export const DECLINED_BUSINESSES: readonly DeclinedGroup[] = [
       "pornography and sexually explicit content, in any medium",
       "live camming, custom explicit content and subscriptions to it",
       "escorting, companionship and any arrangement of sexual services",
+      "strip clubs, adult venues, and door or table charges for them",
       "mail-order brides and marriage brokering",
       "any content that sexualises a person under 18, real or generated, which we report to law enforcement and to Stripe",
       "any sexual content involving a person who did not consent to it being sold, including intimate images shared without consent",
@@ -313,12 +173,51 @@ export const DECLINED_BUSINESSES: readonly DeclinedGroup[] = [
       "get-rich-quick offers, and coaching sold on a promise of income",
       "guaranteed returns, and any claim about money the seller cannot evidence",
       "unsubstantiated health, medical or weight-loss claims",
+      "testimonials, before-and-after photographs and reviews of something that did not happen",
+      "incentives, prizes and rewards no seller could actually deliver",
       "negative-option billing, silent auto-renewal, and free trials that bill without a clear warning",
       "prices that appear only at the end, and fees a buyer could not have seen before paying",
       "fake documents: diplomas, certificates, identity documents, licences, insurance, test and vaccination records",
+      "fake references, and paid-for employment or rental histories",
       "essays, coursework and examinations written to be submitted as someone else’s work",
       "reselling something available free, or a public service, as though it were your own",
       "remote technical support sold off an unsolicited warning",
+      "telemarketing, and anything sold from an unsolicited call",
+      "door-to-door and doorstep selling",
+    ],
+  },
+  {
+    id: "travel",
+    group: "Airlines, cruises and timeshares",
+    why: "Money taken now for something delivered months later by a business that can stop existing in between. This is the shape behind the largest chargeback events the card networks have ever had to absorb, which is why ordinary travel bookings are a condition above and these are a flat no.",
+    items: [
+      "commercial airlines, and selling seats on them",
+      "cruise lines, and selling passages on them",
+      "charter and private aircraft, where the flight crosses a border",
+      "timeshares, timeshare resale, and timeshare exit services",
+      "holiday and travel clubs sold as a membership",
+    ],
+  },
+  {
+    id: "government",
+    group: "Government services and public money",
+    why: "A payment page that looks official when it is not, or that stands between a person and something their state already provides. The harm lands on the person who could not tell the difference, so it does not depend on whether the service is delivered.",
+    items: [
+      "services offered by or on behalf of an embassy or a consulate",
+      "visa, permit, licence and document applications handled without the authority’s permission",
+      "charging for a government service without adding something the applicant could not do themselves",
+      "disbursing grants, benefits or other government economic support",
+      "anything presented as official, endorsed or approved when it is not",
+    ],
+  },
+  {
+    id: "unapproved",
+    group: "Trades that need a permission Sailo does not hold",
+    why: "Stripe accepts each of these only from a platform it has approved in advance for that category, and Sailo is approved as what it is: software one seller runs one shop on. Saying so here is the honest version — the alternative is accepting the shop and letting Stripe refuse its first card payment.",
+    items: [
+      "online dating, matchmaking and introduction services",
+      "cyberlockers, file hosting, and paid access to a shared drive of files",
+      "running a platform inside your shop: letting other people open their own shops, take their own payments, or collect tips through your account",
     ],
   },
   {
@@ -355,6 +254,8 @@ export const DECLINED_BUSINESSES: readonly DeclinedGroup[] = [
       "a shop whose real trade is not the trade on its page",
       "splitting or relabelling a payment to disguise what was bought",
       "accepting money through a shop for something it does not sell",
+      "keying in card numbers taken somewhere else, so that the shop is really a card terminal",
+      "opening an account in one country for a business run from another",
       "re-registering under a new shop or handle to escape a dispute rate, a suspension or a network monitoring programme",
     ],
   },
@@ -372,17 +273,3 @@ export const DECLINED_BUSINESSES: readonly DeclinedGroup[] = [
     ],
   },
 ] as const;
-
-/**
- * Every declined item as one lowercase blob.
- *
- * Used by the tests to assert that categories the card networks require us to
- * exclude are still in the list after somebody edits it. Cheap to compute and
- * only ever called from a test, but it lives here so the shape of the data and
- * the thing that reads it stay together.
- */
-export function declinedText(): string {
-  return DECLINED_BUSINESSES.flatMap((g) => [g.group, g.why, ...g.items])
-    .join(" ")
-    .toLowerCase();
-}

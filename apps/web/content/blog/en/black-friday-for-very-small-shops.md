@@ -149,7 +149,7 @@ If you want to run a discount code on Sailo, coupons are a Business-plan feature
 
 That's fine for the one-product, one-price, capped promotion described above. It's genuinely annoying if you wanted a code to give to a specific group. Worth knowing before you plan around a feature you don't have.
 
-And on card payments specifically, Sailo takes {{fee_range}}% of the goods after discount, excluding delivery and tax, on top of whatever Stripe charges. On Dana's $56 set that's 28 cents. The subscription is the real cost at her volume, not the percentage.
+And on card payments specifically, Sailo takes {{fee_range}}% of the goods after discount, excluding delivery and tax, on top of whatever Stripe charges. On Dana's $56 set that's 56 cents to $1.68, depending on her plan. At her volume the plan she's on costs more than the rate does.
 
 ## Do this in October
 

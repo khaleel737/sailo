@@ -19,7 +19,25 @@ import { z } from "zod";
 export const keys = () =>
   createEnv({
     server: {
-      STRIPE_SECRET_KEY: z.string().startsWith("sk_").optional(),
+      /*
+       * `rk_` as well as `sk_`, and that is not a loosening.
+       *
+       * Stripe's own guidance is to prefer a restricted API key over a secret
+       * one wherever the integration allows it — a compromised `rk_` can only
+       * do what its scopes permit, and this integration's scopes are narrow and
+       * well known: Checkout Sessions, Prices, Coupons, Refunds, Accounts,
+       * Account Links and Webhooks. Refusing the prefix at boot meant the
+       * safer key was the one that would not start the app, so nobody used it.
+       *
+       * The check that mattered is untouched. Both prefixes are still refused
+       * for `whsec_`, which is the mistake this guard exists to catch: two
+       * opaque strings, swapped, failing on live traffic as a signature
+       * mismatch that reads as "Stripe is broken".
+       */
+      STRIPE_SECRET_KEY: z
+        .string()
+        .regex(/^(sk|rk)_/, "must be a Stripe secret (sk_) or restricted (rk_) key")
+        .optional(),
       /*
        * A comma-separated list, so that a secret can be rotated without a
        * window where half the deliveries fail. The whole string still begins

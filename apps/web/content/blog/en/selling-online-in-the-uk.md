@@ -56,16 +56,16 @@ Britain is a card country. Buyers expect a card field, and the friction of askin
 
 Card payments on Sailo carry Sailo's {{fee_range}}% of the goods after discount and excluding delivery and tax, plus your processor's own cut. Stripe's UK pricing page in August 2026 listed standard UK cards at 1.5% + 20p, UK premium cards at 2.8% + 20p, EEA cards at 2.5% + 20p, and cards issued elsewhere at 3.15% + 20p, with a further 2% if a currency has to be converted.
 
-Run it at two volumes on an £18 candle:
+You do not need a paid plan to take cards. The free plan settles them at {{fee_free}}%, and what Business buys you is the rate falling to {{fee_business}}% for ${{business_monthly}} a month, billed in US dollars. So the real question isn't whether to turn cards on, it's which plan to be on once they are. Run it at two volumes on an £18 candle:
 
-| Card orders a month | Goods value | Sailo {{fee_range}}% | Subscription | Platform cost as % of card revenue |
+| Card orders a month | Goods value | Free, {{fee_free}}% | Business, {{fee_business}}% + ${{business_monthly}} | Cheaper |
 | --- | --- | --- | --- | --- |
-| 12 | £216 | £1.08 | ~£19.99 equivalent | roughly 10% |
-| 70 | £1,260 | £6.30 | ~£19.99 equivalent | roughly 2% |
+| 12 | £216 | £6.48 | £2.16 + ${{business_monthly}} | Free, easily |
+| 70 | £1,260 | £37.80 | £12.60 + ${{business_monthly}} | Free, still |
 
-Same product, same plan, completely different verdict. At twelve orders a month you are paying a subscription for a convenience your dozen buyers would have lived without. At seventy you are buying back several hours a month and it's cheap.
+Same product, completely different verdict from the one this table used to give. Business saves you two points of the goods and costs a flat monthly fee, so it pays for itself at ${{business_monthly}} ÷ 0.02 — around £1,900 of card goods a month at current rates, well above either row. Below that you are buying the other things Business carries (unlimited products, affiliates, broadcasts, the API), not a cheaper card rate.
 
-So: don't turn cards on because it feels professional. Turn them on when the fixed cost stops being the biggest number in the calculation. If you're anywhere near the line, [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online) works the numbers properly. Watch the 20p as well as the percentage, because on a £6 order the fixed fee is doing more damage than the rate and almost nobody notices which one is hurting.
+So: don't upgrade because it feels professional. Upgrade when two points of your card goods is worth more than the monthly fee, or when you actually need one of the features. If you're anywhere near the line, [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online) works the numbers properly. Watch the 20p as well as the percentage, because on a £6 order the fixed fee is doing more damage than the rate and almost nobody notices which one is hurting.
 
 Bank transfer, meanwhile, still works fine in the UK. Faster Payments is instant and free to the buyer, and repeat customers who already trust you will use it without complaint. The cost is that you confirm every one by hand.
 

@@ -103,7 +103,7 @@ Bank transfers are the slow part. You cannot see them arrive in real time, and n
 
 If you want card payments so the money confirms itself, there are two conditions worth knowing weeks ahead. Card on Sailo needs a Stripe account that Stripe has actually cleared for charges. Stripe's checks aren't instant and they sometimes come back asking for a document. Do not schedule a drop for four days after you sign up and assume cards will be live. Sort it a fortnight out, run one real test charge on a cheap product, and then you know.
 
-Sailo takes {{fee_range}}% of the goods on card orders, after any discount, excluding delivery and tax. On a $34 hoodie that's 17 cents, plus whatever Stripe charges you. The subscription is the real cost at 60 units a drop, not the half a percent.
+Sailo takes {{fee_range}}% of the goods on card orders, after any discount, excluding delivery and tax — {{fee_free}}% on the free plan, falling to {{fee_business}}% on Business. On a $34 hoodie that's 34c to $1.02 depending on your plan, plus whatever Stripe charges you. At 60 units a drop the plan you're on matters more than the rate does.
 
 ## Devon's second drop, in Atlanta
 

@@ -117,7 +117,7 @@ Selling at a small scale has real disadvantages and nobody says them out loud.
 
 Everything is manual. You'll confirm each payment yourself, answer each message yourself, and remember who paid by looking. That's fine at six orders a month and painful at sixty.
 
-Card payments, the one rail that confirms itself, aren't free at low volume. On Sailo they need a Stripe account that Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on top of Stripe's own fee. If you're doing two orders a month, that's roughly $10 per order in subscription alone, which is an absurd cost structure. Don't turn cards on to look professional. Take bank transfer, or cash, or whatever your buyers already use, and revisit it when the volume justifies it.
+Card payments, the one rail that confirms itself, aren't free. On Sailo they need a Stripe account that Stripe has cleared for charges, and Sailo takes {{fee_range}}% of the goods on top of Stripe's own fee. You do not need a paid plan for it — the free plan settles cards at {{fee_free}}%, so at two orders a month a subscription is the wrong purchase, not the entry fee. What actually costs you at that volume is Stripe's own per-transaction charge, which is a flat amount on a small basket. Don't turn cards on to look professional. Take bank transfer, or cash, or whatever your buyers already use, and revisit it when the volume justifies it.
 
 There's also no mobile money rail on Sailo. No M-Pesa, no GCash, no UPI integration. Bea takes payment by GCash, which she does by putting her number and instructions in the bank transfer field and checking her phone. It works. It just means the money side is hers to run, not the platform's.
 

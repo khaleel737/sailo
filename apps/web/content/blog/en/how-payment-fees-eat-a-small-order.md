@@ -16,32 +16,34 @@ So the first thing to fix is almost never your processor. It's your minimum orde
 
 ## The effective rate, by basket size
 
-Using the verified 1.5% + 20p, and adding Sailo's {{fee_range}}% of goods, which is charged as an application fee on card sales only.
+Using the verified 1.5% + 20p, and adding Sailo's fee on the goods, which is charged as an application fee on card sales only. Sailo's rate depends on your plan — {{fee_range}}% — so this table uses {{fee_free}}%, the free plan, which is where you start and the worst case.
 
-| Basket | Processor at 1.5% + 20p | Sailo {{fee_range}}% | Total taken | Effective rate |
+| Basket | Processor at 1.5% + 20p | Sailo {{fee_free}}% | Total taken | Effective rate |
 | --- | --- | --- | --- | --- |
-| £3 | 24.5p | 1.5p | 26.0p | 8.7% |
-| £5 | 27.5p | 2.5p | 30.0p | 6.0% |
-| £10 | 35.0p | 5.0p | 40.0p | 4.0% |
-| £20 | 50.0p | 10.0p | 60.0p | 3.0% |
-| £40 | 80.0p | 20.0p | £1.00 | 2.5% |
-| £80 | £1.40 | 40.0p | £1.80 | 2.3% |
-| £150 | £2.45 | 75.0p | £3.20 | 2.1% |
+| £3 | 24.5p | 9.0p | 33.5p | 11.2% |
+| £5 | 27.5p | 15.0p | 42.5p | 8.5% |
+| £10 | 35.0p | 30.0p | 65.0p | 6.5% |
+| £20 | 50.0p | 60.0p | £1.10 | 5.5% |
+| £40 | 80.0p | £1.20 | £2.00 | 5.0% |
+| £80 | £1.40 | £2.40 | £3.80 | 4.8% |
+| £150 | £2.45 | £4.50 | £6.95 | 4.6% |
 
-The curve is steep at the bottom and flat everywhere else. Between £40 and £150 your rate barely moves. Between £3 and £20 it falls by two thirds. All the money you can win by thinking about fees is in the bottom two rows of that table, and none of it is in switching processors.
+On Business the Sailo column falls to {{fee_business}}%, which takes the £3 row to 27.5p and the £150 row to £3.95.
+
+The curve is steep at the bottom and flat everywhere else. Between £40 and £150 your rate barely moves. Between £3 and £20 it halves. All the money you can win by thinking about fees is in the bottom two rows of that table, and none of it is in switching processors.
 
 ## Measure the fee against the margin, not the price
 
 Here's the shift that changes decisions. A 4% fee sounds small because you're comparing it to the price. Compare it to what you actually keep.
 
-A £10 order with £3 of margin loses 40p to fees. That's 4% of the price and **13.3% of everything you earned**. On a £3 sticker with £1 of margin, 26p of fees is 26% of your margin. You are working for three quarters of a pound.
+A £10 order with £3 of margin loses 65p to fees. That's 6.5% of the price and **21.7% of everything you earned**. On a £3 sticker with £1 of margin, 33.5p of fees is a third of your margin. You are working for two thirds of a pound.
 
 | Order | Margin | Fees | Fees as share of margin |
 | --- | --- | --- | --- |
-| £3 sticker, £1 margin | £1.00 | 26p | 26.0% |
-| £10 print, £3 margin | £3.00 | 40p | 13.3% |
-| £29 mug, £12 margin | £12.00 | 74.5p | 6.2% |
-| £80 set, £30 margin | £30.00 | £1.80 | 6.0% |
+| £3 sticker, £1 margin | £1.00 | 33.5p | 33.5% |
+| £10 print, £3 margin | £3.00 | 65p | 21.7% |
+| £29 mug, £12 margin | £12.00 | £1.51 | 12.6% |
+| £80 set, £30 margin | £30.00 | £3.80 | 12.7% |
 
 Run this on your own two cheapest products before you read any further. Most sellers have never done it, and most who do it discover one product they should stop selling individually.
 
@@ -51,11 +53,11 @@ This is worth knowing if you're selling in India, because the shape of the fee c
 
 Stripe's India pricing page in August 2026 listed 2% for domestic Visa and Mastercard, with no fixed per-transaction component quoted alongside it. No fixed fee means no penalty for small baskets. A ₹249 order costs the same 2% as a ₹2,490 one.
 
-| Basket | Processor at 2% | Sailo {{fee_range}}% | Total | Effective rate |
+| Basket | Processor at 2% | Sailo {{fee_free}}% | Total | Effective rate |
 | --- | --- | --- | --- | --- |
-| ₹249 | ₹4.98 | ₹1.25 | ₹6.23 | 2.5% |
-| ₹999 | ₹19.98 | ₹5.00 | ₹24.98 | 2.5% |
-| ₹4,999 | ₹99.98 | ₹25.00 | ₹124.98 | 2.5% |
+| ₹249 | ₹4.98 | ₹7.47 | ₹12.45 | 5.0% |
+| ₹999 | ₹19.98 | ₹29.97 | ₹49.95 | 5.0% |
+| ₹4,999 | ₹99.98 | ₹149.97 | ₹249.95 | 5.0% |
 
 Flat all the way down. So an Indian seller with a ₹249 product has a fee problem that a British seller with a £3 product does not, and the British seller's fix, raising the minimum order, is not the Indian seller's fix. The Indian seller's fix is the rail: UPI to a plain UPI ID needs no gateway, no setup fee and no website, and the 2.5% simply doesn't arise.
 
@@ -100,7 +102,7 @@ Worth knowing precisely, because the base differs between the two charges on a c
 - **Sailo's {{fee_range}}%** is on the goods, after any discount, **excluding delivery and tax**. Delivery is money you hand to a courier and tax is money you collect for a government, so neither is billed.
 - **The processor's percentage** is on the whole amount charged to the card, delivery and tax included, because that's the amount that moved.
 
-On a £29 mug with £4.50 postage: Sailo takes {{fee_range}}% of £29, which is 14.5p. Stripe takes 1.5% of £33.50 plus 20p, which is 70p. Total 84.5p on a £33.50 charge, or 2.5%.
+On a £29 mug with £4.50 postage: Sailo takes {{fee_range}}% of £29, which is 29p to 87p depending on your plan. Stripe takes 1.5% of £33.50 plus 20p, which is 70p. Total 99p to £1.57 on a £33.50 charge, or 3.0% to 4.7%.
 
 Small difference, and worth knowing anyway, because a fee you can predict to the penny is a fee you stop worrying about.
 
@@ -118,7 +120,7 @@ What he changed instead was the basket. Single packs at ₹249 became "any 3 for
 
 One last number that belongs in this article even though it isn't a transaction fee. If you're on a paid plan, divide it by your monthly orders and add it to the table above.
 
-At ${{business_monthly}} a month and 20 orders, that's a dollar an order. On a £10 basket that's a bigger cost than the processing, the platform commission and the dispute risk combined. At 200 orders it's ten cents and it disappears.
+At ${{business_monthly}} a month and 20 orders, that's about $2.45 an order. On a £10 basket that dwarfs the processing, the platform commission and the dispute risk combined. At 200 orders it's about 25 cents and it disappears. The free plan takes cards too, so at 20 orders a month this line is optional in a way it used to not be.
 
 Sailo's free plan takes no commission on the manual rails and caps you at {{free_products}} products. If you have fewer than {{free_products}} products and you're not taking cards, the honest total cost of getting paid through Sailo is zero, and the only thing you're spending is the eight minutes a day it takes to confirm payments yourself. That's the trade. Nobody confirms them for you.
 

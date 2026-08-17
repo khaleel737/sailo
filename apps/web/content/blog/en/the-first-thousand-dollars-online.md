@@ -88,7 +88,7 @@ That last instruction matters more than it sounds. Count the money in your bank,
 
 **Chasing the milestone instead of the machine.** You can hit a thousand once by selling to friends and never repeat it. The point of the first thousand is not the money, it's whether the thing that produced it can produce it again next quarter without heroics.
 
-**Turning on tools you don't need yet.** Card payments on Sailo need a Stripe account cleared for charges. Over a three-month push that's about $60, which is 6% of a thousand-dollar target, before Stripe's own fees and before Sailo's {{fee_range}}% on the goods. At four sales a quarter that's a terrible trade. At sixty orders a month, cards pay for themselves several times over in the reconciliation time alone. The dividing line is real and it's worth working out where yours is: [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online) has the arithmetic.
+**Turning on tools you don't need yet.** Card payments on Sailo need a Stripe account cleared for charges, and nothing else — the free plan settles them at {{fee_free}}%. Upgrading is a separate decision: a three-month push on Business is ${{business_monthly}} a month, roughly 15% of a thousand-dollar target, before Stripe's own fees. At four sales a quarter that's a terrible trade. At sixty orders a month, cards pay for themselves several times over in the reconciliation time alone. The dividing line is real and it's worth working out where yours is: [do you need card payments to sell online](/en/blog/do-you-need-card-payments-to-sell-online) has the arithmetic.
 
 ## The reconciliation problem, which is the real work
 

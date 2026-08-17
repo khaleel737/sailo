@@ -6,7 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./blocklist": "./src/blocklist/index.ts",
-    "./restricted-businesses": "./src/restricted-businesses.ts",
+    "./restricted-businesses": "./src/restricted-businesses/index.ts",
     "./staff": "./src/staff.ts",
     "./cron-auth": "./src/cron-auth.ts",
     "./keys": "./src/keys.ts"

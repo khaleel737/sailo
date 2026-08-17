@@ -70,15 +70,18 @@ Here's what the platform takes at that volume, before payment processing.
 | Payhip Free, 5% | $108.00 | 5.0% |
 | Payhip Plus, $29 + 2% | $72.20 | 3.3% |
 | Payhip Pro, $99 + 0% | $99.00 | 4.6% |
-| Sailo Business, ${{business_monthly}} + {{fee_range}}% on card | $30.79 | 1.4% |
+| Sailo Free, $0 + {{fee_free}}% on card | $64.80 | 3.0% |
+| Sailo Business, ${{business_monthly}} + {{fee_business}}% on card | $70.60 | 3.3% |
 
 Two warnings before you read anything into that table.
 
-Gumroad's pricing page on 6 August 2026 did not itemise payment processing separately, so treat 10% + $0.50 as the all-in figure and check it against your own payout statement. Sailo's {{fee_range}}% is definitely not all-in: it's a Stripe application fee on top of whatever Stripe charges Marcus to process the card, and that lands separately. Stripe's rate varies by country, and the page localises. Mine showed 1.5% + €0.25 for standard European cards on 6 August 2026, and a US seller's rate is different. Read your own region's page and add it to the Sailo row before comparing.
+Note what the two Sailo rows do, because it's the same crossover method applied to Sailo itself: Business saves two points of the goods and costs ${{business_monthly}}, so it pays for itself at ${{business_monthly}} ÷ 0.02, about $2,450 a month. Marcus is at $2,160, so he is on the wrong side of his own line and Sailo Free is the cheaper row. He'd upgrade for the unlimited catalogue and the affiliate links, not for the rate.
 
-Now run the same table at 12 sales a month rather than 120, which is where Marcus was 18 months ago. $216 of sales. Gumroad takes $27.60. Payhip Free takes $10.80. Sailo Business takes ${{business_monthly}} plus $1.08, because the subscription doesn't care that you only sold twelve things.
+Gumroad's pricing page on 6 August 2026 did not itemise payment processing separately, so treat 10% + $0.50 as the all-in figure and check it against your own payout statement. Sailo's percentage is definitely not all-in: it's a Stripe application fee on top of whatever Stripe charges Marcus to process the card, and that lands separately. Stripe's rate varies by country, and the page localises. Mine showed 1.5% + €0.25 for standard European cards on 6 August 2026, and a US seller's rate is different. Read your own region's page and add it to the Sailo row before comparing.
 
-At twelve sales a month, the free percentage plan wins and it isn't close. Marcus should have stayed on it, and he did.
+Now run the same table at 12 sales a month rather than 120, which is where Marcus was 18 months ago. $216 of sales. Gumroad takes $27.60. Payhip Free takes $10.80. Sailo Free takes $6.48. Sailo Business takes ${{business_monthly}} plus $2.16, because the subscription doesn't care that you only sold twelve things.
+
+At twelve sales a month, the free percentage plans win and it isn't close. Marcus should have stayed on one, and he did.
 
 The bit he'd tell you himself: the month he upgraded wasn't the month the arithmetic said to. It was the month a free-tier cap blocked a product he'd already announced to his email list, and he paid to unblock it at 11pm with a launch running. Upgrades almost never happen at the crossover. They happen at the wall.
 
