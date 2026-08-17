@@ -1,0 +1,324 @@
+packages/commerce/package.json
+  s_c7a7b98e0ed667::t_4e4d52eab60988 33,35
+  s_c7a7b98e0ed667::t_5d6df1fe641db7 8-9,11,13-14,16,18,22,41-42
+  s_c7a7b98e0ed667::t_2a9cea0e64774a 10,12,15,17,21,23
+  s_c7a7b98e0ed667::t_42f32c2b2feff9 20,36
+apps/web/src/lib/queries/tickets.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 14
+packages/commerce/src/index.ts
+  s_c7a7b98e0ed667::t_978006a17b3eee 11,20-47
+  s_c7a7b98e0ed667::t_3f0884d73e88d9 8-10
+  s_c7a7b98e0ed667::t_facc662fedd52a 12-14,17-19
+  s_c7a7b98e0ed667::t_58446f3df95f19 48-49
+  s_c7a7b98e0ed667::t_b94c1dcb473ec7 2,4,6-7,15-16,52,54-58
+apps/web/scripts/stripe-setup.ts
+  s_c7a7b98e0ed667::t_11da29d6de10c7 32,50,205-206,228,246
+apps/web/src/app/admin/affiliates/page.tsx
+  s_c7a7b98e0ed667::t_5ce8b3e6ffb6cb 22
+packages/commerce/src/catalog/inventory.ts
+  s_c7a7b98e0ed667::t_a1c62cfd29d511 1-441
+apps/web/src/app/partner/[token]/page.tsx
+  s_c7a7b98e0ed667::t_5ce8b3e6ffb6cb 12
+packages/commerce/src/ticketing/event-access.ts
+  s_c7a7b98e0ed667::t_a1c62cfd29d511 1-4,6-82
+  s_c7a7b98e0ed667::t_87ab2e44e1a095 5
+packages/commerce/src/booking/external-busy.ts
+  s_c7a7b98e0ed667::t_f510e1959217a8 1-296
+apps/web/src/lib/actions/tickets.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 5,13
+apps/web/src/lib/actions/order-status.ts
+  s_c7a7b98e0ed667::t_1d20a842020c3d 8
+packages/core/src/order-lines.ts
+  s_c7a7b98e0ed667::t_e70cd68c702fbc 1-158
+packages/commerce/src/orders/referral.ts
+  s_c7a7b98e0ed667::t_f510e1959217a8 1-4,6-72
+  s_c7a7b98e0ed667::t_42f32c2b2feff9 5
+apps/web/src/app/[handle]/_components/cart/confirmation.tsx
+  s_c7a7b98e0ed667::t_1d20a842020c3d 6
+apps/web/src/lib/stripe-webhooks/connect.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 8
+  s_c7a7b98e0ed667::t_d7351795802053 11-12
+packages/api/src/routers/events.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 7
+packages/commerce/src/orders/confirm-buyer.ts
+  s_c7a7b98e0ed667::t_f510e1959217a8 1-102
+apps/web/src/lib/actions/order-admin.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 11
+  s_c7a7b98e0ed667::t_d7351795802053 12-15
+apps/web/src/app/[handle]/_components/cart/checkout.types.ts
+  s_c7a7b98e0ed667::t_1d20a842020c3d 1
+apps/web/scripts/scenarios/seller-notifications.scenario.ts
+  s_c7a7b98e0ed667::t_4f14ea559e759a 72
+apps/web/src/app/[handle]/_components/cart/use-checkout-quote.ts
+  s_c7a7b98e0ed667::t_1d20a842020c3d 5
+packages/partners/turbo.json
+  s_c7a7b98e0ed667::t_42f32c2b2feff9 1-5
+apps/web/src/app/[handle]/_components/product-card.tsx
+  s_c7a7b98e0ed667::t_9ed208dd462c20 14
+apps/web/scripts/scenarios/bookings-audience.scenario.ts
+  s_c7a7b98e0ed667::t_d7351795802053 19-20
+packages/email/src/index.ts
+  s_c7a7b98e0ed667::t_137f3ebcde7c2e 28-33
+  s_c7a7b98e0ed667::t_712f89a72bf737 34
+packages/commerce/src/orders/downloads.ts
+  s_c7a7b98e0ed667::t_a1c62cfd29d511 1-3,5-251
+packages/api/src/routers/members.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 7
+packages/api/src/routers/orders.ts
+  s_c7a7b98e0ed667::t_d7351795802053 7-10
+packages/commerce/src/memberships/server.ts
+  s_c7a7b98e0ed667::t_aab94e950b1398 1
+  s_c7a7b98e0ed667::t_2a9cea0e64774a 2
+packages/core/package.json
+  s_c7a7b98e0ed667::t_137f3ebcde7c2e 19
+  s_c7a7b98e0ed667::t_6662c7e4a00789 23
+  s_c7a7b98e0ed667::t_c554e9e4bf2397 12
+packages/email/src/markup.ts
+  s_c7a7b98e0ed667::t_712f89a72bf737 5,177,207
+packages/commerce/src/orders/card-checkout.test.ts
+  s_c7a7b98e0ed667::t_6662c7e4a00789 1,3-49
+  s_c7a7b98e0ed667::t_42f32c2b2feff9 2
+packages/commerce/src/ticketing/index.ts
+  s_c7a7b98e0ed667::t_aab94e950b1398 1-6
+apps/web/src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_c7a7b98e0ed667::t_1d20a842020c3d 15
+packages/api/src/router.test.ts
+  s_c7a7b98e0ed667::t_eaeb89da6a8d6f 50
+apps/web/src/lib/invoice-pdf.ts
+  s_c7a7b98e0ed667::t_5ce8b3e6ffb6cb 12
+packages/commerce/src/delivery/index.ts
+  s_c7a7b98e0ed667::t_aab94e950b1398 2,4-6,11
+  s_c7a7b98e0ed667::t_2a9cea0e64774a 1,3,7-10,12
+  s_c7a7b98e0ed667::t_35e7c4aff686d8 13
+packages/commerce/src/orders/resolve-intent.ts
+  s_c7a7b98e0ed667::t_d9432ad4dfe830 21
+  s_c7a7b98e0ed667::t_f510e1959217a8 1-20,22-321
+packages/commerce/src/orders/index.ts
+  s_c7a7b98e0ed667::t_aab94e950b1398 2,4-6,11
+  s_c7a7b98e0ed667::t_35e7c4aff686d8 13-18
+  s_c7a7b98e0ed667::t_2a9cea0e64774a 1,3,7-10,12
+packages/commerce/src/memberships/index.ts
+  s_c7a7b98e0ed667::t_2a9cea0e64774a 1,3,7-10,12
+  s_c7a7b98e0ed667::t_aab94e950b1398 2,4-6,11
+  s_c7a7b98e0ed667::t_35e7c4aff686d8 13
+packages/commerce/src/catalog/index.ts
+  s_c7a7b98e0ed667::t_aab94e950b1398 1-3
+apps/web/src/app/[handle]/p/[slug]/page.tsx
+  s_c7a7b98e0ed667::t_9ed208dd462c20 35
+packages/partners/vitest.config.mts
+  s_c7a7b98e0ed667::t_42f32c2b2feff9 1-5
+packages/commerce/src/catalog/products.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 1-543
+apps/web/src/app/download/[token]/page.tsx
+  s_c7a7b98e0ed667::t_9ed208dd462c20 9
+packages/commerce/src/orders/pay-order.ts
+  s_c7a7b98e0ed667::t_a1c62cfd29d511 1-138
+packages/commerce/src/orders/notify-seller.ts
+  s_c7a7b98e0ed667::t_cb94e181110a49 1-175
+packages/commerce/src/memberships/renewals.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 1-14,17-184
+  s_c7a7b98e0ed667::t_a1c62cfd29d511 15-16
+apps/web/src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_c7a7b98e0ed667::t_1d20a842020c3d 17
+apps/web/src/app/admin/_components/order-row.tsx
+  s_c7a7b98e0ed667::t_5ce8b3e6ffb6cb 19
+apps/web/src/app/admin/settings/_components/settings-form.tsx
+  s_c7a7b98e0ed667::t_1d20a842020c3d 28
+packages/commerce/src/orders/resolve-lines.ts
+  s_c7a7b98e0ed667::t_f510e1959217a8 1-316
+apps/web/src/lib/event-access.ts
+  s_c7a7b98e0ed667::t_97ac9bf1c8159d 2,4-5,8
+packages/commerce/src/booking/time-zone.test.ts
+  s_c7a7b98e0ed667::t_f510e1959217a8 1-268
+apps/web/scripts/scenarios/memberships-live.scenario.ts
+  s_c7a7b98e0ed667::t_d7351795802053 17
+apps/web/src/app/admin/products/[id]/page.tsx
+  s_c7a7b98e0ed667::t_d7351795802053 11
+apps/web/src/lib/actions/broadcasts.ts
+  s_c7a7b98e0ed667::t_1d20a842020c3d 12
+packages/api/src/routers/orders.test.ts
+  s_c7a7b98e0ed667::t_eaeb89da6a8d6f 42
+apps/web/src/lib/actions/order-preview.ts
+  s_c7a7b98e0ed667::t_1d20a842020c3d 20
+  s_c7a7b98e0ed667::t_d7351795802053 9-10
+apps/web/src/lib/memberships.ts
+  s_c7a7b98e0ed667::t_97ac9bf1c8159d 2,11
+apps/web/scripts/scenarios/checkout.scenario.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 19
+apps/web/src/app/admin/checkin/page.tsx
+  s_c7a7b98e0ed667::t_9ed208dd462c20 12
+apps/web/src/app/invoice/[token]/page.tsx
+  s_c7a7b98e0ed667::t_5ce8b3e6ffb6cb 11
+packages/commerce/src/booking/index.ts
+  s_c7a7b98e0ed667::t_35e7c4aff686d8 13-16
+  s_c7a7b98e0ed667::t_aab94e950b1398 2,4-6,11
+  s_c7a7b98e0ed667::t_2a9cea0e64774a 1,3,7-10,12
+packages/commerce/src/delivery/server.ts
+  s_c7a7b98e0ed667::t_aab94e950b1398 1
+  s_c7a7b98e0ed667::t_2a9cea0e64774a 2
+apps/web/src/replica.test.ts
+  s_c7a7b98e0ed667::t_f6f2dc57a48047 40-42,45
+apps/web/src/lib/actions/shop.ts
+  s_c7a7b98e0ed667::t_1d20a842020c3d 9
+  s_c7a7b98e0ed667::t_d7351795802053 7,16
+  s_c7a7b98e0ed667::t_9900185ab23200 8
+apps/web/src/lib/actions/affiliates.ts
+  s_c7a7b98e0ed667::t_5ce8b3e6ffb6cb 12
+apps/web/src/app/admin/payments/page.tsx
+  s_c7a7b98e0ed667::t_d7351795802053 24
+apps/web/src/app/admin/products/new/page.tsx
+  s_c7a7b98e0ed667::t_d7351795802053 7
+packages/partners/src/index.ts
+  s_c7a7b98e0ed667::t_42f32c2b2feff9 1-8
+packages/email/src/shop/seller.ts
+  s_c7a7b98e0ed667::t_712f89a72bf737 6,9
+  s_c7a7b98e0ed667::t_8f3d32e3c23bfc 3
+apps/web/src/lib/delivery.ts
+  s_c7a7b98e0ed667::t_97ac9bf1c8159d 4-8
+  s_c7a7b98e0ed667::t_fdad30cf15753b 10-14
+packages/partners/package.json
+  s_c7a7b98e0ed667::t_42f32c2b2feff9 1-26
+apps/web/src/lib/actions/partner.ts
+  s_c7a7b98e0ed667::t_5ce8b3e6ffb6cb 9
+apps/web/scripts/scenarios/tickets.scenario.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 23
+packages/commerce/src/catalog/inventory.test.ts
+  s_c7a7b98e0ed667::t_a951300a091cda 1-136
+apps/web/src/lib/membership-renewals.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 11
+  s_c7a7b98e0ed667::t_c66598696316e5 12
+packages/commerce/src/orders/order-lines.ts
+  s_c7a7b98e0ed667::t_e70cd68c702fbc 1-51
+packages/commerce/src/orders/types.ts
+  s_c7a7b98e0ed667::t_f510e1959217a8 1-159
+packages/api/src/routers/tickets.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 8
+  s_c7a7b98e0ed667::t_d7351795802053 9
+apps/web/src/lib/actions/connect.ts
+  s_c7a7b98e0ed667::t_d7351795802053 12
+apps/web/src/lib/connect-payouts.ts
+  s_c7a7b98e0ed667::t_d7351795802053 4
+apps/web/src/lib/broadcasts/consent-write-paths.test.ts
+  s_c7a7b98e0ed667::t_f6f2dc57a48047 72
+  s_c7a7b98e0ed667::t_21f58fd46a77c4 41-45,49
+packages/commerce/src/orders/digital-delivery.ts
+  s_c7a7b98e0ed667::t_d9432ad4dfe830 8
+  s_c7a7b98e0ed667::t_f510e1959217a8 1-7,9-76
+apps/web/src/app/admin/payments/_components/stripe-card.tsx
+  s_c7a7b98e0ed667::t_d7351795802053 10
+apps/web/src/lib/actions/delivery.ts
+  s_c7a7b98e0ed667::t_d7351795802053 12
+apps/web/src/app/api/cron/sweep/route.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 3
+  s_c7a7b98e0ed667::t_d7351795802053 4
+packages/commerce/src/coupons/index.ts
+  s_c7a7b98e0ed667::t_aab94e950b1398 1-3
+packages/commerce/src/booking/slots.test.ts
+  s_c7a7b98e0ed667::t_f510e1959217a8 1-453
+packages/commerce/src/ticketing/door.ts
+  s_c7a7b98e0ed667::t_a1c62cfd29d511 1-210
+apps/web/src/app/admin/checkin/_components/door-console.tsx
+  s_c7a7b98e0ed667::t_9ed208dd462c20 30
+packages/commerce/src/orders/server.ts
+  s_c7a7b98e0ed667::t_aab94e950b1398 1
+  s_c7a7b98e0ed667::t_2a9cea0e64774a 2-23
+apps/web/src/lib/actions/orders.ts
+  s_c7a7b98e0ed667::t_d7351795802053 5-7,25,31,33,35-36
+  s_c7a7b98e0ed667::t_1d20a842020c3d 8,26,30
+  s_c7a7b98e0ed667::t_9ed208dd462c20 24,34
+packages/commerce/src/orders/card-checkout.ts
+  s_c7a7b98e0ed667::t_712f89a72bf737 36,39
+  s_c7a7b98e0ed667::t_6662c7e4a00789 1-7,10-35,37-38,40-593
+  s_c7a7b98e0ed667::t_e30a4369c78954 8-9
+apps/web/src/app/api/booking/[productId]/route.ts
+  s_c7a7b98e0ed667::t_d7351795802053 8
+packages/commerce/src/orders/orders.test.ts
+  s_c7a7b98e0ed667::t_a1c62cfd29d511 1-33,35-41,43-262
+  s_c7a7b98e0ed667::t_a951300a091cda 34,42
+packages/partners/tsconfig.json
+  s_c7a7b98e0ed667::t_42f32c2b2feff9 1-5
+apps/web/src/app/admin/settings/_components/booking-card.tsx
+  s_c7a7b98e0ed667::t_9900185ab23200 7
+  s_c7a7b98e0ed667::t_d7351795802053 6
+apps/web/src/lib/actions/payment-reference.ts
+  s_c7a7b98e0ed667::t_d7351795802053 14
+packages/commerce/src/booking/server.ts
+  s_c7a7b98e0ed667::t_2a9cea0e64774a 2-5
+  s_c7a7b98e0ed667::t_aab94e950b1398 1
+apps/web/src/lib/membership-cron.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 5
+  s_c7a7b98e0ed667::t_d7351795802053 7,9-10
+packages/commerce/src/booking/hours.test.ts
+  s_c7a7b98e0ed667::t_f510e1959217a8 1-294
+packages/commerce/src/orders/buyer.ts
+  s_c7a7b98e0ed667::t_f510e1959217a8 1-2,4-181
+  s_c7a7b98e0ed667::t_42f32c2b2feff9 3
+packages/email/src/system/messages.ts
+  s_c7a7b98e0ed667::t_712f89a72bf737 5,36
+apps/web/src/lib/stripe-webhooks/memberships.ts
+  s_c7a7b98e0ed667::t_d7351795802053 15
+apps/web/src/lib/actions/memberships.ts
+  s_c7a7b98e0ed667::t_d7351795802053 14
+packages/commerce/src/orders/refund-order.ts
+  s_c7a7b98e0ed667::t_a1c62cfd29d511 1-171
+apps/web/src/lib/webhooks/emit.test.ts
+  s_c7a7b98e0ed667::t_f6f2dc57a48047 43-44
+packages/api/src/push.test.ts
+  s_c7a7b98e0ed667::t_eaeb89da6a8d6f 82
+apps/web/scripts/check-checkout-content.ts
+  s_c7a7b98e0ed667::t_1d20a842020c3d 32
+packages/commerce/src/orders/card-handoff.ts
+  s_c7a7b98e0ed667::t_1d20a842020c3d 6
+  s_c7a7b98e0ed667::t_f510e1959217a8 1-4,7-158
+  s_c7a7b98e0ed667::t_42f32c2b2feff9 5
+apps/web/src/lib/downloads.ts
+  s_c7a7b98e0ed667::t_97ac9bf1c8159d 2,5-11,15
+  s_c7a7b98e0ed667::t_9ed208dd462c20 14
+apps/web/src/lib/import/tickets.ts
+  s_c7a7b98e0ed667::t_9ed208dd462c20 6
+packages/api/src/routers/delivery.ts
+  s_c7a7b98e0ed667::t_d7351795802053 5
+apps/web/src/lib/notify-seller-sites.test.ts
+  s_c7a7b98e0ed667::t_0dbfc53f1a2838 1-133
+packages/core/src/origin.ts
+  s_c7a7b98e0ed667::t_712f89a72bf737 1-60
+apps/web/package.json
+  s_c7a7b98e0ed667::t_5ce8b3e6ffb6cb 64
+packages/commerce/src/orders/orders.ts
+  s_c7a7b98e0ed667::t_a1c62cfd29d511 1-243
+apps/web/src/lib/inventory.test.ts
+  s_c7a7b98e0ed667::t_f6f2dc57a48047 72,186
+apps/web/src/lib/invoices.ts
+  s_c7a7b98e0ed667::t_97ac9bf1c8159d 2,4-5,9
+  s_c7a7b98e0ed667::t_9ed208dd462c20 8
+packages/commerce/src/orders/fulfilment.ts
+  s_c7a7b98e0ed667::t_8668263c9dfdfb 5
+packages/email/src/orders.ts
+  s_c7a7b98e0ed667::t_e7e9a5cd609438 3
+packages/email/src/transactional/messages.ts
+  s_c7a7b98e0ed667::t_8caf18ea2c6100 3
+packages/notifications/src/feed.ts
+  s_c7a7b98e0ed667::t_edcb2164a9393e 2
+packages/notifications/src/push.ts
+  s_c7a7b98e0ed667::t_7dff4d05796327 5
+pnpm-lock.yaml
+  s_c7a7b98e0ed667::t_7068570c9f7fff 301-303,661-663,667-672,688-690,1006-1030
+apps/web/src/lib/order-lines.ts
+  s_c7a7b98e0ed667::t_6b9800c8c2e295 2,4-7,9-11,14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "fdb99b95eff7dcf46afd75fb4bbd88225b864d05",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
