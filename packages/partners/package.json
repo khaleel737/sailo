@@ -10,7 +10,7 @@
     "./applications": "./src/applications.ts",
     "./settings": "./src/settings.ts",
     "./store": "./src/store.ts",
-    "./payouts": "./src/payouts.ts",
+    "./payouts": "./src/payouts/index.ts",
     "./portal": "./src/portal.ts"
   },
   "scripts": {
