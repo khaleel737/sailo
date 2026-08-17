@@ -1,0 +1,55 @@
+apps/web/src/app/api/mcp/route.ts
+  s_c7a7b98e0ed667::t_5563fe50047445 1,6-8,10-11,15-18,21,25,28-29
+packages/api/src/mcp/http.ts
+  s_c7a7b98e0ed667::t_b677fc0693798d 2,4-13,15,19-21
+  s_c7a7b98e0ed667::t_5b3bd16f604b45 1,3,14,16-18,22-358
+apps/api/e2e/edge.e2e.ts
+  s_c7a7b98e0ed667::t_6ae9283b96a745 206-309,317,340,345-347
+  s_c7a7b98e0ed667::t_2d0f90d05c1750 310-316,318-339,341-344
+apps/web/src/app/api/resend/webhook/route.ts
+  s_c7a7b98e0ed667::t_899f9a58f464b7 1,4,6-9,11-12
+apps/api/src/app/api/resend/webhook/route.ts
+  s_c7a7b98e0ed667::t_899f9a58f464b7 2-5,7-8,10,13,15-18,20-21
+packages/observability/src/pii.ts
+  s_c7a7b98e0ed667::t_d12cd012b0c4bc 1-52
+packages/api/src/webhooks/resend.ts
+  s_c7a7b98e0ed667::t_899f9a58f464b7 1-223
+apps/api/src/app/api/mcp/route.ts
+  s_c7a7b98e0ed667::t_5563fe50047445 5-7,9,14-16,18-19,23-26,29,33,36-37
+packages/observability/package.json
+  s_c7a7b98e0ed667::t_d12cd012b0c4bc 12-13,17-18,44-45
+packages/api/src/mcp/index.ts
+  s_c7a7b98e0ed667::t_5563fe50047445 13
+packages/observability/vitest.config.mts
+  s_c7a7b98e0ed667::t_d12cd012b0c4bc 1-3
+packages/observability/src/pii.test.ts
+  s_c7a7b98e0ed667::t_4f41fead8a7168 1-90
+packages/observability/src/web.ts
+  s_c7a7b98e0ed667::t_d12cd012b0c4bc 3
+packages/api/src/webhooks/index.ts
+  s_c7a7b98e0ed667::t_899f9a58f464b7 1-9
+docs/api-cutover.md
+  s_c7a7b98e0ed667::t_684700d3e05862 26-39
+packages/api/package.json
+  s_c7a7b98e0ed667::t_899f9a58f464b7 10
+packages/observability/src/native.ts
+  s_c7a7b98e0ed667::t_d12cd012b0c4bc 4
+pnpm-lock.yaml
+  s_c7a7b98e0ed667::t_70bf5b2b91ffe2 1156-1158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "83225bc8aa4a922c356368e5364de91ef28bc928",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
