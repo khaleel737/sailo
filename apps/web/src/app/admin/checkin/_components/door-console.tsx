@@ -22,6 +22,7 @@ import { Counter } from "./door/counter";
 import { ResultCard } from "./door/result-card";
 import { ManualForm } from "./door/manual-form";
 import { DoorList } from "./door/door-list";
+import { RESULT_HOLD_MS } from "./door/labels";
 
 /**
  * One door, whoever is standing at it.
@@ -46,7 +47,6 @@ import { DoorList } from "./door/door-list";
  */
 export type CheckinLabels = AdminDictionary["checkin"];
 
-const RESULT_HOLD_MS = 1_600;
 
 export function DoorConsole({
   productId,
