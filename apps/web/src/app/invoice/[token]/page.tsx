@@ -9,7 +9,8 @@ import { SettleBasket } from "@/app/invoice/[token]/_components/settle-basket";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { getShopT } from "@/i18n/server";
 import { taxLabel } from "@sailo/core/tax-label";
-import { formatAddress, formatMoney } from "@/lib/utils";
+import { formatAddress } from "@sailo/core/address";
+import { formatMoney } from "@sailo/core/currency";
 
 /* Not yet converted — see the note in `next.config.ts`. */
 export const instant = false;

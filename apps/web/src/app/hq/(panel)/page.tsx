@@ -33,7 +33,7 @@ import {
 import { VolumeChart } from "./_components/volume-chart";
 import { deltaOf, share } from "@/lib/hq-metrics";
 import { PLANS } from "@sailo/core/plans";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 
 export const metadata: Metadata = { title: "Overview" };
 

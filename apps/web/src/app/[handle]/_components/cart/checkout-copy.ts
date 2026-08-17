@@ -1,6 +1,6 @@
 import type { Dictionary } from "@sailo/i18n";
 import type { PaymentMethodType } from "@/lib/payments";
-import type { DeliveryMethodType } from "@/lib/delivery";
+import type { DeliveryMethodType } from "@sailo/commerce/delivery";
 
 /**
  * Buyer-facing labels for the rails and delivery kinds.

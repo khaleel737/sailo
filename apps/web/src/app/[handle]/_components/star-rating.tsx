@@ -1,6 +1,6 @@
 import { Star } from "lucide-react";
 import type { Dictionary } from "@sailo/i18n";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 export function StarRating({
   value,

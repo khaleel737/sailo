@@ -3,7 +3,7 @@ import { interpolate } from "@sailo/i18n";
 import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import type { Dictionary } from "@sailo/i18n";
 import { PLANS, PLATFORM_FEE_RANGE_LABEL, type Plan } from "@sailo/core/plans";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { Cta, Section, SectionHead } from "@/components/marketing/kit";
 
 /** The pricing table: three plans, one of them featured. */

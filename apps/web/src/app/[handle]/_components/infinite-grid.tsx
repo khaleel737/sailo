@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import type { ShopFilters } from "@/lib/queries";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 import { loadMoreProducts } from "../_lib/load-more-products";
 import type { ShopLayout } from "../_types/shop-page.types";
 

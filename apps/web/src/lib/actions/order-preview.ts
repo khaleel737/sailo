@@ -15,7 +15,7 @@ import {
   normalizeCode,
   toChargeableTotals,
 } from "@sailo/core/pricing";
-import { isMembership } from "@/lib/memberships";
+import { isMembership } from "@sailo/commerce/memberships";
 import { cartCanPayInPerson, unitsLeft } from "@sailo/core/variants";
 import type { OrderLineInput, OrderPreview } from "@sailo/commerce/orders";
 

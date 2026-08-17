@@ -20,11 +20,12 @@ import {
 } from "@sailo/notifications/prefs";
 import { setMarketingOptIn } from "@sailo/marketing/lifecycle/server";
 import { isStaff, requireShop, requireUser } from "@/lib/session";
-import { normalizePhone, SOCIAL_PLATFORMS } from "@/lib/utils";
-import { isPublicLinkUrl, isRenderableImageUrl } from "@/lib/file-urls";
+import { normalizePhone } from "@sailo/core/phone";
+import { SOCIAL_PLATFORMS } from "@sailo/core/visibility";
+import { isPublicLinkUrl, isRenderableImageUrl } from "@sailo/storage/urls";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
-import { BRAND_HANDLE, HANDLE_MESSAGES, normalizeHandle, suggestHandles, validateHandleFormat } from "@/lib/handle";
+import { BRAND_HANDLE, HANDLE_MESSAGES, normalizeHandle, suggestHandles, validateHandleFormat } from "@sailo/core/handle";
 import { readPixelIds } from "@sailo/customers/pixels";
 import { attributeReferral } from "@/lib/partners/store";
 import { REFERRAL_COOKIE } from "@/lib/partners/program";

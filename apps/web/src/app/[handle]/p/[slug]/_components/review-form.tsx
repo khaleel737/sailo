@@ -6,7 +6,7 @@ import { Loader2, Star } from "lucide-react";
 import { submitReview } from "@/lib/actions/reviews";
 import type { Dictionary } from "@sailo/i18n";
 import { plural } from "@sailo/i18n";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 function Submit({ label }: { label: string }) {
   const { pending } = useFormStatus();

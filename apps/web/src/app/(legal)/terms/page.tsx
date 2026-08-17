@@ -10,7 +10,7 @@ import {
   P,
   Ref,
 } from "@/components/legal/legal-kit";
-import { LEGAL } from "@/lib/legal";
+import { LEGAL } from "@sailo/core/legal";
 import { PLATFORM_FEE_RANGE_LABEL } from "@sailo/core/plans";
 import {
   ACCEPTED_BUSINESSES,

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { ImageIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 import { useVariantPhoto } from "./variant-photo";
 import type { ProductImage } from "@sailo/db/schema";
 

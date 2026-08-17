@@ -1,6 +1,6 @@
 import { PRODUCT_KIND_VALUES } from "@sailo/core/variants";
 import { ORDER_STATUSES } from "@sailo/core/order-status";
-import { PAYMENT_STATUSES } from "@/lib/payments/status";
+import { PAYMENT_STATUSES } from "@sailo/core/payment-status";
 import { ENDPOINTS, type Endpoint, type ResourceName } from "./endpoints";
 import { API_ERROR_CODES, API_VERSION, MAX_LIMIT } from "./respond";
 

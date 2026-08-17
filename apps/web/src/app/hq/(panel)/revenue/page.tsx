@@ -23,7 +23,7 @@ import {
 import { billingState, planMonthlyCents, share } from "@/lib/hq-metrics";
 import { isPaymentMethodType, PAYMENT_METHOD_DEFS } from "@/lib/payments";
 import { planFor, PLANS } from "@sailo/core/plans";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 
 export const metadata: Metadata = { title: "Revenue" };
 

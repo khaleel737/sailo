@@ -3,7 +3,7 @@ import { SectionTitle, When } from "@/app/hq/_components/hq-ui";
 import { Badge } from "@sailo/design-system/web";
 import { PAYMENT_STATUS_TONES } from "@/lib/payments";
 import { orderSummaryTitle } from "@/lib/order-lines";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { orderStatusTone } from "@sailo/core/order-status";
 import type { AccountDetail } from "./account.types";
 

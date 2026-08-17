@@ -16,7 +16,7 @@ import { renderBody, readingSeconds, MERGE_TAGS } from "@sailo/marketing/broadca
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
 import { Textarea } from "@sailo/design-system/web";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /**
  * Writing the message.

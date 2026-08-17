@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { FileUp, Loader2, Paperclip, X } from "lucide-react";
 import { Button } from "@sailo/design-system/web";
-import { formatBytes } from "@/lib/utils";
+import { formatBytes } from "@sailo/core/currency";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 const MAX_FILES = 10;

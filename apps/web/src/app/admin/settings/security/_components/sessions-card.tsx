@@ -8,7 +8,7 @@ import {
   useAdminLocale,
   useAdminT,
 } from "@/app/admin/_components/admin-i18n";
-import { countryName } from "@/lib/countries";
+import { countryName } from "@sailo/core/countries";
 import {
   revokeOtherSessions,
   revokeSessionById,

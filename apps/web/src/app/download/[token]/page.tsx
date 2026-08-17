@@ -7,11 +7,12 @@ import { Clock, Download, FileDown, Lock, MapPin, Store, Ticket, Video } from "l
 import { LocalTime } from "@sailo/design-system/web";
 import { getDownloadByToken, downloadState } from "@/lib/downloads";
 import { ticketsForOrder } from "@sailo/commerce/ticketing";
-import { eventAccessForOrder } from "@/lib/event-access";
+import { eventAccessForOrder } from "@sailo/commerce/ticketing";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { PoweredBy } from "@/components/shared/powered-by";
-import { formatBytes, shopThemeVars } from "@/lib/utils";
+import { formatBytes } from "@sailo/core/currency";
+import { shopThemeVars } from "@sailo/design-system/web/cn";
 import { accessForOrder } from "@/lib/membership-access";
 import { MembershipCard } from "./_components/membership-card";
 

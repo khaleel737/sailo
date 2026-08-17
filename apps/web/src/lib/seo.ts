@@ -1,7 +1,7 @@
 import type { MarketingDictionary } from "@sailo/i18n/marketing";
-import type { DeliveryMethodType } from "@/lib/delivery";
+import type { DeliveryMethodType } from "@sailo/commerce/delivery";
 import type { PaymentMethodType } from "@/lib/payments";
-import { centsToAmount } from "@/lib/utils";
+import { centsToAmount } from "@sailo/core/currency";
 
 /**
  * Everything a crawler reads.

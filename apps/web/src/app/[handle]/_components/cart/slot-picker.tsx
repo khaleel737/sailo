@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CalendarClock, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /**
  * Picking an appointment from what the shop is actually offering.

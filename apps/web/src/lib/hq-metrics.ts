@@ -7,8 +7,8 @@
  * in `lib/hq.ts`; this is the part that decides what the numbers mean, and it
  * is the part worth testing directly.
  */
-import { isPlanId, PLANS, type PlanId } from "./plans";
-import { formatMoney } from "./utils";
+import { isPlanId, PLANS, type PlanId } from "@sailo/core/plans";
+import { formatMoney } from "@sailo/core/currency";
 
 /** The billing columns every calculation here needs. */
 export type BillingRow = {

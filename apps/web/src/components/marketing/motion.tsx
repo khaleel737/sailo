@@ -9,7 +9,7 @@ import {
   useMotionValue,
   useTransform,
 } from "motion/react";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /*
  * The two places on this page where motion needs JavaScript.

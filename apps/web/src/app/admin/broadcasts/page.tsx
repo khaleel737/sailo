@@ -14,7 +14,7 @@ import { describeSegment, parseSegment } from "@sailo/marketing/broadcasts";
 import { PageHeader } from "@sailo/design-system/web";
 import { LockedFeature } from "@/app/admin/_components/locked-feature";
 import { Badge, Button, Card, EmptyState } from "@sailo/design-system/web";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { interpolate } from "@sailo/i18n";
 import { GrowCard } from "./_components/grow-card";
 

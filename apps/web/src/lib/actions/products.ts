@@ -28,7 +28,8 @@ import {
   type SaveProductRefusal,
 } from "@sailo/commerce/products";
 import { requireShop } from "@/lib/session";
-import { parseMoneyToCents, slugify } from "@/lib/utils";
+import { parseMoneyToCents } from "@sailo/core/currency";
+import { slugify } from "@sailo/core/slug";
 import { isProductKind } from "@sailo/core/variants";
 import type { ActionState } from "./shop";
 

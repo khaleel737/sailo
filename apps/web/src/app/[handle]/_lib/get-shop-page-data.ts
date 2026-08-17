@@ -9,7 +9,7 @@ import {
 } from "@/lib/queries";
 import { getShopT } from "@/i18n/server";
 import { can } from "@sailo/core/plans";
-import { isShopLive } from "@/lib/utils";
+import { isShopLive } from "@sailo/core/visibility";
 import type { ShopLayout, ShopPageData } from "../_types/shop-page.types";
 
 /**

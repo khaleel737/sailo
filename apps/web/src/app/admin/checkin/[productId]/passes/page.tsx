@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
-import { getShopEvent } from "@/lib/queries/tickets";
+import { getShopEvent } from "@sailo/commerce/ticketing";
 import { doorUrl, listDoorPasses } from "@/lib/door-pass";
 import { appUrl } from "@/lib/app-url";
 import { PageHeader } from "@sailo/design-system/web";

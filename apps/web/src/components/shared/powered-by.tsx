@@ -5,7 +5,7 @@ import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
 import { badgeHref as sharedBadgeHref, showsBadge } from "@sailo/core/badge";
 import { APP_URL } from "@/lib/seo";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 import { SailoMark } from "@/components/brand";
 
 /**

@@ -11,7 +11,7 @@ import {
   importTickets,
   isImportType,
   type ImportReport,
-} from "@/lib/importers";
+} from "@/lib/import";
 
 export type ImportState =
   | { ok: false; error?: string }

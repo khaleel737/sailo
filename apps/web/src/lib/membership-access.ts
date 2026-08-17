@@ -2,7 +2,7 @@ import "server-only";
 import { and, desc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders, subscriptions, type Order, type Subscription } from "@sailo/db/schema";
-import { membershipAccess, type MembershipAccess } from "@/lib/memberships";
+import { membershipAccess, type MembershipAccess } from "@sailo/commerce/memberships";
 
 /**
  * Whether a member may still get in, asked at the moment they ask.

@@ -16,7 +16,7 @@ import { useVariantPhoto } from "./variant-photo";
 import { isSoldOut } from "@/app/[handle]/_lib/availability";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import {
   findVariant,
   isLowStock,

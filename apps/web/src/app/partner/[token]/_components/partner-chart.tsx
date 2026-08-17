@@ -4,9 +4,9 @@ import { useId, useMemo, useState } from "react";
 import { localPoint } from "@visx/event";
 import { ParentSize } from "@visx/responsive";
 import { scaleBand, scaleLinear } from "@visx/scale";
-import { indexAtPointer } from "@/lib/chart";
-import { barOffset, barWidth, chartDomain } from "@/lib/chart";
-import { formatMoney } from "@/lib/utils";
+import { indexAtPointer } from "@sailo/design-system/chart";
+import { barOffset, barWidth, chartDomain } from "@sailo/design-system/chart";
+import { formatMoney } from "@sailo/core/currency";
 
 const PLOT_HEIGHT = 132;
 const AXIS_HEIGHT = 22;

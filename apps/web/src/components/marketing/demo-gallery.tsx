@@ -9,7 +9,7 @@ import { DEMOS, phoneShotUrl, shotUrl } from "@sailo/marketing/demos";
 import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import { interpolate } from "@sailo/i18n";
 import { BrowserFrame, PhoneFrame } from "./frames";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /**
  * Five shops, one at a time.

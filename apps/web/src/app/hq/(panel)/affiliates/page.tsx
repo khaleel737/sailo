@@ -7,7 +7,7 @@ import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { Mono, ShopCell } from "@/app/hq/_components/hq-ui";
 import { Badge } from "@sailo/design-system/web";
 import { first, getPlatformAffiliates, pageNumber } from "@/lib/hq";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 
 export const metadata: Metadata = { title: "Affiliates" };
 

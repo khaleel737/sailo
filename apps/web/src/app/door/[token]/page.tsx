@@ -7,7 +7,7 @@ import {
   eventDoorList,
   eventDoorStats,
   eventTiers,
-} from "@/lib/queries/tickets";
+} from "@sailo/commerce/ticketing";
 import { DoorConsole } from "@/app/admin/checkin/_components/door-console";
 
 /* Per-request and behind a bearer token — nothing here is a static shell. */

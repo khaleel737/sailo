@@ -3,13 +3,13 @@ import { Info, Package, Plus, Store, Truck } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { interpolate, plural } from "@sailo/i18n";
-import { countryName } from "@/lib/countries";
+import { countryName } from "@sailo/core/countries";
 import { getShopDeliveryMethods } from "@/lib/queries";
 import {
   DELIVERY_METHOD_DEFS,
   isDeliveryConfigured,
   type DeliveryMethodType,
-} from "@/lib/delivery";
+} from "@sailo/commerce/delivery";
 import {
   deleteDeliveryMethod,
   toggleDeliveryMethod,
@@ -18,7 +18,7 @@ import { PageHeader } from "@sailo/design-system/web";
 import { DeliveryRateForm } from "@/app/admin/delivery/_components/delivery-rate-form";
 import { Panel } from "@sailo/design-system/web";
 import { Alert, Badge, Button, EmptyState } from "@sailo/design-system/web";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 
 export const metadata: Metadata = { title: "Delivery" };
 

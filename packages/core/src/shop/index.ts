@@ -14,3 +14,4 @@ export * from "./plans";
 export * from "./onboarding";
 export * from "./legal";
 export * from "./support";
+export * from "./visibility";

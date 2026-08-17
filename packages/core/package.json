@@ -30,6 +30,7 @@
     "./plans": "./src/shop/plans.ts",
     "./legal": "./src/shop/legal.ts",
     "./support": "./src/shop/support.ts",
+    "./visibility": "./src/shop/visibility.ts",
     "./wire": "./src/wire/index.ts",
     "./resources": "./src/wire/resources.ts",
     "./invariant": "./src/invariant.ts",

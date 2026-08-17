@@ -7,7 +7,7 @@ import { getDb } from "@sailo/db";
 import { clients } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { normalizeTags, MAX_TAGS } from "@sailo/customers/tags";
-import { normalizePhone } from "@/lib/utils";
+import { normalizePhone } from "@sailo/core/phone";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { emitContactWebhook } from "@sailo/webhooks/emit";

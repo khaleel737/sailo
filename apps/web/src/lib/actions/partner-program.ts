@@ -16,7 +16,7 @@ import { payPartner, runPayouts } from "@/lib/partners/payouts";
 import { markPaidManually } from "@/lib/hq/partners";
 import { updateProgramSettings } from "@/lib/partners/settings";
 import { isPartnerStatus, shareLabel } from "@/lib/partners/program";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import type { ActionState } from "./shop";
 
 /**

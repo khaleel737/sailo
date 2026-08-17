@@ -4,7 +4,7 @@ import { useTransition } from "react";
 import { updateOrderStatus } from "@/lib/actions/order-admin";
 import { ORDER_STATUSES, orderStatusLabel } from "@sailo/core/order-status";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 export function OrderStatusSelect({
   orderId,

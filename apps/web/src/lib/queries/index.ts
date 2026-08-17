@@ -14,7 +14,7 @@ export * from "./coupons";
 export * from "./affiliates";
 export * from "./invoices";
 export * from "./reviews";
-export * from "./tickets";
+export * from "@sailo/commerce/ticketing";
 
 /*
  * The customer roster moved to `@sailo/customers/roster` — the broadcast

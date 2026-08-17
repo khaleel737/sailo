@@ -7,7 +7,7 @@ import {
   countriesByName,
   countryFlag,
   type CountryGroupKey,
-} from "@/lib/countries";
+} from "@sailo/core/countries";
 import { plural } from "@sailo/i18n";
 import { Input } from "@sailo/design-system/web";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";

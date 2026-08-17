@@ -8,7 +8,7 @@ import { tickets } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
-import { shopEvents } from "@/lib/queries/tickets";
+import { shopEvents } from "@sailo/commerce/ticketing";
 import { normalizeTicketCode } from "@sailo/commerce/ticketing";
 import { PageHeader } from "@sailo/design-system/web";
 import { Card, EmptyState } from "@sailo/design-system/web";

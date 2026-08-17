@@ -3,7 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { clients } from "@sailo/db/schema";
 import { field } from "@/lib/csv";
-import { normalizePhone } from "@/lib/utils";
+import { normalizePhone } from "@sailo/core/phone";
 import { normalizeTags } from "@sailo/customers/tags";
 import { parse } from "./parse";
 import type { ImportReport } from "./types";

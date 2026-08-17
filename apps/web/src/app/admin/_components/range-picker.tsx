@@ -7,7 +7,7 @@ import { CalendarRange, Lock } from "lucide-react";
 import type { Dictionary } from "@sailo/i18n";
 import { ANALYTICS_RANGES, cheapestPlanWith, PLANS, PLAN_IDS } from "@sailo/core/plans";
 import { UpgradeModal } from "./upgrade-modal";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 import type { PlanId } from "@sailo/core/plans";
 
 const LABELS: Record<number, string> = {

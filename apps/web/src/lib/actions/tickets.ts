@@ -19,7 +19,7 @@ import {
   type DoorFilter,
   type DoorRow,
   type DoorStats,
-} from "@/lib/queries/tickets";
+} from "@sailo/commerce/ticketing";
 import { requireShop } from "@/lib/session";
 
 /**

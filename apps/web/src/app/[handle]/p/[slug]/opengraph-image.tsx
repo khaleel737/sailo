@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 import { getProductBySlug, getShopByHandle } from "@/lib/queries";
 import { priceRange } from "@sailo/core/variants";
-import { formatMoney, isShopLive } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
+import { isShopLive } from "@sailo/core/visibility";
 import { getDictionary, interpolate } from "@sailo/i18n";
 import {
   SailoMark,

@@ -8,10 +8,10 @@ import {
   normalizeHandle,
   validateHandleFormat,
   type HandleProblem,
-} from "@/lib/handle";
+} from "@sailo/core/handle";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 type State =
   | { kind: "idle" }

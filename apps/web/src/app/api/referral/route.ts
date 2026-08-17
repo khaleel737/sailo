@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isUuid } from "@/lib/utils";
+import { isUuid } from "@sailo/core/uuid";
 import { rateLimit } from "@sailo/rate-limit";
 import { ipFromHeaders } from "@sailo/rate-limit/client-ip";
 import { recordAffiliateClick } from "@/lib/actions/affiliates";

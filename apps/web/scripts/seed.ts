@@ -10,7 +10,7 @@ import { drizzle } from "drizzle-orm/neon-http";
 import { eq } from "drizzle-orm";
 import { hashPassword } from "better-auth/crypto";
 import * as schema from "@sailo/db/schema";
-import { slugify } from "../src/lib/utils";
+import { slugify } from "@sailo/core/slug";
 import { computeTotals } from "@sailo/core/pricing";
 
 const {

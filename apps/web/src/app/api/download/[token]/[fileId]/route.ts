@@ -4,8 +4,8 @@ import { getDb } from "@sailo/db";
 import { orders, productFiles } from "@sailo/db/schema";
 import { orderedProductIds } from "@/lib/downloads";
 import { membershipOpenForOrder } from "@/lib/membership-access";
-import { isUuid } from "@/lib/utils";
-import { isStoredFileUrl } from "@/lib/file-urls";
+import { isUuid } from "@sailo/core/uuid";
+import { isStoredFileUrl } from "@sailo/storage/urls";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 

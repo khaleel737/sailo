@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /*
  * Sailo's identity: a three-leaf mark and a geometric "Sailo" wordmark, both

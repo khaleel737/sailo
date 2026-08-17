@@ -1,6 +1,6 @@
 import type { ProductVariant } from "@sailo/db/schema";
 import { optionKey } from "@sailo/core/variants";
-import { centsToAmount } from "@/lib/utils";
+import { centsToAmount } from "@sailo/core/currency";
 
 /**
  * What a variant looks like while it is being edited.

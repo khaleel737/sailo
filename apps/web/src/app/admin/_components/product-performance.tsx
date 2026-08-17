@@ -4,7 +4,7 @@ import type { ProductPerformance } from "@/lib/queries";
 import { Card, EmptyState } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 
 /**
  * Views · Orders · Conversion · Revenue, one row per product.

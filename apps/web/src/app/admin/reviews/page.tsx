@@ -7,7 +7,7 @@ import { getShopReviews } from "@/lib/queries";
 import { approveReview, deleteReview } from "@/lib/actions/reviews";
 import { PageHeader } from "@sailo/design-system/web";
 import { Badge, Button, Card, EmptyState } from "@sailo/design-system/web";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 export const metadata: Metadata = { title: "Reviews" };
 

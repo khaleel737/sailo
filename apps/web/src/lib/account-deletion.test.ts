@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { tombstoneEmail, tombstoneHandle } from "./account-deletion";
-import { HANDLE_MAX, normalizeHandle, validateHandleFormat } from "./handle";
+import { HANDLE_MAX, normalizeHandle, validateHandleFormat } from "@sailo/core/handle";
 
 /**
  * Account deletion, in the two ways it can be got wrong.

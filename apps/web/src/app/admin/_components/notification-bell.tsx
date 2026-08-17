@@ -17,7 +17,7 @@ import {
   dismissNotification,
   markAllNotificationsRead,
 } from "@/lib/actions/notifications";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 import type { Notification, NotificationKind } from "@sailo/notifications/feed";
 import type { Dictionary } from "@sailo/i18n";
 import type { Locale } from "@sailo/i18n/config";

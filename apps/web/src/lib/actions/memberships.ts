@@ -7,13 +7,13 @@ import { getDb } from "@sailo/db";
 import { orders, subscriptions } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { can } from "@sailo/core/plans";
-import { isUuid } from "@/lib/utils";
+import { isUuid } from "@sailo/core/uuid";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { appUrl } from "@/lib/app-url";
 import { billingPortalSession, cancelSubscriptionAtPeriodEnd } from "@sailo/commerce/orders/server";
 import { subscriptionForOrder } from "@/lib/membership-access";
-import { isManual } from "@/lib/memberships";
+import { isManual } from "@sailo/commerce/memberships";
 
 /**
  * Stopping — from either end.

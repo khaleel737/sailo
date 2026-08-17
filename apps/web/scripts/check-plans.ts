@@ -14,7 +14,7 @@
  * a product quietly deleted from the Dashboard.
  */
 import Stripe from "stripe";
-import { PLANS } from "../src/lib/plans";
+import { PLANS } from "@sailo/core/plans";
 import { present } from "@sailo/core/invariant";
 
 const secretKey = process.env.STRIPE_SECRET_KEY;

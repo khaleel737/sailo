@@ -17,7 +17,7 @@
  * so an account comped from a terminal doesn't look like it happened by magic.
  */
 import { neon } from "@neondatabase/serverless";
-import { PLANS, isPlanId } from "../src/lib/plans";
+import { PLANS, isPlanId } from "@sailo/core/plans";
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) throw new Error("DATABASE_URL is not set");

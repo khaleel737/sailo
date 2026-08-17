@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getShopByHandle } from "@/lib/queries";
-import { isShopLive } from "@/lib/utils";
+import { isShopLive } from "@sailo/core/visibility";
 import {
   cardTheme,
   clamp,

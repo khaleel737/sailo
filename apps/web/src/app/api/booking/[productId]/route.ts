@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { liveShop } from "@/lib/shop-visibility";
 import { products, shops } from "@sailo/db/schema";
-import { isUuid } from "@/lib/utils";
+import { isUuid } from "@sailo/core/uuid";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { BOOKING_HORIZON_DAYS, calendarFor, isBookable } from "@sailo/commerce/booking/server";

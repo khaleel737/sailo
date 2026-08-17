@@ -17,7 +17,7 @@ import {
 import { createSubscriptionSession, membershipPrice } from "@sailo/commerce/orders/server";
 import { periodEndOf, subscriptionIdOf } from "@/lib/stripe-webhooks/memberships";
 import { handleConnectEvent } from "@/lib/stripe-webhooks";
-import { membershipAccess } from "@/lib/memberships";
+import { membershipAccess } from "@sailo/commerce/memberships";
 import { platformFeePercent } from "@sailo/core/plans";
 
 /**

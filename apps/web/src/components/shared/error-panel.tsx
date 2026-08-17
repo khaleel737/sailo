@@ -5,7 +5,7 @@ import Link from "next/link";
 import { RotateCw } from "lucide-react";
 import type { Dictionary } from "@sailo/i18n";
 import { useLeaving } from "@/lib/leaving";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /* ===========================================================================
    Error boundaries

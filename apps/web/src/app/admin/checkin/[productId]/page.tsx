@@ -10,7 +10,7 @@ import {
   eventDoorStats,
   eventTiers,
   getShopEvent,
-} from "@/lib/queries/tickets";
+} from "@sailo/commerce/ticketing";
 import { PageHeader } from "@sailo/design-system/web";
 import { Button } from "@sailo/design-system/web";
 import { DoorConsole } from "../_components/door-console";

@@ -18,7 +18,7 @@ import {
 import { Alert, Badge, Button, Card } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /**
  * The Stripe rail is configured by connecting an account, not by filling in

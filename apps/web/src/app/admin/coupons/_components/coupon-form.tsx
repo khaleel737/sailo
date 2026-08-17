@@ -5,7 +5,7 @@ import { useFormStatus } from "react-dom";
 import { Loader2, Plus } from "lucide-react";
 import { saveCoupon } from "@/lib/actions/coupons";
 import { bpToPercent } from "@sailo/core/pricing";
-import { centsToAmount } from "@/lib/utils";
+import { centsToAmount } from "@sailo/core/currency";
 import {
   Alert,
   Button,

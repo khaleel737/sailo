@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { LEGAL } from "@/lib/legal";
-import { cn } from "@/lib/utils";
+import { LEGAL } from "@sailo/core/legal";
+import { cn } from "@sailo/design-system/web/cn";
 
 /**
  * The quiet strip that closes /admin and /hq.

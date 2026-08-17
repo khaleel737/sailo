@@ -9,7 +9,8 @@ import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
-import { isShopLive, shopThemeVars } from "@/lib/utils";
+import { isShopLive } from "@sailo/core/visibility";
+import { shopThemeVars } from "@sailo/design-system/web/cn";
 import { can } from "@sailo/core/plans";
 
 export async function generateMetadata({

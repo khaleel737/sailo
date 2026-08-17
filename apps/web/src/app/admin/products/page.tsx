@@ -11,7 +11,7 @@ import { PageHeader } from "@sailo/design-system/web";
 import { ExportButton } from "@/app/admin/_components/export-button";
 import { Table, Td, Th, Tr } from "@sailo/design-system/web";
 import { Badge, Button, EmptyState } from "@sailo/design-system/web";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { anySellable, priceRange, unitsLeft } from "@sailo/core/variants";
 
 export const metadata: Metadata = { title: "Products" };

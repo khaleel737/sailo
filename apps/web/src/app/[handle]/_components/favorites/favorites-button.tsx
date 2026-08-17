@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Heart, X } from "lucide-react";
 import type { Dictionary } from "@sailo/i18n";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { useFavorites } from "./use-favorites";
 
 /**

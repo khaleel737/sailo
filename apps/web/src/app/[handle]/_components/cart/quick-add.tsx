@@ -6,7 +6,8 @@ import { useCart } from "./cart-provider";
 import { OptionChips } from "../option-chips";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
-import { cn, formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
+import { cn } from "@sailo/design-system/web/cn";
 import {
   findVariant,
   isLowStock,

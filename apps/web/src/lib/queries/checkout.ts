@@ -6,7 +6,7 @@ import { deliveryMethods, paymentMethods, shops } from "@sailo/db/schema";
 import { shopTag } from "@/lib/cache";
 import { can } from "@sailo/core/plans";
 import { isRailUsable, type PaymentMethodType } from "@/lib/payments";
-import { isDeliveryConfigured, type DeliveryMethodType } from "@/lib/delivery";
+import { isDeliveryConfigured, type DeliveryMethodType } from "@sailo/commerce/delivery";
 
 /** What a buyer may choose at checkout, and what the seller has configured. */
 

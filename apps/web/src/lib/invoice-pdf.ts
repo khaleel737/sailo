@@ -11,7 +11,8 @@ import {
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { taxLabel } from "@sailo/core/tax-label";
 
-import { formatAddress, formatMoney } from "@/lib/utils";
+import { formatAddress } from "@sailo/core/address";
+import { formatMoney } from "@sailo/core/currency";
 
 const INK = "#1a1a20";
 const MUTED = "#6d6d7d";

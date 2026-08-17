@@ -8,7 +8,7 @@ import {
   P,
   Ref,
 } from "@/components/legal/legal-kit";
-import { LEGAL } from "@/lib/legal";
+import { LEGAL } from "@sailo/core/legal";
 
 export const metadata: Metadata = {
   title: "Anti-Spam Policy",

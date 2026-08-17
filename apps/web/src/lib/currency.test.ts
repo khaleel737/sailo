@@ -9,7 +9,7 @@ import {
   toCurrencyCode,
   toStripeAmount,
 } from "@sailo/core/currency";
-import { formatMoney, moneyToCents, parseMoneyToCents } from "@/lib/utils";
+import { formatMoney, moneyToCents, parseMoneyToCents } from "@sailo/core/currency";
 
 /*
  * The whole table exists for one number, so most of these test that number

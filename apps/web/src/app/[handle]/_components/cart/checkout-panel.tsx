@@ -9,8 +9,8 @@ import {
   countryFromTimeZone,
   countryName,
   deviceTimeZone,
-} from "@/lib/countries";
-import { shippableCountries, shipsTo } from "@/lib/delivery";
+} from "@sailo/core/countries";
+import { shippableCountries, shipsTo } from "@sailo/commerce/delivery";
 import { markLeaving } from "@/lib/leaving";
 import type { OrderIntentResult } from "@sailo/commerce/orders";
 import { useCheckoutQuote } from "./use-checkout-quote";
@@ -23,7 +23,7 @@ import { formatPercent } from "@sailo/core/pricing";
 import { readReferralCode } from "@/lib/referral";
 import { trackClick } from "@sailo/analytics/clicks";
 import { interpolate } from "@sailo/i18n";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { deliveryCopy, railCopy } from "./checkout-copy";
 import { useCart } from "./cart-provider";
 import { Confirmation } from "./confirmation";

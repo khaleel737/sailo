@@ -27,7 +27,7 @@ import { authClient } from "@/lib/auth-client";
 import { SailoMark } from "@/components/brand";
 import { useAdminT } from "./admin-i18n";
 import type { Dictionary } from "@sailo/i18n";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /*
  * The same rail HQ uses: dark, grouped, with a brand rule marking position.

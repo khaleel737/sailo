@@ -22,7 +22,7 @@ import {
   extendForPaidOrder,
   runManualRenewals,
 } from "@/lib/membership-renewals";
-import { RENEWAL_LEAD_DAYS } from "@/lib/memberships";
+import { RENEWAL_LEAD_DAYS } from "@sailo/commerce/memberships";
 
 /**
  * Recurring memberships, against a real database.

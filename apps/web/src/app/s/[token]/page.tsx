@@ -6,7 +6,7 @@ import { getShopT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { readSubscribeToken } from "@sailo/marketing/broadcasts/server";
 import { SubscribeConfirmForm } from "@/components/shared/subscribe-confirm-form";
-import { shopThemeVars } from "@/lib/utils";
+import { shopThemeVars } from "@sailo/design-system/web/cn";
 
 /* Not yet converted — see the note in `next.config.ts`. */
 export const instant = false;

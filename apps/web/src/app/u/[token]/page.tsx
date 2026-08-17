@@ -8,7 +8,7 @@ import { readUnsubscribeToken } from "@sailo/marketing/broadcasts/server";
 import { isSuppressed } from "@sailo/marketing/broadcasts/server";
 import { confirmUnsubscribe } from "@/lib/actions/unsubscribe";
 import { UnsubscribeForm } from "@/components/shared/unsubscribe-form";
-import { shopThemeVars } from "@/lib/utils";
+import { shopThemeVars } from "@sailo/design-system/web/cn";
 
 /* Not yet converted — see the note in `next.config.ts`. */
 export const instant = false;

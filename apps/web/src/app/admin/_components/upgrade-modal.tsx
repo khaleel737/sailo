@@ -13,11 +13,11 @@ import {
 import { Badge, Button } from "@sailo/design-system/web";
 import { SegmentedControl } from "@sailo/design-system/web";
 import { Dialog } from "@sailo/design-system/web";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { useAdminLocale } from "@/app/admin/_components/admin-i18n";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /*
  * A Dialog, not a Sheet: this is one decision — which plan — and everything

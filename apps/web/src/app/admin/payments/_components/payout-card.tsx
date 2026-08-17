@@ -6,7 +6,7 @@ import { refreshPayouts } from "@/lib/actions/payouts";
 import { Alert, Badge, Button, Card } from "@sailo/design-system/web";
 import { getAdminT, getLocale } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 
 /** Badge tone per Stripe payout status — green is money that arrived. */
 const STATUS_TONES = {

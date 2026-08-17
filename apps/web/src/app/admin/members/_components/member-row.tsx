@@ -10,7 +10,7 @@ import {
 import { Alert, Badge, Button } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import type { Subscription } from "@sailo/db/schema";
 
 /**

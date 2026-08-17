@@ -16,7 +16,8 @@ import {
   Select,
   Textarea,
 } from "@sailo/design-system/web";
-import { centsToAmount, PRODUCT_KINDS } from "@/lib/utils";
+import { centsToAmount } from "@sailo/core/currency";
+import { PRODUCT_KINDS } from "@sailo/core/visibility";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { Toggle } from "./toggle";
 import { DigitalDeliveryCard } from "./digital-delivery-card";

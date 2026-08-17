@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { LEGAL } from "@/lib/legal";
-import { cn } from "@/lib/utils";
+import { LEGAL } from "@sailo/core/legal";
+import { cn } from "@sailo/design-system/web/cn";
 
 /*
  * Typography for the three legal documents.

@@ -1,10 +1,10 @@
 import { ExternalLink, Globe, MapPin, Megaphone, Monitor, Share2 } from "lucide-react";
 import type { ClickBreakdown, VisitBreakdown } from "@/lib/queries";
 import { SOURCE_LABELS, hostLabel, type TrafficSource } from "@sailo/analytics/traffic";
-import { countryFlag, countryName } from "@/lib/countries";
+import { countryFlag, countryName } from "@sailo/core/countries";
 import { Card } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";
-import { CHART } from "@/lib/chart-palette";
+import { CHART } from "@sailo/design-system/chart/palette";
 
 type Row = { label: string; lead?: string; count: number; unique: number };
 

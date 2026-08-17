@@ -10,7 +10,7 @@ import {
 import { getShopT } from "@/i18n/server";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
-import { isShopLive } from "@/lib/utils";
+import { isShopLive } from "@sailo/core/visibility";
 import { ProductCard } from "../_components/product-card";
 
 /**

@@ -28,7 +28,7 @@ import {
   undoAdmission,
 } from "@/lib/actions/tickets";
 import type { CheckInState } from "@sailo/commerce/ticketing";
-import type { DoorFilter, DoorRow, DoorStats } from "@/lib/queries/tickets";
+import type { DoorFilter, DoorRow, DoorStats } from "@sailo/commerce/ticketing";
 import { interpolate } from "@sailo/i18n";
 import type { AdminDictionary } from "@sailo/i18n/admin/en";
 import { Badge, Button, Card, Field, Input, Select } from "@sailo/design-system/web";

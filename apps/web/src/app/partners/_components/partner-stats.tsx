@@ -1,5 +1,5 @@
 import { CopyLink } from "@sailo/design-system/web";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import type { PartnerSummary } from "@/lib/partners/store";
 
 /**

@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, Field, Input } from "@sailo/design-system/web";
-import { SOCIAL_PLATFORMS } from "@/lib/utils";
+import { SOCIAL_PLATFORMS } from "@sailo/core/visibility";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 const SOCIAL_LABELS: Record<string, string> = {

@@ -1,7 +1,7 @@
 import type { ProductOption, VariantOptions } from "@sailo/db/schema";
-import { parseMoneyToCents } from "@/lib/utils";
+import { parseMoneyToCents } from "@sailo/core/currency";
 import { combinations, MAX_VARIANTS, optionKey } from "@sailo/core/variants";
-import { isRenderableImageUrl } from "@/lib/file-urls";
+import { isRenderableImageUrl } from "@sailo/storage/urls";
 
 /**
  * Reading the product form.

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { SectionTitle, When } from "@/app/hq/_components/hq-ui";
 import { Badge } from "@sailo/design-system/web";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import type { AccountDetail, AccountShop } from "./account.types";
 
 /** The shop's products. */

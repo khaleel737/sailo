@@ -26,7 +26,7 @@
  */
 import Stripe from "stripe";
 import { present } from "@sailo/core/invariant";
-import { PAID_PLAN_IDS, PLANS } from "../src/lib/plans";
+import { PAID_PLAN_IDS, PLANS } from "@sailo/core/plans";
 
 const CHECK_ONLY = process.argv.includes("--check");
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://sailo.store";

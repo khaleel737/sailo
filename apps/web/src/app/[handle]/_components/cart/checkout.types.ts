@@ -2,7 +2,7 @@ import type { OrderLineInput, OrderPreview } from "@sailo/commerce/orders";
 import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
 import type { PaymentMethodType } from "@/lib/payments";
-import type { DeliveryMethodType } from "@/lib/delivery";
+import type { DeliveryMethodType } from "@sailo/commerce/delivery";
 
 /** What the checkout is offered, as the storefront hands it over. */
 

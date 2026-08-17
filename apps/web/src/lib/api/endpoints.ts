@@ -1,6 +1,6 @@
 import { PRODUCT_KIND_VALUES } from "@sailo/core/variants";
 import { ORDER_STATUSES } from "@sailo/core/order-status";
-import { PAYMENT_STATUSES } from "@/lib/payments/status";
+import { PAYMENT_STATUSES } from "@sailo/core/payment-status";
 import { MAX_TAGS, MAX_TAG_LENGTH } from "@sailo/customers/tags";
 import { DEFAULT_LIMIT, MAX_LIMIT, type ApiErrorCode } from "./respond";
 import type { ApiScope } from "./keys";

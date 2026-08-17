@@ -9,7 +9,7 @@ import { Badge } from "@sailo/design-system/web";
 import { first, getPlatformOrders, pageNumber } from "@/lib/hq";
 import { PAYMENT_STATUS_TONES } from "@/lib/payments";
 import { orderSummaryTitle } from "@/lib/order-lines";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 
 export const metadata: Metadata = { title: "Orders" };
 

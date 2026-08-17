@@ -9,7 +9,7 @@ import {
   P,
   Ref,
 } from "@/components/legal/legal-kit";
-import { COOKIES, LEGAL, SUBPROCESSORS } from "@/lib/legal";
+import { COOKIES, LEGAL, SUBPROCESSORS } from "@sailo/core/legal";
 import { PLATFORM_FEE_RANGE_LABEL } from "@sailo/core/plans";
 
 export const metadata: Metadata = {

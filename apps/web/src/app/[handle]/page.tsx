@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { getShopByHandle, pickFilters } from "@/lib/queries";
 import { interpolate } from "@sailo/i18n";
 import { absolute, shopJsonLd } from "@/lib/seo";
-import { shopThemeVars } from "@/lib/utils";
+import { shopThemeVars } from "@sailo/design-system/web/cn";
 import { getShopPageData } from "./_lib/get-shop-page-data";
 import { CartRegion } from "./_components/cart/cart-region";
 import { complianceOf } from "./_components/cart/checkout.types";

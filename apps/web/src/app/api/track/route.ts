@@ -11,7 +11,7 @@ import { CLICK_KINDS, clicks, products, shops, visits, type ClickKind } from "@s
 import { classifyVisit, outboundHost, parseUserAgent } from "@sailo/analytics/traffic";
 import { ensurePartition } from "@sailo/analytics/partitions";
 import { visitorId } from "@sailo/analytics/visitor";
-import { isUuid } from "@/lib/utils";
+import { isUuid } from "@sailo/core/uuid";
 
 
 export async function POST(request: Request) {

@@ -4,7 +4,7 @@ import { Card } from "@sailo/design-system/web";
 import { CopyLink } from "@sailo/design-system/web";
 import { interpolate } from "@sailo/i18n";
 import type { AdminDictionary } from "@sailo/i18n/admin/en";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { referralUrl, shareLabel } from "@/lib/partners/program";
 import type { PartnerCard } from "@/lib/partners/store";
 

@@ -14,7 +14,7 @@ import { deleteBroadcast, duplicateBroadcast } from "@/lib/actions/broadcasts";
 import { PageHeader } from "@sailo/design-system/web";
 import { Button, Card } from "@sailo/design-system/web";
 import { Composer } from "../_components/composer";
-import { isUuid } from "@/lib/utils";
+import { isUuid } from "@sailo/core/uuid";
 
 export const metadata: Metadata = { title: "Broadcast" };
 

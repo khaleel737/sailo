@@ -14,7 +14,7 @@ import {
   RevokeSession,
 } from "@/app/hq/_components/security-actions";
 import { Badge, Card } from "@sailo/design-system/web";
-import { countryFlag, countryName } from "@/lib/countries";
+import { countryFlag, countryName } from "@sailo/core/countries";
 import type { AccountSecurity } from "@/lib/hq";
 
 /* ===========================================================================

@@ -5,7 +5,7 @@ import { useFormStatus } from "react-dom";
 import { Alert, Button, Card, Field, Input, Switch, Textarea } from "@sailo/design-system/web";
 import { saveProgramSettings } from "@/lib/actions/partner-program";
 import type { ProgramSettings } from "@/lib/partners/settings";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 
 /**
  * Every knob, with the consequence of turning it stated next to it.

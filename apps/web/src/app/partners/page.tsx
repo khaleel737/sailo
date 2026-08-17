@@ -21,7 +21,7 @@ import { getProgramSettings } from "@/lib/partners/settings";
 import { hasLiveSubscription, payoutBlocker } from "@/lib/partners/eligibility";
 import { referralUrl, resolveCommissionBp, shareLabel } from "@/lib/partners/program";
 import { PLANS } from "@sailo/core/plans";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { ApplyForm } from "./_components/apply-form";
 import { ConnectPanel } from "./_components/connect-panel";
 import { PartnerStats } from "./_components/partner-stats";

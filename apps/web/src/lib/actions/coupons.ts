@@ -11,7 +11,7 @@ import { requireShop } from "@/lib/session";
    wraps it. The two are deliberately the same name: one is the form, one is the
    rule, and a reader following the call arrives where the rule actually is. */
 import { saveCoupon as save } from "@sailo/commerce/coupons";
-import { parseMoneyToCents } from "@/lib/utils";
+import { parseMoneyToCents } from "@sailo/core/currency";
 import { can, upgradeMessage } from "@sailo/core/plans";
 import type { ActionState } from "./shop";
 

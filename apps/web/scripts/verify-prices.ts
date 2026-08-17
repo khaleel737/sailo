@@ -6,7 +6,7 @@
  */
 import Stripe from "stripe";
 import { priceMismatch } from "@sailo/billing/checkout";
-import { PLANS, platformFeeLabel, type PlanId } from "../src/lib/plans";
+import { PLANS, platformFeeLabel, type PlanId } from "@sailo/core/plans";
 
 async function main() {
   const s = new Stripe(process.env.STRIPE_SECRET_KEY!, {

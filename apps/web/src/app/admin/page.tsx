@@ -26,7 +26,7 @@ import { resolveAnalyticsWindow, type DateWindow } from "@sailo/analytics/window
 import { CopyLink } from "@sailo/design-system/web";
 import { Badge, Card, EmptyState, Stat } from "@sailo/design-system/web";
 import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { getAdminT, getLocale, getT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 

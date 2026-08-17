@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { SailoMark } from "@/components/brand";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /*
  * HQ is deliberately dark where /admin is light.

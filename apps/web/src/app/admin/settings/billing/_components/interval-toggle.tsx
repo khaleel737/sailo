@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /**
  * Links rather than buttons — the interval is in the URL, so the choice

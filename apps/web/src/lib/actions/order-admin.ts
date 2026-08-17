@@ -7,7 +7,7 @@ import { getDb } from "@sailo/db";
 import { clients, orders } from "@sailo/db/schema";
 import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
 import { requireShop } from "@/lib/session";
-import { formatMoney, parseMoneyToCents } from "@/lib/utils";
+import { formatMoney, parseMoneyToCents } from "@sailo/core/currency";
 import { restoreStock } from "@sailo/commerce/catalog";
 import { changeOrderStatus } from "@sailo/commerce/orders/server";
 import { refundOrder as refund } from "@sailo/commerce/orders/server";

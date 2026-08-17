@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Chart } from "@sailo/design-system/web/chart";
 import { Card } from "@sailo/design-system/web";
-import type { Series } from "@/lib/chart";
+import type { Series } from "@sailo/design-system/chart";
 
 /* Not yet converted — see the note in `next.config.ts`. */
 export const instant = false;

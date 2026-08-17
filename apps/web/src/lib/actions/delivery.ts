@@ -8,9 +8,9 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { deliveryMethods, type DeliveryConfig } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
-import { DELIVERY_METHOD_DEFS, isDeliveryMethodType } from "@/lib/delivery";
+import { DELIVERY_METHOD_DEFS, isDeliveryMethodType } from "@sailo/commerce/delivery";
 import { saveDelivery, toggleDelivery as toggleShared } from "@sailo/commerce/delivery/server";
-import { parseMoneyToCents } from "@/lib/utils";
+import { parseMoneyToCents } from "@sailo/core/currency";
 import type { ActionState } from "./shop";
 
 /**

@@ -5,7 +5,7 @@ import { useFormStatus } from "react-dom";
 import { Loader2, RotateCcw, Truck } from "lucide-react";
 import { markOrderShipped, refundOrder } from "@/lib/actions/order-admin";
 import { Alert, Button, Field, Input } from "@sailo/design-system/web";
-import { centsToAmount, formatMoney } from "@/lib/utils";
+import { centsToAmount, formatMoney } from "@sailo/core/currency";
 import type { Order } from "@sailo/db/schema";
 import { useAdminLocale, useAdminT } from "@/app/admin/_components/admin-i18n";
 

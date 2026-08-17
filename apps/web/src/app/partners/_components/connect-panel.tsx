@@ -1,6 +1,6 @@
 import { AlertTriangle, BadgeCheck, Clock, ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import type { PayoutBlocker } from "@/lib/partners/eligibility";
 
 /**

@@ -6,7 +6,7 @@ import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { Metric, MetricRow, Mono, When } from "@/app/hq/_components/hq-ui";
 import { getPayoutPreview, getRecentPayouts } from "@/lib/hq/partners";
 import { getProgramSettings } from "@/lib/partners/settings";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { PayNowButton, RunPayoutsButton } from "../_components/payout-buttons";
 
 export const metadata: Metadata = { title: "Partner payouts" };

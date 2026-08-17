@@ -4,7 +4,8 @@ import { CalendarDays, Clock, Download, ImageIcon, RefreshCw } from "lucide-reac
 import type { ProductCard as ProductCardData } from "@/lib/queries";
 import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
-import { cn, formatDuration, formatMoney } from "@/lib/utils";
+import { formatDuration, formatMoney } from "@sailo/core/currency";
+import { cn } from "@sailo/design-system/web/cn";
 import {
   anySellable,
   priceRange,

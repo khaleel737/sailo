@@ -3,7 +3,7 @@
 import { useId, useMemo, useState } from "react";
 import { Chart } from "@sailo/design-system/web/chart";
 import type { VolumeSeries } from "@/lib/hq";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 
 /**
  * What sellers moved, in one currency at a time.

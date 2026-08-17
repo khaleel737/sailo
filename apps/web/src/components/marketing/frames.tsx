@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /*
  * Device chrome for the screenshots.

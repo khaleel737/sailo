@@ -22,7 +22,7 @@ import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { RevokeSession } from "@/app/hq/_components/security-actions";
 import { Metric, MetricRow, SectionTitle, When } from "@/app/hq/_components/hq-ui";
 import { Badge, Card } from "@sailo/design-system/web";
-import { countryFlag, countryName } from "@/lib/countries";
+import { countryFlag, countryName } from "@sailo/core/countries";
 import {
   first,
   getSecurityOverview,

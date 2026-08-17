@@ -1,7 +1,7 @@
 "use client";
 
 import { MapPin } from "lucide-react";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 
 /**
  * The shop being described, as it will look. It updates on every keystroke, so

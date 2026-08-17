@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 
 /*

@@ -9,7 +9,7 @@ import type {
   CheckoutMethod,
 } from "./checkout-panel";
 import type { Dictionary } from "@sailo/i18n";
-import { shopThemeVars } from "@/lib/utils";
+import { shopThemeVars } from "@sailo/design-system/web/cn";
 
 /**
  * Wraps a storefront page in its basket: the provider the buttons talk to, the

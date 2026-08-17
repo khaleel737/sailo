@@ -1,5 +1,5 @@
-import { readableOn } from "@/lib/utils";
-import { isRenderableImageUrl } from "@/lib/file-urls";
+import { readableOn } from "@sailo/design-system/web/cn";
+import { isRenderableImageUrl } from "@sailo/storage/urls";
 
 /*
  * Shared parts for every generated social card and favicon.

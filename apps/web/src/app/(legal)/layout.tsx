@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { SailoLogo } from "@/components/brand";
 import { Container } from "@/components/marketing/kit";
-import { LEGAL } from "@/lib/legal";
+import { LEGAL } from "@sailo/core/legal";
 
 /*
  * Not yet converted. The copy on these pages is chosen by a cookie, so the

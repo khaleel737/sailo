@@ -6,7 +6,7 @@ import { requireShop } from "@/lib/session";
 import { getAdminProduct, getShopCategories } from "@/lib/queries";
 import { ProductForm } from "@/app/admin/products/_components/product-form";
 import { PageHeader } from "@sailo/design-system/web";
-import { isUuid } from "@/lib/utils";
+import { isUuid } from "@sailo/core/uuid";
 import { getAdminT } from "@/i18n/server";
 import { connectState } from "@sailo/commerce/orders/server";
 import { can } from "@sailo/core/plans";

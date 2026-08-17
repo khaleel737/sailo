@@ -4,7 +4,7 @@
  * symbols or thousand separators, and a `Handle` as the product's stable key.
  */
 
-import { centsToAmount, moneyToCents } from "@/lib/utils";
+import { centsToAmount, moneyToCents } from "@sailo/core/currency";
 
 /**
  * Formats minor units as a bare decimal — `29.99`, never `$29.99`.

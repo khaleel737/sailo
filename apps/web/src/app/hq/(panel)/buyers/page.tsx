@@ -6,7 +6,8 @@ import { Pagination } from "@/app/hq/_components/hq-pagination";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { ShopCell, When } from "@/app/hq/_components/hq-ui";
 import { first, getPlatformBuyers, pageNumber } from "@/lib/hq";
-import { formatAddress, formatMoney } from "@/lib/utils";
+import { formatAddress } from "@sailo/core/address";
+import { formatMoney } from "@sailo/core/currency";
 
 export const metadata: Metadata = { title: "Buyers" };
 

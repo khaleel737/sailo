@@ -2,7 +2,7 @@
 
 import { Card, Field, Input, Select } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import { BILLING_INTERVALS } from "@/lib/memberships";
+import { BILLING_INTERVALS } from "@sailo/commerce/memberships";
 import type { ProductWithRelations } from "./product.types";
 
 /**

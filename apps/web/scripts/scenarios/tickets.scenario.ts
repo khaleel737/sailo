@@ -22,7 +22,7 @@ import {
   voidTicketsForOrder,
 } from "@sailo/commerce/ticketing";
 import { importTickets } from "@/lib/import/tickets";
-import { eventDoorList, eventDoorStats } from "@/lib/queries/tickets";
+import { eventDoorList, eventDoorStats } from "@sailo/commerce/ticketing";
 
 /**
  * Event tickets, end to end: minted with the order, gated by the release

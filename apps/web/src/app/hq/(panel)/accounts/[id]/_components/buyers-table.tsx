@@ -1,6 +1,7 @@
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { SectionTitle, When } from "@/app/hq/_components/hq-ui";
-import { formatAddress, formatMoney } from "@/lib/utils";
+import { formatAddress } from "@sailo/core/address";
+import { formatMoney } from "@sailo/core/currency";
 import type { AccountDetail, AccountShop } from "./account.types";
 
 /** The shop's customers, by what they have spent. */

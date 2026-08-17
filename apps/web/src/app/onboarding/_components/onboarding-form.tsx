@@ -14,11 +14,11 @@ import { SellingStep } from "./selling-step";
 import type { Values } from "./onboarding.types";
 import { HandleField } from "@/components/shared/handle-field";
 import { ShopPreview } from "./shop-preview";
-import { slugify } from "@/lib/utils";
-import { normalizeHandle } from "@/lib/handle";
+import { slugify } from "@sailo/core/slug";
+import { normalizeHandle } from "@sailo/core/handle";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /*
  * Setting up a shop is three decisions, not one form: what the link is, what

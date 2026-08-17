@@ -10,7 +10,7 @@ import { Table, Td, Th, Tr } from "@sailo/design-system/web";
 import { Badge, Button, EmptyState } from "@sailo/design-system/web";
 import { LockedFeature } from "@/app/admin/_components/locked-feature";
 import { can } from "@sailo/core/plans";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { getT, getAdminT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Coupons" };

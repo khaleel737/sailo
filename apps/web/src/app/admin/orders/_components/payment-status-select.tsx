@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { updatePaymentStatus } from "@/lib/actions/order-admin";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 import { isSellerSettablePaymentStatus } from "@/lib/payments";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 

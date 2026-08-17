@@ -8,7 +8,7 @@ import { broadcasts, shops } from "@sailo/db/schema";
 import { revalidateShop } from "@/lib/cache";
 import { requireShop } from "@/lib/session";
 import { can, upgradeMessage } from "@sailo/core/plans";
-import { isUuid } from "@/lib/utils";
+import { isUuid } from "@sailo/core/uuid";
 import { zonedTimeToInstant } from "@sailo/commerce/booking";
 import { broadcastLabels, MAX_PROMO_PRODUCTS, queueBroadcast, resolveContent } from "@sailo/marketing/broadcasts/server";
 import { budgetFor, type Budget } from "@sailo/marketing/broadcasts/server";
@@ -19,7 +19,7 @@ import { renderBroadcast, renderText } from "@sailo/marketing/broadcasts";
 import { unsubscribeToken, unsubscribeUrl } from "@sailo/marketing/broadcasts/server";
 import { ORDERS, send, sender } from "@sailo/email/transport";
 import { getDictionary } from "@sailo/i18n";
-import { LEGAL } from "@/lib/legal";
+import { LEGAL } from "@sailo/core/legal";
 import { rateLimit } from "@sailo/rate-limit";
 import type { Shop } from "@sailo/db/schema";
 

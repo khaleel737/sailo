@@ -12,9 +12,9 @@ import { PLAN_IDS, PLANS, planFor, platformFeeLabel, productLimit } from "@sailo
 import { billingEnabled } from "@sailo/payments";
 import { IntervalToggle } from "@/app/admin/settings/billing/_components/interval-toggle";
 import { Alert, Badge, Button, Card, Progress } from "@sailo/design-system/web";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { interpolate } from "@sailo/i18n";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 export const metadata: Metadata = { title: "Billing" };
 

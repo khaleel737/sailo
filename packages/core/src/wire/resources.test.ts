@@ -131,20 +131,20 @@ describe("sampleOrderResource", () => {
     const real = orderResource(realOrder, [realItem]);
     const sample = sampleOrderResource({ currency: "GBP" });
 
-    expect(Object.keys(sample).toSorted()).toEqual(Object.keys(real).toSorted());
+    expect(Object.keys(sample).slice().sort()).toEqual(Object.keys(real).slice().sort());
 
     for (const section of ["customer", "address", "delivery", "total"] as const) {
       expect(
-        Object.keys(sample[section]).toSorted(),
+        Object.keys(sample[section]).slice().sort(),
         `${section} drifted`,
-      ).toEqual(Object.keys(real[section]).toSorted());
+      ).toEqual(Object.keys(real[section]).slice().sort());
     }
 
     const [sampleItem] = sample.items;
     const [realLine] = real.items;
     expect(sampleItem).toBeDefined();
-    expect(Object.keys(sampleItem ?? {}).toSorted()).toEqual(
-      Object.keys(realLine ?? {}).toSorted(),
+    expect(Object.keys(sampleItem ?? {}).slice().sort()).toEqual(
+      Object.keys(realLine ?? {}).slice().sort(),
     );
   });
 

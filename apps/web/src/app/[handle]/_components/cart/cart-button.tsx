@@ -2,7 +2,7 @@
 
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "./cart-provider";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { interpolate } from "@sailo/i18n";
 import type { Dictionary } from "@sailo/i18n";
 

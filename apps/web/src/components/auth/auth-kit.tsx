@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Field, Input } from "@sailo/design-system/web";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /*
  * The four auth screens, dressed for the brand surface.

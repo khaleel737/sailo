@@ -27,7 +27,7 @@ import { eq, inArray } from "drizzle-orm";
 import { hashPassword } from "better-auth/crypto";
 import { firstRow, present } from "@sailo/core/invariant";
 import * as schema from "@sailo/db/schema";
-import { slugify } from "../src/lib/utils";
+import { slugify } from "@sailo/core/slug";
 import type { ShopSocial } from "@sailo/db/schema";
 
 const {

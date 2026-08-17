@@ -8,7 +8,7 @@ import { getPartners, getProgramTotals } from "@/lib/hq/partners";
 import { getProgramSettings } from "@/lib/partners/settings";
 import type { PayoutBlocker } from "@/lib/partners/eligibility";
 import { shareLabel } from "@/lib/partners/program";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { DecideButtons } from "./_components/decide-buttons";
 import { StatusFilter } from "./_components/status-filter";
 

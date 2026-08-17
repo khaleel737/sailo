@@ -10,7 +10,8 @@ import { ExportButton } from "@/app/admin/_components/export-button";
 import { AddContact } from "./_components/add-contact";
 import { Table, Td, Th, Tr } from "@sailo/design-system/web";
 import { Badge, EmptyState } from "@sailo/design-system/web";
-import { formatAddress, formatMoney } from "@/lib/utils";
+import { formatAddress } from "@sailo/core/address";
+import { formatMoney } from "@sailo/core/currency";
 
 export const metadata: Metadata = { title: "Clients" };
 

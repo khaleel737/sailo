@@ -17,7 +17,8 @@ import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { taxName } from "@sailo/core/tax-label";
-import { formatAddress, formatMoney } from "@/lib/utils";
+import { formatAddress } from "@sailo/core/address";
+import { formatMoney } from "@sailo/core/currency";
 import type { Order } from "@sailo/db/schema";
 import type { OrderLine } from "@/lib/order-lines";
 

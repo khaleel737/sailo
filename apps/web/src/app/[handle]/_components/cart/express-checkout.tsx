@@ -12,7 +12,7 @@ import { useCart } from "./cart-provider";
 import { SlotPicker } from "./slot-picker";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
-import { formatDuration, formatMoney } from "@/lib/utils";
+import { formatDuration, formatMoney } from "@sailo/core/currency";
 import { needsDelivery, variantLabel, type CheckoutVariant } from "@sailo/core/variants";
 import type { ProductOption } from "@sailo/db/schema";
 

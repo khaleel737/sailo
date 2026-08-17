@@ -4,7 +4,8 @@ import { ArrowUpRight } from "lucide-react";
 import { Badge, Card } from "@sailo/design-system/web";
 import { billingState, type BillingState, type CurrencyTotal } from "@/lib/hq-metrics";
 import { formatCurrencyTotals } from "@/lib/hq-metrics";
-import { cn, formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
+import { cn } from "@sailo/design-system/web/cn";
 
 /* ===========================================================================
    The small pieces every HQ page is built from. All server components — none

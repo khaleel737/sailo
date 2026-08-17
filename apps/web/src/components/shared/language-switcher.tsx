@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import { LOCALES, type Locale } from "@sailo/i18n/config";
 import { setLocale } from "@/lib/actions/locale";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /** Room the list wants before it's worth opening upwards at all. */
 const MIN_SPACE = 180;

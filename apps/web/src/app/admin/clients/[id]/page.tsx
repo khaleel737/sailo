@@ -16,7 +16,9 @@ import { PageHeader } from "@sailo/design-system/web";
 import { OrderRow } from "@/app/admin/_components/order-row";
 import { Button, Card, Textarea } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";
-import { formatAddress, formatMoney, isUuid } from "@/lib/utils";
+import { formatAddress } from "@sailo/core/address";
+import { formatMoney } from "@sailo/core/currency";
+import { isUuid } from "@sailo/core/uuid";
 
 export const metadata: Metadata = { title: "Client" };
 

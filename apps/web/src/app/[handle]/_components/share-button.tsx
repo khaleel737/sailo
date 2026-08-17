@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Check, Download, Link2, Mail, MoreHorizontal, Share, X } from "lucide-react";
 import type { Dictionary } from "@sailo/i18n";
-import { cn } from "@/lib/utils";
+import { cn } from "@sailo/design-system/web/cn";
 
 /**
  * The share button on a storefront, and the sheet it opens.

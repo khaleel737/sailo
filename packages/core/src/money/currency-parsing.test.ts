@@ -1,13 +1,9 @@
 import { describe, expect, it } from "vitest";
-import {
-  centsToAmount,
-  formatAddress,
-  isUuid,
-  formatMoney,
-  normalizePhone,
-  parseMoneyToCents,
-  slugify,
-} from "./utils";
+import { formatAddress } from "../place/address";
+import { centsToAmount, formatMoney, parseMoneyToCents } from "./currency";
+import { normalizePhone } from "../identity/phone";
+import { slugify } from "../identity/slug";
+import { isUuid } from "../identity/uuid";
 
 /**
  * The helpers that turn stored values into what a buyer reads.

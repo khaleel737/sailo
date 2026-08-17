@@ -13,7 +13,7 @@ import { lineKey, toOrderItems, type CartLine } from "@/lib/cart";
 import { isLowStock, needsDelivery } from "@sailo/core/variants";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import type { PreviewLine } from "@sailo/commerce/orders";
 
 /**

@@ -8,7 +8,7 @@ import { Detail, Metric, MetricRow, Mono, When } from "@/app/hq/_components/hq-u
 import { getPartnerDetail } from "@/lib/hq/partners";
 import { getProgramSettings } from "@/lib/partners/settings";
 import { referralUrl, shareLabel } from "@/lib/partners/program";
-import { formatMoney } from "@/lib/utils";
+import { formatMoney } from "@sailo/core/currency";
 import { DecideButtons } from "../_components/decide-buttons";
 import { MarkSettledButton, PayNowButton } from "../_components/payout-buttons";
 import { PartnerControls } from "../_components/partner-controls";

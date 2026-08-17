@@ -4,12 +4,12 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Loader2, Plus } from "lucide-react";
 import { saveDeliveryMethod } from "@/lib/actions/delivery";
-import { centsToAmount } from "@/lib/utils";
+import { centsToAmount } from "@sailo/core/currency";
 import {
   DELIVERY_METHOD_DEFS,
   DELIVERY_METHOD_LIST,
   type DeliveryMethodType,
-} from "@/lib/delivery";
+} from "@sailo/commerce/delivery";
 import {
   Alert,
   Button,
