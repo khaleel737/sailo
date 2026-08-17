@@ -1,0 +1,120 @@
+apps/mobile/app/(auth)/sign-up.tsx
+  s_c7a7b98e0ed667::t_7d57df0fe7a1dd 15-16
+apps/web/e2e/scenarios/coupon-budget.scenario.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 1-167
+apps/api/vitest.e2e.mts
+  s_c7a7b98e0ed667::t_ed65aa8eefa6f2 1-22
+apps/api/package.json
+  s_c7a7b98e0ed667::t_ed65aa8eefa6f2 11-12
+apps/web/src/lib/consent-write-paths.test.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 12
+apps/web/e2e/scenarios/memberships-live.scenario.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 1-537
+docs/specs/README.md
+  s_c7a7b98e0ed667::t_3841fce646257f 19
+apps/web/e2e/scenarios/consent.scenario.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 1-432
+apps/web/e2e/scenarios/checkout.scenario.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 1-1436
+apps/mobile/components/store/editor.tsx
+  s_c7a7b98e0ed667::t_c05ae422a26cc4 27
+  s_c7a7b98e0ed667::t_3a8ff11261c753 38-536
+  s_c7a7b98e0ed667::t_7fe81b9a26088b 1,3-9,26,34-37
+  s_c7a7b98e0ed667::t_99e8c6a78bc802 2,10-25,28-33
+README.md
+  s_c7a7b98e0ed667::t_3841fce646257f 139,144,162,192
+apps/mobile/components/store/row.tsx
+  s_c7a7b98e0ed667::t_c05ae422a26cc4 2-3,7
+  s_c7a7b98e0ed667::t_7fe81b9a26088b 1,4-6,8
+  s_c7a7b98e0ed667::t_3a8ff11261c753 9-18,20-90
+  s_c7a7b98e0ed667::t_99e8c6a78bc802 19
+apps/mobile/app/(auth)/_layout.tsx
+  s_c7a7b98e0ed667::t_7d57df0fe7a1dd 2
+apps/web/e2e/scenarios/partner-program.scenario.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 1-1036
+apps/web/e2e/scenarios/card-e2e.scenario.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 1-133
+apps/mobile/app/_layout.tsx
+  s_c7a7b98e0ed667::t_7d57df0fe7a1dd 11-12
+packages/db/src/local-database.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 6
+PRODUCTION-PLAN.md
+  s_c7a7b98e0ed667::t_3841fce646257f 35,233,240
+apps/mobile/tests/auth-journey.test.tsx
+  s_c7a7b98e0ed667::t_7d57df0fe7a1dd 65-66
+apps/web/src/lib/queries/products.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 81
+apps/mobile/app/(auth)/two-factor.tsx
+  s_c7a7b98e0ed667::t_7d57df0fe7a1dd 14-15
+apps/mobile/components/store/copy.ts
+  s_c7a7b98e0ed667::t_99e8c6a78bc802 126,157,168
+  s_c7a7b98e0ed667::t_3a8ff11261c753 6-125,127-156,158-167,169-185
+  s_c7a7b98e0ed667::t_7fe81b9a26088b 1-5
+packages/db/src/index.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 14
+knip.json
+  s_c7a7b98e0ed667::t_c4ed8bfd16a848 11-12
+apps/web/e2e/scenarios/memberships-e2e.md
+  s_c7a7b98e0ed667::t_3841fce646257f 1-122
+apps/mobile/app/(auth)/sign-in.tsx
+  s_c7a7b98e0ed667::t_7d57df0fe7a1dd 5-6
+apps/web/e2e/journey.spec.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 14,54
+apps/mobile/tests/seller-decisions.test.tsx
+  s_c7a7b98e0ed667::t_ddc476f6ae54ed 23-32
+apps/mobile/app/(auth)/welcome.tsx
+  s_c7a7b98e0ed667::t_7d57df0fe7a1dd 12-13
+docs/specs/06-recurring-memberships.md
+  s_c7a7b98e0ed667::t_3841fce646257f 90
+docs/architecture.md
+  s_c7a7b98e0ed667::t_7e8e826f979fab 112-159
+apps/mobile/lib/auth-copy.ts
+  s_c7a7b98e0ed667::t_18dd514573095c 1
+  s_c7a7b98e0ed667::t_0b4b05c916ce13 24-293
+  s_c7a7b98e0ed667::t_ec94a0f195d6ba 2-23
+apps/mobile/app/(tabs)/store/index.tsx
+  s_c7a7b98e0ed667::t_9a7c2e23c9a180 32-35,45-46,48-53,55-56
+  s_c7a7b98e0ed667::t_4dc50ad5999205 2,38,40,42-44
+apps/mobile/app/(tabs)/store/[id].tsx
+  s_c7a7b98e0ed667::t_4dc50ad5999205 31-33
+docs/specs/04-seller-notifications.md
+  s_c7a7b98e0ed667::t_3841fce646257f 87
+apps/web/e2e/scenarios/us-wallets.scenario.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 1-303
+apps/mobile/app/(auth)/verify-email.tsx
+  s_c7a7b98e0ed667::t_7d57df0fe7a1dd 17-18
+apps/api/e2e/edge.e2e.ts
+  s_c7a7b98e0ed667::t_ebda6351aed65a 1-32,43-44,46-51,64-72,88,96,98-205
+  s_c7a7b98e0ed667::t_d7d8234375af96 33-42,45
+  s_c7a7b98e0ed667::t_386aefdb5f1227 52-63,73-87,89-95,97
+apps/mobile/components/store/draft.ts
+  s_c7a7b98e0ed667::t_7fe81b9a26088b 1,3-6
+  s_c7a7b98e0ed667::t_3a8ff11261c753 7-31,33-94,96-202,204-289,291-307
+  s_c7a7b98e0ed667::t_99e8c6a78bc802 2,32,95,203,290
+apps/mobile/app/(auth)/get-paid.tsx
+  s_c7a7b98e0ed667::t_7d57df0fe7a1dd 16-17
+apps/web/vitest.scenarios.mts
+  s_c7a7b98e0ed667::t_2e2db550b64861 12,25-26
+apps/web/scripts/check-load.ts
+  s_c7a7b98e0ed667::t_3841fce646257f 35
+apps/web/e2e/scenarios/card-e2e.md
+  s_c7a7b98e0ed667::t_3841fce646257f 1-51
+docs/specs/01-two-factor-authentication.md
+  s_c7a7b98e0ed667::t_3841fce646257f 67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4a7e6865aa63efea640f9172180a37d58f4b2be9",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
