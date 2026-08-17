@@ -16,7 +16,6 @@
     "@sailo/api": "workspace:*",
     "@sailo/db": "workspace:*",
     "@sailo/env": "workspace:*",
-    "@sailo/events": "workspace:*",
     "@sailo/mailer": "workspace:*",
     "@sailo/observability": "workspace:*",
     "@sailo/payments": "workspace:*",

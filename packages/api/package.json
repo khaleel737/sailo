@@ -8,6 +8,7 @@
     "./client": "./src/client.ts",
     "./rest": "./src/rest/index.ts",
     "./webhooks": "./src/webhooks/index.ts",
+    "./streams": "./src/streams/index.ts",
     "./mcp": "./src/mcp/index.ts"
   },
   "scripts": {
