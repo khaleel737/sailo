@@ -6,6 +6,7 @@ import { categories, productFiles, productImages, productVariants, products, rev
 import { shopTag } from "@/lib/cache";
 import { minorPerMajor } from "@sailo/core/currency";
 import { nextOffsetFor, orderByIds } from "./pagination";
+import { sellerCatalogue, sellerProduct } from "@sailo/commerce/catalog";
 
 /** Reading the catalogue, for the storefront and for the admin. */
 
@@ -314,30 +315,24 @@ async function readProductBySlug(shopId: string, slug: string) {
 export const ADMIN_PRODUCT_LIMIT = 1_000;
 
 export async function getAdminProducts(shopId: string, limit = ADMIN_PRODUCT_LIMIT) {
-  return getDb().query.products.findMany({
-    where: eq(products.shopId, shopId),
-    orderBy: [asc(products.position), desc(products.createdAt)],
-    limit,
-    with: {
-      images: { orderBy: [asc(productImages.position)] },
-      category: true,
-      variants: { orderBy: [asc(productVariants.position)] },
-    },
-  });
+  /*
+   * The predicate and the relation set are `@sailo/commerce/catalog`, shared
+   * with the phone's `products.list`. What stays here is the ordering and the
+   * ceiling, because they are this screen's: `position` first so a seller can
+   * drag to reorder, and one page rather than a cursor for the same reason.
+   */
+  return sellerCatalogue({ shopId, limit });
 }
 
 /** Everything the product editor needs to round-trip a product. */
-export async function getAdminProduct(shopId: string, id: string) {
-  const product = await getDb().query.products.findFirst({
-    where: and(eq(products.id, id), eq(products.shopId, shopId)),
-    with: {
-      images: { orderBy: [asc(productImages.position)] },
-      variants: { orderBy: [asc(productVariants.position)] },
-      files: { orderBy: [asc(productFiles.position)] },
-    },
-  });
-  return product ?? null;
-}
+/**
+ * Everything the product editor needs to round-trip a product.
+ *
+ * `@sailo/commerce/catalog`'s, and the same read the phone's `products.get`
+ * makes. The two were written separately and had drifted — the phone's omitted
+ * `files` — which is exactly the shape of bug a shared read exists to prevent.
+ */
+export const getAdminProduct = sellerProduct;
 
 /**
  * One page of a shop's public catalogue.

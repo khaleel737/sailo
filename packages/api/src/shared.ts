@@ -55,7 +55,7 @@ export const pushToken = z
  * `undefined` — and if the two cases answered differently, a seller could
  * learn which ids exist in someone else's shop by reading the error code.
  */
-export function found<T>(row: T | undefined, what: string): T {
+export function found<T>(row: T | undefined | null, what: string): T {
   if (!row) throw new TRPCError({ code: "NOT_FOUND", message: `No such ${what}.` });
   return row;
 }

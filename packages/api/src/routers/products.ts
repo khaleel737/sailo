@@ -10,6 +10,7 @@ import {
   type SaveProductRefusal,
 } from "@sailo/commerce/products";
 import { decodeCursor, olderThan, pageOf } from "@sailo/commerce/pagination";
+import { sellerCataloguePage, sellerProduct } from "@sailo/commerce/catalog";
 import { TRPCError } from "@trpc/server";
 import { router, shopProcedure } from "../trpc";
 import { byId, found, listInput } from "../shared";
@@ -150,25 +151,18 @@ export const productsRouter = router({
    */
   list: shopProcedure.input(pageInput).query(async ({ ctx, input }) => {
     const limit = input?.limit ?? 50;
-    const search = input?.search?.trim();
 
-    const rows = await getDb().query.products.findMany({
-      where: and(
-        eq(products.shopId, ctx.shopId),
-        olderThan(products, decodeCursor(input?.cursor)),
-        input?.status === "published" ? eq(products.isPublished, true) : undefined,
-        input?.status === "draft" ? eq(products.isPublished, false) : undefined,
-        // A filter on top of the shop scope, never instead of it.
-        search
-          ? or(
-              ilike(products.title, `%${search}%`),
-              ilike(products.slug, `%${search}%`),
-            )
-          : undefined,
-      ),
-      // Both halves of the key, or the cursor cannot resume a tie.
-      orderBy: [desc(products.createdAt), desc(products.id)],
-      limit: limit + 1,
+    /*
+     * The predicate, the ordering and the relation set are
+     * `@sailo/commerce/catalog` — the same ones the admin list reads. The shop
+     * scope is not a parameter this passes, which is what makes it impossible
+     * for a filter to widen it.
+     */
+    const rows = await sellerCataloguePage({
+      shopId: ctx.shopId,
+      filter: { status: input?.status === "all" ? undefined : input?.status, search: input?.search },
+      after: olderThan(products, decodeCursor(input?.cursor)),
+      limit,
     });
 
     return pageOf(rows, limit);
@@ -183,19 +177,15 @@ export const productsRouter = router({
    * counting", and those rules already exist once, in `@sailo/core/variants`.
    * Resolving them here would be a second copy that can disagree with the
    * storefront's.
+   *
+   * `sellerProduct` is the admin form's read too, and it brings `files` — which
+   * this router's own query used to omit. A digital product opened here and
+   * saved would have gone back with no downloads attached, had the editor not
+   * been writing them on a separate path.
    */
-  get: shopProcedure.input(byId).query(async ({ ctx, input }) =>
-    found(
-      await getDb().query.products.findFirst({
-        where: and(eq(products.id, input.id), eq(products.shopId, ctx.shopId)),
-        with: {
-          images: { orderBy: asc(productImages.position) },
-          variants: { orderBy: asc(productVariants.position) },
-        },
-      }),
-      "product",
-    ),
-  ),
+  get: shopProcedure
+    .input(byId)
+    .query(async ({ ctx, input }) => found(await sellerProduct(ctx.shopId, input.id), "product")),
 
   /**
    * Create or update, in the same call the admin form makes.
