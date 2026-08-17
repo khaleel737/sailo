@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { DEFAULT_LOCALE, isLocale } from "@sailo/i18n/config";
 import { PREFIXED_LOCALES } from "@/lib/marketing-urls";
-import { HomeView, homeMetadata } from "../../_components/home-view";
+import { homeMetadata } from "../../_components/home-metadata";
+import { HomeView } from "../../_components/home-view";
 
 /**
  * The landing page in one of the other 34 languages.
