@@ -11,7 +11,8 @@
     "typecheck": "turbo typecheck",
     "web": "npm run dev -w @sailo/web",
     "boundaries": "turbo boundaries",
-    "knip": "knip"
+    "knip": "knip",
+    "check:deployment": "bash scripts/check-deployment.sh"
   },
   "devDependencies": {
     "knip": "^6.32.2",

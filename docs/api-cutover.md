@@ -66,10 +66,38 @@ Every one is optional in the schema, so a missing value does not stop a boot. It
 degrades the feature instead, which is the point: get it wrong and the webhook
 refuses deliveries rather than the deployment refusing to start.
 
+**Measured on 2026-08-17, and this is step 1 for a reason:** `RESEND_WEBHOOK_SECRET`
+exists on the **sailo** project (production only) and does **not exist on sailo-api
+at all**, in any environment. A preview of this branch answers
+`POST /api/resend/webhook` with
+
+```json
+{"error":"RESEND_WEBHOOK_SECRET is not set"}
+```
+
+and a `500`. That is the handler failing closed exactly as designed — an absent
+secret on an endpoint that writes reads as "no", never as "yes to everyone" — and
+500 is the right code for Resend to see, because Resend retries. But it means step 3
+must not happen before step 1: point the dashboard at the API origin today and every
+bounce and complaint retries forever against a handler that cannot verify anything.
+
+`scripts/check-deployment.sh` catches this. It is the only check that can: locally
+the secret comes from `.env.local`, so every test suite passes with it present.
+
 ### 2. Prove it on the API origin before switching anything
 
 ```bash
-curl -i https://api.sailo.store/api/v1/openapi.json
+scripts/check-deployment.sh https://api.sailo.store api
+```
+
+Nineteen cases over real HTTP, and each asserts *which* refusal it got rather than
+"not a 500" — an unsigned webhook must be a 400 and not a 500, a keyless read must be
+a 401 and not a 405. For a preview, pass the project's automation-bypass secret as a
+third argument; previews are behind SSO and answer 302 to everything without it.
+
+Then the authenticated reads, which need a real key:
+
+```bash
 curl -i -H "Authorization: Bearer $KEY" https://api.sailo.store/api/v1/shop
 curl -i -H "Authorization: Bearer $KEY" https://api.sailo.store/api/v1/orders
 ```
