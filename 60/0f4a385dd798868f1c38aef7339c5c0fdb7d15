@@ -1,0 +1,181 @@
+packages/commerce/src/memberships/cron.ts
+  s_c7a7b98e0ed667::t_22992719aff74c 1-219
+apps/web/src/env.ts
+  s_c7a7b98e0ed667::t_37c94fe08f1e1e 7-8,39-48
+apps/api/src/app/api/v1/contacts/[id]/route.ts
+  s_c7a7b98e0ed667::t_da906e6f828150 1-32
+apps/web/src/app/api/v1/orders/[id]/route.ts
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 1-2
+apps/web/e2e/scenarios/api.scenario.ts
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 37-39
+apps/web/src/app/api/v1/shop/route.ts
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 1-2
+apps/api/src/app/api/v1/products/[id]/route.ts
+  s_c7a7b98e0ed667::t_da906e6f828150 1-32
+apps/web/src/app/hq/(panel)/partners/_components/partner-controls.tsx
+  s_c7a7b98e0ed667::t_18e6ca19e23902 7
+apps/api/src/app/api/resend/webhook/route.ts
+  s_c7a7b98e0ed667::t_6bbccd1770b07d 1-224
+apps/web/src/lib/actions/integrations.ts
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 19
+apps/web/src/app/(marketing)/docs/api/page.tsx
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 2-3
+apps/web/src/lib/stripe-webhooks/platform.ts
+  s_c7a7b98e0ed667::t_18e6ca19e23902 12
+apps/web/src/lib/actions/partner-program.ts
+  s_c7a7b98e0ed667::t_18e6ca19e23902 14-15,17-18
+apps/api/src/app/api/v1/openapi.json/route.ts
+  s_c7a7b98e0ed667::t_06df0f21bac2a7 50-65
+  s_c7a7b98e0ed667::t_da906e6f828150 1-49,66-85
+apps/web/src/app/api/cron/partner-payouts/route.ts
+  s_c7a7b98e0ed667::t_18e6ca19e23902 2-3
+packages/api/src/rest/handlers.ts
+  s_c7a7b98e0ed667::t_c3646b4fb50f80 1-14,16-542
+  s_c7a7b98e0ed667::t_31fd8644869527 15
+apps/web/e2e/scenarios/partner-program.scenario.ts
+  s_c7a7b98e0ed667::t_18e6ca19e23902 17-19
+packages/api/src/mcp/protocol.test.ts
+  s_c7a7b98e0ed667::t_c3646b4fb50f80 1-178
+apps/web/src/app/hq/(panel)/partners/_components/settings-form.tsx
+  s_c7a7b98e0ed667::t_18e6ca19e23902 7
+packages/commerce/src/memberships/server.ts
+  s_c7a7b98e0ed667::t_2137aaca4c5f00 2
+packages/security/package.json
+  s_c7a7b98e0ed667::t_d575477de5855b 12-13,22,24-26
+apps/web/src/app/api/v1/contacts/route.ts
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 1-4
+apps/web/e2e/scenarios/bookings-audience.scenario.ts
+  s_c7a7b98e0ed667::t_18e6ca19e23902 21
+apps/web/src/app/hq/(panel)/partners/page.tsx
+  s_c7a7b98e0ed667::t_18e6ca19e23902 8-10
+apps/web/next.config.ts
+  s_c7a7b98e0ed667::t_acd0c797b4b238 6-12,15
+packages/partners/package.json
+  s_c7a7b98e0ed667::t_2137aaca4c5f00 8-13,22,24,26-27
+packages/partners/src/index.ts
+  s_c7a7b98e0ed667::t_2137aaca4c5f00 4-24,26-31
+apps/api/vitest.e2e.mts
+  s_c7a7b98e0ed667::t_193fa26d3da4db 21-38
+apps/web/src/app/api/cron/reminders/route.ts
+  s_c7a7b98e0ed667::t_18e6ca19e23902 3
+apps/web/src/app/api/v1/contacts/[id]/route.ts
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 1-2
+docs/api-cutover.md
+  s_c7a7b98e0ed667::t_31f66c235b055b 1-136
+apps/api/package.json
+  s_c7a7b98e0ed667::t_37c94fe08f1e1e 26
+  s_c7a7b98e0ed667::t_ce257fd6572c4d 17,19,22
+apps/api/src/app/api/v1/orders/[id]/route.ts
+  s_c7a7b98e0ed667::t_da906e6f828150 1-39
+apps/web/src/lib/rest-contract.test.ts
+  s_c7a7b98e0ed667::t_b9a08076db0734 58,60-62,102-108
+  s_c7a7b98e0ed667::t_0406f805ec18ec 1-2,4-57,59,63-101,109-237,249-361
+  s_c7a7b98e0ed667::t_a5f67147da727c 3,238-248
+apps/web/src/app/api/v1/openapi.json/route.ts
+  s_c7a7b98e0ed667::t_06df0f21bac2a7 29-44
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 1-2
+apps/api/src/app/api/v1/orders/route.ts
+  s_c7a7b98e0ed667::t_da906e6f828150 1-42
+apps/api/src/app/api/mcp/route.ts
+  s_c7a7b98e0ed667::t_ce257fd6572c4d 1-359
+apps/web/src/app/api/cron/memberships/route.ts
+  s_c7a7b98e0ed667::t_18e6ca19e23902 3
+apps/api/src/app/api/v1/contacts/route.ts
+  s_c7a7b98e0ed667::t_da906e6f828150 1-69
+packages/commerce/src/ticketing/index.ts
+  s_c7a7b98e0ed667::t_2137aaca4c5f00 2,7
+apps/web/src/app/partners/_components/partner-stats.tsx
+  s_c7a7b98e0ed667::t_18e6ca19e23902 3
+apps/web/src/app/hq/(panel)/partners/payouts/page.tsx
+  s_c7a7b98e0ed667::t_18e6ca19e23902 8
+apps/web/src/lib/consent-write-paths.test.ts
+  s_c7a7b98e0ed667::t_c318a7a5631055 52,81-89,116
+  s_c7a7b98e0ed667::t_78fb631e7a6ae4 132
+  s_c7a7b98e0ed667::t_3157ff436a18ee 90-101
+apps/web/src/app/api/v1/products/route.ts
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 1-2
+packages/commerce/src/ticketing/reminders.ts
+  s_c7a7b98e0ed667::t_22992719aff74c 1-199
+apps/web/src/lib/hq/partners.ts
+  s_c7a7b98e0ed667::t_18e6ca19e23902 19-21
+packages/email/src/keys.ts
+  s_c7a7b98e0ed667::t_d575477de5855b 1-39
+packages/api/package.json
+  s_c7a7b98e0ed667::t_c3646b4fb50f80 8-10,28-29
+  s_c7a7b98e0ed667::t_c0d91f5a9f22a1 38
+packages/security/src/keys.ts
+  s_c7a7b98e0ed667::t_d575477de5855b 1-27
+apps/web/src/lib/actions/orders.ts
+  s_c7a7b98e0ed667::t_18e6ca19e23902 30
+apps/api/src/env.ts
+  s_c7a7b98e0ed667::t_37c94fe08f1e1e 7-8,33-42
+apps/web/package.json
+  s_c7a7b98e0ed667::t_acd0c797b4b238 53
+apps/web/src/app/api/mcp/route.ts
+  s_c7a7b98e0ed667::t_ce257fd6572c4d 2
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 1,22-23
+apps/web/src/app/partners/_components/connect-panel.tsx
+  s_c7a7b98e0ed667::t_18e6ca19e23902 4
+apps/web/src/app/hq/(panel)/partners/settings/page.tsx
+  s_c7a7b98e0ed667::t_18e6ca19e23902 3
+apps/api/src/app/api/v1/contacts/[id]/tags/route.ts
+  s_c7a7b98e0ed667::t_da906e6f828150 1-51
+packages/api/src/mcp/tools.ts
+  s_c7a7b98e0ed667::t_c3646b4fb50f80 1-346
+apps/web/src/app/admin/_components/referral-card.tsx
+  s_c7a7b98e0ed667::t_18e6ca19e23902 8-9
+apps/web/src/app/r/[code]/route.ts
+  s_c7a7b98e0ed667::t_18e6ca19e23902 8-9
+apps/web/src/app/(marketing)/docs/page.tsx
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 3-4
+apps/web/src/app/api/v1/contacts/[id]/tags/route.ts
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 1-4
+apps/web/src/app/partners/page.tsx
+  s_c7a7b98e0ed667::t_18e6ca19e23902 13-14,19-22
+apps/web/src/app/api/v1/products/[id]/route.ts
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 1-2
+apps/api/src/app/api/v1/shop/route.ts
+  s_c7a7b98e0ed667::t_da906e6f828150 1-34
+apps/web/src/app/admin/page.tsx
+  s_c7a7b98e0ed667::t_18e6ca19e23902 17
+packages/api/src/mcp/index.ts
+  s_c7a7b98e0ed667::t_c3646b4fb50f80 1-13
+apps/web/src/lib/actions/shop.ts
+  s_c7a7b98e0ed667::t_18e6ca19e23902 30-31
+packages/api/src/mcp/protocol.ts
+  s_c7a7b98e0ed667::t_c3646b4fb50f80 1-259
+packages/api/src/rest/index.ts
+  s_c7a7b98e0ed667::t_c3646b4fb50f80 1-36
+apps/api/src/app/api/v1/products/route.ts
+  s_c7a7b98e0ed667::t_da906e6f828150 1-43
+apps/web/src/app/(marketing)/docs/mcp/page.tsx
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 2-3
+apps/web/e2e/scenarios/memberships.scenario.ts
+  s_c7a7b98e0ed667::t_18e6ca19e23902 24
+apps/web/src/app/hq/(panel)/partners/[id]/page.tsx
+  s_c7a7b98e0ed667::t_18e6ca19e23902 9-10
+packages/commerce/src/memberships/index.ts
+  s_c7a7b98e0ed667::t_2137aaca4c5f00 13
+packages/email/package.json
+  s_c7a7b98e0ed667::t_d575477de5855b 14-15,25,28,30-31
+apps/web/src/app/api/v1/orders/route.ts
+  s_c7a7b98e0ed667::t_fb5d1a53485b05 1-2
+pnpm-lock.yaml
+  s_c7a7b98e0ed667::t_5ef190fff525da 26-28,32-34,41-43,53-55,280-282,589-594,619-621,942-944,951-953,960-962,1146-1148,1152-1154,1161-1163,1257-1259,1263-1265,1269-1271
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "600f4a385dd798868f1c38aef7339c5c0fdb7d15",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
