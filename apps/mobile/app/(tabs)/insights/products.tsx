@@ -13,7 +13,7 @@ import {
   Skeleton,
   Text,
 } from "@sailo/design-system/native";
-import { formatMoney } from "../../../components/money";
+import { formatMoney } from "@sailo/core/currency";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";
 import { errorMessage } from "../../../components/states";

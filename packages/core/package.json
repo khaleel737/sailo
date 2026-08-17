@@ -7,6 +7,7 @@
     ".": "./src/index.ts",
     "./money": "./src/money/index.ts",
     "./currency": "./src/money/currency.ts",
+    "./format": "./src/format/units.ts",
     "./pricing": "./src/money/pricing.ts",
     "./quote": "./src/money/quote.ts",
     "./tax-label": "./src/money/tax-label.ts",

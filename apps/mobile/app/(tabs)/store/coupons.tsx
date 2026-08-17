@@ -21,7 +21,7 @@ import {
   TextField,
   haptics,
 } from "@sailo/design-system/native";
-import { formatMoney, priceToText, textToPrice } from "../../../components/money";
+import { formatMoney, priceToText, textToPrice } from "@sailo/core/currency";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";
 import { errorMessage } from "../../../components/states";

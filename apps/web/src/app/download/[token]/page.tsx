@@ -11,7 +11,7 @@ import { eventAccessForOrder } from "@sailo/commerce/ticketing";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { PoweredBy } from "@/components/shared/powered-by";
-import { formatBytes } from "@sailo/core/currency";
+import { formatBytes } from "@sailo/core/format";
 import { shopThemeVars } from "@sailo/design-system/web/cn";
 import { accessForOrder } from "@/lib/membership-access";
 import { MembershipCard } from "./_components/membership-card";

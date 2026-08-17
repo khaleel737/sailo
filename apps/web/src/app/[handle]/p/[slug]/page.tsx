@@ -20,7 +20,7 @@ import { VisitTracker } from "@/app/[handle]/_components/visit-tracker";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
-import { formatDuration } from "@sailo/core/currency";
+import { formatDuration } from "@sailo/core/format";
 import { isShopLive } from "@sailo/core/visibility";
 import { shopThemeVars } from "@sailo/design-system/web/cn";
 import {

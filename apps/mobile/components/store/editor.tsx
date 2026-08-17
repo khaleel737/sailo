@@ -4,7 +4,7 @@ import { Alert, Platform, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { variantLabel, } from "@sailo/core/variants";
 import { interpolate } from "@sailo/i18n/native";
-import { textToPrice } from "../money";
+import { textToPrice } from "@sailo/core/currency";
 import {
   Banner,
   Button,

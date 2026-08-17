@@ -1,6 +1,6 @@
 import { TRPCClientError } from "@trpc/client";
 import { isProductKind, type ProductKind } from "@sailo/core/variants";
-import { priceToText, textToCount, textToPrice } from "../money";
+import { priceToText, textToCount, textToPrice } from "@sailo/core/currency";
 import type { ProductDetail, RouterInputs } from "../../lib/models";
 import type { StoreCopy } from "./copy";
 
@@ -15,8 +15,12 @@ import type { StoreCopy } from "./copy";
  * its price. That has happened: on the web, a JPY product opened and saved
  * turned ¥1,000 into ¥10.
  *
- * Both directions go through `components/money`, which goes through
- * `@sailo/core/currency`, which is the one table that knows.
+ * Both directions go through `@sailo/core/currency`, which is the one table
+ * that knows. They used to go through an `apps/mobile/components/money.ts`
+ * that wrapped it, and the wrapper is gone: it also held a second
+ * `formatMoney`, so half the app's screens formatted prices with it and half
+ * with the package's, and the two disagreed about whether an Arabic locale
+ * gets Arabic-Indic digits.
  */
 
 type SaveInput = RouterInputs["products"]["save"];
