@@ -143,7 +143,18 @@ describe("read replica", () => {
      * `getReadDb` of its own; the file that does is listed below it.
      */
     const allowed = new Set([
-      "../../packages/analytics/src/queries.ts",
+      /*
+       * Four files, not one, since `queries.ts` was split: it was 607 lines holding five
+       * independent reads that shared nothing but a window helper. Each still reads the
+       * replica for the same reason — these are the widest scans in the codebase and none
+       * of them decides whether a write happens — and listing them individually is the
+       * point of an allowlist. A wildcard here would let the next file into the replica
+       * without anybody reading the rules in `db/index.ts`.
+       */
+      "../../packages/analytics/src/breakdowns.ts",
+      "../../packages/analytics/src/dashboard.ts",
+      "../../packages/analytics/src/performance.ts",
+      "../../packages/analytics/src/series.ts",
       "src/lib/hq/exports.ts",
       // The /hq dashboard: full-table counts over the three biggest tables,
       // behind `requireStaff`, informing nothing but what is on screen. The

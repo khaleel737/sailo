@@ -1,10 +1,3 @@
-import { PRODUCT_KIND_VALUES } from "@sailo/core/variants";
-import { ORDER_STATUSES } from "@sailo/core/order-status";
-import { PAYMENT_STATUSES } from "@sailo/core/payment-status";
-import { MAX_TAGS, MAX_TAG_LENGTH } from "@sailo/core/tags";
-import { DEFAULT_LIMIT, MAX_LIMIT, type ApiErrorCode } from "./respond";
-import type { ApiScope } from "./keys";
-
 /**
  * Every operation `/api/v1` exposes, described once.
  *
@@ -25,327 +18,46 @@ import type { ApiScope } from "./keys";
  * No `server-only`: this is data about the API, not part of serving it, and
  * the docs page and the drift test both need it without dragging a database
  * driver behind them.
- */
-
-/* -------------------------------------------------------------------------- */
-/*  Shape                                                                      */
-/* -------------------------------------------------------------------------- */
-
-export type EndpointParam = {
-  name: string;
-  in: "path" | "query";
-  required: boolean;
-  /** JSON Schema, used verbatim by the OpenAPI document. */
-  schema: Record<string, unknown>;
-  description: string;
-};
-
-export type BodyField = {
-  name: string;
-  required: boolean;
-  schema: Record<string, unknown>;
-  description: string;
-};
-
-export type EndpointError = { code: ApiErrorCode; when: string };
-
-/** The `components/schemas` name a response carries. */
-export type ResourceName = "Shop" | "Order" | "Product" | "Contact";
-
-export type Endpoint = {
-  /** Stable anchor and OpenAPI `operationId`. Never renamed — docs deep-link to it. */
-  id: string;
-  method: "GET" | "POST";
-  /** Path beneath `/api/v1`, with OpenAPI-style `{id}` placeholders. */
-  path: string;
-  /** The scope a key needs. `write` implies the key also carries `read`. */
-  scope: ApiScope;
-  /** One line, for the index table. */
-  summary: string;
-  /** The paragraph on the endpoint's own entry. */
-  description: string;
-  params: readonly EndpointParam[];
-  body?: { fields: readonly BodyField[]; example: string };
-  result: { resource: ResourceName; shape: "one" | "page" };
-  /** Fields this endpoint adds on top of the bare resource. */
-  resultExtra?: readonly BodyField[];
-  errors: readonly EndpointError[];
-  curl: (base: string) => string;
-  /** A real response body, trimmed with `…` where a full one would not be read. */
-  successExample: string;
-};
-
-/* -------------------------------------------------------------------------- */
-/*  Shared pieces                                                              */
-/* -------------------------------------------------------------------------- */
-
-/**
- * The refusals every authenticated route can produce, in the order a caller
- * meets them: no key, a key the plan or the scope does not allow, too many
- * calls, and our own fault.
  *
- * Listed on every endpoint rather than mentioned once at the top, because the
- * thing consuming this is often a generator or a model reading one operation
- * in isolation — and "see the introduction" is not something either can act on.
- */
-const COMMON_ERRORS: readonly EndpointError[] = [
-  { code: "unauthorized", when: "No `Authorization` header, or a key we do not recognise." },
-  {
-    code: "forbidden",
-    when: "A real key, but the shop's plan does not include the API.",
-  },
-  { code: "rate_limited", when: "Too many calls on this key. Slow down and retry." },
-  { code: "server_error", when: "Our fault. The body says nothing about the cause; retry." },
-] as const;
-
-const WRITE_ERROR: EndpointError = {
-  code: "forbidden",
-  when: "The key is read-only. Mint one with write access.",
-};
-
-/**
- * The request-body ceiling, from `readJson` in `./route.ts`.
+ * WHY THIS IS THREE FILES
  *
- * Stated here rather than imported because the literal lives inside that
- * function, and exporting it would mean editing a module that is being moved
- * out into its own package by another change in flight. `endpoints.test.ts`
- * reads that file and fails if the two ever disagree, so the number is pinned
- * even though it is not shared.
+ * 661 lines, of which the catalogue was less than half: the rest was the types that
+ * describe an endpoint and a page of example payloads. The catalogue is what people open
+ * this file to read, so it is what is left in it.
+ *
+ *   ./endpoint-shape     the types, the shared params and errors, `endpointKey`
+ *   ./endpoint-examples  the response bodies the docs page prints verbatim
+ *   ./endpoints          every operation `/api/v1` exposes
  */
-export const MAX_BODY_KB = 64;
 
-const BAD_BODY: EndpointError = {
-  code: "invalid_request",
-  when: `The body is not a JSON object, or is over ${MAX_BODY_KB} KB.`,
-};
+import { PRODUCT_KIND_VALUES } from "@sailo/core/variants";
+import { ORDER_STATUSES } from "@sailo/core/order-status";
+import { PAYMENT_STATUSES } from "@sailo/core/payment-status";
+import { MAX_TAGS, MAX_TAG_LENGTH } from "@sailo/core/tags";
+import {
+  AUTH_HEADER,
+  BAD_BODY,
+  COMMON_ERRORS,
+  CURSOR_PARAM,
+  ID_PARAM,
+  LIMIT_PARAM,
+  ONE_ERRORS,
+  PAGE_ERRORS,
+  WRITE_ERROR,
+  type Endpoint,
+} from "./endpoint-shape";
+import {
+  CONTACT_EXAMPLE,
+  CONTACT_PAGE_EXAMPLE,
+  CONTACT_WRITE_EXAMPLE,
+  ORDER_EXAMPLE,
+  ORDER_PAGE_EXAMPLE,
+  PRODUCT_EXAMPLE,
+  PRODUCT_PAGE_EXAMPLE,
+  SHOP_EXAMPLE,
+} from "./endpoint-examples";
 
-const LIMIT_PARAM: EndpointParam = {
-  name: "limit",
-  in: "query",
-  required: false,
-  schema: { type: "integer", minimum: 1, maximum: MAX_LIMIT, default: DEFAULT_LIMIT },
-  description: `How many to return. Defaults to ${DEFAULT_LIMIT}, capped at ${MAX_LIMIT} — asking for more is clamped, not refused.`,
-};
-
-const CURSOR_PARAM: EndpointParam = {
-  name: "cursor",
-  in: "query",
-  required: false,
-  schema: { type: "string" },
-  description:
-    "The `next_cursor` from the previous page. Omit for the first page. A cursor we did not issue is a 400, not an empty page.",
-};
-
-const ID_PARAM = (what: string): EndpointParam => ({
-  name: "id",
-  in: "path",
-  required: true,
-  schema: { type: "string", format: "uuid" },
-  description: `The ${what} id.`,
-});
-
-const PAGE_ERRORS: readonly EndpointError[] = [
-  { code: "invalid_request", when: "`cursor` is not one we issued." },
-  ...COMMON_ERRORS,
-] as const;
-
-const ONE_ERRORS = (what: string): readonly EndpointError[] =>
-  [
-    { code: "not_found" as const, when: `No ${what} with that id in this shop.` },
-    ...COMMON_ERRORS,
-  ] as const;
-
-/** `Authorization: Bearer …` on every call, and the reason it is never elsewhere. */
-export const AUTH_HEADER = "Authorization: Bearer sailo_sk_…";
-
-/* -------------------------------------------------------------------------- */
-/*  Response examples                                                          */
-/* -------------------------------------------------------------------------- */
-
-const SHOP_EXAMPLE = `{
-  "data": {
-    "id": "3f1c9a80-5e17-4a2b-9c44-2f0d8b71e6a3",
-    "object": "shop",
-    "handle": "acme",
-    "name": "Acme Supply",
-    "currency": "GBP",
-    "timeZone": "Europe/London",
-    "createdAt": "2026-01-09T11:02:44.108Z"
-  }
-}`;
-
-const ORDER_EXAMPLE = `{
-  "data": {
-    "id": "8f2b41d6-0c93-4f77-a1e5-9b6d2c4a7e01",
-    "object": "order",
-    "status": "confirmed",
-    "paymentStatus": "paid",
-    "paymentMethod": "card",
-    "currency": "GBP",
-    "subtotal":    { "cents": 4999, "amount": "49.99", "currency": "GBP" },
-    "discount":    { "cents": 0,    "amount": "0.00",  "currency": "GBP" },
-    "deliveryFee": { "cents": 499,  "amount": "4.99",  "currency": "GBP" },
-    "tax":         { "cents": 0,    "amount": "0.00",  "currency": "GBP" },
-    "total":       { "cents": 5498, "amount": "54.98", "currency": "GBP" },
-    "refunded":    { "cents": 0,    "amount": "0.00",  "currency": "GBP" },
-    "itemCount": 1,
-    "customer": {
-      "clientId": "c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
-      "name": "Ada Lovelace",
-      "email": "ada@example.com",
-      "phone": null
-    },
-    "address": {
-      "line1": "12 Dean Street", "line2": null, "city": "London",
-      "region": null, "postalCode": "W1D 3RN", "country": "GB"
-    },
-    "delivery": {
-      "method": "shipping", "label": "Standard", "pickupLocation": null,
-      "trackingCarrier": null, "trackingNumber": null, "trackingUrl": null,
-      "shippedAt": null
-    },
-    "booking": null,
-    "coupon": { "code": "LAUNCH10" },
-    "affiliate": null,
-    "note": null,
-    "items": [
-      {
-        "id": "1b0c…", "productId": "9a7e…", "variantId": null,
-        "title": "Sourdough loaf", "variantLabel": null, "sku": "SD-01",
-        "kind": "physical", "quantity": 1,
-        "unitPrice": { "cents": 4999, "amount": "49.99", "currency": "GBP" },
-        "subtotal":  { "cents": 4999, "amount": "49.99", "currency": "GBP" }
-      }
-    ],
-    "createdAt": "2026-08-12T09:41:07.221Z",
-    "updatedAt": "2026-08-12T09:41:09.884Z"
-  }
-}`;
-
-const ORDER_PAGE_EXAMPLE = `{
-  "data": [
-    {
-      "id": "8f2b41d6-0c93-4f77-a1e5-9b6d2c4a7e01",
-      "object": "order",
-      "status": "confirmed",
-      "paymentStatus": "paid",
-      "total": { "cents": 5498, "amount": "54.98", "currency": "GBP" },
-      "customer": { "clientId": "c1d2…", "name": "Ada Lovelace", "email": "ada@example.com", "phone": null },
-      "items": [ /* … */ ]
-      /* … every field GET /orders/{id} returns … */
-    }
-  ],
-  "has_more": true,
-  "next_cursor": "MjAyNi0wOC0xMlQwOTo0MTowNy4yMjFafDhmMmI"
-}`;
-
-const PRODUCT_EXAMPLE = `{
-  "data": {
-    "id": "9a7e2c11-6b48-4d0f-8e35-71c9a4f2b6d8",
-    "object": "product",
-    "title": "Sourdough loaf",
-    "slug": "sourdough-loaf",
-    "description": "Baked the night before.",
-    "kind": "physical",
-    "tags": ["bread"],
-    "price":     { "cents": 4999, "amount": "49.99", "currency": "GBP" },
-    "compareAt": null,
-    "trackInventory": true,
-    "stock": 12,
-    "inStock": true,
-    "isPublished": true,
-    "isFeatured": false,
-    "booking": null,
-    "event": null,
-    "membership": null,
-    "variants": [
-      {
-        "id": "4c5d…",
-        "sku": "SD-01-L",
-        "options": { "Size": "Large" },
-        "price": { "cents": 5499, "amount": "54.99", "currency": "GBP" },
-        "stock": 4,
-        "isAvailable": true
-      }
-    ],
-    "createdAt": "2026-03-02T08:15:00.000Z",
-    "updatedAt": "2026-08-01T16:20:31.442Z"
-  }
-}`;
-
-const CONTACT_EXAMPLE = `{
-  "data": {
-    "id": "c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
-    "object": "contact",
-    "name": "Ada Lovelace",
-    "email": "ada@example.com",
-    "phone": null,
-    "tags": ["webinar"],
-    "source": "api",
-    "marketingConsentAt": null,
-    "address": {
-      "line1": null, "line2": null, "city": null,
-      "region": null, "postalCode": null, "country": null
-    },
-    "createdAt": "2026-08-12T09:41:07.221Z",
-    "updatedAt": "2026-08-12T09:41:07.221Z"
-  }
-}`;
-
-const PRODUCT_PAGE_EXAMPLE = `{
-  "data": [
-    {
-      "id": "9a7e2c11-6b48-4d0f-8e35-71c9a4f2b6d8",
-      "object": "product",
-      "title": "Sourdough loaf",
-      "slug": "sourdough-loaf",
-      "kind": "physical",
-      "price": { "cents": 4999, "amount": "49.99", "currency": "GBP" },
-      "stock": 12,
-      "inStock": true,
-      "isPublished": true,
-      "variants": []
-      /* … every field GET /products/{id} returns, minus the variants … */
-    }
-  ],
-  "has_more": false,
-  "next_cursor": null
-}`;
-
-const CONTACT_PAGE_EXAMPLE = `{
-  "data": [
-    {
-      "id": "c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
-      "object": "contact",
-      "name": "Ada Lovelace",
-      "email": "ada@example.com",
-      "phone": null,
-      "tags": ["webinar"],
-      "source": "api",
-      "marketingConsentAt": "2026-08-12T10:03:55.700Z"
-      /* … every field GET /contacts/{id} returns … */
-    }
-  ],
-  "has_more": false,
-  "next_cursor": null
-}`;
-
-const CONTACT_WRITE_EXAMPLE = `{
-  "data": {
-    "id": "c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
-    "object": "contact",
-    "name": "Ada Lovelace",
-    "email": "ada@example.com",
-    "phone": null,
-    "tags": ["webinar"],
-    "source": "api",
-    "marketingConsentAt": null,
-    "address": { "line1": null, "line2": null, "city": null, "region": null, "postalCode": null, "country": null },
-    "createdAt": "2026-08-12T09:41:07.221Z",
-    "updatedAt": "2026-08-12T09:41:07.221Z",
-    "optInSent": true
-  }
-}`;
+export * from "./endpoint-shape";
 
 /* -------------------------------------------------------------------------- */
 /*  The endpoints                                                              */
@@ -650,12 +362,3 @@ export const ENDPOINTS: readonly Endpoint[] = [
     successExample: CONTACT_EXAMPLE,
   },
 ] as const;
-
-/* -------------------------------------------------------------------------- */
-/*  Lookups                                                                    */
-/* -------------------------------------------------------------------------- */
-
-/** `GET /orders/{id}` — the form both the docs anchors and the drift test key on. */
-export function endpointKey(endpoint: Pick<Endpoint, "method" | "path">): string {
-  return `${endpoint.method} ${endpoint.path}`;
-}
