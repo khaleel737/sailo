@@ -1,0 +1,448 @@
+packages/customers/src/shop-consent.test.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-108
+apps/web/src/lib/import/clients.ts
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 7
+packages/customers/package.json
+  s_c7a7b98e0ed667::t_29f4790e1d99ce 12,22-25
+  s_c7a7b98e0ed667::t_97c471f3bd7d45 13-14
+  s_c7a7b98e0ed667::t_a7842740e6e9a8 1-11,15-21,26-33
+packages/marketing/src/broadcasts/quota.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-111,125-175,177-195
+  s_c7a7b98e0ed667::t_50b99f252fbaa8 112-124,176
+apps/web/src/app/admin/settings/integrations/_components/api-keys-card.tsx
+  s_c7a7b98e0ed667::t_e12e9e4c245146 12
+apps/web/src/lib/api/endpoints.ts
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 4
+packages/security/src/index.ts
+  s_c7a7b98e0ed667::t_e9b2e24f9430be 1-30
+packages/webhooks/src/events.ts
+  s_c7a7b98e0ed667::t_e9b2e24f9430be 1-15
+packages/customers/src/favorites.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-83
+apps/web/src/app/[handle]/_components/shop-consent.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 10
+packages/marketing/src/broadcasts/markdown.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-266
+apps/web/src/app/admin/broadcasts/_components/segment-builder.tsx
+  s_c7a7b98e0ed667::t_2637fcfed120cc 14
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 12
+apps/web/src/app/admin/_components/traffic-panel.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 3
+packages/account/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+apps/web/src/app/hq/(panel)/system/page.tsx
+  s_c7a7b98e0ed667::t_e12e9e4c245146 8
+apps/web/scripts/scenarios/bookings-audience.scenario.ts
+  s_c7a7b98e0ed667::t_2637fcfed120cc 23-25
+packages/customers/src/favorites.test.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-92
+apps/web/scripts/scenarios/broadcast-segments.scenario.ts
+  s_c7a7b98e0ed667::t_2637fcfed120cc 20,22-23
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 21
+apps/web/src/components/marketing/shop-marquee.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 2
+apps/web/src/lib/actions/broadcasts.ts
+  s_c7a7b98e0ed667::t_2637fcfed120cc 13-15,19
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 16-18
+packages/marketing/src/lifecycle/messages.test.ts
+  s_c7a7b98e0ed667::t_27b559ad8ed158 1,3-196
+  s_c7a7b98e0ed667::t_e5158863ddef19 2
+packages/core/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+packages/db/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+apps/web/src/lib/actions/hq.ts
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 17
+packages/rate-limit/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+packages/analytics/src/rollup.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-325
+packages/email/src/lifecycle/index.ts
+  s_c7a7b98e0ed667::t_27b559ad8ed158 4-20
+packages/security/package.json
+  s_c7a7b98e0ed667::t_a6296bee741b1c 1-20,23-30
+  s_c7a7b98e0ed667::t_d98d1549222712 21-22
+apps/web/src/app/[handle]/_components/shop-cookie-settings.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 4
+apps/web/src/lib/consent-write-paths.test.ts
+  s_c7a7b98e0ed667::t_a8af9b82e4bd1f 1-152,161-164
+  s_c7a7b98e0ed667::t_1506a24d941e4a 153-160
+apps/web/src/app/api/unsubscribe/[token]/route.ts
+  s_c7a7b98e0ed667::t_2637fcfed120cc 4-5
+packages/marketing/src/broadcasts/reputation.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-175
+packages/customers/src/shop-consent.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-106
+packages/marketing/src/broadcasts/unsubscribe.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-2,4-113,115-126,128-129
+  s_c7a7b98e0ed667::t_98b100fff96ec3 3,114,127
+apps/web/src/lib/hq/system.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 8
+packages/analytics/src/traffic.test.ts
+  s_c7a7b98e0ed667::t_98b100fff96ec3 1-8,10-190
+  s_c7a7b98e0ed667::t_50b99f252fbaa8 9
+packages/webhooks/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+  s_c7a7b98e0ed667::t_a6296bee741b1c 2
+packages/customers/src/index.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 11-12,14-15
+  s_c7a7b98e0ed667::t_97c471f3bd7d45 1-10,13,16
+apps/web/src/app/u/[token]/page.tsx
+  s_c7a7b98e0ed667::t_2637fcfed120cc 7-8
+apps/web/src/app/(auth)/layout.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 8
+packages/payments/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+packages/marketing/tsconfig.json
+  s_c7a7b98e0ed667::t_a7842740e6e9a8 1-5
+apps/web/src/lib/actions/orders.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 37
+packages/customers/src/consent.test.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-121
+apps/web/src/app/[handle]/_components/favorites/use-favorites.ts
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 12
+apps/web/src/app/admin/settings/page.tsx
+  s_c7a7b98e0ed667::t_2637fcfed120cc 4
+apps/web/src/lib/auth.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 19
+apps/web/src/components/marketing/demo-gallery.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 8
+packages/design-system/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+packages/partners/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+packages/customers/src/server.ts
+  s_c7a7b98e0ed667::t_97c471f3bd7d45 1-2
+packages/webhooks/src/signature.ts
+  s_c7a7b98e0ed667::t_e9b2e24f9430be 1-208
+packages/marketing/src/broadcasts/server.ts
+  s_c7a7b98e0ed667::t_97c471f3bd7d45 1-9
+apps/web/src/app/api/cron/lifecycle/route.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 2
+  s_c7a7b98e0ed667::t_2637fcfed120cc 3
+packages/api/package.json
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 21
+packages/webhooks/src/emit.ts
+  s_c7a7b98e0ed667::t_e9b2e24f9430be 1-17
+apps/web/src/app/api/cron/blocklist/route.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 2-5
+apps/web/src/app/admin/clients/_components/tag-editor.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 8
+apps/web/src/app/(marketing)/docs/page.tsx
+  s_c7a7b98e0ed667::t_e12e9e4c245146 2
+packages/security/tsconfig.json
+  s_c7a7b98e0ed667::t_a6296bee741b1c 1-5
+apps/web/src/app/(marketing)/docs/webhooks/page.tsx
+  s_c7a7b98e0ed667::t_e12e9e4c245146 1
+packages/customers/src/tags.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-114
+packages/marketing/src/lifecycle/server.ts
+  s_c7a7b98e0ed667::t_97c471f3bd7d45 1-6
+apps/web/src/lib/exporters.ts
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 12
+apps/web/src/app/api/cron/rollup/route.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 2
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 3
+packages/marketing/turbo.json
+  s_c7a7b98e0ed667::t_a7842740e6e9a8 1-5
+apps/web/src/lib/webhook-emit-sites.test.ts
+  s_c7a7b98e0ed667::t_5990226fcf4663 7-33,36,38-47,50-204
+  s_c7a7b98e0ed667::t_33e136139127b6 1-6,34-35,37,48-49,205
+packages/webhooks/tsconfig.json
+  s_c7a7b98e0ed667::t_a6296bee741b1c 1-5
+packages/webhooks/src/post.ts
+  s_c7a7b98e0ed667::t_e9b2e24f9430be 1-320
+apps/web/src/app/admin/broadcasts/_components/promo-picker.tsx
+  s_c7a7b98e0ed667::t_2637fcfed120cc 7
+packages/marketing/src/broadcasts/subscribe.test.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-146
+packages/config/vitest.base.mts
+  s_c7a7b98e0ed667::t_5ed4115cbdb7f8 1-42
+packages/commerce/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+packages/marketing/src/broadcasts/render.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-270
+apps/web/src/lib/actions/unsubscribe.ts
+  s_c7a7b98e0ed667::t_2637fcfed120cc 6-9
+packages/analytics/package.json
+  s_c7a7b98e0ed667::t_a7842740e6e9a8 10-15,25-28
+apps/web/src/app/[handle]/_components/outbound-link.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 3
+apps/web/src/app/api/cron/sitemap/route.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 2
+apps/web/src/lib/actions/integrations.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 26-28
+apps/web/src/app/admin/clients/page.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 7
+apps/web/src/lib/actions/clients.ts
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 9
+  s_c7a7b98e0ed667::t_e12e9e4c245146 13
+apps/web/src/lib/actions/subscribe.ts
+  s_c7a7b98e0ed667::t_2637fcfed120cc 11
+apps/web/src/app/api/cron/broadcasts/route.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 2
+  s_c7a7b98e0ed667::t_2637fcfed120cc 3
+packages/webhooks/src/server.ts
+  s_c7a7b98e0ed667::t_97c471f3bd7d45 1-4
+apps/web/src/app/api/cron/sweep/route.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 2,5
+apps/web/src/lib/actions/order-admin.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 19
+packages/customers/src/shop-pixels.test.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-123
+apps/web/src/app/(legal)/terms/page.tsx
+  s_c7a7b98e0ed667::t_e12e9e4c245146 20
+packages/security/src/blocklist/alert.ts
+  s_c7a7b98e0ed667::t_e9b2e24f9430be 1-111
+apps/web/src/app/api/unsubscribe/marketing/[token]/route.ts
+  s_c7a7b98e0ed667::t_2637fcfed120cc 1-2
+apps/web/src/app/admin/broadcasts/_components/markdown-editor.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 15
+packages/analytics/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+packages/marketing/src/broadcasts/markdown.test.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-167
+packages/marketing/src/broadcasts/reputation.test.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-95
+apps/web/src/components/shared/cookie-settings-button.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 4
+apps/web/src/lib/actions/shop.ts
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 28
+  s_c7a7b98e0ed667::t_2637fcfed120cc 21
+apps/web/scripts/scenarios/webhooks.scenario.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 2,29,77-79,550
+packages/marketing/src/lifecycle/opt-out.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-94
+apps/web/src/app/(marketing)/page.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 8
+packages/config/package.json
+  s_c7a7b98e0ed667::t_5ed4115cbdb7f8 7-18
+apps/web/src/app/api/cron/reminders/route.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 2
+apps/web/src/components/shared/cookie-consent.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 10
+packages/webhooks/src/emit.test.ts
+  s_c7a7b98e0ed667::t_33e136139127b6 6
+  s_c7a7b98e0ed667::t_5990226fcf4663 5,7-11
+  s_c7a7b98e0ed667::t_e9b2e24f9430be 1-4,12-56
+packages/marketing/src/broadcasts/audience.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-167
+packages/marketing/src/broadcasts/segments.test.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-245
+packages/security/turbo.json
+  s_c7a7b98e0ed667::t_27b559ad8ed158 4
+  s_c7a7b98e0ed667::t_a6296bee741b1c 1-3,5
+packages/marketing/src/broadcasts/segments.ts
+  s_c7a7b98e0ed667::t_22180dfd4628b2 3
+  s_c7a7b98e0ed667::t_d08610146879c9 1-2,4-333
+packages/marketing/src/broadcasts/send.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-15,17-645,647-710
+  s_c7a7b98e0ed667::t_98b100fff96ec3 16,646
+packages/webhooks/src/index.ts
+  s_c7a7b98e0ed667::t_97c471f3bd7d45 1-2,4-5,7-10,13
+  s_c7a7b98e0ed667::t_e9b2e24f9430be 3,6,11-12
+apps/web/src/app/(marketing)/_components/site-footer.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 6
+packages/config/test-stubs/server-only.ts
+  s_c7a7b98e0ed667::t_5ed4115cbdb7f8 1-3
+packages/billing/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+packages/events/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+apps/web/src/lib/utils.ts
+  s_c7a7b98e0ed667::t_1cbda8932ad0d0 230-232,234
+packages/storage/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+apps/web/src/components/shared/cookie-consent.test.ts
+  s_c7a7b98e0ed667::t_1e994310221c6b 1-43
+apps/web/src/lib/hq/roster.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 4
+apps/web/src/app/api/cron/webhooks/route.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 2-3
+apps/web/src/lib/hq-metrics.test.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 13
+packages/security/src/staff.test.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 1-214
+packages/customers/src/shop-pixels.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-171
+apps/web/src/app/[handle]/_components/shop-pixels.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 8-9
+apps/web/src/lib/google-tag-gate.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 5
+packages/customers/tsconfig.json
+  s_c7a7b98e0ed667::t_a7842740e6e9a8 1-5
+packages/webhooks/turbo.json
+  s_c7a7b98e0ed667::t_a6296bee741b1c 1-5
+packages/marketing/src/broadcasts/pickers.ts
+  s_c7a7b98e0ed667::t_29f4790e1d99ce 5
+  s_c7a7b98e0ed667::t_d08610146879c9 1-4,6-91
+apps/web/src/app/api/cron/memberships/route.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 2
+packages/marketing/src/lifecycle/unsubscribe.test.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-150
+apps/web/src/lib/session.ts
+  s_c7a7b98e0ed667::t_82fe37579c4276 6
+packages/core/package.json
+  s_c7a7b98e0ed667::t_1cbda8932ad0d0 23
+apps/web/src/lib/queries/index.ts
+  s_c7a7b98e0ed667::t_821f789dfe0fb2 18-25
+packages/webhooks/src/post.test.ts
+  s_c7a7b98e0ed667::t_e9b2e24f9430be 1-89
+packages/marketing/package.json
+  s_c7a7b98e0ed667::t_a7842740e6e9a8 1-9,13-37
+  s_c7a7b98e0ed667::t_97c471f3bd7d45 10-12
+apps/web/src/app/(marketing)/_components/home-view.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 7
+packages/api/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+packages/marketing/src/broadcasts/index.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 3,11-13
+  s_c7a7b98e0ed667::t_97c471f3bd7d45 1-2,4-10,14
+packages/marketing/src/lifecycle/send.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-4,6-12,14-119,121-320
+  s_c7a7b98e0ed667::t_be782f496b5e0b 5
+  s_c7a7b98e0ed667::t_50b99f252fbaa8 13,120
+packages/marketing/src/broadcasts/segment-sql.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-236
+apps/web/src/app/[handle]/_components/shop-footer.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 11
+packages/security/src/blocklist/index.ts
+  s_c7a7b98e0ed667::t_e9b2e24f9430be 1-11
+apps/web/src/app/admin/broadcasts/page.tsx
+  s_c7a7b98e0ed667::t_2637fcfed120cc 10-12
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 13
+packages/marketing/src/lifecycle/index.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 3,6,11-12
+  s_c7a7b98e0ed667::t_97c471f3bd7d45 1-2,4-5,7-10
+apps/web/src/app/admin/clients/[id]/page.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 12
+apps/web/src/app/[handle]/_components/favorites/favorite-button.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 5
+packages/marketing/src/broadcasts/quota.test.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-60
+packages/marketing/vitest.config.mts
+  s_c7a7b98e0ed667::t_a7842740e6e9a8 2
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+apps/web/src/app/api/resend/webhook/route.ts
+  s_c7a7b98e0ed667::t_2637fcfed120cc 5-8
+apps/web/src/app/admin/broadcasts/new/page.tsx
+  s_c7a7b98e0ed667::t_2637fcfed120cc 8-9
+apps/web/src/app/s/[token]/page.tsx
+  s_c7a7b98e0ed667::t_2637fcfed120cc 7
+apps/web/src/app/admin/settings/integrations/_components/webhooks-card.tsx
+  s_c7a7b98e0ed667::t_e12e9e4c245146 18
+apps/web/package.json
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 56,63
+  s_c7a7b98e0ed667::t_e12e9e4c245146 69,71
+packages/marketing/src/index.ts
+  s_c7a7b98e0ed667::t_2637fcfed120cc 13-17
+  s_c7a7b98e0ed667::t_d08610146879c9 1-12,18-20
+packages/marketing/src/lifecycle/steps.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-339
+packages/customers/src/tags.test.ts
+  s_c7a7b98e0ed667::t_98b100fff96ec3 8
+  s_c7a7b98e0ed667::t_d08610146879c9 1-7,9-111
+packages/webhooks/src/deliver.ts
+  s_c7a7b98e0ed667::t_e9b2e24f9430be 1-505
+apps/web/src/app/api/cron/blocklist/route.test.ts
+  s_c7a7b98e0ed667::t_a8af9b82e4bd1f 19-28,31-32,38
+  s_c7a7b98e0ed667::t_e12e9e4c245146 2,33
+packages/marketing/src/lifecycle/unsubscribe.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-2,4-113,115-126,128-129
+  s_c7a7b98e0ed667::t_98b100fff96ec3 3,114,127
+packages/marketing/src/lifecycle/steps.test.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-395
+apps/web/src/lib/api/handlers.ts
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 12
+  s_c7a7b98e0ed667::t_2637fcfed120cc 14
+packages/customers/src/consent.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-98
+packages/api/src/routers/clients.ts
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 6
+apps/web/scripts/scenarios/consent.scenario.ts
+  s_c7a7b98e0ed667::t_2637fcfed120cc 8
+packages/core/src/uuid.ts
+  s_c7a7b98e0ed667::t_1cbda8932ad0d0 1-26
+apps/web/src/app/admin/settings/_components/tracking-card.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 5
+packages/customers/src/roster.ts
+  s_c7a7b98e0ed667::t_29f4790e1d99ce 1-126
+packages/marketing/src/lifecycle/messages.ts
+  s_c7a7b98e0ed667::t_27b559ad8ed158 1-3,5-525
+  s_c7a7b98e0ed667::t_e5158863ddef19 4
+packages/security/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+  s_c7a7b98e0ed667::t_a6296bee741b1c 2
+packages/customers/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+  s_c7a7b98e0ed667::t_a7842740e6e9a8 2
+apps/web/src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 24
+apps/web/src/lib/queries/sessions.ts
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 5
+apps/web/src/lib/hq/security.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 28
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 26
+packages/email/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+packages/design-system/src/web/chart/variations.test.ts
+  s_c7a7b98e0ed667::t_878e7e72dd3b97 1-252
+packages/marketing/src/broadcasts/subscribe.ts
+  s_c7a7b98e0ed667::t_98b100fff96ec3 6,140,145
+  s_c7a7b98e0ed667::t_d08610146879c9 8
+apps/web/src/app/admin/page.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 25
+apps/web/src/app/u/marketing/[token]/page.tsx
+  s_c7a7b98e0ed667::t_2637fcfed120cc 5-6
+apps/web/src/app/api/track/route.ts
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 11-13
+apps/web/src/app/hq/login/page.tsx
+  s_c7a7b98e0ed667::t_e12e9e4c245146 6
+packages/auth/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 2
+  s_c7a7b98e0ed667::t_229718b6e33e9a 7-8,25
+apps/web/src/app/admin/broadcasts/_components/composer.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 14
+  s_c7a7b98e0ed667::t_2637fcfed120cc 22
+packages/analytics/src/partitions.test.ts
+  s_c7a7b98e0ed667::t_98b100fff96ec3 1-156
+packages/webhooks/src/signature.test.ts
+  s_c7a7b98e0ed667::t_e9b2e24f9430be 1-180
+apps/web/src/app/admin/broadcasts/[id]/page.tsx
+  s_c7a7b98e0ed667::t_2637fcfed120cc 11-12
+packages/marketing/src/lifecycle/state.ts
+  s_c7a7b98e0ed667::t_d08610146879c9 1-321,326,328-339
+  s_c7a7b98e0ed667::t_50b99f252fbaa8 322-325,327
+apps/web/src/app/[handle]/_components/shop-tracking.tsx
+  s_c7a7b98e0ed667::t_d1f73a24ed8ae8 4
+apps/web/src/lib/stripe-webhooks/connect.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 13
+packages/notifications/vitest.config.mts
+  s_c7a7b98e0ed667::t_d419fbb3c6a98e 1,3
+packages/customers/turbo.json
+  s_c7a7b98e0ed667::t_a7842740e6e9a8 1-5
+apps/web/src/app/api/cron/partner-payouts/route.ts
+  s_c7a7b98e0ed667::t_e12e9e4c245146 1
+packages/webhooks/package.json
+  s_c7a7b98e0ed667::t_97c471f3bd7d45 12-13
+  s_c7a7b98e0ed667::t_e12e9e4c245146 25
+  s_c7a7b98e0ed667::t_a6296bee741b1c 1-11,14-24,26-36
+pnpm-lock.yaml
+  s_c7a7b98e0ed667::t_aee0d1fbf4527f 277-279,298-300,316-318,322-324,516-521,525-527,559-561,729-733,757-784,997-1042,1207-1231,1259-1298
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "95d4fddc97c5407651ff7e3a99b05ca013d3f96e",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
