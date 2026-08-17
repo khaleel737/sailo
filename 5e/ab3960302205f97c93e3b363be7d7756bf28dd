@@ -1,0 +1,131 @@
+apps/web/src/lib/actions/broadcast-form.ts
+  s_c7a7b98e0ed667::t_80c91489a89720 16-18,20-22
+  s_c7a7b98e0ed667::t_9b672e14ce2917 1,4-7,11-15,28,30-84,86,93-105
+  s_c7a7b98e0ed667::t_940621eb9f2ee7 2,8-10,25,27,29,85,87-92
+  s_c7a7b98e0ed667::t_2caf2284da7e9d 3,19,23-24,26
+apps/web/src/app/admin/checkin/_components/door/door-list.tsx
+  s_269cca642a7656::t_abc3b48f251cbf 18
+  s_c7a7b98e0ed667::t_6afcac56750eaf 19-20
+  s_c7a7b98e0ed667::t_8fada0b38e84ca 1-17,21-337
+apps/web/src/app/(legal)/restricted-businesses/page.tsx
+  s_269cca642a7656::t_102602967fa064 1-251
+apps/web/src/app/admin/checkin/_components/door/manual-form.tsx
+  s_c7a7b98e0ed667::t_8fada0b38e84ca 1-9,11-68
+  s_c7a7b98e0ed667::t_6afcac56750eaf 10
+apps/web/src/app/hq/(panel)/support/page.tsx
+  s_269cca642a7656::t_0dbe26b1d7673f 8
+apps/web/src/app/admin/checkin/_components/door/result-card.tsx
+  s_c7a7b98e0ed667::t_6afcac56750eaf 15
+  s_c7a7b98e0ed667::t_8fada0b38e84ca 1-14,16-110
+apps/web/src/lib/hq/security/overview.ts
+  s_c7a7b98e0ed667::t_c5766f008eae2c 1-19,23-226
+  s_269cca642a7656::t_1f2b86c100e2ae 20-22
+apps/web/src/lib/hq/security/sessions.ts
+  s_c7a7b98e0ed667::t_c5766f008eae2c 1-15,18-198
+  s_269cca642a7656::t_f65749b4bfffb0 16-17
+apps/web/src/lib/stripe-webhooks/memberships/upsert.ts
+  s_c7a7b98e0ed667::t_beca3f51bae8f4 1-15,17-31,33-49,51-79,81-126,128-152,154-219
+  s_269cca642a7656::t_bb074875bf8c51 16,32,50,80,127,153
+apps/web/src/lib/stripe-webhooks/memberships/lifecycle.ts
+  s_269cca642a7656::t_bb074875bf8c51 15-21
+  s_c7a7b98e0ed667::t_beca3f51bae8f4 1-9,11-14,22-175
+  s_c7a7b98e0ed667::t_792b6d6d2ab4da 10
+apps/web/src/lib/actions/shop.ts
+  s_c7a7b98e0ed667::t_479c06ec89a1d0 101-111
+  s_c7a7b98e0ed667::t_ea2be11ff14a42 12,17
+apps/web/src/app/hq/_components/security-actions.tsx
+  s_269cca642a7656::t_0dbe26b1d7673f 11
+apps/web/src/lib/blog-pricing-claims.test.ts
+  s_269cca642a7656::t_09947308828a1e 1-113
+apps/web/src/app/sitemap.ts
+  s_269cca642a7656::t_57f16122e3bf39 67-78
+  s_269cca642a7656::t_6bfadf3f88f99b 66
+apps/web/src/lib/actions/shop-form.ts
+  s_c7a7b98e0ed667::t_479c06ec89a1d0 1-32,37-142
+  s_269cca642a7656::t_4719d26a15ee43 33-36
+apps/web/src/app/admin/checkin/_components/door/walk-up-form.tsx
+  s_c7a7b98e0ed667::t_8fada0b38e84ca 1-11,13-78
+  s_c7a7b98e0ed667::t_6afcac56750eaf 12
+apps/web/src/app/(legal)/terms/page.tsx
+  s_269cca642a7656::t_a8cc34ef4fdc55 350-365
+apps/web/src/lib/seo.ts
+  s_269cca642a7656::t_51aae2ef075ff0 6
+  s_269cca642a7656::t_06165ca95d7c42 54-55
+  s_269cca642a7656::t_96b2ef5f5a125a 47-53,56-64,66,68-70
+apps/web/src/app/admin/checkin/_components/door/labels.ts
+  s_269cca642a7656::t_abc3b48f251cbf 1-12
+  s_c7a7b98e0ed667::t_6afcac56750eaf 13-14
+apps/web/src/lib/stripe-webhooks/memberships/index.ts
+  s_c7a7b98e0ed667::t_beca3f51bae8f4 1-18
+apps/web/src/lib/stripe-webhooks/memberships/read.ts
+  s_c7a7b98e0ed667::t_beca3f51bae8f4 1-54,56
+  s_269cca642a7656::t_bb074875bf8c51 55
+apps/web/src/lib/actions/hq/access.ts
+  s_c7a7b98e0ed667::t_c9a76b18ffb541 3-14
+  s_c7a7b98e0ed667::t_107bdd4225c176 19,23-24
+apps/web/src/lib/actions/broadcasts.ts
+  s_c7a7b98e0ed667::t_940621eb9f2ee7 24-27
+  s_c7a7b98e0ed667::t_feef011b4d2e20 13-14
+apps/web/src/app/admin/checkin/_components/door-console.tsx
+  s_c7a7b98e0ed667::t_8fada0b38e84ca 21-24,34-36
+  s_c7a7b98e0ed667::t_8b2438129c3877 15,17
+apps/web/src/lib/actions/hq/notes.ts
+  s_c7a7b98e0ed667::t_c9a76b18ffb541 1-81
+apps/web/src/app/admin/checkin/_components/door/counter.tsx
+  s_c7a7b98e0ed667::t_8fada0b38e84ca 1-36
+apps/web/src/lib/actions/hq/standing.ts
+  s_c7a7b98e0ed667::t_c9a76b18ffb541 1-175
+apps/web/src/lib/hq/security/live.ts
+  s_c7a7b98e0ed667::t_c5766f008eae2c 1-21,25-356
+  s_269cca642a7656::t_1bd2dc1bd90016 22-24
+apps/web/src/app/(legal)/layout.tsx
+  s_269cca642a7656::t_ff2712904b12c3 51-57
+  s_269cca642a7656::t_5952ddd875539f 29-35
+apps/web/src/app/hq/(panel)/accounts/[id]/_components/account-actions.tsx
+  s_269cca642a7656::t_0dbe26b1d7673f 6,11
+apps/web/src/lib/hq/overview.ts
+  s_269cca642a7656::t_0dbe26b1d7673f 22
+apps/web/src/lib/hq/security/index.ts
+  s_c7a7b98e0ed667::t_c5766f008eae2c 1-19
+apps/web/src/lib/hq/security/paid.ts
+  s_c7a7b98e0ed667::t_c5766f008eae2c 1,3,5-7,13-17
+  s_269cca642a7656::t_36d9f45ead5888 2,4,8-12
+apps/web/src/lib/actions/connect.ts
+  s_269cca642a7656::t_825ec916a5fe31 49-151,170-179
+  s_269cca642a7656::t_174fac26460c55 8,15-16
+  s_269cca642a7656::t_e344c493249edb 17
+  s_269cca642a7656::t_1d6ccbdf916228 48
+  s_269cca642a7656::t_cdff4f2ec198c0 180
+apps/web/src/lib/stripe-webhooks/memberships/invoices.ts
+  s_c7a7b98e0ed667::t_beca3f51bae8f4 1-19,21-121,123-269
+  s_269cca642a7656::t_bb074875bf8c51 20,122
+apps/web/src/app/partners/page.tsx
+  s_269cca642a7656::t_9eb975d076348a 22-27
+  s_269cca642a7656::t_35bb017aa8297c 109-124
+apps/web/src/lib/actions/hq/shared.ts
+  s_c7a7b98e0ed667::t_ba836fa523a211 1-138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "5eab3960302205f97c93e3b363be7d7756bf28dd",
+  "prompts": {},
+  "sessions": {
+    "s_269cca642a7656": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8f2640f6-7e2b-42df-997d-8c8cd73efebf",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
