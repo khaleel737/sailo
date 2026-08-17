@@ -1,4 +1,4 @@
-import { minorPerMajor } from "./currency";
+import { minorPerMajor } from "../money/currency";
 import type {
   Client,
   Order,

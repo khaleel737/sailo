@@ -1,6 +1,6 @@
 import type { Dictionary } from "@sailo/i18n";
 import type { Shop } from "@sailo/db/schema";
-import { taxOn } from "./pricing";
+import { taxOn } from "../money/pricing";
 
 /**
  * What each plan costs, unlocks and limits — read by both apps.

@@ -20,4 +20,3 @@ export * from "./resolve-coupon";
 export * from "./resolve-intent";
 export * from "./resolve-lines";
 export * from "./ship-order";
-export * from "./webhooks";

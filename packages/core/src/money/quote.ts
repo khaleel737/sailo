@@ -1,6 +1,6 @@
 import type { Coupon, DeliveryMethod, ProductOption, VariantOptions } from "@sailo/db/schema";
 import { computeTotals, type TaxSettings, type Totals } from "./pricing";
-import { needsDelivery as kindNeedsDelivery, variantLabel } from "./variants";
+import { needsDelivery as kindNeedsDelivery, variantLabel } from "../catalog/variants";
 
 /**
  * What an order costs, and what it needs to ask the buyer for.

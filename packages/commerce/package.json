@@ -17,7 +17,6 @@
     "./delivery/server": "./src/delivery/server.ts",
     "./coupons": "./src/coupons/index.ts",
     "./pagination": "./src/pagination.ts",
-    "./webhooks": "./src/orders/webhooks.ts",
     "./order-lines": "./src/orders/order-lines.ts",
     "./products": "./src/catalog/products.ts",
     "./door-pass": "./src/ticketing/door-pass.ts"
@@ -37,6 +36,7 @@
     "@sailo/payments": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
     "@sailo/storage": "workspace:*",
+    "@sailo/webhooks": "workspace:*",
     "drizzle-orm": "^0.45.2",
     "server-only": "^0.0.1",
     "stripe": "^22.4.0"

@@ -5,7 +5,7 @@ import { orders, type Order, type Shop } from "@sailo/db/schema";
 import type { OrderStatus } from "@sailo/core/order-status";
 import { isStockReleasingStatus, restoreStock, retakeStock } from "../catalog/inventory";
 import { reinstateTicketsForOrder, voidTicketsForOrder } from "../ticketing/tickets";
-import { emitOrderWebhook } from "./webhooks";
+import { emitOrderWebhook } from "@sailo/webhooks/emit";
 
 /**
  * A seller changing an order's status, and everything that has to move with it.

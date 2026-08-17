@@ -45,7 +45,7 @@ vi.mock("../ticketing/tickets", () => ({
 }));
 
 const emitOrderWebhook = vi.fn();
-vi.mock("./webhooks", () => ({ emitOrderWebhook }));
+vi.mock("@sailo/webhooks/emit", () => ({ emitOrderWebhook }));
 
 const { changeOrderStatus, orderTransition } = await import("./orders");
 

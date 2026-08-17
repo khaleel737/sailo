@@ -703,6 +703,9 @@ importers:
       '@sailo/storage':
         specifier: workspace:*
         version: link:../storage
+      '@sailo/webhooks':
+        specifier: workspace:*
+        version: link:../webhooks
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(@neondatabase/serverless@1.1.0)(@opentelemetry/api@1.9.1)(@types/pg@8.21.0)(kysely@0.29.5)
@@ -1259,9 +1262,6 @@ importers:
 
   packages/webhooks:
     dependencies:
-      '@sailo/commerce':
-        specifier: workspace:*
-        version: link:../commerce
       '@sailo/core':
         specifier: workspace:*
         version: link:../core

@@ -88,7 +88,7 @@ const MAY_NAME_THE_COLUMN = [
    * `GET /api/v1/contacts/{id}`, and the emitter is no longer in this app.
    * `src/lib/api/resources.ts` is a re-export of it and names nothing itself.
    */
-  "../../packages/core/src/resources.ts",
+  "../../packages/core/src/wire/resources.ts",
   // The API docs, telling integrators the field is ignored.
   "src/app/(marketing)/docs/api/page.tsx",
   // The MCP tool reference, saying the same thing to an assistant.

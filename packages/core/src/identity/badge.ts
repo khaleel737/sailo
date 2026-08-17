@@ -1,4 +1,4 @@
-import { can } from "./plans";
+import { can } from "../shop/plans";
 
 /**
  * The free tier's rent, as two decisions rather than as a component.
