@@ -1,0 +1,174 @@
+packages/mailer/package.json
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 1-33
+apps/web/src/app/admin/broadcasts/page.tsx
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 11
+packages/marketing/package.json
+  s_c7a7b98e0ed667::t_4e7f094c7346cd 23
+packages/workflows/src/index.ts
+  s_c7a7b98e0ed667::t_e4d74f96ab6846 1-55
+apps/web/src/lib/actions/clients.ts
+  s_c7a7b98e0ed667::t_03e628bf7b2194 9
+packages/core/src/net/index.ts
+  s_c7a7b98e0ed667::t_03e628bf7b2194 1-14
+apps/web/src/lib/import/clients.ts
+  s_c7a7b98e0ed667::t_03e628bf7b2194 7
+packages/workflows/src/broadcasts/pickers.ts
+  s_c7a7b98e0ed667::t_7e376da144f123 6
+packages/workflows/src/orders/confirm-buyer.ts
+  s_c7a7b98e0ed667::t_7e376da144f123 1-102
+apps/web/src/lib/stripe-webhooks/connect.ts
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 11-12
+apps/web/src/env.ts
+  s_c7a7b98e0ed667::t_4e7f094c7346cd 7,42
+packages/email/src/shop/messages.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 2,12
+packages/workflows/turbo.json
+  s_c7a7b98e0ed667::t_323c53a8e43554 1-5
+apps/web/src/app/api/cron/memberships/route.ts
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 3
+apps/web/src/app/api/cron/sweep/route.ts
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 5
+packages/email/src/shop/seller.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 10,25
+turbo.json
+  s_c7a7b98e0ed667::t_323c53a8e43554 12,21-23,48-52
+packages/workflows/src/webhooks/deliver.ts
+  s_c7a7b98e0ed667::t_7e376da144f123 1-505
+apps/web/src/app/admin/clients/[id]/page.tsx
+  s_c7a7b98e0ed667::t_03e628bf7b2194 12
+packages/core/package.json
+  s_c7a7b98e0ed667::t_03e628bf7b2194 40-42
+apps/web/src/app/admin/broadcasts/[id]/page.tsx
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 11
+apps/web/src/app/admin/broadcasts/_components/segment-builder.tsx
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 14
+docs/architecture.md
+  s_c7a7b98e0ed667::t_69c370b804455d 49,56-57,76-110
+  s_c7a7b98e0ed667::t_901d93b5f0be6f 111
+packages/marketing/src/broadcasts/render.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 1
+packages/email/src/transactional/messages.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 8,27
+packages/core/src/identity/index.ts
+  s_c7a7b98e0ed667::t_03e628bf7b2194 18
+packages/api/src/rest/endpoints.ts
+  s_c7a7b98e0ed667::t_03e628bf7b2194 4
+packages/mailer/vitest.config.mts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 1-3
+apps/web/package.json
+  s_c7a7b98e0ed667::t_8e8ac50de99728 74
+  s_c7a7b98e0ed667::t_4e7f094c7346cd 64
+packages/workflows/src/orders/index.ts
+  s_c7a7b98e0ed667::t_323c53a8e43554 1-9
+packages/workflows/src/ticketing/reminders.ts
+  s_c7a7b98e0ed667::t_7e376da144f123 1-199
+apps/web/src/app/admin/broadcasts/_components/composer.tsx
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 22
+packages/marketing/src/lifecycle/send.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 6
+packages/api/src/rest/handlers.ts
+  s_c7a7b98e0ed667::t_03e628bf7b2194 12
+apps/web/src/app/api/cron/reminders/route.ts
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 3
+packages/mailer/turbo.json
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 1-5
+apps/web/e2e/scenarios/seller-notifications.scenario.ts
+  s_c7a7b98e0ed667::t_8e8ac50de99728 72
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 3,54
+apps/web/src/lib/actions/orders.ts
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 7,36-37
+packages/workflows/tsconfig.json
+  s_c7a7b98e0ed667::t_323c53a8e43554 1-5
+packages/marketing/src/lifecycle/messages.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 6,15
+packages/workflows/package.json
+  s_c7a7b98e0ed667::t_81462c77cf472f 25
+  s_c7a7b98e0ed667::t_323c53a8e43554 1-24,26-39
+packages/core/src/net/ip.test.ts
+  s_c7a7b98e0ed667::t_03e628bf7b2194 1-146
+packages/security/package.json
+  s_c7a7b98e0ed667::t_4e7f094c7346cd 21
+packages/core/src/identity/tags.test.ts
+  s_c7a7b98e0ed667::t_03e628bf7b2194 1-111
+apps/web/src/lib/notify-seller-sites.test.ts
+  s_c7a7b98e0ed667::t_65f0c82218c91c 23-32,35-37
+packages/email/src/orders.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 6,18
+apps/web/src/app/api/cron/webhooks/route.ts
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 3
+apps/web/e2e/scenarios/webhooks.scenario.ts
+  s_c7a7b98e0ed667::t_8e8ac50de99728 77
+packages/email/src/preview.test.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 9
+packages/security/src/blocklist/alert.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 2-3
+apps/web/src/lib/exporters.ts
+  s_c7a7b98e0ed667::t_03e628bf7b2194 12
+packages/marketing/src/broadcasts/segments.ts
+  s_c7a7b98e0ed667::t_03e628bf7b2194 2
+packages/webhooks/src/post.ts
+  s_c7a7b98e0ed667::t_03e628bf7b2194 5
+packages/workflows/src/memberships/renewals.ts
+  s_c7a7b98e0ed667::t_7e376da144f123 1-219
+apps/web/e2e/scenarios/memberships.scenario.ts
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 20-21
+apps/web/src/lib/actions/payment-reference.ts
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 14
+apps/web/src/app/admin/clients/page.tsx
+  s_c7a7b98e0ed667::t_03e628bf7b2194 7
+packages/marketing/src/broadcasts/send.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 14
+packages/mailer/tsconfig.json
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 1-5
+packages/workflows/src/orders/notify-seller.ts
+  s_c7a7b98e0ed667::t_7e376da144f123 1-175
+packages/mailer/src/index.ts
+  s_c7a7b98e0ed667::t_508e9f96ad8068 1-33
+packages/email/src/index.ts
+  s_c7a7b98e0ed667::t_4e7f094c7346cd 22-37,40
+packages/email/package.json
+  s_c7a7b98e0ed667::t_4e7f094c7346cd 22
+  s_c7a7b98e0ed667::t_ef883af27b1991 12,24
+packages/workflows/vitest.config.mts
+  s_c7a7b98e0ed667::t_323c53a8e43554 1-3
+packages/email/src/lifecycle/subscribe.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 3-4
+apps/web/src/app/admin/broadcasts/_components/promo-picker.tsx
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 7
+apps/api/package.json
+  s_c7a7b98e0ed667::t_4e7f094c7346cd 21
+apps/web/src/app/admin/broadcasts/new/page.tsx
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 8
+packages/email/src/system/messages.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 3,16
+apps/web/src/lib/actions/broadcasts.ts
+  s_c7a7b98e0ed667::t_ffb0ac98ba8ba0 20
+apps/web/src/app/admin/clients/_components/tag-editor.tsx
+  s_c7a7b98e0ed667::t_03e628bf7b2194 8
+apps/api/src/env.ts
+  s_c7a7b98e0ed667::t_4e7f094c7346cd 7,36
+packages/api/src/routers/clients.ts
+  s_c7a7b98e0ed667::t_03e628bf7b2194 6
+apps/web/e2e/scenarios/bookings-audience.scenario.ts
+  s_c7a7b98e0ed667::t_c3b5b9812c67fc 21
+packages/workflows/src/orders/referral.ts
+  s_c7a7b98e0ed667::t_7e376da144f123 1-72
+pnpm-lock.yaml
+  s_c7a7b98e0ed667::t_34ced0efaf18fc 38-40,313-315,343-345,936,938,1015,1023,1025-1062,1066-1068,1276-1278,1341-1377,1381,1383-1384,1386-1395
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "bddbeb410638497a96b4dd621b5f5feb05d50b5f",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
