@@ -7,7 +7,7 @@ import {
   stripeAccountCountriesByName,
 } from "@sailo/core/countries";
 import type { Shop } from "@sailo/db/schema";
-import { connectState } from "@/lib/connect";
+import { connectState } from "@sailo/commerce/orders/server";
 import { can, cheapestPlanWith, platformFeeLabel } from "@sailo/core/plans";
 import {
   connectStripe,

@@ -79,7 +79,7 @@ vi.mock("@sailo/db", () => ({ getDb: () => db }));
  * `@sailo/commerce` pulls in `server-only`, which refuses to load outside a
  * server component and takes the suite down before a test runs.
  */
-vi.mock("@sailo/commerce/orders", () => ({ applyOrderStatus: vi.fn() }));
+vi.mock("@sailo/commerce/orders/server", () => ({ applyOrderStatus: vi.fn() }));
 vi.mock("@sailo/events", () => ({ publishShopEvent: vi.fn() }));
 
 // Same treatment as `router.test.ts`: tag the predicate builders so the test can

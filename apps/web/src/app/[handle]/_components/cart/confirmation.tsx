@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check, Copy, Download, ExternalLink, FileText, Loader2 } from "lucide-react";
 import { submitPaymentReference } from "@/lib/actions/payment-reference";
-import type { OrderIntentResult } from "@/lib/orders/types";
+import type { OrderIntentResult } from "@sailo/commerce/orders";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
 import { ReferAndEarn } from "./refer-and-earn";

@@ -1,5 +1,5 @@
 import "server-only";
-import { orderSummaryTitle } from "@sailo/commerce/order-lines";
+import { orderSummaryTitle } from "@sailo/core/order-lines";
 import { and, desc, eq, gt, isNull, or } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { affiliates, orders, reviews } from "@sailo/db/schema";

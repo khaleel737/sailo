@@ -21,7 +21,7 @@ import { PayoutCard } from "@/app/admin/payments/_components/payout-card";
 import { StripeCard } from "@/app/admin/payments/_components/stripe-card";
 import { Alert, Badge } from "@sailo/design-system/web";
 import { interpolate } from "@sailo/i18n";
-import { syncAccount } from "@/lib/connect";
+import { syncAccount } from "@sailo/commerce/orders/server";
 
 export const metadata: Metadata = { title: "Payments" };
 

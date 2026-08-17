@@ -40,8 +40,8 @@ const CONNECT = read("src/lib/stripe-webhooks/connect.ts");
 const CLIENTS = read("src/lib/actions/clients.ts");
 const SUBSCRIBE = read("src/lib/broadcasts/subscribe.ts");
 /** Read by relative path, as `replica.test.ts` reads its own. Cwd is apps/web. */
-const PAY_ORDER = read("../../packages/commerce/src/pay-order.ts");
-const COMMERCE_ORDERS = read("../../packages/commerce/src/orders.ts");
+const PAY_ORDER = read("../../packages/commerce/src/orders/pay-order.ts");
+const COMMERCE_ORDERS = read("../../packages/commerce/src/orders/orders.ts");
 
 const ALL_SOURCES = [
   ORDERS,

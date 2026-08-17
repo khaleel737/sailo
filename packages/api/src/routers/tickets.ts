@@ -5,8 +5,8 @@ import {
   admitOnce,
   undoAdmission,
   type Door,
-} from "@sailo/commerce/door";
-import { IDEMPOTENCY_WINDOW_SECONDS } from "@sailo/commerce/idempotency";
+} from "@sailo/commerce/ticketing";
+import { IDEMPOTENCY_WINDOW_SECONDS } from "@sailo/commerce/orders/server";
 import { router, shopProcedure } from "../trpc";
 import { byId } from "../shared";
 

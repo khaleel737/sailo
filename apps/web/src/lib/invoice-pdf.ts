@@ -9,7 +9,7 @@ import {
   showsBadge,
 } from "@/components/shared/powered-by";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
-import { taxLabel } from "@/lib/tax-label";
+import { taxLabel } from "@sailo/core/tax-label";
 
 import { formatAddress, formatMoney } from "@/lib/utils";
 

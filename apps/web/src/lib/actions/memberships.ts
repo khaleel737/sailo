@@ -11,7 +11,7 @@ import { isUuid } from "@/lib/utils";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { appUrl } from "@/lib/app-url";
-import { billingPortalSession, cancelSubscriptionAtPeriodEnd } from "@/lib/connect";
+import { billingPortalSession, cancelSubscriptionAtPeriodEnd } from "@sailo/commerce/orders/server";
 import { subscriptionForOrder } from "@/lib/membership-access";
 import { isManual } from "@/lib/memberships";
 

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
-import type { CheckInState } from "@sailo/commerce/tickets";
+import type { CheckInState } from "@sailo/commerce/ticketing";
 import {
   addWalkUp as addWalkUpAtDoor,
   admitByCode as admitCodeAtDoor,
@@ -10,7 +10,7 @@ import {
   revokeAdmission as revokeAtDoor,
   undoAdmission as undoAtDoor,
   type Door,
-} from "@sailo/commerce/door";
+} from "@sailo/commerce/ticketing";
 import { createDoorPass, readDoorPass, revokeDoorPass } from "@/lib/door-pass";
 import {
   eventDoorList,

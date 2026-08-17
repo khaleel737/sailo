@@ -2,12 +2,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { publishShopEvent } from "@sailo/events";
 import { DELIVERY_METHOD_LIST } from "@sailo/commerce/delivery";
-import {
-  deleteDelivery,
-  listDelivery,
-  saveDelivery,
-  toggleDelivery,
-} from "@sailo/commerce/delivery-settings";
+import { deleteDelivery, listDelivery, saveDelivery, toggleDelivery } from "@sailo/commerce/delivery/server";
 import { router, shopProcedure } from "../trpc";
 import { byId } from "../shared";
 

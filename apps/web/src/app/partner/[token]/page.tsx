@@ -9,7 +9,7 @@ import {
   Store,
   Wallet,
 } from "lucide-react";
-import { getPortalByToken } from "@/lib/affiliate-portal";
+import { getPortalByToken } from "@sailo/partners/portal";
 import { rotatePortalToken } from "@/lib/actions/partner";
 import { maskPayoutDetails } from "@/lib/payouts";
 import { getShopT } from "@/i18n/server";

@@ -9,7 +9,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { liveShop } from "@/lib/shop-visibility";
 import { affiliates, orders, shops, type Affiliate, type Shop } from "@sailo/db/schema";
-import { ensurePortalToken, portalUrl } from "@/lib/affiliate-portal";
+import { ensurePortalToken, portalUrl } from "@sailo/partners/portal";
 import { appUrl } from "@/lib/app-url";
 import { sendAffiliateWelcome } from "@/lib/email";
 import { requireShop } from "@/lib/session";

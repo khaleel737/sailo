@@ -6,7 +6,7 @@ import { after } from "next/server";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { affiliates, shops } from "@sailo/db/schema";
-import { newPortalToken, portalLinksForEmail, portalUrl } from "@/lib/affiliate-portal";
+import { newPortalToken, portalLinksForEmail, portalUrl } from "@sailo/partners/portal";
 import {
   PAYOUT_METHOD_LABELS,
   isPayoutMethodType,

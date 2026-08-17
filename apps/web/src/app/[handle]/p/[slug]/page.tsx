@@ -32,7 +32,7 @@ import {
 import { railsForOrder } from "@/lib/payments";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { absolute, breadcrumbJsonLd, productJsonLd } from "@/lib/seo";
-import { eventSalesOpen } from "@sailo/commerce/tickets";
+import { eventSalesOpen } from "@sailo/commerce/ticketing";
 
 export async function generateMetadata({
   params,

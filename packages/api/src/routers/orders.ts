@@ -4,10 +4,10 @@ import { getDb } from "@sailo/db";
 import { orderItems, orders, shops } from "@sailo/db/schema";
 import { ORDER_STATUSES } from "@sailo/core/order-status";
 import { TRPCError } from "@trpc/server";
-import { changeOrderStatus } from "@sailo/commerce/orders";
-import { refundOrder } from "@sailo/commerce/refund-order";
-import { shipOrder } from "@sailo/commerce/ship-order";
-import { setPaymentStatus } from "@sailo/commerce/pay-order";
+import { changeOrderStatus } from "@sailo/commerce/orders/server";
+import { refundOrder } from "@sailo/commerce/orders/server";
+import { shipOrder } from "@sailo/commerce/orders/server";
+import { setPaymentStatus } from "@sailo/commerce/orders/server";
 import {
   sendBookingDecision,
   sendDownloadReady,

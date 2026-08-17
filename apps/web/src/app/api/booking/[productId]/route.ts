@@ -5,7 +5,7 @@ import { products, shops } from "@sailo/db/schema";
 import { isUuid } from "@/lib/utils";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
-import { BOOKING_HORIZON_DAYS, calendarFor, isBookable } from "@/lib/booking/availability";
+import { BOOKING_HORIZON_DAYS, calendarFor, isBookable } from "@sailo/commerce/booking/server";
 
 /**
  * The times a buyer may pick, for one bookable service.

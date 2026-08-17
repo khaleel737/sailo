@@ -2,7 +2,7 @@ import type { Order, Shop } from "@sailo/db/schema";
 import { badgeHref, showsBadge } from "@sailo/core/badge";
 import { isRenderableImageUrl } from "@sailo/storage/urls";
 import { LEGAL } from "@sailo/core/legal";
-import { APP_URL, absolute } from "./origin";
+import { appOrigin, absolute } from "@sailo/core/origin";
 import { formatMoney } from "@sailo/core/currency";
 
 /**
@@ -174,7 +174,7 @@ export function layout(
    * shops that had paid not to be.
    */
   const footer = showsBadge(shop)
-    ? `Sent by ${esc(shop.name)} via <a href="${esc(badgeHref(shop.handle, APP_URL, "email"))}" style="${FOOTER_LINK}">Sailo</a> — open your own shop, free`
+    ? `Sent by ${esc(shop.name)} via <a href="${esc(badgeHref(shop.handle, appOrigin(), "email"))}" style="${FOOTER_LINK}">Sailo</a> — open your own shop, free`
     : `Sent by ${esc(shop.name)}`;
 
   /*
@@ -204,7 +204,7 @@ export function layout(
  * stranger discovering it, and averaging the two answers neither question.
  */
 function sailoHref(): string {
-  const url = new URL("/", APP_URL);
+  const url = new URL("/", appOrigin());
   url.searchParams.set("utm_source", "sailo");
   url.searchParams.set("utm_medium", "email");
   url.searchParams.set("utm_campaign", "transactional_footer");

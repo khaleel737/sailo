@@ -1,6 +1,6 @@
 import "server-only";
 import type { Order, Shop } from "@sailo/db/schema";
-import { orderSummaryTitle, type OrderLine } from "@sailo/commerce/order-lines";
+import { orderSummaryTitle, type OrderLine } from "@sailo/core/order-lines";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@sailo/payments/offline";
 import { formatAddress } from "@sailo/core/address";
 import { formatMoney } from "@sailo/core/currency";

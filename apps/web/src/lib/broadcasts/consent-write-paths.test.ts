@@ -38,10 +38,15 @@ import { describe, expect, it } from "vitest";
  * wrong, and a file naming the column had silently stepped outside the only
  * check on it. A root is added here whenever code crosses a package boundary,
  * never a file removed from the list below to make this pass.
+ *
+ * `@sailo/commerce` was added for the same reason one release later, when
+ * `orders/clients.ts` — the checkout grant, the single most consequential
+ * writer on the list — moved out of this app. The invariant went red rather
+ * than quiet, which is the only reason this note exists.
  */
 function filesNaming(pattern: string): string[] {
   return execSync(
-    `grep -rl "${pattern}" src/ ../../packages/db/src ../../packages/core/src --include="*.ts" --include="*.tsx" || true`,
+    `grep -rl "${pattern}" src/ ../../packages/db/src ../../packages/core/src ../../packages/commerce/src --include="*.ts" --include="*.tsx" || true`,
     { encoding: "utf8" },
   )
     .split("\n")
@@ -64,7 +69,7 @@ const MAY_NAME_THE_COLUMN = [
   "../../packages/db/src/schema/orders.ts",
   // Checkout. Grant-only, and gated on `shop.askMarketingConsent &&
   // input.marketingOptIn` in `actions/orders.ts` — see orders.test.ts.
-  "src/lib/orders/clients.ts",
+  "../../packages/commerce/src/orders/clients.ts",
   // The double opt-in confirmation: the one path that grants consent to
   // somebody who bought nothing, and only behind a link sent to their address.
   "src/lib/broadcasts/subscribe.ts",

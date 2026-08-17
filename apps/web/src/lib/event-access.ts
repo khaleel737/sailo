@@ -1,11 +1,8 @@
 /**
- * Now in `@sailo/commerce/event-access`.
+ * Opening an event's access, now in `@sailo/commerce/ticketing`.
  *
- * Kept as a re-export for the callers here. It left with the rest of what a
- * confirmed payment sets in motion: releasing a buyer's download, opening an
- * event's access, raising the invoice, and extending a manual membership. All
- * four are things the seller triggers by saying the money arrived — which is a
- * thing they do standing at a market stall, not only at a laptop.
+ * Kept as a re-export for the callers here. Every module in `ticketing` reads
+ * or writes, so that context has one entry rather than two.
  */
 
-export * from "@sailo/commerce/event-access";
+export * from "@sailo/commerce/ticketing";

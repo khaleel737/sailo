@@ -2,7 +2,7 @@ import "server-only";
 import type { Shop } from "@sailo/db/schema";
 import { SUPPORT_TOPIC_LABELS, type SupportTopic } from "@sailo/core/support";
 import { ACCOUNTS, SUPPORT, send, sender, type SendResult } from "../transport";
-import { APP_URL } from "../origin";
+import { appOrigin } from "@sailo/core/origin";
 import {
   button,
   detailTable,
@@ -33,7 +33,7 @@ import {
  */
 
 /** This deployment's origin — see `../origin` for why it is read, not passed. */
-const appUrl = () => APP_URL;
+const appUrl = appOrigin;
 
 /**
  * A seller's support ticket, delivered to our inbox with the seller in CC.

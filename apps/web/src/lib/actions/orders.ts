@@ -2,10 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
-import { resolveOrderIntent } from "@/lib/orders/resolve-intent";
-import { upsertClient } from "@/lib/orders/clients";
-import { referralFor } from "@/lib/orders/referral";
-import type { OrderIntentInput, OrderIntentResult } from "@/lib/orders/types";
+import { resolveOrderIntent } from "@sailo/commerce/orders/server";
+import { upsertClient } from "@sailo/commerce/orders/server";
+import { referralFor } from "@sailo/commerce/orders/server";
+import type { OrderIntentInput, OrderIntentResult } from "@sailo/commerce/orders";
 import { firstRow } from "@sailo/core/invariant";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
@@ -21,19 +21,19 @@ import { createInvoiceForOrder, newInvoiceToken } from "@/lib/invoices";
 import { can } from "@sailo/core/plans";
 import { type QuoteLine } from "@sailo/core/quote";
 import { variantLabel } from "@sailo/core/variants";
-import { releaseStock, reserveStock } from "@sailo/commerce/inventory";
-import { handOffSubscription, handOffToStripe } from "@/lib/orders/card-handoff";
-import { checkoutLabels, toCheckoutLine } from "@/lib/orders/checkout-lines";
+import { releaseStock, reserveStock } from "@sailo/commerce/catalog";
+import { handOffSubscription, handOffToStripe } from "@sailo/commerce/orders/server";
+import { checkoutLabels, toCheckoutLine } from "@sailo/commerce/orders";
 import { getShopT } from "@/i18n/server";
 import { intervalOf, isMembership } from "@/lib/memberships";
 import { createManualSubscription } from "@/lib/membership-renewals";
-import { claimCouponRedemption } from "@sailo/commerce/coupon-redemption";
-import { claimSlots, releaseSlots, slotEnd } from "@sailo/commerce/booking-claim";
+import { claimCouponRedemption } from "@sailo/commerce/coupons";
+import { claimSlots, releaseSlots, slotEnd } from "@sailo/commerce/booking/server";
 import { downloadUrl, newDownloadToken, releasesImmediately } from "@/lib/downloads";
-import { resolveDigitalDelivery } from "@/lib/orders/digital-delivery";
-import { eventSalesOpen, ticketValues } from "@sailo/commerce/tickets";
-import { confirmBuyerByEmail } from "@/lib/orders/confirm-buyer";
-import { notifySellerOfOrder } from "@/lib/orders/notify-seller";
+import { resolveDigitalDelivery } from "@sailo/commerce/orders/server";
+import { eventSalesOpen, ticketValues } from "@sailo/commerce/ticketing";
+import { confirmBuyerByEmail } from "@sailo/commerce/orders/server";
+import { notifySellerOfOrder } from "@sailo/commerce/orders/server";
 import { emitOrderWebhook } from "@/lib/webhooks/emit";
 
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { previewOrder } from "@/lib/actions/order-preview";
-import type { OrderLineInput, OrderPreview, PreviewTax } from "@/lib/orders/types";
+import type { OrderLineInput, OrderPreview, PreviewTax } from "@sailo/commerce/orders";
 import type { Totals } from "@sailo/core/pricing";
 import { couponFor, couponReducer, NO_COUPON } from "../../_lib/coupon-state";
 

@@ -1,12 +1,12 @@
 import "server-only";
 import type { Order, Shop } from "@sailo/db/schema";
-import { orderSummaryTitle, type OrderLine } from "@sailo/commerce/order-lines";
+import { orderSummaryTitle, type OrderLine } from "@sailo/core/order-lines";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@sailo/payments/offline";
 import { formatMoney } from "@sailo/core/currency";
-import { APP_URL } from "../origin";
+import { appOrigin } from "@sailo/core/origin";
 
 /** This deployment's origin — see `../origin` for why it is read, not passed. */
-const appUrl = () => APP_URL;
+const appUrl = appOrigin;
 import { ORDERS, send, sender, type SendResult } from "../transport";
 import {
   button,

@@ -9,7 +9,7 @@ import { paymentMethods, shops, type Shop } from "@sailo/db/schema";
 import { and } from "drizzle-orm";
 import { requireShop } from "@/lib/session";
 import { can } from "@sailo/core/plans";
-import { disconnectedFields, loginLink, startOnboarding, syncAccount } from "@/lib/connect";
+import { disconnectedFields, loginLink, startOnboarding, syncAccount } from "@sailo/commerce/orders/server";
 import { MissingStripeCountryError } from "@sailo/payments";
 import { isStripeAccountCountry } from "@sailo/core/countries";
 

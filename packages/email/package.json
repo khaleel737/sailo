@@ -19,7 +19,6 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@sailo/commerce": "workspace:*",
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
     "@sailo/payments": "workspace:*",

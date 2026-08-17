@@ -29,7 +29,7 @@ import { present } from "@sailo/core/invariant";
 import { PAID_PLAN_IDS, PLANS } from "../src/lib/plans";
 
 const CHECK_ONLY = process.argv.includes("--check");
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://sailo.store";
+const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://sailo.store";
 
 /** Metadata key before the Shopik → Sailo rename. */
 const LEGACY_KEY = "shopik_plan";
@@ -47,7 +47,7 @@ async function main() {
   const stripe = new Stripe(key, { apiVersion: "2026-07-29.dahlia" });
 
   const mode = key.startsWith("sk_live_") ? "LIVE" : "test";
-  console.log(`Stripe ${mode} mode — ${APP_URL}\n`);
+  console.log(`Stripe ${mode} mode — ${appUrl}\n`);
 
   const env: string[] = [];
   /** Carried to the portal step so it doesn't re-search mid-rename. */
@@ -202,8 +202,8 @@ async function main() {
       // These pages exist now. Stripe shows them in the portal, and a seller
       // being asked to manage a subscription with no terms in sight is a worse
       // look than the 404 this used to avoid.
-      privacy_policy_url: `${APP_URL}/privacy`,
-      terms_of_service_url: `${APP_URL}/terms`,
+      privacy_policy_url: `${appUrl}/privacy`,
+      terms_of_service_url: `${appUrl}/terms`,
     },
     features: {
       customer_update: { enabled: true, allowed_updates: ["email", "address", "tax_id"] },
@@ -225,7 +225,7 @@ async function main() {
         products: portalProducts,
       },
     },
-    default_return_url: `${APP_URL}/admin/settings/billing`,
+    default_return_url: `${appUrl}/admin/settings/billing`,
   };
 
   const existing = configs.data.find((c) => c.is_default) ?? configs.data[0];
@@ -243,7 +243,7 @@ async function main() {
   }
 
   // --- webhook endpoint ---------------------------------------------------
-  const WEBHOOK_URL = `${APP_URL}/api/stripe/webhook`;
+  const WEBHOOK_URL = `${appUrl}/api/stripe/webhook`;
   const EVENTS: Stripe.WebhookEndpointCreateParams.EnabledEvent[] = [
     "checkout.session.completed",
     "customer.subscription.created",

@@ -11,7 +11,7 @@ import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { checkPaymentReference } from "@/lib/payments/status";
 import { PAYMENT_METHOD_DEFS, PAYMENT_METHOD_TYPES } from "@/lib/payments";
-import { notifySellerOfPaymentReport } from "@/lib/orders/notify-seller";
+import { notifySellerOfPaymentReport } from "@sailo/commerce/orders/server";
 import { shops } from "@sailo/db/schema";
 
 /**

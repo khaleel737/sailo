@@ -25,7 +25,7 @@ import { TrackingCard } from "./tracking-card";
 import { BookingCard } from "./booking-card";
 import { CalendarSyncCard } from "./calendar-sync-card";
 import { NotificationsCard } from "./notifications-card";
-import { hoursOf } from "@/lib/booking/hours";
+import { hoursOf } from "@sailo/commerce/booking";
 
 const PRESET_COLORS = [
   "#111111", "#4f46e5", "#0ea5e9", "#059669",

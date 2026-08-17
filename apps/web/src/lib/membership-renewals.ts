@@ -8,5 +8,6 @@
  * thing they do standing at a market stall, not only at a laptop.
  */
 
-export * from "@sailo/commerce/membership-renewals";
+export * from "@sailo/commerce/memberships";
+export * from "@sailo/commerce/memberships/server";
 export { runManualRenewals } from "@/lib/membership-cron";

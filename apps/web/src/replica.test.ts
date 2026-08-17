@@ -37,12 +37,12 @@ const PRIMARY_ONLY = [
    * how two buyers are sold the last one — so they stay pinned here, by
    * relative path. This test runs with apps/web as its cwd.
    */
-  "../../packages/commerce/src/inventory.ts",
-  "../../packages/commerce/src/coupon-redemption.ts",
-  "../../packages/commerce/src/orders.ts",
+  "../../packages/commerce/src/catalog/inventory.ts",
+  "../../packages/commerce/src/coupons/redemption.ts",
+  "../../packages/commerce/src/orders/orders.ts",
   // Everything on the way to creating an order.
   "src/lib/actions/orders.ts",
-  "src/lib/orders/card-handoff.ts",
+  "../../packages/commerce/src/orders/card-handoff.ts",
   // Settlement, whose idempotency depends on seeing its own last write.
   "src/lib/stripe-webhooks",
   "src/lib/actions/order-admin.ts",

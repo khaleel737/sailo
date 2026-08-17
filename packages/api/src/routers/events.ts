@@ -4,7 +4,7 @@ import {
   eventDoorList,
   eventDoorStats,
   shopEvents,
-} from "@sailo/commerce/door-list";
+} from "@sailo/commerce/ticketing";
 import { router, shopProcedure } from "../trpc";
 
 /**

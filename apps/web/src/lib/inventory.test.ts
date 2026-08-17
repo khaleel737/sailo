@@ -69,7 +69,7 @@ describe("a completed-but-unsettled session", () => {
  */
 describe("the abandonment paths", () => {
   const webhooks = webhookSource();
-  const handoff = readFileSync("src/lib/orders/card-handoff.ts", "utf8");
+  const handoff = readFileSync("../../packages/commerce/src/orders/card-handoff.ts", "utf8");
 
   /** A handler's body, from its `case` label to the next one. */
   function branch(source: string, label: string): string {
@@ -183,7 +183,7 @@ describe("a booked order waits for the seller", () => {
    * answer — so the two can no longer disagree about whether a booking was
    * answered, which they could when each carried its own copy of the condition.
    */
-  const commerce = readFileSync("../../packages/commerce/src/orders.ts", "utf8");
+  const commerce = readFileSync("../../packages/commerce/src/orders/orders.ts", "utf8");
 
   it("does not let payment confirm an appointment", () => {
     const paid = webhook.slice(

@@ -6,8 +6,8 @@ import { liveShop } from "@/lib/shop-visibility";
 import { coupons, shops, type Coupon } from "@sailo/db/schema";
 import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
-import { resolveLines } from "@/lib/orders/resolve-lines";
-import { resolveDelivery } from "@/lib/orders/delivery";
+import { resolveLines } from "@sailo/commerce/orders/server";
+import { resolveDelivery } from "@sailo/commerce/orders/server";
 import { cartNeedsDelivery, cartSubtotal, quote } from "@sailo/core/quote";
 import {
   checkCoupon,
@@ -17,7 +17,7 @@ import {
 } from "@sailo/core/pricing";
 import { isMembership } from "@/lib/memberships";
 import { cartCanPayInPerson, unitsLeft } from "@sailo/core/variants";
-import type { OrderLineInput, OrderPreview } from "@/lib/orders/types";
+import type { OrderLineInput, OrderPreview } from "@sailo/commerce/orders";
 
 /**
  * Pricing a basket without committing to it.

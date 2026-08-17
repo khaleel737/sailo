@@ -11,4 +11,4 @@
  * "who is still outside" is precisely how they would.
  */
 
-export * from "@sailo/commerce/door-list";
+export * from "@sailo/commerce/ticketing";

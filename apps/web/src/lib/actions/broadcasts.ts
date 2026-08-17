@@ -9,7 +9,7 @@ import { revalidateShop } from "@/lib/cache";
 import { requireShop } from "@/lib/session";
 import { can, upgradeMessage } from "@sailo/core/plans";
 import { isUuid } from "@/lib/utils";
-import { zonedTimeToInstant } from "@/lib/booking/time-zone";
+import { zonedTimeToInstant } from "@sailo/commerce/booking";
 import {
   broadcastLabels,
   MAX_PROMO_PRODUCTS,

@@ -39,7 +39,7 @@ vi.mock("@sailo/db", () => ({
 }));
 
 const changeOrderStatus = vi.fn();
-vi.mock("@sailo/commerce/orders", () => ({ changeOrderStatus }));
+vi.mock("@sailo/commerce/orders/server", () => ({ changeOrderStatus }));
 
 const publishShopEvent = vi.fn();
 vi.mock("@sailo/events", () => ({ publishShopEvent }));

@@ -14,7 +14,7 @@ import {
   type Product,
   type Shop,
 } from "@sailo/db/schema";
-import { createSubscriptionSession, membershipPrice } from "@/lib/connect";
+import { createSubscriptionSession, membershipPrice } from "@sailo/commerce/orders/server";
 import { periodEndOf, subscriptionIdOf } from "@/lib/stripe-webhooks/memberships";
 import { handleConnectEvent } from "@/lib/stripe-webhooks";
 import { membershipAccess } from "@/lib/memberships";

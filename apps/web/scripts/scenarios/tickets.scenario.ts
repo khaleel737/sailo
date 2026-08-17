@@ -20,7 +20,7 @@ import {
   reinstateTicketsForOrder,
   undoCheckIn,
   voidTicketsForOrder,
-} from "@sailo/commerce/tickets";
+} from "@sailo/commerce/ticketing";
 import { importTickets } from "@/lib/import/tickets";
 import { eventDoorList, eventDoorStats } from "@/lib/queries/tickets";
 

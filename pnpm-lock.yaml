@@ -298,6 +298,9 @@ importers:
       '@sailo/observability':
         specifier: workspace:*
         version: link:../../packages/observability
+      '@sailo/partners':
+        specifier: workspace:*
+        version: link:../../packages/partners
       '@sailo/payments':
         specifier: workspace:*
         version: link:../../packages/payments
@@ -655,9 +658,18 @@ importers:
       '@sailo/db':
         specifier: workspace:*
         version: link:../db
+      '@sailo/email':
+        specifier: workspace:*
+        version: link:../email
       '@sailo/events':
         specifier: workspace:*
         version: link:../events
+      '@sailo/notifications':
+        specifier: workspace:*
+        version: link:../notifications
+      '@sailo/partners':
+        specifier: workspace:*
+        version: link:../partners
       '@sailo/payments':
         specifier: workspace:*
         version: link:../payments
@@ -673,6 +685,9 @@ importers:
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
+      stripe:
+        specifier: ^22.4.0
+        version: 22.5.0(@types/node@20.19.43)
     devDependencies:
       '@sailo/config':
         specifier: workspace:*
@@ -835,9 +850,6 @@ importers:
 
   packages/email:
     dependencies:
-      '@sailo/commerce':
-        specifier: workspace:*
-        version: link:../commerce
       '@sailo/core':
         specifier: workspace:*
         version: link:../core
@@ -928,9 +940,6 @@ importers:
 
   packages/notifications:
     dependencies:
-      '@sailo/commerce':
-        specifier: workspace:*
-        version: link:../commerce
       '@sailo/core':
         specifier: workspace:*
         version: link:../core
@@ -993,6 +1002,31 @@ importers:
       typescript:
         specifier: ^5
         version: 5.9.3
+
+  packages/partners:
+    dependencies:
+      '@sailo/db':
+        specifier: workspace:*
+        version: link:../db
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(@neondatabase/serverless@1.1.0)(@opentelemetry/api@1.9.1)(@types/pg@8.21.0)(kysely@0.29.5)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
+    devDependencies:
+      '@sailo/config':
+        specifier: workspace:*
+        version: link:../config
+      oxlint:
+        specifier: ^1.77.0
+        version: 1.78.0
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(jsdom@20.0.3)(vite@8.2.1(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
 
   packages/payments:
     dependencies:

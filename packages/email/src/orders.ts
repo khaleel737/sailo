@@ -1,6 +1,6 @@
 import "server-only";
 import type { Order, Shop } from "@sailo/db/schema";
-import { orderSummaryTitle } from "@sailo/commerce/order-lines";
+import { orderSummaryTitle } from "@sailo/core/order-lines";
 import { formatAddress } from "@sailo/core/address";
 import { formatMoney } from "@sailo/core/currency";
 import { ORDERS, send, sender, type SendResult } from "./transport";

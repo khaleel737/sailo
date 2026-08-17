@@ -1,4 +1,4 @@
-import type { OrderLineInput, OrderPreview } from "@/lib/orders/types";
+import type { OrderLineInput, OrderPreview } from "@sailo/commerce/orders";
 import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
 import type { PaymentMethodType } from "@/lib/payments";

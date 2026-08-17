@@ -5,7 +5,7 @@ import { getDb } from "@sailo/db";
 import { orders } from "@sailo/db/schema";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { rateLimit } from "@sailo/rate-limit";
-import type { CheckoutOutcome } from "@/lib/orders/types";
+import type { CheckoutOutcome } from "@sailo/commerce/orders";
 
 /**
  * One question, asked by a storefront that sent a buyer to Stripe and never

@@ -1,7 +1,7 @@
 import "server-only";
 import type Stripe from "stripe";
 import type { Shop } from "@sailo/db/schema";
-import { actingAs } from "@/lib/connect";
+import { actingAs } from "@sailo/commerce/orders/server";
 import { groupBalances, type PayoutOverview } from "@/lib/payout-summary";
 import { withRedis } from "@sailo/rate-limit";
 import { stripe } from "@sailo/payments";

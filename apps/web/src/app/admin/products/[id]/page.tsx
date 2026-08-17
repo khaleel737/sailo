@@ -8,7 +8,7 @@ import { ProductForm } from "@/app/admin/products/_components/product-form";
 import { PageHeader } from "@sailo/design-system/web";
 import { isUuid } from "@/lib/utils";
 import { getAdminT } from "@/i18n/server";
-import { connectState } from "@/lib/connect";
+import { connectState } from "@sailo/commerce/orders/server";
 import { can } from "@sailo/core/plans";
 
 export const metadata: Metadata = { title: "Edit product" };

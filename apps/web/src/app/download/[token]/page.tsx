@@ -6,7 +6,7 @@ import { toString as qrSvg } from "qrcode";
 import { Clock, Download, FileDown, Lock, MapPin, Store, Ticket, Video } from "lucide-react";
 import { LocalTime } from "@sailo/design-system/web";
 import { getDownloadByToken, downloadState } from "@/lib/downloads";
-import { ticketsForOrder } from "@sailo/commerce/tickets";
+import { ticketsForOrder } from "@sailo/commerce/ticketing";
 import { eventAccessForOrder } from "@/lib/event-access";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";

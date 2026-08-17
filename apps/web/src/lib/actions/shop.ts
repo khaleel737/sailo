@@ -4,20 +4,16 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { after } from "next/server";
 import { toCurrencyCode } from "@sailo/core/currency";
-import { normalizeWeeklyHours, type WeeklyHours } from "@/lib/booking/hours";
-import { isTimeZone } from "@/lib/booking/time-zone";
+import { normalizeWeeklyHours } from "@sailo/commerce/booking";
+import { type WeeklyHours } from "@sailo/commerce/booking";
+import { isTimeZone } from "@sailo/commerce/booking";
 import { revalidateShop } from "@/lib/cache";
 import { publishHqEvent, publishShopEvent } from "@sailo/events";
 import { redirect } from "next/navigation";
 import { and, eq, ne } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { paymentMethods, shops, type NotificationPrefs, type Shop, type ShopSocial } from "@sailo/db/schema";
-import {
-  fetchExternalBusy,
-  forgetExternalBusy,
-  isCalendarFeedUrl,
-  normalizeFeedUrl,
-} from "@/lib/booking/external-busy";
+import { fetchExternalBusy, forgetExternalBusy, isCalendarFeedUrl, normalizeFeedUrl } from "@sailo/commerce/booking/server";
 import {
   NOTIFICATION_EVENTS,
   notificationPrefsSchema,

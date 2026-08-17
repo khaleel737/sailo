@@ -8,7 +8,7 @@ import { PrintButton } from "@/app/invoice/[token]/_components/print-button";
 import { SettleBasket } from "@/app/invoice/[token]/_components/settle-basket";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { getShopT } from "@/i18n/server";
-import { taxLabel } from "@/lib/tax-label";
+import { taxLabel } from "@sailo/core/tax-label";
 import { formatAddress, formatMoney } from "@/lib/utils";
 
 /* Not yet converted — see the note in `next.config.ts`. */

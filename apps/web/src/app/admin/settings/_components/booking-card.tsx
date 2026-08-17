@@ -3,13 +3,8 @@
 import { useState } from "react";
 import { Card, Field, Input, Select } from "@sailo/design-system/web";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
-import {
-  clockTime,
-  minutesOfDay,
-  normalizeWeeklyHours,
-  WEEKDAYS,
-  type WeeklyHours,
-} from "@/lib/booking/hours";
+import { clockTime, minutesOfDay, normalizeWeeklyHours, WEEKDAYS } from "@sailo/commerce/booking";
+import { type WeeklyHours } from "@sailo/commerce/booking";
 import type { Shop } from "@sailo/db/schema";
 
 /**

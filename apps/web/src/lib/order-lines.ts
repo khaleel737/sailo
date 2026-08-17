@@ -1,14 +1,15 @@
 /**
- * How to ask what an order contains, now in `@sailo/commerce/order-lines`.
+ * What an order contains, in the two halves it split into.
  *
- * Kept as a re-export for the fourteen files that import `@/lib/order-lines`.
+ * The shape of a line and the rules for naming one are `@sailo/core/order-lines`
+ * — pure, so `@sailo/email` and `@sailo/notifications` can render an order they
+ * were handed without needing a database. Reading the rows is
+ * `@sailo/commerce/order-lines`, which does.
  *
- * It had to leave because a shipping notice and a refund notice both name what
- * was bought, and `@sailo/email` composes both for two apps. The module's own
- * header explains why a second copy would be dangerous rather than untidy: an
- * order stores what was bought *twice* — `orderItems` rows and a set of summary
- * columns on the order itself — and this is the one function that knows which
- * of the two to believe.
+ * Both are re-exported here because fourteen files in this app import
+ * `@/lib/order-lines` and the split is not their concern: a page that lists an
+ * order fetches the lines and titles them in the same breath.
  */
 
+export * from "@sailo/core/order-lines";
 export * from "@sailo/commerce/order-lines";

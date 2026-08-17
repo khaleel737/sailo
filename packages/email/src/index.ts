@@ -25,4 +25,10 @@
 
 export * from "./transport";
 export * from "./markup";
-export { APP_URL, absolute } from "./origin";
+/*
+ * Re-exported, not owned. `origin` moved to `@sailo/core/origin` when
+ * `@sailo/commerce` needed the same base to build a Stripe return URL from —
+ * two packages reading `NEXT_PUBLIC_APP_URL` through two different helpers is
+ * how one of them ends up mailing links to localhost.
+ */
+export { appOrigin, absolute } from "@sailo/core/origin";

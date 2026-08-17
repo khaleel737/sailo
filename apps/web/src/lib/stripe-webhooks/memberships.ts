@@ -12,7 +12,7 @@ import {
   type Subscription,
 } from "@sailo/db/schema";
 import { createInvoiceForOrder } from "@/lib/invoices";
-import { actingAs } from "@/lib/connect";
+import { actingAs } from "@sailo/commerce/orders/server";
 import { downloadUrl } from "@/lib/downloads";
 import { publishShopEvent } from "@sailo/events";
 import { releaseDownloads } from "@/lib/downloads";

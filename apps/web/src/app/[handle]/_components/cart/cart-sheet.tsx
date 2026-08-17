@@ -14,7 +14,7 @@ import { isLowStock, needsDelivery } from "@sailo/core/variants";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
 import { formatMoney } from "@/lib/utils";
-import type { PreviewLine } from "@/lib/orders/types";
+import type { PreviewLine } from "@sailo/commerce/orders";
 
 /**
  * The basket, and checkout for all of it at once.

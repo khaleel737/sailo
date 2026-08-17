@@ -4,7 +4,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { clients, products, shops, subscriptions } from "@sailo/db/schema";
 import { can } from "@sailo/core/plans";
-import { isManual } from "@sailo/core/memberships";
+import { isManual } from "@sailo/commerce/memberships";
 import { cancelSubscriptionAtPeriodEnd } from "@sailo/payments";
 import { publishShopEvent } from "@sailo/events";
 import { router, shopProcedure } from "../trpc";

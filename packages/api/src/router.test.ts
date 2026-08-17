@@ -47,7 +47,7 @@ vi.mock("@sailo/db", () => ({
  * neither belongs in a test about WHERE clauses. What the write actually does
  * with them is asserted in `routers/orders.test.ts`.
  */
-vi.mock("@sailo/commerce/orders", () => ({ changeOrderStatus: vi.fn() }));
+vi.mock("@sailo/commerce/orders/server", () => ({ changeOrderStatus: vi.fn() }));
 vi.mock("@sailo/events", () => ({ publishShopEvent: vi.fn() }));
 
 // Tag `eq`/`desc`/`and`/`asc` so the test can read back the predicate each query

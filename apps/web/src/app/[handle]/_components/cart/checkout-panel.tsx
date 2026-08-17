@@ -12,7 +12,7 @@ import {
 } from "@/lib/countries";
 import { shippableCountries, shipsTo } from "@/lib/delivery";
 import { markLeaving } from "@/lib/leaving";
-import type { OrderIntentResult } from "@/lib/orders/types";
+import type { OrderIntentResult } from "@sailo/commerce/orders";
 import { useCheckoutQuote } from "./use-checkout-quote";
 import {
   PAYMENT_METHOD_DEFS,

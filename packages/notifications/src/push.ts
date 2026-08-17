@@ -2,7 +2,7 @@ import "server-only";
 import { eq, inArray } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { pushTokens, type Order, type Shop } from "@sailo/db/schema";
-import { orderSummaryTitle } from "@sailo/commerce/order-lines";
+import { orderSummaryTitle } from "@sailo/core/order-lines";
 import { formatMoney } from "@sailo/core/currency";
 
 /**

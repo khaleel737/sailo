@@ -19,7 +19,7 @@ import { LockedFeature } from "@/app/admin/_components/locked-feature";
 import { can } from "@sailo/core/plans";
 import { formatMoney } from "@/lib/utils";
 import { CopyLink } from "@sailo/design-system/web";
-import { ensurePortalToken, portalUrl } from "@/lib/affiliate-portal";
+import { ensurePortalToken, portalUrl } from "@sailo/partners/portal";
 import { getT, getAdminT } from "@/i18n/server";
 
 export const metadata: Metadata = { title: "Affiliates" };

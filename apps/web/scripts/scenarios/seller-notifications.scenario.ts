@@ -69,7 +69,7 @@ const { orderItems, orders, paymentMethods, products, shops, user } = await impo
 const { createOrderIntent } = await import("@/lib/actions/orders");
 const { submitPaymentReference } = await import("@/lib/actions/payment-reference");
 const { claimEvent, handleConnectEvent } = await import("@/lib/stripe-webhooks");
-const { notifySellerOfOrder } = await import("@/lib/orders/notify-seller");
+const { notifySellerOfOrder } = await import("@sailo/commerce/orders/server");
 
 const db = getDb();
 const uid = () => crypto.randomUUID();

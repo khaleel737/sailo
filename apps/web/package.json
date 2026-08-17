@@ -61,6 +61,7 @@
     "@sailo/i18n": "workspace:*",
     "@sailo/notifications": "workspace:*",
     "@sailo/observability": "workspace:*",
+    "@sailo/partners": "workspace:*",
     "@sailo/payments": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
     "@sailo/storage": "workspace:*",

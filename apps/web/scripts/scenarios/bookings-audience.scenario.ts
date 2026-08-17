@@ -16,8 +16,8 @@ import {
 } from "@sailo/db/schema";
 import { createOrderIntent } from "@/lib/actions/orders";
 import { releaseDownloads } from "@/lib/downloads";
-import { calendarFor } from "@/lib/booking/availability";
-import { forgetExternalBusy } from "@/lib/booking/external-busy";
+import { calendarFor } from "@sailo/commerce/booking/server";
+import { forgetExternalBusy } from "@sailo/commerce/booking/server";
 import { sendDueEventReminders } from "@/lib/event-reminders";
 import { eventAccessForOrder } from "@/lib/event-access";
 import { audienceFor, suppress } from "@/lib/broadcasts/audience";
