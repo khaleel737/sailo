@@ -10,4 +10,5 @@
  */
 
 export * from "./protocol";
+export * from "./http";
 export * from "./tools";

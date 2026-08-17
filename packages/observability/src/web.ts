@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/node";
 import type { Sink } from "./seam";
+import { scrub } from "./pii";
 
 /**
  * Where a server error actually goes.
@@ -31,32 +32,6 @@ import type { Sink } from "./seam";
  * one is decorative.
  */
 
-/**
- * Anything that identifies a person, dropped before it leaves the server.
- *
- * Sailo's error context carries a `scope` and sometimes an opaque id, and those
- * are fine — an id correlates two reports without naming anybody. What must
- * never be sent is what a seller or their buyer typed: an email, a handle, an
- * order's contents. Sentry's own `sendDefaultPii` is off and stays off; this is
- * the second line, for the fields Sailo attaches itself.
- */
-const PII_KEYS = /email|phone|address|name|handle|token|secret|password|card/i;
-
-function scrub(extra: Record<string, unknown> | undefined): Record<string, unknown> {
-  if (!extra) return {};
-  const out: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(extra)) {
-    if (PII_KEYS.test(key)) continue;
-    if (value === null || ["string", "number", "boolean"].includes(typeof value)) {
-      /*
-       * Truncated: a long string here is either a payload or a message, and
-       * both are ways for content to escape one character at a time.
-       */
-      out[key] = typeof value === "string" ? value.slice(0, 200) : value;
-    }
-  }
-  return out;
-}
 
 function tagsFor(context: { scope?: string; shopId?: string } | undefined) {
   return {

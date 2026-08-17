@@ -203,3 +203,145 @@ describe("the health endpoint", () => {
     expect(response.status).toBe(200);
   });
 });
+
+/* -------------------------------------------------------------------------- */
+/*  The endpoints that answer on two origins                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * MCP and the Resend webhook are mounted here *and* on apps/web, because a
+ * published URL cannot move without a window where it answers nowhere. Both were
+ * a full copy of their handler until it moved into `@sailo/api`, and these drive
+ * the mount that is left — a route file that forgets an export, or a barrel that
+ * stops resolving, builds cleanly and fails on the first real request.
+ *
+ * Every case below is decided before any query runs, which is why this suite can
+ * assert them without a database.
+ */
+describe("the MCP endpoint", () => {
+  /*
+   * The current revision has no GET stream and no session to delete. Answering
+   * 405 with an `allow` header is what lets an older client fall back instead of
+   * hanging on a stream that will never open.
+   */
+  it("refuses a GET, and says what it accepts", async () => {
+    const { GET } = await import("@/app/api/mcp/route");
+    const response = await GET();
+
+    expect(response.status).toBe(405);
+    expect(response.headers.get("allow")).toBe("POST");
+  });
+
+  it("refuses a DELETE the same way, because there is no session to delete", async () => {
+    const { DELETE } = await import("@/app/api/mcp/route");
+
+    expect((await DELETE()).status).toBe(405);
+  });
+
+  /*
+   * The DNS-rebinding defence, and the specification makes it a MUST. A page on
+   * the open web can make a browser POST here; it cannot read the response, but a
+   * request that *executes* is already too far when the tools include writes.
+   *
+   * This has to be checked before the body is parsed, so the assertion is on a
+   * request whose body would also fail — 403 proves the order.
+   */
+  it("refuses a browser origin that is not this deployment, before parsing anything", async () => {
+    const { POST } = await import("@/app/api/mcp/route");
+    const response = await POST(
+      new Request("https://api.sailo.store/api/mcp", {
+        method: "POST",
+        headers: { origin: "https://evil.example", "content-type": "application/json" },
+        body: "not json at all",
+      }),
+    );
+
+    expect(response.status).toBe(403);
+    expect(await response.text()).toContain("Origin not allowed");
+  });
+
+  /*
+   * No Origin header is the normal case — MCP clients are not browsers — so an
+   * absent one must not be treated as a foreign one.
+   */
+  it("answers a malformed body with a JSON-RPC parse error, not a crash", async () => {
+    const { POST } = await import("@/app/api/mcp/route");
+    const response = await POST(
+      new Request("https://api.sailo.store/api/mcp", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: "{",
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    const body = (await response.json()) as { error?: { code?: number } };
+    // -32700 is JSON-RPC's parse error; a bare 400 would not tell a client why.
+    expect(body.error?.code).toBe(-32_700);
+  });
+
+  /*
+   * A notification carries no id and expects no result. A server that replied to
+   * one with a JSON-RPC result would be answering something that is not a
+   * request, which is the bug this endpoint's own header calls out.
+   */
+  it("accepts a notification with 202 and an empty body", async () => {
+    const { POST } = await import("@/app/api/mcp/route");
+    const response = await POST(
+      new Request("https://api.sailo.store/api/mcp", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" }),
+      }),
+    );
+
+    expect(response.status).toBe(202);
+    expect(await response.text()).toBe("");
+  });
+});
+
+describe("the Resend webhook", () => {
+  /*
+   * It authenticates from a Svix signature over the raw body and from nothing
+   * else — no session, no cookie — which is what makes it safe to mount twice.
+   * An unsigned POST must be refused, and refused rather than 500'd: a handler
+   * that throws on a missing header is one Resend will retry forever.
+   */
+  const unsigned = () =>
+    new Request("https://api.sailo.store/api/resend/webhook", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ type: "email.bounced", data: {} }),
+    });
+
+  it("refuses a POST that carries no signature", async () => {
+    /*
+     * The secret is stubbed, and that is the point. The first draft of this test
+     * left it absent, got a 500 from the misconfiguration branch below, and would
+     * have reported "refuses unsigned requests" while never reaching the code that
+     * does — the same mistake this file's header records about `API_ALLOWED_ORIGINS`.
+     */
+    vi.stubEnv("RESEND_WEBHOOK_SECRET", "whsec_test");
+    const { POST } = await import("@/app/api/resend/webhook/route");
+    const response = await POST(unsigned());
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({ error: "unsigned" });
+  });
+
+  /*
+   * Fail closed, deliberately: an absent secret on an endpoint that writes reads
+   * as "no", never as "yes to everyone". 500 is also the right code for Resend to
+   * see — it retries, so a deploy that forgot the variable loses nothing once the
+   * variable arrives.
+   */
+  it("refuses everything when the secret is not configured at all", async () => {
+    vi.stubEnv("RESEND_WEBHOOK_SECRET", "");
+    const { POST } = await import("@/app/api/resend/webhook/route");
+    const response = await POST(unsigned());
+
+    expect(response.status).toBe(500);
+    expect(await response.text()).toContain("RESEND_WEBHOOK_SECRET");
+  });
+});
+

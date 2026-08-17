@@ -23,6 +23,20 @@ them at a moment of our choosing rather than theirs. A dropped Resend
 notification in particular is a bounce or complaint nobody sees, which is a
 sending reputation degrading silently.
 
+### Two mounts, one handler
+
+`/api/mcp` and `/api/resend/webhook` were each a *full copy* of their handler —
+353 and 206 lines, byte for byte identical between the apps. Dual mount requires
+two route files; it never required two implementations, and a duplicated Svix
+signature check is the worst version of the pattern: whichever copy a fix lands
+in is the only one that is safe, while the other keeps answering on a URL that is
+still live in somebody's dashboard.
+
+Both handlers now live in `@sailo/api` — `@sailo/api/mcp` and
+`@sailo/api/webhooks` — and each route file is the mount and nothing else. So
+step 4 below is a four-line deletion per route, and until then the two origins
+cannot answer differently. `apps/api/e2e/edge.e2e.ts` drives both mounts.
+
 Serving both is safe because all three authenticate from a **bearer credential or
 a signature over the body** — an API key, or Svix's signature — and never from
 the better-auth session cookie. A second origin therefore cannot force

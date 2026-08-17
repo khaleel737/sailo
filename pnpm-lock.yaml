@@ -23,9 +23,6 @@ importers:
       '@sailo/api':
         specifier: workspace:*
         version: link:../../packages/api
-      '@sailo/core':
-        specifier: workspace:*
-        version: link:../../packages/core
       '@sailo/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -38,9 +35,6 @@ importers:
       '@sailo/mailer':
         specifier: workspace:*
         version: link:../../packages/mailer
-      '@sailo/marketing':
-        specifier: workspace:*
-        version: link:../../packages/marketing
       '@sailo/observability':
         specifier: workspace:*
         version: link:../../packages/observability
@@ -1159,6 +1153,9 @@ importers:
       typescript:
         specifier: ^5
         version: 5.9.3
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@20.19.43)(@vitest/coverage-v8@4.1.10)(jsdom@20.0.3)(vite@8.2.1(@types/node@20.19.43)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.49.2)(tsx@4.23.12)(yaml@2.9.0))
 
   packages/partners:
     dependencies:

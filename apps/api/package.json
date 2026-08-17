@@ -14,12 +14,10 @@
   "dependencies": {
     "@better-auth/expo": "^1.6.25",
     "@sailo/api": "workspace:*",
-    "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
     "@sailo/env": "workspace:*",
     "@sailo/events": "workspace:*",
     "@sailo/mailer": "workspace:*",
-    "@sailo/marketing": "workspace:*",
     "@sailo/observability": "workspace:*",
     "@sailo/payments": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
