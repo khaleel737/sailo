@@ -43,7 +43,26 @@ import { emitOrderWebhook } from "@sailo/webhooks/emit";
  *
  * A cart is all-or-nothing, so any abandonment after the first reservation has
  * to undo all of them — the line that failed and the ones already held.
- */
+  *
+ * WHY THIS FUNCTION IS NOT SPLIT UP
+ *
+ * It is long, and it was looked at during a pass whose whole purpose was splitting long files.
+ * It stays whole, and the reason is `orders.test.ts` beside it: nine tests that pin the *order*
+ * of the irreversible steps by source position — the terms gate before the client upsert, the
+ * stock reservation before the Stripe handoff, the coupon claim before the invoice, the
+ * confirmation email last. The sequence is the correctness property, not a side effect of how
+ * the code is arranged.
+ *
+ * Splitting it would thread nine accumulated locals through three or four functions and move
+ * that guard from "positions in one file" to "positions across several", which is weaker. The
+ * complexity here is in the sequence of writes, and moving it into parameter lists relocates it
+ * rather than removing it — on the one path in the product where a mistake is somebody's money.
+ *
+ * What *did* come out during that pass is everything that was not part of the sequence: the
+ * form readers are `./shop-form`, and the domain steps this calls are already packages
+ * (`@sailo/commerce`, `@sailo/payments`, `@sailo/workflows`). What is left is the order they
+ * happen in.
+*/
 async function releaseStockFor(lines: QuoteLine[]): Promise<void> {
   for (const line of lines) {
     await releaseStock({

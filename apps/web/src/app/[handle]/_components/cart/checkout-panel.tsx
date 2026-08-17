@@ -34,6 +34,26 @@ import type {
   CheckoutPanelProps,
 } from "./checkout.types";
 
+/**
+ * The checkout sheet.
+ *
+ * WHY THIS COMPONENT IS NOT SPLIT UP
+ *
+ * It is the longest file in the app and it stays whole, which was a decision rather than an
+ * omission. Ten pieces of `useState` are read and written across every section of the form —
+ * the chosen rail, the delivery method, the country, the typed email and phone, the pending
+ * flag, the error, the result — and `useCheckoutQuote` re-prices on almost all of them.
+ *
+ * Extracting the sections means either prop-drilling ten setters into five components or
+ * introducing a context for one screen. Both relocate the coupling into a wider interface
+ * rather than removing it, and this is the storefront checkout: the place where a re-render bug
+ * costs a sale rather than a repaint.
+ *
+ * The parts that were separable already are: the rails come from `@sailo/payments/offline`, the
+ * quote from `use-checkout-quote.ts`, and the slot picker and express buttons are their own
+ * components in this folder.
+ */
+
 export function CheckoutPanel({
   shopId,
   shopName,
