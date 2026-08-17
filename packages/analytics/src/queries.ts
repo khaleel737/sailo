@@ -11,6 +11,7 @@ import {
   visits,
 } from "@sailo/db/schema";
 import type { DateWindow } from "./analytics-window";
+import { utcDayWindow } from "@sailo/core/time";
 import {
   mergePerformance,
   type PerformanceSales,
@@ -159,24 +160,6 @@ export async function getDashboardStats(shopId: string, window: Window = 30) {
   };
 }
 
-/**
- * Timestamps are stored as UTC wall-clock, and Postgres `::date` truncates in
- * UTC — so the JS buckets must be built in UTC too. Using local midnight here
- * silently drops today's bucket for anyone ahead of UTC.
- */
-function utcDayWindow(days: number) {
-  const since = new Date();
-  since.setUTCHours(0, 0, 0, 0);
-  since.setUTCDate(since.getUTCDate() - (days - 1));
-
-  const keys: string[] = [];
-  for (let i = 0; i < days; i++) {
-    const d = new Date(since);
-    d.setUTCDate(since.getUTCDate() + i);
-    keys.push(d.toISOString().slice(0, 10));
-  }
-  return { since, keys };
-}
 
 /**
  * Zero-fill keys and bounds for either window shape. A custom window's bounds

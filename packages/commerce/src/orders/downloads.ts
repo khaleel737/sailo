@@ -12,6 +12,7 @@ import {
   type Shop,
 } from "@sailo/db/schema";
 import { eventAccessForOrder } from "../ticketing/event-access";
+import { randomHex } from "@sailo/core/token";
 
 /**
  * Digital delivery. A buyer never receives a file's storage URL — they get a
@@ -20,8 +21,7 @@ import { eventAccessForOrder } from "../ticketing/event-access";
  */
 
 export function newDownloadToken() {
-  const bytes = crypto.getRandomValues(new Uint8Array(16));
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  return randomHex(16);
 }
 
 export function downloadExpiry(days: number | null, from: Date): Date | null {

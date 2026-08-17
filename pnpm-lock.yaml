@@ -491,6 +491,9 @@ importers:
 
   packages/account:
     dependencies:
+      '@sailo/core':
+        specifier: workspace:*
+        version: link:../core
       '@sailo/db':
         specifier: workspace:*
         version: link:../db

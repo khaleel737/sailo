@@ -65,24 +65,7 @@ export function like(term: string) {
   return `%${term.trim().replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
 }
 
-/**
- * The UTC day buckets a chart is drawn over. Timestamps are stored as UTC and
- * Postgres `::date` truncates in UTC, so building these in local time silently
- * drops today's bucket for anyone ahead of Greenwich.
- */
-export function utcDayWindow(days: number) {
-  const since = new Date();
-  since.setUTCHours(0, 0, 0, 0);
-  since.setUTCDate(since.getUTCDate() - (days - 1));
-
-  const keys: string[] = [];
-  for (let i = 0; i < days; i++) {
-    const d = new Date(since);
-    d.setUTCDate(since.getUTCDate() + i);
-    keys.push(d.toISOString().slice(0, 10));
-  }
-  return { since, keys };
-}
+export { utcDayWindow } from "@sailo/core/time";
 
 /* -------------------------------------------------------------------------- */
 /*  Billing state, expressed as a query                                        */

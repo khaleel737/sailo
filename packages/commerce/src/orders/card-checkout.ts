@@ -79,7 +79,16 @@ export const disconnectedFields = {
  * opens the same kind of account — so it lives in `@sailo/payments`. What is
  * web's alone is knowing where "here" is, which is the one thing this adds.
  */
-export function publicShopUrl(handle: string): string | null {
+/**
+ * The storefront's public address on *this* deployment.
+ *
+ * Renamed from `publicShopUrl`, which `@sailo/payments/connect` also exports with
+ * a different arity — it takes the base explicitly, because Stripe onboarding has
+ * to name a host that is not necessarily ours. This one supplies the base from
+ * the environment, which is the only difference and exactly the kind that is
+ * invisible at a call site when both are called the same thing.
+ */
+export function shopUrl(handle: string): string | null {
   return shopUrlUnder(appUrl(), handle);
 }
 

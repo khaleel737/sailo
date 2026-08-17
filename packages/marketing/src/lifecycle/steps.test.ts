@@ -4,7 +4,7 @@ import {
   LIFECYCLE_STEP_IDS,
   canTakeMoney,
   isRetirable,
-  isSellable,
+  shopCanSell,
   lifecycleGap,
   lifecycleStep,
   nextLifecycleStep,
@@ -209,8 +209,8 @@ describe("set up but not selling", () => {
     });
 
   it("is only reachable once the shop can actually sell", () => {
-    expect(isSellable(ready())).toBe(true);
-    expect(isSellable(ready({ railCount: 0 }))).toBe(false);
+    expect(shopCanSell(ready())).toBe(true);
+    expect(shopCanSell(ready({ railCount: 0 }))).toBe(false);
   });
 
   it("nudges about traffic, then about tactics", () => {

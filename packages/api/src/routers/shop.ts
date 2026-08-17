@@ -5,11 +5,11 @@ import { getDb } from "@sailo/db";
 import { paymentMethods, products, shops } from "@sailo/db/schema";
 import { can } from "@sailo/core/plans";
 import { isRailUsable } from "@sailo/payments/offline";
+import { freeHandleSuggestions, isHandleTaken } from "@sailo/account/handle";
 import {
   HANDLE_MAX,
   HANDLE_MESSAGES,
   normalizeHandle,
-  suggestHandles,
   validateHandleFormat,
 } from "@sailo/core/handle";
 import { setupProgress, setupSteps } from "@sailo/core/onboarding";
@@ -128,7 +128,7 @@ async function availability(raw: string, userId: string) {
      */
     const suggestions =
       problem === "reserved"
-        ? await freeSuggestions(handle)
+        ? await freeHandleSuggestions(handle)
         : ([] as string[]);
     return {
       handle,
@@ -138,36 +138,16 @@ async function availability(raw: string, userId: string) {
     } as const;
   }
 
-  if (await taken(handle)) {
+  if (await isHandleTaken(handle)) {
     return {
       handle,
       verdict: "taken",
       message: HANDLE_MESSAGES.taken,
-      suggestions: await freeSuggestions(handle),
+      suggestions: await freeHandleSuggestions(handle),
     } as const;
   }
 
   return { handle, verdict: "available" } as const;
-}
-
-async function taken(handle: string, exceptShopId?: string): Promise<boolean> {
-  const existing = await getDb().query.shops.findFirst({
-    where: exceptShopId
-      ? and(eq(shops.handle, handle), ne(shops.id, exceptShopId))
-      : eq(shops.handle, handle),
-    columns: { id: true },
-  });
-  return Boolean(existing);
-}
-
-/** Three alternatives that are themselves free — a suggestion the seller taps
- * and is then refused is worse than offering none. */
-async function freeSuggestions(handle: string): Promise<string[]> {
-  const candidates = suggestHandles(handle);
-  const checked = await Promise.all(
-    candidates.map(async (c) => ((await taken(c)) ? null : c)),
-  );
-  return checked.filter((c): c is string => c !== null).slice(0, 3);
 }
 
 export const shopRouter = router({
@@ -269,7 +249,7 @@ export const shopRouter = router({
       if (problem) {
         throw new TRPCError({ code: "BAD_REQUEST", message: HANDLE_MESSAGES[problem] });
       }
-      if (await taken(handle)) {
+      if (await isHandleTaken(handle)) {
         throw new TRPCError({ code: "CONFLICT", message: HANDLE_MESSAGES.taken });
       }
 

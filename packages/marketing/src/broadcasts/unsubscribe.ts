@@ -1,6 +1,7 @@
 import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { appOrigin } from "@sailo/core/origin";
+import { b64url, signingKey } from "@sailo/core/token";
 
 /**
  * The link that has to work.
@@ -30,13 +31,10 @@ import { appOrigin } from "@sailo/core/origin";
  */
 const DOMAIN = "sailo:unsubscribe:v1";
 
-function key(): Buffer | null {
-  const secret = process.env.BETTER_AUTH_SECRET;
-  if (!secret) return null;
-  return createHmac("sha256", secret).update(DOMAIN).digest();
-}
-
-const b64url = (buf: Buffer) => buf.toString("base64url");
+/* The derivation and the encoding are `@sailo/core/token`. `DOMAIN` above stays
+   local and distinct: it is what stops a token minted here being presented as
+   one of the other two families. */
+const key = () => signingKey(DOMAIN);
 
 export type UnsubscribeClaim = {
   shopId: string;

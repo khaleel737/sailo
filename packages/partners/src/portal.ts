@@ -2,6 +2,7 @@ import "server-only";
 import { and, asc, desc, eq, gte, isNotNull, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { affiliates, orders, shops, type Affiliate, type Shop } from "@sailo/db/schema";
+import { randomHex } from "@sailo/core/token";
 
 /**
  * The affiliate's own view of what they've earned.
@@ -13,8 +14,7 @@ import { affiliates, orders, shops, type Affiliate, type Shop } from "@sailo/db/
  */
 
 export function newPortalToken() {
-  const bytes = crypto.getRandomValues(new Uint8Array(18));
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  return randomHex(18);
 }
 
 /** Issues a token the first time one is needed, and keeps it thereafter. */

@@ -5,6 +5,7 @@ import { getDb } from "@sailo/db";
 import { clients, emailSuppressions, shops } from "@sailo/db/schema";
 import { appOrigin } from "@sailo/core/origin";
 import { maybeRow } from "@sailo/core/invariant";
+import { b64url, signingKey } from "@sailo/core/token";
 import { emitContactWebhook } from "@sailo/webhooks/emit";
 
 /**
@@ -52,13 +53,10 @@ const DOMAIN = "sailo:subscribe:v1";
  */
 export const SUBSCRIBE_TOKEN_DAYS = 7;
 
-function key(): Buffer | null {
-  const secret = process.env.BETTER_AUTH_SECRET;
-  if (!secret) return null;
-  return createHmac("sha256", secret).update(DOMAIN).digest();
-}
-
-const b64url = (buf: Buffer) => buf.toString("base64url");
+/* The derivation and the encoding are `@sailo/core/token`. `DOMAIN` above stays
+   local and distinct: it is what stops a token minted here being presented as
+   one of the other two families. */
+const key = () => signingKey(DOMAIN);
 
 export type SubscribeClaim = {
   shopId: string;

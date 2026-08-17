@@ -81,7 +81,17 @@ export function canTakeMoney(state: LifecycleState): boolean {
 }
 
 /** Set up enough to sell: a shop, something in it, and a way to be paid. */
-export function isSellable(state: LifecycleState): boolean {
+/**
+ * Has this shop finished enough setup to sell at all?
+ *
+ * Renamed from `isSellable`, which `@sailo/core/variants` also exports — and
+ * means something else entirely there: whether a *product* is in stock and
+ * available. Two exported functions with one name, answering different questions
+ * about different subjects, is a wrong import that typechecks in exactly the
+ * case where it matters least and passes silently in the case where it matters
+ * most.
+ */
+export function shopCanSell(state: LifecycleState): boolean {
   return Boolean(state.shop) && state.productCount > 0 && canTakeMoney(state);
 }
 
@@ -184,13 +194,13 @@ export const LIFECYCLE_STEPS: LifecycleStep[] = [
   {
     id: "no_orders_1",
     dueAt: (s) => at(readyAt(s), 3 * DAY),
-    applies: (s) => isSellable(s) && s.orderCount === 0,
+    applies: (s) => shopCanSell(s) && s.orderCount === 0,
     staleAfterMs: 45 * DAY,
   },
   {
     id: "no_orders_2",
     dueAt: (s) => at(readyAt(s), 12 * DAY),
-    applies: (s) => isSellable(s) && s.orderCount === 0,
+    applies: (s) => shopCanSell(s) && s.orderCount === 0,
     staleAfterMs: 45 * DAY,
   },
 

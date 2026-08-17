@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { publicShopUrl } from "./card-checkout";
+import { shopUrl } from "./card-checkout";
 
 const original = process.env.NEXT_PUBLIC_APP_URL;
 afterEach(() => {
@@ -9,10 +9,10 @@ afterEach(() => {
 
 const at = (base: string) => {
   process.env.NEXT_PUBLIC_APP_URL = base;
-  return publicShopUrl("khaleel-musleh");
+  return shopUrl("khaleel-musleh");
 };
 
-describe("publicShopUrl", () => {
+describe("shopUrl", () => {
   it("passes a real public address through", () => {
     expect(at("https://sailo.store")).toBe("https://sailo.store/khaleel-musleh");
     expect(at("https://www.sailo.store")).toBe(

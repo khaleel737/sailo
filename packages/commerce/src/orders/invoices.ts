@@ -3,6 +3,7 @@ import { firstRow, maybeRow } from "@sailo/core/invariant";
 import { eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { invoices, shops } from "@sailo/db/schema";
+import { randomHex } from "@sailo/core/token";
 
 /**
  * Claims the next invoice number for a shop. The increment and read happen in
@@ -33,8 +34,7 @@ async function claimNumber(shopId: string) {
  * has accepted the session. The caller mints the token, then passes it here.
  */
 export function newInvoiceToken() {
-  const bytes = crypto.getRandomValues(new Uint8Array(16));
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  return randomHex(16);
 }
 
 /**

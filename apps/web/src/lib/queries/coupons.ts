@@ -5,12 +5,15 @@ import { coupons } from "@sailo/db/schema";
 
 /** Discount codes. */
 
-export async function getShopCoupons(shopId: string) {
-  return getDb().query.coupons.findMany({
-    where: eq(coupons.shopId, shopId),
-    orderBy: [desc(coupons.createdAt)],
-  });
-}
+/**
+ * The shop's coupons, newest first.
+ *
+ * `@sailo/commerce/coupons`'s, not a second query. This was the same four lines
+ * — same table, same predicate, same order — written here and there, which is
+ * two answers to "what coupons does this shop have" waiting to disagree the
+ * first time one of them learns about expiry or archiving.
+ */
+export { listCoupons as getShopCoupons } from "@sailo/commerce/coupons";
 
 /* -------------------------------------------------------------------------- */
 /*  Affiliates                                                                 */

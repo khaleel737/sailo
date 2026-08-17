@@ -3,6 +3,7 @@ import { and, desc, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { doorPasses, products, type DoorPass } from "@sailo/db/schema";
 import { rateLimit } from "@sailo/rate-limit";
+import { randomHex } from "@sailo/core/token";
 
 /**
  * A credential for whoever is actually on the door.
@@ -32,8 +33,7 @@ import { rateLimit } from "@sailo/rate-limit";
  */
 
 export function newDoorToken(): string {
-  const bytes = crypto.getRandomValues(new Uint8Array(24));
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  return randomHex(24);
 }
 
 /**

@@ -45,12 +45,14 @@ export async function getCheckoutMethods(shopId: string) {
 /*  Delivery                                                                   */
 /* -------------------------------------------------------------------------- */
 
-export async function getShopDeliveryMethods(shopId: string) {
-  return getDb().query.deliveryMethods.findMany({
-    where: eq(deliveryMethods.shopId, shopId),
-    orderBy: [asc(deliveryMethods.position)],
-  });
-}
+/**
+ * Every delivery method a shop has configured, in the seller's order.
+ *
+ * `@sailo/commerce/delivery`'s. It was the same four lines here and there —
+ * `getCheckoutDeliveryMethods` below is the one that genuinely differs, because
+ * it narrows to what a *buyer* may pick.
+ */
+export { listDelivery as getShopDeliveryMethods } from "@sailo/commerce/delivery/server";
 
 export async function getCheckoutDeliveryMethods(shopId: string) {
   const rows = await getDb().query.deliveryMethods.findMany({

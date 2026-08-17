@@ -110,19 +110,10 @@ function imageUrlOrNull(value: FormDataEntryValue | null): string | null {
   const url = String(value ?? "").trim();
   return isRenderableImageUrl(url) ? url : null;
 }
+import { freeHandleSuggestions, isHandleTaken } from "@sailo/account/handle";
 import { LOCALES, type Locale } from "@sailo/i18n/config";
 
 export type ActionState = { ok: boolean; error?: string; message?: string };
-
-async function handleTaken(handle: string, exceptShopId?: string) {
-  const existing = await getDb().query.shops.findFirst({
-    where: exceptShopId
-      ? and(eq(shops.handle, handle), ne(shops.id, exceptShopId))
-      : eq(shops.handle, handle),
-    columns: { id: true },
-  });
-  return Boolean(existing);
-}
 
 const HANDLE_INDEX = "shops_handle_key";
 const UNIQUE_VIOLATION = "23505";
@@ -164,7 +155,7 @@ async function checkHandleAvailability(raw: string, exceptShopId?: string) {
     problem === "reserved" && handle === BRAND_HANDLE && (await isStaff());
 
   if (problem && !ours) return { handle, problem } as const;
-  if (await handleTaken(handle, exceptShopId)) {
+  if (await isHandleTaken(handle, exceptShopId)) {
     return { handle, problem: "taken" } as const;
   }
   return { handle, problem: null } as const;
@@ -249,14 +240,16 @@ export async function checkHandle(raw: string): Promise<HandleStatus> {
     return { handle, verdict: "available" };
   }
 
-  let suggestions: string[] = [];
-  if (problem === "taken" || problem === "reserved") {
-    const candidates = suggestHandles(handle);
-    const free = await Promise.all(
-      candidates.map(async (c) => ((await handleTaken(c)) ? null : c)),
-    );
-    suggestions = free.filter((c): c is string => c !== null).slice(0, 3);
-  }
+  /*
+   * `@sailo/account/handle`'s, not a third copy. This block and the phone's
+   * onboarding router held the same two functions verbatim — the read that says
+   * whether a handle is free, and the filter that only offers alternatives which
+   * are themselves free.
+   */
+  const suggestions =
+    problem === "taken" || problem === "reserved"
+      ? await freeHandleSuggestions(handle)
+      : [];
 
   return {
     handle,
