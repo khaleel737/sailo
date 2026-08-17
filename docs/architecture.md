@@ -40,6 +40,27 @@ packages: one consumer, no vendor, no second implementation possible.
 The trigger to promote something is a *second* consumer appearing — which in practice means
 the mobile app reaching for it. Promote at that moment, not in anticipation.
 
+### `apps/web/scripts` stays where it is, and this is the measurement
+
+The restructure plan had these 59 files moving to a `tooling/` workspace, on the
+grounds that "the web app stops shipping its own seed data". Measured, that reason
+does not hold and two others argue the other way:
+
+| Question | Answer |
+|---|---|
+| Do they import app internals (`@/…`)? | **0 files** — 17 import `@sailo/*` packages only |
+| Does `next build` ship them? | No. Nothing under `app/` imports them; they are never in a bundle |
+| What do they read at runtime? | `apps/web/.env.local` — where the keys already are |
+| How are they invoked? | 27 entries in `apps/web/package.json`, run daily |
+
+So they are already decoupled — the thing the move was meant to achieve. What a move
+*would* change is 27 commands the user types and the path every one of them resolves
+its environment from, in exchange for a shorter `package.json`. That is a worse trade
+than it looked when the plan was written, so it was not taken.
+
+What was wrong there was real duplication, and that is fixed: nine of them had
+hand-written the same assertion harness, now `scripts/lib/expect.ts`.
+
 ## Layers
 
 Every workspace declares one layer tag in its own `turbo.json`. A layer may only import
@@ -136,6 +157,16 @@ A subpath is a promise about what a file may reach for. `@sailo/design-system/na
 only entry that resolves React Native, which is what keeps `apps/web` and `apps/api` from
 ever pulling it into a server bundle.
 
+The subpath is also where a miscategorisation shows up first. `formatBytes` and
+`formatDuration` lived in `@sailo/core/currency`, so a file uploader printing
+"1.5 KB" imported from *currency* — the call site announced the mistake every time
+it was read. They are `@sailo/core/format` now. If an import line reads oddly at the
+call site, the file is in the wrong place.
+
+`@sailo/api` gained `./webhooks` and `./streams` for the same reason: an inbound
+provider webhook and an SSE endpoint are transport, and both were sitting in route
+files that had to be copied between the two apps to keep answering.
+
 ## Environment variables
 
 Each package that needs configuration exports `keys()` — a Zod schema over just its own
@@ -173,6 +204,33 @@ React Server Component, which is exactly what would stop a server module being
 unit-tested. That alias used to be copied into nine packages with nine stub
 files. `@sailo/auth` is the one package that extends the preset, for two
 accommodations its own header explains.
+
+### A package with no `test` script is a package with no tests
+
+`@sailo/observability` had no `test` script, so `turbo test` skipped it silently —
+and what it skipped was `scrub`, the function that keeps a seller's customer list out
+of a third-party error tracker, which existed in two copies and was covered by
+neither. A missing script does not fail any gate; it just quietly removes a workspace
+from the run. Worth checking against the task count: `turbo test` runs **26** tasks
+across 29 workspaces today, and the three without one own no testable code.
+
+### Untestable code stays untested, so take the world as an argument
+
+The basket's `localStorage` store reached for `window` directly, and `apps/web` runs
+vitest in a node environment with no jsdom — so the code holding a buyer's basket
+across a page load could not be unit-tested at all, and was not. Taking the storage
+and the event target as parameters, defaulting to the real ones, made every rule in
+it checkable in plain node with no new dependency. If something important has no
+test, ask whether it is *possible* to write one before concluding nobody bothered.
+
+### Guard a duplicate you are choosing to keep
+
+`/api/v1/*` is mounted in both apps on purpose, and the nine route bodies are the
+endpoints' parameter surface — worth keeping readable rather than lifting into the
+package behind an indirection. That leaves nine duplicates, so
+`apps/api/src/dual-mount.test.ts` compares every shared route across the two trees
+with comments stripped. A deliberate duplicate needs a test that it stays a copy;
+otherwise the divergence ships to whichever origin a caller happened to reach.
 
 **Each app owns its end-to-end layer**, and each app's is shaped by what it
 actually is:
