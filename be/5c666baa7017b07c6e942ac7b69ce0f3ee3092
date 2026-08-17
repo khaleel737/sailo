@@ -1,0 +1,38 @@
+apps/web/scripts/check-partners.ts
+  s_c7a7b98e0ed667::t_16b9eb8dc68fc3 31,47,50-54
+  s_c7a7b98e0ed667::t_ed7858ec6a5902 139,197,222-223,243,282-289
+apps/web/scripts/check-stores.ts
+  s_c7a7b98e0ed667::t_4b235b39decb4e 18
+  s_c7a7b98e0ed667::t_15d371d9152bae 379
+apps/web/scripts/check-live.ts
+  s_c7a7b98e0ed667::t_4b235b39decb4e 30
+  s_c7a7b98e0ed667::t_15d371d9152bae 232
+apps/web/scripts/check-payment-methods.ts
+  s_c7a7b98e0ed667::t_15d371d9152bae 22,380
+apps/web/scripts/check-checkout-content.ts
+  s_c7a7b98e0ed667::t_15d371d9152bae 33,481
+apps/web/scripts/lib/expect.ts
+  s_c7a7b98e0ed667::t_c6b028e39c3fba 1-85
+apps/web/scripts/check-cards.ts
+  s_c7a7b98e0ed667::t_4b235b39decb4e 23,526
+apps/web/scripts/check-subscriptions.ts
+  s_c7a7b98e0ed667::t_4b235b39decb4e 28,436
+apps/web/scripts/check-connect-live.ts
+  s_c7a7b98e0ed667::t_15d371d9152bae 25,192
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "be5c666baa7017b07c6e942ac7b69ce0f3ee3092",
+  "prompts": {},
+  "sessions": {
+    "s_c7a7b98e0ed667": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "70893044-d569-48ff-be4c-2178e0eb9f2a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
