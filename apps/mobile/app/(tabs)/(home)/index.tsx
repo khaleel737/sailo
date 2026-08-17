@@ -29,7 +29,7 @@ import { useT } from "../../../lib/i18n";
 import { usePushPrimer } from "../../../lib/push";
 import { reportQueryError, useTRPC } from "../../../lib/query";
 import { errorMessage } from "../../../components/states";
-import { useRelativeTime } from "../orders/index";
+import { useRelativeTime } from "../../../components/order/relative-time";
 
 /**
  * Home — the seller's shop link, today's numbers, and what just came in.

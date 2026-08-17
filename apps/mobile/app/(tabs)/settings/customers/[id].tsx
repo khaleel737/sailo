@@ -22,7 +22,7 @@ import {
   haptics,
 } from "@sailo/design-system/native";
 import { formatMoney } from "@sailo/core/currency";
-import { orderTone } from "../../orders/index";
+import { orderTone } from "../../../../components/order/tone";
 import { useT } from "../../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../../lib/query";
 import { errorMessage } from "../../../../components/states";

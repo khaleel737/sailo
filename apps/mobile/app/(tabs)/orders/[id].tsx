@@ -8,35 +8,37 @@ import {
   type InfiniteData,
 } from "@tanstack/react-query";
 import { captureError } from "@sailo/observability";
-import { formatMoney } from "@sailo/core/currency";
 import { ORDER_STATUSES, orderStatusLabel, type OrderStatus } from "@sailo/core/order-status";
 import { SELLER_SETTABLE_PAYMENT_STATUSES } from "@sailo/core/payment-status";
-import { TRPCClientError } from "@trpc/client";
-import { interpolate } from "@sailo/i18n/native";
 import {
   Banner,
-  Button,
   Card,
   ErrorState,
   GroupedList,
-  Icon,
   ListRow,
   Money,
   Screen,
-  Sheet,
   Skeleton,
   StatusPill,
   Text,
-  TextField,
   haptics,
-  type StatusTone,
 } from "@sailo/design-system/native";
-import type { Order, OrderDetail, OrderItem, RouterOutputs } from "../../../lib/models";
-import { textToPrice } from "@sailo/core/currency";
+import type { Order, RouterOutputs } from "../../../lib/models";
 import { useT } from "../../../lib/i18n";
 import { reportQueryError, useTRPC } from "../../../lib/query";
 import { errorMessage } from "../../../components/states";
-import { orderTone } from "./index";
+import {
+  orderTone,
+  paymentLabel,
+  paymentTone,
+} from "../../../components/order/tone";
+import { Items } from "../../../components/order/items";
+import { OrderActions } from "../../../components/order/actions";
+import { Totals } from "../../../components/order/totals";
+import { Fulfilment } from "../../../components/order/fulfilment";
+import { Buyer } from "../../../components/order/buyer";
+import { StatusPicker } from "../../../components/order/status-picker";
+import { placedOn } from "../../../components/order/format";
 
 /**
  * One order, and the only thing on the phone that writes.
@@ -60,23 +62,15 @@ import { orderTone } from "./index";
  * asked whoever opened this screen next to delete. The header's *title* is set
  * from here instead, once the order has loaded, which is what that layout's
  * empty `title` is waiting for.
- */
-
-/**
- * What the buyer has actually paid, as a tone.
  *
- * Local, and separate from `orderTone`, because payment states are not order
- * states: a refund is a *neutral* fact about an order and a red one about a
- * payment. `disputed` is the bank's decision, not the seller's, which is why it
- * is the same red as a refund rather than a warning.
+ * WHAT IS NO LONGER IN THIS FILE
+ *
+ * It was 918 lines: this screen plus seven components it happened to render. They are in
+ * `components/order/` now, which is where they have to be — in Expo Router every file under
+ * `app/` is a route, so a component kept beside its screen for tidiness would have become a
+ * URL. `orderTone` was the clearest case: it was exported from the orders *list* route and
+ * imported by three screens.
  */
-const PAYMENT_TONES: Record<string, StatusTone> = {
-  unpaid: "neutral",
-  pending: "warning",
-  paid: "success",
-  refunded: "danger",
-  disputed: "danger",
-};
 
 /**
  * One page of `orders.list`, as the optimistic patch below has to reason about
@@ -302,7 +296,7 @@ export default function OrderDetailScreen() {
             <StatusPill label={statusLabel} tone={orderTone(data.status)} />
             <StatusPill
               label={a.paymentStatus[data.paymentStatus as keyof typeof a.paymentStatus] ?? data.paymentStatus}
-              tone={PAYMENT_TONES[data.paymentStatus] ?? "neutral"}
+              tone={paymentTone(data.paymentStatus)}
             />
           </View>
         </View>
@@ -395,524 +389,9 @@ export default function OrderDetailScreen() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Lines                                                                      */
-/* -------------------------------------------------------------------------- */
-
-/**
- * What was actually bought.
- *
- * Read from `items`, never from the header. The order row carries
- * `productTitle`, `unitPriceCents` and `quantity` as a summary of the *first*
- * line so a list can render without a join — on a two-line order those columns
- * describe one of them, and a detail screen that trusted them would quietly
- * show the wrong basket.
- */
-function Items({
-  items,
-  currency,
-  locale,
-  header,
-}: {
-  items: OrderItem[];
-  currency: string;
-  locale: string;
-  header: string;
-}) {
-  return (
-    <GroupedList header={header}>
-      {items.map((item) => (
-        <ListRow
-          key={item.id}
-          title={item.title}
-          subtitle={[
-            item.variantLabel,
-            `${item.quantity} × ${formatMoney(item.unitPriceCents, currency, locale)}`,
-          ]
-            .filter(Boolean)
-            .join(" · ")}
-          // The line's own subtotal — unit price × quantity, as stored.
-          valueTone="strong"
-          value={formatMoney(item.subtotalCents, currency, locale)}
-        />
-      ))}
-    </GroupedList>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Money                                                                      */
-/* -------------------------------------------------------------------------- */
-
-/**
- * The money breakdown, as the order stored it.
- *
- * Every number here is a column, not a calculation. The order was priced once,
- * at checkout, by `@sailo/core/pricing`, and those totals were snapshotted —
- * including the tax rate and name, so a later rate change cannot rewrite what a
- * past buyer was charged. Recomputing any of it on the phone would risk showing
- * a total the buyer was never charged.
- */
-/**
- * Refunding, and recording dispatch.
- *
- * Both were web-only until `@sailo/email` existed, and neither was blocked on
- * the money or the row — a refund that moves money while telling nobody is
- * worse than no button, and a shipping notice with no email is a tracking
- * number the buyer never sees.
- *
- * WHAT THE SELLER IS TOLD AFTERWARDS
- *
- * More than "done". A refund on a bank transfer or a cash sale settles between
- * two people, so `reversed` decides between "the money is on its way back" and
- * "pay them back yourself" — a seller who assumed Stripe had done it would
- * leave a buyer waiting for money nobody sent. A shipping notice reports
- * whether the email actually left, because an order taken over the counter has
- * no address and a seller who believes their buyer has tracking will not chase
- * it.
- */
-function OrderActions({ order, locale }: { order: OrderDetail; locale: string }) {
-  const { a, t } = useT();
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
-
-  const [sheet, setSheet] = useState<"refund" | "ship" | null>(null);
-  const [amount, setAmount] = useState("");
-  const [reason, setReason] = useState("");
-  const [carrier, setCarrier] = useState(order.trackingCarrier ?? "");
-  const [tracking, setTracking] = useState(order.trackingNumber ?? "");
-  const [trackingUrl, setTrackingUrl] = useState(order.trackingUrl ?? "");
-
-  const invalidate = useCallback(
-    () => queryClient.invalidateQueries(trpc.orders.pathFilter()),
-    [queryClient, trpc],
-  );
-
-  const refund = useMutation(
-    trpc.orders.refund.mutationOptions({
-      onSuccess: async (result) => {
-        haptics.success();
-        setSheet(null);
-        Alert.alert(
-          a.orders.recordRefund,
-          result.reversed ? a.orders.refundSent : a.orders.refundManual,
-        );
-        await invalidate();
-      },
-      onError: (error) => {
-        haptics.error();
-        captureError(error, { scope: "mobile:orders:refund" });
-      },
-    }),
-  );
-
-  const ship = useMutation(
-    trpc.orders.markShipped.mutationOptions({
-      onSuccess: async (result) => {
-        haptics.success();
-        setSheet(null);
-        /* Whether the buyer was actually told. `null` means we did not ask;
-           `sent: false` with a reason means we did and it did not go. */
-        if (result.notified && !result.notified.sent) {
-          Alert.alert(a.orders.markShipped, a.orders.shippedNotEmailed);
-        }
-        await invalidate();
-      },
-      onError: (error) => {
-        haptics.error();
-        captureError(error, { scope: "mobile:orders:ship" });
-      },
-    }),
-  );
-
-  /* Nothing left to give back is not a refund waiting to happen. */
-  const refundable = order.totalCents - order.refundedCents;
-
-  return (
-    <>
-      <View style={styles.actions}>
-        {refundable > 0 ? (
-          <Button
-            label={a.orders.recordRefund}
-            variant="secondary"
-            onPress={() => {
-              setAmount("");
-              setReason("");
-              setSheet("refund");
-            }}
-            testID="order-refund"
-          />
-        ) : null}
-        {order.status !== "cancelled" && order.status !== "refunded" ? (
-          <Button
-            label={a.orders.markShipped}
-            icon="package"
-            variant="secondary"
-            onPress={() => setSheet("ship")}
-            testID="order-ship"
-          />
-        ) : null}
-      </View>
-
-      <Sheet
-        visible={sheet === "refund"}
-        onClose={() => setSheet(null)}
-        title={a.orders.recordRefund}
-        closeLabel={a.common.cancel}
-        dismissible={false}
-      >
-        <View style={styles.form}>
-          {refund.error ? (
-            <Banner tone="danger" message={refundError(refund.error, a, t)} />
-          ) : null}
-
-          <TextField
-            label={interpolate(a.productForm.price, { currency: order.currency })}
-            /* Blank refunds whatever is left, never the whole order again —
-               the server decides that, so the hint says it rather than the
-               field pre-filling a number the seller did not choose. */
-            hint={`${a.orders.refundAmountHint} · ${formatMoney(refundable, order.currency, locale)}`}
-            value={amount}
-            onChangeText={setAmount}
-            keyboard="decimal"
-          />
-          <TextField
-            label={a.orders.refundReason}
-            placeholder={a.orders.refundReasonPlaceholder}
-            value={reason}
-            onChangeText={setReason}
-          />
-          <Button
-            label={a.orders.recordRefund}
-            variant="danger"
-            loading={refund.isPending}
-            onPress={() =>
-              refund.mutate({
-                id: order.id,
-                amountCents: amount.trim()
-                  ? textToPrice(amount, order.currency, locale)
-                  : null,
-                reason: reason.trim() || null,
-              })
-            }
-            fullWidth
-          />
-        </View>
-      </Sheet>
-
-      <Sheet
-        visible={sheet === "ship"}
-        onClose={() => setSheet(null)}
-        title={a.orders.markShipped}
-        closeLabel={a.common.cancel}
-        dismissible={false}
-      >
-        <View style={styles.form}>
-          {ship.error ? (
-            <Banner tone="danger" message={errorMessage(ship.error, t.errors.body)} />
-          ) : null}
-
-          <TextField label={a.orders.carrier} value={carrier} onChangeText={setCarrier} />
-          <TextField
-            label={a.orders.trackingNumber}
-            placeholder={a.orders.trackingNumberPlaceholder}
-            value={tracking}
-            onChangeText={setTracking}
-          />
-          <TextField
-            label={a.orders.trackingLink}
-            placeholder={a.orders.trackingLinkPlaceholder}
-            value={trackingUrl}
-            onChangeText={setTrackingUrl}
-            keyboard="url"
-          />
-          <Button
-            label={a.orders.markShipped}
-            loading={ship.isPending}
-            onPress={() =>
-              ship.mutate({
-                id: order.id,
-                carrier: carrier.trim() || null,
-                trackingNumber: tracking.trim() || null,
-                trackingUrl: trackingUrl.trim() || null,
-              })
-            }
-            fullWidth
-          />
-        </View>
-      </Sheet>
-    </>
-  );
-}
-
-/**
- * A refund refusal, in the seller's words.
- *
- * `raced` is the one worth spelling out: another refund on this order claimed
- * the balance first, which means the amount on screen is stale rather than
- * anything having gone wrong.
- */
-function refundError(
-  error: unknown,
-  a: ReturnType<typeof useT>["a"],
-  t: ReturnType<typeof useT>["t"],
-): string {
-  const code = error instanceof TRPCClientError ? String(error.message ?? "") : "";
-  if (code === "raced") return a.orders.refundRaced;
-  if (code === "reversal_failed") return a.orders.refundFailed;
-  if (code === "exceeds_remaining") return a.orders.refundTooMuch;
-  return errorMessage(error, t.errors.body);
-}
-
-function Totals({ order, locale }: { order: OrderDetail; locale: string }) {
-  const { t, a } = useT();
-  const money = (minor: number) => formatMoney(minor, order.currency, locale);
-
-  return (
-    <GroupedList header={t.checkout.total}>
-      <ListRow title={t.checkout.subtotal} valueTone="strong" value={money(order.subtotalCents)} />
-      {order.discountCents > 0 ? (
-        <ListRow
-          title={order.couponCode ?? t.checkout.discount}
-          valueTone="strong"
-          value={`− ${money(order.discountCents)}`}
-        />
-      ) : null}
-      {order.deliveryFeeCents > 0 ? (
-        <ListRow title={a.orders.delivery} valueTone="strong" value={money(order.deliveryFeeCents)} />
-      ) : null}
-      {order.taxCents > 0 ? (
-        <ListRow
-          /*
-           * The shop's own word for it — "VAT", "GST", "Sales tax" —
-           * snapshotted on the order, because that is what the buyer's invoice
-           * says. An inclusive rate is named rather than marked: the money was
-           * already inside the total above, and a bare "VAT" line under it
-           * reads as an amount added on top.
-           */
-          title={
-            order.taxInclusive
-              ? `${t.invoice.includes} ${order.taxName ?? t.invoice.tax}`
-              : (order.taxName ?? t.invoice.tax)
-          }
-          valueTone="strong"
-          value={money(order.taxCents)}
-        />
-      ) : null}
-      <ListRow title={t.checkout.total} valueTone="strong" value={money(order.totalCents)} />
-      {order.refundedCents > 0 ? (
-        <ListRow title={a.orders.refunded} valueTone="strong" value={`− ${money(order.refundedCents)}`} />
-      ) : null}
-    </GroupedList>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Fulfilment                                                                 */
-/* -------------------------------------------------------------------------- */
-
-/** How it gets to the buyer, and how far along that is. */
-function Fulfilment({ order, locale }: { order: OrderDetail; locale: string }) {
-  const { a } = useT();
-
-  const rows = [
-    order.deliveryLabel ? { label: a.orders.delivery, value: order.deliveryLabel } : null,
-    order.pickupLocation ? { label: a.orders.collectFrom, value: order.pickupLocation } : null,
-    order.trackingCarrier ? { label: a.orders.carrier, value: order.trackingCarrier } : null,
-    order.trackingNumber ? { label: a.orders.trackingNumber, value: order.trackingNumber } : null,
-    order.shippedAt ? { label: a.orderStatus.shipped, value: placedOn(order.shippedAt, locale) } : null,
-    order.scheduledFor
-      ? { label: a.orders.booking, value: placedOn(order.scheduledFor, locale) }
-      : null,
-    order.serviceLocation ? { label: a.columns.where, value: order.serviceLocation } : null,
-  ].filter((row) => row !== null);
-
-  if (rows.length === 0) return null;
-
-  return (
-    <GroupedList header={a.orders.delivery}>
-      {rows.map((row) => (
-        <ListRow key={row.label} title={row.label} value={row.value} subtitleLines={2} />
-      ))}
-    </GroupedList>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Buyer                                                                      */
-/* -------------------------------------------------------------------------- */
-
-/**
- * Who bought it — the snapshot taken at checkout, not the client record.
- * A buyer who later edits their profile must not silently rewrite an order
- * that was already placed and possibly already invoiced.
- */
-function Buyer({ order }: { order: OrderDetail }) {
-  const { t, a } = useT();
-
-  const address = [
-    order.addressLine1,
-    order.addressLine2,
-    order.city,
-    order.region,
-    order.postalCode,
-    order.country,
-  ]
-    .filter(Boolean)
-    .join(", ");
-
-  const rows = [
-    order.customerName ? { label: a.common.name, value: order.customerName } : null,
-    order.customerEmail ? { label: a.common.email, value: order.customerEmail } : null,
-    order.customerPhone ? { label: a.clients.phone, value: order.customerPhone } : null,
-    address ? { label: t.checkout.deliveryAddress, value: address } : null,
-    order.paymentMethod
-      ? { label: a.orders.paymentMethodLabel, value: order.paymentMethod }
-      : null,
-    order.paymentReference ? { label: a.orders.transferRef, value: order.paymentReference } : null,
-    order.note ? { label: a.clients.note, value: order.note } : null,
-  ].filter((row) => row !== null);
-
-  if (rows.length === 0) return null;
-
-  return (
-    <GroupedList header={a.columns.client}>
-      {rows.map((row) => (
-        <ListRow key={row.label} title={row.label} value={row.value} subtitleLines={2} />
-      ))}
-    </GroupedList>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Status picker                                                              */
-/* -------------------------------------------------------------------------- */
-
-/**
- * The six statuses, offered exactly as the web dropdown offers them.
- *
- * All of `ORDER_STATUSES`, with no transition rules layered on top — because
- * the web has none either. Inventing "you may only go forward" here would make
- * the phone refuse a correction the same seller can make on their laptop.
- *
- * A `Sheet` rather than a hand-rolled `Modal`: the scrim tap, the swipe-down
- * and the back gesture are all its business, and so is what any of that looks
- * like when the seller has Reduce Motion on.
- */
-/**
- * One picker for both status kinds.
- *
- * It used to iterate `ORDER_STATUSES` itself, which was right while there was
- * one list to pick from. There are two now — an order's own state and whether
- * its money has arrived — and they are picked the same way, told apart only by
- * which options they offer. A second near-identical sheet is a second place to
- * forget the tick, the close label and the grouping.
- *
- * `options` rather than a list name: the payment set a seller may choose from
- * is narrower than the set that exists — `disputed` is a fact a bank reported,
- * not an opinion they hold — and the caller is what knows which.
- */
-function StatusPicker<T extends string>({
-  visible,
-  current,
-  title,
-  options,
-  label,
-  onPick,
-  onClose,
-  closeLabel,
-}: {
-  visible: boolean;
-  current: string;
-  title: string;
-  options: readonly T[];
-  /** How each option is written in the seller's language. */
-  label: (value: T) => string;
-  onPick: (status: T) => void;
-  onClose: () => void;
-  /** The sheet's close button, in the seller's language — the design system
-   *  holds no dictionary, so the word comes from here. */
-  closeLabel: string;
-}) {
-  return (
-    <Sheet visible={visible} onClose={onClose} title={title} closeLabel={closeLabel}>
-      <GroupedList>
-        {options.map((status) => {
-          const active = status === current;
-          return (
-            <ListRow
-              key={status}
-              title={label(status)}
-              /*
-               * The tick is the only thing marking the current status, so it is
-               * the one icon on this screen that gets a label of its own —
-               * `Icon`'s note is that a glyph beside text should be silent, and
-               * this one is not beside text that repeats it.
-               */
-              accessory={active ? <Icon name="check" accessibilityLabel={title} /> : undefined}
-              onPress={() => onPick(status)}
-            />
-          );
-        })}
-      </GroupedList>
-    </Sheet>
-  );
-}
-
-/**
- * A payment status, in the seller's language.
- *
- * Falls back to the stored value rather than an em dash. The column is text, so
- * a row written by a build that knew a status this one does not would otherwise
- * render as blank — and "no payment status" is a different and more alarming
- * thing to read than a word you do not recognise.
- */
-function paymentLabel(status: string, a: ReturnType<typeof useT>["a"]): string {
-  /* Indexed through a widened view rather than a `keyof` cast: the column is
-     text, so the value genuinely may not be a key, and a cast that claims it is
-     would hand back `undefined` typed as `string`. */
-  const labels: Record<string, string | undefined> = a.paymentStatus;
-  return labels[status] ?? status;
-}
-
-/* -------------------------------------------------------------------------- */
-/*  Bits                                                                       */
-/* -------------------------------------------------------------------------- */
-
-/**
- * Dates arrive as ISO strings, not `Date`s — there is no transformer on this
- * tRPC client, which `lib/models.ts` documents and which a screen that called
- * `.toLocaleString()` straight on the value would discover on a device.
- *
- * Wrapped, for the same reason `@sailo/core/currency` wraps `NumberFormat`:
- * Hermes ships a narrower ICU than a browser's, and an unrecognised locale
- * throws rather than degrading. An ISO date is unambiguous everywhere; a
- * crashed screen is not.
- */
-function placedOn(value: string | Date, locale: string): string {
-  const date = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  try {
-    return new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(date);
-  } catch {
-    return date.toISOString().slice(0, 16).replace("T", " ");
-  }
-}
-
-/*
- * Layout only — flex and spacing, nothing with a colour, a radius or a font
- * size in it. Every visual decision on this screen belongs to
- * `@sailo/design-system`.
- */
-/** No safe-area edges — the stack header owns the top, the tab bar the bottom.
- *  `orders/index.tsx` carries the longer note. */
 const EDGES = [] as const;
 
 const styles = StyleSheet.create({
   headline: { gap: 6 },
   badges: { flexDirection: "row", gap: 8, marginTop: 6 },
-  /* Side by side while both fit, wrapping rather than shrinking — a refund
-     button narrow enough to read as an icon is one nobody presses on purpose. */
-  actions: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  form: { gap: 16 },
 });
