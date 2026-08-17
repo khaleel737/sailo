@@ -5,7 +5,9 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./client": "./src/client.ts"
+    "./client": "./src/client.ts",
+    "./rest": "./src/rest/index.ts",
+    "./mcp": "./src/mcp/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -23,6 +25,8 @@
     "@sailo/email": "workspace:*",
     "@sailo/env": "workspace:*",
     "@sailo/events": "workspace:*",
+    "@sailo/i18n": "workspace:*",
+    "@sailo/marketing": "workspace:*",
     "@sailo/notifications": "workspace:*",
     "@sailo/payments": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
@@ -31,6 +35,7 @@
     "@trpc/server": "^11.6.0",
     "@vercel/blob": "^2.6.1",
     "drizzle-orm": "^0.45.2",
+    "server-only": "^0.0.1",
     "zod": "^4.1.13"
   },
   "devDependencies": {

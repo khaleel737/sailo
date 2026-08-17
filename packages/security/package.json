@@ -9,7 +9,8 @@
     "./ip-ranges": "./src/ip-ranges.ts",
     "./restricted-businesses": "./src/restricted-businesses.ts",
     "./staff": "./src/staff.ts",
-    "./cron-auth": "./src/cron-auth.ts"
+    "./cron-auth": "./src/cron-auth.ts",
+    "./keys": "./src/keys.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -18,8 +19,11 @@
   },
   "dependencies": {
     "@sailo/email": "workspace:*",
+    "@sailo/env": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
-    "server-only": "^0.0.1"
+    "@t3-oss/env-core": "^0.13.4",
+    "server-only": "^0.0.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

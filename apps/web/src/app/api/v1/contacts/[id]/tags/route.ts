@@ -1,7 +1,7 @@
-import { tagContact } from "@/lib/api/handlers";
-import { apiFail, apiOk } from "@/lib/api/respond";
-import { apiGuard } from "@/lib/api/auth";
-import { readJson } from "@/lib/api/route";
+import { tagContact } from "@sailo/api/rest";
+import { apiFail, apiOk } from "@sailo/api/rest";
+import { apiGuard } from "@sailo/api/rest";
+import { readJson } from "@sailo/api/rest";
 
 /**
  * `POST /api/v1/contacts/{id}/tags` — `{ "add": ["vip"], "remove": ["lead"] }`

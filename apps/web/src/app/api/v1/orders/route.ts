@@ -1,5 +1,5 @@
-import { listOrders } from "@/lib/api/handlers";
-import { handleList } from "@/lib/api/route";
+import { listOrders } from "@sailo/api/rest";
+import { handleList } from "@sailo/api/rest";
 
 /**
  * `GET /api/v1/orders` — newest first, keyset-paged.

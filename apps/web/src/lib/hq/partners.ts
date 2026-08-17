@@ -16,9 +16,9 @@ import {
   hasLiveSubscription,
   payoutBlocker,
   type PayoutBlocker,
-} from "@/lib/partners/eligibility";
-import { getProgramSettings } from "@/lib/partners/settings";
-import { isPayableBalance, resolveCommissionBp } from "@/lib/partners/program";
+} from "@sailo/partners/eligibility";
+import { getProgramSettings } from "@sailo/partners/settings";
+import { isPayableBalance, resolveCommissionBp } from "@sailo/partners/program";
 
 
 /**

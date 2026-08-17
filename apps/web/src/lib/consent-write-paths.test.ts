@@ -49,7 +49,7 @@ import { describe, expect, it } from "vitest";
  */
 function filesNaming(pattern: string): string[] {
   return execSync(
-    `grep -rl "${pattern}" src/ ../../packages/db/src ../../packages/core/src ../../packages/commerce/src ../../packages/marketing/src --include="*.ts" --include="*.tsx" || true`,
+    `grep -rl "${pattern}" src/ ../../packages/db/src ../../packages/core/src ../../packages/commerce/src ../../packages/marketing/src ../../packages/api/src --include="*.ts" --include="*.tsx" || true`,
     { encoding: "utf8" },
   )
     .split("\n")
@@ -78,8 +78,27 @@ const MAY_NAME_THE_COLUMN = [
   "../../packages/marketing/src/broadcasts/subscribe.ts",
   // Adding a contact by hand. Writes a literal null.
   "src/lib/actions/clients.ts",
-  // The public API's contact upsert. Writes a literal null.
-  "src/lib/api/handlers.ts",
+  /*
+   * The public API's contact upsert. Writes a literal null.
+   *
+   * In `@sailo/api` since the REST contract left this app — a fifth root, added
+   * for the reason the note above gives rather than the entry being dropped to
+   * make this pass.
+   */
+  "../../packages/api/src/rest/handlers.ts",
+  /*
+   * The phone's client router. A read in its `select` projection, and a comment
+   * on `clients.create` explaining that consent is deliberately *not* settable
+   * by hand — a seller typing a contact in is making a claim on somebody else's
+   * behalf.
+   *
+   * Neither is a write, and it is listed for the reason the note above gives:
+   * an over-broad allowlist costs one reviewer glance, a narrow one costs a
+   * write that slips through. Worth knowing that this file was outside the scan
+   * entirely until `@sailo/api` became a root — so had anyone added a consent
+   * write to the phone's client screen, nothing here would have said so.
+   */
+  "../../packages/api/src/routers/clients.ts",
   /*
    * Serialising a contact back out — a read, not a write.
    *
@@ -94,7 +113,7 @@ const MAY_NAME_THE_COLUMN = [
   // The MCP tool reference, saying the same thing to an assistant.
   "src/app/(marketing)/docs/mcp/page.tsx",
   // The OpenAPI document. Describes the field; grants nothing.
-  "src/lib/api/openapi.ts",
+  "../../packages/api/src/rest/openapi.ts",
 ].toSorted();
 
 describe("who may write marketing consent", () => {
@@ -110,7 +129,7 @@ describe("who may write marketing consent", () => {
 
   it.each([
     ["src/lib/actions/clients.ts", "a seller typing somebody in"],
-    ["src/lib/api/handlers.ts", "an integration posting a contact"],
+    ["../../packages/api/src/rest/handlers.ts", "an integration posting a contact"],
   ])("%s states the null rather than defaulting it", (file) => {
     /*
      * Stated, not omitted. A column left out of an insert is one that a later

@@ -1,5 +1,5 @@
-import { authenticateApi, type ApiCaller } from "@/lib/api/auth";
-import { appUrl } from "@/lib/app-url";
+import { authenticateApi, type ApiCaller } from "@sailo/api/rest";
+import { appOrigin as appUrl } from "@sailo/core/origin";
 import {
   CAPABILITIES,
   INSTRUCTIONS,
@@ -19,8 +19,8 @@ import {
   type Era,
   type JsonRpcId,
   type JsonRpcRequest,
-} from "@/lib/mcp/protocol";
-import { findTool, toolResponse, toolsFor } from "@/lib/mcp/tools";
+} from "@sailo/api/mcp";
+import { findTool, toolResponse, toolsFor } from "@sailo/api/mcp";
 
 /**
  * Sailo's MCP endpoint — one shop, addressed by a language model.

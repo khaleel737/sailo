@@ -34,9 +34,9 @@ const {
   listProducts,
   tagContact,
   upsertContact,
-} = await import("@/lib/api/handlers");
-const { requireScope } = await import("@/lib/api/auth");
-const { MCP_TOOLS, toolsFor, findTool } = await import("@/lib/mcp/tools");
+} = await import("@sailo/api/rest");
+const { requireScope } = await import("@sailo/api/rest");
+const { MCP_TOOLS, toolsFor, findTool } = await import("@sailo/api/mcp");
 
 const db = getDb();
 const uid = () => crypto.randomUUID();

@@ -27,8 +27,8 @@ import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { BRAND_HANDLE, HANDLE_MESSAGES, normalizeHandle, suggestHandles, validateHandleFormat } from "@sailo/core/handle";
 import { readPixelIds } from "@sailo/customers/pixels";
-import { attributeReferral } from "@/lib/partners/store";
-import { REFERRAL_COOKIE } from "@/lib/partners/program";
+import { attributeReferral } from "@sailo/partners/store";
+import { REFERRAL_COOKIE } from "@sailo/partners/program";
 
 /**
  * What the calendar-feed field means, given that it is a secret.

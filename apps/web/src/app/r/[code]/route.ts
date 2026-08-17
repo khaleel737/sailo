@@ -5,8 +5,8 @@ import {
   DEFAULT_COOKIE_DAYS,
   REFERRAL_COOKIE,
   normalizeReferralCode,
-} from "@/lib/partners/program";
-import { getProgramSettings } from "@/lib/partners/settings";
+} from "@sailo/partners/program";
+import { getProgramSettings } from "@sailo/partners/settings";
 
 /**
  * How long the cookie lives, from the programme's own settings.

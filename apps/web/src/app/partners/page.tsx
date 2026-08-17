@@ -10,16 +10,16 @@ import {
   Wallet,
 } from "lucide-react";
 import { getSession } from "@/lib/session";
-import { getPartnerForUser } from "@/lib/partners/applications";
-import { getPartnerPayouts } from "@/lib/partners/payouts";
+import { getPartnerForUser } from "@sailo/partners/applications";
+import { getPartnerPayouts } from "@sailo/partners/payouts";
 import {
   getPartnerShop,
   getPartnerSummary,
   getReferredCreators,
-} from "@/lib/partners/store";
-import { getProgramSettings } from "@/lib/partners/settings";
-import { hasLiveSubscription, payoutBlocker } from "@/lib/partners/eligibility";
-import { referralUrl, resolveCommissionBp, shareLabel } from "@/lib/partners/program";
+} from "@sailo/partners/store";
+import { getProgramSettings } from "@sailo/partners/settings";
+import { hasLiveSubscription, payoutBlocker } from "@sailo/partners/eligibility";
+import { referralUrl, resolveCommissionBp, shareLabel } from "@sailo/partners/program";
 import { PLANS } from "@sailo/core/plans";
 import { formatMoney } from "@sailo/core/currency";
 import { ApplyForm } from "./_components/apply-form";

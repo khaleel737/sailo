@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button, Card, Field, Input, Textarea } from "@sailo/design-system/web";
 import { savePartnerNotes, setPartnerRate } from "@/lib/actions/partner-program";
-import { shareLabel } from "@/lib/partners/program";
+import { shareLabel } from "@sailo/partners/program";
 
 /**
  * The two things /hq can set on one partner: their rate, and a private note.

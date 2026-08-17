@@ -1,5 +1,5 @@
-import { listProducts } from "@/lib/api/handlers";
-import { handleList } from "@/lib/api/route";
+import { listProducts } from "@sailo/api/rest";
+import { handleList } from "@sailo/api/rest";
 
 /**
  * `GET /api/v1/products` — the catalogue, newest first.

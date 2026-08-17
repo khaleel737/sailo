@@ -1,6 +1,6 @@
 import "server-only";
-import type { ApiCaller } from "@/lib/api/auth";
-import type { ApiScope } from "@/lib/api/keys";
+import type { ApiCaller } from "../rest/auth";
+import type { ApiScope } from "../rest/keys";
 import {
   getContact,
   getOrder,
@@ -13,8 +13,8 @@ import {
   upsertContact,
   type Handled,
   type Page,
-} from "@/lib/api/handlers";
-import { DEFAULT_LIMIT, MAX_LIMIT } from "@/lib/api/respond";
+} from "../rest/handlers";
+import { DEFAULT_LIMIT, MAX_LIMIT } from "../rest/respond";
 
 /**
  * What a model can do with a Sailo shop.

@@ -14,9 +14,9 @@ import {
   getPartnerSummary,
   recordReferralEarning,
   reverseReferralEarning,
-} from "@/lib/partners/store";
-import { applyToProgram, approvePartner } from "@/lib/partners/applications";
-import { getProgramSettings } from "@/lib/partners/settings";
+} from "@sailo/partners/store";
+import { applyToProgram, approvePartner } from "@sailo/partners/applications";
+import { getProgramSettings } from "@sailo/partners/settings";
 import { markPaidManually } from "@/lib/hq/partners";
 import { assertLocalDatabase } from "./local-only";
 

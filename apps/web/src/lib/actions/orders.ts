@@ -27,7 +27,7 @@ import { handOffSubscription, handOffToStripe } from "@sailo/commerce/orders/ser
 import { checkoutLabels, toCheckoutLine } from "@sailo/commerce/orders";
 import { getShopT } from "@/i18n/server";
 import { intervalOf, isMembership } from "@sailo/commerce/memberships";
-import { createManualSubscription } from "@/lib/membership-renewals";
+import { createManualSubscription } from "@sailo/commerce/memberships/server";
 import { claimCouponRedemption } from "@sailo/commerce/coupons";
 import { claimSlots, releaseSlots, slotEnd } from "@sailo/commerce/booking/server";
 import { downloadUrl, newDownloadToken, releasesImmediately } from "@/lib/downloads";

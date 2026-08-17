@@ -1,5 +1,5 @@
-import { getContact } from "@/lib/api/handlers";
-import { handleOne } from "@/lib/api/route";
+import { getContact } from "@sailo/api/rest";
+import { handleOne } from "@sailo/api/rest";
 
 /** `GET /api/v1/contacts/{id}` — one person on the shop's list. */
 export async function GET(

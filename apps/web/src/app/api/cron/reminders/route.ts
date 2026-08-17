@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cronAuthFailure } from "@sailo/security/cron-auth";
-import { sendDueEventReminders } from "@/lib/event-reminders";
+import { sendDueEventReminders } from "@sailo/commerce/ticketing";
 
 /**
  * "Your event starts tomorrow", and "your event starts in an hour".

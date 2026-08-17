@@ -1,5 +1,5 @@
-import { getShop } from "@/lib/api/handlers";
-import { handleOne } from "@/lib/api/route";
+import { getShop } from "@sailo/api/rest";
+import { handleOne } from "@sailo/api/rest";
 
 /**
  * `GET /api/v1/shop` — who this key speaks for.

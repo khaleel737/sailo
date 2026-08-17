@@ -1,6 +1,6 @@
 import { CopyLink } from "@sailo/design-system/web";
 import { formatMoney } from "@sailo/core/currency";
-import type { PartnerSummary } from "@/lib/partners/store";
+import type { PartnerSummary } from "@sailo/partners/store";
 
 /**
  * The link, and the four numbers underneath it.

@@ -1,6 +1,6 @@
 import { APP_URL } from "@/lib/seo";
-import { API_ERROR_CODES, API_VERSION, DEFAULT_LIMIT, MAX_LIMIT } from "@/lib/api/respond";
-import { ENDPOINTS, MAX_BODY_KB, type Endpoint } from "@/lib/api/endpoints";
+import { API_ERROR_CODES, API_VERSION, DEFAULT_LIMIT, MAX_LIMIT } from "@sailo/api/rest";
+import { ENDPOINTS, MAX_BODY_KB, type Endpoint } from "@sailo/api/rest";
 import {
   Code,
   DefTable,

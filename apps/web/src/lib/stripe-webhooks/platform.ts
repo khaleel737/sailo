@@ -9,7 +9,7 @@ import { freePlanFields, subscriptionFields } from "@sailo/billing/map";
 import {
   recordReferralEarning,
   reverseReferralEarning,
-} from "@/lib/partners/store";
+} from "@sailo/partners/store";
 import { shopIdFor, stripe } from "@sailo/payments";
 
 /**

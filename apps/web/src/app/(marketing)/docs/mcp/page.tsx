@@ -1,6 +1,6 @@
 import { APP_URL } from "@/lib/seo";
-import { MCP_TOOLS, type McpTool } from "@/lib/mcp/tools";
-import { MODERN_VERSION, SERVER_INFO, SUPPORTED_VERSIONS } from "@/lib/mcp/protocol";
+import { MCP_TOOLS, type McpTool } from "@sailo/api/mcp";
+import { MODERN_VERSION, SERVER_INFO, SUPPORTED_VERSIONS } from "@sailo/api/mcp";
 import {
   Code,
   DefTable,

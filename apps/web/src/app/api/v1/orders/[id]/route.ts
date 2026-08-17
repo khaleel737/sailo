@@ -1,5 +1,5 @@
-import { getOrder } from "@/lib/api/handlers";
-import { handleOne } from "@/lib/api/route";
+import { getOrder } from "@sailo/api/rest";
+import { handleOne } from "@sailo/api/rest";
 
 /**
  * `GET /api/v1/orders/{id}` — one order, with its line items.

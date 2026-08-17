@@ -11,8 +11,8 @@ import {
   type Product,
   type Shop,
 } from "@sailo/db/schema";
-import { downloadUrl } from "@/lib/downloads";
-import { sendEventReminder } from "@/lib/email";
+import { downloadUrl } from "../orders/downloads";
+import { sendEventReminder } from "@sailo/email/transactional";
 
 /**
  * Telling registrants their event is about to start.

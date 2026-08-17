@@ -16,7 +16,7 @@ import { requireShop } from "@/lib/session";
 import { maybeRow } from "@sailo/core/invariant";
 import { can, cheapestPlanWith, upgradeMessage } from "@sailo/core/plans";
 import { rateLimit } from "@sailo/rate-limit";
-import { isApiScope, mintApiKey } from "@/lib/api/keys";
+import { isApiScope, mintApiKey } from "@sailo/api/rest";
 import { orderResource, sampleOrderResource } from "@sailo/core/resources";
 import {
   MAX_API_KEYS_PER_SHOP,

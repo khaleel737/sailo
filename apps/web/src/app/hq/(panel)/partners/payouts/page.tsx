@@ -5,7 +5,7 @@ import { PageHeader } from "@sailo/design-system/web";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/hq/_components/hq-table";
 import { Metric, MetricRow, Mono, When } from "@/app/hq/_components/hq-ui";
 import { getPayoutPreview, getRecentPayouts } from "@/lib/hq/partners";
-import { getProgramSettings } from "@/lib/partners/settings";
+import { getProgramSettings } from "@sailo/partners/settings";
 import { formatMoney } from "@sailo/core/currency";
 import { PayNowButton, RunPayoutsButton } from "../_components/payout-buttons";
 

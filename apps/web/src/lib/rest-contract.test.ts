@@ -1,14 +1,19 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import ApiDocsPage from "@/app/(marketing)/docs/api/page";
 import { APP_URL } from "@/lib/seo";
-import { ENDPOINTS, MAX_BODY_KB, endpointKey } from "./endpoints";
-import { openApiDocument } from "./openapi";
-import { API_ERROR_CODES } from "./respond";
+import {
+  API_ERROR_CODES,
+  ENDPOINTS,
+  MAX_BODY_KB,
+  endpointKey,
+  openApiDocument,
+} from "@sailo/api/rest";
 
 /**
  * The route tree, the OpenAPI document and the documentation page describe one
@@ -39,13 +44,22 @@ const HERE = dirname(fileURLToPath(import.meta.url));
  * that has moved throws a bare ENOENT halfway down a stack trace, which reads
  * as a broken test rather than as a migration that left something behind.
  */
-const V1_DIR = resolve(HERE, "../../app/api/v1");
+/*
+ * Both mounts. `/api/v1` is served from this app *and* from `apps/api` — the
+ * cutover for integrators is a URL change they make when they are ready, so for
+ * now the tree exists twice and the two must not drift. A route added to one and
+ * not the other is a caller who gets a 404 depending which host they used.
+ */
+const V1_DIRS = [
+  resolve(HERE, "../app/api/v1"),
+  resolve(HERE, "../../../api/src/app/api/v1"),
+].filter(existsSync);
 
-if (!existsSync(V1_DIR)) {
+if (V1_DIRS.length === 0) {
   throw new Error(
-    `No route directory at ${V1_DIR}. If the REST surface has moved to packages/rest, ` +
-      "repoint V1_DIR in this file — the docs and the OpenAPI document are checked against " +
-      "whatever it points at, so an unrepointed path means nothing is being checked.",
+    "No `/api/v1` route directory found in either app. The docs page and the " +
+      "OpenAPI document are checked against whatever these paths point at, so " +
+      "an unrepointed path means nothing is being checked — repoint V1_DIRS.",
   );
 }
 
@@ -85,7 +99,13 @@ function routeFiles(dir: string): string[] {
  * they organise files without appearing in a URL.
  */
 function routePath(file: string): string {
-  const segments = relative(V1_DIR, dirname(file))
+  /*
+   * Relative to whichever mount the file came from, so the same route served by
+   * both apps yields one path and the dual mount is compared rather than
+   * double-counted.
+   */
+  const root = V1_DIRS.find((dir) => file.startsWith(dir)) ?? V1_DIRS[0]!;
+  const segments = relative(root, dirname(file))
     .split("/")
     .filter((segment) => segment && !segment.startsWith("("))
     .map((segment) =>
@@ -112,7 +132,7 @@ function methodsIn(source: string): string[] {
   );
 }
 
-const ROUTES: Route[] = routeFiles(V1_DIR)
+const ROUTES: Route[] = V1_DIRS.flatMap(routeFiles)
   .flatMap((file) => {
     const path = routePath(file);
     if (NOT_A_RESOURCE.has(path)) return [];
@@ -215,7 +235,17 @@ describe("the documentation", () => {
    * they are apart.
    */
   it("states the request body cap that route.ts actually enforces", () => {
-    const source = readFileSync(resolve(HERE, "route.ts"), "utf8");
+    /*
+     * Resolved through the package rather than by a relative path: the adapter
+     * moved from `apps/web/src/lib/api/route.ts` to `@sailo/api/rest`, and a
+     * relative path would have silently stopped finding it — the regex would
+     * fail to match and the assertion below would report "readJson no longer
+     * caps the body" for a cap that is fine.
+     */
+    const source = readFileSync(
+      createRequire(import.meta.url).resolve("@sailo/api/rest").replace(/[^/]+$/, "route.ts"),
+      "utf8",
+    );
     const match = /declared\s*>\s*(\d+)\s*\*\s*1024/.exec(source);
 
     expect(match, "readJson no longer caps the body the way this test reads it").not.toBeNull();

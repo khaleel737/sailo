@@ -1,6 +1,6 @@
 import { cronAuthFailure } from "@sailo/security/cron-auth";
-import { getProgramSettings } from "@/lib/partners/settings";
-import { reconcilePendingPayouts, runPayouts } from "@/lib/partners/payouts";
+import { getProgramSettings } from "@sailo/partners/settings";
+import { reconcilePendingPayouts, runPayouts } from "@sailo/partners/payouts";
 
 /**
  * The monthly partner payout run.

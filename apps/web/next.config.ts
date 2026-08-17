@@ -3,10 +3,16 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /*
    * The transitive closure of what this app depends on, and nothing else.
-   * `@sailo/api` was listed here without ever being imported or declared —
-   * that package is the mobile client's tRPC router and belongs to apps/api.
+   *
+   * `@sailo/api` is here now, and was deliberately absent before. That package
+   * used to be only the mobile client's tRPC router; it now also holds
+   * `@sailo/api/rest` — the public REST contract that was
+   * `apps/web/src/lib/api`. This app serves `/api/v1/*` from it, and so does
+   * `apps/api`. The tRPC router is a separate entry and is not pulled in by
+   * reaching for the REST one.
    */
   transpilePackages: [
+    "@sailo/api",
     "@sailo/core",
     "@sailo/design-system",
     "@sailo/db",

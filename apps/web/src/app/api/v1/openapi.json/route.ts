@@ -1,6 +1,5 @@
-import { openApiDocument } from "@/lib/api/openapi";
-import { API_VERSION } from "@/lib/api/respond";
-import { APP_URL } from "@/lib/seo";
+import { openApiDocument } from "@sailo/api/rest";
+import { API_VERSION } from "@sailo/api/rest";
 
 /**
  * `GET /api/v1/openapi.json` — the machine-readable description of this API.
@@ -27,8 +26,22 @@ import { APP_URL } from "@/lib/seo";
  * and the work being cached is `JSON.stringify` over an object graph built from
  * constants, which is not worth a cache entry to reason about.
  */
-export function GET(): Response {
-  return new Response(JSON.stringify(openApiDocument(APP_URL), null, 2), {
+/**
+ * The origin that answered this request.
+ *
+ * Derived rather than configured, which is what this route's header already
+ * argued for: "the `servers` entry has to name the deployment answering the
+ * request". It used `APP_URL` — a constant naming the web deployment — which was
+ * right while `apps/web` was the only mount and wrong the moment `apps/api`
+ * became a second one, because the document would have told a generator to call
+ * the other host.
+ */
+function servedFrom(request: Request): string {
+  return new URL(request.url).origin;
+}
+
+export function GET(request: Request): Response {
+  return new Response(JSON.stringify(openApiDocument(servedFrom(request)), null, 2), {
     status: 200,
     headers: {
       /*

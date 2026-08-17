@@ -1,7 +1,7 @@
 import { APP_URL } from "@/lib/seo";
 import { WEBHOOK_EVENTS } from "@sailo/webhooks/events";
-import { ENDPOINTS } from "@/lib/api/endpoints";
-import { MCP_TOOLS } from "@/lib/mcp/tools";
+import { ENDPOINTS } from "@sailo/api/rest";
+import { MCP_TOOLS } from "@sailo/api/mcp";
 import { Code, DocsShell, Pre, Section, docsMetadata, docsPath } from "./_components/docs-kit";
 
 export const metadata = docsMetadata(

@@ -10,4 +10,5 @@
  * module`, because one client component reaching for opening hours pulled the
  * availability query in behind it.
  */
+
 export * from "./memberships";

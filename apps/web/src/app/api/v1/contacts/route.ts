@@ -1,7 +1,7 @@
-import { listContacts, upsertContact } from "@/lib/api/handlers";
-import { apiFail, apiOk } from "@/lib/api/respond";
-import { apiGuard } from "@/lib/api/auth";
-import { handleList, readJson } from "@/lib/api/route";
+import { listContacts, upsertContact } from "@sailo/api/rest";
+import { apiFail, apiOk } from "@sailo/api/rest";
+import { apiGuard } from "@sailo/api/rest";
+import { handleList, readJson } from "@sailo/api/rest";
 
 /**
  * `GET /api/v1/contacts` — the shop's list.

@@ -14,7 +14,7 @@ import {
   getVisitSeries,
 } from "@/lib/queries";
 import { setupSteps } from "@sailo/core/onboarding";
-import { getPartnerCard } from "@/lib/partners/store";
+import { getPartnerCard } from "@sailo/partners/store";
 import { Chart } from "@sailo/design-system/web/chart";
 import { TrafficPanel } from "@/app/admin/_components/traffic-panel";
 import { ProductPerformancePanel } from "@/app/admin/_components/product-performance";

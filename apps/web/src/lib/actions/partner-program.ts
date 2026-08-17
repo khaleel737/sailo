@@ -11,11 +11,11 @@ import {
   setPartnerCommission,
   setPartnerNotes,
   setPartnerStatus,
-} from "@/lib/partners/applications";
-import { payPartner, runPayouts } from "@/lib/partners/payouts";
+} from "@sailo/partners/applications";
+import { payPartner, runPayouts } from "@sailo/partners/payouts";
 import { markPaidManually } from "@/lib/hq/partners";
-import { updateProgramSettings } from "@/lib/partners/settings";
-import { isPartnerStatus, shareLabel } from "@/lib/partners/program";
+import { updateProgramSettings } from "@sailo/partners/settings";
+import { isPartnerStatus, shareLabel } from "@sailo/partners/program";
 import { formatMoney } from "@sailo/core/currency";
 import type { ActionState } from "./shop";
 

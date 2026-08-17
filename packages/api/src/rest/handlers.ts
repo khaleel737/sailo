@@ -12,7 +12,7 @@ import {
 import { MAX_TAGS, normalizeTag, normalizeTags } from "@sailo/customers/tags";
 import { normalizePhone } from "@sailo/core/phone";
 import { MAX_EMAIL_LENGTH, confirmUrl, normalizeEmail, normalizeName, subscribeToken } from "@sailo/marketing/broadcasts/server";
-import { sendSubscribeConfirmation } from "@/lib/email";
+import { sendSubscribeConfirmation } from "@sailo/email/lifecycle";
 import { getDictionary, interpolate } from "@sailo/i18n";
 import { rateLimit } from "@sailo/rate-limit";
 import type { ApiCaller } from "./auth";

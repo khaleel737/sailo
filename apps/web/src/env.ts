@@ -4,6 +4,8 @@ import { keys as shared } from "@sailo/env/keys";
 import { keys as payments } from "@sailo/payments/keys";
 import { keys as rateLimit } from "@sailo/rate-limit/keys";
 import { keys as observability } from "@sailo/observability/keys";
+import { keys as email } from "@sailo/email/keys";
+import { keys as security } from "@sailo/security/keys";
 import { keys as storage } from "@sailo/storage/keys";
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
@@ -34,24 +36,17 @@ import { z } from "zod";
  * boot answer for a variable only a laptop ever sets.
  */
 export const env = createEnv({
-  extends: [db(), shared(), observability(), payments(), rateLimit(), storage()],
+  extends: [
+    db(),
+    shared(),
+    email(),
+    observability(),
+    payments(),
+    rateLimit(),
+    security(),
+    storage(),
+  ],
   server: {
-    /** Guards the nightly rollup and every other Vercel cron route. */
-    CRON_SECRET: z.string().min(1).optional(),
-
-    /* Mail. Absent means transactional mail is off, which the UI reports. */
-    RESEND_API_KEY: z.string().startsWith("re_").optional(),
-    RESEND_WEBHOOK_SECRET: z.string().min(1).optional(),
-    /*
-     * Marketing and transactional mail go out on separate domains so a
-     * broadcast complaint cannot take order receipts down with it.
-     */
-    SAILO_MAIL_DOMAIN: z.string().min(1).optional(),
-    SAILO_MKT_DOMAIN: z.string().min(1).optional(),
-    SAILO_TX_DOMAIN: z.string().min(1).optional(),
-
-    /** Comma-separated addresses that may reach the staff surfaces. */
-    SAILO_STAFF_EMAILS: z.string().min(1).optional(),
     /** Signs outbound seller webhooks. */
     SAILO_WEBHOOK_SECRET: z.string().min(1).optional(),
     /** Salts visitor hashes, so analytics cannot be reversed to a person. */
@@ -65,8 +60,6 @@ export const env = createEnv({
     BROADCAST_DAILY_CEILING: z.coerce.number().int().positive().optional(),
     LIFECYCLE_DAILY_CEILING: z.coerce.number().int().positive().optional(),
 
-    /** Where `email:preview` writes rendered mail. Local only. */
-    EMAIL_PREVIEW_DIR: z.string().min(1).optional(),
   },
   runtimeEnv: process.env,
   onValidationError: onInvalidEnv,

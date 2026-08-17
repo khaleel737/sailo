@@ -21,7 +21,7 @@ import {
   createManualSubscription,
   extendForPaidOrder,
   runManualRenewals,
-} from "@/lib/membership-renewals";
+} from "@sailo/commerce/memberships/server";
 import { RENEWAL_LEAD_DAYS } from "@sailo/commerce/memberships";
 
 /**
