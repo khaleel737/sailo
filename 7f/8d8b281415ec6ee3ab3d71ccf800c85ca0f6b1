@@ -1,0 +1,19 @@
+docs/api-cutover.md
+  s_dcd75e2fc0aa0a::t_3465ed0a772dd9 73-78,84,86-93,95-99,112-126,147-152,176-179
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7f8d8b281415ec6ee3ab3d71ccf800c85ca0f6b1",
+  "prompts": {},
+  "sessions": {
+    "s_dcd75e2fc0aa0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4480cff-caac-46d0-a589-a5bbfd9e0fe9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
