@@ -53,10 +53,19 @@ import { describe, expect, it } from "vitest";
  * consent to integrators stepped outside it. A file moving out of the scan is
  * the same failure as a file moving out of the package — widen the scan, never
  * drop the entry.
+ *
+ * `../docs` is the same lesson a second time, and the reason that sentence was
+ * worth writing down. The documentation left this app entirely for
+ * `apps/docs` — its own deployment on docs.sailo.store — and took three pages
+ * describing the consent rule with it. Scanning a sibling app from here is
+ * unusual and it is right: what this test protects is the claim that *nothing
+ * outside these files names the column*, and a scan that stops at the app
+ * boundary cannot make that claim about a repository where the documentation is
+ * a different app.
  */
 function filesNaming(pattern: string): string[] {
   return execSync(
-    `grep -rl "${pattern}" src/ content/ ../../packages/db/src ../../packages/core/src ../../packages/commerce/src ../../packages/marketing/src ../../packages/api/src --include="*.ts" --include="*.tsx" --include="*.mdx" || true`,
+    `grep -rl "${pattern}" src/ content/ ../docs/src ../docs/content ../../packages/db/src ../../packages/core/src ../../packages/commerce/src ../../packages/marketing/src ../../packages/api/src --include="*.ts" --include="*.tsx" --include="*.mdx" || true`,
     { encoding: "utf8" },
   )
     .split("\n")
@@ -115,10 +124,12 @@ const MAY_NAME_THE_COLUMN = [
    * `src/lib/api/resources.ts` is a re-export of it and names nothing itself.
    */
   "../../packages/core/src/wire/resources.ts",
-  // The API docs, telling integrators the field is ignored.
-  "content/docs/api.mdx",
-  // The MCP tool reference, saying the same thing to an assistant.
-  "content/docs/mcp.mdx",
+  // The contacts reference, telling integrators the field is ignored on a write.
+  "../docs/content/api/contacts.mdx",
+  // The authentication page, listing it among the things no key can do.
+  "../docs/content/authentication.mdx",
+  // What an assistant may do, saying the same thing about the MCP tools.
+  "../docs/content/mcp/permissions.mdx",
   // The OpenAPI document. Describes the field; grants nothing.
   "../../packages/api/src/rest/openapi.ts",
 ].toSorted();

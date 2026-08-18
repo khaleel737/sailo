@@ -1,0 +1,36 @@
+{
+  "name": "@sailo/docs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3003",
+    "build": "next build",
+    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
+    "start": "next start -p 3003",
+    "lint": "oxlint src --config ../../.oxlintrc.json",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@sailo/api": "workspace:*",
+    "@sailo/core": "workspace:*",
+    "@sailo/webhooks": "workspace:*",
+    "@sailo/workflows": "workspace:*",
+    "next": "16.3.0",
+    "nextra": "^4.6.1",
+    "nextra-theme-docs": "^4.6.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@sailo/config": "workspace:*",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "github-slugger": "^2.0.0",
+    "oxlint": "^1.77.0",
+    "pagefind": "^1.5.2",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
+  }
+}

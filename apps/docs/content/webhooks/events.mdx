@@ -1,0 +1,113 @@
+---
+title: Events
+description: All sixteen webhook events, what each one means, and the four distinctions consumers get wrong.
+---
+
+import { Callout } from "nextra/components";
+
+# Events
+
+<EventCount /> events, in five families. Every event sharing a prefix carries the
+[same object](/webhooks/payloads), so subscribing to a second event in a family
+you already handle costs you no remapping.
+
+<EventReference />
+
+## Orders
+
+<EventGroup prefix="order." />
+
+**`order.created` and `order.paid` arrive together on a card sale**, at the
+moment the payment lands — not when the buyer opened the checkout, because about
+a third of those are abandoned and an integration that fired on each would
+report three times the real order count.
+
+On bank transfer, cash or any other manual rail they are days apart:
+`order.created` at checkout, `order.paid` when the seller confirms the money
+arrived.
+
+So: **fulfil on `order.paid`**, not on `order.created`.
+
+`order.refunded` fires on a partial refund too. Read `refunded` against `total`
+rather than assuming the whole sale went back.
+
+## Bookings
+
+<EventGroup prefix="booking." />
+
+The payload is an [order](/objects/order) — the appointment is on its `booking`
+object. It is not a separate resource, because a booking *is* a sale of a
+service and everything else about it is an order.
+
+## Contacts
+
+<EventGroup prefix="contact." />
+
+<Callout type="error">
+**`contact.created` is not consent to email that person.** Read
+`marketingConsentAt` on the payload: it is `null` unless they went through a
+double opt-in and clicked the link, and `null` means no.
+</Callout>
+
+## Memberships
+
+<EventGroup prefix="subscription." />
+
+Three distinctions here, and each one is a real support ticket:
+
+**`cancelled` is not `ended`.** The first is the member asking to stop; they
+have paid through `currentPeriodEnd` and keep their access until it. The second
+is the arrangement actually being over. **Revoke on `ended`.** Cutting somebody
+off at the cancellation takes away a month they already bought.
+
+**`payment_failed` is not an ending either.** Stripe retries for several days
+and most recover. Email them; do not revoke. If it never clears,
+`subscription.ended` arrives.
+
+**A manual membership will never send you a card renewal.** Read `billingMode`:
+`manual` means Sailo raises a renewal order that a human settles, so nothing
+arrives from Stripe about it. An integration waiting for one waits forever.
+
+The [membership access guide](/guides/membership-access) turns all of this into
+a working state machine.
+
+## Chargebacks
+
+<EventGroup prefix="dispute." />
+
+`dispute.opened` fires when a buyer charges back one of the seller's sales, with
+the deadline in `dueBy` — usually around twenty days.
+
+It is the event to hang evidence-gathering off, because what wins a case
+normally lives in a helpdesk or a shipping account rather than in Sailo.
+
+**Check `caseType` before telling anybody they have lost a sale.** An `inquiry`
+is a question from the issuer and has taken no money; a `chargeback` has.
+
+Only ever emitted for a buyer's chargeback against a seller's sale. A seller
+disputing their own Sailo subscription is Sailo's problem and never appears
+here.
+
+## Choosing which to subscribe to
+
+Tick what you will act on and nothing else. Every extra event is a delivery row
+per endpoint per occurrence, and a consumer that receives events it ignores is
+one whose logs are mostly noise on the day something goes wrong.
+
+A reasonable starting set for most integrations:
+
+| If you are building | Subscribe to |
+| --- | --- |
+| Fulfilment or accounting | `order.paid`, `order.refunded` |
+| A CRM sync | `contact.created`, `order.paid` |
+| Access control for a paid community | `subscription.created`, `subscription.ended`, `subscription.resumed` |
+| Dunning email | `subscription.payment_failed`, `subscription.ended` |
+| Chargeback response | `dispute.opened`, `dispute.closed` |
+
+## Adding an event later
+
+Nothing about the events you already receive changes. New fields may appear
+inside `data` without the payload `version` changing — see
+[versioning](/conventions#versioning) — so **build your mapping to ignore fields
+it does not recognise**, and adding a subscription is a change on Sailo's side
+only.

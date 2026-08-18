@@ -1,0 +1,96 @@
+---
+title: Connecting a client
+description: Configuration for Claude Code, Claude Desktop, Cursor, VS Code and anything else that speaks MCP over HTTP.
+---
+
+import { Callout, Tabs } from "nextra/components";
+
+# Connecting a client
+
+One HTTP endpoint and one bearer token. Every client below is the same two
+values in a different file.
+
+<Callout type="warning">
+Mint a **read-only** key unless you specifically want an assistant writing to
+your list, and treat the file you paste it into like any other secret — most of
+these live in a home directory or a repository.
+</Callout>
+
+## Claude Code
+
+<ClaudeCodeSnippet />
+
+Or commit it to a repository, so everyone working in it gets the same
+connection, in `.mcp.json`:
+
+<McpJsonSnippet />
+
+<Callout type="error">
+A `.mcp.json` with a real key in it is a key in your git history. Either keep
+the file untracked, or check whether your client resolves environment
+references — and see the note at the bottom of this page if you are tempted to
+try.
+</Callout>
+
+## Claude Desktop
+
+**Settings → Connectors → Add custom connector**, and give it
+<code><McpUrl /></code>.
+
+Where a build has no connector UI, the configuration file reaches a remote
+server through the `mcp-remote` bridge:
+
+<McpRemoteSnippet />
+
+## Cursor
+
+`.cursor/mcp.json` in a project, or `~/.cursor/mcp.json` for every project:
+
+<CursorSnippet />
+
+## VS Code
+
+`.vscode/mcp.json` in a workspace. Note the top-level key is `servers`, not
+`mcpServers`:
+
+<VsCodeSnippet />
+
+## Anything else
+
+Any client that speaks Streamable HTTP needs three things:
+
+| | |
+| --- | --- |
+| URL | <code><McpUrl /></code> |
+| Method | `POST`. There is no GET stream — see [protocol](/mcp/protocol). |
+| Header | `Authorization: Bearer sailo_sk_…` |
+
+A client that only speaks stdio can use the `mcp-remote` bridge shown above.
+
+## Checking it works
+
+Ask the assistant to call `get_shop`. It should come back with the shop's
+handle, name, currency and time zone — which is the same thing
+[`GET /shop`](/api/shop) is for on the REST side, and for the same reason: it
+proves the credential works and names what it connected to.
+
+If the client will not connect at all, take it out of the loop and
+[try the endpoint with `curl`](/mcp/protocol#trying-it-with-curl). A
+`tools/list` that answers there and not in the client is a client configuration
+problem; one that fails there names its own reason in the JSON-RPC error.
+
+## Environment variable references
+
+**Paste the key literally** unless you have confirmed your client expands
+environment references in that file.
+
+A client that does not expand them sends the literal string `${SAILO_KEY}` as
+the bearer token, and the server refuses it — which presents as "the key is
+wrong" rather than as "the substitution did not happen", and sends people to
+re-mint a key that was fine.
+
+## Removing it
+
+Delete the entry from the client's configuration, and — if the key was minted
+for this — revoke it under <KeyLink />. Revocation is immediate on the next
+request; there is no cached credential anywhere.

@@ -77,24 +77,16 @@ async function buildSitemap(now: Date): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     },
     /*
-     * The developer documentation. `/docs/api` was live and linked from outside
-     * long before it was ever submitted here, which is the sort of page that
-     * gets found by the people who already know about it and by nobody else.
+     * The developer documentation used to be four entries here. It is
+     * docs.sailo.store now — apps/docs, its own deployment — and a sitemap may
+     * only list URLs on the host that serves it, so those four moved to that
+     * app's own `sitemap.ts` rather than being repointed.
      *
-     * No `alternates`: unlike the blog, these four exist only in English, so
-     * declaring an hreflang cluster would be claiming translations that are not
-     * there. Higher priority than the legal pages because "does it have an API"
-     * is a question that decides a signup.
-     *
-     * `/api/v1/openapi.json` is deliberately absent — `robots.ts` disallows
-     * `/api/`, and submitting a blocked URL is a Search Console error rather
-     * than a ranking. It is linked from the pages below, which is how the
-     * machines that want it arrive.
+     * `/api/v1/openapi.json` is deliberately absent for a different reason:
+     * `robots.ts` disallows `/api/`, and submitting a blocked URL is a Search
+     * Console error rather than a ranking. It is linked from the documentation,
+     * which is how the machines that want it arrive.
      */
-    { url: absolute("/docs"), lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: absolute("/docs/api"), lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: absolute("/docs/webhooks"), lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: absolute("/docs/mcp"), lastModified: now, changeFrequency: "monthly", priority: 0.6 },
   ];
 
   /*

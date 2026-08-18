@@ -1,0 +1,199 @@
+---
+title: Protocol
+description: Versions, methods, headers, errors and the curl you need when a client will not connect.
+---
+
+import { Callout } from "nextra/components";
+
+# Protocol
+
+For the person debugging a client that will not connect, or writing one.
+
+## Versions
+
+The server implements **<ModernVersion />** natively and still answers the
+`initialize` handshake for **<LegacyVersions />**. Supported versions, in full:
+<SupportedVersions />.
+
+Supporting only the newest would be correct and useless — a great many shipping
+clients still open with `initialize`. Supporting only the older ones would be
+quietly wrong the moment a client updates. The specification calls a server that
+does both *dual-era* and permits both on one endpoint; the era is decided by how
+the client opens, and every method dispatches to the same handlers either way.
+
+The server identifies itself as **<ServerName />**, version <ServerVersion />.
+
+### How the era is decided
+
+| Signal | Era |
+| --- | --- |
+| `params._meta` carries a protocol version | Whichever that version belongs to |
+| The method is `initialize` or `notifications/*` | Legacy |
+| The `MCP-Protocol-Version` header names a legacy revision | Legacy |
+| Anything else | Modern |
+
+A client that sends neither signal is far more likely to be new and slightly
+wrong than old, which is why the fallback is modern.
+
+Asking for a version the server does not speak returns error `-32022` with a
+`supported` list in `data` — which is the entire negotiation mechanism now that
+there is no handshake to negotiate in. Pick one from the list and retry.
+
+## Transport
+
+**`POST` only.** `GET` and `DELETE` answer `405` with `Allow: POST`.
+
+The current revision removed protocol-level sessions and the standalone GET
+stream, so every request is a self-contained POST carrying its own version,
+identity and credential. There is nothing to store between calls and nothing to
+expire — which is exactly the shape a serverless function can serve correctly,
+and not the shape the older revisions had.
+
+There is no `Mcp-Session-Id`. An older client that tries a GET or a DELETE falls
+back correctly on the 405.
+
+Every response carries `mcp-protocol-version: <ModernVersion />` and
+`cache-control: no-store, private`.
+
+## Headers
+
+In the modern era the request **must** mirror parts of the body into headers,
+and the server verifies they agree:
+
+| Header | Required | Must match |
+| --- | --- | --- |
+| `MCP-Protocol-Version` | Always | `params._meta["io.modelcontextprotocol/protocolVersion"]` |
+| `Mcp-Method` | Always | the body's `method` |
+| `Mcp-Name` | On `tools/call`, `prompts/get`, `resources/read` | the body's `name` (or `uri`) |
+
+<Callout type="info">
+This is a MUST in the specification for a reason that is easy to miss on a
+hosted server: a load balancer may route on the header while the server executes
+on the body, and a request where the two disagree is one that can be made to
+mean two different things in two places. So a mismatch is a refusal — error
+`-32020` — rather than a preference for one source.
+</Callout>
+
+Header values may arrive Base64-wrapped as `=?base64?…?=` when they are not
+plain ASCII. The server decodes before comparing, as the specification requires;
+a server that compared the wrapped form would reject every tool whose name is
+not pure ASCII.
+
+`Mcp-Name` is required **only** for the three methods that name a thing.
+Demanding it everywhere would reject a perfectly conformant `tools/list`.
+
+## Methods
+
+| Method | Needs a key | Answers |
+| --- | --- | --- |
+| `initialize` | No | The handshake — legacy clients only |
+| `server/discover` | No | Supported versions, capabilities, instructions |
+| `tools/list` | Yes | The tools this key may use |
+| `tools/call` | Yes | A tool result |
+| `resources/list` | Yes | `[]` |
+| `prompts/list` | Yes | `[]` |
+| `notifications/*` | No | `202`, empty body |
+
+Anything else is `-32601` with a **404** carrying a JSON-RPC body — which the
+transport specifies precisely so a client can tell "this server does not
+implement that method" from a bare 404 served by something that is not an MCP
+endpoint at all.
+
+`resources/list` and `prompts/list` are declared in no capability, so a
+conformant client never asks. A client that probes anyway gets an empty list
+rather than a 404, which is the friendlier of two correct answers.
+
+### `initialize` is answered before authentication
+
+Deliberately. It is how a legacy client discovers what it is talking to, and a
+401 in its place is a dead end it cannot diagnose — several clients report it as
+"server unreachable".
+
+Nothing is disclosed: the answer is the server's name, its version and the fact
+that it has tools, all of which are public. **Every tool call still needs a
+key.**
+
+The version echoed back is the client's own where the server speaks it, rather
+than always the newest. A client that asked for `2025-06-18` and was told
+`2025-11-25` has been handed a dialect it may not implement.
+
+## Capabilities
+
+```json
+{ "tools": { "listChanged": false } }
+```
+
+`listChanged: false` is honest: the tool set is a constant in the deployment, so
+there is no change to notify about. Note that the *visible* set still varies by
+the key on the request — a read-only key does not see the write tools — but that
+is per-request input, not a change over time.
+
+## Errors
+
+Two kinds, and the distinction matters to a model.
+
+**A JSON-RPC error** says the call was malformed and the model can do nothing
+with it.
+
+| Code | Meaning |
+| --- | --- |
+| `-32700` | The body is not valid JSON |
+| `-32600` | Not a single JSON-RPC 2.0 request |
+| `-32601` | Unknown method |
+| `-32602` | Bad params — a missing `name`, or a tool this key cannot see |
+| `-32603` | Internal |
+| `-32020` | Headers disagree with the body |
+| `-32022` | Unsupported protocol version; `data.supported` lists what is |
+
+**A tool error** — `isError: true` on a *result* — says the call was fine and the
+answer is a refusal the model can act on. "No contact with that id" is something
+it can fix by going and finding the right one.
+
+Authentication failures are JSON-RPC errors with a **401** and a
+`WWW-Authenticate: Bearer` header. Rate limiting is a **429**.
+
+An unknown tool name returns `-32602` with a message naming the likely cause —
+"it may exist but need a key with write access" — because a read-only key
+genuinely does not have `create_contact`, and a bare "unknown tool" sends
+whoever is debugging to look for a typo that is not there.
+
+A tool that throws internally comes back as a tool error with nothing about the
+cause. A stack trace or a database message here goes straight into a model's
+context and from there into whatever it writes next.
+
+## Origin
+
+A request carrying an `Origin` header that is not Sailo's own is refused with
+**403**, before anything is parsed or authenticated.
+
+The specification makes this a MUST, and it is the DNS-rebinding defence: a page
+on the open web can make a browser POST here, and while it cannot read a
+cross-origin response without CORS — and nothing here sends CORS headers — a
+request that *executes* is already too far when the tools include writes.
+
+An absent `Origin` is the normal case, because MCP clients are not browsers.
+
+## Limits
+
+A tool call may take up to **60 seconds**. A call can fan out to several queries
+and the platform default is shorter than the slowest legitimate one.
+
+Rate limiting is [shared with the REST API](/rate-limits) — 240 requests a
+minute per key across both.
+
+## Trying it with `curl`
+
+When a client will not connect, take it out of the loop.
+
+**List the tools:**
+
+<CurlToolsListSnippet />
+
+**Call one:**
+
+<CurlToolCallSnippet />
+
+A `tools/list` that answers here and not in your client is a client
+configuration problem. One that fails here names its own reason in the JSON-RPC
+error — and the two most common are a header that does not match the body, and
+an unexpanded `${VAR}` in the bearer token.

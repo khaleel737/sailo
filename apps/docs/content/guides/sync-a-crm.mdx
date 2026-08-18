@@ -1,0 +1,209 @@
+---
+title: Syncing to a CRM
+description: Push Sailo contacts into Kit, Mailchimp, HubSpot or GoHighLevel without mailing people who never agreed to be mailed.
+---
+
+import { Callout, Steps } from "nextra/components";
+
+# Syncing to a CRM
+
+The most-built integration in this category, and the one with the most
+consequential thing to get right.
+
+<Callout type="error">
+**A contact on a Sailo list is not a subscriber.** Most of them are customers
+who bought something and were never asked whether they wanted email.
+
+`marketingConsentAt` is the only field that says otherwise. It is a timestamp
+when the person went through a double opt-in and clicked the link, and `null`
+otherwise — and `null` means **no**, not "unknown".
+
+Pushing an unfiltered list into a newsletter tool is how a seller ends up
+mailing people who never agreed, which is a complaint rate, a deliverability
+problem, and in most jurisdictions a legal one.
+</Callout>
+
+## The rule
+
+**Sync only contacts with a non-null `marketingConsentAt`.**
+
+Server-side, on the backfill:
+
+<CurlExample path="/contacts?consented=true&limit=100" />
+
+And in your handler, on the live path:
+
+```ts
+if (!contact.marketingConsentAt) return;   // not a subscriber
+```
+
+Both. The filter saves bandwidth; the check in the handler is what protects you
+when somebody edits the URL a year from now.
+
+There is deliberately no way to ask for *only* the non-consenting. That is not a
+list anybody should be assembling, so any value of `consented` other than `true`
+is treated as absent rather than inverted.
+
+## The shape of a sync
+
+<Steps>
+
+### Backfill what exists
+
+Page `/contacts?consented=true` once, at setup. [Cursor-paged](/pagination),
+<MaxLimit /> a page.
+
+Key your side on the Sailo `id`, not the email. A seller can change a contact's
+email, and matching on it turns one person into two.
+
+### Subscribe to `contact.created`
+
+New people arrive as they are added. The payload is the complete
+[contact object](/objects/contact) — the same shape the REST endpoint returns —
+so one field map works for both the backfill and the live path.
+
+### Handle the consent gap
+
+Here is the wrinkle worth understanding, because it is the one thing a naive
+sync gets wrong in the other direction.
+
+`contact.created` fires when the contact is **created**. If they were created
+without consent and opted in later — clicked the link in a double opt-in email a
+week afterwards — there is **no event for that**.
+
+So a sync built on `contact.created` alone will miss everybody who consented
+after they were first added, which on a shop that emails its customers is most
+of them.
+
+The fix is the backfill on a schedule: page `?consented=true` nightly and upsert.
+It is cheap — most shops are a handful of pages — and it converges.
+
+### Push orders as attributes, not as contacts
+
+Subscribe to `order.paid` and update the contact you already have, keyed on
+`data.customer.clientId`.
+
+Do **not** create a CRM contact from an order. An order's `customer.email` is an
+address somebody typed to receive a receipt, and creating a subscriber from it
+is exactly the failure the first section is about.
+
+`clientId` is `null` on a guest checkout that matched nobody. Skip those; they
+will arrive as `contact.created` if the shop ever adds them.
+
+</Steps>
+
+## A worked handler
+
+```ts
+import { Webhook } from "standardwebhooks";
+
+const wh = new Webhook(process.env.SAILO_WEBHOOK_SECRET!);
+
+export async function POST(request: Request) {
+  const body = await request.text();
+  let event;
+  try {
+    event = wh.verify(body, Object.fromEntries(request.headers)) as SailoEvent;
+  } catch {
+    return new Response("bad signature", { status: 400 });
+  }
+
+  // At-least-once delivery. `id` is stable across retries.
+  if (await seen(event.id)) return new Response(null, { status: 204 });
+  await remember(event.id);
+
+  switch (event.type) {
+    case "contact.created": {
+      const contact = event.data;
+      // The whole point of this integration.
+      if (!contact.marketingConsentAt) break;
+
+      await crm.upsertSubscriber({
+        externalId: contact.id,
+        email: contact.email,
+        name: contact.name,
+        tags: contact.tags,
+        consentedAt: contact.marketingConsentAt,
+      });
+      break;
+    }
+
+    case "order.paid": {
+      const order = event.data;
+      if (!order.customer.clientId) break;   // guest checkout
+
+      // Attributes on somebody we may already have — never a new subscriber.
+      await crm.updateAttributes(order.customer.clientId, {
+        lastOrderAt: order.createdAt,
+        // `cents` for arithmetic; `amount` only for display.
+        lifetimeValueCents: await addToTotal(
+          order.customer.clientId,
+          order.total.cents,
+        ),
+      });
+      break;
+    }
+  }
+
+  return new Response(null, { status: 204 });
+}
+```
+
+## Pushing the other way
+
+A form on your own site, a Typeform, a webinar platform — anything can feed
+Sailo's list with one call:
+
+```bash
+curl -X POST https://sailo.store/api/v1/contacts \
+  -H "Authorization: Bearer sailo_sk_…" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"ada@example.com","name":"Ada","tags":["webinar"],"sendOptIn":true}'
+```
+
+Three things about that call:
+
+**It is idempotent by person.** Sending somebody twice updates them and merges
+their tags rather than duplicating or failing. Safe behind a form that may
+double-submit, and safe to retry.
+
+**`sendOptIn: true` asks for consent; it does not grant it.** Sailo emails the
+person the same double opt-in link the public signup form uses, and
+`marketingConsentAt` is written when they click. The response carries
+`optInSent`, and a `false` there can mean *asked too often* — the opt-in send is
+rate-limited per address.
+
+**Tags merge, names do not overwrite.** Yours are added to whatever they carry.
+A name only ever fills a gap, so an automation cannot overwrite what the seller
+or an order already knows.
+
+Needs a key with `write`.
+
+## Tagging from an automation
+
+`POST /contacts/{id}/tags` with `add` and `remove` — its own endpoint precisely
+because *tag everyone who turned up* should not require sending a name and an
+email you may not have.
+
+```bash
+curl -X POST https://sailo.store/api/v1/contacts/{id}/tags \
+  -H "Authorization: Bearer sailo_sk_…" \
+  -H "Content-Type: application/json" \
+  -d '{"add":["attended"],"remove":["registered"]}'
+```
+
+Adding a tag that is present and removing one that is absent are both no-ops, so
+this is safe to retry.
+
+**There is no replace.** A tag the seller applied by hand is not something an
+automation should delete by omitting it — and tags decide who a broadcast
+reaches.
+
+## Deletions
+
+There is no `DELETE /contacts/{id}`, and no `contact.deleted` event.
+
+If a seller removes somebody from their Sailo list, your CRM will not hear about
+it. For an unsubscribe that must propagate, the nightly `?consented=true`
+backfill is the mechanism: somebody who has withdrawn consent stops appearing,
+and a sync that reconciles rather than only appending will notice.

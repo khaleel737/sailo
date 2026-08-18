@@ -1,0 +1,159 @@
+---
+title: Errors
+description: Six stable codes, one envelope, and what to do about each. Branch on code, never on message.
+---
+
+import { Callout } from "nextra/components";
+
+# Errors
+
+Every failure, on every endpoint, has the same shape:
+
+```json
+{
+  "error": {
+    "code": "not_found",
+    "message": "No order with that id."
+  }
+}
+```
+
+with the matching HTTP status.
+
+## Branch on `code`
+
+`code` is stable. One is **never renamed**, only added to — so a consumer that
+switches on it keeps working. `message` is a sentence for a person, may be
+reworded at any time, and is not a contract. Logging the message is right;
+matching on it is not.
+
+<ErrorCodeTable />
+
+## What to do about each
+
+### unauthorized
+
+**HTTP 401.**
+
+No credential, or one Sailo does not recognise. It never distinguishes "no such
+key" from "revoked" from "the shop was deleted", because learning which would
+tell whoever holds a token that it used to be real.
+
+**Do not retry.** Nothing about repeating the request will change the answer.
+Surface it to whoever configured the integration; the fix is a new key.
+
+### forbidden
+
+**HTTP 403.**
+
+A real key, but not one allowed to do this. Two causes, and the `message` says
+which:
+
+- **The scope.** A read-only key reached a write endpoint. Mint a key with
+  `write`.
+- **The plan.** The shop is below the <ApiPlanName /> plan, or has dropped below
+  it since the key was minted. The plan is checked on every request, so a
+  downgrade takes effect immediately.
+
+**Do not retry.** Both are configuration.
+
+### not_found
+
+**HTTP 404.**
+
+No such object *in this shop*. It never distinguishes "not yours" from "not
+there" — the two are answered identically so neither can be used to probe the
+other.
+
+**Do not retry.** For a webhook consumer, a `not_found` on an id that arrived in
+an event usually means the object was deleted between the event and your fetch;
+that is a normal race and worth handling rather than alerting on.
+
+### invalid_request
+
+**HTTP 400.**
+
+Malformed input. A cursor Sailo did not issue, a body that is not a JSON object
+or is over <MaxBodyKb /> KB, a required field missing, a tag that normalises to
+nothing.
+
+**Do not retry unchanged.** The `message` names what was wrong.
+
+### rate_limited
+
+**HTTP 429.**
+
+Too many calls. See [rate limits](/rate-limits) for the budgets.
+
+**Retry, with backoff.** Exponential, starting around a second, with jitter. The
+per-key window is a minute, so a client that backs off past a minute is always
+clear.
+
+### server_error
+
+**HTTP 500.**
+
+Sailo's fault.
+
+**Retry, with backoff.** The body deliberately says nothing about the cause — a
+stack trace, a Postgres message or a constraint name in a response is a
+description of our schema handed to whoever provoked it. If it persists, the
+[support page](/support) has what to send.
+
+## A retry helper
+
+The distinction that matters is between codes worth retrying and codes that will
+give the same answer forever. Getting it backwards produces either an
+integration that hammers a 401 in a loop, or one that gives up on a transient
+blip.
+
+```ts
+const RETRYABLE = new Set(["rate_limited", "server_error"]);
+
+async function call(path: string, key: string, attempt = 0): Promise<unknown> {
+  const response = await fetch(`https://sailo.store/api/v1${path}`, {
+    headers: { authorization: `Bearer ${key}` },
+  });
+
+  if (response.ok) return (await response.json()).data;
+
+  const { error } = await response.json();
+
+  if (RETRYABLE.has(error.code) && attempt < 5) {
+    // Exponential, with jitter so a fleet of workers does not resynchronise.
+    const wait = 2 ** attempt * 1000 + Math.random() * 1000;
+    await new Promise((resolve) => setTimeout(resolve, wait));
+    return call(path, key, attempt + 1);
+  }
+
+  throw new Error(`sailo ${error.code}: ${error.message}`);
+}
+```
+
+<Callout type="info">
+There is no `Retry-After` header on a 429. The per-key window is one minute, so
+backing off to a minute is always sufficient and no header is needed to say so.
+</Callout>
+
+## Errors on the other two surfaces
+
+**Webhooks.** Failures run the other way — Sailo is the client. See
+[delivery and retries](/webhooks/delivery) for what counts as a failure and what
+happens after one.
+
+**MCP.** A tool that refuses comes back as a *result* with `isError: true` and a
+sentence, not as a JSON-RPC error. Those are different things to a model: a
+protocol error says the call was malformed and it can do nothing with that,
+while "no contact with that id" is something it can act on by going and finding
+the right one. See [the protocol](/mcp/protocol#errors).
+
+## What is never in an error
+
+- A stack trace.
+- A database message, table name, column name or constraint name.
+- Anything about another shop.
+- Whether a key *used to* be valid.
+- The size of the failed-authentication budget.
+
+Each of those is a description of Sailo's internals handed to whoever provoked
+it, and none of them helps a legitimate caller do anything differently.

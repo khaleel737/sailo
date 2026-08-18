@@ -111,10 +111,20 @@ export function ApiKeysCard({
   keys,
   contactCount,
   mcpUrl,
+  mcpDocsUrl,
 }: {
   keys: KeyRow[];
   contactCount: number;
+  /** This deployment's MCP endpoint, for the seller to paste into a client. */
   mcpUrl: string;
+  /**
+   * The MCP page on docs.sailo.store.
+   *
+   * Passed in beside `mcpUrl` and for the same reason: this is a client
+   * component, and both addresses belong to deployments it should not be
+   * guessing the hostname of.
+   */
+  mcpDocsUrl: string;
 }) {
   const a = useAdminT();
   const locale = useAdminLocale();
@@ -193,12 +203,12 @@ export function ApiKeysCard({
           />
         </Field>
         {/*
-          A new tab, and a plain anchor rather than `Link`: `/docs/mcp` is a
-          marketing route outside this panel, and a seller reading it has an
-          uncopied URL and a half-filled key form on this one.
+          A new tab, and a plain anchor rather than `Link`: the documentation is
+          a different deployment on a different host, and a seller reading it
+          has an uncopied URL and a half-filled key form on this one.
         */}
         <a
-          href="/docs/mcp"
+          href={mcpDocsUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="focus-ring inline-block text-xs font-medium text-brand-600 underline-offset-2 hover:underline"

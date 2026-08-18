@@ -1,0 +1,78 @@
+---
+title: Money
+description: Every amount Sailo sends is an object with an integer, a decimal string and a currency. Why both numbers, and why amount is not cents over 100.
+---
+
+import { Callout } from "nextra/components";
+
+# Money
+
+Every amount on every object, in both transports, is this:
+
+```json
+{ "cents": 4999, "amount": "49.99", "currency": "GBP" }
+```
+
+Never a bare number, never a float, never a formatted string on its own.
+
+<MoneyFields />
+
+## Why both numbers
+
+Two readers want different things.
+
+A **program** wants `cents`. It is an integer, so it cannot lose a digit to
+floating point — and `0.1 + 0.2` genuinely is not `0.3` in JSON's number type,
+which is the reason financial systems store minor units in the first place.
+
+A **person wiring up a Zap** wants something they can drop straight into an
+email without a formatter step. The single most common integration bug in this
+category is that person mapping the integer and mailing a customer *"you paid
+4999"*. Sending only `cents` would be technically pure and would produce that
+email.
+
+So both, always, rather than a choice a consumer has to get right.
+
+<Callout type="warning">
+**`amount` is not `cents / 100`.** It is computed per currency: JPY has no minor
+unit at all — 4999 JPY is `"4999"`, not `"49.99"` — and JOD has three, where
+4999 is `"4.999"`. A fixed hundred is wrong for about a fifth of the currencies
+Sailo supports, and wrong by a factor of ten or a hundred when it is.
+
+If you need a display value and cannot use `amount`, use your platform's
+currency formatter with the `currency` code. Do not divide.
+</Callout>
+
+## Arithmetic
+
+Do it in `cents`, and only between amounts sharing a `currency`.
+
+```ts
+// Right: integers, same currency.
+const outstanding = order.total.cents - order.refunded.cents;
+
+// Wrong: loses precision, and silently on some values.
+const outstanding = Number(order.total.amount) - Number(order.refunded.amount);
+```
+
+A shop prices in one currency, so every money object on every object from one
+shop carries the same code. You can read it once from
+[`GET /shop`](/api/shop) rather than per row — but the field is on every money
+object anyway, because a payload that travels into a queue should carry its own
+units.
+
+## Zero and null
+
+An amount that is zero is `{ "cents": 0, "amount": "0.00", "currency": "GBP" }`,
+not `null`. A discount that was not applied, a delivery fee that was not
+charged, a refund that has not happened — all zero, all present.
+
+The exception is a field whose *absence* means something different from zero.
+`compareAt` on a product is `null` when the seller set no "was" price, because
+zero would mean they priced it at nothing. The
+[object pages](/objects) say which fields those are.
+
+## Negative amounts
+
+`cents` may be negative, and `amount` carries the sign: `-2500` is `"-25.00"`.
+Do not assume a money object is non-negative when doing comparisons.

@@ -1,0 +1,8 @@
+.vercel
+.env*
+
+# Pagefind writes the search index into `public/` during `postbuild`. It is
+# build output that happens to live where static assets do, so it is ignored
+# for the same reason `.next` is — committing it would mean a stale index in
+# every diff that touches a page.
+public/_pagefind

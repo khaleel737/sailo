@@ -17,22 +17,25 @@ export default function robots(): MetadataRoute.Robots {
   }
 
   /*
-   * `/api/` is closed to everyone, with three exceptions carved back out.
+   * `/api/` is closed to everyone, with one exception carved back out.
    *
    * `Allow` beats `Disallow` on a longer match in every crawler that
-   * implements the standard, so naming the three paths individually is what
-   * keeps the blanket rule honest rather than having to loosen it. All three
-   * are public, unauthenticated and contain no shop's data:
+   * implements the standard, so naming the path individually is what keeps the
+   * blanket rule honest rather than having to loosen it.
    *
-   *   - `/api/v1/openapi.json` is the machine-readable REST contract, and a
-   *     spec nobody can fetch is a spec nobody evaluates.
-   *   - `/llms.txt` and `/llms-full.txt` are the documentation as Markdown.
+   * `/api/v1/openapi.json` is the machine-readable REST contract: public,
+   * unauthenticated, no shop's data behind it, and a spec nobody can fetch is
+   * a spec nobody evaluates.
+   *
+   * It used to be three. `/llms.txt` and `/llms-full.txt` were the developer
+   * documentation as Markdown, and they left with the pages they describe —
+   * docs.sailo.store serves both now, and has its own `robots.ts` saying so.
    *
    * The rest of `/api/` stays shut. Those routes carry shop data behind a
    * bearer token, and several take one-time tokens in the URL.
    */
   const shared = {
-    allow: ["/", "/api/v1/openapi.json", "/llms.txt", "/llms-full.txt"],
+    allow: ["/", "/api/v1/openapi.json"],
     disallow: [
       "/admin",
       "/api/",

@@ -1,0 +1,82 @@
+---
+title: Products
+description: List a shop's catalogue and read one product with its variants. Filter by kind or published state.
+---
+
+import { Callout } from "nextra/components";
+
+# Products
+
+The catalogue, newest first.
+
+## `stock: null` means not counted
+
+<Callout type="warning">
+**`null` is not zero.** A product with `trackInventory: false` reports
+`stock: null`, which means Sailo is not counting units — not that there are
+none. A consumer syncing stock levels into a marketplace listing that reads one
+as the other will delist every product the seller sells without counting, which
+on a service or a digital download is most of them.
+</Callout>
+
+The field to gate a listing on is **`inStock`**, a boolean that already accounts
+for `trackInventory`. Use `stock` for a number to display, and only where
+`trackInventory` is true.
+
+## Variants are not expanded in the list
+
+`GET /products` returns `variants: []` on every row. `GET /products/{id}` returns
+them in full.
+
+A page of twenty-five products with every variant inline is a large response
+nobody asked for, and the detail endpoint is one call away for the product that
+matters. If you are syncing a catalogue with variants, the pattern is: page the
+list, then fetch detail for the products you are actually mirroring.
+
+A variant with no price of its own inherits the product's, so `price` on a
+variant is always populated — there is no null to handle.
+
+## `kind` decides the rest of the object
+
+One of <code>physical</code>, <code>digital</code>, <code>service</code>,
+<code>event</code>, <code>membership</code>. It decides which of three optional
+objects is present:
+
+| `kind` | Carries |
+| --- | --- |
+| `service` | `booking` — duration, mode, lead time |
+| `event` | `event` — when it starts |
+| `membership` | `membership` — interval and trial days |
+| `physical`, `digital` | none of the three; all null |
+
+Filter on it when your integration only handles one:
+
+<CurlExample path="/products?kind=physical&published=true" />
+
+## Drafts
+
+`?published=true` is what buyers can see; `?published=false` is drafts.
+**Omitting it means both**, which is deliberate — a storefront sync wants one, a
+catalogue audit wants the other, and neither should have to know which Sailo
+picked as a default.
+
+Drafts are invisible on the storefront and readable through the API. That is the
+correct behaviour for a key the seller minted themselves, but it does mean a
+public mirror built from an unfiltered list will publish things the seller has
+not.
+
+## Prices are in the shop's currency
+
+Products carry no currency of their own — a shop prices in one. Every money
+object on every product carries the shop's code, which you can read once from
+[`GET /shop`](/api/shop).
+
+`compareAt` is the struck-through "was" price where the seller set one, and
+`null` where they did not — not a copy of `price`.
+
+## The object
+
+The full shape, including variants and the three optional objects, is on the
+[product object reference](/objects/product).
+
+<Endpoints match="/products" />

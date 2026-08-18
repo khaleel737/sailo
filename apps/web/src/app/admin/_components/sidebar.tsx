@@ -80,6 +80,7 @@ export function Sidebar({
   handle,
   pendingReviews,
   newOrders,
+  docsUrl,
   actions,
   t,
 }: {
@@ -87,6 +88,17 @@ export function Sidebar({
   handle: string;
   pendingReviews: number;
   newOrders: number;
+  /**
+   * Where the developer documentation lives.
+   *
+   * Passed in rather than read here, which is the convention every origin in
+   * this panel follows — the MCP URL on the Integrations tab is handed down the
+   * same way. This is a client component, so reading it here would mean
+   * trusting Next to inline the variable into the browser bundle and produce
+   * the identical string on both sides of hydration; a prop from a server
+   * component has neither question in it.
+   */
+  docsUrl: string;
   /** Header controls, folded into the mobile bar where there is no header. */
   actions?: React.ReactNode;
   t: Dictionary;
@@ -209,17 +221,17 @@ export function Sidebar({
       </a>
       {/*
         The developer documentation — the REST API, the webhooks and the MCP
-        server, at `/docs`.
+        server, at docs.sailo.store.
 
         Beside "View shop" rather than in a group above, because like that one
-        it leaves the panel: `/docs` is a marketing route, public and
-        unauthenticated, and the groups are all pages of this admin. A new tab
-        for the same reason — a seller reads it while wiring something up on
-        the Integrations tab, and navigating away would lose the key they were
-        halfway through creating.
+        it leaves the panel: the docs are public, unauthenticated and a
+        different deployment entirely, while the groups are all pages of this
+        admin. A new tab for the same reason — a seller reads it while wiring
+        something up on the Integrations tab, and navigating away would lose the
+        key they were halfway through creating.
       */}
       <a
-        href="/docs"
+        href={docsUrl}
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => setOpen(false)}

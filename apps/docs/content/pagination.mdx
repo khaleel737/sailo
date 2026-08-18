@@ -1,0 +1,134 @@
+---
+title: Pagination
+description: Keyset cursors, not offsets. How to page correctly, why has_more and next_cursor answer different questions, and what a cursor is not.
+---
+
+import { Callout } from "nextra/components";
+
+# Pagination
+
+Every list endpoint is cursor-paged, newest first.
+
+```json
+{
+  "data": [ … ],
+  "has_more": true,
+  "next_cursor": "MjAyNi0wOC0xMlQwOTo0MTowNy4yMjFafDhmMmI"
+}
+```
+
+## The loop
+
+Pass the `next_cursor` from one response as `?cursor=` on the next, and stop
+when `has_more` is false.
+
+```ts
+const SAILO = "https://sailo.store/api/v1";
+
+async function everyOrder(key: string) {
+  const orders = [];
+  let cursor: string | null = null;
+
+  do {
+    const url = new URL(`${SAILO}/orders`);
+    url.searchParams.set("limit", "100");
+    if (cursor) url.searchParams.set("cursor", cursor);
+
+    const response = await fetch(url, {
+      headers: { authorization: `Bearer ${key}` },
+    });
+    if (!response.ok) throw new Error(`sailo: ${response.status}`);
+
+    const page = await response.json();
+    orders.push(...page.data);
+    cursor = page.next_cursor;
+
+    // `has_more`, not `cursor` — see below.
+    if (!page.has_more) break;
+  } while (true);
+
+  return orders;
+}
+```
+
+<Callout type="warning">
+**Loop on `has_more`, not on whether the cursor is null.** They answer different
+questions, and a consumer branching on the cursor gets the wrong one on the last
+full page of a keyset scan: the cursor is present, the next request returns
+nothing, and a naive loop either makes one wasted call or — if it treats an
+empty page as an error — fails.
+</Callout>
+
+## Parameters
+
+| Parameter | Meaning |
+| --- | --- |
+| `limit` | How many to return. Defaults to <DefaultLimit />, capped at <MaxLimit />. |
+| `cursor` | The `next_cursor` from the previous response. Omit for the first page. |
+
+Asking for more than <MaxLimit /> is **clamped rather than refused**, so a
+caller who sends `limit=1000` gets <MaxLimit /> and a working integration
+instead of a 400 and a support ticket.
+
+## Why cursors rather than offsets
+
+A cursor names a *position in the ordering* rather than a count of rows skipped.
+
+That distinction is the whole reason for it. With `?page=3`, an order placed
+while you are scanning shifts every subsequent row down by one, and the record
+that was at the top of page 4 moves to the bottom of page 3 — which you have
+already read. You silently skip it. On a busy shop, a nightly offset-paged
+export misses a handful of orders every night and there is nothing in the data
+to say so.
+
+Keyset paging cannot do that. New rows arrive ahead of where you are reading and
+you simply do not see them on this pass, which is the correct behaviour for a
+snapshot.
+
+## What a cursor is not
+
+**Opaque.** It is base64 today and that is an implementation detail; building
+anything on its internals is building on something that will change. Do not
+parse one, do not construct one, do not assume two cursors can be compared.
+
+**Not durable.** Treat a cursor as valid for the duration of one scan. It is
+fine to hold one across a retry seconds later; it is not a bookmark to store for
+a week.
+
+**Not portable.** A cursor issued for `/orders` means nothing to `/products`,
+and one issued under one set of filters means nothing under another. Change a
+filter and start the scan again.
+
+A cursor Sailo did not issue is an `invalid_request`, not an empty page — a
+silent empty page would make a typo look like "there is no more data", which is
+exactly the failure that gets deployed.
+
+## Ordering
+
+Newest first, by creation time, on every list endpoint. Ties are broken by id so
+the order is total — two orders created in the same millisecond have a stable
+relative position, which is what makes the cursor unambiguous.
+
+## Filters and paging together
+
+Filters are applied before paging, so `has_more` and `next_cursor` describe the
+*filtered* set. `?payment_status=paid&limit=100` walks paid orders a hundred at
+a time; it does not walk all orders and hand you the paid ones out of each
+hundred.
+
+Keep every filter identical across a scan. Changing one mid-loop invalidates the
+cursor's meaning even where it does not produce an error.
+
+## Doing an incremental sync
+
+There is no `updated_since` filter, so the pattern is:
+
+1. Subscribe to the [webhook](/webhooks) for the thing you care about, and
+   process events as they arrive. This is the live path.
+2. Page the list endpoint on a schedule as a backstop, stopping early once you
+   reach records you already have — the ordering is newest-first, so you can
+   break out of the loop rather than reading to the end.
+
+Webhooks are the primary mechanism and polling is the safety net, not the other
+way round. A poll frequent enough to feel live is a poll that will meet the
+[rate limit](/rate-limits) on a shop with real volume.

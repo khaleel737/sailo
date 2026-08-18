@@ -1,0 +1,173 @@
+---
+title: Zapier, n8n and Make
+description: Wire Sailo into a no-code tool with a Catch Hook and an HTTP step. No connector to install, no app to register.
+---
+
+import { Callout, Steps } from "nextra/components";
+
+# Zapier, n8n and Make
+
+There is no Sailo app in any of these directories, and that is the design rather
+than a gap.
+
+A signed webhook plus a bearer key reaches Zapier, n8n, Make, Pipedream, Activepieces,
+Windmill and everything behind them — a larger set than any list of logos we
+could maintain, and it means nothing you build depends on Sailo shipping a
+connector for your tool.
+
+What you use instead: a generic **webhook trigger** and a generic **HTTP
+request** action. Both exist in every one of these tools.
+
+## Receiving events
+
+<Steps>
+
+### Create the trigger and copy its URL
+
+| Tool | Step |
+| --- | --- |
+| Zapier | *Webhooks by Zapier* → **Catch Raw Hook** |
+| n8n | **Webhook** node, `POST` |
+| Make | **Custom webhook** |
+| Pipedream | **HTTP / Webhook** trigger |
+
+<Callout type="warning">
+In Zapier, choose **Catch Raw Hook**, not *Catch Hook*, if you intend to verify
+the signature. The signature covers the exact bytes sent, and *Catch Hook*
+parses the body before you see it — leaving you nothing to verify against. If
+you are not verifying, *Catch Hook* is friendlier to map from.
+</Callout>
+
+### Register it in Sailo
+
+**Settings → Integrations** → add the endpoint, paste the URL, tick the events.
+Up to <MaxEndpoints /> endpoints per shop, so a Zap and an n8n flow can run side
+by side.
+
+### Send a test
+
+Press **Send test**. The payload that arrives carries `"test": true` and **every
+field a real one carries**, including the ones that would be null on a shop with
+no orders yet.
+
+This step is not optional in a no-code tool. **Zapier builds its whole field map
+from the first payload it receives**, so mapping against a thin sample produces
+a Zap that works in testing and breaks on the first real sale. The test payload
+is complete precisely so that cannot happen.
+
+### Build the rest of the flow
+
+Map the fields you need. Two that trip people up:
+
+- **Money is an object.** Use `data.total.amount` for anything a person reads —
+  `"54.98"`. `data.total.cents` is `5498`, and mapping it into an email is the
+  most common mistake in this whole category.
+- **Timestamps are UTC.** Convert to the shop's `timeZone` — read it once from
+  `GET /shop` — before putting a date in front of a human.
+
+</Steps>
+
+## Verifying, in a no-code tool
+
+If your tool can run a code step, verify. It is a dozen lines and it is the
+difference between an endpoint that receives Sailo's events and one that
+receives anybody's.
+
+**n8n** — a Code node before anything else:
+
+```js
+const crypto = require("crypto");
+
+const secret = $env.SAILO_WEBHOOK_SECRET.replace(/^whsec_/, "");
+const headers = $input.first().json.headers;
+const body = $input.first().json.body;   // raw string — set the node to raw
+
+const expected = crypto
+  .createHmac("sha256", Buffer.from(secret, "base64"))
+  .update(`${headers["webhook-id"]}.${headers["webhook-timestamp"]}.${body}`)
+  .digest("base64");
+
+if (!headers["webhook-signature"].includes(expected)) {
+  throw new Error("bad signature");
+}
+
+return [{ json: JSON.parse(body) }];
+```
+
+**Zapier** — a *Code by Zapier* (JavaScript) step, same recipe, reading
+`inputData`.
+
+If your tool cannot run code, the practical mitigation is a **long unguessable
+path** on the webhook URL — which every one of these tools gives you by default
+— plus a check that `data.shop.id` is the shop you expect. That is weaker than a
+signature and better than nothing.
+
+The [signatures page](/webhooks/signatures) has the full recipe and the four
+ways it goes wrong.
+
+## Deduplicating
+
+Delivery is at-least-once, so the same event can arrive twice.
+
+**Zapier** — the *Storage by Zapier* app, or a lookup in whatever spreadsheet or
+database the Zap already writes to. Key on `data.id` from the body, which is the
+same value as the `webhook-id` header.
+
+**n8n / Make** — a "get row where id = …" step with a branch on whether it
+exists. Both tools have an early-exit node for the found case.
+
+Skipping this shows up as duplicate rows in a sheet, duplicate emails to a
+customer, or duplicate charges downstream, and it will not happen in testing.
+
+## Calling the API
+
+For anything the events do not carry — a catalogue sync, a nightly reconcile,
+looking up a contact.
+
+Every tool has a generic HTTP step. Configure it:
+
+| | |
+| --- | --- |
+| Method | `GET` (or `POST` for the two writes) |
+| URL | <code><ApiBaseUrl /></code> plus the path |
+| Header | `Authorization: Bearer sailo_sk_…` |
+| Header | `Content-Type: application/json` on a `POST` |
+
+<Callout type="error">
+**Put the key in the header, never in the URL.** Some of these tools make a
+query parameter the path of least resistance. A token in a URL is written into
+every log the request passes through, including your automation tool's own run
+history — which is often shared with a team.
+</Callout>
+
+### Paging in a no-code tool
+
+Every list endpoint is [cursor-paged](/pagination). Ask for `limit=100` — the
+maximum — and, if you need everything, loop on `has_more` using your tool's
+iterator: Zapier's *Looping*, n8n's *Loop Over Items*, Make's *Repeater*.
+
+Most flows do not need to page. If you are reacting to an event, the event
+already carries the whole object.
+
+## Common recipes
+
+**New paid order → row in a sheet.** Trigger on `order.paid`. Map `data.id`,
+`data.customer.email`, `data.total.amount`, `data.createdAt`.
+
+**New contact → your newsletter tool.** Trigger on `contact.created`, then
+**filter on `data.marketingConsentAt` being non-empty**. Everybody else is a
+customer who never agreed to be emailed — see
+[syncing to a CRM](/guides/sync-a-crm).
+
+**Form submission → Sailo contact.** `POST /contacts` with `email`, `name`,
+`tags`, and `sendOptIn: true` if you want Sailo to ask for consent. It is
+idempotent by person, so a double submission updates rather than duplicating.
+
+**Membership ended → revoke a Discord role.** Trigger on `subscription.ended` —
+**not** `subscription.cancelled`, which is a member who has paid through the end
+of the period. See [granting and revoking
+access](/guides/membership-access).
+
+**Chargeback opened → task with a deadline.** Trigger on `dispute.opened`, map
+`data.dueBy` to the due date, and branch on `data.caseType` so an inquiry does
+not get reported as a lost sale. See [chargebacks](/guides/chargebacks).

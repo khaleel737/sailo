@@ -1,0 +1,82 @@
+---
+title: MCP server
+description: Point Claude, Cursor or any MCP client at a Sailo shop with an API key. Read orders, products and contacts; with a write key, add contacts and change tags.
+---
+
+import { Callout } from "nextra/components";
+
+# MCP server
+
+<code><McpUrl /></code>
+
+Sailo runs a [Model Context Protocol](https://modelcontextprotocol.io) server.
+Point Claude, Cursor, or any MCP client at that address with an API key as a
+bearer token, and it can read a shop's orders, products and contacts — and, with
+a write key, add contacts and change their tags.
+
+## The same key, the same rules
+
+One HTTP endpoint, one bearer token, **no OAuth dance and no separate
+registration**. The key is the same one the [REST API](/api) takes, because they
+are one grant: *this program may act on my shop, within these scopes*.
+
+Which means everything on the [authentication page](/authentication) applies
+here unchanged — the same scopes, the same plan gate checked on every call, the
+same [240 requests a minute](/rate-limits) shared between the two surfaces, and
+one revocation that closes both.
+
+## Every tool is the REST endpoint
+
+Not a reimplementation, not a "simplified" version — **the same function, with
+the same shop id in the same `WHERE`**.
+
+That is the most important property of this server and it is deliberate. Two
+implementations of "list this shop's orders" would be two ownership checks, and
+the one that drifted would be the way into somebody else's shop. An assistant
+and an integrator get identical behaviour because they are one code path.
+
+## What it is for
+
+The honest answer is: asking questions of a shop in words, and doing the small
+number of things an assistant can safely do.
+
+- *"How many orders did we take last week, and what was the total?"*
+- *"Find everything ada@example.com has bought."*
+- *"Which products are nearly out of stock?"*
+- *"Add everybody who came to the webinar to the list and tag them."*
+
+What it is **not** for is running the shop. An assistant cannot refund, ship,
+cancel, publish, or change a price — see [what it can
+do](/mcp/permissions) for the full line.
+
+<Callout type="warning">
+**A key is a key.** An assistant holding one can do everything that key can do,
+and it will do it without asking you again each time. Mint a **read-only** key
+unless you specifically want an assistant writing to your list.
+</Callout>
+
+## At a glance
+
+| | |
+| --- | --- |
+| Endpoint | <code><McpUrl /></code> |
+| Transport | Streamable HTTP, `POST` only |
+| Auth | `Authorization: Bearer sailo_sk_…` |
+| Tools | <ToolCount /> — <ReadToolCount /> read, the rest need a write key |
+| Protocol | <ModernVersion />, and the handshake for <LegacyVersions /> |
+| Sessions | None. Every request carries its own credential. |
+| Rate limit | Shared with the REST API — 240 a minute per key |
+| Tool call ceiling | 60 seconds |
+
+## Next
+
+- **[Connecting a client](/mcp/connect)** — Claude Code, Claude Desktop, Cursor,
+  VS Code, and anything else.
+- **[What it can do](/mcp/permissions)** — the full line, in both directions.
+- **[Tool reference](/mcp/tools)** — all <ToolCount />, with their arguments.
+- **[Protocol](/mcp/protocol)** — versions, methods, errors, and `curl`.
+
+## Getting a key
+
+The MCP server is on the <ApiPlanName /> plan. Every key is read-only unless you
+tick `write`, and is shown once at creation. Create one under <KeyLink />.

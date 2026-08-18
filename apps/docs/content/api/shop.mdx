@@ -1,0 +1,30 @@
+---
+title: Shop
+description: The one call that proves a key works and names what it connected to.
+---
+
+# Shop
+
+The call to make first, and the one to make once.
+
+It proves the credential works and names what it connected to, which is what a
+setup screen shows back to the seller so they know they pasted the right key. It
+is also where two values every other response depends on come from: the shop's
+`currency` and its `timeZone`.
+
+Deliberately thin. Nothing about billing, nothing about the owner's account, no
+contact email — it answers *which shop*, not *tell me everything about this
+seller*.
+
+## Cache it
+
+The values here change about once a year. Read this at setup and hold the
+result; a consumer that calls it before every other request is spending a
+quarter of its [rate limit](/rate-limits) on an answer that has not moved.
+
+## The object
+
+The full shape, field by field, is on the
+[shop object reference](/objects/shop).
+
+<Endpoints match="/shop" />

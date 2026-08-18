@@ -1,0 +1,165 @@
+---
+title: Granting and revoking access
+description: Turn subscription.* events into a Discord role, a course login or a private feed — without cutting anybody off a month early.
+---
+
+import { Callout } from "nextra/components";
+
+# Granting and revoking access
+
+A paid community, a members-only course, a private podcast feed. The
+<SubscriptionEventCount /> `subscription.*` events are what drives access, and
+the whole difficulty is in two pairs of events that look interchangeable and are
+not.
+
+## The two mistakes
+
+<Callout type="error">
+**Revoking on `subscription.cancelled`.**
+
+That event is the member *asking to stop*. They have paid through
+`currentPeriodEnd` and keep their access until it. Revoking there takes away a
+month somebody already bought — which produces an angry customer and a refund
+request, and no error anybody sees.
+
+Revoke on **`subscription.ended`**.
+</Callout>
+
+<Callout type="error">
+**Revoking on `subscription.payment_failed`.**
+
+That is a card that did not go through. Stripe retries for several days and most
+of them recover. Email the member; do not cut them off. If it never clears,
+`subscription.ended` arrives and *that* is the signal.
+</Callout>
+
+## What each event means for access
+
+| Event | Access |
+| --- | --- |
+| `subscription.created` | **Grant** |
+| `subscription.renewed` | Keep — extend any expiry you cache |
+| `subscription.resumed` | Keep, and clear any pending revocation |
+| `subscription.plan_changed` | Keep, and re-evaluate the tier |
+| `subscription.payment_failed` | **Keep.** Email them. |
+| `subscription.cancelled` | **Keep until `currentPeriodEnd`.** |
+| `subscription.ended` | **Revoke** |
+
+## Deriving access from the payload
+
+Better than a state machine over event names: every `subscription.*` event
+carries the [complete membership object](/objects/subscription), so you can
+compute access from the payload and ignore which event delivered it.
+
+```ts
+type Subscription = {
+  status: string;
+  currentPeriodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
+};
+
+function hasAccess(sub: Subscription, now = new Date()): boolean {
+  // `past_due` is included on purpose: a failed renewal is a retry window,
+  // not an ending. Stripe gives it days before moving to `unpaid`.
+  if (["active", "trialing", "past_due"].includes(sub.status)) return true;
+
+  // Cancelled but paid through — the month they already bought.
+  if (sub.currentPeriodEnd && new Date(sub.currentPeriodEnd) > now) return true;
+
+  return false;
+}
+```
+
+That function is order-independent and idempotent, which matters because
+[events are not ordered](/webhooks/delivery#ordering). A `renewed` that needed a
+retry can arrive after a `payment_failed` that did not.
+
+## A handler
+
+```ts
+export async function handleSubscription(event: SailoEvent) {
+  const sub = event.data as Subscription & { id: string; clientId: string | null };
+
+  // Events are not ordered. Ignore one older than what we have stored.
+  const known = await load(sub.id);
+  if (known && known.updatedAt >= event.timestamp) return;
+
+  await save(sub.id, { ...sub, updatedAt: event.timestamp });
+
+  const allowed = hasAccess(sub);
+  const member = await memberFor(sub.clientId);
+  if (!member) return;
+
+  if (allowed) await discord.addRole(member, MEMBER_ROLE);
+  else await discord.removeRole(member, MEMBER_ROLE);
+
+  // The one event that is about a person rather than a state.
+  if (event.type === "subscription.payment_failed") {
+    await email(member, "yourCardDidNotGoThrough");
+  }
+}
+```
+
+Note what it does **not** do: switch on the event type to decide access.
+`hasAccess` reads the state; the event type only chooses the email.
+
+## Scheduled revocation
+
+`hasAccess` returns true for a cancelled member until `currentPeriodEnd` passes
+— but **no event fires at that moment on a manual membership**, and on a Stripe
+one `subscription.ended` is what you are waiting for.
+
+Two ways to close that gap:
+
+**Wait for the event.** Simplest, and correct for `billingMode: "stripe"`.
+`subscription.ended` arrives when the period actually runs out.
+
+**Schedule it.** On `subscription.cancelled`, queue a revocation for
+`currentPeriodEnd`; on `subscription.resumed`, cancel it. Necessary if your
+system needs the revocation to be exact rather than event-driven, and worth it
+for anything where a few minutes of extra access matters.
+
+Do both if you like — `hasAccess` makes a double revocation a no-op.
+
+## Manual memberships
+
+<Callout type="warning">
+Read `billingMode`. **A `manual` membership will never send you anything from
+Stripe.** Sailo raises a renewal order that a human settles — cash at the door,
+a bank transfer — so an integration waiting for a card renewal on one waits
+forever.
+
+`paymentMethod` names the rail. It is `null` on a card subscription.
+</Callout>
+
+Access still works the same way: `status` and `currentPeriodEnd` are maintained
+either way, and that is the point of the field existing. The difference is only
+in what *causes* them to move.
+
+## Trials
+
+`status: "trialing"` with `trialEndsAt` set. Grant access — `hasAccess` does.
+
+A trial that converts moves to `active`. One that does not moves through
+`incomplete` or straight to `canceled`, and `subscription.ended` follows.
+
+## Plan changes
+
+`subscription.plan_changed` carries the **new** `price` and `interval`. If your
+access has tiers, re-evaluate from `productId` — the membership names the
+product it is a subscription to, and that product is readable with
+[`GET /products/{id}`](/api/products).
+
+## Bootstrapping
+
+There is no `GET /api/v1/subscriptions`, so you cannot page existing members at
+setup.
+
+The practical approach: turn the integration on, let it build state from events
+as they arrive, and grant access on demand for anybody it has not seen — a
+member who logs in and is unknown gets checked against your own records or
+granted provisionally. Within a billing cycle every active membership has sent
+you at least a `renewed`.
+
+If that does not work for your case, [get in touch](/support) — it is a real gap
+rather than a decision.

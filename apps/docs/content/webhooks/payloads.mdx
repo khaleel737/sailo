@@ -1,0 +1,127 @@
+---
+title: Payloads
+description: The webhook envelope, the headers that arrive with it, and which of five objects lands in data.
+---
+
+import { Callout } from "nextra/components";
+
+# Payloads
+
+## The envelope
+
+Every delivery, of every event, has this shape:
+
+```json
+{
+  "id": "8f2b41d6-0c93-4f77-a1e5-9b6d2c4a7e01",
+  "type": "order.paid",
+  "timestamp": "2026-08-12T09:41:07.221Z",
+  "version": 1,
+  "test": false,
+  "shop": { "id": "3f1c9a80-…", "handle": "acme" },
+  "data": { }
+}
+```
+
+| Field | What it is |
+| --- | --- |
+| `id` | This delivery's id — **the same value as the `webhook-id` header**, and your idempotency key. |
+| `type` | The [event](/webhooks/events). |
+| `timestamp` | ISO 8601, **when the event happened** — not when this attempt was made. |
+| `version` | The envelope version, currently <PayloadVersion />. |
+| `test` | `true` only for the *Send test* button. |
+| `shop` | Which shop, by id and handle. |
+| `data` | The object the event is about — see below. |
+
+### `id` is in two places on purpose
+
+The header is what a Standard Webhooks library hands you; the body is what a
+no-code tool can see. A consumer that deduplicates on either is correct, which
+is the point — a Zapier user cannot read headers, and a server-side consumer
+should not have to parse the body to dedupe.
+
+### `timestamp` is the event, not the attempt
+
+A retry twelve hours later carries the original timestamp. If you are ordering
+events, order on this — not on when your endpoint received them.
+
+### `test` is on every envelope
+
+Present and `false` on real deliveries rather than absent, so a consumer can
+branch on it without treating a missing field as false — and so somebody wiring
+a Zap against a test payload cannot build a mapping that breaks the moment a
+real order arrives with a different set of keys.
+
+## The payload is a statement about a moment
+
+`data` is built **once, when the event happens**, and stored. It is never
+rebuilt at send time.
+
+That matters on a retry: a delivery of `order.created` that finally succeeds
+twelve hours later describes the order as it was when it was created, not as it
+reads now. Rebuilding it would produce an `order.created` claiming a refunded
+order had just been placed.
+
+The consequence for you: **`data` may be stale by the time you process it.** For
+a slow retry, or a queue you drain later, fetch the current state from the
+[REST API](/api) if freshness matters. For the normal case — a delivery that
+succeeds in under a second — it does not.
+
+## What arrives in `data`
+
+<PayloadShapeTable />
+
+Which one is decided by the event's **prefix**, and every event sharing a prefix
+carries the identical shape. A consumer that wired `subscription.created` and
+later adds `subscription.cancelled` remaps nothing, because what differs between
+them is which one fired and not what a membership is.
+
+<Callout type="info">
+The first two are the **same objects the REST API returns**, built by the same
+code — so one field map works against both, and a consumer that stored only an
+id can fetch the rest with `GET /orders/{id}` and see identical field names.
+
+The other two have no endpoint at all. There is no
+`GET /api/v1/subscriptions/{id}` and no dispute endpoint, which is exactly why
+their shapes are written out in the [object reference](/objects) rather than
+left to a REST page to describe.
+</Callout>
+
+## Headers
+
+```http
+POST /your-endpoint HTTP/1.1
+content-type:       application/json
+user-agent:         Sailo-Webhooks/1.0 (+https://sailo.store)
+webhook-id:         8f2b41d6-0c93-4f77-a1e5-9b6d2c4a7e01
+webhook-timestamp:  1786527667
+webhook-signature:  v1,K5oZfzN95Z9…
+```
+
+The three `webhook-*` headers are [Standard
+Webhooks](/webhooks/signatures). `webhook-timestamp` is **seconds since epoch**
+— the one place in this API that is not ISO 8601, because the specification says
+so.
+
+`webhook-id` is stable across every retry of one event; the timestamp and
+signature are fresh each attempt.
+
+## Money and dates
+
+The [normal conventions](/conventions) apply inside `data` exactly as they do in
+a REST body. Money is always an object; timestamps are always ISO 8601 in UTC;
+a field with no value is `null` rather than absent.
+
+## Test payloads
+
+The *Send test* button sends a complete payload with `"test": true` and **every
+field a real one carries**, including the ones that would be null on a shop that
+has never had an order.
+
+A thin sample would be worse than none. Zapier builds its whole field map from
+the first payload it receives, so a seller who maps against a partial object
+discovers the mismatch on their first real sale — at which point the Zap has
+been "working" for a week.
+
+Use `test` to route: send test deliveries to a staging path, or acknowledge and
+discard them, but do not let one create a real record.

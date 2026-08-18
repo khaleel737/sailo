@@ -1,0 +1,126 @@
+---
+title: Quickstart
+description: Mint a key, prove it works, read a page of orders, and receive your first signed webhook — in about five minutes.
+---
+
+import { Callout, Steps } from "nextra/components";
+
+# Quickstart
+
+Five minutes, four steps, and you will have made an authenticated call and
+received a signed event.
+
+<Steps>
+
+### Mint a key
+
+Open <KeyLink /> in your Sailo admin and create a key.
+
+Two decisions on that screen:
+
+- **Read or write.** Every key is read-only unless you tick `write`. Tick it
+  only if your integration needs to create contacts or change tags —
+  [everything else is read-only anyway](/authentication#what-a-key-can-do), so a
+  write key buys nothing for a sync.
+- **Where it goes.** The key is shown **once**, at creation, and stored hashed.
+  There is no "reveal" button anywhere in the product because there is nothing
+  to reveal. Paste it into your secret store before you close the dialog.
+
+It looks like `sailo_sk_` followed by 43 characters.
+
+<Callout type="warning">
+A key is a bearer credential for one shop. Anything holding it can do
+everything it can do, without asking anybody. Keep it on a server; never ship
+one in a browser bundle or a mobile app.
+</Callout>
+
+### Prove it works
+
+The call to make first. It answers with the shop the key belongs to, which is
+what a setup screen shows back to the seller so they know they pasted the right
+key.
+
+<CurlExample path="/shop" />
+
+```json
+{
+  "data": {
+    "id": "3f1c9a80-5e17-4a2b-9c44-2f0d8b71e6a3",
+    "object": "shop",
+    "handle": "acme",
+    "name": "Acme Supply",
+    "currency": "GBP",
+    "timeZone": "Europe/London",
+    "createdAt": "2026-01-09T11:02:44.108Z"
+  }
+}
+```
+
+Note `currency` and `timeZone`. Every amount you receive from now on is in that
+currency, and every timestamp is UTC that should be rendered in that zone.
+
+If it fails instead, the [errors page](/errors) has the four things it can be.
+
+### Read something real
+
+<CurlExample path="/orders?limit=50&payment_status=paid" />
+
+You get `{ "data": [...], "has_more": …, "next_cursor": … }`. Loop while
+`has_more` is true, passing the previous `next_cursor` as `?cursor=` — not while
+the cursor is non-null, which is [a different question](/pagination) and gets
+the wrong answer on the last full page.
+
+### Receive an event
+
+Reading is a poll. Most integrations want to be told instead.
+
+1. In your Sailo admin, go to **Settings → Integrations**, add an endpoint URL,
+   and tick the events you want. Start with `order.paid`.
+2. Copy the signing secret it shows you — `whsec_…`.
+3. Press **Send test**. A complete payload arrives with `"test": true` and every
+   field a real one carries.
+4. Verify it. Do not skip this; an unverified endpoint accepts anything that
+   knows the URL.
+
+```ts
+import { Webhook } from "standardwebhooks";
+
+const wh = new Webhook(process.env.SAILO_WEBHOOK_SECRET!); // whsec_…
+
+export async function POST(request: Request) {
+  const body = await request.text();          // raw, not parsed
+  const headers = Object.fromEntries(request.headers);
+
+  let event;
+  try {
+    event = wh.verify(body, headers) as { id: string; type: string; data: unknown };
+  } catch {
+    return new Response("bad signature", { status: 400 });
+  }
+
+  // Store it, keyed on event.id, and answer immediately.
+  await enqueue(event);
+  return new Response(null, { status: 204 });
+}
+```
+
+Three things that matter in those twelve lines, each of which is a real support
+ticket when it is missing:
+
+- **`request.text()`, not `request.json()`.** The signature covers the exact
+  bytes sent. Re-serialising parsed JSON will not match.
+- **Answer fast, work later.** Sailo waits five seconds. Store and return; do
+  the work off the request.
+- **Deduplicate on `event.id`.** Delivery is at-least-once, so a POST that
+  succeeded on your side but timed out on ours arrives again.
+
+</Steps>
+
+## Next
+
+- [Authentication](/authentication) — what a key can and cannot do, and how to
+  rotate one.
+- [Conventions](/conventions) — ids, money, dates, nulls, and what "a new field
+  appeared" means.
+- [Webhooks](/webhooks) — all <EventCount /> events and what each one means.
+- [No-code tools](/guides/no-code) — the same four steps in Zapier, n8n or Make.

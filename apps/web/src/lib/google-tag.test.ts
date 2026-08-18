@@ -37,12 +37,12 @@ function mountsTag(route: string) {
 const MEASURED = [
   "/(marketing)",
   /*
-   * The developer documentation. It was inside `(marketing)` and measured by
-   * that layout; when it moved into its own group to let Fumadocs own the page,
-   * it took `/docs/api` — the page a developer evaluating Sailo actually lands
-   * on — out of analytics. Listed here so the move was a decision.
+   * The developer documentation used to be the next entry, as `/(docs)`. It is
+   * apps/docs now — its own deployment on docs.sailo.store — and cannot be
+   * measured from this app at all. Whether it should be measured at all is that
+   * app's decision to make; it currently loads no third-party script, which its
+   * CSP enforces by naming no external script origin.
    */
-  "/(docs)",
   "/(auth)",
   "/(legal)",
   "/onboarding",
@@ -55,7 +55,6 @@ const MEASURED = [
  *   /                 wraps every route in the app, storefronts included
  *   /admin/settings   nested inside /admin, which measures already — a second
  *                     mount here would load the tag twice on those pages
- *   /(docs)/docs      the Fumadocs shell, nested inside /(docs), same reason
  *
  * The staff panel used to be the fourth entry here, as /hq/(panel). It is
  * apps/hq now and cannot be measured from this app at all — nor should it be:
@@ -65,7 +64,7 @@ const MEASURED = [
  * Storefronts and the token pages have no layout of their own, so they inherit
  * only the root, which is exactly why the root must stay clean.
  */
-const UNMEASURED = ["/", "/admin/settings", "/(docs)/docs"];
+const UNMEASURED = ["/", "/admin/settings"];
 
 describe("the Google tag's placement", () => {
   it("is mounted on every Sailo-owned surface", () => {

@@ -1,0 +1,131 @@
+---
+title: Going live
+description: A checklist for the day an integration stops being a prototype — key handling, idempotency, backoff, observability and the failures nobody tests for.
+---
+
+import { Callout } from "nextra/components";
+
+# Going live
+
+A prototype and a production integration differ in about a dozen ways, and every
+one of them is invisible until the day it is not.
+
+## Credentials
+
+- [ ] **The key is in a secret store**, not in a repository, a `.env` committed
+      by accident, or an MCP configuration file that is tracked.
+- [ ] **The key is read-only** unless the integration genuinely writes. Two of
+      the <EndpointCount /> operations write; if you use neither, you do not
+      need a write key.
+- [ ] **One key per integration.** `lastUsedAt` then tells you which is still in
+      use, and revoking one does not break the others.
+- [ ] **A rotation plan exists**, even if it is four manual steps. Mint, deploy,
+      watch `lastUsedAt` on the old key stop moving, revoke.
+- [ ] **The webhook signing secret is stored separately** from the API key. They
+      are different credentials with different blast radii.
+
+## Requests
+
+- [ ] **Retry `rate_limited` and `server_error`; do not retry the rest.** A
+      401 retried in a loop is a loop. See the
+      [retry helper](/errors#a-retry-helper).
+- [ ] **Backoff is exponential with jitter.** A fleet of workers that all retry
+      at exactly two seconds is a fleet that stays synchronised.
+- [ ] **`limit=<MaxLimit />` on any full scan.** The default is
+      <DefaultLimit />, which is four times the calls.
+- [ ] **Loop on `has_more`**, not on whether `next_cursor` is null. They
+      [answer different questions](/pagination#the-loop).
+- [ ] **A timeout on every call.** Sailo is fast and the internet is not.
+
+## Webhooks
+
+- [ ] **Signatures are verified**, against the raw body. See
+      [the four ways this goes wrong](/webhooks/signatures#the-four-ways-this-goes-wrong).
+- [ ] **Deduplication on `webhook-id`**, with a unique constraint rather than a
+      read-then-write — deliveries can be concurrent.
+- [ ] **The handler answers in well under 5 seconds.** Store and return; do the
+      work off the request.
+- [ ] **The handler is order-independent.** Upsert the whole payload rather than
+      applying a diff, and where order genuinely matters compare the envelope
+      `timestamp`.
+- [ ] **`test: true` is handled.** It should not create a real record in
+      production.
+- [ ] **The registered URL is final.** [Redirects count as
+      failures](/webhooks/delivery#what-counts-as-a-failure); they are not
+      followed.
+- [ ] **An unknown `type` is ignored, not thrown on.** Events are added.
+- [ ] **An unknown field is ignored.** New fields appear inside `data` without
+      the payload version changing — that is
+      [the deal](/conventions#versioning).
+
+## Consent
+
+- [ ] **Nothing is emailed on the strength of an order.** An order's
+      `customer.email` is an address for a receipt.
+- [ ] **`marketingConsentAt` is checked** before anybody goes into a newsletter
+      tool — in the handler, not only in the query filter.
+- [ ] **The nightly `?consented=true` reconcile exists**, because
+      [there is no event for consenting later](/guides/sync-a-crm#handle-the-consent-gap).
+
+## Money and dates
+
+- [ ] **Arithmetic is in `cents`.** `amount` is for display.
+- [ ] **`amount` is never computed as `cents / 100`.** It is
+      [currency-aware](/objects/money).
+- [ ] **Timestamps are rendered in the shop's `timeZone`** for anything a person
+      reads.
+- [ ] **`stock: null` is not treated as zero.** Gate listings on `inStock`.
+
+## Observability
+
+- [ ] **Log the `sailo-version` header** on failures. It is the fastest way to
+      tell a contract change from a bug.
+- [ ] **Log `webhook-id` on every delivery**, and the outcome. When a seller
+      asks whether an event arrived, this is the only thing that answers.
+- [ ] **Alert on your own 2xx rate**, not on Sailo's disable email. By the time
+      that arrives you have lost <AutoDisableAfter /> events' worth of
+      promptness.
+- [ ] **Watch handler duration**, not just errors. The 5-second timeout is
+      generous for storing a row and tight for anything else.
+
+## Failure modes to test before you ship
+
+Each of these is something that will happen and that a happy-path test will not
+catch.
+
+**Your endpoint is down for an hour.** Sailo retries <MaxAttempts /> times over
+<RetryWindow />, then abandons. Does your system notice the gap, and can it
+backfill from the [REST API](/api)?
+
+**The same event arrives twice.** Does anything double? A row, an email, a
+charge?
+
+**Two events for one object arrive out of order.** Does the older one overwrite
+the newer?
+
+**A product referenced by an order line has been deleted.** `productId` is
+`null` and the line keeps its own title. Does your code assume the join
+resolves?
+
+**A guest checkout.** `customer.clientId` is `null`. Does your CRM sync create a
+subscriber from an email that never consented?
+
+**A shop whose currency is JPY.** Is `amount` computed anywhere as
+`cents / 100`?
+
+**The key is revoked.** Does the integration fail loudly, or silently stop
+syncing?
+
+## Before you launch to sellers
+
+If you are building something other people's Sailo shops will connect to:
+
+- **Ask for read-only where you can.** A seller pasting a write key into a tool
+  that only reads is a risk you created.
+- **Say which events you subscribe to**, and why. Sellers tick these boxes
+  themselves.
+- **Handle the plan gate.** A shop below the <ApiPlanName /> plan gets
+  `forbidden` on every call. Say so in your setup UI rather than showing a
+  generic failure.
+- **Test against a shop with no orders.** Every list is empty, every optional
+  object is null, and that is the state most new sellers are in.

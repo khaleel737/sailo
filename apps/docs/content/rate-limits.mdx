@@ -1,0 +1,102 @@
+---
+title: Rate limits
+description: 240 requests a minute per key, on every surface. Why it is per key rather than per address, and how to stay under it.
+---
+
+import { Callout } from "nextra/components";
+
+# Rate limits
+
+## 240 requests a minute, per key
+
+That budget covers the REST API and the MCP server together — they are one
+grant, so they share one ceiling.
+
+It is high enough that no ordinary integration will ever meet it: four calls a
+second, sustained. It is low enough that a runaway loop stops being Sailo's
+database's problem within a minute.
+
+Over it, you get [`rate_limited`](/errors#rate_limited) with a 429.
+[Back off exponentially](/errors#a-retry-helper); the window is a minute, so
+backing off past a minute always clears.
+
+## Why per key and not per address
+
+Deliberately, and it is worth saying why the obvious alternative is worse.
+
+An integration and a seller's browser routinely share an office IP. A Zap
+running flat out on a per-address budget would throttle its owner out of their
+own admin panel — the automation they set up denying them access to the tool
+they set it up in. Per key, a runaway integration only ever exhausts its own
+allowance.
+
+It also means the budget travels with the credential. Move your integration to a
+different host and nothing changes; mint a second key for a second job and each
+gets its own.
+
+## Staying under it
+
+**Use webhooks for anything live.** A poll frequent enough to feel immediate is
+a poll that will meet this limit on a shop with real volume. Webhooks cost you
+nothing against it — they are Sailo calling you.
+
+**Ask for <MaxLimit /> per page.** The maximum `limit`, not the default
+<DefaultLimit />, cuts the number of calls in a full scan by four.
+
+**Filter server-side.** `?payment_status=paid` is one call; fetching everything
+and filtering in your own code is four.
+
+**Do not fetch what an event already gave you.** A webhook's `data` is the
+complete object — the same body `GET /orders/{id}` returns. A consumer that
+receives `order.paid` and then immediately fetches the order is making a call it
+already had the answer to.
+
+**Cache the shop.** `GET /shop` answers with values that change about once a
+year. Read it at setup, not per request.
+
+## The guessing budget
+
+Requests that **fail to authenticate** are separately and more tightly limited,
+per source address.
+
+That budget is for guessing, so its size is not published and you should not
+calibrate against it. Two things follow that are worth knowing:
+
+- **A client with a valid key will never encounter it.** The charge is refunded
+  on a successful authentication, precisely so that an integration polling every
+  second does not exhaust its own anti-guessing allowance and lock itself out.
+- **A client probing for keys learns nothing from the response either way.**
+
+If you are seeing 429s on requests that are also getting 401s, the problem is
+the key, not the rate.
+
+<Callout type="info">
+The charge is taken *before* the key is looked up, and refunded after a success.
+The inviting alternative — check the token, then charge only if it was wrong —
+has a hole exactly where this limit is aimed: every request in a concurrent
+burst reads the counter before any of them has written to it, so a whole burst
+of guesses fired at once would pass a ceiling none of them should have cleared.
+</Callout>
+
+## Other limits
+
+| Limit | Value |
+| --- | --- |
+| Request body | <MaxBodyKb /> KB |
+| Page size | <MaxLimit /> maximum, <DefaultLimit /> default |
+| Live API keys per shop | <MaxApiKeys /> |
+| Webhook endpoints per shop | <MaxEndpoints /> |
+| MCP tool call duration | 60 seconds |
+
+Webhook *delivery* has its own limits — how long Sailo waits for your endpoint,
+how often it retries, when it gives up. Those are on
+[delivery and retries](/webhooks/delivery).
+
+## If you need more
+
+The ceiling is per key, so the first question is whether the work can be split
+across keys — a nightly export and a live sync are two jobs and can be two
+credentials.
+
+If a single integration genuinely needs more than four calls a second sustained,
+[get in touch](/support) with what it does. It is a number, not a principle.

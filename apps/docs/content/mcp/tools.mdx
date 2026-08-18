@@ -1,0 +1,52 @@
+---
+title: Tool reference
+description: Every tool the MCP server answers tools/list with, and every argument each one takes.
+---
+
+# Tool reference
+
+<ToolCount /> tools, generated from the array the server actually answers
+`tools/list` with — so a tool added to the server is a tool on this page on the
+same deploy, and one removed cannot linger here.
+
+<ToolIndex />
+
+## Argument spelling
+
+Arguments use the **`snake_case`** spelling, which differs from the REST request
+body in a couple of places: `payment_status`, `send_opt_in`. That is the
+[naming convention](/conventions#naming) — a query parameter and a JSON body
+spell things differently, and a tool argument follows the query-string side.
+
+Field names in the **result** are the REST spelling, `camelCase`, because the
+result *is* the REST object.
+
+## Paging
+
+The list tools take `limit` and `cursor`, exactly as
+[the REST API](/pagination) does, and their results carry `has_more` and
+`next_cursor` beside the data.
+
+`limit` defaults to <DefaultLimit /> and is capped at <MaxLimit />; asking for
+more is clamped rather than refused.
+
+## What a result looks like
+
+Every tool answers with both `structuredContent` and a text block carrying the
+same JSON serialised. That looks redundant and is what the specification
+recommends, for the reason it looks redundant: a client that does not read
+structured content still shows the model something useful rather than an empty
+result.
+
+A refusal comes back as `isError: true` with a sentence — not as a JSON-RPC
+error. See [protocol](/mcp/protocol#errors) for why those are different things
+to a model.
+
+## The tools
+
+Descriptions below are **exactly** what the server sends to a model. Not
+paraphrased for a human reader, on purpose: when an assistant does something
+surprising, this text is the reason — and a prettier version here would send
+somebody looking for a cause that is not in the code.
+
+<ToolReference />

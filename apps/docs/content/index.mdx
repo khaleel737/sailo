@@ -1,0 +1,90 @@
+---
+title: Sailo for developers
+description: Connect a Sailo shop to Zapier, n8n, Make, your own server or an AI assistant. Signed webhooks, a REST API and an MCP server, all opened by one key.
+---
+
+import { Cards } from "nextra/components";
+
+# Sailo for developers
+
+Sailo speaks three ways to the outside world, and **one key opens all three**:
+webhooks push events to you, the REST API lets you ask questions, and the MCP
+server lets an AI assistant do both.
+
+This site is public and unauthenticated on purpose. Somebody evaluating whether
+Sailo fits their stack needs to read it *before* they have an account, and an
+integration guide behind a login is one nobody finds.
+
+<Cards>
+  <Cards.Card title="REST API" href="/api" arrow />
+  <Cards.Card title="Webhooks" href="/webhooks" arrow />
+  <Cards.Card title="MCP server" href="/mcp" arrow />
+</Cards>
+
+<EndpointCount /> REST endpoints over orders, products and contacts;
+<EventCount /> webhook events, signed and retried; <ToolCount /> MCP tools an AI
+assistant can call. All three over the same key, with the same rules.
+
+## The shape of everything
+
+**One credential, sent one way.** Every call carries
+`Authorization: Bearer sailo_sk_…` and nothing ever goes in a query string — a
+token in a URL is written into every access log, proxy log and browser history
+it passes through.
+
+<CurlExample path="/shop" />
+
+**One envelope.** Every REST answer is `{ "data": … }`; every failure is
+`{ "error": { "code", "message" } }` with a matching HTTP status. Branch on
+`code` — it is stable and only ever added to — and never on the message, which
+is a sentence for a person and may be reworded at any time.
+
+**One vocabulary.** A webhook's `data` and the REST body for the same object are
+built by the same code, so a field map written against one works against the
+other. The [object reference](/objects) describes each shape once.
+
+**Money is always an object.**
+
+```json
+{ "cents": 4999, "amount": "49.99", "currency": "GBP" }
+```
+
+Use `cents` for arithmetic and `amount` for anything a person will read.
+`cents` is correct for zero-decimal currencies like JPY too, where dividing by
+100 is not.
+
+## Where to start
+
+| If you want to… | Go to |
+| --- | --- |
+| Make your first call in two minutes | [Quickstart](/quickstart) |
+| Be told when something happens | [Webhooks](/webhooks) |
+| Ask questions about a shop | [REST API](/api) |
+| Let Claude or Cursor read a shop | [MCP server](/mcp) |
+| Know what a field means | [Objects](/objects) |
+| Wire it into Zapier, n8n or Make | [No-code tools](/guides/no-code) |
+| Point Postman or an SDK generator at it | [OpenAPI](/api/openapi) |
+
+## What Sailo does not do
+
+**There is no per-app directory and no OAuth app registration.** A signed
+webhook plus a key reaches Zapier, n8n, Make, Pipedream and everything behind
+them, which is a larger set than any list of logos we could maintain — and it
+means nothing you build here depends on us shipping a connector for your tool.
+
+**There is no partial write surface.** The REST API can create and update a
+contact and change its tags; it cannot change an order, refund anything, or
+touch a product. That is a deliberate line rather than a roadmap gap: the reads
+are what an integration needs, and the writes that exist are the two an
+automation actually performs. See [what a key can do](/authentication#what-a-key-can-do).
+
+**The documentation is English only**, unlike the marketing pages and the blog.
+An integration guide half-translated is worse than one honestly in a single
+language: a mistranslated signature recipe is a verifier that rejects real
+messages.
+
+## Getting a key
+
+The API, webhooks and MCP are on the <ApiPlanName /> plan. Every key is
+read-only unless you tick `write`, and is shown once at creation. Create one
+under <KeyLink />.

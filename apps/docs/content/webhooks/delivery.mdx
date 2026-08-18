@@ -1,0 +1,138 @@
+---
+title: Delivery and retries
+description: At-least-once delivery, six attempts over fifteen hours, and what happens to an endpoint that keeps failing.
+---
+
+import { Callout } from "nextra/components";
+
+# Delivery and retries
+
+## At-least-once
+
+<Callout type="warning">
+**Deduplicate on `webhook-id`.** A POST that succeeded on your side but timed
+out on ours is retried, so the same event can arrive twice. The id stays
+identical across every retry of one event, while the timestamp and signature are
+fresh each attempt.
+</Callout>
+
+Exactly-once delivery is not a thing anybody offers over HTTP, because the
+network cannot tell "your server never got it" from "your server got it and the
+acknowledgement was lost". At-least-once plus an idempotency key is the honest
+version, and the key is already in the payload.
+
+## What counts as success
+
+**Any 2xx.** Answer as soon as you have stored the event; do the work
+afterwards.
+
+Sailo waits **5 seconds**. An endpoint that does its processing inline and takes
+six is an endpoint that gets retried while it is still working — which produces
+duplicate work, not lost work, but produces it every time.
+
+## What counts as a failure
+
+- Any non-2xx status.
+- A timeout past 5 seconds.
+- A connection that cannot be made.
+- **A redirect.** A 3xx counts as a failure, because Sailo does not follow them.
+  Register the final URL.
+
+<Callout type="info">
+Redirects are not followed deliberately rather than as an omission. The URL is
+checked for a public, non-loopback address *before* the request is made, and a
+redirect is a way to send that request somewhere else after every check has
+passed.
+</Callout>
+
+## The schedule
+
+<MaxAttempts /> attempts in total: the first, then retries after
+**<RetrySchedule />**. Then the delivery is abandoned.
+
+Roughly <RetryWindow /> end to end, which is the shape every webhook system
+converges on: dense enough at the start to ride out a deploy or a restart,
+spread out enough at the end to survive an outage that lasts a working day, and
+finite because an event nobody has accepted by tomorrow is not one their CRM
+still wants.
+
+There is no manual replay. If you lose events, backfill from the
+[REST API](/api) — orders, products and contacts are all readable, and the
+[pagination page](/pagination#doing-an-incremental-sync) has the pattern.
+
+## Endpoints that keep failing
+
+After **<AutoDisableAfter /> consecutive failures** the endpoint is switched off
+and the seller is emailed.
+
+Consecutive, so a single bad deploy does not count against an endpoint that
+recovers. Switched off rather than throttled, because an endpoint that has
+rejected twenty deliveries in a row is not coming back on its own, and the
+alternative is Sailo posting into a void for weeks while a seller believes their
+integration is running.
+
+Re-enable it in **Settings → Integrations** once it is fixed. Events that were
+abandoned while it was off are not replayed.
+
+## Ordering
+
+**Events are not ordered.** Two events about the same object can arrive out of
+order, especially when the first one needed a retry and the second did not.
+
+Order on `timestamp` in the envelope — it is when the event *happened*, not when
+the attempt was made — or, better, write your handler so order does not matter:
+
+```ts
+// Fragile: assumes shipped arrives after paid.
+if (event.type === "order.shipped") markPaidAndShipped(order);
+
+// Robust: the payload carries the whole state.
+upsertOrder(event.data);
+```
+
+The payload is the complete object, not a diff, so an upsert keyed on
+`data.id` converges regardless of arrival order. Where it genuinely matters —
+membership access — compare `timestamp` against what you have stored and ignore
+the older one.
+
+## Concurrency
+
+Several deliveries to one endpoint may be in flight at once. Do not assume your
+handler is serialised, and make it safe to run twice concurrently for the same
+`webhook-id` — a unique constraint on that column is the simplest way.
+
+## Requirements on your endpoint
+
+| | |
+| --- | --- |
+| Scheme | `https` only |
+| Host | Publicly resolvable. No loopback, no RFC1918, no link-local, no single-label names. |
+| Redirects | Not followed. Register the final URL. |
+| Response | Any 2xx, within 5 seconds |
+| Body | Ignored. Sailo reads at most a few KB of it for the error log and discards the rest. |
+| User-Agent | `Sailo-Webhooks/1.0 (+https://sailo.store)` |
+
+Basic auth in the URL — `https://user:pass@host/hook` — is accepted, since some
+self-hosted consumers express a shared secret that way.
+
+## Developing locally
+
+`localhost` is refused, so use a tunnel — `cloudflared tunnel`, `ngrok`, or
+whatever your platform gives you — and register the public https URL it hands
+you.
+
+The **Send test** button is the fast loop: it delivers a complete payload with
+`"test": true` and every field a real one carries, without waiting for a real
+order.
+
+## Monitoring
+
+Watch two things:
+
+**Your 2xx rate.** Sailo emails the seller after
+<AutoDisableAfter /> consecutive failures, but that is a last resort, not an
+alert — by then you have lost <AutoDisableAfter /> events' worth of promptness.
+
+**Your handler's duration.** The 5-second timeout is generous for storing a row
+and tight for anything else. If your p99 is creeping toward it, the fix is to
+move work off the request rather than to make the request faster.

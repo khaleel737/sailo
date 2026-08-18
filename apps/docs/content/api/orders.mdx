@@ -1,0 +1,79 @@
+---
+title: Orders
+description: List a shop's orders and read one in full. Filter by fulfilment stage, payment state or customer email.
+---
+
+import { Callout } from "nextra/components";
+
+# Orders
+
+Sales, newest first, with line items included on every row.
+
+## Status and payment are two questions
+
+The single most important thing on this page. **An order can be paid and not yet
+shipped**, so `status` and `paymentStatus` are separate fields and answering one
+does not answer the other.
+
+- `status` is where the order is in **fulfilment** — `new`, `confirmed`,
+  `shipped`, `completed`, `cancelled`, `refunded`.
+- `paymentStatus` is where the **money** stands — `unpaid`, `pending`, `paid`,
+  `refunded`, `disputed`.
+
+A consumer that reads `status: "new"` as "not paid" will hold back fulfilment on
+every card sale, because a card order lands paid and new in the same instant. A
+consumer that reads `paymentStatus: "paid"` as "done" will tell a customer their
+parcel is on its way before anybody has packed it.
+
+The two filters are separate for the same reason, and combine:
+
+<CurlExample path="/orders?status=confirmed&payment_status=paid" />
+
+<Callout type="info">
+`paymentStatus: "refunded"` is set when the whole order was refunded. A
+**partial** refund leaves it `paid` and moves the `refunded` money object
+instead — so compare `refunded` against `total` rather than reading the status
+alone.
+</Callout>
+
+## Finding one customer's orders
+
+`?email=` matches the order's customer email exactly, case-insensitively. It is
+the fastest way to answer "everything this person has bought" without paging the
+whole shop.
+
+<CurlExample path="/orders?email=ada@example.com" />
+
+Note that this matches the email *on the order*, which is what the buyer typed
+at checkout. A customer who used two addresses is two answers. If you want
+everything tied to one person on the seller's list, read
+[`GET /contacts/{id}`](/api/contacts) for their `id` and match orders on
+`customer.clientId`.
+
+## Line items are always included
+
+Both the list and the detail endpoint return `items` in full — title, variant,
+SKU, quantity and per-line money. There is no `?expand=` and no separate
+`/orders/{id}/items`.
+
+That is a deliberate asymmetry with [products](/api/products), where variants
+are *not* expanded in the list. An order has a handful of lines and they are the
+substance of the order; a page of twenty-five products with every variant inline
+is a large response nobody asked for.
+
+## After a webhook
+
+`order.paid` and its siblings carry the complete order in `data` — the same body
+`GET /orders/{id}` returns, built by the same code. **A consumer that receives an
+event and then immediately fetches the order is making a call it already had the
+answer to.**
+
+The detail endpoint is for the consumer that stored only the id, and for the
+backfill of orders that predate the integration.
+
+## The object
+
+The full shape — including `customer`, `address`, `delivery`, `booking` and the
+line items — is on the [order object reference](/objects/order).
+
+<Endpoints match="/orders" />

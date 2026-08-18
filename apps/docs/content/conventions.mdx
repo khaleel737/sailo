@@ -1,0 +1,206 @@
+---
+title: Conventions
+description: The envelope, ids, money, dates, nulls and versioning — the rules that hold for every endpoint and every webhook, written down once.
+---
+
+import { Callout } from "nextra/components";
+
+# Conventions
+
+Rules that hold everywhere, so the reference pages do not have to repeat them.
+
+## The envelope
+
+Every successful single-object answer:
+
+```json
+{ "data": { … } }
+```
+
+Every successful page:
+
+```json
+{
+  "data": [ … ],
+  "has_more": true,
+  "next_cursor": "MjAyNi0wOC0xMlQwOTo0MTowNy4yMjFafDhmMmI"
+}
+```
+
+Every failure:
+
+```json
+{ "error": { "code": "not_found", "message": "No order with that id." } }
+```
+
+One shape every time, rather than one per endpoint. The consumers here are
+Zapier steps and language models, and both handle "the same envelope every
+time" far better than they handle prose.
+
+The `data` wrapper is not decoration: it is what lets a page grow `has_more` and
+`next_cursor` beside the array without the array itself having to become an
+object, and it is what makes a body distinguishable from an error at a glance.
+
+## Response headers
+
+| Header | Value |
+| --- | --- |
+| `content-type` | `application/json; charset=utf-8` |
+| `sailo-version` | <ApiVersion /> — see [versioning](#versioning) below |
+| `cache-control` | `no-store, private` |
+
+`no-store, private` on **every** authenticated response, without exception.
+Every one is scoped to one shop by a bearer token, and a shared cache keying on
+the URL alone would serve one seller's orders to another.
+
+## Identifiers
+
+Every `id` is a UUID, stable for the life of the object, and unique across
+shops. Two things follow:
+
+- **Store the `id`, not the handle or the slug.** A shop's `handle` and a
+  product's `slug` are display values a seller can change.
+- **Ids are safe to log.** They name a Sailo object and nothing else. They are
+  not credentials and they carry no shop's identity.
+
+An id from another shop is a `not_found`, never a `forbidden`. The two are
+answered identically on purpose — distinguishing them would turn the API into a
+way of asking whether an id exists somewhere else.
+
+## Money
+
+Always an object, never a bare number:
+
+<MoneyFields />
+
+```json
+"total": { "cents": 5498, "amount": "54.98", "currency": "GBP" }
+```
+
+Both are sent because two readers want different things. A program wants
+`cents`, which cannot lose a digit to floating point. A person wiring up a Zap
+wants something they can drop straight into an email without a formatter step —
+and the single most common integration bug in this category is that person
+mapping the integer and mailing a customer *"you paid 4999"*.
+
+<Callout type="warning">
+`amount` is **not** `cents / 100`. It is currency-aware: JPY has no minor unit
+at all and JOD has three, so a fixed hundred is wrong for about a fifth of the
+currencies Sailo supports — and wrong by a factor of ten or a hundred when it
+is. If you must compute a display value yourself, use `amount`.
+</Callout>
+
+A shop prices in one currency, so every money object on every object from one
+shop carries the same `currency`. Read it from `GET /shop` once rather than per
+row.
+
+## Dates and times
+
+Every timestamp is **ISO 8601 in UTC**, with milliseconds:
+
+```json
+"createdAt": "2026-08-12T09:41:07.221Z"
+```
+
+Never a Unix epoch, never a local time, never a bare date. The one exception is
+the `webhook-timestamp` header, which is seconds since epoch because Standard
+Webhooks specifies it that way.
+
+A shop has a `timeZone` — IANA, on `GET /shop`. Render timestamps in it for
+anything a seller reads. An appointment at 09:00 in `Europe/London` is not 09:00
+to a consumer in another zone, and a "today's orders" report built on UTC
+midnight is wrong for most of the world.
+
+## Nulls
+
+**A field that has no value is `null`. It is never absent, and never an empty
+string.**
+
+That matters more than it sounds. JSON drops `undefined` entirely, so a payload
+built from a partial object has a *different set of keys* from a complete one —
+and Zapier builds its whole field map from the first payload it receives. A
+seller who maps against a thin sample discovers the mismatch on their first real
+sale. It is the reason the "Send test" button sends a complete payload with
+every field a real one carries.
+
+Nested objects follow the same rule with one deliberate exception. Where the
+whole object is absent rather than empty — an order with no appointment — the
+object itself is `null` rather than an object of nulls:
+
+```json
+"booking": null
+```
+
+so that a consumer branching on `booking` gets a truthy test that works. Where
+the object always exists but its contents may not — an order with no delivery
+address — the object is present and its fields are null:
+
+```json
+"address": { "line1": null, "line2": null, "city": null, … }
+```
+
+The [object reference](/objects) says which is which, field by field.
+
+## Enumerations
+
+String values, lowercase, `snake_case` where they have two words:
+`product_not_received`, `bank_transfer`, `in_person`.
+
+**Treat every enumeration as open.** New members are added — a payment rail, an
+order status, a dispute reason — and a consumer that throws on an unfamiliar
+value breaks on a change that broke nothing else. Branch on the members you
+handle and fall through to a default for the rest.
+
+## Naming
+
+`camelCase` for fields on every object: `paymentStatus`, `marketingConsentAt`,
+`currentPeriodEnd`.
+
+`snake_case` for **query parameters and paging keys**: `payment_status`,
+`has_more`, `next_cursor`. This is not an accident anybody forgot to fix — a
+query string is a URL convention and a body is a JSON convention, and the two
+worlds spell things differently. MCP tool arguments follow the query-string
+spelling for the same reason.
+
+## Versioning
+
+Two version numbers, and they answer different questions.
+
+### `sailo-version` — the REST API
+
+A date, currently <ApiVersion />, on every response. It changes **only when
+something already sent stops meaning what it meant.**
+
+Adding a field is not a version change. Neither is adding an endpoint, a query
+parameter, an enumeration member, or an error code. Any of those would otherwise
+break every integration built on the last version, which is a tax on
+improvement nobody benefits from.
+
+So: **build your mapping to ignore fields it does not recognise.** That is the
+one thing asked of a consumer in exchange for additive changes never breaking
+them.
+
+### `version` — the webhook envelope
+
+An integer, currently <PayloadVersion />, inside every webhook body. Same rule:
+bumped only when a field changes meaning or disappears, never when one is added.
+
+### What a breaking change would look like
+
+If either ever changes, it will be announced on the [changelog](/changelog)
+before it ships, and the old behaviour will keep working for a stated period.
+Nothing on this site describes a change that is coming; when one is, it will be
+there.
+
+## Character encoding
+
+UTF-8 throughout, in both directions. Names, addresses and product titles carry
+whatever the seller and buyer typed — including emoji, right-to-left scripts and
+combining characters. Do not assume ASCII and do not assume one code unit per
+visible character.
+
+## Request bodies
+
+`Content-Type: application/json`, capped at <MaxBodyKb /> KB. A body that is not
+a JSON object, or is over the cap, is `invalid_request` — see
+[errors](/errors).

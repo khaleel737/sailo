@@ -1,0 +1,125 @@
+---
+title: Product object
+description: Every field on a product and its variants, including the three optional objects that depend on kind and the stock field that is null rather than zero.
+---
+
+import { Callout } from "nextra/components";
+
+# Product
+
+What `GET /products` and `GET /products/{id}` return. No webhook carries a
+product — the catalogue is read, not pushed.
+
+<ProductFields />
+
+## Stock
+
+<Callout type="warning">
+**`stock: null` means not counted, not sold out.** A product with
+`trackInventory: false` reports `null` because Sailo is not tracking units — a
+service, a digital download, a made-to-order item. A consumer that reads null as
+zero will delist most of a typical shop.
+</Callout>
+
+Three fields, and only one of them is a listing gate:
+
+| Field | Question it answers |
+| --- | --- |
+| `trackInventory` | Is Sailo counting units at all? |
+| `stock` | How many, or `null` if not counting. |
+| `inStock` | **Can a buyer buy this right now?** |
+
+`inStock` already accounts for `trackInventory`, so it is the field to gate on.
+Use `stock` only for a number you display, and only where `trackInventory` is
+true.
+
+## `kind` decides what else is present
+
+Exactly one of the three optional objects, or none:
+
+| `kind` | Object |
+| --- | --- |
+| `service` | `booking` |
+| `event` | `event` |
+| `membership` | `membership` |
+| `physical`, `digital` | all three `null` |
+
+### `booking`
+
+<ProductBookingFields />
+
+### `event`
+
+<ProductEventFields />
+
+### `membership`
+
+<ProductMembershipFields />
+
+A membership product is what a [subscription](/objects/subscription) is a
+subscription *to* — the subscription's `productId` points here.
+
+## Variants
+
+<ProductVariantFields />
+
+**Empty on the list endpoint, populated on the detail endpoint.** A page of
+twenty-five products with every variant inline is a large response nobody asked
+for. If you are mirroring a catalogue with variants, page the list and then
+fetch detail for the products you actually mirror.
+
+`options` is a plain object whose keys are whatever the seller named their
+option groups — `{ "Size": "Large", "Colour": "Blue" }`. Do not assume a fixed
+set of keys, and do not assume every variant of a product carries the same ones.
+
+`price` on a variant is **always populated**: one with no price of its own
+inherits the product's, so there is no null to handle.
+
+## `slug` and `id`
+
+`id` is the key. `slug` is the product's URL segment on the storefront —
+`sailo.store/{handle}/p/{slug}` — and a seller can change it. Same rule as the
+shop's handle: store the id, treat the slug as display.
+
+## Drafts
+
+`isPublished: false` is a draft: invisible on the storefront, readable through
+the API. Correct for a key the seller minted themselves, but it means an
+unfiltered mirror will publish things the seller has not. Filter with
+`?published=true` unless you specifically want both.
+
+## Example
+
+```json
+{
+  "id": "9a7e2c11-6b48-4d0f-8e35-71c9a4f2b6d8",
+  "object": "product",
+  "title": "Sourdough loaf",
+  "slug": "sourdough-loaf",
+  "description": "Baked the night before.",
+  "kind": "physical",
+  "tags": ["bread"],
+  "price":     { "cents": 4999, "amount": "49.99", "currency": "GBP" },
+  "compareAt": null,
+  "trackInventory": true,
+  "stock": 12,
+  "inStock": true,
+  "isPublished": true,
+  "isFeatured": false,
+  "booking": null,
+  "event": null,
+  "membership": null,
+  "variants": [
+    {
+      "id": "4c5d6e7f-8a9b-4c0d-9e1f-2a3b4c5d6e7f",
+      "sku": "SD-01-L",
+      "options": { "Size": "Large" },
+      "price": { "cents": 5499, "amount": "54.99", "currency": "GBP" },
+      "stock": 4,
+      "isAvailable": true
+    }
+  ],
+  "createdAt": "2026-03-02T08:15:00.000Z",
+  "updatedAt": "2026-08-01T16:20:31.442Z"
+}
+```
