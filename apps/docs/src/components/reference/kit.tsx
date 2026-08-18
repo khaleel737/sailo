@@ -1,4 +1,4 @@
-import { appOrigin } from "@sailo/core/origin";
+import { apiOrigin, appOrigin } from "@sailo/core/origin";
 import { cheapestPlanWith } from "@sailo/core/plans";
 
 /**
@@ -212,44 +212,55 @@ export function DefTable({
 /* -------------------------------------------------------------------------- */
 
 /*
- * `appOrigin()` reads the environment on every call, so a preview deployment of
- * these docs documents the deployment it was built against rather than
- * production.
+ * THREE ORIGINS, AND NOT ONE OF THEM IS THIS SITE
  *
- * Which is why every *one-line* example on this site comes through a component
- * rather than being typed into the MDX. A fenced code block is a string and a
- * string cannot know which environment is serving it, so `curl https://…` in
- * prose is a claim about the host that nothing can keep true.
+ * `apiOrigin()` — api.sailo.store — is where `/api/v1` and `/api/mcp` answer,
+ * and it is what every address a reader copies must say. Both it and the web
+ * origin serve those routes today, from one handler in `@sailo/api`; the web
+ * copies exist so no published URL 404s before its holders have moved, and
+ * `docs/api-cutover.md` says what has to happen before they go. Publishing the
+ * host that survives that deletion is the whole point: a reader who copies
+ * `sailo.store/api/v1` today is somebody who has to be migrated later, for no
+ * reason, because they arrived after the destination already worked.
+ *
+ * `appOrigin()` — sailo.store — is the product. Only two things below use it,
+ * and both are pages a person opens in a browser rather than addresses a
+ * program calls: the link that mints a key, and the pricing page in the navbar.
+ *
+ * `docsOrigin()` — docs.sailo.store — is this site, and appears nowhere on a
+ * page. It is for canonicals and the sitemap; see `lib/origins.ts`.
+ *
+ * All three read the environment on every call, which is why every *one-line*
+ * example comes through a component rather than being typed into MDX. A fenced
+ * code block is a string and a string cannot know which environment is serving
+ * it, so `curl https://…` in prose is a claim about the host that nothing can
+ * keep true.
  *
  * The exception is a multi-line example in a real language — the paging loop,
- * the webhook handler. Those go in fenced blocks so Shiki highlights them and
- * the copy button works, and they name the origin once as a named constant at
- * the top, which is what an integration would do with it anyway. One obvious
- * line to change beats an unhighlighted wall of monospace.
- *
- * Note which origin this is. These pages are served from docs.sailo.store; the
- * API is not, and never was — every address below is the *app* origin, because
- * that is where `/api/v1` and `/api/mcp` answer.
+ * the retry helper. Those go in fenced blocks so Shiki highlights them and the
+ * copy button works, and they name the origin once as a named constant at the
+ * top, which is what an integration would do with it anyway. One obvious line
+ * to change beats an unhighlighted wall of monospace.
  */
 
-/** The API deployment's own origin — `https://sailo.store` in production. */
+/** The API origin — `https://api.sailo.store` in production. */
 export function BaseUrl() {
-  return <>{appOrigin()}</>;
+  return <>{apiOrigin()}</>;
 }
 
 /** The REST base, `…/api/v1`. */
 export function ApiBaseUrl() {
-  return <>{`${appOrigin()}/api/v1`}</>;
+  return <>{`${apiOrigin()}/api/v1`}</>;
 }
 
 /** The MCP endpoint, `…/api/mcp`. */
 export function McpUrl() {
-  return <>{`${appOrigin()}/api/mcp`}</>;
+  return <>{`${apiOrigin()}/api/mcp`}</>;
 }
 
 /** The OpenAPI document, absolute, for prose that sends a reader to it. */
 export function OpenApiUrl() {
-  return <>{`${appOrigin()}/api/v1/openapi.json`}</>;
+  return <>{`${apiOrigin()}/api/v1/openapi.json`}</>;
 }
 
 /**
@@ -263,7 +274,7 @@ export function OpenApiUrl() {
  * nothing to do with the API.
  */
 export function CurlExample({ path }: { path: string }) {
-  const url = `${appOrigin()}/api/v1${path}`;
+  const url = `${apiOrigin()}/api/v1${path}`;
   const target = path.includes("?") ? `"${url}"` : url;
   return <Pre>{`curl ${target} \\\n  -H "Authorization: Bearer sailo_sk_…"`}</Pre>;
 }

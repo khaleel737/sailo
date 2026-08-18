@@ -4,8 +4,7 @@ import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { can, cheapestPlanWith } from "@sailo/core/plans";
-import { appUrl } from "@/lib/app-url";
-import { docsUrl } from "@sailo/core/origin";
+import { apiUrl, docsUrl } from "@sailo/core/origin";
 import { readIntegrations } from "@/lib/actions/integrations";
 import { Alert, Card } from "@sailo/design-system/web";
 import { WebhooksCard } from "./_components/webhooks-card";
@@ -52,10 +51,17 @@ export default async function IntegrationsSettingsPage() {
     <div className="space-y-6">
       <WebhooksCard endpoints={endpoints} />
       <DeliveriesCard rows={recent} />
+      {/*
+        `mcpUrl` is the API origin, not this app's. Both hosts serve `/api/mcp`
+        from one handler in `@sailo/api/mcp`, but this string is the one a
+        seller pastes into Claude or Cursor and then forgets about — so it has
+        to be the address that outlives the cutover in `docs/api-cutover.md`,
+        not the one whose copy is scheduled for deletion.
+      */}
       <ApiKeysCard
         keys={keys}
         contactCount={contactCount}
-        mcpUrl={`${appUrl()}/api/mcp`}
+        mcpUrl={apiUrl("/api/mcp")}
         mcpDocsUrl={docsUrl("/mcp")}
       />
 

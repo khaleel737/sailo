@@ -155,7 +155,7 @@ A form on your own site, a Typeform, a webinar platform — anything can feed
 Sailo's list with one call:
 
 ```bash
-curl -X POST https://sailo.store/api/v1/contacts \
+curl -X POST https://api.sailo.store/api/v1/contacts \
   -H "Authorization: Bearer sailo_sk_…" \
   -H "Content-Type: application/json" \
   -d '{"email":"ada@example.com","name":"Ada","tags":["webinar"],"sendOptIn":true}'
@@ -186,7 +186,7 @@ because *tag everyone who turned up* should not require sending a name and an
 email you may not have.
 
 ```bash
-curl -X POST https://sailo.store/api/v1/contacts/{id}/tags \
+curl -X POST https://api.sailo.store/api/v1/contacts/{id}/tags \
   -H "Authorization: Bearer sailo_sk_…" \
   -H "Content-Type: application/json" \
   -d '{"add":["attended"],"remove":["registered"]}'

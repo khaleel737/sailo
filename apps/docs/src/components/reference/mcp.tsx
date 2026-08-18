@@ -1,4 +1,4 @@
-import { appOrigin } from "@sailo/core/origin";
+import { apiOrigin } from "@sailo/core/origin";
 import {
   MCP_TOOLS,
   MODERN_VERSION,
@@ -178,12 +178,13 @@ function typeName(property: SchemaProperty | undefined): string {
 /* -------------------------------------------------------------------------- */
 /*  Connecting                                                                 */
 /*                                                                             */
-/*  Every snippet interpolates `appOrigin()` rather than naming a host, so a    */
-/*  preview deployment hands out its own address and a reader copying from      */
-/*  these pages configures the server they are actually reading about.          */
+/*  Every snippet interpolates `apiOrigin()` rather than naming a host — the    */
+/*  API origin, not the product's, because that is where `/api/mcp` answers and */
+/*  the address a seller pastes into an assistant should be the one that        */
+/*  outlives the cutover. See `./kit` for the three origins and which is which. */
 /* -------------------------------------------------------------------------- */
 
-const url = () => `${appOrigin()}/api/mcp`;
+const url = () => `${apiOrigin()}/api/mcp`;
 
 /** `claude mcp add …` — the one-liner, for Claude Code. */
 export function ClaudeCodeSnippet() {

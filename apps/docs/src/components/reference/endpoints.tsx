@@ -1,4 +1,4 @@
-import { appOrigin } from "@sailo/core/origin";
+import { apiOrigin } from "@sailo/core/origin";
 import {
   API_ERROR_CODES,
   API_VERSION,
@@ -179,7 +179,7 @@ export function ErrorCodeTable() {
 
 /** Every operation, everywhere. Rendered whole only by `contract.test.ts`. */
 export function EndpointReference() {
-  const base = appOrigin();
+  const base = apiOrigin();
 
   return (
     <>
@@ -192,7 +192,7 @@ export function EndpointReference() {
 
 /** The operations on one resource page. */
 export function Endpoints({ match }: { match: string }) {
-  const base = appOrigin();
+  const base = apiOrigin();
 
   return (
     <>
