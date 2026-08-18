@@ -1,0 +1,100 @@
+apps/web/drizzle/0029_newsletter.sql
+  s_ea1abe50401033::t_ab1d5ace2b6a6b 1-108
+packages/customers/src/subscribe-prompt.ts
+  s_98b37eba3699ee::t_fc09bfc9233574 1-129
+apps/web/e2e/scenarios/newsletter.scenario.ts
+  s_ea1abe50401033::t_f8b72636db6a7b 16-494,497-499,512
+  s_ea1abe50401033::t_646b457b5472ff 1-15,495-496,500-511,513
+packages/marketing/src/newsletter/messages.ts
+  s_ea1abe50401033::t_1f28c2267bdc04 1-152
+apps/web/src/app/n/[token]/_components/confirm-form.tsx
+  s_ea1abe50401033::t_5462c87f019e41 1-71
+apps/web/src/lib/actions/newsletter.ts
+  s_ea1abe50401033::t_5c56537d0c8102 1-249
+apps/web/src/app/admin/broadcasts/subscribers/page.tsx
+  s_98b37eba3699ee::t_0de4b883d465f6 17-25,77-78
+  s_98b37eba3699ee::t_4bac35ee453a5a 1-16,26-75,84-118
+  s_98b37eba3699ee::t_c60f7b321f3fab 76,79-83
+packages/marketing/src/newsletter/list.test.ts
+  s_ea1abe50401033::t_0e609e3214a7a5 1-101
+apps/web/src/components/marketing/newsletter-form.tsx
+  s_45467c7e9ec319::t_28954b83a36bab 123-131
+  s_ea1abe50401033::t_1216815623bbef 1-122,132-148
+packages/marketing/src/newsletter/server.ts
+  s_ea1abe50401033::t_13276ea050a696 1-10
+packages/marketing/src/newsletter/campaigns.ts
+  s_ea1abe50401033::t_457ccfdb3a461c 47-68,84,87-91
+  s_ea1abe50401033::t_1c4b4aad53e65f 1-46,69-83,85-86,92-286
+apps/web/src/app/n/[token]/page.tsx
+  s_ea1abe50401033::t_5462c87f019e41 1-85
+packages/marketing/src/newsletter/send.ts
+  s_ea1abe50401033::t_aba91f4ef76980 1-550
+packages/customers/src/subscribe-prompt.test.ts
+  s_98b37eba3699ee::t_7408600a12013e 1-165
+packages/marketing/src/newsletter/index.ts
+  s_ea1abe50401033::t_13276ea050a696 1-20
+packages/marketing/src/newsletter/render.ts
+  s_ea1abe50401033::t_08c1709c4d5889 1
+  s_ea1abe50401033::t_aed41cee0ce265 2-105
+apps/web/src/app/admin/broadcasts/_components/subscriber-list.test.tsx
+  s_98b37eba3699ee::t_48465e565a177f 1-95
+apps/web/src/app/admin/broadcasts/_components/subscriber-list.tsx
+  s_98b37eba3699ee::t_cff5ad40ae6f03 1-2,9-23,25,51-59,63-75,80-104,106-119,121-127
+  s_98b37eba3699ee::t_93471cdebdcaa0 3-5,7-8
+  s_8616d92fc21d60::t_c7e735cf549022 6,34-36,76-79
+  s_98b37eba3699ee::t_dcac68a557a0ba 24,26-33,37-50,60-62,105,120
+packages/marketing/src/newsletter/list.ts
+  s_ea1abe50401033::t_c7948af300af0b 1-142
+apps/web/src/app/[handle]/_components/subscribe-popup.tsx
+  s_98b37eba3699ee::t_572c6ce8cb47da 215-217
+  s_98b37eba3699ee::t_9c35d258d90c54 253
+  s_98b37eba3699ee::t_f4be8e80506573 1-214,218-252,254-258
+packages/marketing/src/newsletter/subscribe.ts
+  s_ea1abe50401033::t_b1fe2cb91ddcd9 1-7,9-153,155,157-246
+  s_ea1abe50401033::t_b9bb58245d1dd3 8,154,156
+apps/web/src/app/api/cron/newsletters/route.ts
+  s_ea1abe50401033::t_91535fd3fe3549 1-34
+packages/marketing/src/newsletter/audience.ts
+  s_ea1abe50401033::t_fc2c6879721dac 172-180
+  s_ea1abe50401033::t_f5c32e0bbafda9 1-171,181-386
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "c569b052fcb568a9c9c37797e9f9be55a51fb922",
+  "prompts": {},
+  "sessions": {
+    "s_45467c7e9ec319": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5617138f-41d1-4ecb-ac9f-4a4e6ee99b17",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_8616d92fc21d60": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fed81380-e907-4451-8cd4-8d45c59b81c2",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_98b37eba3699ee": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e5a5ba5-0b4a-4d8a-b8bf-01a2ca7efa8b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ea1abe50401033": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e226e4a6-14e7-4e4c-b8e0-3e89fba3f647",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
