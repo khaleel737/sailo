@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { appOrigin } from "@sailo/core/origin";
+import { apiOrigin } from "@sailo/core/origin";
 import {
   API_ERROR_CODES,
   ENDPOINTS,
@@ -290,7 +290,7 @@ describe("the endpoint catalogue", () => {
 
   it("renders every endpoint's curl example in full", () => {
     for (const endpoint of ENDPOINTS) {
-      expect(REST).toContain(escape(endpoint.curl(appOrigin())));
+      expect(REST).toContain(escape(endpoint.curl(apiOrigin())));
     }
   });
 

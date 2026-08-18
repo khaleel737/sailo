@@ -60,6 +60,42 @@ export const absolute = (path: string): string =>
   new URL(path, appOrigin()).toString();
 
 /* -------------------------------------------------------------------------- */
+/*  The API                                                                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Where machines talk to Sailo — `api.sailo.store`, which is `apps/api`.
+ *
+ * A *different* origin from `appOrigin()`, and the distinction is the whole
+ * reason this exists. `/api/v1` and `/api/mcp` are dual-mounted: both this host
+ * and the web host serve them, from one handler in `@sailo/api`, so either
+ * address works today. `docs/api-cutover.md` explains why both, and what has to
+ * happen before the web copies can be deleted.
+ *
+ * This is the one to *publish*. Every URL an integrator copies into a script,
+ * and every URL a seller pastes into an assistant, should be the address that
+ * survives that deletion — otherwise every reader of the documentation becomes
+ * somebody who has to be migrated later. Quoting the web origin was free while
+ * the docs lived on it and had no readers; it stopped being free the moment
+ * they became a site people integrate against.
+ *
+ * `EXPO_PUBLIC_API_URL` is read as well as `NEXT_PUBLIC_API_URL` because the
+ * phone already points at this host through that variable, with this same
+ * default written out by hand in `apps/mobile/lib/api.ts`. One default, spelled
+ * once, rather than a third copy that can disagree with the two that exist.
+ */
+export function apiOrigin(): string {
+  return normalizeOrigin(
+    process.env.NEXT_PUBLIC_API_URL ||
+      process.env.EXPO_PUBLIC_API_URL ||
+      "https://api.sailo.store",
+  );
+}
+
+/** A path on the API origin, absolute. */
+export const apiUrl = (path = "/"): string => new URL(path, apiOrigin()).toString();
+
+/* -------------------------------------------------------------------------- */
 /*  The documentation                                                          */
 /* -------------------------------------------------------------------------- */
 

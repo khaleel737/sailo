@@ -4,9 +4,11 @@
 as `apps/web`. Both origins serve them from the same code — `@sailo/api/rest`,
 `@sailo/api/mcp` — so there is no second implementation to drift.
 
-Nothing has switched over. The switch is a handful of settings changes, in the
-order below, at whatever pace you want. Until you make them, every caller keeps
-talking to the web origin and nothing behaves differently.
+What Sailo *publishes* has switched over — the documentation, and the MCP URL
+in the seller admin, both quote `api.sailo.store` now (step 4). Nothing has been
+deleted, so every caller already pointed at the web origin keeps working; the
+rest of the switch is a handful of settings changes, in the order below, at
+whatever pace you want.
 
 ## Why dual mount instead of moving
 
@@ -14,7 +16,7 @@ Each of these three is addressed by configuration we do not control:
 
 | Route | Who holds the URL |
 |---|---|
-| `/api/v1/*` | integrators, Zapier steps, shell scripts, our own docs page |
+| `/api/v1/*` | integrators, Zapier steps, shell scripts |
 | `/api/mcp` | whatever assistant a seller connected |
 | `/api/resend/webhook` | the Resend dashboard |
 
@@ -43,9 +45,11 @@ the better-auth session cookie. A second origin therefore cannot force
 `SameSite=None` on a real session. `apps/api/src/app/api/partner/events/route.ts`
 wrote that rule down first and it is the test every route here was held to.
 
-`apps/web/src/lib/rest-contract.test.ts` walks **both** `v1` trees, so a route
-added to one mount and not the other fails the suite rather than 404ing depending
-on which host a caller used.
+`apps/docs/src/lib/contract.test.ts` walks **both** `v1` trees, so a route added
+to one mount and not the other fails the suite rather than 404ing depending on
+which host a caller used. It was `apps/web/src/lib/rest-contract.test.ts` until
+the documentation became its own app and took the gate with it — the test has to
+live where the pages it holds to the route tree live.
 
 ## What you change, in order
 
@@ -117,10 +121,30 @@ window to coordinate.
 
 ### 4. Move the integrators, then delete the web copies
 
-Update `/docs/api` to quote `api.sailo.store`, give existing integrators a
-deprecation window on the old host, and only then delete
-`apps/web/src/app/api/{v1,mcp,resend}`. That last step is a code change; ask for
-it when the window has passed.
+**The first half is done.** Everything Sailo publishes now quotes
+`api.sailo.store`: every `curl` and base URL in the documentation, the MCP
+endpoint on `/mcp/connect`, the OpenAPI generator commands, and the MCP URL a
+seller copies out of Settings → Integrations. `apiOrigin()` in
+`@sailo/core/origin` is where that decision lives, and no page or component
+spells a host itself.
+
+It was brought forward deliberately, out of the order the rest of this list
+implies, because the cost of waiting is asymmetric. The documentation moved to
+its own deployment with **no existing readers**, so quoting the old host would
+have manufactured a migration for people who had not arrived yet — every one of
+them a caller to chase in the deprecation window below. Publishing the
+destination costs nothing while both mounts answer, and it shrinks the
+population that step 4's second half has to wait for.
+
+Nothing was deleted and nothing broke: `sailo.store/api/v1` and
+`sailo.store/api/mcp` still answer, so every key, script and connected assistant
+already pointed at them keeps working.
+
+**What is left** is the deletion. Give the integrators still on the web host a
+deprecation window, then delete `apps/web/src/app/api/{v1,mcp,resend}`. That is
+a code change; ask for it when the window has passed. Note that `resend` there
+is gated on step 1 — see the measurement below, which was still true on
+2026-08-18.
 
 ## What is staying on `apps/web`, and why
 

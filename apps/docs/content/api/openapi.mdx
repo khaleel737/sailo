@@ -31,7 +31,7 @@ because a generator running in a browser tab is a legitimate reader of it.
 <Tabs items={["TypeScript", "Python", "Go", "Postman"]}>
   <Tabs.Tab>
 ```bash
-npx openapi-typescript https://sailo.store/api/v1/openapi.json \
+npx openapi-typescript https://api.sailo.store/api/v1/openapi.json \
   -o src/sailo.d.ts
 ```
 Then use it with any fetch wrapper — `openapi-fetch` pairs with it directly and
@@ -41,14 +41,14 @@ gives you typed paths and responses.
 ```bash
 pip install openapi-python-client
 openapi-python-client generate \
-  --url https://sailo.store/api/v1/openapi.json
+  --url https://api.sailo.store/api/v1/openapi.json
 ```
   </Tabs.Tab>
   <Tabs.Tab>
 ```bash
 go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
 oapi-codegen -package sailo \
-  https://sailo.store/api/v1/openapi.json > sailo.gen.go
+  https://api.sailo.store/api/v1/openapi.json > sailo.gen.go
 ```
   </Tabs.Tab>
   <Tabs.Tab>
