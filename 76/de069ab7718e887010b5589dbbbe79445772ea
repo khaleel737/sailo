@@ -1,0 +1,127 @@
+packages/core/src/shop/index.ts
+  s_117ad80ebc0c8a::t_17a2f803a361ab 16
+packages/payments/src/offline/handoff.test.ts
+  s_72edf75866d316::t_7bd08b00c0b1fa 184-198,200-203,205-221,223-245
+  s_72edf75866d316::t_06c46812fd41b2 150,153-176,183,199,204,222
+  s_72edf75866d316::t_04176908e682b6 80-87
+  s_72edf75866d316::t_17e00f3119b3fd 246
+packages/payments/src/offline/handoff.ts
+  s_72edf75866d316::t_87a786b3e79e5f 4,100-106,120,133-144,148,152,154-178
+  s_72edf75866d316::t_58743ebc72da6b 87,91-93
+  s_72edf75866d316::t_04176908e682b6 49-58
+packages/payments/src/stripe/tax.test.ts
+  s_117ad80ebc0c8a::t_904ddee6714452 1-141
+packages/payments/package.json
+  s_45467c7e9ec319::t_753472505be2e2 16-17
+  s_5422fb6c0f54ab::t_2690f97aa845a0 14
+  s_117ad80ebc0c8a::t_48d04e8a80ae55 15
+  s_45467c7e9ec319::t_1e927fa0af5d40 11-12
+packages/core/src/shop/invoice-identity.test.ts
+  s_117ad80ebc0c8a::t_1cd12303870af8 1-153
+packages/payments/src/index.ts
+  s_98b37eba3699ee::t_17caa87a0f4e02 65-74,76-80
+  s_45467c7e9ec319::t_f8cabb1fe10f15 62,75
+  s_afffc65a416996::t_eb825da925ec8e 60
+packages/payments/src/connect/accounts.ts
+  s_45467c7e9ec319::t_82b2c374cce4ca 7-13,116-117,133-149,156-157,175-205,217-219,469
+  s_afffc65a416996::t_e6ce71f837ecc4 434-466
+  s_5422fb6c0f54ab::t_c01397c91934a5 367-372,374
+  s_45467c7e9ec319::t_f8cabb1fe10f15 14,152-155,158-174,216,220-235
+  s_afffc65a416996::t_360529a1fd3a28 467-468
+packages/payments/src/connect/capabilities.test.ts
+  s_98b37eba3699ee::t_a94254f2fd7647 3-8,51-53,63-82,141,179-297
+packages/payments/src/stripe/verify.ts
+  s_5422fb6c0f54ab::t_7f81aaf86710ee 40-56,58,60-71
+packages/payments/src/stripe/presentment.ts
+  s_45467c7e9ec319::t_4a19e74e556251 1-57
+packages/payments/src/connect/methods.ts
+  s_45467c7e9ec319::t_bd099b5a78bf63 14,67-126,169-173,181-186
+  s_45467c7e9ec319::t_2601e20283b3cf 1-13,15-66,127-168,174-180,187-206
+apps/web/drizzle/0030_adaptive_pricing_presentment.sql
+  s_45467c7e9ec319::t_efb7dc51710642 1-26
+packages/payments/src/stripe/presentment.test.ts
+  s_45467c7e9ec319::t_49df55986a3ca6 1-73
+packages/payments/src/offline/rail-defs.ts
+  s_72edf75866d316::t_64f1e2881351ba 71-82,159
+apps/web/src/app/admin/settings/_components/invoicing-card.tsx
+  s_117ad80ebc0c8a::t_4ab1f5f9648681 1-202
+packages/payments/src/stripe/tax.ts
+  s_117ad80ebc0c8a::t_594106336ccc9a 1-96
+packages/payments/src/connect/methods.test.ts
+  s_45467c7e9ec319::t_613835a83e548d 76,80,89,94,99-100,108,110,117-118,123,125,129,134,136-137,139-177,193,202-203
+  s_45467c7e9ec319::t_3a158732998685 2-74
+  s_45467c7e9ec319::t_0d0ed85a9a2bd7 1,75,77-79,81-88,90-93,95-98,101-107,109,111-116,119-122,124,126-128,130-133,135,138,178-192,194-201
+apps/web/src/app/admin/payments/_components/rails-panel.tsx
+  s_45467c7e9ec319::t_2afa79b2f2e1e5 1-2,51-57,70-72,74,108,115-116,125-128
+  s_45467c7e9ec319::t_501e67bf915520 3-50,58-69,73,75-107,109-114,117-124,129-137
+packages/payments/src/connect/index.ts
+  s_98b37eba3699ee::t_17caa87a0f4e02 4
+apps/web/scripts/check-rails.ts
+  s_45467c7e9ec319::t_c1f78be1e3e724 33-37,189-195,197-200,202-209,250,267-268
+  s_45467c7e9ec319::t_6ab3e8635c00e1 46,113,119,123-132,181-187,371
+  s_45467c7e9ec319::t_2c80533a93335d 1-32,39-45,47-99,136-180,188,196,201,210-219,228-234,240-249,251-257,263-266,269-278,290-370,372-374
+  s_45467c7e9ec319::t_ff70edbbf70b47 100-112,114-118,120-122,133-135,220-227,235-239,258-262,279-289
+  s_45467c7e9ec319::t_c116c083a8ae4c 38
+packages/core/src/shop/invoice-identity.ts
+  s_117ad80ebc0c8a::t_702ec86f561044 1-155
+apps/web/drizzle/0028_invoicing_identity_and_tax_mode.sql
+  s_117ad80ebc0c8a::t_f8ecdd09ce0379 1-94
+packages/payments/src/connect/capabilities.ts
+  s_45467c7e9ec319::t_2416bb094ef271 5-7,58-62,89-105,113-120,123,158-222,228-229,241-246,255,257-260,263-264,273,285-350
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "76de069ab7718e887010b5589dbbbe79445772ea",
+  "prompts": {},
+  "sessions": {
+    "s_117ad80ebc0c8a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b4f79ff2-0982-4dd6-b546-6a94197e5b66",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_45467c7e9ec319": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5617138f-41d1-4ecb-ac9f-4a4e6ee99b17",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_5422fb6c0f54ab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7ae46440-b0ee-4afe-9b2a-09daaa8fd63c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_72edf75866d316": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ef4a282d-1df8-41bb-bed9-a694ecb29331",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_98b37eba3699ee": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e5a5ba5-0b4a-4d8a-b8bf-01a2ca7efa8b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_afffc65a416996": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "58649b69-a7d9-49ce-987f-4fd64e3f5d35",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
