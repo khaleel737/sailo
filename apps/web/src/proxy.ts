@@ -43,11 +43,23 @@ export function proxy(request: NextRequest) {
    * empty page between them, and only then a client-side hop to /admin. Three
    * screens to get where they were already going.
    *
-   * The cookie is the whole test here on purpose. Verifying the session means
-   * a database round trip, which the proxy runs on every matched request and
-   * which is exactly the work worth avoiding before a redirect. A cookie that
-   * turns out to be stale costs one extra hop: /admin checks the real session
-   * and sends them to /login, which is where they were going anyway.
+   * The cookie is the whole test here on purpose, and it is only ever a
+   * guess. Better-auth says so in as many words — `getSessionCookie` "only
+   * checks for the existence of a session cookie; it does not validate it" —
+   * and Next says the proxy "should not be used as a full session management
+   * or authorization solution", because it runs on every matched request
+   * including prefetches. So the real check stays in `requireShop`, and this
+   * stays a guess.
+   *
+   * What the guess needs is a way to be wrong. It used to say here that a
+   * stale cookie "costs one extra hop: /admin checks the real session and
+   * sends them to /login, which is where they were going anyway". Both halves
+   * were untrue. Somebody who signed out on another device and then opened
+   * sailo.store was going to the landing page, not to a login form; and the
+   * hop was not one, because nothing removed the cookie — every visit for the
+   * next thirty days made the same trip. `requireUser` now clears a cookie it
+   * finds dead and returns the visitor to `/`, so being wrong here costs one
+   * redirect, once, and then stops.
    */
   if (pathname === "/" && getSessionCookie(request)) {
     const to = request.nextUrl.clone();
