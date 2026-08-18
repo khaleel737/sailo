@@ -21,6 +21,10 @@
       "schedule": "*/5 * * * *"
     },
     {
+      "path": "/api/cron/newsletters",
+      "schedule": "2-59/5 * * * *"
+    },
+    {
       "path": "/api/cron/webhooks",
       "schedule": "*/5 * * * *"
     },
@@ -37,8 +41,16 @@
       "schedule": "10 5 * * *"
     },
     {
+      "path": "/api/cron/membership-fees",
+      "schedule": "25 * * * *"
+    },
+    {
       "path": "/api/cron/blocklist",
       "schedule": "42 4 * * *"
+    },
+    {
+      "path": "/api/cron/disputes",
+      "schedule": "35 * * * *"
     }
   ]
 }

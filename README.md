@@ -73,6 +73,12 @@ SAILO_FROM_EMAIL="Sailo <orders@yourdomain.com>"
 # Bulk email ceilings (optional — sensible defaults if unset)
 BROADCAST_DAILY_CEILING=   # a seller's marketing to their buyers, platform-wide
 LIFECYCLE_DAILY_CEILING=   # Sailo's own onboarding email to sellers
+NEWSLETTER_DAILY_CEILING=  # Sailo's own newsletter to blog subscribers
+
+# Three ceilings and not one, because the streams fail differently. A campaign
+# eating the onboarding pipeline's budget would silently stall every new
+# seller's first three emails, and neither should ever be able to consume the
+# allowance that carries a buyer's receipt.
 
 # Billing (optional — subscriptions)
 STRIPE_SECRET_KEY=

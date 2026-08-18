@@ -19,6 +19,8 @@ import { PageHeader } from "@sailo/design-system/web";
 import { PaymentMethodCard } from "@/app/admin/payments/_components/payment-method-card";
 import { PayoutCard } from "@/app/admin/payments/_components/payout-card";
 import { StripeCard } from "@/app/admin/payments/_components/stripe-card";
+import { DisputesCard } from "@/app/admin/payments/_components/disputes-card";
+import { getSellerDisputes } from "@/lib/seller-disputes";
 import { Alert, Badge } from "@sailo/design-system/web";
 import { interpolate } from "@sailo/i18n";
 import { syncAccount } from "@sailo/commerce/orders/server";
@@ -114,7 +116,14 @@ export default async function AdminPaymentsPage({
     ({ shop } = await requireShop());
   }
 
-  const methods = await getShopPaymentMethods(shop.id);
+  const [methods, disputes] = await Promise.all([
+    getShopPaymentMethods(shop.id),
+    /*
+     * Read alongside the rails rather than after them. Neither needs the
+     * other's answer, and this page is already three round trips deep.
+     */
+    getSellerDisputes(shop.id),
+  ]);
   const byType = new Map(methods.map((m) => [m.type, m]));
 
   const isLive = (type: string) => {
@@ -249,6 +258,20 @@ export default async function AdminPaymentsPage({
           </section>
         );
       })}
+
+      {/*
+        Chargebacks, last.
+
+        Below the rails on purpose: this page's job is getting a seller paid, and
+        a panel about money going *back* belongs after the ones about it coming
+        in. It renders nothing at all for the large majority who have never had
+        one — see `DisputesCard`.
+      */}
+      <DisputesCard
+        disputes={disputes}
+        payoutsPausedAt={shop.payoutsPausedAt}
+        a={a}
+      />
     </>
   );
 }

@@ -11,6 +11,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders, shops, subscriptions, type Shop, type Subscription } from "@sailo/db/schema";
 import { actingAs } from "@sailo/commerce/orders/server";
+import { feeBpFromPercent } from "@sailo/commerce/memberships";
 import { sameAccount, sendingAccount, stripe } from "@sailo/payments";
 import type Stripe from "stripe";
 import { idOf, periodEndOf } from "./read";
@@ -203,6 +204,22 @@ export async function upsertSubscription(
     priceCents: price?.unit_amount ?? existing?.priceCents ?? 0,
     currency: (price?.currency ?? existing?.currency ?? ctx.shop.currency).toUpperCase(),
     interval: price?.recurring?.interval ?? existing?.interval ?? "month",
+    /*
+     * Stripe's word on what we are charging, never ours.
+     *
+     * Recorded here rather than written when `reconcileMembershipFees` asks
+     * for the change, for the reason every other field in this object is read
+     * off the event: a column we set optimistically would let a request that
+     * Stripe rejected look reconciled for ever, and the sweep would never
+     * come back to it. The sweep writes it too, so the row is honest within
+     * the same tick -- but this is the write that decides.
+     *
+     * No `existing ?? ` fallback, unlike the price fields above. Those can be
+     * absent from an event that legitimately knows less; this one is present
+     * on every Subscription object, and `null` there is a real answer meaning
+     * no fee rather than a gap to preserve.
+     */
+    applicationFeeBp: feeBpFromPercent(sub.application_fee_percent),
     updatedAt: new Date(),
   };
 

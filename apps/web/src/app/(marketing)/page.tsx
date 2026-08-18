@@ -255,7 +255,7 @@ export default async function HomePage() {
             title={m.compare.title}
             body={m.compare.body}
           />
-          <ComparePanels t={m} />
+          <ComparePanels t={m} locale={locale} />
         </Section>
 
         {/* ---------------------------------------------------------------

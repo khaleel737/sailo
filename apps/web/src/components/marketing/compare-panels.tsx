@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 
+import { formatMoney } from "@sailo/core/currency";
 import type { MarketingDictionary } from "@sailo/i18n/marketing";
 
 /*
@@ -53,7 +54,7 @@ function LinkListMock() {
   );
 }
 
-function ShopRowMock({ accent }: { accent: string }) {
+function ShopRowMock({ accent, locale }: { accent: string; locale: string }) {
   return (
     <div
       aria-hidden
@@ -72,7 +73,16 @@ function ShopRowMock({ accent }: { accent: string }) {
           <span className="mt-1.5 block h-2 w-[48%] rounded-full bg-[var(--mute-200)]" />
           <div className="mt-3.5 flex items-center gap-2">
             <span className="tabular text-[0.8125rem] font-medium text-[var(--ink)]">
-              €12.00
+              {/*
+                The one word in the mock, so it goes through the same formatter
+                every real price does. Written out it was `€12.00`, which is
+                wrong twice: the site drops a whole amount's fraction — `€12`,
+                never `€12.00` — and only an English reader writes the symbol
+                in front, where a German one expects `12 €`. A currency literal
+                in marketing markup is also exactly what the pricing table next
+                door has a test forbidding.
+              */}
+              {formatMoney(1200, "EUR", locale)}
             </span>
             <span className="ms-auto inline-flex h-7 items-center rounded-[var(--r-pill)] bg-[var(--ink)] px-3">
               <span className="h-1.5 w-9 rounded-full bg-[var(--paper)] opacity-70" />
@@ -147,7 +157,13 @@ function Panel({
   );
 }
 
-export function ComparePanels({ t }: { t: MarketingDictionary }) {
+export function ComparePanels({
+  t,
+  locale,
+}: {
+  t: MarketingDictionary;
+  locale: string;
+}) {
   return (
     // A 1px gap filled by the surface behind draws the divider, so the two
     // panels read as one comparison rather than two floating cards — the same
@@ -164,7 +180,7 @@ export function ComparePanels({ t }: { t: MarketingDictionary }) {
         title={t.compare.shopTitle}
         lines={[t.compare.shop1, t.compare.shop2, t.compare.shop3, t.compare.shop4]}
       >
-        <ShopRowMock accent="#c2410c" />
+        <ShopRowMock accent="#c2410c" locale={locale} />
       </Panel>
     </div>
   );

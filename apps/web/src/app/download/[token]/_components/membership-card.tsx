@@ -28,6 +28,9 @@ export type MembershipLabels = {
   /** What a manual member is told instead — there is no portal to open. */
   manualRenew: string;
   manualPending: string;
+  /** The door pass, for a membership somebody physically turns up to. */
+  pass: string;
+  showAtDoor: string;
 };
 
 function ManageButton({ label }: { label: string }) {
@@ -57,6 +60,8 @@ export function MembershipCard({
   until,
   manual = false,
   awaitingPayment = false,
+  passCode = null,
+  passQr = null,
   labels,
 }: {
   token: string;
@@ -71,6 +76,16 @@ export function MembershipCard({
   manual?: boolean;
   /** True when a renewal has been raised and is waiting to be paid. */
   awaitingPayment?: boolean;
+  /**
+   * The member's door code, and the same code as a QR.
+   *
+   * Both null for a membership nobody turns up to — a paid newsletter or a
+   * Discord invite has no door, and issuing a credential for one would be a
+   * thing to lose for no benefit. The server decides that from the product's
+   * own in-person/online switch and simply sends nothing.
+   */
+  passCode?: string | null;
+  passQr?: string | null;
   labels: MembershipLabels;
 }) {
   /*
@@ -123,6 +138,36 @@ export function MembershipCard({
         wants to check they are no longer being charged, and hiding it is how a
         member ends up unsure whether it really stopped.
       */}
+      {/*
+        The pass, and only while access is actually open.
+
+        Hiding it the moment a membership lapses is the honest thing to put in
+        front of the member — a code still sitting on their phone reads as
+        "you are fine", and they will walk to the gym and be turned away at
+        the door rather than here, where there is a button to fix it. The door
+        would refuse them anyway: `checkInMemberByCode` re-asks the
+        subscription on every scan and never trusts what was minted earlier.
+      */}
+      {passCode && open ? (
+        <div className="mt-4 rounded-xl border border-black/5 bg-black/[0.02] p-4 text-center">
+          <p className="text-xs font-semibold uppercase tracking-wide opacity-60">
+            {labels.pass}
+          </p>
+          {passQr ? (
+            <div
+              className="mx-auto mt-3 w-40 max-w-full [&>svg]:h-auto [&>svg]:w-full"
+              // The QR is generated on the server by `qrcode`, from a code we
+              // minted — never from anything a request carried.
+              dangerouslySetInnerHTML={{ __html: passQr }}
+            />
+          ) : null}
+          <p className="mt-3 font-mono text-base font-semibold tracking-widest">
+            {passCode}
+          </p>
+          <p className="text-muted mt-1 text-xs">{labels.showAtDoor}</p>
+        </div>
+      ) : null}
+
       {manual ? (
         <p className="text-muted mt-4 text-xs leading-relaxed">
           {labels.manualPending}

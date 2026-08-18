@@ -99,8 +99,16 @@ Each of these was read in the source, not inferred from the docs.
 - **Delayed-notification methods handled.** `checkout.session.async_payment_succeeded`
   and `…_failed` are in `HANDLED`. Without them, every iDEAL, SEPA and Bancontact
   buyer pays and the order stays unpaid.
-- **Disputes handled** — `charge.dispute.created` / `.closed`, with a `disputed`
-  payment status that is deliberately not settable by hand.
+- **Disputes handled** — and this line used to say `charge.dispute.created` /
+  `.closed` and stop there, which was true and insufficient in three ways that
+  each cost money. All five dispute events plus `radar.early_fraud_warning.created`
+  are now handled, an inquiry is distinguished from a chargeback (they arrive on
+  the same event and only one of them has taken any money), the real deduction is
+  recorded from the balance transaction rather than assumed from `dispute.amount`,
+  and a dispute is answered with evidence assembled per network reason code. The
+  `disputed` payment status is still deliberately not settable by hand.
+  **[`chargebacks.md`](chargebacks.md) is the whole of it**; §8.1 below is the
+  summary.
 - **The charge cannot disagree with the order.** `createCheckoutSession`
   asserts line totals against `order.subtotalCents` *and* the rounded Stripe
   total against `order.totalCents`, and refuses rather than charging a different
@@ -112,6 +120,13 @@ Each of these was read in the source, not inferred from the docs.
 - **Shipping address is put on the PaymentIntent** for orders that have one.
   Absent, the seller's dispute evidence shows a payment with nowhere to send it,
   which is a losing position on an undelivered-goods chargeback.
+- **The buyer's purchase IP is recorded at checkout** (`orders.buyer_ip`, from
+  the same `callerIp()` the rate limiter already called). Every fraud rebuttal
+  rests on it and Visa's Compelling Evidence 3.0 requires it — on the disputed
+  order *and* on two prior orders 120–365 days earlier, which means the value is
+  realised four months after capture and cannot be backfilled. It is explicitly
+  not identity and never a gate: every value is a header the client can set,
+  which is fine as evidence and worthless as an access control.
 - **`adaptive_pricing: { enabled: false }`** on both session types, so the
   books and the payout are in one currency.
 - **Keys.** Env only, prefix-validated at boot, never logged. Now accepts `rk_`
@@ -141,6 +156,14 @@ Sailo first and is recovered second. Two things follow:
 The platform does hold the mitigations Stripe expects of a losses-collector:
 it *can* pause payments and payouts on a connected account, and clause 9 of the
 Terms reserves that in writing.
+
+**Item 1 is now half-closed.** The exposure has a number and a threshold: per
+shop, `openDisputeCents − balanceCents` read live from Stripe, and payouts are
+held at a $250 shortfall — automatically, on every dispute event rather than on a
+nightly sweep, because the thing being raced is the payout run. `/hq/disputes`
+totals it across the platform. What is still missing is the *forecast* the item
+asks for — worst-case exposure at current GMV — which is a business number rather
+than a query. See [`chargebacks.md`](chargebacks.md) §8.
 
 ### 3.3 Open: platform approval for a creator-commerce category — **counsel / Stripe**
 
@@ -455,18 +478,50 @@ much cheaper to design now than to backfill.
 | 7 | `STRIPE_SECRET_KEY` accepts `rk_` restricted keys as well as `sk_`, still refusing `whsec_` | `payments/src/keys.ts` |
 | 8 | Tests for the country layer and the screen, including the CBD false-positive and word-boundary cases | `security/restricted-businesses/policy.test.ts` |
 
+## 8.1 Chargebacks — added 18 August 2026
+
+A pass of its own, written up in full in [`chargebacks.md`](chargebacks.md). The
+summary, because §3.1 above claimed disputes were handled and they were handled
+in the sense that two events were received:
+
+| | Before | Now |
+| --- | --- | --- |
+| Events handled | 2 | 6, incl. `funds_withdrawn` and Radar's fraud warning |
+| Inquiry vs chargeback | conflated | separated — only one has taken any money |
+| Cost recorded | `dispute.amount` | the balance transaction: amount **plus** the $15 fee |
+| Evidence | none | assembled per network reason code, branched by what was sold |
+| Visa CE3.0 | unavailable | selected, built and submitted where Stripe offers it |
+| Dispute rate | none | per shop, against the cohort the disputed orders came from |
+| Response to a bad shop | none | payouts held automatically; storefront never closed by code |
+| Platform subscription chargebacks | silently dropped | recorded; plan downgraded on a loss |
+| Surfaces | none | `/hq/disputes`, and the seller's own payments page |
+
+Three of those were live defects rather than absences:
+
+1. An inquiry marked the order `disputed`, and a *closed* inquiry — the good
+   outcome — was treated as a loss: order refunded, stock restocked, affiliate
+   commission reversed, on a sale the seller had been paid for and still held.
+2. A seller could charge back their own $468 annual invoice, keep the Business
+   plan indefinitely, and nothing anywhere recorded it. The platform route sent
+   every `charge.dispute.*` to the connected handler, which found no order and
+   returned 200.
+3. Sellers were shown a loss 36% smaller than the one they took.
+
 ## 9. Open, in priority order
 
 | # | Item | Kind | § |
 | --- | --- | --- | --- |
 | 1 | Confirm with Stripe whether Sailo needs Content Creation Platform approval | Business — do this week | 3.3 |
-| 2 | Quantify negative-balance exposure; set a monitoring threshold | Business + eng | 3.2 |
+| 2 | Quantify negative-balance exposure; set a monitoring threshold | Business + eng | 3.2 — **eng half done**, see 8.1 |
 | 3 | DAC7 scope opinion | **Counsel** | 7.4 |
 | 4 | Persisted screening verdicts + HQ review queue + re-screen on catalogue change | Eng, needs a migration | 4.1 |
 | 5 | Record the SAQ A eligibility justification with the attestation | Doc | 5 |
 | 6 | PayPal.Me friends-and-family warning on the rail | Eng, one line | 6 |
 | 7 | Plan the Accounts v1 → v2 migration | Eng, sizeable | 3.4 |
 | 8 | Screening beyond English | Eng | 4.1 |
+| 11 | Confirm the VAMP / Mastercard MMP thresholds with Stripe. They are asserted in `NETWORK_PROGRAMMES` with `needsConfirmation: true`, two of them moved on 1 Jan 2026, and Sailo's own limits are set below them on the assumption they are right | Business — do this week | 8.1 |
+| 12 | Let a seller upload their own proof of delivery. Stripe's `refund_policy` and `shipping_documentation` are File ids, and today only /hq can attach one — a seller holding the document that wins their case cannot supply it | Eng | 8.1 |
+| 13 | Email a seller when a dispute arrives. The panel shows it on next visit; the deadline is ~20 days | Eng | 8.1 |
 | 9 | `integration_identifier` on the *storefront* Checkout Sessions. Corrected: it is in `stripe@22.5.0` and already set on the plan-upgrade session in `@sailo/billing`; only `card-checkout.ts` and `subscription-checkout.ts` omit it | Eng, cosmetic | — |
 | 10 | Add the v2 `customer` configuration so sellers can pay their plan from their Stripe balance — fewer failed renewals, and therefore fewer lost partner commissions | Eng, contained | 3.4 |
 
@@ -582,3 +637,4 @@ Two tools now cover this, split by what automates honestly:
 - [PCI DSS 6.4.3 and 11.6.1 — payment page security and integrity](https://cloudsecurityalliance.org/blog/2026/07/23/pci-dss-6-4-3-and-11-6-1-a-deep-dive-into-payment-page-security-and-integrity-requirements)
 - [PayPal Acceptable Use Policy](https://www.paypal.com/uk/legalhub/paypal/acceptableuse-full) — last updated 15 July 2026
 - [European Commission: DAC7](https://taxation-customs.ec.europa.eu/taxation/tax-transparency-cooperation/administrative-co-operation-and-mutual-assistance/dac7_en)
+- [Stripe: dispute categories and the network code map](https://docs.stripe.com/disputes/categories) — and `stripe@22.5.0`'s own `Disputes.d.ts`, which is the authority for the field names in `chargebacks.md`

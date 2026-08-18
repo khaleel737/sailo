@@ -5,11 +5,12 @@ import { after } from "next/server";
 import type { CheckInState } from "@sailo/commerce/ticketing";
 import {
   addWalkUp as addWalkUpAtDoor,
-  admitByCode as admitCodeAtDoor,
+  admitAnyCode,
   admitByTicket as admitTicketAtDoor,
   revokeAdmission as revokeAtDoor,
   undoAdmission as undoAtDoor,
   type Door,
+  type DoorVerdict,
 } from "@sailo/commerce/ticketing";
 import { createDoorPass, readDoorPass, revokeDoorPass } from "@/lib/door-pass";
 import {
@@ -93,12 +94,20 @@ const HOOKS = { defer: after };
 /*  Admitting                                                                  */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * One scan, whichever credential the person is holding.
+ *
+ * Was ticket-only. A door now also admits members — a gym, a class studio, a
+ * co-working desk — and the volunteer holding the phone should not have to
+ * decide which kind of thing they are about to scan before they scan it. The
+ * ordering and why it is unambiguous is in `admitAnyCode`.
+ */
 export async function admitByCode(
   input: DoorInput & { code: string },
-): Promise<CheckInState> {
+): Promise<DoorVerdict> {
   const door = await doorFor(input);
-  if (!door) return REFUSED;
-  return admitCodeAtDoor(door, input.code, HOOKS);
+  if (!door) return { kind: "ticket", result: REFUSED };
+  return admitAnyCode(door, input.code, HOOKS);
 }
 
 /** Admitting from the guest list, for somebody whose phone is dead. */

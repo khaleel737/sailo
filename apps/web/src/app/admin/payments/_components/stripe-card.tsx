@@ -7,7 +7,7 @@ import {
   stripeAccountCountriesByName,
 } from "@sailo/core/countries";
 import type { Shop } from "@sailo/db/schema";
-import { connectState } from "@sailo/commerce/orders/server";
+import { connectState, shopRails } from "@sailo/commerce/orders/server";
 import { can, cheapestPlanWith, platformFeeLabel } from "@sailo/core/plans";
 import {
   connectStripe,
@@ -19,6 +19,7 @@ import { Alert, Badge, Button, Card } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { cn } from "@sailo/design-system/web/cn";
+import { RailsPanel } from "@/app/admin/payments/_components/rails-panel";
 
 /**
  * The Stripe rail is configured by connecting an account, not by filling in
@@ -31,6 +32,17 @@ export async function StripeCard({ shop }: { shop: Shop }) {
   const needs = cheapestPlanWith("cardRails");
 
   const live = entitled && state === "active";
+
+  /*
+   * What Stripe will actually offer a buyer, read live.
+   *
+   * Only once the account can take charges: before that every rail is
+   * `pending` and a list of five greyed-out names tells the seller nothing
+   * they cannot already see from the badge above it. `shopRails` returns an
+   * empty array rather than throwing, so a Stripe outage costs this panel and
+   * nothing else on the page.
+   */
+  const rails = live ? await shopRails(shop) : [];
 
   /*
    * The country dropdown's contents and its starting value.
@@ -177,6 +189,27 @@ export async function StripeCard({ shop }: { shop: Shop }) {
                 ? a.payments.stripeNeedsDetails
                 : a.payments.stripeChecking}
             </Alert>
+          ) : null}
+
+          {live ? (
+            <RailsPanel
+              rails={rails}
+              currency={shop.currency}
+              blockedAction={
+                /*
+                 * The same single-use onboarding link the Connect button
+                 * mints. A seller with an outstanding field finishes it on
+                 * Stripe's own form, which is the only place it can be
+                 * supplied, and comes back to `?stripe=return`.
+                 */
+                <form action={connectStripe}>
+                  <Button type="submit" variant="secondary" size="sm">
+                    {a.payments.railBlockedAction}
+                    <ArrowUpRight className="size-3.5 rtl:-scale-x-100" />
+                  </Button>
+                </form>
+              }
+            />
           ) : null}
 
           <dl className="grid gap-x-6 gap-y-2 rounded-xl border border-ink-200 bg-white p-3 text-sm sm:grid-cols-2">

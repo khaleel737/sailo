@@ -105,7 +105,10 @@ const PUBLIC_ROUTES = [
   // Marketing and docs.
   "/",
   "/pricing",
+  // The redirect, and the page it lands on. Both are real URLs a reader can be
+  // handed, and only the second one renders the rail.
   "/blog",
+  "/en/blog",
   "/docs",
   "/docs/api",
   "/docs/webhooks",
@@ -325,9 +328,27 @@ const MEASURE_BLOCK_LINKS = ({ minTarget }: { minTarget: number }) =>
     .filter((el) => {
       const st = getComputedStyle(el);
       if (st.visibility === "hidden" || st.display === "none") return false;
+      /*
+       * A visually-hidden link is not a tap target.
+       *
+       * `MEASURE` above has an `invisible()` helper that says so; this filter
+       * was written without it and only ever checked `display` and a zero box.
+       * The skip link every marketing page carries is `sr-only`, which is a
+       * 1x1 absolutely-positioned box — not zero, not `display: none` — so it
+       * was reported on `/`, `/pricing`, `/blog` and all three docs pages as a
+       * 1pt target that nothing can make bigger without unhiding it.
+       *
+       * It cannot be shared with `invisible()` directly: both functions are
+       * serialised into the page by `page.evaluate`, so each one has to be
+       * self-contained. The rule is the same one, restated.
+       */
+      if (st.position === "absolute" && st.clipPath !== "none") return false;
       if (st.display.startsWith("inline") && st.display !== "inline-flex" && st.display !== "inline-grid") return false;
       const r = el.getBoundingClientRect();
-      if (r.width === 0 || r.height === 0) return false;
+      /* `<= 2` and not `=== 0`, matching `invisible()`: `sr-only` clamps to
+         1x1 rather than to nothing, and Tailwind v4 does that with the legacy
+         `clip` property, which leaves `clipPath` reading `none` above. */
+      if (r.width <= 2 || r.height <= 2) return false;
       /* An inline-flex link sitting inside a paragraph is still inline in
          text — judge by the parent, which is where the line comes from. */
       const parent = el.parentElement;
@@ -405,6 +426,33 @@ for (const vp of VIEWPORTS) {
       test.setTimeout(PUBLIC_ROUTES.length * 30_000 + 60_000);
       await acceptConsent(page);
       const failures = await sweep(page, PUBLIC_ROUTES);
+      expect(failures, `\n${failures.join("\n")}\n`).toEqual([]);
+    });
+
+    /*
+     * An article, reached the way a reader reaches one.
+     *
+     * Separate from the sweep above because it cannot be a fixed path: the
+     * blog is 260 files that come and go, and a route list naming one slug is
+     * a suite that breaks when a post is retitled. Following the index's first
+     * card is content-independent and exercises the page a reader actually
+     * lands on from search.
+     *
+     * Worth its own test rather than trusting `/blog`: the article is the most
+     * complicated public page on the site — a sticky rail, a contents list
+     * with an observer, a signup form and a share row — and none of that
+     * renders on the index.
+     */
+    test(`an article fits, and can be operated with a finger`, async ({ page }) => {
+      await acceptConsent(page);
+      await page.goto("/en/blog", { waitUntil: "load", timeout: 90_000 });
+
+      const first = page.locator('a[href^="/en/blog/"]').first();
+      await first.waitFor({ state: "visible", timeout: 30_000 });
+      const href = await first.getAttribute("href");
+      expect(href, "the blog index should link to at least one article").toBeTruthy();
+
+      const failures = await sweep(page, [href!]);
       expect(failures, `\n${failures.join("\n")}\n`).toEqual([]);
     });
 

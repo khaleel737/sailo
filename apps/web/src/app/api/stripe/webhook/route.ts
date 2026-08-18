@@ -7,7 +7,12 @@ import {
   signingSecrets,
   verifyEvent,
 } from "@sailo/payments";
-import { handleAccountEvent, handleConnectEvent } from "@/lib/stripe-webhooks";
+import {
+  handleAccountEvent,
+  handleConnectEvent,
+  handleDisputeEvent,
+  handleEarlyFraudWarning,
+} from "@/lib/stripe-webhooks";
 
 /**
  * Sailo's own Stripe account — sellers paying us.
@@ -60,18 +65,40 @@ export async function POST(request: Request) {
     return NextResponse.json({ received: true, ignored: event.type });
   }
 
+  /*
+   * Dispute events go to the dispute handler, whichever account they are about.
+   *
+   * They used to be routed with the shop-order events below, which was wrong for
+   * the one case that only reaches *this* endpoint: a seller charging back their
+   * own Sailo subscription. That has no connected account and no order, so
+   * `handleConnectEvent` looked for one, found nothing, and returned "order not
+   * found" with a 200 — a seller could reverse a $468 annual invoice, keep the
+   * Business plan indefinitely, and nothing anywhere recorded it.
+   *
+   * `handleDisputeEvent` decides the scope itself, by looking for the order
+   * rather than inferring from the absent account header — which matters because a
+   * shop whose Stripe account *is* the platform's own produces a genuine
+   * connected-account dispute with no header either.
+   */
+  const isDispute =
+    event.type.startsWith("charge.dispute.") ||
+    event.type === "radar.early_fraud_warning.created";
+
   const isShopOrder =
     Boolean(event.account) ||
     event.type === "charge.refunded" ||
-    event.type.startsWith("charge.dispute.") ||
     event.type === "checkout.session.expired" ||
     (event.type === "checkout.session.completed" &&
       (event.data.object as Stripe.Checkout.Session).mode === "payment");
 
   try {
-    const outcome = isShopOrder
-      ? await handleConnectEvent(event, event.account ?? null)
-      : await handleAccountEvent(event);
+    const outcome = isDispute
+      ? event.type === "radar.early_fraud_warning.created"
+        ? await handleEarlyFraudWarning(event, event.account ?? null)
+        : await handleDisputeEvent(event, event.account ?? null)
+      : isShopOrder
+        ? await handleConnectEvent(event, event.account ?? null)
+        : await handleAccountEvent(event);
     return NextResponse.json({ received: true, handled: outcome });
   } catch (error) {
     // Release the claim so Stripe's retry can have another go.

@@ -14,11 +14,15 @@ import {
   type Product,
   type Shop,
 } from "@sailo/db/schema";
-import { createSubscriptionSession, membershipPrice } from "@sailo/commerce/orders/server";
+import {
+  createSubscriptionSession,
+  membershipPrice,
+  setSubscriptionApplicationFee,
+} from "@sailo/commerce/orders/server";
 import { periodEndOf, subscriptionIdOf } from "@/lib/stripe-webhooks/memberships";
 import { handleConnectEvent } from "@/lib/stripe-webhooks";
-import { membershipAccess } from "@sailo/commerce/memberships";
-import { platformFeePercent } from "@sailo/core/plans";
+import { feePercentFromBp, membershipAccess } from "@sailo/commerce/memberships";
+import { platformFeeBp, platformFeePercent } from "@sailo/core/plans";
 
 /**
  * Memberships against real Stripe.
@@ -259,7 +263,17 @@ describe.skipIf(!ACCOUNT)("memberships against real Stripe", () => {
         customer: customer.id,
         items: [{ price: priceId }],
         default_payment_method: pm.id,
-        application_fee_percent: 0.5,
+        /*
+         * The seller's own rate, not a literal.
+         *
+         * This said `0.5` while the fixture shop is on Business, whose rate is
+         * 1% -- so the fee this file goes on to assert (computed from
+         * `platformFeePercent`) disagreed with the fee it had just asked
+         * Stripe for. Deriving both from the plan is the same rule
+         * `createSubscriptionSession` follows, and it is the rule whose
+         * absence on *renewal* is what `reconcileMembershipFees` exists for.
+         */
+        application_fee_percent: platformFeePercent(shop),
         metadata: {
           shopId: shop.id,
           productId: product.id,
@@ -346,6 +360,84 @@ describe.skipIf(!ACCOUNT)("memberships against real Stripe", () => {
     expect(row.priceCents).toBe(3_000);
     expect(row.currentPeriodEnd?.getTime()).toBe(periodEndOf(liveSub)?.getTime());
     expect(membershipAccess(row).open).toBe(true);
+  });
+
+  it("re-points a stale fee at the plan's rate without touching the member", async () => {
+    /*
+     * The regression `reconcileMembershipFees` exists for.
+     *
+     * `application_fee_percent` was set once, at checkout, from whatever plan
+     * the seller was on that day, and the parameter appeared in exactly one
+     * place in the workspace -- so it never moved again. A seller who upgraded
+     * to Business went on paying the Free rate on every membership sold before
+     * the upgrade, for the life of that membership, while their billing page
+     * promised 1%. The fee is deducted inside a Stripe payout, so there is no
+     * screen in this product where the two numbers appear together.
+     *
+     * Offline this is untestable in the way that matters. The question was
+     * never whether our code sends the parameter; it is whether Stripe accepts
+     * a change to it on a *live* subscription, applies it without raising a
+     * proration, and reports it back on the event the column is keyed off.
+     * Each of those three is a silent failure if it goes the other way.
+     */
+    const expectedBp = platformFeeBp(shop);
+
+    // Leave the fee where a plan change leaves it: right on the day, wrong now.
+    const stale = await stripe.subscriptions.update(
+      liveSub.id,
+      { application_fee_percent: feePercentFromBp(300) },
+      acting,
+    );
+    await handleConnectEvent(
+      asEvent("customer.subscription.updated", stale),
+      ACCOUNT ?? null,
+    );
+
+    const drifted = await db.query.subscriptions.findFirst({
+      where: eq(subscriptions.id, subscriptionRowId),
+    });
+    expect(drifted?.applicationFeeBp).toBe(300);
+    expect(drifted?.applicationFeeBp).not.toBe(expectedBp);
+
+    const before = await stripe.invoices.list(
+      { subscription: liveSub.id, limit: 100 },
+      acting,
+    );
+
+    // Exactly what one row of the sweep does.
+    const repointed = await setSubscriptionApplicationFee({
+      accountId: ACCOUNT as string,
+      subscriptionId: liveSub.id,
+      feePercent: feePercentFromBp(expectedBp),
+    });
+    expect(repointed.application_fee_percent).toBe(feePercentFromBp(expectedBp));
+    expect(repointed.status).toBe("active");
+
+    /*
+     * No new invoice. Re-pricing Sailo's own commission must not charge the
+     * member anything -- a sweep that prorated would bill an entire gym on the
+     * day its owner changed plan, which is a far worse bug than the one being
+     * fixed.
+     */
+    const after = await stripe.invoices.list(
+      { subscription: liveSub.id, limit: 100 },
+      acting,
+    );
+    expect(after.data.length).toBe(before.data.length);
+
+    /*
+     * And the column follows Stripe rather than our optimism. The sweep writes
+     * it too, so the next tick skips the row, but this is the write that
+     * decides -- a request Stripe rejected must leave the row still drifted.
+     */
+    await handleConnectEvent(
+      asEvent("customer.subscription.updated", repointed),
+      ACCOUNT ?? null,
+    );
+    const settled = await db.query.subscriptions.findFirst({
+      where: eq(subscriptions.id, subscriptionRowId),
+    });
+    expect(settled?.applicationFeeBp).toBe(expectedBp);
   });
 
   it("settles the signup order from the real invoice, once", async () => {
@@ -452,7 +544,7 @@ describe.skipIf(!ACCOUNT)("memberships against real Stripe", () => {
         customer: customer.id,
         items: [{ price: priceId }],
         default_payment_method: pm.id,
-        application_fee_percent: 0.5,
+        application_fee_percent: platformFeePercent(shop),
         metadata: {
           shopId: shop.id,
           productId: product.id,

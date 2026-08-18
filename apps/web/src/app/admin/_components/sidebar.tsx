@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   BadgeCheck,
+  Code,
   CreditCard,
   ExternalLink,
   Gift,
@@ -23,7 +24,7 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
+import { signOutSeller } from "@/lib/actions/auth";
 import { SailoMark } from "@/components/brand";
 import { useAdminT } from "./admin-i18n";
 import type { Dictionary } from "@sailo/i18n";
@@ -91,7 +92,6 @@ export function Sidebar({
   t: Dictionary;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
   const a = useAdminT();
   const [open, setOpen] = useState(false);
 
@@ -105,12 +105,6 @@ export function Sidebar({
       document.body.style.overflow = "";
     };
   }, [open]);
-
-  async function onSignOut() {
-    await authClient.signOut();
-    router.push("/login");
-    router.refresh();
-  }
 
   const brand = (
     <Link
@@ -213,14 +207,47 @@ export function Sidebar({
         <ExternalLink className="size-4 text-white/40" />
         {t.nav.viewShop}
       </a>
-      <button
-        type="button"
-        onClick={onSignOut}
-        className="focus-ring flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white pointer-coarse:min-h-11"
+      {/*
+        The developer documentation — the REST API, the webhooks and the MCP
+        server, at `/docs`.
+
+        Beside "View shop" rather than in a group above, because like that one
+        it leaves the panel: `/docs` is a marketing route, public and
+        unauthenticated, and the groups are all pages of this admin. A new tab
+        for the same reason — a seller reads it while wiring something up on
+        the Integrations tab, and navigating away would lose the key they were
+        halfway through creating.
+      */}
+      <a
+        href="/docs"
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => setOpen(false)}
+        className="focus-ring flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white pointer-coarse:min-h-11"
       >
-        <LogOut className="size-4 text-white/40" />
-        {t.nav.signOut}
-      </button>
+        <Code className="size-4 text-white/40" />
+        {a.shell.docs}
+      </a>
+      {/*
+        A form, not an onClick.
+
+        Sign-out revokes the session and moves the browser, and those two have
+        to be one act. As a client fetch they were two: better-auth's client
+        answers `{ error }` rather than throwing, so a 500 or a rate-limited
+        429 still fell through to `router.push("/login")` and told the seller
+        they were signed out while the cookie and the session were both alive.
+        The Server Action does the revoke, the cookie and the redirect in a
+        single response — see `lib/actions/auth.ts`.
+      */}
+      <form action={signOutSeller}>
+        <button
+          type="submit"
+          className="focus-ring flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white pointer-coarse:min-h-11"
+        >
+          <LogOut className="size-4 text-white/40" />
+          {t.nav.signOut}
+        </button>
+      </form>
     </div>
   );
 

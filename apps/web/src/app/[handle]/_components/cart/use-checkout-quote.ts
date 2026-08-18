@@ -27,6 +27,9 @@ export const EMPTY_TOTALS: Totals = {
   taxCents: 0,
   totalCents: 0,
   commissionCents: 0,
+  // An empty basket has no tax to defer. The flag only ever means "Stripe will
+  // work this out once there is an address", which nothing here has yet.
+  taxDeferred: false,
 };
 
 export function useCheckoutQuote(input: {

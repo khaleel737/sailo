@@ -11,7 +11,7 @@ import {
   admitByCode,
   doorStats,
 } from "@/lib/actions/tickets";
-import type { CheckInState } from "@sailo/commerce/ticketing";
+import type { CheckInState, DoorVerdict } from "@sailo/commerce/ticketing";
 import type { DoorRow, DoorStats } from "@sailo/commerce/ticketing";
 import type { AdminDictionary } from "@sailo/i18n/admin/en";
 import { Card } from "@sailo/design-system/web";
@@ -70,7 +70,14 @@ export function DoorConsole({
   initialCode?: string | null;
 }) {
   const [tab, setTab] = useState<"scan" | "list" | "manual">("scan");
-  const [result, setResult] = useState<CheckInState>({ status: "idle" });
+  /*
+   * Null is idle now, rather than a ticket-shaped `{ status: "idle" }`.
+   *
+   * The console holds a verdict that may be a ticket *or* a membership, and
+   * "no scan yet" is a state neither of them owns — expressing it as an idle
+   * ticket would have made every member render read a ticket field first.
+   */
+  const [verdict, setVerdict] = useState<DoorVerdict | null>(null);
   const [stats, setStats] = useState(initialStats);
   const [busy, setBusy] = useState(false);
 
@@ -96,23 +103,46 @@ export function DoorConsole({
   }, [scope]);
 
   const show = useCallback(
-    (state: CheckInState) => {
-      setResult(state);
+    (next: DoorVerdict) => {
+      setVerdict(next);
+      /*
+       * The haptic follows the card's colour, including the one place the two
+       * credentials disagree: a member scanned twice is an ordinary admission
+       * and buzzes "ok", where a ticket scanned twice buzzes "warn" because
+       * somebody is trying to get a second person in on one admission.
+       */
       signal(
-        state.status === "checked_in"
-          ? "ok"
-          : state.status === "already_used"
-            ? "warn"
-            : "bad",
+        next.kind === "member"
+          ? next.result.status === "checked_in" ||
+            next.result.status === "already_in"
+            ? "ok"
+            : "bad"
+          : next.result.status === "checked_in"
+            ? "ok"
+            : next.result.status === "already_used"
+              ? "warn"
+              : "bad",
       );
       if (holdRef.current) clearTimeout(holdRef.current);
       holdRef.current = setTimeout(
-        () => setResult({ status: "idle" }),
+        () => setVerdict(null),
         RESULT_HOLD_MS,
       );
       void refreshStats();
     },
     [refreshStats],
+  );
+
+  /*
+   * The guest list only ever produces tickets — it is a list of admissions,
+   * and a walk-up is a ticket minted on the spot. Adapting here rather than
+   * widening `DoorList`'s prop keeps it honest about what it can return, and
+   * puts the one line that bridges the two credentials exactly where they
+   * meet.
+   */
+  const showTicket = useCallback(
+    (state: CheckInState) => show({ kind: "ticket", result: state }),
+    [show],
   );
 
   const onCode = useCallback(
@@ -192,7 +222,7 @@ export function DoorConsole({
       {tab === "scan" ? (
         <Scanner
           onCode={onCode}
-          paused={busy || result.status !== "idle"}
+          paused={busy || verdict !== null}
           labels={{
             starting: a.scanStarting,
             ready: a.scanReady,
@@ -208,7 +238,7 @@ export function DoorConsole({
 
       {/* The result sits below every tab, not just the scanner: admitting from
           the list has to say the same thing in the same place. */}
-      <ResultCard state={result} labels={a} />
+      <ResultCard verdict={verdict} labels={a} />
 
       {tab === "list" ? (
         <DoorList
@@ -217,7 +247,7 @@ export function DoorConsole({
           tiers={tiers}
           labels={a}
           canAddWalkUps={canAddWalkUps}
-          onResult={show}
+          onResult={showTicket}
         />
       ) : null}
     </div>

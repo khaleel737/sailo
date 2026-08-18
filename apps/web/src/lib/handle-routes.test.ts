@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
-import { RESERVED_HANDLES, validateHandleFormat } from "@sailo/core/handle";
+import { RESERVED_HANDLES, normalizeHandle, validateHandleFormat } from "@sailo/core/handle";
 
 /**
  * The half of the handle rules that could not leave this app.
@@ -44,7 +44,23 @@ describe("reserved handles", () => {
       )
       // `[handle]` is the catch-all this list exists to protect, and `_`-
       // prefixed folders are private and serve nothing.
-      .filter((name) => !name.startsWith("[") && !name.startsWith("_"));
+      .filter((name) => !name.startsWith("[") && !name.startsWith("_"))
+      /*
+       * A segment a handle could never spell cannot be shadowed by one.
+       *
+       * `/llms.txt` and `/llms-full.txt` are the case: `normalizeHandle` strips
+       * everything outside `[a-z0-9_-]`, and `actions/shop.ts` normalises
+       * before it stores, so a seller who types `llms.txt` gets the handle
+       * `llmstxt` and a shop at a URL that collides with nothing. Adding those
+       * names to `RESERVED_HANDLES` to satisfy this loop would put two entries
+       * on the list that no input can ever produce — which is exactly what
+       * `handle.test.ts` fails on, and rightly: a reserved name nobody can type
+       * is not protection, it is a line that reads like protection.
+       *
+       * Dropped here rather than special-cased, so the next route with a dot in
+       * it is covered by the reasoning instead of by another exception.
+       */
+      .filter((name) => normalizeHandle(name) === name);
 
     expect(routes.length).toBeGreaterThan(5);
     for (const route of routes) {

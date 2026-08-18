@@ -14,6 +14,7 @@ import { PoweredBy } from "@/components/shared/powered-by";
 import { formatBytes } from "@sailo/core/format";
 import { shopThemeVars } from "@sailo/design-system/web/cn";
 import { accessForOrder } from "@/lib/membership-access";
+import { ensureMemberPass } from "@sailo/commerce/memberships/server";
 import { MembershipCard } from "./_components/membership-card";
 
 /* Not yet converted — see the note in `next.config.ts`. */
@@ -66,6 +67,32 @@ export default async function DownloadPage({
    */
   const membership = await accessForOrder(order);
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
+
+  /*
+   * The member's door pass, for a membership somebody physically turns up to.
+   *
+   * Gated on the product's own in-person switch — the same rule
+   * `handedOverInPerson` applies to a membership when it decides whether cash
+   * at the door is on offer. A paid newsletter and a Discord invite have no
+   * door, and minting them a credential would be a live code to lose in
+   * exchange for nothing.
+   *
+   * Minted only while access is open, so a lapsed member is not handed a fresh
+   * code on the way out. The door does not rely on that: `checkInMemberByCode`
+   * re-reads the subscription on every scan, exactly as the streaming route
+   * re-reads it on every byte.
+   */
+  const memberPass =
+    membership.subscription && membership.access.open && product?.serviceMode !== "online"
+      ? await ensureMemberPass(membership.subscription.id, shop.id)
+      : null;
+
+  const memberPassQr = memberPass
+    ? await qrSvg(`${base}/admin/checkin?code=${memberPass}`, {
+        type: "svg",
+        margin: 0,
+      })
+    : null;
   const ticketQrs = state.released
     ? await Promise.all(
         orderTickets.map(async (ticket) => ({
@@ -121,6 +148,8 @@ export default async function DownloadPage({
             }
             manual={membership.subscription?.billingMode === "manual"}
             awaitingPayment={membership.awaitingPayment}
+            passCode={memberPass}
+            passQr={memberPassQr}
             labels={{
               title: t.membership.title,
               activeUntil: t.membership.activeUntil,
@@ -130,6 +159,10 @@ export default async function DownloadPage({
               manage: t.membership.manage,
               manualRenew: t.membership.manualRenew,
               manualPending: t.membership.manualPending,
+              pass: t.membership.pass,
+              // Reused rather than duplicated: a member and a ticket-holder are
+              // told the same thing because they are doing the same thing.
+              showAtDoor: t.tickets.showAtDoor,
             }}
           />
         ) : null}

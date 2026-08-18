@@ -192,6 +192,19 @@ export function ApiKeysCard({
             className="font-mono text-xs"
           />
         </Field>
+        {/*
+          A new tab, and a plain anchor rather than `Link`: `/docs/mcp` is a
+          marketing route outside this panel, and a seller reading it has an
+          uncopied URL and a half-filled key form on this one.
+        */}
+        <a
+          href="/docs/mcp"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="focus-ring inline-block text-xs font-medium text-brand-600 underline-offset-2 hover:underline"
+        >
+          {a.integrations.mcpDocsLink}
+        </a>
       </div>
     </Card>
   );

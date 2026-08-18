@@ -48,12 +48,19 @@ export function MemberRow({
   email,
   productTitle,
   locale,
+  visits = null,
 }: {
   subscription: Subscription;
   name: string | null;
   email: string | null;
   productTitle: string | null;
   locale: string;
+  /**
+   * How often they have actually turned up. Null when they never have — which
+   * is a different thing from zero and reads differently to a seller deciding
+   * whether a membership is working.
+   */
+  visits?: { count: number; lastAt: Date } | null;
 }) {
   const a = useAdminT();
   const [state, cancel] = useActionState<MembershipState, FormData>(
@@ -90,7 +97,44 @@ export function MemberRow({
             {email ?? a.members.noEmail}
             {productTitle ? ` · ${productTitle}` : ""}
           </p>
+          {/*
+            The pass, so a seller can read it out when a member turns up with a
+            flat phone. Shown only once one has been minted — `ensureMemberPass`
+            issues on first use, so a membership nobody has ever opened simply
+            has nothing here rather than a blank labelled field.
+          */}
+          {subscription.passCode ? (
+            <p className="mt-1 font-mono text-xs text-ink-500">
+              {a.members.pass} {subscription.passCode}
+            </p>
+          ) : null}
         </div>
+
+        {/*
+          Attendance, and only for a membership that has a door.
+
+          A paid newsletter has no visits and never will, so an empty
+          "0 visits" beside it would be a metric that can only ever say
+          nothing. Absent is the honest rendering; the pass column beside it
+          is absent for the same membership and for the same reason.
+        */}
+        {visits ? (
+          <div className="text-end">
+            <p className="tabular text-sm font-medium text-ink-900">
+              {interpolate(a.members.visits, {
+                count: visits.count.toLocaleString(locale),
+              })}
+            </p>
+            <p className="text-xs text-ink-400">
+              {interpolate(a.members.lastIn, {
+                date: visits.lastAt.toLocaleDateString(locale, {
+                  day: "numeric",
+                  month: "short",
+                }),
+              })}
+            </p>
+          </div>
+        ) : null}
 
         <div className="text-end">
           <p className="tabular text-sm font-medium text-ink-900">{price}</p>

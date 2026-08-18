@@ -9,6 +9,8 @@ import { SettleBasket } from "@/app/invoice/[token]/_components/settle-basket";
 import { PoweredBy } from "@/components/shared/powered-by";
 import { getShopT } from "@/i18n/server";
 import { taxLabel } from "@sailo/core/tax-label";
+import { invoiceIdentity } from "@sailo/core/invoice-identity";
+import { interpolate } from "@sailo/i18n";
 import { formatAddress } from "@sailo/core/address";
 import { formatMoney } from "@sailo/core/currency";
 
@@ -31,6 +33,7 @@ export default async function InvoicePage({
   const { invoice, order, shop, items } = data;
   const { locale, t, dir } = await getShopT(shop.locale);
   const address = formatAddress(order);
+  const issuer = invoiceIdentity(shop, locale);
   const methodName = isPaymentMethodType(order.paymentMethod)
     ? PAYMENT_METHOD_DEFS[order.paymentMethod].name
     : order.paymentMethod;
@@ -73,17 +76,34 @@ export default async function InvoicePage({
 
         <article className="rounded-2xl border border-ink-200 bg-white p-6 shadow-sm sm:p-10 print:border-0 print:shadow-none">
           <header className="flex flex-wrap items-start justify-between gap-4 border-b border-ink-100 pb-6">
+            {/*
+              The issuer, from the same resolver the PDF uses. Assembling it
+              here a second time is how this page and the PDF of the same
+              invoice came to be able to name two different businesses.
+            */}
             <div>
-              <h1 className="text-xl font-bold tracking-tight">{shop.name}</h1>
-              {shop.location ? (
-                <p className="mt-0.5 text-sm text-ink-500">{shop.location}</p>
+              <h1 className="text-xl font-bold tracking-tight">{issuer.name}</h1>
+              {issuer.tradingAs ? (
+                <p className="mt-0.5 text-sm text-ink-500">
+                  {interpolate(t.invoice.tradingAs, { name: issuer.tradingAs })}
+                </p>
               ) : null}
-              {shop.contactEmail ? (
-                <p className="text-sm text-ink-500">{shop.contactEmail}</p>
+              {issuer.addressLines.map((line) => (
+                <p key={line} className="mt-0.5 text-sm text-ink-500">
+                  {line}
+                </p>
+              ))}
+              {issuer.email ? (
+                <p className="text-sm text-ink-500">{issuer.email}</p>
               ) : null}
-              {shop.taxId ? (
+              {issuer.taxId ? (
                 <p className="mt-1 text-xs text-ink-400">
-                  {t.invoice.taxId}: {shop.taxId}
+                  {t.invoice.taxId}: {issuer.taxId}
+                </p>
+              ) : null}
+              {issuer.registrationNumber ? (
+                <p className="text-xs text-ink-400">
+                  {t.invoice.registrationNumber}: {issuer.registrationNumber}
                 </p>
               ) : null}
             </div>
@@ -255,6 +275,26 @@ export default async function InvoicePage({
               </div>
             ) : null}
           </dl>
+
+          {/*
+            The notice that makes a zero-tax B2B invoice legal — the liability
+            moved to the buyer, and the number it moved against.
+
+            Keyed on `taxReverseCharge` rather than on `taxCents === 0`: a shop
+            that charges no tax at all also shows zero, and must not carry a
+            statement that the recipient will account for it.
+          */}
+          {order.taxReverseCharge ? (
+            <p className="mt-6 border-t border-ink-100 pt-4 text-xs leading-relaxed text-ink-500">
+              {t.invoice.reverseCharge}
+              {order.buyerTaxId ? (
+                <>
+                  {" "}
+                  {t.invoice.customerTaxId}: {order.buyerTaxId}
+                </>
+              ) : null}
+            </p>
+          ) : null}
 
           {order.note ? (
             <p className="mt-6 border-t border-ink-100 pt-4 text-sm text-ink-600">

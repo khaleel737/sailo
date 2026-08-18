@@ -260,6 +260,29 @@ export async function OrderRow({
                   {order.commissionPaid ? " (paid)" : ""}
                 </span>
               ) : null}
+              {/*
+                What the buyer's card statement says, when Stripe converted it.
+
+                Every other figure on this row is the shop's own currency, and
+                stays that way — this is the one thing on the order that isn't,
+                and the only reason it is recorded at all. Without it "my
+                statement says €41.23, why does my invoice say $45?" has no
+                answer anywhere: Stripe reports the conversion once, on the
+                session, and on nothing that outlives it.
+
+                Null on every order paid in the shop's currency, which is most
+                of them, so this is absent rather than zero.
+              */}
+              {order.presentmentCurrency && order.presentmentAmountCents !== null ? (
+                <span>
+                  {a.orders.paidAs}{" "}
+                  {formatMoney(
+                    order.presentmentAmountCents,
+                    order.presentmentCurrency,
+                    locale,
+                  )}
+                </span>
+              ) : null}
             </p>
           ) : null}
 

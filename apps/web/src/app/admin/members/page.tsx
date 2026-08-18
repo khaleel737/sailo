@@ -8,6 +8,7 @@ import { getAdminT, getT } from "@/i18n/server";
 import { can } from "@sailo/core/plans";
 import { shopSubscriptions } from "@/lib/membership-access";
 import { membershipAccess } from "@sailo/commerce/memberships";
+import { visitSummary } from "@sailo/commerce/memberships/server";
 import { PageHeader } from "@sailo/design-system/web";
 import { LockedFeature } from "@/app/admin/_components/locked-feature";
 import { Card, EmptyState, Stat } from "@sailo/design-system/web";
@@ -52,13 +53,20 @@ export default async function MembersPage() {
   const clientIds = [...new Set(rows.map((r) => r.clientId).filter((id): id is string => Boolean(id)))];
   const productIds = [...new Set(rows.map((r) => r.productId).filter((id): id is string => Boolean(id)))];
 
-  const [people, plans] = await Promise.all([
+  const [people, plans, visits] = await Promise.all([
     clientIds.length
       ? getDb().query.clients.findMany({ where: inArray(clients.id, clientIds) })
       : Promise.resolve([]),
     productIds.length
       ? getDb().query.products.findMany({ where: inArray(products.id, productIds) })
       : Promise.resolve([]),
+    /*
+     * Attendance for every member at once. Grouped in Postgres and handed back
+     * as a Map for the same reason the two lookups above are bulk: a gym with
+     * three hundred members would otherwise be three hundred more round trips
+     * to draw one list.
+     */
+    visitSummary(shop.id),
   ]);
 
   const byClient = new Map(people.map((p) => [p.id, p]));
@@ -117,6 +125,7 @@ export default async function MembersPage() {
                   row.productId ? (byProduct.get(row.productId)?.title ?? null) : null
                 }
                 locale={locale}
+                visits={visits.get(row.id) ?? null}
               />
             ))}
           </Card>

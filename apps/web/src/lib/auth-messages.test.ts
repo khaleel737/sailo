@@ -59,7 +59,7 @@ describe("the staff refusal is indistinguishable", () => {
      * prose, because a prose claim about this is what was wrong last time.
      */
     const source = readFileSync("src/lib/auth.ts", "utf8");
-    const hook = source.slice(source.indexOf("refusesPasswordAuth(ctx.path"));
+    const hook = source.slice(source.indexOf("refusesPasswordAuthForRoster(ctx.path"));
     expect(hook).toContain('APIError("UNPROCESSABLE_ENTITY"');
     expect(hook).toContain('APIError("UNAUTHORIZED"');
     expect(hook).not.toContain('APIError("BAD_REQUEST"');

@@ -5,14 +5,17 @@ import { getDb } from "@sailo/db";
 import { orders, shops } from "@sailo/db/schema";
 import { revalidateShop } from "@/lib/cache";
 import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
-import { abandonOrder, restoreStock } from "@sailo/commerce/catalog";
+import { abandonOrder } from "@sailo/commerce/catalog";
 import { releaseDownloads } from "@/lib/downloads";
 import { createInvoiceForOrder } from "@/lib/invoices";
 import { confirmBuyerByEmail } from "@sailo/workflows/orders";
 import { notifySellerOfOrder } from "@sailo/workflows/orders";
 import { emitOrderWebhook } from "@sailo/webhooks/emit";
 import { intentIdOf, orderForIntent, orderForSession } from "@sailo/payments";
+import { taxFromSession } from "@sailo/payments/tax";
+import { presentmentFromSession } from "@sailo/payments/presentment";
 import { handleSubscriptionRefund } from "./platform";
+import { handleDisputeEvent, handleEarlyFraudWarning } from "./disputes";
 import {
   handleMembershipInvoiceFailed,
   handleMembershipInvoicePaid,
@@ -73,6 +76,17 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
         session.payment_status === "paid" ||
         session.payment_status === "no_payment_required";
 
+      /*
+       * What the buyer's statement will say, when Stripe converted it.
+       *
+       * Null whenever they paid in the shop's own currency, which is the
+       * ordinary case and every order written before Adaptive Pricing was
+       * switched on. Spread rather than assigned so that null writes nothing
+       * at all — a retry of an event that arrived before the conversion was
+       * known must not blank a value a later event already recorded.
+       */
+      const presentment = presentmentFromSession(session);
+
       if (!settled) {
         /*
          * Not a failure: the money is still in flight and Stripe will tell us
@@ -94,6 +108,15 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
             paymentStatus: "pending",
             stripePaymentIntentId: intentIdOf(session.payment_intent),
             stripeAccountId: accountId ?? order.stripeAccountId,
+            /*
+             * Recorded here and not only on the paid path, because this branch
+             * is where the converted payments actually arrive. iDEAL and SEPA
+             * are delayed-notification rails, and they are precisely the ones
+             * Adaptive Pricing exists to unlock — so the buyer who most needs
+             * their statement explained is the one whose order sits in
+             * `pending` for a day first.
+             */
+            ...presentment,
             updatedAt: new Date(),
           })
           // Only ever a promotion from `unpaid`; a later event that already
@@ -108,11 +131,37 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
         return `awaiting settlement (${session.payment_status})`;
       }
 
+      /*
+       * What Stripe Tax actually charged, before anything reads the order.
+       *
+       * Under `automatic_tax` the order this handler is about was written with
+       * `taxCents: 0` — deliberately, because at checkout no address had been
+       * collected and no rate could be chosen. These are the real figures, and
+       * they have to land now: `createInvoiceForOrder` runs a few lines below,
+       * and an invoice issued from the pre-settlement row would state a tax of
+       * zero beside a card statement that says otherwise.
+       *
+       * Null for every manual-mode order — Stripe computed nothing, so there is
+       * nothing to write and the shop's own snapshot stands untouched.
+       */
+      const settledTax = taxFromSession(session);
+
       // Payment is what confirms the order, so the seller never has to.
       await db
         .update(orders)
         .set({
           paymentStatus: "paid",
+          ...presentment,
+          ...(settledTax
+            ? {
+                taxCents: settledTax.taxCents,
+                totalCents: settledTax.totalCents,
+                taxRateBp: settledTax.taxRateBp,
+                buyerTaxId: settledTax.buyerTaxId,
+                buyerTaxIdType: settledTax.buyerTaxIdType,
+                taxReverseCharge: settledTax.reverseCharge,
+              }
+            : {}),
           /*
            * Payment confirms an order, but it does not confirm an appointment.
            *
@@ -369,73 +418,37 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
     /*
      * A buyer told their bank the charge was wrong.
      *
-     * Stripe pulls the money out of the seller's balance the moment this
-     * arrives — before anyone decides who is right — so the order has to stop
-     * reading as a completed sale immediately. `disputed` is not a payment
-     * status the seller can set; it is a fact reported to us.
+     * All five dispute events now go to one handler in `disputes.ts`, and the
+     * two cases that used to sit here were wrong in ways that each cost money:
+     *
+     * - `created` fires for *inquiries* as well as chargebacks, and an inquiry
+     *   moves nothing. Verified in test mode: `balance_transactions: []`,
+     *   `is_charge_refundable: true`. The old code marked the order `disputed`
+     *   for both, telling a seller their money had gone when it had not — in a
+     *   status `SELLER_SETTABLE_PAYMENT_STATUSES` forbids them from correcting.
+     *
+     * - `closed` branched on `status === "won"`, so `warning_closed` — an
+     *   inquiry that closed with no chargeback behind it, which is the *good*
+     *   outcome — took the losing side: the order was marked refunded, its stock
+     *   went back on the shelf and the affiliate's commission was reversed, on a
+     *   sale the seller had been paid for and still held.
+     *
+     * The handler also records the dispute, its deduction and its deadline, and
+     * reassesses the shop — none of which happened here.
      */
-    case "charge.dispute.created": {
-      const dispute = event.data.object as Stripe.Dispute;
-      const order = await orderForIntent(dispute.payment_intent, accountId);
-      if (!order) return "order not found";
-
-      await db
-        .update(orders)
-        .set({
-          paymentStatus: "disputed",
-          refundReason: `Chargeback: ${dispute.reason}`,
-          updatedAt: new Date(),
-        })
-        .where(eq(orders.id, order.id));
-
-      await publishShopEvent(order.shopId, "payment");
-      return `order ${order.id} disputed (${dispute.reason})`;
-    }
+    case "charge.dispute.created":
+    case "charge.dispute.updated":
+    case "charge.dispute.closed":
+    case "charge.dispute.funds_withdrawn":
+    case "charge.dispute.funds_reinstated":
+      return handleDisputeEvent(event, accountId);
 
     /*
-     * The bank decided. `won` gives the money back and the sale stands; `lost`
-     * makes the withdrawal permanent, which is a refund the seller never chose
-     * — so the goods go back on the shelf exactly as a refund would put them.
+     * The only advance notice of a chargeback anybody gets. Recorded and
+     * surfaced, never acted on automatically — see `handleEarlyFraudWarning`.
      */
-    case "charge.dispute.closed": {
-      const dispute = event.data.object as Stripe.Dispute;
-      const order = await orderForIntent(dispute.payment_intent, accountId);
-      if (!order) return "order not found";
-
-      const won = dispute.status === "won";
-      if (won) {
-        await db
-          .update(orders)
-          .set({
-            paymentStatus: "paid",
-            refundReason: null,
-            updatedAt: new Date(),
-          })
-          .where(eq(orders.id, order.id));
-        await publishShopEvent(order.shopId, "payment");
-        return `order ${order.id} dispute won`;
-      }
-
-      // Lost, or withdrawn in the buyer's favour: treat it as money gone.
-      await restoreStock(order);
-      await db
-        .update(orders)
-        .set({
-          paymentStatus: "refunded",
-          status: "refunded",
-          refundedCents: dispute.amount,
-          refundedAt: new Date(),
-          refundReason: `Chargeback lost: ${dispute.reason}`,
-          updatedAt: new Date(),
-        })
-        .where(eq(orders.id, order.id));
-
-      await publishShopEvent(order.shopId, "payment");
-      if (order.affiliateId) {
-        await publishAffiliateEvent(order.affiliateId, "payment");
-      }
-      return `order ${order.id} dispute ${dispute.status}`;
-    }
+    case "radar.early_fraud_warning.created":
+      return handleEarlyFraudWarning(event, accountId);
 
     case "account.updated": {
       const account = event.data.object as Stripe.Account;

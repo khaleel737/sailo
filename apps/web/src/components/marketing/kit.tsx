@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { CSSProperties, ReactNode } from "react";
+import type { ComponentProps, CSSProperties, ReactNode } from "react";
 import { cn } from "@sailo/design-system/web/cn";
 import { Magnetic } from "./motion";
 
@@ -24,12 +24,23 @@ import { Magnetic } from "./motion";
 export function Container({
   children,
   className,
+  ...rest
 }: {
   children: ReactNode;
   className?: string;
-}) {
+  /*
+   * `lang` and `dir`, for the pages whose language is in their URL rather than
+   * in the visitor's cookie. The blog's index is the case: it is written in one
+   * language throughout, and the direction has to apply to the whole frame — a
+   * right-to-left paragraph inside a left-to-right container puts its full stop
+   * on the wrong side, which only readers of that language can see.
+   */
+} & Pick<ComponentProps<"div">, "lang" | "dir">) {
   return (
-    <div className={cn("mx-auto w-full max-w-[78rem] px-5 sm:px-8", className)}>
+    <div
+      {...rest}
+      className={cn("mx-auto w-full max-w-[78rem] px-5 sm:px-8", className)}
+    >
       {children}
     </div>
   );

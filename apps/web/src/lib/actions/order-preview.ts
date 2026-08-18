@@ -176,6 +176,9 @@ export async function previewOrder(input: {
             name: shop.taxName,
             rateBp: shop.taxRateBp,
             inclusive: shop.taxInclusive,
+            // Read off the priced result rather than re-derived from the shop,
+            // so the flag and the zero beside it can only ever agree.
+            deferred: priced.totals.taxDeferred,
           }
         : null,
     lines: priced.lines.map((line, index) => ({

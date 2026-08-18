@@ -12,7 +12,8 @@ import { getDb } from "@sailo/db";
 import { liveShop } from "@/lib/shop-visibility";
 import { rateLimit } from "@sailo/rate-limit";
 import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
-import { callerIp } from "@sailo/rate-limit/client-ip";
+import { headers } from "next/headers";
+import { ipFromHeaders } from "@sailo/rate-limit/client-ip";
 import { orderItems, orders, shops, tickets, type PaymentConfig } from "@sailo/db/schema";
 import { formatAddress } from "@sailo/core/address";
 import { formatMoney } from "@sailo/core/currency";
@@ -92,6 +93,22 @@ function releasingStock(taken: QuoteLine[]) {
   };
 }
 
+/**
+ * What can be observed about the buyer's connection, for dispute evidence.
+ *
+ * One read of the header bag, serving both the rate-limit key and the two columns
+ * a chargeback is answered from. Truncated, because a user-agent string is
+ * attacker-controlled and unbounded — and because Stripe's evidence fields share
+ * a 20,000-character budget that a 4KB header would eat into for no benefit.
+ */
+async function buyerFingerprint(): Promise<{ ip: string; userAgent: string | null }> {
+  const bag = await headers();
+  return {
+    ip: ipFromHeaders(bag),
+    userAgent: bag.get("user-agent")?.slice(0, 400) ?? null,
+  };
+}
+
 export async function createOrderIntent(
   input: OrderIntentInput,
 ): Promise<OrderIntentResult> {
@@ -120,8 +137,18 @@ export async function createOrderIntent(
    * query, but a cached one and far cheaper than the trip it saves everyone
    * else.
    */
+  /*
+   * Read once, used twice: the rate-limit key and the order's dispute evidence.
+   *
+   * This was `callerIp()` inline. Reading the header bag once and passing both
+   * values down means the throttling key and the address written on the order
+   * cannot disagree about what "the caller" means — which would be a quiet way
+   * for a fraud rebuttal to cite an address that was never rate-limited.
+   */
+  const buyer = await buyerFingerprint();
+
   const [gate, shop] = await Promise.all([
-    rateLimit(`order:${await callerIp()}`, 10, 60),
+    rateLimit(`order:${buyer.ip}`, 10, 60),
     db.query.shops.findFirst({
       where: liveShop(eq(shops.id, input.shopId)),
     }),
@@ -364,7 +391,18 @@ export async function createOrderIntent(
       // Snapshot, not a reference: changing the shop's rate tomorrow must not
       // rewrite what this buyer was charged today.
       taxCents: totals.taxCents,
-      taxRateBp: shop.taxEnabled ? shop.taxRateBp : 0,
+      /*
+       * Zero under Stripe Tax, where the rate is not ours to snapshot.
+       *
+       * `shop.taxRateBp` is very likely still holding whatever flat rate the
+       * seller used before they switched, and copying it here would put a rate
+       * on an order that was never charged at it: the card rail overwrites both
+       * figures from the settled session, and every other rail computes no tax
+       * at all under this mode. `taxLabel` prints a bare "VAT" at zero rather
+       * than "VAT (20%)", which is the honest label for an untaxed line.
+       */
+      taxRateBp:
+        shop.taxEnabled && shop.taxMode !== "stripe" ? shop.taxRateBp : 0,
       taxName: shop.taxEnabled ? shop.taxName : null,
       taxInclusive: shop.taxInclusive,
       totalCents: totals.totalCents,
@@ -413,6 +451,25 @@ export async function createOrderIntent(
        * lean on.
        */
       termsAcceptedAt: shop.requireTerms ? now : null,
+      /*
+       * Where the buyer was, recorded so a chargeback can be answered.
+       *
+       * The single highest-value column on this table for a fraud dispute, and it
+       * does nothing at all for this order. Every fraud rebuttal rests on it, and
+       * Visa's Compelling Evidence 3.0 — the only mechanism that wins a 10.4
+       * outright — needs it on the disputed order *and* on two prior orders from
+       * the same buyer, 120 to 365 days earlier. So the value is realised four
+       * months after capture, and it cannot be backfilled: the buyer's connection
+       * existed for the length of this request.
+       *
+       * Free, because `buyerFingerprint()` was already read at the top of this
+       * function for the rate-limit key. Explicitly not identity and never a gate — every
+       * value here is a header the client can set — which is fine as evidence,
+       * where an issuer is being told what we observed, and worthless as an
+       * access control. See `packages/rate-limit/src/client-ip.ts`.
+       */
+      buyerIp: buyer.ip,
+      buyerUserAgent: buyer.userAgent,
       paymentMethod: method.type,
       // COD is collected on delivery; transfers are owed until confirmed.
       paymentStatus: "unpaid",

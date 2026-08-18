@@ -63,6 +63,9 @@ export default async function SubscribePage({
         <SubscribeCard
           standalone
           handle={shop.handle}
+          /* So joining from a bio link also silences the storefront's popup
+             on this device — one person, one ask. */
+          shopId={shop.id}
           incentive={shop.subscribeIncentive}
           labels={{
             title: t.mailing.title,

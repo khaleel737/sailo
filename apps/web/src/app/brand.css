@@ -31,7 +31,10 @@
      than the app's `ink-50` chrome, because pure white next to a screenshot
      of a white shop page makes the screenshot look grey, while warm paper
      makes it look lit. */
-  --paper: #fbfbf9;
+  /* Held in its own token so the inverted surface below can reach it. A
+     literal repeated in two rules is a literal that gets nudged in one. */
+  --paper-raw: #fbfbf9;
+  --paper: var(--paper-raw);
   --paper-sunk: var(--color-ink-50);
   --ink: var(--color-ink-950);
   --ink-soft: var(--color-ink-900);
@@ -79,6 +82,43 @@
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ===========================================================================
+   An ink panel inside a paper page.
+
+   Written as a token redefinition rather than as `text-white` on every child,
+   so anything dropped inside it — a form, an input, a button, a note — is
+   correct without knowing it is standing on an inverted surface. That is the
+   whole point: the signup form is one component and it renders on paper in the
+   sidebar and on ink in the mid-article band, and it should not have a `tone`
+   prop to be told which.
+
+   Every value reads the shared ramp or `--paper-raw` directly. The obvious
+   version of this rule — `--ink: var(--paper); --paper: var(--ink)` on one
+   element — is a cyclic custom-property reference: CSS resolves both to the
+   guaranteed-invalid value and the panel renders with no colours at all.
+
+   The muted greys are not simply swapped either. `--mute-200` is a hairline on
+   paper and has to become a hairline on ink, which is a translucent light
+   rather than a dark grey; `--mute-400` and `--mute-500` move to the ramp's
+   own on-ink values, which already clear 4.5:1 against ink-950.
+=========================================================================== */
+.brand-surface .surface-invert {
+  --paper: var(--color-ink-950);
+  --paper-sunk: var(--color-ink-900);
+  --ink: var(--paper-raw);
+  --ink-soft: var(--color-ink-100);
+
+  --mute-100: color-mix(in oklab, var(--paper-raw) 12%, transparent);
+  --mute-200: color-mix(in oklab, var(--paper-raw) 22%, transparent);
+  --mute-300: color-mix(in oklab, var(--paper-raw) 34%, transparent);
+  --mute-400: var(--on-ink-mute);
+  --mute-500: var(--on-ink-soft);
+  --mute-600: var(--on-ink-soft);
+
+  background: var(--paper);
+  color: var(--ink);
 }
 
 /* Display type. Outfit is geometric and slightly wide, which is what makes it

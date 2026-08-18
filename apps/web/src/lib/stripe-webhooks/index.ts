@@ -15,7 +15,10 @@
  * - `ownership`   — which row may this event touch, and did the account that
  *                   sent it have the right to? The security seam.
  * - `platform`    — Sailo's own account: subscriptions and billing.
- * - `connect`     — a buyer paying a seller: sessions, charges, disputes.
+ * - `connect`     — a buyer paying a seller: sessions, charges, refunds.
+ * - `disputes`    — chargebacks, on either account. Its own module because a
+ *                   dispute is the one object that exists on both, and because
+ *                   an inquiry and a chargeback are not the same event.
  *
  * The first three now live in `@sailo/payments`, because apps/api needs them
  * too and they answer questions about the event alone — no stock, no email, no
@@ -37,3 +40,4 @@
 export { claimEvent, releaseEvent } from "@sailo/payments";
 export { handleAccountEvent } from "./platform";
 export { handleConnectEvent } from "./connect";
+export { handleDisputeEvent, handleEarlyFraudWarning } from "./disputes";

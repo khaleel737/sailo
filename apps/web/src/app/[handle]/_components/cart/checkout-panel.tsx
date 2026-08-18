@@ -448,8 +448,11 @@ export function CheckoutPanel({
      * Two different things wear the same `redirect` kind, and they behave
      * nothing alike.
      *
-     * `https:` — WhatsApp, Telegram, Instagram — genuinely leaves the page, so
+     * `https:` — WhatsApp and Telegram — genuinely leaves the page, so
      * returning early is right: nothing after it would ever run anyway.
+     * (Instagram was here too, and should not have been: it cannot be handed
+     * a message, so leaving took the order off the only screen carrying it.
+     * It builds `instructions` now and the confirmation shows the message.)
      *
      * `mailto:` and `tel:` do not. They ask the operating system to hand off to
      * another app, and if nothing is registered to take it — desktop Chrome
@@ -538,6 +541,7 @@ export function CheckoutPanel({
           {result ? (
             <Confirmation
               result={result}
+              shopId={shopId}
               shopName={shopName}
               contactEmail={contactEmail}
               methodName={rail.name}
@@ -878,6 +882,18 @@ export function CheckoutPanel({
                     </dd>
                   </div>
                 ) : null}
+                {/*
+                  Under Stripe Tax there is genuinely no figure yet — the rate
+                  comes from an address the buyer gives on the next screen. The
+                  row still appears, because a tax line that materialises only
+                  after payment is the surprise this says out loud instead.
+                */}
+                {tax?.deferred ? (
+                  <div className="flex justify-between">
+                    <dt className="text-muted">{tax.name}</dt>
+                    <dd className="text-muted">{t.checkout.taxAtCheckout}</dd>
+                  </div>
+                ) : null}
                 <div className="surface-border flex justify-between border-t pt-1.5 text-base font-semibold">
                   <dt>{t.checkout.total}</dt>
                   <dd className="tabular-nums">
@@ -987,9 +1003,14 @@ export function CheckoutPanel({
               </button>
 
               <p className="text-muted text-center text-xs">
-                {def.kind === "contact"
-                  ? t.checkout.contactHandoffNote
-                  : t.checkout.manualNote}
+                {def.kind !== "contact"
+                  ? t.checkout.manualNote
+                  : def.copyToSend
+                    ? // The one contact rail that cannot carry the order for
+                      // them. Promising a prefill here and then handing over
+                      // an empty DM is how the order got lost.
+                      interpolate(t.checkout.pasteNote, { method: rail.name })
+                    : t.checkout.contactHandoffNote}
               </p>
             </form>
           )}

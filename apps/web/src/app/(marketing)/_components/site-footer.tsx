@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import type { Dictionary } from "@sailo/i18n";
 import type { MarketingDictionary } from "@sailo/i18n/marketing";
+import { getBlogDictionary } from "@sailo/i18n/marketing/blog";
 import type { Locale } from "@sailo/i18n/config";
 import { DEMOS } from "@sailo/marketing/demos";
 import { appOrigin } from "@sailo/core/origin";
@@ -10,6 +11,7 @@ import { CookieSettingsButton } from "@/components/shared/cookie-settings-button
 import { measurementId } from "@/lib/google-tag";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { Container } from "@/components/marketing/kit";
+import { NewsletterForm } from "@/components/marketing/newsletter-form";
 
 /** The marketing footer. */
 
@@ -30,9 +32,36 @@ export function SiteFooter({
     { href: "/anti-spam", label: m.footer.antiSpam },
   ];
 
+  const b = getBlogDictionary(locale);
+
   return (
     <footer className="border-t border-[var(--mute-200)] py-16">
       <Container>
+        {/*
+          The list, on every marketing page rather than only on the blog.
+
+          The blog is where most people meet the newsletter, but it is not the
+          only page somebody reads and leaves: the pricing page, the docs and
+          the landing page all end with a visitor who is interested and not yet
+          ready, and until now the only thing any of them could do was close
+          the tab. `source="footer"` keeps them distinguishable in the list from
+          the readers an article won, because those two audiences behave
+          differently and only the second one says anything about the writing.
+        */}
+        <section className="mb-14 border-b border-[var(--mute-200)] pb-14">
+          <div className="grid gap-6 lg:grid-cols-[1fr_28rem] lg:items-center lg:gap-16">
+            <div>
+              <h2 className="display-sm text-[clamp(1.125rem,2.4vw,1.5rem)] leading-snug text-[var(--ink)]">
+                {b.subscribeTitle}
+              </h2>
+              <p className="mt-2 max-w-md text-[0.875rem] leading-[1.7] text-[var(--mute-500)]">
+                {b.subscribeBody}
+              </p>
+            </div>
+            <NewsletterForm locale={locale} b={b} source="footer" />
+          </div>
+        </section>
+
         <div className="grid gap-12 sm:grid-cols-[1fr_auto] sm:items-start">
           <div>
             <SailoLogo className="h-5 w-auto text-[var(--mute-400)]" />
@@ -90,6 +119,23 @@ export function SiteFooter({
                     className="focus-line inline-flex min-h-11 items-center text-[0.875rem] text-[var(--mute-500)] transition-colors hover:text-[var(--ink)]"
                   >
                     {m.nav.blog}
+                  </Link>
+                </li>
+                {/*
+                  The developer documentation — the REST API, the webhooks and
+                  the MCP server. It is public and unauthenticated on purpose
+                  (see `docs/page.tsx`), and until now nothing on the marketing
+                  site linked to it: somebody deciding whether Sailo fits their
+                  stack had to already know the URL, and a crawler only ever
+                  reached it through the sitemap. One footer link on every
+                  marketing page fixes both.
+                */}
+                <li>
+                  <Link
+                    href="/docs"
+                    className="focus-line inline-flex min-h-11 items-center text-[0.875rem] text-[var(--mute-500)] transition-colors hover:text-[var(--ink)]"
+                  >
+                    {m.footer.docs}
                   </Link>
                 </li>
               </ul>

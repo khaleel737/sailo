@@ -5,7 +5,8 @@ import { fileURLToPath } from "node:url";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import ApiDocsPage from "@/app/(marketing)/docs/api/page";
+import { EndpointIndex, EndpointReference } from "@/components/docs/endpoint-reference";
+import { KEY_PATH, KeyLink } from "@/components/docs/kit";
 import { appOrigin } from "@sailo/core/origin";
 import {
   API_ERROR_CODES,
@@ -157,7 +158,33 @@ const escape = (text: string) =>
 
 const DOCUMENT = openApiDocument("https://sailo.test");
 const DOCUMENT_PATHS = DOCUMENT.paths as Record<string, Record<string, unknown>>;
-const RENDERED = renderToStaticMarkup(createElement(ApiDocsPage));
+
+/**
+ * The generated half of `/docs/api`, rendered.
+ *
+ * The page is MDX now, and this used to render the whole `page.tsx`. Splitting
+ * it in two is not a weakening: everything enumerable — the endpoint index, the
+ * per-endpoint entries, the curl examples, the success bodies — stayed in React
+ * precisely so this could keep rendering it, and prose is checked against the
+ * MDX source below.
+ *
+ * The alternative was compiling MDX inside vitest to render one page. That
+ * would put the whole content pipeline between this gate and the thing it
+ * guards, so a plugin change could turn a real drift into a green run.
+ */
+const RENDERED = renderToStaticMarkup(
+  createElement(() => createElement("div", null, createElement(EndpointIndex), createElement(EndpointReference))),
+);
+
+/**
+ * The prose half, as text.
+ *
+ * Read rather than rendered, for the reason above. These assertions are about
+ * sentences a person wrote and has to keep writing — the path to minting a key,
+ * the published rate limit, the link to the OpenAPI document — and the MDX file
+ * is where those sentences live.
+ */
+const API_MDX = readFileSync(resolve(HERE, "../../content/docs/api.mdx"), "utf8");
 
 /* -------------------------------------------------------------------------- */
 
@@ -342,11 +369,17 @@ describe("the docs page", () => {
   });
 
   it("points at the page that mints a key", () => {
-    expect(RENDERED).toContain("/admin/settings/integrations");
+    /*
+     * Via `<KeyLink />`, which owns the path. Asserted against the rendered
+     * component rather than the MDX so that renaming the route is caught here
+     * even though no `.mdx` file spells it out.
+     */
+    expect(renderToStaticMarkup(createElement(KeyLink))).toContain(KEY_PATH);
+    expect(API_MDX).toContain("<KeyLink />");
   });
 
   it("links the OpenAPI document", () => {
-    expect(RENDERED).toContain("/api/v1/openapi.json");
+    expect(API_MDX).toContain("/api/v1/openapi.json");
   });
 
   /*
@@ -355,7 +388,22 @@ describe("the docs page", () => {
    * telling a valid key from an invalid one by watching for a 429.
    */
   it("does not publish the failed-authentication budget", () => {
-    expect(RENDERED).toContain("240 requests a minute per key");
-    expect(RENDERED).not.toMatch(/30 (?:failed|attempts|requests)/i);
+    expect(API_MDX).toContain("240 requests a minute per key");
+    expect(API_MDX).not.toMatch(/30 (?:failed|attempts|requests)/i);
   });
+
+  /*
+   * The numbers that used to be typed into prose.
+   *
+   * MDX makes hard-coding one easy in a way JSX did not — `50 per page` is
+   * valid Markdown and renders beautifully while being wrong. These assert the
+   * page reaches for the component instead, which is the only version that
+   * cannot drift from `@sailo/api/rest`.
+   */
+  it.each(["<DefaultLimit />", "<MaxLimit />", "<MaxBodyKb />", "<ApiVersion />"])(
+    "quotes %s from source rather than typing the number out",
+    (tag) => {
+      expect(API_MDX).toContain(tag);
+    },
+  );
 });

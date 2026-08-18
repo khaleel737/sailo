@@ -251,7 +251,7 @@ export function HomeView({ locale }: { locale: Locale }) {
             title={m.compare.title}
             body={m.compare.body}
           />
-          <ComparePanels t={m} />
+          <ComparePanels t={m} locale={locale} />
         </Section>
 
         {/* ---------------------------------------------------------------

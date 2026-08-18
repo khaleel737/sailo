@@ -98,10 +98,23 @@ describe("the abandonment paths", () => {
      * A lost chargeback is not an abandonment: the buyer did use the coupon,
      * and the money leaving afterwards does not give that use back. It stays
      * on `restoreStock` deliberately.
+     *
+     * Read from `handleConnectedDispute` rather than from a `case` label, which
+     * is where this lived until the five dispute events were pulled into one
+     * handler. The rule is about the *lost* outcome and never was about the
+     * `closed` event: `charge.dispute.closed` also carries `won`, and
+     * `warning_closed` — a closed inquiry, on which the seller kept the money —
+     * used to reach the restocking branch through exactly that label. Anchoring
+     * on the outcome instead is what the old anchor could not express.
      */
-    const body = branch(webhooks, "charge.dispute.closed");
+    const from = webhooks.indexOf("async function handleConnectedDispute");
+    expect(from, "handleConnectedDispute not found").toBeGreaterThan(-1);
+    const body = webhooks.slice(from, webhooks.indexOf("\n}\n", from));
+
     expect(body).toContain("restoreStock(order)");
     expect(body).not.toContain("abandonOrder(");
+    // And only on a final loss — not while the case is still open.
+    expect(body).toMatch(/status === "lost"\)\s*\{\s*await restoreStock\(order\)/);
   });
 });
 

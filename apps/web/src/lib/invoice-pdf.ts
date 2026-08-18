@@ -10,6 +10,7 @@ import {
 } from "@/components/shared/powered-by";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { taxLabel } from "@sailo/core/tax-label";
+import { invoiceIdentity } from "@sailo/core/invoice-identity";
 
 import { formatAddress } from "@sailo/core/address";
 import { formatMoney } from "@sailo/core/currency";
@@ -47,11 +48,30 @@ export function renderInvoicePdf(data: {
 
     /* ---- header ------------------------------------------------------- */
 
-    doc.fillColor(INK).font("Helvetica-Bold").fontSize(18).text(shop.name, MARGIN, MARGIN);
+    /*
+     * The issuer, from the one resolver the HTML invoice also uses.
+     *
+     * This block used to be assembled here out of `shop.name` and
+     * `shop.location`, and the page beside it assembled its own. Two copies of
+     * "who issued this" is how the PDF and the web view of the same invoice
+     * come to name two different businesses.
+     */
+    const issuer = invoiceIdentity(shop, shop.locale ?? "en");
+
+    doc.fillColor(INK).font("Helvetica-Bold").fontSize(18).text(issuer.name, MARGIN, MARGIN);
 
     let y = doc.y + 2;
     doc.font("Helvetica").fontSize(9).fillColor(MUTED);
-    for (const line of [shop.location, shop.contactEmail, shop.taxId ? `Tax ID: ${shop.taxId}` : null]) {
+    for (const line of [
+      // "trading as", when the registered entity is not the name the buyer
+      // recognises from checkout. Without it the invoice reads as though it
+      // came from a company they have never dealt with.
+      issuer.tradingAs ? `Trading as ${issuer.tradingAs}` : null,
+      ...issuer.addressLines,
+      issuer.email,
+      issuer.taxId ? `Tax ID: ${issuer.taxId}` : null,
+      issuer.registrationNumber ? `Reg. no: ${issuer.registrationNumber}` : null,
+    ]) {
       if (!line) continue;
       doc.text(line, MARGIN, y, { width: width * 0.5 });
       y = doc.y;
@@ -270,6 +290,34 @@ export function renderInvoicePdf(data: {
 
     if (order.refundedCents > 0) {
       totalRow("Refunded", `-${money(order.refundedCents)}`, false, "#dc2626");
+    }
+
+    /* ---- reverse charge ------------------------------------------------ */
+
+    /*
+     * The notice that makes a zero-tax B2B invoice legal.
+     *
+     * When the buyer gave a valid VAT number in another member state, the
+     * liability moves to them and the seller charges nothing — but the invoice
+     * is only compliant if it *says so* and prints the number the exemption was
+     * granted against. An invoice showing no VAT and no explanation reads as a
+     * seller who forgot to charge it.
+     *
+     * Driven by `taxReverseCharge`, not by `taxCents === 0`, because a shop
+     * that charges no tax at all also has zero here and must not carry this.
+     */
+    if (order.taxReverseCharge) {
+      y += 14;
+      doc.font("Helvetica").fontSize(8).fillColor(MUTED);
+      doc.text(
+        order.buyerTaxId
+          ? `Reverse charge — VAT to be accounted for by the recipient. Customer tax ID: ${order.buyerTaxId}`
+          : "Reverse charge — VAT to be accounted for by the recipient.",
+        MARGIN,
+        y,
+        { width },
+      );
+      y = doc.y;
     }
 
     /* ---- notes -------------------------------------------------------- */

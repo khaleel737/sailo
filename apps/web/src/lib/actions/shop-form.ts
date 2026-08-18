@@ -52,8 +52,12 @@ export function isHandleCollision(error: unknown) {
     return !pgError.constraint || pgError.constraint === HANDLE_INDEX;
   }
 
-  const text = error instanceof Error ? error.message : String(error);
-  return text.includes(HANDLE_INDEX);
+  /*
+   * Not `text` — this module exports a `text()` form reader further down, and
+   * shadowing it here reads as a call to that helper to anyone skimming.
+   */
+  const message = error instanceof Error ? error.message : String(error);
+  return message.includes(HANDLE_INDEX);
 }
 
 export function readSocials(formData: FormData): ShopSocial[] {
@@ -139,4 +143,47 @@ export function readNotificationPrefs(formData: FormData): NotificationPrefs {
   }
   const parsed = notificationPrefsSchema.safeParse(off);
   return parsed.success ? parsed.data : {};
+}
+
+/**
+ * A bounded, trimmed string, or null when the seller left it empty.
+ *
+ * The invoice identity block is eleven such fields and every one of them wants
+ * the same three steps. Written out per field it is eleven chances to forget
+ * the `|| null` and store an empty string — which reads as "set" to
+ * `hasInvoiceIdentity` and would switch a shop's invoice header over to a block
+ * containing nothing.
+ */
+export function text(
+  value: FormDataEntryValue | null,
+  max: number,
+): string | null {
+  return String(value ?? "").trim().slice(0, max) || null;
+}
+
+/**
+ * The invoice number prefix — "INV", "2026-", the seller's own series.
+ *
+ * Uppercased and stripped to characters an accounting system will accept:
+ * this is concatenated with a zero-padded counter to make the invoice number,
+ * and a prefix carrying a slash or a space produces numbers that break the
+ * CSV export and half the bookkeeping tools that import it.
+ *
+ * Falls back to "INV" rather than to empty. A blank prefix would leave invoices
+ * numbered "0001", which is legal and is also indistinguishable from every
+ * other shop's — and the seller who cleared the field was trying to change the
+ * prefix, not to remove the concept.
+ *
+ * **`invoiceNextNumber` is deliberately not readable from a form.** A seller
+ * who could set the counter could set it backwards, and the second invoice
+ * issued at a number already used breaks the one property the sequence exists
+ * to have. It is only ever advanced by `createInvoiceForOrder`, atomically.
+ */
+export function readInvoicePrefix(value: FormDataEntryValue | null): string {
+  const cleaned = String(value ?? "")
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9_-]/g, "")
+    .slice(0, 12);
+  return cleaned || "INV";
 }

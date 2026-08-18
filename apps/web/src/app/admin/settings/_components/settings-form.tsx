@@ -21,6 +21,7 @@ import { PublishCard } from "./publish-card";
 import { SocialLinksCard } from "./social-links-card";
 import { ComplianceCard } from "./compliance-card";
 import { TaxCard } from "./tax-card";
+import { InvoicingCard } from "./invoicing-card";
 import { TrackingCard } from "./tracking-card";
 import { BookingCard } from "./booking-card";
 import { CalendarSyncCard } from "./calendar-sync-card";
@@ -122,6 +123,10 @@ export function SettingsForm({
       <OrdersContactCard shop={shop} t={t} />
 
       <TaxCard shop={shop} />
+
+      {/* Directly under tax: the invoice is where the tax decision is printed,
+          and the issuer block beneath it is what makes that printing valid. */}
+      <InvoicingCard shop={shop} />
 
       <ComplianceCard shop={shop} />
 

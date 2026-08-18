@@ -10,6 +10,12 @@ import { getDb } from "@sailo/db";
 import { orders, subscriptions } from "@sailo/db/schema";
 import { actingAs } from "@sailo/commerce/orders/server";
 import { publishShopEvent } from "@sailo/events";
+import { emitSubscriptionWebhook } from "@sailo/webhooks/emit";
+import { subscriptionTransitions } from "@sailo/webhooks/transitions";
+import {
+  notifySellerMembershipCancelled,
+  notifySellerMembershipStarted,
+} from "@sailo/workflows/memberships/notify-seller";
 import { stripe } from "@sailo/payments";
 import type Stripe from "stripe";
 import { idOf } from "./read";
@@ -88,6 +94,20 @@ export async function handleSubscriptionCheckout(
   if (order) await linkSignupOrder(order.id, shop.id, row.id);
 
   await publishShopEvent(shop.id, "order");
+  /*
+   * Awaited, not deferred with `after()`.
+   *
+   * This runs inside a Stripe webhook handler, not a Next request — there is no
+   * response for `after()` to trail, and the process may be frozen the moment
+   * this function returns. The rule the emit module states is "after the
+   * business write", and the upsert above is that write.
+   */
+  await emitSubscriptionWebhook({
+    shop,
+    event: "subscription.created",
+    subscriptionId: row.id,
+  });
+  await notifySellerMembershipStarted({ shop, subscriptionId: row.id });
   return `membership ${row.id} started (${sub.status})`;
 }
 
@@ -126,6 +146,39 @@ export async function handleSubscriptionChanged(
   await linkSignupOrder(sub.metadata?.orderId, shop.id, row.id);
 
   await publishShopEvent(shop.id, "order");
+
+  /*
+   * What this update actually was.
+   *
+   * `known.row` is the state before `upsertSubscription` overwrote it — the
+   * only copy of it that exists, which is why the lookup above is read for its
+   * row and not only for its shop. Stripe names every one of these
+   * `customer.subscription.updated`, so a plan change, a cancellation and a
+   * resumption are indistinguishable without the comparison.
+   *
+   * Nothing is emitted when there was no previous row: that is a subscription
+   * recovered out of order, and `subscription.created` covers it.
+   */
+  for (const event of subscriptionTransitions(known?.row ?? null, row)) {
+    await emitSubscriptionWebhook({ shop, event, subscriptionId: row.id });
+
+    /*
+     * And mail the seller, for the one transition they can act on.
+     *
+     * Only `cancelled` — a plan change is the member choosing something the
+     * seller already offers, and a resumption is good news that needs no
+     * decision. `ended` is mailed from the delete handler below, where it
+     * actually happens.
+     */
+    if (event === "subscription.cancelled") {
+      await notifySellerMembershipCancelled({
+        shop,
+        subscriptionId: row.id,
+        ended: false,
+      });
+    }
+  }
+
   return `membership ${row.id} is ${sub.status}`;
 }
 
@@ -157,6 +210,25 @@ export async function handleSubscriptionDeleted(
     .returning({ id: subscriptions.id });
 
   await publishShopEvent(shop.id, "order");
+
+  /*
+   * `ended`, not `cancelled`. The member asking to stop is the earlier event
+   * and it fires from the update above; this one is the arrangement being over,
+   * which is the day a consumer may actually revoke access.
+   */
+  if (row) {
+    await emitSubscriptionWebhook({
+      shop,
+      event: "subscription.ended",
+      subscriptionId: row.id,
+    });
+    await notifySellerMembershipCancelled({
+      shop,
+      subscriptionId: row.id,
+      ended: true,
+    });
+  }
+
   return row ? `membership ${row.id} cancelled` : "membership delete: unknown subscription";
 }
 

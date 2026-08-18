@@ -1,7 +1,7 @@
 import { and, eq, gt, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { maybeRow } from "@sailo/core/invariant";
 import { getDb } from "@sailo/db";
-import { orders, productFiles } from "@sailo/db/schema";
+import { downloadEvents, orders, productFiles } from "@sailo/db/schema";
 import { orderedProductIds } from "@/lib/downloads";
 import { membershipOpenForOrder } from "@/lib/membership-access";
 import { isUuid } from "@sailo/core/uuid";
@@ -18,7 +18,7 @@ import { callerIp } from "@sailo/rate-limit/client-ip";
  * shared URL can't outlive them.
  */
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: RouteContext<"/api/download/[token]/[fileId]">,
 ) {
   const { token, fileId } = await params;
@@ -139,6 +139,36 @@ export async function GET(
     return new Response("This download is no longer available.", {
       status: 410,
     });
+  }
+
+  /*
+   * The log line, which on a digital sale is the entire dispute evidence.
+   *
+   * `orders.downloadCount` counts; Stripe's `access_activity_log` requires a log.
+   * An issuer reading "downloaded 3 times" learns nothing they can weigh, while
+   * three timestamped lines carrying the buyer's own address are exactly what a
+   * physical seller gets from a carrier's delivery scan — and a
+   * `product_not_received` claim on a download is otherwise unanswerable.
+   *
+   * Written after the claim and before the bytes, so it records attempts that
+   * were *authorised*. Deliberately not rolled back by the release paths below:
+   * an upstream failure gave the allowance back but the buyer did still ask for
+   * the file from that address at that time, and that is the fact the evidence
+   * rests on.
+   *
+   * Best-effort. A logging failure must never cost a paying buyer their download,
+   * so this cannot throw into the response.
+   */
+  try {
+    await db.insert(downloadEvents).values({
+      orderId: order.id,
+      fileId: file.id,
+      fileName: file.name,
+      ip: await callerIp(),
+      userAgent: request.headers.get("user-agent")?.slice(0, 400) ?? null,
+    });
+  } catch (error) {
+    console.error("[sailo] could not record a download event", error);
   }
 
   /*

@@ -8,6 +8,7 @@ import { shopThemeVars } from "@sailo/design-system/web/cn";
 import { getShopPageData } from "./_lib/get-shop-page-data";
 import { CartRegion } from "./_components/cart/cart-region";
 import { complianceOf } from "./_components/cart/checkout.types";
+import { hasPixels } from "@sailo/customers/pixels";
 import { FavoritesButton } from "./_components/favorites/favorites-button";
 import { FilterBar } from "./_components/filter-bar";
 import { ProductGrid } from "./_components/product-grid";
@@ -17,6 +18,7 @@ import { ShopFooter } from "./_components/shop-footer";
 import { ShopHeader } from "./_components/shop-header";
 import { ShopTracking } from "./_components/shop-tracking";
 import { SubscribeCard } from "./_components/subscribe-card";
+import { SubscribePopup } from "./_components/subscribe-popup";
 import { VisitTracker } from "./_components/visit-tracker";
 
 export async function generateMetadata({
@@ -137,6 +139,33 @@ export default async function ShopPage({
       {/* The seller's own tags, and the consent request they require. Renders
           nothing unless the seller configured one in settings. */}
       <ShopTracking shop={shop} t={t} />
+
+      {/*
+        The same question the card at the foot of the page asks, brought to
+        the visitor who was never going to get that far — which is most of
+        them. It waits for a sign of interest, holds off while the consent
+        banner or the basket is in the way, stays quiet while that card is on
+        screen, and remembers being closed. See `subscribe-popup.tsx`.
+      */}
+      {shop.subscribeEnabled ? (
+        <SubscribePopup
+          shopId={shop.id}
+          handle={shop.handle}
+          incentive={shop.subscribeIncentive}
+          awaitsConsent={hasPixels(shop)}
+          labels={{
+            title: t.mailing.title,
+            body: interpolate(t.mailing.body, { shop: shop.name }),
+            emailLabel: t.mailing.emailLabel,
+            nameLabel: t.mailing.nameLabel,
+            cta: t.mailing.cta,
+            checkInbox: t.mailing.checkInbox,
+            privacyNote: t.mailing.privacyNote,
+            optional: t.common.optional,
+            close: t.common.close,
+          }}
+        />
+      ) : null}
         {affiliatesLive ? (
           // Reads `?ref=` from the URL, so it needs a search-params boundary.
           <Suspense fallback={null}>
@@ -208,6 +237,7 @@ export default async function ShopPage({
           {shop.subscribeEnabled ? (
             <SubscribeCard
               handle={shop.handle}
+              shopId={shop.id}
               incentive={shop.subscribeIncentive}
               labels={{
                 title: t.mailing.title,

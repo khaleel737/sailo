@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Switch } from "@sailo/design-system/web";
+import { Card, Field, Input, Switch } from "@sailo/design-system/web";
 import { interpolate } from "@sailo/i18n";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { wantsNotification } from "@sailo/notifications/prefs";
@@ -54,6 +54,26 @@ export function NotificationsCard({
       label: a.settings.notifyOrderNeedsAction,
       description: a.settings.notifyOrderNeedsActionBody,
     },
+    /*
+     * The membership three, which had no switches because they had no mail.
+     * A member could join, cancel or fail a renewal and the seller was told
+     * nothing — see `@sailo/notifications/prefs` for the whole note.
+     */
+    {
+      event: "membershipStarted",
+      label: a.settings.notifyMembershipStarted,
+      description: a.settings.notifyMembershipStartedBody,
+    },
+    {
+      event: "membershipCancelled",
+      label: a.settings.notifyMembershipCancelled,
+      description: a.settings.notifyMembershipCancelledBody,
+    },
+    {
+      event: "membershipPaymentFailed",
+      label: a.settings.notifyMembershipPaymentFailed,
+      description: a.settings.notifyMembershipPaymentFailedBody,
+    },
   ] as const;
 
   return (
@@ -90,11 +110,37 @@ export function NotificationsCard({
         />
       </div>
 
-      <p className="text-xs text-ink-500">
-        {interpolate(a.settings.notifySentTo, {
-          email: shop.contactEmail ?? accountEmail,
-        })}
-      </p>
+      {/*
+        Where these land, and the chance to send them somewhere else.
+
+        Deliberately *not* the "leave empty to disable all" field the tool this
+        screen was modelled on uses. It ships empty for every shop that already
+        exists, so reading empty as silence would have switched off every
+        seller's order alerts on the morning it deployed. Empty here means the
+        fallback it has always meant — contact address, then the account's —
+        and the switches above are how an alert is turned off.
+      */}
+      <div className="space-y-1.5 border-t border-ink-200 pt-4">
+        <Field
+          label={a.settings.notificationEmail}
+          htmlFor="notificationEmail"
+          hint={a.common.optional}
+        >
+          <Input
+            id="notificationEmail"
+            name="notificationEmail"
+            type="email"
+            autoComplete="email"
+            defaultValue={shop.notificationEmail ?? ""}
+            placeholder={shop.contactEmail ?? accountEmail}
+          />
+        </Field>
+        <p className="text-xs text-ink-500">
+          {interpolate(a.settings.notifySentTo, {
+            email: shop.notificationEmail ?? shop.contactEmail ?? accountEmail,
+          })}
+        </p>
+      </div>
     </Card>
   );
 }

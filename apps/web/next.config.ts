@@ -1,3 +1,4 @@
+import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -303,8 +304,49 @@ const nextConfig: NextConfig = {
         destination: "/admin/settings/billing",
         permanent: false,
       },
+      /*
+       * The staff panel left this app for apps/hq, on its own origin.
+       *
+       * Every /hq/* route here is gone, and staff have years of bookmarks and
+       * links in support threads pointing at them. Without this they get this
+       * app's 404, which reads as "the panel is broken" rather than "it moved".
+       *
+       * `:path*` carries the rest of the URL across, so a bookmark to a
+       * specific account or dispute lands on that same page rather than the
+       * panel's front door. The two rules exist because `/hq` itself has no
+       * trailing segment for the wildcard to match.
+       *
+       * `permanent: false` (307) deliberately, despite this being a permanent
+       * move. A 308 is cached by the browser indefinitely and cannot be taken
+       * back — if the domain ever changes again, or this needs to be rolled
+       * back in a hurry, every staff browser would keep honouring a redirect
+       * this repo no longer contains. Make it permanent once the domain has
+       * been settled for a while.
+       */
+      { source: "/hq", destination: "https://hq.sailo.store", permanent: false },
+      {
+        source: "/hq/:path*",
+        destination: "https://hq.sailo.store/:path*",
+        permanent: false,
+      },
     ];
   },
 };
 
-export default nextConfig;
+/**
+ * The MDX pipeline behind `/docs`, and nothing else.
+ *
+ * `macro.include` is narrowed to the one module that calls `defineDocs`. The
+ * default is `**\/*.ts` and five siblings — every JS and TS file in the project
+ * — which for an app this size means the macro plugin is attached to several
+ * thousand modules to find a call that appears in exactly one of them.
+ *
+ * A glob, not a path. These strings become Turbopack loader-rule keys and are
+ * matched by `picomatch` with `basename: true`, so `src/lib/docs-source.ts`
+ * matches nothing and fails at request time with "this macro was not compiled
+ * by the bundler plugin" — which reads as a broken install rather than as a
+ * pattern that missed.
+ */
+const withMDX = createMDX({ macro: { include: ["**/docs-source.ts"] } });
+
+export default withMDX(nextConfig);

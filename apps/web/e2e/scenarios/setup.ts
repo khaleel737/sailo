@@ -13,12 +13,23 @@ import { vi } from "vitest";
 
 const PROXY = process.env.SCENARIO_PROXY ?? "http://localhost:54330/sql";
 
-neonConfig.fetchEndpoint = PROXY;
-neonConfig.useSecureWebSocket = false;
-neonConfig.poolQueryViaFetch = true;
-
 process.env.DATABASE_URL =
   process.env.SCENARIO_DATABASE_URL ?? "postgres://sailo:sailo@localhost:55432/sailo";
+
+/*
+ * The proxy is for the container, and only for the container.
+ *
+ * A real Neon branch speaks the HTTP protocol natively, so pointing
+ * `fetchEndpoint` at localhost while `DATABASE_URL` names a branch sends every
+ * query to a proxy that is not running — which fails as a connection error and
+ * reads like the branch being down. `SCENARIO_ALLOW_REMOTE` is the same switch
+ * `local-only.ts` reads, so the two cannot disagree about which database this is.
+ */
+if (!process.env.SCENARIO_ALLOW_REMOTE) {
+  neonConfig.fetchEndpoint = PROXY;
+  neonConfig.useSecureWebSocket = false;
+  neonConfig.poolQueryViaFetch = true;
+}
 process.env.NEXT_PUBLIC_APP_URL ??= "http://localhost:3000";
 // No replica, so every read in these tests hits the one database they seeded.
 delete process.env.READ_REPLICA_URL;

@@ -55,6 +55,20 @@ const CLIENTS = read("src/lib/actions/clients.ts");
 const SUBSCRIBE = pkg("@sailo/marketing/broadcasts", "subscribe.ts");
 const PAY_ORDER = pkg("@sailo/commerce/orders", "pay-order.ts");
 const COMMERCE_ORDERS = pkg("@sailo/commerce/orders", "orders.ts");
+const MEMBERSHIP_LIFECYCLE = read("src/lib/stripe-webhooks/memberships/lifecycle.ts");
+const MEMBERSHIP_INVOICES = read("src/lib/stripe-webhooks/memberships/invoices.ts");
+const DISPUTES = read("src/lib/stripe-webhooks/disputes.ts");
+/*
+ * The three events nothing *names* at a call site.
+ *
+ * `plan_changed`, `cancelled` and `resumed` all arrive from Stripe as one
+ * indistinguishable `customer.subscription.updated`, so the handler emits
+ * whatever `subscriptionTransitions` returns rather than a literal it chose.
+ * That makes this file their emit site as far as the catalogue check below is
+ * concerned — and it is the honest answer, because it is the only place that
+ * decides they happened.
+ */
+const TRANSITIONS = pkg("@sailo/webhooks/events", "transitions.ts");
 
 const ALL_SOURCES = [
   ORDERS,
@@ -63,6 +77,10 @@ const ALL_SOURCES = [
   CLIENTS,
   SUBSCRIBE,
   COMMERCE_ORDERS,
+  MEMBERSHIP_LIFECYCLE,
+  MEMBERSHIP_INVOICES,
+  DISPUTES,
+  TRANSITIONS,
 ].join("\n");
 
 describe("emit sites", () => {
@@ -194,6 +212,62 @@ describe("emit sites", () => {
     expect(CLIENTS).toContain("if (created)");
     expect(SUBSCRIBE).toContain("emitNewContact");
     expect(SUBSCRIBE).toContain("if (created)");
+  });
+
+  it("emits the membership events from the handlers that own them", () => {
+    expect(MEMBERSHIP_LIFECYCLE).toContain('event: "subscription.created"');
+    expect(MEMBERSHIP_LIFECYCLE).toContain('event: "subscription.ended"');
+    expect(MEMBERSHIP_INVOICES).toContain('event: "subscription.renewed"');
+    expect(MEMBERSHIP_INVOICES).toContain('event: "subscription.payment_failed"');
+  });
+
+  it("emits subscription.renewed only for a renewal, never for the signup", () => {
+    /*
+     * The signup's first invoice settling is not a renewal — a consumer told
+     * one had happened would record a completed billing cycle for a member who
+     * joined this morning. `firstPayment` is the row the signup order's
+     * conditional update returned, so its absence is precisely "this money was
+     * not the first".
+     */
+    expect(MEMBERSHIP_INVOICES).toContain("if (!firstPayment)");
+  });
+
+  it("emits subscription.payment_failed only when the status actually moved", () => {
+    // Below the compare-and-set guard, so a redelivered or late failure that
+    // changed nothing does not tell an integration a payment just failed.
+    expect(MEMBERSHIP_INVOICES).toContain("if (!advanced)");
+  });
+
+  it("derives the three ambiguous membership events rather than guessing", () => {
+    /*
+     * Stripe names a plan swap, a cancellation and a resumption identically, so
+     * the handler must compare the row it held against the row it wrote. The
+     * pre-update row is `known.row` — read for the comparison and not only for
+     * the shop, which is the detail an innocent-looking refactor removes.
+     */
+    expect(MEMBERSHIP_LIFECYCLE).toContain("subscriptionTransitions(known?.row ?? null, row)");
+    for (const event of [
+      "subscription.plan_changed",
+      "subscription.cancelled",
+      "subscription.resumed",
+    ]) {
+      expect(TRANSITIONS, event).toContain(event);
+    }
+  });
+
+  it("emits disputes for a buyer's chargeback and never for the platform's", () => {
+    /*
+     * A seller charging back their own Sailo subscription is Sailo's money. The
+     * platform branch returns before the emit, so it can never arrive in that
+     * seller's Zapier account dressed as a customer chargeback.
+     */
+    expect(DISPUTES).toContain("emitDisputeWebhook");
+    expect(DISPUTES).toContain('return handlePlatformDispute(');
+    const emitAt = DISPUTES.indexOf("emitDisputeWebhook({");
+    const platformReturn = DISPUTES.indexOf("return handlePlatformDispute(");
+    expect(platformReturn, "platform disputes must return before the emit").toBeLessThan(
+      emitAt,
+    );
   });
 
   it("has an emit site for every event in the catalogue", () => {

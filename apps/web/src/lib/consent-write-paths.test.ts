@@ -46,10 +46,17 @@ import { describe, expect, it } from "vitest";
  * `orders/clients.ts` — the checkout grant, the single most consequential
  * writer on the list — moved out of this app. The invariant went red rather
  * than quiet, which is the only reason this note exists.
+ *
+ * `content/` and `*.mdx` came with the documentation move. The two docs pages
+ * naming the column were `.tsx` under `src/`, so they were scanned; as MDX they
+ * are neither, and the scan would have kept passing while two files describing
+ * consent to integrators stepped outside it. A file moving out of the scan is
+ * the same failure as a file moving out of the package — widen the scan, never
+ * drop the entry.
  */
 function filesNaming(pattern: string): string[] {
   return execSync(
-    `grep -rl "${pattern}" src/ ../../packages/db/src ../../packages/core/src ../../packages/commerce/src ../../packages/marketing/src ../../packages/api/src --include="*.ts" --include="*.tsx" || true`,
+    `grep -rl "${pattern}" src/ content/ ../../packages/db/src ../../packages/core/src ../../packages/commerce/src ../../packages/marketing/src ../../packages/api/src --include="*.ts" --include="*.tsx" --include="*.mdx" || true`,
     { encoding: "utf8" },
   )
     .split("\n")
@@ -109,9 +116,9 @@ const MAY_NAME_THE_COLUMN = [
    */
   "../../packages/core/src/wire/resources.ts",
   // The API docs, telling integrators the field is ignored.
-  "src/app/(marketing)/docs/api/page.tsx",
+  "content/docs/api.mdx",
   // The MCP tool reference, saying the same thing to an assistant.
-  "src/app/(marketing)/docs/mcp/page.tsx",
+  "content/docs/mcp.mdx",
   // The OpenAPI document. Describes the field; grants nothing.
   "../../packages/api/src/rest/openapi.ts",
 ].toSorted();

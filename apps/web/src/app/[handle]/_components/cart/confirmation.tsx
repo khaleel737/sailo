@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy, Download, ExternalLink, FileText, Loader2 } from "lucide-react";
+import { trackClick } from "@sailo/analytics/clicks";
 import { submitPaymentReference } from "@/lib/actions/payment-reference";
 import type { OrderIntentResult } from "@sailo/commerce/orders";
 import type { Dictionary } from "@sailo/i18n";
@@ -17,6 +18,7 @@ import { ReferAndEarn } from "./refer-and-earn";
  */
 export function Confirmation({
   result,
+  shopId,
   shopName,
   contactEmail,
   methodName,
@@ -24,6 +26,7 @@ export function Confirmation({
   onClose,
 }: {
   result: Extract<OrderIntentResult, { ok: true }>;
+  shopId: string;
   shopName: string;
   contactEmail: string | null;
   methodName: string;
@@ -35,21 +38,31 @@ export function Confirmation({
   const [pending, setPending] = useState(false);
   const [refError, setRefError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [copiedOrder, setCopiedOrder] = useState(false);
 
   const bank = result.bankDetails ?? [];
   const hasBank = bank.length > 0;
 
   /*
-   * Venmo and PayPal hand the buyer a wallet to open. It is a link and not a
-   * redirect on purpose — the order is unpaid until they come back and submit
-   * a reference, so the page they return to has to still be here. `noopener`
-   * for the same reason every outbound link needs it, and `_blank` so the
-   * back button is not the only way home.
+   * Venmo and PayPal hand the buyer a wallet to open, Instagram a DM. Each is
+   * a link and not a redirect on purpose — the order is unpaid until they come
+   * back, and on Instagram the message they have to send is on this page, so
+   * the page they return to has to still be here. `noopener` for the same
+   * reason every outbound link needs it, and `_blank` so the back button is
+   * not the only way home.
    */
-  const pay =
-    result.handoff?.kind === "instructions" && result.handoff.payUrl
-      ? { url: result.handoff.payUrl, label: result.handoff.payLabel }
-      : null;
+  const handoff = result.handoff?.kind === "instructions" ? result.handoff : null;
+  const pay = handoff?.payUrl
+    ? { url: handoff.payUrl, label: handoff.payLabel }
+    : null;
+  /*
+   * The rail cannot prefill what it opens, so the buyer carries the order
+   * across by hand. Shown rather than merely copied: a clipboard write can be
+   * refused — Safari grants it only inside the gesture that asked, and an
+   * in-app browser may not grant it at all — and a buyer who arrives in the
+   * DM with an empty clipboard and no way back has lost the whole order.
+   */
+  const toPaste = handoff?.copyToSend ? (handoff.message ?? null) : null;
 
   async function onSubmitReference() {
     setPending(true);
@@ -65,6 +78,35 @@ export function Confirmation({
     }
     setSubmitted(true);
     setPending(false);
+  }
+
+  async function copyOrder() {
+    if (!toPaste) return;
+    try {
+      await navigator.clipboard.writeText(toPaste);
+      setCopiedOrder(true);
+      setTimeout(() => setCopiedOrder(false), 2000);
+    } catch {
+      // The message is on screen to select by hand, so a refused clipboard
+      // costs the buyer a long-press rather than the order.
+    }
+  }
+
+  /*
+   * Leaving through a link the seller put there — the same outbound click the
+   * chat rails have always counted. Instagram used to be counted at the
+   * redirect; now that it stays on this page, this is where that click
+   * happens, and the wallets are counted with it for the same reason.
+   *
+   * The copy rides along because this is the one moment every browser grants
+   * the clipboard: inside the gesture that navigates. So the buyer arrives in
+   * the DM with the order already on the pasteboard whether or not they
+   * pressed Copy first — and the button above stays, because this can still be
+   * refused and a new tab is not always where they end up.
+   */
+  function openPay() {
+    if (pay) trackClick(shopId, pay.url, "contact");
+    if (toPaste) void copyOrder();
   }
 
   async function copyDetails() {
@@ -91,17 +133,56 @@ export function Confirmation({
       <p className="text-muted mt-1 text-center text-sm">
         {hasBank
           ? t.checkout.bankInstructions
-          : interpolate(t.checkout.paidBy, { method: methodName })}
+          : toPaste
+            ? interpolate(t.checkout.pasteNote, { method: methodName })
+            : interpolate(t.checkout.paidBy, { method: methodName })}
       </p>
+
+      {toPaste ? (
+        <div className="surface-elevated mt-4 rounded-xl p-3">
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <span className="text-xs font-medium uppercase tracking-wide opacity-60">
+              {t.checkout.yourOrder}
+            </span>
+            <button
+              type="button"
+              onClick={copyOrder}
+              className="inline-flex items-center gap-1 text-xs font-medium transition hover:opacity-70"
+            >
+              {copiedOrder ? (
+                <Check className="size-3.5" />
+              ) : (
+                <Copy className="size-3.5" />
+              )}
+              {copiedOrder ? t.checkout.copied : t.checkout.copy}
+            </button>
+          </div>
+          {/*
+            Capped and scrollable: a basket of eight lines with an address on
+            it is longer than the sheet, and pushing the button that opens the
+            chat off the bottom is the same failure as not showing the message
+            at all.
+          */}
+          <p className="max-h-44 overflow-y-auto whitespace-pre-wrap text-sm">
+            {toPaste}
+          </p>
+        </div>
+      ) : null}
 
       {pay ? (
         <a
           href={pay.url}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={openPay}
+          onAuxClick={(event) => {
+            if (event.button === 1) openPay();
+          }}
           className="accent-bg mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition hover:opacity-90"
         >
-          {interpolate(t.checkout.payWith, { method: pay.label ?? methodName })}
+          {interpolate(toPaste ? t.checkout.openApp : t.checkout.payWith, {
+            method: pay.label ?? methodName,
+          })}
           <ExternalLink className="size-4" />
         </a>
       ) : null}

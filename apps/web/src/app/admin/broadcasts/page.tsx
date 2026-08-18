@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { and, count, desc, eq, isNotNull } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { Mail, Plus } from "lucide-react";
 import { getDb } from "@sailo/db";
-import { broadcasts, clients } from "@sailo/db/schema";
+import { broadcasts } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { getAdminT, getT } from "@/i18n/server";
 import { can } from "@sailo/core/plans";
-import { audienceSize } from "@sailo/marketing/broadcasts/server";
+import {
+  listSubscribers,
+  subscribePageUrl,
+  subscriberStats,
+} from "@sailo/marketing/broadcasts/server";
 import { segmentPickers } from "@sailo/workflows/broadcasts";
-import { subscribePageUrl } from "@sailo/marketing/broadcasts/server";
 import { describeSegment, parseSegment } from "@sailo/marketing/broadcasts";
 import { PageHeader } from "@sailo/design-system/web";
 import { LockedFeature } from "@/app/admin/_components/locked-feature";
@@ -17,6 +20,7 @@ import { Badge, Button, Card, EmptyState } from "@sailo/design-system/web";
 import { formatMoney } from "@sailo/core/currency";
 import { interpolate } from "@sailo/i18n";
 import { GrowCard } from "./_components/grow-card";
+import { SubscriberList } from "./_components/subscriber-list";
 
 export const metadata: Metadata = { title: "Broadcasts" };
 
@@ -28,27 +32,78 @@ const TONES = {
   sent: "green",
 } as const;
 
-/** Contacts who arrived through the signup form and proved the address. */
-async function subscriberCount(shopId: string): Promise<number> {
-  const [row] = await getDb()
-    .select({ n: count() })
-    .from(clients)
-    .where(
-      and(
-        eq(clients.shopId, shopId),
-        eq(clients.source, "subscribe"),
-        // An unconfirmed signup writes no row at all, so this really is
-        // "arrived through the form and proved it".
-        isNotNull(clients.marketingConsentAt),
-      ),
-    );
-  return row?.n ?? 0;
-}
+/**
+ * How many of the list to show before "see everyone".
+ *
+ * Enough to prove the thing works and to recognise this morning's signup;
+ * short enough that it stays a card on a screen about broadcasts rather than
+ * becoming the screen.
+ */
+const PREVIEW = 5;
 
 export default async function BroadcastsPage() {
   const { shop } = await requireShop();
   const { a, locale } = await getAdminT();
   const { t } = await getT();
+
+  /*
+   * Read before the plan check, because both sides of it show this. A seller
+   * who cannot yet send still has to be able to see the list they are
+   * building, or the free plan looks like a form that swallows addresses.
+   */
+  const [stats, recent] = await Promise.all([
+    subscriberStats(shop.id),
+    listSubscribers(shop.id, PREVIEW),
+  ]);
+
+  /*
+   * How the list is grown, and who it grew into — one block, used twice,
+   * so the locked screen and the working one cannot drift apart.
+   */
+  const audience = (
+    <>
+      <GrowCard
+        url={subscribePageUrl(shop.handle)}
+        enabled={shop.subscribeEnabled}
+        incentive={shop.subscribeIncentive}
+        subscriberCount={stats.viaForm}
+      />
+
+      <section className="mb-4">
+        <div className="mb-2 flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <h2 className="text-sm font-semibold text-ink-900">
+              {a.broadcasts.listTitle}
+            </h2>
+            <p className="mt-0.5 text-xs text-ink-500">{a.broadcasts.listBody}</p>
+          </div>
+          {stats.consented > 0 ? (
+            <Link href="/admin/broadcasts/subscribers">
+              <Button variant="secondary" size="sm">
+                {a.broadcasts.seeAllSubscribers}
+              </Button>
+            </Link>
+          ) : null}
+        </div>
+
+        {recent.length === 0 ? (
+          /* Not an `EmptyState` — this is a card on a busy screen, and the
+             full-height illustration treatment belongs to the page that is
+             only about subscribers. */
+          <Card className="p-5">
+            <p className="text-sm font-medium text-ink-900">
+              {a.broadcasts.subscribersEmpty}
+            </p>
+            <p className="mt-1 text-xs leading-relaxed text-ink-500">
+              {a.broadcasts.subscribersEmptyBody}
+            </p>
+          </Card>
+        ) : (
+          <SubscriberList rows={recent} a={a} locale={locale} />
+        )}
+      </section>
+    </>
+  );
 
   if (!can(shop, "broadcasts")) {
     /*
@@ -70,27 +125,18 @@ export default async function BroadcastsPage() {
           description={a.broadcasts.lockedBody}
           t={t}
         />
-        <div className="mt-4">
-          <GrowCard
-            url={subscribePageUrl(shop.handle)}
-            enabled={shop.subscribeEnabled}
-            incentive={shop.subscribeIncentive}
-            subscriberCount={await subscriberCount(shop.id)}
-          />
-        </div>
+        <div className="mt-4">{audience}</div>
       </>
     );
   }
 
-  const [rows, reach, pickers, subscribers] = await Promise.all([
+  const [rows, pickers] = await Promise.all([
     getDb().query.broadcasts.findMany({
       where: eq(broadcasts.shopId, shop.id),
       orderBy: [desc(broadcasts.createdAt)],
       limit: 50,
     }),
-    audienceSize(shop.id),
     segmentPickers(shop.id),
-    subscriberCount(shop.id),
   ]);
 
   /* The names a stored condition needs to read as a sentence. */
@@ -131,7 +177,7 @@ export default async function BroadcastsPage() {
          * opted-in contacts needs to see "11" before they write anything,
          * not after they press Send.
          */
-        description={interpolate(a.broadcasts.reach, { count: reach })}
+        description={interpolate(a.broadcasts.reach, { count: stats.mailable })}
         action={
           <Link href="/admin/broadcasts/new">
             <Button>
@@ -143,13 +189,8 @@ export default async function BroadcastsPage() {
       />
 
       {/* Directly under that number, because it is the answer to what the
-          number makes a seller ask. */}
-      <GrowCard
-        url={subscribePageUrl(shop.handle)}
-        enabled={shop.subscribeEnabled}
-        incentive={shop.subscribeIncentive}
-        subscriberCount={subscribers}
-      />
+          number makes a seller ask — and then the people it counted. */}
+      {audience}
 
       {rows.length === 0 ? (
         <EmptyState

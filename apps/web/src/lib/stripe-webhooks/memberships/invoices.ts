@@ -12,6 +12,8 @@ import { clients, orders, products, subscriptions, type Shop, type Subscription 
 import { createInvoiceForOrder } from "@/lib/invoices";
 import { downloadUrl } from "@/lib/downloads";
 import { publishShopEvent } from "@sailo/events";
+import { emitSubscriptionWebhook } from "@sailo/webhooks/emit";
+import { notifySellerMembershipPaymentFailed } from "@sailo/workflows/memberships/notify-seller";
 import { releaseDownloads } from "@/lib/downloads";
 import { sendMembershipPaymentFailed, sendMembershipStarted } from "@/lib/email";
 import { sendingAccount } from "@sailo/payments";
@@ -104,6 +106,24 @@ export async function handleMembershipInvoicePaid(
   }
 
   await publishShopEvent(shop.id, "order");
+
+  /*
+   * `subscription.renewed`, and only for a renewal.
+   *
+   * `firstPayment` is the signup's own order settling, which
+   * `subscription.created` has already announced — emitting a renewal for it
+   * would tell a consumer that a member who joined this morning has completed a
+   * billing cycle. The `order.paid` event fires for both regardless, so the
+   * money is never silent either way.
+   */
+  if (!firstPayment) {
+    await emitSubscriptionWebhook({
+      shop,
+      event: "subscription.renewed",
+      subscriptionId: row.id,
+    });
+  }
+
   return `membership ${row.id} paid ${invoice.amount_paid}`;
 }
 
@@ -265,5 +285,22 @@ export async function handleMembershipInvoiceFailed(
   }
 
   await publishShopEvent(shop.id, "payment");
+
+  /*
+   * Emitted below the `advanced` guard, so a redelivered or late failure that
+   * changed nothing tells nobody's integration that a payment just failed.
+   *
+   * Deliberately not an ending. `past_due` is a card that will very likely
+   * clear on Stripe's next retry, and a consumer that revokes access here takes
+   * it from a member whose card expired and was replaced the same afternoon —
+   * `subscription.ended` is the event for revoking.
+   */
+  await emitSubscriptionWebhook({
+    shop,
+    event: "subscription.payment_failed",
+    subscriptionId: row.id,
+  });
+  await notifySellerMembershipPaymentFailed({ shop, subscriptionId: row.id });
+
   return `membership ${row.id} past due`;
 }
