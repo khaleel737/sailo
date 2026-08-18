@@ -1,0 +1,292 @@
+apps/hq/src/app/(panel)/accounts/[id]/layout.tsx
+  s_eba9c1a165bb11::t_564a28908afbf0 1-165
+apps/hq/src/app/(panel)/accounts/page.tsx
+  s_eba9c1a165bb11::t_e0e8c15d8d9e05 166-170,173,175,178
+  s_eba9c1a165bb11::t_6899453935ba06 5,19,84-89,120,122,125-133,147,156-164,265
+  s_dcd75e2fc0aa0a::t_0fce4b3921d1fd 75-83,96
+  s_eba9c1a165bb11::t_089c6a0b760293 165
+apps/hq/src/app/(panel)/disputes/page.tsx
+  s_eba9c1a165bb11::t_648763a7d21028 23,62-71,182,185
+  s_eba9c1a165bb11::t_cf0e9ef79c2f60 78-88,386,389
+  s_eba9c1a165bb11::t_29f80937dd50c8 298-313
+  s_eba9c1a165bb11::t_1bc937120ac4ec 451-456
+  s_eba9c1a165bb11::t_212a8a8dedcde1 314,457
+apps/hq/src/lib/platform/risk.ts
+  s_eba9c1a165bb11::t_9d387ebf9fcbe8 359-365,367-371
+  s_eba9c1a165bb11::t_aea73f64781b2d 1-182,186-191,208,210-358,366,372-434
+  s_eba9c1a165bb11::t_63454309739652 183-185,192-207,209
+apps/hq/src/lib/platform/disputes.ts
+  s_eba9c1a165bb11::t_acda8e4259fde8 70-81,87-90,92,120-122
+  s_eba9c1a165bb11::t_db31b026d6d0cd 152-158
+  s_eba9c1a165bb11::t_8bc69d9563c5a8 69
+apps/web/e2e/scenarios/account-deletion.scenario.ts
+  s_eba9c1a165bb11::t_1dec3a0d2239b4 470,556-561,569-589,591-592,594-612,614-615,617-637
+  s_eba9c1a165bb11::t_6eada1131585b8 54-65,67
+  s_eba9c1a165bb11::t_8f2ec1314a1996 3
+  s_eba9c1a165bb11::t_63801ee6100193 590,593,613,616
+  s_eba9c1a165bb11::t_a9d2f3ab36d120 10,315-469
+  s_eba9c1a165bb11::t_962fa712c9d6f2 8
+  s_eba9c1a165bb11::t_faaba679f94a20 471-472
+apps/hq/src/app/(panel)/members/page.tsx
+  s_eba9c1a165bb11::t_996105730c9999 98-115,167-177
+  s_eba9c1a165bb11::t_1276d7d13c4b0a 199-200,207
+  s_eba9c1a165bb11::t_df38f8a21ffc4c 5-10,21-47,74-78,208,215-230,244-248
+  s_eba9c1a165bb11::t_8df0a2c7c88fd5 249
+packages/i18n/src/admin/en.ts
+  s_eba9c1a165bb11::t_85a3d7a0ad0ee7 1414-1426
+apps/hq/src/lib/actions/risk.ts
+  s_eba9c1a165bb11::t_da404ce3ce07db 1-179
+apps/hq/src/lib/platform/payments.ts
+  s_eba9c1a165bb11::t_72c0ecfbc25ecf 1-4,6-296
+  s_eba9c1a165bb11::t_5b13a48dc90e58 5
+packages/core/src/risk/signals.test.ts
+  s_eba9c1a165bb11::t_ff74a50634c0e4 151-156,234
+  s_eba9c1a165bb11::t_4dec1edf49ab61 204-216,219-225,233,259
+  s_eba9c1a165bb11::t_82a4b6a538d142 1-150,157-203,217-218,226-232,235-258,260-282
+apps/hq/src/lib/actions/marketing.ts
+  s_eba9c1a165bb11::t_850d66c83bc19e 57,78,100,134,163,199
+  s_eba9c1a165bb11::t_6c0aa21548aec9 20-31
+packages/core/package.json
+  s_eba9c1a165bb11::t_115ea207c95e72 47-48
+apps/web/src/app/admin/settings/security/_components/delete-account-card.tsx
+  s_eba9c1a165bb11::t_76492f785ba2e3 32-37,41,44-49,58-77,95-97
+apps/hq/src/lib/metrics.ts
+  s_eba9c1a165bb11::t_3f4c4f163e02ed 225-236,240-242,257-259
+  s_eba9c1a165bb11::t_a83a5376c92839 224,260-263
+apps/hq/src/app/(panel)/accounts/[id]/_components/catalogue-table.tsx
+  s_eba9c1a165bb11::t_97cebead5294d1 6,14
+apps/hq/src/lib/actions/access.ts
+  s_eba9c1a165bb11::t_7a85c471652240 10-21,52,99,157,237
+apps/hq/src/app/(panel)/revenue/page.tsx
+  s_eba9c1a165bb11::t_e16a4f97466d5b 135,200-214
+  s_eba9c1a165bb11::t_c3cbd70620f3a2 143,145,148,155
+  s_eba9c1a165bb11::t_ba0a416494a600 43-52
+  s_eba9c1a165bb11::t_07993cef0cbf20 215
+packages/db/src/schema/risk.ts
+  s_eba9c1a165bb11::t_9ff1f8cc7218df 1-112
+apps/hq/src/lib/session.ts
+  s_eba9c1a165bb11::t_c042cc95a795a8 69-91
+  s_eba9c1a165bb11::t_a9364d1522e9b7 68
+apps/hq/src/app/(panel)/accounts/[id]/risk/page.tsx
+  s_eba9c1a165bb11::t_9e61b2daba7d89 1-264
+apps/hq/src/app/(panel)/accounts/[id]/page.tsx
+  s_eba9c1a165bb11::t_830a4a3a4e3613 97-105,107,109,302-307,310-312,315
+  s_eba9c1a165bb11::t_2d7f6ed7a441c5 12,15-17,24-26,29-41,45-46,48,50-54,77-92,106,108,110-111,115-116,119-121,123-124,129-131,133-134,139-142,144-148,150,152-186,189-210,212-243,245,247-264,266-269,271-300,309,313,316-317
+  s_eba9c1a165bb11::t_1aa542a76b4818 301
+packages/core/src/risk/signals.ts
+  s_eba9c1a165bb11::t_115ea207c95e72 1-117,126-143,154-209,215,219-224,226-227,229-288,308,314-339
+  s_eba9c1a165bb11::t_325391198ea61f 210-214,216-218
+  s_eba9c1a165bb11::t_ff74a50634c0e4 144-153,225,228
+  s_eba9c1a165bb11::t_4dec1edf49ab61 118-125,289-307
+  s_dcd75e2fc0aa0a::t_e8e2ca7c83eace 309-313
+apps/hq/src/lib/platform/index.ts
+  s_eba9c1a165bb11::t_aea73f64781b2d 20
+  s_eba9c1a165bb11::t_40bce536fbedb3 19
+  s_eba9c1a165bb11::t_72c0ecfbc25ecf 21
+packages/core/src/risk/index.ts
+  s_eba9c1a165bb11::t_115ea207c95e72 1-8
+apps/web/src/lib/account-deletion.test.ts
+  s_eba9c1a165bb11::t_750097265d4bfb 50-62,68-69
+apps/hq/src/app/(panel)/accounts/[id]/commerce/page.tsx
+  s_eba9c1a165bb11::t_375008697d3d80 54-95,97
+  s_eba9c1a165bb11::t_7eecb2ef729b09 1-53,96,98-212
+apps/hq/src/app/_components/hq-ui.tsx
+  s_eba9c1a165bb11::t_89258e5fc3c323 191-199,222-223,225
+  s_eba9c1a165bb11::t_e0e8c15d8d9e05 231-239,252,254-255
+  s_eba9c1a165bb11::t_655b6d5cc65bbd 149-157,160
+apps/hq/src/lib/actions/notes.ts
+  s_eba9c1a165bb11::t_4a22fd0e3fee44 26,50-52
+apps/hq/src/app/(panel)/security/page.tsx
+  s_eba9c1a165bb11::t_6fbed78c918826 32,391,393-412
+  s_eba9c1a165bb11::t_c3cbd70620f3a2 325,327,330,473,487
+  s_eba9c1a165bb11::t_076e82586ca2ad 339-349,351-356
+apps/hq/src/lib/metrics.test.ts
+  s_eba9c1a165bb11::t_bf88f9c3d6606c 220-234
+packages/design-system/src/web/feedback.tsx
+  s_eba9c1a165bb11::t_325391198ea61f 45-53
+apps/hq/src/app/(panel)/accounts/[id]/_components/security-panel.tsx
+  s_eba9c1a165bb11::t_fa19077d9dce62 243
+  s_eba9c1a165bb11::t_cdba0ffb54502d 48-57,62
+  s_eba9c1a165bb11::t_edbfa4a4a73010 313,315
+  s_eba9c1a165bb11::t_3e88e5e12e0346 69-70,72-77
+apps/hq/src/app/(panel)/closures/page.tsx
+  s_eba9c1a165bb11::t_436232f83eb97c 1-3,5-148,150,152-160,162-243
+  s_eba9c1a165bb11::t_5b13a48dc90e58 4
+  s_eba9c1a165bb11::t_e0e8c15d8d9e05 149,151,161
+apps/hq/src/app/(panel)/risk/_components/flag-controls.tsx
+  s_dcd75e2fc0aa0a::t_cf6a8177db421b 1-136
+apps/hq/src/app/(panel)/accounts/[id]/_components/buyers-table.tsx
+  s_eba9c1a165bb11::t_97cebead5294d1 5,13
+apps/hq/src/app/(panel)/marketing/campaigns/[id]/page.tsx
+  s_eba9c1a165bb11::t_b304e4e3ca1266 13,56-63,196-203,214-221
+  s_eba9c1a165bb11::t_8ceffe9b4a3da4 155-162,177-178
+packages/account/src/deletion/index.ts
+  s_eba9c1a165bb11::t_5f6419b5065b17 42-44,57,66-67,99-121,158-173,202-222,226,248,251,300,303,318
+  s_eba9c1a165bb11::t_7c6b3fe85352cf 71-85,98,188-194
+apps/hq/src/lib/platform/security/live.ts
+  s_eba9c1a165bb11::t_6fbed78c918826 96-105
+apps/web/src/app/admin/settings/security/page.tsx
+  s_eba9c1a165bb11::t_76492f785ba2e3 35
+apps/hq/src/app/(panel)/accounts/[id]/money/page.tsx
+  s_eba9c1a165bb11::t_319bd7ce3d80b7 17-30,127-139,149
+  s_eba9c1a165bb11::t_356062798680c5 1-16,31-126,140-146,148,150-294
+  s_eba9c1a165bb11::t_325391198ea61f 147
+packages/api/src/routers/account.ts
+  s_eba9c1a165bb11::t_750097265d4bfb 102-110,121-135
+apps/hq/src/lib/actions/shared.ts
+  s_eba9c1a165bb11::t_798cbac591e0cc 21,42-56,138-147
+packages/db/src/schema/closures.ts
+  s_eba9c1a165bb11::t_70bd32628f54be 11-216,224-225
+  s_eba9c1a165bb11::t_4a9742dd5f5b59 1-10,217-223
+apps/hq/src/app/(panel)/accounts/[id]/_components/account.types.ts
+  s_eba9c1a165bb11::t_af8e0f5fa0811c 1,4-14,16-21
+apps/hq/src/app/(panel)/accounts/_components/bulk-bar.tsx
+  s_eba9c1a165bb11::t_a4d27c7d68e88f 9-20,74-82,86,145-148
+  s_eba9c1a165bb11::t_20ca41d0af8363 220-225,227-235
+  s_eba9c1a165bb11::t_99c058cb4579c6 1-8,21-73,83-85,87-144,149-219,226,236-237
+packages/account/src/deletion/fingerprint.test.ts
+  s_eba9c1a165bb11::t_3f1afda1e4a660 1-63
+apps/hq/src/app/(panel)/accounts/[id]/_components/account-tabs.tsx
+  s_eba9c1a165bb11::t_629b3f0d8fc9c4 1-93
+apps/hq/src/lib/platform/closures.ts
+  s_eba9c1a165bb11::t_40bce536fbedb3 1-341
+packages/db/src/schema/staff.ts
+  s_eba9c1a165bb11::t_d4bc29619022e9 43-44,54-57
+apps/hq/src/app/(panel)/accounts/[id]/_components/affiliates-table.tsx
+  s_eba9c1a165bb11::t_97cebead5294d1 5,13
+apps/hq/src/app/api/export/[type]/route.ts
+  s_eba9c1a165bb11::t_6c0aa21548aec9 29-40,63
+apps/hq/src/app/(panel)/system/page.tsx
+  s_eba9c1a165bb11::t_076e82586ca2ad 38,56-67
+  s_eba9c1a165bb11::t_bddda657feaf03 27-37,51,216-226,229
+  s_eba9c1a165bb11::t_6fe50fedd9a77d 160-182,184-190
+apps/hq/src/lib/platform/accounts.ts
+  s_eba9c1a165bb11::t_95f6697a1ffa19 26,267,270-295,306-333,353-354,361-364,367-369,372,379,387-410,413-415,419-429
+  s_eba9c1a165bb11::t_375008697d3d80 345-352
+  s_eba9c1a165bb11::t_e09719ca7944af 430
+apps/hq/src/app/(panel)/support/page.tsx
+  s_eba9c1a165bb11::t_9db080499ba5df 113-120
+  s_eba9c1a165bb11::t_20ca41d0af8363 112,127-128
+apps/web/drizzle/0032_closures_and_risk.sql
+  s_eba9c1a165bb11::t_4a9742dd5f5b59 119-122
+  s_eba9c1a165bb11::t_b80861018b6015 1-118,123-194
+packages/security/src/staff.test.ts
+  s_eba9c1a165bb11::t_0e54865bf951c5 2-33,246-361
+apps/hq/src/app/_components/hq-sidebar.tsx
+  s_eba9c1a165bb11::t_3b7c8c989f120e 9-10,19,97-101,103,109-139
+  s_eba9c1a165bb11::t_18b2f0ecf570c1 140-141
+apps/hq/src/lib/actions/disputes.ts
+  s_eba9c1a165bb11::t_850d66c83bc19e 12-19,48,105,176,220
+apps/hq/src/app/(panel)/accounts/[id]/_components/account-security-actions.tsx
+  s_eba9c1a165bb11::t_ebe85149d85278 16-26,32,37,43,70,72
+packages/db/src/schema/index.ts
+  s_eba9c1a165bb11::t_9ff1f8cc7218df 25-26
+packages/account/src/deletion/closure.ts
+  s_eba9c1a165bb11::t_4a9742dd5f5b59 113-120
+  s_eba9c1a165bb11::t_7377f0f7728dc1 39-41
+  s_eba9c1a165bb11::t_981b5b36e45495 2
+  s_eba9c1a165bb11::t_393dec0e7b0232 283-284,286-290,292-298
+  s_eba9c1a165bb11::t_11f06476501c1b 1,3-38,42-112,121-282,285,291,299
+apps/hq/src/app/(panel)/risk/page.tsx
+  s_eba9c1a165bb11::t_94eb1a327e0596 126,130,139-149
+  s_eba9c1a165bb11::t_e8e9a68459051c 1-23,35,39,41-69,71-113,158-308
+  s_eba9c1a165bb11::t_9d387ebf9fcbe8 24-34,36-38,40,70,114-125,127-129,131-138,150-157
+apps/hq/src/app/(panel)/accounts/[id]/_components/orders-table.tsx
+  s_eba9c1a165bb11::t_97cebead5294d1 8,17
+apps/hq/src/lib/actions/partner-program.ts
+  s_eba9c1a165bb11::t_850d66c83bc19e 67,118,157,178,213,248,290
+  s_eba9c1a165bb11::t_abef23f19098b9 34-41
+apps/hq/src/lib/actions/bulk.ts
+  s_eba9c1a165bb11::t_5b13a48dc90e58 262-270,272
+  s_eba9c1a165bb11::t_84a084f6c8d28c 1-28,38-50,57-89,91-261,271,273-322
+  s_eba9c1a165bb11::t_09146428c2391b 29-37,51-56,90
+apps/hq/src/app/(panel)/page.tsx
+  s_eba9c1a165bb11::t_c3cbd70620f3a2 324,326,329
+packages/security/src/staff.ts
+  s_eba9c1a165bb11::t_b859ee314ac3b4 120,124-136,142-143,146,161-162,179-188,190,192-203,208-244,256-286,304-314
+  s_eba9c1a165bb11::t_71695b743a07b5 16-30
+  s_eba9c1a165bb11::t_5352007f1f6c78 315
+apps/hq/src/lib/bulk-operations.ts
+  s_eba9c1a165bb11::t_09146428c2391b 1-115
+apps/hq/src/app/(panel)/closures/[id]/page.tsx
+  s_eba9c1a165bb11::t_1276d7d13c4b0a 78-86,111
+  s_eba9c1a165bb11::t_ab3f19fef72e2a 1-77,87-110,112-310
+packages/account/src/deletion/obligations.ts
+  s_eba9c1a165bb11::t_c9ff75ee5c78b4 12,18-27,31,42-67,70-87,91-108,111-116
+  s_eba9c1a165bb11::t_d8db0ea5194aad 109
+  s_eba9c1a165bb11::t_07f459a4b3b232 110
+apps/hq/src/app/(panel)/payments/page.tsx
+  s_eba9c1a165bb11::t_325391198ea61f 274-281,292-296,298-304
+  s_eba9c1a165bb11::t_58ffaf39817f4c 1-10,17,37-231,267-273,282,284-291,297,305-326
+  s_eba9c1a165bb11::t_319bd7ce3d80b7 12-16,18-36,232-266,283
+  s_eba9c1a165bb11::t_fb4dbaa653aa8a 11
+apps/hq/src/app/(panel)/accounts/[id]/security/page.tsx
+  s_eba9c1a165bb11::t_9e61b2daba7d89 1-69
+packages/account/src/deletion/fingerprint.ts
+  s_eba9c1a165bb11::t_3f1afda1e4a660 1-69
+apps/hq/src/lib/actions/standing.ts
+  s_eba9c1a165bb11::t_4a22fd0e3fee44 9-15,36,89,145
+THREAT-MODEL.md
+  s_eba9c1a165bb11::t_ef030152bb913e 19,129,192,227
+  s_eba9c1a165bb11::t_bdb4f347e6dfa2 118-123,130-191,193-226,237-249
+packages/design-system/src/web/table.tsx
+  s_eba9c1a165bb11::t_0843df207aed54 49-70
+apps/hq/src/app/(panel)/accounts/[id]/_components/account-actions.tsx
+  s_eba9c1a165bb11::t_830a4a3a4e3613 31-45,63-69,72-75
+  s_eba9c1a165bb11::t_655b6d5cc65bbd 267-276
+apps/hq/src/app/(panel)/marketing/page.tsx
+  s_eba9c1a165bb11::t_03875c7cd0ceba 32-37,41-42,81,88-101
+  s_eba9c1a165bb11::t_5f68ab5ef49d78 31
+packages/design-system/src/web/evidence-files.tsx
+  s_eba9c1a165bb11::t_2faa47ef37a241 177-191,229
+apps/hq/package.json
+  s_eba9c1a165bb11::t_a819dbef6d770d 15
+apps/hq/src/app/(panel)/accounts/[id]/commerce/loading.tsx
+  s_eba9c1a165bb11::t_190b8a4ca191d7 1-13
+apps/hq/src/app/(panel)/accounts/[id]/loading.tsx
+  s_eba9c1a165bb11::t_b70b64a8632855 2-7
+apps/hq/src/app/(panel)/accounts/[id]/money/loading.tsx
+  s_eba9c1a165bb11::t_0e9cdfd9c576b7 1-13
+apps/hq/src/app/(panel)/accounts/[id]/risk/loading.tsx
+  s_eba9c1a165bb11::t_6a78975f3774d0 1-13
+apps/hq/src/app/(panel)/accounts/[id]/security/loading.tsx
+  s_eba9c1a165bb11::t_e0bc59ee677b73 1-13
+apps/hq/src/app/(panel)/closures/loading.tsx
+  s_eba9c1a165bb11::t_7b3ff082031644 1-9
+apps/hq/src/app/(panel)/payments/loading.tsx
+  s_eba9c1a165bb11::t_1b93be8be386bd 1-9
+apps/hq/src/app/(panel)/risk/loading.tsx
+  s_eba9c1a165bb11::t_864423b33eb6d6 1-9
+apps/hq/src/app/_components/hq-export.tsx
+  s_dcd75e2fc0aa0a::t_da04bc8d7e6549 2,19-34,36,43-44
+apps/web/src/lib/account-deletion.ts
+  s_eba9c1a165bb11::t_c5871d64b26f4b 18-20,27-35
+apps/web/src/lib/actions/account.ts
+  s_eba9c1a165bb11::t_aac3079488ba0c 65-86,90-91
+packages/account/package.json
+  s_eba9c1a165bb11::t_70859278c8726e 9-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "2ee4f60b0332f0ea46f600570bd012453f9cf011",
+  "prompts": {},
+  "sessions": {
+    "s_dcd75e2fc0aa0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4480cff-caac-46d0-a589-a5bbfd9e0fe9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_eba9c1a165bb11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b28a272c-33b3-43ef-a9af-b57739c1a6e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
