@@ -70,23 +70,33 @@ Every one is optional in the schema, so a missing value does not stop a boot. It
 degrades the feature instead, which is the point: get it wrong and the webhook
 refuses deliveries rather than the deployment refusing to start.
 
-**Measured on 2026-08-17, and this is step 1 for a reason:** `RESEND_WEBHOOK_SECRET`
-exists on the **sailo** project (production only) and does **not exist on sailo-api
-at all**, in any environment. A preview of this branch answers
-`POST /api/resend/webhook` with
+**Done on 2026-08-18.** `RESEND_WEBHOOK_SECRET` is now set on **sailo-api**, in
+Production and Preview, and the deployment was rebuilt to pick it up — an
+environment variable added to a project does not reach a deployment that already
+exists.
+
+Until it was, `POST /api/resend/webhook` on the API origin answered
 
 ```json
 {"error":"RESEND_WEBHOOK_SECRET is not set"}
 ```
 
-and a `500`. That is the handler failing closed exactly as designed — an absent
+with a `500`. That is the handler failing closed exactly as designed — an absent
 secret on an endpoint that writes reads as "no", never as "yes to everyone" — and
-500 is the right code for Resend to see, because Resend retries. But it means step 3
-must not happen before step 1: point the dashboard at the API origin today and every
-bounce and complaint retries forever against a handler that cannot verify anything.
+500 is the right code for Resend to see, because Resend retries. It is why step 3
+could not happen first: pointing the dashboard at the API origin then would have
+left every bounce and complaint retrying forever against a handler that could not
+verify anything.
 
-`scripts/check-deployment.sh` catches this. It is the only check that can: locally
-the secret comes from `.env.local`, so every test suite passes with it present.
+`scripts/check-deployment.sh` is what caught it, and it is the only check that
+could: locally the secret comes from `.env.local`, so every test suite passes
+with it present.
+
+**Still unset on sailo-api**, and none of them blocking: `RESEND_API_KEY`,
+`SAILO_MAIL_DOMAIN`, `SAILO_MKT_DOMAIN`, `SAILO_TX_DOMAIN`, `SAILO_STAFF_EMAILS`.
+The check below passes 19/19 without them because this handler suppresses
+addresses rather than sending anything. Set them before moving a route that
+actually mails.
 
 ### 2. Prove it on the API origin before switching anything
 
@@ -98,6 +108,21 @@ Nineteen cases over real HTTP, and each asserts *which* refusal it got rather th
 "not a 500" — an unsigned webhook must be a 400 and not a 500, a keyless read must be
 a 401 and not a 405. For a preview, pass the project's automation-bypass secret as a
 third argument; previews are behind SSO and answer 302 to everything without it.
+
+**Passing 19/19 as of 2026-08-18.** The webhook was additionally driven with real
+signatures rather than only unsigned ones, because "not a 500" is not the same
+claim as "the secret is the right one":
+
+| Sent | Answer |
+|---|---|
+| no `svix-*` headers | `400 {"error":"unsigned"}` |
+| signed with a different key | `400 {"error":"bad signature"}` |
+| valid signature, timestamp an hour old | `400 {"error":"stale"}` |
+| valid signature | `200 {"ok":true}` |
+| valid signature, `email.bounced`, unknown provider id | `200 {"ok":true}` — the lookup runs against all three tables and matches nothing |
+
+The last row is the one worth keeping: it proves the handler reaches the database
+from this origin, not merely that it parses a header.
 
 Then the authenticated reads, which need a real key:
 
@@ -118,6 +143,12 @@ Resend dashboard → Webhooks → change the endpoint to
 Send a test event and confirm it lands. Delivering to both at once would be
 harmless — the handler is idempotent per event id — so there is no rush and no
 window to coordinate.
+
+**No secret change is needed.** Both projects hold the same
+`RESEND_WEBHOOK_SECRET`: one valid signature was accepted by
+`api.sailo.store` and by `sailo.store` on 2026-08-18, which is the only way to
+compare two values neither project will show you. So the dashboard edit is the
+whole of step 3, and it can be reverted by editing it back.
 
 ### 4. Move the integrators, then delete the web copies
 
@@ -142,9 +173,10 @@ already pointed at them keeps working.
 
 **What is left** is the deletion. Give the integrators still on the web host a
 deprecation window, then delete `apps/web/src/app/api/{v1,mcp,resend}`. That is
-a code change; ask for it when the window has passed. Note that `resend` there
-is gated on step 1 — see the measurement below, which was still true on
-2026-08-18.
+a code change; ask for it when the window has passed. Deleting the `resend` copy
+additionally needs step 3 done first — the dashboard still points at the web
+origin, so removing that route before repointing it would drop every bounce and
+complaint.
 
 ## What is staying on `apps/web`, and why
 
