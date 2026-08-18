@@ -1,0 +1,49 @@
+apps/hq/src/app/_components/dispute-actions.tsx
+  s_eba9c1a165bb11::t_0101f3a3d89c66 147-151,155
+apps/hq/src/app/(panel)/accounts/[id]/_components/security-panel.tsx
+  s_45467c7e9ec319::t_1ca41dbe5e6c67 80-89,92,162,165
+apps/web/drizzle/0033_undelivered_paid_index.sql
+  s_dcd75e2fc0aa0a::t_aaca1853cb8d19 1-41
+apps/hq/src/app/(panel)/members/_components/member-controls.tsx
+  s_eba9c1a165bb11::t_0101f3a3d89c66 44-52,54,56,64,66,79-84
+packages/db/src/schema/orders.ts
+  s_dcd75e2fc0aa0a::t_aaca1853cb8d19 374-393
+apps/hq/next.config.ts
+  s_eba9c1a165bb11::t_8b0c9b89323312 53-74
+apps/hq/src/app/forbidden.tsx
+  s_eba9c1a165bb11::t_b0e66089982cfc 1-55
+apps/hq/src/lib/session.ts
+  s_eba9c1a165bb11::t_6424cbb3fcca7f 125-147
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "0919ced274d5c6224340898aa440787c478b37c3",
+  "prompts": {},
+  "sessions": {
+    "s_45467c7e9ec319": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5617138f-41d1-4ecb-ac9f-4a4e6ee99b17",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_dcd75e2fc0aa0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4480cff-caac-46d0-a589-a5bbfd9e0fe9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_eba9c1a165bb11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b28a272c-33b3-43ef-a9af-b57739c1a6e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
