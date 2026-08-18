@@ -1,0 +1,89 @@
+apps/web/src/components/docs/mcp-reference.tsx
+  s_813fd1e0505632::t_8324589f808d84 10-97,184
+  s_813fd1e0505632::t_672864368a5023 1-9,98-183
+apps/web/content/docs/api.mdx
+  s_813fd1e0505632::t_58f42df4e5ddb6 1-6,9-12,15-19,21-47,51-58,61-85,89-111
+  s_813fd1e0505632::t_4eaf7b035a7ae8 7,20
+  s_813fd1e0505632::t_a3ffb74911fcbd 8,13-14,48-50,59-60,86-88
+apps/web/src/components/docs/kit.tsx
+  s_813fd1e0505632::t_c13cbf59aed2e9 3-103,136
+  s_813fd1e0505632::t_33ed1aabf047dd 1-2,104-135
+apps/web/src/app/(docs)/docs/layout.tsx
+  s_813fd1e0505632::t_a58c9ae4952209 1-41
+apps/web/src/components/docs/webhook-reference.tsx
+  s_813fd1e0505632::t_2ffe0d0e7bbfbf 8-13,17-19,21-24,27-43,46-57,59,61-64
+  s_813fd1e0505632::t_5f473d44c4edc5 1,3-7,14-16,20,25-26,44-45,58,60,65-69,71-77
+  s_813fd1e0505632::t_62eff1213da70c 2,70
+apps/web/src/app/llms-full.txt/route.ts
+  s_813fd1e0505632::t_98d077e144bcb1 1-10,19-20,31-34
+  s_813fd1e0505632::t_086a492c596d7b 17-18
+  s_813fd1e0505632::t_b0823304652f77 11-16
+  s_813fd1e0505632::t_0e04e973b8599b 21-30
+apps/web/content/docs/webhooks.mdx
+  s_813fd1e0505632::t_77e0c49e05e516 10,95,106
+  s_813fd1e0505632::t_1656073690667d 1-9,11-51,58-94,96-105,107-128,130-134,137-169
+apps/web/src/app/llms.txt/route.ts
+  s_813fd1e0505632::t_4884f93e73c350 1-9,11-13,15-27
+  s_813fd1e0505632::t_086a492c596d7b 10,14
+  s_813fd1e0505632::t_a81f036d2ac57b 28
+apps/web/content/docs/index.mdx
+  s_813fd1e0505632::t_8fd9a851f63935 10,43
+  s_813fd1e0505632::t_2c8fea80b40f2f 1-9,11-42,44-73
+apps/web/src/components/docs/endpoint-reference.tsx
+  s_813fd1e0505632::t_978a9a969b1fb3 1,11-42,73-208
+  s_813fd1e0505632::t_4eaf7b035a7ae8 4,68-72
+  s_813fd1e0505632::t_a12445c38b37c8 2-3,5-10,43-67
+apps/web/src/app/(docs)/docs.css
+  s_813fd1e0505632::t_64634563e659fe 1-32
+apps/web/src/components/docs/payload-fields.ts
+  s_813fd1e0505632::t_cfa1a01b3fe654 1-98
+apps/web/src/components/docs/mdx-components.tsx
+  s_813fd1e0505632::t_a58c9ae4952209 1-23
+apps/web/content/docs/meta.json
+  s_813fd1e0505632::t_2ae602bf370276 1-5
+apps/web/src/lib/docs-markdown.ts
+  s_813fd1e0505632::t_19b11017eb3d51 1-71,77-253,271-281,283-302
+  s_813fd1e0505632::t_06344830f95673 254-265,267-270,282
+  s_813fd1e0505632::t_068fa3d9a4d4e0 72-76,266
+apps/web/src/app/api/search/route.ts
+  s_813fd1e0505632::t_4884f93e73c350 1-19
+apps/web/src/app/(docs)/layout.tsx
+  s_813fd1e0505632::t_253989388a43be 18-24,27-32
+  s_813fd1e0505632::t_64634563e659fe 1,3-17,25-26,33
+  s_813fd1e0505632::t_eacb9a0035970f 2
+apps/web/content/docs/mcp.mdx
+  s_813fd1e0505632::t_2228de4b303095 1-123
+docs/specs/README.md
+  s_0c00ec1c320439::t_afd3291e57f73d 248-288
+apps/web/src/lib/docs-source.ts
+  s_813fd1e0505632::t_f74b40e72d34b8 1,3-33
+  s_813fd1e0505632::t_80f53f3ecc77fb 2,34
+apps/web/src/app/(docs)/docs/[[...slug]]/page.tsx
+  s_813fd1e0505632::t_2ae602bf370276 1-75
+apps/web/src/lib/docs-markdown.test.ts
+  s_813fd1e0505632::t_342b263411e903 1-93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7f765fa5cead8f745855885041fbfcb0035bcd63",
+  "prompts": {},
+  "sessions": {
+    "s_0c00ec1c320439": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "83334e83-6860-4bd8-b910-b122ae459064",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_813fd1e0505632": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "355736f2-c737-401a-832c-734acb0be5e0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
