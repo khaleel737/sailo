@@ -77,6 +77,7 @@ export const el: Dictionary = {
     failedSafe: "Κάτι πήγε στραβά. Δεν χρεώθηκατε — δοκιμάστε ξανά.",
     failedUnsure: "Κάτι πήγε στραβά. Η παραγγελία σας μπορεί να καταχωρήθηκε — ελέγξτε το email σας πριν δοκιμάσετε ξανά.",
     taxIncluded: "Περιλαμβάνει {amount} {name} ({percent}%)",
+    taxAtCheckout: "Υπολογίζεται στο ταμείο",
     saveFailed: "Δεν ήταν δυνατή η αποθήκευση.",
     quantity: "Ποσότητα", increase: "Αύξηση ποσότητας", decrease: "Μείωση ποσότητας",
     howReceive: "Πώς θέλετε να το παραλάβετε;", howOrder: "Πώς θέλετε να παραγγείλετε;",
@@ -96,6 +97,10 @@ export const el: Dictionary = {
     manualNote: "Ο πωλητής λαμβάνει την παραγγελία και επιβεβαιώνει την πληρωμή.",
     orderSent: "Η παραγγελία στάλθηκε στο {shop}", paidBy: "Πληρωμή με {method}.",
     payWith: "Πληρωμή με {method}",
+    pasteNote:
+      "Το {method} δεν συμπληρώνει μήνυμα, οπότε αντιγράψτε την παραγγελία και επικολλήστε την στη συνομιλία.",
+    yourOrder: "Η παραγγελία σας",
+    openApp: "Άνοιγμα {method}",
     bankInstructions: "Μεταφέρετε το σύνολο με τα παρακάτω στοιχεία και δώστε την αιτιολογία.",
     bankDetails: "Τραπεζικά στοιχεία", copy: "Αντιγραφή", copied: "Αντιγράφηκε",
     transferReference: "Αιτιολογία εμβάσματος", sentPayment: "Έστειλα την πληρωμή",
@@ -276,6 +281,10 @@ export const el: Dictionary = {
     delivery: "Παράδοση", pickup: "Παραλαβή", reference: "Αρ. αναφ.", note: "Σημείωση",
     paid: "Εξοφλημένο", unpaid: "Ανεξόφλητο", refunded: "Επιστράφηκε", paymentSent: "Πληρωμή στάλθηκε",
     downloadPdf: "Λήψη PDF", print: "Εκτύπωση ή αποθήκευση PDF", taxId: "ΑΦΜ",
+    registrationNumber: "Αρ. μητρώου",
+    tradingAs: "Με διακριτικό τίτλο {name}",
+    reverseCharge: "Αντίστροφη χρέωση — ο ΦΠΑ αποδίδεται από τον λήπτη.",
+    customerTaxId: "ΑΦΜ πελάτη",
   },
   auth: {
     welcomeBack: "Καλώς ήρθατε ξανά", signInSubtitle: "Συνδεθείτε για να διαχειριστείτε το κατάστημά σας.",
@@ -456,5 +465,6 @@ export const el: Dictionary = {
     manage: "Διαχείριση ή ακύρωση",
     manualRenew: "Ώρα για ανανέωση — η πρόσβασή σας ισχύει έως {date}. Πληρώστε το κατάστημα και θα το επιβεβαιώσει.",
     manualPending: "Κανονίζετε την πληρωμή απευθείας με το κατάστημα — δεν υπάρχει αποθηκευμένη κάρτα.",
+    pass: "Η κάρτα μέλους σας",
   },
 };

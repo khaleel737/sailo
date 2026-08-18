@@ -16,10 +16,10 @@ export const marketingRo: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratuit la început, gratuit în continuare",
-    title: "Nu mai rescrie comenzile din {highlight}.",
-    titleHighlight: "mesaje",
-    body: "Deja primești comenzi în mesaje. Sailo transformă asta într-un magazin adevărat — poze, prețuri, opțiuni și stoc în spatele unui link, fără să construiești un site. Comenzile ajung tot în aceeași conversație, dar deja scrise.",
+    badge: "Magazinul într-un singur link",
+    title: "Linkul tău din bio, dar {highlight}.",
+    titleHighlight: "preia comenzile",
+    body: "Un link în bio-ul tău, iar în spatele lui tot ce vinzi — poze, prețuri, opțiuni, stoc. Oamenii răsfoiesc și cumpără fără să fie trimiși în altă parte, iar fiecare comandă ajunge deja scrisă, în conversația în care oricum răspunzi. Niciun site de construit și niciun comision în afară de card.",
     ctaPrimary: "Creează-ți magazinul — gratuit",
     ctaSecondary: "Deschide un magazin real",
     proof1: "Online în mai puțin de un minut",
@@ -185,6 +185,7 @@ export const marketingRo: MarketingDictionary = {
   footer: {
     tagline: "Un link, tot magazinul tău.",
     product: "Produs",
+    docs: "Dezvoltatori",
     liveShops: "Magazine reale",
     rights: "Toate drepturile rezervate.",
     legal: "Informații legale",
@@ -196,10 +197,10 @@ export const marketingRo: MarketingDictionary = {
   },
 
   seo: {
-    title: "Preia comenzi online fără site — Sailo",
+    title: "Magazin pe linkul din bio — vinde fără site | Sailo",
     description:
-      "Transformă Instagramul într-un magazin adevărat: poze, prețuri, opțiuni, stoc. Comenzile ajung scrise. Fără comision pe WhatsApp, transfer bancar sau numerar.",
-    ogTitle: "Nu mai rescrie comenzile din mesaje",
+      "Un link, iar în spatele lui un magazin adevărat: poze, prețuri, opțiuni, stoc și plată. Comenzile ajung deja scrise. Gratuit, fără comision în afară de card.",
+    ogTitle: "Linkul tău din bio, dar preia comenzile",
     ogDescription:
       "Un magazin adevărat în spatele unui singur link — poze, prețuri, stoc și plată. Comenzile ajung gata, iar nimeni nu ia un procent din clienții găsiți de tine.",
   },

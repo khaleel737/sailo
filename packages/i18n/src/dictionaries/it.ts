@@ -78,6 +78,7 @@ export const it: Dictionary = {
     failedSafe: "Qualcosa è andato storto. Non ti è stato addebitato nulla — riprova.",
     failedUnsure: "Qualcosa è andato storto. Il tuo ordine potrebbe essere stato registrato — controlla l'e-mail prima di riprovare.",
     taxIncluded: "Include {amount} di {name} ({percent}%)",
+    taxAtCheckout: "Calcolata al pagamento",
     saveFailed: "Non è stato possibile salvare.",
     quantity: "Quantità", increase: "Aumenta quantità", decrease: "Riduci quantità",
     howReceive: "Come vuoi riceverlo?", howOrder: "Come vuoi ordinare?",
@@ -97,6 +98,10 @@ export const it: Dictionary = {
     manualNote: "Il venditore riceve l'ordine e conferma il pagamento.",
     orderSent: "Ordine inviato a {shop}", paidBy: "Pagamento con {method}.",
     payWith: "Paga con {method}",
+    pasteNote:
+      "{method} non può precompilare il messaggio: copia il tuo ordine e incollalo in chat.",
+    yourOrder: "Il tuo ordine",
+    openApp: "Apri {method}",
     bankInstructions: "Bonifica il totale con i dati qui sotto, poi indica la causale.",
     bankDetails: "Dati bancari", copy: "Copia", copied: "Copiato",
     transferReference: "Causale del bonifico", sentPayment: "Ho effettuato il pagamento",
@@ -278,6 +283,10 @@ export const it: Dictionary = {
     reference: "Rif.", note: "Nota", paid: "Pagata", unpaid: "Da pagare",
     refunded: "Rimborsata", paymentSent: "Pagamento inviato",
     downloadPdf: "Scarica PDF", print: "Stampa o salva in PDF", taxId: "P. IVA",
+    registrationNumber: "N. REA",
+    tradingAs: "Operante come {name}",
+    reverseCharge: "Inversione contabile — IVA assolta dal destinatario.",
+    customerTaxId: "P. IVA del cliente",
   },
   auth: {
     welcomeBack: "Bentornato", signInSubtitle: "Accedi per gestire il tuo negozio.",
@@ -460,5 +469,6 @@ export const it: Dictionary = {
     manage: "Gestisci o annulla",
     manualRenew: "È ora di rinnovare — il tuo accesso arriva al {date}. Paga il negozio e te lo confermerà.",
     manualPending: "Il pagamento lo concordi direttamente con il negozio: nessuna carta è registrata.",
+    pass: "La tua tessera socio",
   },
 };

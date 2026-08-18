@@ -72,7 +72,8 @@ export const fil: Dictionary = {
   checkout: {
     failedSafe: "May nangyaring mali. Hindi ka siningil — subukan muli.",
     failedUnsure: "May nangyaring mali. Maaaring natanggap ang order mo — tingnan ang email mo bago subukang muli.",
-    taxIncluded: "Kasama ang {amount} {name} ({percent}%)", quantity: "Dami",
+    taxIncluded: "Kasama ang {amount} {name} ({percent}%)",
+    taxAtCheckout: "Kakalkulahin sa checkout", quantity: "Dami",
     increase: "Dagdagan ang dami", decrease: "Bawasan ang dami",
     howReceive: "Paano mo gustong matanggap ito?", howOrder: "Paano mo gustong mag-order?",
     yourName: "Pangalan mo", email: "Email", phone: "Telepono",
@@ -92,6 +93,10 @@ export const fil: Dictionary = {
     manualNote: "Matatanggap ng nagbebenta ang order mo at kokumpirmahin ang bayad.",
     orderSent: "Naipadala ang order sa {shop}", paidBy: "Binayaran gamit ang {method}.",
     payWith: "Magbayad gamit ang {method}",
+    pasteNote:
+      "Hindi kayang punan ng {method} ang mensahe, kaya kopyahin ang order mo at i-paste sa chat.",
+    yourOrder: "Ang order mo",
+    openApp: "Buksan ang {method}",
     bankInstructions: "I-transfer ang kabuuan gamit ang detalye sa ibaba, tapos ilagay ang reference mo.",
     bankDetails: "Detalye ng bangko", copy: "Kopyahin", copied: "Nakopya",
     transferReference: "Reference ng transfer", sentPayment: "Naipadala ko na ang bayad",
@@ -237,6 +242,10 @@ export const fil: Dictionary = {
     note: "Tala", paid: "Bayad na", unpaid: "Hindi pa bayad", refunded: "Na-refund",
     paymentSent: "Naipadala ang bayad", downloadPdf: "I-download ang PDF", print: "I-print o i-save bilang PDF",
     taxId: "TIN",
+    registrationNumber: "Reg. no",
+    tradingAs: "Nangangalakal bilang {name}",
+    reverseCharge: "Reverse charge — ang tatanggap ang mag-uulat ng VAT.",
+    customerTaxId: "Tax ID ng customer",
   },
   auth: {
     welcomeBack: "Maligayang pagbabalik", signInSubtitle: "Mag-sign in para pamahalaan ang tindahan mo.",
@@ -401,5 +410,6 @@ export const fil: Dictionary = {
     manage: "Pamahalaan o kanselahin",
     manualRenew: "Oras na para mag-renew — hanggang {date} ang access mo. Magbayad sa tindahan at kokumpirmahin nila.",
     manualPending: "Direktang sa tindahan mo aayusin ang bayad — walang naka-save na card.",
+    pass: "Ang iyong member pass",
   },
 };

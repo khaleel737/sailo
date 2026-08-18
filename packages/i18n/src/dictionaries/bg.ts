@@ -72,7 +72,8 @@ export const bg: Dictionary = {
   checkout: {
     failedSafe: "Нещо се обърка. Не ви е удръжана сума — опитайте отново.",
     failedUnsure: "Нещо се обърка. Поръчката ви може би е приета — проверете имейла си, преди да опитате пак.",
-    taxIncluded: "Включва {amount} {name} ({percent}%)", quantity: "Количество",
+    taxIncluded: "Включва {amount} {name} ({percent}%)",
+    taxAtCheckout: "Изчислява се при плащане", quantity: "Количество",
     increase: "Увеличи количеството", decrease: "Намали количеството",
     howReceive: "Как искате да я получите?", howOrder: "Как искате да поръчате?",
     yourName: "Вашето име", email: "Имейл", phone: "Телефон",
@@ -92,6 +93,10 @@ export const bg: Dictionary = {
     manualNote: "Продавачът получава поръчката ви и потвърждава плащането.",
     orderSent: "Поръчката е изпратена до {shop}", paidBy: "Платено чрез {method}.",
     payWith: "Плащане с {method}",
+    pasteNote:
+      "{method} не може да попълни съобщението, затова копирайте поръчката и я поставете в чата.",
+    yourOrder: "Вашата поръчка",
+    openApp: "Отваряне на {method}",
     bankInstructions: "Преведете общата сума по данните по-долу, след което добавете вашето основание.",
     bankDetails: "Банкови данни", copy: "Копирай", copied: "Копирано",
     transferReference: "Основание за превод", sentPayment: "Изпратих плащането",
@@ -237,6 +242,10 @@ export const bg: Dictionary = {
     note: "Бележка", paid: "Платено", unpaid: "Неплатено", refunded: "Възстановено",
     paymentSent: "Плащането е изпратено", downloadPdf: "Изтегли PDF", print: "Отпечатай или запази PDF",
     taxId: "ЕИК / ДДС номер",
+    registrationNumber: "Рег. №",
+    tradingAs: "Търгува като {name}",
+    reverseCharge: "Обратно начисляване — ДДС се начислява от получателя.",
+    customerTaxId: "Данъчен номер на клиента",
   },
   auth: {
     welcomeBack: "Добре дошли отново", signInSubtitle: "Влезте, за да управлявате магазина си.",
@@ -402,5 +411,6 @@ export const bg: Dictionary = {
     manage: "Управление или отказ",
     manualRenew: "Време е за подновяване — достъпът ви е до {date}. Платете на магазина и той ще потвърди.",
     manualPending: "Плащането се уговаря директно с магазина — няма запазена карта.",
+    pass: "Вашата членска карта",
   },
 };

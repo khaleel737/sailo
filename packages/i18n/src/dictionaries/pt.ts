@@ -76,6 +76,7 @@ export const pt: Dictionary = {
     failedSafe: "Algo correu mal. Não foi cobrado — tente novamente.",
     failedUnsure: "Algo correu mal. O seu pedido pode ter sido registado — verifique o seu e-mail antes de tentar novamente.",
     taxIncluded: "Inclui {amount} de {name} ({percent}%)",
+    taxAtCheckout: "Calculado no pagamento",
     saveFailed: "Não foi possível guardar.",
     quantity: "Quantidade", increase: "Aumentar quantidade", decrease: "Reduzir quantidade",
     howReceive: "Como quer receber?", howOrder: "Como quer encomendar?",
@@ -95,6 +96,10 @@ export const pt: Dictionary = {
     manualNote: "O vendedor recebe a encomenda e confirma o pagamento.",
     orderSent: "Encomenda enviada para {shop}", paidBy: "Pagamento por {method}.",
     payWith: "Pagar com {method}",
+    pasteNote:
+      "O {method} não preenche a mensagem, por isso copie a encomenda e cole-a na conversa.",
+    yourOrder: "A sua encomenda",
+    openApp: "Abrir {method}",
     bankInstructions: "Transfira o total com os dados abaixo e indique a referência.",
     bankDetails: "Dados bancários", copy: "Copiar", copied: "Copiado",
     transferReference: "Referência da transferência", sentPayment: "Já efetuei o pagamento",
@@ -276,6 +281,10 @@ export const pt: Dictionary = {
     reference: "Ref.", note: "Nota", paid: "Paga", unpaid: "Por pagar",
     refunded: "Reembolsada", paymentSent: "Pagamento enviado",
     downloadPdf: "Descarregar PDF", print: "Imprimir ou guardar em PDF", taxId: "NIF",
+    registrationNumber: "N.º de registo",
+    tradingAs: "A operar como {name}",
+    reverseCharge: "Autoliquidação — o IVA é liquidado pelo destinatário.",
+    customerTaxId: "NIF do cliente",
   },
   auth: {
     welcomeBack: "Bem-vindo de volta", signInSubtitle: "Inicie sessão para gerir a sua loja.",
@@ -458,5 +467,6 @@ export const pt: Dictionary = {
     manage: "Gerir ou cancelar",
     manualRenew: "Hora de renovar — o teu acesso vai até {date}. Paga à loja e ela confirma.",
     manualPending: "O pagamento é combinado diretamente com a loja — não há cartão guardado.",
+    pass: "O seu passe de membro",
   },
 };

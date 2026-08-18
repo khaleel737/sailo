@@ -16,10 +16,10 @@ export const marketingVi: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Miễn phí để bắt đầu, miễn phí để tiếp tục",
-    title: "Đừng gõ lại đơn hàng từ {highlight} nữa.",
-    titleHighlight: "tin nhắn",
-    body: "Bạn vốn đã nhận đơn qua tin nhắn. Sailo biến việc đó thành một cửa hàng thật — ảnh, giá, tùy chọn và tồn kho sau một đường link, không cần dựng website. Đơn hàng vẫn về đúng khung chat đó, chỉ khác là đã được ghi sẵn.",
+    badge: "Cửa hàng trong một link",
+    title: "Link trong bio của bạn, nhưng nó {highlight}.",
+    titleHighlight: "nhận luôn đơn hàng",
+    body: "Một link trong bio, và phía sau là mọi thứ bạn bán — ảnh, giá, tùy chọn, tồn kho. Khách xem và mua ngay mà không bị đưa đi đâu khác, còn mỗi đơn hàng đến nơi đã được ghi sẵn, ngay trong đoạn chat bạn vẫn đang trả lời. Không có website nào phải dựng, và không có hoa hồng ngoài thẻ.",
     ctaPrimary: "Tạo cửa hàng — miễn phí",
     ctaSecondary: "Mở một cửa hàng thật",
     proof1: "Hoạt động trong chưa đầy một phút",
@@ -185,6 +185,7 @@ export const marketingVi: MarketingDictionary = {
   footer: {
     tagline: "Một liên kết, cả cửa hàng của bạn.",
     product: "Sản phẩm",
+    docs: "Nhà phát triển",
     liveShops: "Cửa hàng thật",
     rights: "Bảo lưu mọi quyền.",
     legal: "Pháp lý",
@@ -196,10 +197,10 @@ export const marketingVi: MarketingDictionary = {
   },
 
   seo: {
-    title: "Nhận đơn hàng online mà không cần website — Sailo",
+    title: "Cửa hàng từ link trong bio — bán mà không cần website | Sailo",
     description:
-      "Biến Instagram thành cửa hàng thật: ảnh, giá, tùy chọn, tồn kho. Đơn hàng đến đã ghi sẵn. Không hoa hồng với WhatsApp, chuyển khoản hay tiền mặt.",
-    ogTitle: "Đừng gõ lại đơn hàng từ tin nhắn nữa",
+      "Một link, phía sau là cửa hàng thật: ảnh, giá, tùy chọn, tồn kho và thanh toán. Đơn hàng đến nơi đã ghi sẵn. Miễn phí, không hoa hồng ngoài thẻ.",
+    ogTitle: "Link trong bio của bạn, nhưng nó nhận luôn đơn hàng",
     ogDescription:
       "Một cửa hàng thật sau một đường link — ảnh, giá, tồn kho và thanh toán. Đơn hàng đến đã sẵn sàng, và không ai lấy phần trăm từ khách bạn tự tìm được.",
   },

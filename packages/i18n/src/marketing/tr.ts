@@ -16,10 +16,10 @@ export const marketingTr: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Başlaması ücretsiz, kalması ücretsiz",
-    title: "Siparişleri {highlight} yeniden yazmayı bırakın.",
-    titleHighlight: "DM'den",
-    body: "Siparişleri zaten mesajlardan alıyorsunuz. Sailo bunu gerçek bir dükkâna çevirir — fotoğraf, fiyat, seçenek ve stok tek bir bağlantının ardında, site kurmadan. Siparişler yine aynı sohbete düşer, sadece yazılmış olarak.",
+    badge: "Tek linklik dükkân",
+    title: "Biyografindeki link, ama {highlight}.",
+    titleHighlight: "siparişleri alıyor",
+    body: "Biyografinde tek bir link, arkasında sattığın her şey — fotoğraflar, fiyatlar, seçenekler, stok. İnsanlar başka bir yere gönderilmeden bakıp satın alıyor, her sipariş de zaten cevapladığın sohbete yazılmış halde düşüyor. Kurulacak site yok, kart dışında komisyon da yok.",
     ctaPrimary: "Dükkânını aç — ücretsiz",
     ctaSecondary: "Gerçek bir dükkân aç",
     proof1: "Bir dakikadan kısa sürede yayında",
@@ -185,6 +185,7 @@ export const marketingTr: MarketingDictionary = {
   footer: {
     tagline: "Tek bağlantı, bütün dükkânın.",
     product: "Ürün",
+    docs: "Geliştiriciler",
     liveShops: "Gerçek dükkânlar",
     rights: "Tüm hakları saklıdır.",
     legal: "Yasal",
@@ -196,10 +197,10 @@ export const marketingTr: MarketingDictionary = {
   },
 
   seo: {
-    title: "Web sitesi olmadan online sipariş alın — Sailo",
+    title: "Biyografi linkinde dükkân — sitesiz satış yap | Sailo",
     description:
-      "Instagram'ınızı gerçek bir dükkâna çevirin: fotoğraflar, fiyatlar, seçenekler, stok. Siparişler yazılmış olarak gelir. WhatsApp, havale ve nakitte komisyon yok.",
-    ogTitle: "Siparişleri DM'den yeniden yazmayı bırakın",
+      "Tek link, arkasında gerçek bir dükkân: fotoğraflar, fiyatlar, seçenekler, stok ve ödeme. Siparişler yazılmış halde geliyor. Ücretsiz, kart dışında komisyon yok.",
+    ogTitle: "Biyografindeki link, ama siparişleri alıyor",
     ogDescription:
       "Tek bir bağlantının ardında gerçek bir dükkân — fotoğraf, fiyat, stok ve ödeme. Siparişler hazır gelir ve kendi bulduğunuz müşterilerden kimse pay almaz.",
   },

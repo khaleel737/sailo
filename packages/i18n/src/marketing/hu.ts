@@ -16,10 +16,10 @@ export const marketingHu: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Ingyen kezdhetsz, ingyen maradhatsz",
-    title: "Ne másolgassa többé a rendeléseket az {highlight}.",
-    titleHighlight: "üzenetekből",
-    body: "A rendeléseket már most üzenetben veszi fel. A Sailo ebből igazi boltot csinál — fotók, árak, változatok és készlet egyetlen link mögött, weboldal építése nélkül. A rendelés ugyanabba a beszélgetésbe érkezik, csak már kiírva.",
+    badge: "A bolt egyetlen linken",
+    title: "A linked a bióban, csak épp {highlight}.",
+    titleHighlight: "felveszi a rendeléseket",
+    body: "Egy link a biódban, és mögötte minden, amit árulsz — fotók, árak, változatok, készlet. Az emberek nézelődnek és vásárolnak anélkül, hogy máshová küldenéd őket, és minden rendelés készen megírva érkezik, abba a chatbe, ahol amúgy is válaszolsz. Nincs weboldal, amit fel kellene építeni, és nincs jutalék a kártyán kívül.",
     ctaPrimary: "Boltot indítok — ingyen",
     ctaSecondary: "Nyiss meg egy élő boltot",
     proof1: "Egy percen belül él",
@@ -185,6 +185,7 @@ export const marketingHu: MarketingDictionary = {
   footer: {
     tagline: "Egy link, az egész boltod.",
     product: "Termék",
+    docs: "Fejlesztők",
     liveShops: "Élő boltok",
     rights: "Minden jog fenntartva.",
     legal: "Jogi tudnivalók",
@@ -196,10 +197,10 @@ export const marketingHu: MarketingDictionary = {
   },
 
   seo: {
-    title: "Fogadjon rendeléseket weboldal nélkül — Sailo",
+    title: "Bolt a bió linkjén — árulj weboldal nélkül | Sailo",
     description:
-      "Alakítsa az Instagramot igazi bolttá: fotók, árak, változatok, készlet. A rendelés kiírva érkezik. Nincs jutalék WhatsAppon, utaláson vagy készpénzen.",
-    ogTitle: "Ne másolgassa többé a rendeléseket az üzenetekből",
+      "Egy link, mögötte igazi bolt: fotók, árak, változatok, készlet és fizetés. A rendelések készen megírva érkeznek. Ingyenes, és a kártyán kívül nincs jutalék.",
+    ogTitle: "A linked a bióban, csak épp felveszi a rendeléseket",
     ogDescription:
       "Igazi bolt egyetlen link mögött — fotók, árak, készlet és fizetés. A rendelések készen érkeznek, és senki nem kér részesedést az Ön által szerzett vevőkből.",
   },

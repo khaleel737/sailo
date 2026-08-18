@@ -16,10 +16,10 @@ export const marketingJa: MarketingDictionary = {
   },
 
   hero: {
-    badge: "無料で始めて、ずっと無料",
-    title: "{highlight}で注文を打ち直すのは、もう終わり。",
-    titleHighlight: "DM",
-    body: "すでにメッセージで注文を受けているはずです。Sailoはそれを本物のショップに変えます。写真、価格、オプション、在庫がひとつのリンクの向こうに。サイトを作る必要はありません。注文は同じチャットに、書き上がった状態で届きます。",
+    badge: "リンク1本のショップ",
+    title: "プロフィールのリンクが、{highlight}。",
+    titleHighlight: "注文まで受けます",
+    body: "プロフィールのリンク1本の向こうに、売っているものがすべて並びます。写真、価格、オプション、在庫まで。お客さまはどこにも飛ばされずに見て買えて、注文はいつも返信しているチャットに、書き出された状態で届きます。サイトを作る必要はなく、カード以外に手数料もかかりません。",
     ctaPrimary: "ショップを作る — 無料",
     ctaSecondary: "実際のショップを見る",
     proof1: "1分かからず公開",
@@ -185,6 +185,7 @@ export const marketingJa: MarketingDictionary = {
   footer: {
     tagline: "リンク一本に、ショップまるごと。",
     product: "プロダクト",
+    docs: "開発者向け",
     liveShops: "実際のショップ",
     rights: "All rights reserved.",
     legal: "法的事項",
@@ -196,10 +197,10 @@ export const marketingJa: MarketingDictionary = {
   },
 
   seo: {
-    title: "サイトなしで注文を受ける — Sailo",
+    title: "プロフィールのリンクがショップに — サイトなしで売る | Sailo",
     description:
-      "Instagramを本物のショップに。写真・価格・オプション・在庫まで。注文は書き出された状態で届き、WhatsApp・銀行振込・現金には手数料がかかりません。",
-    ogTitle: "DMで注文を打ち直すのは、もう終わり",
+      "リンク1本の向こうに本物のショップ。写真・価格・オプション・在庫・決済まで。注文は書き出された状態で届きます。無料、カード以外は手数料なし。",
+    ogTitle: "プロフィールのリンクが、注文まで受けます",
     ogDescription:
       "ひとつのリンクの向こうに本物のショップを。写真、価格、在庫、そして決済。注文は書き上がった状態で届き、自分で見つけたお客様から誰も手数料を取りません。",
   },

@@ -3,6 +3,7 @@ import { LOCALES, DEFAULT_LOCALE, isLocale, type Locale } from "./config";
 import { getDictionary } from "./index";
 import { getAdminDictionary } from "./admin/index";
 import { getMarketingDictionary } from "./marketing/index";
+import { getBlogDictionary } from "./marketing/blog";
 
 /**
  * What thirty-five dictionaries have to agree about.
@@ -49,6 +50,13 @@ const SETS = [
   { name: "storefront", get: (l: Locale) => getDictionary(l) },
   { name: "admin", get: (l: Locale) => getAdminDictionary(l) },
   { name: "marketing", get: (l: Locale) => getMarketingDictionary(l) },
+  /*
+   * The blog's chrome, which lives in one file rather than thirty-five and is
+   * therefore the set most likely to gain a key that only English answers.
+   * `Record<Locale, …>` stops a missing *language*; only this catches a locale
+   * whose new string was pasted in English and never translated.
+   */
+  { name: "blog", get: (l: Locale) => getBlogDictionary(l) },
 ] as const;
 
 describe("the locale list", () => {

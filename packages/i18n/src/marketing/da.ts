@@ -16,10 +16,10 @@ export const marketingDa: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis at starte, gratis at fortsætte",
-    title: "Stop med at skrive ordrer af fra dine {highlight}.",
-    titleHighlight: "beskeder",
-    body: "Du tager allerede imod ordrer i dine beskeder. Sailo gør det til en rigtig butik — billeder, priser, varianter og lager bag ét link, uden at bygge en hjemmeside. Ordrer lander stadig i den samme chat, bare færdigskrevne.",
+    badge: "Butikken på ét link",
+    title: "Dit link i bio, men det {highlight}.",
+    titleHighlight: "tager imod ordrerne",
+    body: "Ét link i din bio, og alt hvad du sælger ligger bag det — billeder, priser, varianter, lager. Folk kigger og køber uden at blive sendt videre, og hver ordre lander færdigskrevet i den chat, du alligevel svarer i. Ingen hjemmeside at bygge, og ingen kommission undtagen på kort.",
     ctaPrimary: "Opret din butik — gratis",
     ctaSecondary: "Åbn en rigtig butik",
     proof1: "Oppe på under et minut",
@@ -185,6 +185,7 @@ export const marketingDa: MarketingDictionary = {
   footer: {
     tagline: "Ét link, hele din butik.",
     product: "Produkt",
+    docs: "Udviklere",
     liveShops: "Rigtige butikker",
     rights: "Alle rettigheder forbeholdes.",
     legal: "Juridisk",
@@ -196,10 +197,10 @@ export const marketingDa: MarketingDictionary = {
   },
 
   seo: {
-    title: "Tag imod ordrer online uden hjemmeside — Sailo",
+    title: "Butik på linket i bio — sælg uden hjemmeside | Sailo",
     description:
-      "Gør din Instagram til en rigtig butik: billeder, priser, varianter, lager. Ordrer kommer skrevet ud. Ingen kommission på WhatsApp, bankoverførsel eller kontant.",
-    ogTitle: "Stop med at skrive ordrer af fra dine beskeder",
+      "Ét link, og en rigtig butik bag det: billeder, priser, varianter, lager og betaling. Ordrer kommer færdigskrevet. Gratis, uden kommission undtagen på kort.",
+    ogTitle: "Dit link i bio, men det tager imod ordrerne",
     ogDescription:
       "En rigtig butik bag ét link — billeder, priser, lager og kasse. Ordrer kommer færdigskrevne, og ingen tager en del af de kunder, du selv har fundet.",
   },

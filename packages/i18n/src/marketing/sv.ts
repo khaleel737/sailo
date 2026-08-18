@@ -16,10 +16,10 @@ export const marketingSv: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis att börja, gratis att fortsätta",
-    title: "Sluta skriva av beställningar från dina {highlight}.",
-    titleHighlight: "DM",
-    body: "Du tar redan emot beställningar i meddelanden. Sailo gör det till en riktig butik — bilder, priser, varianter och lager bakom en länk, utan att bygga en webbplats. Beställningarna hamnar fortfarande i samma chatt, fast färdigskrivna.",
+    badge: "Butiken på en länk",
+    title: "Din länk i bion, fast den {highlight}.",
+    titleHighlight: "tar emot beställningarna",
+    body: "En länk i din bio, och bakom den allt du säljer — bilder, priser, varianter, lager. Folk tittar och köper utan att skickas vidare, och varje beställning kommer färdigskriven i chatten du ändå svarar i. Ingen webbplats att bygga, och ingen provision utom på kort.",
     ctaPrimary: "Skapa din butik — gratis",
     ctaSecondary: "Öppna en riktig butik",
     proof1: "Uppe på under en minut",
@@ -185,6 +185,7 @@ export const marketingSv: MarketingDictionary = {
   footer: {
     tagline: "En länk, hela din butik.",
     product: "Produkt",
+    docs: "Utvecklare",
     liveShops: "Riktiga butiker",
     rights: "Alla rättigheter förbehållna.",
     legal: "Juridik",
@@ -196,10 +197,10 @@ export const marketingSv: MarketingDictionary = {
   },
 
   seo: {
-    title: "Ta emot beställningar utan webbplats — Sailo",
+    title: "Butik på länken i bion — sälj utan webbplats | Sailo",
     description:
-      "Gör din Instagram till en riktig butik: bilder, priser, varianter, lager. Beställningar kommer färdigskrivna. Ingen provision på WhatsApp, banköverföring eller kontant.",
-    ogTitle: "Sluta skriva av beställningar från dina DM",
+      "En länk, och bakom den en riktig butik: bilder, priser, varianter, lager och betalning. Beställningar kommer färdigskrivna. Gratis, utan provision utom på kort.",
+    ogTitle: "Din länk i bion, fast den tar emot beställningarna",
     ogDescription:
       "En riktig butik bakom en länk — bilder, priser, lager och kassa. Beställningar kommer färdiga, och ingen tar en andel av kunder du hittat själv.",
   },

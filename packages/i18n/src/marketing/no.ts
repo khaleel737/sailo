@@ -16,10 +16,10 @@ export const marketingNo: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis å starte, gratis å fortsette",
-    title: "Slutt å skrive av bestillinger fra {highlight}.",
-    titleHighlight: "meldingene",
-    body: "Du tar allerede imot bestillinger i meldinger. Sailo gjør det om til en ekte butikk — bilder, priser, varianter og lager bak én lenke, uten å bygge nettside. Bestillingene havner fortsatt i samme chat, bare ferdig skrevet.",
+    badge: "Butikken på én lenke",
+    title: "Lenken din i bio, men den {highlight}.",
+    titleHighlight: "tar imot bestillingene",
+    body: "Én lenke i bioen din, og bak den ligger alt du selger — bilder, priser, varianter, lager. Folk ser seg om og kjøper uten å bli sendt videre, og hver bestilling kommer ferdig skrevet i chatten du uansett svarer i. Ingen nettside å bygge, og ingen provisjon utenom kort.",
     ctaPrimary: "Lag butikken din — gratis",
     ctaSecondary: "Åpne en ekte butikk",
     proof1: "Oppe på under ett minutt",
@@ -185,6 +185,7 @@ export const marketingNo: MarketingDictionary = {
   footer: {
     tagline: "Én lenke, hele butikken din.",
     product: "Produkt",
+    docs: "Utviklere",
     liveShops: "Ekte butikker",
     rights: "Alle rettigheter reservert.",
     legal: "Juridisk",
@@ -196,10 +197,10 @@ export const marketingNo: MarketingDictionary = {
   },
 
   seo: {
-    title: "Ta imot bestillinger uten nettside — Sailo",
+    title: "Butikk på lenken i bio — selg uten nettside | Sailo",
     description:
-      "Gjør Instagram om til en ekte butikk: bilder, priser, varianter, lager. Bestillinger kommer ferdig skrevet. Ingen kommisjon på WhatsApp, bankoverføring eller kontant.",
-    ogTitle: "Slutt å skrive av bestillinger fra meldingene",
+      "Én lenke, og bak den en ekte butikk: bilder, priser, varianter, lager og betaling. Bestillinger kommer ferdig skrevet. Gratis, uten provisjon utenom kort.",
+    ogTitle: "Lenken din i bio, men den tar imot bestillingene",
     ogDescription:
       "En ekte butikk bak én lenke — bilder, priser, lager og kasse. Bestillinger kommer ferdige, og ingen tar en andel av kundene du fant selv.",
   },

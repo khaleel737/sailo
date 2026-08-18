@@ -73,7 +73,8 @@ export const sq: Dictionary = {
   checkout: {
     failedSafe: "Dicka shkoi keq. Nuk ju është ngarkuar asgjë — provoni përsëri.",
     failedUnsure: "Dicka shkoi keq. Porosia juaj mund të ketë kaluar — kontrolloni email-in para se të provoni përsëri.",
-    taxIncluded: "Përfshin {amount} {name} ({percent}%)", quantity: "Sasia",
+    taxIncluded: "Përfshin {amount} {name} ({percent}%)",
+    taxAtCheckout: "Llogaritet në arkë", quantity: "Sasia",
     increase: "Rrit sasinë", decrease: "Ul sasinë",
     howReceive: "Si dëshironi ta merrni?", howOrder: "Si dëshironi të porosisni?",
     yourName: "Emri juaj", email: "Email", phone: "Telefoni",
@@ -93,6 +94,10 @@ export const sq: Dictionary = {
     manualNote: "Shitësi merr porosinë tuaj dhe konfirmon pagesën.",
     orderSent: "Porosia iu dërgua {shop}", paidBy: "Paguar me {method}.",
     payWith: "Paguaj me {method}",
+    pasteNote:
+      "{method} nuk mund ta plotësojë mesazhin, prandaj kopjoni porosinë dhe ngjiteni në bisedë.",
+    yourOrder: "Porosia juaj",
+    openApp: "Hap {method}",
     bankInstructions: "Transferoni totalin sipas të dhënave më poshtë, pastaj shtoni referencën tuaj.",
     bankDetails: "Të dhënat bankare", copy: "Kopjo", copied: "U kopjua",
     transferReference: "Referenca e transfertës", sentPayment: "E kam dërguar pagesën",
@@ -238,6 +243,10 @@ export const sq: Dictionary = {
     note: "Shënim", paid: "Paguar", unpaid: "Papaguar", refunded: "Rimbursuar",
     paymentSent: "Pagesa u dërgua", downloadPdf: "Shkarko PDF", print: "Printo ose ruaj PDF",
     taxId: "NIPT",
+    registrationNumber: "Nr. i regjistrimit",
+    tradingAs: "Tregton si {name}",
+    reverseCharge: "Ngarkesë e kundërt — TVSH-ja llogaritet nga marrësi.",
+    customerTaxId: "NIPT-i i klientit",
   },
   auth: {
     welcomeBack: "Mirë se u ktheve", signInSubtitle: "Hyni për të menaxhuar dyqanin tuaj.",
@@ -403,5 +412,6 @@ export const sq: Dictionary = {
     manage: "Menaxho ose anulo",
     manualRenew: "Koha për rinovim — aksesi yt vlen deri më {date}. Paguaj dyqanin dhe do ta konfirmojë.",
     manualPending: "Pagesën e rregullon drejtpërdrejt me dyqanin — nuk ka kartë të ruajtur.",
+    pass: "Karta juaj e anëtarit",
   },
 };

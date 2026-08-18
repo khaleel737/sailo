@@ -16,10 +16,10 @@ export const marketingIt: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis per iniziare, gratis per restare",
-    title: "Basta ricopiare gli ordini dai {highlight}.",
-    titleHighlight: "messaggi",
-    body: "Ricevi già ordini nei messaggi. Sailo li trasforma in un negozio vero — foto, prezzi, opzioni e scorte dietro un solo link, senza costruire un sito. Gli ordini arrivano ancora nella stessa chat, ma già scritti.",
+    badge: "Il negozio in un solo link",
+    title: "Il tuo link in bio, ma {highlight}.",
+    titleHighlight: "prende gli ordini",
+    body: "Un link nella tua bio, e dietro c'è tutto quello che vendi — foto, prezzi, opzioni, disponibilità. La gente guarda e compra senza essere mandata altrove, e ogni ordine arriva già scritto, nella chat in cui stai già rispondendo. Nessun sito da costruire, e nessuna commissione tranne che su carta.",
     ctaPrimary: "Crea il tuo negozio — gratis",
     ctaSecondary: "Apri un negozio vero",
     proof1: "Online in meno di un minuto",
@@ -185,6 +185,7 @@ export const marketingIt: MarketingDictionary = {
   footer: {
     tagline: "Un link, tutto il tuo negozio.",
     product: "Prodotto",
+    docs: "Sviluppatori",
     liveShops: "Negozi veri",
     rights: "Tutti i diritti riservati.",
     legal: "Note legali",
@@ -196,10 +197,10 @@ export const marketingIt: MarketingDictionary = {
   },
 
   seo: {
-    title: "Ricevi ordini online senza sito web — Sailo",
+    title: "Negozio con link in bio — vendi senza sito web | Sailo",
     description:
-      "Trasforma Instagram in un negozio vero: foto, prezzi, opzioni, scorte. Gli ordini arrivano già scritti. Nessuna commissione su WhatsApp, bonifico o contanti.",
-    ogTitle: "Basta ricopiare gli ordini dai messaggi",
+      "Un link, e dietro un negozio vero: foto, prezzi, opzioni, disponibilità e pagamento. Gli ordini arrivano già scritti. Gratis, senza commissioni tranne che su carta.",
+    ogTitle: "Il tuo link in bio, ma prende gli ordini",
     ogDescription:
       "Un negozio vero dietro un solo link — foto, prezzi, scorte e cassa. Gli ordini arrivano pronti, e nessuno prende una percentuale sui clienti che hai trovato tu.",
   },

@@ -16,10 +16,10 @@ export const marketingZh: MarketingDictionary = {
   },
 
   hero: {
-    badge: "免费开始，一直免费",
-    title: "别再从{highlight}里重打订单了。",
-    titleHighlight: "私信",
-    body: "你本来就在消息里接单。Sailo 把这件事变成真正的店铺——照片、价格、款式和库存都在一个链接背后，不用建网站。订单照样落在同一个聊天里，只是到手时已经写好。",
+    badge: "一个链接就是一家店",
+    title: "还是简介里那个链接，只是它{highlight}。",
+    titleHighlight: "能接单了",
+    body: "简介里放一个链接，你卖的一切都在它后面——照片、价格、规格、库存。客人不用被打发到别处，看了就能买，每笔订单都写得清清楚楚，落在你本来就在回的那个对话里。不用做网站，除了刷卡不收任何佣金。",
     ctaPrimary: "创建店铺 — 免费",
     ctaSecondary: "打开一间真实店铺",
     proof1: "不到一分钟就能上线",
@@ -185,6 +185,7 @@ export const marketingZh: MarketingDictionary = {
   footer: {
     tagline: "一条链接，整间店。",
     product: "产品",
+    docs: "开发者",
     liveShops: "真实店铺",
     rights: "保留所有权利。",
     legal: "法律信息",
@@ -196,10 +197,10 @@ export const marketingZh: MarketingDictionary = {
   },
 
   seo: {
-    title: "不用建网站也能在线接单 — Sailo",
+    title: "简介链接开店 — 不用建网站也能卖 | Sailo",
     description:
-      "把 Instagram 变成真正的店铺：照片、价格、款式、库存一应俱全。订单送达时已写好，通过 WhatsApp、银行转账或现金收款不收佣金。",
-    ogTitle: "别再从私信里重打订单了",
+      "一个链接，后面是一家真正的店：照片、价格、规格、库存和收款。订单送达时已写好。免费，除刷卡外不收佣金。",
+    ogTitle: "还是简介里那个链接，只是它能接单了",
     ogDescription:
       "一个链接背后是真正的店铺——照片、价格、库存和结账。订单到手即用，你自己找来的客人，没人抽成。",
   },

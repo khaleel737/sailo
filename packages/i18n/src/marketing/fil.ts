@@ -16,10 +16,10 @@ export const marketingFil: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Libreng magsimula, libreng manatili",
-    title: "Tigilan na ang pag-retype ng orders mula sa {highlight}.",
-    titleHighlight: "DM mo",
-    body: "Tumatanggap ka na ng orders sa mga mensahe mo. Ginagawa itong totoong tindahan ng Sailo — litrato, presyo, options at stock sa likod ng isang link, walang website na gagawin. Dumarating pa rin ang orders sa parehong chat, pero nakasulat na.",
+    badge: "Ang tindahan sa isang link",
+    title: "Ang link mo sa bio, pero {highlight}.",
+    titleHighlight: "tumatanggap ng orders",
+    body: "Isang link sa bio mo, at nasa likod nito ang lahat ng binebenta mo — litrato, presyo, options, stock. Nakakapag-browse at nakakabili ang tao nang hindi mo sila pinapapunta sa iba, at dumarating ang bawat order na nakasulat na, sa mismong chat na sinasagot mo naman. Walang website na gagawin, at walang komisyon maliban sa card.",
     ctaPrimary: "Gumawa ng tindahan — libre",
     ctaSecondary: "Buksan ang totoong tindahan",
     proof1: "Handa sa wala pang isang minuto",
@@ -185,6 +185,7 @@ export const marketingFil: MarketingDictionary = {
   footer: {
     tagline: "Isang link, ang buong tindahan mo.",
     product: "Produkto",
+    docs: "Mga developer",
     liveShops: "Mga totoong tindahan",
     rights: "Nakalaan ang lahat ng karapatan.",
     legal: "Legal",
@@ -196,10 +197,10 @@ export const marketingFil: MarketingDictionary = {
   },
 
   seo: {
-    title: "Tumanggap ng order online kahit walang website — Sailo",
+    title: "Tindahan sa link sa bio — magbenta nang walang website | Sailo",
     description:
-      "Gawing totoong tindahan ang Instagram mo: litrato, presyo, options, stock. Nakasulat na ang dating orders. Walang komisyon sa WhatsApp, bank transfer o cash.",
-    ogTitle: "Tigilan na ang pag-retype ng orders sa DM",
+      "Isang link, at tunay na tindahan sa likod nito: litrato, presyo, options, stock at bayad. Nakasulat na ang dumarating na orders. Libre, walang komisyon maliban sa card.",
+    ogTitle: "Ang link mo sa bio, pero tumatanggap ng orders",
     ogDescription:
       "Totoong tindahan sa likod ng isang link — litrato, presyo, stock at checkout. Handa na ang orders pagdating, at walang kumukuha ng porsyento sa mga suking ikaw ang naghanap.",
   },

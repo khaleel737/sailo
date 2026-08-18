@@ -79,6 +79,7 @@ export const es: Dictionary = {
     failedSafe: "Algo salió mal. No se te ha cobrado — inténtalo de nuevo.",
     failedUnsure: "Algo salió mal. Puede que tu pedido sí se haya realizado — revisa tu correo antes de intentarlo de nuevo.",
     taxIncluded: "Incluye {amount} de {name} ({percent} %)",
+    taxAtCheckout: "Se calcula al pagar",
     saveFailed: "No se pudo guardar.",
     quantity: "Cantidad", increase: "Aumentar cantidad", decrease: "Reducir cantidad",
     howReceive: "¿Cómo quieres recibirlo?", howOrder: "¿Cómo quieres hacer el pedido?",
@@ -99,6 +100,10 @@ export const es: Dictionary = {
     manualNote: "El vendedor recibe tu pedido y confirma el pago.",
     orderSent: "Pedido enviado a {shop}", paidBy: "Pago con {method}.",
     payWith: "Pagar con {method}",
+    pasteNote:
+      "{method} no puede rellenar el mensaje, así que copia tu pedido y pégalo en el chat.",
+    yourOrder: "Tu pedido",
+    openApp: "Abrir {method}",
     bankInstructions: "Transfiere el total con los datos de abajo y añade tu referencia.",
     bankDetails: "Datos bancarios", copy: "Copiar", copied: "Copiado",
     transferReference: "Referencia de la transferencia",
@@ -281,6 +286,10 @@ export const es: Dictionary = {
     reference: "Ref.", note: "Nota", paid: "Pagada", unpaid: "Pendiente",
     refunded: "Reembolsada", paymentSent: "Pago enviado",
     downloadPdf: "Descargar PDF", print: "Imprimir o guardar PDF", taxId: "NIF",
+    registrationNumber: "N.º de registro",
+    tradingAs: "Operando como {name}",
+    reverseCharge: "Inversión del sujeto pasivo — el IVA lo declara el destinatario.",
+    customerTaxId: "NIF del cliente",
   },
   auth: {
     welcomeBack: "Bienvenido de nuevo", signInSubtitle: "Inicia sesión para gestionar tu tienda.",
@@ -462,5 +471,6 @@ export const es: Dictionary = {
     manage: "Gestionar o cancelar",
     manualRenew: "Toca renovar: tu acceso llega hasta el {date}. Paga a la tienda y lo confirmará.",
     manualPending: "El pago lo arreglas directamente con la tienda; no hay ninguna tarjeta guardada.",
+    pass: "Tu pase de socio",
   },
 };

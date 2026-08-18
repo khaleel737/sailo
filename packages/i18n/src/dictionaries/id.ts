@@ -72,7 +72,8 @@ export const id: Dictionary = {
   checkout: {
     failedSafe: "Terjadi kesalahan. Anda tidak ditagih — silakan coba lagi.",
     failedUnsure: "Terjadi kesalahan. Pesanan Anda mungkin sudah masuk — periksa email Anda sebelum mencoba lagi.",
-    taxIncluded: "Termasuk {amount} {name} ({percent}%)", quantity: "Jumlah",
+    taxIncluded: "Termasuk {amount} {name} ({percent}%)",
+    taxAtCheckout: "Dihitung saat pembayaran", quantity: "Jumlah",
     increase: "Tambah jumlah", decrease: "Kurangi jumlah",
     howReceive: "Bagaimana Anda ingin menerimanya?", howOrder: "Bagaimana Anda ingin memesan?",
     yourName: "Nama Anda", email: "Email", phone: "Telepon",
@@ -92,6 +93,9 @@ export const id: Dictionary = {
     manualNote: "Penjual menerima pesanan Anda dan mengonfirmasi pembayaran.",
     orderSent: "Pesanan dikirim ke {shop}", paidBy: "Dibayar dengan {method}.",
     payWith: "Bayar dengan {method}",
+    pasteNote: "{method} tidak bisa mengisi pesan, jadi salin pesanan Anda lalu tempel di chat.",
+    yourOrder: "Pesanan Anda",
+    openApp: "Buka {method}",
     bankInstructions: "Transfer totalnya sesuai rincian di bawah, lalu tambahkan berita transfer Anda.",
     bankDetails: "Rincian bank", copy: "Salin", copied: "Tersalin",
     transferReference: "Berita transfer", sentPayment: "Saya sudah mengirim pembayaran",
@@ -237,6 +241,10 @@ export const id: Dictionary = {
     note: "Catatan", paid: "Lunas", unpaid: "Belum dibayar", refunded: "Dikembalikan",
     paymentSent: "Pembayaran dikirim", downloadPdf: "Unduh PDF", print: "Cetak atau simpan PDF",
     taxId: "NPWP",
+    registrationNumber: "No. registrasi",
+    tradingAs: "Berdagang sebagai {name}",
+    reverseCharge: "Reverse charge — PPN diperhitungkan oleh penerima.",
+    customerTaxId: "NPWP pelanggan",
   },
   auth: {
     welcomeBack: "Selamat datang kembali", signInSubtitle: "Masuk untuk mengelola toko Anda.",
@@ -401,5 +409,6 @@ export const id: Dictionary = {
     manage: "Kelola atau batalkan",
     manualRenew: "Saatnya perpanjang — akses Anda sampai {date}. Bayar ke toko dan mereka akan konfirmasi.",
     manualPending: "Pembayaran diatur langsung dengan toko — tidak ada kartu tersimpan.",
+    pass: "Kartu anggota Anda",
   },
 };

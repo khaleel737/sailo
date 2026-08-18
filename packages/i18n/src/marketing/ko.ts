@@ -16,10 +16,10 @@ export const marketingKo: MarketingDictionary = {
   },
 
   hero: {
-    badge: "무료로 시작, 계속 무료",
-    title: "{highlight}에서 주문을 다시 타이핑하는 일, 이제 그만.",
-    titleHighlight: "메시지",
-    body: "이미 메시지로 주문을 받고 계실 겁니다. Sailo는 그것을 진짜 상점으로 바꿉니다 — 사진, 가격, 옵션, 재고가 링크 하나 뒤에. 웹사이트를 만들 필요는 없습니다. 주문은 같은 대화창에, 정리된 채로 도착합니다.",
+    badge: "링크 하나로 여는 가게",
+    title: "프로필 링크인데, {highlight}.",
+    titleHighlight: "주문까지 받습니다",
+    body: "프로필 링크 하나 뒤에 파는 것이 전부 들어갑니다. 사진, 가격, 옵션, 재고까지. 손님은 다른 곳으로 보내지지 않고 바로 보고 살 수 있고, 주문은 늘 답장하시던 그 채팅으로 정리된 채 도착합니다. 만들 웹사이트도 없고, 카드 외에는 수수료도 없습니다.",
     ctaPrimary: "내 가게 만들기 — 무료",
     ctaSecondary: "실제 가게 열어보기",
     proof1: "1분 안에 오픈",
@@ -185,6 +185,7 @@ export const marketingKo: MarketingDictionary = {
   footer: {
     tagline: "링크 하나에, 가게 전부.",
     product: "제품",
+    docs: "개발자",
     liveShops: "실제 가게",
     rights: "All rights reserved.",
     legal: "법적 고지",
@@ -196,10 +197,10 @@ export const marketingKo: MarketingDictionary = {
   },
 
   seo: {
-    title: "웹사이트 없이 온라인 주문 받기 — Sailo",
+    title: "프로필 링크가 가게로 — 웹사이트 없이 판매 | Sailo",
     description:
-      "인스타그램을 진짜 상점으로: 사진, 가격, 옵션, 재고까지. 주문은 정리된 채로 도착하고 WhatsApp·계좌이체·현금에는 수수료가 없습니다.",
-    ogTitle: "DM에서 주문을 다시 타이핑하는 일, 이제 그만",
+      "링크 하나 뒤에 진짜 가게가 있습니다. 사진, 가격, 옵션, 재고, 결제까지. 주문은 정리된 채 도착합니다. 무료, 카드 외 수수료 없음.",
+    ogTitle: "프로필 링크인데, 주문까지 받습니다",
     ogDescription:
       "링크 하나 뒤에 진짜 상점을 — 사진, 가격, 재고, 결제까지. 주문은 정리되어 도착하고, 직접 찾은 손님에게서 누구도 수수료를 떼지 않습니다.",
   },

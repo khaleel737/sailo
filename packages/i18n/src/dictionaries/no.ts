@@ -73,6 +73,7 @@ export const no: Dictionary = {
     failedSafe: "Noe gikk galt. Du er ikke belastet — prøv igjen.",
     failedUnsure: "Noe gikk galt. Bestillingen din kan ha gått gjennom — sjekk e-posten din før du prøver igjen.",
     taxIncluded: "Inkludert {amount} {name} ({percent} %)",
+    taxAtCheckout: "Beregnes ved betaling",
     saveFailed: "Kunne ikke lagre det.",
     quantity: "Antall", increase: "Øk antall", decrease: "Reduser antall",
     howReceive: "Hvordan vil du motta den?", howOrder: "Hvordan vil du bestille?",
@@ -92,6 +93,10 @@ export const no: Dictionary = {
     manualNote: "Selgeren mottar bestillingen og bekrefter betalingen.",
     orderSent: "Bestilling sendt til {shop}", paidBy: "Betaling med {method}.",
     payWith: "Betal med {method}",
+    pasteNote:
+      "{method} kan ikke fylle ut meldingen, så kopier bestillingen og lim den inn i chatten.",
+    yourOrder: "Bestillingen din",
+    openApp: "Åpne {method}",
     bankInstructions: "Overfør totalbeløpet med opplysningene under, og oppgi referansen din.",
     bankDetails: "Bankopplysninger", copy: "Kopier", copied: "Kopiert",
     transferReference: "Betalingsreferanse", sentPayment: "Jeg har betalt",
@@ -270,6 +275,10 @@ export const no: Dictionary = {
     delivery: "Levering", pickup: "Henting", reference: "Ref.", note: "Merknad",
     paid: "Betalt", unpaid: "Ubetalt", refunded: "Refundert", paymentSent: "Betaling sendt",
     downloadPdf: "Last ned PDF", print: "Skriv ut eller lagre som PDF", taxId: "Org.nr.",
+    registrationNumber: "Org.nr.",
+    tradingAs: "Handler som {name}",
+    reverseCharge: "Omvendt avgiftsplikt — mva beregnes av mottakeren.",
+    customerTaxId: "Kundens mva-nummer",
   },
   auth: {
     welcomeBack: "Velkommen tilbake", signInSubtitle: "Logg inn for å styre butikken din.",
@@ -451,5 +460,6 @@ export const no: Dictionary = {
     manage: "Administrer eller si opp",
     manualRenew: "På tide å fornye — tilgangen din varer til {date}. Betal butikken, så bekrefter de det.",
     manualPending: "Du avtaler betalingen direkte med butikken — det er ikke lagret noe kort.",
+    pass: "Medlemskortet ditt",
   },
 };

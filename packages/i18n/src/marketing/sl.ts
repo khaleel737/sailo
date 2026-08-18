@@ -16,10 +16,10 @@ export const marketingSl: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Brezplačno zdaj in vedno",
-    title: "Nehajte prepisovati naročila iz {highlight}.",
-    titleHighlight: "sporočil",
-    body: "Naročila že sprejemate v sporočilih. Sailo iz tega naredi pravo trgovino — fotografije, cene, možnosti in zalogo za eno povezavo, brez gradnje spletne strani. Naročila še vedno pridejo v isti klepet, le da izpisana.",
+    badge: "Trgovina na eni povezavi",
+    title: "Vaša povezava v biu, le da {highlight}.",
+    titleHighlight: "sprejema naročila",
+    body: "Ena povezava v biu, za njo pa vse, kar prodajate — fotografije, cene, možnosti, zaloga. Ljudje brskajo in kupujejo, ne da bi jih pošiljali drugam, vsako naročilo pa prispe že izpisano, v klepet, v katerem tako ali tako odgovarjate. Nobene spletne strani za izdelavo in nobene provizije razen na kartico.",
     ctaPrimary: "Odprite trgovino — brezplačno",
     ctaSecondary: "Odprite živo trgovino",
     proof1: "Pripravljeno v manj kot minuti",
@@ -185,6 +185,7 @@ export const marketingSl: MarketingDictionary = {
   footer: {
     tagline: "Ena povezava, vsa vaša trgovina.",
     product: "Izdelek",
+    docs: "Razvijalci",
     liveShops: "Žive trgovine",
     rights: "Vse pravice pridržane.",
     legal: "Pravno",
@@ -196,10 +197,10 @@ export const marketingSl: MarketingDictionary = {
   },
 
   seo: {
-    title: "Sprejemajte naročila brez spletne strani — Sailo",
+    title: "Trgovina v biu — prodajajte brez spletne strani | Sailo",
     description:
-      "Spremenite Instagram v pravo trgovino: fotografije, cene, možnosti, zaloga. Naročila pridejo izpisana. Brez provizije na WhatsAppu, nakazilu ali gotovini.",
-    ogTitle: "Nehajte prepisovati naročila iz sporočil",
+      "Ena povezava, za njo pa prava trgovina: fotografije, cene, možnosti, zaloga in plačilo. Naročila prispejo že izpisana. Brezplačno, brez provizije razen na kartico.",
+    ogTitle: "Vaša povezava v biu, le da sprejema naročila",
     ogDescription:
       "Prava trgovina za eno povezavo — fotografije, cene, zaloga in blagajna. Naročila pridejo pripravljena, in nihče ne vzame deleža od strank, ki ste jih našli sami.",
   },

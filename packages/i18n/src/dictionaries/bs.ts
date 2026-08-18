@@ -72,7 +72,8 @@ export const bs: Dictionary = {
   checkout: {
     failedSafe: "Nešto je pošlo po zlu. Nije vam naplaćeno — pokušajte ponovo.",
     failedUnsure: "Nešto je pošlo po zlu. Vaša narudžba je možda prošla — provjerite e-poštu prije nego što pokušate ponovo.",
-    taxIncluded: "Uključuje {amount} {name} ({percent}%)", quantity: "Količina",
+    taxIncluded: "Uključuje {amount} {name} ({percent}%)",
+    taxAtCheckout: "Obračunava se pri plaćanju", quantity: "Količina",
     increase: "Povećaj količinu", decrease: "Smanji količinu",
     howReceive: "Kako želite primiti narudžbu?", howOrder: "Kako želite naručiti?",
     yourName: "Vaše ime", email: "E-mail", phone: "Telefon",
@@ -92,6 +93,9 @@ export const bs: Dictionary = {
     manualNote: "Prodavac prima vašu narudžbu i potvrđuje uplatu.",
     orderSent: "Narudžba poslana prodavnici {shop}", paidBy: "Plaćeno putem: {method}.",
     payWith: "Plati preko {method}",
+    pasteNote: "{method} ne može popuniti poruku, pa kopirajte narudžbu i zalijepite je u chat.",
+    yourOrder: "Vaša narudžba",
+    openApp: "Otvori {method}",
     bankInstructions: "Uplatite ukupan iznos prema podacima ispod, zatim unesite svoj poziv na broj.",
     bankDetails: "Podaci za uplatu", copy: "Kopiraj", copied: "Kopirano",
     transferReference: "Poziv na broj", sentPayment: "Uplatio sam",
@@ -237,6 +241,10 @@ export const bs: Dictionary = {
     note: "Napomena", paid: "Plaćeno", unpaid: "Neplaćeno", refunded: "Vraćeno",
     paymentSent: "Uplata poslana", downloadPdf: "Preuzmi PDF", print: "Odštampaj ili sačuvaj PDF",
     taxId: "PDV broj",
+    registrationNumber: "Reg. br.",
+    tradingAs: "Posluje kao {name}",
+    reverseCharge: "Obrnuto opterećenje — PDV obračunava primalac.",
+    customerTaxId: "Porezni broj kupca",
   },
   auth: {
     welcomeBack: "Dobro došli nazad", signInSubtitle: "Prijavite se da upravljate prodavnicom.",
@@ -402,5 +410,6 @@ export const bs: Dictionary = {
     manage: "Upravljaj ili otkaži",
     manualRenew: "Vrijeme je za obnovu — pristup vam traje do {date}. Platite trgovini i oni će potvrditi.",
     manualPending: "Plaćanje dogovarate direktno s trgovinom — nema sačuvane kartice.",
+    pass: "Vaša članska propusnica",
   },
 };

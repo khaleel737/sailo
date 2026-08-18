@@ -16,10 +16,10 @@ export const marketingPt: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Grátis para começar, grátis para continuar",
-    title: "Pare de redigitar pedidos vindos do {highlight}.",
-    titleHighlight: "direct",
-    body: "Você já recebe pedidos nas mensagens. O Sailo transforma isso numa loja de verdade — fotos, preços, opções e estoque atrás de um link, sem construir site. Os pedidos continuam chegando no mesmo chat, só que já escritos.",
+    badge: "A loja num só link",
+    title: "O teu link na bio, mas {highlight}.",
+    titleHighlight: "recebe as encomendas",
+    body: "Um link na tua bio, e por trás dele tudo o que vendes — fotos, preços, opções, stock. As pessoas veem e compram sem serem mandadas para outro lado, e cada encomenda chega já redigida, na conversa onde já estás a responder. Nenhum site para construir, e nenhuma comissão exceto no cartão.",
     ctaPrimary: "Criar a minha loja — grátis",
     ctaSecondary: "Abrir uma loja real",
     proof1: "No ar em menos de um minuto",
@@ -185,6 +185,7 @@ export const marketingPt: MarketingDictionary = {
   footer: {
     tagline: "Um link, a tua loja inteira.",
     product: "Produto",
+    docs: "Programadores",
     liveShops: "Lojas reais",
     rights: "Todos os direitos reservados.",
     legal: "Legal",
@@ -196,10 +197,10 @@ export const marketingPt: MarketingDictionary = {
   },
 
   seo: {
-    title: "Receba pedidos online sem ter site — Sailo",
+    title: "Loja com link na bio — vende sem ter site | Sailo",
     description:
-      "Transforme o Instagram numa loja de verdade: fotos, preços, opções, estoque. Os pedidos chegam escritos. Sem comissão no WhatsApp, transferência ou dinheiro.",
-    ogTitle: "Pare de redigitar pedidos vindos do direct",
+      "Um link, e por trás dele uma loja a sério: fotos, preços, opções, stock e pagamento. As encomendas chegam já redigidas. Grátis, sem comissão exceto no cartão.",
+    ogTitle: "O teu link na bio, mas recebe as encomendas",
     ogDescription:
       "Uma loja de verdade atrás de um link — fotos, preços, estoque e checkout. Os pedidos chegam prontos, e ninguém tira uma parte dos clientes que você mesmo trouxe.",
   },

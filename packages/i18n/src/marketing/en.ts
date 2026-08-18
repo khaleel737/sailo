@@ -220,6 +220,13 @@ export const marketingEn = {
   footer: {
     tagline: "One link, your whole shop.",
     product: "Product",
+    /*
+     * Names the audience rather than the page, because that is what somebody
+     * scanning a footer is looking for — "Developers" is where a person who
+     * wants the REST API, the webhooks or the MCP server expects to find them,
+     * and "Docs" alone reads as help articles for sellers.
+     */
+    docs: "Developers",
     liveShops: "Live shops",
     rights: "All rights reserved.",
     legal: "Legal",

@@ -74,6 +74,7 @@ export const hu: Dictionary = {
     failedSafe: "Valami hiba történt. Nem terheltunk meg — próbálja újra.",
     failedUnsure: "Valami hiba történt. Lehet, hogy a rendelése átment — ellenőrizze az e-mailjeit, mielőtt újra próbálkozik.",
     taxIncluded: "Tartalmaz {amount} {name}-t ({percent}%)",
+    taxAtCheckout: "A fizetésnél számoljuk ki",
     saveFailed: "Nem sikerült elmenteni.",
     quantity: "Mennyiség", increase: "Mennyiség növelése", decrease: "Mennyiség csökkentése",
     howReceive: "Hogyan szeretnéd megkapni?", howOrder: "Hogyan szeretnél rendelni?",
@@ -93,6 +94,10 @@ export const hu: Dictionary = {
     manualNote: "Az eladó megkapja a rendelést és visszaigazolja a fizetést.",
     orderSent: "Rendelés elküldve: {shop}", paidBy: "Fizetés: {method}.",
     payWith: "Fizetés – {method}",
+    pasteNote:
+      "A(z) {method} nem tudja kitölteni az üzenetet, ezért másold ki a rendelést, és illeszd be a csevegésbe.",
+    yourOrder: "A rendelésed",
+    openApp: "{method} megnyitása",
     bankInstructions: "Utald át a teljes összeget az alábbi adatokkal, majd add meg a közleményt.",
     bankDetails: "Bankszámla adatok", copy: "Másolás", copied: "Másolva",
     transferReference: "Közlemény", sentPayment: "Elutaltam az összeget",
@@ -271,6 +276,10 @@ export const hu: Dictionary = {
     delivery: "Szállítás", pickup: "Átvétel", reference: "Hiv.", note: "Megjegyzés",
     paid: "Fizetve", unpaid: "Fizetésre vár", refunded: "Visszatérítve", paymentSent: "Utalás elküldve",
     downloadPdf: "PDF letöltése", print: "Nyomtatás vagy PDF mentés", taxId: "Adószám",
+    registrationNumber: "Cégjegyzékszám",
+    tradingAs: "Kereskedik mint {name}",
+    reverseCharge: "Fordított adózás — az áfát a vevő számolja el.",
+    customerTaxId: "Vevő adószáma",
   },
   auth: {
     welcomeBack: "Üdv újra", signInSubtitle: "Jelentkezz be a bolt kezeléséhez.",
@@ -451,5 +460,6 @@ export const hu: Dictionary = {
     manage: "Kezelés vagy lemondás",
     manualRenew: "Ideje megújítani — a hozzáférésed {date}-ig tart. Fizess a boltnak, és megerősítik.",
     manualPending: "A fizetést közvetlenül a bolttal intézed — nincs elmentett kártya.",
+    pass: "A tagsági kártyád",
   },
 };

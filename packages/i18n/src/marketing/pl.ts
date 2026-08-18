@@ -16,10 +16,10 @@ export const marketingPl: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Za darmo na start, za darmo dalej",
-    title: "Koniec z przepisywaniem zamówień z {highlight}.",
-    titleHighlight: "wiadomości",
-    body: "Zamówienia już przyjmujesz w wiadomościach. Sailo robi z tego prawdziwy sklep — zdjęcia, ceny, opcje i stany za jednym linkiem, bez budowania strony. Zamówienia nadal trafiają na ten sam czat, tylko już rozpisane.",
+    badge: "Sklep pod jednym linkiem",
+    title: "Twój link w bio, tylko że {highlight}.",
+    titleHighlight: "przyjmuje zamówienia",
+    body: "Jeden link w twoim bio, a za nim wszystko, co sprzedajesz — zdjęcia, ceny, opcje, stany magazynowe. Ludzie przeglądają i kupują bez odsyłania ich gdzie indziej, a każde zamówienie przychodzi już rozpisane, na ten sam czat, na który i tak odpowiadasz. Żadnej strony do zbudowania i żadnej prowizji poza kartą.",
     ctaPrimary: "Załóż sklep — za darmo",
     ctaSecondary: "Otwórz prawdziwy sklep",
     proof1: "Działa w niecałą minutę",
@@ -185,6 +185,7 @@ export const marketingPl: MarketingDictionary = {
   footer: {
     tagline: "Jeden link, cały twój sklep.",
     product: "Produkt",
+    docs: "Programiści",
     liveShops: "Prawdziwe sklepy",
     rights: "Wszelkie prawa zastrzeżone.",
     legal: "Informacje prawne",
@@ -196,10 +197,10 @@ export const marketingPl: MarketingDictionary = {
   },
 
   seo: {
-    title: "Przyjmuj zamówienia online bez strony — Sailo",
+    title: "Sklep pod linkiem w bio — sprzedawaj bez strony | Sailo",
     description:
-      "Zmień Instagram w prawdziwy sklep: zdjęcia, ceny, opcje, stany. Zamówienia przychodzą rozpisane. Bez prowizji na WhatsAppie, przelewie i gotówce.",
-    ogTitle: "Koniec z przepisywaniem zamówień z wiadomości",
+      "Jeden link, a za nim prawdziwy sklep: zdjęcia, ceny, opcje, stany i płatność. Zamówienia przychodzą już rozpisane. Za darmo, bez prowizji poza kartą.",
+    ogTitle: "Twój link w bio, tylko że przyjmuje zamówienia",
     ogDescription:
       "Prawdziwy sklep za jednym linkiem — zdjęcia, ceny, stany i koszyk. Zamówienia przychodzą gotowe, a nikt nie bierze procentu od klientów, których znalazłeś sam.",
   },

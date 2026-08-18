@@ -72,7 +72,8 @@ export const ko: Dictionary = {
   checkout: {
     failedSafe: "문제가 발생했습니다. 결제는 이루어지지 않았으니 다시 시도해 주세요.",
     failedUnsure: "문제가 발생했습니다. 주문이 접수되었을 수 있으니 다시 시도하기 전에 이메일을 확인해 주세요.",
-    taxIncluded: "{name} {amount} 포함 ({percent}%)", quantity: "수량",
+    taxIncluded: "{name} {amount} 포함 ({percent}%)",
+    taxAtCheckout: "결제 시 계산됩니다", quantity: "수량",
     increase: "수량 늘리기", decrease: "수량 줄이기",
     howReceive: "어떻게 받으시겠어요?", howOrder: "어떻게 주문하시겠어요?",
     yourName: "이름", email: "이메일", phone: "전화번호",
@@ -92,6 +93,9 @@ export const ko: Dictionary = {
     manualNote: "판매자가 주문을 받고 결제를 확인합니다.",
     orderSent: "{shop}에 주문이 전송되었습니다", paidBy: "{method}(으)로 결제됨.",
     payWith: "{method}(으)로 결제",
+    pasteNote: "{method}은(는) 메시지를 미리 채울 수 없으니, 주문 내역을 복사해 채팅에 붙여넣어 주세요.",
+    yourOrder: "주문 내역",
+    openApp: "{method} 열기",
     bankInstructions: "아래 정보로 총액을 이체한 뒤 입금자명을 입력해 주세요.",
     bankDetails: "계좌 정보", copy: "복사", copied: "복사됨",
     transferReference: "입금자명", sentPayment: "입금했습니다",
@@ -237,6 +241,10 @@ export const ko: Dictionary = {
     note: "메모", paid: "결제 완료", unpaid: "미결제", refunded: "환불됨",
     paymentSent: "입금 완료 알림", downloadPdf: "PDF 다운로드", print: "인쇄 또는 PDF 저장",
     taxId: "사업자등록번호",
+    registrationNumber: "등록번호",
+    tradingAs: "상호 {name}",
+    reverseCharge: "대리납부 — 부가가치세는 공급받는 자가 신고합니다.",
+    customerTaxId: "고객 사업자번호",
   },
   auth: {
     welcomeBack: "다시 오셨네요", signInSubtitle: "로그인하고 내 가게를 관리하세요.",
@@ -401,5 +409,6 @@ export const ko: Dictionary = {
     manage: "관리 또는 해지",
     manualRenew: "갱신할 때가 되었습니다 — {date}까지 이용하실 수 있습니다. 상점에 결제하시면 확인해 드립니다.",
     manualPending: "결제는 상점과 직접 진행합니다 — 저장된 카드가 없습니다.",
+    pass: "회원 패스",
   },
 };

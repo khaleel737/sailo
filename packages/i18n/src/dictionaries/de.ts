@@ -80,6 +80,7 @@ export const de: Dictionary = {
     failedSafe: "Etwas ist schiefgelaufen. Es wurde nichts abgebucht — bitte versuchen Sie es erneut.",
     failedUnsure: "Etwas ist schiefgelaufen. Ihre Bestellung ist möglicherweise eingegangen — prüfen Sie Ihre E-Mails, bevor Sie es erneut versuchen.",
     taxIncluded: "Inklusive {amount} {name} ({percent} %)",
+    taxAtCheckout: "Wird an der Kasse berechnet",
     saveFailed: "Konnte nicht gespeichert werden.",
     quantity: "Menge", increase: "Menge erhöhen", decrease: "Menge verringern",
     howReceive: "Wie möchtest du es erhalten?", howOrder: "Wie möchtest du bestellen?",
@@ -100,6 +101,10 @@ export const de: Dictionary = {
     manualNote: "Der Verkäufer erhält deine Bestellung und bestätigt die Zahlung.",
     orderSent: "Bestellung an {shop} gesendet", paidBy: "Zahlung per {method}.",
     payWith: "Mit {method} bezahlen",
+    pasteNote:
+      "{method} kann keine Nachricht vorausfüllen – kopiere deine Bestellung und füge sie im Chat ein.",
+    yourOrder: "Deine Bestellung",
+    openApp: "{method} öffnen",
     bankInstructions: "Überweise den Gesamtbetrag mit den Daten unten und gib deine Referenz an.",
     bankDetails: "Bankverbindung", copy: "Kopieren", copied: "Kopiert",
     transferReference: "Verwendungszweck",
@@ -282,6 +287,10 @@ export const de: Dictionary = {
     reference: "Referenz", note: "Hinweis", paid: "Bezahlt", unpaid: "Offen",
     refunded: "Erstattet", paymentSent: "Zahlung gesendet",
     downloadPdf: "PDF herunterladen", print: "Drucken oder als PDF speichern", taxId: "USt-IdNr.",
+    registrationNumber: "Handelsregister-Nr.",
+    tradingAs: "Handelnd als {name}",
+    reverseCharge: "Steuerschuldnerschaft des Leistungsempfängers (Reverse Charge).",
+    customerTaxId: "USt-IdNr. des Kunden",
   },
   auth: {
     welcomeBack: "Willkommen zurück", signInSubtitle: "Melde dich an, um deinen Shop zu verwalten.",
@@ -463,5 +472,6 @@ export const de: Dictionary = {
     manage: "Verwalten oder kündigen",
     manualRenew: "Zeit zu verlängern — dein Zugang läuft bis {date}. Zahle beim Shop, er bestätigt es.",
     manualPending: "Die Zahlung machst du direkt mit dem Shop aus — es ist keine Karte hinterlegt.",
+    pass: "Dein Mitgliedsausweis",
   },
 };

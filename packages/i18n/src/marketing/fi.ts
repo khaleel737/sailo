@@ -16,10 +16,10 @@ export const marketingFi: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Aloita ilmaiseksi, jatka ilmaiseksi",
-    title: "Lopeta tilausten uudelleenkirjoittaminen {highlight}.",
-    titleHighlight: "viesteistä",
-    body: "Otat tilauksia jo vastaan viesteissä. Sailo tekee siitä oikean kaupan — kuvat, hinnat, vaihtoehdot ja varasto yhden linkin takana, ilman verkkosivun rakentamista. Tilaukset tulevat yhä samaan chattiin, mutta valmiiksi kirjoitettuina.",
+    badge: "Kauppa yhdessä linkissä",
+    title: "Linkkisi biossa, mutta se {highlight}.",
+    titleHighlight: "ottaa tilaukset vastaan",
+    body: "Yksi linkki biossasi, ja sen takana kaikki mitä myyt — kuvat, hinnat, vaihtoehdot, varastosaldot. Ihmiset selaavat ja ostavat ilman että heidät lähetetään muualle, ja jokainen tilaus saapuu valmiiksi kirjoitettuna siihen chattiin, jossa vastaat muutenkin. Ei verkkosivua rakennettavaksi, eikä komissiota muusta kuin kortista.",
     ctaPrimary: "Luo kauppasi — ilmaiseksi",
     ctaSecondary: "Avaa oikea kauppa",
     proof1: "Pystyssä alle minuutissa",
@@ -185,6 +185,7 @@ export const marketingFi: MarketingDictionary = {
   footer: {
     tagline: "Yksi linkki, koko kauppasi.",
     product: "Tuote",
+    docs: "Kehittäjät",
     liveShops: "Oikeat kaupat",
     rights: "Kaikki oikeudet pidätetään.",
     legal: "Oikeudelliset tiedot",
@@ -196,10 +197,10 @@ export const marketingFi: MarketingDictionary = {
   },
 
   seo: {
-    title: "Ota tilauksia vastaan ilman verkkosivua — Sailo",
+    title: "Kauppa bion linkissä — myy ilman verkkosivua | Sailo",
     description:
-      "Muuta Instagram oikeaksi kaupaksi: kuvat, hinnat, vaihtoehdot, varasto. Tilaukset saapuvat valmiiksi kirjoitettuina. Ei komissiota WhatsAppista, tilisiirrosta tai käteisestä.",
-    ogTitle: "Lopeta tilausten uudelleenkirjoittaminen viesteistä",
+      "Yksi linkki, takana oikea kauppa: kuvat, hinnat, vaihtoehdot, varasto, maksu. Tilaukset tulevat valmiiksi kirjoitettuina. Ilmaista, ei komissiota paitsi kortista.",
+    ogTitle: "Linkkisi biossa, mutta se ottaa tilaukset vastaan",
     ogDescription:
       "Oikea kauppa yhden linkin takana — kuvat, hinnat, varasto ja kassa. Tilaukset tulevat valmiina, eikä kukaan ota osuutta itse hankkimistasi asiakkaista.",
   },

@@ -73,7 +73,8 @@ export const th: Dictionary = {
   checkout: {
     failedSafe: "เกิดข้อผิดพลาด คุณยังไม่ถูกเรียกเก็บเงิน — โปรดลองอีกครั้ง",
     failedUnsure: "เกิดข้อผิดพลาด คำสั่งซื้อของคุณอาจสำเร็จแล้ว — โปรดตรวจสอบอีเมลก่อนลองอีกครั้ง",
-    taxIncluded: "รวม {amount} {name} ({percent}%)", quantity: "จำนวน",
+    taxIncluded: "รวม {amount} {name} ({percent}%)",
+    taxAtCheckout: "คำนวณตอนชำระเงิน", quantity: "จำนวน",
     increase: "เพิ่มจำนวน", decrease: "ลดจำนวน",
     howReceive: "คุณต้องการรับสินค้าอย่างไร?", howOrder: "คุณต้องการสั่งซื้ออย่างไร?",
     yourName: "ชื่อของคุณ", email: "อีเมล", phone: "โทรศัพท์",
@@ -93,6 +94,9 @@ export const th: Dictionary = {
     manualNote: "ผู้ขายจะได้รับคำสั่งซื้อของคุณและยืนยันการชำระเงิน",
     orderSent: "ส่งคำสั่งซื้อไปยัง {shop} แล้ว", paidBy: "ชำระผ่าน {method}",
     payWith: "ชำระด้วย {method}",
+    pasteNote: "{method} เติมข้อความให้ไม่ได้ กรุณาคัดลอกคำสั่งซื้อของคุณแล้ววางในแชท",
+    yourOrder: "คำสั่งซื้อของคุณ",
+    openApp: "เปิด {method}",
     bankInstructions: "โอนยอดรวมตามรายละเอียดด้านล่าง จากนั้นระบุหมายเลขอ้างอิงของคุณ",
     bankDetails: "รายละเอียดบัญชี", copy: "คัดลอก", copied: "คัดลอกแล้ว",
     transferReference: "หมายเลขอ้างอิงการโอน", sentPayment: "ฉันโอนเงินแล้ว",
@@ -238,6 +242,10 @@ export const th: Dictionary = {
     note: "หมายเหตุ", paid: "ชำระแล้ว", unpaid: "ยังไม่ชำระ", refunded: "คืนเงินแล้ว",
     paymentSent: "ส่งการชำระเงินแล้ว", downloadPdf: "ดาวน์โหลด PDF", print: "พิมพ์หรือบันทึก PDF",
     taxId: "เลขประจำตัวผู้เสียภาษี",
+    registrationNumber: "เลขทะเบียน",
+    tradingAs: "ดำเนินการในนาม {name}",
+    reverseCharge: "Reverse charge — ผู้รับเป็นผู้นำส่งภาษีมูลค่าเพิ่ม",
+    customerTaxId: "เลขประจำตัวผู้เสียภาษีของลูกค้า",
   },
   auth: {
     welcomeBack: "ยินดีต้อนรับกลับมา", signInSubtitle: "เข้าสู่ระบบเพื่อจัดการร้านของคุณ",
@@ -403,5 +411,6 @@ export const th: Dictionary = {
     manage: "จัดการหรือยกเลิก",
     manualRenew: "ถึงเวลาต่ออายุแล้ว — คุณใช้งานได้ถึง {date} ชำระเงินกับร้านแล้วร้านจะยืนยันให้",
     manualPending: "คุณตกลงการชำระเงินกับร้านโดยตรง — ไม่มีบัตรที่บันทึกไว้",
+    pass: "บัตรสมาชิกของคุณ",
   },
 };

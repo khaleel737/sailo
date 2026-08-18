@@ -74,6 +74,7 @@ export const uk: Dictionary = {
     failedSafe: "Щось пішло не так. Кошти не списано — спробуйте ще раз.",
     failedUnsure: "Щось пішло не так. Ваше замовлення могло бути оформлене — перевірте пошту, перш ніж спробувати знову.",
     taxIncluded: "Включно з {amount} {name} ({percent}%)",
+    taxAtCheckout: "Розраховується під час оплати",
     saveFailed: "Не вдалося зберегти.",
     quantity: "Кількість", increase: "Збільшити кількість", decrease: "Зменшити кількість",
     howReceive: "Як бажаєте отримати?", howOrder: "Як бажаєте замовити?",
@@ -93,6 +94,10 @@ export const uk: Dictionary = {
     manualNote: "Продавець отримає замовлення й підтвердить оплату.",
     orderSent: "Замовлення надіслано до {shop}", paidBy: "Оплата: {method}.",
     payWith: "Оплатити через {method}",
+    pasteNote:
+      "{method} не може заповнити повідомлення — скопіюйте замовлення та вставте його в чат.",
+    yourOrder: "Ваше замовлення",
+    openApp: "Відкрити {method}",
     bankInstructions: "Перекажіть суму за реквізитами нижче та вкажіть призначення платежу.",
     bankDetails: "Реквізити", copy: "Копіювати", copied: "Скопійовано",
     transferReference: "Призначення платежу", sentPayment: "Я оплатив(ла)",
@@ -273,6 +278,10 @@ export const uk: Dictionary = {
     delivery: "Доставка", pickup: "Самовивіз", reference: "Номер", note: "Примітка",
     paid: "Оплачено", unpaid: "Не оплачено", refunded: "Повернено", paymentSent: "Оплату надіслано",
     downloadPdf: "Завантажити PDF", print: "Друк або збереження в PDF", taxId: "ЄДРПОУ",
+    registrationNumber: "Реєстр. №",
+    tradingAs: "Працює як {name}",
+    reverseCharge: "Зворотне нарахування — ПДВ сплачує отримувач.",
+    customerTaxId: "Податковий номер клієнта",
   },
   auth: {
     welcomeBack: "З поверненням", signInSubtitle: "Увійдіть, щоб керувати магазином.",
@@ -454,5 +463,6 @@ export const uk: Dictionary = {
     manage: "Керувати або скасувати",
     manualRenew: "Час поновити — доступ діє до {date}. Оплатіть магазину, і він підтвердить.",
     manualPending: "Оплату ви узгоджуєте напряму з магазином — збереженої картки немає.",
+    pass: "Ваша членська перепустка",
   },
 };

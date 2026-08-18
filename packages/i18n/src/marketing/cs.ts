@@ -16,10 +16,10 @@ export const marketingCs: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Zdarma na začátek, zdarma i potom",
-    title: "Přestaňte přepisovat objednávky ze {highlight}.",
-    titleHighlight: "zpráv",
-    body: "Objednávky už přijímáte ve zprávách. Sailo z toho udělá skutečný obchod — fotky, ceny, varianty a sklad za jedním odkazem, bez stavění webu. Objednávky chodí dál do stejného chatu, ale už vypsané.",
+    badge: "Obchod na jednom odkazu",
+    title: "Odkaz ve vašem biu, ale {highlight}.",
+    titleHighlight: "přijímá objednávky",
+    body: "Jeden odkaz v biu a za ním všechno, co prodáváte — fotky, ceny, varianty, sklad. Lidé si prohlížejí a nakupují, aniž byste je posílali jinam, a každá objednávka dorazí už vypsaná, do chatu, ve kterém stejně odpovídáte. Žádný web na stavění a žádná provize kromě karty.",
     ctaPrimary: "Založit obchod — zdarma",
     ctaSecondary: "Otevřít skutečný obchod",
     proof1: "Hotovo za necelou minutu",
@@ -185,6 +185,7 @@ export const marketingCs: MarketingDictionary = {
   footer: {
     tagline: "Jeden odkaz, celý váš obchod.",
     product: "Produkt",
+    docs: "Vývojáři",
     liveShops: "Skutečné obchody",
     rights: "Všechna práva vyhrazena.",
     legal: "Právní informace",
@@ -196,10 +197,10 @@ export const marketingCs: MarketingDictionary = {
   },
 
   seo: {
-    title: "Přijímejte objednávky online bez webu — Sailo",
+    title: "Obchod na odkazu v biu — prodávejte bez webu | Sailo",
     description:
-      "Proměňte Instagram ve skutečný obchod: fotky, ceny, varianty, sklad. Objednávky přijdou vypsané. Bez provize na WhatsApp, převod nebo hotovost.",
-    ogTitle: "Přestaňte přepisovat objednávky ze zpráv",
+      "Jeden odkaz a za ním skutečný obchod: fotky, ceny, varianty, sklad a platba. Objednávky chodí už vypsané. Zdarma, bez provize kromě karty.",
+    ogTitle: "Odkaz ve vašem biu, ale přijímá objednávky",
     ogDescription:
       "Skutečný obchod za jedním odkazem — fotky, ceny, sklad a pokladna. Objednávky chodí hotové a nikdo si nebere podíl ze zákazníků, které jste našli sami.",
   },

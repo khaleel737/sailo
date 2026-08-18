@@ -16,10 +16,10 @@ export const marketingHr: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Besplatno za početak, besplatno i dalje",
-    title: "Prestanite prepisivati narudžbe iz {highlight}.",
-    titleHighlight: "poruka",
-    body: "Već primate narudžbe u porukama. Sailo to pretvara u pravu trgovinu — fotografije, cijene, opcije i zalihe iza jednog linka, bez izrade web stranice. Narudžbe i dalje stižu u isti chat, ali ispisane.",
+    badge: "Trgovina na jednom linku",
+    title: "Vaš link u biju, ali {highlight}.",
+    titleHighlight: "prima narudžbe",
+    body: "Jedan link u biju, a iza njega sve što prodajete — fotografije, cijene, opcije, zalihe. Ljudi pregledavaju i kupuju bez da ih šaljete drugamo, a svaka narudžba stiže već ispisana, u chat u kojem ionako odgovarate. Nema web stranice za izradu i nema provizije osim na karticu.",
     ctaPrimary: "Otvorite trgovinu — besplatno",
     ctaSecondary: "Otvorite živu trgovinu",
     proof1: "Spremno za manje od minute",
@@ -185,6 +185,7 @@ export const marketingHr: MarketingDictionary = {
   footer: {
     tagline: "Jedna poveznica, cijela vaša trgovina.",
     product: "Proizvod",
+    docs: "Programeri",
     liveShops: "Žive trgovine",
     rights: "Sva prava pridržana.",
     legal: "Pravno",
@@ -196,10 +197,10 @@ export const marketingHr: MarketingDictionary = {
   },
 
   seo: {
-    title: "Primajte narudžbe online bez web stranice — Sailo",
+    title: "Trgovina na linku u biju — prodajite bez web stranice | Sailo",
     description:
-      "Pretvorite Instagram u pravu trgovinu: fotografije, cijene, opcije, zalihe. Narudžbe stižu ispisane. Bez provizije na WhatsApp, bankovni prijenos ili gotovinu.",
-    ogTitle: "Prestanite prepisivati narudžbe iz poruka",
+      "Jedan link, a iza njega prava trgovina: fotografije, cijene, opcije, zalihe i plaćanje. Narudžbe stižu već ispisane. Besplatno, bez provizije osim na karticu.",
+    ogTitle: "Vaš link u biju, ali prima narudžbe",
     ogDescription:
       "Prava trgovina iza jednog linka — fotografije, cijene, zalihe i blagajna. Narudžbe stižu gotove, i nitko ne uzima dio od kupaca koje ste sami pronašli.",
   },

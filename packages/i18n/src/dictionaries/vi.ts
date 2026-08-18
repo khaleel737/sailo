@@ -73,7 +73,8 @@ export const vi: Dictionary = {
   checkout: {
     failedSafe: "Đã xảy ra lỗi. Bạn chưa bị trừ tiền — vui lòng thử lại.",
     failedUnsure: "Đã xảy ra lỗi. Đơn hàng của bạn có thể đã được ghi nhận — hãy kiểm tra email trước khi thử lại.",
-    taxIncluded: "Đã gồm {amount} {name} ({percent}%)", quantity: "Số lượng",
+    taxIncluded: "Đã gồm {amount} {name} ({percent}%)",
+    taxAtCheckout: "Được tính khi thanh toán", quantity: "Số lượng",
     increase: "Tăng số lượng", decrease: "Giảm số lượng",
     howReceive: "Bạn muốn nhận hàng thế nào?", howOrder: "Bạn muốn đặt hàng thế nào?",
     yourName: "Tên của bạn", email: "Email", phone: "Điện thoại",
@@ -93,6 +94,10 @@ export const vi: Dictionary = {
     manualNote: "Người bán nhận đơn của bạn và xác nhận thanh toán.",
     orderSent: "Đã gửi đơn hàng đến {shop}", paidBy: "Thanh toán bằng {method}.",
     payWith: "Thanh toán bằng {method}",
+    pasteNote:
+      "{method} không thể điền sẵn tin nhắn, nên hãy sao chép đơn hàng và dán vào cuộc trò chuyện.",
+    yourOrder: "Đơn hàng của bạn",
+    openApp: "Mở {method}",
     bankInstructions: "Chuyển tổng số tiền theo thông tin bên dưới, rồi thêm nội dung chuyển khoản của bạn.",
     bankDetails: "Thông tin ngân hàng", copy: "Sao chép", copied: "Đã sao chép",
     transferReference: "Nội dung chuyển khoản", sentPayment: "Tôi đã chuyển tiền",
@@ -239,6 +244,10 @@ export const vi: Dictionary = {
     note: "Ghi chú", paid: "Đã thanh toán", unpaid: "Chưa thanh toán", refunded: "Đã hoàn tiền",
     paymentSent: "Đã gửi thanh toán", downloadPdf: "Tải PDF", print: "In hoặc lưu PDF",
     taxId: "Mã số thuế",
+    registrationNumber: "Số ĐKKD",
+    tradingAs: "Kinh doanh với tên {name}",
+    reverseCharge: "Cơ chế đảo ngược — VAT do bên nhận kê khai.",
+    customerTaxId: "Mã số thuế khách hàng",
   },
   auth: {
     welcomeBack: "Chào mừng trở lại", signInSubtitle: "Đăng nhập để quản lý cửa hàng của bạn.",
@@ -404,5 +413,6 @@ export const vi: Dictionary = {
     manage: "Quản lý hoặc huỷ",
     manualRenew: "Đến lúc gia hạn — bạn dùng được đến {date}. Thanh toán cho cửa hàng và họ sẽ xác nhận.",
     manualPending: "Bạn thanh toán trực tiếp với cửa hàng — không có thẻ nào được lưu.",
+    pass: "Thẻ thành viên của bạn",
   },
 };

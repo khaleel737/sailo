@@ -140,6 +140,7 @@ export const en = {
     failedSafe: "Something went wrong. You haven't been charged — please try again.",
     failedUnsure: "Something went wrong. Your order may have gone through — check your email before trying again.",
     taxIncluded: "Includes {amount} {name} ({percent}%)",
+    taxAtCheckout: "Calculated at checkout",
     quantity: "Quantity",
     increase: "Increase quantity",
     decrease: "Decrease quantity",
@@ -178,6 +179,9 @@ export const en = {
     orderSent: "Order sent to {shop}",
     paidBy: "Paid by {method}.",
     payWith: "Pay with {method}",
+    pasteNote: "{method} can't fill in a message, so copy your order and paste it into the chat.",
+    yourOrder: "Your order",
+    openApp: "Open {method}",
     bankInstructions:
       "Transfer the total using the details below, then add your reference.",
     bankDetails: "Bank details",
@@ -413,6 +417,17 @@ export const en = {
     downloadPdf: "Download PDF",
     print: "Print or save PDF",
     taxId: "Tax ID",
+    /** The company number, which is a different number from the VAT one. */
+    registrationNumber: "Reg. no",
+    /** Shown when the registered entity is not the name the buyer bought from. */
+    tradingAs: "Trading as {name}",
+    /*
+     * The sentence that makes a zero-VAT B2B invoice compliant. Worded as the
+     * EU directive words it — the *recipient* accounts for the tax — rather
+     * than as "no VAT charged", which states the effect and omits the reason.
+     */
+    reverseCharge: "Reverse charge — VAT to be accounted for by the recipient.",
+    customerTaxId: "Customer tax ID",
   },
 
   auth: {
@@ -633,6 +648,7 @@ export const en = {
     manage: "Manage or cancel",
     manualRenew: "Time to renew — your access runs to {date}. Pay the shop and they'll confirm it.",
     manualPending: "You arrange payment directly with the shop — there's no card on file.",
+    pass: "Your member pass",
   },
 
   mailing: {

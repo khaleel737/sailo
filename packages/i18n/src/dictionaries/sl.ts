@@ -73,7 +73,8 @@ export const sl: Dictionary = {
   checkout: {
     failedSafe: "Nekaj je šlo narobe. Znesek ni bil obračunan — poskusite znova.",
     failedUnsure: "Nekaj je šlo narobe. Vaše naročilo je morda prišlo skozi — preverite e-pošto, preden poskusite znova.",
-    taxIncluded: "Vključuje {amount} {name} ({percent}%)", quantity: "Količina",
+    taxIncluded: "Vključuje {amount} {name} ({percent}%)",
+    taxAtCheckout: "Izračuna se ob plačilu", quantity: "Količina",
     increase: "Povečaj količino", decrease: "Zmanjšaj količino",
     howReceive: "Kako želite prejeti naročilo?", howOrder: "Kako želite naročiti?",
     yourName: "Vaše ime", email: "E-pošta", phone: "Telefon",
@@ -93,6 +94,10 @@ export const sl: Dictionary = {
     manualNote: "Prodajalec prejme vaše naročilo in potrdi plačilo.",
     orderSent: "Naročilo poslano trgovini {shop}", paidBy: "Plačano z: {method}.",
     payWith: "Plačaj z {method}",
+    pasteNote:
+      "{method} ne more izpolniti sporočila, zato kopirajte naročilo in ga prilepite v klepet.",
+    yourOrder: "Vaše naročilo",
+    openApp: "Odpri {method}",
     bankInstructions: "Nakažite skupni znesek po spodnjih podatkih, nato vpišite svoj sklic.",
     bankDetails: "Podatki za nakazilo", copy: "Kopiraj", copied: "Kopirano",
     transferReference: "Sklic", sentPayment: "Plačilo sem izvedel",
@@ -238,6 +243,10 @@ export const sl: Dictionary = {
     note: "Opomba", paid: "Plačano", unpaid: "Neplačano", refunded: "Vrnjeno",
     paymentSent: "Plačilo poslano", downloadPdf: "Prenesi PDF", print: "Natisni ali shrani PDF",
     taxId: "Davčna številka",
+    registrationNumber: "Matična št.",
+    tradingAs: "Posluje kot {name}",
+    reverseCharge: "Obrnjena davčna obveznost — DDV obračuna prejemnik.",
+    customerTaxId: "Davčna številka kupca",
   },
   auth: {
     welcomeBack: "Dobrodošli nazaj", signInSubtitle: "Prijavite se za upravljanje trgovine.",
@@ -400,5 +409,6 @@ export const sl: Dictionary = {
     manage: "Upravljaj ali prekliči",
     manualRenew: "Čas je za podaljšanje — dostop imate do {date}. Plačajte trgovini in potrdila bo.",
     manualPending: "Plačilo dogovorite neposredno s trgovino — shranjene kartice ni.",
+    pass: "Vaša članska izkaznica",
   },
 };

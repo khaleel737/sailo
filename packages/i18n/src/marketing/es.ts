@@ -16,10 +16,10 @@ export const marketingEs: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis para empezar, gratis para seguir",
-    title: "Deja de copiar pedidos a mano desde tus {highlight}.",
-    titleHighlight: "mensajes",
-    body: "Ya recibes pedidos en tus mensajes. Sailo lo convierte en una tienda de verdad — fotos, precios, opciones y stock detrás de un enlace, sin montar una web. Los pedidos siguen llegando al mismo chat, pero ya escritos.",
+    badge: "La tienda en un solo enlace",
+    title: "Tu link en la bio, pero {highlight}.",
+    titleHighlight: "recibe los pedidos",
+    body: "Un enlace en tu bio, y detrás está todo lo que vendes — fotos, precios, opciones, stock. La gente mira y compra sin que la mandes a otro sitio, y cada pedido llega ya redactado, al chat en el que ya estás respondiendo. Ninguna web que construir, y ninguna comisión salvo con tarjeta.",
     ctaPrimary: "Crea tu tienda — gratis",
     ctaSecondary: "Abrir una tienda real",
     proof1: "Lista en menos de un minuto",
@@ -185,6 +185,7 @@ export const marketingEs: MarketingDictionary = {
   footer: {
     tagline: "Un enlace, toda tu tienda.",
     product: "Producto",
+    docs: "Desarrolladores",
     liveShops: "Tiendas reales",
     rights: "Todos los derechos reservados.",
     legal: "Legal",
@@ -196,10 +197,10 @@ export const marketingEs: MarketingDictionary = {
   },
 
   seo: {
-    title: "Recibe pedidos online sin tener web — Sailo",
+    title: "Tienda con link en la bio — vende sin tener web | Sailo",
     description:
-      "Convierte tu Instagram en una tienda de verdad: fotos, precios, opciones y stock. Los pedidos llegan escritos. Sin comisión en WhatsApp, transferencia o efectivo.",
-    ogTitle: "Deja de copiar pedidos a mano desde los mensajes",
+      "Un enlace, y detrás una tienda de verdad: fotos, precios, opciones, stock y pago. Los pedidos llegan ya redactados. Gratis, sin comisión salvo con tarjeta.",
+    ogTitle: "Tu link en la bio, pero recibe los pedidos",
     ogDescription:
       "Una tienda real detrás de un enlace — fotos, precios, stock y checkout. Los pedidos llegan listos, y nadie se lleva un porcentaje de los clientes que conseguiste tú.",
   },

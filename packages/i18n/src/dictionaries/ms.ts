@@ -73,7 +73,8 @@ export const ms: Dictionary = {
   checkout: {
     failedSafe: "Sesuatu tidak menjadi. Anda tidak dicaj — sila cuba lagi.",
     failedUnsure: "Sesuatu tidak menjadi. Pesanan anda mungkin telah diterima — semak e-mel anda sebelum mencuba lagi.",
-    taxIncluded: "Termasuk {amount} {name} ({percent}%)", quantity: "Kuantiti",
+    taxIncluded: "Termasuk {amount} {name} ({percent}%)",
+    taxAtCheckout: "Dikira semasa pembayaran", quantity: "Kuantiti",
     increase: "Tambah kuantiti", decrease: "Kurangkan kuantiti",
     howReceive: "Bagaimana anda mahu menerimanya?", howOrder: "Bagaimana anda mahu memesan?",
     yourName: "Nama anda", email: "E-mel", phone: "Telefon",
@@ -93,6 +94,10 @@ export const ms: Dictionary = {
     manualNote: "Penjual menerima pesanan anda dan mengesahkan pembayaran.",
     orderSent: "Pesanan dihantar kepada {shop}", paidBy: "Dibayar dengan {method}.",
     payWith: "Bayar dengan {method}",
+    pasteNote:
+      "{method} tidak boleh mengisi mesej, jadi salin pesanan anda dan tampalkannya dalam chat.",
+    yourOrder: "Pesanan anda",
+    openApp: "Buka {method}",
     bankInstructions: "Pindahkan jumlahnya mengikut butiran di bawah, kemudian tambah rujukan anda.",
     bankDetails: "Butiran bank", copy: "Salin", copied: "Disalin",
     transferReference: "Rujukan pemindahan", sentPayment: "Saya sudah menghantar bayaran",
@@ -238,6 +243,10 @@ export const ms: Dictionary = {
     note: "Nota", paid: "Dibayar", unpaid: "Belum dibayar", refunded: "Dikembalikan",
     paymentSent: "Bayaran dihantar", downloadPdf: "Muat turun PDF", print: "Cetak atau simpan PDF",
     taxId: "Nombor cukai",
+    registrationNumber: "No. pendaftaran",
+    tradingAs: "Berniaga sebagai {name}",
+    reverseCharge: "Caj balikan — VAT diakaunkan oleh penerima.",
+    customerTaxId: "ID cukai pelanggan",
   },
   auth: {
     welcomeBack: "Selamat kembali", signInSubtitle: "Log masuk untuk menguruskan kedai anda.",
@@ -399,5 +408,6 @@ export const ms: Dictionary = {
     manage: "Urus atau batal",
     manualRenew: "Masa untuk perbaharui — akses anda sehingga {date}. Bayar kepada kedai dan mereka akan sahkan.",
     manualPending: "Pembayaran diuruskan terus dengan kedai — tiada kad disimpan.",
+    pass: "Pas ahli anda",
   },
 };

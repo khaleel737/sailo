@@ -76,6 +76,7 @@ export const nl: Dictionary = {
     failedSafe: "Er is iets misgegaan. Er is niets afgeschreven — probeer het opnieuw.",
     failedUnsure: "Er is iets misgegaan. Je bestelling is mogelijk toch doorgekomen — controleer je e-mail voordat je het opnieuw probeert.",
     taxIncluded: "Inclusief {amount} {name} ({percent}%)",
+    taxAtCheckout: "Wordt bij het afrekenen berekend",
     saveFailed: "Kon dat niet opslaan.",
     quantity: "Aantal", increase: "Aantal verhogen", decrease: "Aantal verlagen",
     howReceive: "Hoe wil je het ontvangen?", howOrder: "Hoe wil je bestellen?",
@@ -95,6 +96,10 @@ export const nl: Dictionary = {
     manualNote: "De verkoper ontvangt je bestelling en bevestigt de betaling.",
     orderSent: "Bestelling verzonden naar {shop}", paidBy: "Betaling via {method}.",
     payWith: "Betalen met {method}",
+    pasteNote:
+      "{method} kan geen bericht invullen, dus kopieer je bestelling en plak die in de chat.",
+    yourOrder: "Je bestelling",
+    openApp: "{method} openen",
     bankInstructions: "Maak het totaal over met onderstaande gegevens en vul je kenmerk in.",
     bankDetails: "Bankgegevens", copy: "Kopiëren", copied: "Gekopieerd",
     transferReference: "Betalingskenmerk", sentPayment: "Ik heb betaald",
@@ -276,6 +281,10 @@ export const nl: Dictionary = {
     reference: "Kenmerk", note: "Notitie", paid: "Betaald", unpaid: "Openstaand",
     refunded: "Terugbetaald", paymentSent: "Betaling verstuurd",
     downloadPdf: "PDF downloaden", print: "Afdrukken of opslaan als PDF", taxId: "Btw-nummer",
+    registrationNumber: "KvK-nr.",
+    tradingAs: "Handelend als {name}",
+    reverseCharge: "Btw verlegd — de btw wordt aangegeven door de afnemer.",
+    customerTaxId: "Btw-nummer klant",
   },
   auth: {
     welcomeBack: "Welkom terug", signInSubtitle: "Log in om je winkel te beheren.",
@@ -458,5 +467,6 @@ export const nl: Dictionary = {
     manage: "Beheren of opzeggen",
     manualRenew: "Tijd om te verlengen — je toegang loopt tot {date}. Betaal de winkel en zij bevestigen het.",
     manualPending: "De betaling regel je rechtstreeks met de winkel — er staat geen kaart geregistreerd.",
+    pass: "Je lidmaatschapspas",
   },
 };

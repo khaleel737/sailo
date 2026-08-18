@@ -125,6 +125,21 @@ export const adminEn = {
     role: "Shop admin",
 
     /**
+     * The developer documentation — `/docs`, covering the REST API, the
+     * webhooks and the MCP server.
+     *
+     * In the rail rather than only on Settings → Integrations, because the
+     * card down there is found by a seller who already knows the feature
+     * exists. A seller who has never heard of the MCP server never opens the
+     * tab that would tell them, and the keys the docs explain are minted two
+     * clicks from here.
+     *
+     * Labelled for the audience, matching the marketing footer's "Developers"
+     * so the same words lead to the same page from both sides of the login.
+     */
+    docs: "Developers",
+
+    /**
      * The panel footer. A seller signs the terms here, not on the marketing
      * site, so this is where the documents have to be reachable from.
      */
@@ -513,7 +528,32 @@ export const adminEn = {
     alreadyUsed: "Already used.",
     alreadyUsedAt: "Already used at {time}.",
     notReleased: "Not valid \u2014 this order isn't paid yet.",
-    notFound: "No ticket with that code in your shop.",
+    notFound: "No ticket or member pass with that code in your shop.",
+
+    /*
+     * Members at the door.
+     *
+     * Deliberately warmer than the ticket wording, and the second line is the
+     * reason: a member scanned twice is a green screen, not an amber one.
+     * A ticket used twice means somebody is trying to get two people in on one
+     * admission; a member scanned twice means they queued and the screen
+     * lagged, and turning a paid-up member away over it is the failure this
+     * whole screen exists to avoid.
+     */
+    memberIn: "Member \u2014 let them through.",
+    memberAlreadyIn: "Already scanned just now \u2014 still let them through.",
+    memberLastVisit: "Last in {when}",
+    memberVisits: "{count} visits",
+    memberFirstVisit: "First visit",
+    memberPaidUntil: "Paid up to {date}",
+    memberEndingSoon: "Cancelling \u2014 keeps access until {date}",
+    memberLapsed: "Membership lapsed \u2014 not paid up.",
+    memberLapsedOn: "Membership lapsed on {date}.",
+    memberAwaitingPayment:
+      "Renewal sent and not paid yet \u2014 they owe for this period.",
+    memberWrong: "That pass is for {membership}, not this door.",
+    memberWrongUnknown: "That pass is for a different membership.",
+    memberPass: "Member pass",
   },
 
   supportTopics: {
@@ -644,6 +684,12 @@ export const adminEn = {
     items: "Items",
     delivery: "Delivery",
     refunded: "Refunded",
+    /*
+     * The buyer's card statement, when Adaptive Pricing converted the charge.
+     * Every other figure on the row is the shop's own currency and stays that
+     * way; this is the one that isn't, and the only reason it is recorded.
+     */
+    paidAs: "Buyer paid",
     andMore: "+ {count} more",
     filesReleased: "Files released",
     filesHeld: "Files held until you mark this paid",
@@ -810,6 +856,50 @@ export const adminEn = {
 
   payments: {
     stripeErrorTitle: "Stripe couldn't start the setup",
+
+    /*
+     * Chargebacks, in the seller's own words.
+     *
+     * Deliberately never says "dispute rate" or names a threshold. A seller
+     * cannot act on a ratio and being shown one they are close to reads as a
+     * threat; what they can act on is the deadline on the case in front of them
+     * and the one document that is missing from it.
+     */
+    disputesTitle: "Chargebacks",
+    disputesNone: "No chargebacks. Nothing to do here.",
+    disputesOpen: "{count} needing a response",
+    disputesOpenOne: "1 needing a response",
+    disputeDaysLeft: "{count} days left",
+    disputeDayLeft: "1 day left",
+    disputeToday: "Due today",
+    disputeOverdue: "The deadline has passed",
+    disputeInquiry: "Question from the bank",
+    /*
+     * The distinction that decides whether a seller panics. An enquiry has taken
+     * nothing; a chargeback has already taken the money and the fee.
+     */
+    disputeInquiryBody: "Their bank is asking about this payment. No money has been taken — answering well usually stops it becoming a chargeback.",
+    disputeChargebackBody: "{amount} has been taken from your balance, including the {fee} chargeback fee. You get it back if you win.",
+    disputeWon: "You won this one",
+    disputeLost: "This one was lost",
+    disputeClosedNoLoss: "Closed — you kept the money",
+    disputeUnderReview: "With the bank now",
+    disputeEvidenceSent: "Answer sent",
+    disputeWhatWins: "What decides this one",
+    disputeMissing: "Still needed",
+    disputeReady: "Everything the bank asks for is on file.",
+    disputeDocuments: "Documents only you have",
+    disputeDocumentsBody:
+      "We put together everything we hold — the buyer's details, their address, what they were charged. These are the ones we cannot: PDF, JPEG or PNG, 4.5 MB across them all. One file per line, so a second upload replaces the first.",
+
+    payoutsHeldTitle: "Payouts paused",
+    /*
+     * States what is *not* happening as prominently as what is. A seller reading
+     * "paused" assumes the worst — that their shop is closed and their money is
+     * gone — and neither is true.
+     */
+    payoutsHeldBody: "Your payouts are paused while we look into some chargebacks. Your shop is open, you can still take payments, and the money is safe in your Stripe balance — it just isn't being sent to your bank yet.",
+    payoutsHeldContact: "We'll be in touch. If you think this is a mistake, reply to any email from us.",
     stripeNoResponse: "Stripe did not respond. Try again in a moment.",
     waysToOrder: "{count} ways to order",
     waysToOrderOne: "1 way to order",
@@ -859,6 +949,33 @@ export const adminEn = {
     disconnectHint: "Disconnecting stops new card orders. Your Stripe account, its payouts and its records stay exactly where they are.",
     stripeNeedsDetails: "Stripe still needs some details before you can take payments.",
     stripeChecking: "Stripe has your details and is checking them. This is usually quick, and the card option turns on by itself.",
+
+    /*
+     * The panel listing what a buyer is actually offered.
+     *
+     * It exists because "connected" and "can be paid with iDEAL" are different
+     * facts and the screen used to show only the first. A Dutch seller whose
+     * iDEAL was switched off pending one identity field read "Live" and had no
+     * way of finding out.
+     */
+    railsTitle: "What buyers can pay with",
+    railsHint:
+      "Stripe picks from these at checkout based on where your buyer is. Apple Pay and Google Pay come with Card.",
+    railsEmpty: "Stripe hasn't told us yet. Refresh the status in a moment.",
+    railLive: "On",
+    railPending: "Stripe is checking",
+    /* Named fields follow, so this ends in a colon rather than a full stop. */
+    railBlocked: "Needs from you:",
+    railBlockedAction: "Add it on Stripe",
+    railUnavailable: "Not available to you",
+    /*
+     * The one state Stripe has no word for, and the one that surprises people.
+     * The rail is switched on and no buyer will ever see it, because the shop
+     * prices in a currency it does not settle in.
+     */
+    railOffCurrency: "Only for prices in {currencies} — yours are in {currency}",
+    railOffCurrencyHint:
+      "Change your shop currency in Settings if you want these. Buyers are always charged in your shop's currency.",
     title: "Payments",
     description:
       "Turn on as many ways to order as you like. Buyers pick one at checkout.",
@@ -970,6 +1087,16 @@ export const adminEn = {
     notifyOrderNeedsAction: "Payments to confirm",
     notifyOrderNeedsActionBody:
       "A buyer says they've sent a bank transfer, so the money needs checking.",
+    notificationEmail: "Notification email",
+    notifyMembershipStarted: "New members",
+    notifyMembershipStartedBody:
+      "Someone started a recurring membership — what they joined and what they pay.",
+    notifyMembershipCancelled: "Members leaving",
+    notifyMembershipCancelledBody:
+      "A member cancelled, or their membership ran out.",
+    notifyMembershipPaymentFailed: "Failed renewals",
+    notifyMembershipPaymentFailedBody:
+      "A renewal payment didn't go through. Stripe retries for a few days and then cancels.",
     notifyProductTips: "Tips & product news",
     notifyProductTipsBody: "Occasional email from Sailo about getting set up and selling more. Never about your orders.",
     taxIdPlaceholder: "GB123456789",
@@ -1035,6 +1162,53 @@ export const adminEn = {
     askMarketingConsentBody: "An optional box, never pre-ticked. Only buyers who tick it may be emailed offers.",
     taxId: "Tax ID",
     taxIdHint: "optional — printed on invoices",
+
+    /* Who computes the tax. */
+    taxMode: "Who works out the tax",
+    taxModeHint: "one rate you set, or Stripe calculating per country",
+    taxModeManual: "I set one rate — charged to every buyer",
+    taxModeStripe: "Stripe Tax — worked out from the buyer's country",
+    /*
+     * Said before the seller's first sale rather than discovered as a Stripe
+     * error at somebody's checkout. Neither half is something Sailo can do for
+     * them: the registrations are legal positions only they can take, and
+     * Stripe refuses to create a session until the origin address is set.
+     */
+    taxStripeSetup:
+      "Turn on Stripe Tax in your own Stripe dashboard and add the countries you're registered in. Stripe then charges the right rate per buyer, watches the registration thresholds, and tells you when you cross one.",
+    taxStripeNoAccount:
+      "Connect Stripe first — Stripe Tax runs on your own Stripe account, and the registrations that set the rate are yours.",
+    taxStripeDelivery:
+      "Stripe decides whether delivery is taxable where the buyer is, so there's nothing to set here.",
+    taxIdCollection: "Ask business buyers for a VAT number",
+    taxIdCollectionBody:
+      "Stripe checks it, and a valid EU number from another country zero-rates the sale under the reverse charge. Leave off if you sell to consumers — it's one more field at checkout.",
+
+    /* Invoicing. */
+    invoicing: "Invoicing",
+    invoicingBody:
+      "How your invoices are numbered, and who they say issued them.",
+    invoicePrefix: "Number prefix",
+    invoicePrefixHint: "letters and numbers — INV, 2026, your own series",
+    invoiceNext: "Next invoice",
+    invoiceNextHint:
+      "Counts up on its own. An invoice sequence has to have no gaps and no repeats, so it isn't editable.",
+    invoiceNotes: "Invoice footer",
+    invoiceNotesHint: "payment terms, a thank-you, anything you must state",
+    invoiceIssuer: "Who the invoice is from",
+    invoiceIssuerBody:
+      "Leave blank and invoices carry your shop name and location, as they do now. Fill it in if you invoice as a registered business — most places require the legal name, full address and company number on the invoice itself.",
+    invoiceLegalName: "Registered business name",
+    invoiceLegalNameHint: "only if it differs from your shop name",
+    invoiceAddressLine1: "Address",
+    invoiceAddressLine2: "Address line 2",
+    invoiceCity: "City",
+    invoiceRegion: "State / region",
+    invoicePostalCode: "Postal code",
+    invoiceCountry: "Country",
+    invoiceRegistrationNumber: "Company number",
+    invoiceRegistrationNumberHint:
+      "the registration number, not the VAT number above",
     tracking: "Analytics & pixels",
     trackingBody: "Connect your own tracking tools to measure visits and ad campaigns on your shop. Paste the ID, not the code snippet.",
     trackingConsentNote: "Adding any of these puts a cookie banner on your shop, as the law requires. The tools load only after a buyer accepts, and each buyer's choice is remembered for your shop alone.",
@@ -1444,12 +1618,50 @@ export const adminEn = {
     signupLink: "Your signup page",
     copyLink: "Copy link",
     copied: "Copied",
-    showCard: "Show a signup box on my shop page",
-    showCardBody: "Under your products, where somebody who browsed and didn't buy will see it.",
+    showCard: "Ask for sign-ups on my shop page",
+    showCardBody:
+      "A card under your products, and a small pop-up for the visitors who never scroll that far. It waits until somebody has looked around, and it doesn't come back once it's closed.",
     incentive: "What they get for signing up",
     incentiveHint: "Shown on the form. Send the code itself in your first broadcast.",
     incentivePlaceholder: "10% off your first order",
     subscribers: "{count} joined from the signup form",
+
+    /*
+     * Who is on the list.
+     *
+     * The count above answers "how many" and was, for a while, the only thing
+     * this screen would say about the people behind it. A seller who has just
+     * shared their signup link wants to see the name that arrived, not watch
+     * a number go from 11 to 12.
+     */
+    listTitle: "Who's on your list",
+    listBody: "Everyone who confirmed they want email from you.",
+    seeAllSubscribers: "See everyone",
+    subscribersTitle: "Subscribers",
+    subscribersDescription: "Everyone who opted in, how they got here, and who has since left.",
+    subscribersEmpty: "Nobody has joined yet",
+    subscribersEmptyBody:
+      "Share your signup page, or turn on the sign-up box, and the people who join show up here — name, address and the day they said yes.",
+    joinedOn: "Joined",
+    joinedVia: "How",
+    /** The address is the identity here; a contact with no name says so. */
+    noName: "No name given",
+    /* The five numbers, and why they differ. `statOnList` counts everybody who
+       ever opted in; `statReachable` is what a broadcast will actually send
+       to, and the gap between them is the two rows underneath. */
+    statOnList: "Opted in",
+    statReachable: "Can be reached",
+    statUnsubscribed: "Unsubscribed",
+    statRefused: "Bounced or reported",
+    statFromForm: "From the signup form",
+    subscriberActive: "Subscribed",
+    subscriberUnsubscribed: "Unsubscribed",
+    /* A hard bounce and a spam report are named apart from an unsubscribe on
+       purpose: neither is undone by the person signing up again, and a seller
+       looking at a shrinking list needs to know which one they are reading. */
+    subscriberBounced: "Bounced",
+    subscriberComplained: "Reported spam",
+    subscribersClipped: "The most recent {count}. Export your clients for the full list.",
   },
 
   /** The members list, and the states a subscription passes through. */
@@ -1503,6 +1715,11 @@ export const adminEn = {
     byCard: "Card",
     byHand: "You collect",
     awaitingPayment: "Waiting on payment",
+
+    /* The door — attendance and the member's own pass. */
+    visits: "{count} visits",
+    lastIn: "Last in {date}",
+    pass: "Pass",
   },
 
   memberStatus: {
@@ -1598,6 +1815,12 @@ export const adminEn = {
     mcpBody:
       "Point Claude or any MCP client at this address and give it a key above. It can then read your shop and answer questions about it.",
     mcpUrlLabel: "MCP server URL",
+    /*
+     * Beside the address, because this is the moment a seller needs it: they
+     * have the URL selected and no idea what to paste it into. The guide is
+     * the one page that answers that, client by client.
+     */
+    mcpDocsLink: "How to connect an assistant",
 
     docsTitle: "How to connect",
     docsBody: "Endpoints, payload shapes and how to verify a signature.",

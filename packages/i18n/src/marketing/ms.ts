@@ -16,10 +16,10 @@ export const marketingMs: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Percuma untuk mula, percuma seterusnya",
-    title: "Berhenti menaip semula pesanan daripada {highlight}.",
-    titleHighlight: "DM anda",
-    body: "Anda sudah menerima pesanan melalui mesej. Sailo menjadikannya kedai sebenar — foto, harga, pilihan dan stok di sebalik satu pautan, tanpa membina laman web. Pesanan tetap masuk ke chat yang sama, cuma sudah tertulis.",
+    badge: "Kedai dalam satu pautan",
+    title: "Pautan di bio anda, tapi {highlight}.",
+    titleHighlight: "menerima pesanan",
+    body: "Satu pautan di bio anda, dan di belakangnya segala yang anda jual — foto, harga, pilihan, stok. Orang melihat dan membeli tanpa dihantar ke tempat lain, dan setiap pesanan tiba sudah tertulis penuh, dalam chat yang memang anda balas. Tiada laman web untuk dibina, dan tiada komisen kecuali kad.",
     ctaPrimary: "Cipta kedai anda — percuma",
     ctaSecondary: "Buka kedai sebenar",
     proof1: "Siap dalam masa kurang seminit",
@@ -185,6 +185,7 @@ export const marketingMs: MarketingDictionary = {
   footer: {
     tagline: "Satu pautan, seluruh kedai anda.",
     product: "Produk",
+    docs: "Pembangun",
     liveShops: "Kedai sebenar",
     rights: "Hak cipta terpelihara.",
     legal: "Perundangan",
@@ -196,10 +197,10 @@ export const marketingMs: MarketingDictionary = {
   },
 
   seo: {
-    title: "Terima pesanan dalam talian tanpa laman web — Sailo",
+    title: "Kedai pada pautan di bio — berjual tanpa laman web | Sailo",
     description:
-      "Jadikan Instagram anda kedai sebenar: foto, harga, pilihan, stok. Pesanan tiba sudah tertulis. Tiada komisen untuk WhatsApp, pindahan bank atau tunai.",
-    ogTitle: "Berhenti menaip semula pesanan daripada DM",
+      "Satu pautan, dan di belakangnya kedai sebenar: foto, harga, pilihan, stok dan bayaran. Pesanan tiba sudah tertulis penuh. Percuma, tiada komisen kecuali kad.",
+    ogTitle: "Pautan di bio anda, tapi menerima pesanan",
     ogDescription:
       "Kedai sebenar di sebalik satu pautan — foto, harga, stok dan pembayaran. Pesanan tiba siap, dan tiada siapa mengambil bahagian daripada pelanggan yang anda cari sendiri.",
   },

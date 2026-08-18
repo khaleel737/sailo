@@ -16,10 +16,10 @@ export const marketingId: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis mulai, gratis seterusnya",
-    title: "Berhenti mengetik ulang pesanan dari {highlight}.",
-    titleHighlight: "DM",
-    body: "Anda sudah menerima pesanan lewat pesan. Sailo mengubahnya jadi toko sungguhan — foto, harga, pilihan, dan stok di balik satu tautan, tanpa membuat website. Pesanan tetap masuk ke chat yang sama, hanya saja sudah tertulis lengkap.",
+    badge: "Toko dalam satu tautan",
+    title: "Tautan di bio Anda, tapi {highlight}.",
+    titleHighlight: "menerima pesanan",
+    body: "Satu tautan di bio Anda, dan di baliknya semua yang Anda jual — foto, harga, pilihan, stok. Orang menelusuri dan membeli tanpa dikirim ke mana-mana, dan setiap pesanan datang sudah tertulis lengkap, di chat yang memang Anda balas. Tidak ada situs yang perlu dibuat, dan tidak ada komisi selain kartu.",
     ctaPrimary: "Buat toko Anda — gratis",
     ctaSecondary: "Buka toko sungguhan",
     proof1: "Aktif dalam kurang dari satu menit",
@@ -185,6 +185,7 @@ export const marketingId: MarketingDictionary = {
   footer: {
     tagline: "Satu tautan, seluruh toko Anda.",
     product: "Produk",
+    docs: "Pengembang",
     liveShops: "Toko sungguhan",
     rights: "Seluruh hak cipta dilindungi.",
     legal: "Legal",
@@ -196,10 +197,10 @@ export const marketingId: MarketingDictionary = {
   },
 
   seo: {
-    title: "Terima pesanan online tanpa website — Sailo",
+    title: "Toko lewat tautan di bio — jualan tanpa website | Sailo",
     description:
-      "Ubah Instagram jadi toko sungguhan: foto, harga, pilihan, stok. Pesanan datang sudah tertulis lengkap. Tanpa komisi lewat WhatsApp, transfer bank, atau tunai.",
-    ogTitle: "Berhenti mengetik ulang pesanan dari DM",
+      "Satu tautan, dan di baliknya toko sungguhan: foto, harga, pilihan, stok, dan pembayaran. Pesanan datang sudah tertulis lengkap. Gratis, tanpa komisi selain kartu.",
+    ogTitle: "Tautan di bio Anda, tapi menerima pesanan",
     ogDescription:
       "Toko sungguhan di balik satu tautan — foto, harga, stok, dan checkout. Pesanan datang siap, dan tak ada yang memotong dari pelanggan yang Anda cari sendiri.",
   },

@@ -79,6 +79,7 @@ export const fr: Dictionary = {
     failedSafe: "Une erreur s'est produite. Vous n'avez pas été débité — veuillez réessayer.",
     failedUnsure: "Une erreur s'est produite. Votre commande est peut-être passée — vérifiez vos e-mails avant de réessayer.",
     taxIncluded: "Dont {amount} de {name} ({percent} %)",
+    taxAtCheckout: "Calculée au paiement",
     saveFailed: "Enregistrement impossible.",
     quantity: "Quantité", increase: "Augmenter la quantité", decrease: "Réduire la quantité",
     howReceive: "Comment souhaitez-vous le recevoir ?",
@@ -100,6 +101,10 @@ export const fr: Dictionary = {
     manualNote: "Le vendeur reçoit votre commande et confirme le paiement.",
     orderSent: "Commande envoyée à {shop}", paidBy: "Paiement par {method}.",
     payWith: "Payer avec {method}",
+    pasteNote:
+      "{method} ne peut pas préremplir le message : copiez votre commande et collez-la dans la conversation.",
+    yourOrder: "Votre commande",
+    openApp: "Ouvrir {method}",
     bankInstructions: "Virez le total avec les coordonnées ci-dessous, puis indiquez votre référence.",
     bankDetails: "Coordonnées bancaires", copy: "Copier", copied: "Copié",
     transferReference: "Référence du virement",
@@ -282,6 +287,10 @@ export const fr: Dictionary = {
     reference: "Réf.", note: "Note", paid: "Payée", unpaid: "Impayée",
     refunded: "Remboursée", paymentSent: "Paiement envoyé",
     downloadPdf: "Télécharger le PDF", print: "Imprimer ou enregistrer en PDF", taxId: "N° TVA",
+    registrationNumber: "N° RCS",
+    tradingAs: "Exerçant sous {name}",
+    reverseCharge: "Autoliquidation — TVA due par le preneur.",
+    customerTaxId: "N° TVA du client",
   },
   auth: {
     welcomeBack: "Bon retour", signInSubtitle: "Connectez-vous pour gérer votre boutique.",
@@ -463,5 +472,6 @@ export const fr: Dictionary = {
     manage: "Gérer ou annuler",
     manualRenew: "Il est temps de renouveler — votre accès court jusqu'au {date}. Payez la boutique et elle confirmera.",
     manualPending: "Le paiement se règle directement avec la boutique — aucune carte n'est enregistrée.",
+    pass: "Votre carte de membre",
   },
 };

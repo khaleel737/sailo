@@ -74,6 +74,7 @@ export const sv: Dictionary = {
     failedSafe: "Något gick fel. Du har inte debiterats — försök igen.",
     failedUnsure: "Något gick fel. Din beställning kan ha gått igenom — kolla din e-post innan du försöker igen.",
     taxIncluded: "Inklusive {amount} {name} ({percent} %)",
+    taxAtCheckout: "Beräknas i kassan",
     saveFailed: "Det gick inte att spara.",
     quantity: "Antal", increase: "Öka antal", decrease: "Minska antal",
     howReceive: "Hur vill du få den?", howOrder: "Hur vill du beställa?",
@@ -93,6 +94,10 @@ export const sv: Dictionary = {
     manualNote: "Säljaren får din order och bekräftar betalningen.",
     orderSent: "Order skickad till {shop}", paidBy: "Betalning via {method}.",
     payWith: "Betala med {method}",
+    pasteNote:
+      "{method} kan inte fylla i meddelandet, så kopiera din beställning och klistra in den i chatten.",
+    yourOrder: "Din beställning",
+    openApp: "Öppna {method}",
     bankInstructions: "För över hela beloppet med uppgifterna nedan och ange din referens.",
     bankDetails: "Bankuppgifter", copy: "Kopiera", copied: "Kopierat",
     transferReference: "Betalningsreferens", sentPayment: "Jag har betalat",
@@ -272,6 +277,10 @@ export const sv: Dictionary = {
     delivery: "Leverans", pickup: "Upphämtning", reference: "Ref.", note: "Notering",
     paid: "Betald", unpaid: "Obetald", refunded: "Återbetald", paymentSent: "Betalning skickad",
     downloadPdf: "Ladda ner PDF", print: "Skriv ut eller spara som PDF", taxId: "Org.nr",
+    registrationNumber: "Org.nr.",
+    tradingAs: "Handlar som {name}",
+    reverseCharge: "Omvänd betalningsskyldighet — moms redovisas av köparen.",
+    customerTaxId: "Kundens momsnummer",
   },
   auth: {
     welcomeBack: "Välkommen tillbaka", signInSubtitle: "Logga in för att sköta din butik.",
@@ -453,5 +462,6 @@ export const sv: Dictionary = {
     manage: "Hantera eller säg upp",
     manualRenew: "Dags att förnya — din tillgång räcker till {date}. Betala butiken så bekräftar de det.",
     manualPending: "Du gör upp betalningen direkt med butiken — inget kort finns sparat.",
+    pass: "Ditt medlemskort",
   },
 };

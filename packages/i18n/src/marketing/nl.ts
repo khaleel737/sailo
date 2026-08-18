@@ -16,10 +16,10 @@ export const marketingNl: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratis starten, gratis blijven",
-    title: "Stop met bestellingen overtypen uit je {highlight}.",
-    titleHighlight: "DM's",
-    body: "Je neemt al bestellingen aan in je berichten. Sailo maakt daar een echte winkel van — foto's, prijzen, opties en voorraad achter één link, zonder website te bouwen. Bestellingen komen nog steeds in dezelfde chat, maar dan uitgeschreven.",
+    badge: "De winkel in één link",
+    title: "Je link in bio, maar hij {highlight}.",
+    titleHighlight: "neemt de bestellingen aan",
+    body: "Eén link in je bio, en daarachter alles wat je verkoopt — foto's, prijzen, varianten, voorraad. Mensen kijken rond en kopen zonder ergens anders heen gestuurd te worden, en elke bestelling komt kant-en-klaar binnen, in de chat waarin je toch al antwoordt. Geen website om te bouwen, en geen commissie behalve op kaart.",
     ctaPrimary: "Maak je winkel — gratis",
     ctaSecondary: "Open een echte winkel",
     proof1: "Binnen een minuut online",
@@ -185,6 +185,7 @@ export const marketingNl: MarketingDictionary = {
   footer: {
     tagline: "Eén link, je hele winkel.",
     product: "Product",
+    docs: "Ontwikkelaars",
     liveShops: "Echte winkels",
     rights: "Alle rechten voorbehouden.",
     legal: "Juridisch",
@@ -196,10 +197,10 @@ export const marketingNl: MarketingDictionary = {
   },
 
   seo: {
-    title: "Neem online bestellingen aan zonder website — Sailo",
+    title: "Winkel via link in bio — verkopen zonder website | Sailo",
     description:
-      "Maak van je Instagram een echte winkel: foto's, prijzen, opties, voorraad. Bestellingen komen uitgeschreven binnen. Geen commissie op WhatsApp, overboeking of contant.",
-    ogTitle: "Stop met bestellingen overtypen uit je DM's",
+      "Eén link, daarachter een echte winkel: foto's, prijzen, varianten, voorraad, betaling. Bestellingen komen kant-en-klaar binnen. Gratis, geen commissie behalve op kaart.",
+    ogTitle: "Je link in bio, maar hij neemt de bestellingen aan",
     ogDescription:
       "Een echte winkel achter één link — foto's, prijzen, voorraad en afrekenen. Bestellingen komen kant-en-klaar binnen, en niemand pakt een deel van klanten die je zelf vond.",
   },

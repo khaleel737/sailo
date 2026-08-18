@@ -16,10 +16,10 @@ export const marketingBs: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Besplatno za početak, besplatno i dalje",
-    title: "Prestanite prepisivati narudžbe iz {highlight}.",
-    titleHighlight: "poruka",
-    body: "Već primate narudžbe u porukama. Sailo to pretvara u pravu trgovinu — fotografije, cijene, opcije i zalihe iza jednog linka, bez izrade web stranice. Narudžbe i dalje stižu u isti chat, ali ispisane.",
+    badge: "Prodavnica na jednom linku",
+    title: "Vaš link u biju, ali {highlight}.",
+    titleHighlight: "prima narudžbe",
+    body: "Jedan link u biju, a iza njega sve što prodajete — fotografije, cijene, opcije, zalihe. Kupci pregledaju i kupuju bez da ih šaljete igdje drugdje, a svaka narudžba stiže već ispisana, u chatu u kojem ionako odgovarate. Nema web stranice za praviti i nema provizije osim na karticu.",
     ctaPrimary: "Otvorite prodavnicu — besplatno",
     ctaSecondary: "Otvorite živu prodavnicu",
     proof1: "Spremno za manje od minute",
@@ -185,6 +185,7 @@ export const marketingBs: MarketingDictionary = {
   footer: {
     tagline: "Jedan link, cijela vaša prodavnica.",
     product: "Proizvod",
+    docs: "Programeri",
     liveShops: "Žive prodavnice",
     rights: "Sva prava zadržana.",
     legal: "Pravno",
@@ -196,10 +197,10 @@ export const marketingBs: MarketingDictionary = {
   },
 
   seo: {
-    title: "Primajte narudžbe online bez web stranice — Sailo",
+    title: "Prodavnica na linku u biju — prodajite bez sajta | Sailo",
     description:
-      "Pretvorite Instagram u pravu trgovinu: fotografije, cijene, opcije, zalihe. Narudžbe stižu ispisane. Bez provizije na WhatsApp, bankovni prijenos ili gotovinu.",
-    ogTitle: "Prestanite prepisivati narudžbe iz poruka",
+      "Jedan link, a iza njega prava prodavnica: fotografije, cijene, opcije, zalihe i plaćanje. Narudžbe stižu već ispisane. Besplatno, bez provizije osim na karticu.",
+    ogTitle: "Vaš link u biju, ali prima narudžbe",
     ogDescription:
       "Prava trgovina iza jednog linka — fotografije, cijene, zalihe i blagajna. Narudžbe stižu gotove, i niko ne uzima dio od kupaca koje ste sami našli.",
   },

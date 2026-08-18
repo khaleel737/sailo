@@ -16,10 +16,10 @@ export const marketingFr: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Gratuit au départ, gratuit ensuite",
-    title: "Arrêtez de recopier les commandes depuis vos {highlight}.",
-    titleHighlight: "messages",
-    body: "Vous prenez déjà des commandes dans vos messages. Sailo en fait une vraie boutique — photos, prix, options et stock derrière un seul lien, sans site à construire. Les commandes arrivent toujours dans la même conversation, mais déjà rédigées.",
+    badge: "La boutique en un seul lien",
+    title: "Votre lien dans la bio, mais il {highlight}.",
+    titleHighlight: "prend les commandes",
+    body: "Un lien dans votre bio, et derrière lui tout ce que vous vendez — photos, prix, options, stock. Les gens parcourent et achètent sans être renvoyés ailleurs, et chaque commande arrive déjà rédigée, dans la conversation où vous répondez de toute façon. Aucun site à construire, et aucune commission sauf par carte.",
     ctaPrimary: "Créer ma boutique — gratuit",
     ctaSecondary: "Ouvrir une boutique réelle",
     proof1: "En ligne en moins d'une minute",
@@ -185,6 +185,7 @@ export const marketingFr: MarketingDictionary = {
   footer: {
     tagline: "Un lien, toute votre boutique.",
     product: "Produit",
+    docs: "Développeurs",
     liveShops: "Boutiques réelles",
     rights: "Tous droits réservés.",
     legal: "Mentions légales",
@@ -196,10 +197,10 @@ export const marketingFr: MarketingDictionary = {
   },
 
   seo: {
-    title: "Prenez des commandes en ligne sans site web — Sailo",
+    title: "Boutique en lien dans la bio — vendez sans site web | Sailo",
     description:
-      "Transformez votre Instagram en vraie boutique : photos, prix, options, stock. Les commandes arrivent rédigées. Aucune commission sur WhatsApp, virement ou espèces.",
-    ogTitle: "Arrêtez de recopier les commandes depuis vos messages",
+      "Un lien, et derrière une vraie boutique : photos, prix, options, stock et paiement. Les commandes arrivent déjà rédigées. Gratuit, sans commission sauf par carte.",
+    ogTitle: "Votre lien dans la bio, mais il prend les commandes",
     ogDescription:
       "Une vraie boutique derrière un seul lien — photos, prix, stock et paiement. Les commandes arrivent prêtes, et personne ne prélève sur les clients que vous avez trouvés vous-même.",
   },

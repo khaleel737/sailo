@@ -16,10 +16,10 @@ export const marketingDe: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Kostenlos starten, kostenlos bleiben",
-    title: "Schluss mit dem Abtippen von Bestellungen aus {highlight}.",
-    titleHighlight: "den DMs",
-    body: "Sie nehmen Bestellungen längst in Nachrichten an. Sailo macht daraus einen echten Shop — Fotos, Preise, Varianten und Bestände hinter einem Link, ohne Website. Bestellungen landen weiter im selben Chat, nur fertig geschrieben.",
+    badge: "Der Shop mit einem Link",
+    title: "Ihr Link in Bio, aber er {highlight}.",
+    titleHighlight: "nimmt die Bestellungen an",
+    body: "Ein Link in Ihrer Bio, und alles, was Sie verkaufen, liegt dahinter — Fotos, Preise, Varianten, Bestand. Ihre Kundschaft stöbert und kauft, ohne woanders hingeschickt zu werden, und jede Bestellung kommt fertig ausgeschrieben an, im Chat, in dem Sie ohnehin antworten. Keine Website zu bauen, und keine Provision außer auf Karte.",
     ctaPrimary: "Shop erstellen — kostenlos",
     ctaSecondary: "Echten Shop ansehen",
     proof1: "In unter einer Minute online",
@@ -185,6 +185,7 @@ export const marketingDe: MarketingDictionary = {
   footer: {
     tagline: "Ein Link, dein ganzer Shop.",
     product: "Produkt",
+    docs: "Entwickler",
     liveShops: "Echte Shops",
     rights: "Alle Rechte vorbehalten.",
     legal: "Rechtliches",
@@ -196,10 +197,10 @@ export const marketingDe: MarketingDictionary = {
   },
 
   seo: {
-    title: "Bestellungen online annehmen — ohne Website | Sailo",
+    title: "Shop per Link in Bio — verkaufen ohne Website | Sailo",
     description:
-      "Machen Sie Instagram zum echten Shop: Fotos, Preise, Varianten, Bestände. Bestellungen kommen fertig geschrieben. Keine Provision auf WhatsApp, Überweisung oder Bar.",
-    ogTitle: "Schluss mit dem Abtippen von Bestellungen aus den DMs",
+      "Ein Link, dahinter ein echter Shop: Fotos, Preise, Varianten, Bestand, Kasse. Bestellungen kommen fertig ausgeschrieben. Kostenlos, keine Provision außer Karte.",
+    ogTitle: "Ihr Link in Bio, aber er nimmt die Bestellungen an",
     ogDescription:
       "Ein echter Shop hinter einem Link — Fotos, Preise, Bestände und Kasse. Bestellungen kommen fertig an, und niemand nimmt einen Anteil an Kunden, die Sie selbst gefunden haben.",
   },

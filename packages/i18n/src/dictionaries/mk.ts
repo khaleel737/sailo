@@ -73,7 +73,8 @@ export const mk: Dictionary = {
   checkout: {
     failedSafe: "Нешто тргна наопаку. Не ви е наплатено — обидете се повторно.",
     failedUnsure: "Нешто тргна наопаку. Вашата порачка можеби помина — проверете го е-поштата пред да обидете повторно.",
-    taxIncluded: "Вклучува {amount} {name} ({percent}%)", quantity: "Количина",
+    taxIncluded: "Вклучува {amount} {name} ({percent}%)",
+    taxAtCheckout: "Се пресметува при плаќање", quantity: "Количина",
     increase: "Зголеми количина", decrease: "Намали количина",
     howReceive: "Како сакате да ја примите нарачката?", howOrder: "Како сакате да нарачате?",
     yourName: "Вашето име", email: "Е-пошта", phone: "Телефон",
@@ -93,6 +94,10 @@ export const mk: Dictionary = {
     manualNote: "Продавачот ја добива вашата нарачка и ја потврдува уплатата.",
     orderSent: "Нарачката е испратена до {shop}", paidBy: "Платено преку: {method}.",
     payWith: "Плати со {method}",
+    pasteNote:
+      "{method} не може да ја пополни пораката, па копирајте ја нарачката и залепете ја во разговорот.",
+    yourOrder: "Вашата нарачка",
+    openApp: "Отвори {method}",
     bankInstructions: "Уплатете го вкупниот износ според податоците подолу, потоа внесете ја вашата повикувачка бројка.",
     bankDetails: "Податоци за уплата", copy: "Копирај", copied: "Копирано",
     transferReference: "Повикувачка бројка", sentPayment: "Ја испратив уплатата",
@@ -238,6 +243,10 @@ export const mk: Dictionary = {
     note: "Забелешка", paid: "Платено", unpaid: "Неплатено", refunded: "Вратено",
     paymentSent: "Уплатата е испратена", downloadPdf: "Преземи PDF", print: "Печати или зачувај PDF",
     taxId: "Даночен број",
+    registrationNumber: "Рег. бр.",
+    tradingAs: "Работи како {name}",
+    reverseCharge: "Обратно оптоварување — ДДВ го пресметува примачот.",
+    customerTaxId: "Даночен број на клиентот",
   },
   auth: {
     welcomeBack: "Добредојдовте назад", signInSubtitle: "Пријавете се за да управувате со продавницата.",
@@ -402,5 +411,6 @@ export const mk: Dictionary = {
     manage: "Управувај или откажи",
     manualRenew: "Време е за обнова — пристапот ви трае до {date}. Платете му на дуќанот и ќе потврди.",
     manualPending: "Плаќањето го договарате директно со дуќанот — нема зачувана картичка.",
+    pass: "Вашата членска карта",
   },
 };

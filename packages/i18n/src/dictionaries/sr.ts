@@ -73,7 +73,8 @@ export const sr: Dictionary = {
   checkout: {
     failedSafe: "Нешто је пошло наопако. Није вам наплаћено — покушајте поново.",
     failedUnsure: "Нешто је пошло наопако. Ваша поруџбина је можда прошла — проверите и-мејл пре него што покушате поново.",
-    taxIncluded: "Укључује {amount} {name} ({percent}%)", quantity: "Количина",
+    taxIncluded: "Укључује {amount} {name} ({percent}%)",
+    taxAtCheckout: "Обрачунава се при плаћању", quantity: "Количина",
     increase: "Повећај количину", decrease: "Смањи количину",
     howReceive: "Како желите да примите поруџбину?", howOrder: "Како желите да наручите?",
     yourName: "Ваше име", email: "Имејл", phone: "Телефон",
@@ -93,6 +94,9 @@ export const sr: Dictionary = {
     manualNote: "Продавац прима вашу поруџбину и потврђује уплату.",
     orderSent: "Поруџбина послата продавници {shop}", paidBy: "Плаћено путем: {method}.",
     payWith: "Плати преко {method}",
+    pasteNote: "{method} не може да попуни поруку, па копирајте поруџбину и налепите је у ћаскање.",
+    yourOrder: "Ваша поруџбина",
+    openApp: "Отвори {method}",
     bankInstructions: "Уплатите укупан износ према подацима испод, затим унесите свој позив на број.",
     bankDetails: "Подаци за уплату", copy: "Копирај", copied: "Копирано",
     transferReference: "Позив на број", sentPayment: "Уплатио сам",
@@ -238,6 +242,10 @@ export const sr: Dictionary = {
     note: "Напомена", paid: "Плаћено", unpaid: "Неплаћено", refunded: "Враћено",
     paymentSent: "Уплата послата", downloadPdf: "Преузми PDF", print: "Одштампај или сачувај PDF",
     taxId: "ПИБ",
+    registrationNumber: "Рег. бр.",
+    tradingAs: "Послује као {name}",
+    reverseCharge: "Обрнуто оптерећење — ПДВ обрачунава прималац.",
+    customerTaxId: "Порески број купца",
   },
   auth: {
     welcomeBack: "Добро дошли назад", signInSubtitle: "Пријавите се да управљате продавницом.",
@@ -403,5 +411,6 @@ export const sr: Dictionary = {
     manage: "Управљај или откажи",
     manualRenew: "Време је за обнову — приступ вам траје до {date}. Платите продавници и она ће потврдити.",
     manualPending: "Плаћање договарате директно са продавницом — нема сачуване картице.",
+    pass: "Ваша чланска карта",
   },
 };

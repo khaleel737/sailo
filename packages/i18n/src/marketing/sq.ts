@@ -16,10 +16,10 @@ export const marketingSq: MarketingDictionary = {
   },
 
   hero: {
-    badge: "Falas për të filluar, falas për të vazhduar",
-    title: "Mos i rishkruaj më porositë nga {highlight}.",
-    titleHighlight: "mesazhet",
-    body: "Ti tashmë merr porosi në mesazhe. Sailo e kthen këtë në një dyqan të vërtetë — foto, çmime, opsione dhe stok pas një lidhjeje, pa ndërtuar faqe interneti. Porositë vijnë prapë në të njëjtin bisedim, por të shkruara.",
+    badge: "Dyqani në një lidhje",
+    title: "Lidhja juaj në bio, por {highlight}.",
+    titleHighlight: "i merr porositë",
+    body: "Një lidhje në bio-n tuaj, dhe pas saj gjithçka që shisni — foto, çmime, opsione, stok. Njerëzit shfletojnë dhe blejnë pa i dërguar gjetkë, dhe çdo porosi mbërrin e shkruar tashmë, në bisedën ku po përgjigjeni gjithsesi. Asnjë faqe interneti për të ndërtuar, dhe asnjë komision përveç kartës.",
     ctaPrimary: "Krijoni dyqanin tuaj — falas",
     ctaSecondary: "Hapni një dyqan të gjallë",
     proof1: "Gati për më pak se një minutë",
@@ -185,6 +185,7 @@ export const marketingSq: MarketingDictionary = {
   footer: {
     tagline: "Një lidhje, i gjithë dyqani juaj.",
     product: "Produkti",
+    docs: "Zhvillues",
     liveShops: "Dyqane të gjalla",
     rights: "Të gjitha të drejtat e rezervuara.",
     legal: "Ligjore",
@@ -196,10 +197,10 @@ export const marketingSq: MarketingDictionary = {
   },
 
   seo: {
-    title: "Merr porosi online pa faqe interneti — Sailo",
+    title: "Dyqan me lidhje në bio — shitni pa faqe interneti | Sailo",
     description:
-      "Kthe Instagramin në dyqan të vërtetë: foto, çmime, opsione, stok. Porositë vijnë të shkruara. Pa komision në WhatsApp, transfertë bankare ose para në dorë.",
-    ogTitle: "Mos i rishkruaj më porositë nga mesazhet",
+      "Një lidhje, dhe pas saj një dyqan i vërtetë: foto, çmime, opsione, stok dhe pagesë. Porositë mbërrijnë të shkruara tashmë. Falas, pa komision përveç kartës.",
+    ogTitle: "Lidhja juaj në bio, por i merr porositë",
     ogDescription:
       "Një dyqan i vërtetë pas një lidhjeje — foto, çmime, stok dhe arkë. Porositë vijnë gati, dhe askush nuk merr përqindje nga klientët që i gjete vetë.",
   },
