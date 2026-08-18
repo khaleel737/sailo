@@ -1,0 +1,259 @@
+apps/docs/content/_meta.ts
+  s_dcd75e2fc0aa0a::t_3670ecac78d8d5 1-38
+apps/docs/src/app/sitemap.ts
+  s_dcd75e2fc0aa0a::t_b8f8aa1f04c2ed 1-41
+apps/docs/vitest.config.mts
+  s_dcd75e2fc0aa0a::t_5e1d4fcdb8bf9a 1-31,39,41-45
+  s_dcd75e2fc0aa0a::t_002915d3664a59 32-38,40
+apps/docs/content/webhooks/index.mdx
+  s_dcd75e2fc0aa0a::t_57c59be703232f 1-120
+apps/docs/content/webhooks/payloads.mdx
+  s_dcd75e2fc0aa0a::t_17469d72052793 1-127
+packages/workflows/package.json
+  s_dcd75e2fc0aa0a::t_ba011eb2c1465f 14
+apps/docs/content/api/_meta.ts
+  s_dcd75e2fc0aa0a::t_af49148c14f808 1-18
+apps/docs/src/app/[[...mdxPath]]/page.tsx
+  s_dcd75e2fc0aa0a::t_acda9d965d66d8 1-29,31-44,46-69
+  s_dcd75e2fc0aa0a::t_e23b476a253f40 30
+  s_dcd75e2fc0aa0a::t_6ea69f1f7b743b 45
+apps/web/src/app/sitemap.ts
+  s_dcd75e2fc0aa0a::t_4552ae82d8305c 80-83,85-88
+apps/docs/content/errors.mdx
+  s_dcd75e2fc0aa0a::t_fa17896c0207c9 1-33,35,38-44,46,49-58,61,63-71,73,76-81,83,86-90,93,95-159
+  s_dcd75e2fc0aa0a::t_18466691d0964b 34,36-37,45,47-48,59-60,62,72,74-75,82,84-85,91-92,94
+apps/docs/src/lib/llms.ts
+  s_dcd75e2fc0aa0a::t_2c6349fc6556a4 1-3,5-26,32-83,85-86,96-158
+  s_dcd75e2fc0aa0a::t_5f2670fe13a2b5 88,94
+  s_dcd75e2fc0aa0a::t_ac5b8751a96efb 27-31
+  s_dcd75e2fc0aa0a::t_70f0356af120ae 84,87,89-93,95
+  s_dcd75e2fc0aa0a::t_a692f837fda70c 4
+apps/docs/content/mcp/index.mdx
+  s_dcd75e2fc0aa0a::t_1888a92e5411e7 1-82
+apps/docs/content/quickstart.mdx
+  s_dcd75e2fc0aa0a::t_de960f1d7a5e23 1-65,67-126
+  s_dcd75e2fc0aa0a::t_1b454a47bb766d 66
+apps/docs/src/components/reference/webhooks.tsx
+  s_dcd75e2fc0aa0a::t_1d79764fbc7947 1-8,10-181,183-195,197-226
+  s_dcd75e2fc0aa0a::t_1684298be4c1e4 9,182,196
+apps/docs/src/app/llms.txt/route.ts
+  s_dcd75e2fc0aa0a::t_e38ef4269b8186 1-31
+apps/docs/content/webhooks/delivery.mdx
+  s_dcd75e2fc0aa0a::t_f502aec9eda70e 1-138
+apps/docs/src/app/reference.css
+  s_dcd75e2fc0aa0a::t_85011bf1952567 1-297
+  s_dcd75e2fc0aa0a::t_81afed47530983 298-322
+  s_dcd75e2fc0aa0a::t_dc4d6619aab2e3 323-339
+apps/docs/src/lib/content.test.ts
+  s_dcd75e2fc0aa0a::t_00bb2f5cabc0a6 148,150-159,161-178,186,191-194
+  s_dcd75e2fc0aa0a::t_e7d7e3fae62a82 5-7
+  s_dcd75e2fc0aa0a::t_2fc3e8a3c4849c 1-4,8-147,149,160,179-185,187-190,195-222
+apps/web/src/app/admin/settings/integrations/_components/api-keys-card.tsx
+  s_dcd75e2fc0aa0a::t_21636de90532ed 114,118,120-127
+  s_dcd75e2fc0aa0a::t_686a9c837948fe 206-208,211
+apps/docs/src/lib/contract.test.ts
+  s_dcd75e2fc0aa0a::t_1320fbba928245 1-159,181-417,434,437,441-475
+  s_dcd75e2fc0aa0a::t_8d3c31a6b75a09 160-180,418-433,435-436,438-440
+apps/docs/src/app/llms-full.txt/route.ts
+  s_dcd75e2fc0aa0a::t_91a42865534293 1-28
+apps/docs/content/objects/index.mdx
+  s_dcd75e2fc0aa0a::t_7fbf4ca3318457 1-81
+apps/web/next.config.ts
+  s_dcd75e2fc0aa0a::t_dcdc1ebf7eb353 335-336,338-341,343
+apps/docs/src/lib/origins.ts
+  s_dcd75e2fc0aa0a::t_32951f1caf164f 1-2,9-11,22,24-35,38,41-46
+  s_dcd75e2fc0aa0a::t_c34c1c5d33d23b 3-8,12-21,23,36-37,39-40,47-62
+apps/web/src/app/(marketing)/_components/site-footer.tsx
+  s_dcd75e2fc0aa0a::t_a942eca3e876e0 8,126-134,137-138,142
+apps/docs/content/guides/no-code.mdx
+  s_dcd75e2fc0aa0a::t_c5ec46471f17a3 1-173
+apps/docs/content/webhooks/_meta.ts
+  s_dcd75e2fc0aa0a::t_aed0b2adaddedb 1-17
+apps/docs/content/objects/product.mdx
+  s_dcd75e2fc0aa0a::t_74aa026243038f 1-125
+apps/docs/content/guides/going-live.mdx
+  s_dcd75e2fc0aa0a::t_54718a9be72409 1-131
+apps/docs/content/webhooks/signatures.mdx
+  s_dcd75e2fc0aa0a::t_12e53ba528cf86 1-223
+apps/docs/content/guides/_meta.ts
+  s_dcd75e2fc0aa0a::t_aed0b2adaddedb 1-10
+apps/docs/content/mcp/connect.mdx
+  s_dcd75e2fc0aa0a::t_bf0715830040ab 1-96
+apps/docs/content/objects/order.mdx
+  s_dcd75e2fc0aa0a::t_704a6904981a58 1-164
+apps/docs/content/api/openapi.mdx
+  s_dcd75e2fc0aa0a::t_ca8721e40245ca 1-109
+apps/docs/turbo.json
+  s_dcd75e2fc0aa0a::t_0005f9b16cff2d 1-5
+apps/docs/content/authentication.mdx
+  s_dcd75e2fc0aa0a::t_a6081c416088bf 1-178,183-192
+  s_dcd75e2fc0aa0a::t_1e551a91dce423 179-182
+apps/docs/content/changelog.mdx
+  s_dcd75e2fc0aa0a::t_1e551a91dce423 70-72
+  s_dcd75e2fc0aa0a::t_994d72ca8c5b9c 1-69,73-84
+apps/docs/content/api/contacts.mdx
+  s_dcd75e2fc0aa0a::t_cb4914824e508e 1-107
+apps/docs/src/lib/pages.ts
+  s_dcd75e2fc0aa0a::t_80435e98901fd6 1-72
+apps/docs/tsconfig.json
+  s_dcd75e2fc0aa0a::t_0005f9b16cff2d 1-30
+apps/docs/content/pagination.mdx
+  s_dcd75e2fc0aa0a::t_ea19c601c585fd 26-27,33
+  s_dcd75e2fc0aa0a::t_b5e1945ebbc8c4 1-25,28-32,34-134
+knip.json
+  s_dcd75e2fc0aa0a::t_de6b0bc6c65ff2 37-38,40-41,43-44
+  s_dcd75e2fc0aa0a::t_d987298211a938 39,42
+apps/docs/content/objects/subscription.mdx
+  s_dcd75e2fc0aa0a::t_a8084729296637 1-114
+apps/docs/content/index.mdx
+  s_dcd75e2fc0aa0a::t_8bb24c25661542 1-18,22,27-90
+  s_dcd75e2fc0aa0a::t_a190d7ad8d1703 19-21,23-26
+packages/api/src/rest/openapi.ts
+  s_dcd75e2fc0aa0a::t_b1cd9fd0abffd2 1
+  s_dcd75e2fc0aa0a::t_c64e6c0ae1cf15 500-506
+apps/docs/content/guides/sync-a-crm.mdx
+  s_dcd75e2fc0aa0a::t_ea178453aca73d 1-209
+apps/docs/content/mcp/tools.mdx
+  s_dcd75e2fc0aa0a::t_3acbd5ff8cf17b 1-52
+apps/docs/test-stubs/server-only.ts
+  s_dcd75e2fc0aa0a::t_942cc3f54b7a71 1-6
+apps/docs/src/lib/to-markdown.ts
+  s_dcd75e2fc0aa0a::t_88dc4dad188b22 81-92
+  s_dcd75e2fc0aa0a::t_41d9e6dfccf0d2 1-80,93-99,101-104,106-107,109-110,112-113,115-122,129-282,305,322
+  s_dcd75e2fc0aa0a::t_9b9aa9ff62b457 100,105,108,111,114,123-128
+  s_dcd75e2fc0aa0a::t_4a3d5d71bb9121 283-304,306-307,310-316,318-321
+  s_dcd75e2fc0aa0a::t_7e6021cfd27ad0 308-309,317
+apps/docs/content/api/index.mdx
+  s_dcd75e2fc0aa0a::t_7d4999c5b951a6 1-18,21-68
+  s_dcd75e2fc0aa0a::t_5552556fa10ba0 19-20
+apps/docs/src/app/robots.ts
+  s_dcd75e2fc0aa0a::t_031e6558b6f132 1-48
+apps/docs/content/api/products.mdx
+  s_dcd75e2fc0aa0a::t_be7a5629bf75e9 1-82
+apps/docs/.gitignore
+  s_dcd75e2fc0aa0a::t_0005f9b16cff2d 1-2
+  s_dcd75e2fc0aa0a::t_1408a10eae707d 3-8
+apps/docs/content/objects/shop.mdx
+  s_dcd75e2fc0aa0a::t_1a42657bb913c4 1-49
+apps/docs/src/components/reference/kit.tsx
+  s_dcd75e2fc0aa0a::t_f83c28bf41124f 123-130,133-138
+  s_dcd75e2fc0aa0a::t_eb8f6f9058ee75 42-113
+  s_dcd75e2fc0aa0a::t_e24199551c5faa 2
+  s_dcd75e2fc0aa0a::t_03b93507f6931c 293-305
+  s_dcd75e2fc0aa0a::t_aaaeff9053b916 1,3-41,114-122,131-132,139-190,200-216,229-254,265,269-292
+  s_dcd75e2fc0aa0a::t_adcaba707cd994 255-264,266-268
+  s_dcd75e2fc0aa0a::t_315f6dfce52f39 217-228
+  s_dcd75e2fc0aa0a::t_3957ca4dab3ed3 191-199
+apps/docs/src/components/reference/objects.tsx
+  s_dcd75e2fc0aa0a::t_1684298be4c1e4 20,35-39
+  s_dcd75e2fc0aa0a::t_223defe3546075 1-19,21-34,40-83
+apps/docs/content/mcp/protocol.mdx
+  s_dcd75e2fc0aa0a::t_b79f8408de6005 1-199
+pnpm-workspace.yaml
+  s_dcd75e2fc0aa0a::t_8a4249a342a565 11-30
+apps/web/src/app/robots.ts
+  s_dcd75e2fc0aa0a::t_7d47fd61578e30 38
+  s_dcd75e2fc0aa0a::t_5da0820f4735ef 20,23-24,26-32
+apps/docs/content/objects/contact.mdx
+  s_dcd75e2fc0aa0a::t_def1c68bbcf039 1-97
+apps/docs/content/conventions.mdx
+  s_dcd75e2fc0aa0a::t_22817edab67a64 1-146,148-206
+  s_dcd75e2fc0aa0a::t_e1d9c8e49aff89 147
+apps/docs/src/components/reference/fields.ts
+  s_dcd75e2fc0aa0a::t_ac823c0f3eabe4 1-493
+apps/docs/content/rate-limits.mdx
+  s_dcd75e2fc0aa0a::t_febc605d287b7a 77-78
+  s_dcd75e2fc0aa0a::t_ac66eecfcd642e 1-18,20-76,79-102
+  s_dcd75e2fc0aa0a::t_18466691d0964b 19
+apps/docs/content/objects/money.mdx
+  s_dcd75e2fc0aa0a::t_de75fa015713e3 1-78
+.env.example
+  s_dcd75e2fc0aa0a::t_5ce6690c9964cc 98-117
+apps/web/src/app/admin/layout.tsx
+  s_dcd75e2fc0aa0a::t_ef993d2c6b304b 16,50
+apps/docs/src/app/layout.tsx
+  s_dcd75e2fc0aa0a::t_40f0727ee2b6c9 61-68
+  s_dcd75e2fc0aa0a::t_fdd4335ac72544 1-60,69-132
+apps/docs/next.config.ts
+  s_dcd75e2fc0aa0a::t_de42cd3d594618 1-62,64-134
+  s_dcd75e2fc0aa0a::t_54dbc5d7020f7b 63
+apps/docs/src/components/reference/mcp.tsx
+  s_dcd75e2fc0aa0a::t_1684298be4c1e4 10,135-137,153-157
+  s_dcd75e2fc0aa0a::t_6ce12f26ef1e3b 1-9,11-134,138-152,158-301
+packages/core/src/origin.ts
+  s_dcd75e2fc0aa0a::t_c573447b19b19b 61-93
+apps/web/src/lib/google-tag.test.ts
+  s_dcd75e2fc0aa0a::t_918986a3ae93f9 40-44,67
+apps/docs/package.json
+  s_dcd75e2fc0aa0a::t_c034054c1f77f8 32
+  s_dcd75e2fc0aa0a::t_0b72ec3c6cf418 30
+  s_dcd75e2fc0aa0a::t_a627adc614fc9a 1-7,9-17,19-29,31,33-36
+  s_dcd75e2fc0aa0a::t_121dde4236a8fb 8,18
+apps/web/src/app/admin/_components/sidebar.tsx
+  s_dcd75e2fc0aa0a::t_ef993d2c6b304b 83,91-101,224,227-231,234
+apps/docs/src/mdx-components.tsx
+  s_dcd75e2fc0aa0a::t_dff75587aaa864 4,19-21,26-30,33-53
+  s_dcd75e2fc0aa0a::t_34938371abd541 1-3,5-18,22-25,31-32,54
+apps/docs/src/components/reference/endpoints.tsx
+  s_dcd75e2fc0aa0a::t_ba86c9d686ce62 1-11,13-137,139-169,171-217,225,227-230,234-239,241-245,247-256,258-262,264-277,279-288,290-333
+  s_dcd75e2fc0aa0a::t_1684298be4c1e4 12,138,170,231-233,246,263,278,289
+  s_dcd75e2fc0aa0a::t_52a40cf2ac544e 240,257
+  s_dcd75e2fc0aa0a::t_a6ccda7235ad42 218-224,226
+apps/docs/content/objects/dispute.mdx
+  s_dcd75e2fc0aa0a::t_e765d5fd60dbb6 1-127
+apps/docs/content/mcp/permissions.mdx
+  s_dcd75e2fc0aa0a::t_6536cfd6860b4a 1-110
+apps/docs/content/guides/membership-access.mdx
+  s_dcd75e2fc0aa0a::t_e6632a038ba980 1-165
+apps/docs/content/api/orders.mdx
+  s_dcd75e2fc0aa0a::t_6bbbf6035c8ec9 1-79
+apps/docs/content/support.mdx
+  s_dcd75e2fc0aa0a::t_1e551a91dce423 84-85
+  s_dcd75e2fc0aa0a::t_4aca37a199d199 1-83,86-97
+scripts/check-deployment.sh
+  s_dcd75e2fc0aa0a::t_f1fd5852f1d177 20-22,30,64-86,111,116-121,124-128,131-136,139,147-167
+apps/docs/content/webhooks/events.mdx
+  s_dcd75e2fc0aa0a::t_016c47f347640a 1-113
+apps/docs/content/api/shop.mdx
+  s_dcd75e2fc0aa0a::t_c2d52498c2ca7d 1-30
+apps/docs/content/guides/chargebacks.mdx
+  s_dcd75e2fc0aa0a::t_22c932685fa61e 1-160
+apps/web/src/app/admin/settings/integrations/page.tsx
+  s_dcd75e2fc0aa0a::t_21636de90532ed 59
+  s_dcd75e2fc0aa0a::t_686a9c837948fe 8
+  s_dcd75e2fc0aa0a::t_bf1e85b4fe09d9 67-76,80
+apps/web/src/lib/consent-write-paths.test.ts
+  s_dcd75e2fc0aa0a::t_20e85e291a5d37 56-64,68,127-132
+apps/docs/content/objects/_meta.ts
+  s_dcd75e2fc0aa0a::t_aed0b2adaddedb 1-21
+README.md
+  s_dcd75e2fc0aa0a::t_cc0ea2ad78b28d 461-469
+apps/docs/content/mcp/_meta.ts
+  s_dcd75e2fc0aa0a::t_aed0b2adaddedb 1-17
+pnpm-lock.yaml
+  s_eba9c1a165bb11::t_6c667100e0699b 7-10,65,101-158,161-163,250,579,847,1637-1639,2259-2264,2931-2936,2940-2941,2943-2945,2947-2948,2970-2975,3141-3149,3270-3372,3872-3906,4149-4150,4152-4153,4155-4156,4158-4159,4161-4162,4310-4314,4593-4594,4596-4597,4599-4600,4602-4603,4605-4606,4608-4611,4613-4614,4780-4788,4801-4808,4836-4838,4890-4898,4902-4904,4908-4925,4932-4934,4941-4952,4956-4958,4968-4979,5028-5030,5040-5042,5077-5079,5151-5155,5279-5281,5585-5587,5826-5830,5936-5939,5999-6002,6030-6032,6070-6073,6085-6088,6114-6119,6153-6169,6174-6185,6190-6193,6206-6210,6215-6222,6231-6234,6239-6241,6246-6264,6273-6275,6302-6308,6328-6330,6469-6471,6684-6686,6836-6839,6901-6904,7156-7159,7172-7174,7238-7241,7324-7327,7381-7383,7415-7423,7427-7429,7448-7453,7527-7530,7564-7566,7592-7594,7665-7669,7705-7709,7756-7759,7788-7797,8073-8076,8080-8082,8111-8116,8290-8292,8351-8355,8371-8374,8381-8383,8402-8404,8446-8448,8623-8625,8629-8631,8653-8655,8770-8773,8800-8802,8899-8917,8954-8957,9046-9049,9120-9126,9147-9152,9164-9169,9182-9185,9254-9259,9375-9385,9412-9417,9511-9515,9539-9540,9608-9619,9626-9628,9632-9634,9641-9643,9647-9650,9727-9738,9763-9765,9769-9771,9900-9901,9925-9928,9983-9986,10117-10120,10168-10170,10199-10205,10272-10275,10310-10313,10317-10319,10335-10342,10435-10437,10441-10443,10453-10455,10459-10461,10528-10531,10743-10745,10886-10888,10892-10909,10924-10928,11592,11635-11638,12402,12404-12405,12408,12410-12414,12416-12424,12442-12449,12559-12570,12815-12881,13179-13180,13182-13183,13185-13186,13188-13189,13191-13198,13200,13202-13204,13229,13255,13268,13315,13328,13355,13368,13391,13406,13408,13427,13446,13465,13504,13534,13567,13580,13599,13614,13627,13640,13642,13644,13646-13647,13649,13651-13652,13654,14003-14006,14251,14253,14258,14260,14264,14266,14269,14271,14273,14275,14277,14279-14284,14286,14422-14429,14455-14465,14485-14490,14542-14551,14554-14558,14561-14576,14583-14584,14591-14598,14603-14604,14613-14656,14708-14709,14718-14721,14760-14762,14864-14870,14943-14947,15265-15266,15505,15548-15552,15664-15665,15718-15723,15746-15747,15782-15783,15790-15791,15827-15834,15881-15896,15901-15914,15917-15920,15932-15937,15940-15949,15956-15957,15962-15963,15966-15981,15992-15995,16027-16064,16091-16092,16191-16194,16388-16389,16694-16695,16769-16780,17227-17234,17245-17248,17328-17329,17401-17402,17460-17461,17486-17507,17519-17522,17608-17618,17709-17710,17741-17742,17764-17765,17838-17839,17870-17873,17911-17912,17943-17950,18481-18484,18489-18490,18521-18524,18652-18653,18706-18707,18716-18722,18747-18757,18815-18826,18919-18942,19465-19466,19486-19492,19551-19560,19771-19772,19795-19796,19874-19943,19974-19977,20071-20074,20207-20218,20246-20256,20267-20270,20277-20278,20343-20349,20462-20479,20515-20519,20765,20788-20798,20815,20834,20944-20969,20984-20992,21004-21012,21029-21035,21044,21046-21047,21049,21051,21054,21124-21148,21181-21187,21192-21193,21353,21355-21360,21396-21397,21440-21445,21600-21601,21633-21634,21666-21669,21731-21736,21766-21767,21770-21774,21799-21808,21915-21919,21924-21928,21942-21947,21952-21955,22026,22052,22072-22073,22298-22299,22409-22410,22413-22418
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "9954922a4f5e900ef7a83d83333e1bd3719062ca",
+  "prompts": {},
+  "sessions": {
+    "s_dcd75e2fc0aa0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4480cff-caac-46d0-a589-a5bbfd9e0fe9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_eba9c1a165bb11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b28a272c-33b3-43ef-a9af-b57739c1a6e1",
+        "model": "unknown"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
