@@ -125,7 +125,7 @@ export default async function HqPartnersPage({
             <Tr key={row.id}>
               <Td className="max-w-64">
                 <Link
-                  href={`/hq/partners/${row.id}`}
+                  href={`/partners/${row.id}`}
                   className="block truncate text-sm font-medium text-ink-900 hover:underline"
                 >
                   {row.name}

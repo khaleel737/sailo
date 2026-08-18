@@ -170,7 +170,7 @@ export default async function HqMarketingPage() {
             {recent.map((campaign) => (
               <li key={campaign.id} className="py-2.5 first:pt-0 last:pb-0">
                 <Link
-                  href={`/hq/marketing/campaigns/${campaign.id}`}
+                  href={`/marketing/campaigns/${campaign.id}`}
                   className="focus-ring flex items-center justify-between gap-4 rounded"
                 >
                   <div className="min-w-0">

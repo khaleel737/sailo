@@ -62,7 +62,7 @@ export async function createCampaignAction(
    * window in which the page holds a saved draft it has not yet moved to —
    * which is the window a double-submit lives in.
    */
-  redirect(`/hq/marketing/campaigns/${id}`);
+  redirect(`/marketing/campaigns/${id}`);
 }
 
 export async function updateCampaignAction(
@@ -83,7 +83,7 @@ export async function updateCampaignAction(
     return { error: "This campaign has already started sending — edits are closed." };
   }
 
-  revalidatePath(`/hq/marketing/campaigns/${id}`);
+  revalidatePath(`/marketing/campaigns/${id}`);
   return { ok: true };
 }
 
@@ -117,7 +117,7 @@ export async function scheduleCampaignAction(
     return { error: "Pick a time in the future for a campaign that has not sent." };
   }
 
-  revalidatePath(`/hq/marketing/campaigns/${id}`);
+  revalidatePath(`/marketing/campaigns/${id}`);
   return { ok: true };
 }
 
@@ -131,7 +131,7 @@ export async function unscheduleCampaignAction(
   const undone = await unscheduleCampaign(id);
   if (!undone) return { error: "That campaign is no longer scheduled." };
 
-  revalidatePath(`/hq/marketing/campaigns/${id}`);
+  revalidatePath(`/marketing/campaigns/${id}`);
   return { ok: true };
 }
 
@@ -181,7 +181,7 @@ export async function sendCampaignAction(
     };
   }
 
-  revalidatePath(`/hq/marketing/campaigns/${id}`);
+  revalidatePath(`/marketing/campaigns/${id}`);
   revalidatePath("/marketing/campaigns");
   return { ok: true };
 }

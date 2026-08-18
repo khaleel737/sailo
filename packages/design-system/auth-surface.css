@@ -1,0 +1,75 @@
+/*
+ * The surface a sign-in page is drawn on.
+ *
+ * WHY THIS EXISTS
+ * Both apps have a sign-in page — apps/web's for sellers, apps/hq's for staff —
+ * and they should look like the same company. The pieces that draw them
+ * (`auth-kit`) are written against `--ink`, `--mute-500`, `--signal` and the
+ * rest, which were declared only inside `.brand-surface` in apps/web's
+ * `brand.css`. That made the kit unusable anywhere that stylesheet wasn't.
+ *
+ * apps/hq found that out the hard way: its login page moved across carrying
+ * `.brand-surface`, `.display-sm` and `.focus-line` in its markup and none of
+ * the three existed, so it rendered as unstyled text on a bare background.
+ *
+ * So the variables the *auth* pages actually need live here, under their own
+ * class. apps/web keeps `brand.css` — that file is the marketing surface, 400
+ * lines about landing pages, and it is not what a staff sign-in should have to
+ * import to get a focus ring. Both classes declare the same custom properties,
+ * so `auth-kit` renders identically under either.
+ *
+ * WHAT IS DELIBERATELY NOT HERE
+ * The scroll-driven reveals, the inverted panels, the capsule button
+ * vocabulary, the display type at 6rem. Those are the landing page's, and they
+ * stay in apps/web where the landing page is.
+ */
+
+.auth-surface {
+  /* A shade brighter than the app's ink-50 chrome: pure white beside a
+     screenshot of a white page makes the screenshot look grey, while warm
+     paper makes it look lit. */
+  --paper-raw: #fbfbf9;
+  --paper: var(--paper-raw);
+  --paper-sunk: var(--color-ink-50);
+
+  --ink: var(--color-ink-950);
+  --ink-soft: var(--color-ink-900);
+
+  --mute-100: var(--color-ink-100);
+  --mute-200: var(--color-ink-200);
+  --mute-300: var(--color-ink-300);
+  /* Not a ramp step: this is the lightest grey that still clears 4.5:1 on
+     `--paper`, and the ramp has nothing at exactly that point. */
+  --mute-400: #75726c;
+  --mute-500: var(--color-ink-500);
+  --mute-600: var(--color-ink-600);
+
+  --signal: var(--color-brand-500);
+
+  --r-pill: 999px;
+  --r-card: var(--radius-2xl);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* Optical correction: tracking that looks right at 6rem is too tight at 2rem,
+   so the smaller display sizes give some back. Falls back to the body face
+   when Outfit is not loaded — apps/hq ships two webfonts, not three. */
+.auth-surface .display-sm {
+  font-family: var(--font-outfit), var(--font-geist-sans), sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+/* The focus ring for this surface: a capsule, offset further than the panel's,
+   because these pages are airier and a tight ring reads as a mistake. */
+.auth-surface .focus-line:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: var(--r-pill);
+}

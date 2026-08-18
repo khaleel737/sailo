@@ -184,7 +184,7 @@ export default async function HqDisputesPage() {
                 <Td>
                   {dispute.shopHandle ? (
                     <Link
-                      href={`/hq/accounts/${dispute.ownerId}`}
+                      href={`/accounts/${dispute.ownerId}`}
                       className="focus-ring rounded font-medium text-ink-900 underline underline-offset-4"
                     >
                       {dispute.shopName}
@@ -208,7 +208,7 @@ export default async function HqDisputesPage() {
                     documents attached to them.
                   */}
                   <Link
-                    href={`/hq/disputes/${dispute.id}`}
+                    href={`/disputes/${dispute.id}`}
                     className="focus-ring rounded underline underline-offset-4"
                   >
                     <Badge tone={DISPUTE_OUTCOME_TONES[dispute.outcome as DisputeOutcome]}>
@@ -352,7 +352,7 @@ export default async function HqDisputesPage() {
               <Tr key={shop.shopId}>
                 <Td>
                   <Link
-                    href={`/hq/accounts/${shop.ownerId}`}
+                    href={`/accounts/${shop.ownerId}`}
                     className="focus-ring rounded font-medium text-ink-900 underline underline-offset-4"
                   >
                     {shop.name}

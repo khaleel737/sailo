@@ -21,7 +21,7 @@ export function CatalogueTable({
     <SectionTitle
       action={
         <Link
-          href={`/hq/products?q=${encodeURIComponent(shop.handle)}`}
+          href={`/products?q=${encodeURIComponent(shop.handle)}`}
           className="focus-ring inline-flex items-center rounded text-xs font-medium text-ink-500 transition hover:text-ink-900 pointer-coarse:min-h-11"
         >
           All products

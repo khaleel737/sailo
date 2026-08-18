@@ -143,7 +143,7 @@ export default async function HqDisputePage({ params }: PageProps<"/disputes/[id
         <Detail label="Whose">
           {shop ? (
             <Link
-              href={`/hq/accounts/${shop.userId}`}
+              href={`/accounts/${shop.userId}`}
               className="underline underline-offset-4"
             >
               {shop.name}
@@ -378,7 +378,7 @@ export default async function HqDisputePage({ params }: PageProps<"/disputes/[id
         <p className="mt-4 text-xs text-ink-500">
           Assembled from order{" "}
           <Link
-            href={`/hq/orders/${order.id}`}
+            href={`/orders/${order.id}`}
             className="underline underline-offset-4"
           >
             <Mono>{order.id.slice(0, 8)}</Mono>

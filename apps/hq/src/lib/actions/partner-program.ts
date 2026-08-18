@@ -92,7 +92,7 @@ export async function decidePartner(
   }
 
   revalidatePath("/partners");
-  revalidatePath(`/hq/partners/${partnerId}`);
+  revalidatePath(`/partners/${partnerId}`);
   return { ok: true, message: `${partner.name} is now ${decision}.` };
 }
 
@@ -134,7 +134,7 @@ export async function setPartnerRate(
       : `Set ${partner.name}'s rate to ${shareLabel(bp)}.`,
   );
 
-  revalidatePath(`/hq/partners/${partnerId}`);
+  revalidatePath(`/partners/${partnerId}`);
   return {
     ok: true,
     message: bp === null ? "Back on the default rate." : `Rate set to ${shareLabel(bp)}.`,
@@ -152,7 +152,7 @@ export async function savePartnerNotes(
   if (!partnerId) return { ok: false, error: "No partner given." };
 
   await setPartnerNotes(partnerId, String(formData.get("notes") ?? ""));
-  revalidatePath(`/hq/partners/${partnerId}`);
+  revalidatePath(`/partners/${partnerId}`);
   return { ok: true, message: "Saved." };
 }
 
@@ -182,7 +182,7 @@ export async function payPartnerNow(
 
   revalidatePath("/partners");
   revalidatePath("/partners/payouts");
-  revalidatePath(`/hq/partners/${partnerId}`);
+  revalidatePath(`/partners/${partnerId}`);
 
   if (!result.ok) return { ok: false, error: result.reason };
 
@@ -228,7 +228,7 @@ export async function markPartnerPaidManually(
   );
 
   revalidatePath("/partners");
-  revalidatePath(`/hq/partners/${partnerId}`);
+  revalidatePath(`/partners/${partnerId}`);
   return { ok: true, message: `Marked ${amount} settled.` };
 }
 

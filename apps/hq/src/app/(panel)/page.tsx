@@ -320,7 +320,7 @@ export default async function HqOverviewPage() {
             <Tr key={row.userId}>
               <Td>
                 <Link
-                  href={`/hq/accounts/${row.userId}`}
+                  href={`/accounts/${row.userId}`}
                   className="focus-ring flex min-w-0 items-center rounded pointer-coarse:min-h-11"
                 >
                   <span className="block truncate font-medium text-ink-900">

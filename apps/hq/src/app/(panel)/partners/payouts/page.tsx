@@ -101,7 +101,7 @@ export default async function HqPartnerPayoutsPage() {
             <Tr key={row.id}>
               <Td className="max-w-64">
                 <Link
-                  href={`/hq/partners/${row.id}`}
+                  href={`/partners/${row.id}`}
                   className="block truncate text-sm font-medium text-ink-900 hover:underline"
                 >
                   {row.name}
@@ -157,7 +157,7 @@ export default async function HqPartnerPayoutsPage() {
               <Tr key={row.id}>
                 <Td className="max-w-64">
                   <Link
-                    href={`/hq/partners/${row.id}`}
+                    href={`/partners/${row.id}`}
                     className="block truncate text-sm font-medium text-ink-900 hover:underline"
                   >
                     {row.name}
@@ -182,7 +182,7 @@ export default async function HqPartnerPayoutsPage() {
                 </Td>
                 <Td align="end">
                   <Link
-                    href={`/hq/partners/${row.id}`}
+                    href={`/partners/${row.id}`}
                     className="text-xs font-medium text-ink-700 underline hover:no-underline"
                   >
                     Open
@@ -219,7 +219,7 @@ export default async function HqPartnerPayoutsPage() {
             <Tr key={row.id}>
               <Td className="max-w-56">
                 <Link
-                  href={`/hq/partners/${row.partnerId}`}
+                  href={`/partners/${row.partnerId}`}
                   className="block truncate text-sm font-medium text-ink-900 hover:underline"
                 >
                   {row.partnerName}

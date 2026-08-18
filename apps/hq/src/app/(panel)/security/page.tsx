@@ -258,7 +258,7 @@ export default async function HqSecurityPage({
               {overview.countries.map((row) => (
                 <li key={row.country}>
                   <Link
-                    href={`/hq/security?country=${row.country}`}
+                    href={`/security?country=${row.country}`}
                     className="focus-ring block rounded-lg py-0.5"
                   >
                     <span className="mb-1 flex items-baseline justify-between gap-2 text-sm">
@@ -320,7 +320,7 @@ export default async function HqSecurityPage({
               <Tr key={row.userId}>
                 <Td>
                   <Link
-                    href={`/hq/accounts/${row.userId}`}
+                    href={`/accounts/${row.userId}`}
                     className="focus-ring flex min-w-0 items-center rounded pointer-coarse:min-h-11"
                   >
                     <span className="block truncate font-medium text-ink-900">
@@ -431,7 +431,7 @@ export default async function HqSecurityPage({
               <Tr key={row.id}>
                 <Td>
                   <Link
-                    href={`/hq/accounts/${row.userId}`}
+                    href={`/accounts/${row.userId}`}
                     className="focus-ring flex min-w-0 items-center rounded pointer-coarse:min-h-11"
                   >
                     <span className="flex min-w-0 items-center gap-2">

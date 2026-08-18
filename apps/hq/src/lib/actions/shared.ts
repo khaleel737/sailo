@@ -81,7 +81,7 @@ export async function record(
    * the staff member clicking it should not be told it is done before it is.
    */
   await revalidateShopOnWeb({ id: shop.id, handle: shop.handle });
-  revalidatePath(`/hq/accounts/${shop.userId}`);
+  revalidatePath(`/accounts/${shop.userId}`);
   revalidatePath("/accounts");
   revalidatePath("/revenue");
   revalidatePath("/");
@@ -117,7 +117,7 @@ export async function recordOnAccount(
     summary,
   });
 
-  revalidatePath(`/hq/accounts/${ownerId}`);
+  revalidatePath(`/accounts/${ownerId}`);
   revalidatePath("/security");
 }
 

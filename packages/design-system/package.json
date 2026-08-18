@@ -15,9 +15,12 @@
     "./web/brand": "./src/web/brand.tsx",
     "./web/panel-footer": "./src/web/panel-footer.tsx",
     "./web/evidence-files": "./src/web/evidence-files.tsx",
-    "./utilities.css": "./utilities.css"
+    "./utilities.css": "./utilities.css",
+    "./auth-surface.css": "./auth-surface.css",
+    "./web/auth-kit": "./src/web/auth-kit.tsx"
   },
   "files": [
+    "auth-surface.css",
     "src",
     "theme.css",
     "utilities.css"

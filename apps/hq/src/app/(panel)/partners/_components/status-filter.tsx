@@ -24,7 +24,7 @@ export function StatusFilter({ active }: { active?: string }) {
         return (
           <Link
             key={tab.label}
-            href={tab.value ? `/hq/partners?status=${tab.value}` : "/partners"}
+            href={tab.value ? `/partners?status=${tab.value}` : "/partners"}
             aria-current={on ? "page" : undefined}
             className={cn(
               "focus-ring rounded-xl px-3 py-1.5 text-sm font-medium transition",

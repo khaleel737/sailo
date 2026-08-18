@@ -129,7 +129,7 @@ export default async function HqRevenuePage() {
               <Tr key={shop.id}>
                 <Td className="max-w-56">
                   <Link
-                    href={`/hq/accounts/${shop.userId}`}
+                    href={`/accounts/${shop.userId}`}
                     className="focus-ring flex min-w-0 items-center rounded pointer-coarse:min-h-11"
                   >
                     <span className="block truncate font-medium text-ink-900">
@@ -207,7 +207,7 @@ export default async function HqRevenuePage() {
                   className="flex items-center justify-between gap-3 py-2.5 first:pt-0"
                 >
                   <Link
-                    href={`/hq/accounts/${shop.userId}`}
+                    href={`/accounts/${shop.userId}`}
                     className="min-w-0 truncate text-sm text-ink-900 hover:underline"
                   >
                     {shop.name}

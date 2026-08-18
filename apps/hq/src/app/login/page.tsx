@@ -42,23 +42,25 @@ export default async function HqLoginPage() {
   if (user?.emailVerified && (await lookupStaff(user.email))) redirect("/");
 
   /*
-   * Panel vocabulary, not the marketing one.
+   * `.auth-surface`, from the design system — the same custom properties
+   * apps/web's `.brand-surface` declares, so this page and the seller sign-in
+   * are drawn from one definition rather than two that drift.
    *
-   * This page arrived from apps/web wearing `.brand-surface`, `.display-sm` and
-   * `.focus-line` — the landing-page stylesheet, which exists to sell to
-   * strangers and is scoped to `brand.css` precisely so it cannot leak into
-   * working surfaces. None of it came with the move, and dragging a 400-line
-   * marketing stylesheet into a staff panel to style one sign-in box would have
-   * been the wrong trade. So this is the ink ramp and the design system, like
-   * every other screen here.
+   * This briefly rendered without any of it. The page moved across still
+   * wearing `.brand-surface`, `.display-sm` and `.focus-line`, all three of
+   * which lived in apps/web's marketing stylesheet and none of which came with
+   * it — so it was unstyled text on a bare background. The answer was not to
+   * restyle the page in panel vocabulary, which is for dense tables and made it
+   * look like a spreadsheet with a text field on it, but to bring the surface
+   * the design was written for.
    */
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-ink-950 px-5 py-8 text-ink-100">
+    <div className="auth-surface flex min-h-[100dvh] flex-col px-5 py-8">
       <header>
         <Link
           href="/"
           aria-label="Sailo"
-          className="focus-ring -mx-2 inline-flex items-center rounded-lg px-2 py-3 text-white"
+          className="focus-line -mx-2 inline-flex items-center px-2 py-3 text-[var(--ink)]"
         >
           <SailoLogo className="h-[1.3rem] w-auto" />
         </Link>
@@ -67,10 +69,10 @@ export default async function HqLoginPage() {
       <main className="flex flex-1 items-center justify-center py-12">
         <div className="w-full max-w-[25rem]">
           <div className="mb-9">
-            <h1 className="text-[1.75rem] font-semibold tracking-tight text-white">
+            <h1 className="display-sm text-[1.75rem] text-[var(--ink)]">
               Sailo HQ
             </h1>
-            <p className="mt-3 text-[0.9375rem] leading-relaxed text-ink-400">
+            <p className="mt-3 text-[0.9375rem] leading-relaxed text-[var(--mute-500)]">
               Staff sign in with an emailed link — no password here.
             </p>
           </div>

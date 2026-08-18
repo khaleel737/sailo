@@ -177,7 +177,7 @@ export default async function HqSystemPage() {
                 <span className="text-ink-900">{entry.summary}</span>{" "}
                 {entry.ownerId && entry.shopName ? (
                   <Link
-                    href={`/hq/accounts/${entry.ownerId}`}
+                    href={`/accounts/${entry.ownerId}`}
                     className="text-ink-500 underline decoration-ink-300 underline-offset-2 hover:text-ink-900"
                   >
                     {entry.shopName}

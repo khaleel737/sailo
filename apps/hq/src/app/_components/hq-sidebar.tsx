@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Activity,
-  ArrowLeft,
   AtSign,
   Gift,
   Handshake,
@@ -219,18 +218,12 @@ export function HqSidebar({ email }: { email: string }) {
   const footer = (
     <div className="mt-5 space-y-0.5 border-t border-white/10 pt-3">
       {/*
-       * An absolute URL, because /admin is in apps/web now. A bare "/admin"
-       * here resolves against hq.sailo.store and 404s — the link that takes
-       * staff back to their own shop has to name the other deployment.
+       * There was a "My own shop" link here, back to /admin. It made sense when
+       * this panel was a route inside the seller app and the two shared a
+       * session — one click between the thing you run and the thing you sell
+       * on. They are separate deployments now, so it was a cross-origin hop to
+       * a different product, and this rail is for running Sailo.
        */}
-      <a
-        href="https://sailo.store/admin"
-        onClick={() => setOpen(false)}
-        className="focus-ring flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-white/60 transition hover:bg-white/5 hover:text-white pointer-coarse:min-h-11"
-      >
-        <ArrowLeft className="size-4 text-white/40" />
-        My own shop
-      </a>
       {/* One act, one response — see the note on the seller sidebar's form. */}
       <form action={signOutStaff}>
         <button

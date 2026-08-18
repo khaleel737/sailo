@@ -40,6 +40,14 @@
    page just renders without it. */
 @import "@sailo/design-system/utilities.css";
 
+/* --- The sign-in surface --------------------------------------------------
+   `/login` is the one page here that is not a dense working table, and it
+   should look like the sign-in a seller sees rather than like a spreadsheet
+   with a text field on it. These are the custom properties `auth-kit` is
+   written against; without them that kit renders as unstyled text, which is
+   exactly what happened when this page first moved across. */
+@import "@sailo/design-system/auth-surface.css";
+
 /* --- What this file adds -------------------------------------------------
    Deliberately almost nothing.
 

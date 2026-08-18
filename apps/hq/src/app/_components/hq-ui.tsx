@@ -222,7 +222,7 @@ export function ShopCell({
 }) {
   return (
     <Link
-      href={`/hq/accounts/${ownerId}`}
+      href={`/accounts/${ownerId}`}
       className="focus-ring flex min-w-0 items-center rounded pointer-coarse:min-h-11"
     >
       <span className="block truncate font-medium text-ink-900">{name}</span>

@@ -128,7 +128,7 @@ export default async function HqSubscribersPage({
                 */}
                 {row.shopHandle ? (
                   <Link
-                    href={`/hq/accounts?q=${encodeURIComponent(row.email)}`}
+                    href={`/accounts?q=${encodeURIComponent(row.email)}`}
                     className="focus-ring block truncate rounded text-xs text-ink-900 hover:underline"
                   >
                     /{row.shopHandle}

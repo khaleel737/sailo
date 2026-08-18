@@ -67,3 +67,12 @@ export * from "./panel-footer";
  * decided by the action each app passes in.
  */
 export * from "./evidence-files";
+
+/**
+ * The form chrome a sign-in page is built from. Shared because both apps have
+ * one — apps/web's for sellers, apps/hq's for staff — and they should look
+ * like the same company. It reads `--ink` and `--mute-*`, which are declared by
+ * `auth-surface.css` here and by `.brand-surface` in apps/web; render it inside
+ * one of those two or it inherits nothing.
+ */
+export * from "./auth-kit";

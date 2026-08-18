@@ -60,7 +60,7 @@ export default async function HqCampaignsPage({
             <Tr key={row.id}>
               <Td className="max-w-80">
                 <Link
-                  href={`/hq/marketing/campaigns/${row.id}`}
+                  href={`/marketing/campaigns/${row.id}`}
                   className="focus-ring block truncate rounded text-ink-900 hover:underline"
                 >
                   {row.subject}

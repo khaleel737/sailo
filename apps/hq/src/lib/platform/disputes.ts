@@ -382,7 +382,7 @@ export async function getOpenFraudWarnings() {
 /**
  * One dispute, with everything needed to decide what to send.
  *
- * The read behind `/hq/disputes/[id]`, and the answer to the question the queue
+ * The read behind `/disputes/[id]`, and the answer to the question the queue
  * cannot answer: *what exactly would be submitted if I pressed Send?* The queue
  * shows a completeness percentage, which is enough to triage and not enough to
  * act — a case at 80% might be missing a persuasive extra or the one document
