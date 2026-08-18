@@ -57,7 +57,24 @@ export {
   publicShopUrl,
   refundCharge,
   requireStripeCountry,
+  setSubscriptionApplicationFee,
   syncCapabilities,
+  accountRails,
   type OnboardingRedirects,
 } from "./connect/accounts";
-export { capabilitiesFor } from "./connect/capabilities";
+export {
+  capabilitiesFor,
+  classify,
+  listCapabilities,
+  type CapabilityFacts,
+  type RailReport,
+  type RailState,
+} from "./connect/capabilities";
+export {
+  CONNECT_RAILS,
+  enabledMethods,
+  sellerRails,
+  type ConnectRail,
+  type SellerRail,
+  type SellerRailState,
+} from "./connect/methods";

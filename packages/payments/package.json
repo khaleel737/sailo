@@ -8,8 +8,13 @@
     "./keys": "./src/keys.ts",
     "./stripe": "./src/stripe/index.ts",
     "./connect": "./src/connect/index.ts",
+    "./connect/capabilities": "./src/connect/capabilities.ts",
+    "./connect/methods": "./src/connect/methods.ts",
     "./offline": "./src/offline/index.ts",
-    "./offline/settings": "./src/offline/settings.ts"
+    "./offline/settings": "./src/offline/settings.ts",
+    "./disputes": "./src/disputes/index.ts",
+    "./tax": "./src/stripe/tax.ts",
+    "./presentment": "./src/stripe/presentment.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

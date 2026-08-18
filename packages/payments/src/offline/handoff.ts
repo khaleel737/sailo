@@ -1,7 +1,7 @@
 import { normalizePhone } from "@sailo/core/phone";
 import { currencyDecimals, minorPerMajor } from "@sailo/core/currency";
 import type { PaymentConfig } from "@sailo/db/schema";
-import { isPaymentMethodType } from "./rails";
+import { isPaymentMethodType, PAYMENT_METHOD_DEFS } from "./rails";
 
 /** What happens to the buyer once they have chosen how to pay. */
 
@@ -46,7 +46,16 @@ export function payAmount(minor: number, code: string): string {
 function bareHandle(value: string | undefined) {
   return (value ?? "")
     .trim()
-    .replace(/^https?:\/\/[^/]+\//i, "")
+    .replace(/^https?:\/\//i, "")
+    /*
+     * The host, whether or not the paste kept its scheme. Stripping only
+     * `https://host/` left `venmo.com/clayandco` — which is what a phone
+     * gives you when you copy a profile link out of an address bar — reading
+     * as the handle `venmo.com`, and both Venmo and Instagram answer that
+     * with a page rather than an error. A handle never contains a slash, so a
+     * dotted first segment with one after it can only be a host.
+     */
+    .replace(/^[\w-]+(?:\.[\w-]+)+\//, "")
     .replace(/^[@$]/, "")
     .replace(/[/?#].*$/, "")
     .trim();
@@ -75,17 +84,26 @@ export type Handoff =
   /**
    * Buyer stays on the page; `message` is offered for copy/paste.
    *
-   * `payUrl` is a wallet the buyer can open *and still come back from*, which
+   * `payUrl` is somewhere the buyer can open *and still come back from*, which
    * is why it lives here rather than as a `redirect`. Venmo and PayPal settle
    * off platform, so the order stays unpaid until the buyer submits a
    * reference — send them away with no way back and the seller never learns
-   * the money arrived, then ships nothing.
+   * the money arrived, then ships nothing. Instagram is here for the sibling
+   * reason: the DM it opens carries nothing, so the buyer has to still have
+   * the message when they get there.
    */
   | {
       kind: "instructions";
       message?: string;
       payUrl?: string;
       payLabel?: string;
+      /**
+       * `payUrl` opens a chat that cannot be prefilled, so `message` is the
+       * buyer's to paste. Set from the rail table rather than restated here,
+       * because the checkout screen has to know the same thing one step
+       * earlier — see `copyToSend` on `PaymentMethodDef`.
+       */
+      copyToSend?: boolean;
     };
 
 /**
@@ -99,6 +117,7 @@ export function buildHandoff(
   order: OrderSummary,
 ): Handoff | null {
   if (!isPaymentMethodType(type)) return null;
+  const def = PAYMENT_METHOD_DEFS[type];
   const message = orderMessage(order);
 
   switch (type) {
@@ -111,18 +130,52 @@ export function buildHandoff(
       };
     }
     case "telegram": {
-      const username = (config.username ?? "").replace(/^@/, "").trim();
+      /*
+       * `?text=` is real here, unlike on Instagram: Telegram documents it on
+       * the public-username link as "UTF-8 text to pre-enter into the text
+       * input bar, if the user can write in the chat" — so the redirect is
+       * right and the seller reads the order in the chat. The buyer still
+       * presses send, which Telegram will not do for them.
+       *
+       * `bareHandle` for the paste, though — the field takes a username and
+       * gets `t.me/yourshop` often enough, which used to build
+       * `t.me/t.me/yourshop` and reach nobody.
+       */
+      const username = bareHandle(config.username);
       if (!username) return null;
       return {
         kind: "redirect",
-        url: `https://t.me/${username}?text=${encodeURIComponent(message)}`,
+        url: `https://t.me/${encodeURIComponent(username)}?text=${encodeURIComponent(message)}`,
       };
     }
     case "instagram": {
-      const username = (config.username ?? "").replace(/^@/, "").trim();
+      const username = bareHandle(config.username);
       if (!username) return null;
-      // Instagram can't prefill a DM, so the buyer copies the message across.
-      return { kind: "redirect", url: `https://ig.me/m/${username}` };
+      /*
+       * Instructions, not a redirect — which is what this was, and why the
+       * seller kept receiving blank DMs.
+       *
+       * `ig.me/m/<user>` opens the thread and drops any query string, and
+       * Instagram documents no way to fill one in. So the redirect took the
+       * buyer off the only screen the order message was ever on: no name, no
+       * address, no total, no invoice number, and no way back to fetch them.
+       * The rail's own description has always said "copy the details from the
+       * next screen"; this is that screen. Shaped like the wallet rails for
+       * the same reason they are — the order is unpaid until the buyer comes
+       * back, so the page has to still be there when they do.
+       *
+       * `bareHandle` because this field is pasted at least as often as it is
+       * typed, and `instagram.com/yourshop` in it produced a link to
+       * `ig.me/m/https:/instagram.com/yourshop`, which reaches nobody.
+       */
+      return {
+        kind: "instructions",
+        message,
+        payUrl: `https://ig.me/m/${encodeURIComponent(username)}`,
+        // Left unlabelled on purpose: the button says the buyer's own word for
+        // the rail, which the storefront has translated and this file has not.
+        copyToSend: def.copyToSend,
+      };
     }
     case "email": {
       const address = (config.address ?? "").trim();

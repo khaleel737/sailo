@@ -77,7 +77,14 @@ describe("the Venmo rail", () => {
   });
 
   it("accepts a handle however the seller pasted it", () => {
-    const forms = ["clayandco", "@clayandco", "https://venmo.com/clayandco", " clayandco "];
+    const forms = [
+      "clayandco",
+      "@clayandco",
+      "https://venmo.com/clayandco",
+      // What a phone hands you when the link is copied from the address bar.
+      "venmo.com/clayandco",
+      " clayandco ",
+    ];
     for (const venmoHandle of forms) {
       const h = buildHandoff("venmo", cfg({ venmoHandle }), order);
       expect(new URL(payUrlOf(h)).pathname).toBe("/clayandco");
@@ -140,12 +147,100 @@ describe("the rails that were already here", () => {
     }
   });
 
-  it("still redirects the chat rails", () => {
+  it("still redirects the chat rails that can carry the order", () => {
     const h = buildHandoff("whatsapp", cfg({ phone: "1234567890" }), order);
     expect(h?.kind).toBe("redirect");
+    expect(h?.kind === "redirect" && decodeURIComponent(h.url)).toContain("Speckled mug");
+  });
+
+  /*
+   * Telegram keeps its redirect, and should: `?text=` on a public-username
+   * link is documented — "UTF-8 text to pre-enter into the text input bar" —
+   * so unlike Instagram it really does arrive with the order written out.
+   */
+  it("hands Telegram the order in the link", () => {
+    const h = buildHandoff("telegram", cfg({ username: "clayandco" }), order);
+    expect(h?.kind).toBe("redirect");
+    const url = new URL(h?.kind === "redirect" ? h.url : "");
+    expect(url.origin + url.pathname).toBe("https://t.me/clayandco");
+    expect(url.searchParams.get("text")).toContain("Speckled mug");
+    expect(url.searchParams.get("text")).toContain("INV-0007");
+  });
+
+  it("accepts a pasted Telegram link", () => {
+    // Built `t.me/t.me/clayandco` before, which is a 404 and a lost order.
+    for (const username of ["@clayandco", "https://t.me/clayandco", "t.me/clayandco"]) {
+      const h = buildHandoff("telegram", cfg({ username }), order);
+      const url = new URL(h?.kind === "redirect" ? h.url : "");
+      expect(url.origin + url.pathname).toBe("https://t.me/clayandco");
+    }
   });
 
   it("leaves card to the Stripe session", () => {
     expect(buildHandoff("card", cfg(), order)).toBeNull();
+  });
+});
+
+/*
+ * The rail that shipped as a redirect and shouldn't have. `ig.me/m/<user>`
+ * opens the DM and drops the query string, so the buyer left the page and
+ * the order message — the only copy of it — went with them. The seller got
+ * an empty chat, which is indistinguishable from a buyer who changed their
+ * mind, and the shop had no idea it was losing orders.
+ */
+describe("the Instagram rail", () => {
+  it("keeps the buyer on the page, holding the message they have to paste", () => {
+    const h = buildHandoff("instagram", cfg({ username: "clayandco" }), order);
+    expect(h?.kind).toBe("instructions");
+    expect(h?.kind === "instructions" && h.copyToSend).toBe(true);
+    expect(h?.kind === "instructions" && h.message).toContain("Speckled mug");
+    expect(h?.kind === "instructions" && h.message).toContain("INV-0007");
+  });
+
+  it("opens the seller's own DM", () => {
+    const h = buildHandoff("instagram", cfg({ username: "clayandco" }), order);
+    expect(h?.kind === "instructions" && h.payUrl).toBe("https://ig.me/m/clayandco");
+  });
+
+  it("accepts the username however the seller pasted it", () => {
+    // The field says "without the @" and is filled in by people who have
+    // just copied their profile link, so it gets both anyway.
+    const forms = [
+      "clayandco",
+      "@clayandco",
+      " clayandco ",
+      "https://instagram.com/clayandco",
+      "instagram.com/clayandco/",
+    ];
+    for (const username of forms) {
+      const h = buildHandoff("instagram", cfg({ username }), order);
+      expect(h?.kind === "instructions" && h.payUrl).toBe(
+        "https://ig.me/m/clayandco",
+      );
+    }
+  });
+
+  it("refuses to build a link with no username", () => {
+    expect(buildHandoff("instagram", cfg(), order)).toBeNull();
+    expect(buildHandoff("instagram", cfg({ username: " " }), order)).toBeNull();
+  });
+
+  it("is the only rail asking the buyer to copy", () => {
+    // `copyToSend` is what the confirmation keys the message box off. A rail
+    // that can prefill must not claim it, or the buyer is told to paste a
+    // message that was already sent.
+    for (const type of ["whatsapp", "telegram", "venmo", "paypal", "bank_transfer"]) {
+      const h = buildHandoff(
+        type,
+        cfg({
+          phone: "1234567890",
+          username: "clayandco",
+          venmoHandle: "clayandco",
+          paypalMe: "clayandco",
+        }),
+        order,
+      );
+      expect(h?.kind === "instructions" && h.copyToSend).toBeFalsy();
+    }
   });
 });

@@ -4,7 +4,14 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops, type Shop } from "@sailo/db/schema";
 import { isStripeAccountCountry } from "@sailo/core/countries";
-import { baseCapabilities, capabilitiesFor, requestCapabilities } from "./capabilities";
+import {
+  baseCapabilities,
+  capabilitiesFor,
+  classify,
+  listCapabilities,
+  requestCapabilities,
+} from "./capabilities";
+import { CONNECT_RAILS, enabledMethods, sellerRails, type SellerRail } from "./methods";
 import { stripe } from "../stripe/client";
 
 /**
@@ -106,7 +113,8 @@ export function requireStripeCountry(shop: Shop): string {
 }
 
 /**
- * Brings an account's capabilities up to what its country allows.
+ * Brings an account's capabilities up to what its country allows, and reports
+ * what Stripe actually did about it.
  *
  * `createCheckoutSession` deliberately does not pin `payment_method_types`, so
  * Stripe decides at runtime which methods to show — from the buyer, the
@@ -122,10 +130,79 @@ export function requireStripeCountry(shop: Shop): string {
  * every visit to the payments screen. That is also the backfill: a shop
  * connected before a capability was added to the table picks it up the next
  * time its owner opens the page, with no migration to run over old accounts.
+ *
+ * **It reads back.** This used to end at the request and return whatever
+ * `requestCapabilities` said, which measures the wrong thing: a request Stripe
+ * accepts is not a rail a buyer can press. Two ways that went wrong in
+ * production, neither of which produced an error anywhere —
+ *
+ *  - `ideal_payments` on a Dutch account is accepted at once and then sits
+ *    `inactive` pending `individual.id_number`. Every seller in the country
+ *    iDEAL comes from had it switched off, and nobody was ever asked for the
+ *    field, because the only thing we looked at was the request.
+ *  - `eps_payments` and `p24_payments` came back from a *successful* update
+ *    and settled at `rejected.*`. `refused` was empty, so nothing was logged
+ *    and the table went on asking for them for ever.
+ *
+ * So the pass is now list, request what is worth requesting, list again. The
+ * second read is skipped when there was nothing to request, which is the
+ * ordinary case for an established shop reloading its payments screen.
  */
 export async function syncCapabilities(account: Stripe.Account) {
-  const wanted = capabilitiesFor(account.country);
-  const outcome = await requestCapabilities(stripe(), account.id, wanted);
+  const [before, enabled] = await Promise.all([
+    listCapabilities(stripe(), account.id),
+    enabledMethods(stripe(), account.id),
+  ]);
+
+  /*
+   * What this country allows, narrowed to what the platform actually offers.
+   *
+   * The second half is not decoration. `sepa_debit` is switched off in Sailo's
+   * own payment method configuration, so `sepa_debit_payments` was going
+   * active on every European account and buying those sellers a verification
+   * requirement for a rail no buyer could ever be shown. Reading the
+   * configuration means the Dashboard stays the one place that is decided.
+   *
+   * Capabilities with no rail of their own — `transfers`, which pays the
+   * seller rather than charging a buyer — are never filtered out by this.
+   */
+  const wanted = capabilitiesFor(account.country).filter((name) => {
+    const rail = CONNECT_RAILS.find((r) => r.capability === name);
+    return !rail || !enabled || enabled.has(rail.type);
+  });
+
+  /*
+   * Rails already live need no request, and `requestCapabilities` drops the
+   * ones Stripe has rejected for good. Between them that is usually the whole
+   * list, which is what keeps the common reload down to a single API call.
+   */
+  const missing = wanted.filter((name) => before.get(name)?.status !== "active");
+  const outcome = await requestCapabilities(stripe(), account.id, missing, before);
+
+  const facts = outcome.requested.length
+    ? await listCapabilities(stripe(), account.id)
+    : before;
+
+  /*
+   * Three different silences, each worth a different line in the log.
+   *
+   * `blocked` is the one that matters and the one that was invisible: Stripe
+   * is waiting on the seller and names the fields. It is a warning because a
+   * human can act on it — the payments screen puts the same information in
+   * front of the seller, which is the actual fix.
+   */
+  const blocked = wanted
+    .map((name) => classify(facts.get(name)))
+    .filter((report) => report.state === "blocked");
+
+  if (blocked.length > 0) {
+    console.warn(
+      `[sailo] ${account.id} (${account.country ?? "??"}) needs ` +
+        blocked
+          .map((r) => `${r.capability}: ${r.currentlyDue.join(", ")}`)
+          .join("; "),
+    );
+  }
 
   if (outcome.refused.length > 0) {
     // Worth a line in the log and nothing more: the account still takes cards,
@@ -136,7 +213,26 @@ export async function syncCapabilities(account: Stripe.Account) {
     );
   }
 
-  return outcome;
+  return { ...outcome, facts, enabled };
+}
+
+/**
+ * What buyers of this shop can actually pay with.
+ *
+ * The three gates in one place, each of which has silently swallowed a rail:
+ * the capability must be active, the platform must offer the method, and the
+ * shop's currency must be one the method settles in.
+ */
+export async function accountRails(
+  accountId: string,
+  currency: string | null | undefined,
+): Promise<SellerRail[]> {
+  const [facts, enabled] = await Promise.all([
+    listCapabilities(stripe(), accountId),
+    enabledMethods(stripe(), accountId),
+  ]);
+
+  return sellerRails({ currency, facts, enabled });
 }
 
 /** Where Stripe sends the seller when it is done with them. */
@@ -268,8 +364,14 @@ export async function connectOnboardingLink(
  * exception exists so the platform's own Stripe account can be attached to a
  * shop and exercise the whole flow end to end; Stripe rejects the header when
  * it names the calling account itself.
+ *
+ * Accepts null, which the body already handled and the type did not. A dispute
+ * is the one object that exists on both accounts — a seller charging back their
+ * own Sailo subscription is a *platform* dispute with no connected account at
+ * all — so "no account" is a real case rather than a missing argument, and the
+ * alternative was every dispute call site carrying its own `?? undefined`.
  */
-export function actingAs(accountId: string): { stripeAccount?: string } {
+export function actingAs(accountId: string | null): { stripeAccount?: string } {
   const platform = process.env.STRIPE_PLATFORM_ACCOUNT_ID;
   return accountId && accountId !== platform ? { stripeAccount: accountId } : {};
 }
@@ -326,6 +428,42 @@ export async function cancelSubscriptionAtPeriodEnd(opts: {
   return stripe().subscriptions.update(
     opts.subscriptionId,
     { cancel_at_period_end: true },
+    actingAs(opts.accountId),
+  );
+}
+
+/**
+ * Re-points Sailo's cut of a member's *future* invoices.
+ *
+ * Stripe applies `application_fee_percent` when it finalises each invoice, so
+ * this changes what the next renewal pays us and can never reach one already
+ * raised. That is the correct boundary and not a limitation: a fee recomputed
+ * over invoices a seller has already been paid out for would be a clawback,
+ * which is a different decision from the one this makes.
+ *
+ * Checked against the live test API rather than reasoned about, because the
+ * failure mode of guessing here is an invoice nobody looks at: updating an
+ * active subscription raises no proration, creates no invoice, and leaves the
+ * status alone. Stripe also stores `0` as `0.0` rather than clearing the
+ * field, which is why `feeBpFromPercent` folds absent and zero together.
+ *
+ * `actingAs` is load-bearing rather than incidental. Stripe's own words are
+ * that the request "must be made by a platform account on a connected account
+ * in order to set an application fee percentage", and a membership lives on
+ * the seller's account -- so the header is what makes the call legal, not just
+ * what makes it find the subscription.
+ *
+ * Takes a percentage because that is Stripe's unit. Every caller holds basis
+ * points and converts on the way in, through `feePercentFromBp`.
+ */
+export async function setSubscriptionApplicationFee(opts: {
+  accountId: string;
+  subscriptionId: string;
+  feePercent: number;
+}) {
+  return stripe().subscriptions.update(
+    opts.subscriptionId,
+    { application_fee_percent: opts.feePercent },
     actingAs(opts.accountId),
   );
 }

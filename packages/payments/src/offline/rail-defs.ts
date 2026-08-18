@@ -68,6 +68,18 @@ export type PaymentMethodDef = {
    * "pay when we meet" is an offer it cannot keep.
    */
   payInPerson?: boolean;
+  /**
+   * True when the rail can only *open* the conversation — the buyer carries
+   * the order across themselves.
+   *
+   * Instagram alone. `ig.me/m/<user>` opens the DM and drops any query string,
+   * and Instagram documents no way to prefill one, so the rail that behaved
+   * like WhatsApp here delivered the seller an empty chat: the buyer left the
+   * page and the order message went nowhere. `buildHandoff` reads this to keep
+   * the buyer on the confirmation with the message to copy, and the checkout
+   * reads it so the note under the button stops promising a prefill.
+   */
+  copyToSend?: boolean;
   name: string;
   /** Button text on the public shop. */
   action: string;
@@ -144,6 +156,7 @@ export const PAYMENT_METHOD_DEFS: Record<PaymentMethodType, PaymentMethodDef> = 
     settlesItself: false,
     kind: "contact",
     category: "chat",
+    copyToSend: true,
     name: "Instagram DM",
     action: "Order via Instagram",
     description:

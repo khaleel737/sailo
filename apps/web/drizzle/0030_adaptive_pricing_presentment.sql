@@ -1,0 +1,26 @@
+-- What the buyer's card statement says, when it isn't what the order says.
+--
+-- Adaptive Pricing is going on for storefront card checkout. It lets Stripe
+-- present a Dutch buyer a EUR amount for a shop that prices in USD, which is
+-- the only way that buyer is ever offered iDEAL — iDEAL settles in EUR and in
+-- nothing else, so no amount of capability work reaches it from a dollar
+-- price. The same is true of Bancontact, BLIK, SEPA Debit and P24.
+--
+-- Nothing about the seller's money changes, and that is worth being precise
+-- about because the comment this replaces in `card-checkout.ts` claimed the
+-- opposite. Stripe's own words: "The Checkout Session and the underlying
+-- PaymentIntent objects reflect what your customer paid in your integration
+-- currency and amount". `orders.currency` and `orders.total_cents` stay in the
+-- shop's currency, the payout is in the shop's currency, and the invoice
+-- states the shop's currency. Stripe carries the conversion.
+--
+-- What was missing was the buyer's side of it. Stripe reports the converted
+-- figure once, as `presentment_details` on the session, and on no other object
+-- we keep — so without these two columns a buyer emailing "my statement says
+-- €41.23, why does my invoice say $45?" is unanswerable by anyone.
+--
+-- Entirely additive and both nullable, permanently. Null is the ordinary case
+-- and means the buyer paid in the shop's currency, which is every order
+-- written before today. Safe to apply ahead of the code that writes it.
+ALTER TABLE "orders" ADD COLUMN IF NOT EXISTS "presentment_currency" text;
+ALTER TABLE "orders" ADD COLUMN IF NOT EXISTS "presentment_amount_cents" integer;

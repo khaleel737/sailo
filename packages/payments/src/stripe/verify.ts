@@ -37,10 +37,38 @@ export const HANDLED = new Set([
   "charge.refunded",
   "checkout.session.expired",
   "account.updated",
-  // Chargebacks. A buyer disputing a card payment takes the money straight
-  // back out of the seller's balance, and nothing else tells us it happened.
+  /*
+   * Chargebacks. A buyer disputing a card payment takes the money straight
+   * back out of the seller's balance, and nothing else tells us it happened.
+   *
+   * Five events, not two, and the three added here are not refinements:
+   *
+   * - `updated` is how a dispute's status, deadline and — critically — its
+   *   `enhanced_eligibility_types` change. Visa decides whether a fraud case
+   *   qualifies for Compelling Evidence 3.0 *after* the dispute is created, and
+   *   that decision arrives on this event. Without it, the one mechanism that
+   *   can win a 10.4 outright is never known to be available.
+   * - `funds_withdrawn` and `funds_reinstated` carry the balance transaction,
+   *   which is the only place the real cost appears. `dispute.amount` on a $42
+   *   chargeback is 4200; the balance transaction says `net: -5700`, because
+   *   Stripe also takes a $15 dispute fee. Without these two, every seller is
+   *   shown a loss 36% smaller than the one they took.
+   */
   "charge.dispute.created",
+  "charge.dispute.updated",
   "charge.dispute.closed",
+  "charge.dispute.funds_withdrawn",
+  "charge.dispute.funds_reinstated",
+  /*
+   * The only advance warning of a chargeback that exists.
+   *
+   * Radar reports the issuer's TC40/SAFE fraud notice days before the dispute
+   * arrives, and refunding in that window avoids the chargeback and its fee
+   * entirely. Not acted on automatically — an EFW is the issuer's opinion, not a
+   * finding — but a platform that does not receive them has given up its only
+   * chance to intervene before the money moves.
+   */
+  "radar.early_fraud_warning.created",
 ]);
 
 /**

@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import type Stripe from "stripe";
-import { capabilitiesFor, requestCapabilities } from "./capabilities";
+import {
+  capabilitiesFor,
+  classify,
+  requestCapabilities,
+  type CapabilityFacts,
+} from "./capabilities";
 
 /**
  * The two bugs this file exists to prevent, both of which shipped.
@@ -43,15 +48,36 @@ describe("capabilitiesFor", () => {
     // Not only the method their own country is named after: a German shop with
     // Dutch customers is the ordinary case, and it is the *seller's* account
     // that needs `ideal_payments` for that buyer to see iDEAL.
+    //
+    // Measured against a sandbox in NL, DE, AT, BE, FR and PL: these three
+    // came back `active` in all six.
     expect(capabilitiesFor("DE")).toEqual(
       expect.arrayContaining([
         "sepa_debit_payments",
         "ideal_payments",
         "bancontact_payments",
-        "p24_payments",
-        "eps_payments",
       ]),
     );
+  });
+
+  it("never asks anyone for EPS, which Stripe rejects even in Austria", () => {
+    /*
+     * `rejected.other` in all six countries tested, its own home included. It
+     * arrived as a *successful* `accounts.update` and then sat inactive, so
+     * nothing was ever logged and the request went up on every onboarding.
+     */
+    for (const country of ["AT", "DE", "NL", "FR", "BE", "PL", "US"]) {
+      expect(capabilitiesFor(country)).not.toContain("eps_payments");
+    }
+  });
+
+  it("keeps P24 to Poland, which is the only place it is obtainable", () => {
+    // `rejected.unsupported_business` everywhere else, again from a request
+    // Stripe accepted.
+    expect(capabilitiesFor("PL")).toContain("p24_payments");
+    for (const country of ["DE", "NL", "AT", "FR", "BE"]) {
+      expect(capabilitiesFor(country)).not.toContain("p24_payments");
+    }
   });
 
   it("adds the domestic-only rails to the country that has them", () => {
@@ -112,6 +138,7 @@ describe("requestCapabilities", () => {
       expect(update).toHaveBeenCalledTimes(1);
       expect(outcome.requested).toEqual(["a", "b", "c"]);
       expect(outcome.refused).toEqual([]);
+      expect(outcome.skipped).toEqual([]);
     });
   });
 
@@ -147,5 +174,124 @@ describe("requestCapabilities", () => {
     const { stripe, update } = stripeRefusing();
     await requestCapabilities(stripe, "acct_1", []);
     expect(update).not.toHaveBeenCalled();
+  });
+});
+
+/** Facts in the shape `listCapabilities` returns them. */
+function facts(over: Partial<CapabilityFacts> & { name: string }): CapabilityFacts {
+  return { status: "active", disabledReason: null, currentlyDue: [], ...over };
+}
+
+describe("requestCapabilities, against what Stripe already said", () => {
+  it("stops asking for a rail Stripe has rejected for good", async () => {
+    /*
+     * The second of the two shipped bugs. P24 comes back from a *successful*
+     * update and settles at `rejected.unsupported_business`, so `refused` was
+     * empty and the request went up again on every single page load.
+     */
+    const { stripe, update } = stripeRefusing();
+    const known = new Map([
+      [
+        "p24_payments",
+        facts({
+          name: "p24_payments",
+          status: "inactive",
+          disabledReason: "rejected.unsupported_business",
+        }),
+      ],
+    ]);
+
+    const outcome = await requestCapabilities(
+      stripe,
+      "acct_1",
+      ["ideal_payments", "p24_payments"],
+      known,
+    );
+
+    expect(outcome.skipped).toEqual(["p24_payments"]);
+    expect(outcome.requested).toEqual(["ideal_payments"]);
+    expect(update).toHaveBeenCalledTimes(1);
+    expect(Object.keys(update.mock.calls[0]![1].capabilities)).toEqual([
+      "ideal_payments",
+    ]);
+  });
+
+  it("still asks for one that is merely inactive, which is not a refusal", async () => {
+    // `inactive` with fields outstanding is Stripe waiting on the seller, not
+    // Stripe saying no. Skipping it would strand the rail for ever.
+    const { stripe } = stripeRefusing();
+    const known = new Map([
+      [
+        "ideal_payments",
+        facts({
+          name: "ideal_payments",
+          status: "inactive",
+          disabledReason: "requirements.fields_needed",
+          currentlyDue: ["individual.id_number"],
+        }),
+      ],
+    ]);
+
+    const outcome = await requestCapabilities(stripe, "acct_1", ["ideal_payments"], known);
+    expect(outcome.requested).toEqual(["ideal_payments"]);
+    expect(outcome.skipped).toEqual([]);
+  });
+
+  it("does nothing at all when every rail is already rejected", async () => {
+    const { stripe, update } = stripeRefusing();
+    const known = new Map([
+      ["eps_payments", facts({ name: "eps_payments", status: "inactive", disabledReason: "rejected.other" })],
+    ]);
+
+    const outcome = await requestCapabilities(stripe, "acct_1", ["eps_payments"], known);
+    expect(update).not.toHaveBeenCalled();
+    expect(outcome.skipped).toEqual(["eps_payments"]);
+  });
+});
+
+describe("classify", () => {
+  it("calls an active capability live", () => {
+    expect(classify(facts({ name: "card_payments" })).state).toBe("live");
+  });
+
+  it("separates waiting-on-the-seller from waiting-on-Stripe", () => {
+    /*
+     * The first of the two shipped bugs, and the whole reason this function
+     * exists. iDEAL on a Dutch account is accepted at once and then sits
+     * inactive for want of one identity field. Reported as a success, it left
+     * every Dutch seller without the rail Dutch buyers expect, and nobody was
+     * ever asked for the field.
+     */
+    const blocked = classify(
+      facts({
+        name: "ideal_payments",
+        status: "inactive",
+        disabledReason: "requirements.fields_needed",
+        currentlyDue: ["individual.id_number"],
+      }),
+    );
+    expect(blocked.state).toBe("blocked");
+    expect(blocked.currentlyDue).toEqual(["individual.id_number"]);
+
+    const pending = classify(
+      facts({ name: "ideal_payments", status: "pending", disabledReason: null }),
+    );
+    expect(pending.state).toBe("pending");
+    expect(pending.currentlyDue).toEqual([]);
+  });
+
+  it("treats every rejected.* reason as final", () => {
+    for (const reason of ["rejected.other", "rejected.unsupported_business"]) {
+      expect(
+        classify(facts({ name: "eps_payments", status: "inactive", disabledReason: reason })).state,
+      ).toBe("unavailable");
+    }
+  });
+
+  it("does not report a rail nobody asked for as a problem", () => {
+    expect(
+      classify(facts({ name: "oxxo_payments", status: "unrequested" })).state,
+    ).toBe("unavailable");
+    expect(classify(undefined).state).toBe("unavailable");
   });
 });
