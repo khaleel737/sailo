@@ -1,0 +1,449 @@
+apps/web/src/app/api/internal/revalidate/route.ts
+  s_73d334589284ef::t_a7c894c240de0f 1-90
+apps/hq/src/app/(panel)/buyers/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 16-103
+  s_73d334589284ef::t_c7e0ede89d180e 3-8
+packages/env/src/keys.ts
+  s_73d334589284ef::t_a7c894c240de0f 25-39
+apps/hq/src/lib/platform/accounts.ts
+  s_73d334589284ef::t_bf69e4d0ecc9f8 10-24,56,72,203
+  s_73d334589284ef::t_5bee70e4e0a59d 7
+apps/web/src/lib/actions/partner-program.ts
+  s_73d334589284ef::t_b6718dbed85356 4-5,9,11-19
+apps/web/drizzle/0031_staff_members.sql
+  s_73d334589284ef::t_fc0feed0b24b07 1-51
+apps/web/src/lib/actions/shop.ts
+  s_117ad80ebc0c8a::t_564f7b36628608 428-454,458-469
+  s_117ad80ebc0c8a::t_d3a814e93db047 109,113
+  s_73d334589284ef::t_3cc5a34d80725a 121-122
+  s_73d334589284ef::t_c9b5c7f41d6eda 116-120
+  s_117ad80ebc0c8a::t_834e5e6dccb81a 7,455-457
+apps/hq/src/lib/metrics.test.ts
+  s_73d334589284ef::t_3cc5a34d80725a 1-286
+apps/hq/src/app/(panel)/accounts/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 61-232
+  s_73d334589284ef::t_c9a7b4232fa3a6 4-8,15
+packages/design-system/src/web/index.ts
+  s_73d334589284ef::t_33ad27235d9e79 62-63
+  s_813fd1e0505632::t_dc3959748dc4ad 48-61
+  s_73d334589284ef::t_6db45b937fc880 64-69
+apps/hq/src/lib/dispute-access.ts
+  s_73d334589284ef::t_5d39085a1135ac 1-61
+packages/commerce/package.json
+  s_73d334589284ef::t_430d5bde7cc86c 23-24
+  s_5422fb6c0f54ab::t_51791c6fad5656 22
+apps/web/src/lib/actions/auth.ts
+  s_167a2770001def::t_f8370e064aba59 1-51
+apps/web/src/components/shared/panel-footer.tsx
+  s_813fd1e0505632::t_dc3959748dc4ad 1-2
+apps/hq/src/lib/actions/disputes.ts
+  s_73d334589284ef::t_c56ce058a17895 22
+  s_73d334589284ef::t_a65def99911c19 21,191
+  s_73d334589284ef::t_d069569bba4a1e 72-147,192-218
+  s_73d334589284ef::t_1e6c3138ac8e0e 1-20,23-71,148-190,219-225
+apps/hq/src/app/(panel)/partners/_components/status-filter.tsx
+  s_73d334589284ef::t_d069569bba4a1e 27
+apps/hq/src/app/(panel)/partners/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 33-211
+  s_73d334589284ef::t_debe3aeff6d2f8 5-7
+apps/hq/src/app/api/disputes/[id]/evidence/route.ts
+  s_73d334589284ef::t_8b91897a645afc 53-56
+  s_73d334589284ef::t_abcd359116ed36 1-52,57-136
+packages/security/src/staff.ts
+  s_73d334589284ef::t_b9eaab4f6a5f65 5
+  s_73d334589284ef::t_3c37cba7e94fde 97-101
+  s_73d334589284ef::t_d9bdfec50b4e7f 2,185
+  s_73d334589284ef::t_d5ecac8f1e40b3 3-4,7-13,15-26,30-45
+  s_ea1abe50401033::t_f08c2793fd1282 107-184,186-195
+packages/core/src/action-state.ts
+  s_73d334589284ef::t_c9b5c7f41d6eda 1-18
+apps/hq/src/lib/auth.ts
+  s_73d334589284ef::t_67f956f01048c4 76-99,101-104,106-115,117-118,120-122,124-127,129-162,165-182,184,186-190,192-211,213-230,232-257
+  s_73d334589284ef::t_d9bdfec50b4e7f 1-75,100,105,116,119,123,128,163-164,183,185,191,212,231
+packages/design-system/src/web/evidence-files.tsx
+  s_73d334589284ef::t_6db45b937fc880 1-6,15-254
+  s_73d334589284ef::t_6afd84b547aa82 7-14
+apps/hq/src/app/(panel)/security/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 61-495
+  s_73d334589284ef::t_d94505e542469c 18-23,34-35
+apps/web/src/lib/google-tag.test.ts
+  s_73d334589284ef::t_4f2cc3366ebb45 68
+  s_73d334589284ef::t_9fcc3a228bfe79 39-45,58-63
+packages/security/src/roster.ts
+  s_73d334589284ef::t_bd77a6bcd7a232 1-4,6-245,274
+  s_73d334589284ef::t_3c37cba7e94fde 5,246-273
+apps/hq/src/app/api/disputes/[id]/evidence/[field]/route.ts
+  s_73d334589284ef::t_2667c8b95650d9 1-53
+apps/hq/src/app/(panel)/support/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 23-159
+  s_73d334589284ef::t_41ffc9d3aa3ead 3-6,8-9
+apps/hq/turbo.json
+  s_8616d92fc21d60::t_4f05d61e1fd9a4 1-5
+apps/hq/src/app/(panel)/partners/payouts/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 36
+  s_73d334589284ef::t_ff633c9b4eb7ae 5-7
+apps/hq/src/app/(panel)/marketing/subscribers/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 55-170
+  s_73d334589284ef::t_2fbd6d866654f9 1-54,171-182
+apps/hq/src/lib/actions/auth.ts
+  s_73d334589284ef::t_bd627dad3fbd74 1-4,6-18,20-21
+  s_73d334589284ef::t_67f956f01048c4 5,19
+packages/core/src/data/csv.ts
+  s_73d334589284ef::t_c0ca5566c934ef 1-114
+apps/hq/src/app/(panel)/error.tsx
+  s_73d334589284ef::t_fbfff39278070a 3-13
+apps/web/src/replica.test.ts
+  s_73d334589284ef::t_b9d6a7632b4c61 158,162
+apps/hq/src/app/(panel)/marketing/campaigns/[id]/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 47-73
+  s_73d334589284ef::t_253b23080c9f29 1-46,74-194
+packages/core/package.json
+  s_73d334589284ef::t_c0ca5566c934ef 45
+  s_117ad80ebc0c8a::t_85f65d5ff52951 33
+  s_5422fb6c0f54ab::t_845b744c0853d0 44
+  s_73d334589284ef::t_c9b5c7f41d6eda 46-47
+apps/hq/src/app/_components/hq-export.tsx
+  s_73d334589284ef::t_21a4987b6d154d 28
+  s_73d334589284ef::t_7d7993ae253f8a 10-11
+apps/hq/src/app/(panel)/marketing/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 43-161
+  s_73d334589284ef::t_848703ca59293d 1-42,162-206
+apps/web/src/app/robots.ts
+  s_73d334589284ef::t_9a25988c5ccb5e 19-47,50-70,76-103
+apps/hq/src/app/(panel)/layout.tsx
+  s_73d334589284ef::t_21a4987b6d154d 40
+  s_73d334589284ef::t_d069569bba4a1e 29
+  s_73d334589284ef::t_3a762b688d610f 3
+  s_73d334589284ef::t_a9243166f22995 2
+apps/hq/src/instrumentation.ts
+  s_73d334589284ef::t_d9bdfec50b4e7f 1-17,19-50
+  s_73d334589284ef::t_b98d217d6f37ef 18
+apps/hq/vitest.config.mts
+  s_73d334589284ef::t_893032875b7a3a 1-30
+apps/hq/postcss.config.mjs
+  s_73d334589284ef::t_1fd079cd4610ec 1-7
+apps/hq/src/lib/actions/dispute-files.ts
+  s_73d334589284ef::t_5d39085a1135ac 1-39
+apps/hq/src/app/api/auth/[...all]/route.ts
+  s_73d334589284ef::t_67f956f01048c4 1-19
+apps/hq/src/app/_components/security-actions.tsx
+  s_73d334589284ef::t_bd627dad3fbd74 13
+  s_73d334589284ef::t_1214833aec67b3 11
+apps/web/src/components/brand.tsx
+  s_813fd1e0505632::t_dc3959748dc4ad 1-2,4-8,10,12
+apps/hq/src/app/(panel)/revenue/page.tsx
+  s_73d334589284ef::t_c81c9c6df7a8da 24
+  s_73d334589284ef::t_5543394b0ca9ed 5-6,15,22-23
+apps/hq/test-stubs/server-only.ts
+  s_73d334589284ef::t_893032875b7a3a 1-6
+apps/hq/src/app/_components/error-panel.tsx
+  s_73d334589284ef::t_fbfff39278070a 1-87
+apps/hq/src/app/globals.css
+  s_73d334589284ef::t_f5b3dcced722c8 1-123
+apps/web/src/lib/queries/affiliates.ts
+  s_73d334589284ef::t_bf69e4d0ecc9f8 3-9
+apps/web/tsconfig.json
+  s_afffc65a416996::t_e681974a77ab26 50-69,71-73
+apps/hq/src/app/(panel)/marketing/campaigns/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 24-106
+  s_73d334589284ef::t_e84b3e178dd4e2 1-23,107-111
+apps/web/src/lib/auth.ts
+  s_73d334589284ef::t_6a5813bee4d0d6 10,14,385-396,398-405
+  s_73d334589284ef::t_3c37cba7e94fde 15,331
+apps/hq/src/app/(panel)/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 55-294
+  s_73d334589284ef::t_3889bd78c85132 15,23,32,34
+apps/hq/vitest.scenarios.mts
+  s_73d334589284ef::t_9b32c76263777a 1-32
+apps/web/src/lib/actions/auth.test.ts
+  s_73d334589284ef::t_b9d6a7632b4c61 109-112
+  s_167a2770001def::t_e340ebea290827 1-25,37-58,64-79,82-108,113-114
+  s_167a2770001def::t_49a54468d0cfe6 26-36,80-81
+  s_73d334589284ef::t_4f2cc3366ebb45 59-63
+apps/hq/src/lib/actions/partner-program.ts
+  s_73d334589284ef::t_b6718dbed85356 1-35,48-93,95-182,185-229,231-253,256-326,328-330
+  s_73d334589284ef::t_d069569bba4a1e 94,183-184,230,254-255,327
+  s_73d334589284ef::t_06eb851b256869 36-47
+apps/web/src/lib/csv.ts
+  s_73d334589284ef::t_c0ca5566c934ef 2,4-7,9,11
+apps/hq/src/app/(panel)/partners/settings/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 32
+apps/hq/e2e/scenarios/local-only.ts
+  s_73d334589284ef::t_9b32c76263777a 1-94
+apps/web/src/lib/queries/checkout.ts
+  s_73d334589284ef::t_bf69e4d0ecc9f8 13
+apps/hq/src/lib/actions/notes.ts
+  s_73d334589284ef::t_c56ce058a17895 17
+  s_73d334589284ef::t_d069569bba4a1e 77
+apps/hq/src/app/(panel)/products/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 16-128
+  s_73d334589284ef::t_97710e2d062dfd 3-7,9
+apps/hq/src/lib/auth-client.ts
+  s_73d334589284ef::t_bd627dad3fbd74 1-24
+apps/hq/src/app/_components/dispute-actions.tsx
+  s_73d334589284ef::t_bd627dad3fbd74 13
+  s_73d334589284ef::t_1d934a323dbd7b 1-12,14-157
+apps/hq/src/app/(panel)/members/_components/member-controls.tsx
+  s_afffc65a416996::t_ab884699312b26 131
+  s_73d334589284ef::t_09d4f807a41b76 1-130,132-153
+apps/hq/src/env.ts
+  s_73d334589284ef::t_d9bdfec50b4e7f 1-53
+apps/hq/src/app/login/page.tsx
+  s_73d334589284ef::t_926454a1aad23e 6-73
+  s_73d334589284ef::t_3a762b688d610f 4
+apps/hq/src/lib/web-cache.ts
+  s_73d334589284ef::t_66f8aa3202df70 1-66
+apps/hq/src/app/(panel)/marketing/campaigns/new/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 33
+  s_73d334589284ef::t_fd1439f7fc13d5 1-32,34-50
+apps/hq/src/app/(panel)/partners/[id]/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 28-42
+  s_73d334589284ef::t_60198ebee34c24 6-8
+apps/hq/src/lib/format.ts
+  s_73d334589284ef::t_c81c9c6df7a8da 1-31
+apps/hq/src/app/(panel)/accounts/[id]/_components/orders-table.tsx
+  s_73d334589284ef::t_c81c9c6df7a8da 4-5
+  s_73d334589284ef::t_39acb05bee30fe 1-2
+apps/hq/src/app/(panel)/disputes/[id]/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 36-68
+  s_73d334589284ef::t_6db45b937fc880 14
+  s_73d334589284ef::t_e8b8d19b52b4eb 1-13,15-35,69-396
+packages/design-system/package.json
+  s_73d334589284ef::t_33ad27235d9e79 16
+  s_73d334589284ef::t_38f97da14d5fd6 17-18,22-23
+  s_73d334589284ef::t_ad1e81faa41e57 14-15
+apps/hq/src/app/(panel)/affiliates/page.tsx
+  s_73d334589284ef::t_d069569bba4a1e 28-153
+  s_73d334589284ef::t_f8a732f139b710 3-7,9
+apps/hq/src/app/api/export/[type]/route.ts
+  s_73d334589284ef::t_c56ce058a17895 53
+  s_73d334589284ef::t_c0ca5566c934ef 3
+  s_73d334589284ef::t_375ee50a21e90b 11,13-14,43,363-390
+apps/hq/tsconfig.json
+  s_8616d92fc21d60::t_4f05d61e1fd9a4 1-30
+apps/hq/src/lib/actions/marketing.ts
+  s_73d334589284ef::t_d069569bba4a1e 185-205
+  s_73d334589284ef::t_e9b455242bd5b9 1-184,206
+apps/hq/src/app/health/route.ts
+  s_73d334589284ef::t_b9eaab4f6a5f65 9
+  s_73d334589284ef::t_d9bdfec50b4e7f 1-8,10-14
+packages/security/src/audit.ts
+  s_73d334589284ef::t_d88dc9653444fb 1-38
+apps/hq/src/app/(panel)/accounts/[id]/page.tsx
+  s_73d334589284ef::t_c81c9c6df7a8da 33
+  s_73d334589284ef::t_d069569bba4a1e 44-118
+  s_73d334589284ef::t_11a9a581097347 19,29,31-32
+apps/hq/e2e/scenarios/partner-program.scenario.ts
+  s_73d334589284ef::t_9b32c76263777a 1-1036
+apps/web/src/lib/session.ts
+  s_73d334589284ef::t_b9d6a7632b4c61 99-101,105-112
+  s_167a2770001def::t_a64cdfc7f51d81 4,22-38,40,44-45,48-50,52,59,62
+  s_167a2770001def::t_49a54468d0cfe6 78
+  s_167a2770001def::t_5de7867212bbf1 39,41-43,51,53-58,60-61,63
+  s_73d334589284ef::t_1f9064fd34f241 7,77,79-80,82-97,114-115,118-121,124,128,139-140
+packages/design-system/utilities.css
+  s_73d334589284ef::t_38f97da14d5fd6 1-262
+packages/commerce/src/shop-views/index.ts
+  s_73d334589284ef::t_3cc5a34d80725a 79-86,88-92
+  s_73d334589284ef::t_430d5bde7cc86c 1-78,87,93-124
+apps/web/src/app/admin/_components/status-banners.tsx
+  s_73d334589284ef::t_9a25988c5ccb5e 118-126,131
+apps/hq/src/lib/actions/members.ts
+  s_73d334589284ef::t_52779b8bff61a4 1-172
+apps/web/src/lib/queries/orders.ts
+  s_73d334589284ef::t_c22da93296efe3 2
+  s_73d334589284ef::t_bf69e4d0ecc9f8 44
+apps/hq/src/lib/session.ts
+  s_73d334589284ef::t_d9bdfec50b4e7f 1-2,5-68,84-126
+  s_73d334589284ef::t_099c7a28cd4a00 3
+  s_73d334589284ef::t_c56ce058a17895 69-83
+  s_73d334589284ef::t_bbe6cfb95de604 4
+apps/hq/package.json
+  s_73d334589284ef::t_7b34eeec7d9409 18,26
+  s_73d334589284ef::t_9b32c76263777a 11-12
+  s_73d334589284ef::t_099c7a28cd4a00 21
+  s_ea1abe50401033::t_86461df611e6ee 25
+  s_73d334589284ef::t_d9bdfec50b4e7f 15-16,23-24,28-43
+  s_73d334589284ef::t_d94d9085609faa 1-10,13-14,17,19-20,22,27,44-63
+apps/hq/src/lib/actions/shared.ts
+  s_73d334589284ef::t_d069569bba4a1e 85-121
+  s_73d334589284ef::t_a65def99911c19 22-83
+packages/db/src/schema/staff.ts
+  s_73d334589284ef::t_9eafc2fa4d1502 1-90
+apps/web/src/lib/actions/support.ts
+  s_73d334589284ef::t_9a25988c5ccb5e 97-102
+.env.example
+  s_ea1abe50401033::t_97019444c56f9a 23,49-56
+  s_73d334589284ef::t_7f54e033f4c465 67-79,82-96
+  s_ea1abe50401033::t_a569d065308510 24-27
+  s_73d334589284ef::t_14c59700853ada 57,97
+apps/hq/src/lib/actions/standing.ts
+  s_73d334589284ef::t_c56ce058a17895 15
+apps/hq/src/app/(panel)/orders/page.tsx
+  s_73d334589284ef::t_c81c9c6df7a8da 10-11
+  s_73d334589284ef::t_d069569bba4a1e 29-186
+  s_73d334589284ef::t_93d7551f605e88 3-7,9
+apps/hq/src/app/layout.tsx
+  s_73d334589284ef::t_d9bdfec50b4e7f 1-38,57-89
+  s_73d334589284ef::t_82635dc69dbf9f 39-56
+apps/hq/e2e/scenarios/purge.ts
+  s_73d334589284ef::t_9b32c76263777a 1-49
+packages/security/package.json
+  s_73d334589284ef::t_d88dc9653444fb 13-14
+  s_73d334589284ef::t_91dca59b58cd40 12,22
+  s_73d334589284ef::t_cf98cf03ec65b4 27
+apps/hq/src/app/login/login-form.tsx
+  s_73d334589284ef::t_bfb1738551ee21 5-16,22,47-59
+  s_73d334589284ef::t_d069569bba4a1e 37
+  s_73d334589284ef::t_f6f3fc5d8df6d2 62-76
+apps/hq/next.config.ts
+  s_73d334589284ef::t_b9eaab4f6a5f65 4
+  s_73d334589284ef::t_99a96936f57769 1-3,5-38,40-163
+  s_73d334589284ef::t_099c7a28cd4a00 39
+packages/db/src/schema/index.ts
+  s_813fd1e0505632::t_1c28dff7d5be18 24
+  s_5422fb6c0f54ab::t_7cd882e64e113e 16
+apps/web/src/app/globals.css
+  s_ea1abe50401033::t_b43aa78163b0ee 490-507,509-530,542
+  s_ea1abe50401033::t_bebc58c1b9c48f 531-541
+  s_73d334589284ef::t_f5b3dcced722c8 48-59,198,201,204,364,366,508
+  s_73d334589284ef::t_a3a6e53049ff81 543
+apps/hq/src/lib/actions/access.ts
+  s_73d334589284ef::t_c56ce058a17895 23
+  s_73d334589284ef::t_c81c9c6df7a8da 21
+apps/hq/src/app/_components/hq-sidebar.tsx
+  s_73d334589284ef::t_d069569bba4a1e 46-48,55-86,93-103,110,119,126,148
+  s_73d334589284ef::t_3a762b688d610f 30
+  s_afffc65a416996::t_5ed80b73242963 23,120-125,221-227,233
+  s_afffc65a416996::t_de9c8f4a9bb5b5 4,9,15,18-19,21,29,234-243
+apps/web/src/lib/auth-client.ts
+  s_73d334589284ef::t_9a25988c5ccb5e 4,9-14
+apps/hq/src/app/(panel)/_components/volume-chart.tsx
+  s_73d334589284ef::t_fba6e36868bd9b 5
+apps/hq/src/app/(panel)/accounts/[id]/_components/account-actions.tsx
+  s_73d334589284ef::t_63123c11756353 6,11
+apps/hq/src/app/(panel)/accounts/[id]/_components/account-security-actions.tsx
+  s_73d334589284ef::t_65b1f8f6710234 5,7
+apps/hq/src/app/(panel)/accounts/[id]/_components/account.types.ts
+  s_73d334589284ef::t_336c320cb3474e 1
+apps/hq/src/app/(panel)/accounts/[id]/_components/affiliates-table.tsx
+  s_73d334589284ef::t_4f8fb30b0c264d 1-2
+apps/hq/src/app/(panel)/accounts/[id]/_components/buyers-table.tsx
+  s_73d334589284ef::t_c6296011b517ec 1-2
+apps/hq/src/app/(panel)/accounts/[id]/_components/catalogue-table.tsx
+  s_73d334589284ef::t_08f0930ba63f8d 2-3
+apps/hq/src/app/(panel)/accounts/[id]/_components/security-panel.tsx
+  s_73d334589284ef::t_76222e2657b709 10-11,15,18
+apps/hq/src/app/(panel)/disputes/page.tsx
+  s_73d334589284ef::t_55bde41d80a0a3 1-510
+apps/hq/src/app/(panel)/marketing/_components/composer.tsx
+  s_73d334589284ef::t_3c45e03361b04d 1-265
+apps/hq/src/app/(panel)/marketing/_components/growth-chart.tsx
+  s_73d334589284ef::t_89c63cb0b4409b 1-73
+apps/hq/src/app/(panel)/marketing/_components/markdown.ts
+  s_73d334589284ef::t_c5cf049fd119ae 1-19
+apps/hq/src/app/(panel)/marketing/_components/send-controls.tsx
+  s_73d334589284ef::t_156a38bbf352a5 1-233
+apps/hq/src/app/(panel)/marketing/_components/status-badge.tsx
+  s_73d334589284ef::t_bf124dfaf502ef 1-34
+apps/hq/src/app/(panel)/marketing/journeys/page.tsx
+  s_73d334589284ef::t_a6c491b4881235 1-151
+apps/hq/src/app/(panel)/members/page.tsx
+  s_73d334589284ef::t_09fdbf673ec272 1-168
+apps/hq/src/app/(panel)/system/page.tsx
+  s_73d334589284ef::t_853e83b30cf9fe 5,7
+apps/hq/src/app/_components/hq-ui.tsx
+  s_73d334589284ef::t_17f686cd9958d4 5-6,189
+apps/hq/src/lib/platform/billing-state.ts
+  s_73d334589284ef::t_3e633a7a8966f6 3
+apps/hq/src/lib/platform/disputes.ts
+  s_73d334589284ef::t_d74621c5fd33e7 1-435
+apps/hq/src/lib/platform/exports.ts
+  s_73d334589284ef::t_de34d70d5b1fd0 5-14,129-174
+apps/hq/src/lib/platform/index.ts
+  s_73d334589284ef::t_b67091cd368b09 24,26
+apps/hq/src/lib/platform/lists.ts
+  s_73d334589284ef::t_77c408f47181e3 8
+apps/hq/src/lib/platform/marketing.ts
+  s_73d334589284ef::t_645fa5d04b58f3 1-165
+apps/hq/src/lib/platform/overview.ts
+  s_73d334589284ef::t_860fe5f93b77a4 6-7
+packages/core/src/data/csv.test.ts
+  s_73d334589284ef::t_9d08f01a21df54 12
+packages/design-system/src/web/brand.tsx
+  s_ea1abe50401033::t_6c679729359035 1-87
+packages/design-system/src/web/panel-footer.tsx
+  s_ea1abe50401033::t_6f978e76770879 1-70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "252b76d964f76565e830d0b210a0e7e623668ef0",
+  "prompts": {},
+  "sessions": {
+    "s_117ad80ebc0c8a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b4f79ff2-0982-4dd6-b546-6a94197e5b66",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_167a2770001def": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1da4e293-1c46-48ea-afb2-51f0e2b0523e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_5422fb6c0f54ab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7ae46440-b0ee-4afe-9b2a-09daaa8fd63c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_73d334589284ef": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8f0fa61d-b7e1-4a59-930e-9c9b5bb3a12e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_813fd1e0505632": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "355736f2-c737-401a-832c-734acb0be5e0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_8616d92fc21d60": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fed81380-e907-4451-8cd4-8d45c59b81c2",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_afffc65a416996": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "58649b69-a7d9-49ce-987f-4fd64e3f5d35",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ea1abe50401033": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e226e4a6-14e7-4e4c-b8e0-3e89fba3f647",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
