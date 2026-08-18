@@ -1,5 +1,22 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "extends": ["//"],
-  "tags": ["app"]
+  "tags": ["app"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build", "test"],
+      /*
+       * `public/_pagefind` is build output too, and the only task in the
+       * repository that writes outside `.next`.
+       *
+       * `pnpm build` here is `next build` followed by a `postbuild` that runs
+       * Pagefind over the rendered HTML and writes the search index into
+       * `public/`. Without this line the root config's outputs restore `.next`
+       * on a cache hit and leave the index behind — and the failure has no
+       * symptom, because the page renders and the search box opens. Every query
+       * just returns nothing.
+       */
+      "outputs": [".next/**", "!.next/cache/**", "public/_pagefind/**"]
+    }
+  }
 }

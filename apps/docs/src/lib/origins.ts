@@ -30,8 +30,18 @@ import { docsOrigin as configuredDocsOrigin } from "@sailo/core/origin";
  * This one answers "what host am I", and naming production from a preview
  * would be a lie with consequences: the preview would declare
  * `docs.sailo.store` as the canonical for pages that do not exist there yet,
- * and ask Google to index the wrong copy. So a preview falls back to its own
- * Vercel URL, and a `next dev` to localhost.
+ * and ask Google to index the wrong copy. So a preview names itself, and a
+ * `next dev` names localhost.
+ *
+ * **`VERCEL_URL`, not `VERCEL_PROJECT_PRODUCTION_URL`.** The second one is the
+ * project's *production* domain and is set on a preview too, so reaching for it
+ * here would produce exactly the lie the paragraph above is about. `VERCEL_URL`
+ * is the address of the deployment being built.
+ *
+ * Neither is `NEXT_PUBLIC_`, which is fine and worth stating: every caller of
+ * this is server-side — `metadataBase`, the canonical, `sitemap.ts`,
+ * `robots.ts`, the two `llms` routes — and all of them are evaluated at build
+ * time, where both variables are present.
  *
  * A function rather than a constant, for the reason `appOrigin()` is one: a
  * value computed at module load cannot see an environment a test sets
@@ -40,9 +50,7 @@ import { docsOrigin as configuredDocsOrigin } from "@sailo/core/origin";
 export function docsOrigin(): string {
   if (process.env.NEXT_PUBLIC_DOCS_URL) return configuredDocsOrigin();
   if (process.env.VERCEL_ENV === "production") return configuredDocsOrigin();
-  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
-  }
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return "http://localhost:3003";
 }
 
