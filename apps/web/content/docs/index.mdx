@@ -1,0 +1,73 @@
+---
+title: Developer documentation
+description: Connect Sailo to Zapier, n8n, Make or an AI assistant. Signed webhooks, a REST API and an MCP server, all opened by one key.
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { EndpointCount } from "@/components/docs/endpoint-reference";
+import { ToolCount } from "@/components/docs/mcp-reference";
+import { EventCount } from "@/components/docs/webhook-reference";
+import { CurlExample, KeyLink } from "@/components/docs/kit";
+
+Sailo speaks three ways to the outside world, and one key opens all three:
+webhooks push events to you, the REST API lets you ask questions, and the MCP
+server lets an AI assistant do both.
+
+This page is public and unauthenticated on purpose. Somebody evaluating whether
+Sailo fits their stack needs to read it *before* they have an account, and an
+integration guide behind a login is one nobody finds.
+
+## Start here
+
+<Cards>
+  <Card href="/docs/api" title="REST API">
+    <EndpointCount /> endpoints over orders, products and contacts. Cursor-paged,
+    one envelope for every answer.
+  </Card>
+  <Card href="/docs/webhooks" title="Webhooks">
+    <EventCount /> events, signed with Standard Webhooks and retried on failure.
+  </Card>
+  <Card href="/docs/mcp" title="MCP">
+    <ToolCount /> tools an AI assistant can call, over the same key and the same
+    rules.
+  </Card>
+</Cards>
+
+## The shape of everything
+
+One credential, sent one way. Every call carries
+`Authorization: Bearer sailo_sk_…` and nothing goes in a query string — a token
+in a URL is written into every access log, proxy log and browser history it
+passes through.
+
+<CurlExample path="/shop" />
+
+Every REST answer is `{ "data": … }`; every failure is
+`{ "error": { "code", "message" } }` with a matching HTTP status. Branch on
+`code` — it is stable and only ever added to — and never on the message, which
+is a sentence for a person and may be reworded.
+
+Money is always an object:
+`{ "cents": 4999, "amount": "49.99", "currency": "GBP" }`. Use `cents` for
+arithmetic and `amount` for anything a person will read — `cents` is correct for
+zero-decimal currencies like JPY too, where dividing by 100 is not.
+
+There is a machine-readable description of the REST surface at
+[`/api/v1/openapi.json`](/api/v1/openapi.json). It needs no key.
+
+## What Sailo does not do
+
+There is no per-app directory and no OAuth app registration. A signed webhook
+plus a key reaches Zapier, n8n, Make, Pipedream and everything behind them,
+which is a larger set than any list of logos we could maintain — and it means
+nothing you build here depends on us shipping a connector for your tool.
+
+The documentation is English only for now, unlike the marketing pages and the
+blog. An integration guide half-translated is worse than one honestly in one
+language: a mistranslated signature recipe is a verifier that rejects real
+messages.
+
+## Getting a key
+
+Every key is read-only unless you tick `write`, and is shown once at creation.
+Create one under <KeyLink />.

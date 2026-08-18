@@ -245,6 +245,47 @@ Also not built: proration UI, plan switching, seats/quantities, and coupons on
 memberships (refused with a message rather than silently ignored — Stripe's
 subscription discounts are their own system with their own duration rules).
 
+### Member passes, as built (`drizzle/0027`)
+
+Memberships were billing-complete and access-empty. `membershipAccess` had
+exactly one caller — the download gate — so a membership could say whether
+somebody had paid and never whether they may walk in. That is the whole
+product for a gym, a class studio or a co-working desk, which is what people
+actually sell as memberships.
+
+`subscriptions.pass_code` is the member's credential and `member_checkins` is
+the attendance. The pass is **not** a ticket and the difference is the design:
+a ticket is one admission and burns itself `valid → used`, while a member
+passes the same door ninety times a year, so the code is durable and every
+scan re-asks the subscription. Entitlement is decided when the pass is
+presented, never when it was minted — the same rule the download route
+follows, and for the same reason: the code lives in a wallet for ever.
+
+Nothing was rebuilt. The staff credential (`door_passes`), the scanner, the
+guest list, the undo button and the offline replay are the ticketing ones, and
+none of them learned what a membership is. `admitAnyCode` tries a ticket and
+falls through to a pass only on `not_found`, which is unambiguous by
+arithmetic rather than by luck: after folding, a ticket is ten characters and a
+pass is twelve, so no string can be a candidate for both. There is a test that
+fails if anyone ever shortens one to match the other.
+
+Two rules that look small and are not. A member scanned twice is **green**,
+where a ticket scanned twice is amber — the ticket case means somebody is
+getting a second person in on one admission, the member case means the screen
+lagged, and an amber screen would have a volunteer turn away a paid-up member.
+And a ten-minute re-scan window means the second scan writes no row, so
+attendance is not quietly inflated by a slow phone.
+
+Minted on demand rather than at signup, and only for a membership somebody
+turns up to (`serviceMode !== "online"`, the same switch `handedOverInPerson`
+already reads) — a paid newsletter has no door, and a credential issued for one
+is a live code to lose in exchange for nothing.
+
+*Not built:* pause/freeze, weekly billing (`BILLING_INTERVALS` is still
+`month | year`), attendance in the CSV export, and a scenario test — the pure
+half is unit-tested but the claim and the live entitlement read want a real
+database.
+
 ### Lifecycle email, as built
 
 **`27-lifecycle-email.md`** is the other direction: Sailo mailing its own
