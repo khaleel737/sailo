@@ -1,0 +1,19 @@
+apps/hq/.gitignore
+  s_73d334589284ef::t_2e2166297e7fbb 1-2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "e2c80404c94903663c6b2cbaba5cda8087c5cc2f",
+  "prompts": {},
+  "sessions": {
+    "s_73d334589284ef": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8f0fa61d-b7e1-4a59-930e-9c9b5bb3a12e",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
