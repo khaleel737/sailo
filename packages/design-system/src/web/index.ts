@@ -45,3 +45,25 @@ export * from "./local-time";
 export * from "./live-refresh";
 export * from "./route-progress";
 export * from "./brand-icons";
+
+/**
+ * The wordmark, and the chrome that frames a signed-in panel.
+ *
+ * Both were `apps/web/src/components` until the staff panel moved to its own
+ * deployment and needed them too. An app cannot import another app, so the
+ * shared half came here — which is also where it belonged: a logo and a legal
+ * footer are the two things every Sailo surface renders identically.
+ *
+ * apps/web still imports them from their old paths; those files are now
+ * one-line re-exports, so nothing over there had to change.
+ */
+export * from "./brand";
+export * from "./panel-footer";
+
+/**
+ * The evidence attachment row on a chargeback. Shared because both panels show
+ * the same case from different sides: the seller's, in apps/web, and staff's,
+ * in apps/hq. Presentation only — who may attach or remove a document is
+ * decided by the action each app passes in.
+ */
+export * from "./evidence-files";

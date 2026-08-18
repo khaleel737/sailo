@@ -9,7 +9,9 @@
     "./restricted-businesses": "./src/restricted-businesses/index.ts",
     "./staff": "./src/staff.ts",
     "./cron-auth": "./src/cron-auth.ts",
-    "./keys": "./src/keys.ts"
+    "./keys": "./src/keys.ts",
+    "./roster": "./src/roster.ts",
+    "./audit": "./src/audit.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -17,10 +19,12 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@sailo/db": "workspace:*",
     "@sailo/env": "workspace:*",
     "@sailo/mailer": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
     "@t3-oss/env-core": "^0.13.4",
+    "drizzle-orm": "^0.45.2",
     "server-only": "^0.0.1",
     "zod": "^4.4.3"
   },

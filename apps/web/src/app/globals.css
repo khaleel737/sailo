@@ -45,6 +45,18 @@
    storefront only reach for it where a page explicitly asks. */
 @import "@sailo/design-system/theme.css";
 
+/* --- Shared utilities -----------------------------------------------------
+   `focus-ring`, `press`, `tabular`, `skeleton` and the rest used to be defined
+   below, in this file. They moved to the design system when apps/hq became a
+   second consumer of `@sailo/design-system/web` — those components are written
+   against these class names, so the package that ships them has to ship these
+   too, or it ships components that are styleable only by whichever app happens
+   to have declared them.
+
+   Removed from here rather than duplicated: two copies of a focus ring is two
+   focus rings that will disagree. */
+@import "@sailo/design-system/utilities.css";
+
 /* ===========================================================================
    Sailo, app-wide
 
@@ -182,154 +194,14 @@ body {
   --badge-mark: var(--color-brand-400);
 }
 
-@utility surface-card {
-  background: var(--surface-card);
-  border: 1px solid var(--surface-border);
-}
 
-@utility surface-elevated {
-  background: var(--surface-elevated);
-}
+   
 
-@utility surface-border {
-  border-color: var(--surface-border);
-}
 
-@utility text-muted {
-  color: var(--surface-muted);
-}
+  
 
-@utility accent-bg {
-  background: var(--accent);
-  color: var(--accent-contrast);
-}
 
-@utility accent-text {
-  color: var(--accent);
-}
-
-/* Hide scrollbars on the horizontal category rail without losing scroll. */
-@utility no-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-/* --- 5. Interaction ----------------------------------------------------------
-   Interaction
-
-   `focus-ring` is opt-in per control rather than a global `:focus-visible`
-   rule, so nothing that already had a focus style gets two.
---------------------------------------------------------------------------- */
-
-@utility focus-ring {
-  &:focus-visible {
-    outline: 2px solid var(--color-brand-500);
-    outline-offset: 2px;
-  }
-}
-
-/*
- * For a widget whose focusable control is not the thing you look at — the
- * chart's day cursor is a visually hidden range input, and its display is the
- * plot above it. Ringing the input would draw a box around nothing.
- */
-@utility focus-ring-within {
-  &:has(:focus-visible) {
-    outline: 2px solid var(--color-brand-500);
-    outline-offset: 2px;
-  }
-}
-
-/*
- * The chart's day cursor, once it becomes visible on a touch screen.
- * Left native it renders a full-width charcoal bar that outweighs the chart it
- * is scrubbing — the control shouted louder than the data. Reduced to a
- * hairline in the ink ramp with the brand dot as its thumb, kept at a 44px
- * hit area by the input's own height.
- */
-@utility day-scrubber {
-  appearance: none;
-  background: transparent;
-
-  &::-webkit-slider-runnable-track {
-    height: 2px;
-    border-radius: 9999px;
-    background: var(--color-ink-200);
-  }
-  &::-webkit-slider-thumb {
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    margin-top: -6px;
-    border-radius: 9999px;
-    background: var(--color-brand-500);
-    border: 2px solid #fff;
-    box-shadow: 0 1px 3px rgb(0 0 0 / 0.25);
-  }
-  &::-moz-range-track {
-    height: 2px;
-    border-radius: 9999px;
-    background: var(--color-ink-200);
-  }
-  &::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    border-radius: 9999px;
-    background: var(--color-brand-500);
-    border: 2px solid #fff;
-  }
-}
-
-/* Controls sitting on a shop's own surface borrow the seller's accent. */
-@utility focus-ring-accent {
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-}
-
-@utility press {
-  transition: transform 0.12s var(--ease-out-quint);
-  &:active {
-    transform: scale(0.97);
-  }
-}
-
-/*
- * `lift` moves an element on hover, which makes it the containing block for
- * any `position: fixed` descendant while the pointer is over it. Never put it
- * on anything that contains a modal, a sheet or a popover — see the note on
- * the storefront product card.
- */
-@utility lift {
-  transition:
-    transform 0.22s var(--ease-out-quint),
-    box-shadow 0.22s var(--ease-out-quint);
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-  }
-}
-
-/* Native select, minus the native arrow. The chevron is painted on so it can
-   sit on the trailing edge in both writing directions. */
-@utility select-chevron {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2396928a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  padding-right: 2.25rem;
-  padding-left: 0.75rem;
-
-  &:dir(rtl) {
-    background-position: left 0.75rem center;
-    padding-right: 0.75rem;
-    padding-left: 2.25rem;
-  }
-}
+  
 
 /*
  * iOS Safari zooms the whole page in when a focused control's text is under
@@ -356,22 +228,6 @@ body {
   }
 }
 
-/* Numbers in tables, totals and stats should never jitter as they update. */
-.tabular {
-  font-variant-numeric: tabular-nums;
-}
-
-/* --- 6. Decoration -----------------------------------------------------------
-   The one gradient still shared with the brand pages. The landing page owns
-   its own surface treatment in `brand.css`; this is what /not-found and
-   onboarding still reach for.
---------------------------------------------------------------------------- */
-
-@utility bg-aurora {
-  background-image:
-    radial-gradient(ellipse 60% 50% at 15% 0%, oklch(0.9 0.11 160 / 0.5), transparent 60%),
-    radial-gradient(ellipse 50% 45% at 85% 10%, oklch(0.92 0.07 200 / 0.45), transparent 60%);
-}
 
 /* --- 7. Motion ---------------------------------------------------------------
    Keyframes, and the one override that turns all of it off.
@@ -388,9 +244,6 @@ body {
   }
 }
 
-@utility animate-rise {
-  animation: sailo-rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
 
 @keyframes sailo-fade {
   from {
@@ -449,23 +302,6 @@ body {
   }
 }
 
-/*
- * Loading placeholder that reads as "content is coming", not "something broke".
- *
- * One step darker than the surfaces it sits on. The panels are `ink-50`
- * (#faf9f7) and the brand pages are `--paper` (#fbfbf9); a ramp that topped out
- * at `ink-50` disappeared entirely on the second, so it starts at `ink-200`.
- */
-@utility skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--color-ink-200) 25%,
-    var(--color-ink-100) 50%,
-    var(--color-ink-200) 75%
-  );
-  background-size: 200% 100%;
-  animation: var(--animate-shimmer);
-}
 
 /* --- 8. Route progress -------------------------------------------------------
 
@@ -496,18 +332,6 @@ body {
   }
 }
 
-.route-progress {
-  position: fixed;
-  inset-inline: 0;
-  top: 0;
-  z-index: 100;
-  height: 2px;
-  pointer-events: none;
-  transform-origin: left center;
-  background: var(--color-brand-500);
-  /* The bar is drawn in logical order, so RTL grows from the right edge. */
-  will-change: transform, opacity;
-}
 
 [dir="rtl"] .route-progress {
   transform-origin: right center;
@@ -536,24 +360,11 @@ body {
   --sheet-dir: -1;
 }
 
-/* --- 9. Prose ------------------------------------------------------------
-   The article body on `/blog/[slug]`.
 
-   Written here rather than pulled in from a typography plugin. The brand pages
-   already have a scale, a measure and an ink ramp; a plugin ships its own and
-   the two disagree in ways that are tedious to unpick. This is the same
-   vocabulary the rest of `.brand-surface` uses, applied to tags Markdown
-   emits and nothing else.
+   
 
-   Scoped under `.prose` so it can only ever affect rendered Markdown — never
-   a component that happens to use an `<h2>`.
-------------------------------------------------------------------------- */
+   
 
-.prose {
-  color: var(--mute-600);
-  font-size: 1.0625rem;
-  line-height: 1.75;
-}
 
 .prose > * + * {
   margin-top: 1.5em;
@@ -674,6 +485,60 @@ body {
   color: var(--ink);
   font-weight: 600;
   white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------------
+   The article's furniture
+
+   Three rules that the sidebar, the anchors and the progress bar all need, and
+   that no utility class can express: a scroll offset that clears the sticky
+   header, a heading anchor that only appears on hover, and a progress bar
+   driven by the scroll position rather than by JavaScript.
+------------------------------------------------------------------------- */
+
+/* The site header is 4rem and sticky. Without this, every anchor in the
+   sidebar scrolls its heading to exactly where the header covers it — the one
+   bug that makes a table of contents feel broken rather than merely imprecise.
+   Applied to the article's own headings only, via `.prose`. */
+.prose :is(h2, h3) {
+  scroll-margin-top: 6rem;
+}
+
+
+   
+
+@supports (animation-timeline: scroll()) {
+  .read-progress {
+    animation: read-progress-grow linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+/* Logical, so a right-to-left article fills from the right. */
+.read-progress:dir(rtl) {
+  transform-origin: 100% 50%;
+}
+
+@keyframes read-progress-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Hidden outright rather than left to the global reduced-motion rule below.
+
+   That rule clamps every `animation-duration` to 0.01ms, which is right for a
+   time-driven animation and wrong for a scroll-driven one: a progress bar with
+   a duration set is a bar that reaches 100% in the first pixel of scroll and
+   then reports the article as read for the rest of it. A wrong readout is
+   worse than no readout, so this surface has no readout. */
+@media (prefers-reduced-motion: reduce) {
+  .read-progress {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

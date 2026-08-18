@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, isNotNull, } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders, type Order } from "@sailo/db/schema";
 import { orderLines, orderLinesMap } from "@/lib/order-lines";
@@ -41,36 +41,7 @@ export function hasOrderFilters(filters: OrderFilters): boolean {
   return Object.values(filters).some(Boolean);
 }
 
-export async function getShopOrders(
-  shopId: string,
-  limit = 100,
-  filters: OrderFilters = {},
-) {
-  return getDb().query.orders.findMany({
-    where: and(
-      eq(orders.shopId, shopId),
-      ...(filters.status ? [eq(orders.status, filters.status)] : []),
-      ...(filters.paymentMethod
-        ? [eq(orders.paymentMethod, filters.paymentMethod)]
-        : []),
-      ...(filters.paymentStatus
-        ? [eq(orders.paymentStatus, filters.paymentStatus)]
-        : []),
-      /*
-       * Read from the order's snapshot rather than joined through
-       * `couponId`. The snapshot is what the buyer was actually charged
-       * under, and it survives the coupon being renamed or deleted — a join
-       * would quietly stop finding last year's orders the day a seller tidies
-       * up their codes.
-       */
-      ...(filters.couponCode
-        ? [eq(orders.couponCode, filters.couponCode.toUpperCase())]
-        : []),
-    ),
-    orderBy: [desc(orders.createdAt)],
-    limit,
-  });
-}
+export { getShopOrders } from "@sailo/commerce/shop-views";
 
 /** Every coupon code that has actually been used, for the filter's options. */
 export async function usedCouponCodes(shopId: string): Promise<string[]> {

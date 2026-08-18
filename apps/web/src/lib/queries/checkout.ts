@@ -10,12 +10,7 @@ import { isDeliveryConfigured, type DeliveryMethodType } from "@sailo/commerce/d
 
 /** What a buyer may choose at checkout, and what the seller has configured. */
 
-export async function getShopPaymentMethods(shopId: string) {
-  return getDb().query.paymentMethods.findMany({
-    where: eq(paymentMethods.shopId, shopId),
-    orderBy: [asc(paymentMethods.position)],
-  });
-}
+export { getShopPaymentMethods } from "@sailo/commerce/shop-views";
 
 /** Only rails a buyer can actually use — enabled and fully configured. */
 export async function getCheckoutMethods(shopId: string) {

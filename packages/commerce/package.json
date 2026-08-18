@@ -19,7 +19,9 @@
     "./pagination": "./src/pagination.ts",
     "./order-lines": "./src/orders/order-lines.ts",
     "./products": "./src/catalog/products.ts",
-    "./door-pass": "./src/ticketing/door-pass.ts"
+    "./door-pass": "./src/ticketing/door-pass.ts",
+    "./disputes": "./src/disputes/index.ts",
+    "./shop-views": "./src/shop-views/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

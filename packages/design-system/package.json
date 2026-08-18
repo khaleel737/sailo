@@ -11,11 +11,16 @@
     "./web/cn": "./src/web/cn.ts",
     "./web/chart": "./src/web/chart/index.tsx",
     "./native": "./src/native/index.ts",
-    "./theme.css": "./theme.css"
+    "./theme.css": "./theme.css",
+    "./web/brand": "./src/web/brand.tsx",
+    "./web/panel-footer": "./src/web/panel-footer.tsx",
+    "./web/evidence-files": "./src/web/evidence-files.tsx",
+    "./utilities.css": "./utilities.css"
   },
   "files": [
     "src",
-    "theme.css"
+    "theme.css",
+    "utilities.css"
   ],
   "scripts": {
     "generate": "node src/tokens/generate.ts",

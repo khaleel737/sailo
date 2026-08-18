@@ -94,7 +94,12 @@ export async function createSupportTicket(
   }
 
   revalidatePath("/admin/support");
-  revalidatePath("/hq/support");
+  /*
+   * The staff view of this ticket is in apps/hq and cannot be revalidated from
+   * here — a path is only meaningful to the deployment that serves it. It
+   * re-reads on the staff member's next request, which for a support queue is
+   * soon enough; nothing here is enforcement.
+   */
   // The bus mirrors support events onto the hq channel, so an open staff
   // desk sees the ticket arrive without anyone reloading it.
   after(() => publishShopEvent(shop.id, "support"));

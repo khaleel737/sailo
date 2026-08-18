@@ -155,11 +155,11 @@ describe("read replica", () => {
       "../../packages/analytics/src/dashboard.ts",
       "../../packages/analytics/src/performance.ts",
       "../../packages/analytics/src/series.ts",
-      "src/lib/hq/exports.ts",
+
       // The /hq dashboard: full-table counts over the three biggest tables,
       // behind `requireStaff`, informing nothing but what is on screen. The
       // staff actions that *do* write re-read on the primary first.
-      "src/lib/hq/overview.ts",
+
       // `src/db/index.ts` used to be here; the connection (and getReadDb) now
       // live in the @sailo/db package, outside this app's source tree, so it
       // no longer appears in an app-source grep.

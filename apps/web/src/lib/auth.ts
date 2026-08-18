@@ -7,16 +7,12 @@ import {
 } from "better-auth/api";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { bearer, magicLink, twoFactor } from "better-auth/plugins";
+import { bearer, twoFactor } from "better-auth/plugins";
 import { expo } from "@better-auth/expo";
 import { getDb } from "@sailo/db";
 import { account, session, twoFactor as twoFactorTable, user, verification } from "@sailo/db/schema";
-import {
-  sendEmailConfirmation,
-  sendHqSignInLink,
-  sendPasswordReset,
-} from "@/lib/email";
-import { isStaffEmail, refusesPasswordAuth } from "@sailo/security/staff";
+import { sendEmailConfirmation, sendPasswordReset } from "@/lib/email";
+import { refusesPasswordAuthForRoster } from "@sailo/security/roster";
 import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
 
 /**
@@ -24,13 +20,6 @@ import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
  * so the email can state a number that can't drift away from the real one.
  */
 const RESET_TOKEN_TTL_SECONDS = 60 * 60;
-
-/**
- * How long an /hq magic link stays good. Short on purpose: the whole point of
- * the link is that it is the staff sign-in, so a live one sitting in an inbox
- * is a live key. Five minutes covers "open your mail and click".
- */
-const MAGIC_LINK_TTL_SECONDS = 60 * 5;
 
 /**
  * Better-auth's own refusals, copied rather than imported.
@@ -265,9 +254,6 @@ export const auth = betterAuth({
       // Mail to a caller-chosen address. Deliberately the tightest rows here.
       "/send-verification-email": { window: 900, max: 8 },
       "/forget-password": { window: 900, max: 8 },
-      // The staff door. Only rostered addresses are ever mailed, but the
-      // endpoint answers identically either way, so it is free to hammer.
-      "/sign-in/magic-link": { window: 900, max: 8 },
     },
     customStorage: {
       consume: async (key, rule) => {
@@ -342,7 +328,7 @@ export const auth = betterAuth({
         return;
       }
 
-      if (!refusesPasswordAuth(ctx.path, ctx.body?.email)) return;
+      if (!(await refusesPasswordAuthForRoster(ctx.path, ctx.body?.email))) return;
 
       console.warn(`[sailo] password auth refused for staff address on ${ctx.path}`);
 
@@ -396,35 +382,28 @@ export const auth = betterAuth({
   },
   plugins: [
     /*
-     * The staff door. /hq/login asks for a link, this decides who gets one:
-     * an address off the roster gets a silent no — not an error, because the
-     * response must read identically from outside — and no email, which means
-     * no account and no session. The check lives here, on the server, where
-     * the client can't reach around it.
+     * THE STAFF MAGIC LINK IS GONE FROM HERE, AND THAT IS THE POINT.
      *
-     * Sign-up through the link is left on deliberately. Only rostered
-     * addresses ever receive one, and better-auth creates the account at the
-     * moment the link is clicked — inbox proven, `emailVerified` set, and no
-     * password anywhere for anyone to phish or reuse.
+     * `magicLink()` used to sit at the top of this list, and its `sendMagicLink`
+     * opened by refusing every address that was not staff. So the plugin lived
+     * in the seller app while serving only the staff panel — no seller could
+     * ever be sent a link, by construction.
+     *
+     * The panel is apps/hq now, on its own origin, and the plugin went with it
+     * rather than being copied: `apps/hq/src/lib/auth.ts` is magic-link-only,
+     * this one is password-and-2FA-only, and the two doors admit disjoint sets
+     * of people. That is what makes the split safe — there is no shared
+     * mechanism for them to drift apart on.
+     *
+     * What stays here is the `hooks.before` refusal above, and it has to: a
+     * staff address must still be unable to grow a *password* on this door.
+     * It now asks the roster rather than the environment variable, so someone
+     * invited in the panel is covered from the moment they are invited.
+     *
+     * DO NOT ADD `magicLink()` BACK. A second place that mails sign-in links is
+     * a second set of rate limits and a second roster check, and the day they
+     * disagree the weaker one is the way in.
      */
-    magicLink({
-      expiresIn: MAGIC_LINK_TTL_SECONDS,
-      sendMagicLink: async ({ email, url }) => {
-        if (!isStaffEmail(email)) {
-          // Server-side only, same as the /hq refusal: the caller sees success.
-          console.warn(`[sailo] magic link refused for ${email}`);
-          return;
-        }
-        const result = await sendHqSignInLink({
-          to: email,
-          url,
-          expiresInMinutes: MAGIC_LINK_TTL_SECONDS / 60,
-        });
-        if (!result.sent) {
-          console.warn(`[sailo] magic link email not sent: ${result.reason}`);
-        }
-      },
-    }),
     /*
      * TOTP two-factor auth for seller accounts. Password sign-in for an
      * enrolled user answers `twoFactorRedirect` instead of a session and the

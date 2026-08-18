@@ -30,6 +30,7 @@
     "./onboarding": "./src/shop/onboarding.ts",
     "./plans": "./src/shop/plans.ts",
     "./legal": "./src/shop/legal.ts",
+    "./invoice-identity": "./src/shop/invoice-identity.ts",
     "./support": "./src/shop/support.ts",
     "./visibility": "./src/shop/visibility.ts",
     "./wire": "./src/wire/index.ts",
@@ -40,7 +41,10 @@
     "./token": "./src/identity/token.ts",
     "./time": "./src/time/index.ts",
     "./tags": "./src/identity/tags.ts",
-    "./net": "./src/net/index.ts"
+    "./net": "./src/net/index.ts",
+    "./disputes": "./src/disputes/index.ts",
+    "./csv": "./src/data/csv.ts",
+    "./action-state": "./src/action-state.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

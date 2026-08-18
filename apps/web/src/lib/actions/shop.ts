@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { after } from "next/server";
 import { toCurrencyCode } from "@sailo/core/currency";
+import { normalizeCountry } from "@sailo/core/countries";
 import { revalidateShop } from "@/lib/cache";
 import { publishHqEvent, publishShopEvent } from "@sailo/events";
 import { redirect } from "next/navigation";
@@ -105,12 +106,20 @@ import {
   readLocale,
   readNotificationPrefs,
   readSlotMinutes,
+  readInvoicePrefix,
   readSocials,
   readTaxRateBp,
   readTimeZone,
+  text,
 } from "./shop-form";
 
-export type ActionState = { ok: boolean; error?: string; message?: string };
+/**
+ * Moved to `@sailo/core/action-state` — apps/hq's forms need the same type and
+ * an app cannot import another app. Re-exported so this app's ~90 actions and
+ * every form that names `@/lib/actions/shop` are unchanged.
+ */
+import type { ActionState } from "@sailo/core/action-state";
+export type { ActionState };
 
 /** Runs format rules then the availability lookup. */
 async function checkHandleAvailability(raw: string, exceptShopId?: string) {
@@ -416,6 +425,48 @@ export async function updateShop(
       taxInclusive: formData.get("taxInclusive") === "inclusive",
       taxOnDelivery: formData.get("taxOnDelivery") === "on",
       taxId: String(formData.get("taxId") ?? "").trim().slice(0, 64) || null,
+      /*
+       * Who works out the tax. Anything but the one known alternative falls
+       * back to the flat rate — this is a `<select>` and therefore whatever
+       * arrived in the request, and an unrecognised value that reached the
+       * column would put `computeTotals` into its deferred branch and quietly
+       * stop charging tax at all.
+       */
+      taxMode: formData.get("taxMode") === "stripe" ? "stripe" : "manual",
+      taxIdCollection: formData.get("taxIdCollection") === "on",
+
+      /*
+       * Invoicing. `invoiceNextNumber` is deliberately absent — see
+       * `readInvoicePrefix` for why the seller may set the prefix and not the
+       * counter.
+       */
+      invoicePrefix: readInvoicePrefix(formData.get("invoicePrefix")),
+      invoiceNotes:
+        String(formData.get("invoiceNotes") ?? "").trim().slice(0, 500) || null,
+
+      // The issuer block. Free text throughout, trimmed and bounded; the
+      // country is the only one with a shape worth enforcing.
+      invoiceLegalName: text(formData.get("invoiceLegalName"), 120),
+      invoiceAddressLine1: text(formData.get("invoiceAddressLine1"), 120),
+      invoiceAddressLine2: text(formData.get("invoiceAddressLine2"), 120),
+      invoiceCity: text(formData.get("invoiceCity"), 80),
+      invoiceRegion: text(formData.get("invoiceRegion"), 80),
+      invoicePostalCode: text(formData.get("invoicePostalCode"), 20),
+      // Refused rather than stored raw: this feeds `Intl.DisplayNames` on a
+      // public invoice, and an unknown code renders as the code itself.
+      invoiceCountry: normalizeCountry(text(formData.get("invoiceCountry"), 2)),
+      invoiceRegistrationNumber: text(
+        formData.get("invoiceRegistrationNumber"),
+        64,
+      ),
+
+      /*
+       * Where alerts go. Null means "fall back to the contact address, then the
+       * account's" — never "send nothing", which is what `notificationPrefs`
+       * below is for. See the column's own note.
+       */
+      notificationEmail:
+        String(formData.get("notificationEmail") ?? "").trim() || null,
 
       /*
        * Booking. Both arrive as text the client composed, so both are checked

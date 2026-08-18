@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* --- Where the classes are ----------------------------------------------
+   Tailwind v4 finds its own sources, and what it deliberately never looks in
+   is `node_modules` — which is exactly where a workspace package resolves
+   from, `@sailo/design-system` being a symlink into `packages/`. So the
+   design system's web components have to be pointed at by hand.
+
+   The failure this prevents is silent and total: every utility class used
+   *only* by a package component — a Button's `rounded-xl`, a Table's
+   `divide-ink-200` — is absent from the generated stylesheet, so the build
+   succeeds, the page renders, and the component is unstyled. Nothing in
+   typecheck, test or lint can see it.
+
+   Only `src/web` is scanned. `src/native` writes React Native styles that
+   have no class names in them, and `src/tokens` is the source the imported
+   `theme.css` partial is generated from. */
+@source "../../../../packages/design-system/src/web";
+
+/* --- The ramps -----------------------------------------------------------
+   Imported, not restated. This is the same generated partial apps/web pulls
+   in, from the same package, so the neutral this panel is built on and the
+   one a seller's admin is built on cannot drift apart. Edit
+   `packages/design-system/src/tokens/index.ts` and regenerate; the design
+   system's own tests fail if the two disagree.
+
+   The long prose about *why* the ink ramp is warm lives in apps/web's
+   `globals.css`, beside the storefront chrome that argument is about. It is
+   not repeated here — one explanation, in the place it was decided. */
+@import "@sailo/design-system/theme.css";
+
+/* --- The utilities the components are written against ---------------------
+   `focus-ring`, `press`, `tabular`, `skeleton` and the rest. Imported rather
+   than restated: they are used by `@sailo/design-system/web`'s own components,
+   so the package ships them and both apps read the same file.
+
+   This app needs them badly — `focus-ring` alone appears 48 times across the
+   panel, and without it there is no visible focus anywhere in a keyboard-heavy
+   tool. Nothing in typecheck, test or build can see a missing utility; the
+   page just renders without it. */
+@import "@sailo/design-system/utilities.css";
+
+/* --- What this file adds -------------------------------------------------
+   Deliberately almost nothing.
+
+   apps/web's stylesheet is ~700 lines because it dresses storefronts, the
+   marketing pages and a seller's admin — three surfaces with different
+   typography, a capsule button vocabulary and a scroll-driven reveal. This
+   panel is tables, and tables need a font, a radius scale and three
+   animations. Everything else it needs is either a Tailwind utility or comes
+   out of the design system.
+
+   When something here starts wanting a fourth animation, put it in
+   `@sailo/design-system` rather than here, so the seller's admin can have it
+   too. This file is for what is genuinely only true of the staff panel. */
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Rounder than Tailwind's defaults, and matched to apps/web on purpose:
+     `xl` is the control radius (buttons, inputs, chips), `2xl` the surface
+     radius (cards, panels, sheets). Staff move between this panel and a
+     seller's admin all day; the two should not feel like different products. */
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.875rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.5rem;
+
+  /* Everything decelerates. Nothing here should feel like it is still
+     accelerating when it arrives. */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* The three this panel actually uses: the page fade on every route, and the
+     sheet pair behind the filter drawer. apps/web declares six; the other
+     three had no callers here and are not copied in on the chance that one
+     day they might. */
+  --animate-fade: sailo-fade 0.3s var(--ease-out-quint) both;
+  --animate-sheet-in: sailo-sheet-in 0.34s var(--ease-out-expo) both;
+  --animate-backdrop: sailo-backdrop 0.28s var(--ease-out-quint) both;
+}
+
+@keyframes sailo-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* `--sheet-dir` is set by the drawer that uses it, so one keyframe serves a
+   panel sliding in from either edge. */
+@keyframes sailo-sheet-in {
+  from {
+    transform: translateX(calc(100% * var(--sheet-dir, 1)));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes sailo-backdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Motion is decoration here — a fade and a drawer, never the thing that tells
+   you what happened. Honouring the OS preference costs this panel nothing. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

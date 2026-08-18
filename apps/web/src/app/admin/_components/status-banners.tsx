@@ -115,13 +115,20 @@ export async function StatusBanners({
             <p dir="auto" className="text-xs text-white/50">
               {a.shell.staffNotice}
             </p>
-            <Link
-              href="/hq"
+            {/*
+              An `<a>` with an absolute URL, not a `<Link>`. The panel is
+              hq.sailo.store now, and `<Link href="/hq">` would client-navigate
+              to a route this app no longer has — a 404 for the one person the
+              banner exists to help. A cross-origin hop is a document request by
+              definition, so the router has nothing to add here.
+            */}
+            <a
+              href="https://hq.sailo.store"
               className="focus-ring inline-flex shrink-0 items-center gap-1 rounded text-xs font-medium text-white transition hover:text-brand-300 pointer-coarse:min-h-11"
             >
               {a.shell.openHq}
               <ArrowRight className="size-3" />
-            </Link>
+            </a>
           </div>
         </div>
       ) : null}
