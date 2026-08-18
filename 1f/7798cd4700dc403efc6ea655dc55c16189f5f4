@@ -1,0 +1,399 @@
+packages/i18n/src/dictionaries/sr.ts
+  s_117ad80ebc0c8a::t_a677d42ef76030 76-77
+  s_72edf75866d316::t_e92473e873e267 97-99
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 245-248
+  s_0c00ec1c320439::t_397937a7c9a649 414
+packages/i18n/src/marketing/da.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_0ead9bb9824871 19-21,200,202-203
+  s_8b15e6a0fe771c::t_8dfe7fb793904c 22
+packages/i18n/src/dictionaries/ru.ts
+  s_117ad80ebc0c8a::t_a677d42ef76030 77
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 280-283
+  s_0c00ec1c320439::t_397937a7c9a649 465
+  s_72edf75866d316::t_e92473e873e267 97-99
+packages/i18n/src/dictionaries/cs.ts
+  s_0c00ec1c320439::t_397937a7c9a649 463
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 279-282
+  s_117ad80ebc0c8a::t_a677d42ef76030 78
+  s_72edf75866d316::t_e92473e873e267 98-100
+packages/i18n/src/dictionaries/hu.ts
+  s_0c00ec1c320439::t_397937a7c9a649 463
+  s_72edf75866d316::t_e92473e873e267 97-100
+  s_117ad80ebc0c8a::t_a677d42ef76030 77
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 279-282
+packages/i18n/src/marketing/en.ts
+  s_813fd1e0505632::t_269db3ed68f672 229
+  s_813fd1e0505632::t_39a9e9aa93cc58 223-228
+packages/i18n/src/marketing/cs.ts
+  s_8b15e6a0fe771c::t_0ead9bb9824871 19-21,200,202-203
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_8dfe7fb793904c 22
+packages/i18n/src/dictionaries/ja.ts
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 315-318
+  s_72edf75866d316::t_e92473e873e267 126-128
+  s_0c00ec1c320439::t_397937a7c9a649 504
+  s_117ad80ebc0c8a::t_a677d42ef76030 103
+packages/i18n/src/dictionaries/fil.ts
+  s_0c00ec1c320439::t_397937a7c9a649 413
+  s_72edf75866d316::t_e92473e873e267 96-99
+  s_117ad80ebc0c8a::t_a677d42ef76030 75-76
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 245-248
+packages/i18n/src/dictionaries/sq.ts
+  s_72edf75866d316::t_e92473e873e267 97-100
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 246-249
+  s_117ad80ebc0c8a::t_a677d42ef76030 76-77
+  s_0c00ec1c320439::t_397937a7c9a649 415
+packages/i18n/src/marketing/sq.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/dictionaries/es.ts
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 289-292
+  s_72edf75866d316::t_e92473e873e267 103-106
+  s_0c00ec1c320439::t_397937a7c9a649 474
+  s_117ad80ebc0c8a::t_a677d42ef76030 82
+packages/i18n/src/marketing/hu.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/dictionaries/vi.ts
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 247-250
+  s_0c00ec1c320439::t_397937a7c9a649 416
+  s_117ad80ebc0c8a::t_a677d42ef76030 76-77
+  s_72edf75866d316::t_e92473e873e267 97-100
+packages/i18n/src/dictionaries/da.ts
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 279-282
+  s_72edf75866d316::t_e92473e873e267 98-100
+  s_117ad80ebc0c8a::t_a677d42ef76030 78
+  s_0c00ec1c320439::t_397937a7c9a649 463
+packages/i18n/src/marketing/nl.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_5e6d1ef1b3453f 202
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,203
+packages/i18n/src/marketing/fil.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/dictionaries/uk.ts
+  s_117ad80ebc0c8a::t_a677d42ef76030 77
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 281-284
+  s_72edf75866d316::t_e92473e873e267 97-100
+  s_0c00ec1c320439::t_397937a7c9a649 466
+packages/i18n/src/marketing/no.ts
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+  s_813fd1e0505632::t_269db3ed68f672 188
+packages/i18n/src/admin/en.ts
+  s_117ad80ebc0c8a::t_1011de1816a3f1 1090-1099,1165-1211
+  s_98b37eba3699ee::t_d8a3fcad14dff5 1621-1623,1628-1636,1639-1664
+  s_8616d92fc21d60::t_3c23e5342af648 891-893
+  s_5422fb6c0f54ab::t_1119b3a45184bf 859-890,894-902
+  s_813fd1e0505632::t_e99c9d08505725 687,691,1818-1823
+  s_0c00ec1c320439::t_615a7bcbfe0a77 531-556
+  s_813fd1e0505632::t_49d2b4241b329c 128-141
+  s_98b37eba3699ee::t_1135b441f01602 1637-1638
+  s_45467c7e9ec319::t_db586759cf78d6 952-978,1718-1722
+  s_813fd1e0505632::t_5b692499502f28 127,688-690,692
+packages/i18n/src/dictionaries/ar.ts
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 314-317
+  s_72edf75866d316::t_e92473e873e267 126-128
+  s_117ad80ebc0c8a::t_a677d42ef76030 103
+  s_0c00ec1c320439::t_397937a7c9a649 503
+packages/i18n/src/dictionaries/th.ts
+  s_72edf75866d316::t_e92473e873e267 97-99
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 245-248
+  s_0c00ec1c320439::t_397937a7c9a649 414
+  s_117ad80ebc0c8a::t_a677d42ef76030 76-77
+packages/i18n/src/marketing/zh.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/marketing/sr.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/marketing/bg.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_8dfe7fb793904c 22
+  s_8b15e6a0fe771c::t_0ead9bb9824871 19-21,200,202-203
+packages/i18n/src/dictionaries/sv.ts
+  s_117ad80ebc0c8a::t_a677d42ef76030 77
+  s_0c00ec1c320439::t_397937a7c9a649 465
+  s_72edf75866d316::t_e92473e873e267 97-100
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 280-283
+packages/i18n/src/dictionaries/tr.ts
+  s_117ad80ebc0c8a::t_a677d42ef76030 79
+  s_0c00ec1c320439::t_397937a7c9a649 467
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 282-285
+  s_72edf75866d316::t_e92473e873e267 99-101
+packages/i18n/src/dictionaries/nl.ts
+  s_117ad80ebc0c8a::t_a677d42ef76030 79
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 284-287
+  s_0c00ec1c320439::t_397937a7c9a649 470
+  s_72edf75866d316::t_e92473e873e267 99-102
+packages/i18n/src/marketing/vi.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/marketing/es.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_0ead9bb9824871 19-21,200,202-203
+  s_8b15e6a0fe771c::t_8dfe7fb793904c 22
+packages/i18n/src/marketing/id.ts
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+  s_813fd1e0505632::t_269db3ed68f672 188
+packages/i18n/src/dictionaries/bs.ts
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 244-247
+  s_72edf75866d316::t_e92473e873e267 96-98
+  s_117ad80ebc0c8a::t_a677d42ef76030 75-76
+  s_0c00ec1c320439::t_397937a7c9a649 413
+packages/i18n/src/marketing/pt.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/marketing/sl.ts
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,202-203
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_01dafa2ec215dc 200
+packages/i18n/src/dictionaries/en.ts
+  s_0c00ec1c320439::t_397937a7c9a649 651
+  s_117ad80ebc0c8a::t_a677d42ef76030 143
+  s_72edf75866d316::t_e92473e873e267 182-184
+  s_117ad80ebc0c8a::t_fe47ad5213d3d2 420-430
+packages/i18n/src/marketing/fi.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_0f0c40601acafd 202
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,203
+packages/i18n/src/marketing/th.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/marketing/mk.ts
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,203
+  s_8b15e6a0fe771c::t_5e6d1ef1b3453f 202
+  s_8b15e6a0fe771c::t_01dafa2ec215dc 200
+  s_813fd1e0505632::t_269db3ed68f672 188
+packages/i18n/src/marketing/ar.ts
+  s_8b15e6a0fe771c::t_0ead9bb9824871 19-21,200,202-203
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_8dfe7fb793904c 22
+packages/i18n/src/marketing/tr.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/marketing/ms.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/marketing/el.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_0ead9bb9824871 19-21,203
+  s_8b15e6a0fe771c::t_8dfe7fb793904c 22
+  s_8b15e6a0fe771c::t_0f0c40601acafd 202
+  s_8b15e6a0fe771c::t_01dafa2ec215dc 200
+packages/i18n/src/marketing/fr.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/dictionaries/el.ts
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 284-287
+  s_117ad80ebc0c8a::t_a677d42ef76030 80
+  s_0c00ec1c320439::t_397937a7c9a649 468
+  s_72edf75866d316::t_e92473e873e267 100-103
+packages/i18n/src/marketing/pl.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/dictionaries/fi.ts
+  s_0c00ec1c320439::t_397937a7c9a649 462
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 278-281
+  s_72edf75866d316::t_e92473e873e267 97-99
+  s_117ad80ebc0c8a::t_a677d42ef76030 77
+packages/i18n/src/dictionaries/it.ts
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 286-289
+  s_72edf75866d316::t_e92473e873e267 101-104
+  s_117ad80ebc0c8a::t_a677d42ef76030 81
+  s_0c00ec1c320439::t_397937a7c9a649 472
+packages/i18n/src/dictionaries/sl.ts
+  s_0c00ec1c320439::t_397937a7c9a649 412
+  s_72edf75866d316::t_e92473e873e267 97-100
+  s_117ad80ebc0c8a::t_a677d42ef76030 76-77
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 246-249
+packages/i18n/src/dictionaries/pt.ts
+  s_72edf75866d316::t_e92473e873e267 99-102
+  s_117ad80ebc0c8a::t_a677d42ef76030 79
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 284-287
+  s_0c00ec1c320439::t_397937a7c9a649 470
+packages/i18n/src/marketing/hr.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/marketing/ja.ts
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+  s_813fd1e0505632::t_269db3ed68f672 188
+packages/i18n/src/dictionaries/mk.ts
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 246-249
+  s_117ad80ebc0c8a::t_a677d42ef76030 76-77
+  s_0c00ec1c320439::t_397937a7c9a649 414
+  s_72edf75866d316::t_e92473e873e267 97-100
+packages/i18n/src/marketing/sv.ts
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+  s_813fd1e0505632::t_269db3ed68f672 188
+packages/i18n/src/marketing/de.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_0ead9bb9824871 19-21,200,203
+  s_8b15e6a0fe771c::t_0f0c40601acafd 202
+  s_8b15e6a0fe771c::t_8dfe7fb793904c 22
+packages/i18n/src/dictionaries/no.ts
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 278-281
+  s_0c00ec1c320439::t_397937a7c9a649 463
+  s_117ad80ebc0c8a::t_a677d42ef76030 76
+  s_72edf75866d316::t_e92473e873e267 96-99
+packages/i18n/src/marketing/bs.ts
+  s_8b15e6a0fe771c::t_01dafa2ec215dc 200
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_0ead9bb9824871 19-21,202-203
+  s_8b15e6a0fe771c::t_8dfe7fb793904c 22
+packages/i18n/src/dictionaries/ro.ts
+  s_0c00ec1c320439::t_397937a7c9a649 462
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 277-280
+  s_117ad80ebc0c8a::t_a677d42ef76030 76
+  s_72edf75866d316::t_e92473e873e267 96-98
+packages/i18n/src/dictionaries/bg.ts
+  s_117ad80ebc0c8a::t_a677d42ef76030 75-76
+  s_72edf75866d316::t_e92473e873e267 96-99
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 245-248
+  s_0c00ec1c320439::t_397937a7c9a649 414
+packages/i18n/src/dictionaries/de.ts
+  s_0c00ec1c320439::t_397937a7c9a649 475
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 290-293
+  s_72edf75866d316::t_e92473e873e267 104-107
+  s_117ad80ebc0c8a::t_a677d42ef76030 83
+packages/i18n/src/dictionaries/fr.ts
+  s_72edf75866d316::t_e92473e873e267 104-107
+  s_0c00ec1c320439::t_397937a7c9a649 475
+  s_117ad80ebc0c8a::t_a677d42ef76030 82
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 290-293
+packages/i18n/src/dictionaries/ko.ts
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 244-247
+  s_72edf75866d316::t_e92473e873e267 96-98
+  s_117ad80ebc0c8a::t_a677d42ef76030 75-76
+  s_0c00ec1c320439::t_397937a7c9a649 412
+packages/i18n/src/marketing/ro.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/dictionaries/hr.ts
+  s_117ad80ebc0c8a::t_a677d42ef76030 75-76
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 244-247
+  s_72edf75866d316::t_e92473e873e267 96-98
+  s_0c00ec1c320439::t_397937a7c9a649 412
+packages/i18n/src/dictionaries/pl.ts
+  s_117ad80ebc0c8a::t_a677d42ef76030 79
+  s_0c00ec1c320439::t_397937a7c9a649 468
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 282-285
+  s_72edf75866d316::t_e92473e873e267 99-101
+packages/i18n/src/marketing/it.ts
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+  s_813fd1e0505632::t_269db3ed68f672 188
+packages/i18n/src/dictionaries/id.ts
+  s_72edf75866d316::t_e92473e873e267 96-98
+  s_0c00ec1c320439::t_397937a7c9a649 412
+  s_117ad80ebc0c8a::t_a677d42ef76030 75-76
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 244-247
+packages/i18n/src/marketing/ru.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/marketing/ko.ts
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+  s_813fd1e0505632::t_269db3ed68f672 188
+packages/i18n/src/dictionaries/ms.ts
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 246-249
+  s_72edf75866d316::t_e92473e873e267 97-100
+  s_117ad80ebc0c8a::t_a677d42ef76030 76-77
+  s_0c00ec1c320439::t_397937a7c9a649 411
+packages/i18n/src/marketing/uk.ts
+  s_813fd1e0505632::t_269db3ed68f672 188
+  s_8b15e6a0fe771c::t_02e4365136af97 19-22,200,202-203
+packages/i18n/src/dictionaries/zh.ts
+  s_72edf75866d316::t_e92473e873e267 126-128
+  s_117ad80ebc0c8a::t_bfee8aa6b8e7c0 314-317
+  s_0c00ec1c320439::t_397937a7c9a649 503
+  s_117ad80ebc0c8a::t_a677d42ef76030 103
+packages/i18n/src/dictionaries.test.ts
+  s_ea1abe50401033::t_cc391bf89a29f5 6,53-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "1f7798cd4700dc403efc6ea655dc55c16189f5f4",
+  "prompts": {},
+  "sessions": {
+    "s_0c00ec1c320439": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "83334e83-6860-4bd8-b910-b122ae459064",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_117ad80ebc0c8a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b4f79ff2-0982-4dd6-b546-6a94197e5b66",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_45467c7e9ec319": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5617138f-41d1-4ecb-ac9f-4a4e6ee99b17",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_5422fb6c0f54ab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7ae46440-b0ee-4afe-9b2a-09daaa8fd63c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_72edf75866d316": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ef4a282d-1df8-41bb-bed9-a694ecb29331",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_813fd1e0505632": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "355736f2-c737-401a-832c-734acb0be5e0",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_8616d92fc21d60": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fed81380-e907-4451-8cd4-8d45c59b81c2",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_8b15e6a0fe771c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "150f087e-b98b-4c61-9f69-d72e317a7826",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_98b37eba3699ee": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e5a5ba5-0b4a-4d8a-b8bf-01a2ca7efa8b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ea1abe50401033": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e226e4a6-14e7-4e4c-b8e0-3e89fba3f647",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
