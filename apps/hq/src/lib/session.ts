@@ -122,6 +122,29 @@ export async function getSession() {
  * exists; a support member who has already signed in knows perfectly well that
  * it exists, and telling them "you can't do that" is honest where pretending
  * the page is missing would just send them to us confused.
+ *
+ * ─── WHAT "403" MEANS ON A PAGE, MEASURED ────────────────────────────────────
+ * `forbidden()` needs `experimental.authInterrupts`, which `next.config.ts`
+ * enables and explains. With it on, the refusal behaves differently depending
+ * on where it is raised, and both behaviours were checked against a production
+ * build rather than assumed:
+ *
+ *   - **Route handlers** — `/api/export/[type]` — return a clean `403`. Nothing
+ *     has been written to the response when the guard runs, so Next can still
+ *     set the status.
+ *
+ *   - **Pages** render `forbidden.tsx` with a `200`. That is not this code
+ *     being wrong: `(panel)/layout.tsx` streams the sidebar before the page
+ *     component runs, and once the first byte is out the status is already
+ *     committed. Under streaming SSR a page-level refusal can only swap the
+ *     body, not the status line.
+ *
+ * What matters is the same either way, and was verified: the guarded content
+ * never renders and nothing it would have read reaches the response. So this is
+ * a monitoring caveat rather than a hole — **do not treat an HQ page's status
+ * code as an authorization signal.** The refusals worth alerting on are the
+ * `console.warn` lines below, which name the address, the role and the
+ * capability.
  */
 export async function requireStaff(capability?: StaffCapability): Promise<Staff> {
   const staff = await resolve();

@@ -77,10 +77,19 @@ export function SecurityPanel({
       */}
       <div className="grid items-start gap-3 sm:grid-cols-2">
         <Card className="p-4">
-          <h3 className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-ink-400">
+          {/*
+            `h2`, not `h3`.
+
+            These reported to an `h2` reading "Security" that this panel used to
+            render. The tab strip is labelled Security now, so that heading went
+            — and left these skipping a level under the page's `h1`, which is
+            how a screen reader's heading outline gets a hole in it. Styled
+            identically; only the level changed.
+          */}
+          <h2 className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-ink-400">
             <Fingerprint className="size-3.5" />
             How they get in
-          </h3>
+          </h2>
           <div className="space-y-3">
             <Detail label="Second factor">
               {twoFactorEnabled ? (
@@ -150,10 +159,10 @@ export function SecurityPanel({
         </Card>
 
         <Card className="p-4">
-          <h3 className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-ink-400">
+          <h2 className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-ink-400">
             <Globe className="size-3.5" />
             Where from
-          </h3>
+          </h2>
           {countries.length === 0 ? (
             <p className="text-sm text-ink-500">
               Nowhere placed. Sessions carry a country only when the edge

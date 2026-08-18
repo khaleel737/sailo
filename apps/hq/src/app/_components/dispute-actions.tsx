@@ -144,9 +144,15 @@ export function ReleaseHold({ shopId }: { shopId: string }) {
           </span>
         </span>
       </label>
+      {/*
+        `aria-label`, because a placeholder is not a label: it is announced
+        inconsistently, and it disappears the moment somebody types — leaving a
+        filled box with nothing saying what is in it.
+      */}
       <input
         type="text"
         name="note"
+        aria-label="Why the payout hold is being released"
         placeholder="Why (goes on the account's record)"
         className="focus-ring w-full rounded-lg border border-ink-200 px-3 py-1.5 text-sm"
       />

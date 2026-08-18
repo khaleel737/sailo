@@ -41,9 +41,19 @@ export function InviteMember() {
 
   return (
     <form action={action} className="space-y-4">
+      {/*
+        `htmlFor` and a matching `id` on every field.
+
+        `Field` renders `<Label htmlFor={htmlFor}>`, and these three passed
+        neither — so the visible label was associated with nothing. A sighted
+        user reads "Email" above a box and cannot tell; a screen reader
+        announces an unlabelled text field, and clicking the word does not
+        focus the input.
+      */}
       <div className="grid gap-4 sm:grid-cols-[1fr_10rem]">
-        <Field label="Email">
+        <Field label="Email" htmlFor="invite-email">
           <Input
+            id="invite-email"
             name="email"
             type="email"
             required
@@ -51,8 +61,9 @@ export function InviteMember() {
             placeholder="colleague@sailo.store"
           />
         </Field>
-        <Field label="Role">
+        <Field label="Role" htmlFor="invite-role">
           <select
+            id="invite-role"
             name="role"
             defaultValue="support"
             className="focus-ring h-11 w-full rounded-xl border border-ink-200 bg-white px-3 text-sm text-ink-900"
@@ -65,8 +76,12 @@ export function InviteMember() {
           </select>
         </Field>
       </div>
-      <Field label="Note" hint="Optional — “contractor, through March”.">
-        <Input name="note" maxLength={200} autoComplete="off" />
+      <Field
+        label="Note"
+        htmlFor="invite-note"
+        hint="Optional — “contractor, through March”."
+      >
+        <Input id="invite-note" name="note" maxLength={200} autoComplete="off" />
       </Field>
 
       {/*

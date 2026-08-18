@@ -371,6 +371,26 @@ export const orders = pgTable(
     index("orders_shop_created_idx").on(t.shopId, t.createdAt),
     index("orders_client_idx").on(t.clientId),
     index("orders_created_idx").on(t.createdAt),
+    /*
+     * Paid, and nobody has delivered it. The one shape four different callers
+     * ask about, and the only one of them that had no index.
+     *
+     * `EXPLAIN` on HQ's risk desk showed `Seq Scan on orders` — the whole
+     * table, on every load of a page staff keep open. It also backs
+     * `openObligations`, which refuses an account deletion while buyers are
+     * owed goods, and both of the undelivered counts on a closure record.
+     *
+     * Partial, and that is what makes it cheap: it holds only the rows that
+     * are paid and still waiting, which is a small and self-limiting slice —
+     * they leave the index the moment somebody ships or refunds. `shopId`
+     * leads because every one of the four callers either groups by it or
+     * filters on it.
+     */
+    index("orders_undelivered_paid_idx")
+      .on(t.shopId)
+      .where(
+        sql`${t.paymentStatus} = 'paid' and ${t.status} in ('new', 'confirmed')`,
+      ),
     uniqueIndex("orders_download_token_key").on(t.downloadToken),
     // The Connect webhook finds the order by session id, on every card payment.
     index("orders_stripe_session_idx").on(t.stripeSessionId),

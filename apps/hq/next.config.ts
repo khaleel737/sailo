@@ -50,6 +50,28 @@ const nextConfig: NextConfig = {
    */
   experimental: {
     optimizePackageImports: ["lucide-react"],
+    /*
+     * `forbidden()` does not work without this, and its failure mode is the
+     * worst kind: it throws a *different* error instead of refusing.
+     *
+     * `requireStaff(capability)` calls `forbidden()` — roughly thirty call
+     * sites, every write in the panel plus the bulk-export route. Without this
+     * flag every one of them threw "`forbidden()` is experimental and only
+     * allowed to be enabled when `experimental.authInterrupts` is enabled".
+     * Access was still denied, because the throw happens before the page
+     * returns anything and before the route reads a row — but a support member
+     * asking for something above their grade got a 500 from `/api/export/*`
+     * and "Something went wrong" from a page, which says the panel is broken
+     * rather than that they are not allowed.
+     *
+     * Experimental, and taken deliberately. The alternative is hand-rolling a
+     * 403 — a thrown sentinel caught in every layout and route handler — which
+     * is more code on the authorization path, the one place least worth being
+     * clever. `forbidden.tsx` beside the root layout renders the page and Next
+     * sets the 403 status; it also injects `<meta name="robots" content=
+     * "noindex">`, which this panel wants everywhere anyway.
+     */
+    authInterrupts: true,
   },
 
   /**
