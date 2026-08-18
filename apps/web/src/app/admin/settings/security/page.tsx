@@ -32,7 +32,7 @@ export default async function SecuritySettingsPage() {
     <div className="space-y-6">
       <TwoFactorCard enabled={Boolean(user.twoFactorEnabled)} />
       <SessionsCard sessions={sessions} />
-      <DeleteAccountCard handle={shop.handle} blocked={obligations.blocked} />
+      <DeleteAccountCard handle={shop.handle} obligations={obligations} />
     </div>
   );
 }

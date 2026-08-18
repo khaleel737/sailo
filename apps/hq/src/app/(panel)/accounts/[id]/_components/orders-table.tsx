@@ -5,7 +5,7 @@ import { PAYMENT_STATUS_TONES } from "@sailo/core/payment-status";
 import { orderSummaryTitle } from "@sailo/core/order-lines";
 import { formatMoney } from "@sailo/core/currency";
 import { orderStatusTone } from "@sailo/core/order-status";
-import type { AccountDetail } from "./account.types";
+import type { AccountCommerce } from "./account.types";
 
 /** Every order this shop has taken, newest first. */
 
@@ -14,7 +14,7 @@ import type { AccountDetail } from "./account.types";
  * current one. An order stays priced in the currency it was taken in, so a
  * seller who switches currency doesn't silently restate their history.
  */
-export function OrdersTable({ detail }: { detail: AccountDetail }) {
+export function OrdersTable({ detail }: { detail: AccountCommerce }) {
   return (
     <>
     <SectionTitle>Recent orders</SectionTitle>

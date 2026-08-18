@@ -2,7 +2,7 @@ import { EmptyRow, Table, Td, Th, Tr } from "@/app/_components/hq-table";
 import { Mono, SectionTitle } from "@/app/_components/hq-ui";
 import { Badge } from "@sailo/design-system/web";
 import { formatMoney } from "@sailo/core/currency";
-import type { AccountDetail, AccountShop } from "./account.types";
+import type { AccountCommerce, AccountShop } from "./account.types";
 
 /** Who is referring buyers, and what they are owed. */
 
@@ -10,7 +10,7 @@ export function AffiliatesTable({
   detail,
   shop,
 }: {
-  detail: AccountDetail;
+  detail: AccountCommerce;
   shop: AccountShop;
 }) {
   const money = (cents: number) => formatMoney(cents, shop.currency);

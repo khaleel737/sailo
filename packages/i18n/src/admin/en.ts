@@ -1411,6 +1411,19 @@ export const adminEn = {
     deleteBlockedTitle: "Finish your open orders first",
     deleteBlockedBody:
       "You have paid orders that haven't been delivered yet. Fulfil or refund them, then come back — deleting now would take money for goods nobody will send.",
+    /*
+     * Three refusals, three messages, because they are answered by three
+     * different actions and a single "you can't delete yet" would send every
+     * seller to support to find out which one they were looking at. Orders are
+     * fixed by shipping or refunding, a dispute is fixed by waiting for the
+     * bank, and a payout hold is fixed by us.
+     */
+    deleteBlockedDisputesTitle: "A card dispute is still open",
+    deleteBlockedDisputesBody:
+      "A buyer's bank is still deciding on a payment to your shop. Deleting now would erase the order, the product and the delivery record we need to answer it — and an unanswered dispute is lost by default. This clears itself once the bank decides.",
+    deleteBlockedPayoutsTitle: "Your payouts are on hold",
+    deleteBlockedPayoutsBody:
+      "Payouts from your shop are paused while we look at recent disputes. Deleting an account would disconnect the Stripe account that hold is on, so it has to be lifted first. Write to us and we'll tell you where it stands.",
   },
 
   /**

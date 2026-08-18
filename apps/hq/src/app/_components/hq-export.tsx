@@ -1,4 +1,5 @@
 import { Download } from "lucide-react";
+import { staffCan } from "@/lib/session";
 
 export type HqExportType =
   | "accounts"
@@ -15,14 +16,32 @@ export type HqExportType =
  *
  * A plain anchor rather than a `<Link>`: this is a file download, and a client
  * navigation would try to render the response as a page instead of saving it.
+ *
+ * ─── WHY THE CAPABILITY IS ASKED HERE AND NOT BY THE SEVEN CALLERS ───────────
+ * Seven pages render this button, and a rule that each of them has to remember
+ * is a rule that will be six-for-seven within a year — the eighth page is
+ * written by copying the seventh, and the copy that gets pasted is the one
+ * without the guard.
+ *
+ * So the component asks. It is a Server Component and `staffCan` is
+ * request-cached, so this costs nothing beyond the session lookup the page has
+ * already paid for, and a new export screen inherits the rule by using the
+ * component rather than by its author knowing about it.
+ *
+ * The route refuses independently — `data:export` is the first line of
+ * `/api/export/[type]`, because the URL is guessable and a hidden button is not
+ * an access control. This only decides whether somebody is offered a link that
+ * was going to 403.
  */
-export function ExportCsv({
+export async function ExportCsv({
   type,
   label = "Export CSV",
 }: {
   type: HqExportType;
   label?: string;
 }) {
+  if (!(await staffCan("data:export"))) return null;
+
   return (
     <a
       href={`/api/export/${type}`}

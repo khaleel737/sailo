@@ -93,7 +93,16 @@ export type WatchRow = {
  * A quiet list is the intended steady state. This is not a queue that has to
  * have something in it.
  */
-export async function getSecurityWatchlist(limit = 40): Promise<WatchRow[]> {
+/**
+ * How many accounts the watchlist shows.
+ *
+ * Exported so the page can state the cap using the same number the query
+ * applies. A screen that hard-codes "40" beside a query that fetches some other
+ * amount is a sentence that goes quietly wrong the first time either moves.
+ */
+export const WATCHLIST_LIMIT = 40;
+
+export async function getSecurityWatchlist(limit = WATCHLIST_LIMIT): Promise<WatchRow[]> {
   await requireStaff();
 
   const flagged = or(

@@ -22,6 +22,8 @@ export * from "./growth";
 export * from "./integrations";
 export * from "./support";
 export * from "./staff";
+export * from "./closures";
+export * from "./risk";
 export * from "./push";
 
 export * from "./relations";

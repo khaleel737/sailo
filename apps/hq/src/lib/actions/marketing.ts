@@ -17,12 +17,18 @@ import {
 /**
  * What staff may do to a campaign.
  *
- * Every action opens with `requireStaff()` — not because the /hq layout does
- * not, but because a server action is a public HTTP endpoint with a generated
- * name. It is reachable by anybody who has ever loaded the page's JavaScript,
- * whatever route they are standing on now, and it sends mail to the entire
- * list. The layout's guard decides whether a screen renders; this one decides
- * whether four thousand people get an email.
+ * Every action opens with a capability check — not because the /hq layout does
+ * not guard, but because a server action is a public HTTP endpoint with a
+ * generated name. It is reachable by anybody who has ever loaded the page's
+ * JavaScript, whatever route they are standing on now, and it sends mail to the
+ * entire list. The layout's guard decides whether a screen renders; this one
+ * decides whether four thousand people get an email.
+ *
+ * Drafting is `notes:write` and everything that can put mail on the wire is
+ * `marketing:send`. The line is drawn at the point of no return rather than at
+ * the point of authorship: a draft is editable, a schedule is a send with a
+ * delay, and a sent campaign cannot be recalled. Deleting is on the send side
+ * for the same reason — the row is the only record that a campaign went out.
  *
  * The rules about *what* may be edited and when are not here: they are in the
  * WHERE clauses of `@sailo/marketing/newsletter/campaigns`, guarded on status
@@ -48,7 +54,7 @@ export async function createCampaignAction(
   _prev: CampaignState,
   formData: FormData,
 ): Promise<CampaignState> {
-  const staff = await requireStaff();
+  const staff = await requireStaff("notes:write");
 
   const draft = draftFrom(formData);
   if ("error" in draft) return { error: draft.error };
@@ -69,7 +75,7 @@ export async function updateCampaignAction(
   _prev: CampaignState,
   formData: FormData,
 ): Promise<CampaignState> {
-  await requireStaff();
+  await requireStaff("notes:write");
 
   const id = String(formData.get("id") ?? "");
   const draft = draftFrom(formData);
@@ -91,7 +97,7 @@ export async function scheduleCampaignAction(
   _prev: CampaignState,
   formData: FormData,
 ): Promise<CampaignState> {
-  await requireStaff();
+  await requireStaff("marketing:send");
 
   const id = String(formData.get("id") ?? "");
   const raw = String(formData.get("scheduledAt") ?? "");
@@ -125,7 +131,7 @@ export async function unscheduleCampaignAction(
   _prev: CampaignState,
   formData: FormData,
 ): Promise<CampaignState> {
-  await requireStaff();
+  await requireStaff("marketing:send");
 
   const id = String(formData.get("id") ?? "");
   const undone = await unscheduleCampaign(id);
@@ -154,7 +160,7 @@ export async function sendCampaignAction(
   _prev: CampaignState,
   formData: FormData,
 ): Promise<CampaignState> {
-  await requireStaff();
+  await requireStaff("marketing:send");
 
   const id = String(formData.get("id") ?? "");
   const campaign = await getCampaign(id);
@@ -190,7 +196,7 @@ export async function deleteCampaignAction(
   _prev: CampaignState,
   formData: FormData,
 ): Promise<CampaignState> {
-  await requireStaff();
+  await requireStaff("marketing:send");
 
   const id = String(formData.get("id") ?? "");
   const gone = await deleteCampaign(id);

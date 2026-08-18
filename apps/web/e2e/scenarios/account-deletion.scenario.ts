@@ -1,11 +1,13 @@
 import { assertLocalDatabase } from "./local-only";
 import { beforeAll, describe, expect, it } from "vitest";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import {
   categories,
   coupons,
+  disputes,
   invoices,
+  shopClosures,
   orderItems,
   orders,
   paymentMethods,
@@ -49,10 +51,20 @@ beforeAll(() => {
   assertLocalDatabase();
 });
 
-/** A shop with the full spread: catalogue, a coupon, a rail, an order, an invoice. */
-async function fullShop(over: Partial<typeof orders.$inferInsert> = {}) {
+/**
+ * A shop with the full spread: catalogue, a coupon, a rail, an order, an invoice.
+ *
+ * `email` is an optional second argument so a test can build two shops under
+ * one address — which is the only way to exercise the closure fingerprint,
+ * since by the time it is read both owner rows have been tombstoned and there
+ * is no address left on either side of the comparison.
+ */
+async function fullShop(
+  over: Partial<typeof orders.$inferInsert> = {},
+  emailOverride?: string,
+) {
   const userId = uid();
-  const email = `delete-${userId.slice(0, 8)}@example.com`;
+  const email = emailOverride ?? `delete-${userId.slice(0, 8)}@example.com`;
 
   await db.insert(user).values({
     id: userId,
@@ -300,6 +312,164 @@ describe("what deletion destroys", () => {
   });
 });
 
+/**
+ * The closure record — what a deleted shop leaves behind.
+ *
+ * This is the half of deletion that has no other test possible. Everything the
+ * record names is read out of rows the next four steps destroy, so the only way
+ * to prove it is written *first* is to delete a shop and then read the record
+ * back and find things on it that no longer exist anywhere else.
+ *
+ * The gap it closes: take deposits for a fortnight, never ship, delete the
+ * account. Before this, the surviving orders no longer said who ran the shop or
+ * what it claimed to sell, and the honest answer to "what happened here" was
+ * that we erased it ourselves, on request, at the moment it became interesting.
+ */
+describe("the closure record", () => {
+  it("keeps what the shop was, after the shop has stopped being it", async () => {
+    const { userId, shop } = await fullShop();
+    await deleteAccountFor(userId);
+
+    const closure = await db.query.shopClosures.findFirst({
+      where: eq(shopClosures.shopId, shop.id),
+    });
+
+    expect(closure).toBeTruthy();
+    // The handle, which is the string every support email in the world still
+    // quotes long after it has been released back to the pool.
+    expect(closure?.handle).toBe(shop.handle);
+    expect(closure?.closedBy).toBe("seller");
+    expect(closure?.currency).toBe("USD");
+
+    /*
+     * The catalogue. `products` is hard-deleted by `hardDeleteShopContent`, so
+     * this is the only place on the platform that still knows what this shop
+     * said it sold — which is the half of the record that reads as evidence
+     * rather than as accounting.
+     */
+    expect(closure?.catalogue).toEqual([
+      { title: "Speckled mug", kind: "physical", priceCents: 2500 },
+    ]);
+
+    // And the shop it points at really is gone as a shop.
+    const tombstone = await db.query.shops.findFirst({ where: eq(shops.id, shop.id) });
+    expect(tombstone?.name).toBe("Deleted shop");
+    expect(tombstone?.deletedAt).not.toBeNull();
+  });
+
+  it("erases the name of a seller who left cleanly, and keeps the digest", async () => {
+    /*
+     * The retention split, and the direction that matters most: an ordinary
+     * departure is a real deletion. The shape of the business is kept because
+     * none of it is personal data about the seller; the name and address are
+     * not, because there is no legitimate interest in a dispute that does not
+     * exist.
+     */
+    const { userId, shop } = await fullShop();
+    await deleteAccountFor(userId);
+
+    const closure = await db.query.shopClosures.findFirst({
+      where: eq(shopClosures.shopId, shop.id),
+    });
+
+    expect(closure?.identityRetained).toBe("none");
+    expect(closure?.ownerEmail).toBeNull();
+    expect(closure?.ownerName).toBeNull();
+    expect(closure?.shopName).toBeNull();
+
+    // Kept, always, and never readable. This is what recognises them signing
+    // up again without storing anything that can be mailed, sold or exported.
+    expect(closure?.ownerEmailHash).toMatch(/^[0-9a-f]{64}$/);
+  });
+
+  it("keeps the identity when the shop was suspended", async () => {
+    const { userId, shop } = await fullShop();
+    await db
+      .update(shops)
+      .set({ suspendedAt: new Date(), suspendedReason: "counterfeit goods" })
+      .where(eq(shops.id, shop.id));
+
+    await deleteAccountFor(userId);
+
+    const closure = await db.query.shopClosures.findFirst({
+      where: eq(shopClosures.shopId, shop.id),
+    });
+
+    expect(closure?.identityRetained).toBe("suspicion");
+    expect(closure?.ownerEmail).toContain("@example.com");
+    expect(closure?.shopName).toBe("Test Shop");
+    // The reason we suspended them, which is the sentence somebody reading
+    // this in a year needs more than any of the numbers.
+    expect(closure?.suspendedReason).toBe("counterfeit goods");
+  });
+
+  it("recognises the same owner across two closed shops", async () => {
+    /*
+     * The whole point of a keyed digest rather than a stored address. Both
+     * shops have had their owner rows tombstoned by the time this reads them,
+     * so there is no email left on either side of this comparison — and the
+     * two still match.
+     */
+    const email = `serial-${uid().slice(0, 8)}@example.com`;
+
+    const first = await fullShop({}, email);
+    await deleteAccountFor(first.userId);
+    const second = await fullShop({}, email);
+    await deleteAccountFor(second.userId);
+
+    const rows = await db
+      .select({ shopId: shopClosures.shopId, hash: shopClosures.ownerEmailHash })
+      .from(shopClosures)
+      .where(
+        inArray(shopClosures.shopId, [first.shop.id, second.shop.id]),
+      );
+
+    expect(rows).toHaveLength(2);
+    expect(rows[0]?.hash).toBe(rows[1]?.hash);
+    expect(rows[0]?.hash).toBeTruthy();
+  });
+
+  it("does not thin the record when a deletion is retried", async () => {
+    /*
+     * A crash halfway leaves a shop already emptied, and a naive upsert would
+     * then overwrite a complete record with what the second pass could still
+     * see — which is nothing. `recordClosure` takes the greater of each count
+     * for exactly this, and it is the failure mode that would be invisible
+     * without a test: the record would exist, and it would be empty.
+     */
+    const { userId, shop } = await fullShop();
+    await deleteAccountFor(userId);
+
+    const before = await db.query.shopClosures.findFirst({
+      where: eq(shopClosures.shopId, shop.id),
+    });
+
+    await deleteAccountFor(userId);
+
+    const after = await db.query.shopClosures.findFirst({
+      where: eq(shopClosures.shopId, shop.id),
+    });
+
+    expect(after?.orderCount).toBe(before?.orderCount);
+    expect(after?.productCount).toBe(before?.productCount);
+    expect(after?.catalogue).toEqual(before?.catalogue);
+    expect(after?.ownerEmailHash).toBe(before?.ownerEmailHash);
+  });
+
+  it("writes exactly one record per shop, however many times it runs", async () => {
+    const { userId, shop } = await fullShop();
+    await deleteAccountFor(userId);
+    await deleteAccountFor(userId);
+
+    const rows = await db
+      .select({ id: shopClosures.id })
+      .from(shopClosures)
+      .where(eq(shopClosures.shopId, shop.id));
+
+    expect(rows).toHaveLength(1);
+  });
+});
+
 describe("the tombstone is invisible and the handle is free", () => {
   it("releases the handle for someone else to register", async () => {
     const { userId, shop } = await fullShop();
@@ -383,12 +553,86 @@ describe("openObligations counts only what is really owed", () => {
   it("ignores shipped, completed, cancelled and refunded orders", async () => {
     const { shop } = await fullShop();
     // The fixture's order is paid, completed and shipped.
-    expect(await openObligations(shop.id)).toEqual({ blocked: false, count: 0 });
+    expect(await openObligations(shop.id)).toEqual({
+      blocked: false,
+      count: 0,
+      openDisputes: 0,
+      payoutsHeld: false,
+    });
 
     await db
       .update(orders)
       .set({ status: "cancelled", shippedAt: null })
       .where(and(eq(orders.shopId, shop.id)));
     expect((await openObligations(shop.id)).blocked).toBe(false);
+  });
+
+  /*
+   * The hole the order test above cannot see.
+   *
+   * Both its branches are about *delivery* — an unshipped physical order, or a
+   * booking still in the future — so a seller of digital downloads passes it
+   * trivially: the file is delivered at checkout, the order goes straight to
+   * `completed`, and until this existed the account could be deleted with forty
+   * chargebacks live against it. Deleting mid-dispute does not make the dispute
+   * go away; it erases the order, the product and the download log needed to
+   * answer it, and an unanswered dispute is lost by default at Sailo's expense.
+   */
+  it("refuses while a card network still has a live case", async () => {
+    const { shop } = await fullShop();
+    expect((await openObligations(shop.id)).blocked).toBe(false);
+
+    await db.insert(disputes).values({
+      scope: "connected",
+      shopId: shop.id,
+      stripeDisputeId: `dp_test_${shop.id.slice(0, 8)}`,
+      status: "needs_response",
+      reason: "fraudulent",
+      amountCents: 4_500,
+      currency: "usd",
+      stripeCreatedAt: new Date(),
+    });
+
+    const obligations = await openObligations(shop.id);
+    expect(obligations.blocked).toBe(true);
+    expect(obligations.openDisputes).toBe(1);
+    // Reported separately, because the two are answered by different actions:
+    // an undelivered order is shipped or refunded, a dispute is waited out.
+    expect(obligations.count).toBe(0);
+  });
+
+  it("stops refusing once the bank has decided", async () => {
+    // A resolved dispute is not an obligation — there is nothing left to answer
+    // and nothing left to keep the seller in the account for.
+    const { shop } = await fullShop();
+    await db.insert(disputes).values({
+      scope: "connected",
+      shopId: shop.id,
+      stripeDisputeId: `dp_done_${shop.id.slice(0, 8)}`,
+      status: "lost",
+      reason: "fraudulent",
+      amountCents: 4_500,
+      currency: "usd",
+      stripeCreatedAt: new Date(),
+    });
+
+    expect((await openObligations(shop.id)).blocked).toBe(false);
+  });
+
+  it("refuses while payouts are held", async () => {
+    /*
+     * Somebody, or the dispute ladder, deliberately stopped money leaving this
+     * account. Deletion disconnects the Stripe account the hold is set on,
+     * which is exactly the thing the hold exists to prevent happening quietly.
+     */
+    const { shop } = await fullShop();
+    await db
+      .update(shops)
+      .set({ payoutsPausedAt: new Date(), payoutsPausedReason: "chargeback_rate" })
+      .where(eq(shops.id, shop.id));
+
+    const obligations = await openObligations(shop.id);
+    expect(obligations.blocked).toBe(true);
+    expect(obligations.payoutsHeld).toBe(true);
   });
 });

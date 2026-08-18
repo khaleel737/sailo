@@ -44,7 +44,8 @@
     "./net": "./src/net/index.ts",
     "./disputes": "./src/disputes/index.ts",
     "./csv": "./src/data/csv.ts",
-    "./action-state": "./src/action-state.ts"
+    "./action-state": "./src/action-state.ts",
+    "./risk": "./src/risk/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

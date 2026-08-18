@@ -40,7 +40,8 @@ export const staffMembers = pgTable(
     email: text("email").notNull().unique(),
 
     /**
-     * owner | admin | support — see `StaffRole` in `@sailo/security/staff`,
+     * owner | admin | risk | support — see `StaffRole` in
+     * `@sailo/security/staff`,
      * which is where the meaning of each lives and where `can()` reads it.
      *
      * `text` rather than a Postgres enum, matching every other status column in
@@ -50,7 +51,10 @@ export const staffMembers = pgTable(
      * Defaults to the *least* privileged role. A bug that forgets to pass a
      * role should under-grant, never over-grant.
      */
-    role: text("role").$type<"owner" | "admin" | "support">().default("support").notNull(),
+    role: text("role")
+      .$type<"owner" | "admin" | "risk" | "support">()
+      .default("support")
+      .notNull(),
 
     /**
      * Who let them in, and who ended it. Plain text, not references — the

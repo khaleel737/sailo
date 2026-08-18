@@ -31,6 +31,14 @@ import type { ActionState } from "@sailo/core/action-state";
  * requires to serve any route.
  *
  * `applyToPartnerProgram` stayed in apps/web, where the partner who calls it is.
+ *
+ * WHY ALL BUT ONE OF THESE ARE `money:move`
+ * Paying a partner obviously is. So is approving one — the decision commits us
+ * to a commission on every sale they ever refer — and so is setting their rate,
+ * which is the same commitment with a number on it. Only `savePartnerNotes` is
+ * not, because a note about a partner is a note. The deployment boundary above
+ * decides whether these functions are reachable at all; the capability decides
+ * which staff member gets to spend money once they are.
  */
 
 /** Writes the audit line every staff decision leaves behind. */
@@ -56,7 +64,7 @@ export async function decidePartner(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const staff = await requireStaff();
+  const staff = await requireStaff("money:move");
 
   const partnerId = String(formData.get("partnerId") ?? "").trim();
   const decision = String(formData.get("decision") ?? "").trim();
@@ -107,7 +115,7 @@ export async function setPartnerRate(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const staff = await requireStaff();
+  const staff = await requireStaff("money:move");
 
   const partnerId = String(formData.get("partnerId") ?? "").trim();
   if (!partnerId) return { ok: false, error: "No partner given." };
@@ -146,7 +154,7 @@ export async function savePartnerNotes(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  await requireStaff();
+  await requireStaff("notes:write");
 
   const partnerId = String(formData.get("partnerId") ?? "").trim();
   if (!partnerId) return { ok: false, error: "No partner given." };
@@ -167,7 +175,7 @@ export async function payPartnerNow(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const staff = await requireStaff();
+  const staff = await requireStaff("money:move");
 
   const partnerId = String(formData.get("partnerId") ?? "").trim();
   const currency = String(formData.get("currency") ?? "USD").trim();
@@ -202,7 +210,7 @@ export async function markPartnerPaidManually(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const staff = await requireStaff();
+  const staff = await requireStaff("money:move");
 
   const partnerId = String(formData.get("partnerId") ?? "").trim();
   if (!partnerId) return { ok: false, error: "No partner given." };
@@ -237,7 +245,7 @@ export async function runPayoutsNow(
   _prev: ActionState,
   _formData: FormData,
 ): Promise<ActionState> {
-  const staff = await requireStaff();
+  const staff = await requireStaff("money:move");
 
   const run = await runPayouts({
     initiatedBy: "manual",
@@ -279,7 +287,7 @@ export async function saveProgramSettings(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const staff = await requireStaff();
+  const staff = await requireStaff("money:move");
 
   const num = (key: string) => {
     const raw = String(formData.get(key) ?? "").trim();

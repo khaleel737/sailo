@@ -9,6 +9,14 @@
  * Each is HQ reaching into somebody else's money, so each writes a staff note
  * naming who did it. The audit line is not decoration: "released a payout hold"
  * three months later is not an answer to "on what basis, and were they right?".
+ *
+ * All four are `money:move`, including the two that do not obviously move any.
+ * Submitting evidence commits Sailo to a position in front of a card network
+ * and spends the single response Stripe allows; releasing a hold lets a balance
+ * leave a connected account while disputes against it are still open, which is
+ * the exact moment Sailo becomes the losses collector for the shortfall. Both
+ * are money decisions wearing a paperwork shape, and guarding them as anything
+ * softer would put the risk desk one click from a liability it does not own.
  */
 
 import { revalidatePath } from "next/cache";
@@ -37,7 +45,7 @@ export async function submitDisputeEvidence(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const staff = await requireStaff();
+  const staff = await requireStaff("money:move");
 
   const id = String(formData.get("disputeId") ?? "").trim();
   if (!id) return { ok: false, error: "That dispute no longer exists." };
@@ -94,7 +102,7 @@ export async function refundDisputedCharge(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const staff = await requireStaff();
+  const staff = await requireStaff("money:move");
 
   const id = String(formData.get("disputeId") ?? "").trim();
   const db = getDb();
@@ -165,7 +173,7 @@ export async function releasePayoutHold(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const staff = await requireStaff();
+  const staff = await requireStaff("money:move");
 
   const shopId = String(formData.get("shopId") ?? "").trim();
   const clear = formData.get("clear") === "on";
@@ -209,7 +217,7 @@ export async function stageDisputeEvidence(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  await requireStaff();
+  await requireStaff("money:move");
 
   const id = String(formData.get("disputeId") ?? "").trim();
   const result = await respondToDispute({ disputeId: id, submit: false });

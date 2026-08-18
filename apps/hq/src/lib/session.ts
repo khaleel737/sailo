@@ -66,6 +66,30 @@ export async function getStaff(): Promise<Staff | null> {
 }
 
 /**
+ * May whoever is asking do this — as a boolean, without refusing anything.
+ *
+ * The rendering half of `requireStaff(capability)`, and deliberately the
+ * *second* half. A button hidden from a support member is a courtesy: it stops
+ * them clicking something that was going to 403 and wondering whether the panel
+ * is broken. It is not the control. The control is the check inside the action,
+ * which is a public HTTP endpoint with a generated name that anybody who has
+ * ever loaded the page's JavaScript can call from anywhere.
+ *
+ * So the rule for using this is: never on its own. Every place this hides an
+ * affordance, the thing behind the affordance asks the same question again and
+ * means it. If a screen ever gates something with this and nothing else, the
+ * gate is decoration.
+ *
+ * Request-cached through `resolve`, so asking it eight times in one page costs
+ * one session lookup — which is what lets a page ask per button rather than
+ * threading a role through every component.
+ */
+export async function staffCan(capability: StaffCapability): Promise<boolean> {
+  const staff = await resolve();
+  return staff ? can(staff.role, capability) : false;
+}
+
+/**
  * The raw session, with no roster check on it.
  *
  * Exactly one caller: `/login`, which needs to know whether to bounce an

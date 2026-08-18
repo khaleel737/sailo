@@ -23,6 +23,7 @@ import {
 } from "@sailo/commerce/shop-views";
 import { getShopClients } from "@sailo/customers/roster";
 import { getAccountSecurity } from "./security";
+import { getShopPayments } from "./payments";
 import { getStaffLog } from "./system";
 
 /** Every seller, filterable and sortable — and one seller in full. */
@@ -263,10 +264,35 @@ export async function getAccounts(filters: AccountFilters = {}) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  One account, in full                                                       */
+/*  One account, a tab at a time                                               */
 /* -------------------------------------------------------------------------- */
 
-export async function getAccountDetail(userId: string) {
+/**
+ * WHY THIS IS FIVE FUNCTIONS AND NOT ONE
+ *
+ * It was one, called `getAccountDetail`, and it fired thirteen queries in
+ * parallel on every visit to an account: the dashboard stats, two chart series,
+ * the orders, the catalogue, the affiliates, every buyer, the payment rails,
+ * the delivery options, the coupons, five scalar counts, the security picture
+ * and the staff log. Then it rendered all of it into a 605-line page that
+ * nobody scrolled to the bottom of.
+ *
+ * The page is now five routes — overview, commerce, money, risk, security — and
+ * the split is a database decision as much as a layout one. Somebody opening an
+ * account to check a plan pays for the plan; somebody who genuinely needs every
+ * buyer this shop has ever had asks for that tab and pays for it then. The
+ * common case went from thirteen queries to four.
+ *
+ * `getAccountHeader` is the one every tab needs, and it is deliberately small:
+ * the owner, the shop, and nothing else. It is called once per request by the
+ * layout and again by the page, which costs one round trip rather than two —
+ * `requireStaff` is request-cached and Postgres will have this row in memory —
+ * and it means a tab can be linked to directly without the layout having to
+ * hand it down through props it does not own.
+ */
+
+/** The owner and their shop. What every tab needs and no tab is built from. */
+export async function getAccountHeader(userId: string) {
   await requireStaff();
   const db = getDb();
 
@@ -277,19 +303,36 @@ export async function getAccountDetail(userId: string) {
     where: eq(shops.userId, owner.id),
   });
 
-  // Someone who registered and stopped. There is still something to say about
-  // them — when they arrived, that they never got as far as a shop, and who is
-  // signed in to the account in the meantime.
-  if (!shop) {
-    const [security, log] = await Promise.all([
-      getAccountSecurity(owner.id, null),
-      getStaffLog({ limit: 20 }),
-    ]);
-    return { owner, shop: null, security, log } as const;
-  }
+  return { owner, shop: shop ?? null } as const;
+}
+
+/**
+ * The overview tab: is this shop working, and what have we done to it.
+ *
+ * Four reads. The two chart series and the dashboard stats are what the tab is
+ * for; the staff log is here rather than on its own tab because "what did we do
+ * to this account" is the question somebody is holding when they arrive, and
+ * putting it a click away means they arrive at the wrong answer first.
+ */
+export async function getAccountOverview(shopId: string) {
+  await requireStaff();
+
+  const [stats, visitSeries, revenueSeries, log] = await Promise.all([
+    getDashboardStats(shopId, 30),
+    getVisitSeries(shopId, 30),
+    getRevenueSeries(shopId, 30),
+    getStaffLog({ shopId, limit: 20 }),
+  ]);
+
+  return { stats, visitSeries, revenueSeries, log } as const;
+}
+
+/** The commerce tab: what this shop sells, to whom, and how it takes the money. */
+export async function getAccountCommerce(shopId: string) {
+  await requireStaff();
+  const db = getDb();
 
   const [
-    stats,
     recentOrders,
     catalogue,
     shopAffiliates,
@@ -298,49 +341,42 @@ export async function getAccountDetail(userId: string) {
     delivery,
     shopCoupons,
     [extras],
-    visitSeries,
-    revenueSeries,
-    security,
-    log,
   ] = await Promise.all([
-    getDashboardStats(shop.id, 30),
-    getShopOrders(shop.id, 10),
-    getShopProductRows(shop.id, 12),
-    getShopAffiliates(shop.id),
+    /*
+     * Ten, not twenty-five. This tab exists to answer "is this a real
+     * business", and twenty-five rows of orders pushed the catalogue, the
+     * affiliates and the buyers a thousand pixels below the fold — so the tab
+     * became an orders list with three tables hidden under it. The full history
+     * is one click away on /orders, which is the screen built for it.
+     */
+    getShopOrders(shopId, 10),
+    getShopProductRows(shopId, 25),
+    getShopAffiliates(shopId),
     /*
      * Every buyer, deliberately. The default cap is a safety valve for the
      * seller's own admin; here the number is *reported* as the shop's buyer
      * count, and a capped list reported as a total is a wrong number on a
      * staff screen used to make decisions about that shop.
      */
-    getShopClients(shop.id, null),
-    getShopPaymentMethods(shop.id),
-    getShopDeliveryMethods(shop.id),
-    getShopCoupons(shop.id),
+    getShopClients(shopId, null),
+    getShopPaymentMethods(shopId),
+    getShopDeliveryMethods(shopId),
+    getShopCoupons(shopId),
     db
       .select({
-        invoices: sql<string>`(select count(*) from invoices i where i.shop_id = ${shop.id})`,
-        reviews: sql<string>`(select count(*) from reviews r where r.shop_id = ${shop.id})`,
-        categories: sql<string>`(select count(*) from categories c where c.shop_id = ${shop.id})`,
-        firstOrderAt: sql<Date | null>`(select min(o.created_at) from orders o where o.shop_id = ${shop.id})`,
-        lastOrderAt: sql<Date | null>`(select max(o.created_at) from orders o where o.shop_id = ${shop.id})`,
+        invoices: sql<string>`(select count(*) from invoices i where i.shop_id = ${shopId})`,
+        reviews: sql<string>`(select count(*) from reviews r where r.shop_id = ${shopId})`,
+        categories: sql<string>`(select count(*) from categories c where c.shop_id = ${shopId})`,
       })
       .from(shops)
-      .where(eq(shops.id, shop.id)),
-    getVisitSeries(shop.id, 30),
-    getRevenueSeries(shop.id, 30),
-    getAccountSecurity(owner.id, shop.id),
-    getStaffLog({ shopId: shop.id, limit: 20 }),
+      .where(eq(shops.id, shopId)),
   ]);
 
   return {
-    owner,
-    shop,
-    stats,
     recentOrders,
     catalogue,
     affiliates: shopAffiliates,
-    buyers: buyers.slice(0, 8),
+    buyers: buyers.slice(0, 25),
     buyerCount: buyers.length,
     payments,
     delivery,
@@ -348,13 +384,48 @@ export async function getAccountDetail(userId: string) {
     invoiceCount: num(extras?.invoices),
     reviewCount: num(extras?.reviews),
     categoryCount: num(extras?.categories),
+  } as const;
+}
+
+/** The money tab: what they pay us, what Stripe says, and every payment taken. */
+export async function getAccountMoney(shopId: string) {
+  await requireStaff();
+  const db = getDb();
+
+  const [payments, [extras]] = await Promise.all([
+    getShopPayments(shopId, 30),
+    db
+      .select({
+        firstOrderAt: sql<Date | null>`(select min(o.created_at) from orders o where o.shop_id = ${shopId})`,
+        lastOrderAt: sql<Date | null>`(select max(o.created_at) from orders o where o.shop_id = ${shopId})`,
+        grossCents: sql<string>`(select coalesce(sum(o.total_cents), 0) from orders o where o.shop_id = ${shopId} and o.status <> 'cancelled')`,
+        refundedCents: sql<string>`(select coalesce(sum(o.refunded_cents), 0) from orders o where o.shop_id = ${shopId})`,
+        invoices: sql<string>`(select count(*) from invoices i where i.shop_id = ${shopId})`,
+      })
+      .from(shops)
+      .where(eq(shops.id, shopId)),
+  ]);
+
+  return {
+    payments,
     firstOrderAt: extras?.firstOrderAt ? new Date(extras.firstOrderAt) : null,
     lastOrderAt: extras?.lastOrderAt ? new Date(extras.lastOrderAt) : null,
-    visitSeries,
-    revenueSeries,
-    security,
-    log,
+    grossCents: num(extras?.grossCents),
+    refundedCents: num(extras?.refundedCents),
+    invoiceCount: num(extras?.invoices),
   } as const;
+}
+
+/**
+ * The security tab, for an account with or without a shop.
+ *
+ * Thin on purpose — `getAccountSecurity` in `./security` is the whole of it.
+ * Wrapped anyway so every tab is reached the same way and the page does not
+ * have to know which module its data lives in.
+ */
+export async function getAccountSecurityTab(userId: string, shopId: string | null) {
+  await requireStaff();
+  return getAccountSecurity(userId, shopId);
 }
 
 export type ShopProductRow = {

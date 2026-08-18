@@ -67,12 +67,29 @@ export type DisputeQueueRow = {
 };
 
 /**
+ * How many of the queue a screen shows before it stops.
+ *
+ * The query fetches 200 and the page rendered every one of them, which on a
+ * platform with a real backlog produced a 23,633-pixel page — a hundred and
+ * fifty rows below the fold that nobody scrolls to, on a list already sorted so
+ * that the only ones worth reading are at the top.
+ *
+ * `total` comes back beside the rows so the page can say what it is not
+ * showing. A cap that is not stated is the same bug wearing a tidier layout.
+ */
+export const DISPUTE_QUEUE_PAGE = 25;
+
+/**
  * The response queue.
  *
  * `needsResponse` only, by default: a dispute under review has nothing anybody
  * can do about it, and a queue that lists them is a queue people stop reading.
+ *
+ * `limit` is the *render* cap, separate from the 200-row fetch: the fetch bounds
+ * the query and this bounds the page. `all: true` lifts the status filter, not
+ * the cap.
  */
-export async function getDisputeQueue(opts: { all?: boolean } = {}) {
+export async function getDisputeQueue(opts: { all?: boolean; limit?: number } = {}) {
   await requireStaff();
   const db = getDb();
   const now = new Date();
@@ -100,7 +117,9 @@ export async function getDisputeQueue(opts: { all?: boolean } = {}) {
     .orderBy(sql`${disputes.dueBy} asc nulls last`, desc(disputes.stripeCreatedAt))
     .limit(200);
 
-  return rows.map(({ dispute, shopName, shopHandle, ownerId }): DisputeQueueRow => {
+  const shown = opts.limit ? rows.slice(0, opts.limit) : rows;
+
+  const mapped = shown.map(({ dispute, shopName, shopHandle, ownerId }): DisputeQueueRow => {
     const playbook = playbookFor(dispute.reason);
     return {
       id: dispute.id,
@@ -130,6 +149,13 @@ export async function getDisputeQueue(opts: { all?: boolean } = {}) {
       guidance: playbook.guidance,
     };
   });
+
+  /*
+   * The rows and what they are a slice of, together. The page needs both to be
+   * able to say "the 25 most urgent of 148" — and returning only the rows is
+   * how a cap becomes silent.
+   */
+  return { rows: mapped, total: rows.length, capped: rows.length > shown.length };
 }
 
 export type ShopExposureRow = {

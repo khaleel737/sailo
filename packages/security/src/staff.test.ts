@@ -1,5 +1,36 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { isStaffEmail, refusesPasswordAuth, staffEmails } from "./staff";
+import {
+  can,
+  capabilitiesFor,
+  isStaffEmail,
+  isStaffRole,
+  refusesPasswordAuth,
+  staffEmails,
+  STAFF_ROLES,
+  type StaffCapability,
+} from "./staff";
+
+/**
+ * Every capability there is, written out so the exhaustiveness checks below
+ * have something to iterate.
+ *
+ * Deliberately a literal and not derived from the grant table: deriving it
+ * would make "every capability is granted to somebody" tautological, since the
+ * only capabilities in the list would be the ones already in the table. Adding
+ * a member to `StaffCapability` and not to this array is a type error.
+ */
+const ALL_CAPABILITIES = [
+  "read",
+  "notes:write",
+  "account:secure",
+  "account:recover",
+  "account:suspend",
+  "billing:grant",
+  "money:move",
+  "marketing:send",
+  "data:export",
+  "members:manage",
+] as const satisfies readonly StaffCapability[];
 
 /**
  * The whole of /hq's authorization model.
@@ -209,6 +240,122 @@ describe("refusesPasswordAuth", () => {
     delete process.env.SAILO_STAFF_EMAILS;
     for (const email of staffEmails()) {
       expect(refusesPasswordAuth("/sign-up/email", email), email).toBe(true);
+    }
+  });
+});
+
+/**
+ * The grant table, asserted rather than described.
+ *
+ * These roles are the only thing standing between a support member and every
+ * seller's money, and the table they read from is a literal — which means the
+ * way it breaks is somebody adding a capability to the union and adding it to
+ * `admin` "for now". So the assertions below are written as the sentences a
+ * reviewer would ask out loud, one per role, and the exhaustiveness check at
+ * the end fails when a new capability is declared and left ungranted anywhere.
+ */
+describe("can", () => {
+  it("gives owner everything, because that is what owner means", () => {
+    for (const capability of ALL_CAPABILITIES) {
+      expect(can("owner", capability), capability).toBe(true);
+    }
+  });
+
+  it("withholds exactly one thing from admin: the roster", () => {
+    /*
+     * The one capability an admin deliberately does not have. A compromised
+     * admin session can already do a great deal of damage; what must stay out
+     * of its reach is the ability to *keep* the access — to invite a second
+     * address, or to promote itself. An account that cannot extend its own
+     * reach is an account whose damage ends when it is revoked.
+     */
+    const withheld = ALL_CAPABILITIES.filter((c) => !can("admin", c));
+    expect(withheld).toEqual(["members:manage"]);
+  });
+
+  it("lets risk act on an account but never on money", () => {
+    expect(can("risk", "account:suspend")).toBe(true);
+    expect(can("risk", "account:secure")).toBe(true);
+    expect(can("risk", "account:recover")).toBe(true);
+
+    // The whole reason the role exists. Working the risk desk means suspending
+    // shops all day; it does not mean being able to refund a charge, comp a
+    // plan, mail every subscriber or download every buyer's address.
+    expect(can("risk", "money:move")).toBe(false);
+    expect(can("risk", "billing:grant")).toBe(false);
+    expect(can("risk", "marketing:send")).toBe(false);
+    expect(can("risk", "data:export")).toBe(false);
+    expect(can("risk", "members:manage")).toBe(false);
+  });
+
+  it("lets support contain a compromised account but not reopen one", () => {
+    /*
+     * The split that makes `account:secure` safe to hand to the queue. Ending
+     * sessions makes an account strictly less reachable and the worst case is a
+     * seller who signs in again; clearing a second factor ends with somebody
+     * signing in who could not before, and the only check on it is whether the
+     * caller was really the seller.
+     */
+    expect(can("support", "account:secure")).toBe(true);
+    expect(can("support", "account:recover")).toBe(false);
+  });
+
+  it("keeps support off everything that moves money or leaves the building", () => {
+    for (const capability of [
+      "money:move",
+      "billing:grant",
+      "account:suspend",
+      "marketing:send",
+      "data:export",
+      "members:manage",
+    ] as const) {
+      expect(can("support", capability), capability).toBe(false);
+    }
+  });
+
+  it("gives every role the two capabilities the panel is unusable without", () => {
+    for (const role of STAFF_ROLES) {
+      expect(can(role, "read"), role).toBe(true);
+      expect(can(role, "notes:write"), role).toBe(true);
+    }
+  });
+
+  it("grants every declared capability to at least one role", () => {
+    /*
+     * A capability nobody holds is a button nobody can press, and it fails as a
+     * 403 on a screen that offered it. This is the check that catches a new
+     * entry in the union that was added to the type and forgotten in the table.
+     */
+    const orphans = ALL_CAPABILITIES.filter(
+      (capability) => !STAFF_ROLES.some((role) => can(role, capability)),
+    );
+    expect(orphans).toEqual([]);
+  });
+
+  it("reports the same grants through capabilitiesFor as through can", () => {
+    // The roster page renders from `capabilitiesFor`. A screen that advertises
+    // a grant the checker does not honour is worse than one that says nothing,
+    // because somebody will staff around it.
+    for (const role of STAFF_ROLES) {
+      for (const capability of ALL_CAPABILITIES) {
+        expect(capabilitiesFor(role).includes(capability), `${role}/${capability}`).toBe(
+          can(role, capability),
+        );
+      }
+    }
+  });
+});
+
+describe("isStaffRole", () => {
+  it("accepts every declared role", () => {
+    for (const role of STAFF_ROLES) expect(isStaffRole(role)).toBe(true);
+  });
+
+  it("refuses anything else, including the shapes a form can send", () => {
+    // The role arrives from a `<select>` in the roster UI, so the hostile
+    // values are whatever someone can put in a form body.
+    for (const value of ["", "OWNER", "root", "admin ", null, undefined, 0, {}, []]) {
+      expect(isStaffRole(value), JSON.stringify(value)).toBe(false);
     }
   });
 });

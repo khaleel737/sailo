@@ -28,11 +28,18 @@ export default async function HqMarketingPage() {
   /*
    * The one derived figure on the page, and the honest one: a mailing list is
    * a cost until it produces sellers.
+   *
+   * The whole hint, not a value glued to a suffix.
+   *
+   * This was a bare percentage that fell back to an em dash, and the tile then
+   * printed "— of everyone who subscribed" — a sentence with a dash where its
+   * subject should be. A fallback has to be a sentence too, or it is only a
+   * fallback for the number and not for the line it lives in.
    */
   const conversion =
     stats.confirmed > 0
-      ? `${((stats.converted / stats.confirmed) * 100).toFixed(1)}%`
-      : "—";
+      ? `${((stats.converted / stats.confirmed) * 100).toFixed(1)}% of everyone who subscribed`
+      : "Nobody has subscribed yet";
 
   return (
     <>
@@ -71,14 +78,27 @@ export default async function HqMarketingPage() {
         <Metric
           label="Became sellers"
           value={stats.converted.toLocaleString()}
-          hint={`${conversion} of everyone who subscribed`}
+          hint={conversion}
           icon={<UserCheck className="size-3.5" />}
         />
       </MetricRow>
 
       <SectionTitle>How the list is growing</SectionTitle>
       <Card className="p-5">
-        <GrowthChart days={30} data={growth} />
+        {/*
+          An empty chart is not an empty state. With no subscribers this drew a
+          bare axis and a row of dashes for 160px, which reads as a chart that
+          failed to load rather than as a list nobody has joined — and the
+          section directly below it already says the true thing in words.
+        */}
+        {growth.some((d) => d.count > 0) ? (
+          <GrowthChart days={30} data={growth} />
+        ) : (
+          <p className="text-sm text-ink-500">
+            Nothing to plot yet — the first confirmed subscriber starts this
+            chart.
+          </p>
+        )}
       </Card>
 
       <SectionTitle>Where they came from</SectionTitle>

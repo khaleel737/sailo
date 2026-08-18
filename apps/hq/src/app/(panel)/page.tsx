@@ -321,12 +321,12 @@ export default async function HqOverviewPage() {
               <Td>
                 <Link
                   href={`/accounts/${row.userId}`}
-                  className="focus-ring flex min-w-0 items-center rounded pointer-coarse:min-h-11"
+                  className="focus-ring flex min-w-0 flex-col items-start justify-center rounded pointer-coarse:min-h-11"
                 >
-                  <span className="block truncate font-medium text-ink-900">
+                  <span className="max-w-full truncate font-medium text-ink-900">
                     {row.name}
                   </span>
-                  <span className="block truncate text-xs text-ink-400">
+                  <span className="max-w-full truncate text-xs text-ink-400">
                     {row.email}
                   </span>
                 </Link>

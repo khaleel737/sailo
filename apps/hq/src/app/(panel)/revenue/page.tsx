@@ -40,6 +40,16 @@ export default async function HqRevenuePage() {
   const { revenue } = overview;
   const renewals = renewalsWithin(paid, 30);
 
+  /**
+   * How many rows this table draws.
+   *
+   * Fifty is a long scroll and a short page. The list is every paying and
+   * comped account, which grows with the business — so an uncapped render is a
+   * page that gets worse the better Sailo does, which is the wrong direction
+   * for a screen somebody opens to feel good about revenue.
+   */
+  const shown = paid.slice(0, 50);
+
   return (
     <>
       <PageHeader
@@ -122,7 +132,7 @@ export default async function HqRevenuePage() {
             appear here.
           </EmptyRow>
         ) : (
-          paid.map(({ shop, ownerName, ownerEmail }) => {
+          shown.map(({ shop, ownerName, ownerEmail }) => {
             const state = billingState(shop);
             const monthly = planMonthlyCents(shop);
             return (
@@ -130,19 +140,19 @@ export default async function HqRevenuePage() {
                 <Td className="max-w-56">
                   <Link
                     href={`/accounts/${shop.userId}`}
-                    className="focus-ring flex min-w-0 items-center rounded pointer-coarse:min-h-11"
+                    className="focus-ring flex min-w-0 flex-col items-start justify-center rounded pointer-coarse:min-h-11"
                   >
-                    <span className="block truncate font-medium text-ink-900">
+                    <span className="max-w-full truncate font-medium text-ink-900">
                       {shop.name}
                     </span>
-                    <span className="block truncate text-xs text-ink-400">
+                    <span className="max-w-full truncate text-xs text-ink-400">
                       /{shop.handle}
                     </span>
                   </Link>
                 </Td>
                 <Td className="max-w-48" label="Owner">
                   <span className="block truncate">{ownerName}</span>
-                  <span className="block truncate text-xs text-ink-400">
+                  <span className="max-w-full truncate text-xs text-ink-400">
                     {ownerEmail}
                   </span>
                 </Td>
@@ -186,6 +196,22 @@ export default async function HqRevenuePage() {
           })
         )}
       </Table>
+
+      {/*
+        `getPaidAccounts` deliberately has no `LIMIT`: the CSV export needs
+        every row, and `renewalsWithin` filters the same list. What it must not
+        do is render every row — this table had no cap at all, so a platform
+        with ten thousand paying shops would draw ten thousand rows into one
+        page. Capping the render rather than the query keeps both callers
+        honest, and the line below keeps the cap from being silent.
+      */}
+      {paid.length > shown.length ? (
+        <p className="mt-3 text-xs leading-relaxed text-ink-400">
+          Showing {shown.length} of {paid.length.toLocaleString()} paying and
+          comped accounts, renewing soonest last. Export the CSV for all of
+          them.
+        </p>
+      ) : null}
 
       <div className="mt-8 grid items-start gap-3 lg:grid-cols-2">
         <Card className="p-5">

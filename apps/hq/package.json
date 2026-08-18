@@ -12,6 +12,7 @@
     "test:scenarios": "vitest run --config vitest.scenarios.mts"
   },
   "dependencies": {
+    "@sailo/account": "workspace:*",
     "@sailo/analytics": "workspace:*",
     "@sailo/commerce": "workspace:*",
     "@sailo/core": "workspace:*",

@@ -29,13 +29,24 @@ function Submit({ label, disabled }: { label: string; disabled: boolean }) {
  * The bottom of the Security tab. Two gates before anything happens: the
  * handle typed out by hand, and the password — the first stops the wrong
  * click, the second stops the wrong person.
+ *
+ * The refusal takes the whole `obligations` object rather than a boolean,
+ * because there are three ways to be blocked and they are answered by three
+ * different actions: ship or refund the orders, wait for the bank, or talk to
+ * us about the hold. A single "you can't delete yet" would send every seller to
+ * support to find out which one they were looking at.
  */
 export function DeleteAccountCard({
   handle,
-  blocked,
+  obligations,
 }: {
   handle: string;
-  blocked: boolean;
+  obligations: {
+    blocked: boolean;
+    count: number;
+    openDisputes: number;
+    payoutsHeld: boolean;
+  };
 }) {
   const a = useAdminT();
   const [state, action] = useActionState(deleteAccount, IDLE);
@@ -43,6 +54,26 @@ export function DeleteAccountCard({
   const [typed, setTyped] = useState("");
 
   const matches = typed.trim().toLowerCase() === handle.toLowerCase();
+
+  /*
+   * Ordered by what the seller can act on soonest. Undelivered orders are
+   * theirs to fix today; a dispute resolves on the network's clock; a payout
+   * hold needs us. Showing the most actionable one first means the message on
+   * screen is the one they can do something about.
+   */
+  const refusal = obligations.count > 0
+    ? { title: a.security.deleteBlockedTitle, body: a.security.deleteBlockedBody }
+    : obligations.openDisputes > 0
+      ? {
+          title: a.security.deleteBlockedDisputesTitle,
+          body: a.security.deleteBlockedDisputesBody,
+        }
+      : obligations.payoutsHeld
+        ? {
+            title: a.security.deleteBlockedPayoutsTitle,
+            body: a.security.deleteBlockedPayoutsBody,
+          }
+        : null;
 
   return (
     <Card className="space-y-4 border-red-200 p-5">
@@ -61,9 +92,9 @@ export function DeleteAccountCard({
         <li>{a.security.deleteKeeps}</li>
       </ul>
 
-      {blocked ? (
-        <Alert tone="warning" title={a.security.deleteBlockedTitle}>
-          {a.security.deleteBlockedBody}
+      {refusal ? (
+        <Alert tone="warning" title={refusal.title}>
+          {refusal.body}
         </Alert>
       ) : open ? (
         <form action={action} className="space-y-3">

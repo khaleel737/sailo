@@ -99,7 +99,15 @@ export const accountRouter = router({
       "shop",
     );
 
-    const result = await deleteAccountFor(shop.userId);
+    const result = await deleteAccountFor(shop.userId, {
+      /*
+       * The closure record's fingerprint key, so a deletion started from the
+       * phone leaves the same record as one started from the browser. This is
+       * exactly the drift the package exists to prevent: two callers, one
+       * deletion, and the one that forgot an effect writes a thinner row.
+       */
+      fingerprintKey: process.env.BETTER_AUTH_SECRET,
+    });
 
     /*
      * The refusal, given back as an error rather than a value.
@@ -110,12 +118,21 @@ export const accountRouter = router({
      * is actionable and "you can't do that" is not.
      */
     if (!result.ok && result.reason === "obligations") {
-      throw new TRPCError({
-        code: "PRECONDITION_FAILED",
-        message:
-          `Fulfil or refund ${result.count} paid ` +
-          `${result.count === 1 ? "order" : "orders"} before deleting your account.`,
-      });
+      /*
+       * In the order the seller can act on them, matching apps/web. Orders are
+       * theirs to fix today; a dispute resolves on the card network's clock; a
+       * payout hold needs us.
+       */
+      const message =
+        result.count > 0
+          ? `Fulfil or refund ${result.count} paid ` +
+            `${result.count === 1 ? "order" : "orders"} before deleting your account.`
+          : result.openDisputes > 0
+            ? `A buyer's bank is still deciding on ${result.openDisputes === 1 ? "a payment" : `${result.openDisputes} payments`} to your shop. ` +
+              `Deleting now would erase the records needed to answer it.`
+            : "Payouts from your shop are on hold. That has to be lifted before the account can be deleted.";
+
+      throw new TRPCError({ code: "PRECONDITION_FAILED", message });
     }
 
     // No shop for this user. Same answer as every other missing row here.

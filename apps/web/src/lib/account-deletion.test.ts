@@ -47,12 +47,26 @@ describe("the effects this app hands in", () => {
   });
 
   it("returns the package's verdict rather than reinterpreting it", async () => {
-    runDeletion.mockResolvedValue({ ok: false, reason: "obligations", count: 3 });
+    /*
+     * Three refusals travel back, not one. The wrapper must not collapse them:
+     * the screen picks its message from which field is set, and a shim that
+     * dropped `openDisputes` would silently tell a seller with a live
+     * chargeback to go and fulfil zero orders.
+     */
+    runDeletion.mockResolvedValue({
+      ok: false,
+      reason: "obligations",
+      count: 3,
+      openDisputes: 1,
+      payoutsHeld: true,
+    });
 
     expect(await deleteAccountFor("user-1")).toEqual({
       ok: false,
       reason: "obligations",
       count: 3,
+      openDisputes: 1,
+      payoutsHeld: true,
     });
   });
 });

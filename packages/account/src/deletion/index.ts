@@ -39,7 +39,9 @@
  * a hostname guard sitting behind a database call. Both are exported from their own
  * module now and asserted directly.
  *
- *   ./obligations   the one thing that refuses a deletion
+ *   ./obligations   the three things that refuse a deletion
+ *   ./closure       the record the shop leaves behind, written before the erasure
+ *   ./fingerprint   how a returning seller is recognised without keeping an address (pure)
  *   ./tombstone     what replaces a seller's identity (pure)
  *   ./subscription  making sure a deleted store stops being charged
  *   ./blobs         the uploaded objects, which no row deletion touches
@@ -52,6 +54,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { session as sessionTable, shops, user as userTable } from "@sailo/db/schema";
 import { openObligations } from "./obligations";
+import { recordClosure } from "./closure";
 import { tombstoneEmail, tombstoneHandle } from "./tombstone";
 import { cancelPlatformSubscription } from "./subscription";
 import { collectBlobUrls, deleteBlobs } from "./blobs";
@@ -60,10 +63,26 @@ import { hardDeleteShopContent } from "./content";
 export * from "./obligations";
 export * from "./tombstone";
 export * from "./blobs";
+export * from "./closure";
+export * from "./fingerprint";
 
 export type DeletionResult =
   | { ok: true }
-  | { ok: false; reason: "obligations"; count: number }
+  /**
+   * Refused, with the whole reason rather than just the order count.
+   *
+   * `count` stays on the shape it has always had, so every existing caller and
+   * assertion keeps working; `openDisputes` and `payoutsHeld` are what let the
+   * screen say *which* refusal it was. See `openObligations` for why there are
+   * three of them.
+   */
+  | {
+      ok: false;
+      reason: "obligations";
+      count: number;
+      openDisputes: number;
+      payoutsHeld: boolean;
+    }
   | { ok: false; reason: "not_found" };
 
 /**
@@ -76,6 +95,30 @@ export type DeletionResult =
  * caller that omits one is omitting something it can read about.
  */
 export type DeletionEffects = {
+  /**
+   * Who closed it, and why. Defaults to the seller doing it themselves, which
+   * is what every caller today is.
+   *
+   * `staff` is here for the closure record rather than for the deletion: a shop
+   * we close is by definition one somebody decided about, and the record of it
+   * is worth nothing if it cannot name who. It is also one of the four tests
+   * that make a closure retain the seller's readable identity.
+   */
+  closedBy?: "seller" | "staff";
+  closedByEmail?: string | null;
+  reason?: string | null;
+  /**
+   * The key the closure record's email fingerprint is derived from —
+   * `BETTER_AUTH_SECRET`, handed in rather than read here so that this package
+   * needs no environment to be driven from a test.
+   *
+   * Omitting it does not skip the closure record; it writes one with a null
+   * `ownerEmailHash`, which loses only the ability to recognise this person
+   * returning later. Everything else about the shop is still preserved. That is
+   * the right way round: a missing environment variable must not be able to
+   * turn a deletion into one that leaves no trace.
+   */
+  fingerprintKey?: string;
   /**
    * The last email this account can ever receive, sent while there is still an
    * address to send it to.
@@ -112,13 +155,22 @@ export type DeletionEffects = {
  * where a crash after it is survivable:
  *
  *  1. refuse if there are open obligations — before anything is touched;
- *  2. cancel the Stripe subscription, verified by re-reading it;
- *  3. email the seller *while we can still reach them*;
- *  4. collect the blob URLs, before the rows naming them are gone;
- *  5. tombstone the seller and the shop;
- *  6. hard-delete everything that is not the ledger;
- *  7. delete the blobs;
- *  8. revoke every session — the actor's own included, so this is last.
+ *  2. write the closure record, while there is still something to record;
+ *  3. cancel the Stripe subscription, verified by re-reading it;
+ *  4. email the seller *while we can still reach them*;
+ *  5. collect the blob URLs, before the rows naming them are gone;
+ *  6. tombstone the seller and the shop;
+ *  7. hard-delete everything that is not the ledger;
+ *  8. delete the blobs;
+ *  9. revoke every session — the actor's own included, so this is last.
+ *
+ * Step 2 is second for the same reason step 1 is first. Every number in the
+ * closure record is read from rows that steps 6 and 7 destroy — the products,
+ * the buyers, the owner's name — so a closure written any later is a record of
+ * a shop that has already been emptied. It is placed *after* the refusal and
+ * *before* the Stripe call so that a deletion which is going to be refused
+ * leaves no record, and one that is going to happen has left one before
+ * anything outside our own database has been touched.
  */
 export async function deleteAccountFor(
   userId: string,
@@ -133,7 +185,13 @@ export async function deleteAccountFor(
 
   const obligations = await openObligations(shop.id);
   if (obligations.blocked) {
-    return { ok: false, reason: "obligations", count: obligations.count };
+    return {
+      ok: false,
+      reason: "obligations",
+      count: obligations.count,
+      openDisputes: obligations.openDisputes,
+      payoutsHeld: obligations.payoutsHeld,
+    };
   }
 
   const owner = await db.query.user.findFirst({
@@ -141,11 +199,31 @@ export async function deleteAccountFor(
     columns: { id: true, name: true, email: true },
   });
 
-  /* 1 — Stripe. Before the rows go, so a failure here is a failure of a
+  /* 1 — The record this shop leaves behind, written while there is still
+   * something to read. See the order-of-operations note above: after this
+   * point the catalogue, the buyers and the owner's name are all on their way
+   * out, and a closure written later would describe an empty shop.
+   *
+   * Not wrapped in a try: a deletion that cannot write its own record is a
+   * deletion that must not proceed. The alternative — swallow the error and
+   * erase the shop anyway — is precisely the outcome this whole feature exists
+   * to prevent, and it would fail silently on the accounts that matter most.
+   * The caller sees the throw, the seller sees an error, and nothing has been
+   * destroyed. */
+  await recordClosure({
+    shop,
+    owner: owner ?? null,
+    closedBy: effects.closedBy ?? "seller",
+    closedByEmail: effects.closedByEmail ?? null,
+    reason: effects.reason ?? null,
+    fingerprintKey: effects.fingerprintKey ?? "",
+  });
+
+  /* 2 — Stripe. Before the rows go, so a failure here is a failure of a
    * deletion that has not started rather than one that cannot finish. */
   await cancelPlatformSubscription(shop.stripeSubscriptionId);
 
-  /* 2 — The last email this account can ever receive. Sent before the address
+  /* 3 — The last email this account can ever receive. Sent before the address
    * is overwritten, because afterwards there is no way to reach them at all,
    * and a deletion nobody asked for needs somewhere to be reported. */
   const alreadyTombstoned = shop.deletedAt !== null;
@@ -167,10 +245,10 @@ export async function deleteAccountFor(
     }
   }
 
-  /* 3 — Every blob this shop owns, named before the rows naming them go. */
+  /* 4 — Every blob this shop owns, named before the rows naming them go. */
   const blobs = await collectBlobUrls(shop.id, shop.avatarUrl, shop.logoUrl);
 
-  /* 4 — Tombstone. The shop row stays: it is the FK home of every order and
+  /* 5 — Tombstone. The shop row stays: it is the FK home of every order and
    * invoice, and it carries the invoice sequence. */
   const oldHandle = shop.handle;
   await db
@@ -219,10 +297,10 @@ export async function deleteAccountFor(
       .where(eq(userTable.id, owner.id));
   }
 
-  /* 5 — Everything that is not the ledger. */
+  /* 6 — Everything that is not the ledger. */
   await hardDeleteShopContent(shop.id, userId);
 
-  /* 6 — The objects themselves. Best effort: a blob we fail to delete is a
+  /* 7 — The objects themselves. Best effort: a blob we fail to delete is a
    * bill, not a breach, and it must not strand the deletion. */
   await deleteBlobs(blobs.images);
 
@@ -237,7 +315,7 @@ export async function deleteAccountFor(
    * persist — which is the safe direction to be wrong in.
    */
 
-  /* 7 — Sessions last: this is where the actor signs themselves out. */
+  /* 8 — Sessions last: this is where the actor signs themselves out. */
   await db.delete(sessionTable).where(eq(sessionTable.userId, userId));
 
   // The storefront caches by handle, and the old handle must stop resolving
