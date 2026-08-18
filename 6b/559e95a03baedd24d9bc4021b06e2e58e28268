@@ -1,0 +1,31 @@
+apps/hq/src/app/icon.svg
+  s_eba9c1a165bb11::t_c947a7da134135 1
+apps/hq/src/app/robots.ts
+  s_dcd75e2fc0aa0a::t_7cf55b50f65574 1-44
+apps/hq/src/app/login/page.tsx
+  s_eba9c1a165bb11::t_5651c8532cb503 11-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "6b559e95a03baedd24d9bc4021b06e2e58e28268",
+  "prompts": {},
+  "sessions": {
+    "s_dcd75e2fc0aa0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4480cff-caac-46d0-a589-a5bbfd9e0fe9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_eba9c1a165bb11": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b28a272c-33b3-43ef-a9af-b57739c1a6e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
