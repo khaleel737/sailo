@@ -5,6 +5,7 @@ import matter from "gray-matter";
 import { Marked } from "marked";
 import { DEFAULT_LOCALE, isLocale, LOCALES, type Locale } from "@sailo/i18n/config";
 import { applyFacts } from "@/lib/blog-facts";
+import { withHeadingAnchors, type Heading } from "@/lib/blog-toc";
 
 /*
  * The blog, read off disk.
@@ -58,11 +59,20 @@ export type Article = {
   locale: Locale;
   /** Rendered HTML body. Only present from `getArticle`. */
   html: string;
+  /**
+   * The `h2`/`h3` map of the body, in document order.
+   *
+   * Beside the HTML rather than derived from it at the call site, because the
+   * ids in one and the anchors in the other have to be the same strings — a
+   * sidebar built from a second pass over the same markup is a sidebar that
+   * silently stops matching the day the renderer changes.
+   */
+  headings: Heading[];
   /** Rounded up, in minutes. */
   readingMinutes: number;
 };
 
-export type ArticleSummary = Omit<Article, "html">;
+export type ArticleSummary = Omit<Article, "html" | "headings">;
 
 /**
  * One configured parser, reused.
@@ -74,6 +84,18 @@ export type ArticleSummary = Omit<Article, "html">;
  * defaults rather than being told to trust the input.
  */
 const marked = new Marked({ gfm: true, breaks: false });
+
+/**
+ * Markdown to article HTML, with the headings anchored on the way through.
+ *
+ * One function so the two readers below cannot render an article differently.
+ * `applyFacts` first: a price or a fee that a heading quotes has to be the
+ * substituted value before it becomes a slug, or the anchor freezes a number
+ * the page no longer shows.
+ */
+async function renderArticle(body: string) {
+  return withHeadingAnchors(await marked.parse(applyFacts(body)));
+}
 
 /** 200 words a minute, which is the low end and so never flatters the post. */
 function readingTime(body: string) {
@@ -302,7 +324,7 @@ export async function getArticleIn(slug: string, locale: Locale): Promise<Articl
   if (!available?.includes(wanted)) return null;
 
   const { body, ...rest } = await readArticle(slug, wanted);
-  return { ...rest, html: await marked.parse(applyFacts(body)) };
+  return { ...rest, ...(await renderArticle(body)) };
 }
 
 /**
@@ -399,5 +421,58 @@ export async function getArticle(
   if (!from) return null;
 
   const { body, ...rest } = await readArticle(slug, from);
-  return { ...rest, html: await marked.parse(applyFacts(body)) };
+  return { ...rest, ...(await renderArticle(body)) };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  What to read next                                                          */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * How many suggestions the foot of an article carries.
+ *
+ * Three, which is one row of the card grid at every width this site has. Six
+ * would fill more of the screen and is the number that turns "what next" into
+ * a second index — the reader who has finished two thousand words needs a
+ * decision, not a catalogue.
+ */
+export const RELATED_ARTICLES = 3;
+
+/**
+ * The articles nearest this one, in its own language.
+ *
+ * Scored on shared tags and broken by recency, rather than "the three newest".
+ * A post about pricing should lead to the other posts about pricing; the
+ * newest three are the same three under every article on the site, which is a
+ * related-posts strip that carries no information at all.
+ *
+ * Padded with recent articles when the tags run out, because an untagged post
+ * — or the first post in a new subject — would otherwise end with nothing
+ * under it, and a dead end is the one thing this section exists to prevent.
+ *
+ * Same locale only. Suggesting an English article under a Portuguese one
+ * hands the reader a page they may not be able to read, which is the same
+ * mistake `getArticlesIn` exists to avoid on the index.
+ */
+export async function getRelatedArticlesIn(
+  locale: Locale,
+  slug: string,
+  tags: readonly string[],
+  limit = RELATED_ARTICLES,
+): Promise<ArticleSummary[]> {
+  const all = (await getArticlesIn(locale)).filter((a) => a.slug !== slug);
+  if (all.length === 0) return [];
+
+  const wanted = new Set(tags.map((tag) => tag.toLowerCase()));
+
+  const scored = all
+    .map((article) => ({
+      article,
+      shared: article.tags.filter((tag) => wanted.has(tag.toLowerCase())).length,
+    }))
+    // `getArticlesIn` is already newest-first, and `toSorted` is stable, so
+    // ordering by shared tags alone leaves recency as the tie-break.
+    .toSorted((a, b) => b.shared - a.shared);
+
+  return scored.slice(0, limit).map((entry) => entry.article);
 }

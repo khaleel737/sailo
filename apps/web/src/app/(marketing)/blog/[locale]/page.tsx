@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getArticlePageIn, getContentLocales } from "@/lib/blog";
+import { getArticlePageIn, getArticlesIn, getContentLocales } from "@/lib/blog";
 import { blogIndexLanguages, blogIndexPath } from "@/lib/blog-urls";
-import { isLocale } from "@sailo/i18n/config";
+import { directionOf, isLocale } from "@sailo/i18n/config";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
+import { getBlogDictionary } from "@sailo/i18n/marketing/blog";
 import { Container } from "@/components/marketing/kit";
 import { absolute } from "@sailo/core/origin";
 import { blogJsonLd } from "@/lib/seo";
 import { ArticleList, Pagination } from "../_components/article-list";
+import { BlogIndexLayout } from "../_components/index-layout";
+import { NewsletterBand } from "../_components/cards";
 
 /*
  * One language's index.
@@ -72,22 +75,35 @@ export async function generateMetadata({
   };
 }
 
+/** How many titles the rail lists. One screen's worth on a laptop. */
+const HEADLINES = 10;
+
 export default async function LocaleBlogIndex({ params }: PageProps<"/blog/[locale]">) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
   const { articles, page, pageCount } = await getArticlePageIn(locale, 1);
   const m = getMarketingDictionary(locale);
+  const b = getBlogDictionary(locale);
 
   /*
    * A shipped language with nothing written yet gets its own empty state rather
    * than a not-found page. It is a real section of the site that simply has no
    * articles, the copy for saying so is already translated, and `generateMetadata`
    * marks the page `noindex` so nothing thin reaches the index.
+   *
+   * The signup band still renders. A language with no articles yet is exactly
+   * the audience worth capturing — somebody who came looking and found nothing
+   * is the one reader who would genuinely like to be told when there is
+   * something.
    */
   if (articles.length === 0) {
     return (
-      <Container className="py-16 sm:py-24">
+      <Container
+        lang={locale}
+        dir={directionOf(locale)}
+        className="py-16 sm:py-24"
+      >
         <header className="max-w-2xl">
           <h1 className="display text-[clamp(2.25rem,6vw,3.5rem)] text-[var(--ink)]">
             {m.blog.title}
@@ -96,10 +112,25 @@ export default async function LocaleBlogIndex({ params }: PageProps<"/blog/[loca
             {m.blog.intro}
           </p>
         </header>
-        <p className="mt-16 text-[var(--mute-500)]">{m.blog.empty}</p>
+        <p className="mt-14 text-[var(--mute-500)]">{m.blog.empty}</p>
+        <NewsletterBand
+          locale={locale}
+          b={b}
+          source="blog"
+          path={blogIndexPath(locale)}
+          className="mt-10 max-w-3xl"
+        />
       </Container>
     );
   }
+
+  /*
+   * The rail's headline list is the newest ten of the whole language, not this
+   * page's twelve. On page one those overlap almost entirely, which is fine —
+   * the list is there so the same rail can be right on page seven, where the
+   * cards are from last spring and "latest" still has to mean latest.
+   */
+  const headlines = (await getArticlesIn(locale)).slice(0, HEADLINES);
 
   return (
     <>
@@ -119,19 +150,16 @@ export default async function LocaleBlogIndex({ params }: PageProps<"/blog/[loca
           ),
         }}
       />
-      <Container className="py-16 sm:py-24">
-        <header className="max-w-2xl">
-          <h1 className="display text-[clamp(2.25rem,6vw,3.5rem)] text-[var(--ink)]">
-            {m.blog.title}
-          </h1>
-          <p className="mt-4 text-[1.0625rem] leading-[1.7] text-[var(--mute-600)]">
-            {m.blog.intro}
-          </p>
-        </header>
-
+      <BlogIndexLayout
+        locale={locale}
+        m={m}
+        b={b}
+        headlines={headlines}
+        path={blogIndexPath(locale)}
+      >
         <ArticleList articles={articles} locale={locale} m={m} withLead />
         <Pagination locale={locale} page={page} pageCount={pageCount} m={m} />
-      </Container>
+      </BlogIndexLayout>
     </>
   );
 }

@@ -38,7 +38,7 @@ export function ArticleList({ articles, locale, m, withLead }: Props) {
   const rest = withLead ? articles.slice(1) : articles;
 
   return (
-    <div className="mt-14 space-y-12">
+    <div className="space-y-12">
       {lead ? (
         <Link
           href={articlePath(lead.locale, lead.slug)}
@@ -53,7 +53,9 @@ export function ArticleList({ articles, locale, m, withLead }: Props) {
                 // The lead image is the largest thing above the fold on this
                 // page, so it is the LCP element on most visits.
                 priority
-                sizes="(min-width: 1024px) 60rem, 100vw"
+                // The list now shares its row with a 17rem rail, so the lead
+                // card is never the full container width above `lg`.
+                sizes="(min-width: 1024px) 48rem, 100vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
               />
             </div>
@@ -104,7 +106,7 @@ export function ArticleList({ articles, locale, m, withLead }: Props) {
                       // LCP candidates, so they load eagerly and the rest stay
                       // lazy — twelve eager images would be worse than none.
                       priority={!withLead && i < 2}
-                      sizes="(min-width: 640px) 28rem, 100vw"
+                      sizes="(min-width: 1024px) 23rem, (min-width: 640px) 45vw, 100vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                     />
                   </div>
@@ -172,10 +174,11 @@ export function Pagination({
     "focus-line inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[var(--mute-200)] px-3 text-[0.8125rem] transition-colors";
 
   return (
-    <nav aria-label={m.blog.pagination} className="mt-16 flex flex-wrap items-center justify-center gap-2">
+    <nav aria-label={m.blog.pagination} className="mt-14 flex flex-wrap items-center justify-center gap-2">
       {page > 1 ? (
         <Link href={blogIndexPath(locale, page - 1)} rel="prev" className={`${step} text-[var(--mute-600)] hover:border-[var(--mute-300)] hover:text-[var(--ink)]`}>
-          <ChevronLeft className="size-4" aria-hidden />
+          {/* Logical, not visual: "previous" points right in Arabic. */}
+          <ChevronLeft className="size-4 rtl:rotate-180" aria-hidden />
           <span className="sr-only">{m.blog.previousPage}</span>
         </Link>
       ) : null}
@@ -208,7 +211,7 @@ export function Pagination({
 
       {page < pageCount ? (
         <Link href={blogIndexPath(locale, page + 1)} rel="next" className={`${step} text-[var(--mute-600)] hover:border-[var(--mute-300)] hover:text-[var(--ink)]`}>
-          <ChevronRight className="size-4" aria-hidden />
+          <ChevronRight className="size-4 rtl:rotate-180" aria-hidden />
           <span className="sr-only">{m.blog.nextPage}</span>
         </Link>
       ) : null}

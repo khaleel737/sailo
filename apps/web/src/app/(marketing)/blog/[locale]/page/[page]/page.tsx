@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getArticlePageIn } from "@/lib/blog";
+import { getArticlePageIn, getArticlesIn } from "@/lib/blog";
 import { isLocale } from "@sailo/i18n/config";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
-import { Container } from "@/components/marketing/kit";
+import { getBlogDictionary } from "@sailo/i18n/marketing/blog";
 import { absolute } from "@sailo/core/origin";
 import { ArticleList, Pagination } from "../../../_components/article-list";
+import { BlogIndexLayout } from "../../../_components/index-layout";
 import { blogIndexPath } from "@/lib/blog-urls";
 
 /*
@@ -57,6 +58,9 @@ export async function generateMetadata({
   };
 }
 
+/** How many titles the rail lists. One screen's worth on a laptop. */
+const HEADLINES = 10;
+
 export default async function LocaleBlogPage({
   params,
 }: PageProps<"/blog/[locale]/page/[page]">) {
@@ -71,20 +75,33 @@ export default async function LocaleBlogPage({
   if (requested === 1 || requested > pageCount || articles.length === 0) notFound();
 
   const m = getMarketingDictionary(locale);
+  const b = getBlogDictionary(locale);
+  const headlines = (await getArticlesIn(locale)).slice(0, HEADLINES);
 
   return (
-    <Container className="py-16 sm:py-24">
-      <header className="max-w-2xl">
-        <h1 className="display text-[clamp(2.25rem,6vw,3.5rem)] text-[var(--ink)]">
-          {m.blog.title}
-        </h1>
-        <p className="mt-4 text-[1.0625rem] leading-[1.7] text-[var(--mute-600)]">
-          {m.blog.intro}
+    <BlogIndexLayout
+      locale={locale}
+      m={m}
+      b={b}
+      headlines={headlines}
+      path={blogIndexPath(locale, page)}
+      heading={
+        /*
+         * Which page this is, said in the page rather than only in the title.
+         *
+         * A reader who lands on page 7 from a search result sees the same
+         * masthead as page 1 and, without this, no way to tell they are seven
+         * screens into an archive rather than looking at what was published
+         * this week. The pager at the foot says so too, but that is below
+         * twelve cards.
+         */
+        <p className="mt-5 text-[0.8125rem] text-[var(--mute-400)]">
+          {page} / {pageCount}
         </p>
-      </header>
-
+      }
+    >
       <ArticleList articles={articles} locale={locale} m={m} withLead={false} />
       <Pagination locale={locale} page={page} pageCount={pageCount} m={m} />
-    </Container>
+    </BlogIndexLayout>
   );
 }
