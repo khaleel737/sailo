@@ -8,7 +8,14 @@ import { HqLoginForm } from "./login-form";
 
 
 export const metadata: Metadata = {
-  title: "Sign in · Sailo HQ",
+  /*
+   * Just "Sign in". The root layout's `template` adds "· Sailo HQ", and this
+   * used to spell the suffix out as well — so the tab read
+   * "Sign in · Sailo HQ · Sailo HQ". Every page under `(panel)` was already
+   * right, because they set a bare noun and let the template do the joining;
+   * this was the one page outside that group and the one that got it wrong.
+   */
+  title: "Sign in",
   // Same reasoning as the panel itself: a login page in a search index is a
   // signpost to a door that shouldn't advertise.
   robots: { index: false, follow: false },
