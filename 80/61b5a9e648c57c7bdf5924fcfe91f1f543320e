@@ -1,0 +1,43 @@
+packages/core/src/origin.ts
+  s_dcd75e2fc0aa0a::t_9facf9160d8407 62-97
+apps/docs/src/components/reference/endpoints.tsx
+  s_dcd75e2fc0aa0a::t_b2ea47429b21ae 1,182,195
+apps/docs/content/api/openapi.mdx
+  s_dcd75e2fc0aa0a::t_516bc4892f6488 34,44,51
+apps/docs/content/pagination.mdx
+  s_dcd75e2fc0aa0a::t_516bc4892f6488 26
+apps/docs/src/lib/contract.test.ts
+  s_dcd75e2fc0aa0a::t_d6d3a41624482a 8,293
+docs/api-cutover.md
+  s_dcd75e2fc0aa0a::t_7fddf6e61813f6 7-11,19,48-52
+  s_dcd75e2fc0aa0a::t_63c4b81b427597 124-147
+.env.example
+  s_dcd75e2fc0aa0a::t_9ba89b1c2d6eb4 98-112
+apps/web/src/app/admin/settings/integrations/page.tsx
+  s_dcd75e2fc0aa0a::t_b21444da0bb180 54-60
+  s_dcd75e2fc0aa0a::t_d6d3a41624482a 7,64
+apps/docs/content/guides/sync-a-crm.mdx
+  s_dcd75e2fc0aa0a::t_516bc4892f6488 158,189
+apps/docs/src/components/reference/kit.tsx
+  s_dcd75e2fc0aa0a::t_b2ea47429b21ae 1,215,217-224,226-231,233-243,246,248,253,258,263,277
+apps/docs/src/components/reference/mcp.tsx
+  s_dcd75e2fc0aa0a::t_b2ea47429b21ae 1,181-184,187
+apps/docs/content/errors.mdx
+  s_dcd75e2fc0aa0a::t_516bc4892f6488 114
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "8061b5a9e648c57c7bdf5924fcfe91f1f543320e",
+  "prompts": {},
+  "sessions": {
+    "s_dcd75e2fc0aa0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4480cff-caac-46d0-a589-a5bbfd9e0fe9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
