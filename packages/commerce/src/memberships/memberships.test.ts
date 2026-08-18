@@ -3,6 +3,9 @@ import {
   BILLING_INTERVALS,
   addInterval,
   anyAccess,
+  canStillInvoice,
+  feeBpFromPercent,
+  feePercentFromBp,
   isManual,
   nextPeriodEnd,
   intervalOf,
@@ -281,5 +284,69 @@ describe("which cycle a membership is on", () => {
      */
     expect(isManual({ billingMode: "manual" })).toBe(true);
     expect(isManual({ billingMode: "stripe" })).toBe(false);
+  });
+});
+
+describe("what Sailo keeps from a membership", () => {
+  it("carries Stripe's percentage as the basis points every plan is written in", () => {
+    /*
+     * The three rates on the plan ladder, in the unit `platformFeeBp` uses.
+     * A mismatch here is not a rounding argument — it is a seller billed at
+     * the wrong tier on every renewal for the life of their membership.
+     */
+    expect(feeBpFromPercent(3)).toBe(300);
+    expect(feeBpFromPercent(2)).toBe(200);
+    expect(feeBpFromPercent(1)).toBe(100);
+    expect(feePercentFromBp(300)).toBe(3);
+    expect(feePercentFromBp(100)).toBe(1);
+  });
+
+  it("folds absent and zero into the same answer", () => {
+    /*
+     * Checkout omits `application_fee_percent` when the fee is zero, and an
+     * update sets it to `0.0` — confirmed against the live API, not assumed.
+     * Two values for one fact would make the sweep rewrite those rows every
+     * hour for ever without ever reaching agreement.
+     */
+    expect(feeBpFromPercent(null)).toBe(0);
+    expect(feeBpFromPercent(undefined)).toBe(0);
+    expect(feeBpFromPercent(0)).toBe(0);
+  });
+
+  it("survives a fee Stripe returned with decimals", () => {
+    // Stripe allows two decimal places; 0.5% is what the live scenario sells at.
+    expect(feeBpFromPercent(0.5)).toBe(50);
+    expect(feeBpFromPercent(2.55)).toBe(255);
+    expect(feePercentFromBp(50)).toBe(0.5);
+  });
+
+  it("round-trips every whole basis point the ladder can produce", () => {
+    /*
+     * The property that makes the stored integer safe to compare with `ne`:
+     * bp -> percent -> bp is the identity, so a row that is in step never
+     * looks drifted and never gets re-sent.
+     */
+    for (const bp of [0, 1, 50, 100, 200, 255, 300, 1200]) {
+      expect(feeBpFromPercent(feePercentFromBp(bp))).toBe(bp);
+    }
+  });
+
+  it("keeps sweeping the statuses Stripe can still invoice", () => {
+    /*
+     * `past_due` and `unpaid` are the two that a set borrowed from the access
+     * rules would wrongly drop. Stripe is still retrying the first, and the
+     * second is a subscription the seller can revive — both can raise another
+     * invoice, and an invoice is what reads the fee.
+     */
+    expect(canStillInvoice("active")).toBe(true);
+    expect(canStillInvoice("trialing")).toBe(true);
+    expect(canStillInvoice("past_due")).toBe(true);
+    expect(canStillInvoice("unpaid")).toBe(true);
+    expect(canStillInvoice("incomplete")).toBe(true);
+  });
+
+  it("skips the ones that will never be invoiced again", () => {
+    expect(canStillInvoice("canceled")).toBe(false);
+    expect(canStillInvoice("incomplete_expired")).toBe(false);
   });
 });

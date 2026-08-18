@@ -70,6 +70,68 @@ export function isManual(subscription: { billingMode: string }): boolean {
   return subscription.billingMode === "manual";
 }
 
+/* --------------------------------------------------------------------------
+   What Sailo keeps
+-------------------------------------------------------------------------- */
+
+/**
+ * Stripe's `application_fee_percent`, as the basis points everything else
+ * speaks.
+ *
+ * Every fee in this codebase is basis points -- `Plan.feeBp`, `platformFeeBp`
+ * -- and Stripe's field is a percentage, so exactly one of the two has to be
+ * converted and it is not the one twenty other files read. Integers also
+ * compare exactly, which is the whole reason the fee is worth storing: the
+ * question asked of it is "has this drifted from the plan", and a float
+ * answers that with an epsilon nobody chose.
+ *
+ * Absent and zero fold together on purpose. `createSubscriptionSession` omits
+ * the parameter entirely when the fee would be zero, while updating a
+ * subscription to zero stores `0.0` -- measured against the live API, not
+ * assumed. Both mean "we take nothing", and a reconciler that saw two
+ * different values for one fact would rewrite those rows for ever.
+ */
+export function feeBpFromPercent(percent: number | null | undefined): number {
+  if (typeof percent !== "number" || !Number.isFinite(percent)) return 0;
+  return Math.round(percent * 100);
+}
+
+/**
+ * The same number on the way back out to Stripe.
+ *
+ * Stripe accepts at most two decimal places, which basis points cannot exceed
+ * -- an integer over 100 has two at most. Carrying the fee as bp is what makes
+ * that guarantee structural instead of a range check somebody has to remember.
+ */
+export function feePercentFromBp(bp: number): number {
+  return bp / 100;
+}
+
+/**
+ * The statuses Stripe will never raise another invoice for.
+ *
+ * Exported as the list as well as the test because the fee sweep asks this
+ * question in SQL and in TypeScript, and two hand-written copies of a status
+ * set is how one of them quietly stops matching.
+ */
+export const SETTLED_STATUSES = ["canceled", "incomplete_expired"] as const;
+
+/**
+ * Whether this subscription can still be invoiced, and so can still charge the
+ * wrong fee.
+ *
+ * Deliberately neither `OPEN_STATUSES` above nor the webhook's `TERMINAL`.
+ * Those answer "does the door open" and "may this row be resurrected", and
+ * both are wrong here in opposite directions: a `past_due` member is not being
+ * let in while Stripe is still retrying their card, and an `unpaid` one is no
+ * longer being retried while the subscription still exists and can be revived.
+ * Access and billing are different questions about the same column, which is
+ * the mistake this file exists to stop.
+ */
+export function canStillInvoice(status: string): boolean {
+  return !(SETTLED_STATUSES as readonly string[]).includes(status);
+}
+
 /**
  * How long before a period ends the next order is raised.
  *
