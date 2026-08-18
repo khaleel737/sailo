@@ -81,12 +81,29 @@ const nextConfig: NextConfig = {
     /*
      * React's development build calls `eval` to reconstruct callstacks across
      * environments, and a policy without this takes the dev overlay with it.
+     *
+     * `'unsafe-eval'` also permits WebAssembly, so it subsumes the
+     * `'wasm-unsafe-eval'` below in development.
      */
     const devEval = isProd ? "" : " 'unsafe-eval'";
 
     const csp = [
       "default-src 'self'",
-      `script-src 'self' 'unsafe-inline'${devEval}`,
+      /*
+       * `'wasm-unsafe-eval'` is what makes search work, and leaving it out is a
+       * failure with no symptom: the page renders, the search box opens, and
+       * every query returns nothing while the console says
+       * "Compiling or instantiating WebAssembly module violates the following
+       * Content Security policy directive".
+       *
+       * Pagefind runs its index through WebAssembly, and Chromium refuses to
+       * compile a module under any CSP that does not say so. It is the narrow
+       * directive on purpose — it permits WebAssembly compilation and nothing
+       * else, where `'unsafe-eval'` would also hand back `eval()` over
+       * arbitrary strings for no benefit. Firefox and Safari allow WASM without
+       * either, so this is Chromium-shaped and harmless elsewhere.
+       */
+      `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${devEval}`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data:",
       "font-src 'self' data:",
