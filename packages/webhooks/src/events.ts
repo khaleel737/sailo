@@ -1,5 +1,17 @@
-import { contactResource, orderResource } from "@sailo/core/wire";
-import type { Client, Order, OrderItem, Shop } from "@sailo/db/schema";
+import {
+  contactResource,
+  disputeResource,
+  orderResource,
+  subscriptionResource,
+} from "@sailo/core/wire";
+import type {
+  Client,
+  Dispute,
+  Order,
+  OrderItem,
+  Shop,
+  Subscription,
+} from "@sailo/db/schema";
 
 /**
  * What Sailo will tell an outside tool about, and exactly what it says.
@@ -40,13 +52,38 @@ import type { Client, Order, OrderItem, Shop } from "@sailo/db/schema";
 /**
  * Every event, in the order the settings card lists them.
  *
- * Seven, and each one has a real emit point wired to it. A catalogue longer
+ * Sixteen, and each one has a real emit point wired to it. A catalogue longer
  * than its emit points is how a seller comes to tick a box, wait for an event
  * that will never arrive, and conclude the feature is broken — so nothing is
- * listed here speculatively.
+ * listed here speculatively. `webhook-emit-sites.test.ts` in apps/web reads
+ * this list against the call sites and fails when the two drift.
  *
  * Named `noun.verb`, past tense, and grouped by noun so a consumer filtering
  * on the `order.` prefix gets every order event including ones added later.
+ *
+ * **Why the subscription half exists.** Sailo has run memberships for as long
+ * as it has run orders — the `subscriptions` table, the Stripe lifecycle
+ * handlers, the renewals cron — and none of it told an outside tool anything.
+ * A seller running a paid community had no way to revoke a Discord role when
+ * somebody stopped paying, which is the single most-wired integration this
+ * category has. The seven below are the states that arrangement can actually
+ * be in, each derived from a real before-and-after comparison rather than from
+ * a Stripe event name.
+ *
+ * **Why `cancelled` and `ended` are both here.** They are different days and
+ * different consequences. `subscription.cancelled` is the member asking to
+ * stop; they have paid through `currentPeriodEnd` and keep their access until
+ * it. `subscription.ended` is the arrangement actually being over. A consumer
+ * that revokes on the first of those takes away a month somebody bought — so
+ * the catalogue makes the distinction impossible to miss rather than leaving
+ * it to a `cancelAtPeriodEnd` field a Zap author will not read.
+ *
+ * **Why disputes are here.** A chargeback has a deadline of about twenty days
+ * and the evidence that wins it usually lives in a system that is not Sailo —
+ * a helpdesk, a fulfilment tool, a shipping account. `dispute.opened` is what
+ * lets a seller's own tooling go and get it. Only ever emitted for a buyer's
+ * chargeback against a seller's sale; a seller charging back their own Sailo
+ * subscription is Sailo's money and never appears here.
  */
 export const WEBHOOK_EVENTS = [
   "order.created",
@@ -56,6 +93,15 @@ export const WEBHOOK_EVENTS = [
   "order.refunded",
   "booking.confirmed",
   "contact.created",
+  "subscription.created",
+  "subscription.renewed",
+  "subscription.payment_failed",
+  "subscription.plan_changed",
+  "subscription.cancelled",
+  "subscription.resumed",
+  "subscription.ended",
+  "dispute.opened",
+  "dispute.closed",
 ] as const;
 
 export type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
@@ -136,6 +182,16 @@ export function orderPayload(order: Order, items: readonly OrderItem[]) {
 /** A contact, in the shape `GET /api/v1/contacts/{id}` also returns. */
 export function contactPayload(client: Client) {
   return contactResource(client);
+}
+
+/** A membership, carried identically by all seven `subscription.*` events. */
+export function subscriptionPayload(subscription: Subscription) {
+  return subscriptionResource(subscription);
+}
+
+/** A chargeback, carried by `dispute.opened` and `dispute.closed`. */
+export function disputePayload(dispute: Dispute) {
+  return disputeResource(dispute);
 }
 
 /**

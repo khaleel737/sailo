@@ -92,6 +92,15 @@ export type TaxSettings = {
   taxRateBp: number;
   taxInclusive: boolean;
   taxOnDelivery: boolean;
+  /**
+   * `manual` — the flat `taxRateBp` below, applied to every buyer.
+   * `stripe` — Stripe Tax works it out at checkout from the buyer's location.
+   *
+   * Optional, and absent means `manual`. Every existing caller passes a shop
+   * row and a row written before the column existed reads as the flat rate,
+   * which is what it was.
+   */
+  taxMode?: string;
 };
 
 export type Totals = {
@@ -101,6 +110,19 @@ export type Totals = {
   taxCents: number;
   totalCents: number;
   commissionCents: number;
+  /**
+   * Tax applies but the amount is not knowable here.
+   *
+   * True only under Stripe Tax, where the rate comes from an address the buyer
+   * has not given yet — so `taxCents` is 0 because nothing has been computed,
+   * not because nothing is owed. A cart that renders "Tax £0.00" off that zero
+   * tells the buyer their order is tax-free and then charges them tax on the
+   * next screen, which is the complaint this flag exists to prevent: the
+   * summary says "calculated at checkout" instead.
+   *
+   * Always false in manual mode, where a zero genuinely means zero.
+   */
+  taxDeferred: boolean;
 };
 
 /**
@@ -148,8 +170,27 @@ export function computeTotals(input: {
    * `tax!` meant two separate claims about the same fact — and the assertion
    * would have thrown on the day they diverged.
    */
+  /*
+   * Under Stripe Tax there is nothing for this function to work out.
+   *
+   * The rate depends on where the buyer is, which registrations the seller
+   * holds, and what kind of product it is — none of which are in scope here and
+   * the first of which is not even known until Stripe has collected an address.
+   * So the arithmetic is skipped and the caller is told why, rather than a zero
+   * being returned that reads identically to "this shop charges no tax".
+   *
+   * `taxRateBp` is deliberately not consulted: a seller who switched to Stripe
+   * Tax may well have left their old flat rate sitting in the column, and
+   * quietly charging it here would be the one outcome nobody asked for.
+   */
+  const deferred = Boolean(
+    input.tax?.taxEnabled && input.tax.taxMode === "stripe",
+  );
+
   const tax =
-    input.tax?.taxEnabled && input.tax.taxRateBp > 0 ? input.tax : null;
+    !deferred && input.tax?.taxEnabled && input.tax.taxRateBp > 0
+      ? input.tax
+      : null;
 
   const taxable = tax
     ? netCents + (tax.taxOnDelivery ? deliveryFeeCents : 0)
@@ -175,6 +216,7 @@ export function computeTotals(input: {
     commissionCents: input.commissionBp
       ? commission(netCents - goodsTaxCents, input.commissionBp)
       : 0,
+    taxDeferred: deferred,
   };
 }
 
@@ -265,5 +307,9 @@ export function toChargeableTotals(
     // Sailo's own cut, which is settled separately and in the platform's own
     // currency, so it is not bound by this currency's settlement step.
     commissionCents: totals.commissionCents,
+    // Carried through unchanged. Rounding cannot turn "Stripe will work this
+    // out" into a number, and a dropped flag would have the cart print a
+    // confident £0.00 tax line in exactly the five currencies this runs for.
+    taxDeferred: totals.taxDeferred,
   };
 }

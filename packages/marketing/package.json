@@ -9,7 +9,10 @@
     "./lifecycle": "./src/lifecycle/index.ts",
     "./demos": "./src/demos.ts",
     "./broadcasts/server": "./src/broadcasts/server.ts",
-    "./lifecycle/server": "./src/lifecycle/server.ts"
+    "./lifecycle/server": "./src/lifecycle/server.ts",
+    "./contact": "./src/contact.ts",
+    "./newsletter": "./src/newsletter/index.ts",
+    "./newsletter/server": "./src/newsletter/server.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

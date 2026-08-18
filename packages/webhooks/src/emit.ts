@@ -4,8 +4,10 @@ import { and, asc, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import {
   clients,
+  disputes,
   orderItems,
   orders,
+  subscriptions,
   webhookDeliveries,
   webhookEndpoints,
   type Shop,
@@ -13,8 +15,10 @@ import {
 import { can } from "@sailo/core/plans";
 import {
   contactPayload,
+  disputePayload,
   envelope,
   orderPayload,
+  subscriptionPayload,
   type WebhookEvent,
 } from "./events";
 
@@ -211,5 +215,91 @@ export async function emitContactWebhook(opts: {
     });
   } catch (error) {
     console.error("[sailo] contact webhook emit failed", error);
+  }
+}
+
+/**
+ * The seven events whose subject is a membership.
+ *
+ * Takes an id and reads the row, for the reason `emitOrderWebhook` gives: the
+ * caller's copy is a snapshot from before the writes that followed it, and on
+ * this path in particular the object a Stripe handler is holding was built
+ * from the webhook body rather than from what the upsert actually stored.
+ *
+ * Ownership is in the WHERE rather than assumed from the caller. Every current
+ * call site holds the shop and the subscription together so it can only ever be
+ * belt-and-braces — but it is the cheap kind, and the failure it prevents is
+ * one shop's member being described to another shop's endpoint.
+ */
+export async function emitSubscriptionWebhook(opts: {
+  shop: Shop;
+  event: WebhookEvent;
+  subscriptionId: string;
+  now?: Date;
+}): Promise<void> {
+  try {
+    const { shop, event, subscriptionId } = opts;
+
+    if (!can(shop, "integrations")) return;
+    if ((await subscribedEndpoints(shop.id, event)).length === 0) return;
+
+    const row = await getDb().query.subscriptions.findFirst({
+      where: and(
+        eq(subscriptions.id, subscriptionId),
+        eq(subscriptions.shopId, shop.id),
+      ),
+    });
+    if (!row) return;
+
+    await emitWebhook({
+      shop,
+      event,
+      data: subscriptionPayload(row),
+      now: opts.now,
+    });
+  } catch (error) {
+    console.error("[sailo] subscription webhook emit failed", error);
+  }
+}
+
+/**
+ * `dispute.opened` and `dispute.closed`, from a dispute row already written.
+ *
+ * The shop is passed in rather than looked up from `dispute.shopId`, because
+ * the plan gate and the endpoint query both need the whole row and the caller
+ * has already resolved it. The ownership check is still made here: a dispute
+ * whose `shopId` does not match the shop being emitted for is not described to
+ * that shop's endpoints, whatever the caller believed.
+ *
+ * Nothing stops a *platform* dispute reaching this function except its call
+ * site, which emits only in the connected branch — a seller charging back their
+ * own Sailo subscription is Sailo's money, and delivering it here would tell a
+ * seller's Zap that one of their customers had filed a chargeback.
+ */
+export async function emitDisputeWebhook(opts: {
+  shop: Shop;
+  event: WebhookEvent;
+  disputeId: string;
+  now?: Date;
+}): Promise<void> {
+  try {
+    const { shop, event, disputeId } = opts;
+
+    if (!can(shop, "integrations")) return;
+    if ((await subscribedEndpoints(shop.id, event)).length === 0) return;
+
+    const row = await getDb().query.disputes.findFirst({
+      where: and(eq(disputes.id, disputeId), eq(disputes.shopId, shop.id)),
+    });
+    if (!row) return;
+
+    await emitWebhook({
+      shop,
+      event,
+      data: disputePayload(row),
+      now: opts.now,
+    });
+  } catch (error) {
+    console.error("[sailo] dispute webhook emit failed", error);
   }
 }

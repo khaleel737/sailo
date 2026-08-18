@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, isNotNull, sql, type SQL } from "drizzle-orm";
+import { and, desc, eq, isNotNull, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { clients, emailSuppressions } from "@sailo/db/schema";
 import { EVERYONE, type Segment } from "./segments";
@@ -164,4 +164,146 @@ export async function isSuppressed(
     columns: { id: true },
   });
   return Boolean(row);
+}
+
+/* --------------------------------------------------------------------------
+   The list, as people
+
+   Everything above answers "who may be mailed" for a send. This answers the
+   question a seller asks *before* writing anything and had no way to ask:
+   who actually joined, how, when, and who has since left.
+
+   It is a deliberately wider question than `mailable`. A subscriber who
+   unsubscribed is still part of the answer — they are the difference between
+   "180 joined" and "reach 174", and hiding them turns that gap into a bug
+   report. So the suppression is joined and reported rather than filtered.
+-------------------------------------------------------------------------- */
+
+export type SubscriberRow = {
+  clientId: string;
+  name: string;
+  email: string;
+  /** How they got here — see `CLIENT_SOURCES`. */
+  source: string;
+  /** When consent was given. Never null: it is what makes this row a subscriber. */
+  consentedAt: Date;
+  /** Null while this shop may still mail them. */
+  suppressedReason: SuppressionReason | null;
+  suppressedAt: Date | null;
+};
+
+/** How many rows a subscribers screen asks for. */
+export const SUBSCRIBER_LIMIT = 500;
+
+/**
+ * The join that pairs a contact with the reason they can no longer be mailed.
+ *
+ * Folded on the way in, because `emailSuppressions.email` is stored lowercase
+ * and `clients.email` is stored as the buyer typed it — matching them raw
+ * would report an unsubscribed `Ada@example.com` as still mailable, which is
+ * the one mistake this table exists to prevent.
+ */
+const suppressionJoin = and(
+  eq(emailSuppressions.shopId, clients.shopId),
+  sql`${emailSuppressions.email} = lower(${clients.email})`,
+);
+
+/** Consented, reachable, and ordered by when they said yes. */
+const consented = (shopId: string) =>
+  and(
+    eq(clients.shopId, shopId),
+    isNotNull(clients.marketingConsentAt),
+    isNotNull(clients.email),
+  );
+
+/**
+ * Everyone who opted in, most recent first.
+ *
+ * Bounded like every other admin read, and newest-first rather than
+ * alphabetical because the question behind the screen is nearly always "did
+ * the person who just signed up land?" — the answer to which has to be the
+ * first row, not somewhere under the Bs.
+ */
+export async function listSubscribers(
+  shopId: string,
+  limit = SUBSCRIBER_LIMIT,
+): Promise<SubscriberRow[]> {
+  const rows = await getDb()
+    .select({
+      clientId: clients.id,
+      name: clients.name,
+      email: clients.email,
+      source: clients.source,
+      consentedAt: clients.marketingConsentAt,
+      suppressedReason: emailSuppressions.reason,
+      suppressedAt: emailSuppressions.createdAt,
+    })
+    .from(clients)
+    .leftJoin(emailSuppressions, suppressionJoin)
+    .where(consented(shopId))
+    .orderBy(desc(clients.marketingConsentAt))
+    .limit(limit);
+
+  /*
+   * `flatMap` and not a cast. The WHERE guarantees both columns are present
+   * and the types do not know it, and a `!` here would be a promise the next
+   * person to edit that WHERE could silently break.
+   */
+  return rows.flatMap((row) =>
+    row.email && row.consentedAt
+      ? [
+          {
+            clientId: row.clientId,
+            name: row.name,
+            email: row.email,
+            source: row.source,
+            consentedAt: row.consentedAt,
+            suppressedReason:
+              (row.suppressedReason as SuppressionReason | null) ?? null,
+            suppressedAt: row.suppressedAt ?? null,
+          },
+        ]
+      : [],
+  );
+}
+
+export type SubscriberStats = {
+  /** Everyone who ever opted in, whatever happened after. */
+  consented: number;
+  /** Of those, how many a broadcast can still reach. */
+  mailable: number;
+  unsubscribed: number;
+  /** Bounced or complained — addresses no click can bring back. */
+  refused: number;
+  /** How many arrived through the signup form rather than a checkout box. */
+  viaForm: number;
+};
+
+/**
+ * The five numbers a seller needs to read the list at a glance.
+ *
+ * One statement with filtered counts rather than five queries, and computed
+ * over the same join the list uses so a total can never disagree with the
+ * rows under it.
+ */
+export async function subscriberStats(shopId: string): Promise<SubscriberStats> {
+  const [row] = await getDb()
+    .select({
+      consented: sql<string>`count(*)`,
+      mailable: sql<string>`count(*) filter (where ${emailSuppressions.id} is null)`,
+      unsubscribed: sql<string>`count(*) filter (where ${emailSuppressions.reason} = 'unsubscribed')`,
+      refused: sql<string>`count(*) filter (where ${emailSuppressions.reason} in ('bounced', 'complained'))`,
+      viaForm: sql<string>`count(*) filter (where ${clients.source} = 'subscribe')`,
+    })
+    .from(clients)
+    .leftJoin(emailSuppressions, suppressionJoin)
+    .where(consented(shopId));
+
+  return {
+    consented: Number(row?.consented ?? 0),
+    mailable: Number(row?.mailable ?? 0),
+    unsubscribed: Number(row?.unsubscribed ?? 0),
+    refused: Number(row?.refused ?? 0),
+    viaForm: Number(row?.viaForm ?? 0),
+  };
 }

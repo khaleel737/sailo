@@ -255,3 +255,215 @@ export async function sendSellerWebhookDisabled(opts: {
     }),
   });
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Memberships                                                                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Where the membership mails point.
+ *
+ * The members list rather than the order queue, because every question these
+ * three raise — who is this, what are they on, are they still active — is
+ * answered there and none of them are answered by a row in Orders.
+ */
+function membersUrl(): string {
+  return `${appUrl()}/admin/clients`;
+}
+
+/** "£12.00 / month", as the seller reads it everywhere else. */
+function perInterval(priceCents: number, currency: string, interval: string): string {
+  return `${formatMoney(priceCents, currency)} / ${interval}`;
+}
+
+/**
+ * A new member signed up.
+ *
+ * The first of three that close a gap the seller could not see: Sailo has run
+ * memberships for as long as it has run orders and told the seller nothing
+ * about any of them. A one-off sale mails them; a member worth twelve times as
+ * much over a year did not, because the recurring path never had a seller
+ * notification at all.
+ *
+ * Deliberately separate from `sendSellerOrderPlaced`, which the signup's own
+ * order also triggers. That one says money arrived. This one says a recurring
+ * arrangement now exists, which is a different fact with a different lifetime —
+ * and it is the one that makes the two mails on signup day worth having rather
+ * than redundant. `notifySellerOfMembership` sends only this one for a signup,
+ * so the seller gets one message and not two.
+ */
+export async function sendSellerMembershipStarted(opts: {
+  shop: Shop;
+  to: string;
+  memberName: string | null;
+  memberEmail: string | null;
+  productTitle: string;
+  priceCents: number;
+  currency: string;
+  interval: string;
+  trialEndsAt: Date | null;
+}): Promise<SendResult> {
+  const { shop, to, memberName, memberEmail, productTitle } = opts;
+  const price = perInterval(opts.priceCents, opts.currency, opts.interval);
+
+  const details: Detail[] = [
+    { label: "Member", value: memberName ?? memberEmail ?? "A new member" },
+    { label: "Plan", value: productTitle },
+    { label: "Price", value: price },
+  ];
+  /*
+   * Only when there is one. A trial changes what the seller should expect —
+   * no money moves today and the first charge is weeks away — and a "Trial:
+   * none" row on every other signup is noise that trains them to skip the
+   * table.
+   */
+  if (opts.trialEndsAt) {
+    details.push({
+      label: "Trial ends",
+      value: formatWhen(opts.trialEndsAt, shop.timeZone),
+    });
+  }
+
+  const body = `
+    ${mutedPara(
+      `${memberName ? strong(esc(memberName)) : "Someone"} started a membership at ${esc(shop.name)}.`,
+    )}
+    ${section("Membership", detailTable(details))}
+    ${button(membersUrl(), "See your members")}
+  `;
+
+  return send({
+    from: sender("Sailo", ORDERS),
+    to,
+    subject: `New member — ${productTitle}`,
+    html: sailoLayout("You have a new member", body, {
+      preheader: `${memberName ?? "A new member"} · ${productTitle} · ${price}`,
+    }),
+    replyTo: memberEmail ?? undefined,
+  });
+}
+
+/**
+ * A member asked to stop, or their membership ended.
+ *
+ * One builder for both because the seller's next move is identical — look at
+ * why, and decide whether to ask — while the *dates* are not, which is what
+ * `endsAt` carries. A cancellation is not a departure yet: the member has paid
+ * through the end of the period and is still owed everything they bought until
+ * then, so a mail that said "X has left" on the day they clicked cancel would
+ * be wrong for up to a month and would invite the seller to cut off access
+ * somebody is still paying for.
+ */
+export async function sendSellerMembershipCancelled(opts: {
+  shop: Shop;
+  to: string;
+  memberName: string | null;
+  memberEmail: string | null;
+  productTitle: string;
+  priceCents: number;
+  currency: string;
+  interval: string;
+  /** Null once it has actually ended — see the note above. */
+  endsAt: Date | null;
+}): Promise<SendResult> {
+  const { shop, to, memberName, memberEmail, productTitle, endsAt } = opts;
+  const price = perInterval(opts.priceCents, opts.currency, opts.interval);
+
+  const details: Detail[] = [
+    { label: "Member", value: memberName ?? memberEmail ?? "A member" },
+    { label: "Plan", value: productTitle },
+    { label: "Was paying", value: price },
+  ];
+  if (endsAt) {
+    details.push({ label: "Access until", value: formatWhen(endsAt, shop.timeZone) });
+  }
+
+  const body = `
+    ${mutedPara(
+      endsAt
+        ? `${memberName ? strong(esc(memberName)) : "A member"} cancelled their membership at ${esc(shop.name)}. They keep access until the end of the period they've already paid for.`
+        : `${memberName ? strong(esc(memberName)) : "A member"}'s membership at ${esc(shop.name)} has ended.`,
+    )}
+    ${section("Membership", detailTable(details))}
+    ${fine(
+      endsAt
+        ? "Nothing to do — Sailo stops the billing and the access on the date above."
+        : "Their access has stopped. Reach out if it's worth asking why.",
+    )}
+    ${button(membersUrl(), "See your members")}
+  `;
+
+  return send({
+    from: sender("Sailo", ORDERS),
+    to,
+    subject: endsAt
+      ? `Membership cancelled — ${productTitle}`
+      : `Membership ended — ${productTitle}`,
+    html: sailoLayout(
+      endsAt ? "A member cancelled" : "A membership ended",
+      body,
+      {
+        preheader: `${memberName ?? "A member"} · ${productTitle} · ${price}`,
+      },
+    ),
+    replyTo: memberEmail ?? undefined,
+  });
+}
+
+/**
+ * A renewal payment failed.
+ *
+ * The one of the three that is genuinely urgent, and the reason the set exists.
+ * The member has already been mailed a pay-now link by
+ * `handleMembershipInvoiceFailed`; this tells the seller the same thing,
+ * because Stripe's dunning eventually gives up and cancels — and a seller who
+ * learns about it then has lost the member without ever having had the chance
+ * to send a message that would have kept them.
+ *
+ * `until` is when the access actually stops, which is the date that decides
+ * whether the seller has a week to act or an afternoon.
+ */
+export async function sendSellerMembershipPaymentFailed(opts: {
+  shop: Shop;
+  to: string;
+  memberName: string | null;
+  memberEmail: string | null;
+  productTitle: string;
+  priceCents: number;
+  currency: string;
+  interval: string;
+  until: Date | null;
+}): Promise<SendResult> {
+  const { shop, to, memberName, memberEmail, productTitle, until } = opts;
+  const price = perInterval(opts.priceCents, opts.currency, opts.interval);
+
+  const details: Detail[] = [
+    { label: "Member", value: memberName ?? memberEmail ?? "A member" },
+    { label: "Plan", value: productTitle },
+    { label: "Amount", value: price },
+  ];
+  if (until) {
+    details.push({ label: "Access until", value: formatWhen(until, shop.timeZone) });
+  }
+
+  const body = `
+    ${mutedPara(
+      `A renewal payment failed for ${memberName ? strong(esc(memberName)) : "a member"} at ${esc(shop.name)}.`,
+    )}
+    ${section("Membership", detailTable(details))}
+    ${fine(
+      "We've emailed them a link to pay it. Stripe will retry the card for a few days and then cancel the membership — a message from you before that is what usually saves it.",
+    )}
+    ${button(membersUrl(), "See your members")}
+  `;
+
+  return send({
+    from: sender("Sailo", ORDERS),
+    to,
+    subject: `Renewal failed — ${productTitle}`,
+    html: sailoLayout("A renewal payment failed", body, {
+      preheader: `${memberName ?? "A member"} · ${productTitle} · ${price}`,
+    }),
+    replyTo: memberEmail ?? undefined,
+  });
+}

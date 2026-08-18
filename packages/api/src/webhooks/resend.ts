@@ -23,6 +23,10 @@ import { suppress } from "@sailo/marketing/broadcasts/server";
 import { evaluateShop } from "@sailo/marketing/broadcasts/server";
 import { optOut } from "@sailo/marketing/lifecycle/server";
 import { lifecycleDeliveryByProviderId, markLifecycleFailed } from "@sailo/marketing/lifecycle/server";
+import {
+  markNewsletterFailed,
+  newsletterDeliveryByProviderId,
+} from "@sailo/marketing/newsletter/server";
 
 /**
  * Bounces and complaints, from Resend.
@@ -202,10 +206,16 @@ export async function handleResendWebhook(request: Request): Promise<Response> {
   }
 
   /*
-   * Sailo's own marketing. The opt-out is platform-wide because Sailo is one
-   * sender — and it is written whichever way the address failed, since a
-   * seller who reports our onboarding mail as spam has said something about
-   * every future onboarding mail, not about one of them.
+   * Sailo's own marketing, which is now two streams rather than one: the
+   * lifecycle ladder we send to sellers, and the newsletter we send to the
+   * readers who subscribed from the blog. Both are checked, because Resend has
+   * one webhook and the payload names only a message id.
+   *
+   * The opt-out is the same row either way, and platform-wide, because Sailo
+   * is one sender: somebody who reports our newsletter as spam has told us to
+   * stop writing to them, not to stop writing one kind of thing. That is also
+   * why the `optOut` call is shared rather than duplicated per stream — one
+   * address, one promise.
    *
    * Note what this deliberately does *not* touch: `email_suppressions`. A
    * seller bouncing our product mail says nothing about whether their buyers
@@ -214,10 +224,17 @@ export async function handleResendWebhook(request: Request): Promise<Response> {
    * could never find.
    */
   const lifecycle = await lifecycleDeliveryByProviderId(providerId);
-  if (!lifecycle) return Response.json({ ok: true });
+  if (lifecycle) {
+    await optOut({ email: lifecycle.email, reason });
+    await markLifecycleFailed([lifecycle.id], reason);
+    return Response.json({ ok: true });
+  }
 
-  await optOut({ email: lifecycle.email, reason });
-  await markLifecycleFailed([lifecycle.id], reason);
+  const newsletter = await newsletterDeliveryByProviderId(providerId);
+  if (!newsletter) return Response.json({ ok: true });
+
+  await optOut({ email: newsletter.email, reason });
+  await markNewsletterFailed([newsletter.id], reason);
 
   return Response.json({ ok: true });
 }

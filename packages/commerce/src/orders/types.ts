@@ -111,6 +111,15 @@ export type PreviewTax = {
   name: string;
   rateBp: number;
   inclusive: boolean;
+  /**
+   * Stripe Tax will work the amount out at checkout, so there is no figure to
+   * show and `rateBp` means nothing.
+   *
+   * The cart has to say so rather than print the zero it would otherwise have:
+   * a buyer shown "Tax £0.00" and then charged £4.20 on Stripe's page has been
+   * told something untrue by the summary they were reading.
+   */
+  deferred: boolean;
 } | null;
 
 /** A priced line, as the cart draws it. */

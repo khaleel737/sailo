@@ -38,6 +38,7 @@ export {
   actingAs,
   billingPortalSession,
   cancelSubscriptionAtPeriodEnd,
+  setSubscriptionApplicationFee,
 } from "@sailo/payments";
 
 export * from "./connect-account";
@@ -149,12 +150,36 @@ export async function createCheckoutSession(opts: {
    * sentence about gift wrapping on one arbitrary line of the basket. The
    * note's real reader is the seller, and metadata is where they find it.
    */
+  /*
+   * Whether Stripe works the tax out instead of us.
+   *
+   * On only when the seller has both switched tax on *and* chosen Stripe Tax.
+   * A shop on the flat rate keeps the behaviour it has always had, down to the
+   * hand-built tax line below, so this is inert for every existing seller.
+   */
+  const automaticTax = shop.taxEnabled && shop.taxMode === "stripe";
+
+  /*
+   * What the price means, which Stripe cannot infer.
+   *
+   * `exclusive` says the amount is pre-tax and Stripe adds on top; `inclusive`
+   * says the tax is already inside it and Stripe extracts it. Getting this
+   * wrong does not error — it silently overcharges an EU shop by its own VAT
+   * rate or undercharges a US one — so it is stated on every line rather than
+   * left to the account default a seller has never seen.
+   */
+  const taxBehavior = shop.taxInclusive ? "inclusive" : "exclusive";
+  const behavior = automaticTax
+    ? ({ tax_behavior: taxBehavior } as const)
+    : ({} as const);
+
   for (const item of goods) {
     line_items.push({
       quantity: item.quantity,
       price_data: {
         currency,
         unit_amount: toStripeAmount(item.unitPriceCents, currency),
+        ...behavior,
         product_data: {
           name: item.name,
           ...(item.description ? { description: item.description } : {}),
@@ -170,14 +195,29 @@ export async function createCheckoutSession(opts: {
       price_data: {
         currency,
         unit_amount: toStripeAmount(order.deliveryFeeCents, currency),
+        /*
+         * Shipping is taxable in most places and Stripe knows where it is not,
+         * so the delivery line is handed over with the goods rather than being
+         * held back by `shop.taxOnDelivery` — that switch is the seller's own
+         * judgement, and under Stripe Tax the whole point is that the judgement
+         * is no longer theirs to make.
+         */
+        ...behavior,
         product_data: { name: order.deliveryLabel ?? "Delivery" },
       },
     });
   }
 
-  // Exclusive tax is a line the buyer pays on top. Inclusive tax is already
-  // inside the unit price and must not be added again.
-  if (order.taxCents > 0 && !order.taxInclusive) {
+  /*
+   * Exclusive tax is a line the buyer pays on top. Inclusive tax is already
+   * inside the unit price and must not be added again.
+   *
+   * Neither happens under Stripe Tax: `order.taxCents` is 0 there because
+   * nothing has been computed yet, and Stripe adds its own tax to the session.
+   * A hand-rolled line beside `automatic_tax` would be taxed *by* it — the
+   * buyer would pay VAT on the VAT.
+   */
+  if (!automaticTax && order.taxCents > 0 && !order.taxInclusive) {
     line_items.push({
       quantity: 1,
       price_data: {
@@ -275,11 +315,75 @@ export async function createCheckoutSession(opts: {
           ? { application_fee_amount: toStripeAmount(applicationFee, currency) }
           : {}),
       },
-      // Adaptive Pricing would let the buyer pay a converted amount in their
-      // own currency. The shop picked its currency, the order row records it,
-      // and the invoice states it — letting Stripe charge a different one
-      // means our books and the seller's payout disagree.
-      adaptive_pricing: { enabled: false },
+      /*
+       * Let a buyer abroad pay in their own currency.
+       *
+       * This was off, on the reasoning that a converted charge would put our
+       * books and the seller's payout in disagreement. That reasoning was
+       * wrong, and it is worth stating why plainly because it reads
+       * plausible. Stripe: "The Checkout Session and the underlying
+       * PaymentIntent objects reflect what your customer paid in *your
+       * integration currency and amount*." `amount_total` and `currency` come
+       * back exactly as this function sent them, the payout is in the shop's
+       * currency, and the invoice states the shop's currency. Nothing in our
+       * books moves. Stripe carries the conversion and reports what the buyer
+       * saw separately, as `presentment_details` — which the Connect webhook
+       * now records onto the order, because that figure is what a buyer's card
+       * statement says and it exists nowhere else.
+       *
+       * What it buys is the entire local-payment-method question. iDEAL
+       * settles in EUR and in nothing else, so a shop priced in dollars could
+       * not offer it to a Dutch buyer however many capabilities its account
+       * had — and Stripe's own note is that iDEAL is 70% of Dutch
+       * e-commerce. Bancontact, BLIK, SEPA Debit and P24 are the same story.
+       *
+       * Deliberately not set on `subscription-checkout`: Stripe supports only
+       * cards and wallets on cross-border subscriptions, so it would buy a
+       * member nothing and cost them a currency they did not expect on a
+       * charge that repeats. Nor on `@sailo/billing`, where the plan prices
+       * are advertised in USD on a page that does not localise — converting
+       * those really would contradict what the seller was quoted.
+       *
+       * Requires the platform switch at
+       * dashboard.stripe.com/settings/connect/adaptive-pricing. Without it
+       * this parameter is inert rather than an error, and every session simply
+       * presents in the shop's currency as before.
+       */
+      adaptive_pricing: { enabled: true },
+      /*
+       * Stripe Tax, on the seller's own account.
+       *
+       * The registrations that decide the rate are theirs — Sailo is never
+       * merchant of record on a Sailo sale — so this reads their Tax settings,
+       * their origin address and their thresholds, and the liability follows
+       * them. A seller who enables the mode without completing Stripe's tax
+       * setup gets an error from Stripe at session creation rather than a
+       * silently untaxed sale, which is the failure we want.
+       */
+      ...(automaticTax
+        ? {
+            automatic_tax: { enabled: true },
+            /*
+             * Automatic tax needs somewhere to put the buyer. Sailo's own cart
+             * collects a delivery address only for things that ship, so a
+             * download or an appointment would otherwise reach Stripe with no
+             * location at all and no rate could be chosen.
+             */
+            billing_address_collection: "required" as const,
+            /*
+             * And a VAT number, when the seller sells B2B.
+             *
+             * This is what makes the reverse charge possible: Stripe validates
+             * the number against VIES, and a valid one in another member state
+             * moves the liability to the buyer and zero-rates the sale. Off
+             * unless the seller asked for it — an unexplained "Tax ID"
+             * field is a checkout step that costs consumer sales.
+             */
+            ...(shop.taxIdCollection
+              ? { tax_id_collection: { enabled: true } }
+              : {}),
+          }
+        : {}),
       success_url: opts.successUrl,
       cancel_url: opts.cancelUrl,
     },

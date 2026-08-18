@@ -7,6 +7,7 @@
     ".": "./src/index.ts",
     "./emit": "./src/emit.ts",
     "./events": "./src/events.ts",
+    "./transitions": "./src/transitions.ts",
     "./post": "./src/post.ts",
     "./signature": "./src/signature.ts",
     "./server": "./src/server.ts"

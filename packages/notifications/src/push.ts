@@ -84,6 +84,57 @@ export async function pushSellerOrder(opts: {
   });
 }
 
+/**
+ * Tell every device this seller has that a bank is taking money back.
+ *
+ * The one seller notification that is genuinely urgent. An order can wait for
+ * the next time they open the app; a chargeback has a deadline measured in days
+ * and needs a document only they have, so this is the channel that interrupts.
+ *
+ * Same payload discipline as the order push: an id the app can look up, never
+ * the case itself. A push is stored by Apple and Google on the way through and
+ * is readable from a locked screen, and a dispute names a buyer and what they
+ * bought.
+ */
+export async function pushSellerDispute(opts: {
+  shop: Shop;
+  kind: "chargeback" | "inquiry" | "fraud_warning";
+  amountCents: number;
+  currency: string;
+  disputeId: string;
+  dueBy: Date | null;
+}): Promise<void> {
+  const { shop, kind, amountCents, currency, disputeId, dueBy } = opts;
+  const amount = formatMoney(amountCents, currency);
+
+  const days =
+    dueBy === null
+      ? null
+      : Math.max(0, Math.floor((dueBy.getTime() - Date.now()) / 86_400_000));
+  const clock =
+    days === null ? "" : days === 0 ? " — due today" : ` — ${days} days to respond`;
+
+  const title =
+    kind === "fraud_warning"
+      ? `Fraud warning · ${amount}`
+      : kind === "inquiry"
+        ? `Bank query · ${amount}`
+        : `Chargeback · ${amount}`;
+
+  const body =
+    kind === "fraud_warning"
+      ? "The card issuer reported this payment as fraud. Refunding now avoids the chargeback and its fee."
+      : kind === "inquiry"
+        ? `A buyer's bank is asking about this payment. No money has moved yet${clock}.`
+        : `${amount} has been taken from your balance${clock}.`;
+
+  await pushToUser(shop.userId, {
+    title,
+    body,
+    data: { kind: kind === "fraud_warning" ? "fraud_warning" : "dispute", disputeId },
+  });
+}
+
 type PushMessage = {
   title: string;
   body: string;

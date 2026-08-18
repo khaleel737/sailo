@@ -144,6 +144,36 @@ export const orders = pgTable(
     taxName: text("tax_name"),
     /** True when `taxCents` is contained in the total rather than added to it. */
     taxInclusive: boolean("tax_inclusive").default(false).notNull(),
+
+    /*
+     * What Stripe Tax decided, for the orders where Stripe decided it.
+     *
+     * All three are null or false under `taxMode = "manual"`, which is the
+     * shape every existing order already has — the flat rate needs nothing
+     * recorded beyond `taxRateBp` above, because there was only ever one rate.
+     *
+     * Under Stripe Tax there is no shop rate to snapshot: the rate came from
+     * the buyer's country and the seller's registrations, and `taxRateBp` is
+     * back-computed from the amounts so a reader that only knows about the old
+     * world still gets a true percentage. These carry the parts of the
+     * decision that a percentage cannot express.
+     */
+    /** The VAT/GST number the buyer gave, as Stripe validated it. */
+    buyerTaxId: text("buyer_tax_id"),
+    /** Stripe's own type string — `eu_vat`, `gb_vat`, `au_abn`. */
+    buyerTaxIdType: text("buyer_tax_id_type"),
+    /**
+     * The liability moved to the buyer, so this sale carries no tax.
+     *
+     * Stored rather than inferred from `taxCents = 0`, because zero tax has
+     * three different causes — a shop that charges none, a zero-rated product,
+     * and this — and only this one obliges the invoice to print the buyer's
+     * VAT number beside a notice that the buyer accounts for the tax. A reader
+     * that cannot tell them apart puts that notice on invoices that must not
+     * carry it, or leaves it off the ones that must.
+     */
+    taxReverseCharge: boolean("tax_reverse_charge").default(false).notNull(),
+
     totalCents: integer("total_cents").default(0).notNull(),
 
     // Delivery — id for reporting, snapshot so the record survives rate edits
@@ -234,6 +264,29 @@ export const orders = pgTable(
     /** The connected account the charge landed in, for reconciliation. */
     stripeAccountId: text("stripe_account_id"),
 
+    /*
+     * What the buyer's card statement will say, when that is not what this
+     * order says.
+     *
+     * Adaptive Pricing lets a Dutch buyer pay a EUR amount for a shop that
+     * prices in USD — which is the only way they are ever offered iDEAL, since
+     * it settles in EUR and nothing else. Stripe converts, and every figure
+     * above stays in the shop's own currency: `currency` and `totalCents` are
+     * what the seller is paid and what the invoice states, unchanged.
+     *
+     * These two are the other half of that sentence, and they exist for one
+     * question nobody could answer without them — "my statement says €41.23,
+     * why does my invoice say $45?". Stripe reports it once, on the session,
+     * and it is on no other object we keep.
+     *
+     * Null is the ordinary case and means what it says: the buyer paid in the
+     * shop's currency, so there is no second amount to record. Never read as a
+     * money figure in its own right — it is a note about a conversion, not a
+     * line in the books.
+     */
+    presentmentCurrency: text("presentment_currency"),
+    presentmentAmountCents: integer("presentment_amount_cents"),
+
     couponId: uuid("coupon_id").references(() => coupons.id, {
       onDelete: "set null",
     }),
@@ -266,6 +319,38 @@ export const orders = pgTable(
      * whole point of the record is that it isn't one.
      */
     termsAcceptedAt: timestamp("terms_accepted_at"),
+
+    /*
+     * What the buyer's browser was, recorded so a chargeback can be answered.
+     *
+     * These three columns are the highest-value thing in this table and they do
+     * nothing for the order that carries them. Every fraud rebuttal rests on
+     * `buyerIp`; Visa's Compelling Evidence 3.0 requires two of the three, plus
+     * two matching prior orders between 120 and 365 days old. Which means the
+     * value is realised four months after capture and cannot be backfilled — the
+     * buyer's connection existed for the length of one request. A platform that
+     * starts recording these today has no fraud defence until December.
+     *
+     * Taken from the same `callerIp()` the order rate limiter already called, so
+     * the capture cost one line. Explicitly *not* identity and never a gate:
+     * every value is a header the client can set, and behind a proxy the honest
+     * one is whatever that proxy wrote. As evidence that is fine — an issuer is
+     * being told what we observed, not what we verified — and as an access
+     * control it would be worthless. See `packages/rate-limit/src/client-ip.ts`.
+     */
+    buyerIp: text("buyer_ip"),
+    buyerUserAgent: text("buyer_user_agent"),
+    /**
+     * A stable per-browser identifier for CE3.0's `customer_device_fingerprint`,
+     * which Visa requires to be at least 20 characters.
+     *
+     * Nullable and expected to stay null for most orders: Sailo redirects to
+     * Stripe Checkout and runs no fingerprinting script of its own, so this is
+     * filled only where a client already had a durable id to offer. Present as a
+     * column because CE3.0 counts it as one of the two matching data points and
+     * an order that carries it plus an IP address qualifies on its own.
+     */
+    buyerDeviceFingerprint: text("buyer_device_fingerprint"),
 
     // How they chose to pay
     paymentMethod: text("payment_method").default("whatsapp").notNull(),

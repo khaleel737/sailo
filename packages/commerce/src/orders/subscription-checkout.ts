@@ -70,6 +70,19 @@ export async function membershipPrice(
         currency: shop.currency.toLowerCase(),
         unit_amount: toStripeAmount(product.priceCents, shop.currency),
         recurring: { interval: intervalOf(product) },
+        /*
+         * What the amount means, for the sessions that hand tax to Stripe.
+         *
+         * A Price is immutable and it is what every renewal is raised against,
+         * so this is the only chance to say it — a Price minted without it
+         * falls back to the account's default `tax_behavior`, which is
+         * `unspecified` on a fresh account and makes `automatic_tax` refuse the
+         * invoice outright. Stamped on every Price rather than only when the
+         * mode is on, because the mode can be switched on tomorrow and
+         * `priceIsStale` would not re-mint for it: the amount and interval are
+         * unchanged, so the old Price would be reused for ever.
+         */
+        tax_behavior: shop.taxInclusive ? "inclusive" : "exclusive",
         product_data: {
           name: product.title,
           ...(description ? { description: description.slice(0, 300) } : {}),
@@ -173,9 +186,58 @@ export async function createSubscriptionSession(opts: {
          */
         ...(feePercent > 0 ? { application_fee_percent: feePercent } : {}),
       },
-      // The shop picked its currency and the order records it; letting Stripe
-      // convert would put our books and the seller's payout in two currencies.
+      /*
+       * Off here, and on in `card-checkout` — the difference is deliberate.
+       *
+       * The old reason given on both ("our books and the payout end up in two
+       * currencies") was not true of either: Stripe keeps `amount_total` and
+       * `currency` in the shop's own, whatever the buyer sees. What is true is
+       * that a membership gains nothing from it. Stripe supports only cards,
+       * Link, Apple Pay and Google Pay on cross-border subscriptions, so none
+       * of the local rails a one-off checkout unlocks — iDEAL, Bancontact,
+       * SEPA — reach a member anyway.
+       *
+       * That leaves only the cost: a recurring charge presented in a currency
+       * the member did not expect, re-converted at whatever the rate is on the
+       * fourteenth renewal, against a price the storefront still quotes in the
+       * shop's currency. Not a trade worth making for no payment methods.
+       */
       adaptive_pricing: { enabled: false },
+      /*
+       * Stripe Tax, on every renewal and not only on the signup.
+       *
+       * Enabling it on the session is what makes Stripe carry it onto the
+       * subscription, so invoice number fourteen is taxed at whatever the rate
+       * is that month rather than at the rate on the day they joined. That is
+       * the half a flat rate could never do: VAT rates move, and a member
+       * billed for three years at a rate that changed in year one is a
+       * liability the seller finds out about at an audit.
+       *
+       * The Price behind this carries its own `tax_behavior` — see
+       * `membershipPrice`, which stamps it from the same shop setting the
+       * one-off checkout uses.
+       */
+      ...(shop.taxEnabled && shop.taxMode === "stripe"
+        ? {
+            automatic_tax: { enabled: true },
+            billing_address_collection: "required" as const,
+            ...(shop.taxIdCollection
+              ? { tax_id_collection: { enabled: true } }
+              : {}),
+            /*
+             * No `customer_update` here, deliberately.
+             *
+             * It is the parameter that carries the collected address onto the
+             * Customer so next month's invoice can still be taxed — but Stripe
+             * only accepts it when the session names an existing `customer`,
+             * and this session passes `customer_email` and lets Stripe create
+             * one. A Customer that Stripe creates from a Checkout Session keeps
+             * the billing address it collected, so the renewal has what it
+             * needs; sending the parameter anyway is an error at session
+             * creation, which would take the whole membership checkout down.
+             */
+          }
+        : {}),
       success_url: opts.successUrl,
       cancel_url: opts.cancelUrl,
     },

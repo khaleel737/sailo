@@ -14,9 +14,11 @@ import { getDb } from "@sailo/db";
 import { shops, type Shop } from "@sailo/db/schema";
 import {
   accountFields,
+  accountRails,
   connectOnboardingLink,
   publicShopUrl as shopUrlUnder,
   stripe,
+  type SellerRail,
 } from "@sailo/payments";
 import { appOrigin } from "@sailo/core/origin";
 import type Stripe from "stripe";
@@ -99,6 +101,35 @@ export async function syncAccount(shop: Shop) {
     .where(eq(shops.id, shop.id));
 
   return account;
+}
+
+/**
+ * What this shop's buyers can actually pay with, live from Stripe.
+ *
+ * Read rather than stored, and read here rather than folded into
+ * `syncAccount`, because the two answer different questions on different
+ * clocks: `syncAccount` mirrors the handful of columns the storefront needs on
+ * every request, while this is one screen's worth of detail that would be
+ * stale the moment a seller finished a verification step on Stripe's side.
+ *
+ * The currency is the shop's own, which is what every Checkout Session is
+ * created in — `createCheckoutSession` takes it from the order row and
+ * switches adaptive pricing off, so it really is the presentment currency and
+ * really does decide which rails a buyer is offered.
+ *
+ * Never throws. This feeds one panel on a settings page; Stripe being
+ * unreachable should cost the seller that panel, not the screen that also
+ * carries their payouts and their disputes.
+ */
+export async function shopRails(shop: Shop): Promise<SellerRail[]> {
+  if (!shop.stripeAccountId) return [];
+
+  try {
+    return await accountRails(shop.stripeAccountId, shop.currency);
+  } catch (error) {
+    console.warn("[sailo] could not read connected account capabilities", error);
+    return [];
+  }
 }
 
 /** A link into Stripe's own dashboard for the connected account. */

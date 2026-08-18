@@ -60,8 +60,20 @@ async function underDailyCeiling(shopId: string): Promise<boolean> {
   return verdict.allowed;
 }
 
-/** `shop.contactEmail` when the seller set one, else the account's own email. */
+/**
+ * Where seller alerts go: `notificationEmail`, then `contactEmail`, then the
+ * account's own address.
+ *
+ * Three steps rather than two since the settings screen grew a dedicated
+ * notification address. The two are genuinely different questions — one is
+ * where buyers write, the other is where alerts land — and a seller who routes
+ * alerts to `ops@` while customers still write to `hello@` has said which is
+ * which. Null here still means "fall back", never "send nothing"; turning an
+ * alert off is what `notificationPrefs` is for, and reading an empty column as
+ * silence would have muted every shop on the day it shipped.
+ */
 async function sellerAddress(shop: Shop): Promise<string | null> {
+  if (shop.notificationEmail) return shop.notificationEmail;
   if (shop.contactEmail) return shop.contactEmail;
   const owner = await getDb().query.user.findFirst({
     where: eq(user.id, shop.userId),

@@ -25,6 +25,9 @@ export const notificationPrefsSchema = z.strictObject({
   orderPlaced: z.boolean().optional(),
   bookingRequested: z.boolean().optional(),
   orderNeedsAction: z.boolean().optional(),
+  membershipStarted: z.boolean().optional(),
+  membershipCancelled: z.boolean().optional(),
+  membershipPaymentFailed: z.boolean().optional(),
 });
 
 /** The event types a seller can be emailed about today. */
@@ -39,6 +42,24 @@ export const NOTIFICATION_EVENTS = [
   "orderPlaced",
   "bookingRequested",
   "orderNeedsAction",
+  /*
+   * The membership three, which had no switches because they had no mail.
+   *
+   * Sailo has run recurring billing for as long as it has run orders and never
+   * told a seller anything about it: a member could join, cancel, or fail a
+   * renewal and the only trace was a row changing colour in a list nobody has
+   * open. `membershipPaymentFailed` is the one that cost money — Stripe retries
+   * a failed card for a few days and then cancels, so a seller who found out
+   * afterwards had lost the member without a chance to send the message that
+   * would have kept them.
+   *
+   * On by default like the rest, because absence of a key means on and these
+   * ship to shops that never asked for them. A shop with no memberships gets
+   * nothing regardless — there is no event to fire.
+   */
+  "membershipStarted",
+  "membershipCancelled",
+  "membershipPaymentFailed",
 ] as const satisfies readonly NotificationEvent[];
 
 /**

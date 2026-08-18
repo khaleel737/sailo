@@ -10,6 +10,10 @@ import {
   undoCheckIn,
   type CheckInState,
 } from "./tickets";
+import {
+  checkInMemberByCode,
+  type MemberCheckInState,
+} from "../memberships/passes";
 
 /**
  * The door, from either side of the credential.
@@ -82,6 +86,71 @@ export async function admitByCode(
 
   await announce(door, result.status === "checked_in", hooks);
   return result;
+}
+
+/**
+ * The same door, for somebody holding a membership instead of a ticket.
+ *
+ * A separate entry point rather than a branch inside `admitByCode`, because
+ * the two answers are genuinely different shapes and flattening them would
+ * cost the caller the thing it most needs to say: a ticket scanned twice is a
+ * refusal and a member scanned twice is not. `admitAnyCode` below is where
+ * they meet, for the one caller that does not know in advance which it has.
+ */
+export async function admitMemberByCode(
+  door: Door,
+  code: string,
+  hooks: DoorHooks = {},
+): Promise<MemberCheckInState> {
+  const result = await checkInMemberByCode(door.shopId, code, {
+    productId: door.productId,
+    by: door.by,
+  });
+
+  await announce(
+    door,
+    result.status === "checked_in" || result.status === "already_in",
+    hooks,
+  );
+  return result;
+}
+
+/**
+ * One scan, whichever credential it turns out to be.
+ *
+ * This is what the scanner actually calls. A doorperson holds one phone and
+ * points it at whatever a person presents; asking them to first decide
+ * *which kind of thing* they are about to scan is asking them to do the
+ * lookup we are about to do anyway.
+ *
+ * Tickets are tried first and member passes only when the ticket lookup finds
+ * nothing at all. That ordering is free of ambiguity rather than merely
+ * lucky: the two codes are different lengths after folding — ten against
+ * twelve — so a string cannot be a candidate for both, and `not_found` from
+ * the first is the only case that reaches the second. Any other ticket
+ * answer (`already_used`, `revoked`, `wrong_event`) means a real ticket was
+ * found and must be reported as itself, never retried as a membership.
+ */
+export type DoorVerdict =
+  | { kind: "ticket"; result: CheckInState }
+  | { kind: "member"; result: MemberCheckInState };
+
+export async function admitAnyCode(
+  door: Door,
+  code: string,
+  hooks: DoorHooks = {},
+): Promise<DoorVerdict> {
+  const ticket = await admitByCode(door, code, hooks);
+  if (ticket.status !== "not_found") return { kind: "ticket", result: ticket };
+
+  const member = await admitMemberByCode(door, code, hooks);
+  /*
+   * Neither matched. The ticket answer is the one to show: it is the
+   * credential the overwhelming majority of doors are checking, and
+   * "no such ticket" is a sentence a volunteer already understands.
+   */
+  if (member.status === "not_found") return { kind: "ticket", result: ticket };
+  return { kind: "member", result: member };
 }
 
 /** Admitting from the guest list, for somebody whose phone is dead. */

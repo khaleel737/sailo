@@ -7,9 +7,12 @@
     ".": "./src/index.ts",
     "./orders": "./src/orders/index.ts",
     "./memberships": "./src/memberships/renewals.ts",
+    "./memberships/fees": "./src/memberships/fees.ts",
+    "./memberships/notify-seller": "./src/memberships/notify-seller.ts",
     "./ticketing": "./src/ticketing/reminders.ts",
     "./webhooks": "./src/webhooks/deliver.ts",
-    "./broadcasts": "./src/broadcasts/pickers.ts"
+    "./broadcasts": "./src/broadcasts/pickers.ts",
+    "./disputes": "./src/disputes/notify-seller.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

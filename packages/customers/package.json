@@ -7,6 +7,7 @@
     ".": "./src/index.ts",
     "./consent": "./src/consent.ts",
     "./shop-consent": "./src/shop-consent.ts",
+    "./subscribe-prompt": "./src/subscribe-prompt.ts",
     "./pixels": "./src/shop-pixels.ts",
     "./favorites": "./src/favorites.ts",
     "./roster": "./src/roster.ts",

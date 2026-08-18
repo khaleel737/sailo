@@ -123,6 +123,27 @@ export const subscriptions = pgTable(
     interval: text("interval").default("month").notNull(),
 
     /**
+     * Sailo's cut of this subscription's invoices, in basis points -- our
+     * mirror of Stripe's `application_fee_percent`.
+     *
+     * Stored because it is the only way to notice the fee has gone stale
+     * without asking Stripe about every member on every sweep. It was set once
+     * at checkout from whatever plan the seller was on that day and then never
+     * touched again, so a seller who upgraded to Business went on paying 3% on
+     * every membership they had already sold while the pricing table promised
+     * them 1%, and one who downgraded kept the 1% for ever. Neither shows up
+     * anywhere a person looks: the fee is deducted inside Stripe's payout.
+     *
+     * Basis points rather than Stripe's percentage, matching `Plan.feeBp` and
+     * `platformFeeBp`, so the comparison that drives the sweep is between two
+     * integers. Converted at the Stripe boundary and nowhere else.
+     *
+     * Null means we have never observed it -- every row written before this
+     * column existed, which is exactly the backlog the first sweep corrects.
+     */
+    applicationFeeBp: integer("application_fee_bp"),
+
+    /**
      * The period a renewal order has already been raised for.
      *
      * The claim that stops a cron tick raising a second one. Compared against
@@ -131,6 +152,23 @@ export const subscriptions = pgTable(
      * and a member is never asked twice for the same month.
      */
     renewalOrderedFor: timestamp("renewal_ordered_for"),
+
+    /**
+     * What the member shows at the door.
+     *
+     * Null until somebody needs one — `ensureMemberPass` mints on first use
+     * rather than at signup, because the majority of memberships sold here are
+     * a file or a Discord invite and will never be scanned, and a credential
+     * issued to somebody who never uses it is a credential to lose.
+     *
+     * Unlike a ticket this never burns. A ticket is one admission and moves
+     * `valid → used`; a member turns up ninety times a year, so the code is
+     * durable and every scan re-asks `membershipAccess` whether the
+     * subscription is still open. That is the whole difference between the two
+     * credentials, and it is why this is a column here rather than a row in
+     * `tickets`.
+     */
+    passCode: text("pass_code"),
 
     startedAt: timestamp("started_at").defaultNow().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -154,6 +192,15 @@ export const subscriptions = pgTable(
      * and that is exactly what happened.
      */
     uniqueIndex("subscriptions_stripe_key").on(t.stripeSubscriptionId),
+    /*
+     * Global rather than per-shop, and plain for the same reason as above.
+     *
+     * The door resolves a scanned code *before* it knows whose membership it
+     * is — that is what scanning means — so a code that means one thing in one
+     * shop and another somewhere else is a code that admits the wrong person
+     * the day a seller opens a second gym.
+     */
+    uniqueIndex("subscriptions_pass_code_key").on(t.passCode),
     // The members list: this shop, these statuses, newest first.
     index("subscriptions_shop_idx").on(t.shopId, t.status, t.createdAt),
     // "Is this person a member" — asked on every gated download.
@@ -165,5 +212,58 @@ export const subscriptions = pgTable(
      */
     index("subscriptions_due_idx").on(t.billingMode, t.status, t.currentPeriodEnd),
     index("subscriptions_product_idx").on(t.productId),
+  ],
+);
+
+/**
+ * One member, admitted once. Append-only.
+ *
+ * Deliberately not a counter on `subscriptions`. A counter answers "how many
+ * times" and nothing else, and every question a gym actually asks needs a row:
+ * who came this week, has this member stopped turning up, was that scan mine
+ * or the evening volunteer's. It is also what makes a disputed cancellation
+ * arguable — a member who says they never used the place has a row per visit
+ * saying otherwise.
+ *
+ * Not `tickets`, either. A ticket is one admission and burns itself on use;
+ * this is the log of a credential that never burns. Sharing the table would
+ * mean `status` meaning two different things depending on which kind of row
+ * you were looking at.
+ */
+export const memberCheckins = pgTable(
+  "member_checkins",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+    /**
+     * Cascade, unlike an order. Attendance documents no money and carries no
+     * retention duty, and a visit whose subscription is gone is a row nobody
+     * can interpret.
+     */
+    subscriptionId: uuid("subscription_id")
+      .notNull()
+      .references(() => subscriptions.id, { onDelete: "cascade" }),
+    /**
+     * Which membership admitted them, snapshotted at scan time. `set null`
+     * rather than cascade: deleting the product has not un-happened anybody's
+     * visit, and the history is what this table is for.
+     */
+    productId: uuid("product_id").references(() => products.id, {
+      onDelete: "set null",
+    }),
+    /** The door pass that scanned, as `tickets.checkedInBy`. Null is the owner. */
+    checkedInBy: text("checked_in_by"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    /*
+     * Leads with the subscription because the hottest read is the double-scan
+     * guard — "was this member already admitted in the last few minutes" —
+     * which runs on every scan, before anybody is let in.
+     */
+    index("member_checkins_subscription_idx").on(t.subscriptionId, t.createdAt),
+    index("member_checkins_shop_idx").on(t.shopId, t.createdAt),
   ],
 );

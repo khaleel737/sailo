@@ -1,11 +1,13 @@
 import { minorPerMajor } from "../money/currency";
 import type {
   Client,
+  Dispute,
   Order,
   OrderItem,
   Product,
   ProductVariant,
   Shop,
+  Subscription,
 } from "@sailo/db/schema";
 
 /**
@@ -383,5 +385,129 @@ export function shopResource(shop: Shop) {
     currency: shop.currency,
     timeZone: shop.timeZone,
     createdAt: iso(shop.createdAt),
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Subscription                                                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A membership, as every `subscription.*` event describes it.
+ *
+ * The seven subscription events all carry this one shape rather than a payload
+ * shaped per event, for the reason `orderResource` gives: a consumer that wired
+ * `subscription.created` and later adds `subscription.cancelled` should not
+ * have to remap anything, because what differs between them is which one fired
+ * and not what a membership is.
+ *
+ * **No Stripe identifiers.** `stripeSubscriptionId`, `stripeCustomerId` and
+ * `stripeAccountId` all name objects in an account the consumer has no right to
+ * — the *seller's* — and shipping them would let anything holding a webhook
+ * payload address that account directly. The membership's own id is the handle,
+ * and `GET /api/v1/…` speaks the same one.
+ *
+ * `billingMode` is here because it changes what a consumer may conclude. A
+ * `manual` membership is one Sailo raises renewal orders for and a human
+ * settles at the door; nothing will ever arrive from Stripe about it, so an
+ * integration waiting for a card renewal on one would wait forever.
+ */
+export function subscriptionResource(sub: Subscription) {
+  const currency = sub.currency;
+
+  return {
+    id: sub.id,
+    object: "subscription" as const,
+    status: sub.status,
+
+    productId: sub.productId,
+    clientId: sub.clientId,
+
+    price: money(sub.priceCents, currency),
+    currency,
+    interval: sub.interval,
+
+    /** `stripe` or `manual` — see above; they renew by different machinery. */
+    billingMode: sub.billingMode,
+    /** The rail a manual member pays on. Null for a card subscription. */
+    paymentMethod: sub.paymentMethod,
+
+    currentPeriodEnd: iso(sub.currentPeriodEnd),
+    /**
+     * The member asked to stop but has paid through `currentPeriodEnd`.
+     *
+     * The distinction `subscription.cancelled` and `subscription.ended` are
+     * built on: a consumer that revokes access the moment it sees a
+     * cancellation takes away a month somebody already bought.
+     */
+    cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
+    canceledAt: iso(sub.canceledAt),
+    trialEndsAt: iso(sub.trialEndsAt),
+
+    startedAt: iso(sub.startedAt),
+    createdAt: iso(sub.createdAt),
+    updatedAt: iso(sub.updatedAt),
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Dispute                                                                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A chargeback, as `dispute.opened` and `dispute.closed` describe it.
+ *
+ * Emitted only for `scope = "connected"` — a buyer charging back a seller's
+ * sale. A platform dispute is a seller charging back their own Sailo
+ * subscription, which is Sailo's money and Sailo's problem, and it has no
+ * business arriving in that seller's Zapier account as though a customer had
+ * done something.
+ *
+ * **`evidenceSnapshot` is deliberately absent.** It is the complete bundle
+ * assembled to answer the case — buyer address, delivery proof, the seller's
+ * own account of events — and it exists to be sent to Stripe, not syndicated to
+ * whatever an integration points at. `completenessBp` says how strong the
+ * response was without shipping the response itself.
+ *
+ * Stripe's identifiers are absent for the same reason they are absent from a
+ * subscription: they address the seller's account.
+ */
+export function disputeResource(dispute: Dispute) {
+  const currency = dispute.currency;
+
+  return {
+    id: dispute.id,
+    object: "dispute" as const,
+    orderId: dispute.orderId,
+
+    status: dispute.status,
+    /** `inquiry` | `chargeback` | `compliance` — an inquiry costs nothing yet. */
+    caseType: dispute.caseType,
+    /** Stripe's reason string: `fraudulent`, `product_not_received`… */
+    reason: dispute.reason,
+    /** The card network's own code — `10.4`, `13.1`. Not a Stripe id. */
+    networkReasonCode: dispute.networkReasonCode,
+    network: dispute.network,
+
+    amount: money(dispute.amountCents, currency),
+    /** Stripe's dispute fee, which is why a $42 chargeback costs $57. */
+    fee: money(dispute.feeCents, currency),
+    /** Amount plus fee — what actually left the seller's balance. */
+    deducted: money(dispute.deductedCents, currency),
+    currency,
+
+    /** The response deadline. Null on a case that no longer needs one. */
+    dueBy: iso(dispute.dueBy),
+    evidenceSubmittedAt: iso(dispute.evidenceSubmittedAt),
+    submissionCount: dispute.submissionCount,
+    /** How complete the submission was over its required fields, in bp. */
+    completenessBp: dispute.completenessBp,
+
+    fundsWithdrawnAt: iso(dispute.fundsWithdrawnAt),
+    fundsReinstatedAt: iso(dispute.fundsReinstatedAt),
+
+    openedAt: iso(dispute.stripeCreatedAt),
+    createdAt: iso(dispute.createdAt),
+    updatedAt: iso(dispute.updatedAt),
   };
 }

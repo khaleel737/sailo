@@ -10,7 +10,12 @@ import type {
   tickets,
 } from "./orders";
 import type { subscriptions } from "./memberships";
+import type { disputes } from "./disputes";
 import type { broadcasts } from "./audience";
+import type {
+  newsletterSubscribers,
+  newsletters,
+} from "./lifecycle";
 import type { staffActions, visitDaily, visits } from "./analytics";
 import type {
   creatorReferrals,
@@ -37,6 +42,9 @@ export type Ticket = typeof tickets.$inferSelect;
 export type DoorPass = typeof doorPasses.$inferSelect;
 export type Subscription = typeof subscriptions.$inferSelect;
 export type Broadcast = typeof broadcasts.$inferSelect;
+/** Sailo's own list and its campaigns — the platform side of `Broadcast`. */
+export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
+export type Newsletter = typeof newsletters.$inferSelect;
 export type Visit = typeof visits.$inferSelect;
 export type VisitDaily = typeof visitDaily.$inferSelect;
 export type PaymentMethod = typeof paymentMethods.$inferSelect;
@@ -45,6 +53,15 @@ export type Client = typeof clients.$inferSelect;
 export type Coupon = typeof coupons.$inferSelect;
 export type Affiliate = typeof affiliates.$inferSelect;
 export type Invoice = typeof invoices.$inferSelect;
+/*
+ * A whole dispute row, unlike the integrations tables above.
+ *
+ * Three readers hold one in full and none of them can pick columns: the seller
+ * notice renders the amount, the deadline and the outcome together, the webhook
+ * resource maps most of the table, and /hq shows the case. A narrower type
+ * would be re-widened by the second of them.
+ */
+export type Dispute = typeof disputes.$inferSelect;
 export type StaffActionRow = typeof staffActions.$inferSelect;
 export type SupportTicket = typeof supportTickets.$inferSelect;
 export type User = typeof user.$inferSelect;

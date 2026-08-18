@@ -190,6 +190,7 @@ describe("toChargeableTotals", () => {
     taxCents: 0,
     totalCents: 0,
     commissionCents: 0,
+    taxDeferred: false,
     ...over,
   });
 
@@ -250,6 +251,13 @@ describe("toChargeableTotals", () => {
     );
     for (const [name, value] of Object.entries(c)) {
       if (name === "commissionCents") continue; // settled separately, in USD
+      /*
+       * Amounts only. `taxDeferred` is a boolean saying Stripe Tax will work
+       * the figure out, and there is nothing about it to round to a settlement
+       * step — the `typeof` is what tells the compiler that too, so the loop
+       * keeps covering every *new* amount without being told their names.
+       */
+      if (typeof value !== "number") continue;
       expect(value % 10, name).toBe(0);
     }
   });

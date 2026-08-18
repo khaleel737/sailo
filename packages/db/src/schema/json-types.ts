@@ -34,6 +34,12 @@ export type NotificationPrefs = Partial<{
   bookingRequested: boolean;
   /** A buyer reported a manual payment or uploaded proof. */
   orderNeedsAction: boolean;
+  /** Somebody started a recurring membership. */
+  membershipStarted: boolean;
+  /** A member asked to stop, or their membership ran out. */
+  membershipCancelled: boolean;
+  /** A renewal payment failed and the membership is now past due. */
+  membershipPaymentFailed: boolean;
 }>;
 
 /** One axis of choice on a product: "Size" with "Small", "Medium", "Large". */

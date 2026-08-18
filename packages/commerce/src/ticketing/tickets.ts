@@ -54,15 +54,32 @@ export function normalizeTicketCode(raw: string): string {
     }
   }
 
-  const cleaned = text
+  const cleaned = foldScanCode(text);
+  return cleaned.length === 10
+    ? `${cleaned.slice(0, 5)}-${cleaned.slice(5)}`
+    : cleaned;
+}
+
+/**
+ * The reading half of `normalizeTicketCode`, without the grouping.
+ *
+ * Extracted because member passes are scanned at the same doors, by the same
+ * people, off the same smudged phone screens — and the four lookalike folds
+ * are the rule that makes a code readable at all. Copied into a second module
+ * it would be a rule that is true in one of them: somebody types `O` on a
+ * member pass, it is not folded to `0`, and a valid credential is refused at a
+ * gym door with no way for anyone present to work out why.
+ *
+ * Grouping stays with each caller because the two codes are deliberately
+ * different lengths — see `newMemberPassCode`.
+ */
+export function foldScanCode(raw: string): string {
+  return raw
     .toUpperCase()
     .replace(/[^0-9A-Z]/g, "")
     .replace(/I|L/g, "1")
     .replace(/O/g, "0")
     .replace(/U/g, "V");
-  return cleaned.length === 10
-    ? `${cleaned.slice(0, 5)}-${cleaned.slice(5)}`
-    : cleaned;
 }
 
 /**

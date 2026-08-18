@@ -185,6 +185,79 @@ export const shops = pgTable(
     invoiceNextNumber: integer("invoice_next_number").default(1).notNull(),
     invoiceNotes: text("invoice_notes"),
 
+    /*
+     * Who the invoice says the seller is.
+     *
+     * Separate from the storefront identity above, and separate on purpose.
+     * `name` is the trading name a buyer recognises ("Ada's Ceramics") and
+     * `location` is the caption under it ("Lisbon, PT"); neither is what a tax
+     * authority means by the issuer of an invoice, which is a registered legal
+     * entity at a full postal address with a company number.
+     *
+     * Every column here is nullable and stays nullable. Most sellers on this
+     * platform are sole traders under a registration threshold who never need
+     * an entity name distinct from their own, and demanding a registered
+     * address before someone can sell a $9 preset would be asking a question
+     * the law has not asked them yet. `invoiceIdentity` in
+     * `packages/core/src/shop/invoice-identity.ts` falls back to the
+     * storefront fields when these are unset, so an invoice always has a
+     * header and an opted-in seller gets a compliant one.
+     */
+    invoiceLegalName: text("invoice_legal_name"),
+    invoiceAddressLine1: text("invoice_address_line1"),
+    invoiceAddressLine2: text("invoice_address_line2"),
+    invoiceCity: text("invoice_city"),
+    invoiceRegion: text("invoice_region"),
+    invoicePostalCode: text("invoice_postal_code"),
+    /** ISO 3166-1 alpha-2. Also what decides the seller's own tax country. */
+    invoiceCountry: text("invoice_country"),
+    /** Companies House number, HRB, SIRET, EIN — distinct from `taxId`. */
+    invoiceRegistrationNumber: text("invoice_registration_number"),
+
+    /*
+     * Where seller alerts go, when it is not the contact address.
+     *
+     * An override rather than a kill switch, which is the one place this
+     * screen deliberately parts company with the tool it was modelled on.
+     * There, an empty field means "send me nothing" — which cannot be the
+     * meaning here, because the column ships empty for every shop that already
+     * exists and would silence all of their order alerts on deploy. Null means
+     * what it meant before the column existed: fall back to `contactEmail`,
+     * then to the account's own address. `notificationPrefs` is how an alert
+     * gets turned off.
+     */
+    notificationEmail: text("notification_email"),
+
+    /*
+     * Who works out the tax: Sailo's flat rate, or Stripe Tax.
+     *
+     * `manual` — the rate below, applied to every buyer wherever they are.
+     * Correct for the seller who trades in one country and is registered
+     * there, which is most of them, and it is the default so nothing changes
+     * for anybody who never opens this setting.
+     *
+     * `stripe` — Stripe Tax computes it at checkout from the buyer's location,
+     * the seller's registrations and the product type. `taxRateBp` is then not
+     * consulted at all, and the cart shows tax as "calculated at checkout"
+     * because it genuinely is not known until Stripe has an address.
+     *
+     * It runs on the *seller's* connected account, never the platform's. The
+     * seller is merchant of record on every Sailo sale — Sailo never touches
+     * the money — so the registrations that decide the rate have to be theirs,
+     * and the liability follows them.
+     */
+    taxMode: text("tax_mode").default("manual").notNull(),
+    /**
+     * Ask a buyer for a VAT/GST number at checkout.
+     *
+     * Only meaningful under `taxMode = "stripe"`: collecting a VAT number
+     * changes nothing unless something is going to validate it and apply the
+     * reverse charge, and the flat rate does neither. The settings card hides
+     * it in manual mode rather than letting a seller switch on a field that
+     * would do nothing.
+     */
+    taxIdCollection: boolean("tax_id_collection").default(false).notNull(),
+
     // Tax. Off by default: most link-in-bio sellers are under a registration
     // threshold, and charging tax they don't owe is worse than not charging it.
     taxEnabled: boolean("tax_enabled").default(false).notNull(),
@@ -299,6 +372,51 @@ export const shops = pgTable(
      */
     suspendedAt: timestamp("suspended_at"),
     suspendedReason: text("suspended_reason"),
+
+    /*
+     * Payouts held, which is the reversible move that `suspendedAt` is not.
+     *
+     * Its own column for the same reason `marketingPausedAt` has one: closing a
+     * storefront is a staff decision that takes a whole business off the air,
+     * and this is narrow, usually automatic, and undone by one API call. A shop
+     * on a payout hold keeps selling, keeps taking card payments and keeps
+     * accruing a balance — the money simply stays in its own Stripe account,
+     * where a chargeback can still be debited from it, instead of leaving on the
+     * next scheduled run.
+     *
+     * That ordering is the whole design. Suspending the storefront stops future
+     * orders, which is not where the exposure is: the exposure is the balance
+     * about to be paid out. Sailo is the losses collector for these accounts
+     * (`payments-compliance.md` §3.2), so money that leaves a seller's balance
+     * before their disputes resolve is money Sailo covers and then has to
+     * recover under Terms clause 5.
+     *
+     * Implemented as `settings.payouts.schedule.interval = "manual"` on the
+     * connected account, verified against the API in test mode: `payouts_enabled`
+     * stays true — the capability is intact — and nothing is scheduled. One
+     * update back to `daily` reverses it and the seller may never have noticed.
+     */
+    payoutsPausedAt: timestamp("payouts_paused_at"),
+    /** The figures that tripped it, so the next person can judge whether it was right. */
+    payoutsPausedReason: text("payouts_paused_reason"),
+    /**
+     * The payout interval this shop had before the hold, so releasing it restores
+     * what the seller chose rather than assuming daily.
+     */
+    payoutIntervalBeforeHold: text("payout_interval_before_hold"),
+
+    /**
+     * When staff last looked at this shop's disputes and said it was fine.
+     *
+     * Without it, a cleared shop is re-flagged by the next run of the same
+     * arithmetic that flagged it — which is how an automated check teaches
+     * everybody to ignore it. The clearance is overridden by new evidence rather
+     * than by time: two further chargebacks reopen it. See
+     * `CLEARANCE_GRACE_CHARGEBACKS`.
+     */
+    disputeClearedAt: timestamp("dispute_cleared_at"),
+    /** The chargeback count at that moment, which is what "new" is measured from. */
+    disputeChargebacksAtClearance: integer("dispute_chargebacks_at_clearance"),
     /**
      * Set by self-serve account deletion. The row itself survives as the
      * retention container for the money ledger — orders and invoices keep
@@ -342,6 +460,21 @@ export const shops = pgTable(
      */
     uniqueIndex("shops_referral_code_key").on(t.referralCode),
     index("shops_stripe_customer_idx").on(t.stripeCustomerId),
+    /*
+     * The connected account, which three paths look a shop up by and none of
+     * them had an index for: `account.updated` mirrors Stripe's capability
+     * changes onto the shop, dispute recording resolves the shop when no order
+     * matched, and the payout hold reads it back. Each was a sequential scan of
+     * every shop on the platform, on a path Stripe retries.
+     *
+     * Not unique, though it should be: one connected account belongs to one
+     * shop, and nothing enforces it. The app database has no duplicates today
+     * (checked), so a partial unique index would take — but the scenario suites
+     * share one account id across every fixture shop, so adding the constraint
+     * means fixing fixtures in suites this change has no business touching.
+     * Left as a plain index and recorded here rather than done quietly.
+     */
+    index("shops_stripe_account_idx").on(t.stripeAccountId),
     index("shops_stripe_subscription_idx").on(t.stripeSubscriptionId),
   ],
 );

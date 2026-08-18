@@ -10,7 +10,17 @@ import type * as TransportModule from "@sailo/mailer/transport";
 
 const DIR = process.env.EMAIL_PREVIEW_DIR;
 
-vi.mock("./transport", async (importOriginal) => {
+/*
+ * `@sailo/mailer/transport`, not `./transport`.
+ *
+ * The transport moved into its own package when `apps/api` began sending mail,
+ * and this mock kept naming the old relative path — so it silently stopped
+ * intercepting anything. Every builder below then called the *real* `send`,
+ * which has no API key in a test and answers `sent: false`, and the suite failed
+ * on an assertion that looked like a broken template. It went unnoticed because
+ * the whole block skips unless `EMAIL_PREVIEW_DIR` is set.
+ */
+vi.mock("@sailo/mailer/transport", async (importOriginal) => {
   const actual = await importOriginal<typeof TransportModule>();
   return {
     ...actual,
@@ -38,6 +48,10 @@ import {
   sendRefundNotification,
   sendShippingNotification,
   sendSupportTicket,
+  sendSellerDisputeClosed,
+  sendSellerDisputeDeadline,
+  sendSellerDisputeOpened,
+  sendSellerFraudWarning,
 } from "./index-all";
 
 const shop = (over: Partial<Shop> = {}) =>
@@ -206,6 +220,81 @@ describe.skipIf(!DIR)("email previews", () => {
       sendHqSignInLink({ to: "staff@sailo.store", url: "http://localhost:3000/hq/x", expiresInMinutes: 15 }),
       sendEmailConfirmation({ to: "new@seller.com", name: "Ana", url: "http://localhost:3000/confirm/x" }),
       sendPasswordReset({ to: "new@seller.com", name: "Ana", url: "http://localhost:3000/reset/x", expiresInHours: 2 }),
+      /*
+       * The chargeback set, which is the one worth looking at with your eyes.
+       * Both halves of the money distinction are rendered — an enquiry that has
+       * taken nothing beside a chargeback that has taken the sale and the fee —
+       * because they are the same template making opposite claims, and reading
+       * them side by side is the only way to be sure neither is lying.
+       */
+      sendSellerDisputeOpened({
+        shop: shop(),
+        to: "ana@example.com",
+        amountCents: 4200,
+        feeCents: 1500,
+        deductedCents: 5700,
+        currency: "USD",
+        reason: "product_not_received",
+        dueBy: new Date(Date.now() + 4 * 86_400_000),
+        inquiry: false,
+        orderTitle: "Speckled Mug",
+        missing: ["A proof of delivery from your carrier"],
+      }),
+      sendSellerDisputeOpened({
+        shop: shop(),
+        to: "ana@example.com",
+        amountCents: 4200,
+        feeCents: 0,
+        deductedCents: 0,
+        currency: "USD",
+        reason: "fraudulent",
+        dueBy: new Date(Date.now() + 9 * 86_400_000),
+        inquiry: true,
+        orderTitle: "Speckled Mug",
+        missing: [],
+      }),
+      sendSellerDisputeDeadline({
+        shop: shop(),
+        to: "ana@example.com",
+        amountCents: 4200,
+        feeCents: 1500,
+        deductedCents: 5700,
+        currency: "USD",
+        reason: "product_not_received",
+        dueBy: new Date(Date.now() + 2 * 86_400_000),
+        inquiry: false,
+        orderTitle: "Speckled Mug",
+        missing: ["A proof of delivery from your carrier"],
+      }),
+      sendSellerDisputeClosed({
+        shop: shop(),
+        to: "ana@example.com",
+        amountCents: 4200,
+        feeCents: 1500,
+        currency: "USD",
+        reason: "product_not_received",
+        orderTitle: "Speckled Mug",
+        status: "won",
+      }),
+      sendSellerDisputeClosed({
+        shop: shop(),
+        to: "ana@example.com",
+        amountCents: 4200,
+        feeCents: 1500,
+        currency: "USD",
+        reason: "fraudulent",
+        orderTitle: "Speckled Mug",
+        status: "lost",
+      }),
+      sendSellerFraudWarning({
+        shop: shop(),
+        to: "ana@example.com",
+        amountCents: 4200,
+        currency: "USD",
+        fraudType: "made_with_stolen_card",
+        orderTitle: "Speckled Mug",
+        orderId: "order-1",
+      }),
     ]);
     for (const r of results) expect(r.sent).toBe(true);
   });

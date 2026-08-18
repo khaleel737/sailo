@@ -148,34 +148,24 @@ export function subscribePageUrl(handle: string, base = appOrigin()): string {
    The address itself
 -------------------------------------------------------------------------- */
 
-/**
- * Deliberately not the RFC's grammar.
+/*
+ * The address rules live in `../contact`, not here.
  *
- * A pattern that accepts every legal address accepts a great many that no
- * mail server will ever deliver to, and the cost of rejecting an exotic-but-
- * real address here is one person typing it again; the cost of accepting
- * junk is a hard bounce charged against the sending domain every other seller
- * shares. One `@`, something on each side, a dot in the host, no whitespace.
+ * They were here, and they had to move the day a second signup form wanted to
+ * validate an address in the browser before spending a round trip on it: this
+ * file carries `server-only`, so the alternative was a copy — and a copy of a
+ * validation rule is a form that accepts what the server rejects.
+ *
+ * Re-exported rather than merely imported, because a dozen call sites already
+ * read these two names from this module and moving a file is not a reason to
+ * touch them.
  */
-const EMAIL_RE = /^[^\s@,;:<>"'()[\]\\]{1,64}@[^\s@.,;:<>"'()[\]\\]+(\.[^\s@.,;:<>"'()[\]\\]+)+$/;
-
-export const MAX_EMAIL_LENGTH = 254;
-export const MAX_NAME_LENGTH = 60;
-
-/** The address, folded — or null if it is not one. */
-export function normalizeEmail(raw: unknown): string | null {
-  if (typeof raw !== "string") return null;
-  const value = raw.trim().toLowerCase();
-  if (value.length < 3 || value.length > MAX_EMAIL_LENGTH) return null;
-  return EMAIL_RE.test(value) ? value : null;
-}
-
-/** What they typed in the name box, if anything usable. */
-export function normalizeName(raw: unknown): string | null {
-  if (typeof raw !== "string") return null;
-  const value = raw.replace(/[\r\n\t]+/g, " ").trim().slice(0, MAX_NAME_LENGTH);
-  return value || null;
-}
+export {
+  MAX_EMAIL_LENGTH,
+  MAX_NAME_LENGTH,
+  normalizeEmail,
+  normalizeName,
+} from "../contact";
 
 /* --------------------------------------------------------------------------
    Confirming
@@ -249,7 +239,7 @@ export async function confirmSubscriber(
         marketingConsentAt: existing.marketingConsentAt ?? now,
         // A name they typed here fills a gap; it never overwrites one the
         // seller or an order already knows.
-        name: existing.name === ANONYMOUS ? (claim.name ?? existing.name) : existing.name,
+        name: existing.name === ANONYMOUS_CONTACT ? (claim.name ?? existing.name) : existing.name,
         updatedAt: now,
       })
       .where(eq(clients.id, existing.id));
@@ -261,7 +251,7 @@ export async function confirmSubscriber(
       .insert(clients)
       .values({
         shopId: claim.shopId,
-        name: claim.name ?? ANONYMOUS,
+        name: claim.name ?? ANONYMOUS_CONTACT,
         email,
         phone: null,
         source: "subscribe",
@@ -315,8 +305,15 @@ export async function confirmSubscriber(
   return "subscribed";
 }
 
-/** What `upsertClient` calls a buyer who gave no name. Matched, not invented. */
-const ANONYMOUS = "Anonymous";
+/**
+ * What `upsertClient` calls a buyer who gave no name. Matched, not invented.
+ *
+ * Exported because the subscribers screen has to recognise it: a list of
+ * addresses where half the rows are headed "Anonymous" reads as a bug, and
+ * the screen shows the address instead. A second copy of the string over
+ * there would be one rename away from quietly showing it again.
+ */
+export const ANONYMOUS_CONTACT = "Anonymous";
 
 /**
  * `contact.created` for a confirmed subscriber, shop loaded on the way.
