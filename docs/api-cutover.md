@@ -92,11 +92,49 @@ verify anything.
 could: locally the secret comes from `.env.local`, so every test suite passes
 with it present.
 
-**Still unset on sailo-api**, and none of them blocking: `RESEND_API_KEY`,
-`SAILO_MAIL_DOMAIN`, `SAILO_MKT_DOMAIN`, `SAILO_TX_DOMAIN`, `SAILO_STAFF_EMAILS`.
-The check below passes 19/19 without them because this handler suppresses
-addresses rather than sending anything. Set them before moving a route that
-actually mails.
+`RESEND_API_KEY` was set on 2026-08-18 too, Production only. **Production only
+on purpose, unlike the webhook secret above**, and the difference is the point:
+a verification secret lets a preview *check* a signature and can send nothing,
+while a sending key on a preview deployment is a way for a branch to mail real
+sellers the day a cron route moves here. It is not needed by anything this app
+serves today — every key in this schema is `.optional()` and the check below
+passed 19/19 without it — so it is here for the routes that will send later.
+
+**Still unset on sailo-api**: `SAILO_MAIL_DOMAIN`, `SAILO_MKT_DOMAIN`,
+`SAILO_TX_DOMAIN`, `SAILO_STAFF_EMAILS`. None are blocking, and the first three
+should stay unset until the paragraph below is dealt with.
+
+#### The sending domains are not what `.env.example` implies
+
+Measured on 2026-08-18, against Resend's own API with the production key:
+
+**Resend has exactly one verified domain — `sailo.store`.** Not
+`mail.sailo.store`, not `send.sailo.email`. Resend verifies each subdomain
+separately, so a parent being verified does not carry them.
+
+The **sailo** project sets only `SAILO_MAIL_DOMAIN` in production;
+`SAILO_TX_DOMAIN` and `SAILO_MKT_DOMAIN` are unset there. That is why mail
+works: `transport.ts` falls both streams back to it —
+
+```ts
+const MAIL_DOMAIN = process.env.SAILO_MAIL_DOMAIN ?? "sailo.store";
+const TX_DOMAIN  = process.env.SAILO_TX_DOMAIN  ?? MAIL_DOMAIN;
+const MKT_DOMAIN = process.env.SAILO_MKT_DOMAIN ?? MAIL_DOMAIN;
+```
+
+— so every From address today is `@sailo.store`, which is verified.
+
+**So setting the two values `.env.example` shows would break sending, not
+improve it.** Every receipt, sign-in link and broadcast would be refused by
+Resend for an unverified domain. `.env.example` describes the arrangement the
+comment in `transport.ts` argues for — marketing off the brand domain so a
+blocklisting cannot take a `.store` registration and the website down with it —
+and that arrangement is worth having. But it is a Resend and DNS job first:
+verify the subdomain, then set the variable. In that order, and never the
+reverse.
+
+`send.sailo.email` additionally implies a registered domain that is not on this
+Vercel account, which lists only `sailo.store` among the Sailo names.
 
 ### 2. Prove it on the API origin before switching anything
 
