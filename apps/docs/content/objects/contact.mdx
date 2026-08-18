@@ -1,0 +1,97 @@
+---
+title: Contact object
+description: A person on a shop's list, with their tags and — the field that decides everything — marketingConsentAt.
+---
+
+import { Callout } from "nextra/components";
+
+# Contact
+
+What the `/contacts` endpoints return and what `contact.created` carries.
+
+<ContactFields />
+
+## `marketingConsentAt`
+
+<Callout type="error">
+**This is the field that decides whether you may email this person.**
+
+A timestamp means they went through a double opt-in and clicked the link.
+`null` means they did not — usually because they are a customer who bought
+something and was never asked. `null` is not "unknown"; it is "no".
+</Callout>
+
+A timestamp rather than a boolean because *when* is what a regulator asks, and
+because a boolean cannot carry it. An integration pushing contacts into Kit,
+Mailchimp, GoHighLevel or anything else must filter on this — or use
+`?consented=true`, which does it server-side.
+
+Nothing an API key can send will set it. A contact created through the API
+always has `null` here, whatever the request body says; the only way it becomes
+a timestamp is a person clicking a link in an email. See
+[consent on the contacts endpoint](/api/contacts#consent).
+
+## Tags
+
+How a seller segments their list, and what a broadcast is targeted by. Changing
+them changes who a future email reaches, which is why the
+[tag endpoint](/api/contacts#tagging-is-its-own-endpoint) adds and removes
+rather than replacing: a tag the seller applied by hand is not something an
+automation should delete by omitting it.
+
+Tags are normalised — trimmed and lowercased — on write and on filter, so
+`"VIP"` and `"vip"` are one tag.
+
+## `name` is never empty
+
+It falls back to the email, then the phone, then the literal `Contact`. There is
+always something to render, so a consumer needs no fallback of its own.
+
+One of `email` or `phone` is always present; both may be, and either may be
+`null` individually.
+
+## `source`
+
+How this person arrived — `order`, `api`, `signup`, and so on. Set once at
+creation and not changed by later activity, so a customer who first appeared
+through an order stays `order` even after they later opt in through a form.
+
+Treat it as an open enumeration; members are added.
+
+## What is deliberately absent
+
+**`notes`.** The seller's private scratchpad about a customer. It is not on this
+object at all, in either transport — it is the last thing that should sync into
+a third-party CRM through an integration nobody re-read.
+
+## Address
+
+Present on every contact, filled from an order where one has given us an
+address, every field `null` otherwise.
+
+<AddressFields />
+
+## Example
+
+```json
+{
+  "id": "c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+  "object": "contact",
+  "name": "Ada Lovelace",
+  "email": "ada@example.com",
+  "phone": null,
+  "tags": ["webinar", "vip"],
+  "source": "api",
+  "marketingConsentAt": "2026-08-12T10:03:55.700Z",
+  "address": {
+    "line1": null, "line2": null, "city": null,
+    "region": null, "postalCode": null, "country": null
+  },
+  "createdAt": "2026-08-12T09:41:07.221Z",
+  "updatedAt": "2026-08-12T10:03:55.700Z"
+}
+```
+
+`POST /contacts` returns one extra field on top of this — `optInSent`, a boolean
+saying whether the confirmation email actually went out. It is on the write
+response only, never on a read or a webhook.

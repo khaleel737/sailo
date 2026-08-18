@@ -458,6 +458,15 @@ the risk.
 
 ## Deploying
 
+Four deployments, one repository:
+
+| App | Host | What it is |
+|---|---|---|
+| `apps/web` | sailo.store | Storefronts, checkout, marketing, and the seller admin |
+| `apps/api` | api.sailo.store | Route handlers only — what the phone and machines talk to |
+| `apps/hq` | hq.sailo.store | Sailo's own back office, staff-only |
+| `apps/docs` | docs.sailo.store | The developer documentation. Reads the endpoint, tool and event catalogues out of `@sailo/api` and `@sailo/webhooks` and renders them, so the reference cannot drift from the API |
+
 Every push to `main` deploys to https://sailo.store. Before pushing:
 
 ```bash

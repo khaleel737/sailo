@@ -1,0 +1,68 @@
+---
+title: REST API
+description: Read a Sailo shop's orders, products and contacts over HTTP. Cursor-paged, one envelope for every answer, OpenAPI 3.1.
+---
+
+# REST API
+
+Base URL <code><ApiBaseUrl /></code>.
+
+<EndpointCount /> operations over four resources. Everything returns
+`{ "data": … }`; failures return `{ "error": { "code", "message" } }` with a
+matching HTTP status. Every response carries a `sailo-version` header, currently
+<ApiVersion />.
+
+## Every operation
+
+<EndpointIndex />
+
+All of them are also described machine-readably, as
+[OpenAPI 3.1 at `/api/v1/openapi.json`](/api/openapi) — no key required, and
+what you point Postman or an SDK generator at.
+
+## What the surface is, and is not
+
+**Mostly reads.** Two of the <EndpointCount /> operations write, and both are on
+contacts: create-or-update, and add-or-remove tags. That is the whole write
+surface and it is a deliberate line rather than a roadmap gap — those two are
+what an automation actually performs, and everything else an integration needs
+is a read.
+
+**No `PUT`, `PATCH` or `DELETE`.** Creating a contact that already exists
+updates it, so there is no separate update verb to get wrong; and nothing here
+deletes anything, because a deletion arriving from an automation nobody re-read
+is not a mistake a seller can undo.
+
+**Four resources, not eleven.** Shops, orders, products, contacts. Memberships
+and disputes have no endpoint — they reach you through
+[webhooks](/webhooks) instead, and their shapes are written out in the
+[object reference](/objects) precisely because there is no endpoint to read them
+off.
+
+## The rules that apply everywhere
+
+Each of these has its own page, because each is a thing consumers get wrong in a
+way that is invisible until it costs something:
+
+- **[Authentication](/authentication)** — the bearer header, scopes, and what a
+  key can reach.
+- **[Conventions](/conventions)** — the envelope, ids, money, dates, nulls,
+  versioning.
+- **[Pagination](/pagination)** — keyset cursors, and why `has_more` and
+  `next_cursor` answer different questions.
+- **[Errors](/errors)** — six stable codes and what to do about each.
+- **[Rate limits](/rate-limits)** — 240 a minute, per key.
+
+## Resources
+
+| Resource | Operations | What it is |
+| --- | --- | --- |
+| [Shop](/api/shop) | <SectionEndpointCount prefix="/shop" /> | Which shop this key speaks for. |
+| [Orders](/api/orders) | <SectionEndpointCount prefix="/orders" /> | Sales, with their line items. |
+| [Products](/api/products) | <SectionEndpointCount prefix="/products" /> | The catalogue, with variants and stock. |
+| [Contacts](/api/contacts) | <SectionEndpointCount prefix="/contacts" /> | The shop's list, with tags and consent. |
+
+## Getting a key
+
+The API is on the <ApiPlanName /> plan. Every key is read-only unless you tick
+`write`, and is shown once at creation. Create one under <KeyLink />.

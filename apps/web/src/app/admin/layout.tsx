@@ -13,6 +13,7 @@ import { AdminI18nProvider } from "@/app/admin/_components/admin-i18n";
 import { StatusBanners } from "@/app/admin/_components/status-banners";
 import { PanelFooter } from "@/components/shared/panel-footer";
 import { LiveRefresh } from "@sailo/design-system/web";
+import { docsUrl } from "@sailo/core/origin";
 
 /*
  * Per-seller, behind a session, and re-read on every visit — there is no
@@ -46,6 +47,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
           handle={shop.handle}
           pendingReviews={stats.pendingReviews}
           newOrders={stats.newOrders}
+          docsUrl={docsUrl()}
           actions={
             <AdminHeaderCompact
               shop={shop}

@@ -1,0 +1,49 @@
+---
+title: Shop object
+description: The shop a key speaks for — handle, name, currency and time zone. Deliberately thin.
+---
+
+# Shop
+
+What `GET /shop` answers with. Deliberately thin: it says *which shop*, not
+*everything about this seller*. There is nothing about billing, nothing about
+the owner's account, and no contact email.
+
+<ShopFields />
+
+## The two fields everything else depends on
+
+**`currency`** is the code every money object from this shop carries. Read it
+once at setup rather than per row.
+
+**`timeZone`** is the zone every timestamp should be rendered in for anybody who
+works at this shop. Every timestamp Sailo sends is UTC; a "today's orders"
+report built on UTC midnight is wrong for most of the world, and an appointment
+at 09:00 in `Europe/London` is not 09:00 to a consumer elsewhere.
+
+## `id` and `handle`
+
+`id` is the key. `handle` is the shop's URL segment — the `acme` in
+`sailo.store/acme` — and **a seller can change it**. Store the `id` and treat
+the handle as a display value you re-read.
+
+The handle is the one field on this object that also appears elsewhere: every
+[webhook envelope](/webhooks/payloads#the-envelope) carries
+`shop: { id, handle }`, so a consumer receiving events from several shops can
+route on it without a lookup.
+
+## Example
+
+```json
+{
+  "data": {
+    "id": "3f1c9a80-5e17-4a2b-9c44-2f0d8b71e6a3",
+    "object": "shop",
+    "handle": "acme",
+    "name": "Acme Supply",
+    "currency": "GBP",
+    "timeZone": "Europe/London",
+    "createdAt": "2026-01-09T11:02:44.108Z"
+  }
+}
+```

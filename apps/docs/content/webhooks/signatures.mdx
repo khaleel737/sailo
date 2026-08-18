@@ -1,0 +1,223 @@
+---
+title: Verifying signatures
+description: Sailo signs with Standard Webhooks — three headers, one HMAC. Use a library, or the recipe by hand.
+---
+
+import { Callout, Tabs } from "nextra/components";
+
+# Verifying signatures
+
+An endpoint that accepts anything knowing its URL is an endpoint that accepts
+anything. Verification is one line with an off-the-shelf library, and there is
+no good reason to skip it.
+
+## Standard Webhooks
+
+Sailo implements [Standard Webhooks](https://www.standardwebhooks.com) rather
+than a scheme of its own, so you can use a maintained library instead of
+transcribing a recipe out of this page and getting the concatenation wrong.
+
+It is also exactly what Svix speaks. If Sailo's delivery volume ever outgrows
+its own queue, moving behind Svix would be invisible to every endpoint already
+receiving — which would not be true of a bespoke header.
+
+## The headers
+
+```http
+webhook-id:         8f2b41d6-0c93-4f77-a1e5-9b6d2c4a7e01
+webhook-timestamp:  1786527667
+webhook-signature:  v1,K5oZfzN95Z9…
+```
+
+`webhook-timestamp` is **seconds** since epoch. `v1,` names the algorithm.
+
+## With a library
+
+<Tabs items={["TypeScript", "Python", "Go", "PHP", "Ruby"]}>
+  <Tabs.Tab>
+```ts
+import { Webhook } from "standardwebhooks";
+
+const wh = new Webhook(process.env.SAILO_WEBHOOK_SECRET!); // whsec_…
+
+export async function POST(request: Request) {
+  const body = await request.text();                    // raw, not parsed
+  const headers = Object.fromEntries(request.headers);
+
+  try {
+    const event = wh.verify(body, headers);
+    await enqueue(event);
+    return new Response(null, { status: 204 });
+  } catch {
+    return new Response("bad signature", { status: 400 });
+  }
+}
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```python
+from standardwebhooks import Webhook
+
+wh = Webhook(os.environ["SAILO_WEBHOOK_SECRET"])  # whsec_…
+
+@app.post("/sailo")
+def sailo(request):
+    try:
+        event = wh.verify(request.get_data(), dict(request.headers))
+    except Exception:
+        return "bad signature", 400
+
+    enqueue(event)
+    return "", 204
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```go
+import standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
+
+wh, _ := standardwebhooks.NewWebhook(os.Getenv("SAILO_WEBHOOK_SECRET"))
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    body, _ := io.ReadAll(r.Body)
+    if err := wh.Verify(body, r.Header); err != nil {
+        http.Error(w, "bad signature", http.StatusBadRequest)
+        return
+    }
+    enqueue(body)
+    w.WriteHeader(http.StatusNoContent)
+}
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```php
+use StandardWebhooks\Webhook;
+
+$wh = new Webhook(getenv('SAILO_WEBHOOK_SECRET'));
+
+try {
+    $event = $wh->verify($rawBody, getallheaders());
+} catch (Exception $e) {
+    http_response_code(400);
+    exit('bad signature');
+}
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```ruby
+require "standard_webhooks"
+
+wh = StandardWebhooks::Webhook.new(ENV["SAILO_WEBHOOK_SECRET"])
+
+begin
+  event = wh.verify(raw_body, headers)
+rescue StandardWebhooks::WebhookVerificationError
+  halt 400, "bad signature"
+end
+```
+  </Tabs.Tab>
+</Tabs>
+
+## By hand
+
+If your language has no library:
+
+1. **Strip the `whsec_` prefix** from the secret and **base64-decode the rest**.
+   Those bytes are the HMAC key.
+2. Build the signed content: <code>{"`${id}.${timestamp}.${rawBody}`"}</code> —
+   the `webhook-id` header, a dot, the `webhook-timestamp` header, a dot, and
+   the body exactly as received.
+3. HMAC-SHA256 it with the key, base64-encode the digest.
+4. Compare, in **constant time**, against the part of `webhook-signature` after
+   `v1,`.
+5. Reject if `webhook-timestamp` is more than **five minutes** from now, in
+   either direction.
+
+```ts
+import { createHmac, timingSafeEqual } from "node:crypto";
+
+function verify(body: string, headers: Record<string, string>, secret: string) {
+  const id = headers["webhook-id"];
+  const timestamp = headers["webhook-timestamp"];
+  const presented = headers["webhook-signature"];
+  if (!id || !timestamp || !presented) return false;
+
+  // Five-minute replay window, in seconds — the spec's recommendation.
+  const drift = Math.abs(Math.floor(Date.now() / 1000) - Number(timestamp));
+  if (!Number.isFinite(Number(timestamp)) || drift > 300) return false;
+
+  const key = Buffer.from(secret.replace(/^whsec_/, ""), "base64");
+  const expected = createHmac("sha256", key)
+    .update(`${id}.${timestamp}.${body}`)
+    .digest("base64");
+
+  // The header may carry a space-delimited list; check each version-1 entry.
+  return presented
+    .split(" ")
+    .filter((part) => part.startsWith("v1,"))
+    .some((part) => {
+      const given = Buffer.from(part.slice(3), "base64");
+      const mine = Buffer.from(expected, "base64");
+      return given.length === mine.length && timingSafeEqual(given, mine);
+    });
+}
+```
+
+## The four ways this goes wrong
+
+<Callout type="error">
+**Signing the parsed body.** The signature covers the exact bytes sent.
+`JSON.stringify(await request.json())` reorders nothing on most runtimes and
+still changes whitespace — and where a framework parses the body for you before
+your handler runs, you may not have the raw bytes at all. In Express, that means
+`express.raw({ type: "application/json" })` on this route rather than
+`express.json()`.
+</Callout>
+
+**Using the printable secret as the key.** The signing key is the *decoded*
+bytes. Hand `"whsec_abc…"` to an HMAC as a UTF-8 string and you get a
+well-formed signature that verifies against nothing on earth. This is the single
+most common hand-rolled mistake.
+
+**Milliseconds instead of seconds.** `Date.now()` is milliseconds. A tolerance
+check written in the wrong unit puts every message roughly fifty thousand years
+out and fails everything.
+
+**A non-constant-time comparison.** `===` on a signature leaks timing. Use your
+platform's constant-time compare; every language has one.
+
+## What the signature covers, and why
+
+**The id and the timestamp as well as the body.**
+
+Over the body alone, a captured POST can be replayed forever, and one delivery
+can be passed off as a different one. Including both is what makes the
+five-minute window meaningful and what ties a signature to a specific delivery.
+
+## Retries are re-signed
+
+Each attempt gets a **fresh timestamp and a fresh signature**, while `webhook-id`
+stays the delivery's.
+
+That is what lets you keep a tight replay window and still accept a retry twelve
+hours later — and still recognise it as the same event you already stored.
+
+## Rotating a secret
+
+Rotation mints a new secret and shows it to the seller, who updates their
+consumer. Sailo sends **one** signature rather than the space-delimited list the
+specification allows for overlapping secrets, because there is no automatic
+rotation to be caught out by.
+
+A verifier should still parse the header as a list. It costs a `split` and it
+means an endpoint written today keeps working if that ever changes.
+
+## Additional hardening
+
+Verification is the security boundary; these are belt and braces on top.
+
+- **Check `shop.id`** matches the shop you expect, if your endpoint serves one
+  seller.
+- **Reject on `test: true`** in production paths, so a test delivery cannot
+  create a real record.
+- **One endpoint per shop** where you serve many. Each has its own secret, so a
+  leak is scoped.

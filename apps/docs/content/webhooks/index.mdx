@@ -1,0 +1,120 @@
+---
+title: Webhooks
+description: Sailo POSTs signed JSON to your endpoint when an order is paid, a booking is confirmed, a membership changes or a chargeback opens.
+---
+
+import { Callout, Steps } from "nextra/components";
+
+# Webhooks
+
+Add an endpoint, tick the events you want, and Sailo will `POST` signed JSON to
+it when they happen.
+
+Anything that accepts a webhook works — Zapier's *Catch Hook*, n8n's *Webhook*
+node, Make's *Custom webhook*, Pipedream, or your own server. There is no
+connector to install and no app to register.
+
+<Callout type="info">
+Webhooks are the primary mechanism for anything live. Polling the
+[REST API](/api) frequently enough to feel immediate is polling that will meet
+the [rate limit](/rate-limits) on a shop with real volume — and webhooks cost
+nothing against it, because they are Sailo calling you.
+</Callout>
+
+## Setting one up
+
+<Steps>
+
+### Add the endpoint
+
+**Settings → Integrations** in the Sailo admin. Paste your URL and tick the
+events you want. Up to <MaxEndpoints /> endpoints per shop.
+
+The URL must be `https` and publicly resolvable. Sailo refuses private and
+loopback addresses at delivery time, so a tunnel is what you want during
+development rather than `localhost`.
+
+### Keep the signing secret
+
+It is shown when the endpoint is created and starts `whsec_`. Each endpoint has
+its own, so revoking one does not affect the others.
+
+### Verify before you trust
+
+An endpoint that accepts anything knowing its URL is an endpoint that accepts
+anything. See [verifying signatures](/webhooks/signatures) — it is one line with
+an off-the-shelf library.
+
+### Send a test
+
+The **Send test** button delivers a complete payload with `"test": true` and
+**every field a real one carries**, including the ones that would be null on a
+shop that has never had an order.
+
+That matters more than it sounds: Zapier builds its whole field map from the
+first payload it receives, and a thin sample is a map that breaks on the first
+real sale.
+
+</Steps>
+
+## What you get
+
+| | |
+| --- | --- |
+| Events | <EventCount /> — [see them all](/webhooks/events) |
+| Payload | The same object the REST API returns — [see the shapes](/webhooks/payloads) |
+| Signature | [Standard Webhooks](/webhooks/signatures), HMAC-SHA256 |
+| Delivery | At-least-once, <MaxAttempts /> attempts over <RetryWindow /> — [see the schedule](/webhooks/delivery) |
+| Timeout | 5 seconds |
+| Endpoints per shop | <MaxEndpoints /> |
+
+## The three rules
+
+Everything else on these pages is detail. These three are what separates a
+webhook consumer that works from one that mostly works:
+
+**1. Verify the signature.** Against the **raw body**, exactly as received.
+Re-serialising parsed JSON will not match.
+
+**2. Answer fast, work later.** Return a 2xx as soon as you have stored the
+event. Sailo waits five seconds; the work belongs off the request.
+
+**3. Deduplicate on `webhook-id`.** Delivery is at-least-once. A POST that
+succeeded on your side but timed out on ours is retried, and the id stays the
+same across every retry of one event.
+
+## A minimal handler
+
+```ts
+import { Webhook } from "standardwebhooks";
+
+const wh = new Webhook(process.env.SAILO_WEBHOOK_SECRET!);
+
+export async function POST(request: Request) {
+  const body = await request.text();                    // raw — rule 1
+  const headers = Object.fromEntries(request.headers);
+
+  let event: { id: string; type: string; data: unknown };
+  try {
+    event = wh.verify(body, headers) as typeof event;
+  } catch {
+    return new Response("bad signature", { status: 400 });
+  }
+
+  if (await alreadySeen(event.id)) {                    // rule 3
+    return new Response(null, { status: 204 });
+  }
+
+  await store(event);                                   // rule 2
+  return new Response(null, { status: 204 });
+}
+```
+
+## Next
+
+- **[Events](/webhooks/events)** — all <EventCount />, and what each one means.
+- **[Payloads](/webhooks/payloads)** — the envelope, and which object arrives.
+- **[Verifying signatures](/webhooks/signatures)** — libraries, and the recipe
+  by hand.
+- **[Delivery and retries](/webhooks/delivery)** — the schedule, what counts as
+  a failure, and when an endpoint is switched off.

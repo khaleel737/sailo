@@ -1,4 +1,3 @@
-import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -333,20 +332,12 @@ const nextConfig: NextConfig = {
   },
 };
 
-/**
- * The MDX pipeline behind `/docs`, and nothing else.
+/*
+ * No MDX pipeline any more.
  *
- * `macro.include` is narrowed to the one module that calls `defineDocs`. The
- * default is `**\/*.ts` and five siblings — every JS and TS file in the project
- * — which for an app this size means the macro plugin is attached to several
- * thousand modules to find a call that appears in exactly one of them.
- *
- * A glob, not a path. These strings become Turbopack loader-rule keys and are
- * matched by `picomatch` with `basename: true`, so `src/lib/docs-source.ts`
- * matches nothing and fails at request time with "this macro was not compiled
- * by the bundler plugin" — which reads as a broken install rather than as a
- * pattern that missed.
+ * `/docs` was four Fumadocs pages in this app and is now apps/docs on its own
+ * host, which took `createMDX`, the macro plugin and three `fumadocs-*`
+ * dependencies with it. Nothing else here was ever MDX — the blog is Markdown,
+ * read with `marked` at build time.
  */
-const withMDX = createMDX({ macro: { include: ["**/docs-source.ts"] } });
-
-export default withMDX(nextConfig);
+export default nextConfig;

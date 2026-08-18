@@ -1,0 +1,192 @@
+---
+title: Authentication
+description: One bearer key opens the REST API, the MCP server and nothing else. How keys are minted, scoped, checked, rotated and revoked.
+---
+
+import { Callout } from "nextra/components";
+
+# Authentication
+
+One credential type, sent one way, for both machine surfaces. The key that
+opens `/api/v1` is the same key that opens `/api/mcp`, because they are one
+grant: *this program may act on my shop, within these scopes*. A seller who
+revokes a key revokes both, which is what they will expect.
+
+## The header
+
+```http
+Authorization: Bearer sailo_sk_…
+```
+
+And nowhere else. **There is no query-string form and there will not be one.** A
+token in a URL is written into every access log, proxy log and browser history
+it passes through, and it turns a link somebody pastes into a support ticket
+into a working credential. Some tools make it tempting to allow; none of them
+need it badly enough.
+
+Requests without the header get `unauthorized` with a message naming the header
+to use, rather than a bare 401.
+
+## What a key looks like
+
+`sailo_sk_` followed by 43 characters of base64url — 256 bits of randomness
+behind a fixed prefix.
+
+The prefix costs nine characters and buys two things. Secret-scanning services
+key off exactly this kind of marker, so a key committed to a public repository
+is something somebody's tooling can spot; a token that looks like ordinary
+base64 is not. And it is recognisable in a log or a screenshot, which is how
+most leaks are actually noticed.
+
+## Scopes
+
+Two, and deliberately not more.
+
+| Scope | What it allows |
+| --- | --- |
+| `read` | Every read on every surface. Carried by every key. |
+| `write` | Additionally: create or update a contact, and change a contact's tags. |
+
+A per-resource scope matrix is the obvious next step and it is the wrong one
+for this product. A seller wiring up Zapier is not going to reason about eleven
+checkboxes, and a scope nobody understands is a scope everybody grants. The
+line that actually matters to somebody handing a key to a tool — or to a
+language model — is whether it can *change* anything, and that is the line these
+two draw.
+
+`write` implies `read`. A read-only key that reaches a write endpoint is told
+exactly that — "this key is read-only, create a key with write access" — rather
+than given a bare 403, because the first is actionable and the second is not.
+
+### What a key can do
+
+Even a `write` key is narrower than most people assume. In full:
+
+**With any key**
+
+- Read the shop's identity, currency and time zone.
+- Read orders and their line items.
+- Read the catalogue, its variants and their stock.
+- Read the people on the shop's list, with their tags and consent state.
+
+**With a write key, additionally**
+
+- Create or update a contact, merging tags onto one that already exists.
+- Add and remove tags on a contact.
+
+**Never, with any key**
+
+- **Grant marketing consent.** A contact created through the API always has
+  `marketingConsentAt: null`, whatever the request body says. See
+  [consent](/api/contacts#consent).
+- Change an order, mark one paid or shipped, refund anything, or cancel
+  anything.
+- Create, edit, publish or delete a product, or change stock.
+- Delete a contact, or read the seller's private notes on one.
+- See anything internal — no Stripe identifiers, no download tokens, no payment
+  proofs, no dispute evidence bundles.
+- Touch billing, the seller's account, or another shop. A key names one shop and
+  every query is scoped by it in the `WHERE`, not by an id the caller sends.
+
+## How a key is stored
+
+**The only copy Sailo keeps is a SHA-256 hash, and the only moment the seller
+can see the token is when it is created.** Everything else follows from that:
+
+- The admin list shows a six-character prefix, because a hash cannot be shown.
+- There is no "reveal key" button anywhere in the product. There is nothing to
+  reveal.
+- A lost key is rotated, not recovered.
+
+<Callout type="info">
+Not bcrypt or argon2, and that is a deliberate call rather than a shortcut. A
+slow key-derivation function exists to make a *low-entropy* secret expensive to
+guess. There are 256 bits of `randomBytes` in a Sailo key, so there is nothing
+to guess — and a work factor would only buy a deliberately slow hash on the hot
+path of every API and MCP request.
+</Callout>
+
+## What is checked on every request
+
+In the order a caller meets them:
+
+1. **The header is present and parses.** Otherwise `unauthorized`.
+2. **A failed-authentication budget, per source address.** Charged *before* the
+   lookup and refunded on success, so a legitimate integration polling every
+   second never spends it. Its size is not published — see
+   [rate limits](/rate-limits#the-guessing-budget).
+3. **The token resolves to a live key.** Revoked keys do not resolve at all;
+   the check is in the query rather than after it, so no code path downstream
+   can hold a shop it should not have.
+4. **The shop's plan includes the API.** Checked on every request, not once
+   when the key was minted — a seller who downgrades stops being able to use a
+   key they already hold, which is the point of a gate.
+5. **The shop still exists.** A deleted shop keeps its rows through the
+   retention window, and every one of them would otherwise be readable through a
+   key the departed seller still has.
+6. **The per-key rate limit.** See [rate limits](/rate-limits).
+7. **The scope, per route.** Only on writes.
+
+A key that will not be accepted is refused **identically** whether it never
+existed, was revoked, or belongs to a shop that has since been deleted. That is
+deliberate: learning *which* would tell whoever holds a token that it used to be
+real.
+
+## Plan
+
+The API, webhooks and the MCP server are on the <ApiPlanName /> plan. A key on a
+shop below it gets `forbidden` with a message naming the plan — not
+`unauthorized`, because the credential is genuine and the problem is not the
+credential.
+
+## Limits and lifecycle
+
+- **<MaxApiKeys /> live keys per shop.** Revoked ones do not count.
+- **`lastUsedAt`** is stamped at most once an hour per key. That column answers
+  "is anything still using this, or can I revoke it", and an hour's resolution
+  answers it exactly as well as a write per request would — while a write per
+  request would put an `UPDATE` on the hot path of an endpoint built to be
+  called in a loop.
+
+### Rotating
+
+There is no rotation endpoint, and the manual sequence is better than one:
+
+1. Mint a second key with the same scope.
+2. Deploy it.
+3. Watch `lastUsedAt` on the old key stop moving.
+4. Revoke the old key.
+
+Overlap is what makes this a zero-downtime change. A rotation endpoint that
+swapped a key atomically would break every consumer that had not been
+redeployed in the same instant.
+
+### Revoking
+
+Revocation is a stamp, not a delete. A deleted row cannot answer questions after
+a leak — "was this key ever real, and what did it reach" is exactly what you
+need on the day it matters.
+
+Revocation is immediate on the next request. There is no cached credential
+anywhere.
+
+## CORS
+
+There is none, on any authenticated route, and that is not an oversight.
+
+Keys are for servers. A key a browser can send is a key in somebody's bundle,
+and a CORS policy permitting it would be Sailo helping to put it there. The one
+route that does send `Access-Control-Allow-Origin` is the
+[OpenAPI document](/api/openapi) at `/api/v1/openapi.json`, which carries no
+shop's data and needs no key — a generator running in a browser tab is a
+legitimate reader of it.
+
+The MCP endpoint additionally refuses any request carrying an `Origin` header
+that is not Sailo's own. That is the specification's DNS-rebinding defence: a
+page on the open web cannot read a cross-origin response without CORS, but a
+request that *executes* is already too far when the tools include writes.
+
+## Getting a key
+
+Every key is read-only unless you tick `write`, and is shown once at creation.
+Create one under <KeyLink />.

@@ -1,5 +1,0 @@
-{
-  "title": "Documentation",
-  "root": true,
-  "pages": ["index", "api", "webhooks", "mcp"]
-}

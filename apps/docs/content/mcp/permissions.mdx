@@ -1,0 +1,110 @@
+---
+title: What it can do
+description: Exactly what an assistant holding a Sailo key can and cannot do — in both directions, with nothing implied.
+---
+
+import { Callout } from "nextra/components";
+
+# What an assistant can do
+
+The question worth answering before you paste a key anywhere.
+
+## With any key
+
+- Read the shop's identity, currency and time zone.
+- Read orders, their line items, delivery details and any appointment.
+- Read the catalogue, its variants and their stock.
+- Read the people on the shop's list, with their tags and consent state.
+
+## With a write key, additionally
+
+Two things, and they are the whole of it: <WriteToolNames />.
+
+- **Add somebody to the list**, or update and merge tags onto somebody already
+  on it.
+- **Add and remove tags** on one contact.
+
+## Never, with any key
+
+- **Grant marketing consent.** A contact an assistant creates always has
+  `marketingConsentAt: null`, whatever it passes. It can ask Sailo to send a
+  double opt-in email; consent is written only when the person clicks the link.
+  Never tell a seller a contact is subscribed on the strength of that call
+  alone.
+- Change an order — mark one paid, mark one shipped, add tracking, refund
+  anything, or cancel anything.
+- Create, edit, publish, unpublish or delete a product, or change stock.
+- Delete a contact, or read the seller's private notes on one.
+- Send an email, a broadcast or a notification.
+- Create or change a coupon, an affiliate, a delivery rate or a payment method.
+- See anything internal — no Stripe identifiers, no download tokens, no payment
+  proofs, no dispute evidence.
+- Touch billing, the seller's account, or another shop. A key names one shop.
+
+<Callout type="info">
+That list is short because the tool set is short, not because the tools are
+policed. Every tool is a thin wrapper over the same handler the REST endpoint
+calls, and the REST surface has no operation for any of the above — so there is
+nothing for a model to reach even if it decides it would like to.
+</Callout>
+
+## A read-only key does not see the write tools
+
+Not "is refused when it calls one" — **does not see them in `tools/list` at
+all.**
+
+The specification allows the listed tool set to vary by the authorization on the
+request, because credentials are per-request input rather than connection state,
+and this uses that.
+
+Hiding is better than refusing here. A model that cannot see a tool does not
+spend a turn discovering it may not use it, and — more usefully — does not
+promise the person it is talking to something it then cannot do. "I'll add them
+to your list" followed by a permission error is a worse experience than never
+offering.
+
+## The consent rule, in the tool's own words
+
+The `create_contact` description the server sends to a model says, verbatim:
+
+> This CANNOT grant marketing consent — a new contact is always created without
+> it, whatever you pass. To get consent, set `send_opt_in` to true: that emails
+> the person a confirmation link, and consent is recorded only when they click
+> it. Never tell the seller a contact is subscribed on the strength of this call
+> alone.
+
+It is written that way on purpose. A model decides what to do from the tool
+description, so the rule has to be in the description rather than only in
+documentation the model never reads.
+
+The same applies to `list_contacts`, which tells it that a contact without
+`marketingConsentAt` **must not** be added to a mailing list or newsletter tool.
+
+## Server instructions
+
+Every client is told this at connection, whichever era it speaks:
+
+> Read and manage one Sailo shop: its orders, products and contacts. Amounts are
+> returned both as integer minor units (`cents`) and as a decimal string
+> (`amount`) — quote the decimal string to people. A contact's
+> `marketingConsentAt` is null unless that person opted in; never treat a
+> contact without it as someone who agreed to be emailed.
+
+Two rules, both aimed at the failures that matter: quoting `4999` at a customer,
+and mailing somebody who never agreed.
+
+## Practical advice
+
+**Mint a key per assistant.** One for Claude, one for Cursor, one for whatever
+you try next. `lastUsedAt` then tells you which is still in use, and revoking
+one does not break the others.
+
+**Read-only by default.** The write tools are two contact operations. If you are
+not automating list-building, you do not need them.
+
+**Revoke when you stop.** A key left in a configuration file on a laptop is a
+key. Revocation is immediate on the next request.
+
+**Remember it is not a sandbox.** An assistant with a write key is writing to
+the real list the seller broadcasts to. Tagging is what decides who a future
+email reaches.

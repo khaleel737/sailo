@@ -1,0 +1,97 @@
+---
+title: Support
+description: What to check first, what to send when you get in touch, and what never to include.
+---
+
+import { Callout } from "nextra/components";
+
+# Support
+
+## Check these first
+
+They are the causes of most of what gets reported.
+
+**A 401 on every call.** The key is wrong, revoked, or the header is malformed.
+Confirm with `GET /shop` — [the call that exists for
+this](/api/shop). If it fails, the credential is the problem, not the endpoint.
+In an MCP client, the usual cause is an unexpanded `${VAR}` being sent as the
+literal bearer token.
+
+**A 403 on every call.** Either the key is read-only and you reached a write
+endpoint, or the shop is below the <ApiPlanName /> plan. The `message` says
+which.
+
+**A 404 on an id you have.** Ids are per shop. An id from one shop is a
+`not_found` in another, never a `forbidden` — the two are answered identically
+so neither can probe the other.
+
+**Webhooks not arriving.** In order: is the endpoint enabled in Settings →
+Integrations (it is switched off after <AutoDisableAfter /> consecutive
+failures); is the URL `https` and publicly resolvable; is it the *final* URL
+(redirects are [not followed](/webhooks/delivery#what-counts-as-a-failure)); is
+the event ticked.
+
+**Signature verification failing.** Almost always one of
+[four things](/webhooks/signatures#the-four-ways-this-goes-wrong) — signing the
+parsed body instead of the raw one, using the printable secret instead of its
+decoded bytes, milliseconds instead of seconds, or a stale timestamp past the
+five-minute window.
+
+**An MCP client that will not connect.** Take it out of the loop and
+[try the endpoint with `curl`](/mcp/protocol#trying-it-with-curl). A
+`tools/list` that answers there and not in the client is a client configuration
+problem.
+
+## Getting in touch
+
+Through your Sailo admin, or the support address on your account.
+
+### What to send
+
+- **What you called** — method and path, or the event type.
+- **When**, with a timezone.
+- **The `sailo-version` header** from the response.
+- **The `error.code`**, and the message.
+- **The `webhook-id`**, for anything about a delivery. It is the only value that
+  identifies one attempt, and it is in the body as `id` as well as in the
+  header.
+- **The shop handle.**
+
+<Callout type="error">
+**Never send an API key or a webhook signing secret**, in a ticket, a chat
+message, a screenshot or a log paste. Nobody at Sailo can read your key back to
+you — [only a hash is stored](/authentication#how-a-key-is-stored) — and nobody
+will ever ask for one.
+
+If a key has been exposed, revoke it under <KeyLink /> and mint a replacement.
+That is the whole remediation.
+</Callout>
+
+## What is not supported
+
+Stated plainly so nobody spends a day on it:
+
+- **Writing to orders, products, coupons, affiliates or delivery rates.** There
+  is no endpoint. See [what a key can
+  do](/authentication#what-a-key-can-do).
+- **Reading subscriptions or disputes over HTTP.** They arrive by
+  [webhook](/webhooks) only.
+- **Deleting a contact.** No endpoint, deliberately.
+- **Marking a contact as consenting.** Only a person clicking a double opt-in
+  link does that.
+- **OAuth, app registration or a public app directory.** A key and a signed
+  webhook reach every no-code tool without one.
+- **An official SDK.** Point a generator at the
+  [OpenAPI document](/api/openapi).
+- **A sandbox environment.** The *Send test* button covers webhooks; for the API
+  the practical approach is a second shop.
+
+If one of those is blocking something real, say so with what you are building.
+Several are decisions rather than laws.
+
+## Reporting a security issue
+
+Do not open a normal support ticket, and do not include a working proof of
+concept in a channel other people can read. Contact Sailo through your admin
+and say that it is a security report; you will be given somewhere private to
+send the detail.

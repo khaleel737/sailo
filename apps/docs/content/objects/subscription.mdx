@@ -1,0 +1,114 @@
+---
+title: Subscription object
+description: A membership, carried identically by all seven subscription.* events. The field to revoke access on is currentPeriodEnd, not the cancellation date.
+---
+
+import { Callout } from "nextra/components";
+
+# Subscription
+
+A membership. Carried by all <SubscriptionEventCount /> `subscription.*` events,
+identically.
+
+**There is no `GET /api/v1/subscriptions/{id}`.** This object reaches you
+through a webhook or not at all, which is why its shape is written out here
+rather than left to a REST reference to describe.
+
+One shape for all seven events rather than a payload per event: a consumer that
+wired `subscription.created` and later adds `subscription.cancelled` should not
+have to remap anything, because what differs between them is which one fired and
+not what a membership is.
+
+<SubscriptionFields />
+
+## Revoke on `currentPeriodEnd`, not on cancellation
+
+<Callout type="error">
+`subscription.cancelled` is **the member asking to stop**. They have paid
+through `currentPeriodEnd` and keep their access until it.
+
+`subscription.ended` is **the membership actually being over**, and it is the
+one to revoke on.
+
+A consumer that revokes on the first takes away a month somebody already bought.
+That is the single most common mistake in this category, and it produces an
+angry customer rather than an error anybody sees.
+</Callout>
+
+The state to hold is:
+
+```ts
+const hasAccess =
+  ["active", "trialing", "past_due"].includes(sub.status) ||
+  (sub.currentPeriodEnd && new Date(sub.currentPeriodEnd) > new Date());
+```
+
+`past_due` is included on purpose — see below.
+
+## `payment_failed` is not an ending
+
+`subscription.payment_failed` is a card that did not go through. Stripe retries
+for several days and most of them recover.
+
+Treat it as a reason to **email**, not a reason to revoke. If it never clears,
+`subscription.ended` arrives and that is the signal to act on. Revoking on the
+first failure cuts off members whose bank declined one attempt.
+
+## `billingMode` changes what you may conclude
+
+`stripe` or `manual`.
+
+A **manual** membership is one Sailo raises renewal orders for and a human
+settles — cash at the door, a bank transfer. Nothing will ever arrive from
+Stripe about it, so an integration waiting for a card renewal on one waits
+forever. `paymentMethod` names the rail; it is `null` on a card subscription,
+where Stripe is the rail.
+
+## `price` is snapshotted
+
+What this member pays, as they signed up. A seller who re-prices the product has
+not re-priced existing members — so do not read the price off
+[the product](/objects/product) and assume it matches.
+
+## No Stripe identifiers
+
+`stripeSubscriptionId`, `stripeCustomerId` and `stripeAccountId` all name
+objects in the **seller's** Stripe account, and shipping them would let anything
+holding a webhook payload address that account directly. The membership's own
+`id` is the handle Sailo speaks.
+
+## Statuses
+
+`trialing`, `active`, `past_due`, `canceled`, `incomplete`, `unpaid`.
+
+Note the spelling of `canceled` — it is Stripe's, one `l`, and it is the value
+you will receive. The *event* is `subscription.cancelled` with two, because that
+is Sailo's own vocabulary. They are different strings in different places and
+both are correct where they appear.
+
+## Example
+
+```json
+{
+  "id": "7d3c8e21-0a94-4b6f-9c17-3e5b8a2d4f60",
+  "object": "subscription",
+  "status": "active",
+  "productId": "9a7e2c11-6b48-4d0f-8e35-71c9a4f2b6d8",
+  "clientId": "c1d2e3f4-5a6b-7c8d-9e0f-1a2b3c4d5e6f",
+  "price": { "cents": 1500, "amount": "15.00", "currency": "GBP" },
+  "currency": "GBP",
+  "interval": "month",
+  "billingMode": "stripe",
+  "paymentMethod": null,
+  "currentPeriodEnd": "2026-09-12T09:41:07.221Z",
+  "cancelAtPeriodEnd": false,
+  "canceledAt": null,
+  "trialEndsAt": null,
+  "startedAt": "2026-05-12T09:41:07.221Z",
+  "createdAt": "2026-05-12T09:41:07.221Z",
+  "updatedAt": "2026-08-12T09:41:07.221Z"
+}
+```
+
+The [granting and revoking access guide](/guides/membership-access) works
+through the whole lifecycle with this object.

@@ -1,0 +1,160 @@
+---
+title: Reacting to a chargeback
+description: dispute.opened gives you about twenty days and the evidence usually lives somewhere that is not Sailo. Turn the event into a task with a deadline.
+---
+
+import { Callout } from "nextra/components";
+
+# Reacting to a chargeback
+
+`dispute.opened` exists for one reason: **what wins a chargeback usually lives in
+a system that is not Sailo.** A helpdesk transcript, a delivery confirmation, a
+shipping account, a login log. The event is what lets a seller's own tooling go
+and get it, in the roughly twenty days there are to do so.
+
+## Check `caseType` first
+
+<Callout type="warning">
+`dispute.opened` fires for an **inquiry** and for a **chargeback**, and they are
+not the same thing to a business.
+
+An `inquiry` is the issuer asking a question on the cardholder's behalf. **No
+money has moved** and none may. A `chargeback` has taken the money.
+
+A consumer that reports "you have lost a sale" on every `dispute.opened` is
+wrong a good fraction of the time — and the correction costs a seller's trust in
+the alert.
+</Callout>
+
+```ts
+if (dispute.caseType === "inquiry") {
+  // A question. Answer it well and it may never become a chargeback.
+} else if (dispute.caseType === "chargeback") {
+  // The money is already gone. `fundsWithdrawnAt` is set.
+}
+```
+
+`fundsWithdrawnAt` is the unambiguous signal: `null` on an inquiry, a timestamp
+once the money has actually left.
+
+Handle `compliance`, `block` and `resolution` by falling through rather than
+assuming they cannot occur — they are rarer, not impossible.
+
+## The cost is more than the sale
+
+Three money objects, and the third is the one to report:
+
+| Field | What it is |
+| --- | --- |
+| `amount` | The disputed sale |
+| `fee` | Stripe's dispute fee |
+| `deducted` | **Amount plus fee — what actually left the balance** |
+
+Which is why a £42 chargeback costs £57. A dashboard reporting `amount` is
+understating the loss by the fee on every case, and the fee is generally **not**
+returned even on a win.
+
+## Turn it into a task with a deadline
+
+The whole value of the event.
+
+```ts
+export async function handleDispute(event: SailoEvent) {
+  const dispute = event.data as Dispute;
+
+  if (event.type === "dispute.closed") {
+    await closeTask(dispute.id, { outcome: dispute.status });
+    return;
+  }
+
+  const order = await sailo(`/orders/${dispute.orderId}`);
+
+  await createTask({
+    externalId: dispute.id,
+    title:
+      dispute.caseType === "inquiry"
+        ? `Inquiry on ${order.customer.name ?? "an order"}`
+        : `Chargeback: ${dispute.deducted.amount} ${dispute.currency}`,
+    // The deadline is the point. Null on a case that no longer needs one.
+    dueAt: dispute.dueBy,
+    // What a human needs to go and find the evidence.
+    body: [
+      `Reason: ${dispute.reason ?? "not given"} (${dispute.networkReasonCode ?? "—"})`,
+      `Order: ${dispute.orderId}`,
+      `Customer: ${order.customer.email ?? "—"}`,
+      `Placed: ${order.createdAt}`,
+      `Shipped: ${order.delivery.shippedAt ?? "not shipped"}`,
+      `Tracking: ${order.delivery.trackingNumber ?? "none"}`,
+    ].join("\n"),
+  });
+}
+```
+
+Note the `GET /orders/{id}` call. The dispute payload carries `orderId` and not
+the order — so this is the one place where fetching after an event is right
+rather than wasteful.
+
+## What to gather, by reason
+
+`reason` is Stripe's string. The evidence that answers each is different, and
+almost none of it is in Sailo:
+
+| `reason` | What wins it |
+| --- | --- |
+| `product_not_received` | Delivery confirmation, tracking, signature. From the carrier. |
+| `product_unacceptable` | Photos, the listing as it was, your returns policy. |
+| `fraudulent` | AVS/CVC match, device and IP, prior undisputed orders from the same person, login history. |
+| `subscription_canceled` | Your cancellation records and the terms they agreed to. |
+| `duplicate` | Both charges, and proof they are different orders. |
+| `credit_not_processed` | Your refund record, or the reason there is none. |
+
+An automation that opens a task with the right checklist per reason is worth
+more than one that just says "a dispute happened".
+
+## What is not in the payload
+
+**The evidence bundle.** Sailo assembles one — buyer address, delivery proof,
+the seller's own account of events — and it is deliberately absent from the
+webhook. It exists to be sent to Stripe, not syndicated to whatever an
+integration points at.
+
+`completenessBp` says how strong the response was, in basis points over the
+required fields, without shipping the response itself. `submissionCount` says
+how many times evidence has gone.
+
+**Stripe identifiers.** No dispute id, charge id or account id from Stripe, for
+the same reason they are absent everywhere else: they address the *seller's*
+account.
+
+## Only buyer chargebacks arrive
+
+A seller charging back their own Sailo subscription is Sailo's money and Sailo's
+problem, and it has no business arriving in that seller's Zapier account as
+though a customer had done something.
+
+Every `dispute.*` you receive is a buyer against one of the seller's sales.
+
+## `dispute.closed`
+
+The case is finished; `status` says how.
+
+| `status` | Meaning |
+| --- | --- |
+| `won` | The seller kept the money. `fundsReinstatedAt` is set. |
+| `lost` | The buyer kept it. |
+| `warning_closed` | An inquiry that ended without becoming a chargeback. |
+| `prevented` | Resolved by a deflection service before it became a chargeback. |
+
+Close the task, record the outcome, and — worth doing — track the win rate by
+`reason`. It tells a seller which evidence is worth gathering next time far
+better than a total does.
+
+## A note on speed
+
+The deadline is roughly twenty days and the evidence gets harder to find as time
+passes: helpdesk threads scroll away, carrier tracking expires, the customer
+stops replying.
+
+The single highest-value thing an integration can do here is put the task in
+front of a human on day one rather than day fifteen. That is why `dueBy` is on
+the payload and why this event exists.

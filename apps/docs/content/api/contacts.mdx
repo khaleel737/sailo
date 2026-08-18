@@ -1,0 +1,107 @@
+---
+title: Contacts
+description: Read a shop's list, create or update a contact, and change tags. Includes the consent rules that decide who you may email.
+---
+
+import { Callout } from "nextra/components";
+
+# Contacts
+
+The people on a shop's list — everyone who has bought something, signed up, or
+been added by an automation.
+
+This is the only resource with writes. Both of them are here, and both are
+narrow on purpose.
+
+## Consent
+
+<Callout type="error">
+**Nothing on this page can mark anyone as consenting to marketing email.** A
+contact created through the API always has `marketingConsentAt: null`, whatever
+you send. Consent is something a person gave, not something a request body can
+assert.
+</Callout>
+
+To get consent, pass `"sendOptIn": true` on the create call. Sailo emails that
+person the same double opt-in link the public signup form uses, and
+`marketingConsentAt` is written **when they click it** — not when you asked.
+
+The response carries `optInSent`, which says whether the email actually went
+out. A `false` there can mean *asked too often* rather than *failed*: the opt-in
+send is rate-limited per address, so a script that re-sends to the same person in
+a loop is throttled rather than allowed to use Sailo to pester somebody.
+
+### Reading it back
+
+`marketingConsentAt` is a timestamp or `null`. A timestamp because *when* is what
+a regulator asks; `null` because that is a customer who bought a thing and never
+agreed to be emailed.
+
+Filter with `?consented=true` when syncing into a newsletter tool:
+
+<CurlExample path="/contacts?consented=true&limit=100" />
+
+**Everybody the unfiltered list returns who is not in that set is somebody you
+may not email.** There is deliberately no way to ask for *only* the
+non-consenting — that is not a list anybody should be assembling — so any other
+value of `consented` is treated as absent rather than inverted.
+
+## Creating is idempotent by person
+
+`POST /contacts` is create-or-update, matched on email or phone. Sending
+somebody twice **updates them and merges their tags** rather than duplicating or
+failing.
+
+That is what makes it safe to put behind a form, a Typeform, or a Zapier action
+that may fire twice. There is no separate update endpoint and no `PUT`, because
+there is nothing for one to do.
+
+Two rules on merging that are easy to get backwards:
+
+- **Tags are merged, never replaced.** Sending `["webinar"]` adds it and leaves
+  whatever else they carry.
+- **A name only ever fills a gap.** If the contact already has a name — from the
+  seller, or from an order — yours is ignored. An automation should not be able
+  to overwrite what a human knows about a customer with what a form field
+  guessed.
+
+One of `email` or `phone` is required. If both are absent, that is an
+`invalid_request`.
+
+## Tagging is its own endpoint
+
+`POST /contacts/{id}/tags` takes `add` and `remove`.
+
+Its own route rather than a field on the create call, because this is what an
+automation actually wants to do — *tag everyone who turned up* — and routing it
+through create-or-update would mean sending a name and an email you may not have
+just to change a label.
+
+**Add and remove, never replace.** There is no way to set the whole tag set at
+once, on purpose: a tag the seller put on somebody by hand is not something an
+automation should be able to delete by omitting it.
+
+Tags absent from the contact are not an error to remove, and tags already
+present are not an error to add. Both are no-ops, so the endpoint is safe to
+retry.
+
+Tags are normalised — trimmed and lowercased — the same way stored ones are, on
+both write and filter. A tag that normalises to nothing is an
+`invalid_request` rather than a silent no-op.
+
+## What is deliberately absent
+
+**`notes`.** The seller's private scratchpad about a customer. It is the last
+thing that should sync into a third-party CRM through an integration nobody
+re-read, so it is not on the object at all.
+
+**Deletion.** There is no `DELETE /contacts/{id}`. A person removed from a
+seller's list by an automation is not a mistake the seller can undo, and the
+one legitimate case — a data-subject erasure request — is a decision that
+belongs in the admin with a human attached to it.
+
+## The object
+
+The full shape is on the [contact object reference](/objects/contact).
+
+<Endpoints match="/contacts" />

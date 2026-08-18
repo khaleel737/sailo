@@ -34,6 +34,14 @@
         "src/**/*.{ts,tsx}"
       ]
     },
+    "apps/docs": {
+      "entry": [
+        "src/mdx-components.tsx"
+      ],
+      "project": [
+        "src/**/*.{ts,tsx}"
+      ]
+    },
     "apps/mobile": {
       "entry": [
         "app/**/*.{ts,tsx}",

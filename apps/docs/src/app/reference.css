@@ -1,0 +1,339 @@
+/*
+ * The generated reference, styled.
+ *
+ * Everything on these pages that is *prose* is styled by nextra-theme-docs and
+ * is not touched here. What is here is the half MDX cannot express: the tables
+ * built from `ENDPOINTS`, `MCP_TOOLS` and the wire resources, which are React
+ * components and therefore carry no theme of their own.
+ *
+ * WHY ITS OWN TOKENS RATHER THAN THE THEME'S
+ *
+ * nextra-theme-docs exposes `--x-color-*` custom properties, and reaching for
+ * them directly would be the shorter route. They are the theme's internals
+ * though — prefixed precisely because they are not a public API — and a minor
+ * upgrade that renames one would leave this stylesheet resolving colours to
+ * nothing, which fails as unreadable grey-on-grey rather than as a build error.
+ *
+ * So the six tokens below are ours, defined twice: once for light and once
+ * under `html.dark`, which is the class next-themes puts on the document and
+ * the one contract with the theme worth depending on.
+ */
+
+:root {
+  --ref-line: #e5e5e5;
+  --ref-line-strong: #d4d4d4;
+  --ref-surface: #fafafa;
+  --ref-text: #171717;
+  --ref-muted: #525252;
+  --ref-mono-bg: #f5f5f5;
+}
+
+html.dark {
+  --ref-line: #262626;
+  --ref-line-strong: #333333;
+  --ref-surface: #171717;
+  --ref-text: #ededed;
+  --ref-muted: #a3a3a3;
+  --ref-mono-bg: #1c1c1c;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Inline pieces                                                              */
+/* -------------------------------------------------------------------------- */
+
+.ref-code {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.8125rem;
+  background: var(--ref-mono-bg);
+  border: 1px solid var(--ref-line);
+  border-radius: 0.25rem;
+  padding: 0.0625rem 0.3125rem;
+  white-space: nowrap;
+}
+
+/*
+ * The method badge. Colour carries meaning here rather than decoration: GET is
+ * safe to retry and POST is not, and that is the single most useful thing to
+ * know at a glance when scanning an index of nine operations.
+ */
+.ref-method {
+  display: inline-block;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  border: 1px solid transparent;
+}
+
+.ref-method[data-method="GET"] {
+  color: #166534;
+  background: #dcfce7;
+  border-color: #bbf7d0;
+}
+
+.ref-method[data-method="POST"] {
+  color: #1e40af;
+  background: #dbeafe;
+  border-color: #bfdbfe;
+}
+
+html.dark .ref-method[data-method="GET"] {
+  color: #86efac;
+  background: rgb(22 101 52 / 0.25);
+  border-color: rgb(34 197 94 / 0.3);
+}
+
+html.dark .ref-method[data-method="POST"] {
+  color: #93c5fd;
+  background: rgb(30 64 175 / 0.25);
+  border-color: rgb(59 130 246 / 0.3);
+}
+
+/*
+ * The write pill. Deliberately not coloured like a method badge — a scope is
+ * not a verb, and a reader who has learned "green means GET" should not have to
+ * unlearn it two columns later.
+ */
+.ref-scope {
+  display: inline-block;
+  margin-inline-start: 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  padding: 0.0625rem 0.375rem;
+  border-radius: 0.25rem;
+  color: var(--ref-muted);
+  background: var(--ref-surface);
+  border: 1px solid var(--ref-line-strong);
+  vertical-align: middle;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Tables                                                                     */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Every table scrolls inside its own box. A parameter name plus a paragraph of
+ * description does not fit a phone, and the alternative to an inner scroll is a
+ * page that scrolls sideways as a whole — which moves the sidebar and the
+ * heading out of view to read one cell.
+ */
+.ref-scroll {
+  overflow-x: auto;
+  margin-top: 0.75rem;
+}
+
+.ref-table {
+  width: 100%;
+  min-width: 30rem;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.ref-table td,
+.ref-table th {
+  border-top: 1px solid var(--ref-line);
+  padding: 0.625rem 0.75rem 0.625rem 0;
+  vertical-align: top;
+  text-align: start;
+}
+
+.ref-table tr:first-child td,
+.ref-table tr:first-child th {
+  border-top: 0;
+}
+
+.ref-table th {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ref-muted);
+  padding-bottom: 0.5rem;
+}
+
+.ref-table-term {
+  width: 30%;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.8125rem;
+  color: var(--ref-text);
+  word-break: break-word;
+}
+
+.ref-table-note {
+  display: block;
+  margin-top: 0.125rem;
+  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: var(--ref-muted);
+}
+
+.ref-table-body {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--ref-muted);
+}
+
+/* The operation index: method, path, one line. */
+.ref-index td:first-child {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.ref-index-path {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.8125rem;
+  color: var(--ref-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ref-index-path:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  An operation, a tool, an event                                             */
+/* -------------------------------------------------------------------------- */
+
+.ref-entry {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ref-line);
+  /*
+   * The heading is a link target from the index above and from other pages.
+   * Without this, clicking one puts the heading flush against the sticky
+   * navbar, so the first line a reader sees is the one below the thing they
+   * clicked.
+   */
+  scroll-margin-top: 5rem;
+}
+
+.ref-entry:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.ref-entry-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ref-text);
+  margin: 0;
+}
+
+.ref-entry-lead {
+  margin-top: 0.625rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--ref-muted);
+}
+
+.ref-label {
+  margin-top: 1.25rem;
+  margin-bottom: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ref-muted);
+}
+
+/*
+ * Fenced code inside a generated component.
+ *
+ * Nextra highlights code blocks written in MDX with Shiki, at build time,
+ * through the MDX pipeline. These blocks are not in the MDX — they are strings
+ * on a constant — so there is nothing for that pipeline to reach. Styled to
+ * match rather than highlighted: a `curl` line and a JSON body read perfectly
+ * well unhighlighted, and shipping Shiki to the browser to colour them would
+ * cost more than it buys.
+ */
+.ref-pre {
+  margin-top: 0.5rem;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  border: 1px solid var(--ref-line);
+  background: var(--ref-surface);
+  padding: 0.875rem 1rem;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.75rem;
+  line-height: 1.7;
+  color: var(--ref-text);
+  tab-size: 2;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Lists                                                                      */
+/* -------------------------------------------------------------------------- */
+
+/* The event catalogue: two columns where there is room, one where there is not. */
+.ref-chips {
+  display: grid;
+  gap: 0.375rem;
+  grid-template-columns: 1fr;
+  margin-top: 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .ref-chips {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.ref-chips li {
+  margin: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Screen-reader only                                                         */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Every generated table carries a `<caption>` this class hides.
+ *
+ * Defined here rather than borrowed from the theme, which prefixes its utility
+ * classes (`x:sr-only`) precisely because they are internal. A page with six
+ * tables and no captions is one a screen reader announces as six identical
+ * "table" landmarks — the heading above a table is not part of it, so there is
+ * nothing else to say which is which.
+ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/*
+ * A link inside a generated table that is prose rather than a path.
+ *
+ * The tool index links a tool's title — "Create or update a contact" — which in
+ * `.ref-index-path`'s monospace reads as an identifier somebody is meant to
+ * type. Inherits the surrounding font and takes only the underline behaviour.
+ */
+.ref-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ref-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}

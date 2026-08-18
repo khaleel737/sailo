@@ -1,0 +1,81 @@
+---
+title: Objects
+description: One vocabulary for both transports. Every field Sailo sends, described once, for the REST API and webhooks alike.
+---
+
+# Objects
+
+**A webhook's `data` and the REST body for the same thing are the same object.**
+
+They are built by the same code, so a field map written against one works
+against the other. A consumer that receives `order.paid` and later decides to
+fetch the order to check something sees identical field names in both. Two
+shapes would be two sets of documentation, two mental models, and a support
+question every week about why `total` is an object here and a number there.
+
+These pages are that vocabulary, written down once.
+
+## The objects
+
+| Object | Reachable by | Carried by |
+| --- | --- | --- |
+| [Money](/objects/money) | — | every amount, everywhere |
+| [Shop](/objects/shop) | `GET /shop` | — |
+| [Order](/objects/order) | `GET /orders`, `GET /orders/{id}` | `order.*`, `booking.confirmed` |
+| [Product](/objects/product) | `GET /products`, `GET /products/{id}` | — |
+| [Contact](/objects/contact) | `GET /contacts`, `GET /contacts/{id}` | `contact.created` |
+| [Subscription](/objects/subscription) | *no endpoint* | `subscription.*` |
+| [Dispute](/objects/dispute) | *no endpoint* | `dispute.*` |
+
+The last two are the reason this section exists as a section. Nine of the
+<EventCount /> webhook events carry an object that appears nowhere in the REST
+API — there is no `GET /api/v1/subscriptions/{id}` and no dispute endpoint — so
+unlike an order there is nowhere else to go and read the shape off.
+
+## `object`
+
+Every one of them carries a literal `object` field:
+
+```json
+{ "id": "…", "object": "order", … }
+```
+
+so a single handler that receives a webhook can branch on the kind of thing it
+was given without inspecting the event name, and a value stored in a queue can
+be recognised later without the context that produced it.
+
+## What is never on any of them
+
+Consistent across all seven, and worth stating in one place rather than seven:
+
+- **No Stripe identifiers.** `stripeSubscriptionId`, `stripeCustomerId`,
+  `stripeAccountId`, charge ids, payment intent ids. Every one of them names an
+  object in the *seller's* Stripe account, and shipping them would let anything
+  holding a payload address that account directly. A Sailo object's own `id` is
+  the handle Sailo speaks.
+- **No credentials or one-time tokens.** No download tokens, no invoice tokens,
+  no ticket tokens, no payment proof URLs. Each of those is a bearer credential
+  in link form.
+- **Nothing the seller wrote privately.** A contact's `notes` column is the
+  seller's scratchpad about a customer; a dispute's `evidenceSnapshot` is the
+  bundle assembled to answer a chargeback. Both exist for one reader and it is
+  not an integration.
+- **Nothing about another shop.** Every object comes from one shop and names
+  nothing outside it.
+
+## Field types
+
+The `type` column on each page is written for a reader, not as TypeScript:
+
+| Written | Means |
+| --- | --- |
+| `string` | A JSON string. Never `null` where the type does not say so. |
+| `string \| null` | Present on every payload; `null` when there is no value. |
+| `number` | An integer unless the field says otherwise. |
+| `money` | A [money object](/objects/money), never a bare number. |
+| `object \| null` | The whole object is `null` when absent — see [nulls](/conventions#nulls). |
+| `object[]` | An array, possibly empty. Never `null`. |
+| `"order"` | Exactly that literal string. |
+
+Timestamps are `string | null` and always [ISO 8601 in
+UTC](/conventions#dates-and-times).

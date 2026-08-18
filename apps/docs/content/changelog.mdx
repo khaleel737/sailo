@@ -1,0 +1,84 @@
+---
+title: Changelog
+description: What has changed in the API, the webhooks and the MCP server — and what counts as a breaking change.
+---
+
+import { Callout } from "nextra/components";
+
+# Changelog
+
+## What counts as breaking
+
+The distinction that decides whether something appears here as a warning or as a
+note.
+
+**Not breaking**, and shipped without notice:
+
+- A new endpoint, a new query parameter, a new webhook event, a new MCP tool.
+- A new field inside a response body or a webhook `data`.
+- A new member of an enumeration — a payment rail, an order status, a dispute
+  reason.
+- A new error `code`.
+- Any change to an error `message`, which is a sentence for a person.
+
+**Breaking**, and announced here before it ships, with the old behaviour kept
+working for a stated period:
+
+- A field removed, renamed, or changed in meaning.
+- An endpoint removed.
+- A webhook event removed, or one that starts firing at a different moment.
+- An error `code` renamed.
+
+<Callout type="warning">
+The deal is symmetrical. Sailo does not break you with an additive change, and
+in exchange **your mapping must ignore fields it does not recognise** and must
+not throw on an unfamiliar enumeration member. A consumer that validates a
+payload against a closed schema has opted out of that deal.
+</Callout>
+
+Two version numbers carry it: `sailo-version` (a date) on every REST response,
+and `version` (an integer) inside every webhook envelope. Both move **only** on
+a breaking change. See [versioning](/conventions#versioning).
+
+## Current
+
+| | |
+| --- | --- |
+| REST API | <ApiVersion /> |
+| Webhook payload | <PayloadVersion /> |
+| MCP protocol | <ModernVersion />, with the handshake for <LegacyVersions /> |
+| MCP server | <ServerName /> <ServerVersion /> |
+
+## History
+
+### 2026-08-12 — the current contract
+
+The version every response carries today. It covers:
+
+- <EndpointCount /> REST operations over shops, orders, products and contacts.
+- <EventCount /> webhook events, signed with Standard Webhooks.
+- <ToolCount /> MCP tools over the same key.
+
+Nothing has been removed or renamed since. Everything since has been additive
+and is described on the pages it belongs to rather than repeated here.
+
+## Watching for changes
+
+**This page** is the signal for anything breaking. Nothing is announced only in
+a release note somewhere else.
+
+**The [OpenAPI document](/api/openapi)**, at `/api/v1/openapi.json`, is the
+machine-readable version of the REST surface. Diffing it in CI will show you
+additive changes too, which is more signal than most consumers want — but it is
+there.
+
+**`/llms-full.txt`** is this entire site as one Markdown file, if you would
+rather diff prose.
+
+## Deprecations
+
+None currently in force.
+
+When there is one it will appear here with the date it was announced, the date
+the old behaviour stops, and what to do instead — in that order, before it
+ships.

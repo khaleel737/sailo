@@ -1,0 +1,109 @@
+---
+title: OpenAPI
+description: A machine-readable OpenAPI 3.1 description of the whole REST surface, served without a key.
+---
+
+import { Callout, Tabs } from "nextra/components";
+
+# OpenAPI
+
+<code><OpenApiUrl /></code>
+
+OpenAPI 3.1.1, served as `application/openapi+json`, describing every operation,
+parameter, request body, response schema and failure mode.
+
+## No key required
+
+Deliberately, and it is the one route under `/api/v1` that is open.
+
+The document describes the *shape* of the API and contains no shop's data, so a
+key would buy nothing — and would cost the thing the document exists for.
+Somebody deciding whether Sailo fits their stack needs to point Postman, an SDK
+generator or a model at it *before* they have an account. A spec behind a
+credential is a spec nobody evaluates.
+
+It is also the only route here that sends `Access-Control-Allow-Origin: *`,
+because a generator running in a browser tab is a legitimate reader of it.
+[Every other route sends no CORS headers at all](/authentication#cors).
+
+## Generating a client
+
+<Tabs items={["TypeScript", "Python", "Go", "Postman"]}>
+  <Tabs.Tab>
+```bash
+npx openapi-typescript https://sailo.store/api/v1/openapi.json \
+  -o src/sailo.d.ts
+```
+Then use it with any fetch wrapper — `openapi-fetch` pairs with it directly and
+gives you typed paths and responses.
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash
+pip install openapi-python-client
+openapi-python-client generate \
+  --url https://sailo.store/api/v1/openapi.json
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+```bash
+go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
+oapi-codegen -package sailo \
+  https://sailo.store/api/v1/openapi.json > sailo.gen.go
+```
+  </Tabs.Tab>
+  <Tabs.Tab>
+Import → Link, and paste the URL. Set a collection-level Bearer token so every
+request inherits it.
+  </Tabs.Tab>
+</Tabs>
+
+Sailo publishes no official SDK. The surface is <EndpointCount /> operations
+over one envelope, so a generated client is as good as a written one and stays
+current without waiting on us.
+
+## What is in it
+
+- **`servers`** — the origin that answered the request, not a hard-coded host.
+  The document is generated per request precisely so a generated client calls
+  the deployment you fetched the spec from.
+- **`security`** — `bearerAuth` on every operation.
+- **`components.schemas`** — `Money`, `Address`, `Shop`, `Order`, `OrderItem`,
+  `Product`, `ProductVariant`, `Contact`, `Error`.
+- **`x-sailo-scope`** — `read` or `write` on every operation, which is the
+  vendor extension worth reading: it tells a generated client which calls need a
+  write key before it makes one.
+- **Responses per status**, with every reason a status can occur folded into its
+  description. Two 400s would silently overwrite each other under one key, so
+  the reasons are grouped rather than listed one per response.
+
+## Nullability is 3.1, not 3.0
+
+A nullable field is a **type union**:
+
+```json
+{ "type": ["string", "null"] }
+```
+
+not `nullable: true`, which was 3.0's spelling and which 3.1 validators reject.
+If your generator produces `any` where it should produce `string | null`, it is
+reading the document as 3.0 — check the generator's version rather than the
+document.
+
+<Callout type="info">
+The document is hand-authored rather than derived from the handlers, because
+there is nothing at runtime to derive it from: the routes read the query string
+by hand and take plain TypeScript types, so no schema exists to reflect over.
+What keeps it honest is a build-time test that walks the real route tree and
+fails if a route exists this does not describe — or if this describes one that
+does not exist.
+</Callout>
+
+## Caching
+
+`public, max-age=3600, stale-while-revalidate=86400`. Public, unlike everything
+else under `/api/v1`, because there is no bearer token on this route and no shop
+behind it — so a shared cache holding one copy for everybody is correct rather
+than a leak.
+
+If you are polling it in CI to detect changes, an hour is the granularity you
+will get. The [changelog](/changelog) is the better signal.

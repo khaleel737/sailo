@@ -8,3 +8,23 @@ packages:
 onlyBuiltDependencies:
   - esbuild
   - unrs-resolver
+
+# Nextra's two packages get an older zod than the rest of the repo.
+#
+# zod 4.4.0 made `z.custom()` reject `undefined` — before it, the predicate ran
+# and nextra's `reactNode` predicate returns true for null and undefined. The
+# docs theme's `LayoutPropsSchema` declares `children: reactNode` and then
+# destructures `children` out of the props *before* validating, so under 4.4 it
+# validates an object that is missing a field it requires and throws
+# "expected nonoptional, received undefined" while prerendering every page.
+#
+# Scoped rather than a repo-wide override, deliberately. Every `@sailo/*`
+# package asks for `^4.4.3` and several use it for real; pinning zod globally to
+# satisfy a documentation theme would be the tail wagging the dog. `4.3.5` is
+# the newest release before the change and satisfies nextra's own `^4.1.12`.
+#
+# Remove both lines once nextra ships a fix — this is their bug, not a
+# constraint of ours.
+overrides:
+  nextra>zod: 4.3.5
+  nextra-theme-docs>zod: 4.3.5

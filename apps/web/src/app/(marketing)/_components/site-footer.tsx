@@ -5,7 +5,7 @@ import type { MarketingDictionary } from "@sailo/i18n/marketing";
 import { getBlogDictionary } from "@sailo/i18n/marketing/blog";
 import type { Locale } from "@sailo/i18n/config";
 import { DEMOS } from "@sailo/marketing/demos";
-import { appOrigin } from "@sailo/core/origin";
+import { appOrigin, docsUrl } from "@sailo/core/origin";
 import { SailoLogo } from "@/components/brand";
 import { CookieSettingsButton } from "@/components/shared/cookie-settings-button";
 import { measurementId } from "@/lib/google-tag";
@@ -123,20 +123,23 @@ export function SiteFooter({
                 </li>
                 {/*
                   The developer documentation — the REST API, the webhooks and
-                  the MCP server. It is public and unauthenticated on purpose
-                  (see `docs/page.tsx`), and until now nothing on the marketing
-                  site linked to it: somebody deciding whether Sailo fits their
-                  stack had to already know the URL, and a crawler only ever
-                  reached it through the sitemap. One footer link on every
-                  marketing page fixes both.
+                  the MCP server. Public and unauthenticated on purpose:
+                  somebody deciding whether Sailo fits their stack reads it
+                  before they have an account, and one footer link on every
+                  marketing page is how they and a crawler find it.
+
+                  An `<a>` rather than a `Link`, and an absolute URL rather than
+                  `/docs`. It is a different deployment on a different host now
+                  — apps/docs, at docs.sailo.store — so there is no route here
+                  to prefetch and `next/link` would be claiming otherwise.
                 */}
                 <li>
-                  <Link
-                    href="/docs"
+                  <a
+                    href={docsUrl()}
                     className="focus-line inline-flex min-h-11 items-center text-[0.875rem] text-[var(--mute-500)] transition-colors hover:text-[var(--ink)]"
                   >
                     {m.footer.docs}
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </nav>

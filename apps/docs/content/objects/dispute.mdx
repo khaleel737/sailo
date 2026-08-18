@@ -1,0 +1,127 @@
+---
+title: Dispute object
+description: A chargeback, carried by dispute.opened and dispute.closed. dueBy is the deadline, and caseType decides whether any money has actually moved.
+---
+
+import { Callout } from "nextra/components";
+
+# Dispute
+
+A chargeback. Carried by `dispute.opened` and `dispute.closed`.
+
+**There is no dispute endpoint.** Like a [subscription](/objects/subscription),
+this object reaches you through a webhook or not at all — which is why its shape
+is written out here.
+
+<DisputeFields />
+
+## Only ever a buyer against a seller
+
+Sailo has two kinds of dispute and **one of them never appears here**: a seller
+charging back their own Sailo subscription is Sailo's money and Sailo's problem,
+and it has no business arriving in that seller's Zapier account as though a
+customer had done something.
+
+Every payload you receive is a buyer charging back one of the seller's sales.
+
+## `caseType` before anything else
+
+<Callout type="warning">
+`dispute.opened` fires for an **inquiry** and for a **chargeback**, and they are
+not the same event to a business.
+
+An `inquiry` is the issuer asking a question on the cardholder's behalf. No
+money has moved and none may. A `chargeback` has taken the money.
+
+A consumer that tells a seller "you have lost a sale" on every `dispute.opened`
+is wrong a good fraction of the time.
+</Callout>
+
+Branch on `caseType` first: `inquiry`, `chargeback`, `compliance`, `block`,
+`resolution`. The last three are rarer — `compliance` is a network-rules case,
+the other two are deflection outcomes — and a consumer should handle them by
+falling through rather than by assuming they cannot occur.
+
+`fundsWithdrawnAt` is the unambiguous signal that money actually left: it is
+`null` on an inquiry.
+
+## `dueBy` is the whole point of the event
+
+The response deadline, usually about twenty days.
+
+`dispute.opened` exists so a seller's own tooling can go and get the evidence,
+because **what wins a chargeback usually lives somewhere that is not Sailo** — a
+helpdesk transcript, a delivery confirmation, a shipping account, a login log.
+Hanging a task off `dueBy` is what this event is for.
+
+It is `null` on a case that no longer needs a response.
+
+## The cost is more than the sale
+
+Three money objects, and the third is the one to report:
+
+| Field | What it is |
+| --- | --- |
+| `amount` | The disputed sale |
+| `fee` | Stripe's dispute fee |
+| `deducted` | **Amount plus fee — what actually left the balance** |
+
+Which is why a £42 chargeback costs £57. A consumer reporting `amount` as the
+loss is understating it by the fee on every case.
+
+## Evidence is never sent
+
+`evidenceSnapshot` — the bundle assembled to answer the case — is **not on this
+object**. It holds the buyer's address, delivery proof and the seller's own
+account of events, and it exists to be sent to Stripe rather than syndicated to
+whatever an integration points at.
+
+`completenessBp` says how strong the response was, in basis points over the
+required fields, without shipping the response itself. `submissionCount` says
+how many times evidence has gone.
+
+## Statuses
+
+`warning_needs_response`, `warning_under_review`, `warning_closed`,
+`needs_response`, `under_review`, `won`, `lost`, `prevented`.
+
+The `warning_*` three are inquiry states. `prevented` is a case a deflection
+service — Visa Order Insight/RDR, Ethoca — resolved before it became a
+chargeback.
+
+## `dispute.closed`
+
+The case is finished; `status` says how it went. On a win,
+`fundsReinstatedAt` is set — the money came back, though **the fee generally
+does not**.
+
+## Example
+
+```json
+{
+  "id": "b4e1f7a2-9d38-4c05-8e6b-1f0a3d7c2b95",
+  "object": "dispute",
+  "orderId": "8f2b41d6-0c93-4f77-a1e5-9b6d2c4a7e01",
+  "status": "needs_response",
+  "caseType": "chargeback",
+  "reason": "product_not_received",
+  "networkReasonCode": "13.1",
+  "network": "visa",
+  "amount":   { "cents": 4200, "amount": "42.00", "currency": "GBP" },
+  "fee":      { "cents": 1500, "amount": "15.00", "currency": "GBP" },
+  "deducted": { "cents": 5700, "amount": "57.00", "currency": "GBP" },
+  "currency": "GBP",
+  "dueBy": "2026-09-01T23:59:59.000Z",
+  "evidenceSubmittedAt": null,
+  "submissionCount": 0,
+  "completenessBp": null,
+  "fundsWithdrawnAt": "2026-08-12T09:41:07.221Z",
+  "fundsReinstatedAt": null,
+  "openedAt": "2026-08-12T09:40:58.000Z",
+  "createdAt": "2026-08-12T09:41:07.221Z",
+  "updatedAt": "2026-08-12T09:41:07.221Z"
+}
+```
+
+The [chargeback guide](/guides/chargebacks) turns this into a working
+evidence-gathering flow.

@@ -58,3 +58,36 @@ export function appOrigin(): string {
 /** A path, as a link an inbox can follow. */
 export const absolute = (path: string): string =>
   new URL(path, appOrigin()).toString();
+
+/* -------------------------------------------------------------------------- */
+/*  The documentation                                                          */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Where the developer documentation lives — a different host from the product.
+ *
+ * `apps/docs`, served from `docs.sailo.store`. It used to be a route group
+ * inside apps/web, which is why several places still spelled the link
+ * `/docs/api` as though it were a path on this origin. It is not, and a
+ * relative link from the seller admin or the footer now lands on a 404.
+ *
+ * Here rather than in apps/docs because the callers are spread across the
+ * repository and only one of them is that app: the marketing footer, the admin
+ * sidebar, the integrations settings card, and the `contact.url` in the OpenAPI
+ * document `@sailo/api` builds. Four copies of a hostname is three chances for
+ * one to rot when it moves.
+ *
+ * Read from the environment for the same reason `appOrigin` is: a preview
+ * deployment should link to whatever documentation was deployed with it, not to
+ * production's.
+ */
+export function docsOrigin(): string {
+  return normalizeOrigin(
+    process.env.NEXT_PUBLIC_DOCS_URL ||
+      process.env.EXPO_PUBLIC_DOCS_URL ||
+      "https://docs.sailo.store",
+  );
+}
+
+/** A path on the documentation site, absolute. */
+export const docsUrl = (path = "/"): string => new URL(path, docsOrigin()).toString();

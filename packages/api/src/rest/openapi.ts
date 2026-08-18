@@ -1,3 +1,4 @@
+import { docsUrl } from "@sailo/core/origin";
 import { PRODUCT_KIND_VALUES } from "@sailo/core/variants";
 import { ORDER_STATUSES } from "@sailo/core/order-status";
 import { PAYMENT_STATUSES } from "@sailo/core/payment-status";
@@ -496,7 +497,13 @@ export function openApiDocument(baseUrl: string): Record<string, unknown> {
         "There are no CORS headers, deliberately: a key a browser can send is a key in somebody's bundle.",
       ].join("\n"),
       license: { name: "Proprietary", url: `${baseUrl}/terms` },
-      contact: { name: "Sailo", url: `${baseUrl}/docs/api` },
+      /*
+       * `baseUrl` is the origin that answered the request, and the terms live
+       * on it. The documentation does not: it is its own deployment on its own
+       * host, so this is the one URL in the document that must not be built
+       * from the server's address.
+       */
+      contact: { name: "Sailo", url: docsUrl("/api") },
     },
     servers: [{ url: baseUrl, description: "Production" }],
     security: [{ bearerAuth: [] }],

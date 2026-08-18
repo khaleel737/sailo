@@ -5,6 +5,7 @@ import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
 import { can, cheapestPlanWith } from "@sailo/core/plans";
 import { appUrl } from "@/lib/app-url";
+import { docsUrl } from "@sailo/core/origin";
 import { readIntegrations } from "@/lib/actions/integrations";
 import { Alert, Card } from "@sailo/design-system/web";
 import { WebhooksCard } from "./_components/webhooks-card";
@@ -55,6 +56,7 @@ export default async function IntegrationsSettingsPage() {
         keys={keys}
         contactCount={contactCount}
         mcpUrl={`${appUrl()}/api/mcp`}
+        mcpDocsUrl={docsUrl("/mcp")}
       />
 
       <Card className="space-y-2 p-5">
@@ -62,12 +64,20 @@ export default async function IntegrationsSettingsPage() {
           {a.integrations.docsTitle}
         </h2>
         <p className="text-xs text-ink-500">{a.integrations.docsBody}</p>
-        <Link
-          href="/docs/api"
+        {/*
+          An `<a>` in a new tab rather than a `Link`. The documentation is a
+          different deployment on a different host now, so there is no route to
+          prefetch — and a seller reading it is halfway through creating a key
+          on this page, which navigating away would lose.
+        */}
+        <a
+          href={docsUrl("/api")}
+          target="_blank"
+          rel="noopener noreferrer"
           className="focus-ring inline-block text-xs font-medium text-brand-600 underline-offset-2 hover:underline"
         >
           {a.integrations.docsLink}
-        </Link>
+        </a>
       </Card>
 
       {/*
