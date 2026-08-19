@@ -1,0 +1,25 @@
+apps/web/drizzle/0039_preorders.sql
+  s_a79949fd39aa12::t_5d7aee384d37f1 1
+apps/web/drizzle/0041_pricing_models.sql
+  s_a79949fd39aa12::t_5d7aee384d37f1 1
+apps/web/drizzle/0040_physical_depth.sql
+  s_a79949fd39aa12::t_5d7aee384d37f1 1
+apps/web/drizzle/0042_offers.sql
+  s_a79949fd39aa12::t_5d7aee384d37f1 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4dfb3a430aa6c90a4043d7976319ac1334219b50",
+  "prompts": {},
+  "sessions": {
+    "s_a79949fd39aa12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3512a1e-3a48-4b59-95c2-ad40c780f6a9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
