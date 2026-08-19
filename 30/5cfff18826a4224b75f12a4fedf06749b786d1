@@ -1,0 +1,29 @@
+apps/web/drizzle/0052_shop_team.sql
+  s_e1f6fcdd78170a::t_a1cd8d3e41a01d 1
+apps/web/drizzle/0054_lead_capture.sql
+  s_e1f6fcdd78170a::t_a1cd8d3e41a01d 1
+apps/web/src/lib/migrations.test.ts
+  s_e1f6fcdd78170a::t_5c25e15b5d9b24 37-41,45-46,48-50,52-55,57-64,100-102,104,106,108-109,111-115
+  s_e1f6fcdd78170a::t_2cedc38a88632c 34-36,42-44,47,51,56,65-66,99,103
+  s_e1f6fcdd78170a::t_350b721889a878 33
+apps/web/drizzle/0055_testimonials.sql
+  s_e1f6fcdd78170a::t_a1cd8d3e41a01d 1
+apps/web/drizzle/0053_tax.sql
+  s_e1f6fcdd78170a::t_a1cd8d3e41a01d 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "305cfff18826a4224b75f12a4fedf06749b786d1",
+  "prompts": {},
+  "sessions": {
+    "s_e1f6fcdd78170a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "07ffa20a-be06-4b62-a6c7-e2cc4d3b435d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
