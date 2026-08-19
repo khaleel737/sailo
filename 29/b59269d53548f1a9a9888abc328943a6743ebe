@@ -1,0 +1,19 @@
+apps/web/src/app/download/[token]/page.tsx
+  s_e1f6fcdd78170a::t_8ef2f153d42468 310-323
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "29b59269d53548f1a9a9888abc328943a6743ebe",
+  "prompts": {},
+  "sessions": {
+    "s_e1f6fcdd78170a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "07ffa20a-be06-4b62-a6c7-e2cc4d3b435d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
