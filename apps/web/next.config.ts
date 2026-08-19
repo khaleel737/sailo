@@ -1,4 +1,29 @@
 import type { NextConfig } from "next";
+import { pixelCspHosts } from "@sailo/customers/pixels";
+
+/**
+ * The hosts the seller-configured pixels need, derived from the provider table
+ * rather than typed out here.
+ *
+ * They *were* typed out here, and that was the drift waiting to happen: a
+ * provider added to `shop-pixels.ts` with no matching entry in this list is a
+ * pixel that loads, is blocked by this policy, and fails **silently** — the
+ * seller's dashboard simply stays empty and nothing anywhere says why. Spec 42
+ * adds three providers at once, which is exactly when that stops being
+ * hypothetical.
+ *
+ * It is a union across every supported provider, and the spec asks for a
+ * per-shop list. It is a union because this is a static response header and
+ * headers cannot tell `/{handle}` from our own routes — the note below records
+ * that decision for the two vendors that were already here. What actually
+ * gates a pixel is unchanged and is stronger than an allowlist: the `<script>`
+ * is not rendered at all unless the seller configured that provider *and* the
+ * buyer consented, so a host named here for a shop that configured nothing is
+ * a permission nothing uses. The residual gap is real: a successful injection
+ * on a storefront could reach these hosts. Closing it needs a per-request
+ * policy, which this app's static shells do not have.
+ */
+const PIXEL_HOSTS = pixelCspHosts();
 
 const nextConfig: NextConfig = {
   /*
@@ -215,11 +240,11 @@ const nextConfig: NextConfig = {
        * shipped `BarcodeDetector`, so on an iPhone — which is what a seller
        * is holding at a door — this decoder is the only scanner there is.
        */
-      `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${devEval} https://js.stripe.com https://*.stripe.com https://www.googletagmanager.com https://va.vercel-scripts.com https://connect.facebook.net https://analytics.tiktok.com`,
+      `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${devEval} https://js.stripe.com https://*.stripe.com https://va.vercel-scripts.com ${PIXEL_HOSTS.script.join(" ")}`,
       "style-src 'self' 'unsafe-inline'",
       // Google Analytics still falls back to a tracking pixel in some paths,
       // and the Meta pixel's namesake fallback is an image request to /tr.
-      "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://picsum.photos https://images.unsplash.com https://*.stripe.com https://www.google-analytics.com https://www.googletagmanager.com https://www.facebook.com https://analytics.tiktok.com",
+      `img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://picsum.photos https://images.unsplash.com https://*.stripe.com ${PIXEL_HOSTS.img.join(" ")}`,
       "font-src 'self' data:",
       /*
        * Stripe.js posts to its own API; the app posts only to itself. The two
@@ -228,7 +253,7 @@ const nextConfig: NextConfig = {
        * the scripts load and then every event is dropped, which is the same
        * empty dashboard as before but harder to spot.
        */
-      "connect-src 'self' https://api.stripe.com https://*.stripe.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://analytics.tiktok.com",
+      `connect-src 'self' https://api.stripe.com https://*.stripe.com ${PIXEL_HOSTS.connect.join(" ")}`,
       // Checkout, the billing portal and Connect onboarding are iframed or
       // opened by Stripe.js.
       "frame-src https://js.stripe.com https://hooks.stripe.com https://*.stripe.com",

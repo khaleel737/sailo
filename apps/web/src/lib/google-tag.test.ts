@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { pixelCspHosts } from "@sailo/customers/pixels";
 
 /**
  * Where the Google tag is allowed to be.
@@ -183,11 +184,33 @@ describe("the Content Security Policy lets the tags run", () => {
     config.match(new RegExp(`["\`]${name}[^"\`]+["\`]`))?.[0] ?? "";
 
   it("allows the Google tag's script and its collect endpoints", () => {
-    const scriptSrc = directive("script-src");
-    expect(scriptSrc).toContain("googletagmanager.com");
+    /*
+     * Asserted against the derived list rather than against the file's text.
+     *
+     * The vendor hosts moved out of this config and into `shop-pixels.ts`, so
+     * that a provider added there cannot ship without a CSP entry — which was
+     * the drift this whole block exists to catch, and which grepping the
+     * source can no longer see. Reading `pixelCspHosts()` checks what actually
+     * ends up in the header.
+     */
+    const hosts = pixelCspHosts();
+    expect(hosts.script).toContain("https://www.googletagmanager.com");
+    expect(hosts.connect).toContain("https://www.google-analytics.com");
 
-    const connectSrc = directive("connect-src");
-    expect(connectSrc).toContain("google-analytics.com");
+    // And the config really does interpolate them, rather than naming a
+    // variable that goes nowhere.
+    expect(directive("script-src")).toContain("PIXEL_HOSTS.script");
+    expect(directive("connect-src")).toContain("PIXEL_HOSTS.connect");
+  });
+
+  it("still allows the two pixels that were named here by hand", () => {
+    // The move must not have dropped one on the way. Meta and TikTok were the
+    // two vendor hosts in this file before spec 42.
+    const hosts = pixelCspHosts();
+    expect(hosts.script).toContain("https://connect.facebook.net");
+    expect(hosts.script).toContain("https://analytics.tiktok.com");
+    expect(hosts.img).toContain("https://www.facebook.com");
+    expect(hosts.connect).toContain("https://analytics.tiktok.com");
   });
 
   it("keeps 'unsafe-eval' out of production and in development", () => {
