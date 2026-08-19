@@ -89,7 +89,20 @@ export async function authenticateApi(request: Request): Promise<AuthOutcome> {
    * charge has to come first.
    */
   const ip = await callerIp();
-  const budget = await rateLimit(`api-auth:${ip}`, AUTH_ATTEMPTS_PER_MINUTE, AUTH_WINDOW);
+  /*
+   * DECISION B — fails closed (secret guessing).
+   *
+   * An API key is a bearer token for a whole shop's data and writes, and this
+   * budget is the entire cost of guessing one. Failing open turns a cache outage
+   * into an unmetered offline attack conducted online.
+   *
+   * The message is the same either way and deliberately says nothing about the
+   * key: "wait a minute" is true when the budget is spent and true when there
+   * was no budget to spend, and neither reveals whether the token was close.
+   */
+  const budget = await rateLimit(`api-auth:${ip}`, AUTH_ATTEMPTS_PER_MINUTE, AUTH_WINDOW, {
+    onOutage: "closed",
+  });
   if (!budget.allowed) {
     return {
       ok: false,

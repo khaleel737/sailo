@@ -2,8 +2,12 @@
   "$schema": "https://unpkg.com/knip@latest/schema.json",
   "workspaces": {
     ".": {
-      "entry": [],
-      "project": []
+      "entry": [
+        "scripts/i18n/*.mts"
+      ],
+      "project": [
+        "scripts/**/*.mts"
+      ]
     },
     "apps/web": {
       "entry": [
@@ -42,6 +46,19 @@
         "src/**/*.{ts,tsx}"
       ]
     },
+    "apps/hq": {
+      "entry": [
+        "e2e/**/*.scenario.ts",
+        "e2e/scenarios/*.{ts,mts}",
+        "test-stubs/*.{ts,mts}"
+      ],
+      "project": [
+        "src/**/*.{ts,tsx}",
+        "src/**/*.css",
+        "e2e/**/*.ts",
+        "test-stubs/*.ts"
+      ]
+    },
     "apps/mobile": {
       "entry": [
         "app/**/*.{ts,tsx}",
@@ -64,12 +81,25 @@
         "src/**/*.{ts,tsx}"
       ]
     },
+    "packages/email": {
+      "entry": [
+        "src/testing/*.ts"
+      ],
+      "project": [
+        "src/**/*.{ts,tsx}"
+      ]
+    },
     "packages/events": {
       "project": [
         "src/**/*.{ts,tsx}"
       ],
       "ignoreDependencies": [
         "redis"
+      ]
+    },
+    "packages/i18n": {
+      "project": [
+        "src/**/*.{ts,tsx}"
       ]
     },
     "packages/config": {

@@ -22,6 +22,7 @@ import { broadcastDeliveries } from "@sailo/db/schema";
 import { suppress } from "@sailo/marketing/broadcasts/server";
 import { evaluateShop } from "@sailo/marketing/broadcasts/server";
 import { optOut } from "@sailo/marketing/lifecycle/server";
+import { markMessageStatus } from "@sailo/commerce/disputes";
 import { lifecycleDeliveryByProviderId, markLifecycleFailed } from "@sailo/marketing/lifecycle/server";
 import {
   markNewsletterFailed,
@@ -135,12 +136,39 @@ export async function handleResendWebhook(request: Request): Promise<Response> {
       : event.type === "email.complained"
         ? ("complained" as const)
         : null;
-  // Every other event type — delivered, opened, clicked — is acknowledged and
-  // ignored. Returning an error would make Resend retry something we do not
-  // want.
-  if (!reason) return Response.json({ ok: true });
 
   const providerId = event.data?.email_id;
+
+  /*
+   * The transactional message log, before the suppression logic. Spec 44.
+   *
+   * `order_messages` keeps every message sent to a buyer about their order so
+   * that a chargeback can be answered with it, and what happened to that message
+   * afterwards is part of the evidence rather than a footnote. **A bounced
+   * confirmation is itself evidence**: it explains why a buyer says they never
+   * heard anything, and disclosing it is honest in a way that quietly omitting
+   * it is not.
+   *
+   * Which is why `delivered` is recorded here and nowhere else in this handler —
+   * for suppression it is noise, for evidence it is the strongest line in the
+   * slot. This is also why the update runs before the `if (!reason)` return: that
+   * return exists to stop Resend retrying events the suppression path ignores,
+   * and `email.delivered` is exactly such an event.
+   *
+   * Keyed on the provider id, which is the only handle the payload offers, and
+   * scoped by a partial index. A transactional message is never in
+   * `broadcast_deliveries`, so the two lookups cannot collide.
+   */
+  if (providerId) {
+    const status =
+      reason ??
+      (event.type === "email.delivered" ? ("delivered" as const) : null);
+    if (status) await markMessageStatus(providerId, status);
+  }
+
+  // Every other event type — opened, clicked — is acknowledged and ignored.
+  // Returning an error would make Resend retry something we do not want.
+  if (!reason) return Response.json({ ok: true });
   if (!providerId) return Response.json({ ok: true });
 
   /*

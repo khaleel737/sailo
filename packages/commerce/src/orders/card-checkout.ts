@@ -18,6 +18,7 @@ import { orderLines } from "./order-lines";
 import { actingAs, stripe } from "@sailo/payments";
 import { taxName } from "@sailo/core/tax-label";
 import { platformFeeCents } from "@sailo/core/plans";
+import { checkDescriptor } from "@sailo/core/disputes";
 import type Stripe from "stripe";
 
 /*
@@ -249,6 +250,16 @@ export async function createCheckoutSession(opts: {
 
   const shipping = checkoutShipping(order);
 
+  /*
+   * Validated here, once, and reported back to the caller so the order can
+   * snapshot exactly what was sent. A seller who edits their descriptor next
+   * month must not change what a five-month-old dispute says the buyer saw.
+   */
+  const descriptorCheck = checkDescriptor(
+    shop.statementDescriptorSuffix ?? shop.statementDescriptor,
+  );
+  const descriptor = descriptorCheck.ok ? descriptorCheck.value : null;
+
   return stripe().checkout.sessions.create(
     {
       mode: "payment",
@@ -314,6 +325,29 @@ export async function createCheckoutSession(opts: {
         ...(applicationFee > 0
           ? { application_fee_amount: toStripeAmount(applicationFee, currency) }
           : {}),
+        /*
+         * What the buyer will see on their statement.
+         *
+         * `unrecognized` — Visa 10.4, Mastercard 4837 — is a cardholder looking
+         * at a line they do not recognise and charging it back, and
+         * `docs/chargebacks.md` calls it *"usually a statement-descriptor
+         * problem"*. Without this the connected account's own default appears,
+         * which for a link-in-bio shop is frequently a registered company name
+         * the buyer has never heard of.
+         *
+         * Sent only when it passes `checkDescriptor`, because **Stripe silently
+         * ignores an invalid descriptor** — no error, the charge succeeds, the
+         * account default is used. Sending one we have not validated would mean a
+         * settings screen that says one thing and statements that say another,
+         * discovered by a chargeback months later.
+         *
+         * `statement_descriptor_suffix` rather than `statement_descriptor` for
+         * the same reason Stripe recommends it on a connected account: the
+         * account already carries a prefix, and setting the whole descriptor
+         * per-charge is rejected on accounts that have one. The suffix composes
+         * with it — which is what `descriptorPreview` models for the buyer.
+         */
+        ...(descriptor ? { statement_descriptor_suffix: descriptor } : {}),
       },
       /*
        * Let a buyer abroad pay in their own currency.
@@ -386,6 +420,17 @@ export async function createCheckoutSession(opts: {
         : {}),
       success_url: opts.successUrl,
       cancel_url: opts.cancelUrl,
+      /*
+       * So the caller can record what the buyer will actually see.
+       *
+       * `payment_intent_data` is a *request* field and never comes back on the
+       * session, so without this the descriptor snapshot on the order would be
+       * what we hoped to send rather than what Stripe took. Those differ exactly
+       * where it matters: an invalid descriptor is silently dropped and the
+       * account default applies, which is the failure this whole field exists to
+       * make visible. One expansion, no extra round trip.
+       */
+      expand: ["payment_intent"],
     },
     actingAs(shop.stripeAccountId),
   );

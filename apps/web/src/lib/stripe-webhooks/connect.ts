@@ -1,6 +1,6 @@
 import "server-only";
 import type Stripe from "stripe";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders, shops } from "@sailo/db/schema";
 import { revalidateShop } from "@/lib/cache";
@@ -147,11 +147,39 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
        */
       const settledTax = taxFromSession(session);
 
+      /*
+       * The settlement, in two writes: the claim, then the figures.
+       *
+       * `order.paymentStatus !== "paid"` on the row read at the top of this
+       * handler is a check-then-act, not a claim. Two settling events for one
+       * session carry two event ids, so the route's own event-id claim does not
+       * fence them, and both read `unpaid` before either writes — so both mailed
+       * the seller, both emitted `order.created` and `order.paid`, and both sent
+       * the buyer a receipt with an invoice link. A buyer holding two receipts
+       * for one order cannot tell whether they were charged twice.
+       *
+       * Moving the status into the WHERE makes it a claim: exactly one caller's
+       * UPDATE matches a row, and `returning` tells that caller it won.
+       *
+       * Split from the figures below rather than merged with them, because the
+       * two want opposite things. The claim must match once. The figures must
+       * land whichever delivery carried them — a session whose `payment_intent`
+       * or Stripe Tax totals only appear on the second event would otherwise be
+       * settled with the first one's blanks, permanently.
+       */
+      const settleClaim = await db
+        .update(orders)
+        .set({ paymentStatus: "paid", updatedAt: new Date() })
+        .where(and(eq(orders.id, order.id), ne(orders.paymentStatus, "paid")))
+        .returning({ id: orders.id });
+
+      /** Whether this delivery is the one that moved the order to paid. */
+      const settledHere = settleClaim.length > 0;
+
       // Payment is what confirms the order, so the seller never has to.
       await db
         .update(orders)
         .set({
-          paymentStatus: "paid",
           ...presentment,
           ...(settledTax
             ? {
@@ -228,6 +256,7 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
             invoice,
             delivery: {
               deliversFiles: Boolean(order.downloadToken),
+              deliversAccess: Boolean(order.downloadToken),
               unlockNow: Boolean(order.downloadToken),
               downloadToken: order.downloadToken,
             },
@@ -244,7 +273,7 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
          * already marked paid. Best-effort: it logs its own failures and never
          * throws, so a mail outage cannot make Stripe retry a settled payment.
          */
-        if (order.paymentStatus !== "paid") {
+        if (settledHere) {
           await notifySellerOfOrder({ shop: paidShop, orderId: order.id });
 
           /*
@@ -258,11 +287,11 @@ export async function handleConnectEvent(event: Stripe.Event, accountId: string 
            * whichever way the shop takes money, and one subscribed to both
            * sees them arrive together, which is the truth about a card sale.
            *
-           * Guarded by the same `paymentStatus !== "paid"` read as the mail
-           * above, so a second settling event for an order already marked paid
-           * adds nothing. Awaited rather than deferred: this is a webhook
-           * handler, not a request somebody is waiting on, and `after()` here
-           * would race the function shutting down.
+           * Guarded by the same settlement claim as the mail above, so a
+           * second settling event for an order already marked paid adds
+           * nothing. Awaited rather than deferred: this is a webhook handler,
+           * not a request somebody is waiting on, and `after()` here would race
+           * the function shutting down.
            */
           await emitOrderWebhook({
             shop: paidShop,
