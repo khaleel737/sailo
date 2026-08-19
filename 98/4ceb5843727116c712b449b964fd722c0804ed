@@ -1,0 +1,130 @@
+packages/i18n/src/admin/fi.ts
+  s_16f404b29c0075::t_7d143c30cf6afc 926-949
+  s_16f404b29c0075::t_9a16aa8450585d 950-981
+packages/i18n/src/admin/da.ts
+  s_16f404b29c0075::t_7d143c30cf6afc 928-951
+  s_16f404b29c0075::t_28ed246739aced 952-983
+packages/i18n/src/admin/bg.ts
+  s_16f404b29c0075::t_cb2698209d955c 967-998
+  s_16f404b29c0075::t_fee4db9af173d9 943-966
+packages/i18n/src/admin/hu.ts
+  s_16f404b29c0075::t_9a16aa8450585d 950-981
+  s_16f404b29c0075::t_7d143c30cf6afc 926-949
+packages/i18n/src/admin/cs.ts
+  s_16f404b29c0075::t_7d143c30cf6afc 928-951
+  s_16f404b29c0075::t_9a16aa8450585d 952-983
+packages/i18n/src/admin/ms.ts
+  s_16f404b29c0075::t_41a313ae9c60f6 966-998
+  s_16f404b29c0075::t_27cc3f4aaa47b3 943-965
+packages/i18n/src/admin/th.ts
+  s_16f404b29c0075::t_41a313ae9c60f6 967-999
+  s_16f404b29c0075::t_11dac3fdc3deb2 944-966
+packages/i18n/src/admin/ko.ts
+  s_16f404b29c0075::t_fee4db9af173d9 943-966
+  s_16f404b29c0075::t_41a313ae9c60f6 967-998
+scripts/i18n/fill.mts
+  s_16f404b29c0075::t_22d5df585e8cff 321,323-337
+packages/i18n/src/admin/bs.ts
+  s_16f404b29c0075::t_cb2698209d955c 967-998
+  s_16f404b29c0075::t_fee4db9af173d9 943-966
+packages/i18n/src/tooling/scripts.test.ts
+  s_16f404b29c0075::t_38005f01a13f68 1-56
+packages/i18n/src/admin/id.ts
+  s_16f404b29c0075::t_fee4db9af173d9 943-966
+  s_16f404b29c0075::t_41a313ae9c60f6 967-998
+packages/i18n/src/admin/sq.ts
+  s_16f404b29c0075::t_cb2698209d955c 967-999
+  s_16f404b29c0075::t_29db66c2dd86f3 944-966
+packages/i18n/src/admin/de.ts
+  s_16f404b29c0075::t_22d5df585e8cff 931-954
+  s_16f404b29c0075::t_28ed246739aced 955-986
+packages/i18n/src/admin/fil.ts
+  s_16f404b29c0075::t_41a313ae9c60f6 965-996
+  s_16f404b29c0075::t_fee4db9af173d9 941-964
+packages/i18n/src/admin/es.ts
+  s_16f404b29c0075::t_28ed246739aced 950-981
+  s_16f404b29c0075::t_22d5df585e8cff 926-949
+packages/i18n/src/tooling/index.ts
+  s_16f404b29c0075::t_38005f01a13f68 13
+packages/i18n/src/admin/sv.ts
+  s_16f404b29c0075::t_7d143c30cf6afc 929-952
+  s_16f404b29c0075::t_28ed246739aced 953-984
+packages/i18n/src/admin/pt.ts
+  s_16f404b29c0075::t_22d5df585e8cff 938-961
+  s_16f404b29c0075::t_28ed246739aced 962-993
+packages/i18n/src/admin/fr.ts
+  s_16f404b29c0075::t_28ed246739aced 955-986
+  s_16f404b29c0075::t_22d5df585e8cff 931-954
+packages/i18n/src/admin/pl.ts
+  s_16f404b29c0075::t_7d143c30cf6afc 938-961
+  s_16f404b29c0075::t_9a16aa8450585d 962-993
+packages/i18n/src/admin/el.ts
+  s_16f404b29c0075::t_9a16aa8450585d 952-983
+  s_16f404b29c0075::t_fee4db9af173d9 928-951
+packages/i18n/src/admin/ru.ts
+  s_16f404b29c0075::t_9a16aa8450585d 961-993
+  s_16f404b29c0075::t_247f4607c22f2e 938-960
+packages/i18n/src/admin/sl.ts
+  s_16f404b29c0075::t_cb2698209d955c 966-998
+  s_16f404b29c0075::t_26b070749c87fc 943-965
+packages/i18n/src/admin/hr.ts
+  s_16f404b29c0075::t_fee4db9af173d9 941-964
+  s_16f404b29c0075::t_cb2698209d955c 965-996
+packages/i18n/src/admin/mk.ts
+  s_16f404b29c0075::t_cb2698209d955c 967-998
+  s_16f404b29c0075::t_fee4db9af173d9 943-966
+packages/i18n/src/admin/ja.ts
+  s_16f404b29c0075::t_fee4db9af173d9 931-954
+  s_16f404b29c0075::t_41a313ae9c60f6 955-968,970-986
+  s_16f404b29c0075::t_343017412c8bd5 969
+packages/i18n/src/tooling/scripts.ts
+  s_16f404b29c0075::t_a9948341919318 1-95
+packages/i18n/src/admin/tr.ts
+  s_16f404b29c0075::t_9a16aa8450585d 952-984
+  s_16f404b29c0075::t_6dfb5335786813 929-951
+packages/i18n/src/admin/zh.ts
+  s_16f404b29c0075::t_41a313ae9c60f6 952-984
+  s_16f404b29c0075::t_5f3e182cf66373 929-951
+packages/i18n/src/admin/ro.ts
+  s_16f404b29c0075::t_7d143c30cf6afc 938-961
+  s_16f404b29c0075::t_9a16aa8450585d 962-993
+packages/i18n/src/admin/uk.ts
+  s_16f404b29c0075::t_9a16aa8450585d 952-984
+  s_16f404b29c0075::t_a486914deabb04 929-951
+packages/i18n/src/admin/no.ts
+  s_16f404b29c0075::t_7d143c30cf6afc 938-961
+  s_16f404b29c0075::t_9a16aa8450585d 962-993
+packages/i18n/src/admin/ar.ts
+  s_16f404b29c0075::t_fee4db9af173d9 930-953
+  s_16f404b29c0075::t_cb2698209d955c 954-985
+scripts/i18n/check.mts
+  s_16f404b29c0075::t_c50967915cd3c4 25,102-110,115-117,134-145
+packages/i18n/src/admin/nl.ts
+  s_16f404b29c0075::t_22d5df585e8cff 938-961
+  s_16f404b29c0075::t_28ed246739aced 962-993
+packages/i18n/src/admin/sr.ts
+  s_16f404b29c0075::t_cb2698209d955c 967-999
+  s_16f404b29c0075::t_c4ace684c05c05 944-966
+packages/i18n/src/admin/vi.ts
+  s_16f404b29c0075::t_41a313ae9c60f6 967-999
+  s_16f404b29c0075::t_6a98137a6707c6 944-966
+packages/i18n/src/admin/it.ts
+  s_16f404b29c0075::t_22d5df585e8cff 928-951
+  s_16f404b29c0075::t_28ed246739aced 952-983
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "984ceb5843727116c712b449b964fd722c0804ed",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
