@@ -275,6 +275,7 @@ export function DigitalDeliveryCard({
           <Toggle
             name="licenseEnabled"
             label={a.productForm.licenseEnabled}
+            description={a.productForm.licenseDocs}
             checked={licenseEnabled}
             onChange={setLicenseEnabled}
           />

@@ -975,6 +975,22 @@ export const licenseKeys = pgTable(
     /** Machines at once. Null is unlimited, which sellers do mean. */
     activationLimit: integer("activation_limit"),
     /**
+     * Seats currently taken — the *ceiling*, not the record.
+     *
+     * A counter row rather than a count of `license_activations`, and the
+     * reason is what Postgres will and will not make atomic: under READ
+     * COMMITTED a subquery counting activations cannot see rows other
+     * transactions have not committed, so concurrent callers all pass a limit
+     * that should stop all but the first few. `booking_slots` exists for
+     * exactly the same reason on a different table.
+     *
+     * Moved only by a conditional UPDATE with the ceiling in the WHERE, which
+     * Postgres re-evaluates against the latest committed row under its own
+     * lock. `license_activations` stays the record of *which* machine and from
+     * where, because that is what answers a dispute.
+     */
+    activationsUsed: integer("activations_used").default(0).notNull(),
+    /**
      * Snapshotted from the product's licence length at mint time, so a seller
      * shortening the licence tomorrow does not shorten one already sold.
      */

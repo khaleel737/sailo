@@ -11,8 +11,15 @@ import { callerIp } from "@sailo/rate-limit/client-ip";
 import { verifyDataRequest } from "@sailo/account/data-requests";
 import { DATA_REQUEST_WINDOW_DAYS } from "@sailo/core/privacy";
 
-export const dynamic = "force-dynamic";
-/* Not yet converted — see the note in `next.config.ts`. */
+/*
+ * Not yet converted — see the note in `next.config.ts`.
+ *
+ * `export const dynamic = "force-dynamic"` was here too and broke the build:
+ * this Next refuses the route segment config alongside `cacheComponents`, and
+ * it is the only place in `apps/web` that still carried one. `instant = false`
+ * is the conversion this codebase uses instead and already says the same
+ * thing, so the line was redundant as well as fatal.
+ */
 export const instant = false;
 
 export const metadata: Metadata = {

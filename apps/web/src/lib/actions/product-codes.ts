@@ -168,7 +168,7 @@ export async function clearUnclaimedCodes(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
   const productId = String(formData.get("productId") ?? "");
 
   const product = await ownedProduct(shop.id, productId);

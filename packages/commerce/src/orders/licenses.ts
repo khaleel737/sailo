@@ -282,14 +282,7 @@ export async function validateLicense(input: {
     if (!instance) return { valid: false, reason: "no_instance" };
   }
 
-  return {
-    valid: true,
-    instanceId: input.instanceIdentifier ?? null,
-    expiresAt: row.expiresAt,
-    activationLimit: row.activationLimit,
-    activationsUsed: await liveActivations(row.id),
-    productId: row.productId,
-  };
+  return ok(row, input.instanceIdentifier ?? null, await liveActivations(row.id));
 }
 
 /**
@@ -325,18 +318,80 @@ export async function activateLicense(input: {
   if (!identifier) return { valid: false, reason: "no_instance" };
 
   /*
-   * One statement: the row goes in only if the licence has room, and the
-   * count that decides is taken inside it. `ON CONFLICT … DO UPDATE` is what
-   * makes a reinstall free — a machine that comes back reuses its own row and
-   * clears its `deactivated_at` rather than taking a second slot.
-   *
-   * The ceiling is `activation_limit IS NULL` (unlimited) or the live count
-   * being under it, and both branches are in the WHERE rather than in
-   * JavaScript, because a limit checked in JavaScript is a limit two
-   * concurrent callers both pass.
+   * A machine that is already live is a re-activation, not a new seat. Asked
+   * first so a customer reinstalling does not spend their spare licence —
+   * which is the single most common complaint about activation limits.
    */
-  const now = new Date();
-  const [mine] = await db
+  const live = await db.query.licenseActivations.findFirst({
+    where: and(
+      eq(licenseActivations.licenseKeyId, row.id),
+      eq(licenseActivations.instanceIdentifier, identifier),
+      isNull(licenseActivations.deactivatedAt),
+    ),
+    columns: { id: true },
+  });
+
+  if (live) {
+    await db
+      .update(licenseActivations)
+      .set({
+        activatedAt: new Date(),
+        instanceName: input.instanceName?.trim().slice(0, 200) ?? null,
+        ip: input.ip ?? null,
+        userAgent: input.userAgent?.slice(0, 400) ?? null,
+      })
+      .where(eq(licenseActivations.id, live.id));
+    return ok(row, identifier, await liveActivations(row.id));
+  }
+
+  /*
+   * THE CEILING, AND WHY IT IS A COUNTER RATHER THAN A COUNT
+   *
+   * `set activations_used = activations_used + 1 where activation_limit is
+   * null or activations_used < activation_limit` — a conditional UPDATE on the
+   * row that holds the number, which Postgres re-reads under its own lock and
+   * re-evaluates against the latest committed version. That is the only shape
+   * this driver makes atomic: it cannot open an interactive transaction
+   * (`db.transaction()` throws on neon-http), and under READ COMMITTED a
+   * subquery counting `license_activations` cannot see rows other transactions
+   * have not committed — so five copies of a customer's software launching at
+   * once would all pass a two-seat limit.
+   *
+   * The same reasoning produced `booking_slots` for a class and
+   * `event_tiers.sold` for a ticket band. `license_activations` stays the
+   * *record* — which machine, from which address, when — because that is what
+   * answers a `product_not_received` dispute months later.
+   */
+  const [claimed] = await db
+    .update(licenseKeys)
+    .set({
+      activationsUsed: sql`${licenseKeys.activationsUsed} + 1`,
+      updatedAt: new Date(),
+    })
+    .where(
+      and(
+        eq(licenseKeys.id, row.id),
+        sql`(${licenseKeys.activationLimit} is null or ${licenseKeys.activationsUsed} < ${licenseKeys.activationLimit})`,
+      ),
+    )
+    .returning({ id: licenseKeys.id });
+
+  if (!claimed) return { valid: false, reason: "activation_limit" };
+
+  /*
+   * The record, written after the seat is held.
+   *
+   * `ON CONFLICT … DO UPDATE` because the machine may have a *deactivated* row
+   * from a previous install — it takes a fresh seat, which is what the claim
+   * above just bought, and reuses its row so the history stays one line per
+   * machine rather than one per reinstall.
+   *
+   * A failure here leaves a seat held by nothing, which is the direction every
+   * claim in this codebase fails in — and the customer's next `deactivate`
+   * releases it. The alternative, inserting first, hands out a seat the
+   * ceiling refused.
+   */
+  await db
     .insert(licenseActivations)
     .values({
       licenseKeyId: row.id,
@@ -344,72 +399,33 @@ export async function activateLicense(input: {
       instanceName: input.instanceName?.trim().slice(0, 200) ?? null,
       ip: input.ip ?? null,
       userAgent: input.userAgent?.slice(0, 400) ?? null,
-      activatedAt: now,
     })
     .onConflictDoUpdate({
       target: [licenseActivations.licenseKeyId, licenseActivations.instanceIdentifier],
       set: {
-        /*
-         * A machine that comes back reuses its own row rather than taking a
-         * second seat — the unique index is what makes that true, and it is
-         * why software that reinstalls does not eat its customer's spare
-         * licence. `deactivatedAt` is cleared, so a machine that was switched
-         * off and on again is live once.
-         */
         deactivatedAt: null,
-        activatedAt: now,
+        activatedAt: new Date(),
         instanceName: input.instanceName?.trim().slice(0, 200) ?? null,
         ip: input.ip ?? null,
         userAgent: input.userAgent?.slice(0, 400) ?? null,
       },
-    })
-    .returning({ id: licenseActivations.id, activatedAt: licenseActivations.activatedAt });
+    });
 
-  /*
-   * THE CEILING, AND WHY IT IS AFTER THE INSERT RATHER THAN INSIDE IT
-   *
-   * Postgres cannot count the table an INSERT is writing to from inside that
-   * same INSERT, and this driver cannot open an interactive transaction to
-   * take a lock first — `db.transaction()` throws on neon-http, which is why
-   * `createOrderIntent` uses a batch. So the insert is optimistic and this is
-   * the authority.
-   *
-   * It is not a check-then-act, and the difference is the ordering. Each
-   * caller asks "how many live activations are at or before mine, by
-   * `(activated_at, id)`" — a *total* order over rows that have already
-   * committed. Two concurrent callers on a two-seat licence both see both
-   * rows: one ranks 2 and stays, the other ranks 3 and withdraws. They cannot
-   * both decide they lost, and they cannot both decide they won, because the
-   * ordering is the same fact read twice rather than two independent counts.
-   *
-   * The row that lost is deleted rather than marked deactivated: it never
-   * held a seat, and leaving it would show the seller a machine that was
-   * refused as one that used their licence.
-   */
-  if (row.activationLimit !== null && mine) {
-    const [rank] = await db
-      .select({ n: sql<number>`count(*)::int` })
-      .from(licenseActivations)
-      .where(
-        and(
-          eq(licenseActivations.licenseKeyId, row.id),
-          isNull(licenseActivations.deactivatedAt),
-          sql`(${licenseActivations.activatedAt}, ${licenseActivations.id}) <= (${mine.activatedAt}, ${mine.id})`,
-        ),
-      );
+  return ok(row, identifier, await liveActivations(row.id));
+}
 
-    if ((rank?.n ?? 0) > row.activationLimit) {
-      await db.delete(licenseActivations).where(eq(licenseActivations.id, mine.id));
-      return { valid: false, reason: "activation_limit" };
-    }
-  }
-
+/** The shape a live licence answers with, assembled in one place. */
+function ok(
+  row: LicenseKey,
+  instanceId: string | null,
+  activationsUsed: number,
+): LicenseResult {
   return {
     valid: true,
-    instanceId: identifier,
+    instanceId,
     expiresAt: row.expiresAt,
     activationLimit: row.activationLimit,
-    activationsUsed: await liveActivations(row.id),
+    activationsUsed,
     productId: row.productId,
   };
 }
@@ -432,7 +448,9 @@ export async function deactivateLicense(input: {
   // validate.
   if (!row || row.status === "disabled") return { deactivated: false };
 
-  const done = await getDb()
+  const db = getDb();
+
+  const done = await db
     .update(licenseActivations)
     .set({ deactivatedAt: new Date() })
     .where(
@@ -443,6 +461,25 @@ export async function deactivateLicense(input: {
       ),
     )
     .returning({ id: licenseActivations.id });
+
+  /*
+   * The seat goes back only when a row actually moved, which is what makes a
+   * second deactivation of the same instance a no-op rather than a free seat —
+   * an uninstaller that retries must not hand its customer an extra machine.
+   *
+   * `greatest(…, 0)` so the counter cannot go negative, which
+   * `activations_used < activation_limit` would then read as room that does
+   * not exist.
+   */
+  if (done.length > 0) {
+    await db
+      .update(licenseKeys)
+      .set({
+        activationsUsed: sql`greatest(${licenseKeys.activationsUsed} - ${done.length}, 0)`,
+        updatedAt: new Date(),
+      })
+      .where(eq(licenseKeys.id, row.id));
+  }
 
   return { deactivated: done.length > 0 };
 }

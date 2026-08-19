@@ -196,3 +196,41 @@ ALTER TABLE "product_files" ADD COLUMN IF NOT EXISTS "updated_at" timestamp NOT 
 
 CREATE INDEX IF NOT EXISTS "product_files_variant_idx"
   ON "product_files" ("product_id", "variant_id");
+
+-- ─── 5. THE ACTIVATION CEILING NEEDS A COUNTER, NOT A COUNT ─────────────────
+--
+-- Added after `booking_slots` in `0046` proved the point on a different table:
+-- under READ COMMITTED a ceiling checked by counting rows is not a ceiling.
+-- Every statement snapshots at statement start, so concurrent callers cannot
+-- see each other's uncommitted activations and all of them pass a limit that
+-- should have stopped all but the first few. Ranking the committed rows
+-- afterwards fails the other way — a caller whose rank query runs before its
+-- siblings commit ranks itself too low.
+--
+-- The one shape Postgres makes atomic is a conditional UPDATE on the row that
+-- holds the count: it re-reads that row under its own lock and re-evaluates the
+-- WHERE against the latest committed version. `products.stock_quantity` is that
+-- row for stock and `event_tiers.sold` is for a tier; this is it for a licence.
+--
+-- `license_activations` stays the *record* — which machine, from which address,
+-- when — because that is what answers a `product_not_received` dispute. This is
+-- only the ceiling.
+--
+-- Defaulted to the live count rather than to zero, so a key that already has
+-- activations when this runs does not silently gain free seats.
+
+ALTER TABLE "license_keys" ADD COLUMN IF NOT EXISTS "activations_used" integer NOT NULL DEFAULT 0;
+
+UPDATE "license_keys" k
+SET "activations_used" = (
+  SELECT count(*) FROM "license_activations" a
+  WHERE a."license_key_id" = k."id" AND a."deactivated_at" IS NULL
+)
+WHERE k."activations_used" = 0;
+
+DO $$ BEGIN
+  ALTER TABLE "license_keys"
+    ADD CONSTRAINT "license_keys_activations_not_negative"
+    CHECK ("activations_used" >= 0);
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;

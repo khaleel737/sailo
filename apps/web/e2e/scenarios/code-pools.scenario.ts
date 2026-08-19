@@ -551,6 +551,37 @@ describe("licence keys", () => {
     expect(check.valid && check.activationsUsed).toBe(1);
   });
 
+  /*
+   * The ceiling under contention, which is the only way it is interesting.
+   *
+   * Five copies of a customer's software launching at once on a two-seat
+   * licence must produce two activations. A count of `license_activations`
+   * cannot decide that — under READ COMMITTED none of the five sees the
+   * others' uncommitted rows — so the ceiling is a conditional UPDATE on
+   * `license_keys.activations_used`, which Postgres re-reads under its own
+   * lock. Remove that and this test hands out five seats.
+   */
+  it("holds the limit against five machines activating at once", { timeout: 60_000 }, async () => {
+    const shop = await makeShop();
+    const product = await makeLicensed(shop.id);
+    const orderId = await mustPlace(shop.id, product.id);
+    await releaseDownloads(orderId);
+    const [license] = await licensesForOrder(orderId);
+    if (!license) throw new Error("fixture: no licence minted");
+
+    const results = await Promise.all(
+      Array.from({ length: 5 }, (_, i) =>
+        activateLicense({ key: license.key, instanceIdentifier: `mac-${i}` }),
+      ),
+    );
+
+    expect(results.filter((r) => r.valid)).toHaveLength(2);
+    expect(results.filter((r) => !r.valid)).toHaveLength(3);
+    for (const refused of results.filter((r) => !r.valid)) {
+      expect(refused).toEqual({ valid: false, reason: "activation_limit" });
+    }
+  });
+
   it("frees a seat on deactivate", { timeout: 60_000 }, async () => {
     const shop = await makeShop();
     const product = await makeLicensed(shop.id);
