@@ -307,7 +307,20 @@ export default async function DownloadPage({
               ) : null}
             </div>
           </>
-        ) : files.length > 0 || !state.released ? (
+        ) : (files.length > 0 && !content) || !state.released ? (
+          /*
+           * `&& !content` — spec 40, and it is load-bearing.
+           *
+           * The flat file list above is skipped when a collection is rendering
+           * the same files in order, and without this the *lock* branch caught
+           * the order instead: a perfectly healthy course showed "you've used
+           * every download on this link" under a working lesson list. Nothing
+           * in the type system or the tests could see it; reading the page did.
+           *
+           * `!state.released` still reaches here on purpose. A collection shows
+           * previews to an unreleased order, and the buyer is owed the sentence
+           * explaining why the rest is shut.
+           */
           <div className="surface-card mt-6 flex items-start gap-3 rounded-2xl p-4">
             <Lock className="mt-0.5 size-5 shrink-0 opacity-60" />
             <p className="text-sm leading-relaxed">
