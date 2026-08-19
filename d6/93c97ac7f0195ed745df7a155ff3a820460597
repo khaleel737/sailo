@@ -1,0 +1,34 @@
+apps/web/e2e/scenarios/catalogue.scenario.ts
+  s_ff5bd57f7b4f2f::t_9e17443e27fc10 1-755
+apps/web/src/lib/actions/offers-admin.ts
+  s_ff5bd57f7b4f2f::t_b78ebb37b011cf 34-40,47,56,60,64,76,99,104
+apps/web/src/app/[handle]/p/[slug]/page.tsx
+  s_e1f6fcdd78170a::t_c9cfa35d5af499 126-130,132-134
+  s_ff5bd57f7b4f2f::t_bb63ddee6275e1 412-421
+apps/web/src/app/[handle]/p/[slug]/_components/buy-box.tsx
+  s_ff5bd57f7b4f2f::t_e909858d72ecf9 31,73,162-170,534-562
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "d693c97ac7f0195ed745df7a155ff3a820460597",
+  "prompts": {},
+  "sessions": {
+    "s_e1f6fcdd78170a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "07ffa20a-be06-4b62-a6c7-e2cc4d3b435d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ff5bd57f7b4f2f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f7a8e604-26d7-4dc0-9381-beaca5a4f55b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
