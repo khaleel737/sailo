@@ -27,6 +27,7 @@ import type {
 import type { subscriptions } from "./memberships";
 import type { disputes } from "./disputes";
 import type { broadcasts } from "./audience";
+import type { checkoutSessions } from "./recovery";
 import type {
   automationEmails,
   automationRuns,
@@ -51,6 +52,9 @@ import type { user } from "./auth";
 /** Row types, inferred from the tables rather than written twice. */
 
 export type Shop = typeof shops.$inferSelect;
+
+/** One checkout a buyer opened — spec 32. */
+export type CheckoutSession = typeof checkoutSessions.$inferSelect;
 
 /* Flows — spec 30. `Automation` is shared with spec 31's scenarios; `kind`
    tells them apart, and one runner serves both. */

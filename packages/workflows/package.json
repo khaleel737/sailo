@@ -15,7 +15,8 @@
     "./webhooks/policy": "./src/webhooks/policy.ts",
     "./broadcasts": "./src/broadcasts/pickers.ts",
     "./disputes": "./src/disputes/notify-seller.ts",
-    "./leads": "./src/leads/notify-seller.ts"
+    "./leads": "./src/leads/notify-seller.ts",
+    "./recovery": "./src/recovery/pass.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

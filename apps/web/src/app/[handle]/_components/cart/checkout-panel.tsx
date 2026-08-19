@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Download, Loader2, X } from "lucide-react";
 import { createOrderIntent } from "@/lib/actions/orders";
 import { CustomFields, readCustomFields } from "./custom-fields";
+import { useCheckoutSession } from "./use-checkout-session";
 import { markPendingOrder } from "@/lib/cart";
 import {
   countriesByName,
@@ -117,6 +118,22 @@ export function CheckoutPanel({
    */
   const [emailTyped, setEmailTyped] = useState("");
   const [phoneTyped, setPhoneTyped] = useState("");
+
+  /*
+   * The recovery session — spec 32. Opened when the panel first renders with
+   * something to buy, and updated as the buyer types their address in, which
+   * is the moment they become recoverable at all.
+   *
+   * Every refusal is `null` and the panel does not care which: a shop that
+   * does not exist, a ceiling, and a cache outage all read the same, so
+   * nothing here can tell a caller anything about a shop.
+   */
+  const session = useCheckoutSession({
+    shopId,
+    productId: items.length === 1 ? items[0]?.productId : null,
+    email: emailTyped,
+  });
+
   const [result, setResult] = useState<Extract<
     OrderIntentResult,
     { ok: true }
@@ -421,6 +438,13 @@ export function CheckoutPanel({
          * name. The server validates every one against its row.
          */
         customFields: readCustomFields(data),
+        /*
+         * Both reports, neither a decision. The server re-reads the session's
+         * own status before attributing anything, so a forged `viaResumeLink`
+         * cannot turn an ordinary sale into a recovered one.
+         */
+        checkoutSessionId: session.sessionId ?? undefined,
+        viaResumeLink: session.viaResumeLink,
       });
     } catch (thrown) {
       // Named for what it is rather than `error`, which is the state setter's

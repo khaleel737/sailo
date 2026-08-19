@@ -399,6 +399,37 @@ export const shops = pgTable(
      * run. UTC is the safe default rather than the right one — onboarding asks.
      */
     timeZone: text("time_zone").default("UTC").notNull(),
+
+    /* ----------------------------------------------------------------------
+       Checkout recovery — spec 32
+    ---------------------------------------------------------------------- */
+
+    /**
+     * Whether an abandoned checkout is followed up at all.
+     *
+     * Off by default, and deliberately: sessions are *recorded* on every plan
+     * from the day this ships, so a seller who switches it on later has
+     * history to show — but nothing is sent until somebody chooses to send it.
+     */
+    recoveryEnabled: boolean("recovery_enabled").default(false).notNull(),
+    /**
+     * What the recovery mail offers, as a percentage in basis points or a flat
+     * amount in minor units. Exactly one may be set; both null is a recovery
+     * mail that carries no discount, which is a perfectly good configuration
+     * and the safest default.
+     */
+    recoveryDiscountBp: integer("recovery_discount_bp"),
+    recoveryDiscountCents: integer("recovery_discount_cents"),
+    /**
+     * How often the discount is actually awarded, in basis points.
+     *
+     * The clever part of their design, and the reason it exists rather than
+     * always awarding: **give a recovery discount every time and buyers learn
+     * to abandon on purpose.** Default 5000 — a coin flip.
+     */
+    recoveryDiscountOddsBp: integer("recovery_discount_odds_bp")
+      .default(5000)
+      .notNull(),
     /**
      * Seven days, each an array of `{ from, to }` wall-clock windows, so a
      * shop that closes for lunch can say so. Validated by `isWeeklyHours` on

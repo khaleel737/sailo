@@ -6,6 +6,7 @@ import { resolveOrderIntent } from "@sailo/commerce/orders/server";
 import { displayCurrency } from "@/lib/regional";
 import { upsertClient } from "@sailo/commerce/orders/server";
 import { saveAnswers } from "@sailo/marketing/contacts/server";
+import { markSessionPaid } from "@sailo/commerce/recovery/server";
 import { referralFor } from "@sailo/workflows/orders";
 import type { OrderIntentInput, OrderIntentResult } from "@sailo/commerce/orders";
 import { firstRow } from "@sailo/core/invariant";
@@ -1246,6 +1247,35 @@ export async function createOrderIntent(
     after(() =>
       emitOrderWebhook({ shop, event: "order.created", orderId: order.id }),
     );
+  }
+
+  /*
+   * The checkout session this order came from — spec 32.
+   *
+   * `viaResumeLink` is a report from the browser and it decides nothing on its
+   * own: `markSessionPaid` re-reads the session's own status, and
+   * `statusAfterPayment` requires it to have actually been `recovering`, which
+   * only the recovery cron can make it. So a forged flag turns nothing into a
+   * recovered sale — it can only fail to claim one that was.
+   *
+   * Deferred, because it is bookkeeping: a seller's recovery rate must never
+   * be between a buyer and their order confirmation.
+   */
+  if (input.checkoutSessionId) {
+    const sessionId = input.checkoutSessionId;
+    const viaResumeLink = input.viaResumeLink === true;
+    after(async () => {
+      try {
+        await markSessionPaid({
+          shopId: shop.id,
+          sessionId,
+          orderId: order.id,
+          viaResumeLink,
+        });
+      } catch (error) {
+        console.error("[sailo] checkout session attribution failed", error);
+      }
+    });
   }
 
   // Buyers who leave an email can be offered their own referral link.

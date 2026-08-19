@@ -80,6 +80,18 @@ export type OrderIntentInput = {
    */
   customFields?: Record<string, unknown>;
   /**
+   * The checkout session this order came from, and whether the buyer arrived
+   * through the recovery link — spec 32.
+   *
+   * Both are reports, not decisions. The server re-reads the session's own
+   * status before attributing anything, so a forged `viaResumeLink` cannot
+   * turn an ordinary sale into a recovered one: `statusAfterPayment` requires
+   * the session to have actually been `recovering`, which only the cron can
+   * make it.
+   */
+  checkoutSessionId?: string;
+  viaResumeLink?: boolean;
+  /**
    * A durable per-browser id, when the caller has one. Spec 44.
    *
    * Visa's Compelling Evidence 3.0 counts `customer_device_fingerprint` as one

@@ -25,6 +25,7 @@ export * from "./audience";
 export * from "./contacts";
 export * from "./automations";
 export * from "./recovery";
+export * from "./recovery";
 export * from "./lifecycle";
 export * from "./analytics";
 export * from "./growth";

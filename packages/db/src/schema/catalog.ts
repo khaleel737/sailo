@@ -186,6 +186,19 @@ export const products = pgTable(
      * `inStock` switch. Stock lives on the variant when there are options.
      */
     trackInventory: boolean("track_inventory").default(false).notNull(),
+
+    /**
+     * Whether an abandoned checkout for this product is followed up — spec 32.
+     *
+     * **Nullable, and the null is the point: it means inherit the shop.**
+     * Blank is not false. `false` is a seller switching recovery off for this
+     * one product with the shop's setting left on; `null` is a product that
+     * has never been asked, which is every product that existed before this
+     * column did. Collapsing the two would turn "I haven't decided" into "no",
+     * silently, across an entire catalogue — the blank-vs-zero shape, on a
+     * path where the symptom is revenue that quietly stops being recovered.
+     */
+    recoveryEnabled: boolean("recovery_enabled"),
     /** Units left, for a product with no options. Null while untracked. */
     stockQuantity: integer("stock_quantity"),
 
