@@ -1,0 +1,50 @@
+apps/web/drizzle/0035_evidence_capture.sql
+  s_16f404b29c0075::t_52de6a4f9354af 1-184
+packages/commerce/src/disputes/capture.ts
+  s_16f404b29c0075::t_a614a86edcbdf7 1-376
+packages/core/src/disputes/policy.ts
+  s_16f404b29c0075::t_729578a2357989 32-37
+  s_16f404b29c0075::t_6396f01e0b06fc 1-31,38-109
+packages/commerce/src/disputes/arrival.ts
+  s_16f404b29c0075::t_67fbc59f9c4fc1 1-106
+packages/core/src/html-text.ts
+  s_16f404b29c0075::t_5e73ab2068f672 1-31
+packages/core/src/disputes/descriptor.ts
+  s_16f404b29c0075::t_b899ed3f39621b 1-131
+packages/core/src/disputes/capture.test.ts
+  s_16f404b29c0075::t_e078fba3f56591 1-287
+apps/web/drizzle/0034_product_kinds.sql
+  s_c6ab3915e97efe::t_0bc59bdec4fbf9 76-88
+  s_c6ab3915e97efe::t_17a91008f4ad06 1-75,89-92
+packages/db/src/schema/policies.ts
+  s_16f404b29c0075::t_2810aa1a8bc058 1-90
+packages/core/src/disputes/messages.ts
+  s_16f404b29c0075::t_09c9c0184a0476 1-142
+packages/db/src/schema/evidence.ts
+  s_16f404b29c0075::t_2810aa1a8bc058 1
+  s_16f404b29c0075::t_f083284acb6408 2-160
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7556e385cdf679018b6f3ebe3a35d212971d187e",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_c6ab3915e97efe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c24c96ca-a911-4fa0-901b-d9f00fe9e7ce",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
