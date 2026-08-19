@@ -16,11 +16,17 @@ vi.mock("@/lib/blog", () => ({
 const { blogHrefFor } = await import("@/lib/actions/locale");
 
 describe("blogHrefFor", () => {
-  it("leaves every non-blog path alone, so the cookie still decides", () => {
+  it("leaves every non-blog path alone, so the cookie still decides", async () => {
     // The storefront, admin and marketing pages all read the cookie, and a
     // navigation there would throw away whatever the visitor was doing.
+    //
+    // Awaited, one at a time. `expect(...).resolves` without an `await` is a
+    // floating promise: vitest currently rescues it at the end of the test and
+    // has said it will stop, at which point five assertions would go from
+    // passing to not running at all — the failure mode where a test keeps its
+    // green tick and stops checking anything.
     for (const path of ["/", "/demo", "/admin/orders", "/pricing", undefined]) {
-      expect(blogHrefFor("fr", path)).resolves.toBeNull();
+      await expect(blogHrefFor("fr", path)).resolves.toBeNull();
     }
   });
 
