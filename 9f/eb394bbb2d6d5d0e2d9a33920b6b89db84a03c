@@ -1,0 +1,249 @@
+apps/web/src/app/admin/settings/data/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 69
+apps/web/src/lib/actions/clients.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 33,84
+apps/web/src/app/api/upload/route.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 17
+apps/web/src/app/admin/affiliates/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 34
+apps/web/drizzle/0052_shop_team.sql
+  s_ff5bd57f7b4f2f::t_1204f2ccb393a7 1-121
+apps/web/src/lib/actions/products.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 376,435,444,460,491
+packages/auth/src/permissions.ts
+  s_a79949fd39aa12::t_df1fdbfe7877d5 1-29,39-57,59-65,67-71,80-82,85-98,105-151
+  s_e1f6fcdd78170a::t_14ea4d0f54f0d0 30-38,58,84,99-104
+  s_a79949fd39aa12::t_5955e15e68c7fd 66,72-79,83
+apps/web/src/app/admin/clients/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 21
+apps/web/src/app/admin/settings/integrations/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 24
+apps/web/src/lib/actions/coupons.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 34,136,149
+apps/web/src/app/admin/payments/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 108,116
+apps/web/src/lib/actions/order-admin.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 38,128,170,286,333,408,512,538,552
+packages/auth/src/organization-for-shop.ts
+  s_e1f6fcdd78170a::t_085ce16fb47b37 1-92
+apps/web/src/app/admin/settings/team/_components/activity-card.tsx
+  s_e1f6fcdd78170a::t_c60f06fe47cf21 1-37,39-46
+  s_e1f6fcdd78170a::t_f227f2e12752e1 38
+apps/web/src/app/admin/testimonials/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 33
+apps/web/src/lib/actions/integrations.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 87,152,196,229,265,340,390,433
+apps/web/src/app/admin/broadcasts/unsubscribed/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 43
+packages/email/src/system/messages.ts
+  s_ff5bd57f7b4f2f::t_0c428eae9cb898 287-331
+apps/web/src/app/api/tax/report/route.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 22
+apps/web/src/lib/actions/tickets.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 69,80
+apps/web/src/lib/actions/payouts.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 18
+apps/web/src/app/admin/coupons/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 19
+apps/web/src/app/admin/support/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 18
+apps/web/src/lib/actions/shop.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 376
+  s_e1f6fcdd78170a::t_9f85460c76fca4 301-314
+  s_6a50ff8b58418c::t_4f158dd436fc86 300
+apps/web/src/lib/actions/audience.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 69,100,123,143,255,286,332,356,386
+apps/web/src/app/admin/offers/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 40
+apps/web/src/app/admin/settings/team/page.tsx
+  s_e1f6fcdd78170a::t_c60f06fe47cf21 1-53
+apps/web/src/app/api/admin/events/route.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 21
+apps/web/src/lib/actions/affiliates.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 50,140,172,189,214
+apps/web/src/app/admin/settings/security/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 20
+apps/web/src/app/admin/products/waiting/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 42
+apps/web/src/app/admin/checkin/[productId]/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 33
+apps/web/src/lib/session.test.ts
+  s_6a50ff8b58418c::t_25073c24cc9d46 1-61,63-65,76,78-93,95,97-110,112-135
+  s_a79949fd39aa12::t_dc3a05f61c7fe5 62,66-75,77,94,96
+  s_e1f6fcdd78170a::t_ee9eec90fb94d6 111
+apps/web/src/lib/actions/support.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 30
+apps/web/src/lib/actions/notifications.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 13,31
+apps/web/src/lib/session.ts
+  s_e1f6fcdd78170a::t_5d7f6f1ed28f3e 9-10,67-113,115-149,152,169-172,174-181
+  s_6a50ff8b58418c::t_1f16846663eca0 150-151,153-168,173
+  s_e1f6fcdd78170a::t_42f1949ebf8c9a 222-223,236
+apps/web/src/app/admin/products/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 28
+apps/web/src/app/admin/settings/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 11
+apps/web/src/lib/actions/shop-pages.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 102,133,184,209,251
+apps/web/src/app/api/orders/[id]/evidence-pack/route.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 43
+apps/web/src/lib/actions/offers-admin.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 53,165
+packages/auth/package.json
+  s_a79949fd39aa12::t_df1fdbfe7877d5 7
+  s_e1f6fcdd78170a::t_085ce16fb47b37 8-9
+apps/web/src/app/admin/legal/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 25
+apps/web/src/app/admin/data-requests/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 25
+apps/web/src/app/admin/broadcasts/[id]/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 25
+apps/web/src/app/admin/no-access/page.tsx
+  s_e1f6fcdd78170a::t_967035ce36bf35 1-54
+apps/web/src/app/api/export/[type]/route.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 13
+apps/web/src/lib/actions/tax.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 50,87,96,111
+apps/web/src/app/admin/layout.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 26
+apps/web/src/app/admin/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 39
+apps/web/src/lib/actions/delivery.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 70,172,190
+apps/web/src/lib/actions/account.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 24
+apps/web/src/app/admin/settings/fields/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 21
+packages/auth/src/permissions.test.ts
+  s_e1f6fcdd78170a::t_14ea4d0f54f0d0 29,40,48,73-74,109
+  s_a79949fd39aa12::t_5955e15e68c7fd 37-39,66-70
+  s_e1f6fcdd78170a::t_06811ddeb70d43 1-28,30-36,41-47,49-65,71-72,75-107,110-111
+  s_e1f6fcdd78170a::t_c6ebd7e21cbdd2 108
+apps/web/src/app/admin/settings/team/_components/team-card.tsx
+  s_e1f6fcdd78170a::t_f227f2e12752e1 1-184
+packages/core/src/shop/plans.ts
+  s_a79949fd39aa12::t_6c7c577ababa46 210-219,289,336,375
+apps/web/src/app/admin/reviews/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 15
+apps/web/src/app/admin/broadcasts/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 45
+apps/web/src/app/admin/products/new/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 14
+apps/web/src/app/admin/settings/_components/settings-nav.tsx
+  s_e1f6fcdd78170a::t_f227f2e12752e1 22
+apps/web/src/lib/actions/broadcasts.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 60
+  s_a79949fd39aa12::t_11cbb2923f5dfa 471,505
+apps/web/src/lib/actions/data-requests.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 152,188,240
+apps/web/src/app/admin/orders/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 39
+apps/web/src/lib/actions/payments.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 32
+packages/db/src/schema/team.ts
+  s_e1f6fcdd78170a::t_23d0f89655f920 1-58
+apps/web/src/app/admin/categories/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 18
+apps/web/src/app/admin/checkin/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 31
+apps/web/src/app/admin/settings/billing/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 24,34
+apps/web/src/app/admin/broadcasts/new/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 16
+apps/web/src/app/admin/broadcasts/subscribers/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 41
+apps/web/src/app/admin/delivery/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 27
+apps/web/src/app/admin/settings/tax/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 56
+apps/web/src/lib/auth.ts
+  s_e1f6fcdd78170a::t_aab4664d2003f7 10,13-24,111-125,459-507,511
+  s_16f404b29c0075::t_31c24d3bbeae5a 28
+  s_e1f6fcdd78170a::t_c8de0430a30f46 508-510
+apps/web/src/lib/actions/billing.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 22,116
+apps/web/src/app/admin/broadcasts/lists/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 35
+apps/web/src/app/admin/clients/[id]/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 35
+apps/web/src/lib/actions/team.ts
+  s_e1f6fcdd78170a::t_9f7394e952b6b7 1-291
+apps/web/src/lib/actions/import.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 30
+apps/web/src/app/admin/checkin/[productId]/passes/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 20
+apps/web/src/lib/actions/connect.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 161,216,257,271
+apps/web/src/app/admin/members/page.tsx
+  s_a79949fd39aa12::t_5fd3a8c97accec 29
+apps/web/src/lib/actions/migrate.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 70
+apps/web/src/lib/actions/testimonials.ts
+  s_a79949fd39aa12::t_5fd3a8c97accec 106,141,168,200,215,223,236
+apps/web/e2e/scenarios/team.scenario.ts
+  s_e1f6fcdd78170a::t_57ebaded160ca4 1-386
+apps/web/package.json
+  s_6a50ff8b58418c::t_18ab0760dc86da 59
+apps/web/src/app/team/invite/[id]/_components/accept-invite.tsx
+  s_e1f6fcdd78170a::t_3e4ed43107f1bd 1-97
+apps/web/src/app/team/invite/[id]/page.tsx
+  s_e1f6fcdd78170a::t_fe9bf0e0083f45 1-86
+apps/web/src/lib/actions/memberships.ts
+  s_a79949fd39aa12::t_9e899851a5e731 97
+apps/web/src/lib/actions/reviews.ts
+  s_a79949fd39aa12::t_524c6424f89a66 68,85
+apps/web/src/lib/actions/team-accept.ts
+  s_e1f6fcdd78170a::t_8a544260124f94 1-59
+packages/db/src/schema/auth.ts
+  s_e1f6fcdd78170a::t_f5c520693ae0f2 113-199
+packages/db/src/schema/shop.ts
+  s_e1f6fcdd78170a::t_ebd70b95cf71c0 417-434
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "9feb394bbb2d6d5d0e2d9a33920b6b89db84a03c",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_6a50ff8b58418c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d67b706-f77d-4af2-84f8-c7556015fd53",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_a79949fd39aa12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3512a1e-3a48-4b59-95c2-ad40c780f6a9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e1f6fcdd78170a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "07ffa20a-be06-4b62-a6c7-e2cc4d3b435d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ff5bd57f7b4f2f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f7a8e604-26d7-4dc0-9381-beaca5a4f55b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
