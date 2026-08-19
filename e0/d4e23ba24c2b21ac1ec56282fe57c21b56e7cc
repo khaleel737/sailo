@@ -1,0 +1,107 @@
+packages/i18n/src/admin/pl.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1118-1190
+packages/i18n/src/admin/sv.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1109-1181
+packages/i18n/src/admin/ro.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1118-1190
+packages/i18n/src/admin/sq.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1124-1196
+packages/marketing/src/contacts/fields.ts
+  s_16f404b29c0075::t_c9c253f28f84df 205-213
+apps/web/e2e/scenarios/automations.scenario.ts
+  s_16f404b29c0075::t_8affe7e4049b18 2
+packages/commerce/src/orders/resolve-lines.ts
+  s_16f404b29c0075::t_c6834cbe8c4537 252-255,260,265
+apps/web/src/app/admin/clients/_components/contact-audience.tsx
+  s_16f404b29c0075::t_8affe7e4049b18 4
+packages/i18n/src/admin/es.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1106-1178
+packages/i18n/src/admin/fil.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1121-1193
+packages/i18n/src/admin/bg.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1123-1195
+packages/i18n/src/admin/ko.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1123-1195
+packages/i18n/src/admin/ar.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1110-1182
+packages/commerce/src/disputes/platform.ts
+  s_16f404b29c0075::t_c6834cbe8c4537 703-704
+packages/i18n/src/admin/de.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1111-1183
+packages/marketing/src/automations/tick.ts
+  s_16f404b29c0075::t_d3bba56abbf9b5 482-495,538,545
+  s_16f404b29c0075::t_5e637963165404 19
+packages/i18n/src/admin/sl.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1123-1195
+packages/core/src/identity/secret-box.ts
+  s_16f404b29c0075::t_6c1dcb5eb9c793 80-81,85,91-93,99-100,103-105
+  s_16f404b29c0075::t_62ad22c08b0b85 82-84,86-90,94-98
+packages/i18n/src/admin/ru.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1118-1190
+packages/i18n/src/admin/pt.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1118-1190
+packages/marketing/src/automations/graph.ts
+  s_16f404b29c0075::t_1ba81827ba2ff3 309-317,458-459
+packages/i18n/src/admin/fr.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1111-1183
+packages/i18n/src/admin/hu.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1106-1178
+packages/i18n/src/admin/fi.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1106-1178
+packages/i18n/src/admin/sr.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1124-1196
+packages/i18n/src/admin/tr.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1109-1181
+packages/i18n/src/admin/mk.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1123-1195
+apps/web/src/app/[handle]/_lib/get-shop-page-data.ts
+  s_16f404b29c0075::t_b270e84f03042c 103-104
+packages/i18n/src/admin/ms.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1123-1195
+packages/i18n/src/admin/nl.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1118-1190
+packages/i18n/src/admin/bs.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1123-1195
+packages/i18n/src/admin/no.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1118-1190
+packages/i18n/src/admin/th.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1124-1196
+packages/i18n/src/admin/zh.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1109-1181
+packages/i18n/src/admin/da.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1108-1180
+packages/i18n/src/admin/it.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1108-1180
+packages/i18n/src/admin/hr.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1121-1193
+packages/i18n/src/admin/ja.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1111-1183
+packages/i18n/src/admin/id.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1123-1195
+packages/i18n/src/admin/uk.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1109-1181
+apps/web/src/app/api/cron/sweep/route.ts
+  s_16f404b29c0075::t_8affe7e4049b18 65-66,76
+packages/i18n/src/admin/el.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1108-1180
+packages/i18n/src/admin/vi.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1124-1196
+packages/i18n/src/admin/cs.ts
+  s_16f404b29c0075::t_eeaaa9b012e550 1108-1180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "e0d4e23ba24c2b21ac1ec56282fe57c21b56e7cc",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
