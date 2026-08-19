@@ -59,11 +59,11 @@ describe("requireShop, audited", () => {
     expect(source).not.toMatch(/requireShop\(\s*permission\?/);
   });
 
-  it("is called 147 times, and every one names a real permission", () => {
+  it("is called 149 times, and every one names a real permission", () => {
     const sites = callSites();
 
     /*
-     * **147**, and the number is the point of this test.
+     * **149**, and the number is the point of this test.
      *
      * The audit that introduced the argument found **140** existing call sites
      * — 94 server actions, 40 pages and layouts, 6 route handlers — and read
@@ -71,10 +71,15 @@ describe("requireShop, audited", () => {
      * added seven of its own: five writes in `actions/team.ts` and the settings
      * page, all `team:*`, which no role but the owner carries.
      *
+     * 147 → 149 is the order detail screen, and both of its claims are on the
+     * same file: `generateMetadata` guards as well as the page body. That is
+     * not a duplicate to be tidied away — Next runs the two independently, and
+     * a title naming a buyer is as much of a leak as the page under it.
+     *
      * Update this deliberately when a screen is added or removed. A number that
      * moves on its own is exactly the thing this exists to notice.
      */
-    expect(sites).toHaveLength(147);
+    expect(sites).toHaveLength(149);
 
     const unknown = sites.filter(
       (s) => !(SHOP_PERMISSIONS as readonly string[]).includes(s.permission),
@@ -93,7 +98,7 @@ describe("requireShop, audited", () => {
     );
     expect(inActions).toHaveLength(100);
     expect(inRoutes).toHaveLength(6);
-    expect(inPages).toHaveLength(41);
+    expect(inPages).toHaveLength(43);
     expect(inActions.length + inRoutes.length + inPages.length).toBe(sites.length);
 
     /*

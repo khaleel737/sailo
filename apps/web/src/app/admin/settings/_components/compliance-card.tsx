@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Card, Field, Input } from "@sailo/design-system/web";
+import { descriptorPreview } from "@sailo/core/disputes";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import type { Shop } from "@sailo/db/schema";
 
@@ -14,6 +16,18 @@ import type { Shop } from "@sailo/db/schema";
  */
 export function ComplianceCard({ shop }: { shop: Shop }) {
   const a = useAdminT();
+  /*
+   * Held in state for one reason: the preview underneath.
+   *
+   * Stripe *silently ignores* an invalid descriptor — the charge succeeds and
+   * the account default is used instead — so the failure this field exists to
+   * prevent is a seller who typed something, was never told it would not be
+   * used, and finds out from an `unrecognized` chargeback months later. The
+   * save refuses an invalid one, but a refusal costs a round trip; this shows
+   * the exact line the buyer will read while they are still looking at it.
+   */
+  const [descriptor, setDescriptor] = useState(shop.statementDescriptor ?? "");
+  const preview = descriptorPreview(descriptor, null);
 
   return (
     <Card className="space-y-4 p-5">
@@ -40,6 +54,45 @@ export function ComplianceCard({ shop }: { shop: Shop }) {
           </span>
         </span>
       </label>
+
+      {/*
+        The statement descriptor sits with the compliance switches rather than
+        with the payment rails, because it is the same kind of thing: something
+        the seller owes the buyer at checkout. Spec 44 — it is the only dispute
+        reason a seller can eliminate outright rather than argue after the fact.
+      */}
+      <Field
+        label={a.settings.statementDescriptor}
+        htmlFor="statementDescriptor"
+        hint={a.settings.statementDescriptorHint}
+      >
+        <Input
+          id="statementDescriptor"
+          name="statementDescriptor"
+          maxLength={22}
+          value={descriptor}
+          onChange={(e) => setDescriptor(e.target.value)}
+          placeholder={shop.name.slice(0, 22)}
+        />
+        {/*
+          Three states, and the middle one is deliberately silent. A valid line
+          is shown as the buyer will read it — monospaced, because the thing
+          being checked is the characters. An empty field says what actually
+          happens instead, which is not "nothing". A field that is non-empty and
+          not yet valid says neither: somebody four characters into typing
+          "SPECKLED" has not made a mistake, and telling them so is noise.
+        */}
+        {preview ? (
+          <p className="mt-1.5 text-xs text-ink-500">
+            {a.settings.statementDescriptorPreview}{" "}
+            <span className="font-mono text-ink-900">{preview}</span>
+          </p>
+        ) : descriptor.trim() ? null : (
+          <p className="mt-1.5 text-xs text-ink-500">
+            {a.settings.statementDescriptorDefault}
+          </p>
+        )}
+      </Field>
 
       <Field
         label={a.settings.termsUrl}

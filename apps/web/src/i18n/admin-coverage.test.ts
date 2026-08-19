@@ -124,8 +124,79 @@ for (const file of files) {
   }
 }
 
+/**
+ * Keys whose screen is specified and paid for, but not yet written.
+ *
+ * A third category the ceiling below has no way to express. The test's premise
+ * is that an unreferenced key is either a string a screen is hardcoding in
+ * English or a key nobody needs — both of which should be acted on. These are
+ * neither: the table, the arithmetic and the scenario tests exist and the admin
+ * screen does not, so the translation is correct, wanted, and waiting.
+ *
+ * Named one by one rather than folded into a larger ceiling, because a number
+ * hides what it is covering. Twenty-six free slots would absorb the next
+ * accidental hardcoded string in silence; this list absorbs exactly these
+ * twenty-six and fails on the twenty-seventh.
+ *
+ * **Event tiers** (`tier*`, `tiersTitle`, `tiersBody`) — `event_tiers` is a
+ * table, `claimEventCapacity` enforces the two-level ceiling narrower-first,
+ * and `event-depth.scenario.ts` proves it. Nothing in `apps/web` calls it: no
+ * editor writes a tier and the checkout claims product stock only. Deliberately
+ * *not* variants — the note over `eventTiers` explains why a tier forced into
+ * an option group becomes a fake option that renders in the picker.
+ *
+ * **Event sessions** (`sessionMode*`, `sessions*`, `sessionGenerate*`,
+ * `sessionCapacity`) — `event_sessions` exists and `saveProduct` already reads
+ * and gates `sessionMode`, so half of this is wired: what is missing is the
+ * editor that creates the dates and the checkout that claims one.
+ *
+ * **Staff rosters** (`staff*`) — `staff_resources` and `product_staff` exist
+ * with `listStaff`, `staffCalendars` and `firstFreeStaff` behind them, and
+ * `staff-bookings.scenario.ts` passes. The booking path does not consult them
+ * and there is no roster screen, so a Pro shop paying for "staff and classes"
+ * gets `bookingCapacity` and nothing else.
+ *
+ * Each entry is asserted to exist and to still be unreferenced below, so the
+ * list cannot rot: renaming one fails, and *building* the screen fails until
+ * the entry is deleted, which is the point.
+ */
+const UNBUILT = new Set([
+  // Spec 50 — ticket tiers.
+  "productForm.tiersTitle",
+  "productForm.tiersBody",
+  "productForm.tierName",
+  "productForm.tierPrice",
+  "productForm.tierCapacity",
+  "productForm.tierCapacityHint",
+  "productForm.tierHidden",
+  // Spec 50 — several dates on one event.
+  "productForm.sessionMode",
+  "productForm.sessionModeSingle",
+  "productForm.sessionModePickOne",
+  "productForm.sessionModeAllAccess",
+  "productForm.sessionsTitle",
+  "productForm.sessionGenerate",
+  "productForm.sessionGenerateCount",
+  "productForm.sessionCapacity",
+  // Spec 51 — who takes the bookings.
+  "productForm.staffTitle",
+  "productForm.staffBody",
+  "productForm.staffName",
+  "productForm.staffEmail",
+  "productForm.staffHours",
+  "productForm.staffHoursHint",
+  "productForm.staffTimeZone",
+  "productForm.staffFeed",
+  "productForm.staffFeedHint",
+  "productForm.staffAdd",
+  "productForm.staffActive",
+]);
+
 const unreferenced = KEYS.filter(
-  (k) => !WHOLESALE.has(k.split(".")[0] ?? "") && !referenced.has(`a.${k}`),
+  (k) =>
+    !WHOLESALE.has(k.split(".")[0] ?? "") &&
+    !UNBUILT.has(k) &&
+    !referenced.has(`a.${k}`),
 );
 
 describe("admin translation coverage", () => {
@@ -141,6 +212,22 @@ describe("admin translation coverage", () => {
       return entries !== undefined && !(key in (entries as object));
     });
     expect(dangling).toEqual([]);
+  });
+
+  it("keeps the unbuilt-screen list honest", () => {
+    /*
+     * Both directions, because an allowlist that is never checked becomes a
+     * place to put things.
+     *
+     * A named key that no longer exists means it was renamed or deleted, and
+     * the entry is now excusing nothing while looking like it excuses
+     * something. A named key that *is* referenced means the screen got built —
+     * and the entry has to go, or the next key to go unshown in that section
+     * inherits a free pass nobody granted it.
+     */
+    const all = new Set(KEYS);
+    expect([...UNBUILT].filter((k) => !all.has(k))).toEqual([]);
+    expect([...UNBUILT].filter((k) => referenced.has(`a.${k}`))).toEqual([]);
   });
 
   it("does not grow the backlog of translations nobody shows", () => {
