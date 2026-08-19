@@ -503,4 +503,14 @@ export const sq: Dictionary = {
     moderated: "Ata zgjedhin çfarë shkon në faqen e tyre, dhe ti mund të kërkosh ta heqin më vonë.",
     wallTitle: "Çfarë thonë njerëzit",
   },
+  collection: {
+    progress: "{percent}% e përfunduar",
+    continueLabel: "Vazhdoni aty ku e latë",
+    preview: "Pamje falas",
+    locked: "Zhbllokohet kur nis qasja juaj",
+    unlocksIn: "Zhbllokohet pas {days} ditësh",
+    markDone: "Shëno si të përfunduar",
+    done: "U krye",
+    open: "Hap",
+  },
 };

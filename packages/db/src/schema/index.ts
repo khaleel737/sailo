@@ -37,6 +37,7 @@ export * from "./risk";
 export * from "./tax";
 export * from "./leads";
 export * from "./testimonials";
+export * from "./team";
 export * from "./push";
 
 export * from "./relations";

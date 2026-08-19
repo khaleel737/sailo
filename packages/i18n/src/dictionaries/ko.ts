@@ -500,4 +500,14 @@ export const ko: Dictionary = {
     moderated: "페이지에 올릴지는 상점이 정하고, 나중에 삭제를 요청할 수도 있어요.",
     wallTitle: "고객들의 이야기",
   },
+  collection: {
+    progress: "{percent}% 완료",
+    continueLabel: "이어서 보기",
+    preview: "무료 미리보기",
+    locked: "이용이 시작되면 열립니다",
+    unlocksIn: "{days}일 후에 열립니다",
+    markDone: "완료로 표시",
+    done: "완료",
+    open: "열기",
+  },
 };

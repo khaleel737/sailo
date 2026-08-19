@@ -551,4 +551,14 @@ export const da: Dictionary = {
     moderated: "De vælger, hvad der kommer på deres side, og du kan bede dem fjerne det igen.",
     wallTitle: "Hvad folk siger",
   },
+  collection: {
+    progress: "{percent}% gennemført",
+    continueLabel: "Fortsæt hvor du slap",
+    preview: "Gratis smugkig",
+    locked: "Låses op, når din adgang starter",
+    unlocksIn: "Låses op om {days} dage",
+    markDone: "Markér som færdig",
+    done: "Færdig",
+    open: "Åbn",
+  },
 };

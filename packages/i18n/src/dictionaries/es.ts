@@ -562,4 +562,14 @@ export const es: Dictionary = {
     moderated: "Ellos eligen qué ponen en su página, y puedes pedir que lo quiten más adelante.",
     wallTitle: "Lo que dice la gente",
   },
+  collection: {
+    progress: "{percent}% completado",
+    continueLabel: "Continúa donde lo dejaste",
+    preview: "Vista previa gratuita",
+    locked: "Se desbloquea cuando empiece tu acceso",
+    unlocksIn: "Se desbloquea en {days} días",
+    markDone: "Marcar como hecho",
+    done: "Hecho",
+    open: "Abrir",
+  },
 };

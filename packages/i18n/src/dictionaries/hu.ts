@@ -551,4 +551,14 @@ export const hu: Dictionary = {
     moderated: "Ők döntik el, mi kerül az oldalukra, és később kérheted az eltávolítását.",
     wallTitle: "Mit mondanak mások",
   },
+  collection: {
+    progress: "{percent}% kész",
+    continueLabel: "Folytassa ott, ahol abbahagyta",
+    preview: "Ingyenes előnézet",
+    locked: "A hozzáférés kezdetekor nyílik meg",
+    unlocksIn: "{days} nap múlva nyílik meg",
+    markDone: "Megjelölés késznek",
+    done: "Kész",
+    open: "Megnyitás",
+  },
 };

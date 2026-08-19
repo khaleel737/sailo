@@ -550,4 +550,14 @@ export const fi: Dictionary = {
     moderated: "He valitsevat, mitä sivulleen laittavat, ja voit myöhemmin pyytää poistamaan sen.",
     wallTitle: "Mitä ihmiset sanovat",
   },
+  collection: {
+    progress: "{percent} % valmiina",
+    continueLabel: "Jatka siitä, mihin jäit",
+    preview: "Ilmainen esikatselu",
+    locked: "Avautuu, kun käyttöoikeutesi alkaa",
+    unlocksIn: "Avautuu {days} päivän kuluttua",
+    markDone: "Merkitse tehdyksi",
+    done: "Valmis",
+    open: "Avaa",
+  },
 };

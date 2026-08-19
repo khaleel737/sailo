@@ -502,4 +502,14 @@ export const th: Dictionary = {
     moderated: "ร้านเป็นคนเลือกว่าจะขึ้นหน้าไหน และคุณขอให้ลบทีหลังได้",
     wallTitle: "เสียงจากลูกค้า",
   },
+  collection: {
+    progress: "เสร็จแล้ว {percent}%",
+    continueLabel: "ไปต่อจากที่ค้างไว้",
+    preview: "ตัวอย่างฟรี",
+    locked: "จะเปิดเมื่อการเข้าถึงของคุณเริ่มต้น",
+    unlocksIn: "จะเปิดในอีก {days} วัน",
+    markDone: "ทำเครื่องหมายว่าเสร็จแล้ว",
+    done: "เสร็จแล้ว",
+    open: "เปิด",
+  },
 };

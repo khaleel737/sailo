@@ -553,4 +553,14 @@ export const sv: Dictionary = {
     moderated: "De väljer vad som hamnar på deras sida, och du kan be dem ta bort det senare.",
     wallTitle: "Vad andra säger",
   },
+  collection: {
+    progress: "{percent} % klart",
+    continueLabel: "Fortsätt där du slutade",
+    preview: "Gratis förhandsvisning",
+    locked: "Låses upp när din åtkomst börjar",
+    unlocksIn: "Låses upp om {days} dagar",
+    markDone: "Markera som klar",
+    done: "Klar",
+    open: "Öppna",
+  },
 };

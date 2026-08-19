@@ -551,4 +551,14 @@ export const cs: Dictionary = {
     moderated: "Vybírají si, co dají na svou stránku, a vy můžete kdykoli požádat o odstranění.",
     wallTitle: "Co říkají lidé",
   },
+  collection: {
+    progress: "Hotovo z {percent} %",
+    continueLabel: "Pokračovat tam, kde jste skončili",
+    preview: "Ukázka zdarma",
+    locked: "Odemkne se, jakmile začne váš přístup",
+    unlocksIn: "Odemkne se za {days} dní",
+    markDone: "Označit jako hotové",
+    done: "Hotovo",
+    open: "Otevřít",
+  },
 };

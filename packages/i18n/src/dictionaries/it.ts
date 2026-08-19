@@ -560,4 +560,14 @@ export const it: Dictionary = {
     moderated: "Sono loro a scegliere cosa mettere sulla pagina, e puoi chiedere di toglierlo più avanti.",
     wallTitle: "Cosa dice chi ha comprato",
   },
+  collection: {
+    progress: "{percent}% completato",
+    continueLabel: "Riprendi da dove eri rimasto",
+    preview: "Anteprima gratuita",
+    locked: "Si sblocca all'inizio del tuo accesso",
+    unlocksIn: "Si sblocca tra {days} giorni",
+    markDone: "Segna come completato",
+    done: "Fatto",
+    open: "Apri",
+  },
 };

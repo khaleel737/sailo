@@ -556,4 +556,14 @@ export const pl: Dictionary = {
     moderated: "To oni wybierają, co trafi na ich stronę, a Ty możesz później poprosić o usunięcie.",
     wallTitle: "Co mówią inni",
   },
+  collection: {
+    progress: "Ukończono {percent}%",
+    continueLabel: "Wróć tam, gdzie skończyłeś",
+    preview: "Darmowy podgląd",
+    locked: "Odblokuje się, gdy zacznie się Twój dostęp",
+    unlocksIn: "Odblokuje się za {days} dni",
+    markDone: "Oznacz jako ukończone",
+    done: "Gotowe",
+    open: "Otwórz",
+  },
 };

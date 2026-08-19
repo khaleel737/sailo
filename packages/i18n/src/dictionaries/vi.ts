@@ -504,4 +504,14 @@ export const vi: Dictionary = {
     moderated: "Họ chọn những gì lên trang của mình, và bạn có thể yêu cầu gỡ sau.",
     wallTitle: "Khách hàng nói gì",
   },
+  collection: {
+    progress: "Hoàn thành {percent}%",
+    continueLabel: "Tiếp tục từ chỗ bạn dừng lại",
+    preview: "Xem trước miễn phí",
+    locked: "Mở khi quyền truy cập của bạn bắt đầu",
+    unlocksIn: "Mở sau {days} ngày",
+    markDone: "Đánh dấu đã xong",
+    done: "Đã xong",
+    open: "Mở",
+  },
 };

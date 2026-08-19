@@ -500,4 +500,14 @@ export const hr: Dictionary = {
     moderated: "Oni biraju što ide na njihovu stranicu, a ti kasnije možeš tražiti uklanjanje.",
     wallTitle: "Što ljudi kažu",
   },
+  collection: {
+    progress: "{percent}% dovršeno",
+    continueLabel: "Nastavite gdje ste stali",
+    preview: "Besplatan pregled",
+    locked: "Otključava se kad započne vaš pristup",
+    unlocksIn: "Otključava se za {days} dana",
+    markDone: "Označi kao dovršeno",
+    done: "Gotovo",
+    open: "Otvori",
+  },
 };

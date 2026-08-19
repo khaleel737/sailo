@@ -558,4 +558,14 @@ export const pt: Dictionary = {
     moderated: "São eles que escolhem o que vai para a página, e podes pedir para tirar mais tarde.",
     wallTitle: "O que dizem os clientes",
   },
+  collection: {
+    progress: "{percent}% concluído",
+    continueLabel: "Continuar de onde parou",
+    preview: "Pré-visualização gratuita",
+    locked: "Desbloqueia quando o seu acesso começar",
+    unlocksIn: "Desbloqueia dentro de {days} dias",
+    markDone: "Marcar como concluído",
+    done: "Concluído",
+    open: "Abrir",
+  },
 };

@@ -555,4 +555,14 @@ export const tr: Dictionary = {
     moderated: "Sayfalarına ne koyacaklarına onlar karar veriyor, sen de sonradan kaldırmalarını isteyebilirsin.",
     wallTitle: "İnsanlar ne diyor",
   },
+  collection: {
+    progress: "%{percent} tamamlandı",
+    continueLabel: "Kaldığınız yerden devam edin",
+    preview: "Ücretsiz önizleme",
+    locked: "Erişiminiz başladığında açılır",
+    unlocksIn: "{days} gün içinde açılır",
+    markDone: "Tamamlandı olarak işaretle",
+    done: "Tamamlandı",
+    open: "Aç",
+  },
 };

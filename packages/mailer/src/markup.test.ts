@@ -115,7 +115,31 @@ describe("the email footer", () => {
     const footer = footerOf(paid);
     expect(footer).toContain("Forno Nove");
     expect(footer).not.toContain("Sailo");
-    expect(footer).not.toContain("<a href=");
+    /*
+     * No link *to Sailo*, which is what this test is about. It used to assert
+     * "no `<a href=` at all", which was a fair proxy until the footer gained a
+     * second link that is not a badge: spec 52's "Request your data".
+     *
+     * That one stays on every tier, deliberately. It is a buyer's statutory
+     * right rather than a Sailo advertisement, and putting it behind a plan
+     * would mean the shops least able to pay are the ones whose customers
+     * cannot exercise it — which spec 52 refuses in as many words.
+     */
+    expect(footer).not.toMatch(/<a href="[^"]*sailo[^"]*"/i);
+  });
+
+  it("carries the data-request link on every tier", () => {
+    /*
+     * Spec 52. On the transactional shell rather than the marketing one,
+     * because the person who most needs it is a buyer who consented to nothing
+     * — and in the footer of a receipt rather than only on the storefront,
+     * because a receipt is where they are when the question occurs to them.
+     */
+    for (const plan of [{}, { plan: "pro", subscriptionStatus: "active" }]) {
+      const footer = footerOf(layout(shop(plan), "Order confirmed", "<p>x</p>"));
+      expect(footer).toContain("/forno/data-request");
+      expect(footer).toContain("Request your data");
+    }
   });
 
   it("still signs Sailo's own mail, where no shop is involved", () => {

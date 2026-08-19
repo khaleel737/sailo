@@ -592,4 +592,14 @@ export const ja: Dictionary = {
     moderated: "掲載するかどうかはショップが決めます。あとから削除を頼むこともできます。",
     wallTitle: "お客さまの声",
   },
+  collection: {
+    progress: "{percent}% 完了",
+    continueLabel: "続きから再開",
+    preview: "無料プレビュー",
+    locked: "アクセス開始時に公開されます",
+    unlocksIn: "あと {days} 日で公開されます",
+    markDone: "完了にする",
+    done: "完了",
+    open: "開く",
+  },
 };

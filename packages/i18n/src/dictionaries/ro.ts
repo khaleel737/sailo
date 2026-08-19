@@ -550,4 +550,14 @@ export const ro: Dictionary = {
     moderated: "Ei aleg ce pun pe pagina lor, iar tu poți cere să fie scos mai târziu.",
     wallTitle: "Ce spun oamenii",
   },
+  collection: {
+    progress: "{percent}% finalizat",
+    continueLabel: "Continuă de unde ai rămas",
+    preview: "Previzualizare gratuită",
+    locked: "Se deblochează când începe accesul tău",
+    unlocksIn: "Se deblochează în {days} zile",
+    markDone: "Marchează ca finalizat",
+    done: "Gata",
+    open: "Deschide",
+  },
 };

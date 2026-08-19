@@ -563,4 +563,14 @@ export const fr: Dictionary = {
     moderated: "C'est eux qui choisissent ce qui va sur leur page, et tu peux demander à le retirer plus tard.",
     wallTitle: "Ce qu'en disent les gens",
   },
+  collection: {
+    progress: "{percent} % terminé",
+    continueLabel: "Reprendre où vous en étiez",
+    preview: "Aperçu gratuit",
+    locked: "Se débloque au début de votre accès",
+    unlocksIn: "Se débloque dans {days} jours",
+    markDone: "Marquer comme terminé",
+    done: "Terminé",
+    open: "Ouvrir",
+  },
 };

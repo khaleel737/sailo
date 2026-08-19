@@ -398,6 +398,30 @@ export const en = {
   },
 
   /*
+   * Spec 40 — the lesson list on the buyer's own delivery page.
+   *
+   * Its own section rather than keys under `download`, and deliberately: that
+   * one is a protected money section — `glossary.ts` lists it, because it is
+   * what a digital sale actually delivers — so a machine may not write into it.
+   * These are the chrome around an ordered list, which it may.
+   *
+   * The wording of `locked` and `unlocksIn` carries the one thing this feature
+   * must get right in front of a buyer: an item they cannot open yet is
+   * *waiting*, not missing. A lapsed member reads the same list and needs to
+   * see what they had.
+   */
+  collection: {
+    progress: "{percent}% complete",
+    continueLabel: "Continue where you left off",
+    preview: "Free preview",
+    locked: "Unlocks when your access starts",
+    unlocksIn: "Unlocks in {days} days",
+    markDone: "Mark as done",
+    done: "Done",
+    open: "Open",
+  },
+
+  /*
    * Spec 52 — a buyer asking what a shop holds about them.
    *
    * Every string here is read by somebody with no account, cold, from a link in

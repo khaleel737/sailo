@@ -501,4 +501,14 @@ export const fil: Dictionary = {
     moderated: "Sila ang pumipili kung ano ang ilalagay sa page nila, at puwede mong ipatanggal mamaya.",
     wallTitle: "Ang sinasabi ng iba",
   },
+  collection: {
+    progress: "{percent}% tapos na",
+    continueLabel: "Ipagpatuloy kung saan ka huminto",
+    preview: "Libreng preview",
+    locked: "Bubukas kapag nagsimula ang access mo",
+    unlocksIn: "Bubukas sa loob ng {days} araw",
+    markDone: "Markahang tapos",
+    done: "Tapos",
+    open: "Buksan",
+  },
 };

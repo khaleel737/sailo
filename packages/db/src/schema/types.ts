@@ -1,8 +1,11 @@
 import type { shops } from "./shop";
 import type { shopPages } from "./pages";
 import type { dataRequests } from "./privacy";
+import type { collectionItems, collections } from "./content";
 import type {
   categories,
+  eventSessions,
+  eventTiers,
   licenseActivations,
   licenseKeys,
   productCodes,
@@ -24,7 +27,7 @@ import type {
   stockRequests,
   tickets,
 } from "./orders";
-import type { subscriptions } from "./memberships";
+import type { subscriptionSeats, subscriptions } from "./memberships";
 import type { disputes } from "./disputes";
 import type { broadcasts } from "./audience";
 import type { checkoutSessions } from "./recovery";
@@ -71,6 +74,9 @@ export type IntegrationApp = typeof integrationApps.$inferSelect;
 export type ShopPage = typeof shopPages.$inferSelect;
 /** A buyer's subject access, erasure or portability request — spec 52. */
 export type DataRequest = typeof dataRequests.$inferSelect;
+/** A product's gated content, and one item of it — spec 40. */
+export type Collection = typeof collections.$inferSelect;
+export type CollectionItem = typeof collectionItems.$inferSelect;
 export type Category = typeof categories.$inferSelect;
 export type Product = typeof products.$inferSelect;
 export type ProductImage = typeof productImages.$inferSelect;
@@ -82,6 +88,10 @@ export type ProductCode = typeof productCodes.$inferSelect;
 export type LicenseKey = typeof licenseKeys.$inferSelect;
 /** One machine a licence is running on — spec 48. */
 export type LicenseActivation = typeof licenseActivations.$inferSelect;
+/** One price band on one event — spec 50. */
+export type EventTier = typeof eventTiers.$inferSelect;
+/** One date an event actually runs on — spec 50. */
+export type EventSession = typeof eventSessions.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
@@ -96,6 +106,8 @@ export type ShipmentItem = typeof shipmentItems.$inferSelect;
 export type Ticket = typeof tickets.$inferSelect;
 export type DoorPass = typeof doorPasses.$inferSelect;
 export type Subscription = typeof subscriptions.$inferSelect;
+/** One person on somebody else's subscription — spec 49. */
+export type SubscriptionSeat = typeof subscriptionSeats.$inferSelect;
 export type Broadcast = typeof broadcasts.$inferSelect;
 /** Sailo's own list and its campaigns — the platform side of `Broadcast`. */
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;

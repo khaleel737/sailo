@@ -3,10 +3,22 @@ import { orderSummaryTitle } from "@/lib/order-lines";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { toString as qrSvg } from "qrcode";
-import { Clock, Download, FileDown, Lock, MapPin, Store, Ticket, Video } from "lucide-react";
+import {
+  ArrowUpRight,
+  Clock,
+  Download,
+  FileDown,
+  KeyRound,
+  Lock,
+  MapPin,
+  Store,
+  Ticket,
+  Video,
+} from "lucide-react";
 import { LocalTime } from "@sailo/design-system/web";
 import { getDownloadByToken, downloadState } from "@/lib/downloads";
 import { ticketsForOrder } from "@sailo/commerce/ticketing";
+import { digitalAccessForOrder, licensesForOrder } from "@sailo/commerce/orders/server";
 import { eventAccessForOrder } from "@sailo/commerce/ticketing";
 import { getShopT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
@@ -16,6 +28,8 @@ import { shopThemeVars } from "@sailo/design-system/web/cn";
 import { accessForOrder } from "@/lib/membership-access";
 import { ensureMemberPass } from "@sailo/commerce/memberships/server";
 import { MembershipCard } from "./_components/membership-card";
+import { CollectionList } from "./_components/collection-list";
+import { collectionForProduct, readableCollection } from "@sailo/commerce/content";
 
 /* Not yet converted — see the note in `next.config.ts`. */
 export const instant = false;
@@ -58,6 +72,24 @@ export default async function DownloadPage({
   const events = await eventAccessForOrder(order);
 
   /*
+   * The digital goods that are not files — a link, a code — read from the
+   * order's *lines* for the same reason the events are, and gated by the same
+   * `downloadReleasedAt`. `digitalAccessForOrder` returns `value: null` until
+   * the order has earned it, so there is no gate on this page to get wrong.
+   */
+  const access = await digitalAccessForOrder(order);
+
+  /*
+   * The licence keys this order minted — spec 48.
+   *
+   * Read by order, and only rendered once the order is released: the key is a
+   * bearer credential that turns a stranger's software on, so it is held back
+   * by exactly the timestamp that holds back a file. `licensesForOrder`
+   * filters on `order_id`, so this page has no way to reach anybody else's.
+   */
+  const licenses = state.released ? await licensesForOrder(order.id) : [];
+
+  /*
    * The membership behind this order, if it is one.
    *
    * Read here rather than gating the files above, because the files are
@@ -67,6 +99,30 @@ export default async function DownloadPage({
    */
   const membership = await accessForOrder(order);
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
+
+  /*
+   * The product's gated content, if the seller has built any. Spec 40.
+   *
+   * `accessOpen` is the answer the *existing* gate already gave — `state.open`
+   * for a one-off purchase, `membership.access.open` for a membership — handed
+   * in rather than recomputed. That is the whole design: the collection writes
+   * no new access predicate, and a parameter cannot become a second opinion.
+   *
+   * The anchor is when access began: the subscription's start for a member, so
+   * a course drips from the day they joined rather than from the day of
+   * whichever renewal order the token belongs to.
+   */
+  const collection = product ? await collectionForProduct(product.id) : null;
+  const content = collection
+    ? await readableCollection({
+        collection,
+        order,
+        accessOpen: membership.isMembership ? membership.access.open : state.open,
+        anchor: membership.isMembership
+          ? (membership.subscription?.startedAt ?? order.downloadReleasedAt)
+          : order.downloadReleasedAt,
+      })
+    : null;
 
   /*
    * The member's door pass, for a membership somebody physically turns up to.
@@ -167,7 +223,30 @@ export default async function DownloadPage({
           />
         ) : null}
 
-        {files.length > 0 && state.open ? (
+        {/*
+          The collection — spec 40. Above the flat file list, because when a
+          seller has grouped their files into lessons that ordering *is* the
+          product, and a duplicate unordered list under it would be the same
+          files twice.
+        */}
+        {content ? (
+          <CollectionList
+            token={token}
+            data={content}
+            labels={{
+              progress: t.collection.progress,
+              continueLabel: t.collection.continueLabel,
+              preview: t.collection.preview,
+              locked: t.collection.locked,
+              unlocksIn: t.collection.unlocksIn,
+              markDone: t.collection.markDone,
+              done: t.collection.done,
+              open: t.collection.open,
+            }}
+          />
+        ) : null}
+
+        {files.length > 0 && state.open && !content ? (
           <>
             <ul className="surface-card mt-6 divide-y divide-black/5 rounded-2xl">
               {files.map((file) => (
@@ -181,9 +260,21 @@ export default async function DownloadPage({
                       <span className="block truncate text-sm font-medium">
                         {file.name}
                       </span>
-                      {file.sizeBytes ? (
+                      {/*
+                        The version and the date it was last touched — spec 48.
+                        A buyer who paid for v1 and is handed v3 has a support
+                        problem; a buyer who can see which one they are holding
+                        has an answer. This is the whole of "file versions" on
+                        this page: a label, not a second entitlement model.
+                      */}
+                      {file.version || file.sizeBytes ? (
                         <span className="text-muted block text-xs">
-                          {formatBytes(file.sizeBytes)}
+                          {[
+                            file.version,
+                            file.sizeBytes ? formatBytes(file.sizeBytes) : null,
+                          ]
+                            .filter(Boolean)
+                            .join(" · ")}
                         </span>
                       ) : null}
                     </span>
@@ -241,6 +332,109 @@ export default async function DownloadPage({
           </div>
         ) : null}
 
+        {access.length > 0 ? (
+          <ul className="mt-6 space-y-3">
+            {access.map((item) => (
+              <li key={item.productId} className="surface-card rounded-2xl p-4">
+                <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide opacity-60">
+                  {item.delivery === "link" ? (
+                    <ArrowUpRight className="size-3.5" />
+                  ) : (
+                    <KeyRound className="size-3.5" />
+                  )}
+                  {item.delivery === "link"
+                    ? t.download.linkLabel
+                    : t.download.codeLabel}
+                </p>
+                <p className="mt-1 text-sm font-semibold">{item.title}</p>
+
+                {item.value === null ? (
+                  <p className="text-muted mt-2 flex items-center gap-1.5 text-xs">
+                    <Lock className="size-3.5" />
+                    {interpolate(t.download.notReady, { shop: shop.name })}
+                  </p>
+                ) : item.delivery === "link" ? (
+                  <a
+                    href={item.value}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="accent-bg mt-3 inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-semibold"
+                  >
+                    {t.download.open}
+                    <ArrowUpRight className="size-4" />
+                  </a>
+                ) : (
+                  /*
+                   * One block per code, because a buyer who bought three
+                   * licences was given three — spec 48. `values` is the whole
+                   * list and `value` is its first entry, so a single shared
+                   * code renders exactly as it always did.
+                   *
+                   * Selectable and wrapped, not truncated. This *is* the good:
+                   * a buyer who cannot copy the whole of it has not been given
+                   * what they paid for, so it wraps rather than eliding and
+                   * keeps the seller's own line breaks.
+                   */
+                  <div className="mt-3 space-y-2">
+                    {(item.values.length > 0 ? item.values : [item.value]).map(
+                      (code) => (
+                        <p
+                          key={code}
+                          className="whitespace-pre-wrap break-words rounded-xl bg-black/5 px-3 py-2.5 font-mono text-sm leading-relaxed"
+                        >
+                          {code}
+                        </p>
+                      ),
+                    )}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        {/*
+          The licences this order minted — spec 48.
+          Below the codes and above the events, because a buyer who bought a
+          licensed download reads down the page in the order they will use
+          things: the file, the key that unlocks it, then anything they have to
+          turn up to.
+        */}
+        {licenses.length > 0 ? (
+          <ul className="mt-6 space-y-3">
+            {licenses.map((license) => (
+              <li key={license.id} className="surface-card rounded-2xl p-4">
+                <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide opacity-60">
+                  <KeyRound className="size-3.5" />
+                  {t.license.title}
+                </p>
+                <p className="mt-3 select-all break-words rounded-xl bg-black/5 px-3 py-2.5 font-mono text-sm leading-relaxed">
+                  {license.key}
+                </p>
+                <p className="text-muted mt-2 text-xs">
+                  {license.activationLimit === null
+                    ? t.license.unlimited
+                    : interpolate(t.license.activations, {
+                        count: String(license.activationLimit),
+                      })}
+                  {license.expiresAt ? (
+                    <>
+                      {" · "}
+                      {interpolate(t.license.expires, {
+                        date: license.expiresAt.toLocaleDateString(locale, {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        }),
+                      })}
+                    </>
+                  ) : null}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
         {events.length > 0 ? (
           <ul className="mt-6 space-y-3">
             {events.map((event) => (
@@ -261,11 +455,22 @@ export default async function DownloadPage({
                    * The server has no idea where they are, and "18:00" without
                    * a zone is the single most common webinar support ticket —
                    * so the one clock that cannot be wrong for them is theirs.
+                   *
+                   * The end, when the seller gave one, is a second `LocalTime`
+                   * rather than a formatted range: both ends have to be
+                   * converted in the browser, and a server-rendered dash
+                   * between two client-rendered times is the only part of the
+                   * sentence that can be laid out here.
                    */
-                  <LocalTime
-                    at={event.startsAt.toISOString()}
-                    className="text-muted mt-0.5 block text-xs"
-                  />
+                  <span className="text-muted mt-0.5 flex flex-wrap items-center gap-1 text-xs">
+                    <LocalTime at={event.startsAt.toISOString()} />
+                    {event.endsAt ? (
+                      <>
+                        <span aria-hidden>&ndash;</span>
+                        <LocalTime at={event.endsAt.toISOString()} />
+                      </>
+                    ) : null}
+                  </span>
                 ) : null}
 
                 {event.joinUrl ? (

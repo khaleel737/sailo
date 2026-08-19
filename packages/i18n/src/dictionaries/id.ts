@@ -500,4 +500,14 @@ export const id: Dictionary = {
     moderated: "Mereka yang memilih apa yang tampil di halaman mereka, dan kamu bisa minta dihapus nanti.",
     wallTitle: "Kata mereka",
   },
+  collection: {
+    progress: "{percent}% selesai",
+    continueLabel: "Lanjutkan dari tempat Anda berhenti",
+    preview: "Pratinjau gratis",
+    locked: "Terbuka saat akses Anda dimulai",
+    unlocksIn: "Terbuka dalam {days} hari",
+    markDone: "Tandai selesai",
+    done: "Selesai",
+    open: "Buka",
+  },
 };

@@ -558,4 +558,14 @@ export const nl: Dictionary = {
     moderated: "Zij bepalen wat er op hun pagina komt, en je kunt later vragen het weg te halen.",
     wallTitle: "Wat mensen zeggen",
   },
+  collection: {
+    progress: "{percent}% voltooid",
+    continueLabel: "Ga verder waar je gebleven was",
+    preview: "Gratis voorbeeld",
+    locked: "Wordt ontgrendeld zodra je toegang begint",
+    unlocksIn: "Wordt over {days} dagen ontgrendeld",
+    markDone: "Markeer als klaar",
+    done: "Klaar",
+    open: "Openen",
+  },
 };

@@ -591,4 +591,14 @@ export const ar: Dictionary = {
     moderated: "هم يختارون ما يظهر على صفحتهم، ويمكنك أن تطلب إزالته لاحقاً.",
     wallTitle: "ماذا يقول الناس",
   },
+  collection: {
+    progress: "اكتمل {percent}%",
+    continueLabel: "تابع من حيث توقفت",
+    preview: "معاينة مجانية",
+    locked: "يُفتح عند بدء اشتراكك",
+    unlocksIn: "يُفتح خلال {days} يومًا",
+    markDone: "وضع علامة كمكتمل",
+    done: "تم",
+    open: "فتح",
+  },
 };

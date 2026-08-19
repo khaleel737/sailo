@@ -563,4 +563,14 @@ export const de: Dictionary = {
     moderated: "Sie entscheiden, was auf ihre Seite kommt, und du kannst es später entfernen lassen.",
     wallTitle: "Was andere sagen",
   },
+  collection: {
+    progress: "{percent}% abgeschlossen",
+    continueLabel: "Weitermachen, wo Sie aufgehört haben",
+    preview: "Kostenlose Vorschau",
+    locked: "Wird freigeschaltet, sobald Ihr Zugang beginnt",
+    unlocksIn: "Wird in {days} Tagen freigeschaltet",
+    markDone: "Als erledigt markieren",
+    done: "Erledigt",
+    open: "Öffnen",
+  },
 };

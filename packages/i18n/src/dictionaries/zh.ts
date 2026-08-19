@@ -591,4 +591,14 @@ export const zh: Dictionary = {
     moderated: "放不放在页面上由他们决定，之后你也可以要求撤下。",
     wallTitle: "大家怎么说",
   },
+  collection: {
+    progress: "已完成 {percent}%",
+    continueLabel: "从上次的位置继续",
+    preview: "免费预览",
+    locked: "在你的访问开始时解锁",
+    unlocksIn: "{days} 天后解锁",
+    markDone: "标记为完成",
+    done: "已完成",
+    open: "打开",
+  },
 };

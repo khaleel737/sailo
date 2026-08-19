@@ -499,4 +499,14 @@ export const ms: Dictionary = {
     moderated: "Merekalah yang memilih apa yang muncul di halaman mereka, dan anda boleh minta ia dibuang kemudian.",
     wallTitle: "Kata mereka",
   },
+  collection: {
+    progress: "{percent}% selesai",
+    continueLabel: "Sambung dari tempat anda berhenti",
+    preview: "Pratonton percuma",
+    locked: "Dibuka apabila akses anda bermula",
+    unlocksIn: "Dibuka dalam {days} hari",
+    markDone: "Tandakan selesai",
+    done: "Selesai",
+    open: "Buka",
+  },
 };

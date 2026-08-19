@@ -551,4 +551,14 @@ export const no: Dictionary = {
     moderated: "De velger hva som havner på siden deres, og du kan be om å få det fjernet senere.",
     wallTitle: "Hva folk sier",
   },
+  collection: {
+    progress: "{percent} % fullført",
+    continueLabel: "Fortsett der du slapp",
+    preview: "Gratis forhåndsvisning",
+    locked: "Låses opp når tilgangen din starter",
+    unlocksIn: "Låses opp om {days} dager",
+    markDone: "Merk som ferdig",
+    done: "Ferdig",
+    open: "Åpne",
+  },
 };

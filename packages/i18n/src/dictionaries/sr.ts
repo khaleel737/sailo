@@ -502,4 +502,14 @@ export const sr: Dictionary = {
     moderated: "Они бирају шта иде на њихову страницу, а ти касније можеш тражити уклањање.",
     wallTitle: "Шта људи кажу",
   },
+  collection: {
+    progress: "{percent}% завршено",
+    continueLabel: "Наставите одакле сте стали",
+    preview: "Бесплатан преглед",
+    locked: "Откључава се када почне ваш приступ",
+    unlocksIn: "Откључава се за {days} дана",
+    markDone: "Означи као завршено",
+    done: "Готово",
+    open: "Отвори",
+  },
 };
