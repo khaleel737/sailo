@@ -49,6 +49,15 @@ export type NotificationPrefs = Partial<{
    */
   taxThreshold: boolean;
   /**
+   * Somebody filled in a lead-capture form — spec 07.
+   *
+   * Its own switch rather than folding into `orderPlaced`, because a lead is
+   * not a sale: a seller who wants to know about money and not about
+   * newsletter signups has to be able to say so, and a shop running a magnet
+   * can collect far more leads than orders.
+   */
+  leadCaptured: boolean;
+  /**
    * Stock has fallen to the threshold the seller set — spec 51.
    *
    * One email per downward crossing, claimed in the same conditional UPDATE
@@ -189,6 +198,26 @@ export type WeightBand = {
   upToGrams: number;
   /** What this band costs, in the shop's minor units. */
   priceCents: number;
+};
+
+/**
+ * One question a lead-capture form asks — spec 07.
+ *
+ * `id` is a stable slug the seller never sees; renaming a `label` must not
+ * orphan the answers already given, which is why the answer below stores the
+ * label it was actually shown rather than looking it up later.
+ */
+export type LeadQuestion = {
+  id: string;
+  label: string;
+  required: boolean;
+};
+
+/** One answer, with the question as it was worded at the time. */
+export type LeadAnswer = {
+  id: string;
+  label: string;
+  value: string;
 };
 
 /* --------------------------------------------------------------------------

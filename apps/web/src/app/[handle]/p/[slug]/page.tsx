@@ -289,9 +289,11 @@ export default async function ProductPage({
                 {product.category.name}
               </Link>
             ) : null}
-            <span className="surface-elevated text-muted inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium">
-              {kindLabel}
-            </span>
+            {kindLabel ? (
+              <span className="surface-elevated text-muted inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium">
+                {kindLabel}
+              </span>
+            ) : null}
             {product.kind === "service" && product.durationMinutes ? (
               <span className="surface-elevated text-muted inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium">
                 {interpolate(t.checkout.duration, {

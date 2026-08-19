@@ -314,7 +314,22 @@ export type ProductKind =
   | "digital"
   | "service"
   | "event"
-  | "membership";
+  | "membership"
+  /**
+   * A form, not a sale — spec 07.
+   *
+   * The one kind whose checkout takes no money and writes no order. It is a
+   * `kind` rather than a price of zero because everything downstream has to
+   * treat it differently: no invoice number, no stock, no delivery, and it is
+   * excluded from every revenue figure. A £0 product settling through the
+   * ordinary path would put rows into an invoice sequence that is supposed to
+   * describe actual trade.
+   *
+   * The same mechanism is a sample request, a quote request and a
+   * made-to-order enquiry. Naming it well in the admin is what makes it reach
+   * the seller who has never heard the phrase "lead magnet".
+   */
+  | "lead";
 
 export const PRODUCT_KIND_VALUES: ProductKind[] = [
   "physical",
@@ -322,10 +337,63 @@ export const PRODUCT_KIND_VALUES: ProductKind[] = [
   "service",
   "event",
   "membership",
+  "lead",
 ];
 
 export function isProductKind(value: string): value is ProductKind {
   return (PRODUCT_KIND_VALUES as string[]).includes(value);
+}
+
+/**
+ * The three shapes a digital good comes in.
+ *
+ * `file` is a download we host and stream behind a per-order token. `link` is
+ * somewhere else the buyer is sent — a course platform, a shared drive, a
+ * Notion page. `code` is a string that *is* the good: a licence key, an invite,
+ * a password.
+ *
+ * One per product, never a combination. A buyer handed a file, a link and a
+ * code has to work out which of the three they actually bought, and a seller
+ * filling in all three has almost certainly meant only one of them.
+ */
+export type DigitalDelivery = "file" | "link" | "code";
+
+export const DIGITAL_DELIVERY_VALUES: DigitalDelivery[] = ["file", "link", "code"];
+
+export function isDigitalDelivery(value: unknown): value is DigitalDelivery {
+  return (
+    typeof value === "string" &&
+    (DIGITAL_DELIVERY_VALUES as string[]).includes(value)
+  );
+}
+
+/**
+ * How this product delivers, for anything that has to branch on it.
+ *
+ * Answers `file` for every kind that is not digital, and that is the useful
+ * answer rather than a null one: a mug and an appointment deliver no link and
+ * no code, and a caller asking "should I render the access details" wants
+ * "no" rather than a special case of its own.
+ */
+export function deliveryOf(product: {
+  kind: string;
+  digitalDelivery?: string | null;
+}): DigitalDelivery {
+  if (product.kind !== "digital") return "file";
+  return isDigitalDelivery(product.digitalDelivery)
+    ? product.digitalDelivery
+    : "file";
+}
+
+/**
+ * Whether this product hands over anything at all through the download page.
+ *
+ * True for every digital product — all three shapes land there — and for an
+ * event, whose tickets and join link do too. Used by the seller's own screens
+ * to decide whether "released" means anything for an order.
+ */
+export function hasReleasableGoods(product: { kind: string }): boolean {
+  return product.kind === "digital" || product.kind === "event";
 }
 
 /** Only physical goods get delivered; a file and an appointment don't. */

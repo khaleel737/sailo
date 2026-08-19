@@ -99,7 +99,7 @@ export function ruleArg(type: RuleType) {
 }
 
 /** How a contact came to be on the list — `clients.source`. */
-export const CLIENT_SOURCES = ["order", "subscribe", "manual", "import"] as const;
+export const CLIENT_SOURCES = ["order", "subscribe", "manual", "import", "lead"] as const;
 
 /** What a shop sells, for "bought any digital product". */
 export const PRODUCT_KINDS_SEGMENT = [

@@ -29,6 +29,7 @@ export const notificationPrefsSchema = z.strictObject({
   membershipCancelled: z.boolean().optional(),
   membershipPaymentFailed: z.boolean().optional(),
   taxThreshold: z.boolean().optional(),
+  leadCaptured: z.boolean().optional(),
   lowStock: z.boolean().optional(),
 });
 

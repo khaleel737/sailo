@@ -234,7 +234,26 @@ export default async function AdminOverviewPage({
           icon={<ShoppingBag className="size-4" />}
           label={a.dashboard.orders}
           value={stats.totalOrders.toLocaleString()}
-          hint={stats.newOrders > 0 ? `${stats.newOrders} new` : undefined}
+          hint={
+            [
+              stats.newOrders > 0 ? `${stats.newOrders} new` : null,
+              /*
+                Leads, beside orders rather than in a tile of their own — spec
+                07 asks for a first-class number and this is the honest place
+                for it: they are the other thing a visitor can turn into, and a
+                fifth tile would push revenue onto a second row on a phone.
+                Absent entirely for the shops that run no enquiry form, which
+                is nearly all of them.
+              */
+              stats.leadsInRange > 0
+                ? interpolate(a.dashboard.leads, {
+                    count: stats.leadsInRange.toLocaleString(),
+                  })
+                : null,
+            ]
+              .filter(Boolean)
+              .join(" · ") || undefined
+          }
         />
         <Stat
           icon={<Wallet className="size-4" />}

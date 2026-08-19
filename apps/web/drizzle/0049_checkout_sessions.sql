@@ -1,1 +1,0 @@
--- D3 — checkout recovery. Claimed; SQL lands in the next commit.

@@ -535,3 +535,45 @@ export async function sendSellerTaxThreshold(opts: {
     }),
   });
 }
+
+/**
+ * "Somebody asked for your checklist."
+ *
+ * Deliberately small. A lead is not a sale and this mail must not read like
+ * one — no total, no order number, no "you have a new order". What the seller
+ * needs is that it happened and where to look, and anything more would train
+ * them to skim the mail that does carry money.
+ */
+export async function sendSellerLead(opts: {
+  shopName: string;
+  to: string;
+  productTitle: string;
+  leadEmail: string;
+  leadName: string | null;
+}): Promise<SendResult> {
+  const { shopName, to, productTitle, leadEmail, leadName } = opts;
+
+  const body = `
+    ${mutedPara(
+      `${leadName ? strong(esc(leadName)) : "Someone"} asked for ${strong(esc(productTitle))} at ${esc(shopName)}.`,
+    )}
+    ${section(
+      "Who",
+      detailTable([
+        { label: "Name", value: leadName ?? "Not given" },
+        { label: "Email", value: leadEmail },
+      ]),
+    )}
+    ${button(`${appUrl()}/admin/clients`, "See your contacts")}
+  `;
+
+  return send({
+    from: sender("Sailo", ORDERS),
+    to,
+    subject: `New lead — ${productTitle}`,
+    html: sailoLayout("Somebody left their details", body, {
+      preheader: `${leadName ?? leadEmail} · ${productTitle}`,
+    }),
+    replyTo: leadEmail,
+  });
+}

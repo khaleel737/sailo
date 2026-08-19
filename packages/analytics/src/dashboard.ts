@@ -1,6 +1,7 @@
 import { and, eq, inArray, ne, or, sql } from "drizzle-orm";
 import { getReadDb } from "@sailo/db";
 import {
+  leads,
   orders,
   products,
   reviews,
@@ -105,6 +106,16 @@ export async function getDashboardStats(shopId: string, window: Window = 30) {
     awaitingShipment: Number(openRow?.awaitingShipment ?? 0),
     unpaidCommissionCents: Number(openRow?.unpaidCommission ?? 0),
     taxCollectedCents: Number(periodRow?.tax ?? 0),
+    /*
+     * Leads in the window — spec 07, and a first-class number beside revenue.
+     *
+     * Its own query rather than a column on the orders one, because a lead is
+     * not an order: it takes no invoice number, moves no stock and appears in
+     * no money figure on this page. Folding it into that query would put it
+     * behind the `payment_status = 'paid'` and `status <> 'cancelled'` filters,
+     * which are questions a lead has no answer to.
+     */
+    leadsInRange: Number(leadRow?.total ?? 0),
     totalProducts: Number(productRow?.total ?? 0),
     publishedProducts: Number(productRow?.published ?? 0),
     pendingReviews: Number(reviewRow?.pending ?? 0),
