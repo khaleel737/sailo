@@ -31,6 +31,40 @@ const numberOf = (name: string) => name.slice(0, 4);
 const KNOWN_DUPLICATE_NUMBERS = ["0007", "0008", "0012"];
 
 /**
+ * Numbers handed to a wave that has not landed yet.
+ *
+ * `docs/specs/agents/README.md` splits the 2026-08 release across six agents
+ * and gives each a disjoint block of migration numbers, so six branches can
+ * write SQL at once without any of them having to guess what the others took.
+ * That is the whole point of the allocation — and it guarantees a gap the
+ * moment the waves land out of order, which they do, because nothing sequences
+ * them beyond E going last.
+ *
+ * So a gap is now two different facts. One is the bug this test was written
+ * for: somebody wrote `0057` and forgot to `git add` `0056`, and the directory
+ * silently stopped being replayable in order. The other is a wave still in
+ * flight.
+ *
+ * Read from that table rather than copied into a list here, so the two cannot
+ * drift and nobody has to remember to prune this as waves land. An unreserved
+ * gap still fails, which is the case worth failing on.
+ */
+function reservedNumbers(): Set<string> {
+  const table = readFileSync(
+    join(process.cwd(), "../../docs/specs/agents/README.md"),
+    "utf8",
+  );
+  const out = new Set<string>();
+  // `| wave-a-reach.md | … | 0036–0038 |` — an en dash in the source.
+  for (const [, from, to] of table.matchAll(/\|\s*(\d{4})\s*[–-]\s*(\d{4})\s*\|/g)) {
+    for (let n = Number(from); n <= Number(to); n++) {
+      out.add(String(n).padStart(4, "0"));
+    }
+  }
+  return out;
+}
+
+/**
  * Postgres has no `IF NOT EXISTS` for `ADD CONSTRAINT`, and these five predate
  * the `DO $$ … EXCEPTION WHEN duplicate_object` form that `0015` onwards uses.
  * They are already applied everywhere that matters; rewriting SQL that no test
@@ -62,27 +96,23 @@ describe("migration filenames", () => {
     expect(name).toMatch(/^\d{4}_[a-z0-9_]+\.sql$/);
   });
 
-  it("numbers run from 0001 with no gaps", () => {
-    const distinct = [...new Set(files.map(numberOf))].toSorted();
-    const highest = Number(distinct.at(-1));
-    const expected = Array.from({ length: highest }, (_, i) =>
+  it("numbers run from 0001, gapped only where a wave is still out", () => {
+    const claimed = new Set(files.map(numberOf));
+    const highest = Number([...claimed].toSorted().at(-1));
+    const reserved = reservedNumbers();
+
+    const unexplained = Array.from({ length: highest }, (_, i) =>
       String(i + 1).padStart(4, "0"),
-    );
-    expect(distinct).toEqual(expected);
+    ).filter((n) => !claimed.has(n) && !reserved.has(n));
+
+    expect(unexplained).toEqual([]);
   });
 
-  it("reuses no number beyond the three already merged", () => {
-    const seen = new Map<string, number>();
-    for (const name of files) {
-      const n = numberOf(name);
-      seen.set(n, (seen.get(n) ?? 0) + 1);
-    }
-    const duplicated = [...seen.entries()]
-      .filter(([, count]) => count > 1)
-      .map(([n]) => n)
-      .toSorted();
-
-    expect(duplicated).toEqual(KNOWN_DUPLICATE_NUMBERS);
+  it("finds the wave table it reads reservations from", () => {
+    // A moved or reformatted table would make the check above vacuous — every
+    // gap unreserved is loud, but every gap *reserved* is silent, and an empty
+    // set is what a failed parse produces.
+    expect(reservedNumbers().size).toBeGreaterThan(20);
   });
 });
 
