@@ -1,0 +1,21 @@
+packages/commerce/package.json
+  s_16f404b29c0075::t_abe00a8a6f608f 42
+packages/workflows/package.json
+  s_16f404b29c0075::t_9f9b946442af17 33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "0fc459ccff7752d9482d266dbd5a183f084698d8",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
