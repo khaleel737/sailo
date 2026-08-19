@@ -1,8 +1,9 @@
 import { sql } from "drizzle-orm";
-import { boolean, index, integer, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { shops } from "./shop";
 import { products, productVariants } from "./catalog";
 import { affiliates, coupons, deliveryMethods } from "./commerce";
+import type { OrderCustomField } from "./json-types";
 
 /** A sale: the buyer, the order, its lines, and the invoice it produced. */
 
@@ -311,6 +312,22 @@ export const orders = pgTable(
     postalCode: text("postal_code"),
     country: text("country"),
     note: text("note"),
+
+    /**
+     * What this buyer answered to the shop's own checkout questions, as they
+     * were asked.
+     *
+     * A snapshot and not a join to `contact_field_values`, for the reason
+     * `variantSku` beside it is one: an order has to record what was answered
+     * at the time even if the field is later deleted, renamed or retyped, and
+     * a join would rewrite a March order the day a seller edits a dropdown.
+     *
+     * Nullable, and the null carries meaning: it is an order placed before
+     * this column existed. An order that was asked nothing, or asked and
+     * answered nothing, carries `[]` — blank is not absent, and the invoice
+     * renders the two differently.
+     */
+    customFields: jsonb("custom_fields").$type<OrderCustomField[]>(),
 
     /**
      * Proof this buyer agreed to the shop's terms, or null if the shop wasn't

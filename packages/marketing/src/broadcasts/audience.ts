@@ -1,7 +1,12 @@
 import "server-only";
 import { and, desc, eq, isNotNull, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { clients, emailSuppressions } from "@sailo/db/schema";
+import {
+  clients,
+  contactListMembers,
+  contactLists,
+  emailSuppressions,
+} from "@sailo/db/schema";
 import { EVERYONE, type Segment } from "./segments";
 import { segmentSql } from "./segment-sql";
 
@@ -50,9 +55,14 @@ export const MAX_AUDIENCE = 5_000;
  * disagree about who is mailable — a count that includes a suppressed address
  * is a seller told they will reach 900 people and a send that reaches 899,
  * which reads as a bug in the send.
+ *
+ * Exported for `../contacts/rules.test.ts`, which renders it and asserts that
+ * consent, suppression and list status are all inside this one clause. That
+ * test is the only reader outside this file and it must stay that way: the
+ * point of a single `mailable` is that no caller gets to assemble its own.
  */
-function mailable(shopId: string): SQL[] {
-  return [
+export function mailable(shopId: string, listIds: readonly string[] = []): SQL[] {
+  const floor: SQL[] = [
     eq(clients.shopId, shopId),
     isNotNull(clients.marketingConsentAt),
     isNotNull(clients.email),
@@ -62,25 +72,91 @@ function mailable(shopId: string): SQL[] {
         and ${emailSuppressions.email} = lower(${clients.email})
     )`,
   ];
+
+  if (listIds.length > 0) floor.push(onOneOfTheseLists(shopId, listIds));
+  return floor;
 }
+
+/**
+ * On at least one of these lists, as an EXISTS rather than a join.
+ *
+ * **Rule 4 — one person, one email per campaign, even on three lists.** A join
+ * to `contact_list_members` returns a contact once per list they are on, and a
+ * seller mailing "Regulars" and "Wholesale" together would mail everybody in
+ * both twice. An EXISTS asks whether *any* row matches and returns the contact
+ * once, so the dedupe is a property of the statement rather than something a
+ * later pass has to remember to do.
+ *
+ * `status = 'subscribed'` is the other half of the rule set: **rule 6**, a
+ * `pending` member is not a recipient, and **rule 2**, a `removed` one is not
+ * either — and neither is a post-filter that could be dropped.
+ *
+ * The list's own shop is checked here as well as by the caller. A list id
+ * arrives from a form, and an audience assembled from a list belonging to a
+ * different shop would mail one seller's customers on another seller's quota.
+ */
+function onOneOfTheseLists(shopId: string, listIds: readonly string[]): SQL {
+  return sql`exists (
+    select 1 from ${contactListMembers}
+    join ${contactLists} on ${contactLists.id} = ${contactListMembers.listId}
+    where ${contactListMembers.clientId} = ${clients.id}
+      and ${contactListMembers.status} = 'subscribed'
+      and ${contactLists.shopId} = ${shopId}
+      and ${contactListMembers.listId} in ${listIds}
+  )`;
+}
+
+/**
+ * The seller's narrowing, in the two forms it now comes in.
+ *
+ * A segment is a question re-asked at send time; a list is a set somebody was
+ * put in. They compose — "everyone on Wholesale who has not ordered since
+ * spring" — and both are ANDed onto the floor above rather than replacing any
+ * part of it.
+ */
+export type Narrowing = {
+  segment?: Segment;
+  /** Empty, or absent, means the whole consented audience. */
+  listIds?: readonly string[];
+};
 
 export async function audienceFor(
   shopId: string,
-  segment: Segment = EVERYONE,
+  narrow: Segment | Narrowing = EVERYONE,
   now = new Date(),
 ): Promise<{ recipients: Recipient[]; clamped: boolean }> {
   const db = getDb();
+  const { segment, listIds } = asNarrowing(narrow);
   const narrowing = segmentSql(segment, now);
 
   const rows = await db
-    .select({
+    /*
+     * **Rule 4, at the address rather than at the row.** The EXISTS above
+     * already returns one row per contact however many lists they are on;
+     * this covers the other way two rows reach one inbox, which is two
+     * `clients` rows differing only in case. `clients_shop_email_key` indexes
+     * the address as stored, so `Ada@example.com` and `ada@example.com` are
+     * two legal rows and one mailbox.
+     *
+     * In SQL, not in a pass afterwards, because a post-filter is a thing the
+     * next caller of this function can forget — and the visible symptom of
+     * forgetting is one person receiving a campaign twice.
+     */
+    .selectDistinctOn([sql`lower(${clients.email})`], {
       clientId: clients.id,
       email: clients.email,
       name: clients.name,
     })
     .from(clients)
-    .where(and(...mailable(shopId), ...(narrowing ? [narrowing] : [])))
-    .orderBy(clients.createdAt)
+    .where(and(...mailable(shopId, listIds), ...(narrowing ? [narrowing] : [])))
+    /*
+     * `DISTINCT ON` requires its expression to lead the sort, so the send is
+     * ordered by address rather than by signup date. That costs nothing —
+     * nothing downstream reads the order — and `createdAt` stays second so
+     * which of two case-variant rows survives is the older one, deterministically,
+     * rather than whichever the planner reached first.
+     */
+    .orderBy(sql`lower(${clients.email})`, clients.createdAt)
     .limit(MAX_AUDIENCE + 1);
 
   const clamped = rows.length > MAX_AUDIENCE;
@@ -107,17 +183,39 @@ export async function audienceFor(
  */
 export async function audienceSize(
   shopId: string,
-  segment: Segment = EVERYONE,
+  narrow: Segment | Narrowing = EVERYONE,
   now = new Date(),
 ): Promise<number> {
+  const { segment, listIds } = asNarrowing(narrow);
   const narrowing = segmentSql(segment, now);
 
   const [row] = await getDb()
-    .select({ n: sql<string>`count(*)` })
+    /*
+     * Counted the same way the list is assembled — distinct addresses, not
+     * distinct rows. A count that said 900 where the send reaches 899 is read
+     * as a bug in the send, and this is the second way those two numbers can
+     * come apart.
+     */
+    .select({ n: sql<string>`count(distinct lower(${clients.email}))` })
     .from(clients)
-    .where(and(...mailable(shopId), ...(narrowing ? [narrowing] : [])));
+    .where(and(...mailable(shopId, listIds), ...(narrowing ? [narrowing] : [])));
 
   return Number(row?.n ?? 0);
+}
+
+/**
+ * Both call shapes, folded into one.
+ *
+ * `audienceFor(shop, segment)` is what a dozen call sites already pass and
+ * keeps working; the object form is for callers that also name lists. A widened
+ * signature rather than a second function, because two functions is how the
+ * consent floor ends up enforced in one of them.
+ */
+function asNarrowing(
+  narrow: Segment | Narrowing,
+): { segment: Segment; listIds: readonly string[] } {
+  if ("rules" in narrow) return { segment: narrow, listIds: [] };
+  return { segment: narrow.segment ?? EVERYONE, listIds: narrow.listIds ?? [] };
 }
 
 export const SUPPRESSION_REASONS = [

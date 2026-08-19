@@ -19,6 +19,7 @@ export * from "./audience";
 export * from "./lifecycle";
 export * from "./analytics";
 export * from "./growth";
+export * from "./contacts";
 export * from "./integrations";
 export * from "./support";
 export * from "./staff";

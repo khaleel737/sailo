@@ -116,3 +116,21 @@ export type DeliveryConfig = {
   hours?: string;
   instructions?: string;
 };
+
+/**
+ * One checkout question and the answer this buyer gave, as both read at the
+ * time.
+ *
+ * The label and type ride along rather than being resolved from
+ * `contact_fields` when the order is displayed, because the whole reason this
+ * is snapshotted is that the field can be deleted or retyped afterwards — and
+ * an invoice reprinted next year has to say what it said. `value` is the same
+ * shape `contact_field_values.value` holds, so one renderer serves both.
+ */
+export type OrderCustomField = {
+  key: string;
+  label: string;
+  /** One of `FIELD_TYPES` in `@sailo/marketing/contacts`. */
+  type: string;
+  value: string | number | boolean | null;
+};
