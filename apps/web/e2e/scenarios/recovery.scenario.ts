@@ -101,7 +101,6 @@ async function makeProduct(over: Record<string, unknown> = {}): Promise<string> 
       title: "A mug",
       slug: `mug-${uid().slice(0, 8)}`,
       priceCents: 2_500,
-      currency: "USD",
       isPublished: true,
       ...over,
     })
