@@ -18,6 +18,15 @@ import {
   updateList,
 } from "@sailo/marketing/contacts/server";
 import { isMemberSource } from "@sailo/marketing/contacts";
+import { and, eq } from "drizzle-orm";
+import { getDb } from "@sailo/db";
+import { clients, contactLists, type Shop } from "@sailo/db/schema";
+import { getDictionary, interpolate } from "@sailo/i18n";
+import { sendSubscribeConfirmation } from "@sailo/email/lifecycle";
+import {
+  listConfirmToken,
+  listConfirmUrl,
+} from "@sailo/marketing/contacts/server";
 
 /**
  * The seller's own edits to their audience: lists, fields, and the one button
@@ -144,6 +153,25 @@ export async function addToContactList(
   const outcome = await joinList({ shopId: shop.id, listId, clientId, source });
   if (!outcome) return NO("That contact or list isn't yours.");
 
+  /*
+   * A `pending` member with no email is a dead end, and a list that silently
+   * never reaches half the people on it is worse than one that never asked.
+   * Rule 6 is only real once this send exists.
+   *
+   * Awaited rather than fired into `after()`: the seller is looking at the
+   * answer, and "added — they'll confirm by email" is a claim about a message
+   * that has to have been handed to the transport before it is made.
+   */
+  if (outcome.status === "pending") {
+    const invited = await inviteToList({ shop, listId, clientId });
+    if (!invited) {
+      return NO(
+        "Added, but the confirmation email couldn't be sent — so they won't " +
+          "receive anything yet. Try again in a moment.",
+      );
+    }
+  }
+
   revalidatePath("/admin/broadcasts/lists");
   revalidatePath(`/admin/clients/${clientId}`);
 
@@ -157,6 +185,67 @@ export async function addToContactList(
       ? "Added — they'll be on the list once they confirm by email."
       : "Added to the list.",
   );
+}
+
+
+/**
+ * Sends the double-opt-in email for one list join.
+ *
+ * Reuses `sendSubscribeConfirmation` — the same message, the same markup, the
+ * same "if you did not ask for this, ignore it" copy — with the list's own
+ * confirmation link. A second confirmation email would be a second place to
+ * get that copy wrong, and it is the one message in the product sent to
+ * somebody who has consented to nothing.
+ *
+ * Returns false rather than throwing on every "cannot": no address to send to,
+ * no signing secret, no transport. The caller says so; an optimistic "check
+ * your inbox" for a message that was never sent leaves somebody waiting.
+ */
+async function inviteToList(opts: {
+  shop: Shop;
+  listId: string;
+  clientId: string;
+}): Promise<boolean> {
+  const [client, list] = await Promise.all([
+    getDb().query.clients.findFirst({
+      where: and(eq(clients.id, opts.clientId), eq(clients.shopId, opts.shop.id)),
+      columns: { email: true, name: true },
+    }),
+    getDb().query.contactLists.findFirst({
+      where: and(eq(contactLists.id, opts.listId), eq(contactLists.shopId, opts.shop.id)),
+      columns: { id: true },
+    }),
+  ]);
+  // A contact with no address cannot be asked to confirm by email. `joinList`
+  // only returns `pending` for one that has consent missing, and a phone-only
+  // contact reaches this — so it is a real case, not a defensive branch.
+  if (!client?.email || !list) return false;
+
+  const token = listConfirmToken({
+    shopId: opts.shop.id,
+    listId: list.id,
+    email: client.email.toLowerCase(),
+    name: client.name,
+  });
+  // No signing secret means no confirmable link, and an unconfirmable
+  // invitation either does nothing or subscribes somebody who never proved
+  // the address was theirs.
+  if (!token) return false;
+
+  const dict = getDictionary(opts.shop.locale);
+  const result = await sendSubscribeConfirmation({
+    shop: opts.shop,
+    to: client.email,
+    name: client.name,
+    confirmUrl: listConfirmUrl(token),
+    labels: {
+      subject: interpolate(dict.mailing.confirmSubject, { shop: opts.shop.name }),
+      title: dict.mailing.confirmTitle,
+      body: interpolate(dict.mailing.confirmEmailBody, { shop: opts.shop.name }),
+      cta: dict.mailing.confirmCta,
+    },
+  });
+  return result.sent;
 }
 
 export async function removeFromContactList(
