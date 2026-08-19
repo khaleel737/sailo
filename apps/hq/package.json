@@ -24,7 +24,6 @@
     "@sailo/events": "workspace:*",
     "@sailo/mailer": "workspace:*",
     "@sailo/marketing": "workspace:*",
-    "@sailo/notifications": "workspace:*",
     "@sailo/observability": "workspace:*",
     "@sailo/partners": "workspace:*",
     "@sailo/payments": "workspace:*",

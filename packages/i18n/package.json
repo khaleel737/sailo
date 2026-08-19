@@ -11,7 +11,8 @@
     "./marketing": "./src/marketing/index.ts",
     "./marketing/*": "./src/marketing/*.ts",
     "./dictionaries/*": "./src/dictionaries/*.ts",
-    "./native": "./src/native/index.ts"
+    "./native": "./src/native/index.ts",
+    "./tooling": "./src/tooling/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
