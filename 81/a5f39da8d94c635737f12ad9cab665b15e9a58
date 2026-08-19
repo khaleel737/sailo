@@ -1,0 +1,128 @@
+packages/marketing/package.json
+  s_6a50ff8b58418c::t_55c74b17f6f256 22-24
+apps/web/next.config.ts
+  s_6a50ff8b58418c::t_7139bc2ee6fff4 267-285
+  s_e1f6fcdd78170a::t_9c23f04a7c8d43 244-266,286-296,299-317
+apps/web/src/app/embed/not-found.tsx
+  s_a79949fd39aa12::t_856e82f7f7e462 1-16
+apps/web/src/app/testimonial/[token]/_components/testimonial-form.tsx
+  s_a79949fd39aa12::t_74f5872c8ace07 1-33,35-123
+  s_e1f6fcdd78170a::t_9d75f48bcf1330 34
+apps/web/src/lib/queries/testimonials.ts
+  s_e1f6fcdd78170a::t_ec11aaab4db329 1-38
+apps/web/src/app/admin/testimonials/_components/walls-card.tsx
+  s_d85ec1f24c11c4::t_f2bc0c0e039b82 119-120,122-123
+  s_ff5bd57f7b4f2f::t_622730f4f56b52 1-118,121,124-192
+apps/web/src/app/admin/testimonials/_components/add-card.tsx
+  s_e1f6fcdd78170a::t_e3f0404da29423 1-75
+apps/web/src/app/admin/testimonials/_components/ask-card.tsx
+  s_e1f6fcdd78170a::t_f79ce7582ba1a4 1-78
+apps/web/src/app/[handle]/_components/testimonial-strip.tsx
+  s_e1f6fcdd78170a::t_e002081c695179 1-98
+apps/web/src/app/admin/_components/sidebar.tsx
+  s_e1f6fcdd78170a::t_5b32ae88a3f472 17,61-68
+packages/db/src/schema/testimonials.ts
+  s_e1f6fcdd78170a::t_0898ae2fa63eb8 1-181
+apps/web/src/lib/actions/testimonials.ts
+  s_e1f6fcdd78170a::t_377a22baa61f7c 1-298
+apps/web/src/lib/queries/index.ts
+  s_e1f6fcdd78170a::t_ec11aaab4db329 28
+apps/web/src/app/[handle]/_types/shop-page.types.ts
+  s_e1f6fcdd78170a::t_60712fb4795fea 1,41-48
+apps/web/src/app/admin/testimonials/page.tsx
+  s_e1f6fcdd78170a::t_5deed557728154 4,37,40-41,43-44
+  s_e1f6fcdd78170a::t_28801315e68e23 1-3,5-36,38-39,42,45-94
+apps/web/src/app/[handle]/_lib/get-shop-page-data.ts
+  s_e1f6fcdd78170a::t_ec11aaab4db329 12,55,74-79,95
+packages/marketing/src/testimonials/server.ts
+  s_6a50ff8b58418c::t_55c74b17f6f256 1-484
+apps/web/src/app/admin/testimonials/_components/moderation-list.tsx
+  s_e1f6fcdd78170a::t_e3f0404da29423 1-144
+apps/web/src/app/[handle]/page.tsx
+  s_e1f6fcdd78170a::t_4e3926a29f41e3 10,118,247-249
+  s_e1f6fcdd78170a::t_cf1ee23d77a357 9
+apps/web/src/app/testimonial/[token]/page.tsx
+  s_a79949fd39aa12::t_74f5872c8ace07 1-59
+packages/email/src/transactional/messages.ts
+  s_3d280b9c37709e::t_234f165457f529 527-559
+apps/web/e2e/embed-wall.spec.ts
+  s_ff5bd57f7b4f2f::t_c06556f0359e1f 33-40
+  s_a79949fd39aa12::t_633dbbd14b874e 1-32,41,58-188
+  s_a79949fd39aa12::t_856e82f7f7e462 42-57
+apps/web/drizzle/0055_testimonials.sql
+  s_3d280b9c37709e::t_b4413dbb10a4a6 1-107
+apps/web/e2e/scenarios/testimonials.scenario.ts
+  s_e1f6fcdd78170a::t_7e9692d1fc9489 1-393
+apps/web/src/app/[handle]/_components/cart/cart-region.tsx
+  s_e1f6fcdd78170a::t_9704f4216f6610 33,52-53,84
+apps/web/src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_e1f6fcdd78170a::t_ee39286614a26f 34,46,66
+apps/web/src/app/[handle]/_components/cart/checkout.types.ts
+  s_e1f6fcdd78170a::t_b185f6013905a9 97-105
+apps/web/src/app/embed/layout.tsx
+  s_3d280b9c37709e::t_fcc04d42bc0f26 1-22
+apps/web/src/app/embed/wall/[key]/page.tsx
+  s_e1f6fcdd78170a::t_bddb03feee710b 1-182
+packages/marketing/src/testimonials/index.ts
+  s_e1f6fcdd78170a::t_7cb003ed94df5f 1-113
+packages/storage/src/urls.ts
+  s_e1f6fcdd78170a::t_3144faf9e8f58e 215-299
+packages/storage/src/video-urls.test.ts
+  s_e1f6fcdd78170a::t_9577b99c92f03a 1-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "81a5f39da8d94c635737f12ad9cab665b15e9a58",
+  "prompts": {},
+  "sessions": {
+    "s_3d280b9c37709e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "914a407f-3ed9-41c1-8fbc-6b7047fa1462",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_6a50ff8b58418c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d67b706-f77d-4af2-84f8-c7556015fd53",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_a79949fd39aa12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3512a1e-3a48-4b59-95c2-ad40c780f6a9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_d85ec1f24c11c4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "91e0b22a-1b92-4b3d-a00c-9932ecca90d6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e1f6fcdd78170a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "07ffa20a-be06-4b62-a6c7-e2cc4d3b435d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ff5bd57f7b4f2f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f7a8e604-26d7-4dc0-9381-beaca5a4f55b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
