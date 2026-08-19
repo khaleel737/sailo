@@ -95,8 +95,32 @@ describe("createOrderIntent — nothing irreversible before the payment handoff"
      * there the order is the commitment and no webhook is coming.
      */
     expect(source).toContain("const settlesAtCheckout = method.type !== \"card\"");
-    expect(source).toContain("settlesAtCheckout\n    ? await createInvoiceForOrder(");
+    expect(source).toContain("settlesAtCheckout && !isTrialSignup\n      ? await createInvoiceForOrder(");
     expect(source).toContain("if (email && settlesAtCheckout)");
+  });
+
+  /*
+   * Two orders that cost nothing, and only one of them is a sale — spec 43.
+   *
+   * A free order has no Checkout Session and none is coming, so it settles here
+   * on every rail: deferring its invoice and its confirmation would defer them
+   * for ever, leaving the buyer with a download and no receipt. A *trial*
+   * signup is the exception inside the exception — nothing has been bought yet,
+   * so claiming an invoice number would gap a sequence a tax authority expects
+   * unbroken, on a document reading "total 0.00".
+   *
+   * Pinned here rather than left to a scenario because the two are one
+   * character apart in the source and the difference is a tax record.
+   */
+  it("settles a free order here, and invoices every one of them but a trial", () => {
+    expect(source).toContain("const isFreeOrder = totals.totalCents === 0");
+    expect(source).toContain("method.type !== \"card\" || isFreeOrder");
+    expect(source).toContain("const isTrialSignup = trial !== null");
+    // And it never opens a Stripe session for one.
+    expect(source).toContain("method.type === \"card\" && !isFreeOrder");
+    // Nothing is owed, so nothing is outstanding — and the 24-hour sweep only
+    // takes `unpaid` card orders, which is why this is not cosmetic.
+    expect(source).toContain('paymentStatus: isFreeOrder ? "paid" : "unpaid"');
   });
 
   /*

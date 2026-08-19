@@ -207,6 +207,17 @@ export type OrderPreview = {
    */
   needsEmail: boolean;
   hasService: boolean;
+  /**
+   * Every rate that reaches this address has been withdrawn because the basket
+   * is heavier than any of them price — spec 51.
+   *
+   * Reported rather than refused, exactly as an unserviceable country is: the
+   * buyer is still shopping, and blanking their basket over a rule they can fix
+   * by removing an item is the opposite of what a preview is for. The panel
+   * says so in a sentence; `createOrderIntent` is where it stops being a
+   * sentence.
+   */
+  deliveryTooHeavy: boolean;
   /** Whether a pay-in-person rail (cash on delivery) may be offered. False
    * only when the basket holds an instant download, which unlocks on order. */
   canPayInPerson: boolean;

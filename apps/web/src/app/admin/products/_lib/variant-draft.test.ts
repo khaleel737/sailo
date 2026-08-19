@@ -27,6 +27,22 @@ function variant(over: Partial<ProductVariant> = {}): ProductVariant {
     stockQuantity: null,
     isAvailable: true,
     imageUrl: null,
+    currencyPrices: {},
+    /*
+     * This combination's own sell window — spec 43. Null on both sides is what
+     * every variant in every existing catalogue means: on sale whenever its
+     * product is. The fixture carries them because the cast below is an
+     * assertion about the whole row, and a row missing a column is one the
+     * compiler is right to refuse.
+     */
+    sellFrom: null,
+    sellUntil: null,
+    /* Spec 51. Null on all four is "the product's", which is what every variant
+       in every existing catalogue means. */
+    weightGrams: null,
+    lengthMm: null,
+    widthMm: null,
+    heightMm: null,
     position: 0,
     createdAt: new Date(0),
     updatedAt: new Date(0),

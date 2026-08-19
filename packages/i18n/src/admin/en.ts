@@ -241,6 +241,13 @@ export const adminEn = {
   },
 
   products: {
+    /* ---- Spec 51: what a refund does to the shelf ----------------------- */
+    /* In `products` rather than `orders`, which is a protected money section a
+       filler may not write into — and this is a question about stock. */
+    restockOnRefund: "Put it back on the shelf",
+    restockOnRefundHint:
+      "Untick if it came back damaged, or never went out. Only applies to a full refund.",
+
     title: "Products",
     description: "Anything you sell — physical, digital or a service.",
     add: "Add product",
@@ -736,7 +743,6 @@ export const adminEn = {
     carrier: "Carrier",
     trackingNumber: "Tracking number",
     trackingNumberPlaceholder: "JD0002890124",
-    trackingUrl: "Tracking link",
     trackingLink: "Tracking link",
     trackingLinkPlaceholder: "https://dhl.com/track?id=…",
     markShipped: "Mark as shipped",
@@ -837,27 +843,6 @@ export const adminEn = {
    * is a hole in thirty-four locales that nothing can close. These strings are
    * about parcels rather than about amounts.
    */
-  /*
-   * Spec 51's two refund strings live in `orders`, which is a protected money
-   * section — so they are here in `shipments` instead, where a filler may write
-   * them. They are about a shelf rather than about an amount.
-   */
-  shipments: {
-    restockOnRefund: "Put it back on the shelf",
-    restockOnRefundHint:
-      "Untick if it came back damaged, or never went out. Only applies to a full refund.",
-    title: "Boxes",
-    body: "This order has more than one thing to send. Record each box with its own tracking.",
-    allSent: "Everything on this order has been sent.",
-    boxNumber: "Box {n}",
-    inTransit: "On its way",
-    delivered: "Delivered",
-    nothingLeft: "Nothing left to send.",
-    leftOf: "({remaining} of {ordered} left)",
-    quantityFor: "How many {item} in this box",
-    record: "Record this box",
-  },
-
   clients: {
     outstandingLabel: "Outstanding",
     saveNotesLabel: "Save notes",
@@ -1153,6 +1138,29 @@ export const adminEn = {
   },
 
   delivery: {
+    /* ---- Spec 51: an order that goes out in more than one box ----------- */
+    /*
+     * Here rather than in a `shipments` section of their own, and that is a
+     * mechanical constraint rather than a filing preference: a *new* admin
+     * section has to exist in all thirty-five locale files before the coverage
+     * test passes, and those files are never hand-edited. New keys inside an
+     * existing section render in English until a filler writes them, which is
+     * the ordinary admin debt. `delivery` is already "how a shop gets an order
+     * to a buyer", which is what a box is.
+     */
+    shipmentsTitle: "Boxes",
+    shipmentsBody:
+      "This order has more than one thing to send. Record each box with its own tracking.",
+    shipmentsAllSent: "Everything on this order has been sent.",
+    boxNumber: "Box {n}",
+    inTransit: "On its way",
+    boxDelivered: "Delivered",
+    nothingLeft: "Nothing left to send.",
+    leftOf: "({remaining} of {ordered} left)",
+    quantityFor: "How many {item} in this box",
+    recordBox: "Record this box",
+    trackingUrlLabel: "Tracking link",
+
     /* ---- Spec 51: postage priced by what is in the box ------------------ */
     byWeight: "Price by weight",
     byWeightHint:

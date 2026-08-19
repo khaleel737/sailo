@@ -61,7 +61,15 @@ describe("the product action", () => {
 
   it("hands the shared write the whole form", () => {
     // The three things left: read it, call it, drop the caches this app keeps.
-    expect(PRODUCT_HALF).toContain("saveProductRow(shop, readProduct(");
+    /*
+     * Two assertions rather than one string, because the call now wraps: it
+     * takes the shop's time zone as well as its currency, since spec 43's sell
+     * windows are wall-clock times in the seller's own zone. What is being
+     * pinned is that the action hands the *whole form* to the shared write and
+     * keeps no rule of its own — not how prettier chose to break the line.
+     */
+    expect(PRODUCT_HALF).toContain("await saveProductRow(");
+    expect(PRODUCT_HALF).toContain("readProduct(formData, shop.currency");
     expect(PRODUCT_HALF).toContain("dropCatalogueCaches");
   });
 

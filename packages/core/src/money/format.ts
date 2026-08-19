@@ -65,6 +65,32 @@ export function formatMoney(minor: number, currency = "USD", locale = "en-US") {
 }
 
 /**
+ * Just the symbol — `£`, `€`, `kr`, `¥` — for a field the buyer types into.
+ *
+ * Asked of `Intl` rather than kept in a table of our own, for the same reason
+ * `currencyLabel` below is: seventy-one currencies across thirty-five locales
+ * is a table nobody could keep right, and the runtime already has it. Taken
+ * from `formatToParts` rather than by stripping digits out of a formatted
+ * string, which breaks on every locale that puts a non-breaking space between
+ * the symbol and the number.
+ *
+ * The symbol and not the code, because a buyer reading `kr` knows where they
+ * are and a buyer reading `SEK` is doing a lookup. Falls back to the code,
+ * which is a worse label and never a wrong one.
+ */
+export function currencySymbol(code: string, locale = "en-US"): string {
+  try {
+    return (
+      new Intl.NumberFormat(`${locale}-u-nu-latn`, { style: "currency", currency: code })
+        .formatToParts(0)
+        .find((part) => part.type === "currency")?.value ?? code
+    );
+  } catch {
+    return code;
+  }
+}
+
+/**
  * "JPY — Japanese Yen", in the reader's own language.
  *
  * `Intl.DisplayNames` already ships every one of these translated, in every

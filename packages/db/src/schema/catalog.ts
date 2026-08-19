@@ -1,6 +1,6 @@
 import { boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { shops } from "./shop";
-import type { CurrencyPrices, ProductOption, VariantOptions } from "./json-types";
+import type { CurrencyPrices, LeadQuestion, ProductOption, VariantOptions } from "./json-types";
 
 /** What a shop sells: categories, products, their variants, files and reviews. */
 
@@ -160,6 +160,19 @@ export const products = pgTable(
      * and a percentage typed here would be Sailo deciding a tax treatment.
      */
     taxCategory: text("tax_category"),
+
+    /**
+     * The questions a `lead` product asks instead of selling anything.
+     *
+     * `[{ id, label, required }]`, and empty for every other kind — which is
+     * what every existing product means, so the column changes nothing until a
+     * seller makes a lead magnet. Never a price and never a payment: a lead
+     * product's whole checkout is this list plus a name and an address.
+     */
+    leadQuestions: jsonb("lead_questions")
+      .$type<LeadQuestion[]>()
+      .default([])
+      .notNull(),
 
     /**
      * What the buyer chooses between: [{ name: "Size", values: ["S","M","L"] }].

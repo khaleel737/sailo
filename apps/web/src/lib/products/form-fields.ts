@@ -2,6 +2,7 @@ import type { ProductOption, VariantOptions } from "@sailo/db/schema";
 import { parseMoneyToCents } from "@sailo/core/currency";
 import { combinations, MAX_VARIANTS, optionKey } from "@sailo/core/variants";
 import { isRenderableImageUrl } from "@sailo/storage/urls";
+import { fromIsoDate, zoneOf, zonedTimeToInstant } from "@sailo/commerce/booking";
 
 /**
  * Reading the product form.
@@ -21,6 +22,16 @@ export type VariantRow = {
   stock?: string;
   available?: boolean;
   image?: string;
+  /**
+   * This combination's own sell window — spec 43, as a `datetime-local` string.
+   *
+   * Still a string here: the row is JSON a browser posted, and turning it into
+   * an instant needs the shop's time zone, which is a server fact. The action
+   * converts both through one parser so a product's window and a variant's
+   * cannot land an hour apart.
+   */
+  sellFrom?: string;
+  sellUntil?: string;
 };
 
 export type FileRow = {
@@ -117,4 +128,45 @@ export function usableVariants(options: ProductOption[], rows: VariantRow[]) {
   }
 
   return usable;
+}
+
+/**
+ * A `datetime-local` value, read as wall-clock time in the shop's own zone —
+ * spec 43.
+ *
+ * Deliberately not `new Date(raw)`, which reads the string against whatever
+ * clock the *server* happens to be on. "Sales close on the 31st" means the 31st
+ * where the seller is, and the whole point of a sell window is that its
+ * boundary lands when they said it would — including across a daylight-saving
+ * change, where the offset on the day the window closes is not the offset
+ * today. `zonedTimeToInstant` resolves the wall clock against the zone's rules
+ * *at that instant*, so a window set in March for October lands on the hour the
+ * seller typed rather than an hour either side of it.
+ *
+ * It answers null for a wall time that does not exist — the hour a
+ * spring-forward skips — and null here means "no bound", which is the safe
+ * reading: a product goes on selling rather than silently closing at a moment
+ * nobody can name. A naive parse would have moved it by an hour instead and
+ * said nothing.
+ *
+ * Here rather than in the action beside its caller because it is pure and the
+ * action is `"use server"`, where nothing can import it and no test can reach
+ * it — the same reason every other reader in this file moved out.
+ */
+export function shopMomentFrom(value: unknown, timeZone: string): Date | null {
+  const raw = typeof value === "string" ? value.trim() : "";
+  if (!raw) return null;
+
+  // `2026-08-31T17:00` — the only shape a `datetime-local` input produces.
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(raw);
+  if (!m) return null;
+
+  const date = fromIsoDate(`${m[1]}-${m[2]}-${m[3]}`);
+  if (!date) return null;
+
+  return zonedTimeToInstant(
+    date,
+    { hour: Number(m[4]), minute: Number(m[5]) },
+    zoneOf(timeZone),
+  );
 }
