@@ -1,0 +1,368 @@
+apps/web/src/app/admin/settings/_components/settings-form.tsx
+  s_e1f6fcdd78170a::t_43a5ba990feab6 16,54,62-67,134-139
+  s_3d280b9c37709e::t_59aaa2237846e7 29
+  s_3d280b9c37709e::t_3eef0f3240bac4 140
+apps/web/src/app/admin/products/new/page.tsx
+  s_3d280b9c37709e::t_063ac5e6d7b8c6 40-42
+  s_c6ab3915e97efe::t_99f47666d1e5a5 26,30
+  s_ff5bd57f7b4f2f::t_8770193348d94a 8,27-29,31-34
+  s_ff5bd57f7b4f2f::t_eb43c5b146a3ba 35-38
+apps/web/src/app/admin/coupons/page.tsx
+  s_ff5bd57f7b4f2f::t_9aaf5749aae135 20-26
+  s_3d280b9c37709e::t_a5227194bdc007 64
+packages/i18n/src/admin/en.ts
+  s_3d280b9c37709e::t_cd4093070814bd 311-313
+  s_e1f6fcdd78170a::t_e3955715c3ddf1 739,832-858
+  s_3d280b9c37709e::t_d660a27139fb7a 1413-1425
+  s_3d280b9c37709e::t_74d55ad25126c3 2116-2159
+  s_3d280b9c37709e::t_c2ad0a192bf9da 954-956
+  s_e1f6fcdd78170a::t_56ebbda3663ec5 284-299,859-860,2160-2161
+packages/commerce/src/orders/resolve-intent.ts
+  s_ff5bd57f7b4f2f::t_be3fefca6257dc 453
+  s_3d280b9c37709e::t_24c4087f3b0c7d 50-51,98-111,114,123-124,252,432-438
+  s_ff5bd57f7b4f2f::t_f4c2501f9dce6d 24
+  s_ff5bd57f7b4f2f::t_bbcdd93a7c07fa 77-87
+  s_ff5bd57f7b4f2f::t_51baaea3d4b6da 439-443
+  s_ff5bd57f7b4f2f::t_6e05593b7eb557 347-395,397
+  s_ff5bd57f7b4f2f::t_a5bfa7c38a3bcc 129-138
+  s_e1f6fcdd78170a::t_c89d790a543f1e 17,205-217,244-251,292-309
+  s_ff5bd57f7b4f2f::t_fa9ad24f0fbf88 310
+apps/web/src/app/admin/coupons/_components/coupon-form.tsx
+  s_3d280b9c37709e::t_799245d18911b8 9,38,43-44,162-207
+  s_3d280b9c37709e::t_4334752ecf77a4 208
+apps/web/src/app/[handle]/p/[slug]/page.tsx
+  s_3d280b9c37709e::t_f8cf59491e243e 42-47,146-160,162-165,222,349,357-362
+  s_c6ab3915e97efe::t_9be2e4bce58c1e 30
+  s_e1f6fcdd78170a::t_f8f94ed6894571 221,348
+  s_c6ab3915e97efe::t_88ba35c2b8e4a7 356
+  s_3d280b9c37709e::t_0f15d195ea99b0 22,56,91-102,104,107
+  s_3d280b9c37709e::t_34e6c8e759aac6 23,375-390,487-501
+packages/core/src/shop/plans.ts
+  s_ff5bd57f7b4f2f::t_b411ee21186330 78
+  s_a79949fd39aa12::t_ca07f7d5c40b89 219
+  s_ff5bd57f7b4f2f::t_9ced5ed98e1e46 62,64,71,73-77,79-97,157-159,191-193,217-218
+  s_ff5bd57f7b4f2f::t_33246e2cae8ed2 63,65-70,72
+packages/core/src/money/index.ts
+  s_ff5bd57f7b4f2f::t_9d3cdf8d27d15b 14,18-19
+apps/web/src/app/[handle]/_components/shop-footer.tsx
+  s_a79949fd39aa12::t_4b26c6db7399dc 133-148
+apps/web/src/lib/queries/regional.ts
+  s_3d280b9c37709e::t_9711de78041f7b 1-221
+packages/commerce/src/orders/resolve-coupon.ts
+  s_3d280b9c37709e::t_05cd90f76a4275 6,26-35,40,44-58
+  s_3d280b9c37709e::t_d351f4cd584533 59
+apps/web/src/app/admin/page.tsx
+  s_3d280b9c37709e::t_f437da3568295f 99-107,253-264
+  s_3d280b9c37709e::t_5e729ffce8d476 82
+  s_3d280b9c37709e::t_993bdd31d37de2 15
+apps/web/src/lib/actions/coupons.ts
+  s_3d280b9c37709e::t_91a783ea699a41 14-15,78-103
+  s_3d280b9c37709e::t_c8e1b3688d984b 104
+apps/web/src/lib/regional.ts
+  s_3d280b9c37709e::t_5634303549aac5 1-90
+packages/db/src/schema/catalog.ts
+  s_ff5bd57f7b4f2f::t_d12d2e7d7db10f 179-216,473-484
+  s_ff5bd57f7b4f2f::t_8fbd95a6155888 125,300,490-502
+  s_e1f6fcdd78170a::t_8b4506fab19b9e 151-162
+  s_3d280b9c37709e::t_6122db9623b743 3,52-71,451-470
+  s_c6ab3915e97efe::t_0bc59bdec4fbf9 274-289
+  s_ff5bd57f7b4f2f::t_0d4509f086c24d 72-121
+  s_c6ab3915e97efe::t_276da7a073bad8 126-150,218-253,301-308,331-339,341-353,391-400
+  s_ff5bd57f7b4f2f::t_0a0b03fd0e1275 163,503
+apps/web/src/app/admin/products/_lib/variant-draft.ts
+  s_3d280b9c37709e::t_5b3bf6813cb948 4,18-27,39,81-82,89-101
+apps/web/src/app/admin/products/_components/variant-editor.tsx
+  s_3d280b9c37709e::t_5b3bf6813cb948 46,58-67,76,127-138,293-297,351-375
+  s_c6ab3915e97efe::t_efc733a918daff 45,56-57,231-278
+packages/core/package.json
+  s_ff5bd57f7b4f2f::t_39d4513b800f78 14
+  s_3d280b9c37709e::t_060e4596f07076 54-55
+packages/core/src/money/regional.ts
+  s_3d280b9c37709e::t_87d600daf80075 1-16,18-225,238-239,262-264,268,275,281,314,317,321-379
+  s_3d280b9c37709e::t_ac7ea1dbd7cf39 17,226-237,240-261,265-267,269-274,276-280,282-313,315-316,318-320
+apps/web/src/lib/actions/currency.ts
+  s_3d280b9c37709e::t_7c1149d9eadeaa 1-51
+packages/commerce/src/coupons/coupons.ts
+  s_3d280b9c37709e::t_d1f651b08773f7 50-58,109
+  s_ff5bd57f7b4f2f::t_38c40c022f0ea7 4
+packages/commerce/src/orders/resolve-lines.ts
+  s_3d280b9c37709e::t_070749bb4cfa6e 13,57-66,139-165,172,174,183,187
+  s_ff5bd57f7b4f2f::t_3cf62b8619e6eb 299-312
+  s_c6ab3915e97efe::t_ed5e1cae9bb5f9 420-428
+  s_ff5bd57f7b4f2f::t_c47f1e14720bc6 5-10
+  s_ff5bd57f7b4f2f::t_71524361a6338c 251-276
+  s_ff5bd57f7b4f2f::t_181e89fd45fcff 215,217,224,228,419,471-485
+  s_ff5bd57f7b4f2f::t_db83908be4d55a 442-458,462-464,467
+  s_3d280b9c37709e::t_20664783fa0628 173,175-182,184-186,214,216,218-223,225-227,229-241,250,277-280,298,313-317
+apps/web/src/app/admin/products/[id]/page.tsx
+  s_ff5bd57f7b4f2f::t_8770193348d94a 12,49-51,53-56
+  s_3d280b9c37709e::t_063ac5e6d7b8c6 62-64
+  s_c6ab3915e97efe::t_99f47666d1e5a5 48,52
+  s_ff5bd57f7b4f2f::t_199b64052c2130 57-60
+apps/web/src/app/admin/products/_components/product-form.tsx
+  s_c6ab3915e97efe::t_fae76b3316fcc7 18,22-23,25,32,34-56,72,83-84,105-109,123-129,163-178,212-218,230-248,324-335,358,360-370,375-381,383-389,391-398,400-415,417-419
+  s_3d280b9c37709e::t_0a0fd5c73867e5 416
+  s_ff5bd57f7b4f2f::t_289e90a64a7c00 24,75-76,86-89,339-340,342-349,351-354,356
+  s_c6ab3915e97efe::t_8a6e459c456a48 3,58,102,132-155,445
+  s_ff5bd57f7b4f2f::t_2c26639a7ff366 20,78,92-99,251-271,273-281,283-302
+  s_e1f6fcdd78170a::t_d1ebacea086e16 371-373
+  s_ff5bd57f7b4f2f::t_e30715df631c77 77,90-91,130,303-304
+apps/web/src/app/admin/delivery/page.tsx
+  s_ff5bd57f7b4f2f::t_9aaf5749aae135 4,28-34
+  s_3d280b9c37709e::t_a5227194bdc007 157,190
+apps/web/src/lib/actions/shop.ts
+  s_16f404b29c0075::t_725b0cd656a4b6 22,176-190,396-419,555
+  s_ff5bd57f7b4f2f::t_77924ae7d248ca 7,463-484
+  s_3d280b9c37709e::t_8a2127f0bd3428 8
+apps/web/src/lib/actions/order-preview.ts
+  s_c6ab3915e97efe::t_9c07b8c496a244 22-27
+  s_16f404b29c0075::t_eee9a0c5d27f5c 150-162,164,169,174-187,191-193
+  s_c6ab3915e97efe::t_50c3b4ffa441fd 63,69,267-273,277-279
+  s_a79949fd39aa12::t_e146a5faa8fc7c 12,20-21,64-68,70-73,84-86,92-93,97-104,110-111,213-219,221-225,244-245,289-290
+packages/i18n/src/dictionaries/en.ts
+  s_a79949fd39aa12::t_4b604674b8e9a8 334-375
+  s_a79949fd39aa12::t_0ddcdc0e9ca140 333
+packages/commerce/src/delivery/settings.ts
+  s_3d280b9c37709e::t_f6800061ab5894 52-59,116-119
+  s_3d280b9c37709e::t_4615149348a2ca 4
+apps/web/src/lib/actions/products.ts
+  s_ff5bd57f7b4f2f::t_de5220d8d5c1e0 34,375-389
+  s_3d280b9c37709e::t_593efefdde2c57 144,147-186,191-192,206-219,254-266
+  s_c6ab3915e97efe::t_ded0379d2dcb84 37,66-73,97-100,102-103,237-238,304-306,318-319,323
+  s_ff5bd57f7b4f2f::t_65b98c19581433 109-128,187-190,193
+  s_3d280b9c37709e::t_b0188109fe8e29 356-367,370
+  s_ff5bd57f7b4f2f::t_1ff50e6a0c95f8 220-233,271-277,368-369,371
+  s_d85ec1f24c11c4::t_d8be1e4af0fdec 80-83,129-143
+  s_d85ec1f24c11c4::t_25513a5ff4d380 23-25
+  s_ff5bd57f7b4f2f::t_77924ae7d248ca 18
+  s_e1f6fcdd78170a::t_d1ebacea086e16 288-303
+  s_c6ab3915e97efe::t_0828874c58d095 316
+  s_ff5bd57f7b4f2f::t_8c3b1688a21ded 145
+packages/db/src/schema/json-types.ts
+  s_e1f6fcdd78170a::t_6d5b80fe4a3f60 43-59,62-81,192
+  s_ff5bd57f7b4f2f::t_f06622dc3dec4c 175-191
+  s_ff5bd57f7b4f2f::t_24bd069d9bd9f6 82
+packages/db/src/schema/shop.ts
+  s_ff5bd57f7b4f2f::t_b9a73a40f1d3a1 544-561
+apps/web/src/lib/actions/orders.ts
+  s_ff5bd57f7b4f2f::t_874362adc4872f 44,1079-1099
+  s_a79949fd39aa12::t_3ca1727f896fe3 1100-1101
+packages/core/src/money/regional.test.ts
+  s_3d280b9c37709e::t_d33be8ee269217 1-293
+apps/web/e2e/scenarios/checkout.scenario.ts
+  s_e1f6fcdd78170a::t_921aa5318b02b7 793,803,805
+apps/web/src/app/admin/_components/status-banners.tsx
+  s_3d280b9c37709e::t_ca203e31ee87e3 31
+apps/web/e2e/scenarios/regional-pricing.scenario.ts
+  s_ff5bd57f7b4f2f::t_58f81f28611607 269,288-292,295,302-326,328-338,340-352,399-408,413,427-429,431-455
+  s_e1f6fcdd78170a::t_d4eec59a78cef9 1-268,270-287,293-294,296-301,327,339,353-398,409-412,414-426,430,456-521
+apps/web/src/lib/actions/delivery.ts
+  s_ff5bd57f7b4f2f::t_38c40c022f0ea7 13-15,54-70
+packages/commerce/src/catalog/product-input.ts
+  s_c6ab3915e97efe::t_0828874c58d095 127-128
+  s_ff5bd57f7b4f2f::t_0b7f2691727aeb 158-178
+  s_e1f6fcdd78170a::t_d1ebacea086e16 32-36,104-112
+  s_c6ab3915e97efe::t_70faee20a18a5e 92-95,114-117,131,135-136,155,180-192
+  s_ff5bd57f7b4f2f::t_c4ef3b8cfc98f5 75-88
+  s_3d280b9c37709e::t_dfd4320170b7ca 12,27-28,67-74
+  s_ff5bd57f7b4f2f::t_01e5affdf9accc 38-46
+  s_ff5bd57f7b4f2f::t_3ca558d8146d7a 113
+apps/web/src/lib/queries/products.ts
+  s_3d280b9c37709e::t_75682b4a95fa50 195,197
+  s_e1f6fcdd78170a::t_e2b2976fe75ae6 11,461-501
+  s_3d280b9c37709e::t_dfb3e092212183 5,113-146,340,349-354,377-382,442-450,452,460,504-509,513
+  s_e1f6fcdd78170a::t_5d0e0907354a56 8,150,158-194,196,229,233,261-262
+  s_e1f6fcdd78170a::t_79f20e4e86fa03 198
+docs/specs/53-regional-pricing.md
+  s_3d280b9c37709e::t_fa0015c3a24ea2 1-263
+apps/web/drizzle/0036_regional_pricing.sql
+  s_3d280b9c37709e::t_d095f993fce723 1-75
+apps/web/src/app/admin/settings/page.tsx
+  s_e1f6fcdd78170a::t_43a5ba990feab6 6,23-34,42
+packages/commerce/src/orders/fulfilment.ts
+  s_3d280b9c37709e::t_f53a19eaab8ac7 6-7,42-60,73-78,91,97,100
+  s_e1f6fcdd78170a::t_1a0ae09521de47 88-90,92-96,98-99,101-107
+apps/web/src/app/admin/settings/_components/currencies-card.tsx
+  s_3d280b9c37709e::t_39028590819910 1-147
+apps/web/src/app/admin/delivery/_components/delivery-rate-form.tsx
+  s_3d280b9c37709e::t_a038b26c3ebe5c 8,44,48-49,137-178
+  s_3d280b9c37709e::t_9c111b2918bcc0 179
+packages/commerce/src/catalog/products.ts
+  s_ff5bd57f7b4f2f::t_8f50a19483e08e 233-245
+  s_c6ab3915e97efe::t_c8e32dfe35d30f 27-31,34,37,301-346,375-383,426,482-500,525-533,559,581,676,688
+  s_3d280b9c37709e::t_a5e64ca00ef707 54-74,154,246,260,438-450
+  s_ff5bd57f7b4f2f::t_c298448f825d1a 389-425
+  s_e1f6fcdd78170a::t_d1ebacea086e16 165-170,248-259,502-517
+  s_c6ab3915e97efe::t_0828874c58d095 544-554
+  s_c6ab3915e97efe::t_e0b15058c4d4e2 677-687,689-690
+  s_ff5bd57f7b4f2f::t_33b9e83106846d 451-476
+  s_ff5bd57f7b4f2f::t_a7619d1af94dc5 157-164
+  s_ff5bd57f7b4f2f::t_06724c469c53ad 20,24-25,247,261,427,501,518
+apps/web/src/app/admin/products/_components/stock-card.tsx
+  s_dcd75e2fc0aa0a::t_b83f6a34a8441b 1-31,33-40,50-82,84-117
+  s_d85ec1f24c11c4::t_8b894328b21128 41-49
+  s_3d280b9c37709e::t_0a0fd5c73867e5 32,83
+packages/email/src/shop/seller.ts
+  s_e1f6fcdd78170a::t_7b5a1e3697b2a9 487-488,501,507
+  s_e1f6fcdd78170a::t_33cb0b51d0f94d 470-486,489-500,502-506,508-537
+packages/notifications/src/prefs.ts
+  s_ff5bd57f7b4f2f::t_a803ad4c5eba11 32,72-85
+  s_e1f6fcdd78170a::t_6d5b80fe4a3f60 31,65-71
+apps/web/src/app/[handle]/_components/currency-switcher.tsx
+  s_3d280b9c37709e::t_7c1149d9eadeaa 1-96
+apps/web/src/app/[handle]/_lib/load-more-products.tsx
+  s_ff5bd57f7b4f2f::t_bf61d581a8e5ef 70-78
+  s_ff5bd57f7b4f2f::t_f20647a4761365 6
+  s_ff5bd57f7b4f2f::t_f7ec49069358fc 12,59-68,82-84,92
+packages/analytics/src/dashboard.ts
+  s_3d280b9c37709e::t_0e612d1961aeb3 1,113-167
+  s_ff5bd57f7b4f2f::t_216545b5ba8747 168
+packages/db/src/schema/commerce.ts
+  s_ff5bd57f7b4f2f::t_f06622dc3dec4c 3-8,76-101
+  s_3d280b9c37709e::t_6122db9623b743 54-73,150-170
+  s_ff5bd57f7b4f2f::t_c349328c7bdc39 102
+apps/web/e2e/scenarios/search.scenario.ts
+  s_3d280b9c37709e::t_e011e125998966 72,147,152
+apps/web/src/app/[handle]/p/[slug]/opengraph-image.tsx
+  s_a79949fd39aa12::t_b1203d46a78e67 46
+packages/i18n/src/dictionaries/ar.ts
+  s_a79949fd39aa12::t_2820c737692241 537-554
+packages/i18n/src/dictionaries/bg.ts
+  s_a79949fd39aa12::t_4ceb2d0be834dd 448-465
+packages/i18n/src/dictionaries/bs.ts
+  s_a79949fd39aa12::t_304b0e2b8b9bcc 447-464
+packages/i18n/src/dictionaries/cs.ts
+  s_a79949fd39aa12::t_4348b82daa5ebb 497-514
+packages/i18n/src/dictionaries/da.ts
+  s_a79949fd39aa12::t_cda88134d127f3 497-514
+packages/i18n/src/dictionaries/de.ts
+  s_a79949fd39aa12::t_179d4f55aaecc8 509-526
+packages/i18n/src/dictionaries/el.ts
+  s_a79949fd39aa12::t_2a0aa9285ea80e 502-519
+packages/i18n/src/dictionaries/es.ts
+  s_a79949fd39aa12::t_e2ae9faaacbb61 508-525
+packages/i18n/src/dictionaries/fi.ts
+  s_a79949fd39aa12::t_dca713e68e7003 496-513
+packages/i18n/src/dictionaries/fil.ts
+  s_a79949fd39aa12::t_af83332253004b 447-464
+packages/i18n/src/dictionaries/fr.ts
+  s_a79949fd39aa12::t_af4291d34d2d6f 509-526
+packages/i18n/src/dictionaries/hr.ts
+  s_a79949fd39aa12::t_c59e7c3a598cd3 446-463
+packages/i18n/src/dictionaries/hu.ts
+  s_a79949fd39aa12::t_b87c94dd25b786 497-514
+packages/i18n/src/dictionaries/id.ts
+  s_a79949fd39aa12::t_3a1380c25b2563 446-463
+packages/i18n/src/dictionaries/it.ts
+  s_a79949fd39aa12::t_cfa6e040796804 506-523
+packages/i18n/src/dictionaries/ja.ts
+  s_a79949fd39aa12::t_cc20b0e633cc1e 538-555
+packages/i18n/src/dictionaries/ko.ts
+  s_a79949fd39aa12::t_0ac9d8ee3d4927 446-463
+packages/i18n/src/dictionaries/mk.ts
+  s_a79949fd39aa12::t_cdcfc9198ef453 448-465
+packages/i18n/src/dictionaries/ms.ts
+  s_a79949fd39aa12::t_043fd0695d81ec 445-462
+packages/i18n/src/dictionaries/nl.ts
+  s_a79949fd39aa12::t_700dda1389b78e 504-521
+packages/i18n/src/dictionaries/no.ts
+  s_a79949fd39aa12::t_4c68e66a6ffd18 497-514
+packages/i18n/src/dictionaries/pl.ts
+  s_a79949fd39aa12::t_7861bfa4901467 502-519
+packages/i18n/src/dictionaries/pt.ts
+  s_a79949fd39aa12::t_f2525280391b73 504-521
+packages/i18n/src/dictionaries/ro.ts
+  s_a79949fd39aa12::t_5814b794eed019 496-513
+packages/i18n/src/dictionaries/ru.ts
+  s_a79949fd39aa12::t_502d3a01f0041e 499-516
+packages/i18n/src/dictionaries/sl.ts
+  s_a79949fd39aa12::t_0f5728778645cd 446-463
+packages/i18n/src/dictionaries/sq.ts
+  s_a79949fd39aa12::t_a46fd63cf45d58 449-466
+packages/i18n/src/dictionaries/sr.ts
+  s_a79949fd39aa12::t_c658ff696e944b 448-465
+packages/i18n/src/dictionaries/sv.ts
+  s_a79949fd39aa12::t_29d9201453adda 499-516
+packages/i18n/src/dictionaries/th.ts
+  s_a79949fd39aa12::t_aba8b78b7a0039 448-465
+packages/i18n/src/dictionaries/tr.ts
+  s_a79949fd39aa12::t_f3df16b5fa0174 501-518
+packages/i18n/src/dictionaries/uk.ts
+  s_a79949fd39aa12::t_25a4c7e10d43e6 500-517
+packages/i18n/src/dictionaries/vi.ts
+  s_a79949fd39aa12::t_f3b931c181f2fd 450-467
+packages/i18n/src/dictionaries/zh.ts
+  s_a79949fd39aa12::t_224f27a9f49af4 537-554
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "547d4dcebe3ae5648829f1df2ab2e44e1a882daa",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3d280b9c37709e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "914a407f-3ed9-41c1-8fbc-6b7047fa1462",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_a79949fd39aa12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3512a1e-3a48-4b59-95c2-ad40c780f6a9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_c6ab3915e97efe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c24c96ca-a911-4fa0-901b-d9f00fe9e7ce",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_d85ec1f24c11c4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "91e0b22a-1b92-4b3d-a00c-9932ecca90d6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_dcd75e2fc0aa0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f4480cff-caac-46d0-a589-a5bbfd9e0fe9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e1f6fcdd78170a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "07ffa20a-be06-4b62-a6c7-e2cc4d3b435d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ff5bd57f7b4f2f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f7a8e604-26d7-4dc0-9381-beaca5a4f55b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
