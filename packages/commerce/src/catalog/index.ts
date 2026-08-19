@@ -24,3 +24,9 @@ export * from "./low-stock";
  * what it found; both are deliberate.
  */
 export * from "./stock-requests";
+/**
+ * `code-pool` is one product's pile of bearer tokens, and the conditional
+ * claim that hands exactly one of them to exactly one order — spec 48. Nothing
+ * in it ever returns an unclaimed code to a caller.
+ */
+export * from "./code-pool";

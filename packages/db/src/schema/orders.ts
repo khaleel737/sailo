@@ -584,6 +584,37 @@ export const orderItems = pgTable(
     serviceMode: text("service_mode"),
     serviceLocation: text("service_location"),
 
+    /**
+     * Which date of a multi-session event this line bought — spec 50.
+     *
+     * Null for a single-date event, which is every event today, and for an
+     * `all_access` pass — the pass admits every session, so naming one would
+     * be a claim on capacity it does not take. Under `pick_one` this is what
+     * the seat was claimed against.
+     */
+    sessionId: uuid("session_id"),
+    /**
+     * Which price band — spec 50. Null for an event sold at one price.
+     *
+     * A reference *and* a snapshot: `tickets.tier` still records the name as
+     * it read on the night, because a tier renamed or deleted between the
+     * on-sale and the door must not change what prints beside somebody's name.
+     * This is for the restock path, which has to give the seat back to the
+     * band it came from.
+     */
+    tierId: uuid("tier_id"),
+
+    /**
+     * Which bookable person this appointment is with — spec 51.
+     *
+     * **Null is "any available", which is today's behaviour and stays the
+     * default.** A shop with no `staff_resources` rows books exactly as it
+     * always has.
+     */
+    staffId: uuid("staff_id"),
+    /** When the buyer moved this themselves — spec 51. The old time. */
+    rescheduledFrom: timestamp("rescheduled_from"),
+
     position: integer("position").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
@@ -901,6 +932,27 @@ export const tickets = pgTable(
     source: text("source").default("order").notNull(),
     /** Which door pass admitted them; null means the owner's own session. */
     checkedInBy: text("checked_in_by"),
+    /**
+     * Which date this admission is for, and which band it was sold in — spec 50.
+     *
+     * Both alongside the `tier` *text* above rather than replacing it: the text
+     * is the snapshot the door list prints and must survive the tier being
+     * renamed or deleted, and these are the references the scanner and the
+     * restock path resolve.
+     */
+    sessionId: uuid("session_id"),
+    tierId: uuid("tier_id"),
+    /**
+     * The ticket this one replaced, when a buyer passed it on — spec 50.
+     *
+     * **Transfer voids the old code and mints a new one.** Not a name change:
+     * the old screenshot has to stop working, or two people arrive with one
+     * admission and the scanner is right to show amber for both. The chain is
+     * what lets a seller see a ticket that has moved three times, which is a
+     * resale pattern worth being able to see.
+     */
+    transferredFromTicketId: uuid("transferred_from_ticket_id"),
+    transferredAt: timestamp("transferred_at"),
     note: text("note"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
@@ -982,7 +1034,33 @@ export const eventReminders = pgTable(
       .references(() => products.id, { onDelete: "cascade" }),
     /** Which pass this was — see `REMINDER_LEADS` in `lib/events-reminders`. */
     lead: text("lead").notNull(),
+    /**
+     * Which session this reminder was for — spec 50.
+     *
+     * Null for an event with no sessions, which is all of them today. It is
+     * part of the *claim*, so a conference pass reminds once per day rather
+     * than once for eight days — see the unique index below.
+     */
+    sessionId: uuid("session_id"),
     sentAt: timestamp("sent_at").defaultNow().notNull(),
   },
-  (t) => [uniqueIndex("event_reminders_key").on(t.orderId, t.productId, t.lead)],
+  (t) => [
+    /*
+     * The claim, widened by the session — spec 50.
+     *
+     * Declared here without its `NULLS NOT DISTINCT`, which drizzle's builder
+     * cannot express — `0045` carries the real one, exactly as `0039` carries
+     * `stock_requests`'. The modifier is load-bearing rather than decorative:
+     * `session_id` is null for every event that has no sessions, which is all
+     * of them today, so under the default rule the constraint would not fire
+     * for precisely those rows and a single-date event would be reminded once
+     * per cron tick for ever.
+     */
+    uniqueIndex("event_reminders_key").on(
+      t.orderId,
+      t.productId,
+      t.sessionId,
+      t.lead,
+    ),
+  ],
 );

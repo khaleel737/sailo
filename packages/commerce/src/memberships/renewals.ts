@@ -18,6 +18,7 @@ import {
   normalizeIntervalCount,
   normalizeTrialDays,
 } from "@sailo/commerce/memberships";
+import { completeTermIfDone, countCycle } from "./lifecycle";
 
 /**
  * The renewal cycle, for every rail that is not a card.
@@ -214,10 +215,40 @@ export async function extendForPaidOrder(orderId: string): Promise<Subscription 
       // period has now been paid for.
       renewalOrderedFor: null,
       startedAt: row.startedAt,
+      /*
+       * The cycle is counted **in this statement** — spec 49.
+       *
+       * Not in one of its own afterwards, and the reason is the same one the
+       * two claims above exist for: a seller toggling an order paid → unpaid →
+       * paid must buy one cycle rather than three. A counter incremented
+       * separately has exactly that hazard back, and it fails silently — the
+       * member's twelve-week course finishes in week ten and nobody can say
+       * why. Riding the period guard means the count and the period can never
+       * disagree about how many months this member has bought.
+       */
+      cyclesPaid: countCycle,
+      /*
+       * And the dunning sequence starts over, because the money arrived. Left
+       * standing, a member who failed twice in March and recovered would have
+       * one attempt left for ever: the next real failure, in November, would
+       * send one email and give up on somebody who would have fixed their card.
+       */
+      dunningAttempts: 0,
+      dunningLastSentAt: null,
       updatedAt: new Date(),
     })
     .where(and(eq(subscriptions.id, row.id), periodGuard))
     .returning();
+
+  /*
+   * And if that was the last cycle, the term is over.
+   *
+   * After the extension rather than before it, because "complete" is decided
+   * by the count this statement just wrote. `completeTermIfDone` claims on
+   * `ended_reason IS NULL`, so a seller re-saving the order finds the term
+   * already complete and changes nothing.
+   */
+  if (extended) await completeTermIfDone(extended.id);
 
   /*
    * Files, if the membership carries any. The same call the card path makes,

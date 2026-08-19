@@ -420,6 +420,71 @@ export const products = pgTable(
      */
     eventJoinUrl: text("event_join_url"),
 
+    /* ---- Event depth — spec 50 ------------------------------------------- */
+
+    /**
+     * How a buyer meets an event's dates. NULL is single, which is today.
+     *
+     * `pick_one` — the buyer chooses a session (a class on Tuesday *or*
+     * Thursday). `all_access` — the ticket admits every session (a conference
+     * pass). The distinction decides which capacity a purchase claims, and it
+     * is the only thing that does: under `pick_one` a line claims the
+     * *session's* seats, under `all_access` the product's.
+     */
+    sessionMode: text("session_mode"),
+    /**
+     * Ask for each attendee's name at checkout — spec 50.
+     *
+     * `tickets.attendeeName` and `attendeeEmail` existed and nothing collected
+     * them, so four tickets bought together were four rows carrying the
+     * purchaser's own details and the door list was one name four times.
+     *
+     * An attendee address is **not** a marketing contact: consent is a thing a
+     * person gave, and the purchaser cannot give it for their guest. `clients`
+     * is never written from an attendee row.
+     */
+    collectAttendeeDetails: boolean("collect_attendee_details")
+      .default(false)
+      .notNull(),
+    /**
+     * online | in_person | hybrid. NULL falls back to `serviceMode`, which is
+     * what every event decided by before this column.
+     */
+    eventMode: text("event_mode"),
+    eventVenueName: text("event_venue_name"),
+    eventAddress: text("event_address"),
+    /**
+     * The event's own zone, falling back to `shops.timeZone`.
+     *
+     * **Per event, not per shop.** A seller in Dubai running a webinar for a
+     * London audience is the normal case, and `shops.timeZone` — which exists
+     * so opening hours mean anything — is the wrong answer for it. The buyer
+     * sees their own clock with the event's zone named beside it, which
+     * prevents more support mail than any other line in spec 50.
+     */
+    eventTimeZone: text("event_time_zone"),
+    /**
+     * The seller's refund terms for this event, in their own words.
+     *
+     * Disclosed at checkout and snapshotted onto the order, because
+     * `refund_policy_disclosure` is a real Stripe evidence field and a policy
+     * nobody was shown is a policy that loses a dispute.
+     */
+    eventRefundPolicy: text("event_refund_policy"),
+    /** Hours before the start after which nothing may be cancelled. */
+    eventRefundCutoffHours: integer("event_refund_cutoff_hours"),
+    /**
+     * Whether a buyer may release their own seat inside the cutoff.
+     *
+     * Off by default, which is today. When on, a cancellation puts the
+     * capacity back through the same conditional-UPDATE restock path the sweep
+     * uses, and notifies spec 33's waitlist — a released seat nobody is told
+     * about is a lost sale.
+     */
+    eventAllowSelfCancel: boolean("event_allow_self_cancel")
+      .default(false)
+      .notNull(),
+
     /* ----------------------------------------------------------------------
        Memberships
 
@@ -458,6 +523,71 @@ export const products = pgTable(
      * is not a trial and Stripe rejects it as one.
      */
     trialDays: integer("trial_days"),
+
+    /* ---- Membership depth — spec 49 -------------------------------------- */
+
+    /**
+     * How many cycles this membership runs for. NULL is open-ended, which is
+     * every membership sold before this column.
+     *
+     * Two or more, never one: a one-cycle membership is a one-off purchase
+     * wearing a subscription's clothes, and Stripe would create a recurring
+     * price and cancel it immediately, leaving a subscription in the buyer's
+     * portal for something that charged once. `normalizeCycles` refuses it.
+     */
+    termCycles: integer("term_cycles"),
+    /**
+     * Whether the door stays open once the term is paid off.
+     *
+     * This is what turns a fixed term into a **payment plan** — a course sold
+     * in three instalments, expressed in a model that already works, and
+     * without the instalments engine `GAP-2026-08-easytools.md` §4.7 refuses
+     * on money-path grounds. Access is granted from the first payment either
+     * way, so a failed third cycle costs the seller a payment rather than
+     * leaving an entitlement half-earned.
+     */
+    accessAfterTerm: boolean("access_after_term").default(false).notNull(),
+    /**
+     * Cycles a member must pay before they may cancel. NULL is none.
+     *
+     * **On the manual rail this is not a lock and cannot be.** A member can
+     * always stop paying, and no column here changes that. What a minimum term
+     * governs is what the seller may *say* about it, and what a dispute is
+     * argued from through the policy snapshot — the copy beside the field says
+     * so rather than implying an obligation Sailo cannot enforce.
+     */
+    minimumTermCycles: integer("minimum_term_cycles"),
+    /**
+     * Days of notice before a period end. NULL is none.
+     *
+     * Never a refusal to cancel — it moves the date. A member who gives notice
+     * a day late is cancelling the *next* period rather than being told they
+     * may not leave, which is what a notice period means everywhere else it
+     * exists.
+     */
+    cancelNoticeDays: integer("cancel_notice_days"),
+    /**
+     * The seller's own words, shown at checkout and again on the cancel
+     * screen.
+     *
+     * **Disclosure at checkout is what makes a policy enforceable**, and it
+     * feeds `cancellation_policy_disclosure` — a real Stripe evidence field
+     * and the one that decides Visa 13.2. Snapshotted onto the order through
+     * spec 44's `policy_snapshots`, so a dispute five months later cites the
+     * terms the member actually saw.
+     */
+    cancelPolicyNote: text("cancel_policy_note"),
+    /**
+     * The most days a member may freeze for, over the life of their
+     * membership. NULL is pausing not offered, which is every membership today.
+     *
+     * The ceiling is what stops a rolling permanent pause: freeze for
+     * twenty-eight days, resume for one, freeze again — a free membership
+     * assembled out of individually reasonable requests, which nobody notices
+     * until the seller wonders why their busiest member never pays.
+     */
+    pauseMaxDays: integer("pause_max_days"),
+
     /**
      * The Stripe Price this product currently sells at, on the seller's own
      * connected account.
@@ -865,4 +995,111 @@ export const licenseActivations = pgTable(
     ),
     index("license_activations_live_idx").on(t.licenseKeyId),
   ],
+);
+
+/**
+ * One price band on one event — spec 50.
+ *
+ * `tickets.tier` existed as a column and nothing wrote a meaningful value,
+ * because there was nothing to name: a product had one price and one stock
+ * count, so "Early bird / General / VIP" was three products, three checkouts
+ * and no shared capacity.
+ *
+ * WHY A TABLE AND NOT VARIANTS
+ *
+ * Variants exist and carry price, stock and SKU. But a variant is an *option
+ * combination* driven by `products.options`, and forcing a tier into that
+ * shape makes an event's tiers a fake option group — it renders in the option
+ * picker and appears in every variant matrix. Tiers are their own list with
+ * their own sale windows.
+ *
+ * CAPACITY IS TWO-LEVEL AND BOTH MUST HOLD
+ *
+ * A room of 200 with 30 VIP seats is a product stock of 200 and a tier
+ * capacity of 30. A claim succeeds against **both** or fails, in one
+ * transaction, **narrower first** — the tier, then the product. The other
+ * order oversells the tier while the product still looks available, which is
+ * the one failure an event seller cannot forgive.
+ */
+export const eventTiers = pgTable(
+  "event_tiers",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description"),
+    priceCents: integer("price_cents").default(0).notNull(),
+    /** NULL shares the product's stock — a single-tier event, which is today. */
+    capacity: integer("capacity"),
+    /**
+     * The counter the claim moves, never a read followed by a write.
+     *
+     * `set sold = sold + n where capacity is null or sold + n <= capacity`, so
+     * two concurrent checkouts for the last VIP seat produce one ticket. There
+     * is a CHECK constraint under it as a floor — a seller editing a capacity
+     * down below what has already sold must be refused by the database, not
+     * only by the statement that happened to be looking.
+     */
+    sold: integer("sold").default(0).notNull(),
+    /**
+     * This tier's own window — spec 43's mechanism reused verbatim.
+     *
+     * Early bird expiring while General keeps selling is the case, and it is
+     * why 43 put windows on variants too. Narrowed by the product's own window
+     * through `effectiveSellWindow`, which is the one place that decides it.
+     */
+    sellFrom: timestamp("sell_from"),
+    sellUntil: timestamp("sell_until"),
+    maxPerOrder: integer("max_per_order"),
+    position: integer("position").default(0).notNull(),
+    /** A comp or press tier, reachable only by direct link. */
+    isHidden: boolean("is_hidden").default(false).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [index("event_tiers_product_idx").on(t.productId, t.position)],
+);
+
+/**
+ * One date an event actually runs on — spec 50.
+ *
+ * A weekly class, a three-day conference with day tickets, a workshop run four
+ * times: each was a separate product, so the seller re-typed everything and
+ * the attendee list was split.
+ *
+ * **No recurrence engine.** No RRULE, no infinite series. A "generate weekly
+ * for 8 weeks" button that writes eight rows the seller can then edit
+ * individually is the whole feature, and it never has to answer "what does
+ * editing the series do to the one you have already sold tickets for".
+ */
+export const eventSessions = pgTable(
+  "event_sessions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    startsAt: timestamp("starts_at").notNull(),
+    endsAt: timestamp("ends_at"),
+    /** NULL shares the product's stock, as a tier's does. */
+    capacity: integer("capacity"),
+    sold: integer("sold").default(0).notNull(),
+    location: text("location"),
+    joinUrl: text("join_url"),
+    isCancelled: boolean("is_cancelled").default(false).notNull(),
+    /**
+     * The claim on "tell the ticket-holders this session is off", not a log.
+     *
+     * A cancelled session's mail is a bulk send against the broadcast quota,
+     * exactly as spec 33's waitlist notify is, so two cron ticks send it once
+     * between them.
+     */
+    cancelNotifiedAt: timestamp("cancel_notified_at"),
+    position: integer("position").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [index("event_sessions_product_idx").on(t.productId, t.startsAt)],
 );

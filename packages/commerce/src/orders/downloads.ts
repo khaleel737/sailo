@@ -12,6 +12,8 @@ import {
   type Shop,
 } from "@sailo/db/schema";
 import { eventAccessForOrder } from "../ticketing/event-access";
+import { claimCodesForOrder } from "../catalog/code-pool";
+import { mintLicensesForOrder } from "./licenses";
 import { randomHex } from "@sailo/core/token";
 
 /**
@@ -157,6 +159,38 @@ export async function releaseDownloads(
     .returning({ id: orders.id });
   if (!claimed) return false;
 
+  /*
+   * The code and the licence are spent *here*, on the winning side of the
+   * claim above — spec 48.
+   *
+   * Not at checkout, and the distinction is the whole of the feature's
+   * inventory story: roughly a third of card sessions are abandoned, and a
+   * pool that burned a key when the Stripe page opened would be drained by
+   * people who never paid. `0034` already made this decision for the file and
+   * the event join URL — "they are the whole good; handing one to an unpaid
+   * order gives the good away" — and a licence key is the same good in a
+   * shorter string.
+   *
+   * After the UPDATE won rather than before it, so a webhook retry racing the
+   * seller's own click reaches neither: the loser returned false three lines
+   * up. Both are additionally idempotent on their own, because this is a real
+   * second path — a seller toggling an order paid, unpaid, paid.
+   *
+   * Neither may fail the release. An empty pool is a real state and a buyer
+   * whose files and tickets are held hostage by a missing key is worse off
+   * than one who is short a code the seller can send by hand.
+   */
+  try {
+    await claimCodesForOrder(orderId);
+  } catch (error) {
+    console.error("[sailo] could not claim pool codes for an order", error);
+  }
+  try {
+    await mintLicensesForOrder(orderId);
+  } catch (error) {
+    console.error("[sailo] could not mint licence keys for an order", error);
+  }
+
   if (order.customerEmail) {
     const shop = await db.query.shops.findFirst({
       where: eq(shops.id, order.shopId),
@@ -200,15 +234,99 @@ export async function releaseDownloads(
  * header's single product, so reading it alone would show a buyer who paid
  * for two digital products the files of one of them and nothing to explain
  * where the rest went.
+ *
+ * PER VARIANT, SINCE SPEC 48
+ *
+ * `product_files.variant_id` is NULL for the product default and set for a
+ * combination's own files, and the resolution is Easytools' rule: the ordered
+ * variant's files where any exist, else the default. A product sold as "PDF
+ * only / PDF + Figma / everything" delivered the same set to all three before
+ * this, which is the feature the column exists for.
+ *
+ * **Both directions matter.** Falling back when a variant has no files of its
+ * own keeps every single-variant catalogue working untouched; *not* widening
+ * when it does is the security half — buying the cheap variant must not
+ * download the expensive one's files.
  */
 export async function filesForOrder(order: Order) {
-  const productIds = await orderedProductIds(order);
-  if (productIds.length === 0) return [];
+  return entitledFiles(order);
+}
 
-  return getDb().query.productFiles.findMany({
-    where: inArray(productFiles.productId, productIds),
+/**
+ * The ordered (product, variant) pairs, deduplicated.
+ *
+ * A basket holding two variants of one product is entitled to both sets, which
+ * is why this is a list of pairs rather than a map from product to variant.
+ */
+async function orderedCombinations(
+  order: Order,
+): Promise<{ productId: string; variantId: string | null }[]> {
+  const lines = await orderLines(order);
+  const seen = new Set<string>();
+  const out: { productId: string; variantId: string | null }[] = [];
+
+  for (const line of lines) {
+    if (!line.productId) continue;
+    const key = `${line.productId}:${line.variantId ?? ""}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({ productId: line.productId, variantId: line.variantId ?? null });
+  }
+  return out;
+}
+
+async function entitledFiles(order: Order) {
+  const combinations = await orderedCombinations(order);
+  if (combinations.length === 0) return [];
+
+  const rows = await getDb().query.productFiles.findMany({
+    where: inArray(
+      productFiles.productId,
+      combinations.map((c) => c.productId),
+    ),
     orderBy: [asc(productFiles.position)],
   });
+
+  const kept = new Map<string, (typeof rows)[number]>();
+  for (const combination of combinations) {
+    for (const file of filesForVariant(rows, combination)) kept.set(file.id, file);
+  }
+  return [...kept.values()];
+}
+
+/**
+ * One combination's files: its own if it has any, otherwise the product's
+ * defaults.
+ *
+ * Pure over rows already read, so the download route and the delivery page
+ * cannot disagree about what a buyer is entitled to — which is exactly the
+ * kind of rule that grows a second, slightly different copy and then a bug.
+ */
+export function filesForVariant<
+  T extends { productId: string; variantId: string | null },
+>(files: T[], combination: { productId: string; variantId: string | null }): T[] {
+  const mine = files.filter((f) => f.productId === combination.productId);
+  if (combination.variantId) {
+    const own = mine.filter((f) => f.variantId === combination.variantId);
+    if (own.length > 0) return own;
+  }
+  return mine.filter((f) => f.variantId === null);
+}
+
+/**
+ * Whether this exact file may be streamed to this order.
+ *
+ * The gate the download route asks. It used to be "does this file belong to a
+ * product on the order", which stopped being sufficient the moment files could
+ * belong to a variant: the cheap variant's buyer would pass it while asking
+ * for the expensive one's file.
+ */
+export async function orderMayFetchFile(
+  order: Order,
+  fileId: string,
+): Promise<boolean> {
+  const files = await entitledFiles(order);
+  return files.some((f) => f.id === fileId);
 }
 
 /** Every product in an order, deduplicated. Entitlement is judged on this. */
@@ -221,13 +339,25 @@ export async function orderedProductIds(order: Order): Promise<string[]> {
   ];
 }
 
-/** True when this product can actually deliver something. */
-export async function hasDeliverableFiles(productId: string) {
-  const file = await getDb().query.productFiles.findFirst({
+/**
+ * True when this exact combination can actually deliver something.
+ *
+ * Variant-aware since spec 48, and it has to be: a product whose only files
+ * hang off the expensive variant would otherwise mint a download token for a
+ * buyer of the cheap one and hand them a delivery page with nothing on it.
+ * The fallback is `filesForVariant`'s — the variant's own files, else the
+ * product defaults — so a catalogue with no per-variant files answers exactly
+ * as it did before.
+ */
+export async function hasDeliverableFiles(
+  productId: string,
+  variantId: string | null = null,
+) {
+  const rows = await getDb().query.productFiles.findMany({
     where: eq(productFiles.productId, productId),
-    columns: { id: true },
+    columns: { id: true, productId: true, variantId: true },
   });
-  return Boolean(file);
+  return filesForVariant(rows, { productId, variantId }).length > 0;
 }
 
 /** Looks an order up by its public download token, with the shop it belongs to. */

@@ -19,11 +19,57 @@ import type { Product, Subscription } from "@sailo/db/schema";
    Intervals
 -------------------------------------------------------------------------- */
 
-export const BILLING_INTERVALS = ["month", "year"] as const;
+/**
+ * Stripe's four recurring intervals, all four of them.
+ *
+ * It was two — month and year — which was a guess about what sellers charge
+ * rather than a constraint anything imposed. A weekly class, a fortnightly
+ * box, a quarterly subscription: ordinary businesses, none of them sellable.
+ * Stripe has always accepted all four, and pairing them with a count below is
+ * exactly its model rather than one of ours.
+ *
+ * Ordered shortest first, which is the order a picker should offer them in.
+ */
+export const BILLING_INTERVALS = ["day", "week", "month", "year"] as const;
 export type BillingInterval = (typeof BILLING_INTERVALS)[number];
 
 export function isBillingInterval(value: unknown): value is BillingInterval {
   return typeof value === "string" && (BILLING_INTERVALS as readonly string[]).includes(value);
+}
+
+/**
+ * The most of each interval Stripe will put in one billing period.
+ *
+ * Stripe's rule is that a period may not exceed one year, expressed per
+ * interval. Written down here rather than discovered at checkout, because the
+ * seller is looking at the field now and the buyer would meet the error later
+ * with nothing they can do about it.
+ */
+export const MAX_INTERVAL_COUNT: Record<BillingInterval, number> = {
+  day: 365,
+  week: 52,
+  month: 12,
+  year: 1,
+};
+
+/**
+ * How many intervals per charge, with nonsense folded to one.
+ *
+ * One is the answer for absent, zero, a fraction and a negative, because all
+ * four mean the same thing to a seller: they did not choose a number, and the
+ * ordinary cycle is every one interval. Above the ceiling it clamps rather
+ * than refusing — "every 400 days" is a typo for something, and the closest
+ * legal cycle is a better answer than a saved product that cannot be bought.
+ */
+export function normalizeIntervalCount(
+  raw: unknown,
+  interval: BillingInterval = "month",
+): number {
+  const n = typeof raw === "number" ? raw : Number(raw);
+  if (!Number.isFinite(n)) return 1;
+  const count = Math.trunc(n);
+  if (count <= 1) return 1;
+  return Math.min(count, MAX_INTERVAL_COUNT[interval]);
 }
 
 /**
@@ -179,18 +225,40 @@ export const MANUAL_LAPSE_DAYS = 21;
  * on the 31st should renew on the last day of the next month, not skip into
  * the one after.
  */
-export function addInterval(from: Date, interval: BillingInterval): Date {
+export function addInterval(
+  from: Date,
+  interval: BillingInterval,
+  /** How many of them — the `3` in "every 3 months". */
+  count = 1,
+): Date {
+  const steps = normalizeIntervalCount(count, interval);
   const next = new Date(from.getTime());
 
+  /*
+   * Days and weeks are exact spans and are added as such — no calendar
+   * clamping applies, because there is no such thing as the 31st of a week.
+   * `setDate` past the end of a month rolls forward correctly on its own,
+   * which is the behaviour wanted here and the bug being guarded against
+   * below.
+   */
+  if (interval === "day") {
+    next.setDate(next.getDate() + steps);
+    return next;
+  }
+  if (interval === "week") {
+    next.setDate(next.getDate() + steps * 7);
+    return next;
+  }
+
   if (interval === "year") {
-    next.setFullYear(next.getFullYear() + 1);
+    next.setFullYear(next.getFullYear() + steps);
     // 29 February plus a year is 28 February, not 1 March.
     if (next.getDate() !== from.getDate()) next.setDate(0);
     return next;
   }
 
   const day = from.getDate();
-  next.setMonth(next.getMonth() + 1);
+  next.setMonth(next.getMonth() + steps);
   // Rolled over into the following month because the target one is shorter:
   // step back to its last day.
   if (next.getDate() !== day) next.setDate(0);
@@ -211,9 +279,10 @@ export function nextPeriodEnd(
   current: Date | null,
   interval: BillingInterval,
   now = new Date(),
+  count = 1,
 ): Date {
   const from = current && current.getTime() > now.getTime() ? current : now;
-  return addInterval(from, interval);
+  return addInterval(from, interval, count);
 }
 
 /* --------------------------------------------------------------------------
@@ -224,7 +293,10 @@ export function nextPeriodEnd(
 export type MembershipProduct = Pick<
   Product,
   "kind" | "priceCents" | "billingInterval"
->;
+> & {
+  /** Absent on the trimmed rows a quote carries; one is the assumed cycle. */
+  billingIntervalCount?: number | null;
+};
 
 export function isMembership(product: Pick<Product, "kind">): boolean {
   return product.kind === "membership";
@@ -263,6 +335,27 @@ export function membershipSellable(product: MembershipProduct): boolean {
  */
 const OPEN_STATUSES = new Set(["trialing", "active", "past_due"]);
 
+/**
+ * Frozen — spec 49.
+ *
+ * **A status rather than a second access predicate, and that is the whole
+ * design of pause.** `membershipAccess` reads `status` and `currentPeriodEnd`
+ * and has never known who wrote them; expressing a freeze as one more status
+ * outside `OPEN_STATUSES` means the door gate, the members list, the download
+ * route, the door pass and the renewal cron all close for a paused member with
+ * **no code change at all** — the same property that made adding the manual
+ * rail cost nothing.
+ *
+ * The alternative — a `pausedUntil` clause inside `membershipAccess` — would
+ * have been a second thing that decides access, and the five readers above
+ * would each have had to learn about it or quietly keep letting people in.
+ *
+ * `pausedAt` / `pausedUntil` are still columns, because they answer *when* and
+ * *how long*, which a status cannot. They are read by the resume sweep and by
+ * the seller's list; they are not read by anything that decides entitlement.
+ */
+export const PAUSED_STATUS = "paused";
+
 export type MembershipAccess = {
   /** Whether the door opens right now. */
   open: boolean;
@@ -287,10 +380,18 @@ export type MembershipAccess = {
  * member has definitely just paid.
  */
 export function membershipAccess(
-  subscription: Pick<
-    Subscription,
-    "status" | "currentPeriodEnd" | "cancelAtPeriodEnd"
-  > | null,
+  subscription:
+    | (Pick<Subscription, "status" | "currentPeriodEnd" | "cancelAtPeriodEnd"> &
+        /*
+         * Optional, and deliberately so. Every caller selecting the three
+         * columns this function has always read keeps compiling and keeps
+         * getting the same answer — the two below are absent, `accessAfterTerm`
+         * reads as false, and the new branch cannot fire. A required pair would
+         * have made every existing `columns:` selection a compile error and
+         * invited somebody to widen `Subscription` instead.
+         */
+        Partial<Pick<Subscription, "accessAfterTerm" | "endedReason">>)
+    | null,
   now = new Date(),
 ): MembershipAccess {
   if (!subscription) return { open: false, endingSoon: false, until: null };
@@ -298,6 +399,35 @@ export function membershipAccess(
   const until = subscription.currentPeriodEnd;
   const statusOpen = OPEN_STATUSES.has(subscription.status);
   const withinPeriod = !until || until.getTime() > now.getTime();
+
+  /*
+   * THE ONE NEW BRANCH — spec 49, and there is not allowed to be a second.
+   *
+   * A fixed-term membership that keeps access is how a seller sells a course
+   * in three payments without Sailo building an instalments engine, which
+   * `GAP-2026-08-easytools.md` §4.7 refuses on money-path grounds. The
+   * subscription is genuinely over — `status` is `canceled`, billing has
+   * stopped, the members list says so — and the door stays open because the
+   * seller sold it that way.
+   *
+   * Both halves are required. `endedReason === "term_complete"` is what
+   * separates "they finished paying" from "they cancelled in month two", and
+   * without it a member who quit a 12-cycle course after one payment would
+   * keep the whole course. `accessAfterTerm` is the seller's own answer,
+   * snapshotted at signup so changing the product later does not retroactively
+   * withdraw access somebody already earned.
+   *
+   * Pause is *not* here, and that is not an omission. A frozen membership sits
+   * at `status = "paused"`, which is simply not in `OPEN_STATUSES` — so it
+   * closes through the predicate that already existed rather than through a
+   * second one. See `PAUSED_STATUS`.
+   */
+  if (
+    subscription.endedReason === "term_complete" &&
+    subscription.accessAfterTerm === true
+  ) {
+    return { open: true, endingSoon: false, until: null };
+  }
 
   return {
     open: statusOpen && withinPeriod,
@@ -338,13 +468,27 @@ export function anyAccess(
 export function priceIsStale(product: {
   priceCents: number;
   billingInterval: string | null;
+  billingIntervalCount?: number | null;
   stripePriceId: string | null;
   stripePriceCents: number | null;
   stripePriceInterval: string | null;
+  stripePriceIntervalCount?: number | null;
 }): boolean {
   if (!product.stripePriceId) return true;
   if (product.stripePriceCents !== product.priceCents) return true;
-  return product.stripePriceInterval !== intervalOf(product);
+  if (product.stripePriceInterval !== intervalOf(product)) return true;
+  /*
+   * And the count, for the same reason the interval is here and the amount
+   * alone was not enough: a membership moved from "every month" to "every 3
+   * months" changes neither the amount nor the interval, so the two checks
+   * above see an unchanged product and every new member goes on being billed
+   * monthly against a Price the seller no longer sells.
+   *
+   * `?? 1` on the stored side rather than a null check, because a Price minted
+   * before this column existed was minted at a count of one — which is what
+   * Stripe defaults to, so the fallback is a fact rather than a guess.
+   */
+  return (product.stripePriceIntervalCount ?? 1) !== intervalCountOf(product);
 }
 
 /**
@@ -358,4 +502,21 @@ export function intervalOf(product: {
   billingInterval: string | null;
 }): BillingInterval {
   return isBillingInterval(product.billingInterval) ? product.billingInterval : "month";
+}
+
+/**
+ * And how many of them per charge.
+ *
+ * Clamped against the interval this product actually sells on, so "every 400
+ * days" cannot reach Stripe, and folded to one whenever the column is absent —
+ * which it is on every trimmed row a quote or a card carries.
+ */
+export function intervalCountOf(product: {
+  billingInterval: string | null;
+  billingIntervalCount?: number | null;
+}): number {
+  return normalizeIntervalCount(
+    product.billingIntervalCount ?? 1,
+    intervalOf(product),
+  );
 }

@@ -25,6 +25,8 @@ import {
 import { atProductLimit, can, planFor, productLimit } from "@sailo/core/plans";
 import { normalizePricingMode } from "@sailo/core/pricing-models";
 import { isPublicLinkUrl, isRenderableImageUrl, isStoredFileUrl } from "@sailo/storage/urls";
+import { DEFAULT_CODE_PATTERN, checkCodePattern } from "@sailo/core/codes";
+import { isCodeSource } from "./code-pool";
 import {
   isBillingInterval,
   normalizeIntervalCount,
@@ -218,22 +220,75 @@ async function syncFiles(productId: string, rows: ProductFileInput[]) {
     .flatMap((f) => (isStoredFileUrl(f.url) ? [{ ...f, url: f.url }] : []))
     .slice(0, MAX_FILES);
 
-  await db.delete(productFiles).where(eq(productFiles.productId, productId));
-  if (!kept.length) return;
+  /*
+   * MATCHED ON URL RATHER THAN DELETED AND RE-INSERTED — spec 48
+   *
+   * This used to clear the table and write it again, which minted a new `id`
+   * for every file on every save. Two things now depend on that id being
+   * stable: `notify_buyers_at` is a *claim* on one file's update announcement,
+   * and it would be reset by a seller renaming an unrelated file; and the
+   * buyer's own `/download/[token]/[fileId]` link would 404 after any edit to
+   * the product, which was already a real bug and simply had nobody to notice
+   * it.
+   *
+   * A file *is* its URL here — the uploader mints an immutable storage key per
+   * upload — so matching on it identifies the same file across a save, and
+   * anything the seller replaced arrives as a different URL and is written as
+   * a new row.
+   */
+  const existing = await db.query.productFiles.findMany({
+    where: eq(productFiles.productId, productId),
+  });
+  const byUrl = new Map(existing.map((f) => [f.url, f]));
 
-  await db.insert(productFiles).values(
-    kept.map((f, position) => ({
-      productId,
+  const variantIds = await variantIdsByKey(productId);
+
+  let position = 0;
+  for (const f of kept) {
+    const values = {
       name: trimmed(f.name, 200) ?? "Download",
-      url: f.url,
       sizeBytes:
         typeof f.sizeBytes === "number" && Number.isFinite(f.sizeBytes)
           ? Math.max(0, Math.trunc(f.sizeBytes))
           : null,
       contentType: trimmed(f.contentType, 120),
-      position,
-    })),
-  );
+      /*
+       * Resolved from the option combination rather than taken as an id.
+       * `syncVariants` runs before this and may have just created the row the
+       * seller is assigning to, so an id posted by the browser would name a
+       * variant that no longer exists — the same reason the order line
+       * snapshots a variant's options rather than joining to it.
+       */
+      variantId: f.variantOptions
+        ? (variantIds.get(optionKey(f.variantOptions)) ?? null)
+        : null,
+      version: trimmed(f.version, 60),
+      position: position++,
+      updatedAt: new Date(),
+    };
+
+    const match = byUrl.get(f.url);
+    if (match) {
+      await db.update(productFiles).set(values).where(eq(productFiles.id, match.id));
+      byUrl.delete(f.url);
+    } else {
+      await db.insert(productFiles).values({ ...values, productId, url: f.url });
+    }
+  }
+
+  const stale = [...byUrl.values()].map((f) => f.id);
+  if (stale.length) {
+    await db.delete(productFiles).where(inArray(productFiles.id, stale));
+  }
+}
+
+/** The variant rows this product actually has, keyed by their option string. */
+async function variantIdsByKey(productId: string): Promise<Map<string, string>> {
+  const rows = await getDb().query.productVariants.findMany({
+    where: eq(productVariants.productId, productId),
+    columns: { id: true, options: true },
+  });
+  return new Map(rows.map((v) => [optionKey(v.options), v.id]));
 }
 
 /**
@@ -339,16 +394,57 @@ export async function saveProduct(
   const digitalAccessDetails = trimmed(input.digitalAccessDetails, 2000);
 
   if (kind === "digital" && delivery === "link") {
-    if (!digitalLinkUrl) {
+    // A pooled link product has no single URL to demand — see `codeSource`
+    // below. Each pooled URL is guarded at `addCodes`, where it arrives.
+    if (!digitalLinkUrl && !isCodeSource(input.codeSource)) {
       return refuse({ kind: "digital_needs_delivery", delivery: "link" });
     }
-    if (!isPublicLinkUrl(digitalLinkUrl)) {
+    if (digitalLinkUrl && !isPublicLinkUrl(digitalLinkUrl)) {
       return refuse({ kind: "digital_link_not_public" });
     }
   }
-  if (kind === "digital" && delivery === "code" && !digitalAccessDetails) {
+  /*
+   * Where a code comes from — spec 48.
+   *
+   * `pool` and `generated` are gated on `codePools`; a shop without the plan
+   * falls back to null, which is the shared string and today's behaviour, so
+   * downgrading a shop never breaks a product — it stops handing out one code
+   * per buyer and starts handing out the one the seller typed. The alternative
+   * (refusing the save) would leave a seller unable to edit a title on a
+   * product they configured while they were on Pro.
+   */
+  const codeSource =
+    kind === "digital" && can(shop, "codePools") && isCodeSource(input.codeSource)
+      ? input.codeSource
+      : null;
+
+  let codePattern: string | null = null;
+  if (codeSource === "generated") {
+    const checked = checkCodePattern(input.codePattern ?? DEFAULT_CODE_PATTERN);
+    if (!checked.ok) return refuse({ kind: "code_pattern_invalid", reason: checked.reason });
+    codePattern = checked.pattern;
+  }
+
+  /*
+   * The shared string is required only when it is the thing being handed over.
+   *
+   * A product drawing from a pool has no single string to type, so demanding
+   * one would make the feature unreachable — the seller would have to invent a
+   * placeholder that every buyer would then never see.
+   */
+  if (kind === "digital" && delivery === "code" && !codeSource && !digitalAccessDetails) {
     return refuse({ kind: "digital_needs_delivery", delivery: "code" });
   }
+  /*
+   * Same, for `link`: a pool of one-seat invite URLs has no single URL. The
+   * check above already refused a blank `digitalLinkUrl`, so this widens it
+   * back for the pooled case only — each pooled URL goes through the identical
+   * `isPublicLinkUrl` guard at `addCodes`, at the write, where the value
+   * actually arrives.
+   */
+
+  const licenseEnabled =
+    kind === "digital" && can(shop, "licensing") && input.licenseEnabled === true;
 
   /*
    * The join link for an online event — refused rather than quietly dropped.
@@ -574,6 +670,23 @@ export async function saveProduct(
       kind === "digital" && delivery === "link" ? digitalLinkUrl : null,
     digitalAccessDetails:
       kind === "digital" && delivery === "code" ? digitalAccessDetails : null,
+
+    /*
+     * Spec 48. Cleared off every other kind, exactly as the three columns
+     * above are: a product switched away from being digital must not keep a
+     * pool it would silently start drawing from if it were switched back.
+     *
+     * The pool rows themselves are left alone — they are the seller's
+     * inventory and their claimed half is a buyer's — so switching a product
+     * to physical and back finds the codes where they were.
+     */
+    codeSource,
+    codePattern,
+    licenseEnabled,
+    licenseActivationLimit: licenseEnabled
+      ? wholeCountOrNull(input.licenseActivationLimit)
+      : null,
+    licenseDays: licenseEnabled ? wholeCountOrNull(input.licenseDays) : null,
     releaseOnPayment: input.releaseOnPayment === true,
     downloadLimit: input.downloadLimit ?? null,
     downloadExpiryDays: input.downloadExpiryDays ?? null,

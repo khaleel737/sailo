@@ -5,6 +5,7 @@ import { releaseCouponRedemption } from "../coupons/redemption";
 import { and, asc, eq, gte, inArray, isNull, isNotNull, lt, ne, or, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { releaseSlots, retakeSlots } from "../booking/claim";
+import { spentCodesByProduct } from "./code-pool";
 import {
   bookingClaims,
   orderItems,
@@ -181,8 +182,28 @@ export async function restoreStock(order: Order): Promise<boolean> {
    */
   await releaseSlots(order.id);
 
+  /*
+   * Units whose code was already handed over do not come back — spec 48.
+   *
+   * A pool is stock, so `stock_quantity` is what the storefront and
+   * `reserveStock` read; but a code the buyer has already seen is spent
+   * whatever happens next, and `revokeDigitalGoodsForOrder` does not return it
+   * to the pool. Putting the unit back regardless would leave the count
+   * claiming inventory the pool no longer holds, and the next buyer would
+   * reach `releaseDownloads` with an empty pool and a paid order.
+   *
+   * So the line gives back what it took *minus* what was spent. An order
+   * cancelled before release — an abandoned Stripe session, a sweep — has
+   * claimed no codes at all, so this subtracts nothing and the ordinary path
+   * is untouched.
+   */
+  const spent = await spentCodesByProduct(order.id);
+
   for (const line of await stockLinesFor(order)) {
-    await releaseStock(line);
+    const burned = line.productId ? (spent.get(line.productId) ?? 0) : 0;
+    const quantity = Math.max(0, line.quantity - burned);
+    if (quantity === 0) continue;
+    await releaseStock({ ...line, quantity });
   }
   return true;
 }
@@ -221,8 +242,20 @@ export async function retakeStock(order: Order): Promise<boolean> {
     .returning({ id: orders.id }));
   if (!claimed) return false;
 
-  for (const line of await stockLinesFor(order)) {
-    if (!line.productId) continue;
+  /*
+   * Symmetrical with `restoreStock`: units whose code was spent were never
+   * given back, so taking them off again would decrement the count twice for
+   * one sale. Un-cancelling is a seller correcting a mistake, and the mistake
+   * they are correcting is not "the pool refilled itself".
+   */
+  const spent = await spentCodesByProduct(order.id);
+
+  for (const rawLine of await stockLinesFor(order)) {
+    const productId = rawLine.productId;
+    if (!productId) continue;
+    const burned = spent.get(productId) ?? 0;
+    const line = { ...rawLine, productId, quantity: Math.max(0, rawLine.quantity - burned) };
+    if (line.quantity === 0) continue;
     // Deliberately unguarded: the seller is reversing their own decision, and
     // refusing to take the units back would leave the count too high.
     if (line.variantId) {

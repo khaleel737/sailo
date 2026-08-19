@@ -54,6 +54,13 @@ export type ProductFileInput = {
   url: string;
   sizeBytes?: number | null;
   contentType?: string | null;
+  /**
+   * Which combination this file belongs to — spec 48. Null is the product
+   * default, which is every file that existed before the column.
+   */
+  variantOptions?: VariantOptions | null;
+  /** The seller's own label — "v2", "2026 edition". */
+  version?: string | null;
 };
 
 /**
@@ -136,6 +143,19 @@ export type ProductInput = {
   digitalDelivery?: string | null;
   digitalLinkUrl?: string | null;
   digitalAccessDetails?: string | null;
+  /**
+   * Where a code comes from — spec 48. Null is the shared string above, which
+   * is what every product does today.
+   */
+  codeSource?: string | null;
+  /** The shape of a minted code, under `codeSource: "generated"`. */
+  codePattern?: string | null;
+  /** Mint a checkable licence key per buyer — spec 48. */
+  licenseEnabled?: boolean;
+  /** Machines one key may run on at once. Null is unlimited. */
+  licenseActivationLimit?: number | null;
+  /** Licence length in days. Null never expires. */
+  licenseDays?: number | null;
   releaseOnPayment?: boolean;
   downloadLimit?: number | null;
   downloadExpiryDays?: number | null;
@@ -211,6 +231,17 @@ export type SaveProductRefusal =
    */
   | { kind: "digital_needs_delivery"; delivery: "link" | "code" }
   | { kind: "digital_link_not_public" }
+  /**
+   * A code pattern that cannot be minted from — spec 48.
+   *
+   * Carries the reason, because the three are genuinely different problems
+   * and a seller cannot guess which they hit: too little randomness is a
+   * pattern that would be guessable, and `collides_with_scan_codes` is one
+   * that folds to the length of a ticket or a member pass — the arithmetic
+   * `admitAnyCode` depends on, so it is refused at the point it is typed
+   * rather than found at a door.
+   */
+  | { kind: "code_pattern_invalid"; reason: string }
   | { kind: "product_limit"; limit: number; planName: string }
   | { kind: "not_found" };
 

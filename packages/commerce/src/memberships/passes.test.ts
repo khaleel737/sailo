@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { newMemberPassCode, normalizeMemberPassCode } from "./passes";
-import { newTicketCode, normalizeTicketCode } from "../ticketing/tickets";
+import { foldScanCode, newTicketCode, normalizeTicketCode } from "../ticketing/tickets";
+import { DEFAULT_CODE_PATTERN, mintCode, newLicenseKey } from "@sailo/core/codes";
 
 /**
  * The pass code, and the one property the door depends on.
@@ -84,5 +85,26 @@ describe("member passes and tickets cannot be confused", () => {
     // returned ungrouped and will match no `pass_code` row.
     const ticket = newTicketCode();
     expect(normalizeMemberPassCode(ticket)).toBe(ticket.replace(/-/g, ""));
+  });
+
+  /*
+   * Spec 48 added two more minted strings — a pool code and a licence key —
+   * and this is where the property they had to satisfy is checked from the
+   * side that cares. Neither is ever presented at a door today, and that is
+   * exactly why the guarantee has to be arithmetic rather than a convention:
+   * the day somebody adds a third branch to `admitAnyCode`, the lengths are
+   * what will still be true.
+   *
+   * `codes.test.ts` asserts the same thing from the minting side, including
+   * that a *pattern* folding to ten or twelve is refused before it can ever
+   * produce one.
+   */
+  it("neither a pool code nor a licence key can be either length", () => {
+    for (let i = 0; i < 100; i += 1) {
+      expect(foldScanCode(mintCode(DEFAULT_CODE_PATTERN))).not.toHaveLength(10);
+      expect(foldScanCode(mintCode(DEFAULT_CODE_PATTERN))).not.toHaveLength(12);
+      expect(foldScanCode(newLicenseKey())).not.toHaveLength(10);
+      expect(foldScanCode(newLicenseKey())).not.toHaveLength(12);
+    }
   });
 });
