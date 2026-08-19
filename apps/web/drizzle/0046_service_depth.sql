@@ -1,0 +1,2 @@
+-- Spec 51, the service half — staff calendars, group bookings, buyer
+-- reschedule and cancel, intake forms, booking reminders. Claimed; SQL follows.

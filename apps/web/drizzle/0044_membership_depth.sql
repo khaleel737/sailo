@@ -1,0 +1,2 @@
+-- Spec 49 — membership depth: fixed terms, cancellation policy, pause, seats,
+-- dunning, upgrade paths. Claimed; SQL follows.

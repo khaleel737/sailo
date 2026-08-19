@@ -1,0 +1,2 @@
+-- Spec 48 — digital depth: code pools, licence keys, files per variant, file
+-- versions. Claimed; SQL follows.

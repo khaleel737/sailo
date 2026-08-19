@@ -1,0 +1,2 @@
+-- Spec 50 — event depth: tiers, sessions, attendee details, transfer, venue,
+-- timezone, event policy. Claimed; SQL follows.
