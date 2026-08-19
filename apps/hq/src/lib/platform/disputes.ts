@@ -12,13 +12,16 @@ import {
   needsResponse,
   playbookFor,
   ratioBp,
+  assemblePlatformEvidence,
 } from "@sailo/core/disputes";
 import {
   disputeReadiness,
   evidenceBudget,
   evidenceCoverage,
   evidenceFilesFor,
+  platformDecision,
   platformDisputeMonths,
+  platformHoldingsFor,
 } from "@sailo/commerce/disputes";
 
 /**
@@ -438,8 +441,15 @@ export async function getDisputeDetail(id: string) {
      * unreachable still has a deadline, an amount and a shop, and a page that
      * 500s because Stripe is slow is a page that is down at exactly the moment
      * somebody needed the deadline.
+     *
+     * Skipped entirely for a platform dispute. `assembleEvidence` opens by
+     * requiring an order and there is none — and the Stripe read it makes would
+     * go out with a connected-account header that names nobody. Spec 46's own
+     * holdings are gathered below instead.
      */
-    disputeReadiness(id).catch(() => null),
+    dispute.scope === "platform"
+      ? Promise.resolve(null)
+      : disputeReadiness(id).catch(() => null),
   ]);
 
   const owner = shop
@@ -449,6 +459,22 @@ export async function getDisputeDetail(id: string) {
       })
     : undefined;
 
+  /*
+   * Spec 46 — the platform side.
+   *
+   * A `platform` dispute is a seller charging back their own Sailo
+   * subscription: Sailo is the merchant of record, there is no order and no
+   * connected account, and `disputeReadiness` above resolves nothing because
+   * every field resolver in `assemble.ts` reads an order. So this branch gathers
+   * the other holdings — signup, terms acceptance, sign-in history, real usage —
+   * and answers the three questions that decide whether to fight at all.
+   *
+   * Loaded only for the scope that needs it. A connected dispute pays nothing
+   * for this existing.
+   */
+  const platform =
+    dispute.scope === "platform" ? await platformHoldingsFor(dispute) : null;
+
   return {
     dispute,
     shop: shop ?? null,
@@ -457,5 +483,12 @@ export async function getDisputeDetail(id: string) {
     files,
     budget: evidenceBudget(files),
     readiness,
+    platform: platform
+      ? {
+          holdings: platform,
+          evidence: assemblePlatformEvidence(dispute.reason, platform),
+          decision: platformDecision(platform, { isInquiry: isInquiry(dispute.status) }),
+        }
+      : null,
   };
 }

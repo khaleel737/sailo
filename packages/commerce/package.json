@@ -28,7 +28,8 @@
     "./import": "./src/import/index.ts",
     "./import/server": "./src/import/server.ts",
     "./recovery": "./src/recovery/index.ts",
-    "./recovery/server": "./src/recovery/server.ts"
+    "./recovery/server": "./src/recovery/server.ts",
+    "./content": "./src/content/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

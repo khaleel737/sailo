@@ -19,6 +19,7 @@ import {
 } from "@/app/_components/dispute-actions";
 import { removeDisputeFile } from "@/lib/actions/dispute-files";
 import { getDisputeDetail } from "@/lib/platform/disputes";
+import { PlatformCase } from "./_components/platform-case";
 import { formatMoney } from "@sailo/core/currency";
 import {
   EVIDENCE_FILE_ORDER,
@@ -70,7 +71,7 @@ export default async function HqDisputePage({ params }: PageProps<"/disputes/[id
   const detail = await getDisputeDetail(id);
   if (!detail) notFound();
 
-  const { dispute, shop, owner, order, files, budget, readiness } = detail;
+  const { dispute, shop, owner, order, files, budget, readiness, platform } = detail;
   const playbook = playbookFor(dispute.reason);
   const inquiry = isInquiry(dispute.status);
   const daysLeft = daysToRespond(dispute, new Date());
@@ -171,13 +172,33 @@ export default async function HqDisputePage({ params }: PageProps<"/disputes/[id
 
       {/* ---------------------------------------------------------------- */}
 
-      {readiness === null ? (
+      {/* ---------------------------------------------------------------- */}
+
+      {/*
+        Spec 46 — the platform case, which the panels below cannot render.
+
+        Every field resolver in `assemble.ts` reads an order, a shipment, a
+        download log or a duplicate candidate, and a subscription dispute has
+        none of those. So a platform dispute gets its own evidence, its own three
+        decision questions, and its own submit — and the connected panels are
+        skipped entirely rather than shown empty.
+      */}
+      {platform ? (
+        <PlatformCase
+          disputeId={dispute.id}
+          detail={platform}
+          submittable={readiness?.submittable.allowed ?? true}
+          sent={sent}
+        />
+      ) : null}
+
+      {readiness === null && dispute.scope !== "platform" ? (
         <Alert tone="warning" title="Stripe could not be reached" className="mt-4">
           The deadline and amounts above are Sailo&rsquo;s copy of what Stripe last
           told us. The evidence below cannot be assembled without the live dispute,
           so nothing can be sent until Stripe answers again.
         </Alert>
-      ) : !readiness.submittable.allowed && !sent ? (
+      ) : readiness && !readiness.submittable.allowed && !sent ? (
         <Alert
           tone="warning"
           title="Stripe will not accept a response"

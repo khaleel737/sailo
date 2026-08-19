@@ -46,7 +46,8 @@
     "social:preview": "tsx scripts/social/preview.ts",
     "social:report": "tsx scripts/social/report.ts",
     "social:creators": "tsx scripts/social/creators.ts",
-    "social:outreach": "tsx scripts/social/outreach.ts"
+    "social:outreach": "tsx scripts/social/outreach.ts",
+    "deploy:post": "tsx scripts/post-deploy.ts"
   },
   "dependencies": {
     "@better-auth/expo": "^1.6.25",

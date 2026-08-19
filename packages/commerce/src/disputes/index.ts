@@ -53,3 +53,68 @@ export {
   type DisputeReadiness,
   type RespondResult,
 } from "./respond";
+
+/*
+ * Spec 44 — capturing what a dispute is answered with, at the moment it is
+ * knowable. Every one of these runs on a path a buyer or Stripe is waiting on
+ * and none of them may throw into it.
+ */
+export {
+  accountHistory,
+  awaitingDeliveryConfirmation,
+  confirmDelivery,
+  latestSnapshot,
+  logOrderMessage,
+  markMessageStatus,
+  messagesForOrder,
+  recordAccountEvent,
+  snapshotPolicy,
+  type AccountEventInput,
+  type DeliveryResult,
+  type LogMessageInput,
+  type SnapshotInput,
+} from "./capture";
+export {
+  PLATFORM_POLICY_PATHS,
+  policySnapshotsForOrder,
+  readablePolicy,
+  snapshotFromUrl,
+  snapshotPlatformPolicies,
+} from "./policies";
+export { arrivalToken, arrivalUrl, readArrivalToken } from "./arrival";
+
+/*
+ * Spec 46 — Sailo answering a chargeback against its own subscription revenue.
+ * The pure half is `@sailo/core/disputes/platform.ts`; this is the reads, the
+ * rollup that keeps them answerable, and the two claims that stop a retried
+ * webhook paging the desk twice or downgrading a shop that has not lost yet.
+ */
+export {
+  PLATFORM_CHARGEBACK_LIMIT,
+  PLATFORM_STATEMENT_DESCRIPTOR,
+  claimStaffNotice,
+  enforceCardBillingBlock,
+  holdPlanForDispute,
+  platformDecision,
+  platformHoldingsFor,
+  reinstatePlanAfterWin,
+  respondToPlatformDispute,
+  rollUpPlatformUsage,
+  type PlatformRespondResult,
+  type UsageRollupResult,
+} from "./platform";
+
+/*
+ * Spec 45 — the order evidence pack. The pure content assembly is
+ * `@sailo/core/disputes/pack.ts`; this is the read that fills it and the rules
+ * about which documents fit inside the 4.5 MB the networks accept.
+ */
+export {
+  SAILO_UPLOADER,
+  evictGeneratedFor,
+  generatedFields,
+  latestDisputeForOrder,
+  offerablePackDocuments,
+  orderForDispute,
+  packHoldingsForOrder,
+} from "./pack-holdings";

@@ -516,6 +516,31 @@ export const shops = pgTable(
     metaPixelId: text("meta_pixel_id"),
     tiktokPixelId: text("tiktok_pixel_id"),
 
+    /* ----------------------------------------------------------------------
+       Three more, spec 42.
+
+       Ad platforms a seller is already buying from — the id is the receipt for
+       spend they made elsewhere, which is what separates these from a named
+       analytics vendor. DataFast is refused for exactly that reason: a
+       third-party analytics product in our settings is an endorsement and a
+       support surface for something we do not run.
+
+       Every one is validated, consent-gated and CSP-scoped through
+       `shop-pixels.ts` like the four above. A column here that skipped any of
+       the three would be a script-injection point in a `<script>` src.
+    ---------------------------------------------------------------------- */
+    googleAdsId: text("google_ads_id"),
+    /**
+     * The conversion label that pairs with the Ads id.
+     *
+     * Optional beside a set `googleAdsId`, and that is a real state rather
+     * than an oversight: a seller may want the remarketing tag running before
+     * they have configured a conversion to report against it.
+     */
+    googleAdsConversionId: text("google_ads_conversion_id"),
+    linkedinPartnerId: text("linkedin_partner_id"),
+    pinterestTagId: text("pinterest_tag_id"),
+
     /*
      * Staff-side columns. Written only from /hq — the seller's own admin never
      * touches these, and nothing in it reads them except the suspension notice.

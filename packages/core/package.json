@@ -57,7 +57,8 @@
     "./html-text": "./src/html-text.ts",
     "./shop-pages": "./src/shop/shop-pages.ts",
     "./privacy": "./src/privacy/index.ts",
-    "./secret-box": "./src/identity/secret-box.ts"
+    "./secret-box": "./src/identity/secret-box.ts",
+    "./content": "./src/content/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

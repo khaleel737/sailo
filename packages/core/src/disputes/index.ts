@@ -17,4 +17,11 @@ export * from "./rate";
 export * from "./escalation";
 export * from "./assemble";
 export * from "./ce3";
+export * from "./platform";
+export * from "./pack";
 export * from "./files";
+
+/* Spec 44 — capturing what a dispute is answered with. */
+export * from "./descriptor";
+export * from "./policy";
+export * from "./messages";

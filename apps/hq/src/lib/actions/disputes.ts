@@ -24,7 +24,11 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { disputes, shops } from "@sailo/db/schema";
 import { refundCharge } from "@sailo/payments";
-import { releaseHold, respondToDispute } from "@sailo/commerce/disputes";
+import {
+  releaseHold,
+  respondToDispute,
+  respondToPlatformDispute,
+} from "@sailo/commerce/disputes";
 import { requireStaff } from "@/lib/session";
 import { revalidateShopOnWeb } from "@/lib/web-cache";
 import type { ActionState } from "@sailo/core/action-state";
@@ -229,5 +233,89 @@ export async function stageDisputeEvidence(
     message:
       `Draft saved to Stripe at ${(result.completenessBp / 100).toFixed(0)}% complete. ` +
       `Nothing has been sent — press Send to answer the case.`,
+  };
+}
+
+/* ===========================================================================
+   Sailo's own chargebacks. Spec 46.
+
+   A `platform` dispute is a seller charging back their own Sailo subscription:
+   Sailo is the merchant of record, our own balance is debited, and until now the
+   only thing that happened was a plan downgrade and no response at all.
+
+   Two capabilities, deliberately not one. `platform:contest` submits evidence on
+   Sailo's behalf; `money:move` gives Sailo's revenue back. Spec 46 asks for
+   exactly that split — "submitting evidence on Sailo's behalf and issuing a
+   refund of Sailo's revenue are two different capabilities, and neither is
+   `disputes.view`" — because the risk desk should be able to answer a case
+   without being one click from a refund it does not own.
+=========================================================================== */
+
+/**
+ * Answer a chargeback against Sailo's own subscription revenue.
+ *
+ * Refuses when the three decision questions say the seller is right. That is not
+ * a validation failure, it is the rule spec 46 calls the one that matters most:
+ * contesting a cancellation that did not work is dishonest *and* a loss — the
+ * fee is spent, the case is lost anyway, and a loss lands on the platform
+ * account's own rate. The desk shows the refusal in place of a submit button;
+ * this refuses again for anybody who posts the form regardless.
+ */
+export async function submitPlatformDisputeEvidence(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const staff = await requireStaff("platform:contest");
+
+  const id = String(formData.get("disputeId") ?? "").trim();
+  if (!id) return { ok: false, error: "That dispute no longer exists." };
+
+  const db = getDb();
+  const dispute = await db.query.disputes.findFirst({ where: eq(disputes.id, id) });
+  if (!dispute) return { ok: false, error: "That dispute no longer exists." };
+
+  const result = await respondToPlatformDispute({
+    disputeId: id,
+    submit: true,
+    /*
+     * The one question the desk has to answer rather than the database. "We
+     * owed a refund and did not process it" is what makes contesting dishonest,
+     * and inferring it from row shapes would either miss the case that matters
+     * or refuse a case that should be argued.
+     */
+    refundOwedUnprocessed: formData.get("refundOwed") === "on",
+  });
+
+  if (!result.ok) {
+    return {
+      ok: false,
+      error: result.refundInstead
+        ? `${result.error} Use "Refund instead".`
+        : result.error,
+    };
+  }
+
+  if (dispute.shopId) {
+    const shop = await db.query.shops.findFirst({
+      where: eq(shops.id, dispute.shopId),
+      columns: { id: true, userId: true },
+    });
+    if (shop) {
+      await recordOnAccount(
+        staff.email,
+        "dispute.platform.answered",
+        shop.id,
+        shop.userId,
+        `Answered this account's Sailo subscription chargeback ${dispute.stripeDisputeId} ` +
+          `(${dispute.reason}, ${(dispute.amountCents / 100).toFixed(2)} ${dispute.currency}) — ` +
+          `evidence ${(result.completenessBp / 100).toFixed(0)}% complete`,
+      );
+    }
+  }
+
+  revalidatePath("/disputes");
+  return {
+    ok: true,
+    message: "Answer sent on Sailo's own behalf.",
   };
 }
