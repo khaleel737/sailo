@@ -140,6 +140,73 @@ export type Features = {
   testimonials: boolean;
   /** `/embed/wall/[key]` in somebody else's page, and more than one wall. */
   testimonialEmbed: boolean;
+  /**
+   * One code per buyer instead of one code for everybody — spec 48.
+   *
+   * Pro. A pool is the difference between "I can sell licence keys here" and
+   * "I cannot", which is a selling tool rather than a growth one — the same
+   * argument that brought `coupons` down from Business. The shared string
+   * `digitalAccessDetails` already holds is **not** gated and never will be: it
+   * is today's behaviour, and taking it away from a Free shop would be
+   * withdrawing something they are already selling.
+   */
+  codePools: boolean;
+  /**
+   * Licence keys with an activation limit, and the public API that checks them
+   * — spec 48.
+   *
+   * Business, because it is the shape of thing Business is bought for: a
+   * seller shipping software that talks to us from inside somebody else's
+   * binary is running a business on other tools as well as this one, which is
+   * the same reasoning `integrations` carries.
+   */
+  licensing: boolean;
+  /**
+   * Fixed-term memberships and pause/freeze — spec 49.
+   *
+   * Pro, and one flag for both because they are the same seller: a gym that
+   * sells a twelve-week course is the gym that freezes somebody for a holiday.
+   * `memberships` itself stays on Business, so this only ever widens what a
+   * shop that already has memberships can do with them.
+   */
+  membershipTerms: boolean;
+  /**
+   * Seats bought together and assigned, and switching between memberships —
+   * spec 49.
+   *
+   * Business. Seats are what turns a membership into something a *company*
+   * buys, and the buyer of eight seats is not shopping for a Pro plan.
+   */
+  membershipSeats: boolean;
+  /**
+   * Early bird / General / VIP against one room's capacity — spec 50.
+   *
+   * Pro. Tiered pricing on one event is configuration a working event seller
+   * needs on their first sale, and the alternative today is three products
+   * with three checkouts and no shared capacity.
+   */
+  eventTiers: boolean;
+  /**
+   * Sessions — the same workshop four Tuesdays — and ticket transfer, spec 50.
+   *
+   * Business, and one flag because both are a *series* seller's problem: a
+   * conference with day tickets is also the event whose buyer passes one to a
+   * colleague. `.ics`, the venue and the timezone are deliberately not here:
+   * they are correctness, not upsell, and a buyer's calendar entry being in
+   * the wrong timezone is not a thing to charge for fixing.
+   */
+  eventSessions: boolean;
+  /**
+   * More than one bookable person, and a class with more than one seat —
+   * spec 51.
+   *
+   * Pro, and one flag because they are the same shop growing: a salon that
+   * hires a second stylist is the studio that starts running a class. What is
+   * **not** gated is a buyer moving their own appointment or a booking
+   * reminder — both prevent a loss rather than creating a sale, and gating
+   * them would price the smallest shops out of not being stood up.
+   */
+  staffResources: boolean;
 };
 
 export type Limits = {
@@ -215,6 +282,13 @@ export const PLANS: Record<PlanId, Plan> = {
       pricingModes: false,
       weightBands: false,
       offers: false,
+      codePools: false,
+      licensing: false,
+      membershipTerms: false,
+      membershipSeats: false,
+      eventTiers: false,
+      eventSessions: false,
+      staffResources: false,
     },
     highlights: [
       "free1", "free2", "free3", "free4", "free5",
@@ -254,6 +328,13 @@ export const PLANS: Record<PlanId, Plan> = {
       pricingModes: true,
       weightBands: false,
       offers: true,
+      codePools: true,
+      licensing: false,
+      membershipTerms: true,
+      membershipSeats: false,
+      eventTiers: true,
+      eventSessions: false,
+      staffResources: true,
     },
     highlights: ["pro1", "pro2", "biz3", "pro3", "pro4", "pro5"],
   },
@@ -285,6 +366,13 @@ export const PLANS: Record<PlanId, Plan> = {
       pricingModes: true,
       weightBands: true,
       offers: true,
+      codePools: true,
+      licensing: true,
+      membershipTerms: true,
+      membershipSeats: true,
+      eventTiers: true,
+      eventSessions: true,
+      staffResources: true,
     },
     /*
      * `biz2` (card through your own Stripe) moved to Free and `biz3` (discount

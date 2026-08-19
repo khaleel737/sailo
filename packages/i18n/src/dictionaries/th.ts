@@ -311,6 +311,7 @@ export const th: Dictionary = {
     members: "สมาชิก",
     legal: "หน้าข้อกำหนด",
     dataRequests: "คำขอข้อมูล",
+    testimonials: "คำรับรอง",
   },
   notifications: {
     aBuyer: "ผู้ซื้อ", title: "การแจ้งเตือน", markAllRead: "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด",
@@ -483,5 +484,22 @@ export const th: Dictionary = {
     expected: "คาดว่า {date}",
     noDate: "ยังไม่มีกำหนด — ผู้ขายจะยืนยัน",
     refundNote: "หากไม่ได้จัดส่งเลย จะใช้นโยบายคืนเงินของ {shop}",
+  },
+  offers: {
+    alsoLike: "คุณอาจชอบสิ่งนี้ด้วย",
+    addIt: "เพิ่มเลย",
+    noThanks: "ไม่เป็นไร",
+  },
+  testimonial: {
+    title: "ช่วยเขียนสักสองสามคำถึง {shop} ไหม",
+    body: "เขาถามเพราะคุณเคยซื้อของ ใช้เวลาแค่นาทีเดียว และเขาอ่านจริง ๆ",
+    yourRole: "คุณทำอะไร",
+    words: "อยากบอกอะไรบ้าง",
+    video: "หรือส่งวิดีโอ",
+    videoHint: "ลิงก์จาก YouTube หรือ Vimeo เท่านั้น",
+    send: "ส่ง",
+    thanks: "ขอบคุณ — ทางร้านจะเข้ามาดู",
+    moderated: "ร้านเป็นคนเลือกว่าจะขึ้นหน้าไหน และคุณขอให้ลบทีหลังได้",
+    wallTitle: "เสียงจากลูกค้า",
   },
 };

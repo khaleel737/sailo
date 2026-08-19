@@ -351,6 +351,7 @@ export const no: Dictionary = {
     members: "Medlemmer",
     legal: "Juridiske sider",
     dataRequests: "Dataforespørsler",
+    testimonials: "Uttalelser",
   },
   notifications: {
     aBuyer: "En kjøper",
@@ -532,5 +533,22 @@ export const no: Dictionary = {
     expected: "Ventes {date}",
     noDate: "Ingen dato ennå — selgeren bekrefter",
     refundNote: "Hvis den aldri sendes, gjelder returreglene til {shop}.",
+  },
+  offers: {
+    alsoLike: "Du liker kanskje også",
+    addIt: "Legg til",
+    noThanks: "Nei takk",
+  },
+  testimonial: {
+    title: "Noen ord om {shop}?",
+    body: "De spør fordi du har kjøpt noe. Det tar et minutt, og de leser det.",
+    yourRole: "Hva du driver med",
+    words: "Hva vil du si?",
+    video: "Eller en video",
+    videoHint: "En lenke fra YouTube eller Vimeo. Annet fungerer ikke her.",
+    send: "Send",
+    thanks: "Takk — butikken tar en titt.",
+    moderated: "De velger hva som havner på siden deres, og du kan be om å få det fjernet senere.",
+    wallTitle: "Hva folk sier",
   },
 };

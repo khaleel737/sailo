@@ -353,6 +353,7 @@ export const sv: Dictionary = {
     members: "Medlemmar",
     legal: "Juridiska sidor",
     dataRequests: "Dataförfrågningar",
+    testimonials: "Omdömen",
   },
   notifications: {
     aBuyer: "En köpare",
@@ -534,5 +535,22 @@ export const sv: Dictionary = {
     expected: "Väntas {date}",
     noDate: "Inget datum än — säljaren bekräftar",
     refundNote: "Om den aldrig skickas gäller {shop}s återbetalningsregler.",
+  },
+  offers: {
+    alsoLike: "Du kanske också gillar",
+    addIt: "Lägg till",
+    noThanks: "Nej tack",
+  },
+  testimonial: {
+    title: "Några ord om {shop}?",
+    body: "De frågar för att du har köpt något. Det tar en minut, och de läser allt.",
+    yourRole: "Vad du gör",
+    words: "Vad skulle du säga?",
+    video: "Eller en video",
+    videoHint: "En länk från YouTube eller Vimeo. Annat fungerar inte här.",
+    send: "Skicka",
+    thanks: "Tack — butiken tittar på det.",
+    moderated: "De väljer vad som hamnar på deras sida, och du kan be dem ta bort det senare.",
+    wallTitle: "Vad andra säger",
   },
 };

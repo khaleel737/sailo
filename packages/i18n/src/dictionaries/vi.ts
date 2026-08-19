@@ -313,6 +313,7 @@ export const vi: Dictionary = {
     members: "Thành viên",
     legal: "Trang pháp lý",
     dataRequests: "Yêu cầu dữ liệu",
+    testimonials: "Lời chứng thực",
   },
   notifications: {
     aBuyer: "Một người mua", title: "Thông báo", markAllRead: "Đánh dấu tất cả đã đọc",
@@ -485,5 +486,22 @@ export const vi: Dictionary = {
     expected: "Dự kiến {date}",
     noDate: "Chưa có ngày — người bán sẽ xác nhận",
     refundNote: "Nếu không bao giờ được gửi đi, chính sách hoàn tiền của {shop} sẽ được áp dụng.",
+  },
+  offers: {
+    alsoLike: "Có thể bạn cũng thích",
+    addIt: "Thêm vào",
+    noThanks: "Không, cảm ơn",
+  },
+  testimonial: {
+    title: "Vài lời về {shop} nhé?",
+    body: "Họ hỏi vì bạn đã mua gì đó. Chỉ mất một phút, và họ đọc thật.",
+    yourRole: "Bạn làm gì",
+    words: "Bạn muốn nói gì?",
+    video: "Hoặc một video",
+    videoHint: "Một liên kết YouTube hoặc Vimeo. Ở đây không dùng được thứ khác.",
+    send: "Gửi",
+    thanks: "Cảm ơn bạn — cửa hàng sẽ xem qua.",
+    moderated: "Họ chọn những gì lên trang của mình, và bạn có thể yêu cầu gỡ sau.",
+    wallTitle: "Khách hàng nói gì",
   },
 };

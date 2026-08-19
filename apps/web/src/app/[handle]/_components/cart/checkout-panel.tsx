@@ -16,6 +16,7 @@ import { shippableCountries, shipsTo } from "@sailo/commerce/delivery";
 import { markLeaving } from "@/lib/leaving";
 import type { OrderIntentResult } from "@sailo/commerce/orders";
 import { useCheckoutQuote } from "./use-checkout-quote";
+import { OrderBump } from "./order-bump";
 import {
   PAYMENT_METHOD_DEFS,
   railsForOrder,
@@ -64,6 +65,7 @@ export function CheckoutPanel({
   methods,
   deliveryOptions,
   blockedCountries,
+  proof,
   needsDeliveryHint = false,
   payInPersonHint = true,
   contactEmail,
@@ -86,7 +88,8 @@ export function CheckoutPanel({
    * one. Optional-chained because the buy-now sheet mounts this outside a
    * populated cart; the formatter falls back to English on its own.
    */
-  const locale = useCart()?.locale;
+  const cart = useCart();
+  const locale = cart?.locale;
   const [chosen, setChosen] = useState<PaymentMethodType>(
     railsForOrder(methods, payInPersonHint)[0]?.type ?? "whatsapp",
   );
@@ -594,6 +597,7 @@ export function CheckoutPanel({
             <div className="pe-8">{empty}</div>
           ) : (
             <form method="post" onSubmit={onSubmit} className="space-y-4">
+              {proof}
               {children?.(preview)}
 
               {error ? (
@@ -891,6 +895,48 @@ export function CheckoutPanel({
                   <p className="mt-1.5 text-xs text-red-600">{coupon.error}</p>
                 ) : null}
               </div>
+
+              {/*
+                "Add X for £Y" — spec 08, immediately above the totals and the
+                pay button.
+
+                One tap on something small that goes with what is already in the
+                basket, and it does not add a step: the buyer reads it on the way
+                past. That is the whole difference from a cross-sell, which is a
+                second decision and goes after payment — Baymard's 66%.
+
+                It adds an ordinary basket line. `resolveLines` re-reads and
+                re-prices it exactly like every other line, and `attributeBumps`
+                decides server-side whether it counts as a bump, so nothing about
+                this control is trusted.
+              */}
+              {cart ? (
+                <OrderBump
+                  shopId={shopId}
+                  productIds={items.map((line) => line.productId)}
+                  currency={currency}
+                  locale={locale}
+                  t={t}
+                  onAdd={(bump) => {
+                    cart.add({
+                      productId: bump.productId,
+                      variantId: null,
+                      quantity: 1,
+                      title: bump.title,
+                      label: "",
+                      kind: "physical",
+                      /*
+                       * A cache for the drawer's first paint, like every other
+                       * line's. The server re-reads the price before anything is
+                       * quoted, and the next `previewOrder` replaces this number
+                       * with the seller's own.
+                       */
+                      unitPriceCents: bump.priceCents,
+                      imageUrl: bump.imageUrl,
+                    });
+                  }}
+                />
+              ) : null}
 
               <dl className="surface-border space-y-1.5 border-t pt-3 text-sm">
                 <div className="flex justify-between">

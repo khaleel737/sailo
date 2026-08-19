@@ -41,6 +41,7 @@ import { downloadUrl, newDownloadToken, releasesImmediately } from "@/lib/downlo
 import { resolveDigitalDelivery } from "@sailo/commerce/orders/server";
 import { eventSalesOpen, ticketValues } from "@sailo/commerce/ticketing";
 import { preorderRoom } from "@sailo/commerce/catalog";
+import { attributeBumps } from "@sailo/commerce/orders/server";
 import { preorderExpectedAt } from "@sailo/core/preorders";
 import { confirmBuyerByEmail } from "@sailo/workflows/orders";
 import { notifySellerOfOrder } from "@sailo/workflows/orders";
@@ -490,7 +491,7 @@ export async function createOrderIntent(
     totalCents: totals.totalCents,
     now,
   }).catch(releasingStock(taken));
-  const { deliversFiles, downloadExpiresAt, downloadLimit } = digital;
+  const { deliversFiles, deliversAccess, downloadExpiresAt, downloadLimit } = digital;
 
   /*
    * Tickets ride the same token and the same release timestamp as files.
@@ -570,7 +571,7 @@ export async function createOrderIntent(
     digital.downloadToken ??
     (sellsTickets || isMembershipOrder ? newDownloadToken() : null);
   const unlockNow =
-    (deliversFiles ? digital.unlockNow : true) &&
+    (deliversFiles || deliversAccess ? digital.unlockNow : true) &&
     (sellsTickets ? eventsUnlockNow : true) &&
     Boolean(downloadToken);
 
@@ -810,6 +811,21 @@ export async function createOrderIntent(
   ]).catch(releasingStock(taken));
 
   const order = firstRow(inserted, "order");
+
+  /*
+   * Which of these lines came from an in-cart bump — spec 08's attribution.
+   *
+   * **Decided server-side, from the offers this shop actually has**, never from
+   * a flag the browser sent: a client saying "this line was a bump" is a client
+   * telling us its own conversion rate, and the spec says so in as many words.
+   *
+   * After the lines exist because it is a fact *about* them — a line counts as
+   * a bump when its product is the offered side of an active `bump` offer whose
+   * source is somewhere else in this same order. Awaited rather than deferred,
+   * because Income reads it and a seller opening their dashboard a second later
+   * should not see a sale that becomes attributed while they watch.
+   */
+  await attributeBumps({ shopId: shop.id, orderId: order.id, now });
 
   /*
    * The appointments, claimed the way the stock was.
@@ -1181,7 +1197,7 @@ export async function createOrderIntent(
         shop,
         orderId: order.id,
         invoice,
-        delivery: { deliversFiles, unlockNow, downloadToken },
+        delivery: { deliversFiles, deliversAccess, unlockNow, downloadToken },
         base,
       }),
     );
@@ -1372,7 +1388,7 @@ export async function createOrderIntent(
     invoiceNumber: invoice?.number ?? null,
     downloadUrl:
       unlockNow && downloadToken ? downloadUrl(downloadToken, base) : null,
-    downloadPending: deliversFiles && !unlockNow,
+    downloadPending: (deliversFiles || deliversAccess) && !unlockNow,
     referral,
     bankDetails:
       method.type === "bank_transfer" ? bankDetailLines(config) : undefined,

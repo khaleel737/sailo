@@ -563,6 +563,21 @@ export const orderItems = pgTable(
     /** unitPrice × quantity, before any order-level discount or tax. */
     subtotalCents: integer("subtotal_cents").default(0).notNull(),
 
+    /**
+     * This line came from an in-cart bump — spec 08, kept exactly as written.
+     *
+     * On the *line* and not the order: a basket holding a mug and the bump
+     * attached to it is one order with two lines, and only one of them came
+     * from the bump. Attributing on the header would credit both, which is the
+     * header-versus-lines shape this repo names as recurring.
+     *
+     * **Set server-side only.** A client flag saying "this was a bump" is a
+     * client telling us its own conversion rate.
+     */
+    viaBump: boolean("via_bump").default(false).notNull(),
+    /** Which offer, so take-rate is per offer rather than per feature — spec 36. */
+    viaOfferId: uuid("via_offer_id"),
+
     // A service books its own slot: two services in one cart are two
     // appointments, not one.
     scheduledFor: timestamp("scheduled_for"),

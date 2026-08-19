@@ -351,6 +351,7 @@ export const cs: Dictionary = {
     members: "Členové",
     legal: "Právní stránky",
     dataRequests: "Žádosti o údaje",
+    testimonials: "Reference",
   },
   notifications: {
     aBuyer: "Kupující",
@@ -532,5 +533,22 @@ export const cs: Dictionary = {
     expected: "Očekáváno {date}",
     noDate: "Datum zatím není — prodejce ho potvrdí",
     refundNote: "Pokud to nikdy neodejde, platí pravidla vracení obchodu {shop}.",
+  },
+  offers: {
+    alsoLike: "Mohlo by se vám líbit",
+    addIt: "Přidat",
+    noThanks: "Ne, děkuji",
+  },
+  testimonial: {
+    title: "Pár slov o {shop}?",
+    body: "Ptají se, protože jste u nich něco koupili. Zabere to minutu a opravdu si to přečtou.",
+    yourRole: "Čemu se věnujete",
+    words: "Co byste řekli?",
+    video: "Nebo video",
+    videoHint: "Odkaz na YouTube nebo Vimeo. Nic jiného tu nefunguje.",
+    send: "Odeslat",
+    thanks: "Děkujeme — obchod se na to podívá.",
+    moderated: "Vybírají si, co dají na svou stránku, a vy můžete kdykoli požádat o odstranění.",
+    wallTitle: "Co říkají lidé",
   },
 };

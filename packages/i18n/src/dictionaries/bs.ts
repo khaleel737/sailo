@@ -310,6 +310,7 @@ export const bs: Dictionary = {
     members: "Članovi",
     legal: "Pravne stranice",
     dataRequests: "Zahtjevi za podatke",
+    testimonials: "Preporuke",
   },
   notifications: {
     aBuyer: "Kupac", title: "Obavještenja", markAllRead: "Označi sve pročitanim",
@@ -482,5 +483,22 @@ export const bs: Dictionary = {
     expected: "Očekuje se {date}",
     noDate: "Datum još nije poznat — prodavač će potvrditi",
     refundNote: "Ako nikad ne bude poslano, vrijedi politika povrata prodavca {shop}.",
+  },
+  offers: {
+    alsoLike: "Moglo bi vam se svidjeti",
+    addIt: "Dodaj",
+    noThanks: "Ne, hvala",
+  },
+  testimonial: {
+    title: "Nekoliko riječi o {shop}?",
+    body: "Pitaju jer ste nešto kupili. Traje minutu, i zaista će pročitati.",
+    yourRole: "Čime se bavite",
+    words: "Šta biste rekli?",
+    video: "Ili video",
+    videoHint: "Link s YouTubea ili Vimea. Ništa drugo ovdje ne radi.",
+    send: "Pošalji",
+    thanks: "Hvala — trgovina će pogledati.",
+    moderated: "Oni biraju šta ide na njihovu stranicu, a vi možete kasnije tražiti da se ukloni.",
+    wallTitle: "Šta ljudi kažu",
   },
 };

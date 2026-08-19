@@ -309,6 +309,7 @@ export const ko: Dictionary = {
     members: "회원",
     legal: "법률 페이지",
     dataRequests: "데이터 요청",
+    testimonials: "고객 후기",
   },
   notifications: {
     aBuyer: "한 구매자", title: "알림", markAllRead: "모두 읽음으로 표시",
@@ -481,5 +482,22 @@ export const ko: Dictionary = {
     expected: "{date} 예정",
     noDate: "아직 날짜가 없습니다 — 판매자가 확정합니다",
     refundNote: "끝내 발송되지 않으면 {shop}의 환불 정책이 적용됩니다.",
+  },
+  offers: {
+    alsoLike: "이런 것도 좋아하실 거예요",
+    addIt: "담기",
+    noThanks: "괜찮아요",
+  },
+  testimonial: {
+    title: "{shop}에 대해 한마디 부탁드려요",
+    body: "구매하신 분들께만 부탁드리고 있어요. 1분이면 되고, 꼭 읽어봅니다.",
+    yourRole: "하시는 일",
+    words: "어떤 말씀이든 좋아요",
+    video: "또는 영상으로",
+    videoHint: "YouTube나 Vimeo 링크만 됩니다.",
+    send: "보내기",
+    thanks: "감사합니다 — 상점에서 확인할 거예요.",
+    moderated: "페이지에 올릴지는 상점이 정하고, 나중에 삭제를 요청할 수도 있어요.",
+    wallTitle: "고객들의 이야기",
   },
 };

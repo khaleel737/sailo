@@ -391,6 +391,7 @@ export const ja: Dictionary = {
     members: "メンバー",
     legal: "法務ページ",
     dataRequests: "データ請求",
+    testimonials: "お客さまの声",
   },
   notifications: {
     aBuyer: "購入者",
@@ -573,5 +574,22 @@ export const ja: Dictionary = {
     expected: "{date} 頃の予定",
     noDate: "日付は未定です — 出品者が確定します",
     refundNote: "万一発送されない場合は、{shop} の返金ポリシーが適用されます。",
+  },
+  offers: {
+    alsoLike: "こちらもおすすめ",
+    addIt: "追加する",
+    noThanks: "結構です",
+  },
+  testimonial: {
+    title: "{shop} について一言いただけますか？",
+    body: "ご購入いただいた方にお願いしています。1分ほどで、必ず目を通します。",
+    yourRole: "ご職業",
+    words: "どんなことでも",
+    video: "または動画で",
+    videoHint: "YouTube か Vimeo のリンクを。ほかは使えません。",
+    send: "送信",
+    thanks: "ありがとうございます。ショップが確認します。",
+    moderated: "掲載するかどうかはショップが決めます。あとから削除を頼むこともできます。",
+    wallTitle: "お客さまの声",
   },
 };

@@ -20,3 +20,9 @@ export * from "./pricing-models";
  * them can refuse an order.
  */
 export * from "./preorders";
+/**
+ * `offers` is whether a companion product may be put in front of this buyer —
+ * specs 36 and 08. It decides eligibility and is deliberately unable to price
+ * anything: a cross-sell adds no pricing trust at all.
+ */
+export * from "./offers";

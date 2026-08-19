@@ -351,6 +351,7 @@ export const hu: Dictionary = {
     members: "Tagok",
     legal: "Jogi oldalak",
     dataRequests: "Adatkérelmek",
+    testimonials: "Vélemények",
   },
   notifications: {
     aBuyer: "Egy vásárló",
@@ -532,5 +533,22 @@ export const hu: Dictionary = {
     expected: "Várható: {date}",
     noDate: "Még nincs dátum — az eladó megerősíti",
     refundNote: "Ha soha nem indul útnak, a(z) {shop} visszatérítési szabályzata érvényes.",
+  },
+  offers: {
+    alsoLike: "Ez is tetszhet",
+    addIt: "Hozzáadom",
+    noThanks: "Köszönöm, nem",
+  },
+  testimonial: {
+    title: "Néhány szót a(z) {shop} boltról?",
+    body: "Azért kérdeznek, mert vásároltál náluk. Egy percbe telik, és el is olvassák.",
+    yourRole: "Mivel foglalkozol",
+    words: "Mit mondanál?",
+    video: "Vagy egy videó",
+    videoHint: "YouTube- vagy Vimeo-link. Más itt nem működik.",
+    send: "Küldés",
+    thanks: "Köszönjük — a bolt megnézi.",
+    moderated: "Ők döntik el, mi kerül az oldalukra, és később kérheted az eltávolítását.",
+    wallTitle: "Mit mondanak mások",
   },
 };

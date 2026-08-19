@@ -390,6 +390,7 @@ export const zh: Dictionary = {
     members: "会员",
     legal: "法律页面",
     dataRequests: "数据请求",
+    testimonials: "客户评价",
   },
   notifications: {
     aBuyer: "买家",
@@ -572,5 +573,22 @@ export const zh: Dictionary = {
     expected: "预计 {date}",
     noDate: "暂无日期——卖家会确认",
     refundNote: "如果最终没有发货，适用 {shop} 的退款政策。",
+  },
+  offers: {
+    alsoLike: "你可能还喜欢",
+    addIt: "加入",
+    noThanks: "不用了",
+  },
+  testimonial: {
+    title: "说几句关于 {shop} 的话？",
+    body: "因为你在这里买过东西，所以想问问。一分钟就好，他们都会看。",
+    yourRole: "你做什么的",
+    words: "你想说点什么？",
+    video: "或者一段视频",
+    videoHint: "YouTube 或 Vimeo 的链接，其他的这里用不了。",
+    send: "发送",
+    thanks: "谢谢——店家会看的。",
+    moderated: "放不放在页面上由他们决定，之后你也可以要求撤下。",
+    wallTitle: "大家怎么说",
   },
 };

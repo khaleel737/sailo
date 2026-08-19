@@ -206,6 +206,20 @@ export const en = {
     refundNote: "If it never ships, {shop}'s refund policy applies.",
   },
 
+  /**
+   * A companion product, offered after the receipt — spec 36.
+   *
+   * Its own section rather than keys in `checkout` or `cart`, for the same
+   * mechanical reason `pricing` and `stock` above give: both are protected money
+   * sections a filler may not write into, and a storefront hole is a compile
+   * error nothing can close.
+   */
+  offers: {
+    alsoLike: "You might also like",
+    addIt: "Add it",
+    noThanks: "No thanks",
+  },
+
   checkout: {
     failedSafe: "Something went wrong. You haven't been charged — please try again.",
     failedUnsure: "Something went wrong. Your order may have gone through — check your email before trying again.",
@@ -336,6 +350,25 @@ export const en = {
     codeLabel: "Your access details",
     open: "Open",
     visitShop: "Visit {shop}",
+  },
+
+  /*
+   * A licence key, and what it is good for — spec 48.
+   *
+   * Its own section rather than four more keys inside `download`, and the
+   * reason is the glossary rather than tidiness: `download` is a protected
+   * money section, so nothing may be machine-translated into it. These strings
+   * are not money — they are the delivery labels on a credential, the same
+   * kind of thing `tickets` holds and for the same reader — so they belong
+   * where a filler can reach them. Nothing here names a price, a refund or a
+   * charge, and nothing here should ever start to.
+   */
+  license: {
+    title: "Your licence key",
+    /** `{count}` is the seat count, not how many are left. */
+    activations: "Works on up to {count} machines",
+    unlimited: "Works on any number of machines",
+    expires: "Valid until {date}",
   },
 
   /*
@@ -720,6 +753,8 @@ export const en = {
     legal: "Legal pages",
     /** Spec 52 — the statutory queue. Never abbreviated: "DSARs" is jargon. */
     dataRequests: "Data requests",
+    /** Spec 35. Beside Reviews, because both are queues somebody moderates. */
+    testimonials: "Testimonials",
   },
 
   notifications: {
@@ -886,6 +921,26 @@ export const en = {
     thanksNoFile: "Thanks! {shop} has your details.",
     answerRequired: "Please answer: {question}",
     privacy: "Your details go to this shop only, and you can ask them to delete them at any time.",
+  },
+
+  /*
+   * Spec 35 — the page somebody the seller asked writes a testimonial on.
+   *
+   * The embed and the storefront strip carry no copy of their own: they render
+   * what people wrote, and a heading there is the seller's `headline` rather
+   * than a translated string. So this section is only the invitation page.
+   */
+  testimonial: {
+    title: "A few words for {shop}?",
+    body: "They asked because you bought something. It takes a minute, and they'll read it.",
+    yourRole: "What you do",
+    words: "What would you say?",
+    video: "Or a video",
+    videoHint: "A YouTube or Vimeo link. Nothing else works here.",
+    send: "Send it",
+    thanks: "Thank you — the shop will take a look.",
+    moderated: "They choose what goes on their page, and you can ask them to remove it later.",
+    wallTitle: "What people say",
   },
 
 } as const;

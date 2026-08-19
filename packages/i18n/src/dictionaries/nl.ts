@@ -357,6 +357,7 @@ export const nl: Dictionary = {
     members: "Leden",
     legal: "Juridische pagina's",
     dataRequests: "Gegevensverzoeken",
+    testimonials: "Klantverhalen",
   },
   notifications: {
     aBuyer: "Een koper",
@@ -539,5 +540,22 @@ export const nl: Dictionary = {
     expected: "Verwacht op {date}",
     noDate: "Nog geen datum — de verkoper bevestigt",
     refundNote: "Als het nooit wordt verstuurd, geldt het retourbeleid van {shop}.",
+  },
+  offers: {
+    alsoLike: "Dit vind je misschien ook leuk",
+    addIt: "Toevoegen",
+    noThanks: "Nee, bedankt",
+  },
+  testimonial: {
+    title: "Een paar woorden over {shop}?",
+    body: "Ze vragen het omdat je iets hebt gekocht. Het kost een minuut, en ze lezen het echt.",
+    yourRole: "Wat je doet",
+    words: "Wat zou je zeggen?",
+    video: "Of een video",
+    videoHint: "Een link van YouTube of Vimeo. Iets anders werkt hier niet.",
+    send: "Versturen",
+    thanks: "Bedankt — de shop kijkt ernaar.",
+    moderated: "Zij bepalen wat er op hun pagina komt, en je kunt later vragen het weg te halen.",
+    wallTitle: "Wat mensen zeggen",
   },
 };

@@ -33,6 +33,7 @@ import type {
   automationRuns,
   automationSteps,
   automations,
+  integrationApps,
 } from "./automations";
 import type {
   newsletterSubscribers,
@@ -41,6 +42,8 @@ import type {
 import type { staffActions, visitDaily, visits } from "./analytics";
 import type {
   creatorReferrals,
+  offerEvents,
+  offers,
   partnerPayouts,
   partners,
   referralEarnings,
@@ -53,15 +56,17 @@ import type { user } from "./auth";
 
 export type Shop = typeof shops.$inferSelect;
 
+/* Flows — spec 30. `Automation` is shared with spec 31's scenarios; `kind`
+   tells them apart, and one runner serves both. */
 /** One checkout a buyer opened — spec 32. */
 export type CheckoutSession = typeof checkoutSessions.$inferSelect;
 
-/* Flows — spec 30. `Automation` is shared with spec 31's scenarios; `kind`
-   tells them apart, and one runner serves both. */
 export type Automation = typeof automations.$inferSelect;
 export type AutomationEmail = typeof automationEmails.$inferSelect;
 export type AutomationRun = typeof automationRuns.$inferSelect;
 export type AutomationStep = typeof automationSteps.$inferSelect;
+/** A place a scenario can send something — spec 31. */
+export type IntegrationApp = typeof integrationApps.$inferSelect;
 /** One of a seller's five hosted documents — spec 41. */
 export type ShopPage = typeof shopPages.$inferSelect;
 /** A buyer's subject access, erasure or portability request — spec 52. */
@@ -84,6 +89,9 @@ export type OrderItem = typeof orderItems.$inferSelect;
 export type Shipment = typeof shipments.$inferSelect;
 /** Somebody waiting for one variant to come back — spec 33. */
 export type StockRequest = typeof stockRequests.$inferSelect;
+/** A companion product, in-cart or after payment — specs 08 and 36. */
+export type Offer = typeof offers.$inferSelect;
+export type OfferEvent = typeof offerEvents.$inferSelect;
 export type ShipmentItem = typeof shipmentItems.$inferSelect;
 export type Ticket = typeof tickets.$inferSelect;
 export type DoorPass = typeof doorPasses.$inferSelect;

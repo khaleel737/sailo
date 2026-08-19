@@ -312,6 +312,7 @@ export const sq: Dictionary = {
     members: "Anëtarët",
     legal: "Faqet ligjore",
     dataRequests: "Kërkesat për të dhëna",
+    testimonials: "Dëshmi",
   },
   notifications: {
     aBuyer: "Një blerës", title: "Njoftime", markAllRead: "Shëno të gjitha si të lexuara",
@@ -484,5 +485,22 @@ export const sq: Dictionary = {
     expected: "Pritet më {date}",
     noDate: "Ende pa datë — shitësi do ta konfirmojë",
     refundNote: "Nëse nuk dërgohet kurrë, zbatohet politika e rimbursimit e {shop}.",
+  },
+  offers: {
+    alsoLike: "Mund t'ju pëlqejë edhe",
+    addIt: "Shtoje",
+    noThanks: "Jo, faleminderit",
+  },
+  testimonial: {
+    title: "Ca fjalë për {shop}?",
+    body: "Të pyesin sepse bleve diçka. Merr një minutë, dhe vërtet i lexojnë.",
+    yourRole: "Me çfarë merresh",
+    words: "Çfarë do të thoshe?",
+    video: "Ose një video",
+    videoHint: "Një link nga YouTube ose Vimeo. Asgjë tjetër nuk funksionon këtu.",
+    send: "Dërgoje",
+    thanks: "Faleminderit — dyqani do ta shohë.",
+    moderated: "Ata zgjedhin çfarë shkon në faqen e tyre, dhe ti mund të kërkosh ta heqin më vonë.",
+    wallTitle: "Çfarë thonë njerëzit",
   },
 };

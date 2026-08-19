@@ -37,6 +37,30 @@ export const shops = pgTable(
     theme: text("theme").default("light").notNull(), // light | dark
     layout: text("layout").default("grid").notNull(), // grid | list
 
+    /* ----------------------------------------------------------------------
+       The thank-you page — spec 36
+
+       Fixed copy in 35 locales until now. What it gains is a headline, a body,
+       and an optional redirect.
+    ---------------------------------------------------------------------- */
+    thankYouHeadline: text("thank_you_headline"),
+    /** Markdown, through the existing pipeline. Null keeps the default copy. */
+    thankYouBody: text("thank_you_body"),
+    /**
+     * Where the buyer goes afterwards, if the seller wants them to go anywhere.
+     *
+     * **Opt-in and never default, and the receipt renders first.** A redirect
+     * that fires before the buyer has their download link is a lost order and a
+     * support ticket — the same reasoning that puts cross-sells after payment
+     * rather than during it.
+     */
+    thankYouRedirectUrl: text("thank_you_redirect_url"),
+    /**
+     * Seconds to wait. Null or zero is **no redirect however the URL is set**,
+     * so clearing the delay switches it off without losing the address.
+     */
+    thankYouRedirectDelay: integer("thank_you_redirect_delay"),
+
     // Contact / ordering
     currency: text("currency").default("USD").notNull(),
 
@@ -589,6 +613,38 @@ export const shops = pgTable(
      * ever, which is what makes the partial index on it tiny.
      */
     filesSweptAt: timestamp("files_swept_at"),
+
+    /**
+     * The plan this shop was on before a platform chargeback held the downgrade.
+     *
+     * Spec 46: contesting and downgrading are not exclusive. The existing
+     * downgrade on a *lost* platform dispute is correct and keeps working; what
+     * changes is that it waits for the case to close where the deadline allows,
+     * and a win reinstates. Without this column "reinstate" would put the shop
+     * back on whatever the code guessed rather than what they were paying for.
+     *
+     * Null except while a platform dispute is open against this shop.
+     */
+    planBeforeDispute: text("plan_before_dispute"),
+
+    /**
+     * When this shop stopped being allowed to pay Sailo by card.
+     *
+     * A second platform chargeback from one customer is not an accident, and
+     * re-subscribing by card after one is how the same $64 is lost again. This
+     * is a normal risk control and deliberately the *narrow* one: the shop keeps
+     * trading, keeps taking card payments from its own buyers, keeps its
+     * storefront. All that closes is the rail it pays *us* on. Same graded shape
+     * as `payoutsPausedAt` beside `suspendedAt` — the reversible move that a
+     * suspension is not.
+     *
+     * Nothing else is offered in its place, which is the honest position: a
+     * customer who has charged back twice is one Sailo does not want a recurring
+     * card mandate with.
+     */
+    cardBillingBlockedAt: timestamp("card_billing_blocked_at"),
+    /** The figures that tripped it, so the next person can judge it. */
+    cardBillingBlockedReason: text("card_billing_blocked_reason"),
 
     /*
      * This seller's own refer-a-creator code — the `/r/<code>` link they

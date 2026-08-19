@@ -8,6 +8,8 @@ import type { OrderIntentResult } from "@sailo/commerce/orders";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
 import { ReferAndEarn } from "./refer-and-earn";
+import { CrossSells } from "./cross-sells";
+import { useCart } from "./cart-provider";
 
 /**
  * What the buyer sees once the order exists.
@@ -33,6 +35,7 @@ export function Confirmation({
   t: Dictionary;
   onClose: () => void;
 }) {
+  const locale = useCart()?.locale;
   const [reference, setReference] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [pending, setPending] = useState(false);
@@ -289,6 +292,20 @@ export function Confirmation({
       {result.referral ? (
         <ReferAndEarn referral={result.referral} shopName={shopName} t={t} />
       ) : null}
+
+      {/*
+        The cross-sells — spec 36, and their position on this screen is the
+        feature.
+
+        Below everything the buyer actually paid for: the order, the files, the
+        invoice, the payment instructions. Baymard found 66% of shoppers made to
+        pass a cross-sell *before* completing a transaction reported extreme
+        frustration, and the corollary is that the receipt has to be finished
+        before an offer starts. It loads its own data in an effect, so a slow or
+        failed offer query leaves a buyer looking at their order rather than at
+        a spinner.
+      */}
+      <CrossSells shopId={shopId} orderId={result.orderId} t={t} locale={locale} />
 
       {contactEmail ? (
         <p className="text-muted mt-3 text-center text-xs">

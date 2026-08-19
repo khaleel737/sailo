@@ -248,6 +248,61 @@ export const adminEn = {
   },
 
   products: {
+  /* ---- Specs 08 and 36: bumps and cross-sells --------------------------- */
+    /*
+     * Here rather than in an `offers` section of their own, for the third time
+     * in this wave and the same mechanical reason: a *new* admin section has to
+     * exist in all thirty-five locale files before the coverage test passes, and
+     * those files are never hand-edited. New keys inside an existing section
+     * render in English until a filler writes them, which is ordinary admin debt.
+     */
+    offersTitle: "Offers",
+    offersDescription:
+      "A companion product, in the cart or after they pay. Both are re-priced by the server like any other line.",
+    offersLocked: "Order bumps and cross-sells are on {plan}.",
+    offersEmpty: "No offers yet. Add one below.",
+    offerUntitled: "Untitled offer",
+    offerAdd: "Add offer",
+    offerActive: "Live",
+
+    offerPlacement: "Where it appears",
+    offerPlacementBump: "In the cart",
+    offerPlacementCrossSell: "After they pay",
+    /* The difference is not obvious from the label, and it is the whole design
+       decision — Baymard's 66% is why the second one exists. */
+    offerBumpHint:
+      "One tap, above the pay button. Adds a normal line to the basket, priced by the server.",
+    offerCrossSellHint:
+      "On the thank-you page, after the receipt. Never blocks the order — 66% of shoppers made to pass an offer before paying report extreme frustration.",
+
+    offerSourceProduct: "Shown with",
+    offerSourceProductHint: "Leave blank to offer it alongside everything you sell.",
+    offerAnyProduct: "Any product",
+    offerProduct: "Offer this",
+    offerPickProduct: "Choose a product",
+
+    offerHeadline: "Headline",
+    offerHeadlineHint: "Blank uses the product's own name.",
+    offerBody: "A line about it",
+    offerPrice: "Price for this offer ({currency})",
+    offerPriceHint: "Blank sells it at its usual price.",
+    offerButtonLabel: "Button",
+    offerDisplay: "How it looks",
+    offerDisplayCard: "Card",
+    offerDisplayCompact: "Compact",
+    offerDisplayTimer: "With a countdown",
+
+    offerValidFrom: "Starts",
+    offerValidUntil: "Ends",
+    /* Checked again when the buyer presses the button, not only when the page
+       drew it — a page can sit open for an hour. */
+    offerWindowHint: "Checked again when they press the button. Times are {zone}.",
+
+    /* No rate at all where nothing has been shown: "0%" beside an offer nobody
+       has seen says it is failing, and the truth is that it has not run. */
+    offerTakeRate: "{rate}% take it ({taken} of {shown})",
+    offerNotShownYet: "Not shown yet",
+
     /* ---- Spec 33: who is waiting for something to come back -------------- */
     /*
      * Here rather than in a `waiting` section of their own, for the mechanical
@@ -857,6 +912,16 @@ export const adminEn = {
      * asserting it — the evidence pack prints the source, and a tick shown as
      * though a carrier signed for it would be a false claim to a bank.
      */
+    /*
+     * Spec 45. On every order, not only a disputed one: "always ready" means a
+     * seller can find the gap while it is still fixable, and a pack full of
+     * "not on record" is the most useful thing this feature ever prints.
+     *
+     * In `orders`, which `glossary.ts` protects from the machine filler — this
+     * is a money surface and a chargeback is argued from it, so the translation
+     * waits for a human rather than being written by a model.
+     */
+    evidencePack: "Evidence pack",
     markDelivered: "Mark delivered",
     delivered: "Delivered",
     deliveredBySeller: "You marked this delivered",
@@ -2442,6 +2507,71 @@ export const adminEn = {
       "{count} orders in this period were refunded. Their tax is left out of the total above, because Sailo stores what was charged and not how a partial refund split it.",
     totalNet: "Net",
     totalTax: "Tax",
+  },
+
+  /**
+   * Spec 35 — the moderation queue, the walls, and asking somebody.
+   *
+   * "Testimonials" and not "wall of love", which is the reference product's
+   * name for it: a seller searching their own admin types the ordinary word.
+   * The *wall* keeps its name because that is what the thing on a page is.
+   */
+  testimonials: {
+    title: "Testimonials",
+    description: "What people say about you — collected, chosen by you, and shown where it helps.",
+    notReviews:
+      "Different from Reviews: a review is about one product and carries a rating. A testimonial is about you, and goes on your storefront, in the basket, and on any site you run.",
+    locked: "Testimonials are on {plan}.",
+
+    queueTitle: "Waiting for you",
+    queueEmpty: "Nothing yet. Ask a few past customers below.",
+    approve: "Show it",
+    unapprove: "Hide it",
+    feature: "Pin to the top",
+    unfeature: "Unpin",
+    approved: "Showing",
+    pending: "Hidden",
+    featured: "Pinned",
+    sourceRequested: "Asked for",
+    sourceManual: "Typed in",
+    sourceImported: "Brought over",
+    onWall: "On",
+    noWall: "Not on a wall",
+
+    addTitle: "Add one yourself",
+    addBody: "Something somebody emailed you, or a quote from another site. It goes up straight away — you are the one vouching for it.",
+    authorName: "Their name",
+    authorRole: "What they do",
+    words: "What they said",
+    videoUrl: "Video link",
+    videoUrlHint: "YouTube or Vimeo only. Anything else is refused rather than quietly ignored.",
+    avatarUrl: "Photo",
+    add: "Add",
+
+    askTitle: "Ask past customers",
+    askBody: "One email each, with a private link. It counts against your daily sending limit, and anybody who unsubscribed is skipped.",
+    askCta: "Send the ask",
+    askEmpty: "No customers with an email address yet.",
+
+    wallsTitle: "Walls",
+    wallsBody: "A wall is a selection you can put somewhere. One goes under your products; more than one is for the sites you run elsewhere.",
+    wallName: "Name",
+    wallHeadline: "Heading",
+    wallLayout: "Layout",
+    layoutGrid: "Grid",
+    layoutCarousel: "Row that scrolls",
+    wallPublished: "Live",
+    newWall: "New wall",
+    noWalls: "No walls yet.",
+
+    embedTitle: "Put it on your own site",
+    embedBody: "Paste this into any page. It carries no scripts and reads no cookies.",
+    embedLocked: "Embedding on your own site is on {plan}.",
+    rotate: "New address",
+    rotateHint: "Stops the old snippet working. The only way to take a wall off a site you no longer control.",
+    unpublishedNote: "Publish the wall before you paste it anywhere — an unpublished one shows nothing.",
+    deleteWall: "Delete wall",
+    deleteWallHint: "The testimonials stay; only the arrangement goes.",
   },
 
 } as const;

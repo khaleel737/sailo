@@ -390,6 +390,7 @@ export const ar: Dictionary = {
     members: "الأعضاء",
     legal: "الصفحات القانونية",
     dataRequests: "طلبات البيانات",
+    testimonials: "الشهادات",
   },
   notifications: {
     aBuyer: "مشترٍ",
@@ -572,5 +573,22 @@ export const ar: Dictionary = {
     expected: "متوقع في {date}",
     noDate: "لا يوجد تاريخ بعد — سيؤكده البائع",
     refundNote: "إذا لم يُشحن أبدًا، تُطبَّق سياسة الاسترداد لدى {shop}.",
+  },
+  offers: {
+    alsoLike: "قد يعجبك أيضًا",
+    addIt: "أضِفه",
+    noThanks: "لا، شكرًا",
+  },
+  testimonial: {
+    title: "كلمات قليلة عن {shop}؟",
+    body: "طلبوا منك ذلك لأنك اشتريت شيئاً. لن يستغرق الأمر أكثر من دقيقة، وسيقرأونه.",
+    yourRole: "ما الذي تعمل به",
+    words: "ماذا تودّ أن تقول؟",
+    video: "أو مقطع فيديو",
+    videoHint: "رابط من YouTube أو Vimeo. لا شيء غير ذلك يعمل هنا.",
+    send: "أرسِله",
+    thanks: "شكراً لك — سيطّلع عليه المتجر.",
+    moderated: "هم يختارون ما يظهر على صفحتهم، ويمكنك أن تطلب إزالته لاحقاً.",
+    wallTitle: "ماذا يقول الناس",
   },
 };

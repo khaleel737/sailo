@@ -355,6 +355,7 @@ export const pl: Dictionary = {
     members: "Członkowie",
     legal: "Strony prawne",
     dataRequests: "Wnioski o dane",
+    testimonials: "Opinie",
   },
   notifications: {
     aBuyer: "Kupujący",
@@ -537,5 +538,22 @@ export const pl: Dictionary = {
     expected: "Spodziewane {date}",
     noDate: "Brak daty — sprzedawca ją potwierdzi",
     refundNote: "Jeśli nigdy nie zostanie wysłane, obowiązują zasady zwrotów sklepu {shop}.",
+  },
+  offers: {
+    alsoLike: "Może Ci się też spodobać",
+    addIt: "Dodaj",
+    noThanks: "Nie, dziękuję",
+  },
+  testimonial: {
+    title: "Kilka słów o {shop}?",
+    body: "Pytają, bo coś u nich kupiłeś. Zajmie minutę, a naprawdę to czytają.",
+    yourRole: "Czym się zajmujesz",
+    words: "Co byś powiedział?",
+    video: "Albo wideo",
+    videoHint: "Link z YouTube albo Vimeo. Nic innego tu nie zadziała.",
+    send: "Wyślij",
+    thanks: "Dziękujemy — sklep to przejrzy.",
+    moderated: "To oni wybierają, co trafi na ich stronę, a Ty możesz później poprosić o usunięcie.",
+    wallTitle: "Co mówią inni",
   },
 };

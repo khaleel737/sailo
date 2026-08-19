@@ -350,6 +350,7 @@ export const fi: Dictionary = {
     members: "Jäsenet",
     legal: "Lakisivut",
     dataRequests: "Tietopyynnöt",
+    testimonials: "Suositukset",
   },
   notifications: {
     aBuyer: "Ostaja",
@@ -531,5 +532,22 @@ export const fi: Dictionary = {
     expected: "Odotettavissa {date}",
     noDate: "Ei vielä päivämäärää — myyjä vahvistaa sen",
     refundNote: "Jos sitä ei koskaan lähetetä, sovelletaan myyjän {shop} palautuskäytäntöä.",
+  },
+  offers: {
+    alsoLike: "Saatat pitää myös",
+    addIt: "Lisää",
+    noThanks: "Ei kiitos",
+  },
+  testimonial: {
+    title: "Muutama sana kaupasta {shop}?",
+    body: "He kysyvät, koska ostit jotain. Vie minuutin, ja he lukevat sen.",
+    yourRole: "Mitä teet",
+    words: "Mitä sanoisit?",
+    video: "Tai video",
+    videoHint: "YouTube- tai Vimeo-linkki. Muu ei toimi täällä.",
+    send: "Lähetä",
+    thanks: "Kiitos — kauppa katsoo sen läpi.",
+    moderated: "He valitsevat, mitä sivulleen laittavat, ja voit myöhemmin pyytää poistamaan sen.",
+    wallTitle: "Mitä ihmiset sanovat",
   },
 };

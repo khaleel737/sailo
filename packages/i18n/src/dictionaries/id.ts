@@ -309,6 +309,7 @@ export const id: Dictionary = {
     members: "Anggota",
     legal: "Halaman hukum",
     dataRequests: "Permintaan data",
+    testimonials: "Testimoni",
   },
   notifications: {
     aBuyer: "Seorang pembeli", title: "Notifikasi", markAllRead: "Tandai semua sudah dibaca",
@@ -481,5 +482,22 @@ export const id: Dictionary = {
     expected: "Diperkirakan {date}",
     noDate: "Belum ada tanggal — penjual akan mengonfirmasi",
     refundNote: "Jika tidak pernah dikirim, kebijakan pengembalian dana {shop} berlaku.",
+  },
+  offers: {
+    alsoLike: "Mungkin kamu juga suka",
+    addIt: "Tambahkan",
+    noThanks: "Tidak, terima kasih",
+  },
+  testimonial: {
+    title: "Beberapa kata tentang {shop}?",
+    body: "Mereka bertanya karena kamu pernah membeli sesuatu. Hanya sebentar, dan mereka membacanya.",
+    yourRole: "Apa pekerjaanmu",
+    words: "Apa yang ingin kamu katakan?",
+    video: "Atau sebuah video",
+    videoHint: "Tautan YouTube atau Vimeo. Selain itu tidak berfungsi di sini.",
+    send: "Kirim",
+    thanks: "Terima kasih — tokonya akan melihatnya.",
+    moderated: "Mereka yang memilih apa yang tampil di halaman mereka, dan kamu bisa minta dihapus nanti.",
+    wallTitle: "Kata mereka",
   },
 };

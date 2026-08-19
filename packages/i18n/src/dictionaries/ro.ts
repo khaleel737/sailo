@@ -350,6 +350,7 @@ export const ro: Dictionary = {
     members: "Membri",
     legal: "Pagini juridice",
     dataRequests: "Cereri privind datele",
+    testimonials: "Testimoniale",
   },
   notifications: {
     aBuyer: "Un cumpărător",
@@ -531,5 +532,22 @@ export const ro: Dictionary = {
     expected: "Așteptat pe {date}",
     noDate: "Încă fără dată — vânzătorul va confirma",
     refundNote: "Dacă nu este expediat niciodată, se aplică politica de rambursare a {shop}.",
+  },
+  offers: {
+    alsoLike: "S-ar putea să îți placă și",
+    addIt: "Adaugă",
+    noThanks: "Nu, mulțumesc",
+  },
+  testimonial: {
+    title: "Câteva cuvinte despre {shop}?",
+    body: "Te întreabă pentru că ai cumpărat ceva. Durează un minut și chiar le citesc.",
+    yourRole: "Cu ce te ocupi",
+    words: "Ce ai spune?",
+    video: "Sau un videoclip",
+    videoHint: "Un link de pe YouTube sau Vimeo. Altceva nu merge aici.",
+    send: "Trimite",
+    thanks: "Mulțumim — magazinul se va uita peste el.",
+    moderated: "Ei aleg ce pun pe pagina lor, iar tu poți cere să fie scos mai târziu.",
+    wallTitle: "Ce spun oamenii",
   },
 };

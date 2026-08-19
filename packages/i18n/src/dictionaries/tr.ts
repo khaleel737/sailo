@@ -355,6 +355,7 @@ export const tr: Dictionary = {
     members: "Üyeler",
     legal: "Hukuki sayfalar",
     dataRequests: "Veri talepleri",
+    testimonials: "Referanslar",
   },
   notifications: {
     aBuyer: "Bir alıcı",
@@ -536,5 +537,22 @@ export const tr: Dictionary = {
     expected: "{date} tarihinde bekleniyor",
     noDate: "Henüz tarih yok — satıcı doğrulayacak",
     refundNote: "Hiç gönderilmezse {shop} mağazasının iade politikası geçerlidir.",
+  },
+  offers: {
+    alsoLike: "Bunu da beğenebilirsin",
+    addIt: "Ekle",
+    noThanks: "Hayır, teşekkürler",
+  },
+  testimonial: {
+    title: "{shop} hakkında birkaç kelime?",
+    body: "Bir şey satın aldığın için soruyorlar. Bir dakika sürer, ve gerçekten okuyorlar.",
+    yourRole: "Ne iş yapıyorsun",
+    words: "Ne söylerdin?",
+    video: "Ya da bir video",
+    videoHint: "YouTube veya Vimeo bağlantısı. Burada başkası çalışmıyor.",
+    send: "Gönder",
+    thanks: "Teşekkürler — mağaza bir göz atacak.",
+    moderated: "Sayfalarına ne koyacaklarına onlar karar veriyor, sen de sonradan kaldırmalarını isteyebilirsin.",
+    wallTitle: "İnsanlar ne diyor",
   },
 };

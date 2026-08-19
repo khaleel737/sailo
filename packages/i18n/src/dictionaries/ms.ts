@@ -308,6 +308,7 @@ export const ms: Dictionary = {
     members: "Ahli",
     legal: "Halaman undang-undang",
     dataRequests: "Permintaan data",
+    testimonials: "Testimoni",
   },
   notifications: {
     aBuyer: "Seorang pembeli", title: "Pemberitahuan", markAllRead: "Tandakan semua sudah dibaca",
@@ -480,5 +481,22 @@ export const ms: Dictionary = {
     expected: "Dijangka pada {date}",
     noDate: "Belum ada tarikh — penjual akan mengesahkan",
     refundNote: "Jika ia tidak pernah dihantar, polisi bayaran balik {shop} terpakai.",
+  },
+  offers: {
+    alsoLike: "Anda mungkin juga suka",
+    addIt: "Tambah",
+    noThanks: "Tidak, terima kasih",
+  },
+  testimonial: {
+    title: "Beberapa patah kata tentang {shop}?",
+    body: "Mereka bertanya kerana anda pernah membeli sesuatu. Sekejap sahaja, dan mereka membacanya.",
+    yourRole: "Apa kerja anda",
+    words: "Apa yang ingin anda katakan?",
+    video: "Atau video",
+    videoHint: "Pautan YouTube atau Vimeo. Selain itu tidak berfungsi di sini.",
+    send: "Hantar",
+    thanks: "Terima kasih — kedai akan melihatnya.",
+    moderated: "Merekalah yang memilih apa yang muncul di halaman mereka, dan anda boleh minta ia dibuang kemudian.",
+    wallTitle: "Kata mereka",
   },
 };

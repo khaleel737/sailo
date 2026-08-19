@@ -310,6 +310,7 @@ export const fil: Dictionary = {
     members: "Mga miyembro",
     legal: "Mga legal na pahina",
     dataRequests: "Mga hiling sa datos",
+    testimonials: "Testimonial",
   },
   notifications: {
     aBuyer: "Isang bumibili", title: "Mga abiso", markAllRead: "Markahang nabasa lahat",
@@ -482,5 +483,22 @@ export const fil: Dictionary = {
     expected: "Inaasahan sa {date}",
     noDate: "Wala pang petsa — kokumpirmahin ng nagbebenta",
     refundNote: "Kung hindi ito maipadala, ang refund policy ng {shop} ang masusunod.",
+  },
+  offers: {
+    alsoLike: "Baka magustuhan mo rin",
+    addIt: "Idagdag",
+    noThanks: "Salamat na lang",
+  },
+  testimonial: {
+    title: "Ilang salita tungkol sa {shop}?",
+    body: "Tinatanong ka nila dahil may binili ka. Isang minuto lang, at babasahin nila.",
+    yourRole: "Ano ang ginagawa mo",
+    words: "Ano ang masasabi mo?",
+    video: "O isang video",
+    videoHint: "Link mula sa YouTube o Vimeo. Wala nang iba pang gumagana rito.",
+    send: "Ipadala",
+    thanks: "Salamat — titingnan ito ng tindahan.",
+    moderated: "Sila ang pumipili kung ano ang ilalagay sa page nila, at puwede mong ipatanggal mamaya.",
+    wallTitle: "Ang sinasabi ng iba",
   },
 };
