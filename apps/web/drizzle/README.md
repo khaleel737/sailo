@@ -50,12 +50,11 @@ Every file is safe to re-run *except* for foreign keys and check constraints.
 
 `CREATE TABLE`, `CREATE INDEX`, `CREATE TYPE` and `ADD COLUMN` all carry
 `IF NOT EXISTS` throughout, so applying them twice is a no-op. Postgres has no
-`IF NOT EXISTS` for `ALTER TABLE ... ADD CONSTRAINT`, and five early files add
+`IF NOT EXISTS` for `ALTER TABLE ... ADD CONSTRAINT`, and four early files add
 constraints bare:
 
 | File | Unguarded constraints |
 | --- | --- |
-| `0002_support_tickets.sql` | 1 |
 | `0004_booking_overlap.sql` | 1 |
 | `0006_event_tickets.sql` | 3 |
 | `0012_bookings_and_audience.sql` | 7 |
@@ -78,7 +77,7 @@ EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 ```
 
-The test requires that form for every **new** migration. The five files above
+The test requires that form for every **new** migration. The four files above
 are grandfathered, because they are already applied everywhere that matters and
 rewriting SQL that cannot be tested from here is a worse trade than recording
 the debt. Converting them is safe to do at a keyboard with a scratch database
@@ -97,7 +96,7 @@ Two ways out, when it becomes worth the time:
   a `__drizzle_migrations` table. This is the real fix, and the cost is a
   one-off reconciliation: mark all 22 as applied in every existing environment
   before the first automated run, or it will try to replay them.
-- **Make the whole directory replayable first.** Convert the 13 constraints
+- **Make the whole directory replayable first.** Convert the 12 constraints
   above, and then "apply everything" becomes a safe, boring operation that needs
   no record at all.
 

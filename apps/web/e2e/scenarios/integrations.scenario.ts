@@ -247,7 +247,14 @@ describe("a scenario runs on the flow runner", () => {
       where: eq(automationRuns.automationId, scenarioId),
     });
     expect(run?.status).toBe("waiting");
-    expect(run?.wakeAt!.getTime() - Date.now()).toBeGreaterThan(2.9 * 86_400_000);
+    /*
+     * Asserted, not asserted-away. `run?.wakeAt!` reads as "definitely there"
+     * and is not — the optional chain still yields `undefined`, and the
+     * arithmetic on it is `NaN`, which `toBeGreaterThan` fails with a message
+     * about numbers rather than about a missing row.
+     */
+    expect(run?.wakeAt).toBeInstanceOf(Date);
+    expect(run!.wakeAt!.getTime() - Date.now()).toBeGreaterThan(2.9 * 86_400_000);
 
     // Wound forward, it posts.
     await db

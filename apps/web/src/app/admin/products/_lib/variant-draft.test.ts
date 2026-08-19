@@ -43,6 +43,10 @@ function variant(over: Partial<ProductVariant> = {}): ProductVariant {
     lengthMm: null,
     widthMm: null,
     heightMm: null,
+    /* Spec 33. Null is "no date promised" and "uncapped" — what a variant that
+       has never been preordered means, which is all of them today. */
+    preorderExpectedAt: null,
+    preorderLimit: null,
     position: 0,
     createdAt: new Date(0),
     updatedAt: new Date(0),

@@ -122,6 +122,7 @@ import {
  * every form that names `@/lib/actions/shop` are unchanged.
  */
 import type { ActionState } from "@sailo/core/action-state";
+import { ensureShopOrganization } from "@sailo/auth/organization-for-shop";
 export type { ActionState };
 
 /** Runs format rules then the availability lookup. */

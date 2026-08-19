@@ -238,13 +238,21 @@ WHERE COALESCE(a."staff_id", a."product_id") = COALESCE(b."staff_id", b."product
       && tsrange(b."starts_at", GREATEST(b."ends_at", b."starts_at"), '[)')
   AND (a."created_at", a."id") > (b."created_at", b."id");
 
-ALTER TABLE "booking_claims"
-  ADD CONSTRAINT "booking_claims_no_overlap"
-  EXCLUDE USING gist (
-    (COALESCE("staff_id", "product_id")) WITH =,
-    tsrange("starts_at", GREATEST("ends_at", "starts_at"), '[)') WITH &&
-  )
-  WHERE ("is_exclusive");
+-- Wrapped, like every other constraint added since 0015. The DROP above is
+-- `IF EXISTS`, so a re-run would in fact reach here with nothing in the way —
+-- but `migrations.test.ts` requires the guarded form of every new file rather
+-- than reasoning about each one, and a rule that holds without exceptions is
+-- the reason this directory is replayable at all.
+DO $$ BEGIN
+  ALTER TABLE "booking_claims"
+    ADD CONSTRAINT "booking_claims_no_overlap"
+    EXCLUDE USING gist (
+      (COALESCE("staff_id", "product_id")) WITH =,
+      tsrange("starts_at", GREATEST("ends_at", "starts_at"), '[)') WITH &&
+    )
+    WHERE ("is_exclusive");
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 /*
  * The old exact-match unique index has to go with it.

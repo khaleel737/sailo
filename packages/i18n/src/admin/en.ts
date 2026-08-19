@@ -1527,6 +1527,22 @@ export const adminEn = {
     notifyMembershipPaymentFailed: "Failed renewals",
     notifyMembershipPaymentFailedBody:
       "A renewal payment didn't go through. Stripe retries for a few days and then cancels.",
+    /*
+     * The three switches that existed as events before they existed as rows.
+     *
+     * Each says what the mail is *for* rather than naming the event, because a
+     * seller reading a settings page is deciding whether they want to be
+     * interrupted, not learning our vocabulary.
+     */
+    notifyTaxThreshold: "Approaching a tax threshold",
+    notifyTaxThresholdBody:
+      "When sales into a country get close to the point where you may need to register there. Nobody watches that number until it has been crossed.",
+    notifyLowStock: "Running low",
+    notifyLowStockBody:
+      "When a product drops to the level you set on it. Otherwise the way you find out is a buyer telling you.",
+    notifyLeadCaptured: "Someone left their details",
+    notifyLeadCapturedBody:
+      "When a free product collects an enquiry — a sample request, a quote, a question.",
     notifyProductTips: "Tips & product news",
     notifyProductTipsBody: "Occasional email from Sailo about getting set up and selling more. Never about your orders.",
     taxIdPlaceholder: "GB123456789",

@@ -96,9 +96,28 @@ const files = execSync(
   .split("\n")
   .filter(Boolean);
 
+/**
+ * Strip comments before looking for key reads.
+ *
+ * A comment *about* a key is not a use of one, and reading it as a use fails
+ * this suite in both directions: `a.legal.kinds` was reported dangling because
+ * `legal-pages-screen.tsx` explains in prose why it uses a lookup **instead
+ * of** `a.legal.kinds[kind]`. The fix that suggests itself — reword the comment
+ * — makes the file worse to read in order to satisfy a regex, and the next
+ * person writes the same sentence again.
+ *
+ * The same trap caught `migrations.test.ts`, which counted the words
+ * `ADD CONSTRAINT` inside a comment describing an unguarded one.
+ */
+function withoutComments(source: string): string {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, " ")
+    .replace(/\/\/[^\n]*/g, " ");
+}
+
 const referenced = new Set<string>();
 for (const file of files) {
-  for (const m of readFileSync(file, "utf8").matchAll(
+  for (const m of withoutComments(readFileSync(file, "utf8")).matchAll(
     /(?<![\w.])a\.([a-zA-Z]+)\.([a-zA-Z0-9]+)/g,
   )) {
     referenced.add(`a.${m[1]}.${m[2]}`);

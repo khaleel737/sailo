@@ -84,6 +84,15 @@ export const NOTIFICATION_EVENTS = [
    * knowing their own stockroom.
    */
   "lowStock",
+  /*
+   * A lead arriving on a zero-priced enquiry product — spec 07.
+   *
+   * It was in the schema and in `json-types.ts` and had a real sender in
+   * `packages/workflows/src/leads/notify-seller.ts`, and it was missing from
+   * this array. Absence here does not mean the mail stops: `wantsNotification`
+   * reads absence as *on*, so it sent, and the seller had no switch to stop it.
+   */
+  "leadCaptured",
 ] as const satisfies readonly NotificationEvent[];
 
 /**

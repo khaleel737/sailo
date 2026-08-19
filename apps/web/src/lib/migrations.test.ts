@@ -71,7 +71,15 @@ function reservedNumbers(): Set<string> {
  * here can execute is a worse trade than recording the debt and capping it.
  */
 const GRANDFATHERED_BARE_CONSTRAINTS = [
-  "0002_support_tickets.sql",
+  /*
+   * `0002_support_tickets.sql` used to be on this list and should not have
+   * been. Its constraint is guarded — by an `IF NOT EXISTS (SELECT … FROM
+   * pg_catalog)` inside a `DO` block rather than by `EXCEPTION WHEN
+   * duplicate_object`, which is the older of the two safe forms and arguably
+   * the clearer one. What put it here was the *comment* above it, which
+   * contains the words `ADD CONSTRAINT` while explaining why the guard is
+   * needed. The counter now strips comments, so the file reads as what it is.
+   */
   "0004_booking_overlap.sql",
   "0006_event_tickets.sql",
   "0012_bookings_and_audience.sql",
@@ -80,7 +88,18 @@ const GRANDFATHERED_BARE_CONSTRAINTS = [
 
 /** `ADD CONSTRAINT`s left over once the guarded blocks are removed. */
 function bareConstraintCount(sql: string): number {
-  const unguarded = sql.replace(/DO \$\$[\s\S]*?END\s*\$\$;/g, " ");
+  /*
+   * Comments first, then guarded blocks.
+   *
+   * A `--` line that *describes* an unguarded constraint is not one, and 0046
+   * was failing this check for a sentence explaining why it re-creates the
+   * booking exclusion constraint. Counting prose as SQL sends the next author
+   * hunting for a statement that is not there — and the obvious workaround,
+   * rewording the comment, makes the file worse to read in order to satisfy a
+   * regex.
+   */
+  const withoutComments = sql.replace(/--[^\n]*/g, " ");
+  const unguarded = withoutComments.replace(/DO \$\$[\s\S]*?END\s*\$\$;/g, " ");
   return (unguarded.match(/ADD\s+CONSTRAINT/gi) ?? []).length;
 }
 
@@ -158,13 +177,13 @@ describe("re-running a migration", () => {
     expect(offenders).toEqual(GRANDFATHERED_BARE_CONSTRAINTS);
   });
 
-  it("still has exactly the 13 bare constraints already accounted for", () => {
+  it("still has exactly the 12 bare constraints already accounted for", () => {
     // Pinned so the debt cannot quietly grow inside a file that is already on
     // the list — the count is what the README's table adds up to.
     const total = GRANDFATHERED_BARE_CONSTRAINTS.reduce(
       (sum, name) => sum + bareConstraintCount(readFileSync(join(DIR, name), "utf8")),
       0,
     );
-    expect(total).toBe(13);
+    expect(total).toBe(12);
   });
 });

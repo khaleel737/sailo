@@ -92,6 +92,26 @@ const MAY_NAME_THE_COLUMN = [
   // The double opt-in confirmation: the one path that grants consent to
   // somebody who bought nothing, and only behind a link sent to their address.
   "../../packages/marketing/src/broadcasts/subscribe.ts",
+  /*
+   * List membership — spec 34. **Reads only**, and the read is the interesting
+   * part: a contact who already carries `marketingConsentAt` for this shop skips
+   * the double opt-in on a list that asks for it, because they have already
+   * clicked a link in their own inbox for this seller and asking twice costs a
+   * real join. It grants nothing; a contact without it is admitted `pending`,
+   * and a `pending` member is not a recipient.
+   */
+  "../../packages/marketing/src/contacts/lists.ts",
+  /*
+   * A lead form's opt-in box — spec 07. This one genuinely writes.
+   *
+   * It is on the list rather than refused because it is the same shape as the
+   * checkout's: gated on `shop.askMarketingConsent`, so a crafted request cannot
+   * opt somebody in to a shop whose form never showed the box. The client
+   * composes the body, so a flag nobody was offered is a flag anyone can set —
+   * gating on the shop's own switch means the record can only say what the
+   * visitor was actually asked. Never pre-ticked.
+   */
+  "src/lib/actions/leads.ts",
   // Adding a contact by hand. Writes a literal null.
   "src/lib/actions/clients.ts",
   /*
