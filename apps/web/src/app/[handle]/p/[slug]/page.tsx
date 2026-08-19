@@ -9,6 +9,8 @@ import {
 } from "@/lib/queries";
 import { ProductGallery } from "@/app/[handle]/p/[slug]/_components/product-gallery";
 import { BuyBox } from "@/app/[handle]/p/[slug]/_components/buy-box";
+import { LeadForm } from "@/app/[handle]/p/[slug]/_components/lead-form";
+import { readQuestions } from "@sailo/core/lead-questions";
 import { VariantPhotoProvider } from "@/app/[handle]/p/[slug]/_components/variant-photo";
 import { ShareButton } from "@/app/[handle]/_components/share-button";
 import { CartRegion } from "@/app/[handle]/_components/cart/cart-region";
@@ -45,6 +47,22 @@ import {
   pwywSuggestedCents,
   sellWindowState,
 } from "@sailo/core/pricing-models";
+import {
+  offersStockRequest,
+  preorderExpectedAt,
+  takesPreorders,
+} from "@sailo/core/preorders";
+import { StockRequestForm } from "@/app/[handle]/_components/stock-request-form";
+
+/**
+ * The rails where a phone number is worth collecting — spec 33.
+ *
+ * Sailo never sends to one; the seller does, from their own number, through the
+ * `wa.me` link on their own screen. So the field belongs only where the shop
+ * already talks to buyers that way — offering it on a card-only shop would be
+ * collecting a number nobody will ever use.
+ */
+const CHAT_RAILS = new Set(["whatsapp", "telegram", "instagram", "phone"]);
 
 export async function generateMetadata({
   params,
@@ -332,6 +350,20 @@ export default async function ProductPage({
           ) : null}
 
           <div className="mt-4">
+            {/*
+              A lead product has no buy panel at all — spec 07. Its checkout is
+              a form: no price, no quantity, no basket, no rail, because there
+              is no money. Rendering both and hiding one would leave a `Buy now`
+              in the markup for anything that reads it rather than looks at it.
+            */}
+            {product.kind === "lead" ? (
+              <LeadForm
+                productId={product.id}
+                questions={readQuestions(product.leadQuestions)}
+                askMarketingConsent={shop.askMarketingConsent}
+                t={t}
+              />
+            ) : (
             <BuyBox
               shopId={shop.id}
               shopName={shop.name}
@@ -360,6 +392,15 @@ export default async function ProductPage({
                 isPwyw(product) ? pwywSuggestedCents(product) : 0
               }
               windowState={windowState}
+              /*
+               * Spec 33. The button and the checkout answer from the same
+               * place: `resolveLines` lets a sold-out line through on exactly
+               * this condition, so a button offering a preorder the order would
+               * refuse is not reachable.
+               */
+              preorderEnabled={product.preorderEnabled}
+              preorderExpectedAt={preorderExpectedAt(product)}
+              takesPhone={checkout.methods.some((m) => CHAT_RAILS.has(m.type))}
               service={
                 product.kind === "service"
                   ? {
@@ -393,6 +434,52 @@ export default async function ProductPage({
               compliance={complianceOf(shop)}
               t={t}
             />
+            )}
+
+            {/*
+              The third answer, where "Out of stock" used to be the end of the
+              page — spec 33.
+              
+              A seller's two options today are to hide the product and lose
+              everyone, or leave it reading sold out and lose the buyer who
+              would happily have waited eleven days. Offered wherever a buyer
+              cannot buy right now and might be able to later, and *not* on a
+              preorder — there the answer to "when can I have it" is the button
+              above, not a queue.
+              
+              Still offered on a launch whose window has ended, which is spec
+              43's `hideWhenUnavailable` note in practice: an ended launch is
+              exactly where this belongs, and being told it is coming back is
+              the only thing left to offer somebody who arrived too late.
+            */}
+            {offersStockRequest({
+              sellable,
+              takesPreorders: takesPreorders(product),
+            }) ? (
+              <div className="mt-4">
+                <StockRequestForm
+                  shopId={shop.id}
+                  productId={product.id}
+                  /*
+                   * Null, and that is the honest value on a page that has not
+                   * asked which combination the buyer wants.
+                   *
+                   * The queue is keyed on the variant — "tell me when the blue
+                   * medium is back" is the request — but the picker lives
+                   * inside the buy box, which is a client component, and this
+                   * form sits outside it. A request against the product means
+                   * "tell me when this product is back", which is what a buyer
+                   * who never picked a size actually means; per-combination
+                   * requests come from the buy box's own picker when that is
+                   * wired through.
+                   */
+                  variantId={null}
+                  takesPhone={checkout.methods.some((m) => CHAT_RAILS.has(m.type))}
+                  locale={locale}
+                  t={t}
+                />
+              </div>
+            ) : null}
           </div>
 
           {product.description ? (

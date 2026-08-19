@@ -8,6 +8,7 @@ import {
   resolvedUnitPriceCents,
   sellWindowState,
 } from "@sailo/core/pricing-models";
+import { takesPreorders } from "@sailo/core/preorders";
 import { isMembership, membershipSellable } from "../memberships/memberships";
 import { toStripeAmount } from "@sailo/core/currency";
 import { productAtCurrency, variantAtCurrency } from "@sailo/core/regional";
@@ -194,6 +195,27 @@ export async function resolveLines(
 
   for (const item of wanted) {
     const product = byId.get(item.productId);
+    /*
+     * A lead product is not orderable, and this is the line that makes that
+     * true — spec 07.
+     *
+     * Its checkout is `captureLead`: a form, no order, no invoice number, no
+     * stock. The storefront renders that form instead of a buy panel, but a
+     * server action takes whatever the client sends, so an ordinary basket
+     * payload naming a lead product would otherwise walk it straight through
+     * pricing at zero and out the other side as a £0 sale with an invoice
+     * number claimed from a sequence that is supposed to describe trade.
+     *
+     * Refused here rather than filtered in the rollups, because this is the
+     * one place both the preview and the checkout pass through: an exclusion
+     * added to the revenue queries would be reading for a row that must never
+     * have been written.
+     */
+    if (product?.kind === "lead") {
+      const stop = fail(item, "That one is a form, not something to buy.");
+      if (stop) return stop;
+      continue;
+    }
     if (!product) {
       const stop = fail(item, "Product not available.");
       if (stop) return stop;
@@ -241,7 +263,20 @@ export async function resolveLines(
       }
     }
 
-    if (!isSellable(product, variant)) {
+    /*
+     * Sold out, or a preorder — spec 33.
+     *
+     * The same stock question the catalogue has always answered, with one more
+     * thing to do about a "no". `reserveStock` is deliberately not bypassed and
+     * not consulted twice: the line is let through here, the reservation fails
+     * as it does today, and `createOrderIntent` treats that failure as expected
+     * on a line marked below. That keeps one stock claim in the codebase, and
+     * the existing one is already race-free.
+     *
+     * A product with preorders off behaves exactly as it did.
+     */
+    const preorder = !isSellable(product, variant) && takesPreorders(product);
+    if (!isSellable(product, variant) && !preorder) {
       const stop = fail(item, `${product.title} is sold out.`);
       if (stop) return stop;
       continue;
@@ -468,6 +503,7 @@ export async function resolveLines(
         opts.currency ?? "USD",
       ),
       quantity,
+      preorder,
       /*
        * What one of these weighs, for a rate priced by weight — spec 51.
        *

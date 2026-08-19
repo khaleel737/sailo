@@ -10,6 +10,7 @@ import { interpolate } from "@sailo/i18n";
 import { ChoiceGroup } from "./choice-group";
 import { Toggle } from "./toggle";
 import type { ProductWithRelations } from "./product.types";
+import { localMoment } from "@/app/admin/products/_lib/local-moment";
 
 /**
  * How the price is arrived at, and when the product is on sale — spec 43.
@@ -190,7 +191,7 @@ export function PricingCard({
               id="sellFrom"
               name="sellFrom"
               type="datetime-local"
-              defaultValue={localValue(product?.sellFrom ?? null, timeZone)}
+              defaultValue={localMoment(product?.sellFrom ?? null, timeZone)}
             />
           </Field>
           <Field
@@ -202,7 +203,7 @@ export function PricingCard({
               id="sellUntil"
               name="sellUntil"
               type="datetime-local"
-              defaultValue={localValue(product?.sellUntil ?? null, timeZone)}
+              defaultValue={localMoment(product?.sellUntil ?? null, timeZone)}
             />
           </Field>
         </div>
@@ -218,40 +219,4 @@ export function PricingCard({
       </div>
     </Card>
   );
-}
-
-/**
- * A stored instant, back into the `YYYY-MM-DDTHH:mm` a `datetime-local` wants —
- * read on the shop's clock, not the browser's.
- *
- * The round trip has to close: the action parses this field as wall-clock time
- * in `shops.timeZone`, so rendering it in the *viewer's* zone would move a
- * seller's launch every time somebody opened the form from another country.
- * A seller in Lisbon and their assistant in Manila must see the same 17:00.
- *
- * `en-CA` gives ISO-ordered date parts, which is the shortest way to the exact
- * shape the input parses; the zone does the rest.
- */
-function localValue(at: Date | null, timeZone: string): string {
-  if (!at) return "";
-  try {
-    const parts = new Intl.DateTimeFormat("en-CA", {
-      timeZone,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }).formatToParts(at);
-    const get = (type: Intl.DateTimeFormatPartTypes) =>
-      parts.find((part) => part.type === type)?.value ?? "";
-    // Midnight reads as `24` under `hour12: false` in some runtimes.
-    const hour = get("hour") === "24" ? "00" : get("hour");
-    return `${get("year")}-${get("month")}-${get("day")}T${hour}:${get("minute")}`;
-  } catch {
-    // An unknown zone should not blank a seller's saved window; UTC is a worse
-    // label and never a lost value.
-    return at.toISOString().slice(0, 16);
-  }
 }

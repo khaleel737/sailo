@@ -164,6 +164,13 @@ export const adminEn = {
   },
 
   dashboard: {
+    /*
+     * Spec 07. Shown beside the orders count rather than as a fifth tile: a
+     * lead is the other thing a visitor can turn into, and four tiles is what
+     * fits on a phone before revenue drops onto a second row. Absent entirely
+     * for a shop with no enquiry form, which is nearly all of them.
+     */
+    leads: "{count} leads",
     views: "Views",
     visitors: "Visitors",
     sales: "Sales",
@@ -241,6 +248,29 @@ export const adminEn = {
   },
 
   products: {
+    /* ---- Spec 33: who is waiting for something to come back -------------- */
+    /*
+     * Here rather than in a `waiting` section of their own, for the mechanical
+     * reason spec 51's box strings give: a *new* admin section has to exist in
+     * all thirty-five locale files before the coverage test passes, and those
+     * files are never hand-edited. New keys inside an existing section render in
+     * English until a filler writes them, which is the ordinary admin debt.
+     */
+    waitingTitle: "Waiting for stock",
+    waitingDescription: "{count} people asked to be told when something comes back.",
+    waitingEmpty: "Nobody is waiting for anything right now.",
+    /* The email half needs no seller: a restock claims the queue and sends. */
+    waitingByEmail: "We'll email them",
+    waitingMessageThem: "Message on WhatsApp",
+    /* Sailo does not send to a phone — there is no WhatsApp Business API here
+       and no SMS provider. The seller sends, from their own number. */
+    waitingPhoneNote:
+      "{count} of these left a phone number rather than an email. We can't message a phone for you — tap through and send it from your own WhatsApp.",
+    /* Says the thing is *available*, never that it is held: anybody can buy the
+       restocked unit, and being told first is the whole of what was promised. */
+    waitingWhatsapp:
+      "Hi! {item} is back in stock at {shop}. I can't hold one, but here's the link: {url}",
+
     /* ---- Spec 51: what a refund does to the shelf ----------------------- */
     /* In `products` rather than `orders`, which is a protected money section a
        filler may not write into — and this is a question about stock. */
@@ -301,6 +331,18 @@ export const adminEn = {
     widthMm: "Width",
     heightMm: "Height",
     lowStockThreshold: "Tell me when stock hits",
+    /* ---- Spec 33: taking orders for what there is none of ---------------- */
+    preorderEnabled: "Take preorders when it's sold out",
+    preorderEnabledBody:
+      "Buyers pay now and you ship when it arrives. Charged at checkout like any other order.",
+    preorderExpectedAt: "You expect it by",
+    /* The one field that matters: a card payment for goods that arrive six
+       weeks later is a chargeback waiting to happen if nobody said six weeks. */
+    preorderExpectedAtHint:
+      "Shown to the buyer before they pay, and kept on the order. Blank reads as \"no date yet\". Times are {zone}.",
+    preorderLimit: "Most you'll take",
+    preorderLimitHint: "Blank takes as many as people order.",
+
     lowStockThresholdHint:
       "One email each time stock falls to this. You'll hear again only after it goes back up.",
 
@@ -489,6 +531,26 @@ export const adminEn = {
     eventInPerson: "At a venue",
     eventOnline: "Online",
     eventJoinUrl: "Join link",
+    /*
+     * Spec 07 — the kind whose checkout is a form.
+     *
+     * "Enquiry form" rather than "lead magnet", because the same mechanism is
+     * a sample request, a quote request and a made-to-order enquiry — and the
+     * physical seller who wants one of those has never heard the marketing
+     * phrase. Naming it for what it does is what makes it reachable.
+     */
+    kindLeadLabel: "Enquiry form",
+    leadHint: "A free download or an enquiry — no payment, just their details.",
+    leadTitle: "What you ask for",
+    leadBody:
+      "Name and email are always asked. Add your own questions below, and attach a file under Files if you're giving something away.",
+    leadQuestion: "Question",
+    leadQuestionPlaceholder: "Which team are you on?",
+    leadQuestionRequired: "Must be answered",
+    leadAddQuestion: "Add a question",
+    leadRemoveQuestion: "Remove",
+    leadQuestionLimit: "Up to {count} questions. A form longer than that stops being one.",
+    leadNoPrice: "A form takes no payment, so this product has no price.",
     eventJoinUrlHint: "Zoom, Meet, Teams — anything with a link. Buyers only see it once their payment is confirmed.",
   },
 

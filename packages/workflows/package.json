@@ -9,11 +9,13 @@
     "./memberships": "./src/memberships/renewals.ts",
     "./memberships/fees": "./src/memberships/fees.ts",
     "./memberships/notify-seller": "./src/memberships/notify-seller.ts",
+    "./catalog": "./src/catalog/restock.ts",
     "./ticketing": "./src/ticketing/reminders.ts",
     "./webhooks": "./src/webhooks/deliver.ts",
     "./webhooks/policy": "./src/webhooks/policy.ts",
     "./broadcasts": "./src/broadcasts/pickers.ts",
-    "./disputes": "./src/disputes/notify-seller.ts"
+    "./disputes": "./src/disputes/notify-seller.ts",
+    "./leads": "./src/leads/notify-seller.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

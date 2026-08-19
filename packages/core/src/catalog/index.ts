@@ -13,3 +13,10 @@ export * from "./variants";
  * with `resolveLines` before the buyer reaches it.
  */
 export * from "./pricing-models";
+/**
+ * `preorders` is what a buyer is offered when there is none of it: the queue
+ * they can join, or the order they can place against stock that has not
+ * arrived. Pure for the same reason — four surfaces decide it and only one of
+ * them can refuse an order.
+ */
+export * from "./preorders";

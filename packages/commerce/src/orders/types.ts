@@ -101,6 +101,21 @@ export type ResolvedLine = QuoteLine & {
   product: Product;
   variant: ProductVariant | null;
   scheduledFor: Date | null;
+  /**
+   * Taken against stock that does not exist yet — spec 33.
+   *
+   * Decided in `resolveLines`, from the one stock question the catalogue
+   * already answers: a line that is not sellable on a product whose seller has
+   * turned preorders on is a preorder, and everything else that is not sellable
+   * is sold out. There is no second stock read and no second concept of
+   * availability — `isSellable` decides, and this only records what to do about
+   * the answer.
+   *
+   * `createOrderIntent` reads it to know that a *failed* reservation on this
+   * line is expected rather than fatal, which is what keeps one stock claim in
+   * the codebase rather than two.
+   */
+  preorder: boolean;
 };
 
 /**

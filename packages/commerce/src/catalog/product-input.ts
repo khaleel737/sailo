@@ -29,6 +29,9 @@ export type ProductVariantInput = {
   /** Null means "nobody is counting" — not sold out. */
   stockQuantity?: number | null;
   isAvailable?: boolean;
+  /** This combination's own preorder promise and ceiling — spec 33. */
+  preorderExpectedAt?: Date | null;
+  preorderLimit?: number | null;
   /** This combination's own weight and size — spec 51. Null is the product's. */
   weightGrams?: number | null;
   lengthMm?: number | null;
@@ -75,6 +78,15 @@ export type ProductInput = {
 
   /* ---- How the price is arrived at, and when it is on sale — spec 43 ---- */
 
+  /**
+   * The questions an enquiry form asks — spec 07, `kind: "lead"` only.
+   *
+   * Labels and flags as the seller typed them; the ids are minted server-side
+   * by `normalizeQuestions`, so nothing the browser sends decides a question's
+   * identity and a renamed question cannot orphan its own answers.
+   */
+  leadQuestions?: { label: string; required?: boolean }[];
+
   /** `fixed` or `pwyw`. Anything else, and anything a kind refuses, is fixed. */
   pricingMode?: string | null;
   /** The PWYW floor. **Null is "not configured"; zero is "free is allowed".** */
@@ -105,6 +117,15 @@ export type ProductInput = {
 
   /** Tell the seller at this count. Null is no alert. */
   lowStockThreshold?: number | null;
+
+  /* ---- Selling what there is none of — spec 33 ------------------------- */
+
+  /** Take orders against stock that has not arrived. */
+  preorderEnabled?: boolean;
+  /** What the buyer is told *before* they commit. Null is "no date given". */
+  preorderExpectedAt?: Date | null;
+  /** A ceiling on preorders, separate from stock. Null is uncapped. */
+  preorderLimit?: number | null;
   /** What one weighs, in grams. Null is unweighed, which is not zero. */
   weightGrams?: number | null;
   lengthMm?: number | null;

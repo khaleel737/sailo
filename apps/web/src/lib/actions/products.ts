@@ -32,6 +32,7 @@ import {
 } from "@sailo/commerce/products";
 import { requireShop } from "@/lib/session";
 import { notifySellerOfLowStock } from "@sailo/workflows/orders";
+import { notifyBackInStock } from "@sailo/workflows/catalog";
 import { parseMoneyToCents } from "@sailo/core/currency";
 import { slugify } from "@sailo/core/slug";
 import { MAX_QUANTITY, isProductKind } from "@sailo/core/variants";
@@ -296,6 +297,16 @@ function readProduct(
      * them before they reach an `integer` column.
      */
     lowStockThreshold: optionalCount(formData.get("lowStockThreshold"), 1_000_000),
+
+    /*
+     * Spec 33. The date is a wall-clock moment in the shop's own zone, read
+     * through the same parser the sell window uses — a seller writing "the 3rd"
+     * means the 3rd where they are, and one parser means a product's window and
+     * its preorder date cannot land an hour apart.
+     */
+    preorderEnabled: formData.get("preorderEnabled") === "on",
+    preorderExpectedAt: readShopMoment(formData, "preorderExpectedAt", timeZone),
+    preorderLimit: optionalCount(formData.get("preorderLimit"), 1_000_000),
     weightGrams: optionalCount(formData.get("weightGrams"), 1_000_000),
     lengthMm: optionalCount(formData.get("lengthMm"), 10_000),
     widthMm: optionalCount(formData.get("widthMm"), 10_000),
@@ -318,6 +329,17 @@ function readProduct(
     eventStartsAt: readMoment(formData, "eventStartsAt"),
     eventEndsAt: readMoment(formData, "eventEndsAt"),
     eventJoinUrl: String(formData.get("eventJoinUrl") ?? ""),
+
+    /*
+     * The enquiry form's questions, as one JSON field — spec 07.
+     *
+     * One field rather than parallel `label[]` / `required[]` arrays, because
+     * the browser omits an unchecked checkbox entirely: delete a middle row and
+     * the flags shift up by one, so every question after it silently changes
+     * whether it is required. Parsed defensively — a body is a body, and
+     * `normalizeQuestions` re-derives every id server-side regardless.
+     */
+    leadQuestions: readLeadQuestions(formData.get("leadQuestions")),
 
     billingInterval: String(formData.get("billingInterval") ?? ""),
     billingIntervalCount: optionalCount(formData.get("billingIntervalCount"), 365),
@@ -386,6 +408,22 @@ export async function saveProduct(
    * save that has already succeeded.
    */
   after(() => notifySellerOfLowStock({ shop, productId: result.id }));
+
+  /*
+   * And whoever asked to be told when it came back — spec 33.
+   *
+   * This save is the trigger, because raising the count is the one thing a
+   * seller does that makes stock cross zero upward. There is no poll: a queue
+   * checked on a schedule tells somebody four hours after the thing sold out
+   * again.
+   *
+   * Called unconditionally rather than only when the count went up.
+   * `notifyBackInStock` re-asks `isSellable` itself, which is the same
+   * predicate the storefront and the checkout use — so a save that *lowered*
+   * stock sends nothing, and the decision is not made twice from two different
+   * readings of the same row.
+   */
+  after(() => notifyBackInStock({ shop, productId: result.id }));
 
   return {
     ok: true,
@@ -463,4 +501,26 @@ export async function deleteCategory(formData: FormData) {
   // The catalogue is cached per shop; a write has to drop it.
   revalidateShop(shop.id, shop.handle);
   after(() => publishShopEvent(shop.id, "catalog"));
+}
+
+/** `[{ label, required }]` out of the hidden field the lead card posts. */
+function readLeadQuestions(
+  raw: FormDataEntryValue | null,
+): { label: string; required: boolean }[] {
+  if (typeof raw !== "string" || !raw) return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.flatMap((row) => {
+      if (!row || typeof row !== "object") return [];
+      const value = row as Record<string, unknown>;
+      const label = typeof value.label === "string" ? value.label : "";
+      return label.trim() ? [{ label, required: value.required === true }] : [];
+    });
+  } catch {
+    // A body that is not JSON is a client that is not ours. No questions is
+    // the safe reading — it saves a form that asks nothing rather than
+    // refusing a save over a field the seller never sees.
+    return [];
+  }
 }

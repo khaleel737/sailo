@@ -227,6 +227,38 @@ export const products = pgTable(
     widthMm: integer("width_mm"),
     heightMm: integer("height_mm"),
 
+    /* ----------------------------------------------------------------------
+       Selling what there is none of — spec 33
+
+       A buyer who finds the blue medium sold out has two useful answers, and
+       these are the second: buy it now, against stock that does not exist yet,
+       with a date they were shown *first*.
+
+       Charged at checkout like any other order — the ordinary commerce answer,
+       and what every Shopify preorder does. What that buys is a duty rather
+       than machinery, and `preorderExpectedAt` is the whole of it.
+    ---------------------------------------------------------------------- */
+    preorderEnabled: boolean("preorder_enabled").default(false).notNull(),
+    /**
+     * What the buyer is told before they commit.
+     *
+     * **Null means "no date given"**, which is honest and must render as that
+     * rather than as a blank: a card payment for goods that arrive six weeks
+     * later is a chargeback waiting to happen if the buyer was never told six
+     * weeks. Snapshotted onto the order at checkout, so a seller who slips the
+     * date next month does not change what this buyer was promised today.
+     */
+    preorderExpectedAt: timestamp("preorder_expected_at"),
+    /**
+     * A ceiling on preorders, separate from stock. Null is uncapped.
+     *
+     * Claimed by counting open preorders for the variant inside the statement
+     * that takes one, never a read followed by a write — a seller who can make
+     * fifty must not be able to sell fifty-three because three buyers arrived
+     * in the same second.
+     */
+    preorderLimit: integer("preorder_limit"),
+
     // Digital goods
     /**
      * What a digital order actually hands over: `file`, `link` or `code`.
@@ -264,6 +296,49 @@ export const products = pgTable(
      * partner shop.
      */
     digitalAccessDetails: text("digital_access_details"),
+    /**
+     * Where the code under `digitalDelivery: "code"` actually comes from —
+     * spec 48.
+     *
+     * NULL is `digitalAccessDetails` above, the one shared string, and it is
+     * every product that existed before this column. `pool` draws one row per
+     * buyer from `product_codes`; `generated` mints one per buyer from
+     * `codePattern`.
+     *
+     * NULL rather than a defaulted `"shared"` because the whole point is that
+     * an untouched product keeps behaving as it did, and a default would have
+     * to be written to every row in the table to say so.
+     *
+     * `link` delivery gets pools too. A Notion duplicate link or a one-seat
+     * invite URL is a code that happens to be a URL, and it is the same
+     * scarcity problem: one string handed to two hundred buyers is the product
+     * given away.
+     */
+    codeSource: text("code_source"),
+    /**
+     * The shape of a minted code, under `codeSource: "generated"`.
+     *
+     * `SAILO-XXXX-XXXX-XXXX` — every `X` becomes a Crockford base32 character
+     * and everything else is literal. Validated at the write against two
+     * rules: enough `X`s to be unguessable, and a folded length that no ticket
+     * or member pass can produce. See `codePattern` in `@sailo/core/codes`.
+     */
+    codePattern: text("code_pattern"),
+    /**
+     * Whether this product mints a checkable licence key per buyer — spec 48.
+     *
+     * A code pool serves anyone handing out a string; this serves the seller
+     * whose *software* has to ask whether a string is still good. The public
+     * activate/validate/deactivate endpoints are the surface, and they are
+     * deliberately outside the authenticated API: the licence key is the
+     * credential, because requiring the seller's API key would put it in every
+     * customer's binary.
+     */
+    licenseEnabled: boolean("license_enabled").default(false).notNull(),
+    /** Machines one key may run on at once. Null is unlimited. */
+    licenseActivationLimit: integer("license_activation_limit"),
+    /** Licence length in days. Null never expires. */
+    licenseDays: integer("license_days"),
     /**
      * Hold the files until the seller confirms payment. On by default: every
      * rail here settles out of band, so releasing on order would hand the file
@@ -495,6 +570,16 @@ export const productVariants = pgTable(
     lengthMm: integer("length_mm"),
     widthMm: integer("width_mm"),
     heightMm: integer("height_mm"),
+    /**
+     * This combination's own preorder promise and ceiling — spec 33.
+     *
+     * Null falls back to the product's, the same rule its price follows. The
+     * blue medium may be six weeks out while the red small is two, and a buyer
+     * shown the product's date for a combination that will take longer has been
+     * told something untrue at the moment they were deciding.
+     */
+    preorderExpectedAt: timestamp("preorder_expected_at"),
+    preorderLimit: integer("preorder_limit"),
     /** The seller's manual switch for this combination alone. */
     isAvailable: boolean("is_available").default(true).notNull(),
     /** Swapped into the gallery when this combination is picked. */
@@ -533,14 +618,57 @@ export const productFiles = pgTable(
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
 
+    /**
+     * Which combination this file belongs to — spec 48.
+     *
+     * NULL is the product default, which is every file that existed before
+     * this column. Delivery resolves to the ordered variant's files where any
+     * exist and falls back to the default otherwise, which is Easytools' rule
+     * and the one that leaves a single-variant catalogue untouched.
+     *
+     * **The download gate narrows with it.** Checking only that a file belongs
+     * to the order's *product* would let the cheap variant download the
+     * expensive one's files, which is this feature inverted.
+     */
+    variantId: uuid("variant_id").references(() => productVariants.id, {
+      onDelete: "set null",
+    }),
     name: text("name").notNull(),
     url: text("url").notNull(),
     sizeBytes: integer("size_bytes"),
     contentType: text("content_type"),
+    /**
+     * The seller's own label — "v2", "2026 edition". Free text, because it is
+     * shown to the buyer and never compared.
+     */
+    version: text("version"),
+    /**
+     * The file this one supersedes, when the seller uploaded a replacement
+     * rather than overwriting.
+     *
+     * Deliberately not an entitlement: past buyers keep access to the
+     * *current* file, which is what they expect and what already happened.
+     * Versioning here is labelling plus an announcement, and there is no
+     * per-order file pinning to go with it.
+     */
+    replacesFileId: uuid("replaces_file_id"),
+    /**
+     * The claim on "tell my buyers about this update", not a log of it.
+     *
+     * The send is a bulk mail wearing a product feature's clothes — it goes
+     * through the broadcast quota and the suppression list — so it is claimed
+     * by conditional UPDATE exactly as spec 33's waitlist notify is, and two
+     * cron ticks send it once between them.
+     */
+    notifyBuyersAt: timestamp("notify_buyers_at"),
     position: integer("position").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
-  (t) => [index("product_files_product_idx").on(t.productId)],
+  (t) => [
+    index("product_files_product_idx").on(t.productId),
+    index("product_files_variant_idx").on(t.productId, t.variantId),
+  ],
 );
 
 export const productImages = pgTable(
@@ -585,3 +713,143 @@ export const reviews = pgTable(
  * manual rails settle out of band, and card rails (later) redirect to a
  * gateway the seller owns. Config shape varies per type — see PaymentConfig.
  */
+
+/**
+ * One code out of a pool — spec 48.
+ *
+ * A pool is a pile of bearer tokens, and handing one out is spending
+ * inventory. Which is why nothing in this table is ever written by a read
+ * followed by a write: the claim is a conditional UPDATE whose subselect takes
+ * `FOR UPDATE SKIP LOCKED`, so two concurrent releases take two different
+ * codes rather than one blocking on the other, and never the same one twice.
+ *
+ * Claimed at *release*, not at checkout. The code is spent when
+ * `orders.downloadReleasedAt` is set, exactly as the file and the event join
+ * URL are — an abandoned card session must burn no key, and roughly a third
+ * of them are abandoned.
+ *
+ * `revokedAt` is a refund, and a revoked code is **not** returned to the pool.
+ * A key a buyer has already seen is spent whatever happens next; handing it to
+ * a stranger is worse than losing the unit. The seller is told the count so
+ * they can top up.
+ */
+export const productCodes = pgTable(
+  "product_codes",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    /**
+     * NULL is the product-level pool, which is every pool a seller starts
+     * with. A per-variant pool is "PDF only" and "PDF + Figma" handing out
+     * different keys.
+     */
+    variantId: uuid("variant_id").references(() => productVariants.id, {
+      onDelete: "set null",
+    }),
+    /**
+     * The key, the serial, or — under `digitalDelivery: "link"` — the
+     * one-seat invite URL. A URL goes through the same public-link guard at
+     * the write that `digitalLinkUrl` does.
+     */
+    code: text("code").notNull(),
+    claimedByOrderId: uuid("claimed_by_order_id"),
+    claimedAt: timestamp("claimed_at"),
+    revokedAt: timestamp("revoked_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    /*
+     * Per product and not globally. Two sellers can legitimately hand out the
+     * same third-party string, and a global unique index would make one shop's
+     * upload fail because of another's.
+     */
+    uniqueIndex("product_codes_product_code_key").on(t.productId, t.code),
+    index("product_codes_unclaimed_idx").on(t.productId, t.variantId, t.createdAt),
+    index("product_codes_order_idx").on(t.claimedByOrderId),
+  ],
+);
+
+/**
+ * A checkable licence — spec 48.
+ *
+ * A code pool serves anyone handing out a string; this serves the seller whose
+ * *software* has to ask whether a string is still good. Lemon Squeezy's model,
+ * because it is the one integrators already know: an activation limit, a
+ * length, and one *instance* per machine.
+ *
+ * THE KEY IS STORED IN CLEAR, DELIBERATELY
+ *
+ * The buyer re-reads their own key from the delivery page and from an email
+ * months later, so a value we cannot reproduce is a product that does not
+ * work. Same call `doorPasses` and `tickets` already made, and for the same
+ * reason. What a hashed store would have bought is bought another way:
+ * `keyPrefix` is the indexed lookup and the only form ever logged, the full
+ * key is compared in constant time after the row is found, and the public
+ * endpoints answer an unknown key and a disabled one identically.
+ */
+export const licenseKeys = pgTable(
+  "license_keys",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    /** Denormalised so a seller's licence list needs no join. */
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+    orderId: uuid("order_id"),
+    clientId: uuid("client_id"),
+    key: text("key").notNull(),
+    /** The first group. Indexed for the lookup, and the only thing logged. */
+    keyPrefix: text("key_prefix").notNull(),
+    /** Machines at once. Null is unlimited, which sellers do mean. */
+    activationLimit: integer("activation_limit"),
+    /**
+     * Snapshotted from the product's licence length at mint time, so a seller
+     * shortening the licence tomorrow does not shorten one already sold.
+     */
+    expiresAt: timestamp("expires_at"),
+    status: text("status").default("active").notNull(), // active | disabled | expired
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("license_keys_key_key").on(t.key),
+    index("license_keys_prefix_idx").on(t.keyPrefix),
+    index("license_keys_order_idx").on(t.orderId),
+    index("license_keys_shop_idx").on(t.shopId, t.createdAt),
+  ],
+);
+
+/**
+ * One machine a licence is running on.
+ *
+ * One row per (key, instance) for ever: a machine that deactivates and comes
+ * back reuses its row rather than writing a second, so the live count is
+ * `deactivatedAt IS NULL` and never a running total that only goes up.
+ */
+export const licenseActivations = pgTable(
+  "license_activations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    licenseKeyId: uuid("license_key_id")
+      .notNull()
+      .references(() => licenseKeys.id, { onDelete: "cascade" }),
+    instanceName: text("instance_name"),
+    instanceIdentifier: text("instance_identifier").notNull(),
+    ip: text("ip"),
+    userAgent: text("user_agent"),
+    activatedAt: timestamp("activated_at").defaultNow().notNull(),
+    deactivatedAt: timestamp("deactivated_at"),
+  },
+  (t) => [
+    uniqueIndex("license_activations_instance_key").on(
+      t.licenseKeyId,
+      t.instanceIdentifier,
+    ),
+    index("license_activations_live_idx").on(t.licenseKeyId),
+  ],
+);

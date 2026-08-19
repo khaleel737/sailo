@@ -66,6 +66,9 @@ export function BuyBox({
   pwywFloorCents = 0,
   pwywSuggestedCents = 0,
   windowState = "open",
+  preorderEnabled = false,
+  preorderExpectedAt = null,
+  takesPhone = false,
   service = null,
   serviceLocation = null,
   imageUrl = null,
@@ -134,6 +137,26 @@ export function BuyBox({
    * already is one line away.
    */
   windowState?: SellWindowState;
+  /**
+   * Whether this seller takes orders against stock that has not arrived —
+   * spec 33.
+   *
+   * Decided on the server so the button and the checkout answer from the same
+   * place: `resolveLines` lets a sold-out line through on exactly this
+   * condition, and a button that offered a preorder the order would refuse
+   * would be a dead tap on the one control the page exists for.
+   */
+  preorderEnabled?: boolean;
+  /**
+   * The date the buyer is shown **before** they commit, already resolved to
+   * this combination where it has its own.
+   *
+   * Null is "no date given", which renders as that. It is never a blank: a
+   * blank reads as a date that failed to load and a buyer will wait for it.
+   */
+  preorderExpectedAt?: Date | null;
+  /** Whether the shop runs a chat rail, so a phone is worth collecting. */
+  takesPhone?: boolean;
   service?: CheckoutService | null;
   serviceLocation?: string | null;
   imageUrl?: string | null;
@@ -231,7 +254,21 @@ export function BuyBox({
    * filling in a sheet that was always going to be refused.
    */
   const windowClosed = windowState !== "open";
-  const disabled = soldOut || !salesOpen || noRails || windowClosed;
+
+  /*
+   * Sold out, or a preorder — spec 33.
+   *
+   * Three states rather than two, because collapsing them loses the sale
+   * either way round: a buyer told "sold out" on something they could have
+   * preordered leaves, and a buyer offered "preorder" on something in stock is
+   * told a date that does not apply to them.
+   *
+   * A closed sell window is not a preorder. Spec 43's window says the seller
+   * has not opened sales, or has closed them — taking money against that would
+   * be selling something they deliberately took off sale.
+   */
+  const canPreorder = soldOut && preorderEnabled && !windowClosed && salesOpen;
+  const disabled = (soldOut && !canPreorder) || !salesOpen || noRails || windowClosed;
 
   function chooseOption(name: string, value: string) {
     const target = retargetSelection(variants, selection, name, value);
@@ -290,13 +327,15 @@ export function BuyBox({
       ? t.pricing.notYetOnSale
       : windowState === "ended"
         ? t.pricing.noLongerAvailable
-        : soldOut
-          ? t.shop.soldOut
-          : !salesOpen
-            ? t.shop.salesClosed
-            : isMembership
-              ? t.shop.subscribeNow
-              : null;
+        : canPreorder
+          ? t.stock.preorder
+          : soldOut
+            ? t.shop.soldOut
+            : !salesOpen
+              ? t.shop.salesClosed
+              : isMembership
+                ? t.shop.subscribeNow
+                : null;
 
   return (
     <div className="space-y-4">
@@ -340,6 +379,40 @@ export function BuyBox({
         onChoose={chooseOption}
         t={t}
       />
+
+      {/*
+        The promised date, above the button and before the buyer commits — spec
+        33, and the entire risk this feature adds.
+
+        A card payment for goods that arrive six weeks later is a chargeback
+        waiting to happen if the buyer was never told six weeks. It is recorded
+        on the order too, so a `product_not_received` case can show what was
+        *promised* rather than what was hoped.
+
+        No date renders as "no date yet" and never as a blank: a blank reads as
+        a date that failed to load, and a buyer will wait for it.
+
+        The refund line says that a policy exists, not what it is. What it says
+        is the seller's business; that it exists is not.
+      */}
+      {canPreorder ? (
+        <div className="surface-elevated space-y-1 rounded-xl p-3 text-sm">
+          <p className="font-medium">
+            {preorderExpectedAt
+              ? interpolate(t.stock.expected, {
+                  date: preorderExpectedAt.toLocaleDateString(locale, {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  }),
+                })
+              : t.stock.noDate}
+          </p>
+          <p className="text-muted text-xs">
+            {interpolate(t.stock.refundNote, { shop: shopName })}
+          </p>
+        </div>
+      ) : null}
 
       {pwyw && !disabled ? (
         <AmountField

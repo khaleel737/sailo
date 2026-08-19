@@ -11,6 +11,7 @@
 import "server-only";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
+import { normalizeQuestions } from "@sailo/core/lead-questions";
 import {
   categories,
   productFiles,
@@ -162,6 +163,11 @@ async function syncVariants(
        */
       sellFrom: row.sellFrom ?? null,
       sellUntil: row.sellUntil ?? null,
+      /* Spec 33 — the blue medium may be six weeks out while the red small is
+         two, and a buyer shown the product's date for the slower one has been
+         told something untrue at the moment they were deciding. */
+      preorderExpectedAt: row.preorderExpectedAt ?? null,
+      preorderLimit: wholeCountOrNull(row.preorderLimit),
       /* Spec 51 — null falls back to the product's, the same rule its price
          already follows. */
       weightGrams: wholeCountOrNull(row.weightGrams),
@@ -425,8 +431,18 @@ export async function saveProduct(
     return refuse({ kind: "sell_window_inverted" });
   }
 
-  const priceCents = input.priceCents;
-  const compareAtCents = input.compareAtCents ?? null;
+  /*
+   * A lead product is free, and that is decided here rather than on the form —
+   * spec 07 says so in as many words.
+   *
+   * The form hides the price field, which is a claim the *client* makes: a
+   * server action takes whatever it is sent, so a posted `priceCents` would
+   * otherwise be stored and a "free" enquiry form would quietly have a price
+   * on it. Forced to `0` and never to null: blank is not zero, and this column
+   * is not nullable — zero is the honest value for a thing that costs nothing.
+   */
+  const priceCents = kind === "lead" ? 0 : input.priceCents;
+  const compareAtCents = kind === "lead" ? null : (input.compareAtCents ?? null);
   const trackInventory = input.trackInventory === true;
 
   const values = {
@@ -447,7 +463,19 @@ export async function saveProduct(
      * reason it is above: a strike-through that is not a saving is an
      * advertisement for a discount nobody is giving.
      */
-    currencyPrices: droppingWeakCompareAt(input.currencyPrices ?? {}),
+    currencyPrices: kind === "lead" ? {} : droppingWeakCompareAt(input.currencyPrices ?? {}),
+
+    /*
+     * The enquiry form's questions, and empty for every other kind.
+     *
+     * Cleared rather than left alone when the kind changes, for the same
+     * reason `digitalAccessDetails` is: a product switched from an enquiry
+     * form to something sold would otherwise keep a form nothing renders,
+     * waiting to reappear the day somebody switches it back and wonders where
+     * the old questions came from.
+     */
+    leadQuestions:
+      kind === "lead" ? normalizeQuestions(input.leadQuestions ?? []) : [],
 
     /* ---- Spec 43 -------------------------------------------------------- */
 
@@ -511,6 +539,21 @@ export async function saveProduct(
      * knowing their own stockroom.
      */
     lowStockThreshold: wholeCountOrNull(input.lowStockThreshold),
+
+    /*
+     * Spec 33. Kept on every kind rather than cleared off the ones that rarely
+     * use it, matching the weight columns above: a workshop run twice a year
+     * and a print run are both things a seller takes orders for before they
+     * exist, and nothing reads these but `takesPreorders` and the buy box.
+     *
+     * The date is stored as given. It is *snapshotted onto the order* at
+     * checkout, so a seller slipping it next month changes what future buyers
+     * are told and not what past ones were promised — which is the whole reason
+     * the order carries its own copy.
+     */
+    preorderEnabled: input.preorderEnabled === true,
+    preorderExpectedAt: input.preorderExpectedAt ?? null,
+    preorderLimit: wholeCountOrNull(input.preorderLimit),
     weightGrams: wholeCountOrNull(input.weightGrams),
     lengthMm: wholeCountOrNull(input.lengthMm),
     widthMm: wholeCountOrNull(input.widthMm),

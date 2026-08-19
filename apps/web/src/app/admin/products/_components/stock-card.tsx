@@ -1,6 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { Card, Field, Input } from "@sailo/design-system/web";
+import { interpolate } from "@sailo/i18n";
+import { localMoment } from "@/app/admin/products/_lib/local-moment";
 import { MAX_QUANTITY, type ProductKind } from "@sailo/core/variants";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { Toggle } from "./toggle";
@@ -27,6 +30,7 @@ export function StockCard({
   product,
   currency,
   price,
+  timeZone = "UTC",
   trackInventory,
   onTrackInventoryChange,
   regionalCurrencies = [],
@@ -36,6 +40,8 @@ export function StockCard({
   currency: string;
   /** The base price, shown as the placeholder each variant inherits. */
   price: string;
+  /** The shop's zone, so the preorder date means the seller's own calendar. */
+  timeZone?: string;
   trackInventory: boolean;
   onTrackInventoryChange: (next: boolean) => void;
   /**
@@ -50,6 +56,7 @@ export function StockCard({
 }) {
   const a = useAdminT();
   const event = kind === "event";
+  const [preorder, setPreorder] = useState(product?.preorderEnabled ?? false);
 
   return (
     <Card className="space-y-4 p-5">
@@ -82,6 +89,66 @@ export function StockCard({
         sku={product?.sku ?? null}
         regionalCurrencies={regionalCurrencies}
       />
+
+      {/*
+        Selling what there is none of — spec 33.
+
+        Here rather than in a card of its own, because it is an answer to the
+        question this card already asks: what is there to sell, and what happens
+        when there is not. A seller reading "track stock" is one line away from
+        wanting to know what a buyer sees when it runs out.
+
+        The date is the whole risk the feature adds. Charging at checkout for
+        goods that arrive six weeks later is a chargeback waiting to happen if
+        the buyer was never told six weeks — so it is shown before they commit
+        and snapshotted onto the order, and leaving it blank renders as "no date
+        yet" rather than as nothing.
+      */}
+      <div className="space-y-4 border-t border-ink-100 pt-4">
+        <Toggle
+          name="preorderEnabled"
+          label={a.productForm.preorderEnabled}
+          description={a.productForm.preorderEnabledBody}
+          checked={preorder}
+          onChange={setPreorder}
+        />
+
+        {preorder ? (
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field
+              label={a.productForm.preorderExpectedAt}
+              htmlFor="preorderExpectedAt"
+              hint={a.common.optional}
+              help={interpolate(a.productForm.preorderExpectedAtHint, {
+                zone: timeZone,
+              })}
+            >
+              <Input
+                id="preorderExpectedAt"
+                name="preorderExpectedAt"
+                type="datetime-local"
+                defaultValue={localMoment(product?.preorderExpectedAt ?? null, timeZone)}
+              />
+            </Field>
+            <Field
+              label={a.productForm.preorderLimit}
+              htmlFor="preorderLimit"
+              hint={a.common.optional}
+              help={a.productForm.preorderLimitHint}
+            >
+              <Input
+                id="preorderLimit"
+                name="preorderLimit"
+                type="number"
+                min={1}
+                inputMode="numeric"
+                defaultValue={product?.preorderLimit ?? ""}
+                placeholder="50"
+              />
+            </Field>
+          </div>
+        ) : null}
+      </div>
 
       {/*
         The cap, and it is not a stock field.

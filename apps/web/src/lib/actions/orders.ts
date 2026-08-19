@@ -39,6 +39,8 @@ import { claimSlots, releaseSlots, slotEnd } from "@sailo/commerce/booking/serve
 import { downloadUrl, newDownloadToken, releasesImmediately } from "@/lib/downloads";
 import { resolveDigitalDelivery } from "@sailo/commerce/orders/server";
 import { eventSalesOpen, ticketValues } from "@sailo/commerce/ticketing";
+import { preorderRoom } from "@sailo/commerce/catalog";
+import { preorderExpectedAt } from "@sailo/core/preorders";
 import { confirmBuyerByEmail } from "@sailo/workflows/orders";
 import { notifySellerOfOrder } from "@sailo/workflows/orders";
 import { notifySellerOfLowStock } from "@sailo/workflows/orders";
@@ -131,6 +133,20 @@ function deviceFingerprintOf(input: OrderIntentInput): string | null {
   const raw = input.deviceFingerprint?.trim();
   if (!raw || raw.length < 20) return null;
   return raw.slice(0, 200);
+}
+
+/**
+ * The last of several promised dates, ignoring the ones nobody gave.
+ *
+ * The order is complete when its *last* line arrives, so a basket holding a
+ * two-week preorder and a six-week one is a six-week order. Quoting the sooner
+ * date would be telling the buyer something the order cannot meet, on the one
+ * field this whole feature exists to get right.
+ */
+function latestOf(dates: (Date | null)[]): Date | null {
+  const real = dates.filter((d): d is Date => d !== null);
+  if (real.length === 0) return null;
+  return real.reduce((latest, d) => (d > latest ? d : latest));
 }
 
 export async function createOrderIntent(
@@ -398,7 +414,23 @@ export async function createOrderIntent(
   );
 
   const taken: QuoteLine[] = reservations.filter((r) => r.ok).map((r) => r.line);
-  const shortfall = reservations.find((r) => !r.ok)?.line;
+
+  /*
+   * A failed reservation on a preorder line is the expected outcome, not a
+   * shortfall — spec 33.
+   *
+   * This is the whole of "do not bypass `reserveStock`". The claim ran exactly
+   * as it always has, against the same guarded UPDATE, and came back false
+   * because there is nothing on the shelf; `resolveLines` already decided that
+   * this product's seller takes orders anyway. So one stock claim remains in
+   * the codebase and the preorder path is a decision about its answer rather
+   * than a second way of asking.
+   *
+   * A preorder line takes nothing off the shelf and so gives nothing back —
+   * it is not in `taken`, and `releaseStockFor` must not "return" units that
+   * were never held, which would drift the count upward on every abandonment.
+   */
+  const shortfall = reservations.find((r) => !r.ok && !r.line.preorder)?.line;
 
   if (shortfall) {
     await releaseStockFor(taken);
@@ -409,6 +441,43 @@ export async function createOrderIntent(
           ? `There isn't that much ${shortfall.title} left. Try a smaller quantity.`
           : `${shortfall.title} just sold out.`,
     };
+  }
+
+  /*
+   * Which lines this order is actually taking on trust.
+   *
+   * A line marked `preorder` whose reservation *succeeded* is not one: the
+   * seller left stock on a preorder-enabled product, so the buyer is getting a
+   * real unit and must not be shown a six-week date for it.
+   */
+  const preordered = reservations
+    .filter((r) => !r.ok && r.line.preorder)
+    .map((r) => r.line);
+  const isPreorderOrder = preordered.length > 0;
+
+  /*
+   * The ceiling on preorders, before anything irreversible.
+   *
+   * Cheap and racy on its own, which is why it is not the only check: the claim
+   * that decides is re-taken after the order row exists, below, where the n+1th
+   * buyer's own order is inside the count that refuses it. This one stops the
+   * ordinary case — a seller who can make fifty and has already sold fifty —
+   * without writing anything.
+   */
+  for (const line of preordered) {
+    const room = await preorderRoom({
+      productId: line.productId,
+      variantId: line.variantId,
+      product: line.product,
+      variant: line.variant,
+    });
+    if (room.limited) {
+      await releaseStockFor(taken);
+      return {
+        ok: false,
+        error: `${line.title} can't be preordered right now.`,
+      };
+    }
   }
 
   /* ---- Digital delivery ------------------------------------------------ */
@@ -678,6 +747,25 @@ export async function createOrderIntent(
        * `missing`, which is the truth.
        */
       ...policySnapshotIds,
+      /*
+       * Taken against stock that does not exist yet, and what the buyer was
+       * told about it — spec 33.
+       *
+       * The *latest* of the promised dates, not the earliest: the order is
+       * complete when its last line arrives, and quoting the soonest one on a
+       * basket holding two preorders would tell the buyer a date the order
+       * cannot meet. Null when no date was given, which is honest and renders
+       * as that.
+       *
+       * Snapshotted rather than joined, for the reason `0035` gives about
+       * `shops.termsUrl`: a seller who slips their date next month must not
+       * change what this buyer was promised today. A `product_not_received`
+       * case turns on what was promised, not on what was hoped.
+       */
+      isPreorder: isPreorderOrder,
+      preorderExpectedAt: latestOf(
+        preordered.map((line) => preorderExpectedAt(line.product, line.variant)),
+      ),
       paymentMethod: method.type,
       // COD is collected on delivery; transfers are owed until confirmed.
       // Nothing is owed on a free order, so nothing is outstanding — and
@@ -770,6 +858,39 @@ export async function createOrderIntent(
       ok: false,
       error: "That time has just been taken. Pick another and try again.",
     };
+  }
+
+  /*
+   * The preorder ceiling, re-taken now that this order is a row — spec 33.
+   *
+   * This is the claim, and the check before the insert was only the cheap half.
+   * Two buyers arriving in the same second both read the same count there and
+   * both passed; here each one's own order is inside the count, so of any burst
+   * exactly `limit` orders survive and the rest are rolled back — the same
+   * shape the coupon claim below uses, and rolled back the same way, because
+   * this is still before anything irreversible.
+   *
+   * `exceptOrderId` is not passed: this order *must* be counted, or the n+1th
+   * buyer would see the same `n` the nth did.
+   */
+  if (isPreorderOrder) {
+    for (const line of preordered) {
+      const room = await preorderRoom({
+        productId: line.productId,
+        variantId: line.variantId,
+        product: line.product,
+        variant: line.variant,
+      });
+      if (room.limited) {
+        await releaseStockFor(taken);
+        await releaseSlots(order.id);
+        await db.delete(orders).where(eq(orders.id, order.id));
+        return {
+          ok: false,
+          error: `${line.title} can't be preordered right now.`,
+        };
+      }
+    }
   }
 
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";

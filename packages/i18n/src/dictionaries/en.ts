@@ -172,6 +172,40 @@ export const en = {
     closesOn: "Sales close {date}",
   },
 
+  /**
+   * Wanting something there is none of — spec 33.
+   *
+   * Its own section rather than keys inside `checkout` or `cart`, for the
+   * mechanical reason `pricing` above gives: both of those are protected money
+   * sections that `i18n:fill` refuses to write into, so a new key there is a
+   * hole in thirty-four locales that nothing can close — and a storefront hole
+   * is a compile error.
+   *
+   * Every string here is written to be true whether or not a row was written.
+   * "You'll hear from us" is the answer in all cases, because a reply that
+   * varied would say which of a seller's variants exist and who is watching
+   * them.
+   */
+  stock: {
+    tellMe: "Tell me when it's back",
+    emailPlaceholder: "you@example.com",
+    contactPlaceholder: "Email or phone",
+    notifyMe: "Notify me",
+    queued: "You'll hear from us when it's back. We haven't held one for you — anyone can buy it.",
+    onceOnly: "One message, when it returns. Nothing else. {shop}",
+    /* Nothing was written, and this says only that. Never anything about
+       stock — a buyer told "you'll hear from us" when nothing was recorded is
+       a buyer who waits for ever. */
+    tryAgain: "Couldn't do that just now. Try again shortly.",
+    /* A preorder's date is shown *before* the buyer commits. Null is not a
+       blank: "no date given" is an honest answer and a blank reads as one that
+       failed to load. */
+    preorder: "Preorder",
+    expected: "Expected {date}",
+    noDate: "No date yet — the seller will confirm",
+    refundNote: "If it never ships, {shop}'s refund policy applies.",
+  },
+
   checkout: {
     failedSafe: "Something went wrong. You haven't been charged — please try again.",
     failedUnsure: "Something went wrong. Your order may have gone through — check your email before trying again.",
@@ -833,6 +867,27 @@ export const en = {
     /** What a merge tag says when the contact has no name on file. */
     friend: "there",
   },
+  /*
+   * Spec 07 — the form a lead product shows instead of a buy panel.
+   *
+   * Six keys, and the two "thanks" are two on purpose: a magnet with a file
+   * genuinely does put something in an inbox, and one without does not.
+   * Saying "check your email" to somebody who will never get one is the small
+   * lie that makes a seller's support inbox fill up.
+   *
+   * Which of the two is shown depends on the *product*, never on the row that
+   * was just written. A message that changed with whether the address was
+   * already known would be an address checker with extra steps.
+   */
+  lead: {
+    submit: "Send it to me",
+    sending: "Sending…",
+    thanks: "Thanks! Check your inbox — it's on its way.",
+    thanksNoFile: "Thanks! {shop} has your details.",
+    answerRequired: "Please answer: {question}",
+    privacy: "Your details go to this shop only, and you can ask them to delete them at any time.",
+  },
+
 } as const;
 
 /**

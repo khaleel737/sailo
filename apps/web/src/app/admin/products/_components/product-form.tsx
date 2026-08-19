@@ -27,6 +27,7 @@ import { DigitalDeliveryCard } from "./digital-delivery-card";
 import { ServiceSettingsCard } from "./service-settings-card";
 import { EventSettingsCard } from "./event-settings-card";
 import { MembershipSettingsCard } from "./membership-settings-card";
+import { LeadSettingsCard } from "./lead-settings-card";
 import type { ProductWithRelations } from "./product.types";
 import { interpolate } from "@sailo/i18n";
 import type { Category } from "@sailo/db/schema";
@@ -405,12 +406,23 @@ export function ProductForm({
           />
         ) : null}
 
-        {membership ? null : (
+        {kind === "lead" ? <LeadSettingsCard product={product} /> : null}
+
+        {/*
+          A form has no stock and no price. `membership` was already excluded
+          for the same reason — a thing that renews is not a thing there are
+          five of — and a lead is the second: there is nothing to run out of,
+          and a "sold out" enquiry form is a sentence with no meaning.
+        */}
+        {membership || kind === "lead" ? null : (
           <StockCard
             kind={kind}
             product={product}
             currency={currency}
             price={price}
+            /* Spec 33's preorder date is wall-clock in the shop's own zone,
+               like spec 43's two window fields. */
+            timeZone={timeZone}
             trackInventory={trackInventory}
             onTrackInventoryChange={setTrackInventory}
             regionalCurrencies={regionalCurrencies}

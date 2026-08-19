@@ -217,6 +217,60 @@ export async function sendEventReminder(opts: {
 }
 
 /**
+ * "The blue medium is back" — spec 33.
+ *
+ * Sent once per request, ever. The row was already claimed by the time this is
+ * called, which is what makes a seller who restocks on Monday, sells out by
+ * lunch and restocks on Wednesday unable to message the same person twice in
+ * three days.
+ *
+ * WHAT THIS EMAIL MUST NOT SAY
+ *
+ * **It is not a reservation and nothing here may imply one.** "Your item is
+ * ready" is a lie: anybody can buy the restocked unit, and being told first is
+ * the whole of what was promised. Copy that suggests otherwise turns a helpful
+ * message into a complaint from whoever arrives second — which is the same
+ * failure, in a different key, as telling somebody about the red one when they
+ * asked about the blue.
+ *
+ * It names the *combination*, not just the product, for that reason. A buyer
+ * who asked about the blue medium and receives "Speckled Mug is back" has to
+ * open the page to find out whether it is even the thing they wanted.
+ */
+export async function sendBackInStock(opts: {
+  shop: Shop;
+  to: string;
+  productTitle: string;
+  /** "Blue / Medium", or null for a product sold as one thing. */
+  variantLabel: string | null;
+  productUrl: string;
+}): Promise<SendResult> {
+  const { shop, to, productTitle, variantLabel, productUrl } = opts;
+
+  const what = variantLabel
+    ? `${esc(productTitle)} — ${esc(variantLabel)}`
+    : esc(productTitle);
+
+  const body = `
+    ${para(`${strong(what)} is back in stock at ${esc(shop.name)}.`)}
+    ${buttonGhost(productUrl, "Have a look")}
+    ${fine(
+      "We haven't held one for you — you asked to hear when it returned, and it has. Anyone can buy it, so it may go again.",
+    )}
+  `;
+
+  return send({
+    from: sender(shop.name, ORDERS),
+    to,
+    subject: `Back in stock: ${productTitle}`,
+    html: layout(shop, "It's back", body, {
+      preheader: `${variantLabel ? `${productTitle} — ${variantLabel}` : productTitle} is available again. Not held for you.`,
+    }),
+    replyTo: shop.contactEmail ?? undefined,
+  });
+}
+
+/**
  * The affiliate's own report links, one per shop they promote. Sent only to an
  * address that already has an active affiliate row against it.
  */
@@ -424,6 +478,49 @@ export async function sendMembershipRenewalDue(opts: {
     html: layout(shop, "Your membership is due", body, {
       preheader: `${formatMoney(opts.priceCents, opts.currency)} to carry on with ${opts.productTitle}.`,
     }),
+    replyTo: shop.contactEmail ?? undefined,
+  });
+}
+
+/**
+ * The free thing somebody swapped an address for — spec 07.
+ *
+ * Transactional, and the distinction matters: this is the delivery of a thing
+ * that was asked for, in the same class as a receipt, so it carries no
+ * unsubscribe link and is sent whether or not the marketing box was ticked. The
+ * consent checkbox on the form is about *future* mail from the shop, which is a
+ * different question and has its own answer in `marketing_consent_at`.
+ *
+ * Shop-branded, because the visitor asked the shop for the thing and Sailo is
+ * not part of the exchange.
+ */
+export async function sendLeadMagnet(opts: {
+  shop: Shop;
+  to: string;
+  name: string | null;
+  productTitle: string;
+  url: string;
+  expiresAt: Date | null;
+}): Promise<SendResult> {
+  const { shop, to, name, productTitle, url, expiresAt } = opts;
+
+  const body = `
+    ${para(`${name ? `Hi ${esc(name)} — h` : "H"}ere's ${strong(esc(productTitle))}, as promised.`)}
+    ${button(url, "Open it")}
+    ${
+      expiresAt
+        ? fine(
+            `This link works until ${formatWhen(expiresAt, shop.timeZone)}. Save the file somewhere of your own before then.`,
+          )
+        : ""
+    }
+  `;
+
+  return send({
+    from: sender(shop.name, ORDERS),
+    to,
+    subject: productTitle,
+    html: layout(shop, `Here's ${productTitle}`, body),
     replyTo: shop.contactEmail ?? undefined,
   });
 }

@@ -1,7 +1,17 @@
 import type { shops } from "./shop";
 import type { shopPages } from "./pages";
 import type { dataRequests } from "./privacy";
-import type { categories, productFiles, productImages, productVariants, products, reviews } from "./catalog";
+import type {
+  categories,
+  licenseActivations,
+  licenseKeys,
+  productCodes,
+  productFiles,
+  productImages,
+  productVariants,
+  products,
+  reviews,
+} from "./catalog";
 import type { affiliates, coupons, deliveryMethods, paymentMethods } from "./commerce";
 import type {
   clients,
@@ -57,6 +67,12 @@ export type Product = typeof products.$inferSelect;
 export type ProductImage = typeof productImages.$inferSelect;
 export type ProductVariant = typeof productVariants.$inferSelect;
 export type ProductFile = typeof productFiles.$inferSelect;
+/** One code out of a pool — spec 48. */
+export type ProductCode = typeof productCodes.$inferSelect;
+/** A checkable licence, with its own activation limit — spec 48. */
+export type LicenseKey = typeof licenseKeys.$inferSelect;
+/** One machine a licence is running on — spec 48. */
+export type LicenseActivation = typeof licenseActivations.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
