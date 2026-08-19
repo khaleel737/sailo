@@ -1,0 +1,140 @@
+packages/commerce/src/orders/types.ts
+  s_ff5bd57f7b4f2f::t_8b6bd7b1f28937 31-46
+  s_d85ec1f24c11c4::t_71948910ec888b 70-82
+  s_c6ab3915e97efe::t_9c07b8c496a244 180,183,185-189
+  s_c6ab3915e97efe::t_50c3b4ffa441fd 182,184,190-191
+  s_16f404b29c0075::t_1b3588f99306db 69,83-96
+apps/web/src/app/[handle]/p/[slug]/_components/buy-box.tsx
+  s_ff5bd57f7b4f2f::t_06f6ed9313fed5 30-31,65-68,115-136,177-200
+  s_3d280b9c37709e::t_ab55f4c0b49f2c 225-234,254-261,278-286,289-299
+  s_ff5bd57f7b4f2f::t_185e3c3a00ab2f 305-314,324-329,344-357,460-461
+  s_e1f6fcdd78170a::t_f8f94ed6894571 57,92,464
+  s_c6ab3915e97efe::t_88ba35c2b8e4a7 64,106-114,161-170
+  s_a79949fd39aa12::t_3d400b70d46586 76,144,474
+  s_ff5bd57f7b4f2f::t_aab296b2437011 4,24,171,201
+apps/web/src/app/[handle]/_components/cart/express-checkout.tsx
+  s_a79949fd39aa12::t_3d400b70d46586 68,107,222
+  s_ff5bd57f7b4f2f::t_15fc71c93560fb 55,81-89,207-208
+  s_e1f6fcdd78170a::t_f8f94ed6894571 58,92,213
+  s_ff5bd57f7b4f2f::t_230bfc8725f3c9 4
+apps/web/src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_c6ab3915e97efe::t_50c3b4ffa441fd 157-162,164-170
+  s_a79949fd39aa12::t_3d400b70d46586 36,47,69
+  s_c6ab3915e97efe::t_9c07b8c496a244 14
+  s_e1f6fcdd78170a::t_f8f94ed6894571 33,44,63
+  s_d85ec1f24c11c4::t_43bfa8b38085dd 4
+packages/marketing/src/contacts/values.ts
+  s_3d280b9c37709e::t_7ffa181538d823 330-340,350-365,369-371,374-382,389,399,408-409,412-420
+apps/web/src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_d85ec1f24c11c4::t_f589b732ef8302 6,76,418-423,823-824
+  s_e1f6fcdd78170a::t_56e0297f4c8d7d 65,192-201,205
+  s_d85ec1f24c11c4::t_75cf2800db3ba3 825
+apps/web/src/app/[handle]/_components/cart/cart-region.tsx
+  s_e1f6fcdd78170a::t_f8f94ed6894571 32,49-50,80
+  s_a79949fd39aa12::t_3d400b70d46586 35,53,83
+  s_d85ec1f24c11c4::t_e24c111ab3ec62 4
+apps/web/src/app/[handle]/_components/cart/custom-fields.tsx
+  s_d85ec1f24c11c4::t_5b56f1ad9f81a4 1-143
+apps/web/src/lib/queries/checkout.ts
+  s_e1f6fcdd78170a::t_0687aeb946fcce 11-12,95-98,128-141
+  s_d85ec1f24c11c4::t_69162252a480f5 13,56-69,77-83,87-92,99,142-162
+  s_d85ec1f24c11c4::t_19cd085a7f250d 8,94,163,171-179,183
+apps/web/src/lib/actions/orders.ts
+  s_ff5bd57f7b4f2f::t_0f62ed5c854833 1010-1015,1017,1019-1037
+  s_ff5bd57f7b4f2f::t_b4438390d666c0 481-497
+  s_3d280b9c37709e::t_d45674d196e2eb 260-272,308,555,865
+  s_ff5bd57f7b4f2f::t_44e6054196555e 915
+  s_16f404b29c0075::t_1b3588f99306db 117-134,663
+  s_c6ab3915e97efe::t_86aa8ffaff6e6f 34,868
+  s_16f404b29c0075::t_7586ca575c7bd4 174-184
+  s_ff5bd57f7b4f2f::t_3cbc3449685f9f 452-480
+  s_ff5bd57f7b4f2f::t_6e44dbab255ce8 682-684
+  s_e1f6fcdd78170a::t_5d0e0907354a56 16-17,217-245
+  s_ff5bd57f7b4f2f::t_626223784a6d53 853-864,869-874
+  s_ff5bd57f7b4f2f::t_482657a6ee209e 283
+  s_ddccb778c45a39::t_c05f86fdd0dc9f 37,527-535
+  s_16f404b29c0075::t_51ba3c06b7ec5e 650-662,664-679
+  s_d85ec1f24c11c4::t_789d62166b0b78 8
+  s_d85ec1f24c11c4::t_545e6319065868 246,333-366,615-622
+  s_3d280b9c37709e::t_ab55f4c0b49f2c 6,1149,1153,1172,1195
+  s_ff5bd57f7b4f2f::t_57df16f60b1f75 247,367,536
+apps/web/src/app/[handle]/_components/cart/checkout.types.ts
+  s_d85ec1f24c11c4::t_139bdc7f3c85af 6,88,108-117
+  s_e1f6fcdd78170a::t_56e0297f4c8d7d 89-96
+apps/web/src/app/[handle]/p/[slug]/page.tsx
+  s_3d280b9c37709e::t_847cff2195a35f 186,332
+apps/web/src/app/[handle]/page.tsx
+  s_d85ec1f24c11c4::t_836b2fcbc3dc19 117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "870ecf1884b9aec2698973e3dbc15b1af1088e1c",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3d280b9c37709e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "914a407f-3ed9-41c1-8fbc-6b7047fa1462",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_a79949fd39aa12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3512a1e-3a48-4b59-95c2-ad40c780f6a9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_c6ab3915e97efe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c24c96ca-a911-4fa0-901b-d9f00fe9e7ce",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_d85ec1f24c11c4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "91e0b22a-1b92-4b3d-a00c-9932ecca90d6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ddccb778c45a39": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5b2dfcd1-4a3c-4a3f-87ee-3a6f9a532003",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e1f6fcdd78170a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "07ffa20a-be06-4b62-a6c7-e2cc4d3b435d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ff5bd57f7b4f2f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f7a8e604-26d7-4dc0-9381-beaca5a4f55b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
