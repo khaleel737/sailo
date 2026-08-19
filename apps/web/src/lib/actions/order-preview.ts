@@ -171,6 +171,18 @@ export async function previewOrder(input: {
           where: and(eq(coupons.shopId, shop.id), eq(coupons.code, code)),
         })
       : undefined;
+
+    /*
+     * Refunded on the *row*, before the currency is applied.
+     *
+     * The rule this ceiling is built on is that existence is the secret: a
+     * buyer holding a real code is not guessing, so an expired one and one
+     * under its minimum both hand the unit back. A code that exists and simply
+     * has no price in this basket's currency is the same case — and keying the
+     * refund on the swapped row instead, which is what this did for an hour,
+     * charged that buyer a guess for holding a real code.
+     */
+    if (row) await refundRateLimit(guessKey, 300);
     /*
      * Re-read in the basket's currency before the verdict — spec 53, and the
      * same order `resolveCoupon` does it in, so the panel and the checkout
@@ -185,7 +197,7 @@ export async function previewOrder(input: {
     const found = row
       ? (couponAtCurrency(row, currency, shop.currency) ?? undefined)
       : row;
-    if (found) await refundRateLimit(guessKey, 300);
+
     // Judged against the whole basket, so a minimum spend counts every line.
     const verdict = checkCoupon(found, cartSubtotal(resolved.lines), now);
     if (budget.reason === "outage") {

@@ -158,7 +158,7 @@ export function mapStripe(
     });
   }
 
-  return { currency, products: mapped, clients: [], notes: [] };
+  return { currency, products: mapped, notes: [] };
 }
 
 /** Stripe's only human label for a price, with a fallback that is stable. */

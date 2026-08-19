@@ -141,7 +141,6 @@ export function mapTabular(
      */
     currency: first ? field(first, ...COLUMNS.currency).toUpperCase() || null : null,
     products,
-    clients: [],
     notes,
   };
 }

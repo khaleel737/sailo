@@ -39,7 +39,6 @@ const batch = (products: ImportProduct[], over: Partial<SourceBatch> = {}): Sour
   source: "shopify",
   currency: null,
   products,
-  clients: [],
   notes: [],
   ...over,
 });

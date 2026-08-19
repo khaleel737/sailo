@@ -100,31 +100,6 @@ export type ImportProduct = {
   refusal?: string;
 };
 
-/** One contact, as any source describes it. */
-export type ImportClient = {
-  externalId: string;
-  name: string | null;
-  email: string | null;
-  phone: string | null;
-  addressLine1: string | null;
-  city: string | null;
-  postalCode: string | null;
-  country: string | null;
-  tags: string[];
-  /**
-   * When the person actually opted in, and where — or null.
-   *
-   * **Null is the default and stays null unless the source carries a real
-   * timestamp *and* a level.** Consent is a thing a person gave; a column in a
-   * CSV is a claim that they did. Shopify carries both
-   * (`email_marketing_consent.consent_updated_at` and `opt_in_level`) and
-   * Gumroad's export carries neither, so a Gumroad contact lands as a contact
-   * and not as an audience — spec 34's Rule 1 then governs everything
-   * downstream.
-   */
-  marketingConsentAt: Date | null;
-};
-
 /**
  * What one source produced, before anything is written.
  *
@@ -138,7 +113,6 @@ export type SourceBatch = {
   source: ImportSource;
   currency: string | null;
   products: ImportProduct[];
-  clients: ImportClient[];
   /**
    * Anything the *fetch* could not do — a page of the catalogue that failed,
    * a collection type that was skipped. Distinct from a row's notes, because
@@ -147,10 +121,25 @@ export type SourceBatch = {
   notes: string[];
 };
 
+/**
+ * **Contacts are deliberately not here.**
+ *
+ * Spec 47 maps a source's customers onto `clients`, and this build does not:
+ * importing people is governed by a rule with real consequences — *"consent is
+ * a thing a person gave, and a column in a CSV is a claim that they did"* — and
+ * a half-built path that carries a `marketingConsentAt` field nothing writes is
+ * one refactor away from writing it. `consent-write-paths.test.ts` keeps an
+ * allowlist of every file that may touch that column for exactly this reason,
+ * and a type declaration is not a good enough reason to be on it.
+ *
+ * When contacts land, the rule is the one `addClient` and the API's
+ * `POST /contacts` already state: consent only where the source carries a real
+ * timestamp **and** a level — Shopify does, Gumroad's export does not — and
+ * everything else arrives as a contact rather than an audience.
+ */
 export const EMPTY_BATCH = (source: ImportSource): SourceBatch => ({
   source,
   currency: null,
   products: [],
-  clients: [],
   notes: [],
 });

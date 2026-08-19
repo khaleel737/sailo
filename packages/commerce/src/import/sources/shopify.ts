@@ -241,7 +241,6 @@ export function mapShopify(
   return {
     currency,
     products: nodes.map((node) => mapShopifyProduct(node, currency)),
-    clients: [],
     notes: [],
   };
 }

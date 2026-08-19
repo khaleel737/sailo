@@ -48,6 +48,16 @@ export const RESERVED_HANDLES = new Set([
    * email, and the only symptom is that nobody's opt-in ever completes.
    */
   "lists",
+  /*
+   * Spec 35's embeddable wall of love, at `/embed/...`. Same finding as
+   * `lists` above and from the same test: a shop holding this handle shadows
+   * the iframe every seller who embeds their wall is pointing at.
+   */
+  "embed",
+  /* Spec 07's lead magnet, at `/magnet/<token>`. Same finding, same test. */
+  "magnet",
+  /* Spec 35's public request-a-testimonial page, at `/testimonial/<token>`. */
+  "testimonial",
   // Locale prefixes. `/fr/blog` is a real URL, so a shop called `fil` would
   // shadow the Filipino blog. Only three-letter codes need listing: every other
   // locale is two characters and already too short to be a handle.
