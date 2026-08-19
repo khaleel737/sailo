@@ -57,6 +57,7 @@ export const hu: Dictionary = {
     perMonth: "havonta",
     perYear: "évente",
     subscribeNow: "Feliratkozás",
+    currencyLabel: "Pénznem",
   },
   sort: {
     featured: "Kiemelt", newest: "Legújabb", priceAsc: "Ár szerint növekvő",
@@ -149,6 +150,9 @@ export const hu: Dictionary = {
   },
 
   download: {
+    linkLabel: "A linked",
+    codeLabel: "A hozzáférési adataid",
+    open: "Megnyitás",
     title: "A letöltésed",
     file: "Letöltés",
     expires: "Ez a link {date} napjáig működik.",
@@ -345,6 +349,8 @@ export const hu: Dictionary = {
     openMenu: "Menü megnyitása", closeMenu: "Menü bezárása",
     broadcasts: "Körlevelek",
     members: "Tagok",
+    legal: "Jogi oldalak",
+    dataRequests: "Adatkérelmek",
   },
   notifications: {
     aBuyer: "Egy vásárló",
@@ -461,5 +467,31 @@ export const hu: Dictionary = {
     manualRenew: "Ideje megújítani — a hozzáférésed {date}-ig tart. Fizess a boltnak, és megerősítik.",
     manualPending: "A fizetést közvetlenül a bolttal intézed — nincs elmentett kártya.",
     pass: "A tagsági kártyád",
+  },
+  arrival: {
+    title: "Megérkezett a rendelésed?",
+    body: "A {shop} {date} napján adta fel. Egy koppintás jelezni, hogy megjött, és segít nekik rendben tartani a nyilvántartást.",
+    confirm: "Igen, megérkezett",
+    confirmed: "Köszönjük — feljegyeztük, hogy megérkezett.",
+    already: "Ezt már megerősítetted. Nincs más teendő.",
+    unavailable: "Most nem tudtuk ellenőrizni ezt a linket. Próbáld újra egy pillanat múlva.",
+    notFound: "Ez a link nem nyit meg semmit. Ha a rendelésed nem érkezett meg, írj a {shop} címére.",
+    problem: "Valami baj van vele? Írj a {shop} címére.",
+  },
+  pages: {
+    disclaimer: "Ez a dokumentum sablonból készült, és a bolt szerkesztette. Kiindulópont, nem jogi tanácsadás.",
+    faq: "Gyakori kérdések",
+    shopPolicies: "Bolti feltételek",
+    visitShop: "{shop} megtekintése",
+  },
+  pricing: {
+    payWhatYouWant: "Fizess, amennyit szeretnél",
+    nameYourPrice: "Add meg a saját árad",
+    atLeast: "Legalább {amount}",
+    payAnything: "Fizess, amennyit szeretnél – akár semmit",
+    notYetOnSale: "Még nem kapható",
+    noLongerAvailable: "Már nem elérhető",
+    opensOn: "{date}-tól kapható",
+    closesOn: "Az értékesítés {date}-kor zárul",
   },
 };

@@ -76,6 +76,7 @@ export const ja: Dictionary = {
     perMonth: "月額",
     perYear: "年額",
     subscribeNow: "登録する",
+    currencyLabel: "通貨",
   },
   sort: {
     featured: "おすすめ順", newest: "新着順",
@@ -180,6 +181,9 @@ export const ja: Dictionary = {
   },
 
   download: {
+    linkLabel: "リンク",
+    codeLabel: "アクセス情報",
+    open: "開く",
     title: "ダウンロード",
     file: "ダウンロード",
     expires: "このリンクは{date}まで有効です。",
@@ -385,6 +389,8 @@ export const ja: Dictionary = {
     openMenu: "メニューを開く", closeMenu: "メニューを閉じる",
     broadcasts: "一斉配信",
     members: "メンバー",
+    legal: "法務ページ",
+    dataRequests: "データ請求",
   },
   notifications: {
     aBuyer: "購入者",
@@ -502,5 +508,31 @@ export const ja: Dictionary = {
     manualRenew: "更新の時期です。ご利用は {date} までです。ショップにお支払いいただくと確認されます。",
     manualPending: "お支払いはショップと直接やり取りします。カード情報は登録されていません。",
     pass: "メンバーパス",
+  },
+  arrival: {
+    title: "ご注文は届きましたか？",
+    body: "{shop} が {date} に発送しました。届いたことを知らせるのはワンタップで、お店の記録の整理に役立ちます。",
+    confirm: "はい、届きました",
+    confirmed: "ありがとうございます — 届いたことを記録しました。",
+    already: "こちらはすでに確認済みです。これ以上の操作は必要ありません。",
+    unavailable: "今このリンクを確認できませんでした。少し経ってからもう一度お試しください。",
+    notFound: "このリンクでは何も開きません。ご注文が届いていない場合は {shop} までご連絡ください。",
+    problem: "何か問題がありますか？ {shop} までご連絡ください。",
+  },
+  pages: {
+    disclaimer: "この文書はテンプレートから作成され、ショップが編集したものです。出発点であり、法的助言ではありません。",
+    faq: "よくある質問",
+    shopPolicies: "ショップの規約",
+    visitShop: "{shop} を見る",
+  },
+  pricing: {
+    payWhatYouWant: "好きな金額で購入",
+    nameYourPrice: "金額を自分で決める",
+    atLeast: "{amount}以上",
+    payAnything: "好きな金額をどうぞ。無料でもかまいません",
+    notYetOnSale: "まだ販売していません",
+    noLongerAvailable: "現在は販売していません",
+    opensOn: "{date}に販売開始",
+    closesOn: "{date}に販売終了",
   },
 };

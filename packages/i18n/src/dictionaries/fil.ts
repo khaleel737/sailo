@@ -56,6 +56,7 @@ export const fil: Dictionary = {
     perMonth: "kada buwan",
     perYear: "kada taon",
     subscribeNow: "Mag-subscribe",
+    currencyLabel: "Pera",
   },
   sort: {
     featured: "Itinatampok", newest: "Pinakabago", priceAsc: "Presyo: mababa pataas", priceDesc: "Presyo: mataas pababa",
@@ -137,6 +138,9 @@ export const fil: Dictionary = {
   },
 
   download: {
+    linkLabel: "Ang iyong link",
+    codeLabel: "Ang iyong mga detalye ng access",
+    open: "Buksan",
     title: "Iyong download", file: "I-download", expires: "Gumagana ang link na ito hanggang {date}.",
     expired: "Expired na ang link na ito. Makipag-ugnayan sa {shop} para sa bago.",
     remaining: "Natitirang download: {count}",
@@ -304,6 +308,8 @@ export const fil: Dictionary = {
     signOut: "Mag-sign out", upgrade: "Mag-upgrade", openMenu: "Buksan ang menu", closeMenu: "Isara ang menu",
     broadcasts: "Broadcasts",
     members: "Mga miyembro",
+    legal: "Mga legal na pahina",
+    dataRequests: "Mga hiling sa datos",
   },
   notifications: {
     aBuyer: "Isang bumibili", title: "Mga abiso", markAllRead: "Markahang nabasa lahat",
@@ -411,5 +417,31 @@ export const fil: Dictionary = {
     manualRenew: "Oras na para mag-renew — hanggang {date} ang access mo. Magbayad sa tindahan at kokumpirmahin nila.",
     manualPending: "Direktang sa tindahan mo aayusin ang bayad — walang naka-save na card.",
     pass: "Ang iyong member pass",
+  },
+  arrival: {
+    title: "Dumating na ba ang order mo?",
+    body: "Ipinadala ito ng {shop} noong {date}. Isang tap lang para ipaalam na dumating na, at nakakatulong ito sa maayos nilang record.",
+    confirm: "Oo, dumating na",
+    confirmed: "Salamat — naitala namin na dumating na ito.",
+    already: "Nakumpirma mo na ito. Wala nang kailangang gawin.",
+    unavailable: "Hindi namin ma-check ang link ngayon. Subukan ulit maya-maya.",
+    notFound: "Walang binubuksan ang link na ito. Kung hindi pa dumating ang order mo, kontakin ang {shop}.",
+    problem: "May problema ba rito? Kontakin ang {shop}.",
+  },
+  pages: {
+    disclaimer: "Ginawa ang dokumentong ito mula sa isang template at inedit ng tindahan. Panimulang punto ito, hindi legal na payo.",
+    faq: "Mga madalas itanong",
+    shopPolicies: "Mga patakaran ng tindahan",
+    visitShop: "Bisitahin ang {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Magbayad ng gusto mo",
+    nameYourPrice: "Ikaw ang magtakda ng presyo",
+    atLeast: "Hindi bababa sa {amount}",
+    payAnything: "Magbayad ng kahit magkano, kahit wala",
+    notYetOnSale: "Wala pa sa benta",
+    noLongerAvailable: "Hindi na available",
+    opensOn: "Bubukas sa {date}",
+    closesOn: "Nagsasara ang benta sa {date}",
   },
 };

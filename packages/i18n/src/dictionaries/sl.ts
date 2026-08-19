@@ -57,6 +57,7 @@ export const sl: Dictionary = {
     perMonth: "na mesec",
     perYear: "na leto",
     subscribeNow: "Naroči se",
+    currencyLabel: "Valuta",
   },
   sort: {
     featured: "Izpostavljeno", newest: "Najnovejše", priceAsc: "Cena: naraščajoče", priceDesc: "Cena: padajoče",
@@ -138,6 +139,9 @@ export const sl: Dictionary = {
   },
 
   download: {
+    linkLabel: "Vaša povezava",
+    codeLabel: "Vaši podatki za dostop",
+    open: "Odpri",
     title: "Vaš prenos", file: "Prenesi", expires: "Ta povezava velja do {date}.",
     expired: "Povezava je potekla. Obrnite se na {shop} za novo.",
     remaining: "Preostalo prenosov: {count}",
@@ -303,6 +307,8 @@ export const sl: Dictionary = {
     signOut: "Odjava", upgrade: "Nadgradi", openMenu: "Odpri meni", closeMenu: "Zapri meni",
     broadcasts: "Kampanje",
     members: "Člani",
+    legal: "Pravne strani",
+    dataRequests: "Zahteve za podatke",
   },
   notifications: {
     aBuyer: "Kupec", title: "Obvestila", markAllRead: "Označi vse kot prebrano",
@@ -410,5 +416,31 @@ export const sl: Dictionary = {
     manualRenew: "Čas je za podaljšanje — dostop imate do {date}. Plačajte trgovini in potrdila bo.",
     manualPending: "Plačilo dogovorite neposredno s trgovino — shranjene kartice ni.",
     pass: "Vaša članska izkaznica",
+  },
+  arrival: {
+    title: "Je vaše naročilo prispelo?",
+    body: "{shop} ga je poslal {date}. Sporočiti, da je prispelo, vzame en dotik in jim pomaga voditi urejeno evidenco.",
+    confirm: "Da, prispelo je",
+    confirmed: "Hvala — zabeležili smo, da je prispelo.",
+    already: "To ste že potrdili. Nič drugega ni treba.",
+    unavailable: "Te povezave zdaj nismo mogli preveriti. Poskusite znova čez trenutek.",
+    notFound: "Ta povezava ne odpre ničesar. Če vaše naročilo ni prispelo, se obrnite na {shop}.",
+    problem: "Je z njim kaj narobe? Obrnite se na {shop}.",
+  },
+  pages: {
+    disclaimer: "Ta dokument je nastal iz predloge in ga je uredila trgovina. Je izhodišče, ne pravni nasvet.",
+    faq: "Pogosta vprašanja",
+    shopPolicies: "Pogoji trgovine",
+    visitShop: "Obiščite {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Plačajte, kolikor želite",
+    nameYourPrice: "Določite svojo ceno",
+    atLeast: "Vsaj {amount}",
+    payAnything: "Plačajte, kolikor želite, tudi nič",
+    notYetOnSale: "Še ni naprodaj",
+    noLongerAvailable: "Ni več na voljo",
+    opensOn: "Odpre se {date}",
+    closesOn: "Prodaja se zapre {date}",
   },
 };

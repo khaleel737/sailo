@@ -56,6 +56,7 @@ export const ro: Dictionary = {
     perMonth: "pe lună",
     perYear: "pe an",
     subscribeNow: "Abonează-te",
+    currencyLabel: "Monedă",
   },
   sort: {
     featured: "Recomandate", newest: "Cele mai noi", priceAsc: "Preț crescător",
@@ -147,6 +148,9 @@ export const ro: Dictionary = {
   },
 
   download: {
+    linkLabel: "Linkul tău",
+    codeLabel: "Detaliile tale de acces",
+    open: "Deschide",
     title: "Descărcarea ta",
     file: "Descarcă",
     expires: "Acest link funcționează până la {date}.",
@@ -344,6 +348,8 @@ export const ro: Dictionary = {
     openMenu: "Deschide meniul", closeMenu: "Închide meniul",
     broadcasts: "Trimiteri",
     members: "Membri",
+    legal: "Pagini juridice",
+    dataRequests: "Cereri privind datele",
   },
   notifications: {
     aBuyer: "Un cumpărător",
@@ -460,5 +466,31 @@ export const ro: Dictionary = {
     manualRenew: "E timpul să reînnoiești — accesul tău ține până pe {date}. Plătește magazinului și va confirma.",
     manualPending: "Plata o aranjezi direct cu magazinul — nu există niciun card salvat.",
     pass: "Cardul tău de membru",
+  },
+  arrival: {
+    title: "Ți-a ajuns comanda?",
+    body: "{shop} a expediat-o pe {date}. Le spui că a ajuns dintr-o atingere și îi ajuți să țină evidența la zi.",
+    confirm: "Da, a ajuns",
+    confirmed: "Mulțumim — am notat că a ajuns.",
+    already: "Ai confirmat deja. Nu mai e nimic de făcut.",
+    unavailable: "Nu am putut verifica linkul acum. Încearcă din nou într-o clipă.",
+    notFound: "Linkul acesta nu deschide nimic. Dacă nu ți-a ajuns comanda, scrie-i lui {shop}.",
+    problem: "E ceva în neregulă cu ea? Scrie-i lui {shop}.",
+  },
+  pages: {
+    disclaimer: "Acest document a fost creat dintr-un șablon și editat de magazin. Este un punct de plecare, nu consultanță juridică.",
+    faq: "Întrebări frecvente",
+    shopPolicies: "Condițiile magazinului",
+    visitShop: "Vizitează {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Plătește cât vrei",
+    nameYourPrice: "Stabilește-ți prețul",
+    atLeast: "Cel puțin {amount}",
+    payAnything: "Plătește cât vrei, chiar și nimic",
+    notYetOnSale: "Încă nu este la vânzare",
+    noLongerAvailable: "Nu mai este disponibil",
+    opensOn: "Se deschide pe {date}",
+    closesOn: "Vânzările se închid pe {date}",
   },
 };

@@ -39,6 +39,26 @@ export const shops = pgTable(
 
     // Contact / ordering
     currency: text("currency").default("USD").notNull(),
+
+    /**
+     * The other currencies this shop quotes, ISO 4217 uppercase.
+     *
+     * Presentment only. `currency` above is still the shop's own — what its
+     * settings say, what an unmatched visitor is quoted, and what every price
+     * falls back to. This is the list a seller ticked, not the list a buyer can
+     * actually be quoted: a currency is only offered once **every** published
+     * product, priced variant, enabled delivery rate and active coupon carries
+     * a price in it. `liveCurrencies` decides that, and the difference is what
+     * stops a half-configured currency putting a euro sign in front of a dollar
+     * integer.
+     *
+     * A text array rather than jsonb for the same reason `delivery_methods.
+     * countries` is one: the question asked of it is containment.
+     *
+     * Empty is the default and means today's behaviour exactly — one currency,
+     * everywhere.
+     */
+    regionalCurrencies: text("regional_currencies").array().default([]).notNull(),
     contactEmail: text("contact_email"),
     location: text("location"),
 
@@ -59,6 +79,50 @@ export const shops = pgTable(
      * things a seller gets to put in front of their buyers.
      */
     termsUrl: text("terms_url"),
+    /**
+     * Where the shop's privacy policy lives, if it has published one.
+     *
+     * Its own column rather than a second meaning for `termsUrl`, because the
+     * two appear in different places and answer different questions: terms is
+     * what the buyer *agrees to* at checkout and is snapshotted onto the order
+     * when they do, privacy is what the shop must disclose whether or not
+     * anybody agrees to anything. One column for both would mean turning on
+     * `requireTerms` silently republished the privacy policy as the document
+     * being consented to — spec 41.
+     *
+     * Host-checked on write by the same `isPublicLinkUrl` guard `termsUrl`
+     * uses. A page generated in Sailo points at `/[handle]/legal/<slug>`, which
+     * is stored absolute so the storefront footer, the checkout and an evidence
+     * pack all render one string.
+     */
+    privacyUrl: text("privacy_url"),
+
+    /**
+     * What this shop puts on a buyer's card statement.
+     *
+     * The fix for `unrecognized` (Visa 10.4 / MC 4837) — a cardholder who did
+     * not recognise a line and charged it back. `docs/chargebacks.md` calls it
+     * *"usually a statement-descriptor problem"*, and until this column existed
+     * Sailo had no answer: whatever the seller's connected account defaults to
+     * appeared, which for a link-in-bio shop is often a legal entity name the
+     * buyer has never heard of.
+     *
+     * Two columns because Stripe has two. The descriptor is the fixed part, up
+     * to 22 characters; the suffix is appended per transaction where the account
+     * supports it. Both validated against the card networks' rules on write —
+     * Stripe *silently ignores* an invalid descriptor, which is the worst
+     * possible outcome, because it looks configured and is not.
+     *
+     * Defaulted from `shops.name` on first save. An unconfigured shop showing
+     * its own name is still better than one showing an entity nobody knows.
+     *
+     * Whatever is actually sent is snapshotted onto the order, because this is
+     * editable and a five-month-old dispute must not change its story when the
+     * seller changes theirs.
+     */
+    statementDescriptor: text("statement_descriptor"),
+    statementDescriptorSuffix: text("statement_descriptor_suffix"),
+
     /** Show the optional marketing opt-in. Never pre-checked — see the panel. */
     askMarketingConsent: boolean("ask_marketing_consent")
       .default(false)
@@ -274,6 +338,57 @@ export const shops = pgTable(
     taxOnDelivery: boolean("tax_on_delivery").default(true).notNull(),
     /** VAT/GST registration number, printed on the invoice. */
     taxId: text("tax_id"),
+
+    /*
+     * Spec 38 — the four switches on the jurisdictions tab.
+     *
+     * All four default to today's behaviour, so a shop that never opens the tab
+     * is unchanged: no OSS, no automatic country switching, and no product tax
+     * category to send Stripe.
+     */
+    /**
+     * The seller files one EU one-stop-shop return rather than registering in
+     * each member state.
+     *
+     * It does not change a rate — under `stripe` the registrations on the
+     * connected account decide that, and under `manual` there is one flat rate
+     * by definition. What it changes is the *warning*: an OSS-registered seller
+     * has already dealt with the €10,000 combined threshold, so the monitor
+     * marks the EU row registered instead of mailing them about it.
+     */
+    taxOssRegistered: boolean("tax_oss_registered").default(false).notNull(),
+    /**
+     * Stop selling into a country as it approaches a threshold, rather than
+     * warning and letting the seller decide.
+     *
+     * Off by default and deliberately so: the safe-looking default here would
+     * silently close a seller's best market while they were asleep. A seller
+     * who wants it has usually decided that registering somewhere is more
+     * expensive than the sales, which is a judgement only they can make.
+     */
+    taxDisableOnThreshold: boolean("tax_disable_on_threshold")
+      .default(false)
+      .notNull(),
+    /**
+     * Refuse countries that expect registration from the very first sale.
+     *
+     * A different switch from the one above because it is a different decision:
+     * there is no threshold to approach, so nothing will ever warn — the seller
+     * is either non-compliant from sale one or not selling there.
+     */
+    taxDisableImmediateObligation: boolean("tax_disable_immediate_obligation")
+      .default(false)
+      .notNull(),
+    /**
+     * The shop-wide product tax category, as Stripe Tax names them
+     * (`txcd_10000000` and friends).
+     *
+     * Meaningful under `taxMode = 'stripe'` and inert under `manual`, where
+     * there is one rate applied to everything. The card hides it in manual mode
+     * rather than offering a control that does nothing — the same treatment
+     * `taxIdCollection` already gets, and for the same reason.
+     */
+    taxCategory: text("tax_category"),
 
     /*
      * Booking.

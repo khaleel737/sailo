@@ -81,6 +81,16 @@ export const en = {
     unavailable: "Unavailable",
     joinOnSailo: "Join {shop} on Sailo", loadMore: "Load more",
     earnBySharing: "Earn {percent}% by sharing this shop",
+    /*
+     * The currency switcher's accessible name — spec 53.
+     *
+     * One key, because the control's faces are currency symbols and its
+     * options' names come from `Intl.DisplayNames`, which already ships every
+     * currency translated into all thirty-five languages. A dictionary entry
+     * per currency would be nine more keys to translate for something the
+     * platform already knows.
+     */
+    currencyLabel: "Currency",
     // A badge answers "what happens after I pay?", not "what category is
     // this?". `kind*` is the product page; `label*` is the smaller card badge,
     // where physical is the unmarked default.
@@ -134,6 +144,32 @@ export const en = {
     reviewThanks: "Thanks! Your review is awaiting approval.",
     star: "{count} star",
     stars: "{count} stars",
+  },
+
+  /**
+   * What a price *is*, when it is not simply a number — spec 43.
+   *
+   * Its own section rather than more keys inside `checkout`, and the reason is
+   * mechanical rather than editorial: `checkout` is one of the protected money
+   * sections, which `i18n:fill` refuses to write into at all — so a new key
+   * there is a hole in thirty-four locales that no filler may ever close, and a
+   * storefront hole is a compile error. These strings are money-adjacent and
+   * should join the protected list once a human has read them in every
+   * language; until then they are fillable, which is the difference between a
+   * feature that ships translated and one that does not ship.
+   */
+  pricing: {
+    payWhatYouWant: "Pay what you want",
+    nameYourPrice: "Name your price",
+    atLeast: "At least {amount}",
+    /* A floor of zero is the seller saying this may be free, which is the whole
+       of a donation. "At least £0.00" would read as a bug on the one product
+       where free is the point. */
+    payAnything: "Pay whatever you like, including nothing",
+    notYetOnSale: "Not on sale yet",
+    noLongerAvailable: "No longer available",
+    opensOn: "Opens {date}",
+    closesOn: "Sales close {date}",
   },
 
   checkout: {
@@ -207,8 +243,10 @@ export const en = {
     duration: "Takes {duration}",
     online: "Online",
     inPerson: "In person",
+    /* "What you bought" rather than "your download": the same line now covers
+       a link and an access code, and neither of those is a download. */
     downloadAfterPayment:
-      "Your download unlocks as soon as {shop} confirms your payment.",
+      "What you bought unlocks as soon as {shop} confirms your payment.",
     getFiles: "Get your files",
     termsAgree: "I agree to the terms and conditions",
     termsView: "Read them",
@@ -255,7 +293,71 @@ export const en = {
     usedUp:
       "You've used every download on this link. Get in touch with {shop} if you need it again.",
     notReady: "Your files unlock once {shop} confirms your payment.",
+    /*
+     * A digital product that is a link or a code rather than a file. Same
+     * gate, same page, different noun — "Download" would be a button that
+     * downloads nothing.
+     */
+    linkLabel: "Your link",
+    codeLabel: "Your access details",
+    open: "Open",
     visitShop: "Visit {shop}",
+  },
+
+  /*
+   * Spec 41 — the chrome around a seller's own hosted documents.
+   *
+   * The chrome only. The documents themselves are English and stay English:
+   * a template in thirty-five languages is thirty-five legal documents, and a
+   * machine-translated refund clause is precisely the case Decision A says is
+   * never machine-translatable. What is translated here is the frame — the
+   * link back to the shop, the section headings, and the disclaimer, which is
+   * the one sentence on the page that has to be understood by everybody.
+   */
+  pages: {
+    /*
+     * Not optional and not dismissible, on every generated legal page and at
+     * the top of the generator. The register is borrowed from Easytools' own
+     * tax wizard, and it is the right one: it respects the reader, it does not
+     * pretend the output is advice, and it puts responsibility where it sits.
+     */
+    disclaimer:
+      "This document was produced from a template and edited by the shop. It is a starting point, not legal advice.",
+    /** The heading over the FAQ accordion, when the seller left theirs blank. */
+    faq: "Frequently asked questions",
+    /** The label on the footer row holding the shop's own documents. */
+    shopPolicies: "Shop policies",
+    visitShop: "Visit {shop}",
+  },
+
+  /*
+   * Spec 44 — the page that asks a buyer whether their parcel arrived.
+   *
+   * Deliberately its own section rather than part of `orderStatus`: this is a
+   * standalone page reached from a link in a shipping email, by somebody with no
+   * session who may not remember the order. Every string here has to make sense
+   * cold.
+   *
+   * The copy carries a load nothing else on the storefront does. A confirmation
+   * here becomes evidence submitted to a card network, so it must be
+   * unmistakable what is being confirmed — "yes, this arrived" and nothing
+   * vaguer — and it must never read as a request the buyer is obliged to answer.
+   */
+  arrival: {
+    title: "Did your order arrive?",
+    body: "{shop} sent this on {date}. Letting them know it arrived takes one tap and helps them keep their records straight.",
+    confirm: "Yes, it arrived",
+    confirmed: "Thanks — we've recorded that it arrived.",
+    already: "You've already confirmed this one. Nothing more to do.",
+    /*
+     * Not "invalid link". A buyer holding a real link that we could not check —
+     * an expired signing key, a cold cache — must not be told their order is
+     * wrong, which is the same rule the coupon path follows.
+     */
+    unavailable: "We couldn't check that link just now. Try again in a moment.",
+    notFound: "This link doesn't open anything. If your order hasn't arrived, get in touch with {shop}.",
+    /** The one thing the page must never imply is that a complaint is closed. */
+    problem: "Something wrong with it? Get in touch with {shop}.",
   },
 
   tickets: {
@@ -537,6 +639,10 @@ export const en = {
     closeMenu: "Close menu",
     broadcasts: "Broadcasts",
     members: "Members",
+    /** Spec 41 — the seller's own terms, privacy policy, refunds, about, FAQ. */
+    legal: "Legal pages",
+    /** Spec 52 — the statutory queue. Never abbreviated: "DSARs" is jargon. */
+    dataRequests: "Data requests",
   },
 
   notifications: {

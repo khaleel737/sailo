@@ -57,6 +57,7 @@ export const sv: Dictionary = {
     perMonth: "per månad",
     perYear: "per år",
     subscribeNow: "Prenumerera",
+    currencyLabel: "Valuta",
   },
   sort: {
     featured: "Utvalda", newest: "Nyast", priceAsc: "Pris: lägst först",
@@ -149,6 +150,9 @@ export const sv: Dictionary = {
   },
 
   download: {
+    linkLabel: "Din länk",
+    codeLabel: "Dina åtkomstuppgifter",
+    open: "Öppna",
     title: "Din nedladdning",
     file: "Ladda ner",
     expires: "Länken fungerar till {date}.",
@@ -347,6 +351,8 @@ export const sv: Dictionary = {
     openMenu: "Öppna meny", closeMenu: "Stäng meny",
     broadcasts: "Utskick",
     members: "Medlemmar",
+    legal: "Juridiska sidor",
+    dataRequests: "Dataförfrågningar",
   },
   notifications: {
     aBuyer: "En köpare",
@@ -463,5 +469,31 @@ export const sv: Dictionary = {
     manualRenew: "Dags att förnya — din tillgång räcker till {date}. Betala butiken så bekräftar de det.",
     manualPending: "Du gör upp betalningen direkt med butiken — inget kort finns sparat.",
     pass: "Ditt medlemskort",
+  },
+  arrival: {
+    title: "Har din beställning kommit fram?",
+    body: "{shop} skickade den {date}. Att säga till att den kom fram tar en tryckning och hjälper dem hålla ordning på bokföringen.",
+    confirm: "Ja, den kom fram",
+    confirmed: "Tack — vi har noterat att den kom fram.",
+    already: "Du har redan bekräftat den här. Inget mer att göra.",
+    unavailable: "Vi kunde inte kolla länken just nu. Försök igen om en stund.",
+    notFound: "Den här länken öppnar ingenting. Har din beställning inte kommit, kontakta {shop}.",
+    problem: "Är något fel med den? Kontakta {shop}.",
+  },
+  pages: {
+    disclaimer: "Det här dokumentet har skapats från en mall och redigerats av butiken. Det är en utgångspunkt, inte juridisk rådgivning.",
+    faq: "Vanliga frågor",
+    shopPolicies: "Butikens villkor",
+    visitShop: "Besök {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Betala vad du vill",
+    nameYourPrice: "Sätt ditt eget pris",
+    atLeast: "Minst {amount}",
+    payAnything: "Betala vad du vill – även ingenting",
+    notYetOnSale: "Inte till salu än",
+    noLongerAvailable: "Inte längre tillgänglig",
+    opensOn: "Öppnar {date}",
+    closesOn: "Försäljningen stänger {date}",
   },
 };

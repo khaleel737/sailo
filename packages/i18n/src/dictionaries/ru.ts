@@ -57,6 +57,7 @@ export const ru: Dictionary = {
     perMonth: "в месяц",
     perYear: "в год",
     subscribeNow: "Подписаться",
+    currencyLabel: "Валюта",
   },
   sort: {
     featured: "Рекомендуемые", newest: "Новинки", priceAsc: "Цена: по возрастанию",
@@ -148,6 +149,9 @@ export const ru: Dictionary = {
   },
 
   download: {
+    linkLabel: "Ваша ссылка",
+    codeLabel: "Данные для доступа",
+    open: "Открыть",
     title: "Ваша загрузка",
     file: "Скачать",
     expires: "Ссылка действует до {date}.",
@@ -347,6 +351,8 @@ export const ru: Dictionary = {
     openMenu: "Открыть меню", closeMenu: "Закрыть меню",
     broadcasts: "Рассылки",
     members: "Участники",
+    legal: "Правовые страницы",
+    dataRequests: "Запросы данных",
   },
   notifications: {
     aBuyer: "Покупатель",
@@ -463,5 +469,31 @@ export const ru: Dictionary = {
     manualRenew: "Пора продлить — доступ действует до {date}. Оплатите магазину, и он подтвердит.",
     manualPending: "Оплату вы согласуете напрямую с магазином — сохранённой карты нет.",
     pass: "Ваш членский пропуск",
+  },
+  arrival: {
+    title: "Ваш заказ дошёл?",
+    body: "{shop} отправил его {date}. Сообщить, что он дошёл, — одно нажатие, и это помогает продавцу вести учёт.",
+    confirm: "Да, дошёл",
+    confirmed: "Спасибо — мы отметили, что заказ дошёл.",
+    already: "Вы уже подтвердили этот заказ. Больше ничего делать не нужно.",
+    unavailable: "Сейчас не получилось проверить ссылку. Попробуйте ещё раз через минуту.",
+    notFound: "Эта ссылка ничего не открывает. Если заказ не дошёл, напишите {shop}.",
+    problem: "Что-то не так с ним? Напишите {shop}.",
+  },
+  pages: {
+    disclaimer: "Этот документ создан по шаблону и отредактирован магазином. Это отправная точка, а не юридическая консультация.",
+    faq: "Частые вопросы",
+    shopPolicies: "Условия магазина",
+    visitShop: "Перейти в {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Платите сколько хотите",
+    nameYourPrice: "Назначьте свою цену",
+    atLeast: "Не менее {amount}",
+    payAnything: "Платите сколько хотите, хоть ничего",
+    notYetOnSale: "Ещё не в продаже",
+    noLongerAvailable: "Больше не доступно",
+    opensOn: "Открывается {date}",
+    closesOn: "Продажи закрываются {date}",
   },
 };

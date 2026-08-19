@@ -57,6 +57,7 @@ export const fi: Dictionary = {
     perMonth: "kuukaudessa",
     perYear: "vuodessa",
     subscribeNow: "Tilaa",
+    currencyLabel: "Valuutta",
   },
   sort: {
     featured: "Suositellut", newest: "Uusimmat", priceAsc: "Hinta: halvin ensin",
@@ -148,6 +149,9 @@ export const fi: Dictionary = {
   },
 
   download: {
+    linkLabel: "Linkkisi",
+    codeLabel: "Käyttöoikeustietosi",
+    open: "Avaa",
     title: "Latauksesi",
     file: "Lataa",
     expires: "Linkki toimii {date} asti.",
@@ -344,6 +348,8 @@ export const fi: Dictionary = {
     openMenu: "Avaa valikko", closeMenu: "Sulje valikko",
     broadcasts: "Joukkoviestit",
     members: "Jäsenet",
+    legal: "Lakisivut",
+    dataRequests: "Tietopyynnöt",
   },
   notifications: {
     aBuyer: "Ostaja",
@@ -460,5 +466,31 @@ export const fi: Dictionary = {
     manualRenew: "Aika uusia — käyttöoikeutesi kestää {date} asti. Maksa kaupalle, niin he vahvistavat sen.",
     manualPending: "Sovit maksusta suoraan kaupan kanssa — korttia ei ole tallennettu.",
     pass: "Jäsenkorttisi",
+  },
+  arrival: {
+    title: "Saapuiko tilauksesi?",
+    body: "{shop} lähetti sen {date}. Ilmoittaminen vie yhden napautuksen ja auttaa pitämään kirjanpidon kunnossa.",
+    confirm: "Kyllä, se saapui",
+    confirmed: "Kiitos — merkitsimme, että se saapui.",
+    already: "Olet jo vahvistanut tämän. Muuta ei tarvita.",
+    unavailable: "Emme voineet tarkistaa linkkiä juuri nyt. Yritä hetken päästä uudelleen.",
+    notFound: "Tämä linkki ei avaa mitään. Jos tilauksesi ei saapunut, ota yhteyttä: {shop}.",
+    problem: "Onko siinä jotain vikaa? Ota yhteyttä: {shop}.",
+  },
+  pages: {
+    disclaimer: "Tämä asiakirja on luotu mallipohjasta ja kaupan muokkaama. Se on lähtökohta, ei oikeudellinen neuvo.",
+    faq: "Usein kysytyt kysymykset",
+    shopPolicies: "Kaupan ehdot",
+    visitShop: "Siirry kauppaan {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Maksa mitä haluat",
+    nameYourPrice: "Aseta oma hintasi",
+    atLeast: "Vähintään {amount}",
+    payAnything: "Maksa mitä haluat, vaikka et mitään",
+    notYetOnSale: "Ei vielä myynnissä",
+    noLongerAvailable: "Ei enää saatavilla",
+    opensOn: "Avautuu {date}",
+    closesOn: "Myynti päättyy {date}",
   },
 };

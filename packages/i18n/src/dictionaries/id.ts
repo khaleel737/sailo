@@ -56,6 +56,7 @@ export const id: Dictionary = {
     perMonth: "per bulan",
     perYear: "per tahun",
     subscribeNow: "Berlangganan",
+    currencyLabel: "Mata uang",
   },
   sort: {
     featured: "Unggulan", newest: "Terbaru", priceAsc: "Harga: terendah dulu", priceDesc: "Harga: tertinggi dulu",
@@ -136,6 +137,9 @@ export const id: Dictionary = {
   },
 
   download: {
+    linkLabel: "Tautan Anda",
+    codeLabel: "Detail akses Anda",
+    open: "Buka",
     title: "Unduhan Anda", file: "Unduh", expires: "Tautan ini berlaku sampai {date}.",
     expired: "Tautan ini kedaluwarsa. Hubungi {shop} untuk yang baru.",
     remaining: "Sisa unduhan: {count}",
@@ -303,6 +307,8 @@ export const id: Dictionary = {
     signOut: "Keluar", upgrade: "Tingkatkan", openMenu: "Buka menu", closeMenu: "Tutup menu",
     broadcasts: "Siaran email",
     members: "Anggota",
+    legal: "Halaman hukum",
+    dataRequests: "Permintaan data",
   },
   notifications: {
     aBuyer: "Seorang pembeli", title: "Notifikasi", markAllRead: "Tandai semua sudah dibaca",
@@ -410,5 +416,31 @@ export const id: Dictionary = {
     manualRenew: "Saatnya perpanjang — akses Anda sampai {date}. Bayar ke toko dan mereka akan konfirmasi.",
     manualPending: "Pembayaran diatur langsung dengan toko — tidak ada kartu tersimpan.",
     pass: "Kartu anggota Anda",
+  },
+  arrival: {
+    title: "Pesananmu sudah sampai?",
+    body: "{shop} mengirimnya pada {date}. Memberi tahu bahwa pesanan sudah sampai cuma sekali ketuk dan membantu mereka merapikan catatan.",
+    confirm: "Ya, sudah sampai",
+    confirmed: "Terima kasih — kami sudah mencatat bahwa pesanan sampai.",
+    already: "Kamu sudah mengonfirmasi yang ini. Tidak ada lagi yang perlu dilakukan.",
+    unavailable: "Kami belum bisa memeriksa tautan ini sekarang. Coba lagi sebentar.",
+    notFound: "Tautan ini tidak membuka apa pun. Kalau pesananmu belum sampai, hubungi {shop}.",
+    problem: "Ada yang tidak beres? Hubungi {shop}.",
+  },
+  pages: {
+    disclaimer: "Dokumen ini dibuat dari templat dan disunting oleh toko. Ini adalah titik awal, bukan nasihat hukum.",
+    faq: "Pertanyaan umum",
+    shopPolicies: "Ketentuan toko",
+    visitShop: "Kunjungi {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Bayar sesukamu",
+    nameYourPrice: "Tentukan harganya sendiri",
+    atLeast: "Minimal {amount}",
+    payAnything: "Bayar berapa pun yang kamu mau, termasuk nol",
+    notYetOnSale: "Belum dijual",
+    noLongerAvailable: "Tidak tersedia lagi",
+    opensOn: "Dibuka {date}",
+    closesOn: "Penjualan ditutup {date}",
   },
 };

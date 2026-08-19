@@ -56,6 +56,7 @@ export const bs: Dictionary = {
     perMonth: "mjesečno",
     perYear: "godišnje",
     subscribeNow: "Pretplati se",
+    currencyLabel: "Valuta",
   },
   sort: {
     featured: "Izdvojeno", newest: "Najnovije", priceAsc: "Cijena: od niže", priceDesc: "Cijena: od više",
@@ -136,6 +137,9 @@ export const bs: Dictionary = {
   },
 
   download: {
+    linkLabel: "Vaš link",
+    codeLabel: "Podaci za pristup",
+    open: "Otvori",
     title: "Vaše preuzimanje", file: "Preuzmi", expires: "Ovaj link važi do {date}.",
     expired: "Link je istekao. Javite se prodavnici {shop} za novi.",
     remaining: "Preostalo preuzimanja: {count}",
@@ -304,6 +308,8 @@ export const bs: Dictionary = {
     signOut: "Odjava", upgrade: "Nadogradi", openMenu: "Otvori meni", closeMenu: "Zatvori meni",
     broadcasts: "Kampanje",
     members: "Članovi",
+    legal: "Pravne stranice",
+    dataRequests: "Zahtjevi za podatke",
   },
   notifications: {
     aBuyer: "Kupac", title: "Obavještenja", markAllRead: "Označi sve pročitanim",
@@ -411,5 +417,31 @@ export const bs: Dictionary = {
     manualRenew: "Vrijeme je za obnovu — pristup vam traje do {date}. Platite trgovini i oni će potvrditi.",
     manualPending: "Plaćanje dogovarate direktno s trgovinom — nema sačuvane kartice.",
     pass: "Vaša članska propusnica",
+  },
+  arrival: {
+    title: "Je li vaša narudžba stigla?",
+    body: "{shop} ju je poslao {date}. Da im javite da je stigla treba jedan dodir i pomaže im da vode uredne evidencije.",
+    confirm: "Da, stigla je",
+    confirmed: "Hvala — zabilježili smo da je stigla.",
+    already: "Ovo ste već potvrdili. Ništa više ne treba.",
+    unavailable: "Trenutno nismo mogli provjeriti ovaj link. Pokušajte ponovo za koji trenutak.",
+    notFound: "Ovaj link ne otvara ništa. Ako vaša narudžba nije stigla, javite se {shop}.",
+    problem: "Nešto nije u redu s njom? Javite se {shop}.",
+  },
+  pages: {
+    disclaimer: "Ovaj dokument je napravljen prema predlošku i uređen od strane trgovine. To je polazna tačka, a ne pravni savjet.",
+    faq: "Često postavljana pitanja",
+    shopPolicies: "Pravila trgovine",
+    visitShop: "Posjetite {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Platite koliko želite",
+    nameYourPrice: "Odredite svoju cijenu",
+    atLeast: "Najmanje {amount}",
+    payAnything: "Platite koliko želite, čak i ništa",
+    notYetOnSale: "Još nije u prodaji",
+    noLongerAvailable: "Više nije dostupno",
+    opensOn: "Otvara se {date}",
+    closesOn: "Prodaja se zatvara {date}",
   },
 };

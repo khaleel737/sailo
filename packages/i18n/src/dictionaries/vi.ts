@@ -57,6 +57,7 @@ export const vi: Dictionary = {
     perMonth: "mỗi tháng",
     perYear: "mỗi năm",
     subscribeNow: "Đăng ký",
+    currencyLabel: "Tiền tệ",
   },
   sort: {
     featured: "Nổi bật", newest: "Mới nhất", priceAsc: "Giá: thấp đến cao", priceDesc: "Giá: cao đến thấp",
@@ -138,6 +139,9 @@ export const vi: Dictionary = {
   },
 
   download: {
+    linkLabel: "Liên kết của bạn",
+    codeLabel: "Thông tin truy cập của bạn",
+    open: "Mở",
     title: "Tệp tải về của bạn", file: "Tải về", expires: "Liên kết này dùng được đến {date}.",
     expired: "Liên kết đã hết hạn. Liên hệ {shop} để lấy liên kết mới.",
     remaining: "Lượt tải còn lại: {count}",
@@ -307,6 +311,8 @@ export const vi: Dictionary = {
     signOut: "Đăng xuất", upgrade: "Nâng cấp", openMenu: "Mở menu", closeMenu: "Đóng menu",
     broadcasts: "Email hàng loạt",
     members: "Thành viên",
+    legal: "Trang pháp lý",
+    dataRequests: "Yêu cầu dữ liệu",
   },
   notifications: {
     aBuyer: "Một người mua", title: "Thông báo", markAllRead: "Đánh dấu tất cả đã đọc",
@@ -414,5 +420,31 @@ export const vi: Dictionary = {
     manualRenew: "Đến lúc gia hạn — bạn dùng được đến {date}. Thanh toán cho cửa hàng và họ sẽ xác nhận.",
     manualPending: "Bạn thanh toán trực tiếp với cửa hàng — không có thẻ nào được lưu.",
     pass: "Thẻ thành viên của bạn",
+  },
+  arrival: {
+    title: "Đơn hàng của bạn đã đến chưa?",
+    body: "{shop} đã gửi vào {date}. Báo là đã nhận chỉ mất một chạm và giúp họ giữ sổ sách gọn gàng.",
+    confirm: "Rồi, đã đến",
+    confirmed: "Cảm ơn bạn — chúng tôi đã ghi nhận là đơn đã đến.",
+    already: "Bạn đã xác nhận đơn này rồi. Không cần làm gì thêm.",
+    unavailable: "Hiện chưa kiểm tra được liên kết này. Thử lại sau ít phút nhé.",
+    notFound: "Liên kết này không mở gì cả. Nếu đơn hàng chưa đến, hãy liên hệ {shop}.",
+    problem: "Có gì đó không ổn? Hãy liên hệ {shop}.",
+  },
+  pages: {
+    disclaimer: "Tài liệu này được tạo từ một mẫu và do cửa hàng chỉnh sửa. Đây là điểm khởi đầu, không phải tư vấn pháp lý.",
+    faq: "Câu hỏi thường gặp",
+    shopPolicies: "Điều khoản cửa hàng",
+    visitShop: "Ghé {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Trả bao nhiêu tùy bạn",
+    nameYourPrice: "Tự đặt giá của bạn",
+    atLeast: "Ít nhất {amount}",
+    payAnything: "Trả bao nhiêu tùy bạn, kể cả không trả gì",
+    notYetOnSale: "Chưa mở bán",
+    noLongerAvailable: "Không còn bán nữa",
+    opensOn: "Mở bán {date}",
+    closesOn: "Kết thúc bán {date}",
   },
 };

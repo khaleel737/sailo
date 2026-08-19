@@ -6,7 +6,9 @@
  */
 
 export * from "./shop";
+export * from "./pages";
 export * from "./products";
+export * from "./regional";
 export * from "./analytics";
 export * from "./orders";
 export * from "./checkout";

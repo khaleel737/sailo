@@ -76,6 +76,7 @@ export const zh: Dictionary = {
     perMonth: "每月",
     perYear: "每年",
     subscribeNow: "订阅",
+    currencyLabel: "货币",
   },
   sort: {
     featured: "推荐", newest: "最新",
@@ -180,6 +181,9 @@ export const zh: Dictionary = {
   },
 
   download: {
+    linkLabel: "你的链接",
+    codeLabel: "你的访问信息",
+    open: "打开",
     title: "你的下载",
     file: "下载",
     expires: "此链接有效期至 {date}。",
@@ -384,6 +388,8 @@ export const zh: Dictionary = {
     openMenu: "打开菜单", closeMenu: "关闭菜单",
     broadcasts: "群发邮件",
     members: "会员",
+    legal: "法律页面",
+    dataRequests: "数据请求",
   },
   notifications: {
     aBuyer: "买家",
@@ -501,5 +507,31 @@ export const zh: Dictionary = {
     manualRenew: "该续费了 — 你的权限到 {date}。向店铺付款后由店铺确认。",
     manualPending: "付款直接与店铺约定 — 没有保存任何银行卡。",
     pass: "您的会员通行证",
+  },
+  arrival: {
+    title: "你的订单收到了吗？",
+    body: "{shop} 于 {date} 寄出。告诉他们已经收到只需一下，也方便他们把账目理清楚。",
+    confirm: "收到了",
+    confirmed: "谢谢 — 我们已记录订单已送达。",
+    already: "你已经确认过了，不用再操作。",
+    unavailable: "现在无法核对这个链接，请稍后再试。",
+    notFound: "这个链接打不开任何内容。如果订单还没到，请联系 {shop}。",
+    problem: "有什么问题吗？请联系 {shop}。",
+  },
+  pages: {
+    disclaimer: "本文档由模板生成并经店铺编辑。它是一个起点，而非法律建议。",
+    faq: "常见问题",
+    shopPolicies: "店铺条款",
+    visitShop: "访问 {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "随心付",
+    nameYourPrice: "自己定价",
+    atLeast: "至少 {amount}",
+    payAnything: "想付多少都可以，不付也行",
+    notYetOnSale: "尚未开售",
+    noLongerAvailable: "已不再供应",
+    opensOn: "{date} 开售",
+    closesOn: "{date} 停售",
   },
 };

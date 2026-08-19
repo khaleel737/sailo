@@ -56,6 +56,7 @@ export const ko: Dictionary = {
     perMonth: "월",
     perYear: "년",
     subscribeNow: "구독하기",
+    currencyLabel: "통화",
   },
   sort: {
     featured: "추천", newest: "최신순", priceAsc: "가격: 낮은 순", priceDesc: "가격: 높은 순",
@@ -136,6 +137,9 @@ export const ko: Dictionary = {
   },
 
   download: {
+    linkLabel: "링크",
+    codeLabel: "액세스 정보",
+    open: "열기",
     title: "다운로드", file: "다운로드", expires: "이 링크는 {date}까지 사용할 수 있습니다.",
     expired: "링크가 만료되었습니다. 새 링크는 {shop}에 문의해 주세요.",
     remaining: "남은 다운로드 횟수: {count}",
@@ -303,6 +307,8 @@ export const ko: Dictionary = {
     signOut: "로그아웃", upgrade: "업그레이드", openMenu: "메뉴 열기", closeMenu: "메뉴 닫기",
     broadcasts: "브로드캐스트",
     members: "회원",
+    legal: "법률 페이지",
+    dataRequests: "데이터 요청",
   },
   notifications: {
     aBuyer: "한 구매자", title: "알림", markAllRead: "모두 읽음으로 표시",
@@ -410,5 +416,31 @@ export const ko: Dictionary = {
     manualRenew: "갱신할 때가 되었습니다 — {date}까지 이용하실 수 있습니다. 상점에 결제하시면 확인해 드립니다.",
     manualPending: "결제는 상점과 직접 진행합니다 — 저장된 카드가 없습니다.",
     pass: "회원 패스",
+  },
+  arrival: {
+    title: "주문하신 상품이 도착했나요?",
+    body: "{shop}에서 {date}에 발송했어요. 도착했다고 알려주면 한 번의 탭으로 끝나고, 판매자가 기록을 정리하는 데 도움이 돼요.",
+    confirm: "네, 도착했어요",
+    confirmed: "감사합니다 — 도착한 것으로 기록했어요.",
+    already: "이미 확인하셨어요. 더 하실 일은 없어요.",
+    unavailable: "지금은 이 링크를 확인할 수 없었어요. 잠시 후 다시 시도해 주세요.",
+    notFound: "이 링크로는 아무것도 열리지 않아요. 주문이 도착하지 않았다면 {shop}에 문의해 주세요.",
+    problem: "문제가 있나요? {shop}에 문의해 주세요.",
+  },
+  pages: {
+    disclaimer: "이 문서는 템플릿으로 작성되어 상점이 편집했습니다. 출발점일 뿐 법률 자문이 아닙니다.",
+    faq: "자주 묻는 질문",
+    shopPolicies: "상점 약관",
+    visitShop: "{shop} 방문하기",
+  },
+  pricing: {
+    payWhatYouWant: "원하는 만큼 결제",
+    nameYourPrice: "가격을 직접 정하세요",
+    atLeast: "최소 {amount}",
+    payAnything: "원하는 만큼 내세요. 무료도 괜찮습니다",
+    notYetOnSale: "아직 판매하지 않습니다",
+    noLongerAvailable: "더 이상 구매할 수 없습니다",
+    opensOn: "{date}에 판매 시작",
+    closesOn: "{date}에 판매 종료",
   },
 };

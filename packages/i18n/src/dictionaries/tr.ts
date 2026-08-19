@@ -59,6 +59,7 @@ export const tr: Dictionary = {
     perMonth: "aylık",
     perYear: "yıllık",
     subscribeNow: "Abone ol",
+    currencyLabel: "Para birimi",
   },
   sort: {
     featured: "Öne çıkanlar", newest: "En yeniler", priceAsc: "Fiyat: artan",
@@ -150,6 +151,9 @@ export const tr: Dictionary = {
   },
 
   download: {
+    linkLabel: "Bağlantınız",
+    codeLabel: "Erişim bilgileriniz",
+    open: "Aç",
     title: "İndirmeniz",
     file: "İndir",
     expires: "Bu bağlantı {date} tarihine kadar geçerli.",
@@ -349,6 +353,8 @@ export const tr: Dictionary = {
     openMenu: "Menüyü aç", closeMenu: "Menüyü kapat",
     broadcasts: "Toplu e-postalar",
     members: "Üyeler",
+    legal: "Hukuki sayfalar",
+    dataRequests: "Veri talepleri",
   },
   notifications: {
     aBuyer: "Bir alıcı",
@@ -465,5 +471,31 @@ export const tr: Dictionary = {
     manualRenew: "Yenileme zamanı — erişimin {date} tarihine kadar sürüyor. Mağazaya öde, onaylasınlar.",
     manualPending: "Ödemeyi doğrudan mağazayla hallediyorsun — kayıtlı kart yok.",
     pass: "Üyelik kartınız",
+  },
+  arrival: {
+    title: "Siparişin ulaştı mı?",
+    body: "{shop} {date} tarihinde gönderdi. Ulaştığını söylemek tek dokunuş sürüyor ve kayıtlarını düzgün tutmalarına yardım ediyor.",
+    confirm: "Evet, ulaştı",
+    confirmed: "Teşekkürler — ulaştığını kaydettik.",
+    already: "Bunu zaten onayladın. Yapılacak başka bir şey yok.",
+    unavailable: "Bu bağlantıyı şu an kontrol edemedik. Birazdan tekrar dene.",
+    notFound: "Bu bağlantı hiçbir şey açmıyor. Siparişin ulaşmadıysa {shop} ile iletişime geç.",
+    problem: "Bir sorun mu var? {shop} ile iletişime geç.",
+  },
+  pages: {
+    disclaimer: "Bu belge bir şablondan üretildi ve mağaza tarafından düzenlendi. Bir başlangıç noktasıdır, hukuki tavsiye değildir.",
+    faq: "Sık sorulan sorular",
+    shopPolicies: "Mağaza koşulları",
+    visitShop: "{shop} mağazasına git",
+  },
+  pricing: {
+    payWhatYouWant: "Dilediğin kadar öde",
+    nameYourPrice: "Fiyatını kendin belirle",
+    atLeast: "En az {amount}",
+    payAnything: "İstediğin kadar öde, hiç ödemesen de olur",
+    notYetOnSale: "Henüz satışta değil",
+    noLongerAvailable: "Artık mevcut değil",
+    opensOn: "{date} tarihinde açılıyor",
+    closesOn: "Satışlar {date} tarihinde kapanıyor",
   },
 };

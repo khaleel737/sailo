@@ -61,6 +61,7 @@ export const de: Dictionary = {
     perMonth: "pro Monat",
     perYear: "pro Jahr",
     subscribeNow: "Abonnieren",
+    currencyLabel: "Währung",
   },
   sort: {
     featured: "Empfohlen", newest: "Neueste",
@@ -157,6 +158,9 @@ export const de: Dictionary = {
   },
 
   download: {
+    linkLabel: "Dein Link",
+    codeLabel: "Deine Zugangsdaten",
+    open: "Öffnen",
     title: "Dein Download",
     file: "Herunterladen",
     expires: "Dieser Link gilt bis {date}.",
@@ -356,6 +360,8 @@ export const de: Dictionary = {
     openMenu: "Menü öffnen", closeMenu: "Menü schließen",
     broadcasts: "Rundmails",
     members: "Mitglieder",
+    legal: "Rechtliche Seiten",
+    dataRequests: "Datenanfragen",
   },
   notifications: {
     aBuyer: "Ein Käufer",
@@ -473,5 +479,31 @@ export const de: Dictionary = {
     manualRenew: "Zeit zu verlängern — dein Zugang läuft bis {date}. Zahle beim Shop, er bestätigt es.",
     manualPending: "Die Zahlung machst du direkt mit dem Shop aus — es ist keine Karte hinterlegt.",
     pass: "Dein Mitgliedsausweis",
+  },
+  arrival: {
+    title: "Ist deine Bestellung angekommen?",
+    body: "{shop} hat sie am {date} verschickt. Kurz Bescheid zu geben, dauert einen Tipp und hilft beim Ordnunghalten.",
+    confirm: "Ja, angekommen",
+    confirmed: "Danke — wir haben notiert, dass sie angekommen ist.",
+    already: "Das hast du schon bestätigt. Mehr ist nicht zu tun.",
+    unavailable: "Wir konnten diesen Link gerade nicht prüfen. Versuch es gleich noch einmal.",
+    notFound: "Dieser Link öffnet nichts. Wenn deine Bestellung nicht angekommen ist, melde dich bei {shop}.",
+    problem: "Stimmt etwas nicht damit? Melde dich bei {shop}.",
+  },
+  pages: {
+    disclaimer: "Dieses Dokument wurde aus einer Vorlage erstellt und vom Shop bearbeitet. Es ist ein Ausgangspunkt und keine Rechtsberatung.",
+    faq: "Häufige Fragen",
+    shopPolicies: "Shop-Bedingungen",
+    visitShop: "{shop} besuchen",
+  },
+  pricing: {
+    payWhatYouWant: "Zahl, was du willst",
+    nameYourPrice: "Nenne deinen Preis",
+    atLeast: "Mindestens {amount}",
+    payAnything: "Zahl, was du möchtest – auch nichts",
+    notYetOnSale: "Noch nicht im Verkauf",
+    noLongerAvailable: "Nicht mehr verfügbar",
+    opensOn: "Öffnet am {date}",
+    closesOn: "Verkauf endet am {date}",
   },
 };

@@ -58,6 +58,7 @@ export const pl: Dictionary = {
     perMonth: "miesięcznie",
     perYear: "rocznie",
     subscribeNow: "Subskrybuj",
+    currencyLabel: "Waluta",
   },
   sort: {
     featured: "Polecane", newest: "Najnowsze", priceAsc: "Cena rosnąco",
@@ -150,6 +151,9 @@ export const pl: Dictionary = {
   },
 
   download: {
+    linkLabel: "Twój link",
+    codeLabel: "Twoje dane dostępu",
+    open: "Otwórz",
     title: "Twoje pobranie",
     file: "Pobierz",
     expires: "Ten link działa do {date}.",
@@ -349,6 +353,8 @@ export const pl: Dictionary = {
     openMenu: "Otwórz menu", closeMenu: "Zamknij menu",
     broadcasts: "Wysyłki",
     members: "Członkowie",
+    legal: "Strony prawne",
+    dataRequests: "Wnioski o dane",
   },
   notifications: {
     aBuyer: "Kupujący",
@@ -466,5 +472,31 @@ export const pl: Dictionary = {
     manualRenew: "Czas odnowić — dostęp masz do {date}. Zapłać sklepowi, a on to potwierdzi.",
     manualPending: "Płatność ustalasz bezpośrednio ze sklepem — żadna karta nie jest zapisana.",
     pass: "Twoja karta członkowska",
+  },
+  arrival: {
+    title: "Czy Twoje zamówienie dotarło?",
+    body: "{shop} wysłał je {date}. Potwierdzenie zajmie chwilę i pomoże im utrzymać porządek w dokumentacji.",
+    confirm: "Tak, dotarło",
+    confirmed: "Dzięki — zapisaliśmy, że dotarło.",
+    already: "To już potwierdziłeś. Nic więcej nie trzeba robić.",
+    unavailable: "Nie udało się teraz sprawdzić tego linku. Spróbuj ponownie za chwilę.",
+    notFound: "Ten link niczego nie otwiera. Jeśli zamówienie nie dotarło, napisz do {shop}.",
+    problem: "Coś jest z nim nie tak? Napisz do {shop}.",
+  },
+  pages: {
+    disclaimer: "Ten dokument powstał na podstawie szablonu i został zredagowany przez sklep. To punkt wyjścia, a nie porada prawna.",
+    faq: "Najczęstsze pytania",
+    shopPolicies: "Regulamin sklepu",
+    visitShop: "Odwiedź {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Zapłać, ile chcesz",
+    nameYourPrice: "Ustal własną cenę",
+    atLeast: "Co najmniej {amount}",
+    payAnything: "Zapłać, ile chcesz — nawet nic",
+    notYetOnSale: "Jeszcze nie w sprzedaży",
+    noLongerAvailable: "Nie jest już dostępne",
+    opensOn: "Otwiera się {date}",
+    closesOn: "Sprzedaż kończy się {date}",
   },
 };

@@ -57,6 +57,7 @@ export const ms: Dictionary = {
     perMonth: "sebulan",
     perYear: "setahun",
     subscribeNow: "Langgan",
+    currencyLabel: "Mata wang",
   },
   sort: {
     featured: "Pilihan", newest: "Terbaharu", priceAsc: "Harga: rendah ke tinggi", priceDesc: "Harga: tinggi ke rendah",
@@ -138,6 +139,9 @@ export const ms: Dictionary = {
   },
 
   download: {
+    linkLabel: "Pautan anda",
+    codeLabel: "Butiran akses anda",
+    open: "Buka",
     title: "Muat turun anda", file: "Muat turun", expires: "Pautan ini sah sehingga {date}.",
     expired: "Pautan ini telah tamat tempoh. Hubungi {shop} untuk yang baharu.",
     remaining: "Baki muat turun: {count}",
@@ -302,6 +306,8 @@ export const ms: Dictionary = {
     signOut: "Log keluar", upgrade: "Naik taraf", openMenu: "Buka menu", closeMenu: "Tutup menu",
     broadcasts: "Siaran",
     members: "Ahli",
+    legal: "Halaman undang-undang",
+    dataRequests: "Permintaan data",
   },
   notifications: {
     aBuyer: "Seorang pembeli", title: "Pemberitahuan", markAllRead: "Tandakan semua sudah dibaca",
@@ -409,5 +415,31 @@ export const ms: Dictionary = {
     manualRenew: "Masa untuk perbaharui — akses anda sehingga {date}. Bayar kepada kedai dan mereka akan sahkan.",
     manualPending: "Pembayaran diuruskan terus dengan kedai — tiada kad disimpan.",
     pass: "Pas ahli anda",
+  },
+  arrival: {
+    title: "Pesanan anda sudah sampai?",
+    body: "{shop} menghantarnya pada {date}. Memberitahu bahawa ia sudah sampai hanya perlu satu ketikan dan membantu mereka menyimpan rekod yang kemas.",
+    confirm: "Ya, sudah sampai",
+    confirmed: "Terima kasih — kami telah merekodkan bahawa ia sampai.",
+    already: "Anda sudah mengesahkan yang ini. Tiada apa-apa lagi perlu dibuat.",
+    unavailable: "Kami tidak dapat menyemak pautan ini sekarang. Cuba lagi sebentar.",
+    notFound: "Pautan ini tidak membuka apa-apa. Jika pesanan anda belum sampai, hubungi {shop}.",
+    problem: "Ada masalah dengannya? Hubungi {shop}.",
+  },
+  pages: {
+    disclaimer: "Dokumen ini dihasilkan daripada templat dan disunting oleh kedai. Ia titik permulaan, bukan nasihat undang-undang.",
+    faq: "Soalan lazim",
+    shopPolicies: "Terma kedai",
+    visitShop: "Lawati {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Bayar sesuka hati",
+    nameYourPrice: "Tetapkan harga anda",
+    atLeast: "Sekurang-kurangnya {amount}",
+    payAnything: "Bayar seberapa yang anda mahu, termasuk tiada",
+    notYetOnSale: "Belum dijual lagi",
+    noLongerAvailable: "Tidak lagi tersedia",
+    opensOn: "Dibuka pada {date}",
+    closesOn: "Jualan ditutup pada {date}",
   },
 };

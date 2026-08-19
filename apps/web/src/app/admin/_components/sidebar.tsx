@@ -16,6 +16,8 @@ import {
   MessageSquare,
   ScanLine,
   Package,
+  ScrollText,
+  ShieldCheck,
   Settings,
   ShoppingBag,
   Tag,
@@ -70,6 +72,17 @@ const GROUPS = [
     items: [
       { href: "/admin/payments", key: "payments", icon: CreditCard },
       { href: "/admin/delivery", key: "delivery", icon: Truck },
+      /*
+       * The two obligations, in Setup rather than in Growth or Selling.
+       *
+       * Neither sells anything and neither is optional. A seller finds "Legal
+       * pages" when they are setting the shop up, which is also the moment
+       * `requireTerms` is worth turning on; "Data requests" has a statutory
+       * clock on it and has to be somewhere a seller will pass, not behind a
+       * settings accordion.
+       */
+      { href: "/admin/legal", key: "legal", icon: ScrollText },
+      { href: "/admin/data-requests", key: "dataRequests", icon: ShieldCheck },
       { href: "/admin/settings", key: "settings", icon: Settings },
     ],
   },

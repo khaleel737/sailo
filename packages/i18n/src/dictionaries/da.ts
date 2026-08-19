@@ -58,6 +58,7 @@ export const da: Dictionary = {
     perMonth: "pr. måned",
     perYear: "pr. år",
     subscribeNow: "Abonnér",
+    currencyLabel: "Valuta",
   },
   sort: {
     featured: "Fremhævede", newest: "Nyeste", priceAsc: "Pris: lavest først",
@@ -149,6 +150,9 @@ export const da: Dictionary = {
   },
 
   download: {
+    linkLabel: "Dit link",
+    codeLabel: "Dine adgangsoplysninger",
+    open: "Åbn",
     title: "Din download",
     file: "Download",
     expires: "Linket virker til {date}.",
@@ -345,6 +349,8 @@ export const da: Dictionary = {
     openMenu: "Åbn menu", closeMenu: "Luk menu",
     broadcasts: "Udsendelser",
     members: "Medlemmer",
+    legal: "Juridiske sider",
+    dataRequests: "Dataanmodninger",
   },
   notifications: {
     aBuyer: "En køber",
@@ -461,5 +467,31 @@ export const da: Dictionary = {
     manualRenew: "Tid til at forny — din adgang løber til {date}. Betal butikken, så bekræfter de det.",
     manualPending: "Du aftaler betalingen direkte med butikken — der er intet kort gemt.",
     pass: "Dit medlemskort",
+  },
+  arrival: {
+    title: "Er din ordre kommet frem?",
+    body: "{shop} sendte den {date}. Det tager ét tryk at sige, at den er kommet, og det hjælper dem med at holde styr på deres regnskab.",
+    confirm: "Ja, den kom frem",
+    confirmed: "Tak — vi har noteret, at den kom frem.",
+    already: "Du har allerede bekræftet denne. Der er ikke mere at gøre.",
+    unavailable: "Vi kunne ikke tjekke linket lige nu. Prøv igen om et øjeblik.",
+    notFound: "Dette link åbner ikke noget. Er din ordre ikke kommet, så kontakt {shop}.",
+    problem: "Er der noget galt med den? Kontakt {shop}.",
+  },
+  pages: {
+    disclaimer: "Dette dokument er lavet ud fra en skabelon og redigeret af butikken. Det er et udgangspunkt, ikke juridisk rådgivning.",
+    faq: "Ofte stillede spørgsmål",
+    shopPolicies: "Butikkens betingelser",
+    visitShop: "Besøg {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Betal hvad du vil",
+    nameYourPrice: "Fastsæt din pris",
+    atLeast: "Mindst {amount}",
+    payAnything: "Betal hvad du har lyst til – også ingenting",
+    notYetOnSale: "Ikke til salg endnu",
+    noLongerAvailable: "Ikke længere tilgængelig",
+    opensOn: "Åbner {date}",
+    closesOn: "Salget lukker {date}",
   },
 };

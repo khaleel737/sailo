@@ -21,7 +21,10 @@
     "./products": "./src/catalog/products.ts",
     "./door-pass": "./src/ticketing/door-pass.ts",
     "./disputes": "./src/disputes/index.ts",
-    "./shop-views": "./src/shop-views/index.ts"
+    "./shop-views": "./src/shop-views/index.ts",
+    "./tax": "./src/tax/index.ts",
+    "./tax/server": "./src/tax/server.ts",
+    "./pages": "./src/pages/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

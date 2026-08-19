@@ -60,6 +60,7 @@ export const es: Dictionary = {
     perMonth: "al mes",
     perYear: "al año",
     subscribeNow: "Suscribirse",
+    currencyLabel: "Moneda",
   },
   sort: {
     featured: "Destacados", newest: "Más recientes",
@@ -156,6 +157,9 @@ export const es: Dictionary = {
   },
 
   download: {
+    linkLabel: "Tu enlace",
+    codeLabel: "Tus datos de acceso",
+    open: "Abrir",
     title: "Tu descarga",
     file: "Descargar",
     expires: "Este enlace funciona hasta el {date}.",
@@ -355,6 +359,8 @@ export const es: Dictionary = {
     openMenu: "Abrir menú", closeMenu: "Cerrar menú",
     broadcasts: "Envíos",
     members: "Miembros",
+    legal: "Páginas legales",
+    dataRequests: "Solicitudes de datos",
   },
   notifications: {
     aBuyer: "Un comprador",
@@ -472,5 +478,31 @@ export const es: Dictionary = {
     manualRenew: "Toca renovar: tu acceso llega hasta el {date}. Paga a la tienda y lo confirmará.",
     manualPending: "El pago lo arreglas directamente con la tienda; no hay ninguna tarjeta guardada.",
     pass: "Tu pase de socio",
+  },
+  arrival: {
+    title: "¿Ha llegado tu pedido?",
+    body: "{shop} lo envió el {date}. Avisar de que llegó cuesta un toque y les ayuda a llevar las cuentas al día.",
+    confirm: "Sí, ha llegado",
+    confirmed: "Gracias — hemos anotado que llegó.",
+    already: "Ya lo confirmaste. No hay nada más que hacer.",
+    unavailable: "No hemos podido comprobar este enlace ahora mismo. Inténtalo de nuevo en un momento.",
+    notFound: "Este enlace no abre nada. Si tu pedido no ha llegado, escribe a {shop}.",
+    problem: "¿Algo va mal con él? Escribe a {shop}.",
+  },
+  pages: {
+    disclaimer: "Este documento se generó a partir de una plantilla y lo editó la tienda. Es un punto de partida, no asesoramiento legal.",
+    faq: "Preguntas frecuentes",
+    shopPolicies: "Condiciones de la tienda",
+    visitShop: "Visitar {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Paga lo que quieras",
+    nameYourPrice: "Elige tu precio",
+    atLeast: "Al menos {amount}",
+    payAnything: "Paga lo que quieras, incluso nada",
+    notYetOnSale: "Aún no está a la venta",
+    noLongerAvailable: "Ya no está disponible",
+    opensOn: "Se abre el {date}",
+    closesOn: "Las ventas cierran el {date}",
   },
 };

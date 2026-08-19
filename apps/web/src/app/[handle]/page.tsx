@@ -16,6 +16,7 @@ import { ReferralCapture } from "./_components/referral-capture";
 import { ShareButton } from "./_components/share-button";
 import { ShopFooter } from "./_components/shop-footer";
 import { ShopHeader } from "./_components/shop-header";
+import { AboutBlock, FaqBlock } from "./_components/shop-sections";
 import { ShopTracking } from "./_components/shop-tracking";
 import { SubscribeCard } from "./_components/subscribe-card";
 import { SubscribePopup } from "./_components/subscribe-popup";
@@ -93,6 +94,11 @@ export default async function ShopPage({
     productTotal,
     nextOffset,
     hasFilters,
+    about,
+    faq,
+    legalLinks,
+    currency,
+    currencyOptions,
   } = await getShopPageData(handle, filters);
 
   return (
@@ -106,6 +112,8 @@ export default async function ShopPage({
       locale={locale}
       methods={checkout.methods}
       deliveryOptions={checkout.deliveryOptions}
+      blockedCountries={checkout.blockedCountries}
+      customFields={checkout.customFields}
       contactEmail={shop.contactEmail}
       compliance={complianceOf(shop)}
       t={t}
@@ -228,6 +236,15 @@ export default async function ShopPage({
           </main>
 
           {/*
+            Under the catalogue and above the signup card. Somebody who read the
+            whole shop and did not buy is often held up by a question, and the
+            answer belongs before the ask for an email address rather than after
+            it. Both render nothing until the seller publishes them.
+          */}
+          <AboutBlock page={about} />
+          <FaqBlock page={faq} t={t} />
+
+          {/*
             Under the catalogue, not over it. A signup card above the products
             asks for an address before the visitor has any reason to give one;
             below, it catches the person who scrolled the whole shop and did
@@ -255,6 +272,9 @@ export default async function ShopPage({
           <ShopFooter
             shop={shop}
             affiliatesLive={affiliatesLive}
+            shopPages={legalLinks}
+            currency={currency}
+            currencyOptions={currencyOptions}
             locale={locale}
             t={t}
           />

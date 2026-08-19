@@ -58,6 +58,7 @@ export const nl: Dictionary = {
     perMonth: "per maand",
     perYear: "per jaar",
     subscribeNow: "Abonneren",
+    currencyLabel: "Valuta",
   },
   sort: {
     featured: "Uitgelicht", newest: "Nieuwste", priceAsc: "Prijs oplopend",
@@ -151,6 +152,9 @@ export const nl: Dictionary = {
   },
 
   download: {
+    linkLabel: "Je link",
+    codeLabel: "Je toegangsgegevens",
+    open: "Openen",
     title: "Jouw download",
     file: "Downloaden",
     expires: "Deze link werkt tot {date}.",
@@ -351,6 +355,8 @@ export const nl: Dictionary = {
     openMenu: "Menu openen", closeMenu: "Menu sluiten",
     broadcasts: "Mailings",
     members: "Leden",
+    legal: "Juridische pagina's",
+    dataRequests: "Gegevensverzoeken",
   },
   notifications: {
     aBuyer: "Een koper",
@@ -468,5 +474,31 @@ export const nl: Dictionary = {
     manualRenew: "Tijd om te verlengen — je toegang loopt tot {date}. Betaal de winkel en zij bevestigen het.",
     manualPending: "De betaling regel je rechtstreeks met de winkel — er staat geen kaart geregistreerd.",
     pass: "Je lidmaatschapspas",
+  },
+  arrival: {
+    title: "Is je bestelling aangekomen?",
+    body: "{shop} heeft hem op {date} verstuurd. Even laten weten dat hij binnen is kost één tik en helpt de administratie kloppend te houden.",
+    confirm: "Ja, aangekomen",
+    confirmed: "Bedankt — we hebben genoteerd dat hij is aangekomen.",
+    already: "Dit heb je al bevestigd. Verder hoef je niks te doen.",
+    unavailable: "We konden deze link nu niet controleren. Probeer het zo nog eens.",
+    notFound: "Deze link opent niets. Is je bestelling niet aangekomen, neem dan contact op met {shop}.",
+    problem: "Is er iets mis mee? Neem contact op met {shop}.",
+  },
+  pages: {
+    disclaimer: "Dit document is gemaakt op basis van een sjabloon en bewerkt door de winkel. Het is een startpunt, geen juridisch advies.",
+    faq: "Veelgestelde vragen",
+    shopPolicies: "Winkelvoorwaarden",
+    visitShop: "Bezoek {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Betaal wat je wilt",
+    nameYourPrice: "Bepaal je eigen prijs",
+    atLeast: "Minimaal {amount}",
+    payAnything: "Betaal wat je wilt, ook niets",
+    notYetOnSale: "Nog niet te koop",
+    noLongerAvailable: "Niet meer beschikbaar",
+    opensOn: "Opent op {date}",
+    closesOn: "Verkoop sluit op {date}",
   },
 };

@@ -76,6 +76,7 @@ export const ar: Dictionary = {
     perMonth: "شهريًا",
     perYear: "سنويًا",
     subscribeNow: "اشترك",
+    currencyLabel: "العملة",
   },
   sort: {
     featured: "المميزة", newest: "الأحدث",
@@ -180,6 +181,9 @@ export const ar: Dictionary = {
   },
 
   download: {
+    linkLabel: "رابطك",
+    codeLabel: "تفاصيل الوصول الخاصة بك",
+    open: "فتح",
     title: "تنزيلك",
     file: "تنزيل",
     expires: "يعمل هذا الرابط حتى {date}.",
@@ -384,6 +388,8 @@ export const ar: Dictionary = {
     openMenu: "فتح القائمة", closeMenu: "إغلاق القائمة",
     broadcasts: "الرسائل الجماعية",
     members: "الأعضاء",
+    legal: "الصفحات القانونية",
+    dataRequests: "طلبات البيانات",
   },
   notifications: {
     aBuyer: "مشترٍ",
@@ -501,5 +507,31 @@ export const ar: Dictionary = {
     manualRenew: "حان وقت التجديد — اشتراكك ساري حتى {date}. ادفع للمتجر وسيؤكّد ذلك.",
     manualPending: "تُرتّب الدفع مع المتجر مباشرة — لا توجد بطاقة محفوظة.",
     pass: "بطاقة عضويتك",
+  },
+  arrival: {
+    title: "هل وصل طلبك؟",
+    body: "أرسله {shop} في {date}. إخبارهم بوصوله يستغرق نقرة واحدة ويساعدهم على ضبط سجلاتهم.",
+    confirm: "نعم، وصل",
+    confirmed: "شكرًا لك — سجّلنا أنه وصل.",
+    already: "لقد أكدت هذا من قبل. لا شيء آخر عليك فعله.",
+    unavailable: "تعذّر التحقق من هذا الرابط الآن. حاول مرة أخرى بعد قليل.",
+    notFound: "هذا الرابط لا يفتح شيئًا. إذا لم يصل طلبك، تواصل مع {shop}.",
+    problem: "هل هناك مشكلة فيه؟ تواصل مع {shop}.",
+  },
+  pages: {
+    disclaimer: "أُنشئ هذا المستند من قالب وحرّره المتجر. هو نقطة انطلاق وليس استشارة قانونية.",
+    faq: "الأسئلة الشائعة",
+    shopPolicies: "سياسات المتجر",
+    visitShop: "زيارة {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "ادفع ما تريد",
+    nameYourPrice: "حدّد سعرك",
+    atLeast: "{amount} على الأقل",
+    payAnything: "ادفع ما تشاء، حتى لو لا شيء",
+    notYetOnSale: "ليس معروضًا للبيع بعد",
+    noLongerAvailable: "لم يعد متاحًا",
+    opensOn: "يُفتح في {date}",
+    closesOn: "يُغلق البيع في {date}",
   },
 };

@@ -57,6 +57,7 @@ export const th: Dictionary = {
     perMonth: "ต่อเดือน",
     perYear: "ต่อปี",
     subscribeNow: "สมัครสมาชิก",
+    currencyLabel: "สกุลเงิน",
   },
   sort: {
     featured: "แนะนำ", newest: "ใหม่ล่าสุด", priceAsc: "ราคา: ต่ำไปสูง", priceDesc: "ราคา: สูงไปต่ำ",
@@ -137,6 +138,9 @@ export const th: Dictionary = {
   },
 
   download: {
+    linkLabel: "ลิงก์ของคุณ",
+    codeLabel: "รายละเอียดการเข้าถึงของคุณ",
+    open: "เปิด",
     title: "ไฟล์ของคุณ", file: "ดาวน์โหลด", expires: "ลิงก์นี้ใช้ได้ถึง {date}",
     expired: "ลิงก์นี้หมดอายุแล้ว ติดต่อ {shop} เพื่อขอลิงก์ใหม่",
     remaining: "ดาวน์โหลดได้อีก: {count}",
@@ -305,6 +309,8 @@ export const th: Dictionary = {
     signOut: "ออกจากระบบ", upgrade: "อัปเกรด", openMenu: "เปิดเมนู", closeMenu: "ปิดเมนู",
     broadcasts: "อีเมลกลุ่ม",
     members: "สมาชิก",
+    legal: "หน้าข้อกำหนด",
+    dataRequests: "คำขอข้อมูล",
   },
   notifications: {
     aBuyer: "ผู้ซื้อ", title: "การแจ้งเตือน", markAllRead: "ทำเครื่องหมายว่าอ่านแล้วทั้งหมด",
@@ -412,5 +418,31 @@ export const th: Dictionary = {
     manualRenew: "ถึงเวลาต่ออายุแล้ว — คุณใช้งานได้ถึง {date} ชำระเงินกับร้านแล้วร้านจะยืนยันให้",
     manualPending: "คุณตกลงการชำระเงินกับร้านโดยตรง — ไม่มีบัตรที่บันทึกไว้",
     pass: "บัตรสมาชิกของคุณ",
+  },
+  arrival: {
+    title: "ออร์เดอร์ของคุณถึงแล้วหรือยัง",
+    body: "{shop} ส่งเมื่อ {date} การบอกว่าของถึงแล้วใช้แค่แตะเดียว และช่วยให้ร้านเก็บบันทึกได้ครบถ้วน",
+    confirm: "ใช่ ของถึงแล้ว",
+    confirmed: "ขอบคุณ — เราบันทึกไว้แล้วว่าของถึง",
+    already: "คุณยืนยันรายการนี้ไปแล้ว ไม่ต้องทำอะไรเพิ่ม",
+    unavailable: "ตอนนี้เราตรวจสอบลิงก์นี้ไม่ได้ ลองอีกครั้งในอีกสักครู่",
+    notFound: "ลิงก์นี้ไม่ได้เปิดอะไร ถ้าออร์เดอร์ยังไม่ถึง ติดต่อ {shop}",
+    problem: "มีอะไรผิดปกติไหม ติดต่อ {shop}",
+  },
+  pages: {
+    disclaimer: "เอกสารนี้สร้างจากแม่แบบและแก้ไขโดยร้านค้า เป็นจุดเริ่มต้น ไม่ใช่คำแนะนำทางกฎหมาย",
+    faq: "คำถามที่พบบ่อย",
+    shopPolicies: "ข้อกำหนดของร้าน",
+    visitShop: "ไปที่ {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "จ่ายเท่าที่อยากจ่าย",
+    nameYourPrice: "ตั้งราคาเอง",
+    atLeast: "อย่างน้อย {amount}",
+    payAnything: "จ่ายเท่าไหร่ก็ได้ หรือไม่จ่ายเลยก็ได้",
+    notYetOnSale: "ยังไม่เปิดขาย",
+    noLongerAvailable: "ไม่มีจำหน่ายแล้ว",
+    opensOn: "เปิดขาย {date}",
+    closesOn: "ปิดการขาย {date}",
   },
 };

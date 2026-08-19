@@ -57,6 +57,7 @@ export const sq: Dictionary = {
     perMonth: "në muaj",
     perYear: "në vit",
     subscribeNow: "Abonohu",
+    currencyLabel: "Monedha",
   },
   sort: {
     featured: "Të veçuara", newest: "Më të rejat", priceAsc: "Çmimi: nga i ulëti", priceDesc: "Çmimi: nga i larti",
@@ -138,6 +139,9 @@ export const sq: Dictionary = {
   },
 
   download: {
+    linkLabel: "Lidhja juaj",
+    codeLabel: "Të dhënat tuaja të hyrjes",
+    open: "Hap",
     title: "Shkarkimi juaj", file: "Shkarko", expires: "Kjo lidhje vlen deri më {date}.",
     expired: "Kjo lidhje ka skaduar. Kontaktoni {shop} për një të re.",
     remaining: "Shkarkime të mbetura: {count}",
@@ -306,6 +310,8 @@ export const sq: Dictionary = {
     signOut: "Dil", upgrade: "Përmirëso", openMenu: "Hap menunë", closeMenu: "Mbyll menunë",
     broadcasts: "Dërgesa",
     members: "Anëtarët",
+    legal: "Faqet ligjore",
+    dataRequests: "Kërkesat për të dhëna",
   },
   notifications: {
     aBuyer: "Një blerës", title: "Njoftime", markAllRead: "Shëno të gjitha si të lexuara",
@@ -413,5 +419,31 @@ export const sq: Dictionary = {
     manualRenew: "Koha për rinovim — aksesi yt vlen deri më {date}. Paguaj dyqanin dhe do ta konfirmojë.",
     manualPending: "Pagesën e rregullon drejtpërdrejt me dyqanin — nuk ka kartë të ruajtur.",
     pass: "Karta juaj e anëtarit",
+  },
+  arrival: {
+    title: "A mbërriti porosia jote?",
+    body: "{shop} e dërgoi më {date}. Të thuash se mbërriti të merr një prekje dhe i ndihmon të mbajnë të rregullt regjistrat.",
+    confirm: "Po, mbërriti",
+    confirmed: "Faleminderit — e shënuam se mbërriti.",
+    already: "Këtë e ke konfirmuar tashmë. S'ka gjë tjetër për të bërë.",
+    unavailable: "Nuk arritëm ta kontrollojmë këtë lidhje tani. Provo sërish pas pak.",
+    notFound: "Kjo lidhje nuk hap asgjë. Nëse porosia jote nuk mbërriti, kontakto {shop}.",
+    problem: "Diçka nuk shkon me të? Kontakto {shop}.",
+  },
+  pages: {
+    disclaimer: "Ky dokument u krijua nga një model dhe u redaktua nga dyqani. Është një pikënisje, jo këshillë ligjore.",
+    faq: "Pyetjet e shpeshta",
+    shopPolicies: "Kushtet e dyqanit",
+    visitShop: "Vizito {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Paguani sa të doni",
+    nameYourPrice: "Cakto çmimin tënd",
+    atLeast: "Të paktën {amount}",
+    payAnything: "Paguani sa të doni, edhe asgjë",
+    notYetOnSale: "Ende nuk është në shitje",
+    noLongerAvailable: "Nuk është më i disponueshëm",
+    opensOn: "Hapet më {date}",
+    closesOn: "Shitjet mbyllen më {date}",
   },
 };

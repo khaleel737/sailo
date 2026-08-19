@@ -1,4 +1,4 @@
-import type { Shop } from "@sailo/db/schema";
+import type { Shop, ShopPage } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
 import type { Locale } from "@sailo/i18n/config";
 import type {
@@ -15,7 +15,19 @@ import type {
  * other is a compile error rather than a blank section.
  */
 export type ShopPageData = {
+  /**
+   * The shop, with `currency` set to what **this visit** is quoted in.
+   *
+   * Spec 53. It is the row's own currency for every shop that has not enabled
+   * a second one, which is every shop the day this ships. `currency` below is
+   * the same value said out loud, for the two places that need to know which
+   * one they are looking at rather than merely how to format a number.
+   */
   shop: Shop;
+  /** What this visit is quoted in. */
+  currency: string;
+  /** What the switcher may offer, the shop's own first. One entry means no switcher. */
+  currencyOptions: string[];
   products: ProductCard[];
   facets: ShopFacets;
   checkout: CheckoutOptions;
@@ -40,6 +52,18 @@ export type ShopPageData = {
   nextOffset: number | null;
   /** True when the visitor narrowed the list, so "nothing found" can say why. */
   hasFilters: boolean;
+
+  /*
+   * Spec 41. All three are null or empty for a shop that has published nothing,
+   * which is every shop the day this ships — so the storefront renders exactly
+   * as it did until a seller writes something.
+   */
+  /** The About block, when the seller has published one. */
+  about: ShopPage | null;
+  /** The FAQ accordion's source document, when published. */
+  faq: ShopPage | null;
+  /** Published terms/privacy/refunds, for the footer. */
+  legalLinks: ShopPage[];
 };
 
 export type ShopLayout = "grid" | "list";

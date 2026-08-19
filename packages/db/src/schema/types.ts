@@ -1,4 +1,5 @@
 import type { shops } from "./shop";
+import type { shopPages } from "./pages";
 import type { categories, productFiles, productImages, productVariants, products, reviews } from "./catalog";
 import type { affiliates, coupons, deliveryMethods, paymentMethods } from "./commerce";
 import type {
@@ -30,6 +31,8 @@ import type { user } from "./auth";
 /** Row types, inferred from the tables rather than written twice. */
 
 export type Shop = typeof shops.$inferSelect;
+/** One of a seller's five hosted documents — spec 41. */
+export type ShopPage = typeof shopPages.$inferSelect;
 export type Category = typeof categories.$inferSelect;
 export type Product = typeof products.$inferSelect;
 export type ProductImage = typeof productImages.$inferSelect;

@@ -58,6 +58,7 @@ export const cs: Dictionary = {
     perMonth: "měsíčně",
     perYear: "ročně",
     subscribeNow: "Odebírat",
+    currencyLabel: "Měna",
   },
   sort: {
     featured: "Doporučené", newest: "Nejnovější", priceAsc: "Cena vzestupně",
@@ -149,6 +150,9 @@ export const cs: Dictionary = {
   },
 
   download: {
+    linkLabel: "Váš odkaz",
+    codeLabel: "Přístupové údaje",
+    open: "Otevřít",
     title: "Vaše stažení",
     file: "Stáhnout",
     expires: "Tento odkaz platí do {date}.",
@@ -345,6 +349,8 @@ export const cs: Dictionary = {
     openMenu: "Otevřít menu", closeMenu: "Zavřít menu",
     broadcasts: "Hromadné e-maily",
     members: "Členové",
+    legal: "Právní stránky",
+    dataRequests: "Žádosti o údaje",
   },
   notifications: {
     aBuyer: "Kupující",
@@ -461,5 +467,31 @@ export const cs: Dictionary = {
     manualRenew: "Čas na obnovení — přístup máte do {date}. Zaplaťte obchodu a on to potvrdí.",
     manualPending: "Platbu si domlouváte přímo s obchodem — žádná karta uložená není.",
     pass: "Vaše členská průkazka",
+  },
+  arrival: {
+    title: "Dorazila vaše objednávka?",
+    body: "{shop} ji odeslal {date}. Dát vědět, že dorazila, zabere jedno klepnutí a pomůže jim udržet pořádek v evidenci.",
+    confirm: "Ano, dorazila",
+    confirmed: "Díky — zaznamenali jsme, že dorazila.",
+    already: "Tuhle jste už potvrdili. Nic dalšího dělat nemusíte.",
+    unavailable: "Tento odkaz se teď nepodařilo ověřit. Zkuste to za chvíli znovu.",
+    notFound: "Tento odkaz nic neotevírá. Pokud vaše objednávka nedorazila, ozvěte se {shop}.",
+    problem: "Něco s ní není v pořádku? Ozvěte se {shop}.",
+  },
+  pages: {
+    disclaimer: "Tento dokument vznikl ze šablony a upravil jej obchod. Je to výchozí bod, nikoli právní poradenství.",
+    faq: "Časté dotazy",
+    shopPolicies: "Podmínky obchodu",
+    visitShop: "Navštívit {shop}",
+  },
+  pricing: {
+    payWhatYouWant: "Zaplaťte, kolik chcete",
+    nameYourPrice: "Určete svou cenu",
+    atLeast: "Nejméně {amount}",
+    payAnything: "Zaplaťte, kolik chcete, klidně nic",
+    notYetOnSale: "Zatím není v prodeji",
+    noLongerAvailable: "Již není k dispozici",
+    opensOn: "Otevírá se {date}",
+    closesOn: "Prodej končí {date}",
   },
 };
