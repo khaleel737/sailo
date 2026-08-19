@@ -1,0 +1,19 @@
+apps/web/drizzle/0047_audience.sql
+  s_e1f6fcdd78170a::t_3eff8f26e17647 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ae2f7c8c8f640281213ed2828c86ea17f566f5b7",
+  "prompts": {},
+  "sessions": {
+    "s_e1f6fcdd78170a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "07ffa20a-be06-4b62-a6c7-e2cc4d3b435d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
