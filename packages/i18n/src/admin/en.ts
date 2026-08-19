@@ -511,6 +511,47 @@ export const adminEn = {
     digitalCodePlaceholder:
       "Discord invite: https://discord.gg/\u2026\nPassword: studio2026",
 
+    /* ---- Code pools and licences — spec 48 ------------------------------ */
+
+    codeSourceLabel: "Who gets which code",
+    codeSourceShared: "One code for everyone",
+    codeSourceSharedBody:
+      "A Discord invite or a workshop password \u2014 the same text for every buyer.",
+    codeSourcePool: "One code each, from a list you upload",
+    codeSourcePoolBody:
+      "Licence keys, redemption codes, one-seat invites. Each buyer gets their own, and the list is your stock.",
+    codeSourceGenerated: "One code each, made by Sailo",
+    codeSourceGeneratedBody:
+      "We mint a fresh code per buyer from a pattern you pick. Nothing to upload.",
+    codePattern: "Code pattern",
+    codePatternHint:
+      "Every X becomes a random character. At least ten of them, and the whole thing can't be the same length as a ticket code.",
+    poolTitle: "Your codes",
+    poolCounts: "{available} left, {claimed} handed out, {revoked} revoked",
+    poolEmpty:
+      "The pool is empty, so this product is sold out. Add codes to start selling again.",
+    poolPaste: "Paste codes, one per line",
+    poolPasteHint:
+      "Or paste a CSV \u2014 we take the first column. Duplicates are skipped, and nothing already handed out is ever touched.",
+    poolAdd: "Add to pool",
+    poolGenerateCount: "How many to make",
+    poolGenerate: "Make codes",
+    poolExport: "Export handed-out codes",
+    poolExportHint:
+      "Which code went to which order. Codes nobody has been given are deliberately left out \u2014 an export of those is your stock in somebody's downloads folder.",
+    poolRefundNote:
+      "A refund revokes the buyer's code and does not put it back in the pool \u2014 they have already seen it. Top up when the number gets low.",
+
+    licenseTitle: "Licence keys",
+    licenseBody:
+      "For software. Each buyer gets a key your app can check, activate and deactivate over our API.",
+    licenseEnabled: "Issue a licence key with every sale",
+    licenseActivationLimit: "Machines per key",
+    licenseActivationLimitHint: "Blank means any number.",
+    licenseDays: "Licence length in days",
+    licenseDaysHint: "Blank means it never expires.",
+    licenseDocs: "How to check a key from your app",
+
     maxPerOrder: "Limit per order",
     maxPerOrderHint: "The most one buyer can take at once. Blank means the only limit is stock.",
     maxPerOrderEventHint:
@@ -2565,7 +2606,7 @@ export const adminEn = {
     noWalls: "No walls yet.",
 
     embedTitle: "Put it on your own site",
-    embedBody: "Paste this into any page. It carries no scripts and reads no cookies.",
+    embedBody: "Paste this into any page. It loads nothing from anyone else and reads no cookies.",
     embedLocked: "Embedding on your own site is on {plan}.",
     rotate: "New address",
     rotateHint: "Stops the old snippet working. The only way to take a wall off a site you no longer control.",

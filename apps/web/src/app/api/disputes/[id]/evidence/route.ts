@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { rateLimit } from "@sailo/rate-limit";
-import { attachEvidenceFile } from "@sailo/commerce/disputes";
+import { attachEvidenceFile, evictGeneratedFor } from "@sailo/commerce/disputes";
 import {
   EVIDENCE_FILE_BUDGET_BYTES,
   formatBytes,
@@ -85,12 +85,28 @@ export async function POST(
     );
   }
 
+  /*
+   * Spec 45 — Sailo's own generated documents yield to a real one.
+   *
+   * `attachEvidenceFile` checks the 4.5 MB combined ceiling against what is held
+   * *at that moment*, so a generated fulfilment document still sitting on
+   * another field is exactly what would refuse a seller's carrier proof of
+   * delivery — at the one moment it matters, with hours on the clock. Lowest
+   * value first out: ours is an account of what Sailo saw, theirs is what wins
+   * the case.
+   *
+   * Before the attach, and only as far as the incoming file needs. A seller's
+   * own uploads are never candidates.
+   */
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const evicted = await evictGeneratedFor(id, bytes.byteLength);
+
   const result = await attachEvidenceFile({
     disputeId: id,
     field,
     filename: file.name,
     contentType: file.type,
-    bytes: new Uint8Array(await file.arrayBuffer()),
+    bytes,
     uploadedBy: access.actor,
   });
   if (!result.ok) {
@@ -115,11 +131,24 @@ export async function POST(
     });
   }
 
+  /*
+   * The eviction is *stated*, not silent. A seller who is not told that Sailo's
+   * generated fulfilment document came off to make room believes both are on the
+   * case — and would be surprised by a readiness panel that has gone backwards.
+   */
+  const evictionNote =
+    evicted > 0
+      ? ` ${evicted} document Sailo had generated ${evicted === 1 ? "was" : "were"} removed to make room — yours is the stronger evidence.`
+      : "";
+
   return NextResponse.json({
     ok: true,
     replaced: result.replaced,
-    message: result.replaced
-      ? `Attached. It replaced ${result.replaced} — Stripe keeps one document per field.`
-      : `Attached. ${formatBytes(result.remainingBytes)} of evidence allowance left.`,
+    evicted,
+    message:
+      (result.replaced
+        ? `Attached. It replaced ${result.replaced} — Stripe keeps one document per field.`
+        : `Attached. ${formatBytes(result.remainingBytes)} of evidence allowance left.`) +
+      evictionNote,
   });
 }
