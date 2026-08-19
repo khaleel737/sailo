@@ -25,6 +25,7 @@
  * a workflow, and after this move it rarely needs to reach for a sibling either.
  *
  *   ./orders/announce-paid    an order settled: emit the webhook, start any flow
+ *   ./orders/announce-subscription  a membership moved: the same, for scenarios
  *   ./orders/notify-seller   an order settled: email the seller, push to their phone
  *   ./orders/confirm-buyer   an order settled: send the buyer their receipt
  *   ./orders/referral        an order settled: credit the partner and mint their token
@@ -48,6 +49,7 @@
  */
 
 export * from "./orders/announce-paid";
+export * from "./orders/announce-subscription";
 export * from "./orders/notify-seller";
 export * from "./orders/confirm-buyer";
 export * from "./orders/referral";

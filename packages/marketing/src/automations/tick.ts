@@ -23,6 +23,7 @@ import { segmentSql } from "../broadcasts/segment-sql";
 import { EVERYONE } from "../broadcasts/segments";
 import { nextNode, parseGraph, type ParsedGraph, type ParsedNode } from "./graph";
 import { wakeAtFor } from "./timers";
+import { performAction, type ActionOutcome } from "./actions";
 import {
   automationUnsubPostUrl,
   automationUnsubToken,
@@ -250,6 +251,8 @@ async function advance(
       return runSend(run, node, automation, shop, parsed.graph, now);
     case "whatsapp":
       return runWhatsApp(run, node, parsed.graph, now);
+    case "action":
+      return runAction(run, node, automation, shop, parsed.graph, now);
   }
 }
 
@@ -590,6 +593,91 @@ async function runWhatsApp(
 ): Promise<Advanced[]> {
   await step(run.id, node, "handed_off", node.template.slice(0, 500));
   return [await moveTo(run, nextNode(graph, node.id), now)];
+}
+
+/**
+ * A scenario's one step — spec 31.
+ *
+ * Three actions, deliberately generic, and the genericity is the refusal
+ * holding: an app directory is an OAuth client, a refresh token at rest and a
+ * support surface per logo, forever. These reach every tool with an API key
+ * and every tool behind Zapier, Make or n8n.
+ *
+ * It runs on the *same* tick, with the same claim and the same retry policy as
+ * a send, which is the whole reason spec 31 shares this table.
+ */
+async function runAction(
+  run: AutomationRun,
+  node: Extract<ParsedNode, { kind: "action" }>,
+  automation: Automation,
+  shop: Shop,
+  graph: ParsedGraph,
+  now: Date,
+): Promise<Advanced[]> {
+  /*
+   * The existing `integrations` flag, not a new one. One credential opens
+   * webhooks, the API, MCP and scenarios; revoking it revokes everything,
+   * which is what a seller expects of a single switch.
+   */
+  if (!can(shop, "integrations")) {
+    await step(run.id, node, "skipped", "plan");
+    return ["skipped", await moveTo(run, nextNode(graph, node.id), now)];
+  }
+
+  const outcome = await performAction({
+    action: node.action,
+    appId: node.appId,
+    tag: node.tag,
+    shop,
+    automation,
+    run,
+  });
+
+  await stepWithResponse(run.id, node, outcome);
+
+  if (!outcome.ok) {
+    /*
+     * Left where it is, to be retried on the webhook policy's own cadence.
+     * `attempt` counts it and `MAX_ATTEMPTS` eventually gives up — a seller's
+     * endpoint being down for ten minutes must not cost them the scenario.
+     */
+    await getDb()
+      .update(automationRuns)
+      .set({
+        status: "waiting",
+        wakeAt: new Date(now.getTime() + 15 * 60_000),
+        lastError: outcome.reason.slice(0, 500),
+      })
+      .where(eq(automationRuns.id, run.id));
+    return ["failed"];
+  }
+
+  return [await moveTo(run, nextNode(graph, node.id), now)];
+}
+
+/** A step row that also records what a scenario's action got back. */
+async function stepWithResponse(
+  runId: string,
+  node: ParsedNode,
+  outcome: ActionOutcome,
+): Promise<void> {
+  const at = new Date();
+  await getDb().insert(automationSteps).values({
+    runId,
+    nodeId: node.id,
+    kind: node.kind,
+    enteredAt: at,
+    leftAt: at,
+    outcome: outcome.ok ? "sent" : "failed",
+    detail: (outcome.ok ? outcome.detail : outcome.reason).slice(0, 500),
+    /*
+     * A status and a content-type, and **never the body**. An arbitrary
+     * third-party response rendered into the seller's panel is stored XSS with
+     * extra steps, and no rendering of it is worth that.
+     */
+    responseStatus: outcome.status ?? null,
+    responseType: outcome.contentType?.slice(0, 120) ?? null,
+  });
 }
 
 /* --------------------------------------------------------------------------

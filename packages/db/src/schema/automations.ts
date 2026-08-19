@@ -1,4 +1,5 @@
 import {
+  boolean,
   index,
   integer,
   jsonb,
@@ -218,6 +219,18 @@ export const automationSteps = pgTable(
     deliveryId: uuid("delivery_id").references(() => broadcastDeliveries.id, {
       onDelete: "set null",
     }),
+
+    /**
+     * What a scenario's HTTP action got back — spec 31.
+     *
+     * A status and a content-type, and **never the body.** An arbitrary
+     * third-party response rendered into the seller's panel is stored XSS with
+     * extra steps, and there is no rendering of it worth that. What a seller
+     * needs is to tell "my endpoint 500ed" from "we never reached it", and a
+     * status line says both.
+     */
+    responseStatus: integer("response_status"),
+    responseType: text("response_type"),
   },
   (t) => [index("automation_steps_run_idx").on(t.runId, t.enteredAt)],
 );
@@ -244,4 +257,94 @@ export const automationOptOuts = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [primaryKey({ columns: [t.automationId, t.email] })],
+);
+
+/* --------------------------------------------------------------------------
+   Integration scenarios — spec 31
+
+   One new table. Everything that *executes* is above: the same `automations`
+   row with `kind = 'scenario'`, the same runs, the same steps, the same tick.
+   A second runner would be two schedulers and two ways to send the same
+   request twice.
+-------------------------------------------------------------------------- */
+
+/**
+ * A place a scenario can send something.
+ *
+ * **Not an app directory.** This tree has refused named connectors twice, and
+ * for the same reason each time: every logo is an OAuth client, a refresh
+ * token at rest and a support surface, per logo, forever. What a seller
+ * actually lacks is a trigger they can pick and an action they can configure —
+ * so the actions are generic and the credential is an API key, which reaches
+ * every tool that has one and every tool behind Zapier, Make or n8n.
+ *
+ * If a named connector is ever worth doing it is a **preset**: a stored
+ * `{ baseUrl, headerName, path }` shipped as data. This table is shaped so
+ * that is a row rather than a rewrite.
+ */
+export const integrationApps = pgTable(
+  "integration_apps",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+
+    /** What the seller calls it — the only name that appears in the picker. */
+    label: text("label").notNull(),
+    /** http | notify — see `APP_KINDS`. */
+    kind: text("kind").default("http").notNull(),
+
+    /**
+     * Where a `http.request` action posts.
+     *
+     * Validated by `isWebhookTargetUrl` at the write *and* again at the send:
+     * https, 443 only, no credentials in the URL, and no private address in
+     * any notation `core/src/net/ip.ts` unwraps. Twice, because a URL that
+     * was public when it was saved can resolve somewhere else tomorrow.
+     */
+    baseUrl: text("base_url"),
+
+    /**
+     * The API key, encrypted at rest, and **never returned by a query that
+     * feeds a page**.
+     *
+     * The settings card shows `secretHint` and a "replace" action — the
+     * pattern `apiKeys` already uses — because a secret rendered into a page
+     * is a secret in a browser cache, a screenshot and a support ticket.
+     */
+    secretCiphertext: text("secret_ciphertext"),
+    /** The last four characters, for the card. Not a secret. */
+    secretHint: text("secret_hint"),
+    /**
+     * Which header the key travels in — `Authorization`, `X-Api-Key`,
+     * whatever the seller's tool wants.
+     *
+     * Stored rather than guessed, because guessing it is the commonest
+     * support ticket this feature would otherwise generate.
+     */
+    headerName: text("header_name"),
+
+    /** "Check connection", theirs — the button that prevents that ticket. */
+    lastCheckedAt: timestamp("last_checked_at"),
+    lastCheckOk: boolean("last_check_ok"),
+
+    /**
+     * Consecutive failures. At the webhook policy's threshold the app is
+     * disabled and the seller is told — spec 16's rule, reused rather than
+     * re-invented, because a scenario posting into a void for a month is the
+     * same failure as an endpoint doing it.
+     */
+    failureCount: integer("failure_count").default(0).notNull(),
+    disabledAt: timestamp("disabled_at"),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    /* Folded, like `contactLists`: "Zapier" and "zapier" are one app to every
+       seller who has ever typed both. */
+    uniqueIndex("integration_apps_shop_label_key").on(t.shopId, sql`lower(${t.label})`),
+    index("integration_apps_shop_idx").on(t.shopId, t.createdAt),
+  ],
 );

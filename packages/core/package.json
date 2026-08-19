@@ -56,7 +56,8 @@
     "./risk": "./src/risk/index.ts",
     "./html-text": "./src/html-text.ts",
     "./shop-pages": "./src/shop/shop-pages.ts",
-    "./privacy": "./src/privacy/index.ts"
+    "./privacy": "./src/privacy/index.ts",
+    "./secret-box": "./src/identity/secret-box.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

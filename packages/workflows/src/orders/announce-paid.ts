@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orderItems, orders, type Shop } from "@sailo/db/schema";
 import { emitOrderWebhook } from "@sailo/webhooks/emit";
+import type { WebhookEvent } from "@sailo/webhooks/events";
 import {
   clientIdForEmail,
   enrolIfMatching,
@@ -87,5 +88,49 @@ export async function announceOrderPaid(input: {
       clientId: order.clientId ?? (await clientIdForEmail(shop.id, email)),
     },
     context: { productIds },
+  });
+}
+
+
+/**
+ * The general form: an order event, to both audiences.
+ *
+ * `announceOrderPaid` is this with `order.paid` and the product scope filled
+ * in, and it stays a separate function because that one is by far the most
+ * used and its own trigger reads the order's *lines* — which the others have
+ * no use for.
+ */
+export async function announceOrderEvent(input: {
+  shop: Shop;
+  event: WebhookEvent;
+  orderId: string;
+}): Promise<void> {
+  const { shop, event, orderId } = input;
+
+  await emitOrderWebhook({ shop, event, orderId });
+
+  const order = await getDb().query.orders.findFirst({
+    where: eq(orders.id, orderId),
+    columns: { shopId: true, customerEmail: true, clientId: true },
+  });
+  if (!order || order.shopId !== shop.id) return;
+
+  const email = order.customerEmail?.trim().toLowerCase();
+  if (!email) return;
+
+  /*
+   * Scenario-only. `order.paid` and `order.refunded` are triggers a seller
+   * configures against another system — an email flow's four triggers are the
+   * ones about a *contact*, and a refund is about an order.
+   */
+  await enrolIfMatching({
+    shopId: shop.id,
+    trigger: event,
+    subject: {
+      email,
+      clientId: order.clientId ?? (await clientIdForEmail(shop.id, email)),
+    },
+    context: { orderId },
+    kinds: ["scenario"],
   });
 }

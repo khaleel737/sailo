@@ -7,7 +7,8 @@ import {
   clients,
   type Automation,
 } from "@sailo/db/schema";
-import { isTriggerType, REPEAT_FLOOR_MS, type TriggerType } from "./graph";
+import { isTriggerType, REPEAT_FLOOR_MS } from "./graph";
+import { isScenarioTrigger } from "./scenarios";
 import { hasOptedOutOfAutomation } from "./unsubscribe";
 
 /**
@@ -49,10 +50,22 @@ export type EnrolOutcome =
  */
 export async function enrolIfMatching(opts: {
   shopId: string;
-  trigger: TriggerType;
+  trigger: string;
   subject: EnrolSubject;
   /** The trigger's own payload — a list id, a product id, changed fields. */
   context?: Record<string, unknown>;
+  /**
+   * `email` for a flow (spec 30), `scenario` for an integration (spec 31), or
+   * both.
+   *
+   * Both is the default, and it is right: `product.purchased` is a real
+   * trigger for each of them, and an emit point should not have to know which
+   * kinds a seller happens to have built. What the kinds do *not* share is
+   * their trigger vocabularies — a scenario listens for subscription events a
+   * flow has no use for — and `triggerMatches` is what keeps a row from
+   * answering a trigger it was never configured for.
+   */
+  kinds?: readonly string[];
   now?: Date;
 }): Promise<{ automationId: string; outcome: EnrolOutcome }[]> {
   const now = opts.now ?? new Date();
@@ -63,13 +76,7 @@ export async function enrolIfMatching(opts: {
     where: and(
       eq(automations.shopId, opts.shopId),
       eq(automations.status, "active"),
-      /*
-       * Scenarios (spec 31) share this table and this runner, and they are
-       * enrolled by their own emit points with their own trigger vocabulary.
-       * Filtering here rather than at the caller keeps one shop's flows and
-       * its scenarios from cross-triggering.
-       */
-      eq(automations.kind, "email"),
+      inArray(automations.kind, [...(opts.kinds ?? ["email", "scenario"])]),
     ),
   });
 
@@ -94,12 +101,25 @@ export async function enrolIfMatching(opts: {
  */
 function triggerMatches(
   automation: Automation,
-  fired: TriggerType,
+  fired: string,
   context: Record<string, unknown>,
 ): boolean {
   const trigger = automation.trigger;
   if (!trigger || typeof trigger.type !== "string") return false;
-  if (!isTriggerType(trigger.type) || trigger.type !== fired) return false;
+  if (trigger.type !== fired) return false;
+
+  /*
+   * The vocabulary a row is allowed to use depends on what it is. A flow may
+   * only listen for spec 30's four; a scenario may also listen for the
+   * subscription lifecycle, which an email flow has no use for. A row naming a
+   * trigger outside its own kind's vocabulary matches nothing — which is the
+   * safe reading of a row written by a newer deploy.
+   */
+  const known =
+    automation.kind === "scenario"
+      ? isScenarioTrigger(trigger.type)
+      : isTriggerType(trigger.type);
+  if (!known) return false;
 
   const config = (trigger.config ?? {}) as Record<string, unknown>;
 
@@ -129,6 +149,15 @@ function triggerMatches(
       const changed = Array.isArray(context.fields) ? context.fields : [];
       return changed.some((field) => watched.includes(field));
     }
+
+    /*
+     * The scenario-only triggers. Each is an event about one subscription and
+     * carries no scope worth filtering on — a seller who wanted "only for this
+     * plan" is asking for a segment, which is a filter node rather than a
+     * trigger config.
+     */
+    default:
+      return true;
   }
 }
 

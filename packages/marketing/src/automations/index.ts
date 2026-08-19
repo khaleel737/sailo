@@ -9,4 +9,5 @@
  * rows.
  */
 export * from "./graph";
+export * from "./scenarios";
 export * from "./timers";

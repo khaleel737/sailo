@@ -4,6 +4,7 @@ import type {
   AutomationNode,
 } from "@sailo/db/schema/json-types";
 import { parseSegment, type Segment } from "../broadcasts/segments";
+import { ACTION_TYPES } from "./scenarios";
 
 /**
  * What a flow is, as data — and the rules that stop a stored graph from being
@@ -47,6 +48,16 @@ export const NODE_KINDS = [
    * country, needs no template approval, and costs nothing.
    */
   "whatsapp",
+  /**
+   * A scenario's one step — spec 31: post to a URL the seller owns, mail the
+   * seller, or tag the buyer.
+   *
+   * In this vocabulary rather than a second one, because that is the whole
+   * reason spec 31 shares this table: a scenario is a two-node graph, and a
+   * two-node graph does not need a second runner, a second retry policy, or a
+   * second way to send the same request twice.
+   */
+  "action",
 ] as const;
 export type NodeKind = (typeof NODE_KINDS)[number];
 
@@ -131,7 +142,24 @@ export type WhatsAppNode = {
   template: string;
 };
 
-export type ParsedNode = SendNode | TimerNode | BranchNode | FilterNode | WhatsAppNode;
+/** A scenario's action — see `ACTION_TYPES` in `./scenarios`. */
+export type ActionNode = {
+  id: string;
+  kind: "action";
+  action: string;
+  /** Which `integration_apps` row, for `http.request`. */
+  appId?: string;
+  /** The tag to write, for `contact.tag`. */
+  tag?: string;
+};
+
+export type ParsedNode =
+  | SendNode
+  | TimerNode
+  | BranchNode
+  | FilterNode
+  | WhatsAppNode
+  | ActionNode;
 
 export type ParsedGraph = {
   entry: string;
@@ -332,6 +360,25 @@ function parseNode(node: AutomationNode): ParsedNode | null {
         kind: "filter",
         segment: parseSegment(config.segment ?? null, null),
       };
+
+    case "action": {
+      const action = String(config.action ?? "");
+      if (!(ACTION_TYPES as readonly string[]).includes(action)) return null;
+      const appId = typeof config.appId === "string" ? config.appId : undefined;
+      const tag = typeof config.tag === "string" ? config.tag.trim() : undefined;
+
+      /*
+       * Each action's own requirement, refused here rather than at execution.
+       * A `http.request` with no app to post to, or a `contact.tag` with no
+       * tag, is a scenario that would fail on every run for ever — and the
+       * seller's only evidence would be an execution log full of failures with
+       * no obvious cause.
+       */
+      if (action === "http.request" && !appId) return null;
+      if (action === "contact.tag" && !tag) return null;
+
+      return { id: node.id, kind: "action", action, appId, tag };
+    }
 
     case "whatsapp": {
       const template = config.template;

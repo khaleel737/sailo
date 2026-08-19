@@ -21,7 +21,7 @@ import { isOrderStatus } from "@sailo/core/order-status";
 import { sendBookingDecision, sendRefundNotification, sendShippingNotification } from "@/lib/email";
 import { arrivalUrl, confirmDelivery, logOrderMessage } from "@sailo/commerce/disputes";
 import { emitOrderWebhook } from "@sailo/webhooks/emit";
-import { announceOrderPaid } from "@sailo/workflows/orders";
+import { announceOrderEvent, announceOrderPaid } from "@sailo/workflows/orders";
 import type { ActionState } from "./shop";
 
 /**
@@ -317,7 +317,12 @@ export async function refundOrder(
    * what the order was, so a consumer can tell a £10 refund on a £50 order
    * from the second £10 refund on the same order.
    */
-  after(() => emitOrderWebhook({ shop, event: "order.refunded", orderId: id }));
+  /*
+   * `order.refunded` — a webhook and, since spec 31, a scenario trigger. Both
+   * from one call for the reason `announceOrderPaid` gives: two audiences, one
+   * announcement, and a second copy is one of them silently missing.
+   */
+  after(() => announceOrderEvent({ shop, event: "order.refunded", orderId: id }));
   return { ok: true, message: note };
 }
 
