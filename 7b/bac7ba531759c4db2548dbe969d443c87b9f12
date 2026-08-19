@@ -1,0 +1,28 @@
+.gitignore
+  s_16f404b29c0075::t_75facf22bc8d63 99-102
+apps/web/src/lib/session.test.ts
+  s_16f404b29c0075::t_9dbfab9e63c9a4 62,66,74-78,82,101
+apps/web/src/app/admin/settings/_components/compliance-card.tsx
+  s_16f404b29c0075::t_5c0312ca042628 58-72,75-76,95
+  s_16f404b29c0075::t_4314da8de64709 3,5,19-30,73-74,77-94
+  s_16f404b29c0075::t_0a3556115e0b6a 96
+apps/web/src/i18n/admin-coverage.test.ts
+  s_16f404b29c0075::t_d0ea0940caa55b 127-194,196-199,217-230
+  s_16f404b29c0075::t_91e4fc21cbf03c 231-232
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "7bbac7ba531759c4db2548dbe969d443c87b9f12",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
