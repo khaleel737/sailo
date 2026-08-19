@@ -1575,6 +1575,28 @@ export const adminEn = {
     importClientsBody:
       "Matched on email, or phone when there's no email. Existing details are never blanked by a missing column.",
     chooseCsv: "Choose CSV",
+
+    /* Spec 47 — bringing a catalogue in from another tool. The two notes at
+       the bottom of the panel are stated before the import rather than
+       discovered after it: both are deliberate and neither is an apology. */
+    migrateTitle: "Move a catalogue in",
+    migrateBody: "Bring your products, variants, images, categories and stock across from another tool. You'll see exactly what will happen before anything is saved.",
+    migrateSource: "Where from",
+    shopifyStore: "Store address",
+    shopifyStoreHint: "The one ending in .myshopify.com.",
+    shopifyToken: "Admin API access token",
+    tokenDiscarded: "Used for this import and never stored.",
+    stripeNoToken: "Your Stripe account is already connected, so there's nothing to paste.",
+    previewNothingSaved: "Preview — nothing saved yet",
+    previewImport: "Preview import",
+    confirmImport: "Confirm import",
+    toCreate: "to create",
+    toUpdate: "to update",
+    skipped: "skipped",
+    failedRows: "failed",
+    clampedByPlan: "{leftOut} products were left out — your plan has room for {headroom} more.",
+    migrateNoOrders: "Past orders aren't imported. Your invoice numbering starts here, and old sales stay where they happened.",
+    migrateNoFiles: "Digital files aren't transferred — they live behind the other tool's login. The report lists every product still waiting for one.",
   },
 
   traffic: {

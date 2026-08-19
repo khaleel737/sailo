@@ -23,6 +23,7 @@
     "./lead-questions": "./src/catalog/lead-questions.ts",
     "./pricing-models": "./src/catalog/pricing-models.ts",
     "./preorders": "./src/catalog/preorders.ts",
+    "./offers": "./src/catalog/offers.ts",
     "./codes": "./src/catalog/codes.ts",
     "./identity": "./src/identity/index.ts",
     "./slug": "./src/identity/slug.ts",

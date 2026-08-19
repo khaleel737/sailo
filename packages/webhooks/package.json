@@ -10,7 +10,8 @@
     "./transitions": "./src/transitions.ts",
     "./post": "./src/post.ts",
     "./signature": "./src/signature.ts",
-    "./server": "./src/server.ts"
+    "./server": "./src/server.ts",
+    "./fetch": "./src/fetch.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

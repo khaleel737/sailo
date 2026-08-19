@@ -4,6 +4,7 @@ import { Download, Lock } from "lucide-react";
 import { requireShop } from "@/lib/session";
 import { can, cheapestPlanWith } from "@sailo/core/plans";
 import { ImportPanel } from "@/app/admin/settings/data/_components/import-panel";
+import { MigratePanel } from "@/app/admin/settings/data/_components/migrate-panel";
 import { Badge, Card } from "@sailo/design-system/web";
 import { getAdminT } from "@/i18n/server";
 
@@ -137,6 +138,14 @@ export default async function DataPage() {
         </p>
 
         <div className="space-y-3">
+          {/*
+            Above the CSV panels, because it is the one somebody arriving from
+            another platform is looking for — and because the CSV importer is
+            what they fall back to when their tool is not on the list, not the
+            other way round.
+          */}
+          <MigratePanel unlocked={can(shop, "catalogueImport")} />
+
           <ImportPanel
             type="products"
             title={a.data.importProducts}

@@ -89,6 +89,39 @@ export type CurrencyPrice = {
 /** `{ "EUR": { price: 2500, secondary: 3000 } }`, keyed by ISO 4217 uppercase. */
 export type CurrencyPrices = Record<string, CurrencyPrice>;
 
+/**
+ * What one import run did, in totals — spec 47.
+ *
+ * Every field optional so a job written before it ran, or one that failed
+ * before counting anything, is `{}` rather than a row of zeros. Zero created
+ * and "we never got that far" are different answers and a seller reading a
+ * failed import needs to be able to tell them apart.
+ */
+export type ImportCounts = {
+  found?: number;
+  created?: number;
+  updated?: number;
+  skipped?: number;
+  failed?: number;
+};
+
+/**
+ * One row's verdict, as the report keeps it.
+ *
+ * `label` is what the seller will recognise — a product title, not an id — and
+ * `reason` is why, in a sentence they can act on. "A silent partial import is
+ * worse than a failure": every skip and every failure appears here, and the
+ * seller downloads the lot as a CSV.
+ */
+export type ImportReportRow = {
+  /** create | update | skip | fail */
+  action: string;
+  label: string;
+  /** The source's own id, so a seller can find the thing in the other tool. */
+  externalId?: string;
+  reason?: string;
+};
+
 /** One axis of choice on a product: "Size" with "Small", "Medium", "Large". */
 export type ProductOption = {
   name: string;

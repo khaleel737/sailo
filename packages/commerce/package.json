@@ -24,7 +24,11 @@
     "./shop-views": "./src/shop-views/index.ts",
     "./tax": "./src/tax/index.ts",
     "./tax/server": "./src/tax/server.ts",
-    "./pages": "./src/pages/index.ts"
+    "./pages": "./src/pages/index.ts",
+    "./import": "./src/import/index.ts",
+    "./import/server": "./src/import/server.ts",
+    "./recovery": "./src/recovery/index.ts",
+    "./recovery/server": "./src/recovery/server.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

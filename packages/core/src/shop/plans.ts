@@ -107,12 +107,53 @@ export type Features = {
    * able to keep, and the second prevents a loss rather than creating a sale.
    */
   weightBands: boolean;
+  /**
+   * Order bumps and post-payment cross-sells — specs 08 and 36.
+   *
+   * Pro, which is where spec 08 asked for it ("gate ours behind `pro`"), and
+   * one flag for both because they are one table and one editor: a seller who
+   * wants a companion product in the cart wants one on the thank-you page a
+   * week later, and two switches would be two upgrade prompts for one idea.
+   */
+  offers: boolean;
+  /**
+   * Importing a catalogue from Shopify or Gumroad — spec 47.
+   *
+   * Pro, and **Stripe, Etsy and the plain CSV are not gated at all**. Etsy is a
+   * spreadsheet upload that costs us nothing to accept and it is the migration
+   * this product's own marketing promises — `layout.tsx` ships "Etsy
+   * alternative" as a targeting keyword — so gating it would be charging for
+   * the door. Shopify is an API integration with a rate limit to respect and a
+   * seller who has a business to move, which is what Pro is for.
+   */
+  catalogueImport: boolean;
+  /**
+   * Collecting testimonials and showing them on the seller's own surfaces —
+   * spec 35.
+   *
+   * On Pro, with the *embed* held back to Business below. The split is the
+   * spec's and it is the right one: putting a wall on your own storefront is
+   * shop-building, which is what Pro is; putting one inside a Framer site you
+   * also run is using Sailo as a content service for somewhere else, which is
+   * the shape of thing Business is bought for.
+   */
+  testimonials: boolean;
+  /** `/embed/wall/[key]` in somebody else's page, and more than one wall. */
+  testimonialEmbed: boolean;
 };
 
 export type Limits = {
   /** null means unlimited. */
   products: number | null;
   analyticsDays: number;
+  /**
+   * Walls a shop may keep — spec 35. `0` is none, `null` is unlimited.
+   *
+   * One on Pro is not a throttle dressed as a feature: a shop with one
+   * storefront needs one wall, and the second exists to put a *different*
+   * selection on a *different* site, which is the embed and therefore Business.
+   */
+  testimonialWalls: number | null;
 };
 
 export type Plan = {
@@ -144,7 +185,7 @@ export const PLANS: Record<PlanId, Plan> = {
     monthlyCents: 0,
     yearlyCents: 0,
     feeBp: 300,
-    limits: { products: 10, analyticsDays: 7 },
+    limits: { products: 10, analyticsDays: 7, testimonialWalls: 0 },
     features: {
       chatRails: true,
       manualRails: true,
@@ -166,10 +207,14 @@ export const PLANS: Record<PlanId, Plan> = {
       broadcasts: false,
       memberships: false,
       integrations: false,
+      testimonials: false,
+      testimonialEmbed: false,
       automations: false,
       regionalPricing: false,
+      catalogueImport: false,
       pricingModes: false,
       weightBands: false,
+      offers: false,
     },
     highlights: [
       "free1", "free2", "free3", "free4", "free5",
@@ -183,7 +228,7 @@ export const PLANS: Record<PlanId, Plan> = {
     monthlyCents: 1900,
     yearlyCents: 18000, // ~21% off
     feeBp: 200,
-    limits: { products: 100, analyticsDays: 365 },
+    limits: { products: 100, analyticsDays: 365, testimonialWalls: 1 },
     features: {
       chatRails: true,
       manualRails: true,
@@ -201,10 +246,14 @@ export const PLANS: Record<PlanId, Plan> = {
       broadcasts: false,
       memberships: false,
       integrations: false,
+      testimonials: true,
+      testimonialEmbed: false,
       automations: false,
       regionalPricing: true,
+      catalogueImport: true,
       pricingModes: true,
       weightBands: false,
+      offers: true,
     },
     highlights: ["pro1", "pro2", "biz3", "pro3", "pro4", "pro5"],
   },
@@ -215,7 +264,7 @@ export const PLANS: Record<PlanId, Plan> = {
     monthlyCents: 4900,
     yearlyCents: 46800, // ~20% off
     feeBp: 100,
-    limits: { products: null, analyticsDays: 365 * 3 },
+    limits: { products: null, analyticsDays: 365 * 3, testimonialWalls: null },
     features: {
       chatRails: true,
       manualRails: true,
@@ -228,10 +277,14 @@ export const PLANS: Record<PlanId, Plan> = {
       broadcasts: true,
       memberships: true,
       integrations: true,
+      testimonials: true,
+      testimonialEmbed: true,
       automations: true,
       regionalPricing: true,
+      catalogueImport: true,
       pricingModes: true,
       weightBands: true,
+      offers: true,
     },
     /*
      * `biz2` (card through your own Stripe) moved to Free and `biz3` (discount
