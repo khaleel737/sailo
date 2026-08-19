@@ -28,6 +28,7 @@ import {
 } from "@sailo/core/variants";
 import { railsForOrder } from "@/lib/payments";
 import { AmountField, suggestedText } from "@/app/[handle]/_components/amount-field";
+import { StockRequestForm } from "@/app/[handle]/_components/stock-request-form";
 import type { SellWindowState } from "@sailo/core/pricing-models";
 import type { ProductOption, VariantOptions } from "@sailo/db/schema";
 
@@ -69,6 +70,7 @@ export function BuyBox({
   preorderEnabled = false,
   preorderExpectedAt = null,
   takesPhone = false,
+  offersStockRequest = false,
   service = null,
   serviceLocation = null,
   imageUrl = null,
@@ -157,6 +159,15 @@ export function BuyBox({
   preorderExpectedAt?: Date | null;
   /** Whether the shop runs a chat rail, so a phone is worth collecting. */
   takesPhone?: boolean;
+  /**
+   * Whether "tell me when it's back" belongs on this product — spec 33.
+   *
+   * Decided on the server by `offersStockRequest`, which is the same predicate
+   * the storefront card asks. Passed rather than re-derived because the rule
+   * involves the sell window and the preorder switch as well as stock, and a
+   * second copy of it here is a second answer.
+   */
+  offersStockRequest?: boolean;
   service?: CheckoutService | null;
   serviceLocation?: string | null;
   imageUrl?: string | null;
@@ -519,6 +530,35 @@ export function BuyBox({
             : (primaryLabel ?? t.shop.orderNow)}
         </button>
       </div>
+
+      {/*
+        "Tell me when the blue medium is back" — spec 33, and it is *inside* the
+        buy box on purpose.
+        
+        `variant_id` is the subject of the request, not `product_id`: notifying
+        somebody because the red one arrived is the failure that turns a helpful
+        message into a complaint. The picker lives here, so this is the only
+        place on the page that knows which combination the buyer means. Rendered
+        below the buttons because it is what a buyer reads *after* finding they
+        cannot buy.
+      */}
+      {offersStockRequest && soldOut && !canPreorder ? (
+        <div className="pt-1">
+          <StockRequestForm
+            shopId={shopId}
+            productId={productId}
+            /*
+             * Null for a product sold as one thing, which is exactly what the
+             * column means — the claim compares with `is not distinct from`
+             * rather than `=` for this case.
+             */
+            variantId={variant?.id ?? null}
+            takesPhone={takesPhone}
+            locale={locale}
+            t={t}
+          />
+        </div>
+      ) : null}
 
       {buying ? (
         <ExpressCheckout

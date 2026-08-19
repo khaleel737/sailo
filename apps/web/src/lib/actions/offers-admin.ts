@@ -31,14 +31,20 @@ import type { ActionState } from "./shop";
  * render and at charge, and never from a browser.
  */
 
-const REFUSALS: Record<string, string> = {
+/**
+ * `as const` rather than `Record<string, string>`, and the difference is not
+ * cosmetic: an index signature makes every lookup `string | undefined`, so each
+ * one needed a `!` to satisfy the compiler — six assertions telling it to
+ * believe six things it could have checked. A literal type checks them.
+ */
+const REFUSALS = {
   unknown_placement: "Choose where the offer appears.",
   no_product: "Pick the product to offer.",
   not_yours: "That product isn't in your shop.",
   self: "An offer can't be for the same product that triggers it.",
   inverted: "The offer has to close after it opens. Check the two dates.",
   locked: "Order bumps and cross-sells are on Pro.",
-};
+} as const;
 
 export async function saveOffer(
   _prev: ActionState,
@@ -47,15 +53,15 @@ export async function saveOffer(
   const { shop } = await requireShop();
 
   // Gated here as well as in the form, because a form is not a gate.
-  if (!can(shop, "offers")) return { ok: false, error: REFUSALS.locked! };
+  if (!can(shop, "offers")) return { ok: false, error: REFUSALS.locked };
 
   const placement = String(formData.get("placement") ?? "");
   if (!isOfferPlacement(placement)) {
-    return { ok: false, error: REFUSALS.unknown_placement! };
+    return { ok: false, error: REFUSALS.unknown_placement };
   }
 
   const offerProductId = String(formData.get("offerProductId") ?? "").trim();
-  if (!offerProductId) return { ok: false, error: REFUSALS.no_product! };
+  if (!offerProductId) return { ok: false, error: REFUSALS.no_product };
 
   const sourceProductId = String(formData.get("sourceProductId") ?? "").trim() || null;
 
@@ -67,7 +73,7 @@ export async function saveOffer(
    * a seller who set it would see nothing render and have no idea why.
    */
   if (sourceProductId && sourceProductId === offerProductId) {
-    return { ok: false, error: REFUSALS.self! };
+    return { ok: false, error: REFUSALS.self };
   }
 
   const db = getDb();
@@ -90,12 +96,12 @@ export async function saveOffer(
     .select({ id: products.id })
     .from(products)
     .where(and(eq(products.shopId, shop.id), inArray(products.id, wanted)));
-  if (owned.length !== wanted.length) return { ok: false, error: REFUSALS.not_yours! };
+  if (owned.length !== wanted.length) return { ok: false, error: REFUSALS.not_yours };
 
   const validFrom = shopMomentFrom(formData.get("validFrom"), shop.timeZone);
   const validUntil = shopMomentFrom(formData.get("validUntil"), shop.timeZone);
   if (validFrom && validUntil && validUntil.getTime() <= validFrom.getTime()) {
-    return { ok: false, error: REFUSALS.inverted! };
+    return { ok: false, error: REFUSALS.inverted };
   }
 
   const priceRaw = String(formData.get("priceCents") ?? "").trim();

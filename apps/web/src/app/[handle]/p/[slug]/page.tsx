@@ -52,7 +52,6 @@ import {
   preorderExpectedAt,
   takesPreorders,
 } from "@sailo/core/preorders";
-import { StockRequestForm } from "@/app/[handle]/_components/stock-request-form";
 
 /**
  * The rails where a phone number is worth collecting — spec 33.
@@ -124,8 +123,15 @@ export default async function ProductPage({
 
   const checkout = await getCheckoutOptions(shop.id, display.currency, row.currency);
   const { locale, t, dir } = await getShopT(shop.locale);
+  /*
+   * The badge answers "what happens after I pay?", so a lead product has none:
+   * nothing is paid and nothing ships. Without this it fell through to the
+   * default and an enquiry form advertised itself as "Ships to you".
+   */
   const kindLabel =
-    product.kind === "digital"
+    product.kind === "lead"
+      ? null
+      : product.kind === "digital"
       ? t.shop.kindDigital
       : product.kind === "service"
         ? t.shop.kindService
@@ -403,6 +409,16 @@ export default async function ProductPage({
               preorderEnabled={product.preorderEnabled}
               preorderExpectedAt={preorderExpectedAt(product)}
               takesPhone={checkout.methods.some((m) => CHAT_RAILS.has(m.type))}
+              /*
+               * Spec 33. Decided here rather than in the buy box because the
+               * rule involves the sell window and the preorder switch as well
+               * as stock, and the buy box would be a second answer to a
+               * question the storefront card already asks this way.
+               */
+              offersStockRequest={offersStockRequest({
+                sellable,
+                takesPreorders: takesPreorders(product),
+              })}
               service={
                 product.kind === "service"
                   ? {
@@ -438,50 +454,6 @@ export default async function ProductPage({
             />
             )}
 
-            {/*
-              The third answer, where "Out of stock" used to be the end of the
-              page — spec 33.
-              
-              A seller's two options today are to hide the product and lose
-              everyone, or leave it reading sold out and lose the buyer who
-              would happily have waited eleven days. Offered wherever a buyer
-              cannot buy right now and might be able to later, and *not* on a
-              preorder — there the answer to "when can I have it" is the button
-              above, not a queue.
-              
-              Still offered on a launch whose window has ended, which is spec
-              43's `hideWhenUnavailable` note in practice: an ended launch is
-              exactly where this belongs, and being told it is coming back is
-              the only thing left to offer somebody who arrived too late.
-            */}
-            {offersStockRequest({
-              sellable,
-              takesPreorders: takesPreorders(product),
-            }) ? (
-              <div className="mt-4">
-                <StockRequestForm
-                  shopId={shop.id}
-                  productId={product.id}
-                  /*
-                   * Null, and that is the honest value on a page that has not
-                   * asked which combination the buyer wants.
-                   *
-                   * The queue is keyed on the variant — "tell me when the blue
-                   * medium is back" is the request — but the picker lives
-                   * inside the buy box, which is a client component, and this
-                   * form sits outside it. A request against the product means
-                   * "tell me when this product is back", which is what a buyer
-                   * who never picked a size actually means; per-combination
-                   * requests come from the buy box's own picker when that is
-                   * wired through.
-                   */
-                  variantId={null}
-                  takesPhone={checkout.methods.some((m) => CHAT_RAILS.has(m.type))}
-                  locale={locale}
-                  t={t}
-                />
-              </div>
-            ) : null}
           </div>
 
           {product.description ? (
