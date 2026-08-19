@@ -28,12 +28,17 @@ import { stripe } from "@sailo/payments";
  * what makes it safe to call on every deploy, and it is why this is idempotent
  * rather than merely tolerant of being run twice.
  *
- * **2. Sets the statement descriptor on the platform Stripe account.**
+ * **2. Checks the statement descriptor on the platform Stripe account.**
  * `SAILO` is recognisable; a legal entity name is not, and `unrecognized` (Visa
  * 10.4 / MC 4837) is the reason code that fixes for free. Spec 44 set one for
- * sellers and left ours unset. Read from the same constant the evidence quotes,
- * so what we tell an issuer appeared on the statement and what actually appeared
- * cannot drift.
+ * sellers and left ours unset.
+ *
+ * This step *checks* rather than sets, because setting it is not possible:
+ * Stripe refuses `accounts.update` against your own account, and the platform
+ * descriptor is a Dashboard setting. Measured 19 August 2026 — see
+ * `docs/chargebacks.md` §11. Reporting the mismatch is the whole value left: it
+ * is what turns "someone has to remember to set this" into a line in every
+ * deploy's output.
  *
  * ─── WHY A ROUTE AND NOT A BUILD SCRIPT ────────────────────────────────────
  *
@@ -80,7 +85,7 @@ export async function POST(request: Request): Promise<Response> {
    */
   const snapshots = await snapshotPlatformPolicies(appOrigin(), guardedFetch);
 
-  const descriptor = await syncPlatformDescriptor();
+  const descriptor = await checkPlatformDescriptor();
 
   return Response.json({
     ok: true,
@@ -90,31 +95,56 @@ export async function POST(request: Request): Promise<Response> {
 }
 
 /**
- * Put `SAILO` on the platform account's statements.
+ * Report whether `SAILO` is actually on the platform account's statements.
  *
- * Best effort and reported rather than thrown: a deploy must not fail because
- * Stripe had a bad minute, and the descriptor being wrong costs a reason code
- * rather than a broken deployment. The response says what happened, which is
- * what makes the failure visible instead of silent.
+ * ─── WHY THIS DOES NOT SET IT ──────────────────────────────────────────────
+ *
+ * It cannot. `accounts.update(ownAccountId, …)` is refused by Stripe:
+ *
+ *     You cannot use this method on your own account:
+ *     you may only use it on connected accounts.
+ *
+ * stripe-node's own doc comment on `update` says the same in advance — *"To
+ * update your own account, use the Dashboard"* — and there is no
+ * `updateCurrent` counterpart to `retrieveCurrent`. The first draft of this
+ * function called `update` anyway and swallowed the error into `{ set: false }`,
+ * which meant a deploy would have reported a descriptor problem it could never
+ * fix, forever, in a field nobody reads.
+ *
+ * So: read it, compare it, and say plainly what a human has to go and do. Best
+ * effort and reported rather than thrown — a deploy must not fail because Stripe
+ * had a bad minute.
  */
-async function syncPlatformDescriptor(): Promise<{ set: boolean; reason?: string }> {
+async function checkPlatformDescriptor(): Promise<{
+  matches: boolean;
+  actual: string | null;
+  expected: string;
+  todo?: string;
+}> {
+  const expected = PLATFORM_STATEMENT_DESCRIPTOR;
   try {
     /*
      * `retrieveCurrent`, not `retrieve(id)`. This is `GET /v1/account` — the
      * platform's own account, the one whose key we hold — and there is no id to
-     * pass because the key *is* the identity. `retrieve` takes a connected
-     * account id and would need us to invent one.
+     * pass because the key *is* the identity.
      */
     const account = await stripe().accounts.retrieveCurrent();
-    if (account.settings?.payments?.statement_descriptor === PLATFORM_STATEMENT_DESCRIPTOR) {
-      return { set: true };
-    }
-    await stripe().accounts.update(account.id, {
-      settings: { payments: { statement_descriptor: PLATFORM_STATEMENT_DESCRIPTOR } },
-    });
-    return { set: true };
+    const actual = account.settings?.payments?.statement_descriptor ?? null;
+    if (actual === expected) return { matches: true, actual, expected };
+
+    const todo =
+      `set the statement descriptor to "${expected}" at ` +
+      `https://dashboard.stripe.com/settings/public — it is ` +
+      `${actual ? `"${actual}"` : "unset"} and cannot be changed through the API`;
+    console.error(`[sailo] platform statement descriptor: ${todo}`);
+    return { matches: false, actual, expected, todo };
   } catch (error) {
-    console.error("[sailo] could not set the platform statement descriptor", error);
-    return { set: false, reason: error instanceof Error ? error.message : "unknown" };
+    console.error("[sailo] could not read the platform statement descriptor", error);
+    return {
+      matches: false,
+      actual: null,
+      expected,
+      todo: error instanceof Error ? error.message : "unknown",
+    };
   }
 }

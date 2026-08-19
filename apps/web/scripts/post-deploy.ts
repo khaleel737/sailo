@@ -11,9 +11,13 @@
  *     better as our evidence than a seller's changed URL is as theirs. The pages
  *     are prose that `PRODUCTION-PLAN.md` §4 rules "leave whole", so the only
  *     way to capture a version is to read the deployed page.
- *   - **The statement descriptor is set on the platform Stripe account.**
+ *   - **The platform Stripe account's statement descriptor is checked.**
  *     `SAILO` is recognisable and a legal entity name is not; `unrecognized`
- *     (Visa 10.4 / MC 4837) is the reason code that fixes for free.
+ *     (Visa 10.4 / MC 4837) is the reason code that fixes for free. Checked and
+ *     not set, because Stripe refuses `accounts.update` on your own account —
+ *     it is a Dashboard setting. A mismatch prints as a task for a human rather
+ *     than failing the deploy: a build that goes red on a setting no pipeline
+ *     can change is a build people learn to ignore.
  *
  * Content-addressed, so a deploy that changed no wording writes nothing — which
  * is what makes running it on every deploy the right default rather than a cost.
@@ -45,3 +49,9 @@ if (!response.ok) {
   console.error(`deploy:post failed: ${response.status}`);
   process.exit(1);
 }
+
+const todo =
+  typeof body === "object" && body !== null
+    ? (body as { descriptor?: { todo?: string } }).descriptor?.todo
+    : undefined;
+if (todo) console.warn(`\n⚠  action needed — ${todo}`);

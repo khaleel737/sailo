@@ -9,8 +9,9 @@ Written against the code as it is: `packages/core/src/disputes`,
 `/hq/disputes` and `/admin/payments`.
 
 Everything asserted about Stripe's behaviour below was verified against the live
-API in test mode on **17 August 2026**, not read off the documentation. Where the
-two disagreed, the API won and the discrepancy is noted.
+API in test mode on **17 August 2026**, not read off the documentation, and the
+evidence file limits were re-measured on **19 August 2026** for spec 45 — §10.
+Where the two disagreed, the API won and the discrepancy is noted.
 
 ---
 
@@ -538,7 +539,177 @@ stripe payment_intents create --stripe-account acct_… \
 `stripe trigger charge.dispute.created` produces an **inquiry**, not a
 chargeback, which is worth knowing before concluding the chargeback path works.
 
-## 10. Still open
+## 10. The evidence file limits, measured
+
+Spec 45 asked one question before the evidence pack was built — *"whether
+attaching one Stripe file id to several evidence fields counts once or several
+times against the combined cap … check it against the live API in test mode and
+record what the API said, not what the docs say."* Measured on **19 August
+2026**, on the platform account in test mode, against API version
+`2026-07-29.dahlia`. Three of the four answers differ from the documentation.
+
+### One file id on several fields is charged for each field
+
+| Attachment | Bytes counted | Result |
+| --- | --- | --- |
+| `receipt = A` (3,607,988 B) | 3,607,988 | accepted |
+| `receipt = A`, `uncategorized_file = A` — *the same id* | 7,215,976 | **refused** |
+
+> Adding these files would bring the total evidence size over the 5 MB maximum.
+
+So the conservative assumption was the correct one, and `bytesHeld` — which sums
+`dispute_evidence_files` rows, one per field — already accounts for it. A
+generator that attached one pack to three slots would be spending three times its
+size.
+
+### The combined ceiling is ~4.8 MB, not the 5 MB the error names
+
+Binary-searched with two distinct files across two fields, a fresh dispute per
+trial (`disputes.update` persists, so reusing one measures the sum of every trial
+before it):
+
+| Total | Result |
+| --- | --- |
+| 4,502,440 B | accepted |
+| 4,699,288 B | accepted |
+| 4,750,002 B | accepted |
+| 4,799,134 B | **refused** |
+
+`EVIDENCE_FILE_BUDGET_BYTES` is 4,500,000 — about 250 KB of headroom under the
+line Stripe actually draws. That is the right direction: the constant exists to
+refuse *before* the API does, because an overflow rejects the entire
+`disputes.update` and loses the fields that were correct. Its comment used to
+call 4.5 MB "Stripe's own limit"; it is a margin, and now says so.
+
+### The 50-page limit is enforced, not advice
+
+> The file you uploaded was too long. Please upload a file with fewer than 50
+> pages.
+
+A 400 from the Files API. Nothing reaches the evidence object. `PAGE_GUIDANCE`
+described this as "carried as guidance rather than enforced", read off the
+best-practices page.
+
+It matters most for documents Sailo *generates*, where there is no seller to read
+an error: a refused upload leaves `autoFillEvidence` with nothing to register and
+the slot silently stays empty. **A pack built from a policy snapshot at
+`POLICY_BODY_MAX` in short lines rendered to 98 pages.** Fixed at both ends —
+`PACK_POLICY_LINE_CAP` bounds the common case at the source and states the
+truncation on the page, and `MAX_PACK_PAGES` in the renderer is a hard ceiling
+for every other case.
+
+### And two smaller ones
+
+**The per-file limit is 5 MB**, separately from the combined budget: *"The file
+you uploaded was too large. Please upload a file smaller than 5 MB."*
+
+**Stripe validates file content, not the extension.** A hand-assembled
+`application/pdf` that is not a real PDF is refused — *"The file you uploaded is
+not supported"* — which is the same reasoning `EVIDENCE_FILE_TYPES` gives for
+checking the content type rather than the filename, confirmed from the other
+side.
+
+### The fixed pack, end to end
+
+Not a synthetic file this time — the pack the renderer actually produces, pushed
+through the whole chain against the live API:
+
+| Pack | Pages | Bytes | `files.create` | `disputes.update` |
+| --- | --- | --- | --- | --- |
+| Ordinary order | 1 | 4,765 | accepted, `type: pdf` | staged, `has_evidence: true` |
+| 6,000-clause policy — the 98-page case | **11** | 16,480 | accepted | staged, `has_evidence: true` |
+
+The second row is the one that matters: the same input that rendered 98 pages and
+would have been refused now renders eleven and attaches. Both landed on a real
+`du_…` created with `pm_card_createDispute`, with `submit: false`, leaving
+`submission_count` at `0` — which is also `autoFillEvidence`'s contract, since a
+pack registered at dispute-open must never spend the one submission.
+
+Two figures worth keeping: a real pack is **kilobytes**, not megabytes, so the
+4.5 MB budget is never the binding constraint on Sailo's own documents — the page
+count was, and only for pathological policies.
+
+### Method
+
+`pm_card_createDispute` on a $42 PaymentIntent, exactly as §1, then
+`files.create({ purpose: "dispute_evidence" })` and `disputes.update(…, { submit:
+false })`. Padding a PDF to a target size needs vector paths rather than text:
+`doc.text()` auto-paginates, so "45 pages of 60 lines" silently became hundreds
+of pages and hit the page ceiling instead of the size one.
+
+---
+
+## 11. Sailo's own disputes, on the platform account
+
+Spec 46 answers a chargeback against Sailo's own subscription revenue. Three
+things it relies on, verified the same day:
+
+**`accounts.retrieveCurrent()` is the right call, and the descriptor is at
+`settings.payments.statement_descriptor`.** `accounts.retrieve(id)` wants a
+connected account id and there is none to pass — the key *is* the identity.
+
+**The platform descriptor cannot be set through the API.** The deploy step was
+written to set it. It cannot; three shapes were tried and all three were refused:
+
+| Call | Account | Refusal |
+|---|---|---|
+| `accounts.update(ownId, …)` | sandbox `acct_1U0kWG…` | "You cannot use this method on your own account: you may only use it on connected accounts." |
+| `POST /v1/accounts/{ownId}` | platform `acct_1U0kW3…` | "Only live keys can access this method." |
+| `POST /v1/account` | platform `acct_1U0kW3…` | "Only live keys can access this method." |
+
+stripe-node says so in advance, in its own doc comment on `update`: *"To update
+your own account, use the Dashboard."* There is no `updateCurrent` beside
+`retrieveCurrent`. So the deploy step now **checks and reports** — it prints the
+Dashboard URL and the current value as a task for a human, and does not fail the
+deploy, because a build that goes red on a setting no pipeline can change is a
+build people learn to ignore.
+
+**What that changed in the evidence.** `platformHoldingsFor` used to fill
+`statementDescriptor` from the `PLATFORM_STATEMENT_DESCRIPTOR` constant, so the
+pack asserted *"the charge appeared on the statement as SAILO"* on the strength
+of a string literal. Since the value is only ever set by hand in a Dashboard,
+that claim was one forgotten setting away from being false — and the sandbox
+proved it, reading `SAILO SANDBOX` while the constant said `SAILO`. It is now
+read from the live account and cached, and a read failure prints no line at all.
+The platform account does read `SAILO`, so the claim was true in production; it
+was true by luck rather than by construction, which for a statement made to an
+issuer is not the same thing.
+
+**Every evidence field `assemblePlatformEvidence` emits exists.** All fourteen —
+`access_activity_log`, `billing_address`, `cancellation_policy_disclosure`,
+`cancellation_rebuttal`, `customer_email_address`, `customer_name`,
+`customer_purchase_ip`, `duplicate_charge_explanation`, `duplicate_charge_id`,
+`product_description`, `refund_policy_disclosure`, `refund_refusal_explanation`,
+`service_date`, `uncategorized_text` — sent one at a time so a rejection would
+name the field. None was rejected. This matters because one bad name fails the
+whole update and takes the correct fields with it.
+
+**An unqualified CE3.0 payload costs the whole answer.** `respondToPlatformDispute`
+declines to attempt Visa Compelling Evidence 3.0 and says why; the "why" is now
+measured rather than reasoned. Sending
+`enhanced_evidence.visa_compelling_evidence_3` alongside ordinary evidence on an
+ineligible charge (`enhanced_eligibility_types: []`) was refused:
+
+> Disputed transaction ch_… is not eligible for Visa Compelling Evidence 3.0.
+
+And re-reading the dispute afterwards, `product_description` and
+`uncategorized_text` — sent in the same call — were **both null**. The update is
+all-or-nothing, so a speculative enhanced payload does not degrade to an ordinary
+submission; it discards it. Qualify first or do not send it.
+
+**A platform dispute takes no `stripeAccount` header.** `disputes.update` on the
+platform account with `submit: false` staged the evidence: status stayed
+`needs_response`, `evidence_details.submission_count` stayed `0`, and
+`has_evidence` became `true`. That is the contract `respondToPlatformDispute`
+depends on, and sending a connected-account header instead would 404 on somebody
+else's account — a case answered with nothing. Carried through to the real thing
+on a fresh dispute: the twelve-field platform payload staged, then `submit: true`
+moved it `needs_response` → `under_review` with `submission_count` `0` → `1` and
+every field still present.
+
+---
+
+## 12. Still open
 
 | # | Item | Kind |
 | --- | --- | --- |
@@ -546,6 +717,7 @@ chargeback, which is worth knowing before concluding the chargeback path works.
 | 2 | `shops.stripe_account_id` is indexed but not unique. One account belongs to one shop and nothing enforces it; a partial unique index would take today. Not applied because the scenario suites share one account id across fixtures | Eng, small |
 | 3 | The evidence assembly reads English. The same limitation as the restricted-business screen (`payments-compliance.md` §4.1) — a Polish shop's product description goes to the issuer in Polish, which is correct, but the narrative around it is English | Eng |
 | 4 | Sailo's platform fee is not returned on a lost chargeback (§2). Whether it should be is a business decision nobody has made | Business |
+| 5 | The combined evidence ceiling was measured to a 50 KB window (§10), not to the byte. Stripe's own message says 5 MB and the API refuses just under 4.8 MB, so something is counted that is not the file bytes — per-file overhead, most likely. `EVIDENCE_FILE_BUDGET_BYTES` clears it by 250 KB either way | Eng, small |
 
 ---
 
@@ -554,7 +726,8 @@ chargeback, which is worth knowing before concluding the chargeback path works.
 - [Stripe: dispute categories and the network code map](https://docs.stripe.com/disputes/categories)
 - [Stripe: respond to Visa Compelling Evidence 3.0](https://docs.stripe.com/disputes/responding)
 - [Stripe: dispute evidence best practices](https://docs.stripe.com/disputes/best-practices) —
-  the 4.5 MB / 50-page / 19-page-Mastercard table, and what an issuer looks for in each file
+  what an issuer looks for in each file. **Its size and page table is not what the
+  API enforces** — see §10 for the measurements that replaced it
 - [Stripe: the File Upload API](https://docs.stripe.com/file-upload) — `purpose: dispute_evidence`
 - [Stripe: early fraud warnings](https://docs.stripe.com/radar/early-fraud-warnings)
 - [Stripe: manage payout schedules for connected accounts](https://docs.stripe.com/connect/manage-payout-schedule)

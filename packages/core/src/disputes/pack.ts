@@ -320,6 +320,27 @@ function line(label: string, value: string | null | undefined, provenance?: stri
  */
 export const PACK_LOG_CAP = 200;
 
+/**
+ * The most lines of policy text a pack prints.
+ *
+ * ─── MEASURED, NOT GUESSED ──────────────────────────────────────────────────
+ *
+ * The Files API **enforces** a 50-page ceiling on dispute evidence — verified
+ * against the live API in test mode on 19 August 2026: *"The file you uploaded
+ * was too long. Please upload a file with fewer than 50 pages."* That is a hard
+ * 400, not the advice `PAGE_GUIDANCE` used to describe.
+ *
+ * `POLICY_BODY_MAX` is 200,000 characters and this section prints the body line
+ * by line, so a real seller's terms in short lines reached **98 pages** in a
+ * measurement — the upload would be refused and the evidence slot would quietly
+ * stay empty. 600 lines is roughly fifteen pages of prose, which is more terms
+ * than any issuer reads, and the truncation is *stated* rather than silent.
+ *
+ * The renderer carries its own hard page ceiling as well. This bounds the common
+ * case at the source; that bounds every case.
+ */
+export const PACK_POLICY_LINE_CAP = 600;
+
 /* -------------------------------------------------------------------------- */
 /*  The sections                                                              */
 /* -------------------------------------------------------------------------- */
@@ -393,7 +414,30 @@ export function policySection(h: PackHoldings): PackSection {
       ),
       ...(h.policySourceUrl ? [line("Published at", h.policySourceUrl)] : []),
     ],
-    entries: h.policyText ? h.policyText.split("\n") : undefined,
+    entries: policyLines(h.policyText).lines,
+    ...(policyLines(h.policyText).capped
+      ? {
+          entriesCapped: {
+            shown: PACK_POLICY_LINE_CAP,
+            total: policyLines(h.policyText).total,
+          },
+        }
+      : {}),
+  };
+}
+
+/** The policy body, bounded — see `PACK_POLICY_LINE_CAP`. */
+function policyLines(text: string | null): {
+  lines: string[] | undefined;
+  capped: boolean;
+  total: number;
+} {
+  if (!text) return { lines: undefined, capped: false, total: 0 };
+  const all = text.split("\n");
+  return {
+    lines: all.slice(0, PACK_POLICY_LINE_CAP),
+    capped: all.length > PACK_POLICY_LINE_CAP,
+    total: all.length,
   };
 }
 

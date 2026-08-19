@@ -254,6 +254,34 @@ describe("the rendered pack", () => {
     expect(visibleText(one)).toBe(visibleText(two));
   });
 
+  it("never exceeds the page ceiling the Files API enforces", async () => {
+    /*
+     * Measured against the live API in test mode on 19 August 2026: an upload of
+     * more than 50 pages is refused with a 400, not merely discouraged. A pack
+     * built from a real seller's terms reached 98 pages before this cap, and the
+     * refusal would have left the evidence slot silently empty.
+     */
+    const long = Array.from({ length: 6_000 }, (_, i) => `Clause ${i}.`).join("\n");
+    const [pack] = packDocuments({ ...holdings, policyText: long });
+    const bytes = await renderEvidenceDocument({
+      document: pack!,
+      shopName: holdings.shopName,
+      renderedAt: RENDERED,
+      packVersion: "2026-08",
+    });
+
+    const pages = (bytes.toString("latin1").match(/\/Type\s*\/Page[^s]/g) ?? []).length;
+    expect(pages).toBeLessThan(50);
+
+    /*
+     * And the shortening is *stated*. `PACK_POLICY_LINE_CAP` does the work here
+     * — 6,000 clauses become 600 and eleven pages — so the caption is the
+     * section's own, not the renderer's last-resort note. A document that stops
+     * without saying so reads to an adjudicator as the whole record.
+     */
+    expect(visibleText(bytes)).toContain("Showing the first 600 of 6000 entries");
+  });
+
   it("stays small enough to matter inside the 4.5 MB budget", async () => {
     const [pack] = packDocuments(holdings);
     const bytes = await renderEvidenceDocument({

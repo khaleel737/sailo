@@ -15,6 +15,28 @@ import {
 } from "./pdf-kit";
 
 /**
+ * The most pages a generated document may reach.
+ *
+ * ─── MEASURED AGAINST THE LIVE API IN TEST MODE, 19 AUGUST 2026 ────────────
+ *
+ * The Files API **enforces** a page ceiling and refuses the upload outright:
+ * *"The file you uploaded was too long. Please upload a file with fewer than 50
+ * pages."* `PAGE_GUIDANCE` in `@sailo/core/disputes` described that as advice
+ * carried rather than enforced, which was read off Stripe's own best-practices
+ * page and is wrong at the API.
+ *
+ * It matters because the failure is silent in the direction that costs a case: a
+ * refused upload leaves `autoFillEvidence` with nothing to register, so the
+ * evidence slot the seller believed was handled simply stays empty. A pack built
+ * from a real seller's terms reached **98 pages** in a measurement.
+ *
+ * Forty, not forty-nine. The count is checked before each block rather than
+ * after, so a section that runs long must have somewhere to land — and a
+ * document that stops nine pages early is a document that uploads.
+ */
+const MAX_PACK_PAGES = 40;
+
+/**
  * Rendering an evidence document. Spec 45.
  *
  * The *content* — which sections, in what order, from what facts, with what
@@ -87,8 +109,36 @@ export async function renderEvidenceDocument(opts: {
   );
   y += 16;
 
+  let truncated = false;
   for (const section of opts.document.sections) {
-    y = renderSection(doc, section, y, width);
+    if (doc.bufferedPageRange().count >= MAX_PACK_PAGES) {
+      truncated = true;
+      break;
+    }
+    const result = renderSection(doc, section, y, width);
+    y = result.y;
+    if (result.truncated) {
+      truncated = true;
+      break;
+    }
+  }
+
+  if (truncated) {
+    /*
+     * Stated, never silent. A document that stops without saying so is one an
+     * adjudicator reads as the whole record — which is the same failure a capped
+     * log without its caption would be, and the reason `entriesCapped` exists.
+     */
+    y = pageBreakIfNeeded(doc, y, 40);
+    body(
+      doc,
+      "This document was shortened to stay inside the card networks' page limit for " +
+        "submitted evidence. The remainder is on record and can be produced on request.",
+      MARGIN,
+      y + 8,
+      width,
+      { color: MUTED, size: 8 },
+    );
   }
 
   footer(doc, `${opts.shopName} · Sailo evidence pack ${opts.packVersion}`);
@@ -96,7 +146,15 @@ export async function renderEvidenceDocument(opts: {
   return bytes;
 }
 
-function renderSection(doc: Pdf, section: PackSection, startY: number, width: number): number {
+function renderSection(
+  doc: Pdf,
+  section: PackSection,
+  startY: number,
+  width: number,
+): { y: number; truncated: boolean } {
+  /** True once the page ceiling is reached — see `MAX_PACK_PAGES`. */
+  const full = () => doc.bufferedPageRange().count >= MAX_PACK_PAGES;
+
   let y = pageBreakIfNeeded(doc, startY, 90);
 
   y = body(doc, section.title, MARGIN, y, width, { bold: true, size: 11 });
@@ -114,6 +172,7 @@ function renderSection(doc: Pdf, section: PackSection, startY: number, width: nu
   const valueWidth = width - labelWidth - 10;
 
   for (const entry of section.lines) {
+    if (full()) return { y, truncated: true };
     const broke = y;
     y = pageBreakIfNeeded(doc, y, 44);
     /*
@@ -150,6 +209,7 @@ function renderSection(doc: Pdf, section: PackSection, startY: number, width: nu
   if (section.entries && section.entries.length > 0) {
     y = pageBreakIfNeeded(doc, y, 40) + 4;
     for (const entry of section.entries) {
+      if (full()) return { y, truncated: true };
       const broke = y;
       y = pageBreakIfNeeded(doc, y, 20);
       if (y !== broke) y = continuedHeading(doc, section.title, y, width);
@@ -175,7 +235,7 @@ function renderSection(doc: Pdf, section: PackSection, startY: number, width: nu
       ) + 2;
   }
 
-  return y + 18;
+  return { y: y + 18, truncated: false };
 }
 
 /** The section's own title again, at the top of a page it ran onto. */
