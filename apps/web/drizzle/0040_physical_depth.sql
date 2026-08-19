@@ -1,0 +1,1 @@
+-- Spec 51 (physical half) — low stock, weight, shipments. Claimed; SQL follows.

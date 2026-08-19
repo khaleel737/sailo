@@ -1,0 +1,1 @@
+-- Spec 43 — pay-what-you-want, sell windows, manual trials. Claimed; SQL follows.
