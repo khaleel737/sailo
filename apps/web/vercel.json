@@ -51,6 +51,10 @@
     {
       "path": "/api/cron/disputes",
       "schedule": "35 * * * *"
+    },
+    {
+      "path": "/api/cron/tax",
+      "schedule": "45 3 * * *"
     }
   ]
 }
