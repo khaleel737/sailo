@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Download, Loader2, X } from "lucide-react";
 import { createOrderIntent } from "@/lib/actions/orders";
+import { CustomFields, readCustomFields } from "./custom-fields";
 import { markPendingOrder } from "@/lib/cart";
 import {
   countriesByName,
@@ -61,6 +62,7 @@ export function CheckoutPanel({
   items,
   methods,
   deliveryOptions,
+  blockedCountries,
   needsDeliveryHint = false,
   payInPersonHint = true,
   contactEmail,
@@ -71,6 +73,7 @@ export function CheckoutPanel({
   ariaLabel,
   t,
   onClose,
+  customFields,
   onPlaced,
   children,
   empty,
@@ -186,11 +189,20 @@ export function CheckoutPanel({
   const reachable = shippableCountries(deliveryOptions);
   const countryChoices = useMemo(() => {
     const all = countriesByName(locale);
-    return reachable ? all.filter((c) => reachable.includes(c.code)) : all;
+    const shipped = reachable ? all.filter((c) => reachable.includes(c.code)) : all;
+    /*
+     * Two narrowings, and they mean different things. `reachable` is "we do not
+     * post there"; `blockedCountries` is "we will not sell there", which is a
+     * compliance decision and applies to a download with no address just as
+     * much as to a parcel.
+     */
+    if (blockedCountries.length === 0) return shipped;
+    const blocked = new Set(blockedCountries);
+    return shipped.filter((c) => !blocked.has(c.code));
     // `reachable` is rebuilt each render from a prop that rarely changes;
     // joined so an identical list doesn't re-sort 244 names.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [locale, reachable?.join(",")]);
+  }, [locale, reachable?.join(","), blockedCountries.join(",")]);
 
   /*
    * Ask only when the answer changes something. An unrestricted shop keeps the
@@ -403,6 +415,12 @@ export function CheckoutPanel({
          */
         acceptedTerms: data.get("acceptedTerms") === "on",
         marketingOptIn: data.get("marketingOptIn") === "on",
+        /*
+         * Namespaced on the way out of the form, so a seller's field called
+         * `note` or `country` cannot land on the panel's own input of that
+         * name. The server validates every one against its row.
+         */
+        customFields: readCustomFields(data),
       });
     } catch (thrown) {
       // Named for what it is rather than `error`, which is the state setter's
@@ -801,6 +819,9 @@ export function CheckoutPanel({
                 placeholder={t.checkout.notes}
                 className="surface-elevated w-full rounded-xl px-3 py-2.5 text-sm outline-none placeholder:opacity-50"
               />
+
+              {/* The shop's own questions, under the note and above the money. */}
+              <CustomFields fields={customFields} />
 
               <div>
                 {coupon.applied ? (

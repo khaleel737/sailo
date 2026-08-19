@@ -28,6 +28,22 @@ export type OrderLineInput = {
   quantity: number;
   /** ISO instant from the booking picker, for a service line. */
   scheduledFor?: string;
+  /**
+   * What the buyer typed into the amount field, in minor units — spec 43.
+   *
+   * **The only money the browser is ever allowed to name**, and it is read for
+   * `pricingMode: "pwyw"` products and nothing else. On a fixed-price product
+   * this field is ignored entirely rather than validated, so a forged one buys
+   * the same thing at the same price as an honest basket; on a PWYW one it is
+   * clamped to the seller's floor in `resolveLines`, which `previewOrder` and
+   * `createOrderIntent` are both built on.
+   *
+   * Minor units, never a decimal string. The client parses through
+   * `moneyToCents`, which knows each currency's minor unit — the three-decimal
+   * currencies are the standing warning here, and `parseFloat(x) * 100` is the
+   * shape of the defect that overcharged a KWD buyer tenfold.
+   */
+  priceCents?: number;
 };
 
 export type OrderIntentInput = {
@@ -50,6 +66,34 @@ export type OrderIntentInput = {
   acceptedTerms?: boolean;
   /** The buyer ticked the optional marketing box. Only ever grants consent. */
   marketingOptIn?: boolean;
+  /**
+   * What the buyer typed into the shop's own checkout questions, keyed by
+   * field key — spec 34's other half, and what Wave C's intake forms are
+   * built on.
+   *
+   * Raw, and deliberately so: nothing here is trusted, and `saveAnswers`
+   * validates every value against the field's own row before a character of
+   * it is written. The keys a shop does not define are ignored rather than
+   * refused, because a stale form is a browser with an old page open and not
+   * an attack — but a value that fails its field's type or leaves its
+   * dropdown's option list refuses the order, exactly like the terms box.
+   */
+  customFields?: Record<string, unknown>;
+  /**
+   * A durable per-browser id, when the caller has one. Spec 44.
+   *
+   * Visa's Compelling Evidence 3.0 counts `customer_device_fingerprint` as one
+   * of its two matching data points, and an order carrying it *plus* an IP
+   * address qualifies on its own — which is the whole of a 10.4 defence.
+   *
+   * Optional and expected to be absent for most orders: Sailo redirects to
+   * Stripe Checkout and runs no fingerprinting script of its own, so this is
+   * filled only where a client already had a durable id. Never generated
+   * server-side — an id minted per request matches nothing four months later,
+   * and asserting it to an issuer as a match point would be a claim about a
+   * returning buyer that is not true.
+   */
+  deviceFingerprint?: string;
 } & OrderAddress;
 
 
@@ -133,8 +177,18 @@ export type PreviewLine = {
   unitPriceCents: number;
   quantity: number;
   subtotalCents: number;
-  /** Units left, or null when nobody is counting. */
+  /** Units left, or null when nobody is counting — for "only 3 left". */
   unitsLeft: number | null;
+  /**
+   * The most of this line one order may take, which is a different question.
+   *
+   * The cart used to derive its stepper's ceiling from `unitsLeft` alone, so
+   * the seller's per-order cap was invisible here: the control offered a fifth
+   * ticket on a four-a-head event and the checkout silently took it back.
+   * `maxOrderable` is the same function the checkout clamps with, so the
+   * number a buyer can reach is the number the order will honour.
+   */
+  maxOrderable: number;
 };
 
 export type OrderPreview = {

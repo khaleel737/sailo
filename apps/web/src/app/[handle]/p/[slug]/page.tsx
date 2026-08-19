@@ -183,6 +183,7 @@ export default async function ProductPage({
       deliveryOptions={checkout.deliveryOptions}
       contactEmail={shop.contactEmail}
       compliance={complianceOf(shop)}
+      customFields={checkout.customFields}
       t={t}
     >
     <div
@@ -328,6 +329,7 @@ export default async function ProductPage({
               heldUntilPaid={product.releaseOnPayment}
               contactEmail={shop.contactEmail}
               compliance={complianceOf(shop)}
+              customFields={checkout.customFields}
               t={t}
             />
           </div>

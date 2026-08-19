@@ -3,6 +3,7 @@ import type { Shop } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
 import type { PaymentMethodType } from "@/lib/payments";
 import type { DeliveryMethodType } from "@sailo/commerce/delivery";
+import type { CheckoutField } from "./custom-fields";
 
 /** What the checkout is offered, as the storefront hands it over. */
 
@@ -85,6 +86,15 @@ export type CheckoutPanelProps = {
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
   /**
+   * Countries this shop will not sell into — spec 38's country control.
+   *
+   * Left out of the picker so a buyer learns the rule by reading it rather than
+   * by being refused after typing a card number. It is not the enforcement:
+   * `createOrderIntent` reads the same rows and refuses a country that arrives
+   * anyway, because a missing option element is not a property of a request.
+   */
+  blockedCountries: string[];
+  /**
    * Whether anything here travels, as the caller already knows it from the
    * kinds in the basket. The server re-decides on the first quote; this only
    * spares the panel a frame of asking the wrong questions.
@@ -95,6 +105,16 @@ export type CheckoutPanelProps = {
   payInPersonHint?: boolean;
   contactEmail: string | null;
   compliance: CheckoutCompliance;
+  /**
+   * The shop's own checkout questions — spec 34.
+   *
+   * Threaded beside `compliance` and required for the same reason it is: a
+   * mount point that forgot to pass it would quietly stop asking, and the
+   * first anyone would know is a seller wondering where their answers went.
+   * An empty array is how a shop with no questions says so, and it is what
+   * the common shop passes.
+   */
+  customFields: CheckoutField[];
   /** True when a digital line has files attached. */
   hasFiles?: boolean;
   /** True when those files wait for the seller to confirm payment. */

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { CheckoutField } from "@/app/[handle]/_components/cart/custom-fields";
 import { Check, Minus, Plus, ShoppingBag } from "lucide-react";
 import {
   ExpressCheckout,
@@ -20,12 +21,14 @@ import { formatMoney } from "@sailo/core/currency";
 import {
   findVariant,
   isLowStock,
-  MAX_QUANTITY,
+  quantityCeiling,
   retargetSelection,
   variantLabel,
   type CheckoutVariant,
 } from "@sailo/core/variants";
 import { railsForOrder } from "@/lib/payments";
+import { AmountField, suggestedText } from "@/app/[handle]/_components/amount-field";
+import type { SellWindowState } from "@sailo/core/pricing-models";
 import type { ProductOption, VariantOptions } from "@sailo/db/schema";
 
 /**
@@ -51,12 +54,18 @@ export function BuyBox({
   salesOpen,
   methods,
   deliveryOptions,
+  blockedCountries,
   kind,
   billingInterval,
   canPayInPerson,
   options,
   variants,
   unitsLeft,
+  maxPerOrder = null,
+  pricingMode = "fixed",
+  pwywFloorCents = 0,
+  pwywSuggestedCents = 0,
+  windowState = "open",
   service = null,
   serviceLocation = null,
   imageUrl = null,
@@ -64,6 +73,7 @@ export function BuyBox({
   heldUntilPaid = false,
   contactEmail,
   compliance,
+  customFields,
   t,
 }: {
   shopId: string;
@@ -79,6 +89,7 @@ export function BuyBox({
   salesOpen: boolean;
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
+  blockedCountries: string[];
   kind: string;
   /** `month` or `year` for a membership; null for everything else. */
   billingInterval?: string | null;
@@ -92,6 +103,37 @@ export function BuyBox({
   variants: CheckoutVariant[];
   /** Units left on the product itself, when it has no options. */
   unitsLeft: number | null;
+  /**
+   * The seller's cap on one order — four tickets a head, two per customer.
+   *
+   * A separate answer from stock, and both apply: a room of 200 that will not
+   * sell anybody a fifth seat is refusing on this, not on supply. The server
+   * clamps against it too, in `maxOrderable`, because a quantity arrives from
+   * a browser and this control is only the polite half of the rule.
+   */
+  maxPerOrder?: number | null;
+  /**
+   * `fixed` or `pwyw` — spec 43. On `pwyw` the price is a field rather than a
+   * number, and everything below reads the buyer's amount where it would
+   * otherwise read the variant's.
+   */
+  pricingMode?: string;
+  /** The seller's floor, in minor units. Zero means free is allowed. */
+  pwywFloorCents?: number;
+  /** What the field opens on. */
+  pwywSuggestedCents?: number;
+  /**
+   * Whether this product is inside its sell window, decided on the server
+   * against a fresh clock — spec 43.
+   *
+   * A prop rather than something computed here, and that is the whole of the
+   * caching answer: `getProductBySlug` is `"use cache"` with `cacheLife("max")`
+   * and never expires on a clock, so a boundary decided *inside* it would be
+   * frozen into an entry that outlives the window. The cached thing is the row;
+   * the decision is taken per request from `now`, exactly as `eventSalesOpen`
+   * already is one line away.
+   */
+  windowState?: SellWindowState;
   service?: CheckoutService | null;
   serviceLocation?: string | null;
   imageUrl?: string | null;
@@ -99,6 +141,7 @@ export function BuyBox({
   heldUntilPaid?: boolean;
   contactEmail: string | null;
   compliance: CheckoutCompliance;
+  customFields: CheckoutField[];
   t: Dictionary;
 }) {
   const cart = useCart();
@@ -115,12 +158,46 @@ export function BuyBox({
   const unitPriceCents = variant?.priceCents ?? priceCents;
   const wasPriced = variant ? variant.compareAtCents : compareAtCents;
   const stockLeft = variant ? variant.unitsLeft : unitsLeft;
-  const maxQuantity =
-    stockLeft === null ? MAX_QUANTITY : Math.max(1, stockLeft);
+  /*
+   * `quantityCeiling`, not a third copy of the same three comparisons. It is
+   * what `maxOrderable` is built from, and `maxOrderable` is what the checkout
+   * clamps with — so the number this stepper can reach is the number the order
+   * will honour.
+   *
+   * `Math.max(1, …)` keeps the control legal when the answer is zero: a
+   * sold-out product is refused by `soldOut` below, not by a picker whose only
+   * value is none.
+   */
+  const maxQuantity = Math.max(1, quantityCeiling(stockLeft, maxPerOrder));
 
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
   const [buying, setBuying] = useState(false);
+
+  /*
+   * The buyer's own number, on a pay-what-you-want product — spec 43.
+   *
+   * Held as the text they typed rather than as cents, so a half-finished "12."
+   * survives the keystroke instead of collapsing to a number and moving their
+   * cursor. `chosenCents` is what travels.
+   */
+  const pwyw = pricingMode === "pwyw";
+  const [amount, setAmount] = useState(() =>
+    suggestedText(pwywSuggestedCents, currency),
+  );
+  const [amountCents, setAmountCents] = useState(pwywSuggestedCents);
+
+  /*
+   * What this line is worth, whichever mode the product is in.
+   *
+   * Clamped here only so the drawer and the button read the same number the
+   * server will settle on — the floor that actually decides is `resolveLines`,
+   * which re-applies it to whatever arrives. A buyer who empties the field gets
+   * the floor rather than a zero, which is what the server would give them.
+   */
+  const chosenCents = pwyw
+    ? Math.max(pwywFloorCents, amountCents)
+    : unitPriceCents;
 
   /*
    * Tell the gallery which photo the buyer is looking at, so choosing
@@ -145,7 +222,16 @@ export function BuyBox({
    */
   const rails = railsForOrder(methods, canPayInPerson);
   const noRails = rails.length === 0;
-  const disabled = soldOut || !salesOpen || noRails;
+  /*
+   * Outside its sell window, this product cannot be bought — spec 43.
+   *
+   * The button is the polite half. `resolveLines` refuses the order whatever
+   * this says, which is what makes a page opened before the window closed
+   * unable to complete after it; disabling here only saves the buyer from
+   * filling in a sheet that was always going to be refused.
+   */
+  const windowClosed = windowState !== "open";
+  const disabled = soldOut || !salesOpen || noRails || windowClosed;
 
   function chooseOption(name: string, value: string) {
     const target = retargetSelection(variants, selection, name, value);
@@ -165,7 +251,14 @@ export function BuyBox({
       title: productTitle,
       label: variant ? variantLabel(variant.options, options) : "",
       kind,
-      unitPriceCents,
+      unitPriceCents: chosenCents,
+      /*
+       * Only on a pay-what-you-want line, and this is the one number in the
+       * basket that is not a cache. `toOrderItems` sends it; `resolveLines`
+       * clamps it to the seller's floor. Left undefined on a fixed-price line
+       * so nothing downstream has to decide whether to believe it.
+       */
+      priceCents: pwyw ? chosenCents : undefined,
       imageUrl: variant?.imageUrl ?? imageUrl ?? null,
     });
     setJustAdded(true);
@@ -182,23 +275,43 @@ export function BuyBox({
    */
   const isMembership = kind === "membership";
 
+  /*
+   * One label, and the order of these branches is the order of the reasons.
+   *
+   * The window comes before "sold out" deliberately: a product that is not
+   * released yet has no stock question to answer, and telling a buyer something
+   * is sold out when the seller has simply not opened sales is both wrong and
+   * the kind of wrong that costs the sale — they will not come back on Friday
+   * for something they were told had run out.
+   */
   const primaryLabel = noRails
     ? t.shop.unavailable
-    : soldOut
-      ? t.shop.soldOut
-      : !salesOpen
-        ? t.shop.salesClosed
-        : isMembership
-          ? t.shop.subscribeNow
-          : null;
+    : windowState === "early"
+      ? t.pricing.notYetOnSale
+      : windowState === "ended"
+        ? t.pricing.noLongerAvailable
+        : soldOut
+          ? t.shop.soldOut
+          : !salesOpen
+            ? t.shop.salesClosed
+            : isMembership
+              ? t.shop.subscribeNow
+              : null;
 
   return (
     <div className="space-y-4">
       <div className="flex items-baseline gap-2">
         <span className="text-xl font-semibold tabular-nums">
-          {unitPriceCents > 0
-            ? formatMoney(unitPriceCents, currency, locale)
-            : t.common.free}
+          {/*
+            A pay-what-you-want product has no price to print — the number is
+            the field below, and printing the suggestion up here as though it
+            were the price is how a buyer comes to believe they were quoted one.
+          */}
+          {pwyw
+            ? t.pricing.payWhatYouWant
+            : unitPriceCents > 0
+              ? formatMoney(unitPriceCents, currency, locale)
+              : t.common.free}
         </span>
         {/* The interval belongs beside the number, not in a line underneath:
             a price with no cadence is the single most misread thing on a
@@ -208,7 +321,12 @@ export function BuyBox({
             {billingInterval === "year" ? t.shop.perYear : t.shop.perMonth}
           </span>
         ) : null}
-        {wasPriced !== null && wasPriced > unitPriceCents ? (
+        {/*
+          No strike-through on a buyer-chosen amount: there is no "was" price,
+          so a higher number crossed out beside it advertises a saving against
+          nothing.
+        */}
+        {!pwyw && wasPriced !== null && wasPriced > unitPriceCents ? (
           <span className="text-muted text-sm line-through tabular-nums">
             {formatMoney(wasPriced, currency, locale)}
           </span>
@@ -222,6 +340,20 @@ export function BuyBox({
         onChoose={chooseOption}
         t={t}
       />
+
+      {pwyw && !disabled ? (
+        <AmountField
+          currency={currency}
+          locale={locale}
+          floorCents={pwywFloorCents}
+          value={amount}
+          onChange={(next) => {
+            setAmount(next.text);
+            setAmountCents(next.cents);
+          }}
+          t={t}
+        />
+      ) : null}
 
       {salesOpen && isLowStock(stockLeft) ? (
         <p className="text-sm font-medium text-amber-600">
@@ -325,9 +457,11 @@ export function BuyBox({
           variant={variant}
           options={options}
           quantity={quantity}
-          unitPriceCents={unitPriceCents}
+          unitPriceCents={chosenCents}
+          pwywCents={pwyw ? chosenCents : undefined}
           methods={methods}
           deliveryOptions={deliveryOptions}
+          blockedCountries={blockedCountries}
           kind={kind}
           canPayInPerson={canPayInPerson}
           service={service}
@@ -337,6 +471,7 @@ export function BuyBox({
           heldUntilPaid={heldUntilPaid}
           contactEmail={contactEmail}
           compliance={compliance}
+          customFields={customFields}
           t={t}
           onClose={() => setBuying(false)}
         />

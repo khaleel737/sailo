@@ -1,6 +1,7 @@
 "use client";
 
 import { CartProvider } from "./cart-provider";
+import type { CheckoutField } from "@/app/[handle]/_components/cart/custom-fields";
 import { CartButton } from "./cart-button";
 import { CartSheet } from "./cart-sheet";
 import type {
@@ -28,8 +29,10 @@ export function CartRegion({
   locale,
   methods,
   deliveryOptions,
+  blockedCountries,
   contactEmail,
   compliance,
+  customFields,
   t,
   children,
 }: {
@@ -43,8 +46,11 @@ export function CartRegion({
   locale: string;
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
+  /** Countries this shop refuses — spec 38's country control. */
+  blockedCountries: string[];
   contactEmail: string | null;
   compliance: CheckoutCompliance;
+  customFields: CheckoutField[];
   t: Dictionary;
   children: React.ReactNode;
 }) {
@@ -71,8 +77,10 @@ export function CartRegion({
           currency={currency}
           methods={methods}
           deliveryOptions={deliveryOptions}
+          blockedCountries={blockedCountries}
           contactEmail={contactEmail}
           compliance={compliance}
+          customFields={customFields}
           t={t}
         />
       </div>

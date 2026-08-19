@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { CheckoutField } from "@/app/[handle]/_components/cart/custom-fields";
 import { MapPin, Video } from "lucide-react";
 import {
   CheckoutPanel,
@@ -51,8 +52,10 @@ export function ExpressCheckout({
   options,
   quantity,
   unitPriceCents,
+  pwywCents,
   methods,
   deliveryOptions,
+  blockedCountries,
   kind,
   canPayInPerson,
   service = null,
@@ -62,6 +65,7 @@ export function ExpressCheckout({
   heldUntilPaid = false,
   contactEmail,
   compliance,
+  customFields,
   t,
   onClose,
 }: {
@@ -74,8 +78,18 @@ export function ExpressCheckout({
   options: ProductOption[];
   quantity: number;
   unitPriceCents: number;
+  /**
+   * What the buyer named, on a pay-what-you-want product — spec 43.
+   *
+   * Undefined on every fixed-price product, and that is not the same as zero:
+   * the server ignores this field outright unless the product's stored
+   * `pricing_mode` says otherwise, so sending it where it does not belong buys
+   * nothing and sending it where it does is the only way the amount can travel.
+   */
+  pwywCents?: number;
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
+  blockedCountries: string[];
   /** physical | digital | service | event — only physical goods get delivered. */
   kind: string;
   /** Whether this product has a moment where cash can change hands. */
@@ -90,6 +104,7 @@ export function ExpressCheckout({
   heldUntilPaid?: boolean;
   contactEmail: string | null;
   compliance: CheckoutCompliance;
+  customFields: CheckoutField[];
   t: Dictionary;
   onClose: () => void;
 }) {
@@ -189,10 +204,13 @@ export function ExpressCheckout({
           // Sent as an absolute instant: the buyer picked a time in their own
           // timezone, and the server has no idea what that is.
           scheduledFor,
+          // The one price the browser is allowed to name, clamped server-side.
+          priceCents: pwywCents,
         },
       ]}
       methods={methods}
       deliveryOptions={deliveryOptions}
+      blockedCountries={blockedCountries}
       // One product, so its kind settles the question outright — no quote
       // needed to know that a download is not delivered.
       needsDeliveryHint={needsDelivery(kind)}
@@ -201,6 +219,7 @@ export function ExpressCheckout({
       payInPersonHint={canPayInPerson}
       contactEmail={contactEmail}
       compliance={compliance}
+      customFields={customFields}
       hasFiles={hasFiles}
       heldUntilPaid={heldUntilPaid}
       title={t.shop.order}

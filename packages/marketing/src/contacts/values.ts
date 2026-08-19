@@ -327,7 +327,17 @@ export type SaveAnswersResult = {
  */
 export async function saveAnswers(input: {
   shopId: string;
-  clientId: string;
+  /**
+   * Null when there is no contact to hang the answers on.
+   *
+   * `upsertClient` returns null for a buyer who gave neither an address nor a
+   * phone number, and the checkout still has to be able to ask its questions:
+   * the answers are validated exactly as they would be, and `written` comes
+   * back for the order to snapshot. What is skipped is only the
+   * `contact_field_values` write, because there is no contact — and the order
+   * is the durable record either way, which is the whole reason it snapshots.
+   */
+  clientId: string | null;
   answers: readonly AnswerInput[];
   /** True for imports: an empty answer leaves an existing one alone. */
   skipBlank?: boolean;
@@ -337,24 +347,38 @@ export async function saveAnswers(input: {
 }): Promise<SaveAnswersResult> {
   const now = input.now ?? new Date();
   const defined = await fieldsFor(input.shopId);
-  const byKey = new Map(defined.map((field) => [field.key, field]));
+  /*
+   * Iterated over the fields the shop *defines*, not over the keys the caller
+   * sent, and that direction is the whole security of this function.
+   *
+   * The other way round, a required field is only ever checked when its key
+   * happens to be in the request — so omitting the key entirely walks past the
+   * requirement, which is check-then-act wearing a different hat. Driving from
+   * the definitions makes "absent" a case this loop has to answer rather than
+   * one it never reaches.
+   *
+   * The reverse comes free: a key the shop does not define is never looked at,
+   * because nothing iterates it. A CSV with an extra column is every CSV, and
+   * a stale checkout form is a browser with an old page open — neither is
+   * worth refusing an order over.
+   */
+  const submitted = new Map(input.answers.map((answer) => [answer.key, answer.raw]));
 
   const written: OrderCustomField[] = [];
   const refused: { key: string; problem: string }[] = [];
-  const rows: {
-    shopId: string;
-    clientId: string;
-    fieldId: string;
-    value: FieldValue;
-    updatedAt: Date;
-  }[] = [];
+  const rows: { fieldId: string; value: FieldValue }[] = [];
 
-  for (const answer of input.answers) {
-    const field = byKey.get(answer.key);
-    // Not an error worth surfacing: a CSV with a column this shop does not
-    // define is a spreadsheet with an extra column, which is every spreadsheet.
-    if (!field) continue;
+  for (const field of defined) {
     if (input.scope === "checkout" && !asksAtCheckout(field.scope)) continue;
+
+    /*
+     * A field nobody sent an answer for. An import simply had no column, and
+     * rule 5 says an existing answer stands — so it is skipped before it can
+     * be judged. Every other caller renders the whole form, so absent means
+     * the box was left empty, and an empty required box is a refusal.
+     */
+    const present = submitted.has(field.key);
+    if (!present && input.skipBlank) continue;
 
     const shape: FieldShape = {
       key: field.key,
@@ -362,7 +386,7 @@ export async function saveAnswers(input: {
       options: field.options,
       required: field.required,
     };
-    const parsed = parseAnswer(shape, answer.raw);
+    const parsed = parseAnswer(shape, present ? submitted.get(field.key) : undefined);
     if (!parsed.ok) {
       refused.push({ key: field.key, problem: parsed.problem });
       continue;
@@ -372,13 +396,7 @@ export async function saveAnswers(input: {
     // a column the import had nothing in, and an existing answer stands.
     if (input.skipBlank && parsed.value === null) continue;
 
-    rows.push({
-      shopId: input.shopId,
-      clientId: input.clientId,
-      fieldId: field.id,
-      value: parsed.value,
-      updatedAt: now,
-    });
+    rows.push({ fieldId: field.id, value: parsed.value });
     written.push({
       key: field.key,
       label: field.label,
@@ -387,10 +405,19 @@ export async function saveAnswers(input: {
     });
   }
 
-  if (rows.length > 0) {
+  const { clientId } = input;
+  if (rows.length > 0 && clientId) {
     await getDb()
       .insert(contactFieldValues)
-      .values(rows)
+      .values(
+        rows.map((row) => ({
+          shopId: input.shopId,
+          clientId,
+          fieldId: row.fieldId,
+          value: row.value,
+          updatedAt: now,
+        })),
+      )
       .onConflictDoUpdate({
         target: [contactFieldValues.clientId, contactFieldValues.fieldId],
         set: {
