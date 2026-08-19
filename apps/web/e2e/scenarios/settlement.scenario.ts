@@ -1,6 +1,9 @@
 import type Stripe from "stripe";
+import type * as transactional from "@sailo/email/transactional";
+import type * as workflows from "@sailo/workflows/orders";
+import type * as webhookEmit from "@sailo/webhooks/emit";
 import { assertLocalDatabase } from "./local-only";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import {
@@ -14,7 +17,56 @@ import {
   stripeEvents,
   user,
 } from "@sailo/db/schema";
-import { claimEvent, handleConnectEvent, releaseEvent } from "@/lib/stripe-webhooks";
+/**
+ * The buyer's receipt, recorded rather than sent.
+ *
+ * `setup.ts` deletes `RESEND_API_KEY`, so the real sender answers `{sent:false}`
+ * — which is a send that did not happen, and would make "was the receipt sent
+ * exactly once?" unanswerable by passing every time. Recording it is the only
+ * way this file can ask the question at all.
+ */
+const receipts: { orderId: string; invoiceNumber: string | null }[] = [];
+
+/** Whether the provider refuses the send. Set per test. */
+let receiptFails = false;
+
+/** Orders the seller was told about, one entry per call. */
+const sellerNotices: string[] = [];
+
+/** Outbound domain events, one entry per emit. */
+const outboundWebhooks: { orderId: string; event: string }[] = [];
+const webhooksFor = (orderId: string, event: string) =>
+  outboundWebhooks.filter((row) => row.orderId === orderId && row.event === event);
+
+vi.mock("@sailo/email/transactional", async (importOriginal) => ({
+  ...(await importOriginal<typeof transactional>()),
+  sendOrderConfirmation: async (opts: {
+    order: { id: string };
+    invoiceNumber: string | null;
+  }) => {
+    if (receiptFails) return { sent: false as const, reason: "scenario: refused" };
+    receipts.push({ orderId: opts.order.id, invoiceNumber: opts.invoiceNumber });
+    return { sent: true as const };
+  },
+}));
+
+vi.mock("@sailo/workflows/orders", async (importOriginal) => ({
+  ...(await importOriginal<typeof workflows>()),
+  notifySellerOfOrder: async (opts: { orderId: string }) => {
+    sellerNotices.push(opts.orderId);
+  },
+}));
+
+vi.mock("@sailo/webhooks/emit", async (importOriginal) => ({
+  ...(await importOriginal<typeof webhookEmit>()),
+  emitOrderWebhook: async (opts: { orderId: string; event: string }) => {
+    outboundWebhooks.push({ orderId: opts.orderId, event: opts.event });
+  },
+}));
+
+const { claimEvent, handleConnectEvent, releaseEvent } = await import(
+  "@/lib/stripe-webhooks"
+);
 
 /**
  * Settlement — what happens when the money actually arrives.
@@ -47,6 +99,13 @@ const ACCOUNT = "acct_scenario_seller";
 
 beforeAll(() => {
   assertLocalDatabase();
+});
+
+beforeEach(() => {
+  receipts.length = 0;
+  receiptFails = false;
+  sellerNotices.length = 0;
+  outboundWebhooks.length = 0;
 });
 
 async function shopWithCardRail() {
@@ -196,6 +255,87 @@ describe("a card payment settles", () => {
 
     const all = await db.select().from(invoices).where(eq(invoices.orderId, order.id));
     expect(all).toHaveLength(1);
+  });
+
+  it("sends the buyer exactly one receipt, whatever Stripe delivers", async () => {
+    /*
+     * The invoice sequence has been guarded here since it moved onto the
+     * webhook; the receipt carrying that invoice number had not been.
+     *
+     * `checkout.session.completed` is not the only event that settles a session
+     * — `async_payment_succeeded` settles the same one, with a *different* event
+     * id, so the route's event-id claim does not fence the pair. Both used to
+     * find `confirmationSentAt` null under a plain read in the caller and both
+     * sent, so a buyer got two receipts with two invoice links for one order and
+     * no way to tell whether they had been charged twice.
+     *
+     * `confirmBuyerByEmail` claims the column in the UPDATE's own WHERE now, so
+     * exactly one caller wins it.
+     */
+    const shop = await shopWithCardRail();
+    const { order, sessionId } = await pendingCardOrder(shop.id);
+
+    const completed = sessionEvent(sessionId, "paid");
+    const asyncSucceeded = {
+      ...sessionEvent(sessionId, "paid"),
+      type: "checkout.session.async_payment_succeeded",
+    } as Stripe.Event;
+
+    /*
+     * Concurrently, which is the only way this fails. Stripe delivers webhooks
+     * in parallel, so the two land as two requests that both read the order
+     * before either has written to it. Awaited one after the other, even the
+     * check-then-act version passes — the second call reads a row the first has
+     * already stamped — and the test proves nothing.
+     */
+    await Promise.all([
+      handleConnectEvent(completed, ACCOUNT),
+      handleConnectEvent(asyncSucceeded, ACCOUNT),
+    ]);
+
+    const mine = receipts.filter((row) => row.orderId === order.id);
+    expect(mine).toHaveLength(1);
+    // And it carries the number this settlement actually claimed.
+    const invoice = await db.query.invoices.findFirst({
+      where: eq(invoices.orderId, order.id),
+    });
+    expect(mine[0]!.invoiceNumber).toBe(invoice?.number);
+    expect((await orderRow(order.id))?.confirmationSentAt).toBeInstanceOf(Date);
+
+    /*
+     * The seller's copy and the two domain events, which fired on the same
+     * pre-read and now fire on the settlement claim.
+     *
+     * Worth being exact about what this pins and what it does not. The receipt
+     * above *reproduces* the race — `confirmationSentAt` is read at the top of
+     * the handler and written near the bottom, so the second delivery's read
+     * lands inside that window every time. `paymentStatus` is written within a
+     * few statements of being read, so the window here is narrow enough that two
+     * deliveries usually miss it, and this assertion passes against the old
+     * guard as often as not. It is here as the invariant, not as the repro: one
+     * settled sale, one seller notice, one `order.created`, one `order.paid`.
+     * A consumer that receives `order.paid` twice double-counts revenue.
+     */
+    expect(sellerNotices.filter((id) => id === order.id)).toHaveLength(1);
+    expect(webhooksFor(order.id, "order.created")).toHaveLength(1);
+    expect(webhooksFor(order.id, "order.paid")).toHaveLength(1);
+  });
+
+  it("leaves the receipt retryable when it could not be sent", async () => {
+    /*
+     * The other half of the claim, and the property the old stamp-afterwards
+     * order was protecting. A claim held through a failed send would mean the
+     * buyer has no receipt and nothing will ever try again — silently worse than
+     * the double-send.
+     */
+    const shop = await shopWithCardRail();
+    const { order, sessionId } = await pendingCardOrder(shop.id);
+
+    receiptFails = true;
+    await handleConnectEvent(sessionEvent(sessionId, "paid"), ACCOUNT);
+
+    expect(receipts.filter((row) => row.orderId === order.id)).toHaveLength(0);
+    expect((await orderRow(order.id))?.confirmationSentAt).toBeNull();
   });
 
   it("releases a digital order's files", async () => {

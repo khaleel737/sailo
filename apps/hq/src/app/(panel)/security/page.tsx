@@ -29,6 +29,7 @@ import {
   getSecurityWatchlist,
   getSessionCountryOptions,
   getSessions,
+  WATCHLIST_LIMIT,
   getSignInSeries,
   pageNumber,
 } from "@/lib/platform";
@@ -321,12 +322,12 @@ export default async function HqSecurityPage({
                 <Td>
                   <Link
                     href={`/accounts/${row.userId}`}
-                    className="focus-ring flex min-w-0 items-center rounded pointer-coarse:min-h-11"
+                    className="focus-ring flex min-w-0 flex-col items-start justify-center rounded pointer-coarse:min-h-11"
                   >
-                    <span className="block truncate font-medium text-ink-900">
+                    <span className="max-w-full truncate font-medium text-ink-900">
                       {row.shopName ?? row.name}
                     </span>
-                    <span className="block truncate text-xs text-ink-400">
+                    <span className="max-w-full truncate text-xs text-ink-400">
                       {row.handle ? `/${row.handle} · ` : ""}
                       {row.email}
                     </span>
@@ -335,8 +336,24 @@ export default async function HqSecurityPage({
 
                 <Td label="What's wrong">
                   <span className="flex flex-wrap gap-1.5">
+                    {/*
+                      `whitespace-normal`, overriding the Badge default.
+
+                      A badge is normally a one-or-two-word chip and not
+                      wrapping is right for it — a wrapped chip makes its whole
+                      table row taller. These are not chips: they are sentences
+                      ("Takes card payments with no second factor"), and held on
+                      one line the widest of them pushed this page 12px past the
+                      viewport on a phone. `cn` is tailwind-merge, so the later
+                      class wins cleanly rather than fighting the base.
+                    */}
                     {row.reasons.map((reason) => (
-                      <Badge key={reason.key} tone={reason.tone} dot>
+                      <Badge
+                        key={reason.key}
+                        tone={reason.tone}
+                        dot
+                        className="whitespace-normal text-left"
+                      >
                         {reason.text}
                       </Badge>
                     ))}
@@ -371,7 +388,28 @@ export default async function HqSecurityPage({
               </Tr>
             ))}
           </Table>
+
         )}
+        {/*
+          `getSecurityWatchlist` takes forty and this drew all forty with
+          nothing saying so. Forty is a deliberate cap — the list is ranked, so
+          the fortieth is by definition the least urgent — but a cap nobody is
+          told about reads as a complete list, and somebody works it to the
+          bottom believing they are done.
+        */}
+        {watchlist.length >= WATCHLIST_LIMIT ? (
+          <p className="mt-3 text-xs leading-relaxed text-ink-400">
+            The {WATCHLIST_LIMIT} most exposed accounts. There may be more
+            behind them — work this list down and reload, or filter{" "}
+            <Link
+              href="/accounts?security=cards_no2fa"
+              className="underline decoration-ink-300 underline-offset-2 hover:text-ink-700"
+            >
+              Accounts by what guards them
+            </Link>{" "}
+            for the whole set.
+          </p>
+        ) : null}
       </div>
 
       <SectionTitle>Signed in right now</SectionTitle>
@@ -432,7 +470,7 @@ export default async function HqSecurityPage({
                 <Td>
                   <Link
                     href={`/accounts/${row.userId}`}
-                    className="focus-ring flex min-w-0 items-center rounded pointer-coarse:min-h-11"
+                    className="focus-ring flex min-w-0 flex-col items-start justify-center rounded pointer-coarse:min-h-11"
                   >
                     <span className="flex min-w-0 items-center gap-2">
                       <span className="truncate font-medium text-ink-900">
@@ -446,7 +484,7 @@ export default async function HqSecurityPage({
                         <Badge tone="neutral">No 2FA</Badge>
                       ) : null}
                     </span>
-                    <span className="block truncate text-xs text-ink-400">
+                    <span className="max-w-full truncate text-xs text-ink-400">
                       {row.email}
                     </span>
                   </Link>

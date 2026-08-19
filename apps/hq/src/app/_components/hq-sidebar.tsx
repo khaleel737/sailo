@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import {
   Activity,
   AtSign,
+  Archive,
+  FileLock2,
+  CreditCard,
   Gift,
   Handshake,
   LayoutDashboard,
@@ -14,6 +17,7 @@ import {
   Megaphone,
   Menu,
   Package,
+  Radar,
   Route,
   Send,
   ShieldCheck,
@@ -91,15 +95,57 @@ const GROUPS = [
     items: [
       { href: "/orders", label: "Orders", icon: ShoppingBag },
       /*
-       * Under "What they're doing" rather than beside Security, though it is a
-       * risk surface. A chargeback is a thing that happened to an order, and the
-       * person who opens it has almost always come from one — the desk they need
-       * is next to Orders, not next to sessions and API keys.
+       * Beside Orders, and it is a different screen. /orders answers "what did
+       * somebody buy"; /payments answers "what happened to the money", which is
+       * a question about rails, refunds and Stripe objects rather than about
+       * products. They look alike right up until something goes wrong with one
+       * of them, which is the moment somebody needs the second one.
        */
-      { href: "/disputes", label: "Chargebacks", icon: Gavel },
+      { href: "/payments", label: "Payments", icon: CreditCard },
       { href: "/products", label: "Products", icon: Package },
       { href: "/affiliates", label: "Affiliates", icon: Gift },
       { href: "/buyers", label: "Buyers", icon: UserRound },
+    ],
+  },
+  /*
+   * Trust & safety, which is new, and which took Chargebacks out of the group
+   * above.
+   *
+   * That move overturns a decision this file used to argue for: a chargeback
+   * was filed under "What they're doing" because it "is a thing that happened
+   * to an order, and the person who opens it has almost always come from one".
+   * That was true, and it stopped being true when the risk desk was built. The
+   * person opening a chargeback now has almost always come from /risk — it is
+   * the screen that told them which shop to look at — and the three items here
+   * are one shift's work rather than three unrelated tables: what is going
+   * wrong now, what a bank is already arguing about, and what walked away.
+   *
+   * Security stays under Platform. It reads per-account but its question is
+   * about the estate — who is signed in, from where, holding what key — and it
+   * is about sellers being attacked rather than sellers doing the attacking.
+   * Those are different jobs on different days.
+   */
+  {
+    id: "trust",
+    label: "Trust & safety",
+    items: [
+      { href: "/risk", label: "Risk", icon: Radar },
+      { href: "/disputes", label: "Chargebacks", icon: Gavel },
+      /*
+       * "Closures" and not "Deleted shops". The screen is not a list of
+       * tombstones — /accounts?shopState=deleted is that, and it is useless,
+       * every row being an identical `deleted-3f2a…`. This is the record of
+       * what each shop *was* on the way out, which is a different noun.
+       */
+      { href: "/closures", label: "Closures", icon: Archive },
+      /*
+       * Under Trust & safety rather than Platform, because that is what a data
+       * request is on this side of the product: an obligation with a clock,
+       * where the failure mode is a regulator's letter rather than a broken
+       * page. It sits beside Closures for the same reason — both are about a
+       * business's relationship with people it no longer serves.
+       */
+      { href: "/data-requests", label: "Data requests", icon: FileLock2 },
     ],
   },
   {

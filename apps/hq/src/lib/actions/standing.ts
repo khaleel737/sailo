@@ -6,6 +6,13 @@
  * The three switches HQ throws that change what a shop may do, as opposed to what it may
  * access. Each one is reversible and each one is visible to the seller, which is what separates
  * them from the revocations in `./access`.
+ *
+ * TWO CAPABILITIES, NOT ONE
+ * Comping a plan is `billing:grant`; suspending a shop and pausing its marketing are
+ * `account:suspend`. They sit in one file because they are the same *kind* of switch, and
+ * they are guarded separately because the mistakes are not comparable: a wrongly comped plan
+ * costs us a subscription, and a wrongly suspended shop takes somebody's income offline until
+ * a human notices. `risk` holds the second and not the first, which is the shape of the job.
  */
 
 import { eq } from "drizzle-orm";
@@ -26,7 +33,7 @@ export async function setCompPlan(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { staff, shop } = await loadShop(formData);
+  const { staff, shop } = await loadShop(formData, "billing:grant");
   if (!shop) return { ok: false, error: "That account no longer exists." };
 
   const requested = String(formData.get("plan") ?? "none").trim();
@@ -79,7 +86,7 @@ export async function setSuspended(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { staff, shop } = await loadShop(formData);
+  const { staff, shop } = await loadShop(formData, "account:suspend");
   if (!shop) return { ok: false, error: "That account no longer exists." };
 
   const suspend = String(formData.get("suspend") ?? "") === "1";
@@ -135,7 +142,7 @@ export async function setMarketingPaused(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { staff, shop } = await loadShop(formData);
+  const { staff, shop } = await loadShop(formData, "account:suspend");
   if (!shop) return { ok: false, error: "That account no longer exists." };
 
   const pause = String(formData.get("pause") ?? "") === "1";

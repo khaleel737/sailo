@@ -1,5 +1,6 @@
 import "server-only";
 import { Resend } from "resend";
+import { htmlToText } from "@sailo/core/html-text";
 
 /** Getting mail out, and saying plainly when it didn't go. */
 
@@ -81,7 +82,25 @@ export function sender(displayName: string, address: string) {
 }
 
 export type SendResult =
-  | { sent: true; id: string }
+  | {
+      sent: true;
+      id: string;
+      /**
+       * What was sent, so the sender can record it.
+       *
+       * Spec 44 keeps every transactional message against its order, because
+       * Stripe's `customer_communication` evidence slot was asking the *seller*
+       * to upload messages that Sailo itself had sent and never kept.
+       *
+       * Returned from here rather than reconstructed by the caller for the
+       * reason `disputes.evidenceSnapshot` already gives about snapshotting: the
+       * template changes and what the buyer read does not, so the evidence has
+       * to come from the send itself. Re-rendering it a month later answers a
+       * different question.
+       */
+      subject: string;
+      text: string;
+    }
   | { sent: false; reason: string };
 
 export type Message = {
@@ -123,7 +142,19 @@ export async function send(opts: Message): Promise<SendResult> {
       text: opts.text,
     });
     if (error) return { sent: false, reason: error.message };
-    return { sent: true, id: data?.id ?? "" };
+    return {
+      sent: true,
+      id: data?.id ?? "",
+      subject: opts.subject,
+      /*
+       * The plain-text alternative when there is one, and the HTML flattened
+       * when there is not. Bulk mail always carries `text`; most transactional
+       * mail does not, and "no text part" must not mean "no record of what was
+       * sent" — that would leave the evidence slot empty for exactly the
+       * messages a dispute is answered with.
+       */
+      text: opts.text ?? htmlToText(opts.html),
+    };
   } catch (error) {
     // Email must never take an order down with it.
     return {
@@ -176,10 +207,15 @@ export async function sendBatch(messages: Message[]): Promise<SendResult[]> {
     if (error) return fail(error.message);
 
     const ids = data?.data ?? [];
-    return messages.map((_, i) => {
+    return messages.map((message, i): SendResult => {
       const id = ids[i]?.id;
       return id
-        ? { sent: true, id }
+        ? {
+            sent: true,
+            id,
+            subject: message.subject,
+            text: message.text ?? htmlToText(message.html),
+          }
         : // Fewer ids than messages is the provider telling us it did not
           // accept them all, and guessing which is worse than saying so.
           { sent: false, reason: "the provider returned no id for this message" };

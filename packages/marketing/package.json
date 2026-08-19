@@ -8,11 +8,19 @@
     "./broadcasts": "./src/broadcasts/index.ts",
     "./lifecycle": "./src/lifecycle/index.ts",
     "./demos": "./src/demos.ts",
+    "./socials": "./src/socials.ts",
     "./broadcasts/server": "./src/broadcasts/server.ts",
+    "./contacts": "./src/contacts/index.ts",
+    "./contacts/server": "./src/contacts/server.ts",
+    "./automations": "./src/automations/index.ts",
+    "./automations/server": "./src/automations/server.ts",
     "./lifecycle/server": "./src/lifecycle/server.ts",
     "./contact": "./src/contact.ts",
     "./newsletter": "./src/newsletter/index.ts",
-    "./newsletter/server": "./src/newsletter/server.ts"
+    "./newsletter/server": "./src/newsletter/server.ts",
+    "./leads/server": "./src/leads/server.ts",
+    "./testimonials": "./src/testimonials/index.ts",
+    "./testimonials/server": "./src/testimonials/server.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

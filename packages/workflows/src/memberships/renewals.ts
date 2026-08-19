@@ -60,7 +60,27 @@ export async function runManualRenewals(now = new Date()): Promise<RenewalTick> 
   const due = await db.query.subscriptions.findMany({
     where: and(
       eq(subscriptions.billingMode, "manual"),
-      or(eq(subscriptions.status, "active"), eq(subscriptions.status, "past_due")),
+      /*
+       * `trialing` is here because a manual trial is the one period nobody has
+       * paid for — spec 43.
+       *
+       * The trial *is* the current period: `currentPeriodEnd` is the day it
+       * runs out, and the first real payment is the order this cron raises five
+       * days before that. Left out of this list, a trialling member would reach
+       * the end of their free month, `membershipAccess` would close the door on
+       * time, and nothing would ever have asked them for money — a trial that
+       * silently cancels instead of converting, which is the entire failure the
+       * feature exists to avoid.
+       *
+       * Safe against the card rail without a second condition: `billingMode`
+       * above already excludes every Stripe-billed subscription, and Stripe
+       * runs its own trials.
+       */
+      or(
+        eq(subscriptions.status, "active"),
+        eq(subscriptions.status, "past_due"),
+        eq(subscriptions.status, "trialing"),
+      ),
       eq(subscriptions.cancelAtPeriodEnd, false),
       lte(subscriptions.currentPeriodEnd, horizon),
       /*

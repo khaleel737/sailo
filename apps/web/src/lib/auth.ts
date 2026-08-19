@@ -7,13 +7,25 @@ import {
 } from "better-auth/api";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { bearer, twoFactor } from "better-auth/plugins";
+import { bearer, organization, twoFactor } from "better-auth/plugins";
 import { expo } from "@better-auth/expo";
 import { getDb } from "@sailo/db";
-import { account, session, twoFactor as twoFactorTable, user, verification } from "@sailo/db/schema";
+import {
+  account,
+  invitation,
+  member,
+  organization as organizationTable,
+  session,
+  twoFactor as twoFactorTable,
+  user,
+  verification,
+} from "@sailo/db/schema";
+import { SHOP_ROLES, shopAccess } from "@sailo/auth/permissions";
+import { sendTeamInvite } from "@/lib/email";
 import { sendEmailConfirmation, sendPasswordReset } from "@/lib/email";
 import { refusesPasswordAuthForRoster } from "@sailo/security/roster";
 import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
+import { recordAccountEvent } from "@sailo/commerce/disputes";
 
 /**
  * How long a reset link stays good. Set here rather than left to the default
@@ -80,6 +92,40 @@ async function twoFactorUserId(
   return pending?.value ?? null;
 }
 
+/**
+ * DECISION B — the auth paths that keep their ceiling when Redis is cold.
+ *
+ * `RELEASE-PLAN-2026-08.md` §0.6 asked for this per endpoint rather than
+ * globally, and the four here are the ones where an hour without a ceiling
+ * costs more than an hour of refusals:
+ *
+ *   - **`/forget-password` and `/send-verification-email`** mail an address the
+ *     *caller* chooses. Unmetered, they are an open relay on Sailo's own sending
+ *     domain — reputation that also carries every buyer's receipt — and the
+ *     answer they give is an account-existence oracle besides.
+ *   - **`/reset-password`** consumes a token. The ceiling is the cost of
+ *     guessing one, and a reset token is a full account takeover.
+ *   - **`/sign-up/email`** is an unauthenticated write that creates an account
+ *     and sends mail.
+ *
+ * `/sign-in/email` is deliberately **not** here. Failing it closed locks every
+ * seller out of their own shop for as long as the cache is down, which is a
+ * worse outage than the credential stuffing it would prevent — and better-auth
+ * answers a failed sign-in identically whether or not the account exists, so
+ * there is no oracle to close.
+ *
+ * The 2FA verify ceiling further down is also deliberately left open: it has a
+ * database-backed lockout underneath it (ten failures, fifteen minutes) that
+ * does not depend on Redis at all, which is the compensating control the paths
+ * here do not have.
+ */
+const FAIL_CLOSED_PATHS = new Set([
+  "/forget-password",
+  "/send-verification-email",
+  "/reset-password",
+  "/sign-up/email",
+]);
+
 export const auth = betterAuth({
   /*
    * Doubles as the TOTP issuer — the name a seller sees beside the rotating
@@ -96,7 +142,21 @@ export const auth = betterAuth({
   trustedOrigins: ["sailo://"],
   database: drizzleAdapter(getDb(), {
     provider: "pg",
-    schema: { user, session, account, verification, twoFactor: twoFactorTable },
+    schema: {
+      user,
+      session,
+      account,
+      verification,
+      twoFactor: twoFactorTable,
+      /*
+       * Spec 37. Named here or the adapter invents its own table names and
+       * nothing the migration created is ever written to. `team` and
+       * `teamMember` are absent on purpose — a Sailo shop is one team.
+       */
+      organization: organizationTable,
+      member,
+      invitation,
+    },
   }),
   emailAndPassword: {
     enabled: true,
@@ -202,6 +262,30 @@ export const auth = betterAuth({
           if (!city && !country) return;
           return { data: { city, country } };
         },
+        /*
+         * The same facts again, in a table that outlives the session. Spec 44.
+         *
+         * `session` carries exactly what a subscription chargeback wants —
+         * address, user agent, city, country, when — and then better-auth
+         * removes the row on expiry. So a platform dispute arriving 120 days
+         * after a seller's last sign-in finds nothing to answer with, and spec
+         * 46 cannot be built on a table that empties itself.
+         *
+         * One insert on a hook that has already resolved the geo. Deliberately
+         * `after`, so a session is never lost to an evidence row failing, and
+         * `recordAccountEvent` swallows its own errors on top of that: nothing
+         * here may be the reason somebody cannot get into their shop.
+         */
+        after: async (created) => {
+          await recordAccountEvent({
+            userId: created.userId,
+            kind: "signin",
+            ip: created.ipAddress ?? null,
+            userAgent: created.userAgent ?? null,
+            city: (created as { city?: string | null }).city ?? null,
+            country: (created as { country?: string | null }).country ?? null,
+          });
+        },
       },
     },
   },
@@ -222,9 +306,12 @@ export const auth = betterAuth({
    * — the same check-then-act gap this codebase has fixed three times
    * elsewhere.
    *
-   * Fails open when Redis is missing or cold, like every other limit here. A
-   * limiter that locks real sellers out because its own backend is down has
-   * done more damage than the traffic it was meant to stop.
+   * Fails open when Redis is missing or cold *except* on the four paths named
+   * in `FAIL_CLOSED_PATHS` above — Decision B, decided per endpoint rather than
+   * globally. A limiter that locks real sellers out of signing in because its
+   * own backend is down has done more damage than the traffic it was meant to
+   * stop; a limiter that lets anybody mail an address of their choosing without
+   * a ceiling has not.
    */
   rateLimit: {
     enabled: true,
@@ -257,7 +344,19 @@ export const auth = betterAuth({
     },
     customStorage: {
       consume: async (key, rule) => {
-        const verdict = await rateLimit(`auth:${key}`, rule.max, rule.window);
+        /*
+         * The key better-auth builds is `<ip>|<path>` — `createRateLimitKey` in
+         * `@better-auth/core/utils/ip`, verified against the installed version
+         * rather than assumed. The separator is a pipe rather than a colon
+         * precisely because an IPv6 address is full of colons, so matching on
+         * `|` + path is exact: it cannot be satisfied by an address, and it
+         * cannot be satisfied by a longer path that merely ends in a shorter
+         * one.
+         */
+        const closed = [...FAIL_CLOSED_PATHS].some((path) => key.endsWith(`|${path}`));
+        const verdict = await rateLimit(`auth:${key}`, rule.max, rule.window, {
+          onOutage: closed ? "closed" : "open",
+        });
         return {
           allowed: verdict.allowed,
           retryAfter: verdict.allowed ? null : rule.window,
@@ -430,6 +529,59 @@ export const auth = betterAuth({
      * fifteen minutes underneath the Redis limit in `hooks.before`.
      */
     twoFactor(),
+    /*
+     * Spec 37 — the seller's own team.
+     *
+     * The plugin owns members, invitations, expiry, acceptance and revocation.
+     * What Sailo supplies is the vocabulary (`@sailo/auth/permissions`) and the
+     * screen. Deliberately *not* `admin()`: that plugin is platform staff, and
+     * Sailo's staff model is `StaffCapability` in apps/hq. Conflating them
+     * would put a seller's colleague and a Sailo employee on one ladder.
+     *
+     * `creatorRole: "owner"` matches the role the `0052` backfill wrote for
+     * every existing shop, so a shop made today and a shop made last year have
+     * the same word for the same person.
+     */
+    organization({
+      ac: shopAccess,
+      roles: SHOP_ROLES,
+      creatorRole: "owner",
+      /*
+       * The invitation is an account oracle unless it is careful, and Decision
+       * B says it fails closed. Two halves:
+       *
+       *   - the *mail* says the same thing whether or not the address already
+       *     has a Sailo account, because it is the same mail either way — a
+       *     link to accept, which works for both;
+       *   - the *action* that calls this (`lib/actions/team.ts`) rate-limits
+       *     with `{ onOutage: "closed" }` and answers one sentence regardless.
+       *
+       * Nothing here may branch on whether the user exists.
+       */
+      async sendInvitationEmail(data) {
+        await sendTeamInvite({
+          to: data.email,
+          organizationName: data.organization.name,
+          inviterName: data.inviter.user.name,
+          inviterEmail: data.inviter.user.email,
+          url: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/team/invite/${data.id}`,
+        });
+      },
+      /*
+       * Seven days. Long enough for somebody who reads mail weekly, short
+       * enough that a forwarded invitation stops working — the plugin's own
+       * default is 48 hours, which is too short for the person a small seller
+       * is actually inviting.
+       */
+      invitationExpiresIn: 60 * 60 * 24 * 7,
+      /*
+       * One organization per shop, and a shop is created by the onboarding
+       * flow rather than by anybody pressing "new organization". Left at the
+       * plugin's default of allowing creation because the endpoint is only
+       * reachable with a session, and `createShop` is what actually makes one.
+       */
+      organizationLimit: 5,
+    }),
     // Must stay last so Server Actions can set cookies.
     /*
      * The mobile app carries its session as a bearer token, not a cookie — a

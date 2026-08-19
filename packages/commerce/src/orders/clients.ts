@@ -26,6 +26,17 @@ export async function upsertClient(
    * neither this function nor its callers could read back.
    */
   consent?: { marketingConsentAt: Date | null },
+  /**
+   * How this person first reached the list — `CLIENT_SOURCES`.
+   *
+   * **Applied on insert only, never on update.** `source` answers "how did
+   * they get here", which is a fact about a moment and cannot be restated
+   * later: somebody who swapped an address for a checklist and then bought
+   * something arrived as a lead, and rewriting the column on their first order
+   * would quietly empty the audience a seller built. The default stays `order`,
+   * which is what every row written before this argument existed is.
+   */
+  source?: string,
 ) {
   const db = getDb();
   if (!data.email && !data.phone) return null;
@@ -108,6 +119,8 @@ export async function upsertClient(
       email: data.email,
       phone: data.phone,
       ...address,
+      // Insert only — see the argument's own note.
+      ...(source ? { source } : {}),
       marketingConsentAt: grantedConsent,
     })
     .onConflictDoNothing()

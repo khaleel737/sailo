@@ -1,0 +1,41 @@
+-- Paid, and nobody has delivered it.
+--
+-- WHY
+-- Four callers ask this exact question and none of them had an index for it:
+--
+--   1. HQ's risk desk, building its candidate set — `EXPLAIN` showed
+--      `Seq Scan on orders` on every load of a page staff keep open;
+--   2. `openObligations`, which refuses to delete an account while buyers are
+--      owed goods — the check that stands between a seller and taking deposits
+--      and vanishing;
+--   3. the undelivered count written onto a `shop_closures` record;
+--   4. the same count in the risk desk's per-shop detail query.
+--
+-- At a few thousand orders the scan is under a millisecond and invisible. It
+-- grows with the orders table, which is the one table on this platform that is
+-- supposed to grow without limit, and the pages it slows are the ones somebody
+-- opens when something is going wrong.
+--
+-- PARTIAL, WHICH IS WHAT MAKES IT CHEAP
+-- The index holds only rows that are paid and still waiting. That is a small
+-- slice of any healthy platform and a self-limiting one — a row leaves the
+-- index the moment somebody ships it or refunds it, so this does not grow with
+-- the table the way a full index on (payment_status, status) would.
+--
+-- `shop_id` leads because all four callers either group by it or filter on it.
+--
+-- Safe to re-run: IF NOT EXISTS.
+--
+-- Note for whoever applies this: CREATE INDEX takes a write lock on `orders`
+-- for the duration. On a large table use CONCURRENTLY instead, which cannot run
+-- inside a transaction block:
+--
+--   CREATE INDEX CONCURRENTLY IF NOT EXISTS "orders_undelivered_paid_idx" ...
+--
+-- It is written plainly here because that is what `drizzle-kit push` and a
+-- fresh environment can both run, and because at the size this table is today
+-- the lock is measured in milliseconds.
+
+CREATE INDEX IF NOT EXISTS "orders_undelivered_paid_idx"
+  ON "orders" ("shop_id")
+  WHERE "payment_status" = 'paid' AND "status" IN ('new', 'confirmed');

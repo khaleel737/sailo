@@ -13,20 +13,34 @@ import type { AccountSecurity } from "@/lib/platform";
  * plan, take a shop down, leave a note — and this one is incident response.
  * Mixing them would put "sign out every device" one mis-click from "save note",
  * and the two have very different mornings after.
+ *
+ * TWO CAPABILITIES, POINTING OPPOSITE WAYS
+ * Signing every device out is `account:secure` and support holds it: it makes
+ * the account strictly *less* reachable, the worst case is a seller signing in
+ * again, and the thing it defends against is at its most urgent on the shift
+ * with the fewest people on it. Clearing a second factor is `account:recover`
+ * and support does not hold it: it ends with somebody signing in who could not
+ * a minute ago, and the only check on that is whether the voice on the phone
+ * was really the seller.
+ *
+ * Both are re-checked inside their own actions. Hiding a card is a courtesy.
  */
 export function AccountSecurityActions({
   userId,
   security,
   twoFactorEnabled,
+  may = { secure: true, recover: true },
 }: {
   userId: string;
   security: AccountSecurity;
   twoFactorEnabled: boolean;
+  may?: { secure: boolean; recover: boolean };
 }) {
   const enrolled = twoFactorEnabled || Boolean(security.twoFactor);
 
   return (
     <div className="space-y-3">
+      {may.secure ? (
       <Card className="p-4">
         <div className="mb-2 flex items-center gap-2">
           <LogOut className="size-4 text-ink-400" />
@@ -53,8 +67,9 @@ export function AccountSecurityActions({
           </div>
         )}
       </Card>
+      ) : null}
 
-      {enrolled ? (
+      {enrolled && may.recover ? (
         <ClearTwoFactor
           userId={userId}
           locked={security.twoFactor?.locked ?? false}

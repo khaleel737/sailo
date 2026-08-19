@@ -1,6 +1,7 @@
 import type { ProductVariant } from "@sailo/db/schema";
 import { optionKey } from "@sailo/core/variants";
 import { centsToAmount } from "@sailo/core/currency";
+import { priceIn } from "@sailo/core/regional";
 
 /**
  * What a variant looks like while it is being edited.
@@ -14,6 +15,16 @@ import { centsToAmount } from "@sailo/core/currency";
 export type Draft = {
   price: string;
   compareAt: string;
+  /**
+   * This combination's price in each other currency the shop quotes — spec 53,
+   * keyed by ISO 4217 code and holding the string an input holds.
+   *
+   * Empty and absent mean the same thing here as `price` above does: the
+   * variant inherits the product's price in that currency. They do **not**
+   * mean free, and they do not mean the variant is unpriced — a variant with
+   * no price of its own is priced by its product, in every currency alike.
+   */
+  currencyPrices: Record<string, string>;
   sku: string;
   stock: string;
   available: boolean;
@@ -25,6 +36,7 @@ export type OptionDraft = { name: string; values: string };
 export const BLANK: Draft = {
   price: "",
   compareAt: "",
+  currencyPrices: {},
   sku: "",
   stock: "",
   available: true,
@@ -66,12 +78,27 @@ export function probablyMissingCommas(input: string): boolean {
 export function toDrafts(
   variants: ProductVariant[],
   currency: string,
+  /** The other currencies the shop quotes — spec 53. Empty means one currency. */
+  regionalCurrencies: readonly string[] = [],
 ): Record<string, Draft> {
   const map: Record<string, Draft> = {};
   for (const v of variants) {
     map[optionKey(v.options)] = {
       price: centsToAmount(v.priceCents, currency),
       compareAt: centsToAmount(v.compareAtCents, currency),
+      /*
+       * Each rendered against **its own** currency's decimals, not the shop's.
+       * The comment above this function is about exactly this asymmetry one
+       * level down: a flat hundred turned every JPY variant into a hundredth
+       * of its price on save, and using the shop's decimals for a HUF field
+       * would do the same to a shop that prices in dollars.
+       */
+      currencyPrices: Object.fromEntries(
+        regionalCurrencies.map((code) => [
+          code,
+          centsToAmount(priceIn(v, code)?.price ?? null, code),
+        ]),
+      ),
       sku: v.sku ?? "",
       stock: v.stockQuantity === null ? "" : String(v.stockQuantity),
       available: v.isAvailable,

@@ -8,6 +8,7 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { shops } from "./shop";
 import { orders } from "./orders";
 
@@ -172,6 +173,21 @@ export const disputes = pgTable(
     sellerDeadlineNotifiedAt: timestamp("seller_deadline_notified_at"),
     sellerClosedNotifiedAt: timestamp("seller_closed_notified_at"),
 
+    /*
+     * What *staff* have been told, and when — spec 46.
+     *
+     * A platform dispute is a chargeback against Sailo's own subscription
+     * revenue, so there is no seller to notify: the person who has to act is on
+     * shift here. Same claim shape as the three above — a conditional update, so
+     * a retried `charge.dispute.created` pages the desk once rather than five
+     * times — and deliberately *different columns*, because the seller ones mean
+     * something else. Reusing them would make one column mean two things
+     * depending on `scope`, which is the shape of bug that silently stops
+     * notifying somebody.
+     */
+    staffNotifiedAt: timestamp("staff_notified_at"),
+    staffDeadlineNotifiedAt: timestamp("staff_deadline_notified_at"),
+
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
@@ -209,6 +225,14 @@ export const disputes = pgTable(
      * narrows it.
      */
     index("disputes_deadline_reminder_idx").on(t.dueBy, t.sellerDeadlineNotifiedAt),
+    /*
+     * The staff deadline sweep — the platform-side twin of the index above.
+     * Partial on scope because platform disputes are a tiny minority of this
+     * table and this index exists only for them.
+     */
+    index("disputes_platform_deadline_idx")
+      .on(t.dueBy, t.staffDeadlineNotifiedAt)
+      .where(sql`${t.scope} = 'platform'`),
   ],
 );
 

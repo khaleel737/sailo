@@ -473,6 +473,32 @@ export default function PrivacyPage() {
             to verify your identity before acting, which usually means proving control
             of the email address on the record.
           </P>
+          <P>
+            <strong className="font-medium text-[var(--ink)]">
+              If you bought something from a shop on Sailo
+            </strong>
+            , the seller is the controller of your order data and we are their
+            processor, so the request goes to them. Every shop has a{" "}
+            <em>Request your data</em> link in its footer and in the footer of every
+            order email it sends: it asks for your address, mails you a link, and
+            nothing is assembled or deleted until you click it. The seller then has
+            30 days. The copy you get covers that one shop — each shop on Sailo keeps
+            its own separate records, and we do not join them.
+          </P>
+          <P>
+            Some of it is kept even when you ask for deletion, and the answer you
+            receive says which and why. Orders and invoices are tax records and the
+            invoice sequence must stay unbroken. The address and browser recorded when
+            you paid, and the log of files you downloaded, are kept while a bank can
+            still reverse the payment and are erased afterwards. And{" "}
+            <strong className="font-medium text-[var(--ink)]">
+              an unsubscribe or complaint record is kept permanently, on purpose
+            </strong>
+            : it is how a shop knows never to email you again, and deleting it would
+            put you back on the list. Everything else about you on that shop —
+            your name, phone number, address, any labels the seller gave you, and your
+            marketing consent — is removed or replaced with an anonymous reference.
+          </P>
         </Clause>
 
         <Clause id="security" n={13} title="How the data is kept">

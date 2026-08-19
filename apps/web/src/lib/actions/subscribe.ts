@@ -1,14 +1,15 @@
 "use server";
 
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { shops } from "@sailo/db/schema";
+import { clients, shops } from "@sailo/db/schema";
 import { getDictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { rateLimit } from "@sailo/rate-limit";
 import { sendSubscribeConfirmation } from "@/lib/email";
 import { confirmSubscriber, normalizeEmail, normalizeName, readSubscribeToken, subscribeToken, confirmUrl } from "@sailo/marketing/broadcasts/server";
+import { confirmMembership, readListConfirmToken } from "@sailo/marketing/contacts/server";
 
 /**
  * The public end of a shop's mailing list.
@@ -73,8 +74,12 @@ export async function subscribeToShop(
    * is the same whatever address was typed.
    */
   const [byIp, byEmail] = await Promise.all([
-    rateLimit(`subscribe-ip:${await callerIp()}`, 8, 600),
-    rateLimit(`subscribe-email:${handle}:${email}`, 2, 3_600),
+    /*
+     * DECISION B — both fail closed. Same shape as the blog newsletter above:
+     * unauthenticated, writes a row, sends mail on the shared quota.
+     */
+    rateLimit(`subscribe-ip:${await callerIp()}`, 8, 600, { onOutage: "closed" }),
+    rateLimit(`subscribe-email:${handle}:${email}`, 2, 3_600, { onOutage: "closed" }),
   ]);
   if (!byIp.allowed) {
     return { done: false, error: t(null).mailing.tooMany };
@@ -168,5 +173,81 @@ export async function confirmSubscription(
    * recipient at this address reported the shop for spam would disclose one
    * person's action to whoever is holding the address today.
    */
+  return { done: outcome === "subscribed" || outcome === "refused" };
+}
+
+
+/**
+ * The same confirmation, for a list — spec 34's rule 6.
+ *
+ * Two writes and only one of them is new. `confirmSubscriber` is the existing
+ * signup path, called unchanged, and it is what carries the parts with legal
+ * weight: granting `marketingConsentAt`, lifting an `unsubscribed`
+ * suppression, and refusing to lift a `bounced` or `complained` one. This adds
+ * the fact that path has no room for — *which list* was being joined.
+ *
+ * A second implementation of rule 8 is how rule 8 stops being true on one of
+ * two paths, so there is not one.
+ *
+ * Order matters. Consent first, membership second: a `pending` member promoted
+ * before consent landed would be a recipient for however long the second write
+ * took, and the whole point of `pending` is that they are not one yet.
+ */
+export async function confirmListJoin(
+  _prev: ConfirmState,
+  formData: FormData,
+): Promise<ConfirmState> {
+  const gate = await rateLimit(`list-confirm:${await callerIp()}`, 30, 60);
+  if (!gate.allowed) {
+    // Throttled is unknown, never a positive answer — the same rule the
+    // signup confirmation above follows.
+    return { done: false, error: getDictionary("en").errors.body };
+  }
+
+  const claim = readListConfirmToken(String(formData.get("token") ?? ""));
+  if (!claim) {
+    return { done: false, error: getDictionary("en").mailing.expiredBody };
+  }
+
+  const shop = await getDb().query.shops.findFirst({
+    where: eq(shops.id, claim.shopId),
+    columns: { locale: true },
+  });
+  const dict = getDictionary(shop?.locale ?? "en");
+  if (!shop) return { done: false, error: dict.mailing.expiredBody };
+
+  const outcome = await confirmSubscriber({
+    shopId: claim.shopId,
+    email: claim.email,
+    name: claim.name,
+  });
+
+  /*
+   * `refused` is a bounce or a spam complaint on this address. The membership
+   * is deliberately *not* promoted in that case — a confirmed member who can
+   * never be mailed would be counted in the list's reach and silently skipped
+   * by every send, which is the gap between "180 subscribed" and "174 sent"
+   * that reads as a bug in the send.
+   */
+  if (outcome === "subscribed") {
+    const client = await getDb().query.clients.findFirst({
+      where: and(
+        eq(clients.shopId, claim.shopId),
+        sql`lower(${clients.email}) = ${claim.email.toLowerCase()}`,
+      ),
+      columns: { id: true },
+    });
+    if (client) {
+      await confirmMembership({
+        shopId: claim.shopId,
+        listId: claim.listId,
+        clientId: client.id,
+      });
+    }
+  }
+
+  // The same sentence either way, for the reason the signup confirmation
+  // gives: explaining that a previous holder of this address reported the shop
+  // would disclose one person's action to whoever holds it today.
   return { done: outcome === "subscribed" || outcome === "refused" };
 }

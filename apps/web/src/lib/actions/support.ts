@@ -27,7 +27,7 @@ export async function createSupportTicket(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { user, shop } = await requireShop();
+  const { user, shop } = await requireShop("settings:read");
 
   const topicRaw = String(formData.get("topic") ?? "other");
   const topic = isSupportTopic(topicRaw) ? topicRaw : "other";

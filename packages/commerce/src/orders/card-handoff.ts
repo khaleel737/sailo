@@ -6,6 +6,7 @@ import { createCheckoutSession, createSubscriptionSession } from "./card-checkou
 import { abandonOrder } from "@sailo/commerce/catalog";
 import type { CheckoutLine } from "../orders/checkout-lines";
 import type { Handoff } from "@sailo/payments/offline";
+import type Stripe from "stripe";
 
 /**
  * Sending a card buyer to Stripe.
@@ -58,6 +59,21 @@ export async function handOffToStripe(opts: {
       .set({
         stripeSessionId: session.id,
         stripeAccountId: opts.shop.stripeAccountId,
+        /*
+         * What this charge put on the buyer's statement, snapshotted.
+         *
+         * A snapshot rather than a join to `shops.statementDescriptor`, because
+         * that column is editable: a seller who changes it next month must not
+         * change what a five-month-old `unrecognized` dispute claims the buyer
+         * saw. Same argument `disputes.evidenceSnapshot` already makes about
+         * storing what was submitted rather than re-deriving it.
+         *
+         * Read back from the session rather than recomputed, so this records
+         * what Stripe *accepted* — an invalid descriptor is silently dropped, and
+         * a snapshot of what we hoped to send would be a claim about the buyer's
+         * statement that is not true.
+         */
+        statementDescriptor: descriptorSent(session),
         updatedAt: new Date(),
       })
       .where(eq(orders.id, saved.id));
@@ -133,6 +149,21 @@ export async function handOffSubscription(opts: {
       .set({
         stripeSessionId: session.id,
         stripeAccountId: opts.shop.stripeAccountId,
+        /*
+         * What this charge put on the buyer's statement, snapshotted.
+         *
+         * A snapshot rather than a join to `shops.statementDescriptor`, because
+         * that column is editable: a seller who changes it next month must not
+         * change what a five-month-old `unrecognized` dispute claims the buyer
+         * saw. Same argument `disputes.evidenceSnapshot` already makes about
+         * storing what was submitted rather than re-deriving it.
+         *
+         * Read back from the session rather than recomputed, so this records
+         * what Stripe *accepted* — an invalid descriptor is silently dropped, and
+         * a snapshot of what we hoped to send would be a claim about the buyer's
+         * statement that is not true.
+         */
+        statementDescriptor: descriptorSent(session),
         updatedAt: new Date(),
       })
       .where(eq(orders.id, saved.id));
@@ -155,4 +186,21 @@ export async function handOffSubscription(opts: {
       error: "Memberships aren't available right now. Try again in a moment.",
     };
   }
+}
+
+/**
+ * The descriptor suffix Stripe actually took, off the created session.
+ *
+ * `payment_intent_data` is a *request* field and does not come back on the
+ * session, so this reads the expanded payment intent when there is one and falls
+ * back to what the session itself reports. Null when neither says anything,
+ * which is the honest answer: the connected account's own default applied, and
+ * Sailo does not know what that is.
+ */
+function descriptorSent(session: Stripe.Checkout.Session): string | null {
+  const intent = session.payment_intent;
+  if (intent && typeof intent !== "string") {
+    return intent.statement_descriptor_suffix ?? intent.statement_descriptor ?? null;
+  }
+  return null;
 }

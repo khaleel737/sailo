@@ -2,11 +2,13 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { and, asc, desc, eq, gte, inArray, lte, sql, type SQL } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { categories, productFiles, productImages, productVariants, products, reviews, type Category, type Product, type ProductImage, type ProductVariant } from "@sailo/db/schema";
+import { categories, productFiles, productImages, productVariants, products, reviews, type Category, type CurrencyPrices, type Product, type ProductImage, type ProductVariant } from "@sailo/db/schema";
 import { shopTag } from "@/lib/cache";
 import { minorPerMajor } from "@sailo/core/currency";
+import { productAtCurrency, variantAtCurrency } from "@sailo/core/regional";
 import { nextOffsetFor, orderByIds } from "./pagination";
 import { sellerCatalogue, sellerProduct } from "@sailo/commerce/catalog";
+import { hiddenOutsideWindow } from "@sailo/core/pricing-models";
 
 /** Reading the catalogue, for the storefront and for the admin. */
 
@@ -108,15 +110,91 @@ const EMPTY_PAGE: ProductPage = { items: [], total: 0, nextOffset: null };
  * problem. Step one picks the page's ids, step two loads relations for those
  * ids only, step three restores the order SQL chose.
  */
+/**
+ * A product and its variants, re-read in the currency this visit is quoted in.
+ *
+ * The point of rewriting the rows rather than threading a currency through the
+ * renderers: `variantPrice`, `priceRange`, the product card, the buy box and
+ * the cart all read `priceCents` off a row, and none of them has to learn what
+ * a currency is. One call here, and every reader downstream is unchanged.
+ *
+ * `productAtCurrency` answers null when there is no price in that currency —
+ * it never falls back, because falling back is how a dollar integer ends up
+ * with a euro sign in front of it. The WHERE clause above has already excluded
+ * those rows, so the `??` here is the assertion rather than the behaviour: if
+ * one ever arrives, it keeps the price it actually has.
+ */
+function inCurrency<
+  T extends {
+    priceCents: number;
+    compareAtCents: number | null;
+    currencyPrices: CurrencyPrices;
+    variants?: ProductVariant[];
+  },
+>(product: T, currency: string, shopCurrency: string): T {
+  const swapped = productAtCurrency(product, currency, shopCurrency);
+  if (!swapped) return product;
+  if (!swapped.variants) return swapped;
+
+  return {
+    ...swapped,
+    variants: swapped.variants.map(
+      (variant) => variantAtCurrency(variant, currency, shopCurrency) ?? variant,
+    ),
+  };
+}
+
 async function readPublicProducts(
   shopId: string,
   currency: string,
+  shopCurrency: string,
   filters: ShopFilters = {},
   offset = 0,
   limit = PRODUCT_PAGE_SIZE,
 ): Promise<ProductPage> {
   const db = getDb();
   const where = [eq(products.shopId, shopId), eq(products.isPublished, true)];
+
+  /*
+   * Quoting a currency the shop is not its own means every price on this page
+   * comes out of `currency_prices`, so a row without an entry has no price to
+   * show. Excluded in SQL rather than dropped afterwards, so the count and the
+   * batch agree — a filtered list whose total is larger than its contents is
+   * how a catalogue silently loses a page.
+   *
+   * `liveCurrencies` already refuses to offer a currency with a gap in it, so
+   * in practice this excludes nothing. It is here because the two answers are
+   * cached separately and a seller unpublishing a price opens a window between
+   * them, and the safe side of that window is showing one product fewer rather
+   * than one price wrong.
+   *
+   * Variants only when they *override* the product's price; one that inherits
+   * inherits in every currency alike.
+   */
+  const regional = currency.toUpperCase() !== shopCurrency.toUpperCase();
+  const code = currency.toUpperCase();
+  if (regional) {
+    where.push(sql`jsonb_exists(${products.currencyPrices}, ${code})`);
+    where.push(sql`not exists (
+      select 1 from ${productVariants} v
+      where v.product_id = ${products.id}
+        and v.price_cents is not null
+        and not jsonb_exists(v.currency_prices, ${code})
+    )`);
+  }
+
+  /*
+   * What "price" means to the filter and the sort below.
+   *
+   * A visitor looking at euros who types 20 in the price filter means €20, and
+   * comparing that against `price_cents` would filter a euro page by dollar
+   * numbers. The same for `?sort=price_asc`: sorting by the shop's column
+   * would order a euro catalogue by its dollar prices, which is nearly right
+   * and therefore worse than being obviously wrong.
+   */
+  const priceExpr: SQL<number> = regional
+    ? sql<number>`(${products.currencyPrices} -> ${code} ->> 'price')::int`
+    : sql<number>`${products.priceCents}`;
 
   if (filters.q?.trim()) {
     where.push(sql`${productSearchExpr} ILIKE ${`%${filters.q.trim()}%`}`);
@@ -148,11 +226,11 @@ async function readPublicProducts(
 
   const min = Number(filters.min);
   if (Number.isFinite(min) && filters.min)
-    where.push(gte(products.priceCents, Math.round(min * per)));
+    where.push(gte(priceExpr, Math.round(min * per)));
 
   const max = Number(filters.max);
   if (Number.isFinite(max) && filters.max)
-    where.push(lte(products.priceCents, Math.round(max * per)));
+    where.push(lte(priceExpr, Math.round(max * per)));
 
   /*
    * Approved-review aggregate, joined rather than fetched afterwards. Sorting
@@ -180,8 +258,8 @@ async function readPublicProducts(
     .as("ratings");
 
   const SORTS: Record<string, SQL[]> = {
-    price_asc: [asc(products.priceCents)],
-    price_desc: [desc(products.priceCents)],
+    price_asc: [asc(priceExpr)],
+    price_desc: [desc(priceExpr)],
     newest: [desc(products.createdAt)],
     oldest: [asc(products.createdAt)],
     // NULLS LAST keeps unreviewed products behind reviewed ones in both
@@ -259,7 +337,7 @@ async function readPublicProducts(
     const avg = found?.avg ?? null;
     const count = found?.count ?? null;
     return {
-      ...product,
+      ...inCurrency(product, currency, shopCurrency),
       avgRating: avg === null ? null : Number(avg),
       reviewCount: count === null ? 0 : Number(count),
     };
@@ -268,7 +346,12 @@ async function readPublicProducts(
   return { items, total, nextOffset: nextOffsetFor(offset, items.length, total) };
 }
 
-async function readProductBySlug(shopId: string, slug: string) {
+async function readProductBySlug(
+  shopId: string,
+  slug: string,
+  currency: string,
+  shopCurrency: string,
+) {
   const db = getDb();
   const product = await db.query.products.findFirst({
     where: and(eq(products.shopId, shopId), eq(products.slug, slug)),
@@ -291,7 +374,12 @@ async function readProductBySlug(shopId: string, slug: string) {
       ? approved.reduce((sum, r) => sum + r.rating, 0) / approved.length
       : null;
 
-  return { ...product, reviews: approved, avgRating: avg, reviewCount: approved.length };
+  return {
+    ...inCurrency(product, currency, shopCurrency),
+    reviews: approved,
+    avgRating: avg,
+    reviewCount: approved.length,
+  };
 }
 
 /**
@@ -351,7 +439,17 @@ export const getAdminProduct = sellerProduct;
  */
 export async function getPublicProducts(
   shopId: string,
+  /**
+   * What this visit is quoted in, and what the shop's own prices are in.
+   *
+   * Both are arguments and both are therefore in the cache key, which is the
+   * whole reason they are passed rather than read: a currency left out of the
+   * key serves one visitor's euro page to the next visitor in dollars.
+   * `displayCurrency` in `lib/regional.ts` decides the first, outside every
+   * cached scope, because deciding it reads a header and a cookie.
+   */
   currency: string,
+  shopCurrency: string,
   filters: ShopFilters = {},
   offset = 0,
   limit = PRODUCT_PAGE_SIZE,
@@ -359,12 +457,58 @@ export async function getPublicProducts(
   "use cache";
   cacheLife("max");
   cacheTag(shopTag(shopId));
-  return readPublicProducts(shopId, currency, filters, offset, limit);
+  return readPublicProducts(shopId, currency, shopCurrency, filters, offset, limit);
 }
 
-export async function getProductBySlug(shopId: string, slug: string) {
+/**
+ * Drops the products the seller has asked to hide outside their sell window —
+ * spec 43.
+ *
+ * **This is the answer to "which of the two cache options did you pick", and it
+ * is the second: nothing about a sell window is decided inside a `"use cache"`
+ * function.** `getPublicProducts` above is `cacheLife("max")` and keyed on its
+ * arguments, so an entry never expires on a clock — a window boundary evaluated
+ * in there would be frozen into a page that goes on showing a finished launch
+ * until somebody happens to edit the shop. Three caches in this repo have
+ * silently stopped working before, and a window that expires invisibly is the
+ * same failure wearing different clothes.
+ *
+ * So the cached thing is the *rows* and the decision is taken here, per request,
+ * against a fresh clock. The alternative — a `revalidate` bound to the nearest
+ * boundary — would have meant computing that boundary across a whole catalogue
+ * on every read and re-keying the entry whenever any product's window moved,
+ * which is more machinery for a weaker guarantee.
+ *
+ * What it costs is honest and small: a batch can come back holding fewer than
+ * `PRODUCT_PAGE_SIZE` cards, because the hidden ones were counted in SQL and
+ * removed here. `total` is adjusted for what this batch dropped so the count
+ * under the filter bar does not claim products nobody can see; `nextOffset` is
+ * left alone, because it is an offset into the *query*, and moving it would
+ * skip real products. A short page is a cosmetic cost. Selling something after
+ * its window closed is not — and that is refused in `resolveLines` regardless
+ * of anything decided here.
+ */
+export function visibleNow(page: ProductPage, now = new Date()): ProductPage {
+  const items = page.items.filter(
+    (product) => !hiddenOutsideWindow(product, null, now),
+  );
+  if (items.length === page.items.length) return page;
+
+  return {
+    items,
+    total: Math.max(items.length, page.total - (page.items.length - items.length)),
+    nextOffset: page.nextOffset,
+  };
+}
+
+export async function getProductBySlug(
+  shopId: string,
+  slug: string,
+  currency: string,
+  shopCurrency: string,
+) {
   "use cache";
   cacheLife("max");
   cacheTag(shopTag(shopId));
-  return readProductBySlug(shopId, slug);
+  return readProductBySlug(shopId, slug, currency, shopCurrency);
 }

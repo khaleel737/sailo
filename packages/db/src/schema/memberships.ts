@@ -119,8 +119,18 @@ export const subscriptions = pgTable(
      */
     priceCents: integer("price_cents").default(0).notNull(),
     currency: text("currency").default("USD").notNull(),
-    /** month | year, as sold. */
+    /** day | week | month | year, as sold. */
     interval: text("interval").default("month").notNull(),
+    /**
+     * How many of them per charge — the `3` in "every 3 months".
+     *
+     * Snapshotted beside the interval for the same reason `priceCents` is: the
+     * seller may re-price or re-cycle the product tomorrow and this member is
+     * not on the new terms. Without it, a member on a quarterly plan renews
+     * monthly the moment the manual cycle reads the row, because "month" alone
+     * cannot say "three of them".
+     */
+    intervalCount: integer("interval_count").default(1).notNull(),
 
     /**
      * Sailo's cut of this subscription's invoices, in basis points -- our
@@ -152,6 +162,115 @@ export const subscriptions = pgTable(
      * and a member is never asked twice for the same month.
      */
     renewalOrderedFor: timestamp("renewal_ordered_for"),
+
+    /* ---- Fixed term — spec 49 ------------------------------------------- */
+
+    /**
+     * How many cycles this member has actually paid for.
+     *
+     * Incremented in the **same conditional UPDATE that records the period**,
+     * beside `renewalOrderedFor` and `orders.membershipPeriodEnd`. Those two
+     * columns exist precisely because a seller toggling an order paid →
+     * unpaid → paid must buy one month rather than three, and counting cycles
+     * has the identical hazard: a count incremented in its own statement is a
+     * count a webhook retry doubles.
+     */
+    cyclesPaid: integer("cycles_paid").default(0).notNull(),
+    /**
+     * The term this member signed up to, snapshotted.
+     *
+     * Null is open-ended, which is every membership sold before this column.
+     * Snapshotted rather than read from the product for the same reason
+     * `priceCents` is: a seller who shortens the course next year has not
+     * shortened one somebody already bought.
+     */
+    termCycles: integer("term_cycles"),
+    /**
+     * Whether the door stays open once the last cycle is paid.
+     *
+     * This is what makes a fixed term a *payment plan* — a course sold in
+     * three instalments, expressed in a model that already works, with none of
+     * the partial-delivery problem: access is granted from the first payment
+     * either way, so a failed third cycle costs the seller a payment rather
+     * than leaving an entitlement half-earned.
+     *
+     * The one new branch in `membershipAccess` reads this and nothing else.
+     */
+    accessAfterTerm: boolean("access_after_term").default(false).notNull(),
+    /** term_complete | canceled | expired | disputed. */
+    endedReason: text("ended_reason"),
+
+    /* ---- Pause — spec 49 ------------------------------------------------- */
+
+    /**
+     * When the freeze started, and when it lifts.
+     *
+     * **Access is closed while paused**, and it is closed by the one new
+     * branch rather than a second predicate: a pause that kept access would be
+     * a free month, and the whole point is that the member is not using it.
+     * The door pass closes with it for nothing — `checkInMemberByCode` already
+     * re-asks `membershipAccess` on every scan.
+     *
+     * On the card rail this mirrors Stripe's `pause_collection` and Stripe
+     * pushes the billing clock; on the manual rail the renewal cron skips and
+     * `currentPeriodEnd` moves by the paused days on resume. We do not
+     * recompute Stripe's arithmetic in either case.
+     */
+    pausedAt: timestamp("paused_at"),
+    pausedUntil: timestamp("paused_until"),
+    /**
+     * Days spent frozen, ever. What stops a rolling permanent pause against
+     * `products.pauseMaxDays` — a member frozen for good is a free membership.
+     */
+    pauseDaysUsed: integer("pause_days_used").default(0).notNull(),
+
+    /* ---- Seats — spec 49 ------------------------------------------------- */
+
+    /**
+     * How many people this subscription is for.
+     *
+     * `quantity` on the Stripe subscription, so the price is Stripe's
+     * arithmetic and never ours. One is every membership that exists today.
+     */
+    seats: integer("seats").default(1).notNull(),
+    /**
+     * Reserved for a seat that is its own subscription row rather than a
+     * `subscription_seats` entry — a company that wants each employee billed
+     * separately. Nothing writes it yet; the column exists so the foreign key
+     * and the index land in one migration rather than two.
+     */
+    parentSubscriptionId: uuid("parent_subscription_id"),
+
+    /* ---- Dunning — spec 49 ----------------------------------------------- */
+
+    /**
+     * How many times we have told this member their payment failed, and when.
+     *
+     * The *claim*, not a log. Each send is taken by conditional UPDATE — the
+     * `sellerOpenedNotifiedAt` pattern on `disputes` — because Stripe delivers
+     * `invoice.payment_failed` at least once and out of order, and a member
+     * receiving the same "your card failed" three times is a member who rings
+     * their bank.
+     *
+     * Reset to zero by a successful payment, so a card that recovers and fails
+     * again next quarter starts the sequence over rather than expiring
+     * immediately.
+     */
+    dunningAttempts: integer("dunning_attempts").default(0).notNull(),
+    dunningLastSentAt: timestamp("dunning_last_sent_at"),
+
+    /* ---- Switching — spec 49 --------------------------------------------- */
+
+    /**
+     * A switch the member has asked for, taking effect at the period end.
+     *
+     * At the period end **by default**, and that is the whole of the decision
+     * the memberships notes left open: no proration, no surprise invoice, no
+     * number Sailo computed. An immediate switch is offered only where
+     * Stripe's own proration produces the amount.
+     */
+    pendingProductId: uuid("pending_product_id"),
+    pendingEffectiveAt: timestamp("pending_effective_at"),
 
     /**
      * What the member shows at the door.
@@ -212,6 +331,65 @@ export const subscriptions = pgTable(
      */
     index("subscriptions_due_idx").on(t.billingMode, t.status, t.currentPeriodEnd),
     index("subscriptions_product_idx").on(t.productId),
+    /* The switch sweep's own question: which switches are due. */
+    index("subscriptions_pending_switch_idx").on(t.pendingEffectiveAt),
+    /* And the resume sweep's: which paused memberships are due back. */
+    index("subscriptions_paused_idx").on(t.pausedUntil),
+  ],
+);
+
+/**
+ * One person on somebody else's subscription — spec 49.
+ *
+ * The shape that turns a membership into something a *company* buys. The payer
+ * holds the billing relationship and each seat holds its own access, which is
+ * the division that keeps `membershipAccess` from forking: a seat's
+ * entitlement is read from the **parent's** status and period end, and the row
+ * here only says who.
+ *
+ * Reached by a signed token like everything else a buyer touches. This is the
+ * closest buyer identity has come to needing an account and it still does not
+ * need one.
+ */
+export const subscriptionSeats = pgTable(
+  "subscription_seats",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    subscriptionId: uuid("subscription_id")
+      .notNull()
+      .references(() => subscriptions.id, { onDelete: "cascade" }),
+    /** Folded to lowercase by the writer, so the unique index actually bites. */
+    email: text("email").notNull(),
+    name: text("name"),
+    /**
+     * This seat's own credential.
+     *
+     * A shared code for eight employees is one code at the door, and
+     * attendance stops meaning anything the first time two of them arrive
+     * together. Twelve characters, the same length and alphabet as
+     * `subscriptions.passCode`, because the door resolves whichever it is
+     * handed.
+     */
+    passCode: text("pass_code"),
+    invitedAt: timestamp("invited_at").defaultNow().notNull(),
+    acceptedAt: timestamp("accepted_at"),
+    revokedAt: timestamp("revoked_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("subscription_seats_subscription_email_key").on(
+      t.subscriptionId,
+      t.email,
+    ),
+    /*
+     * Global, exactly as `subscriptions_pass_code_key` is and for the identical
+     * reason: the door resolves a scanned code *before* it knows whose
+     * membership it is, so a code meaning one thing in one shop and something
+     * else in another admits the wrong person the day a seller opens a second
+     * gym.
+     */
+    uniqueIndex("subscription_seats_pass_code_key").on(t.passCode),
+    index("subscription_seats_subscription_idx").on(t.subscriptionId, t.invitedAt),
   ],
 );
 

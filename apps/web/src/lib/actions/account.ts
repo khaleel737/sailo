@@ -21,7 +21,7 @@ export async function deleteAccount(
   _prev: DeleteAccountState,
   formData: FormData,
 ): Promise<DeleteAccountState> {
-  const { user, shop } = await requireShop();
+  const { user, shop } = await requireShop("settings:write");
 
   /*
    * Three a day. Deleting is once-per-account by definition, so anything
@@ -62,11 +62,33 @@ export async function deleteAccount(
 
   if (!result.ok) {
     if (result.reason === "obligations") {
+      /*
+       * Three refusals, in the order the seller can act on them. Undelivered
+       * orders are theirs to fix today; a dispute resolves on the card
+       * network's clock; a payout hold needs us. Saying "you can't delete yet"
+       * for all three would send everyone to support to find out which.
+       */
+      if (result.count > 0) {
+        return {
+          ok: false,
+          error:
+            `You have ${result.count} paid order${result.count === 1 ? "" : "s"} still to fulfil. ` +
+            `Deliver or refund them first.`,
+        };
+      }
+      if (result.openDisputes > 0) {
+        return {
+          ok: false,
+          error:
+            `A buyer's bank is still deciding on ${result.openDisputes === 1 ? "a payment" : `${result.openDisputes} payments`} to your shop. ` +
+            `Deleting now would erase the records we need to answer it. This clears itself once the bank decides.`,
+        };
+      }
       return {
         ok: false,
         error:
-          `You have ${result.count} paid order${result.count === 1 ? "" : "s"} still to fulfil. ` +
-          `Deliver or refund them first.`,
+          "Payouts from your shop are on hold while we look at recent disputes. " +
+          "That has to be lifted before the account can be deleted — write to us and we'll tell you where it stands.",
       };
     }
     return { ok: false, error: "Something went wrong. Try again." };

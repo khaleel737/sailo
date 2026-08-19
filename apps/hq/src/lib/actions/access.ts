@@ -7,6 +7,18 @@
  * Grouped because they are the same act with different scopes and the same risk: each one is
  * HQ reaching into somebody else's account, so each writes a staff note naming who did it.
  *
+ * THE ONE THAT IS NOT LIKE THE OTHERS
+ * Three of these four are `account:secure` and the fourth is `account:recover`, and the split
+ * is worth more than its cost in a second capability. Ending a session and stamping a key make
+ * an account strictly *less* reachable: the worst a mistake does is make a seller sign in
+ * again, and the thing they defend against — somebody already inside the account — is at its
+ * most urgent on the shift with the fewest people on it. So support holds them.
+ *
+ * `clearAccountTwoFactor` runs the other way. It ends with somebody able to sign in who could
+ * not sign in a minute ago, and the only thing between it and a full account takeover is
+ * whether the voice on the phone was really the seller. That judgement is exactly what social
+ * engineering attacks, and it is not one to hand to whoever is next in the queue.
+ *
  * Split out of a 613-line `actions/hq.ts` that also set plans and suspended shops. A file where
  * "give this shop a comped plan" sits next to "clear this account's 2FA" is a file where the
  * blast radius of an edit is not obvious from its name.
@@ -37,7 +49,7 @@ export async function revokeAccountSession(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const staff = await requireStaff();
+  const staff = await requireStaff("account:secure");
 
   const id = String(formData.get("sessionId") ?? "").trim();
   if (!id) return { ok: false, error: "That session no longer exists." };
@@ -84,7 +96,7 @@ export async function revokeAccountSessions(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { staff, owner, shopId } = await loadAccount(formData);
+  const { staff, owner, shopId } = await loadAccount(formData, "account:secure");
   if (!owner) return { ok: false, error: "That account no longer exists." };
 
   /*
@@ -142,7 +154,7 @@ export async function clearAccountTwoFactor(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { staff, owner, shopId } = await loadAccount(formData);
+  const { staff, owner, shopId } = await loadAccount(formData, "account:recover");
   if (!owner) return { ok: false, error: "That account no longer exists." };
 
   const reason = String(formData.get("reason") ?? "").trim().slice(0, 500);
@@ -222,7 +234,7 @@ export async function revokeAccountApiKey(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const staff = await requireStaff();
+  const staff = await requireStaff("account:secure");
 
   const id = String(formData.get("keyId") ?? "").trim();
   if (!id) return { ok: false, error: "That key no longer exists." };

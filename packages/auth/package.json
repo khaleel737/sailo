@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./permissions": "./src/permissions.ts",
+    "./organization-for-shop": "./src/organization-for-shop.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -13,7 +15,11 @@
   },
   "dependencies": {
     "@better-auth/expo": "^1.6.25",
-    "better-auth": "^1.6.25"
+    "@sailo/core": "workspace:*",
+    "@sailo/db": "workspace:*",
+    "better-auth": "^1.6.25",
+    "drizzle-orm": "^0.45.2",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@sailo/config": "workspace:*",

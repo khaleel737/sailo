@@ -2,11 +2,15 @@
 
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { shops } from "@sailo/db/schema";
+import { automations, shops } from "@sailo/db/schema";
 import { suppress } from "@sailo/marketing/broadcasts/server";
 import { readUnsubscribeToken } from "@sailo/marketing/broadcasts/server";
 import { optOut } from "@sailo/marketing/lifecycle/server";
 import { readMarketingOptOutToken } from "@sailo/marketing/lifecycle/server";
+import {
+  optOutOfAutomation,
+  readAutomationUnsubToken,
+} from "@sailo/marketing/automations/server";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 
@@ -90,4 +94,43 @@ export async function confirmMarketingUnsubscribe(
   await optOut({ email: claim.email, reason: "unsubscribed" });
 
   return { done: true };
+}
+
+
+/**
+ * The same button, for one flow — spec 30.
+ *
+ * Its own action rather than a parameter on the one above, because the two
+ * write different things: that one suppresses an address for a whole shop and
+ * this one stops a single sequence and touches no list. Putting "which kind"
+ * in a parameter would put it in the request, which is exactly where a replay
+ * would want it.
+ *
+ * The person is told what did *not* happen, and that is the part worth getting
+ * right: leaving one sequence is not leaving the shop's list, and somebody who
+ * meant the second and got the first will be surprised by the next campaign.
+ */
+export async function confirmFlowUnsubscribe(
+  _prev: UnsubscribeState,
+  formData: FormData,
+): Promise<UnsubscribeState> {
+  const gate = await rateLimit(`unsub-flow-form:${await callerIp()}`, 30, 60);
+  if (!gate.allowed) {
+    // Throttled is unknown, never a false positive: somebody told "done" who
+    // is not done walks away and the next email in the sequence proves it.
+    return { done: false, error: "Too many attempts — try again in a minute." };
+  }
+
+  const claim = readAutomationUnsubToken(String(formData.get("token") ?? ""));
+  if (!claim) return { done: false, error: "That link isn't valid any more." };
+
+  const automation = await getDb().query.automations.findFirst({
+    where: eq(automations.id, claim.automationId),
+    columns: { name: true },
+  });
+  if (!automation) return { done: false, error: "That link isn't valid any more." };
+
+  await optOutOfAutomation(claim);
+
+  return { done: true, shopName: automation.name };
 }

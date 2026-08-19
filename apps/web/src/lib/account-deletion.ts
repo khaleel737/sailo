@@ -15,15 +15,24 @@ import { updateShopNow } from "@/lib/cache";
  * Both are passed in here, so a deletion started from the admin does exactly
  * what it did before this move.
  *
- * Everything else — the obligations refusal, the tombstone, the ledger
- * retention, the order the steps run in — is the package's, and is the same
- * code both callers run.
+ * Everything else — the obligations refusal, the closure record, the tombstone,
+ * the ledger retention, the order the steps run in — is the package's, and is
+ * the same code both callers run.
  */
 
 export async function deleteAccountFor(userId: string): Promise<DeletionResult> {
   return runDeletion(userId, {
     notifyDeleted: sendAccountDeleted,
     dropCaches: updateShopNow,
+    /*
+     * The key the closure record's email fingerprint is derived from.
+     *
+     * Read here rather than inside the package, so `@sailo/account` needs no
+     * environment to be driven from a test. Absent, the closure is still
+     * written and still complete — only the ability to recognise this person
+     * signing up again is lost, which is the right thing to degrade.
+     */
+    fingerprintKey: process.env.BETTER_AUTH_SECRET,
   });
 }
 

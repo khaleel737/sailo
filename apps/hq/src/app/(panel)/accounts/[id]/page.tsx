@@ -1,73 +1,60 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
-  ArrowUpRight,
   CreditCard,
   Eye,
   Gift,
   Package,
   ShoppingBag,
-  Truck,
   Users,
   Wallet,
 } from "lucide-react";
+import { Card } from "@sailo/design-system/web";
 import { Chart } from "@sailo/design-system/web/chart";
-import { PageHeader } from "@sailo/design-system/web";
 import { AccountActions } from "./_components/account-actions";
-import { AccountSecurityActions } from "./_components/account-security-actions";
-import { SecurityPanel } from "./_components/security-panel";
-import { Table, Td, Th, Tr } from "@/app/_components/hq-table";
-import {
-  BillingBadge,
-  Detail,
-  Metric,
-  MetricRow,
-  Mono,
-  SectionTitle,
-  StripeLink,
-  When,
-} from "@/app/_components/hq-ui";
-import { Badge, Card } from "@sailo/design-system/web";
-import { getAccountDetail } from "@/lib/platform";
-import { billingState } from "@/lib/metrics";
-import { isPaymentMethodType, PAYMENT_METHOD_DEFS } from "@sailo/payments/offline";
-import { planFor } from "@sailo/core/plans";
+import { Detail, Metric, MetricRow, Mono, SectionTitle, When } from "@/app/_components/hq-ui";
+import { getAccountHeader, getAccountOverview } from "@/lib/platform";
+import { staffCan } from "@/lib/session";
 import { formatMoney } from "@sailo/core/currency";
-import { isShopLive } from "@sailo/core/visibility";
-import { OrdersTable } from "./_components/orders-table";
-import { CatalogueTable } from "./_components/catalogue-table";
-import { AffiliatesTable } from "./_components/affiliates-table";
-import { BuyersTable } from "./_components/buyers-table";
 
 export async function generateMetadata({
   params,
 }: PageProps<"/accounts/[id]">): Promise<Metadata> {
   const { id } = await params;
-  const detail = await getAccountDetail(id);
-  if (!detail) return { title: "Account" };
-  return { title: detail.shop?.name ?? detail.owner.name };
+  const header = await getAccountHeader(id);
+  if (!header) return { title: "Account" };
+  return { title: header.shop?.name ?? header.owner.name };
 }
 
-export default async function HqAccountPage({
+/**
+ * The overview tab: is this shop working, and what have we done to it.
+ *
+ * Four reads — the thirty-day stats, two chart series and the staff log — where
+ * the page this replaced fired thirteen before it drew anything. The rest moved
+ * to the tabs that own it, which is the whole argument in `getAccountHeader`'s
+ * note.
+ *
+ * The staff log is here rather than on a tab of its own because "what have we
+ * already done about this" is the question somebody is holding when they
+ * arrive, and a click away is far enough to make a decision without it.
+ */
+export default async function HqAccountOverviewPage({
   params,
 }: PageProps<"/accounts/[id]">) {
   const { id } = await params;
-  const detail = await getAccountDetail(id);
-  if (!detail) notFound();
+  const header = await getAccountHeader(id);
+  if (!header) notFound();
 
-  const { owner, shop } = detail;
+  const { owner, shop } = header;
 
-  /* An account that registered and stopped. Worth its own screen — this is the
-     shape of the biggest leak in any signup funnel. */
+  /*
+   * An account that registered and stopped. Worth its own screen — this is the
+   * shape of the biggest leak in any signup funnel — and it has no tabs above
+   * it, because four of the five would be empty by definition.
+   */
   if (!shop) {
     return (
       <>
-        <PageHeader
-          back={{ href: "/accounts", label: "Accounts" }}
-          title={owner.name}
-          description={owner.email}
-          meta={<Badge tone="amber">Never onboarded</Badge>}
-        />
         <Card className="p-5">
           <div className="grid gap-4 sm:grid-cols-3">
             <Detail label="Registered">
@@ -87,519 +74,246 @@ export default async function HqAccountPage({
           </p>
         </Card>
 
-        {/* No shop is not no account: they can still be signed in, still be
-            locked out of their authenticator, and still be the person on the
-            other end of a support mail about either. */}
-        <SecurityPanel
-          security={detail.security}
-          emailVerified={owner.emailVerified}
-          twoFactorEnabled={owner.twoFactorEnabled}
-        />
-        <div className="mt-4 max-w-md">
-          <AccountSecurityActions
-            userId={owner.id}
-            security={detail.security}
-            twoFactorEnabled={owner.twoFactorEnabled}
-          />
-        </div>
+        {/*
+          No shop is not no account: they can still be signed in, still be
+          locked out of their authenticator, and still be the person on the
+          other end of a support mail about either. The security tab handles
+          both cases, so this is a link rather than a second copy of it.
+        */}
+        <p className="mt-4 text-sm text-ink-500">
+          They can still hold sessions and a second factor —{" "}
+          <a
+            href={`/accounts/${owner.id}/security`}
+            className="text-ink-900 underline decoration-ink-300 underline-offset-2 hover:text-brand-700"
+          >
+            see what guards this account
+          </a>
+          .
+        </p>
       </>
     );
   }
 
+  /*
+   * One question per capability, not one for the column. The four cards in
+   * `AccountActions` sit behind three different grants, and asking once for the
+   * loudest of them would hide the internal note — which every role holds and
+   * which is the main thing support does on this screen.
+   *
+   * All three are request-cached, so this is one session lookup.
+   */
+  const [overview, mayGrant, maySuspend, mayNote] = await Promise.all([
+    getAccountOverview(shop.id),
+    staffCan("billing:grant"),
+    staffCan("account:suspend"),
+    staffCan("notes:write"),
+  ]);
+
   const money = (cents: number) => formatMoney(cents, shop.currency);
-  const plan = planFor(shop);
-  const state = billingState(shop);
-  const live = isShopLive(shop);
-  const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
 
   return (
-    <>
-      <PageHeader
-        back={{ href: "/accounts", label: "Accounts" }}
-        title={shop.name}
-        description={`${owner.name} · ${owner.email}`}
-        meta={
-          <>
-            <BillingBadge shop={shop} plan={plan.name} />
-            {/* A tombstone is unpublished and not suspended, so it needs its
-                own badge or it reads as a seller who merely went offline. */}
-            {shop.deletedAt ? (
-              <Badge tone="neutral" dot>
-                Deleted
-              </Badge>
-            ) : shop.suspendedAt ? (
-              <Badge tone="red" dot>
-                Suspended
-              </Badge>
-            ) : live ? (
-              <Badge tone="green" dot>
-                Live
-              </Badge>
-            ) : (
-              <Badge tone="neutral" dot>
-                Unpublished
-              </Badge>
-            )}
-          </>
-        }
-        action={
-          // A tombstoned handle 404s by design, so the link would only ever
-          // be a dead end. The handle is still shown, because it is what the
-          // surviving invoices were issued under.
-          shop.deletedAt ? (
-            <span className="text-sm text-ink-400">/{shop.handle}</span>
-          ) : (
-            <a
-              href={`${base}/${shop.handle}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="focus-ring press inline-flex h-10 items-center gap-2 rounded-xl pointer-coarse:h-11 border border-ink-200 bg-white px-4 text-sm font-medium text-ink-900 shadow-xs transition hover:border-ink-300 hover:bg-ink-50"
-            >
-              /{shop.handle}
-              <ArrowUpRight className="size-4" />
-            </a>
-          )
-        }
-      />
-
-      {shop.suspendedAt ? (
-        <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">
-          <p className="font-medium">
-            Suspended <When value={shop.suspendedAt} withTime />
-          </p>
-          {shop.suspendedReason ? (
-            <p className="mt-0.5 opacity-90">{shop.suspendedReason}</p>
-          ) : null}
-        </div>
-      ) : null}
-
-      <MetricRow>
-        <Metric
-          icon={<Wallet className="size-4" />}
-          label="Net revenue"
-          value={money(detail.stats.netRevenueCents)}
-          hint={
-            detail.stats.refundedCents > 0
-              ? `${money(detail.stats.refundedCents)} refunded`
-              : undefined
-          }
-        />
-        <Metric
-          icon={<ShoppingBag className="size-4" />}
-          label="Orders"
-          value={detail.stats.totalOrders.toLocaleString()}
-          hint={
-            detail.stats.newOrders > 0
-              ? `${detail.stats.newOrders} not yet actioned`
-              : undefined
-          }
-        />
-        <Metric
-          icon={<Package className="size-4" />}
-          label="Products"
-          value={detail.stats.totalProducts.toLocaleString()}
-          hint={`${detail.stats.publishedProducts} published · ${detail.categoryCount} categories`}
-        />
-        <Metric
-          icon={<Users className="size-4" />}
-          label="Buyers"
-          value={detail.buyerCount.toLocaleString()}
-        />
-      </MetricRow>
-
-      <div className="mt-3">
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_19rem]">
+      <div className="min-w-0">
         <MetricRow>
+          <Metric
+            icon={<Wallet className="size-4" />}
+            label="Net revenue"
+            value={money(overview.stats.netRevenueCents)}
+            hint={
+              overview.stats.refundedCents > 0
+                ? `${money(overview.stats.refundedCents)} refunded`
+                : undefined
+            }
+          />
+          <Metric
+            icon={<ShoppingBag className="size-4" />}
+            label="Orders"
+            value={overview.stats.totalOrders.toLocaleString()}
+            hint={
+              overview.stats.newOrders > 0
+                ? `${overview.stats.newOrders} not yet actioned`
+                : undefined
+            }
+          />
+          <Metric
+            icon={<Package className="size-4" />}
+            label="Products"
+            value={overview.stats.totalProducts.toLocaleString()}
+            hint={`${overview.stats.publishedProducts} published`}
+          />
           <Metric
             icon={<Eye className="size-4" />}
             label="Visits · 30d"
-            value={detail.stats.visitsInRange.toLocaleString()}
-            hint={`${detail.stats.uniqueVisitorsInRange} unique`}
-          />
-          <Metric
-            icon={<Gift className="size-4" />}
-            label="Affiliates"
-            value={detail.affiliates.length.toLocaleString()}
-            hint={
-              detail.stats.unpaidCommissionCents > 0
-                ? `${money(detail.stats.unpaidCommissionCents)} owed`
-                : undefined
-            }
-          />
-          <Metric
-            icon={<CreditCard className="size-4" />}
-            label="Paid orders"
-            value={money(detail.stats.paidValueCents)}
-            hint={
-              detail.stats.awaitingConfirmation > 0
-                ? `${detail.stats.awaitingConfirmation} awaiting confirmation`
-                : undefined
-            }
-          />
-          <Metric
-            icon={<Truck className="size-4" />}
-            label="Tax collected"
-            value={money(detail.stats.taxCollectedCents)}
-            hint={
-              shop.taxEnabled
-                ? `${shop.taxName} at ${(shop.taxRateBp / 100).toFixed(2)}%`
-                : "Tax is off"
-            }
+            value={overview.stats.visitsInRange.toLocaleString()}
+            hint={`${overview.stats.uniqueVisitorsInRange} unique`}
           />
         </MetricRow>
-      </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_19rem]">
-        {/* ------------------------------------------------------------ main */}
-        <div className="min-w-0">
-          <div className="grid items-start gap-3 sm:grid-cols-2">
-            <Card className="p-5">
-              <Chart
-                title="Visits · 30 days"
-                defaultShape="line"
-                days={detail.visitSeries.map((d) => d.day)}
-                series={[
-                  {
-                    key: "visits",
-                    label: "Views",
-                    values: detail.visitSeries.map((d) => d.count),
-                  },
-                  {
-                    key: "unique",
-                    label: "Visitors",
-                    values: detail.visitSeries.map((d) => d.unique),
-                  },
-                ]}
-                tone="activity"
-                unit="count"
-                emptyLabel="No visits."
-              />
-            </Card>
-            <Card className="p-5">
-              <Chart
-                title="Revenue · 30 days"
-                days={detail.revenueSeries.map((d) => d.day)}
-                series={[
-                  {
-                    key: "sales",
-                    label: "Sales",
-                    depth: 1,
-                    values: detail.revenueSeries.map((d) => d.grossCents),
-                  },
-                  {
-                    key: "refunds",
-                    label: "Refunds",
-                    negative: true,
-                    depth: 2,
-                    values: detail.revenueSeries.map((d) => d.refundedCents),
-                  },
-                  {
-                    key: "net",
-                    label: "Net",
-                    depth: 0,
-                    readoutOnly: true,
-                    values: detail.revenueSeries.map((d) => d.cents),
-                  },
-                ]}
-                totalKey="net"
-                tone="money"
-                unit="money"
-                currency={shop.currency}
-                emptyLabel="No revenue."
-              />
-            </Card>
-          </div>
+        <div className="mt-3">
+          <MetricRow>
+            <Metric
+              icon={<CreditCard className="size-4" />}
+              label="Paid orders"
+              value={money(overview.stats.paidValueCents)}
+              hint={
+                overview.stats.awaitingConfirmation > 0
+                  ? `${overview.stats.awaitingConfirmation} awaiting confirmation`
+                  : undefined
+              }
+            />
+            <Metric
+              icon={<Gift className="size-4" />}
+              label="Commission owed"
+              value={money(overview.stats.unpaidCommissionCents)}
+              hint="To this shop's own affiliates"
+            />
+            <Metric
+              icon={<Users className="size-4" />}
+              label="Tax collected"
+              value={money(overview.stats.taxCollectedCents)}
+              hint={
+                shop.taxEnabled
+                  ? `${shop.taxName} at ${(shop.taxRateBp / 100).toFixed(2)}%`
+                  : "Tax is off"
+              }
+            />
+            <Metric
+              icon={<Wallet className="size-4" />}
+              label="Currency"
+              value={shop.currency}
+              hint={shop.locale ?? "Follows the visitor"}
+            />
+          </MetricRow>
+        </div>
 
-          <OrdersTable detail={detail} />
-          <CatalogueTable detail={detail} shop={shop} />
-          <AffiliatesTable detail={detail} shop={shop} />
-          <BuyersTable detail={detail} shop={shop} />
-
-          <SectionTitle>Checkout</SectionTitle>
-          <div className="grid items-start gap-3 sm:grid-cols-2">
-            <Card className="p-4">
-              <h3 className="mb-3 text-xs font-medium uppercase tracking-wide text-ink-400">
-                Payment rails
-              </h3>
-              {detail.payments.length === 0 ? (
-                <p className="text-sm text-ink-500">
-                  No rails configured — this shop can&rsquo;t take an order.
-                </p>
-              ) : (
-                <ul className="space-y-2">
-                  {detail.payments.map((method) => (
-                    <li
-                      key={method.id}
-                      className="flex items-center justify-between gap-2 text-sm"
-                    >
-                      <span className="truncate text-ink-700">
-                        {isPaymentMethodType(method.type)
-                          ? PAYMENT_METHOD_DEFS[method.type].name
-                          : method.type}
-                      </span>
-                      <Badge tone={method.isEnabled ? "green" : "neutral"}>
-                        {method.isEnabled ? "On" : "Off"}
-                      </Badge>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Card>
-
-            <Card className="p-4">
-              <h3 className="mb-3 text-xs font-medium uppercase tracking-wide text-ink-400">
-                Delivery
-              </h3>
-              {detail.delivery.length === 0 ? (
-                <p className="text-sm text-ink-500">
-                  No delivery options — digital and service shops don&rsquo;t
-                  need any.
-                </p>
-              ) : (
-                <ul className="space-y-2">
-                  {detail.delivery.map((option) => (
-                    <li
-                      key={option.id}
-                      className="flex items-center justify-between gap-2 text-sm"
-                    >
-                      <span className="truncate text-ink-700">
-                        {option.name}
-                        <span className="ms-1.5 text-xs text-ink-400">
-                          {option.feeCents > 0
-                            ? money(option.feeCents)
-                            : "Free"}
-                        </span>
-                      </span>
-                      <Badge tone={option.isEnabled ? "green" : "neutral"}>
-                        {option.isEnabled ? "On" : "Off"}
-                      </Badge>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Card>
-          </div>
-
-          {detail.coupons.length > 0 ? (
-            <>
-              <SectionTitle>Discount codes</SectionTitle>
-              <Table
-                minWidth="32rem"
-                head={
-                  <>
-                    <Th>Code</Th>
-                    <Th>Discount</Th>
-                    <Th align="end">Redeemed</Th>
-                    <Th>State</Th>
-                  </>
-                }
-              >
-                {detail.coupons.map((coupon) => (
-                  <Tr key={coupon.id}>
-                    <Td>
-                      <Mono>{coupon.code}</Mono>
-                    </Td>
-                    <Td label="Discount">
-                      {coupon.discountType === "percent"
-                        ? `${coupon.discountValue / 100}%`
-                        : money(coupon.discountValue)}
-                    </Td>
-                    <Td align="end" className="tabular" label="Redeemed">
-                      {coupon.timesRedeemed}
-                      {coupon.maxRedemptions
-                        ? ` / ${coupon.maxRedemptions}`
-                        : ""}
-                    </Td>
-                    <Td label="State">
-                      <Badge tone={coupon.isActive ? "green" : "neutral"}>
-                        {coupon.isActive ? "Active" : "Off"}
-                      </Badge>
-                    </Td>
-                  </Tr>
-                ))}
-              </Table>
-            </>
-          ) : null}
-
-          <SecurityPanel
-            security={detail.security}
-            emailVerified={owner.emailVerified}
-            twoFactorEnabled={owner.twoFactorEnabled}
-          />
-
-          <SectionTitle>Staff activity on this account</SectionTitle>
-          <Card className="divide-y divide-ink-100">
-            {detail.log.length === 0 ? (
-              <p className="p-5 text-sm text-ink-500">
-                Nothing yet. Anything you change here gets recorded.
-              </p>
-            ) : (
-              detail.log.map((entry) => (
-                <div key={entry.id} className="flex gap-3 p-4 text-sm">
-                  <span className="shrink-0 text-xs text-ink-400">
-                    <When value={entry.createdAt} withTime />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="text-ink-900">{entry.summary}</span>
-                    <span className="block text-xs text-ink-400">
-                      {entry.actorEmail}
-                    </span>
-                  </span>
-                </div>
-              ))
-            )}
+        <div className="mt-4 grid items-start gap-3 sm:grid-cols-2">
+          <Card className="p-5">
+            <Chart
+              title="Visits · 30 days"
+              defaultShape="line"
+              days={overview.visitSeries.map((d) => d.day)}
+              series={[
+                {
+                  key: "visits",
+                  label: "Views",
+                  values: overview.visitSeries.map((d) => d.count),
+                },
+                {
+                  key: "unique",
+                  label: "Visitors",
+                  values: overview.visitSeries.map((d) => d.unique),
+                },
+              ]}
+              tone="activity"
+              unit="count"
+              emptyLabel="No visits."
+            />
+          </Card>
+          <Card className="p-5">
+            <Chart
+              title="Revenue · 30 days"
+              days={overview.revenueSeries.map((d) => d.day)}
+              series={[
+                {
+                  key: "sales",
+                  label: "Sales",
+                  depth: 1,
+                  values: overview.revenueSeries.map((d) => d.grossCents),
+                },
+                {
+                  key: "refunds",
+                  label: "Refunds",
+                  negative: true,
+                  depth: 2,
+                  values: overview.revenueSeries.map((d) => d.refundedCents),
+                },
+                {
+                  key: "net",
+                  label: "Net",
+                  depth: 0,
+                  readoutOnly: true,
+                  values: overview.revenueSeries.map((d) => d.cents),
+                },
+              ]}
+              totalKey="net"
+              tone="money"
+              unit="money"
+              currency={shop.currency}
+              emptyLabel="No revenue."
+            />
           </Card>
         </div>
 
-        {/* --------------------------------------------------------- sidebar */}
-        <aside className="min-w-0 space-y-3">
-          <Card className="p-4">
-            <h3 className="mb-3 text-xs font-medium uppercase tracking-wide text-ink-400">
-              Account
-            </h3>
-            <div className="space-y-3">
-              <Detail label="Owner">{owner.name}</Detail>
-              <Detail label="Email">
-                <a
-                  href={`mailto:${owner.email}`}
-                  className="text-ink-900 underline decoration-ink-300 underline-offset-2 hover:text-brand-700"
-                >
-                  {owner.email}
-                </a>
-              </Detail>
-              <Detail label="Verified">
-                {owner.emailVerified ? "Yes" : "No"}
-              </Detail>
-              <Detail label="Registered">
-                <When value={owner.createdAt} withTime />
-              </Detail>
-              <Detail label="Shop created">
-                <When value={shop.createdAt} />
-              </Detail>
-              <Detail label="First order">
-                <When value={detail.firstOrderAt} />
-              </Detail>
-              <Detail label="Last order">
-                <When value={detail.lastOrderAt} />
-              </Detail>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <h3 className="mb-3 text-xs font-medium uppercase tracking-wide text-ink-400">
-              Subscription
-            </h3>
-            <div className="space-y-3">
-              <Detail label="Entitled to">
-                {plan.name}
-                {state === "comped" ? " (comped by us)" : ""}
-              </Detail>
-              <Detail label="State">
-                <BillingBadge shop={shop} />
-              </Detail>
-              <Detail label="Billing plan on Stripe">
-                {shop.plan === "free" ? "Free" : shop.plan}
-                {shop.subscriptionInterval
-                  ? ` · ${shop.subscriptionInterval}ly`
-                  : ""}
-              </Detail>
-              <Detail label="Stripe status">
-                {shop.subscriptionStatus ?? "—"}
-              </Detail>
-              <Detail label="Renews">
-                <When value={shop.currentPeriodEnd} />
-                {shop.cancelAtPeriodEnd ? " · cancelling" : ""}
-              </Detail>
-              {shop.compNote ? (
-                <Detail label="Comp reason">{shop.compNote}</Detail>
-              ) : null}
-              <Detail label="Customer">
-                <StripeLink id={shop.stripeCustomerId} kind="customers" />
-              </Detail>
-              <Detail label="Subscription">
-                <StripeLink
-                  id={shop.stripeSubscriptionId}
-                  kind="subscriptions"
-                />
-              </Detail>
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <h3 className="mb-3 text-xs font-medium uppercase tracking-wide text-ink-400">
-              Card payments
-            </h3>
-            {shop.stripeAccountId ? (
-              <div className="space-y-3">
-                <Detail label="Connected account">
-                  <StripeLink
-                    id={shop.stripeAccountId}
-                    kind="connect/accounts"
-                  />
-                </Detail>
-                <Detail label="Charges enabled">
-                  {shop.stripeChargesEnabled ? "Yes" : "Not yet"}
-                </Detail>
-                <Detail label="Details submitted">
-                  {shop.stripeDetailsSubmitted ? "Yes" : "No"}
-                </Detail>
-                <Detail label="Country">
-                  {shop.stripeAccountCountry ?? "—"}
-                </Detail>
-                <Detail label="Connected">
-                  <When value={shop.stripeConnectedAt} />
-                </Detail>
+        <SectionTitle>Staff activity on this account</SectionTitle>
+        <Card className="divide-y divide-ink-100">
+          {overview.log.length === 0 ? (
+            <p className="p-5 text-sm text-ink-500">
+              Nothing yet. Anything you change here gets recorded.
+            </p>
+          ) : (
+            overview.log.map((entry) => (
+              <div key={entry.id} className="flex gap-3 p-4 text-sm">
+                <span className="shrink-0 text-xs text-ink-400">
+                  <When value={entry.createdAt} withTime />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="text-ink-900">{entry.summary}</span>
+                  <span className="block text-xs text-ink-400">
+                    {entry.actorEmail}
+                  </span>
+                </span>
               </div>
-            ) : (
-              <p className="text-sm text-ink-500">
-                No Stripe account connected — this shop settles out of band.
-              </p>
-            )}
-          </Card>
-
-          <Card className="p-4">
-            <h3 className="mb-3 text-xs font-medium uppercase tracking-wide text-ink-400">
-              Storefront
-            </h3>
-            <div className="space-y-3">
-              <Detail label="Handle">
-                <Mono>/{shop.handle}</Mono>
-              </Detail>
-              <Detail label="Currency">{shop.currency}</Detail>
-              <Detail label="Language">
-                {shop.locale ?? "Follows the visitor"}
-              </Detail>
-              <Detail label="Layout">
-                {shop.theme} · {shop.layout}
-              </Detail>
-              <Detail label="Affiliate programme">
-                {shop.affiliatesEnabled
-                  ? `On · ${(shop.affiliateDefaultBp / 100).toFixed(0)}% default`
-                  : "Off"}
-              </Detail>
-              <Detail label="Tax">
-                {shop.taxEnabled
-                  ? `${shop.taxName} ${(shop.taxRateBp / 100).toFixed(2)}%${shop.taxInclusive ? " inclusive" : ""}`
-                  : "Off"}
-              </Detail>
-              <Detail label="Invoices">
-                {detail.invoiceCount} issued · next {shop.invoicePrefix}-
-                {String(shop.invoiceNextNumber).padStart(4, "0")}
-              </Detail>
-              <Detail label="Reviews">{detail.reviewCount}</Detail>
-              <Detail label="Shop id">
-                <Mono>{shop.id}</Mono>
-              </Detail>
-            </div>
-          </Card>
-
-          <AccountActions shop={shop} />
-          <AccountSecurityActions
-            userId={owner.id}
-            security={detail.security}
-            twoFactorEnabled={owner.twoFactorEnabled}
-          />
-        </aside>
+            ))
+          )}
+        </Card>
       </div>
-    </>
+
+      <aside className="min-w-0 space-y-3">
+        <Card className="p-4">
+          <h3 className="mb-3 text-xs font-medium uppercase tracking-wide text-ink-400">
+            Account
+          </h3>
+          <div className="space-y-3">
+            <Detail label="Owner">{owner.name}</Detail>
+            <Detail label="Email">
+              <a
+                href={`mailto:${owner.email}`}
+                className="text-ink-900 underline decoration-ink-300 underline-offset-2 hover:text-brand-700"
+              >
+                {owner.email}
+              </a>
+            </Detail>
+            <Detail label="Verified">{owner.emailVerified ? "Yes" : "No"}</Detail>
+            <Detail label="Registered">
+              <When value={owner.createdAt} withTime />
+            </Detail>
+            <Detail label="Shop created">
+              <When value={shop.createdAt} />
+            </Detail>
+            <Detail label="Handle">
+              <Mono>/{shop.handle}</Mono>
+            </Detail>
+            <Detail label="Shop id">
+              <Mono>{shop.id}</Mono>
+            </Detail>
+          </div>
+        </Card>
+
+        <AccountActions
+          shop={shop}
+          may={{ grant: mayGrant, suspend: maySuspend, note: mayNote }}
+        />
+
+        {!mayGrant && !maySuspend ? (
+          <Card className="p-4">
+            <p className="text-xs leading-relaxed text-ink-500">
+              Comping a plan and suspending a shop need a role you don&rsquo;t
+              hold. Everything on this account is readable, and the internal note
+              above is yours to write.
+            </p>
+          </Card>
+        ) : null}
+      </aside>
+    </div>
   );
 }

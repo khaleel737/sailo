@@ -66,7 +66,7 @@ async function doorFor(input: DoorInput): Promise<Door | null> {
     };
   }
 
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
   return {
     shopId: shop.id,
     productId: input.productId ?? null,
@@ -77,7 +77,7 @@ async function doorFor(input: DoorInput): Promise<Door | null> {
 
 /** Owner-only. Anything a volunteer must not reach goes through this. */
 async function ownerShopId(): Promise<string> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
   return shop.id;
 }
 

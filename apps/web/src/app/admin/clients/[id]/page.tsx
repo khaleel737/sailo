@@ -19,6 +19,12 @@ import { getAdminT } from "@/i18n/server";
 import { formatAddress } from "@sailo/core/address";
 import { formatMoney } from "@sailo/core/currency";
 import { isUuid } from "@sailo/core/uuid";
+import {
+  listsFor,
+  listsForClient,
+  valuesForClient,
+} from "@sailo/marketing/contacts/server";
+import { ContactAudience } from "../_components/contact-audience";
 
 export const metadata: Metadata = { title: "Client" };
 
@@ -26,7 +32,7 @@ export default async function ClientDetailPage({
   params,
 }: PageProps<"/admin/clients/[id]">) {
   const { id } = await params;
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:read");
   const { a, locale } = await getAdminT();
   if (!isUuid(id)) notFound();
 
@@ -34,10 +40,26 @@ export default async function ClientDetailPage({
   if (!data) notFound();
 
   const { client, orders, totalCents, paidCents, outstandingCents } = data;
-  const [invoiceMap, itemsByOrder] = await Promise.all([
+  const [invoiceMap, itemsByOrder, memberships, allLists, answers] = await Promise.all([
     getInvoiceMap(orders.map((o) => o.id)),
     getOrderItemsMap(orders),
+    listsForClient(shop.id, client.id),
+    listsFor(shop.id),
+    valuesForClient(shop.id, client.id),
   ]);
+
+  /*
+   * Lists they are not already on, including the ones they were removed from.
+   * A `removed` membership is still a row, so it has to be filtered out here
+   * or the picker would offer nothing and the seller would have no way to put
+   * somebody back on a list they took them off.
+   */
+  const onAlready = new Set(
+    memberships.filter((list) => list.status !== "removed").map((list) => list.id),
+  );
+  const available = allLists
+    .filter((list) => !onAlready.has(list.id))
+    .map((list) => ({ id: list.id, name: list.name }));
   const address = formatAddress(client);
   // The shop's whole tag vocabulary, so the editor can autocomplete rather
   // than let a seller invent `vips` beside the `vip` they already use.
@@ -142,6 +164,19 @@ export default async function ClientDetailPage({
             clientId={client.id}
             tags={client.tags}
             vocabulary={vocabulary}
+          />
+
+          <ContactAudience
+            clientId={client.id}
+            memberships={memberships.filter((list) => list.status !== "removed")}
+            available={available}
+            answers={[...answers.values()].map(({ field, value }) => ({
+              key: field.key,
+              label: field.label,
+              type: field.type,
+              value,
+            }))}
+            locale={locale}
           />
 
           <Card className="p-5">

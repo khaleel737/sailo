@@ -51,6 +51,8 @@ const pkg = (spec: string, file: string) =>
 const ORDERS = read("src/lib/actions/orders.ts");
 const ORDER_ADMIN = read("src/lib/actions/order-admin.ts");
 const CONNECT = read("src/lib/stripe-webhooks/connect.ts");
+/* `order.paid` lives here now, for both rails. */
+const ANNOUNCE = read("../../packages/workflows/src/orders/announce-paid.ts");
 const CLIENTS = read("src/lib/actions/clients.ts");
 const SUBSCRIBE = pkg("@sailo/marketing/broadcasts", "subscribe.ts");
 const PAY_ORDER = pkg("@sailo/commerce/orders", "pay-order.ts");
@@ -121,18 +123,41 @@ describe("emit sites", () => {
 
   it("emits order.created and order.paid together when a card settles", () => {
     expect(CONNECT).toContain('event: "order.created"');
-    expect(CONNECT).toContain('event: "order.paid"');
     /*
-     * Behind the pre-update status read, so a redelivered settling event for
-     * an order already marked paid adds nothing.
+     * `order.paid` moved into `announceOrderPaid` so the card rail and the
+     * rails that settle at checkout have one thing to call rather than two to
+     * remember — see `packages/workflows/src/orders/announce-paid.ts`. Asserted
+     * through the call, because the string is no longer in this file and a test
+     * that only grepped for it would now pass by looking at nothing.
      */
-    expect(CONNECT).toContain('if (order.paymentStatus !== "paid")');
+    expect(CONNECT).toContain("await announceOrderPaid(");
+    expect(ANNOUNCE).toContain('event: "order.paid"');
+    /*
+     * Behind the settlement claim, so a second settling event for an order
+     * already marked paid adds nothing. A consumer that receives `order.paid`
+     * twice for one sale double-counts revenue — which is why this is guarded
+     * by a conditional UPDATE rather than by the pre-update read it used to
+     * name, a read both deliveries passed.
+     */
+    expect(CONNECT).toContain("if (settledHere) {");
   });
 
   it("emits the three events this app still owns", () => {
-    for (const event of ["order.paid", "order.shipped", "order.refunded"]) {
+    for (const event of ["order.shipped", "order.refunded"]) {
       expect(ORDER_ADMIN, event).toContain(`event: "${event}"`);
     }
+    /*
+     * `order.paid` is the third and it is no longer spelled here.
+     *
+     * Both rails now route through `announceOrderPaid` — this dropdown and the
+     * Stripe handler — which is the point of that function: the event and the
+     * enrolment that follows it were two things each caller had to remember,
+     * and remembering one of two is the "guard at one sink and not its twin"
+     * shape. Asserted through the call, because grepping this file for a string
+     * that legitimately moved would pass by looking at nothing.
+     */
+    expect(ORDER_ADMIN).toContain("announceOrderPaid(");
+    expect(ANNOUNCE).toContain('event: "order.paid"');
   });
 
   it("emits the two that hang off a status change, where both surfaces call", () => {

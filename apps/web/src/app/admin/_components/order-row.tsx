@@ -4,15 +4,15 @@ import {
   Download,
   FileText,
   MapPin,
-  Trash2,
   Truck,
 } from "lucide-react";
-import { deleteOrder } from "@/lib/actions/order-admin";
 import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { OrderStatusSelect } from "@/app/admin/orders/_components/order-status-select";
 import { PaymentStatusSelect } from "@/app/admin/orders/_components/payment-status-select";
 import { OrderActions } from "@/app/admin/orders/_components/order-actions";
-import { Badge, Button } from "@sailo/design-system/web";
+import { ShipmentsPanel } from "@/app/admin/orders/_components/shipments-panel";
+import { shipmentsForOrder } from "@sailo/commerce/orders/server";
+import { Badge } from "@sailo/design-system/web";
 import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";
 import { getAdminT } from "@/i18n/server";
 import { interpolate } from "@sailo/i18n";
@@ -27,14 +27,41 @@ export async function OrderRow({
   items,
   invoice,
   showCustomer = true,
+  multiShipment = false,
 }: {
   order: Order;
   /** Every line. Falls back to the header for orders written before carts. */
   items?: OrderLine[];
   invoice?: { number: string; token: string };
   showCustomer?: boolean;
+  /**
+   * Whether this shop may ship an order in more than one box — spec 51.
+   *
+   * A prop with a default of `false` rather than a read inside this component,
+   * because the plan is one fact about the shop and this renders once per order
+   * in a list of fifty. The page asks once and hands the answer down.
+   */
+  multiShipment?: boolean;
 }) {
   const { a, locale } = await getAdminT();
+
+  /*
+   * The boxes, read only for the orders that could possibly need them.
+   *
+   * Gated on two columns that are already on the row — more than one line, and
+   * something that actually ships — before any query is issued, because this
+   * component renders once per order and an unconditional read would be fifty
+   * round trips to draw one page. Most orders are one thing in one box and pay
+   * nothing for this.
+   *
+   * A single-order page would be the better home for this panel and there is
+   * not one yet; when there is, this gate becomes unnecessary rather than
+   * wrong.
+   */
+  const boxes =
+    multiShipment && order.itemCount > 1 && order.deliveryMethod === "shipping"
+      ? await shipmentsForOrder(order.id)
+      : null;
   const lines: OrderLine[] = items?.length ? items : [];
   const address = formatAddress(order);
   const methodName = isPaymentMethodType(order.paymentMethod)
@@ -47,7 +74,14 @@ export async function OrderRow({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-sm font-medium">
-              {order.productTitle}
+              {/* The order's own page, where the full story and its controls
+                  live — this row is the client-history summary of it. */}
+              <Link
+                href={`/admin/orders/${order.id}`}
+                className="focus-ring rounded underline-offset-2 hover:underline"
+              >
+                {order.productTitle}
+              </Link>
               {order.variantLabel ? (
                 <span className="text-ink-500"> — {order.variantLabel}</span>
               ) : null}
@@ -337,22 +371,26 @@ export async function OrderRow({
             paymentStatus={order.paymentStatus}
           />
           <OrderStatusSelect orderId={order.id} status={order.status} />
-          <form action={deleteOrder}>
-            <input type="hidden" name="id" value={order.id} />
-            <Button
-              variant="ghost"
-              size="sm"
-              type="submit"
-              aria-label={a.orders.deleteOrder}
-              className="text-ink-400 hover:bg-red-50 hover:text-red-600"
-            >
-              <Trash2 className="size-4" />
-            </Button>
-          </form>
+          {/* Deleting moved to the order's own page, behind a confirm — it
+              was a bare icon here, one mis-tap from removing an order. */}
         </div>
       </div>
 
       <OrderActions order={order} />
+
+      {/* Only where there is genuinely more than one thing to send. An order
+          whose second line is a download has one box, and offering a
+          box-by-box form for it is a screen of controls with one answer. */}
+      {boxes && boxes.coverage.length > 1 ? (
+        <div className="mt-3">
+          <ShipmentsPanel
+            orderId={order.id}
+            coverage={boxes.coverage}
+            shipments={boxes.shipments}
+            complete={boxes.complete}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -6,7 +6,9 @@
   "exports": {
     ".": "./src/deletion/index.ts",
     "./deletion": "./src/deletion/index.ts",
-    "./handle": "./src/handle.ts"
+    "./handle": "./src/handle.ts",
+    "./fingerprint": "./src/deletion/fingerprint.ts",
+    "./data-requests": "./src/data-requests/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

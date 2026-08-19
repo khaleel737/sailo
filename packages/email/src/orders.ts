@@ -42,10 +42,29 @@ import {
  * and that is a fact about the order, not an error in the send.
  */
 
-/** Sent when the seller marks a shipping order as dispatched. */
+/**
+ * Sent when the seller marks a shipping order as dispatched.
+ *
+ * Carries the arrival question when there is one to carry. Spec 44: on
+ * `product_not_received` the whole case turns on delivery, and the cardholder's
+ * own timestamped "yes, it arrived" is stronger evidence than a seller's tick
+ * and than a tracking number that says "in transit". This email is the one
+ * moment a buyer is already thinking about the parcel, so it is where the
+ * question costs least to ask.
+ */
 export async function sendShippingNotification(opts: {
   shop: Shop;
   order: Order;
+  /**
+   * The signed arrival link, when the caller could mint one.
+   *
+   * Passed in rather than built here so this module keeps its property of
+   * touching no secrets. Null when `BETTER_AUTH_SECRET` is unset, and the mail
+   * then simply goes without the question — a link that does not verify is worse
+   * than no link, because a buyer who clicks it and is refused concludes their
+   * order is wrong.
+   */
+  arrivalUrl?: string | null;
 }): Promise<SendResult> {
   const { shop, order } = opts;
   if (!order.customerEmail) return { sent: false, reason: "no customer email" };
@@ -76,6 +95,13 @@ export async function sendShippingNotification(opts: {
     ${
       order.trackingNumber && !order.trackingUrl
         ? fine("Use the tracking number above on the carrier's website for live updates.")
+        : ""
+    }
+    ${
+      opts.arrivalUrl
+        ? fine(
+            `Once it lands, <a href="${esc(opts.arrivalUrl)}">let ${esc(shop.name)} know it arrived</a>.`,
+          )
         : ""
     }
   `;

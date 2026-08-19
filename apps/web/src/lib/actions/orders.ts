@@ -3,7 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { resolveOrderIntent } from "@sailo/commerce/orders/server";
+import { displayCurrency } from "@/lib/regional";
 import { upsertClient } from "@sailo/commerce/orders/server";
+import { saveAnswers } from "@sailo/marketing/contacts/server";
+import { markSessionPaid } from "@sailo/commerce/recovery/server";
 import { referralFor } from "@sailo/workflows/orders";
 import type { OrderIntentInput, OrderIntentResult } from "@sailo/commerce/orders";
 import { firstRow } from "@sailo/core/invariant";
@@ -11,6 +14,8 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { liveShop } from "@/lib/shop-visibility";
 import { rateLimit } from "@sailo/rate-limit";
+import { isCountryBlocked } from "@sailo/commerce/tax";
+import { countryGateFor } from "@sailo/commerce/tax/server";
 import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
 import { headers } from "next/headers";
 import { ipFromHeaders } from "@sailo/rate-limit/client-ip";
@@ -27,15 +32,25 @@ import { releaseStock, reserveStock } from "@sailo/commerce/catalog";
 import { handOffSubscription, handOffToStripe } from "@sailo/commerce/orders/server";
 import { checkoutLabels, toCheckoutLine } from "@sailo/commerce/orders";
 import { getShopT } from "@/i18n/server";
-import { intervalOf, isMembership } from "@sailo/commerce/memberships";
+import { intervalCountOf, intervalOf, isMembership } from "@sailo/commerce/memberships";
 import { createManualSubscription } from "@sailo/commerce/memberships/server";
 import { claimCouponRedemption } from "@sailo/commerce/coupons";
-import { claimSlots, releaseSlots, slotEnd } from "@sailo/commerce/booking/server";
+import { policySnapshotsForOrder } from "@sailo/commerce/disputes";
+import {
+  claimSlots,
+  firstFreeStaff,
+  releaseSlots,
+  slotEnd,
+} from "@sailo/commerce/booking/server";
 import { downloadUrl, newDownloadToken, releasesImmediately } from "@/lib/downloads";
 import { resolveDigitalDelivery } from "@sailo/commerce/orders/server";
 import { eventSalesOpen, ticketValues } from "@sailo/commerce/ticketing";
+import { preorderRoom } from "@sailo/commerce/catalog";
+import { attributeBumps } from "@sailo/commerce/orders/server";
+import { preorderExpectedAt } from "@sailo/core/preorders";
 import { confirmBuyerByEmail } from "@sailo/workflows/orders";
 import { notifySellerOfOrder } from "@sailo/workflows/orders";
+import { notifySellerOfLowStock } from "@sailo/workflows/orders";
 import { emitOrderWebhook } from "@sailo/webhooks/emit";
 
 
@@ -109,6 +124,38 @@ async function buyerFingerprint(): Promise<{ ip: string; userAgent: string | nul
   };
 }
 
+/**
+ * The client's own durable browser id, if it sent one worth keeping.
+ *
+ * Visa requires `customer_device_fingerprint` to be **at least 20 characters**,
+ * and a shorter one is not merely weak — it is a data point submitted to an
+ * issuer that the network will not count, which makes the submission look
+ * complete when it is not. So a short value is dropped rather than stored.
+ *
+ * Capped at 200 because it is client-supplied text on a public write, and
+ * nothing else about it is trusted: it is evidence of a returning browser, never
+ * identity and never a gate.
+ */
+function deviceFingerprintOf(input: OrderIntentInput): string | null {
+  const raw = input.deviceFingerprint?.trim();
+  if (!raw || raw.length < 20) return null;
+  return raw.slice(0, 200);
+}
+
+/**
+ * The last of several promised dates, ignoring the ones nobody gave.
+ *
+ * The order is complete when its *last* line arrives, so a basket holding a
+ * two-week preorder and a six-week one is a six-week order. Quoting the sooner
+ * date would be telling the buyer something the order cannot meet, on the one
+ * field this whole feature exists to get right.
+ */
+function latestOf(dates: (Date | null)[]): Date | null {
+  const real = dates.filter((d): d is Date => d !== null);
+  if (real.length === 0) return null;
+  return real.reduce((latest, d) => (d > latest ? d : latest));
+}
+
 export async function createOrderIntent(
   input: OrderIntentInput,
 ): Promise<OrderIntentResult> {
@@ -148,6 +195,17 @@ export async function createOrderIntent(
   const buyer = await buyerFingerprint();
 
   const [gate, shop] = await Promise.all([
+    /*
+     * DECISION B — deliberately stays open.
+     *
+     * This is the checkout. Failing it closed means a cache outage stops every
+     * shop on the platform from taking an order, which is the exact trade the
+     * default was chosen against — more damage than the traffic it stops. Ten a
+     * minute from one address is a runaway-client guard, not a security
+     * boundary, and the things that *are* boundaries on this path (stock claims,
+     * coupon budgets, ownership checks) are all in Postgres and unaffected by
+     * Redis being down.
+     */
     rateLimit(`order:${buyer.ip}`, 10, 60),
     db.query.shops.findFirst({
       where: liveShop(eq(shops.id, input.shopId)),
@@ -180,6 +238,37 @@ export async function createOrderIntent(
     };
   }
 
+  /*
+   * The country gate, beside the terms gate and for the same reason.
+   *
+   * Spec 38's country control is enforced here because a client-side list is a
+   * suggestion: the storefront leaves a switched-off country out of the picker,
+   * and this is a server action, so a hand-rolled POST carries whatever the
+   * caller wants. Both read the same rows through `countryGateFor`, so the
+   * picker and the refusal cannot drift — the guard at one sink and not its
+   * twin is the second of the six recurring bug shapes, and here it would mean
+   * a buyer choosing a country and being refused after typing a card number.
+   *
+   * Above every write for the same reason the terms gate is: past this line
+   * `upsertClient` creates the buyer and stock comes off the shelf, and
+   * refusing after a reservation holds units for an order that was never
+   * allowed to exist.
+   *
+   * A renewal never reaches this function. That is deliberate and it is spec
+   * 38's rule: a member in a country the seller later switched off keeps
+   * renewing, because the switch governs new checkouts. Otherwise a compliance
+   * toggle silently cancels paying members.
+   */
+  if (input.country) {
+    const countries = await countryGateFor(shop);
+    if (isCountryBlocked(countries, input.country)) {
+      return {
+        ok: false,
+        error: "This shop isn't taking orders for that country right now.",
+      };
+    }
+  }
+
   const now = new Date();
 
   /*
@@ -192,7 +281,19 @@ export async function createOrderIntent(
    * point every failure needs an undo, and the undos are what the hardest bugs
    * in this file have been about.
    */
-  const resolvedIntent = await resolveOrderIntent(shop, input, now);
+  /*
+   * What this order is priced and charged in — spec 53.
+   *
+   * Re-derived from this request's own geography and cookie, not taken from
+   * the body: the client sends a basket, and a currency in a request body is a
+   * price in a request body one step removed. `displayCurrency` answers with a
+   * currency the shop can actually quote — its own, if this visit matched
+   * nothing — so there is no path from here to an order in a currency the
+   * seller never priced.
+   */
+  const { currency } = await displayCurrency(shop);
+
+  const resolvedIntent = await resolveOrderIntent(shop, input, now, currency);
   if (!resolvedIntent.ok) return { ok: false, error: resolvedIntent.error };
   const {
     lines,
@@ -203,6 +304,7 @@ export async function createOrderIntent(
     coupon,
     affiliate,
     priced,
+    trial,
     buyer: { name, email, phone, note, address },
   } = resolvedIntent.intent;
 
@@ -227,7 +329,7 @@ export async function createOrderIntent(
    * before anything is written down, is what makes the order, the invoice and
    * the charge the same number.
    */
-  const totals = toChargeableTotals(priced.totals, shop.currency, shop.taxInclusive);
+  const totals = toChargeableTotals(priced.totals, currency, shop.taxInclusive);
 
   /*
    * Consent is only ever *taken* from a shop that asked for it.
@@ -251,6 +353,41 @@ export async function createOrderIntent(
     },
     { marketingConsentAt },
   );
+
+  /*
+   * The shop's own checkout questions, validated against the rows that define
+   * them and written to the contact — spec 34.
+   *
+   * Above the stock claim for the same reason the terms and country gates are:
+   * a refusal past this line holds units for an order that was never allowed
+   * to exist, and only the hourly sweep hands them back.
+   *
+   * `scope: "checkout"` is not decoration. A field the seller marked
+   * contact-only is one the checkout never renders, and a hand-rolled POST
+   * naming it must not be able to write it — this is a server action, so the
+   * body is whatever the caller composed. Nothing about a field's type,
+   * options or required-ness is read from the request either; all of it comes
+   * from `contact_fields`.
+   */
+  const answers = await saveAnswers({
+    shopId: shop.id,
+    clientId,
+    answers: Object.entries(input.customFields ?? {}).map(([key, raw]) => ({ key, raw })),
+    scope: "checkout",
+    now,
+  });
+  if (answers.refused.length > 0) {
+    /*
+     * One sentence for every reason, naming the field and not the rule it
+     * broke. "Size must be one of the options" tells an honest buyer with a
+     * stale form what to do, and tells somebody probing the endpoint nothing
+     * about which of the eight types they hit.
+     */
+    return {
+      ok: false,
+      error: `Please check the answers on this form and try again.`,
+    };
+  }
 
   /* ---- Stock ----------------------------------------------------------- */
 
@@ -284,7 +421,23 @@ export async function createOrderIntent(
   );
 
   const taken: QuoteLine[] = reservations.filter((r) => r.ok).map((r) => r.line);
-  const shortfall = reservations.find((r) => !r.ok)?.line;
+
+  /*
+   * A failed reservation on a preorder line is the expected outcome, not a
+   * shortfall — spec 33.
+   *
+   * This is the whole of "do not bypass `reserveStock`". The claim ran exactly
+   * as it always has, against the same guarded UPDATE, and came back false
+   * because there is nothing on the shelf; `resolveLines` already decided that
+   * this product's seller takes orders anyway. So one stock claim remains in
+   * the codebase and the preorder path is a decision about its answer rather
+   * than a second way of asking.
+   *
+   * A preorder line takes nothing off the shelf and so gives nothing back —
+   * it is not in `taken`, and `releaseStockFor` must not "return" units that
+   * were never held, which would drift the count upward on every abandonment.
+   */
+  const shortfall = reservations.find((r) => !r.ok && !r.line.preorder)?.line;
 
   if (shortfall) {
     await releaseStockFor(taken);
@@ -297,6 +450,43 @@ export async function createOrderIntent(
     };
   }
 
+  /*
+   * Which lines this order is actually taking on trust.
+   *
+   * A line marked `preorder` whose reservation *succeeded* is not one: the
+   * seller left stock on a preorder-enabled product, so the buyer is getting a
+   * real unit and must not be shown a six-week date for it.
+   */
+  const preordered = reservations
+    .filter((r) => !r.ok && r.line.preorder)
+    .map((r) => r.line);
+  const isPreorderOrder = preordered.length > 0;
+
+  /*
+   * The ceiling on preorders, before anything irreversible.
+   *
+   * Cheap and racy on its own, which is why it is not the only check: the claim
+   * that decides is re-taken after the order row exists, below, where the n+1th
+   * buyer's own order is inside the count that refuses it. This one stops the
+   * ordinary case — a seller who can make fifty and has already sold fifty —
+   * without writing anything.
+   */
+  for (const line of preordered) {
+    const room = await preorderRoom({
+      productId: line.productId,
+      variantId: line.variantId,
+      product: line.product,
+      variant: line.variant,
+    });
+    if (room.limited) {
+      await releaseStockFor(taken);
+      return {
+        ok: false,
+        error: `${line.title} can't be preordered right now.`,
+      };
+    }
+  }
+
   /* ---- Digital delivery ------------------------------------------------ */
 
   // Reads the products' files, so it can fail — and the stock is already off
@@ -306,7 +496,7 @@ export async function createOrderIntent(
     totalCents: totals.totalCents,
     now,
   }).catch(releasingStock(taken));
-  const { deliversFiles, downloadExpiresAt, downloadLimit } = digital;
+  const { deliversFiles, deliversAccess, downloadExpiresAt, downloadLimit } = digital;
 
   /*
    * Tickets ride the same token and the same release timestamp as files.
@@ -336,11 +526,57 @@ export async function createOrderIntent(
    * dispute fee and a mark against their Stripe account.
    */
   const isMembershipOrder = isMembership(head.product);
+
+  /*
+   * An order that costs nothing does not go to a payment processor — spec 43.
+   *
+   * Reachable two ways now. A pay-what-you-want product with a floor of zero is
+   * the deliberate one: a donation, a name-your-price download, a buyer who
+   * chose nothing. A coupon that takes the whole basket off is the accidental
+   * one, and it has always been reachable.
+   *
+   * Stripe refuses a Checkout Session whose line items add to zero, so before
+   * this the card rail answered a free order with a raw gateway error the buyer
+   * could do nothing about. Taking the same path a manual rail takes is the
+   * honest shape: there is no payment step to wait for, so the invoice, the
+   * confirmation and the files all happen here rather than on a webhook that is
+   * never coming.
+   *
+   * `paid`, not `unpaid`, and it is not cosmetic. `releaseAbandonedCheckouts`
+   * sweeps unpaid *card* orders after 24 hours — so a free order left `unpaid`
+   * would be cancelled and restocked the next day, taking back a download the
+   * buyer already has. Nothing is owed on it, so nothing is outstanding, and
+   * revenue is unaffected because the arithmetic sums a zero.
+   *
+   * A membership can never land here: `saveProduct` refuses one priced at
+   * nothing and `resolveLines` refuses a PWYW one, so its first period is
+   * always a real charge. A manual *trial* signup is the deliberate exception
+   * and is priced to zero further down, where it can be said out loud.
+   */
+  const isFreeOrder = totals.totalCents === 0;
+
+  /*
+   * The one free order that must not be invoiced — spec 43.
+   *
+   * `resolveOrderIntent` re-priced this basket to nothing because the seller
+   * offers a trial on a rail Sailo runs itself, so the member has bought
+   * nothing yet: they pay for their first real period when the trial lapses and
+   * the renewal cron raises that order. Claiming an invoice number for this one
+   * would spend one out of a sequence a tax authority expects unbroken, on a
+   * document reading "total 0.00" that answers no question anybody has.
+   *
+   * Derived from `trial` rather than from `totalCents === 0`, and the
+   * difference matters: a name-your-price download taken for nothing is also a
+   * zero-value order, and that one *is* a completed sale and *does* get a
+   * receipt. One flag says which is which.
+   */
+  const isTrialSignup = trial !== null;
+
   const downloadToken =
     digital.downloadToken ??
     (sellsTickets || isMembershipOrder ? newDownloadToken() : null);
   const unlockNow =
-    (deliversFiles ? digital.unlockNow : true) &&
+    (deliversFiles || deliversAccess ? digital.unlockNow : true) &&
     (sellsTickets ? eventsUnlockNow : true) &&
     Boolean(downloadToken);
 
@@ -365,6 +601,16 @@ export async function createOrderIntent(
   // event order without its tickets.
   const ticketRows = ticketValues(lines, { orderId, shopId: shop.id });
 
+  /*
+   * Which policy text this buyer is agreeing to, resolved before the insert.
+   *
+   * Two indexed reads against snapshots that already exist — never a fetch. A
+   * checkout that waited on a seller's own web host would fail whenever that
+   * host did, which is a real outage traded for a hypothetical dispute. The
+   * scheduled refresh is what keeps the snapshots current.
+   */
+  const policySnapshotIds = await policySnapshotsForOrder(shop);
+
   const [inserted] = await db.batch([
     db
     .insert(orders)
@@ -383,7 +629,7 @@ export async function createOrderIntent(
       unitPriceCents: head.unitPriceCents,
       quantity: priced.unitCount,
       itemCount: lines.length,
-      currency: shop.currency,
+      currency,
 
       subtotalCents: totals.subtotalCents,
       discountCents: totals.discountCents,
@@ -444,6 +690,14 @@ export async function createOrderIntent(
       ...address,
       note,
       /*
+       * The answers as they were asked, not a join.
+       *
+       * `[]` and not null when the shop asks nothing: null on this column means
+       * an order placed before it existed, and the two read differently on an
+       * invoice. Blank is not absent — the same distinction rule 5 turns on.
+       */
+      customFields: answers.written,
+      /*
        * The server's clock, not the client's claim — and only when the shop
        * was asking. `input.acceptedTerms` was already the difference between
        * this order existing and being refused above; what gets written down is
@@ -470,9 +724,60 @@ export async function createOrderIntent(
        */
       buyerIp: buyer.ip,
       buyerUserAgent: buyer.userAgent,
+      /*
+       * A durable browser id for CE3.0's `customer_device_fingerprint`, when the
+       * client offered one.
+       *
+       * Visa counts it as one of the two matching data points, and an order that
+       * carries it *plus* an IP address qualifies on its own — which is the
+       * whole of a 10.4 defence. Null for most orders and that is expected:
+       * Sailo redirects to Stripe Checkout and runs no fingerprinting script, so
+       * this is filled only where a caller already had a durable id. Read from
+       * the same parsed input as the rest; never generated here, because an id
+       * we minted per request would match nothing four months later and would be
+       * a data point asserted to an issuer that means nothing.
+       */
+      buyerDeviceFingerprint: deviceFingerprintOf(input),
+      /*
+       * *What* they agreed to, beside the `termsAcceptedAt` above that records
+       * when. Spec 44.
+       *
+       * `shops.termsUrl` is a URL whose contents the seller controls, so an
+       * issuer following it four months later reads today's policy rather than
+       * the one that was on screen — a URL that changed is not evidence. These
+       * point at the text as it stood.
+       *
+       * Resolved from snapshots that already exist and never fetched here: a
+       * checkout must not wait on a seller's own web host, and a scheduled
+       * refresh is what keeps them current. Null is the ordinary case for a shop
+       * that has written no policy, and the readiness panel reports it as
+       * `missing`, which is the truth.
+       */
+      ...policySnapshotIds,
+      /*
+       * Taken against stock that does not exist yet, and what the buyer was
+       * told about it — spec 33.
+       *
+       * The *latest* of the promised dates, not the earliest: the order is
+       * complete when its last line arrives, and quoting the soonest one on a
+       * basket holding two preorders would tell the buyer a date the order
+       * cannot meet. Null when no date was given, which is honest and renders
+       * as that.
+       *
+       * Snapshotted rather than joined, for the reason `0035` gives about
+       * `shops.termsUrl`: a seller who slips their date next month must not
+       * change what this buyer was promised today. A `product_not_received`
+       * case turns on what was promised, not on what was hoped.
+       */
+      isPreorder: isPreorderOrder,
+      preorderExpectedAt: latestOf(
+        preordered.map((line) => preorderExpectedAt(line.product, line.variant)),
+      ),
       paymentMethod: method.type,
       // COD is collected on delivery; transfers are owed until confirmed.
-      paymentStatus: "unpaid",
+      // Nothing is owed on a free order, so nothing is outstanding — and
+      // leaving one `unpaid` would have the 24-hour sweep cancel it.
+      paymentStatus: isFreeOrder ? "paid" : "unpaid",
     })
     .returning({ id: orders.id }),
 
@@ -513,6 +818,21 @@ export async function createOrderIntent(
   const order = firstRow(inserted, "order");
 
   /*
+   * Which of these lines came from an in-cart bump — spec 08's attribution.
+   *
+   * **Decided server-side, from the offers this shop actually has**, never from
+   * a flag the browser sent: a client saying "this line was a bump" is a client
+   * telling us its own conversion rate, and the spec says so in as many words.
+   *
+   * After the lines exist because it is a fact *about* them — a line counts as
+   * a bump when its product is the offered side of an active `bump` offer whose
+   * source is somewhere else in this same order. Awaited rather than deferred,
+   * because Income reads it and a seller opening their dashboard a second later
+   * should not see a sale that becomes attributed while they watch.
+   */
+  await attributeBumps({ shopId: shop.id, orderId: order.id, now });
+
+  /*
    * The appointments, claimed the way the stock was.
    *
    * `resolveLines` re-derived every slot against the shop's hours and its
@@ -524,18 +844,49 @@ export async function createOrderIntent(
    * After the insert because the claim carries a foreign key to the order, and
    * before the coupon because losing a slot must not also burn a discount.
    */
-  const slots = lines.flatMap((line) =>
-    line.scheduledFor && line.productId
-      ? [
-          {
-            productId: line.productId,
-            startsAt: line.scheduledFor,
-            // The range, not just the start: two appointments that overlap are
-            // as double-booked as two that begin together.
-            endsAt: slotEnd(line.scheduledFor, line.product.durationMinutes),
-          },
-        ]
-      : [],
+  const slots = await Promise.all(
+    lines
+      .filter((line) => line.scheduledFor && line.productId)
+      .map(async (line) => {
+        const startsAt = line.scheduledFor as Date;
+        const endsAt = slotEnd(startsAt, line.product.durationMinutes);
+        /*
+         * Who the appointment is with — spec 51.
+         *
+         * Asked at the moment the claim is taken rather than when the calendar
+         * was rendered, because those are different instants and the second is
+         * the one that has to be true. It is a *read* and not the guard: two
+         * buyers racing for the last stylist can both be told "Sam is free"
+         * here, and the exclusion constraint hands the slot to exactly one of
+         * them.
+         *
+         * Null for a shop with no staff rows, which is every shop today, and
+         * that null is what the constraint's `COALESCE(staff_id, product_id)`
+         * falls back on — so nothing about this path changes for them.
+         */
+        const staff = await firstFreeStaff({
+          shopId: shop.id,
+          productId: line.productId as string,
+          startsAt,
+          endsAt,
+        });
+
+        return {
+          productId: line.productId as string,
+          startsAt,
+          // The range, not just the start: two appointments that overlap are
+          // as double-booked as two that begin together.
+          endsAt,
+          staffId: staff?.id ?? null,
+          /*
+           * A class takes seats rather than the whole slot — spec 51. Null or
+           * one is an ordinary appointment, which is every service today, and
+           * the two paths are chosen by this number alone.
+           */
+          seats: line.quantity,
+          capacity: line.product.bookingCapacity,
+        };
+      }),
   );
   const gotSlots = await claimSlots(order.id, slots).catch(async (error: unknown) => {
     /*
@@ -560,6 +911,39 @@ export async function createOrderIntent(
       ok: false,
       error: "That time has just been taken. Pick another and try again.",
     };
+  }
+
+  /*
+   * The preorder ceiling, re-taken now that this order is a row — spec 33.
+   *
+   * This is the claim, and the check before the insert was only the cheap half.
+   * Two buyers arriving in the same second both read the same count there and
+   * both passed; here each one's own order is inside the count, so of any burst
+   * exactly `limit` orders survive and the rest are rolled back — the same
+   * shape the coupon claim below uses, and rolled back the same way, because
+   * this is still before anything irreversible.
+   *
+   * `exceptOrderId` is not passed: this order *must* be counted, or the n+1th
+   * buyer would see the same `n` the nth did.
+   */
+  if (isPreorderOrder) {
+    for (const line of preordered) {
+      const room = await preorderRoom({
+        productId: line.productId,
+        variantId: line.variantId,
+        product: line.product,
+        variant: line.variant,
+      });
+      if (room.limited) {
+        await releaseStockFor(taken);
+        await releaseSlots(order.id);
+        await db.delete(orders).where(eq(orders.id, order.id));
+        return {
+          ok: false,
+          error: `${line.title} can't be preordered right now.`,
+        };
+      }
+    }
   }
 
   const base = process.env.NEXT_PUBLIC_APP_URL ?? "";
@@ -641,10 +1025,28 @@ export async function createOrderIntent(
         clientId,
         productId: head.productId,
         paymentMethod: method.type,
-        totalCents: totals.totalCents,
-        currency: shop.currency,
+        /*
+         * What the *membership* is worth, which on a trial is not what this
+         * order is worth.
+         *
+         * The signup order is zero — nothing has been bought yet — and this
+         * used to copy that total straight onto the subscription, which would
+         * have set a trialling member's recurring price to nothing and gone on
+         * asking them for nothing every month for ever. `trial.priceCents`
+         * carries the product's real price through the re-pricing that made
+         * the order free.
+         */
+        totalCents: trial?.priceCents ?? totals.totalCents,
+        currency,
       },
       interval: intervalOf(head.product),
+      intervalCount: intervalCountOf(head.product),
+      /*
+       * And the trial itself, which is what opens the door before any money
+       * arrives — spec 43. Absent on every other manual signup, where the
+       * subscription stays `incomplete` until the seller confirms the payment.
+       */
+      trialDays: trial?.days ?? null,
     });
 
     /*
@@ -685,7 +1087,7 @@ export async function createOrderIntent(
     });
     if (!member.ok) return { ok: false, error: member.error };
     cardHandoff = member.handoff;
-  } else if (method.type === "card") {
+  } else if (method.type === "card" && !isFreeOrder) {
     /*
      * The shop's own language and clock, for the line subtitles.
      *
@@ -780,12 +1182,34 @@ export async function createOrderIntent(
    * issued here or they never will be. Deferring them because it happens to be
    * a membership would leave a bank-transfer member with no invoice to pay
    * against and nothing in their inbox saying how.
+   *
+   * A free order settles here too, on every rail including card — spec 43.
+   * There is no Checkout Session for it and none is coming, so deferring its
+   * invoice and its confirmation would defer them for ever: the buyer would
+   * have a download and no receipt, and the seller an order that never
+   * appeared to complete.
    */
-  const settlesAtCheckout = method.type !== "card";
+  const settlesAtCheckout = method.type !== "card" || isFreeOrder;
 
-  const invoice = settlesAtCheckout
-    ? await createInvoiceForOrder(shop.id, order.id, invoiceToken)
-    : null;
+  /*
+   * The invoice, except for the one order that must not have one.
+   *
+   * A manual trial's signup order is zero-value and exists only to carry the
+   * subscription — the member has bought nothing yet and pays for their first
+   * real period when the trial lapses. Giving it a number would spend one out
+   * of a sequence a tax authority expects unbroken, on a document reading
+   * "total: 0.00" that answers no question anybody has. `trialSignupOrder`
+   * states the rule once so this sink and the seller's own screens cannot
+   * disagree about which orders it covers.
+   *
+   * Every *other* free order still gets one. A name-your-price download that
+   * somebody took for nothing is a completed sale, and a buyer who paid zero
+   * on purpose is exactly as entitled to a receipt as one who paid twenty.
+   */
+  const invoice =
+    settlesAtCheckout && !isTrialSignup
+      ? await createInvoiceForOrder(shop.id, order.id, invoiceToken)
+      : null;
 
   /*
    * Best effort, never fails the checkout — and no longer part of it.
@@ -809,7 +1233,7 @@ export async function createOrderIntent(
         shop,
         orderId: order.id,
         invoice,
-        delivery: { deliversFiles, unlockNow, downloadToken },
+        delivery: { deliversFiles, deliversAccess, unlockNow, downloadToken },
         base,
       }),
     );
@@ -824,6 +1248,29 @@ export async function createOrderIntent(
    */
   if (settlesAtCheckout) {
     after(() => notifySellerOfOrder({ shop, orderId: order.id }));
+  }
+
+  /*
+   * And whether that order has just emptied a shelf — spec 51.
+   *
+   * On every rail, not only the ones that settle here, and that is the
+   * difference from the notification above it. The units came off the shelf
+   * when this order was written — before the card was charged, so that two
+   * buyers racing for the last one cannot both be told yes — so the shortage is
+   * real the moment the order exists, whatever Stripe goes on to say about the
+   * money. A card checkout that is then abandoned puts them back through the
+   * sweep, which re-arms the alert on its way past.
+   *
+   * One call per distinct product rather than per line: a basket holding two
+   * variants of the same shirt is one stockroom question, and the mail names
+   * which combinations are short.
+   *
+   * Inside `after()` and best-effort, like every other notification here: this
+   * reports on something that has already happened and must never be able to
+   * fail it.
+   */
+  for (const productId of new Set(lines.map((line) => line.productId))) {
+    after(() => notifySellerOfLowStock({ shop, productId }));
   }
 
   /*
@@ -852,6 +1299,35 @@ export async function createOrderIntent(
     after(() =>
       emitOrderWebhook({ shop, event: "order.created", orderId: order.id }),
     );
+  }
+
+  /*
+   * The checkout session this order came from — spec 32.
+   *
+   * `viaResumeLink` is a report from the browser and it decides nothing on its
+   * own: `markSessionPaid` re-reads the session's own status, and
+   * `statusAfterPayment` requires it to have actually been `recovering`, which
+   * only the recovery cron can make it. So a forged flag turns nothing into a
+   * recovered sale — it can only fail to claim one that was.
+   *
+   * Deferred, because it is bookkeeping: a seller's recovery rate must never
+   * be between a buyer and their order confirmation.
+   */
+  if (input.checkoutSessionId) {
+    const sessionId = input.checkoutSessionId;
+    const viaResumeLink = input.viaResumeLink === true;
+    after(async () => {
+      try {
+        await markSessionPaid({
+          shopId: shop.id,
+          sessionId,
+          orderId: order.id,
+          viaResumeLink,
+        });
+      } catch (error) {
+        console.error("[sailo] checkout session attribution failed", error);
+      }
+    });
   }
 
   // Buyers who leave an email can be offered their own referral link.
@@ -897,11 +1373,11 @@ export async function createOrderIntent(
       .join("\n"),
     // Already spelled out per line above; repeating it would read as double.
     quantity: lines.length > 1 ? 1 : head.quantity,
-    priceLabel: formatMoney(totals.totalCents, shop.currency),
+    priceLabel: formatMoney(totals.totalCents, currency),
     // Venmo and PayPal put the amount inside the URL, and neither accepts a
     // formatted one. Same number as `priceLabel`, from the same totals.
     totalCents: totals.totalCents,
-    currency: shop.currency,
+    currency,
     productUrl:
       base && lines.length === 1
         ? `${base}/${shop.handle}/p/${head.product.slug}`
@@ -920,7 +1396,7 @@ export async function createOrderIntent(
       : undefined,
     discount:
       totals.discountCents > 0 && coupon
-        ? `${coupon.code} (−${formatMoney(totals.discountCents, shop.currency)})`
+        ? `${coupon.code} (−${formatMoney(totals.discountCents, currency)})`
         : undefined,
     invoiceNumber: invoice?.number,
   });
@@ -943,12 +1419,12 @@ export async function createOrderIntent(
     handoff,
     methodName: def.name,
     totals,
-    currency: shop.currency,
+    currency,
     invoiceUrl: invoice && base ? `${base}/invoice/${invoice.token}` : null,
     invoiceNumber: invoice?.number ?? null,
     downloadUrl:
       unlockNow && downloadToken ? downloadUrl(downloadToken, base) : null,
-    downloadPending: deliversFiles && !unlockNow,
+    downloadPending: (deliversFiles || deliversAccess) && !unlockNow,
     referral,
     bankDetails:
       method.type === "bank_transfer" ? bankDetailLines(config) : undefined,

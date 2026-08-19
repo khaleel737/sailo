@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 import { Loader2, Plus } from "lucide-react";
 import { saveDeliveryMethod } from "@/lib/actions/delivery";
 import { centsToAmount } from "@sailo/core/currency";
+import { priceIn } from "@sailo/core/regional";
 import {
   DELIVERY_METHOD_DEFS,
   DELIVERY_METHOD_LIST,
@@ -23,6 +24,14 @@ import type { DeliveryConfig, DeliveryMethod } from "@sailo/db/schema";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { CountryPicker } from "./country-picker";
 
+/**
+ * Rows the form draws. Fewer than the twenty `MAX_BANDS` the server accepts,
+ * because a form that renders twenty empty pairs reads as a spreadsheet — and a
+ * seller who genuinely needs more than eight bands wants a carrier account
+ * rather than a longer table.
+ */
+const MAX_BAND_ROWS = 8;
+
 function Submit({ isEdit }: { isEdit: boolean }) {
   const { pending } = useFormStatus();
   return (
@@ -40,9 +49,15 @@ function Submit({ isEdit }: { isEdit: boolean }) {
 export function DeliveryRateForm({
   method,
   currency,
+  regionalCurrencies = [],
+  weightBands = false,
 }: {
   method?: DeliveryMethod;
   currency: string;
+  /** The other currencies the shop quotes — spec 53. Empty renders no extra fields. */
+  regionalCurrencies?: string[];
+  /** Whether the plan prices postage by weight — spec 51. */
+  weightBands?: boolean;
 }) {
   const a = useAdminT();
   const [state, action] = useActionState(saveDeliveryMethod, { ok: false });
@@ -51,6 +66,22 @@ export function DeliveryRateForm({
   );
   const formRef = useRef<HTMLFormElement>(null);
   const config = (method?.config ?? {}) as DeliveryConfig;
+
+  /*
+   * How this rate is priced — spec 51.
+   *
+   * The rows are held in state rather than rendered from the saved value alone,
+   * because "add a band" has to work before anything is saved. Four blank rows
+   * beyond whatever exists is enough for the tables sellers actually write —
+   * light, medium, heavy, and one spare — without a button that grows the form
+   * indefinitely for a feature whose whole point is that it is short.
+   */
+  const [byWeight, setByWeight] = useState(method?.rateMode === "by_weight");
+  const savedBands = method?.weightBands ?? [];
+  const bandRows = Array.from(
+    { length: Math.min(MAX_BAND_ROWS, savedBands.length + 3) },
+    (_, i) => savedBands[i] ?? null,
+  );
 
   useEffect(() => {
     if (state.ok && !method) formRef.current?.reset();
@@ -129,6 +160,117 @@ export function DeliveryRateForm({
             />
           </Field>
         </div>
+
+        {/*
+          Postage priced by what is in the box — spec 51.
+
+          Only on `shipping`: a collection has no parcel, and a weight table
+          beside "pick it up from the studio" is a control with nothing to
+          price. Only on a plan that bought it, and gated again in the action
+          because a form is not a gate.
+
+          The fee above stays visible and stays meaningful: a `by_weight` rate
+          with an empty table falls back to it, which is the half-configured
+          state a seller passes through between ticking this box and typing the
+          first row.
+        */}
+        {type === "shipping" && weightBands ? (
+          <div className="space-y-3 rounded-xl border border-ink-100 p-3">
+            <label className="flex items-start gap-2 text-sm">
+              <input
+                type="checkbox"
+                name="rateMode"
+                value="by_weight"
+                checked={byWeight}
+                onChange={(e) => setByWeight(e.target.checked)}
+                className="mt-0.5 size-4 shrink-0 rounded border-ink-300"
+              />
+              <span>
+                <span className="font-medium">{a.delivery.byWeight}</span>
+                <span className="block text-xs text-ink-500">
+                  {a.delivery.byWeightHint}
+                </span>
+              </span>
+            </label>
+
+            {byWeight ? (
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-2 text-xs font-medium text-ink-500">
+                  <span>{a.delivery.upToGrams}</span>
+                  <span>{`${a.delivery.bandPrice} (${currency})`}</span>
+                </div>
+                {bandRows.map((band, i) => (
+                  <div key={i} className="grid grid-cols-2 gap-2">
+                    <Input
+                      name={`band_${i}_upTo`}
+                      type="number"
+                      min={1}
+                      inputMode="numeric"
+                      aria-label={`${a.delivery.upToGrams} ${i + 1}`}
+                      defaultValue={band?.upToGrams ?? ""}
+                      placeholder={i === 0 ? "500" : ""}
+                    />
+                    <Input
+                      name={`band_${i}_price`}
+                      inputMode="decimal"
+                      aria-label={`${a.delivery.bandPrice} ${i + 1}`}
+                      defaultValue={
+                        band ? centsToAmount(band.priceCents, currency) : ""
+                      }
+                      placeholder={i === 0 ? "3.50" : ""}
+                    />
+                  </div>
+                ))}
+                {/* The one thing a seller has to be told, because getting it
+                    wrong stops their checkout rather than mispricing it. */}
+                <p className="text-xs text-ink-500">{a.delivery.bandsCeiling}</p>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        {/*
+          The same fee, in each currency the shop quotes — spec 53.
+
+          Required, in the sense that leaving one blank keeps that currency off
+          the storefront entirely. A basket in euros cannot be charged a fee in
+          dollars, and nothing here converts one into the other, so the only
+          honest alternative to a number the seller typed is not offering the
+          currency at all.
+        */}
+        {regionalCurrencies.map((code) => (
+          <div key={code} className="grid gap-4 sm:grid-cols-2">
+            <Field
+              label={`Fee (${code})`}
+              htmlFor={`${method?.id ?? "new"}-fee-${code}`}
+            >
+              <Input
+                id={`${method?.id ?? "new"}-fee-${code}`}
+                name={`fee_${code}`}
+                inputMode="decimal"
+                defaultValue={centsToAmount(
+                  priceIn(method ?? { currencyPrices: {} }, code)?.price ?? null,
+                  code,
+                )}
+              />
+            </Field>
+            <Field
+              label={`${a.delivery.freeOverLabel} (${code})`}
+              htmlFor={`${method?.id ?? "new"}-freeOver-${code}`}
+              hint={a.common.optional}
+            >
+              <Input
+                id={`${method?.id ?? "new"}-freeOver-${code}`}
+                name={`freeOver_${code}`}
+                inputMode="decimal"
+                defaultValue={centsToAmount(
+                  priceIn(method ?? { currencyPrices: {} }, code)?.secondary ?? null,
+                  code,
+                )}
+              />
+            </Field>
+          </div>
+        ))}
 
         {/*
           Shipping only. Collection is a pickup at one fixed address, so where

@@ -3,11 +3,13 @@
 import type { ReactNode } from "react";
 import {
   getPublicProducts,
+  visibleNow,
   getShopByHandle,
   type ShopFilters,
   pickFilters,
 } from "@/lib/queries";
 import { getShopT } from "@/i18n/server";
+import { displayCurrency } from "@/lib/regional";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { isShopLive } from "@sailo/core/visibility";
@@ -54,10 +56,31 @@ export async function loadMoreProducts(
   // serving its catalogue through the action that renders it.
   if (!shop || !isShopLive(shop)) return empty;
 
+  /*
+   * The same currency the first batch was rendered in — spec 53.
+   *
+   * Re-derived rather than sent from the browser, for the reason the comment
+   * above already gives about the price list: this is a public action and
+   * anything the client sent would have to be distrusted and re-read anyway. A
+   * currency taken from the request would let a hand-rolled call render batch
+   * two in euros under a dollar heading.
+   */
+  const display = await displayCurrency(shop);
   const [page, { t, locale }] = await Promise.all([
-    getPublicProducts(shop.id, shop.currency, pickFilters(filters), offset),
+    // The same sell-window filter the first batch got, for the same reason:
+    // the cached read never expires on a clock, so the decision is taken here.
+    getPublicProducts(
+      shop.id,
+      display.currency,
+      shop.currency,
+      pickFilters(filters),
+      offset,
+    ).then((batch) => visibleNow(batch)),
     getShopT(shop.locale),
   ]);
+
+  const shown =
+    display.currency === shop.currency ? shop : { ...shop, currency: display.currency };
 
   const layout = shop.layout === "list" ? "list" : "grid";
 
@@ -66,7 +89,7 @@ export async function loadMoreProducts(
       <ProductCard
         key={product.id}
         product={product}
-        shop={shop}
+        shop={shown}
         layout={layout}
         t={t}
         locale={locale}

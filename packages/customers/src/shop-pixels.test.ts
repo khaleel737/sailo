@@ -3,7 +3,10 @@ import {
   configuredPixels,
   hasPixels,
   normalizePixelId,
+  pixelCspHosts,
   pixelIdsOf,
+  PIXEL_PROVIDER_IDS,
+  PIXEL_PROVIDERS,
   readPixelIds,
   type ShopPixelColumns,
 } from "./shop-pixels";
@@ -20,6 +23,9 @@ const none: ShopPixelColumns = {
   gtmContainerId: null,
   metaPixelId: null,
   tiktokPixelId: null,
+  googleAdsId: null,
+  linkedinPartnerId: null,
+  pinterestTagId: null,
 };
 
 describe("what counts as an id", () => {
@@ -84,6 +90,9 @@ describe("reading the settings form", () => {
         gtmContainerId: null,
         metaPixelId: null,
         tiktokPixelId: null,
+        googleAdsId: null,
+        linkedinPartnerId: null,
+        pinterestTagId: null,
       },
     });
   });
@@ -119,5 +128,97 @@ describe("reading the shop row back", () => {
 
   it("one pixel is enough to have to ask", () => {
     expect(hasPixels({ ...none, tiktokPixelId: "C1AB23CD45EF67GH89IJ" })).toBe(true);
+  });
+});
+
+/**
+ * Spec 42's three, held to the same bar as the four before them.
+ *
+ * The refusals are the point: each of these ids goes into a `<script>` the
+ * storefront serves to buyers, so anything that is not plainly an id must not
+ * get to run.
+ */
+describe("the three ad-platform pixels", () => {
+  it("takes a real id for each", () => {
+    expect(normalizePixelId("googleAds", "AW-123456789")).toEqual({
+      ok: true,
+      id: "AW-123456789",
+    });
+    expect(normalizePixelId("linkedin", "1234567")).toEqual({ ok: true, id: "1234567" });
+    expect(normalizePixelId("pinterest", "2612345678901")).toEqual({
+      ok: true,
+      id: "2612345678901",
+    });
+  });
+
+  it("refuses anything that could close a quote or open a tag", () => {
+    for (const [provider, hostile] of [
+      ["googleAds", '"><script>alert(1)</script>'],
+      ["googleAds", "AW-123456789'; alert(1);//"],
+      ["googleAds", "https://evil.example/x"],
+      ["googleAds", "AW-"],
+      ["googleAds", "AW-12345678901234567890"],
+      ["linkedin", '"><img src=x onerror=alert(1)>'],
+      ["linkedin", "12"],
+      ["linkedin", "1234567890123456"],
+      ["linkedin", "12345a"],
+      ["pinterest", "26123456789012345678901"],
+      ["pinterest", "../../etc/passwd"],
+      ["pinterest", "2612345678901 "],
+    ] as const) {
+      const read = normalizePixelId(provider, hostile);
+      expect(read.ok, `${provider}: ${hostile}`).toBe(
+        // A trailing space is trimmed before the shape check, so that one is
+        // legitimately accepted — asserted so the trim is deliberate rather
+        // than discovered.
+        hostile === "2612345678901 ",
+      );
+    }
+  });
+
+  it("reads a stored value back only while it still matches its shape", () => {
+    // The second gate: the columns are plain text and hand back whatever was
+    // written, including by an older build or a staff tool.
+    expect(
+      pixelIdsOf({ ...none, googleAdsId: "AW-123456789" }).googleAds,
+    ).toBe("AW-123456789");
+    expect(pixelIdsOf({ ...none, googleAdsId: "<script>" }).googleAds).toBeNull();
+    expect(pixelIdsOf({ ...none, linkedinPartnerId: "not-numeric" }).linkedin).toBeNull();
+  });
+});
+
+describe("the CSP host list", () => {
+  it("covers every provider in the table", () => {
+    /*
+     * The reason it is derived rather than hand-kept: a provider added above
+     * with no CSP entry is a pixel that loads, is blocked, and fails
+     * *silently* — the seller's dashboard stays empty and nothing says why.
+     */
+    const hosts = pixelCspHosts();
+    for (const provider of PIXEL_PROVIDER_IDS) {
+      for (const host of PIXEL_PROVIDERS[provider].csp.script ?? []) {
+        expect(hosts.script, `${provider} script`).toContain(host);
+      }
+      for (const host of PIXEL_PROVIDERS[provider].csp.img ?? []) {
+        expect(hosts.img, `${provider} img`).toContain(host);
+      }
+      for (const host of PIXEL_PROVIDERS[provider].csp.connect ?? []) {
+        expect(hosts.connect, `${provider} connect`).toContain(host);
+      }
+    }
+  });
+
+  it("names every host over https and none with a wildcard scheme", () => {
+    const hosts = pixelCspHosts();
+    for (const host of [...hosts.script, ...hosts.img, ...hosts.connect]) {
+      expect(host, host).toMatch(/^https:\/\/[a-z0-9*.-]+$/);
+    }
+  });
+
+  it("deduplicates hosts two providers share", () => {
+    // Four providers name googletagmanager.com; a repeated host in a CSP is
+    // harmless and a directive that grows with every provider is not.
+    const hosts = pixelCspHosts();
+    expect(new Set(hosts.script).size).toBe(hosts.script.length);
   });
 });

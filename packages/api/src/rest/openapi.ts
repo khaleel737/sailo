@@ -245,14 +245,22 @@ const PRODUCT = {
     },
     event: {
       type: ["object", "null"],
-      required: ["startsAt"],
-      properties: { startsAt: nullable("string", { format: "date-time" }) },
+      required: ["startsAt", "endsAt"],
+      properties: {
+        startsAt: nullable("string", { format: "date-time" }),
+        endsAt: nullable("string", { format: "date-time" }),
+      },
     },
     membership: {
       type: ["object", "null"],
-      required: ["interval", "trialDays"],
+      required: ["interval", "intervalCount", "trialDays"],
       properties: {
-        interval: nullable("string", { description: "`month` or `year`." }),
+        interval: nullable("string", {
+          description: "`day`, `week`, `month` or `year`.",
+        }),
+        intervalCount: nullable("integer", {
+          description: "How many intervals per charge — the `3` in every 3 months.",
+        }),
         trialDays: nullable("integer"),
       },
     },

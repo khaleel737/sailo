@@ -2,7 +2,7 @@ import "server-only";
 import type Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { orders, shops } from "@sailo/db/schema";
+import { orders, shops, type Dispute } from "@sailo/db/schema";
 import { captureMessage } from "@sailo/observability";
 import { publishShopEvent } from "@sailo/events";
 import { restoreStock } from "@sailo/commerce/catalog";
@@ -16,13 +16,18 @@ import { orderForIntent, shopIdFor } from "@sailo/payments";
 import { freePlanFields } from "@sailo/billing/map";
 import {
   applyEscalation,
+  claimStaffNotice,
+  enforceCardBillingBlock,
+  holdPlanForDispute,
   linkWarningToDispute,
   paymentStatusForDispute,
   recordDispute,
   recordEarlyFraudWarning,
+  reinstatePlanAfterWin,
 } from "@sailo/commerce/disputes";
 import { emitDisputeWebhook } from "@sailo/webhooks/emit";
 import { revalidateShop } from "@/lib/cache";
+import { autoFillEvidence } from "@/lib/evidence-pack";
 
 /**
  * Every dispute event, on either Stripe account.
@@ -153,6 +158,14 @@ export async function handleDisputeEvent(
     order,
     recorded.id,
     recorded.shopId,
+    /*
+     * The row as the write just left it, rather than a re-read. Spec 45's
+     * auto-fill needs `stripeAccountId` and `scope` off it, and a `findFirst`
+     * here would be a second round trip on a path Stripe is waiting on — with a
+     * chance of reading a *different* row, since a concurrent delivery can land
+     * in between.
+     */
+    recorded.row,
   );
 
   /*
@@ -223,6 +236,7 @@ async function handleConnectedDispute(
   order: typeof orders.$inferSelect | undefined,
   disputeRowId: string,
   shopId: string | null,
+  recordedRow: Dispute,
 ): Promise<Outcome> {
   const db = getDb();
 
@@ -254,6 +268,40 @@ async function handleConnectedDispute(
     );
     const escalation = await escalate(shopId);
     return `dispute ${dispute.stripeDisputeId} recorded without an order${escalation}`;
+  }
+
+  /*
+   * Spec 45 — fill the evidence slots Sailo can fill, at the moment the case
+   * opens rather than at the moment somebody remembers.
+   *
+   * Seven of the nine file fields are documents Sailo already holds the facts
+   * for, and the seller was being asked to hand-produce them out of our own
+   * database an hour before a deadline. Registered as ordinary
+   * `dispute_evidence_files` rows with `uploadedBy = 'sailo:auto'`, so the
+   * readiness panel shows those slots as held and the seller's job shrinks to
+   * the two that are genuinely theirs.
+   *
+   * Never overwrites a seller's own upload, never runs on a platform dispute,
+   * and swallows its own failures: the chargeback is recorded either way and
+   * every document here can be generated again from the same facts.
+   */
+  const shopRow = shopId
+    ? await db.query.shops.findFirst({ where: eq(shops.id, shopId) })
+    : undefined;
+  if (shopRow) {
+    const filled = await autoFillEvidence({
+      dispute: recordedRow,
+      order,
+      shop: shopRow,
+      now: new Date(),
+    });
+    if (filled.filled.length > 0) {
+      captureMessage(
+        `Filled ${filled.filled.length} evidence slot(s) for dispute ` +
+          `${dispute.stripeDisputeId} from what Sailo already held: ${filled.filled.join(", ")}`,
+        "info",
+      );
+    }
   }
 
   const change = paymentStatusForDispute(dispute, order.paymentStatus);
@@ -398,7 +446,35 @@ async function handlePlatformDispute(
   const shop = await db.query.shops.findFirst({ where: eq(shops.id, shopId) });
   if (!shop) return `platform dispute ${disputeRowId} recorded, shop ${shopId} missing`;
 
+  /*
+   * Tell the desk, once. Spec 46.
+   *
+   * The three `seller*NotifiedAt` claims are for telling a *seller* about their
+   * dispute; a platform dispute needs the opposite, and reusing those columns
+   * would make one mean two things depending on `scope`. Same conditional-update
+   * shape, different columns — so a retried `charge.dispute.created` under a
+   * fifth event id pages the desk once rather than five times.
+   *
+   * Before the branches below, because the message is worth sending whatever the
+   * status turns out to be: an inquiry that nobody answers becomes a chargeback.
+   */
+  if (await claimStaffNotice(disputeRowId, "opened")) {
+    captureMessage(
+      `Sailo has a subscription chargeback to answer: shop ${shop.handle}, ${money}, ` +
+        `${dispute.reason}. Due by ${dispute.dueBy?.toISOString() ?? "unknown"}. ` +
+        `Open /hq/disputes — the evidence is assembled and the three decision ` +
+        `questions are answered there.`,
+      dispute.inquiry ? "info" : "warning",
+    );
+  }
+
   if (dispute.inquiry) {
+    /*
+     * No money has moved on an inquiry and the plan must not be touched. That is
+     * unchanged and it is stated again here because it is the one thing spec 46
+     * says twice: `isInquiry` keys on the `warning_` status prefix and applies
+     * on this side exactly as it does on the connected one.
+     */
     captureMessage(
       `Shop ${shop.handle} raised a billing enquiry on their subscription (${money})`,
       "info",
@@ -432,11 +508,50 @@ async function handlePlatformDispute(
   }
 
   if (dispute.status === "won") {
+    /*
+     * Contesting and downgrading are not exclusive — spec 46. The plan was
+     * remembered when the case opened, so a win puts the seller back on what
+     * they were actually paying for rather than on whatever the code guesses.
+     * Returns false when nothing was held, which is the ordinary case for a
+     * dispute that never got as far as a downgrade.
+     */
+    const reinstated = await reinstatePlanAfterWin(shop.id);
+    if (reinstated) {
+      revalidateShop(shop.id, shop.handle);
+      await publishShopEvent(shop.id, "account");
+    }
+
     captureMessage(
       `Shop ${shop.handle} lost their subscription chargeback; ${money} reinstated to Sailo`,
       "info",
     );
-    return `platform dispute ${disputeRowId} won, shop ${shop.handle} plan unchanged`;
+    return `platform dispute ${disputeRowId} won, shop ${shop.handle} plan ${
+      reinstated ? "reinstated" : "unchanged"
+    }`;
+  }
+
+  /*
+   * Remember the plan while the case runs, so a win can put it back.
+   *
+   * Claimed against a null, so two deliveries of `charge.dispute.created` cannot
+   * overwrite the remembered plan with one a downgrade has already changed.
+   */
+  await holdPlanForDispute(shop.id);
+
+  /*
+   * And close the card rail if this is their second.
+   *
+   * A repeat is not an accident, and re-subscribing by card after one is how the
+   * same amount is lost again. Deliberately the narrow control: the shop keeps
+   * trading, keeps taking card payments from its own buyers, keeps its
+   * storefront. All that closes is the rail it pays *us* on.
+   */
+  const blocked = await enforceCardBillingBlock(shop.id);
+  if (blocked) {
+    captureMessage(
+      `Shop ${shop.handle} has a second subscription chargeback — card billing closed to them`,
+      "warning",
+    );
   }
 
   captureMessage(
@@ -444,7 +559,9 @@ async function handlePlatformDispute(
       `Plan left in place pending the outcome; due by ${dispute.dueBy?.toISOString() ?? "unknown"}.`,
     "warning",
   );
-  return `platform chargeback ${disputeRowId} on shop ${shop.handle}, plan held pending outcome`;
+  return `platform chargeback ${disputeRowId} on shop ${shop.handle}, plan held pending outcome${
+    blocked ? ", card billing closed" : ""
+  }`;
 }
 
 /**

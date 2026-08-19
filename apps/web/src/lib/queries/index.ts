@@ -6,7 +6,9 @@
  */
 
 export * from "./shop";
+export * from "./pages";
 export * from "./products";
+export * from "./regional";
 export * from "./analytics";
 export * from "./orders";
 export * from "./checkout";
@@ -23,3 +25,4 @@ export * from "@sailo/commerce/ticketing";
  * it here are unchanged.
  */
 export * from "@sailo/customers/roster";
+export * from "./testimonials";

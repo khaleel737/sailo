@@ -1,5 +1,6 @@
 import type { Coupon, DeliveryMethod, ProductOption, VariantOptions } from "@sailo/db/schema";
 import { computeTotals, type TaxSettings, type Totals } from "./pricing";
+import { basketWeightGrams } from "./weight";
 import { needsDelivery as kindNeedsDelivery, variantLabel } from "../catalog/variants";
 
 /**
@@ -24,6 +25,17 @@ export type QuoteLine = {
   imageUrl: string | null;
   unitPriceCents: number;
   quantity: number;
+  /**
+   * What one of these weighs, in grams — spec 51.
+   *
+   * Optional because the type is constructed by hand in a dozen tests and two
+   * projections, and absent means the same as null: nobody has weighed it. Set
+   * once, in `resolveLines`, from the variant's weight falling back to the
+   * product's — so `previewOrder` and `createOrderIntent` inherit the same
+   * number rather than each computing one, which is how a delivery fee comes to
+   * differ between the basket and the charge.
+   */
+  weightGrams?: number | null;
 };
 
 export type QuoteInput = {
@@ -107,6 +119,16 @@ export function quote(input: QuoteInput): Quote {
 
   const totals = computeTotals({
     subtotalCents: cartSubtotal(lines),
+    /*
+     * What the parcel weighs, for a rate priced by weight — spec 51.
+     *
+     * Summed here rather than at each caller, and that is the point: both
+     * pricing sinks are built on `quote`, so the weight the basket is quoted
+     * against and the weight the order is charged against are the same
+     * addition. Zero for every basket of downloads and appointments, and
+     * ignored outright by a `flat` rate.
+     */
+    weightGrams: basketWeightGrams(lines),
     // A discount is on the goods, so it applies whatever they are: a coupon
     // works the same on a mug, a PDF and a workshop.
     coupon: input.coupon,

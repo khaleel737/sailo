@@ -12,6 +12,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { shops } from "./shop";
+import { productVariants, products } from "./catalog";
 
 /**
  * The partner programme: people who bring Sailo creators, and what we owe them.
@@ -433,4 +434,148 @@ export const partnerProgramSettings = pgTable(
       sql`${t.payoutMinimumCents} >= 0 and ${t.cookieDays} >= 0 and ${t.holdDays} >= 0`,
     ),
   ],
+);
+
+/* -------------------------------------------------------------------------- */
+/*  Offers — specs 36 and 08                                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A companion product put in front of a buyer, in one of two places.
+ *
+ * Spec 08 proposed `products.bumpProductId` + `bumpHeadline`, one bump per
+ * product, which was its own stated v1 limit. Spec 36 supersedes it: the moment
+ * cross-sells exist the two features want the same columns — display type,
+ * override price, validity window, position — so building 08 as written and
+ * replacing it a week later is wasted work. 08's `orderItems.viaBump` is kept
+ * exactly as specified.
+ *
+ * WHERE, AND WHY THE TWO PLACES ARE NOT THE SAME
+ *
+ *   `bump`       in-cart, one tap, above the pay button
+ *   `crosssell`  after payment, on the thank-you page, never blocking anything
+ *
+ * Baymard found 66% of shoppers made to pass a cross-sell before completing a
+ * transaction reported extreme frustration, which is Easytools' own argument
+ * for post-purchase placement and it is right. The buyer's confirmation, files
+ * and invoice are visible before any offer is; a funnel that delays a download
+ * is a support ticket.
+ *
+ * FLAT, WITH `parentId` FROM DAY ONE
+ *
+ * Always null in v1 — `GAP-2026-08-easytools.md` §4.6 refuses three-level
+ * down-sell trees. The column is here so nesting is a migration and an editor
+ * away rather than a rewrite. Nothing writes it and nothing reads it.
+ */
+export const offers = pgTable(
+  "offers",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+    placement: text("placement").notNull(), // bump | crosssell
+
+    /**
+     * What triggers it. **Null means every product in the shop**, which is what
+     * a seller with one thing to cross-sell actually wants — and saves them
+     * attaching the same offer to forty products by hand.
+     */
+    sourceProductId: uuid("source_product_id").references(() => products.id, {
+      onDelete: "cascade",
+    }),
+    /**
+     * What is offered.
+     *
+     * Cascade rather than `set null`: an offer whose product is gone is not an
+     * offer, and a row that renders nothing is a take-rate denominator nobody
+     * can explain.
+     */
+    offerProductId: uuid("offer_product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    offerVariantId: uuid("offer_variant_id").references(() => productVariants.id, {
+      onDelete: "set null",
+    }),
+
+    /** Always null in v1. See the header. */
+    parentId: uuid("parent_id"),
+
+    title: text("title"),
+    body: text("body"),
+    buttonLabel: text("button_label"),
+    display: text("display").default("card").notNull(), // card | compact | timer
+
+    /**
+     * An override, in the shop's minor units. Null sells at the product's own
+     * price.
+     *
+     * **Read from this column and never from the browser.** A cross-sell adds
+     * no pricing trust at all: the whole line goes through `resolveLines` like
+     * any other, and the "prices from the shop, never from the browser"
+     * scenario pins it.
+     */
+    priceCents: integer("price_cents"),
+
+    validFrom: timestamp("valid_from"),
+    /**
+     * Checked **at the charge**, not only at render.
+     *
+     * Theirs is explicit about this and it is the right rule: a buyer who opens
+     * a time-limited offer must not be able to complete it once it has expired,
+     * even with the page still open. The same rule spec 43's sell windows
+     * follow, for the same reason.
+     */
+    validUntil: timestamp("valid_until"),
+
+    position: integer("position").default(0).notNull(),
+    isActive: boolean("is_active").default(true).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("offers_lookup_idx").on(
+      t.shopId,
+      t.sourceProductId,
+      t.placement,
+      t.position,
+    ),
+    index("offers_shop_idx").on(t.shopId, t.placement, t.position),
+  ],
+);
+
+/**
+ * How a seller learns whether any of this works.
+ *
+ * Take-rate is `taken / shown`, so `shown` is written when an offer *renders*
+ * or the denominator is a guess — which is the difference between a number a
+ * seller can act on and one they cannot.
+ *
+ * The unique index on (offer, order) for `taken` is in `0042` rather than here,
+ * because it is partial on `outcome` and drizzle's builder cannot express that.
+ * It is the idempotency: one-click means double-click, so the row is claimed
+ * *before* anything is charged and released on refusal — the shape the refund
+ * race fix used. It covers `taken` only; a unique index over `shown` would
+ * silently swallow the second impression, which is the denominator.
+ */
+export const offerEvents = pgTable(
+  "offer_events",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    offerId: uuid("offer_id")
+      .notNull()
+      .references(() => offers.id, { onDelete: "cascade" }),
+    /**
+     * The order it was shown against.
+     *
+     * `set null` rather than cascade: a deleted order must not take a seller's
+     * take-rate history with it.
+     */
+    orderId: uuid("order_id"),
+    /** The order taking it produced, once there is one. */
+    resultingOrderId: uuid("resulting_order_id"),
+    outcome: text("outcome").notNull(), // shown | taken | skipped | expired
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [index("offer_events_offer_idx").on(t.offerId, t.createdAt)],
 );

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Gift } from "lucide-react";
-import type { Shop } from "@sailo/db/schema";
+import type { Shop, ShopPage } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
 import type { Locale } from "@sailo/i18n/config";
@@ -10,6 +10,7 @@ import { PoweredBy } from "@/components/shared/powered-by";
 import { getMarketingDictionary } from "@sailo/i18n/marketing";
 import { hasPixels } from "@sailo/customers/pixels";
 import { ShopCookieSettings } from "./shop-cookie-settings";
+import { CurrencySwitcher } from "./currency-switcher";
 
 /**
  * The referral invitation, the Sailo badge, the platform's legal pages, and the
@@ -26,11 +27,29 @@ import { ShopCookieSettings } from "./shop-cookie-settings";
 export function ShopFooter({
   shop,
   affiliatesLive,
+  shopPages,
+  currency,
+  currencyOptions,
   locale,
   t,
 }: {
   shop: Shop;
   affiliatesLive: boolean;
+  /**
+   * The seller's *own* published documents — spec 41.
+   *
+   * Rendered above Sailo's, and in their own row, because they are not the same
+   * kind of thing: these are the terms of the contract the buyer is about to
+   * enter, and the ones below are the platform's small print. Mixing the two
+   * lists would put "Sailo's refund policy" next to "this shop's refund policy"
+   * with nothing to tell a buyer which one governs their order.
+   *
+   * Empty for every shop that has published nothing, which renders nothing.
+   */
+  shopPages: ShopPage[];
+  /** What this visit is quoted in, and what may be switched to — spec 53. */
+  currency: string;
+  currencyOptions: string[];
   locale: Locale;
   t: Dictionary;
 }) {
@@ -51,6 +70,30 @@ export function ShopFooter({
       ) : null}
 
       <PoweredBy shop={shop} t={t} />
+
+      {shopPages.length > 0 ? (
+        <nav aria-label={t.pages.shopPolicies}>
+          <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1">
+            {shopPages.map((page) => (
+              <li key={page.id}>
+                <Link
+                  href={`/${shop.handle}/legal/${page.slug}`}
+                  /*
+                   * The seller's own title, in the language they wrote it. The
+                   * document is English-only by design (§ "35 locales is the
+                   * interesting problem here") and a translated label over an
+                   * English page would promise a translation that is not there.
+                   */
+                  lang="en"
+                  className="focus-ring-accent inline-flex min-h-11 items-center rounded text-xs font-medium transition hover:opacity-70"
+                >
+                  {page.title ?? page.slug}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
 
       <nav aria-label={m.footer.legal}>
         <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1">
@@ -87,10 +130,40 @@ export function ShopFooter({
               <ShopCookieSettings shopId={shop.id} label={t.consent.manage} />
             </li>
           ) : null}
+
+          {/*
+            Spec 52. In the platform's footer row rather than the seller's,
+            because the route is Sailo's and it works for every shop whether or
+            not the seller has published a privacy policy — an obligation the
+            buyer can exercise must not depend on the seller having set anything
+            up. It is also why it is not plan-gated anywhere.
+          */}
+          <li>
+            <Link
+              href={`/${shop.handle}/data-request`}
+              className="text-muted focus-ring-accent inline-flex min-h-11 items-center rounded text-xs transition hover:opacity-70"
+            >
+              {t.dataRequest.footerLink}
+            </Link>
+          </li>
         </ul>
       </nav>
 
-      <LanguageSwitcher current={locale} label={t.common.language} />
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <LanguageSwitcher current={locale} label={t.common.language} />
+        {/*
+          Beside the language, and for the same reason it is there: both are
+          "how this page is presented to me", both are read rarely and by the
+          minority who need them, and neither belongs above the seller's own
+          products. Renders nothing at all for a shop quoting one currency.
+        */}
+        <CurrencySwitcher
+          current={currency}
+          options={currencyOptions}
+          locale={locale}
+          t={t}
+        />
+      </div>
     </footer>
   );
 }

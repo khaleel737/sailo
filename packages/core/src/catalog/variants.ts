@@ -28,6 +28,20 @@ export type StockedProduct = Pick<
   "inStock" | "trackInventory" | "stockQuantity"
 >;
 
+/**
+ * A product that may also cap how many one order takes.
+ *
+ * Optional rather than folded into `StockedProduct`, because half the callers
+ * of that type hand in a trimmed literal — a card, a test, a projection — and
+ * they are asking whether the thing is *sellable*, which the cap has no
+ * opinion about. A full row satisfies this without being changed, so the
+ * checkout, the buy box and the basket all get the cap for free.
+ */
+export type CappedProduct = StockedProduct & {
+  /** Most units one order may take. Null or absent is no cap beyond stock. */
+  maxPerOrder?: number | null;
+};
+
 export type VariantLike = {
   options: VariantOptions;
   priceCents: number | null;
@@ -216,13 +230,54 @@ export function isSellable(
   return left === null || left > 0;
 }
 
-/** The most a buyer may put in the quantity box. */
+/**
+ * The most a buyer may put in the quantity box.
+ *
+ * Three ceilings, and the smallest wins: the hard cap that stops a typo
+ * becoming an order for nine million mugs, what is left in stock, and the
+ * seller's own per-order limit. The last is the one that is not about supply —
+ * a sold-out event and an event that will not sell you a fifth ticket are
+ * different refusals, and a shop with 200 seats can mean both at once.
+ *
+ * `maxPerOrder` of 0 is read as "no cap", not "nothing may be ordered": a
+ * seller who wants to stop sales has `inStock`, and a zero here is far more
+ * likely to be a cleared field than a deliberate embargo.
+ */
 export function maxOrderable(
-  product: StockedProduct,
+  product: CappedProduct,
   variant?: VariantLike | null,
 ): number {
-  const left = unitsLeft(product, variant);
-  return left === null ? MAX_QUANTITY : Math.min(MAX_QUANTITY, left);
+  return quantityCeiling(unitsLeft(product, variant), perOrderCap(product));
+}
+
+/**
+ * The same three ceilings, from the two numbers a client already holds.
+ *
+ * The buy box and the basket are handed `unitsLeft` and the cap already
+ * resolved — they have no product row to pass `maxOrderable` — and both had
+ * grown their own `stockLeft === null ? 999 : …`. That is the rule written a
+ * third and fourth time, and the third copy is the one that forgot the
+ * seller's cap and offered a fifth ticket on a four-a-head event.
+ */
+export function quantityCeiling(
+  /** Units left, or null when nobody is counting. */
+  left: number | null,
+  /** The seller's per-order limit. Null, absent or zero is no limit. */
+  maxPerOrder: number | null | undefined,
+): number {
+  const cap =
+    typeof maxPerOrder === "number" && Number.isFinite(maxPerOrder) && maxPerOrder > 0
+      ? maxPerOrder
+      : MAX_QUANTITY;
+  return Math.min(MAX_QUANTITY, cap, left ?? MAX_QUANTITY);
+}
+
+/** The seller's per-order limit, once nonsense is discarded. Null is none. */
+export function perOrderCap(product: CappedProduct): number | null {
+  const raw = product.maxPerOrder;
+  if (typeof raw !== "number" || !Number.isFinite(raw)) return null;
+  const cap = Math.trunc(raw);
+  return cap > 0 ? Math.min(cap, MAX_QUANTITY) : null;
 }
 
 /** True when at least one combination is still sellable. */
@@ -314,7 +369,22 @@ export type ProductKind =
   | "digital"
   | "service"
   | "event"
-  | "membership";
+  | "membership"
+  /**
+   * A form, not a sale — spec 07.
+   *
+   * The one kind whose checkout takes no money and writes no order. It is a
+   * `kind` rather than a price of zero because everything downstream has to
+   * treat it differently: no invoice number, no stock, no delivery, and it is
+   * excluded from every revenue figure. A £0 product settling through the
+   * ordinary path would put rows into an invoice sequence that is supposed to
+   * describe actual trade.
+   *
+   * The same mechanism is a sample request, a quote request and a
+   * made-to-order enquiry. Naming it well in the admin is what makes it reach
+   * the seller who has never heard the phrase "lead magnet".
+   */
+  | "lead";
 
 export const PRODUCT_KIND_VALUES: ProductKind[] = [
   "physical",
@@ -322,10 +392,63 @@ export const PRODUCT_KIND_VALUES: ProductKind[] = [
   "service",
   "event",
   "membership",
+  "lead",
 ];
 
 export function isProductKind(value: string): value is ProductKind {
   return (PRODUCT_KIND_VALUES as string[]).includes(value);
+}
+
+/**
+ * The three shapes a digital good comes in.
+ *
+ * `file` is a download we host and stream behind a per-order token. `link` is
+ * somewhere else the buyer is sent — a course platform, a shared drive, a
+ * Notion page. `code` is a string that *is* the good: a licence key, an invite,
+ * a password.
+ *
+ * One per product, never a combination. A buyer handed a file, a link and a
+ * code has to work out which of the three they actually bought, and a seller
+ * filling in all three has almost certainly meant only one of them.
+ */
+export type DigitalDelivery = "file" | "link" | "code";
+
+export const DIGITAL_DELIVERY_VALUES: DigitalDelivery[] = ["file", "link", "code"];
+
+export function isDigitalDelivery(value: unknown): value is DigitalDelivery {
+  return (
+    typeof value === "string" &&
+    (DIGITAL_DELIVERY_VALUES as string[]).includes(value)
+  );
+}
+
+/**
+ * How this product delivers, for anything that has to branch on it.
+ *
+ * Answers `file` for every kind that is not digital, and that is the useful
+ * answer rather than a null one: a mug and an appointment deliver no link and
+ * no code, and a caller asking "should I render the access details" wants
+ * "no" rather than a special case of its own.
+ */
+export function deliveryOf(product: {
+  kind: string;
+  digitalDelivery?: string | null;
+}): DigitalDelivery {
+  if (product.kind !== "digital") return "file";
+  return isDigitalDelivery(product.digitalDelivery)
+    ? product.digitalDelivery
+    : "file";
+}
+
+/**
+ * Whether this product hands over anything at all through the download page.
+ *
+ * True for every digital product — all three shapes land there — and for an
+ * event, whose tickets and join link do too. Used by the seller's own screens
+ * to decide whether "released" means anything for an order.
+ */
+export function hasReleasableGoods(product: { kind: string }): boolean {
+  return product.kind === "digital" || product.kind === "event";
 }
 
 /** Only physical goods get delivered; a file and an appointment don't. */

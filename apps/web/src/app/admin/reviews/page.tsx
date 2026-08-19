@@ -12,7 +12,7 @@ import { cn } from "@sailo/design-system/web/cn";
 export const metadata: Metadata = { title: "Reviews" };
 
 export default async function AdminReviewsPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:read");
   const { a, locale } = await getAdminT();
   const reviews = await getShopReviews(shop.id);
   const pending = reviews.filter((r) => !r.isApproved);

@@ -2,7 +2,7 @@ import { EmptyRow, Table, Td, Th, Tr } from "@/app/_components/hq-table";
 import { SectionTitle, When } from "@/app/_components/hq-ui";
 import { formatAddress } from "@sailo/core/address";
 import { formatMoney } from "@sailo/core/currency";
-import type { AccountDetail, AccountShop } from "./account.types";
+import type { AccountCommerce, AccountShop } from "./account.types";
 
 /** The shop's customers, by what they have spent. */
 
@@ -10,7 +10,7 @@ export function BuyersTable({
   detail,
   shop,
 }: {
-  detail: AccountDetail;
+  detail: AccountCommerce;
   shop: AccountShop;
 }) {
   const money = (cents: number) => formatMoney(cents, shop.currency);

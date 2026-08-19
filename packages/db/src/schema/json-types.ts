@@ -40,7 +40,87 @@ export type NotificationPrefs = Partial<{
   membershipCancelled: boolean;
   /** A renewal payment failed and the membership is now past due. */
   membershipPaymentFailed: boolean;
+  /**
+   * Revenue in one place has reached 70% or 90% of a registration threshold.
+   *
+   * Sent at most twice per place per year and only where a published figure
+   * exists — see `packages/core/src/money/tax-thresholds.ts`. It states what
+   * was collected and where; it never says a seller must register anywhere.
+   */
+  taxThreshold: boolean;
+  /**
+   * Somebody filled in a lead-capture form — spec 07.
+   *
+   * Its own switch rather than folding into `orderPlaced`, because a lead is
+   * not a sale: a seller who wants to know about money and not about
+   * newsletter signups has to be able to say so, and a shop running a magnet
+   * can collect far more leads than orders.
+   */
+  leadCaptured: boolean;
+  /**
+   * Stock has fallen to the threshold the seller set — spec 51.
+   *
+   * One email per downward crossing, claimed in the same conditional UPDATE
+   * that reads the count, and re-armed only when stock is back above the line.
+   * A seller adjusting stock in a spreadsheet-like screen crosses the threshold
+   * several times in a minute and hears once.
+   */
+  lowStock: boolean;
 }>;
+
+/**
+ * One row's price in one currency, in that currency's minor units.
+ *
+ * `price` is the amount charged. `secondary` is whatever second number the row
+ * already has beside its own price — a product's compare-at, a delivery rate's
+ * free-over threshold, a coupon's minimum subtotal — and it is one field rather
+ * than three because the reader is identical in all three cases, and a shape
+ * per table would be three validators that can disagree.
+ *
+ * The rules live in `packages/core/src/money/regional.ts`, which is where this
+ * is read and written; the type is here because four tables store it and a
+ * column's shape should not drag a package edge along with it.
+ */
+export type CurrencyPrice = {
+  price: number;
+  secondary?: number | null;
+};
+
+/** `{ "EUR": { price: 2500, secondary: 3000 } }`, keyed by ISO 4217 uppercase. */
+export type CurrencyPrices = Record<string, CurrencyPrice>;
+
+/**
+ * What one import run did, in totals — spec 47.
+ *
+ * Every field optional so a job written before it ran, or one that failed
+ * before counting anything, is `{}` rather than a row of zeros. Zero created
+ * and "we never got that far" are different answers and a seller reading a
+ * failed import needs to be able to tell them apart.
+ */
+export type ImportCounts = {
+  found?: number;
+  created?: number;
+  updated?: number;
+  skipped?: number;
+  failed?: number;
+};
+
+/**
+ * One row's verdict, as the report keeps it.
+ *
+ * `label` is what the seller will recognise — a product title, not an id — and
+ * `reason` is why, in a sentence they can act on. "A silent partial import is
+ * worse than a failure": every skip and every failure appears here, and the
+ * seller downloads the lot as a CSV.
+ */
+export type ImportReportRow = {
+  /** create | update | skip | fail */
+  action: string;
+  label: string;
+  /** The source's own id, so a seller can find the thing in the other tool. */
+  externalId?: string;
+  reason?: string;
+};
 
 /** One axis of choice on a product: "Size" with "Small", "Medium", "Large". */
 export type ProductOption = {
@@ -115,4 +195,110 @@ export type DeliveryConfig = {
   /** collection: opening hours */
   hours?: string;
   instructions?: string;
+};
+
+/**
+ * One checkout question and the answer this buyer gave, as both read at the
+ * time.
+ *
+ * The label and type ride along rather than being resolved from
+ * `contact_fields` when the order is displayed, because the whole reason this
+ * is snapshotted is that the field can be deleted or retyped afterwards — and
+ * an invoice reprinted next year has to say what it said. `value` is the same
+ * shape `contact_field_values.value` holds, so one renderer serves both.
+ */
+export type OrderCustomField = {
+  key: string;
+  label: string;
+  /** One of `FIELD_TYPES` in `@sailo/marketing/contacts`. */
+  type: string;
+  value: string | number | boolean | null;
+};
+
+/**
+ * One row of a shipping rate's weight table — spec 51.
+ *
+ * "Up to 500 g costs £3.50." Read cheapest-first and matched on the *first*
+ * band the parcel fits, so the boundaries are inclusive upper bounds and a
+ * 500 g parcel takes the 500 g band rather than the next one up.
+ *
+ * Grams and minor units, both integers, for the same reason: a float on either
+ * side of a boundary is a rounding argument — with a carrier on one side and a
+ * buyer on the other.
+ */
+export type WeightBand = {
+  /** Inclusive upper bound, in grams. */
+  upToGrams: number;
+  /** What this band costs, in the shop's minor units. */
+  priceCents: number;
+};
+
+/**
+ * One question a lead-capture form asks — spec 07.
+ *
+ * `id` is a stable slug the seller never sees; renaming a `label` must not
+ * orphan the answers already given, which is why the answer below stores the
+ * label it was actually shown rather than looking it up later.
+ */
+export type LeadQuestion = {
+  id: string;
+  label: string;
+  required: boolean;
+};
+
+/** One answer, with the question as it was worded at the time. */
+export type LeadAnswer = {
+  id: string;
+  label: string;
+  value: string;
+};
+
+/* --------------------------------------------------------------------------
+   Automations — spec 30
+
+   The graph is stored rather than compiled, and that is the design: keeping it
+   serialisable is what makes the whole of the runner's behaviour testable from
+   object literals, with no database and no mail. `packages/marketing/src/
+   automations/graph.ts` is the only thing that may parse one, and it validates
+   on save *and again at claim time*.
+-------------------------------------------------------------------------- */
+
+/** What enrols a contact. `config` is read by the trigger's own parser. */
+export type AutomationTrigger = {
+  type: string;
+  config?: Record<string, unknown>;
+};
+
+/**
+ * One step.
+ *
+ * `config` is deliberately loose here and strict in `graph.ts`. This type
+ * describes the column; the parser describes the vocabulary, and putting the
+ * vocabulary in the schema package would mean the db and the marketing package
+ * had to be edited together to add a step kind.
+ */
+export type AutomationNode = {
+  id: string;
+  /** send | timer | branch | filter | whatsapp — see `NODE_KINDS`. */
+  kind: string;
+  config?: Record<string, unknown>;
+};
+
+/**
+ * One connection.
+ *
+ * `label` is what a branch's paths are told apart by — `"yes"`, `"no"`, or a
+ * path index. Absent on the single edge leaving a linear node.
+ */
+export type AutomationEdge = {
+  from: string;
+  to: string;
+  label?: string;
+};
+
+export type AutomationGraph = {
+  nodes: AutomationNode[];
+  edges: AutomationEdge[];
+  /** Where a run starts. Must name a node. */
+  entry?: string;
 };

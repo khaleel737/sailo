@@ -74,6 +74,35 @@ export function NotificationsCard({
       label: a.settings.notifyMembershipPaymentFailed,
       description: a.settings.notifyMembershipPaymentFailedBody,
     },
+    /*
+     * The three that had no row here, and the reason a missing row is not a
+     * cosmetic gap.
+     *
+     * `readNotificationPrefs` iterates `NOTIFICATION_EVENTS` and writes `false`
+     * for every switch the form did not submit. An unchecked box and an absent
+     * one are the same thing in a `FormData`, so an event with no row here was
+     * turned **off** every time the seller saved anything at all on this page —
+     * silently, and for a notification they never asked to stop.
+     *
+     * Which makes this list and `NOTIFICATION_EVENTS` a pair that must not
+     * drift. The test below the card asserts they match, and it is the reason
+     * that test exists.
+     */
+    {
+      event: "taxThreshold",
+      label: a.settings.notifyTaxThreshold,
+      description: a.settings.notifyTaxThresholdBody,
+    },
+    {
+      event: "lowStock",
+      label: a.settings.notifyLowStock,
+      description: a.settings.notifyLowStockBody,
+    },
+    {
+      event: "leadCaptured",
+      label: a.settings.notifyLeadCaptured,
+      description: a.settings.notifyLeadCapturedBody,
+    },
   ] as const;
 
   return (

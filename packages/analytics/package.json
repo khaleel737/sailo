@@ -12,7 +12,10 @@
     "./rollup": "./src/rollup.ts",
     "./partitions": "./src/partitions.ts",
     "./visitor": "./src/visitor.ts",
-    "./clicks": "./src/clicks.ts"
+    "./clicks": "./src/clicks.ts",
+    "./shares": "./src/shares.ts",
+    "./shares/server": "./src/shares-server.ts",
+    "./tiles": "./src/tiles.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

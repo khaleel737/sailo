@@ -23,7 +23,7 @@ export async function saveStaffNote(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { staff, shop } = await loadShop(formData);
+  const { staff, shop } = await loadShop(formData, "notes:write");
   if (!shop) return { ok: false, error: "That account no longer exists." };
 
   const note = String(formData.get("note") ?? "").trim().slice(0, 2000);
@@ -47,7 +47,9 @@ export async function saveStaffNote(
  * this is the queue's bookkeeping, so the list shows what still needs a reply.
  */
 export async function closeSupportTicket(formData: FormData) {
-  const staff = await requireStaff();
+  // The queue's bookkeeping, which is support's own job — the same capability
+  // that lets them write the note explaining what the reply said.
+  const staff = await requireStaff("notes:write");
   const id = String(formData.get("id") ?? "").trim();
   if (!id) return;
 

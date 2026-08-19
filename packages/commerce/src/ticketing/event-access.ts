@@ -24,6 +24,8 @@ export type EventAccess = {
   productId: string;
   title: string;
   startsAt: Date | null;
+  /** When it is over, when the seller said. Null when they did not. */
+  endsAt: Date | null;
   /** Null until the order is released, and null for an in-person event. */
   joinUrl: string | null;
   /** Where to turn up, for an event with a venue. */
@@ -58,6 +60,7 @@ export async function eventAccessForOrder(order: Order): Promise<EventAccess[]> 
       id: true,
       title: true,
       eventStartsAt: true,
+      eventEndsAt: true,
       eventJoinUrl: true,
       serviceMode: true,
       serviceLocation: true,
@@ -72,6 +75,7 @@ export async function eventAccessForOrder(order: Order): Promise<EventAccess[]> 
       productId: product.id,
       title: product.title,
       startsAt: product.eventStartsAt,
+      endsAt: product.eventEndsAt,
       joinUrl: released && online ? product.eventJoinUrl : null,
       location: online ? null : product.serviceLocation,
       online,

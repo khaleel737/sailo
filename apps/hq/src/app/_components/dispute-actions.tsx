@@ -8,6 +8,7 @@ import {
   releasePayoutHold,
   stageDisputeEvidence,
   submitDisputeEvidence,
+  submitPlatformDisputeEvidence,
 } from "@/lib/actions/disputes";
 import { Alert, Button } from "@sailo/design-system/web";
 import type { ActionState } from "@sailo/core/action-state";
@@ -144,13 +145,60 @@ export function ReleaseHold({ shopId }: { shopId: string }) {
           </span>
         </span>
       </label>
+      {/*
+        `aria-label`, because a placeholder is not a label: it is announced
+        inconsistently, and it disappears the moment somebody types — leaving a
+        filled box with nothing saying what is in it.
+      */}
       <input
         type="text"
         name="note"
+        aria-label="Why the payout hold is being released"
         placeholder="Why (goes on the account's record)"
         className="focus-ring w-full rounded-lg border border-ink-200 px-3 py-1.5 text-sm"
       />
       <Submit icon={<PauseCircle className="size-4" />}>Release payouts</Submit>
+      <Result state={state} />
+    </form>
+  );
+}
+
+/**
+ * Answer a chargeback against Sailo's own subscription revenue. Spec 46.
+ *
+ * Its own component rather than a flag on `SendEvidence`, because the two send
+ * different evidence under different capabilities to different Stripe accounts —
+ * a platform dispute carries no `stripeAccount` header, and a submission sent
+ * with one 404s on somebody else's account, which is a case answered with
+ * nothing.
+ *
+ * The checkbox is the one question the desk answers rather than the database.
+ * "Did we owe a refund and not process it?" is what makes contesting dishonest,
+ * and the action refuses outright when it is ticked — spec 46's rule that
+ * matters most, enforced rather than advised.
+ */
+export function SendPlatformEvidence({ disputeId }: { disputeId: string }) {
+  const [state, action] = useActionState(submitPlatformDisputeEvidence, IDLE);
+
+  return (
+    <form action={action}>
+      <input type="hidden" name="disputeId" value={disputeId} />
+
+      <label className="mb-3 flex cursor-pointer items-start gap-2.5">
+        <input
+          type="checkbox"
+          name="refundOwed"
+          className="mt-0.5 size-4 rounded border-ink-300 accent-ink-900"
+        />
+        <span className="text-xs leading-relaxed text-ink-600">
+          We owed this account a refund and did not process it. Ticking this
+          refuses the submission — if we were in the wrong, refund and stop.
+        </span>
+      </label>
+
+      <Submit variant="primary" icon={<Send className="size-4" />}>
+        Answer on Sailo&rsquo;s behalf
+      </Submit>
       <Result state={state} />
     </form>
   );

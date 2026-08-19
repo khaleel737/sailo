@@ -13,6 +13,17 @@ export type CartLine = {
   quantity: number;
   /** ISO instant, for a service the buyer scheduled. */
   scheduledFor?: string;
+  /**
+   * What the buyer named, in minor units, on a pay-what-you-want line — spec 43.
+   *
+   * The one number in this file that is *not* a cache. Everything else here is
+   * re-read from the database before a total is shown, which is what makes a
+   * tampered basket harmless; this is an answer only the buyer has, so it
+   * travels with the order and the server clamps it to the seller's floor in
+   * `resolveLines`. Absent on every fixed-price line, where it is ignored
+   * outright rather than validated.
+   */
+  priceCents?: number;
 
   // Cached for first paint only.
   title: string;
@@ -31,7 +42,17 @@ export function cartKey(shopId: string) {
   return `${PREFIX}${shopId}`;
 }
 
-/** Two lines are the same line when they're the same variant of the same product. */
+/**
+ * Two lines are the same line when they're the same variant of the same product.
+ *
+ * Deliberately unchanged by pay-what-you-want. A buyer who adds the same
+ * name-your-price download twice at two different amounts gets one line at the
+ * amount they named *last*, times two — because `addLine` spreads the incoming
+ * line over the existing one. Keying on the amount instead would leave two rows
+ * for one product in the drawer, which reads as a bug, and neither reading is
+ * more correct than the other: the buyer is looking at the number either way,
+ * and the server prices whatever the line finally says.
+ */
 export function lineKey(line: Pick<CartLine, "productId" | "variantId">) {
   return `${line.productId}:${line.variantId ?? ""}`;
 }
@@ -133,13 +154,23 @@ export function cachedTotal(lines: CartLine[]) {
   return lines.reduce((sum, line) => sum + line.unitPriceCents * line.quantity, 0);
 }
 
-/** What the server needs: identity and counts, none of the cached money. */
+/**
+ * What the server needs: identity, counts, and the one price it cannot know.
+ *
+ * `unitPriceCents` still does not travel and never will — it is a cache for the
+ * drawer's first paint, and sending it would be the browser naming what it is
+ * charged. `priceCents` is the opposite case and the only one: on a
+ * pay-what-you-want line the amount *is* the buyer's answer, so there is
+ * nowhere else it could come from. It is clamped to the seller's floor at the
+ * server, in `resolveLines`, which both sinks are built on.
+ */
 export function toOrderItems(lines: CartLine[]) {
   return lines.map((line) => ({
     productId: line.productId,
     variantId: line.variantId ?? undefined,
     quantity: line.quantity,
     scheduledFor: line.scheduledFor,
+    priceCents: line.priceCents,
   }));
 }
 

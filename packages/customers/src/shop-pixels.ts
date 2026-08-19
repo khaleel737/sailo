@@ -18,7 +18,14 @@ import type { Shop } from "@sailo/db/schema";
  * build or a staff tool — and what they feed is a script tag.
  */
 
-export type PixelProvider = "ga4" | "gtm" | "meta" | "tiktok";
+export type PixelProvider =
+  | "ga4"
+  | "gtm"
+  | "meta"
+  | "tiktok"
+  | "googleAds"
+  | "linkedin"
+  | "pinterest";
 
 /** One id per provider, or null where the seller left it empty. */
 export type ShopPixelIds = Record<PixelProvider, string | null>;
@@ -26,7 +33,13 @@ export type ShopPixelIds = Record<PixelProvider, string | null>;
 /** The columns on `shops` that hold them — what `updateShop` writes. */
 export type ShopPixelColumns = Pick<
   Shop,
-  "ga4MeasurementId" | "gtmContainerId" | "metaPixelId" | "tiktokPixelId"
+  | "ga4MeasurementId"
+  | "gtmContainerId"
+  | "metaPixelId"
+  | "tiktokPixelId"
+  | "googleAdsId"
+  | "linkedinPartnerId"
+  | "pinterestTagId"
 >;
 
 type ProviderSpec = {
@@ -51,6 +64,21 @@ type ProviderSpec = {
    * disclosure and a guessed cookie list would be a claim we can't check.
    */
   stored: readonly string[];
+  /**
+   * The hosts this pixel needs, by CSP directive.
+   *
+   * Declared beside the id it belongs to rather than hand-kept in
+   * `next.config.ts`, and that is the point: a provider added to this table
+   * with no CSP entry is a pixel that loads, is blocked, and fails *silently*
+   * — the seller's dashboard simply stays empty and nothing anywhere says
+   * why. `pixelCspHosts` builds the header's list from here, so the two
+   * cannot drift.
+   */
+  csp: {
+    script?: readonly string[];
+    img?: readonly string[];
+    connect?: readonly string[];
+  };
 };
 
 export const PIXEL_PROVIDERS: Record<PixelProvider, ProviderSpec> = {
@@ -61,6 +89,16 @@ export const PIXEL_PROVIDERS: Record<PixelProvider, ProviderSpec> = {
     shape: /^G-[A-Z0-9]{4,20}$/,
     example: "G-ABC12DE3F4",
     stored: ["_ga", "_ga_*"],
+    csp: {
+      script: ["https://www.googletagmanager.com"],
+      img: ["https://www.google-analytics.com", "https://www.googletagmanager.com"],
+      connect: [
+        "https://www.google-analytics.com",
+        "https://*.google-analytics.com",
+        "https://*.analytics.google.com",
+        "https://www.googletagmanager.com",
+      ],
+    },
   },
   gtm: {
     name: "Google Tag Manager",
@@ -69,6 +107,11 @@ export const PIXEL_PROVIDERS: Record<PixelProvider, ProviderSpec> = {
     shape: /^GTM-[A-Z0-9]{4,10}$/,
     example: "GTM-ABC123",
     stored: [],
+    csp: {
+      script: ["https://www.googletagmanager.com"],
+      img: ["https://www.googletagmanager.com"],
+      connect: ["https://www.googletagmanager.com"],
+    },
   },
   meta: {
     name: "Meta Pixel",
@@ -77,6 +120,12 @@ export const PIXEL_PROVIDERS: Record<PixelProvider, ProviderSpec> = {
     shape: /^[0-9]{5,20}$/,
     example: "123456789012345",
     stored: ["_fbp", "_fbc"],
+    csp: {
+      script: ["https://connect.facebook.net"],
+      // The pixel's namesake fallback is an image request to /tr.
+      img: ["https://www.facebook.com"],
+      connect: ["https://www.facebook.com"],
+    },
   },
   tiktok: {
     name: "TikTok Pixel",
@@ -85,6 +134,67 @@ export const PIXEL_PROVIDERS: Record<PixelProvider, ProviderSpec> = {
     shape: /^[A-Z0-9]{8,32}$/,
     example: "C1AB23CD45EF67GH89IJ",
     stored: ["_ttp"],
+    csp: {
+      script: ["https://analytics.tiktok.com"],
+      img: ["https://analytics.tiktok.com"],
+      connect: ["https://analytics.tiktok.com"],
+    },
+  },
+
+  /* ------------------------------------------------------------------------
+     Spec 42's three.
+
+     Ad platforms a seller is already buying from — the id is the receipt for
+     spend they made elsewhere, which is what separates these from a named
+     analytics *product*. DataFast is refused for exactly that reason.
+  ------------------------------------------------------------------------ */
+
+  googleAds: {
+    name: "Google Ads",
+    column: "googleAdsId",
+    field: "pixelGoogleAds",
+    // `AW-123456789`. Digits only after the prefix — the whole injection
+    // defence is that this cannot contain a quote, an angle bracket or a slash.
+    shape: /^AW-[0-9]{6,15}$/,
+    example: "AW-123456789",
+    stored: ["_gcl_au"],
+    csp: {
+      script: ["https://www.googletagmanager.com", "https://www.googleadservices.com"],
+      img: [
+        "https://www.googleadservices.com",
+        "https://googleads.g.doubleclick.net",
+        "https://www.google.com",
+      ],
+      connect: ["https://www.googletagmanager.com", "https://www.googleadservices.com"],
+    },
+  },
+
+  linkedin: {
+    name: "LinkedIn Insight Tag",
+    column: "linkedinPartnerId",
+    field: "pixelLinkedIn",
+    shape: /^[0-9]{4,12}$/,
+    example: "1234567",
+    stored: ["li_sugr", "bcookie", "lidc"],
+    csp: {
+      script: ["https://snap.licdn.com"],
+      img: ["https://px.ads.linkedin.com", "https://p.adsymptotic.com"],
+      connect: ["https://px.ads.linkedin.com"],
+    },
+  },
+
+  pinterest: {
+    name: "Pinterest Tag",
+    column: "pinterestTagId",
+    field: "pixelPinterest",
+    shape: /^[0-9]{10,20}$/,
+    example: "2612345678901",
+    stored: ["_pinterest_ct_ua", "_pin_unauth"],
+    csp: {
+      script: ["https://s.pinimg.com"],
+      img: ["https://ct.pinterest.com"],
+      connect: ["https://ct.pinterest.com"],
+    },
   },
 };
 
@@ -168,4 +278,38 @@ export function configuredPixels(
 /** Whether this storefront runs any seller tag — and so must ask first. */
 export function hasPixels(shop: ShopPixelColumns): boolean {
   return configuredPixels(pixelIdsOf(shop)).length > 0;
+}
+
+/**
+ * Every host any supported pixel could need, by directive.
+ *
+ * **Derived, not hand-kept**, and that is the whole reason it exists: the four
+ * hosts in `next.config.ts` were maintained by hand, and a provider added to
+ * the table above without a matching entry there is a pixel that loads, is
+ * blocked by the CSP, and fails *silently* — the seller's dashboard simply
+ * stays empty and nothing says why.
+ *
+ * **This is a union, and the spec asks for a per-shop list.** It is a union
+ * because the policy is a static response header and headers cannot tell
+ * `/{handle}` from our own routes — the note in `next.config.ts` records that
+ * decision for the two vendors already there. What actually gates a pixel is
+ * unchanged and is stronger than an allowlist: the `<script>` is not rendered
+ * at all unless the seller configured that provider *and* the buyer consented,
+ * so a host named here for a shop that configured nothing is a permission
+ * nothing uses. The residual gap is real and worth naming: a successful
+ * injection on a storefront could reach these hosts. Closing it needs a
+ * per-request policy, which this app's static shells do not have.
+ */
+export function pixelCspHosts(): {
+  script: string[];
+  img: string[];
+  connect: string[];
+} {
+  const gather = (key: "script" | "img" | "connect") => [
+    ...new Set(
+      PIXEL_PROVIDER_IDS.flatMap((provider) => PIXEL_PROVIDERS[provider].csp[key] ?? []),
+    ),
+  ].toSorted();
+
+  return { script: gather("script"), img: gather("img"), connect: gather("connect") };
 }

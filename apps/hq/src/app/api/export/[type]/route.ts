@@ -26,10 +26,18 @@ import { planFor } from "@sailo/core/plans";
  * a board deck, a cohort chart, a mail merge to every seller who hasn't
  * published yet.
  *
- * Behind `requireStaff()` like every other /hq surface. This is the one place
- * that hands over every account in one file, so it is worth saying plainly:
- * the guard is the whole security model, and it is the first line of the
- * handler for that reason.
+ * Behind `data:export`, which is narrower than the rest of the panel and is
+ * the reason that capability exists at all.
+ *
+ * Reading one seller's page and downloading all of them are not the same act,
+ * however identical the rows. One is support work with a name on it and a
+ * session that can be revoked; the other is a file on a laptop holding every
+ * buyer's name, email and delivery address, and it leaves the building the
+ * moment it is saved. Nothing we do afterwards reaches it — not a revocation,
+ * not a deletion request, not a role change. So the roles that answer tickets
+ * and work the risk desk do not hold this, and the refusal is here on the
+ * first line of the handler rather than on the button that links to it: the
+ * URL is guessable, and a hidden button is not an access control.
  */
 
 const EXPORTS = [
@@ -52,7 +60,7 @@ export async function GET(
   _request: Request,
   { params }: RouteContext<"/api/export/[type]">,
 ) {
-  await requireStaff();
+  await requireStaff("data:export");
   const { type } = await params;
 
   if (!isExportType(type)) {

@@ -1,6 +1,11 @@
 import { boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { shops } from "./shop";
-import type { DeliveryConfig, PaymentConfig } from "./json-types";
+import type {
+  CurrencyPrices,
+  DeliveryConfig,
+  PaymentConfig,
+  WeightBand,
+} from "./json-types";
 
 /** How a shop takes money and gets goods to people, plus who refers buyers. */
 
@@ -46,7 +51,54 @@ export const deliveryMethods = pgTable(
     feeCents: integer("fee_cents").default(0).notNull(),
     /** Orders at or above this subtotal ship free. Null disables the rule. */
     freeOverCents: integer("free_over_cents"),
+
+    /**
+     * What this costs in the other currencies the shop quotes.
+     *
+     * `{ "EUR": { "price": 2500, "secondary": 3000 } }` — minor units in
+     * *that* currency, decided by `currencyDecimals` and never by a flat 100.
+     * `price` is the fee charged; `secondary` is the free-over threshold, if this rate has one.
+     *
+     * Every number in here was typed by the seller. Nothing converts anything:
+     * see `docs/specs/53-regional-pricing.md`. An absent currency is not a zero
+     * and not a fallback — it is what makes that currency **not offered at
+     * all**, which is the only safe answer when nobody has said what the price
+     * should be.
+     *
+     * `{}` is the default and is what every existing row means.
+     */
+    currencyPrices: jsonb("currency_prices")
+      .$type<CurrencyPrices>()
+      .default({})
+      .notNull(),
     config: jsonb("config").$type<DeliveryConfig>().default({}).notNull(),
+
+    /**
+     * Whether this rate is one price or a table of them — spec 51.
+     *
+     * `flat` is `feeCents`, which is every rate ever saved here. `by_weight`
+     * reads `weightBands` below and charges by what is actually in the box —
+     * the input `0019`'s per-country zones were missing, because a rate could
+     * not vary by weight when nothing recorded weight.
+     */
+    rateMode: text("rate_mode").default("flat").notNull(), // flat | by_weight
+    /**
+     * `[{ upToGrams: 500, priceCents: 350 }, …]`, cheapest first.
+     *
+     * A seller-configured table rather than a live carrier API, and that is the
+     * deliberate trade: bands reach every carrier in every country, need no
+     * credential at rest, and cannot go down mid-checkout. A seller can also
+     * reason about them — they know what a 2 kg parcel costs because they have
+     * posted one.
+     *
+     * A basket heavier than the last band makes this rate **unavailable**
+     * rather than falling back to the top price: undercharging silently is the
+     * seller's money, and `resolveDelivery` already has the vocabulary for a
+     * rate that cannot be had. An empty table under `by_weight` falls back to
+     * `feeCents`, because that is the half-configured state a seller passes
+     * through on the way and it must not take their shop down.
+     */
+    weightBands: jsonb("weight_bands").$type<WeightBand[]>().default([]).notNull(),
 
     /**
      * Where this rate reaches: ISO 3166-1 alpha-2, uppercase.
@@ -95,6 +147,27 @@ export const coupons = pgTable(
     discountValue: integer("discount_value").notNull(),
 
     minSubtotalCents: integer("min_subtotal_cents").default(0).notNull(),
+
+    /**
+     * What this costs in the other currencies the shop quotes.
+     *
+     * `{ "EUR": { "price": 2500, "secondary": 3000 } }` — minor units in
+     * *that* currency, decided by `currencyDecimals` and never by a flat 100.
+     * `price` is the amount taken off, on a `fixed` coupon — a `percent` coupon
+     * needs no entry at all, because a percentage is currency-free; `secondary` is the minimum subtotal that qualifies.
+     *
+     * Every number in here was typed by the seller. Nothing converts anything:
+     * see `docs/specs/53-regional-pricing.md`. An absent currency is not a zero
+     * and not a fallback — it is what makes that currency **not offered at
+     * all**, which is the only safe answer when nobody has said what the price
+     * should be.
+     *
+     * `{}` is the default and is what every existing row means.
+     */
+    currencyPrices: jsonb("currency_prices")
+      .$type<CurrencyPrices>()
+      .default({})
+      .notNull(),
     maxRedemptions: integer("max_redemptions"),
     timesRedeemed: integer("times_redeemed").default(0).notNull(),
 

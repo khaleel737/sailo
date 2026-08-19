@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Download, Loader2, X } from "lucide-react";
 import { createOrderIntent } from "@/lib/actions/orders";
+import { CustomFields, readCustomFields } from "./custom-fields";
+import { useCheckoutSession } from "./use-checkout-session";
 import { markPendingOrder } from "@/lib/cart";
 import {
   countriesByName,
@@ -14,6 +16,7 @@ import { shippableCountries, shipsTo } from "@sailo/commerce/delivery";
 import { markLeaving } from "@/lib/leaving";
 import type { OrderIntentResult } from "@sailo/commerce/orders";
 import { useCheckoutQuote } from "./use-checkout-quote";
+import { OrderBump } from "./order-bump";
 import {
   PAYMENT_METHOD_DEFS,
   railsForOrder,
@@ -61,6 +64,8 @@ export function CheckoutPanel({
   items,
   methods,
   deliveryOptions,
+  blockedCountries,
+  proof,
   needsDeliveryHint = false,
   payInPersonHint = true,
   contactEmail,
@@ -71,6 +76,7 @@ export function CheckoutPanel({
   ariaLabel,
   t,
   onClose,
+  customFields,
   onPlaced,
   children,
   empty,
@@ -82,7 +88,8 @@ export function CheckoutPanel({
    * one. Optional-chained because the buy-now sheet mounts this outside a
    * populated cart; the formatter falls back to English on its own.
    */
-  const locale = useCart()?.locale;
+  const cart = useCart();
+  const locale = cart?.locale;
   const [chosen, setChosen] = useState<PaymentMethodType>(
     railsForOrder(methods, payInPersonHint)[0]?.type ?? "whatsapp",
   );
@@ -114,6 +121,22 @@ export function CheckoutPanel({
    */
   const [emailTyped, setEmailTyped] = useState("");
   const [phoneTyped, setPhoneTyped] = useState("");
+
+  /*
+   * The recovery session — spec 32. Opened when the panel first renders with
+   * something to buy, and updated as the buyer types their address in, which
+   * is the moment they become recoverable at all.
+   *
+   * Every refusal is `null` and the panel does not care which: a shop that
+   * does not exist, a ceiling, and a cache outage all read the same, so
+   * nothing here can tell a caller anything about a shop.
+   */
+  const session = useCheckoutSession({
+    shopId,
+    productId: items.length === 1 ? items[0]?.productId : null,
+    email: emailTyped,
+  });
+
   const [result, setResult] = useState<Extract<
     OrderIntentResult,
     { ok: true }
@@ -186,11 +209,20 @@ export function CheckoutPanel({
   const reachable = shippableCountries(deliveryOptions);
   const countryChoices = useMemo(() => {
     const all = countriesByName(locale);
-    return reachable ? all.filter((c) => reachable.includes(c.code)) : all;
+    const shipped = reachable ? all.filter((c) => reachable.includes(c.code)) : all;
+    /*
+     * Two narrowings, and they mean different things. `reachable` is "we do not
+     * post there"; `blockedCountries` is "we will not sell there", which is a
+     * compliance decision and applies to a download with no address just as
+     * much as to a parcel.
+     */
+    if (blockedCountries.length === 0) return shipped;
+    const blocked = new Set(blockedCountries);
+    return shipped.filter((c) => !blocked.has(c.code));
     // `reachable` is rebuilt each render from a prop that rarely changes;
     // joined so an identical list doesn't re-sort 244 names.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [locale, reachable?.join(",")]);
+  }, [locale, reachable?.join(","), blockedCountries.join(",")]);
 
   /*
    * Ask only when the answer changes something. An unrestricted shop keeps the
@@ -403,6 +435,19 @@ export function CheckoutPanel({
          */
         acceptedTerms: data.get("acceptedTerms") === "on",
         marketingOptIn: data.get("marketingOptIn") === "on",
+        /*
+         * Namespaced on the way out of the form, so a seller's field called
+         * `note` or `country` cannot land on the panel's own input of that
+         * name. The server validates every one against its row.
+         */
+        customFields: readCustomFields(data),
+        /*
+         * Both reports, neither a decision. The server re-reads the session's
+         * own status before attributing anything, so a forged `viaResumeLink`
+         * cannot turn an ordinary sale into a recovered one.
+         */
+        checkoutSessionId: session.sessionId ?? undefined,
+        viaResumeLink: session.viaResumeLink,
       });
     } catch (thrown) {
       // Named for what it is rather than `error`, which is the state setter's
@@ -552,6 +597,7 @@ export function CheckoutPanel({
             <div className="pe-8">{empty}</div>
           ) : (
             <form method="post" onSubmit={onSubmit} className="space-y-4">
+              {proof}
               {children?.(preview)}
 
               {error ? (
@@ -802,6 +848,9 @@ export function CheckoutPanel({
                 className="surface-elevated w-full rounded-xl px-3 py-2.5 text-sm outline-none placeholder:opacity-50"
               />
 
+              {/* The shop's own questions, under the note and above the money. */}
+              <CustomFields fields={customFields} />
+
               <div>
                 {coupon.applied ? (
                   <div className="surface-elevated flex items-center justify-between gap-2 rounded-xl px-3 py-2.5">
@@ -846,6 +895,48 @@ export function CheckoutPanel({
                   <p className="mt-1.5 text-xs text-red-600">{coupon.error}</p>
                 ) : null}
               </div>
+
+              {/*
+                "Add X for £Y" — spec 08, immediately above the totals and the
+                pay button.
+
+                One tap on something small that goes with what is already in the
+                basket, and it does not add a step: the buyer reads it on the way
+                past. That is the whole difference from a cross-sell, which is a
+                second decision and goes after payment — Baymard's 66%.
+
+                It adds an ordinary basket line. `resolveLines` re-reads and
+                re-prices it exactly like every other line, and `attributeBumps`
+                decides server-side whether it counts as a bump, so nothing about
+                this control is trusted.
+              */}
+              {cart ? (
+                <OrderBump
+                  shopId={shopId}
+                  productIds={items.map((line) => line.productId)}
+                  currency={currency}
+                  locale={locale}
+                  t={t}
+                  onAdd={(bump) => {
+                    cart.add({
+                      productId: bump.productId,
+                      variantId: null,
+                      quantity: 1,
+                      title: bump.title,
+                      label: "",
+                      kind: "physical",
+                      /*
+                       * A cache for the drawer's first paint, like every other
+                       * line's. The server re-reads the price before anything is
+                       * quoted, and the next `previewOrder` replaces this number
+                       * with the seller's own.
+                       */
+                      unitPriceCents: bump.priceCents,
+                      imageUrl: bump.imageUrl,
+                    });
+                  }}
+                />
+              ) : null}
 
               <dl className="surface-border space-y-1.5 border-t pt-3 text-sm">
                 <div className="flex justify-between">

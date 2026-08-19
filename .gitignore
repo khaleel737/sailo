@@ -96,3 +96,7 @@ apps/*/CLAUDE.md
 
 # launchd output from the social scheduler — runtime noise, not source
 apps/web/scripts/social/.log/
+
+# Agent scratch space — dumps, translation batches, one-off scripts.
+.scratch/
+.scratch-*

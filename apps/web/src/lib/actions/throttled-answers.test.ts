@@ -22,6 +22,20 @@ const shop = readFileSync("src/lib/actions/shop.ts", "utf8");
 const field = readFileSync("src/components/shared/handle-field.tsx", "utf8");
 
 describe("a coupon budget is charged up front and refunded on a hit", () => {
+  it("says something different when there was no budget to spend", () => {
+    /*
+     * DECISION B made this ceiling fail closed, which introduces a refusal that
+     * is not about the code at all: Redis is down and nothing was looked up.
+     *
+     * Answering that with `not_found` — the right answer for a *spent* budget,
+     * because it says nothing about whether the code exists — would tell a buyer
+     * holding a real code that it is invalid. Rule 5: throttled is unknown,
+     * never a negative answer.
+     */
+    expect(preview).toContain('if (budget.reason === "outage")');
+    expect(preview).toContain("COUPON_MESSAGES.unavailable");
+  });
+
   it("charges before the lookup rather than peeking", () => {
     /*
      * Both orderings have failed here, in opposite directions, so the exact
@@ -32,18 +46,31 @@ describe("a coupon budget is charged up front and refunded on a hit", () => {
      * the only shape that closes both: the verdict is atomic in `INCR`, and a
      * real code hands its unit straight back.
      */
-    expect(preview).toContain("const budget = await rateLimit(guessKey, 10, 300)");
+    expect(preview).toContain(
+      'const budget = await rateLimit(guessKey, 10, 300, { onOutage: "closed" })',
+    );
     expect(preview).not.toContain("rateLimitPeek");
   });
 
   it("refunds exactly when the code resolved", () => {
-    expect(preview).toContain("if (found) await refundRateLimit(guessKey, 300)");
+    /*
+     * On the row the lookup returned, and deliberately *before* spec 53's
+     * per-currency read narrows it. A code that exists and has no price in
+     * this basket's currency is still a code the buyer was holding rather than
+     * guessing, and charging them for it is the same mistake as charging for
+     * an expired one.
+     */
+    expect(preview).toContain("if (row) await refundRateLimit(guessKey, 300)");
   });
 
   it("gates the lookup on the verdict the charge returned", () => {
     // The atomicity only holds if the answer used is the one INCR gave back —
     // re-reading the counter here would reopen the burst window.
-    expect(preview).toContain("const found = budget.allowed");
+    //
+    // `row`, not `found`: spec 53 put a per-currency read between the lookup
+    // and the verdict, so the raw row and the applicable one are two values
+    // now. The one gated on the budget is still the lookup.
+    expect(preview).toContain("const row = budget.allowed");
   });
 });
 

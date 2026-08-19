@@ -20,6 +20,7 @@ import {
   StageEvidence,
 } from "@/app/_components/dispute-actions";
 import {
+  DISPUTE_QUEUE_PAGE,
   getDisputeQueue,
   getOpenFraudWarnings,
   getPlatformDisputeHealth,
@@ -58,13 +59,33 @@ export const metadata: Metadata = { title: "Chargebacks" };
  */
 export default async function HqDisputesPage() {
   const [queue, exposure, health, warnings] = await Promise.all([
-    getDisputeQueue(),
+    /*
+     * Capped, and the cap is stated under the table.
+     *
+     * This rendered every row the query returned — up to two hundred — which
+     * produced a page 23,633 pixels tall on a platform with a real backlog. The
+     * queue is sorted by deadline, so everything past the first screenful is
+     * sorted-but-unread, and a list nobody reaches the bottom of is a list that
+     * makes the top of it look optional.
+     */
+    getDisputeQueue({ limit: DISPUTE_QUEUE_PAGE }),
     getShopExposure(),
     getPlatformDisputeHealth(),
     getOpenFraudWarnings(),
   ]);
 
   const held = exposure.filter((shop) => shop.payoutsPausedAt);
+
+  /*
+   * The exposure table draws the worst twenty-five of up to a hundred.
+   *
+   * Sorted by chargeback count already, so the tail is by definition the shops
+   * with the fewest — and rendering all hundred is what kept this page nine
+   * thousand pixels tall after the response queue was capped. Held payouts are
+   * counted from the whole list above, not from the slice, because "how many
+   * shops have money frozen" must not change with how many rows are drawn.
+   */
+  const exposureShown = exposure.slice(0, 25);
   const coveragePct =
     health.coverage.orders > 0
       ? Math.round((health.coverage.ce3Capable / health.coverage.orders) * 100)
@@ -158,10 +179,10 @@ export default async function HqDisputesPage() {
           </>
         }
       >
-          {queue.length === 0 ? (
+          {queue.rows.length === 0 ? (
             <EmptyRow colSpan={6}>Nothing owes a response.</EmptyRow>
           ) : (
-            queue.map((dispute) => (
+            queue.rows.map((dispute) => (
               <Tr key={dispute.id}>
                 <Td>
                   <span
@@ -274,6 +295,23 @@ export default async function HqDisputesPage() {
           )}
       </Table>
 
+      {/*
+        The cap, said out loud.
+
+        A queue that quietly shows the first twenty-five of a hundred and forty
+        reads as a queue of twenty-five, and somebody plans their morning around
+        it. The number behind the cap is the whole point of stating it — and the
+        rows are deadline-sorted, so the ones not shown are the ones with the
+        most time left rather than a random remainder.
+      */}
+      {queue.capped ? (
+        <p className="mt-3 text-xs leading-relaxed text-ink-400">
+          Showing the {queue.rows.length} most urgent of {queue.total} awaiting a
+          response — soonest deadline first. The rest have more time left than
+          these do.
+        </p>
+      ) : null}
+
       {/* ---------------------------------------------------------------- */}
 
       {warnings.length > 0 ? (
@@ -345,10 +383,10 @@ export default async function HqDisputesPage() {
           </>
         }
       >
-          {exposure.length === 0 ? (
+          {exposureShown.length === 0 ? (
             <EmptyRow colSpan={6}>No shop has had a chargeback.</EmptyRow>
           ) : (
-            exposure.map((shop) => (
+            exposureShown.map((shop) => (
               <Tr key={shop.shopId}>
                 <Td>
                   <Link
@@ -409,6 +447,13 @@ export default async function HqDisputesPage() {
             ))
           )}
       </Table>
+
+      {exposure.length > exposureShown.length ? (
+        <p className="mt-3 text-xs leading-relaxed text-ink-400">
+          Showing the {exposureShown.length} shops with the most chargebacks, of{" "}
+          {exposure.length} that have had any. The rest have fewer than these do.
+        </p>
+      ) : null}
 
       {/* ---------------------------------------------------------------- */}
 

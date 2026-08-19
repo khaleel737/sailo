@@ -284,3 +284,48 @@ export async function sendAccountDeleted(opts: {
   });
 }
 
+/**
+ * "Come and help run this shop" — spec 37.
+ *
+ * System mail rather than shop mail, and the distinction is the whole of the
+ * anti-oracle argument: this is an *account* invitation, and it must read
+ * identically whether or not the address already has a Sailo account. A
+ * shop-branded mail that said "sign in to accept" to one person and "create an
+ * account to accept" to another would be an account checker anybody could
+ * point at any address.
+ *
+ * So there is one sentence and one link, and the link works for both: a person
+ * with an account signs in and lands on the acceptance page, a person without
+ * one creates an account and lands there too.
+ */
+export async function sendTeamInvite(opts: {
+  to: string;
+  organizationName: string;
+  inviterName: string;
+  inviterEmail: string;
+  url: string;
+}): Promise<SendResult> {
+  const { to, organizationName, inviterName, inviterEmail, url } = opts;
+
+  const body = `
+    ${mutedPara(
+      `${strong(esc(inviterName))} has asked you to help run ${strong(esc(organizationName))} on Sailo.`,
+    )}
+    ${button(url, "Open the invitation")}
+    ${fine(
+      "Opening it shows you what you would be able to do before you accept. If you were not expecting this, ignore the email — nothing happens until you accept, and nobody is told you looked.",
+    )}
+  `;
+
+  return send({
+    from: sender("Sailo", ACCOUNTS),
+    to,
+    subject: `${inviterName} invited you to ${organizationName}`,
+    html: sailoLayout("You have been invited", body, {
+      preheader: `${organizationName} on Sailo`,
+    }),
+    // A reply reaches the person who sent it, which is who the recipient will
+    // want to ask "is this really you?".
+    replyTo: inviterEmail,
+  });
+}

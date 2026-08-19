@@ -69,7 +69,7 @@ describe("storefront search", () => {
 
     // The query under test, run for real first — the plan is only meaningful
     // if this is the SQL the storefront actually issues.
-    const page = await getPublicProducts(shop.id, "USD", { q: "kaleidoscope" }, 0, 24);
+    const page = await getPublicProducts(shop.id, "USD", "USD", { q: "kaleidoscope" }, 0, 24);
     expect(page.total).toBe(MATCHES);
     expect(page.items).toHaveLength(MATCHES);
 
@@ -144,12 +144,12 @@ describe("storefront search", () => {
     // Searching the two columns separately could never match this: "blue mug"
     // exists only across the join. Concatenating is what makes it findable,
     // and that is an improvement worth pinning rather than an accident.
-    const spanning = await getPublicProducts(shop.id, "USD", { q: "Blue mug" }, 0, 24);
+    const spanning = await getPublicProducts(shop.id, "USD", "USD", { q: "Blue mug" }, 0, 24);
     expect(spanning.items.map((p) => p.title)).toEqual(["Blue"]);
 
     // A null description must not swallow the row — coalesce carries its
     // weight here, and dropping it would make this product unsearchable.
-    const nullDesc = await getPublicProducts(shop.id, "USD", { q: "kettle" }, 0, 24);
+    const nullDesc = await getPublicProducts(shop.id, "USD", "USD", { q: "kettle" }, 0, 24);
     expect(nullDesc.items.map((p) => p.title)).toEqual(["Red Kettle"]);
 
     await db.delete(products).where(eq(products.shopId, shop.id));

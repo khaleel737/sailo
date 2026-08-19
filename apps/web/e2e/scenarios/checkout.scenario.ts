@@ -790,7 +790,7 @@ describe("the storefront survives a hostile query string", () => {
     await makeProduct(shop.id, { priceCents: 1000 });
     const { getPublicProducts } = await import("@/lib/queries/products");
 
-    const page = await getPublicProducts(shop.id, shop.currency, { sort } as never);
+    const page = await getPublicProducts(shop.id, shop.currency, shop.currency, { sort } as never);
     expect(page.items.length).toBeGreaterThan(0);
   });
 
@@ -800,9 +800,9 @@ describe("the storefront survives a hostile query string", () => {
     await makeProduct(shop.id, { title: "Dear", priceCents: 9000 });
     const { getPublicProducts } = await import("@/lib/queries/products");
 
-    const asc = await getPublicProducts(shop.id, shop.currency, { sort: "price_asc" } as never);
+    const asc = await getPublicProducts(shop.id, shop.currency, shop.currency, { sort: "price_asc" } as never);
     expect(asc.items[0]?.title).toBe("Cheap");
-    const desc = await getPublicProducts(shop.id, shop.currency, { sort: "price_desc" } as never);
+    const desc = await getPublicProducts(shop.id, shop.currency, shop.currency, { sort: "price_desc" } as never);
     expect(desc.items[0]?.title).toBe("Dear");
   });
 });

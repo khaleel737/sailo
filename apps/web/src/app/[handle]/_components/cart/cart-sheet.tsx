@@ -1,6 +1,7 @@
 "use client";
 
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+import type { CheckoutField } from "@/app/[handle]/_components/cart/custom-fields";
 import {
   CheckoutPanel,
   type CheckoutCompliance,
@@ -10,7 +11,7 @@ import {
 import { useCart } from "./cart-provider";
 import { SlotPicker } from "./slot-picker";
 import { lineKey, toOrderItems, type CartLine } from "@/lib/cart";
-import { isLowStock, needsDelivery } from "@sailo/core/variants";
+import { MAX_QUANTITY, isLowStock, needsDelivery } from "@sailo/core/variants";
 import type { Dictionary } from "@sailo/i18n";
 import { interpolate } from "@sailo/i18n";
 import { formatMoney } from "@sailo/core/currency";
@@ -29,8 +30,11 @@ export function CartSheet({
   currency,
   methods,
   deliveryOptions,
+  blockedCountries,
+  proof,
   contactEmail,
   compliance,
+  customFields,
   t,
 }: {
   shopId: string;
@@ -38,8 +42,11 @@ export function CartSheet({
   currency: string;
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
+  blockedCountries: string[];
+  proof?: React.ReactNode;
   contactEmail: string | null;
   compliance: CheckoutCompliance;
+  customFields: CheckoutField[];
   t: Dictionary;
 }) {
   const cart = useCart();
@@ -55,11 +62,14 @@ export function CartSheet({
       items={items}
       methods={methods}
       deliveryOptions={deliveryOptions}
+      blockedCountries={blockedCountries}
+      proof={proof}
       // One physical line makes the whole basket travel, which is the same
       // rule the server applies to it.
       needsDeliveryHint={cart.lines.some((line) => needsDelivery(line.kind))}
       contactEmail={contactEmail}
       compliance={compliance}
+      customFields={customFields}
       title={t.cart.title}
       t={t}
       onClose={() => cart.setOpen(false)}
@@ -147,8 +157,20 @@ function CartRow({
   const gone = loaded && !priced;
   const unitPriceCents = priced?.unitPriceCents ?? line.unitPriceCents;
   const label = priced?.label || line.label;
+  /*
+   * Decided by the server, not re-derived here. It carries stock *and* the
+   * seller's per-order cap, and a stepper that knew only about stock offered
+   * a fifth ticket on a four-a-head event and let the checkout take it away
+   * afterwards.
+   */
   const left = priced?.unitsLeft ?? null;
-  const max = left === null ? 999 : Math.max(1, left);
+  /*
+   * The server's own answer, not a ceiling derived here. It carries stock and
+   * the seller's per-order cap together, and a stepper that knew only about
+   * stock offered a fifth ticket on a four-a-head event and let the checkout
+   * take it away afterwards.
+   */
+  const max = Math.max(1, priced?.maxOrderable ?? MAX_QUANTITY);
 
   return (
     <li className="flex gap-3 py-3">

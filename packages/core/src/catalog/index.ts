@@ -6,3 +6,23 @@
  * seller's editor builds the same combinations the storefront renders.
  */
 export * from "./variants";
+/**
+ * `pricing-models` is the other half of what a thing costs: the buyer-chosen
+ * amount and the window it is on sale in. Pure for the same reason — the buy
+ * box, the basket, the storefront card and the admin form all have to agree
+ * with `resolveLines` before the buyer reaches it.
+ */
+export * from "./pricing-models";
+/**
+ * `preorders` is what a buyer is offered when there is none of it: the queue
+ * they can join, or the order they can place against stock that has not
+ * arrived. Pure for the same reason — four surfaces decide it and only one of
+ * them can refuse an order.
+ */
+export * from "./preorders";
+/**
+ * `offers` is whether a companion product may be put in front of this buyer —
+ * specs 36 and 08. It decides eligibility and is deliberately unable to price
+ * anything: a cross-sell adds no pricing trust at all.
+ */
+export * from "./offers";

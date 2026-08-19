@@ -1,8 +1,10 @@
 import { sql } from "drizzle-orm";
-import { boolean, index, integer, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { boolean, index, integer, jsonb, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { shops } from "./shop";
 import { products, productVariants } from "./catalog";
 import { affiliates, coupons, deliveryMethods } from "./commerce";
+import { policySnapshots } from "./policies";
+import type { OrderCustomField } from "./json-types";
 
 /** A sale: the buyer, the order, its lines, and the invoice it produced. */
 
@@ -191,6 +193,36 @@ export const orders = pgTable(
     trackingUrl: text("tracking_url"),
     shippedAt: timestamp("shipped_at"),
 
+    /**
+     * When it arrived, which is a different fact from when it was sent.
+     *
+     * `docs/chargebacks.md` states the rule this exists for: on
+     * `product_not_received` (Visa 13.1 / MC 4855) *"a tracking number showing
+     * 'in transit' is not delivery."* Sailo recorded the carrier, the number,
+     * the URL and `shippedAt`, and then had nothing to say about arrival — which
+     * is the one thing that reason code turns on.
+     *
+     * Deliberately **not** a status. `ORDER_STATUSES` stays as it is: three
+     * surfaces render status and the enum's own header records what happened
+     * last time a copy of it drifted. This is a fact about the parcel;
+     * `completed` remains the seller's own workflow mark.
+     */
+    deliveredAt: timestamp("delivered_at"),
+    /**
+     * Who says so — `seller` | `buyer_confirmed` | `carrier`.
+     *
+     * The pack (spec 45) prints this beside the date, because the three are not
+     * equally persuasive and presenting a seller's tick as though a carrier said
+     * it would be a false claim to a bank. `seller` is the honest default:
+     * weaker than a proof of delivery and much stronger than silence.
+     * `buyer_confirmed` is the strongest not-received evidence there is — the
+     * cardholder's own word, timestamped. `carrier` is reserved for a real
+     * integration and ships empty.
+     */
+    deliveredSource: text("delivered_source"),
+    /** The name from a proof of delivery, when there is one. */
+    deliverySignedBy: text("delivery_signed_by"),
+
     // Booking, for services the buyer scheduled
     scheduledFor: timestamp("scheduled_for"),
     serviceMode: text("service_mode"), // in_person | online
@@ -212,8 +244,46 @@ export const orders = pgTable(
     refundedCents: integer("refunded_cents").default(0).notNull(),
     refundedAt: timestamp("refunded_at"),
     refundReason: text("refund_reason"),
+    /**
+     * Taken against stock that does not exist yet — spec 33.
+     *
+     * A flag on the order and not only on the line, deliberately: the seller's
+     * list has to show it without a join and the confirmation email has to say
+     * it. **Not a different order type and no new status** — a preorder becomes
+     * an ordinary fulfilment the day stock arrives, and `ORDER_STATUSES`'s own
+     * header records what happened last time a copy of that enum drifted.
+     */
+    isPreorder: boolean("is_preorder").default(false).notNull(),
+    /**
+     * What the buyer was promised, as they were shown it.
+     *
+     * Snapshotted rather than joined: a seller who slips the date next month
+     * must not change what this buyer was told today. That is the argument
+     * `0035` makes about `shops.termsUrl`, and it is the difference between
+     * evidence and a URL — a `product_not_received` case turns on what was
+     * *promised* rather than on what was hoped.
+     *
+     * Null is a preorder with no date given, which is honest and renders as
+     * that. It is never a blank.
+     */
+    preorderExpectedAt: timestamp("preorder_expected_at"),
+
     /** Set once cancelled or refunded stock has gone back on the shelf. */
     restockedAt: timestamp("restocked_at"),
+    /**
+     * The seller said this one does not go back on the shelf — spec 51.
+     *
+     * `restockedAt` records that the units were returned; this records the
+     * seller's *decision* not to return them, which is a different fact and the
+     * one a refund for a damaged item needs. Asked at the moment they refund,
+     * because that is the moment they know.
+     *
+     * Defaulted false rather than nullable: every refund before this column
+     * restocked, and false is what that means. The flag is read *before* the
+     * units move, so it cannot be used to explain a restock that already
+     * happened.
+     */
+    restockDeclined: boolean("restock_declined").default(false).notNull(),
 
     /**
      * The subscription this order is a payment of, if it is one.
@@ -264,6 +334,22 @@ export const orders = pgTable(
     /** The connected account the charge landed in, for reconciliation. */
     stripeAccountId: text("stripe_account_id"),
 
+    /**
+     * What this charge put on the buyer's statement, as sent.
+     *
+     * `unrecognized` (Visa 10.4 / MC 4837) is a cardholder who did not recognise
+     * a line on their statement, and `docs/chargebacks.md` says the answer is
+     * *"usually a statement-descriptor problem"*. Sailo could not make that
+     * argument because it did not know what the buyer saw: whatever the seller's
+     * connected account defaults to appeared, and for a link-in-bio shop that is
+     * often a legal entity name the buyer has never heard of.
+     *
+     * A **snapshot**, not a reference to `shops.statementDescriptor`. A seller
+     * who changes their descriptor next month must not change what a five-month
+     * -old dispute claims the buyer saw.
+     */
+    statementDescriptor: text("statement_descriptor"),
+
     /*
      * What the buyer's card statement will say, when that is not what this
      * order says.
@@ -313,12 +399,45 @@ export const orders = pgTable(
     note: text("note"),
 
     /**
+     * What this buyer answered to the shop's own checkout questions, as they
+     * were asked.
+     *
+     * A snapshot and not a join to `contact_field_values`, for the reason
+     * `variantSku` beside it is one: an order has to record what was answered
+     * at the time even if the field is later deleted, renamed or retyped, and
+     * a join would rewrite a March order the day a seller edits a dropdown.
+     *
+     * Nullable, and the null carries meaning: it is an order placed before
+     * this column existed. An order that was asked nothing, or asked and
+     * answered nothing, carries `[]` — blank is not absent, and the invoice
+     * renders the two differently.
+     */
+    customFields: jsonb("custom_fields").$type<OrderCustomField[]>(),
+
+    /**
      * Proof this buyer agreed to the shop's terms, or null if the shop wasn't
      * asking. Stamped from the server's clock at order creation and never from
      * anything the client sent — a flag in a request body is a claim, and the
      * whole point of the record is that it isn't one.
      */
     termsAcceptedAt: timestamp("terms_accepted_at"),
+
+    /**
+     * *What* they agreed to, beside the `termsAcceptedAt` that records when.
+     *
+     * Both `set null` rather than cascade: a snapshot is never deleted, and if
+     * one ever were, the order has to survive it. The readiness panel already
+     * knows how to report a null as `missing`, which is the truth; a page that
+     * failed to load would not be.
+     */
+    termsSnapshotId: uuid("terms_snapshot_id").references(
+      () => policySnapshots.id,
+      { onDelete: "set null" },
+    ),
+    refundSnapshotId: uuid("refund_snapshot_id").references(
+      () => policySnapshots.id,
+      { onDelete: "set null" },
+    ),
 
     /*
      * What the buyer's browser was, recorded so a chargeback can be answered.
@@ -371,6 +490,26 @@ export const orders = pgTable(
     index("orders_shop_created_idx").on(t.shopId, t.createdAt),
     index("orders_client_idx").on(t.clientId),
     index("orders_created_idx").on(t.createdAt),
+    /*
+     * Paid, and nobody has delivered it. The one shape four different callers
+     * ask about, and the only one of them that had no index.
+     *
+     * `EXPLAIN` on HQ's risk desk showed `Seq Scan on orders` — the whole
+     * table, on every load of a page staff keep open. It also backs
+     * `openObligations`, which refuses an account deletion while buyers are
+     * owed goods, and both of the undelivered counts on a closure record.
+     *
+     * Partial, and that is what makes it cheap: it holds only the rows that
+     * are paid and still waiting, which is a small and self-limiting slice —
+     * they leave the index the moment somebody ships or refunds. `shopId`
+     * leads because every one of the four callers either groups by it or
+     * filters on it.
+     */
+    index("orders_undelivered_paid_idx")
+      .on(t.shopId)
+      .where(
+        sql`${t.paymentStatus} = 'paid' and ${t.status} in ('new', 'confirmed')`,
+      ),
     uniqueIndex("orders_download_token_key").on(t.downloadToken),
     // The Connect webhook finds the order by session id, on every card payment.
     index("orders_stripe_session_idx").on(t.stripeSessionId),
@@ -424,11 +563,57 @@ export const orderItems = pgTable(
     /** unitPrice × quantity, before any order-level discount or tax. */
     subtotalCents: integer("subtotal_cents").default(0).notNull(),
 
+    /**
+     * This line came from an in-cart bump — spec 08, kept exactly as written.
+     *
+     * On the *line* and not the order: a basket holding a mug and the bump
+     * attached to it is one order with two lines, and only one of them came
+     * from the bump. Attributing on the header would credit both, which is the
+     * header-versus-lines shape this repo names as recurring.
+     *
+     * **Set server-side only.** A client flag saying "this was a bump" is a
+     * client telling us its own conversion rate.
+     */
+    viaBump: boolean("via_bump").default(false).notNull(),
+    /** Which offer, so take-rate is per offer rather than per feature — spec 36. */
+    viaOfferId: uuid("via_offer_id"),
+
     // A service books its own slot: two services in one cart are two
     // appointments, not one.
     scheduledFor: timestamp("scheduled_for"),
     serviceMode: text("service_mode"),
     serviceLocation: text("service_location"),
+
+    /**
+     * Which date of a multi-session event this line bought — spec 50.
+     *
+     * Null for a single-date event, which is every event today, and for an
+     * `all_access` pass — the pass admits every session, so naming one would
+     * be a claim on capacity it does not take. Under `pick_one` this is what
+     * the seat was claimed against.
+     */
+    sessionId: uuid("session_id"),
+    /**
+     * Which price band — spec 50. Null for an event sold at one price.
+     *
+     * A reference *and* a snapshot: `tickets.tier` still records the name as
+     * it read on the night, because a tier renamed or deleted between the
+     * on-sale and the door must not change what prints beside somebody's name.
+     * This is for the restock path, which has to give the seat back to the
+     * band it came from.
+     */
+    tierId: uuid("tier_id"),
+
+    /**
+     * Which bookable person this appointment is with — spec 51.
+     *
+     * **Null is "any available", which is today's behaviour and stays the
+     * default.** A shop with no `staff_resources` rows books exactly as it
+     * always has.
+     */
+    staffId: uuid("staff_id"),
+    /** When the buyer moved this themselves — spec 51. The old time. */
+    rescheduledFrom: timestamp("rescheduled_from"),
 
     position: integer("position").default(0).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -444,6 +629,168 @@ export const orderItems = pgTable(
      * client the audience query considers.
      */
     index("order_items_product_order_idx").on(t.productId, t.orderId),
+  ],
+);
+
+/**
+ * "Tell me when the blue medium is back" — spec 33.
+ *
+ * **`variantId` is the subject, not `productId`.** Notifying somebody because
+ * the *red* one arrived is the failure that turns a helpful message into a
+ * complaint, and it is what this table is shaped to prevent: every read and
+ * every notification is keyed on the variant, and the product is here for the
+ * join and for the seller's list. Null means the product is sold as one thing,
+ * which is why the claim compares with `is not distinct from` rather than `=`.
+ *
+ * `notifiedAt` is a **claim, not a log**. One notification per request, ever:
+ * the row is spent when it is taken, and somebody who wants telling again asks
+ * again. A seller who restocks on Monday, sells out by lunch and restocks on
+ * Wednesday must not message the same person twice in three days — that is the
+ * behaviour that gets a sending domain reported.
+ *
+ * It is **not** a reservation and nothing about it may imply one. Anybody can
+ * buy the restocked unit; being told first is the whole of what was promised.
+ *
+ * And it is **not a marketing list**. These people asked to be told about one
+ * thing; rolling them into `34`'s contacts as subscribers is consent laundering,
+ * and the suppression rules in `packages/marketing/src/broadcasts/` exist to
+ * prevent exactly it. A separate, explicit opt-in on the same form is fine.
+ */
+export const stockRequests = pgTable(
+  "stock_requests",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    /** Null only for a product sold as one thing. */
+    variantId: uuid("variant_id").references(() => productVariants.id, {
+      onDelete: "cascade",
+    }),
+
+    email: text("email"),
+    /**
+     * Accepted, and **Sailo never sends to it**.
+     *
+     * There is no WhatsApp Business API here and no SMS provider, and
+     * pretending otherwise would be a promise the platform cannot keep. A shop
+     * running chat rails has buyers who never gave an address, and refusing
+     * them a place in the queue is refusing a sale — so the seller's screen
+     * lists these with a `wa.me` compose link and they press send from their own
+     * number, in a thread the buyer recognises.
+     */
+    phone: text("phone"),
+    /** Where they were standing, for the notification's language. */
+    locale: text("locale"),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    /** Set when the notification actually went. Null means owed. */
+    notifiedAt: timestamp("notified_at"),
+  },
+  (t) => [
+    index("stock_requests_shop_idx").on(t.shopId, t.createdAt),
+    /*
+     * The two partial unique indexes are in `0039` rather than here, and they
+     * have to be: both carry `NULLS NOT DISTINCT`, which drizzle's builder
+     * cannot express. Without it the constraint would not fire at all for a
+     * product sold as one thing — `variantId` is null there, and a distinct
+     * NULL means the same address could be registered a thousand times against
+     * one mug.
+     */
+  ],
+);
+
+/**
+ * One box, with its own tracking — spec 51.
+ *
+ * `orders.trackingCarrier` / `trackingNumber` / `shippedAt` are on the order
+ * *header*, so a three-item order going out in two parcels could record one
+ * tracking number and the buyer chasing the second was told about the first.
+ * That is the header-versus-lines shape this repo names as recurring, and this
+ * is the fifth place it has turned up.
+ *
+ * **The header columns stay and go on working.** They are populated from the
+ * *first* shipment and treated as a denormalised convenience — the decision
+ * spec 51 asks to be written down, taken this way because the buyer's email,
+ * the CSV export, the API resource shape, the HQ panel and a dozen tests all
+ * read them, and migrating every reader in one pass is a larger and riskier
+ * change than keeping one copy that only ever moves forward. Anything wanting
+ * the whole picture reads these rows.
+ *
+ * No new order status. `shipped` when the first shipment goes and `completed`
+ * when every line is covered — spec 44 declined to add `delivered` for the same
+ * reason, and `ORDER_STATUSES`'s own header records what happened the last time
+ * a copy of that enum drifted.
+ */
+export const shipments = pgTable(
+  "shipments",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    orderId: uuid("order_id")
+      .notNull()
+      .references(() => orders.id, { onDelete: "cascade" }),
+    /**
+     * Denormalised so the seller's "what is in transit" screen needs no join,
+     * and so a shipment can be read without its order. The same reasoning
+     * `order_messages.shop_id` carries.
+     */
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+
+    carrier: text("carrier"),
+    trackingNumber: text("tracking_number"),
+    trackingUrl: text("tracking_url"),
+    shippedAt: timestamp("shipped_at").defaultNow().notNull(),
+
+    /**
+     * When it actually arrived, and who says so.
+     *
+     * `shipped` is not `delivered`, and `docs/chargebacks.md` says so in as
+     * many words: a tracking number reading "in transit" is not delivery. The
+     * source is what separates evidence from an assertion — a carrier scan and
+     * a seller ticking a box answer an issuer very differently, and spec 45's
+     * fulfilment document prints which one it has.
+     */
+    deliveredAt: timestamp("delivered_at"),
+    deliveredSource: text("delivered_source"), // seller | carrier | buyer
+
+    /** The seller's own note — "front door", "second box of two". */
+    note: text("note"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("shipments_order_idx").on(t.orderId, t.shippedAt),
+    index("shipments_shop_idx").on(t.shopId, t.shippedAt),
+  ],
+);
+
+/**
+ * What went in the box.
+ *
+ * The composite primary key is the whole of the de-duplication: one order line
+ * cannot appear twice in one shipment, so a double-submitted form adds nothing
+ * rather than shipping the same three mugs again. The ceiling *across* all of
+ * an order's shipments is enforced in the claim, which is a conditional insert
+ * — a line can never be shipped more times than it was ordered.
+ */
+export const shipmentItems = pgTable(
+  "shipment_items",
+  {
+    shipmentId: uuid("shipment_id")
+      .notNull()
+      .references(() => shipments.id, { onDelete: "cascade" }),
+    orderItemId: uuid("order_item_id")
+      .notNull()
+      .references(() => orderItems.id, { onDelete: "cascade" }),
+    quantity: integer("quantity").default(1).notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.shipmentId, t.orderItemId] }),
+    index("shipment_items_order_item_idx").on(t.orderItemId),
   ],
 );
 
@@ -519,18 +866,58 @@ export const bookingClaims = pgTable(
     orderId: uuid("order_id")
       .notNull()
       .references(() => orders.id, { onDelete: "cascade" }),
+
+    /**
+     * Which bookable person this appointment is with — spec 51.
+     *
+     * **Null is "any available", which is today's behaviour and stays the
+     * default**, and it is why the exclusion constraint keys on
+     * `COALESCE(staff_id, product_id)` rather than on `staff_id`: Postgres
+     * treats `NULL = NULL` as unknown, so a constraint keyed on a null column
+     * excludes nothing at all. Every existing shop would have silently lost
+     * the guarantee, and the failure would have been a double-booked Saturday
+     * rather than an error anybody could see.
+     */
+    staffId: uuid("staff_id"),
+    /**
+     * How many of a class's seats this claim holds — spec 51. One is an
+     * ordinary appointment, which is every claim that exists today.
+     */
+    seatsTaken: integer("seats_taken").default(1).notNull(),
+    /**
+     * Whether this claim owns its time outright.
+     *
+     * True for a one-at-a-time appointment; false for a seat in a class, where
+     * overlapping is the entire point and an exclusion constraint would refuse
+     * the second person through the door.
+     *
+     * On the row rather than derived from `products.bookingCapacity`, because
+     * the exclusion constraint is **partial on this column** and a partial
+     * index cannot reach into another table to ask. It also snapshots the
+     * decision: a seller who turns a one-to-one into a class next month has
+     * not retroactively made last month's appointments shareable.
+     */
+    isExclusive: boolean("is_exclusive").default(true).notNull(),
+
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [
     /*
-     * Two orders cannot hold one product at one instant. The overlap rule
-     * lives in `booking_claims_no_overlap`, a GiST exclusion constraint that
-     * Drizzle's schema language cannot express — see `drizzle/0004`. This
-     * index stays because it is the cheap exact-match case and the thing
-     * `ON CONFLICT DO NOTHING` can infer.
+     * The overlap rule lives in `booking_claims_no_overlap`, a GiST exclusion
+     * constraint Drizzle's schema language cannot express — `drizzle/0004`
+     * created it on `(product_id, range)` and `drizzle/0046` re-keys it to
+     * `(COALESCE(staff_id, product_id), range)`, partial on `is_exclusive`.
+     *
+     * The old `booking_claims_slot_key` unique index went with it, and its
+     * removal is not tidying: `(product_id, starts_at)` is *wrong* under the
+     * new key, because two stylists working the same 10:00 slot on the same
+     * service are two legitimate claims with one product and one start time.
+     * `claimSlots` leaned on it for `ON CONFLICT DO NOTHING` and now catches
+     * the exclusion violation instead — the same answer arriving as an error
+     * rather than as an empty result.
      */
-    uniqueIndex("booking_claims_slot_key").on(t.productId, t.startsAt),
     index("booking_claims_order_idx").on(t.orderId),
+    index("booking_claims_staff_idx").on(t.staffId, t.startsAt),
   ],
 );
 
@@ -585,6 +972,27 @@ export const tickets = pgTable(
     source: text("source").default("order").notNull(),
     /** Which door pass admitted them; null means the owner's own session. */
     checkedInBy: text("checked_in_by"),
+    /**
+     * Which date this admission is for, and which band it was sold in — spec 50.
+     *
+     * Both alongside the `tier` *text* above rather than replacing it: the text
+     * is the snapshot the door list prints and must survive the tier being
+     * renamed or deleted, and these are the references the scanner and the
+     * restock path resolve.
+     */
+    sessionId: uuid("session_id"),
+    tierId: uuid("tier_id"),
+    /**
+     * The ticket this one replaced, when a buyer passed it on — spec 50.
+     *
+     * **Transfer voids the old code and mints a new one.** Not a name change:
+     * the old screenshot has to stop working, or two people arrive with one
+     * admission and the scanner is right to show amber for both. The chain is
+     * what lets a seller see a ticket that has moved three times, which is a
+     * resale pattern worth being able to see.
+     */
+    transferredFromTicketId: uuid("transferred_from_ticket_id"),
+    transferredAt: timestamp("transferred_at"),
     note: text("note"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
@@ -666,7 +1074,33 @@ export const eventReminders = pgTable(
       .references(() => products.id, { onDelete: "cascade" }),
     /** Which pass this was — see `REMINDER_LEADS` in `lib/events-reminders`. */
     lead: text("lead").notNull(),
+    /**
+     * Which session this reminder was for — spec 50.
+     *
+     * Null for an event with no sessions, which is all of them today. It is
+     * part of the *claim*, so a conference pass reminds once per day rather
+     * than once for eight days — see the unique index below.
+     */
+    sessionId: uuid("session_id"),
     sentAt: timestamp("sent_at").defaultNow().notNull(),
   },
-  (t) => [uniqueIndex("event_reminders_key").on(t.orderId, t.productId, t.lead)],
+  (t) => [
+    /*
+     * The claim, widened by the session — spec 50.
+     *
+     * Declared here without its `NULLS NOT DISTINCT`, which drizzle's builder
+     * cannot express — `0045` carries the real one, exactly as `0039` carries
+     * `stock_requests`'. The modifier is load-bearing rather than decorative:
+     * `session_id` is null for every event that has no sessions, which is all
+     * of them today, so under the default rule the constraint would not fire
+     * for precisely those rows and a single-date event would be reminded once
+     * per cron tick for ever.
+     */
+    uniqueIndex("event_reminders_key").on(
+      t.orderId,
+      t.productId,
+      t.sessionId,
+      t.lead,
+    ),
+  ],
 );

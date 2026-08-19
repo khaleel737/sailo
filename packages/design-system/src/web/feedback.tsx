@@ -42,7 +42,15 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium",
+        /*
+         * `whitespace-nowrap`, because a badge is a label and not prose. In a
+         * narrow table column "Needs evidence" wrapped onto two lines and took
+         * the whole row's height with it — so a table of twenty-five payments
+         * had twenty-five rows of two different heights for no reason anybody
+         * could see. A chip that does not fit should make its column wider, not
+         * make itself taller.
+         */
+        "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium",
         BADGE_TONES[tone],
         className,
       )}

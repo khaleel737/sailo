@@ -35,13 +35,19 @@ export type OrderFilters = {
   paymentStatus?: string | null;
   /** Matched case-insensitively; coupon codes are stored uppercase. */
   couponCode?: string | null;
+  /** Free text over buyer name, email and the headline product. */
+  search?: string | null;
 };
 
 export function hasOrderFilters(filters: OrderFilters): boolean {
   return Object.values(filters).some(Boolean);
 }
 
-export { getShopOrders } from "@sailo/commerce/shop-views";
+export {
+  getShopOrder,
+  getShopOrders,
+  getShopOrderStatusCounts,
+} from "@sailo/commerce/shop-views";
 
 /** Every coupon code that has actually been used, for the filter's options. */
 export async function usedCouponCodes(shopId: string): Promise<string[]> {

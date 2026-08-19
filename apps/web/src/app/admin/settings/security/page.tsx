@@ -17,7 +17,7 @@ export const metadata: Metadata = { title: "Security" };
 export const instant = false;
 
 export default async function SecuritySettingsPage() {
-  const { user, shop } = await requireShop();
+  const { user, shop } = await requireShop("orders:read");
   const session = await getSession();
   // `requireShop` already redirected if there were no session; this narrows
   // the type and covers the sliver where it expired mid-render.
@@ -32,7 +32,7 @@ export default async function SecuritySettingsPage() {
     <div className="space-y-6">
       <TwoFactorCard enabled={Boolean(user.twoFactorEnabled)} />
       <SessionsCard sessions={sessions} />
-      <DeleteAccountCard handle={shop.handle} blocked={obligations.blocked} />
+      <DeleteAccountCard handle={shop.handle} obligations={obligations} />
     </div>
   );
 }

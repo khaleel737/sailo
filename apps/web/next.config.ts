@@ -1,4 +1,29 @@
 import type { NextConfig } from "next";
+import { pixelCspHosts } from "@sailo/customers/pixels";
+
+/**
+ * The hosts the seller-configured pixels need, derived from the provider table
+ * rather than typed out here.
+ *
+ * They *were* typed out here, and that was the drift waiting to happen: a
+ * provider added to `shop-pixels.ts` with no matching entry in this list is a
+ * pixel that loads, is blocked by this policy, and fails **silently** — the
+ * seller's dashboard simply stays empty and nothing anywhere says why. Spec 42
+ * adds three providers at once, which is exactly when that stops being
+ * hypothetical.
+ *
+ * It is a union across every supported provider, and the spec asks for a
+ * per-shop list. It is a union because this is a static response header and
+ * headers cannot tell `/{handle}` from our own routes — the note below records
+ * that decision for the two vendors that were already here. What actually
+ * gates a pixel is unchanged and is stronger than an allowlist: the `<script>`
+ * is not rendered at all unless the seller configured that provider *and* the
+ * buyer consented, so a host named here for a shop that configured nothing is
+ * a permission nothing uses. The residual gap is real: a successful injection
+ * on a storefront could reach these hosts. Closing it needs a per-request
+ * policy, which this app's static shells do not have.
+ */
+const PIXEL_HOSTS = pixelCspHosts();
 
 const nextConfig: NextConfig = {
   /*
@@ -215,11 +240,11 @@ const nextConfig: NextConfig = {
        * shipped `BarcodeDetector`, so on an iPhone — which is what a seller
        * is holding at a door — this decoder is the only scanner there is.
        */
-      `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${devEval} https://js.stripe.com https://*.stripe.com https://www.googletagmanager.com https://va.vercel-scripts.com https://connect.facebook.net https://analytics.tiktok.com`,
+      `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${devEval} https://js.stripe.com https://*.stripe.com https://va.vercel-scripts.com ${PIXEL_HOSTS.script.join(" ")}`,
       "style-src 'self' 'unsafe-inline'",
       // Google Analytics still falls back to a tracking pixel in some paths,
       // and the Meta pixel's namesake fallback is an image request to /tr.
-      "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://picsum.photos https://images.unsplash.com https://*.stripe.com https://www.google-analytics.com https://www.googletagmanager.com https://www.facebook.com https://analytics.tiktok.com",
+      `img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://picsum.photos https://images.unsplash.com https://*.stripe.com ${PIXEL_HOSTS.img.join(" ")}`,
       "font-src 'self' data:",
       /*
        * Stripe.js posts to its own API; the app posts only to itself. The two
@@ -228,7 +253,7 @@ const nextConfig: NextConfig = {
        * the scripts load and then every event is dropped, which is the same
        * empty dashboard as before but harder to spot.
        */
-      "connect-src 'self' https://api.stripe.com https://*.stripe.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://analytics.tiktok.com",
+      `connect-src 'self' https://api.stripe.com https://*.stripe.com ${PIXEL_HOSTS.connect.join(" ")}`,
       // Checkout, the billing portal and Connect onboarding are iframed or
       // opened by Stripe.js.
       "frame-src https://js.stripe.com https://hooks.stripe.com https://*.stripe.com",
@@ -241,9 +266,80 @@ const nextConfig: NextConfig = {
       ...(isProd ? ["upgrade-insecure-requests"] : []),
     ].join("; ");
 
+    /*
+     * The testimonial embed, and the one place `frame-ancestors 'none'` is
+     * wrong — spec 35.
+     *
+     * `/embed/wall/[key]` exists to be put in an iframe on a site the seller
+     * runs somewhere else. The global policy below forbids exactly that, twice:
+     * `frame-ancestors 'none'` in the CSP and `X-Frame-Options: DENY` beside
+     * it. Overriding the CSP alone would not be enough — `X-Frame-Options` has
+     * no "allow anyone" value, so it has to be *absent*, which means the embed
+     * cannot match the global rule at all.
+     *
+     * Hence the negative lookahead on the catch-all rather than a second entry
+     * layered on top. Two rules that both match and disagree is the arrangement
+     * where a later refactor silently reinstates the deny and the failure shows
+     * up only inside somebody else's website, which nothing here would see.
+     *
+     * Its own policy is as small as the page: `default-src 'none'`, no scripts
+     * at all, its own styles, the image hosts the avatars live on, and frames
+     * from the two video hosts `isEmbeddableVideoUrl` allows. Nothing on that
+     * page reads a cookie or calls an API, so `connect-src` stays absent.
+     */
+    const embedCsp = [
+      "default-src 'none'",
+      /*
+       * `'self' 'unsafe-inline'` and no host beyond this origin.
+       *
+       * `default-src 'none'` alone was the first version and it renders a blank
+       * rectangle: React streams the document as HTML plus inline scripts that
+       * move each chunk into place, so blocking inline script does not merely
+       * disable interactivity — it stops the content arriving at all. The
+       * cross-origin iframe test is what caught it, which is the whole reason
+       * that test exists.
+       *
+       * What this still buys, on a page inside a stranger's site: no external
+       * script host of any kind, no analytics, no pixels, and nothing this page
+       * renders is user-controlled markup — the two seller-supplied URLs are
+       * an allowlisted image host and an allowlisted video frame.
+       */
+      `script-src 'self' 'unsafe-inline'${devEval}`,
+      // Next's own bootstrap talks to the origin it was served from. Nothing on
+      // this page calls anything else, and no other host is named.
+      "connect-src 'self'",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: https://*.public.blob.vercel-storage.com https://picsum.photos https://images.unsplash.com",
+      "font-src 'self' data:",
+      // The two hosts the write-time allowlist permits, and no others.
+      "frame-src https://www.youtube-nocookie.com https://player.vimeo.com",
+      "base-uri 'none'",
+      "form-action 'none'",
+      // The whole point of the route.
+      "frame-ancestors *",
+    ].join("; ");
+
     return [
       {
-        source: "/:path*",
+        source: "/embed/:path*",
+        headers: [
+          { key: "Content-Security-Policy", value: embedCsp },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          // Deliberately no `X-Frame-Options`: there is no value that means
+          // "anyone may frame this", so the header must not be sent.
+          { key: "Referrer-Policy", value: "no-referrer" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+          },
+        ],
+      },
+      {
+        /*
+         * Everything except the embed. See the note above for why this is a
+         * lookahead rather than a second rule stacked on `/:path*`.
+         */
+        source: "/((?!embed/).*)",
         headers: [
           { key: "Content-Security-Policy", value: csp },
           { key: "X-Content-Type-Options", value: "nosniff" },

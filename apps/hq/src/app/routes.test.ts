@@ -66,10 +66,6 @@ describe("routes this app links to", () => {
     expect(offenders).toEqual([]);
   });
 
-  /*
-   * Static paths only. A template literal with an id in it cannot be resolved
-   * here, and the prefix check above is what covers those.
-   */
   it("only names paths this deployment serves", () => {
     const unknown = new Set<string>();
 
@@ -86,5 +82,39 @@ describe("routes this app links to", () => {
     }
 
     expect([...unknown]).toEqual([]);
+  });
+
+  /*
+   * And the paths carrying an id, which are the ones that break.
+   *
+   * `/orders/${order.id}` shipped on the dispute page against an app that
+   * served `/orders` and nothing under it, so every one of those links was a
+   * 404 — and the two checks above both passed it. The prefix check only looks
+   * for `/hq`, and the static check cannot resolve a template literal so it
+   * skips them entirely. That left the exact shape this app is built from — a
+   * list linking to a record — as the one shape nothing tested.
+   *
+   * A template literal cannot be resolved to a URL here, but it does not need
+   * to be. Interpolating anything at all means a *segment below the prefix* is
+   * being addressed, so the assertion is that this deployment serves something
+   * under that prefix — which `/orders` alone did not.
+   */
+  it("serves a child route for every path built around an id", () => {
+    const unreachable = new Set<string>();
+
+    for (const { code: c } of sources) {
+      for (const match of code(c).matchAll(
+        /(?:href|action)=\{`(\/[a-z0-9/-]*\/)\$\{/gi,
+      )) {
+        const prefix = match[1];
+        if (!prefix) continue;
+        const served = [...routes].some(
+          (route) => route.startsWith(prefix) && route.length > prefix.length,
+        );
+        if (!served) unreachable.add(`${prefix}\${…}`);
+      }
+    }
+
+    expect([...unreachable]).toEqual([]);
   });
 });

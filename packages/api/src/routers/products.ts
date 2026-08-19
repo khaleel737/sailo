@@ -2,7 +2,11 @@ import { z } from "zod";
 import { eq, } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { products, shops } from "@sailo/db/schema";
-import { PRODUCT_KIND_VALUES } from "@sailo/core/variants";
+import {
+  DIGITAL_DELIVERY_VALUES,
+  MAX_QUANTITY,
+  PRODUCT_KIND_VALUES,
+} from "@sailo/core/variants";
 import {
   deleteProduct,
   saveProduct,
@@ -109,6 +113,8 @@ const productInput = z.object({
   kind: z.enum(PRODUCT_KIND_VALUES),
   categoryId: z.uuid().nullish(),
   tags: z.array(z.string().max(40)).max(24).optional(),
+  sku: z.string().max(60).nullish(),
+  maxPerOrder: z.number().int().min(0).max(MAX_QUANTITY).nullish(),
   options: z
     .array(z.object({ name: z.string(), values: z.array(z.string()) }))
     .optional(),
@@ -119,6 +125,15 @@ const productInput = z.object({
   trackInventory: z.boolean().optional(),
   stockQuantity: z.number().int().min(0).nullish(),
 
+  /*
+   * The shape of the good, not just its files. Which of the three fields
+   * below has to be filled in is `saveProduct`'s to refuse — the same place
+   * that checks the URL is one this server may put in front of a buyer, which
+   * a `z.url()` cannot answer.
+   */
+  digitalDelivery: z.enum(DIGITAL_DELIVERY_VALUES).optional(),
+  digitalLinkUrl: z.string().max(2000).nullish(),
+  digitalAccessDetails: z.string().max(2000).nullish(),
   releaseOnPayment: z.boolean().optional(),
   downloadLimit: z.number().int().min(0).max(1000).nullish(),
   downloadExpiryDays: z.number().int().min(0).max(3650).nullish(),
@@ -128,11 +143,20 @@ const productInput = z.object({
   serviceLocation: z.string().max(500).nullish(),
   bookingEnabled: z.boolean().optional(),
   bookingLeadHours: z.number().int().min(0).max(24 * 365).optional(),
+  bookingBufferMinutes: z.number().int().min(0).max(24 * 60).nullish(),
 
   eventStartsAt: z.coerce.date().nullish(),
+  eventEndsAt: z.coerce.date().nullish(),
   eventJoinUrl: z.string().max(500).nullish(),
 
   billingInterval: z.string().max(20).nullish(),
+  /*
+   * Bounded at the widest interval's ceiling — 365, for days. The exact
+   * ceiling depends on which interval it is paired with and is Stripe's rule
+   * rather than ours, so `normalizeIntervalCount` clamps it where the pair is
+   * known. This is only the guard that stops an absurd number reaching it.
+   */
+  billingIntervalCount: z.number().int().min(1).max(365).nullish(),
   trialDays: z.number().int().min(0).nullish(),
 
   inStock: z.boolean().optional(),

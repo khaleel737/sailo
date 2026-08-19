@@ -6,6 +6,8 @@ import { absolute } from "@sailo/core/origin";
 import { shopJsonLd } from "@/lib/seo";
 import { shopThemeVars } from "@sailo/design-system/web/cn";
 import { getShopPageData } from "./_lib/get-shop-page-data";
+import { checkoutTestimonials } from "@/lib/queries";
+import { TestimonialStrip } from "./_components/testimonial-strip";
 import { CartRegion } from "./_components/cart/cart-region";
 import { complianceOf } from "./_components/cart/checkout.types";
 import { hasPixels } from "@sailo/customers/pixels";
@@ -16,6 +18,7 @@ import { ReferralCapture } from "./_components/referral-capture";
 import { ShareButton } from "./_components/share-button";
 import { ShopFooter } from "./_components/shop-footer";
 import { ShopHeader } from "./_components/shop-header";
+import { AboutBlock, FaqBlock } from "./_components/shop-sections";
 import { ShopTracking } from "./_components/shop-tracking";
 import { SubscribeCard } from "./_components/subscribe-card";
 import { SubscribePopup } from "./_components/subscribe-popup";
@@ -93,6 +96,12 @@ export default async function ShopPage({
     productTotal,
     nextOffset,
     hasFilters,
+    about,
+    faq,
+    legalLinks,
+    testimonials,
+    currency,
+    currencyOptions,
   } = await getShopPageData(handle, filters);
 
   return (
@@ -106,6 +115,9 @@ export default async function ShopPage({
       locale={locale}
       methods={checkout.methods}
       deliveryOptions={checkout.deliveryOptions}
+      blockedCountries={checkout.blockedCountries}
+      proof={<TestimonialStrip items={checkoutTestimonials(testimonials)} t={t} compact />}
+      customFields={checkout.customFields}
       contactEmail={shop.contactEmail}
       compliance={complianceOf(shop)}
       t={t}
@@ -228,6 +240,18 @@ export default async function ShopPage({
           </main>
 
           {/*
+            Under the catalogue and above the signup card. Somebody who read the
+            whole shop and did not buy is often held up by a question, and the
+            answer belongs before the ask for an email address rather than after
+            it. Both render nothing until the seller publishes them.
+          */}
+          {/* Spec 35 — under the products, above the seller's own blocks, and
+              riding `shopTag` so approving one makes it appear here. */}
+          <TestimonialStrip items={testimonials} t={t} />
+          <AboutBlock page={about} />
+          <FaqBlock page={faq} t={t} />
+
+          {/*
             Under the catalogue, not over it. A signup card above the products
             asks for an address before the visitor has any reason to give one;
             below, it catches the person who scrolled the whole shop and did
@@ -255,6 +279,9 @@ export default async function ShopPage({
           <ShopFooter
             shop={shop}
             affiliatesLive={affiliatesLive}
+            shopPages={legalLinks}
+            currency={currency}
+            currencyOptions={currencyOptions}
             locale={locale}
             t={t}
           />

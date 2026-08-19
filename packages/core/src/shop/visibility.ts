@@ -60,6 +60,7 @@ export const PRODUCT_KIND_LABELS: Record<ProductKind, string> = {
   service: "Service",
   event: "Event tickets",
   membership: "Membership",
+  lead: "Enquiry form",
 };
 
 export const PRODUCT_KINDS = PRODUCT_KIND_VALUES.map((value) => ({

@@ -12,7 +12,7 @@ import { clients, orders, products, subscriptions, type Shop, type Subscription 
 import { createInvoiceForOrder } from "@/lib/invoices";
 import { downloadUrl } from "@/lib/downloads";
 import { publishShopEvent } from "@sailo/events";
-import { emitSubscriptionWebhook } from "@sailo/webhooks/emit";
+import { announceSubscriptionEvent } from "@sailo/workflows/orders";
 import { notifySellerMembershipPaymentFailed } from "@sailo/workflows/memberships/notify-seller";
 import { releaseDownloads } from "@/lib/downloads";
 import { sendMembershipPaymentFailed, sendMembershipStarted } from "@/lib/email";
@@ -117,7 +117,7 @@ export async function handleMembershipInvoicePaid(
    * money is never silent either way.
    */
   if (!firstPayment) {
-    await emitSubscriptionWebhook({
+    await announceSubscriptionEvent({
       shop,
       event: "subscription.renewed",
       subscriptionId: row.id,
@@ -295,7 +295,7 @@ export async function handleMembershipInvoiceFailed(
    * it from a member whose card expired and was replaced the same afternoon —
    * `subscription.ended` is the event for revoking.
    */
-  await emitSubscriptionWebhook({
+  await announceSubscriptionEvent({
     shop,
     event: "subscription.payment_failed",
     subscriptionId: row.id,

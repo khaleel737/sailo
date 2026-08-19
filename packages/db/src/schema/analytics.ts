@@ -196,3 +196,63 @@ export const staffActions = pgTable(
 /* -------------------------------------------------------------------------- */
 /*  Relations                                                                  */
 /* -------------------------------------------------------------------------- */
+
+
+/**
+ * A public link to one number.
+ *
+ * **The most dangerous thing in spec 42**, and every column is one of the
+ * rules that makes it safe. A seller sharing a revenue chart with a partner or
+ * a landlord is a real use; a public URL rendering a shop's revenue is a real
+ * hazard, and the difference is entirely in the constraints.
+ *
+ * **The token is hashed**, like `apiKeys`: a dump of this table is not a set of
+ * working links. **`expiresAt` is not null** — a link that never expires is a
+ * permanent public revenue feed, and "they can revoke it" is no answer for one
+ * a seller forgot they made. And **`metric` and `range` live on the row, not
+ * in the URL**: one number and one fixed window per token, so nobody can edit
+ * a link into a different figure or a wider period, because neither is a
+ * parameter.
+ *
+ * There is no `dashboard` value for `metric` and there must not be one.
+ */
+export const analyticsShares = pgTable(
+  "analytics_shares",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    shopId: uuid("shop_id")
+      .notNull()
+      .references(() => shops.id, { onDelete: "cascade" }),
+
+    /** One of `SHARE_METRICS`. Aggregates only. */
+    metric: text("metric").notNull(),
+    /** One of `SHARE_RANGES`, fixed at creation. */
+    range: text("range").notNull(),
+
+    tokenHash: text("token_hash").notNull(),
+    /** The leading characters, so the settings list can name a link. Not a secret. */
+    tokenPrefix: text("token_prefix").notNull(),
+
+    expiresAt: timestamp("expires_at").notNull(),
+    revokedAt: timestamp("revoked_at"),
+
+    /**
+     * Who made it.
+     *
+     * An address rather than a user id, and deliberately: staff change, and
+     * the question a seller asks a year later is "who shared our revenue" —
+     * which a deleted account should not be able to erase.
+     */
+    createdByEmail: text("created_by_email"),
+    lastViewedAt: timestamp("last_viewed_at"),
+    viewCount: integer("view_count").default(0).notNull(),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    /* The public route's only lookup. Unique, because two rows with one hash
+       would be two shops behind one link. */
+    uniqueIndex("analytics_shares_token_hash_key").on(t.tokenHash),
+    index("analytics_shares_shop_idx").on(t.shopId, t.createdAt),
+  ],
+);

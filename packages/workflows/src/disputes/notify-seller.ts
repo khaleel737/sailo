@@ -89,10 +89,17 @@ async function underCeiling(shopId: string): Promise<boolean> {
  */
 async function claim(
   disputeId: string,
+  /*
+   * `staffDeadlineNotifiedAt` joins the three seller columns here rather than
+   * getting a claim of its own, because the *mechanism* is identical and it is
+   * the mechanism that is load-bearing. What must not be shared is the column —
+   * see spec 46 — and that is exactly what this argument keeps distinct.
+   */
   column:
     | "sellerOpenedNotifiedAt"
     | "sellerDeadlineNotifiedAt"
-    | "sellerClosedNotifiedAt",
+    | "sellerClosedNotifiedAt"
+    | "staffDeadlineNotifiedAt",
 ): Promise<boolean> {
   const db = getDb();
   const claimed = await db
@@ -414,4 +421,68 @@ export async function sendDueDisputeReminders(now = new Date()): Promise<{
   }
 
   return { considered: due.length, sent };
+}
+
+/**
+ * The platform-side twin: claim the "Sailo's own chargeback is about to lapse"
+ * notice.
+ *
+ * Spec 46. The sweep above is for a seller and is scoped `connected`; this one is
+ * for the desk. Same shape, and the same claim discipline — a conditional update
+ * on `staffDeadlineNotifiedAt`, so two overlapping ticks page once — but the
+ * columns are different on purpose. Reusing the seller ones would make a column
+ * mean two things depending on `scope`, which is the shape of bug that silently
+ * stops notifying somebody.
+ *
+ * **It returns the claimed rows rather than alerting.** There is no seller to
+ * email; the audience is staff, and the channel they already watch is
+ * `captureMessage`, which lives in `@sailo/observability` — a package this one
+ * does not depend on and should not start depending on for one line. The caller
+ * (the cron route, which already imports it) does the alerting. That also keeps
+ * the claim and the alert one step apart in a way worth stating: the claim is
+ * what makes it once, and losing an alert to a crash between them is the cheaper
+ * side of the trade than paging the desk on every tick.
+ */
+export async function claimDuePlatformDisputes(now = new Date()): Promise<
+  {
+    id: string;
+    stripeDisputeId: string;
+    reason: string;
+    deductedCents: number;
+    currency: string;
+    dueBy: Date | null;
+  }[]
+> {
+  const db = getDb();
+  const horizon = new Date(now.getTime() + 4 * 86_400_000);
+
+  const due = await db
+    .select()
+    .from(disputes)
+    .where(
+      and(
+        isNull(disputes.staffDeadlineNotifiedAt),
+        gte(disputes.dueBy, now),
+        lte(disputes.dueBy, horizon),
+        isNull(disputes.evidenceSubmittedAt),
+        sql`${disputes.status} in ('needs_response', 'warning_needs_response')`,
+        eq(disputes.scope, "platform"),
+      ),
+    )
+    .limit(200);
+
+  const claimed: Awaited<ReturnType<typeof claimDuePlatformDisputes>> = [];
+  for (const row of due) {
+    if (!(await claim(row.id, "staffDeadlineNotifiedAt"))) continue;
+    claimed.push({
+      id: row.id,
+      stripeDisputeId: row.stripeDisputeId,
+      reason: row.reason,
+      deductedCents: row.deductedCents,
+      currency: row.currency,
+      dueBy: row.dueBy,
+    });
+  }
+
+  return claimed;
 }

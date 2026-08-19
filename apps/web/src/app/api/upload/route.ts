@@ -14,7 +14,7 @@ import { storeUpload } from "@sailo/storage/blob";
 
 export async function POST(request: Request) {
   // Redirects if unauthenticated, so only shop owners can write to the store.
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
 
   /*
    * A guard is not a ceiling. Signup is open, so "an authenticated seller" is

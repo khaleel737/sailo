@@ -1,17 +1,20 @@
 import { describe, expect, it } from "vitest";
 import {
   BILLING_INTERVALS,
+  MAX_INTERVAL_COUNT,
   addInterval,
   anyAccess,
   canStillInvoice,
   feeBpFromPercent,
   feePercentFromBp,
+  intervalCountOf,
   isManual,
   nextPeriodEnd,
   intervalOf,
   isBillingInterval,
   membershipAccess,
   membershipSellable,
+  normalizeIntervalCount,
   normalizeTrialDays,
   priceIsStale,
 } from "./memberships";
@@ -123,7 +126,13 @@ describe("what may be sold as a membership", () => {
 
   it("refuses one with no interval, which nothing can schedule", () => {
     expect(membershipSellable(product({ billingInterval: null }))).toBe(false);
-    expect(membershipSellable(product({ billingInterval: "week" }))).toBe(false);
+    expect(membershipSellable(product({ billingInterval: "fortnight" }))).toBe(false);
+  });
+
+  it("sells on every interval Stripe recurs on, not just two of them", () => {
+    for (const interval of BILLING_INTERVALS) {
+      expect(membershipSellable(product({ billingInterval: interval }))).toBe(true);
+    }
   });
 
   it("refuses a product that is not a membership at all", () => {
@@ -132,10 +141,13 @@ describe("what may be sold as a membership", () => {
 });
 
 describe("intervals and trials", () => {
-  it("knows only the two Stripe recurring intervals we sell", () => {
-    expect(BILLING_INTERVALS).toEqual(["month", "year"]);
+  it("knows Stripe's four recurring intervals and nothing else", () => {
+    expect(BILLING_INTERVALS).toEqual(["day", "week", "month", "year"]);
     expect(isBillingInterval("month")).toBe(true);
-    expect(isBillingInterval("week")).toBe(false);
+    expect(isBillingInterval("week")).toBe(true);
+    // Ours to name would be a mistake: Stripe's model is an interval and a
+    // count, so a quarter is three months rather than a fifth interval.
+    expect(isBillingInterval("quarter")).toBe(false);
     expect(isBillingInterval(null)).toBe(false);
   });
 
@@ -199,6 +211,67 @@ describe("whether the cached Stripe Price is still right", () => {
      */
     expect(priceIsStale(cached({ billingInterval: "year" }))).toBe(true);
   });
+
+  it("is stale when only the count changed", () => {
+    /*
+     * The one neither the amount nor the interval can see: monthly to
+     * quarterly changes no number and no interval, so both checks above pass
+     * an unchanged product and every new member goes on being billed every
+     * month against a Price the seller no longer sells.
+     */
+    expect(priceIsStale(cached({ billingIntervalCount: 3 }))).toBe(true);
+    expect(
+      priceIsStale(cached({ billingIntervalCount: 3, stripePriceIntervalCount: 3 })),
+    ).toBe(false);
+  });
+
+  it("reads a Price minted before the column existed as a count of one", () => {
+    // Stripe's own default, so the fallback is a fact rather than a guess —
+    // and without it every existing membership would re-mint on the next
+    // subscribe for no reason.
+    expect(priceIsStale(cached({ stripePriceIntervalCount: null }))).toBe(false);
+  });
+});
+
+describe("how many intervals per charge", () => {
+  it("treats every way of not choosing as one", () => {
+    expect(normalizeIntervalCount(undefined)).toBe(1);
+    expect(normalizeIntervalCount(null)).toBe(1);
+    expect(normalizeIntervalCount(0)).toBe(1);
+    expect(normalizeIntervalCount(-4)).toBe(1);
+    expect(normalizeIntervalCount("")).toBe(1);
+  });
+
+  it("keeps a real one and truncates a fraction", () => {
+    expect(normalizeIntervalCount(3)).toBe(3);
+    expect(normalizeIntervalCount("6")).toBe(6);
+    expect(normalizeIntervalCount(2.9)).toBe(2);
+  });
+
+  it("clamps to Stripe's one-year ceiling, per interval", () => {
+    /*
+     * Clamped rather than refused: "every 400 days" is a typo for something,
+     * and the nearest legal cycle beats a saved product Stripe will not create
+     * a Price for — which the seller would meet through a buyer's failed
+     * checkout rather than at the field.
+     */
+    expect(normalizeIntervalCount(400, "day")).toBe(365);
+    expect(normalizeIntervalCount(80, "week")).toBe(52);
+    expect(normalizeIntervalCount(18, "month")).toBe(12);
+    expect(normalizeIntervalCount(5, "year")).toBe(1);
+    expect(MAX_INTERVAL_COUNT.month).toBe(12);
+  });
+
+  it("clamps against the interval the product actually sells on", () => {
+    expect(
+      intervalCountOf({ billingInterval: "year", billingIntervalCount: 4 }),
+    ).toBe(1);
+    expect(
+      intervalCountOf({ billingInterval: "month", billingIntervalCount: 3 }),
+    ).toBe(3);
+    // A trimmed row that never carried the column bills the ordinary cycle.
+    expect(intervalCountOf({ billingInterval: "month" })).toBe(1);
+  });
 });
 
 /**
@@ -234,6 +307,73 @@ describe("moving a period on", () => {
     for (let i = 0; i < 12; i += 1) date = addInterval(date, "month");
     expect(date.getUTCDate()).toBe(15);
     expect(date.getUTCFullYear()).toBe(2027);
+  });
+
+  it("adds several months at once, and still clamps", () => {
+    /*
+     * Quarterly, which is three months rather than a fifth interval of its
+     * own — Stripe's model, and the reason there is no `quarter`.
+     *
+     * Asserted on the calendar rather than on the instant, because a span of
+     * three months can cross a clock change: `addInterval` works in local wall
+     * time on purpose, so a member renewing at 09:00 goes on renewing at
+     * 09:00 and the UTC offset behind it is allowed to move.
+     */
+    const quarter = addInterval(at("2026-01-15T09:00:00Z"), "month", 3);
+    expect(quarter.getMonth()).toBe(3); // April
+    expect(quarter.getDate()).toBe(15);
+
+    // 30 November + 3 months is 30 February; the last day of February is the
+    // answer, not the 2nd of March.
+    const clamped = addInterval(at("2025-11-30T09:00:00Z"), "month", 3);
+    expect(clamped.getMonth()).toBe(1);
+    expect(clamped.getDate()).toBe(28);
+  });
+
+  it("adds days and weeks as exact spans", () => {
+    /*
+     * No calendar clamping applies to either — there is no such thing as the
+     * 31st of a week — so both are `setDate`, which rolls into the next month
+     * correctly on its own. A fortnightly box crossing a month end is the
+     * case that would break under month arithmetic.
+     */
+    expect(addInterval(at("2026-01-15T09:00:00Z"), "week", 2).toISOString()).toBe(
+      "2026-01-29T09:00:00.000Z",
+    );
+    expect(addInterval(at("2026-01-25T09:00:00Z"), "week", 2).toISOString()).toBe(
+      "2026-02-08T09:00:00.000Z",
+    );
+    expect(addInterval(at("2026-01-15T09:00:00Z"), "day", 10).toISOString()).toBe(
+      "2026-01-25T09:00:00.000Z",
+    );
+  });
+
+  it("folds a missing or silly count back to one interval", () => {
+    expect(addInterval(at("2026-01-15T09:00:00Z"), "month").toISOString()).toBe(
+      addInterval(at("2026-01-15T09:00:00Z"), "month", 0).toISOString(),
+    );
+    // Clamped to Stripe's ceiling rather than adding four years.
+    expect(addInterval(at("2026-01-15T09:00:00Z"), "year", 4).getUTCFullYear()).toBe(
+      2027,
+    );
+  });
+
+  it("renews a quarterly member a quarter on, not a month", () => {
+    /*
+     * The whole reason `subscriptions.interval_count` is a column. The manual
+     * renewal reads the subscription rather than the product, and "month"
+     * alone cannot say three of them — so without the count a quarterly
+     * member is asked to pay again after four weeks.
+     */
+    const periodEnd = at("2026-03-01T12:00:00Z");
+    const now = at("2026-02-25T12:00:00Z");
+    const next = nextPeriodEnd(periodEnd, "month", now, 3);
+    expect(next.getMonth()).toBe(5); // June, not April
+    expect(next.getDate()).toBe(periodEnd.getDate());
+
+    // And without it, the same member is asked to pay again after one month —
+    // which is exactly what happened before `subscriptions.interval_count`.
+    expect(nextPeriodEnd(periodEnd, "month", now).getMonth()).toBe(3);
   });
 
   it("adds a year, and 29 February becomes 28 February", () => {

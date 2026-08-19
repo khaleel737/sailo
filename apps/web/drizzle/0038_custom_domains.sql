@@ -1,0 +1,15 @@
+-- Nothing. This number is spent, and the file exists to say so.
+--
+-- 0038 was claimed for spec 39, custom domains. The owner then decided the
+-- feature is never being built: a shop's address is `sailo.store/<handle>` and
+-- will stay that way. The spec is in `docs/specs/deferred/` with the reasoning.
+--
+-- The number cannot simply be released. `src/lib/migrations.test.ts` requires
+-- the sequence to run from 0001 with no gaps — sort order is apply order, and
+-- a hole in it is the one thing nobody can reconstruct later — and 0039
+-- onwards were claimed by other agents while this was in flight. Renumbering
+-- them to close the gap would rewrite the only record anyone has of what was
+-- already applied where, which `drizzle/README.md` is explicit about being the
+-- worse trade.
+--
+-- Safe to apply, and applying it does nothing.

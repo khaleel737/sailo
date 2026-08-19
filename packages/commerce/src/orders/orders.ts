@@ -4,6 +4,7 @@ import { getDb } from "@sailo/db";
 import { orders, type Order, type Shop } from "@sailo/db/schema";
 import type { OrderStatus } from "@sailo/core/order-status";
 import { isStockReleasingStatus, restoreStock, retakeStock } from "../catalog/inventory";
+import { revokeDigitalGoodsForOrder } from "./digital-revoke";
 import { reinstateTicketsForOrder, voidTicketsForOrder } from "../ticketing/tickets";
 import { emitOrderWebhook } from "@sailo/webhooks/emit";
 
@@ -97,6 +98,13 @@ export async function applyOrderStatus(input: {
      * and both people can turn up.
      */
     await voidTicketsForOrder(input.orderId);
+    /*
+     * And the codes and licences, for the same reason and at the same moment —
+     * spec 48. A revoked code is not returned to the pool; see
+     * `revokeDigitalGoodsForOrder` for why, and `restoreStock` for what the
+     * count is used for.
+     */
+    await revokeDigitalGoodsForOrder(input.orderId);
   } else if (previous.status === "cancelled" && previous.restockedAt) {
     /*
      * Only *cancelled* is reversible, and the asymmetry is deliberate.

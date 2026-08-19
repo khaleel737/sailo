@@ -42,7 +42,7 @@ const TONES = {
 const PREVIEW = 5;
 
 export default async function BroadcastsPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:read");
   const { a, locale } = await getAdminT();
   const { t } = await getT();
 
@@ -77,13 +77,33 @@ export default async function BroadcastsPage() {
             </h2>
             <p className="mt-0.5 text-xs text-ink-500">{a.broadcasts.listBody}</p>
           </div>
-          {stats.consented > 0 ? (
-            <Link href="/admin/broadcasts/subscribers">
+          {/*
+            Three doors onto the same audience, and they are three because the
+            questions are: who is on it, how it is grouped, and who has left.
+            `Lists` and `Unsubscribed` show whatever the count — a seller with
+            no subscribers still needs to be able to make the list they are
+            about to collect into, and an empty suppression screen is the
+            answer to "why is my reach falling", not a screen to hide.
+          */}
+          <div className="flex flex-wrap items-center gap-2">
+            {stats.consented > 0 ? (
+              <Link href="/admin/broadcasts/subscribers">
+                <Button variant="secondary" size="sm">
+                  {a.broadcasts.seeAllSubscribers}
+                </Button>
+              </Link>
+            ) : null}
+            <Link href="/admin/broadcasts/lists">
               <Button variant="secondary" size="sm">
-                {a.broadcasts.seeAllSubscribers}
+                {a.broadcasts.listsTitle}
               </Button>
             </Link>
-          ) : null}
+            <Link href="/admin/broadcasts/unsubscribed">
+              <Button variant="secondary" size="sm">
+                {a.broadcasts.unsubscribedTitle}
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {recent.length === 0 ? (

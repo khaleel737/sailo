@@ -81,6 +81,16 @@ export const en = {
     unavailable: "Unavailable",
     joinOnSailo: "Join {shop} on Sailo", loadMore: "Load more",
     earnBySharing: "Earn {percent}% by sharing this shop",
+    /*
+     * The currency switcher's accessible name — spec 53.
+     *
+     * One key, because the control's faces are currency symbols and its
+     * options' names come from `Intl.DisplayNames`, which already ships every
+     * currency translated into all thirty-five languages. A dictionary entry
+     * per currency would be nine more keys to translate for something the
+     * platform already knows.
+     */
+    currencyLabel: "Currency",
     // A badge answers "what happens after I pay?", not "what category is
     // this?". `kind*` is the product page; `label*` is the smaller card badge,
     // where physical is the unmarked default.
@@ -134,6 +144,80 @@ export const en = {
     reviewThanks: "Thanks! Your review is awaiting approval.",
     star: "{count} star",
     stars: "{count} stars",
+  },
+
+  /**
+   * What a price *is*, when it is not simply a number — spec 43.
+   *
+   * Its own section rather than more keys inside `checkout`, and the reason is
+   * mechanical rather than editorial: `checkout` is one of the protected money
+   * sections, which `i18n:fill` refuses to write into at all — so a new key
+   * there is a hole in thirty-four locales that no filler may ever close, and a
+   * storefront hole is a compile error. These strings are money-adjacent and
+   * should join the protected list once a human has read them in every
+   * language; until then they are fillable, which is the difference between a
+   * feature that ships translated and one that does not ship.
+   */
+  pricing: {
+    payWhatYouWant: "Pay what you want",
+    nameYourPrice: "Name your price",
+    atLeast: "At least {amount}",
+    /* A floor of zero is the seller saying this may be free, which is the whole
+       of a donation. "At least £0.00" would read as a bug on the one product
+       where free is the point. */
+    payAnything: "Pay whatever you like, including nothing",
+    notYetOnSale: "Not on sale yet",
+    noLongerAvailable: "No longer available",
+    opensOn: "Opens {date}",
+    closesOn: "Sales close {date}",
+  },
+
+  /**
+   * Wanting something there is none of — spec 33.
+   *
+   * Its own section rather than keys inside `checkout` or `cart`, for the
+   * mechanical reason `pricing` above gives: both of those are protected money
+   * sections that `i18n:fill` refuses to write into, so a new key there is a
+   * hole in thirty-four locales that nothing can close — and a storefront hole
+   * is a compile error.
+   *
+   * Every string here is written to be true whether or not a row was written.
+   * "You'll hear from us" is the answer in all cases, because a reply that
+   * varied would say which of a seller's variants exist and who is watching
+   * them.
+   */
+  stock: {
+    tellMe: "Tell me when it's back",
+    emailPlaceholder: "you@example.com",
+    contactPlaceholder: "Email or phone",
+    notifyMe: "Notify me",
+    queued: "You'll hear from us when it's back. We haven't held one for you — anyone can buy it.",
+    onceOnly: "One message, when it returns. Nothing else. {shop}",
+    /* Nothing was written, and this says only that. Never anything about
+       stock — a buyer told "you'll hear from us" when nothing was recorded is
+       a buyer who waits for ever. */
+    tryAgain: "Couldn't do that just now. Try again shortly.",
+    /* A preorder's date is shown *before* the buyer commits. Null is not a
+       blank: "no date given" is an honest answer and a blank reads as one that
+       failed to load. */
+    preorder: "Preorder",
+    expected: "Expected {date}",
+    noDate: "No date yet — the seller will confirm",
+    refundNote: "If it never ships, {shop}'s refund policy applies.",
+  },
+
+  /**
+   * A companion product, offered after the receipt — spec 36.
+   *
+   * Its own section rather than keys in `checkout` or `cart`, for the same
+   * mechanical reason `pricing` and `stock` above give: both are protected money
+   * sections a filler may not write into, and a storefront hole is a compile
+   * error nothing can close.
+   */
+  offers: {
+    alsoLike: "You might also like",
+    addIt: "Add it",
+    noThanks: "No thanks",
   },
 
   checkout: {
@@ -207,8 +291,10 @@ export const en = {
     duration: "Takes {duration}",
     online: "Online",
     inPerson: "In person",
+    /* "What you bought" rather than "your download": the same line now covers
+       a link and an access code, and neither of those is a download. */
     downloadAfterPayment:
-      "Your download unlocks as soon as {shop} confirms your payment.",
+      "What you bought unlocks as soon as {shop} confirms your payment.",
     getFiles: "Get your files",
     termsAgree: "I agree to the terms and conditions",
     termsView: "Read them",
@@ -255,7 +341,139 @@ export const en = {
     usedUp:
       "You've used every download on this link. Get in touch with {shop} if you need it again.",
     notReady: "Your files unlock once {shop} confirms your payment.",
+    /*
+     * A digital product that is a link or a code rather than a file. Same
+     * gate, same page, different noun — "Download" would be a button that
+     * downloads nothing.
+     */
+    linkLabel: "Your link",
+    codeLabel: "Your access details",
+    open: "Open",
     visitShop: "Visit {shop}",
+  },
+
+
+  /*
+   * Spec 41 — the chrome around a seller's own hosted documents.
+   *
+   * The chrome only. The documents themselves are English and stay English:
+   * a template in thirty-five languages is thirty-five legal documents, and a
+   * machine-translated refund clause is precisely the case Decision A says is
+   * never machine-translatable. What is translated here is the frame — the
+   * link back to the shop, the section headings, and the disclaimer, which is
+   * the one sentence on the page that has to be understood by everybody.
+   */
+  pages: {
+    /*
+     * Not optional and not dismissible, on every generated legal page and at
+     * the top of the generator. The register is borrowed from Easytools' own
+     * tax wizard, and it is the right one: it respects the reader, it does not
+     * pretend the output is advice, and it puts responsibility where it sits.
+     */
+    disclaimer:
+      "This document was produced from a template and edited by the shop. It is a starting point, not legal advice.",
+    /** The heading over the FAQ accordion, when the seller left theirs blank. */
+    faq: "Frequently asked questions",
+    /** The label on the footer row holding the shop's own documents. */
+    shopPolicies: "Shop policies",
+    visitShop: "Visit {shop}",
+  },
+
+  /*
+   * Spec 40 — the lesson list on the buyer's own delivery page.
+   *
+   * Its own section rather than keys under `download`, and deliberately: that
+   * one is a protected money section — `glossary.ts` lists it, because it is
+   * what a digital sale actually delivers — so a machine may not write into it.
+   * These are the chrome around an ordered list, which it may.
+   *
+   * The wording of `locked` and `unlocksIn` carries the one thing this feature
+   * must get right in front of a buyer: an item they cannot open yet is
+   * *waiting*, not missing. A lapsed member reads the same list and needs to
+   * see what they had.
+   */
+  collection: {
+    progress: "{percent}% complete",
+    continueLabel: "Continue where you left off",
+    preview: "Free preview",
+    locked: "Unlocks when your access starts",
+    unlocksIn: "Unlocks in {days} days",
+    markDone: "Mark as done",
+    done: "Done",
+    open: "Open",
+  },
+
+  /*
+   * Spec 52 — a buyer asking what a shop holds about them.
+   *
+   * Every string here is read by somebody with no account, cold, from a link in
+   * a footer. The three that matter most are `received`, `unavailable` and
+   * `badLink`, and they are worded against three different mistakes:
+   *
+   *   `received` is the **only** thing the form ever says on success, whether
+   *   the address is known, unknown or suppressed. A form that answered
+   *   differently would be a customer-list oracle, on a form whose subject is
+   *   literally whether somebody is in a database.
+   *
+   *   `unavailable` is not an answer about the request. Decision B has this
+   *   endpoint failing closed, and a throttled or degraded refusal has to read
+   *   as "we could not check" — the same rule `COUPON_MESSAGES.unavailable`
+   *   follows.
+   *
+   *   `badLink` never says whether the request existed, only that the link does
+   *   not work.
+   */
+  dataRequest: {
+    title: "Request your data",
+    body: "Ask {shop} for a copy of what they hold about you, or ask them to delete it.",
+    emailLabel: "The email address you used",
+    kindLabel: "What are you asking for?",
+    kindAccess: "A copy of what you hold about me",
+    kindPortability: "A portable copy I can take elsewhere",
+    kindErasure: "Delete what you hold about me",
+    cta: "Send my request",
+    received:
+      "Thanks. If we hold anything for that address, we've sent a link there to confirm it's you. Nothing happens until you click it.",
+    note: "This covers this shop only. Other shops on Sailo keep their own separate records and have to be asked separately.",
+    confirmed: "Confirmed — thank you",
+    confirmedBody:
+      "{shop} has {days} days to answer. We'll email you at this address when they do.",
+    badLink: "This link doesn't open anything",
+    badLinkBody:
+      "It may have expired, or already been used. Ask {shop} again from their shop page and a new link will be sent.",
+    unavailable: "We couldn't check that just now. Try again in a moment.",
+    /** The storefront footer's own link. Short: it sits beside five others. */
+    footerLink: "Request your data",
+  },
+
+  /*
+   * Spec 44 — the page that asks a buyer whether their parcel arrived.
+   *
+   * Deliberately its own section rather than part of `orderStatus`: this is a
+   * standalone page reached from a link in a shipping email, by somebody with no
+   * session who may not remember the order. Every string here has to make sense
+   * cold.
+   *
+   * The copy carries a load nothing else on the storefront does. A confirmation
+   * here becomes evidence submitted to a card network, so it must be
+   * unmistakable what is being confirmed — "yes, this arrived" and nothing
+   * vaguer — and it must never read as a request the buyer is obliged to answer.
+   */
+  arrival: {
+    title: "Did your order arrive?",
+    body: "{shop} sent this on {date}. Letting them know it arrived takes one tap and helps them keep their records straight.",
+    confirm: "Yes, it arrived",
+    confirmed: "Thanks — we've recorded that it arrived.",
+    already: "You've already confirmed this one. Nothing more to do.",
+    /*
+     * Not "invalid link". A buyer holding a real link that we could not check —
+     * an expired signing key, a cold cache — must not be told their order is
+     * wrong, which is the same rule the coupon path follows.
+     */
+    unavailable: "We couldn't check that link just now. Try again in a moment.",
+    notFound: "This link doesn't open anything. If your order hasn't arrived, get in touch with {shop}.",
+    /** The one thing the page must never imply is that a complaint is closed. */
+    problem: "Something wrong with it? Get in touch with {shop}.",
   },
 
   tickets: {
@@ -537,6 +755,12 @@ export const en = {
     closeMenu: "Close menu",
     broadcasts: "Broadcasts",
     members: "Members",
+    /** Spec 41 — the seller's own terms, privacy policy, refunds, about, FAQ. */
+    legal: "Legal pages",
+    /** Spec 52 — the statutory queue. Never abbreviated: "DSARs" is jargon. */
+    dataRequests: "Data requests",
+    /** Spec 35. Beside Reviews, because both are queues somebody moderates. */
+    testimonials: "Testimonials",
   },
 
   notifications: {
@@ -684,6 +908,47 @@ export const en = {
     /** What a merge tag says when the contact has no name on file. */
     friend: "there",
   },
+  /*
+   * Spec 07 — the form a lead product shows instead of a buy panel.
+   *
+   * Six keys, and the two "thanks" are two on purpose: a magnet with a file
+   * genuinely does put something in an inbox, and one without does not.
+   * Saying "check your email" to somebody who will never get one is the small
+   * lie that makes a seller's support inbox fill up.
+   *
+   * Which of the two is shown depends on the *product*, never on the row that
+   * was just written. A message that changed with whether the address was
+   * already known would be an address checker with extra steps.
+   */
+  lead: {
+    submit: "Send it to me",
+    sending: "Sending…",
+    thanks: "Thanks! Check your inbox — it's on its way.",
+    thanksNoFile: "Thanks! {shop} has your details.",
+    answerRequired: "Please answer: {question}",
+    privacy: "Your details go to this shop only, and you can ask them to delete them at any time.",
+  },
+
+  /*
+   * Spec 35 — the page somebody the seller asked writes a testimonial on.
+   *
+   * The embed and the storefront strip carry no copy of their own: they render
+   * what people wrote, and a heading there is the seller's `headline` rather
+   * than a translated string. So this section is only the invitation page.
+   */
+  testimonial: {
+    title: "A few words for {shop}?",
+    body: "They asked because you bought something. It takes a minute, and they'll read it.",
+    yourRole: "What you do",
+    words: "What would you say?",
+    video: "Or a video",
+    videoHint: "A YouTube or Vimeo link. Nothing else works here.",
+    send: "Send it",
+    thanks: "Thank you — the shop will take a look.",
+    moderated: "They choose what goes on their page, and you can ask them to remove it later.",
+    wallTitle: "What people say",
+  },
+
 } as const;
 
 /**

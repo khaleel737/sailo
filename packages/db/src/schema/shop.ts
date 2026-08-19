@@ -37,8 +37,52 @@ export const shops = pgTable(
     theme: text("theme").default("light").notNull(), // light | dark
     layout: text("layout").default("grid").notNull(), // grid | list
 
+    /* ----------------------------------------------------------------------
+       The thank-you page — spec 36
+
+       Fixed copy in 35 locales until now. What it gains is a headline, a body,
+       and an optional redirect.
+    ---------------------------------------------------------------------- */
+    thankYouHeadline: text("thank_you_headline"),
+    /** Markdown, through the existing pipeline. Null keeps the default copy. */
+    thankYouBody: text("thank_you_body"),
+    /**
+     * Where the buyer goes afterwards, if the seller wants them to go anywhere.
+     *
+     * **Opt-in and never default, and the receipt renders first.** A redirect
+     * that fires before the buyer has their download link is a lost order and a
+     * support ticket — the same reasoning that puts cross-sells after payment
+     * rather than during it.
+     */
+    thankYouRedirectUrl: text("thank_you_redirect_url"),
+    /**
+     * Seconds to wait. Null or zero is **no redirect however the URL is set**,
+     * so clearing the delay switches it off without losing the address.
+     */
+    thankYouRedirectDelay: integer("thank_you_redirect_delay"),
+
     // Contact / ordering
     currency: text("currency").default("USD").notNull(),
+
+    /**
+     * The other currencies this shop quotes, ISO 4217 uppercase.
+     *
+     * Presentment only. `currency` above is still the shop's own — what its
+     * settings say, what an unmatched visitor is quoted, and what every price
+     * falls back to. This is the list a seller ticked, not the list a buyer can
+     * actually be quoted: a currency is only offered once **every** published
+     * product, priced variant, enabled delivery rate and active coupon carries
+     * a price in it. `liveCurrencies` decides that, and the difference is what
+     * stops a half-configured currency putting a euro sign in front of a dollar
+     * integer.
+     *
+     * A text array rather than jsonb for the same reason `delivery_methods.
+     * countries` is one: the question asked of it is containment.
+     *
+     * Empty is the default and means today's behaviour exactly — one currency,
+     * everywhere.
+     */
+    regionalCurrencies: text("regional_currencies").array().default([]).notNull(),
     contactEmail: text("contact_email"),
     location: text("location"),
 
@@ -59,6 +103,50 @@ export const shops = pgTable(
      * things a seller gets to put in front of their buyers.
      */
     termsUrl: text("terms_url"),
+    /**
+     * Where the shop's privacy policy lives, if it has published one.
+     *
+     * Its own column rather than a second meaning for `termsUrl`, because the
+     * two appear in different places and answer different questions: terms is
+     * what the buyer *agrees to* at checkout and is snapshotted onto the order
+     * when they do, privacy is what the shop must disclose whether or not
+     * anybody agrees to anything. One column for both would mean turning on
+     * `requireTerms` silently republished the privacy policy as the document
+     * being consented to — spec 41.
+     *
+     * Host-checked on write by the same `isPublicLinkUrl` guard `termsUrl`
+     * uses. A page generated in Sailo points at `/[handle]/legal/<slug>`, which
+     * is stored absolute so the storefront footer, the checkout and an evidence
+     * pack all render one string.
+     */
+    privacyUrl: text("privacy_url"),
+
+    /**
+     * What this shop puts on a buyer's card statement.
+     *
+     * The fix for `unrecognized` (Visa 10.4 / MC 4837) — a cardholder who did
+     * not recognise a line and charged it back. `docs/chargebacks.md` calls it
+     * *"usually a statement-descriptor problem"*, and until this column existed
+     * Sailo had no answer: whatever the seller's connected account defaults to
+     * appeared, which for a link-in-bio shop is often a legal entity name the
+     * buyer has never heard of.
+     *
+     * Two columns because Stripe has two. The descriptor is the fixed part, up
+     * to 22 characters; the suffix is appended per transaction where the account
+     * supports it. Both validated against the card networks' rules on write —
+     * Stripe *silently ignores* an invalid descriptor, which is the worst
+     * possible outcome, because it looks configured and is not.
+     *
+     * Defaulted from `shops.name` on first save. An unconfigured shop showing
+     * its own name is still better than one showing an entity nobody knows.
+     *
+     * Whatever is actually sent is snapshotted onto the order, because this is
+     * editable and a five-month-old dispute must not change its story when the
+     * seller changes theirs.
+     */
+    statementDescriptor: text("statement_descriptor"),
+    statementDescriptorSuffix: text("statement_descriptor_suffix"),
+
     /** Show the optional marketing opt-in. Never pre-checked — see the panel. */
     askMarketingConsent: boolean("ask_marketing_consent")
       .default(false)
@@ -276,6 +364,75 @@ export const shops = pgTable(
     taxId: text("tax_id"),
 
     /*
+     * Spec 38 — the four switches on the jurisdictions tab.
+     *
+     * All four default to today's behaviour, so a shop that never opens the tab
+     * is unchanged: no OSS, no automatic country switching, and no product tax
+     * category to send Stripe.
+     */
+    /**
+     * The seller files one EU one-stop-shop return rather than registering in
+     * each member state.
+     *
+     * It does not change a rate — under `stripe` the registrations on the
+     * connected account decide that, and under `manual` there is one flat rate
+     * by definition. What it changes is the *warning*: an OSS-registered seller
+     * has already dealt with the €10,000 combined threshold, so the monitor
+     * marks the EU row registered instead of mailing them about it.
+     */
+    taxOssRegistered: boolean("tax_oss_registered").default(false).notNull(),
+    /**
+     * Stop selling into a country as it approaches a threshold, rather than
+     * warning and letting the seller decide.
+     *
+     * Off by default and deliberately so: the safe-looking default here would
+     * silently close a seller's best market while they were asleep. A seller
+     * who wants it has usually decided that registering somewhere is more
+     * expensive than the sales, which is a judgement only they can make.
+     */
+    taxDisableOnThreshold: boolean("tax_disable_on_threshold")
+      .default(false)
+      .notNull(),
+    /**
+     * Refuse countries that expect registration from the very first sale.
+     *
+     * A different switch from the one above because it is a different decision:
+     * there is no threshold to approach, so nothing will ever warn — the seller
+     * is either non-compliant from sale one or not selling there.
+     */
+    taxDisableImmediateObligation: boolean("tax_disable_immediate_obligation")
+      .default(false)
+      .notNull(),
+    /**
+     * The shop-wide product tax category, as Stripe Tax names them
+     * (`txcd_10000000` and friends).
+     *
+     * Meaningful under `taxMode = 'stripe'` and inert under `manual`, where
+     * there is one rate applied to everything. The card hides it in manual mode
+     * rather than offering a control that does nothing — the same treatment
+     * `taxIdCollection` already gets, and for the same reason.
+     */
+    taxCategory: text("tax_category"),
+
+    /**
+     * The team this shop belongs to — spec 37.
+     *
+     * `shops.userId` stays the owner of record and is not what changes: it is
+     * what account deletion, the closure record and every existing ownership
+     * check already read, and re-pointing all of that at membership would be a
+     * second tree-wide change for no gain. **The organization decides who else
+     * may act; `userId` still decides whose shop it is.**
+     *
+     * Nullable in the column and never null in practice: `0052` backfills every
+     * existing shop with an organization whose only member is the current
+     * owner, and shop creation makes one. Nullable rather than NOT NULL because
+     * a shop that somehow lost its organization must still load — the guard
+     * falls back to the owner, who can always administer their own shop, rather
+     * than a seller finding their admin unreachable.
+     */
+    organizationId: text("organization_id"),
+
+    /*
      * Booking.
      *
      * `timeZone` is what makes opening hours mean anything: "we open at nine"
@@ -284,6 +441,37 @@ export const shops = pgTable(
      * run. UTC is the safe default rather than the right one — onboarding asks.
      */
     timeZone: text("time_zone").default("UTC").notNull(),
+
+    /* ----------------------------------------------------------------------
+       Checkout recovery — spec 32
+    ---------------------------------------------------------------------- */
+
+    /**
+     * Whether an abandoned checkout is followed up at all.
+     *
+     * Off by default, and deliberately: sessions are *recorded* on every plan
+     * from the day this ships, so a seller who switches it on later has
+     * history to show — but nothing is sent until somebody chooses to send it.
+     */
+    recoveryEnabled: boolean("recovery_enabled").default(false).notNull(),
+    /**
+     * What the recovery mail offers, as a percentage in basis points or a flat
+     * amount in minor units. Exactly one may be set; both null is a recovery
+     * mail that carries no discount, which is a perfectly good configuration
+     * and the safest default.
+     */
+    recoveryDiscountBp: integer("recovery_discount_bp"),
+    recoveryDiscountCents: integer("recovery_discount_cents"),
+    /**
+     * How often the discount is actually awarded, in basis points.
+     *
+     * The clever part of their design, and the reason it exists rather than
+     * always awarding: **give a recovery discount every time and buyers learn
+     * to abandon on purpose.** Default 5000 — a coin flip.
+     */
+    recoveryDiscountOddsBp: integer("recovery_discount_odds_bp")
+      .default(5000)
+      .notNull(),
     /**
      * Seven days, each an array of `{ from, to }` wall-clock windows, so a
      * shop that closes for lunch can say so. Validated by `isWeeklyHours` on
@@ -345,6 +533,31 @@ export const shops = pgTable(
     gtmContainerId: text("gtm_container_id"),
     metaPixelId: text("meta_pixel_id"),
     tiktokPixelId: text("tiktok_pixel_id"),
+
+    /* ----------------------------------------------------------------------
+       Three more, spec 42.
+
+       Ad platforms a seller is already buying from — the id is the receipt for
+       spend they made elsewhere, which is what separates these from a named
+       analytics vendor. DataFast is refused for exactly that reason: a
+       third-party analytics product in our settings is an endorsement and a
+       support surface for something we do not run.
+
+       Every one is validated, consent-gated and CSP-scoped through
+       `shop-pixels.ts` like the four above. A column here that skipped any of
+       the three would be a script-injection point in a `<script>` src.
+    ---------------------------------------------------------------------- */
+    googleAdsId: text("google_ads_id"),
+    /**
+     * The conversion label that pairs with the Ads id.
+     *
+     * Optional beside a set `googleAdsId`, and that is a real state rather
+     * than an oversight: a seller may want the remarketing tag running before
+     * they have configured a conversion to report against it.
+     */
+    googleAdsConversionId: text("google_ads_conversion_id"),
+    linkedinPartnerId: text("linkedin_partner_id"),
+    pinterestTagId: text("pinterest_tag_id"),
 
     /*
      * Staff-side columns. Written only from /hq — the seller's own admin never
@@ -425,6 +638,56 @@ export const shops = pgTable(
      * overwritten. Every public query path excludes it, same as `suspendedAt`.
      */
     deletedAt: timestamp("deleted_at"),
+
+    /**
+     * When the 90-day sweep cleared this dead shop's remaining files.
+     *
+     * Spec 03 deletes a departed seller's images at once and deliberately keeps
+     * their product *files*, because a buyer who paid for a download still holds
+     * a live token — and taking the file away the moment the seller leaves
+     * punishes the wrong person. The cron that finally clears them was a TODO in
+     * `api/cron/sweep` from the day that shipped, which left personal data with
+     * no deletion path at all. Spec 52 could not honestly promise a statutory
+     * erasure on top of that.
+     *
+     * This column is the *claim*, not a log: the sweep's UPDATE carries
+     * `deletedAt < now() - 90 days AND filesSweptAt IS NULL` in its WHERE, so two
+     * overlapping ticks list a shop's blobs once. Null on every live shop for
+     * ever, which is what makes the partial index on it tiny.
+     */
+    filesSweptAt: timestamp("files_swept_at"),
+
+    /**
+     * The plan this shop was on before a platform chargeback held the downgrade.
+     *
+     * Spec 46: contesting and downgrading are not exclusive. The existing
+     * downgrade on a *lost* platform dispute is correct and keeps working; what
+     * changes is that it waits for the case to close where the deadline allows,
+     * and a win reinstates. Without this column "reinstate" would put the shop
+     * back on whatever the code guessed rather than what they were paying for.
+     *
+     * Null except while a platform dispute is open against this shop.
+     */
+    planBeforeDispute: text("plan_before_dispute"),
+
+    /**
+     * When this shop stopped being allowed to pay Sailo by card.
+     *
+     * A second platform chargeback from one customer is not an accident, and
+     * re-subscribing by card after one is how the same $64 is lost again. This
+     * is a normal risk control and deliberately the *narrow* one: the shop keeps
+     * trading, keeps taking card payments from its own buyers, keeps its
+     * storefront. All that closes is the rail it pays *us* on. Same graded shape
+     * as `payoutsPausedAt` beside `suspendedAt` — the reversible move that a
+     * suspension is not.
+     *
+     * Nothing else is offered in its place, which is the honest position: a
+     * customer who has charged back twice is one Sailo does not want a recurring
+     * card mandate with.
+     */
+    cardBillingBlockedAt: timestamp("card_billing_blocked_at"),
+    /** The figures that tripped it, so the next person can judge it. */
+    cardBillingBlockedReason: text("card_billing_blocked_reason"),
 
     /*
      * This seller's own refer-a-creator code — the `/r/<code>` link they

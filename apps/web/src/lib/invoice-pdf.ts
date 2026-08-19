@@ -15,10 +15,14 @@ import { invoiceIdentity } from "@sailo/core/invoice-identity";
 import { formatAddress } from "@sailo/core/address";
 import { formatMoney } from "@sailo/core/currency";
 
-const INK = "#1a1a20";
-const MUTED = "#6d6d7d";
-const LINE = "#e6e6ea";
-const MARGIN = 50;
+/*
+ * The palette and the margin moved to `./pdf-kit` when spec 45 added a second
+ * PDF, so the two documents cannot drift apart on what "muted" means. Only the
+ * vocabulary moved — every line of layout below is untouched, because each
+ * section here depends on the `y` the last one left and `PRODUCTION-PLAN.md` §4
+ * rules this file left whole.
+ */
+import { INK, LINE, MARGIN, MUTED } from "./pdf-kit";
 
 /**
  * Renders the invoice with pdfkit's built-in Helvetica, so no font files need

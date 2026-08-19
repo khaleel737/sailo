@@ -38,7 +38,7 @@ export const instant = false;
  * ordered by the day they opted in and says what that opt-in is worth today.
  */
 export default async function SubscribersPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:read");
   const { a, locale } = await getAdminT();
 
   const [stats, rows] = await Promise.all([

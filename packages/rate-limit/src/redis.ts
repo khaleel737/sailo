@@ -40,8 +40,9 @@ function goCold(reason: string) {
   if (reportedCold) return;
   reportedCold = true;
   console.error(
-    `[sailo] redis is unreachable (${reason}) — every rate limit is now ` +
-      `failing open until it recovers`,
+    `[sailo] redis is unreachable (${reason}) — every rate limit that fails ` +
+      `open has now vanished, and every one that fails closed is refusing, ` +
+      `until it recovers`,
   );
 }
 
@@ -104,14 +105,36 @@ export async function withRedis<T>(
   fn: (redis: RedisClientType) => Promise<T>,
   fallback: T,
 ): Promise<T> {
+  return (await attemptRedis(fn, fallback)).value;
+}
+
+/**
+ * `withRedis`, plus whether the answer came from Redis or from the fallback.
+ *
+ * The distinction only one caller needs, and it needs it badly: a limiter that
+ * fails closed has to tell "the ceiling refused you" from "there was no ceiling
+ * to ask". Everything else in this file is happier not knowing.
+ *
+ * `reached: false` covers both a cold backend and one that was never configured
+ * — `configured()` is what separates those, because they mean opposite things.
+ */
+async function attemptRedis<T>(
+  fn: (redis: RedisClientType) => Promise<T>,
+  fallback: T,
+): Promise<{ value: T; reached: boolean }> {
   const redis = await connect();
-  if (!redis) return fallback;
+  if (!redis) return { value: fallback, reached: false };
   try {
-    return await fn(redis);
+    return { value: await fn(redis), reached: true };
   } catch (error) {
     goCold(error instanceof Error ? error.message : "command failed");
-    return fallback;
+    return { value: fallback, reached: false };
   }
+}
+
+/** Whether a limiter is meant to exist in this environment at all. */
+function configured(): boolean {
+  return Boolean(process.env.REDIS_URL);
 }
 
 /**
@@ -149,22 +172,72 @@ export async function createSubscriber(): Promise<RedisClientType | null> {
 /*  Rate limiting                                                              */
 /* -------------------------------------------------------------------------- */
 
-export type RateVerdict = { allowed: boolean; remaining: number };
+/**
+ * Why a caller was let through or turned away.
+ *
+ * Three answers, not two, because "over the ceiling" and "there is no ceiling
+ * right now" are different facts and one caller acts on the difference.
+ *
+ * - `under` — Redis answered and the budget had room.
+ * - `over` — Redis answered and the budget did not. A real refusal.
+ * - `outage` — Redis is configured and unreachable. **Not** a refusal on the
+ *   merits: nothing was measured. Whatever a surface says about this must read
+ *   as "ask again shortly", never as an answer about the thing being asked for.
+ *   Rule 5: throttled is unknown, never a negative answer.
+ * - `unconfigured` — there is no limiter in this environment. A preview deploy,
+ *   a local checkout, the scenario suite. Nothing failed, so nothing fails
+ *   closed; a limiter that was never installed cannot be said to have gone down.
+ */
+export type RateReason = "under" | "over" | "outage" | "unconfigured";
+
+export type RateVerdict = {
+  allowed: boolean;
+  remaining: number;
+  reason: RateReason;
+};
+
+/**
+ * What a caller wants when Redis is not answering.
+ *
+ * `open` is the default and stays the default: a rate limiter that blocks real
+ * buyers because its own backend is down has done more damage than the traffic
+ * it was meant to stop, and that is the right trade for the overwhelming
+ * majority of the ceilings in this app.
+ *
+ * `closed` is for the three kinds of endpoint where it is not (Decision B in
+ * `RELEASE-PLAN-2026-08.md` §0.6), and each call site says which it is beside
+ * the call:
+ *
+ *   1. **Public writes.** Unauthenticated requests that create rows —
+ *      checkout-recovery sessions, waitlist joins, testimonial submissions. An
+ *      hour of no ceiling on these is an hour of unbounded rows from anybody.
+ *   2. **Anything that spends money or quota.** A send path with no ceiling
+ *      burns the Resend quota, and that quota also carries buyers' receipts —
+ *      so an open failure here takes down transactional mail as collateral.
+ *   3. **Existence oracles.** Invite, password reset, coupon guessing. The
+ *      ceiling is the only thing making enumeration expensive; without it the
+ *      endpoint answers the question it exists to refuse.
+ */
+export type OutagePolicy = "open" | "closed";
 
 /**
  * A fixed window per key. Coarser than a sliding log and far cheaper — two
  * commands, no sorted set — and for "stop one address hammering the tracking
  * endpoint" the extra precision buys nothing.
  *
- * Fails open. A rate limiter that blocks real buyers because its own backend
- * is down has done more damage than the traffic it was meant to stop.
+ * Fails open unless the caller says otherwise; see `OutagePolicy` for when it
+ * should not, and read `verdict.reason` rather than `verdict.allowed` when
+ * deciding what to *say* — a refusal under `outage` is not an answer about the
+ * request, and copy that treats it as one is a lie about a coupon, an account
+ * or a slot.
  */
 export async function rateLimit(
   key: string,
   limit: number,
   windowSeconds: number,
+  opts: { onOutage?: OutagePolicy } = {},
 ): Promise<RateVerdict> {
-  return withRedis(
+  const { value, reached } = await attemptRedis<RateVerdict>(
     async (redis) => {
       const bucket = Math.floor(Date.now() / (windowSeconds * 1000));
       const full = `sailo:rl:${key}:${bucket}`;
@@ -172,10 +245,30 @@ export async function rateLimit(
       const count = await redis.incr(full);
       if (count === 1) await redis.expire(full, windowSeconds);
 
-      return { allowed: count <= limit, remaining: Math.max(0, limit - count) };
+      return {
+        allowed: count <= limit,
+        remaining: Math.max(0, limit - count),
+        reason: count <= limit ? "under" : "over",
+      };
     },
-    { allowed: true, remaining: limit },
+    { allowed: true, remaining: limit, reason: "outage" },
   );
+
+  if (reached) return value;
+
+  /*
+   * No backend. Which of the two "no backend" cases this is decides everything:
+   * an unset `REDIS_URL` is a deployment with no limiter, and refusing every
+   * public write in it would break local development and the scenario suite for
+   * a failure that has not happened.
+   */
+  if (!configured()) {
+    return { allowed: true, remaining: limit, reason: "unconfigured" };
+  }
+
+  return opts.onOutage === "closed"
+    ? { allowed: false, remaining: 0, reason: "outage" }
+    : { allowed: true, remaining: limit, reason: "outage" };
 }
 
 /**

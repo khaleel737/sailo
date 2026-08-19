@@ -12,13 +12,16 @@ import {
   needsResponse,
   playbookFor,
   ratioBp,
+  assemblePlatformEvidence,
 } from "@sailo/core/disputes";
 import {
   disputeReadiness,
   evidenceBudget,
   evidenceCoverage,
   evidenceFilesFor,
+  platformDecision,
   platformDisputeMonths,
+  platformHoldingsFor,
 } from "@sailo/commerce/disputes";
 
 /**
@@ -67,12 +70,29 @@ export type DisputeQueueRow = {
 };
 
 /**
+ * How many of the queue a screen shows before it stops.
+ *
+ * The query fetches 200 and the page rendered every one of them, which on a
+ * platform with a real backlog produced a 23,633-pixel page — a hundred and
+ * fifty rows below the fold that nobody scrolls to, on a list already sorted so
+ * that the only ones worth reading are at the top.
+ *
+ * `total` comes back beside the rows so the page can say what it is not
+ * showing. A cap that is not stated is the same bug wearing a tidier layout.
+ */
+export const DISPUTE_QUEUE_PAGE = 25;
+
+/**
  * The response queue.
  *
  * `needsResponse` only, by default: a dispute under review has nothing anybody
  * can do about it, and a queue that lists them is a queue people stop reading.
+ *
+ * `limit` is the *render* cap, separate from the 200-row fetch: the fetch bounds
+ * the query and this bounds the page. `all: true` lifts the status filter, not
+ * the cap.
  */
-export async function getDisputeQueue(opts: { all?: boolean } = {}) {
+export async function getDisputeQueue(opts: { all?: boolean; limit?: number } = {}) {
   await requireStaff();
   const db = getDb();
   const now = new Date();
@@ -100,7 +120,9 @@ export async function getDisputeQueue(opts: { all?: boolean } = {}) {
     .orderBy(sql`${disputes.dueBy} asc nulls last`, desc(disputes.stripeCreatedAt))
     .limit(200);
 
-  return rows.map(({ dispute, shopName, shopHandle, ownerId }): DisputeQueueRow => {
+  const shown = opts.limit ? rows.slice(0, opts.limit) : rows;
+
+  const mapped = shown.map(({ dispute, shopName, shopHandle, ownerId }): DisputeQueueRow => {
     const playbook = playbookFor(dispute.reason);
     return {
       id: dispute.id,
@@ -130,6 +152,13 @@ export async function getDisputeQueue(opts: { all?: boolean } = {}) {
       guidance: playbook.guidance,
     };
   });
+
+  /*
+   * The rows and what they are a slice of, together. The page needs both to be
+   * able to say "the 25 most urgent of 148" — and returning only the rows is
+   * how a cap becomes silent.
+   */
+  return { rows: mapped, total: rows.length, capped: rows.length > shown.length };
 }
 
 export type ShopExposureRow = {
@@ -412,8 +441,15 @@ export async function getDisputeDetail(id: string) {
      * unreachable still has a deadline, an amount and a shop, and a page that
      * 500s because Stripe is slow is a page that is down at exactly the moment
      * somebody needed the deadline.
+     *
+     * Skipped entirely for a platform dispute. `assembleEvidence` opens by
+     * requiring an order and there is none — and the Stripe read it makes would
+     * go out with a connected-account header that names nobody. Spec 46's own
+     * holdings are gathered below instead.
      */
-    disputeReadiness(id).catch(() => null),
+    dispute.scope === "platform"
+      ? Promise.resolve(null)
+      : disputeReadiness(id).catch(() => null),
   ]);
 
   const owner = shop
@@ -423,6 +459,22 @@ export async function getDisputeDetail(id: string) {
       })
     : undefined;
 
+  /*
+   * Spec 46 — the platform side.
+   *
+   * A `platform` dispute is a seller charging back their own Sailo
+   * subscription: Sailo is the merchant of record, there is no order and no
+   * connected account, and `disputeReadiness` above resolves nothing because
+   * every field resolver in `assemble.ts` reads an order. So this branch gathers
+   * the other holdings — signup, terms acceptance, sign-in history, real usage —
+   * and answers the three questions that decide whether to fight at all.
+   *
+   * Loaded only for the scope that needs it. A connected dispute pays nothing
+   * for this existing.
+   */
+  const platform =
+    dispute.scope === "platform" ? await platformHoldingsFor(dispute) : null;
+
   return {
     dispute,
     shop: shop ?? null,
@@ -431,5 +483,12 @@ export async function getDisputeDetail(id: string) {
     files,
     budget: evidenceBudget(files),
     readiness,
+    platform: platform
+      ? {
+          holdings: platform,
+          evidence: assemblePlatformEvidence(dispute.reason, platform),
+          decision: platformDecision(platform, { isInquiry: isInquiry(dispute.status) }),
+        }
+      : null,
   };
 }

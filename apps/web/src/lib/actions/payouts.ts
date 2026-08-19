@@ -15,7 +15,7 @@ import { rateLimit, withRedis } from "@sailo/rate-limit";
  * which is at most five minutes old.
  */
 export async function refreshPayouts() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("money:read");
   if (!shop.stripeAccountId) return;
 
   const verdict = await rateLimit(`payouts-refresh:${shop.id}`, 10, 60);

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeader } from "@sailo/design-system/web";
 import { ExportCsv } from "@/app/_components/hq-export";
+import { BulkBar, BulkCheckbox } from "./_components/bulk-bar";
 import { HqFilters } from "@/app/_components/hq-filters";
 import { Pagination } from "@/app/_components/hq-pagination";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/_components/hq-table";
@@ -15,6 +16,7 @@ import {
 } from "@/lib/platform";
 import { planFor } from "@sailo/core/plans";
 import { formatMoney } from "@sailo/core/currency";
+import { staffCan } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Accounts" };
 
@@ -70,16 +72,28 @@ export default async function HqAccountsPage({
     page: pageNumber(params.page),
   };
 
-  const { rows, total, page, pages } = await getAccounts(filters);
+  /*
+   * Three questions, one session lookup — `staffCan` is request-cached. They
+   * are asked separately rather than rolled into one "can act" because the
+   * sweep bar offers a different menu per capability, and a single flag would
+   * either hide the note operation from support or offer them a suspension
+   * that 403s. `data:export` is not among them: `ExportCsv` asks for itself,
+   * so a new export screen inherits the rule rather than remembering it.
+   */
+  const [{ rows, total, page, pages }, maySuspend, mayGrant, mayNote] =
+    await Promise.all([
+      getAccounts(filters),
+      staffCan("account:suspend"),
+      staffCan("billing:grant"),
+      staffCan("notes:write"),
+    ]);
 
   return (
     <>
       <PageHeader
         title="Accounts"
         description="Everyone who has registered — the shop they built, what it sells, and what they pay us."
-        action={
-          <ExportCsv type="accounts" />
-        }
+        action={<ExportCsv type="accounts" />}
       />
 
       <HqFilters
@@ -103,10 +117,20 @@ export default async function HqAccountsPage({
         ]}
       />
 
+      <BulkBar may={{ suspend: maySuspend, grant: mayGrant, note: mayNote }}>
       <Table
-        minWidth="64rem"
+        minWidth="66rem"
         head={
           <>
+            {/*
+              No "select all". A header checkbox selects the twenty-five rows on
+              this page, which reads as "all accounts matching this filter" and
+              is not — and the gap between those two is exactly the mistake a
+              sweep must not make easy. Selecting is deliberate, one row at a
+              time, which is the right amount of friction in front of a button
+              that suspends a hundred businesses.
+            */}
+            <Th>{null}</Th>
             <Th>Account</Th>
             <Th>Shop</Th>
             <Th>Plan</Th>
@@ -120,7 +144,7 @@ export default async function HqAccountsPage({
         }
       >
         {rows.length === 0 ? (
-          <EmptyRow colSpan={9}>
+          <EmptyRow colSpan={10}>
             No accounts match those filters.
           </EmptyRow>
         ) : (
@@ -129,14 +153,29 @@ export default async function HqAccountsPage({
             return (
               <Tr key={row.userId}>
                 <Td>
+                  {/*
+                    Only a shop can be swept — every operation writes to the
+                    `shops` row — so an account that never onboarded has nothing
+                    to check. A disabled box would imply it might work later.
+                  */}
+                  {shop ? (
+                    <BulkCheckbox shopId={shop.id} label={shop.name} />
+                  ) : null}
+                </Td>
+                <Td>
+                  {/*
+                    `flex-col`, not `flex items-center` — see `ShopCell`. As a
+                    row, the two spans rendered the name and the address as one
+                    run-on string on every row of this table.
+                  */}
                   <Link
                     href={`/accounts/${row.userId}`}
-                    className="focus-ring flex min-w-0 items-center rounded pointer-coarse:min-h-11"
+                    className="focus-ring flex min-w-0 flex-col items-start justify-center rounded pointer-coarse:min-h-11"
                   >
-                    <span className="block truncate font-medium text-ink-900">
+                    <span className="max-w-full truncate font-medium text-ink-900">
                       {row.name}
                     </span>
-                    <span className="block truncate text-xs text-ink-400">
+                    <span className="max-w-full truncate text-xs text-ink-400">
                       {row.email}
                     </span>
                   </Link>
@@ -223,6 +262,7 @@ export default async function HqAccountsPage({
           })
         )}
       </Table>
+      </BulkBar>
 
       <Pagination
         page={page}

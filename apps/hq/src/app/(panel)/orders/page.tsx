@@ -4,25 +4,15 @@ import { ExportCsv } from "@/app/_components/hq-export";
 import { HqFilters } from "@/app/_components/hq-filters";
 import { Pagination } from "@/app/_components/hq-pagination";
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/_components/hq-table";
-import { Money, ShopCell, When } from "@/app/_components/hq-ui";
+import { Money, RowLink, ShopCell, When } from "@/app/_components/hq-ui";
 import { Badge } from "@sailo/design-system/web";
 import { first, getPlatformOrders, pageNumber } from "@/lib/platform";
 import { PAYMENT_STATUS_TONES } from "@sailo/core/payment-status";
 import { orderSummaryTitle } from "@sailo/core/order-lines";
+import { orderStatusTone } from "@sailo/core/order-status";
 import { formatMoney } from "@sailo/core/currency";
 
 export const metadata: Metadata = { title: "Orders" };
-
-const STATUS_TONE = {
-  new: "blue",
-  confirmed: "amber",
-  shipped: "blue",
-  completed: "green",
-  cancelled: "neutral",
-  refunded: "red",
-} as const;
-
-
 
 export default async function HqOrdersPage({
   searchParams,
@@ -117,9 +107,20 @@ export default async function HqOrdersPage({
           <EmptyRow colSpan={7}>No orders match those filters.</EmptyRow>
         ) : (
           rows.map(({ order, shopName, shopHandle, ownerId }) => (
-            <Tr key={order.id}>
+            <Tr key={order.id} className="relative cursor-pointer">
               <Td className="whitespace-nowrap text-ink-500" label="Placed">
-                <When value={order.createdAt} withTime />
+                {/*
+                  The row opens the order. It hangs off this cell rather than
+                  the title one because "Placed" is the first thing in the row
+                  and in the phone's card, so the link's own focus ring lands
+                  where a keyboard reader is already looking.
+                */}
+                <RowLink
+                  href={`/orders/${order.id}`}
+                  label={`Order — ${orderSummaryTitle(order)}`}
+                >
+                  <When value={order.createdAt} withTime />
+                </RowLink>
               </Td>
               <Td className="max-w-48" label="Shop">
                 <ShopCell ownerId={ownerId} name={shopName} handle={shopHandle} />
@@ -164,12 +165,7 @@ export default async function HqOrdersPage({
                 </Badge>
               </Td>
               <Td label="Status">
-                <Badge
-                  tone={
-                    STATUS_TONE[order.status as keyof typeof STATUS_TONE] ??
-                    "neutral"
-                  }
-                >
+                <Badge tone={orderStatusTone(order.status)}>
                   {order.status}
                 </Badge>
               </Td>

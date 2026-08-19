@@ -109,14 +109,23 @@ export default async function HqSupportPage({
                 {row.ticket.imageUrls.length === 0 ? (
                   <span className="text-ink-400">—</span>
                 ) : (
-                  <span className="flex gap-1.5">
+                  <span className="flex flex-wrap gap-1">
+                    {/*
+                      A boxed link, not a bare digit.
+
+                      These were the numeral on its own: a 5×16px hit target,
+                      unusable on a phone and awkward with a mouse. The numeral
+                      still identifies which screenshot it is — it just needs
+                      something around it big enough to press.
+                    */}
                     {row.ticket.imageUrls.map((url, i) => (
                       <a
                         key={url}
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs font-medium underline underline-offset-2 hover:text-ink-900"
+                        aria-label={`Screenshot ${i + 1} of ${row.ticket.imageUrls.length}`}
+                        className="focus-ring grid size-7 place-items-center rounded-md border border-ink-200 bg-white text-xs font-medium text-ink-700 transition hover:border-ink-300 hover:bg-ink-50 hover:text-ink-900 pointer-coarse:size-9"
                       >
                         {i + 1}
                       </a>

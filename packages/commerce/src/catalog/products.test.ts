@@ -24,6 +24,14 @@ import type { Shop } from "@sailo/db/schema";
 const productsFindFirst = vi.fn();
 const categoriesFindFirst = vi.fn();
 const variantsFindMany = vi.fn();
+/**
+ * The files a product already has — spec 48.
+ *
+ * `syncFiles` stopped deleting and re-inserting the table on every save (that
+ * minted a new id per file, which broke the buyer's own download link after any
+ * product edit); it now matches on URL, so it reads the existing rows first.
+ */
+const filesFindMany = vi.fn();
 
 /** Every row this save wrote, by table, in the order it wrote them. */
 let written: { table: string; values: unknown }[];
@@ -45,6 +53,7 @@ vi.mock("@sailo/db", () => ({
       products: { findFirst: productsFindFirst },
       categories: { findFirst: categoriesFindFirst },
       productVariants: { findMany: variantsFindMany },
+      productFiles: { findMany: filesFindMany },
     },
     select: () => ({ from: () => ({ where: () => thenable(selectResult) }) }),
     insert: (table: unknown) => ({
@@ -92,6 +101,8 @@ function rowsFor(table: string) {
 
 beforeEach(() => {
   written = [];
+  // No files yet, which is what every one of these saves starts from.
+  filesFindMany.mockResolvedValue([]);
   selectResult = [{ count: "0", max: "0" }];
   insertedId = "new-product-id";
   productsFindFirst.mockReset().mockResolvedValue(undefined);
@@ -302,6 +313,73 @@ describe("what it will not save", () => {
     const result = await saveProduct(SHOP, { ...BASICS, id: "p_other" });
     expect(result).toEqual({ ok: false, refusal: { kind: "not_found" } });
   });
+
+  it("will not save an event that ends before it starts", async () => {
+    // Almost always a date the seller forgot to move after picking the start,
+    // and the buyer's page would render a span that reads as a bug.
+    const result = await saveProduct(SHOP, {
+      ...BASICS,
+      kind: "event",
+      eventStartsAt: new Date("2026-09-01T19:00:00Z"),
+      eventEndsAt: new Date("2026-09-01T18:00:00Z"),
+    });
+    expect(result).toEqual({
+      ok: false,
+      refusal: { kind: "event_ends_before_start" },
+    });
+    expect(written).toHaveLength(0);
+  });
+
+  it("will not save a digital product whose link or code is blank", async () => {
+    /*
+     * Refused where a fileless download is not, and the asymmetry is the
+     * point: files are managed by an uploader the phone's editor does not
+     * have, so blocking those would block a legitimate draft. A link and a
+     * code are single text fields wherever the kind is offered at all, so a
+     * blank one is a buy button that leads nowhere.
+     */
+    expect(
+      await saveProduct(SHOP, {
+        ...BASICS,
+        kind: "digital",
+        digitalDelivery: "link",
+        digitalLinkUrl: "   ",
+      }),
+    ).toEqual({
+      ok: false,
+      refusal: { kind: "digital_needs_delivery", delivery: "link" },
+    });
+
+    expect(
+      await saveProduct(SHOP, {
+        ...BASICS,
+        kind: "digital",
+        digitalDelivery: "code",
+        digitalAccessDetails: "",
+      }),
+    ).toEqual({
+      ok: false,
+      refusal: { kind: "digital_needs_delivery", delivery: "code" },
+    });
+
+    expect(written).toHaveLength(0);
+  });
+
+  it("refuses a download link this server would not put in front of a buyer", async () => {
+    // The same guard the event's join link gets: it is rendered as an anchor
+    // in an email and on the buyer's page.
+    const result = await saveProduct(SHOP, {
+      ...BASICS,
+      kind: "digital",
+      digitalDelivery: "link",
+      digitalLinkUrl: "http://169.254.169.254/latest/meta-data/",
+    });
+    expect(result).toEqual({
+      ok: false,
+      refusal: { kind: "digital_link_not_public" },
+    });
+    expect(written).toHaveLength(0);
+  });
 });
 
 /* -------------------------------------------------------------------------- */
@@ -328,6 +406,102 @@ describe("what it writes", () => {
     expect(rowsFor("product_variants")).toEqual([
       expect.objectContaining({ priceCents: null, stockQuantity: null }),
       expect.objectContaining({ priceCents: 1500, stockQuantity: 0 }),
+    ]);
+  });
+
+  it("keeps only the shape the digital product actually sells", async () => {
+    /*
+     * The two fields that are not the chosen shape are cleared, and the files
+     * with them. A product moved from a file to a link must not leave a
+     * download behind: the streaming route keys off the order's token rather
+     * than the product's kind, so the leftover would go on being handed over
+     * as though it were the good.
+     */
+    await saveProduct(SHOP, {
+      ...BASICS,
+      kind: "digital",
+      digitalDelivery: "link",
+      digitalLinkUrl: "https://school.example.com/p/ceramics",
+      digitalAccessDetails: "leftover code",
+      files: [{ url: "https://abc123.public.blob.vercel-storage.com/a.pdf" }],
+    });
+
+    expect(rowsFor("products")).toEqual([
+      expect.objectContaining({
+        digitalDelivery: "link",
+        digitalLinkUrl: "https://school.example.com/p/ceramics",
+        digitalAccessDetails: null,
+      }),
+    ]);
+    expect(rowsFor("product_files")).toHaveLength(0);
+  });
+
+  it("clears a digital shape off a product that is not digital", async () => {
+    // A stale link on a mug would be one the download page is still entitled
+    // to render, which is the whole reason these are cleared rather than left.
+    await saveProduct(SHOP, {
+      ...BASICS,
+      kind: "physical",
+      digitalDelivery: "link",
+      digitalLinkUrl: "https://school.example.com/p/ceramics",
+    });
+
+    expect(rowsFor("products")).toEqual([
+      expect.objectContaining({
+        digitalDelivery: "file",
+        digitalLinkUrl: null,
+        digitalAccessDetails: null,
+      }),
+    ]);
+  });
+
+  it("clamps a membership's cycle to what Stripe will bill", async () => {
+    await saveProduct(SHOP, {
+      ...BASICS,
+      kind: "membership",
+      priceCents: 3_000,
+      billingInterval: "month",
+      billingIntervalCount: 18,
+    });
+
+    // Eighteen months is longer than Stripe's one-year period, and the nearest
+    // legal cycle beats a product whose checkout fails at the buyer.
+    expect(rowsFor("products")).toEqual([
+      expect.objectContaining({ billingInterval: "month", billingIntervalCount: 12 }),
+    ]);
+  });
+
+  it("keeps the product's own code only while it is sold as one thing", async () => {
+    // With options the codes live on the variants, and the order line
+    // snapshots whichever applies — a second code up here would be one no
+    // order can quote and one more thing to keep in step.
+    await saveProduct(SHOP, { ...BASICS, sku: "MUG-OAT-350" });
+    expect(rowsFor("products")).toEqual([
+      expect.objectContaining({ sku: "MUG-OAT-350" }),
+    ]);
+
+    written.length = 0;
+    await saveProduct(SHOP, {
+      ...BASICS,
+      sku: "MUG-OAT-350",
+      options: [{ name: "Size", values: ["S", "M"] }],
+      variants: [{ options: { Size: "S" } }, { options: { Size: "M" } }],
+    });
+    expect(rowsFor("products")).toEqual([expect.objectContaining({ sku: null })]);
+  });
+
+  it("reads a per-order cap of zero as no cap at all", async () => {
+    // A seller who wants to stop selling has `inStock`; a zero here is a
+    // cleared field, and honouring it would offer a picker with no legal value.
+    await saveProduct(SHOP, { ...BASICS, maxPerOrder: 0 });
+    expect(rowsFor("products")).toEqual([
+      expect.objectContaining({ maxPerOrder: null }),
+    ]);
+
+    written.length = 0;
+    await saveProduct(SHOP, { ...BASICS, maxPerOrder: 4 });
+    expect(rowsFor("products")).toEqual([
+      expect.objectContaining({ maxPerOrder: 4 }),
     ]);
   });
 

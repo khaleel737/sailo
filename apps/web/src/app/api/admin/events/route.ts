@@ -18,7 +18,7 @@ import { eventStreamResponse } from "@sailo/events/stream";
 export const maxDuration = 300;
 
 export async function GET(request: Request) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:read");
 
   return eventStreamResponse(
     (onEvent, onLost) => subscribeShopEvents(shop.id, onEvent, onLost),

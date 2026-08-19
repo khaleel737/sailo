@@ -212,3 +212,88 @@ export function isPublicLinkUrl(value: unknown): value is string {
    */
   return host.includes(".");
 }
+
+/**
+ * Where a testimonial's video is allowed to live — spec 35.
+ *
+ * A URL, never an upload: storing video in Blob is a bandwidth bill and a
+ * moderation surface for a feature that needs neither. But a URL a seller types
+ * is rendered inside an `<iframe>` on a page a *third party* has embedded in
+ * their own site, so there are two untrusted parties in the chain before the
+ * visitor — and an arbitrary frame source there is a seller's shop being used
+ * to serve somebody else's content under somebody else's domain.
+ *
+ * An allowlist, not a denylist, and a short one. YouTube and Vimeo are what
+ * sellers actually paste; anything else is refused with a message rather than
+ * stored and silently not rendered. Unlike `isPublicLinkUrl` next door — where
+ * a denylist is the weaker tool chosen knowingly, because a seller's terms live
+ * on the seller's own domain and there is no set to enumerate — here there
+ * genuinely is one.
+ *
+ * Path-checked as well as host-checked. `youtube.com/@someone` is a channel,
+ * not a video, and `frame-src https://www.youtube.com` would let it render as
+ * a page inside the wall.
+ */
+const VIDEO_HOSTS: Record<string, RegExp> = {
+  // `/watch?v=…` is the address people copy; `/embed/…` is what an iframe wants.
+  "www.youtube.com": /^\/(watch|embed\/[\w-]{6,})$/,
+  "youtube.com": /^\/(watch|embed\/[\w-]{6,})$/,
+  // The share button's short form.
+  "youtu.be": /^\/[\w-]{6,}$/,
+  "vimeo.com": /^\/\d+$/,
+  "player.vimeo.com": /^\/video\/\d+$/,
+};
+
+export function isEmbeddableVideoUrl(value: unknown): value is string {
+  if (typeof value !== "string" || !value) return false;
+
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return false;
+  }
+
+  if (url.protocol !== "https:") return false;
+
+  /*
+   * `hostname`, so credentials cannot smuggle a different host past the check:
+   * `https://www.youtube.com@evil.tld/` parses with hostname `evil.tld`.
+   */
+  const pattern = VIDEO_HOSTS[url.hostname.toLowerCase()];
+  if (!pattern || !pattern.test(url.pathname)) return false;
+
+  // A `/watch` with no `v` is the YouTube home page.
+  if (url.pathname === "/watch") {
+    const id = url.searchParams.get("v");
+    return Boolean(id && /^[\w-]{6,}$/.test(id));
+  }
+  return true;
+}
+
+/**
+ * The same video as an address an `<iframe>` can hold, or null.
+ *
+ * Derived rather than stored: what the seller pasted is what they will
+ * recognise if they ever look at the field again, and the embed form is a
+ * rendering detail that would go stale the day either site changes it.
+ */
+export function videoEmbedSrc(value: string): string | null {
+  if (!isEmbeddableVideoUrl(value)) return null;
+  const url = new URL(value);
+  const host = url.hostname.toLowerCase();
+
+  if (host === "youtu.be") {
+    return `https://www.youtube-nocookie.com/embed/${url.pathname.slice(1)}`;
+  }
+  if (host.endsWith("youtube.com")) {
+    const id = url.pathname.startsWith("/embed/")
+      ? url.pathname.slice("/embed/".length)
+      : url.searchParams.get("v");
+    // `youtube-nocookie.com`, because this frame renders on a stranger's site
+    // and a visitor there did not agree to anything from anybody.
+    return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+  }
+  const id = url.pathname.replace(/^\/(video\/)?/, "");
+  return /^\d+$/.test(id) ? `https://player.vimeo.com/video/${id}` : null;
+}

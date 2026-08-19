@@ -28,6 +28,21 @@ import type { Shop } from "@sailo/db/schema";
    is in one place on the page, visibly separated from the read-only panels
    around it. Each form owns its own action state — a failed suspension must
    not blank out the note you were halfway through typing.
+
+   THREE CAPABILITIES, NOT ONE
+   The four cards below sit behind three different grants, and they are passed
+   in as props rather than resolved here because this is a client component and
+   a client component cannot ask who is asking.
+
+     comp plan          billing:grant     revenue we choose to forgo
+     suspend            account:suspend   somebody's livelihood, offline
+     pause marketing    account:suspend   narrower, same authority
+     internal note      notes:write       every role has this
+
+   Hiding a card is a courtesy and never the control: each action re-checks its
+   own capability server-side, because a Server Action is a public endpoint with
+   a generated name and the person who should not be pressing the button does
+   not need the button.
 =========================================================================== */
 
 function Submit({
@@ -45,13 +60,19 @@ function Submit({
   );
 }
 
-export function AccountActions({ shop }: { shop: Shop }) {
+export function AccountActions({
+  shop,
+  may = { grant: true, suspend: true, note: true },
+}: {
+  shop: Shop;
+  may?: { grant: boolean; suspend: boolean; note: boolean };
+}) {
   return (
     <div className="space-y-3">
-      <CompForm shop={shop} />
-      <SuspendForm shop={shop} />
-      <MarketingPauseForm shop={shop} />
-      <NoteForm shop={shop} />
+      {may.grant ? <CompForm shop={shop} /> : null}
+      {may.suspend ? <SuspendForm shop={shop} /> : null}
+      {may.suspend ? <MarketingPauseForm shop={shop} /> : null}
+      {may.note ? <NoteForm shop={shop} /> : null}
     </div>
   );
 }
@@ -243,7 +264,16 @@ function MarketingPauseForm({ shop }: { shop: Shop }) {
           </Field>
         )}
 
-        <Submit variant={paused ? "secondary" : "danger"}>
+        {/*
+          Secondary, where Suspend is filled danger.
+
+          Both used to be red, which made them compete in a 19rem column and
+          implied their blast radii were comparable. They are not: suspending
+          takes a business offline, and pausing marketing holds broadcasts while
+          the shop keeps trading and keeps sending receipts. One loud button per
+          column, and it should be the one that closes a business.
+        */}
+        <Submit variant="secondary">
           {paused ? "Let them send again" : "Pause marketing"}
         </Submit>
       </form>

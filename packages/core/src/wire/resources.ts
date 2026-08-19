@@ -344,10 +344,24 @@ export function productResource(
         }
       : null,
 
-    event: product.eventStartsAt ? { startsAt: iso(product.eventStartsAt) } : null,
+    event: product.eventStartsAt
+      ? {
+          startsAt: iso(product.eventStartsAt),
+          endsAt: iso(product.eventEndsAt),
+        }
+      : null,
 
     membership: product.billingInterval
-      ? { interval: product.billingInterval, trialDays: product.trialDays }
+      ? {
+          interval: product.billingInterval,
+          /*
+           * The interval and how many of them, because one without the other
+           * is not a cycle: a mirror that read `month` and nothing else would
+           * bill a quarterly membership every month. Stripe's own pair.
+           */
+          intervalCount: product.billingIntervalCount,
+          trialDays: product.trialDays,
+        }
       : null,
 
     variants: variants.map((variant) => ({
@@ -426,6 +440,8 @@ export function subscriptionResource(sub: Subscription) {
     price: money(sub.priceCents, currency),
     currency,
     interval: sub.interval,
+    /** How many intervals per charge — the `3` in "every 3 months". */
+    intervalCount: sub.intervalCount,
 
     /** `stripe` or `manual` — see above; they renew by different machinery. */
     billingMode: sub.billingMode,

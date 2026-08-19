@@ -18,7 +18,7 @@ export const metadata: Metadata = { title: "Clients" };
 export default async function AdminClientsPage({
   searchParams,
 }: PageProps<"/admin/clients">) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:read");
   const { a, locale } = await getAdminT();
 
   /*

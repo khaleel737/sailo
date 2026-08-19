@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { cronAuthFailure } from "@sailo/security/cron-auth";
-import { sendDueDisputeReminders } from "@sailo/workflows/disputes";
+import {
+  claimDuePlatformDisputes,
+  sendDueDisputeReminders,
+} from "@sailo/workflows/disputes";
+import { captureMessage } from "@sailo/observability";
 
 /**
  * "Your chargeback deadline is close, and this is still missing."
@@ -25,5 +29,27 @@ export async function GET(request: Request) {
 
   const result = await sendDueDisputeReminders();
 
-  return NextResponse.json({ ok: true, ...result });
+  /*
+   * And the desk's own deadline — spec 46.
+   *
+   * A platform dispute has no seller to email: Sailo is the merchant of record,
+   * and the person who has to act is on shift here. Same four-day window, same
+   * conditional-update claim on its own column, and the channel is the one staff
+   * already watch. Without it the desk's deadline would be the single thing in
+   * this subsystem nobody was reminded about — which is how a case that was
+   * worth winning becomes an uncontested loss on the platform's own rate.
+   */
+  const platform = await claimDuePlatformDisputes();
+  for (const row of platform) {
+    captureMessage(
+      `Sailo's own chargeback ${row.stripeDisputeId} is due ` +
+        `${row.dueBy?.toISOString().slice(0, 10) ?? "soon"} and has not been answered. ` +
+        `${(row.deductedCents / 100).toFixed(2)} ${row.currency}, ${row.reason}. ` +
+        `Open /hq/disputes/${row.id} — the evidence is assembled and the three ` +
+        `decision questions are answered there.`,
+      "warning",
+    );
+  }
+
+  return NextResponse.json({ ok: true, ...result, platformNoticed: platform.length });
 }

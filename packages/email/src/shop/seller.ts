@@ -257,6 +257,74 @@ export async function sendSellerWebhookDisabled(opts: {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Running out                                                                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Stock has fallen to the line the seller drew — spec 51.
+ *
+ * The other mail here that reports something nobody would otherwise see.
+ * `lowStock` matched zero files in this tree, so a seller's first notice of an
+ * empty shelf was a buyer asking where their order was — and by then the sale
+ * is already lost, along with the fortnight of lead time that would have saved
+ * it.
+ *
+ * It names the *combinations* that are short rather than only the product,
+ * because "Speckled Mug is low" is not actionable for a seller who makes them
+ * in four glazes: the answer is which glaze to throw next, and that is a
+ * different sentence. A product sold as one thing gets the plain number.
+ *
+ * Deliberately no "reorder" button, no supplier integration and no forecast.
+ * The seller knows what to do about their own stockroom; what they did not have
+ * was the fact.
+ */
+export async function sendSellerLowStock(opts: {
+  shop: Shop;
+  to: string;
+  productTitle: string;
+  productId: string;
+  threshold: number;
+  remaining: number;
+  /** The combinations at or under the line. Empty for a product with no options. */
+  variants: { label: string; remaining: number }[];
+}): Promise<SendResult> {
+  const { shop, to, productTitle, productId, threshold, remaining, variants } = opts;
+
+  const detail: Detail[] = variants.length
+    ? variants.map((v) => ({
+        label: v.label,
+        value: v.remaining === 0 ? "sold out" : `${v.remaining} left`,
+      }))
+    : [
+        { label: "Left", value: String(remaining) },
+        { label: "Your alert", value: `at ${threshold} or fewer` },
+      ];
+
+  const body = `
+    ${mutedPara(
+      `${strong(esc(productTitle))} at ${esc(shop.name)} is down to ${remaining === 0 ? "none" : remaining}, which is at or under the ${threshold} you asked to be told about.`,
+    )}
+    ${section(variants.length ? "Which ones" : "Stock", detailTable(detail))}
+    ${fine(
+      "You'll hear about this product once per crossing — this message comes back only after stock goes above your threshold and falls to it again.",
+    )}
+    ${button(`${appUrl()}/admin/products/${productId}`, "Update stock")}
+  `;
+
+  return send({
+    from: sender("Sailo", ORDERS),
+    to,
+    subject:
+      remaining === 0
+        ? `Sold out — ${productTitle}`
+        : `Running low — ${productTitle} (${remaining} left)`,
+    html: sailoLayout("Stock is running low", body, {
+      preheader: `${productTitle}: ${remaining} left, your alert is set at ${threshold}.`,
+    }),
+  });
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Memberships                                                                */
 /* -------------------------------------------------------------------------- */
 
@@ -465,5 +533,115 @@ export async function sendSellerMembershipPaymentFailed(opts: {
       preheader: `${memberName ?? "A member"} · ${productTitle} · ${price}`,
     }),
     replyTo: memberEmail ?? undefined,
+  });
+}
+
+/**
+ * "You have taken £7,100 of a £10,000 figure in Germany."
+ *
+ * The most carefully worded mail in this file, and the wording is the feature.
+ * It states two numbers and a place, and it stops. It does not say the seller
+ * must register, must charge anything, or has done anything wrong — those are
+ * legal claims, and `GAP-2026-08-easytools.md` §4.3 is the argument for why
+ * Sailo does not make them. The seller draws the conclusion; the link goes to
+ * the tab where the working is shown, including the date the figure was last
+ * checked.
+ *
+ * Sent at most twice per place per calendar year, at 70% and 90%, and the claim
+ * that makes "at most" true is a conditional UPDATE in `tax_country_rules` —
+ * not a read followed by a write, which two overlapping cron ticks both pass.
+ */
+export async function sendSellerTaxThreshold(opts: {
+  /** Only the name is used, so the monitor need not load a whole `Shop`. */
+  shopName: string;
+  to: string;
+  /** "Germany", "California", "the EU" — already in the seller's words. */
+  place: string;
+  rung: "70" | "90";
+  netCents: number;
+  thresholdCents: number;
+  currency: string;
+  /** The date the published figure was last reviewed. Never omitted. */
+  reviewedOn: string;
+  /** Set when the figures were compared through an indicative rate. */
+  converted: boolean;
+}): Promise<SendResult> {
+  const { shopName, to, place, rung, currency, reviewedOn, converted } = opts;
+  const taken = formatMoney(opts.netCents, currency);
+  const limit = formatMoney(opts.thresholdCents, currency);
+
+  const body = `
+    ${mutedPara(
+      `Sales from ${esc(shopName)} into ${strong(esc(place))} have reached ${strong(rung)}% of the registration threshold published for that place.`,
+    )}
+    ${section(
+      "Where it stands",
+      detailTable([
+        { label: "Place", value: place },
+        { label: "Taken", value: taken },
+        { label: "Published threshold", value: limit },
+        { label: "Figure last checked", value: reviewedOn },
+      ]),
+    )}
+    ${fine(
+      converted
+        ? "Your sales and that threshold are in different currencies, so they were compared at an indicative rate — treat the percentage as a signal rather than an exact position."
+        : "Only sales to individuals count toward this. Business sales are shown separately on the tab.",
+    )}
+    ${fine(
+      "This is a count of what you have taken, not tax advice. Thresholds change, and whether you need to register anywhere is a question for your accountant.",
+    )}
+    ${button(`${appUrl()}/admin/settings/tax`, "See the working")}
+  `;
+
+  return send({
+    from: sender("Sailo", ORDERS),
+    to,
+    subject: `${rung}% of the ${place} threshold`,
+    html: sailoLayout(`Sales into ${place} are at ${rung}%`, body, {
+      preheader: `${taken} of ${limit}`,
+    }),
+  });
+}
+
+/**
+ * "Somebody asked for your checklist."
+ *
+ * Deliberately small. A lead is not a sale and this mail must not read like
+ * one — no total, no order number, no "you have a new order". What the seller
+ * needs is that it happened and where to look, and anything more would train
+ * them to skim the mail that does carry money.
+ */
+export async function sendSellerLead(opts: {
+  shopName: string;
+  to: string;
+  productTitle: string;
+  leadEmail: string;
+  leadName: string | null;
+}): Promise<SendResult> {
+  const { shopName, to, productTitle, leadEmail, leadName } = opts;
+
+  const body = `
+    ${mutedPara(
+      `${leadName ? strong(esc(leadName)) : "Someone"} asked for ${strong(esc(productTitle))} at ${esc(shopName)}.`,
+    )}
+    ${section(
+      "Who",
+      detailTable([
+        { label: "Name", value: leadName ?? "Not given" },
+        { label: "Email", value: leadEmail },
+      ]),
+    )}
+    ${button(`${appUrl()}/admin/clients`, "See your contacts")}
+  `;
+
+  return send({
+    from: sender("Sailo", ORDERS),
+    to,
+    subject: `New lead — ${productTitle}`,
+    html: sailoLayout("Somebody left their details", body, {
+      preheader: `${leadName ?? leadEmail} · ${productTitle}`,
+    }),
+    replyTo: leadEmail,
   });
 }

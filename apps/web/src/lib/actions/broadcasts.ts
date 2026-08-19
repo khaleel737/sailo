@@ -57,7 +57,7 @@ const EDITABLE_STATUSES: string[] = ["draft", "scheduled"];
 async function editable(): Promise<
   { ok: true; shop: Shop; userEmail: string | null } | { ok: false; error: string }
 > {
-  const { shop, user } = await requireShop();
+  const { shop, user } = await requireShop("marketing:send");
   if (!can(shop, "broadcasts")) {
     return { ok: false, error: upgradeMessage("broadcasts", "Email broadcasts") };
   }
@@ -199,7 +199,15 @@ export async function testSendBroadcast(
   if (!gate.ok) return { ok: false, error: gate.error };
   const { shop, userEmail } = gate;
 
-  const limit = await rateLimit(`test-send:${shop.id}`, 10, 3_600);
+  const limit = await /*
+   * DECISION B — fails closed (spends the send quota).
+   *
+   * A test send is real mail on the shared Resend allowance, and that allowance
+   * also carries every buyer's receipt. Ten an hour is generous for a seller
+   * checking a template and the only thing standing between a loop and the
+   * transactional stream.
+   */
+  rateLimit(`test-send:${shop.id}`, 10, 3_600, { onOutage: "closed" });
   if (!limit.allowed) {
     return { ok: false, error: "That's a lot of test sends — try again later." };
   }
@@ -468,7 +476,7 @@ export async function duplicateBroadcast(formData: FormData) {
 
 /** Deletes a draft. A broadcast that has been sent is a record and stays. */
 export async function deleteBroadcast(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const id = String(formData.get("id") ?? "");
 
   await getDb()
@@ -502,7 +510,7 @@ export async function saveSubscribeSettings(
   _prev: BroadcastState,
   formData: FormData,
 ): Promise<BroadcastState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
 
   const incentive =
     String(formData.get("subscribeIncentive") ?? "")

@@ -1,3 +1,5 @@
+import { badgeHref } from "@sailo/core/badge";
+import { appOrigin } from "@sailo/core/origin";
 import { describe, expect, it } from "vitest";
 import { esc, formatWhen, itemRows, layout, moneyRows, sailoLayout } from "./markup";
 import type { Order, Shop } from "@sailo/db/schema";
@@ -115,7 +117,42 @@ describe("the email footer", () => {
     const footer = footerOf(paid);
     expect(footer).toContain("Forno Nove");
     expect(footer).not.toContain("Sailo");
-    expect(footer).not.toContain("<a href=");
+    /*
+     * No link to the *badge destination*, which is what this test is about.
+     *
+     * It has now been narrowed twice, and both times for the same reason: the
+     * footer keeps gaining links that are not badges. First it asserted "no
+     * `<a href=` at all", which stopped being true when spec 52 added "Request
+     * your data". Then it asserted no href containing "sailo" — and that one
+     * passed locally and failed on Vercel, because both links are built from
+     * `appOrigin()`, which is `localhost:3000` with no environment and a sailo
+     * domain with one. The assertion was reading the deploy's hostname, not the
+     * footer's content.
+     *
+     * `badgeHref` is the actual discriminator and it does not care where the app
+     * is served from. The line above catches a badge by its visible text; this
+     * one catches a badge whose text is something else.
+     *
+     * The data-request link stays on every tier, deliberately: it is a buyer's
+     * statutory right rather than a Sailo advertisement, and putting it behind
+     * a plan would mean the shops least able to pay are the ones whose
+     * customers cannot exercise it — which spec 52 refuses in as many words.
+     */
+    expect(footer).not.toContain(badgeHref("forno", appOrigin(), "email"));
+  });
+
+  it("carries the data-request link on every tier", () => {
+    /*
+     * Spec 52. On the transactional shell rather than the marketing one,
+     * because the person who most needs it is a buyer who consented to nothing
+     * — and in the footer of a receipt rather than only on the storefront,
+     * because a receipt is where they are when the question occurs to them.
+     */
+    for (const plan of [{}, { plan: "pro", subscriptionStatus: "active" }]) {
+      const footer = footerOf(layout(shop(plan), "Order confirmed", "<p>x</p>"));
+      expect(footer).toContain("/forno/data-request");
+      expect(footer).toContain("Request your data");
+    }
   });
 
   it("still signs Sailo's own mail, where no shop is involved", () => {

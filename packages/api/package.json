@@ -9,7 +9,8 @@
     "./rest": "./src/rest/index.ts",
     "./webhooks": "./src/webhooks/index.ts",
     "./streams": "./src/streams/index.ts",
-    "./mcp": "./src/mcp/index.ts"
+    "./mcp": "./src/mcp/index.ts",
+    "./license": "./src/license/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

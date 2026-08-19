@@ -18,6 +18,7 @@ import { eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { shops, staffActions, user as userTable, type Shop } from "@sailo/db/schema";
 import { publishShopEvent } from "@sailo/events";
+import type { StaffCapability } from "@sailo/security/staff";
 import { requireStaff } from "@/lib/session";
 import { revalidateShopOnWeb } from "@/lib/web-cache";
 
@@ -38,8 +39,21 @@ import { revalidateShopOnWeb } from "@/lib/web-cache";
    staff being able to sign a stolen account out is telling its owner to wait.
 =========================================================================== */
 
-export async function loadShop(formData: FormData) {
-  const staff = await requireStaff();
+/**
+ * The shop an action names, and the authority to act on it.
+ *
+ * The capability is a required argument rather than an optional one, and that
+ * is the whole point of the parameter existing. Every action in this app used
+ * to open with a bare `requireStaff()` — staff-only, and nothing narrower —
+ * which meant a support member could suspend any shop on the platform or comp
+ * a plan, because the *page* was the access control and the action asked no
+ * further question. Making it optional here would have left the same hole with
+ * a nicer shape: the guard someone forgets to pass is the guard that is not
+ * there. So the type refuses to compile without one, and choosing which one is
+ * a decision the author has to make at the moment they write the action.
+ */
+export async function loadShop(formData: FormData, capability: StaffCapability) {
+  const staff = await requireStaff(capability);
 
   const shopId = String(formData.get("shopId") ?? "").trim();
   if (!shopId) return { staff, shop: null } as const;
@@ -121,9 +135,16 @@ export async function recordOnAccount(
   revalidatePath("/security");
 }
 
-/** The account an action names, with the shop it owns if there is one. */
-export async function loadAccount(formData: FormData) {
-  const staff = await requireStaff();
+/**
+ * The account an action names, with the shop it owns if there is one.
+ *
+ * Capability required, for the reason `loadShop` gives at length. The two
+ * capabilities that reach here point in opposite directions and must not be
+ * confused: `account:secure` ends sessions and keys, and `account:recover`
+ * hands a locked-out seller their account back.
+ */
+export async function loadAccount(formData: FormData, capability: StaffCapability) {
+  const staff = await requireStaff(capability);
   const db = getDb();
 
   const userId = String(formData.get("userId") ?? "").trim();

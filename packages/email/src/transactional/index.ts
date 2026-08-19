@@ -8,3 +8,4 @@
  */
 export * from "./messages";
 export * from "../orders";
+export * from "./privacy";

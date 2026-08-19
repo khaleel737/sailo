@@ -3,7 +3,7 @@ import { EmptyRow, Table, Td, Th, Tr } from "@/app/_components/hq-table";
 import { SectionTitle, When } from "@/app/_components/hq-ui";
 import { Badge } from "@sailo/design-system/web";
 import { formatMoney } from "@sailo/core/currency";
-import type { AccountDetail, AccountShop } from "./account.types";
+import type { AccountCommerce, AccountShop } from "./account.types";
 
 /** The shop's products. */
 
@@ -11,7 +11,7 @@ export function CatalogueTable({
   detail,
   shop,
 }: {
-  detail: AccountDetail;
+  detail: AccountCommerce;
   shop: AccountShop;
 }) {
   const money = (cents: number) => formatMoney(cents, shop.currency);

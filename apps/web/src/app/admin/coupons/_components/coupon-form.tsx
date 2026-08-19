@@ -6,6 +6,7 @@ import { Loader2, Plus } from "lucide-react";
 import { saveCoupon } from "@/lib/actions/coupons";
 import { bpToPercent } from "@sailo/core/pricing";
 import { centsToAmount } from "@sailo/core/currency";
+import { priceIn } from "@sailo/core/regional";
 import {
   Alert,
   Button,
@@ -34,10 +35,13 @@ function Submit({ isEdit }: { isEdit: boolean }) {
 export function CouponForm({
   coupon,
   currency,
+  regionalCurrencies = [],
   onDone,
 }: {
   coupon?: Coupon;
   currency: string;
+  /** The other currencies the shop quotes — spec 53. Empty renders no extra fields. */
+  regionalCurrencies?: string[];
   onDone?: () => void;
 }) {
   const a = useAdminT();
@@ -154,6 +158,53 @@ export function CouponForm({
             />
           </Field>
         </div>
+
+        {/*
+          The same two amounts, in each currency the shop quotes — spec 53.
+
+          A **percentage** code needs nothing here unless it names a minimum
+          spend: a percentage is currency-free, so 10% off works in euros with
+          no second number. A **fixed** one is a number in a currency, and a
+          code with no euro amount is refused in euros rather than converted —
+          which is why the amount field is only offered on the fixed branch.
+        */}
+        {regionalCurrencies.length > 0 ? (
+          <div className="space-y-4 border-t border-ink-100 pt-4">
+            <p className="text-xs text-ink-500">{a.coupons.otherCurrencies}</p>
+            {regionalCurrencies.map((code) => (
+              <div key={code} className="grid gap-4 sm:grid-cols-2">
+                {discountType === "percent" ? null : (
+                  <Field label={`${a.coupons.amount} (${code})`} htmlFor={`value_${code}`}>
+                    <Input
+                      id={`value_${code}`}
+                      name={`value_${code}`}
+                      inputMode="decimal"
+                      defaultValue={centsToAmount(
+                        priceIn(coupon ?? { currencyPrices: {} }, code)?.price ?? null,
+                        code,
+                      )}
+                    />
+                  </Field>
+                )}
+                <Field
+                  label={`${a.coupons.minSpend} (${code})`}
+                  htmlFor={`minSubtotal_${code}`}
+                  hint={a.common.optional}
+                >
+                  <Input
+                    id={`minSubtotal_${code}`}
+                    name={`minSubtotal_${code}`}
+                    inputMode="decimal"
+                    defaultValue={centsToAmount(
+                      priceIn(coupon ?? { currencyPrices: {} }, code)?.secondary ?? null,
+                      code,
+                    )}
+                  />
+                </Field>
+              </div>
+            ))}
+          </div>
+        ) : null}
 
         <div className="flex items-center justify-between gap-3 border-t border-ink-100 pt-4">
           <label className="flex cursor-pointer items-center gap-2.5 pointer-coarse:min-h-11">

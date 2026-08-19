@@ -217,6 +217,21 @@ describe("deltaOf", () => {
     expect(deltaOf(3, 0)).toEqual({ value: "+3 vs none", direction: "up" });
   });
 
+  it("refuses a percentage of a base too small to take one of", () => {
+    /*
+     * The overview really did display "+21000% vs previous" — one registration
+     * the week before, two hundred and eleven this week. It is arithmetically
+     * correct and it reads as a broken number; the counts underneath are both
+     * smaller and more useful.
+     */
+    expect(deltaOf(211, 1)).toEqual({ value: "211 vs 1", direction: "up" });
+    expect(deltaOf(2, 9)).toEqual({ value: "2 vs 9", direction: "down" });
+  });
+
+  it("starts using percentages once the base can carry one", () => {
+    expect(deltaOf(20, 10).value).toBe("+100% vs previous");
+  });
+
   it("reports a fall", () => {
     expect(deltaOf(50, 100).direction).toBe("down");
   });

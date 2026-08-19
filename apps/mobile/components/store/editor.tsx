@@ -366,18 +366,36 @@ export function ProductEditor({
 
         {draft.kind === "membership" ? (
           <>
-            <Segmented
-              options={[
-                { value: "month", label: a.billing.monthly },
-                { value: "year", label: a.billing.yearly },
-              ]}
-              value={draft.billingInterval}
-              onChange={(next) => edit({ billingInterval: next })}
-              accessibilityLabel={a.productForm.billingInterval}
-            />
-            <Text variant="caption" tone="muted">
-              {a.productForm.billingIntervalHint}
-            </Text>
+            {/*
+              A picker, or a sentence — never a picker that lies.
+
+              This screen can say monthly and yearly. The web form can say
+              "every 3 months", and a membership already on such a cycle would
+              be shown "Monthly" here with no way to tell it apart from a
+              genuinely monthly one. `toInput` round-trips the count so the
+              cycle survives a save either way; this is so the seller is not
+              misinformed about what they are looking at.
+            */}
+            {draft.billingIntervalCount > 1 ? (
+              <Text variant="caption" tone="muted">
+                {s.customCycleOnWeb}
+              </Text>
+            ) : (
+              <>
+                <Segmented
+                  options={[
+                    { value: "month", label: a.billing.monthly },
+                    { value: "year", label: a.billing.yearly },
+                  ]}
+                  value={draft.billingInterval}
+                  onChange={(next) => edit({ billingInterval: next })}
+                  accessibilityLabel={a.productForm.billingInterval}
+                />
+                <Text variant="caption" tone="muted">
+                  {a.productForm.billingIntervalHint}
+                </Text>
+              </>
+            )}
             <TextField
               label={a.productForm.trialDays}
               hint={a.productForm.trialDaysHint}

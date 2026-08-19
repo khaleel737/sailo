@@ -1,8 +1,8 @@
-import { and, eq, gt, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
+import { and, eq, gt, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { maybeRow } from "@sailo/core/invariant";
 import { getDb } from "@sailo/db";
 import { downloadEvents, orders, productFiles } from "@sailo/db/schema";
-import { orderedProductIds } from "@/lib/downloads";
+import { orderMayFetchFile } from "@/lib/downloads";
 import { membershipOpenForOrder } from "@/lib/membership-access";
 import { isUuid } from "@sailo/core/uuid";
 import { isStoredFileUrl } from "@sailo/storage/urls";
@@ -58,7 +58,9 @@ export async function GET(
     });
   }
 
-  const gate = await rateLimit(`download:${token}`, 30, 300);
+  const gate = await // DECISION B — fails closed (token guessing). The token *is* the
+  // authorisation, so an unmetered endpoint is an offline attack made online.
+  rateLimit(`download:${token}`, 30, 300, { onOutage: "closed" });
   if (!gate.allowed) {
     return new Response("Too many requests. Try again in a few minutes.", {
       status: 429,
@@ -97,17 +99,25 @@ export async function GET(
    * Entitlement is every product on the order, not `order.productId` — that
    * column names the header's single line, and gating on it would refuse a
    * buyer the second half of what they paid for.
+   *
+   * **And every ordered *variant*, since spec 48.** `orderMayFetchFile`
+   * resolves the same rule the delivery page renders: a combination's own
+   * files where it has any, the product's defaults where it has none. Asking
+   * only "does this file belong to a product on this order" was sufficient
+   * until files could belong to a variant, and stopped being so the moment
+   * they could — the buyer of the cheap variant would pass it while asking for
+   * the expensive one's file, which is this feature inverted.
+   *
+   * One function rather than a second copy of the fallback here, because the
+   * page and the gate disagreeing is how a buyer sees a file they cannot
+   * fetch, or fetches one they cannot see.
    */
-  const productIds = await orderedProductIds(order);
-  if (productIds.length === 0) {
+  if (!(await orderMayFetchFile(order, fileId))) {
     return new Response("Not found", { status: 404 });
   }
 
   const file = await db.query.productFiles.findFirst({
-    where: and(
-      eq(productFiles.id, fileId),
-      inArray(productFiles.productId, productIds),
-    ),
+    where: eq(productFiles.id, fileId),
   });
   if (!file) {
     return new Response("Not found", { status: 404 });

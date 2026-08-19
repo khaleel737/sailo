@@ -15,7 +15,10 @@ import {
   intervalOf,
   isBillingInterval,
   nextPeriodEnd,
+  normalizeIntervalCount,
+  normalizeTrialDays,
 } from "@sailo/commerce/memberships";
+import { completeTermIfDone, countCycle } from "./lifecycle";
 
 /**
  * The renewal cycle, for every rail that is not a card.
@@ -49,12 +52,46 @@ import {
  * on the promise is how a gym ends up with members it is not being paid for.
  * `startManualPeriod` is what opens the door, and only the seller confirming
  * the payment calls it.
+ *
+ * A free trial is the one deliberate exception — spec 43. There the seller has
+ * decided the first n days are free, so the door opens now and the record says
+ * `trialing` with the period running to the end of it. See below.
  */
 export async function createManualSubscription(opts: {
   shop: Shop;
   order: Pick<Order, "id" | "clientId" | "productId" | "paymentMethod" | "totalCents" | "currency">;
   interval: string;
+  /** How many of them per charge. Absent is the ordinary every-one cycle. */
+  intervalCount?: number;
+  /**
+   * A free trial, in days — spec 43. Null or absent is every signup that
+   * existed before this: nothing until the seller confirms the money.
+   */
+  trialDays?: number | null;
 }): Promise<Subscription | null> {
+  const interval = isBillingInterval(opts.interval) ? opts.interval : "month";
+
+  /*
+   * A trial opens the door before any money has arrived, and that is the one
+   * thing this function otherwise refuses to do.
+   *
+   * `incomplete` with no period end is the default precisely because somebody
+   * who has *said* they will pay by bank transfer has not paid. A trial is the
+   * seller deliberately choosing otherwise — they have decided the first n days
+   * are free — so the honest record is `trialing` with the period running to
+   * the end of it. `membershipAccess` already treats `trialing` as open and
+   * already closes on `currentPeriodEnd`, so neither needed changing.
+   *
+   * Nothing here raises the first paid period. The manual-renewal cron finds
+   * this subscription five days before the trial ends and raises it under the
+   * same `renewalOrderedFor` claim every other renewal uses — one cycle engine,
+   * not two.
+   */
+  const trialDays = normalizeTrialDays(opts.trialDays);
+  const trialEndsAt = trialDays
+    ? new Date(Date.now() + trialDays * 86_400_000)
+    : null;
+
   const [row] = await getDb()
     .insert(subscriptions)
     .values({
@@ -63,10 +100,18 @@ export async function createManualSubscription(opts: {
       clientId: opts.order.clientId,
       billingMode: "manual",
       paymentMethod: opts.order.paymentMethod,
-      status: "incomplete",
+      status: trialEndsAt ? "trialing" : "incomplete",
+      currentPeriodEnd: trialEndsAt,
       priceCents: opts.order.totalCents,
       currency: opts.order.currency,
-      interval: isBillingInterval(opts.interval) ? opts.interval : "month",
+      interval,
+      /*
+       * Snapshotted alongside, because the renewal below reads this row and not
+       * the product. Without it a member on a quarterly plan is asked to pay
+       * again after a month — the interval says "month" and nothing else here
+       * can say three of them.
+       */
+      intervalCount: normalizeIntervalCount(opts.intervalCount ?? 1, interval),
     })
     .returning();
 
@@ -97,6 +142,19 @@ export async function extendForPaidOrder(orderId: string): Promise<Subscription 
   const order = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
   if (!order?.subscriptionId || order.paymentStatus !== "paid") return null;
 
+  /*
+   * An order that bought nothing extends nothing — spec 43.
+   *
+   * A trial signup is a zero-value order carrying `subscriptionId`, written
+   * `paid` because nothing is owed on it. Without this line a seller toggling
+   * that order unpaid and back — an ordinary thing to do while tidying a list —
+   * would land here and hand the member a free paid period on top of their free
+   * trial. The trial's own period end is written by `createManualSubscription`;
+   * the first *paid* period is raised by the cron and confirmed through an
+   * order that has an amount on it.
+   */
+  if (order.totalCents <= 0) return null;
+
   const row = await db.query.subscriptions.findFirst({
     where: and(
       eq(subscriptions.id, order.subscriptionId),
@@ -106,7 +164,12 @@ export async function extendForPaidOrder(orderId: string): Promise<Subscription 
   if (!row || row.billingMode !== "manual") return null;
 
   const interval = intervalOf({ billingInterval: row.interval });
-  const until = nextPeriodEnd(row.currentPeriodEnd, interval);
+  const until = nextPeriodEnd(
+    row.currentPeriodEnd,
+    interval,
+    new Date(),
+    row.intervalCount,
+  );
 
   /*
    * The claim, and it is the order that carries it.
@@ -152,10 +215,40 @@ export async function extendForPaidOrder(orderId: string): Promise<Subscription 
       // period has now been paid for.
       renewalOrderedFor: null,
       startedAt: row.startedAt,
+      /*
+       * The cycle is counted **in this statement** — spec 49.
+       *
+       * Not in one of its own afterwards, and the reason is the same one the
+       * two claims above exist for: a seller toggling an order paid → unpaid →
+       * paid must buy one cycle rather than three. A counter incremented
+       * separately has exactly that hazard back, and it fails silently — the
+       * member's twelve-week course finishes in week ten and nobody can say
+       * why. Riding the period guard means the count and the period can never
+       * disagree about how many months this member has bought.
+       */
+      cyclesPaid: countCycle,
+      /*
+       * And the dunning sequence starts over, because the money arrived. Left
+       * standing, a member who failed twice in March and recovered would have
+       * one attempt left for ever: the next real failure, in November, would
+       * send one email and give up on somebody who would have fixed their card.
+       */
+      dunningAttempts: 0,
+      dunningLastSentAt: null,
       updatedAt: new Date(),
     })
     .where(and(eq(subscriptions.id, row.id), periodGuard))
     .returning();
+
+  /*
+   * And if that was the last cycle, the term is over.
+   *
+   * After the extension rather than before it, because "complete" is decided
+   * by the count this statement just wrote. `completeTermIfDone` claims on
+   * `ended_reason IS NULL`, so a seller re-saving the order finds the term
+   * already complete and changes nothing.
+   */
+  if (extended) await completeTermIfDone(extended.id);
 
   /*
    * Files, if the membership carries any. The same call the card path makes,

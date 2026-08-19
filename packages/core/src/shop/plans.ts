@@ -59,12 +59,178 @@ export type Features = {
    * somebody running a business on other tools as well as this one.
    */
   integrations: boolean;
+  /**
+   * Flows — a sequence the seller builds once that runs on its own (spec 30),
+   * and the scenarios built on the same runner (spec 31).
+   *
+   * Business, and its own flag rather than riding `broadcasts`. The two sit on
+   * the same tier today and they are not the same entitlement: a broadcast is
+   * one message a seller wrote and pressed send on; a flow keeps sending after
+   * they close the laptop. Reading one to infer the other is the bug
+   * `memberships` records beside `cardRails` — the day either moves, a shared
+   * flag moves both.
+   */
+  automations: boolean;
+  /**
+   * Quote the buyer in their own currency, at a price the seller typed.
+   *
+   * Pro rather than Business, and rather than free. It is a selling feature —
+   * a British buyer shown `$29.00` is doing mental arithmetic at the moment
+   * they were about to pay — and Pro is the tier bought by a seller whose shop
+   * has an audience outside their own country. Stripe's Adaptive Pricing
+   * still converts the *charge* for every tier, including Free; what this buys
+   * is the price on the card, which is where the decision is made.
+   */
+  regionalPricing: boolean;
+  /**
+   * Pay-what-you-want pricing and scheduled sell windows — spec 43.
+   *
+   * One flag for both, because from the seller's side they are one idea: the
+   * price is no longer a single number typed once. Two checkboxes on a pricing
+   * card that a seller reads as one decision would only invite the half-set
+   * state where a launch window is live and the amount field is not.
+   *
+   * Pro, alongside coupons and for the same reason they came down from
+   * Business: a launch that opens on Friday and a name-your-price download are
+   * ordinary selling tools, not growth-team features, and they are the sort of
+   * thing a seller reaches for in their first month.
+   */
+  pricingModes: boolean;
+  /**
+   * Postage priced by what is in the box, and an order shipped in more than one
+   * — spec 51.
+   *
+   * Business, and one flag for both because they are the same seller: somebody
+   * posting parcels of different sizes in more than one box is running a
+   * stockroom, not a link in a bio. What is *not* gated is recording a weight
+   * or being told stock is low — the first is data a seller should always be
+   * able to keep, and the second prevents a loss rather than creating a sale.
+   */
+  weightBands: boolean;
+  /**
+   * Order bumps and post-payment cross-sells — specs 08 and 36.
+   *
+   * Pro, which is where spec 08 asked for it ("gate ours behind `pro`"), and
+   * one flag for both because they are one table and one editor: a seller who
+   * wants a companion product in the cart wants one on the thank-you page a
+   * week later, and two switches would be two upgrade prompts for one idea.
+   */
+  offers: boolean;
+  /**
+   * Importing a catalogue from Shopify or Gumroad — spec 47.
+   *
+   * Pro, and **Stripe, Etsy and the plain CSV are not gated at all**. Etsy is a
+   * spreadsheet upload that costs us nothing to accept and it is the migration
+   * this product's own marketing promises — `layout.tsx` ships "Etsy
+   * alternative" as a targeting keyword — so gating it would be charging for
+   * the door. Shopify is an API integration with a rate limit to respect and a
+   * seller who has a business to move, which is what Pro is for.
+   */
+  catalogueImport: boolean;
+  /**
+   * Collecting testimonials and showing them on the seller's own surfaces —
+   * spec 35.
+   *
+   * On Pro, with the *embed* held back to Business below. The split is the
+   * spec's and it is the right one: putting a wall on your own storefront is
+   * shop-building, which is what Pro is; putting one inside a Framer site you
+   * also run is using Sailo as a content service for somewhere else, which is
+   * the shape of thing Business is bought for.
+   */
+  testimonials: boolean;
+  /** `/embed/wall/[key]` in somebody else's page, and more than one wall. */
+  testimonialEmbed: boolean;
+  /**
+   * One code per buyer instead of one code for everybody — spec 48.
+   *
+   * Pro. A pool is the difference between "I can sell licence keys here" and
+   * "I cannot", which is a selling tool rather than a growth one — the same
+   * argument that brought `coupons` down from Business. The shared string
+   * `digitalAccessDetails` already holds is **not** gated and never will be: it
+   * is today's behaviour, and taking it away from a Free shop would be
+   * withdrawing something they are already selling.
+   */
+  codePools: boolean;
+  /**
+   * Licence keys with an activation limit, and the public API that checks them
+   * — spec 48.
+   *
+   * Business, because it is the shape of thing Business is bought for: a
+   * seller shipping software that talks to us from inside somebody else's
+   * binary is running a business on other tools as well as this one, which is
+   * the same reasoning `integrations` carries.
+   */
+  licensing: boolean;
+  /**
+   * Fixed-term memberships and pause/freeze — spec 49.
+   *
+   * Pro, and one flag for both because they are the same seller: a gym that
+   * sells a twelve-week course is the gym that freezes somebody for a holiday.
+   * `memberships` itself stays on Business, so this only ever widens what a
+   * shop that already has memberships can do with them.
+   */
+  membershipTerms: boolean;
+  /**
+   * Seats bought together and assigned, and switching between memberships —
+   * spec 49.
+   *
+   * Business. Seats are what turns a membership into something a *company*
+   * buys, and the buyer of eight seats is not shopping for a Pro plan.
+   */
+  membershipSeats: boolean;
+  /**
+   * Early bird / General / VIP against one room's capacity — spec 50.
+   *
+   * Pro. Tiered pricing on one event is configuration a working event seller
+   * needs on their first sale, and the alternative today is three products
+   * with three checkouts and no shared capacity.
+   */
+  eventTiers: boolean;
+  /**
+   * Sessions — the same workshop four Tuesdays — and ticket transfer, spec 50.
+   *
+   * Business, and one flag because both are a *series* seller's problem: a
+   * conference with day tickets is also the event whose buyer passes one to a
+   * colleague. `.ics`, the venue and the timezone are deliberately not here:
+   * they are correctness, not upsell, and a buyer's calendar entry being in
+   * the wrong timezone is not a thing to charge for fixing.
+   */
+  eventSessions: boolean;
+  /**
+   * More than one bookable person, and a class with more than one seat —
+   * spec 51.
+   *
+   * Pro, and one flag because they are the same shop growing: a salon that
+   * hires a second stylist is the studio that starts running a class. What is
+   * **not** gated is a buyer moving their own appointment or a booking
+   * reminder — both prevent a loss rather than creating a sale, and gating
+   * them would price the smallest shops out of not being stood up.
+   */
+  staffResources: boolean;
+  /**
+   * Other people, working in the seller's shop — spec 37.
+   *
+   * A paid feature, and the Free plan gets the owner alone. Not a throttle
+   * dressed as a feature: a shop with a second person in it is a shop with
+   * somebody on a payroll, and it is also the point at which Sailo starts
+   * carrying an invitation flow, an audit trail and a support surface that a
+   * one-person shop costs us nothing for.
+   */
+  teams: boolean;
 };
 
 export type Limits = {
   /** null means unlimited. */
   products: number | null;
   analyticsDays: number;
+  /**
+   * Walls a shop may keep — spec 35. `0` is none, `null` is unlimited.
+   *
+   * One on Pro is not a throttle dressed as a feature: a shop with one
+   * storefront needs one wall, and the second exists to put a *different*
+   * selection on a *different* site, which is the embed and therefore Business.
+   */
+  testimonialWalls: number | null;
 };
 
 export type Plan = {
@@ -96,7 +262,7 @@ export const PLANS: Record<PlanId, Plan> = {
     monthlyCents: 0,
     yearlyCents: 0,
     feeBp: 300,
-    limits: { products: 10, analyticsDays: 7 },
+    limits: { products: 10, analyticsDays: 7, testimonialWalls: 0 },
     features: {
       chatRails: true,
       manualRails: true,
@@ -118,6 +284,22 @@ export const PLANS: Record<PlanId, Plan> = {
       broadcasts: false,
       memberships: false,
       integrations: false,
+      testimonials: false,
+      testimonialEmbed: false,
+      teams: false,
+      automations: false,
+      regionalPricing: false,
+      catalogueImport: false,
+      pricingModes: false,
+      weightBands: false,
+      offers: false,
+      codePools: false,
+      licensing: false,
+      membershipTerms: false,
+      membershipSeats: false,
+      eventTiers: false,
+      eventSessions: false,
+      staffResources: false,
     },
     highlights: [
       "free1", "free2", "free3", "free4", "free5",
@@ -131,7 +313,7 @@ export const PLANS: Record<PlanId, Plan> = {
     monthlyCents: 1900,
     yearlyCents: 18000, // ~21% off
     feeBp: 200,
-    limits: { products: 100, analyticsDays: 365 },
+    limits: { products: 100, analyticsDays: 365, testimonialWalls: 1 },
     features: {
       chatRails: true,
       manualRails: true,
@@ -149,6 +331,22 @@ export const PLANS: Record<PlanId, Plan> = {
       broadcasts: false,
       memberships: false,
       integrations: false,
+      testimonials: true,
+      testimonialEmbed: false,
+      teams: true,
+      automations: false,
+      regionalPricing: true,
+      catalogueImport: true,
+      pricingModes: true,
+      weightBands: false,
+      offers: true,
+      codePools: true,
+      licensing: false,
+      membershipTerms: true,
+      membershipSeats: false,
+      eventTiers: true,
+      eventSessions: false,
+      staffResources: true,
     },
     highlights: ["pro1", "pro2", "biz3", "pro3", "pro4", "pro5"],
   },
@@ -159,7 +357,7 @@ export const PLANS: Record<PlanId, Plan> = {
     monthlyCents: 4900,
     yearlyCents: 46800, // ~20% off
     feeBp: 100,
-    limits: { products: null, analyticsDays: 365 * 3 },
+    limits: { products: null, analyticsDays: 365 * 3, testimonialWalls: null },
     features: {
       chatRails: true,
       manualRails: true,
@@ -172,6 +370,22 @@ export const PLANS: Record<PlanId, Plan> = {
       broadcasts: true,
       memberships: true,
       integrations: true,
+      testimonials: true,
+      testimonialEmbed: true,
+      teams: true,
+      automations: true,
+      regionalPricing: true,
+      catalogueImport: true,
+      pricingModes: true,
+      weightBands: true,
+      offers: true,
+      codePools: true,
+      licensing: true,
+      membershipTerms: true,
+      membershipSeats: true,
+      eventTiers: true,
+      eventSessions: true,
+      staffResources: true,
     },
     /*
      * `biz2` (card through your own Stripe) moved to Free and `biz3` (discount

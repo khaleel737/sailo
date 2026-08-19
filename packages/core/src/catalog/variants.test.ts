@@ -3,10 +3,16 @@ import type { ProductOption } from "@sailo/db/schema";
 import {
   cartCanPayInPerson,
   combinations,
+  deliveryOf,
+  isDigitalDelivery,
   retargetSelection,
+  MAX_QUANTITY,
   MAX_VARIANTS,
+  maxOrderable,
+  quantityCeiling,
   normalizeOptions,
   optionKey,
+  perOrderCap,
   sameOptions,
   variantPrice,
 } from "./variants";
@@ -256,5 +262,146 @@ describe("cartCanPayInPerson", () => {
 
   it("withdraws it from an empty order rather than assuming one", () => {
     expect(cartCanPayInPerson([])).toBe(false);
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/*  How many one order may take                                                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Stock and the seller's per-order cap are different refusals, and a ticketed
+ * event means both at once: a room of 200 that will not sell anybody a fifth
+ * seat. The picker, the basket and the checkout all clamp through this one
+ * function, so a quantity a buyer can reach is a quantity the order honours.
+ */
+const stocked = (over: Partial<Parameters<typeof maxOrderable>[0]> = {}) => ({
+  inStock: true,
+  trackInventory: false,
+  stockQuantity: null,
+  ...over,
+});
+
+describe("maxOrderable", () => {
+  it("offers the hard cap when nothing else limits it", () => {
+    expect(maxOrderable(stocked())).toBe(MAX_QUANTITY);
+  });
+
+  it("stops at what is left when the seller counts stock", () => {
+    expect(
+      maxOrderable(stocked({ trackInventory: true, stockQuantity: 3 })),
+    ).toBe(3);
+  });
+
+  it("stops at the seller's cap even with plenty on the shelf", () => {
+    expect(maxOrderable(stocked({ maxPerOrder: 4 }))).toBe(4);
+  });
+
+  it("takes whichever of stock and cap bites first, in both directions", () => {
+    // Two seats left on a four-a-head event: two.
+    expect(
+      maxOrderable(
+        stocked({ trackInventory: true, stockQuantity: 2, maxPerOrder: 4 }),
+      ),
+    ).toBe(2);
+    // Two hundred seats on a four-a-head event: four.
+    expect(
+      maxOrderable(
+        stocked({ trackInventory: true, stockQuantity: 200, maxPerOrder: 4 }),
+      ),
+    ).toBe(4);
+  });
+
+  it("never offers more than the hard cap, whatever the seller typed", () => {
+    expect(maxOrderable(stocked({ maxPerOrder: 10_000 }))).toBe(MAX_QUANTITY);
+  });
+});
+
+describe("quantityCeiling", () => {
+  /*
+   * The same rule from the two numbers a client already holds. The buy box and
+   * the basket are handed `unitsLeft` and the cap resolved, with no product row
+   * to pass `maxOrderable` — so they call this, and `maxOrderable` is built
+   * from it. One implementation, four callers.
+   */
+  it("is the hard cap when neither stock nor the seller limits it", () => {
+    expect(quantityCeiling(null, null)).toBe(MAX_QUANTITY);
+    expect(quantityCeiling(null, undefined)).toBe(MAX_QUANTITY);
+  });
+
+  it("takes whichever of stock and cap bites first", () => {
+    expect(quantityCeiling(2, 4)).toBe(2);
+    expect(quantityCeiling(200, 4)).toBe(4);
+    expect(quantityCeiling(3, null)).toBe(3);
+  });
+
+  it("reads a zero or negative cap as no cap", () => {
+    expect(quantityCeiling(null, 0)).toBe(MAX_QUANTITY);
+    expect(quantityCeiling(null, -2)).toBe(MAX_QUANTITY);
+  });
+
+  it("agrees with `maxOrderable`, which is built from it", () => {
+    const product = stocked({
+      trackInventory: true,
+      stockQuantity: 6,
+      maxPerOrder: 4,
+    });
+    expect(maxOrderable(product)).toBe(quantityCeiling(6, 4));
+  });
+});
+
+describe("perOrderCap", () => {
+  it("reads a blank cap as no cap", () => {
+    expect(perOrderCap(stocked())).toBeNull();
+    expect(perOrderCap(stocked({ maxPerOrder: null }))).toBeNull();
+  });
+
+  it("reads zero as no cap rather than as an embargo", () => {
+    /*
+     * A seller who wants to stop selling has `inStock`. A zero here is far
+     * more likely a cleared field, and honouring it would render a quantity
+     * picker whose only legal value is none.
+     */
+    expect(perOrderCap(stocked({ maxPerOrder: 0 }))).toBeNull();
+    expect(perOrderCap(stocked({ maxPerOrder: -3 }))).toBeNull();
+  });
+
+  it("discards a cap that is not a number", () => {
+    expect(perOrderCap(stocked({ maxPerOrder: Number.NaN }))).toBeNull();
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/*  What a digital product hands over                                          */
+/* -------------------------------------------------------------------------- */
+
+describe("deliveryOf", () => {
+  it("knows the three shapes a digital good comes in", () => {
+    expect(isDigitalDelivery("file")).toBe(true);
+    expect(isDigitalDelivery("link")).toBe(true);
+    expect(isDigitalDelivery("code")).toBe(true);
+    expect(isDigitalDelivery("email")).toBe(false);
+    expect(isDigitalDelivery(null)).toBe(false);
+  });
+
+  it("reads the seller's choice on a digital product", () => {
+    expect(deliveryOf({ kind: "digital", digitalDelivery: "link" })).toBe("link");
+    expect(deliveryOf({ kind: "digital", digitalDelivery: "code" })).toBe("code");
+  });
+
+  it("falls back to files rather than guessing", () => {
+    expect(deliveryOf({ kind: "digital", digitalDelivery: "nonsense" })).toBe("file");
+    expect(deliveryOf({ kind: "digital", digitalDelivery: null })).toBe("file");
+  });
+
+  it("answers files for everything that is not digital", () => {
+    /*
+     * Not a null answer, deliberately: a mug delivers no link and no code, and
+     * a caller asking "should I render the access details" wants "no" rather
+     * than a special case of its own. A stale value left on a product switched
+     * away from digital must not resurrect either.
+     */
+    expect(deliveryOf({ kind: "physical", digitalDelivery: "link" })).toBe("file");
+    expect(deliveryOf({ kind: "event", digitalDelivery: "code" })).toBe("file");
   });
 });

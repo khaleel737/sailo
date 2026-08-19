@@ -11,7 +11,8 @@ import { requireShop } from "@/lib/session";
    wraps it. The two are deliberately the same name: one is the form, one is the
    rule, and a reader following the call arrives where the rule actually is. */
 import { saveCoupon as save } from "@sailo/commerce/coupons";
-import { parseMoneyToCents } from "@sailo/core/currency";
+import { moneyToCents, parseMoneyToCents } from "@sailo/core/currency";
+import { buildCurrencyPrices } from "@sailo/core/regional";
 import { can, upgradeMessage } from "@sailo/core/plans";
 import type { ActionState } from "./shop";
 
@@ -30,7 +31,7 @@ export async function saveCoupon(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
 
   if (!can(shop, "coupons")) {
     return { ok: false, error: upgradeMessage("coupons", "Discount codes") };
@@ -74,6 +75,33 @@ export async function saveCoupon(
       String(formData.get("minSubtotal") ?? "0"),
       shop.currency,
     ),
+    /*
+     * The same two amounts in each currency the shop quotes — spec 53.
+     *
+     * A **percentage** coupon needs no entry unless it names a minimum: 10%
+     * off is 10% off in any currency, and `couponAtCurrency` lets it through.
+     * A fixed one always does, because a `€5` code that takes five off
+     * whatever the buyer happens to be paying in is a discount nobody set.
+     */
+    currencyPrices: buildCurrencyPrices(
+      (can(shop, "regionalPricing") ? shop.regionalCurrencies : []).map((code) => ({
+        currency: code,
+        priceCents:
+          discountType === "percent"
+            ? /* A percentage has no amount to price; the entry exists only to
+                 carry the minimum, so it is stored as a zero discount rather
+                 than dropped — dropping it would take the minimum with it. */
+              (moneyToCents(String(formData.get(`minSubtotal_${code}`) ?? ""), code) ===
+              null
+                ? null
+                : 0)
+            : moneyToCents(String(formData.get(`value_${code}`) ?? ""), code),
+        secondaryCents: moneyToCents(
+          String(formData.get(`minSubtotal_${code}`) ?? ""),
+          code,
+        ),
+      })),
+    ),
     maxRedemptions,
     expiresAt,
     isActive: formData.get("isActive") === "on",
@@ -105,7 +133,7 @@ const REFUSALS: Record<
 };
 
 export async function deleteCoupon(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
@@ -118,7 +146,7 @@ export async function deleteCoupon(formData: FormData) {
 }
 
 export async function toggleCoupon(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 

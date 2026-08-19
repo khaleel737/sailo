@@ -45,24 +45,51 @@ export function SecurityPanel({
   security,
   emailVerified,
   twoFactorEnabled,
+  /**
+   * Whether to draw the per-row revoke buttons.
+   *
+   * `account:secure`, resolved by the page. Defaults to true because the other
+   * caller — the platform-wide security desk — already renders only for staff
+   * who hold it, and a default of false there would silently remove the buttons
+   * that page exists for. The actions behind them check for themselves either
+   * way; this only decides what is drawn.
+   */
+  mayRevoke = true,
 }: {
   security: AccountSecurity;
   emailVerified: boolean;
   twoFactorEnabled: boolean;
+  mayRevoke?: boolean;
 }) {
   const { sessions, countries, twoFactor, providers, keys, hooks } = security;
   const liveKeys = keys.filter((key) => !key.revokedAt);
 
   return (
     <>
-      <SectionTitle>Security</SectionTitle>
+      {/*
+        No "Security" heading here.
 
+        This panel is now reached only through the account's Security *tab*,
+        which is already labelled — so the heading restated the word directly
+        under itself and pushed everything down a line for nothing. The panel's
+        own sub-headings ("How they get in", "Where from") are what actually
+        divide it.
+      */}
       <div className="grid items-start gap-3 sm:grid-cols-2">
         <Card className="p-4">
-          <h3 className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-ink-400">
+          {/*
+            `h2`, not `h3`.
+
+            These reported to an `h2` reading "Security" that this panel used to
+            render. The tab strip is labelled Security now, so that heading went
+            — and left these skipping a level under the page's `h1`, which is
+            how a screen reader's heading outline gets a hole in it. Styled
+            identically; only the level changed.
+          */}
+          <h2 className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-ink-400">
             <Fingerprint className="size-3.5" />
             How they get in
-          </h3>
+          </h2>
           <div className="space-y-3">
             <Detail label="Second factor">
               {twoFactorEnabled ? (
@@ -132,10 +159,10 @@ export function SecurityPanel({
         </Card>
 
         <Card className="p-4">
-          <h3 className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-ink-400">
+          <h2 className="mb-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-ink-400">
             <Globe className="size-3.5" />
             Where from
-          </h3>
+          </h2>
           {countries.length === 0 ? (
             <p className="text-sm text-ink-500">
               Nowhere placed. Sessions carry a country only when the edge
@@ -222,7 +249,7 @@ export function SecurityPanel({
                     <When value={row.expiresAt} />
                   </Td>
                   <Td align="end">
-                    <RevokeSession sessionId={row.id} />
+                    {mayRevoke ? <RevokeSession sessionId={row.id} /> : null}
                   </Td>
                 </Tr>
               );
@@ -292,9 +319,9 @@ export function SecurityPanel({
                     <span className="text-xs text-ink-400">
                       <When value={key.revokedAt} />
                     </span>
-                  ) : (
+                  ) : mayRevoke ? (
                     <RevokeApiKey keyId={key.id} />
-                  )}
+                  ) : null}
                 </Td>
               </Tr>
             ))}

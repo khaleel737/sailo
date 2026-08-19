@@ -46,6 +46,28 @@ export function Table({
         // Sideways scroll is the tablet-and-up story. Below md the rows are
         // cards, so a scroll container there would only clip the shadow.
         "max-md:overflow-visible md:overflow-x-auto",
+        /*
+         * A shadow at whichever edge has more table behind it.
+         *
+         * Wide tables already scrolled; nothing said so. The last column was
+         * simply cut off at the container's edge — "Decide" rendering as
+         * "Decid" on /partners, a Stripe id running under the edge on
+         * /payments — and a heading sliced mid-word reads as broken rendering
+         * rather than as an invitation to scroll.
+         *
+         * The classic `background-attachment` trick, and the reason it is worth
+         * the four gradients: the white covers are `local` so they travel with
+         * the content, and the shadows are `scroll` so they stay pinned to the
+         * box. At the far left the cover sits exactly on the shadow and hides
+         * it; scroll right and the cover moves away, revealing it. So the
+         * affordance appears only when there is genuinely something to scroll
+         * to, with no JavaScript and no resize observer to keep in step.
+         */
+        "md:[background-attachment:local,local,scroll,scroll]",
+        "md:[background-image:linear-gradient(to_right,white,transparent),linear-gradient(to_left,white,transparent),linear-gradient(to_right,rgba(9,9,11,0.10),transparent),linear-gradient(to_left,rgba(9,9,11,0.10),transparent)]",
+        "md:[background-position:left_center,right_center,left_center,right_center]",
+        "md:[background-repeat:no-repeat]",
+        "md:[background-size:2rem_100%,2rem_100%,0.75rem_100%,0.75rem_100%]",
         className,
       )}
     >

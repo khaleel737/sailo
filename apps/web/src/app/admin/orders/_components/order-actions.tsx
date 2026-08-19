@@ -2,8 +2,12 @@
 
 import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
-import { Loader2, RotateCcw, Truck } from "lucide-react";
-import { markOrderShipped, refundOrder } from "@/lib/actions/order-admin";
+import { Check, FileText, Loader2, PackageCheck, RotateCcw, Truck } from "lucide-react";
+import {
+  markOrderDelivered,
+  markOrderShipped,
+  refundOrder,
+} from "@/lib/actions/order-admin";
 import { Alert, Button, Field, Input } from "@sailo/design-system/web";
 import { centsToAmount, formatMoney } from "@sailo/core/currency";
 import type { Order } from "@sailo/db/schema";
@@ -27,9 +31,29 @@ export function OrderActions({ order }: { order: Order }) {
     ok: false,
   });
   const [refundState, refundAction] = useActionState(refundOrder, { ok: false });
+  const [deliveredState, deliveredAction] = useActionState(markOrderDelivered, {
+    ok: false,
+  });
 
   const isShipping = order.deliveryMethod === "shipping";
   const canRefund = order.refundedCents === 0 && order.status !== "cancelled";
+
+  /*
+   * Offered once it has been sent and not yet confirmed. Spec 44: on
+   * `product_not_received` the whole case turns on arrival, and this is the
+   * cheapest way for the slot to stop being empty. Optimistic against the
+   * server's own claim — `confirmDelivery` puts the ceiling in the WHERE, so a
+   * double click cannot move the date.
+   */
+  const canConfirmArrival = Boolean(order.shippedAt) && !order.deliveredAt;
+
+  /** Who said it arrived. The three are not equally persuasive and it shows. */
+  const deliveredBy =
+    order.deliveredSource === "buyer_confirmed"
+      ? a.orders.deliveredByBuyer
+      : order.deliveredSource === "carrier"
+        ? a.orders.deliveredByCarrier
+        : a.orders.deliveredBySeller;
 
   return (
     <div className="mt-2">
@@ -46,6 +70,23 @@ export function OrderActions({ order }: { order: Order }) {
           </Button>
         ) : null}
 
+        {canConfirmArrival ? (
+          <form action={deliveredAction} className="contents">
+            <input type="hidden" name="id" value={order.id} />
+            <Button variant="secondary" size="sm" type="submit">
+              <PackageCheck className="size-4" />
+              {a.orders.markDelivered}
+            </Button>
+          </form>
+        ) : null}
+
+        {order.deliveredAt ? (
+          <span className="text-ink-500 inline-flex items-center gap-1.5 text-xs">
+            <Check className="size-3.5" />
+            {deliveredBy}
+          </span>
+        ) : null}
+
         {canRefund ? (
           <Button
             variant="ghost"
@@ -58,7 +99,40 @@ export function OrderActions({ order }: { order: Order }) {
           {a.orders.refund}
           </Button>
         ) : null}
+
+        {/*
+          The evidence pack — spec 45. Offered on every order and not only on a
+          disputed one, which is the whole of "always ready": a pack full of
+          "Not on record" tells a seller what they are not recording while it is
+          still fixable, and four months later nobody remembers.
+
+          A plain link rather than an action, because it returns a PDF: the route
+          re-checks ownership and rate-limits, so the anchor is a convenience
+          rather than the control.
+        */}
+        <a
+          href={`/api/orders/${order.id}/evidence-pack`}
+          className="focus-ring text-ink-500 inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-xs font-medium transition hover:bg-ink-100 hover:text-ink-900 pointer-coarse:h-11"
+        >
+          <FileText className="size-4" />
+          {a.orders.evidencePack}
+        </a>
       </div>
+
+      {deliveredState.error ? (
+        <Alert className="mt-2">{deliveredState.error}</Alert>
+      ) : null}
+
+      {/*
+        The nudge, not a silent hole. A shipped order nobody has confirmed is a
+        gap somebody can still close, and it closes only while the seller
+        remembers — four months later, when the chargeback lands, nobody does.
+      */}
+      {canConfirmArrival ? (
+        <p className="text-ink-500 mt-2 text-xs leading-relaxed">
+          {a.orders.confirmArrival}
+        </p>
+      ) : null}
 
       {panel === "ship" ? (
         <form
@@ -145,6 +219,37 @@ export function OrderActions({ order }: { order: Order }) {
               />
             </Field>
           </div>
+
+          {/*
+            Does it go back on the shelf — spec 51.
+
+            Ticked, because that is what every refund did before this column
+            existed and it is what a return usually means. Unticking is the
+            seller saying the item is damaged, lost or thrown away, and it is an
+            answer only they have — `refundReason` is free text and nothing can
+            read a decision out of it. Asked here because this is the moment
+            they know.
+
+            Only shown on a refund that would actually restock. A partial refund
+            is a price adjustment rather than a return and never restocks, so
+            offering the choice there would be a control with no effect.
+          */}
+          {order.status !== "refunded" ? (
+            <label className="flex items-start gap-2 text-xs text-red-800">
+              <input
+                type="checkbox"
+                name="restock"
+                defaultChecked
+                className="mt-0.5 size-4 shrink-0 rounded border-red-300"
+              />
+              <span>
+                {a.products.restockOnRefund}
+                <span className="block text-red-700/80">
+                  {a.products.restockOnRefundHint}
+                </span>
+              </span>
+            </label>
+          ) : null}
 
           <p className="text-xs text-red-700">
             Comes straight off your revenue. Max{" "}

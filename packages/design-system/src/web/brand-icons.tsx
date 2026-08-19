@@ -51,7 +51,20 @@ export function YouTube({ className }: BrandIconProps) {
 export function XMark({ className }: BrandIconProps) {
   return (
     <svg {...svg} className={className}>
-      <path d="M4 4l16 16M20 4L4 20" />
+      {/*
+       * Taller than it is wide, and that is the whole point.
+       *
+       * This was `M4 4l16 16M20 4L4 20` — sixteen by sixteen, which is the
+       * exact geometry of every close button ever drawn. In the storefront's
+       * row it survived on context; in the marketing footer, sitting fourth
+       * after three unmistakable marks, it read as a dismiss control on the
+       * cookie banner. 14×18 is the letter's proportion rather than the
+       * control's, and nothing else in the set changes.
+       *
+       * Still an approximation, not the official glyph — the trademark reason
+       * this file exists at all has not gone away.
+       */}
+      <path d="M5 3l14 18M19 3L5 21" />
     </svg>
   );
 }
@@ -69,6 +82,25 @@ export function WhatsApp({ className }: BrandIconProps) {
     <svg {...svg} className={className}>
       <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z" />
       <path d="M9.5 9.5c0 3 2 5 5 5" />
+    </svg>
+  );
+}
+
+/*
+ * The one mark here that no seller can pick.
+ *
+ * `SOCIAL_PLATFORMS` doesn't offer LinkedIn — a shop selling cakes has no
+ * company page — so this exists for Sailo's own accounts in the marketing
+ * footer. Drawn anyway rather than dropped into that one file, because the
+ * next caller that wants it would otherwise draw a second, slightly different
+ * "in".
+ */
+export function LinkedIn({ className }: BrandIconProps) {
+  return (
+    <svg {...svg} className={className}>
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect width="4" height="12" x="2" y="9" />
+      <circle cx="4" cy="4" r="2" />
     </svg>
   );
 }

@@ -25,6 +25,22 @@ export type Slot = { startsAt: Date; endsAt: Date };
 /** A booking already on the books, whatever length it was agreed at. */
 export type Busy = { startsAt: Date; endsAt: Date };
 
+/**
+ * A busy range with the seller's buffer added to both ends.
+ *
+ * Both ends, not just the far one: the gap exists so nothing is booked up
+ * against an appointment, and an hour that ends exactly when the next one
+ * begins is the same problem read backwards.
+ */
+export function widen(busy: Busy, bufferMinutes: number): Busy {
+  const pad = Math.max(0, Math.trunc(bufferMinutes)) * 60_000;
+  if (pad === 0) return busy;
+  return {
+    startsAt: new Date(busy.startsAt.getTime() - pad),
+    endsAt: new Date(busy.endsAt.getTime() + pad),
+  };
+}
+
 export function overlaps(a: Busy, b: Busy): boolean {
   return a.startsAt < b.endsAt && b.startsAt < a.endsAt;
 }
@@ -41,6 +57,20 @@ export type SlotOptions = {
   now: Date;
   /** Spacing between starts, when a shop wants them on the half hour. */
   stepMinutes?: number;
+  /**
+   * Quiet minutes the seller wants either side of anything already booked.
+   *
+   * Here rather than applied to `busy` by whoever assembles it, so that
+   * `isOfferedSlot` — which re-derives the calendar to check the time a buyer
+   * actually picked — honours it without being told. A buffer enforced on the
+   * listing and not on the check is a gap the seller can watch a buyer book
+   * straight through.
+   *
+   * It widens what counts as taken rather than lengthening the appointment:
+   * the buyer books the hour they are paying for, and the quarter hour after
+   * it stops being offered to anybody else.
+   */
+  bufferMinutes?: number;
 };
 
 /**
@@ -58,6 +88,8 @@ export function slotsOnDate(date: CalendarDate, opts: SlotOptions): Slot[] {
 
   const step = Math.trunc(opts.stepMinutes ?? duration);
   if (!Number.isFinite(step) || step <= 0) return [];
+
+  const buffer = Math.max(0, Math.trunc(opts.bufferMinutes ?? 0));
 
   const weekday = new Date(
     Date.UTC(date.year, date.month - 1, date.day),
@@ -92,7 +124,9 @@ export function slotsOnDate(date: CalendarDate, opts: SlotOptions): Slot[] {
       if (startsAt < earliest) continue;
 
       const candidate = { startsAt, endsAt };
-      if (opts.busy.some((taken) => overlaps(candidate, taken))) continue;
+      if (opts.busy.some((taken) => overlaps(candidate, widen(taken, buffer)))) {
+        continue;
+      }
 
       slots.push(candidate);
     }

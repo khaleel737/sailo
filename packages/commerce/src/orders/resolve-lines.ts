@@ -2,9 +2,16 @@ import "server-only";
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { productImages, productVariants, products } from "@sailo/db/schema";
-import { clampQuantity, isSellable, maxOrderable, variantPrice } from "@sailo/core/variants";
+import { clampQuantity, isSellable, maxOrderable } from "@sailo/core/variants";
+import {
+  isPwyw,
+  resolvedUnitPriceCents,
+  sellWindowState,
+} from "@sailo/core/pricing-models";
+import { takesPreorders } from "@sailo/core/preorders";
 import { isMembership, membershipSellable } from "../memberships/memberships";
 import { toStripeAmount } from "@sailo/core/currency";
+import { productAtCurrency, variantAtCurrency } from "@sailo/core/regional";
 import type { OrderLineInput } from "./types";
 import type { ResolvedLine } from "./types";
 import { parseBooking } from "./booking";
@@ -48,6 +55,16 @@ export async function resolveLines(
      * on the way. One place decides, so the two cannot disagree.
      */
     currency?: string;
+    /**
+     * The shop's own currency, when `currency` above is **not** it — spec 53.
+     *
+     * Present means every price on this basket comes out of `currency_prices`
+     * rather than out of `price_cents`, and a product with no entry is refused
+     * rather than quoted at the shop's own number with the wrong symbol on it.
+     * Absent — every caller before this feature — means one currency, and the
+     * two are the same value, so nothing changes.
+     */
+    shopCurrency?: string;
   },
 ): Promise<
   | { ok: true; lines: ResolvedLine[]; dropped: OrderLineInput[] }
@@ -120,13 +137,55 @@ export async function resolveLines(
       : Promise.resolve([]),
   ]);
 
-  const byId = new Map(found.map((p) => [p.id, p]));
+  /*
+   * Every product re-read in the currency this order is priced in — spec 53.
+   *
+   * Done once, here, rather than at the price line four hundred characters
+   * down: `isSellable`, `maxOrderable`, `variantPrice` and the membership
+   * checks all take the product row, and a row swapped in one place and not
+   * another is the half-updated-pair shape this repo keeps a list of.
+   *
+   * A product with no price in this currency is **dropped from the map**, so
+   * it fails exactly as an unpublished or deleted product does — one code
+   * path, one message, and no branch that could quote it at the shop's own
+   * number with the wrong symbol on it.
+   */
+  const regional = Boolean(
+    opts.shopCurrency &&
+      opts.currency &&
+      opts.currency.toUpperCase() !== opts.shopCurrency.toUpperCase(),
+  );
+  const priced = regional
+    ? found
+        .map((row) =>
+          productAtCurrency(row, opts.currency ?? "", opts.shopCurrency ?? ""),
+        )
+        .filter((row) => row !== null)
+    : found;
+
+  const byId = new Map(priced.map((p) => [p.id, p]));
   const coverByProduct = new Map<string, string>();
   for (const image of allImages) {
     if (!coverByProduct.has(image.productId)) {
       coverByProduct.set(image.productId, image.url);
     }
   }
+  /*
+   * Every variant, unswapped, and that is deliberate after getting it wrong.
+   *
+   * The first version dropped a variant with no price in this currency from
+   * this map, on the reasoning that a combination which cannot be priced is a
+   * combination that cannot be picked. It is — but dropping the *only* variant
+   * left the list empty, and an empty list is how `resolveLines` says "this
+   * product has no options", so the line fell straight through to the
+   * product's own price. A euro order for a variant that had never been priced
+   * in euros went through at the product's euro price. The scenario suite
+   * caught it; nothing else would have.
+   *
+   * So the map holds what the shop actually has, and the currency is applied
+   * to the one combination the buyer picked, below, where a null can be
+   * refused rather than mistaken for an absence.
+   */
   const variantsByProduct = new Map<string, ProductVariant[]>();
   for (const v of allVariants) {
     const list = variantsByProduct.get(v.productId);
@@ -136,6 +195,27 @@ export async function resolveLines(
 
   for (const item of wanted) {
     const product = byId.get(item.productId);
+    /*
+     * A lead product is not orderable, and this is the line that makes that
+     * true — spec 07.
+     *
+     * Its checkout is `captureLead`: a form, no order, no invoice number, no
+     * stock. The storefront renders that form instead of a buy panel, but a
+     * server action takes whatever the client sends, so an ordinary basket
+     * payload naming a lead product would otherwise walk it straight through
+     * pricing at zero and out the other side as a £0 sale with an invoice
+     * number claimed from a sequence that is supposed to describe trade.
+     *
+     * Refused here rather than filtered in the rollups, because this is the
+     * one place both the preview and the checkout pass through: an exclusion
+     * added to the revenue queries would be reading for a row that must never
+     * have been written.
+     */
+    if (product?.kind === "lead") {
+      const stop = fail(item, "That one is a form, not something to buy.");
+      if (stop) return stop;
+      continue;
+    }
     if (!product) {
       const stop = fail(item, "Product not available.");
       if (stop) return stop;
@@ -153,10 +233,85 @@ export async function resolveLines(
         if (stop) return stop;
         continue;
       }
+
+      /*
+       * And now in the currency this order is priced in — spec 53.
+       *
+       * A variant that inherits the product's price passes through untouched
+       * in every currency. One that overrides it and has no entry cannot be
+       * quoted at all, and the line is refused rather than falling back to
+       * anything: the product's own euro price is a price for a *different*
+       * combination, and charging it would sell the large one at the small
+       * one's price.
+       *
+       * `liveCurrencies` makes this unreachable from the storefront — a shop
+       * with a gap like this is not offered the currency in the first place —
+       * so this is the guard for the window between two caches.
+       */
+      if (regional) {
+        // Not `priced` — that name is taken by the product list above, and the
+        // two are different things: one is every product in this currency, this
+        // is the single variant re-read in it.
+        const variantInCurrency = variantAtCurrency(
+          variant,
+          opts.currency ?? "",
+          opts.shopCurrency ?? "",
+        );
+        if (!variantInCurrency) {
+          const stop = fail(item, `${product.title} isn't available right now.`);
+          if (stop) return stop;
+          continue;
+        }
+        variant = variantInCurrency;
+      }
     }
 
-    if (!isSellable(product, variant)) {
+    /*
+     * Sold out, or a preorder — spec 33.
+     *
+     * The same stock question the catalogue has always answered, with one more
+     * thing to do about a "no". `reserveStock` is deliberately not bypassed and
+     * not consulted twice: the line is let through here, the reservation fails
+     * as it does today, and `createOrderIntent` treats that failure as expected
+     * on a line marked below. That keeps one stock claim in the codebase, and
+     * the existing one is already race-free.
+     *
+     * A product with preorders off behaves exactly as it did.
+     */
+    const preorder = !isSellable(product, variant) && takesPreorders(product);
+    if (!isSellable(product, variant) && !preorder) {
       const stop = fail(item, `${product.title} is sold out.`);
+      if (stop) return stop;
+      continue;
+    }
+
+    /*
+     * The sell window closes the sale, not just the page — spec 43.
+     *
+     * A product page opened at ten to five must not complete at five past, and
+     * hiding the button is no answer at all: the checkout is a server action a
+     * browser can call directly, and a cached page can outlive its own window
+     * by design (`cacheLife("max")` never expires on a clock). So the refusal
+     * is here, where every rail and every surface passes through, rather than
+     * anywhere it could be skipped.
+     *
+     * Two sentences, not one, because the buyer's options genuinely differ:
+     * something that has not opened yet is worth waiting for and something
+     * that has closed is not. Neither leaks anything — both are true of a
+     * product the caller can already see.
+     *
+     * The variant's own window narrows the product's; `sellWindowState` is
+     * where that is decided, so no caller can widen one by asking the pair
+     * separately.
+     */
+    const window = sellWindowState(product, variant, opts.now);
+    if (window !== "open") {
+      const stop = fail(
+        item,
+        window === "early"
+          ? `${product.title} isn't on sale yet.`
+          : `${product.title} is no longer available.`,
+      );
       if (stop) return stop;
       continue;
     }
@@ -173,6 +328,26 @@ export async function resolveLines(
      * is missing, which it does.
      */
     if (isMembership(product) && !membershipSellable(product)) {
+      const stop = fail(item, `${product.title} isn't available right now.`);
+      if (stop) return stop;
+      continue;
+    }
+
+    /*
+     * A membership may not be pay-what-you-want — spec 43.
+     *
+     * A recurring buyer-chosen amount is a Stripe Price per buyer: Prices are
+     * immutable and per-amount, so a hundred members choosing a hundred
+     * numbers is a hundred objects on the seller's account to find again at
+     * every renewal. `saveProduct` already refuses the combination, so this is
+     * the second lock rather than the first — and it is the one that holds for
+     * a row that predates the rule or was written by a route that forgot it.
+     *
+     * Refused with a sentence rather than silently priced at the list amount,
+     * the same way coupons on memberships are: a seller who set it and was
+     * never told would believe they were selling something they are not.
+     */
+    if (isMembership(product) && isPwyw(product)) {
       const stop = fail(item, `${product.title} isn't available right now.`);
       if (stop) return stop;
       continue;
@@ -279,7 +454,16 @@ export async function resolveLines(
       kind: product.kind,
       options: product.options,
       variantOptions: variant?.options ?? null,
-      sku: variant?.sku ?? null,
+      /*
+       * The variant's code when the buyer picked a combination, the product's
+       * own otherwise.
+       *
+       * It used to be the variant's alone, which is null for every product
+       * sold without options — so the column that exists on the order line to
+       * carry a code carried one only for shops that use variants. The same
+       * fallback the cover image gets two lines down, for the same reason.
+       */
+      sku: variant?.sku ?? product.sku ?? null,
       /*
        * The variant's own photo when the buyer picked one, the product's cover
        * otherwise.
@@ -293,16 +477,51 @@ export async function resolveLines(
       imageUrl: variant?.imageUrl ?? coverByProduct.get(product.id) ?? null,
       // The price the buyer is charged comes from the variant they picked.
       /*
+       * …or, on a pay-what-you-want product, from what they typed — clamped.
+       *
+       * This is the only line in the checkout where a number from the request
+       * survives, and `resolvedUnitPriceCents` is the whole of the reason it
+       * is safe to. It reads the mode from the *database row*, so a forged
+       * `priceCents` against a fixed-price product is ignored rather than
+       * validated, and on a PWYW one it is floored at the seller's minimum
+       * with `NaN`, `Infinity`, negatives and fractional minor units all
+       * refused on the way through.
+       *
+       * Here rather than at the two callers, and that is the point.
+       * `previewOrder` and `createOrderIntent` are both built on this
+       * function, so the amount the basket quotes and the amount the card is
+       * asked for are the same clamp applied once — the recurring
+       * "guard applied at one sink not its twin" shape has no room to happen
+       * on this path because there is only one place the guard lives.
+       *
        * Rounded to what this currency can actually settle. A no-op for
        * sixty-six of the seventy-one; for KWD, BHD, JOD, OMR and TND — quoted
        * to three decimals, settled to two — it is what stops Stripe refusing
-       * the charge and what keeps the quote and the order the same number.
+       * the charge and what keeps the quote and the order the same number. It
+       * matters more here than anywhere: a buyer typing 12.345 KWD into an
+       * amount field is naming a number their own card cannot pay.
        */
       unitPriceCents: toStripeAmount(
-        variantPrice(product, variant),
+        resolvedUnitPriceCents(product, variant, item.priceCents),
         opts.currency ?? "USD",
       ),
       quantity,
+      preorder,
+      /*
+       * What one of these weighs, for a rate priced by weight — spec 51.
+       *
+       * The variant's, falling back to the product's, which is the same rule
+       * its price and its photo already follow: a large weighs more than a
+       * small and that is most of what a size *is*, but a shirt in three
+       * colours weighs the same in all of them and its seller should not have
+       * to type it three times.
+       *
+       * Set here rather than at either sink, for the reason every other number
+       * on this line is: `previewOrder` and `createOrderIntent` are both built
+       * on this function, so the weight the basket is quoted against and the
+       * weight the order is charged against cannot be two different additions.
+       */
+      weightGrams: variant?.weightGrams ?? product.weightGrams ?? null,
       product,
       variant,
       scheduledFor,

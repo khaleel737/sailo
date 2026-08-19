@@ -13,6 +13,7 @@
 export * from "./plans";
 export * from "./onboarding";
 export * from "./legal";
+export * from "./shop-pages";
 export * from "./invoice-identity";
 export * from "./support";
 export * from "./visibility";

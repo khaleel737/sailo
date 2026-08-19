@@ -3,11 +3,12 @@ import { requireShop } from "@/lib/session";
 import { SettingsForm } from "@/app/admin/settings/_components/settings-form";
 import { hasOptedOut } from "@sailo/marketing/lifecycle/server";
 import { getT } from "@/i18n/server";
+import { currencyGaps as getCurrencyGaps } from "@/lib/queries/regional";
 
 export const metadata: Metadata = { title: "Settings" };
 
 export default async function AdminSettingsPage() {
-  const { user, shop } = await requireShop();
+  const { user, shop } = await requireShop("settings:read");
   const { t } = await getT();
 
   /*
@@ -19,6 +20,18 @@ export default async function AdminSettingsPage() {
    */
   const marketingOptIn = !(await hasOptedOut(user.email));
 
+  /*
+   * Spec 53. Uncached and read on every visit: the seller has often just
+   * edited a price, and a cached answer would be the one thing on this screen
+   * that disagrees with what they did a moment ago. Returns immediately for a
+   * shop that has ticked no second currency, which is one array check.
+   */
+  const currencyGaps = await getCurrencyGaps(
+    shop.id,
+    shop.regionalCurrencies,
+    shop.currency,
+  );
+
   return (
     <>
       <SettingsForm
@@ -26,6 +39,7 @@ export default async function AdminSettingsPage() {
         t={t}
         accountEmail={user.email}
         marketingOptIn={marketingOptIn}
+        currencyGaps={currencyGaps}
       />
     </>
   );

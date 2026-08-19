@@ -11,13 +11,14 @@
  * rather than a size check because the constraint that actually bites is not
  * per-file:
  *
- *   - **4.5 MB combined**, across every file on the dispute. Stripe's own limit
- *     and the issuers' — one 4 MB proof of delivery does not leave room for a
- *     1 MB receipt, and the eleventh-hour upload that tips the set over is
- *     rejected at submission, when the deadline is hours away.
- *   - **Under 50 pages combined**, and under 19 for Mastercard. A page count is
- *     not something an upload form can measure without parsing the PDF, so it is
- *     carried as guidance rather than enforced — see `PAGE_GUIDANCE`.
+ *   - **4.5 MB combined**, across every file on the dispute — a margin under the
+ *     ~4.8 MB Stripe actually enforces, and the same id on two fields is charged
+ *     twice. One 4 MB proof of delivery does not leave room for a 1 MB receipt,
+ *     and the eleventh-hour upload that tips the set over is rejected at
+ *     submission, when the deadline is hours away. See
+ *     `EVIDENCE_FILE_BUDGET_BYTES` for the measurements.
+ *   - **Under 50 pages per file**, which the Files API *enforces* with a 400 —
+ *     and under 19 for Mastercard, which is guidance. See `PAGE_GUIDANCE`.
  *   - **PDF, JPEG or PNG.** Nothing else is accepted, and a rejected file type
  *     fails the whole `disputes.update`, taking the correct fields with it.
  *   - **One file per evidence type.** Stripe's evidence object has one slot per
@@ -28,7 +29,11 @@
  *
  * Sources: Stripe's dispute evidence best-practices page (file upload
  * recommendations, and the per-network size and page table) and the Files API
- * reference for the accepted purposes. Re-checked 2026-08-18.
+ * reference for the accepted purposes. Re-checked 2026-08-18, and the size and
+ * page limits **measured against the live API in test mode on 2026-08-19** —
+ * where the documentation and the API disagreed, the API won and the difference
+ * is recorded on the constant it concerns. `docs/chargebacks.md` §10 has the
+ * transcript.
  *
  * Pure, like everything else in this directory: no Stripe, no database, no
  * filesystem. The upload itself is `@sailo/payments/disputes/files`.
@@ -58,25 +63,60 @@ export const EVIDENCE_FILE_ACCEPT = ".pdf,.jpg,.jpeg,.png";
 /**
  * 4.5 MB, across every file on the dispute rather than each.
  *
- * The number is Stripe's and the issuers' alike, and it is a *combined* budget —
- * which is why nothing here validates a file on its own. A 4 MB scan uploaded
- * first is legal; the 600 KB receipt after it is the one that breaks, and the
- * seller who uploaded them in the other order would have had the opposite
- * experience for the same set of documents. Both need to be told the same thing,
- * so the check takes the whole set.
+ * A *combined* budget, which is why nothing here validates a file on its own. A
+ * 4 MB scan uploaded first is legal; the 600 KB receipt after it is the one that
+ * breaks, and the seller who uploaded them in the other order would have had the
+ * opposite experience for the same set of documents. Both need to be told the
+ * same thing, so the check takes the whole set.
+ *
+ * ─── THIS IS A MARGIN, NOT STRIPE'S NUMBER ─────────────────────────────────
+ *
+ * It used to say the 4.5 MB was "Stripe's and the issuers' alike". Measured
+ * against the live API in test mode on 19 August 2026, that is not what the API
+ * does. Stripe's refusal names five: *"Adding these files would bring the total
+ * evidence size over the 5 MB maximum."* The ceiling it actually enforces is
+ * lower than the number in its own message — binary-searched with two files
+ * across two fields:
+ *
+ *     4,750,002 B  accepted
+ *     4,799,134 B  refused
+ *
+ * So the true line sits just under 4.8 MB, and 4,500,000 is roughly 250 KB of
+ * headroom below it. That is the right direction and the right reason: this
+ * constant exists to refuse *before* the API does, because an overflow rejects
+ * the entire `disputes.update` and loses the fields that were correct.
+ *
+ * **One file id on several fields is charged for each field.** Also measured: a
+ * 3,607,988 B file on `receipt` alone was accepted, and the same id added to
+ * `uncategorized_file` as well was refused at 7,215,976 B. Spec 45 said to treat
+ * it that way until measured; it measures that way. `bytesHeld` sums the rows,
+ * which is one row per field, so the accounting here is already correct.
  */
 export const EVIDENCE_FILE_BUDGET_BYTES = 4_500_000;
 
 /**
- * Page ceilings, carried as advice.
+ * Page ceilings — and the first one is **enforced by Stripe**, not advice.
  *
- * Not enforced: counting pages means parsing the PDF, and a wrong count that
- * blocks an upload costs a case that a right one would only have improved. The
- * asymmetry decides it — an over-long file is weak evidence, a blocked upload is
- * no evidence.
+ * This used to say "not enforced", read off Stripe's best-practices page. The
+ * API disagrees, measured in test mode on 19 August 2026: a 50-page upload is
+ * refused with a 400 — *"The file you uploaded was too long. Please upload a
+ * file with fewer than 50 pages."* Nothing reaches the evidence object at all.
  *
- * Mastercard's 19 is the one that surprises people; it is roughly a third of the
- * general limit, and a terms-of-service PDF clears it without trying.
+ * Sailo still does not count pages on a *seller's* upload, and that reasoning is
+ * unchanged: counting means parsing the PDF, and a wrong count that blocks an
+ * upload costs a case that a right one would only have improved. What changes is
+ * what happens when the limit is hit — Stripe's own error is returned to the
+ * seller by `attachEvidenceFile`, which is a real message rather than silence.
+ *
+ * It bites hardest on documents Sailo *generates*, where there is no seller to
+ * read an error: a refused upload leaves `autoFillEvidence` with nothing to
+ * register and the slot silently stays empty. A pack built from a real seller's
+ * terms reached 98 pages before `PACK_POLICY_LINE_CAP` and the renderer's own
+ * `MAX_PACK_PAGES` were added.
+ *
+ * Mastercard's 19 is the one that surprises people, and that one is guidance: it
+ * is roughly a third of the general limit, and a terms-of-service PDF clears it
+ * without trying.
  */
 export const PAGE_GUIDANCE = {
   allNetworks: 50,

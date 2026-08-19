@@ -222,11 +222,24 @@ export function formatCurrencyTotals(
 export type Delta = { value: string; direction: "up" | "down" | "flat" };
 
 /**
+ * The smallest previous period a percentage may be computed from.
+ *
+ * Below this, a ratio is arithmetically true and communicates nothing: one
+ * signup last week and two hundred and eleven this week is "+21000%", which is
+ * a number the overview really did display. It reads as a data error, and the
+ * fact underneath it — "211, against 1" — is both smaller and more useful.
+ *
+ * Ten, because that is roughly where a percentage stops swinging wildly on one
+ * extra event. Under it, the counts are reported instead.
+ */
+const MIN_BASE_FOR_PERCENT = 10;
+
+/**
  * Period-on-period change, phrased for a tile.
  *
- * Growth from zero is reported as the raw count ("+3") rather than as an
- * infinite percentage, which is the honest way to say "there was nothing to
- * compare against".
+ * Growth from zero, or from a base too small to take a ratio of, is reported as
+ * counts rather than as a percentage — which is the honest way to say "there
+ * was nothing much to compare against".
  */
 export function deltaOf(current: number, previous: number): Delta {
   if (current === previous) return { value: "No change", direction: "flat" };
@@ -237,6 +250,13 @@ export function deltaOf(current: number, previous: number): Delta {
   if (previous === 0) {
     return {
       value: `${sign}${magnitude.toLocaleString()} vs none`,
+      direction: diff > 0 ? "up" : "down",
+    };
+  }
+
+  if (previous < MIN_BASE_FOR_PERCENT) {
+    return {
+      value: `${current.toLocaleString()} vs ${previous.toLocaleString()}`,
       direction: diff > 0 ? "up" : "down",
     };
   }

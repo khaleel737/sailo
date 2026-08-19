@@ -1,11 +1,11 @@
 import { EmptyRow, Table, Td, Th, Tr } from "@/app/_components/hq-table";
-import { SectionTitle, When } from "@/app/_components/hq-ui";
+import { RowLink, SectionTitle, When } from "@/app/_components/hq-ui";
 import { Badge } from "@sailo/design-system/web";
 import { PAYMENT_STATUS_TONES } from "@sailo/core/payment-status";
 import { orderSummaryTitle } from "@sailo/core/order-lines";
 import { formatMoney } from "@sailo/core/currency";
 import { orderStatusTone } from "@sailo/core/order-status";
-import type { AccountDetail } from "./account.types";
+import type { AccountCommerce } from "./account.types";
 
 /** Every order this shop has taken, newest first. */
 
@@ -14,7 +14,7 @@ import type { AccountDetail } from "./account.types";
  * current one. An order stays priced in the currency it was taken in, so a
  * seller who switches currency doesn't silently restate their history.
  */
-export function OrdersTable({ detail }: { detail: AccountDetail }) {
+export function OrdersTable({ detail }: { detail: AccountCommerce }) {
   return (
     <>
     <SectionTitle>Recent orders</SectionTitle>
@@ -35,11 +35,13 @@ export function OrdersTable({ detail }: { detail: AccountDetail }) {
         <EmptyRow colSpan={6}>No orders yet.</EmptyRow>
       ) : (
         detail.recentOrders.map((order) => (
-          <Tr key={order.id}>
+          <Tr key={order.id} className="relative cursor-pointer">
             <Td className="max-w-56">
-              <span className="block truncate text-ink-900">
-                {orderSummaryTitle(order)}
-              </span>
+              <RowLink href={`/orders/${order.id}`} className="block">
+                <span className="block truncate text-ink-900">
+                  {orderSummaryTitle(order)}
+                </span>
+              </RowLink>
               <span className="text-xs text-ink-400">
                 {order.itemCount} item{order.itemCount === 1 ? "" : "s"}
                 {order.affiliateCode ? ` · ref ${order.affiliateCode}` : ""}

@@ -1,9 +1,7 @@
 import "server-only";
 import { request as httpsRequest, Agent } from "node:https";
-import { lookup as dnsLookup, type LookupAddress, type LookupOptions } from "node:dns";
-import type { LookupFunction } from "node:net";
-import { isPublicAddress } from "@sailo/core/net";
 import { isPublicLinkUrl } from "@sailo/storage/urls";
+import { guardedLookup } from "./lookup";
 
 /**
  * The one outbound request in this app whose destination is chosen entirely by
@@ -83,88 +81,6 @@ export function isWebhookTargetUrl(value: unknown): value is string {
   // Empty means the scheme default, which for https is 443.
   return url.port === "" || url.port === "443";
 }
-
-/**
- * The DNS hook that closes the rebinding window.
- *
- * The tempting shape is: resolve the hostname, check the addresses, then
- * `fetch` the URL. It does not work. The check and the connection are two
- * separate resolutions, and an attacker who controls the authoritative server
- * for their own domain answers the first with a public address and the second
- * with `169.254.169.254`. A one-second TTL is all it takes, the technique has
- * a name — DNS rebinding — and `docs/specs/16-outbound-webhooks.md` calls it
- * out by name for this reason.
- *
- * `net.connect` accepts a `lookup` function, and the socket is opened to
- * whatever that function returns. Filtering here means the address we approved
- * is the address connected to, with no second resolution in between and
- * therefore no window at all. TLS still validates against the hostname,
- * because the hostname is what we asked for — which is the other reason not to
- * do the naive alternative of connecting to a bare IP with a `Host` header.
- *
- * Both callback shapes are handled: `net.connect` asks with `all: true` when
- * it is doing Happy Eyeballs (the default since Node 20) and `all: false`
- * otherwise, and a hook that only implements one of them fails in production
- * on whichever it did not.
- */
-const guardedLookup: LookupFunction = (hostname, options, callback) => {
-  const refuse = () =>
-    callback(
-      Object.assign(
-        new Error(`refusing to connect to ${hostname}: it resolves inside a private network`),
-        { code: "ESSRFBLOCKED" },
-      ),
-      "",
-      undefined,
-    );
-
-  /*
-   * Cast because `dns.lookup`'s own overloads split on whether `all` is a
-   * literal `true` or `false`, and here it is neither — it is whatever
-   * `net.connect` decided, which is a plain boolean. The runtime contract is
-   * the one `LookupFunction` already describes, so the cast states it once
-   * rather than branching the call site to satisfy the type checker.
-   */
-  const resolve = dnsLookup as (
-    host: string,
-    opts: LookupOptions,
-    cb: (
-      err: NodeJS.ErrnoException | null,
-      address: string | LookupAddress[],
-      family?: number,
-    ) => void,
-  ) => void;
-
-  resolve(hostname, options, (error, address, family) => {
-    if (error) {
-      callback(error, "", undefined);
-      return;
-    }
-
-    if (Array.isArray(address)) {
-      /*
-       * Filtered rather than all-or-nothing. A host that legitimately answers
-       * with both a public and a private address — a split-horizon setup, or
-       * an IPv6 ULA alongside a real A record — is still reachable on the
-       * public one, and dropping the private entries from the list means Happy
-       * Eyeballs can only race candidates we approved.
-       */
-      const allowed = address.filter((entry) => isPublicAddress(entry.address));
-      if (allowed.length === 0) {
-        refuse();
-        return;
-      }
-      callback(null, allowed);
-      return;
-    }
-
-    if (!isPublicAddress(address)) {
-      refuse();
-      return;
-    }
-    callback(null, address, family);
-  });
-};
 
 /**
  * One POST to a seller's endpoint.
@@ -318,3 +234,97 @@ export async function postWebhook(opts: {
 
   return answered;
 }
+
+/**
+ * A GET fetch that goes through the same `lookup` hook as `postWebhook`.
+ *
+ * `snapshotFromUrl` in `@sailo/commerce/disputes` takes its fetcher as an
+ * argument precisely so the SSRF guard is the caller's choice, and until now no
+ * caller in the app had one to pass — the guard lived inside `postWebhook` and
+ * could only send a POST. This is the read half, and it exists because the two
+ * things Sailo fetches a *page* for are both evidence: a seller's own terms URL,
+ * and Sailo's own legal pages on deploy.
+ *
+ * The guard applies to our own origin too, and that is deliberate rather than
+ * belt-and-braces. `appOrigin()` is an environment variable; a guard skipped
+ * "because the value is ours" is a guard that stops applying the day somebody
+ * sets that variable wrong — and the body of the response is stored as Sailo's
+ * terms and later submitted to a card network.
+ *
+ * Redirects are never followed, for the reason the module header gives: a
+ * `Location` is chosen by whoever controls the URL, which puts the internal
+ * network back in reach one hop after the guard passed.
+ */
+export function guardedFetch(url: string, init: RequestInit = {}): Promise<Response> {
+  if (!isWebhookTargetUrl(url)) {
+    return Promise.reject(new Error(`refusing to fetch ${url}`));
+  }
+
+  const target = new URL(url);
+  const timeout = TIMEOUT_MS;
+
+  return new Promise<Response>((resolve, reject) => {
+    let settled = false;
+    const deadline = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      req.destroy();
+      reject(new Error("timed out"));
+    }, timeout);
+
+    const chunks: Buffer[] = [];
+    let received = 0;
+
+    const req = httpsRequest(
+      {
+        protocol: "https:",
+        hostname: target.hostname,
+        port: Number(target.port || 443),
+        path: `${target.pathname}${target.search}`,
+        method: "GET",
+        headers: {
+          "user-agent": "Sailo-Policy/1.0 (+https://sailo.store)",
+          accept: "text/html,text/plain;q=0.9,*/*;q=0.1",
+        },
+        lookup: guardedLookup,
+        // A fresh agent, keep-alive off: a pooled socket is one whose address
+        // was approved on some earlier request, which skips the guard above.
+        agent: new Agent({ keepAlive: false }),
+      },
+      (res) => {
+        res.on("data", (chunk: Buffer) => {
+          received += chunk.byteLength;
+          if (received > POLICY_MAX_BYTES) res.destroy();
+          else chunks.push(chunk);
+        });
+        res.on("end", () => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(deadline);
+          resolve(
+            new Response(Buffer.concat(chunks), {
+              status: res.statusCode ?? 0,
+              headers: { "content-type": res.headers["content-type"] ?? "text/plain" },
+            }),
+          );
+        });
+      },
+    );
+
+    req.on("error", (error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(deadline);
+      reject(error);
+    });
+
+    // `signal` is honoured because the caller's own timeout is shorter than
+    // ours and it is the one they are reasoning about.
+    init.signal?.addEventListener("abort", () => req.destroy(), { once: true });
+
+    req.end();
+  });
+}
+
+/** A legal page is prose. Two megabytes of it is far past any real document. */
+const POLICY_MAX_BYTES = 2 * 1024 * 1024;

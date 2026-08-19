@@ -42,6 +42,7 @@ export const adminEn = {
     expires: "Expires",
     day: "Day",
     viewAsTable: "View as table",
+    upgrade: "Upgrade",
     /** A read that failed on its own, where the rest of the screen is fine. */
     couldntLoad: "Couldn't load",
   },
@@ -56,18 +57,77 @@ export const adminEn = {
     category: "Category",
     client: "Client",
     code: "Code",
+    date: "Date",
     discount: "Discount",
     expires: "Expires",
     never: "Never",
+    order: "Order",
     orders: "Orders",
+    payment: "Payment",
     product: "Product",
     price: "Price",
     products: "Products",
     spent: "Spent",
     status: "Status",
     stock: "Stock",
+    total: "Total",
     used: "Used",
     where: "Where",
+  },
+
+  /**
+   * The share dialog — the QR code and link a seller hands out.
+   *
+   * One dialog, two doorways: the shop itself and the mailing-list sign-up
+   * form. Unprotected, because nothing here is read at the moment money moves;
+   * it is the words around a picture of a link.
+   */
+  share: {
+    share: "Share",
+    shopTitle: "Share your shop",
+    shopBody: "Anyone who scans the code lands on your storefront.",
+    signupTitle: "Share your sign-up link",
+    signupBody: "Anyone who scans the code lands on your sign-up form.",
+    qrAlt: "QR code for {url}",
+    downloadQr: "Download QR",
+    drawing: "Drawing the code…",
+  },
+
+  /**
+   * The orders list's own chrome — tabs, search, the row's affordance.
+   *
+   * Its own section rather than more keys under `orders`, for the reason
+   * `shipmentsTitle` gives: `orders` is a protected money section a filler may
+   * not write into, and a new key there is a hole in thirty-four locales that
+   * nothing can close. These strings name controls, not amounts.
+   */
+  orderList: {
+    all: "All",
+    searchLabel: "Search orders",
+    searchPlaceholder: "Customer, email or product…",
+    viewOrder: "View order",
+    /** The tab counter, read by screen readers: "New, 3 orders". */
+    tabCount: "{label}, {count} orders",
+  },
+
+  /**
+   * The single-order page — section headings and its one destructive act.
+   * Same reasoning as `orderList`: chrome, not amounts, so the filler may
+   * translate it.
+   */
+  orderDetail: {
+    payment: "Payment",
+    customer: "Customer",
+    fulfilment: "Fulfilment",
+    /** The affiliate's cut, as a line in the money summary. */
+    commission: "Commission",
+    note: "Buyer's note",
+    placed: "Placed",
+    noContact: "No contact details were left.",
+    viewClient: "View client",
+    deleteTitle: "Delete this order?",
+    deleteBody:
+      "It comes off your records, your revenue and this buyer's history, and any stock it held goes back on the shelf. There's no undo.",
   },
 
   shell: {
@@ -163,6 +223,13 @@ export const adminEn = {
   },
 
   dashboard: {
+    /*
+     * Spec 07. Shown beside the orders count rather than as a fifth tile: a
+     * lead is the other thing a visitor can turn into, and four tiles is what
+     * fits on a phone before revenue drops onto a second row. Absent entirely
+     * for a shop with no enquiry form, which is nearly all of them.
+     */
+    leads: "{count} leads",
     views: "Views",
     visitors: "Visitors",
     sales: "Sales",
@@ -240,6 +307,91 @@ export const adminEn = {
   },
 
   products: {
+  /* ---- Specs 08 and 36: bumps and cross-sells --------------------------- */
+    /*
+     * Here rather than in an `offers` section of their own, for the third time
+     * in this wave and the same mechanical reason: a *new* admin section has to
+     * exist in all thirty-five locale files before the coverage test passes, and
+     * those files are never hand-edited. New keys inside an existing section
+     * render in English until a filler writes them, which is ordinary admin debt.
+     */
+    offersTitle: "Offers",
+    offersDescription:
+      "A companion product, in the cart or after they pay. Both are re-priced by the server like any other line.",
+    offersLocked: "Order bumps and cross-sells are on {plan}.",
+    offersEmpty: "No offers yet. Add one below.",
+    offerUntitled: "Untitled offer",
+    offerAdd: "Add offer",
+    offerActive: "Live",
+
+    offerPlacement: "Where it appears",
+    offerPlacementBump: "In the cart",
+    offerPlacementCrossSell: "After they pay",
+    /* The difference is not obvious from the label, and it is the whole design
+       decision — Baymard's 66% is why the second one exists. */
+    offerBumpHint:
+      "One tap, above the pay button. Adds a normal line to the basket, priced by the server.",
+    offerCrossSellHint:
+      "On the thank-you page, after the receipt. Never blocks the order — 66% of shoppers made to pass an offer before paying report extreme frustration.",
+
+    offerSourceProduct: "Shown with",
+    offerSourceProductHint: "Leave blank to offer it alongside everything you sell.",
+    offerAnyProduct: "Any product",
+    offerProduct: "Offer this",
+    offerPickProduct: "Choose a product",
+
+    offerHeadline: "Headline",
+    offerHeadlineHint: "Blank uses the product's own name.",
+    offerBody: "A line about it",
+    offerPrice: "Price for this offer ({currency})",
+    offerPriceHint: "Blank sells it at its usual price.",
+    offerButtonLabel: "Button",
+    offerDisplay: "How it looks",
+    offerDisplayCard: "Card",
+    offerDisplayCompact: "Compact",
+    offerDisplayTimer: "With a countdown",
+
+    offerValidFrom: "Starts",
+    offerValidUntil: "Ends",
+    /* Checked again when the buyer presses the button, not only when the page
+       drew it — a page can sit open for an hour. */
+    offerWindowHint: "Checked again when they press the button. Times are {zone}.",
+
+    /* No rate at all where nothing has been shown: "0%" beside an offer nobody
+       has seen says it is failing, and the truth is that it has not run. */
+    offerTakeRate: "{rate}% take it ({taken} of {shown})",
+    offerNotShownYet: "Not shown yet",
+
+    /* ---- Spec 33: who is waiting for something to come back -------------- */
+    /*
+     * Here rather than in a `waiting` section of their own, for the mechanical
+     * reason spec 51's box strings give: a *new* admin section has to exist in
+     * all thirty-five locale files before the coverage test passes, and those
+     * files are never hand-edited. New keys inside an existing section render in
+     * English until a filler writes them, which is the ordinary admin debt.
+     */
+    waitingTitle: "Waiting for stock",
+    waitingDescription: "{count} people asked to be told when something comes back.",
+    waitingEmpty: "Nobody is waiting for anything right now.",
+    /* The email half needs no seller: a restock claims the queue and sends. */
+    waitingByEmail: "We'll email them",
+    waitingMessageThem: "Message on WhatsApp",
+    /* Sailo does not send to a phone — there is no WhatsApp Business API here
+       and no SMS provider. The seller sends, from their own number. */
+    waitingPhoneNote:
+      "{count} of these left a phone number rather than an email. We can't message a phone for you — tap through and send it from your own WhatsApp.",
+    /* Says the thing is *available*, never that it is held: anybody can buy the
+       restocked unit, and being told first is the whole of what was promised. */
+    waitingWhatsapp:
+      "Hi! {item} is back in stock at {shop}. I can't hold one, but here's the link: {url}",
+
+    /* ---- Spec 51: what a refund does to the shelf ----------------------- */
+    /* In `products` rather than `orders`, which is a protected money section a
+       filler may not write into — and this is a question about stock. */
+    restockOnRefund: "Put it back on the shelf",
+    restockOnRefundHint:
+      "Untick if it came back damaged, or never went out. Only applies to a full refund.",
+
     title: "Products",
     description: "Anything you sell — physical, digital or a service.",
     add: "Add product",
@@ -257,6 +409,57 @@ export const adminEn = {
   },
 
   productForm: {
+    /* ---- Spec 43: pay what you want, and when it is on sale ------------- */
+    pricingTitle: "Pricing",
+    pricingBody: "How the price is worked out, and when this is on sale.",
+    pricingLocked: "Name-your-price and scheduled sales are on {plan}.",
+    modeFixed: "Fixed price",
+    modeFixedHint: "Everyone pays the price above.",
+    modePwyw: "Name your price",
+    modePwywHint: "The buyer chooses what to pay, above a floor you set.",
+    minPrice: "Least they can pay ({currency})",
+    /* The one sentence in this card that has to be exactly right: blank and 0
+       are different answers, and a seller who reads them as the same thing
+       either gives their work away or cannot run a donation at all. */
+    minPriceHint: "Leave blank to floor it at the price above. Enter 0 to allow free — that is how a donation works.",
+    suggestedPrice: "Suggested amount ({currency})",
+    suggestedPriceHint: "What the amount field opens on. Blank uses the price above.",
+    sellWindowTitle: "When it is on sale",
+    sellWindowBody: "Leave both blank to sell all the time. Times are {zone}.",
+    sellFrom: "Sales open",
+    sellUntil: "Sales close",
+    hideWhenUnavailable: "Hide it outside those times",
+    hideWhenUnavailableBody:
+      "Off, it stays on your shop reading as unavailable — which is where buyers ask to be told when it returns.",
+
+    /* ---- Spec 51: the parcel, and running out --------------------------- */
+    parcelTitle: "The parcel",
+    parcelBody: "What it weighs and how big it is. Used to work out postage.",
+    parcelBodyBands: "What it weighs, so your weight-banded rates can price it.",
+    weightGrams: "Weight (grams)",
+    /* Grams and no unit picker: a second stored unit is a conversion every
+       reader has to get right, and one of them eventually will not. */
+    weightGramsHint: "In grams. 1 kg is 1000.",
+    dimensionsMm: "Size (mm)",
+    lengthMm: "Length",
+    widthMm: "Width",
+    heightMm: "Height",
+    lowStockThreshold: "Tell me when stock hits",
+    /* ---- Spec 33: taking orders for what there is none of ---------------- */
+    preorderEnabled: "Take preorders when it's sold out",
+    preorderEnabledBody:
+      "Buyers pay now and you ship when it arrives. Charged at checkout like any other order.",
+    preorderExpectedAt: "You expect it by",
+    /* The one field that matters: a card payment for goods that arrive six
+       weeks later is a chargeback waiting to happen if nobody said six weeks. */
+    preorderExpectedAtHint:
+      "Shown to the buyer before they pay, and kept on the order. Blank reads as \"no date yet\". Times are {zone}.",
+    preorderLimit: "Most you'll take",
+    preorderLimitHint: "Blank takes as many as people order.",
+
+    lowStockThresholdHint:
+      "One email each time stock falls to this. You'll hear again only after it goes back up.",
+
     titleLabel: "Title",
     titlePlaceholder: "Speckled stoneware mug",
     descriptionLabel: "Description",
@@ -264,7 +467,13 @@ export const adminEn = {
       "Wheel-thrown, glazed in matte oatmeal. Holds 350ml. Dishwasher safe.",
     photos: "Photos",
     price: "Price ({currency})",
+    /* A membership's price is per interval, and the label says so rather than
+       leaving a seller to wonder whether 30 is a month or a year. */
+    priceEach: "Price per period ({currency})",
     compareAt: "Compare-at price",
+    /* Spec 53. The currency has to be in the label on a second one, or a
+       seller with three price fields on screen has no way to tell them apart. */
+    compareAtIn: "Compare-at price ({currency})",
     kind: "Type",
     /**
      * The five kinds, as a control's labels.
@@ -289,6 +498,11 @@ export const adminEn = {
      * is a subscription. The web form has the same rule.
      */
     kindFixed: "The type is set when a product is created and can't be changed.",
+    /* The heading over the tabs. The kind is the first decision on the page
+       now, so it gets a heading rather than being a field among fields. */
+    kindTitle: "What are you selling?",
+    kindBody:
+      "Pick one. The settings underneath change to match — an event asks for a date, a download asks how buyers get it.",
     category: "Category",
     noCategory: "No category",
     tags: "Tags",
@@ -311,15 +525,189 @@ export const adminEn = {
     membershipPriceNote:
       "The price above is what they pay each interval, in {currency}. Changing it later applies to new members only: people already subscribed keep the price they signed up at until they cancel and rejoin.",
     billingInterval: "Charge them",
-    billingIntervalHint: "Stripe bills the card automatically on this cycle.",
+    /* True on both rails. It used to say Stripe billed the card, which is a
+       sentence a shop taking bank transfers reads as "this will not work". */
+    billingIntervalHint: "How often the member pays for another period.",
     everyMonth: "Every month",
     everyYear: "Every year",
+    everyCustom: "Custom",
+    everyCount: "Charge every",
+    everyUnit: "Period",
+    intervalDay: "days",
+    intervalWeek: "weeks",
+    intervalMonth: "months",
+    intervalYear: "years",
+    /* Stripe's rule, said where the number is typed rather than met by the
+       buyer at checkout, where nobody can do anything about it. */
+    intervalCeiling: "A billing period can't be longer than a year \u2014 up to {count} {unit}.",
     trialDays: "Free trial",
     trialDaysHint: "Days before the first charge. Leave blank for none.",
     /* Said where the field is, because a setting that quietly does nothing is
        worse than one that isn't offered. */
     trialDaysCardOnly:
       "Free trials need Stripe. On your other payment options the first period is due at signup — leave this blank.",
+    deliveryTitle: "Delivery",
+    deliveryBody:
+      "Physical products ask the buyer how they'd like it delivered at checkout. Shipping rates and collection points are set once for the whole shop.",
+    deliverySettings: "Delivery settings",
+
+    digitalTitle: "How buyers get it",
+    digitalBody:
+      "Pick one. Whichever you choose is held back until the order is paid for, unless you turn that off below.",
+    deliveryMethod: "Delivery method",
+    deliverFile: "Files",
+    deliverFileBody: "Upload what they download.",
+    deliverLink: "Link",
+    deliverLinkBody: "Send them somewhere else.",
+    deliverCode: "Code",
+    deliverCodeBody: "A key, invite or password.",
+    digitalLink: "Link buyers get",
+    digitalLinkHint:
+      "A course, a shared folder, a Notion page \u2014 anything with a public https:// address. Buyers only see it once their payment is confirmed.",
+    digitalCode: "Code or joining details",
+    digitalCodeHint:
+      "Shown on the buyer's order page once their payment is confirmed. Everyone who buys gets the same text.",
+    digitalCodePlaceholder:
+      "Discord invite: https://discord.gg/\u2026\nPassword: studio2026",
+
+    /* ---- Code pools and licences — spec 48 ------------------------------ */
+
+    codeSourceLabel: "Who gets which code",
+    codeSourceShared: "One code for everyone",
+    codeSourceSharedBody:
+      "A Discord invite or a workshop password \u2014 the same text for every buyer.",
+    codeSourcePool: "One code each, from a list you upload",
+    codeSourcePoolBody:
+      "Licence keys, redemption codes, one-seat invites. Each buyer gets their own, and the list is your stock.",
+    codeSourceGenerated: "One code each, made by Sailo",
+    codeSourceGeneratedBody:
+      "We mint a fresh code per buyer from a pattern you pick. Nothing to upload.",
+    codePattern: "Code pattern",
+    codePatternHint:
+      "Every X becomes a random character. At least ten of them, and the whole thing can't be the same length as a ticket code.",
+    poolTitle: "Your codes",
+    poolCounts: "{available} left, {claimed} handed out, {revoked} revoked",
+    poolEmpty:
+      "The pool is empty, so this product is sold out. Add codes to start selling again.",
+    poolPaste: "Paste codes, one per line",
+    poolPasteHint:
+      "Or paste a CSV \u2014 we take the first column. Duplicates are skipped, and nothing already handed out is ever touched.",
+    poolAdd: "Add to pool",
+    poolGenerateCount: "How many to make",
+    poolGenerate: "Make codes",
+    poolClear: "Remove every unused code",
+    poolExport: "Export handed-out codes",
+    poolExportHint:
+      "Which code went to which order. Codes nobody has been given are deliberately left out \u2014 an export of those is your stock in somebody's downloads folder.",
+    poolRefundNote:
+      "A refund revokes the buyer's code and does not put it back in the pool \u2014 they have already seen it. Top up when the number gets low.",
+
+    licenseTitle: "Licence keys",
+    licenseBody:
+      "For software. Each buyer gets a key your app can check, activate and deactivate over our API.",
+    licenseEnabled: "Issue a licence key with every sale",
+    licenseActivationLimit: "Machines per key",
+    licenseActivationLimitHint: "Blank means any number.",
+    licenseDays: "Licence length in days",
+    licenseDaysHint: "Blank means it never expires.",
+    licenseDocs: "How to check a key from your app",
+
+    /* ---- Membership depth — spec 49 ------------------------------------- */
+
+    termTitle: "How long it runs",
+    termCycles: "Number of payments",
+    termCyclesHint:
+      "Leave blank for an open-ended membership. Two or more \u2014 a single payment is a one-off product, not a membership.",
+    accessAfterTerm: "Keep access after the last payment",
+    accessAfterTermHint:
+      "Turns a membership into a payment plan: a course sold in three instalments where they keep what they bought.",
+    minimumTermCycles: "Minimum payments before cancelling",
+    minimumTermHint:
+      "On cash and transfer this governs what you can say, not what we can stop \u2014 a member can always stop paying.",
+    cancelNoticeDays: "Notice period in days",
+    cancelNoticeHint:
+      "Notice given later than this ends the *next* period rather than this one. It never stops somebody cancelling.",
+    cancelPolicyNote: "Your cancellation terms",
+    cancelPolicyHint:
+      "Shown at checkout and again when a member cancels. Buyers have to have seen it for it to count in a dispute.",
+    pauseMaxDays: "Days a member may freeze for",
+    pauseMaxDaysHint:
+      "Blank means freezing isn't offered. Access is closed while frozen, and the days they were away are added to their period.",
+
+    /* ---- Event depth — spec 50 ------------------------------------------- */
+
+    eventVenueTitle: "Where and when",
+    eventMode: "How people attend",
+    eventModeOnline: "Online",
+    eventModeInPerson: "In person",
+    eventModeHybrid: "Both",
+    eventVenueName: "Venue name",
+    eventAddress: "Address",
+    eventTimeZone: "Event time zone",
+    eventTimeZoneHint:
+      "Buyers see their own clock with this one named beside it. Blank uses your shop's.",
+    sessionMode: "Dates",
+    sessionModeSingle: "One date",
+    sessionModePickOne: "Several dates, buyer picks one",
+    sessionModeAllAccess: "Several dates, one ticket covers all",
+    collectAttendeeDetails: "Ask for each attendee's name",
+    collectAttendeeDetailsHint:
+      "Four tickets become four names on the door list instead of the buyer's four times. Guest addresses are never added to your mailing list.",
+    eventRefundPolicy: "Refund policy",
+    eventRefundPolicyHint:
+      "Shown at checkout. An event sells a moment, so buyers need to know where they stand before they pay.",
+    eventRefundCutoff: "Cancellation cutoff in hours",
+    eventAllowSelfCancel: "Let buyers release their own seat",
+    eventAllowSelfCancelHint:
+      "Inside the cutoff. The seat goes back on sale and anybody waiting is told.",
+    tiersTitle: "Ticket tiers",
+    tiersBody:
+      "Early bird, General, VIP \u2014 different prices against the same room.",
+    tierName: "Tier name",
+    tierPrice: "Price",
+    tierCapacity: "Seats in this tier",
+    tierCapacityHint: "Blank shares the room's capacity.",
+    tierHidden: "Hidden \u2014 reachable by direct link only",
+    sessionsTitle: "Dates",
+    sessionGenerate: "Repeat weekly",
+    sessionGenerateCount: "How many",
+    sessionCapacity: "Seats per date",
+
+    /* ---- Service depth — spec 51 ----------------------------------------- */
+
+    staffTitle: "Who takes bookings",
+    staffBody:
+      "Add the people buyers can book. With nobody here your shop takes one appointment at a time, as it does today.",
+    staffName: "Name",
+    staffEmail: "Email",
+    staffHours: "Their hours",
+    staffHoursHint: "Blank uses the shop's opening hours.",
+    staffTimeZone: "Their time zone",
+    staffFeed: "Their calendar address",
+    staffFeedHint:
+      "The secret iCal link from their own calendar. We read it to block times they're already busy \u2014 we never write to it.",
+    staffAdd: "Add somebody",
+    staffActive: "Taking bookings",
+    bookingCapacity: "People per slot",
+    bookingCapacityHint:
+      "Blank is one \u2014 an ordinary appointment. Higher turns it into a class. For fixed dates use an event instead.",
+    rescheduleCutoff: "Buyers can move it up to (hours before)",
+    rescheduleCutoffHint: "Blank means only you can move an appointment.",
+    cancelCutoff: "Buyers can cancel up to (hours before)",
+    cancelCutoffHint: "A released slot goes back on the calendar straight away.",
+
+    maxPerOrder: "Limit per order",
+    maxPerOrderHint: "The most one buyer can take at once. Blank means the only limit is stock.",
+    maxPerOrderEventHint:
+      "The most one buyer can take at once \u2014 four tickets a head, say. Blank means the only limit is capacity.",
+
+    capacityTitle: "Capacity & ticket tiers",
+    capacityBody:
+      "How many can come, and what they can buy \u2014 General, VIP, early bird.",
+    trackCapacity: "Limit how many can come",
+    trackCapacityBody:
+      "Counts seats down with every ticket sold and closes sales when the room is full.",
+
     optionsTitle: "Options & stock",
     optionsBody:
       "Sizes, colours, session lengths — anything the buyer chooses between.",
@@ -330,8 +718,10 @@ export const adminEn = {
     filesBody:
       "Buyers get a private download page as soon as the order is released.",
     releaseOnPayment: "Release only after payment is confirmed",
+    /* Says "it" rather than "the file": the same switch now gates a link and
+       a code, and neither of those is a file. */
     releaseOnPaymentBody:
-      "Every payment option here settles outside Sailo, so leaving this on stops someone taking the file without paying. Free products unlock straight away either way.",
+      "Every payment option here settles outside Sailo, so leaving this on stops someone taking it without paying. Free products unlock straight away either way.",
     downloadLimit: "Download limit",
     downloadLimitHint: "blank = unlimited",
     downloadExpiry: "Link expires after (days)",
@@ -351,18 +741,24 @@ export const adminEn = {
     bookingEnabledBody:
       "Adds a preferred date and time to checkout. You confirm the slot afterwards.",
     bookingLead: "Notice needed (hours)",
-    bookingLeadHint: "the picker won't offer anything sooner",
+    bookingLeadHint: "The picker won't offer anything sooner than this.",
+    bookingBuffer: "Gap between bookings (minutes)",
+    bookingBufferHint:
+      "Quiet time either side of an appointment \u2014 to clean up, write notes, or travel. Buyers still only pay for the session itself.",
     eventTitle: "Event details",
     eventBody: "When it happens, where to turn up, and when tickets unlock.",
     eventStartsAt: "Starts at",
-    eventStartsAtHint: "in your own time zone \u2014 ticket sales close at this moment",
+    eventStartsAtHint: "Ticket sales close at this moment.",
+    eventEndsAt: "Ends at",
+    eventEndsAtHint:
+      "Shown to buyers so they can plan the evening. It doesn't close sales \u2014 the start time does.",
     eventVenue: "Venue or joining details",
     eventVenuePlaceholder: "Warehouse 7, Marina Bay \u2014 doors 19:00",
     eventReleaseOnPayment: "Release tickets only after payment is confirmed",
     eventReleaseOnPaymentBody:
       "Every payment option here settles outside Sailo, so leaving this on stops someone walking in without paying. Free events admit straight away either way.",
     eventCapacityHint:
-      "Capacity is stock: turn on Track stock above and set how many can come. Ticket tiers \u2014 General, VIP \u2014 are variants with their own price and count.",
+      "Capacity and ticket tiers are set below \u2014 turn on \u201cLimit how many can come\u201d and say how many. Tiers like General and VIP are options with their own price and count.",
     inStock: "In stock",
     inStockBody: "Turn off to show a Sold out badge and disable ordering.",
     featured: "Featured",
@@ -371,10 +767,27 @@ export const adminEn = {
     publishedBody: "Uncheck to hide it from your shop while you work on it.",
     added: "Product added.",
     updated: "Product updated.",
-    eventWhere: "Where it happens",
-    eventInPerson: "At a venue",
-    eventOnline: "Online",
     eventJoinUrl: "Join link",
+    /*
+     * Spec 07 — the kind whose checkout is a form.
+     *
+     * "Enquiry form" rather than "lead magnet", because the same mechanism is
+     * a sample request, a quote request and a made-to-order enquiry — and the
+     * physical seller who wants one of those has never heard the marketing
+     * phrase. Naming it for what it does is what makes it reachable.
+     */
+    kindLeadLabel: "Enquiry form",
+    leadHint: "A free download or an enquiry — no payment, just their details.",
+    leadTitle: "What you ask for",
+    leadBody:
+      "Name and email are always asked. Add your own questions below, and attach a file under Files if you're giving something away.",
+    leadQuestion: "Question",
+    leadQuestionPlaceholder: "Which team are you on?",
+    leadQuestionRequired: "Must be answered",
+    leadAddQuestion: "Add a question",
+    leadRemoveQuestion: "Remove",
+    leadQuestionLimit: "Up to {count} questions. A form longer than that stops being one.",
+    leadNoPrice: "A form takes no payment, so this product has no price.",
     eventJoinUrlHint: "Zoom, Meet, Teams — anything with a link. Buyers only see it once their payment is confirmed.",
   },
 
@@ -395,6 +808,7 @@ export const adminEn = {
     compareAt: "Compare at",
     stock: "Stock",
     sku: "SKU",
+    skuHint: "optional, your own product code",
     forSale: "For sale",
     restore: "Bring back {count} removed combinations",
     restoreOne: "Bring back 1 removed combination",
@@ -670,6 +1084,33 @@ export const adminEn = {
     track: "Track",
     addTracking: "Add tracking",
     editTracking: "Edit tracking",
+    /*
+     * Spec 44 — `shipped` is not `delivered`.
+     *
+     * `docs/chargebacks.md` states the rule this button exists for: on
+     * `product_not_received` (Visa 13.1 / MC 4855) "a tracking number showing
+     * 'in transit' is not delivery". The seller's tick is weaker evidence than a
+     * carrier's proof and far stronger than silence, and the label says who is
+     * asserting it — the evidence pack prints the source, and a tick shown as
+     * though a carrier signed for it would be a false claim to a bank.
+     */
+    /*
+     * Spec 45. On every order, not only a disputed one: "always ready" means a
+     * seller can find the gap while it is still fixable, and a pack full of
+     * "not on record" is the most useful thing this feature ever prints.
+     *
+     * In `orders`, which `glossary.ts` protects from the machine filler — this
+     * is a money surface and a chargeback is argued from it, so the translation
+     * waits for a human rather than being written by a model.
+     */
+    evidencePack: "Evidence pack",
+    markDelivered: "Mark delivered",
+    delivered: "Delivered",
+    deliveredBySeller: "You marked this delivered",
+    deliveredByBuyer: "The buyer confirmed it arrived",
+    deliveredByCarrier: "The carrier confirmed delivery",
+    /** The nudge: shipped a while ago and nobody has said it landed. */
+    confirmArrival: "Did this arrive? Recording it now is what answers a chargeback later.",
     refund: "Refund",
     title: "Orders",
     empty: "No orders yet",
@@ -703,6 +1144,14 @@ export const adminEn = {
     noMatchesBody: "Clear a filter to see more.",
   },
 
+  /**
+   * An order going out in more than one box — spec 51.
+   *
+   * Its own section rather than more keys under `orders`, because `orders` is a
+   * protected money section that a filler may not write into: a new key there
+   * is a hole in thirty-four locales that nothing can close. These strings are
+   * about parcels rather than about amounts.
+   */
   clients: {
     outstandingLabel: "Outstanding",
     saveNotesLabel: "Save notes",
@@ -796,6 +1245,9 @@ export const adminEn = {
     codePlaceholder: "WELCOME10",
     usageLimit: "Usage limit",
     minSpend: "Minimum spend",
+    /* Spec 53. A percentage needs no second amount, so the heading says
+       "where they apply" rather than promising a field for every code. */
+    otherCurrencies: "In your other currencies — a code with no amount here isn't offered in that currency.",
     amount: "Amount",
     /**
      * The server's refusals, as sentences.
@@ -995,6 +1447,40 @@ export const adminEn = {
   },
 
   delivery: {
+    /* ---- Spec 51: an order that goes out in more than one box ----------- */
+    /*
+     * Here rather than in a `shipments` section of their own, and that is a
+     * mechanical constraint rather than a filing preference: a *new* admin
+     * section has to exist in all thirty-five locale files before the coverage
+     * test passes, and those files are never hand-edited. New keys inside an
+     * existing section render in English until a filler writes them, which is
+     * the ordinary admin debt. `delivery` is already "how a shop gets an order
+     * to a buyer", which is what a box is.
+     */
+    shipmentsTitle: "Boxes",
+    shipmentsBody:
+      "This order has more than one thing to send. Record each box with its own tracking.",
+    shipmentsAllSent: "Everything on this order has been sent.",
+    boxNumber: "Box {n}",
+    inTransit: "On its way",
+    boxDelivered: "Delivered",
+    nothingLeft: "Nothing left to send.",
+    leftOf: "({remaining} of {ordered} left)",
+    quantityFor: "How many {item} in this box",
+    recordBox: "Record this box",
+    trackingUrlLabel: "Tracking link",
+
+    /* ---- Spec 51: postage priced by what is in the box ------------------ */
+    byWeight: "Price by weight",
+    byWeightHint:
+      "Charge from a table of weight bands instead of one flat fee. Uses the weight on each product.",
+    upToGrams: "Up to (grams)",
+    bandPrice: "Costs",
+    /* The one thing that stops a checkout rather than mispricing it, so it is
+       said on the form rather than discovered by a buyer. */
+    bandsCeiling:
+      "Make the last band heavier than anything you post — an order over it can't use this rate at all.",
+
     kind: "Type",
     freeOverLabel: "Free over",
     addOptionBody: "Standard, express, international or collection in person.",
@@ -1097,6 +1583,22 @@ export const adminEn = {
     notifyMembershipPaymentFailed: "Failed renewals",
     notifyMembershipPaymentFailedBody:
       "A renewal payment didn't go through. Stripe retries for a few days and then cancels.",
+    /*
+     * The three switches that existed as events before they existed as rows.
+     *
+     * Each says what the mail is *for* rather than naming the event, because a
+     * seller reading a settings page is deciding whether they want to be
+     * interrupted, not learning our vocabulary.
+     */
+    notifyTaxThreshold: "Approaching a tax threshold",
+    notifyTaxThresholdBody:
+      "When sales into a country get close to the point where you may need to register there. Nobody watches that number until it has been crossed.",
+    notifyLowStock: "Running low",
+    notifyLowStockBody:
+      "When a product drops to the level you set on it. Otherwise the way you find out is a buyer telling you.",
+    notifyLeadCaptured: "Someone left their details",
+    notifyLeadCapturedBody:
+      "When a free product collects an enquiry — a sample request, a quote, a question.",
     notifyProductTips: "Tips & product news",
     notifyProductTipsBody: "Occasional email from Sailo about getting set up and selling more. Never about your orders.",
     taxIdPlaceholder: "GB123456789",
@@ -1158,6 +1660,20 @@ export const adminEn = {
     requireTermsBody: "Buyers tick a box before they can order. Orders without it are refused.",
     termsUrl: "Link to your terms",
     termsUrlHint: "optional — a public https:// address",
+    /*
+     * Spec 44 — the line on the buyer's card statement.
+     *
+     * `unrecognized` (Visa 10.4 / MC 4837) is a cardholder who did not recognise
+     * a line and charged it back, and it is the one dispute reason a seller can
+     * eliminate rather than argue. The hint says the thing that actually
+     * prevents it: use the name buyers know you by, not the company name.
+     */
+    statementDescriptor: "Card statement name",
+    statementDescriptorHint:
+      "What buyers see on their bank statement. Use the name they know you by — an unfamiliar line is the most common reason a card payment gets disputed. Up to 22 characters.",
+    statementDescriptorPreview: "Their statement will read",
+    statementDescriptorDefault:
+      "Not set — buyers see whatever your Stripe account is registered as.",
     askMarketingConsent: "Ask for marketing consent",
     askMarketingConsentBody: "An optional box, never pre-ticked. Only buyers who tick it may be emailed offers.",
     taxId: "Tax ID",
@@ -1238,6 +1754,19 @@ export const adminEn = {
     description: "Your shop details, plan and data.",
     calendarSync: "Calendar sync",
     calendarSyncBody: "Block booking slots with busy time from your own calendar. Read-only — Sailo never writes to it.",
+
+    /* Spec 53 — regional pricing. Every string here is about a price a seller
+       typed, never about a conversion, and the copy says so out loud: the one
+       thing a seller will assume is that Sailo converts, and it does not. */
+    currenciesTitle: "Sell in other currencies",
+    currenciesBody: "Your shop prices in {currency}. Tick a currency here and you can type a price in it on each product — a buyer in that country sees your price, in their money, before they reach checkout.",
+    currenciesNoConversion: "Sailo never converts. You type every price, so you can round it to something that reads well.",
+    currencyIncomplete: "{currency} is not being shown to anyone yet — still needs a price on:",
+    currencyGapProducts: "{count} products",
+    currencyGapVariants: "{count} variants",
+    currencyGapDelivery: "{count} delivery rates",
+    currencyGapCoupons: "{count} discount codes",
+    currencyLive: "{currency} is live on your storefront",
     calendarFeedUrl: "Calendar link",
     calendarFeedUrlHint: "In Google Calendar: Settings → your calendar → Secret address in iCal format. Apple and Outlook publish one too.",
     calendarFeedReplace: "Replace the calendar link",
@@ -1245,6 +1774,46 @@ export const adminEn = {
     calendarSyncConnected: "Connected to {host}",
     calendarSyncBroken: "This calendar isn't loading — no times are being blocked.",
     calendarSyncPrivacy: "Only busy times are read. Titles, guests and descriptions are never fetched or stored.",
+    /*
+     * Spec 37 — the team tab.
+     *
+     * In `settings` rather than a section of its own, because that is where it
+     * lives and because a new *section* has to land in all thirty-four locale
+     * files before `admin-coverage.test.ts` is happy, while a new key in an
+     * existing one merges over English quietly. The screen is one tab; the
+     * words are settings words.
+     */
+    tabTeam: "Team",
+    teamTitle: "Who can work in this shop",
+    teamBody:
+      "Invite the people who help you run it, and choose what each of them can do. They sign in with their own account — never yours.",
+    teamInvite: "Invite somebody",
+    teamEmail: "Their email address",
+    teamRole: "What they can do",
+    teamSend: "Send the invitation",
+    teamSent:
+      "If that address can be invited, the invitation is on its way. Nothing here says whether it already had a Sailo account.",
+    teamMembers: "In this shop",
+    teamPending: "Invited, not yet accepted",
+    teamNoPending: "No invitations waiting.",
+    teamOwner: "Owner",
+    teamOwnerNote: "Everything, and cannot be removed — a shop with no owner is unrecoverable.",
+    teamManager: "Manager",
+    teamManagerNote: "Runs the shop day to day. No payouts, no settings, no inviting.",
+    teamStaff: "Staff",
+    teamStaffNote: "Handles orders and customers. No refunds, no exports, no marketing.",
+    teamRemove: "Remove",
+    teamCancel: "Cancel invitation",
+    teamYou: "You",
+    teamActivity: "What people have done",
+    teamActivityEmpty: "Nothing yet.",
+    teamActivityBody:
+      "Append-only, and kept even after somebody leaves — it answers \"who refunded that?\".",
+
+    noAccessTitle: "You can't do that in this shop",
+    noAccessBody:
+      "Your role doesn't include {permission}. Ask the shop's owner if you think it should.",
+    noAccessBack: "Back to the shop",
     calendarSyncLocked: "Calendar sync is available on a paid plan.",
   },
 
@@ -1309,6 +1878,28 @@ export const adminEn = {
     importClientsBody:
       "Matched on email, or phone when there's no email. Existing details are never blanked by a missing column.",
     chooseCsv: "Choose CSV",
+
+    /* Spec 47 — bringing a catalogue in from another tool. The two notes at
+       the bottom of the panel are stated before the import rather than
+       discovered after it: both are deliberate and neither is an apology. */
+    migrateTitle: "Move a catalogue in",
+    migrateBody: "Bring your products, variants, images, categories and stock across from another tool. You'll see exactly what will happen before anything is saved.",
+    migrateSource: "Where from",
+    shopifyStore: "Store address",
+    shopifyStoreHint: "The one ending in .myshopify.com.",
+    shopifyToken: "Admin API access token",
+    tokenDiscarded: "Used for this import and never stored.",
+    stripeNoToken: "Your Stripe account is already connected, so there's nothing to paste.",
+    previewNothingSaved: "Preview — nothing saved yet",
+    previewImport: "Preview import",
+    confirmImport: "Confirm import",
+    toCreate: "to create",
+    toUpdate: "to update",
+    skipped: "skipped",
+    failedRows: "failed",
+    clampedByPlan: "{leftOut} products were left out — your plan has room for {headroom} more.",
+    migrateNoOrders: "Past orders aren't imported. Your invoice numbering starts here, and old sales stay where they happened.",
+    migrateNoFiles: "Digital files aren't transferred — they live behind the other tool's login. The report lists every product still waiting for one.",
   },
 
   traffic: {
@@ -1411,6 +2002,19 @@ export const adminEn = {
     deleteBlockedTitle: "Finish your open orders first",
     deleteBlockedBody:
       "You have paid orders that haven't been delivered yet. Fulfil or refund them, then come back — deleting now would take money for goods nobody will send.",
+    /*
+     * Three refusals, three messages, because they are answered by three
+     * different actions and a single "you can't delete yet" would send every
+     * seller to support to find out which one they were looking at. Orders are
+     * fixed by shipping or refunding, a dispute is fixed by waiting for the
+     * bank, and a payout hold is fixed by us.
+     */
+    deleteBlockedDisputesTitle: "A card dispute is still open",
+    deleteBlockedDisputesBody:
+      "A buyer's bank is still deciding on a payment to your shop. Deleting now would erase the order, the product and the delivery record we need to answer it — and an unanswered dispute is lost by default. This clears itself once the bank decides.",
+    deleteBlockedPayoutsTitle: "Your payouts are on hold",
+    deleteBlockedPayoutsBody:
+      "Payouts from your shop are paused while we look at recent disputes. Deleting an account would disconnect the Stripe account that hold is on, so it has to be lifted first. Write to us and we'll tell you where it stands.",
   },
 
   /**
@@ -1662,6 +2266,86 @@ export const adminEn = {
     subscriberBounced: "Bounced",
     subscriberComplained: "Reported spam",
     subscribersClipped: "The most recent {count}. Export your clients for the full list.",
+
+    /* ----------------------------------------------------------------------
+       Lists, suppressions and custom fields — spec 34.
+
+       Inside `broadcasts` rather than in sections of their own, and that is a
+       deliberate constraint rather than tidiness: `admin-coverage.test.ts`
+       requires every one of the 34 locales to carry each *section* English
+       has, so a new section is a screen that must land in 34 files at once or
+       the suite goes red. A new key in an existing section merges over English
+       quietly and is reported as backlog, which is what Decision A chose.
+    ---------------------------------------------------------------------- */
+
+    listsTitle: "Lists",
+    listsDescription: "Group people so a campaign can reach one part of your audience.",
+    listsEmpty: "No lists yet",
+    listsEmptyBody:
+      "A list is a group you put people in — regulars, wholesale, the waiting list for a drop. Make one and you can send to just that group.",
+    listNew: "New list",
+    listName: "Name",
+    listDescriptionLabel: "What it's for",
+    listDoubleOptIn: "Ask people to confirm by email",
+    listDoubleOptInHint:
+      "On by default. Everyone sends through one domain, so a list of addresses nobody confirmed costs every seller's delivery, not just yours.",
+    listMembers: "{count} subscribed",
+    listPending: "{count} waiting to confirm",
+    listDelete: "Delete list",
+    listDeleteConfirm: "Delete this list? Nobody is unsubscribed — they stay contacts and stay on your other lists.",
+    listRemoveMember: "Remove from this list",
+    /* The two verbs, side by side, because the whole of rule 2 is that a
+       seller must never press one meaning the other. */
+    listRemoveVsUnsubscribe:
+      "Removing takes them off this one list. It is not an unsubscribe — that stops all email from you, and only they can ask for it.",
+
+    unsubscribedTitle: "Unsubscribed",
+    unsubscribedDescription: "Addresses you can't email, and why.",
+    unsubscribedEmpty: "Nobody has unsubscribed",
+    unsubscribedEmptyBody:
+      "When somebody unsubscribes, or their address bounces, or they report a message as spam, they appear here and stop receiving your email.",
+    unsubscribedReason: "Reason",
+    unsubscribedWhen: "When",
+    resubscribe: "Put back on the list",
+    /* The banner over the button. It says what the seller is doing on
+       somebody else's behalf, which is the only honest framing for it. */
+    resubscribeWarning:
+      "Only do this if the person asked you to. They chose to stop hearing from you, and putting them back without being asked is how a shop gets reported as spam.",
+    resubscribeRefused: "Bounced and reported addresses can't be switched back on.",
+
+    fieldsTitle: "Custom fields",
+    fieldsDescription: "Your own questions — on the contact card, at checkout, or both.",
+    fieldsEmpty: "No custom fields yet",
+    fieldsEmptyBody:
+      "Ask buyers something your shop needs to know — a size, a delivery window, a name for the engraving — and keep the answer on the contact.",
+    fieldNew: "New field",
+    fieldLabel: "What buyers see",
+    fieldKey: "Stored as",
+    fieldKeyHint:
+      "Lower-case letters, numbers and underscores. It can't be changed later, because it is what merge tags read.",
+    fieldType: "Type",
+    fieldOptions: "Options",
+    fieldOptionsHint: "One per line. Buyers can only choose from these.",
+    fieldRequired: "Required",
+    fieldScope: "Where it's asked",
+    fieldScopeContact: "On the contact card",
+    fieldScopeCheckout: "At checkout",
+    fieldScopeBoth: "Both",
+    fieldDelete: "Delete field",
+    fieldDeleteConfirm:
+      "Delete this field? The answers go with it. Past orders keep what they recorded at the time.",
+    fieldAnswers: "Answers",
+
+    /* The eight types. Read by bracket off `field.type`, so `fieldType` above
+       is the label and these are the values. */
+    typeText: "Short text",
+    typeLongtext: "Long text",
+    typeCheckbox: "Tick box",
+    typeInteger: "Whole number",
+    typeDecimal: "Number",
+    typeDropdown: "Choose one",
+    typeDate: "Date",
+    typeDatetime: "Date and time",
   },
 
   /** The members list, and the states a subscription passes through. */
@@ -1747,6 +2431,196 @@ export const adminEn = {
     suppressed: "Opted out",
   },
 
+  /**
+   * Spec 41 — the seller's own legal pages.
+   *
+   * Chrome, all of it. The documents these produce are English-only by design
+   * and none of their text is here; what is translated is the screen a seller
+   * uses to generate, read, edit and publish them, plus the disclaimer, which
+   * is the one sentence that must land in the reader's own language.
+   */
+  legal: {
+    title: "Legal pages",
+    intro:
+      "Hosted terms, a privacy policy, a refund policy, an About page and an FAQ — built from what you have already told us, then yours to edit.",
+    /*
+     * The same sentence as the public footer's, and deliberately so: a seller
+     * who reads it here and a buyer who reads it there should be told the same
+     * thing about what this is.
+     */
+    disclaimer:
+      "These are starting points, not legal advice. We make this easy to understand but not automatic, because you being responsible for your own business is a good thing. Read what we produce, change what is wrong, and have it reviewed before you rely on it.",
+
+    generate: "Generate your pages",
+    generateBody:
+      "Four questions. Everything else comes from the business details on your invoices.",
+    generateAll: "Generate all five",
+    generateMissing: "Generate what is missing",
+
+    refundWindow: "Refund window, in days",
+    refundWindowHint:
+      "How long a buyer has to ask for a refund. Leave blank if you have not decided — the page will say so rather than inventing a number.",
+    extraData: "Anything you collect beyond the order",
+    extraDataHint:
+      "Sizes, dietary requirements, a photo — whatever you ask buyers for that is not their name, address or payment.",
+    analytics: "My shop uses analytics or advertising tools",
+    analyticsHint: "Turn this on if you have added a pixel or a tag anywhere.",
+    analyticsDetected:
+      "Already on, because you have a pixel or tag configured. Your privacy policy has to say so.",
+    ships: "I send physical goods",
+    shipsHint: "Changes the delivery and returns wording.",
+
+    /*
+     * Flat, not a nested `kinds` object. `mergeAdmin` merges one section at a
+     * time and every leaf in this dictionary is a string — a nested object here
+     * types as `Record<string, string>`'s index signature being violated, and
+     * the whole admin dictionary stops compiling. Two levels, always.
+     */
+    kindTerms: "Terms of sale",
+    kindPrivacy: "Privacy policy",
+    kindRefunds: "Refunds and returns",
+    kindAbout: "About",
+    kindFaq: "FAQ",
+
+    published: "Published",
+    draft: "Draft",
+    edited: "Edited by you",
+    publish: "Publish",
+    unpublish: "Take down",
+    publishOnSave: "Publish this page",
+
+    pageTitle: "Title",
+    slug: "Web address",
+    body: "The page, in Markdown",
+    bodyHint:
+      "Written in English, which is deliberate — a translated legal clause is a different document. Edit it freely.",
+    bodyHintPlain: "Markdown. Headings become sections; ### headings become FAQ rows.",
+
+    /*
+     * The one click this whole screen exists for. Worded as the outcome — what
+     * the buyer will see — rather than as the setting being written, because
+     * "point termsUrl at this page and enable requireTerms" is two column names
+     * and no reason to press it.
+     */
+    useAtCheckout: "Use this at checkout",
+    checkoutOffer:
+      "Ask every buyer to accept these terms before they pay, and record when they did.",
+    checkoutLinked:
+      "Buyers accept these terms at checkout, and the version they agreed to is recorded against their order.",
+    useAsPrivacy: "Link this from my shop",
+    privacyOffer: "Link this as your shop's privacy policy.",
+    privacyLinked: "Linked from your shop as your privacy policy.",
+
+    regenerate: "Replace with a fresh copy of the template",
+    regenerateWarning:
+      "This throws away every change you have made to this page and writes the template again. Copy anything you want to keep first.",
+    regenerateConfirm: "Replace what I wrote",
+    /** The editor's own close, distinct from `common.cancel` on a form. */
+    closeEditor: "Close",
+  },
+
+  /**
+   * Spec 52 — the statutory queue.
+   *
+   * Chrome around an obligation, so the words matter more than usual: a seller
+   * reading this screen is deciding whether to delete somebody's records, and
+   * the two lists on the confirmation come from the decision table rather than
+   * from here. What is here is the frame.
+   */
+  dataRequests: {
+    title: "Data requests",
+    intro:
+      "Buyers asking for a copy of what you hold, or asking you to delete it. You have 30 days from the moment they confirm their email.",
+    empty: "No requests",
+    emptyBody:
+      "A link in your shop's footer and in every order email lets a buyer ask. Anything they ask for shows up here with its deadline.",
+
+    kindAccess: "Copy of their data",
+    kindPortability: "Portable copy",
+    kindErasure: "Deletion",
+
+    daysLeft: "days left",
+    overdue: "Overdue",
+    awaitingBuyer: "Waiting on the buyer",
+    answered: "Answered",
+    refused: "Refused",
+
+    release: "Assemble and send",
+    erase: "Delete their data",
+    refuse: "Refuse",
+
+    /*
+     * The two headings over the confirmation lists. Deliberately "will" and not
+     * "may": the seller is about to press a button, and a hedge here would read
+     * as uncertainty about what the button does.
+     */
+    willRemove: "This will remove or anonymise:",
+    willKeep: "This will keep, and the buyer will be told why:",
+    typeErase: 'Type "erase" to confirm',
+
+    refusalReason: "Why are you refusing?",
+    refusalHint:
+      "The buyer is told this, so it has to be true. Pick the one that applies rather than the one that is shortest.",
+    pickReason: "Choose a reason…",
+    recordRefusal: "Record the refusal",
+  },
+
+  /**
+   * Spec 40 — gated content collections. "Courses", narrowly.
+   *
+   * Chrome around an ordered list. The one string here that is not chrome is
+   * `previewHint`: a preview is public by construction, and a seller who does
+   * not understand that gives a paid file away to anybody with the link.
+   */
+  content: {
+    title: "Gated content",
+    intro:
+      "Group this product's files into an ordered list your buyers work through, with progress and a continue link on their delivery page.",
+    wrongKind:
+      "Gated content works on a digital product or a membership — the two kinds that have a delivery page to show it on.",
+
+    collectionTitle: "What is this collection called?",
+    description: "Description",
+    descriptionHint: "One or two lines, shown above the list.",
+    create: "Create the collection",
+
+    dripMode: "How does it unlock?",
+    dripNone: "Everything at once",
+    dripInterval: "One step at a time",
+    dripHint: "Release items a set number of days after somebody gets access.",
+    dripLocked:
+      "Releasing content over time is on the Business plan. On your plan everything unlocks at once.",
+    dripDays: "Days between each item",
+    dripDaysHint: "Counted from when the buyer's access started, not from a calendar date.",
+
+    addItem: "Add an item",
+    itemTitle: "Title",
+    section: "Section",
+    sectionHint: "A heading to group under — \"Week 1\". Leave blank for no group.",
+    position: "Order",
+    unlockOverride: "Unlock after (days)",
+    unlockOverrideHint:
+      "Overrides the collection for this item. Leave blank to follow it; 0 means this one opens immediately.",
+
+    file: "File",
+    noFile: "No file — text or an embed",
+    embed: "Embed",
+    embedHint: "YouTube, Vimeo or Loom, over https. Nothing else is allowed.",
+    body: "Text",
+    bodyHint: "Markdown. Shown under the title.",
+
+    preview: "Free preview",
+    previewBadge: "Preview",
+    /*
+     * The one string on this screen that is not chrome. A seller who does not
+     * understand that a preview is public gives a paid file away to anybody
+     * with the link — which is why the server refuses the combination outright
+     * rather than trusting this sentence to prevent it.
+     */
+    previewHint:
+      "Anyone can open a preview, with no order and no payment — that is what makes it a preview. A preview can never be a file.",
+  },
+
   integrations: {
     title: "Integrations",
     body: "Connect your shop to Zapier, n8n, Make — or to an AI assistant.",
@@ -1825,6 +2699,172 @@ export const adminEn = {
     docsTitle: "How to connect",
     docsBody: "Endpoints, payload shapes and how to verify a signature.",
     docsLink: "Read the guide",
+  },
+
+  /**
+   * Spec 38 — the jurisdictions tab.
+   *
+   * The register of this whole section is deliberate and it is the feature.
+   * Nothing here tells a seller they must register anywhere: that is a legal
+   * claim Sailo is not qualified to make, and the refusal in
+   * `GAP-2026-08-easytools.md` §4.3 is what these words are keeping. Every
+   * string states what was collected and where, names the date the published
+   * figure was last checked, and stops.
+   */
+  tax: {
+    title: "Tax & jurisdictions",
+    notAdvice:
+      "This is a record of what you collected, not tax advice. Whether you need to register anywhere is a question for your accountant.",
+    reviewedOn: "Published thresholds last checked {date}. Confirm them before you act on one.",
+
+    registrationsTitle: "Where you are registered",
+    registrationsBody:
+      "Your own record of the tax registrations you hold.",
+    registrationsStripe:
+      "You use Stripe Tax, so these are for your records only — the registrations on your Stripe account decide what a buyer is charged.",
+    registrationsManual:
+      "You charge one flat rate. A rate set against a country here replaces it for buyers in that country.",
+    addRegistration: "Add a registration",
+    country: "Country",
+    region: "State or region",
+    regionHint: "For places that register per state. Leave blank for a national registration.",
+    registrationNumber: "Registration number",
+    registeredOn: "Registered on",
+    expiresOn: "Expires",
+    localRate: "Local rate",
+    localRateHint: "Percent. Leave blank to use your shop rate; 0 means zero-rated here.",
+    noRegistrations: "No registrations recorded yet.",
+    usesShopRate: "Shop rate",
+    remove: "Remove",
+
+    thresholdsTitle: "Revenue against published thresholds",
+    thresholdsBody:
+      "Sales to individuals in {year}, counted from what you actually charged. Business sales are shown separately and do not count toward a threshold.",
+    thresholdsEmpty: "No paid orders with a country recorded yet this year.",
+    place: "Place",
+    taken: "Taken",
+    threshold: "Threshold",
+    remaining: "Remaining",
+    ordersColumn: "Orders",
+    b2bColumn: "Business sales",
+    taxColumn: "Tax collected",
+    stateUnder: "Under",
+    stateApproaching: "Past 70%",
+    stateNear: "Past 90%",
+    stateCrossed: "Over",
+    stateImmediate: "From the first sale",
+    stateUntracked: "No published figure",
+    stateUncomparable: "Cannot be compared",
+    registeredHere: "Registered",
+    convertedNote:
+      "Converted at an indicative rate reviewed {date}, because your sales and this threshold are in different currencies.",
+    crossedOnCount: "Crossed on the number of sales, not the amount.",
+    euRow: "The EU, combined",
+    euBody:
+      "EU distance selling is one combined figure across every member state except your own.",
+    notRecorded: "Country not recorded",
+
+    countriesTitle: "Countries you sell into",
+    countriesBody:
+      "A country switched off here is left out of your checkout and refused if an order arrives for it anyway. It never affects a membership that is already running.",
+    disableOnThreshold: "Stop selling as a threshold approaches",
+    disableOnThresholdBody:
+      "Switch a country off once sales there pass 90% of its published threshold. Off by default — most sellers would rather register than close a market.",
+    disableImmediate: "Refuse countries that expect registration from the first sale",
+    disableImmediateBody:
+      "Some places have no threshold at all. There is nothing to warn you about, so this is the only way to stay out of them.",
+    ossRegistered: "I file an EU one-stop-shop (OSS) return",
+    ossRegisteredBody:
+      "Stops the combined EU threshold being flagged. It does not change any rate.",
+    taxCategory: "Product tax category",
+    taxCategoryHint:
+      "Stripe's own code, like txcd_10000000. Books, food and children's clothes are rated differently in much of the EU.",
+    blockedTitle: "Switched off",
+    noBlocked: "You sell to every country.",
+    autoDisabled: "Switched off automatically: {reason}",
+    enable: "Turn back on",
+    disable: "Switch off",
+    addCountry: "Switch a country off",
+
+    reportTitle: "Tax report",
+    reportBody: "Per place, for a period you choose. This is what you file from.",
+    from: "From",
+    to: "To",
+    run: "Show",
+    download: "Download CSV",
+    downloadLocked: "CSV export is on {plan}.",
+    reportEmpty: "Nothing paid in that period.",
+    reconciles: "Reconciles with {count} orders and {invoices} invoices for this period.",
+    reconcileOff:
+      "This report covers {folded} of {count} paid orders in the period. The nightly fold has not reached the rest — run it, or pick a shorter period.",
+    refundedNote:
+      "{count} orders in this period were refunded. Their tax is left out of the total above, because Sailo stores what was charged and not how a partial refund split it.",
+    totalNet: "Net",
+    totalTax: "Tax",
+  },
+
+  /**
+   * Spec 35 — the moderation queue, the walls, and asking somebody.
+   *
+   * "Testimonials" and not "wall of love", which is the reference product's
+   * name for it: a seller searching their own admin types the ordinary word.
+   * The *wall* keeps its name because that is what the thing on a page is.
+   */
+  testimonials: {
+    title: "Testimonials",
+    description: "What people say about you — collected, chosen by you, and shown where it helps.",
+    notReviews:
+      "Different from Reviews: a review is about one product and carries a rating. A testimonial is about you, and goes on your storefront, in the basket, and on any site you run.",
+
+    queueTitle: "Waiting for you",
+    queueEmpty: "Nothing yet. Ask a few past customers below.",
+    approve: "Show it",
+    unapprove: "Hide it",
+    feature: "Pin to the top",
+    unfeature: "Unpin",
+    approved: "Showing",
+    pending: "Hidden",
+    featured: "Pinned",
+    sourceRequested: "Asked for",
+    sourceManual: "Typed in",
+    sourceImported: "Brought over",
+    onWall: "On",
+    noWall: "Not on a wall",
+
+    addTitle: "Add one yourself",
+    addBody: "Something somebody emailed you, or a quote from another site. It goes up straight away — you are the one vouching for it.",
+    authorName: "Their name",
+    authorRole: "What they do",
+    words: "What they said",
+    videoUrl: "Video link",
+    videoUrlHint: "YouTube or Vimeo only. Anything else is refused rather than quietly ignored.",
+    avatarUrl: "Photo",
+    add: "Add",
+
+    askTitle: "Ask past customers",
+    askBody: "One email each, with a private link. It counts against your daily sending limit, and anybody who unsubscribed is skipped.",
+    askCta: "Send the ask",
+    askEmpty: "No customers with an email address yet.",
+
+    wallsTitle: "Walls",
+    wallsBody: "A wall is a selection you can put somewhere. One goes under your products; more than one is for the sites you run elsewhere.",
+    wallName: "Name",
+    wallHeadline: "Heading",
+    wallLayout: "Layout",
+    layoutGrid: "Grid",
+    layoutCarousel: "Row that scrolls",
+    wallPublished: "Live",
+    newWall: "New wall",
+    noWalls: "No walls yet.",
+
+    embedTitle: "Put it on your own site",
+    embedBody: "Paste this into any page. It loads nothing from anyone else and reads no cookies.",
+    embedLocked: "Embedding on your own site is on {plan}.",
+    rotate: "New address",
+    rotateHint: "Stops the old snippet working. The only way to take a wall off a site you no longer control.",
+    unpublishedNote: "Publish the wall before you paste it anywhere — an unpublished one shows nothing.",
+    deleteWall: "Delete wall",
+    deleteWallHint: "The testimonials stay; only the arrangement goes.",
   },
 
 } as const;

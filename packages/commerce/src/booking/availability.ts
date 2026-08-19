@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq, gte, isNotNull, lt, ne, notInArray } from "drizzle-orm";
+import { and, eq, gte, isNotNull, isNull, lt, ne, notInArray } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { bookingClaims, orderItems, orders, type Shop } from "@sailo/db/schema";
 import { hoursOf } from "./hours";
@@ -36,7 +36,38 @@ export async function busyFor(opts: {
   to: Date;
   durationMinutes: number;
   excludeOrderId?: string;
+  /**
+   * Whose diary to read — spec 51.
+   *
+   * Named, this asks about one *person* across every service they do: a
+   * stylist booked for a colour at ten is not free for a cut at ten, and the
+   * product-keyed read could never see that. Absent, it asks about one
+   * *product*, which is exactly what a shop with no staff has always meant and
+   * what the exclusion constraint still enforces for them.
+   */
+  staffId?: string | null;
 }): Promise<Busy[]> {
+  /*
+   * The subject of both reads below, and the one line that decides which
+   * question is being asked. With a staff id the product falls out of it
+   * entirely — that is the point — and without one nothing changes.
+   */
+  const lineSubject = opts.staffId
+    ? eq(orderItems.staffId, opts.staffId)
+    : eq(orderItems.productId, opts.productId);
+  const claimSubject = opts.staffId
+    ? eq(bookingClaims.staffId, opts.staffId)
+    : and(
+        eq(bookingClaims.productId, opts.productId),
+        /*
+         * And only the unassigned ones. A shop that has just added staff has
+         * old claims with a null `staff_id` and new ones with a person on
+         * them; reading the product's whole history as "anybody's" would show
+         * every stylist as busy whenever any of them was.
+         */
+        isNull(bookingClaims.staffId),
+      );
+
   const rows = await getDb()
     .select({
       scheduledFor: orderItems.scheduledFor,
@@ -46,7 +77,7 @@ export async function busyFor(opts: {
     .innerJoin(orders, eq(orders.id, orderItems.orderId))
     .where(
       and(
-        eq(orderItems.productId, opts.productId),
+        lineSubject,
         isNotNull(orderItems.scheduledFor),
         gte(orderItems.scheduledFor, opts.from),
         lt(orderItems.scheduledFor, opts.to),
@@ -81,7 +112,7 @@ export async function busyFor(opts: {
     .innerJoin(orders, eq(orders.id, bookingClaims.orderId))
     .where(
       and(
-        eq(bookingClaims.productId, opts.productId),
+        claimSubject,
         gte(bookingClaims.startsAt, opts.from),
         lt(bookingClaims.startsAt, opts.to),
         ...(opts.excludeOrderId ? [ne(orders.id, opts.excludeOrderId)] : []),
@@ -131,9 +162,21 @@ export type BookableProduct = {
   id: string;
   durationMinutes: number | null;
   bookingLeadHours: number;
+  /**
+   * Quiet minutes either side of an appointment.
+   *
+   * Required, not optional, and that is the point: both callers select
+   * explicit `columns`, so an optional field would simply be absent from the
+   * buyer's calendar route and the buffer would apply at checkout and nowhere
+   * else — the seller would see their gap honoured only when somebody was
+   * refused a slot the page had just offered them. Required makes a caller
+   * that forgets the column a compile error.
+   */
+  bookingBufferMinutes: number;
   bookingEnabled: boolean;
   kind: string;
 };
+
 
 /** A service the shop is actually taking appointments for. */
 export function isBookable(product: BookableProduct): boolean {
@@ -180,11 +223,22 @@ export async function slotOptionsFor(
     durationMinutes,
     leadHours: product.bookingLeadHours,
     stepMinutes: shop.bookingSlotMinutes ?? undefined,
+    /*
+     * Handed to the generator rather than applied to `busy` here, so that
+     * `isOfferedSlot` — which re-derives the calendar to check the time a
+     * buyer actually picked — honours the gap without being told. Enforcing it
+     * on the listing alone would be a gap the seller could watch somebody book
+     * straight through.
+     */
+    bufferMinutes: product.bookingBufferMinutes,
     now,
     /*
      * One list. The generator asks "does this candidate overlap anything",
      * and an appointment Sailo owes and an hour the seller's own calendar
-     * has already spent are the same answer to that question.
+     * has already spent are the same answer to that question — which is also
+     * why the buffer applies to both. The gap exists so the seller is not
+     * walking out of one thing into the next, and a dentist appointment in
+     * their own diary is exactly that.
      */
     busy: [...busy, ...external],
   };

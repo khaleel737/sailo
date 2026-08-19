@@ -8,6 +8,7 @@ import {
   readJsonRows,
   readTags,
   text,
+  shopMomentFrom,
   usableVariants,
 } from "./form-fields";
 
@@ -180,5 +181,65 @@ describe("usableVariants", () => {
 
   it("ignores a row with no options at all", () => {
     expect(usableVariants(options, [{ sku: "orphan" }])).toEqual([]);
+  });
+});
+
+/**
+ * A sell window is agreed in the seller's own clock and stored as an instant.
+ * Everything downstream compares instants, so this conversion is the only place
+ * daylight saving can be got wrong — and it is got wrong silently, by an hour,
+ * on a boundary nobody is watching.
+ */
+describe("shopMomentFrom", () => {
+  it("reads the wall clock in the shop's zone, not the server's", () => {
+    // 17:00 in Lisbon on a summer day is 16:00 UTC — Portugal is on WEST.
+    expect(shopMomentFrom("2026-08-31T17:00", "Europe/Lisbon")?.toISOString()).toBe(
+      "2026-08-31T16:00:00.000Z",
+    );
+    // The same wall clock in New York is 21:00 UTC.
+    expect(shopMomentFrom("2026-08-31T17:00", "America/New_York")?.toISOString()).toBe(
+      "2026-08-31T21:00:00.000Z",
+    );
+  });
+
+  it("uses the offset in force on the day, not the offset today", () => {
+    /*
+     * The case a naive `new Date(raw)` gets wrong by exactly one hour. Both of
+     * these are 17:00 in Berlin; the first is CEST (UTC+2) and the second CET
+     * (UTC+1), because the clocks go back on the last Sunday of October. A
+     * seller who sets a Christmas window in August must not have it fire at
+     * 16:00.
+     */
+    expect(shopMomentFrom("2026-08-31T17:00", "Europe/Berlin")?.toISOString()).toBe(
+      "2026-08-31T15:00:00.000Z",
+    );
+    expect(shopMomentFrom("2026-12-31T17:00", "Europe/Berlin")?.toISOString()).toBe(
+      "2026-12-31T16:00:00.000Z",
+    );
+  });
+
+  it("answers null for an hour the clocks skipped", () => {
+    /*
+     * Europe/London springs forward at 01:00 on 29 March 2026, so 01:30 that
+     * morning does not occur. Null means "no bound", which is the safe reading:
+     * the product goes on selling rather than closing at a moment nobody can
+     * name. A naive parse would have moved it an hour and said nothing.
+     */
+    expect(shopMomentFrom("2026-03-29T01:30", "Europe/London")).toBeNull();
+  });
+
+  it("treats blank as no bound and refuses anything that is not a moment", () => {
+    expect(shopMomentFrom("", "Europe/London")).toBeNull();
+    expect(shopMomentFrom("   ", "Europe/London")).toBeNull();
+    expect(shopMomentFrom("next tuesday", "Europe/London")).toBeNull();
+    expect(shopMomentFrom("2026-02-31T10:00", "Europe/London")).toBeNull();
+    expect(shopMomentFrom(42, "Europe/London")).toBeNull();
+  });
+
+  it("falls back to UTC for a zone the runtime has never heard of", () => {
+    // A stored zone is data, and a bad one must not throw inside a form save.
+    expect(shopMomentFrom("2026-08-31T17:00", "Mars/Olympus")?.toISOString()).toBe(
+      "2026-08-31T17:00:00.000Z",
+    );
   });
 });

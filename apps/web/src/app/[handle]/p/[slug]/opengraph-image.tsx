@@ -43,7 +43,7 @@ export default async function Image({
 }) {
   const { handle, slug } = await params;
   const shop = await getShopByHandle(handle);
-  const product = shop ? await getProductBySlug(shop.id, slug) : null;
+  const product = shop ? await getProductBySlug(shop.id, slug, shop.currency, shop.currency) : null;
 
   /*
    * Directly requestable, so it must not throw for a bad handle or slug — and

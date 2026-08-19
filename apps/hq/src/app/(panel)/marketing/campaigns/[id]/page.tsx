@@ -10,6 +10,7 @@ import {
 } from "@sailo/marketing/newsletter";
 import { updateCampaignAction } from "@/lib/actions/marketing";
 import { formatMoment } from "@/lib/format";
+import { staffCan } from "@/lib/session";
 import { CampaignComposer } from "../../_components/composer";
 import { CampaignStatus } from "../../_components/status-badge";
 import {
@@ -51,6 +52,14 @@ export default async function CampaignPage({
 
   const { campaign, progress, audienceSize } = found;
   const editable = isEditable(campaign.status);
+
+  /*
+   * Drafting and sending are different capabilities — see `actions/marketing`.
+   * Anybody who can write a note can write a campaign; putting one on the wire
+   * is `marketing:send`, because it is the only act in this panel that cannot
+   * be undone by clicking again.
+   */
+  const maySend = await staffCan("marketing:send");
 
   const sizes = Object.fromEntries(
     await Promise.all(
@@ -143,6 +152,14 @@ export default async function CampaignPage({
 
       {editable ? (
         <>
+          {/*
+            Scheduling is on the send side of the line, not the drafting side.
+            A schedule is a send with a delay on it, and the delay is not what
+            makes an act reversible — the cron promotes it on the next tick
+            whether or not the person who booked it is still at their desk.
+          */}
+          {maySend ? (
+          <>
           <SectionTitle>Schedule</SectionTitle>
           <Card className="p-5">
             <ScheduleControls
@@ -157,6 +174,8 @@ export default async function CampaignPage({
               </p>
             ) : null}
           </Card>
+          </>
+          ) : null}
 
           <SectionTitle>Send</SectionTitle>
           <Card className="p-5">
@@ -174,7 +193,14 @@ export default async function CampaignPage({
                 ]?.description
               }
             </p>
-            <SendNow id={campaign.id} audienceSize={audienceSize} />
+            {maySend ? (
+              <SendNow id={campaign.id} audienceSize={audienceSize} />
+            ) : (
+              <p className="text-sm leading-relaxed text-ink-500">
+                Sending needs a role you don&rsquo;t hold. The draft is yours to
+                write and save; ask somebody who can send to look at it.
+              </p>
+            )}
           </Card>
 
           <SectionTitle>Danger</SectionTitle>
@@ -185,7 +211,14 @@ export default async function CampaignPage({
               people were told, and the deliveries under it are what a bounce
               webhook resolves against days later.
             </p>
-            <DeleteDraft id={campaign.id} />
+            {maySend ? (
+              <DeleteDraft id={campaign.id} />
+            ) : (
+              <p className="text-xs text-ink-400">
+                Deleting a campaign needs the same role as sending one — the row
+                is the only record that it went out.
+              </p>
+            )}
           </Card>
         </>
       ) : null}

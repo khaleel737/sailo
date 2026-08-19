@@ -193,7 +193,23 @@ function createAuth() {
       },
       customStorage: {
         consume: async (key, rule) => {
-          const verdict = await rateLimit(`hq-auth:${key}`, rule.max, rule.window);
+          /*
+           * DECISION B — the magic-link endpoint keeps its ceiling when Redis is
+           * cold; everything else here stays open.
+           *
+           * It is the one endpoint that sends mail, and it answers identically
+           * whether or not the address is on the roster — which is what stops it
+           * being a test for who is staff, and also what makes it free to hammer.
+           * Unmetered it is an open relay on Sailo's own sending domain, aimed at
+           * whatever address the caller types.
+           *
+           * The key is `<ip>|<path>` (`createRateLimitKey`), so the pipe is what
+           * makes this match exact against an IPv6 address.
+           */
+          const closed = key.endsWith("|/sign-in/magic-link");
+          const verdict = await rateLimit(`hq-auth:${key}`, rule.max, rule.window, {
+            onOutage: closed ? "closed" : "open",
+          });
           return {
             allowed: verdict.allowed,
             retryAfter: verdict.allowed ? null : rule.window,

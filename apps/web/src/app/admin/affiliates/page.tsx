@@ -31,7 +31,7 @@ const SOURCE_LABEL: Record<string, string> = {
 };
 
 export default async function AdminAffiliatesPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:read");
   const { a, locale } = await getAdminT();
   const { t } = await getT();
 

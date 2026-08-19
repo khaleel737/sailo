@@ -1,13 +1,21 @@
-import type { getAccountDetail } from "@/lib/platform";
-
-/** What one account's page is built from. */
-type Result = NonNullable<Awaited<ReturnType<typeof getAccountDetail>>>;
+import type { getAccountCommerce, getAccountHeader } from "@/lib/platform";
 
 /**
- * `getAccountDetail` returns a union: an owner who never finished onboarding
- * has no shop and so none of the shop's data. The tables below only ever
- * render on the loaded branch, and naming it here is what lets them read
- * `detail.affiliates` without each one re-proving the shop exists.
+ * What the four tables on the commerce tab are built from.
+ *
+ * This used to alias `getAccountDetail`, the one function that loaded an entire
+ * account in thirteen parallel queries, and it needed an `Extract` to pick the
+ * branch where a shop exists — that function returned a union, because an owner
+ * who never finished onboarding has no shop and so none of the shop's data.
+ *
+ * The union is gone with the split: `getAccountCommerce` takes a shop id, so
+ * there is no shape it returns that lacks one. The alias stays because four
+ * components read it, and because naming the loader once is what stops each of
+ * them re-deriving it slightly differently.
  */
-export type AccountDetail = Extract<Result, { affiliates: unknown }>;
-export type AccountShop = NonNullable<AccountDetail["shop"]>;
+export type AccountCommerce = Awaited<ReturnType<typeof getAccountCommerce>>;
+
+/** The shop those tables render against. Never null on the commerce tab. */
+export type AccountShop = NonNullable<
+  NonNullable<Awaited<ReturnType<typeof getAccountHeader>>>["shop"]
+>;

@@ -7,16 +7,21 @@ import { getDb } from "@sailo/db";
 import { clients, orders } from "@sailo/db/schema";
 import { publishAffiliateEvent, publishShopEvent } from "@sailo/events";
 import { requireShop } from "@/lib/session";
+import { revalidateShop } from "@/lib/cache";
 import { formatMoney, parseMoneyToCents } from "@sailo/core/currency";
 import { restoreStock } from "@sailo/commerce/catalog";
 import { changeOrderStatus } from "@sailo/commerce/orders/server";
 import { refundOrder as refund } from "@sailo/commerce/orders/server";
 import { shipOrder as ship } from "@sailo/commerce/orders/server";
+import { recordShipment } from "@sailo/commerce/orders/server";
+import { can } from "@sailo/core/plans";
 import { setPaymentStatus as pay } from "@sailo/commerce/orders/server";
 import { sendDownloadReady } from "@sailo/email/transactional";
 import { isOrderStatus } from "@sailo/core/order-status";
 import { sendBookingDecision, sendRefundNotification, sendShippingNotification } from "@/lib/email";
+import { arrivalUrl, confirmDelivery, logOrderMessage } from "@sailo/commerce/disputes";
 import { emitOrderWebhook } from "@sailo/webhooks/emit";
+import { announceOrderEvent, announceOrderPaid } from "@sailo/workflows/orders";
 import type { ActionState } from "./shop";
 
 /**
@@ -30,7 +35,7 @@ import type { ActionState } from "./shop";
  */
 
 export async function updateOrderStatus(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
   if (!id || !isOrderStatus(status)) return;
@@ -120,7 +125,7 @@ export async function updateOrderStatus(formData: FormData) {
  * than this one re-deriving it from a row it read for itself.
  */
 export async function updatePaymentStatus(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
   const id = String(formData.get("id") ?? "");
   const paymentStatus = String(formData.get("paymentStatus") ?? "");
   if (!id) return;
@@ -136,7 +141,16 @@ export async function updatePaymentStatus(formData: FormData) {
   after(() => publishShopEvent(shop.id, "payment"));
 
   if (result.becamePaid) {
-    after(() => emitOrderWebhook({ shop, event: "order.paid", orderId: id }));
+    /*
+     * One call, not two. The webhook and spec 30's `product.purchased`
+     * enrolment are the same announcement made to two audiences, and the card
+     * rail's settlement handler makes it too — a second copy here is the
+     * "guard at one sink and not its twin" shape, on a path where the symptom
+     * is a flow that silently never runs for bank-transfer buyers.
+     */
+    after(() =>
+      announceOrderPaid({ shop, orderId: id }),
+    );
   }
 }
 
@@ -153,7 +167,7 @@ export async function markOrderShipped(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
   const id = String(formData.get("id") ?? "");
 
   let note = "Marked as shipped.";
@@ -173,10 +187,37 @@ export async function markOrderShipped(
        * has gone — so deferring would mean the message could never say.
        */
       notify: async ({ shop: s, order }) => {
-        const sent = await sendShippingNotification({ shop: s, order });
+        const sent = await sendShippingNotification({
+          shop: s,
+          order,
+          /*
+           * The arrival question, minted here because this is where the secret
+           * is reachable. Spec 44: the cardholder's own confirmation is the
+           * strongest `product_not_received` evidence there is, and this email
+           * is the one moment the buyer is already thinking about the parcel.
+           */
+          arrivalUrl: arrivalUrl(order.id),
+        });
         note = sent.sent
           ? `Marked as shipped and emailed ${order.customerEmail}.`
           : `Marked as shipped, but the email failed: ${sent.reason}`;
+
+        /*
+         * Kept against the order, like the confirmation. Only on a real send —
+         * a logged message that never went is a false claim to a bank.
+         */
+        if (sent.sent) {
+          await logOrderMessage({
+            orderId: order.id,
+            shopId: s.id,
+            kind: "shipped",
+            toAddress: order.customerEmail,
+            subject: sent.subject,
+            bodyText: sent.text,
+            providerMessageId: sent.id,
+            status: "sent",
+          });
+        }
         return sent;
       },
     },
@@ -219,11 +260,152 @@ export async function markOrderShipped(
  * out of a form in the seller's locale, deferring the effects onto Next's
  * `after`, and revalidating the four pages a refund changes.
  */
+/**
+ * The seller ticking "it arrived".
+ *
+ * Spec 44. `shipped` is not `delivered` and `docs/chargebacks.md` says so in as
+ * many words — *"a tracking number showing 'in transit' is not delivery"* — so
+ * on `product_not_received` this is the difference between an evidence slot that
+ * is filled and one that is empty.
+ *
+ * Recorded as `seller`, never as anything stronger. The three sources are not
+ * equally persuasive and the evidence pack prints which one asserted it: a
+ * seller's own tick presented as though a carrier had signed for it would be a
+ * false claim to a bank, made on that seller's behalf, and it would lose the
+ * case as well as damaging them.
+ *
+ * Deliberately not a status change. `ORDER_STATUSES` stays as it is — three
+ * surfaces render status and the enum's own header records what happened last
+ * time a copy of it drifted — and `completed` remains the seller's workflow
+ * mark. This is a fact about the parcel.
+ */
+export async function markOrderDelivered(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const { shop } = await requireShop("orders:write");
+  const id = String(formData.get("id") ?? "");
+  if (!id) return { ok: false, error: "Order not found." };
+
+  /*
+   * Scoped to the caller's own shop before anything is written. `confirmDelivery`
+   * takes an order id and knows nothing about who is asking, so the ownership
+   * check has to be here — an id from a form is a claim, not an authorisation.
+   */
+  const order = await getDb().query.orders.findFirst({
+    where: and(eq(orders.id, id), eq(orders.shopId, shop.id)),
+    columns: { id: true },
+  });
+  if (!order) return { ok: false, error: "Order not found." };
+
+  const result = await confirmDelivery({ orderId: id, source: "seller" });
+  if (!result.ok) {
+    return { ok: false, error: "Couldn't record that just now. Try again." };
+  }
+
+  revalidatePath("/admin/orders");
+  await revalidateShop(shop.id);
+  return {
+    ok: true,
+    message: result.alreadyConfirmed
+      ? "Already recorded as delivered."
+      : "Recorded as delivered.",
+  };
+}
+
+/**
+ * Records one box of an order that is going out in more than one — spec 51.
+ *
+ * Separate from `markOrderShipped` above rather than replacing it, and that is
+ * a decision rather than an accident. The one-box case is most orders and its
+ * form is three fields; making every seller pick lines before they can enter a
+ * tracking number would tax the common case to serve the rare one. So the
+ * simple button stays and this is what the "shipped in parts" panel posts to.
+ *
+ * Both write the same header columns, and `recordShipment` writes them with
+ * `coalesce` so whichever ran first keeps them — a buyer emailed one tracking
+ * number must not find their link resolving to a different parcel.
+ */
+export async function recordOrderShipment(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const { shop } = await requireShop("orders:write");
+
+  /*
+   * Gated here as well as in the panel, because a form is not a gate.
+   * `requireShop` says who is asking; the plan says what they bought.
+   */
+  if (!can(shop, "weightBands")) {
+    return { ok: false, error: "Shipping an order in parts is on Business." };
+  }
+
+  const id = String(formData.get("id") ?? "");
+
+  /*
+   * One field per line, named for the line, so an empty box posts nothing and
+   * shifts nothing. Parallel arrays would silently move a quantity onto the
+   * wrong line the moment a seller left one blank — the same defect the variant
+   * editor's JSON-per-row shape exists to prevent.
+   */
+  const items = formData
+    .getAll("shipItemId")
+    .map((raw) => String(raw))
+    .flatMap((orderItemId) => {
+      const quantity = Number(formData.get(`shipQty:${orderItemId}`) ?? 0);
+      return Number.isFinite(quantity) && quantity > 0
+        ? [{ orderItemId, quantity: Math.trunc(quantity) }]
+        : [];
+    });
+
+  const result = await recordShipment({
+    shopId: shop.id,
+    orderId: id,
+    carrier: String(formData.get("trackingCarrier") ?? ""),
+    trackingNumber: String(formData.get("trackingNumber") ?? ""),
+    trackingUrl: String(formData.get("trackingUrl") ?? ""),
+    note: String(formData.get("shipmentNote") ?? ""),
+    items,
+  });
+
+  if (!result.ok) {
+    switch (result.reason) {
+      case "not_found":
+        return { ok: false, error: "Order not found." };
+      case "nothing_to_ship":
+        return { ok: false, error: "Choose at least one item for this box." };
+      case "bad_tracking_url":
+        return { ok: false, error: "That tracking link isn't a valid URL." };
+      case "over_shipped":
+        return {
+          ok: false,
+          error: `Only ${result.remaining} of ${result.title} is left to ship.`,
+        };
+    }
+  }
+
+  revalidatePath("/admin/orders");
+  after(() => publishShopEvent(shop.id, "order"));
+  /*
+   * The same event the single-box button emits, on every box — a consumer
+   * tracking dispatch wants to hear about the second parcel as much as the
+   * first, and `order.shipped` is already documented as repeatable.
+   */
+  after(() => emitOrderWebhook({ shop, event: "order.shipped", orderId: id }));
+
+  return {
+    ok: true,
+    message: result.complete
+      ? "Recorded. Every item on this order has now shipped."
+      : "Recorded. The rest of this order is still to go.",
+  };
+}
+
 export async function refundOrder(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:refund");
 
   const id = String(formData.get("id") ?? "");
   const raw = String(formData.get("amount") ?? "").trim();
@@ -248,6 +430,19 @@ export async function refundOrder(
       // Blank means refund whatever is left, not the whole order again.
       amountCents: raw ? parseMoneyToCents(raw, order.currency) : null,
       reason: String(formData.get("reason") ?? ""),
+      /*
+       * Whether it goes back on the shelf — spec 51.
+       *
+       * A checkbox that ships *ticked*, so the absence of the field means
+       * "restock", which is what every refund did before this. Reading an
+       * unchecked box as "do not restock" is the whole point: a seller who has
+       * deliberately unticked it is telling us the item is damaged, and that is
+       * an answer only they have.
+       *
+       * `=== "on"` rather than `!== "off"`, because an unchecked checkbox posts
+       * nothing at all — the same reader every other toggle on this form uses.
+       */
+      restock: formData.get("restock") === "on",
     },
     {
       defer: (task) => after(task),
@@ -303,13 +498,18 @@ export async function refundOrder(
    * what the order was, so a consumer can tell a £10 refund on a £50 order
    * from the second £10 refund on the same order.
    */
-  after(() => emitOrderWebhook({ shop, event: "order.refunded", orderId: id }));
+  /*
+   * `order.refunded` — a webhook and, since spec 31, a scenario trigger. Both
+   * from one call for the reason `announceOrderPaid` gives: two audiences, one
+   * announcement, and a second copy is one of them silently missing.
+   */
+  after(() => announceOrderEvent({ shop, event: "order.refunded", orderId: id }));
   return { ok: true, message: note };
 }
 
 
 export async function deleteOrder(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
   const db = getDb();
   const id = String(formData.get("id") ?? "");
   if (!id) return;
@@ -335,7 +535,7 @@ export async function deleteOrder(formData: FormData) {
 
 /** Removes clients that no longer have any orders. */
 export async function deleteClient(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:write");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
@@ -349,7 +549,7 @@ export async function deleteClient(formData: FormData) {
 }
 
 export async function updateClientNotes(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:write");
   const id = String(formData.get("id") ?? "");
   const notes = String(formData.get("notes") ?? "").trim().slice(0, 2000);
   if (!id) return;

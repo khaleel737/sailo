@@ -10,7 +10,7 @@ import { getDb } from "@sailo/db";
 import { orders, subscriptions } from "@sailo/db/schema";
 import { actingAs } from "@sailo/commerce/orders/server";
 import { publishShopEvent } from "@sailo/events";
-import { emitSubscriptionWebhook } from "@sailo/webhooks/emit";
+import { announceSubscriptionEvent } from "@sailo/workflows/orders";
 import { subscriptionTransitions } from "@sailo/webhooks/transitions";
 import {
   notifySellerMembershipCancelled,
@@ -102,7 +102,7 @@ export async function handleSubscriptionCheckout(
    * this function returns. The rule the emit module states is "after the
    * business write", and the upsert above is that write.
    */
-  await emitSubscriptionWebhook({
+  await announceSubscriptionEvent({
     shop,
     event: "subscription.created",
     subscriptionId: row.id,
@@ -160,7 +160,7 @@ export async function handleSubscriptionChanged(
    * recovered out of order, and `subscription.created` covers it.
    */
   for (const event of subscriptionTransitions(known?.row ?? null, row)) {
-    await emitSubscriptionWebhook({ shop, event, subscriptionId: row.id });
+    await announceSubscriptionEvent({ shop, event, subscriptionId: row.id });
 
     /*
      * And mail the seller, for the one transition they can act on.
@@ -217,7 +217,7 @@ export async function handleSubscriptionDeleted(
    * which is the day a consumer may actually revoke access.
    */
   if (row) {
-    await emitSubscriptionWebhook({
+    await announceSubscriptionEvent({
       shop,
       event: "subscription.ended",
       subscriptionId: row.id,

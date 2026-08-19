@@ -44,19 +44,6 @@ let balance = { currency: "USD", availableCents: 0, pendingCents: 0, negativeCen
 /** Whether Stripe should accept a payout hold. */
 let holdSucceeds = true;
 
-/*
- * Staff, for the /hq queries below.
- *
- * They all open with `requireStaff()` — deliberately, because they read across
- * every account on the platform and the layout's own check is not proof the
- * page's reads never ran. In a scenario there is no session, so the guard is
- * stubbed and what is under test is the SQL.
- */
-vi.mock("@/lib/session", async (importOriginal) => ({
-  ...(await importOriginal<Record<string, unknown>>()),
-  requireStaff: async () => ({ id: "staff", email: "staff@sailo.test" }),
-}));
-
 vi.mock("@sailo/payments/disputes", async (importOriginal) => {
   const actual = await importOriginal<typeof disputesApi>();
   return {
@@ -104,13 +91,6 @@ const { handleDisputeEvent } = await import("@/lib/stripe-webhooks");
 const { shopDisputeStats, applyEscalation, releaseHold, holdingsForOrder } =
   await import("@sailo/commerce/disputes");
 const { assembleEvidence } = await import("@sailo/core/disputes");
-const {
-  getDisputeQueue,
-  getDisputeOrders,
-  getOpenFraudWarnings,
-  getPlatformDisputeHealth,
-  getShopExposure,
-} = await import("@/lib/hq/disputes");
 const { getSellerDisputes } = await import("@/lib/seller-disputes");
 
 const db = getDb();
@@ -1387,148 +1367,22 @@ describe("what the seller is shown", () => {
 
 /* ------------------------------------------------------------------------- */
 
-describe("what the two panels actually query", () => {
+describe("what the seller's panel actually queries", () => {
   /*
-   * Every query behind /hq/disputes and the seller's payments card, run against
-   * real rows.
+   * The SQL behind the seller's payments card, run against real rows.
    *
-   * The page's JSX is typechecked and its numbers are tested above; what is not
-   * covered anywhere else is the SQL, and three of these are the kind that
-   * typechecks and then throws at runtime — a correlated subquery inside a
-   * `select`, an `in` over a JavaScript array, and a `group by` that has to name
-   * every non-aggregated column. None of them had ever executed.
+   * The card's JSX is typechecked and its numbers are tested above; what is not
+   * covered anywhere else is the query, and this is the kind that typechecks and
+   * then throws at runtime.
+   *
+   * The five /hq queries this block used to cover live in `apps/hq` now, and so
+   * do their tests — `apps/hq/e2e/scenarios/dispute-desk.scenario.ts`. They came
+   * out because they could not stay: they open with `requireStaff()` from
+   * `@/lib/session`, and `@/` means `apps/web/src` in this config. The import
+   * that named them was left behind when HQ moved, and because it sits at the
+   * top level of the module it failed the *whole file* — all 1,583 lines of
+   * chargeback coverage were dark, not just the six tests that needed it.
    */
-  it("loads the response queue, soonest deadline first", async () => {
-    const shop = await sellerShop();
-    const soon = await paidOrder(shop.id);
-    const later = await paidOrder(shop.id);
-
-    await handleDisputeEvent(
-      disputeEvent({
-        type: "charge.dispute.created",
-        intent: later.intent,
-        status: "needs_response",
-        caseType: "chargeback",
-        createdAt: new Date(Date.now() - 1_000),
-      }),
-      ACCOUNT,
-    );
-    await handleDisputeEvent(
-      disputeEvent({
-        type: "charge.dispute.created",
-        intent: soon.intent,
-        status: "needs_response",
-        caseType: "chargeback",
-        // An earlier deadline, since `disputeEvent` derives due_by from created.
-        createdAt: new Date(Date.now() - 5 * 86_400_000),
-      }),
-      ACCOUNT,
-    );
-
-    const queue = await getDisputeQueue();
-    const mine = queue.filter((row) => row.shopId === shop.id);
-    expect(mine).toHaveLength(2);
-
-    // Soonest first, and every row carries what the table renders.
-    expect(mine[0]!.dueBy!.getTime()).toBeLessThan(mine[1]!.dueBy!.getTime());
-    expect(mine[0]!.daysLeft).not.toBeNull();
-    expect(mine[0]!.reasonLabel).toBeTruthy();
-    expect(mine[0]!.guidance).toBeTruthy();
-    expect(mine[0]!.deductedCents).toBe(5_700);
-    expect(mine[0]!.inquiry).toBe(false);
-  });
-
-  it("resolves the orders behind a queue, without dropping the ones that have none", async () => {
-    /*
-     * The `in` over an array, which is the one that throws if built wrongly —
-     * and the join, which must not be what filters the queue: a dispute with no
-     * order is exactly the row most worth looking at.
-     */
-    const shop = await sellerShop();
-    const { order, intent } = await paidOrder(shop.id);
-    await handleDisputeEvent(
-      disputeEvent({
-        type: "charge.dispute.created",
-        intent,
-        status: "needs_response",
-        caseType: "chargeback",
-      }),
-      ACCOUNT,
-    );
-
-    const rows = await disputeRows(shop.id);
-    const withOrder = await getDisputeOrders(rows.map((row) => row.id));
-    expect(withOrder.get(rows[0]!.id)?.id).toBe(order.id);
-
-    // And an empty list must not produce `in ()`, which is a syntax error.
-    expect((await getDisputeOrders([])).size).toBe(0);
-  });
-
-  it("ranks shops by exposure, with the floor applied to the screening rate", async () => {
-    const shop = await sellerShop();
-    const made = await cohortOrders(shop.id, 5, 60);
-    for (const intent of made.slice(0, 4)) {
-      await handleDisputeEvent(
-        disputeEvent({
-          type: "charge.dispute.created",
-          intent,
-          status: "needs_response",
-          caseType: "chargeback",
-        }),
-        ACCOUNT,
-      );
-    }
-
-    const rows = await getShopExposure();
-    const mine = rows.find((row) => row.shopId === shop.id);
-    expect(mine).toBeDefined();
-    expect(mine!.chargebacks).toBe(4);
-    expect(mine!.settledOrders).toBeGreaterThanOrEqual(60);
-    expect(mine!.chargebackBp).not.toBeNull();
-    expect(mine!.openDisputeCents).toBe(4 * 5_700);
-    expect(mine!.awaitingResponse).toBe(4);
-    expect(mine!.ownerEmail).toContain("@");
-  });
-
-  it("withholds the screening rate below the floor, like every other rate here", async () => {
-    const shop = await sellerShop();
-    const made = await cohortOrders(shop.id, 5, 5);
-    await handleDisputeEvent(
-      disputeEvent({
-        type: "charge.dispute.created",
-        intent: made[0]!,
-        status: "needs_response",
-        caseType: "chargeback",
-      }),
-      ACCOUNT,
-    );
-
-    const mine = (await getShopExposure()).find((row) => row.shopId === shop.id);
-    // One dispute on five orders is 2,000bp and means nothing.
-    expect(mine!.chargebacks).toBe(1);
-    expect(mine!.chargebackBp).toBeNull();
-  });
-
-  it("reports the platform's own arrival-month ratio", async () => {
-    const health = await getPlatformDisputeHealth();
-
-    expect(Array.isArray(health.months)).toBe(true);
-    expect(health.thresholds.length).toBeGreaterThan(0);
-    expect(health.sailoThresholds.reviewBp).toBeLessThan(
-      Math.min(...health.thresholds.map((t) => t.thresholdBp)),
-    );
-    // The coverage forecast, which is the number that says whether the next four
-    // months can be defended at all.
-    expect(health.coverage.orders).toBeGreaterThanOrEqual(0);
-    expect(health.coverage.ce3Capable).toBeLessThanOrEqual(health.coverage.orders);
-    expect(health.open).toBeGreaterThanOrEqual(0);
-  });
-
-  it("lists open fraud warnings", async () => {
-    // Empty is a valid answer; what is under test is that the query runs.
-    expect(Array.isArray(await getOpenFraudWarnings())).toBe(true);
-  });
-
   it("gives the seller their own disputes, with the gaps they can close", async () => {
     const shop = await sellerShop();
     const { intent } = await paidOrder(shop.id);

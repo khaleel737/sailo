@@ -7,7 +7,6 @@ import {
   isAutomatic,
   suspensionWarranted,
   type EscalationDecision,
-  type EscalationLevel,
   type ShopRisk,
 } from "@sailo/core/disputes";
 import {
@@ -304,5 +303,3 @@ export async function releaseHold(
   return { ok: true, interval: "daily" };
 }
 
-/** Every level, for the surfaces that render a badge. */
-export type { EscalationLevel };

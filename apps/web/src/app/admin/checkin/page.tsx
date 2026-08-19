@@ -28,7 +28,7 @@ export default async function AdminCheckinPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:read");
   const { a } = await getAdminT();
   const params = await searchParams;
 

@@ -63,9 +63,22 @@ describe("exactly one of the two send sites fires per order", () => {
      * Stripe's event-id claim already makes each *event* once-only, but a
      * second settling event for the same order — `checkout.session.completed`
      * followed by an `async_payment_succeeded` — is a different event id and
-     * would reach here twice. The pre-update status read is what stops it.
+     * reaches here twice.
+     *
+     * This assertion used to name the pre-update status read,
+     * `if (order.paymentStatus !== "paid")`, and say that it was what stopped
+     * the resend. It was not: both deliveries read the row before either wrote
+     * to it, so both passed. The guard is the settlement claim — the status is
+     * in the UPDATE's own WHERE and `returning` says who won it — and it is the
+     * shape, not the placement, that makes this once-only.
      */
-    expect(connect).toContain('if (order.paymentStatus !== "paid") {');
+    expect(connect).toContain(
+      '.where(and(eq(orders.id, order.id), ne(orders.paymentStatus, "paid")))',
+    );
+    expect(connect).toContain("const settledHere = settleClaim.length > 0;");
+    expect(connect).toContain("if (settledHere) {");
+    // And the read it replaced is gone, rather than left beside it.
+    expect(connect).not.toContain('if (order.paymentStatus !== "paid") {');
   });
 });
 
@@ -87,10 +100,16 @@ describe("a notification never costs an order", () => {
      * line starts with a brace in column zero and a lazy `\n}` match stops
      * before the body it was meant to read.
      */
+    /*
+     * The count is a tripwire, not a fact worth pinning for its own sake: a new
+     * entry point that forgets its `try` is exactly the failure this test
+     * exists to catch, and a hard number is what makes somebody read the loop
+     * below when they add one. Three since spec 51 added `notifySellerOfLowStock`.
+     */
     const bodies = notify
       .split("export async function ")
       .filter((part) => part.startsWith("notifySeller"));
-    expect(bodies).toHaveLength(2);
+    expect(bodies).toHaveLength(3);
 
     for (const fn of bodies) {
       expect(fn).toContain("try {");

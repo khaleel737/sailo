@@ -16,7 +16,14 @@ import { getT, getAdminT } from "@/i18n/server";
 export const metadata: Metadata = { title: "Coupons" };
 
 export default async function AdminCouponsPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:read");
+  /*
+   * Spec 53. Gated here as well as at the write: a form is not a gate, and a
+   * downgraded shop keeps every price it typed while it stops being able to
+   * edit them.
+   */
+  const regional = can(shop, "regionalPricing") ? shop.regionalCurrencies : [];
+
   const { a, locale } = await getAdminT();
   const { t } = await getT();
   const coupons = await getShopCoupons(shop.id);
@@ -54,7 +61,7 @@ export default async function AdminCouponsPage() {
       />
 
       <div className="mb-5">
-        <CouponForm currency={shop.currency} />
+        <CouponForm currency={shop.currency} regionalCurrencies={regional} />
       </div>
 
       {coupons.length === 0 ? (

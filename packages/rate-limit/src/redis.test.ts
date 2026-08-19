@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 /**
  * The limiter's behaviour when its own backend is gone.
  *
- * Failing open is the right call and is deliberate — a rate limiter that
+ * Failing open is the right *default* and is deliberate — a rate limiter that
  * blocks real buyers because a cache went down has cost more than the traffic
  * it stopped. What was wrong was that it happened *silently*: every ceiling in
  * the app — signup, sign-in, checkout, the affiliate form, the download route,
@@ -11,11 +11,18 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
  * moment, and the only outward sign is an absence of throttling, which looks
  * exactly like not being attacked.
  *
- * These pin the two properties that make that survivable: it still fails open,
- * and it says so once rather than either never or on every request.
+ * Decision B (`RELEASE-PLAN-2026-08.md` §0.6) named three kinds of endpoint
+ * where open is the wrong trade — public writes, anything spending money or
+ * quota, and existence oracles — so the default is now a default rather than
+ * the only behaviour, and `reason` is what lets a surface tell "we measured you
+ * and refused" from "we could not measure anything".
+ *
+ * These pin the properties that make an outage survivable: it still fails open
+ * by default, it fails closed when asked, an *unconfigured* environment is
+ * neither, and it says so once rather than either never or on every request.
  */
 
-const OK = { allowed: true, remaining: 10 };
+const OK = { allowed: true, remaining: 10, reason: "unconfigured" };
 
 describe("rateLimit without a backend", () => {
   const original = process.env.REDIS_URL;
@@ -58,7 +65,11 @@ describe("rateLimit without a backend", () => {
     const { rateLimit } = await import("./redis");
 
     // Fails open — this is the property a buyer depends on.
-    expect(await rateLimit("test", 10, 60)).toEqual(OK);
+    expect(await rateLimit("test", 10, 60)).toEqual({
+      allowed: true,
+      remaining: 10,
+      reason: "outage",
+    });
 
     // And says so. Once: the second call is inside the cold window, and a log
     // line per request would bury the one that mattered.
@@ -66,8 +77,68 @@ describe("rateLimit without a backend", () => {
     await rateLimit("test", 10, 60);
 
     expect(error).toHaveBeenCalledTimes(1);
-    expect(String(error.mock.calls[0]?.[0])).toMatch(/failing open/i);
+    expect(String(error.mock.calls[0]?.[0])).toMatch(/fails? open/i);
   }, 20_000);
+
+  /*
+   * DECISION B
+   *
+   * Three kinds of endpoint may not lose their ceiling to a cache outage:
+   * unauthenticated writes that create rows, anything spending money or a
+   * shared quota, and anything whose answer says whether something exists.
+   * Each call site names which it is; the limiter only has to honour it.
+   */
+  it("refuses when the caller asked to fail closed and Redis is down", async () => {
+    process.env.REDIS_URL = "redis://127.0.0.1:1";
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    const { rateLimit } = await import("./redis");
+
+    const verdict = await rateLimit("test", 10, 60, { onOutage: "closed" });
+    expect(verdict.allowed).toBe(false);
+    /*
+     * And it says *why*, because a fail-closed refusal is not an answer about
+     * the request. A surface that renders this as "that code is invalid" or
+     * "no account with that address" has told the caller something nobody
+     * checked — rule 5, and the reason `over` and `outage` are separate values.
+     */
+    expect(verdict.reason).toBe("outage");
+  }, 20_000);
+
+  it("does not fail closed in an environment that has no limiter", async () => {
+    /*
+     * An unset `REDIS_URL` is a preview deploy, a local checkout, or the
+     * scenario suite — a deployment with no ceilings, not a ceiling that broke.
+     * Refusing every public write in one of those would break development for
+     * an outage that has not happened.
+     */
+    delete process.env.REDIS_URL;
+    const { rateLimit } = await import("./redis");
+
+    const verdict = await rateLimit("test", 10, 60, { onOutage: "closed" });
+    expect(verdict.allowed).toBe(true);
+    expect(verdict.reason).toBe("unconfigured");
+  });
+
+  it("tells a real refusal from an outage", async () => {
+    process.env.REDIS_URL = "redis://localhost:6379";
+    let count = 0;
+    vi.doMock("redis", () => ({
+      createClient: () => ({
+        incr: vi.fn(async () => ++count),
+        expire: vi.fn(async () => 1),
+        on: vi.fn(),
+        connect: vi.fn(async () => undefined),
+      }),
+    }));
+    const { rateLimit } = await import("./redis");
+
+    expect((await rateLimit("k", 1, 60)).reason).toBe("under");
+    // Over the ceiling, measured. This one is an answer, and may be rendered
+    // as one — under either policy, because the backend was reachable.
+    const over = await rateLimit("k", 1, 60, { onOutage: "closed" });
+    expect(over.allowed).toBe(false);
+    expect(over.reason).toBe("over");
+  });
 });
 
 /**

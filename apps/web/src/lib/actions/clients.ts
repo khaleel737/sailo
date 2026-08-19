@@ -11,6 +11,7 @@ import { normalizePhone } from "@sailo/core/phone";
 import { rateLimit } from "@sailo/rate-limit";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { emitContactWebhook } from "@sailo/webhooks/emit";
+import { announceContactUpdated } from "@sailo/marketing/contacts/server";
 
 /** Editing the people in a shop's list, by hand. */
 
@@ -29,7 +30,7 @@ export async function setClientTags(
   _prev: ClientActionState,
   formData: FormData,
 ): Promise<ClientActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:write");
 
   const clientId = String(formData.get("clientId") ?? "");
   if (!clientId) return { ok: false, error: "Which customer?" };
@@ -48,6 +49,16 @@ export async function setClientTags(
 
   revalidatePath("/admin/clients");
   revalidatePath(`/admin/clients/${clientId}`);
+
+  /*
+   * `contact.updated` — spec 30's third trigger. Tags are the field a segment
+   * is most often written against, so a flow watching them is the common case.
+   *
+   * Deferred with `after`, unlike the custom-field path: the seller is holding
+   * a tag editor and an enrolment they cannot see must not be between them and
+   * the row being saved.
+   */
+  after(() => announceContactUpdated(shop.id, clientId, ["tags"]));
 
   return {
     ok: true,
@@ -70,7 +81,7 @@ export async function addClient(
   _prev: ClientActionState,
   formData: FormData,
 ): Promise<ClientActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:write");
 
   const gate = await rateLimit(`add-client:${await callerIp()}`, 60, 300);
   if (!gate.allowed) {

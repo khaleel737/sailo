@@ -174,7 +174,21 @@ export function EvidenceFileRow({
 
   return (
     <div className="border-b border-ink-100 py-3 last:border-0">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      {/*
+        Stacked on a phone, side by side from `sm` up.
+
+        This was `flex flex-wrap` with the controls `shrink-0`. A file input and
+        an Attach button need about 250px and will not give any of it back, so
+        at 390px the description beside them was squeezed to roughly thirty —
+        and "The clause that applies, plus proof it was shown" rendered as a
+        vertical ladder one character wide. `flex-wrap` could never rescue it,
+        because `flex-1` shrinks before a row wraps: the text had somewhere left
+        to go, so the row never broke.
+
+        Shared with the seller's own payments page, so this is the same fix in
+        both places — which is the reason it lives in the design system.
+      */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           <p className="flex items-center gap-1.5 text-sm font-medium text-ink-900">
             {guide.label}
@@ -212,7 +226,7 @@ export function EvidenceFileRow({
         </div>
 
         {disabled ? null : (
-          <div className="flex shrink-0 flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
             <form action={upload} className="flex items-center gap-2">
               <input type="hidden" name="field" value={field} />
               <input

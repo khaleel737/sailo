@@ -23,7 +23,7 @@ import { docsUrl } from "@sailo/core/origin";
 export const instant = false;
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
-  const { user, shop } = await requireShop();
+  const { user, shop } = await requireShop("orders:read");
   const { locale, t, a, dir } = await getAdminT();
 
   const [stats, all, staff] = await Promise.all([

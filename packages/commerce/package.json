@@ -21,7 +21,15 @@
     "./products": "./src/catalog/products.ts",
     "./door-pass": "./src/ticketing/door-pass.ts",
     "./disputes": "./src/disputes/index.ts",
-    "./shop-views": "./src/shop-views/index.ts"
+    "./shop-views": "./src/shop-views/index.ts",
+    "./tax": "./src/tax/index.ts",
+    "./tax/server": "./src/tax/server.ts",
+    "./pages": "./src/pages/index.ts",
+    "./import": "./src/import/index.ts",
+    "./import/server": "./src/import/server.ts",
+    "./recovery": "./src/recovery/index.ts",
+    "./recovery/server": "./src/recovery/server.ts",
+    "./content": "./src/content/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -31,7 +39,9 @@
   "dependencies": {
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
+    "@sailo/email": "workspace:*",
     "@sailo/events": "workspace:*",
+    "@sailo/notifications": "workspace:*",
     "@sailo/payments": "workspace:*",
     "@sailo/rate-limit": "workspace:*",
     "@sailo/storage": "workspace:*",

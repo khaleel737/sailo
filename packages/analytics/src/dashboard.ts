@@ -1,6 +1,7 @@
-import { and, eq, inArray, or, sql } from "drizzle-orm";
+import { and, eq, inArray, ne, or, sql } from "drizzle-orm";
 import { getReadDb } from "@sailo/db";
 import {
+  leads,
   orders,
   products,
   reviews,
@@ -13,7 +14,7 @@ export async function getDashboardStats(shopId: string, window: Window = 30) {
   const db = getReadDb();
   const { since, until } = windowBounds(window);
 
-  const [[visitRow], [periodRow], [openRow], [productRow], [reviewRow]] =
+  const [[visitRow], [periodRow], [openRow], [productRow], [reviewRow], [leadRow]] =
     await Promise.all([
       db
         .select({
@@ -88,6 +89,12 @@ export async function getDashboardStats(shopId: string, window: Window = 30) {
         })
         .from(reviews)
         .where(eq(reviews.shopId, shopId)),
+      db
+        .select({ total: sql<string>`count(*)` })
+        .from(leads)
+        .where(
+          and(eq(leads.shopId, shopId), inWindow(leads.createdAt, since, until)),
+        ),
     ]);
 
   return {
@@ -105,8 +112,74 @@ export async function getDashboardStats(shopId: string, window: Window = 30) {
     awaitingShipment: Number(openRow?.awaitingShipment ?? 0),
     unpaidCommissionCents: Number(openRow?.unpaidCommission ?? 0),
     taxCollectedCents: Number(periodRow?.tax ?? 0),
+    /*
+     * Leads in the window — spec 07, and a first-class number beside revenue.
+     *
+     * Its own query rather than a column on the orders one, because a lead is
+     * not an order: it takes no invoice number, moves no stock and appears in
+     * no money figure on this page. Folding it into that query would put it
+     * behind the `payment_status = 'paid'` and `status <> 'cancelled'` filters,
+     * which are questions a lead has no answer to.
+     */
+    leadsInRange: Number(leadRow?.total ?? 0),
     totalProducts: Number(productRow?.total ?? 0),
     publishedProducts: Number(productRow?.published ?? 0),
     pendingReviews: Number(reviewRow?.pending ?? 0),
   };
+}
+
+/**
+ * What a shop took, **grouped by the currency it was taken in** — spec 53.
+ *
+ * Every other money figure on the dashboard is a `sum(total_cents)` formatted
+ * in `shops.currency`. That is exactly right for a shop quoting one currency,
+ * which is every shop until a seller enables regional pricing — and it is a
+ * wrong number the moment one of them does, because adding €25 to $29 and
+ * calling the result dollars is arithmetic on two different units.
+ *
+ * v1 does not convert them and does not hide them. It returns the totals as
+ * they are, one row per currency, and the dashboard names the ones that are
+ * not the shop's own beside the headline figure rather than folding them into
+ * it. Converting would need a rate policy — which rate, recorded where, as of
+ * when — and that is a decision this feature deliberately does not make: see
+ * `docs/specs/53-regional-pricing.md`.
+ *
+ * Returns an **empty array** when every order in the window is in the shop's
+ * own currency, so the caller renders nothing at all in the ordinary case.
+ */
+export async function orderCurrencyMix(
+  shopId: string,
+  shopCurrency: string,
+  window: Window = 30,
+): Promise<{ currency: string; grossCents: number; orders: number }[]> {
+  const db = getReadDb();
+  const { since, until } = windowBounds(window);
+
+  const rows = await db
+    .select({
+      currency: orders.currency,
+      gross: sql<string>`coalesce(sum(${orders.totalCents}), 0)`,
+      count: sql<string>`count(*)`,
+    })
+    .from(orders)
+    .where(
+      and(
+        eq(orders.shopId, shopId),
+        inWindow(orders.createdAt, since, until),
+        // Cancelled orders never counted anywhere else on this page either.
+        ne(orders.status, "cancelled"),
+      ),
+    )
+    .groupBy(orders.currency);
+
+  return rows
+    .filter((r) => r.currency.toUpperCase() !== shopCurrency.toUpperCase())
+    .map((r) => ({
+      currency: r.currency.toUpperCase(),
+      grossCents: Number(r.gross),
+      orders: Number(r.count),
+    }))
+    /* Largest first: a seller reading a second line wants to know which
+       currency actually matters, not which sorts first. */
+    .sort((a, b) => b.grossCents - a.grossCents);
 }

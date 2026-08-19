@@ -146,9 +146,18 @@ export function BillingBadge({
   plan?: string;
 }) {
   const state = billingState(shop);
+  const label = STATE_LABELS[state];
+  /*
+   * "Free · Free" was on every free shop — which is most rows of the busiest
+   * table in the panel. The plan name and the billing state are different facts
+   * and usually different words ("Pro · Past due"), but when they are the same
+   * word the separator is the only thing being communicated.
+   */
+  const text = plan && plan !== label ? `${plan} · ${label}` : label;
+
   return (
     <Badge tone={STATE_TONES[state]} dot>
-      {plan ? `${plan} · ${STATE_LABELS[state]}` : STATE_LABELS[state]}
+      {text}
     </Badge>
   );
 }
@@ -179,7 +188,15 @@ export function Mono({ children }: { children: ReactNode }) {
   );
 }
 
-/** A Stripe object, linked into their dashboard where one exists. */
+/**
+ * A Stripe object, linked into their dashboard where one exists.
+ *
+ * `truncate` with the full id in `title`, because these are 27+ characters and
+ * a table column is not. Unbounded, the id ran under the edge of the payments
+ * table and was cut mid-character — which reads as broken rendering rather than
+ * as "this scrolls", and is the sort of thing that makes people stop trusting
+ * the numbers next to it.
+ */
 export function StripeLink({
   id,
   kind,
@@ -202,15 +219,24 @@ export function StripeLink({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="focus-ring inline-flex items-center gap-1 rounded font-mono text-xs text-ink-600 underline decoration-ink-300 underline-offset-2 transition hover:text-ink-900"
+      title={id}
+      className="focus-ring inline-flex max-w-full items-center gap-1 rounded font-mono text-xs text-ink-600 underline decoration-ink-300 underline-offset-2 transition hover:text-ink-900"
     >
-      {id}
+      <span className="truncate">{id}</span>
       <ArrowUpRight className="size-3 shrink-0" />
     </a>
   );
 }
 
-/** The shop a row belongs to, linked to its account page. */
+/**
+ * The shop a row belongs to, linked to its account page.
+ *
+ * `flex-col items-start`, and the direction is the whole fix. This was
+ * `flex items-center`, which makes the two spans *row* items — so `block` did
+ * nothing and every table in the panel rendered "Parcel Shop/dnotice-315cd731"
+ * as one run-on string. It looked like a missing separator and was a missing
+ * axis; six pages carried it.
+ */
 export function ShopCell({
   ownerId,
   name,
@@ -223,10 +249,60 @@ export function ShopCell({
   return (
     <Link
       href={`/accounts/${ownerId}`}
-      className="focus-ring flex min-w-0 items-center rounded pointer-coarse:min-h-11"
+      /*
+       * `relative z-10` so this keeps working inside a row that is itself a
+       * link. A `RowLink`'s overlay is a positioned pseudo-element and would
+       * otherwise paint over this one — the shop would still look like a link,
+       * and clicking it would open the row instead. Positioning costs nothing
+       * on the rows that have no overlay.
+       */
+      className="focus-ring relative z-10 flex min-w-0 flex-col items-start justify-center rounded pointer-coarse:min-h-11"
     >
-      <span className="block truncate font-medium text-ink-900">{name}</span>
-      <span className="block truncate text-xs text-ink-400">/{handle}</span>
+      <span className="max-w-full truncate font-medium text-ink-900">{name}</span>
+      <span className="max-w-full truncate text-xs text-ink-400">/{handle}</span>
+    </Link>
+  );
+}
+
+/**
+ * Turns a whole table row into a link, from inside the cell that names it.
+ *
+ * A list page whose rows open nothing is a list page people read and then go
+ * looking for a search box. The row is the thing a person points at, so the
+ * row is what should be clickable — but an `<a>` cannot be a child of `<tr>`:
+ * the HTML parser hoists it straight out of the table and the row falls apart.
+ *
+ * So the anchor lives in the cell it genuinely belongs to and grows a `::after`
+ * with no size of its own, which stretches to the nearest positioned ancestor.
+ * That ancestor is the row, which is why every caller passes `className="relative"`
+ * to its `<Tr>` — without it the overlay escapes to the page and covers
+ * everything. Below `md` the row is a card and the same rule covers the card.
+ *
+ * Anything else clickable in the row has to sit above the overlay. `ShopCell`
+ * already does; a new one needs `relative z-10` for the same reason.
+ */
+export function RowLink({
+  href,
+  children,
+  label,
+  className,
+}: {
+  href: string;
+  children: ReactNode;
+  /** What the row opens, for a reader who only hears the link. */
+  label?: string;
+  className?: string;
+}) {
+  return (
+    <Link
+      href={href}
+      aria-label={label}
+      className={cn(
+        "focus-ring rounded after:absolute after:inset-0 after:content-['']",
+        className,
+      )}
+    >
+      {children}
     </Link>
   );
 }

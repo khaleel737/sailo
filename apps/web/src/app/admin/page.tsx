@@ -12,10 +12,12 @@ import {
   getShopOrders,
   getVisitBreakdown,
   getVisitSeries,
+  orderCurrencyMix,
 } from "@/lib/queries";
 import { setupSteps } from "@sailo/core/onboarding";
 import { getPartnerCard } from "@sailo/partners/store";
 import { Chart } from "@sailo/design-system/web/chart";
+import { ShareLinkButton } from "@/app/admin/_components/share-link-dialog";
 import { TrafficPanel } from "@/app/admin/_components/traffic-panel";
 import { ProductPerformancePanel } from "@/app/admin/_components/product-performance";
 import { RangePicker } from "@/app/admin/_components/range-picker";
@@ -35,7 +37,7 @@ export const metadata: Metadata = { title: "Overview" };
 export default async function AdminOverviewPage({
   searchParams,
 }: PageProps<"/admin">) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:read");
   const { t } = await getT();
   const { a } = await getAdminT();
   const locale = await getLocale();
@@ -78,6 +80,7 @@ export default async function AdminOverviewPage({
      */
     usableRails,
     partnerCard,
+    currencyMix,
   ] = await Promise.all([
     getDashboardStats(shop.id, window.query),
     getVisitSeries(shop.id, chartQuery),
@@ -94,6 +97,15 @@ export default async function AdminOverviewPage({
      * than one a page render makes on their behalf.
      */
     getPartnerCard(shop.userId),
+    /*
+     * What was taken in a currency that is not the shop's own — spec 53.
+     *
+     * Empty for every shop that has not enabled regional pricing, which is
+     * every shop the day this ships, and empty again for one that has enabled
+     * it and sold nothing in it yet. The revenue tile is unchanged in both
+     * cases; only a shop that has actually taken euros grows a second line.
+     */
+    orderCurrencyMix(shop.id, shop.currency, window.query),
   ]);
 
   const steps = setupSteps({
@@ -161,8 +173,20 @@ export default async function AdminOverviewPage({
               {displayUrl}
             </p>
           </div>
-          <div className="flex shrink-0 gap-2">
+          <div className="flex shrink-0 flex-wrap gap-2">
             <CopyLink url={shopUrl} />
+            {/*
+              The same link as a picture — spec'd alongside the storefront's
+              share sheet. The seller at a market stall doesn't paste a URL;
+              they hold this up, or print the PNG it downloads.
+            */}
+            <ShareLinkButton
+              url={shopUrl}
+              title={a.share.shopTitle}
+              body={a.share.shopBody}
+              fileName={shop.handle}
+              variant="onDark"
+            />
             <a
               href={`/${shop.handle}`}
               target="_blank"
@@ -223,7 +247,26 @@ export default async function AdminOverviewPage({
           icon={<ShoppingBag className="size-4" />}
           label={a.dashboard.orders}
           value={stats.totalOrders.toLocaleString()}
-          hint={stats.newOrders > 0 ? `${stats.newOrders} new` : undefined}
+          hint={
+            [
+              stats.newOrders > 0 ? `${stats.newOrders} new` : null,
+              /*
+                Leads, beside orders rather than in a tile of their own — spec
+                07 asks for a first-class number and this is the honest place
+                for it: they are the other thing a visitor can turn into, and a
+                fifth tile would push revenue onto a second row on a phone.
+                Absent entirely for the shops that run no enquiry form, which
+                is nearly all of them.
+              */
+              stats.leadsInRange > 0
+                ? interpolate(a.dashboard.leads, {
+                    count: stats.leadsInRange.toLocaleString(),
+                  })
+                : null,
+            ]
+              .filter(Boolean)
+              .join(" · ") || undefined
+          }
         />
         <Stat
           icon={<Wallet className="size-4" />}
@@ -239,6 +282,18 @@ export default async function AdminOverviewPage({
               stats.taxCollectedCents > 0
                 ? `${money(stats.taxCollectedCents)} tax collected`
                 : null,
+              /*
+                And what was taken in another currency — spec 53.
+
+                Named beside the figure rather than folded into it, because
+                adding €25 to $29 and calling the result dollars is arithmetic
+                on two different units. Nothing here converts: v1 has no rate
+                policy and inventing one for a dashboard tile would be the
+                worst place to start.
+              */
+              ...currencyMix.map(
+                (row) => `${formatMoney(row.grossCents, row.currency, locale)} in ${row.currency}`,
+              ),
             ]
               .filter(Boolean)
               .join(" · ") || undefined
@@ -392,7 +447,12 @@ export default async function AdminOverviewPage({
               >
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">
-                    {orderSummaryTitle(order)}
+                    <Link
+                      href={`/admin/orders/${order.id}`}
+                      className="focus-ring rounded underline-offset-2 hover:underline"
+                    >
+                      {orderSummaryTitle(order)}
+                    </Link>
                     {order.itemCount === 1 && order.quantity > 1 ? (
                       <span className="text-ink-400"> ×{order.quantity}</span>
                     ) : null}
