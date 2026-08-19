@@ -11,6 +11,7 @@
     "./format": "./src/format/units.ts",
     "./pricing": "./src/money/pricing.ts",
     "./quote": "./src/money/quote.ts",
+    "./weight": "./src/money/weight.ts",
     "./tax-label": "./src/money/tax-label.ts",
     "./tax-thresholds": "./src/money/tax-thresholds.ts",
     "./orders": "./src/orders/index.ts",
@@ -50,7 +51,8 @@
     "./action-state": "./src/action-state.ts",
     "./risk": "./src/risk/index.ts",
     "./html-text": "./src/html-text.ts",
-    "./shop-pages": "./src/shop/shop-pages.ts"
+    "./shop-pages": "./src/shop/shop-pages.ts",
+    "./privacy": "./src/privacy/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

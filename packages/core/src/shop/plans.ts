@@ -59,6 +59,42 @@ export type Features = {
    * somebody running a business on other tools as well as this one.
    */
   integrations: boolean;
+  /**
+   * Quote the buyer in their own currency, at a price the seller typed.
+   *
+   * Pro rather than Business, and rather than free. It is a selling feature —
+   * a British buyer shown `$29.00` is doing mental arithmetic at the moment
+   * they were about to pay — and Pro is the tier bought by a seller whose shop
+   * has an audience outside their own country. Stripe's Adaptive Pricing
+   * still converts the *charge* for every tier, including Free; what this buys
+   * is the price on the card, which is where the decision is made.
+   */
+  regionalPricing: boolean;
+  /**
+   * Pay-what-you-want pricing and scheduled sell windows — spec 43.
+   *
+   * One flag for both, because from the seller's side they are one idea: the
+   * price is no longer a single number typed once. Two checkboxes on a pricing
+   * card that a seller reads as one decision would only invite the half-set
+   * state where a launch window is live and the amount field is not.
+   *
+   * Pro, alongside coupons and for the same reason they came down from
+   * Business: a launch that opens on Friday and a name-your-price download are
+   * ordinary selling tools, not growth-team features, and they are the sort of
+   * thing a seller reaches for in their first month.
+   */
+  pricingModes: boolean;
+  /**
+   * Postage priced by what is in the box, and an order shipped in more than one
+   * — spec 51.
+   *
+   * Business, and one flag for both because they are the same seller: somebody
+   * posting parcels of different sizes in more than one box is running a
+   * stockroom, not a link in a bio. What is *not* gated is recording a weight
+   * or being told stock is low — the first is data a seller should always be
+   * able to keep, and the second prevents a loss rather than creating a sale.
+   */
+  weightBands: boolean;
 };
 
 export type Limits = {
@@ -118,6 +154,9 @@ export const PLANS: Record<PlanId, Plan> = {
       broadcasts: false,
       memberships: false,
       integrations: false,
+      regionalPricing: false,
+      pricingModes: false,
+      weightBands: false,
     },
     highlights: [
       "free1", "free2", "free3", "free4", "free5",
@@ -149,6 +188,9 @@ export const PLANS: Record<PlanId, Plan> = {
       broadcasts: false,
       memberships: false,
       integrations: false,
+      regionalPricing: true,
+      pricingModes: true,
+      weightBands: false,
     },
     highlights: ["pro1", "pro2", "biz3", "pro3", "pro4", "pro5"],
   },
@@ -172,6 +214,9 @@ export const PLANS: Record<PlanId, Plan> = {
       broadcasts: true,
       memberships: true,
       integrations: true,
+      regionalPricing: true,
+      pricingModes: true,
+      weightBands: true,
     },
     /*
      * `biz2` (card through your own Stripe) moved to Free and `biz3` (discount

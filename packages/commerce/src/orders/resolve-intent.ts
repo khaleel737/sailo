@@ -14,13 +14,14 @@ import {
   type PaymentMethodType,
 } from "@sailo/payments/offline";
 import { cartNeedsDelivery, cartSubtotal, quote, type Quote } from "@sailo/core/quote";
+import { basketWeightGrams } from "@sailo/core/weight";
 import { cartCanPayInPerson } from "@sailo/core/variants";
 import { readBuyer } from "../orders/buyer";
 import { commissionBpFor } from "../orders/commission";
 import { resolveCoupon } from "../orders/resolve-coupon";
 import { resolveDelivery } from "./fulfilment";
 import { resolveLines } from "../orders/resolve-lines";
-import { isMembership } from "../memberships/memberships";
+import { isMembership, normalizeTrialDays } from "../memberships/memberships";
 import type { BuyerDetails } from "../orders/buyer";
 import type { OrderIntentInput, ResolvedLine } from "../orders/types";
 import type { Coupon, DeliveryMethod, PaymentMethod } from "@sailo/db/schema";
@@ -46,6 +47,8 @@ import type { Coupon, DeliveryMethod, PaymentMethod } from "@sailo/db/schema";
  */
 
 export type ResolvedIntent = {
+  /** The currency every amount in here is in. Spec 53. */
+  currency: string;
   lines: ResolvedLine[];
   /** The first line, which the order header's columns are derived from. */
   head: ResolvedLine;
@@ -71,6 +74,17 @@ export type ResolvedIntent = {
   commissionBp: number | null;
   priced: Quote;
   buyer: BuyerDetails;
+  /**
+   * A manual-rail free trial, when this order is the start of one — spec 43.
+   *
+   * Present means the basket has been re-priced to nothing and the caller must
+   * open the membership on the trial rather than on a paid period. It carries
+   * `priceCents` because the *subscription* is worth the product's real price
+   * even while the *order* is worth zero: `createManualSubscription` copied the
+   * order total, and a trial that copied a zero would go on asking the member
+   * for nothing every month for ever.
+   */
+  trial: { days: number; priceCents: number } | null;
 };
 
 export type ResolveIntentResult =
@@ -81,8 +95,23 @@ export async function resolveOrderIntent(
   shop: Shop,
   input: OrderIntentInput,
   now: Date,
+  /**
+   * What this order is priced and charged in — spec 53.
+   *
+   * Defaults to the shop's own, which is what every caller meant before this
+   * feature and what every shop that has not enabled a second currency still
+   * means. When it differs, every price in this function comes out of a
+   * `currency_prices` entry a seller typed, and anything without one is
+   * refused rather than converted.
+   *
+   * Re-derived by the caller from the request's own geography and cookie, and
+   * checked against the shop's offering there — never taken from the body. A
+   * currency in a request body is a price in a request body one step removed.
+   */
+  currency: string = shop.currency,
 ): Promise<ResolveIntentResult> {
   const db = getDb();
+  const money = { currency, shopCurrency: shop.currency };
 
   /* ---- Lines ----------------------------------------------------------- */
 
@@ -91,15 +120,22 @@ export async function resolveOrderIntent(
     now,
     // Committing, so booked slots are verified against what is still free.
     shop,
-    currency: shop.currency,
+    currency,
+    shopCurrency: shop.currency,
   });
   if (!resolved.ok) return { ok: false, error: resolved.error };
 
   const { lines } = resolved;
-  // The first line stands in for the order wherever one product is expected.
-  // Every path above rejects an empty basket, but the header columns are
-  // derived from this line and a silent undefined would write a broken order.
-  const head = present(lines[0], "at least one order line");
+  /*
+   * At least one line, asserted here rather than trusted.
+   *
+   * The first line stands in for the order wherever one product is expected,
+   * and every path above rejects an empty basket — but the header columns are
+   * derived from it and a silent undefined would write a broken order. The
+   * value itself is taken again further down, from the *charged* basket, once
+   * a trial has had its say about what these lines cost.
+   */
+  present(lines[0], "at least one order line");
 
   if (!isPaymentMethodType(input.paymentMethod)) {
     return { ok: false, error: "Pick how you'd like to order." };
@@ -166,6 +202,19 @@ export async function resolveOrderIntent(
    * network timing.
    */
   const subtotalCents = cartSubtotal(lines);
+  /*
+   * What the parcel weighs, for a rate priced by weight — spec 51.
+   *
+   * Worked out before the rate is chosen rather than after, because a rate this
+   * basket is too heavy for is not one of its options at all: choosing first
+   * and pricing second would let the `servable[0]` fallback land on a rate that
+   * then costs nothing.
+   *
+   * `quote` below re-derives the same number from the same lines through the
+   * same function, so the fee the rate is chosen on and the fee the order is
+   * charged cannot disagree.
+   */
+  const weightGrams = basketWeightGrams(lines);
   // Decides the delivery rate below: only a physical good is shipped.
   const delivered = cartNeedsDelivery(lines);
   // Decides whether a pay-in-person rail may be used. It may, unless something
@@ -192,8 +241,15 @@ export async function resolveOrderIntent(
      * (it needs the quote to know whether an address is wanted at all).
      * `shipsTo` normalises it itself for exactly this reason.
      */
-    resolveDelivery(shop.id, delivered, input.deliveryMethodId, input.country),
-    resolveCoupon({ shopId: shop.id, code: input.couponCode, subtotalCents, now }),
+    resolveDelivery(
+      shop.id,
+      delivered,
+      input.deliveryMethodId,
+      input.country,
+      money,
+      weightGrams,
+    ),
+    resolveCoupon({ shopId: shop.id, code: input.couponCode, subtotalCents, now, money }),
     wantsAffiliate
       ? db.query.affiliates.findFirst({
           where: and(
@@ -233,6 +289,25 @@ export async function resolveOrderIntent(
   if (delivery === "unavailable") {
     return { ok: false, error: "Pick how you'd like to receive it." };
   }
+
+  /*
+   * Heavier than anything the shop has priced — spec 51.
+   *
+   * Its own sentence rather than folded into "pick another", because there is
+   * nothing else to pick: every rate that reaches this country has been
+   * withdrawn, and a buyer told to choose from an empty list will simply leave.
+   * Naming the basket rather than the rate is deliberate — the fix is fewer
+   * items or a message to the seller, and both are things the buyer can act on.
+   *
+   * Says nothing about which rates exist or what they weigh. "Too heavy to
+   * post" is true of the basket the caller already holds.
+   */
+  if (delivery === "too_heavy") {
+    return {
+      ok: false,
+      error: `${shop.name} can't post an order this heavy. Try ordering fewer items, or message them.`,
+    };
+  }
   /*
    * The shop does not post here.
    *
@@ -269,8 +344,57 @@ export async function resolveOrderIntent(
 
   const commissionBp = commissionBpFor(affiliate, shop);
 
+  /*
+   * A free trial on a rail Sailo runs itself — spec 43.
+   *
+   * `trialDays` has existed since memberships shipped and was Stripe's alone:
+   * it becomes `trial_period_days` on a Checkout Session and nothing else in
+   * the tree read it, so a seller who set a trial on a cash or bank-transfer
+   * membership got no trial at all and the product form said so beside the
+   * field. This is the code path that was missing, not a column.
+   *
+   * The shape is the one spec 06's notes named: the signup order is
+   * **zero-value**, the subscription opens on the trial, and the first *paid*
+   * period is raised by the manual-renewal cron when the trial lapses — same
+   * five-day lead, same `renewalOrderedFor` claim, no second cycle engine.
+   *
+   * Re-priced here rather than at the insert, and that is the whole reason it
+   * is safe. Zeroing `totals` at the write would leave `order_items` quoting
+   * the full price under a header that says nothing was charged — the
+   * header-versus-lines shape this repo names as recurring, on the one order
+   * where the discrepancy is a member's money. Re-pricing the *lines* means
+   * `quote` derives every figure downstream from one basket, so the header,
+   * the lines, the invoice and the Stripe hand-off cannot disagree.
+   *
+   * Card is excluded because Stripe already does this properly: it holds the
+   * card, runs the trial itself, and raises the first real invoice on the day
+   * it ends. Two implementations of a trial on one product would be two
+   * answers to "when is the member charged".
+   */
+  const trialHead = memberships[0];
+  const trialDays =
+    trialHead && input.paymentMethod !== "card"
+      ? normalizeTrialDays(trialHead.product.trialDays)
+      : null;
+
+  const trial = trialHead && trialDays
+    ? { days: trialDays, priceCents: trialHead.unitPriceCents }
+    : null;
+
+  /*
+   * The basket the buyer is actually charged for.
+   *
+   * Every other field survives the spread — the product row, the variant, the
+   * booked slot — so nothing downstream has to know a trial happened to keep
+   * working. Only the number changes.
+   */
+  const charged: ResolvedLine[] = trial
+    ? lines.map((line) => ({ ...line, unitPriceCents: 0 }))
+    : lines;
+  const chargedHead = present(charged[0], "at least one order line");
+
   const priced: Quote = quote({
-    lines,
+    lines: charged,
     coupon,
     deliveryMethod: delivery,
     commissionBp,
@@ -305,8 +429,18 @@ export async function resolveOrderIntent(
   return {
     ok: true,
     intent: {
-      lines,
-      head,
+      /*
+       * What every figure below is denominated in. On the order, on the
+       * invoice and on the card statement — one currency, decided here and
+       * carried rather than re-derived, so nothing downstream can reach a
+       * different answer from the same request.
+       */
+      currency,
+      // The charged basket, not the resolved one — everything downstream
+      // prices from these, and a caller handed both would eventually pick the
+      // wrong one on the one order where they differ.
+      lines: charged,
+      head: chargedHead,
       method,
       railType: input.paymentMethod,
       def,
@@ -316,6 +450,7 @@ export async function resolveOrderIntent(
       commissionBp,
       priced,
       buyer: read.buyer,
+      trial,
     },
   };
 }

@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 import { Loader2, Plus } from "lucide-react";
 import { saveDeliveryMethod } from "@/lib/actions/delivery";
 import { centsToAmount } from "@sailo/core/currency";
+import { priceIn } from "@sailo/core/regional";
 import {
   DELIVERY_METHOD_DEFS,
   DELIVERY_METHOD_LIST,
@@ -40,9 +41,12 @@ function Submit({ isEdit }: { isEdit: boolean }) {
 export function DeliveryRateForm({
   method,
   currency,
+  regionalCurrencies = [],
 }: {
   method?: DeliveryMethod;
   currency: string;
+  /** The other currencies the shop quotes — spec 53. Empty renders no extra fields. */
+  regionalCurrencies?: string[];
 }) {
   const a = useAdminT();
   const [state, action] = useActionState(saveDeliveryMethod, { ok: false });
@@ -129,6 +133,49 @@ export function DeliveryRateForm({
             />
           </Field>
         </div>
+
+        {/*
+          The same fee, in each currency the shop quotes — spec 53.
+
+          Required, in the sense that leaving one blank keeps that currency off
+          the storefront entirely. A basket in euros cannot be charged a fee in
+          dollars, and nothing here converts one into the other, so the only
+          honest alternative to a number the seller typed is not offering the
+          currency at all.
+        */}
+        {regionalCurrencies.map((code) => (
+          <div key={code} className="grid gap-4 sm:grid-cols-2">
+            <Field
+              label={`Fee (${code})`}
+              htmlFor={`${method?.id ?? "new"}-fee-${code}`}
+            >
+              <Input
+                id={`${method?.id ?? "new"}-fee-${code}`}
+                name={`fee_${code}`}
+                inputMode="decimal"
+                defaultValue={centsToAmount(
+                  priceIn(method ?? { currencyPrices: {} }, code)?.price ?? null,
+                  code,
+                )}
+              />
+            </Field>
+            <Field
+              label={`${a.delivery.freeOverLabel} (${code})`}
+              htmlFor={`${method?.id ?? "new"}-freeOver-${code}`}
+              hint={a.common.optional}
+            >
+              <Input
+                id={`${method?.id ?? "new"}-freeOver-${code}`}
+                name={`freeOver_${code}`}
+                inputMode="decimal"
+                defaultValue={centsToAmount(
+                  priceIn(method ?? { currencyPrices: {} }, code)?.secondary ?? null,
+                  code,
+                )}
+              />
+            </Field>
+          </div>
+        ))}
 
         {/*
           Shipping only. Collection is a pickup at one fixed address, so where

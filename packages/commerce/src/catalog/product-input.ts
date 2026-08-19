@@ -9,7 +9,7 @@
  */
 
 import "server-only";
-import { type ProductOption, type VariantOptions } from "@sailo/db/schema";
+import { type CurrencyPrices, type ProductOption, type VariantOptions } from "@sailo/db/schema";
 
 /** Images kept per product. The gallery is a set, replaced wholesale. */
 export const MAX_IMAGES = 8;
@@ -24,10 +24,26 @@ export type ProductVariantInput = {
   /** Null means "same as the product" — not free. */
   priceCents?: number | null;
   compareAtCents?: number | null;
+  /** This combination's price in each currency the shop quotes — spec 53. */
+  currencyPrices?: CurrencyPrices;
   /** Null means "nobody is counting" — not sold out. */
   stockQuantity?: number | null;
   isAvailable?: boolean;
+  /** This combination's own weight and size — spec 51. Null is the product's. */
+  weightGrams?: number | null;
+  lengthMm?: number | null;
+  widthMm?: number | null;
+  heightMm?: number | null;
   imageUrl?: string | null;
+  /**
+   * This combination's own sell window — spec 43. Null on either side is "no
+   * bound from here", which is what every existing variant means.
+   *
+   * Narrows the product's window and never widens it; `effectiveSellWindow`
+   * decides that at every read, so nothing has to be normalised on the way in.
+   */
+  sellFrom?: Date | null;
+  sellUntil?: Date | null;
 };
 
 export type ProductFileInput = {
@@ -48,9 +64,35 @@ export type ProductInput = {
   description?: string | null;
   priceCents: number;
   compareAtCents?: number | null;
+  /**
+   * The same price in each other currency the shop quotes — spec 53.
+   *
+   * A currency absent from here is a currency this product cannot be sold in,
+   * which is what keeps it off the storefront until a seller has typed a
+   * number. Never derived from `priceCents`: nothing in Sailo converts.
+   */
+  currencyPrices?: CurrencyPrices;
+
+  /* ---- How the price is arrived at, and when it is on sale — spec 43 ---- */
+
+  /** `fixed` or `pwyw`. Anything else, and anything a kind refuses, is fixed. */
+  pricingMode?: string | null;
+  /** The PWYW floor. **Null is "not configured"; zero is "free is allowed".** */
+  minPriceCents?: number | null;
+  /** What the amount field opens on. Null falls back to the list price. */
+  suggestedPriceCents?: number | null;
+  sellFrom?: Date | null;
+  sellUntil?: Date | null;
+  /** Whether a closed window hides the product or leaves it reading closed. */
+  hideWhenUnavailable?: boolean;
+
   kind: string;
   categoryId?: string | null;
   tags?: string[];
+  /** The seller's own code, for a product sold as one thing. */
+  sku?: string | null;
+  /** Most units one order may take. Null is no cap beyond stock. */
+  maxPerOrder?: number | null;
   options?: ProductOption[];
   variants?: ProductVariantInput[];
   files?: ProductFileInput[];
@@ -59,6 +101,20 @@ export type ProductInput = {
   trackInventory?: boolean;
   stockQuantity?: number | null;
 
+  /* ---- Running a stockroom — spec 51 ---------------------------------- */
+
+  /** Tell the seller at this count. Null is no alert. */
+  lowStockThreshold?: number | null;
+  /** What one weighs, in grams. Null is unweighed, which is not zero. */
+  weightGrams?: number | null;
+  lengthMm?: number | null;
+  widthMm?: number | null;
+  heightMm?: number | null;
+
+  /** file | link | code — what a digital order hands over. */
+  digitalDelivery?: string | null;
+  digitalLinkUrl?: string | null;
+  digitalAccessDetails?: string | null;
   releaseOnPayment?: boolean;
   downloadLimit?: number | null;
   downloadExpiryDays?: number | null;
@@ -68,11 +124,16 @@ export type ProductInput = {
   serviceLocation?: string | null;
   bookingEnabled?: boolean;
   bookingLeadHours?: number;
+  /** Quiet minutes either side of an appointment. */
+  bookingBufferMinutes?: number | null;
 
   eventStartsAt?: Date | null;
+  eventEndsAt?: Date | null;
   eventJoinUrl?: string | null;
 
   billingInterval?: string | null;
+  /** How many intervals per charge — the `3` in "every 3 months". */
+  billingIntervalCount?: number | null;
   trialDays?: number | null;
 
   inStock?: boolean;
@@ -91,9 +152,44 @@ export type SaveProductRefusal =
   | { kind: "no_title" }
   | { kind: "unknown_category" }
   | { kind: "event_needs_start" }
+  | { kind: "event_ends_before_start" }
   | { kind: "membership_needs_interval" }
   | { kind: "membership_needs_price" }
+  /**
+   * A sell window that closes before it opens — spec 43.
+   *
+   * Almost always a start the seller changed without touching the end, and the
+   * product would be permanently unsellable with nothing on any screen saying
+   * why: `resolveLines` would answer "not on sale yet" and "no longer
+   * available" at the same instant. Cheaper to say so while they are looking at
+   * the fields, exactly as `event_ends_before_start` already does.
+   */
+  | { kind: "sell_window_inverted" }
+  /**
+   * Pay-what-you-want on a membership.
+   *
+   * A recurring buyer-chosen amount is a Stripe Price per buyer, and Prices are
+   * immutable and per-amount — a hundred members choosing a hundred numbers is
+   * a hundred objects to find again at every renewal. Refused with a message
+   * rather than silently ignored, the way coupons on memberships already are: a
+   * seller who set it and was never told would believe they were selling
+   * something they are not.
+   */
+  | { kind: "pwyw_not_for_membership" }
   | { kind: "join_url_not_public" }
+  /*
+   * A digital product that delivers by link or by code, with nothing in the
+   * field that *is* the good.
+   *
+   * Refused where a fileless download is not, and the asymmetry is deliberate:
+   * files are managed by a separate uploader that the phone's editor does not
+   * have, so a seller adding a product there would be blocked from saving a
+   * draft they intend to finish on the web. A link and a code are single text
+   * fields on every surface that offers the kind at all, so a blank one is not
+   * an unfinished draft — it is a product whose buy button leads nowhere.
+   */
+  | { kind: "digital_needs_delivery"; delivery: "link" | "code" }
+  | { kind: "digital_link_not_public" }
   | { kind: "product_limit"; limit: number; planName: string }
   | { kind: "not_found" };
 

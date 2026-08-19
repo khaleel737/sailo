@@ -114,7 +114,6 @@ export default async function ShopPage({
       deliveryOptions={checkout.deliveryOptions}
       blockedCountries={checkout.blockedCountries}
       customFields={checkout.customFields}
-      customFields={checkout.customFields}
       contactEmail={shop.contactEmail}
       compliance={complianceOf(shop)}
       t={t}

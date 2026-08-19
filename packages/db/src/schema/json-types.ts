@@ -40,7 +40,45 @@ export type NotificationPrefs = Partial<{
   membershipCancelled: boolean;
   /** A renewal payment failed and the membership is now past due. */
   membershipPaymentFailed: boolean;
+  /**
+   * Revenue in one place has reached 70% or 90% of a registration threshold.
+   *
+   * Sent at most twice per place per year and only where a published figure
+   * exists — see `packages/core/src/money/tax-thresholds.ts`. It states what
+   * was collected and where; it never says a seller must register anywhere.
+   */
+  taxThreshold: boolean;
+  /**
+   * Stock has fallen to the threshold the seller set — spec 51.
+   *
+   * One email per downward crossing, claimed in the same conditional UPDATE
+   * that reads the count, and re-armed only when stock is back above the line.
+   * A seller adjusting stock in a spreadsheet-like screen crosses the threshold
+   * several times in a minute and hears once.
+   */
+  lowStock: boolean;
 }>;
+
+/**
+ * One row's price in one currency, in that currency's minor units.
+ *
+ * `price` is the amount charged. `secondary` is whatever second number the row
+ * already has beside its own price — a product's compare-at, a delivery rate's
+ * free-over threshold, a coupon's minimum subtotal — and it is one field rather
+ * than three because the reader is identical in all three cases, and a shape
+ * per table would be three validators that can disagree.
+ *
+ * The rules live in `packages/core/src/money/regional.ts`, which is where this
+ * is read and written; the type is here because four tables store it and a
+ * column's shape should not drag a package edge along with it.
+ */
+export type CurrencyPrice = {
+  price: number;
+  secondary?: number | null;
+};
+
+/** `{ "EUR": { price: 2500, secondary: 3000 } }`, keyed by ISO 4217 uppercase. */
+export type CurrencyPrices = Record<string, CurrencyPrice>;
 
 /** One axis of choice on a product: "Size" with "Small", "Medium", "Large". */
 export type ProductOption = {
@@ -133,4 +171,22 @@ export type OrderCustomField = {
   /** One of `FIELD_TYPES` in `@sailo/marketing/contacts`. */
   type: string;
   value: string | number | boolean | null;
+};
+
+/**
+ * One row of a shipping rate's weight table — spec 51.
+ *
+ * "Up to 500 g costs £3.50." Read cheapest-first and matched on the *first*
+ * band the parcel fits, so the boundaries are inclusive upper bounds and a
+ * 500 g parcel takes the 500 g band rather than the next one up.
+ *
+ * Grams and minor units, both integers, for the same reason: a float on either
+ * side of a boundary is a rounding argument — with a carrier on one side and a
+ * buyer on the other.
+ */
+export type WeightBand = {
+  /** Inclusive upper bound, in grams. */
+  upToGrams: number;
+  /** What this band costs, in the shop's minor units. */
+  priceCents: number;
 };

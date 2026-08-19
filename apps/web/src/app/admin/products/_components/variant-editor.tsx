@@ -42,6 +42,8 @@ export function VariantEditor({
   basePrice,
   trackInventory,
   stockQuantity,
+  sku,
+  regionalCurrencies = [],
 }: {
   options: ProductOption[];
   variants: ProductVariant[];
@@ -51,6 +53,18 @@ export function VariantEditor({
   trackInventory: boolean;
   /** The product's own count, used only while it has no options. */
   stockQuantity: number | null;
+  /** The product's own code, likewise used only while it has no options. */
+  sku: string | null;
+  /**
+   * The other currencies the shop quotes — spec 53. Empty for every shop that
+   * has enabled none, which renders exactly the table this had before.
+   *
+   * A variant that overrides the product's price needs an override in each of
+   * these too, or the currency cannot be quoted at all: `liveCurrencies`
+   * refuses a currency with a gap in it, and a variant priced in dollars and
+   * not in euros is a gap.
+   */
+  regionalCurrencies?: string[];
 }) {
   const a = useAdminT();
   const [optionDrafts, setOptionDrafts] = useState<OptionDraft[]>(
@@ -59,7 +73,7 @@ export function VariantEditor({
       : [],
   );
   const [drafts, setDrafts] = useState<Record<string, Draft>>(() =>
-    toDrafts(variants, currency),
+    toDrafts(variants, currency, regionalCurrencies),
   );
   // Combinations the seller doesn't sell — no small pizza in that topping.
   const [removed, setRemoved] = useState<Set<string>>(new Set());
@@ -110,6 +124,18 @@ export function VariantEditor({
               stock: draft.stock,
               available: draft.available,
               image: draft.image,
+              /*
+                Flattened to `price_EUR` rather than nested — spec 53. The
+                server reads a variant row as a flat bag of strings, and a
+                nested object would be the one field in it that needs a second
+                shape to be understood.
+              */
+              ...Object.fromEntries(
+                regionalCurrencies.map((code) => [
+                  `price_${code}`,
+                  draft.currencyPrices[code] ?? "",
+                ]),
+              ),
             })}
           />
         );
@@ -202,27 +228,54 @@ export function VariantEditor({
         </p>
       ) : null}
 
-      {/* Stock lives wherever the thing being counted is: on the product while
-          it's sold as one item, on each combination once options exist. */}
-      {trackInventory && rows.length === 0 ? (
-        <div>
-          <label
-            htmlFor="stockQuantity"
-            className="mb-1.5 block text-sm font-medium text-ink-800"
-          >
-            {a.variants.unitsInStock}
-            <span className="ml-1.5 font-normal text-ink-400">
-              {a.variants.unitsHint}
-            </span>
-          </label>
-          <Input
-            id="stockQuantity"
-            name="stockQuantity"
-            inputMode="numeric"
-            defaultValue={stockQuantity ?? ""}
-            placeholder="12"
-            className="sm:w-40"
-          />
+      {/*
+        Stock and the product's code both live wherever the thing they describe
+        is: on the product while it's sold as one item, on each combination
+        once options exist. Drawn together and gated on the same condition,
+        because `saveProduct` nulls both the moment a variant appears — a field
+        left on screen whose value the server throws away is worse than one
+        that is not offered.
+      */}
+      {rows.length === 0 ? (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {trackInventory ? (
+            <div>
+              <label
+                htmlFor="stockQuantity"
+                className="mb-1.5 block text-sm font-medium text-ink-800"
+              >
+                {a.variants.unitsInStock}
+                <span className="ml-1.5 font-normal text-ink-400">
+                  {a.variants.unitsHint}
+                </span>
+              </label>
+              <Input
+                id="stockQuantity"
+                name="stockQuantity"
+                inputMode="numeric"
+                defaultValue={stockQuantity ?? ""}
+                placeholder="12"
+              />
+            </div>
+          ) : null}
+          <div>
+            <label
+              htmlFor="sku"
+              className="mb-1.5 block text-sm font-medium text-ink-800"
+            >
+              {a.variants.sku}
+              <span className="ml-1.5 font-normal text-ink-400">
+                {a.variants.skuHint}
+              </span>
+            </label>
+            <Input
+              id="sku"
+              name="sku"
+              maxLength={60}
+              defaultValue={sku ?? ""}
+              placeholder="MUG-OAT-350"
+            />
+          </div>
         </div>
       ) : null}
 
@@ -237,6 +290,11 @@ export function VariantEditor({
                   {interpolate(a.variants.priceIn, { currency })}
                 </th>
                 <th className="px-3 py-2 w-28">{a.variants.compareAt}</th>
+                {regionalCurrencies.map((code) => (
+                  <th key={code} className="px-3 py-2 w-28">
+                    {interpolate(a.variants.priceIn, { currency: code })}
+                  </th>
+                ))}
                 {trackInventory ? (
                   <th className="px-3 py-2 w-24">{a.variants.stock}</th>
                 ) : null}
@@ -290,6 +348,31 @@ export function VariantEditor({
                         className="h-9"
                       />
                     </td>
+                    {regionalCurrencies.map((code) => (
+                      <td key={code} className="px-3 py-2">
+                        <Input
+                          inputMode="decimal"
+                          value={draft.currencyPrices[code] ?? ""}
+                          /*
+                            The placeholder is a dash and not the product's
+                            price in this currency, because a blank here means
+                            "inherit" and showing a number would read as one
+                            already typed.
+                          */
+                          placeholder="—"
+                          aria-label={`${code} price for ${variantLabel(row.options, parsedOptions)}`}
+                          onChange={(e) =>
+                            setDraft(row.key, {
+                              currencyPrices: {
+                                ...draft.currencyPrices,
+                                [code]: e.target.value,
+                              },
+                            })
+                          }
+                          className="h-9"
+                        />
+                      </td>
+                    ))}
                     {trackInventory ? (
                       <td className="px-3 py-2">
                         <Input

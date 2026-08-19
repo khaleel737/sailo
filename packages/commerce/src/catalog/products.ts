@@ -17,16 +17,24 @@ import {
   productImages,
   productVariants,
   products,
+  type CurrencyPrices,
   type ProductOption,
   type Shop,
 } from "@sailo/db/schema";
-import { atProductLimit, planFor, productLimit } from "@sailo/core/plans";
+import { atProductLimit, can, planFor, productLimit } from "@sailo/core/plans";
+import { normalizePricingMode } from "@sailo/core/pricing-models";
 import { isPublicLinkUrl, isRenderableImageUrl, isStoredFileUrl } from "@sailo/storage/urls";
-import { isBillingInterval, normalizeTrialDays } from "@sailo/commerce/memberships";
+import {
+  isBillingInterval,
+  normalizeIntervalCount,
+  normalizeTrialDays,
+} from "@sailo/commerce/memberships";
 import { slugify } from "@sailo/core/slug";
 import {
+  MAX_QUANTITY,
   MAX_VARIANTS,
   combinations,
+  isDigitalDelivery,
   isProductKind,
   isServiceMode,
   normalizeOptions,
@@ -42,6 +50,27 @@ import {
   type SaveProductRefusal,
   type SaveProductResult,
 } from "./product-input";
+
+
+/**
+ * A per-currency price map with every unhelpful strike-through removed.
+ *
+ * The rule the shop's own price already has, applied in each currency: a
+ * compare-at at or below the price is not a saving, it is an advertisement for
+ * a discount nobody is giving. Checked per currency and not across them,
+ * because €30 and $25 are not comparable numbers and nothing here converts.
+ */
+function droppingWeakCompareAt(prices: CurrencyPrices): CurrencyPrices {
+  const out: CurrencyPrices = {};
+  for (const [code, entry] of Object.entries(prices)) {
+    const secondary = entry.secondary ?? null;
+    out[code] = {
+      price: entry.price,
+      secondary: secondary !== null && secondary <= entry.price ? null : secondary,
+    };
+  }
+  return out;
+}
 
 export * from "./product-input";
 
@@ -122,8 +151,23 @@ async function syncVariants(
           ? null
           : compare;
       })(),
+      currencyPrices: droppingWeakCompareAt(row.currencyPrices ?? {}),
       stockQuantity: trackInventory ? (row.stockQuantity ?? null) : null,
       isAvailable: row.isAvailable !== false,
+      /*
+       * This combination's own window — spec 43. Stored as given and never
+       * clamped to the product's: `effectiveSellWindow` narrows at every read,
+       * so a seller who widens the product's launch later gets the tier window
+       * they actually typed back rather than one silently truncated on save.
+       */
+      sellFrom: row.sellFrom ?? null,
+      sellUntil: row.sellUntil ?? null,
+      /* Spec 51 — null falls back to the product's, the same rule its price
+         already follows. */
+      weightGrams: wholeCountOrNull(row.weightGrams),
+      lengthMm: wholeCountOrNull(row.lengthMm),
+      widthMm: wholeCountOrNull(row.widthMm),
+      heightMm: wholeCountOrNull(row.heightMm),
       // Fetched server-side by the social card, so it gets the same host
       // check the product's own gallery does.
       imageUrl: isRenderableImageUrl(row.imageUrl) ? row.imageUrl : null,
@@ -186,6 +230,35 @@ async function syncFiles(productId: string, rows: ProductFileInput[]) {
   );
 }
 
+/**
+ * A whole number of minor units, or null — spec 43.
+ *
+ * Null survives as null, which is what makes "not configured" distinguishable
+ * from "zero" on `minPriceCents`. Fractions are truncated because a minor unit
+ * is the smallest thing money comes in, and negatives become zero rather than
+ * being refused: a negative floor is a paste or a stray minus, and "free is
+ * allowed" is a far better reading of it than a saved product whose floor
+ * subtracts from the basket.
+ */
+function wholeCentsOrNull(value: number | null | undefined): number | null {
+  if (value === null || value === undefined || !Number.isFinite(value)) return null;
+  return Math.max(0, Math.trunc(value));
+}
+
+/**
+ * A whole non-negative count, or null — spec 51.
+ *
+ * The same blank-versus-zero rule `wholeCentsOrNull` above states, on the
+ * columns where blank means "nobody has weighed it" and "no alert". A weight of
+ * zero and no weight at all are different facts and `basketWeightGrams` reads
+ * them the same way only because neither adds anything; a threshold of zero is
+ * a real setting, meaning "tell me when it is gone".
+ */
+function wholeCountOrNull(value: number | null | undefined): number | null {
+  if (value === null || value === undefined || !Number.isFinite(value)) return null;
+  return Math.max(0, Math.trunc(value));
+}
+
 /** Blank is "no answer" and stores as null, which is not the empty string. */
 function trimmed(value: unknown, max: number): string | null {
   const raw = typeof value === "string" ? value.trim() : "";
@@ -226,6 +299,52 @@ export async function saveProduct(
   }
 
   /*
+   * An end before its own start, refused rather than stored.
+   *
+   * It is almost always a date the seller did not change after picking the
+   * start, and the two places it surfaces — the buyer's page and their
+   * calendar — would render a negative span that reads as a mistake nobody
+   * can explain. Cheaper to say so while they are looking at the field.
+   */
+  const eventEndsAt = input.eventEndsAt ?? null;
+  if (
+    kind === "event" &&
+    eventEndsAt &&
+    eventStartsAt &&
+    eventEndsAt.getTime() <= eventStartsAt.getTime()
+  ) {
+    return refuse({ kind: "event_ends_before_start" });
+  }
+
+  /*
+   * What a digital product actually hands over.
+   *
+   * `link` and `code` are refused when blank, where a fileless download is
+   * not — see the note on `digital_needs_delivery` for why the asymmetry is
+   * the right way round. The URL gets `isPublicLinkUrl`, the same check the
+   * event join link and the terms link get: it is rendered as an anchor in an
+   * email and on the buyer's page, so `javascript:` and internal hosts are not
+   * things a seller may put in front of their buyers.
+   */
+  const delivery = isDigitalDelivery(input.digitalDelivery)
+    ? input.digitalDelivery
+    : "file";
+  const digitalLinkUrl = input.digitalLinkUrl?.trim() || "";
+  const digitalAccessDetails = trimmed(input.digitalAccessDetails, 2000);
+
+  if (kind === "digital" && delivery === "link") {
+    if (!digitalLinkUrl) {
+      return refuse({ kind: "digital_needs_delivery", delivery: "link" });
+    }
+    if (!isPublicLinkUrl(digitalLinkUrl)) {
+      return refuse({ kind: "digital_link_not_public" });
+    }
+  }
+  if (kind === "digital" && delivery === "code" && !digitalAccessDetails) {
+    return refuse({ kind: "digital_needs_delivery", delivery: "code" });
+  }
+
+  /*
    * The join link for an online event — refused rather than quietly dropped.
    *
    * A dropped link saves the rest of the form and leaves the seller believing
@@ -253,9 +372,57 @@ export async function saveProduct(
   const billingInterval = isBillingInterval(input.billingInterval)
     ? input.billingInterval
     : null;
+  /*
+   * Clamped rather than refused. "Every 400 days" is a typo for something, and
+   * the nearest legal cycle is a better answer than a saved product Stripe
+   * will not create a Price for — which the seller would only discover when a
+   * buyer met the failure at checkout.
+   */
+  const billingIntervalCount = billingInterval
+    ? normalizeIntervalCount(input.billingIntervalCount ?? 1, billingInterval)
+    : 1;
   if (kind === "membership") {
     if (!billingInterval) return refuse({ kind: "membership_needs_interval" });
     if (input.priceCents <= 0) return refuse({ kind: "membership_needs_price" });
+  }
+
+  /*
+   * How the price is arrived at, and when the product is on sale — spec 43.
+   *
+   * Both are gated on the plan *here* rather than only in the form, because a
+   * downgraded shop must not keep selling on a windowed schedule its plan no
+   * longer includes and a hand-rolled POST is not a form. Falling back to
+   * `fixed` and no window is the safe direction on both counts: the product
+   * goes on selling at its list price, all the time, which is what it did
+   * before any of these columns existed.
+   *
+   * The seller's stored numbers are *not* wiped by the downgrade — only
+   * ignored — so an upgrade brings back the launch they configured rather than
+   * a blank card. That is the same trade `atProductLimit` makes when it applies
+   * the cap to new products only: a downgrade never deletes work.
+   */
+  const pricingAllowed = can(shop, "pricingModes");
+
+  const pricingMode = pricingAllowed
+    ? normalizePricingMode(input.pricingMode, kind)
+    : "fixed";
+
+  /*
+   * PWYW on a membership is refused rather than quietly downgraded to `fixed`.
+   *
+   * `normalizePricingMode` would fall back silently, which is right for a typo
+   * arriving from an API caller and wrong for a seller who has just ticked a
+   * box: they would save, see nothing, and go on believing their gym takes
+   * whatever members feel like paying.
+   */
+  if (kind === "membership" && input.pricingMode === "pwyw" && pricingAllowed) {
+    return refuse({ kind: "pwyw_not_for_membership" });
+  }
+
+  const sellFrom = pricingAllowed ? (input.sellFrom ?? null) : null;
+  const sellUntil = pricingAllowed ? (input.sellUntil ?? null) : null;
+  if (sellFrom && sellUntil && sellUntil.getTime() <= sellFrom.getTime()) {
+    return refuse({ kind: "sell_window_inverted" });
   }
 
   const priceCents = input.priceCents;
@@ -268,10 +435,86 @@ export async function saveProduct(
     priceCents,
     compareAtCents:
       compareAtCents !== null && compareAtCents <= priceCents ? null : compareAtCents,
+    /*
+     * The same price in the shop's other currencies — spec 53.
+     *
+     * Written whole rather than merged, so clearing a field clears the entry
+     * and the currency stops being offered. A merge would leave a price a
+     * seller had deliberately removed still quoted on their storefront, which
+     * is the worse direction by a distance.
+     *
+     * A compare-at below its own currency's price is dropped for the same
+     * reason it is above: a strike-through that is not a saving is an
+     * advertisement for a discount nobody is giving.
+     */
+    currencyPrices: droppingWeakCompareAt(input.currencyPrices ?? {}),
+
+    /* ---- Spec 43 -------------------------------------------------------- */
+
+    pricingMode,
+    /*
+     * Blank stays blank, and that is the whole rule on these two.
+     *
+     * `null` means "not configured", which `pwywFloorCents` reads as the list
+     * price; `0` means "free is allowed". A normaliser that folded one into the
+     * other would either make every unconfigured PWYW product free or make
+     * every donation impossible, and both failures are silent. So the only
+     * thing done here is truncating a fractional minor unit and refusing a
+     * negative, neither of which is a number a seller can mean.
+     */
+    minPriceCents: wholeCentsOrNull(input.minPriceCents),
+    suggestedPriceCents: wholeCentsOrNull(input.suggestedPriceCents),
+    /*
+     * Kept on every kind rather than cleared off the ones that rarely use
+     * them, matching `bookingLeadHours` and `durationMinutes`: a launch window
+     * is as meaningful on a digital download as on a run of mugs, and nothing
+     * reads these but `sellWindowState`.
+     */
+    sellFrom,
+    sellUntil,
+    hideWhenUnavailable: pricingAllowed && input.hideWhenUnavailable === true,
+
     kind,
     categoryId,
     tags: (input.tags ?? []).map((t) => t.trim()).filter(Boolean).slice(0, MAX_TAGS),
     options: hasVariants ? options : [],
+
+    /*
+     * The product's own code, kept only where it can be read. A product with
+     * options carries its codes on the variants, and the order line snapshots
+     * whichever applies — so a second code up here would be one no order can
+     * ever quote and one more thing to keep in step.
+     */
+    sku: hasVariants ? null : trimmed(input.sku, 60),
+    /*
+     * Zero and null both mean "no cap". A seller who wants to stop selling has
+     * `inStock`, and a zero here is far more likely a cleared field than a
+     * deliberate embargo — one that would render a quantity picker whose only
+     * legal value is none.
+     */
+    maxPerOrder: (() => {
+      const raw = input.maxPerOrder ?? null;
+      if (raw === null || !Number.isFinite(raw)) return null;
+      const cap = Math.trunc(raw);
+      return cap > 0 ? Math.min(cap, MAX_QUANTITY) : null;
+    })(),
+
+    /*
+     * Spec 51. Kept on every kind rather than cleared off the non-physical
+     * ones, matching `bookingLeadHours` above: nothing reads a weight but the
+     * band table, a product switched between kinds keeps what the seller typed,
+     * and a digital product that also ships a printed copy is an ordinary thing
+     * to sell.
+     *
+     * `lowStockThreshold` is not gated on the plan. It prevents a loss rather
+     * than creating a sale, and gating it would price the smallest shops out of
+     * knowing their own stockroom.
+     */
+    lowStockThreshold: wholeCountOrNull(input.lowStockThreshold),
+    weightGrams: wholeCountOrNull(input.weightGrams),
+    lengthMm: wholeCountOrNull(input.lengthMm),
+    widthMm: wholeCountOrNull(input.widthMm),
+    heightMm: wholeCountOrNull(input.heightMm),
 
     trackInventory,
     // Stock lives on the variants when there are any, so the product-level
@@ -279,7 +522,15 @@ export async function saveProduct(
     stockQuantity:
       trackInventory && !hasVariants ? (input.stockQuantity ?? null) : null,
 
-    // Digital delivery
+    // Digital delivery. The shape is the product's, so the two fields that
+    // do not belong to the chosen shape are cleared — a seller who moves a
+    // product from a link to a file must not leave a live URL behind that the
+    // download page would still be entitled to render.
+    digitalDelivery: kind === "digital" ? delivery : "file",
+    digitalLinkUrl:
+      kind === "digital" && delivery === "link" ? digitalLinkUrl : null,
+    digitalAccessDetails:
+      kind === "digital" && delivery === "code" ? digitalAccessDetails : null,
     releaseOnPayment: input.releaseOnPayment === true,
     downloadLimit: input.downloadLimit ?? null,
     downloadExpiryDays: input.downloadExpiryDays ?? null,
@@ -290,10 +541,22 @@ export async function saveProduct(
     serviceLocation: trimmed(input.serviceLocation, 500),
     bookingEnabled: input.bookingEnabled === true,
     bookingLeadHours: input.bookingLeadHours ?? 0,
+    /*
+     * Kept on every kind rather than cleared off the non-services, matching
+     * `bookingLeadHours` and `durationMinutes` directly above: a product
+     * switched to a service and back keeps the seller's settings, and none of
+     * the three is read by anything but `isBookable`.
+     */
+    bookingBufferMinutes: Math.min(
+      Math.max(0, Math.trunc(input.bookingBufferMinutes ?? 0)),
+      // A buffer longer than a day is not a buffer, it is a closed diary.
+      24 * 60,
+    ),
 
     // Events. Cleared on other kinds so a product switched away from being
     // an event doesn't keep silently closing its own sales at a stale date.
     eventStartsAt: kind === "event" ? eventStartsAt : null,
+    eventEndsAt: kind === "event" ? eventEndsAt : null,
     /*
      * Held to the same two conditions the buyer's page checks. An in-person
      * event keeps no link — a venue is not joined — and a product switched
@@ -315,6 +578,7 @@ export async function saveProduct(
      * every save.
      */
     billingInterval: kind === "membership" ? billingInterval : null,
+    billingIntervalCount: kind === "membership" ? billingIntervalCount : 1,
     trialDays: kind === "membership" ? normalizeTrialDays(input.trialDays) : null,
 
     inStock: input.inStock === true,
@@ -409,7 +673,21 @@ export async function saveProduct(
   }
 
   await syncVariants(savedId, hasVariants ? options : [], variants, trackInventory);
-  await syncFiles(savedId, input.files ?? []);
+  /*
+   * A digital product that delivers a link or a code keeps no files.
+   *
+   * Only that case is cleared here. Any other kind may still carry an
+   * attachment — a care card with a mug, a worksheet with a class — and the
+   * download page has always handed those over; taking them away would be a
+   * silent deletion of things sellers are already shipping.
+   *
+   * What is not allowed is a *digital* product whose stated shape is a link
+   * while a file sits behind it: the streaming route keys off the order's
+   * token rather than the product's kind, so the leftover file would go on
+   * being downloadable as though it were the good.
+   */
+  const keepsFiles = !(kind === "digital" && delivery !== "file");
+  await syncFiles(savedId, keepsFiles ? (input.files ?? []) : []);
 
   return { ok: true, id: savedId, slug, created };
 }

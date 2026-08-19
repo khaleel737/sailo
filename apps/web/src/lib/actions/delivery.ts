@@ -10,7 +10,9 @@ import { deliveryMethods, type DeliveryConfig } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { DELIVERY_METHOD_DEFS, isDeliveryMethodType } from "@sailo/commerce/delivery";
 import { saveDelivery, toggleDelivery as toggleShared } from "@sailo/commerce/delivery/server";
-import { parseMoneyToCents } from "@sailo/core/currency";
+import { moneyToCents, parseMoneyToCents } from "@sailo/core/currency";
+import { buildCurrencyPrices } from "@sailo/core/regional";
+import { can } from "@sailo/core/plans";
 import type { ActionState } from "./shop";
 
 /**
@@ -49,6 +51,23 @@ export async function saveDeliveryMethod(
     name: String(formData.get("name") ?? ""),
     feeCents: parseMoneyToCents(String(formData.get("fee") ?? "0"), shop.currency),
     freeOverCents: freeOverRaw ? parseMoneyToCents(freeOverRaw, shop.currency) : null,
+    /*
+     * The same fee in each currency the shop quotes — spec 53. Each parsed
+     * against its own currency's decimals, and blank drops the currency rather
+     * than storing a free postage rate nobody offered.
+     *
+     * Gated on the plan here as well as in the form: a form is not a gate.
+     */
+    currencyPrices: buildCurrencyPrices(
+      (can(shop, "regionalPricing") ? shop.regionalCurrencies : []).map((code) => ({
+        currency: code,
+        priceCents: moneyToCents(String(formData.get(`fee_${code}`) ?? ""), code),
+        secondaryCents: moneyToCents(
+          String(formData.get(`freeOver_${code}`) ?? ""),
+          code,
+        ),
+      })),
+    ),
     config,
     isEnabled: formData.get("isEnabled") === "on",
     /*

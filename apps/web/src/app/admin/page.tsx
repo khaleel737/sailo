@@ -12,6 +12,7 @@ import {
   getShopOrders,
   getVisitBreakdown,
   getVisitSeries,
+  orderCurrencyMix,
 } from "@/lib/queries";
 import { setupSteps } from "@sailo/core/onboarding";
 import { getPartnerCard } from "@sailo/partners/store";
@@ -78,6 +79,7 @@ export default async function AdminOverviewPage({
      */
     usableRails,
     partnerCard,
+    currencyMix,
   ] = await Promise.all([
     getDashboardStats(shop.id, window.query),
     getVisitSeries(shop.id, chartQuery),
@@ -94,6 +96,15 @@ export default async function AdminOverviewPage({
      * than one a page render makes on their behalf.
      */
     getPartnerCard(shop.userId),
+    /*
+     * What was taken in a currency that is not the shop's own — spec 53.
+     *
+     * Empty for every shop that has not enabled regional pricing, which is
+     * every shop the day this ships, and empty again for one that has enabled
+     * it and sold nothing in it yet. The revenue tile is unchanged in both
+     * cases; only a shop that has actually taken euros grows a second line.
+     */
+    orderCurrencyMix(shop.id, shop.currency, window.query),
   ]);
 
   const steps = setupSteps({
@@ -239,6 +250,18 @@ export default async function AdminOverviewPage({
               stats.taxCollectedCents > 0
                 ? `${money(stats.taxCollectedCents)} tax collected`
                 : null,
+              /*
+                And what was taken in another currency — spec 53.
+
+                Named beside the figure rather than folded into it, because
+                adding €25 to $29 and calling the result dollars is arithmetic
+                on two different units. Nothing here converts: v1 has no rate
+                policy and inventing one for a dashboard tile would be the
+                worst place to start.
+              */
+              ...currencyMix.map(
+                (row) => `${formatMoney(row.grossCents, row.currency, locale)} in ${row.currency}`,
+              ),
             ]
               .filter(Boolean)
               .join(" · ") || undefined

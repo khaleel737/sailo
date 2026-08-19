@@ -41,6 +41,7 @@ import { resolveDigitalDelivery } from "@sailo/commerce/orders/server";
 import { eventSalesOpen, ticketValues } from "@sailo/commerce/ticketing";
 import { confirmBuyerByEmail } from "@sailo/workflows/orders";
 import { notifySellerOfOrder } from "@sailo/workflows/orders";
+import { notifySellerOfLowStock } from "@sailo/workflows/orders";
 import { emitOrderWebhook } from "@sailo/webhooks/emit";
 
 
@@ -1073,6 +1074,29 @@ export async function createOrderIntent(
    */
   if (settlesAtCheckout) {
     after(() => notifySellerOfOrder({ shop, orderId: order.id }));
+  }
+
+  /*
+   * And whether that order has just emptied a shelf — spec 51.
+   *
+   * On every rail, not only the ones that settle here, and that is the
+   * difference from the notification above it. The units came off the shelf
+   * when this order was written — before the card was charged, so that two
+   * buyers racing for the last one cannot both be told yes — so the shortage is
+   * real the moment the order exists, whatever Stripe goes on to say about the
+   * money. A card checkout that is then abandoned puts them back through the
+   * sweep, which re-arms the alert on its way past.
+   *
+   * One call per distinct product rather than per line: a basket holding two
+   * variants of the same shirt is one stockroom question, and the mail names
+   * which combinations are short.
+   *
+   * Inside `after()` and best-effort, like every other notification here: this
+   * reports on something that has already happened and must never be able to
+   * fail it.
+   */
+  for (const productId of new Set(lines.map((line) => line.productId))) {
+    after(() => notifySellerOfLowStock({ shop, productId }));
   }
 
   /*

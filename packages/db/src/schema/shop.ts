@@ -541,6 +541,24 @@ export const shops = pgTable(
      */
     deletedAt: timestamp("deleted_at"),
 
+    /**
+     * When the 90-day sweep cleared this dead shop's remaining files.
+     *
+     * Spec 03 deletes a departed seller's images at once and deliberately keeps
+     * their product *files*, because a buyer who paid for a download still holds
+     * a live token — and taking the file away the moment the seller leaves
+     * punishes the wrong person. The cron that finally clears them was a TODO in
+     * `api/cron/sweep` from the day that shipped, which left personal data with
+     * no deletion path at all. Spec 52 could not honestly promise a statutory
+     * erasure on top of that.
+     *
+     * This column is the *claim*, not a log: the sweep's UPDATE carries
+     * `deletedAt < now() - 90 days AND filesSweptAt IS NULL` in its WHERE, so two
+     * overlapping ticks list a shop's blobs once. Null on every live shop for
+     * ever, which is what makes the partial index on it tiny.
+     */
+    filesSweptAt: timestamp("files_swept_at"),
+
     /*
      * This seller's own refer-a-creator code — the `/r/<code>` link they
      * share to bring another creator to Sailo. See `lib/creator-referrals`.

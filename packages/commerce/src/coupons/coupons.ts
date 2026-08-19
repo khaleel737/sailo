@@ -1,7 +1,7 @@
 import "server-only";
 import { and, desc, eq, ne } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { coupons } from "@sailo/db/schema";
+import { coupons, type CurrencyPrices } from "@sailo/db/schema";
 import { normalizeCode, percentToBp } from "@sailo/core/pricing";
 
 /**
@@ -47,6 +47,15 @@ export type SaveCouponInput = {
    */
   value: number;
   minSubtotalCents: number;
+  /**
+   * The same amounts in each other currency the shop quotes — spec 53.
+   *
+   * `price` is the fixed discount and `secondary` the minimum subtotal. A
+   * **percentage** coupon with no minimum needs no entry at all: a percentage
+   * is currency-free, and `couponAtCurrency` lets it through untouched. One
+   * that names a minimum does need one, because a minimum is money.
+   */
+  currencyPrices?: CurrencyPrices;
   maxRedemptions: number | null;
   expiresAt: Date | null;
   isActive: boolean;
@@ -97,6 +106,7 @@ export async function saveCoupon(input: SaveCouponInput): Promise<SaveCouponResu
     discountValue:
       input.discountType === "percent" ? percentToBp(input.value) : Math.round(input.value),
     minSubtotalCents: Math.max(0, Math.round(input.minSubtotalCents)),
+    currencyPrices: input.currencyPrices ?? {},
     maxRedemptions:
       input.maxRedemptions === null ? null : Math.max(1, Math.trunc(input.maxRedemptions)),
     expiresAt: input.expiresAt,

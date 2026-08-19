@@ -28,7 +28,7 @@ export async function StatusBanners({
    * and the seller would be told they are open while their page says
    * otherwise.
    */
-  const { methods } = await getCheckoutOptions(shop.id);
+  const { methods } = await getCheckoutOptions(shop.id, shop.currency, shop.currency);
 
   return (
     <>

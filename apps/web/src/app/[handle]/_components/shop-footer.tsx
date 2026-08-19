@@ -130,6 +130,22 @@ export function ShopFooter({
               <ShopCookieSettings shopId={shop.id} label={t.consent.manage} />
             </li>
           ) : null}
+
+          {/*
+            Spec 52. In the platform's footer row rather than the seller's,
+            because the route is Sailo's and it works for every shop whether or
+            not the seller has published a privacy policy — an obligation the
+            buyer can exercise must not depend on the seller having set anything
+            up. It is also why it is not plan-gated anywhere.
+          */}
+          <li>
+            <Link
+              href={`/${shop.handle}/data-request`}
+              className="text-muted focus-ring-accent inline-flex min-h-11 items-center rounded text-xs transition hover:opacity-70"
+            >
+              {t.dataRequest.footerLink}
+            </Link>
+          </li>
         </ul>
       </nav>
 

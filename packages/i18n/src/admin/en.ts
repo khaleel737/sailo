@@ -281,6 +281,22 @@ export const adminEn = {
     hideWhenUnavailableBody:
       "Off, it stays on your shop reading as unavailable — which is where buyers ask to be told when it returns.",
 
+    /* ---- Spec 51: the parcel, and running out --------------------------- */
+    parcelTitle: "The parcel",
+    parcelBody: "What it weighs and how big it is. Used to work out postage.",
+    parcelBodyBands: "What it weighs, so your weight-banded rates can price it.",
+    weightGrams: "Weight (grams)",
+    /* Grams and no unit picker: a second stored unit is a conversion every
+       reader has to get right, and one of them eventually will not. */
+    weightGramsHint: "In grams. 1 kg is 1000.",
+    dimensionsMm: "Size (mm)",
+    lengthMm: "Length",
+    widthMm: "Width",
+    heightMm: "Height",
+    lowStockThreshold: "Tell me when stock hits",
+    lowStockThresholdHint:
+      "One email each time stock falls to this. You'll hear again only after it goes back up.",
+
     titleLabel: "Title",
     titlePlaceholder: "Speckled stoneware mug",
     descriptionLabel: "Description",
@@ -292,6 +308,9 @@ export const adminEn = {
        leaving a seller to wonder whether 30 is a month or a year. */
     priceEach: "Price per period ({currency})",
     compareAt: "Compare-at price",
+    /* Spec 53. The currency has to be in the label on a second one, or a
+       seller with three price fields on screen has no way to tell them apart. */
+    compareAtIn: "Compare-at price ({currency})",
     kind: "Type",
     /**
      * The five kinds, as a control's labels.
@@ -717,6 +736,7 @@ export const adminEn = {
     carrier: "Carrier",
     trackingNumber: "Tracking number",
     trackingNumberPlaceholder: "JD0002890124",
+    trackingUrl: "Tracking link",
     trackingLink: "Tracking link",
     trackingLinkPlaceholder: "https://dhl.com/track?id=…",
     markShipped: "Mark as shipped",
@@ -807,6 +827,35 @@ export const adminEn = {
     filtered: "{count} orders match these filters.",
     noMatches: "No orders match",
     noMatchesBody: "Clear a filter to see more.",
+  },
+
+  /**
+   * An order going out in more than one box — spec 51.
+   *
+   * Its own section rather than more keys under `orders`, because `orders` is a
+   * protected money section that a filler may not write into: a new key there
+   * is a hole in thirty-four locales that nothing can close. These strings are
+   * about parcels rather than about amounts.
+   */
+  /*
+   * Spec 51's two refund strings live in `orders`, which is a protected money
+   * section — so they are here in `shipments` instead, where a filler may write
+   * them. They are about a shelf rather than about an amount.
+   */
+  shipments: {
+    restockOnRefund: "Put it back on the shelf",
+    restockOnRefundHint:
+      "Untick if it came back damaged, or never went out. Only applies to a full refund.",
+    title: "Boxes",
+    body: "This order has more than one thing to send. Record each box with its own tracking.",
+    allSent: "Everything on this order has been sent.",
+    boxNumber: "Box {n}",
+    inTransit: "On its way",
+    delivered: "Delivered",
+    nothingLeft: "Nothing left to send.",
+    leftOf: "({remaining} of {ordered} left)",
+    quantityFor: "How many {item} in this box",
+    record: "Record this box",
   },
 
   clients: {
@@ -902,6 +951,9 @@ export const adminEn = {
     codePlaceholder: "WELCOME10",
     usageLimit: "Usage limit",
     minSpend: "Minimum spend",
+    /* Spec 53. A percentage needs no second amount, so the heading says
+       "where they apply" rather than promising a field for every code. */
+    otherCurrencies: "In your other currencies — a code with no amount here isn't offered in that currency.",
     amount: "Amount",
     /**
      * The server's refusals, as sentences.
@@ -1358,6 +1410,19 @@ export const adminEn = {
     description: "Your shop details, plan and data.",
     calendarSync: "Calendar sync",
     calendarSyncBody: "Block booking slots with busy time from your own calendar. Read-only — Sailo never writes to it.",
+
+    /* Spec 53 — regional pricing. Every string here is about a price a seller
+       typed, never about a conversion, and the copy says so out loud: the one
+       thing a seller will assume is that Sailo converts, and it does not. */
+    currenciesTitle: "Sell in other currencies",
+    currenciesBody: "Your shop prices in {currency}. Tick a currency here and you can type a price in it on each product — a buyer in that country sees your price, in their money, before they reach checkout.",
+    currenciesNoConversion: "Sailo never converts. You type every price, so you can round it to something that reads well.",
+    currencyIncomplete: "{currency} is not being shown to anyone yet — still needs a price on:",
+    currencyGapProducts: "{count} products",
+    currencyGapVariants: "{count} variants",
+    currencyGapDelivery: "{count} delivery rates",
+    currencyGapCoupons: "{count} discount codes",
+    currencyLive: "{currency} is live on your storefront",
     calendarFeedUrl: "Calendar link",
     calendarFeedUrlHint: "In Google Calendar: Settings → your calendar → Secret address in iCal format. Apple and Outlook publish one too.",
     calendarFeedReplace: "Replace the calendar link",
@@ -2048,6 +2113,52 @@ export const adminEn = {
     closeEditor: "Close",
   },
 
+  /**
+   * Spec 52 — the statutory queue.
+   *
+   * Chrome around an obligation, so the words matter more than usual: a seller
+   * reading this screen is deciding whether to delete somebody's records, and
+   * the two lists on the confirmation come from the decision table rather than
+   * from here. What is here is the frame.
+   */
+  dataRequests: {
+    title: "Data requests",
+    intro:
+      "Buyers asking for a copy of what you hold, or asking you to delete it. You have 30 days from the moment they confirm their email.",
+    empty: "No requests",
+    emptyBody:
+      "A link in your shop's footer and in every order email lets a buyer ask. Anything they ask for shows up here with its deadline.",
+
+    kindAccess: "Copy of their data",
+    kindPortability: "Portable copy",
+    kindErasure: "Deletion",
+
+    daysLeft: "days left",
+    overdue: "Overdue",
+    awaitingBuyer: "Waiting on the buyer",
+    answered: "Answered",
+    refused: "Refused",
+
+    release: "Assemble and send",
+    erase: "Delete their data",
+    refuse: "Refuse",
+
+    /*
+     * The two headings over the confirmation lists. Deliberately "will" and not
+     * "may": the seller is about to press a button, and a hedge here would read
+     * as uncertainty about what the button does.
+     */
+    willRemove: "This will remove or anonymise:",
+    willKeep: "This will keep, and the buyer will be told why:",
+    typeErase: 'Type "erase" to confirm',
+
+    refusalReason: "Why are you refusing?",
+    refusalHint:
+      "The buyer is told this, so it has to be true. Pick the one that applies rather than the one that is shortest.",
+    pickReason: "Choose a reason…",
+    recordRefusal: "Record the refusal",
+  },
+
   integrations: {
     title: "Integrations",
     body: "Connect your shop to Zapier, n8n, Make — or to an AI assistant.",
@@ -2140,8 +2251,6 @@ export const adminEn = {
    */
   tax: {
     title: "Tax & jurisdictions",
-    description:
-      "Where you are registered, what you have taken in each place, and the countries you sell into.",
     notAdvice:
       "This is a record of what you collected, not tax advice. Whether you need to register anywhere is a question for your accountant.",
     reviewedOn: "Published thresholds last checked {date}. Confirm them before you act on one.",

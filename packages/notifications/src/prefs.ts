@@ -28,6 +28,8 @@ export const notificationPrefsSchema = z.strictObject({
   membershipStarted: z.boolean().optional(),
   membershipCancelled: z.boolean().optional(),
   membershipPaymentFailed: z.boolean().optional(),
+  taxThreshold: z.boolean().optional(),
+  lowStock: z.boolean().optional(),
 });
 
 /** The event types a seller can be emailed about today. */
@@ -60,6 +62,27 @@ export const NOTIFICATION_EVENTS = [
   "membershipStarted",
   "membershipCancelled",
   "membershipPaymentFailed",
+  /*
+   * The threshold warning, which is the one mail on this list a seller cannot
+   * get from anywhere else. Everything above reports something they can also
+   * see by opening the admin; this one is about a number nobody watches until
+   * it has already been crossed.
+   */
+  "taxThreshold",
+  /*
+   * Running out — spec 51, and the other mail on this list a seller cannot get
+   * from anywhere else.
+   *
+   * `lowStock` matched zero files in this tree, so the way a seller found out
+   * they were out of stock was a buyer telling them. Everything above except
+   * the threshold warning reports something they could also see by opening the
+   * admin; nobody opens the admin to check a number that was fine yesterday.
+   *
+   * Free on every plan, and deliberately: it prevents a loss rather than
+   * creating a sale, and gating it would price the smallest shops out of
+   * knowing their own stockroom.
+   */
+  "lowStock",
 ] as const satisfies readonly NotificationEvent[];
 
 /**

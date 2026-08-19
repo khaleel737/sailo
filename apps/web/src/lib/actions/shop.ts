@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { after } from "next/server";
 import { toCurrencyCode } from "@sailo/core/currency";
+import { normalizeOfferedCurrencies } from "@sailo/core/regional";
+import { can } from "@sailo/core/plans";
 import { normalizeCountry } from "@sailo/core/countries";
 import { revalidateShop } from "@/lib/cache";
 import { publishHqEvent, publishShopEvent } from "@sailo/events";
@@ -17,6 +19,7 @@ import { isStaff, requireShop, requireUser } from "@/lib/session";
 import { normalizePhone } from "@sailo/core/phone";
 import { isPublicLinkUrl } from "@sailo/storage/urls";
 import { rateLimit } from "@sailo/rate-limit";
+import { checkDescriptor, type DescriptorProblem } from "@sailo/core/disputes";
 import { callerIp } from "@sailo/rate-limit/client-ip";
 import { BRAND_HANDLE, HANDLE_MESSAGES, normalizeHandle, validateHandleFormat } from "@sailo/core/handle";
 import { readPixelIds } from "@sailo/customers/pixels";
@@ -170,6 +173,21 @@ export type HandleStatus =
  * it stays cheap: format first, one indexed lookup, and suggestions only when
  * the handle is actually gone.
  */
+/**
+ * What to say when a descriptor is refused.
+ *
+ * Named per problem rather than one sentence, because each has a different fix
+ * and "that isn't valid" sends a seller guessing at rules the card networks
+ * publish and nobody reads.
+ */
+const DESCRIPTOR_ERRORS: Record<DescriptorProblem, string> = {
+  empty: "Enter what buyers should see on their statement.",
+  too_short: "Too short to recognise — use at least 5 characters.",
+  too_long: "Card statements only fit 22 characters.",
+  no_letter: "Needs at least one letter, or it reads as a reference number.",
+  forbidden_character: "Card networks reject < > \\ \" and '.",
+};
+
 export async function checkHandle(raw: string): Promise<HandleStatus> {
   /*
    * Throttled for what it costs, not for what it says.
@@ -375,6 +393,30 @@ export async function updateShop(
    * never shown. That belief is the whole value of the feature, and it would
    * fail exactly when someone finally asked to see the agreement.
    */
+  /*
+   * The statement descriptor. Spec 44.
+   *
+   * Validated here rather than sent hopefully, because **Stripe silently
+   * ignores an invalid descriptor** — no error, the charge succeeds, and the
+   * connected account's own default appears on the buyer's statement instead.
+   * That is the worst available failure: the settings screen says one thing,
+   * every statement says another, and the only way anybody finds out is an
+   * `unrecognized` chargeback months later.
+   *
+   * Blank clears it, which is a real choice — a seller whose account default is
+   * already right should be able to say so — and an empty column means "use the
+   * account default", not "use nothing".
+   */
+  const descriptorInput = String(formData.get("statementDescriptor") ?? "").trim();
+  let statementDescriptor: string | null = null;
+  if (descriptorInput) {
+    const verdict = checkDescriptor(descriptorInput);
+    if (!verdict.ok) {
+      return { ok: false, error: DESCRIPTOR_ERRORS[verdict.problem] };
+    }
+    statementDescriptor = verdict.value;
+  }
+
   const termsUrlInput = String(formData.get("termsUrl") ?? "").trim();
   if (termsUrlInput && !isPublicLinkUrl(termsUrlInput)) {
     return {
@@ -418,6 +460,28 @@ export async function updateShop(
        * moves every price by a factor of a hundred.
        */
       currency: toCurrencyCode(formData.get("currency")),
+      /*
+       * The other currencies this shop quotes — spec 53.
+       *
+       * `normalizeOfferedCurrencies` drops anything outside the offered set,
+       * anything that is not a string, and the shop's own currency, and stores
+       * the survivors in a fixed order. A currency in this array is only a
+       * *ticked box*: whether a buyer can actually be quoted in it is
+       * `liveCurrencies`, which requires every published product, priced
+       * variant, enabled delivery rate and active coupon to carry a price in
+       * it. That separation is what stops a half-configured currency reaching
+       * a storefront.
+       *
+       * Gated behind the plan at the write as well as in the card. A form is a
+       * request body, and a downgraded shop must not be able to turn this back
+       * on by posting to the action the card no longer renders.
+       */
+      regionalCurrencies: can(shop, "regionalPricing")
+        ? normalizeOfferedCurrencies(
+            formData.getAll("regionalCurrencies"),
+            toCurrencyCode(formData.get("currency")),
+          )
+        : shop.regionalCurrencies,
       locale: readLocale(formData.get("locale")),
       taxEnabled: formData.get("taxEnabled") === "on",
       taxName: String(formData.get("taxName") ?? "").trim().slice(0, 40) || "Tax",
@@ -488,6 +552,7 @@ export async function updateShop(
       // or nothing at all.
       requireTerms: formData.get("requireTerms") === "on",
       termsUrl: termsUrlInput || null,
+      statementDescriptor,
       askMarketingConsent: formData.get("askMarketingConsent") === "on",
 
       isPublished: formData.get("isPublished") === "on",

@@ -467,3 +467,71 @@ export async function sendSellerMembershipPaymentFailed(opts: {
     replyTo: memberEmail ?? undefined,
   });
 }
+
+/**
+ * "You have taken £7,100 of a £10,000 figure in Germany."
+ *
+ * The most carefully worded mail in this file, and the wording is the feature.
+ * It states two numbers and a place, and it stops. It does not say the seller
+ * must register, must charge anything, or has done anything wrong — those are
+ * legal claims, and `GAP-2026-08-easytools.md` §4.3 is the argument for why
+ * Sailo does not make them. The seller draws the conclusion; the link goes to
+ * the tab where the working is shown, including the date the figure was last
+ * checked.
+ *
+ * Sent at most twice per place per calendar year, at 70% and 90%, and the claim
+ * that makes "at most" true is a conditional UPDATE in `tax_country_rules` —
+ * not a read followed by a write, which two overlapping cron ticks both pass.
+ */
+export async function sendSellerTaxThreshold(opts: {
+  /** Only the name is used, so the monitor need not load a whole `Shop`. */
+  shopName: string;
+  to: string;
+  /** "Germany", "California", "the EU" — already in the seller's words. */
+  place: string;
+  rung: "70" | "90";
+  netCents: number;
+  thresholdCents: number;
+  currency: string;
+  /** The date the published figure was last reviewed. Never omitted. */
+  reviewedOn: string;
+  /** Set when the figures were compared through an indicative rate. */
+  converted: boolean;
+}): Promise<SendResult> {
+  const { shopName, to, place, rung, currency, reviewedOn, converted } = opts;
+  const taken = formatMoney(opts.netCents, currency);
+  const limit = formatMoney(opts.thresholdCents, currency);
+
+  const body = `
+    ${mutedPara(
+      `Sales from ${esc(shopName)} into ${strong(esc(place))} have reached ${strong(rung)}% of the registration threshold published for that place.`,
+    )}
+    ${section(
+      "Where it stands",
+      detailTable([
+        { label: "Place", value: place },
+        { label: "Taken", value: taken },
+        { label: "Published threshold", value: limit },
+        { label: "Figure last checked", value: reviewedOn },
+      ]),
+    )}
+    ${fine(
+      converted
+        ? "Your sales and that threshold are in different currencies, so they were compared at an indicative rate — treat the percentage as a signal rather than an exact position."
+        : "Only sales to individuals count toward this. Business sales are shown separately on the tab.",
+    )}
+    ${fine(
+      "This is a count of what you have taken, not tax advice. Thresholds change, and whether you need to register anywhere is a question for your accountant.",
+    )}
+    ${button(`${appUrl()}/admin/settings/tax`, "See the working")}
+  `;
+
+  return send({
+    from: sender("Sailo", ORDERS),
+    to,
+    subject: `${rung}% of the ${place} threshold`,
+    html: sailoLayout(`Sales into ${place} are at ${rung}%`, body, {
+      preheader: `${taken} of ${limit}`,
+    }),
+  });
+}

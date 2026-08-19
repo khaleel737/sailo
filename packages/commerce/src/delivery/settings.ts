@@ -1,7 +1,7 @@
 import "server-only";
 import { and, asc, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { deliveryMethods, type DeliveryConfig } from "@sailo/db/schema";
+import { deliveryMethods, type CurrencyPrices, type DeliveryConfig } from "@sailo/db/schema";
 import { firstRow } from "@sailo/core/invariant";
 import {
   DELIVERY_METHOD_DEFS,
@@ -49,6 +49,14 @@ export type SaveDeliveryInput = {
   feeCents: number;
   /** Free above this, or null for never. */
   freeOverCents: number | null;
+  /**
+   * The same fee in each other currency the shop quotes — spec 53.
+   *
+   * A rate with no entry for a currency is one that currency cannot be
+   * offered with, and `liveCurrencies` holds the whole currency back rather
+   * than quoting a euro basket a dollar postage fee.
+   */
+  currencyPrices?: CurrencyPrices;
   config: DeliveryConfig;
   isEnabled: boolean;
   /**
@@ -105,6 +113,10 @@ export async function saveDelivery(input: SaveDeliveryInput): Promise<SaveDelive
     feeCents: Math.max(0, Math.round(input.feeCents)),
     freeOverCents:
       input.freeOverCents === null ? null : Math.max(0, Math.round(input.freeOverCents)),
+    /* Written whole rather than merged, for the reason the product's is:
+       clearing a field must stop the currency being offered, and a merge
+       would leave a fee a seller deliberately removed still being charged. */
+    currencyPrices: input.currencyPrices ?? {},
     config,
     countries,
     isEnabled: input.isEnabled,

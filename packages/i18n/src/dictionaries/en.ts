@@ -331,6 +331,49 @@ export const en = {
   },
 
   /*
+   * Spec 52 — a buyer asking what a shop holds about them.
+   *
+   * Every string here is read by somebody with no account, cold, from a link in
+   * a footer. The three that matter most are `received`, `unavailable` and
+   * `badLink`, and they are worded against three different mistakes:
+   *
+   *   `received` is the **only** thing the form ever says on success, whether
+   *   the address is known, unknown or suppressed. A form that answered
+   *   differently would be a customer-list oracle, on a form whose subject is
+   *   literally whether somebody is in a database.
+   *
+   *   `unavailable` is not an answer about the request. Decision B has this
+   *   endpoint failing closed, and a throttled or degraded refusal has to read
+   *   as "we could not check" — the same rule `COUPON_MESSAGES.unavailable`
+   *   follows.
+   *
+   *   `badLink` never says whether the request existed, only that the link does
+   *   not work.
+   */
+  dataRequest: {
+    title: "Request your data",
+    body: "Ask {shop} for a copy of what they hold about you, or ask them to delete it.",
+    emailLabel: "The email address you used",
+    kindLabel: "What are you asking for?",
+    kindAccess: "A copy of what you hold about me",
+    kindPortability: "A portable copy I can take elsewhere",
+    kindErasure: "Delete what you hold about me",
+    cta: "Send my request",
+    received:
+      "Thanks. If we hold anything for that address, we've sent a link there to confirm it's you. Nothing happens until you click it.",
+    note: "This covers this shop only. Other shops on Sailo keep their own separate records and have to be asked separately.",
+    confirmed: "Confirmed — thank you",
+    confirmedBody:
+      "{shop} has {days} days to answer. We'll email you at this address when they do.",
+    badLink: "This link doesn't open anything",
+    badLinkBody:
+      "It may have expired, or already been used. Ask {shop} again from their shop page and a new link will be sent.",
+    unavailable: "We couldn't check that just now. Try again in a moment.",
+    /** The storefront footer's own link. Short: it sits beside five others. */
+    footerLink: "Request your data",
+  },
+
+  /*
    * Spec 44 — the page that asks a buyer whether their parcel arrived.
    *
    * Deliberately its own section rather than part of `orderStatus`: this is a

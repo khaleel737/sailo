@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Info, Package, Plus, Store, Truck } from "lucide-react";
 import { requireShop } from "@/lib/session";
+import { can } from "@sailo/core/plans";
 import { getAdminT } from "@/i18n/server";
 import { interpolate, plural } from "@sailo/i18n";
 import { countryName } from "@sailo/core/countries";
@@ -24,6 +25,13 @@ export const metadata: Metadata = { title: "Delivery" };
 
 export default async function AdminDeliveryPage() {
   const { shop } = await requireShop();
+  /*
+   * Spec 53. Gated here as well as at the write: a form is not a gate, and a
+   * downgraded shop keeps every price it typed while it stops being able to
+   * edit them.
+   */
+  const regional = can(shop, "regionalPricing") ? shop.regionalCurrencies : [];
+
   const { a, locale } = await getAdminT();
   const methods = await getShopDeliveryMethods(shop.id);
 
@@ -146,7 +154,7 @@ export default async function AdminDeliveryPage() {
                   </>
                 }
               >
-                <DeliveryRateForm method={method} currency={shop.currency} />
+                <DeliveryRateForm method={method} currency={shop.currency} regionalCurrencies={regional} />
 
                 <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-ink-200 pt-4">
                   <form action={toggleDeliveryMethod}>
@@ -179,7 +187,7 @@ export default async function AdminDeliveryPage() {
         subtitle={a.delivery.addOptionBody}
         defaultOpen={methods.length === 0}
       >
-        <DeliveryRateForm currency={shop.currency} />
+        <DeliveryRateForm currency={shop.currency} regionalCurrencies={regional} />
       </Panel>
     </>
   );

@@ -19,12 +19,15 @@ import { ShopTracking } from "@/app/[handle]/_components/shop-tracking";
 import { VisitTracker } from "@/app/[handle]/_components/visit-tracker";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { getShopT } from "@/i18n/server";
+import { displayCurrency } from "@/lib/regional";
+import { CurrencySwitcher } from "../../_components/currency-switcher";
 import { interpolate } from "@sailo/i18n";
 import { formatDuration } from "@sailo/core/format";
 import { isShopLive } from "@sailo/core/visibility";
 import { shopThemeVars } from "@sailo/design-system/web/cn";
 import {
   anySellable,
+  deliveryOf,
   needsDelivery,
   priceRange,
   cartCanPayInPerson,
@@ -36,6 +39,12 @@ import { PoweredBy } from "@/components/shared/powered-by";
 import { absolute } from "@sailo/core/origin";
 import { breadcrumbJsonLd, productJsonLd } from "@/lib/seo";
 import { eventSalesOpen } from "@sailo/commerce/ticketing";
+import {
+  isPwyw,
+  pwywFloorCents,
+  pwywSuggestedCents,
+  sellWindowState,
+} from "@sailo/core/pricing-models";
 
 export async function generateMetadata({
   params,
@@ -44,7 +53,7 @@ export async function generateMetadata({
   const shop = await getShopByHandle(handle);
   if (!shop) return { title: "Not found" };
 
-  const product = await getProductBySlug(shop.id, slug);
+  const product = await getProductBySlug(shop.id, slug, shop.currency, shop.currency);
   if (!product) return { title: "Not found" };
 
   const url = absolute(`/${shop.handle}/p/${product.slug}`);
@@ -79,13 +88,23 @@ export default async function ProductPage({
   params,
 }: PageProps<"/[handle]/p/[slug]">) {
   const { handle, slug } = await params;
-  const shop = await getShopByHandle(handle);
-  if (!shop || !isShopLive(shop)) notFound();
+  const row = await getShopByHandle(handle);
+  if (!row || !isShopLive(row)) notFound();
 
-  const product = await getProductBySlug(shop.id, slug);
+  /*
+   * The currency this visit is quoted in — spec 53, and the same substitution
+   * `get-shop-page-data.ts` makes: `shop.currency` becomes what the buyer is
+   * being shown, so every `formatMoney` on this page and in the buy box below
+   * needs no change at all. The stored row is untouched.
+   */
+  const display = await displayCurrency(row);
+  const shop =
+    display.currency === row.currency ? row : { ...row, currency: display.currency };
+
+  const product = await getProductBySlug(shop.id, slug, display.currency, row.currency);
   if (!product || !product.isPublished) notFound();
 
-  const checkout = await getCheckoutOptions(shop.id);
+  const checkout = await getCheckoutOptions(shop.id, display.currency, row.currency);
   const { locale, t, dir } = await getShopT(shop.locale);
   const kindLabel =
     product.kind === "digital"
@@ -124,8 +143,26 @@ export default async function ProductPage({
   };
   const range = priceRange(product, product.variants);
   const salesOpen = eventSalesOpen(product);
+  /*
+   * Whether the seller has this on sale right now — spec 43.
+   *
+   * Decided here, per request, against a fresh clock rather than inside
+   * `getProductBySlug`. That read is `"use cache"` with `cacheLife("max")` and
+   * never expires on a clock, so a window boundary decided inside it would be
+   * frozen into an entry that outlives the window — the product would go on
+   * selling past its own closing time until somebody edited the shop. Caching
+   * the *row* and taking the *decision* per request is the same shape
+   * `eventSalesOpen` one line above already has, and it costs two comparisons.
+   *
+   * `resolveLines` refuses the order regardless, so what this decides is what
+   * the page says, never whether money can move.
+   */
+  const windowState = sellWindowState(product, null, new Date());
   const sellable =
-    product.inStock && salesOpen && anySellable(product, product.variants);
+    product.inStock &&
+    salesOpen &&
+    windowState === "open" &&
+    anySellable(product, product.variants);
   const stockLeft = unitsLeft(product);
 
   return (
@@ -181,9 +218,10 @@ export default async function ProductPage({
       locale={locale}
       methods={checkout.methods}
       deliveryOptions={checkout.deliveryOptions}
+      blockedCountries={checkout.blockedCountries}
+      customFields={checkout.customFields}
       contactEmail={shop.contactEmail}
       compliance={complianceOf(shop)}
-      customFields={checkout.customFields}
       t={t}
     >
     <div
@@ -307,12 +345,21 @@ export default async function ProductPage({
               salesOpen={salesOpen}
               methods={checkout.methods}
               deliveryOptions={checkout.deliveryOptions}
+              blockedCountries={checkout.blockedCountries}
+              customFields={checkout.customFields}
               kind={product.kind}
               billingInterval={product.billingInterval}
               canPayInPerson={payInPerson}
               options={product.options}
               variants={variants}
               unitsLeft={stockLeft}
+              maxPerOrder={product.maxPerOrder}
+              pricingMode={product.pricingMode}
+              pwywFloorCents={isPwyw(product) ? pwywFloorCents(product) : 0}
+              pwywSuggestedCents={
+                isPwyw(product) ? pwywSuggestedCents(product) : 0
+              }
+              windowState={windowState}
               service={
                 product.kind === "service"
                   ? {
@@ -325,11 +372,25 @@ export default async function ProductPage({
               }
               serviceLocation={product.serviceLocation}
               imageUrl={product.images[0]?.url ?? null}
-              hasFiles={product.kind === "digital" && product.files.length > 0}
+              /*
+               * "You will get it once payment is confirmed", and the question
+               * is whether there is an "it".
+               *
+               * It asked whether the product had files, which is now only one
+               * of the three ways a digital product delivers — so a course
+               * link and an invite code, the two where a buyer is *most*
+               * unsure what they are about to receive, were the two that said
+               * nothing at checkout.
+               */
+              hasFiles={
+                product.kind === "digital" &&
+                (deliveryOf(product) === "file"
+                  ? product.files.length > 0
+                  : Boolean(product.digitalLinkUrl ?? product.digitalAccessDetails))
+              }
               heldUntilPaid={product.releaseOnPayment}
               contactEmail={shop.contactEmail}
               compliance={complianceOf(shop)}
-              customFields={checkout.customFields}
               t={t}
             />
           </div>
@@ -423,7 +484,21 @@ export default async function ProductPage({
 
         <footer className="mt-14 flex flex-col items-center gap-3 text-center">
           <PoweredBy shop={shop} t={t} />
-          <LanguageSwitcher current={locale} label={t.common.language} />
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <LanguageSwitcher current={locale} label={t.common.language} />
+            {/*
+              The product page is where most storefront traffic actually lands —
+              a link in a bio goes to the shop, but an ad, a post and a share
+              all go to one product. A switcher only on the index would be a
+              switcher most buyers never see.
+            */}
+            <CurrencySwitcher
+              current={display.currency}
+              options={display.options}
+              locale={locale}
+              t={t}
+            />
+          </div>
         </footer>
       </div>
     </div>

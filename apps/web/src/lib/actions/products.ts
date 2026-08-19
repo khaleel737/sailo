@@ -15,11 +15,14 @@ import {
   readJsonRows,
   readTags,
   text,
+  shopMomentFrom,
   usableVariants,
   type FileRow,
   type VariantRow,
 } from "@/lib/products/form-fields";
-import { categories, type ProductOption } from "@sailo/db/schema";
+import { categories, type CurrencyPrices, type ProductOption } from "@sailo/db/schema";
+import { buildCurrencyPrices } from "@sailo/core/regional";
+import { can } from "@sailo/core/plans";
 import {
   deleteProduct as deleteProductRow,
   saveProduct as saveProductRow,
@@ -28,9 +31,10 @@ import {
   type SaveProductRefusal,
 } from "@sailo/commerce/products";
 import { requireShop } from "@/lib/session";
+import { notifySellerOfLowStock } from "@sailo/workflows/orders";
 import { parseMoneyToCents } from "@sailo/core/currency";
 import { slugify } from "@sailo/core/slug";
-import { isProductKind } from "@sailo/core/variants";
+import { MAX_QUANTITY, isProductKind } from "@sailo/core/variants";
 import type { ActionState } from "./shop";
 
 /**
@@ -59,12 +63,24 @@ function sentenceFor(refusal: SaveProductRefusal): string {
       return "That category doesn't exist.";
     case "event_needs_start":
       return "An event needs a date and time.";
+    case "event_ends_before_start":
+      return "The event's end has to come after it starts.";
+    case "digital_needs_delivery":
+      return refusal.delivery === "link"
+        ? "Add the link buyers get after paying."
+        : "Add the code or joining details buyers get after paying.";
+    case "digital_link_not_public":
+      return "The download link must be a public https:// address.";
     case "membership_needs_interval":
       return "Choose how often a membership is charged.";
     case "membership_needs_price":
       return "A membership needs a price to charge.";
     case "join_url_not_public":
       return "The join link must be a public https:// address.";
+    case "sell_window_inverted":
+      return "Sales have to close after they open. Check the two dates.";
+    case "pwyw_not_for_membership":
+      return "A membership needs a fixed price — buyers can't name their own for a recurring charge.";
     case "product_limit":
       return `You've reached the ${refusal.limit}-product limit on ${refusal.planName}. Upgrade to add more.`;
     case "not_found":
@@ -78,16 +94,103 @@ function sentenceFor(refusal: SaveProductRefusal): string {
  * The form labels it with the shop's time zone, and a seller placing a 7pm show
  * wants "7pm where the event is", which for a link-in-bio seller is
  * overwhelmingly their own zone.
+ *
+ * Takes the field name because the event now has two of them, and a second
+ * copy of this that parsed the end time slightly differently is exactly the
+ * kind of drift that makes an end land before its own start.
  */
-function readEventStart(formData: FormData): Date | null {
-  const raw = String(formData.get("eventStartsAt") ?? "").trim();
+function readMoment(formData: FormData, name: string): Date | null {
+  const raw = String(formData.get(name) ?? "").trim();
   if (!raw) return null;
   const parsed = new Date(raw);
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
+/**
+ * A `datetime-local` value, read as wall-clock time in the shop's own zone.
+ *
+ * Different from `readMoment` above on purpose, and the difference is the one
+ * spec 43 names. An event's start is a moment the seller thinks of in the
+ * zone of the venue, which for a link-in-bio seller is their own — reading it
+ * against the server's clock has been close enough because the server's clock
+ * is UTC and the field is labelled with the zone.
+ *
+ * A sell window is not that. "Sales close on the 31st" means the 31st where the
+ * seller is, and the whole point of the feature is that a boundary lands when
+ * they said it would — including across a DST change, where the offset on the
+ * day the window opens differs from the offset today. `zonedTimeToInstant`
+ * resolves the wall clock against the zone's rules at that instant and answers
+ * null for a time that does not exist (the hour a spring-forward skips), which
+ * is exactly the case a naive `new Date(raw)` silently moves by an hour.
+ *
+ * So the DST question is answered once, here, at the write — and every read
+ * downstream is an instant comparison that cannot get it wrong.
+ */
+/**
+ * The same, read out of the form bag.
+ *
+ * Two entry points and one parser, because the product's own window arrives as
+ * a `FormData` field and each variant's arrives as a string inside that row's
+ * JSON blob. Two parsers that differed by an hour would be the drift
+ * `readMoment`'s own note warns about, on the pair where it decides whether a
+ * tier is on sale at all.
+ */
+function readShopMoment(
+  formData: FormData,
+  name: string,
+  timeZone: string,
+): Date | null {
+  return shopMomentFrom(formData.get(name), timeZone);
+}
+
 /** The form, as the domain understands it. Every string is already a value. */
-function readProduct(formData: FormData, currency: string): ProductInput {
+/**
+ * The per-currency price fields the product form posts — spec 53.
+ *
+ * One pair per currency, named `price_EUR` / `compareAtPrice_EUR`, parsed
+ * against **that currency's** decimals. `prefix` exists so the same reader
+ * serves the product's own fields and, later, anything else that needs the
+ * same pair set.
+ *
+ * `buildCurrencyPrices` is what actually decides what is stored: it refuses a
+ * currency outside the offered set, and it drops a blank rather than storing a
+ * zero. Blank ≠ zero, on the field where confusing them prices a catalogue at
+ * nothing.
+ */
+function readCurrencyPrices(
+  formData: FormData,
+  currencies: readonly string[],
+  prefix: string,
+): CurrencyPrices {
+  return buildCurrencyPrices(
+    currencies.map((code) => ({
+      currency: code,
+      priceCents: optionalCents(formData.get(`${prefix}price_${code}`), code),
+      secondaryCents: optionalCents(
+        formData.get(`${prefix}compareAtPrice_${code}`),
+        code,
+      ),
+    })),
+  );
+}
+
+/** A variant row's own per-currency price, as the editor serialises it. */
+function readVariantPrice(row: VariantRow, code: string): unknown {
+  const prices = (row as Record<string, unknown>)[`price_${code}`];
+  return prices ?? null;
+}
+
+function readVariantCompareAt(row: VariantRow, code: string): unknown {
+  return (row as Record<string, unknown>)[`compareAt_${code}`] ?? null;
+}
+
+function readProduct(
+  formData: FormData,
+  currency: string,
+  timeZone: string,
+  /** The other currencies the shop quotes. Empty means one currency. */
+  regionalCurrencies: readonly string[],
+): ProductInput {
   const kindRaw = String(formData.get("kind") ?? "physical");
   const kind = isProductKind(kindRaw) ? kindRaw : "physical";
 
@@ -100,9 +203,39 @@ function readProduct(formData: FormData, currency: string): ProductInput {
     description: String(formData.get("description") ?? ""),
     priceCents: parseMoneyToCents(String(formData.get("price") ?? "0"), currency),
     compareAtCents: optionalCents(formData.get("compareAtPrice"), currency),
+    /*
+     * The same price in each currency the shop quotes — spec 53.
+     *
+     * Read against the *target* currency's decimals rather than the shop's, so
+     * a seller typing 2500 into a HUF field means Ft 2,500 and not Ft 25. That
+     * is the same asymmetry `moneyToCents` exists to prevent, arriving one
+     * level up: the shop's currency decides nothing about a price denominated
+     * in another one.
+     *
+     * Blank drops the currency rather than storing a zero — `buildCurrencyPrices`
+     * enforces that, and it is what keeps "no price yet" and "free" apart on
+     * the field where confusing them gives a catalogue away.
+     */
+    currencyPrices: readCurrencyPrices(formData, regionalCurrencies, ""),
+
+    /*
+     * Spec 43. Blank stays blank on both money fields, which is the whole rule:
+     * `optionalCents` answers null for an empty box and a number for "0", so
+     * "not configured" and "free is allowed" reach the domain as the two
+     * different things they are.
+     */
+    pricingMode: String(formData.get("pricingMode") ?? "fixed"),
+    minPriceCents: optionalCents(formData.get("minPrice"), currency),
+    suggestedPriceCents: optionalCents(formData.get("suggestedPrice"), currency),
+    sellFrom: readShopMoment(formData, "sellFrom", timeZone),
+    sellUntil: readShopMoment(formData, "sellUntil", timeZone),
+    hideWhenUnavailable: formData.get("hideWhenUnavailable") === "on",
+
     kind,
     categoryId: String(formData.get("categoryId") ?? ""),
     tags: readTags(formData),
+    sku: text(formData.get("sku"), 60),
+    maxPerOrder: optionalCount(formData.get("maxPerOrder"), MAX_QUANTITY),
     options,
 
     /*
@@ -118,10 +251,30 @@ function readProduct(formData: FormData, currency: string): ProductInput {
       // Blank is "same as the product", which is not the same as free.
       priceCents: optionalCents(row.price, currency),
       compareAtCents: optionalCents(row.compareAt, currency),
+      /*
+       * The combination's own per-currency prices — spec 53. Carried on the
+       * variant row's JSON blob the way its other money already is, keyed by
+       * currency code, and only meaningful when the variant overrides the
+       * product's price at all.
+       */
+      currencyPrices: buildCurrencyPrices(
+        regionalCurrencies.map((code) => ({
+          currency: code,
+          priceCents: optionalCents(readVariantPrice(row, code), code),
+          secondaryCents: optionalCents(readVariantCompareAt(row, code), code),
+        })),
+      ),
       // Blank is "nobody is counting", which is not the same as sold out.
       stockQuantity: optionalCount(row.stock),
       isAvailable: row.available !== false,
       imageUrl: typeof row.image === "string" ? row.image : null,
+      /*
+       * This combination's own window — an early-bird tier that closes while
+       * the product keeps selling. Read from the row's JSON in the shop's zone,
+       * the same way the product's own two are.
+       */
+      sellFrom: shopMomentFrom(row.sellFrom, timeZone),
+      sellUntil: shopMomentFrom(row.sellUntil, timeZone),
     })),
 
     files: readJsonRows<FileRow>(formData, "files").flatMap((f) =>
@@ -132,6 +285,25 @@ function readProduct(formData: FormData, currency: string): ProductInput {
     trackInventory: formData.get("trackInventory") === "on",
     stockQuantity: optionalCount(formData.get("stockQuantity")),
 
+    /*
+     * Spec 51. Blank stays blank on all five: an unweighed product weighs
+     * nothing as far as a band table is concerned, and a product with no
+     * threshold gets no alert. Neither is the same as zero, and `optionalCount`
+     * is what keeps them apart.
+     *
+     * Capped at a tonne and at ten metres — not to be clever about parcels, but
+     * because these are integers a browser posts and something has to bound
+     * them before they reach an `integer` column.
+     */
+    lowStockThreshold: optionalCount(formData.get("lowStockThreshold"), 1_000_000),
+    weightGrams: optionalCount(formData.get("weightGrams"), 1_000_000),
+    lengthMm: optionalCount(formData.get("lengthMm"), 10_000),
+    widthMm: optionalCount(formData.get("widthMm"), 10_000),
+    heightMm: optionalCount(formData.get("heightMm"), 10_000),
+
+    digitalDelivery: String(formData.get("digitalDelivery") ?? "file"),
+    digitalLinkUrl: String(formData.get("digitalLinkUrl") ?? ""),
+    digitalAccessDetails: text(formData.get("digitalAccessDetails"), 2000),
     releaseOnPayment: formData.get("releaseOnPayment") === "on",
     downloadLimit: optionalCount(formData.get("downloadLimit"), 1000),
     downloadExpiryDays: optionalCount(formData.get("downloadExpiryDays"), 3650),
@@ -141,11 +313,14 @@ function readProduct(formData: FormData, currency: string): ProductInput {
     serviceLocation: text(formData.get("serviceLocation"), 500),
     bookingEnabled: formData.get("bookingEnabled") === "on",
     bookingLeadHours: optionalCount(formData.get("bookingLeadHours"), 24 * 365) ?? 0,
+    bookingBufferMinutes: optionalCount(formData.get("bookingBufferMinutes"), 24 * 60),
 
-    eventStartsAt: readEventStart(formData),
+    eventStartsAt: readMoment(formData, "eventStartsAt"),
+    eventEndsAt: readMoment(formData, "eventEndsAt"),
     eventJoinUrl: String(formData.get("eventJoinUrl") ?? ""),
 
     billingInterval: String(formData.get("billingInterval") ?? ""),
+    billingIntervalCount: optionalCount(formData.get("billingIntervalCount"), 365),
     trialDays: optionalCount(formData.get("trialDays")),
 
     inStock: formData.get("inStock") === "on",
@@ -178,10 +353,40 @@ export async function saveProduct(
 ): Promise<ActionState> {
   const { shop } = await requireShop();
 
-  const result = await saveProductRow(shop, readProduct(formData, shop.currency));
+  /*
+   * The currencies whose fields this form may have posted — spec 53.
+   *
+   * Taken from the shop row and gated on the plan, never from the request: the
+   * field names are `price_EUR`, so a hand-rolled POST could otherwise write a
+   * price in a currency this shop does not offer, and a currency with a price
+   * on every product is one `liveCurrencies` will happily put on a storefront.
+   */
+  const regionalCurrencies = can(shop, "regionalPricing")
+    ? shop.regionalCurrencies
+    : [];
+
+  const result = await saveProductRow(
+    shop,
+    readProduct(formData, shop.currency, shop.timeZone, regionalCurrencies),
+  );
   if (!result.ok) return { ok: false, error: sentenceFor(result.refusal) };
 
   dropCatalogueCaches(shop, result.slug);
+
+  /*
+   * A seller typing a new stock count crosses the line as surely as an order
+   * does — spec 51.
+   *
+   * This is the path that *re-arms* the alert as well as the one that fires it,
+   * and the re-arm is the half that matters most here: a restock happens on
+   * this screen and nowhere else, so without this call a shop would hear once
+   * about a shortage and then never again for the life of the product.
+   *
+   * After the caches are dropped and inside `after()`, because it reports on a
+   * save that has already succeeded.
+   */
+  after(() => notifySellerOfLowStock({ shop, productId: result.id }));
+
   return {
     ok: true,
     message: result.created ? "Product added." : "Product updated.",

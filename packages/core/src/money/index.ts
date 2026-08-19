@@ -11,6 +11,9 @@
  * storefront quoted.
  */
 export * from "./currency";
+export * from "./regional";
 export * from "./pricing";
 export * from "./quote";
 export * from "./tax-label";
+/** What a parcel weighs, and what that costs to post — spec 51. */
+export * from "./weight";

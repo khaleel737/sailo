@@ -13,6 +13,7 @@ import {
   Select,
 } from "@sailo/design-system/web";
 import type { Shop } from "@sailo/db/schema";
+import type { CurrencyGaps } from "@/lib/queries/regional";
 import type { Dictionary } from "@sailo/i18n";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { IdentityCard } from "./identity-card";
@@ -25,6 +26,7 @@ import { InvoicingCard } from "./invoicing-card";
 import { TrackingCard } from "./tracking-card";
 import { BookingCard } from "./booking-card";
 import { CalendarSyncCard } from "./calendar-sync-card";
+import { CurrenciesCard } from "./currencies-card";
 import { NotificationsCard } from "./notifications-card";
 import { hoursOf } from "@sailo/commerce/booking";
 
@@ -49,6 +51,7 @@ export function SettingsForm({
   t,
   accountEmail,
   marketingOptIn,
+  currencyGaps,
 }: {
   shop: Shop;
   t: Dictionary;
@@ -56,6 +59,12 @@ export function SettingsForm({
   accountEmail: string;
   /** Whether Sailo's own product mail is still switched on for this account. */
   marketingOptIn: boolean;
+  /**
+   * What each ticked currency is still missing before it can be quoted —
+   * spec 53. Empty for every shop that has ticked none, which is every shop
+   * the day this ships.
+   */
+  currencyGaps: CurrencyGaps[];
 }) {
   const a = useAdminT();
   const [state, action] = useActionState(updateShop, { ok: false });
@@ -121,6 +130,13 @@ export function SettingsForm({
       </Card>
 
       <OrdersContactCard shop={shop} t={t} />
+
+      {/* Above tax rather than below it: which currencies a shop quotes is a
+          decision about the price on the card, and tax is a decision about
+          what is added to it. Reading them the other way round invites the
+          idea that a second currency has a second tax rate, which it does
+          not — a rate is a percentage and a percentage has no currency. */}
+      <CurrenciesCard shop={shop} gaps={currencyGaps} />
 
       <TaxCard shop={shop} />
 
