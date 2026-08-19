@@ -170,8 +170,14 @@ export async function runAutomationTick(now = new Date()): Promise<TickResult> {
       continue;
     }
     try {
-      const advanced = await advance(run, found.automation, found.shop, now);
-      result[advanced] += 1;
+      /*
+       * A list, not one value, because a node can be two facts at once: a send
+       * that is also the last step both *sent* and *finished*. Counting only
+       * one of them under-reports the other.
+       */
+      for (const counted of await advance(run, found.automation, found.shop, now)) {
+        result[counted] += 1;
+      }
     } catch (error) {
       /*
        * One run's failure must never take the tick with it. A graph nobody
@@ -195,7 +201,7 @@ async function advance(
   automation: Automation,
   shop: Shop,
   now: Date,
-): Promise<Advanced> {
+): Promise<Advanced[]> {
   /*
    * A paused automation's runs keep their `wake_at` and resume on activation.
    * The lease already pushed this one five minutes out, which is the right
@@ -203,11 +209,11 @@ async function advance(
    * claim every five minutes, and a pause that lasts a minute resumes almost
    * immediately.
    */
-  if (automation.status !== "active") return "waited";
+  if (automation.status !== "active") return ["waited"];
 
   if (run.attempt > MAX_ATTEMPTS) {
     await failRun(run, `gave up after ${MAX_ATTEMPTS} attempts`, now);
-    return "failed";
+    return ["failed"];
   }
 
   /*
@@ -223,14 +229,14 @@ async function advance(
       `graph invalid: ${parsed.problems.map((p) => p.code).join(", ")}`,
       now,
     );
-    return "failed";
+    return ["failed"];
   }
 
   const nodeId = run.cursor ?? parsed.graph.entry;
   const node = parsed.graph.nodes.get(nodeId);
   if (!node) {
     await failRun(run, `step ${nodeId} no longer exists`, now);
-    return "failed";
+    return ["failed"];
   }
 
   switch (node.kind) {
@@ -257,7 +263,7 @@ async function runTimer(
   shop: Shop,
   graph: ParsedGraph,
   now: Date,
-): Promise<Advanced> {
+): Promise<Advanced[]> {
   const wake = wakeAtFor(node, shop.timeZone, now);
   const next = nextNode(graph, node.id, undefined);
 
@@ -268,12 +274,12 @@ async function runTimer(
    * Leaving the cursor on the timer would make it fire again on the next
    * claim and reset its own wait — a five-minute timer that never ends.
    */
-  if (!next) return finishRun(run, now);
+  if (!next) return [await finishRun(run, now)];
   await getDb()
     .update(automationRuns)
     .set({ status: "waiting", cursor: next, wakeAt: wake, lastError: null })
     .where(eq(automationRuns.id, run.id));
-  return "waited";
+  return ["waited"];
 }
 
 async function runFilter(
@@ -281,7 +287,7 @@ async function runFilter(
   node: Extract<ParsedNode, { kind: "filter" }>,
   graph: ParsedGraph,
   now: Date,
-): Promise<Advanced> {
+): Promise<Advanced[]> {
   const matches = await contactMatches(run, node.segment, now);
 
   /*
@@ -293,11 +299,11 @@ async function runFilter(
    */
   if (!matches) {
     await step(run.id, node, "filtered", "did not match");
-    return finishRun(run, now);
+    return [await finishRun(run, now)];
   }
 
   await step(run.id, node, "branched", "matched");
-  return moveTo(run, nextNode(graph, node.id), now);
+  return [await moveTo(run, nextNode(graph, node.id), now)];
 }
 
 async function runBranch(
@@ -305,7 +311,7 @@ async function runBranch(
   node: Extract<ParsedNode, { kind: "branch" }>,
   graph: ParsedGraph,
   now: Date,
-): Promise<Advanced> {
+): Promise<Advanced[]> {
   let took: boolean;
 
   switch (node.condition) {
@@ -345,7 +351,7 @@ async function runBranch(
   }
 
   await step(run.id, node, "branched", took ? "yes" : "no");
-  return moveTo(run, nextNode(graph, node.id, took ? "yes" : "no"), now);
+  return [await moveTo(run, nextNode(graph, node.id, took ? "yes" : "no"), now)];
 }
 
 /**
@@ -369,7 +375,7 @@ async function runSend(
   shop: Shop,
   graph: ParsedGraph,
   now: Date,
-): Promise<Advanced> {
+): Promise<Advanced[]> {
   const db = getDb();
 
   /*
@@ -380,7 +386,7 @@ async function runSend(
    */
   if (!can(shop, "automations")) {
     await step(run.id, node, "skipped", "plan");
-    return moveTo(run, nextNode(graph, node.id), now);
+    return ["skipped", await moveTo(run, nextNode(graph, node.id), now)];
   }
 
   // Left this sequence for good. The run ends rather than limping to a node
@@ -391,7 +397,7 @@ async function runSend(
       .update(automationRuns)
       .set({ status: "cancelled", wakeAt: null, finishedAt: now })
       .where(eq(automationRuns.id, run.id));
-    return "skipped";
+    return ["skipped"];
   }
 
   /*
@@ -402,7 +408,7 @@ async function runSend(
   const reachable = await canMailNow(shop.id, run.email);
   if (!reachable) {
     await step(run.id, node, "skipped", "suppressed or no consent");
-    return moveTo(run, nextNode(graph, node.id), now);
+    return ["skipped", await moveTo(run, nextNode(graph, node.id), now)];
   }
 
   /*
@@ -429,7 +435,7 @@ async function runSend(
         lastError: null,
       })
       .where(eq(automationRuns.id, run.id));
-    return "deferred";
+    return ["deferred"];
   }
 
   const email = await db.query.automationEmails.findFirst({
@@ -440,7 +446,7 @@ async function runSend(
   });
   if (!email) {
     await failRun(run, `email ${node.emailId} no longer exists`, now);
-    return "failed";
+    return ["failed"];
   }
 
   /*
@@ -457,7 +463,7 @@ async function runSend(
       .update(automationRuns)
       .set({ status: "waiting", wakeAt: new Date(now.getTime() + 3_600_000) })
       .where(eq(automationRuns.id, run.id));
-    return "deferred";
+    return ["deferred"];
   }
 
   /*
@@ -546,11 +552,17 @@ async function runSend(
         lastError: (result.reason ?? "send failed").slice(0, 500),
       })
       .where(eq(automationRuns.id, run.id));
-    return "failed";
+    return ["failed"];
   }
 
+  /*
+   * Both facts, when there are two. A send that is also the last step finished
+   * the run, and reporting only one of them makes the tick's own log wrong
+   * about whichever it dropped — `sent` being the number an operator reads to
+   * know mail is going out at all.
+   */
   const moved = await moveTo(run, nextNode(graph, node.id), now);
-  return moved === "waited" ? "sent" : moved;
+  return moved === "finished" ? ["sent", "finished"] : ["sent"];
 }
 
 /**
@@ -575,9 +587,9 @@ async function runWhatsApp(
   node: Extract<ParsedNode, { kind: "whatsapp" }>,
   graph: ParsedGraph,
   now: Date,
-): Promise<Advanced> {
+): Promise<Advanced[]> {
   await step(run.id, node, "handed_off", node.template.slice(0, 500));
-  return moveTo(run, nextNode(graph, node.id), now);
+  return [await moveTo(run, nextNode(graph, node.id), now)];
 }
 
 /* --------------------------------------------------------------------------
