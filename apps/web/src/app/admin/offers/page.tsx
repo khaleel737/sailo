@@ -37,7 +37,7 @@ export const metadata: Metadata = { title: "Offers" };
  */
 export default async function OffersPage() {
   const { a, locale } = await getAdminT();
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:read");
 
   const allowed = can(shop, "offers");
 

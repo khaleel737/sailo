@@ -298,6 +298,21 @@ export async function createShop(
   if (!shop) return { ok: false, error: "Couldn't create your shop. Try again." };
 
   /*
+   * The shop's team, with its owner already in it — spec 37.
+   *
+   * Awaited rather than deferred to `after()`, unlike the referral attribution
+   * below. That one can fail into "nobody earns"; this one cannot: a shop
+   * created without an organization is a shop nobody can ever invite anybody
+   * to, and the seller would have no way to tell — the screen is simply empty
+   * and the button does nothing. `0052` gives every older shop the same thing,
+   * and the two have to agree because `requireShop` reads the result of both.
+   *
+   * Idempotent, so the retry a seller makes after a slow response cannot leave
+   * two organizations behind.
+   */
+  await ensureShopOrganization(shop.id);
+
+  /*
    * Who brought them, decided once and never revisited.
    *
    * This is the only place the referral cookie is read, and it is dropped in
@@ -358,7 +373,7 @@ export async function updateShop(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { user, shop } = await requireShop();
+  const { user, shop } = await requireShop("settings:write");
 
   const name = String(formData.get("name") ?? "").trim();
   if (!name) return { ok: false, error: "Shop name can't be empty." };

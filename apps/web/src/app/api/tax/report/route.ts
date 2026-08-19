@@ -19,7 +19,7 @@ import {
  */
 export async function GET(request: Request) {
   // Redirects when signed out, so this is never publicly reachable.
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("money:read");
 
   if (!can(shop, "csvExport")) {
     const plan = cheapestPlanWith("csvExport");

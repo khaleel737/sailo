@@ -35,7 +35,7 @@ import type { ActionState } from "./shop";
  */
 
 export async function updateOrderStatus(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
   if (!id || !isOrderStatus(status)) return;
@@ -125,7 +125,7 @@ export async function updateOrderStatus(formData: FormData) {
  * than this one re-deriving it from a row it read for itself.
  */
 export async function updatePaymentStatus(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
   const id = String(formData.get("id") ?? "");
   const paymentStatus = String(formData.get("paymentStatus") ?? "");
   if (!id) return;
@@ -167,7 +167,7 @@ export async function markOrderShipped(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
   const id = String(formData.get("id") ?? "");
 
   let note = "Marked as shipped.";
@@ -283,7 +283,7 @@ export async function markOrderDelivered(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
   const id = String(formData.get("id") ?? "");
   if (!id) return { ok: false, error: "Order not found." };
 
@@ -330,7 +330,7 @@ export async function recordOrderShipment(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
 
   /*
    * Gated here as well as in the panel, because a form is not a gate.
@@ -405,7 +405,7 @@ export async function refundOrder(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:refund");
 
   const id = String(formData.get("id") ?? "");
   const raw = String(formData.get("amount") ?? "").trim();
@@ -509,7 +509,7 @@ export async function refundOrder(
 
 
 export async function deleteOrder(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
   const db = getDb();
   const id = String(formData.get("id") ?? "");
   if (!id) return;
@@ -535,7 +535,7 @@ export async function deleteOrder(formData: FormData) {
 
 /** Removes clients that no longer have any orders. */
 export async function deleteClient(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:write");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
@@ -549,7 +549,7 @@ export async function deleteClient(formData: FormData) {
 }
 
 export async function updateClientNotes(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:write");
   const id = String(formData.get("id") ?? "");
   const notes = String(formData.get("notes") ?? "").trim().slice(0, 2000);
   if (!id) return;

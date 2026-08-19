@@ -15,7 +15,7 @@ import { Button, Card, EmptyState } from "@sailo/design-system/web";
 export const metadata: Metadata = { title: "Categories" };
 
 export default async function AdminCategoriesPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:read");
   const { a } = await getAdminT();
   const categories = await getShopCategories(shop.id);
 

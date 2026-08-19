@@ -66,7 +66,7 @@ export async function createContactList(
   _prev: AudienceActionState,
   formData: FormData,
 ): Promise<AudienceActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   if (!gated(shop)) return NO(UPGRADE);
 
   const result = await createList(shop.id, {
@@ -97,7 +97,7 @@ export async function updateContactList(
   _prev: AudienceActionState,
   formData: FormData,
 ): Promise<AudienceActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   if (!gated(shop)) return NO(UPGRADE);
 
   const listId = String(formData.get("listId") ?? "");
@@ -120,7 +120,7 @@ export async function deleteContactList(
   _prev: AudienceActionState,
   formData: FormData,
 ): Promise<AudienceActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   if (!gated(shop)) return NO(UPGRADE);
 
   const listId = String(formData.get("listId") ?? "");
@@ -140,7 +140,7 @@ export async function addToContactList(
   _prev: AudienceActionState,
   formData: FormData,
 ): Promise<AudienceActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   if (!gated(shop)) return NO(UPGRADE);
 
   const listId = String(formData.get("listId") ?? "");
@@ -252,7 +252,7 @@ export async function removeFromContactList(
   _prev: AudienceActionState,
   formData: FormData,
 ): Promise<AudienceActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   if (!gated(shop)) return NO(UPGRADE);
 
   const listId = String(formData.get("listId") ?? "");
@@ -283,7 +283,7 @@ export async function createContactField(
   _prev: AudienceActionState,
   formData: FormData,
 ): Promise<AudienceActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   if (!gated(shop)) return NO(UPGRADE);
 
   const result = await createField(shop.id, {
@@ -329,7 +329,7 @@ export async function updateContactField(
   _prev: AudienceActionState,
   formData: FormData,
 ): Promise<AudienceActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   if (!gated(shop)) return NO(UPGRADE);
 
   const fieldId = String(formData.get("fieldId") ?? "");
@@ -353,7 +353,7 @@ export async function deleteContactField(
   _prev: AudienceActionState,
   formData: FormData,
 ): Promise<AudienceActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   if (!gated(shop)) return NO(UPGRADE);
 
   const fieldId = String(formData.get("fieldId") ?? "");
@@ -383,7 +383,7 @@ export async function resubscribeAddress(
   _prev: AudienceActionState,
   formData: FormData,
 ): Promise<AudienceActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   if (!gated(shop)) return NO(UPGRADE);
 
   const gate = await rateLimit(`resubscribe:${await callerIp()}`, 30, 300);

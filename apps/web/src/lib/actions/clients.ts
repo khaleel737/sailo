@@ -30,7 +30,7 @@ export async function setClientTags(
   _prev: ClientActionState,
   formData: FormData,
 ): Promise<ClientActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:write");
 
   const clientId = String(formData.get("clientId") ?? "");
   if (!clientId) return { ok: false, error: "Which customer?" };
@@ -81,7 +81,7 @@ export async function addClient(
   _prev: ClientActionState,
   formData: FormData,
 ): Promise<ClientActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:write");
 
   const gate = await rateLimit(`add-client:${await callerIp()}`, 60, 300);
   if (!gate.allowed) {

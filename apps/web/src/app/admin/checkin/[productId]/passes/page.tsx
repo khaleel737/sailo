@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default async function DoorPassesPage({
   params,
 }: PageProps<"/admin/checkin/[productId]/passes">) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:read");
   const { a } = await getAdminT();
   const { productId } = await params;
 

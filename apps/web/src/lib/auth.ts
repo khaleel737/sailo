@@ -7,13 +7,25 @@ import {
 } from "better-auth/api";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { bearer, twoFactor } from "better-auth/plugins";
+import { bearer, organization, twoFactor } from "better-auth/plugins";
 import { expo } from "@better-auth/expo";
 import { getDb } from "@sailo/db";
-import { account, session, twoFactor as twoFactorTable, user, verification } from "@sailo/db/schema";
+import {
+  account,
+  invitation,
+  member,
+  organization as organizationTable,
+  session,
+  twoFactor as twoFactorTable,
+  user,
+  verification,
+} from "@sailo/db/schema";
+import { SHOP_ROLES, shopAccess } from "@sailo/auth/permissions";
+import { sendTeamInvite } from "@/lib/email";
 import { sendEmailConfirmation, sendPasswordReset } from "@/lib/email";
 import { refusesPasswordAuthForRoster } from "@sailo/security/roster";
 import { rateLimit, refundRateLimit } from "@sailo/rate-limit";
+import { recordAccountEvent } from "@sailo/commerce/disputes";
 
 /**
  * How long a reset link stays good. Set here rather than left to the default
@@ -96,7 +108,21 @@ export const auth = betterAuth({
   trustedOrigins: ["sailo://"],
   database: drizzleAdapter(getDb(), {
     provider: "pg",
-    schema: { user, session, account, verification, twoFactor: twoFactorTable },
+    schema: {
+      user,
+      session,
+      account,
+      verification,
+      twoFactor: twoFactorTable,
+      /*
+       * Spec 37. Named here or the adapter invents its own table names and
+       * nothing the migration created is ever written to. `team` and
+       * `teamMember` are absent on purpose — a Sailo shop is one team.
+       */
+      organization: organizationTable,
+      member,
+      invitation,
+    },
   }),
   emailAndPassword: {
     enabled: true,
@@ -430,6 +456,59 @@ export const auth = betterAuth({
      * fifteen minutes underneath the Redis limit in `hooks.before`.
      */
     twoFactor(),
+    /*
+     * Spec 37 — the seller's own team.
+     *
+     * The plugin owns members, invitations, expiry, acceptance and revocation.
+     * What Sailo supplies is the vocabulary (`@sailo/auth/permissions`) and the
+     * screen. Deliberately *not* `admin()`: that plugin is platform staff, and
+     * Sailo's staff model is `StaffCapability` in apps/hq. Conflating them
+     * would put a seller's colleague and a Sailo employee on one ladder.
+     *
+     * `creatorRole: "owner"` matches the role the `0052` backfill wrote for
+     * every existing shop, so a shop made today and a shop made last year have
+     * the same word for the same person.
+     */
+    organization({
+      ac: shopAccess,
+      roles: SHOP_ROLES,
+      creatorRole: "owner",
+      /*
+       * The invitation is an account oracle unless it is careful, and Decision
+       * B says it fails closed. Two halves:
+       *
+       *   - the *mail* says the same thing whether or not the address already
+       *     has a Sailo account, because it is the same mail either way — a
+       *     link to accept, which works for both;
+       *   - the *action* that calls this (`lib/actions/team.ts`) rate-limits
+       *     with `{ onOutage: "closed" }` and answers one sentence regardless.
+       *
+       * Nothing here may branch on whether the user exists.
+       */
+      async sendInvitationEmail(data) {
+        await sendTeamInvite({
+          to: data.email,
+          organizationName: data.organization.name,
+          inviterName: data.inviter.user.name,
+          inviterEmail: data.inviter.user.email,
+          url: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/team/invite/${data.id}`,
+        });
+      },
+      /*
+       * Seven days. Long enough for somebody who reads mail weekly, short
+       * enough that a forwarded invitation stops working — the plugin's own
+       * default is 48 hours, which is too short for the person a small seller
+       * is actually inviting.
+       */
+      invitationExpiresIn: 60 * 60 * 24 * 7,
+      /*
+       * One organization per shop, and a shop is created by the onboarding
+       * flow rather than by anybody pressing "new organization". Left at the
+       * plugin's default of allowing creation because the endpoint is only
+       * reachable with a session, and `createShop` is what actually makes one.
+       */
+      organizationLimit: 5,
+    }),
     // Must stay last so Server Actions can set cookies.
     /*
      * The mobile app carries its session as a bearer token, not a cookie — a

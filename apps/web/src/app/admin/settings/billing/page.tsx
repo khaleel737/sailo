@@ -21,7 +21,7 @@ export const metadata: Metadata = { title: "Billing" };
 export default async function BillingPage({
   searchParams,
 }: PageProps<"/admin/settings/billing">) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("money:read");
   const { t, a, locale } = await getAdminT();
   const params = await searchParams;
 
@@ -31,7 +31,7 @@ export default async function BillingPage({
     await syncSubscriptionForShop(shop.id);
   }
 
-  const { shop: fresh } = await requireShop();
+  const { shop: fresh } = await requireShop("money:read");
   const current = planFor(fresh);
   const interval = params.interval === "year" ? "year" : "month";
 

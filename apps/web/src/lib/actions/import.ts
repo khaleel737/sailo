@@ -27,7 +27,7 @@ export async function runImport(
   _prev: ImportState,
   formData: FormData,
 ): Promise<ImportState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
 
   const type = String(formData.get("type") ?? "");
   if (!isImportType(type)) return { ok: false, error: "Unknown import type." };

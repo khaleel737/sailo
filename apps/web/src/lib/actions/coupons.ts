@@ -31,7 +31,7 @@ export async function saveCoupon(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
 
   if (!can(shop, "coupons")) {
     return { ok: false, error: upgradeMessage("coupons", "Discount codes") };
@@ -133,7 +133,7 @@ const REFUSALS: Record<
 };
 
 export async function deleteCoupon(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
@@ -146,7 +146,7 @@ export async function deleteCoupon(formData: FormData) {
 }
 
 export async function toggleCoupon(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 

@@ -17,7 +17,7 @@ export const metadata: Metadata = { title: "Security" };
 export const instant = false;
 
 export default async function SecuritySettingsPage() {
-  const { user, shop } = await requireShop();
+  const { user, shop } = await requireShop("orders:read");
   const session = await getSession();
   // `requireShop` already redirected if there were no session; this narrows
   // the type and covers the sliver where it expired mid-render.

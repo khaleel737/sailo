@@ -53,7 +53,7 @@ export const instant = false;
 export default async function TaxSettingsPage(
   props: PageProps<"/admin/settings/tax">,
 ) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("money:read");
   const { a, locale } = await getAdminT();
   const params = await props.searchParams;
 

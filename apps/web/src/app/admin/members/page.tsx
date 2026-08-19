@@ -26,7 +26,7 @@ export const metadata: Metadata = { title: "Members" };
  * by omission — which is to say, never.
  */
 export default async function MembersPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:read");
   const { a, locale } = await getAdminT();
   const { t } = await getT();
 

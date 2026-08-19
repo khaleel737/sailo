@@ -19,7 +19,7 @@ import {
  * the source of truth.
  */
 export async function startCheckout(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
 
   const plan = String(formData.get("plan") ?? "");
   const interval = String(formData.get("interval") ?? "month");
@@ -113,7 +113,7 @@ export async function startCheckout(formData: FormData) {
 
 /** Stripe-hosted portal for changing plan, card or cancelling. */
 export async function openBillingPortal() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   if (!shop.stripeCustomerId) redirect("/admin/settings/billing");
 
   /*

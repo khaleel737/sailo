@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: "Support" };
 const RECENT_TICKETS = 20;
 
 export default async function AdminSupportPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:read");
   const { a, locale } = await getAdminT();
 
   const tickets = await getDb().query.supportTickets.findMany({

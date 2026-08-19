@@ -32,7 +32,7 @@ export const instant = false;
  * from the campaign they were trying to narrow.
  */
 export default async function ListsPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:read");
   const { a } = await getAdminT();
 
   const lists = await listsFor(shop.id);

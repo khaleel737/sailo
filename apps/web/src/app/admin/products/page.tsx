@@ -25,7 +25,7 @@ export const metadata: Metadata = { title: "Products" };
  * you, which is why every commerce admin worth using ends up here.
  */
 export default async function AdminProductsPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:read");
   const { a, locale } = await getAdminT();
   const products = await getAdminProducts(shop.id);
   /*

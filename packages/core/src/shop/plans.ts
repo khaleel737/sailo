@@ -207,6 +207,16 @@ export type Features = {
    * them would price the smallest shops out of not being stood up.
    */
   staffResources: boolean;
+  /**
+   * Other people, working in the seller's shop — spec 37.
+   *
+   * A paid feature, and the Free plan gets the owner alone. Not a throttle
+   * dressed as a feature: a shop with a second person in it is a shop with
+   * somebody on a payroll, and it is also the point at which Sailo starts
+   * carrying an invitation flow, an audit trail and a support surface that a
+   * one-person shop costs us nothing for.
+   */
+  teams: boolean;
 };
 
 export type Limits = {
@@ -276,6 +286,7 @@ export const PLANS: Record<PlanId, Plan> = {
       integrations: false,
       testimonials: false,
       testimonialEmbed: false,
+      teams: false,
       automations: false,
       regionalPricing: false,
       catalogueImport: false,
@@ -322,6 +333,7 @@ export const PLANS: Record<PlanId, Plan> = {
       integrations: false,
       testimonials: true,
       testimonialEmbed: false,
+      teams: true,
       automations: false,
       regionalPricing: true,
       catalogueImport: true,
@@ -360,6 +372,7 @@ export const PLANS: Record<PlanId, Plan> = {
       integrations: true,
       testimonials: true,
       testimonialEmbed: true,
+      teams: true,
       automations: true,
       regionalPricing: true,
       catalogueImport: true,

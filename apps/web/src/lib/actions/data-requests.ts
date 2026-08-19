@@ -149,7 +149,7 @@ export async function releaseDataExport(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { user, shop } = await requireShop();
+  const { user, shop } = await requireShop("customers:export");
   const id = String(formData.get("requestId") ?? "");
 
   const result = await fulfilAccessRequest({
@@ -185,7 +185,7 @@ export async function eraseBuyerData(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { user, shop } = await requireShop();
+  const { user, shop } = await requireShop("settings:write");
   const id = String(formData.get("requestId") ?? "");
 
   /*
@@ -237,7 +237,7 @@ export async function refuseBuyerRequest(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { user, shop } = await requireShop();
+  const { user, shop } = await requireShop("customers:export");
 
   const result = await refuseDataRequest({
     shopId: shop.id,

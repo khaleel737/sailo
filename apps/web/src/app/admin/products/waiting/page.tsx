@@ -39,7 +39,7 @@ export const metadata: Metadata = { title: "Waiting for stock" };
  */
 export default async function WaitingPage() {
   const { a } = await getAdminT();
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:read");
 
   const waiting = await waitingFor(shop.id);
   const byPhone = waiting.filter((row) => !row.email && row.phone);

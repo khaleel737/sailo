@@ -36,7 +36,7 @@ export const metadata: Metadata = { title: "Overview" };
 export default async function AdminOverviewPage({
   searchParams,
 }: PageProps<"/admin">) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:read");
   const { t } = await getT();
   const { a } = await getAdminT();
   const locale = await getLocale();

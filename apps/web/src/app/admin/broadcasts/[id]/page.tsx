@@ -22,7 +22,7 @@ export default async function BroadcastPage({
   params,
 }: PageProps<"/admin/broadcasts/[id]">) {
   const { id } = await params;
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:read");
   const { a, locale } = await getAdminT();
   if (!can(shop, "broadcasts") || !isUuid(id)) notFound();
 

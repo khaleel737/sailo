@@ -66,7 +66,7 @@ const CLIENT_COLUMNS = [
 
 export default async function DataPage() {
   const { a } = await getAdminT();
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:read");
   const canExport = can(shop, "csvExport");
   const exportPlan = cheapestPlanWith("csvExport");
 

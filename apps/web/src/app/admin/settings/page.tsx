@@ -8,7 +8,7 @@ import { currencyGaps as getCurrencyGaps } from "@/lib/queries/regional";
 export const metadata: Metadata = { title: "Settings" };
 
 export default async function AdminSettingsPage() {
-  const { user, shop } = await requireShop();
+  const { user, shop } = await requireShop("settings:read");
   const { t } = await getT();
 
   /*

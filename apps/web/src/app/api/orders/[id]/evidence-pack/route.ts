@@ -40,7 +40,7 @@ export async function GET(
   if (!isUuid(id)) return new Response("Not found", { status: 404 });
 
   // Redirects if unauthenticated, so only a signed-in seller gets this far.
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:read");
 
   const gate = await rateLimit(`evidence-pack:${shop.id}`, 30, 300);
   if (!gate.allowed) {

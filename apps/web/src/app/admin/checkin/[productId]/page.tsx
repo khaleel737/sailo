@@ -30,7 +30,7 @@ export default async function EventDoorPage({
   params,
   searchParams,
 }: PageProps<"/admin/checkin/[productId]">) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:read");
   const { a } = await getAdminT();
   const { productId } = await params;
   const query = await searchParams;

@@ -22,7 +22,7 @@ export const metadata: Metadata = { title: "Legal pages" };
  * is shown the previous body would edit the wrong text.
  */
 export default async function AdminLegalPagesPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:read");
   const [pages, { a }] = await Promise.all([shopPagesFor(shop.id), getAdminT()]);
 
   return (

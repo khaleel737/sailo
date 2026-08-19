@@ -29,7 +29,7 @@ export async function savePaymentMethod(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const type = String(formData.get("type") ?? "");
 
   if (!isPaymentMethodType(type)) {

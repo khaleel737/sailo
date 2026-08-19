@@ -13,7 +13,7 @@ import { Composer } from "../_components/composer";
 export const metadata: Metadata = { title: "New broadcast" };
 
 export default async function NewBroadcastPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const { a } = await getAdminT();
   // The gate is on the route, not only on the action: a locked feature whose
   // compose screen still opens is a feature that looks broken rather than

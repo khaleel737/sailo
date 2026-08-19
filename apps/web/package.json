@@ -56,6 +56,7 @@
     "@sailo/account": "workspace:*",
     "@sailo/analytics": "workspace:*",
     "@sailo/api": "workspace:*",
+    "@sailo/auth": "workspace:*",
     "@sailo/billing": "workspace:*",
     "@sailo/commerce": "workspace:*",
     "@sailo/core": "workspace:*",

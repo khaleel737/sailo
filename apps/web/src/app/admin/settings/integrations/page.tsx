@@ -21,7 +21,7 @@ export const metadata: Metadata = { title: "Integrations" };
 export const instant = false;
 
 export default async function IntegrationsSettingsPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:read");
   const { a } = await getAdminT();
 
   /*

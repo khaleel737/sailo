@@ -10,7 +10,7 @@ export async function GET(
   { params }: RouteContext<"/api/export/[type]">,
 ) {
   // Redirects when signed out, so exports are never publicly reachable.
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:export");
   const { type } = await params;
 
   if (!isExportType(type)) {

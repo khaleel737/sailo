@@ -158,7 +158,7 @@ async function screenBeforeConnect(shop: Shop) {
  * the full error goes to the server log.
  */
 export async function connectStripe(formData?: FormData) {
-  const { shop: current } = await requireShop();
+  const { shop: current } = await requireShop("settings:write");
   if (!can(current, "cardRails")) {
     throw new Error("Card payments are a Business feature.");
   }
@@ -213,7 +213,7 @@ export async function connectStripe(formData?: FormData) {
  * no moment we can assume it.
  */
 export async function refreshStripeAccount() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const account = await syncAccount(shop);
 
   // Charges going live is what makes the rail offerable, so the card method
@@ -254,7 +254,7 @@ export async function refreshStripeAccount() {
 
 /** Opens the seller's own Stripe dashboard — payouts, disputes, receipts. */
 export async function openStripeDashboard() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   if (!shop.stripeAccountId) redirect("/admin/payments");
   const url = await loginLink(shop.stripeAccountId);
   redirect(url);
@@ -268,7 +268,7 @@ export async function openStripeDashboard() {
  * they are required to keep. Disabling the rail is what stops new orders.
  */
 export async function disconnectStripe() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const db = getDb();
 
   await db

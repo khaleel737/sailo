@@ -19,6 +19,7 @@ export function SettingsNav() {
     { href: "/admin/settings", label: a.settings.tabDetails, exact: true },
     { href: "/admin/settings/billing", label: a.settings.tabBilling },
     { href: "/admin/settings/tax", label: a.tax.title },
+    { href: "/admin/settings/team", label: a.settings.tabTeam },
     { href: "/admin/settings/integrations", label: a.integrations.title },
     { href: "/admin/settings/fields", label: a.broadcasts.fieldsTitle },
     { href: "/admin/settings/security", label: a.settings.tabSecurity },

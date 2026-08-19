@@ -67,7 +67,7 @@ export async function saveDeliveryMethod(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
 
   const type = String(formData.get("type") ?? "");
   if (!isDeliveryMethodType(type)) {
@@ -169,7 +169,7 @@ const REFUSALS: Record<
 };
 
 export async function deleteDeliveryMethod(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
@@ -187,7 +187,7 @@ export async function deleteDeliveryMethod(formData: FormData) {
 }
 
 export async function toggleDeliveryMethod(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 

@@ -414,6 +414,24 @@ export const shops = pgTable(
      */
     taxCategory: text("tax_category"),
 
+    /**
+     * The team this shop belongs to — spec 37.
+     *
+     * `shops.userId` stays the owner of record and is not what changes: it is
+     * what account deletion, the closure record and every existing ownership
+     * check already read, and re-pointing all of that at membership would be a
+     * second tree-wide change for no gain. **The organization decides who else
+     * may act; `userId` still decides whose shop it is.**
+     *
+     * Nullable in the column and never null in practice: `0052` backfills every
+     * existing shop with an organization whose only member is the current
+     * owner, and shop creation makes one. Nullable rather than NOT NULL because
+     * a shop that somehow lost its organization must still load — the guard
+     * falls back to the owner, who can always administer their own shop, rather
+     * than a seller finding their admin unreachable.
+     */
+    organizationId: text("organization_id"),
+
     /*
      * Booking.
      *

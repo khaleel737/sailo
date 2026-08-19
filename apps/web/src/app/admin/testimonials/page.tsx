@@ -30,7 +30,7 @@ export const instant = false;
  * service for somewhere else, and that is the shape of thing that tier buys.
  */
 export default async function TestimonialsPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:read");
   const { a } = await getAdminT();
 
   if (!can(shop, "testimonials")) {

@@ -103,7 +103,7 @@ async function published(shop: { id: string; handle: string }) {
 }
 
 export async function moderateTestimonial(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
@@ -138,7 +138,7 @@ export async function addTestimonial(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   if (!can(shop, "testimonials")) {
     const plan = cheapestPlanWith("testimonials");
     return { ok: false, error: `Testimonials are available on ${plan?.name ?? "a paid plan"}.` };
@@ -165,7 +165,7 @@ export async function addWall(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   if (!can(shop, "testimonials")) {
     const plan = cheapestPlanWith("testimonials");
     return { ok: false, error: `Testimonials are available on ${plan?.name ?? "a paid plan"}.` };
@@ -197,7 +197,7 @@ export async function addWall(
 }
 
 export async function saveWall(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
@@ -212,7 +212,7 @@ export async function saveWall(formData: FormData) {
 }
 
 export async function rotateWallKey(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   await rotateEmbedKey(shop.id, id);
@@ -220,7 +220,7 @@ export async function rotateWallKey(formData: FormData) {
 }
 
 export async function removeWall(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   // The testimonials survive — `wall_id` is `set null`, so deleting a wall
@@ -233,7 +233,7 @@ export async function askForTestimonials(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   if (!can(shop, "testimonials")) {
     const plan = cheapestPlanWith("testimonials");
     return { ok: false, error: `Testimonials are available on ${plan?.name ?? "a paid plan"}.` };

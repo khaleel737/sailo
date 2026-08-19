@@ -57,7 +57,7 @@ const EDITABLE_STATUSES: string[] = ["draft", "scheduled"];
 async function editable(): Promise<
   { ok: true; shop: Shop; userEmail: string | null } | { ok: false; error: string }
 > {
-  const { shop, user } = await requireShop();
+  const { shop, user } = await requireShop("marketing:send");
   if (!can(shop, "broadcasts")) {
     return { ok: false, error: upgradeMessage("broadcasts", "Email broadcasts") };
   }
@@ -468,7 +468,7 @@ export async function duplicateBroadcast(formData: FormData) {
 
 /** Deletes a draft. A broadcast that has been sent is a record and stays. */
 export async function deleteBroadcast(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const id = String(formData.get("id") ?? "");
 
   await getDb()
@@ -502,7 +502,7 @@ export async function saveSubscribeSettings(
   _prev: BroadcastState,
   formData: FormData,
 ): Promise<BroadcastState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
 
   const incentive =
     String(formData.get("subscribeIncentive") ?? "")

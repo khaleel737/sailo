@@ -22,7 +22,7 @@ export const metadata: Metadata = { title: "Data requests" };
  * mean the shops least able to pay are the ones that cannot answer.
  */
 export default async function AdminDataRequestsPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:read");
   const [requests, { a }] = await Promise.all([
     dataRequestQueue(shop.id),
     getAdminT(),

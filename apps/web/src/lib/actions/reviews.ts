@@ -65,7 +65,7 @@ export async function submitReview(
 }
 
 export async function approveReview(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
@@ -82,7 +82,7 @@ export async function approveReview(formData: FormData) {
 }
 
 export async function deleteReview(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 

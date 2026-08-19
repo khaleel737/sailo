@@ -21,7 +21,7 @@ export async function deleteAccount(
   _prev: DeleteAccountState,
   formData: FormData,
 ): Promise<DeleteAccountState> {
-  const { user, shop } = await requireShop();
+  const { user, shop } = await requireShop("settings:write");
 
   /*
    * Three a day. Deleting is once-per-account by definition, so anything

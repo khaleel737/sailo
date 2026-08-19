@@ -42,7 +42,7 @@ const TONES = {
 const PREVIEW = 5;
 
 export default async function BroadcastsPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:read");
   const { a, locale } = await getAdminT();
   const { t } = await getT();
 

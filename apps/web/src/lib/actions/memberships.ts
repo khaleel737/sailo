@@ -94,7 +94,7 @@ export async function cancelMembership(
   _prev: MembershipState,
   formData: FormData,
 ): Promise<MembershipState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:write");
   if (!can(shop, "memberships")) {
     return { ok: false, error: "Memberships aren't on your plan." };
   }

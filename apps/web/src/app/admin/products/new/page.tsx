@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "Add product" };
 
 export default async function NewProductPage() {
   const { a } = await getAdminT();
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
   const categories = await getShopCategories(shop.id);
 
   return (

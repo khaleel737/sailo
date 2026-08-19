@@ -36,7 +36,7 @@ function one(value: string | string[] | undefined): string {
 export default async function AdminOrdersPage({
   searchParams,
 }: PageProps<"/admin/orders">) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:read");
   const { a } = await getAdminT();
 
   /*

@@ -40,7 +40,7 @@ export const instant = false;
  * that need different action.
  */
 export default async function UnsubscribedPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:read");
   const { a, locale } = await getAdminT();
 
   const [counts, rows] = await Promise.all([

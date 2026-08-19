@@ -99,7 +99,7 @@ export async function generateShopPages(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
 
   const facts = shopPageFacts(shop, readAnswers(formData, shop), {
     sells: await soldKinds(shop.id),
@@ -130,7 +130,7 @@ export async function saveShopPage(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
 
   const kind = String(formData.get("kind") ?? "");
   if (!isShopPageKind(kind)) return { ok: false, error: "That page no longer exists." };
@@ -181,7 +181,7 @@ export async function regenerateShopPage(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
 
   const kind = String(formData.get("kind") ?? "");
   if (!isShopPageKind(kind)) return { ok: false, error: "That page no longer exists." };
@@ -206,7 +206,7 @@ export async function toggleShopPage(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
 
   const kind = String(formData.get("kind") ?? "");
   if (!isShopPageKind(kind)) return { ok: false, error: "That page no longer exists." };
@@ -248,7 +248,7 @@ export async function useAsCheckoutTerms(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
 
   const kind = String(formData.get("kind") ?? "");
   if (kind !== "terms" && kind !== "privacy") {

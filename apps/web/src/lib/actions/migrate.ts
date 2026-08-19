@@ -67,7 +67,7 @@ export async function migrateCatalogue(
   _prev: MigrateState,
   formData: FormData,
 ): Promise<MigrateState> {
-  const { shop, user } = await requireShop();
+  const { shop, user } = await requireShop("products:write");
 
   const source = String(formData.get("source") ?? "");
   if (!isImportSource(source)) return { ok: false, error: "Unknown source." };

@@ -47,7 +47,7 @@ export async function saveAffiliate(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const db = getDb();
 
   if (!can(shop, "affiliates")) {
@@ -137,7 +137,7 @@ export async function saveAffiliate(
 }
 
 export async function setAffiliateStatus(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const db = getDb();
   const id = String(formData.get("id") ?? "");
   const status = String(formData.get("status") ?? "");
@@ -169,7 +169,7 @@ export async function setAffiliateStatus(formData: FormData) {
 }
 
 export async function deleteAffiliate(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
@@ -186,7 +186,7 @@ export async function deleteAffiliate(formData: FormData) {
 
 /** Marks every unpaid commission for one affiliate as settled. */
 export async function markCommissionsPaid(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const affiliateId = String(formData.get("affiliateId") ?? "");
   if (!affiliateId) return;
 
@@ -211,7 +211,7 @@ export async function updateAffiliateSettings(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("marketing:send");
 
   const pct = Number(String(formData.get("defaultCommission") ?? "10"));
   if (!Number.isFinite(pct) || pct < 0 || pct > 100) {

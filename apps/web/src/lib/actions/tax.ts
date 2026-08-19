@@ -47,7 +47,7 @@ export async function saveTaxJurisdiction(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
 
   const rateBp = readRateBp(formData.get("rateBp"));
   if (rateBp === "bad") {
@@ -84,7 +84,7 @@ export async function saveTaxJurisdiction(
 }
 
 export async function removeTaxJurisdiction(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
@@ -93,7 +93,7 @@ export async function removeTaxJurisdiction(formData: FormData) {
 }
 
 export async function setTaxCountry(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const country = String(formData.get("country") ?? "");
   if (!country) return;
 
@@ -108,7 +108,7 @@ export async function updateTaxOptions(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
 
   /*
    * `taxCategory` is Stripe's own string (`txcd_…`) and inert under `manual`.

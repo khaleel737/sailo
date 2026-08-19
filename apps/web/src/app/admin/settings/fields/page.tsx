@@ -18,7 +18,7 @@ export const instant = false;
  * screen would be wrong.
  */
 export default async function CustomFieldsPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:read");
   const { a } = await getAdminT();
 
   const fields = await fieldsFor(shop.id);

@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./permissions": "./src/permissions.ts",
+    "./organization-for-shop": "./src/organization-for-shop.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

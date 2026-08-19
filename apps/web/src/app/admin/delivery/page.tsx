@@ -24,7 +24,7 @@ import { formatMoney } from "@sailo/core/currency";
 export const metadata: Metadata = { title: "Delivery" };
 
 export default async function AdminDeliveryPage() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:read");
   /*
    * Spec 53. Gated here as well as at the write: a form is not a gate, and a
    * downgraded shop keeps every price it typed while it stops being able to

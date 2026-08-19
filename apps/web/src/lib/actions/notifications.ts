@@ -10,7 +10,7 @@ import { requireShop } from "@/lib/session";
 
 /** Clears the tray by marking everything up to now as read. */
 export async function markAllNotificationsRead() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:read");
 
   await getDb()
     .update(shops)
@@ -28,7 +28,7 @@ export async function markAllNotificationsRead() {
 }
 
 export async function dismissNotification(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("orders:read");
   const id = String(formData.get("id") ?? "").slice(0, 100);
   if (!id) return;
 

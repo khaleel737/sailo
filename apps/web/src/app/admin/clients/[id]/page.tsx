@@ -32,7 +32,7 @@ export default async function ClientDetailPage({
   params,
 }: PageProps<"/admin/clients/[id]">) {
   const { id } = await params;
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("customers:read");
   const { a, locale } = await getAdminT();
   if (!isUuid(id)) notFound();
 

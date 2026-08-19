@@ -105,7 +105,7 @@ function SectionHeading({
 export default async function AdminPaymentsPage({
   searchParams,
 }: PageProps<"/admin/payments">) {
-  let { shop } = await requireShop();
+  let { shop } = await requireShop("settings:read");
   const { a } = await getAdminT();
   const params = await searchParams;
 
@@ -113,7 +113,7 @@ export default async function AdminPaymentsPage({
   // decides separately whether the account may take charges — so re-read it.
   if (params.stripe === "return" && shop.stripeAccountId) {
     await syncAccount(shop);
-    ({ shop } = await requireShop());
+    ({ shop } = await requireShop("settings:read"));
   }
 
   const [methods, disputes] = await Promise.all([

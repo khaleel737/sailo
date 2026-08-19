@@ -50,7 +50,7 @@ export async function saveOffer(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
 
   // Gated here as well as in the form, because a form is not a gate.
   if (!can(shop, "offers")) return { ok: false, error: REFUSALS.locked };
@@ -162,7 +162,7 @@ export async function saveOffer(
 }
 
 export async function deleteOffer(formData: FormData): Promise<void> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
   const id = String(formData.get("id") ?? "").trim();
   if (!id) return;
 

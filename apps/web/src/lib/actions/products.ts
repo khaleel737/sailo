@@ -373,7 +373,7 @@ export async function saveProduct(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
 
   /*
    * The currencies whose fields this form may have posted — spec 53.
@@ -432,7 +432,7 @@ export async function saveProduct(
 }
 
 export async function deleteProduct(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
@@ -441,7 +441,7 @@ export async function deleteProduct(formData: FormData) {
 }
 
 export async function toggleProductPublished(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 
@@ -457,7 +457,7 @@ export async function createCategory(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
   const name = String(formData.get("name") ?? "").trim();
   if (!name) return { ok: false, error: "Category needs a name." };
 
@@ -488,7 +488,7 @@ export async function createCategory(
 }
 
 export async function deleteCategory(formData: FormData) {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("products:write");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
 

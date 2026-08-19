@@ -84,7 +84,7 @@ export async function createWebhookEndpoint(
   _prev: IntegrationState,
   formData: FormData,
 ): Promise<IntegrationState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const denied = gate(shop);
   if (denied) return denied;
 
@@ -149,7 +149,7 @@ export async function updateWebhookEndpoint(
   _prev: IntegrationState,
   formData: FormData,
 ): Promise<IntegrationState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const denied = gate(shop);
   if (denied) return denied;
 
@@ -193,7 +193,7 @@ export async function rotateWebhookSecret(
   _prev: IntegrationState,
   formData: FormData,
 ): Promise<IntegrationState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const denied = gate(shop);
   if (denied) return denied;
 
@@ -226,7 +226,7 @@ export async function rotateWebhookSecret(
 }
 
 export async function deleteWebhookEndpoint(formData: FormData): Promise<void> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   // Not plan-gated, unlike creation: turning an endpoint off is how a seller
   // stops it, and a seller whose plan lapsed still needs to be able to. The
   // ownership check in the WHERE is the only guard that belongs here.
@@ -262,7 +262,7 @@ export async function sendTestWebhook(
   _prev: IntegrationState,
   formData: FormData,
 ): Promise<IntegrationState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const denied = gate(shop);
   if (denied) return denied;
 
@@ -337,7 +337,7 @@ export async function createApiKey(
   _prev: IntegrationState,
   formData: FormData,
 ): Promise<IntegrationState> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   const denied = gate(shop);
   if (denied) return denied;
 
@@ -387,7 +387,7 @@ export async function createApiKey(
 }
 
 export async function revokeApiKey(formData: FormData): Promise<void> {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:write");
   // Not plan-gated, unlike minting: revoking is the answer to a leak, and a
   // seller whose plan lapsed must still be able to turn a live key off rather
   // than leave it working because they stopped paying. Ownership is enforced
@@ -430,7 +430,7 @@ export async function revokeApiKey(formData: FormData): Promise<void> {
  * `select()` with no argument would ship both.
  */
 export async function readIntegrations() {
-  const { shop } = await requireShop();
+  const { shop } = await requireShop("settings:read");
   const db = getDb();
 
   const endpoints = await db
