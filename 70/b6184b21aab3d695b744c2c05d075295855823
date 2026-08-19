@@ -1,0 +1,169 @@
+packages/api/src/license/handlers.ts
+  s_6a50ff8b58418c::t_9feab500637e22 300-305
+apps/web/src/app/admin/products/_components/event-settings-card.tsx
+  s_6a50ff8b58418c::t_2a4f58eccf990e 4,34-39
+  s_6a50ff8b58418c::t_c41ab1fd385703 164-254
+  s_c6ab3915e97efe::t_eac98e13c1b30a 25,30-31,49-56,66-69,74-108
+  s_c6ab3915e97efe::t_bd0b2d16c6056e 70-73
+packages/commerce/src/catalog/products.test.ts
+  s_6a50ff8b58418c::t_c79d1e45763078 27-34,56,104-105
+  s_c6ab3915e97efe::t_d71b62cb7db558 316-382,412-506
+  s_6a50ff8b58418c::t_f277ed9aed7e47 507
+apps/web/src/app/download/[token]/page.tsx
+  s_6a50ff8b58418c::t_3dad25bcfdae65 421-433,436,441-458,462-466
+  s_6a50ff8b58418c::t_939fec83c2a775 14
+packages/commerce/src/booking/claim.ts
+  s_e1f6fcdd78170a::t_578883e8743abb 179,181-184,201,207,217-224,230-238,257,269
+  s_e1f6fcdd78170a::t_9bd84f750505d6 2,4,14-42,55-76,79-83,98-101,103-144,146-172,176-178,180,185-194,205-206,208-211,216,226,241-242,246,255,258,271,277,279,291-340,351-356,367-368,371,384-387,393-455,457-512
+  s_6a50ff8b58418c::t_f276dce87450da 195-200,202-204,212-215,225,227-229,239-240,243-245,247-254,256,259,270,272-276,278,280-290
+packages/commerce/src/ticketing/capacity.ts
+  s_6a50ff8b58418c::t_9feab500637e22 9,309
+packages/commerce/src/memberships/memberships.test.ts
+  s_c6ab3915e97efe::t_e5f5b735759e8f 4,10,17
+  s_c6ab3915e97efe::t_5d4ea38eb870a5 274,312,326-328,331-367,377
+  s_c6ab3915e97efe::t_9e1d75d2ae7421 313-325,329-330,368-376
+  s_c6ab3915e97efe::t_dc6cbf94cbd552 129-135,144-145,147-150
+  s_c6ab3915e97efe::t_04be7459e492e8 214-273
+  s_c6ab3915e97efe::t_c81e7c4e036c14 378
+packages/commerce/src/ticketing/event-access.ts
+  s_c6ab3915e97efe::t_a3aaed495a5824 27-28,63,78
+packages/commerce/src/booking/server.ts
+  s_a79949fd39aa12::t_685d2137adb9ba 6-7
+packages/db/src/schema/types.ts
+  s_e1f6fcdd78170a::t_8282003deafc61 18,96-97
+packages/db/src/schema/orders.ts
+  s_e1f6fcdd78170a::t_c4e9e1916ee432 869-901,906-917,920
+packages/i18n/src/admin/en.ts
+  s_6a50ff8b58418c::t_4e9447df3ec92a 556-639
+  s_6a50ff8b58418c::t_6b8d01fb5fb6ca 539
+apps/web/e2e/scenarios/event-depth.scenario.ts
+  s_6a50ff8b58418c::t_44ea4453db4a43 1-428
+packages/commerce/src/ticketing/ics.ts
+  s_a79949fd39aa12::t_850bba9b43b697 202-207
+  s_6a50ff8b58418c::t_8bd7bf6955bb76 1-111,120-201,208-257
+  s_6a50ff8b58418c::t_9feab500637e22 112-119
+packages/commerce/src/memberships/terms.test.ts
+  s_6a50ff8b58418c::t_229d9294762071 1-280
+packages/db/src/schema/index.ts
+  s_e1f6fcdd78170a::t_8282003deafc61 14
+apps/web/src/app/admin/products/_components/product-form.tsx
+  s_6a50ff8b58418c::t_40517641aff8e3 81-82,101-104,421
+  s_6a50ff8b58418c::t_7fe88679677de3 79-80,97-100,393-394
+  s_6a50ff8b58418c::t_8bf4c9b64922c5 400
+apps/web/e2e/scenarios/membership-depth.scenario.ts
+  s_6a50ff8b58418c::t_0fdc19d66ac699 328,418,500,608,643
+  s_a79949fd39aa12::t_12097950da4cd2 301-307,310-312,315,339-347,352,361
+  s_6a50ff8b58418c::t_012c2f800e1da3 1-300,308-309,313-314,316-327,329-338,348-351,353-360,362-417,419-499,501-607,609-642,644-727
+packages/commerce/src/ticketing/index.ts
+  s_6a50ff8b58418c::t_ee32646a8cfbaf 11-12
+packages/commerce/src/ticketing/ics.test.ts
+  s_6a50ff8b58418c::t_d98815e75383e9 28-42,224
+  s_6a50ff8b58418c::t_b3a198a980fa42 1-27,47-223,225-227
+  s_6a50ff8b58418c::t_ed47d59e641627 43-46
+packages/commerce/src/booking/availability.ts
+  s_c6ab3915e97efe::t_8442f127e4e32c 180,240-241
+  s_c6ab3915e97efe::t_f9f0176a9548b8 226-233,238-239
+  s_c6ab3915e97efe::t_4b7d87aa0549f2 165-175
+  s_e1f6fcdd78170a::t_45306218dd8feb 2,39-48,50-70,80,115
+packages/workflows/src/orders/confirm-buyer.ts
+  s_16f404b29c0075::t_c0607ef633fa76 2,24-27,54-68,97-115,117-119,157,189-198,200-201
+  s_16f404b29c0075::t_0ec028517aa9c5 8,161-188
+  s_6a50ff8b58418c::t_5460b50910efed 33-36,76-79,120,135-145,151
+  s_16f404b29c0075::t_36242813a36173 116
+  s_6a50ff8b58418c::t_dfbd6b8d1dbf72 146-150
+  s_6a50ff8b58418c::t_30add130200a85 152
+packages/commerce/src/booking/staff.ts
+  s_a79949fd39aa12::t_685d2137adb9ba 1-244
+apps/web/src/app/admin/products/_components/service-settings-card.tsx
+  s_6a50ff8b58418c::t_2a4f58eccf990e 124-179
+  s_c6ab3915e97efe::t_3bea97ecfecc9e 83-87,89-122
+  s_6a50ff8b58418c::t_78e1724ffc8198 14,19-20
+apps/web/src/app/admin/products/_components/membership-settings-card.tsx
+  s_c6ab3915e97efe::t_ad61302bf58c5e 6,129-134
+  s_c6ab3915e97efe::t_dbcabfe3321624 137-142
+  s_6a50ff8b58418c::t_1af396fcbf19ad 4-5,52,58-59,62-64
+  s_6a50ff8b58418c::t_dd2655a4f0db22 220-323
+  s_c6ab3915e97efe::t_1e92dd69ea71c2 145-150,152,162,166,172,180
+  s_c6ab3915e97efe::t_f3a0fb139e0441 3,8-16,22-37,39-47,65-97,105,125-128,135,143,153-161,163-165,167-171,173-179,182-209,218
+packages/commerce/src/ticketing/door-pass.ts
+  s_16f404b29c0075::t_eee9a0c5d27f5c 121
+apps/web/src/app/admin/products/[id]/page.tsx
+  s_6a50ff8b58418c::t_40517641aff8e3 79-80
+apps/web/e2e/scenarios/staff-bookings.scenario.ts
+  s_6a50ff8b58418c::t_0649ecbf5dc6da 1-520
+packages/workflows/src/orders/confirm-buyer.test.ts
+  s_16f404b29c0075::t_9ea3c9463c11d7 13-19,31-38,49-54,71,92,216-218,223,228-229,231,236,239,244-289
+  s_16f404b29c0075::t_769cbc41be9116 26,62,95-100,290-349
+  s_16f404b29c0075::t_f109cc0753f583 68-70
+  s_16f404b29c0075::t_3dbe5b2638e48e 72-74
+  s_6a50ff8b58418c::t_97d36ea20477a6 67,75-77,172,186,206
+packages/db/src/schema/booking.ts
+  s_e1f6fcdd78170a::t_8282003deafc61 1-125
+apps/web/src/app/admin/products/new/page.tsx
+  s_6a50ff8b58418c::t_40517641aff8e3 44-45
+  s_6a50ff8b58418c::t_814d47374ec53b 39-43
+packages/db/src/schema/catalog.ts
+  s_e1f6fcdd78170a::t_8282003deafc61 375-398
+apps/web/drizzle/0046_service_depth.sql
+  s_6a50ff8b58418c::t_e3fa5c029f8693 265,269-321
+apps/web/src/app/admin/products/_components/code-pool-card.tsx
+  s_6a50ff8b58418c::t_5654bab3badff3 6-10,67-70,72-77,136-156
+apps/web/src/lib/actions/product-codes.ts
+  s_6a50ff8b58418c::t_0720298b468e5d 11,151,153-157,161-165,167-171,175,177,179
+packages/commerce/src/catalog/code-pool.ts
+  s_6a50ff8b58418c::t_7ed4a3429e6ce2 161,163-175,177-178,182,189-190
+packages/commerce/src/orders/orders.test.ts
+  s_e1f6fcdd78170a::t_6ec56a4df9729f 47-55
+packages/commerce/src/catalog/product-input.ts
+  s_6a50ff8b58418c::t_6399f413267ede 180-218,284-301
+packages/commerce/src/catalog/products.ts
+  s_e1f6fcdd78170a::t_b6b900e3f5c951 29-30,467-502,760-837,1006-1022
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "70b6184b21aab3d695b744c2c05d075295855823",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_6a50ff8b58418c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d67b706-f77d-4af2-84f8-c7556015fd53",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_a79949fd39aa12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3512a1e-3a48-4b59-95c2-ad40c780f6a9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_c6ab3915e97efe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c24c96ca-a911-4fa0-901b-d9f00fe9e7ce",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e1f6fcdd78170a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "07ffa20a-be06-4b62-a6c7-e2cc4d3b435d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
