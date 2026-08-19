@@ -1,0 +1,101 @@
+packages/workflows/src/index.ts
+  s_d85ec1f24c11c4::t_ca1723df750b17 27,50
+apps/web/src/lib/actions/unsubscribe.ts
+  s_3d280b9c37709e::t_85b4e3e36e731c 5,10-13,98-134
+  s_d85ec1f24c11c4::t_67c40f2ed49b21 135
+apps/web/src/lib/stripe-webhooks/connect.ts
+  s_6a50ff8b58418c::t_84fc31aa9113c2 272
+  s_d85ec1f24c11c4::t_92fabcbf14ed21 14,273-279
+packages/workflows/src/orders/announce-paid.ts
+  s_d85ec1f24c11c4::t_4d40fea94b029d 1-3,5-29,31,33,53-55,57-73,75-91
+  s_6a50ff8b58418c::t_84fc31aa9113c2 4,30,32,34-52,56,74
+packages/marketing/src/contacts/values.ts
+  s_a79949fd39aa12::t_15d50f5b184e55 478
+  s_3d280b9c37709e::t_42e34c4b32a959 4-5,431-446,449-477
+apps/web/src/lib/actions/clients.ts
+  s_d85ec1f24c11c4::t_81c35e39cab211 14,53-61
+  s_d85ec1f24c11c4::t_c7c39b00577618 62
+apps/web/src/app/api/unsubscribe/flow/[token]/route.ts
+  s_d85ec1f24c11c4::t_21234629a57816 1-72
+apps/web/vercel.json
+  s_d85ec1f24c11c4::t_77fd891383caef 28-30
+  s_d85ec1f24c11c4::t_c1a83f26407d88 27
+apps/web/src/app/api/cron/automations/route.ts
+  s_d85ec1f24c11c4::t_0450576abce4f9 1-30
+packages/core/src/shop/plans.ts
+  s_d85ec1f24c11c4::t_94f7047cd8b3ad 169,204,231
+  s_d85ec1f24c11c4::t_ad1949d61b648c 62-73
+apps/web/src/app/u/flow/[token]/page.tsx
+  s_3d280b9c37709e::t_85b4e3e36e731c 1-119
+apps/web/src/lib/actions/order-admin.ts
+  s_ff5bd57f7b4f2f::t_ce906fd09478b2 16
+  s_6a50ff8b58418c::t_84fc31aa9113c2 24,152
+  s_d85ec1f24c11c4::t_2eeb1715666d29 144-151,153
+  s_16f404b29c0075::t_57000b7ffc7f17 22
+  s_d85ec1f24c11c4::t_4641ee89a7e24a 17
+  s_d85ec1f24c11c4::t_9e306ebb8094a2 10
+packages/marketing/src/contacts/lists.ts
+  s_3d280b9c37709e::t_12f16f24face98 10,268-316,389-399
+packages/marketing/src/automations/tick.ts
+  s_a79949fd39aa12::t_69b8d2bde6b7bd 381
+packages/workflows/package.json
+  s_16f404b29c0075::t_33ea034c858405 30
+packages/workflows/src/orders/index.ts
+  s_d85ec1f24c11c4::t_4380c5c7fe2d66 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "3178c5954a7094361690a797a0ce45ee8f038b0c",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3d280b9c37709e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "914a407f-3ed9-41c1-8fbc-6b7047fa1462",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_6a50ff8b58418c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d67b706-f77d-4af2-84f8-c7556015fd53",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_a79949fd39aa12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3512a1e-3a48-4b59-95c2-ad40c780f6a9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_d85ec1f24c11c4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "91e0b22a-1b92-4b3d-a00c-9932ecca90d6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ff5bd57f7b4f2f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f7a8e604-26d7-4dc0-9381-beaca5a4f55b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
