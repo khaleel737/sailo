@@ -4,18 +4,22 @@
   "private": true,
   "packageManager": "pnpm@10.34.5",
   "scripts": {
+    "boundaries": "turbo boundaries",
     "build": "turbo build",
+    "check:deployment": "bash scripts/check-deployment.sh",
+    "check:i18n": "tsx scripts/i18n/check.mts",
     "dev": "turbo dev",
+    "i18n:fill": "tsx scripts/i18n/fill.mts",
+    "knip": "knip",
     "lint": "turbo lint",
     "test": "turbo test",
     "typecheck": "turbo typecheck",
-    "web": "npm run dev -w @sailo/web",
-    "boundaries": "turbo boundaries",
-    "knip": "knip",
-    "check:deployment": "bash scripts/check-deployment.sh"
+    "web": "npm run dev -w @sailo/web"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "^0.72.0",
     "knip": "^6.32.2",
+    "tsx": "^4.20.7",
     "turbo": "^2.5.5"
   }
 }
