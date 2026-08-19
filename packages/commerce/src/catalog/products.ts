@@ -26,6 +26,8 @@ import { atProductLimit, can, planFor, productLimit } from "@sailo/core/plans";
 import { normalizePricingMode } from "@sailo/core/pricing-models";
 import { isPublicLinkUrl, isRenderableImageUrl, isStoredFileUrl } from "@sailo/storage/urls";
 import { DEFAULT_CODE_PATTERN, checkCodePattern } from "@sailo/core/codes";
+import { isTimeZone } from "../booking/time-zone";
+import { normalizeCycles } from "../memberships/terms";
 import { isCodeSource } from "./code-pool";
 import {
   isBillingInterval,
@@ -463,6 +465,42 @@ export async function saveProduct(
   }
 
   /*
+   * The event's own zone — spec 50.
+   *
+   * Refused rather than stored when the runtime does not know it, because
+   * every downstream reader falls back to the shop's zone on an unknown value
+   * and the seller would never find out: the reminder, the `.ics` and the
+   * buyer's page would each quietly use a different clock from the one they
+   * typed. Blank is fine and means "the shop's", which is today.
+   */
+  const eventTimeZone = trimmed(input.eventTimeZone, 64);
+  if (kind === "event" && eventTimeZone && !isTimeZone(eventTimeZone)) {
+    return refuse({ kind: "event_time_zone_unknown" });
+  }
+
+  /*
+   * Somewhere to be, or a way in — refused at *publish* rather than at
+   * checkout, which is spec 50's own instruction and the right one: the
+   * alternative is a buyer paying for a webinar and finding out at the start
+   * time that there is no link.
+   *
+   * A draft may be half-finished. Only publishing asserts that a buyer could
+   * turn up.
+   */
+  const eventMode = isEventMode(input.eventMode) ? input.eventMode : null;
+  const eventAddress = trimmed(input.eventAddress, 500);
+  if (kind === "event" && input.isPublished) {
+    const online = eventMode ? eventMode !== "in_person" : mode === "online";
+    const inPerson = eventMode ? eventMode !== "online" : mode !== "online";
+    if (inPerson && !eventAddress && !trimmed(input.serviceLocation, 500)) {
+      return refuse({ kind: "event_needs_venue" });
+    }
+    if (online && !joinUrl) {
+      return refuse({ kind: "event_needs_join_url" });
+    }
+  }
+
+  /*
    * A membership has to be billable before it can be saved as one.
    *
    * Both refusals turn a Stripe error the *buyer* would have met at checkout
@@ -719,7 +757,84 @@ export async function saveProduct(
      * away from being an event keeps none either, so a stale Zoom room can
      * never be handed to the buyer of something else.
      */
-    eventJoinUrl: kind === "event" && mode === "online" ? joinUrl || null : null,
+    eventJoinUrl:
+      kind === "event" && (eventMode ? eventMode !== "in_person" : mode === "online")
+        ? joinUrl || null
+        : null,
+
+    /*
+     * Spec 50. Cleared on every other kind, exactly as the three columns above
+     * are: a product switched away from being an event must not keep a venue
+     * or a session mode that a later switch back would silently resurrect.
+     */
+    eventMode: kind === "event" ? eventMode : null,
+    eventVenueName: kind === "event" ? trimmed(input.eventVenueName, 200) : null,
+    eventAddress: kind === "event" ? eventAddress : null,
+    eventTimeZone: kind === "event" ? eventTimeZone : null,
+    eventRefundPolicy: kind === "event" ? trimmed(input.eventRefundPolicy, 2000) : null,
+    eventRefundCutoffHours:
+      kind === "event" ? wholeCountOrNull(input.eventRefundCutoffHours) : null,
+    eventAllowSelfCancel: kind === "event" && input.eventAllowSelfCancel === true,
+    /*
+     * `sessionMode` is gated on the plan, and falls back to null — a single
+     * date, which is today — rather than refusing the save. A shop that
+     * downgrades keeps its sessions in the table and stops selling per-session;
+     * refusing would leave a seller unable to edit a title.
+     */
+    sessionMode:
+      kind === "event" && can(shop, "eventSessions") && isSessionMode(input.sessionMode)
+        ? input.sessionMode
+        : null,
+    collectAttendeeDetails:
+      kind === "event" && input.collectAttendeeDetails === true,
+
+    /*
+     * Spec 51's service half. Kept on every kind rather than cleared off the
+     * non-services, matching `bookingLeadHours` and `durationMinutes` directly
+     * above: nothing reads these but the booking path, and a product switched
+     * to a service and back keeps what the seller typed.
+     *
+     * `bookingCapacity` is gated — a class is what Pro buys — and falls back to
+     * null, which is one seat and today's behaviour.
+     */
+    bookingCapacity: can(shop, "staffResources")
+      ? wholeCountOrNull(input.bookingCapacity)
+      : null,
+    /*
+     * The two cutoffs are **not** gated. A buyer moving their own appointment
+     * prevents a loss rather than creating a sale, and gating it would price
+     * the smallest shops out of not being stood up.
+     */
+    rescheduleCutoffHours: wholeCountOrNull(input.rescheduleCutoffHours),
+    cancelCutoffHours: wholeCountOrNull(input.cancelCutoffHours),
+
+    /*
+     * Spec 49. Cleared off every other kind for the same reason the billing
+     * interval is: a product switched away from being a membership must not
+     * keep a term that nothing reads and that a switch back would resurrect.
+     *
+     * Gated where the plan gates them, and falling back rather than refusing —
+     * a downgraded shop keeps selling its memberships, it just stops offering
+     * new terms and freezes.
+     */
+    termCycles:
+      kind === "membership" && can(shop, "membershipTerms")
+        ? normalizeCycles(input.termCycles)
+        : null,
+    accessAfterTerm:
+      kind === "membership" &&
+      can(shop, "membershipTerms") &&
+      input.accessAfterTerm === true,
+    minimumTermCycles:
+      kind === "membership" ? normalizeCycles(input.minimumTermCycles) : null,
+    cancelNoticeDays:
+      kind === "membership" ? wholeCountOrNull(input.cancelNoticeDays) : null,
+    cancelPolicyNote:
+      kind === "membership" ? trimmed(input.cancelPolicyNote, 2000) : null,
+    pauseMaxDays:
+      kind === "membership" && can(shop, "membershipTerms")
+        ? wholeCountOrNull(input.pauseMaxDays)
+        : null,
 
     /*
      * Memberships. Cleared on every other kind, so a product switched away
@@ -887,4 +1002,21 @@ export async function toggleProductPublished(
     .where(and(eq(products.id, productId), eq(products.shopId, shopId)))
     .returning({ isPublished: products.isPublished });
   return row ? row.isPublished : null;
+}
+
+
+/** online | in_person | hybrid — spec 50. Null falls back to `serviceMode`. */
+function isEventMode(value: unknown): value is "online" | "in_person" | "hybrid" {
+  return value === "online" || value === "in_person" || value === "hybrid";
+}
+
+/**
+ * How a buyer meets an event's dates — spec 50.
+ *
+ * Null is a single date, which is every event today, and it is deliberately
+ * not one of the two named values: a third state that had to be written to
+ * every existing row is exactly what the `0034` discipline exists to avoid.
+ */
+function isSessionMode(value: unknown): value is "pick_one" | "all_access" {
+  return value === "pick_one" || value === "all_access";
 }

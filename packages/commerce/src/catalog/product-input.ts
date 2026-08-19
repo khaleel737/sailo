@@ -177,6 +177,45 @@ export type ProductInput = {
   billingIntervalCount?: number | null;
   trialDays?: number | null;
 
+  /* ---- Membership depth — spec 49 -------------------------------------- */
+
+  /** Cycles the membership runs for. Null is open-ended, which is today. */
+  termCycles?: number | null;
+  /** Whether the door stays open once the term is paid off. */
+  accessAfterTerm?: boolean;
+  /** Cycles a member must pay before they may cancel. */
+  minimumTermCycles?: number | null;
+  /** Days of notice before a period end. Never a refusal — it moves the date. */
+  cancelNoticeDays?: number | null;
+  /** The seller's own cancellation terms, disclosed at checkout. */
+  cancelPolicyNote?: string | null;
+  /** The most days a member may freeze for. Null is pausing not offered. */
+  pauseMaxDays?: number | null;
+
+  /* ---- Event depth — spec 50 -------------------------------------------- */
+
+  /** NULL single (today) | pick_one | all_access. */
+  sessionMode?: string | null;
+  /** Ask for each attendee's name at checkout. */
+  collectAttendeeDetails?: boolean;
+  /** online | in_person | hybrid. Null falls back to `serviceMode`. */
+  eventMode?: string | null;
+  eventVenueName?: string | null;
+  eventAddress?: string | null;
+  /** The event's own zone, falling back to the shop's. */
+  eventTimeZone?: string | null;
+  eventRefundPolicy?: string | null;
+  eventRefundCutoffHours?: number | null;
+  eventAllowSelfCancel?: boolean;
+
+  /* ---- Service depth — spec 51 ------------------------------------------ */
+
+  /** How many people one slot holds. Null is 1, which is today. */
+  bookingCapacity?: number | null;
+  /** How close to the appointment a buyer may move it. Null is not allowed. */
+  rescheduleCutoffHours?: number | null;
+  cancelCutoffHours?: number | null;
+
   inStock?: boolean;
   isFeatured?: boolean;
   isPublished?: boolean;
@@ -242,6 +281,24 @@ export type SaveProductRefusal =
    * rather than found at a door.
    */
   | { kind: "code_pattern_invalid"; reason: string }
+  /**
+   * An event's own time zone that no runtime recognises — spec 50.
+   *
+   * Refused rather than stored, because every downstream reader falls back to
+   * the shop's zone on an unknown value and the seller would never find out:
+   * the reminder, the `.ics` and the buyer's page would each quietly use a
+   * different clock from the one they typed.
+   */
+  | { kind: "event_time_zone_unknown" }
+  /**
+   * An in-person event with nowhere to be, or an online one with no way in.
+   *
+   * Refused at *publish* rather than at checkout — spec 50 — because the
+   * alternative is a buyer paying for a webinar and discovering at the start
+   * time that there is no link, which is the worst possible moment.
+   */
+  | { kind: "event_needs_venue" }
+  | { kind: "event_needs_join_url" }
   | { kind: "product_limit"; limit: number; planName: string }
   | { kind: "not_found" };
 

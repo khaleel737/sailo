@@ -262,9 +262,60 @@ ALTER TABLE "booking_claims"
  */
 DROP INDEX IF EXISTS "booking_claims_slot_key";
 
--- The class claim's own lookup: seats already taken across an overlapping
--- range, for one product. Partial, because a class is a handful of products in
--- a catalogue and the index would otherwise cover every appointment ever made.
+-- The class claim's own lookup, for releasing seats back.
 CREATE INDEX IF NOT EXISTS "booking_claims_group_idx"
   ON "booking_claims" ("product_id", "starts_at")
   WHERE NOT "is_exclusive";
+
+-- ─── THE CLASS COUNTER, AND WHY IT HAS TO BE A ROW ──────────────────────────
+--
+-- A class seat cannot be claimed by a conditional INSERT, and this table is the
+-- consequence. The obvious shape —
+--
+--   INSERT … SELECT … WHERE (SELECT sum(seats_taken) …) + $n <= $capacity
+--
+-- was written first and **the scenario caught it overselling**: twelve buyers
+-- arriving at a ten-seat class produced eleven bookings.
+--
+-- The reason is snapshots rather than sloppiness. Under READ COMMITTED every
+-- statement takes its snapshot at statement start, so a subquery counting
+-- `booking_claims` cannot see rows other transactions have not committed yet —
+-- all twelve read the same sum and eleven pass a ceiling that should have
+-- stopped ten. Neither a `FOR UPDATE` on the product nor an advisory lock
+-- fixes it: both are acquired *after* the snapshot is taken, and neither
+-- advances it. Ranking the committed rows afterwards fails the same way, in
+-- the other direction — a caller whose rank query runs before its siblings
+-- commit ranks itself too low.
+--
+-- The one shape Postgres does make atomic here is a **conditional UPDATE on
+-- the row that holds the count**: it re-reads that row under its own lock and
+-- re-evaluates the WHERE against the latest committed version. That is exactly
+-- why `reserveStock` is safe, and `products.stock_quantity` is exactly that
+-- row. A class has a capacity per *time slot* rather than per product, so it
+-- needs a row per slot — which is this table and nothing more.
+--
+-- **Capacity is counted per slot start**, not per overlapping range, and that
+-- is a stated limitation rather than an oversight: a class is a published time
+-- that people turn up to, and two class starts inside one hour are two classes.
+-- The *exclusive* path still compares ranges, because a one-to-one appointment
+-- genuinely can be offered on the half hour.
+
+CREATE TABLE IF NOT EXISTS "booking_slots" (
+  "id"          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  "product_id"  uuid NOT NULL REFERENCES "products"("id") ON DELETE CASCADE,
+  "starts_at"   timestamp NOT NULL,
+  "ends_at"     timestamp NOT NULL,
+  -- The number the conditional UPDATE moves. Never read then written.
+  "seats_taken" integer NOT NULL DEFAULT 0,
+  "created_at"  timestamp NOT NULL DEFAULT now(),
+  UNIQUE ("product_id", "starts_at")
+);
+
+-- A floor under the claim, for the same reason `event_tiers` has one: a seller
+-- editing a class capacity down below what has already sold must be refused by
+-- the database and not only by whichever statement happened to be looking.
+DO $$ BEGIN
+  ALTER TABLE "booking_slots"
+    ADD CONSTRAINT "booking_slots_seats_not_negative" CHECK ("seats_taken" >= 0);
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;

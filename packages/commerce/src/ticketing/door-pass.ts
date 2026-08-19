@@ -118,7 +118,7 @@ export async function readDoorPass(
   const clean = token.trim();
   if (!/^[0-9a-f]{48}$/.test(clean)) return null;
 
-  const gate = await rateLimit(`door:${clean}`, 600, 60);
+  const gate = await rateLimit(`door:${clean}`, 600, 60, { onOutage: "closed" });
   if (!gate.allowed) return null;
 
   const pass = await getDb().query.doorPasses.findFirst({

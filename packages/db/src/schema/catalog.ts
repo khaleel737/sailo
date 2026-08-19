@@ -373,6 +373,30 @@ export const products = pgTable(
     /** Notice the seller needs — the picker won't offer anything sooner. */
     bookingLeadHours: integer("booking_lead_hours").default(24).notNull(),
     /**
+     * How many people one slot holds — spec 51. NULL is 1, which is today.
+     *
+     * A yoga class of twelve, a workshop of six, a tour of twenty could not be
+     * sold at all: `durationMinutes` plus one slot was one buyer.
+     *
+     * A class is close to an event session (spec 50) and deliberately not the
+     * same thing: a session is a fixed datetime the seller published, a class
+     * slot is *generated from hours*. Where a seller wants fixed dates, `event`
+     * with sessions is the right kind, and the product form says so.
+     */
+    bookingCapacity: integer("booking_capacity"),
+    /**
+     * How close to the appointment a buyer may still move it themselves.
+     * NULL is not allowed at all, which is today's behaviour.
+     *
+     * Today a buyer who needs to move a haircut emails and the seller does it
+     * by hand. The link is the signed-token pattern `disputes/arrival.ts` and
+     * `broadcasts/unsubscribe.ts` already use — no account, no row written at
+     * send time, works from a cold mail client months later.
+     */
+    rescheduleCutoffHours: integer("reschedule_cutoff_hours"),
+    /** The same for cancelling, which releases the slot and tells the waitlist. */
+    cancelCutoffHours: integer("cancel_cutoff_hours"),
+    /**
      * Quiet minutes either side of an appointment.
      *
      * The gap to clean the room, write the notes, drive to the next one. The

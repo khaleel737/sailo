@@ -36,6 +36,13 @@ export default async function NewProductPage() {
            seller may record what a thing weighs on any plan; what Business buys
            is charging postage by it. */
         weightBands={can(shop, "weightBands")}
+        /* Spec 48. Decided here and again in `saveProduct` for the same
+           reason every other gate is: a form is not a gate, and a hand-rolled
+           POST does not render this card. */
+        codePools={can(shop, "codePools")}
+        licensing={can(shop, "licensing")}
+        membershipTerms={can(shop, "membershipTerms")}
+        staffResources={can(shop, "staffResources")}
         cardReady={connectState(shop) === "active" && can(shop, "cardRails")}
         /* Spec 53. Gated here and again in `saveProduct`: a form is not a
            gate, and a downgraded shop keeps every price it typed. */

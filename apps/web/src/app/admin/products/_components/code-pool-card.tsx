@@ -3,7 +3,11 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button, Card, Field, Input, Textarea } from "@sailo/design-system/web";
-import { addProductCodes, generateProductCodes } from "@/lib/actions/product-codes";
+import {
+  addProductCodes,
+  clearUnclaimedCodes,
+  generateProductCodes,
+} from "@/lib/actions/product-codes";
 import { useAdminT } from "@/app/admin/_components/admin-i18n";
 import { interpolate } from "@sailo/i18n";
 import type { ActionState } from "@/lib/actions/shop";
@@ -60,8 +64,17 @@ export function CodePoolCard({
     generateProductCodes,
     { ok: false },
   );
+  const [clearState, clearAction] = useActionState<ActionState, FormData>(
+    clearUnclaimedCodes,
+    { ok: false },
+  );
 
-  const state = makeState.message || makeState.error ? makeState : addState;
+  const state =
+    clearState.message || clearState.error
+      ? clearState
+      : makeState.message || makeState.error
+        ? makeState
+        : addState;
 
   return (
     <Card className="mt-6 space-y-4 p-5">
@@ -118,6 +131,27 @@ export function CodePoolCard({
         >
           {state.message ?? state.error}
         </p>
+      ) : null}
+
+      {/*
+        The seller's undo for pasting the wrong file, which happens.
+
+        One button rather than a list with a delete beside each code: rendering
+        the codes so a seller could pick one would put unclaimed inventory in
+        this page's payload, which is the one thing the whole feature is careful
+        not to do. Only codes nobody has been given are reachable — the WHERE
+        requires both timestamps null.
+      */}
+      {counts.available > 0 ? (
+        <form action={clearAction} className="border-t border-black/5 pt-4">
+          <input type="hidden" name="productId" value={productId} />
+          <button
+            type="submit"
+            className="text-xs font-medium text-red-600 underline underline-offset-2"
+          >
+            {a.productForm.poolClear}
+          </button>
+        </form>
       ) : null}
 
       <div className="border-t border-black/5 pt-4">

@@ -11,6 +11,7 @@ import {
   KeyRound,
   Lock,
   MapPin,
+  MonitorSmartphone,
   Store,
   Ticket,
   Video,
@@ -417,32 +418,52 @@ export default async function DownloadPage({
           <ul className="mt-6 space-y-3">
             {licenses.map((license) => (
               <li key={license.id} className="surface-card rounded-2xl p-4">
+                {/*
+                  `download.codeLabel` rather than a label of its own, and that
+                  is a deliberate i18n decision rather than a shortcut. `download`
+                  is a protected money section — no filler may write into it —
+                  so a new key there would need a human translator in
+                  thirty-four languages before the build would even compile, and
+                  inventing an unprotected section for a string that names what
+                  a digital sale delivers would be routing around the
+                  protection rather than honouring it.
+
+                  "Your access details" is already the right sentence for a
+                  licence key, and it is already translated everywhere.
+                */}
                 <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide opacity-60">
                   <KeyRound className="size-3.5" />
-                  {t.license.title}
+                  {t.download.codeLabel}
                 </p>
                 <p className="mt-3 select-all break-words rounded-xl bg-black/5 px-3 py-2.5 font-mono text-sm leading-relaxed">
                   {license.key}
                 </p>
-                <p className="text-muted mt-2 text-xs">
-                  {license.activationLimit === null
-                    ? t.license.unlimited
-                    : interpolate(t.license.activations, {
-                        count: String(license.activationLimit),
-                      })}
-                  {license.expiresAt ? (
-                    <>
-                      {" · "}
-                      {interpolate(t.license.expires, {
-                        date: license.expiresAt.toLocaleDateString(locale, {
+                {/*
+                  The metadata as *data* rather than as sentences — a seat count
+                  and a date, both of which read in any language without a word
+                  of copy. The alternative was four English strings shown to a
+                  buyer in Warsaw.
+                */}
+                {license.activationLimit !== null || license.expiresAt ? (
+                  <p className="text-muted mt-2 flex items-center gap-3 text-xs">
+                    {license.activationLimit !== null ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <MonitorSmartphone className="size-3.5" />
+                        {license.activationLimit}
+                      </span>
+                    ) : null}
+                    {license.expiresAt ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <Clock className="size-3.5" />
+                        {license.expiresAt.toLocaleDateString(locale, {
                           day: "numeric",
                           month: "long",
                           year: "numeric",
-                        }),
-                      })}
-                    </>
-                  ) : null}
-                </p>
+                        })}
+                      </span>
+                    ) : null}
+                  </p>
+                ) : null}
               </li>
             ))}
           </ul>

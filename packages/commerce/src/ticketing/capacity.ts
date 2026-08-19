@@ -4,9 +4,9 @@ import { getDb } from "@sailo/db";
 import {
   eventSessions,
   eventTiers,
-  products,
   type EventSession,
   type EventTier,
+  type Product,
 } from "@sailo/db/schema";
 import { reserveStock, releaseStock } from "../catalog/inventory";
 
@@ -306,10 +306,7 @@ export async function claimSessionCancelNotice(
  * unavailable — which is spec 33's waitlist trigger rather than a 404.
  */
 export async function eventHasFutureDate(
-  product: Pick<
-    typeof products.$inferSelect,
-    "id" | "eventStartsAt" | "sessionMode"
-  >,
+  product: Pick<Product, "id" | "eventStartsAt" | "sessionMode">,
   now = new Date(),
 ): Promise<boolean> {
   if (!product.sessionMode) {

@@ -44,6 +44,15 @@ vi.mock("../ticketing/tickets", () => ({
   reinstateTicketsForOrder: vi.fn(),
 }));
 
+/*
+ * The digital sibling of `voidTicketsForOrder`, stubbed for the same reason —
+ * spec 48. What this file asserts is which announcements a transition owes,
+ * and revoking a pool code is two conditional UPDATEs against a real database
+ * that `code-pools.scenario.ts` exercises for real.
+ */
+const revokeDigitalGoodsForOrder = vi.fn().mockResolvedValue({ codes: 0, licenses: 0 });
+vi.mock("./digital-revoke", () => ({ revokeDigitalGoodsForOrder }));
+
 const emitOrderWebhook = vi.fn();
 vi.mock("@sailo/webhooks/emit", () => ({ emitOrderWebhook }));
 

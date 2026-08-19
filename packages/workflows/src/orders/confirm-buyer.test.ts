@@ -10,19 +10,31 @@ import type { Shop } from "@sailo/db/schema";
  * never "we have your money". An earlier version of the source comment asserted the
  * payment was settled, and it was wrong on every rail.
  *
- * The other thing worth a test is `confirmationSentAt`. A seller looking at an order
- * needs to tell "we emailed them" from "we tried", so the column is written only on
- * a send that actually succeeded — and it is the kind of line a refactor moves out of
- * an `if` without anybody noticing.
+ * The other thing worth a test is `confirmationSentAt`, which is two properties at
+ * once. A seller looking at an order needs to tell "we emailed them" from "we
+ * tried", so a send that did not happen must leave the column null. And exactly
+ * one receipt may go out per order however many settling events Stripe delivers,
+ * so the column is *claimed* in a conditional UPDATE before the send rather than
+ * stamped after it — a read in the caller is not a claim, and both callers only
+ * had a read.
  */
 
 const ordersFindFirst = vi.fn();
 const itemsFindMany = vi.fn();
 const sendOrderConfirmation = vi.fn();
 const downloadUrl = vi.fn();
+const logOrderMessage = vi.fn();
 
 /** Everything written back to `orders`, so the timestamp can be asserted on. */
 let updates: Record<string, unknown>[];
+
+/**
+ * Whether the conditional claim finds the column still null.
+ *
+ * `false` is the second settling event for one order: the UPDATE matches no row
+ * and returns nothing, and nothing should be sent.
+ */
+let claimWon: boolean;
 
 vi.mock("@sailo/db", () => ({
   getDb: () => ({
@@ -34,7 +46,12 @@ vi.mock("@sailo/db", () => ({
       set: (values: Record<string, unknown>) => ({
         where: () => {
           updates.push(values);
-          return Promise.resolve();
+          const rows = claimWon || values.confirmationSentAt === null
+            ? [{ id: "order-1" }]
+            : [];
+          return Object.assign(Promise.resolve(rows), {
+            returning: () => Promise.resolve(rows),
+          });
         },
       }),
     }),
@@ -42,11 +59,22 @@ vi.mock("@sailo/db", () => ({
 }));
 vi.mock("@sailo/email/transactional", () => ({ sendOrderConfirmation }));
 vi.mock("@sailo/commerce/orders/server", () => ({ downloadUrl }));
+vi.mock("@sailo/commerce/disputes", () => ({ logOrderMessage }));
 
 const { confirmBuyerByEmail } = await import("./confirm-buyer");
 
 const SHOP = { id: "shop-1", handle: "ada" } as Shop;
-const NOTHING = { deliversFiles: false, unlockNow: false, downloadToken: null };
+/*
+ * Nothing to deliver at all. `deliversAccess` is the spec 48 half — a link or a
+ * code is as much the good as a file is — and it is false here for the same
+ * reason `deliversFiles` is.
+ */
+const NOTHING = {
+  deliversFiles: false,
+  deliversAccess: false,
+  unlockNow: false,
+  downloadToken: null,
+};
 
 const call = (overrides: Partial<Parameters<typeof confirmBuyerByEmail>[0]> = {}) =>
   confirmBuyerByEmail({
@@ -61,9 +89,15 @@ const call = (overrides: Partial<Parameters<typeof confirmBuyerByEmail>[0]> = {}
 beforeEach(() => {
   vi.clearAllMocks();
   updates = [];
+  claimWon = true;
   ordersFindFirst.mockResolvedValue({ id: "order-1", totalCents: 1999 });
   itemsFindMany.mockResolvedValue([{ id: "item-1", position: 0 }]);
-  sendOrderConfirmation.mockResolvedValue({ sent: true });
+  sendOrderConfirmation.mockResolvedValue({
+    sent: true,
+    id: "resend-1",
+    subject: "Your order from Ada",
+    text: "Thanks — Ada has your order.",
+  });
   downloadUrl.mockReturnValue("https://sailo.store/download/tok");
   vi.spyOn(console, "warn").mockImplementation(() => {});
   vi.spyOn(console, "error").mockImplementation(() => {});
@@ -135,7 +169,7 @@ describe("the invoice link", () => {
 
 describe("digital delivery", () => {
   it("links the download when the files are unlocked now", async () => {
-    await call({ delivery: { deliversFiles: true, unlockNow: true, downloadToken: "tok" } });
+    await call({ delivery: { ...NOTHING, deliversFiles: true, unlockNow: true, downloadToken: "tok" } });
 
     expect(downloadUrl).toHaveBeenCalledWith("tok", "https://sailo.store");
     expect(sendOrderConfirmation).toHaveBeenCalledWith(
@@ -149,7 +183,7 @@ describe("digital delivery", () => {
    * receipt listing nothing downloadable assumes the sale failed.
    */
   it("says a download is pending when the files are held", async () => {
-    await call({ delivery: { deliversFiles: true, unlockNow: false, downloadToken: "tok" } });
+    await call({ delivery: { ...NOTHING, deliversFiles: true, unlockNow: false, downloadToken: "tok" } });
 
     expect(sendOrderConfirmation).toHaveBeenCalledWith(
       expect.objectContaining({ downloadUrl: null, downloadPending: true }),
@@ -169,7 +203,7 @@ describe("digital delivery", () => {
    * email must not contain the string "undefined" where a link belongs.
    */
   it("links nothing when unlocked with no token", async () => {
-    await call({ delivery: { deliversFiles: true, unlockNow: true, downloadToken: null } });
+    await call({ delivery: { ...NOTHING, deliversFiles: true, unlockNow: true, downloadToken: null } });
 
     expect(downloadUrl).not.toHaveBeenCalled();
     expect(sendOrderConfirmation).toHaveBeenCalledWith(
@@ -179,31 +213,140 @@ describe("digital delivery", () => {
 });
 
 describe("confirmationSentAt", () => {
+  /** What the column reads as once everything this call did has settled. */
+  const finalValue = () => updates.at(-1)?.confirmationSentAt;
+
   it("is written when the email actually went", async () => {
     await call();
 
     expect(updates).toHaveLength(1);
-    expect(updates[0]?.confirmationSentAt).toBeInstanceOf(Date);
+    expect(finalValue()).toBeInstanceOf(Date);
   });
 
   /*
    * The distinction the column exists for. A seller chasing a buyer who says they
-   * never got the receipt needs to know whether we sent one.
+   * never got the receipt needs to know whether we sent one — and a send that did
+   * not happen has to stay retryable, which a held claim would not be.
    */
-  it("is not written when the provider refused the send", async () => {
+  it("is given back when the provider refused the send", async () => {
     sendOrderConfirmation.mockResolvedValue({ sent: false, reason: "no api key" });
 
     await call();
 
-    expect(updates).toHaveLength(0);
+    expect(finalValue()).toBeNull();
   });
 
-  it("is not written when the send threw", async () => {
+  it("is given back when the send threw", async () => {
     sendOrderConfirmation.mockRejectedValue(new Error("Resend is down"));
 
     await call();
 
-    expect(updates).toHaveLength(0);
+    expect(finalValue()).toBeNull();
+  });
+
+  /*
+   * THE CLAIM
+   *
+   * Stripe delivers settling events for one order under more than one type and
+   * therefore more than one id, so the webhook route's event-id claim does not
+   * fence them: `checkout.session.completed` and
+   * `checkout.session.async_payment_succeeded` for the same session both find the
+   * column null under a plain read, and both send. Two receipts with two invoice
+   * links for one order is the shape of bug that makes a buyer ask whether they
+   * were charged twice.
+   */
+  it("sends nothing when another caller already claimed it", async () => {
+    claimWon = false;
+
+    await call();
+
+    expect(sendOrderConfirmation).not.toHaveBeenCalled();
+  });
+
+  it("does not release a claim it did not win", async () => {
+    claimWon = false;
+
+    await call();
+
+    // One attempt to claim, and no write putting anybody else's claim back.
+    expect(updates).toHaveLength(1);
+    expect(updates[0]?.confirmationSentAt).toBeInstanceOf(Date);
+  });
+
+  it("claims before sending, not after", async () => {
+    /*
+     * The ordering is the whole property. Claiming afterwards is what a read in
+     * the caller already was — two callers both get past it.
+     */
+    let claimedBySendTime = false;
+    sendOrderConfirmation.mockImplementation(async () => {
+      claimedBySendTime = updates.some((u) => u.confirmationSentAt instanceof Date);
+      return { sent: true };
+    });
+
+    await call();
+
+    expect(claimedBySendTime).toBe(true);
+  });
+});
+
+describe("keeping the message, because a chargeback is answered with it", () => {
+  /*
+   * SPEC 44
+   *
+   * Stripe's `customer_communication` evidence slot asks for the messages sent
+   * to the buyer, and `FILE_ASKS` was asking the *seller* to upload the ones
+   * Sailo had itself sent and thrown away.
+   */
+  it("records what was sent, with the provider's id", async () => {
+    await call();
+
+    expect(logOrderMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        orderId: "order-1",
+        shopId: "shop-1",
+        kind: "confirmation",
+        subject: "Your order from Ada",
+        bodyText: "Thanks — Ada has your order.",
+        providerMessageId: "resend-1",
+        status: "sent",
+      }),
+    );
+  });
+
+  it("records nothing when the provider refused the send", async () => {
+    /*
+     * The rule the whole evidence pipeline is written around: never state a fact
+     * Sailo does not hold. A logged message that never went is worse than no log
+     * — it is a false claim to a bank, made on the seller's behalf.
+     */
+    sendOrderConfirmation.mockResolvedValue({ sent: false, reason: "no api key" });
+
+    await call();
+
+    expect(logOrderMessage).not.toHaveBeenCalled();
+  });
+
+  it("records nothing when another caller had already claimed the send", async () => {
+    claimWon = false;
+
+    await call();
+
+    expect(logOrderMessage).not.toHaveBeenCalled();
+  });
+
+  it("logs the message the buyer was actually sent to", async () => {
+    ordersFindFirst.mockResolvedValue({
+      id: "order-1",
+      totalCents: 1999,
+      customerEmail: "buyer@example.com",
+    });
+
+    await call();
+
+    expect(logOrderMessage).toHaveBeenCalledWith(
+      expect.objectContaining({ toAddress: "buyer@example.com" }),
+    );
   });
 });
 

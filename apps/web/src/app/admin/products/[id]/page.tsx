@@ -76,6 +76,8 @@ export default async function EditProductPage({
            POST does not render this card. */
         codePools={can(shop, "codePools")}
         licensing={can(shop, "licensing")}
+        membershipTerms={can(shop, "membershipTerms")}
+        staffResources={can(shop, "staffResources")}
         cardReady={connectState(shop) === "active" && can(shop, "cardRails")}
         /* Spec 53. Gated here and again in `saveProduct`: a form is not a
            gate, and a downgraded shop keeps every price it typed. */

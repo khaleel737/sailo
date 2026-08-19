@@ -158,33 +158,36 @@ export async function generateCodes(input: {
 }
 
 /**
- * Deletes an unclaimed code and takes its unit back off the shelf.
+ * Empties the unclaimed half of a pool, and takes those units off the shelf.
  *
- * Claimed and revoked rows are deliberately unreachable from here. A claimed
- * code is a buyer's; a revoked one is the record of a refund, and both are
- * evidence in a dispute long after the seller has stopped thinking about them.
+ * The seller's undo for pasting the wrong file — which happens, and which
+ * otherwise leaves two hundred wrong keys in the pool with no way out but
+ * selling them.
+ *
+ * **Claimed and revoked rows are unreachable from here by construction.** The
+ * WHERE requires both timestamps to be null: a claimed code is a buyer's and a
+ * revoked one is the record of a refund, and both are evidence in a dispute
+ * long after the seller has stopped thinking about them.
+ *
+ * The stock moves by the number of rows actually removed rather than by a
+ * count taken first, for the same reason `addCodes` credits `.returning()`
+ * rather than its input: a concurrent release that claimed one on the way past
+ * must not also cost the seller a unit here.
  */
-export async function deleteUnclaimedCode(input: {
-  productId: string;
-  codeId: string;
-}): Promise<boolean> {
-  const db = getDb();
-
-  const [gone] = await db
+export async function deleteUnclaimedCodes(productId: string): Promise<number> {
+  const gone = await getDb()
     .delete(productCodes)
     .where(
       and(
-        eq(productCodes.id, input.codeId),
-        eq(productCodes.productId, input.productId),
+        eq(productCodes.productId, productId),
         isNull(productCodes.claimedAt),
         isNull(productCodes.revokedAt),
       ),
     )
     .returning({ id: productCodes.id });
 
-  if (!gone) return false;
-  await syncPoolStock(input.productId, -1);
-  return true;
+  if (gone.length > 0) await syncPoolStock(productId, -gone.length);
+  return gone.length;
 }
 
 /**

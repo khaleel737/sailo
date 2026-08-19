@@ -11,6 +11,7 @@ export * from "./json-types";
 export * from "./auth";
 export * from "./shop";
 export * from "./catalog";
+export * from "./booking";
 export * from "./imports";
 export * from "./commerce";
 export * from "./policies";

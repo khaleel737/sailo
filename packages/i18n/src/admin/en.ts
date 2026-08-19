@@ -536,6 +536,7 @@ export const adminEn = {
     poolAdd: "Add to pool",
     poolGenerateCount: "How many to make",
     poolGenerate: "Make codes",
+    poolClear: "Remove every unused code",
     poolExport: "Export handed-out codes",
     poolExportHint:
       "Which code went to which order. Codes nobody has been given are deliberately left out \u2014 an export of those is your stock in somebody's downloads folder.",
@@ -551,6 +552,90 @@ export const adminEn = {
     licenseDays: "Licence length in days",
     licenseDaysHint: "Blank means it never expires.",
     licenseDocs: "How to check a key from your app",
+
+    /* ---- Membership depth — spec 49 ------------------------------------- */
+
+    termTitle: "How long it runs",
+    termCycles: "Number of payments",
+    termCyclesHint:
+      "Leave blank for an open-ended membership. Two or more \u2014 a single payment is a one-off product, not a membership.",
+    accessAfterTerm: "Keep access after the last payment",
+    accessAfterTermHint:
+      "Turns a membership into a payment plan: a course sold in three instalments where they keep what they bought.",
+    minimumTermCycles: "Minimum payments before cancelling",
+    minimumTermHint:
+      "On cash and transfer this governs what you can say, not what we can stop \u2014 a member can always stop paying.",
+    cancelNoticeDays: "Notice period in days",
+    cancelNoticeHint:
+      "Notice given later than this ends the *next* period rather than this one. It never stops somebody cancelling.",
+    cancelPolicyNote: "Your cancellation terms",
+    cancelPolicyHint:
+      "Shown at checkout and again when a member cancels. Buyers have to have seen it for it to count in a dispute.",
+    pauseMaxDays: "Days a member may freeze for",
+    pauseMaxDaysHint:
+      "Blank means freezing isn't offered. Access is closed while frozen, and the days they were away are added to their period.",
+
+    /* ---- Event depth — spec 50 ------------------------------------------- */
+
+    eventVenueTitle: "Where and when",
+    eventMode: "How people attend",
+    eventModeOnline: "Online",
+    eventModeInPerson: "In person",
+    eventModeHybrid: "Both",
+    eventVenueName: "Venue name",
+    eventAddress: "Address",
+    eventTimeZone: "Event time zone",
+    eventTimeZoneHint:
+      "Buyers see their own clock with this one named beside it. Blank uses your shop's.",
+    sessionMode: "Dates",
+    sessionModeSingle: "One date",
+    sessionModePickOne: "Several dates, buyer picks one",
+    sessionModeAllAccess: "Several dates, one ticket covers all",
+    collectAttendeeDetails: "Ask for each attendee's name",
+    collectAttendeeDetailsHint:
+      "Four tickets become four names on the door list instead of the buyer's four times. Guest addresses are never added to your mailing list.",
+    eventRefundPolicy: "Refund policy",
+    eventRefundPolicyHint:
+      "Shown at checkout. An event sells a moment, so buyers need to know where they stand before they pay.",
+    eventRefundCutoff: "Cancellation cutoff in hours",
+    eventAllowSelfCancel: "Let buyers release their own seat",
+    eventAllowSelfCancelHint:
+      "Inside the cutoff. The seat goes back on sale and anybody waiting is told.",
+    tiersTitle: "Ticket tiers",
+    tiersBody:
+      "Early bird, General, VIP \u2014 different prices against the same room.",
+    tierName: "Tier name",
+    tierPrice: "Price",
+    tierCapacity: "Seats in this tier",
+    tierCapacityHint: "Blank shares the room's capacity.",
+    tierHidden: "Hidden \u2014 reachable by direct link only",
+    sessionsTitle: "Dates",
+    sessionGenerate: "Repeat weekly",
+    sessionGenerateCount: "How many",
+    sessionCapacity: "Seats per date",
+
+    /* ---- Service depth — spec 51 ----------------------------------------- */
+
+    staffTitle: "Who takes bookings",
+    staffBody:
+      "Add the people buyers can book. With nobody here your shop takes one appointment at a time, as it does today.",
+    staffName: "Name",
+    staffEmail: "Email",
+    staffHours: "Their hours",
+    staffHoursHint: "Blank uses the shop's opening hours.",
+    staffTimeZone: "Their time zone",
+    staffFeed: "Their calendar address",
+    staffFeedHint:
+      "The secret iCal link from their own calendar. We read it to block times they're already busy \u2014 we never write to it.",
+    staffAdd: "Add somebody",
+    staffActive: "Taking bookings",
+    bookingCapacity: "People per slot",
+    bookingCapacityHint:
+      "Blank is one \u2014 an ordinary appointment. Higher turns it into a class. For fixed dates use an event instead.",
+    rescheduleCutoff: "Buyers can move it up to (hours before)",
+    rescheduleCutoffHint: "Blank means only you can move an appointment.",
+    cancelCutoff: "Buyers can cancel up to (hours before)",
+    cancelCutoffHint: "A released slot goes back on the calendar straight away.",
 
     maxPerOrder: "Limit per order",
     maxPerOrderHint: "The most one buyer can take at once. Blank means the only limit is stock.",

@@ -297,7 +297,12 @@ function callerAddress(request: Request): string | null {
  * enough to be anybody's licence.
  */
 function logRefusal(endpoint: string, key: string, reason: string): void {
-  console.info(
+  /*
+   * `warn` rather than `info`, because `info` is not on this repo's allowed
+   * list — and the level is right anyway: a refusal here is either a customer
+   * with a problem or somebody probing, and both are worth seeing.
+   */
+  console.warn(
     `[sailo] license ${endpoint} refused: ${reason} (key ${licenseKeyPrefix(key) || "?"}…)`,
   );
 }

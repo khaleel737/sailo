@@ -8,9 +8,8 @@ import { can, cheapestPlanWith } from "@sailo/core/plans";
 import {
   MAX_CODES_PER_UPLOAD,
   addCodes,
-  deleteUnclaimedCode,
+  deleteUnclaimedCodes,
   generateCodes,
-  poolCounts,
 } from "@sailo/commerce/catalog";
 import { requireShop } from "@/lib/session";
 import type { ActionState } from "./shop";
@@ -149,28 +148,33 @@ export async function generateProductCodes(
 }
 
 /**
- * Removes one code that nobody has been given.
+ * Empties the unclaimed half of a pool.
  *
- * Claimed and revoked codes are unreachable from here by construction: the
+ * The seller's undo for pasting the wrong file — which happens, and which
+ * otherwise leaves two hundred wrong keys in the pool with no way to get them
+ * out except selling them.
+ *
+ * **Claimed and revoked codes are unreachable from here by construction**: the
  * delete's WHERE requires both timestamps to be null. A claimed code is a
  * buyer's and a revoked one is the record of a refund, and both are evidence
  * in a dispute months after the seller has stopped thinking about them.
+ *
+ * One button rather than a list with a delete beside each row, and that is the
+ * same decision the card makes about counts: rendering the codes so a seller
+ * can pick one would put unclaimed inventory in an RSC payload, which is the
+ * one thing this whole feature is careful not to do.
  */
-export async function deleteProductCode(formData: FormData) {
-  const { shop } = await requireShop("products:write");
+export async function clearUnclaimedCodes(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const { shop } = await requireShop();
   const productId = String(formData.get("productId") ?? "");
-  const codeId = String(formData.get("codeId") ?? "");
 
   const product = await ownedProduct(shop.id, productId);
-  if (!product) return;
+  if (!product) return { ok: false, error: "That product no longer exists." };
 
-  await deleteUnclaimedCode({ productId: product.id, codeId });
+  const removed = await deleteUnclaimedCodes(product.id);
   revalidatePath(`/admin/products/${product.id}`);
-}
-
-/** What the product form shows above the upload box. Counts only. */
-export async function readPoolCounts(shopId: string, productId: string) {
-  const product = await ownedProduct(shopId, productId);
-  if (!product) return { available: 0, claimed: 0, revoked: 0 };
-  return poolCounts(product.id);
+  return { ok: true, message: `${removed} unused codes removed.` };
 }

@@ -866,18 +866,58 @@ export const bookingClaims = pgTable(
     orderId: uuid("order_id")
       .notNull()
       .references(() => orders.id, { onDelete: "cascade" }),
+
+    /**
+     * Which bookable person this appointment is with — spec 51.
+     *
+     * **Null is "any available", which is today's behaviour and stays the
+     * default**, and it is why the exclusion constraint keys on
+     * `COALESCE(staff_id, product_id)` rather than on `staff_id`: Postgres
+     * treats `NULL = NULL` as unknown, so a constraint keyed on a null column
+     * excludes nothing at all. Every existing shop would have silently lost
+     * the guarantee, and the failure would have been a double-booked Saturday
+     * rather than an error anybody could see.
+     */
+    staffId: uuid("staff_id"),
+    /**
+     * How many of a class's seats this claim holds — spec 51. One is an
+     * ordinary appointment, which is every claim that exists today.
+     */
+    seatsTaken: integer("seats_taken").default(1).notNull(),
+    /**
+     * Whether this claim owns its time outright.
+     *
+     * True for a one-at-a-time appointment; false for a seat in a class, where
+     * overlapping is the entire point and an exclusion constraint would refuse
+     * the second person through the door.
+     *
+     * On the row rather than derived from `products.bookingCapacity`, because
+     * the exclusion constraint is **partial on this column** and a partial
+     * index cannot reach into another table to ask. It also snapshots the
+     * decision: a seller who turns a one-to-one into a class next month has
+     * not retroactively made last month's appointments shareable.
+     */
+    isExclusive: boolean("is_exclusive").default(true).notNull(),
+
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [
     /*
-     * Two orders cannot hold one product at one instant. The overlap rule
-     * lives in `booking_claims_no_overlap`, a GiST exclusion constraint that
-     * Drizzle's schema language cannot express — see `drizzle/0004`. This
-     * index stays because it is the cheap exact-match case and the thing
-     * `ON CONFLICT DO NOTHING` can infer.
+     * The overlap rule lives in `booking_claims_no_overlap`, a GiST exclusion
+     * constraint Drizzle's schema language cannot express — `drizzle/0004`
+     * created it on `(product_id, range)` and `drizzle/0046` re-keys it to
+     * `(COALESCE(staff_id, product_id), range)`, partial on `is_exclusive`.
+     *
+     * The old `booking_claims_slot_key` unique index went with it, and its
+     * removal is not tidying: `(product_id, starts_at)` is *wrong* under the
+     * new key, because two stylists working the same 10:00 slot on the same
+     * service are two legitimate claims with one product and one start time.
+     * `claimSlots` leaned on it for `ON CONFLICT DO NOTHING` and now catches
+     * the exclusion violation instead — the same answer arriving as an error
+     * rather than as an empty result.
      */
-    uniqueIndex("booking_claims_slot_key").on(t.productId, t.startsAt),
     index("booking_claims_order_idx").on(t.orderId),
+    index("booking_claims_staff_idx").on(t.staffId, t.startsAt),
   ],
 );
 

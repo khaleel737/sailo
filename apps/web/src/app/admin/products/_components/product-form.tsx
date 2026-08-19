@@ -76,6 +76,10 @@ export function ProductForm({
   pricingModes = false,
   pricingUpgradeTo = null,
   weightBands = false,
+  codePools = false,
+  licensing = false,
+  membershipTerms = false,
+  staffResources = false,
   regionalCurrencies = [],
 }: {
   product?: ProductWithRelations;
@@ -90,6 +94,14 @@ export function ProductForm({
   pricingUpgradeTo?: string | null;
   /** Whether the plan prices postage by weight — spec 51, for the hint only. */
   weightBands?: boolean;
+  /** Whether the plan hands each buyer their own code — spec 48. */
+  codePools?: boolean;
+  /** Whether the plan issues checkable licence keys — spec 48. */
+  licensing?: boolean;
+  /** Whether the plan includes fixed terms and pause — spec 49. */
+  membershipTerms?: boolean;
+  /** Whether the plan includes staff and classes — spec 51. */
+  staffResources?: boolean;
   /**
    * The other currencies the shop quotes — spec 53.
    *
@@ -378,11 +390,14 @@ export function ProductForm({
             product={product}
             releaseOnPayment={releaseOnPayment}
             onReleaseOnPaymentChange={setReleaseOnPayment}
+            codePools={codePools}
+            licensing={licensing}
           />
         ) : null}
 
         {kind === "service" ? (
           <ServiceSettingsCard
+            staffResources={staffResources}
             product={product}
             bookingEnabled={bookingEnabled}
             onBookingEnabledChange={setBookingEnabled}
@@ -403,6 +418,7 @@ export function ProductForm({
             product={product}
             currency={currency}
             connected={cardReady}
+            membershipTerms={membershipTerms}
           />
         ) : null}
 

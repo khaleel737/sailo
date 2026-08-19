@@ -352,24 +352,6 @@ export const en = {
     visitShop: "Visit {shop}",
   },
 
-  /*
-   * A licence key, and what it is good for — spec 48.
-   *
-   * Its own section rather than four more keys inside `download`, and the
-   * reason is the glossary rather than tidiness: `download` is a protected
-   * money section, so nothing may be machine-translated into it. These strings
-   * are not money — they are the delivery labels on a credential, the same
-   * kind of thing `tickets` holds and for the same reader — so they belong
-   * where a filler can reach them. Nothing here names a price, a refund or a
-   * charge, and nothing here should ever start to.
-   */
-  license: {
-    title: "Your licence key",
-    /** `{count}` is the seat count, not how many are left. */
-    activations: "Works on up to {count} machines",
-    unlimited: "Works on any number of machines",
-    expires: "Valid until {date}",
-  },
 
   /*
    * Spec 41 — the chrome around a seller's own hosted documents.

@@ -15,6 +15,7 @@ import type {
   products,
   reviews,
 } from "./catalog";
+import type { staffResources } from "./booking";
 import type { affiliates, coupons, deliveryMethods, paymentMethods } from "./commerce";
 import type {
   clients,
@@ -92,6 +93,8 @@ export type LicenseActivation = typeof licenseActivations.$inferSelect;
 export type EventTier = typeof eventTiers.$inferSelect;
 /** One date an event actually runs on — spec 50. */
 export type EventSession = typeof eventSessions.$inferSelect;
+/** Somebody a buyer can book — spec 51. Not a login; see `booking.ts`. */
+export type StaffResource = typeof staffResources.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
