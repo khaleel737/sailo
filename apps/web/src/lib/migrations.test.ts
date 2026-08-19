@@ -108,6 +108,20 @@ describe("migration filenames", () => {
     expect(unexplained).toEqual([]);
   });
 
+  it("reuses no number beyond the three already merged", () => {
+    const seen = new Map<string, number>();
+    for (const name of files) {
+      const n = numberOf(name);
+      seen.set(n, (seen.get(n) ?? 0) + 1);
+    }
+    const duplicated = [...seen.entries()]
+      .filter(([, count]) => count > 1)
+      .map(([n]) => n)
+      .toSorted();
+
+    expect(duplicated).toEqual(KNOWN_DUPLICATE_NUMBERS);
+  });
+
   it("finds the wave table it reads reservations from", () => {
     // A moved or reformatted table would make the check above vacuous — every
     // gap unreserved is loud, but every gap *reserved* is silent, and an empty

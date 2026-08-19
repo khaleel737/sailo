@@ -65,7 +65,18 @@ const MEASURED = [
  * Storefronts and the token pages have no layout of their own, so they inherit
  * only the root, which is exactly why the root must stay clean.
  */
-const UNMEASURED = ["/", "/admin/settings"];
+const UNMEASURED = [
+  "/",
+  "/admin/settings",
+  /*
+   * The testimonial embed — spec 35. Its own root layout, because everything
+   * the app's root mounts is wrong inside somebody else's page, and the tag is
+   * the sharpest example: a visitor to a stranger's Framer site did not arrive
+   * at sailo.store and must not be measured by it. Its CSP names no external
+   * script origin at all, so the decision is enforced rather than remembered.
+   */
+  "/embed",
+];
 
 describe("the Google tag's placement", () => {
   it("is mounted on every Sailo-owned surface", () => {

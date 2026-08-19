@@ -180,7 +180,9 @@ export function CountriesCard({
           <div className="flex-1">
             <Field label={a.tax.addCountry} htmlFor="block-country">
               <Select id="block-country" name="country" required defaultValue="">
-                <option value="" disabled />
+                <option value="" disabled>
+                {a.tax.addCountry}
+              </option>
                 {countries.map((c) => (
                   <option key={c.code} value={c.code}>
                     {c.name}

@@ -145,7 +145,9 @@ export function RegistrationsCard({
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label={a.tax.country} htmlFor="tax-country">
             <Select id="tax-country" name="country" required defaultValue="">
-              <option value="" disabled />
+              <option value="" disabled>
+                {a.tax.country}
+              </option>
               {countries.map((c) => (
                 <option key={c.code} value={c.code}>
                   {c.name}

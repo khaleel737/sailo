@@ -1630,7 +1630,6 @@ export const adminEn = {
     teamTitle: "Who can work in this shop",
     teamBody:
       "Invite the people who help you run it, and choose what each of them can do. They sign in with their own account — never yours.",
-    teamLocked: "Team members are on {plan}.",
     teamInvite: "Invite somebody",
     teamEmail: "Their email address",
     teamRole: "What they can do",
@@ -1647,7 +1646,6 @@ export const adminEn = {
     teamStaff: "Staff",
     teamStaffNote: "Handles orders and customers. No refunds, no exports, no marketing.",
     teamRemove: "Remove",
-    teamRemoved: "Removed, and signed out everywhere.",
     teamCancel: "Cancel invitation",
     teamYou: "You",
     teamActivity: "What people have done",
@@ -2660,7 +2658,6 @@ export const adminEn = {
     description: "What people say about you — collected, chosen by you, and shown where it helps.",
     notReviews:
       "Different from Reviews: a review is about one product and carries a rating. A testimonial is about you, and goes on your storefront, in the basket, and on any site you run.",
-    locked: "Testimonials are on {plan}.",
 
     queueTitle: "Waiting for you",
     queueEmpty: "Nothing yet. Ask a few past customers below.",

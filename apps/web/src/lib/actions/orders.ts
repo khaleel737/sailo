@@ -255,8 +255,8 @@ export async function createOrderIntent(
    * toggle silently cancels paying members.
    */
   if (input.country) {
-    const gate = await countryGateFor(shop);
-    if (isCountryBlocked(gate, input.country)) {
+    const countries = await countryGateFor(shop);
+    if (isCountryBlocked(countries, input.country)) {
       return {
         ok: false,
         error: "This shop isn't taking orders for that country right now.",
