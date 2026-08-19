@@ -1,0 +1,23 @@
+apps/web/drizzle/0036_regional_pricing.sql
+  s_3d280b9c37709e::t_4f7332966a4097 1
+apps/web/drizzle/0037_imports.sql
+  s_3d280b9c37709e::t_5a671bbc4c503f 1
+apps/web/drizzle/0038_custom_domains.sql
+  s_3d280b9c37709e::t_6b1821b8785b8b 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "58429f97ebbb7e669d19dd6dc852b7998a7736ba",
+  "prompts": {},
+  "sessions": {
+    "s_3d280b9c37709e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "914a407f-3ed9-41c1-8fbc-6b7047fa1462",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
