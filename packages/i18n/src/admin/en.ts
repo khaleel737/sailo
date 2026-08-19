@@ -1795,6 +1795,86 @@ export const adminEn = {
     subscriberBounced: "Bounced",
     subscriberComplained: "Reported spam",
     subscribersClipped: "The most recent {count}. Export your clients for the full list.",
+
+    /* ----------------------------------------------------------------------
+       Lists, suppressions and custom fields — spec 34.
+
+       Inside `broadcasts` rather than in sections of their own, and that is a
+       deliberate constraint rather than tidiness: `admin-coverage.test.ts`
+       requires every one of the 34 locales to carry each *section* English
+       has, so a new section is a screen that must land in 34 files at once or
+       the suite goes red. A new key in an existing section merges over English
+       quietly and is reported as backlog, which is what Decision A chose.
+    ---------------------------------------------------------------------- */
+
+    listsTitle: "Lists",
+    listsDescription: "Group people so a campaign can reach one part of your audience.",
+    listsEmpty: "No lists yet",
+    listsEmptyBody:
+      "A list is a group you put people in — regulars, wholesale, the waiting list for a drop. Make one and you can send to just that group.",
+    listNew: "New list",
+    listName: "Name",
+    listDescriptionLabel: "What it's for",
+    listDoubleOptIn: "Ask people to confirm by email",
+    listDoubleOptInHint:
+      "On by default. Everyone sends through one domain, so a list of addresses nobody confirmed costs every seller's delivery, not just yours.",
+    listMembers: "{count} subscribed",
+    listPending: "{count} waiting to confirm",
+    listDelete: "Delete list",
+    listDeleteConfirm: "Delete this list? Nobody is unsubscribed — they stay contacts and stay on your other lists.",
+    listRemoveMember: "Remove from this list",
+    /* The two verbs, side by side, because the whole of rule 2 is that a
+       seller must never press one meaning the other. */
+    listRemoveVsUnsubscribe:
+      "Removing takes them off this one list. It is not an unsubscribe — that stops all email from you, and only they can ask for it.",
+
+    unsubscribedTitle: "Unsubscribed",
+    unsubscribedDescription: "Addresses you can't email, and why.",
+    unsubscribedEmpty: "Nobody has unsubscribed",
+    unsubscribedEmptyBody:
+      "When somebody unsubscribes, or their address bounces, or they report a message as spam, they appear here and stop receiving your email.",
+    unsubscribedReason: "Reason",
+    unsubscribedWhen: "When",
+    resubscribe: "Put back on the list",
+    /* The banner over the button. It says what the seller is doing on
+       somebody else's behalf, which is the only honest framing for it. */
+    resubscribeWarning:
+      "Only do this if the person asked you to. They chose to stop hearing from you, and putting them back without being asked is how a shop gets reported as spam.",
+    resubscribeRefused: "Bounced and reported addresses can't be switched back on.",
+
+    fieldsTitle: "Custom fields",
+    fieldsDescription: "Your own questions — on the contact card, at checkout, or both.",
+    fieldsEmpty: "No custom fields yet",
+    fieldsEmptyBody:
+      "Ask buyers something your shop needs to know — a size, a delivery window, a name for the engraving — and keep the answer on the contact.",
+    fieldNew: "New field",
+    fieldLabel: "What buyers see",
+    fieldKey: "Stored as",
+    fieldKeyHint:
+      "Lower-case letters, numbers and underscores. It can't be changed later, because it is what merge tags read.",
+    fieldType: "Type",
+    fieldOptions: "Options",
+    fieldOptionsHint: "One per line. Buyers can only choose from these.",
+    fieldRequired: "Required",
+    fieldScope: "Where it's asked",
+    fieldScopeContact: "On the contact card",
+    fieldScopeCheckout: "At checkout",
+    fieldScopeBoth: "Both",
+    fieldDelete: "Delete field",
+    fieldDeleteConfirm:
+      "Delete this field? The answers go with it. Past orders keep what they recorded at the time.",
+    fieldAnswers: "Answers",
+
+    /* The eight types. Read by bracket off `field.type`, so `fieldType` above
+       is the label and these are the values. */
+    typeText: "Short text",
+    typeLongtext: "Long text",
+    typeCheckbox: "Tick box",
+    typeInteger: "Whole number",
+    typeDecimal: "Number",
+    typeDropdown: "Choose one",
+    typeDate: "Date",
+    typeDatetime: "Date and time",
   },
 
   /** The members list, and the states a subscription passes through. */
