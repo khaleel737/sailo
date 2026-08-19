@@ -24,6 +24,7 @@
     "./identity": "./src/identity/index.ts",
     "./slug": "./src/identity/slug.ts",
     "./handle": "./src/identity/handle.ts",
+    "./hostname": "./src/identity/hostname.ts",
     "./badge": "./src/identity/badge.ts",
     "./uuid": "./src/identity/uuid.ts",
     "./phone": "./src/identity/phone.ts",

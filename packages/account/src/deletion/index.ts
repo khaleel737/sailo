@@ -46,6 +46,7 @@
  *   ./subscription  making sure a deleted store stops being charged
  *   ./blobs         the uploaded objects, which no row deletion touches
  *   ./content       everything that is not the money record
+ *   ./sweep         the files a closed shop leaves behind, ninety days later
  *   ./index         the order of operations, which is the load-bearing part
  */
 
@@ -65,6 +66,7 @@ export * from "./tombstone";
 export * from "./blobs";
 export * from "./closure";
 export * from "./fingerprint";
+export * from "./sweep";
 
 export type DeletionResult =
   | { ok: true }
@@ -309,10 +311,12 @@ export async function deleteAccountFor(
    * A buyer who paid for a download still has a live token, and taking the
    * file away the moment the seller leaves punishes the wrong person.
    *
-   * TODO(sweep): delete blobs for shops whose `deletedAt` is over 90 days old
-   * from `/api/cron/sweep`, which already runs hourly and is the home for
-   * exactly this kind of idempotent housekeeping. Until that lands the files
-   * persist — which is the safe direction to be wrong in.
+   * The sweep that finally clears them is `./sweep`, wired into
+   * `/api/cron/sweep` — hourly, idempotent, claimed against
+   * `shops.filesSweptAt`. It lists the blob store by the shop's own path prefix
+   * rather than reading rows, because `hardDeleteShopContent` above has already
+   * taken `products` and `product_files` cascaded with them: ninety days later
+   * there is nothing in the database naming these objects at all.
    */
 
   /* 8 — Sessions last: this is where the actor signs themselves out. */

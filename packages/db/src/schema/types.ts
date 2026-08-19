@@ -1,5 +1,6 @@
 import type { shops } from "./shop";
 import type { shopPages } from "./pages";
+import type { dataRequests } from "./privacy";
 import type { categories, productFiles, productImages, productVariants, products, reviews } from "./catalog";
 import type { affiliates, coupons, deliveryMethods, paymentMethods } from "./commerce";
 import type {
@@ -8,6 +9,8 @@ import type {
   invoices,
   orderItems,
   orders,
+  shipmentItems,
+  shipments,
   tickets,
 } from "./orders";
 import type { subscriptions } from "./memberships";
@@ -27,12 +30,17 @@ import type {
 import type { apiKeys } from "./integrations";
 import type { supportTickets } from "./support";
 import type { user } from "./auth";
+import type { shopDomains } from "./domains";
 
 /** Row types, inferred from the tables rather than written twice. */
 
 export type Shop = typeof shops.$inferSelect;
+/** A hostname pointed at a storefront — spec 39. */
+export type ShopDomain = typeof shopDomains.$inferSelect;
 /** One of a seller's five hosted documents — spec 41. */
 export type ShopPage = typeof shopPages.$inferSelect;
+/** A buyer's subject access, erasure or portability request — spec 52. */
+export type DataRequest = typeof dataRequests.$inferSelect;
 export type Category = typeof categories.$inferSelect;
 export type Product = typeof products.$inferSelect;
 export type ProductImage = typeof productImages.$inferSelect;
@@ -41,6 +49,9 @@ export type ProductFile = typeof productFiles.$inferSelect;
 export type Review = typeof reviews.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
+/** One box, with its own tracking and its own delivery date — spec 51. */
+export type Shipment = typeof shipments.$inferSelect;
+export type ShipmentItem = typeof shipmentItems.$inferSelect;
 export type Ticket = typeof tickets.$inferSelect;
 export type DoorPass = typeof doorPasses.$inferSelect;
 export type Subscription = typeof subscriptions.$inferSelect;

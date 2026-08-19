@@ -127,9 +127,30 @@ export function layout(
    * drifting apart — which is exactly how the invoice page ended up branding
    * shops that had paid not to be.
    */
-  const footer = showsBadge(shop)
+  const sender = showsBadge(shop)
     ? `Sent by ${esc(shop.name)} via <a href="${esc(badgeHref(shop.handle, appOrigin(), "email"))}" style="${FOOTER_LINK}">Sailo</a> — open your own shop, free`
     : `Sent by ${esc(shop.name)}`;
+
+  /*
+   * "Request your data" — spec 52, in the footer of every transactional mail.
+   *
+   * Here rather than only on the storefront because this is where a buyer
+   * actually is when the question occurs to them: they have a receipt in front
+   * of them from a shop they bought from once, months ago, and they are not
+   * going to find the footer of a page they no longer remember the address of.
+   *
+   * Deliberately *not* an unsubscribe line and deliberately not gated on
+   * anything. `marketingFooter` above carries a preference; this carries a
+   * right, and a buyer cannot be opted out of having one. It is also why it is
+   * on the transactional shell rather than the marketing one — a marketing mail
+   * only reaches people who consented, and the person who most needs this link
+   * is somebody who consented to nothing.
+   */
+  const dataRequest = `<span style="display:inline-block;margin-top:8px;"><a href="${esc(
+    new URL(`/${shop.handle}/data-request`, appOrigin()).toString(),
+  )}" style="${FOOTER_LINK}">Request your data</a></span>`;
+
+  const footer = `${sender}<br />${dataRequest}`;
 
   /*
    * Every order email sets replyTo to the shop's contact address — when it has

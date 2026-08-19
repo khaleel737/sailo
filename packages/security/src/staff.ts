@@ -242,6 +242,34 @@ export type StaffCapability =
    * up being about.
    */
   | "data:export"
+  /**
+   * Answer a **buyer's** data request on a seller's behalf — spec 52.
+   *
+   * Its own capability rather than `data:export`, and the distinction is not
+   * bureaucratic. `data:export` is downloading rows *for Sailo*: a support
+   * question, a spreadsheet, our own decision. This is acting as the seller in
+   * front of that seller's customer, under a statutory clock, and half of what
+   * it can do is an **erasure** — which `data:export` does not describe at all
+   * and which no amount of exporting could ever perform.
+   *
+   * HQ needs it because a seller can vanish, refuse, or simply not answer, and
+   * the obligation does not vanish with them. Every use writes the acting
+   * address into `data_requests.actor`, so "the seller answered" and "we
+   * answered for them" are never the same row.
+   */
+  | "privacy:act"
+  /**
+   * Submit evidence to a card network on **Sailo's own** behalf — spec 46.
+   *
+   * Separate from `money:move`, because spec 46 asks for exactly that split:
+   * contesting a platform chargeback and refunding it are two different
+   * decisions and the second is the one that moves money. Contesting spends the
+   * single response Stripe allows and commits Sailo to a position in front of a
+   * network; refunding gives revenue back. Somebody may reasonably hold the
+   * first and not the second — that is the risk desk — and collapsing them
+   * would put the desk one click from a refund it does not own.
+   */
+  | "platform:contest"
   /** Invite, revoke, or change someone's role. */
   | "members:manage";
 
@@ -263,6 +291,8 @@ const GRANTS: Record<StaffRole, readonly StaffCapability[]> = {
     "money:move",
     "marketing:send",
     "data:export",
+    "privacy:act",
+    "platform:contest",
     "members:manage",
   ],
   admin: [
@@ -275,6 +305,8 @@ const GRANTS: Record<StaffRole, readonly StaffCapability[]> = {
     "money:move",
     "marketing:send",
     "data:export",
+    "privacy:act",
+    "platform:contest",
   ],
   risk: [
     "read",
@@ -282,6 +314,16 @@ const GRANTS: Record<StaffRole, readonly StaffCapability[]> = {
     "account:secure",
     "account:recover",
     "account:suspend",
+    /*
+     * The dispute desk's own act, and not the refund beside it. Answering a
+     * chargeback against Sailo is the job this role exists for; giving revenue
+     * back is `money:move`, which risk does not hold.
+     *
+     * `privacy:act` is deliberately absent. A risk analyst has no business
+     * deleting a buyer's records on a seller's behalf — the shape of that
+     * mistake is a support ticket answered by erasing the complainant.
+     */
+    "platform:contest",
   ],
   support: ["read", "notes:write", "account:secure"],
 };

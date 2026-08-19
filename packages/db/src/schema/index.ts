@@ -10,16 +10,19 @@ export * from "./json-types";
 
 export * from "./auth";
 export * from "./shop";
+export * from "./domains";
 export * from "./catalog";
 export * from "./commerce";
 export * from "./policies";
 export * from "./pages";
+export * from "./privacy";
 export * from "./orders";
 export * from "./evidence";
 export * from "./disputes";
 export * from "./memberships";
 export * from "./audience";
 export * from "./contacts";
+export * from "./automations";
 export * from "./lifecycle";
 export * from "./analytics";
 export * from "./growth";
@@ -29,6 +32,7 @@ export * from "./staff";
 export * from "./closures";
 export * from "./risk";
 export * from "./tax";
+export * from "./leads";
 export * from "./push";
 
 export * from "./relations";

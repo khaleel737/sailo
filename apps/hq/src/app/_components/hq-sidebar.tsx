@@ -7,6 +7,7 @@ import {
   Activity,
   AtSign,
   Archive,
+  FileLock2,
   CreditCard,
   Gift,
   Handshake,
@@ -137,6 +138,14 @@ const GROUPS = [
        * what each shop *was* on the way out, which is a different noun.
        */
       { href: "/closures", label: "Closures", icon: Archive },
+      /*
+       * Under Trust & safety rather than Platform, because that is what a data
+       * request is on this side of the product: an obligation with a clock,
+       * where the failure mode is a regulator's letter rather than a broken
+       * page. It sits beside Closures for the same reason — both are about a
+       * business's relationship with people it no longer serves.
+       */
+      { href: "/data-requests", label: "Data requests", icon: FileLock2 },
     ],
   },
   {

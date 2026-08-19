@@ -42,6 +42,10 @@ const CAPABILITY_MEANING: Record<StaffCapability, string> = {
   "marketing:send": "Send or schedule a campaign to Sailo's own mailing list.",
   "data:export":
     "Download every account, buyer and session as a CSV. This is the one a breach report is about.",
+  "privacy:act":
+    "Answer a buyer's data request on a seller's behalf — including deleting that buyer's records. Every use is recorded against the request.",
+  "platform:contest":
+    "Submit evidence to a card network for a chargeback against Sailo's own subscription revenue. Does not include refunding it.",
   "members:manage": "Invite, revoke and re-role everybody on this page.",
 };
 

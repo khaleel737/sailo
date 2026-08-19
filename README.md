@@ -497,10 +497,15 @@ healthy ones too. Render it and read the visible text.
 - Custom domains, multiple shops per user, bot filtering on visit tracking.
 - Paystack and PayPal rails. Card is Stripe Connect only, which leaves out the
   markets Stripe does not reach — the reason the chat rails matter.
-- The 90-day sweep for a deleted seller's product files. Deletion removes their
-  images at once and keeps the files, because buyers who paid for a download
-  still hold live tokens; the cron that finally clears them is a TODO in
-  `api/cron/sweep`.
+
+The 90-day sweep for a deleted seller's product files **is** built now — it
+was the last piece of personal data on the platform with no deletion path at
+all, and spec 52 could not honestly promise a buyer a statutory erasure while it
+was still a TODO. It runs hourly from `api/cron/sweep`, claimed against
+`shops.filesSweptAt`, and it lists the blob store by the shop's own path prefix
+rather than reading rows: `hardDeleteShopContent` takes `products` and
+`product_files` cascades with them, so ninety days after a deletion there is
+nothing left in the database naming those objects.
 
 Shipped since this list was last written: card checkout on Stripe Connect,
 multi-item carts (up to 50 lines), digital file delivery with tokened

@@ -1153,6 +1153,17 @@ export const adminEn = {
   },
 
   delivery: {
+    /* ---- Spec 51: postage priced by what is in the box ------------------ */
+    byWeight: "Price by weight",
+    byWeightHint:
+      "Charge from a table of weight bands instead of one flat fee. Uses the weight on each product.",
+    upToGrams: "Up to (grams)",
+    bandPrice: "Costs",
+    /* The one thing that stops a checkout rather than mispricing it, so it is
+       said on the form rather than discovered by a buyer. */
+    bandsCeiling:
+      "Make the last band heavier than anything you post — an order over it can't use this rate at all.",
+
     kind: "Type",
     freeOverLabel: "Free over",
     addOptionBody: "Standard, express, international or collection in person.",
