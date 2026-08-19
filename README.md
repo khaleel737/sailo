@@ -494,7 +494,15 @@ healthy ones too. Render it and read the visible text.
 
 - Regional pricing. Flat USD today; localised pricing lifts conversion sharply
   in the emerging markets this is aimed at.
-- Custom domains, multiple shops per user, bot filtering on visit tracking.
+- Multiple shops per user, bot filtering on visit tracking.
+
+**Custom domains are refused, not pending.** A shop's address is
+`sailo.store/<handle>` and always will be — the line that used to sit here
+listed them as a gap, and an agent reading it reasonably concluded they were
+simply not got to yet. They were: a build was started on 2026-08-19 and backed
+out the same day at the owner's instruction. Nothing about them is to be built.
+The argument is `docs/specs/GAP-2026-08-easytools.md` §4.11 and the spec is in
+`docs/specs/deferred/`.
 - Paystack and PayPal rails. Card is Stripe Connect only, which leaves out the
   markets Stripe does not reach — the reason the chat rails matter.
 

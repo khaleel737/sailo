@@ -10,12 +10,12 @@ export * from "./json-types";
 
 export * from "./auth";
 export * from "./shop";
-export * from "./domains";
 export * from "./catalog";
 export * from "./commerce";
 export * from "./policies";
 export * from "./pages";
 export * from "./privacy";
+export * from "./platform";
 export * from "./orders";
 export * from "./evidence";
 export * from "./disputes";

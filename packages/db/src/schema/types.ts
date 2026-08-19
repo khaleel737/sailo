@@ -11,11 +11,18 @@ import type {
   orders,
   shipmentItems,
   shipments,
+  stockRequests,
   tickets,
 } from "./orders";
 import type { subscriptions } from "./memberships";
 import type { disputes } from "./disputes";
 import type { broadcasts } from "./audience";
+import type {
+  automationEmails,
+  automationRuns,
+  automationSteps,
+  automations,
+} from "./automations";
 import type {
   newsletterSubscribers,
   newsletters,
@@ -30,13 +37,17 @@ import type {
 import type { apiKeys } from "./integrations";
 import type { supportTickets } from "./support";
 import type { user } from "./auth";
-import type { shopDomains } from "./domains";
 
 /** Row types, inferred from the tables rather than written twice. */
 
 export type Shop = typeof shops.$inferSelect;
-/** A hostname pointed at a storefront — spec 39. */
-export type ShopDomain = typeof shopDomains.$inferSelect;
+
+/* Flows — spec 30. `Automation` is shared with spec 31's scenarios; `kind`
+   tells them apart, and one runner serves both. */
+export type Automation = typeof automations.$inferSelect;
+export type AutomationEmail = typeof automationEmails.$inferSelect;
+export type AutomationRun = typeof automationRuns.$inferSelect;
+export type AutomationStep = typeof automationSteps.$inferSelect;
 /** One of a seller's five hosted documents — spec 41. */
 export type ShopPage = typeof shopPages.$inferSelect;
 /** A buyer's subject access, erasure or portability request — spec 52. */
@@ -51,6 +62,8 @@ export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
 /** One box, with its own tracking and its own delivery date — spec 51. */
 export type Shipment = typeof shipments.$inferSelect;
+/** Somebody waiting for one variant to come back — spec 33. */
+export type StockRequest = typeof stockRequests.$inferSelect;
 export type ShipmentItem = typeof shipmentItems.$inferSelect;
 export type Ticket = typeof tickets.$inferSelect;
 export type DoorPass = typeof doorPasses.$inferSelect;

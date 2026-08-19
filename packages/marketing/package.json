@@ -12,6 +12,8 @@
     "./lifecycle/server": "./src/lifecycle/server.ts",
     "./contacts": "./src/contacts/index.ts",
     "./contacts/server": "./src/contacts/server.ts",
+    "./automations": "./src/automations/index.ts",
+    "./automations/server": "./src/automations/server.ts",
     "./contact": "./src/contact.ts",
     "./newsletter": "./src/newsletter/index.ts",
     "./newsletter/server": "./src/newsletter/server.ts"

@@ -190,3 +190,53 @@ export type WeightBand = {
   /** What this band costs, in the shop's minor units. */
   priceCents: number;
 };
+
+/* --------------------------------------------------------------------------
+   Automations — spec 30
+
+   The graph is stored rather than compiled, and that is the design: keeping it
+   serialisable is what makes the whole of the runner's behaviour testable from
+   object literals, with no database and no mail. `packages/marketing/src/
+   automations/graph.ts` is the only thing that may parse one, and it validates
+   on save *and again at claim time*.
+-------------------------------------------------------------------------- */
+
+/** What enrols a contact. `config` is read by the trigger's own parser. */
+export type AutomationTrigger = {
+  type: string;
+  config?: Record<string, unknown>;
+};
+
+/**
+ * One step.
+ *
+ * `config` is deliberately loose here and strict in `graph.ts`. This type
+ * describes the column; the parser describes the vocabulary, and putting the
+ * vocabulary in the schema package would mean the db and the marketing package
+ * had to be edited together to add a step kind.
+ */
+export type AutomationNode = {
+  id: string;
+  /** send | timer | branch | filter | whatsapp — see `NODE_KINDS`. */
+  kind: string;
+  config?: Record<string, unknown>;
+};
+
+/**
+ * One connection.
+ *
+ * `label` is what a branch's paths are told apart by — `"yes"`, `"no"`, or a
+ * path index. Absent on the single edge leaving a linear node.
+ */
+export type AutomationEdge = {
+  from: string;
+  to: string;
+  label?: string;
+};
+
+export type AutomationGraph = {
+  nodes: AutomationNode[];
+  edges: AutomationEdge[];
+  /** Where a run starts. Must name a node. */
+  entry?: string;
+};

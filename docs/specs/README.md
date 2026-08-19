@@ -10,6 +10,13 @@ Every "Sailo has / lacks" claim was verified in source during the
 in `deferred/` and are not work — do not pick them up without the owner
 saying so.
 
+**Specs 30–43 are the Easytools parity release.** The analysis behind them —
+their whole surface, ours, and the fourteen things we are deliberately *not*
+building — is `GAP-2026-08-easytools.md`. The order, the gates and the two
+decisions that block estimating are `RELEASE-PLAN-2026-08.md`. Read the gap
+analysis before picking up any spec numbered 30 or above; several of them
+narrow or supersede what came before.
+
 ## Rules for every agent, before any spec
 
 1. **A schema change is not shipped until its migration has run against
@@ -281,10 +288,11 @@ turns up to (`serviceMode !== "online"`, the same switch `handedOverInPerson`
 already reads) — a paid newsletter has no door, and a credential issued for one
 is a live code to lose in exchange for nothing.
 
-*Not built:* pause/freeze, weekly billing (`BILLING_INTERVALS` is still
-`month | year`), attendance in the CSV export, and a scenario test — the pure
-half is unit-tested but the claim and the live entitlement read want a real
-database.
+*Not built:* pause/freeze, attendance in the CSV export, and a scenario test —
+the pure half is unit-tested but the claim and the live entitlement read want a
+real database. **Correction, 2026-08-19:** weekly billing *is* built —
+`BILLING_INTERVALS` now reads `day | week | month | year`, so the earlier note
+here was stale. Pause/freeze is spec 49.
 
 ### Lifecycle email, as built
 
@@ -441,17 +449,91 @@ events for one click.
 New route: `/docs/api`, public and unauthenticated, because somebody deciding
 whether Sailo fits their stack has to read it before they have an account.
 
+### The Easytools parity release (30–43)
+
+Scoped 2026-08-19 against 36 screenshots of the Easytools creator panel and
+their `llms-full.txt` (10,448 lines). Every claim was verified in source;
+see `GAP-2026-08-easytools.md` for the tables and the refusals, and
+`RELEASE-PLAN-2026-08.md` for sequencing and the verification gate.
+
+**Wave 0 — unblock.** The chargeback scenario suite has two unresolved imports
+and cannot import what it tests; the card-payment webhook path
+(`checkout.session.completed` → settlement, invoice numbering, email, release) is
+still proven only by unit tests of its pure rules, which `PRODUCTION-PLAN.md` §6
+has said for weeks. Both come before spec 30, and the first also gates spec 44.
+So do the two decisions: the i18n policy for new admin surfaces (35 locales is
+the throttle on this entire release) and which endpoints stop failing open.
+
+**Spec 44 is the one feature in wave 0**, and the only item in this release whose
+cost compounds daily. Five kinds of chargeback evidence are never captured, and
+evidence not captured cannot be printed later — the argument `ce3.ts` already
+makes about `orders.buyerIp`. Every week it waits is a week of orders that can
+never be defended.
+
+| Wave | Order | Spec | Effort | Notes |
+|---|---|---|---|---|
+| 0 | 19 | `44-dispute-evidence-capture.md` | M | **Ships first, alone.** Statement descriptor (0 files today), policy snapshots, per-order message log, delivery confirmation, durable sign-in events. Retroactive — nothing here can be backfilled |
+| 1 | 20 | `34-contacts-lists-custom-fields.md` | L | Unifies two half-audiences; supplies 30's `list.joined` trigger; its eight rules are the correctness floor for everything that sends mail |
+| 1 | 21 | `30-email-automations.md` | XL | **The headline gap** — "*Not built: flows*" appears three times above. Assembly, not invention: segments, the webhook lease, broadcast sending and `lifecycle`'s three rules already exist. Must not touch `lifecycle/steps.ts` |
+| 2 | 22 | `32-checkout-recovery.md` | L | Sessions + status machine + one T+3h mail + randomised discount. Their 10% commission, phone consultants and cross-seller buyer network are refused |
+| 2 | 23 | `08-order-bumps.md` | M | Written, unbuilt. **36 supersedes its `products.bumpProductId`** with an `offers` table; keep its `viaBump` attribution |
+| 2 | 24 | `36-cross-sells-and-thank-you.md` | L | Post-payment, not in-checkout (their Baymard reasoning, adopted). Flat list; `parent_id` exists and is always null in v1 |
+| 2 | 25 | `43-pricing-models.md` | M | PWYW, donation-as-preset, sell windows, manual-rail trials. One migration, no sixth product kind |
+| 2 | 25b | `45-order-evidence-pack.md` | L | One PDF per order, rendered on demand from 44's snapshot. **Seven of nine `EVIDENCE_FILE_FIELDS` are things Sailo already holds and currently asks the seller to upload** |
+| 2 | 25c | `46-platform-subscription-disputes.md` | M | A seller charging back their Sailo subscription is currently never contested — the schema calls the remedy "a plan downgrade rather than evidence about a parcel". We lose the sub plus a $15 fee and add an uncontested loss to the platform account's own rate |
+| 3 | 26 | `07-lead-capture.md` | M | Already written and still wanted; 30 uses it as a trigger source |
+| 3 | 27 | `33-waitlists.md` | M | Ships the notification their own docs admit they do not send |
+| 3 | 28 | `35-testimonials-wall-of-love.md` | M | A wall of love is **not** `reviews` — shop-scoped, unrated, embeddable. The iframe is the risky part |
+| 3 | 29 | `41-seller-legal-pages.md` | S | What finally makes `requireTerms` usable. English-only document, translated chrome |
+| 3 | 29b | `47-migrate-from-other-tools.md` | L | Stripe, **Shopify**, **Etsy**, Gumroad, Lemon Squeezy, Paddle → the existing validated CSV row shape. One write path, seven readers. Etsy is a listings-CSV upload, not OAuth. Imports no orders (the invoice sequence) and no marketing consent |
+| 2b | 25d | `48-digital-product-depth.md` | L | **`digital_access_details` is one shared column — every buyer of a licence key gets the same string.** Code pools claimed with `FOR UPDATE SKIP LOCKED`, a Lemon-Squeezy-shaped licence API, files per variant, file versions |
+| 2b | 25e | `49-membership-depth.md` | L | Fixed term + access-after (a payment plan without an instalments engine), cancellation policy, pause/freeze, seats with per-seat passes, dunning, plan switching |
+| 2b | 25f | `50-event-product-depth.md` | L | Ticket tiers with two-level capacity, sessions/recurring, transfer, per-attendee details, `.ics`, venue + event timezone, refund policy. `tickets.tier` finally gets written |
+| 2b | 25g | `51-service-and-physical-depth.md` | L | Staff resources (the exclusion constraint moves to (staff, range)), classes, buyer reschedule, intake forms, booking reminders, low-stock alerts, weight bands, multi-shipment |
+| 4 | 33b | `52-buyer-data-requests.md` | M | Subject access, erasure, portability. Verification before assembly; suppressions never erased; the invoice sequence unbroken |
+| 4 | 30 | `37-seller-team-roles.md` | M | `staff_members` is *Sailo's* roster, not a seller's. `requireShop()` gains a required permission argument — audit every call site and write the count down |
+| 4 | 31 | `38-tax-jurisdictions-thresholds.md` | L | Registrations, threshold monitoring, country control, a filable report. We do **not** become a tax provider |
+| — | — | ~~`39-custom-domain.md`~~ | — | **Refused 2026-08-19 — do not build.** A shop's address is `sailo.store/<handle>` and always will be. Moved to `deferred/`; the argument is `GAP-2026-08-easytools.md` §4.11 |
+| 4 | 33 | `42-analytics-expansion.md` | M | Three pixels, four tiles, scoped share links, a closed link vocabulary with no `?price=` |
+| 5 | 34 | `31-integration-scenarios.md` | L | Shares 30's runner. Generic actions; the app-directory refusal stands |
+| 5 | 35 | `40-gated-content-collections.md` | L | Supersedes `deferred/18-ecourse.md`, narrowly. Writes **no new access predicate** |
+
+Waves 2–5 are fully parallel: nothing in them blocks anything else in them.
+Wave 1 is sequential and 34 comes first.
+
+**The refusals matter as much as the list.** Not building, with the argument in
+`GAP-2026-08-easytools.md` §4: the Easypage website builder (the storefront *is*
+the page — `15-landing-pages.md` stays deferred), the cross-seller buyer
+identity network and 1-click that depends on it (it would put one seller's
+buyers in another's checkout, and Sailo is not merchant of record), Easybilling
+as a staffed tax service, per-seller sending domains and DKIM, named branding
+themes, three-level cross-sell funnels, payment plans and installments, a
+logged-in buyer portal, an OAuth app directory, Google-review import, and all
+six add-ons their own `llms.txt` marks **Legacy** (Easycookie, EasyFAQ,
+Easyoffer, Easytimer, Easycoffee, Easyticker).
+
 ## Deferred (`deferred/` — not work)
 
 | Spec | Why it's parked |
 |---|---|
-| `15-landing-pages.md` | Not Sailo's product direction — the storefront *is* the page |
+| `15-landing-pages.md` | Not Sailo's product direction — the storefront *is* the page. **Re-examined 2026-08-19 against Easytools' Sites tab and still deferred** (`GAP-2026-08-easytools.md` §4.1); the two pieces worth having — an FAQ block and an About block — land in spec 41 |
 | `21-media-embeds.md` | Written for a link/URL product kind Sailo does not have, and existed to feed 15 |
-| `18-ecourse.md` | Not needed — not Sailo's product direction now |
+| `18-ecourse.md` | **Superseded 2026-08-19 by `40-gated-content-collections.md`**, which is the narrow shape: ordered, gated, resumable files reusing the download gate and `membershipAccess`. Not a video player — that stays out |
 | `19-community.md` | Covered better by 06: memberships can gate a Discord/WhatsApp invite |
 | `24-paypal-rail.md` | A second payment platform; Stripe + manual rails cover buyers |
 | `25-autodm.md` | Blocked on Meta app review — a human/business task, not agent work |
 | `26-education-hub.md` | We have education (blog programme, onboarding); no in-admin hub needed |
+| `39-custom-domain.md` | **Refused, not parked.** The owner: *"we will never add it, it will always be sailo.store/store-name."* A build was started on 2026-08-19 and backed out the same day — see `GAP-2026-08-easytools.md` §4.11, and `drizzle/0038_custom_domains.sql` for why that number is spent |
+
+Verified ahead of Easytools on 2026-08-19 (do not "fix" downwards): physical
+goods with variants and stock, the booking engine, manual/chat payment rails,
+member door passes, partner payouts, 35-language admin *and* storefront, the HQ
+back-office and risk desk, Standard Webhooks + REST v1 + MCP + `/docs/api`, the
+**chargeback pipeline** (dispute scope, inquiry-vs-chargeback, the real deducted
+cost, early fraud warnings, the 4.5 MB evidence budget enforced from the set, and
+a full Visa Compelling Evidence 3.0 implementation — Easytools has no equivalent
+and specs 44–46 extend it rather than replacing anything), and email broadcasts (19-rule dynamic segments, RFC 8058 one-click unsubscribe,
+bounce/complaint suppression, per-shop and platform quotas).
 
 Already at parity (do not build): CSV export, coupons, storefront theming,
 35-language admin+storefront, powered-by removal (`removeBadge`), automatic

@@ -33,9 +33,21 @@ export const RESERVED_HANDLES = new Set([
    */
   "partner", "partners", "door", "download", "dev", "gdpr", "refunds",
   "forgot-password", "reset-password", "verify-2fa", "anti-spam", "home",
+  // Spec 44's "did your order arrive?" page. A public, token-addressed route
+  // like `/download` and `/invoice`, so a shop claiming the handle would shadow
+  // it — and the page it would shadow is one a buyer reaches from an email.
+  "arrived",
   // The acceptable-use policy, published at its own address so diligence and a
   // declined seller have a URL rather than a clause number.
   "restricted-businesses",
+  /*
+   * Spec 34's double opt-in confirmation, at `/lists/confirm/<token>`. Found
+   * by `handle-routes.test.ts` rather than remembered — it reads `src/app` off
+   * disk and had been failing since the route landed. A shop holding this
+   * handle shadows the page a subscriber reaches from their confirmation
+   * email, and the only symptom is that nobody's opt-in ever completes.
+   */
+  "lists",
   // Locale prefixes. `/fr/blog` is a real URL, so a shop called `fil` would
   // shadow the Filipino blog. Only three-letter codes need listing: every other
   // locale is two characters and already too short to be a handle.

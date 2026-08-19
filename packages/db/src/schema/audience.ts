@@ -156,9 +156,22 @@ export const broadcastDeliveries = pgTable(
   "broadcast_deliveries",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    broadcastId: uuid("broadcast_id")
-      .notNull()
-      .references(() => broadcasts.id, { onDelete: "cascade" }),
+    /**
+     * Null for a message no broadcast sent — an automation's, since spec 30.
+     *
+     * One ledger and not two: opens, bounces and complaints from a flow land
+     * where the Resend webhook already looks, and the daily ceilings already
+     * count them. A second table would be a second place suppression has to
+     * know about, and the first one somebody forgets.
+     *
+     * Nothing here reads this column except code already scoped to one
+     * broadcast, so a null row is invisible to it. The link back for an
+     * automation send is `automation_steps.delivery_id`, which keeps this
+     * table free of a column only one reader would understand.
+     */
+    broadcastId: uuid("broadcast_id").references(() => broadcasts.id, {
+      onDelete: "cascade",
+    }),
     shopId: uuid("shop_id")
       .notNull()
       .references(() => shops.id, { onDelete: "cascade" }),
@@ -182,6 +195,12 @@ export const broadcastDeliveries = pgTable(
      * One address is mailed once per broadcast, decided by Postgres rather
      * than by the loop that builds the queue. Two clients sharing an address,
      * a retried enqueue, a seller pressing Send twice — all collide here.
+     */
+    /*
+     * Unaffected by `broadcastId` becoming nullable in the way that matters:
+     * Postgres treats NULLs as distinct, so this goes on deduplicating a
+     * broadcast's own rows while allowing a flow to send one contact several
+     * messages — which is what a sequence is.
      */
     uniqueIndex("broadcast_deliveries_target_key").on(t.broadcastId, t.email),
     index("broadcast_deliveries_queue_idx").on(t.broadcastId, t.status),
