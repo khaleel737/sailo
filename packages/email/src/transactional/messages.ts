@@ -524,3 +524,36 @@ export async function sendLeadMagnet(opts: {
     replyTo: shop.contactEmail ?? undefined,
   });
 }
+
+/**
+ * "Would you say a few words?" — spec 35.
+ *
+ * Shop-branded, because the buyer bought from the shop and Sailo is not part of
+ * the exchange. Transactional in substance — you bought this, tell us — and
+ * bulk in shape, which is why the *sending* side counts it against the
+ * broadcast quota and honours suppressions even though nothing here does.
+ * `raiseTestimonialRequests` is where that lives; a builder that decided it
+ * for itself would be a second opinion about who may be mailed.
+ */
+export async function sendTestimonialRequest(opts: {
+  shop: Shop;
+  to: string;
+  url: string;
+}): Promise<SendResult> {
+  const { shop, to, url } = opts;
+
+  const body = `
+    ${para(`You bought something from ${strong(esc(shop.name))} recently.`)}
+    ${mutedPara("If it worked out, a couple of sentences would mean a lot — it takes a minute, and they read every one.")}
+    ${button(url, "Say a few words")}
+    ${fine("They choose what goes on their page, and you can ask them to take it down at any time.")}
+  `;
+
+  return send({
+    from: sender(shop.name, ORDERS),
+    to,
+    subject: `A few words about ${shop.name}?`,
+    html: layout(shop, `A few words about ${shop.name}?`, body),
+    replyTo: shop.contactEmail ?? undefined,
+  });
+}

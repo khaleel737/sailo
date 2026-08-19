@@ -9,6 +9,7 @@ import {
   type ShopFilters,
 } from "@/lib/queries";
 import { getPublishedPages, getStorefrontSections } from "@/lib/queries";
+import { getShopTestimonials } from "@/lib/queries";
 import { getShopT } from "@/i18n/server";
 import { displayCurrency } from "@/lib/regional";
 import { can } from "@sailo/core/plans";
@@ -51,7 +52,7 @@ export async function getShopPageData(
   const shop =
     display.currency === row.currency ? row : { ...row, currency: display.currency };
 
-  const [page, facets, checkout, translations, sections, publishedPages] =
+  const [page, facets, checkout, translations, sections, publishedPages, testimonials] =
     await Promise.all([
       // Only the first batch. The rest arrives as the shopper scrolls, so a
       // catalogue with no ceiling can't decide how long this page takes.
@@ -70,6 +71,12 @@ export async function getShopPageData(
        */
       getStorefrontSections(shop.id),
       getPublishedPages(shop.id),
+      /*
+       * Spec 35. Read once and used twice — the strip under the products and
+       * the three lines in the basket come out of this one cached list, because
+       * the checkout must not gain a fetch of its own.
+       */
+      getShopTestimonials(shop.id),
     ]);
 
   return {
@@ -85,6 +92,7 @@ export async function getShopPageData(
     dir: translations.dir,
     t: translations.t,
     layout: readLayout(shop.layout),
+    testimonials,
     about: sections.about,
     faq: sections.faq,
     /*

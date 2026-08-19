@@ -241,9 +241,80 @@ const nextConfig: NextConfig = {
       ...(isProd ? ["upgrade-insecure-requests"] : []),
     ].join("; ");
 
+    /*
+     * The testimonial embed, and the one place `frame-ancestors 'none'` is
+     * wrong — spec 35.
+     *
+     * `/embed/wall/[key]` exists to be put in an iframe on a site the seller
+     * runs somewhere else. The global policy below forbids exactly that, twice:
+     * `frame-ancestors 'none'` in the CSP and `X-Frame-Options: DENY` beside
+     * it. Overriding the CSP alone would not be enough — `X-Frame-Options` has
+     * no "allow anyone" value, so it has to be *absent*, which means the embed
+     * cannot match the global rule at all.
+     *
+     * Hence the negative lookahead on the catch-all rather than a second entry
+     * layered on top. Two rules that both match and disagree is the arrangement
+     * where a later refactor silently reinstates the deny and the failure shows
+     * up only inside somebody else's website, which nothing here would see.
+     *
+     * Its own policy is as small as the page: `default-src 'none'`, no scripts
+     * at all, its own styles, the image hosts the avatars live on, and frames
+     * from the two video hosts `isEmbeddableVideoUrl` allows. Nothing on that
+     * page reads a cookie or calls an API, so `connect-src` stays absent.
+     */
+    const embedCsp = [
+      "default-src 'none'",
+      /*
+       * `'self' 'unsafe-inline'` and no host beyond this origin.
+       *
+       * `default-src 'none'` alone was the first version and it renders a blank
+       * rectangle: React streams the document as HTML plus inline scripts that
+       * move each chunk into place, so blocking inline script does not merely
+       * disable interactivity — it stops the content arriving at all. The
+       * cross-origin iframe test is what caught it, which is the whole reason
+       * that test exists.
+       *
+       * What this still buys, on a page inside a stranger's site: no external
+       * script host of any kind, no analytics, no pixels, and nothing this page
+       * renders is user-controlled markup — the two seller-supplied URLs are
+       * an allowlisted image host and an allowlisted video frame.
+       */
+      `script-src 'self' 'unsafe-inline'${devEval}`,
+      // Next's own bootstrap talks to the origin it was served from. Nothing on
+      // this page calls anything else, and no other host is named.
+      "connect-src 'self'",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: https://*.public.blob.vercel-storage.com https://picsum.photos https://images.unsplash.com",
+      "font-src 'self' data:",
+      // The two hosts the write-time allowlist permits, and no others.
+      "frame-src https://www.youtube-nocookie.com https://player.vimeo.com",
+      "base-uri 'none'",
+      "form-action 'none'",
+      // The whole point of the route.
+      "frame-ancestors *",
+    ].join("; ");
+
     return [
       {
-        source: "/:path*",
+        source: "/embed/:path*",
+        headers: [
+          { key: "Content-Security-Policy", value: embedCsp },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          // Deliberately no `X-Frame-Options`: there is no value that means
+          // "anyone may frame this", so the header must not be sent.
+          { key: "Referrer-Policy", value: "no-referrer" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+          },
+        ],
+      },
+      {
+        /*
+         * Everything except the embed. See the note above for why this is a
+         * lookahead rather than a second rule stacked on `/:path*`.
+         */
+        source: "/((?!embed/).*)",
         headers: [
           { key: "Content-Security-Policy", value: csp },
           { key: "X-Content-Type-Options", value: "nosniff" },

@@ -31,6 +31,7 @@ export function CartSheet({
   methods,
   deliveryOptions,
   blockedCountries,
+  proof,
   contactEmail,
   compliance,
   customFields,
@@ -42,6 +43,7 @@ export function CartSheet({
   methods: CheckoutMethod[];
   deliveryOptions: CheckoutDelivery[];
   blockedCountries: string[];
+  proof?: React.ReactNode;
   contactEmail: string | null;
   compliance: CheckoutCompliance;
   customFields: CheckoutField[];
@@ -61,6 +63,7 @@ export function CartSheet({
       methods={methods}
       deliveryOptions={deliveryOptions}
       blockedCountries={blockedCountries}
+      proof={proof}
       // One physical line makes the whole basket travel, which is the same
       // rule the server applies to it.
       needsDeliveryHint={cart.lines.some((line) => needsDelivery(line.kind))}

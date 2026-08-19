@@ -1,4 +1,4 @@
-import type { Shop, ShopPage } from "@sailo/db/schema";
+import type { Shop, ShopPage, Testimonial } from "@sailo/db/schema";
 import type { Dictionary } from "@sailo/i18n";
 import type { Locale } from "@sailo/i18n/config";
 import type {
@@ -38,6 +38,14 @@ export type ShopPageData = {
 
   /** Grid or list, as the seller chose. */
   layout: ShopLayout;
+  /**
+   * Approved testimonials — spec 35, read once for two surfaces.
+   *
+   * The strip under the products renders all of them; the basket takes the
+   * first three. One list rather than two reads, because the checkout must not
+   * gain a fetch.
+   */
+  testimonials: Testimonial[];
   /**
    * Whether the referral programme is actually live. A downgrade has to switch
    * it off publicly, not just hide it in admin.

@@ -19,7 +19,9 @@
     "./newsletter": "./src/newsletter/index.ts",
     "./newsletter/server": "./src/newsletter/server.ts",
     "./leads": "./src/leads/index.ts",
-    "./leads/server": "./src/leads/server.ts"
+    "./leads/server": "./src/leads/server.ts",
+    "./testimonials": "./src/testimonials/index.ts",
+    "./testimonials/server": "./src/testimonials/server.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

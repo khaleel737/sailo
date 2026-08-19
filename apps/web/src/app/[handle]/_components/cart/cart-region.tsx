@@ -30,6 +30,7 @@ export function CartRegion({
   methods,
   deliveryOptions,
   blockedCountries,
+  proof,
   contactEmail,
   compliance,
   customFields,
@@ -48,6 +49,8 @@ export function CartRegion({
   deliveryOptions: CheckoutDelivery[];
   /** Countries this shop refuses — spec 38's country control. */
   blockedCountries: string[];
+  /** Spec 35 — pre-rendered, so the checkout gains no fetch. */
+  proof?: React.ReactNode;
   contactEmail: string | null;
   compliance: CheckoutCompliance;
   customFields: CheckoutField[];
@@ -78,6 +81,7 @@ export function CartRegion({
           methods={methods}
           deliveryOptions={deliveryOptions}
           blockedCountries={blockedCountries}
+          proof={proof}
           contactEmail={contactEmail}
           compliance={compliance}
           customFields={customFields}

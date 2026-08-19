@@ -14,6 +14,7 @@ import {
   LogOut,
   Menu,
   MessageSquare,
+  Quote,
   ScanLine,
   Package,
   ScrollText,
@@ -57,6 +58,14 @@ const GROUPS = [
       { href: "/admin/clients", key: "clients", icon: Users },
       { href: "/admin/members", key: "members", icon: BadgeCheck },
       { href: "/admin/reviews", key: "reviews", icon: MessageSquare },
+      /*
+       * Beside reviews rather than in Growth, because a seller looking for one
+       * looks for the other — and because both are queues: something arrived
+       * and somebody has to decide whether it goes on a public page. What they
+       * *are* is different (spec 35 argues it at length), but where you find
+       * them is the same place.
+       */
+      { href: "/admin/testimonials", key: "testimonials", icon: Quote },
     ],
   },
   {

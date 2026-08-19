@@ -95,6 +95,15 @@ export type CheckoutPanelProps = {
    */
   blockedCountries: string[];
   /**
+   * Three approved testimonials, rendered at the top of the form — spec 35.
+   *
+   * A pre-rendered node rather than rows plus a component, because the rows
+   * come out of the page's own `"use cache"` read and this panel is a client
+   * component: passing the markup keeps the promise the spec makes, which is
+   * that the checkout gains no fetch of its own.
+   */
+  proof?: React.ReactNode;
+  /**
    * Whether anything here travels, as the caller already knows it from the
    * kinds in the basket. The server re-decides on the first quote; this only
    * spares the panel a frame of asking the wrong questions.

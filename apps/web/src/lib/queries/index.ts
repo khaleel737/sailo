@@ -25,3 +25,4 @@ export * from "@sailo/commerce/ticketing";
  * it here are unchanged.
  */
 export * from "@sailo/customers/roster";
+export * from "./testimonials";
