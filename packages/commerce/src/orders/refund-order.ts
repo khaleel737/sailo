@@ -3,6 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import { orders, type Order, type Shop } from "@sailo/db/schema";
 import { restoreStock } from "../catalog/inventory";
+import { revokeDigitalGoodsForOrder } from "./digital-revoke";
 import { voidTicketsForOrder } from "../ticketing/tickets";
 import { claimRefundAmount, releaseRefundClaim } from "./refund-claim";
 import { checkRefund, refundableCents, reversePayment, type RefundOutcome } from "./refunds";
@@ -92,6 +93,19 @@ export async function refundOrder(
     /** Minor units. Null refunds whatever is left, not the whole order again. */
     amountCents: number | null;
     reason?: string | null;
+    /**
+     * Whether the units go back on the shelf — spec 51.
+     *
+     * Defaults to true, which is what every refund before this did. A refund
+     * for something damaged, lost in the post or thrown away should not put it
+     * back on sale, and the seller is asked at the moment they refund because
+     * that is the moment they know: `refundReason` is free text and nothing can
+     * read a decision out of it.
+     *
+     * Only consulted on a *full* refund, because only a full refund restocks at
+     * all — a partial one is a price adjustment, not a return.
+     */
+    restock?: boolean;
   },
   hooks: RefundHooks = {},
 ): Promise<RefundResult> {
@@ -126,11 +140,20 @@ export async function refundOrder(
     };
   }
 
+  const restock = input.restock !== false;
+
   await db
     .update(orders)
     .set({
       refundedAt: new Date(),
       refundReason: input.reason?.trim().slice(0, 300) || null,
+      /*
+       * Recorded whether or not it is acted on, and *before* the units would
+       * move — spec 51. A seller reading this order back in six months should
+       * find the decision they made, not have to infer it from a stock count
+       * that has changed a hundred times since.
+       */
+      restockDeclined: !restock,
       /* Only ever written *to* `refunded`. A partial refund says nothing about
          the status, so a concurrent caller's conclusion survives. */
       ...(isFull ? { status: "refunded" as const, paymentStatus: "refunded" } : {}),
@@ -144,8 +167,30 @@ export async function refundOrder(
    * opening a door. A partial refund is a price adjustment, not a return.
    */
   if (isFull) {
-    await restoreStock(order);
+    /*
+     * The seller's answer, and it is the only thing that decides — spec 51.
+     *
+     * `restoreStock` also claims `restockedAt`, which is what stops a
+     * double-click restocking twice; skipping the call entirely means a
+     * declined restock leaves that column null, which is the truth. The
+     * decision itself is on `restockDeclined` above, so "never restocked" and
+     * "deliberately not restocked" are two different rows rather than one
+     * ambiguous null.
+     *
+     * A ticket stops opening a door either way. That is not a stock question:
+     * money given back for an admission has to stop admitting somebody,
+     * whatever the seller decided about the shelf.
+     */
+    if (restock) await restoreStock(order);
     await voidTicketsForOrder(order.id);
+    /*
+     * A code and a licence stop working either way, and deliberately outside
+     * the `restock` branch — spec 48. Whether a damaged mug goes back on the
+     * shelf is a stock question; whether a refunded buyer keeps a live licence
+     * key is not, and hanging the second off the first is how a guard ends up
+     * at one sink and not its twin.
+     */
+    await revokeDigitalGoodsForOrder(order.id);
   }
 
   if (hooks.notify) {

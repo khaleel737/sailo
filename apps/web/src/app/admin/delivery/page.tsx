@@ -154,7 +154,13 @@ export default async function AdminDeliveryPage() {
                   </>
                 }
               >
-                <DeliveryRateForm method={method} currency={shop.currency} regionalCurrencies={regional} />
+                <DeliveryRateForm
+                  method={method}
+                  currency={shop.currency}
+                  regionalCurrencies={regional}
+                  /* Spec 51 — gated again in the action, because a form is not a gate. */
+                  weightBands={can(shop, "weightBands")}
+                />
 
                 <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-ink-200 pt-4">
                   <form action={toggleDeliveryMethod}>
@@ -187,7 +193,11 @@ export default async function AdminDeliveryPage() {
         subtitle={a.delivery.addOptionBody}
         defaultOpen={methods.length === 0}
       >
-        <DeliveryRateForm currency={shop.currency} regionalCurrencies={regional} />
+        <DeliveryRateForm
+          currency={shop.currency}
+          regionalCurrencies={regional}
+          weightBands={can(shop, "weightBands")}
+        />
       </Panel>
     </>
   );

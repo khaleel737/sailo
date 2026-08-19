@@ -1,7 +1,13 @@
 import "server-only";
 import { and, asc, eq, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
-import { deliveryMethods, type CurrencyPrices, type DeliveryConfig } from "@sailo/db/schema";
+import {
+  deliveryMethods,
+  type CurrencyPrices,
+  type DeliveryConfig,
+  type WeightBand,
+} from "@sailo/db/schema";
+import { usableBands } from "@sailo/core/weight";
 import { firstRow } from "@sailo/core/invariant";
 import {
   DELIVERY_METHOD_DEFS,
@@ -39,6 +45,12 @@ const MAX_FIELD = 500;
 /** A name a phone can render in a row without truncating mid-word. */
 const MAX_NAME = 60;
 
+/**
+ * Bands per rate. Past this a seller wants a carrier account, not a table —
+ * and it is a bound on a jsonb column a request can fill.
+ */
+export const MAX_BANDS = 20;
+
 export type SaveDeliveryInput = {
   shopId: string;
   /** Null creates; an id updates, and is scoped to `shopId` in the WHERE. */
@@ -57,6 +69,22 @@ export type SaveDeliveryInput = {
    * than quoting a euro basket a dollar postage fee.
    */
   currencyPrices?: CurrencyPrices;
+  /**
+   * Whether this rate is one price or a table of them — spec 51.
+   *
+   * Anything but `by_weight` is `flat`, which is every rate ever saved before
+   * this and the safe fallback for a value that arrived from a request.
+   */
+  rateMode?: string | null;
+  /**
+   * `[{ upToGrams, priceCents }]`, in whatever order the seller left them.
+   *
+   * Normalised on the way in — sorted, truncated to integers, and stripped of
+   * rows that are not bands — so every reader after this can trust the shape.
+   * A rate saved `by_weight` with an empty table falls back to `feeCents` at
+   * quote time, which is the half-configured state a seller passes through.
+   */
+  weightBands?: WeightBand[];
   config: DeliveryConfig;
   isEnabled: boolean;
   /**
@@ -117,6 +145,16 @@ export async function saveDelivery(input: SaveDeliveryInput): Promise<SaveDelive
        clearing a field must stop the currency being offered, and a merge
        would leave a fee a seller deliberately removed still being charged. */
     currencyPrices: input.currencyPrices ?? {},
+    /*
+     * Spec 51. Normalised here rather than trusted, for the same reason the
+     * config above is rebuilt from the option's own field list: the column is
+     * `jsonb` and would accept anything a client sent. `usableBands` sorts,
+     * truncates to integers and drops rows that are not bands — so a table read
+     * at checkout cannot charge the 5 kg price for a 500 g parcel because the
+     * seller dragged the rows around.
+     */
+    rateMode: input.rateMode === "by_weight" ? "by_weight" : "flat",
+    weightBands: usableBands(input.weightBands).slice(0, MAX_BANDS),
     config,
     countries,
     isEnabled: input.isEnabled,

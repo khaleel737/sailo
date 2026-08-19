@@ -7,9 +7,11 @@ import { wantsNotification } from "@sailo/notifications/prefs";
 import { pushSellerOrder } from "@sailo/notifications/push";
 import {
   sendSellerBookingRequested,
+  sendSellerLowStock,
   sendSellerOrderNeedsAction,
   sendSellerOrderPlaced,
 } from "@sailo/email/shop";
+import { afterStockChanged } from "@sailo/commerce/catalog";
 
 /**
  * Telling the seller something happened in their shop.
@@ -49,6 +51,17 @@ const DAILY_CEILING = 500;
 const ceilingLogged = new Set<string>();
 
 async function underDailyCeiling(shopId: string): Promise<boolean> {
+  /*
+   * DECISION B — deliberately stays open.
+   *
+   * This ceiling spends the shared send quota, which is the category that
+   * otherwise fails closed. It is the exception because the mail is 1:1 with
+   * orders: it cannot run away without a separate bug, and five hundred a day is
+   * a backstop against that bug rather than against a caller. Closing it would
+   * mean a cache outage silences every seller's order alerts — they find out
+   * they had sales when they next open the admin — which is a worse day than the
+   * quota risk it removes.
+   */
   const verdict = await rateLimit(`seller-mail:${shopId}`, DAILY_CEILING, 86_400);
   if (!verdict.allowed && !ceilingLogged.has(shopId)) {
     ceilingLogged.add(shopId);
@@ -183,5 +196,69 @@ export async function notifySellerOfPaymentReport(opts: {
     }
   } catch (error) {
     console.error("[sailo] seller payment notification failed", error);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Running out                                                                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Tells a seller their stock has fallen to the line they drew — spec 51.
+ *
+ * Called from every path that moves units: an order reserving them, a seller
+ * editing the count, a refund putting them back. That breadth is exactly why
+ * the *claim* lives in the database rather than here — a busy afternoon calls
+ * this a dozen times and one email comes out of it.
+ *
+ * `afterStockChanged` does both halves in one call: it re-arms the alert when
+ * stock has climbed back above the threshold, and claims the crossing when it
+ * has fallen to it. Splitting them across call sites is how a codebase ends up
+ * alerting once and then never again, because the reset was added to three of
+ * the four places units move.
+ *
+ * Swallows everything, like every other function in this file. By the time it
+ * runs the units have already moved and the order already exists; a mail
+ * provider having a bad afternoon must never fail the thing it reports on.
+ */
+export async function notifySellerOfLowStock(opts: {
+  shop: Shop;
+  productId: string;
+}): Promise<void> {
+  try {
+    const { shop, productId } = opts;
+
+    const alert = await afterStockChanged(productId);
+    if (!alert) return;
+
+    /*
+     * The preference is read *after* the claim, and that is deliberate.
+     *
+     * The claim is what records that this crossing has been dealt with. A
+     * seller who has the alert switched off still crosses the threshold, and
+     * spending the claim means the day they switch it back on they hear about
+     * the *next* crossing rather than being immediately mailed about a
+     * shortage they have been living with for a fortnight.
+     */
+    if (!wantsNotification(shop.notificationPrefs, "lowStock")) return;
+    if (!(await underDailyCeiling(shop.id))) return;
+
+    const to = await sellerAddress(shop);
+    if (!to) return;
+
+    const result = await sendSellerLowStock({
+      shop,
+      to,
+      productTitle: alert.title,
+      productId: alert.productId,
+      threshold: alert.threshold,
+      remaining: alert.remaining,
+      variants: alert.variants,
+    });
+    if (!result.sent) {
+      console.warn(`[sailo] low-stock email not sent: ${result.reason}`);
+    }
+  } catch (error) {
+    console.error("[sailo] low-stock notification failed", error);
   }
 }

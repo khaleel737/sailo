@@ -12,6 +12,8 @@ import { PAYMENT_METHOD_DEFS, isPaymentMethodType } from "@/lib/payments";
 import { OrderStatusSelect } from "@/app/admin/orders/_components/order-status-select";
 import { PaymentStatusSelect } from "@/app/admin/orders/_components/payment-status-select";
 import { OrderActions } from "@/app/admin/orders/_components/order-actions";
+import { ShipmentsPanel } from "@/app/admin/orders/_components/shipments-panel";
+import { shipmentsForOrder } from "@sailo/commerce/orders/server";
 import { Badge, Button } from "@sailo/design-system/web";
 import { orderStatusLabel, orderStatusTone } from "@sailo/core/order-status";
 import { getAdminT } from "@/i18n/server";
@@ -27,14 +29,41 @@ export async function OrderRow({
   items,
   invoice,
   showCustomer = true,
+  multiShipment = false,
 }: {
   order: Order;
   /** Every line. Falls back to the header for orders written before carts. */
   items?: OrderLine[];
   invoice?: { number: string; token: string };
   showCustomer?: boolean;
+  /**
+   * Whether this shop may ship an order in more than one box — spec 51.
+   *
+   * A prop with a default of `false` rather than a read inside this component,
+   * because the plan is one fact about the shop and this renders once per order
+   * in a list of fifty. The page asks once and hands the answer down.
+   */
+  multiShipment?: boolean;
 }) {
   const { a, locale } = await getAdminT();
+
+  /*
+   * The boxes, read only for the orders that could possibly need them.
+   *
+   * Gated on two columns that are already on the row — more than one line, and
+   * something that actually ships — before any query is issued, because this
+   * component renders once per order and an unconditional read would be fifty
+   * round trips to draw one page. Most orders are one thing in one box and pay
+   * nothing for this.
+   *
+   * A single-order page would be the better home for this panel and there is
+   * not one yet; when there is, this gate becomes unnecessary rather than
+   * wrong.
+   */
+  const boxes =
+    multiShipment && order.itemCount > 1 && order.deliveryMethod === "shipping"
+      ? await shipmentsForOrder(order.id)
+      : null;
   const lines: OrderLine[] = items?.length ? items : [];
   const address = formatAddress(order);
   const methodName = isPaymentMethodType(order.paymentMethod)
@@ -353,6 +382,20 @@ export async function OrderRow({
       </div>
 
       <OrderActions order={order} />
+
+      {/* Only where there is genuinely more than one thing to send. An order
+          whose second line is a download has one box, and offering a
+          box-by-box form for it is a screen of controls with one answer. */}
+      {boxes && boxes.coverage.length > 1 ? (
+        <div className="mt-3">
+          <ShipmentsPanel
+            orderId={order.id}
+            coverage={boxes.coverage}
+            shipments={boxes.shipments}
+            complete={boxes.complete}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

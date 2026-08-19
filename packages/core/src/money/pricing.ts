@@ -1,5 +1,6 @@
-import type { Coupon, DeliveryMethod } from "@sailo/db/schema";
+import type { Coupon, DeliveryMethod, WeightBand } from "@sailo/db/schema";
 import { chargeStep } from "./currency";
+import { weightedRate } from "./weight";
 
 /**
  * Percentages are stored in basis points so fractional rates (7.5%) survive a
@@ -26,7 +27,25 @@ export type CouponFailure =
   | "used_up"
   | "below_minimum";
 
-export const COUPON_MESSAGES: Record<CouponFailure, string> = {
+/**
+ * A refusal that is not about the code.
+ *
+ * Every `CouponFailure` above is an answer: the code was looked up and something
+ * was wrong with it. This one is the absence of an answer — the guess budget
+ * failed closed because Redis is down, so nothing was looked up at all.
+ *
+ * Deliberately not a member of `CouponFailure`: `checkCoupon` is pure and can
+ * never produce it, and widening the union would make every exhaustive switch
+ * over that type handle a case its own function cannot return.
+ *
+ * The sentence matters as much as the separation. Reusing `not_found` here would
+ * tell a buyer holding a real code that it is invalid — a negative answer to a
+ * question nobody asked, which is exactly what rule 5 forbids.
+ */
+type CouponUnavailable = "unavailable";
+
+export const COUPON_MESSAGES: Record<CouponFailure | CouponUnavailable, string> = {
+  unavailable: "We couldn't check that code just now. Try again in a moment.",
   not_found: "That code isn't valid.",
   inactive: "That code isn't active.",
   not_started: "That code isn't available yet.",
@@ -70,14 +89,44 @@ export function couponDiscount(coupon: Coupon, subtotalCents: number) {
   return Math.max(0, Math.min(raw, subtotalCents));
 }
 
-/** Free-over threshold is checked against the discounted subtotal. */
+/**
+ * What delivery costs, once the free-over rule and the weight table have both
+ * had their say.
+ *
+ * Free-over is checked against the *discounted* subtotal, unchanged. What is
+ * new is that a `by_weight` rate reads its band table first — spec 51 — so the
+ * order of the two rules is now something a reader has to be able to see, and
+ * it is this: **weight decides the price, then free-over can take it to zero.**
+ * A seller offering "free over £50" means free over £50 whatever the parcel
+ * weighs; charging a band price on top of a free-shipping promise would be the
+ * seller breaking their own offer.
+ *
+ * A basket heavier than the heaviest band returns 0 here and is refused
+ * upstream, in `resolveDelivery`, which is the only place that can say "pick
+ * another rate" to a buyer. Returning a number rather than throwing keeps this
+ * function total: it is called on a preview that is deliberately lenient, and
+ * a throw there would blank a basket somebody is still filling.
+ */
 export function deliveryFee(
-  method: Pick<DeliveryMethod, "feeCents" | "freeOverCents"> | null | undefined,
+  method:
+    | (Pick<DeliveryMethod, "feeCents" | "freeOverCents"> & {
+        rateMode?: string | null;
+        weightBands?: WeightBand[] | null;
+      })
+    | null
+    | undefined,
   netCents: number,
+  /** What the basket weighs, in grams. Ignored by a flat rate. */
+  weightGrams = 0,
 ) {
   if (!method) return 0;
   if (method.freeOverCents !== null && netCents >= method.freeOverCents) return 0;
-  return Math.max(0, method.feeCents);
+
+  const rated = weightedRate(
+    { rateMode: method.rateMode, weightBands: method.weightBands, feeCents: method.feeCents },
+    weightGrams,
+  );
+  return rated.ok ? Math.max(0, rated.feeCents) : 0;
 }
 
 /** Commission is earned on goods only, never on the delivery fee. */
@@ -148,7 +197,14 @@ export function computeTotals(input: {
   /** The goods, already summed — one line or a whole cart. */
   subtotalCents: number;
   coupon?: Coupon | null;
-  deliveryMethod?: Pick<DeliveryMethod, "feeCents" | "freeOverCents"> | null;
+  deliveryMethod?:
+    | (Pick<DeliveryMethod, "feeCents" | "freeOverCents"> & {
+        rateMode?: string | null;
+        weightBands?: WeightBand[] | null;
+      })
+    | null;
+  /** What the parcel weighs, for a rate priced by weight — spec 51. */
+  weightGrams?: number;
   commissionBp?: number | null;
   tax?: TaxSettings | null;
   now?: Date;
@@ -161,7 +217,11 @@ export function computeTotals(input: {
   const discountCents = couponResult?.ok ? couponResult.discountCents : 0;
 
   const netCents = subtotalCents - discountCents;
-  const deliveryFeeCents = deliveryFee(input.deliveryMethod, netCents);
+  const deliveryFeeCents = deliveryFee(
+    input.deliveryMethod,
+    netCents,
+    input.weightGrams ?? 0,
+  );
 
   /*
    * Bound once, so "is tax charged here" and "what rate" cannot disagree.

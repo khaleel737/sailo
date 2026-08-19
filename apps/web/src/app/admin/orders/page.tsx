@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { interpolate } from "@sailo/i18n";
 import { ShoppingBag } from "lucide-react";
+import { can } from "@sailo/core/plans";
 import { requireShop } from "@/lib/session";
 import { getAdminT } from "@/i18n/server";
 import {
@@ -119,6 +120,8 @@ export default async function AdminOrdersPage({
               order={order}
               items={itemsByOrder.get(order.id)}
               invoice={invoices.get(order.id)}
+              /* Spec 51 — asked once for the shop rather than once per row. */
+              multiShipment={can(shop, "weightBands")}
             />
           ))}
         </Card>

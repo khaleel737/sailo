@@ -257,6 +257,74 @@ export async function sendSellerWebhookDisabled(opts: {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Running out                                                                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Stock has fallen to the line the seller drew — spec 51.
+ *
+ * The other mail here that reports something nobody would otherwise see.
+ * `lowStock` matched zero files in this tree, so a seller's first notice of an
+ * empty shelf was a buyer asking where their order was — and by then the sale
+ * is already lost, along with the fortnight of lead time that would have saved
+ * it.
+ *
+ * It names the *combinations* that are short rather than only the product,
+ * because "Speckled Mug is low" is not actionable for a seller who makes them
+ * in four glazes: the answer is which glaze to throw next, and that is a
+ * different sentence. A product sold as one thing gets the plain number.
+ *
+ * Deliberately no "reorder" button, no supplier integration and no forecast.
+ * The seller knows what to do about their own stockroom; what they did not have
+ * was the fact.
+ */
+export async function sendSellerLowStock(opts: {
+  shop: Shop;
+  to: string;
+  productTitle: string;
+  productId: string;
+  threshold: number;
+  remaining: number;
+  /** The combinations at or under the line. Empty for a product with no options. */
+  variants: { label: string; remaining: number }[];
+}): Promise<SendResult> {
+  const { shop, to, productTitle, productId, threshold, remaining, variants } = opts;
+
+  const detail: Detail[] = variants.length
+    ? variants.map((v) => ({
+        label: v.label,
+        value: v.remaining === 0 ? "sold out" : `${v.remaining} left`,
+      }))
+    : [
+        { label: "Left", value: String(remaining) },
+        { label: "Your alert", value: `at ${threshold} or fewer` },
+      ];
+
+  const body = `
+    ${mutedPara(
+      `${strong(esc(productTitle))} at ${esc(shop.name)} is down to ${remaining === 0 ? "none" : remaining}, which is at or under the ${threshold} you asked to be told about.`,
+    )}
+    ${section(variants.length ? "Which ones" : "Stock", detailTable(detail))}
+    ${fine(
+      "You'll hear about this product once per crossing — this message comes back only after stock goes above your threshold and falls to it again.",
+    )}
+    ${button(`${appUrl()}/admin/products/${productId}`, "Update stock")}
+  `;
+
+  return send({
+    from: sender("Sailo", ORDERS),
+    to,
+    subject:
+      remaining === 0
+        ? `Sold out — ${productTitle}`
+        : `Running low — ${productTitle} (${remaining} left)`,
+    html: sailoLayout("Stock is running low", body, {
+      preheader: `${productTitle}: ${remaining} left, your alert is set at ${threshold}.`,
+    }),
+  });
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Memberships                                                                */
 /* -------------------------------------------------------------------------- */
 

@@ -9,11 +9,50 @@ import { getDb } from "@sailo/db";
 import { deliveryMethods, type DeliveryConfig } from "@sailo/db/schema";
 import { requireShop } from "@/lib/session";
 import { DELIVERY_METHOD_DEFS, isDeliveryMethodType } from "@sailo/commerce/delivery";
-import { saveDelivery, toggleDelivery as toggleShared } from "@sailo/commerce/delivery/server";
+import {
+  MAX_BANDS,
+  saveDelivery,
+  toggleDelivery as toggleShared,
+} from "@sailo/commerce/delivery/server";
 import { moneyToCents, parseMoneyToCents } from "@sailo/core/currency";
 import { buildCurrencyPrices } from "@sailo/core/regional";
 import { can } from "@sailo/core/plans";
 import type { ActionState } from "./shop";
+
+/**
+ * The weight table, as the rate form posts it — spec 51.
+ *
+ * `band_0_upTo` / `band_0_price` and so on, read until the first row with no
+ * ceiling. Grams are read with `optionalCount`-style parsing rather than
+ * `moneyToCents`, because a weight is a count and not an amount: "1,500" grams
+ * is fifteen hundred in every locale, while "1,500" of money is fifteen in half
+ * of them.
+ *
+ * The price *is* money and is parsed against the shop's currency, so a French
+ * seller typing `3,50` gets three fifty rather than three hundred and fifty.
+ *
+ * Nothing is sorted or validated here — `saveDelivery` runs the row through
+ * `usableBands`, which is the one place that decides what a band is.
+ */
+function readWeightBands(formData: FormData, currency: string) {
+  const bands = [];
+  for (let i = 0; i < MAX_BANDS; i++) {
+    const upTo = String(formData.get(`band_${i}_upTo`) ?? "").trim();
+    if (!upTo) continue;
+
+    const grams = Number.parseInt(upTo.replace(/[^0-9]/g, ""), 10);
+    if (!Number.isFinite(grams) || grams <= 0) continue;
+
+    bands.push({
+      upToGrams: grams,
+      priceCents: parseMoneyToCents(
+        String(formData.get(`band_${i}_price`) ?? "0"),
+        currency,
+      ),
+    });
+  }
+  return bands;
+}
 
 /**
  * Creates or updates one delivery rate. A shop can have any number of them —
@@ -68,6 +107,25 @@ export async function saveDeliveryMethod(
         ),
       })),
     ),
+    /*
+     * How this rate is priced, and its table — spec 51.
+     *
+     * Gated on the plan here as well as in the form, like the currency prices
+     * above and for the same reason: a form is not a gate. A shop that has
+     * downgraded keeps whatever bands it typed — a downgrade never deletes work
+     * — but the rate falls back to `flat`, so the fee a buyer is quoted is the
+     * one number every plan can charge.
+     *
+     * One field per row, named for its index and read until a gap. A seller who
+     * clears the middle row of three ends the table there rather than silently
+     * merging the last row into the gap, which is the behaviour a parallel-array
+     * reader would have.
+     */
+    rateMode:
+      can(shop, "weightBands") && formData.get("rateMode") === "by_weight"
+        ? "by_weight"
+        : "flat",
+    weightBands: readWeightBands(formData, shop.currency),
     config,
     isEnabled: formData.get("isEnabled") === "on",
     /*
