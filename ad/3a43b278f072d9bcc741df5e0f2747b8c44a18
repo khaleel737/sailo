@@ -1,0 +1,19 @@
+pnpm-lock.yaml
+  s_16f404b29c0075::t_f5a76f5971d396 15-17,21-23,71,253,481-483,585,851-856,859-865,1609-1611,1661-1669,8084-8087,10338-10340,10966-10971,11635,15548,18507-18511,21810-21811
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ad3a43b278f072d9bcc741df5e0f2747b8c44a18",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
