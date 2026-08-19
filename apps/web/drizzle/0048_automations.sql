@@ -1,0 +1,1 @@
+-- D2 — email automations. Claimed; SQL lands in the next commit.
