@@ -10,4 +10,5 @@ export * from "./gaps";
 export * from "./glossary";
 export * from "./splice";
 export * from "./placeholders";
+export * from "./scripts";
 export * from "./report";

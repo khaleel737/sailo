@@ -318,8 +318,23 @@ for (const surface of Object.keys(SURFACES) as Surface[]) {
     const target = flatten(await loadDictionary(dir, locale, exportName(locale)), surface);
     const gap = gapsFor(english, target, locale);
 
-    const writable = gap.missing.filter((key) => !isProtected(surface, key));
+    let writable = gap.missing.filter((key) => !isProtected(surface, key));
     held += gap.missing.length - writable.length;
+
+    /*
+     * Under `--from`, the file is the scope.
+     *
+     * `fromSupplied` refuses a batch it cannot fill completely, which is right
+     * when the model is writing — a half-filled batch makes the rest vanish from
+     * the next gap report, the one failure that hides itself. It is wrong for a
+     * supplied file, where the keys present *are* the request: a human
+     * translating one section at a time would otherwise have to supply every
+     * outstanding key in the locale before a single one could land.
+     */
+    if (fromFile) {
+      const have = supplied[surface]?.[locale] ?? {};
+      writable = writable.filter((key) => typeof have[key] === "string");
+    }
     if (writable.length === 0) continue;
 
     const todo = writable.slice(0, Math.max(0, limit - written));

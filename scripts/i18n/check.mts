@@ -22,6 +22,7 @@ import { fileURLToPath } from "node:url";
 import {
   assertSectionsExist,
   flatten,
+  foreignScripts,
   gapsFor,
   passes,
   render,
@@ -98,9 +99,21 @@ async function reportFor(surface: Surface): Promise<SurfaceReport> {
       surface,
     );
     gaps.push(gapsFor(english, target, locale));
+
+    /*
+     * A value that strayed into another alphabet. Reported as found rather than
+     * gathered into the summary, because it is not debt — it is a string already
+     * shipped to readers who cannot parse it.
+     */
+    for (const bad of foreignScripts(locale, target)) {
+      strays.push(`${surface}/${locale} ${bad.key}: ${bad.found} "${bad.characters}"`);
+    }
   }
   return summarise(surface, gaps);
 }
+
+/** Values in the wrong alphabet, collected across both surfaces. */
+const strays: string[] = [];
 
 const json = process.argv.includes("--json");
 const reports = [await reportFor("storefront"), await reportFor("admin")];
@@ -118,4 +131,15 @@ if (json) {
   );
 }
 
-process.exit(passes(reports) ? 0 : 1);
+if (strays.length > 0 && !json) {
+  console.log("");
+  console.log(`${strays.length} value(s) in an alphabet the locale does not use:`);
+  for (const s of strays) console.log(`  ${s}`);
+}
+
+/*
+ * A stray script fails. Unlike admin debt — which renders as English and is
+ * merely untranslated — this renders as characters the reader cannot parse, in
+ * a language they were promised. A defect, not a backlog entry.
+ */
+process.exit(passes(reports) && strays.length === 0 ? 0 : 1);
