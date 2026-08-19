@@ -1,0 +1,19 @@
+apps/web/src/lib/actions/locale.test.ts
+  s_16f404b29c0075::t_3dcf7989f72b5a 19,22-27,29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "608d1438441513966258b7ff1f2aeded2fc6d8e1",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
