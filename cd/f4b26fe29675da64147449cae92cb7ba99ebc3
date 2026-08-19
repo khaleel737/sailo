@@ -1,0 +1,128 @@
+packages/db/src/schema/platform.ts
+  s_a79949fd39aa12::t_1de18dd4d574d7 1-66
+packages/workflows/src/disputes/notify-seller.ts
+  s_a79949fd39aa12::t_fe45993ba9ef94 425-486
+  s_a79949fd39aa12::t_f9d79f26b01dd5 92-97,101-102,487-488
+apps/web/src/lib/actions/billing.ts
+  s_d85ec1f24c11c4::t_ec9b615ac608b4 3,29-49,53-85,88
+packages/db/src/schema/index.ts
+  s_e1f6fcdd78170a::t_f343134a713677 20
+packages/core/src/disputes/index.ts
+  s_16f404b29c0075::t_4bd87c4ee3b396 23-27
+  s_d85ec1f24c11c4::t_a8a8cba786c770 20
+  s_6a50ff8b58418c::t_eab87f9efcff39 21
+packages/db/src/schema/disputes.ts
+  s_a79949fd39aa12::t_cabd5b33735846 176-190,228-235
+  s_a79949fd39aa12::t_1de18dd4d574d7 11
+apps/hq/src/lib/platform/disputes.ts
+  s_d85ec1f24c11c4::t_e63573e81cdec9 444-448,450-452
+  s_ff5bd57f7b4f2f::t_0a3a72f671c848 15,22,24,462-477,486-492
+packages/commerce/package.json
+  s_e1f6fcdd78170a::t_34b00604069ec0 31-32
+packages/core/src/disputes/platform.ts
+  s_d85ec1f24c11c4::t_a8a8cba786c770 1-629
+apps/hq/src/app/(panel)/disputes/[id]/_components/platform-case.tsx
+  s_d85ec1f24c11c4::t_e63573e81cdec9 1-233
+packages/commerce/src/disputes/index.ts
+  s_3d280b9c37709e::t_74783c54429eba 77,86,91-92,106-120
+  s_16f404b29c0075::t_d4ff7c7339eb14 56-76
+  s_a79949fd39aa12::t_088dbfd99cf3c8 78-85,87-90,93-105
+apps/hq/src/app/(panel)/disputes/[id]/page.tsx
+  s_a79949fd39aa12::t_728e9346f9056e 22,74,175-195,201
+packages/db/src/schema/shop.ts
+  s_d85ec1f24c11c4::t_84dfa6f59d900d 519-543
+apps/web/src/lib/stripe-webhooks/disputes.ts
+  s_6a50ff8b58418c::t_d7cd526155980c 5,239
+  s_a79949fd39aa12::t_62ef1167f75440 30,273-304
+  s_ff5bd57f7b4f2f::t_49e0d1d3ee4d24 19-21,26,161,167,305,449-470,472-477,511-523,528-554,562-564
+  s_a79949fd39aa12::t_89314e8ad9da8a 162-166,168,306
+packages/core/src/disputes/platform.test.ts
+  s_a79949fd39aa12::t_a1b7d3df51b10c 1-312
+apps/web/src/app/api/internal/deploy/route.ts
+  s_a79949fd39aa12::t_bf47f235588894 1-120
+apps/hq/src/lib/actions/disputes.ts
+  s_e1f6fcdd78170a::t_b517dcbd48fec3 27-31,238-319
+  s_a79949fd39aa12::t_169f1d5663ddf6 320-321
+apps/web/drizzle/0058_platform_evidence.sql
+  s_a79949fd39aa12::t_95e02c5c2efe67 1,3-90
+apps/hq/src/app/_components/dispute-actions.tsx
+  s_a79949fd39aa12::t_c4522a4142169f 11,165-205
+apps/web/e2e/scenarios/platform-disputes.scenario.ts
+  s_a79949fd39aa12::t_5478701d2e9979 1-422
+apps/web/package.json
+  s_a79949fd39aa12::t_390a2ee7309e7d 49-50
+apps/web/scripts/post-deploy.ts
+  s_a79949fd39aa12::t_d4863e5ec4502a 1-47
+apps/web/src/app/api/cron/disputes/route.ts
+  s_e1f6fcdd78170a::t_e902b0b92d5472 3-7,32-54
+apps/web/src/app/api/cron/rollup/route.ts
+  s_a79949fd39aa12::t_802f6ca0a53f9c 4,20-35,38-39
+packages/commerce/src/disputes/platform.ts
+  s_a79949fd39aa12::t_469bf7c9194f24 1-628
+packages/core/package.json
+  s_a79949fd39aa12::t_5b2f07c182fbd1 60-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "cdf4b26fe29675da64147449cae92cb7ba99ebc3",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_3d280b9c37709e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "914a407f-3ed9-41c1-8fbc-6b7047fa1462",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_6a50ff8b58418c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d67b706-f77d-4af2-84f8-c7556015fd53",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_a79949fd39aa12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3512a1e-3a48-4b59-95c2-ad40c780f6a9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_d85ec1f24c11c4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "91e0b22a-1b92-4b3d-a00c-9932ecca90d6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e1f6fcdd78170a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "07ffa20a-be06-4b62-a6c7-e2cc4d3b435d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ff5bd57f7b4f2f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f7a8e604-26d7-4dc0-9381-beaca5a4f55b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
