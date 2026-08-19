@@ -1,0 +1,1674 @@
+apps/web/next.config.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 2-26,243,247,256,269-321,324-342
+packages/db/src/schema/staff.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 43-44,54-57
+packages/commerce/src/disputes/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 56-120
+packages/db/src/schema/platform.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-66
+packages/core/src/disputes/messages.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-142
+docs/specs/36-cross-sells-and-thank-you.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-159
+apps/web/src/app/[handle]/_components/cart/cart-region.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 4,32-33,36,50-53,56,83-84,87
+apps/web/src/app/admin/products/_components/event-settings-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 4,25,30-31,34-39,45-52,54-66,77-119,121,123-124,129-131,135-148,165-167,181,192-282
+packages/core/src/money/weight.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-169
+apps/web/src/lib/actions/import.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 30
+docs/chargebacks.md
+  s_16f404b29c0075::t_30a21d1c2be87b 12-14,542-712,720,729-730
+packages/commerce/src/orders/resolve-intent.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 17,24,50-51,77-87,98-111,114,123-124,129-138,205-217,244-252,292-310,347-395,397,432-443,453
+packages/db/src/schema/audience.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 159-174,199-204
+packages/i18n/src/admin/ja.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,932-1183
+packages/i18n/src/dictionaries/id.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 59,140-142,310-312,421-512
+apps/web/src/app/[handle]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 9-10,21,99-104,118-120,242-253,282-284
+apps/hq/src/app/(panel)/marketing/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 31-37,41-42,81,88-101
+apps/web/src/lib/stripe-webhooks/disputes.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 5,19-21,26,30,161-168,239,273-306,449-470,472-477,511-523,528-554,562-564
+apps/web/src/lib/actions/delivery.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 12-19,22-56,70,93-128,172,190
+apps/web/src/app/embed/layout.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-22
+apps/web/src/lib/actions/offers.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-291
+packages/core/src/money/quote.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 3,28-38,122-131
+packages/storage/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 10
+packages/commerce/src/catalog/products.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 14,21,25-26,28-36,39,42,59-79,159,162-180,225-246,248-250,257-322,364-450,467-502,515-523,529-579,588-638,644-695,702-727,738-748,753,760-837,852,947-961,1006-1022
+apps/web/src/lib/actions/leads.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-224
+apps/web/src/app/admin/products/[id]/codes.csv/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-86
+packages/core/src/content/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-273
+packages/i18n/src/tooling/glossary.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-146
+apps/web/src/app/admin/orders/[id]/_components/delete-order.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-58
+apps/hq/src/app/robots.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-44
+packages/i18n/src/tooling/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-14
+packages/storage/src/video-urls.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-79
+apps/hq/src/app/_components/hq-sidebar.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 9-11,20,98-102,104,110-148
+  s_16f404b29c0075::t_94eca18f741636 149-150
+packages/marketing/src/contacts/suppressions.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-154
+apps/hq/src/app/(panel)/accounts/[id]/loading.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 2-7
+apps/web/src/app/(marketing)/_components/site-footer.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 8-9,18-34,90-141
+packages/commerce/src/catalog/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 13-15,20-32
+apps/api/src/app/api/license/activate/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-19
+apps/web/src/app/admin/offers/_components/offer-form.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-239
+packages/commerce/src/content/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-303
+apps/web/src/app/admin/coupons/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 19-26,64
+packages/i18n/src/admin/bg.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 607-610,944-1195
+packages/i18n/src/dictionaries/el.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 63,156-158,357-359,477-568
+apps/web/drizzle/0036_regional_pricing.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-75
+apps/web/drizzle/0041_pricing_models.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-97
+apps/web/src/app/[handle]/_components/currency-switcher.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-96
+packages/account/src/deletion/sweep.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-205
+packages/commerce/src/checkout-link.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-201
+packages/core/src/content/content.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-270
+packages/core/src/risk/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-8
+apps/web/src/app/api/cron/disputes/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 3-7,32-54
+apps/web/src/app/admin/testimonials/_components/ask-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-78
+packages/commerce/src/orders/licenses.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-490
+apps/web/src/app/api/unsubscribe/flow/[token]/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-72
+packages/account/src/deletion/closure.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-299
+apps/web/src/app/api/cron/automations/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-30
+packages/core/src/catalog/pricing-models.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-332
+apps/web/drizzle/0042_offers.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-180
+apps/web/e2e/product-kinds.spec.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-273
+packages/workflows/src/leads/notify-seller.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-81
+apps/web/src/app/admin/legal/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-46
+apps/web/src/lib/actions/checkout-session.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-165
+docs/specs/42-analytics-expansion.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-143
+apps/web/src/app/admin/orders/_components/shipments-panel.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-203
+apps/web/src/app/admin/settings/tax/_components/thresholds-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 32-90
+  s_16f404b29c0075::t_c4164c6625aaf5 1-31,91-148
+apps/web/drizzle/0053_tax.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-111
+apps/web/src/app/admin/products/_components/digital-delivery-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 3-18,24-49,55-56,61-64,67-91,94-102,104-122,124-172,174-282,285-287,290-291,293-294,298-300,303-304,306-307,311-359
+apps/web/src/app/admin/settings/_components/settings-nav.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 21-22,24
+apps/web/src/app/api/cron/sweep/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6-7,15-19,47-67,74-76
+packages/commerce/src/recovery/sessions.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-333
+apps/web/src/lib/account-deletion.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 18-20,27-35
+apps/web/drizzle/0052_shop_team.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-121
+apps/web/src/lib/actions/newsletter.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 87-97
+apps/web/src/lib/stripe-webhooks/connect.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 3,14,150-178,259,276,290-294,301-308
+apps/web/scripts/post-deploy.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-57
+packages/email/src/transactional/privacy.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-148
+apps/web/src/lib/stripe-webhooks/memberships/invoices.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 15,120,298
+apps/web/src/lib/webhook-emit-sites.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 54-55,127-131,133-142,146,149-160
+packages/commerce/src/tax/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-31
+knip.json
+  s_16f404b29c0075::t_30a21d1c2be87b 5-10,49-61,84-91,100-103
+  s_16f404b29c0075::t_d06af2525ee119 104
+apps/web/src/lib/actions/product-codes.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-180
+packages/commerce/src/memberships/dunning.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-167
+docs/specs/52-buyer-data-requests.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-149
+apps/hq/src/app/(panel)/accounts/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 5,19,75-89,96,120,122,125-133,147,156-170,173,175,178,265
+apps/web/src/app/api/cron/tax/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-29
+packages/core/src/catalog/codes.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-181
+docs/specs/43-pricing-models.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-165
+apps/hq/src/lib/platform/security/live.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 96-105
+apps/web/src/app/admin/clients/[id]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 22-27,35,43,46-48,50-62,169-179
+  s_16f404b29c0075::t_7992019ab3f812 180-181
+docs/specs/32-checkout-recovery.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-182
+packages/marketing/src/automations/timers.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-212
+apps/web/src/app/admin/reviews/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 15
+apps/hq/src/app/(panel)/payments/loading.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-9
+packages/api/src/rest/openapi.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 248-252,256,258-263
+packages/commerce/src/coupons/coupons.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 4,50-58,109
+packages/core/src/catalog/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 9-28
+packages/core/src/money/pricing.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1,3,30-48,92-109,111-117,119-120,124-129,200-207,220-224
+packages/commerce/src/booking/staff.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-244
+packages/core/src/wire/resources.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 347-352,355-364,443-444
+packages/marketing/src/contacts/rules.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-208
+apps/web/src/lib/consent-write-paths.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 95-114
+packages/email/src/transactional/messages.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 219-272,484-559
+apps/web/src/lib/actions/orders.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6,8-9,17-18,35,38-44,48-50,53,127-158,198-208,241-271,284-296,307,332,357-391,424-440,453-489,499,529-574,579,604-613,632,692-699,727-775,778-780,820-834,847-889,916-948,1028-1040,1043-1049,1090,1185-1190,1192,1194-1212,1236,1253-1275,1304-1332,1376,1380,1399,1422,1427
+packages/i18n/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 14-15
+apps/web/src/app/admin/settings/team/_components/activity-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-46
+packages/i18n/src/dictionaries/sl.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,142-144,310-312,421-512
+docs/specs/53-regional-pricing.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-263
+packages/db/src/schema/pages.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-97
+packages/i18n/src/dictionaries/bg.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 59,141-143,312-314,423-514
+packages/commerce/src/recovery/resume.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-103
+packages/i18n/src/dictionaries/uk.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,153-155,355-357,475-566
+packages/marketing/src/automations/timers.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-226
+packages/core/src/disputes/files.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 14-21,32-36,66-93,98-109,111-115,117-119
+apps/web/e2e/scenarios/audience.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-504
+apps/hq/src/app/(panel)/closures/[id]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-310
+apps/hq/src/lib/platform/disputes.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 15,22,24,72-84,90-93,95,123-125,155-161,444-448,450-452,462-477,486-492
+packages/core/src/shop/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 16
+packages/rate-limit/src/redis.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6,14-22,25,68-72,80-104,106-141
+packages/design-system/src/web/evidence-files.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 177-191,229
+packages/core/src/identity/secret-box.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-116
+packages/i18n/src/admin/uk.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,930-1181
+apps/web/src/app/api/orders/[id]/evidence-pack/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-81
+scripts/i18n/check.mts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-145
+packages/db/src/schema/disputes.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 11,176-190,228-235
+docs/specs/RELEASE-PLAN-2026-08.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-395
+packages/commerce/src/recovery/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-10
+apps/web/src/app/api/upload/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 17
+packages/account/src/data-requests/assemble.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-253
+apps/hq/src/lib/platform/accounts.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 26,267,270-295,306-333,345-354,361-364,367-369,372,379,387-410,413-415,419-429
+  s_16f404b29c0075::t_0bc7835228306d 430
+apps/web/drizzle/0049_checkout_sessions.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-168
+packages/commerce/src/booking/slots.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 28-43,60-73,92-93,127-129
+apps/web/src/app/admin/broadcasts/unsubscribed/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-165
+packages/commerce/src/orders/card-handoff.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 9,62-76,152-166,190-205
+  s_16f404b29c0075::t_a931b45daef606 206
+packages/email/src/system/messages.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 287-331
+apps/web/src/lib/actions/subscribe.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 3,5,12,77-82,178-251
+  s_16f404b29c0075::t_3f03e93eaa4121 252-253
+apps/web/src/app/invoice/[token]/pdf/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 39-41
+apps/hq/src/app/_components/hq-ui.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 149-157,160,191-199,222-223,225,231-239,252-303,305
+packages/email/src/transactional/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 11
+packages/webhooks/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 13-14
+apps/web/e2e/scenarios/regional-pricing.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-521
+packages/workflows/src/orders/confirm-buyer.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 13-19,26,31-38,49-54,62,67-77,92,95-100,172,186,206,216-218,223,228-229,231,236,239,244-349
+apps/hq/src/app/(panel)/revenue/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 43-52,135,143,145,148,155,200-214
+  s_16f404b29c0075::t_f4e578d1e446cd 215
+apps/hq/src/app/(panel)/security/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 32,325,327,330,339-349,351-356,391,393-412,473,487
+packages/commerce/src/tax/rollup.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-154
+apps/web/src/app/testimonial/[token]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-59
+apps/web/src/lib/pdf-kit.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-170
+packages/account/src/deletion/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 42-44,49,58,67-69,73-87,100-123,160-175,190-196,204-224,228,250,253,302,305,314-319,322
+apps/web/src/app/admin/settings/team/_components/team-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-184
+packages/db/src/schema/content.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-168
+packages/design-system/src/web/brand-icons.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 54-67,89-103
+  s_16f404b29c0075::t_2274c0dfac61ed 104-107
+packages/commerce/src/pages/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-231
+packages/auth/src/permissions.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-151
+packages/commerce/src/memberships/terms.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-273
+apps/web/vercel.json
+  s_16f404b29c0075::t_30a21d1c2be87b 15-18,31-34,62-65
+packages/i18n/src/admin/no.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,939-1190
+apps/hq/src/app/(panel)/closures/loading.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-9
+packages/commerce/src/orders/downloads.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 15-16,162-193,237-249,252-253,255-286,289-329,342-356,358,360
+apps/web/src/app/[handle]/_components/cart/use-checkout-session.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-85
+packages/marketing/src/automations/tick.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-904
+apps/web/src/app/admin/coupons/_components/coupon-form.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 9,38,43-44,162-207
+  s_16f404b29c0075::t_dfa07d19fd7ba0 208
+docs/specs/agents/wave-d-audience.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-285
+packages/commerce/src/checkout-link.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-181
+apps/web/drizzle/0045_event_depth.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-292
+packages/core/src/money/regional.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-379
+apps/hq/src/app/(panel)/not-found.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-56
+apps/hq/src/app/icon.svg
+  s_16f404b29c0075::t_30a21d1c2be87b 1
+apps/web/src/app/api/internal/deploy/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-150
+docs/specs/50-event-product-depth.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-240
+packages/commerce/src/catalog/code-pool.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-520
+apps/web/drizzle/0051_pixels.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-82
+packages/core/src/identity/secret-box.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-129
+packages/marketing/src/automations/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-13
+apps/hq/src/app/(panel)/accounts/[id]/_components/account-actions.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 31-45,63-69,72-75,267-276
+apps/hq/src/lib/platform/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 19-21,24
+apps/web/src/app/admin/products/_lib/variant-draft.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 4,18-27,39,81-82,89-101
+packages/marketing/src/socials.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-41
+apps/hq/src/lib/actions/disputes.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 12-19,27-31,52,109,180,224,238-319
+  s_16f404b29c0075::t_d9bf5f4b894f24 320-321
+apps/web/drizzle/0032_closures_and_risk.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-194
+apps/web/src/app/admin/products/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 28
+apps/web/src/app/admin/products/_components/stock-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-184
+packages/i18n/src/tooling/gaps.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-132
+apps/web/src/lib/actions/coupons.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 14-15,34,78-104,136,149
+apps/web/src/components/shared/list-confirm-form.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-71
+apps/web/src/lib/evidence-pdf.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-248
+packages/i18n/src/admin/bs.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 607-610,944-1195
+packages/i18n/src/dictionaries/ko.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 59,140-142,310-312,421-512
+apps/web/src/lib/actions/collections.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-270
+packages/commerce/src/orders/file-variants.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-92
+packages/commerce/src/recovery/server.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-3
+packages/commerce/src/orders/digital-revoke.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-35
+apps/web/src/app/admin/_components/sidebar.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 8,16,19,22-23,36,40-42,44-54,56-78,80-94,97-104,108-121,125-132,135-142,145-164,196-213,226-228,252-408,411-429,431,433-434,436-443
+docs/specs/34-contacts-lists-custom-fields.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-169
+apps/web/src/lib/notify-seller-sites.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 66-73,75-81,103-108,112
+packages/marketing/src/contacts/fields.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-294
+apps/web/src/app/magnet/[token]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-123
+packages/marketing/src/broadcasts/segments.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 102
+docs/specs/45-order-evidence-pack.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-206
+apps/web/src/app/[handle]/_components/amount-field.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-125
+apps/hq/src/app/(panel)/orders/[id]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-1303
+apps/web/drizzle/0038_custom_domains.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-15
+packages/core/src/shop/shop-pages.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-303
+apps/web/e2e/scenarios/search.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 72,147,152
+apps/web/src/app/api/download/[token]/[fileId]/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1,5,61-63,102-113,115,120
+packages/auth/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 7-9,18-22
+apps/web/src/lib/session.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 9-10,67-113,115-181,222-223,236
+apps/hq/src/app/(panel)/accounts/[id]/security/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-69
+apps/web/src/app/admin/_components/share-link-dialog.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-243
+apps/web/src/app/embed/wall/[key]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-182
+packages/analytics/src/shares.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-118
+packages/core/src/catalog/pricing-models.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-311
+packages/marketing/src/contacts/server.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-5
+packages/commerce/src/recovery/rules.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-244
+apps/web/src/lib/actions/clients.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 14,33,53-62,84
+apps/web/src/lib/actions/throttled-answers.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 25-38,49-51,56-63,69-73
+packages/api/src/routers/account.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 102-110,121-135
+packages/commerce/src/ticketing/event-access.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 27-28,63,78
+packages/marketing/src/automations/runs.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-246
+apps/web/src/app/[handle]/_components/cart/checkout-panel.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 6-7,19,67-68,79,91-92,124-139,212-221,225,438-450,600,851-853,899-939
+  s_16f404b29c0075::t_3521061e5a2794 940
+apps/web/src/app/[handle]/data-request/_components/data-request-form.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-112
+apps/web/src/app/admin/legal/_components/legal-pages-screen.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-459
+apps/web/src/app/admin/products/_components/choice-group.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-178
+apps/web/src/lib/actions/testimonials.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-298
+apps/web/drizzle/0055_testimonials.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-107
+packages/i18n/src/tooling/placeholders.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-73
+docs/specs/51-service-and-physical-depth.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-234
+apps/web/src/app/admin/products/_components/service-settings-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 14,19-20,83-87,89-122,124-179
+apps/web/src/app/download/[token]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 6-18,22,32-33,75-92,104-127,227-250,264-271,273-278,311-324,349-471,492-497,499-507
+packages/commerce/src/booking/slots.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 8,87-105,308-349
+  s_16f404b29c0075::t_7dd94d2a903e09 350
+packages/customers/src/shop-pixels.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6,8-9,26-28,93-95,133-224
+packages/db/src/schema/imports.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-121
+packages/i18n/src/admin/es.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,927-1178
+packages/commerce/src/orders/digital-access.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-148
+apps/web/src/app/api/license/deactivate/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-19
+packages/core/src/catalog/lead-questions.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-110
+apps/web/src/app/admin/_components/status-banners.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 31
+apps/web/src/lib/actions/products.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 18,23-25,34-36,39,68-89,96-105,119-122,124-125,131-167,169-215,228-255,259-260,276-288,293-299,310-348,358-385,388-398,400,431-448,452-493,496,501,510,526,557,571-592
+apps/web/src/app/admin/products/_components/lead-settings-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-112
+apps/web/drizzle/0054_lead_capture.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-87
+apps/web/src/lib/actions/arrival.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-84
+docs/specs/49-membership-depth.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-248
+packages/db/src/schema/recovery.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-134
+apps/web/src/app/admin/delivery/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 4,27-34,157-163,196-200
+packages/customers/src/shop-pixels.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 21-28,36-42,67-81,92-101,110-114,123-128,137-197,282-314
+  s_16f404b29c0075::t_b577094cb542e2 315
+packages/api/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 12-13
+packages/workflows/src/recovery/pass.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-435
+apps/web/src/lib/queries/products.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 5,8,11,113-146,150,158-198,229,233,261-262,340,349-354,377-382,442-450,452,460-501,504-509,513
+apps/web/e2e/scenarios/event-depth.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-428
+apps/hq/src/app/_components/hq-export.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 2,19-34,36,43-44
+apps/web/src/lib/invoice-pdf.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 18-25
+packages/commerce/src/memberships/renewals.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 18-19,21,55-58,64-70,72-94,103-104,107-114,145-157,167-172,218-237,243-251
+  s_16f404b29c0075::t_ba006a9cb20edf 252
+packages/commerce/src/import/run.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-405
+packages/workflows/src/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 27-28,51-52
+apps/hq/src/app/(panel)/accounts/[id]/_components/account-tabs.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-93
+apps/web/src/app/admin/orders/[id]/loading.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-44
+apps/web/src/app/admin/products/[id]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 4,12-14,23,31-41,61-80,82-84,86-122
+apps/web/src/lib/actions/orders.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 98,102-123
+  s_16f404b29c0075::t_943a80f0e3f09a 124-125
+packages/commerce/src/ticketing/door-pass.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 121
+apps/web/src/lib/actions/unsubscribe.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 5,10-13,98-135
+  s_16f404b29c0075::t_85fdc758d15a6e 136
+packages/commerce/src/orders/card-checkout.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 21,253-262,328-350,423-433
+apps/hq/src/app/(panel)/accounts/[id]/risk/loading.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-13
+packages/db/src/schema/auth.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1,113-199
+packages/i18n/src/dictionaries/nl.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 61,155-157,358-360,479-570
+apps/web/e2e/stubs/setup.mts
+  s_16f404b29c0075::t_30a21d1c2be87b 4-48
+packages/i18n/src/admin/sr.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 608-611,945-1196
+apps/hq/next.config.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 53-74
+packages/email/src/orders.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 45-54,58-67,100-104
+  s_16f404b29c0075::t_5cd7f1517e2c5b 105-106
+packages/commerce/src/ticketing/ics.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-227
+apps/docs/src/components/reference/fields.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 339-340,349-350,418-419
+apps/web/src/app/admin/broadcasts/[id]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 25
+packages/commerce/src/booking/availability.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 2,39-48,50-70,80,115,165-175,180,226-233,238-241
+apps/web/src/app/admin/offers/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-148
+packages/db/src/schema/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 14-15,17-21,23,27-29,36-41
+apps/web/src/lib/actions/currency.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-51
+docs/specs/agents/wave-e-business.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-245
+packages/commerce/src/memberships/lifecycle.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-547
+packages/commerce/src/tax/country-rules.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-107
+apps/web/src/lib/notification-switches.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-67
+packages/core/src/disputes/capture.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-287
+apps/web/src/app/api/export/[type]/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 13
+packages/commerce/src/catalog/low-stock.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-237
+packages/account/src/deletion/fingerprint.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-69
+packages/i18n/src/dictionaries/sq.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,142-144,313-315,424-515
+packages/commerce/src/disputes/pack-holdings.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-414
+apps/web/e2e/scenarios/imports.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-419
+apps/web/src/app/[handle]/p/[slug]/_components/lead-form.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-153
+packages/db/src/schema/evidence.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-160
+packages/db/src/schema/tax.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-202
+packages/design-system/src/web/feedback.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 45-53
+apps/hq/src/app/(panel)/data-requests/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-131
+apps/hq/e2e/scenarios/dispute-desk.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-533
+apps/web/drizzle/0034_product_kinds.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-92
+apps/web/src/app/admin/clients/_components/contact-audience.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-200
+apps/hq/src/app/(panel)/risk/_components/flag-controls.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-136
+apps/web/src/app/admin/broadcasts/lists/_components/list-manager.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-264
+packages/webhooks/src/fetch.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-180
+apps/hq/src/app/(panel)/orders/[id]/loading.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-53
+apps/hq/src/lib/metrics.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 220-234
+apps/web/src/app/u/flow/[token]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-119
+apps/web/src/app/[handle]/_components/cart/checkout.types.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6,88-105,117-126
+packages/i18n/src/admin/ru.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,939-1190
+apps/web/src/app/[handle]/_lib/get-shop-page-data.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6,11-12,14,31,34,36-80,84-85,95-105
+apps/web/src/app/api/license/validate/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-19
+apps/hq/src/app/(panel)/marketing/campaigns/[id]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 13,56-63,155-162,177-178,196-203,214-221
+packages/api/src/webhooks/resend.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 25,141-171
+packages/i18n/src/admin/th.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 608-611,945-1196
+packages/i18n/src/dictionaries/fr.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 63,161-163,363-365,484-575
+packages/i18n/src/admin/pl.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,939-1190
+packages/security/src/staff.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 16-30,120,124-136,142-143,146,161-162,179-188,190-201,203,208-272,284-328,346-356
+  s_16f404b29c0075::t_d641111d6d54e3 357
+packages/db/src/schema/types.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 2-18,26-28,31,34-41,49-50,62-80,86-97,101-108,112-113
+packages/commerce/src/disputes/capture.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-376
+apps/web/e2e/scenarios/settlement.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 2-4,6,20-69,104-110,260-339
+  s_16f404b29c0075::t_e1e501eac77cd8 340
+packages/marketing/src/automations/actions.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-252
+apps/hq/src/lib/actions/standing.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 9-15,36,89,145
+apps/web/src/app/arrived/[token]/_components/arrival-form.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-89
+packages/i18n/src/admin/sl.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 607-610,944-1195
+docs/specs/agents/README.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-77
+apps/web/src/app/admin/products/_lib/local-moment.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-47
+apps/hq/src/app/(panel)/accounts/[id]/_components/security-panel.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 48-57,62,69-70,72-77,80-89,92,162,165,252,322,324
+apps/web/e2e/scenarios/account-deletion.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 3,8,10,54-65,67,315-472,556-561,569-637
+apps/web/src/app/api/booking/[productId]/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 47
+apps/web/src/lib/queries/orders.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 38-39,46-50
+docs/specs/README.md
+  s_16f404b29c0075::t_30a21d1c2be87b 13-19,291-295,452-514,519,521,526-536
+apps/hq/src/app/(panel)/payments/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-326
+apps/web/e2e/scenarios/analytics-shares.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-329
+apps/web/src/lib/actions/data-requests.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-252
+apps/api/src/app/api/license/validate/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-19
+docs/specs/35-testimonials-wall-of-love.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-154
+apps/web/src/app/admin/clients/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 21
+packages/core/src/identity/handle.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 36-39,43-60
+packages/i18n/src/admin/en.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 45,60,64,66,73,78-132,226-232,310-394,412-462,470-472,474-476,501-505,528-530,533-542,549-710,721-722,724,744-747,751-754,761,771-790,811,1087-1113,1147-1154,1248-1250,1450-1483,1586-1601,1663-1676,1757-1769,1777-1816,1881-1902,2005-2017,2269-2348,2434-2623,2704-2868
+  s_16f404b29c0075::t_b001ebb430c5b0 2869
+apps/web/src/lib/actions/audience.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-416
+packages/i18n/src/admin/zh.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,930-1181
+packages/i18n/src/admin/da.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,929-1180
+apps/hq/src/app/(panel)/accounts/[id]/commerce/loading.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-13
+apps/hq/src/app/routes.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 86-118
+  s_16f404b29c0075::t_8941ed6c4dd336 119
+apps/web/src/app/admin/products/_components/variant-editor.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 45-46,56-67,76,127-138,231-278,293-297,351-375
+packages/i18n/src/dictionaries/en.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 84-93,149-222,294-295,297,344-378,382-478,758-763,911-951
+docs/specs/agents/wave-b-catalogue.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-226
+packages/marketing/src/testimonials/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-113
+apps/web/src/lib/stripe-webhooks/memberships/upsert.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 208-212
+  s_16f404b29c0075::t_357291b700985c 207
+apps/web/src/lib/actions/offers-admin.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-189
+packages/commerce/src/orders/resolve-lines.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 5-11,14,58-67,140-166,173-188,198-218,236-266,269-282,288-318,336-355,457-466,480-496,500-502,505,509-524
+packages/i18n/src/dictionaries/hr.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 59,140-142,310-312,421-512
+apps/hq/src/app/(panel)/disputes/[id]/_components/platform-case.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-233
+packages/marketing/src/contacts/fields.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-155
+apps/web/drizzle/0048_automations.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-202
+packages/core/src/disputes/platform.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-629
+apps/web/src/lib/actions/affiliates.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 50,140,172,189,214,294-303
+apps/hq/src/lib/platform/order.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-321
+packages/core/src/catalog/variants.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6-7,9,11-12,15,267-407
+packages/i18n/src/admin/fil.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 609-612,942-1193
+packages/i18n/src/admin/id.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 609-612,944-1195
+packages/i18n/src/dictionaries/sr.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,141-143,312-314,423-514
+apps/web/src/app/team/invite/[id]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-86
+packages/db/src/schema/closures.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-225
+docs/specs/47-migrate-from-other-tools.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-284
+docs/specs/38-tax-jurisdictions-thresholds.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-159
+apps/web/drizzle/0037_imports.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-111
+apps/web/src/app/[handle]/_components/shop-sections.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-94
+apps/hq/src/app/(panel)/accounts/[id]/_components/orders-table.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 2,8,17,38,40-44
+apps/hq/src/app/(panel)/accounts/[id]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 12,15-17,24-26,29-41,45-46,48,50-54,77-92,97-111,115-116,119-121,123-124,129-131,133-134,139-142,144-148,150,152-186,189-210,212-243,245,247-264,266-269,271-307,309-313,315-317
+packages/i18n/src/dictionaries/fil.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 59,141-143,311-313,422-513
+packages/marketing/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 11,13-16,20-23
+packages/marketing/src/automations/enrol.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-329
+apps/web/drizzle/0046_service_depth.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-329
+apps/hq/src/lib/bulk-operations.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-115
+docs/specs/RESHAPE-2026-08.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-289
+apps/web/drizzle/0050_integration_scenarios.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-95
+apps/hq/src/app/(panel)/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 324,326,329
+apps/web/e2e/scenarios/platform-disputes.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-422
+apps/web/drizzle/0043_digital_depth.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-236
+apps/web/src/app/admin/products/_components/kind-tabs.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-258
+apps/hq/src/app/(panel)/accounts/_components/bulk-bar.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-237
+apps/web/e2e/scenarios/testimonials.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-393
+apps/web/src/app/admin/broadcasts/lists/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-58
+apps/web/src/app/embed/not-found.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-16
+apps/web/src/lib/evidence-pack.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-207
+apps/web/src/lib/actions/partner.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 36-44,80-86,168-174
+apps/web/src/lib/stripe-webhooks/memberships/lifecycle.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 13,105,163,220
+packages/commerce/src/booking/claim.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 2,4,14-42,55-76,79-83,98-101,103-144,146-172,176-259,269-340,351-356,367-368,371,384-387,393-455,457-512
+packages/core/src/catalog/preorders.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-164
+packages/core/src/privacy/privacy.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-214
+apps/web/e2e/scenarios/shop-pages.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-380
+apps/web/src/app/admin/checkin/[productId]/passes/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 20
+apps/web/src/app/admin/settings/_components/currencies-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-147
+apps/web/src/lib/cart.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 16-26,45-55,157-166,173
+packages/storage/src/stream.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-65
+apps/web/src/lib/queries/checkout.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 8,11-13,56-69,77-83,87-92,94-99,128-163,171-179,183
+packages/commerce/src/memberships/passes.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 3-4,89-108
+  s_16f404b29c0075::t_80efdd15fa76b3 109
+packages/commerce/src/ticketing/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6-12
+packages/i18n/src/admin/ms.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 607-610,944-1195
+apps/hq/src/app/(panel)/accounts/[id]/money/loading.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-13
+packages/security/src/staff.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 2-33,246-361
+apps/web/src/app/api/disputes/[id]/evidence/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 3,88-103,109,134-143,147-152
+packages/analytics/src/dashboard.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1,4,17,92-97,115-124,130-184
+  s_16f404b29c0075::t_20e609058f4878 185
+packages/workflows/src/orders/announce-paid.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-136
+packages/webhooks/src/post.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 4,237-330
+apps/web/src/lib/google-tag.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 4,68-79,198-215,217-224
+packages/i18n/src/dictionaries/de.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 64,161-163,363-365,484-575
+apps/web/src/app/admin/settings/tax/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-136
+apps/web/src/app/admin/settings/data/_components/migrate-panel.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-257
+apps/web/src/app/admin/products/[id]/content/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-75
+apps/web/src/app/testimonial/[token]/_components/testimonial-form.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-123
+packages/marketing/src/contacts/lists.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-470
+apps/web/src/app/[handle]/p/[slug]/opengraph-image.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 46
+packages/commerce/src/shop-views/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 2,93-98,101-142,150,155-181,183
+  s_16f404b29c0075::t_7c80736d769d85 182
+apps/web/src/app/admin/products/new/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 8,14,26-45,47-49
+packages/workflows/src/orders/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 7-8
+apps/web/src/app/admin/settings/integrations/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 24
+packages/core/src/catalog/variants.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 31-44,233-245,247,250-280,372-387,395,402-452
+  s_16f404b29c0075::t_e16981a09c67fc 453
+apps/web/src/app/admin/delivery/_components/delivery-rate-form.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 8,27-34,52-53,57-60,70-85,164-273
+  s_16f404b29c0075::t_1c663f750dcd29 274
+docs/specs/40-gated-content-collections.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-152
+packages/i18n/src/dictionaries/ar.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 79,184-186,391-393,512-603
+packages/commerce/src/orders/offers.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-465
+packages/core/src/privacy/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-333
+apps/web/src/lib/products/form-fields.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 11,186-244
+  s_16f404b29c0075::t_582661eb607aa4 245
+packages/commerce/src/orders/fulfilment.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6-7,42-60,73-78,88-107
+apps/web/src/app/admin/settings/tax/_components/report-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-166
+packages/core/src/money/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 14,18-19
+packages/marketing/src/contacts/confirm.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-112
+packages/i18n/src/tooling/splice.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-200
+packages/commerce/src/tax/server.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-7
+packages/commerce/src/catalog/product-input.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 12,27-28,32-39,41-49,57-63,77-107,111-114,123-158,168-169,172,176-177,180-218,235,238-258,260-301
+packages/commerce/src/memberships/memberships.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 4,10,17,129-135,144-145,147-150,214-274,312-377
+  s_16f404b29c0075::t_7c5ac1c18c39c0 378
+packages/i18n/src/tooling/scripts.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-95
+apps/web/e2e/scenarios/disputes.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1370,1372-1376,1378-1384
+packages/commerce/src/orders/refund-order.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6,96-108,143-144,150-156,170-184,186-193
+apps/web/src/app/admin/settings/billing/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 24,34
+packages/workflows/src/disputes/notify-seller.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 92-97,101-102,425-487
+  s_16f404b29c0075::t_0f61811e5a0680 488
+apps/web/drizzle/0035_evidence_capture.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-184
+apps/web/src/app/api/magnet/[token]/[fileId]/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-84
+apps/web/src/lib/evidence-pdf.render.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-298
+apps/web/src/lib/queries/regional.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-221
+packages/commerce/src/tax/registrations.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-195
+packages/core/src/money/weight.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-171
+docs/specs/46-platform-subscription-disputes.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-219
+apps/web/src/app/api/tax/report/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-63
+apps/web/src/app/[handle]/_components/cart/express-checkout.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 4,55,58,68,81-89,92,107,207-208,213,222
+docs/specs/41-seller-legal-pages.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-126
+packages/i18n/src/dictionaries/ro.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 59,151-153,351-353,471-562
+apps/hq/src/app/_components/dispute-actions.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 11,148-152,156,165-201
+  s_16f404b29c0075::t_987661936098ab 202-205
+apps/hq/src/lib/actions/access.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 10-21,52,99,157,237
+packages/workflows/src/orders/notify-seller.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 10,14,54-64,201-262
+  s_16f404b29c0075::t_19f054c752ae2a 263-264
+packages/api/src/routers/products.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6-9,116-117,128-136,146,149,153-159
+  s_16f404b29c0075::t_2fa8b2ea4dda55 5
+apps/web/src/app/admin/orders/_components/order-filters.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 4-5,18-21,37-63,73-79,111-122
+apps/web/src/app/[handle]/_components/testimonial-strip.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-98
+apps/web/src/app/admin/products/_components/code-pool-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-176
+apps/hq/src/app/(panel)/accounts/[id]/_components/buyers-table.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 5,13
+package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 7,9-10,12-13,17,20,22
+packages/commerce/src/memberships/memberships.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 22-33,40-74,228-234,237-252,254,261,282,285,296-299,338-358,383-394,403-431,471,475,479-491,506-521
+  s_16f404b29c0075::t_d79359f7f232ad 522
+packages/db/src/schema/analytics.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 199-258
+packages/workflows/src/orders/confirm-buyer.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 2,8,24-27,33-36,54-68,76-79,97-120,135-152,157,161-198,200-201
+packages/db/src/schema/policies.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-90
+packages/account/src/data-requests/erase.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-261
+packages/commerce/src/orders/subscription-checkout.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 17-23,78-88,124
+packages/commerce/src/orders/types.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 31-46,69-108,116-130,207,209-218,237-247
+apps/web/src/app/admin/data-requests/_components/request-row.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-233
+apps/web/e2e/scenarios/integrations.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-578
+packages/commerce/src/import/sources/tabular.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-354
+apps/web/drizzle/0044_membership_depth.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-236
+apps/web/e2e/scenarios/evidence-pack.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-447
+packages/i18n/src/admin/ro.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,939-1190
+apps/web/src/app/admin/testimonials/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-94
+packages/core/src/html-text.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-31
+apps/web/drizzle/0039_preorders.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-147
+packages/commerce/src/tax/report.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-284
+packages/marketing/src/automations/server.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-6
+apps/hq/src/app/(panel)/accounts/[id]/_components/account.types.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1,4-14,16-21
+packages/core/src/money/tax-thresholds.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-315
+packages/commerce/src/disputes/policies.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-242
+packages/commerce/src/import/rows.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-145
+packages/commerce/src/orders/shipments.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-391
+apps/web/src/lib/actions/order-admin.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 10,16-17,22,24,38,128,144-153,170,190-200,204-220,263-403,408,433-445,501-506,512,538,552
+apps/web/src/lib/actions/order-preview.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 12,20-27,63-73,84-86,92-93,97-104,110-111,150-162,164,169,174-200,203-205,225-231,233-237,256-257,279-285,289-291,301-302
+apps/web/src/app/admin/settings/fields/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-35
+apps/web/e2e/scenarios/leads.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-480
+packages/commerce/src/disputes/platform.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-716
+apps/web/src/app/admin/testimonials/_components/walls-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-192
+apps/web/src/lib/queries/affiliates.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 7-9
+apps/hq/src/lib/platform/payments.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-296
+packages/account/src/data-requests/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-464
+packages/commerce/src/orders/resolve-coupon.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6,26-35,40,44-58
+  s_16f404b29c0075::t_bde54a5b5d2eb1 59
+apps/hq/src/lib/platform/risk.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-434
+apps/hq/src/app/(panel)/system/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 27-38,51,56-67,160-182,184-190,216-226,229
+packages/marketing/src/automations/graph.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-236
+apps/web/drizzle/0057_data_requests.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-117
+apps/web/e2e/scenarios/staff-bookings.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-520
+apps/web/src/lib/actions/notifications.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 13,31
+apps/web/src/lib/auth.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 10,13-24,28,95-128,145-159,265-288,309-314,347-359,532-584
+apps/web/src/lib/migrations.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 34-66,74-82,91-102,118-123,125-127,143-149,180,187
+  s_16f404b29c0075::t_238a4538962c8b 33
+packages/db/src/schema/catalog.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 3,52-121,125-176,189-201,205-274,276-354,375-414,425-433,447-511,521-529,531-543,550-614,646-655,706-725,728-749,755-768,788-802,807-830,833,835-838,883-1145
+packages/db/src/schema/growth.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 15,438-581
+packages/commerce/src/memberships/seats.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-287
+packages/db/src/schema/json-types.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 43-68,71-124,199-304
+packages/i18n/src/admin/fr.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,932-1183
+packages/i18n/src/admin/hu.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,927-1178
+packages/i18n/src/dictionaries/it.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 63,157-159,360-362,481-572
+packages/core/src/disputes/pack.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-776
+packages/i18n/src/dictionaries/pt.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 61,155-157,358-360,479-570
+packages/commerce/src/import/sources/stripe.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-196
+packages/i18n/src/tooling/gaps.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-145
+apps/mobile/components/store/editor.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 369-398
+apps/web/src/app/admin/data-requests/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-49
+docs/specs/agents/wave-c-product-kinds.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-251
+packages/api/src/license/handlers.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-308
+apps/web/src/app/admin/products/_lib/variant-draft.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 30-49
+apps/hq/src/app/(panel)/closures/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-243
+packages/db/src/schema/risk.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-112
+apps/web/src/app/api/cron/rollup/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 4,20-35,38-39
+apps/web/src/lib/actions/shop.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 7-8,22,125,177-191,301-315,377,412-435,479-500,571
+packages/commerce/src/orders/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 7-13
+apps/hq/src/lib/actions/notes.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 26,50-52
+packages/i18n/src/admin/it.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,929-1180
+apps/web/src/app/[handle]/_components/cart/order-bump.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-116
+docs/specs/deferred/39-custom-domain.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-158
+docs/specs/GAP-2026-08-easytools.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-661
+packages/commerce/src/import/plan.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-390
+apps/hq/src/app/login/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 11-18
+packages/commerce/src/tax/monitor.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-339
+apps/hq/src/app/forbidden.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-55
+apps/web/src/app/admin/products/waiting/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-128
+apps/hq/src/app/(panel)/members/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 5-10,21-51,78-82,102-119,171-181,203-204,211-212,219-234,248-252
+  s_16f404b29c0075::t_a291e125f33bb7 253
+apps/hq/src/lib/metrics.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 225-236,240-242,257-259
+  s_16f404b29c0075::t_3f926879076367 224,260-263
+packages/db/src/schema/contacts.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-236
+apps/web/src/app/admin/orders/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 3-4,7,10,15-25,34,36-38,47-57,61-62,86,90,92-97,102-108,125-145,147-250,253-254
+apps/web/src/app/admin/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 15,20,40,83,100-108,176,178-189,250-269,285-296,450-455
+apps/web/src/app/admin/products/_components/product-form.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 3,18,20,22-25,30,33,35-57,59,73,76-83,88-89,91-112,115,118-122,136-143,145-168,176-191,225-231,243-261,264-284,286-315,317,337-348,350,352-353,355-363,365-367,369,371,373-386,388-396,398-405,407-414,416-423,425,427-447,473
+apps/web/src/lib/account-deletion.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 50-62,68-69
+apps/web/src/lib/actions/reviews.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 22-31,77,94
+apps/web/src/lib/actions/integrations.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 87,152,196,229,265,340,390,433
+scripts/i18n/fill.mts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-430
+apps/web/src/lib/queries/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 9,11,28
+packages/commerce/src/orders/digital-delivery.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 8,25-38,44-45,59-61,64-71,74-77,80,89-96,103-110,112,116,119-132
+  s_16f404b29c0075::t_d8069cfa611512 133
+packages/marketing/src/testimonials/server.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-484
+apps/web/src/app/admin/affiliates/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 34
+packages/commerce/src/ticketing/capacity.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-327
+packages/commerce/src/catalog/stock-requests.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-290
+apps/web/src/app/team/invite/[id]/_components/accept-invite.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-97
+packages/commerce/src/disputes/arrival.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-106
+packages/analytics/src/tiles.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-134
+apps/web/src/app/admin/products/_components/membership-settings-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 3-6,8-16,22-37,39-47,52,58-59,62-97,105,125-135,137-143,145-150,152-180,182-209,218,220-323
+apps/web/src/app/admin/settings/_components/settings-form.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 16,29,54,62-67,134-139
+  s_16f404b29c0075::t_646681d67e6c0b 140
+apps/web/src/lib/actions/tickets.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 69,80
+packages/commerce/src/delivery/settings.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 4-10,48-53,64-87,144-157
+packages/core/src/money/format.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 68-92
+  s_16f404b29c0075::t_b7f593334271f8 67
+packages/i18n/src/dictionaries/bs.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 59,140-142,311-313,422-513
+apps/web/src/lib/seo.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 7,35-55,95,286
+apps/web/e2e/scenarios/data-requests.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-614
+packages/analytics/src/shares-server.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-213
+packages/i18n/src/dictionaries/mk.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,142-144,312-314,423-514
+packages/i18n/src/dictionaries/no.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 59,152-154,352-354,472-563
+apps/web/src/app/admin/checkin/[productId]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 33
+packages/rate-limit/src/redis.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 43-45,108-124,126,128,131,135-139,175-221,228-232,238,240,248-252,254,256-271
+packages/commerce/src/memberships/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 2-7
+apps/web/src/lib/regional.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-90
+packages/webhooks/src/lookup.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-102
+packages/notifications/src/prefs.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 31-33,66-95
+packages/marketing/src/contacts/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-11
+packages/i18n/src/admin/sq.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 608-611,945-1196
+packages/commerce/src/import/fetch.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-279
+apps/web/src/lib/actions/migrate.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-286
+packages/commerce/src/recovery/rules.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-217
+apps/hq/src/app/(panel)/accounts/[id]/layout.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-165
+apps/web/src/lib/session.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-140
+packages/marketing/src/automations/unsubscribe.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-175
+docs/specs/48-digital-product-depth.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-234
+packages/i18n/src/admin/cs.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,929-1180
+apps/web/src/app/admin/settings/_components/compliance-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 3,5,19-30,58-95
+  s_16f404b29c0075::t_73d3038c931ef3 96
+apps/web/src/app/[handle]/_components/cart/cross-sells.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-159
+apps/web/src/lib/actions/team-accept.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-59
+packages/db/src/schema/leads.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-118
+packages/db/src/schema/privacy.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-128
+apps/web/src/app/[handle]/_components/shop-footer.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 3,13,30-32,38-52,74-97,133-148,152-166
+apps/hq/src/app/(panel)/data-requests/_components/staff-answer.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-155
+apps/web/src/app/admin/payments/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 108,116
+apps/web/src/app/admin/settings/_components/notifications-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 77-105
+apps/web/src/app/[handle]/p/[slug]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 12-13,24-25,32,44-64,73,108-109,111-121,124,126-130,132-134,170-184,186-189,245-246,298-302,361-374,388-389,396-421,434-449,455-456,548-562
+apps/web/src/lib/actions/billing.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 3,22,29-49,53-85,88,116
+packages/i18n/src/tooling/scripts.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-56
+packages/i18n/src/admin/el.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,929-1180
+apps/hq/src/app/(panel)/members/_components/member-controls.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 44-52,54,56,64,66,79-84
+packages/core/src/catalog/offers.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-199
+apps/web/src/lib/actions/payouts.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 18
+docs/specs/30-email-automations.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-204
+apps/api/src/app/api/license/deactivate/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-19
+apps/hq/src/lib/auth.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 196-212
+apps/web/src/app/(legal)/privacy/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 476-501
+packages/core/src/catalog/preorders.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-177
+packages/api/src/rest/auth.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 92-105
+packages/commerce/src/import/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-22
+packages/core/src/risk/signals.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-282
+apps/web/e2e/scenarios/team.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-386
+packages/commerce/src/import/plan.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-268
+packages/marketing/src/automations/graph.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-526
+apps/hq/src/app/(panel)/orders/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 7,12,110,112-123,168
+apps/web/src/lib/products/form-fields.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 5,25-34,132-171
+  s_16f404b29c0075::t_a3047ea925a6bb 172
+apps/web/src/app/lists/confirm/[token]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-108
+packages/commerce/src/booking/server.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 6-7
+packages/commerce/src/memberships/server.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 4-9
+apps/hq/src/lib/actions/marketing.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 20-31,57,78,100,134,163,199
+apps/web/src/app/admin/broadcasts/subscribers/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 41
+packages/marketing/src/contacts/membership.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-44
+packages/db/src/schema/orders.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 2,6-7,196-225,247-270,273-286,337-352,401-416,425-441,493-512,566-580,587-617,635-796,869-901,906-917,920,975-995,1077-1084,1087-1105
+packages/db/src/schema/shop.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 40-63,66-85,106-149,366-434,444-474,537-561,642-690
+  s_16f404b29c0075::t_91fa23e7cde074 691
+packages/i18n/src/admin/tr.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,930-1181
+packages/workflows/src/memberships/renewals.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 63-83
+apps/web/src/app/[handle]/data-request/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-93
+apps/web/src/lib/queries/pages.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-49
+packages/marketing/src/contacts/values.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-478
+apps/web/src/app/[handle]/_components/cart/confirmation.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 11-12,38,296-308
+  s_16f404b29c0075::t_c4412162c209bc 309
+packages/i18n/src/admin/hr.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 609-612,942-1193
+apps/web/src/app/admin/settings/team/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-53
+packages/commerce/src/catalog/inventory.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 8,185-201,203-206,245-258
+packages/i18n/src/dictionaries/ms.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,142-144,309-311,420-511
+THREAT-MODEL.md
+  s_16f404b29c0075::t_30a21d1c2be87b 19,118-123,129-227,237-249
+apps/web/src/app/admin/broadcasts/unsubscribed/_components/resubscribe.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-49
+apps/web/src/app/admin/settings/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 6,11,23-34,42
+packages/marketing/src/leads/server.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-195
+apps/web/e2e/scenarios/evidence-capture.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-673
+docs/specs/deferred/33-waitlists.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-138
+packages/commerce/src/catalog/products.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 27-34,56,104-105,316-382,412-506
+  s_16f404b29c0075::t_dd1f290f3cf30e 507
+packages/core/src/shop/shop-pages.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-660
+packages/commerce/src/memberships/terms.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-280
+apps/web/src/app/api/cron/recovery/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-31
+apps/web/src/lib/actions/tax.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-145
+packages/db/src/schema/booking.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-125
+apps/web/src/app/admin/settings/security/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 20,35
+apps/web/src/app/admin/support/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 18
+apps/web/src/lib/actions/payments.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 32
+packages/db/src/schema/commerce.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 3-8,54-73,76-102,150-170
+apps/web/src/app/admin/products/_components/physical-settings-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-157
+packages/db/src/schema/memberships.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122,124-133,166-274,334-392
+packages/design-system/src/web/brand-icons.test.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 25
+packages/i18n/src/dictionaries/hu.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,153-155,352-354,472-563
+packages/marketing/src/broadcasts/audience.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 4-9,58-62,64-65,75-106,109-122,125,129,133-145,151-159,186,189,193-199,201,206-219
+  s_16f404b29c0075::t_6762523a2d0f56 220
+packages/i18n/src/dictionaries/da.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 61,153-155,352-354,472-563
+packages/i18n/src/dictionaries/sv.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,153-155,354-356,474-565
+apps/web/e2e/scenarios/membership-depth.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-727
+packages/account/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 9-11
+packages/storage/src/urls.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 215-299
+apps/web/e2e/scenarios/collections.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-672
+apps/web/drizzle/0056_shop_pages.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-74
+apps/web/src/app/admin/testimonials/_components/moderation-list.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-144
+packages/account/src/deletion/fingerprint.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-63
+apps/web/src/app/admin/members/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 29
+apps/web/src/lib/actions/team.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-291
+packages/account/src/data-requests/tokens.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-108
+apps/web/src/app/[handle]/_components/cart/custom-fields.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-143
+apps/web/src/app/admin/products/_components/pricing-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-222
+packages/commerce/src/import/server.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-12
+packages/core/src/disputes/pack.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-442
+packages/i18n/src/tooling/splice.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-226
+packages/core/src/money/regional.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-293
+apps/hq/src/lib/actions/shared.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 21,42-56,138-147
+apps/web/src/app/[handle]/p/[slug]/_components/buy-box.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 4,24,30-32,58,65-73,81,97,111-170,178,195-205,211-235,259-282,302-309,326-334,337-349,355-364,374-379,394-441,534-562,573-574,577,587
+apps/web/src/app/admin/categories/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 18
+apps/web/src/app/download/[token]/_components/collection-list.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-205
+packages/mailer/src/markup.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-2,120-155
+apps/web/e2e/scenarios/catalogue.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-755
+apps/web/src/app/admin/broadcasts/_components/grow-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 11,82,88,94-100
+apps/web/drizzle/README.md
+  s_16f404b29c0075::t_30a21d1c2be87b 53,80,99
+packages/commerce/src/orders/orders.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 7,101-107
+packages/i18n/src/admin/mk.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 609-612,944-1195
+packages/mailer/src/layout.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 130,134-153
+  s_16f404b29c0075::t_dacfbcd5206b72 154
+apps/web/src/app/[handle]/legal/[slug]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-125
+apps/web/src/app/admin/settings/fields/_components/field-manager.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-362
+packages/commerce/src/orders/shipments.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-73
+.gitignore
+  s_16f404b29c0075::t_30a21d1c2be87b 99-102
+packages/commerce/src/ticketing/ics.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-257
+apps/web/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 49-50,59
+apps/web/src/lib/actions/connect.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 161,216,257,271
+packages/analytics/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 15-18
+packages/email/src/shop/seller.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 259-326,538-647
+apps/hq/src/lib/actions/partner-program.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 34-41,67,118,157,178,213,248,290
+packages/workflows/src/orders/announce-subscription.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-73
+packages/auth/src/organization-for-shop.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-92
+packages/i18n/src/admin/pt.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,939-1190
+packages/core/src/risk/signals.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-339
+apps/web/src/app/admin/products/[id]/content/_components/collection-editor.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-338
+packages/i18n/src/admin/nl.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,939-1190
+apps/hq/src/lib/session.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 69-91,125-147
+  s_16f404b29c0075::t_30c29c3bc29fc1 68
+packages/analytics/src/shares.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-104
+docs/specs/HANDOFF-2026-08.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-651
+packages/i18n/src/dictionaries/fi.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,152-154,351-353,471-562
+packages/i18n/src/dictionaries/pl.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 61,154-156,356-358,477-568
+apps/web/src/app/[handle]/_components/stock-request-form.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-146
+apps/hq/src/lib/platform/closures.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-341
+packages/db/src/schema/team.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-58
+apps/web/src/app/admin/settings/data/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 7,69,141-148
+packages/commerce/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 24-32,42,44
+apps/web/drizzle/0040_physical_depth.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-184
+packages/commerce/src/orders/orders.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 47-55
+packages/i18n/src/admin/ar.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,931-1182
+apps/web/src/app/admin/no-access/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-54
+packages/design-system/src/web/table.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 49-70
+packages/db/src/schema/automations.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-350
+packages/core/src/disputes/policy.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-109
+apps/web/e2e/scenarios/recovery.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-482
+packages/core/src/money/tax-thresholds.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-624
+packages/i18n/src/admin/de.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,932-1183
+apps/web/src/app/admin/layout.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 26
+apps/web/src/lib/actions/support.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 30
+packages/i18n/src/admin/sv.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,930-1181
+packages/i18n/src/dictionaries/es.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 63,160-162,362-364,483-574
+packages/i18n/src/dictionaries/tr.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 62,154-156,356-358,476-567
+apps/hq/src/app/api/export/[type]/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 29-40,63
+apps/web/e2e/scenarios/automations.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-706
+README.md
+  s_16f404b29c0075::t_30a21d1c2be87b 497-505,508-516
+packages/i18n/src/dictionaries/zh.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 79,184-186,391-393,512-603
+docs/specs/44-dispute-evidence-capture.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-285
+apps/web/src/i18n/admin-coverage.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 99-117,120,127-194,196-199,217-230
+  s_16f404b29c0075::t_cfae15c0b7abcb 231-232
+apps/hq/src/lib/actions/bulk.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-322
+packages/i18n/src/admin/ko.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 609-612,944-1195
+packages/workflows/src/catalog/restock.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-184
+apps/hq/src/app/(panel)/accounts/[id]/money/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-294
+apps/hq/src/app/(panel)/accounts/[id]/security/loading.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-13
+packages/account/src/deletion/obligations.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 12,18-27,31,42-67,70-87,91-116
+packages/core/src/shop/visibility.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 63
+apps/web/src/lib/actions/shop-pages.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-321
+packages/db/src/schema/testimonials.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-181
+packages/workflows/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 12,17-19,33-34
+apps/web/src/app/api/admin/events/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 21
+apps/web/drizzle/0059_content_collections.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-104
+apps/web/src/app/arrived/[token]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-149
+apps/web/src/lib/actions/stock-requests.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-127
+apps/hq/src/lib/actions/data-requests.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-170
+apps/hq/src/app/(panel)/accounts/[id]/_components/account-security-actions.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 16-26,32,37,43,70,72
+packages/i18n/src/dictionaries/ja.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 79,184-186,392-394,513-604
+apps/web/src/app/admin/_components/order-row.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 13-15,30,37-44,47-64,77-84,374-375,380-393
+apps/web/src/lib/actions/content.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-100
+packages/core/src/disputes/descriptor.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-131
+apps/web/src/app/[handle]/_lib/load-more-products.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 6,12,59-68,70-78,82-84,92
+packages/commerce/src/orders/server.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 5,21-28
+apps/web/e2e/scenarios/checkout.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 793,803,805
+packages/i18n/src/dictionaries/vi.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,142-144,314-316,425-516
+apps/hq/src/app/(panel)/accounts/[id]/risk/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-264
+docs/specs/33-preorders-and-back-in-stock.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-258
+packages/core/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 10,14,16,23-27,55-61
+apps/web/src/app/admin/settings/tax/_components/countries-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-201
+packages/i18n/src/admin/fi.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 122-125,927-1178
+packages/i18n/src/dictionaries/cs.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 61,153-155,352-354,472-563
+apps/hq/src/app/(panel)/risk/loading.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-9
+apps/web/src/lib/actions/products.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 64-72
+apps/web/drizzle/0047_audience.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-177
+apps/hq/src/app/(panel)/accounts/[id]/_components/affiliates-table.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 5,13
+packages/i18n/src/dictionaries/th.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,141-143,312-314,423-514
+packages/auth/src/permissions.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-111
+apps/web/src/app/admin/orders/[id]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-488
+apps/web/e2e/scenarios/code-pools.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-664
+packages/mailer/src/transport.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 3,85-103,145-157,210,213-218
+packages/i18n/src/admin/vi.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 608-611,945-1196
+packages/api/src/license/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-11
+apps/hq/src/app/(panel)/accounts/[id]/commerce/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-212
+packages/marketing/src/socials.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-48
+apps/hq/src/app/(panel)/disputes/[id]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 22,74,175-195,201
+apps/web/src/app/api/license/activate/route.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-19
+apps/web/src/lib/queries/testimonials.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-38
+apps/mobile/components/store/draft.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 88-98,144,176,292-293
+apps/web/src/lib/actions/account.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 24,65-86,90-91
+docs/specs/37-seller-team-roles.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-201
+apps/web/src/app/admin/broadcasts/new/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 16
+apps/web/src/app/admin/broadcasts/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 45,80-96,98,101-106
+apps/web/drizzle/0058_platform_evidence.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-90
+apps/hq/src/app/(panel)/risk/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-308
+packages/core/src/catalog/offers.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-197
+apps/mobile/components/store/copy.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 123-132
+apps/web/e2e/embed-wall.spec.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-188
+packages/core/src/disputes/platform.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-312
+packages/core/src/disputes/index.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 20-21,23-27
+docs/specs/agents/wave-a-reach.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-214
+apps/web/src/app/admin/orders/_components/order-tabs.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-85
+apps/hq/package.json
+  s_16f404b29c0075::t_30a21d1c2be87b 15
+packages/commerce/src/orders/clients.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 29-39,122-123
+packages/i18n/src/tooling/report.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-147
+apps/web/src/app/admin/testimonials/_components/add-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-75
+apps/hq/src/app/(panel)/disputes/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 23,62-71,78-88,182,185,298-314,386,389,451-456
+  s_16f404b29c0075::t_19d901314ee0f3 457
+apps/web/src/lib/actions/broadcasts.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,202-210,479,513
+packages/marketing/src/automations/scenarios.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-182
+docs/specs/31-integration-scenarios.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-136
+apps/hq/src/lib/actions/risk.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-179
+apps/web/src/lib/actions/memberships.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 57-65,105
+packages/core/src/shop/plans.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 62-219,226-233,265,287-302,316,334-349,360,373-388
+apps/web/src/app/admin/checkin/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 31
+packages/design-system/src/web/segmented-control.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 5-6,79-149
+packages/commerce/src/import/sources/shopify.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-246
+packages/i18n/src/dictionaries/ru.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 60,152-154,354-356,474-565
+apps/web/src/app/[handle]/data-request/[token]/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-113
+packages/marketing/src/automations/scenarios.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-225
+apps/web/e2e/scenarios/dispute-files.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 135,337-338,352-353,357-358
+apps/web/src/app/[handle]/_types/shop-page.types.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1,18-25,27-30,41-48,63-74
+apps/web/e2e/scenarios/tax.scenario.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-561
+docs/specs/agents/wave-f-paperwork.md
+  s_16f404b29c0075::t_30a21d1c2be87b 1-276
+apps/hq/src/app/(panel)/support/page.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 112-120,127-128
+apps/web/src/app/admin/orders/_components/order-actions.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 5-10,34-36,41-57,73-89,102-119,122-136,223-252
+  s_16f404b29c0075::t_f4e02caf6c3599 253
+apps/web/src/app/[handle]/_components/cart/cart-sheet.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 4,14,33-34,37,45-46,49,65-66,72,160-165,167-173
+apps/web/src/app/admin/settings/security/_components/delete-account-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 32-37,41,44-49,58-77,95-97
+apps/web/src/lib/actions/locale.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 19,22-27,29
+apps/web/src/app/admin/settings/tax/_components/registrations-card.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 1-206
+apps/web/drizzle/0033_undelivered_paid_index.sql
+  s_16f404b29c0075::t_30a21d1c2be87b 1-41
+apps/hq/src/app/(panel)/accounts/[id]/_components/catalogue-table.tsx
+  s_16f404b29c0075::t_30a21d1c2be87b 6,14
+packages/core/src/catalog/codes.test.ts
+  s_16f404b29c0075::t_30a21d1c2be87b 1-155
+pnpm-lock.yaml
+  s_16f404b29c0075::t_790d17d03dfead 15-17,21-23,167-169,481-483,851-856,860-865,928-930,934-936,1615-1620,1670-1678,8093-8096,10347-10349,10975-10980,18516-18520,21819-21820
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "4fb8ad9946afaa5a0b8d937f65d588cda0143ad8",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
