@@ -1,0 +1,19 @@
+packages/mailer/src/markup.test.ts
+  s_16f404b29c0075::t_817381a1d46b8a 1-2,121,123-139,141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "5993d65c5f06545cd1a5d1c05f8fbbcdd7569885",
+  "prompts": {},
+  "sessions": {
+    "s_16f404b29c0075": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "932207f6-236e-44e8-a0f1-01eb0d45df22",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
