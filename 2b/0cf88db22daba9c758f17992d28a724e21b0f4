@@ -1,0 +1,102 @@
+packages/core/src/catalog/pricing-models.test.ts
+  s_ff5bd57f7b4f2f::t_aa543fe8056ea8 1-332
+packages/commerce/src/orders/shipments.ts
+  s_ff5bd57f7b4f2f::t_d64c1a11514409 1-391
+packages/core/src/money/weight.ts
+  s_ff5bd57f7b4f2f::t_ac634fcdebc8c0 1-169
+packages/commerce/src/orders/shipments.test.ts
+  s_ff5bd57f7b4f2f::t_dbc16c724094a3 1-73
+apps/web/src/lib/actions/orders.test.ts
+  s_ff5bd57f7b4f2f::t_9f790d60cbfe15 98,102-123
+  s_ff5bd57f7b4f2f::t_d817c828ce35e1 124-125
+packages/core/src/money/weight.test.ts
+  s_ff5bd57f7b4f2f::t_52a5d16160596f 1-171
+apps/web/src/lib/products/form-fields.ts
+  s_ff5bd57f7b4f2f::t_77924ae7d248ca 5,132-171
+  s_ff5bd57f7b4f2f::t_1a647d8b86306f 25-34
+  s_ff5bd57f7b4f2f::t_08c7c859827dc6 172
+apps/web/src/lib/cart.ts
+  s_ff5bd57f7b4f2f::t_8867131b6f4355 16-26,45-55,157-166,173
+packages/i18n/src/admin/en.ts
+  s_ff5bd57f7b4f2f::t_fe9a5db717ad21 244-250,1141-1163
+apps/web/src/app/admin/products/_lib/variant-draft.test.ts
+  s_ff5bd57f7b4f2f::t_a334208d49df10 30-39
+  s_ff5bd57f7b4f2f::t_ad56ecd8125625 40-45
+apps/web/drizzle/0040_physical_depth.sql
+  s_ff5bd57f7b4f2f::t_e21d8e18892a26 1-184
+packages/commerce/src/catalog/low-stock.ts
+  s_ff5bd57f7b4f2f::t_356fdd41f0ba9e 1-237
+apps/web/src/app/admin/products/_components/pricing-card.tsx
+  s_ff5bd57f7b4f2f::t_2c48a6fd4288ef 1-99,105,108,110,121-257
+  s_ff5bd57f7b4f2f::t_d2b75a72cc0cb9 100-104,106-107,109,111-120
+packages/db/src/schema/catalog.ts
+  s_e1f6fcdd78170a::t_f62f854dec59b9 3,164-175
+  s_e1f6fcdd78170a::t_ed5ef1e28d82f9 176
+packages/workflows/src/memberships/renewals.ts
+  s_ff5bd57f7b4f2f::t_300c706f1a76f3 63-83
+packages/core/src/catalog/index.ts
+  s_ff5bd57f7b4f2f::t_bcfdfc3f7b9fff 9-15
+packages/core/src/catalog/pricing-models.ts
+  s_ff5bd57f7b4f2f::t_520ff42b938069 1-311
+apps/web/src/app/[handle]/_components/amount-field.tsx
+  s_ff5bd57f7b4f2f::t_3c06b1c3378245 1-5,12-70,73,75-125
+  s_ff5bd57f7b4f2f::t_f1bba5ec7665c7 6-11,71-72,74
+packages/core/src/money/format.ts
+  s_ff5bd57f7b4f2f::t_f1bba5ec7665c7 68-92
+  s_ff5bd57f7b4f2f::t_817d4c52ba4520 67
+packages/commerce/src/memberships/renewals.ts
+  s_ff5bd57f7b4f2f::t_b0545951b6f913 65-69,72-93,102-103
+  s_ff5bd57f7b4f2f::t_131e607855e51c 19
+  s_c6ab3915e97efe::t_e996cafb51462d 18,63-64,71,106-113,166-171
+  s_e1f6fcdd78170a::t_3f900871cd6303 54-57
+  s_ff5bd57f7b4f2f::t_922fc6df06ade8 144-155
+  s_a79949fd39aa12::t_9aeef10366bd7b 156
+apps/web/drizzle/0041_pricing_models.sql
+  s_ff5bd57f7b4f2f::t_b1efe6c82fac6e 1-97
+apps/web/src/lib/actions/products.test.ts
+  s_ff5bd57f7b4f2f::t_84dd7312591777 64-72
+apps/web/src/lib/products/form-fields.test.ts
+  s_e1f6fcdd78170a::t_097505b5c884b3 11,186-245
+packages/commerce/src/orders/types.ts
+  s_ff5bd57f7b4f2f::t_ee9ac79a9a12d3 210-220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "2b0cf88db22daba9c758f17992d28a724e21b0f4",
+  "prompts": {},
+  "sessions": {
+    "s_a79949fd39aa12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3512a1e-3a48-4b59-95c2-ad40c780f6a9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_c6ab3915e97efe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c24c96ca-a911-4fa0-901b-d9f00fe9e7ce",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_e1f6fcdd78170a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "07ffa20a-be06-4b62-a6c7-e2cc4d3b435d",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_ff5bd57f7b4f2f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f7a8e604-26d7-4dc0-9381-beaca5a4f55b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
