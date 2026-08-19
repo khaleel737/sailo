@@ -1,0 +1,40 @@
+packages/commerce/src/orders/licenses.ts
+  s_6a50ff8b58418c::t_d86ba00a7232b1 285,321-348,350-363,365-394,407,412,414-415,417-422,425,428,451-453,465-482
+  s_6a50ff8b58418c::t_dc4bafb66379de 483
+apps/web/e2e/scenarios/code-pools.scenario.ts
+  s_6a50ff8b58418c::t_d2e5a3718171a0 554-584
+apps/web/drizzle/0043_digital_depth.sql
+  s_6a50ff8b58418c::t_59d95a3ff7cfb8 199-236
+apps/web/src/app/[handle]/data-request/[token]/page.tsx
+  s_a79949fd39aa12::t_cde046f25f4f17 14-22
+apps/web/src/app/admin/products/_components/digital-delivery-card.tsx
+  s_6a50ff8b58418c::t_3f8b22da4f9db6 278
+apps/web/src/lib/actions/product-codes.ts
+  s_6a50ff8b58418c::t_1d02637648fe0d 171
+packages/db/src/schema/catalog.ts
+  s_6a50ff8b58418c::t_3b2f927757ffe8 977-992
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "ca2da8afc10e54883f302bbaa54389bc6eaf4449",
+  "prompts": {},
+  "sessions": {
+    "s_6a50ff8b58418c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8d67b706-f77d-4af2-84f8-c7556015fd53",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    },
+    "s_a79949fd39aa12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3512a1e-3a48-4b59-95c2-ad40c780f6a9",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Khaleel Musleh <khaleelmusleh@gmail.com>"
+    }
+  }
+}
