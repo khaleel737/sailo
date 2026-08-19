@@ -16,6 +16,7 @@ import {
 } from "@sailo/db/schema";
 import { ORDERS, send, sender } from "@sailo/mailer/transport";
 import { can } from "@sailo/core/plans";
+import { firstRow } from "@sailo/core/invariant";
 import { applyMergeTags, mergeValuesFor, renderBody } from "../broadcasts/markdown";
 import { broadcastLabels, shopDictionary } from "../broadcasts/labels";
 import { budgetFor } from "../broadcasts/quota";
@@ -478,17 +479,20 @@ async function runSend(
    * after, a crash would lose the fact that somebody was mailed — which is the
    * one fact this table exists to keep.
    */
-  const [delivery] = await db
-    .insert(broadcastDeliveries)
-    .values({
-      broadcastId: null,
-      shopId: shop.id,
-      clientId: run.clientId,
-      email: run.email,
-      status: "sending",
-      attempts: 1,
-    })
-    .returning({ id: broadcastDeliveries.id });
+  const delivery = firstRow(
+    await db
+      .insert(broadcastDeliveries)
+      .values({
+        broadcastId: null,
+        shopId: shop.id,
+        clientId: run.clientId,
+        email: run.email,
+        status: "sending",
+        attempts: 1,
+      })
+      .returning({ id: broadcastDeliveries.id }),
+    "the delivery row this send is about to be recorded against",
+  );
 
   const { t } = shopDictionary(shop);
   const labels = broadcastLabels(t);
@@ -531,14 +535,14 @@ async function runSend(
         ? { status: "sent", providerId: result.id, sentAt: new Date() }
         : { status: "failed", error: (result.reason ?? "unknown").slice(0, 500) },
     )
-    .where(eq(broadcastDeliveries.id, delivery!.id));
+    .where(eq(broadcastDeliveries.id, delivery.id));
 
   await step(
     run.id,
     node,
     result.sent ? "sent" : "failed",
     email.id,
-    delivery!.id,
+    delivery.id,
   );
 
   if (!result.sent) {

@@ -306,7 +306,15 @@ export function parseGraph(raw: unknown): GraphResult {
   }
 
   if (problems.length > 0) return { ok: false, problems };
-  return { ok: true, graph: { entry: start!, nodes: parsed, out } };
+  /*
+   * `start` is set here, and the reason is two lines up rather than in a `!`:
+   * a missing one pushes `noEntry`, so reaching an empty `problems` means it
+   * was found. Narrowed rather than asserted, because the two facts are only
+   * connected by that push — and if somebody ever removes it, this returns a
+   * graph whose entry is `undefined` and every run on it walks nowhere.
+   */
+  if (!start) return { ok: false, problems: [{ code: "noEntry" }] };
+  return { ok: true, graph: { entry: start, nodes: parsed, out } };
 }
 
 /** The node a run starts on when the graph does not name one. */
@@ -447,7 +455,8 @@ function reachable(entry: string, out: Map<string, AutomationEdge[]>): Set<strin
   const seen = new Set<string>([entry]);
   const stack = [entry];
   while (stack.length > 0) {
-    const id = stack.pop()!;
+    const id = stack.pop();
+    if (id === undefined) break;
     for (const edge of out.get(id) ?? []) {
       if (seen.has(edge.to)) continue;
       seen.add(edge.to);

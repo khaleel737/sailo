@@ -62,7 +62,8 @@ export async function GET(request: Request) {
    * incident spec 52 exists to prevent, so the link expiring and the bytes going
    * are the same tick rather than two.
    */
-  const exports_ = await expireDataExports();
+  // Not `exports` — that is a reserved word in a module.
+  const expiredExports = await expireDataExports();
 
   return NextResponse.json({
     ok: true,
@@ -72,6 +73,6 @@ export async function GET(request: Request) {
     webhookRowsPruned,
     deletedShopsSwept: files.shopsSwept,
     deletedFilesRemoved: files.blobsDeleted,
-    dataExportsExpired: exports_.expired,
+    dataExportsExpired: expiredExports.expired,
   });
 }

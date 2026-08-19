@@ -249,17 +249,20 @@ export async function resolveLines(
        * so this is the guard for the window between two caches.
        */
       if (regional) {
-        const priced = variantAtCurrency(
+        // Not `priced` — that name is taken by the product list above, and the
+        // two are different things: one is every product in this currency, this
+        // is the single variant re-read in it.
+        const variantInCurrency = variantAtCurrency(
           variant,
           opts.currency ?? "",
           opts.shopCurrency ?? "",
         );
-        if (!priced) {
+        if (!variantInCurrency) {
           const stop = fail(item, `${product.title} isn't available right now.`);
           if (stop) return stop;
           continue;
         }
-        variant = priced;
+        variant = variantInCurrency;
       }
     }
 

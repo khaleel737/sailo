@@ -700,7 +700,8 @@ async function submitPlatformEvidence(opts: {
   submit: boolean;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
   try {
-    const { stripe } = await import("@sailo/payments");
+    // The module-level `stripe` from the top of this file. It is already a lazy
+    // factory, so a second dynamic import bought nothing and shadowed the name.
     await stripe().disputes.update(opts.disputeId, {
       evidence: opts.payload,
       submit: opts.submit,

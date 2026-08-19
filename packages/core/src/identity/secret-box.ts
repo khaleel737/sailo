@@ -77,12 +77,32 @@ export function openSecret(sealed: string): string | null {
   if (!key) return null;
 
   const parts = sealed.split(".");
-  if (parts.length !== 4 || parts[0] !== "v1") return null;
+  if (parts.length !== 4) return null;
+  /*
+   * Destructured after the length check rather than indexed through it. A `!`
+   * here would be three assertions on a value that arrived from a database row,
+   * which is the one place in this file where the input is genuinely untrusted.
+   *
+   * `=== undefined` and not a truthiness test: an **empty** body is a sealed
+   * empty string, which `sealSecret("")` produces and the round-trip test
+   * covers. Rejecting it would turn a stored blank credential into "cannot be
+   * read", and the caller's response to that is to stop running the scenario.
+   * The IV and tag cannot be blank, and are checked by length below.
+   */
+  const [version, rawIv, rawTag, rawBody] = parts;
+  if (
+    version !== "v1" ||
+    rawIv === undefined ||
+    rawTag === undefined ||
+    rawBody === undefined
+  ) {
+    return null;
+  }
 
   try {
-    const iv = Buffer.from(parts[1]!, "base64url");
-    const tag = Buffer.from(parts[2]!, "base64url");
-    const body = Buffer.from(parts[3]!, "base64url");
+    const iv = Buffer.from(rawIv, "base64url");
+    const tag = Buffer.from(rawTag, "base64url");
+    const body = Buffer.from(rawBody, "base64url");
     if (iv.length !== IV_BYTES || tag.length !== 16) return null;
 
     const decipher = createDecipheriv("aes-256-gcm", key.subarray(0, 32), iv);

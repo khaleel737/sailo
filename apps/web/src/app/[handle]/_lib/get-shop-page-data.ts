@@ -100,8 +100,8 @@ export async function getShopPageData(
      * refunds. About and FAQ are already on the page as blocks, and linking to
      * them from the footer as well would put the same words in two places.
      */
-    legalLinks: publishedPages.filter((row) =>
-      ["terms", "privacy", "refunds"].includes(row.kind),
+    legalLinks: publishedPages.filter((doc) =>
+      ["terms", "privacy", "refunds"].includes(doc.kind),
     ),
     // A downgrade has to switch the programme off publicly, not just in admin.
     affiliatesLive: shop.affiliatesEnabled && can(shop, "affiliates"),

@@ -3,7 +3,6 @@ import { and, eq, inArray, isNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@sailo/db";
 import {
   checkoutSessions,
-  clients,
   coupons,
   emailSuppressions,
   orders,

@@ -202,7 +202,15 @@ export function parseAnswer(field: FieldShape, raw: unknown): ParsedAnswer {
     return { ok: true, value };
   }
 
-  const text = typeof raw === "string" ? raw.trim() : raw == null ? "" : String(raw).trim();
+  // `raw === null || raw === undefined` rather than `raw == null`: the loose
+  // form means exactly this and the lint rule refuses it, and `String(null)`
+  // is the string "null", which would arrive in somebody's contact record.
+  const text =
+    typeof raw === "string"
+      ? raw.trim()
+      : raw === null || raw === undefined
+        ? ""
+        : String(raw).trim();
 
   if (!text) {
     if (field.required) return { ok: false, problem: "required" };

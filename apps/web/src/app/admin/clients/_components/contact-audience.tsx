@@ -1,7 +1,7 @@
 "use client";
 
 import { startTransition, useActionState } from "react";
-import { Loader2, X } from "lucide-react";
+import { X } from "lucide-react";
 import {
   addToContactList,
   removeFromContactList,
