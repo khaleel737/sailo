@@ -1,0 +1,3 @@
+-- F5 — gated content (collections, collection_items, content_progress)
+--
+-- Claimed by wave F. SQL follows in the commit that builds it.

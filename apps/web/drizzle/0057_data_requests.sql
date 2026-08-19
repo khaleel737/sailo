@@ -1,0 +1,3 @@
+-- F2 — buyer data requests (data_requests) and the 90-day file sweep
+--
+-- Claimed by wave F. SQL follows in the commit that builds it.

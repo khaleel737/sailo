@@ -1,0 +1,3 @@
+-- F4 — platform subscription disputes (platform_usage_daily)
+--
+-- Claimed by wave F. SQL follows in the commit that builds it.

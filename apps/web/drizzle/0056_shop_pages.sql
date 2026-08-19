@@ -1,0 +1,3 @@
+-- F1 — seller legal pages (shop_pages)
+--
+-- Claimed by wave F. SQL follows in the commit that builds it.
