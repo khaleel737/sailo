@@ -30,6 +30,7 @@
     "@sailo/db": "workspace:*",
     "@sailo/email": "workspace:*",
     "@sailo/events": "workspace:*",
+    "@sailo/mailer": "workspace:*",
     "@sailo/marketing": "workspace:*",
     "@sailo/notifications": "workspace:*",
     "@sailo/partners": "workspace:*",

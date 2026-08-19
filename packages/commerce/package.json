@@ -39,6 +39,7 @@
   "dependencies": {
     "@sailo/core": "workspace:*",
     "@sailo/db": "workspace:*",
+    "@sailo/email": "workspace:*",
     "@sailo/events": "workspace:*",
     "@sailo/notifications": "workspace:*",
     "@sailo/payments": "workspace:*",

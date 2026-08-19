@@ -925,6 +925,9 @@ importers:
       '@sailo/db':
         specifier: workspace:*
         version: link:../db
+      '@sailo/email':
+        specifier: workspace:*
+        version: link:../email
       '@sailo/events':
         specifier: workspace:*
         version: link:../events
@@ -1609,6 +1612,9 @@ importers:
       '@sailo/events':
         specifier: workspace:*
         version: link:../events
+      '@sailo/mailer':
+        specifier: workspace:*
+        version: link:../mailer
       '@sailo/marketing':
         specifier: workspace:*
         version: link:../marketing
